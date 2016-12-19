@@ -2461,7 +2461,7 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
   {
     base_t::impact( s );
 
-    if ( special && p() -> artifacts.bullseye.rank() && s -> target -> health_percentage() <= p() -> artifacts.bullseye.value() )
+    if ( p() -> artifacts.bullseye.rank() && s -> target -> health_percentage() <= p() -> artifacts.bullseye.value() )
       p() -> buffs.bullseye -> trigger();
   }
 
@@ -2532,50 +2532,6 @@ struct hunter_melee_attack_t: public hunter_action_t < melee_attack_t >
   }
 };
 
-// Ranged Attack ============================================================
-
-struct ranged_t: public hunter_ranged_attack_t
-{
-  bool first_shot;
-  ranged_t( hunter_t* p, const char* n = "ranged", const spell_data_t* s = spell_data_t::nil() ):
-    hunter_ranged_attack_t( n, p, s ), first_shot( true )
-  {
-    school = SCHOOL_PHYSICAL;
-    weapon = &p -> main_hand_weapon;
-    base_execute_time = weapon -> swing_time;
-    background = true;
-    repeating = true;
-    special = false;
-  }
-
-  void reset() override
-  {
-    hunter_ranged_attack_t::reset();
-
-    first_shot = true;
-  }
-
-  virtual timespan_t execute_time() const override
-  {
-    timespan_t t = hunter_ranged_attack_t::execute_time();
-    if ( first_shot )
-      return timespan_t::from_millis( 100 );
-    else
-      return t;
-  }
-
-  virtual void execute() override
-  {
-    if ( first_shot )
-      first_shot = false;
-    hunter_ranged_attack_t::execute();
-  }
-
-  virtual void try_steady_focus() override
-  {
-  }
-};
-
 // Volley ============================================================================
 
 struct volley_tick_t: hunter_ranged_attack_t
@@ -2641,15 +2597,25 @@ struct volley_t: hunter_ranged_attack_t
 
 // Auto Shot ================================================================
 
-struct auto_shot_t: public ranged_t
+struct auto_shot_t: public hunter_action_t < ranged_attack_t >
 {
   volley_tick_t* volley_tick;
   double volley_tick_cost;
-  auto_shot_t( hunter_t* p ): ranged_t( p, "auto_shot", spell_data_t::nil() ), volley_tick( nullptr ),
-    volley_tick_cost( 0 )
+  bool first_shot;
+
+  auto_shot_t( hunter_t* p ): base_t( "auto_shot", p, spell_data_t::nil() ), volley_tick( nullptr ),
+    volley_tick_cost( 0 ), first_shot( true )
   {
     school = SCHOOL_PHYSICAL;
+    background = true;
+    repeating = true;
+    trigger_gcd = timespan_t::zero();
+    special = false;
+    may_crit = true;
+
     range = 40.0;
+    weapon = &p->main_hand_weapon;
+    base_execute_time = weapon->swing_time;
 
     if ( p -> talents.volley -> ok() )
     {
@@ -2659,9 +2625,29 @@ struct auto_shot_t: public ranged_t
     }
   }
 
+  virtual bool usable_moving() const override
+  { return true; }
+
+  void reset() override
+  {
+    base_t::reset();
+    first_shot = true;
+  }
+
+  virtual timespan_t execute_time() const override
+  {
+    timespan_t t = base_t::execute_time();
+    if ( first_shot )
+      return timespan_t::from_millis( 100 );
+    return t;
+  }
+
   virtual void execute() override
   {
-    ranged_t::execute();
+    if ( first_shot )
+      first_shot = false;
+
+    base_t::execute();
 
     if ( p() -> specialization() == HUNTER_MARKSMANSHIP && p() -> ppm_hunters_mark -> trigger() )
     {
@@ -2688,7 +2674,7 @@ struct auto_shot_t: public ranged_t
 
   virtual void impact( action_state_t* s ) override
   {
-    ranged_t::impact( s );
+    base_t::impact( s );
 
     if ( rng().roll( p() -> talents.lock_and_load -> proc_chance() ) )
     {
@@ -2714,7 +2700,7 @@ struct auto_shot_t: public ranged_t
 
   virtual double composite_target_crit_chance( player_t* t ) const override
   {
-    double cc= ranged_t::composite_target_crit_chance( t );
+    double cc = base_t::composite_target_crit_chance( t );
 
     cc += p() -> buffs.big_game_hunter -> value();
 
