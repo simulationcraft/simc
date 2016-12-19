@@ -2112,12 +2112,17 @@ struct arcane_mage_spell_t : public mage_spell_t
     mage_spell_t( n, p, s )
   {}
 
-  double arcane_charge_damage_bonus() const
+  double arcane_charge_damage_bonus( bool missile_call ) const
   {
-    double per_ac_bonus =  ( p() -> spec.arcane_charge -> effectN( 1 ).percent() +
-                             p() -> talents.amplification -> effectN( 1 ).percent() ) +
+    double per_ac_bonus =  p() -> spec.arcane_charge -> effectN( 1 ).percent() +
                           ( p() -> composite_mastery() *
                            p() -> spec.savant -> effectN( 2 ).mastery_value() );
+
+    if ( p() -> talents.amplification -> ok() && missile_call )
+    {
+      per_ac_bonus += p() -> talents.amplification -> effectN( 1 ).percent();
+    }
+
     return 1.0 + p() -> buffs.arcane_charge -> check() * per_ac_bonus;
 
   }
@@ -2875,7 +2880,7 @@ struct arcane_barrage_t : public arcane_mage_spell_t
   {
     double am = arcane_mage_spell_t::action_multiplier();
 
-    am *= arcane_charge_damage_bonus();
+    am *= arcane_charge_damage_bonus( false );
 
     if ( p() -> talents.resonance -> ok() )
     {
@@ -3011,7 +3016,7 @@ struct arcane_blast_t : public arcane_mage_spell_t
   {
     double am = arcane_mage_spell_t::action_multiplier();
 
-    am *= arcane_charge_damage_bonus();
+    am *= arcane_charge_damage_bonus( false );
 
     if ( p() -> wild_arcanist && p() -> buffs.arcane_power -> check() )
     {
@@ -3131,7 +3136,7 @@ struct arcane_explosion_t : public arcane_mage_spell_t
   {
     double am = arcane_mage_spell_t::action_multiplier();
 
-    am *= arcane_charge_damage_bonus();
+    am *= arcane_charge_damage_bonus( false );
 
     return am;
   }
@@ -3222,7 +3227,7 @@ struct arcane_missiles_t : public arcane_mage_spell_t
   {
     double am = arcane_mage_spell_t::action_multiplier();
 
-    am *= arcane_charge_damage_bonus();
+    am *= arcane_charge_damage_bonus( true );
 
     return am;
   }
@@ -3616,7 +3621,7 @@ struct charged_up_t : public arcane_mage_spell_t
     arcane_mage_spell_t( "charged_up", p, p -> find_spell ("Charged Up" ) )
   {
     parse_options( options_str );
-    triggers_arcane_missiles = false;
+    triggers_arcane_missiles = harmful = false;
   }
 
   virtual void execute() override
@@ -6086,7 +6091,7 @@ struct nether_tempest_t : public arcane_mage_spell_t
   {
     double m = arcane_mage_spell_t::composite_persistent_multiplier( state );
 
-    m *= arcane_charge_damage_bonus();
+    m *= arcane_charge_damage_bonus( false );
 
     return m;
   }
