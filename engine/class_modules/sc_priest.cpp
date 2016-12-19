@@ -212,9 +212,10 @@ public:
     const spell_data_t* auspicious_spirits;
     const spell_data_t* shadowy_insight;
 
+    const spell_data_t* misery;
+
     const spell_data_t* legacy_of_the_void;
- //   const spell_data_t* mind_spike;
-	const spell_data_t* shadow_crash;
+    const spell_data_t* shadow_crash;
     const spell_data_t* surrender_to_madness;
   } talents;
 
@@ -1255,6 +1256,8 @@ struct priest_spell_t : public priest_action_t<spell_t>
 {
   bool is_mind_spell;
   bool is_sphere_of_insanity_spell;
+  // PTR hotfix spell for Shadow
+  const spell_data_t* ptr_shadow_scaling_buff;
 
   priest_spell_t( const std::string& n, priest_t& player,
                   const spell_data_t* s = spell_data_t::nil() )
@@ -1263,6 +1266,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
       is_sphere_of_insanity_spell( false )
   {
     weapon_multiplier = 0.0;
+    ptr_shadow_scaling_buff = priest.find_spell(137033);
   }
 
   bool usable_moving() const override
@@ -1875,8 +1879,7 @@ public:
 
     if (maybe_ptr(priest.dbc.ptr))
     {
-      auto ptr_scaling_buff = priest.find_spell(137033);
-      d *= 1.0 + ptr_scaling_buff->effectN(1).percent();
+      d *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
     }
 
     return d;
@@ -1893,9 +1896,6 @@ public:
   {
     priest_spell_t::impact( s );
     generate_insanity( insanity_gain, priest.gains.insanity_mind_blast );
-
-    priest_td_t& td = get_td( s->target );
-
   }
 
   timespan_t execute_time() const override
@@ -2057,8 +2057,7 @@ struct mind_flay_t final : public priest_spell_t
 
     if (maybe_ptr(priest.dbc.ptr))
     {
-      auto ptr_scaling_buff = priest.find_spell(137033);
-      am *= 1.0 + ptr_scaling_buff->effectN(2).percent();
+      am *= 1.0 + ptr_shadow_scaling_buff->effectN(2).percent();
     }
 
     return am;
@@ -2472,8 +2471,7 @@ struct shadow_word_death_t final : public priest_spell_t
 
     if (maybe_ptr(priest.dbc.ptr))
     {
-      auto ptr_scaling_buff = priest.find_spell(137033);
-      d *= 1.0 + ptr_scaling_buff->effectN(1).percent();
+      d *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
     }
 
     return d;
@@ -2549,8 +2547,7 @@ struct shadow_crash_t final : public priest_spell_t
 
     if (maybe_ptr(priest.dbc.ptr))
     {
-      auto ptr_scaling_buff = priest.find_spell(137033);
-      d *= 1.0 + ptr_scaling_buff->effectN(1).percent();
+      d *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
     }
 
     return d;
@@ -2687,16 +2684,22 @@ struct sphere_of_insanity_spell_t final : public priest_spell_t
 struct shadow_word_pain_t final : public priest_spell_t
 {
   double insanity_gain;
+  bool casted;
 
-  shadow_word_pain_t( priest_t& p, const std::string& options_str )
+  shadow_word_pain_t( priest_t& p, const std::string& options_str, bool _casted = true )
     : priest_spell_t( "shadow_word_pain", p,
                       p.find_class_spell( "Shadow Word: Pain" ) ),
       insanity_gain( data().effectN( 3 ).resource( RESOURCE_INSANITY ) )
   {
     parse_options( options_str );
-
+    casted = _casted;
     may_crit  = true;
     tick_zero = false;
+    if (!casted)
+    {
+      base_dd_max = 0.0;
+      base_dd_min = 0.0;
+    }
     energize_type =
         ENERGIZE_NONE;  // disable resource generation from spell data
 
@@ -2727,9 +2730,23 @@ struct shadow_word_pain_t final : public priest_spell_t
     }
   }
 
+  double spell_direct_power_coefficient(const action_state_t* s) const override
+  {
+    return casted
+      ? priest_spell_t::spell_direct_power_coefficient(s)
+      : 0.0;
+  }
+
+
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
+
+    if (casted) 
+    {
+    generate_insanity( insanity_gain,
+                       priest.gains.insanity_shadow_word_pain_onhit );
+    }
 
     if ( priest.buffs.sphere_of_insanity->up() )
     {
@@ -2737,9 +2754,6 @@ struct shadow_word_pain_t final : public priest_spell_t
           priest.buffs.sphere_of_insanity->current_value );
       priest.buffs.sphere_of_insanity->current_value = 0;
     }
-
-    generate_insanity( insanity_gain,
-                       priest.gains.insanity_shadow_word_pain_onhit );
   }
 
   void tick( dot_t* d ) override
@@ -2800,8 +2814,7 @@ struct shadow_word_pain_t final : public priest_spell_t
 
     if (maybe_ptr(priest.dbc.ptr))
     {
-      auto ptr_scaling_buff = priest.find_spell(137033);
-      m *= 1.0 + ptr_scaling_buff->effectN(1).percent();
+      m *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
     }
 
     return m;
@@ -2841,8 +2854,7 @@ struct shadow_word_void_t final : public priest_spell_t
 
     if (maybe_ptr(priest.dbc.ptr))
     {
-      auto ptr_scaling_buff = priest.find_spell(137033);
-      d *= 1.0 + ptr_scaling_buff->effectN(1).percent();
+      d *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
     }
 
     return d;
@@ -3022,6 +3034,7 @@ struct vampiric_embrace_t final : public priest_spell_t
 struct vampiric_touch_t final : public priest_spell_t
 {
   double insanity_gain;
+  shadow_word_pain_t* child_swp;
 
   vampiric_touch_t( priest_t& p, const std::string& options_str )
     : priest_spell_t( "vampiric_touch", p,
@@ -3031,6 +3044,11 @@ struct vampiric_touch_t final : public priest_spell_t
     parse_options( options_str );
     init_mental_fortitude();
     may_crit = false;
+    if (priest.talents.misery->ok())
+    {
+      child_swp = new shadow_word_pain_t(priest, std::string(""), false);
+      child_swp->background = true;
+    }
     energize_type =
         ENERGIZE_NONE;  // disable resource generation from spell data
 
@@ -3084,6 +3102,12 @@ struct vampiric_touch_t final : public priest_spell_t
 
     generate_insanity( insanity_gain,
                        priest.gains.insanity_vampiric_touch_onhit );
+
+    if (priest.talents.misery->ok())
+    {
+      child_swp->target = s->target;
+      child_swp->execute();
+    }
   }
 
   void tick( dot_t* d ) override
@@ -3135,8 +3159,7 @@ struct vampiric_touch_t final : public priest_spell_t
 
     if (maybe_ptr(priest.dbc.ptr))
     {
-      auto ptr_scaling_buff = priest.find_spell(137033);
-      m *= 1.0 + ptr_scaling_buff->effectN(2).percent();
+      m *= 1.0 + ptr_shadow_scaling_buff->effectN(2).percent();
     }
 
     return m;
@@ -3340,8 +3363,7 @@ struct void_eruption_t final : public priest_spell_t
 
     if (maybe_ptr(priest.dbc.ptr))
     {
-      auto ptr_scaling_buff = priest.find_spell(137033);
-      d *= 1.0 + ptr_scaling_buff->effectN(1).percent();
+      d *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
     }
 
     return d;
@@ -3394,8 +3416,7 @@ struct void_torrent_t final : public priest_spell_t
 
     if (maybe_ptr(priest.dbc.ptr))
     {
-      auto ptr_scaling_buff = priest.find_spell(137033);
-      am *= 1.0 + ptr_scaling_buff->effectN(1).percent();
+      am *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
     }
 
     return am;
@@ -4801,10 +4822,10 @@ void priest_t::init_spells()
   talents.auspicious_spirits = find_talent_spell( "Auspicious Spirits" );
   talents.shadowy_insight    = find_talent_spell( "Shadowy Insight" );
 
-  talents.shadow_crash = find_talent_spell( "Shadow Crash" );
+  talents.misery = find_talent_spell( "Misery" );
 
   talents.legacy_of_the_void   = find_talent_spell( "Legacy of the Void" );
-  
+  talents.shadow_crash = find_talent_spell( "Shadow Crash" );
   talents.surrender_to_madness = find_talent_spell( "Surrender to Madness" );
 
   // Artifacts
