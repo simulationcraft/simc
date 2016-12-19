@@ -776,7 +776,7 @@ struct arcane_familiar_pet_t : public mage_pet_t
 struct arcane_assault_t : public mage_pet_spell_t
 {
   arcane_assault_t( arcane_familiar_pet_t* p, const std::string& options_str )
-    : mage_pet_spell_t( "arcane_assault", p, p->find_spell( 205235 ) )
+    : mage_pet_spell_t( "arcane_assault", p,  p -> find_spell( 205235 ) )
   {
     parse_options( options_str );
     spell_power_mod.direct = p->find_spell( 225119 )->effectN( 1 ).sp_coeff();
@@ -1148,6 +1148,10 @@ struct arcane_blast_t : public mirror_image_spell_t
                             p->find_pet_spell( "Arcane Blast" ) )
   {
     parse_options( options_str );
+    if ( o()-> artifact.ancient_power && o() -> specialization() == MAGE_ARCANE )
+    {
+      base_multiplier *= 1.0 + o() -> artifact.ancient_power.percent();
+    }
   }
 
   virtual void execute() override
@@ -1164,21 +1168,6 @@ struct arcane_blast_t : public mirror_image_spell_t
     // MI Arcane Charges are still hardcoded as 25% damage gains
     am *= 1.0 + p()->arcane_charge->check() * 0.25;
 
-    if ( o()-> artifact.spellborne && o() -> specialization() == MAGE_FROST )
-    {
-      am *= 1.0 + o() -> artifact.spellborne.percent();
-    }
-
-    if ( o()-> artifact.empowered_spellblade && o() -> specialization() == MAGE_FIRE )
-    {
-      am *= 1.0 + o() -> artifact.empowered_spellblade.percent();
-    }
-
-    if ( o()-> artifact.ancient_power && o() -> specialization() == MAGE_ARCANE )
-    {
-      am *= 1.0 + o() -> artifact.ancient_power.percent();
-    }
-
     return am;
   }
 };
@@ -1189,6 +1178,11 @@ struct fireball_t : public mirror_image_spell_t
     : mirror_image_spell_t( "fireball", p, p->find_pet_spell( "Fireball" ) )
   {
     parse_options( options_str );
+
+    if ( o()-> artifact.empowered_spellblade && o() -> specialization() == MAGE_FIRE )
+    {
+      base_multiplier *= 1.0 + o() -> artifact.empowered_spellblade.percent();
+    }
   }
 };
 
@@ -1198,6 +1192,11 @@ struct frostbolt_t : public mirror_image_spell_t
     : mirror_image_spell_t( "frostbolt", p, p->find_pet_spell( "Frostbolt" ) )
   {
     parse_options( options_str );
+    if ( o()-> artifact.spellborne && o() -> specialization() == MAGE_FROST )
+    {
+      base_multiplier *= 1.0 + o() -> artifact.spellborne.percent();
+    }
+
   }
 };
 
@@ -3365,7 +3364,8 @@ struct arcane_orb_bolt_t : public arcane_mage_spell_t
     background = true;
     dual = true;
     cooldown -> duration = timespan_t::zero(); // dbc has CD of 15 seconds
-
+    // PTR Multiplier
+    base_multiplier *= 1.0 + p -> find_spell( 137021 ) -> effectN( 1 ).percent();
   }
 
   virtual bool init_finished() override
@@ -8780,7 +8780,7 @@ void mage_t::apl_fire()
   combustion_phase -> add_action( this, "Fire Blast", "if=buff.heating_up.up" );
   combustion_phase -> add_action( this, "Phoenix's Flames" );
   combustion_phase -> add_action( this, "Scorch", "if=buff.combustion.remains>cast_time" );
-  combustion_phase -> add_talent( this, "Dragon's Breath", "if=buff.hot_streak.down&action.fire_blast.charges<1&action.phoenixs_flames.charges<1" );
+  combustion_phase -> add_action( this, "Dragon's Breath", "if=buff.hot_streak.down&action.fire_blast.charges<1&action.phoenixs_flames.charges<1" );
   combustion_phase -> add_action( this, "Scorch", "if=target.health.pct<=25&equipped.132454");
 
   rop_phase        -> add_talent( this, "Rune of Power" );
