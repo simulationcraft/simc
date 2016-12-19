@@ -215,7 +215,7 @@ public:
     const spell_data_t* misery;
 
     const spell_data_t* legacy_of_the_void;
-	  const spell_data_t* shadow_crash;
+    const spell_data_t* shadow_crash;
     const spell_data_t* surrender_to_madness;
   } talents;
 
@@ -2697,8 +2697,8 @@ struct shadow_word_pain_t final : public priest_spell_t
     tick_zero = false;
     if (!casted)
     {
-    base_dd_max = 0.0;
-    base_dd_min = 0.0;
+      base_dd_max = 0.0;
+      base_dd_min = 0.0;
     }
     energize_type =
         ENERGIZE_NONE;  // disable resource generation from spell data
