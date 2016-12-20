@@ -508,18 +508,6 @@ public:
     if ( !td ) td = new hunter_td_t( target, const_cast<hunter_t*>( this ) );
     return td;
   }
-
-  double beast_multiplier() const
-  {
-    double pm = 1.0;
-    if ( mastery.master_of_beasts -> ok() )
-      pm *= 1.0 + cache.mastery_value();
-
-    if ( artifacts.spiritbound.rank() )
-      pm *= 1.0 + artifacts.spiritbound.percent();
-
-    return pm;
-  }
 };
 
 // Template for common hunter action code. See priest_action_t.
@@ -4322,7 +4310,9 @@ struct peck_t : public hunter_spell_t
   virtual double action_multiplier() const override
   {
     double am = hunter_spell_t::action_multiplier();
-    am *= p() -> beast_multiplier();
+
+    if ( p() -> mastery.master_of_beasts -> ok() )
+        am *= 1.0 + p() -> cache.mastery_value();
 
     return am;
   }
@@ -6373,6 +6363,9 @@ double hunter_t::composite_player_multiplier( school_e school ) const
   if ( artifacts.aspect_of_the_skylord.rank() && buffs.aspect_of_the_eagle -> check() )
     m *= 1.0 + find_spell( 203927 ) -> effectN( 1 ).percent();
 
+  if ( artifacts.spiritbound.rank() )
+    m *= 1.0 + artifacts.spiritbound.percent();
+
   if ( artifacts.windflight_arrows.rank() )
     m *= 1.0 + artifacts.windflight_arrows.percent();
 
@@ -6407,7 +6400,17 @@ double hunter_t::composite_player_pet_damage_multiplier( const action_state_t* s
 {
   double m = player_t::composite_player_pet_damage_multiplier( s );
 
-  m *= beast_multiplier();
+  if ( mastery.master_of_beasts -> ok() )
+    m *= 1.0 + cache.mastery_value();
+
+  if ( artifacts.spiritbound.rank() )
+    m *= 1.0 + artifacts.spiritbound.percent();
+
+  if ( artifacts.windflight_arrows.rank() )
+    m *= 1.0 + artifacts.windflight_arrows.percent();
+
+  if ( artifacts.voice_of_the_wild_gods.rank() )
+    m *= 1.0 + artifacts.voice_of_the_wild_gods.percent();
 
   return m;
 }
