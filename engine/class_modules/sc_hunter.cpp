@@ -3251,9 +3251,6 @@ struct aimed_shot_t: public aimed_shot_base_t
 
     if ( p() -> buffs.careful_aim -> value() && s -> result == RESULT_CRIT )
       trigger_piercing_shots( s );
-
-    if ( !td( s -> target ) -> debuffs.vulnerable -> check() )
-      p() -> procs.no_vuln_aimed_shot -> occur();
   }
 
   virtual void execute() override
@@ -3261,7 +3258,10 @@ struct aimed_shot_t: public aimed_shot_base_t
     p() -> no_steady_focus();
 
     aimed_shot_base_t::execute();
-    
+
+    if ( ! td( execute_state -> target ) -> debuffs.vulnerable -> check() )
+      p() -> procs.no_vuln_aimed_shot -> occur();
+
     if ( trick_shot )
       trick_shot -> execute();
 
