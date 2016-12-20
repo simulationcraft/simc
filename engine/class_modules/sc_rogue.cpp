@@ -278,6 +278,7 @@ struct rogue_t : public player_t
     cooldown_t* death_from_above;
     cooldown_t* weaponmaster;
     cooldown_t* vendetta;
+    cooldown_t* shadow_nova;
   } cooldowns;
 
   // Gains
@@ -600,6 +601,7 @@ struct rogue_t : public player_t
     cooldowns.riposte             = get_cooldown( "riposte"             );
     cooldowns.weaponmaster        = get_cooldown( "weaponmaster"        );
     cooldowns.vendetta            = get_cooldown( "vendetta"            );
+    cooldowns.shadow_nova         = get_cooldown( "shadow_nova"         );
 
     base.distance = 3;
     regen_type = REGEN_DYNAMIC;
@@ -674,6 +676,7 @@ struct rogue_t : public player_t
   void trigger_exsanguinate( const action_state_t* );
   void trigger_relentless_strikes( const action_state_t* );
   void trigger_insignia_of_ravenholdt( action_state_t* );
+  void trigger_shadow_nova( const action_state_t* );
 
   // Computes the composite Agonizing Poison stack multiplier for Assassination Rogue
   double agonizing_poison_stack_multiplier( const rogue_td_t* ) const;
@@ -1366,6 +1369,13 @@ struct shadow_nova_t : public rogue_attack_t
   {
     background = true;
     aoe = -1;
+  }
+
+  void init() override
+  {
+    rogue_attack_t::init();
+
+    p() -> cooldowns.shadow_nova -> duration = p() -> artifact.shadow_nova.data().internal_cooldown();
   }
 };
 
@@ -4121,11 +4131,9 @@ struct shadowstrike_t : public rogue_attack_t
     }
   };
 
-  double shadow_nova_proc_chance;
-  cooldown_t* shadow_nova_icd;
   shadowstrike_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "shadowstrike", p, p -> spec.shadowstrike, options_str ),
-    shadow_satyrs_walk( nullptr ), shadow_nova_proc_chance( 0.0 ), shadow_nova_icd( nullptr )
+    shadow_satyrs_walk( nullptr )
   {
     requires_weapon = WEAPON_DAGGER;
     requires_stealth = true;
@@ -4137,9 +4145,6 @@ struct shadowstrike_t : public rogue_attack_t
     {
       add_child( p -> soul_rip );
     }
-    shadow_nova_proc_chance = p ->find_spell( 209781 ) -> proc_chance();
-    shadow_nova_icd = p -> get_cooldown( "shadow_nova_icd" );
-    shadow_nova_icd -> duration = p -> find_spell( 209781 ) -> internal_cooldown();
   }
 
   void execute() override
@@ -4153,13 +4158,7 @@ struct shadowstrike_t : public rogue_attack_t
       make_event<akaaris_soul_event_t>( *sim, p(), execute_state -> target );
     }
 
-    // TODO: Check if it triggers when the hit is failed
-    if ( p() -> artifact.shadow_nova.rank() && shadow_nova_icd -> is_ready() &&
-         rng().roll( shadow_nova_proc_chance ) )
-    {
-      p() -> shadow_nova -> schedule_execute();
-      shadow_nova_icd -> start();
-    }
+    p() -> trigger_shadow_nova( execute_state );
 
     p() -> buffs.death -> decrement();
 
@@ -4172,8 +4171,7 @@ struct shadowstrike_t : public rogue_attack_t
     if ( shadow_satyrs_walk )
     {
       const spell_data_t* base_proc = p() -> find_spell( 224914 );
-      // TODO: Use real Distance
-      // Distance set to 4y as a default value
+      // Distance set to 4y as a default value, use the offset for custom value instead of distance
       double distance = 4;
       double grant_energy = base_proc -> effectN( 1 ).base_value();
       while (distance > shadow_satyrs_walk -> effectN( 2 ).base_value())
@@ -4244,6 +4242,17 @@ struct shuriken_storm_t: public rogue_attack_t
     }
 
     return m;
+  }
+
+  void execute() override
+  {
+    rogue_attack_t::execute();
+
+    // As of 12/20/2016, Shuriken Storm triggers Shadow Nova only during Shadow Dance.
+    if ( p() -> buffs.shadow_dance -> up() )
+    {
+      p() -> trigger_shadow_nova( execute_state );
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -5526,9 +5535,12 @@ void rogue_t::trigger_true_bearing( const action_state_t* state )
   timespan_t v = timespan_t::from_seconds( buffs.true_bearing -> default_value );
   v *= - actions::rogue_attack_t::cast_state( state ) -> cp;
 
+  // Abilities
   cooldowns.adrenaline_rush -> adjust( v, false );
+  cooldowns.between_the_eyes -> adjust( v, false );
   cooldowns.sprint -> adjust( v, false );
   cooldowns.vanish -> adjust( v, false );
+  // Talents
   cooldowns.grappling_hook -> adjust( v, false );
   cooldowns.cannonball_barrage -> adjust( v, false );
   cooldowns.killing_spree -> adjust( v, false );
@@ -5692,6 +5704,32 @@ void rogue_t::trigger_insignia_of_ravenholdt( action_state_t* state )
   insignia_of_ravenholdt_ -> base_dd_max = amount;
   insignia_of_ravenholdt_ -> target = state -> target;
   insignia_of_ravenholdt_ -> execute();
+}
+
+void rogue_t::trigger_shadow_nova( const action_state_t* state )
+{
+  /* TODO: Check if it triggers when the result is null or when the hit is failed.
+  if ( state -> result_total <= 0 )
+  {
+    return;
+  }
+
+  if ( ! state -> action -> result_is_hit( state -> result ) )
+  {
+    return;
+  }
+  */
+
+  if ( ! artifact.shadow_nova.rank() )
+  {
+    return;
+  }
+
+  if ( cooldowns.shadow_nova -> is_ready() && rng().roll( artifact.shadow_nova.data().proc_chance() ) )
+  {
+    shadow_nova -> schedule_execute();
+    cooldowns.shadow_nova -> start();
+  }
 }
 
 namespace buffs {
