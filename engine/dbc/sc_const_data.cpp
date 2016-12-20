@@ -93,7 +93,7 @@ int dbc::build_level( bool ptr )
 }
 
 const char* dbc::wow_version( bool ptr )
-{ return maybe_ptr( ptr ) ? "7.1.0" : "7.1.0"; }
+{ return maybe_ptr( ptr ) ? "7.1.5" : "7.1.5"; }
 
 const char* dbc::wow_ptr_status( bool ptr )
 #if SC_BETA
