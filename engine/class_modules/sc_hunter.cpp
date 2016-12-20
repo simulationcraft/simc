@@ -3715,8 +3715,10 @@ struct explosive_shot_t: public hunter_ranged_attack_t
 
   virtual void execute() override
   {
-    p() -> no_steady_focus();
-    initial_target = p() -> target;
+    p()->no_steady_focus();
+    initial_target = p()->target;
+
+    hunter_ranged_attack_t::execute();
 
     if (result_is_hit(execute_state->result))
     {
@@ -3731,8 +3733,6 @@ struct explosive_shot_t: public hunter_ranged_attack_t
       if (proc_bullseye)
         p()->buffs.bullseye->trigger();
     }
-
-    hunter_ranged_attack_t::execute();
   }
 
   virtual double composite_target_da_multiplier( player_t* t ) const override
@@ -6330,7 +6330,7 @@ void hunter_t::apl_mm()
   default_list -> add_action( "call_action_list,name=cooldowns" );
   default_list -> add_action( "call_action_list,name=targetdie,if=target.time_to_die<6&spell_targets.multishot=1" );
 
-  default_list -> add_action( "call_action_list,name=patient_sniper,if=&talent.patient_sniper.enabled" );
+  default_list -> add_action( "call_action_list,name=patient_sniper,if=talent.patient_sniper.enabled" );
   default_list -> add_action( "call_action_list,name=non_patient_sniper,if=!talent.patient_sniper.enabled" );
   
   cooldowns -> add_action( "potion,name=prolonged_power,if=spell_targets.multishot>2&((buff.trueshot.react&buff.bloodlust.react)|buff.bullseye.react>=23|target.time_to_die<62)" );
