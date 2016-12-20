@@ -10,6 +10,13 @@
 // General
 //   - Cleanup old spells
 //
+// 7.1.5
+// MM
+//   - Patient Sniper
+//   - new Sentinel
+//
+//   - Legendaries
+//
 // Survival
 //   - Harpoon legendary
 //
