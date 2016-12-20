@@ -7432,7 +7432,7 @@ double druid_t::composite_rating_multiplier( rating_e rating ) const
     case RATING_SPELL_HASTE:
     case RATING_MELEE_HASTE:
     case RATING_RANGED_HASTE:
-      rm *= 1.0 + spec.feral -> effectN( 3 ).percent();
+      rm *= 1.0 + spec.feral -> effectN( 7 ).percent();
       break;
     default:
       break;
