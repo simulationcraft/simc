@@ -2545,50 +2545,6 @@ struct hunter_melee_attack_t: public hunter_action_t < melee_attack_t >
   }
 };
 
-// Ranged Attack ============================================================
-
-struct ranged_t: public hunter_ranged_attack_t
-{
-  bool first_shot;
-  ranged_t( hunter_t* p, const char* n = "ranged", const spell_data_t* s = spell_data_t::nil() ):
-    hunter_ranged_attack_t( n, p, s ), first_shot( true )
-  {
-    school = SCHOOL_PHYSICAL;
-    weapon = &p -> main_hand_weapon;
-    base_execute_time = weapon -> swing_time;
-    background = true;
-    repeating = true;
-    special = false;
-  }
-
-  void reset() override
-  {
-    hunter_ranged_attack_t::reset();
-
-    first_shot = true;
-  }
-
-  virtual timespan_t execute_time() const override
-  {
-    timespan_t t = hunter_ranged_attack_t::execute_time();
-    if ( first_shot )
-      return timespan_t::from_millis( 100 );
-    else
-      return t;
-  }
-
-  virtual void execute() override
-  {
-    if ( first_shot )
-      first_shot = false;
-    hunter_ranged_attack_t::execute();
-  }
-
-  virtual void try_steady_focus() override
-  {
-  }
-};
-
 // Volley ============================================================================
 
 struct volley_tick_t: hunter_ranged_attack_t
@@ -2623,6 +2579,9 @@ struct volley_tick_t: hunter_ranged_attack_t
       }
     }
   }
+
+  virtual void try_steady_focus() override
+  {}
 };
 
 struct volley_t: hunter_ranged_attack_t
@@ -2677,16 +2636,25 @@ struct volley_t: hunter_ranged_attack_t
 
 // Auto Shot ================================================================
 
-struct auto_shot_t: public ranged_t
+struct auto_shot_t: public hunter_action_t<ranged_attack_t>
 {
   volley_tick_t* volley_tick;
   double volley_tick_cost;
-  auto_shot_t( hunter_t* p ): ranged_t( p, "auto_shot", spell_data_t::nil() ), volley_tick( nullptr ),
-    volley_tick_cost( 0 )
+  bool first_shot;
+
+  auto_shot_t( hunter_t* p ): base_t( "auto_shot", p, spell_data_t::nil() ), volley_tick( nullptr ),
+    volley_tick_cost( 0 ), first_shot( true )
   {
-    may_proc_bullseye = false;
     school = SCHOOL_PHYSICAL;
+    background = true;
+    repeating = true;
+    trigger_gcd = timespan_t::zero();
+    special = false;
+    may_crit = true;
+
     range = 40.0;
+    weapon = &p->main_hand_weapon;
+    base_execute_time = weapon->swing_time;
 
     if ( p -> talents.volley -> ok() )
     {
@@ -2696,36 +2664,53 @@ struct auto_shot_t: public ranged_t
     }
   }
 
+  void reset() override
+  {
+    base_t::reset();
+    first_shot = true;
+  }
+
+  virtual timespan_t execute_time() const override
+  {
+    timespan_t t = base_t::execute_time();
+    if (first_shot)
+      return timespan_t::from_millis(100);
+    else
+      return t;
+  }
+
   virtual void execute() override
   {
-    ranged_t::execute();
+    if (first_shot)
+      first_shot = false;
+    base_t::execute();
 
-    if ( p() -> specialization() == HUNTER_MARKSMANSHIP && p() -> ppm_hunters_mark -> trigger() )
+    if (p()->specialization() == HUNTER_MARKSMANSHIP && p()->ppm_hunters_mark->trigger())
     {
-      if ( p() -> buffs.marking_targets -> up() )
-        p() -> procs.wasted_marking_targets -> occur();
+      if (p()->buffs.marking_targets->up())
+        p()->procs.wasted_marking_targets->occur();
 
-      p() -> buffs.marking_targets -> trigger();
-      p() -> procs.marking_targets -> occur();
+      p()->buffs.marking_targets->trigger();
+      p()->procs.marking_targets->occur();
     }
 
-    if ( p() -> buffs.volley -> up() )
+    if (p()->buffs.volley->up())
     {
-      if ( p() -> resources.current[RESOURCE_FOCUS] > volley_tick_cost )
+      if (p()->resources.current[RESOURCE_FOCUS] > volley_tick_cost)
       {
-        volley_tick -> target = execute_state -> target;
-        volley_tick -> execute();
+        volley_tick->target = execute_state->target;
+        volley_tick->execute();
       }
       else
       {
-        p() -> buffs.volley -> expire();
+        p()->buffs.volley->expire();
       }
     }
   }
 
   virtual void impact( action_state_t* s ) override
   {
-    ranged_t::impact( s );
+    base_t::impact( s );
 
     if ( rng().roll( p() -> talents.lock_and_load -> proc_chance() ) )
     {
@@ -2751,7 +2736,7 @@ struct auto_shot_t: public ranged_t
 
   virtual double composite_target_crit_chance( player_t* t ) const override
   {
-    double cc= ranged_t::composite_target_crit_chance( t );
+    double cc= base_t::composite_target_crit_chance( t );
 
     cc += p() -> buffs.big_game_hunter -> value();
 
@@ -2854,9 +2839,6 @@ struct barrage_t: public hunter_ranged_attack_t
 
     p() -> no_steady_focus();
   }
-
-  bool usable_moving() const override
-  { return true; }
 };
 
 // Multi Shot Attack =================================================================
@@ -3414,7 +3396,9 @@ struct aimed_shot_t: public aimed_shot_base_t
   }
 
   virtual bool usable_moving() const override
-  { return false; }
+  {
+    return false;
+  }
 };
 
 // Arcane Shot Attack ================================================================
@@ -3838,15 +3822,13 @@ struct windburst_t: hunter_ranged_attack_t
     parse_options( options_str );
   }
 
-  virtual void execute() override
+  void impact(action_state_t* s) override
   {
-    p() -> no_steady_focus();
-    hunter_ranged_attack_t::execute();
+    hunter_ranged_attack_t::impact(s);
 
-    if ( p() -> artifacts.mark_of_the_windrunner.rank() )
+    if (p()->artifacts.mark_of_the_windrunner.rank())
     {
-      hunter_td_t* td = this -> td( execute_state -> target );
-      td -> debuffs.vulnerable -> trigger();
+      td( s -> target ) -> debuffs.vulnerable -> trigger();
     }
   }
 
@@ -4506,8 +4488,7 @@ public:
   virtual void execute() override
   {
     hunter_action_t<spell_t>::execute();
-
-    this -> try_steady_focus();
+    try_steady_focus();
   }
 };
 
@@ -4608,6 +4589,9 @@ struct sentinel_t : public hunter_spell_t
       p()->buffs.hunters_mark_exists->trigger();
       td(s->target)->debuffs.hunters_mark->trigger();
     }
+
+    virtual void try_steady_focus() override
+    {}
   };
 
   sentinel_mark_t* sentinel_mark;
@@ -4651,13 +4635,9 @@ struct sentinel_t : public hunter_spell_t
   }
 };
 
-
 //==============================
 // Shared spells
 //==============================
-
-
-
 
 // Summon Pet ===============================================================
 
@@ -5462,8 +5442,7 @@ dots( dots_t() )
         .spell( p -> find_spell( 199803 ) )
         .default_value( p -> find_spell( 199803 ) 
                           -> effectN( 1 )
-                            .percent() )
-        .max_stack(maybe_ptr(p->dbc.ptr) ? 10 : 8);
+                            .percent() );
 
   debuffs.lacerate = 
     buff_creator_t( *this, "lacerate" )
@@ -6135,12 +6114,12 @@ void hunter_t::init_procs()
   procs.vuln_aimed_45                = get_proc( "vuln_aimed_45" );
   procs.vuln_aimed_60                = get_proc( "vuln_aimed_60" );
   procs.vuln_aimed_75                = get_proc( "vuln_aimed_75" );
-  procs.no_vuln_piercing_shot        = get_proc(" no_vuln_piercing_shot ");
-  procs.vuln_piercing_15             = get_proc(" vuln_piercing_15" );
-  procs.vuln_piercing_30             = get_proc(" vuln_piercing_30" );
-  procs.vuln_piercing_45             = get_proc(" vuln_piercing_45" );
-  procs.vuln_piercing_60             = get_proc(" vuln_piercing_60" );
-  procs.vuln_piercing_75             = get_proc(" vuln_piercing_75" );
+  procs.no_vuln_piercing_shot        = get_proc( "no_vuln_piercing_shot" );
+  procs.vuln_piercing_15             = get_proc( "vuln_piercing_15" );
+  procs.vuln_piercing_30             = get_proc( "vuln_piercing_30" );
+  procs.vuln_piercing_45             = get_proc( "vuln_piercing_45" );
+  procs.vuln_piercing_60             = get_proc( "vuln_piercing_60" );
+  procs.vuln_piercing_75             = get_proc( "vuln_piercing_75" );
   procs.no_vuln_marked_shot          = get_proc( "no_vuln_marked_shot" );
   procs.zevrims_hunger               = get_proc( "zevrims_hunger" );
   procs.convergence                  = get_proc( "convergence" );
@@ -6150,7 +6129,7 @@ void hunter_t::init_procs()
   procs.animal_instincts_aspect      = get_proc( "animal_instincts_aspect" );
   procs.animal_instincts_harpoon     = get_proc( "animal_instincts_harpoon" );
   procs.animal_instincts_flanking    = get_proc( "animal_instincts_flanking" );
-  procs.animal_instincts             = get_proc(" animal_instincts ");
+  procs.animal_instincts             = get_proc( "animal_instincts" );
 }
 
 // hunter_t::init_rng =======================================================
@@ -6232,14 +6211,14 @@ void hunter_t::init_action_list()
       if ( true_level > 100 )
       {
         if ( specialization() == HUNTER_SURVIVAL )
-          precombat -> add_action( "potion,name=potion_of_the_old_war");
+          precombat -> add_action( "potion,name=potion_of_the_old_war" );
         else if ( specialization() == HUNTER_BEAST_MASTERY )
         {
           precombat -> add_action( "potion,name=prolonged_power" );
         }
         else
         {
-          precombat -> add_action( "potion,name=prolonged_power,if=active_enemies>2" );
+          precombat -> add_action( "potion,name=prolonged_power,if=spell_targets.multishot>2" );
           precombat -> add_action( "potion,name=deadly_grace" );
         }
       }
@@ -6303,11 +6282,11 @@ void hunter_t::add_item_actions( action_priority_list_t* list )
 void hunter_t::add_racial_actions( action_priority_list_t* list )
 {
     if ( specialization() == HUNTER_MARKSMANSHIP )
-      list -> add_action( "arcane_torrent,if=focus.deficit>=30&(!talent.sidewinders.enabled|cooldown.sidewinders.charges<2)");
+      list -> add_action( "arcane_torrent,if=focus.deficit>=30&(!talent.sidewinders.enabled|cooldown.sidewinders.charges<2)" );
     else
       list -> add_action( "arcane_torrent,if=focus.deficit>=30" );
     list -> add_action( "blood_fury" );
-    list -> add_action( "berserking" );
+    list -> add_action( "berserking,if=buff.trueshot.up" );
 }
 
 // Potions Actions =======================================================================
@@ -6356,11 +6335,14 @@ void hunter_t::apl_bm()
 void hunter_t::apl_mm()
 {
   action_priority_list_t* default_list = get_action_priority_list( "default" );
-  action_priority_list_t* cooldowns  = get_action_priority_list( "cooldowns" );
-  action_priority_list_t* open = get_action_priority_list( "open" );
+  action_priority_list_t* cooldowns = get_action_priority_list( "cooldowns" );
   action_priority_list_t* targetdie = get_action_priority_list( "targetdie" );
   action_priority_list_t* trueshotaoe = get_action_priority_list( "trueshotaoe" );
-  action_priority_list_t* precombat    = get_action_priority_list( "precombat" );
+  action_priority_list_t* precombat = get_action_priority_list( "precombat" );
+
+  action_priority_list_t* ptr_patient_sniper = get_action_priority_list( "ptr_patient_sniper" );
+  action_priority_list_t* ptr_non_patient_sniper = get_action_priority_list( "ptr_non_patient_sniper" );
+
   action_priority_list_t* patient_sniper = get_action_priority_list( "patient_sniper" );
   action_priority_list_t* non_patient_sniper = get_action_priority_list( "non_patient_sniper" );
 
@@ -6373,67 +6355,89 @@ void hunter_t::apl_mm()
   add_racial_actions( default_list );
 
   default_list -> add_action( "volley,toggle=on" );
-  default_list -> add_action( "auto_shot" );
 
   default_list -> add_action( "variable,name=safe_to_build,value=debuff.hunters_mark.down|(buff.trueshot.down&buff.marking_targets.down)" );
   default_list -> add_action( "variable,name=use_multishot,value=((buff.marking_targets.up|buff.trueshot.up)&spell_targets.multishot>1)|(buff.marking_targets.down&buff.trueshot.down&spell_targets.multishot>2)" );
-  default_list -> add_action( "call_action_list,name=open,if=active_enemies=1&time<=15" );
-  default_list -> add_action( "a_murder_of_crows,if=(target.time_to_die>=cooldown+duration|target.health.pct<20)&(debuff.hunters_mark.down|(debuff.hunters_mark.remains>execute_time&debuff.vulnerability.remains>execute_time&focus+(focus.regen*debuff.vulnerability.remains)>=60&focus+(focus.regen*debuff.hunters_mark.remains)>=60))" );
+  default_list -> add_action( "variable,name=pooling_for_piercing,value=talent.piercing_shot.enabled&cooldown.piercing_shot.remains<5&focus<100&!buff.lock_and_load.up" );
+  default_list -> add_action( "variable,name=sentinel_soon,value=talent.sentinel.enabled&!cooldown.sentinel.up&((cooldown.sentinel.remains>50&cooldown.sentinel.remains<(50+gcd.max))|(cooldown.sentinel.remains>40&cooldown.sentinel.remains<(40+gcd.max)))" );
+
+  default_list -> add_action( "a_murder_of_crows,if=ptr=1&time=0" );
+  default_list -> add_action( "a_murder_of_crows,if=ptr=0&(target.time_to_die>=cooldown+duration|target.health.pct<20)&(debuff.hunters_mark.down|(debuff.hunters_mark.remains>execute_time&debuff.vulnerability.remains>execute_time&focus+(focus.regen*debuff.vulnerability.remains)>=60&focus+(focus.regen*debuff.hunters_mark.remains)>=60))" );
   default_list -> add_action( "call_action_list,name=cooldowns" );
-  default_list -> add_action( "call_action_list,name=trueshotaoe,if=(target.time_to_die>=cooldown+duration|target.health.pct<20)&(debuff.hunters_mark.down|(debuff.hunters_mark.remains>execute_time&debuff.vulnerability.remains>execute_time&focus+(focus.regen*debuff.vulnerability.remains)>=60&focus+(focus.regen*debuff.hunters_mark.remains)>=60))" );
-  default_list -> add_action( "black_arrow,if=debuff.hunters_mark.down|(debuff.hunters_mark.remains>execute_time&debuff.vulnerability.remains>execute_time&focus+(focus.regen*debuff.vulnerability.remains)>=70&focus+(focus.regen*debuff.hunters_mark.remains)>=70)" );
-  default_list -> add_action( "barrage,if=(target.time_to_20pct>10|target.health.pct<=20|spell_targets>1)&((buff.trueshot.down|(target.health.pct<=20&buff.bullseye.stack<29)|spell_targets>1)&debuff.hunters_mark.down|(debuff.hunters_mark.remains>execute_time&debuff.vulnerability.remains>execute_time&focus+(focus.regen*debuff.vulnerability.remains)>=90&focus+(focus.regen*debuff.hunters_mark.remains)>=90))" );
+  default_list -> add_action( "call_action_list,name=trueshotaoe,if=ptr=0&spell_targets.multishot>1&!talent.sidewinders.enabled&buff.trueshot.up" );
+  default_list -> add_action( "black_arrow,if=ptr=0&(debuff.hunters_mark.down|(debuff.hunters_mark.remains>execute_time&debuff.vulnerability.remains>execute_time&focus+(focus.regen*debuff.vulnerability.remains)>=70&focus+(focus.regen*debuff.hunters_mark.remains)>=70))" );
+  default_list -> add_action( "barrage,if=ptr=0&(((buff.trueshot.down&(target.time_to_20pct>10|target.health.pct<=20))|spell_targets>1|(target.health.pct<20&buff.bullseye.stack<30))&(debuff.hunters_mark.down|(debuff.hunters_mark.remains>execute_time&debuff.vulnerability.remains>execute_time&focus+(focus.regen*debuff.vulnerability.remains)>=90&focus+(focus.regen*debuff.hunters_mark.remains)>=90)))" );
+  default_list -> add_action( "call_action_list,name=targetdie,if=target.time_to_die<6&spell_targets.multishot=1" );
 
-  default_list -> add_action( "call_action_list,name=targetdie,if=target.time_to_die<6&active_enemies=1" );
-  default_list -> add_action( "call_action_list,name=patient_sniper,if=talent.patient_sniper.enabled" );
-  default_list -> add_action( "call_action_list,name=non_patient_sniper,if=!talent.patient_sniper.enabled" );
+  default_list -> add_action( "call_action_list,name=ptr_patient_sniper,if=ptr=1&talent.patient_sniper.enabled" );
+  default_list -> add_action( "call_action_list,name=patient_sniper,if=ptr=0&talent.patient_sniper.enabled" );
 
-  open -> add_action( "a_murder_of_crows" );
-  open -> add_action( "trueshot" );
-  open -> add_action( "piercing_shot" );
-  open -> add_action( "explosive_shot" );
-  open -> add_action( "barrage,if=!talent.patient_sniper.enabled" );
-  open -> add_action( "arcane_shot,line_cd=16&!talent.patient_sniper.enabled" );
-  open -> add_action( "sidewinders,if=(buff.marking_targets.down&buff.trueshot.remains<2)|(charges_fractional>=1.9&focus<80)" );
-  open -> add_action( "marked_shot" );
-  open -> add_action( "barrage,if=buff.bloodlust.up" );
-  open -> add_action( "aimed_shot,if=(buff.lock_and_load.up&execute_time<debuff.vulnerability.remains)|focus>90&!talent.patient_sniper.enabled&talent.trick_shot.enabled" );
-  open -> add_action( "aimed_shot,if=buff.lock_and_load.up&execute_time<debuff.vulnerability.remains" );
-  open -> add_action( "black_arrow" );
-  open -> add_action( "barrage" );
-  open -> add_action( "arcane_shot" );
-  open -> add_action( "aimed_shot,if=execute_time<debuff.vulnerability.remains" );
-  open -> add_action( "sidewinders" );
-  open -> add_action( "aimed_shot" );
+  default_list -> add_action( "call_action_list,name=ptr_non_patient_sniper,if=ptr=1&!talent.patient_sniper.enabled" );
+  default_list -> add_action( "call_action_list,name=non_patient_sniper,if=ptr=0&!talent.patient_sniper.enabled" );
   
   cooldowns -> add_action( "potion,name=prolonged_power,if=spell_targets.multishot>2&((buff.trueshot.react&buff.bloodlust.react)|buff.bullseye.react>=23|target.time_to_die<62)" );
   cooldowns -> add_action( "potion,name=deadly_grace,if=(buff.trueshot.react&buff.bloodlust.react)|buff.bullseye.react>=23|target.time_to_die<31" );
-  cooldowns -> add_action( "trueshot,if=time<5|buff.bloodlust.react|target.time_to_die>=(cooldown+duration)|buff.bullseye.react>25|target.time_to_die<16" );
+  cooldowns -> add_action( "variable,name=trueshot_cooldown,op=set,value=time*1.1,if=time>15&cooldown.trueshot.up&variable.trueshot_cooldown=0" );
+  cooldowns -> add_action( "trueshot,if=time<=15|buff.bloodlust.react|(variable.trueshot_cooldown>0&target.time_to_die>(variable.trueshot_cooldown+duration))|buff.bullseye.react>25|target.time_to_die<16" );
 
-  patient_sniper -> add_action( "marked_shot,cycle_targets=1,if=(talent.sidewinders.enabled&talent.barrage.enabled&spell_targets>2)|debuff.hunters_mark.remains<2|((debuff.vulnerability.up|talent.sidewinders.enabled)&debuff.vulnerability.remains<gcd)" );
-  patient_sniper -> add_action( "windburst,if=talent.sidewinders.enabled&(debuff.hunters_mark.down|(debuff.hunters_mark.remains>execute_time&focus+(focus.regen*debuff.hunters_mark.remains)>=50))|buff.trueshot.up" );
-  patient_sniper -> add_action( "sidewinders,if=buff.trueshot.up&((buff.marking_targets.down&buff.trueshot.remains<2)|(charges_fractional>=1.9&(focus.deficit>70|spell_targets>1)))" );
-  patient_sniper -> add_action( "multishot,if=buff.marking_targets.up&debuff.hunters_mark.down&variable.use_multishot&focus.deficit>2*spell_targets+gcd*focus.regen" );
-  patient_sniper -> add_action( "aimed_shot,if=buff.lock_and_load.up&buff.trueshot.up&debuff.vulnerability.remains>execute_time" );
-  patient_sniper -> add_action( "marked_shot,if=buff.trueshot.up&!talent.sidewinders.enabled" );
-  patient_sniper -> add_action( "arcane_shot,if=buff.trueshot.up" );
-  patient_sniper -> add_action( "aimed_shot,if=debuff.hunters_mark.down&debuff.vulnerability.remains>execute_time" );
-  patient_sniper -> add_action( "aimed_shot,if=talent.sidewinders.enabled&debuff.hunters_mark.remains>execute_time&debuff.vulnerability.remains>execute_time&(buff.lock_and_load.up|(focus+debuff.hunters_mark.remains*focus.regen>=80&focus+focus.regen*debuff.vulnerability.remains>=80))&(!talent.piercing_shot.enabled|cooldown.piercing_shot.remains>5|focus>120)" );
-  patient_sniper -> add_action( "aimed_shot,if=!talent.sidewinders.enabled&debuff.hunters_mark.remains>execute_time&debuff.vulnerability.remains>execute_time&(buff.lock_and_load.up|(buff.trueshot.up&focus>=80)|(buff.trueshot.down&focus+debuff.hunters_mark.remains*focus.regen>=80&focus+focus.regen*debuff.vulnerability.remains>=80))&(!talent.piercing_shot.enabled|cooldown.piercing_shot.remains>5|focus>120)" );
+  ptr_patient_sniper -> add_action( "variable,name=vuln_aim_casts,op=set,value=floor(debuff.vulnerability.remains%(2*attack_haste))" );
+  ptr_patient_sniper -> add_action( "variable,name=vuln_aim_casts,op=set,value=floor((focus.regen*(debuff.vulnerability.remains-(2*attack_haste))+focus)%50),if=variable.vuln_aim_casts>floor((focus.regen*(debuff.vulnerability.remains-(2*attack_haste))+focus)%50)" );
+  ptr_patient_sniper -> add_action( "variable,name=focus_after_vuln,op=set,value=(focus.regen*debuff.vulnerability.remains)-(variable.vuln_aim_casts*50)" );
+  ptr_patient_sniper -> add_action( "sidewinders,if=buff.trueshot.up&(debuff.vulnerability.remains<(2*attack_haste)|focus<35)&(spell_targets.sidewinders<2|debuff.hunters_mark.down)" );
+  ptr_patient_sniper -> add_action( "sidewinders,if=buff.trueshot.down&debuff.vulnerability.remains<(2*attack_haste)&focus<60&(debuff.hunters_mark.down|(charges_fractional>1.3&spell_targets.sidewinders<2))" );
+  ptr_patient_sniper -> add_action( "windburst,if=debuff.vulnerability.remains<(2*attack_haste)&(talent.sidewinders.enabled|focus>60)&!variable.pooling_for_piercing" );
+  ptr_patient_sniper -> add_action( "black_arrow" );
+  ptr_patient_sniper -> add_action( "a_murder_of_crows,if=(target.time_to_die>=cooldown+duration|target.health.pct<20|taget.time_to_die<16)&(debuff.vulnerability.remains<1|debuff.vulnerability.remains>(4*attack_haste+gcd))" );
+  ptr_patient_sniper -> add_action( "barrage,if=spell_targets>1|(target.health.pct<20&buff.bullseye.stack<25)" );
+  ptr_patient_sniper -> add_action( "piercing_shot,if=debuff.vulnerability.up&debuff.vulnerability.remains<4&focus>80" );
+  ptr_patient_sniper -> add_action( "marked_shot,if=!talent.sidewinders.enabled&spell_targets.multishot>1&(!variable.pooling_for_piercing|debuff.vulnerability.up)" );
+  ptr_patient_sniper -> add_action( "marked_shot,if=talent.sidewinders.enabled&((debuff.vulnerability.remains<(2*attack_haste)&focus>50)|spell_targets.sidewinders>1)" );
+  ptr_patient_sniper -> add_action( "marked_shot,if=!talent.sidewinders.enabled&spell_targets.multishot<2&debuff.vulnerability.remains<(2*attack_haste)&(debuff.hunters_mark.remains<gcd|focus>90)" );
+  ptr_patient_sniper -> add_action( "aimed_shot,if=debuff.vulnerability.remains>execute_time&(buff.trueshot.up|buff.lock_and_load.up)&(spell_targets.multishot<2|talent.sidewinders.enabled)&!variable.pooling_for_piercing" );
+  ptr_patient_sniper -> add_action( "aimed_shot,if=talent.sidewinders.enabled&variable.focus_after_vuln>60&!debuff.hunters_mark.up" );
+  ptr_patient_sniper -> add_action( "aimed_shot,if=debuff.vulnerability.remains>execute_time&debuff.vulnerability.remains-execute_time<1&!variable.pooling_for_piercing" );
+  ptr_patient_sniper -> add_action( "aimed_shot,if=debuff.vulnerability.remains>(execute_time*2)&(debuff.vulnerability.remains-(execute_time*2))<1&(focus+focus.regen*(debuff.vulnerability.remains-execute_time))>100&!variable.pooling_for_piercing" );
+  ptr_patient_sniper -> add_action( "aimed_shot,if=cast_regen+focus>focus.max&(debuff.vulnerability.remains>execute_time|cooldown.windburst.remains>3)&!variable.pooling_for_piercing" );
+  ptr_patient_sniper -> add_action( "arcane_shot,if=buff.trueshot.up&spell_targets.multishot<2" );
+  ptr_patient_sniper -> add_action( "multishot,if=buff.trueshot.up&spell_targets.multishot>1" );
+  ptr_patient_sniper -> add_action( "arcane_shot,if=spell_targets.multishot<2&(debuff.vulnerability.remains<(2*attack_haste)|(debuff.vulnerability.remains>(variable.vuln_aim_casts*2*attack_haste+gcd)&(debuff.vulnerability.remains-(variable.vuln_aim_casts*2*attack_haste+gcd))<1))" );
+  ptr_patient_sniper -> add_action( "multishot,if=spell_targets.multishot>1&(debuff.vulnerability.remains<(2*attack_haste)|(debuff.vulnerability.remains>(variable.vuln_aim_casts*2*attack_haste+gcd)&(debuff.vulnerability.remains-(variable.vuln_aim_casts*2*attack_haste+gcd))<1))" );
+
+  ptr_non_patient_sniper->add_action( "windburst,if=debuff.vulnerability.remains<(2*attack_haste)" );
+  ptr_non_patient_sniper->add_action( "piercing_shot,if=debuff.vulnerability.up&focus>90" );
+  ptr_non_patient_sniper->add_action( "black_arrow,if=debuff.vulnerability.remains<(2*attack_haste)" );
+  ptr_non_patient_sniper->add_action( "explosive_shot,if=debuff.vulnerability.remains<(2*attack_haste)|spell_targets.explosive_shot>1" );
+  ptr_non_patient_sniper->add_action( "a_murder_of_crows,if=debuff.vulnerability.remains<(2*attack_haste)" );
+  ptr_non_patient_sniper->add_action( "barrage,if=spell_targets>1|(target.health.pct<20&buff.bullseye.stack<25)" );
+  ptr_non_patient_sniper->add_action( "sentinel,if=debuff.hunters_mark.down" );
+  ptr_non_patient_sniper->add_action( "sidewinders,if=variable.safe_to_build&focus.deficit>60&(((buff.marking_targets.up|buff.trueshot.up)&charges_fractional>1.2)|charges_fractional>1.8)&!variable.sentinel_soon" );
+  ptr_non_patient_sniper->add_action( "marked_shot,if=cooldown.sentinel.remains>40|spell_targets.multishot>1" );
+  ptr_non_patient_sniper->add_action( "marked_shot,if=talent.sidewinders.enabled&((debuff.vulnerability.remains<1&cooldown.sidewinders.charges_fractional<1.5&focus.deficit<80)|(cooldown.sidewinders.charges_fractional>1.7))" );
+  ptr_non_patient_sniper->add_action( "marked_shot,if=!talent.sidewinders.enabled&debuff.vulnerability.remains<(2*attack_haste)" );
+  ptr_non_patient_sniper->add_action( "aimed_shot,if=(debuff.vulnerability.remains>execute_time|(focus>80&cooldown.windburst.remains>3))&!variable.pooling_for_piercing" );
+  ptr_non_patient_sniper->add_action( "arcane_shot,if=spell_targets.multishot<2" );
+  ptr_non_patient_sniper->add_action( "multishot,if=spell_targets.multishot>1" );
+
+  patient_sniper -> add_action( "marked_shot,cycle_targets=1,if=time<15|(talent.sidewinders.enabled&talent.barrage.enabled&spell_targets.barrage>2)|debuff.hunters_mark.remains<=gcd|((debuff.vulnerability.up|talent.sidewinders.enabled)&debuff.vulnerability.remains<=gcd)" );
+  patient_sniper -> add_action( "windburst,if=talent.sidewinders.enabled&(debuff.hunters_mark.down|(debuff.hunters_mark.remains>execute_time&focus+(focus.regen*debuff.hunters_mark.remains)>=50))" );
+  patient_sniper -> add_action( "sidewinders,if=debuff.hunters_mark.down&buff.trueshot.up&((buff.marking_targets.down&buff.trueshot.remains<2)|(charges_fractional>=1.9&(focus.deficit>70|spell_targets.barrage>1)))" );
+  patient_sniper -> add_action( "multishot,if=buff.marking_targets.up&debuff.hunters_mark.down&variable.use_multishot&focus.deficit>2*spell_targets.multishot+gcd*focus.regen" );
+  patient_sniper -> add_action( "aimed_shot,if=debuff.hunters_mark.down&debuff.vulnerability.remains>execute_time&(!talent.piercing_shot.enabled|cooldown.piercing_shot.remains>5|focus>120|buff.lock_and_load.up)" );
+  patient_sniper -> add_action( "aimed_shot,if=talent.sidewinders.enabled&debuff.hunters_mark.remains>execute_time&debuff.vulnerability.remains>execute_time&(buff.lock_and_load.up|(focus+debuff.hunters_mark.remains*focus.regen>=80&focus+focus.regen*debuff.vulnerability.remains>=80))&(!talent.piercing_shot.enabled|cooldown.piercing_shot.remains>5|focus>120|buff.lock_and_load.up)" );
+  patient_sniper -> add_action( "aimed_shot,if=!talent.sidewinders.enabled&debuff.hunters_mark.remains>execute_time&debuff.vulnerability.remains>execute_time&(buff.lock_and_load.up|(buff.trueshot.up&focus>=80)|(buff.trueshot.down&focus+debuff.hunters_mark.remains*focus.regen>=80&focus+focus.regen*debuff.vulnerability.remains>=80))&(!talent.piercing_shot.enabled|cooldown.piercing_shot.remains>5|focus>120|buff.lock_and_load.up)" );
   patient_sniper -> add_action( "windburst,if=!talent.sidewinders.enabled&focus>80&(debuff.hunters_mark.down|(debuff.hunters_mark.remains>execute_time&focus+(focus.regen*debuff.hunters_mark.remains)>=50))" );
-  patient_sniper -> add_action( "marked_shot,if=(talent.sidewinders.enabled&spell_targets>1)|focus.deficit<50|buff.trueshot.up|(buff.marking_targets.up&(!talent.sidewinders.enabled|cooldown.sidewinders.charges_fractional>=1.2))" );
+  patient_sniper -> add_action( "marked_shot,if=(talent.sidewinders.enabled&spell_targets.barrage>1)|focus.deficit<50|buff.trueshot.up|(buff.marking_targets.up&(!talent.sidewinders.enabled|cooldown.sidewinders.charges_fractional>=1.2))" );
   patient_sniper -> add_action( "piercing_shot,if=focus>80" );
   patient_sniper -> add_action( "sidewinders,if=variable.safe_to_build&((buff.trueshot.up&focus.deficit>70)|charges_fractional>=1.9)" );
-  patient_sniper -> add_action( "sidewinders,if=(buff.marking_targets.up&debuff.hunters_mark.down&buff.trueshot.down)|(cooldown.sidewinders.charges_fractional>1&target.time_to_die<11)" );
+  patient_sniper -> add_action( "sidewinders,if=buff.marking_targets.up&debuff.hunters_mark.down&buff.trueshot.down" );
   patient_sniper -> add_action( "arcane_shot,if=variable.safe_to_build&!variable.use_multishot&focus.deficit>5+gcd*focus.regen" );
-  patient_sniper -> add_action( "multishot,if=variable.safe_to_build&variable.use_multishot&focus.deficit>2*spell_targets+gcd*focus.regen" );
+  patient_sniper -> add_action( "multishot,if=variable.safe_to_build&variable.use_multishot&focus.deficit>2*spell_targets.multishot+gcd*focus.regen" );
   patient_sniper -> add_action( "aimed_shot,if=debuff.vulnerability.down&focus>80&cooldown.windburst.remains>focus.time_to_max" );
 
-  non_patient_sniper -> add_action("windburst");
+  non_patient_sniper -> add_action( "windburst" );
   non_patient_sniper -> add_action( "piercing_shot,if=focus>=100" );
-  non_patient_sniper -> add_action( "sentinel,if=debuff.hunters_mark.down&focus>30&buff.trueshot.down" );
-  non_patient_sniper -> add_action( "sidewinders,if=debuff.vulnerability.remains<gcd&time>6" );
-  non_patient_sniper -> add_action( "aimed_shot,if=buff.lock_and_load.up&spell_targets.barrage<3" );
+  non_patient_sniper -> add_action( "sentinel,if=debuff.hunters_mark.down&focus>30" );
+  non_patient_sniper -> add_action( "aimed_shot,if=debuff.vulnerability.stack=3&buff.lock_and_load.up&spell_targets.barrage<3" );
   non_patient_sniper -> add_action( "marked_shot" );
   non_patient_sniper -> add_action( "explosive_shot" );
   non_patient_sniper -> add_action( "sidewinders,if=((buff.marking_targets.up|buff.trueshot.up)&focus.deficit>70)|charges_fractional>=1.9" );
@@ -6443,10 +6447,11 @@ void hunter_t::apl_mm()
   non_patient_sniper -> add_action( "arcane_shot,if=!variable.use_multishot" );
   non_patient_sniper -> add_action( "multishot,if=variable.use_multishot" );
 
-  targetdie -> add_action( "marked_shot" );
+  targetdie -> add_action( "marked_shot,if=ptr=0" );
   targetdie -> add_action( "windburst" );
   targetdie -> add_action( "aimed_shot,if=debuff.vulnerability.remains>execute_time&target.time_to_die>execute_time" );
-  targetdie -> add_action( "sidewinders" );
+  targetdie -> add_action( "sidewinders,if=ptr=1|variable.safe_to_build" );
+  targetdie -> add_action( "marked_shot,if=ptr=1" );
   targetdie -> add_action( "aimed_shot" );
   targetdie -> add_action( "arcane_shot" );
 
