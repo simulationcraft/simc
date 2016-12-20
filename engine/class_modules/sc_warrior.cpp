@@ -515,7 +515,7 @@ public:
   void      init_action_list() override;
 
   action_t*  create_action( const std::string& name, const std::string& options ) override;
-  bool       create_actions();
+  bool       create_actions() override;
   resource_e primary_resource() const override { return RESOURCE_RAGE; }
   role_e     primary_role() const override;
   stat_e     convert_hybrid_stat( stat_e s ) const override;
@@ -608,17 +608,14 @@ public:
     cd_wasted_exec( nullptr ), cd_wasted_cumulative( nullptr ), cd_wasted_iter( nullptr )
   {
     ab::may_crit = true;
-    tactician_per_rage += ( player -> spec.tactician -> effectN( 2 ).percent() / 100  );
+    tactician_per_rage += ( player -> spec.tactician -> effectN( 2 ).percent() / 100 );
     tactician_per_rage *= 1.0 + player -> artifact.exploit_the_weakness.percent();
     arms_t19_4p_chance = p() -> sets.set( WARRIOR_ARMS, T19, B4 ) -> effectN( 1 ).percent();
 
-    if ( maybe_ptr( player ->dbc.ptr ) )
-    {
-      if ( arms_damage_increase )
-        ab::weapon_multiplier *= 1.0 + player ->spell.arms_warrior -> effectN( 2 ).percent();
-      if ( fury_damage_increase  )
-        ab::weapon_multiplier *= 1.0 + player ->spell.fury_warrior ->effectN( 1 ).percent();
-    }
+    if ( arms_damage_increase )
+      ab::weapon_multiplier *= 1.0 + player ->spell.arms_warrior -> effectN( 2 ).percent();
+    if ( fury_damage_increase )
+      ab::weapon_multiplier *= 1.0 + player ->spell.fury_warrior ->effectN( 1 ).percent();
   }
 
   void init() override
@@ -1107,7 +1104,10 @@ struct melee_t: public warrior_attack_t
     else
     {
       warrior_attack_t::execute();
+      if ( p() -> level() < 110 )
+      {
       p() -> buff.fury_trinket -> trigger();
+      }
       if ( rng().roll( arms_trinket_chance ) ) // Same
       {
         p() -> cooldown.colossus_smash -> reset( true );
@@ -1237,10 +1237,7 @@ struct bladestorm_tick_t: public warrior_attack_t
     aoe = -1;
     if ( p->specialization() == WARRIOR_ARMS )
     {
-      if ( maybe_ptr( p->dbc.ptr ) )
-        weapon_multiplier *= 1.0 + p->spell.arms_warrior->effectN( 5 ).percent();
-      else
-        weapon_multiplier *= 1.0 + p->spell.arms_warrior->effectN( 3 ).percent();
+      weapon_multiplier *= 1.0 + p->spell.arms_warrior->effectN( 5 ).percent();
     }
   }
 
@@ -2553,10 +2550,14 @@ struct heroic_charge_movement_ticker_t: public event_t
 struct heroic_charge_t: public warrior_attack_t
 {
   heroic_leap_t* leap;
+  bool disable_leap;
   heroic_charge_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "heroic_charge", p, spell_data_t::nil() ), leap( nullptr )
+    warrior_attack_t( "heroic_charge", p, spell_data_t::nil() ), leap( nullptr ),
+     disable_leap( false )
   {
+    add_option( opt_bool( "disable_heroic_leap", disable_leap ) );
     parse_options( options_str );
+
     leap = new heroic_leap_t( p, "" );
     trigger_gcd = timespan_t::zero();
     ignore_false_positive = true;
@@ -2568,7 +2569,7 @@ struct heroic_charge_t: public warrior_attack_t
   {
     warrior_attack_t::execute();
 
-    if ( p() -> cooldown.heroic_leap -> up() )
+    if ( !disable_leap && p() -> cooldown.heroic_leap -> up() )
     {// We are moving 10 yards, and heroic leap always executes in 0.5 seconds.
       // Do some hacky math to ensure it will only take 0.5 seconds, since it will certainly
       // be the highest temporary movement speed buff.
@@ -3057,8 +3058,7 @@ struct ravager_tick_t: public warrior_attack_t
     dual = ground_aoe = true;
     if ( p->specialization() == WARRIOR_ARMS )
     {
-      if ( maybe_ptr( p->dbc.ptr ) )
-        weapon_multiplier *= 1.0 + p->spell.arms_warrior->effectN( 3 ).percent();
+      weapon_multiplier *= 1.0 + p->spell.arms_warrior->effectN( 3 ).percent();
     }
   }
 };
@@ -3101,15 +3101,12 @@ struct ravager_t: public warrior_attack_t
 // Revenge ==================================================================
 
 struct revenge_t: public warrior_attack_t
-{
-  double rage_gain;
+{ //TODO: Costs rage now, free from a proc. 
   revenge_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "revenge", p, p -> spec.revenge ),
-    rage_gain( data().effectN( 2 ).resource( RESOURCE_RAGE ) )
+    warrior_attack_t( "revenge", p, p -> spec.revenge )
   {
     parse_options( options_str );
     aoe = -1;
-    energize_type = ENERGIZE_NONE; // disable resource generation from spell data.
 
     impact_action = p -> active.deep_wounds;
     attack_power_mod.direct *= 1.0 + p -> artifact.rage_of_the_fallen.percent();
@@ -3146,20 +3143,6 @@ struct revenge_t: public warrior_attack_t
   void execute() override
   {
     warrior_attack_t::execute();
-
-    if ( p() -> buff.bindings_of_kakushan -> check() )
-    {
-      p() -> resource_gain( RESOURCE_RAGE, rage_gain *
-        ( 1.0 + p() -> buff.bindings_of_kakushan -> check_value() ) * ( 1.0 + ( p() -> buff.demoralizing_shout -> check() ? p() -> artifact.might_of_the_vrykul.percent() : 0 ) )
-                            , p() -> gain.revenge );
-    }
-    else
-    {
-      p() -> resource_gain( RESOURCE_RAGE, rage_gain * ( 1.0 + ( p() -> buff.demoralizing_shout -> check() ? p() -> artifact.might_of_the_vrykul.percent() : 0 ) )
-                            , p() -> gain.revenge );
-    }
-
-    p() -> buff.bindings_of_kakushan -> expire();
   }
 };
 
@@ -5649,7 +5632,7 @@ struct into_the_fray_callback_t
         buff_stacks_++;
       }
     }
-    if ( w -> buff.into_the_fray -> current_stack != buff_stacks_ )
+    if ( w -> buff.into_the_fray -> current_stack != as<int>(buff_stacks_) )
     {
       w -> buff.into_the_fray -> expire();
       w -> buff.into_the_fray -> trigger( static_cast<int>( buff_stacks_ ) );
@@ -5736,10 +5719,7 @@ double warrior_t::composite_player_multiplier( school_e school ) const
 
   if ( specialization() == WARRIOR_ARMS )
   {
-    if ( maybe_ptr( dbc.ptr ))
-      m *= 1.0 + spell.arms_warrior -> effectN( 4 ).percent();
-    else
-      m *= 1.0 + spell.arms_warrior -> effectN( 2 ).percent();
+    m *= 1.0 + spell.arms_warrior -> effectN( 4 ).percent();
   }
   // Arms no longer has enrage, so no need to check for it.
   else if ( buff.enrage -> check() )

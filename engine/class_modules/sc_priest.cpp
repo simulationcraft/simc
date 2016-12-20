@@ -2008,6 +2008,7 @@ struct mind_sear_tick_t final : public priest_spell_t
       generate_insanity(insanity_gain, priest.gains.insanity_mind_sear);
     }
   }
+
 };
 
 struct mind_flay_t final : public priest_spell_t
@@ -2742,7 +2743,7 @@ struct shadow_word_pain_t final : public priest_spell_t
   {
     priest_spell_t::impact( s );
 
-    if (casted) 
+    if (casted)
     {
     generate_insanity( insanity_gain,
                        priest.gains.insanity_shadow_word_pain_onhit );

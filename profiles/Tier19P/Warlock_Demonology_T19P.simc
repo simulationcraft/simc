@@ -88,13 +88,13 @@ off_hand=skull_of_the_manari,id=128943,ilevel=870,gem_id=137459/137492/133764,re
 
 # Gear Summary
 # gear_ilvl=843.75
-# gear_stamina=17943
-# gear_intellect=11293
-# gear_spell_power=8954
-# gear_crit_rating=4752
-# gear_haste_rating=9868
-# gear_mastery_rating=2333
-# gear_leech_rating=404
+# gear_stamina=18839
+# gear_intellect=11844
+# gear_spell_power=9399
+# gear_crit_rating=5181
+# gear_haste_rating=10892
+# gear_mastery_rating=2502
+# gear_leech_rating=531
 # gear_armor=1570
 # set_bonus=tier19p_cloth_2pc=1
 default_pet=felguard

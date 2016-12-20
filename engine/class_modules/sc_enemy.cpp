@@ -198,18 +198,31 @@ struct enemy_action_t : public ACTION_TYPE
     // TODO: This does not work for heals at all, as it presumes enemies in the
     // actor list.
     tl.clear();
-    tl.push_back( this -> target );
+    tl.push_back( this->target );
 
-    for ( size_t i = 0, actors = this -> sim -> actor_list.size(); i < actors; i++ )
+    if ( this->sim->single_actor_batch )
     {
-      player_t* actor = this -> sim -> actor_list[ i ];
-      //only add non heal_target tanks to this list for now
-      if ( ! actor -> is_sleeping() &&
-           ! actor -> is_enemy() &&
-           actor -> primary_role() == ROLE_TANK &&
-           actor != this -> target &&
-           actor != this -> sim -> heal_target )
+      player_t* actor = this -> sim -> player_no_pet_list[this->sim->current_index];
+      if ( !actor->is_sleeping() &&
+           !actor->is_enemy() &&
+           actor->primary_role() == ROLE_TANK &&
+           actor != this->target &&
+           actor != this->sim->heal_target )
         tl.push_back( actor );
+    }
+    else
+    {
+      for ( size_t i = 0, actors = this->sim->actor_list.size(); i < actors; i++ )
+      {
+        player_t* actor = this->sim->actor_list[i];
+        //only add non heal_target tanks to this list for now
+        if ( !actor->is_sleeping() &&
+             !actor->is_enemy() &&
+             actor->primary_role() == ROLE_TANK &&
+             actor != this->target &&
+             actor != this->sim->heal_target )
+          tl.push_back( actor );
+      }
     }
     //if we have no target (no tank), add the healing target as substitute
     if ( tl.empty() )
@@ -276,9 +289,16 @@ struct enemy_action_driver_t : public CHILD_ACTION_TYPE
     // construct the target list
     std::vector<player_t*> target_list;
 
-    for ( size_t i = 0; i < this -> sim -> player_no_pet_list.size(); i++ )
-      if ( this -> sim -> player_no_pet_list[ i ] -> primary_role() == ROLE_TANK )
-        target_list.push_back( this -> sim -> player_no_pet_list[ i ] );
+    if ( this->sim->single_actor_batch )
+    {
+      target_list.push_back( this -> sim -> player_no_pet_list[this->sim->current_index] );
+    }
+    else
+    {
+      for ( size_t i = 0; i < this->sim->player_no_pet_list.size(); i++ )
+        if ( this->sim->player_no_pet_list[i]->primary_role() == ROLE_TANK )
+          target_list.push_back( this->sim->player_no_pet_list[i] );
+    }
 
     // create a separate action for each potential target
     for ( size_t i = 0; i < target_list.size(); i++ )
@@ -408,7 +428,9 @@ struct auto_attack_t : public enemy_action_t<attack_t>
     trigger_gcd = timespan_t::zero();
 
     size_t num_attacks = 0;
-    if ( aoe_tanks == 1 || aoe_tanks < 0 )
+    if ( this ->sim ->single_actor_batch )
+      num_attacks = 1;
+    else if ( aoe_tanks == 1 || aoe_tanks < 0 )
        num_attacks = this -> player -> sim -> actor_list.size();
     else
       num_attacks = static_cast<size_t>( aoe_tanks );
@@ -497,7 +519,9 @@ struct auto_attack_off_hand_t : public enemy_action_t<attack_t>
     trigger_gcd = timespan_t::zero();
 
     size_t num_attacks = 0;
-    if ( aoe_tanks == 1 || aoe_tanks < 0 )
+    if ( this ->sim ->single_actor_batch )
+      num_attacks = 1;
+    else if ( aoe_tanks == 1 || aoe_tanks < 0 )
        num_attacks = this -> player -> sim -> actor_list.size();
     else
       num_attacks = static_cast<size_t>( aoe_tanks );
@@ -752,12 +776,25 @@ struct spell_aoe_t : public enemy_action_t<spell_t>
     tl.clear();
     tl.push_back( target );
 
-    for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; ++i )
+    if ( sim->single_actor_batch )
     {
-      if ( ! sim -> actor_list[ i ] -> is_sleeping() &&
-           !sim -> actor_list[ i ] -> is_enemy() &&
-           sim -> actor_list[ i ] != target )
-        tl.push_back( sim -> actor_list[ i ] );
+      player_t* actor = sim -> player_no_pet_list[sim->current_index];
+      if ( !actor->is_sleeping() &&
+           !actor->is_enemy() &&
+           actor->primary_role() == ROLE_TANK &&
+           actor != this->target &&
+           actor != this->sim->heal_target )
+        tl.push_back( actor );
+    }
+    else
+    {
+      for ( size_t i = 0, actors = sim->actor_list.size(); i < actors; ++i )
+      {
+        if ( !sim->actor_list[i]->is_sleeping() &&
+             !sim->actor_list[i]->is_enemy() &&
+             sim->actor_list[i] != target )
+          tl.push_back( sim->actor_list[i] );
+      }
     }
 
     return tl.size();
