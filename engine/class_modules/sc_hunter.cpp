@@ -5222,7 +5222,7 @@ dots( dots_t() )
                           -> effectN( 2 )
                             .percent() + 
                               p -> talents.patient_sniper 
-                                -> effectN( 2 )
+                                -> effectN( 1 )
                                   .percent() )
         .duration( timespan_t::from_seconds( 6.0 ) )
         .max_stack( 1 );
