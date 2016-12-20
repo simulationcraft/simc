@@ -5737,7 +5737,7 @@ void hunter_t::create_buffs()
 
   buffs.pre_steady_focus = 
     buff_creator_t( this, "pre_steady_focus" )
-      .max_stack( 3 )
+      .max_stack( 2 )
       .quiet( true );
 
   buffs.rapid_killing = 
