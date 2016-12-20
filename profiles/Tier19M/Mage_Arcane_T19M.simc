@@ -89,7 +89,7 @@ actions.rop_phase+=/arcane_blast,if=mana.pct>45
 actions.rop_phase+=/arcane_barrage
 
 head=hood_of_darkened_visions,id=139189,bonus_id=1806
-neck=sea_fan_pendant,id=142428,bonus_id=3469
+neck=sea_fan_pendant,id=142428,bonus_id=3469,enchant=mark_of_the_hidden_satyr
 shoulders=ancient_dreamwoven_mantle,id=139191,bonus_id=1806
 back=drape_of_the_unworthy,id=142521,bonus_id=3469/1512,enchant=binding_of_intellect
 chest=robes_of_the_ancient_chronicle,id=142297

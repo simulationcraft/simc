@@ -8664,7 +8664,7 @@ void mage_t::apl_arcane()
 
   conserve     -> add_action( this, "Arcane Missiles", "if=buff.arcane_missiles.react=3" );
 
-  conserve     -> add_action( this, "Arcane Explosion", "if=buff.quickening.remains<action.arcane_blast.cast_time&talent.quickening.enabled" );
+  //conserve     -> add_action( this, "Arcane Explosion", "if=buff.quickening.remains<action.arcane_blast.cast_time&talent.quickening.enabled" );
   conserve     -> add_action( this, "Arcane Blast", "if=mana.pct>99" );
   conserve     -> add_talent( this, "Nether Tempest", "if=(refreshable|!ticking)" );
   conserve     -> add_action( this, "Arcane Blast", "if=buff.rhonins_assaulting_armwraps.up&equipped.132413" );
@@ -8678,7 +8678,7 @@ void mage_t::apl_arcane()
   conserve     -> add_action( this, "Arcane Blast" );
 
   rop_phase    -> add_action( this, "Arcane Missiles", "if=buff.arcane_missiles.react=3" );
-  rop_phase    -> add_action( this, "Arcane Explosion", "if=buff.quickening.remains<action.arcane_blast.cast_time&talent.quickening.enabled" );
+  //rop_phase    -> add_action( this, "Arcane Explosion", "if=buff.quickening.remains<action.arcane_blast.cast_time&talent.quickening.enabled" );
   rop_phase    -> add_talent( this, "Nether Tempest", "if=dot.nether_tempest.remains<=2|!ticking" );
   rop_phase    -> add_action( this, "Arcane Missiles", "if=buff.arcane_charge.stack=4" );
   rop_phase    -> add_talent( this, "Super Nova", "if=mana.pct<100" );
@@ -8719,7 +8719,7 @@ void mage_t::apl_arcane()
 
   burn      -> add_action( "call_action_list,name=cooldowns" );
   burn      -> add_action( this, "Arcane Missiles", "if=buff.arcane_missiles.react=3" );
-  burn      -> add_action( this, "Arcane Explosion", "if=buff.quickening.remains<action.arcane_blast.cast_time&talent.quickening.enabled" );
+  //burn      -> add_action( this, "Arcane Explosion", "if=buff.quickening.remains<action.arcane_blast.cast_time&talent.quickening.enabled" );
   burn      -> add_talent( this, "Presence of Mind", "if=buff.arcane_power.remains>2*gcd" );
   burn      -> add_talent( this, "Nether Tempest", "if=dot.nether_tempest.remains<=2|!ticking" );
   burn      -> add_action( this, "Arcane Blast", "if=active_enemies<=1&mana.pct%10*execute_time>target.time_to_die" );
