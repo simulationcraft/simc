@@ -2136,9 +2136,9 @@ public:
     requires_stealth( false ),
     consumes_combo_points( false ),
     consumes_clearcasting( false ),
-    trigger_tier17_2pc( false ),
     triggers_ashamanes_bite ( true ),
     triggers_primal_fury ( true ),
+    trigger_tier17_2pc( false ),
     snapshots_tf( true ),
     snapshots_sr( true )
   {
