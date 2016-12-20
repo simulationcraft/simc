@@ -1734,10 +1734,7 @@ bool item_database::has_item_bonus_type( const item_t& item, item_bonus_type bon
 double item_database::apply_combat_rating_multiplier( const item_t& item, double amount )
 {
   auto type = item_combat_rating_type( &item.parsed.data );
-  // TODO: FIXME: Apply categorized combat rating multiplier only on PTR sims. For live ones, the
-  // combat rating multiplier category is ignored. This needs to be fixed when 7.1.5 goes live.
-  if ( item.player -> dbc.ptr &&
-       type == CR_MULTIPLIER_INVALID )
+  if ( type == CR_MULTIPLIER_INVALID )
   {
     return amount;
   }

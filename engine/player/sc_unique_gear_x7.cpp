@@ -1843,6 +1843,9 @@ struct kiljaedens_burning_wish_t : public spell_t
     travel_speed = 25;
   }
 
+  virtual double composite_crit_chance() const override
+  { return 1.0; }
+
 };
 
 void item::kiljadens_burning_wish( special_effect_t& effect )
@@ -3467,12 +3470,6 @@ void unique_gear::register_hotfixes_x7()
     .operation( hotfix::HOTFIX_SET )
     .modifier( 1.25 )
     .verification_value( 0.7 );
-
-  hotfix::register_effect( "Mark of the Hidden Satyr", "2016-10-10", "In-game testing shows that the damage from this ability is roughly 10% higher than what spelldata shows.", 280531 )
-    .field( "average" )
-    .operation( hotfix::HOTFIX_MUL )
-    .modifier( 1.1 )
-    .verification_value( 26.48617 );
 
   hotfix::register_spell( "Aran's Relaxing Ruby", "2016-11-08", "In-game testing shows that the actual rppm is 1.7 rather than 0.92. We slightly underestimate at 1.65 here.", 230257 )
     .field( "rppm" )
