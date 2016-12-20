@@ -91,6 +91,7 @@ public:
   struct legendary_t
   {
     // Survival
+    const special_effect_t* sv_chest;
     const special_effect_t* sv_feet;
     const special_effect_t* sv_ring;
     const special_effect_t* sv_waist;
@@ -99,10 +100,12 @@ public:
     // Beast Mastery
     const special_effect_t* bm_feet;
     const special_effect_t* bm_ring;
+    const special_effect_t* bm_shoulders;
     const special_effect_t* bm_waist;
 
     // Marksmanship
     const special_effect_t* mm_feet;
+    const special_effect_t* mm_gloves;
     const special_effect_t* mm_ring;
     const special_effect_t* mm_waist;
     const special_effect_t* magnetized_blasting_cap_launcher;
@@ -572,6 +575,12 @@ static void blackness( special_effect_t& effect )
   init_special_effect( hunter, HUNTER_SURVIVAL, hunter -> blackness, effect );
 }
 
+static void sv_chest( special_effect_t& effect )
+{
+  hunter_t* hunter = debug_cast<hunter_t*>( effect.player );
+  init_special_effect( hunter, HUNTER_SURVIVAL, hunter -> legendary.sv_chest, effect );
+}
+
 static void sv_feet( special_effect_t& effect )
 {
   hunter_t* hunter = debug_cast<hunter_t*>( effect.player );
@@ -608,6 +617,12 @@ static void bm_ring( special_effect_t& effect )
   init_special_effect( hunter, HUNTER_BEAST_MASTERY, hunter -> legendary.bm_ring, effect );
 }
 
+static void bm_shoulders( special_effect_t& effect )
+{
+  hunter_t* hunter = debug_cast<hunter_t*>( effect.player );
+  init_special_effect( hunter, HUNTER_BEAST_MASTERY, hunter -> legendary.bm_shoulders, effect );
+}
+
 static void bm_waist( special_effect_t& effect )
 {
   hunter_t* hunter = debug_cast<hunter_t*>( effect.player );
@@ -618,6 +633,12 @@ static void mm_feet( special_effect_t& effect )
 {
   hunter_t* hunter = debug_cast<hunter_t*>( effect.player );
   init_special_effect( hunter, HUNTER_MARKSMANSHIP, hunter -> legendary.mm_feet, effect );
+}
+
+static void mm_gloves( special_effect_t& effect )
+{
+  hunter_t* hunter = debug_cast<hunter_t*>( effect.player );
+  init_special_effect( hunter, HUNTER_MARKSMANSHIP, hunter -> legendary.mm_gloves, effect );
 }
 
 static void mm_ring( special_effect_t& effect )
@@ -6817,12 +6838,15 @@ struct hunter_module_t: public module_t
     unique_gear::register_special_effect( 184900, beastlord );
     unique_gear::register_special_effect( 184901, longview );
     unique_gear::register_special_effect( 184902, blackness );
+    unique_gear::register_special_effect( 236447, sv_chest );
     unique_gear::register_special_effect( 212574, sv_feet );
     unique_gear::register_special_effect( 225155, sv_ring );
     unique_gear::register_special_effect( 213154, sv_waist );
     unique_gear::register_special_effect( 212278, bm_feet );
     unique_gear::register_special_effect( 212329, bm_ring );
+    unique_gear::register_special_effect( 235721, bm_shoulders );
     unique_gear::register_special_effect( 207280, bm_waist );
+    unique_gear::register_special_effect( 235691, mm_gloves );
     unique_gear::register_special_effect( 206889, mm_feet );
     unique_gear::register_special_effect( 224550, mm_ring );
     unique_gear::register_special_effect( 208912, mm_waist );
