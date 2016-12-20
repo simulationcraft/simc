@@ -2745,7 +2745,7 @@ struct barrage_t: public hunter_ranged_attack_t
   struct barrage_damage_t: public attacks::hunter_ranged_attack_t
   {
     barrage_damage_t( hunter_t* player ):
-      attacks::hunter_ranged_attack_t( "barrage_primary", player, player -> talents.barrage -> effectN( 2 ).trigger() )
+      attacks::hunter_ranged_attack_t( "barrage_primary", player, player -> talents.barrage -> effectN( 1 ).trigger() )
     {
       background = true;
       may_crit = true;

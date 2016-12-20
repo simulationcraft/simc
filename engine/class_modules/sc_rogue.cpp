@@ -4138,7 +4138,7 @@ struct shadowstrike_t : public rogue_attack_t
       add_child( p -> soul_rip );
     }
     shadow_nova_proc_chance = p ->find_spell( 209781 ) -> proc_chance();
-    shadow_nova_icd = p -> find_cooldown( "shadow_nova_icd" );
+    shadow_nova_icd = p -> get_cooldown( "shadow_nova_icd" );
     shadow_nova_icd -> duration = p -> find_spell( 209781 ) -> internal_cooldown();
   }
 

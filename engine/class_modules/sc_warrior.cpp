@@ -3101,15 +3101,12 @@ struct ravager_t: public warrior_attack_t
 // Revenge ==================================================================
 
 struct revenge_t: public warrior_attack_t
-{
-  double rage_gain;
+{ //TODO: Costs rage now, free from a proc. 
   revenge_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "revenge", p, p -> spec.revenge ),
-    rage_gain( data().effectN( 2 ).resource( RESOURCE_RAGE ) )
+    warrior_attack_t( "revenge", p, p -> spec.revenge )
   {
     parse_options( options_str );
     aoe = -1;
-    energize_type = ENERGIZE_NONE; // disable resource generation from spell data.
 
     impact_action = p -> active.deep_wounds;
     attack_power_mod.direct *= 1.0 + p -> artifact.rage_of_the_fallen.percent();
@@ -3146,20 +3143,6 @@ struct revenge_t: public warrior_attack_t
   void execute() override
   {
     warrior_attack_t::execute();
-
-    if ( p() -> buff.bindings_of_kakushan -> check() )
-    {
-      p() -> resource_gain( RESOURCE_RAGE, rage_gain *
-        ( 1.0 + p() -> buff.bindings_of_kakushan -> check_value() ) * ( 1.0 + ( p() -> buff.demoralizing_shout -> check() ? p() -> artifact.might_of_the_vrykul.percent() : 0 ) )
-                            , p() -> gain.revenge );
-    }
-    else
-    {
-      p() -> resource_gain( RESOURCE_RAGE, rage_gain * ( 1.0 + ( p() -> buff.demoralizing_shout -> check() ? p() -> artifact.might_of_the_vrykul.percent() : 0 ) )
-                            , p() -> gain.revenge );
-    }
-
-    p() -> buff.bindings_of_kakushan -> expire();
   }
 };
 

@@ -44,7 +44,6 @@ actions.build+=/arcane_blast
 actions.burn=call_action_list,name=cooldowns
 actions.burn+=/arcane_missiles,if=buff.arcane_missiles.react=3
 actions.burn+=/arcane_explosion,if=buff.quickening.remains<action.arcane_blast.cast_time&talent.quickening.enabled
-actions.burn+=/presence_of_mind,if=buff.arcane_power.remains>2*gcd
 actions.burn+=/nether_tempest,if=dot.nether_tempest.remains<=2|!ticking
 actions.burn+=/arcane_blast,if=active_enemies<=1&mana.pct%10*execute_time>target.time_to_die
 actions.burn+=/arcane_explosion,if=active_enemies>1&mana.pct%10*execute_time>target.time_to_die
@@ -110,11 +109,11 @@ main_hand=aluneth,id=127857,ilevel=870
 
 # Gear Summary
 # gear_ilvl=842.00
-# gear_stamina=17964
-# gear_intellect=18709
-# gear_crit_rating=7967
-# gear_haste_rating=3966
-# gear_mastery_rating=1603
-# gear_versatility_rating=4329
+# gear_stamina=18862
+# gear_intellect=19631
+# gear_crit_rating=8715
+# gear_haste_rating=4287
+# gear_mastery_rating=1683
+# gear_versatility_rating=4845
 # gear_armor=1570
 # set_bonus=tier19p_cloth_2pc=1

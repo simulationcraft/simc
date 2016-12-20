@@ -6411,7 +6411,7 @@ void warlock_t::apl_affliction()
     action_list_str += "|buff.collapsing_shadow.remains";
   action_list_str += ")";
   add_action( "Unstable Affliction", "if=talent.malefic_grasp.enabled&(target.time_to_die<30|dot.agony.remains>cast_time+8*spell_haste&(dot.corruption.remains>cast_time+8*spell_haste|talent.absolute_corruption.enabled)&(dot.siphon_life.remains>cast_time+8*spell_haste|!talent.siphon_life.enabled)|soul_shard>=4)" );
-  add_action( "Unstable Affliction", "if=talent.haunt.enabled&(soul_shard>=4|debuff.haunt.remains|target.time_to_die<30)" );
+  add_action( "Unstable Affliction", "if=talent.haunt.enabled&(soul_shard>=4|debuff.haunt.remains|target.time_to_die<30" );
 
   if ( find_item( "horn_of_valor" ) )
     action_list_str += "|buff.valarjars_path.remains";
