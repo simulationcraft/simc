@@ -1877,7 +1877,7 @@ public:
   {
     double d = priest_spell_t::composite_da_multiplier(state);
 
-    if (maybe_ptr(priest.dbc.ptr))
+ //   if (maybe_ptr(priest.dbc.ptr))
     {
       d *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
     }
@@ -2056,7 +2056,7 @@ struct mind_flay_t final : public priest_spell_t
                 priest.buffs.void_ray->data().effectN( 1 ).percent();
 
 
-    if (maybe_ptr(priest.dbc.ptr))
+   // if (maybe_ptr(priest.dbc.ptr))
     {
       am *= 1.0 + ptr_shadow_scaling_buff->effectN(2).percent();
     }
@@ -2470,7 +2470,7 @@ struct shadow_word_death_t final : public priest_spell_t
   {
     double d = priest_spell_t::composite_da_multiplier(state);
 
-    if (maybe_ptr(priest.dbc.ptr))
+  //  if (maybe_ptr(priest.dbc.ptr))
     {
       d *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
     }
@@ -2546,7 +2546,7 @@ struct shadow_crash_t final : public priest_spell_t
   {
     double d = priest_spell_t::composite_da_multiplier(state);
 
-    if (maybe_ptr(priest.dbc.ptr))
+  //  if (maybe_ptr(priest.dbc.ptr))
     {
       d *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
     }
@@ -2813,7 +2813,7 @@ struct shadow_word_pain_t final : public priest_spell_t
                    priest.buffs.voidform->stack() );
     }
 
-    if (maybe_ptr(priest.dbc.ptr))
+ //   if (maybe_ptr(priest.dbc.ptr))
     {
       m *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
     }
@@ -2853,7 +2853,7 @@ struct shadow_word_void_t final : public priest_spell_t
   {
     double d = priest_spell_t::composite_da_multiplier( state );
 
-    if (maybe_ptr(priest.dbc.ptr))
+//    if (maybe_ptr(priest.dbc.ptr))
     {
       d *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
     }
@@ -3158,7 +3158,7 @@ struct vampiric_touch_t final : public priest_spell_t
                    priest.buffs.voidform->stack() );
     }
 
-    if (maybe_ptr(priest.dbc.ptr))
+//    if (maybe_ptr(priest.dbc.ptr))
     {
       m *= 1.0 + ptr_shadow_scaling_buff->effectN(2).percent();
     }
@@ -3362,7 +3362,7 @@ struct void_eruption_t final : public priest_spell_t
   {
     double d = priest_spell_t::composite_da_multiplier(state);
 
-    if (maybe_ptr(priest.dbc.ptr))
+  //  if (maybe_ptr(priest.dbc.ptr))
     {
       d *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
     }
@@ -3415,7 +3415,7 @@ struct void_torrent_t final : public priest_spell_t
   {
     double am = priest_spell_t::action_multiplier();
 
-    if (maybe_ptr(priest.dbc.ptr))
+ //   if (maybe_ptr(priest.dbc.ptr))
     {
       am *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
     }
