@@ -10,6 +10,13 @@
 // General
 //   - Cleanup old spells
 //
+// 7.1.5
+// MM
+//   - Patient Sniper
+//   - new Sentinel
+//
+//   - Legendaries
+//
 // Survival
 //   - Harpoon legendary
 //
@@ -91,6 +98,7 @@ public:
   struct legendary_t
   {
     // Survival
+    const special_effect_t* sv_chest;
     const special_effect_t* sv_feet;
     const special_effect_t* sv_ring;
     const special_effect_t* sv_waist;
@@ -99,10 +107,12 @@ public:
     // Beast Mastery
     const special_effect_t* bm_feet;
     const special_effect_t* bm_ring;
+    const special_effect_t* bm_shoulders;
     const special_effect_t* bm_waist;
 
     // Marksmanship
     const special_effect_t* mm_feet;
+    const special_effect_t* mm_gloves;
     const special_effect_t* mm_ring;
     const special_effect_t* mm_waist;
     const special_effect_t* magnetized_blasting_cap_launcher;
@@ -193,7 +203,7 @@ public:
     proc_t* mortal_wounds;
     proc_t* t18_4pc_sv;
     proc_t* no_vuln_aimed_shot;
-    proc_t* no_vuln_marked_shot;
+    proc_t* no_vuln_piercing_shot;
     proc_t* zevrims_hunger;
     proc_t* convergence;
     proc_t* marking_targets;
@@ -572,6 +582,12 @@ static void blackness( special_effect_t& effect )
   init_special_effect( hunter, HUNTER_SURVIVAL, hunter -> blackness, effect );
 }
 
+static void sv_chest( special_effect_t& effect )
+{
+  hunter_t* hunter = debug_cast<hunter_t*>( effect.player );
+  init_special_effect( hunter, HUNTER_SURVIVAL, hunter -> legendary.sv_chest, effect );
+}
+
 static void sv_feet( special_effect_t& effect )
 {
   hunter_t* hunter = debug_cast<hunter_t*>( effect.player );
@@ -608,6 +624,12 @@ static void bm_ring( special_effect_t& effect )
   init_special_effect( hunter, HUNTER_BEAST_MASTERY, hunter -> legendary.bm_ring, effect );
 }
 
+static void bm_shoulders( special_effect_t& effect )
+{
+  hunter_t* hunter = debug_cast<hunter_t*>( effect.player );
+  init_special_effect( hunter, HUNTER_BEAST_MASTERY, hunter -> legendary.bm_shoulders, effect );
+}
+
 static void bm_waist( special_effect_t& effect )
 {
   hunter_t* hunter = debug_cast<hunter_t*>( effect.player );
@@ -618,6 +640,12 @@ static void mm_feet( special_effect_t& effect )
 {
   hunter_t* hunter = debug_cast<hunter_t*>( effect.player );
   init_special_effect( hunter, HUNTER_MARKSMANSHIP, hunter -> legendary.mm_feet, effect );
+}
+
+static void mm_gloves( special_effect_t& effect )
+{
+  hunter_t* hunter = debug_cast<hunter_t*>( effect.player );
+  init_special_effect( hunter, HUNTER_MARKSMANSHIP, hunter -> legendary.mm_gloves, effect );
 }
 
 static void mm_ring( special_effect_t& effect )
@@ -2751,7 +2779,6 @@ struct barrage_t: public hunter_ranged_attack_t
       may_crit = true;
       weapon = &( player -> main_hand_weapon );
       aoe = -1;
-      base_aoe_multiplier = 0.5;
       range = radius;
       range = 0;
       travel_speed = 0.0;
@@ -2800,6 +2827,7 @@ struct multi_shot_t: public hunter_ranged_attack_t
     parse_options( options_str );
     may_proc_mm_feet = true;
     aoe = -1;
+    benefits_from_sniper_training = false;
 
     if ( p -> artifacts.called_shot.rank() )
       base_multiplier *= 1.0 + p -> artifacts.called_shot.percent();
@@ -3250,9 +3278,6 @@ struct aimed_shot_t: public aimed_shot_base_t
 
     if ( p() -> buffs.careful_aim -> value() && s -> result == RESULT_CRIT )
       trigger_piercing_shots( s );
-
-    if ( !td( s -> target ) -> debuffs.vulnerable -> check() )
-      p() -> procs.no_vuln_aimed_shot -> occur();
   }
 
   virtual void execute() override
@@ -3260,7 +3285,10 @@ struct aimed_shot_t: public aimed_shot_base_t
     p() -> no_steady_focus();
 
     aimed_shot_base_t::execute();
-    
+
+    if ( ! td( execute_state -> target ) -> debuffs.vulnerable -> check() )
+      p() -> procs.no_vuln_aimed_shot -> occur();
+
     if ( trick_shot )
       trick_shot -> execute();
 
@@ -3427,16 +3455,9 @@ struct marked_shot_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t::execute();
 
     // Consume Hunter's Mark and apply appropriate debuffs. Vulnerable applies on cast.
-    bool no_vuln_check = true;
     std::vector<player_t*> marked_shot_targets = execute_state -> action -> target_list();
     for ( size_t i = 0; i < marked_shot_targets.size(); i++ )
     {
-      if ( !td( marked_shot_targets[i] ) -> debuffs.vulnerable -> check() && no_vuln_check )
-      {
-        p() -> procs.no_vuln_marked_shot -> occur();
-        no_vuln_check = false; // Don't show multiple procs for one cast
-      }
-
       if ( td( marked_shot_targets[i] ) -> debuffs.hunters_mark -> up() )
         td( marked_shot_targets[i] ) -> debuffs.vulnerable -> trigger();
 
@@ -3515,9 +3536,6 @@ struct marked_shot_t: public hunter_ranged_attack_t
     double m = hunter_ranged_attack_t::composite_target_da_multiplier( t );
 
     hunter_td_t* td = this -> td( t );
-    if ( td -> debuffs.vulnerable -> up() )
-      m *= 1.0 + td -> debuffs.vulnerable -> check_stack_value();
-
     if ( td -> debuffs.true_aim -> up() )
       m *= 1.0 + td -> debuffs.true_aim -> check_stack_value();
 
@@ -3545,6 +3563,9 @@ struct piercing_shot_t: public hunter_ranged_attack_t
   {
     p() -> no_steady_focus();
     hunter_ranged_attack_t::execute();
+
+    if ( ! td( execute_state -> target ) -> debuffs.vulnerable -> check() )
+      p() -> procs.no_vuln_piercing_shot -> occur();
   }
 
   virtual double action_multiplier() const override
@@ -3554,6 +3575,17 @@ struct piercing_shot_t: public hunter_ranged_attack_t
     am *= std::min( 100.0, p() -> resources.current[RESOURCE_FOCUS] ) / 100;
 
     return am;
+  }
+
+  virtual double composite_target_da_multiplier(player_t* t) const override
+  {
+    double m = hunter_ranged_attack_t::composite_target_da_multiplier(t);
+
+    hunter_td_t* td = this -> td( t );
+    if ( td -> debuffs.vulnerable -> up() )
+      m *= 1.0 + td -> debuffs.vulnerable -> check_stack_value();
+
+    return m;
   }
 };
 
@@ -5213,30 +5245,14 @@ dots( dots_t() )
   debuffs.hunters_mark = 
     buff_creator_t( *this, "hunters_mark" )
       .spell( p -> find_spell( 185365 ) );
-  if ( p -> talents.patient_sniper -> ok() )
-  {
-    debuffs.vulnerable = 
-      buff_creator_t( *this, "vulnerability" )
-        .spell( p -> find_spell( 187131 ) )
-        .default_value( p -> find_spell( 187131 ) 
-                          -> effectN( 2 )
-                            .percent() + 
-                              p -> talents.patient_sniper 
-                                -> effectN( 1 )
-                                  .percent() )
-        .duration( timespan_t::from_seconds( 6.0 ) )
-        .max_stack( 1 );
-  }
-  else
-  {
-    debuffs.vulnerable = 
-      buff_creator_t( *this, "vulnerability" )
-        .spell( p -> find_spell( 187131 ) )
-        .default_value( p -> find_spell( 187131 ) 
-                          -> effectN( 2 )
-                            .percent() )
-        .max_stack( 2 );
-  }
+
+  debuffs.vulnerable =
+    buff_creator_t( *this, "vulnerability" )
+      .spell( p -> find_spell( 187131 ) )
+      .default_value( p -> find_spell( 187131 )
+                        -> effectN( 2 )
+                          .percent() );
+
   debuffs.true_aim = 
     buff_creator_t( *this, "true_aim" )
         .spell( p -> find_spell( 199803 ) )
@@ -5601,7 +5617,7 @@ void hunter_t::init_base_stats()
 
   base_focus_regen_per_second = 10.0;
 
-  resources.base[RESOURCE_FOCUS] = 100 + specs.kindred_spirits -> effectN( 1 ).resource( RESOURCE_FOCUS ) + specs.marksmans_focus -> effectN( 1 ).resource( RESOURCE_FOCUS ) + talents.patient_sniper -> effectN( 1 ).resource( RESOURCE_FOCUS );
+  resources.base[RESOURCE_FOCUS] = 100 + specs.kindred_spirits -> effectN( 1 ).resource( RESOURCE_FOCUS ) + specs.marksmans_focus -> effectN( 1 ).resource( RESOURCE_FOCUS );
 
   stats_tier17_4pc_bm = get_stats( "tier17_4pc_bm" );
   stats_tier18_4pc_bm = get_stats( "tier18_4pc_bm" );
@@ -5733,7 +5749,7 @@ void hunter_t::create_buffs()
 
   buffs.pre_steady_focus = 
     buff_creator_t( this, "pre_steady_focus" )
-      .max_stack( 3 )
+      .max_stack( 2 )
       .quiet( true );
 
   buffs.rapid_killing = 
@@ -5909,7 +5925,7 @@ void hunter_t::init_procs()
   procs.mortal_wounds                = get_proc( "mortal_wounds" );
   procs.t18_4pc_sv                   = get_proc( "t18_4pc_sv" );
   procs.no_vuln_aimed_shot           = get_proc( "no_vuln_aimed_shot" );
-  procs.no_vuln_marked_shot          = get_proc( "no_vuln_marked_shot" );
+  procs.no_vuln_piercing_shot        = get_proc( "no_vuln_piercing_shot" );
   procs.zevrims_hunger               = get_proc( "zevrims_hunger" );
   procs.convergence                  = get_proc( "convergence" );
   procs.marking_targets              = get_proc( "marking_targets" );
@@ -6829,12 +6845,15 @@ struct hunter_module_t: public module_t
     unique_gear::register_special_effect( 184900, beastlord );
     unique_gear::register_special_effect( 184901, longview );
     unique_gear::register_special_effect( 184902, blackness );
+    unique_gear::register_special_effect( 236447, sv_chest );
     unique_gear::register_special_effect( 212574, sv_feet );
     unique_gear::register_special_effect( 225155, sv_ring );
     unique_gear::register_special_effect( 213154, sv_waist );
     unique_gear::register_special_effect( 212278, bm_feet );
     unique_gear::register_special_effect( 212329, bm_ring );
+    unique_gear::register_special_effect( 235721, bm_shoulders );
     unique_gear::register_special_effect( 207280, bm_waist );
+    unique_gear::register_special_effect( 235691, mm_gloves );
     unique_gear::register_special_effect( 206889, mm_feet );
     unique_gear::register_special_effect( 224550, mm_ring );
     unique_gear::register_special_effect( 208912, mm_waist );
