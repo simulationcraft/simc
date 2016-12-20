@@ -6836,8 +6836,8 @@ bool monk_t::rjw_trigger_mark_of_the_crane()
 {
   if ( specialization() == MONK_WINDWALKER )
   {
-    int mark_of_the_crane_max = talent.rushing_jade_wind -> effectN( 2 ).base_value();
-    int mark_of_the_crane_counter = 0;
+    unsigned mark_of_the_crane_max = talent.rushing_jade_wind -> effectN( 2 ).base_value();
+    unsigned mark_of_the_crane_counter = 0;
     auto targets = sim -> target_non_sleeping_list.data();
 
     // If the number of targets is less than or equal to the max number mark of the Cranes being applied,
@@ -6865,7 +6865,7 @@ bool monk_t::rjw_trigger_mark_of_the_crane()
       // If all targets have the debuff, find the lowest duration of cyclone strike debuff and refresh it
       player_t* lowest_duration = targets[0];
 
-      for ( mark_of_the_crane_counter; mark_of_the_crane_counter < mark_of_the_crane_max; mark_of_the_crane_counter++ )
+      for ( ; mark_of_the_crane_counter < mark_of_the_crane_max; mark_of_the_crane_counter++ )
       {
         for ( player_t* target : targets )
         {

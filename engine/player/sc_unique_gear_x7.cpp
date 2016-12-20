@@ -1843,6 +1843,9 @@ struct kiljaedens_burning_wish_t : public spell_t
     travel_speed = 25;
   }
 
+  virtual double composite_crit_chance() const override
+  { return 1.0; }
+
 };
 
 void item::kiljadens_burning_wish( special_effect_t& effect )

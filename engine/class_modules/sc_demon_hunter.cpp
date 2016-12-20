@@ -2058,7 +2058,7 @@ struct fiery_brand_t : public demon_hunter_spell_t
   struct fiery_brand_dot_t : public demon_hunter_spell_t
   {
     fiery_brand_dot_t( demon_hunter_t* p )
-      : demon_hunter_spell_t( "fiery_brand_dot", p, p -> find_spell( 204022 ) )
+      : demon_hunter_spell_t( "fiery_brand_dot", p, p -> find_spell( 207771 ) )
     {
       background = dual = true;
       hasted_ticks = may_crit = false;
@@ -2069,13 +2069,12 @@ struct fiery_brand_t : public demon_hunter_spell_t
 
       if ( p -> talent.burning_alive -> ok() )
       {
-        // Not in spell data.
-        attack_power_mod.tick = 1.0;
         // Spread radius used for Burning Alive.
         radius = p -> find_spell( 207760 ) -> effectN( 1 ).radius();
       }
       else
       {
+        attack_power_mod.tick = 0.0;
         /* If Burning alive isn't talented this isn't really a DoT, so let's
         turn off DoT callbacks and minimize the number of events generated.*/
         base_tick_time = dot_duration;
@@ -2172,7 +2171,8 @@ struct fiery_brand_t : public demon_hunter_spell_t
 
   fiery_brand_t( demon_hunter_t* p, const std::string& options_str )
     : demon_hunter_spell_t( "fiery_brand", p,
-      p -> find_specialization_spell( "Fiery Brand" ), options_str )
+      p -> find_specialization_spell( "Fiery Brand" ), options_str ),
+    dot( nullptr )
   {
     use_off_gcd = true;
 
@@ -6381,6 +6381,7 @@ void demon_hunter_t::apl_vengeance()
   action_priority_list_t* def = get_action_priority_list( "default" );
 
   def -> add_action( "auto_attack" );
+  def->add_action(this, "Consume Magic");
   def -> add_action( this, "Fiery Brand",
     "if=buff.demon_spikes.down&buff.metamorphosis.down" );
   def -> add_action( this, "Demon Spikes", "if=charges=2|buff.demon_spikes.d"

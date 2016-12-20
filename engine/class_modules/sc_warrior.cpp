@@ -515,7 +515,7 @@ public:
   void      init_action_list() override;
 
   action_t*  create_action( const std::string& name, const std::string& options ) override;
-  bool       create_actions();
+  bool       create_actions() override;
   resource_e primary_resource() const override { return RESOURCE_RAGE; }
   role_e     primary_role() const override;
   stat_e     convert_hybrid_stat( stat_e s ) const override;
@@ -5632,7 +5632,7 @@ struct into_the_fray_callback_t
         buff_stacks_++;
       }
     }
-    if ( w -> buff.into_the_fray -> current_stack != buff_stacks_ )
+    if ( w -> buff.into_the_fray -> current_stack != as<int>(buff_stacks_) )
     {
       w -> buff.into_the_fray -> expire();
       w -> buff.into_the_fray -> trigger( static_cast<int>( buff_stacks_ ) );
@@ -5759,8 +5759,7 @@ double warrior_t::composite_player_target_multiplier( player_t* target, school_e
 
   if ( td -> debuffs_colossus_smash -> up() )
   {
-    m *= 1.0 + ( td -> debuffs_colossus_smash -> value() + cache.mastery_value() )
-      * ( 1.0 + talents.titanic_might -> effectN( 2 ).percent() );
+    m *= 1.0 + ( td -> debuffs_colossus_smash -> value() + cache.mastery_value() );
   }
 
   return m;

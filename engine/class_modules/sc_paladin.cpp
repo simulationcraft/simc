@@ -820,7 +820,7 @@ public:
     }
   }
 
-  virtual double cost() const
+  double cost() const override
   {
     if ( ab::current_resource() == RESOURCE_HOLY_POWER )
     {
@@ -833,7 +833,7 @@ public:
     return ab::cost();
   }
 
-  virtual void execute()
+  void execute() override
   {
     double c = ( this -> current_resource() == RESOURCE_HOLY_POWER ) ? this -> cost() : -1.0;
 
@@ -864,7 +864,7 @@ public:
     }
   }
 
-  virtual void impact( action_state_t* s )
+  void impact( action_state_t* s ) override
   {
     ab::impact( s );
 
@@ -2883,7 +2883,7 @@ struct echoed_spell_event_t : public event_t
   paladin_t* paladin;
 
   echoed_spell_event_t( paladin_t* p, paladin_melee_attack_t* spell, timespan_t delay ) :
-    event_t( *p, delay ), paladin( p ), echo( spell )
+    event_t( *p, delay ), echo( spell ), paladin( p )
   {
   }
 
