@@ -99,7 +99,7 @@ public:
     const special_effect_t* mm_feet;
     const special_effect_t* mm_ring;
     const special_effect_t* mm_waist;
-    const special_effect_t* magnetized_blasting_cap_launcher;
+    const special_effect_t* mm_wrist;
   } legendary;
 
   // Buffs
@@ -521,103 +521,6 @@ public:
     return pm;
   }
 };
-
-static void init_special_effect( hunter_t*                 r,
-                             specialization_e          spec,
-                             const special_effect_t*&  ptr,
-                             const special_effect_t&   effect )
-{
-  if ( ! r -> find_spell( effect.spell_id ) -> ok() || ( r -> specialization() != spec && spec != SPEC_NONE ) )
-  {
-    return;
-  }
-
-  ptr = &( effect );
-}
-
-static void beastlord( special_effect_t& effect )
-{
-  hunter_t* hunter = debug_cast<hunter_t*>( effect.player );
-  init_special_effect( hunter, HUNTER_BEAST_MASTERY, hunter -> beastlord, effect );
-}
-
-static void longview( special_effect_t& effect )
-{
-  hunter_t* hunter = debug_cast<hunter_t*>( effect.player );
-  init_special_effect( hunter, HUNTER_MARKSMANSHIP, hunter -> longview, effect );
-}
-
-static void blackness( special_effect_t& effect )
-{
-  hunter_t* hunter = debug_cast<hunter_t*>( effect.player );
-  init_special_effect( hunter, HUNTER_SURVIVAL, hunter -> blackness, effect );
-}
-
-static void sv_feet( special_effect_t& effect )
-{
-  hunter_t* hunter = debug_cast<hunter_t*>( effect.player );
-  init_special_effect( hunter, HUNTER_SURVIVAL, hunter -> legendary.sv_feet, effect );
-}
-
-static void sv_ring( special_effect_t& effect )
-{
-  hunter_t* hunter = debug_cast<hunter_t*>( effect.player );
-  init_special_effect( hunter, HUNTER_SURVIVAL, hunter -> legendary.sv_ring, effect );
-}
-
-static void sv_waist( special_effect_t& effect )
-{
-  hunter_t* hunter = debug_cast<hunter_t*>( effect.player );
-  init_special_effect( hunter, HUNTER_SURVIVAL, hunter -> legendary.sv_waist, effect );
-}
-
-static void wrist( special_effect_t& effect )
-{
-  hunter_t* hunter = debug_cast<hunter_t*>( effect.player );
-  init_special_effect( hunter, SPEC_NONE, hunter -> legendary.wrist, effect );
-}
-
-static void bm_feet( special_effect_t& effect )
-{
-  hunter_t* hunter = debug_cast<hunter_t*>( effect.player );
-  init_special_effect( hunter, HUNTER_BEAST_MASTERY, hunter -> legendary.bm_feet, effect );
-}
-
-static void bm_ring( special_effect_t& effect )
-{
-  hunter_t* hunter = debug_cast<hunter_t*>( effect.player );
-  init_special_effect( hunter, HUNTER_BEAST_MASTERY, hunter -> legendary.bm_ring, effect );
-}
-
-static void bm_waist( special_effect_t& effect )
-{
-  hunter_t* hunter = debug_cast<hunter_t*>( effect.player );
-  init_special_effect( hunter, HUNTER_BEAST_MASTERY, hunter -> legendary.bm_waist, effect );
-}
-
-static void mm_feet( special_effect_t& effect )
-{
-  hunter_t* hunter = debug_cast<hunter_t*>( effect.player );
-  init_special_effect( hunter, HUNTER_MARKSMANSHIP, hunter -> legendary.mm_feet, effect );
-}
-
-static void mm_ring( special_effect_t& effect )
-{
-  hunter_t* hunter = debug_cast<hunter_t*>( effect.player );
-  init_special_effect( hunter, HUNTER_MARKSMANSHIP, hunter -> legendary.mm_ring, effect );
-}
-
-static void mm_waist( special_effect_t& effect )
-{
-  hunter_t* hunter = debug_cast<hunter_t*>( effect.player );
-  init_special_effect( hunter, HUNTER_MARKSMANSHIP, hunter -> legendary.mm_waist, effect );
-}
-
-static void magnetized_blasting_cap_launcher( special_effect_t& effect )
-{
-  hunter_t* hunter = debug_cast<hunter_t*>( effect.player );
-  init_special_effect( hunter, HUNTER_MARKSMANSHIP, hunter -> legendary.magnetized_blasting_cap_launcher, effect );
-}
 
 // Template for common hunter action code. See priest_action_t.
 template <class Base>
@@ -3145,8 +3048,8 @@ struct bursting_shot_t : public hunter_ranged_attack_t
   {
     parse_options( options_str );
 
-    if ( p() -> legendary.magnetized_blasting_cap_launcher )
-      base_multiplier *= 1.0 + p() -> legendary.magnetized_blasting_cap_launcher -> driver() -> effectN( 2 ).percent();
+    if ( p() -> legendary.mm_wrist )
+      base_multiplier *= 1.0 + p() -> legendary.mm_wrist-> driver() -> effectN( 2 ).percent();
   }
 };
 // Aimed Shot base class ==============================================================
@@ -6834,6 +6737,19 @@ private:
 
 // HUNTER MODULE INTERFACE ==================================================
 
+template <typename Getter>
+static unique_gear::custom_cb_t init_special_effect( specialization_e spec, const Getter& get )
+{
+  return [ spec, &get ]( special_effect_t& effect )
+  {
+    hunter_t* p = debug_cast<hunter_t*>( effect.player );
+    if ( ! p -> find_spell( effect.spell_id ) -> ok() || ( p -> specialization() != spec && spec != SPEC_NONE ) )
+      return;
+
+    *( get( p ) ) = &( effect );
+  };
+}
+
 struct hunter_module_t: public module_t
 {
   hunter_module_t(): module_t( HUNTER ) {}
@@ -6849,20 +6765,20 @@ struct hunter_module_t: public module_t
 
   virtual void static_init() const override
   {
-    unique_gear::register_special_effect( 184900, beastlord );
-    unique_gear::register_special_effect( 184901, longview );
-    unique_gear::register_special_effect( 184902, blackness );
-    unique_gear::register_special_effect( 212574, sv_feet );
-    unique_gear::register_special_effect( 225155, sv_ring );
-    unique_gear::register_special_effect( 213154, sv_waist );
-    unique_gear::register_special_effect( 212278, bm_feet );
-    unique_gear::register_special_effect( 212329, bm_ring );
-    unique_gear::register_special_effect( 207280, bm_waist );
-    unique_gear::register_special_effect( 206889, mm_feet );
-    unique_gear::register_special_effect( 224550, mm_ring );
-    unique_gear::register_special_effect( 208912, mm_waist );
-    unique_gear::register_special_effect( 226841, magnetized_blasting_cap_launcher );
-    unique_gear::register_special_effect( 206332, wrist );
+    unique_gear::register_special_effect( 184900, init_special_effect( HUNTER_BEAST_MASTERY, []( hunter_t* p ) { return &( p -> beastlord ); }) );
+    unique_gear::register_special_effect( 184901, init_special_effect( HUNTER_MARKSMANSHIP,  []( hunter_t* p ) { return &( p -> longview ); }) );
+    unique_gear::register_special_effect( 184902, init_special_effect( HUNTER_SURVIVAL,      []( hunter_t* p ) { return &( p -> blackness ); }) );
+    unique_gear::register_special_effect( 212574, init_special_effect( HUNTER_SURVIVAL,      []( hunter_t* p ) { return &( p -> legendary.sv_feet ); }) );
+    unique_gear::register_special_effect( 225155, init_special_effect( HUNTER_SURVIVAL,      []( hunter_t* p ) { return &( p -> legendary.sv_ring ); }) );
+    unique_gear::register_special_effect( 213154, init_special_effect( HUNTER_SURVIVAL,      []( hunter_t* p ) { return &( p -> legendary.sv_waist ); }) );
+    unique_gear::register_special_effect( 212278, init_special_effect( HUNTER_BEAST_MASTERY, []( hunter_t* p ) { return &( p -> legendary.bm_feet ); }) );
+    unique_gear::register_special_effect( 212329, init_special_effect( HUNTER_BEAST_MASTERY, []( hunter_t* p ) { return &( p -> legendary.bm_ring ); }) );
+    unique_gear::register_special_effect( 207280, init_special_effect( HUNTER_BEAST_MASTERY, []( hunter_t* p ) { return &( p -> legendary.bm_waist ); }) );
+    unique_gear::register_special_effect( 206889, init_special_effect( HUNTER_MARKSMANSHIP,  []( hunter_t* p ) { return &( p -> legendary.mm_feet ); }) );
+    unique_gear::register_special_effect( 224550, init_special_effect( HUNTER_MARKSMANSHIP,  []( hunter_t* p ) { return &( p -> legendary.mm_ring ); }) );
+    unique_gear::register_special_effect( 208912, init_special_effect( HUNTER_MARKSMANSHIP,  []( hunter_t* p ) { return &( p -> legendary.mm_waist ); }) );
+    unique_gear::register_special_effect( 226841, init_special_effect( HUNTER_MARKSMANSHIP,  []( hunter_t* p ) { return &( p -> legendary.mm_wrist ); }) );
+    unique_gear::register_special_effect( 206332, init_special_effect( SPEC_NONE,            []( hunter_t* p ) { return &( p -> legendary.wrist ); }) );
   }
 
   virtual void init( player_t* ) const override
