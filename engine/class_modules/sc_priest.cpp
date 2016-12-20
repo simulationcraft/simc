@@ -3181,7 +3181,7 @@ struct void_bolt_t final : public priest_spell_t
     parse_options( options_str );
     use_off_gcd                 = true;
     is_sphere_of_insanity_spell = true;
-    dot_extension = data().effectN(1).base_value();
+    dot_extension = rank2 ->effectN( 1 ).base_value();
     energize_type =
         ENERGIZE_NONE;  // disable resource generation from spell data.
 
