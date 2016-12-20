@@ -394,6 +394,8 @@ public:
     retribution_trinket = nullptr;
     whisper_of_the_nathrezim = nullptr;
     liadrins_fury_unleashed = nullptr;
+    chain_of_thrayn = nullptr;
+    ashes_to_dust = nullptr;
     justice_gaze = nullptr;
     active_beacon_of_light             = nullptr;
     active_enlightened_judgments       = nullptr;
