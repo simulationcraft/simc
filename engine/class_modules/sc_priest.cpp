@@ -2110,14 +2110,6 @@ struct mind_flay_t final : public priest_spell_t
 
     generate_insanity( insanity_gain, priest.gains.insanity_mind_flay );
   }
-
-  bool ready() override
-  {
-    if ( priest.talents.mind_spike->ok() && !maybe_ptr( priest.dbc.ptr ) )
-      return false;
-
-    return priest_spell_t::ready();
-  }
 };
 
 struct mind_sear_tick_t final : public priest_spell_t

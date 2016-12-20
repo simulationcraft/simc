@@ -3103,7 +3103,7 @@ struct shred_t : public cat_attack_t
   {
     double m = cat_attack_t::action_multiplier();
 
-    if ( sim->dbc.ptr && p()->talent.moment_of_clarity->ok() && p()->buff.clearcasting->up() ) //PTR 7.1.5
+    if ( p()->talent.moment_of_clarity->ok() && p()->buff.clearcasting->up() )
     {
        m *= 1.0 + p()->talent.moment_of_clarity->effectN(5).percent();
     }
@@ -3148,10 +3148,10 @@ public:
 
   virtual void execute() override
   {
-     if (sim->dbc.ptr && p()->talent.moment_of_clarity->ok() && p()->buff.clearcasting->up()) //PTR 7.1.5
-     {
-        base_multiplier *= 1.0 + p()->talent.moment_of_clarity->effectN(5).percent();
-     }
+    if ( p()->talent.moment_of_clarity->ok() && p()->buff.clearcasting->up() )
+    {
+      base_multiplier *= 1.0 + p()->talent.moment_of_clarity->effectN( 5 ).percent();
+    }
 
     cat_attack_t::execute();
 
@@ -3211,13 +3211,10 @@ struct tigers_fury_t : public cat_attack_t
 
 // Thrash (Cat) =============================================================
 
-struct thrash_cat_t : public cat_attack_t
-{
-  struct shadow_thrash_t : public cat_attack_t
-  {
-    struct shadow_thrash_tick_t : public cat_attack_t
-    {
-      shadow_thrash_tick_t( druid_t* p ) :
+struct thrash_cat_t: public cat_attack_t {
+  struct shadow_thrash_t: public cat_attack_t {
+    struct shadow_thrash_tick_t: public cat_attack_t {
+      shadow_thrash_tick_t( druid_t* p ):
         cat_attack_t( "shadow_thrash", p, p -> find_spell( 210687 ) )
       {
         background = dual = true;
@@ -3225,18 +3222,18 @@ struct thrash_cat_t : public cat_attack_t
       }
     };
 
-    shadow_thrash_t( druid_t* p ) :
+    shadow_thrash_t( druid_t* p ):
       cat_attack_t( "shadow_thrash", p, p -> artifact.shadow_thrash.data().effectN( 1 ).trigger() )
     {
       background = true;
       tick_action = new shadow_thrash_tick_t( p );
-    
+
       base_tick_time *= 1.0 + p -> talent.jagged_wounds -> effectN( 1 ).percent();
-      dot_duration   *= 1.0 + p -> talent.jagged_wounds -> effectN( 2 ).percent();
+      dot_duration *= 1.0 + p -> talent.jagged_wounds -> effectN( 2 ).percent();
     }
   };
 
-  thrash_cat_t( druid_t* p, const std::string& options_str ) :
+  thrash_cat_t( druid_t* p, const std::string& options_str ):
     cat_attack_t( "thrash_cat", p, p -> find_spell( 106830 ), options_str )
   {
     aoe = -1;
@@ -3255,28 +3252,28 @@ struct thrash_cat_t : public cat_attack_t
       energize_type = ENERGIZE_ON_HIT;
     }
 
-    if ( p -> artifact.shadow_thrash.rank() && ! p -> active.shadow_thrash )
+    if ( p -> artifact.shadow_thrash.rank() && !p -> active.shadow_thrash )
     {
       p -> active.shadow_thrash = new shadow_thrash_t( p );
       add_child( p -> active.shadow_thrash );
     }
-    
+
     base_tick_time *= 1.0 + p -> talent.jagged_wounds -> effectN( 1 ).percent();
-    dot_duration   *= 1.0 + p -> talent.jagged_wounds -> effectN( 2 ).percent();
+    dot_duration *= 1.0 + p -> talent.jagged_wounds -> effectN( 2 ).percent();
     base_multiplier *= 1.0 + p -> artifact.jagged_claws.percent();
   }
 
   void execute() override
   {
-    if (sim->dbc.ptr && p()->talent.moment_of_clarity->ok() && p()->buff.clearcasting->up()) //PTR 7.1.5
+    if ( p()->talent.moment_of_clarity->ok() && p()->buff.clearcasting->up() )
     {
-       base_multiplier *= 1.0 + p()->talent.moment_of_clarity->effectN(5).percent();
+      base_multiplier *= 1.0 + p()->talent.moment_of_clarity->effectN( 5 ).percent();
     }
 
     cat_attack_t::execute();
 
     p() -> buff.scent_of_blood -> trigger( 1,
-      num_targets_hit * p() -> buff.scent_of_blood -> default_value );
+                                           num_targets_hit * p() -> buff.scent_of_blood -> default_value );
 
     if ( rng().roll( p() -> artifact.shadow_thrash.data().proc_chance() ) )
       p() -> active.shadow_thrash -> schedule_execute();

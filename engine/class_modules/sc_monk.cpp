@@ -1908,10 +1908,7 @@ public:
         if ( ab::data().affected_by( player -> spec.stagger -> effectN( 15 ) ) )
           ab::base_costs[RESOURCE_CHI] *= 1 + player -> spec.stagger -> effectN( 15 ).percent(); // -100% for Brewmasters
         // Hasted Cooldown
-        if ( player -> sim -> dbc.ptr )
-          ab::cooldown -> hasted = ab::data().affected_by( player -> passives.aura_brewmaster_monk -> effectN( 3 ) );
-        else
-          ab::cooldown -> hasted = ab::data().affected_by( player -> passives.aura_brewmaster_monk -> effectN( 1 ) );
+        ab::cooldown -> hasted = ab::data().affected_by( player -> passives.aura_brewmaster_monk -> effectN( 3 ) );
         break;
       }
       case MONK_MISTWEAVER:
@@ -1930,17 +1927,8 @@ public:
         // Hasted Cooldown
         ab::cooldown -> hasted = ab::data().affected_by( player -> passives.aura_monk -> effectN( 1 ) );
         // Cooldown reduction
-        if ( player -> sim -> dbc.ptr )
-        {
-          if ( ab::data().affected_by( player -> passives.aura_windwalker_monk -> effectN( 3 ) ) )
-            ab::cooldown -> duration *= 1 + player -> passives.aura_windwalker_monk -> effectN( 3 ).percent(); // saved as -100
-
-        }
-        else
-        {
-          if ( ab::data().affected_by( player -> passives.aura_windwalker_monk -> effectN( 1 ) ) )
-            ab::cooldown -> duration *= 1 + player -> passives.aura_windwalker_monk -> effectN( 1 ).percent(); // saved as -100
-        }
+        if ( ab::data().affected_by( player -> passives.aura_windwalker_monk -> effectN( 3 ) ) )
+          ab::cooldown -> duration *= 1 + player -> passives.aura_windwalker_monk -> effectN( 3 ).percent(); // saved as -100
         break;
       }
       default: break;
@@ -2319,7 +2307,7 @@ struct monk_spell_t: public monk_action_t < spell_t >
   {
     double am = base_t::action_multiplier();
 
-    if ( p() -> specialization() == MONK_WINDWALKER && sim -> dbc.ptr )
+    if ( p() -> specialization() == MONK_WINDWALKER )
     {
       if ( this -> data().affected_by( p() -> passives.aura_windwalker_monk -> effectN( 1 ) ) )
         am *= 1.0 + p() -> passives.aura_windwalker_monk -> effectN( 1 ).percent();
@@ -2327,7 +2315,7 @@ struct monk_spell_t: public monk_action_t < spell_t >
       if ( this -> data().affected_by( p() -> passives.aura_windwalker_monk -> effectN( 2 ) ) )
         am *= 1.0 + p() -> passives.aura_windwalker_monk -> effectN( 2 ).percent();
     }
-    else if ( p() -> specialization() == MONK_BREWMASTER && sim -> dbc.ptr )
+    else if ( p() -> specialization() == MONK_BREWMASTER )
     {
       if ( this -> data().affected_by( p() -> passives.aura_brewmaster_monk -> effectN( 1 ) ) )
         am *= 1.0 + p() -> passives.aura_brewmaster_monk -> effectN( 1 ).percent();
@@ -2382,12 +2370,12 @@ struct monk_heal_t: public monk_action_t < heal_t >
       if ( p() -> buff.extend_life -> up() )
         am *= 1.0 + p() -> buff.extend_life -> value();
     }
-    else if ( p() -> specialization() == MONK_WINDWALKER && sim -> dbc.ptr )
+    else if ( p() -> specialization() == MONK_WINDWALKER )
     {
       if ( this -> data().affected_by( p() -> passives.aura_windwalker_monk -> effectN( 1 ) ) )
         am *= 1.0 + p() -> passives.aura_windwalker_monk -> effectN( 1 ).percent();
     }
-    else if ( p() -> specialization() == MONK_BREWMASTER && sim -> dbc.ptr )
+    else if ( p() -> specialization() == MONK_BREWMASTER )
     {
       if ( this -> data().affected_by( p() -> passives.aura_brewmaster_monk -> effectN( 1 ) ) )
         am *= 1.0 + p() -> passives.aura_brewmaster_monk -> effectN( 1 ).percent();
@@ -2436,12 +2424,12 @@ struct monk_melee_attack_t: public monk_action_t < melee_attack_t >
   {
     double am = base_t::action_multiplier();
 
-    if ( p() -> specialization() == MONK_WINDWALKER && sim -> dbc.ptr )
+    if ( p() -> specialization() == MONK_WINDWALKER )
     {
       if ( this -> data().affected_by( p() -> passives.aura_windwalker_monk -> effectN( 1 ) ) )
         am *= 1.0 + p() -> passives.aura_windwalker_monk -> effectN( 1 ).percent();
     }
-    else if ( p() -> specialization() == MONK_BREWMASTER && sim -> dbc.ptr )
+    else if ( p() -> specialization() == MONK_BREWMASTER )
     {
       if ( this -> data().affected_by( p() -> passives.aura_brewmaster_monk -> effectN( 1 ) ) )
         am *= 1.0 + p() -> passives.aura_brewmaster_monk -> effectN( 1 ).percent();
@@ -2487,10 +2475,7 @@ struct eye_of_the_tiger_heal_tick_t : public monk_heal_t
 
     if ( p() -> specialization() == MONK_BREWMASTER )
     {
-      if ( sim -> dbc.ptr )
-        am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 7 ).percent();
-      else
-        am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 5 ).percent();
+      am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 7 ).percent();
     }
 
     return am;
@@ -2543,10 +2528,7 @@ struct tiger_palm_t: public monk_melee_attack_t
 
     if ( p -> specialization() == MONK_WINDWALKER )
     {
-      if ( sim -> dbc.ptr )
-        energize_amount = p -> passives.aura_windwalker_monk -> effectN( 4 ).base_value();
-      else
-        energize_amount = p -> passives.aura_windwalker_monk -> effectN( 2 ).base_value();
+      energize_amount = p -> passives.aura_windwalker_monk -> effectN( 4 ).base_value();
     }
     else
       energize_type = ENERGIZE_NONE;
@@ -2576,10 +2558,7 @@ struct tiger_palm_t: public monk_melee_attack_t
 
     if ( p() -> specialization() == MONK_BREWMASTER )
     {
-      if ( sim -> dbc.ptr )
-        am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 6 ).percent();
-      else
-        am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 4 ).percent();
+      am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 6 ).percent();
 
       if ( p() -> artifact.face_palm.rank() )
       {
@@ -3328,10 +3307,7 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
 
     if ( p() -> specialization() == MONK_BREWMASTER )
     {
-      if ( sim -> dbc.ptr )
-        pm *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 5 ).percent();
-      else
-        pm *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 3 ).percent();
+      pm *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 5 ).percent();
     }
 
     return pm;
@@ -6098,10 +6074,7 @@ struct chi_wave_heal_tick_t: public monk_heal_t
     }
     if ( p() -> specialization() == MONK_BREWMASTER )
     {
-      if ( sim -> dbc.ptr )
-        am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 6 ).percent();
-      else
-        am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 4 ).percent();
+      am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 6 ).percent();
     }
 
     return am;
@@ -6133,11 +6106,7 @@ struct chi_wave_dmg_tick_t: public monk_spell_t
 
     if ( p() -> specialization() == MONK_BREWMASTER )
     {
-      if ( sim -> dbc.ptr )
-        am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 6 ).percent();
-      else
-        am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 4 ).percent();
-
+      am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 6 ).percent();
     }
     return am;
   }
@@ -6224,10 +6193,7 @@ struct chi_burst_heal_t: public monk_heal_t
 
     if ( p() -> specialization() == MONK_BREWMASTER )
     {
-      if ( sim -> dbc.ptr )
-        am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 6 ).percent();
-      else
-        am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 4 ).percent();
+      am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 6 ).percent();
     }
 
     return am;
@@ -6260,11 +6226,7 @@ struct chi_burst_damage_t: public monk_spell_t
 
     if ( p() -> specialization() == MONK_BREWMASTER )
     {
-      if ( sim -> dbc.ptr )
-        am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 6 ).percent();
-      else
-        am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 4 ).percent();
-
+      am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 6 ).percent();
     }
     return am;
   }
@@ -6666,8 +6628,7 @@ struct hidden_masters_forbidden_touch_t : public monk_buff_t < buff_t >
 };
 
 // Serenity Buff ==========================================================
-struct serenity_buff_t : public monk_buff_t < buff_t >
-{
+struct serenity_buff_t: public monk_buff_t < buff_t > {
   double percent_adjust;
   serenity_buff_t( monk_t& p, const std::string& n, const spell_data_t* s ):
     base_t( p, buff_creator_t( &p, n, s ) ),
@@ -6693,7 +6654,7 @@ struct serenity_buff_t : public monk_buff_t < buff_t >
   }
 
   // Used on expire_override to revert all cooldowns
-  void cooldown_extension(cooldown_t* cd )
+  void cooldown_extension( cooldown_t* cd )
   {
     if ( cd -> down() )
       // adjustin by +100% of remaining cooldown
@@ -6723,22 +6684,19 @@ struct serenity_buff_t : public monk_buff_t < buff_t >
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
-    if ( sim -> dbc.ptr )
-    {
-      cooldown_extension( monk.cooldown.blackout_kick );
+    cooldown_extension( monk.cooldown.blackout_kick );
 
-      cooldown_extension( monk.cooldown.blackout_strike );
+    cooldown_extension( monk.cooldown.blackout_strike );
 
-      cooldown_extension( monk.cooldown.rushing_jade_wind );
+    cooldown_extension( monk.cooldown.rushing_jade_wind );
 
-      cooldown_extension( monk.cooldown.refreshing_jade_wind );
+    cooldown_extension( monk.cooldown.refreshing_jade_wind );
 
-      cooldown_extension( monk.cooldown.rising_sun_kick );
+    cooldown_extension( monk.cooldown.rising_sun_kick );
 
-      cooldown_extension( monk.cooldown.fists_of_fury );
+    cooldown_extension( monk.cooldown.fists_of_fury );
 
-      cooldown_extension( monk.cooldown.strike_of_the_windlord );
-    }
+    cooldown_extension( monk.cooldown.strike_of_the_windlord );
     base_t::expire_override( expiration_stacks, remaining_duration );
   }
 };
@@ -6876,54 +6834,50 @@ void monk_t::trigger_mark_of_the_crane( action_state_t* s )
 
 bool monk_t::rjw_trigger_mark_of_the_crane()
 {
-  if ( sim -> dbc.ptr )
+  if ( specialization() == MONK_WINDWALKER )
   {
-    if ( specialization() == MONK_WINDWALKER )
+    int mark_of_the_crane_max = talent.rushing_jade_wind -> effectN( 2 ).base_value();
+    int mark_of_the_crane_counter = 0;
+    auto targets = sim -> target_non_sleeping_list.data();
+
+    // If the number of targets is less than or equal to the max number mark of the Cranes being applied,
+    // just apply the debuff to all targets; or refresh the buff if it is already up
+    if ( targets.max_size() <= mark_of_the_crane_max )
     {
-      int mark_of_the_crane_max = talent.rushing_jade_wind -> effectN( 2 ).base_value();
-      int mark_of_the_crane_counter = 0;
-      auto targets = sim -> target_non_sleeping_list.data();
-
-      // If the number of targets is less than or equal to the max number mark of the Cranes being applied,
-      // just apply the debuff to all targets; or refresh the buff if it is already up
-      if ( targets.max_size() <= mark_of_the_crane_max )
-      {
-        for ( player_t* target : targets )
-          get_target_data( target ) -> debuff.mark_of_the_crane -> trigger();
-      }
-      else
-      {
-        // First of all find targets that do not have the cyclone strike debuff applied and apply a cyclone
-        for ( player_t* target : targets )
-        {
-          if ( !get_target_data( target ) -> debuff.mark_of_the_crane -> up() )
-          {
-            get_target_data( target ) -> debuff.mark_of_the_crane -> trigger();
-            mark_of_the_crane_counter++;
-          }
-
-          if ( mark_of_the_crane_counter == mark_of_the_crane_max )
-            return true;
-        }
-
-        // If all targets have the debuff, find the lowest duration of cyclone strike debuff and refresh it
-        player_t* lowest_duration = targets[0];
-
-        for ( mark_of_the_crane_counter; mark_of_the_crane_counter < mark_of_the_crane_max; mark_of_the_crane_counter++)
-        {
-          for ( player_t* target : targets )
-          {
-            if ( get_target_data( target ) -> debuff.mark_of_the_crane -> remains() <
-              get_target_data( lowest_duration ) -> debuff.mark_of_the_crane -> remains() )
-              lowest_duration = target;
-          }
-          
-          get_target_data( lowest_duration ) -> debuff.mark_of_the_crane -> trigger();
-        }
-        return true;
-      }
+      for ( player_t* target : targets )
+        get_target_data( target ) -> debuff.mark_of_the_crane -> trigger();
     }
-    return false;
+    else
+    {
+      // First of all find targets that do not have the cyclone strike debuff applied and apply a cyclone
+      for ( player_t* target : targets )
+      {
+        if ( !get_target_data( target ) -> debuff.mark_of_the_crane -> up() )
+        {
+          get_target_data( target ) -> debuff.mark_of_the_crane -> trigger();
+          mark_of_the_crane_counter++;
+        }
+
+        if ( mark_of_the_crane_counter == mark_of_the_crane_max )
+          return true;
+      }
+
+      // If all targets have the debuff, find the lowest duration of cyclone strike debuff and refresh it
+      player_t* lowest_duration = targets[0];
+
+      for ( mark_of_the_crane_counter; mark_of_the_crane_counter < mark_of_the_crane_max; mark_of_the_crane_counter++ )
+      {
+        for ( player_t* target : targets )
+        {
+          if ( get_target_data( target ) -> debuff.mark_of_the_crane -> remains() <
+               get_target_data( lowest_duration ) -> debuff.mark_of_the_crane -> remains() )
+            lowest_duration = target;
+        }
+
+        get_target_data( lowest_duration ) -> debuff.mark_of_the_crane -> trigger();
+      }
+      return true;
+    }
   }
   return false;
 }
