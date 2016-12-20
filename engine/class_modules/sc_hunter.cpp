@@ -5217,30 +5217,14 @@ dots( dots_t() )
   debuffs.hunters_mark = 
     buff_creator_t( *this, "hunters_mark" )
       .spell( p -> find_spell( 185365 ) );
-  if ( p -> talents.patient_sniper -> ok() )
-  {
-    debuffs.vulnerable = 
-      buff_creator_t( *this, "vulnerability" )
-        .spell( p -> find_spell( 187131 ) )
-        .default_value( p -> find_spell( 187131 ) 
-                          -> effectN( 2 )
-                            .percent() + 
-                              p -> talents.patient_sniper 
-                                -> effectN( 1 )
-                                  .percent() )
-        .duration( timespan_t::from_seconds( 6.0 ) )
-        .max_stack( 1 );
-  }
-  else
-  {
-    debuffs.vulnerable = 
-      buff_creator_t( *this, "vulnerability" )
-        .spell( p -> find_spell( 187131 ) )
-        .default_value( p -> find_spell( 187131 ) 
-                          -> effectN( 2 )
-                            .percent() )
-        .max_stack( 2 );
-  }
+
+  debuffs.vulnerable =
+    buff_creator_t( *this, "vulnerability" )
+      .spell( p -> find_spell( 187131 ) )
+      .default_value( p -> find_spell( 187131 )
+                        -> effectN( 2 )
+                          .percent() );
+
   debuffs.true_aim = 
     buff_creator_t( *this, "true_aim" )
         .spell( p -> find_spell( 199803 ) )
