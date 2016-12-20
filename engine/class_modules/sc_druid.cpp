@@ -5441,7 +5441,7 @@ struct starfall_t : public druid_spell_t
   };
 
   starfall_t( druid_t* p, const std::string& options_str ):
-    druid_spell_t( "starfall", p, p -> find_spell( 191034 ), options_str )
+    druid_spell_t( "starfall", p, p -> find_specialization_spell( "Starfall" ), options_str )
   {
     may_miss = may_crit = false;
     base_tick_time = data().duration() / 8.0; // ticks 9 times (missing from spell data)
@@ -5465,7 +5465,7 @@ struct starfall_t : public druid_spell_t
       if ( sim -> distance_targeting_enabled )
       {
         echo -> aoe = 0;
-        echo -> radius = p -> active.starfall -> data().effectN( 2 ).radius();
+        echo -> radius = data().effectN( 2 ).radius_max();
       }
 
       add_child( echo );
