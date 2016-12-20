@@ -2848,6 +2848,7 @@ struct multi_shot_t: public hunter_ranged_attack_t
   multi_shot_t( hunter_t* p, const std::string& options_str ):
     hunter_ranged_attack_t( "multi_shot", p, p -> find_class_spell( "Multi-Shot" ) )
   {
+    benefits_from_sniper_training = false;
     parse_options( options_str );
     may_proc_mm_feet = true;
     may_proc_bullseye = false;
@@ -2877,10 +2878,13 @@ struct multi_shot_t: public hunter_ranged_attack_t
   virtual double action_multiplier() const override
   {
     double am = hunter_ranged_attack_t::action_multiplier();
+
     if ( p() -> buffs.bombardment -> up() )
       am *= 1.0 + p() -> buffs.bombardment -> data().effectN( 2 ).percent();
+
     if ( p() -> artifacts.focus_of_the_titans.rank() )
       am *= 1.0 + p() -> artifacts.focus_of_the_titans.percent();
+
     return am;
   }
 
@@ -3641,6 +3645,7 @@ struct piercing_shot_t: public hunter_ranged_attack_t
   piercing_shot_t( hunter_t* p, const std::string& options_str ):
     hunter_ranged_attack_t( "piercing_shot", p, p -> talents.piercing_shot )
   {
+    may_proc_bullseye = false;
     parse_options( options_str );
 
     aoe = -1;
@@ -3654,6 +3659,20 @@ struct piercing_shot_t: public hunter_ranged_attack_t
   {
     p() -> no_steady_focus();
     hunter_ranged_attack_t::execute();
+
+    if (result_is_hit(execute_state->result))
+    {
+      bool proc_bullseye = false;
+
+      std::vector<player_t*> piercing_shot_targets = execute_state->action->target_list();
+      for (size_t i = 0; i < piercing_shot_targets.size(); i++) {
+        if (p()->artifacts.bullseye.rank() && piercing_shot_targets[i]->health_percentage() <= p()->artifacts.bullseye.value())
+          proc_bullseye = true;
+      }
+
+      if (proc_bullseye)
+        p()->buffs.bullseye->trigger();
+    }
 
     if (maybe_ptr(p()->dbc.ptr)) {
       if (!td(p()->target)->debuffs.vulnerable->check()) {
@@ -3713,9 +3732,11 @@ struct piercing_shot_t: public hunter_ranged_attack_t
 struct explosive_shot_t: public hunter_ranged_attack_t
 {
   player_t* initial_target;
+
   explosive_shot_t( hunter_t* p, const std::string& options_str ):
     hunter_ranged_attack_t( "explosive_shot", p, p -> find_talent_spell( "Explosive Shot" ) ), initial_target( nullptr )
   {
+    may_proc_bullseye = false;
     parse_options( options_str );
 
     aoe = -1;
@@ -3730,6 +3751,20 @@ struct explosive_shot_t: public hunter_ranged_attack_t
   {
     p() -> no_steady_focus();
     initial_target = p() -> target;
+
+    if (result_is_hit(execute_state->result))
+    {
+      bool proc_bullseye = false;
+
+      std::vector<player_t*> explosive_shot_targets = execute_state->action->target_list();
+      for (size_t i = 0; i < explosive_shot_targets.size(); i++) {
+        if (p()->artifacts.bullseye.rank() && explosive_shot_targets[i]->health_percentage() <= p()->artifacts.bullseye.value())
+          proc_bullseye = true;
+      }
+
+      if (proc_bullseye)
+        p()->buffs.bullseye->trigger();
+    }
 
     hunter_ranged_attack_t::execute();
   }
