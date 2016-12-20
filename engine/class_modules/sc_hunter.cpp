@@ -85,6 +85,7 @@ public:
   struct legendary_t
   {
     // Survival
+    const special_effect_t* sv_chest;
     const special_effect_t* sv_feet;
     const special_effect_t* sv_ring;
     const special_effect_t* sv_waist;
@@ -93,10 +94,12 @@ public:
     // Beast Mastery
     const special_effect_t* bm_feet;
     const special_effect_t* bm_ring;
+    const special_effect_t* bm_shoulders;
     const special_effect_t* bm_waist;
 
     // Marksmanship
     const special_effect_t* mm_feet;
+    const special_effect_t* mm_gloves;
     const special_effect_t* mm_ring;
     const special_effect_t* mm_waist;
     const special_effect_t* mm_wrist;
@@ -134,6 +137,8 @@ public:
     buff_t* t18_2p_dire_longevity;
     buff_t* t19_4p_mongoose_power;
     buff_t* sentinels_sight;
+    buff_t* butchers_bone_apron;
+    buff_t* gyroscopic_stabilization;
   } buffs;
 
   // Cooldowns
@@ -3071,6 +3076,16 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
     return am;
   }
 
+  double composite_crit_chance() const override
+  {
+    double cc = hunter_ranged_attack_t::composite_crit_chance();
+
+    if ( p() -> buffs.gyroscopic_stabilization -> up() )
+      cc += p() -> buffs.gyroscopic_stabilization -> check_value();
+
+    return cc;
+  }
+
   virtual double composite_target_da_multiplier( player_t* t ) const override
   {
     double m = hunter_ranged_attack_t::composite_target_da_multiplier( t );
@@ -3250,6 +3265,11 @@ struct aimed_shot_t: public aimed_shot_base_t
       p() -> buffs.sentinels_sight -> expire();
 
     vulnerability_stats.update( td( execute_state -> target ) );
+
+    if ( p() -> buffs.gyroscopic_stabilization -> up() )
+      p() -> buffs.gyroscopic_stabilization -> expire();
+    else if ( p() -> legendary.mm_gloves )
+      p() -> buffs.gyroscopic_stabilization -> trigger();
   }
 
   virtual timespan_t execute_time() const override
@@ -3264,6 +3284,8 @@ struct aimed_shot_t: public aimed_shot_base_t
 
   virtual bool usable_moving() const override
   {
+    if ( p() -> buffs.gyroscopic_stabilization -> check() )
+      return true;
     return false;
   }
 };
@@ -3800,6 +3822,9 @@ struct mongoose_bite_t: hunter_melee_attack_t
       p() -> cooldowns.lacerate -> reset( true );
       p() -> procs.t18_4pc_sv -> occur();
     }
+
+    if ( p() -> legendary.sv_chest )
+      p() -> buffs.butchers_bone_apron -> trigger();
   }
 
   virtual double action_multiplier() const override
@@ -3967,6 +3992,9 @@ struct carve_t: public hunter_melee_attack_t
   {
     hunter_melee_attack_t::execute();
 
+    if ( p() -> buffs.butchers_bone_apron -> up() )
+      p() -> buffs.butchers_bone_apron -> expire();
+
     if ( p() -> legendary.sv_ring && num_targets() > 1 )
     {
       std::vector<player_t*> carve_targets = execute_state -> action -> target_list();
@@ -4008,6 +4036,9 @@ struct carve_t: public hunter_melee_attack_t
 
     if ( p() -> artifacts.hellcarver.rank() )
       am *= 1.0 + num_targets() * p() -> artifacts.hellcarver.percent();
+
+    if ( p() -> buffs.butchers_bone_apron -> up() )
+      am *= 1.0 + p() -> buffs.butchers_bone_apron -> check_stack_value();
 
     return am;
   }
@@ -4088,12 +4119,18 @@ struct butchery_t: public hunter_melee_attack_t
     if ( p() -> artifacts.hellcarver.rank() )
       am *= 1.0 + num_targets() * p() -> artifacts.hellcarver.percent();
 
+    if ( p() -> buffs.butchers_bone_apron -> up() )
+      am *= 1.0 + p() -> buffs.butchers_bone_apron -> check_stack_value();
+
     return am;
   }
 
   virtual void execute() override
   {
     hunter_melee_attack_t::execute();
+
+    if ( p() -> buffs.butchers_bone_apron -> up() )
+      p() -> buffs.butchers_bone_apron -> expire();
 
     if ( p() -> legendary.sv_ring && num_targets() > 1 )
     {
@@ -4489,6 +4526,9 @@ struct dire_beast_t: public hunter_spell_t
     may_crit = false;
     may_miss = false;
     school = SCHOOL_PHYSICAL;
+
+    if ( player -> legendary.bm_shoulders )
+      cooldown -> charges += player -> legendary.bm_shoulders -> driver() -> effectN( 1 ).base_value();
   }
 
   bool init_finished() override
@@ -4707,6 +4747,9 @@ struct dire_frenzy_t: public hunter_spell_t
 
     if ( p -> talents.dire_stable -> ok() )
       energize_amount += p -> talents.dire_stable -> effectN( 2 ).base_value();
+
+    if ( p -> legendary.bm_shoulders )
+      cooldown -> charges += p -> legendary.bm_shoulders -> driver() -> effectN( 1 ).base_value();
   }
 
   bool init_finished() override
@@ -5778,6 +5821,14 @@ void hunter_t::create_buffs()
       .default_value( find_spell( 211362 ) 
                    -> effectN( 1 )
                      .percent() );
+
+  buffs.butchers_bone_apron =
+    buff_creator_t( this, 236446, "butchers_bone_apron" )
+      .default_value( find_spell( 236446 ) -> effectN( 1 ).percent() );
+
+  buffs.gyroscopic_stabilization =
+    buff_creator_t( this, 235712, "gyroscopic_stabilization" )
+      .default_value( find_spell( 235712 ) -> effectN( 2 ).percent() );
 }
 
 bool hunter_t::init_special_effects()
@@ -6772,13 +6823,16 @@ struct hunter_module_t: public module_t
     unique_gear::register_special_effect( 184900, init_special_effect( HUNTER_BEAST_MASTERY, []( hunter_t* p ) { return &( p -> beastlord ); }) );
     unique_gear::register_special_effect( 184901, init_special_effect( HUNTER_MARKSMANSHIP,  []( hunter_t* p ) { return &( p -> longview ); }) );
     unique_gear::register_special_effect( 184902, init_special_effect( HUNTER_SURVIVAL,      []( hunter_t* p ) { return &( p -> blackness ); }) );
+    unique_gear::register_special_effect( 236447, init_special_effect( HUNTER_SURVIVAL,      []( hunter_t* p ) { return &( p -> legendary.sv_chest); }) );
     unique_gear::register_special_effect( 212574, init_special_effect( HUNTER_SURVIVAL,      []( hunter_t* p ) { return &( p -> legendary.sv_feet ); }) );
     unique_gear::register_special_effect( 225155, init_special_effect( HUNTER_SURVIVAL,      []( hunter_t* p ) { return &( p -> legendary.sv_ring ); }) );
     unique_gear::register_special_effect( 213154, init_special_effect( HUNTER_SURVIVAL,      []( hunter_t* p ) { return &( p -> legendary.sv_waist ); }) );
     unique_gear::register_special_effect( 212278, init_special_effect( HUNTER_BEAST_MASTERY, []( hunter_t* p ) { return &( p -> legendary.bm_feet ); }) );
     unique_gear::register_special_effect( 212329, init_special_effect( HUNTER_BEAST_MASTERY, []( hunter_t* p ) { return &( p -> legendary.bm_ring ); }) );
+    unique_gear::register_special_effect( 235721, init_special_effect( HUNTER_BEAST_MASTERY, []( hunter_t* p ) { return &( p -> legendary.bm_shoulders ); }) );
     unique_gear::register_special_effect( 207280, init_special_effect( HUNTER_BEAST_MASTERY, []( hunter_t* p ) { return &( p -> legendary.bm_waist ); }) );
     unique_gear::register_special_effect( 206889, init_special_effect( HUNTER_MARKSMANSHIP,  []( hunter_t* p ) { return &( p -> legendary.mm_feet ); }) );
+    unique_gear::register_special_effect( 235691, init_special_effect( HUNTER_MARKSMANSHIP,  []( hunter_t* p ) { return &( p -> legendary.mm_gloves); }) );
     unique_gear::register_special_effect( 224550, init_special_effect( HUNTER_MARKSMANSHIP,  []( hunter_t* p ) { return &( p -> legendary.mm_ring ); }) );
     unique_gear::register_special_effect( 208912, init_special_effect( HUNTER_MARKSMANSHIP,  []( hunter_t* p ) { return &( p -> legendary.mm_waist ); }) );
     unique_gear::register_special_effect( 226841, init_special_effect( HUNTER_MARKSMANSHIP,  []( hunter_t* p ) { return &( p -> legendary.mm_wrist ); }) );
