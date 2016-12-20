@@ -2800,6 +2800,7 @@ struct multi_shot_t: public hunter_ranged_attack_t
     parse_options( options_str );
     may_proc_mm_feet = true;
     aoe = -1;
+    benefits_from_sniper_training = false;
 
     if ( p -> artifacts.called_shot.rank() )
       base_multiplier *= 1.0 + p -> artifacts.called_shot.percent();
