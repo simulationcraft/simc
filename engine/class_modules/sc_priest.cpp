@@ -5338,7 +5338,7 @@ void priest_t::apl_shadow()
       "death.up|buff.shadowy_insight.up)&target.time_to_die<=variable.s2mcheck-"
       "(buff.insanity_drain_stacks.stack)" );
   vf->add_action(
-      "void_bolt,if=set_bonus.tier19_4pc&buff.voidform.stack<6" );
+      "void_bolt,if=set_bonus.tier19_4pc&buff.insanity_drain_stacks.stack<6" );
   vf->add_action( "shadow_crash,if=talent.shadow_crash.enabled" );
   vf->add_action(
       "void_torrent,if=dot.shadow_word_pain.remains>5.5&dot.vampiric_"
@@ -5429,7 +5429,7 @@ void priest_t::apl_shadow()
   vf->add_action( "shadow_word_pain" );
 
   // Surrender to Madness APL
-  s2m->add_action( "void_bolt,if=set_bonus.tier19_4pc&buff.voidform.stack<6" );
+  s2m->add_action( "void_bolt,if=set_bonus.tier19_4pc&buff.insanity_drain_stacks.stack<6" );
   s2m->add_action( "shadow_crash,if=talent.shadow_crash.enabled" );
   s2m->add_action( "mindbender,if=talent.mindbender.enabled" );
   s2m->add_action(
