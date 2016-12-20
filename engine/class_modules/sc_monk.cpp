@@ -8134,13 +8134,13 @@ double monk_t::composite_armor_multiplier() const
 {
   double a = player_t::composite_armor_multiplier();
 
-  a += spec.stagger -> effectN( 14 ).percent();
+  a *= 1 + spec.stagger -> effectN( 14 ).percent();
 
   if ( specialization() == MONK_BREWMASTER )
-    a += passives.aura_brewmaster_monk -> effectN( 6 ).percent();
+    a *= 1 + passives.aura_brewmaster_monk -> effectN( 6 ).percent();
 
   if ( artifact.wanderers_hardiness.rank() )
-    a += artifact.wanderers_hardiness.percent();
+    a *= 1 + artifact.wanderers_hardiness.percent();
 
   return a;
 }
