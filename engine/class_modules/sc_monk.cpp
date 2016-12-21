@@ -7015,7 +7015,6 @@ void monk_t::init_spells()
   // Tier 60 Talents
   talent.ring_of_peace               = find_talent_spell( "Ring of Peace" );
   talent.summon_black_ox_statue      = find_talent_spell( "Summon Black Ox Statue" ); // Brewmaster
-  talent.dizzying_kicks              = find_talent_spell( "Dizzying Kicks" ); // Windwalker
   talent.song_of_chi_ji              = find_talent_spell( "Song of Chi-Ji" ); // Mistweaver
   talent.leg_sweep                   = find_talent_spell( "Leg Sweep" );
 
