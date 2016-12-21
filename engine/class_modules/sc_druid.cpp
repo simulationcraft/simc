@@ -4900,7 +4900,7 @@ struct lunar_strike_t : public druid_spell_t
 
   timespan_t natures_balance_extension() const
   {
-    return p() ->cache.spell_haste() * natures_balance;
+    return natures_balance - timespan_t::from_seconds( ( 1.0 - p() -> cache.spell_haste() ) * 5 );
   }
 
   double composite_crit_chance() const override
@@ -4946,21 +4946,23 @@ struct lunar_strike_t : public druid_spell_t
     return et;
   }
 
-  void impact( action_state_t* s ) override
-  {
-    druid_spell_t::impact( s );
-    if ( natures_balance > timespan_t::zero() )
-    {
-      td( s -> target ) -> dots.moonfire -> extend_duration( natures_balance_extension(), timespan_t::from_seconds( 29.0 ) );
-    }
-  }
-
   void execute() override
   {
     p() -> buff.lunar_empowerment -> up();
     p() -> buff.warrior_of_elune -> up();
 
     druid_spell_t::execute();
+
+    if ( natures_balance > timespan_t::zero() )
+    {
+      timespan_t extend_stuff = natures_balance_extension();
+      std::vector< player_t* >& tl = target_list();
+      for ( size_t i = 0, actors = tl.size(); i < actors; i++ )
+      {
+        player_t* t = tl[i];
+        td( t ) -> dots.moonfire -> extend_duration( extend_stuff, timespan_t::from_seconds( 28 ) );
+      }
+    }
 
     p() -> buff.lunar_empowerment -> decrement();
     p() -> buff.warrior_of_elune -> decrement();
@@ -5296,19 +5298,24 @@ struct solar_wrath_t : public druid_spell_t
 
   timespan_t natures_balance_extension() const
   {
-    return p() ->cache.spell_haste() * natures_balance;
+    return natures_balance - timespan_t::from_seconds( ( 1.0 - p() -> cache.spell_haste() ) * 5 );
   }
+
 
   void execute() override
   {
     p() -> buff.solar_empowerment -> up();
 
     druid_spell_t::execute();
-    
-    if ( natures_balance > timespan_t::zero() && hit_any_target )
+
+    if ( natures_balance > timespan_t::zero() )
     {
-      td( execute_state -> target ) -> dots.sunfire ->
-        extend_duration( natures_balance_extension(), timespan_t::from_seconds( 24.0 ) );
+      timespan_t extend_stuff = natures_balance_extension();
+      for ( size_t i = 0, actors = sim -> target_non_sleeping_list.size(); i < actors; i++ )
+      {
+        player_t* t = sim -> target_non_sleeping_list[i];
+        td( t ) -> dots.sunfire -> extend_duration( extend_stuff, timespan_t::from_seconds( 23 ) );
+      }
     }
 
     if ( p() -> sets.has_set_bonus( DRUID_BALANCE, T17, B4 ) )
