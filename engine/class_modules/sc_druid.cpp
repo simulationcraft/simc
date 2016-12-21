@@ -4891,11 +4891,16 @@ struct lunar_strike_t : public druid_spell_t
     aoe = -1;
     base_aoe_multiplier = data().effectN( 3 ).percent();
 
-    natures_balance    = timespan_t::from_seconds( player -> talent.natures_balance -> effectN( 1 ).base_value() );
+    natures_balance    = timespan_t::from_seconds( player -> talent.natures_balance -> effectN( 1 ).base_value() * 2 );
     
     base_execute_time *= 1.0 + player -> sets.set( DRUID_BALANCE, T17, B2 ) -> effectN( 1 ).percent();
     base_crit         += player -> artifact.dark_side_of_the_moon.percent();
     base_multiplier   *= 1.0 + player -> artifact.skywrath.percent();
+  }
+
+  timespan_t natures_balance_extension() const
+  {
+    return p() ->cache.spell_haste() * natures_balance;
   }
 
   double composite_crit_chance() const override
@@ -4944,10 +4949,9 @@ struct lunar_strike_t : public druid_spell_t
   void impact( action_state_t* s ) override
   {
     druid_spell_t::impact( s );
-    // Nature's Balance only extends Moonfire on the primary target. FIXME: Actually extends the duration of ALL sunfires.
-    if ( natures_balance > timespan_t::zero() && hit_any_target )
+    if ( natures_balance > timespan_t::zero() )
     {
-      td( s -> target ) -> dots.moonfire -> extend_duration( natures_balance, timespan_t::from_seconds( 20.0 ) );
+      td( s -> target ) -> dots.moonfire -> extend_duration( natures_balance_extension(), timespan_t::from_seconds( 29.0 ) );
     }
   }
 
@@ -5242,7 +5246,7 @@ struct solar_wrath_t : public druid_spell_t
   solar_wrath_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "solar_wrath", player, player -> find_affinity_spell( "Solar Wrath" ), options_str )
   {
-    natures_balance    = timespan_t::from_seconds( player -> talent.natures_balance -> effectN( 2 ).base_value() );
+    natures_balance    = timespan_t::from_seconds( player -> talent.natures_balance -> effectN( 2 ).base_value() * 2);
 
     base_execute_time *= 1.0 + player -> sets.set( DRUID_BALANCE, T17, B2 ) -> effectN( 1 ).percent();
     base_multiplier   *= 1.0 + player -> artifact.skywrath.percent();
@@ -5290,6 +5294,11 @@ struct solar_wrath_t : public druid_spell_t
     return et;
   }
 
+  timespan_t natures_balance_extension() const
+  {
+    return p() ->cache.spell_haste() * natures_balance;
+  }
+
   void execute() override
   {
     p() -> buff.solar_empowerment -> up();
@@ -5299,7 +5308,7 @@ struct solar_wrath_t : public druid_spell_t
     if ( natures_balance > timespan_t::zero() && hit_any_target )
     {
       td( execute_state -> target ) -> dots.sunfire ->
-        extend_duration( natures_balance, timespan_t::from_seconds( 20.0 ) );
+        extend_duration( natures_balance_extension(), timespan_t::from_seconds( 24.0 ) );
     }
 
     if ( p() -> sets.has_set_bonus( DRUID_BALANCE, T17, B4 ) )
