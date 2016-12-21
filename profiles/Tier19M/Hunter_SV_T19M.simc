@@ -27,7 +27,7 @@ actions.precombat+=/harpoon
 actions=auto_attack
 actions+=/arcane_torrent,if=focus.deficit>=30
 actions+=/blood_fury
-actions+=/berserking
+actions+=/berserking,if=buff.trueshot.up
 actions+=/potion,name=old_war,if=buff.aspect_of_the_eagle.remains
 actions+=/fury_of_the_eagle,if=(buff.mongoose_fury.up&buff.mongoose_fury.remains<=gcd)|target.time_to_die<=execute_time
 actions+=/raptor_strike,if=talent.way_of_the_moknathal.enabled&buff.moknathal_tactics.remains&buff.moknathal_tactics.remains<gcd.max
