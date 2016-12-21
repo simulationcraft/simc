@@ -833,7 +833,9 @@ struct rogue_attack_t : public melee_attack_t
     }
 
     // FIXME: Apply "spec aura"
-    if ( data().affected_by( p -> spec.assassination_rogue -> effectN( 1 ) ) )
+    // The Assassination is special since some spells are flagged 2 times.
+    if ( data().affected_by( p -> spec.assassination_rogue -> effectN( 1 ) ) &&
+         ! data().affected_by( p -> spec.assassination_rogue -> effectN( 2 ) ) )
     {
       base_multiplier *= 1.0 + p -> spec.assassination_rogue -> effectN( 1 ).percent();
     }
@@ -3806,7 +3808,6 @@ struct rupture_t : public rogue_attack_t
     return m;
   }
 
-
   double composite_target_multiplier( player_t* target ) const override
   {
     double m = rogue_attack_t::composite_target_multiplier( target );
@@ -3836,6 +3837,10 @@ struct rupture_t : public rogue_attack_t
 
     return duration;
   }
+
+  // Rupture no longer gain power from combo points like typical damage effects (since 7.1.5)
+  double attack_tick_power_coefficient( const action_state_t* s ) const override
+  { return melee_attack_t::attack_tick_power_coefficient( s ); }
 
   void execute() override
   {
