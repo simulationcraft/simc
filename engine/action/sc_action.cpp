@@ -2798,6 +2798,22 @@ expr_t* action_t::create_expression( const std::string& name_str )
       };
       return new prev_gcd_expr_t( *this, splits[1] );
     }
+    else if ( splits[0] == "prev_prev_gcd" )
+    {
+      struct prev_prev_gcd_expr_t: public action_expr_t {
+        action_t* previously_used;
+        prev_prev_gcd_expr_t( action_t& a, const std::string& prev_action ): action_expr_t( "prev_prev_gcd", a ),
+          previously_used( a.player -> find_action( prev_action ) )
+        {}
+        virtual double evaluate() override
+        {
+          if ( previously_used != nullptr && action.player -> prev_prev_gcd_action )
+            return action.player -> prev_prev_gcd_action -> internal_id == previously_used -> internal_id;
+          return false;
+        }
+      };
+      return new prev_prev_gcd_expr_t( *this, splits[1] );
+    }
     else if ( splits[0] == "prev_off_gcd" )
     {
       struct prev_gcd_expr_t: public action_expr_t

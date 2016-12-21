@@ -1877,10 +1877,8 @@ public:
   {
     double d = priest_spell_t::composite_da_multiplier(state);
 
-    if (maybe_ptr(priest.dbc.ptr))
-    {
-      d *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
-    }
+
+    d *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
 
     return d;
   }
@@ -2056,10 +2054,8 @@ struct mind_flay_t final : public priest_spell_t
                 priest.buffs.void_ray->data().effectN( 1 ).percent();
 
 
-    if (maybe_ptr(priest.dbc.ptr))
-    {
-      am *= 1.0 + ptr_shadow_scaling_buff->effectN(2).percent();
-    }
+    am *= 1.0 + ptr_shadow_scaling_buff->effectN(2).percent();
+ 
 
     return am;
   }
@@ -2470,10 +2466,8 @@ struct shadow_word_death_t final : public priest_spell_t
   {
     double d = priest_spell_t::composite_da_multiplier(state);
 
-    if (maybe_ptr(priest.dbc.ptr))
-    {
-      d *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
-    }
+
+    d *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
 
     return d;
   }
@@ -2546,11 +2540,9 @@ struct shadow_crash_t final : public priest_spell_t
   {
     double d = priest_spell_t::composite_da_multiplier(state);
 
-    if (maybe_ptr(priest.dbc.ptr))
-    {
-      d *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
-    }
 
+    d *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
+ 
     return d;
   }
 
@@ -2813,10 +2805,7 @@ struct shadow_word_pain_t final : public priest_spell_t
                    priest.buffs.voidform->stack() );
     }
 
-    if (maybe_ptr(priest.dbc.ptr))
-    {
-      m *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
-    }
+    m *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
 
     return m;
   }
@@ -2853,10 +2842,8 @@ struct shadow_word_void_t final : public priest_spell_t
   {
     double d = priest_spell_t::composite_da_multiplier( state );
 
-    if (maybe_ptr(priest.dbc.ptr))
-    {
-      d *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
-    }
+
+    d *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
 
     return d;
   }
@@ -3158,10 +3145,8 @@ struct vampiric_touch_t final : public priest_spell_t
                    priest.buffs.voidform->stack() );
     }
 
-    if (maybe_ptr(priest.dbc.ptr))
-    {
-      m *= 1.0 + ptr_shadow_scaling_buff->effectN(2).percent();
-    }
+
+    m *= 1.0 + ptr_shadow_scaling_buff->effectN(2).percent();
 
     return m;
   }
@@ -3362,11 +3347,9 @@ struct void_eruption_t final : public priest_spell_t
   {
     double d = priest_spell_t::composite_da_multiplier(state);
 
-    if (maybe_ptr(priest.dbc.ptr))
-    {
-      d *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
-    }
 
+    d *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
+   
     return d;
   }
 
@@ -3415,11 +3398,8 @@ struct void_torrent_t final : public priest_spell_t
   {
     double am = priest_spell_t::action_multiplier();
 
-    if (maybe_ptr(priest.dbc.ptr))
-    {
-      am *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
-    }
-
+    am *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
+ 
     return am;
   }
 
@@ -3887,24 +3867,25 @@ struct surrender_to_madness_t final : public priest_buff_t<buff_t>
 
 /* Custom lingering_insanity buff
 */
-struct lingering_insanity_t final : public priest_buff_t<haste_buff_t>
-{
-  lingering_insanity_t( priest_t& p)
+struct lingering_insanity_t final: public priest_buff_t<haste_buff_t> {
+  int hidden_lingering_insanity;
+  lingering_insanity_t( priest_t& p )
     : base_t( p, haste_buff_creator_t( &p, "lingering_insanity",
-                                  p.talents.lingering_insanity)
-                .reverse(true)
-                .period(p.find_spell(197937)->effectN( 2 ).period())
-                .tick_behavior(BUFF_TICK_REFRESH)
-                .tick_time_behavior(BUFF_TICK_TIME_UNHASTED)
-                .max_stack(p.find_spell(185916)->effectN( 4 ).base_value() ) // or 18?
-                )
+              p.talents.lingering_insanity )
+              .reverse( true )
+              .duration( timespan_t::from_seconds( 50 ) )
+              .period( timespan_t::from_seconds( 1 ) )
+              .tick_behavior( BUFF_TICK_REFRESH )
+              .tick_time_behavior( BUFF_TICK_TIME_UNHASTED )
+              .max_stack( p.find_spell( 185916 )->effectN( 4 ).base_value() ) // or 18?
+    ), hidden_lingering_insanity( 0 )
   {
+    hidden_lingering_insanity = p.find_spell( 199849 ) ->effectN( 1 ).base_value();
   }
 
-  void decrement(int stacks, double value) override
+  void decrement( int, double ) override
   {
-    auto hidden_lingering_insanity = player->find_spell(199849);
-    buff_t::decrement(hidden_lingering_insanity->effectN( 1 ).base_value());
+    buff_t::decrement( hidden_lingering_insanity );
   }
 };
 
