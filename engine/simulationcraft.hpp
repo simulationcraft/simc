@@ -3736,6 +3736,7 @@ struct player_t : public actor_t
   bool first_cast;
   action_t* last_foreground_action;
   action_t* last_gcd_action;
+  action_t* prev_prev_gcd_action;
   std::vector<action_t*> off_gcdactions; // Returns all off gcd abilities used since the last gcd.
 
   // Delay time used by "cast_delay" expression to determine when an action
