@@ -136,7 +136,6 @@ public:
   struct buffs_t
   {
     debuff_t* mark_of_the_crane;
-    debuff_t* dizzing_kicks;
     debuff_t* gale_burst;
     debuff_t* keg_smash;
     debuff_t* storm_earth_and_fire;
@@ -321,8 +320,7 @@ public:
 
     // Tier 60 Talents
     const spell_data_t* ring_of_peace;
-    const spell_data_t* summon_black_ox_statue; // Brewmaster
-    const spell_data_t* dizzying_kicks; // Windwalker
+    const spell_data_t* summon_black_ox_statue; // Brewmaster & Windwalker
     const spell_data_t* song_of_chi_ji; // Mistweaver
     const spell_data_t* leg_sweep;
 
@@ -3169,10 +3167,6 @@ struct blackout_kick_t: public monk_melee_attack_t
 
     if ( result_is_hit( s -> result ) )
     {
-      // Apply Dizzing Kick debuff onto the target if talented
-      if ( p() -> talent.dizzying_kicks -> ok() )
-        td( s -> target ) -> debuff.dizzing_kicks -> trigger();
-
       if ( p() -> specialization() == MONK_WINDWALKER && p() -> spec.spinning_crane_kick )
         p() -> trigger_mark_of_the_crane( s );
 
@@ -6723,10 +6717,6 @@ monk( *p )
       .default_value( 0 )
       .quiet( true );
   }
-
-  debuff.dizzing_kicks = buff_creator_t( *this, "dizzying_kicks" )
-    .spell( p -> passives.dizzying_kicks )
-    .default_value( p-> passives.dizzying_kicks -> effectN( 1 ).percent() );
 
   if ( p -> specialization() == MONK_BREWMASTER )
   {
