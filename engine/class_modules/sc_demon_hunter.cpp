@@ -1425,6 +1425,15 @@ struct consume_soul_t : public demon_hunter_heal_t
       execute_action = new demonic_appetite_t( p );
     }
   }
+
+  void execute() override
+  {
+	  demon_hunter_heal_t::execute();
+	  
+	  if (p()->buff.soul_barrier->up()){
+		  p()->buff.soul_barrier->consume(-p()->buff.soul_barrier->data().effectN(2).ap_coeff() * p()->cache.attack_power() * (1+p()->cache.heal_versatility()));
+	  }
+  }
 };
 
 // Charred Warblades ========================================================
@@ -1488,7 +1497,7 @@ struct soul_barrier_t : public demon_hunter_action_t<absorb_t>
   {
     demon_hunter_action_t<absorb_t>::execute();
 
-    p() -> consume_soul_fragments( SOUL_FRAGMENT_ALL, false );
+    p() -> consume_soul_fragments();
   }
 
   void impact( action_state_t* s ) override
@@ -4734,7 +4743,7 @@ struct soul_barrier_t : public demon_hunter_buff_t<absorb_buff_t>
 
   double minimum_absorb() const
   {
-    return data().effectN( 3 ).ap_coeff() * p().cache.attack_power();
+    return data().effectN( 3 ).ap_coeff() * p().cache.attack_power() * (1+p().cache.heal_versatility());
   }
 
   // Custom consume implementation to allow minimum absorb amount.
@@ -4742,24 +4751,33 @@ struct soul_barrier_t : public demon_hunter_buff_t<absorb_buff_t>
   {
     // Limit the consumption to the current size of the buff.
     amount = std::min( amount, current_value );
+	if (amount > 0)
+	{
+		if (absorb_source)
+		{
+			absorb_source->add_result(amount, 0, ABSORB, RESULT_HIT,
+				BLOCK_RESULT_UNBLOCKED, player);
+		}
 
-    if ( absorb_source )
-    {
-      absorb_source -> add_result( amount, 0, ABSORB, RESULT_HIT,
-                                 BLOCK_RESULT_UNBLOCKED, player );
-    }
-
-    if ( absorb_gain )
-    {
-      absorb_gain -> add( RESOURCE_HEALTH, amount, 0 );
-    }
-
+		if (absorb_gain)
+		{
+			absorb_gain->add(RESOURCE_HEALTH, amount, 0);
+		}
+	}
+    
     current_value = std::max( current_value - amount, minimum_absorb() );
 
     if ( sim -> debug )
     {
-      sim -> out_debug.printf( "%s %s absorbs %.2f (remaining: %.2f)",
-                             player -> name(), name(), amount, current_value );
+		if (amount > 0)
+		{
+			sim->out_debug.printf("%s %s absorbs %.2f (remaining: %.2f)",
+				player->name(), name(), amount, current_value);
+		}
+		else{
+			sim->out_debug.printf("%s %s gains %.2f (remaining: %.2f)",
+				player->name(), name(), std::abs(amount), current_value);
+		}
     }
 
     absorb_used( amount );
