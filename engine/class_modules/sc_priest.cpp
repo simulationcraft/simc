@@ -1135,7 +1135,7 @@ public:
     return false;
   }
 
-  void trigger_zeks()
+  bool trigger_zeks()
   {
     int stack = priest.buffs.zeks_exterminatus->check();
     if (priest.buffs.zeks_exterminatus->trigger())
@@ -2494,10 +2494,17 @@ struct shadow_word_death_t final : public priest_spell_t
     if (priest.buffs.zeks_exterminatus->up())
     {
       d *= 1.0 + priest.buffs.zeks_exterminatus->data().effectN( 1 ).trigger()->effectN( 2 ).percent();
-      priest.buffs.zeks_exterminatus->expire();
+
     }
 
     return d;
+  }
+
+  void schedule_execute(action_state_t* s) override
+  {
+    priest_spell_t::schedule_execute(s);
+
+    priest.buffs.zeks_exterminatus->expire();
   }
 
   void impact( action_state_t* s ) override
@@ -2532,6 +2539,11 @@ struct shadow_word_death_t final : public priest_spell_t
   {
     if ( !priest_spell_t::ready() )
       return false;
+
+    if ( priest.buffs.zeks_exterminatus->up() )
+    {
+      return true;
+    }
 
     if ( ( priest.talents.reaper_of_souls->ok() &&
            target->health_percentage() < 35.0 ) ||
@@ -5074,7 +5086,8 @@ void priest_t::create_buffs()
   //.duration(timespan_t::from_seconds(10.0));
 
   buffs.zeks_exterminatus = buff_creator_t( this, "zeks_exterminatus" )
-                                .spell( find_spell( 215210 ) ) ;
+                                .spell( find_spell( 236545 ) )
+                                .rppm_scale( RPPM_HASTE );
 }
 
 // priest_t::init_rng ==================================================
