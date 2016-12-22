@@ -2491,6 +2491,12 @@ struct shadow_word_death_t final : public priest_spell_t
 
     d *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
 
+    if (priest.buffs.zeks_exterminatus->up())
+    {
+      d *= 1.0 + priest.buffs.zeks_exterminatus->data().effectN( 1 ).trigger()->effectN( 2 ).percent();
+      priest.buffs.zeks_exterminatus->expire();
+    }
+
     return d;
   }
 
@@ -4256,6 +4262,13 @@ void priest_t::create_procs()
   procs.legendary_anunds_last_breath_overflow = get_proc(
       "Legendary - Anund's Seared Shackles - Void Bolt damage increases (2% "
       "per) lost to overflow" );
+
+  procs.legendary_zeks_exterminatus = get_proc(
+    "Legendary - Zek's Exterminatus - Shadow Word Death damage increases (25% "
+    "per)");
+  procs.legendary_zeks_exterminatus_overflow = get_proc(
+    "Legendary - Zek's Exterminatus - Shadow Word Death damage increases (25% "
+    "per) lost to overflow");
 }
 
 /* Construct priest benefits
@@ -5059,6 +5072,9 @@ void priest_t::create_buffs()
           .spell( find_spell( 207721 ) )
           .chance( active_items.the_twins_painful_touch ? 1.0 : 0.0 );
   //.duration(timespan_t::from_seconds(10.0));
+
+  buffs.zeks_exterminatus = buff_creator_t( this, "zeks_exterminatus" )
+                                .spell( find_spell( 215210 ) ) ;
 }
 
 // priest_t::init_rng ==================================================
