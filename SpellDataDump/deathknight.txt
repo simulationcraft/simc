@@ -1,4 +1,4 @@
-SimulationCraft 710-03 for World of Warcraft 7.1.0 PTR (wow build 22995, git build 6bee682)
+SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23244, git build c5141f9)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -2764,8 +2764,9 @@ Effects          :
                    Affected Spells: Icebound Fortitude (48792)
 #7 (id=260808)   : Apply Aura (6) | Unknown effect sub type (218)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf8 | Target: Self(1)
-#8 (id=260809)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#8 (id=260809)   : Apply Aura (6) | Unknown effect sub type (218)
+                   Base Value: -40 | Scaled Value: -40 | Misc Value: 3 | Misc Value 2: 0x114 | Target: Self(1)
+                   Hotfixed: Sub Type (4 -> 218), Base Value (0 -> -40), Misc Value (0 -> 3), Misc Value 2 (0 -> 276)
 #9 (id=260810)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #10 (id=260811)   : Apply Aura (6) | Dummy (4)

@@ -322,7 +322,7 @@ public:
           * sephuzs_secret,
           * shard_time_warp,
           * zannesu_journey;
-    
+
     // Miscellaneous Buffs
     buff_t* greater_blessing_of_widsom;
 
@@ -776,7 +776,7 @@ struct arcane_familiar_pet_t : public mage_pet_t
 struct arcane_assault_t : public mage_pet_spell_t
 {
   arcane_assault_t( arcane_familiar_pet_t* p, const std::string& options_str )
-    : mage_pet_spell_t( "arcane_assault", p, p->find_spell( 205235 ) )
+    : mage_pet_spell_t( "arcane_assault", p,  p -> find_spell( 205235 ) )
   {
     parse_options( options_str );
     spell_power_mod.direct = p->find_spell( 225119 )->effectN( 1 ).sp_coeff();
@@ -1148,6 +1148,10 @@ struct arcane_blast_t : public mirror_image_spell_t
                             p->find_pet_spell( "Arcane Blast" ) )
   {
     parse_options( options_str );
+    if ( o()-> artifact.ancient_power && o() -> specialization() == MAGE_ARCANE )
+    {
+      base_multiplier *= 1.0 + o() -> artifact.ancient_power.percent();
+    }
   }
 
   virtual void execute() override
@@ -1164,21 +1168,6 @@ struct arcane_blast_t : public mirror_image_spell_t
     // MI Arcane Charges are still hardcoded as 25% damage gains
     am *= 1.0 + p()->arcane_charge->check() * 0.25;
 
-    if ( o()-> artifact.spellborne && o() -> specialization() == MAGE_FROST )
-    {
-      am *= 1.0 + o() -> artifact.spellborne.percent();
-    }
-
-    if ( o()-> artifact.empowered_spellblade && o() -> specialization() == MAGE_FIRE )
-    {
-      am *= 1.0 + o() -> artifact.empowered_spellblade.percent();
-    }
-
-    if ( o()-> artifact.ancient_power && o() -> specialization() == MAGE_ARCANE )
-    {
-      am *= 1.0 + o() -> artifact.ancient_power.percent();
-    }
-
     return am;
   }
 };
@@ -1189,6 +1178,11 @@ struct fireball_t : public mirror_image_spell_t
     : mirror_image_spell_t( "fireball", p, p->find_pet_spell( "Fireball" ) )
   {
     parse_options( options_str );
+
+    if ( o()-> artifact.empowered_spellblade && o() -> specialization() == MAGE_FIRE )
+    {
+      base_multiplier *= 1.0 + o() -> artifact.empowered_spellblade.percent();
+    }
   }
 };
 
@@ -1198,6 +1192,11 @@ struct frostbolt_t : public mirror_image_spell_t
     : mirror_image_spell_t( "frostbolt", p, p->find_pet_spell( "Frostbolt" ) )
   {
     parse_options( options_str );
+    if ( o()-> artifact.spellborne && o() -> specialization() == MAGE_FROST )
+    {
+      base_multiplier *= 1.0 + o() -> artifact.spellborne.percent();
+    }
+
   }
 };
 
@@ -2113,12 +2112,17 @@ struct arcane_mage_spell_t : public mage_spell_t
     mage_spell_t( n, p, s )
   {}
 
-  double arcane_charge_damage_bonus() const
+  double arcane_charge_damage_bonus( bool missile_call ) const
   {
-    double per_ac_bonus =  ( p() -> spec.arcane_charge -> effectN( 1 ).percent() +
-                             p() -> talents.amplification -> effectN( 1 ).percent() ) +
+    double per_ac_bonus =  p() -> spec.arcane_charge -> effectN( 1 ).percent() +
                           ( p() -> composite_mastery() *
                            p() -> spec.savant -> effectN( 2 ).mastery_value() );
+
+    if ( p() -> talents.amplification -> ok() && missile_call )
+    {
+      per_ac_bonus += p() -> talents.amplification -> effectN( 1 ).percent();
+    }
+
     return 1.0 + p() -> buffs.arcane_charge -> check() * per_ac_bonus;
 
   }
@@ -2876,7 +2880,7 @@ struct arcane_barrage_t : public arcane_mage_spell_t
   {
     double am = arcane_mage_spell_t::action_multiplier();
 
-    am *= arcane_charge_damage_bonus();
+    am *= arcane_charge_damage_bonus( false );
 
     if ( p() -> talents.resonance -> ok() )
     {
@@ -3012,7 +3016,7 @@ struct arcane_blast_t : public arcane_mage_spell_t
   {
     double am = arcane_mage_spell_t::action_multiplier();
 
-    am *= arcane_charge_damage_bonus();
+    am *= arcane_charge_damage_bonus( false );
 
     if ( p() -> wild_arcanist && p() -> buffs.arcane_power -> check() )
     {
@@ -3132,7 +3136,7 @@ struct arcane_explosion_t : public arcane_mage_spell_t
   {
     double am = arcane_mage_spell_t::action_multiplier();
 
-    am *= arcane_charge_damage_bonus();
+    am *= arcane_charge_damage_bonus( false );
 
     return am;
   }
@@ -3209,8 +3213,8 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     temporal_hero_duration = p -> find_spell( 188117 ) -> duration();
 
     base_multiplier *= 1.0 + p -> artifact.aegwynns_fury.percent();
-    // PTR Multiplier
-    base_multiplier *= 1.0 + p -> find_spell( 137021 ) -> effectN( 1 ).percent();
+
+
     rule_of_threes_ticks = dot_duration / base_tick_time +
       p -> artifact.rule_of_threes.data().effectN( 2 ).base_value();
     rule_of_threes_ratio = ( dot_duration / base_tick_time ) / rule_of_threes_ticks;
@@ -3223,7 +3227,7 @@ struct arcane_missiles_t : public arcane_mage_spell_t
   {
     double am = arcane_mage_spell_t::action_multiplier();
 
-    am *= arcane_charge_damage_bonus();
+    am *= arcane_charge_damage_bonus( true );
 
     return am;
   }
@@ -3365,7 +3369,8 @@ struct arcane_orb_bolt_t : public arcane_mage_spell_t
     background = true;
     dual = true;
     cooldown -> duration = timespan_t::zero(); // dbc has CD of 15 seconds
-
+    // PTR Multiplier
+    base_multiplier *= 1.0 + p -> find_spell( 137021 ) -> effectN( 1 ).percent();
   }
 
   virtual bool init_finished() override
@@ -3616,7 +3621,7 @@ struct charged_up_t : public arcane_mage_spell_t
     arcane_mage_spell_t( "charged_up", p, p -> find_spell ("Charged Up" ) )
   {
     parse_options( options_str );
-    triggers_arcane_missiles = false;
+    triggers_arcane_missiles = harmful = false;
   }
 
   virtual void execute() override
@@ -6086,7 +6091,7 @@ struct nether_tempest_t : public arcane_mage_spell_t
   {
     double m = arcane_mage_spell_t::composite_persistent_multiplier( state );
 
-    m *= arcane_charge_damage_bonus();
+    m *= arcane_charge_damage_bonus( false );
 
     return m;
   }
@@ -8658,8 +8663,6 @@ void mage_t::apl_arcane()
   default_list -> add_action( "call_action_list,name=conserve" );
 
   conserve     -> add_action( this, "Arcane Missiles", "if=buff.arcane_missiles.react=3" );
-
-  conserve     -> add_action( this, "Arcane Explosion", "if=buff.quickening.remains<action.arcane_blast.cast_time&talent.quickening.enabled" );
   conserve     -> add_action( this, "Arcane Blast", "if=mana.pct>99" );
   conserve     -> add_talent( this, "Nether Tempest", "if=(refreshable|!ticking)" );
   conserve     -> add_action( this, "Arcane Blast", "if=buff.rhonins_assaulting_armwraps.up&equipped.132413" );
@@ -8673,7 +8676,6 @@ void mage_t::apl_arcane()
   conserve     -> add_action( this, "Arcane Blast" );
 
   rop_phase    -> add_action( this, "Arcane Missiles", "if=buff.arcane_missiles.react=3" );
-  rop_phase    -> add_action( this, "Arcane Explosion", "if=buff.quickening.remains<action.arcane_blast.cast_time&talent.quickening.enabled" );
   rop_phase    -> add_talent( this, "Nether Tempest", "if=dot.nether_tempest.remains<=2|!ticking" );
   rop_phase    -> add_action( this, "Arcane Missiles", "if=buff.arcane_charge.stack=4" );
   rop_phase    -> add_talent( this, "Super Nova", "if=mana.pct<100" );
@@ -8714,7 +8716,6 @@ void mage_t::apl_arcane()
 
   burn      -> add_action( "call_action_list,name=cooldowns" );
   burn      -> add_action( this, "Arcane Missiles", "if=buff.arcane_missiles.react=3" );
-  burn      -> add_action( this, "Arcane Explosion", "if=buff.quickening.remains<action.arcane_blast.cast_time&talent.quickening.enabled" );
   burn      -> add_talent( this, "Presence of Mind", "if=buff.arcane_power.remains>2*gcd" );
   burn      -> add_talent( this, "Nether Tempest", "if=dot.nether_tempest.remains<=2|!ticking" );
   burn      -> add_action( this, "Arcane Blast", "if=active_enemies<=1&mana.pct%10*execute_time>target.time_to_die" );
@@ -8728,10 +8729,6 @@ void mage_t::apl_arcane()
   burn      -> add_action( this, "Arcane Blast" );
   burn      -> add_action( this, "Evocation", "interrupt_if=mana.pct>99" );
 
-
-  /*
-  TODO: Arcane APL needs love :<
-  */
 }
 
 // Fire Mage Action List ===================================================================================================
@@ -8780,7 +8777,7 @@ void mage_t::apl_fire()
   combustion_phase -> add_action( this, "Fire Blast", "if=buff.heating_up.up" );
   combustion_phase -> add_action( this, "Phoenix's Flames" );
   combustion_phase -> add_action( this, "Scorch", "if=buff.combustion.remains>cast_time" );
-  combustion_phase -> add_talent( this, "Dragon's Breath", "if=buff.hot_streak.down&action.fire_blast.charges<1&action.phoenixs_flames.charges<1" );
+  combustion_phase -> add_action( this, "Dragon's Breath", "if=buff.hot_streak.down&action.fire_blast.charges<1&action.phoenixs_flames.charges<1" );
   combustion_phase -> add_action( this, "Scorch", "if=target.health.pct<=25&equipped.132454");
 
   rop_phase        -> add_talent( this, "Rune of Power" );

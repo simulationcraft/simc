@@ -26,13 +26,13 @@ actions.precombat+=/marked_for_death,if=raid_event.adds.in>40
 actions.precombat+=/symbols_of_death
 
 # Executed every time the actor is available.
-actions=variable,name=ssw_refund,value=equipped.shadow_satyrs_walk*(12+ssw_refund_offset)
+actions=variable,name=ssw_refund,value=equipped.shadow_satyrs_walk*(4+ssw_refund_offset)
 actions+=/variable,name=ed_threshold,value=energy.deficit<=(15+talent.vigor.enabled*35+talent.master_of_shadows.enabled*30+variable.ssw_refund)
 actions+=/call_action_list,name=cds
 # Fully switch to the Stealthed Rotation (by doing so, it forces pooling if nothing is available)
 actions+=/run_action_list,name=stealthed,if=stealthed.all
 actions+=/call_action_list,name=finish,if=combo_points>=5|(combo_points>=4&spell_targets.shuriken_storm>=3&spell_targets.shuriken_storm<=4)
-actions+=/call_action_list,name=stealth_cds,if=combo_points.deficit>=2+talent.premeditation.enabled&((variable.ed_threshold&(!equipped.shadow_satyrs_walk|energy.deficit>=10))|(cooldown.shadowmeld.up&!cooldown.vanish.up&cooldown.shadow_dance.charges<=1)|target.time_to_die<12*cooldown.shadow_dance.charges_fractional*(1+equipped.shadow_satyrs_walk*0.5)|spell_targets.shuriken_storm>=5)
+actions+=/call_action_list,name=stealth_cds,if=combo_points.deficit>=2+talent.premeditation.enabled&((variable.ed_threshold&(!equipped.shadow_satyrs_walk|cooldown.shadow_dance.charges_fractional>=2.45|energy.deficit>=10))|(cooldown.shadowmeld.up&!cooldown.vanish.up&cooldown.shadow_dance.charges<=1)|target.time_to_die<12*cooldown.shadow_dance.charges_fractional*(1+equipped.shadow_satyrs_walk*0.5)|spell_targets.shuriken_storm>=5)
 actions+=/call_action_list,name=build,if=variable.ed_threshold
 
 # Builders
@@ -65,7 +65,7 @@ actions.stealth_cds+=/shadowmeld,if=energy>=40-variable.ssw_refund&energy.defici
 actions.stealth_cds+=/shadow_dance,if=combo_points<=1
 
 # Stealthed Rotation
-actions.stealthed=symbols_of_death,if=buff.shadowmeld.down&((buff.symbols_of_death.remains<target.time_to_die-4&buff.symbols_of_death.remains<=buff.symbols_of_death.duration*0.3)|(equipped.shadow_satyrs_walk&energy.time_to_max<0.25))
+actions.stealthed=symbols_of_death,if=(buff.symbols_of_death.remains<target.time_to_die-4&buff.symbols_of_death.remains<=buff.symbols_of_death.duration*0.3)|equipped.shadow_satyrs_walk&energy.time_to_max<0.25
 actions.stealthed+=/call_action_list,name=finish,if=combo_points>=5
 actions.stealthed+=/shuriken_storm,if=buff.shadowmeld.down&((combo_points.deficit>=3&spell_targets.shuriken_storm>=2+talent.premeditation.enabled+equipped.shadow_satyrs_walk)|buff.the_dreadlords_deceit.stack>=29)
 actions.stealthed+=/shadowstrike
@@ -89,11 +89,11 @@ off_hand=fangs_of_the_devourer,id=128479
 
 # Gear Summary
 # gear_ilvl=843.75
-# gear_agility=11083
-# gear_stamina=17630
-# gear_crit_rating=4188
-# gear_haste_rating=3630
-# gear_mastery_rating=4786
-# gear_versatility_rating=4153
+# gear_agility=11624
+# gear_stamina=18511
+# gear_crit_rating=4596
+# gear_haste_rating=3911
+# gear_mastery_rating=5111
+# gear_versatility_rating=4505
 # gear_armor=1957
 # set_bonus=tier19p_leather_2pc=1

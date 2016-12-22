@@ -89,11 +89,11 @@ std::vector< std::vector< const spell_data_t* > > ptr_class_family_index;
 
 int dbc::build_level( bool ptr )
 {
-  return maybe_ptr( ptr ) ? 22995 : 22995;
+  return maybe_ptr( ptr ) ? 23244 : 23244;
 }
 
 const char* dbc::wow_version( bool ptr )
-{ return maybe_ptr( ptr ) ? "7.1.0" : "7.1.0"; }
+{ return maybe_ptr( ptr ) ? "7.1.5" : "7.1.5"; }
 
 const char* dbc::wow_ptr_status( bool ptr )
 #if SC_BETA
@@ -793,12 +793,11 @@ bool dbc_t::replace_id( uint32_t id_spell, uint32_t replaced_by_id )
 double dbc_t::combat_rating_multiplier( unsigned item_level, combat_rating_multiplier_type type ) const
 {
   assert( item_level > 0 && item_level <= MAX_ILEVEL );
-#if SC_USE_PTR
   assert( type < CR_MULTIPLIER_MAX );
-  return ptr ? _ptr__combat_ratings_mult_by_ilvl[ type ][ item_level - 1 ]
-    : __combat_ratings_mult_by_ilvl[ item_level - 1 ];
+#if SC_USE_PTR
+  return _ptr__combat_ratings_mult_by_ilvl[ type ][ item_level - 1 ]
 #else
-  return __combat_ratings_mult_by_ilvl[ item_level - 1 ];
+  return __combat_ratings_mult_by_ilvl[type][ item_level - 1 ];
 #endif
 }
 

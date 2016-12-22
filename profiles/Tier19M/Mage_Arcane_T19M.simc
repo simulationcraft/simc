@@ -3,7 +3,7 @@ level=110
 race=troll
 role=spell
 position=back
-talents=1021012
+talents=2022031
 artifact=4:139269:139259:142514:0:72:3:73:1:74:3:75:4:77:3:78:1:79:3:80:1:81:4:82:4:83:3:84:3:86:1:87:1:290:1:1169:1:1339:1
 spec=arcane
 
@@ -43,7 +43,6 @@ actions.build+=/arcane_blast
 
 actions.burn=call_action_list,name=cooldowns
 actions.burn+=/arcane_missiles,if=buff.arcane_missiles.react=3
-actions.burn+=/presence_of_mind,if=buff.arcane_power.remains>2*gcd
 actions.burn+=/nether_tempest,if=dot.nether_tempest.remains<=2|!ticking
 actions.burn+=/arcane_blast,if=active_enemies<=1&mana.pct%10*execute_time>target.time_to_die
 actions.burn+=/arcane_explosion,if=active_enemies>1&mana.pct%10*execute_time>target.time_to_die
@@ -90,7 +89,7 @@ actions.rop_phase+=/arcane_blast,if=mana.pct>45
 actions.rop_phase+=/arcane_barrage
 
 head=hood_of_darkened_visions,id=139189,bonus_id=1806
-neck=sea_fan_pendant,id=142428,bonus_id=3469
+neck=sea_fan_pendant,id=142428,bonus_id=3469,enchant=mark_of_the_hidden_satyr
 shoulders=ancient_dreamwoven_mantle,id=139191,bonus_id=1806
 back=drape_of_the_unworthy,id=142521,bonus_id=3469/1512,enchant=binding_of_intellect
 chest=robes_of_the_ancient_chronicle,id=142297
@@ -107,10 +106,10 @@ main_hand=aluneth,id=127857,gem_id=139269/139259/142514,relic_id=1806/1806/3469
 
 # Gear Summary
 # gear_ilvl=885.60
-# gear_stamina=27489
-# gear_intellect=27704
-# gear_crit_rating=6116
-# gear_haste_rating=4723
-# gear_mastery_rating=7185
-# gear_versatility_rating=2953
+# gear_stamina=28855
+# gear_intellect=29077
+# gear_crit_rating=6913
+# gear_haste_rating=5241
+# gear_mastery_rating=7715
+# gear_versatility_rating=3618
 # gear_armor=1850

@@ -17,7 +17,6 @@ spec=retribution
 actions.precombat=flask,type=flask_of_the_countless_armies
 actions.precombat+=/food,type=azshari_salad
 actions.precombat+=/augmentation,type=defiled
-actions.precombat+=/greater_blessing_of_might
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=old_war
@@ -84,11 +83,11 @@ main_hand=ashbringer,id=120978,bonus_id=737,gem_id=136717/139266/136717,relic_id
 
 # Gear Summary
 # gear_ilvl=866.27
-# gear_strength=14125
-# gear_stamina=22534
-# gear_crit_rating=8945
-# gear_haste_rating=9452
-# gear_mastery_rating=751
-# gear_versatility_rating=384
+# gear_strength=14818
+# gear_stamina=23658
+# gear_crit_rating=9889
+# gear_haste_rating=10405
+# gear_mastery_rating=788
+# gear_versatility_rating=404
 # gear_armor=4187
 # set_bonus=tier19p_plate_2pc=1

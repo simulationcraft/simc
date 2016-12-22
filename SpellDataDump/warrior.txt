@@ -1,4 +1,4 @@
-SimulationCraft 710-03 for World of Warcraft 7.1.0 PTR (wow build 22995, git build 6bee682)
+SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23244, git build c5141f9)
 
 Name             : Defensive Stance (id=71) [Spell Family (4), Passive, Hidden] 
 Class            : Protection Warrior
@@ -2554,8 +2554,9 @@ Effects          :
                    Affected Spells: Victory Rush (34428), Shockwave (46968), Storm Bolt (107570), Shockwave (132168), Storm Bolt (132169), Impending Victory (202168)
 #5 (id=191019)   : Apply Aura (6) | Unknown effect sub type (218)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf8 | Target: Self(1)
-#6 (id=261027)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#6 (id=261027)   : Apply Aura (6) | Unknown effect sub type (218)
+                   Base Value: -40 | Scaled Value: -40 | Misc Value: 3 | Misc Value 2: 0x114 | Target: Self(1)
+                   Hotfixed: Sub Type (4 -> 218), Base Value (0 -> -40), Misc Value (0 -> 3), Misc Value 2 (0 -> 276)
 #7 (id=261028)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #8 (id=261029)   : Apply Aura (6) | Dummy (4)
@@ -2574,6 +2575,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #15 (id=261036)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#16 (id=362031)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+                   Hotfixed: NEW EFFECT
 
 Name             : Arms Warrior (id=137049) [Spell Family (4), Passive, Hidden] 
 Class            : Arms Warrior

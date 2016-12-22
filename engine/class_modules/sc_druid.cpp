@@ -1027,6 +1027,7 @@ public:
     add_invalidate( CACHE_STAMINA );
     add_invalidate( CACHE_ARMOR );
     add_invalidate( CACHE_EXP );
+    add_invalidate( CACHE_CRIT_AVOIDANCE );
 
     if ( p.spec.killer_instinct -> ok() )
       add_invalidate( CACHE_AGILITY );
@@ -2135,9 +2136,9 @@ public:
     requires_stealth( false ),
     consumes_combo_points( false ),
     consumes_clearcasting( false ),
-    trigger_tier17_2pc( false ),
     triggers_ashamanes_bite ( true ),
     triggers_primal_fury ( true ),
+    trigger_tier17_2pc( false ),
     snapshots_tf( true ),
     snapshots_sr( true )
   {
@@ -3102,7 +3103,7 @@ struct shred_t : public cat_attack_t
   {
     double m = cat_attack_t::action_multiplier();
 
-    if ( sim->dbc.ptr && p()->talent.moment_of_clarity->ok() && p()->buff.clearcasting->up() ) //PTR 7.1.5
+    if ( p()->talent.moment_of_clarity->ok() && p()->buff.clearcasting->up() )
     {
        m *= 1.0 + p()->talent.moment_of_clarity->effectN(5).percent();
     }
@@ -3147,10 +3148,10 @@ public:
 
   virtual void execute() override
   {
-     if (sim->dbc.ptr && p()->talent.moment_of_clarity->ok() && p()->buff.clearcasting->up()) //PTR 7.1.5
-     {
-        base_multiplier *= 1.0 + p()->talent.moment_of_clarity->effectN(5).percent();
-     }
+    if ( p()->talent.moment_of_clarity->ok() && p()->buff.clearcasting->up() )
+    {
+      base_multiplier *= 1.0 + p()->talent.moment_of_clarity->effectN( 5 ).percent();
+    }
 
     cat_attack_t::execute();
 
@@ -3210,13 +3211,10 @@ struct tigers_fury_t : public cat_attack_t
 
 // Thrash (Cat) =============================================================
 
-struct thrash_cat_t : public cat_attack_t
-{
-  struct shadow_thrash_t : public cat_attack_t
-  {
-    struct shadow_thrash_tick_t : public cat_attack_t
-    {
-      shadow_thrash_tick_t( druid_t* p ) :
+struct thrash_cat_t: public cat_attack_t {
+  struct shadow_thrash_t: public cat_attack_t {
+    struct shadow_thrash_tick_t: public cat_attack_t {
+      shadow_thrash_tick_t( druid_t* p ):
         cat_attack_t( "shadow_thrash", p, p -> find_spell( 210687 ) )
       {
         background = dual = true;
@@ -3224,18 +3222,18 @@ struct thrash_cat_t : public cat_attack_t
       }
     };
 
-    shadow_thrash_t( druid_t* p ) :
+    shadow_thrash_t( druid_t* p ):
       cat_attack_t( "shadow_thrash", p, p -> artifact.shadow_thrash.data().effectN( 1 ).trigger() )
     {
       background = true;
       tick_action = new shadow_thrash_tick_t( p );
-    
+
       base_tick_time *= 1.0 + p -> talent.jagged_wounds -> effectN( 1 ).percent();
-      dot_duration   *= 1.0 + p -> talent.jagged_wounds -> effectN( 2 ).percent();
+      dot_duration *= 1.0 + p -> talent.jagged_wounds -> effectN( 2 ).percent();
     }
   };
 
-  thrash_cat_t( druid_t* p, const std::string& options_str ) :
+  thrash_cat_t( druid_t* p, const std::string& options_str ):
     cat_attack_t( "thrash_cat", p, p -> find_spell( 106830 ), options_str )
   {
     aoe = -1;
@@ -3254,28 +3252,28 @@ struct thrash_cat_t : public cat_attack_t
       energize_type = ENERGIZE_ON_HIT;
     }
 
-    if ( p -> artifact.shadow_thrash.rank() && ! p -> active.shadow_thrash )
+    if ( p -> artifact.shadow_thrash.rank() && !p -> active.shadow_thrash )
     {
       p -> active.shadow_thrash = new shadow_thrash_t( p );
       add_child( p -> active.shadow_thrash );
     }
-    
+
     base_tick_time *= 1.0 + p -> talent.jagged_wounds -> effectN( 1 ).percent();
-    dot_duration   *= 1.0 + p -> talent.jagged_wounds -> effectN( 2 ).percent();
+    dot_duration *= 1.0 + p -> talent.jagged_wounds -> effectN( 2 ).percent();
     base_multiplier *= 1.0 + p -> artifact.jagged_claws.percent();
   }
 
   void execute() override
   {
-    if (sim->dbc.ptr && p()->talent.moment_of_clarity->ok() && p()->buff.clearcasting->up()) //PTR 7.1.5
+    if ( p()->talent.moment_of_clarity->ok() && p()->buff.clearcasting->up() )
     {
-       base_multiplier *= 1.0 + p()->talent.moment_of_clarity->effectN(5).percent();
+      base_multiplier *= 1.0 + p()->talent.moment_of_clarity->effectN( 5 ).percent();
     }
 
     cat_attack_t::execute();
 
     p() -> buff.scent_of_blood -> trigger( 1,
-      num_targets_hit * p() -> buff.scent_of_blood -> default_value );
+                                           num_targets_hit * p() -> buff.scent_of_blood -> default_value );
 
     if ( rng().roll( p() -> artifact.shadow_thrash.data().proc_chance() ) )
       p() -> active.shadow_thrash -> schedule_execute();
@@ -4893,11 +4891,16 @@ struct lunar_strike_t : public druid_spell_t
     aoe = -1;
     base_aoe_multiplier = data().effectN( 3 ).percent();
 
-    natures_balance    = timespan_t::from_seconds( player -> talent.natures_balance -> effectN( 1 ).base_value() );
+    natures_balance    = timespan_t::from_seconds( player -> talent.natures_balance -> effectN( 1 ).base_value() * 2 );
     
     base_execute_time *= 1.0 + player -> sets.set( DRUID_BALANCE, T17, B2 ) -> effectN( 1 ).percent();
     base_crit         += player -> artifact.dark_side_of_the_moon.percent();
     base_multiplier   *= 1.0 + player -> artifact.skywrath.percent();
+  }
+
+  timespan_t natures_balance_extension() const
+  {
+    return natures_balance - timespan_t::from_seconds( ( 1.0 - p() -> cache.spell_haste() ) * 5 );
   }
 
   double composite_crit_chance() const override
@@ -4943,22 +4946,23 @@ struct lunar_strike_t : public druid_spell_t
     return et;
   }
 
-  void impact( action_state_t* s ) override
-  {
-    druid_spell_t::impact( s );
-    // Nature's Balance only extends Moonfire on the primary target. FIXME: Actually extends the duration of ALL sunfires.
-    if ( natures_balance > timespan_t::zero() && hit_any_target )
-    {
-      td( s -> target ) -> dots.moonfire -> extend_duration( natures_balance, timespan_t::from_seconds( 20.0 ) );
-    }
-  }
-
   void execute() override
   {
     p() -> buff.lunar_empowerment -> up();
     p() -> buff.warrior_of_elune -> up();
 
     druid_spell_t::execute();
+
+    if ( natures_balance > timespan_t::zero() )
+    {
+      timespan_t extend_stuff = natures_balance_extension();
+      std::vector< player_t* >& tl = target_list();
+      for ( size_t i = 0, actors = tl.size(); i < actors; i++ )
+      {
+        player_t* t = tl[i];
+        td( t ) -> dots.moonfire -> extend_duration( extend_stuff, timespan_t::from_seconds( 28 ) );
+      }
+    }
 
     p() -> buff.lunar_empowerment -> decrement();
     p() -> buff.warrior_of_elune -> decrement();
@@ -5244,7 +5248,7 @@ struct solar_wrath_t : public druid_spell_t
   solar_wrath_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "solar_wrath", player, player -> find_affinity_spell( "Solar Wrath" ), options_str )
   {
-    natures_balance    = timespan_t::from_seconds( player -> talent.natures_balance -> effectN( 2 ).base_value() );
+    natures_balance    = timespan_t::from_seconds( player -> talent.natures_balance -> effectN( 2 ).base_value() * 2);
 
     base_execute_time *= 1.0 + player -> sets.set( DRUID_BALANCE, T17, B2 ) -> effectN( 1 ).percent();
     base_multiplier   *= 1.0 + player -> artifact.skywrath.percent();
@@ -5292,16 +5296,26 @@ struct solar_wrath_t : public druid_spell_t
     return et;
   }
 
+  timespan_t natures_balance_extension() const
+  {
+    return natures_balance - timespan_t::from_seconds( ( 1.0 - p() -> cache.spell_haste() ) * 5 );
+  }
+
+
   void execute() override
   {
     p() -> buff.solar_empowerment -> up();
 
     druid_spell_t::execute();
-    
-    if ( natures_balance > timespan_t::zero() && hit_any_target )
+
+    if ( natures_balance > timespan_t::zero() )
     {
-      td( execute_state -> target ) -> dots.sunfire ->
-        extend_duration( natures_balance, timespan_t::from_seconds( 20.0 ) );
+      timespan_t extend_stuff = natures_balance_extension();
+      for ( size_t i = 0, actors = sim -> target_non_sleeping_list.size(); i < actors; i++ )
+      {
+        player_t* t = sim -> target_non_sleeping_list[i];
+        td( t ) -> dots.sunfire -> extend_duration( extend_stuff, timespan_t::from_seconds( 23 ) );
+      }
     }
 
     if ( p() -> sets.has_set_bonus( DRUID_BALANCE, T17, B4 ) )
@@ -5443,7 +5457,7 @@ struct starfall_t : public druid_spell_t
   };
 
   starfall_t( druid_t* p, const std::string& options_str ):
-    druid_spell_t( "starfall", p, p -> find_spell( 191034 ), options_str )
+    druid_spell_t( "starfall", p, p -> find_specialization_spell( "Starfall" ), options_str )
   {
     may_miss = may_crit = false;
     base_tick_time = data().duration() / 8.0; // ticks 9 times (missing from spell data)
@@ -5467,7 +5481,7 @@ struct starfall_t : public druid_spell_t
       if ( sim -> distance_targeting_enabled )
       {
         echo -> aoe = 0;
-        echo -> radius = p -> active.starfall -> data().effectN( 2 ).radius();
+        echo -> radius = data().effectN( 2 ).radius_max();
       }
 
       add_child( echo );
@@ -6460,7 +6474,7 @@ void druid_t::create_buffs()
 
   buff.rage_of_the_sleeper   = buff_creator_t( this, "rage_of_the_sleeper", &artifact.rage_of_the_sleeper.data() )
                                .cd( timespan_t::zero() )
-                               .default_value( -artifact.rage_of_the_sleeper.data().effectN( 1 ).percent() )
+                               .default_value( -artifact.rage_of_the_sleeper.data().effectN( 4 ).percent() )
                                .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                                .add_invalidate( CACHE_LEECH );
 
@@ -7434,7 +7448,7 @@ double druid_t::composite_rating_multiplier( rating_e rating ) const
     case RATING_SPELL_HASTE:
     case RATING_MELEE_HASTE:
     case RATING_RANGED_HASTE:
-      rm *= 1.0 + spec.feral -> effectN( 3 ).percent();
+      rm *= 1.0 + spec.feral -> effectN( 7 ).percent();
       break;
     default:
       break;
@@ -8687,13 +8701,13 @@ struct druid_module_t : public module_t
 
   virtual void register_hotfixes() const override 
   {
+    
+    hotfix::register_spell( "Druid", "2016-12-18", "Incorrect spell level for starfall damage component.", 191037 )
+      .field( "spell_level" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 40 )
+      .verification_value( 76 );
     /*
-    hotfix::register_effect( "Druid", "2016-09-23", "Sunfire damage increased by 10%.", 232416 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 1.10 )
-      .verification_value( 1.0 );
-
     hotfix::register_effect( "Druid", "2016-09-23", "Sunfire damage increased by 10%.-dot", 232417 )
       .field( "sp_coefficient" )
       .operation( hotfix::HOTFIX_MUL )

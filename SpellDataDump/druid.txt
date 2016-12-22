@@ -1,4 +1,4 @@
-SimulationCraft 710-03 for World of Warcraft 7.1.0 PTR (wow build 22995, git build 6bee682)
+SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23244, git build c5141f9)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -3359,8 +3359,9 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf8 | Target: Self(1)
 #12 (id=260763)   : Apply Aura (6) | Unknown effect sub type (218)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf9 | Target: Self(1)
-#13 (id=260764)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#13 (id=260764)   : Apply Aura (6) | Unknown effect sub type (218)
+                   Base Value: -40 | Scaled Value: -40 | Misc Value: 3 | Misc Value 2: 0x114 | Target: Self(1)
+                   Hotfixed: Sub Type (4 -> 218), Base Value (0 -> -40), Misc Value (0 -> 3), Misc Value 2 (0 -> 276)
 #14 (id=260765)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #15 (id=260766)   : Apply Aura (6) | Dummy (4)
@@ -4688,7 +4689,7 @@ Tooltip          : Calling down falling stars at the targeted area.
 Name             : Starfall (id=191037) [Scaling Spell (3), Spell Family (7)] 
 Class            : Druid
 School           : Astral
-Spell Level      : 76
+Spell Level      : 40
 Range            : 50000 yards
 Velocity         : 0.8 yards/sec
 Affecting spells : Mastery: Starlight (77492), Soul of the Forest (114107), Balance Druid (137013), Lucidity (137247), Thrash (192090), Astral Influence (197524), Stellar Drift (202354), Ekowraith, Creator of Worlds (210667), 
