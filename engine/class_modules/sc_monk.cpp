@@ -1896,10 +1896,10 @@ private:
     }
   };
 
-  struct stomp_t: public spell_t
+  struct stomp_t: public melee_attack_t
   {
     stomp_t( niuzao_pet_t *p, const std::string& options_str ): 
-      spell_t( "stomp", p, p -> o() -> passives.stomp )
+      melee_attack_t( "stomp", p, p -> o() -> passives.stomp )
     {
       parse_options( options_str );
 
