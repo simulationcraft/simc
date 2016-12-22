@@ -6248,14 +6248,18 @@ void hunter_t::add_item_actions( action_priority_list_t* list )
 
 // Racial Actions =======================================================================
 
-void hunter_t::add_racial_actions( action_priority_list_t* list )
+void hunter_t::add_racial_actions(action_priority_list_t* list)
 {
-    if ( specialization() == HUNTER_MARKSMANSHIP )
-      list -> add_action( "arcane_torrent,if=focus.deficit>=30&(!talent.sidewinders.enabled|cooldown.sidewinders.charges<2)" );
-    else
-      list -> add_action( "arcane_torrent,if=focus.deficit>=30" );
-    list -> add_action( "blood_fury" );
-    list -> add_action( "berserking,if=buff.trueshot.up" );
+  if (specialization() == HUNTER_MARKSMANSHIP) {
+    list->add_action("arcane_torrent,if=focus.deficit>=30&(!talent.sidewinders.enabled|cooldown.sidewinders.charges<2)");
+    list->add_action("berserking,if=buff.trueshot.up");
+    list->add_action("blood_fury,if=buff.trueshot.up");
+  }
+  else {
+    list->add_action("arcane_torrent,if=focus.deficit>=30");
+    list->add_action("berserking");
+    list->add_action("blood_fury");
+  }
 }
 
 // Potions Actions =======================================================================
