@@ -326,7 +326,8 @@ public:
 
     // Tier 75 Talents
     const spell_data_t* healing_elixirs;
-    const spell_data_t* diffuse_magic;
+    const spell_data_t* mystic_vitality;
+    const spell_data_t* diffuse_magic; // Mistweaver & Windwalker
     const spell_data_t* dampen_harm;
 
     // Tier 90 Talents
@@ -782,7 +783,7 @@ public:
   double stagger_pct();
   void trigger_celestial_fortune( action_state_t* );
   void trigger_mark_of_the_crane( action_state_t* );
-  bool rjw_trigger_mark_of_the_crane();
+  void rjw_trigger_mark_of_the_crane();
   player_t* next_mark_of_the_crane_target( action_state_t* );
   int mark_of_the_crane_counter();
   double clear_stagger();
@@ -6922,7 +6923,7 @@ void monk_t::trigger_mark_of_the_crane( action_state_t* s )
   get_target_data( s -> target ) -> debuff.mark_of_the_crane -> trigger();
 }
 
-bool monk_t::rjw_trigger_mark_of_the_crane()
+void monk_t::rjw_trigger_mark_of_the_crane()
 {
   if ( specialization() == MONK_WINDWALKER )
   {
@@ -6949,7 +6950,7 @@ bool monk_t::rjw_trigger_mark_of_the_crane()
         }
 
         if ( mark_of_the_crane_counter == mark_of_the_crane_max )
-          return true;
+          return;
       }
 
       // If all targets have the debuff, find the lowest duration of cyclone strike debuff and refresh it
@@ -6966,10 +6967,8 @@ bool monk_t::rjw_trigger_mark_of_the_crane()
 
         get_target_data( lowest_duration ) -> debuff.mark_of_the_crane -> trigger();
       }
-      return true;
     }
   }
-  return false;
 }
 
 player_t* monk_t::next_mark_of_the_crane_target( action_state_t* state )
@@ -7126,6 +7125,7 @@ void monk_t::init_spells()
 
   // Tier 75 Talents
   talent.healing_elixirs             = find_talent_spell( "Healing Elixirs" );
+  talent.mystic_vitality             = find_talent_spell( "Mystic Vitality" );
   talent.diffuse_magic               = find_talent_spell( "Diffuse Magic" );
   talent.dampen_harm                 = find_talent_spell( "Dampen Harm" );
 
@@ -8441,15 +8441,8 @@ void monk_t::target_mitigation( school_e school,
                                 dmg_e    dt,
                                 action_state_t* s )
 {
-  // Stagger is not reduced by damage mitigation effects
-  if ( s -> action -> id == passives.stagger_self_damage -> id() )
-  {
-    // Register the tick then exit
-    sample_datas.stagger_tick_damage -> add( s -> result_amount );
-    return;
-  }
-
   // Dampen Harm // Reduces hits by 20 - 50% based on the size of the hit
+  // Works on Stagger
   if ( buff.dampen_harm -> up() )
   {
     double dampen_max_percent = buff.dampen_harm -> data().effectN( 3 ).percent();
@@ -8460,6 +8453,14 @@ void monk_t::target_mitigation( school_e school,
       double dampen_min_percent = buff.dampen_harm -> data().effectN( 2 ).percent();
       s -> result_amount *= 1 - ( dampen_min_percent + ( ( dampen_max_percent - dampen_min_percent ) * ( s -> result_amount / max_health() ) ) );
     }
+  }
+
+  // Stagger is not reduced by damage mitigation effects
+  if ( s -> action -> id == passives.stagger_self_damage -> id() )
+  {
+    // Register the tick then exit
+    sample_datas.stagger_tick_damage -> add( s -> result_amount );
+    return;
   }
 
   // Diffuse Magic
@@ -8583,8 +8584,13 @@ void monk_t::assess_damage_imminent_pre_absorb( school_e school,
         stagger_dmg += s -> result_amount * stagger_pct();
 
       else if ( school != SCHOOL_PHYSICAL )
-        // hard code the 50% effectiveness of stagger
-        stagger_dmg += s -> result_amount * ( stagger_pct() * 0.5 );
+      {
+        double stagger_magic = stagger_pct() * spec.stagger -> effectN( 1 ).percent();
+        if ( talent.mystic_vitality -> ok() )
+          stagger_magic *= 1 + talent.mystic_vitality -> effectN( 1 ).percent();
+
+        stagger_dmg += s -> result_amount * stagger_magic;
+      }
 
       s -> result_amount -= stagger_dmg;
       s -> result_mitigated -= stagger_dmg;
@@ -9097,7 +9103,7 @@ double monk_t::stagger_pct()
 
   if ( specialization() == MONK_BREWMASTER ) // no stagger when not in Brewmaster Specialization
   {
-    stagger += spec.stagger -> effectN( 9 ).percent(); //TODO: Effect says 10 but tooltip say 6%; double check
+    stagger += spec.stagger -> effectN( 9 ).percent();
 
     if ( talent.high_tolerance -> ok() )
       stagger += talent.high_tolerance -> effectN( 1 ).percent();
