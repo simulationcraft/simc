@@ -4495,6 +4495,23 @@ struct xuen_spell_t: public summon_pet_t
 };
 
 // ==========================================================================
+// Invoke Niuzao, the Black Ox
+// ==========================================================================
+
+struct niuzao_spell_t: public summon_pet_t
+{
+  niuzao_spell_t( monk_t* p, const std::string& options_str ):
+    summon_pet_t( "invoke_niuzao", "niuzao_the_black_ox", p, p -> talent.invoke_niuzao )
+  {
+    parse_options( options_str );
+
+    trigger_gcd = timespan_t::zero();
+    harmful = false;
+    summoning_duration = data().duration();
+  }
+};
+
+// ==========================================================================
 // Storm, Earth, and Fire
 // ==========================================================================
 
@@ -6839,6 +6856,7 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "fortifying_brew" ) return new           fortifying_brew_t( *this, options_str );
   if ( name == "gift_of_the_ox" ) return new            gift_of_the_ox_t( *this, options_str );
   if ( name == "greater_gift_of_the_ox" ) return new    greater_gift_of_the_ox_t( *this, options_str );
+  if ( name == "invoke_niuzao" ) return new             niuzao_spell_t( this, options_str );
   if ( name == "ironskin_brew" ) return new             ironskin_brew_t( *this, options_str );
   if ( name == "keg_smash" ) return new                 keg_smash_t( *this, options_str );
   if ( name == "purifying_brew" ) return new            purifying_brew_t( *this, options_str );
@@ -7035,6 +7053,7 @@ pet_t* monk_t::create_pet( const std::string& name,
 
   using namespace pets;
   if ( name == "xuen_the_white_tiger" ) return new xuen_pet_t( sim, this );
+  if ( name == "niuzao_the_black_ox" ) return new niuzao_pet_t( sim, this );
 
   return nullptr;
 }
@@ -7048,6 +7067,11 @@ void monk_t::create_pets()
   if ( talent.invoke_xuen -> ok() && find_action( "invoke_xuen" ) )
   {
     create_pet( "xuen_the_white_tiger" );
+  }
+
+  if ( talent.invoke_niuzao -> ok() && find_action( "invoke_niuzao" ) )
+  {
+    create_pet( "niuzao_the_black_ox" );
   }
 
   if ( specialization() == MONK_WINDWALKER && find_action( "storm_earth_and_fire" ) )
@@ -8943,7 +8967,6 @@ void monk_t::apl_combat_mistweaver()
   action_priority_list_t* aoe = get_action_priority_list( "aoe" );
 
   def -> add_action( "auto_attack" );
-  def -> add_action( "invoke_xuen" );
   int num_items = (int)items.size();
   for ( int i = 0; i < num_items; i++ )
   {
