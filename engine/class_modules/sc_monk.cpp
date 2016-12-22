@@ -7237,7 +7237,7 @@ void monk_t::init_spells()
   spec.blackout_strike               = find_specialization_spell( "Blackout Strike" );
   spec.bladed_armor                  = find_specialization_spell( "Bladed Armor" );
   spec.breath_of_fire                = find_specialization_spell( "Breath of Fire" );
-  spec.brewmaster_monk               = find_specialization_spell( "Brewmaster Monk" );
+  spec.brewmaster_monk               = find_specialization_spell( 137023 );
   spec.celestial_fortune             = find_specialization_spell( "Celestial Fortune" );
   spec.expel_harm                    = find_specialization_spell( "Expel Harm" );
   spec.fortifying_brew               = find_specialization_spell( "Fortifying Brew" );
@@ -7257,7 +7257,7 @@ void monk_t::init_spells()
   spec.envoloping_mist_2             = find_specialization_spell( 231605 );
   spec.essence_font                  = find_specialization_spell( "Essence Font" );
   spec.life_cocoon                   = find_specialization_spell( "Life Cocoon" );
-  spec.mistweaver_monk               = find_specialization_spell( "Mistweaver Monk" );
+  spec.mistweaver_monk               = find_specialization_spell( 137024 );
   spec.reawaken                      = find_specialization_spell( "Reawaken" );
   spec.renewing_mist                 = find_specialization_spell( "Renewing Mist" );
   spec.renewing_mist_2               = find_specialization_spell( 231606 );
