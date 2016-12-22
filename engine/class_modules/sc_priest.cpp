@@ -3339,7 +3339,7 @@ struct void_eruption_t final : public priest_spell_t
                   ->effectN(1)
                   .base_value();
 
-      priest.buffs.voidform->bump( mss_vf_stacks );
+      priest.buffs.voidform->bump( mss_vf_stacks -1 ); // You start with 5 Stacks of Voidform 2016/12/22 N1gh7h4wk
     }
   }
 
@@ -4016,7 +4016,7 @@ void init()
   // Legion Legendaries
   unique_gear::register_special_effect( 215209, anunds_seared_shackles );
   unique_gear::register_special_effect( 207701, mangazas_madness );
-  unique_gear::register_special_effect( 215250, mother_shahrazs_seduction );
+  unique_gear::register_special_effect( 236523, mother_shahrazs_seduction );
   unique_gear::register_special_effect( 207721, the_twins_painful_touch );
   unique_gear::register_special_effect( 224999, zenkaram_iridis_anadem );
 }
