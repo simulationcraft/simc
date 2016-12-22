@@ -3,7 +3,7 @@ level=110
 race=troll
 role=attack
 position=ranged_back
-talents=1103011
+talents=1303013
 artifact=55:0:0:0:0:307:1:308:1:310:1:311:1:312:3:313:3:314:2:315:3:318:3:319:3:320:3:321:1:322:1:1337:1
 spec=marksmanship
 
@@ -111,8 +111,8 @@ main_hand=thasdorah_legacy_of_the_windrunners,id=128826,ilevel=894,gem_id=137313
 # gear_agility=15095
 # gear_stamina=23428
 # gear_crit_rating=1504
-# gear_haste_rating=5144
-# gear_mastery_rating=13984
+# gear_haste_rating=4946
+# gear_mastery_rating=13705
 # gear_armor=2630
 # set_bonus=tier19p_mail_2pc=1
 summon_pet=cat

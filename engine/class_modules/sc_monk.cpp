@@ -136,7 +136,6 @@ public:
   struct buffs_t
   {
     debuff_t* mark_of_the_crane;
-    debuff_t* dizzing_kicks;
     debuff_t* gale_burst;
     debuff_t* keg_smash;
     debuff_t* storm_earth_and_fire;
@@ -321,8 +320,7 @@ public:
 
     // Tier 60 Talents
     const spell_data_t* ring_of_peace;
-    const spell_data_t* summon_black_ox_statue; // Brewmaster
-    const spell_data_t* dizzying_kicks; // Windwalker
+    const spell_data_t* summon_black_ox_statue; // Brewmaster & Windwalker
     const spell_data_t* song_of_chi_ji; // Mistweaver
     const spell_data_t* leg_sweep;
 
@@ -380,6 +378,7 @@ public:
     const spell_data_t* blackout_strike;
     const spell_data_t* bladed_armor;
     const spell_data_t* breath_of_fire;
+    const spell_data_t* brewmaster_monk;
     const spell_data_t* celestial_fortune;
     const spell_data_t* expel_harm;
     const spell_data_t* fortifying_brew;
@@ -400,6 +399,7 @@ public:
     const spell_data_t* essence_font;
     const spell_data_t* essence_font_2;
     const spell_data_t* life_cocoon;
+    const spell_data_t* mistweaver_monk;
     const spell_data_t* reawaken;
     const spell_data_t* renewing_mist;
     const spell_data_t* renewing_mist_2;
@@ -532,7 +532,6 @@ public:
     const spell_data_t* chi_wave_heal;
     const spell_data_t* healing_elixirs;
     // Brewmaster
-    const spell_data_t* aura_brewmaster_monk;
     const spell_data_t* breath_of_fire_dot;
     const spell_data_t* celestial_fortune;
     const spell_data_t* dragonfire_brew_damage;
@@ -546,10 +545,10 @@ public:
     const spell_data_t* keg_smash_buff;
     const spell_data_t* special_delivery;
     const spell_data_t* stagger_self_damage;
+    const spell_data_t* stomp;
     const spell_data_t* tier17_2pc_tank;
 
     // Mistweaver
-    const spell_data_t* aura_mistweaver_monk;
     const spell_data_t* blessings_of_yulon;
     const spell_data_t* celestial_breath_heal;
     const spell_data_t* lifecycles_enveloping_mist;
@@ -569,7 +568,6 @@ public:
     const spell_data_t* tier18_2pc_heal;
 
     // Windwalker
-    const spell_data_t* aura_windwalker_monk;
     const spell_data_t* chi_orbit;
     const spell_data_t* bok_proc;
     const spell_data_t* crackling_tiger_lightning;
@@ -1760,7 +1758,8 @@ private:
 
   struct crackling_tiger_lightning_tick_t: public spell_t
   {
-    crackling_tiger_lightning_tick_t( xuen_pet_t *p ): spell_t( "crackling_tiger_lightning_tick", p, p -> find_spell( 123996 ) )
+    crackling_tiger_lightning_tick_t( xuen_pet_t *p ): 
+      spell_t( "crackling_tiger_lightning_tick", p, p -> o() -> passives.crackling_tiger_lightning )
     {
       aoe = 3;
       dual = direct_tick = background = may_crit = may_miss = true;
@@ -1769,10 +1768,10 @@ private:
     }
   };
 
-  struct crackling_tiger_lightning_driver_t: public spell_t
+  struct crackling_tiger_lightning_t: public spell_t
   {
-    crackling_tiger_lightning_driver_t( xuen_pet_t *p, const std::string& options_str ): 
-      spell_t( "crackling_tiger_lightning_driver", p, p -> o() -> passives.crackling_tiger_lightning_driver )
+    crackling_tiger_lightning_t( xuen_pet_t *p, const std::string& options_str ): 
+      spell_t( "crackling_tiger_lightning", p, p -> o() -> passives.crackling_tiger_lightning )
     {
       parse_options( options_str );
 
@@ -1782,22 +1781,10 @@ private:
       tick_zero = dynamic_tick_action = true; // trigger tick when t == 0
       base_tick_time = p -> o() -> passives.crackling_tiger_lightning_driver -> effectN( 1 ).period(); // trigger a tick every second
       cooldown -> duration = p -> o() -> talent.invoke_xuen -> duration(); // we're done after 45 seconds
+      attack_power_mod.direct = 0.0;
+      attack_power_mod.tick = 0.0;
 
       tick_action = new crackling_tiger_lightning_tick_t( p );
-    }
-  };
-
-  struct crackling_tiger_lightning_t: public melee_attack_t
-  {
-    crackling_tiger_lightning_t( xuen_pet_t* player, const std::string& options_str ): 
-      melee_attack_t( "crackling_tiger_lightning", player, player -> o() -> passives.crackling_tiger_lightning )
-    {
-      parse_options( options_str );
-
-      // Looks like Xuen needs a couple fixups to work properly.  Let's do that now.
-      aoe = 3;
-      special = tick_may_crit = true;
-      cooldown -> duration = timespan_t::from_seconds( 6.0 );
     }
   };
 
@@ -1847,6 +1834,13 @@ public:
     return static_cast<monk_t*>( owner );
   }
 
+  double composite_player_multiplier( school_e school ) const override
+  {
+    double m = pet_t::composite_player_multiplier( school );
+
+    return m;
+  }
+
   virtual void init_action_list() override
   {
     action_list_str = "auto_attack";
@@ -1859,7 +1853,132 @@ public:
                            const std::string& options_str ) override
   {
     if ( name == "crackling_tiger_lightning" )
-      return new crackling_tiger_lightning_driver_t( this, options_str );
+      return new crackling_tiger_lightning_t( this, options_str );
+
+    if ( name == "auto_attack" )
+      return new auto_attack_t( this, options_str );
+
+    return pet_t::create_action( name, options_str );
+  }
+};
+
+// ==========================================================================
+// Niuzao Pet
+// ==========================================================================
+struct niuzao_pet_t: public pet_t
+{
+private:
+  struct melee_t: public melee_attack_t
+  {
+    melee_t( const std::string& n, niuzao_pet_t* player ):
+      melee_attack_t( n, player, spell_data_t::nil() )
+    {
+      background = repeating = may_crit = may_glance = true;
+      school = SCHOOL_PHYSICAL;
+
+      // Use damage numbers from the level-scaled weapon
+      weapon = &( player -> main_hand_weapon );
+      base_execute_time = weapon -> swing_time;
+      trigger_gcd = timespan_t::zero();
+      special = false;
+    }
+
+    void execute() override
+    {
+      if ( time_to_execute > timespan_t::zero() && player -> executing )
+      {
+        if ( sim -> debug )
+          sim -> out_debug.printf( "Executing '%s' during melee (%s).", player -> executing -> name(), util::slot_type_string( weapon -> slot ) );
+        schedule_execute();
+      }
+      else
+        attack_t::execute();
+    }
+  };
+
+  struct stomp_t: public melee_attack_t
+  {
+    stomp_t( niuzao_pet_t *p, const std::string& options_str ): 
+      melee_attack_t( "stomp", p, p -> o() -> passives.stomp )
+    {
+      parse_options( options_str );
+
+      // for future compatibility, we may want to grab Niuzao and our tick spell and build this data from those (Niuzao summon duration, for example)
+      aoe = 3;
+      dot_duration = p -> o() -> talent.invoke_niuzao -> duration();
+      hasted_ticks = may_miss = false;
+      tick_zero = dynamic_tick_action = true; // trigger tick when t == 0
+      base_tick_time = p -> o() -> passives.stomp -> cooldown(); // trigger a tick every second
+      cooldown -> duration = p -> o() -> talent.invoke_niuzao -> duration(); // we're done after 45 seconds
+    }
+  };
+
+  struct auto_attack_t: public attack_t
+  {
+    auto_attack_t( niuzao_pet_t* player, const std::string& options_str ):
+      attack_t( "auto_attack", player, spell_data_t::nil() )
+    {
+      parse_options( options_str );
+
+      player -> main_hand_attack = new melee_t( "melee_main_hand", player );
+      player -> main_hand_attack -> base_execute_time = player -> main_hand_weapon.swing_time;
+
+      trigger_gcd = timespan_t::zero();
+    }
+
+    virtual bool ready() override
+    {
+      if ( player -> is_moving() ) return false;
+
+      return ( player -> main_hand_attack -> execute_event == nullptr ); // not swinging
+    }
+
+    virtual void execute() override
+    {
+      player -> main_hand_attack -> schedule_execute();
+
+      if ( player -> off_hand_attack )
+        player -> off_hand_attack -> schedule_execute();
+    }
+  };
+
+public:
+  niuzao_pet_t( sim_t* sim, monk_t* owner ):
+    pet_t( sim, owner, "niuzao_the_black_ox", true )
+  {
+    main_hand_weapon.type = WEAPON_BEAST;
+    main_hand_weapon.min_dmg = dbc.spell_scaling( o() -> type, level() );
+    main_hand_weapon.max_dmg = dbc.spell_scaling( o() -> type, level() );
+    main_hand_weapon.damage = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
+    owner_coeff.ap_from_ap = 1.35;
+  }
+
+  monk_t* o()
+  {
+    return static_cast<monk_t*>( owner );
+  }
+
+  double composite_player_multiplier( school_e school ) const override
+  {
+    double m = pet_t::composite_player_multiplier( school );
+
+    return m;
+  }
+
+  virtual void init_action_list() override
+  {
+    action_list_str = "auto_attack";
+    action_list_str += "/stomp";
+
+    pet_t::init_action_list();
+  }
+
+  action_t* create_action( const std::string& name,
+                           const std::string& options_str ) override
+  {
+    if ( name == "stomp" )
+      return new stomp_t( this, options_str );
 
     if ( name == "auto_attack" )
       return new auto_attack_t( this, options_str );
@@ -1890,7 +2009,7 @@ public:
                  const spell_data_t* s = spell_data_t::nil() ):
                  ab( n, player, s ),
                  sef_ability( SEF_NONE ),
-                 hasted_gcd( ab::data().affected_by( player -> passives.aura_mistweaver_monk -> effectN( 4 ) ) )
+                 hasted_gcd( ab::data().affected_by( player -> spec.mistweaver_monk -> effectN( 4 ) ) )
   {
     ab::may_crit = true;
     range::fill( _resource_by_stance, RESOURCE_MAX );
@@ -1908,13 +2027,13 @@ public:
         if ( ab::data().affected_by( player -> spec.stagger -> effectN( 15 ) ) )
           ab::base_costs[RESOURCE_CHI] *= 1 + player -> spec.stagger -> effectN( 15 ).percent(); // -100% for Brewmasters
         // Hasted Cooldown
-        ab::cooldown -> hasted = ab::data().affected_by( player -> passives.aura_brewmaster_monk -> effectN( 3 ) );
+        ab::cooldown -> hasted = ab::data().affected_by( player -> spec.brewmaster_monk -> effectN( 3 ) );
         break;
       }
       case MONK_MISTWEAVER:
       {
         // Hasted Cooldown
-        ab::cooldown -> hasted = ab::data().affected_by( player -> passives.aura_mistweaver_monk -> effectN( 5 ) );
+        ab::cooldown -> hasted = ab::data().affected_by( player -> spec.mistweaver_monk -> effectN( 5 ) );
         break;
       }
       case MONK_WINDWALKER:
@@ -1927,8 +2046,8 @@ public:
         // Hasted Cooldown
         ab::cooldown -> hasted = ab::data().affected_by( player -> passives.aura_monk -> effectN( 1 ) );
         // Cooldown reduction
-        if ( ab::data().affected_by( player -> passives.aura_windwalker_monk -> effectN( 3 ) ) )
-          ab::cooldown -> duration *= 1 + player -> passives.aura_windwalker_monk -> effectN( 3 ).percent(); // saved as -100
+        if ( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 3 ) ) )
+          ab::cooldown -> duration *= 1 + player -> spec.windwalker_monk -> effectN( 3 ).percent(); // saved as -100
         break;
       }
       default: break;
@@ -2307,22 +2426,17 @@ struct monk_spell_t: public monk_action_t < spell_t >
   {
     double am = base_t::action_multiplier();
 
-    if ( p() -> specialization() == MONK_WINDWALKER )
-    {
-      if ( this -> data().affected_by( p() -> passives.aura_windwalker_monk -> effectN( 1 ) ) )
-        am *= 1.0 + p() -> passives.aura_windwalker_monk -> effectN( 1 ).percent();
+    if ( this -> data().affected_by( p() -> spec.windwalker_monk -> effectN( 1 ) ) )
+      am *= 1.0 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
 
-      if ( this -> data().affected_by( p() -> passives.aura_windwalker_monk -> effectN( 2 ) ) )
-        am *= 1.0 + p() -> passives.aura_windwalker_monk -> effectN( 2 ).percent();
-    }
-    else if ( p() -> specialization() == MONK_BREWMASTER )
-    {
-      if ( this -> data().affected_by( p() -> passives.aura_brewmaster_monk -> effectN( 1 ) ) )
-        am *= 1.0 + p() -> passives.aura_brewmaster_monk -> effectN( 1 ).percent();
+    if ( this -> data().affected_by( p() -> spec.windwalker_monk -> effectN( 2 ) ) )
+      am *= 1.0 + p() -> spec.windwalker_monk -> effectN( 2 ).percent();
 
-      if ( this -> data().affected_by( p() -> passives.aura_brewmaster_monk -> effectN( 2 ) ) )
-        am *= 1.0 + p() -> passives.aura_brewmaster_monk -> effectN( 2 ).percent();
-    }
+    if ( this -> data().affected_by( p() -> spec.brewmaster_monk -> effectN( 1 ) ) )
+      am *= 1.0 + p() -> spec.brewmaster_monk -> effectN( 1 ).percent();
+
+    if ( this -> data().affected_by( p() -> spec.brewmaster_monk -> effectN( 2 ) ) )
+      am *= 1.0 + p() -> spec.brewmaster_monk -> effectN( 2 ).percent();
 
     return am;
   }
@@ -2370,16 +2484,12 @@ struct monk_heal_t: public monk_action_t < heal_t >
       if ( p() -> buff.extend_life -> up() )
         am *= 1.0 + p() -> buff.extend_life -> value();
     }
-    else if ( p() -> specialization() == MONK_WINDWALKER )
-    {
-      if ( this -> data().affected_by( p() -> passives.aura_windwalker_monk -> effectN( 1 ) ) )
-        am *= 1.0 + p() -> passives.aura_windwalker_monk -> effectN( 1 ).percent();
-    }
-    else if ( p() -> specialization() == MONK_BREWMASTER )
-    {
-      if ( this -> data().affected_by( p() -> passives.aura_brewmaster_monk -> effectN( 1 ) ) )
-        am *= 1.0 + p() -> passives.aura_brewmaster_monk -> effectN( 1 ).percent();
-    }
+
+    if ( this -> data().affected_by( p() -> spec.windwalker_monk -> effectN( 1 ) ) )
+        am *= 1.0 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
+
+    if ( this -> data().affected_by( p() -> spec.brewmaster_monk -> effectN( 1 ) ) )
+        am *= 1.0 + p() -> spec.brewmaster_monk -> effectN( 1 ).percent();
 
     return am;
   }
@@ -2424,17 +2534,11 @@ struct monk_melee_attack_t: public monk_action_t < melee_attack_t >
   {
     double am = base_t::action_multiplier();
 
-    if ( p() -> specialization() == MONK_WINDWALKER )
-    {
-      if ( this -> data().affected_by( p() -> passives.aura_windwalker_monk -> effectN( 1 ) ) )
-        am *= 1.0 + p() -> passives.aura_windwalker_monk -> effectN( 1 ).percent();
-    }
-    else if ( p() -> specialization() == MONK_BREWMASTER )
-    {
-      if ( this -> data().affected_by( p() -> passives.aura_brewmaster_monk -> effectN( 1 ) ) )
-        am *= 1.0 + p() -> passives.aura_brewmaster_monk -> effectN( 1 ).percent();
-    }
+    if ( this -> data().affected_by( p() -> spec.windwalker_monk -> effectN( 1 ) ) )
+      am *= 1.0 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
 
+    if ( this -> data().affected_by( p() -> spec.brewmaster_monk -> effectN( 1 ) ) )
+        am *= 1.0 + p() -> spec.brewmaster_monk -> effectN( 1 ).percent();
 
     return am;
   }
@@ -2473,10 +2577,7 @@ struct eye_of_the_tiger_heal_tick_t : public monk_heal_t
   {
     double am = monk_heal_t::action_multiplier();
 
-    if ( p() -> specialization() == MONK_BREWMASTER )
-    {
-      am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 7 ).percent();
-    }
+    am *= 1 + p() -> spec.brewmaster_monk -> effectN( 7 ).percent();
 
     return am;
   }
@@ -2497,10 +2598,8 @@ struct eye_of_the_tiger_dmg_tick_t: public monk_spell_t
   {
     double am = monk_spell_t::action_multiplier();
 
-    if ( p() -> specialization() == MONK_BREWMASTER )
-    {
-      am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 5 ).percent();
-    }
+    am *= 1 + p() -> spec.brewmaster_monk -> effectN( 5 ).percent();
+
     return am;
   }
 };
@@ -2527,9 +2626,7 @@ struct tiger_palm_t: public monk_melee_attack_t
       base_costs[RESOURCE_ENERGY] *= 1 + p -> spec.stagger -> effectN( 16 ).percent(); // -50% for Brewmasters
 
     if ( p -> specialization() == MONK_WINDWALKER )
-    {
-      energize_amount = p -> passives.aura_windwalker_monk -> effectN( 4 ).base_value();
-    }
+      energize_amount = p -> spec.windwalker_monk -> effectN( 4 ).base_value();
     else
       energize_type = ENERGIZE_NONE;
 
@@ -2553,12 +2650,11 @@ struct tiger_palm_t: public monk_melee_attack_t
     if ( p() -> artifact.tiger_claws.rank() )
       am *= 1 + p() -> artifact.tiger_claws.percent();
 
-    if ( p() -> specialization() == MONK_MISTWEAVER )
-      am *= 1 + p() -> passives.aura_mistweaver_monk -> effectN( 11 ).percent();
+    am *= 1 + p() -> spec.mistweaver_monk -> effectN( 11 ).percent();
 
     if ( p() -> specialization() == MONK_BREWMASTER )
     {
-      am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 6 ).percent();
+      am *= 1 + p() -> spec.brewmaster_monk -> effectN( 6 ).percent();
 
       if ( p() -> artifact.face_palm.rank() )
       {
@@ -2837,8 +2933,8 @@ struct rising_sun_kick_t: public monk_melee_attack_t
   {
     parse_options( options_str );
 
-    if ( p -> specialization() == MONK_MISTWEAVER )
-      cooldown -> duration += p -> passives.aura_mistweaver_monk -> effectN( 8 ).time_value();
+    cooldown -> duration += p -> spec.mistweaver_monk -> effectN( 8 ).time_value();
+
     if ( p -> sets.has_set_bonus( MONK_WINDWALKER, T19, B2) )
       cooldown -> duration += p -> sets.set( MONK_WINDWALKER, T19, B2 ) -> effectN( 1 ).time_value();
 
@@ -3005,7 +3101,7 @@ struct blackout_kick_totm_proc : public monk_melee_attack_t
   {
     double am = monk_melee_attack_t::action_multiplier();
 
-    am *= 1 + p() -> passives.aura_mistweaver_monk -> effectN( 10 ).percent();
+    am *= 1 + p() -> spec.mistweaver_monk -> effectN( 10 ).percent();
 
     return am;
   }
@@ -3094,7 +3190,7 @@ struct blackout_kick_t: public monk_melee_attack_t
     {
       case MONK_MISTWEAVER:
       {
-        am *= 1 + p() -> passives.aura_mistweaver_monk -> effectN( 10 ).percent();
+        am *= 1 + p() -> spec.mistweaver_monk -> effectN( 10 ).percent();
         break;
       }
       case MONK_WINDWALKER:
@@ -3169,10 +3265,6 @@ struct blackout_kick_t: public monk_melee_attack_t
 
     if ( result_is_hit( s -> result ) )
     {
-      // Apply Dizzing Kick debuff onto the target if talented
-      if ( p() -> talent.dizzying_kicks -> ok() )
-        td( s -> target ) -> debuff.dizzing_kicks -> trigger();
-
       if ( p() -> specialization() == MONK_WINDWALKER && p() -> spec.spinning_crane_kick )
         p() -> trigger_mark_of_the_crane( s );
 
@@ -3224,10 +3316,8 @@ struct blackout_strike_t: public monk_melee_attack_t
 
     // Mistweavers cannot learn this spell. However the effect to adjust this spell is in the database.
     // Just being a completionist about this.
-    if ( p() -> specialization() == MONK_MISTWEAVER )
-    {
-      am *= 1 + p() -> passives.aura_mistweaver_monk -> effectN( 10 ).percent();
-    }
+    am *= 1 + p() -> spec.mistweaver_monk -> effectN( 10 ).percent();
+
     return am;
   }
 
@@ -3305,10 +3395,7 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
     if ( p() -> buff.combo_strikes -> up() )
       pm *= 1 + p() -> cache.mastery_value();
 
-    if ( p() -> specialization() == MONK_BREWMASTER )
-    {
-      pm *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 5 ).percent();
-    }
+    pm *= 1 + p() -> spec.brewmaster_monk -> effectN( 5 ).percent();
 
     return pm;
   }
@@ -3400,8 +3487,7 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
     if ( p() -> artifact.power_of_a_thousand_cranes.rank() )
       pm *= 1 + p() -> artifact.power_of_a_thousand_cranes.percent();
 
-    if ( p() -> specialization() == MONK_MISTWEAVER )
-      pm *= 1 + p() -> passives.aura_mistweaver_monk -> effectN( 12 ).percent();
+    pm *= 1 + p() -> spec.mistweaver_monk -> effectN( 12 ).percent();
 
     return pm;
   }
@@ -3826,7 +3912,7 @@ struct melee_t: public monk_melee_attack_t
     if ( player -> main_hand_weapon.group() == WEAPON_1H )
     {
       if ( player -> specialization() == MONK_MISTWEAVER )
-        base_multiplier *= 1.0 + player -> passives.aura_mistweaver_monk -> effectN( 3 ).percent();
+        base_multiplier *= 1.0 + player -> spec.mistweaver_monk -> effectN( 3 ).percent();
       else
         base_hit -= 0.19;
     }
@@ -4409,6 +4495,23 @@ struct xuen_spell_t: public summon_pet_t
 };
 
 // ==========================================================================
+// Invoke Niuzao, the Black Ox
+// ==========================================================================
+
+struct niuzao_spell_t: public summon_pet_t
+{
+  niuzao_spell_t( monk_t* p, const std::string& options_str ):
+    summon_pet_t( "invoke_niuzao", "niuzao_the_black_ox", p, p -> talent.invoke_niuzao )
+  {
+    parse_options( options_str );
+
+    trigger_gcd = timespan_t::zero();
+    harmful = false;
+    summoning_duration = data().duration();
+  }
+};
+
+// ==========================================================================
 // Storm, Earth, and Fire
 // ==========================================================================
 
@@ -4599,8 +4702,7 @@ struct crackling_jade_lightning_t: public monk_spell_t
   {
     double am = monk_spell_t::action_multiplier();
 
-    if ( p() -> specialization() == MONK_MISTWEAVER )
-      am *= 1 + p() -> passives.aura_mistweaver_monk -> effectN( 13 ).percent();
+    am *= 1 + p() -> spec.mistweaver_monk -> effectN( 13 ).percent();
 
     return am;
   }
@@ -6072,10 +6174,8 @@ struct chi_wave_heal_tick_t: public monk_heal_t
         sef_mult += p() -> artifact.spiritual_focus.data().effectN( 3 ).percent();
       am *= 1.0 + sef_mult;
     }
-    if ( p() -> specialization() == MONK_BREWMASTER )
-    {
-      am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 6 ).percent();
-    }
+
+    am *= 1 + p() -> spec.brewmaster_monk -> effectN( 6 ).percent();
 
     return am;
   }
@@ -6104,10 +6204,8 @@ struct chi_wave_dmg_tick_t: public monk_spell_t
   {
     double am = monk_spell_t::action_multiplier();
 
-    if ( p() -> specialization() == MONK_BREWMASTER )
-    {
-      am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 6 ).percent();
-    }
+    am *= 1 + p() -> spec.brewmaster_monk -> effectN( 6 ).percent();
+
     return am;
   }
 };
@@ -6191,10 +6289,7 @@ struct chi_burst_heal_t: public monk_heal_t
       am *= 1.0 + sef_mult;
     }
 
-    if ( p() -> specialization() == MONK_BREWMASTER )
-    {
-      am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 6 ).percent();
-    }
+    am *= 1 + p() -> spec.brewmaster_monk -> effectN( 6 ).percent();
 
     return am;
   }
@@ -6224,10 +6319,8 @@ struct chi_burst_damage_t: public monk_spell_t
   {
     double am = monk_spell_t::action_multiplier();
 
-    if ( p() -> specialization() == MONK_BREWMASTER )
-    {
-      am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 6 ).percent();
-    }
+    am *= 1 + p() -> spec.brewmaster_monk -> effectN( 6 ).percent();
+
     return am;
   }
 };
@@ -6724,10 +6817,6 @@ monk( *p )
       .quiet( true );
   }
 
-  debuff.dizzing_kicks = buff_creator_t( *this, "dizzying_kicks" )
-    .spell( p -> passives.dizzying_kicks )
-    .default_value( p-> passives.dizzying_kicks -> effectN( 1 ).percent() );
-
   if ( p -> specialization() == MONK_BREWMASTER )
   {
     debuff.keg_smash = buff_creator_t( *this, "keg_smash" )
@@ -6767,6 +6856,7 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "fortifying_brew" ) return new           fortifying_brew_t( *this, options_str );
   if ( name == "gift_of_the_ox" ) return new            gift_of_the_ox_t( *this, options_str );
   if ( name == "greater_gift_of_the_ox" ) return new    greater_gift_of_the_ox_t( *this, options_str );
+  if ( name == "invoke_niuzao" ) return new             niuzao_spell_t( this, options_str );
   if ( name == "ironskin_brew" ) return new             ironskin_brew_t( *this, options_str );
   if ( name == "keg_smash" ) return new                 keg_smash_t( *this, options_str );
   if ( name == "purifying_brew" ) return new            purifying_brew_t( *this, options_str );
@@ -6963,6 +7053,7 @@ pet_t* monk_t::create_pet( const std::string& name,
 
   using namespace pets;
   if ( name == "xuen_the_white_tiger" ) return new xuen_pet_t( sim, this );
+  if ( name == "niuzao_the_black_ox" ) return new niuzao_pet_t( sim, this );
 
   return nullptr;
 }
@@ -6976,6 +7067,11 @@ void monk_t::create_pets()
   if ( talent.invoke_xuen -> ok() && find_action( "invoke_xuen" ) )
   {
     create_pet( "xuen_the_white_tiger" );
+  }
+
+  if ( talent.invoke_niuzao -> ok() && find_action( "invoke_niuzao" ) )
+  {
+    create_pet( "niuzao_the_black_ox" );
   }
 
   if ( specialization() == MONK_WINDWALKER && find_action( "storm_earth_and_fire" ) )
@@ -7024,8 +7120,7 @@ void monk_t::init_spells()
 
   // Tier 60 Talents
   talent.ring_of_peace               = find_talent_spell( "Ring of Peace" );
-  talent.summon_black_ox_statue      = find_talent_spell( "Summon Black Ox Statue" ); // Brewmaster
-  talent.dizzying_kicks              = find_talent_spell( "Dizzying Kicks" ); // Windwalker
+  talent.summon_black_ox_statue      = find_talent_spell( "Summon Black Ox Statue" ); // Brewmaster & Windwalker
   talent.song_of_chi_ji              = find_talent_spell( "Song of Chi-Ji" ); // Mistweaver
   talent.leg_sweep                   = find_talent_spell( "Leg Sweep" );
 
@@ -7142,6 +7237,7 @@ void monk_t::init_spells()
   spec.blackout_strike               = find_specialization_spell( "Blackout Strike" );
   spec.bladed_armor                  = find_specialization_spell( "Bladed Armor" );
   spec.breath_of_fire                = find_specialization_spell( "Breath of Fire" );
+  spec.brewmaster_monk               = find_specialization_spell( "Brewmaster Monk" );
   spec.celestial_fortune             = find_specialization_spell( "Celestial Fortune" );
   spec.expel_harm                    = find_specialization_spell( "Expel Harm" );
   spec.fortifying_brew               = find_specialization_spell( "Fortifying Brew" );
@@ -7161,6 +7257,7 @@ void monk_t::init_spells()
   spec.envoloping_mist_2             = find_specialization_spell( 231605 );
   spec.essence_font                  = find_specialization_spell( "Essence Font" );
   spec.life_cocoon                   = find_specialization_spell( "Life Cocoon" );
+  spec.mistweaver_monk               = find_specialization_spell( "Mistweaver Monk" );
   spec.reawaken                      = find_specialization_spell( "Reawaken" );
   spec.renewing_mist                 = find_specialization_spell( "Renewing Mist" );
   spec.renewing_mist_2               = find_specialization_spell( 231606 );
@@ -7198,7 +7295,6 @@ void monk_t::init_spells()
   passives.healing_elixirs                  = find_spell( 122281 ); // talent.healing_elixirs -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() 
 
   // Brewmaster
-  passives.aura_brewmaster_monk             = find_spell( 137023 );
   passives.breath_of_fire_dot               = find_spell( 123725 );
   passives.celestial_fortune                = find_spell( 216521 );
   passives.dragonfire_brew_damage           = find_spell( 227681 ); 
@@ -7212,10 +7308,10 @@ void monk_t::init_spells()
   passives.face_palm                        = find_spell( 227679 );
   passives.special_delivery                 = find_spell( 196733 );
   passives.stagger_self_damage              = find_spell( 124255 );
+  passives.stomp                            = find_spell( 227291 );
   passives.tier17_2pc_tank                  = find_spell( 165356 );
 
   // Mistweaver
-  passives.aura_mistweaver_monk             = find_spell( 137024 );
   passives.totm_bok_proc                    = find_spell( 228649 );
   passives.blessings_of_yulon               = find_spell( 199671 );
   passives.celestial_breath_heal            = find_spell( 199565 ); // artifact.celestial_breath.data().effectN( 1 ).trigger() -> effectN( 1 ).trigger()
@@ -7235,7 +7331,6 @@ void monk_t::init_spells()
   passives.tier18_2pc_heal                  = find_spell( 185158 ); // Extend Life
 
   // Windwalker
-  passives.aura_windwalker_monk             = find_spell( 137025 );
   passives.chi_orbit                        = find_spell( 196748 );
   passives.bok_proc                         = find_spell( 116768 );
   passives.crackling_tiger_lightning        = find_spell( 123996 );
@@ -8090,8 +8185,7 @@ double monk_t::composite_armor_multiplier() const
 
   a *= 1 + spec.stagger -> effectN( 14 ).percent();
 
-  if ( specialization() == MONK_BREWMASTER )
-    a *= 1 + passives.aura_brewmaster_monk -> effectN( 6 ).percent();
+  a *= 1 + spec.brewmaster_monk -> effectN( 6 ).percent();
 
   if ( artifact.wanderers_hardiness.rank() )
     a *= 1 + artifact.wanderers_hardiness.percent();
@@ -8873,7 +8967,6 @@ void monk_t::apl_combat_mistweaver()
   action_priority_list_t* aoe = get_action_priority_list( "aoe" );
 
   def -> add_action( "auto_attack" );
-  def -> add_action( "invoke_xuen" );
   int num_items = (int)items.size();
   for ( int i = 0; i < num_items; i++ )
   {

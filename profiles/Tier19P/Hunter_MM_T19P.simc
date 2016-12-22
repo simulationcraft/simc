@@ -3,7 +3,7 @@ level=110
 race=blood_elf
 role=attack
 position=ranged_back
-talents=1103021
+talents=1303013
 artifact=55:137493:137412:137327:0:307:1:308:1:310:1:312:3:313:3:315:3:318:3:319:3:320:3:322:1:1337:1
 spec=marksmanship
 
@@ -111,8 +111,8 @@ main_hand=thasdorah_legacy_of_the_windrunners,id=128826,ilevel=870
 # gear_agility=10680
 # gear_stamina=18862
 # gear_crit_rating=1373
-# gear_haste_rating=4996
-# gear_mastery_rating=12211
+# gear_haste_rating=4893
+# gear_mastery_rating=12065
 # gear_versatility_rating=943
 # gear_armor=2433
 # set_bonus=tier19p_mail_2pc=1

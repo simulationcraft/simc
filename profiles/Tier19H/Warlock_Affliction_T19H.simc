@@ -79,8 +79,8 @@ main_hand=ulthalesh_the_deadwind_harvester,id=128942,gem_id=137347/137544/137347
 # gear_stamina=23773
 # gear_intellect=26087
 # gear_crit_rating=2179
-# gear_haste_rating=7431
-# gear_mastery_rating=11355
+# gear_haste_rating=7233
+# gear_mastery_rating=11076
 # gear_armor=1715
 # set_bonus=tier19p_cloth_2pc=1
 default_pet=felhunter
