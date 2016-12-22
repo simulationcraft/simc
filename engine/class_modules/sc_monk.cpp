@@ -5310,7 +5310,7 @@ struct dampen_harm_t: public monk_spell_t
   {
     monk_spell_t::execute();
 
-    p() -> buff.dampen_harm -> trigger( data().max_stacks() );
+    p() -> buff.dampen_harm -> trigger();
   }
 };
 
@@ -7484,8 +7484,7 @@ void monk_t::create_buffs()
   buff.rushing_jade_wind = buff_creator_t( this, "rushing_jade_wind", talent.rushing_jade_wind )
     .cd( timespan_t::zero() );
 
-  buff.dampen_harm = buff_creator_t( this, "dampen_harm", talent.dampen_harm )
-    .cd( timespan_t::zero() );
+  buff.dampen_harm = buff_creator_t( this, "dampen_harm", talent.dampen_harm );
 
   buff.diffuse_magic = buff_creator_t( this, "diffuse_magic", talent.diffuse_magic )
     .default_value( talent.diffuse_magic -> effectN( 1 ).percent() );
@@ -8450,12 +8449,17 @@ void monk_t::target_mitigation( school_e school,
     return;
   }
 
-  // Dampen Harm // Currently reduces hits below 15% hp as well
-  double dampen_health = max_health() * buff.dampen_harm -> data().effectN( 1 ).percent();
-  if ( buff.dampen_harm -> up() && s -> result_amount >= dampen_health )
+  // Dampen Harm // Reduces hits by 20 - 50% based on the size of the hit
+  if ( buff.dampen_harm -> up() )
   {
-    s -> result_amount *= 1.0 - buff.dampen_harm -> data().effectN( 2 ).percent(); // Dampen Harm reduction is stored as +50
-    buff.dampen_harm -> decrement(); // A stack will only be removed if the reduction was applied.
+    double dampen_max_percent = buff.dampen_harm -> data().effectN( 3 ).percent();
+    if ( s -> result_amount >= max_health() )
+      s -> result_amount *= 1 - dampen_max_percent;
+    else
+    {
+      double dampen_min_percent = buff.dampen_harm -> data().effectN( 2 ).percent();
+      s -> result_amount *= 1 - ( dampen_min_percent + ( ( dampen_max_percent - dampen_min_percent ) * ( s -> result_amount / max_health() ) ) );
+    }
   }
 
   // Diffuse Magic
