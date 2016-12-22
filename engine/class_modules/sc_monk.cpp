@@ -545,6 +545,7 @@ public:
     const spell_data_t* keg_smash_buff;
     const spell_data_t* special_delivery;
     const spell_data_t* stagger_self_damage;
+    const spell_data_t* stomp;
     const spell_data_t* tier17_2pc_tank;
 
     // Mistweaver
@@ -1853,6 +1854,131 @@ public:
   {
     if ( name == "crackling_tiger_lightning" )
       return new crackling_tiger_lightning_t( this, options_str );
+
+    if ( name == "auto_attack" )
+      return new auto_attack_t( this, options_str );
+
+    return pet_t::create_action( name, options_str );
+  }
+};
+
+// ==========================================================================
+// Niuzao Pet
+// ==========================================================================
+struct niuzao_pet_t: public pet_t
+{
+private:
+  struct melee_t: public melee_attack_t
+  {
+    melee_t( const std::string& n, niuzao_pet_t* player ):
+      melee_attack_t( n, player, spell_data_t::nil() )
+    {
+      background = repeating = may_crit = may_glance = true;
+      school = SCHOOL_PHYSICAL;
+
+      // Use damage numbers from the level-scaled weapon
+      weapon = &( player -> main_hand_weapon );
+      base_execute_time = weapon -> swing_time;
+      trigger_gcd = timespan_t::zero();
+      special = false;
+    }
+
+    void execute() override
+    {
+      if ( time_to_execute > timespan_t::zero() && player -> executing )
+      {
+        if ( sim -> debug )
+          sim -> out_debug.printf( "Executing '%s' during melee (%s).", player -> executing -> name(), util::slot_type_string( weapon -> slot ) );
+        schedule_execute();
+      }
+      else
+        attack_t::execute();
+    }
+  };
+
+  struct stomp_t: public spell_t
+  {
+    stomp_t( niuzao_pet_t *p, const std::string& options_str ): 
+      spell_t( "stomp", p, p -> o() -> passives.stomp )
+    {
+      parse_options( options_str );
+
+      // for future compatibility, we may want to grab Niuzao and our tick spell and build this data from those (Niuzao summon duration, for example)
+      aoe = 3;
+      dot_duration = p -> o() -> talent.invoke_niuzao -> duration();
+      hasted_ticks = may_miss = false;
+      tick_zero = dynamic_tick_action = true; // trigger tick when t == 0
+      base_tick_time = p -> o() -> passives.stomp -> cooldown(); // trigger a tick every second
+      cooldown -> duration = p -> o() -> talent.invoke_niuzao -> duration(); // we're done after 45 seconds
+    }
+  };
+
+  struct auto_attack_t: public attack_t
+  {
+    auto_attack_t( niuzao_pet_t* player, const std::string& options_str ):
+      attack_t( "auto_attack", player, spell_data_t::nil() )
+    {
+      parse_options( options_str );
+
+      player -> main_hand_attack = new melee_t( "melee_main_hand", player );
+      player -> main_hand_attack -> base_execute_time = player -> main_hand_weapon.swing_time;
+
+      trigger_gcd = timespan_t::zero();
+    }
+
+    virtual bool ready() override
+    {
+      if ( player -> is_moving() ) return false;
+
+      return ( player -> main_hand_attack -> execute_event == nullptr ); // not swinging
+    }
+
+    virtual void execute() override
+    {
+      player -> main_hand_attack -> schedule_execute();
+
+      if ( player -> off_hand_attack )
+        player -> off_hand_attack -> schedule_execute();
+    }
+  };
+
+public:
+  niuzao_pet_t( sim_t* sim, monk_t* owner ):
+    pet_t( sim, owner, "niuzao_the_black_ox", true )
+  {
+    main_hand_weapon.type = WEAPON_BEAST;
+    main_hand_weapon.min_dmg = dbc.spell_scaling( o() -> type, level() );
+    main_hand_weapon.max_dmg = dbc.spell_scaling( o() -> type, level() );
+    main_hand_weapon.damage = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
+    owner_coeff.ap_from_ap = 1.35;
+  }
+
+  monk_t* o()
+  {
+    return static_cast<monk_t*>( owner );
+  }
+
+  double composite_player_multiplier( school_e school ) const override
+  {
+    double m = pet_t::composite_player_multiplier( school );
+
+    return m;
+  }
+
+  virtual void init_action_list() override
+  {
+    action_list_str = "auto_attack";
+    action_list_str += "/stomp";
+
+    pet_t::init_action_list();
+  }
+
+  action_t* create_action( const std::string& name,
+                           const std::string& options_str ) override
+  {
+    if ( name == "stomp" )
+      return new stomp_t( this, options_str );
 
     if ( name == "auto_attack" )
       return new auto_attack_t( this, options_str );
@@ -7158,6 +7284,7 @@ void monk_t::init_spells()
   passives.face_palm                        = find_spell( 227679 );
   passives.special_delivery                 = find_spell( 196733 );
   passives.stagger_self_damage              = find_spell( 124255 );
+  passives.stomp                            = find_spell( 227291 );
   passives.tier17_2pc_tank                  = find_spell( 165356 );
 
   // Mistweaver
