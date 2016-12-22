@@ -135,6 +135,7 @@ public:
     // Shadow
     buff_t* anunds_last_breath;       // Anund's Seared Shackles stack counter
     buff_t* the_twins_painful_touch;  // To track first casting
+    buff_t* zeks_exterminatus;        // Aura for Zeks proc
   } buffs;
 
   // Talents
@@ -332,6 +333,8 @@ public:
   // Procs
   struct
   {
+    proc_t* legendary_zeks_exterminatus;
+    proc_t* legendary_zeks_exterminatus_overflow;
     proc_t* legendary_anunds_last_breath;
     proc_t* legendary_anunds_last_breath_overflow;
     proc_t* shadowy_insight;
@@ -382,6 +385,7 @@ public:
     const special_effect_t* mangazas_madness;           // belt
     const special_effect_t* zenkaram_iridis_anadem;     // helm
     const special_effect_t* the_twins_painful_touch;    // ring
+    const special_effect_t* zeks_exterminatus;          // cloak
   } active_items;
 
   // Pets
@@ -1125,6 +1129,27 @@ public:
       else
       {
         priest.procs.shadowy_insight->occur();
+      }
+      return true;
+    }
+    return false;
+  }
+
+  void trigger_zeks()
+  {
+    int stack = priest.buffs.zeks_exterminatus->check();
+    if (priest.buffs.zeks_exterminatus->trigger())
+    {
+      // proc doesn't reset the CD :'(
+      // priest.cooldowns.shadow_word_death->reset(true);
+
+      if (priest.buffs.zeks_exterminatus->check())
+      {
+        priest.procs.legendary_zeks_exterminatus_overflow->occur();
+      }
+      else
+      {
+        priest.procs.legendary_zeks_exterminatus->occur();
       }
       return true;
     }
@@ -2754,6 +2779,11 @@ struct shadow_word_pain_t final : public priest_spell_t
           priest.buffs.sphere_of_insanity->current_value );
       priest.buffs.sphere_of_insanity->current_value = 0;
     }
+
+    if (priest.active_items.zeks_exterminatus)
+    {
+      trigger_zeks();
+    }
   }
 
   void tick( dot_t* d ) override
@@ -2784,6 +2814,11 @@ struct shadow_word_pain_t final : public priest_spell_t
     if ( priest.active_items.anunds_seared_shackles )
     {
       trigger_anunds();
+    }
+
+    if (priest.active_items.zeks_exterminatus)
+    {
+      trigger_zeks();
     }
   }
 
@@ -3888,22 +3923,32 @@ struct surrender_to_madness_t final : public priest_buff_t<buff_t>
 */
 struct lingering_insanity_t final : public priest_buff_t<haste_buff_t>
 {
+  const spell_data_t* hidden_lingering_insanity;
+
   lingering_insanity_t( priest_t& p)
     : base_t( p, haste_buff_creator_t( &p, "lingering_insanity",
                                   p.talents.lingering_insanity)
                 .reverse(true)
-                .period(p.find_spell(197937)->effectN( 2 ).period())
+                .period(timespan_t::from_seconds(1))
                 .tick_behavior(BUFF_TICK_REFRESH)
                 .tick_time_behavior(BUFF_TICK_TIME_UNHASTED)
                 .max_stack(p.find_spell(185916)->effectN( 4 ).base_value() ) // or 18?
                 )
   {
+    hidden_lingering_insanity = player->find_spell(199849);
   }
 
   void decrement(int stacks, double value) override
-  {
-    auto hidden_lingering_insanity = player->find_spell(199849);
+  { 
     buff_t::decrement(hidden_lingering_insanity->effectN( 1 ).base_value());
+  }
+
+  void expire_override(int stacks, timespan_t) 
+  {
+    if (stacks <= 0)
+    {
+      expire();
+    }
   }
 };
 
@@ -4024,6 +4069,14 @@ void zenkaram_iridis_anadem( special_effect_t& effect )
                    priest->active_items.zenkaram_iridis_anadem, effect );
 }
 
+void zeks_exterminatus(special_effect_t& effect)
+{
+  priest_t* priest = debug_cast<priest_t*>(effect.player);
+  assert(priest);
+  do_trinket_init(priest, PRIEST_SHADOW,
+    priest->active_items.zeks_exterminatus, effect);
+}
+
 void init()
 {
   // Archimonde Trinkets
@@ -4037,6 +4090,7 @@ void init()
   unique_gear::register_special_effect( 215250, mother_shahrazs_seduction );
   unique_gear::register_special_effect( 207721, the_twins_painful_touch );
   unique_gear::register_special_effect( 224999, zenkaram_iridis_anadem );
+  unique_gear::register_special_effect( 236545, zeks_exterminatus );
 }
 
 }  // items
