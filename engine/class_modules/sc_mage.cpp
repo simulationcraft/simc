@@ -5051,9 +5051,6 @@ struct frozen_orb_t : public frost_mage_spell_t
     ice_time_nova( new ice_time_nova_t( p  ) )
   {
     parse_options( options_str );
-    hasted_ticks = false;
-    base_tick_time    = timespan_t::from_seconds( 0.5 );
-    dot_duration      = timespan_t::from_seconds( 10.0 );
     add_child( frozen_orb_bolt );
     add_child( ice_time_nova );
     may_miss       = false;
@@ -5067,15 +5064,6 @@ struct frozen_orb_t : public frost_mage_spell_t
                         -> get_source_id( "Frozen Orb Initial Impact" );
 
     return frost_mage_spell_t::init_finished();
-  }
-
-  void tick( dot_t* d ) override
-  {
-    frost_mage_spell_t::tick( d );
-    // "travel time" reduction of ticks based on distance from target - set on the side of less ticks lost.
-    //TODO: Update/Check this for legion - does it still lose ticks on travel?
-    frozen_orb_bolt -> target = d -> target;
-    frozen_orb_bolt -> execute();
   }
 
   virtual void execute() override
@@ -5095,8 +5083,12 @@ struct frozen_orb_t : public frost_mage_spell_t
     if ( result_is_hit( s -> result ) )
     {
       trigger_fof( fof_source_id, 1.0 );
+      make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
+        .pulse_time( timespan_t::from_seconds( 0.5 ) )
+        .target( s -> target )
+        .duration( timespan_t::from_seconds( 10.0 ) )
+        .action( frozen_orb_bolt ) );
     }
-
     if ( ice_time )
     {
       ice_time_nova -> target = s -> target;
@@ -8720,10 +8712,10 @@ void mage_t::apl_arcane()
 
   burn      -> add_action( "call_action_list,name=cooldowns" );
   burn      -> add_action( this, "Arcane Missiles", "if=buff.arcane_missiles.react=3" );
-  burn      -> add_talent( this, "Presence of Mind", "if=buff.arcane_power.remains>2*gcd" );
   burn      -> add_talent( this, "Nether Tempest", "if=dot.nether_tempest.remains<=2|!ticking" );
   burn      -> add_action( this, "Arcane Blast", "if=active_enemies<=1&mana.pct%10*execute_time>target.time_to_die" );
   burn      -> add_action( this, "Arcane Explosion", "if=active_enemies>1&mana.pct%10*execute_time>target.time_to_die" );
+  burn      -> add_action( this, "Presence of Mind", "if=buff.rune_of_power.remains<=2*action.arcane_blast.execute_time");
   burn      -> add_action( this, "Arcane Missiles", "if=buff.arcane_missiles.react>1" );
   burn      -> add_action( this, "Arcane Explosion", "if=active_enemies>1&buff.arcane_power.remains>cast_time" );
   burn      -> add_action( this, "Arcane Blast", "if=buff.presence_of_mind.up|buff.arcane_power.remains>cast_time" );
