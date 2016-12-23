@@ -2927,11 +2927,19 @@ expr_t* action_t::create_expression( const std::string& name_str )
 
   if ( splits.size() == 3 && splits[0] == "prev_gcd" )
   {
+    int gcd = util::to_int( splits[1] );
+    if ( gcd <= 0 )
+    {
+      sim -> errorf( "%s expression creation error: invalid parameters for expression 'prev_gcd.<number>.<action>'",
+            player -> name() );
+      return 0;
+    }
+
     struct prevgcd_expr_t: public action_expr_t {
       int gcd;
       action_t* previously_used;
-      prevgcd_expr_t( action_t& a, const std::string& gcd, const std::string& prev_action ): action_expr_t( "prev_gcd", a ),
-        gcd( util::to_int( gcd ) ), // prevgcd.1.action will mean 1 gcd ago, prevgcd.2.action will mean 2 gcds ago, etc.
+      prevgcd_expr_t( action_t& a, int gcd, const std::string& prev_action ): action_expr_t( "prev_gcd", a ),
+        gcd( gcd ), // prevgcd.1.action will mean 1 gcd ago, prevgcd.2.action will mean 2 gcds ago, etc.
         previously_used( a.player -> find_action( prev_action ) )
       {}
       virtual double evaluate() override
@@ -2941,7 +2949,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
         return false;
       }
     };
-    return new prevgcd_expr_t( *this, splits[1], splits[2] );
+    return new prevgcd_expr_t( *this, gcd, splits[2] );
   }
   if ( splits.size() == 3 && splits[ 0 ] == "dot" )
   {
