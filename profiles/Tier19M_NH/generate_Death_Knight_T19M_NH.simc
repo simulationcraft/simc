@@ -19,7 +19,7 @@ spec=frost
 role=attack
 position=back
 talents=2230021
-artifact=12:140832:140821:140832:0:108:4:109:3:110:5:111:3:113:3:114:3:115:3:117:3:119:1:120:1:122:1:123:1:124:1:1090:3:1091:1:1092:1:1332:1
+artifact=12:0:0:0:0:108:3:109:3:110:3:111:3:113:3:114:3:115:3:117:3:119:1:120:1:122:1:123:1:124:1:1090:3:1091:1:1092:1:1332:1:1360:20
 
 head=dreadwyrm_crown,id=138355,bonus_id=3445
 neck=radiant_string_of_scorpid_eyes,id=140898,bonus_id=3445,enchant=mark_of_the_hidden_satyr
