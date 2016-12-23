@@ -8904,9 +8904,9 @@ void monk_t::apl_combat_windwalker()
     if ( racial_actions[i] != "arcane_torrent" )
       cd -> add_action( racial_actions[i]  );
   }
-  cd -> add_action( this, "Touch of Death", "cycle_targets=1,max_cycle_targets=2,if=!artifact.gale_burst.enabled&equipped.137057&!prev_gcd.touch_of_death" );
+  cd -> add_action( this, "Touch of Death", "cycle_targets=1,max_cycle_targets=2,if=!artifact.gale_burst.enabled&equipped.137057&!prev_gcd.1.touch_of_death" );
   cd -> add_action( this, "Touch of Death", "if=!artifact.gale_burst.enabled&!equipped.137057" );
-  cd -> add_action( this, "Touch of Death", "cycle_targets=1,max_cycle_targets=2,if=artifact.gale_burst.enabled&equipped.137057&cooldown.strike_of_the_windlord.remains<8&cooldown.fists_of_fury.remains<=4&cooldown.rising_sun_kick.remains<7&!prev_gcd.touch_of_death" );
+  cd -> add_action( this, "Touch of Death", "cycle_targets=1,max_cycle_targets=2,if=artifact.gale_burst.enabled&equipped.137057&cooldown.strike_of_the_windlord.remains<8&cooldown.fists_of_fury.remains<=4&cooldown.rising_sun_kick.remains<7&!prev_gcd.1.touch_of_death" );
   cd -> add_action( this, "Touch of Death", "if=artifact.gale_burst.enabled&!equipped.137057&cooldown.strike_of_the_windlord.remains<8&cooldown.fists_of_fury.remains<=4&cooldown.rising_sun_kick.remains<7" );
 
   // Storm, Earth, and Fire
@@ -8927,11 +8927,11 @@ void monk_t::apl_combat_windwalker()
   serenity -> add_action( this, "Strike of the Windlord" );
   serenity -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=active_enemies<3" );
   serenity -> add_action( this, "Fists of Fury" );
-  serenity -> add_action( this, "Spinning Crane Kick", "if=active_enemies>=3&!prev_gcd.spinning_crane_kick" );
+  serenity -> add_action( this, "Spinning Crane Kick", "if=active_enemies>=3&!prev_gcd.1.spinning_crane_kick" );
   serenity -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=active_enemies>=3" );
-  serenity -> add_action( this, "Blackout Kick", "cycle_targets=1,if=!prev_gcd.blackout_kick" );
-  serenity -> add_action( this, "Spinning Crane Kick", "if=!prev_gcd.spinning_crane_kick" );
-  serenity -> add_talent( this, "Rushing Jade Wind", "if=!prev_gcd.rushing_jade_wind" );
+  serenity -> add_action( this, "Blackout Kick", "cycle_targets=1,if=!prev_gcd.1.blackout_kick" );
+  serenity -> add_action( this, "Spinning Crane Kick", "if=!prev_gcd.1.spinning_crane_kick" );
+  serenity -> add_talent( this, "Rushing Jade Wind", "if=!prev_gcd.1.rushing_jade_wind" );
 
   // Single Target
   st -> add_action( "call_action_list,name=cd" );
@@ -8945,12 +8945,12 @@ void monk_t::apl_combat_windwalker()
   st -> add_action( this, "Fists of Fury" );
   st -> add_action( this, "Rising Sun Kick", "cycle_targets=1" );
   st -> add_talent( this, "Whirling Dragon Punch" );
-  st -> add_action( this, "Spinning Crane Kick", "if=active_enemies>=3&!prev_gcd.spinning_crane_kick" );
-  st -> add_talent( this, "Rushing Jade Wind", "if=chi.max-chi>1&!prev_gcd.rushing_jade_wind" );
-  st -> add_action( this, "Blackout Kick", "cycle_targets=1,if=(chi>1|buff.bok_proc.up)&!prev_gcd.blackout_kick" );
+  st -> add_action( this, "Spinning Crane Kick", "if=active_enemies>=3&!prev_gcd.1.spinning_crane_kick" );
+  st -> add_talent( this, "Rushing Jade Wind", "if=chi.max-chi>1&!prev_gcd.1.rushing_jade_wind" );
+  st -> add_action( this, "Blackout Kick", "cycle_targets=1,if=(chi>1|buff.bok_proc.up)&!prev_gcd.1.blackout_kick" );
   st -> add_talent( this, "Chi Wave", "if=energy.time_to_max>=2.25" );
   st -> add_talent( this, "Chi Burst", "if=energy.time_to_max>=2.25" );
-  st -> add_action( this, "Tiger Palm", "cycle_targets=1,if=!prev_gcd.tiger_palm" );
+  st -> add_action( this, "Tiger Palm", "cycle_targets=1,if=!prev_gcd.1.tiger_palm" );
 }
 
 // Mistweaver Combat Action Priority List ==================================

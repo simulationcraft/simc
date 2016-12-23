@@ -6830,7 +6830,7 @@ void shaman_t::init_action_list_enhancement()
   // Use Feral Spirits before off-GCD CDs.
   def -> add_action( this, "Feral Spirit" );
   // Ensure Feral Spirits start using alpha wolf abilities immediately
-  def -> add_action( this, "Crash Lightning", "if=artifact.alpha_wolf.rank&prev_gcd.feral_spirit" );
+  def -> add_action( this, "Crash Lightning", "if=artifact.alpha_wolf.rank&prev_gcd.1.feral_spirit" );
 
   // On-use items
   for ( const auto& item : items )

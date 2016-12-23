@@ -53,7 +53,7 @@ actions+=/summon_infernal,if=talent.grimoire_of_supremacy.enabled&spell_targets.
 actions+=/soul_harvest
 actions+=/channel_demonfire,if=dot.immolate.remains>cast_time
 actions+=/chaos_bolt,if=soul_shard>3|buff.backdraft.remains
-actions+=/chaos_bolt,if=buff.backdraft.remains&prev_gcd.incinerate
+actions+=/chaos_bolt,if=buff.backdraft.remains&prev_gcd.1.incinerate
 actions+=/incinerate,if=buff.backdraft.remains
 actions+=/havoc,if=active_enemies=1&talent.wreak_havoc.enabled&equipped.132375&!debuff.havoc.remains
 actions+=/rain_of_fire,if=active_enemies>=4&cooldown.havoc.remains<=12&!talent.wreak_havoc.enabled

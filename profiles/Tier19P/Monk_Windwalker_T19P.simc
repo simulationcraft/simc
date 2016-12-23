@@ -33,9 +33,9 @@ actions+=/call_action_list,name=st
 actions.cd=invoke_xuen
 actions.cd+=/blood_fury
 actions.cd+=/berserking
-actions.cd+=/touch_of_death,cycle_targets=1,max_cycle_targets=2,if=!artifact.gale_burst.enabled&equipped.137057&!prev_gcd.touch_of_death
+actions.cd+=/touch_of_death,cycle_targets=1,max_cycle_targets=2,if=!artifact.gale_burst.enabled&equipped.137057&!prev_gcd.1.touch_of_death
 actions.cd+=/touch_of_death,if=!artifact.gale_burst.enabled&!equipped.137057
-actions.cd+=/touch_of_death,cycle_targets=1,max_cycle_targets=2,if=artifact.gale_burst.enabled&equipped.137057&cooldown.strike_of_the_windlord.remains<8&cooldown.fists_of_fury.remains<=4&cooldown.rising_sun_kick.remains<7&!prev_gcd.touch_of_death
+actions.cd+=/touch_of_death,cycle_targets=1,max_cycle_targets=2,if=artifact.gale_burst.enabled&equipped.137057&cooldown.strike_of_the_windlord.remains<8&cooldown.fists_of_fury.remains<=4&cooldown.rising_sun_kick.remains<7&!prev_gcd.1.touch_of_death
 actions.cd+=/touch_of_death,if=artifact.gale_burst.enabled&!equipped.137057&cooldown.strike_of_the_windlord.remains<8&cooldown.fists_of_fury.remains<=4&cooldown.rising_sun_kick.remains<7
 
 actions.sef=energizing_elixir
@@ -50,11 +50,11 @@ actions.serenity+=/serenity
 actions.serenity+=/strike_of_the_windlord
 actions.serenity+=/rising_sun_kick,cycle_targets=1,if=active_enemies<3
 actions.serenity+=/fists_of_fury
-actions.serenity+=/spinning_crane_kick,if=active_enemies>=3&!prev_gcd.spinning_crane_kick
+actions.serenity+=/spinning_crane_kick,if=active_enemies>=3&!prev_gcd.1.spinning_crane_kick
 actions.serenity+=/rising_sun_kick,cycle_targets=1,if=active_enemies>=3
-actions.serenity+=/blackout_kick,cycle_targets=1,if=!prev_gcd.blackout_kick
-actions.serenity+=/spinning_crane_kick,if=!prev_gcd.spinning_crane_kick
-actions.serenity+=/rushing_jade_wind,if=!prev_gcd.rushing_jade_wind
+actions.serenity+=/blackout_kick,cycle_targets=1,if=!prev_gcd.1.blackout_kick
+actions.serenity+=/spinning_crane_kick,if=!prev_gcd.1.spinning_crane_kick
+actions.serenity+=/rushing_jade_wind,if=!prev_gcd.1.rushing_jade_wind
 
 actions.st=call_action_list,name=cd
 actions.st+=/arcane_torrent,if=chi.max-chi>=1&energy.time_to_max>=0.5
@@ -63,12 +63,12 @@ actions.st+=/strike_of_the_windlord,if=talent.serenity.enabled|active_enemies<6
 actions.st+=/fists_of_fury
 actions.st+=/rising_sun_kick,cycle_targets=1
 actions.st+=/whirling_dragon_punch
-actions.st+=/spinning_crane_kick,if=active_enemies>=3&!prev_gcd.spinning_crane_kick
-actions.st+=/rushing_jade_wind,if=chi.max-chi>1&!prev_gcd.rushing_jade_wind
-actions.st+=/blackout_kick,cycle_targets=1,if=(chi>1|buff.bok_proc.up)&!prev_gcd.blackout_kick
+actions.st+=/spinning_crane_kick,if=active_enemies>=3&!prev_gcd.1.spinning_crane_kick
+actions.st+=/rushing_jade_wind,if=chi.max-chi>1&!prev_gcd.1.rushing_jade_wind
+actions.st+=/blackout_kick,cycle_targets=1,if=(chi>1|buff.bok_proc.up)&!prev_gcd.1.blackout_kick
 actions.st+=/chi_wave,if=energy.time_to_max>=2.25
 actions.st+=/chi_burst,if=energy.time_to_max>=2.25
-actions.st+=/tiger_palm,cycle_targets=1,if=!prev_gcd.tiger_palm
+actions.st+=/tiger_palm,cycle_targets=1,if=!prev_gcd.1.tiger_palm
 
 head=veil_of_unseen_strikes,id=134447,bonus_id=1727
 neck=strand_of_the_stars,id=137487,bonus_id=1727,enchant=mark_of_the_trained_soldier

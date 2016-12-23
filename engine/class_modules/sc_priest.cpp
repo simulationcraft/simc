@@ -1137,7 +1137,6 @@ public:
 
   bool trigger_zeks()
   {
-    int stack = priest.buffs.zeks_exterminatus->check();
     if (priest.buffs.zeks_exterminatus->trigger())
     {
       // proc doesn't reset the CD :'(
@@ -2224,7 +2223,7 @@ struct mind_sear_t final : public priest_spell_t
   }
 
 
-  void impact( action_state_t* s ) override
+  void impact( action_state_t* ) override
   {
     // Mind Sear does on-hit damage only when there is a GCD of another ability
     // between it, so chaining Mind Sears doesn't allow for the on-hit to happen

@@ -8654,7 +8654,7 @@ void mage_t::apl_arcane()
                               "if=target.debuff.casting.react" );
   default_list -> add_action( this, "Time Warp", "if=(time=0&buff.bloodlust.down)|(buff.bloodlust.down&equipped.132410)" );
   default_list -> add_talent( this, "Mirror Image", "if=buff.arcane_power.down" );
-  default_list -> add_action( "stop_burn_phase,if=prev_gcd.evocation&burn_phase_duration>gcd.max" );
+  default_list -> add_action( "stop_burn_phase,if=prev_gcd.1.evocation&burn_phase_duration>gcd.max" );
   default_list -> add_action( this, "Mark of Aluneth", "if=cooldown.arcane_power.remains>20" );
   default_list -> add_action( "call_action_list,name=build,if=buff.arcane_charge.stack<4" );
   default_list -> add_action( "call_action_list,name=init_burn,if=buff.arcane_power.down&buff.arcane_charge.stack=4&(cooldown.mark_of_aluneth.remains=0|cooldown.mark_of_aluneth.remains>20)&(!talent.rune_of_power.enabled|(cooldown.arcane_power.remains<=action.rune_of_power.cast_time|action.rune_of_power.recharge_time<cooldown.arcane_power.remains))|target.time_to_die<45" );
@@ -8710,7 +8710,7 @@ void mage_t::apl_arcane()
 
   init_burn -> add_action( this, "Mark of Aluneth" );
   init_burn -> add_action( this, "Frost Nova", "if=equipped.132452" );
-  init_burn -> add_talent( this, "Nether Tempest", "if=dot.nether_tempest.remains<10&(prev_gcd.mark_of_aluneth|(talent.rune_of_power.enabled&cooldown.rune_of_power.remains<gcd.max))" );
+  init_burn -> add_talent( this, "Nether Tempest", "if=dot.nether_tempest.remains<10&(prev_gcd.1.mark_of_aluneth|(talent.rune_of_power.enabled&cooldown.rune_of_power.remains<gcd.max))" );
   init_burn -> add_talent( this, "Rune of Power" );
   init_burn -> add_action( "start_burn_phase,if=((cooldown.evocation.remains-(2*burn_phase_duration))%2<burn_phase_duration)|cooldown.arcane_power.remains=0|target.time_to_die<55" );
 
@@ -8785,7 +8785,7 @@ void mage_t::apl_fire()
   rop_phase        -> add_action( "call_action_list,name=active_talents" );
   rop_phase        -> add_action( this, "Pyroblast", "if=buff.kaelthas_ultimate_ability.react" );
   rop_phase        -> add_action( this, "Fire Blast", "if=!prev_off_gcd.fire_blast" );
-  rop_phase        -> add_action( this, "Phoenix's Flames", "if=!prev_gcd.phoenixs_flames" );
+  rop_phase        -> add_action( this, "Phoenix's Flames", "if=!prev_gcd.1.phoenixs_flames" );
   rop_phase        -> add_action( this, "Scorch", "if=target.health.pct<=25&equipped.132454" );
   rop_phase        -> add_action( this, "Fireball" );
 
@@ -8798,7 +8798,7 @@ void mage_t::apl_fire()
   single_target    -> add_action( this, "Pyroblast", "if=buff.hot_streak.up&buff.hot_streak.remains<action.fireball.execute_time" );
   single_target    -> add_action( this, "Phoenix's Flames", "if=charges_fractional>2.7&active_enemies>2" );
   single_target    -> add_action( this, "Flamestrike", "if=talent.flame_patch.enabled&active_enemies>2&buff.hot_streak.react" );
-  single_target    -> add_action( this, "Pyroblast", "if=buff.hot_streak.up&!prev_gcd.pyroblast" );
+  single_target    -> add_action( this, "Pyroblast", "if=buff.hot_streak.up&!prev_gcd.1.pyroblast" );
   single_target    -> add_action( this, "Pyroblast", "if=buff.hot_streak.react&target.health.pct<=25&equipped.132454" );
   single_target    -> add_action( this, "Pyroblast", "if=buff.kaelthas_ultimate_ability.react" );
   single_target    -> add_action( "call_action_list,name=active_talents" );
@@ -8823,14 +8823,14 @@ void mage_t::apl_frost()
   action_priority_list_t* cooldowns         = get_action_priority_list( "cooldowns"         );
 
   default_list -> add_action( this, "Counterspell", "if=target.debuff.casting.react" );
-  default_list -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react=0&prev_gcd.flurry" );
+  default_list -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react=0&prev_gcd.1.flurry" );
   default_list -> add_action( this, "Time Warp", "if=(time=0&buff.bloodlust.down)|(buff.bloodlust.down&equipped.132410)" );
   default_list -> add_action( "call_action_list,name=cooldowns" );
   default_list -> add_talent( this, "Ice Nova", "if=debuff.winters_chill.up" );
   default_list -> add_action( this, "Frostbolt", "if=prev_off_gcd.water_jet" );
-  default_list -> add_action( "water_jet,if=prev_gcd.frostbolt&buff.fingers_of_frost.stack<(2+artifact.icy_hand.enabled)&buff.brain_freeze.react=0" );
+  default_list -> add_action( "water_jet,if=prev_gcd.1.frostbolt&buff.fingers_of_frost.stack<(2+artifact.icy_hand.enabled)&buff.brain_freeze.react=0" );
   default_list -> add_talent( this, "Ray of Frost", "if=buff.icy_veins.up|(cooldown.icy_veins.remains>action.ray_of_frost.cooldown&buff.rune_of_power.down)" );
-  default_list -> add_action( this, "Flurry", "if=buff.brain_freeze.react&buff.fingers_of_frost.react=0&prev_gcd.frostbolt" );
+  default_list -> add_action( this, "Flurry", "if=buff.brain_freeze.react&buff.fingers_of_frost.react=0&prev_gcd.1.frostbolt" );
   default_list -> add_talent( this, "Frost Bomb", "if=debuff.frost_bomb.remains<action.ice_lance.travel_time&buff.fingers_of_frost.react>0" );
   default_list -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react>0&cooldown.icy_veins.remains>10|buff.fingers_of_frost.react>2" );
   default_list -> add_action( this, "Frozen Orb" );
