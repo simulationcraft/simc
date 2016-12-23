@@ -135,6 +135,7 @@ public:
     // Shadow
     buff_t* anunds_last_breath;       // Anund's Seared Shackles stack counter
     buff_t* the_twins_painful_touch;  // To track first casting
+    buff_t* zeks_exterminatus;        // Aura for Zeks proc
   } buffs;
 
   // Talents
@@ -332,6 +333,8 @@ public:
   // Procs
   struct
   {
+    proc_t* legendary_zeks_exterminatus;
+    proc_t* legendary_zeks_exterminatus_overflow;
     proc_t* legendary_anunds_last_breath;
     proc_t* legendary_anunds_last_breath_overflow;
     proc_t* shadowy_insight;
@@ -382,6 +385,7 @@ public:
     const special_effect_t* mangazas_madness;           // belt
     const special_effect_t* zenkaram_iridis_anadem;     // helm
     const special_effect_t* the_twins_painful_touch;    // ring
+    const special_effect_t* zeks_exterminatus;          // cloak
   } active_items;
 
   // Pets
@@ -1125,6 +1129,27 @@ public:
       else
       {
         priest.procs.shadowy_insight->occur();
+      }
+      return true;
+    }
+    return false;
+  }
+
+  bool trigger_zeks()
+  {
+    int stack = priest.buffs.zeks_exterminatus->check();
+    if (priest.buffs.zeks_exterminatus->trigger())
+    {
+      // proc doesn't reset the CD :'(
+      // priest.cooldowns.shadow_word_death->reset(true);
+
+      if (priest.buffs.zeks_exterminatus->check())
+      {
+        priest.procs.legendary_zeks_exterminatus_overflow->occur();
+      }
+      else
+      {
+        priest.procs.legendary_zeks_exterminatus->occur();
       }
       return true;
     }
@@ -1877,7 +1902,6 @@ public:
   {
     double d = priest_spell_t::composite_da_multiplier(state);
 
-
     d *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
 
     return d;
@@ -2055,7 +2079,6 @@ struct mind_flay_t final : public priest_spell_t
 
 
     am *= 1.0 + ptr_shadow_scaling_buff->effectN(2).percent();
- 
 
     return am;
   }
@@ -2466,10 +2489,22 @@ struct shadow_word_death_t final : public priest_spell_t
   {
     double d = priest_spell_t::composite_da_multiplier(state);
 
-
     d *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
 
+    if (priest.buffs.zeks_exterminatus->up())
+    {
+      d *= 1.0 + priest.buffs.zeks_exterminatus->data().effectN( 1 ).trigger()->effectN( 2 ).percent();
+
+    }
+
     return d;
+  }
+
+  void schedule_execute(action_state_t* s) override
+  {
+    priest_spell_t::schedule_execute(s);
+
+    priest.buffs.zeks_exterminatus->expire();
   }
 
   void impact( action_state_t* s ) override
@@ -2505,6 +2540,11 @@ struct shadow_word_death_t final : public priest_spell_t
     if ( !priest_spell_t::ready() )
       return false;
 
+    if ( priest.buffs.zeks_exterminatus->up() )
+    {
+      return true;
+    }
+
     if ( ( priest.talents.reaper_of_souls->ok() &&
            target->health_percentage() < 35.0 ) ||
          target->health_percentage() < 20.0 )  // FIXME Spelldata effectN(2)?
@@ -2539,7 +2579,6 @@ struct shadow_crash_t final : public priest_spell_t
   double composite_da_multiplier(const action_state_t* state) const override
   {
     double d = priest_spell_t::composite_da_multiplier(state);
-
 
     d *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
  
@@ -2747,6 +2786,11 @@ struct shadow_word_pain_t final : public priest_spell_t
           priest.buffs.sphere_of_insanity->current_value );
       priest.buffs.sphere_of_insanity->current_value = 0;
     }
+
+    if (priest.active_items.zeks_exterminatus)
+    {
+      trigger_zeks();
+    }
   }
 
   void tick( dot_t* d ) override
@@ -2777,6 +2821,11 @@ struct shadow_word_pain_t final : public priest_spell_t
     if ( priest.active_items.anunds_seared_shackles )
     {
       trigger_anunds();
+    }
+
+    if (priest.active_items.zeks_exterminatus)
+    {
+      trigger_zeks();
     }
   }
 
@@ -2841,7 +2890,6 @@ struct shadow_word_void_t final : public priest_spell_t
   double composite_da_multiplier( const action_state_t* state ) const override
   {
     double d = priest_spell_t::composite_da_multiplier( state );
-
 
     d *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
 
@@ -3145,7 +3193,6 @@ struct vampiric_touch_t final : public priest_spell_t
                    priest.buffs.voidform->stack() );
     }
 
-
     m *= 1.0 + ptr_shadow_scaling_buff->effectN(2).percent();
 
     return m;
@@ -3347,7 +3394,6 @@ struct void_eruption_t final : public priest_spell_t
   {
     double d = priest_spell_t::composite_da_multiplier(state);
 
-
     d *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
    
     return d;
@@ -3399,7 +3445,7 @@ struct void_torrent_t final : public priest_spell_t
     double am = priest_spell_t::action_multiplier();
 
     am *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
- 
+
     return am;
   }
 
@@ -3887,6 +3933,14 @@ struct lingering_insanity_t final: public priest_buff_t<haste_buff_t> {
   {
     buff_t::decrement( hidden_lingering_insanity );
   }
+
+  void expire_override(int stacks, timespan_t) 
+  {
+    if (stacks <= 0)
+    {
+      expire();
+    }
+  }
 };
 
 /* Custom archangel buff
@@ -4006,6 +4060,14 @@ void zenkaram_iridis_anadem( special_effect_t& effect )
                    priest->active_items.zenkaram_iridis_anadem, effect );
 }
 
+void zeks_exterminatus(special_effect_t& effect)
+{
+  priest_t* priest = debug_cast<priest_t*>(effect.player);
+  assert(priest);
+  do_trinket_init(priest, PRIEST_SHADOW,
+    priest->active_items.zeks_exterminatus, effect);
+}
+
 void init()
 {
   // Archimonde Trinkets
@@ -4019,6 +4081,7 @@ void init()
   unique_gear::register_special_effect( 236523, mother_shahrazs_seduction );
   unique_gear::register_special_effect( 207721, the_twins_painful_touch );
   unique_gear::register_special_effect( 224999, zenkaram_iridis_anadem );
+  unique_gear::register_special_effect( 236545, zeks_exterminatus );
 }
 
 }  // items
@@ -4211,6 +4274,13 @@ void priest_t::create_procs()
   procs.legendary_anunds_last_breath_overflow = get_proc(
       "Legendary - Anund's Seared Shackles - Void Bolt damage increases (2% "
       "per) lost to overflow" );
+
+  procs.legendary_zeks_exterminatus = get_proc(
+    "Legendary - Zek's Exterminatus - Shadow Word Death damage increases (25% "
+    "per)");
+  procs.legendary_zeks_exterminatus_overflow = get_proc(
+    "Legendary - Zek's Exterminatus - Shadow Word Death damage increases (25% "
+    "per) lost to overflow");
 }
 
 /* Construct priest benefits
@@ -5014,6 +5084,10 @@ void priest_t::create_buffs()
           .spell( find_spell( 207721 ) )
           .chance( active_items.the_twins_painful_touch ? 1.0 : 0.0 );
   //.duration(timespan_t::from_seconds(10.0));
+
+  buffs.zeks_exterminatus = buff_creator_t( this, "zeks_exterminatus" )
+                                .spell( find_spell( 236545 ) )
+                                .rppm_scale( RPPM_HASTE );
 }
 
 // priest_t::init_rng ==================================================
