@@ -1,4 +1,4 @@
-SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23244, git build c5141f9)
+SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23244, git build 2679573)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -526,7 +526,8 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=39872)    : School Damage: shadow (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.27500 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.50000 | Target: Enemy(6)
+                   Hotfixed: AP Coefficient (1.275 -> 1.5)
 Description      : Fire a blast of unholy energy, causing Shadow damage to an enemy target or healing a friendly Undead target.
 
 Name             : Veteran of the Third War (id=48263) [Spell Family (15), Passive] 
@@ -1018,7 +1019,8 @@ Effects          :
 #1 (id=43777)    : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Target: Self(1)
 #2 (id=247162)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 125 | Scaled Value: 125 | Target: Self(1)
+                   Base Value: 100 | Scaled Value: 100 | Target: Self(1)
+                   Hotfixed: Base Value (125 -> 100)
 Description      : You have a ${$m2/100}.2% chance per Runic Power you spend to increase your Rune regeneration rate by $s1% for $51460d.
 
 Name             : Razorice (id=51714) [Spell Family (15)] 
@@ -1256,7 +1258,7 @@ Spell Level      : 57
 Duration         : 10 seconds
 Cooldown         : 90 seconds
 Category         : 1641
-Affecting spells : Vampiric Fangs (192542), Vampiric Fangs (192543), Vampiric Fangs (192544), Vampiric Fangs (208793), Vampiric Fangs (208794), Vampiric Fangs (208795), 
+Affecting spells : Vampiric Fangs (192542), 
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2701,11 +2703,13 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179690)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 3 | Scaled Value: 3 | Target: Self(1)
+                   Base Value: 6 | Scaled Value: 6 | Target: Self(1)
                    Affected Spells: Death Coil (47541), Death Coil (47632), Death Strike (49998), Death and Decay (52212), Scourge Strike (55090), Death Strike Off-Hand (66188), Scourge Strike (70890), Festering Strike (85948), Soul Reaper (130736), Defile (156000), Festering Wound (194311), Clawing Shadows (207311), Epidemic (207317), Epidemic (212739), Epidemic (215969)
+                   Hotfixed: Base Value (3 -> 6)
 #2 (id=191170)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 3 | Scaled Value: 3 | Misc Value: 22 | Target: Self(1)
+                   Base Value: 6 | Scaled Value: 6 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Virulent Plague (191587), Virulent Eruption (191685)
+                   Hotfixed: Base Value (3 -> 6)
 #3 (id=191171)   : Apply Aura (6) | Unknown effect sub type (218)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf7 | Target: Self(1)
 #4 (id=191172)   : Apply Aura (6) | Dummy (4)
@@ -3904,13 +3908,14 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=286108)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 6 | Scaled Value: 6 | Target: Self(1)
+                   Base Value: 8 | Scaled Value: 8 | Target: Self(1)
+                   Hotfixed: Base Value (6 -> 8)
 Description      : Every $s1 Festering Wounds you burst, you gain 1 Rune.
 
 Name             : Blighted Rune Weapon (id=194918) [Spell Family (15)] 
+Hotfixed         : GCD (1500 -> 0)
 Class            : Death Knight
 School           : Shadow
-GCD              : 1.5 seconds
 Duration         : 30 seconds
 Cooldown         : 60 seconds
 Stacks           : 5 initial, 5 maximum

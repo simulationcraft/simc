@@ -1,4 +1,4 @@
-SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23244, git build c5141f9)
+SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23244, git build 2679573)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -964,7 +964,7 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Incarnation: King of the Jungle (102543), Berserk (106951), Bloodtalons (145152), Thrash (192090), Feral Affinity (197490), Astral Influence (197524), Sabertooth (202031), Feral Affinity (202155), Feral Affinity (202157), Powerful Bite (210575), Ekowraith, Creator of Worlds (210667), 
+Affecting spells : Incarnation: King of the Jungle (102543), Berserk (106951), Feral Druid (137011), Bloodtalons (145152), Thrash (192090), Feral Affinity (197490), Astral Influence (197524), Sabertooth (202031), Feral Affinity (202155), Feral Affinity (202157), Powerful Bite (210575), Ekowraith, Creator of Worlds (210667), 
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1813,7 +1813,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=68110)    : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.25000 | Target: Self(1)
-                   Affected Spells: Starsurge (78674), Starfall (191034), Starfall (191037), Starsurge (197626)
+                   Affected Spells: Starsurge (78674), Starfall (191034), Starfall (191037), Starsurge (197626), Echoing Stars (226104)
 #2 (id=90627)    : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.25000 | Misc Value: 3 | Target: Self(1)
                    Affected Spells: Solar Empowerment (164545), Lunar Empowerment (164547), Stellar Empowerment (197637)
@@ -2921,7 +2921,7 @@ Effects          :
                    Affected Spells: Solar Empowerment (164545), Lunar Empowerment (164547)
 #2 (id=325445)   : Apply Aura (6) | Add Flat Modifier: Spell Resource Cost (107)
                    Base Value: -200 | Scaled Value: -200 | Misc Value: 14 | Target: Self(1)
-                   Affected Spells: Starfall (191034), Starfall (191037)
+                   Affected Spells: Starfall (191034), Starfall (191037), Echoing Stars (226104)
 Description      : Increases the damage bonus from Lunar and Solar Empowerment by an additional $s1%.
 
 Reduces the Astral Power cost of Starfall by ${$m2/-10}.
@@ -3383,11 +3383,13 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179694)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 4 | Scaled Value: 4 | Target: Self(1)
-                   Affected Spells: Rake (1822), Shred (5221), Maim (22570), Thrash (77758), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Brutal Slash (202028), Shadow Thrash (210687), Ashamane's Frenzy (210722), Ashamane's Frenzy (210723), Swipe (213771)
+                   Base Value: 8 | Scaled Value: 8 | Target: Self(1)
+                   Affected Spells: Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Thrash (77758), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Brutal Slash (202028), Shadow Thrash (210687), Ashamane's Frenzy (210722), Ashamane's Frenzy (210723), Swipe (213771)
+                   Hotfixed: Base Value (4 -> 8), Affects Spells
 #2 (id=191154)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 4 | Scaled Value: 4 | Misc Value: 22 | Target: Self(1)
+                   Base Value: 8 | Scaled Value: 8 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Rip (1079), Rake (1822), Thrash (77758), Thrash (106830), Moonfire (155625), Rake (155722), Shadow Thrash (210687), Ashamane's Rip (210705), Ashamane's Frenzy (210722), Ashamane's Frenzy (210723)
+                   Hotfixed: Base Value (4 -> 8)
 #3 (id=191155)   : Apply Aura (6) | Add Flat Modifier: Spell Cooldown (107)
                    Base Value: 90000 | Scaled Value: 90000 | Misc Value: 11 | Target: Self(1)
                    Affected Spells: Moonkin Form (24858), Incarnation: Chosen of Elune (102560), Moonkin Form (197625)
@@ -3493,7 +3495,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179696)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 4 | Scaled Value: 4 | Target: Self(1)
-                   Affected Spells: Solar Wrath (5176), Moonfire (8921), Starsurge (78674), Sunfire (93402), Moonfire (164812), Sunfire (164815), Solar Wrath (190984), Starfall (191034), Starfall (191037), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Stellar Flare (202347), New Moon (202767), Half Moon (202768), Fury of Elune (202770), Full Moon (202771), Fury of Elune (211545)
+                   Affected Spells: Solar Wrath (5176), Moonfire (8921), Starsurge (78674), Sunfire (93402), Moonfire (164812), Sunfire (164815), Solar Wrath (190984), Starfall (191034), Starfall (191037), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Stellar Flare (202347), New Moon (202767), Half Moon (202768), Fury of Elune (202770), Full Moon (202771), Fury of Elune (211545), Echoing Stars (226104)
 #2 (id=191146)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 4 | Scaled Value: 4 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Moonfire (8921), Sunfire (93402), Moonfire (164812), Sunfire (164815), Sunfire (197630), Stellar Flare (202347), Fury of Elune (202770), Fury of Elune (211545)
@@ -4006,8 +4008,9 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=221438)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 4 (107)
-                   Base Value: 60 | Scaled Value: 60 | Misc Value: 32 | Target: Self(1)
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: 32 | Target: Self(1)
                    Affected Spells: Mangle (33917), Enraged Mangle (202085)
+                   Hotfixed: Base Value (60 -> 50)
 #2 (id=221439)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 25 | Scaled Value: 25 | Target: Self(1)
                    Affected Spells: Mangle (33917), Enraged Mangle (202085)
@@ -4724,7 +4727,8 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=281770)   : Apply Aura (6) | Modify Base Resistance (142)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 1 | Target: Self(1)
+                   Base Value: 80 | Scaled Value: 80 | Misc Value: 1 | Target: Self(1)
+                   Hotfixed: Base Value (100 -> 80)
 #2 (id=321076)   : Apply Aura (6) | Unknown effect sub type (118)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Self(1)
 #3 (id=321077)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
@@ -4776,10 +4780,10 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.12100 | Mechanic: Bleed | Target: Enemy(6)
 #2 (id=301092)   : Apply Aura (6) | Unknown effect sub type (271)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
-                   Affected Spells: Rip (1079), Rake (1822), Solar Wrath (5176), Shred (5221), Maul (6807), Moonfire (8921), Ferocious Bite (22568), Maim (22570), Mangle (33917), Thrash (77758), Starsurge (78674), Pulverize (80313), Sunfire (93402), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Brutal Slash (202028), Enraged Mangle (202085), Ashamane's Rip (210705), Swipe (213771)
+                   Affected Spells: Rip (1079), Rake (1822), Solar Wrath (5176), Shred (5221), Maul (6807), Moonfire (8921), Ferocious Bite (22568), Maim (22570), Mangle (33917), Thrash (77758), Starsurge (78674), Pulverize (80313), Sunfire (93402), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Brutal Slash (202028), Enraged Mangle (202085), Ashamane's Rip (210705), Swipe (213771), Echoing Stars (226104)
 #3 (id=301093)   : Apply Aura (6) | Unknown effect sub type (343)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
-                   Affected Spells: Rip (1079), Rake (1822), Solar Wrath (5176), Shred (5221), Maul (6807), Moonfire (8921), Ferocious Bite (22568), Maim (22570), Mangle (33917), Thrash (77758), Starsurge (78674), Pulverize (80313), Sunfire (93402), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Brutal Slash (202028), Enraged Mangle (202085), Ashamane's Rip (210705), Swipe (213771)
+                   Affected Spells: Rip (1079), Rake (1822), Solar Wrath (5176), Shred (5221), Maul (6807), Moonfire (8921), Ferocious Bite (22568), Maim (22570), Mangle (33917), Thrash (77758), Starsurge (78674), Pulverize (80313), Sunfire (93402), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Brutal Slash (202028), Enraged Mangle (202085), Ashamane's Rip (210705), Swipe (213771), Echoing Stars (226104)
 Description      : $@spelldesc77758
 Tooltip          : Suffering $w1 damage every $t1 sec.
 
@@ -5046,10 +5050,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=290202)   : Apply Aura (6) | Add Flat Modifier: Spell Range (107)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 5 | Target: Self(1)
-                   Affected Spells: Entangling Roots (339), Tranquility (740), Rejuvenation (774), Rip (1079), Rake (1822), Remove Corruption (2782), Solar Wrath (5176), Healing Touch (5185), Mighty Bash (5211), Shred (5221), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Innervate (29166), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Typhoon (61391), Thrash (77758), Starsurge (78674), Solar Beam (78675), Pulverize (80313), Nature's Cure (88423), Sunfire (93402), Skull Bash (93985), Ironbark (102342), Cenarion Ward (102351), Cenarion Ward (102352), Mass Entanglement (102359), Wild Charge (102401), Ursol's Vortex (102793), Swipe (106785), Thrash (106830), Skull Bash (106839), Typhoon (132469), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Efflorescence (145205), Moonfire (155625), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Brutal Slash (202028), Enraged Mangle (202085), Stellar Flare (202347), New Moon (202767), Half Moon (202768), Fury of Elune (202770), Full Moon (202771), Lunar Beam (204069), Force of Nature (205636), Shadow Thrash (210687), Ashamane's Rip (210705), Ashamane's Frenzy (210722), Ashamane's Frenzy (210723), Fury of Elune (211545), Revitalize (212040), Brambles (213709), Swipe (213764), Swipe (213771)
+                   Affected Spells: Entangling Roots (339), Tranquility (740), Rejuvenation (774), Rip (1079), Rake (1822), Remove Corruption (2782), Solar Wrath (5176), Healing Touch (5185), Mighty Bash (5211), Shred (5221), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Innervate (29166), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Typhoon (61391), Thrash (77758), Starsurge (78674), Solar Beam (78675), Pulverize (80313), Nature's Cure (88423), Sunfire (93402), Skull Bash (93985), Ironbark (102342), Cenarion Ward (102351), Cenarion Ward (102352), Mass Entanglement (102359), Wild Charge (102401), Ursol's Vortex (102793), Swipe (106785), Thrash (106830), Skull Bash (106839), Typhoon (132469), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Efflorescence (145205), Moonfire (155625), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Brutal Slash (202028), Enraged Mangle (202085), Stellar Flare (202347), New Moon (202767), Half Moon (202768), Fury of Elune (202770), Full Moon (202771), Lunar Beam (204069), Force of Nature (205636), Shadow Thrash (210687), Ashamane's Rip (210705), Ashamane's Frenzy (210722), Ashamane's Frenzy (210723), Fury of Elune (211545), Revitalize (212040), Brambles (213709), Swipe (213764), Swipe (213771), Echoing Stars (226104)
 #2 (id=314659)   : Apply Aura (6) | Unknown effect sub type (153)
                    Base Value: 5 | Scaled Value: 5 | Target: Self(1)
-                   Affected Spells: Entangling Roots (339), Tranquility (740), Rejuvenation (774), Rip (1079), Rake (1822), Remove Corruption (2782), Solar Wrath (5176), Healing Touch (5185), Mighty Bash (5211), Shred (5221), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Typhoon (61391), Thrash (77758), Starsurge (78674), Solar Beam (78675), Pulverize (80313), Nature's Cure (88423), Sunfire (93402), Skull Bash (93985), Ironbark (102342), Cenarion Ward (102351), Cenarion Ward (102352), Mass Entanglement (102359), Wild Charge (102401), Swipe (106785), Thrash (106830), Skull Bash (106839), Typhoon (132469), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Efflorescence (145205), Moonfire (155625), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Enraged Mangle (202085), Stellar Flare (202347), New Moon (202767), Half Moon (202768), Fury of Elune (202770), Full Moon (202771), Touch of the Moon (203018), Lunar Beam (204069), Force of Nature (205636), Ashamane's Rip (210705), Fury of Elune (211545), Revitalize (212040), Brambles (213709), Swipe (213764), Swipe (213771)
+                   Affected Spells: Entangling Roots (339), Tranquility (740), Rejuvenation (774), Rip (1079), Rake (1822), Remove Corruption (2782), Solar Wrath (5176), Healing Touch (5185), Mighty Bash (5211), Shred (5221), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Typhoon (61391), Thrash (77758), Starsurge (78674), Solar Beam (78675), Pulverize (80313), Nature's Cure (88423), Sunfire (93402), Skull Bash (93985), Ironbark (102342), Cenarion Ward (102351), Cenarion Ward (102352), Mass Entanglement (102359), Wild Charge (102401), Swipe (106785), Thrash (106830), Skull Bash (106839), Typhoon (132469), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Efflorescence (145205), Moonfire (155625), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Enraged Mangle (202085), Stellar Flare (202347), New Moon (202767), Half Moon (202768), Fury of Elune (202770), Full Moon (202771), Touch of the Moon (203018), Lunar Beam (204069), Force of Nature (205636), Ashamane's Rip (210705), Fury of Elune (211545), Revitalize (212040), Brambles (213709), Swipe (213764), Swipe (213771), Echoing Stars (226104)
 #3 (id=317501)   : Apply Aura (6) | Add Flat Modifier: Spell Radius (107)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 6 | Target: Self(1)
                    Affected Spells: Incapacitating Roar (99), Tranquility (740), Typhoon (61391), Thrash (77758), Displacer Beast (102280), Swipe (106785), Thrash (106830), Stampeding Roar (106898), Typhoon (132469), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Tranquility (157982), Brutal Slash (202028), Lunar Beam (204069), Shadow Thrash (210687), Power of the Archdruid (213121), Brambles (213709), Swipe (213771), Intimidating Roar (236748)
@@ -5676,10 +5680,10 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=298306)   : Apply Aura (6) | Add Percent Modifier: Spell Radius (108)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 6 | Target: Self(1)
-                   Affected Spells: Starfall (191034), Starfall (191037)
+                   Affected Spells: Starfall (191034), Starfall (191037), Echoing Stars (226104)
 #2 (id=298474)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 60 | Scaled Value: 60 | Target: Self(1)
-                   Affected Spells: Starfall (191034), Starfall (191037)
+                   Affected Spells: Starfall (191034), Starfall (191037), Echoing Stars (226104)
 Description      : Increases Starfall's radius by $s1%, Starfall damage by $s2%, and allows you to cast while moving while within Starfall's radius.
 
 Name             : Astral Communion (id=202359) [Spell Family (7)] 
@@ -6628,7 +6632,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=312761)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 8 | Scaled Value: 8 | Misc Value: 14 | Target: Self(1)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 14 | Target: Self(1)
+                   Hotfixed: Base Value (8 -> 10)
 Description      : Shred and Swipe deal $s1% increased damage for each Bleed effect you have on the target.
 
 Name             : Fury of Elune (id=211545) [Spell Family (7)] 
