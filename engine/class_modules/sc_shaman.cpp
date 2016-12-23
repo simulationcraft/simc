@@ -1018,7 +1018,7 @@ public:
       ab::gcd_haste = HASTE_ATTACK;
     }
 
-    may_proc_unleash_doom = p() -> artifact.unleash_doom.rank() && ! ab::callbacks && ! ab::background && ab::harmful &&
+    may_proc_unleash_doom = p() -> artifact.unleash_doom.rank() && ab::callbacks && ! ab::background && ab::harmful &&
       ( ab::weapon_multiplier > 0 || ab::attack_power_mod.direct > 0 || ab::spell_power_mod.direct > 0 );
   }
 
@@ -1026,7 +1026,7 @@ public:
   {
     if ( may_proc_unleash_doom )
     {
-      proc_ud = ab::player -> get_proc( std::string( "Unleash Doom: " ) + full_name() );
+      proc_ud = ab::player -> get_proc( std::string( "Unleash Doom (damage): " ) + full_name() );
     }
 
     return ab::init_finished();
