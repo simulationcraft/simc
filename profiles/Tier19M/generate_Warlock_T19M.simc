@@ -14,6 +14,34 @@
 # * No Hardcoded Stats (generally if an item gives wrong stats: either bonus_id is wrong, either the item no longer exists in-game)
 # * It is recommended to use enchant name (ex : ",enchant=binding_of_mastery") rather than id/hardcoded stats.
 
+warlock="Warlock_Affliction_T19M"
+level=110
+race=human
+role=spell
+position=back
+talents=3201021
+artifact=39:142512:142510:142512:0:915:3:916:3:917:3:918:3:919:3:920:4:921:5:922:3:923:3:924:1:925:1:926:1:927:1:928:1:929:1:999:1:1353:1
+spec=affliction
+
+head=collar_of_enclosure,id=134424,bonus_id=1727/1522
+neck=cursed_beartooth_necklace,id=139239,bonus_id=1806,gems=150mastery,enchant=mark_of_the_hidden_satyr
+shoulders=amice_of_the_unfurling_tempest,id=134432,bonus_id=1727/1522
+back=drape_of_the_unworthy,id=142521,bonus_id=3469/1512,enchant_id=5436
+chest=robes_of_the_ancient_chronicle,id=142297
+wrists=helhound_hair_bracers,id=142415,bonus_id=3469
+hands=oiled_riggers_handwraps,id=142429,bonus_id=3469/1512
+waist=cinch_of_light,id=142411,bonus_id=3469
+legs=leggings_of_the_lower_planes,id=142413,bonus_id=3469
+feet=treads_of_the_drowned,id=142414,bonus_id=3469/1512
+finger1=dreadful_cyclopean_signet,id=139237,bonus_id=1806,enchant_id=5429
+finger2=mindrend_band,id=138220,bonus_id=1806,enchant_id=5429
+trinket1=arans_relaxing_ruby,id=142157
+trinket2=brinewater_slime_in_a_bottle,id=142507,bonus_id=605/3469/1512
+main_hand=ulthalesh_the_deadwind_harvester,id=128942,gem_id=142512/142510/142512,relic_id=3469/3469:1512/3469
+default_pet=felhunter
+
+save=Warlock_Affliction_T19M.simc
+
 warlock="Warlock_Demonology_T19M"
 level=110
 race=troll

@@ -6325,6 +6325,9 @@ void warlock_t::apl_precombat()
   if ( specialization() != WARLOCK_DEMONOLOGY )
     precombat_list += "/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled";
 
+  if ( specialization() != WARLOCK_DEMONOLOGY )
+    precombat_list += "/life_tap,if=talent.empowered_life_tap.enabled&!buff.empowered_life_tap.remains";
+
   if ( sim -> allow_potions )
   {
     // Pre-potion
@@ -6365,7 +6368,6 @@ void warlock_t::apl_affliction()
     action_list_str += "|buff.collapsing_shadow.remains";
   action_list_str += ")";
 
-  add_action( "Reap Souls", "if=!buff.deadwind_harvester.remains&!trinket.has_stacking_stat.any&!trinket.has_stat.any&prev_gcd.1.unstable_affliction" );
   action_list_str += "/soul_effigy,if=!pet.soul_effigy.active";
   add_action( "Agony", "cycle_targets=1,if=remains<=tick_time+gcd" );
   action_list_str += "/service_pet,if=dot.corruption.remains&dot.agony.remains";
@@ -6395,13 +6397,17 @@ void warlock_t::apl_affliction()
   if ( find_item( "obelisk of_the_void" ) )
     action_list_str += "|buff.collapsing_shadow.remains";
 
-  add_action( "Corruption", "cycle_targets=1,if=remains<=tick_time+gcd" );
-  add_action( "Siphon Life", "cycle_targets=1,if=remains<=tick_time+gcd" );
+  add_action( "Corruption", "if=remains<=tick_time+gcd" );
+  add_action( "Corruption", "cycle_targets=1,if=(talent.absolute_corruption.enabled|!talent.malefic_grasp.enabled|!talent.soul_effigy.enabled)&remains<=tick_time+gcd" );
+  add_action( "Siphon Life", "if=remains<=tick_time+gcd" );
+  add_action( "Siphon Life", "cycle_targets=1,if=(!talent.malefic_grasp.enabled||!talent.soul_effigy.enabled)&remains<=tick_time+gcd" );
+
   action_list_str += "/life_tap,if=talent.empowered_life_tap.enabled&buff.empowered_life_tap.remains<=gcd";
   action_list_str += "/phantom_singularity";
   action_list_str += "/haunt";
 
   add_action( "Unstable Affliction", "if=talent.writhe_in_agony.enabled&talent.contagion.enabled" );
+  
   add_action( "Unstable Affliction", "if=talent.writhe_in_agony.enabled&(soul_shard>=4|trinket.proc.intellect.react|trinket.stacking_proc.mastery.react|trinket.proc.mastery.react|trinket.proc.crit.react|trinket.proc.versatility.react|buff.soul_harvest.remains|buff.deadwind_harvester.remains|buff.compounding_horror.react=5|target.time_to_die<=20" );
   if ( find_item( "horn_of_valor" ) )
     action_list_str += "|buff.valarjars_path.remains";
@@ -6410,9 +6416,12 @@ void warlock_t::apl_affliction()
   if ( find_item( "obelisk of_the_void" ) )
     action_list_str += "|buff.collapsing_shadow.remains";
   action_list_str += ")";
-  add_action( "Unstable Affliction", "if=talent.malefic_grasp.enabled&(target.time_to_die<30|dot.agony.remains>cast_time+8*spell_haste&(dot.corruption.remains>cast_time+8*spell_haste|talent.absolute_corruption.enabled)&(dot.siphon_life.remains>cast_time+8*spell_haste|!talent.siphon_life.enabled)|soul_shard>=4)" );
-  add_action( "Unstable Affliction", "if=talent.haunt.enabled&(soul_shard>=4|debuff.haunt.remains|target.time_to_die<30" );
 
+  add_action( "Unstable Affliction", "if=talent.malefic_grasp.enabled&target.time_to_die<30" );
+  add_action( "Unstable Affliction", "if=talent.malefic_grasp.enabled&soul_shard>=4" );
+  add_action( "Unstable Affliction", "if=talent.malefic_grasp.enabled&!prev_gcd.3.unstable_affliction&dot.agony.remains>cast_time+6.5&(dot.corruption.remains>cast_time+6.5|talent.absolute_corruption.enabled)&(dot.siphon_life.remains>cast_time+6.5|!talent.siphon_life.enabled)" );
+  
+  add_action( "Unstable Affliction", "if=talent.haunt.enabled&(soul_shard>=4|debuff.haunt.remains|target.time_to_die<30" );
   if ( find_item( "horn_of_valor" ) )
     action_list_str += "|buff.valarjars_path.remains";
   if ( find_item( "moonlit_prism" ) )
@@ -6421,11 +6430,18 @@ void warlock_t::apl_affliction()
     action_list_str += "|buff.collapsing_shadow.remains";
   action_list_str += ")";
 
+  add_action( "Reap Souls", "if=!buff.deadwind_harvester.remains&!trinket.has_stacking_stat.any&!trinket.has_stat.any&prev_gcd.1.unstable_affliction" );
   action_list_str += "/life_tap,if=talent.empowered_life_tap.enabled&buff.empowered_life_tap.remains<duration*0.3";
-  add_action( "Agony", "cycle_targets=1,if=remains<=duration*0.3&target.time_to_die>=remains" );
-  add_action( "Corruption", "cycle_targets=1,if=remains<=duration*0.3&target.time_to_die>=remains" );
-  action_list_str += "/haunt";
-  add_action( "Siphon Life", "cycle_targets=1,if=remains<=duration*0.3&target.time_to_die>=remains" );
+
+  add_action( "Agony", "cycle_targets=1,if=!talent.malefic_grasp.enabled&remains<=duration*0.3&target.time_to_die>=remains" );
+  add_action( "Agony", "cycle_targets=1,if=remains<=duration*0.3&target.time_to_die>=remains&!dot.unstable_affliction_1.remains&!dot.unstable_affliction_2.remains&!dot.unstable_affliction_3.remains&!dot.unstable_affliction_4.remains&!dot.unstable_affliction_5.remains" );
+  add_action( "Corruption", "if=!talent.malefic_grasp.enabled&remains<=duration*0.3&target.time_to_die>=remains" );
+  add_action( "Corruption", "if=remains<=duration*0.3&target.time_to_die>=remains&!dot.unstable_affliction_1.remains&!dot.unstable_affliction_2.remains&!dot.unstable_affliction_3.remains&!dot.unstable_affliction_4.remains&!dot.unstable_affliction_5.remains" );
+  add_action( "Corruption", "cycle_targets=1,if=(talent.absolute_corruption.enabled|!talent.malefic_grasp.enabled|!talent.soul_effigy.enabled)&remains<=duration*0.3&target.time_to_die>=remains" );
+  add_action( "Siphon Life", "if=!talent.malefic_grasp.enabled&remains<=duration*0.3&target.time_to_die>=remains" );
+  add_action( "Siphon Life", "if=remains<=duration*0.3&target.time_to_die>=remains&!dot.unstable_affliction_1.remains&!dot.unstable_affliction_2.remains&!dot.unstable_affliction_3.remains&!dot.unstable_affliction_4.remains&!dot.unstable_affliction_5.remains" );
+  add_action( "Siphon Life", "cycle_targets=1,if=(!talent.malefic_grasp.enabled|!talent.soul_effigy.enabled)&remains<=duration*0.3&target.time_to_die>=remains" );
+
   add_action( "Life Tap", "if=mana.pct<=10" );
   action_list_str += "/drain_soul,chain=1,interrupt=1";
 }
