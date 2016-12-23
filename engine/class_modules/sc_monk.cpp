@@ -1827,19 +1827,12 @@ public:
     main_hand_weapon.max_dmg = dbc.spell_scaling( o() -> type, level() );
     main_hand_weapon.damage = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.0 );
-    owner_coeff.ap_from_ap = 1;
+    owner_coeff.ap_from_ap = 6;
   }
 
   monk_t* o()
   {
     return static_cast<monk_t*>( owner );
-  }
-
-  double composite_player_multiplier( school_e school ) const override
-  {
-    double m = pet_t::composite_player_multiplier( school );
-
-    return m;
   }
 
   virtual void init_action_list() override
@@ -1952,19 +1945,12 @@ public:
     main_hand_weapon.max_dmg = dbc.spell_scaling( o() -> type, level() );
     main_hand_weapon.damage = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
-    owner_coeff.ap_from_ap = 1.35;
+    owner_coeff.ap_from_ap = 3.30;
   }
 
   monk_t* o()
   {
     return static_cast<monk_t*>( owner );
-  }
-
-  double composite_player_multiplier( school_e school ) const override
-  {
-    double m = pet_t::composite_player_multiplier( school );
-
-    return m;
   }
 
   virtual void init_action_list() override
