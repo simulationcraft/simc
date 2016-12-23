@@ -3531,7 +3531,7 @@ struct blizzard_shard_t : public frost_mage_spell_t
 
   virtual void impact( action_state_t* s )
   {
-    mage_spell_t::impact( s );
+    frost_mage_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
     {
