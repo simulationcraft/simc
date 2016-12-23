@@ -330,6 +330,7 @@ public:
     const spell_data_t* nethermancy;
 
     // Affliction only
+    const spell_data_t* affliction;
     const spell_data_t* nightfall;
     const spell_data_t* unstable_affliction;
     const spell_data_t* unstable_affliction_2;
@@ -339,11 +340,13 @@ public:
     const spell_data_t* shadow_bite_2;
 
     // Demonology only
+    const spell_data_t* demonology;
     const spell_data_t* doom;
     const spell_data_t* demonic_empowerment;
     const spell_data_t* wild_imps;
 
     // Destruction only
+    const spell_data_t* destruction;
     const spell_data_t* immolate;
     const spell_data_t* conflagrate;
     const spell_data_t* conflagrate_2;
@@ -935,6 +938,15 @@ struct firebolt_t: public warlock_pet_spell_t
     base_multiplier *= 1.0 + p -> o() -> artifact.impish_incineration.percent();
   }
 
+  virtual double action_multiplier() const override
+  {
+    double m = warlock_pet_spell_t::action_multiplier();
+
+    m *= 1.0 + p() -> o() -> spec.destruction -> effectN( 1 ).percent();
+
+    return m;
+  }
+
   virtual double composite_target_multiplier( player_t* target ) const override
   {
     double m = warlock_pet_spell_t::composite_target_multiplier( target );
@@ -1146,6 +1158,15 @@ struct doom_bolt_t: public warlock_pet_spell_t
 
     if ( p -> o() -> talents.grimoire_of_supremacy -> ok() ) //FIXME spelldata?
       base_multiplier *= 0.8;
+  }
+
+  virtual double action_multiplier() const override
+  {
+    double m = warlock_pet_spell_t::action_multiplier();
+
+    m *= 1.0 + p() -> o() -> spec.destruction -> effectN( 1 ).percent();
+
+    return m;
   }
 
   virtual double composite_target_multiplier( player_t* target ) const override
@@ -2200,6 +2221,7 @@ public:
   bool affected_by_contagion;
   bool affected_by_flamelicked;
   bool affected_by_odr_shawl_of_the_ymirjar;
+  bool affected_by_destruction_hotfix;
   bool destro_mastery;
 
   // Warlock module overrides the "target" option handling to properly target their own Soul Effigy
@@ -2294,6 +2316,7 @@ public:
     }
 
     affected_by_odr_shawl_of_the_ymirjar = data().affected_by( p() -> find_spell( 212173 ) -> effectN( 1 ) );
+    affected_by_destruction_hotfix = data().affected_by( p() -> spec.destruction -> effectN( 1 ) );
   }
 
   int n_targets() const override
@@ -2486,6 +2509,9 @@ public:
       double chaotic_energies_rng = rng().range( 0, p() -> cache.mastery_value() );
       pm *= 1.0 + chaotic_energies_rng;
     }
+
+    if ( affected_by_destruction_hotfix )
+      pm *= 1.0 + p() -> spec.destruction -> effectN( 1 ).percent();
 
     return pm;
   }
@@ -5202,7 +5228,7 @@ struct demonic_power_damage_t : public warlock_spell_t
     // Hotfix on the aff hotfix spell, check regularly.
     if ( p -> specialization() == WARLOCK_AFFLICTION )
     {
-      base_multiplier *= 1.0 + p -> find_spell( 137043 ) -> effectN( 1 ).percent();
+      base_multiplier *= 1.0 + p -> spec.affliction -> effectN( 1 ).percent();
     }
   }
 };
@@ -5887,6 +5913,9 @@ void warlock_t::init_spells()
   // General
   spec.fel_armor   = find_spell( 104938 );
   spec.nethermancy = find_spell( 86091 );
+  spec.affliction = find_spell( 137043 );
+  spec.demonology = find_spell( 137044 );
+  spec.destruction = find_spell( 137046 );
 
   // Specialization Spells
   // PTR
