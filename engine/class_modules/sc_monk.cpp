@@ -1898,7 +1898,7 @@ private:
       parse_options( options_str );
 
       // for future compatibility, we may want to grab Niuzao and our tick spell and build this data from those (Niuzao summon duration, for example)
-      aoe = 3;
+      aoe = -1;
       dot_duration = p -> o() -> talent.invoke_niuzao -> duration();
       hasted_ticks = may_miss = false;
       tick_zero = dynamic_tick_action = true; // trigger tick when t == 0
