@@ -27,7 +27,7 @@ actions.precombat+=/potion,name=deadly_grace
 
 # Executed every time the actor is available.
 actions=reap_souls,if=!buff.deadwind_harvester.remains&(buff.soul_harvest.remains|buff.tormented_souls.react>=8|target.time_to_die<=buff.tormented_souls.react*5|trinket.proc.any.react|trinket.stacking_proc.any.react)
-actions+=/reap_souls,if=!buff.deadwind_harvester.remains&!trinket.has_stacking_stat.any&!trinket.has_stat.any&prev_gcd.unstable_affliction
+actions+=/reap_souls,if=!buff.deadwind_harvester.remains&!trinket.has_stacking_stat.any&!trinket.has_stat.any&prev_gcd.1.unstable_affliction
 actions+=/soul_effigy,if=!pet.soul_effigy.active
 actions+=/agony,cycle_targets=1,if=remains<=tick_time+gcd
 actions+=/service_pet,if=dot.corruption.remains&dot.agony.remains

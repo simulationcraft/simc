@@ -326,7 +326,8 @@ public:
 
     // Tier 75 Talents
     const spell_data_t* healing_elixirs;
-    const spell_data_t* diffuse_magic;
+    const spell_data_t* mystic_vitality;
+    const spell_data_t* diffuse_magic; // Mistweaver & Windwalker
     const spell_data_t* dampen_harm;
 
     // Tier 90 Talents
@@ -782,7 +783,7 @@ public:
   double stagger_pct();
   void trigger_celestial_fortune( action_state_t* );
   void trigger_mark_of_the_crane( action_state_t* );
-  bool rjw_trigger_mark_of_the_crane();
+  void rjw_trigger_mark_of_the_crane();
   player_t* next_mark_of_the_crane_target( action_state_t* );
   int mark_of_the_crane_counter();
   double clear_stagger();
@@ -1826,19 +1827,12 @@ public:
     main_hand_weapon.max_dmg = dbc.spell_scaling( o() -> type, level() );
     main_hand_weapon.damage = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.0 );
-    owner_coeff.ap_from_ap = 1;
+    owner_coeff.ap_from_ap = 6;
   }
 
   monk_t* o()
   {
     return static_cast<monk_t*>( owner );
-  }
-
-  double composite_player_multiplier( school_e school ) const override
-  {
-    double m = pet_t::composite_player_multiplier( school );
-
-    return m;
   }
 
   virtual void init_action_list() override
@@ -1904,7 +1898,7 @@ private:
       parse_options( options_str );
 
       // for future compatibility, we may want to grab Niuzao and our tick spell and build this data from those (Niuzao summon duration, for example)
-      aoe = 3;
+      aoe = -1;
       dot_duration = p -> o() -> talent.invoke_niuzao -> duration();
       hasted_ticks = may_miss = false;
       tick_zero = dynamic_tick_action = true; // trigger tick when t == 0
@@ -1951,19 +1945,12 @@ public:
     main_hand_weapon.max_dmg = dbc.spell_scaling( o() -> type, level() );
     main_hand_weapon.damage = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
-    owner_coeff.ap_from_ap = 1.35;
+    owner_coeff.ap_from_ap = 3.30;
   }
 
   monk_t* o()
   {
     return static_cast<monk_t*>( owner );
-  }
-
-  double composite_player_multiplier( school_e school ) const override
-  {
-    double m = pet_t::composite_player_multiplier( school );
-
-    return m;
   }
 
   virtual void init_action_list() override
@@ -5310,7 +5297,7 @@ struct dampen_harm_t: public monk_spell_t
   {
     monk_spell_t::execute();
 
-    p() -> buff.dampen_harm -> trigger( data().max_stacks() );
+    p() -> buff.dampen_harm -> trigger();
   }
 };
 
@@ -6922,7 +6909,7 @@ void monk_t::trigger_mark_of_the_crane( action_state_t* s )
   get_target_data( s -> target ) -> debuff.mark_of_the_crane -> trigger();
 }
 
-bool monk_t::rjw_trigger_mark_of_the_crane()
+void monk_t::rjw_trigger_mark_of_the_crane()
 {
   if ( specialization() == MONK_WINDWALKER )
   {
@@ -6949,7 +6936,7 @@ bool monk_t::rjw_trigger_mark_of_the_crane()
         }
 
         if ( mark_of_the_crane_counter == mark_of_the_crane_max )
-          return true;
+          return;
       }
 
       // If all targets have the debuff, find the lowest duration of cyclone strike debuff and refresh it
@@ -6966,10 +6953,8 @@ bool monk_t::rjw_trigger_mark_of_the_crane()
 
         get_target_data( lowest_duration ) -> debuff.mark_of_the_crane -> trigger();
       }
-      return true;
     }
   }
-  return false;
 }
 
 player_t* monk_t::next_mark_of_the_crane_target( action_state_t* state )
@@ -7126,6 +7111,7 @@ void monk_t::init_spells()
 
   // Tier 75 Talents
   talent.healing_elixirs             = find_talent_spell( "Healing Elixirs" );
+  talent.mystic_vitality             = find_talent_spell( "Mystic Vitality" );
   talent.diffuse_magic               = find_talent_spell( "Diffuse Magic" );
   talent.dampen_harm                 = find_talent_spell( "Dampen Harm" );
 
@@ -7237,7 +7223,7 @@ void monk_t::init_spells()
   spec.blackout_strike               = find_specialization_spell( "Blackout Strike" );
   spec.bladed_armor                  = find_specialization_spell( "Bladed Armor" );
   spec.breath_of_fire                = find_specialization_spell( "Breath of Fire" );
-  spec.brewmaster_monk               = find_specialization_spell( "Brewmaster Monk" );
+  spec.brewmaster_monk               = find_specialization_spell( 137023 );
   spec.celestial_fortune             = find_specialization_spell( "Celestial Fortune" );
   spec.expel_harm                    = find_specialization_spell( "Expel Harm" );
   spec.fortifying_brew               = find_specialization_spell( "Fortifying Brew" );
@@ -7257,7 +7243,7 @@ void monk_t::init_spells()
   spec.envoloping_mist_2             = find_specialization_spell( 231605 );
   spec.essence_font                  = find_specialization_spell( "Essence Font" );
   spec.life_cocoon                   = find_specialization_spell( "Life Cocoon" );
-  spec.mistweaver_monk               = find_specialization_spell( "Mistweaver Monk" );
+  spec.mistweaver_monk               = find_specialization_spell( 137024 );
   spec.reawaken                      = find_specialization_spell( "Reawaken" );
   spec.renewing_mist                 = find_specialization_spell( "Renewing Mist" );
   spec.renewing_mist_2               = find_specialization_spell( 231606 );
@@ -7484,8 +7470,7 @@ void monk_t::create_buffs()
   buff.rushing_jade_wind = buff_creator_t( this, "rushing_jade_wind", talent.rushing_jade_wind )
     .cd( timespan_t::zero() );
 
-  buff.dampen_harm = buff_creator_t( this, "dampen_harm", talent.dampen_harm )
-    .cd( timespan_t::zero() );
+  buff.dampen_harm = buff_creator_t( this, "dampen_harm", talent.dampen_harm );
 
   buff.diffuse_magic = buff_creator_t( this, "diffuse_magic", talent.diffuse_magic )
     .default_value( talent.diffuse_magic -> effectN( 1 ).percent() );
@@ -8442,20 +8427,26 @@ void monk_t::target_mitigation( school_e school,
                                 dmg_e    dt,
                                 action_state_t* s )
 {
+  // Dampen Harm // Reduces hits by 20 - 50% based on the size of the hit
+  // Works on Stagger
+  if ( buff.dampen_harm -> up() )
+  {
+    double dampen_max_percent = buff.dampen_harm -> data().effectN( 3 ).percent();
+    if ( s -> result_amount >= max_health() )
+      s -> result_amount *= 1 - dampen_max_percent;
+    else
+    {
+      double dampen_min_percent = buff.dampen_harm -> data().effectN( 2 ).percent();
+      s -> result_amount *= 1 - ( dampen_min_percent + ( ( dampen_max_percent - dampen_min_percent ) * ( s -> result_amount / max_health() ) ) );
+    }
+  }
+
   // Stagger is not reduced by damage mitigation effects
   if ( s -> action -> id == passives.stagger_self_damage -> id() )
   {
     // Register the tick then exit
     sample_datas.stagger_tick_damage -> add( s -> result_amount );
     return;
-  }
-
-  // Dampen Harm // Currently reduces hits below 15% hp as well
-  double dampen_health = max_health() * buff.dampen_harm -> data().effectN( 1 ).percent();
-  if ( buff.dampen_harm -> up() && s -> result_amount >= dampen_health )
-  {
-    s -> result_amount *= 1.0 - buff.dampen_harm -> data().effectN( 2 ).percent(); // Dampen Harm reduction is stored as +50
-    buff.dampen_harm -> decrement(); // A stack will only be removed if the reduction was applied.
   }
 
   // Diffuse Magic
@@ -8579,8 +8570,13 @@ void monk_t::assess_damage_imminent_pre_absorb( school_e school,
         stagger_dmg += s -> result_amount * stagger_pct();
 
       else if ( school != SCHOOL_PHYSICAL )
-        // hard code the 50% effectiveness of stagger
-        stagger_dmg += s -> result_amount * ( stagger_pct() * 0.5 );
+      {
+        double stagger_magic = stagger_pct() * spec.stagger -> effectN( 1 ).percent();
+        if ( talent.mystic_vitality -> ok() )
+          stagger_magic *= 1 + talent.mystic_vitality -> effectN( 1 ).percent();
+
+        stagger_dmg += s -> result_amount * stagger_magic;
+      }
 
       s -> result_amount -= stagger_dmg;
       s -> result_mitigated -= stagger_dmg;
@@ -8908,9 +8904,9 @@ void monk_t::apl_combat_windwalker()
     if ( racial_actions[i] != "arcane_torrent" )
       cd -> add_action( racial_actions[i]  );
   }
-  cd -> add_action( this, "Touch of Death", "cycle_targets=1,max_cycle_targets=2,if=!artifact.gale_burst.enabled&equipped.137057&!prev_gcd.touch_of_death" );
+  cd -> add_action( this, "Touch of Death", "cycle_targets=1,max_cycle_targets=2,if=!artifact.gale_burst.enabled&equipped.137057&!prev_gcd.1.touch_of_death" );
   cd -> add_action( this, "Touch of Death", "if=!artifact.gale_burst.enabled&!equipped.137057" );
-  cd -> add_action( this, "Touch of Death", "cycle_targets=1,max_cycle_targets=2,if=artifact.gale_burst.enabled&equipped.137057&cooldown.strike_of_the_windlord.remains<8&cooldown.fists_of_fury.remains<=4&cooldown.rising_sun_kick.remains<7&!prev_gcd.touch_of_death" );
+  cd -> add_action( this, "Touch of Death", "cycle_targets=1,max_cycle_targets=2,if=artifact.gale_burst.enabled&equipped.137057&cooldown.strike_of_the_windlord.remains<8&cooldown.fists_of_fury.remains<=4&cooldown.rising_sun_kick.remains<7&!prev_gcd.1.touch_of_death" );
   cd -> add_action( this, "Touch of Death", "if=artifact.gale_burst.enabled&!equipped.137057&cooldown.strike_of_the_windlord.remains<8&cooldown.fists_of_fury.remains<=4&cooldown.rising_sun_kick.remains<7" );
 
   // Storm, Earth, and Fire
@@ -8931,11 +8927,11 @@ void monk_t::apl_combat_windwalker()
   serenity -> add_action( this, "Strike of the Windlord" );
   serenity -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=active_enemies<3" );
   serenity -> add_action( this, "Fists of Fury" );
-  serenity -> add_action( this, "Spinning Crane Kick", "if=active_enemies>=3&!prev_gcd.spinning_crane_kick" );
+  serenity -> add_action( this, "Spinning Crane Kick", "if=active_enemies>=3&!prev_gcd.1.spinning_crane_kick" );
   serenity -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=active_enemies>=3" );
-  serenity -> add_action( this, "Blackout Kick", "cycle_targets=1,if=!prev_gcd.blackout_kick" );
-  serenity -> add_action( this, "Spinning Crane Kick", "if=!prev_gcd.spinning_crane_kick" );
-  serenity -> add_talent( this, "Rushing Jade Wind", "if=!prev_gcd.rushing_jade_wind" );
+  serenity -> add_action( this, "Blackout Kick", "cycle_targets=1,if=!prev_gcd.1.blackout_kick" );
+  serenity -> add_action( this, "Spinning Crane Kick", "if=!prev_gcd.1.spinning_crane_kick" );
+  serenity -> add_talent( this, "Rushing Jade Wind", "if=!prev_gcd.1.rushing_jade_wind" );
 
   // Single Target
   st -> add_action( "call_action_list,name=cd" );
@@ -8949,12 +8945,12 @@ void monk_t::apl_combat_windwalker()
   st -> add_action( this, "Fists of Fury" );
   st -> add_action( this, "Rising Sun Kick", "cycle_targets=1" );
   st -> add_talent( this, "Whirling Dragon Punch" );
-  st -> add_action( this, "Spinning Crane Kick", "if=active_enemies>=3&!prev_gcd.spinning_crane_kick" );
-  st -> add_talent( this, "Rushing Jade Wind", "if=chi.max-chi>1&!prev_gcd.rushing_jade_wind" );
-  st -> add_action( this, "Blackout Kick", "cycle_targets=1,if=(chi>1|buff.bok_proc.up)&!prev_gcd.blackout_kick" );
+  st -> add_action( this, "Spinning Crane Kick", "if=active_enemies>=3&!prev_gcd.1.spinning_crane_kick" );
+  st -> add_talent( this, "Rushing Jade Wind", "if=chi.max-chi>1&!prev_gcd.1.rushing_jade_wind" );
+  st -> add_action( this, "Blackout Kick", "cycle_targets=1,if=(chi>1|buff.bok_proc.up)&!prev_gcd.1.blackout_kick" );
   st -> add_talent( this, "Chi Wave", "if=energy.time_to_max>=2.25" );
   st -> add_talent( this, "Chi Burst", "if=energy.time_to_max>=2.25" );
-  st -> add_action( this, "Tiger Palm", "cycle_targets=1,if=!prev_gcd.tiger_palm" );
+  st -> add_action( this, "Tiger Palm", "cycle_targets=1,if=!prev_gcd.1.tiger_palm" );
 }
 
 // Mistweaver Combat Action Priority List ==================================
@@ -9093,7 +9089,7 @@ double monk_t::stagger_pct()
 
   if ( specialization() == MONK_BREWMASTER ) // no stagger when not in Brewmaster Specialization
   {
-    stagger += spec.stagger -> effectN( 9 ).percent(); //TODO: Effect says 10 but tooltip say 6%; double check
+    stagger += spec.stagger -> effectN( 9 ).percent();
 
     if ( talent.high_tolerance -> ok() )
       stagger += talent.high_tolerance -> effectN( 1 ).percent();

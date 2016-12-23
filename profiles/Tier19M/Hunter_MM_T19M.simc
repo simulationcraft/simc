@@ -27,8 +27,8 @@ actions.precombat+=/windburst
 # Executed every time the actor is available.
 actions=auto_shot
 actions+=/arcane_torrent,if=focus.deficit>=30&(!talent.sidewinders.enabled|cooldown.sidewinders.charges<2)
-actions+=/blood_fury
 actions+=/berserking,if=buff.trueshot.up
+actions+=/blood_fury,if=buff.trueshot.up
 actions+=/volley,toggle=on
 actions+=/variable,name=safe_to_build,value=debuff.hunters_mark.down|(buff.trueshot.down&buff.marking_targets.down)
 actions+=/variable,name=use_multishot,value=((buff.marking_targets.up|buff.trueshot.up)&spell_targets.multishot>1)|(buff.marking_targets.down&buff.trueshot.down&spell_targets.multishot>2)

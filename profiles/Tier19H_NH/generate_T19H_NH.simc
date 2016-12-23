@@ -1,8 +1,8 @@
-# T19M_NH
-# Tier 19 Mythic Nighthold
-# * Ilvl Cap: 905
-# * Artifact Rank Cap: 34
-# * 3 Relics with max ilevel of 905
+# T19H_NH
+# Tier 19 Heroic Nighthold
+# * Ilvl Cap: 890
+# * Artifact Rank Cap: 40
+# * 3 Relics with max ilevel of 890
 # * No Legendaries (see Raid_T19x_Legendary.simc)
 # * No items from World Bosses / World Quests / BoEs
 # * Mythic+ gear is permitted up to the Mythic+ item level cap
@@ -13,7 +13,5 @@
 # * It is recommended to use enchant name (ex : ",enchant=binding_of_mastery") rather than id/hardcoded stats.
 
 # Death Knight
-generate_Death_Knight_T19M_NH.simc
+generate_Death_Knight_T19H_NH.simc
 
-# Rogue
-generate_Rogue_T19M_NH.simc

@@ -423,6 +423,12 @@ bool report::check_gear_ilevel( player_t& p, sim_t& sim )
     max_weapon_ilevel_allowed = 870;
     tier_name                 = "T19P";
   }
+  else if ( p.report_information.save_str.find( "T19H_NH" ) != std::string::npos )
+  {
+    max_ilevel_allowed           = 890;
+    max_weapon_ilevel_allowed    = 927;
+    tier_name                    = "T19H_NH";
+  }
   else if ( p.report_information.save_str.find( "T19H" ) != std::string::npos )
   {
     max_ilevel_allowed        = 865;
@@ -584,10 +590,20 @@ bool report::check_artifact_points( const player_t& p, sim_t& sim )
     max_allowed = 22;
     tier_name   = "T19P";
   }
+  else if ( p.report_information.save_str.find( "T19H_NH" ) != std::string::npos )
+  {
+    max_allowed = 43;
+    tier_name   = "T19H_NH";
+  }
   else if ( p.report_information.save_str.find( "T19H" ) != std::string::npos )
   {
     max_allowed = 29;
     tier_name   = "T19H";
+  }
+  else if ( p.report_information.save_str.find( "T19M_NH" ) != std::string::npos )
+  {
+    max_allowed = 57;
+    tier_name   = "T19M_NH";
   }
   else if ( p.report_information.save_str.find( "T19M" ) != std::string::npos )
   {

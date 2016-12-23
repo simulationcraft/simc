@@ -6365,7 +6365,7 @@ void warlock_t::apl_affliction()
     action_list_str += "|buff.collapsing_shadow.remains";
   action_list_str += ")";
 
-  add_action( "Reap Souls", "if=!buff.deadwind_harvester.remains&!trinket.has_stacking_stat.any&!trinket.has_stat.any&prev_gcd.unstable_affliction" );
+  add_action( "Reap Souls", "if=!buff.deadwind_harvester.remains&!trinket.has_stacking_stat.any&!trinket.has_stat.any&prev_gcd.1.unstable_affliction" );
   action_list_str += "/soul_effigy,if=!pet.soul_effigy.active";
   add_action( "Agony", "cycle_targets=1,if=remains<=tick_time+gcd" );
   action_list_str += "/service_pet,if=dot.corruption.remains&dot.agony.remains";
@@ -6433,9 +6433,9 @@ void warlock_t::apl_affliction()
 void warlock_t::apl_demonology()
 {
   action_list_str += "/implosion,if=wild_imp_remaining_duration<=action.shadow_bolt.execute_time&buff.demonic_synergy.remains";
-  action_list_str += "/implosion,if=prev_gcd.hand_of_guldan&wild_imp_remaining_duration<=3&buff.demonic_synergy.remains";
+  action_list_str += "/implosion,if=prev_gcd.1.hand_of_guldan&wild_imp_remaining_duration<=3&buff.demonic_synergy.remains";
   action_list_str += "/implosion,if=wild_imp_count<=4&wild_imp_remaining_duration<=action.shadow_bolt.execute_time&spell_targets.implosion>1";
-  action_list_str += "/implosion,if=prev_gcd.hand_of_guldan&wild_imp_remaining_duration<=4&spell_targets.implosion>2";
+  action_list_str += "/implosion,if=prev_gcd.1.hand_of_guldan&wild_imp_remaining_duration<=4&spell_targets.implosion>2";
   action_list_str += "/shadowflame,if=debuff.shadowflame.stack>0&remains<action.shadow_bolt.cast_time+travel_time";
   action_list_str += "/service_pet";
   add_action( "Summon Doomguard", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<3&(target.time_to_die>180|target.health.pct<=20|target.time_to_die<30)" );
@@ -6444,19 +6444,19 @@ void warlock_t::apl_demonology()
   add_action( "Summon Infernal", "if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>=3&equipped.132379&!cooldown.sindorei_spite_icd.remains" );
   add_action( "Call Dreadstalkers", "if=!talent.summon_darkglare.enabled&(spell_targets.implosion<3|!talent.implosion.enabled)" );
   add_action( "Hand of Gul'dan", "if=soul_shard>=4&!talent.summon_darkglare.enabled" );
-  action_list_str += "/summon_darkglare,if=prev_gcd.hand_of_guldan";
-  action_list_str += "/summon_darkglare,if=prev_gcd.call_dreadstalkers";
+  action_list_str += "/summon_darkglare,if=prev_gcd.1.hand_of_guldan";
+  action_list_str += "/summon_darkglare,if=prev_gcd.1.call_dreadstalkers";
   action_list_str += "/summon_darkglare,if=cooldown.call_dreadstalkers.remains>5&soul_shard<3";
   action_list_str += "/summon_darkglare,if=cooldown.call_dreadstalkers.remains<=action.summon_darkglare.cast_time&soul_shard>=3";
   action_list_str += "/summon_darkglare,if=cooldown.call_dreadstalkers.remains<=action.summon_darkglare.cast_time&soul_shard>=1&buff.demonic_calling.react";
   add_action( "Call Dreadstalkers", "if=talent.summon_darkglare.enabled&(spell_targets.implosion<3|!talent.implosion.enabled)&cooldown.summon_darkglare.remains>2" );
-  add_action( "Call Dreadstalkers", "if=talent.summon_darkglare.enabled&(spell_targets.implosion<3|!talent.implosion.enabled)&prev_gcd.summon_darkglare" );
+  add_action( "Call Dreadstalkers", "if=talent.summon_darkglare.enabled&(spell_targets.implosion<3|!talent.implosion.enabled)&prev_gcd.1.summon_darkglare" );
   add_action( "Call Dreadstalkers", "if=talent.summon_darkglare.enabled&(spell_targets.implosion<3|!talent.implosion.enabled)&cooldown.summon_darkglare.remains<=action.call_dreadstalkers.cast_time&soul_shard>=3" );
   add_action( "Call Dreadstalkers", "if=talent.summon_darkglare.enabled&(spell_targets.implosion<3|!talent.implosion.enabled)&cooldown.summon_darkglare.remains<=action.call_dreadstalkers.cast_time&soul_shard>=1&buff.demonic_calling.react" );
-  add_action( "Hand of Gul'dan", "if=soul_shard>=3&prev_gcd.call_dreadstalkers" );
+  add_action( "Hand of Gul'dan", "if=soul_shard>=3&prev_gcd.1.call_dreadstalkers" );
   add_action( "Hand of Gul'dan", "if=soul_shard>=5&cooldown.summon_darkglare.remains<=action.hand_of_guldan.cast_time" );
   add_action( "Hand of Gul'dan", "if=soul_shard>=4&cooldown.summon_darkglare.remains>2" );
-  add_action( "Demonic Empowerment", "if=wild_imp_no_de>3|prev_gcd.hand_of_guldan" );
+  add_action( "Demonic Empowerment", "if=wild_imp_no_de>3|prev_gcd.1.hand_of_guldan" );
   add_action( "Demonic Empowerment", "if=dreadstalker_no_de>0|darkglare_no_de>0|doomguard_no_de>0|infernal_no_de>0|service_no_de>0" );
   add_action( "Doom", "cycle_targets=1,if=!talent.hand_of_doom.enabled&target.time_to_die>duration&(!ticking|remains<duration*0.3)" );
   for ( int i = as< int >( items.size() ) - 1; i >= 0; i-- )
@@ -6524,7 +6524,7 @@ void warlock_t::apl_destruction()
   action_list_str += "/soul_harvest";
   action_list_str += "/channel_demonfire,if=dot.immolate.remains>cast_time";
   add_action( "Chaos Bolt", "if=soul_shard>3|buff.backdraft.remains" );
-  add_action( "Chaos Bolt", "if=buff.backdraft.remains&prev_gcd.incinerate" );
+  add_action( "Chaos Bolt", "if=buff.backdraft.remains&prev_gcd.1.incinerate" );
   add_action( "Incinerate", "if=buff.backdraft.remains" );
   add_action( "Havoc", "if=active_enemies=1&talent.wreak_havoc.enabled&equipped.132375&!debuff.havoc.remains" );
   add_action( "Rain of Fire", "if=active_enemies>=4&cooldown.havoc.remains<=12&!talent.wreak_havoc.enabled");
