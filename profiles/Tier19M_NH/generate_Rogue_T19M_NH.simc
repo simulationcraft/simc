@@ -26,7 +26,7 @@ spec=assassination
 head=doomblade_cowl,id=138332,bonus_id=3445
 neck=belerons_choker_of_misery,id=140899,bonus_id=3445,enchant=mark_of_the_hidden_satyr
 shoulders=doomblade_spaulders,id=138338,bonus_id=3445
-back=doomblade_shadowwrap,id=138371,bonus_id=34453445,enchant=binding_of_agility
+back=doomblade_shadowwrap,id=138371,bonus_id=3445,enchant=binding_of_agility
 chest=doomblade_tunic,id=138326,bonus_id=3445
 wrists=bracers_of_impossible_choices,id=140889,bonus_id=3445
 hands=doomblade_gauntlets,id=138329,bonus_id=3445
@@ -53,7 +53,7 @@ spec=assassination
 head=doomblade_cowl,id=138332,bonus_id=3445
 neck=belerons_choker_of_misery,id=140899,bonus_id=3445,enchant=mark_of_the_hidden_satyr
 shoulders=doomblade_spaulders,id=138338,bonus_id=3445
-back=doomblade_shadowwrap,id=138371,bonus_id=34453445,enchant=binding_of_agility
+back=doomblade_shadowwrap,id=138371,bonus_id=3445,enchant=binding_of_agility
 chest=doomblade_tunic,id=138326,bonus_id=3445
 wrists=bracers_of_impossible_choices,id=140889,bonus_id=3445
 hands=doomblade_gauntlets,id=138329,bonus_id=3445
@@ -81,7 +81,7 @@ spec=outlaw
 head=doomblade_cowl,id=138332,bonus_id=3445
 neck=radiant_string_of_scorpid_eyes,id=140898,bonus_id=3445,enchant=mark_of_the_hidden_satyr
 shoulders=doomblade_spaulders,id=138338,bonus_id=3445
-back=doomblade_shadowwrap,id=138371,bonus_id=34453445,enchant=binding_of_agility
+back=doomblade_shadowwrap,id=138371,bonus_id=3445,enchant=binding_of_agility
 chest=doomblade_tunic,id=138326,bonus_id=3445
 wrists=wellflattened_wristguards,id=140857,bonus_id=3445
 hands=doomblade_gauntlets,id=138329,bonus_id=3445
@@ -109,7 +109,7 @@ spec=subtlety
 head=doomblade_cowl,id=138332,bonus_id=3445
 neck=belerons_choker_of_misery,id=140899,bonus_id=3445,enchant=mark_of_the_hidden_satyr
 shoulders=doomblade_spaulders,id=138338,bonus_id=3445
-back=doomblade_shadowwrap,id=138371,bonus_id=34453445,enchant=binding_of_agility
+back=doomblade_shadowwrap,id=138371,bonus_id=3445,enchant=binding_of_agility
 chest=doomblade_tunic,id=138326,bonus_id=3445
 wrists=bracers_of_impossible_choices,id=140889,bonus_id=3445
 hands=doomblade_gauntlets,id=138329,bonus_id=3445
