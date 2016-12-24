@@ -3170,7 +3170,7 @@ struct echoed_divine_storm_t: public paladin_melee_attack_t
     base_multiplier *= 1.0 + p -> artifact.divine_tempest.percent( 2 );
     if ( p -> talents.final_verdict -> ok() )
       base_multiplier *= 1.0 + p -> talents.final_verdict -> effectN( 2 ).percent();
-    
+
     base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 1 ).percent();
 
     // TODO: figure out where this is from
@@ -3243,7 +3243,7 @@ struct divine_storm_t: public holy_power_consumer_t
     base_multiplier *= 1.0 + p -> artifact.divine_tempest.percent( 2 );
     if ( p -> talents.final_verdict -> ok() )
       base_multiplier *= 1.0 + p -> talents.final_verdict -> effectN( 2 ).percent();
-    
+
     base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 1 ).percent();
 
     // TODO: figure out where this is from
@@ -3781,7 +3781,7 @@ struct echoed_templars_verdict_t : public paladin_melee_attack_t
     if ( p -> talents.final_verdict -> ok() )
       base_multiplier *= 1.0 + p -> talents.final_verdict -> effectN( 1 ).percent();
 
-    // TODO: this happened in 7.1, but not sure where it came from - Removing for 7.1.5 for now. 
+    // TODO: this happened in 7.1, but not sure where it came from - Removing for 7.1.5 for now.
     //base_multiplier *= 0.9;
     base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 1 ).percent();
   }
@@ -5429,20 +5429,22 @@ double paladin_t::composite_player_multiplier( school_e school ) const
   // Avenging Wrath buffs everything
   if ( buffs.avenging_wrath -> check() )
   {
-    m *= 1.0 + buffs.avenging_wrath -> get_damage_mod();
+    double aw_multiplier = buffs.avenging_wrath -> get_damage_mod();
     if ( chain_of_thrayn )
     {
-      m *= 1.0 + spells.chain_of_thrayn -> effectN( 4 ).percent();
+      aw_multiplier += spells.chain_of_thrayn -> effectN( 4 ).percent();
     }
+    m *= 1.0 + aw_multiplier;
   }
 
   if ( buffs.crusade -> check() )
   {
-    m *= 1.0 + buffs.crusade -> get_damage_mod();
+    double aw_multiplier = buffs.crusade -> get_damage_mod();
     if ( chain_of_thrayn )
     {
-      m *= 1.0 + spells.chain_of_thrayn -> effectN( 4 ).percent();
+      aw_multiplier += spells.chain_of_thrayn -> effectN( 4 ).percent();
     }
+    m *= 1.0 + aw_multiplier;
   }
 
   m *= 1.0 + buffs.wings_of_liberty -> current_stack * buffs.wings_of_liberty -> current_value;

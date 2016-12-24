@@ -28,7 +28,7 @@ actions=wind_shear
 actions+=/bloodlust,if=target.health.pct<25|time>0.500
 actions+=/auto_attack
 actions+=/feral_spirit
-actions+=/crash_lightning,if=artifact.alpha_wolf.rank&prev_gcd.feral_spirit
+actions+=/crash_lightning,if=artifact.alpha_wolf.rank&prev_gcd.1.feral_spirit
 actions+=/potion,name=old_war,if=feral_spirit.remains>5|target.time_to_die<=30
 actions+=/berserking,if=buff.ascendance.up|!talent.ascendance.enabled|level<100
 actions+=/blood_fury
@@ -84,6 +84,6 @@ off_hand=fury_of_the_stonemother,id=128873
 # gear_agility=14601
 # gear_stamina=23334
 # gear_crit_rating=704
-# gear_haste_rating=6583
-# gear_mastery_rating=13439
+# gear_haste_rating=6385
+# gear_mastery_rating=13160
 # gear_armor=2630

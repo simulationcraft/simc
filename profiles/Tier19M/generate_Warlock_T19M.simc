@@ -19,8 +19,8 @@ level=110
 race=human
 role=spell
 position=back
-talents=2301011
-artifact=39:142512:142510:142512:0:915:3:916:3:917:3:918:3:919:3:920:3:921:6:922:3:923:3:924:1:925:1:926:1:927:1:928:1:929:1:999:1:1353:1
+talents=3201021
+artifact=39:142512:142510:142512:0:915:3:916:3:917:3:918:3:919:3:920:4:921:5:922:3:923:3:924:1:925:1:926:1:927:1:928:1:929:1:999:1:1353:1
 spec=affliction
 
 head=collar_of_enclosure,id=134424,bonus_id=1727/1522
@@ -47,7 +47,7 @@ level=110
 race=troll
 role=spell
 position=back
-talents=3201032
+talents=3201022
 artifact=37:142512:142516:142513:0:1170:1:1171:3:1172:3:1173:4:1174:3:1175:3:1176:4:1177:4:1178:3:1179:3:1180:1:1181:1:1182:1:1183:1:1184:1:1185:1:1354:1
 spec=demonology
 
@@ -56,7 +56,7 @@ neck=pendant_of_the_watchful_eye,id=137536,bonus_id=1727/1522,enchant_id=5439
 shoulders=amice_of_the_unfurling_tempest,id=134432,bonus_id=1727/1522
 back=drape_of_the_unworthy,id=142521,bonus_id=3469/1512,enchant_id=5436
 chest=robes_of_celestial_adornment,id=142410,bonus_id=3469
-wrists=cinch_of_cosmic_insignficance,id=139187,bonus_id=1806
+wrists=clasp_of_cosmic_insignificance,id=139187,bonus_id=1806
 hands=handwraps_of_delusional_power,id=138212,bonus_id=1806
 waist=cinch_of_light,id=142411,bonus_id=3469
 legs=leggings_of_the_lower_planes,id=142413,bonus_id=3469
@@ -76,7 +76,7 @@ level=110
 race=troll
 role=spell
 position=back
-talents=2301013
+talents=2203022
 artifact=38:142513:142516:142513:0:803:1:804:3:805:3:806:5:807:3:808:3:809:4:810:3:811:3:812:3:813:1:814:1:815:1:816:1:817:1:818:1:1355:1
 spec=destruction
 
@@ -85,7 +85,7 @@ neck=blackened_portalstone_necklace,id=139332,bonus_id=1806,enchant_id=5439
 shoulders=amice_of_the_unfurling_tempest,id=134432,bonus_id=1727/1522
 back=drape_of_the_unworthy,id=142521,bonus_id=3469/1512,enchant_id=5436
 chest=robes_of_the_ancient_chronicle,id=142297
-wrists=cinch_of_cosmic_insignficance,id=139187,bonus_id=1806
+wrists=clasp_of_cosmic_insignificance,id=139187,bonus_id=1806
 hands=oiled_riggers_handwraps,id=142429,bonus_id=3469/1512
 waist=cinch_of_light,id=142411,bonus_id=3469
 legs=leggings_of_the_lower_planes,id=142413,bonus_id=3469

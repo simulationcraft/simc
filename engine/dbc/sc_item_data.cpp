@@ -1776,6 +1776,7 @@ combat_rating_multiplier_type item_database::item_combat_rating_type( const item
     case INVTYPE_FEET:
     case INVTYPE_SHIELD:
     case INVTYPE_HOLDABLE:
+    case INVTYPE_HANDS:
       return CR_MULTIPLIER_ARMOR;
     default:
       return CR_MULTIPLIER_INVALID;

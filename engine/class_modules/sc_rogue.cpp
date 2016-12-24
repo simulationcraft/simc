@@ -833,7 +833,9 @@ struct rogue_attack_t : public melee_attack_t
     }
 
     // FIXME: Apply "spec aura"
-    if ( data().affected_by( p -> spec.assassination_rogue -> effectN( 1 ) ) )
+    // The Assassination is special since some spells are flagged 2 times.
+    if ( data().affected_by( p -> spec.assassination_rogue -> effectN( 1 ) ) &&
+         ! data().affected_by( p -> spec.assassination_rogue -> effectN( 2 ) ) )
     {
       base_multiplier *= 1.0 + p -> spec.assassination_rogue -> effectN( 1 ).percent();
     }
@@ -3806,7 +3808,6 @@ struct rupture_t : public rogue_attack_t
     return m;
   }
 
-
   double composite_target_multiplier( player_t* target ) const override
   {
     double m = rogue_attack_t::composite_target_multiplier( target );
@@ -3836,6 +3837,10 @@ struct rupture_t : public rogue_attack_t
 
     return duration;
   }
+
+  // Rupture no longer gain power from combo points like typical damage effects (since 7.1.5)
+  double attack_tick_power_coefficient( const action_state_t* s ) const override
+  { return melee_attack_t::attack_tick_power_coefficient( s ); }
 
   void execute() override
   {
@@ -6632,7 +6637,7 @@ void rogue_t::init_action_list()
     cds -> add_action( this, "Vanish", "if=talent.nightstalker.enabled&combo_points>=cp_max_spend&((talent.exsanguinate.enabled&cooldown.exsanguinate.remains<1&(dot.rupture.ticking|time>10))|(!talent.exsanguinate.enabled&dot.rupture.refreshable))" );
     cds -> add_action( this, "Vanish", "if=talent.subterfuge.enabled&dot.garrote.refreshable&((spell_targets.fan_of_knives<=3&combo_points.deficit>=1+spell_targets.fan_of_knives)|(spell_targets.fan_of_knives>=4&combo_points.deficit>=4))" );
     cds -> add_action( this, "Vanish", "if=talent.shadow_focus.enabled&energy.time_to_max>=2&combo_points.deficit>=4" );
-    cds -> add_talent( this, "Exsanguinate", "if=prev_gcd.rupture&dot.rupture.remains>4+4*cp_max_spend" );
+    cds -> add_talent( this, "Exsanguinate", "if=prev_gcd.1.rupture&dot.rupture.remains>4+4*cp_max_spend" );
 
     // Finishers
     action_priority_list_t* finish = get_action_priority_list( "finish", "Finishers" );
@@ -6702,7 +6707,7 @@ void rogue_t::init_action_list()
     exsang_combo -> add_action( this, "Vanish", "if=talent.nightstalker.enabled&combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1&gcd.remains=0&energy>=25" );
     exsang_combo -> add_action( this, "Rupture", "if=combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1&(!talent.nightstalker.enabled|buff.vanish.up|cooldown.vanish.remains>15)" );
       // Some safeguards to make sure Exsanguinate is casted at the right moment
-    exsang_combo -> add_talent( this, "Exsanguinate", "if=prev_gcd.rupture&dot.rupture.remains>22+4*talent.deeper_stratagem.enabled&cooldown.vanish.remains>10" );
+    exsang_combo -> add_talent( this, "Exsanguinate", "if=prev_gcd.1.rupture&dot.rupture.remains>22+4*talent.deeper_stratagem.enabled&cooldown.vanish.remains>10" );
     exsang_combo -> add_action( "call_action_list,name=garrote,if=spell_targets.fan_of_knives<=8-artifact.bag_of_tricks.enabled" );
       // AoE
     exsang_combo -> add_talent( this, "Hemorrhage", "if=spell_targets.fan_of_knives>=2&!ticking" );

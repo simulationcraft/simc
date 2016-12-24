@@ -135,6 +135,7 @@ public:
     // Shadow
     buff_t* anunds_last_breath;       // Anund's Seared Shackles stack counter
     buff_t* the_twins_painful_touch;  // To track first casting
+    buff_t* zeks_exterminatus;        // Aura for Zeks proc
   } buffs;
 
   // Talents
@@ -332,6 +333,8 @@ public:
   // Procs
   struct
   {
+    proc_t* legendary_zeks_exterminatus;
+    proc_t* legendary_zeks_exterminatus_overflow;
     proc_t* legendary_anunds_last_breath;
     proc_t* legendary_anunds_last_breath_overflow;
     proc_t* shadowy_insight;
@@ -382,6 +385,7 @@ public:
     const special_effect_t* mangazas_madness;           // belt
     const special_effect_t* zenkaram_iridis_anadem;     // helm
     const special_effect_t* the_twins_painful_touch;    // ring
+    const special_effect_t* zeks_exterminatus;          // cloak
   } active_items;
 
   // Pets
@@ -1125,6 +1129,26 @@ public:
       else
       {
         priest.procs.shadowy_insight->occur();
+      }
+      return true;
+    }
+    return false;
+  }
+
+  bool trigger_zeks()
+  {
+    if (priest.buffs.zeks_exterminatus->trigger())
+    {
+      // proc doesn't reset the CD :'(
+      // priest.cooldowns.shadow_word_death->reset(true);
+
+      if (priest.buffs.zeks_exterminatus->check())
+      {
+        priest.procs.legendary_zeks_exterminatus_overflow->occur();
+      }
+      else
+      {
+        priest.procs.legendary_zeks_exterminatus->occur();
       }
       return true;
     }
@@ -1877,10 +1901,7 @@ public:
   {
     double d = priest_spell_t::composite_da_multiplier(state);
 
-    if (maybe_ptr(priest.dbc.ptr))
-    {
-      d *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
-    }
+    d *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
 
     return d;
   }
@@ -2056,10 +2077,7 @@ struct mind_flay_t final : public priest_spell_t
                 priest.buffs.void_ray->data().effectN( 1 ).percent();
 
 
-    if (maybe_ptr(priest.dbc.ptr))
-    {
-      am *= 1.0 + ptr_shadow_scaling_buff->effectN(2).percent();
-    }
+    am *= 1.0 + ptr_shadow_scaling_buff->effectN(2).percent();
 
     return am;
   }
@@ -2205,7 +2223,7 @@ struct mind_sear_t final : public priest_spell_t
   }
 
 
-  void impact( action_state_t* s ) override
+  void impact( action_state_t* ) override
   {
     // Mind Sear does on-hit damage only when there is a GCD of another ability
     // between it, so chaining Mind Sears doesn't allow for the on-hit to happen
@@ -2470,12 +2488,22 @@ struct shadow_word_death_t final : public priest_spell_t
   {
     double d = priest_spell_t::composite_da_multiplier(state);
 
-    if (maybe_ptr(priest.dbc.ptr))
+    d *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
+
+    if (priest.buffs.zeks_exterminatus->up())
     {
-      d *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
+      d *= 1.0 + priest.buffs.zeks_exterminatus->data().effectN( 1 ).trigger()->effectN( 2 ).percent();
+
     }
 
     return d;
+  }
+
+  void schedule_execute(action_state_t* s) override
+  {
+    priest_spell_t::schedule_execute(s);
+
+    priest.buffs.zeks_exterminatus->expire();
   }
 
   void impact( action_state_t* s ) override
@@ -2510,6 +2538,11 @@ struct shadow_word_death_t final : public priest_spell_t
   {
     if ( !priest_spell_t::ready() )
       return false;
+
+    if ( priest.buffs.zeks_exterminatus->up() )
+    {
+      return true;
+    }
 
     if ( ( priest.talents.reaper_of_souls->ok() &&
            target->health_percentage() < 35.0 ) ||
@@ -2546,11 +2579,8 @@ struct shadow_crash_t final : public priest_spell_t
   {
     double d = priest_spell_t::composite_da_multiplier(state);
 
-    if (maybe_ptr(priest.dbc.ptr))
-    {
-      d *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
-    }
-
+    d *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
+ 
     return d;
   }
 
@@ -2755,6 +2785,11 @@ struct shadow_word_pain_t final : public priest_spell_t
           priest.buffs.sphere_of_insanity->current_value );
       priest.buffs.sphere_of_insanity->current_value = 0;
     }
+
+    if (priest.active_items.zeks_exterminatus)
+    {
+      trigger_zeks();
+    }
   }
 
   void tick( dot_t* d ) override
@@ -2786,6 +2821,11 @@ struct shadow_word_pain_t final : public priest_spell_t
     {
       trigger_anunds();
     }
+
+    if (priest.active_items.zeks_exterminatus)
+    {
+      trigger_zeks();
+    }
   }
 
   double cost() const override
@@ -2813,10 +2853,7 @@ struct shadow_word_pain_t final : public priest_spell_t
                    priest.buffs.voidform->stack() );
     }
 
-    if (maybe_ptr(priest.dbc.ptr))
-    {
-      m *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
-    }
+    m *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
 
     return m;
   }
@@ -2853,10 +2890,7 @@ struct shadow_word_void_t final : public priest_spell_t
   {
     double d = priest_spell_t::composite_da_multiplier( state );
 
-    if (maybe_ptr(priest.dbc.ptr))
-    {
-      d *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
-    }
+    d *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
 
     return d;
   }
@@ -3158,10 +3192,7 @@ struct vampiric_touch_t final : public priest_spell_t
                    priest.buffs.voidform->stack() );
     }
 
-    if (maybe_ptr(priest.dbc.ptr))
-    {
-      m *= 1.0 + ptr_shadow_scaling_buff->effectN(2).percent();
-    }
+    m *= 1.0 + ptr_shadow_scaling_buff->effectN(2).percent();
 
     return m;
   }
@@ -3181,7 +3212,7 @@ struct void_bolt_t final : public priest_spell_t
     parse_options( options_str );
     use_off_gcd                 = true;
     is_sphere_of_insanity_spell = true;
-    dot_extension = data().effectN(1).base_value();
+    dot_extension = rank2 ->effectN( 1 ).base_value();
     energize_type =
         ENERGIZE_NONE;  // disable resource generation from spell data.
 
@@ -3215,7 +3246,7 @@ struct void_bolt_t final : public priest_spell_t
       {
         if ( td->dots.shadow_word_pain->is_ticking() )
         {
-			    td->dots.shadow_word_pain->extend_duration(timespan_t::from_millis(dot_extension), true );
+          td->dots.shadow_word_pain->extend_duration(timespan_t::from_millis(dot_extension), true );
         }
 
         if ( td->dots.vampiric_touch->is_ticking() )
@@ -3354,7 +3385,7 @@ struct void_eruption_t final : public priest_spell_t
                   ->effectN(1)
                   .base_value();
 
-      priest.buffs.voidform->bump( mss_vf_stacks );
+      priest.buffs.voidform->bump( mss_vf_stacks -1 ); // You start with 5 Stacks of Voidform 2016/12/22 N1gh7h4wk
     }
   }
 
@@ -3362,11 +3393,8 @@ struct void_eruption_t final : public priest_spell_t
   {
     double d = priest_spell_t::composite_da_multiplier(state);
 
-    if (maybe_ptr(priest.dbc.ptr))
-    {
-      d *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
-    }
-
+    d *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
+   
     return d;
   }
 
@@ -3415,10 +3443,7 @@ struct void_torrent_t final : public priest_spell_t
   {
     double am = priest_spell_t::action_multiplier();
 
-    if (maybe_ptr(priest.dbc.ptr))
-    {
-      am *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
-    }
+    am *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
 
     return am;
   }
@@ -3887,24 +3912,33 @@ struct surrender_to_madness_t final : public priest_buff_t<buff_t>
 
 /* Custom lingering_insanity buff
 */
-struct lingering_insanity_t final : public priest_buff_t<haste_buff_t>
-{
-  lingering_insanity_t( priest_t& p)
+struct lingering_insanity_t final: public priest_buff_t<haste_buff_t> {
+  int hidden_lingering_insanity;
+  lingering_insanity_t( priest_t& p )
     : base_t( p, haste_buff_creator_t( &p, "lingering_insanity",
-                                  p.talents.lingering_insanity)
-                .reverse(true)
-                .period(p.find_spell(197937)->effectN( 2 ).period())
-                .tick_behavior(BUFF_TICK_REFRESH)
-                .tick_time_behavior(BUFF_TICK_TIME_UNHASTED)
-                .max_stack(p.find_spell(185916)->effectN( 4 ).base_value() ) // or 18?
-                )
+              p.talents.lingering_insanity )
+              .reverse( true )
+              .duration( timespan_t::from_seconds( 50 ) )
+              .period( timespan_t::from_seconds( 1 ) )
+              .tick_behavior( BUFF_TICK_REFRESH )
+              .tick_time_behavior( BUFF_TICK_TIME_UNHASTED )
+              .max_stack( p.find_spell( 185916 )->effectN( 4 ).base_value() ) // or 18?
+    ), hidden_lingering_insanity( 0 )
   {
+    hidden_lingering_insanity = p.find_spell( 199849 ) ->effectN( 1 ).base_value();
   }
 
-  void decrement(int stacks, double value) override
+  void decrement( int, double ) override
   {
-    auto hidden_lingering_insanity = player->find_spell(199849);
-    buff_t::decrement(hidden_lingering_insanity->effectN( 1 ).base_value());
+    buff_t::decrement( hidden_lingering_insanity );
+  }
+
+  void expire_override(int stacks, timespan_t) 
+  {
+    if (stacks <= 0)
+    {
+      expire();
+    }
   }
 };
 
@@ -4025,6 +4059,14 @@ void zenkaram_iridis_anadem( special_effect_t& effect )
                    priest->active_items.zenkaram_iridis_anadem, effect );
 }
 
+void zeks_exterminatus(special_effect_t& effect)
+{
+  priest_t* priest = debug_cast<priest_t*>(effect.player);
+  assert(priest);
+  do_trinket_init(priest, PRIEST_SHADOW,
+    priest->active_items.zeks_exterminatus, effect);
+}
+
 void init()
 {
   // Archimonde Trinkets
@@ -4035,9 +4077,10 @@ void init()
   // Legion Legendaries
   unique_gear::register_special_effect( 215209, anunds_seared_shackles );
   unique_gear::register_special_effect( 207701, mangazas_madness );
-  unique_gear::register_special_effect( 215250, mother_shahrazs_seduction );
+  unique_gear::register_special_effect( 236523, mother_shahrazs_seduction );
   unique_gear::register_special_effect( 207721, the_twins_painful_touch );
   unique_gear::register_special_effect( 224999, zenkaram_iridis_anadem );
+  unique_gear::register_special_effect( 236545, zeks_exterminatus );
 }
 
 }  // items
@@ -4230,6 +4273,13 @@ void priest_t::create_procs()
   procs.legendary_anunds_last_breath_overflow = get_proc(
       "Legendary - Anund's Seared Shackles - Void Bolt damage increases (2% "
       "per) lost to overflow" );
+
+  procs.legendary_zeks_exterminatus = get_proc(
+    "Legendary - Zek's Exterminatus - Shadow Word Death damage increases (25% "
+    "per)");
+  procs.legendary_zeks_exterminatus_overflow = get_proc(
+    "Legendary - Zek's Exterminatus - Shadow Word Death damage increases (25% "
+    "per) lost to overflow");
 }
 
 /* Construct priest benefits
@@ -4321,7 +4371,7 @@ expr_t* priest_t::create_expression( action_t* a, const std::string& name_str )
 
       return ( ( buffs.voidform->data().effectN( 2 ).base_value() / -500.0 ) +
                ( ( buffs.insanity_drain_stacks->check() - 1 ) *2.0/3.0 ) );
-	  //hardcoded patch 7.1.5 2016/12/17
+      //hardcoded patch 7.1.5 2016/12/17
     } );
   }
 
@@ -5033,6 +5083,10 @@ void priest_t::create_buffs()
           .spell( find_spell( 207721 ) )
           .chance( active_items.the_twins_painful_touch ? 1.0 : 0.0 );
   //.duration(timespan_t::from_seconds(10.0));
+
+  buffs.zeks_exterminatus = buff_creator_t( this, "zeks_exterminatus" )
+                                .spell( find_spell( 236545 ) )
+                                .rppm_scale( RPPM_HASTE );
 }
 
 // priest_t::init_rng ==================================================
@@ -5214,9 +5268,10 @@ void priest_t::apl_default()
 void priest_t::apl_shadow()
 {
   action_priority_list_t* default_list = get_action_priority_list( "default" );
+  action_priority_list_t* check        = get_action_priority_list( "check" );
   action_priority_list_t* main         = get_action_priority_list( "main" );
-  action_priority_list_t* vf           = get_action_priority_list( "vf" );
   action_priority_list_t* s2m          = get_action_priority_list( "s2m" );
+  action_priority_list_t* vf           = get_action_priority_list( "vf" );
 
   // On-Use Items
   for ( const std::string& item_action : get_item_actions() )
@@ -5255,43 +5310,46 @@ void priest_t::apl_shadow()
   // Choose which APL to use based on talents and fight conditions.
 
   default_list->add_action(
-      "variable,op=set,name=actors_fight_time_mod,value=0" );
-  default_list->add_action(
-      "variable,op=set,name=actors_fight_time_mod,value=-((-(450)+(time+target."
-      "time_to_die))%10),if=time+target.time_to_die>450&time+target.time_to_"
-      "die<600" );
-  default_list->add_action(
-      "variable,op=set,name=actors_fight_time_mod,value=((450-(time+target."
-      "time_to_die))%5),if=time+target.time_to_die<=450" );
-  default_list->add_action(
-      "variable,op=set,name=s2mcheck,value=0.8*(116+set_bonus.tier19_2pc"
-      "*(4-variable.s2mbeltcheck*4)+4*variable.s2mbeltcheck+((raw_haste_pct*8)*"
-      "(2+(0.8*set_bonus.tier19_2pc)+(1*talent.reaper_of_souls.enabled)+"
-      "(2*artifact.mass_hysteria.rank)-(1*talent.sanlayn.enabled))))-("
-      "variable.actors_fight_time_mod*nonexecute_actors_pct)" );
-  default_list->add_action( "variable,op=min,name=s2mcheck,value=180" );
+      "call_action_list,name=check,if=talent.surrender_to_madness.enabled&!buff"
+      ".surrender_to_madness.up" );
   default_list->add_action(
       "call_action_list,name=s2m,if=buff.voidform.up&buff.surrender_to_madness."
       "up" );
   default_list->add_action( "call_action_list,name=vf,if=buff.voidform.up" );
   default_list->add_action( "call_action_list,name=main" );
 
+  // s2mcheck APL
+  check->add_action(
+      "variable,op=set,name=actors_fight_time_mod,value=0" );
+  check->add_action(
+      "variable,op=set,name=actors_fight_time_mod,value=-((-(450)+(time+target."
+      "time_to_die))%10),if=time+target.time_to_die>450&time+target.time_to_"
+      "die<600" );
+  check->add_action(
+      "variable,op=set,name=actors_fight_time_mod,value=((450-(time+target."
+      "time_to_die))%5),if=time+target.time_to_die<=450" );
+  check->add_action(
+      "variable,op=set,name=s2mcheck,value=0.8*(116+set_bonus.tier19_2pc"
+      "*(4-variable.s2mbeltcheck*4)+4*variable.s2mbeltcheck+((raw_haste_pct*8)*"
+      "(2+(0.8*set_bonus.tier19_2pc)+(1*talent.reaper_of_souls.enabled)+"
+      "(2*artifact.mass_hysteria.rank)-(1*talent.sanlayn.enabled))))-("
+      "variable.actors_fight_time_mod*nonexecute_actors_pct)" );
+  check->add_action( "variable,op=min,name=s2mcheck,value=180" );
+
   // Main APL
   main->add_action(
       "surrender_to_madness,if=talent.surrender_to_madness.enabled&target.time_"
       "to_die<=variable.s2mcheck" );
   main->add_action(
-      "mindbender,if=talent.mindbender.enabled&!talent.surrender_to_madness."
-      "enabled" );
+      "mindbender,if=talent.mindbender.enabled&((talent.surrender_to_madness."
+      "enabled&target.time_to_die>variable.s2mcheck+60)|!talent.surrender_to_"
+      "madness.enabled)" );
   main->add_action(
-      "mindbender,if=talent.mindbender.enabled&talent.surrender_to_madness."
-      "enabled&target.time_to_die>variable.s2mcheck+60" );
+      "shadow_word_pain,if=talent.misery.enabled&dot.shadow_word_pain.remains<"
+      "gcd.max,moving=1,cycle_targets=1"  );
   main->add_action(
-       "shadow_word_pain,if=talent.misery.enabled&dot.shadow_word_pain.remains<"
-       "gcd.max,moving=1,cycle_targets=1"  );
-  main->add_action(
-       "vampiric_touch,if=talent.misery.enabled&(dot.vampiric_touch.remains<3"
-       "*gcd.max|dot.shadow_word_pain.remains<3*gcd.max),cycle_targets=1"  );
+      "vampiric_touch,if=talent.misery.enabled&(dot.vampiric_touch.remains<3"
+      "*gcd.max|dot.shadow_word_pain.remains<3*gcd.max),cycle_targets=1"  );
   main->add_action(
       "shadow_word_pain,if=!talent.misery.enabled&dot.shadow_word_pain.remains"
       "<(3+(4%3))*gcd" );
@@ -5299,8 +5357,8 @@ void priest_t::apl_shadow()
       "vampiric_touch,if=!talent.misery.enabled&dot.vampiric_touch.remains<"
       "(4+(4%3))*gcd" );
   main->add_action(
-      "void_eruption,if=insanity>=85|(talent.auspicious_spirits.enabled&"
-      "insanity>=(80-shadowy_apparitions_in_flight*4))|set_bonus.tier19_4pc" );
+      "void_eruption,if=insanity>=70|(talent.auspicious_spirits.enabled&"
+      "insanity>=(65-shadowy_apparitions_in_flight*3))|set_bonus.tier19_4pc" );
   main->add_action( "shadow_crash,if=talent.shadow_crash.enabled" );
   main->add_action(
       "mindbender,if=talent.mindbender.enabled&set_bonus.tier18_2pc" );
@@ -5311,11 +5369,8 @@ void priest_t::apl_shadow()
       "vampiric_touch,if=!talent.misery.enabled&!ticking&talent.legacy_of_"
       "the_void.enabled&insanity>=70,cycle_targets=1" );
   main->add_action(
-      "shadow_word_death,if=!talent.reaper_of_souls.enabled&cooldown.shadow_"
-      "word_death.charges=2&insanity<=90" );
-  main->add_action(
-      "shadow_word_death,if=talent.reaper_of_souls.enabled&cooldown.shadow_"
-      "word_death.charges=2&insanity<=70" );
+      "shadow_word_death,if=cooldown.shadow_word_death.charges=2&insanity<="
+      "(90-20*talent.reaper_of_souls.enabled)" );
   main->add_action(
       "mind_blast,if=talent.legacy_of_the_void.enabled&(insanity<=81|(insanity<"
       "=75.2&talent.fortress_of_the_mind.enabled))" );
@@ -5334,11 +5389,92 @@ void priest_t::apl_shadow()
       "shadow_word_pain,if=!talent.misery.enabled&!ticking&target.time_to_die>10&"
       "(active_enemies<5&artifact.sphere_of_insanity.rank),cycle_targets=1" );
   main->add_action(
-      "shadow_word_void,if=(insanity<=70&talent.legacy_of_the_void.enabled)|("
-      "insanity<=85&!talent.legacy_of_the_void.enabled)" );
+      "shadow_word_void,if=talent.shadow_word_void.enabled&(insanity<=70&talent."
+      "legacy_of_the_void.enabled)|(insanity<=85&!talent.legacy_of_the_void.enabled)" );
   main->add_action(
       "mind_flay,interrupt=1,chain=1" );
   main->add_action( "shadow_word_pain" );
+
+  // Surrender to Madness APL
+  s2m->add_action( 
+      "void_bolt,if=buff.insanity_drain_stacks.stack<6&set_bonus.tier19_4pc" );
+  s2m->add_action( "shadow_crash,if=talent.shadow_crash.enabled" );
+  s2m->add_action( "mindbender,if=talent.mindbender.enabled" );
+  s2m->add_action(
+      "void_torrent,if=dot.shadow_word_pain.remains>5.5&dot.vampiric_"
+      "touch.remains>5.5" );
+  s2m->add_action( "berserking,if=buff.voidform.stack>=65" );
+  s2m->add_action(
+      "shadow_word_death,if=current_insanity_drain*gcd.max>insanity&!buff."
+      "power_infusion.up&(insanity-(current_insanity_drain*gcd.max)+(20+40*"
+      "talent.reaper_of_souls.enabled)<100)" );
+  s2m->add_action(
+      "power_infusion,if=cooldown.shadow_word_death.charges=0&cooldown.shadow_"
+      "word_death.remains>3*gcd.max" );
+  s2m->add_action(
+      "void_bolt,if=dot.shadow_word_pain.remains<3.5*gcd&dot.vampiric_touch."
+      "remains<3.5*gcd&target.time_to_die>10,cycle_targets=1" );
+  s2m->add_action(
+      "void_bolt,if=dot.shadow_word_pain.remains<3.5*gcd&(talent.auspicious_"
+      "spirits.enabled|talent.shadowy_insight.enabled)&target.time_to_die>10,"
+      "cycle_targets=1" );
+  s2m->add_action(
+      "void_bolt,if=dot.vampiric_touch.remains<3.5*gcd&(talent.sanlayn.enabled|"
+      "(talent.auspicious_spirits.enabled&artifact.unleash_the_shadows.rank))&"
+      "target.time_to_die>10,cycle_targets=1" );
+  s2m->add_action(
+      "void_bolt,if=dot.shadow_word_pain.remains<3.5*gcd&artifact.sphere_of_"
+      "insanity.rank&target.time_to_die>10,cycle_targets=1" );
+  s2m->add_action( "void_bolt" );
+  s2m->add_action(
+      "shadow_word_death,if=current_insanity_drain*gcd.max>insanity&(insanity-"
+      "(current_insanity_drain*gcd.max)+(20+40*talent.reaper_of_souls.enabled))<100" );
+  s2m->add_action(
+      "wait,sec=action.void_bolt.usable_in,if=action.void_bolt.usable_in<gcd."
+      "max*0.28" );
+  s2m->add_action(
+      "dispersion,if=current_insanity_drain*gcd.max>insanity-5&!buff.power_"
+      "infusion.up" );
+  s2m->add_action( "mind_blast" );
+  s2m->add_action(
+      "wait,sec=action.mind_blast.usable_in,if=action.mind_blast.usable_in<gcd."
+      "max*0.28" );
+  s2m->add_action(
+      "shadow_word_death,if=cooldown.shadow_word_death.charges=2" );
+  s2m->add_action(
+      "shadowfiend,if=!talent.mindbender.enabled,if=buff.voidform.stack>15" );
+  s2m->add_action(
+      "shadow_word_void,if=talent.shadow_word_void.enabled&(insanity-(current_"
+      "insanity_drain*gcd.max)+50)<100" );
+  s2m->add_action(
+      "shadow_word_pain,if=talent.misery.enabled&dot.shadow_word_pain.remains"
+      "<gcd,moving=1,cycle_targets=1"  );
+  s2m->add_action(
+      "vampiric_touch,if=talent.misery.enabled&(dot.vampiric_touch.remains<3*"
+      "gcd.max|dot.shadow_word_pain.remains<3*gcd.max),cycle_targets=1"      );
+  s2m->add_action(
+      "shadow_word_pain,if=!talent.misery.enabled&!ticking&(active_enemies<5|"
+      "talent.auspicious_spirits.enabled|talent.shadowy_insight.enabled|artifact"
+      ".sphere_of_insanity.rank)" );
+  s2m->add_action(
+      "vampiric_touch,if=!talent.misery.enabled&!ticking&(active_enemies<4|talent."
+      "sanlayn.enabled|(talent.auspicious_spirits.enabled&artifact.unleash_the_"
+      "shadows.rank))" );
+  s2m->add_action(
+      "shadow_word_pain,if=!talent.misery.enabled&!ticking&target.time_to_die>10&"
+      "(active_enemies<5&(talent.auspicious_spirits.enabled|talent.shadowy_insight"
+      ".enabled)),cycle_targets=1" );
+  s2m->add_action(
+      "vampiric_touch,if=!talent.misery.enabled&!ticking&target.time_to_die>10&"
+      "(active_enemies<4|talent.sanlayn.enabled|(talent.auspicious_spirits.enabled&"
+      "artifact.unleash_the_shadows.rank)),cycle_targets=1" );
+  s2m->add_action(
+      "shadow_word_pain,if=!talent.misery.enabled&!ticking&target.time_to_die>10&"
+      "(active_enemies<5&artifact.sphere_of_insanity.rank),cycle_targets=1" );
+  s2m->add_action(
+      "mind_flay,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&(action.void_"
+      "bolt.usable|(current_insanity_drain*gcd.max>insanity&(insanity-(current_"
+      "insanity_drain*gcd.max)+60)<100&cooldown.shadow_word_death.charges>=1))" );
 
   // Voidform APL
   vf->add_action(
@@ -5350,33 +5486,22 @@ void priest_t::apl_shadow()
       "void_bolt,if=set_bonus.tier19_4pc&buff.insanity_drain_stacks.stack<6" );
   vf->add_action( "shadow_crash,if=talent.shadow_crash.enabled" );
   vf->add_action(
-      "void_torrent,if=dot.shadow_word_pain.remains>5.5&dot.vampiric_"
-      "touch.remains>5.5&talent.surrender_to_madness.enabled&target.time_to_"
-      "die>"
-      "variable.s2mcheck-(buff.insanity_drain_stacks.stack)+60" );
-  vf->add_action( "void_torrent,if=!talent.surrender_to_madness.enabled" );
+      "void_torrent,if=dot.shadow_word_pain.remains>5.5&dot.vampiric_touch.remains"
+      ">5.5&(!talent.surrender_to_madness.enabled|(talent.surrender_to_madness."
+      "enabled&target.time_to_die>variable.s2mcheck-(buff.insanity_drain_stacks."
+      "stack)+60))" );
   vf->add_action(
-      "mindbender,if=talent.mindbender.enabled&!talent.surrender_to_madness."
-      "enabled" );
+      "mindbender,if=talent.mindbender.enabled&(!talent.surrender_to_madness.enabled"
+      "|(talent.surrender_to_madness.enabled&target.time_to_die>variable.s2mcheck-"
+      "(buff.insanity_drain_stacks.stack)+30))" );
   vf->add_action(
-      "mindbender,if=talent.mindbender.enabled&talent.surrender_to_madness."
-      "enabled&target.time_to_die>variable.s2mcheck-(buff.insanity_drain_"
-      "stacks.stack)+30" );
+      "power_infusion,if=buff.insanity_drain_stacks.stack>=10+2*set_bonus.tier19_2pc&"
+      "(!talent.surrender_to_madness.enabled|(talent.surrender_to_madness.enabled&"
+      "target.time_to_die>variable.s2mcheck-(buff.insanity_drain_stacks.stack)+61))" );
   vf->add_action(
-      "power_infusion,if=buff.insanity_drain_stacks.stack>=10+2*set_bonus."
-      "tier19_2pc&buff.insanity_drain_stacks.stack<=30&!talent.surrender_"
-      "to_madness.enabled" );
-  vf->add_action(
-      "power_infusion,if=buff.insanity_drain_stacks.stack>=10+2*set_bonus."
-      "tier19_2pc&talent.surrender_to_madness.enabled&target.time_to_die>"
-      "variable.s2mcheck-(buff.insanity_drain_stacks.stack)+61" );
-  vf->add_action(
-      "berserking,if=buff.voidform.stack>=10&buff.insanity_drain_stacks.stack<="
-      "20&!talent.surrender_to_madness.enabled" );
-  vf->add_action(
-      "berserking,if=buff.voidform.stack>=10&talent.surrender_to_madness."
-      "enabled&target.time_to_die>variable.s2mcheck-(buff.insanity_drain_"
-      "stacks.stack)+60" );
+      "berserking,if=buff.voidform.stack>=10&buff.insanity_drain_stacks.stack<=20&"
+      "(!talent.surrender_to_madness.enabled|(talent.surrender_to_madness.enabled&"
+      "target.time_to_die>variable.s2mcheck-(buff.insanity_drain_stacks.stack)+60))" );
   vf->add_action(
       "void_bolt,if=dot.shadow_word_pain.remains<3.5*gcd&dot.vampiric_touch."
       "remains<3.5*gcd&target.time_to_die>10,cycle_targets=1" );
@@ -5392,15 +5517,9 @@ void priest_t::apl_shadow()
       "void_bolt,if=dot.shadow_word_pain.remains<3.5*gcd&artifact.sphere_of_"
       "insanity.rank&target.time_to_die>10,cycle_targets=1" );
   vf->add_action( "void_bolt" );
-
   vf->add_action(
-      "shadow_word_death,if=!talent.reaper_of_souls.enabled&current_insanity_"
-      "drain*gcd.max>insanity&(insanity-(current_insanity_drain*gcd.max)+10)<"
-      "100" );
-  vf->add_action(
-      "shadow_word_death,if=talent.reaper_of_souls.enabled&current_insanity_"
-      "drain*gcd.max>insanity&(insanity-(current_insanity_drain*gcd.max)+30)<"
-      "100" );
+      "shadow_word_death,if=current_insanity_drain*gcd.max>insanity&(insanity-"
+      "(current_insanity_drain*gcd.max)+(10+20*talent.reaper_of_souls.enabled))<100" );
   vf->add_action(
       "wait,sec=action.void_bolt.usable_in,if=action.void_bolt.usable_in<gcd."
       "max*0.28" );
@@ -5412,8 +5531,8 @@ void priest_t::apl_shadow()
   vf->add_action(
       "shadowfiend,if=!talent.mindbender.enabled,if=buff.voidform.stack>15" );
   vf->add_action(
-      "shadow_word_void,if=(insanity-(current_insanity_drain*gcd.max)+25)<"
-      "100" );
+      "shadow_word_void,if=talent.shadow_word_void.enabled&(insanity-(current_"
+    "insanity_drain*gcd.max)+25)<100" );
   vf->add_action(
       "shadow_word_pain,if=talent.misery.enabled&dot.shadow_word_pain.remains"
       "<gcd,moving=1,cycle_targets=1"    );
@@ -5440,102 +5559,10 @@ void priest_t::apl_shadow()
       "shadow_word_pain,if=!talent.misery.enabled&!ticking&target.time_to_die>10&"
       "(active_enemies<5&artifact.sphere_of_insanity.rank),cycle_targets=1" );
   vf->add_action(
-      "mind_flay,chain=1,interrupt_immediate=1,"
-      "interrupt_if=action.void_bolt.usable" );
+      "mind_flay,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&(action.void_"
+      "bolt.usable|(current_insanity_drain*gcd.max>insanity&(insanity-(current_"
+      "insanity_drain*gcd.max)+30)<100&cooldown.shadow_word_death.charges>=1))" );
   vf->add_action( "shadow_word_pain" );
-
-  // Surrender to Madness APL
-  s2m->add_action( "void_bolt,if=set_bonus.tier19_4pc&buff.insanity_drain_stacks.stack<6" );
-  s2m->add_action( "shadow_crash,if=talent.shadow_crash.enabled" );
-  s2m->add_action( "mindbender,if=talent.mindbender.enabled" );
-  s2m->add_action(
-      "void_torrent,if=dot.shadow_word_pain.remains>5.5&dot.vampiric_"
-      "touch.remains>5.5" );
-  s2m->add_action( "berserking,if=buff.voidform.stack>=65" );
- s2m->add_action(
-      "shadow_word_death,if=!talent.reaper_of_souls.enabled&current_insanity_"
-      "drain*gcd.max>insanity&(insanity-(current_insanity_drain*gcd.max)+20)<"
-      "100&!buff.power_infusion.up&buff.insanity_drain_stacks.stack<=60" );
-  s2m->add_action(
-      "shadow_word_death,if=talent.reaper_of_souls.enabled&current_insanity_"
-      "drain*gcd.max>insanity&(insanity-(current_insanity_drain*gcd.max)+60)<"
-      "100&!buff.power_infusion.up&buff.insanity_drain_stacks.stack<=60" );
-  s2m->add_action(
-      "power_infusion,if=cooldown.shadow_word_death.charges=0&cooldown.shadow_"
-      "word_death.remains>2*gcd.max" );
-
-  s2m->add_action(
-      "void_bolt,if=dot.shadow_word_pain.remains<3.5*gcd&dot.vampiric_touch."
-      "remains<3.5*gcd&target.time_to_die>10,cycle_targets=1" );
-  s2m->add_action(
-      "void_bolt,if=dot.shadow_word_pain.remains<3.5*gcd&(talent.auspicious_"
-      "spirits.enabled|talent.shadowy_insight.enabled)&target.time_to_die>10,"
-      "cycle_targets=1" );
-  s2m->add_action(
-      "void_bolt,if=dot.vampiric_touch.remains<3.5*gcd&(talent.sanlayn.enabled|"
-      "(talent.auspicious_spirits.enabled&artifact.unleash_the_shadows.rank))&"
-      "target.time_to_die>10,cycle_targets=1" );
-  s2m->add_action(
-      "void_bolt,if=dot.shadow_word_pain.remains<3.5*gcd&artifact.sphere_of_"
-      "insanity.rank&target.time_to_die>10,cycle_targets=1" );
-  s2m->add_action( "void_bolt" );
-
-  s2m->add_action(
-      "shadow_word_death,if=!talent.reaper_of_souls.enabled&current_insanity_"
-      "drain*gcd.max>insanity&(insanity-(current_insanity_drain*gcd.max)+20)<"
-      "100" );
-  s2m->add_action(
-      "shadow_word_death,if=talent.reaper_of_souls.enabled&current_insanity_"
-      "drain*gcd.max>insanity&(insanity-(current_insanity_drain*gcd.max)+60)<"
-      "100" );
-
-  s2m->add_action(
-      "wait,sec=action.void_bolt.usable_in,if=action.void_bolt.usable_in<gcd."
-      "max*0.28" );
-  s2m->add_action(
-      "dispersion,if=current_insanity_drain*gcd.max>insanity-5&!buff.power_"
-      "infusion.up" );
-  s2m->add_action( "mind_blast" );
-  s2m->add_action(
-      "wait,sec=action.mind_blast.usable_in,if=action.mind_blast.usable_in<gcd."
-      "max*0.28" );
-  s2m->add_action(
-      "shadow_word_death,if=cooldown.shadow_word_death.charges=2" );
-  s2m->add_action(
-      "shadowfiend,if=!talent.mindbender.enabled,if=buff.voidform.stack>15" );
-  s2m->add_action(
-      "shadow_word_void,if=(insanity-(current_insanity_drain*gcd.max)+50)<"
-      "100" );
-  s2m->add_action(
-      "shadow_word_pain,if=talent.misery.enabled&dot.shadow_word_pain.remains"
-      "<gcd,moving=1,cycle_targets=1"  );
-  s2m->add_action(
-      "vampiric_touch,if=talent.misery.enabled&(dot.vampiric_touch.remains<3*"
-      "gcd.max|dot.shadow_word_pain.remains<3*gcd.max),cycle_targets=1"      );
-  s2m->add_action(
-     "shadow_word_pain,if=!talent.misery.enabled&!ticking&(active_enemies<5|"
-     "talent.auspicious_spirits.enabled|talent.shadowy_insight.enabled|artifact"
-     ".sphere_of_insanity.rank)" );
-  s2m->add_action(
-     "vampiric_touch,if=!talent.misery.enabled&!ticking&(active_enemies<4|talent."
-     "sanlayn.enabled|(talent.auspicious_spirits.enabled&artifact.unleash_the_"
-     "shadows.rank))" );
-  s2m->add_action(
-     "shadow_word_pain,if=!talent.misery.enabled&!ticking&target.time_to_die>10&"
-     "(active_enemies<5&(talent.auspicious_spirits.enabled|talent.shadowy_insight"
-     ".enabled)),cycle_targets=1" );
-  s2m->add_action(
-     "vampiric_touch,if=!talent.misery.enabled&!ticking&target.time_to_die>10&"
-     "(active_enemies<4|talent.sanlayn.enabled|(talent.auspicious_spirits.enabled&"
-     "artifact.unleash_the_shadows.rank)),cycle_targets=1" );
-  s2m->add_action(
-     "shadow_word_pain,if=!talent.misery.enabled&!ticking&target.time_to_die>10&"
-     "(active_enemies<5&artifact.sphere_of_insanity.rank),cycle_targets=1" );
-  s2m->add_action(
-      "mind_flay,chain=1,interrupt_immediate=1,"
-      "interrupt_if=((current_insanity_drain*gcd.max>insanity&(insanity-(current_"
-      "insanity_drain*gcd.max)+60)<100&cooldown.shadow_word_death.charges>=1)|"
-      "action.void_bolt.usable)&ticks>=2" );
 }
 
 // Discipline Heal Combat Action Priority List

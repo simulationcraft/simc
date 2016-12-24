@@ -5759,8 +5759,7 @@ double warrior_t::composite_player_target_multiplier( player_t* target, school_e
 
   if ( td -> debuffs_colossus_smash -> up() )
   {
-    m *= 1.0 + ( td -> debuffs_colossus_smash -> value() + cache.mastery_value() )
-      * ( 1.0 + talents.titanic_might -> effectN( 2 ).percent() );
+    m *= 1.0 + ( td -> debuffs_colossus_smash -> value() + cache.mastery_value() );
   }
 
   return m;

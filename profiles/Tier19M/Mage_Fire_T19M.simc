@@ -3,7 +3,7 @@ level=110
 race=troll
 role=spell
 position=back
-talents=1022021
+talents=2022022
 artifact=54:142516:139269:142516:0:748:1:749:3:750:3:751:3:752:3:753:3:754:3:755:6:756:3:757:3:758:1:759:1:760:1:761:1:762:1:763:1:1340:1
 spec=fire
 
@@ -58,14 +58,14 @@ actions.rop_phase+=/pyroblast,if=buff.hot_streak.up
 actions.rop_phase+=/call_action_list,name=active_talents
 actions.rop_phase+=/pyroblast,if=buff.kaelthas_ultimate_ability.react
 actions.rop_phase+=/fire_blast,if=!prev_off_gcd.fire_blast
-actions.rop_phase+=/phoenixs_flames,if=!prev_gcd.phoenixs_flames
+actions.rop_phase+=/phoenixs_flames,if=!prev_gcd.1.phoenixs_flames
 actions.rop_phase+=/scorch,if=target.health.pct<=25&equipped.132454
 actions.rop_phase+=/fireball
 
 actions.single_target=pyroblast,if=buff.hot_streak.up&buff.hot_streak.remains<action.fireball.execute_time
 actions.single_target+=/phoenixs_flames,if=charges_fractional>2.7&active_enemies>2
 actions.single_target+=/flamestrike,if=talent.flame_patch.enabled&active_enemies>2&buff.hot_streak.react
-actions.single_target+=/pyroblast,if=buff.hot_streak.up&!prev_gcd.pyroblast
+actions.single_target+=/pyroblast,if=buff.hot_streak.up&!prev_gcd.1.pyroblast
 actions.single_target+=/pyroblast,if=buff.hot_streak.react&target.health.pct<=25&equipped.132454
 actions.single_target+=/pyroblast,if=buff.kaelthas_ultimate_ability.react
 actions.single_target+=/call_action_list,name=active_talents
@@ -97,9 +97,9 @@ off_hand=heart_of_the_phoenix,id=133959
 # gear_ilvl=879.94
 # gear_stamina=26803
 # gear_intellect=28518
-# gear_crit_rating=12360
+# gear_crit_rating=11807
 # gear_haste_rating=4676
 # gear_mastery_rating=3898
-# gear_versatility_rating=2107
+# gear_versatility_rating=1809
 # gear_armor=1799
 # set_bonus=tier19p_cloth_2pc=1
