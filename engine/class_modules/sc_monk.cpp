@@ -1890,20 +1890,36 @@ private:
     }
   };
 
-  struct stomp_t: public melee_attack_t
+  struct stomp_tick_t : public melee_attack_t
   {
-    stomp_t( niuzao_pet_t *p, const std::string& options_str ): 
-      melee_attack_t( "stomp", p, p -> o() -> passives.stomp )
+    stomp_tick_t( niuzao_pet_t *p ) :
+      melee_attack_t( "stomp_tick", p, p -> o() -> passives.stomp )
+    {
+      aoe = -1;
+      dual = direct_tick = background = may_crit = may_miss = true;
+      range = radius;
+      radius = 0;
+      cooldown -> duration = timespan_t::zero();
+    }
+  };
+
+  struct stomp_t: public spell_t
+  {
+    stomp_t( niuzao_pet_t *p, const std::string& options_str ) : 
+      spell_t( "stomp", p, p -> o() -> passives.stomp )
     {
       parse_options( options_str );
 
       // for future compatibility, we may want to grab Niuzao and our tick spell and build this data from those (Niuzao summon duration, for example)
-      aoe = -1;
       dot_duration = p -> o() -> talent.invoke_niuzao -> duration();
       hasted_ticks = may_miss = false;
       tick_zero = dynamic_tick_action = true; // trigger tick when t == 0
       base_tick_time = p -> o() -> passives.stomp -> cooldown(); // trigger a tick every second
       cooldown -> duration = p -> o() -> talent.invoke_niuzao -> duration(); // we're done after 45 seconds
+      attack_power_mod.direct = 0.0;
+      attack_power_mod.tick = 0.0;
+
+      tick_action = new stomp_tick_t( p );
     }
   };
 
@@ -2413,21 +2429,8 @@ struct monk_spell_t: public monk_action_t < spell_t >
   {
     double am = base_t::action_multiplier();
 
-    if ( this -> data().affected_by( p() -> spec.windwalker_monk -> effectN( 1 ) ) )
-      am *= 1.0 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
-
-    if ( this -> data().affected_by( p() -> spec.windwalker_monk -> effectN( 2 ) ) )
-      am *= 1.0 + p() -> spec.windwalker_monk -> effectN( 2 ).percent();
-
-    if ( this -> data().affected_by( p() -> spec.brewmaster_monk -> effectN( 1 ) ) )
-      am *= 1.0 + p() -> spec.brewmaster_monk -> effectN( 1 ).percent();
-
-    if ( this -> data().affected_by( p() -> spec.brewmaster_monk -> effectN( 2 ) ) )
-      am *= 1.0 + p() -> spec.brewmaster_monk -> effectN( 2 ).percent();
-
     return am;
   }
-
 };
 
 struct monk_heal_t: public monk_action_t < heal_t >
@@ -2472,12 +2475,6 @@ struct monk_heal_t: public monk_action_t < heal_t >
         am *= 1.0 + p() -> buff.extend_life -> value();
     }
 
-    if ( this -> data().affected_by( p() -> spec.windwalker_monk -> effectN( 1 ) ) )
-        am *= 1.0 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
-
-    if ( this -> data().affected_by( p() -> spec.brewmaster_monk -> effectN( 1 ) ) )
-        am *= 1.0 + p() -> spec.brewmaster_monk -> effectN( 1 ).percent();
-
     return am;
   }
 
@@ -2520,12 +2517,6 @@ struct monk_melee_attack_t: public monk_action_t < melee_attack_t >
   double action_multiplier() const override
   {
     double am = base_t::action_multiplier();
-
-    if ( this -> data().affected_by( p() -> spec.windwalker_monk -> effectN( 1 ) ) )
-      am *= 1.0 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
-
-    if ( this -> data().affected_by( p() -> spec.brewmaster_monk -> effectN( 1 ) ) )
-        am *= 1.0 + p() -> spec.brewmaster_monk -> effectN( 1 ).percent();
 
     return am;
   }
@@ -2585,7 +2576,7 @@ struct eye_of_the_tiger_dmg_tick_t: public monk_spell_t
   {
     double am = monk_spell_t::action_multiplier();
 
-    am *= 1 + p() -> spec.brewmaster_monk -> effectN( 5 ).percent();
+    am *= 1 + p() -> spec.brewmaster_monk -> effectN( 7 ).percent();
 
     return am;
   }
@@ -2641,6 +2632,8 @@ struct tiger_palm_t: public monk_melee_attack_t
 
     if ( p() -> specialization() == MONK_BREWMASTER )
     {
+      am *= 1 + p() -> spec.brewmaster_monk -> effectN( 1 ).percent();
+
       am *= 1 + p() -> spec.brewmaster_monk -> effectN( 6 ).percent();
 
       if ( p() -> artifact.face_palm.rank() )
@@ -2652,6 +2645,10 @@ struct tiger_palm_t: public monk_melee_attack_t
       if ( p() -> buff.blackout_combo -> up() )
         am *= 1 + p() -> buff.blackout_combo -> data().effectN( 1 ).percent();
     }
+
+    am *= 1 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
+
+    am *= 1 + p() -> spec.windwalker_monk -> effectN( 6 ).percent();
 
     return am;
   }
@@ -2808,6 +2805,10 @@ struct rising_sun_kick_proc_t : public monk_melee_attack_t
     if ( p() -> artifact.rising_winds.rank() )
       am *= 1 + p() -> artifact.rising_winds.percent();
 
+    am *= 1 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
+
+    am *= 1 + p() -> spec.windwalker_monk -> effectN( 6 ).percent();
+
     return am;
   }
 
@@ -2955,6 +2956,10 @@ struct rising_sun_kick_t: public monk_melee_attack_t
 
     if ( p() -> artifact.rising_winds.rank() )
       am *= 1 + p() -> artifact.rising_winds.percent();
+
+    am *= 1 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
+
+    am *= 1 + p() -> spec.windwalker_monk -> effectN( 6 ).percent();
 
     return am;
   }
@@ -3175,6 +3180,12 @@ struct blackout_kick_t: public monk_melee_attack_t
 
     switch ( p() -> specialization() )
     {
+      case MONK_BREWMASTER:
+      {
+        // Brewmasters cannot use Blackout Kick but it's in the database so being a completionist.
+        am *= 1 + p() -> spec.brewmaster_monk -> effectN( 1 ).percent();
+        break;
+      }
       case MONK_MISTWEAVER:
       {
         am *= 1 + p() -> spec.mistweaver_monk -> effectN( 10 ).percent();
@@ -3184,6 +3195,10 @@ struct blackout_kick_t: public monk_melee_attack_t
       {
         if ( p() -> artifact.dark_skies.rank() )
           am *= 1 + p() -> artifact.dark_skies.percent();
+
+        am *= 1 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
+
+        am *= 1 + p() -> spec.windwalker_monk -> effectN( 6 ).percent();
 
         break;
       }
@@ -3301,9 +3316,17 @@ struct blackout_strike_t: public monk_melee_attack_t
   {
     double am = monk_melee_attack_t::action_multiplier();
 
+    am *= 1 + p() -> spec.brewmaster_monk -> effectN( 1 ).percent();
+
     // Mistweavers cannot learn this spell. However the effect to adjust this spell is in the database.
     // Just being a completionist about this.
     am *= 1 + p() -> spec.mistweaver_monk -> effectN( 10 ).percent();
+
+    // Windwalkers cannot learn this spell. However the effect to adjust this spell is in the database.
+    // Just being a completionist about this.
+    am *= 1 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
+
+    am *= 1 + p() -> spec.windwalker_monk -> effectN( 6 ).percent();
 
     return am;
   }
@@ -3382,14 +3405,18 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
     if ( p() -> buff.combo_strikes -> up() )
       pm *= 1 + p() -> cache.mastery_value();
 
-    pm *= 1 + p() -> spec.brewmaster_monk -> effectN( 5 ).percent();
-
     return pm;
   }
 
   virtual double action_multiplier() const override
   {
     double am = monk_melee_attack_t::action_multiplier();
+
+    am *= 1 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
+
+    am *= 1 + p() -> spec.brewmaster_monk -> effectN( 1 ).percent();
+
+    am *= 1 + p() -> spec.brewmaster_monk -> effectN( 5 ).percent();
 
     return am;
   }
@@ -3471,11 +3498,6 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
 
     pm *= 1 + ( mark_of_the_crane_counter() * p() -> spec.spinning_crane_kick -> effectN( 2 ).percent() );
 
-    if ( p() -> artifact.power_of_a_thousand_cranes.rank() )
-      pm *= 1 + p() -> artifact.power_of_a_thousand_cranes.percent();
-
-    pm *= 1 + p() -> spec.mistweaver_monk -> effectN( 12 ).percent();
-
     return pm;
   }
 
@@ -3483,6 +3505,12 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
   {
     double am = monk_melee_attack_t::action_multiplier();
 
+    if ( p() -> artifact.power_of_a_thousand_cranes.rank() )
+      am *= 1 + p() -> artifact.power_of_a_thousand_cranes.percent();
+
+    am *= 1 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
+
+    am *= 1 + p() -> spec.mistweaver_monk -> effectN( 12 ).percent();
 
     return am;
   }
@@ -3615,6 +3643,8 @@ struct fists_of_fury_t: public monk_melee_attack_t
     if ( p() -> buff.combo_strikes -> up() )
       pm *= 1 + p() -> cache.mastery_value();
 
+    pm *= 1 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
+
     if ( p() -> buff.transfer_the_power -> up() )
     {
       pm *= 1 + p() -> buff.transfer_the_power -> stack_value();
@@ -3746,6 +3776,8 @@ struct whirling_dragon_punch_t: public monk_melee_attack_t
     if ( p() -> buff.combo_strikes -> up() )
       pm *= 1 + p() -> cache.mastery_value();
 
+    pm *= 1 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
+
     return pm;
   }
 
@@ -3806,6 +3838,8 @@ struct strike_of_the_windlord_off_hand_t: public monk_melee_attack_t
     if ( p() -> buff.combo_strikes -> up() )
       pm *= 1 + p() -> cache.mastery_value();
 
+    pm *= 1 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
+
     return pm;
   }
 
@@ -3853,6 +3887,8 @@ struct strike_of_the_windlord_t: public monk_melee_attack_t
 
     if ( p() -> buff.combo_strikes -> up() )
       pm *= 1 + p() -> cache.mastery_value();
+
+    pm *= 1 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
 
     return pm;
   }
@@ -4027,6 +4063,8 @@ struct keg_smash_t: public monk_melee_attack_t
   virtual double action_multiplier() const override
   {
     double am = monk_melee_attack_t::action_multiplier();
+
+    am *= 1 + p() -> spec.brewmaster_monk -> effectN( 1 ).percent();
 
     if ( p() -> artifact.full_keg.rank() )
       am *= 1 + p() -> artifact.full_keg.percent();
@@ -4691,6 +4729,10 @@ struct crackling_jade_lightning_t: public monk_spell_t
 
     am *= 1 + p() -> spec.mistweaver_monk -> effectN( 13 ).percent();
 
+    am *= 1 + p() -> spec.brewmaster_monk -> effectN( 2 ).percent();
+
+    am *= 1 + p() -> spec.windwalker_monk -> effectN( 2 ).percent();
+
     return am;
   }
 
@@ -4783,6 +4825,15 @@ struct dragonfire_brew : public monk_spell_t
 
     tick_action = new dragonfire_brew_tick( p );
   }
+
+  double action_multiplier() const override
+  {
+    double am = monk_spell_t::action_multiplier();
+
+    am *= 1 + p() -> spec.brewmaster_monk -> effectN( 1 ).percent();
+
+    return am;
+  }
 };
 
 struct breath_of_fire_t: public monk_spell_t
@@ -4800,6 +4851,8 @@ struct breath_of_fire_t: public monk_spell_t
     double action_multiplier() const override
     {
       double am = monk_spell_t::action_multiplier();
+
+      am *= 1 + p() -> spec.brewmaster_monk -> effectN( 1 ).percent();
 
       if ( p() -> artifact.hot_blooded.rank() )
         am *= 1 + p() -> artifact.hot_blooded.data().effectN( 1 ).percent();
@@ -6162,7 +6215,11 @@ struct chi_wave_heal_tick_t: public monk_heal_t
       am *= 1.0 + sef_mult;
     }
 
+    am *= 1 + p() -> spec.brewmaster_monk -> effectN( 1 ).percent();
+
     am *= 1 + p() -> spec.brewmaster_monk -> effectN( 6 ).percent();
+
+    am *= 1 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
 
     return am;
   }
@@ -6191,7 +6248,11 @@ struct chi_wave_dmg_tick_t: public monk_spell_t
   {
     double am = monk_spell_t::action_multiplier();
 
+    am *= 1 + p() -> spec.brewmaster_monk -> effectN( 1 ).percent();
+
     am *= 1 + p() -> spec.brewmaster_monk -> effectN( 6 ).percent();
+
+    am *= 1 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
 
     return am;
   }
@@ -6276,7 +6337,11 @@ struct chi_burst_heal_t: public monk_heal_t
       am *= 1.0 + sef_mult;
     }
 
+    am *= 1 + p() -> spec.brewmaster_monk -> effectN( 1 ).percent();
+
     am *= 1 + p() -> spec.brewmaster_monk -> effectN( 6 ).percent();
+
+    am *= 1 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
 
     return am;
   }
@@ -6306,7 +6371,11 @@ struct chi_burst_damage_t: public monk_spell_t
   {
     double am = monk_spell_t::action_multiplier();
 
+    am *= 1 + p() -> spec.brewmaster_monk -> effectN( 1 ).percent();
+
     am *= 1 + p() -> spec.brewmaster_monk -> effectN( 6 ).percent();
+
+    am *= 1 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
 
     return am;
   }
