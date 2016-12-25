@@ -17,18 +17,19 @@
 
 
 # Shadow - S2M only
-Priest_Shadow_$(Tier)_S2M.simc
-copy=Shadow_$(Tier)_Anunds,Priest_Shadow_$(Tier)_S2M
+Priest_Shadow_S2M_$(Tier).simc
+
+copy=Shadow_$(Tier)_Anunds,Priest_Shadow_S2M_$(Tier)
 wrist=anunds_seared_shackles,id=132409
 
-#copy=Shadow_$(Tier)_Zenk'aram,Priest_Shadow_$(Tier)_S2M
+#copy=Shadow_$(Tier)_Zenk'aram,Priest_Shadow_S2M_$(Tier)
 #head=zenkaram_iridis_anadem,id=133971
 
-#copy=Shadow_$(Tier)_Twin's,Priest_Shadow_$(Tier)_S2M
+#copy=Shadow_$(Tier)_Twin's,Priest_Shadow_S2M_$(Tier)
 #finger1=the_twins_painful_touch,id=133973,bonus_id=1811,enchant=binding_of_haste
 
-copy=Shadow_$(Tier)_Mangaza's,Priest_Shadow_$(Tier)_S2M
+copy=Shadow_$(Tier)_Mangaza's,Priest_Shadow_S2M_$(Tier)
 waist=mangazas_madness,id=132864
 
-copy=Shadow_$(Tier)_Sharaz,Priest_Shadow_$(Tier)_S2M
+copy=Shadow_$(Tier)_Sharaz,Priest_Shadow_S2M_$(Tier)
 shoulder=mother_shahrazs_seduction,id=132437
