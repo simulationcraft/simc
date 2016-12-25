@@ -28,6 +28,7 @@ actions+=/mind_freeze
 actions+=/arcane_torrent,if=runic_power.deficit>20
 actions+=/blood_fury,if=!talent.breath_of_sindragosa.enabled|dot.breath_of_sindragosa.ticking
 actions+=/berserking,if=buff.pillar_of_frost.up
+actions+=/use_item,slot=trinket1
 actions+=/potion,name=old_war
 actions+=/sindragosas_fury,if=buff.pillar_of_frost.up
 actions+=/obliteration
@@ -93,7 +94,7 @@ legs=dreadwyrm_legplates,id=138358,bonus_id=3445
 feet=leystonetoe_kickers,id=140884,bonus_id=3445
 finger1=ring_of_braided_stems,id=140896,bonus_id=3445,enchant=binding_of_haste
 finger2=spellblades_gemmed_signet,id=140895,bonus_id=3445,enchant=binding_of_haste
-trinket1=convergence_of_fates,id=140806,bonus_id=3445
+trinket1=might_of_krosus,id=140799,bonus_id=3445
 trinket2=claw_of_the_crystalline_scorpid,id=140790,bonus_id=3445
 main_hand=blades_of_the_fallen_prince,id=128292,gem_id=140832/140821/140832,relic_id=3445/3445/3445,enchant=rune_of_razorice
 off_hand=blades_of_the_fallen_prince,id=128293,enchant=rune_of_the_fallen_crusader
