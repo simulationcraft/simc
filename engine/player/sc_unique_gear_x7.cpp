@@ -2478,7 +2478,7 @@ static const convergence_cd_t convergence_cds[] =
     if they have one, or this trinket may cause undesirable results.
 
   !!! NOTE !!! NOTE !!! NOTE !!! NOTE !!! NOTE !!! NOTE !!! NOTE !!! */
-  { DEATH_KNIGHT_FROST,   { "pillar_of_frost" } },
+  { DEATH_KNIGHT_FROST,   { "empower_rune_weapon" } },
   { DEATH_KNIGHT_UNHOLY,  { "summon_gargoyle" } },
   { DRUID_FERAL,          { "berserk", "incarnation_king_of_the_jungle" } },
   { HUNTER_BEAST_MASTERY, { "aspect_of_the_wild" } },
@@ -2486,9 +2486,9 @@ static const convergence_cd_t convergence_cds[] =
   { HUNTER_SURVIVAL,      { "aspect_of_the_eagle" } },
   { MONK_WINDWALKER,      { "storm_earth_and_fire" } },
   { PALADIN_RETRIBUTION,  { "avenging_wrath", "crusade" } },
-  { ROGUE_SUBTLETY,       { "vendetta" } },
+  { ROGUE_SUBTLETY,       { "shadow_blades" } },
   { ROGUE_OUTLAW,         { "adrenaline_rush" } },
-  { ROGUE_ASSASSINATION,  { "shadow_blades" } },
+  { ROGUE_ASSASSINATION,  { "vendetta" } },
   { SHAMAN_ENHANCEMENT,   { "feral_spirit" } },
   { WARRIOR_ARMS,         { "battle_cry" } },
   { WARRIOR_FURY,         { "battle_cry" } },
