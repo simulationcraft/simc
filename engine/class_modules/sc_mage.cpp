@@ -5046,9 +5046,9 @@ struct frozen_orb_t : public frost_mage_spell_t
   frozen_orb_t( mage_t* p, const std::string& options_str ) :
     frost_mage_spell_t( "frozen_orb", p,
                         p -> find_class_spell( "Frozen Orb" ) ),
-    frozen_orb_bolt( new frozen_orb_bolt_t( p ) ),
     ice_time( false ),
-    ice_time_nova( new ice_time_nova_t( p  ) )
+    ice_time_nova( new ice_time_nova_t( p  ) ),
+    frozen_orb_bolt( new frozen_orb_bolt_t( p ) )
   {
     parse_options( options_str );
     add_child( frozen_orb_bolt );
@@ -7665,7 +7665,6 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
 
 mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   player_t( sim, MAGE, name, r ),
-  blessing_of_wisdom( false ),
   current_target( target ),
   icicle( nullptr ),
   icicle_event( nullptr ),
@@ -7683,6 +7682,7 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   global_cinder_count( 0 ),
   incanters_flow_stack_mult( find_spell( 116267 ) -> effectN( 1 ).percent() ),
   iv_haste( 1.0 ),
+  blessing_of_wisdom( false ),
   benefits( benefits_t() ),
   buffs( buffs_t() ),
   cooldowns( cooldowns_t() ),
@@ -9910,7 +9910,8 @@ struct ice_time_t : public scoped_action_callback_t<frozen_orb_t>
   ice_time_t() : super( MAGE_FROST, "frozen_orb" )
   { }
 
-  void manipulate( frozen_orb_t* action, const special_effect_t& e ) override
+  void manipulate( frozen_orb_t* action,
+                   const special_effect_t& /* e */ ) override
   {
     action -> ice_time = true;
   }
