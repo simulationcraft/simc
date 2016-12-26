@@ -192,19 +192,6 @@ public:
     proc_t* hunting_companion;
     proc_t* mortal_wounds;
     proc_t* t18_4pc_sv;
-    proc_t* no_vuln_aimed_shot;
-    proc_t* vuln_aimed_15;
-    proc_t* vuln_aimed_30;
-    proc_t* vuln_aimed_45;
-    proc_t* vuln_aimed_60;
-    proc_t* vuln_aimed_75;
-    proc_t* no_vuln_piercing_shot;
-    proc_t* vuln_piercing_15;
-    proc_t* vuln_piercing_30;
-    proc_t* vuln_piercing_45;
-    proc_t* vuln_piercing_60;
-    proc_t* vuln_piercing_75;
-    proc_t* no_vuln_marked_shot;
     proc_t* zevrims_hunger;
     proc_t* convergence;
     proc_t* marking_targets;
@@ -780,6 +767,42 @@ void trigger_true_aim( hunter_t* p, player_t* t, int stacks = 1 )
     td_curr -> debuffs.true_aim -> trigger( stacks );
   }
 }
+
+struct vulnerability_stats_t
+{
+  proc_t* no_vuln;
+
+  bool has_patient_sniper;
+  std::array< proc_t*, 6 > patient_sniper;
+
+  vulnerability_stats_t( hunter_t* p, action_t* a )
+    : no_vuln( nullptr ), has_patient_sniper( p -> talents.patient_sniper -> ok() )
+  {
+    const std::string name = a -> name();
+
+    no_vuln = p -> get_proc( "no_vuln_" + name );
+
+    if ( has_patient_sniper )
+    {
+      for ( size_t i = 0; i < patient_sniper.size(); i++ )
+        patient_sniper[ i ] = p -> get_proc( "vuln_" + name + "_" + std::to_string( 15 * i ) );
+    }
+  }
+
+  void update( hunter_td_t* td )
+  {
+    if ( ! td -> debuffs.vulnerable -> check() )
+    {
+      no_vuln -> occur();
+    }
+    else if ( has_patient_sniper )
+    {
+      // it looks like we can get called with current_tick == 6 (last tick) which is oor
+      size_t current_tick = std::min<size_t>( td -> debuffs.vulnerable -> current_tick, patient_sniper.size() - 1 );
+      patient_sniper[ current_tick ] -> occur();
+    }
+  }
+};
 
 namespace pets
 {
@@ -3269,11 +3292,13 @@ struct aimed_shot_t: public aimed_shot_base_t
   benefit_t* aimed_in_ca;
   trick_shot_t* trick_shot;
   legacy_of_the_windrunners_t* legacy_of_the_windrunners;
+  vulnerability_stats_t vulnerability_stats;
 
   aimed_shot_t( hunter_t* p, const std::string& options_str ):
     aimed_shot_base_t( "aimed_shot", p, p -> find_specialization_spell( "Aimed Shot" ) ),
     aimed_in_ca( p -> get_benefit( "aimed_in_careful_aim" ) ),
-    trick_shot( nullptr ), legacy_of_the_windrunners( nullptr )
+    trick_shot( nullptr ), legacy_of_the_windrunners( nullptr ),
+    vulnerability_stats( p, this )
   {
     parse_options( options_str );
 
@@ -3341,28 +3366,7 @@ struct aimed_shot_t: public aimed_shot_base_t
     if ( p() -> buffs.sentinels_sight -> up() )
       p() -> buffs.sentinels_sight -> expire();
 
-    if (!td(p()->target)->debuffs.vulnerable->check()) {
-      p()->procs.no_vuln_aimed_shot->occur();
-    }
-    else if (p()->talents.patient_sniper->ok()) {
-      switch (td(p()->target)->debuffs.vulnerable->current_tick) {
-      case 1:
-        p()->procs.vuln_aimed_15->occur();
-        break;
-      case 2:
-        p()->procs.vuln_aimed_30->occur();
-        break;
-      case 3:
-        p()->procs.vuln_aimed_45->occur();
-        break;
-      case 4:
-        p()->procs.vuln_aimed_60->occur();
-        break;
-      case 5:
-        p()->procs.vuln_aimed_75->occur();
-        break;
-      }
-    }
+    vulnerability_stats.update( td( execute_state -> target ) );
   }
 
   virtual timespan_t execute_time() const override
@@ -3595,8 +3599,11 @@ struct marked_shot_t: public hunter_ranged_attack_t
 
 struct piercing_shot_t: public hunter_ranged_attack_t
 {
+  vulnerability_stats_t vulnerability_stats;
+
   piercing_shot_t( hunter_t* p, const std::string& options_str ):
-    hunter_ranged_attack_t( "piercing_shot", p, p -> talents.piercing_shot )
+    hunter_ranged_attack_t( "piercing_shot", p, p -> talents.piercing_shot ),
+    vulnerability_stats( p, this )
   {
     may_proc_bullseye = false;
     parse_options( options_str );
@@ -3626,28 +3633,7 @@ struct piercing_shot_t: public hunter_ranged_attack_t
         p()->buffs.bullseye->trigger();
     }
 
-    if (!td(p()->target)->debuffs.vulnerable->check()) {
-      p()->procs.no_vuln_piercing_shot->occur();
-    }
-    else if (p()->talents.patient_sniper->ok()) {
-      switch (td(p()->target)->debuffs.vulnerable->current_tick) {
-      case 1:
-        p()->procs.vuln_piercing_15->occur();
-        break;
-      case 2:
-        p()->procs.vuln_piercing_30->occur();
-        break;
-      case 3:
-        p()->procs.vuln_piercing_45->occur();
-        break;
-      case 4:
-        p()->procs.vuln_piercing_60->occur();
-        break;
-      case 5:
-        p()->procs.vuln_piercing_75->occur();
-        break;
-      }
-    }
+    vulnerability_stats.update( td( execute_state -> target ) );
   }
 
   virtual double composite_target_da_multiplier(player_t* t) const override
@@ -5370,7 +5356,6 @@ dots( dots_t() )
     buff_creator_t(*this, "vulnerability")
     .spell(p->find_spell(187131))
     .default_value(p->find_spell(187131)->effectN(2).percent())
-    .duration(timespan_t::from_seconds(6.0))
     .refresh_behavior(BUFF_REFRESH_DURATION);
 
   debuffs.true_aim = 
@@ -6044,19 +6029,6 @@ void hunter_t::init_procs()
   procs.hunting_companion            = get_proc( "hunting_companion" );
   procs.mortal_wounds                = get_proc( "mortal_wounds" );
   procs.t18_4pc_sv                   = get_proc( "t18_4pc_sv" );
-  procs.no_vuln_aimed_shot           = get_proc( "no_vuln_aimed_shot" );
-  procs.vuln_aimed_15                = get_proc( "vuln_aimed_15" );
-  procs.vuln_aimed_30                = get_proc( "vuln_aimed_30" );
-  procs.vuln_aimed_45                = get_proc( "vuln_aimed_45" );
-  procs.vuln_aimed_60                = get_proc( "vuln_aimed_60" );
-  procs.vuln_aimed_75                = get_proc( "vuln_aimed_75" );
-  procs.no_vuln_piercing_shot        = get_proc( "no_vuln_piercing_shot" );
-  procs.vuln_piercing_15             = get_proc( "vuln_piercing_15" );
-  procs.vuln_piercing_30             = get_proc( "vuln_piercing_30" );
-  procs.vuln_piercing_45             = get_proc( "vuln_piercing_45" );
-  procs.vuln_piercing_60             = get_proc( "vuln_piercing_60" );
-  procs.vuln_piercing_75             = get_proc( "vuln_piercing_75" );
-  procs.no_vuln_marked_shot          = get_proc( "no_vuln_marked_shot" );
   procs.zevrims_hunger               = get_proc( "zevrims_hunger" );
   procs.convergence                  = get_proc( "convergence" );
   procs.marking_targets              = get_proc( "marking_targets" );
