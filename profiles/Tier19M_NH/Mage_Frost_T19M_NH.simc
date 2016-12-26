@@ -52,11 +52,11 @@ actions.cooldowns+=/blood_fury
 actions.cooldowns+=/berserking
 actions.cooldowns+=/arcane_torrent
 
-head=hood_of_everburning_knowledge,id=138312,bonus_id=3518
+head=nighthold_custodians_hood,id=140851,bonus_id=3445
 neck=sorcerous_shadowruby_pendant,id=130233,bonus_id=1758/689/601/669,gem_id=130219,enchant_id=5439
 shoulders=mantle_of_everburning_knowledge,id=138321,bonus_id=3518
 back=cloak_of_everburning_knowledge,id=138365,bonus_id=3518,enchant=binding_of_intellect
-chest=robe_of_everburning_knowledge,id=138318,bonus_id=3518
+chest=robes_of_fluctuating_energy,id=140848,bonus_id=3445
 wrists=bracers_of_harnessed_flame,id=140850,bonus_id=3518
 hands=gloves_of_everburning_knowledge,id=138309,bonus_id=3518
 waist=manari_skullbuckled_cinch,id=140887,bonus_id=3518
