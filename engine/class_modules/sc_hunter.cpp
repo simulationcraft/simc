@@ -32,10 +32,6 @@ struct hati_t;
 struct dire_critter_t;
 }
 
-enum aspect_type { ASPECT_NONE = 0, ASPECT_MAX };
-
-enum exotic_munitions { NO_AMMO = 0, FROZEN_AMMO = 2, INCENDIARY_AMMO = 4, POISONED_AMMO = 8 };
-
 struct hunter_td_t: public actor_target_data_t
 {
   struct debuffs_t
@@ -51,7 +47,6 @@ struct hunter_td_t: public actor_target_data_t
   struct dots_t
   {
     dot_t* serpent_sting;
-    dot_t* poisoned_ammo;
     dot_t* piercing_shots;
     dot_t* lacerate;
     dot_t* on_the_trail;
@@ -63,7 +58,6 @@ struct hunter_td_t: public actor_target_data_t
 struct hunter_t: public player_t
 {
 public:
-  timespan_t movement_ended;
 
   // Active
   std::vector<pets::hunter_main_pet_t*> hunter_main_pets;
@@ -131,7 +125,6 @@ public:
     buff_t* volley;
     buff_t* rapid_killing;
     buff_t* bullseye;
-    buff_t* heavy_shot; // t17 SV 4pc
     buff_t* mongoose_fury;
     buff_t* fury_of_the_eagle;
     buff_t* aspect_of_the_eagle;
@@ -186,9 +179,6 @@ public:
     proc_t* wild_call;
     proc_t* tier17_2pc_bm;
     proc_t* tier18_4pc_bm;
-    proc_t* black_arrow_trinket_reset;
-    proc_t* tier18_2pc_mm_wasted_proc;
-    proc_t* tier18_2pc_mm_wasted_overwrite;
     proc_t* hunting_companion;
     proc_t* mortal_wounds;
     proc_t* t18_4pc_sv;
@@ -500,7 +490,6 @@ public:
 
   virtual void      schedule_ready( timespan_t delta_time = timespan_t::zero( ), bool waiting = false ) override;
   virtual void      moving( ) override;
-  virtual void      finish_moving() override;
 
   void              apl_default();
   void              apl_surv();
@@ -817,6 +806,154 @@ struct vulnerability_stats_t
       size_t current_tick = std::min<size_t>( td -> debuffs.vulnerable -> current_tick, patient_sniper.size() - 1 );
       patient_sniper[ current_tick ] -> occur();
     }
+  }
+};
+
+struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
+{
+  bool may_proc_mm_feet;
+  bool may_proc_bullseye;
+  hunter_ranged_attack_t( const std::string& n, hunter_t* player,
+                          const spell_data_t* s = spell_data_t::nil() ):
+                          base_t( n, player, s ),
+                          may_proc_mm_feet( false ),
+                          may_proc_bullseye( true )
+  {
+    may_block = false;
+    may_crit = true;
+    may_parry = false;
+    special = true;
+    tick_may_crit = true;
+  }
+
+  virtual void init() override
+  {
+    if ( player -> main_hand_weapon.group() != WEAPON_RANGED )
+      background = true;
+
+    base_t::init();
+  }
+
+  virtual bool usable_moving() const override
+  { return true; }
+
+  virtual void execute() override
+  {
+    base_t::execute();
+    try_steady_focus();
+
+    // TODO: Verify if only integer chunks of 20 focus reduce the CD, or if there's rollover
+    if ( p() -> sets.has_set_bonus( HUNTER_MARKSMANSHIP, T19, B2 ) )
+    {
+      p() -> cooldowns.trueshot
+        -> adjust( timespan_t::from_seconds( -1.0 *
+                                             cost() /
+                                               p() -> sets.set( HUNTER_MARKSMANSHIP, T19, B2 )
+                                            -> effectN( 1 )
+                                              .base_value() ) );
+    }
+
+    if ( !background && p() -> legendary.mm_feet && may_proc_mm_feet )
+    {
+      p() -> cooldowns.trueshot
+        -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet
+                                                -> driver()
+                                                -> effectN( 1 )
+                                                  .base_value() ) );
+    }
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    base_t::impact( s );
+
+    if ( may_proc_bullseye && p() -> artifacts.bullseye.rank() && s -> target -> health_percentage() <= p() -> artifacts.bullseye.value() )
+      p() -> buffs.bullseye -> trigger();
+  }
+
+  virtual void trigger_steady_focus( bool require_pre )
+  {
+    if ( !p() -> talents.steady_focus -> ok() )
+      return;
+
+    if ( require_pre )
+    {
+      p() -> buffs.pre_steady_focus -> trigger( 1 );
+      if ( p() -> buffs.pre_steady_focus -> stack() < 2 )
+        return;
+    }
+
+    // either three required shots have happened or we don't require them
+    double regen_buff = p() -> buffs.steady_focus -> data().effectN( 1 ).percent();
+    p() -> buffs.steady_focus -> trigger( 1, regen_buff );
+    p() -> buffs.pre_steady_focus -> expire();
+  }
+
+  void trigger_piercing_shots( action_state_t* s )
+  {
+    double amount = p() -> talents.careful_aim
+                        -> effectN( 3 )
+                          .percent() *
+                      s -> result_amount;
+
+    residual_action::trigger( p() -> active.piercing_shots, s -> target, amount );
+  }
+
+  double vulnerability_multiplier( hunter_td_t* td ) const
+  {
+    double m = td -> debuffs.vulnerable -> check_value();
+
+    if ( p() -> talents.patient_sniper -> ok() )
+    {
+      // it looks like we can get called with current_tick == 6 (last tick) which can't happen in game
+      unsigned current_tick = std::min<unsigned>( td -> debuffs.vulnerable -> current_tick, 5 );
+      m += p() -> talents.patient_sniper -> effectN( 1 ).percent() * current_tick;
+    }
+
+    return m;
+  }
+};
+
+struct hunter_melee_attack_t: public hunter_action_t < melee_attack_t >
+{
+  hunter_melee_attack_t( const std::string& n, hunter_t* p,
+                          const spell_data_t* s = spell_data_t::nil() ):
+                          base_t( n, p, s )
+  {
+    if ( p -> main_hand_weapon.type == WEAPON_NONE )
+      background = true;
+
+    weapon = &p -> main_hand_weapon;
+    may_block = false;
+    may_crit = true;
+    may_parry = false;
+    special = true;
+    tick_may_crit = true;
+  }
+
+  virtual double composite_crit_chance() const override
+  {
+    double cc = base_t::composite_crit_chance();
+
+    if ( p() -> buffs.aspect_of_the_eagle -> up() )
+      cc += p() -> specs.aspect_of_the_eagle -> effectN( 1 ).percent();
+
+    return cc;
+  }
+};
+
+struct hunter_spell_t: public hunter_action_t < spell_t >
+{
+public:
+  hunter_spell_t( const std::string& n, hunter_t* player,
+                  const spell_data_t* s = spell_data_t::nil() ):
+                  base_t( n, player, s )
+  {}
+
+  virtual void execute() override
+  {
+    base_t::execute();
+    try_steady_focus();
   }
 };
 
@@ -2446,152 +2583,6 @@ namespace attacks
 // Hunter Attacks
 // ==========================================================================
 
-struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
-{
-  bool may_proc_mm_feet;
-  bool may_proc_bullseye;
-  hunter_ranged_attack_t( const std::string& n, hunter_t* player,
-                          const spell_data_t* s = spell_data_t::nil() ):
-                          base_t( n, player, s ),
-                          may_proc_mm_feet( false ),
-                          may_proc_bullseye( true )
-  {
-    if ( player -> main_hand_weapon.type == WEAPON_NONE )
-      background = true;
-
-    may_block = false;
-    may_crit = true;
-    may_parry = false;
-    special = true;
-    tick_may_crit = true;
-  }
-
-  virtual void init() override
-  {
-    if ( player -> main_hand_weapon.group() != WEAPON_RANGED )
-      background = true;
-
-    base_t::init();
-  }
-
-  virtual bool usable_moving() const override
-  { return true; }
-
-  virtual void execute() override
-  {
-    ranged_attack_t::execute();
-    try_steady_focus();
-
-    // TODO: Verify if only integer chunks of 20 focus reduce the CD, or if there's rollover
-    if ( p() -> sets.has_set_bonus( HUNTER_MARKSMANSHIP, T19, B2 ) )
-    {
-      p() -> cooldowns.trueshot 
-        -> adjust( timespan_t::from_seconds( -1.0 * 
-                                             cost() / 
-                                               p() -> sets.set( HUNTER_MARKSMANSHIP, T19, B2 ) 
-                                            -> effectN( 1 )
-                                              .base_value() ) );
-    }
-
-    if ( !background && p() -> legendary.mm_feet && may_proc_mm_feet )
-    {
-      p() -> cooldowns.trueshot 
-        -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet 
-                                                -> driver() 
-                                                -> effectN( 1 )
-                                                  .base_value() ) );
-    }
-  }
-
-  virtual void impact( action_state_t* s ) override
-  {
-    base_t::impact( s );
-
-    if ( may_proc_bullseye && p() -> artifacts.bullseye.rank() && s -> target -> health_percentage() <= p() -> artifacts.bullseye.value() )
-      p() -> buffs.bullseye -> trigger();
-  }
-
-  virtual timespan_t execute_time() const override
-  {
-    timespan_t t = base_t::execute_time();
-
-    if ( t == timespan_t::zero() || base_execute_time < timespan_t::zero() )
-      return timespan_t::zero();
-
-    return t;
-  }
-
-  virtual void trigger_steady_focus( bool require_pre )
-  {
-    if ( !p() -> talents.steady_focus -> ok() )
-      return;
-
-    if ( require_pre )
-    {
-      p() -> buffs.pre_steady_focus -> trigger( 1 );
-      if ( p() -> buffs.pre_steady_focus -> stack() < 2 )
-        return;
-    }
-
-    // either three required shots have happened or we don't require them
-    double regen_buff = p() -> buffs.steady_focus -> data().effectN( 1 ).percent();
-    p() -> buffs.steady_focus -> trigger( 1, regen_buff );
-    p() -> buffs.pre_steady_focus -> expire();
-  }
-
-  void trigger_piercing_shots( action_state_t* s )
-  {
-    double amount = p() -> talents.careful_aim 
-                        -> effectN( 3 )
-                          .percent() * 
-                      s -> result_amount;
-
-    residual_action::trigger( p() -> active.piercing_shots, s -> target, amount );
-  }
-
-  double vulnerability_multiplier( hunter_td_t* td ) const
-  {
-    double m = td -> debuffs.vulnerable -> check_value();
-
-    if ( p() -> talents.patient_sniper -> ok() )
-    {
-      // it looks like we can get called with current_tick == 6 (last tick) which can't happen in game
-      unsigned current_tick = std::min<unsigned>( td -> debuffs.vulnerable -> current_tick, 5 );
-      m += p() -> talents.patient_sniper -> effectN( 1 ).percent() * current_tick;
-    }
-
-    return m;
-  }
-};
-
-struct hunter_melee_attack_t: public hunter_action_t < melee_attack_t >
-{
-  hunter_melee_attack_t( const std::string& n, hunter_t* p,
-                          const spell_data_t* s = spell_data_t::nil() ):
-                          base_t( n, p, s )
-  {
-    if ( p -> main_hand_weapon.type == WEAPON_NONE )
-      background = true;
-
-    weapon = &p -> main_hand_weapon;
-    may_block = false;
-    may_crit = true;
-    may_parry = false;
-    special = true;
-    tick_may_crit = true;
-  }
-
-  virtual double composite_crit_chance() const override
-  {
-    double cc = base_t::composite_crit_chance();
-
-    if ( p() -> buffs.aspect_of_the_eagle -> up() )
-      cc += p() -> specs.aspect_of_the_eagle -> effectN( 1 ).percent();
-
-    return cc;
-  }
-};
-
 // Volley ============================================================================
 
 struct volley_tick_t: hunter_ranged_attack_t
@@ -2705,10 +2696,9 @@ struct auto_shot_t: public hunter_action_t < ranged_attack_t >
 
   virtual timespan_t execute_time() const override
   {
-    timespan_t t = base_t::execute_time();
     if ( first_shot )
       return timespan_t::from_millis( 100 );
-    return t;
+    return base_t::execute_time();
   }
 
   virtual void execute() override
@@ -2811,10 +2801,10 @@ struct start_attack_t: public hunter_ranged_attack_t
 
 struct barrage_t: public hunter_ranged_attack_t
 {
-  struct barrage_damage_t: public attacks::hunter_ranged_attack_t
+  struct barrage_damage_t: public hunter_ranged_attack_t
   {
     barrage_damage_t( hunter_t* player ):
-      attacks::hunter_ranged_attack_t( "barrage_primary", player, player -> talents.barrage -> effectN( 1 ).trigger() )
+      hunter_ranged_attack_t( "barrage_primary", player, player -> talents.barrage -> effectN( 1 ).trigger() )
     {
       background = true;
       may_crit = true;
@@ -2829,7 +2819,7 @@ struct barrage_t: public hunter_ranged_attack_t
     void impact(action_state_t* s) override {
       // Simulate the random chance of hitting for secondary targets.
       if (rng().roll(0.5))
-        attacks::hunter_ranged_attack_t::impact(s);
+        hunter_ranged_attack_t::impact(s);
     }
   };
 
@@ -4400,30 +4390,6 @@ struct harpoon_t: public hunter_melee_attack_t
 
 namespace spells
 {
-struct hunter_spell_t: public hunter_action_t < spell_t >
-{
-public:
-  hunter_spell_t( const std::string& n, hunter_t* player,
-                  const spell_data_t* s = spell_data_t::nil() ):
-                  base_t( n, player, s )
-  {
-  }
-
-  virtual timespan_t gcd() const override
-  {
-    if ( !harmful && !player -> in_combat )
-      return timespan_t::zero();
-
-    // Hunter gcd unaffected by haste
-    return hunter_action_t::gcd();
-  }
-
-  virtual void execute() override
-  {
-    hunter_action_t<spell_t>::execute();
-    try_steady_focus();
-  }
-};
 
 // A Murder of Crows ========================================================
 
@@ -5313,7 +5279,6 @@ actor_target_data_t( target, p ),
 dots( dots_t() )
 {
   dots.serpent_sting = target -> get_dot( "serpent_sting", p );
-  dots.poisoned_ammo = target -> get_dot( "poisoned_ammo", p );
   dots.piercing_shots = target -> get_dot( "piercing_shots", p );
   dots.lacerate = target -> get_dot( "lacerate", p );
   dots.on_the_trail = target -> get_dot( "on_the_trail", p );
@@ -5877,13 +5842,6 @@ void hunter_t::create_buffs()
       .cd( timespan_t::zero() )
       .max_stack( 6 );
 
-  buffs.heavy_shot = 
-    buff_creator_t( this, 167165, "heavy_shot" )
-      .default_value( find_spell( 167165 ) 
-                   -> effectN( 1 )
-                     .percent() )
-      .refresh_behavior( BUFF_REFRESH_EXTEND );
-
   buffs.moknathal_tactics = 
     buff_creator_t( this, "moknathal_tactics", talents.way_of_the_moknathal
                                             -> effectN( 1 )
@@ -5993,9 +5951,6 @@ void hunter_t::init_procs()
   procs.wild_call                    = get_proc( "wild_call" );
   procs.tier17_2pc_bm                = get_proc( "tier17_2pc_bm" );
   procs.tier18_4pc_bm                = get_proc( "tier18_4pc_bm" );
-  procs.black_arrow_trinket_reset    = get_proc( "black_arrow_trinket_reset" );
-  procs.tier18_2pc_mm_wasted_proc    = get_proc( "tier18_2pc_mm_wasted_proc" );
-  procs.tier18_2pc_mm_wasted_overwrite     = get_proc ( "tier18_2pc_mm_wasted_overwrite" );
   procs.hunting_companion            = get_proc( "hunting_companion" );
   procs.mortal_wounds                = get_proc( "mortal_wounds" );
   procs.t18_4pc_sv                   = get_proc( "t18_4pc_sv" );
@@ -6843,13 +6798,6 @@ void hunter_t::moving()
 {
   if ( ( executing && ! executing -> usable_moving() ) || ( channeling && ! channeling -> usable_moving() ) )
     player_t::interrupt();
-}
-
-void hunter_t::finish_moving()
-{
-  player_t::finish_moving();
-
-  movement_ended = sim -> current_time();
 }
 
 /* Report Extension Class
