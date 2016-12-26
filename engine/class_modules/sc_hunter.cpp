@@ -2840,6 +2840,8 @@ struct multi_shot_t: public hunter_ranged_attack_t
 
     if ( p -> specialization() == HUNTER_MARKSMANSHIP )
     {
+      base_costs[ RESOURCE_FOCUS ] = 0;
+
       energize_type = ENERGIZE_PER_HIT;
       energize_resource = RESOURCE_FOCUS;
       energize_amount = p -> find_spell( 213363 ) -> effectN( 1 ).resource( RESOURCE_FOCUS );
@@ -2849,11 +2851,6 @@ struct multi_shot_t: public hunter_ranged_attack_t
   virtual void try_steady_focus() override
   {
     trigger_steady_focus( true );
-  }
-
-  virtual double cost() const override
-  {
-    return p() -> specialization() == HUNTER_MARKSMANSHIP ? 0 : hunter_ranged_attack_t::cost();
   }
 
   virtual double action_multiplier() const override
