@@ -544,12 +544,6 @@ public:
 
     return pm;
   }
-
-  // shared code to interrupt a steady focus pair if the ability is cast between steady/cobras
-  virtual void no_steady_focus()
-  {
-    buffs.pre_steady_focus -> expire();
-  }
 };
 
 static void init_special_effect( hunter_t*                 r,
@@ -2825,8 +2819,6 @@ struct barrage_t: public hunter_ranged_attack_t
     // Delay auto shot, add 500ms to simulate "wind up"
     if ( p() -> main_hand_attack && p() -> main_hand_attack -> execute_event )
       p() -> main_hand_attack -> reschedule_execute( dot_duration * composite_haste() + timespan_t::from_millis( 500 ) );
-
-    p() -> no_steady_focus();
   }
 };
 
@@ -3110,7 +3102,6 @@ struct black_arrow_t: public hunter_ranged_attack_t
 
   virtual void execute() override
   {
-    p() -> no_steady_focus();
     hunter_ranged_attack_t::execute();
 
     if ( p() -> dark_minion[ 0 ] -> is_sleeping() )
@@ -3327,10 +3318,8 @@ struct aimed_shot_t: public aimed_shot_base_t
 
   virtual void execute() override
   {
-    p() -> no_steady_focus();
-
     aimed_shot_base_t::execute();
-    
+
     if ( trick_shot )
       trick_shot -> execute();
 
@@ -3525,7 +3514,6 @@ struct marked_shot_t: public hunter_ranged_attack_t
     else
       p() -> clear_next_hunters_mark = true;
 
-    p() -> no_steady_focus();
     hunter_ranged_attack_t::execute();
 
     // Consume Hunter's Mark and apply appropriate debuffs. Vulnerable applies on cast.
@@ -3625,7 +3613,6 @@ struct piercing_shot_t: public hunter_ranged_attack_t
 
   virtual void execute() override
   {
-    p() -> no_steady_focus();
     hunter_ranged_attack_t::execute();
 
     if (result_is_hit(execute_state->result))
@@ -3715,7 +3702,6 @@ struct explosive_shot_t: public hunter_ranged_attack_t
 
   virtual void execute() override
   {
-    p()->no_steady_focus();
     initial_target = p()->target;
 
     hunter_ranged_attack_t::execute();
@@ -4561,12 +4547,6 @@ struct moc_t : public hunter_spell_t
     hunter_spell_t::tick( d );
     peck -> execute();
   }
-
-  virtual void execute() override
-  {
-    p() -> no_steady_focus();
-    hunter_spell_t::execute();
-  }
 };
 
 // Sentinel ==========================================================================
@@ -4715,7 +4695,6 @@ struct dire_beast_t: public hunter_spell_t
   virtual void execute() override
   {
     hunter_spell_t::execute();
-    p() -> no_steady_focus();
 
     // Trigger buffs
     timespan_t duration = p() -> buffs.dire_beast -> buff_duration + timespan_t::from_millis( p() -> buffs.t18_2p_dire_longevity -> check_stack_value() );
@@ -4876,7 +4855,6 @@ struct kill_command_t: public hunter_spell_t
     }
     if ( p() -> artifacts.master_of_beasts.rank() )
       p() -> hati -> active.kill_command -> execute();
-    p() -> no_steady_focus();
   }
 
   virtual bool ready() override
