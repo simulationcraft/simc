@@ -3116,17 +3116,9 @@ struct bursting_shot_t : public hunter_ranged_attack_t
     hunter_ranged_attack_t( "bursting_shot", player, player -> find_spell( 186387 ) )
   {
     parse_options( options_str );
-  }
-
-
-  virtual double action_multiplier() const override
-  {
-    double am = hunter_ranged_attack_t::action_multiplier();
 
     if ( p() -> legendary.magnetized_blasting_cap_launcher )
-      am *= 1.0 + p() -> legendary.magnetized_blasting_cap_launcher -> driver() -> effectN( 2 ).percent();
-
-    return am;
+      base_multiplier *= 1.0 + p() -> legendary.magnetized_blasting_cap_launcher -> driver() -> effectN( 2 ).percent();
   }
 };
 // Aimed Shot base class ==============================================================
