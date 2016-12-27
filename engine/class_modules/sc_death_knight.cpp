@@ -6864,8 +6864,13 @@ void death_knight_t::default_apl_frost()
   // Refresh Icy talons if it's about to expire
   generic -> add_action( this, "Frost Strike", "if=buff.icy_talons.remains<1.5&talent.icy_talons.enabled" );
 
-  // Howling blast disease upkeep and rimeing
+  // Howling blast disease upkeep
   generic -> add_action( this, "Howling Blast", "target_if=!dot.frost_fever.ticking" );
+  
+  // priotize Obliterate if Koltira's Newfound Will is equipped
+  generic -> add_action( this, "Obliterate", "if=equipped.132366" );
+  
+  // Howling blast @rime proc
   generic -> add_action( this, "Howling Blast", "if=buff.rime.react" );
 
   // Prevent RP waste
