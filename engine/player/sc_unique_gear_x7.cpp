@@ -2478,7 +2478,7 @@ static const convergence_cd_t convergence_cds[] =
     if they have one, or this trinket may cause undesirable results.
 
   !!! NOTE !!! NOTE !!! NOTE !!! NOTE !!! NOTE !!! NOTE !!! NOTE !!! */
-  { DEATH_KNIGHT_FROST,   { "empower_rune_weapon" } },
+  { DEATH_KNIGHT_FROST,   { "empower_rune_weapon", "hungering_rune_weapon" } },
   { DEATH_KNIGHT_UNHOLY,  { "summon_gargoyle" } },
   { DRUID_FERAL,          { "berserk", "incarnation_king_of_the_jungle" } },
   { HUNTER_BEAST_MASTERY, { "aspect_of_the_wild" } },
