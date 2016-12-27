@@ -6839,8 +6839,8 @@ void death_knight_t::default_apl_frost()
   }
 
   // Cooldowns
-  def -> add_action( this, "Sindragosa's Fury", "if=buff.pillar_of_frost.up" );
-  def -> add_talent( this, "Obliteration" );
+  def -> add_action( this, "Sindragosa's Fury", "if=buff.pillar_of_frost.up&(buff.unholy_strength.up|(buff.pillar_of_frost.remains<3&target.time_to_die<60))&debuff.razorice.stack==5&!buff.obliteration.up" );
+  def -> add_talent( this, "Obliteration", "if=!talent.frozen_pulse.enabled|rune<2" );
   def -> add_talent( this, "Breath of Sindragosa", "if=runic_power>=50" );
 
   // Choose APL
@@ -6874,7 +6874,7 @@ void death_knight_t::default_apl_frost()
   generic -> add_action( this, "Howling Blast", "if=buff.rime.react" );
 
   // Prevent RP waste
-  generic -> add_action( this, "Frost Strike", "if=runic_power>=80" );
+  generic -> add_action( this, "Frost Strike", "if=runic_power.deficit<=10" );
 
   // Do core rotation
   generic -> add_action( "call_action_list,name=core" );

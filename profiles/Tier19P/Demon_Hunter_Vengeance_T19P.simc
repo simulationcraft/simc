@@ -24,8 +24,8 @@ actions.precombat+=/potion,name=unbending_potion
 
 # Executed every time the actor is available.
 actions=auto_attack
-actions+=/use_item,slot=trinket2
 actions+=/consume_magic
+actions+=/use_item,slot=trinket2
 actions+=/fiery_brand,if=buff.demon_spikes.down&buff.metamorphosis.down
 actions+=/demon_spikes,if=charges=2|buff.demon_spikes.down&!dot.fiery_brand.ticking&buff.metamorphosis.down
 actions+=/empower_wards,if=debuff.casting.up
