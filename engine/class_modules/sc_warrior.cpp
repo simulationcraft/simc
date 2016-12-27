@@ -5412,7 +5412,7 @@ void warrior_t::create_buffs()
     .cd( timespan_t::zero() );
 
   buff.battle_cry_deadly_calm = buff_creator_t( this, "battle_cry_deadly_calm", spec.battle_cry )
-    .duration( spec.battle_cry -> duration() + sets.set( WARRIOR_ARMS, T19, B4 ) -> effectN( 1 ).time_value() )
+    .duration( spec.battle_cry -> duration() + sets.set( WARRIOR_ARMS, T19, B2 ) -> effectN( 1 ).time_value() )
     .chance( talents.deadly_calm -> ok() )
     .cd( timespan_t::zero() )
     .quiet( true );
