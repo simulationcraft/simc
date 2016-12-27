@@ -18,7 +18,7 @@ race=troll
 role=spell
 position=back
 talents=2022031
-artifact=4:140810:140831:140810:0:72:3:73:1:74:3:75:3:77:3:78:1:79:3:80:1:81:3:82:3:83:3:84:3:86:1:87:1:290:1:1169:1:1339:1:1371:20
+artifact=4:0:0:0:0:72:3:73:1:74:3:75:3:77:3:78:1:79:3:80:1:81:3:82:3:83:3:84:3:86:1:87:1:290:1:1169:1:1339:1:1371:20
 spec=Arcane
 head=hood_of_everburning_knowledge,id=138312,bonus_id=3518
 neck=sorcerous_shadowruby_pendant,id=130233,bonus_id=1758/689/601/669,gem_id=130219,enchant_id=5439
@@ -43,7 +43,7 @@ race=troll
 role=spell
 position=back
 talents=1012022
-artifact=54:140834:140810:140834:0:748:1:749:3:750:3:751:3:752:3:753:3:754:3:755:3:756:3:757:3:758:1:759:1:760:1:761:1:762:1:763:1:1340:1:1372:20
+artifact=54:0:0:0:0:748:1:749:3:750:3:751:3:752:3:753:3:754:3:755:3:756:3:757:3:758:1:759:1:760:1:761:1:762:1:763:1:1340:1:1372:20
 spec=fire
 head=hood_of_everburning_knowledge,id=138312,bonus_id=3518
 neck=sorcerous_shadowruby_pendant,id=130233,bonus_id=1758/689/601/669,gem_id=130219,enchant_id=5439
@@ -69,7 +69,7 @@ race=troll
 role=spell
 position=back
 talents=3012021
-artifact=53:140832:140812:140832:0:783:1:784:3:785:3:786:3:787:3:788:3:789:3:790:3:791:3:792:3:793:1:794:1:795:1:796:1:797:1:798:1:1296:1:1373:20
+artifact=53:0:0:0:0:783:1:784:3:785:3:786:3:787:3:788:3:789:3:790:3:791:3:792:3:793:1:794:1:795:1:796:1:797:1:798:1:1296:1:1373:20
 spec=frost
 head=nighthold_custodians_hood,id=140851,bonus_id=3445
 neck=sorcerous_shadowruby_pendant,id=130233,bonus_id=1758/689/601/669,gem_id=130219,enchant_id=5439

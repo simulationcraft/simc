@@ -4,7 +4,7 @@ race=troll
 role=spell
 position=back
 talents=3012021
-artifact=53:140832:140812:140832:0:783:1:784:3:785:5:786:3:787:3:788:4:789:3:790:3:791:3:792:3:793:1:794:1:795:1:796:1:797:1:798:1:1296:1
+artifact=53:0:0:0:0:783:1:784:3:785:3:786:3:787:3:788:3:789:3:790:3:791:3:792:3:793:1:794:1:795:1:796:1:797:1:798:1:1296:1:1373:20
 spec=frost
 
 # This default action priority list is automatically created based on your character.
@@ -69,13 +69,13 @@ trinket2=brinewater_slime_in_a_bottle,id=142507,bonus_id=604/3469/1512
 main_hand=ebonchill,id=128862,gem_id=140832/140812/140832,relic_id=3518/3518/3518
 
 # Gear Summary
-# gear_ilvl=899.13
-# gear_stamina=33469
-# gear_intellect=36375
-# gear_crit_rating=7570
-# gear_haste_rating=6683
-# gear_mastery_rating=5973
-# gear_versatility_rating=4533
-# gear_armor=1979
+# gear_ilvl=898.47
+# gear_stamina=33159
+# gear_intellect=36169
+# gear_crit_rating=8538
+# gear_haste_rating=7346
+# gear_mastery_rating=4905
+# gear_versatility_rating=3908
+# gear_armor=1969
 # set_bonus=tier19_2pc=1
 # set_bonus=tier19_4pc=1
