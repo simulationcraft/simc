@@ -6400,6 +6400,16 @@ void demon_hunter_t::apl_vengeance()
 
   def -> add_action( "auto_attack" );
   def->add_action(this, "Consume Magic");
+  
+  // On-use items
+  for (const auto& item : items)
+  {
+    if (item.has_special_effect(SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE))
+    {
+      def->add_action("use_item,slot=" + std::string(item.slot_name()));
+    }
+  }
+  
   def -> add_action( this, "Fiery Brand",
     "if=buff.demon_spikes.down&buff.metamorphosis.down" );
   def -> add_action( this, "Demon Spikes", "if=charges=2|buff.demon_spikes.d"
