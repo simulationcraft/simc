@@ -653,6 +653,22 @@ public:
     return p() -> get_target_data( t );
   }
 
+  void execute() override
+  {
+    ab::execute();
+
+    // TODO: Verify if only integer chunks of focus reduce the CD, or if there's rollover
+    if ( p() -> sets.has_set_bonus( HUNTER_MARKSMANSHIP, T19, B2 ) )
+    {
+      p() -> cooldowns.trueshot
+        -> adjust( timespan_t::from_seconds( -1.0 *
+                                             cost() /
+                                               p() -> sets.set( HUNTER_MARKSMANSHIP, T19, B2 )
+                                            -> effectN( 1 )
+                                              .base_value() ) );
+    }
+  }
+
   double action_multiplier() const override
   {
     double am = ab::action_multiplier();
@@ -841,17 +857,6 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
   {
     base_t::execute();
     try_steady_focus();
-
-    // TODO: Verify if only integer chunks of 20 focus reduce the CD, or if there's rollover
-    if ( p() -> sets.has_set_bonus( HUNTER_MARKSMANSHIP, T19, B2 ) )
-    {
-      p() -> cooldowns.trueshot
-        -> adjust( timespan_t::from_seconds( -1.0 *
-                                             cost() /
-                                               p() -> sets.set( HUNTER_MARKSMANSHIP, T19, B2 )
-                                            -> effectN( 1 )
-                                              .base_value() ) );
-    }
 
     if ( !background && p() -> legendary.mm_feet && may_proc_mm_feet )
     {
