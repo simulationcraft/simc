@@ -6867,8 +6867,8 @@ void death_knight_t::default_apl_frost()
   // Howling blast disease upkeep
   generic -> add_action( this, "Howling Blast", "target_if=!dot.frost_fever.ticking" );
   
-  // priotize Obliterate if Koltira's Newfound Will is equipped
-  generic -> add_action( this, "Obliterate", "if=equipped.132366" );
+  // priotize Obliterate if Koltira's Newfound Will is equipped and Icy Talons active
+  generic -> add_action( this, "Obliterate", "if=equipped.132366&talent.frozen_pulse.enabled" );
   
   // Howling blast @rime proc
   generic -> add_action( this, "Howling Blast", "if=buff.rime.react" );
