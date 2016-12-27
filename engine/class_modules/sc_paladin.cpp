@@ -2792,7 +2792,7 @@ struct holy_power_generator_t : public paladin_melee_attack_t
       // leftover nonsense from when this was Conviction?
       bool success = p() -> buffs.the_fires_of_justice -> trigger( 1,
         p() -> buffs.the_fires_of_justice -> default_value,
-        p() -> sets.set( PALADIN_RETRIBUTION, T19, B4 ) -> effectN( 2 ).percent() );
+        p() -> sets.set( PALADIN_RETRIBUTION, T19, B4 ) -> proc_chance() );
       if ( success )
         p() -> procs.tfoj_set_bonus -> occur();
     }
