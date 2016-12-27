@@ -1981,6 +1981,15 @@ public:
     return static_cast<monk_t*>( owner );
   }
 
+  double composite_player_multiplier( school_e school ) const override
+  {
+    double m = pet_t::composite_player_multiplier( school );
+
+    //m *= 1.0 + owner -> artifact.artificial_damage -> effectN( 2 ).percent() * .01 * ( owner -> artifact.n_purchased_points + 6.0 );
+
+    return m;
+  }
+
   virtual void init_action_list() override
   {
     action_list_str = "auto_attack";
