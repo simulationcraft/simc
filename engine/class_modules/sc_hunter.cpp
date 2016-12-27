@@ -2822,17 +2822,14 @@ struct multi_shot_t: public hunter_ranged_attack_t
       if ( p() -> specialization() == HUNTER_MARKSMANSHIP )
       {
         trigger_bullseye( p(), execute_state -> action );
-        bool proc_hunters_mark = p()->buffs.trueshot->up() || p()->buffs.marking_targets->up();
 
-        std::vector<player_t*> multi_shot_targets = execute_state->action->target_list();
-        for (size_t i = 0; i < multi_shot_targets.size(); i++) {
-          if (proc_hunters_mark)
-            td(multi_shot_targets[i])->debuffs.hunters_mark->trigger();
-        }
+        if ( p() -> buffs.trueshot -> up() || p() -> buffs.marking_targets -> up() )
+        {
+          for ( player_t* t : execute_state -> action -> target_list() )
+            td( t ) -> debuffs.hunters_mark -> trigger();
 
-        if (proc_hunters_mark) {
-          p()->buffs.hunters_mark_exists->trigger();
-          p()->buffs.marking_targets->expire();
+          p() -> buffs.hunters_mark_exists -> trigger();
+          p() -> buffs.marking_targets -> expire();
         }
       }
     }
