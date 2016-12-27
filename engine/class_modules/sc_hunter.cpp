@@ -3334,6 +3334,17 @@ struct aimed_shot_t: public aimed_shot_base_t
       trigger_piercing_shots(s);
   }
 
+  void schedule_execute( action_state_t* s ) override
+  {
+    aimed_shot_base_t::schedule_execute( s );
+
+    if ( legacy_of_the_windrunners && rng().roll( p() -> artifacts.legacy_of_the_windrunners.data().proc_chance() ) )
+    {
+      for ( int i = 0; i < 6; i++ )
+        legacy_of_the_windrunners -> schedule_execute();
+    }
+  }
+
   virtual void execute() override
   {
     aimed_shot_base_t::execute();
@@ -3348,16 +3359,6 @@ struct aimed_shot_t: public aimed_shot_base_t
 
     if ( p() -> buffs.lock_and_load -> up() )
       p() -> buffs.lock_and_load -> decrement();
-
-    if ( legacy_of_the_windrunners && rng().roll( p() -> artifacts.legacy_of_the_windrunners.data().proc_chance() ) )
-    {
-      legacy_of_the_windrunners -> schedule_execute();
-      legacy_of_the_windrunners -> schedule_execute();
-      legacy_of_the_windrunners -> schedule_execute();
-      legacy_of_the_windrunners -> schedule_execute();
-      legacy_of_the_windrunners -> schedule_execute();
-      legacy_of_the_windrunners -> schedule_execute();
-    }
 
     if ( p() -> buffs.sentinels_sight -> up() )
       p() -> buffs.sentinels_sight -> expire();
