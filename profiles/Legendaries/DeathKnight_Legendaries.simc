@@ -19,7 +19,6 @@
 Death_Knight_Frost_$(Tier).simc
 copy=Frost_$(Tier)_Baseline
 
-# bugged? provides lower dps than baseline...
 copy=Frost_$(Tier)_Koltiras,Frost_$(Tier)_Baseline
 waist=koltiras_newfound_will,id=132366
 
