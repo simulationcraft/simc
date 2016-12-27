@@ -6807,6 +6807,7 @@ struct serenity_buff_t: public monk_buff_t < buff_t > {
     default_value = s -> effectN( 2 ).percent();
     if ( monk.artifact.spiritual_focus.rank() )
       default_value += monk.artifact.spiritual_focus.percent();
+    cooldown -> duration = timespan_t::zero();
 
     buff_duration = s -> duration();
     add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
