@@ -858,7 +858,7 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
     base_t::execute();
     try_steady_focus();
 
-    if ( !background && p() -> legendary.mm_feet && may_proc_mm_feet )
+    if ( may_proc_mm_feet && p() -> legendary.mm_feet )
     {
       p() -> cooldowns.trueshot
         -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet
