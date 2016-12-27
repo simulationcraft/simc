@@ -768,6 +768,22 @@ void trigger_true_aim( hunter_t* p, player_t* t, int stacks = 1 )
   }
 }
 
+// Bullseye trigger for aoe actions
+void trigger_bullseye( hunter_t* p, const action_t* a )
+{
+  if ( ! p -> artifacts.bullseye.rank() )
+    return;
+
+  for ( player_t* t : a -> target_list() )
+  {
+    if ( t -> health_percentage() <= p -> artifacts.bullseye.value() )
+    {
+      p -> buffs.bullseye -> trigger();
+      return;
+    }
+  }
+}
+
 struct vulnerability_stats_t
 {
   proc_t* no_vuln;
@@ -2594,21 +2610,7 @@ struct volley_tick_t: hunter_ranged_attack_t
     hunter_ranged_attack_t::execute();
 
     if (result_is_hit(execute_state->result))
-    {
-      if (p()->specialization() == HUNTER_MARKSMANSHIP)
-      {
-        bool proc_bullseye = false;
-
-        std::vector<player_t*> volley_targets = execute_state->action->target_list();
-        for (size_t i = 0; i < volley_targets.size(); i++) {
-          if (p()->artifacts.bullseye.rank() && volley_targets[i]->health_percentage() <= p()->artifacts.bullseye.value())
-            proc_bullseye = true;
-        }
-
-        if (proc_bullseye)
-          p()->buffs.bullseye->trigger();
-      }
-    }
+      trigger_bullseye( p(), execute_state -> action );
   }
 
   virtual void try_steady_focus() override
@@ -2922,20 +2924,14 @@ struct multi_shot_t: public hunter_ranged_attack_t
       // regardless of target hit count if at least one is in execute range.
       if ( p() -> specialization() == HUNTER_MARKSMANSHIP )
       {
-        bool proc_bullseye = false;
+        trigger_bullseye( p(), execute_state -> action );
         bool proc_hunters_mark = p()->buffs.trueshot->up() || p()->buffs.marking_targets->up();
 
         std::vector<player_t*> multi_shot_targets = execute_state->action->target_list();
         for (size_t i = 0; i < multi_shot_targets.size(); i++) {
           if (proc_hunters_mark)
             td(multi_shot_targets[i])->debuffs.hunters_mark->trigger();
-
-          if (p()->artifacts.bullseye.rank() && multi_shot_targets[i]->health_percentage() <= p()->artifacts.bullseye.value())
-            proc_bullseye = true;
         }
-
-        if (proc_bullseye)
-          p()->buffs.bullseye->trigger();
 
         if (proc_hunters_mark) {
           p()->buffs.hunters_mark_exists->trigger();
@@ -3620,18 +3616,7 @@ struct piercing_shot_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t::execute();
 
     if (result_is_hit(execute_state->result))
-    {
-      bool proc_bullseye = false;
-
-      std::vector<player_t*> piercing_shot_targets = execute_state->action->target_list();
-      for (size_t i = 0; i < piercing_shot_targets.size(); i++) {
-        if (p()->artifacts.bullseye.rank() && piercing_shot_targets[i]->health_percentage() <= p()->artifacts.bullseye.value())
-          proc_bullseye = true;
-      }
-
-      if (proc_bullseye)
-        p()->buffs.bullseye->trigger();
-    }
+      trigger_bullseye( p(), execute_state -> action );
 
     vulnerability_stats.update( td( execute_state -> target ) );
   }
@@ -3683,18 +3668,7 @@ struct explosive_shot_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t::execute();
 
     if (result_is_hit(execute_state->result))
-    {
-      bool proc_bullseye = false;
-
-      std::vector<player_t*> explosive_shot_targets = execute_state->action->target_list();
-      for (size_t i = 0; i < explosive_shot_targets.size(); i++) {
-        if (p()->artifacts.bullseye.rank() && explosive_shot_targets[i]->health_percentage() <= p()->artifacts.bullseye.value())
-          proc_bullseye = true;
-      }
-
-      if (proc_bullseye)
-        p()->buffs.bullseye->trigger();
-    }
+      trigger_bullseye( p(), execute_state -> action );
   }
 
   virtual double composite_target_da_multiplier( player_t* t ) const override
@@ -3735,7 +3709,8 @@ struct sidewinders_t: hunter_ranged_attack_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      bool proc_bullseye = false;
+      trigger_bullseye( p(), execute_state -> action );
+
       bool proc_hunters_mark = p()->buffs.trueshot->up() || p()->buffs.marking_targets->up();
 
       std::vector<player_t*> sidewinder_targets = execute_state -> action -> target_list();
@@ -3744,13 +3719,7 @@ struct sidewinders_t: hunter_ranged_attack_t
           td( sidewinder_targets[i] ) -> debuffs.hunters_mark -> trigger();
 
         td( sidewinder_targets[i] ) -> debuffs.vulnerable -> trigger();
-
-        if (p()->artifacts.bullseye.rank() && sidewinder_targets[i]->health_percentage() <= p()->artifacts.bullseye.value())
-          proc_bullseye = true;
       }
-
-      if (proc_bullseye)
-        p()->buffs.bullseye->trigger();
 
       if (proc_hunters_mark) {
         p() -> buffs.hunters_mark_exists -> trigger();
