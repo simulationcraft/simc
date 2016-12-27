@@ -685,6 +685,15 @@ void trigger_bullseye( hunter_t* p, const action_t* a )
   }
 }
 
+void trigger_mm_feet( hunter_t* p )
+{
+  if ( p -> legendary.mm_feet )
+  {
+    double ms = p -> legendary.mm_feet -> driver() -> effectN( 1 ).base_value();
+    p -> cooldowns.trueshot -> adjust( timespan_t::from_millis( ms ) );
+  }
+}
+
 struct vulnerability_stats_t
 {
   proc_t* no_vuln;
@@ -754,14 +763,8 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
     base_t::execute();
     try_steady_focus();
 
-    if ( may_proc_mm_feet && p() -> legendary.mm_feet )
-    {
-      p() -> cooldowns.trueshot
-        -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet
-                                                -> driver()
-                                                -> effectN( 1 )
-                                                  .base_value() ) );
-    }
+    if ( may_proc_mm_feet )
+      trigger_mm_feet( p() );
   }
 
   virtual void impact( action_state_t* s ) override
@@ -3384,35 +3387,92 @@ struct arcane_shot_t: public hunter_ranged_attack_t
 
 // Marked Shot Attack =================================================================
 
-struct marked_shot_t: public hunter_ranged_attack_t
+struct marked_shot_t: public hunter_spell_t
 {
+  struct marked_shot_impact_t: public hunter_ranged_attack_t
+  {
+    marked_shot_impact_t( hunter_t* p ):
+      hunter_ranged_attack_t( "marked_shot_impact", p, p -> find_spell( 212621 ) )
+    {
+      benefits_from_sniper_training = true;
+      background = true;
+      dual = true;
+
+      if ( p -> artifacts.windrunners_guidance.rank() )
+        base_multiplier *= 1.0 + p -> artifacts.windrunners_guidance.percent();
+    }
+
+    void execute() override
+    {
+      hunter_ranged_attack_t::execute();
+
+      hunter_td_t* td = this -> td( execute_state -> target );
+
+      td -> debuffs.vulnerable -> trigger();
+
+      if ( p() -> clear_next_hunters_mark )
+        td -> debuffs.hunters_mark -> expire();
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      hunter_ranged_attack_t::impact( s );
+
+      if ( s -> result == RESULT_CRIT )
+      {
+        if ( p() -> buffs.careful_aim -> check() )
+          trigger_piercing_shots( s );
+
+        if ( p() -> sets.has_set_bonus( HUNTER_MARKSMANSHIP, T18, B2 ) )
+          p() -> buffs.t18_2p_rapid_fire -> trigger();
+      }
+    }
+
+    double composite_crit_chance() const override
+    {
+      double cc = hunter_ranged_attack_t::composite_crit_chance();
+
+      if ( p() -> artifacts.precision.rank() )
+        cc += p() -> artifacts.precision.percent();
+
+      return cc;
+    }
+
+    double composite_target_crit_chance( player_t* t ) const override
+    {
+      double cc = hunter_ranged_attack_t::composite_target_crit_chance( t );
+
+      cc += p() -> buffs.careful_aim -> value();
+
+      return cc;
+    }
+  };
+
   struct call_of_the_hunter_t: public hunter_ranged_attack_t
   {
     call_of_the_hunter_t( hunter_t* p ):
       hunter_ranged_attack_t( "call_of_the_hunter", p, p -> find_spell( 191070 ) )
     {
       may_proc_bullseye = false;
-      aoe = -1;
       background = true;
     }
   };
 
+  marked_shot_impact_t* impact;
   call_of_the_hunter_t* call_of_the_hunter;
+  bool call_of_the_hunter_procced;
 
   marked_shot_t( hunter_t* p, const std::string& options_str ):
-    hunter_ranged_attack_t( "marked_shot", p, p -> find_specialization_spell( "Marked Shot" ) ), call_of_the_hunter( nullptr )
+    hunter_spell_t( "marked_shot", p, p -> find_specialization_spell( "Marked Shot" ) ),
+    impact( new marked_shot_impact_t( p ) ), call_of_the_hunter( nullptr ),
+    call_of_the_hunter_procced( false )
   {
     parse_options( options_str );
-    may_proc_mm_feet = true;
-    // Simulated as AOE for simplicity.
-    aoe               = -1;
-    travel_speed      = 0.0;
-    weapon            = &p -> main_hand_weapon;
-    weapon_multiplier = p -> find_spell( 212621 ) -> effectN( 2 ).percent();
-    normalize_weapon_speed = true;
 
-    if ( p -> artifacts.windrunners_guidance.rank() )
-      base_multiplier *= 1.0 + p -> artifacts.windrunners_guidance.percent();
+    aoe = -1;
+    may_crit = false;
+
+    add_child( impact );
 
     if ( p -> artifacts.call_of_the_hunter.rank() )
     {
@@ -3431,41 +3491,15 @@ struct marked_shot_t: public hunter_ranged_attack_t
     else
       p() -> clear_next_hunters_mark = true;
 
-    hunter_ranged_attack_t::execute();
+    if ( p() -> artifacts.call_of_the_hunter.rank() )
+      call_of_the_hunter_procced = p() -> ppm_call_of_the_hunter -> trigger();
 
-    // Consume Hunter's Mark and apply appropriate debuffs. Vulnerable applies on cast.
-    std::vector<player_t*> marked_shot_targets = execute_state -> action -> target_list();
-    for ( size_t i = 0; i < marked_shot_targets.size(); i++ )
-    {
-      if ( td( marked_shot_targets[i] ) -> debuffs.hunters_mark -> up() )
-        td( marked_shot_targets[i] ) -> debuffs.vulnerable -> trigger();
-
-      if ( p() -> clear_next_hunters_mark )
-        td( marked_shot_targets[i] ) -> debuffs.hunters_mark -> expire();
-    }
+    hunter_spell_t::execute();
 
     if ( p() -> clear_next_hunters_mark )
       p() -> buffs.hunters_mark_exists -> expire();
 
-    if ( p() -> artifacts.call_of_the_hunter.rank() && p() -> ppm_call_of_the_hunter -> trigger() )
-    {
-      call_of_the_hunter -> schedule_execute();
-      call_of_the_hunter -> schedule_execute();
-    }
-  }
-
-  virtual void impact( action_state_t* s ) override
-  {
-    hunter_ranged_attack_t::impact( s );
-
-    if ( s -> result == RESULT_CRIT )
-    {
-      if ( p() -> buffs.careful_aim -> check() )
-        trigger_piercing_shots( s );
-
-      if ( p() -> sets.has_set_bonus( HUNTER_MARKSMANSHIP, T18, B2 ) )
-        p() -> buffs.t18_2p_rapid_fire -> trigger();
-    }
+    trigger_mm_feet( p() );
   }
 
   // Only schedule the attack if a valid target
@@ -3473,41 +3507,26 @@ struct marked_shot_t: public hunter_ranged_attack_t
   {
     if ( td( s -> target ) -> debuffs.hunters_mark -> up() )
     {
-      hunter_ranged_attack_t::schedule_travel( s );
+      impact -> target = s -> target;
+      impact -> execute();
+
+      if ( call_of_the_hunter_procced )
+      {
+        call_of_the_hunter -> target = s -> target;
+        call_of_the_hunter -> execute();
+        call_of_the_hunter -> execute();
+      }
     }
-    // If its not a valid target, the state needs to be released
-    else
-    {
-      action_state_t::release( s );
-    }
+    action_state_t::release( s );
   }
 
   // Marked Shot can only be used if a Hunter's Mark exists on any target.
   virtual bool ready() override
   {
     if ( p() -> buffs.hunters_mark_exists -> up() )
-      return hunter_ranged_attack_t::ready();
+      return hunter_spell_t::ready();
 
     return false;
-  }
-
-  virtual double composite_crit_chance() const override
-  {
-    double cc = hunter_ranged_attack_t::composite_crit_chance();
-
-    if ( p() -> artifacts.precision.rank() )
-      cc += p() -> artifacts.precision.percent();
-
-    return cc;
-  }
-
-  virtual double composite_target_crit_chance( player_t* t ) const override
-  {
-    double cc = hunter_ranged_attack_t::composite_target_crit_chance( t );
-
-    cc += p() -> buffs.careful_aim -> value();
-
-    return cc;
   }
 };
 
