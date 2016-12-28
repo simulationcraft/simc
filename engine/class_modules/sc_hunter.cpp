@@ -529,8 +529,10 @@ public:
   hunter_action_t( const std::string& n, hunter_t* player,
                    const spell_data_t* s = spell_data_t::nil() ):
                    ab( n, player, s ),
-                   benefits_from_sniper_training( ab::base_cost() > 0.0 )
+                   benefits_from_sniper_training( false )
   {
+    if ( ab::data().affected_by( p() -> mastery.sniper_training -> effectN( 2 ) ) )
+      benefits_from_sniper_training = true;
   }
 
   virtual ~hunter_action_t() {}
@@ -2772,7 +2774,6 @@ struct multi_shot_t: public hunter_ranged_attack_t
   multi_shot_t( hunter_t* p, const std::string& options_str ):
     hunter_ranged_attack_t( "multi_shot", p, p -> find_class_spell( "Multi-Shot" ) )
   {
-    benefits_from_sniper_training = false;
     parse_options( options_str );
     may_proc_mm_feet = true;
     may_proc_bullseye = false;
@@ -3069,7 +3070,6 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
   {
     background = true;
     parse_spell_data( *p -> specs.aimed_shot );
-    benefits_from_sniper_training = true;
 
     if ( p -> artifacts.wind_arrows.rank() )
       base_multiplier *= 1.0 +  p -> artifacts.wind_arrows.percent();
@@ -3144,6 +3144,7 @@ struct trick_shot_t: public aimed_shot_base_t
     aimed_shot_base_t( "trick_shot", p, p -> find_talent_spell( "Trick Shot" ) )
   {
     may_proc_bullseye = false;
+    benefits_from_sniper_training = true;
     // Simulated as aoe for simplicity
     aoe               = -1;
     background        = true;
@@ -3190,6 +3191,7 @@ struct legacy_of_the_windrunners_t: aimed_shot_base_t
     aimed_shot_base_t( "legacy_of_the_windrunners", p, p -> artifacts.legacy_of_the_windrunners )
   {
     may_proc_bullseye = false;
+    benefits_from_sniper_training = true;
     background = true;
     dual = true;
     proc = true;
@@ -3394,7 +3396,6 @@ struct marked_shot_t: public hunter_spell_t
     marked_shot_impact_t( hunter_t* p ):
       hunter_ranged_attack_t( "marked_shot_impact", p, p -> find_spell( 212621 ) )
     {
-      benefits_from_sniper_training = true;
       background = true;
       dual = true;
 
@@ -4357,7 +4358,6 @@ struct peck_t : public hunter_spell_t
     may_block = false;
     may_dodge = false;
     travel_speed = 0.0;
-    benefits_from_sniper_training = true;
   }
 
   hunter_t* p() const { return static_cast<hunter_t*>( player ); }
