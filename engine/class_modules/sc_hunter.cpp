@@ -525,13 +525,18 @@ private:
 public:
   typedef hunter_action_t base_t;
 
+  bool hasted_gcd;
   bool benefits_from_sniper_training;
 
   hunter_action_t( const std::string& n, hunter_t* player,
                    const spell_data_t* s = spell_data_t::nil() ):
                    ab( n, player, s ),
+                   hasted_gcd( false ),
                    benefits_from_sniper_training( false )
   {
+    if ( ab::data().affected_by( p() -> specs.hunter -> effectN( 3 ) ) )
+      hasted_gcd = true;
+
     if ( ab::data().affected_by( p() -> specs.hunter -> effectN( 2 ) ) )
       ab::cooldown -> hasted = true;
 
@@ -600,14 +605,14 @@ public:
   virtual timespan_t gcd() const override
   {
     timespan_t g = ab::gcd();
-    timespan_t m = ab::min_gcd;
 
     if ( g == timespan_t::zero() )
-      return timespan_t::zero();
+      return g;
 
-    g *= p() -> cache.attack_haste();
+    if ( hasted_gcd )
+      g *= p() -> cache.attack_haste();
 
-    return g < m ? m : g;
+    return g < ab::min_gcd ? ab::min_gcd : g;
   }
 
   virtual double cast_regen() const
