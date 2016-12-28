@@ -1983,7 +1983,7 @@ struct main_pet_kill_command_t: public kill_command_t
 struct beast_cleave_attack_t: public hunter_pet_action_t < hunter_pet_t, attack_t >
 {
   beast_cleave_attack_t( hunter_pet_t* p ):
-    hunter_pet_action_t < hunter_pet_t, attack_t >( "beast_cleave", *p, p -> find_spell( 118455 ) )
+    hunter_pet_action_t < hunter_pet_t, attack_t >( "beast_cleave", *p, p -> find_spell( 118459 ) )
   {
     aoe = -1;
     background = true;
@@ -1991,10 +1991,9 @@ struct beast_cleave_attack_t: public hunter_pet_action_t < hunter_pet_t, attack_
     may_miss = false;
     may_crit = false;
     proc = false;
-    radius = 10.0;
-    range = -1.0;
-    school = SCHOOL_PHYSICAL;
     // The starting damage includes all the buffs
+    base_dd_min = base_dd_max = 0;
+    spell_power_mod.direct = attack_power_mod.direct = 0;
     weapon_multiplier = 0;
   }
 
