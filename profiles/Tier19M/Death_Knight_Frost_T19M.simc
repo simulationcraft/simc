@@ -30,7 +30,7 @@ actions+=/blood_fury,if=!talent.breath_of_sindragosa.enabled|dot.breath_of_sindr
 actions+=/berserking,if=buff.pillar_of_frost.up
 actions+=/potion,name=old_war
 actions+=/sindragosas_fury,if=buff.pillar_of_frost.up&(buff.unholy_strength.up|(buff.pillar_of_frost.remains<3&target.time_to_die<60))&debuff.razorice.stack==5&!buff.obliteration.up
-actions+=/obliteration,if=!talent.frozen_pulse.enabled|rune<2
+actions+=/obliteration,if=!talent.frozen_pulse.enabled|(rune<2&runic_power<28)
 actions+=/breath_of_sindragosa,if=runic_power>=50
 actions+=/run_action_list,name=bos,if=dot.breath_of_sindragosa.ticking
 actions+=/call_action_list,name=shatter,if=talent.shattering_strikes.enabled
