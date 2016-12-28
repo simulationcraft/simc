@@ -1447,7 +1447,16 @@ void action_t::execute()
       s -> target = tl[ t ];
       s -> n_targets = std::min( num_targets, tl.size() );
       s -> chain_target = as<int>( t );
-      if ( ! pre_execute_state ) snapshot_state( s, amount_type( s ) );
+      if ( ! pre_execute_state )
+      {
+        snapshot_state( s, amount_type( s ) );
+      }
+      // Even if pre-execute state is defined, we need to snapshot target-specific state variables
+      // for aoe spells.
+      else
+      {
+        snapshot_internal( s, snapshot_flags & STATE_TARGET, amount_type( s ) );
+      }
       s -> result = calculate_result( s );
       s -> block_result = calculate_block_result( s );
 
