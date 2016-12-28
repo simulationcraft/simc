@@ -37,9 +37,9 @@ parser.add_argument("--suffix",      dest = "suffix",       default = '',
                     help = "Data structure suffix string")
 parser.add_argument("--min-ilvl",    dest = "min_ilevel",   default = 90, type = int,
                     help = "Minimum inclusive ilevel for item-related extraction")
-parser.add_argument("--max-ilvl",    dest = "max_ilevel",   default = 940, type = int,
+parser.add_argument("--max-ilvl",    dest = "max_ilevel",   default = 1300, type = int,
                     help = "Maximum inclusive ilevel for item-related extraction")
-parser.add_argument("--scale-ilvl",  dest = "scale_ilevel", default = 1000, type = int,
+parser.add_argument("--scale-ilvl",  dest = "scale_ilevel", default = 1300, type = int,
                     help = "Maximum inclusive ilevel for game table related extraction")
 parser.add_argument("--as",          dest = "as_dbc",       default = '',
                     help = "Treat given DBC file as this option" )
@@ -55,8 +55,8 @@ options = parser.parse_args()
 if options.build == 0 and options.type != 'header':
     parser.error('-b is a mandatory parameter for extraction type "%s"' % options.type)
 
-if options.min_ilevel < 0 or options.max_ilevel > 999:
-    parser.error('--min/max-ilevel range is 0..999')
+if options.min_ilevel < 0 or options.max_ilevel > 1300:
+    parser.error('--min/max-ilevel range is 0..1300')
 
 if options.level % 5 != 0 or options.level > 115:
     parser.error('-l must be given as a multiple of 5 and be smaller than 100')
