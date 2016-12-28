@@ -1753,12 +1753,11 @@ struct touch_of_the_magi_t : public buff_t
 
 
 // Custom buffs ===============================================================
-struct icy_veins_buff_t : public buff_t
+struct icy_veins_buff_t : public haste_buff_t
 {
   mage_t* p;
   icy_veins_buff_t( mage_t* p ) :
-    buff_t( buff_creator_t( p, "icy_veins", p -> find_spell( 12472 ) )
-            .add_invalidate( CACHE_SPELL_HASTE ) ),p( p )
+    haste_buff_t( haste_buff_creator_t( p, "icy_veins", p -> find_spell( 12472 ) ) ), p( p )
 
   {}
 
