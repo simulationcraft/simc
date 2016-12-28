@@ -4314,8 +4314,6 @@ struct touch_of_karma_t: public monk_melee_attack_t
     base_dd_min = base_dd_max = 0;
 
     double max_pct = data().effectN( 3 ).percent();
-    if ( p -> legendary.cenedril_reflector_of_hatred )
-      max_pct += p -> legendary.cenedril_reflector_of_hatred -> effectN( 1 ).percent();
     if ( pct_health > max_pct ) // Does a maximum of 50% of the monk's HP.
       pct_health = max_pct;
 
@@ -4347,9 +4345,12 @@ struct touch_of_karma_t: public monk_melee_attack_t
 
     if ( pct_health > 0 )
     {
+      double damage_amount = pct_health * player -> resources.max[RESOURCE_HEALTH];
+      if ( p() -> legendary.cenedril_reflector_of_hatred )
+        damage_amount *= 1 + p() -> legendary.cenedril_reflector_of_hatred -> effectN( 1 ).percent();
+
       residual_action::trigger(
-        touch_of_karma_dot, execute_state -> target,
-        pct_health * player -> resources.max[RESOURCE_HEALTH] );
+        touch_of_karma_dot, execute_state -> target, damage_amount );
     }
   }
 };
