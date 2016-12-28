@@ -1317,6 +1317,7 @@ class SpellDataGenerator(DataGenerator):
           ( 191070, 0 ), # Call of the Hunter
           ( 217207, 0 ), # Dire Frenzy (pet)
           ( 201594, 0 ), # Stampede
+          ( 118459, 5 ), # Beast Cleave
         ),
 
         # Rogue:
