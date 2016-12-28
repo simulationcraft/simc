@@ -274,10 +274,18 @@ void item::arans_relaxing_ruby( special_effect_t& effect )
     action = effect.player -> create_proc_action( "flame_wreath", effect );
   }
 
+  // Adjust frost base RPPM: https://www.altered-time.com/forum/viewtopic.php?f=2&t=3416
+  if ( effect.player -> specialization() == MAGE_FROST )
+  {
+    effect.ppm_ = -1.35;
+  }
+
   if ( ! action )
   {
     action = new flame_wreath_t( effect );
   }
+
+
 
   effect.execute_action = action;
   effect.proc_flags2_ = PF2_ALL_HIT;
@@ -293,7 +301,7 @@ void item::ring_of_collapsing_futures( special_effect_t& effect )
                     effect.player -> find_spell( effect.spell_id ),
                     effect.item )
     {
-      base_dd_min = base_dd_max = effect.player ->find_spell( effect.spell_id ) -> effectN( 1 ).base_value(); // Does not scale with ilevel, apparently. 
+      base_dd_min = base_dd_max = effect.player ->find_spell( effect.spell_id ) -> effectN( 1 ).base_value(); // Does not scale with ilevel, apparently.
     }
   };
 
@@ -1261,15 +1269,81 @@ void item::bough_of_corruption( special_effect_t& effect )
   new bough_of_corruption_driver_t( effect );
 }
 
-
 void item::ursocs_rending_paw( special_effect_t& effect )
 {
+  struct rending_flesh_t: public residual_action::residual_periodic_action_t < attack_t > {
+    double crit_chance_of_last_impact;
+    player_t* player_;
+    rending_flesh_t( const special_effect_t& effect ):
+      residual_action::residual_periodic_action_t<attack_t>( "rend_flesh", effect.player, effect.player -> find_spell( effect.trigger_spell_id ) ),
+      crit_chance_of_last_impact( 0 ), player_( effect.player )
+    {
+      base_td = base_dd_max = base_dd_min = 0;
+      attack_power_mod.tick = 0;
+      tick_may_crit = true;
+    }
+
+    double calculate_tick_amount( action_state_t* state, double dmg_multiplier ) const override
+    {
+      double amount = 0.0;
+
+      if ( dot_t* d = find_dot( state->target ) )
+      {
+        residual_action::residual_periodic_state_t* dot_state = debug_cast<residual_action::residual_periodic_state_t*>( d->state );
+        amount += dot_state->tick_amount;
+      }
+
+      state->result_raw = amount;
+
+      state->result = RESULT_HIT; // Reset result to hit, as it has already been rolled inside tick().
+      if ( rng().roll( composite_crit_chance() ) )
+        state->result = RESULT_CRIT;
+
+      if ( state->result == RESULT_CRIT )
+        amount *= 1.0 + total_crit_bonus( state );
+
+      amount *= dmg_multiplier;
+
+      state->result_total = amount;
+
+      return amount;
+    }
+
+    double composite_crit_chance() const override
+    {
+      return crit_chance_of_last_impact;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      residual_periodic_action_t::impact( s );
+      crit_chance_of_last_impact = player_ -> composite_melee_crit_chance(); // Uses crit chance of the last autoattack to proc it.
+    }
+  };
+
+  struct rending_flesh_execute_t: spell_t {
+    rending_flesh_t* rend;
+    rending_flesh_execute_t( const special_effect_t& effect ):
+      spell_t( "rending_flesh_trigger", effect.player, effect.player -> find_spell( effect.trigger_spell_id ) ),
+      rend( nullptr )
+    {
+      rend = new rending_flesh_t( effect );
+      background = true;
+      base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item ) * 4; //We're tossing the entire dot into the ignite.
+      dot_duration = timespan_t::zero();
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      residual_action::trigger( rend, s -> target, s -> result_amount );
+    }
+  };
+
   effect.proc_flags2_ = PF2_CRIT;
   effect.trigger_spell_id = 221770;
 
-  auto rend_flesh = effect.create_action();
-  rend_flesh -> update_flags = 0;
-  effect.execute_action = rend_flesh;
+  auto rend = new rending_flesh_execute_t( effect );
+  effect.execute_action = rend;
 
   new dbc_proc_callback_t( effect.item, effect );
 }
@@ -1769,6 +1843,9 @@ struct kiljaedens_burning_wish_t : public spell_t
     travel_speed = 25;
   }
 
+  virtual double composite_crit_chance() const override
+  { return 1.0; }
+
 };
 
 void item::kiljadens_burning_wish( special_effect_t& effect )
@@ -1915,12 +1992,6 @@ void item::faulty_countermeasures( special_effect_t& effect )
   effect2 -> name_str       = "brittle";
   effect2 -> spell_id       = effect.driver() -> id();
   effect2 -> cooldown_      = timespan_t::zero();
-
-  // 2016-09-13: Enhancement RPPM hotfixed 1.8 -> 0.8, does not show in client data
-  if ( effect.player -> specialization() == SHAMAN_ENHANCEMENT )
-  {
-    effect2 -> rppm_modifier_ = 0.8;
-  }
 
   effect.player -> special_effects.push_back( effect2 );
 
@@ -2407,17 +2478,17 @@ static const convergence_cd_t convergence_cds[] =
     if they have one, or this trinket may cause undesirable results.
 
   !!! NOTE !!! NOTE !!! NOTE !!! NOTE !!! NOTE !!! NOTE !!! NOTE !!! */
-  { DEATH_KNIGHT_FROST,   { "pillar_of_frost" } },
+  { DEATH_KNIGHT_FROST,   { "empower_rune_weapon", "hungering_rune_weapon" } },
   { DEATH_KNIGHT_UNHOLY,  { "summon_gargoyle" } },
   { DRUID_FERAL,          { "berserk", "incarnation_king_of_the_jungle" } },
   { HUNTER_BEAST_MASTERY, { "aspect_of_the_wild" } },
   { HUNTER_MARKSMANSHIP,  { "trueshot" } },
   { HUNTER_SURVIVAL,      { "aspect_of_the_eagle" } },
-  { MONK_WINDWALKER,      { "storm_earth_and_fire" } },
+  { MONK_WINDWALKER,      { "storm_earth_and_fire", "serenity" } },
   { PALADIN_RETRIBUTION,  { "avenging_wrath", "crusade" } },
-  { ROGUE_SUBTLETY,       { "vendetta" } },
+  { ROGUE_SUBTLETY,       { "shadow_blades" } },
   { ROGUE_OUTLAW,         { "adrenaline_rush" } },
-  { ROGUE_ASSASSINATION,  { "shadow_blades" } },
+  { ROGUE_ASSASSINATION,  { "vendetta" } },
   { SHAMAN_ENHANCEMENT,   { "feral_spirit" } },
   { WARRIOR_ARMS,         { "battle_cry" } },
   { WARRIOR_FURY,         { "battle_cry" } },
@@ -3400,16 +3471,10 @@ void unique_gear::register_hotfixes_x7()
     .modifier( 1.25 )
     .verification_value( 0.7 );
 
-  hotfix::register_effect( "Mark of the Hidden Satyr", "2016-10-10", "In-game testing shows that the damage from this ability is roughly 10% higher than what spelldata shows.", 280531 )
-    .field( "average" )
-    .operation( hotfix::HOTFIX_MUL )
-    .modifier( 1.1 )
-    .verification_value( 26.48617 );
-
-  hotfix::register_spell( "Aran's Relaxing Ruby", "2016-11-08", "In-game testing shows that the actual rppm is 1.8 rather than 0.92. We slightly underestimate at 1.75 here.", 230257 )
+  hotfix::register_spell( "Aran's Relaxing Ruby", "2016-11-08", "In-game testing shows that the actual rppm is 1.7 rather than 0.92. We slightly underestimate at 1.65 here.", 230257 )
     .field( "rppm" )
     .operation( hotfix::HOTFIX_SET )
-    .modifier( 1.75 )
+    .modifier( 1.65 )
     .verification_value( 0.92 );
 
 }

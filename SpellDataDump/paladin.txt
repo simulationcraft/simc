@@ -1,4 +1,4 @@
-SimulationCraft 710-03 for World of Warcraft 7.1.0 PTR (wow build 22995, git build 2b2fc10)
+SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23244, git build 2679573)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -414,7 +414,8 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=15851)    : School Damage: holy (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=1.25, dl=0.08) | SP Coefficient: 3.50000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 0 (avg=1.25, dl=0.08) | SP Coefficient: 2.80000 | Target: Enemy(6)
+                   Hotfixed: SP Coefficient (3.5 -> 2.8)
 Description      : Blasts the target with Holy energy, causing $25912s1 Holy damage to an enemy, or $25914s1 healing to an ally.
 
 Name             : Holy Shock (id=25914) [Scaling Spell (7), Spell Family (10)] 
@@ -808,7 +809,7 @@ School           : Holy
 Resource         : 3 Holy Power
 Spell Level      : 40
 GCD              : 1.5 seconds
-Affecting spells : Paladin (137026), The Fires of Justice (209785), Divine Purpose (223819)
+Affecting spells : Paladin (137026), Retribution Paladin (137027), The Fires of Justice (209785), Divine Purpose (223819)
 Attributes       : ........ ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .......x ........ ........ 
@@ -2212,27 +2213,29 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179711)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 12 | Scaled Value: 12 | Target: Self(1)
+                   Affected Spells: Judgment (20271), Consecration (26573), Crusader Strike (35395), Divine Storm (53385), Consecration (81297), Blade of Justice (184575), Judgment (197277), Eye for an Eye (205191), Consecration (205228), Wake of Ashes (205273), Judgment (214222), Justicar's Vengeance (215661), Zeal (217020), Templar's Verdict (224266), Judgment (228288)
+#2 (id=191092)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
+                   Base Value: 12 | Scaled Value: 12 | Misc Value: 22 | Target: Self(1)
+                   Affected Spells: Wake of Ashes (205273)
+#3 (id=191093)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 42 | Scaled Value: 42 | Target: Self(1)
                    Affected Spells: Flash of Light (19750)
-#2 (id=191092)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
+#4 (id=191094)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: 22 | Scaled Value: 22 | Misc Value: 14 | Target: Self(1)
                    Affected Spells: Flash of Light (19750)
-#3 (id=191093)   : Apply Aura (6) | Override Spell Power per Attack Power% (366)
+#5 (id=191095)   : Apply Aura (6) | Override Spell Power per Attack Power% (366)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 126 | Misc Value 2: 0x1 | Target: Self(1)
-#4 (id=191094)   : Apply Aura (6) | Modify Damage Done% (79)
+#6 (id=260907)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 0x7f | Target: Self(1)
-#5 (id=191095)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+#7 (id=260908)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 13 | Scaled Value: 13 | Target: Self(1)
                    Affected Spells: Judgment (20271), Crusader Strike (35395), Judgment (197277), Judgment (214222), Judgment (228288)
-#6 (id=260907)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+#8 (id=260909)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 100 | Scaled Value: 100 | Target: Self(1)
                    Affected Spells: Consecration (26573), Consecration (81297), Consecration (205228)
-#7 (id=260908)   : Apply Aura (6) | Unknown effect sub type (218)
+#9 (id=260910)   : Apply Aura (6) | Unknown effect sub type (218)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf7 | Target: Self(1)
-#8 (id=260909)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#9 (id=260910)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #10 (id=260911)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #11 (id=260912)   : Apply Aura (6) | Dummy (4)
@@ -2277,8 +2280,9 @@ Effects          :
                    Affected Spells: Consecration (26573), Consecration (81297), Consecration (205228)
 #5 (id=191091)   : Apply Aura (6) | Unknown effect sub type (218)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf8 | Target: Self(1)
-#6 (id=260917)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#6 (id=260917)   : Apply Aura (6) | Unknown effect sub type (218)
+                   Base Value: -40 | Scaled Value: -40 | Misc Value: 3 | Misc Value 2: 0x114 | Target: Self(1)
+                   Hotfixed: Sub Type (4 -> 218), Base Value (0 -> -40), Misc Value (0 -> 3), Misc Value 2 (0 -> 276)
 #7 (id=260918)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #8 (id=260919)   : Apply Aura (6) | Dummy (4)
@@ -2518,7 +2522,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=210813)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 1000 | Scaled Value: 4881.219 (avg=2.872995) | Misc Value: 1913521920 | Target: Self(1)
+                   Base Value: 1000 | Scaled Value: 5500.224 (avg=3.23733) | Misc Value: 1913521920 | Target: Self(1)
 #2 (id=218844)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Self(1)
 Description      : The Light temporarily magnifies your power, increasing your Haste, Critical Strike, Mastery, and Versatility by $s1.
@@ -3003,7 +3007,7 @@ Spell Level      : 20
 Range            : 12 yards
 GCD              : 1.5 seconds
 Cooldown         : 10.5 seconds
-Affecting spells : Paladin (137026), Deliver the Justice (186927), Virtue's Blade (202271), 
+Affecting spells : Paladin (137026), Retribution Paladin (137027), Deliver the Justice (186927), Virtue's Blade (202271), 
 Attributes       : ........ ........ x.x..x.. ........   ........ .x...... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3555,34 +3559,6 @@ Effects          :
                    Base Value: -22 | Scaled Value: -22 | Misc Value: 1627 | Target: Self(1)
 Description      : Reduces the cooldown of Crusader Strike by ${$m2/-1000}.1 sec and gives it a $h% chance to reduce the cost of your next damaging or healing Holy Power ability by $209785s1.
 
-Name             : Greater Blessing of Might (id=203528) [Spell Family (10)] 
-Class            : Retribution Paladin
-School           : Holy
-Spell Level      : 50
-Range            : 30 yards
-GCD              : 1.5 seconds
-Duration         : 3600 seconds
-Proc Chance      : 100%
-Proc Flags       : ..xxxxxx xx.xxx.x xxxx.... .......x 
-                 : White Melee, White Melee Taken, Yellow Melee, Yellow Melee Taken, White Ranged, White Ranged Taken , Yellow Ranged, Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell, AOE Hostile Spell Taken, Heal Taken, Hostile Spell, Hostile Spell Taken, Periodic, Periodic Taken
-Affecting spells : Lucidity (137288)
-Attributes       : ........ ........ x.x..... ....x...   ........ ........ ........ ........ 
-                 : ........ x....... ........ ........   ........ ........ ....x... ..x..... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
-                 : ....x... x....... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   .x...... ........ ........ ........ 
-                 : Cannot be used in combat (28)
-Effects          :
-#1 (id=300186)   : Unknown effect type (202) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 1792 | Radius: 100 yards | Target: Friend(21)
-#2 (id=303979)   : Unknown effect type (202) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: 1792 | Radius: 100 yards | Target: Friend(21)
-Description      : Places a blessing on an ally that gives their attacks a $s1% chance to deal $s2% additional damage as Holy.
-
-You may only have 3 Greater Blessings active at one time.
-Tooltip          : Attacks have a $s1% chance to deal $s2% additional damage as Holy.
-
 Name             : Greater Blessing of Kings (id=203538) [Spell Family (10)] 
 Class            : Retribution Paladin
 School           : Holy
@@ -3594,23 +3570,23 @@ Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Lucidity (137288)
-Attributes       : ........ ........ x.x..... ....x...   ........ ........ ........ ........ 
+Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ....x... ........ 
-                 : ........ ........ ........ ........   ........ xx...... ........ ........ 
+                 : ........ ........ ........ ........   .....x.. xx...... ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ........ x...x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Cannot be used in combat (28)
 Effects          :
 #1 (id=300207)   : Apply Aura (6) | Periodic Dummy: every 6 seconds (226)
                    Base Value: 0 | Scaled Value: 0 | Target: Friend(21)
 #2 (id=318981)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 127 | Target: Friend(21)
-Description      : Places a blessing on an ally that grants them an absorption shield. It absorbs up to $?s214228[${3.6*$SPH}][${1.8*$SPH}] damage, and will be refreshed to full strength every 6 sec, even if fully consumed.
-
-You may only have 3 Greater Blessings active at one time.
+#3 (id=361463)   : Dummy (3)
+                   Base Value: 1 | Scaled Value: 1 | Target: Friend(21)
+Description      : Places a blessing on an ally that grants them an absorption shield. It absorbs up to $<shield> damage, and will be refreshed to full strength every $t1 sec, even if fully consumed. Limit $s3.
 Tooltip          : $?$w2>1[Absorbs the next ${$w2-1} damage.][]
 Refreshed to $w1 absorption every $t1 sec.
+Variables        : $shield=${2.7*$SPH}
 
 Name             : Greater Blessing of Wisdom (id=203539) [Scaling Spell (-1), Spell Family (10)] 
 Class            : Retribution Paladin
@@ -3623,23 +3599,22 @@ Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Lucidity (137288)
-Attributes       : ........ ........ x.x..... ....x...   ........ ........ ........ ........ 
+Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ....x... ........ 
-                 : ........ ........ ........ ........   ........ x....... ........ ........ 
+                 : ........ ........ ........ ........   .....x.. x....... ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
-                 : Cannot be used in combat (28)
 Effects          :
 #1 (id=300209)   : Apply Aura (6) | Unknown effect sub type (21)
                    Base Value: 1 | Scaled Value: 1 | Target: Friend(21)
-#2 (id=310150)   : Apply Aura (6) | Periodic Heal%: every 3 seconds (20)
+#2 (id=310150)   : Apply Aura (6) | Periodic Heal%: every 2 seconds (20)
                    Base Value: 1 | Scaled Value: 1 | Target: Friend(21)
 #3 (id=341305)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15 | Target: Friend(21)
-Description      : Places a blessing on an ally that causes them to regenerate $s1% of maximum health and mana per $s3 sec.
-
-You may only have 3 Greater Blessings active at one time.
+                   Base Value: 10 | Scaled Value: 10 | Target: Friend(21)
+#4 (id=361462)   : Dummy (3)
+                   Base Value: 1 | Scaled Value: 1 | Target: Friend(21)
+Description      : Places a blessing on an ally that causes them to regenerate $s1% of maximum health and mana per $s3 sec. Limit $s4.
 Tooltip          : Gaining $s1% health and mana per $s3 sec.
 
 Name             : First Avenger (id=203776) [Spell Family (10), Passive] 
@@ -3993,7 +3968,7 @@ Cooldown         : 60 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.. ........ ........ ........ 
                  : White Melee Taken, Yellow Melee Taken
-Affecting spells : Paladin (137026)
+Affecting spells : Paladin (137026), Retribution Paladin (137027)
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -4060,7 +4035,7 @@ GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 30 seconds
 Artifact Power   : Id: 40, Max Rank: 1
-Affecting spells : Ashes to Dust (236106)
+Affecting spells : Retribution Paladin (137027), Ashes to Dust (236106)
 Triggered by     : Push Active Ability to Bar (225875)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4103,22 +4078,6 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(95) | Target: Enemy(6)
 Description      : $@spelldesc205273
 Tooltip          : Stunned.
-
-Name             : Greater Blessing of Might (id=205729) [Spell Family (10)] 
-Class            : Paladin
-School           : Holy
-Range            : 50000 yards
-Attributes       : ........ ........ ..x..x.. ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ .....x..   ........ ........ ..x..... ......x. 
-                 : ........ x....... .......x ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Cannot dodge/parry/block (21), Cannot crit (93), Disable weapon procs (151)
-Effects          :
-#1 (id=303983)   : School Damage: holy (2)
-                   Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
-Description      : $@spelldesc203528
 
 Name             : Eye of Tyr (Artifact) (id=209202) [Spell Family (10)] 
 Class            : Paladin
@@ -4274,7 +4233,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=316419)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 99999999 | Scaled Value: 1e+08 - 1.9e+08 | Value Range: 90000001 | Misc Value: 127 | Target: Self(1)
+                   Base Value: 100000000 | Scaled Value: 1e+08 | Misc Value: 127 | Target: Self(1)
 #2 (id=316420)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self(1)
 #3 (id=316427)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
@@ -4410,7 +4369,7 @@ Resource         : 5 Holy Power
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Paladin (137026), Judgment (197277), The Fires of Justice (209785), Item - Paladin T19 Retribution 2P Bonus (211444), Divine Purpose (223819)
+Affecting spells : Paladin (137026), Retribution Paladin (137027), Judgment (197277), The Fires of Justice (209785), Item - Paladin T19 Retribution 2P Bonus (211444), Divine Purpose (223819)
 Attributes       : ........ ........ x.x..... ........   ....x... .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ....x... ........ ........ 
@@ -4437,7 +4396,7 @@ Charges          : 2 (4.5 seconds cooldown)
 Category         : 1610
 Stacks           : 3 maximum
 Proc Chance      : 101%
-Affecting spells : Paladin (137026), Sharpened Edge (184759), Blade of Light (214081)
+Affecting spells : Paladin (137026), Retribution Paladin (137027), Sharpened Edge (184759), Blade of Light (214081)
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ....x... ........ ........ 
@@ -4645,7 +4604,7 @@ Class            : Paladin
 School           : Holy
 Spell Level      : 10
 Range            : 100 yards
-Affecting spells : Might of the Templar (185368), Judgment (197277), Final Verdict (198038), Whisper of the Nathrezim (207635), Item - Paladin T19 Retribution 2P Bonus (211444)
+Affecting spells : Retribution Paladin (137027), Might of the Templar (185368), Judgment (197277), Final Verdict (198038), Whisper of the Nathrezim (207635), Item - Paladin T19 Retribution 2P Bonus (211444)
 Attributes       : ........ ........ x.x..... ........   ....x... .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ....x... ........ ........ 

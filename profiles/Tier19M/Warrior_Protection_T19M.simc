@@ -42,7 +42,6 @@ actions.prot+=/shield_block,if=!buff.neltharions_fury.up&(cooldown.shield_slam.r
 actions.prot+=/shield_slam,if=!(cooldown.shield_block.remains<=gcd.max*2&!buff.shield_block.up&talent.heavy_repercussions.enabled)
 actions.prot+=/revenge,if=cooldown.shield_slam.remains<=gcd.max*1.5|spell_targets.revenge>=2
 actions.prot+=/ignore_pain,if=(rage>=60&!talent.vengeance.enabled)|(buff.vengeance_ignore_pain.up&rage>=39)|(talent.vengeance.enabled&!buff.ultimatum.up&!buff.vengeance_ignore_pain.up&!buff.vengeance_focused_rage.up&rage<30)
-actions.prot+=/focused_rage,if=(buff.vengeance_focused_rage.up&!buff.vengeance_ignore_pain.up&rage>=59)|(buff.ultimatum.up&!buff.vengeance_ignore_pain.up)|(talent.vengeance.enabled&!buff.vengeance_ignore_pain.up&!buff.vengeance_focused_rage.up&rage>=69)|(rage>=100)
 actions.prot+=/thunder_clap,if=spell_targets.thunder_clap>=4
 actions.prot+=/devastate
 
@@ -65,10 +64,10 @@ off_hand=scale_of_the_earthwarder,id=128289,gem_id=139261/139257/139256,relic_id
 
 # Gear Summary
 # gear_ilvl=882.31
-# gear_strength=16053
-# gear_stamina=25675
-# gear_crit_rating=3044
-# gear_haste_rating=6079
-# gear_mastery_rating=8324
-# gear_versatility_rating=2090
+# gear_strength=16842
+# gear_stamina=26948
+# gear_crit_rating=3447
+# gear_haste_rating=6749
+# gear_mastery_rating=9254
+# gear_versatility_rating=2364
 # gear_armor=4323

@@ -1,0 +1,106 @@
+mage="Mage_Fire_T19M_NH"
+level=110
+race=troll
+role=spell
+position=back
+talents=1012022
+artifact=54:0:0:0:0:748:1:749:3:750:3:751:3:752:3:753:3:754:3:755:3:756:3:757:3:758:1:759:1:760:1:761:1:762:1:763:1:1340:1:1372:20
+spec=fire
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask,type=flask_of_the_whispered_pact
+actions.precombat+=/food,type=the_hungry_magister
+actions.precombat+=/augmentation,type=defiled
+actions.precombat+=/snapshot_stats
+actions.precombat+=/mirror_image
+actions.precombat+=/potion,name=deadly_grace
+actions.precombat+=/pyroblast
+
+# Executed every time the actor is available.
+actions=counterspell,if=target.debuff.casting.react
+actions+=/time_warp,if=(time=0&buff.bloodlust.down)|(buff.bloodlust.down&equipped.132410)
+actions+=/mirror_image,if=buff.combustion.down
+actions+=/rune_of_power,if=cooldown.combustion.remains>40&buff.combustion.down&!talent.kindling.enabled|target.time_to_die.remains<11|talent.kindling.enabled&(charges_fractional>1.8|time<40)&cooldown.combustion.remains>40
+actions+=/call_action_list,name=combustion_phase,if=cooldown.combustion.remains<=action.rune_of_power.cast_time+(!talent.kindling.enabled*gcd)|buff.combustion.up
+actions+=/call_action_list,name=rop_phase,if=buff.rune_of_power.up&buff.combustion.down
+actions+=/call_action_list,name=single_target
+
+actions.active_talents=blast_wave,if=(buff.combustion.down)|(buff.combustion.up&action.fire_blast.charges<1&action.phoenixs_flames.charges<1)
+actions.active_talents+=/meteor,if=cooldown.combustion.remains>30|(cooldown.combustion.remains>target.time_to_die)|buff.rune_of_power.up
+actions.active_talents+=/cinderstorm,if=cooldown.combustion.remains<cast_time&(buff.rune_of_power.up|!talent.rune_on_power.enabled)|cooldown.combustion.remains>10*spell_haste&!buff.combustion.up
+actions.active_talents+=/dragons_breath,if=equipped.132863
+actions.active_talents+=/living_bomb,if=active_enemies>1&buff.combustion.down
+
+actions.combustion_phase=rune_of_power,if=buff.combustion.down
+actions.combustion_phase+=/call_action_list,name=active_talents
+actions.combustion_phase+=/combustion
+actions.combustion_phase+=/potion,name=deadly_grace
+actions.combustion_phase+=/blood_fury
+actions.combustion_phase+=/berserking
+actions.combustion_phase+=/arcane_torrent
+actions.combustion_phase+=/use_item,slot=neck
+actions.combustion_phase+=/pyroblast,if=buff.kaelthas_ultimate_ability.react&buff.combustion.remains>execute_time
+actions.combustion_phase+=/pyroblast,if=buff.hot_streak.up
+actions.combustion_phase+=/fire_blast,if=buff.heating_up.up
+actions.combustion_phase+=/phoenixs_flames
+actions.combustion_phase+=/scorch,if=buff.combustion.remains>cast_time
+actions.combustion_phase+=/dragons_breath,if=buff.hot_streak.down&action.fire_blast.charges<1&action.phoenixs_flames.charges<1
+actions.combustion_phase+=/scorch,if=target.health.pct<=25&equipped.132454
+
+actions.rop_phase=rune_of_power
+actions.rop_phase+=/pyroblast,if=buff.hot_streak.up
+actions.rop_phase+=/call_action_list,name=active_talents
+actions.rop_phase+=/pyroblast,if=buff.kaelthas_ultimate_ability.react
+actions.rop_phase+=/fire_blast,if=!prev_off_gcd.fire_blast
+actions.rop_phase+=/phoenixs_flames,if=!prev_gcd.1.phoenixs_flames
+actions.rop_phase+=/scorch,if=target.health.pct<=25&equipped.132454
+actions.rop_phase+=/fireball
+
+actions.single_target=pyroblast,if=buff.hot_streak.up&buff.hot_streak.remains<action.fireball.execute_time
+actions.single_target+=/phoenixs_flames,if=charges_fractional>2.7&active_enemies>2
+actions.single_target+=/flamestrike,if=talent.flame_patch.enabled&active_enemies>2&buff.hot_streak.react
+actions.single_target+=/pyroblast,if=buff.hot_streak.up&!prev_gcd.1.pyroblast
+actions.single_target+=/pyroblast,if=buff.hot_streak.react&target.health.pct<=25&equipped.132454
+actions.single_target+=/pyroblast,if=buff.kaelthas_ultimate_ability.react
+actions.single_target+=/call_action_list,name=active_talents
+actions.single_target+=/fire_blast,if=!talent.kindling.enabled&buff.heating_up.up&(!talent.rune_of_power.enabled|charges_fractional>1.4|cooldown.combustion.remains<40)&(3-charges_fractional)*(12*spell_haste)<cooldown.combustion.remains+3|target.time_to_die.remains<4
+actions.single_target+=/fire_blast,if=talent.kindling.enabled&buff.heating_up.up&(!talent.rune_of_power.enabled|charges_fractional>1.5|cooldown.combustion.remains<40)&(3-charges_fractional)*(18*spell_haste)<cooldown.combustion.remains+3|target.time_to_die.remains<4
+actions.single_target+=/phoenixs_flames,if=(buff.combustion.up|buff.rune_of_power.up|buff.incanters_flow.stack>3|talent.mirror_image.enabled)&artifact.phoenix_reborn.enabled&(4-charges_fractional)*13<cooldown.combustion.remains+5|target.time_to_die.remains<10
+actions.single_target+=/phoenixs_flames,if=(buff.combustion.up|buff.rune_of_power.up)&(4-charges_fractional)*30<cooldown.combustion.remains+5
+actions.single_target+=/scorch,if=target.health.pct<=25&equipped.132454
+actions.single_target+=/fireball
+
+head=hood_of_everburning_knowledge,id=138312,bonus_id=3518
+neck=sorcerous_shadowruby_pendant,id=130233,bonus_id=1758/689/601/669,gem_id=130219,enchant_id=5439
+shoulders=mantle_of_everburning_knowledge,id=138321,bonus_id=3518
+back=astromancers_greatcloak,id=140909,bonus_id=3518,enchant=binding_of_intellect
+chest=robes_of_fluctuating_energy,id=140848,bonus_id=3445
+wrists=bracers_of_harnessed_flame,id=140850,bonus_id=3518
+hands=gloves_of_everburning_knowledge,id=138309,bonus_id=3518
+waist=manari_skullbuckled_cinch,id=140887,bonus_id=3518
+legs=leggings_of_everburning_knowledge,id=138315,bonus_id=3518
+feet=treads_of_galactic_odyssey,id=140885,bonus_id=3518
+finger1=spellblades_gemmed_signet,id=140895,bonus_id=3518,enchant=binding_of_crit
+finger2=ring_of_exclusive_servitude,id=140906,bonus_id=3518,enchant=binding_of_crit
+trinket1=arans_relaxing_ruby,id=142157
+trinket2=bough_of_corruption,id=139336,ilevel=880
+main_hand=felomelorn,id=128820,gem_id=140834/140810/140834,relic_id=3518/3518/3518
+off_hand=heart_of_the_phoenix,id=133959
+
+# Gear Summary
+# gear_ilvl=899.63
+# gear_stamina=33277
+# gear_intellect=34279
+# gear_crit_rating=7312
+# gear_haste_rating=7135
+# gear_mastery_rating=5622
+# gear_versatility_rating=4178
+# gear_armor=1973
+# set_bonus=tier19_2pc=1
+# set_bonus=tier19_4pc=1

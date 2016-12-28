@@ -28,7 +28,7 @@ actions=wind_shear
 actions+=/bloodlust,if=target.health.pct<25|time>0.500
 actions+=/auto_attack
 actions+=/feral_spirit
-actions+=/crash_lightning,if=artifact.alpha_wolf.rank&prev_gcd.feral_spirit
+actions+=/crash_lightning,if=artifact.alpha_wolf.rank&prev_gcd.1.feral_spirit
 actions+=/potion,name=old_war,if=feral_spirit.remains>5|target.time_to_die<=30
 actions+=/berserking,if=buff.ascendance.up|!talent.ascendance.enabled|level<100
 actions+=/blood_fury
@@ -40,6 +40,7 @@ actions+=/windstrike,if=active_enemies>=3&!talent.hailstorm.enabled
 actions+=/stormstrike,if=active_enemies>=3&!talent.hailstorm.enabled
 actions+=/windstrike,if=buff.stormbringer.react
 actions+=/stormstrike,if=buff.stormbringer.react
+actions+=/rockbiter,if=talent.landslide.enabled&buff.landslide.remains<gcd
 actions+=/frostbrand,if=talent.hailstorm.enabled&buff.frostbrand.remains<gcd
 actions+=/flametongue,if=buff.flametongue.remains<gcd
 actions+=/windsong
@@ -80,9 +81,9 @@ off_hand=fury_of_the_stonemother,id=128873
 
 # Gear Summary
 # gear_ilvl=843.75
-# gear_agility=11083
-# gear_stamina=17628
-# gear_crit_rating=1510
-# gear_haste_rating=4970
-# gear_mastery_rating=10279
+# gear_agility=11624
+# gear_stamina=18511
+# gear_crit_rating=1587
+# gear_haste_rating=5397
+# gear_mastery_rating=11137
 # gear_armor=2433

@@ -1,4 +1,4 @@
-SimulationCraft 710-03 for World of Warcraft 7.1.0 PTR (wow build 22995, git build 2b2fc10)
+SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23244, git build 2679573)
 
 Name             : Defensive Stance (id=71) [Spell Family (4), Passive, Hidden] 
 Class            : Protection Warrior
@@ -123,7 +123,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Mechanic         : Bleed
-Affecting spells : Battle Cry (1719), Warrior (137047), Dauntless (202297)
+Affecting spells : Battle Cry (1719), Warrior (137047), Arms Warrior (137049), Dauntless (202297)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... .x...... ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -146,7 +146,7 @@ Spell Level      : 22
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 6 seconds
-Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Warrior (137047), Dauntless (202297)
+Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Warrior (137047), Arms Warrior (137049), Dauntless (202297)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -220,7 +220,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Stacks           : 2 maximum
 Proc Chance      : 101%
-Affecting spells : Battle Cry (1719), Warrior (137047), Item - Warrior T18 Arms 4P Bonus (185804), Dauntless (202297), Crushing Blows (209472)
+Affecting spells : Battle Cry (1719), Warrior (137047), Arms Warrior (137049), Item - Warrior T18 Arms 4P Bonus (185804), Dauntless (202297), Crushing Blows (209472)
 Attributes       : ....x... ........ x.x..... ..x.....   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -241,7 +241,7 @@ Resource         : 25 Rage
 Spell Level      : 40 (max 80)
 GCD              : 1.5 seconds
 Category         : 891
-Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Warrior (137047), Cleave (188923), Dauntless (202297), Wrecking Ball (215570), Many Will Fall (216274)
+Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Warrior (137047), Arms Warrior (137049), Fury Warrior (137050), Cleave (188923), Dauntless (202297), Wrecking Ball (215570), Many Will Fall (216274)
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ .......x ........ ........ 
@@ -265,7 +265,7 @@ Spell Level      : 32
 Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
-Affecting spells : Battle Cry (1719), Hamstring Rage Reduction (22778), Improved Hamstring (24428), Warrior (137047), Dauntless (202297)
+Affecting spells : Battle Cry (1719), Hamstring Rage Reduction (22778), Improved Hamstring (24428), Warrior (137047), Arms Warrior (137049), Dauntless (202297)
 Attributes       : ........ ........ x.x..... ........   ...x...x .x...... ........ ........ 
                  : ........ ........ ........ ........   ...x.... ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -447,7 +447,7 @@ Resource         : 25 Rage
 Spell Level      : 8 (max 80)
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Battle Cry (1719), Single-Minded Fury (81099), Protection (131086), Warrior (137047), Death Sentence (144442), Deathdealer (200846), Sense Death (200979), Juggernaut (201009), Dauntless (202297), Deathblow (209481), Precise Strikes (209493), Shattered Defenses (209706), Stone Heart (225947), Execute (231827), Execute (231830)
+Affecting spells : Battle Cry (1719), Single-Minded Fury (81099), Protection (131086), Warrior (137047), Arms Warrior (137049), Fury Warrior (137050), Death Sentence (144442), Deathdealer (200846), Sense Death (200979), Juggernaut (201009), Dauntless (202297), Deathblow (209481), Precise Strikes (209493), Shattered Defenses (209706), Stone Heart (225947), Execute (231827), Execute (231830)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ .x...... ........ ........   ........ ....x... ........ ........ 
@@ -500,7 +500,7 @@ Cooldown         : 0.8 seconds
 Charges          : 1 (45 seconds cooldown)
 Category         : 1211
 Category Cooldown: 0.8 seconds
-Affecting spells : Demoralizing Shout (1160), Weight of the Earth (208177)
+Affecting spells : Demoralizing Shout (1160), Arms Warrior (137049), Weight of the Earth (208177)
 Attributes       : ....x... x....... x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -552,7 +552,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=2316)     : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 6.50000 | Radius: 8 yards | Target: Cone Front(104)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 4.40000 | Radius: 8 yards | Target: Cone Front(104)
 Description      : Swing in a wide arc, dealing $s1 damage to all enemies in front of you.
 
 Your successful dodges and parries cause your next Revenge to become free.
@@ -564,7 +564,7 @@ Resource         : 10 Rage
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Warrior (137047), Dauntless (202297)
+Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Warrior (137047), Arms Warrior (137049), Dauntless (202297)
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ...xx... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -634,7 +634,7 @@ GCD              : 1.5 seconds
 Charges          : 1 (6 seconds cooldown)
 Category         : 971
 Proc Chance      : 101%
-Affecting spells : Battle Cry (1719), Warrior (137047), Item - Warrior T17 Arms 4P Bonus (165336), Vicious Strike (165638), Sweeping Strikes (202161), Dauntless (202297), Archavon's Heavy Hand (205144), Focused Rage (207982), Thoradin's Might (209480), Precise Strikes (209493), Shattered Defenses (209706), 
+Affecting spells : Battle Cry (1719), Warrior (137047), Arms Warrior (137049), Item - Warrior T17 Arms 4P Bonus (165336), Vicious Strike (165638), Sweeping Strikes (202161), Dauntless (202297), Archavon's Heavy Hand (205144), Focused Rage (207982), Thoradin's Might (209480), Precise Strikes (209493), Shattered Defenses (209706), 
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ....x... ........ ........ 
@@ -820,7 +820,7 @@ GCD              : 1.5 seconds
 Cooldown         : 4.5 seconds
 Category         : 971
 Category Cooldown: 4.5 seconds
-Affecting spells : Meat Cleaver (85739), Warrior (137047), Vicious Strike (165640), Thirst for Battle (200847), Taste for Blood (206333)
+Affecting spells : Meat Cleaver (85739), Warrior (137047), Fury Warrior (137050), Vicious Strike (165640), Thirst for Battle (200847), Taste for Blood (206333)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1031,7 +1031,7 @@ School           : Physical
 Spell Level      : 5
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Warrior (137047), Protection Warrior (137048)
+Affecting spells : Warrior (137047), Protection Warrior (137048), Arms Warrior (137049)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .x...... ........ ........   ........ ........ ........ ........ 
@@ -1083,7 +1083,7 @@ Name             : Whirlwind Off-Hand (id=44949) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Spell Level      : 1 (max 80)
-Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Warrior (137047), Cleave (188923), Dauntless (202297), Wrecking Ball (215570), Many Will Fall (216274)
+Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Warrior (137047), Arms Warrior (137049), Fury Warrior (137050), Cleave (188923), Dauntless (202297), Wrecking Ball (215570), Many Will Fall (216274)
 Triggered by     : Whirlwind (190411)
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ x....... 
@@ -1155,7 +1155,7 @@ GCD              : 1.5 seconds
 Velocity         : 10 yards/sec
 Duration         : 6 seconds
 Cooldown         : 90 seconds
-Affecting spells : Demoralizing Shout (1160), Protection (131086), Warrior (137047), Arms Warrior (137049)
+Affecting spells : Demoralizing Shout (1160), Protection (131086), Warrior (137047), Arms Warrior (137049), Fury Warrior (137050)
 Attributes       : ....x... ........ x.x..... ........   ....x... .xx....x ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -1204,7 +1204,7 @@ Cooldown         : 40 seconds
 Category         : 1201
 Category Cooldown: 40 seconds
 Proc Chance      : 101%
-Affecting spells : Demoralizing Shout (1160), Warrior (137047), Protection Warrior (137048)
+Affecting spells : Demoralizing Shout (1160), Warrior (137047), Protection Warrior (137048), Arms Warrior (137049), Fury Warrior (137050)
 Attributes       : ....x... ........ x.x..x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1228,7 +1228,7 @@ Name             : Bladestorm (id=50622) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Spell Level      : 1
-Affecting spells : Demoralizing Shout (1160), Protection (131086), Warrior (137047), Arms Warrior (137049)
+Affecting spells : Demoralizing Shout (1160), Protection (131086), Warrior (137047), Arms Warrior (137049), Fury Warrior (137050)
 Triggered by     : Bladestorm (46924), Bladestorm (227847)
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -1251,7 +1251,7 @@ Class            : Warrior
 School           : Physical
 Spell Level      : 26
 Range            : 50000 yards
-Affecting spells : Demoralizing Shout (1160), Weight of the Earth (208177)
+Affecting spells : Demoralizing Shout (1160), Arms Warrior (137049), Weight of the Earth (208177)
 Attributes       : ....x... ........ x.x..x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ..x..... ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ..x...x. 
@@ -1302,7 +1302,7 @@ Range            : 8 - 30 yards
 GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Cooldown         : 6 seconds
-Affecting spells : Defensive Stance (71), Demoralizing Shout (1160), Warrior (137047)
+Affecting spells : Defensive Stance (71), Demoralizing Shout (1160), Warrior (137047), Arms Warrior (137049), Fury Warrior (137050)
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1666,7 +1666,7 @@ School           : Physical
 Spell Level      : 20
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Warrior (137047), Wrath and Fury (200849), Inner Rage (215573), 
+Affecting spells : Warrior (137047), Fury Warrior (137050), Wrath and Fury (200849), Inner Rage (215573), 
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ x....... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1692,7 +1692,7 @@ Class            : Warrior
 School           : Physical
 Spell Level      : 20
 Range            : 100 yards
-Affecting spells : Warrior (137047), Wrath and Fury (200849), Inner Rage (215573), 
+Affecting spells : Warrior (137047), Fury Warrior (137050), Wrath and Fury (200849), Inner Rage (215573), 
 Triggered by     : Raging Blow (85288)
 Attributes       : ....x... ........ x.x..... ........   ....x... ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ .x...... ........ x.....x. 
@@ -1820,7 +1820,7 @@ Name             : Bladestorm Off-Hand (id=95738) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Spell Level      : 1
-Affecting spells : Demoralizing Shout (1160), Protection (131086), Warrior (137047), Arms Warrior (137049)
+Affecting spells : Demoralizing Shout (1160), Protection (131086), Warrior (137047), Arms Warrior (137049), Fury Warrior (137050)
 Triggered by     : Bladestorm (50622), Bladestorm (168969)
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ x....... 
@@ -1840,7 +1840,7 @@ Class            : Warrior
 School           : Physical
 Spell Level      : 20
 Range            : 100 yards
-Affecting spells : Warrior (137047), Wrath and Fury (200849), Inner Rage (215573), 
+Affecting spells : Warrior (137047), Fury Warrior (137050), Wrath and Fury (200849), Inner Rage (215573), 
 Triggered by     : Raging Blow (85288)
 Attributes       : ....x... ........ x.x..... ........   ....x... ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ .xx..... ........ ......x. 
@@ -1903,7 +1903,7 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
 Proc Chance      : 101%
-Affecting spells : Warrior (137047), Item - Warrior T18 Fury 2P Bonus (185798), Wild Slashes (216273)
+Affecting spells : Warrior (137047), Fury Warrior (137050), Item - Warrior T18 Fury 2P Bonus (185798), Wild Slashes (216273)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ x....... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1962,7 +1962,7 @@ Range            : 20 yards
 GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Cooldown         : 30 seconds
-Affecting spells : Warrior (137047), Protection Warrior (137048)
+Affecting spells : Warrior (137047), Protection Warrior (137048), Arms Warrior (137049), Fury Warrior (137050)
 Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2059,7 +2059,7 @@ Spell Level      : 1
 Range            : 100 yards
 Duration         : 15 seconds
 Mechanic         : Bleed
-Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Warrior (137047), Dauntless (202297)
+Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Warrior (137047), Arms Warrior (137049), Dauntless (202297)
 Triggered by     : Deep Wounds (115768)
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ........ 
                  : ..x....x ........ ........ ........   ........ ..x..... ..x..... ..x...x. 
@@ -2222,7 +2222,7 @@ Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 25 seconds
-Affecting spells : Warrior (137047)
+Affecting spells : Warrior (137047), Fury Warrior (137050)
 Attributes       : ....x... ........ x.x..x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2414,7 +2414,7 @@ Spell Level      : 1
 Range            : 50000 yards
 Duration         : 3 seconds
 Proc Chance      : 101%
-Affecting spells : Demoralizing Shout (1160), Warrior (137047), Protection Warrior (137048)
+Affecting spells : Demoralizing Shout (1160), Warrior (137047), Protection Warrior (137048), Arms Warrior (137049), Fury Warrior (137050)
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2436,7 +2436,7 @@ Range            : 30 yards
 Velocity         : 25 yards/sec
 Duration         : 4 seconds
 Mechanic         : Unknown(95)
-Affecting spells : Warrior (137047), Protection Warrior (137048)
+Affecting spells : Warrior (137047), Protection Warrior (137048), Arms Warrior (137049), Fury Warrior (137050)
 Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... ........ ........ 
                  : ..x..... ........ ........ ........   ........ ..x..... ..x..... ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2554,8 +2554,9 @@ Effects          :
                    Affected Spells: Victory Rush (34428), Shockwave (46968), Storm Bolt (107570), Shockwave (132168), Storm Bolt (132169), Impending Victory (202168)
 #5 (id=191019)   : Apply Aura (6) | Unknown effect sub type (218)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf8 | Target: Self(1)
-#6 (id=261027)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#6 (id=261027)   : Apply Aura (6) | Unknown effect sub type (218)
+                   Base Value: -40 | Scaled Value: -40 | Misc Value: 3 | Misc Value 2: 0x114 | Target: Self(1)
+                   Hotfixed: Sub Type (4 -> 218), Base Value (0 -> -40), Misc Value (0 -> 3), Misc Value 2 (0 -> 276)
 #7 (id=261028)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #8 (id=261029)   : Apply Aura (6) | Dummy (4)
@@ -2574,6 +2575,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #15 (id=261036)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#16 (id=362031)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+                   Hotfixed: NEW EFFECT
 
 Name             : Arms Warrior (id=137049) [Spell Family (4), Passive, Hidden] 
 Class            : Arms Warrior
@@ -2591,17 +2595,19 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179733)   : Apply Aura (6) | Unknown effect sub type (213)
                    Base Value: 297 | Scaled Value: 297 | Target: Self(1)
-#2 (id=186754)   : Apply Aura (6) | Modify Damage Done% (79)
+#2 (id=186754)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 5 | Scaled Value: 5 | Target: Self(1)
+                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Whirlwind (1680), Hamstring (1715), Execute (5308), Heroic Leap (6544), Overpower (7384), Mortal Strike (12294), Improved Hamstring (24428), Victory Rush (34428), Whirlwind Off-Hand (44949), Bladestorm (46924), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Bladestorm Off-Hand (95738), Storm Bolt (107570), Deep Wounds (115767), Shockwave (132168), Storm Bolt (132169), Ravager (152277), Ravager (156287), Execute (163201), Execute Off-Hand (163558), Colossus Smash (167105), Bladestorm (168969), Whirlwind (190411), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Impending Victory (202168), Colossus Smash (208086), Bladestorm (222634), Ravager (227744), Bladestorm (227847), Ravager (228920)
+#3 (id=191014)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 22 | Target: Self(1)
+                   Affected Spells: Ravager (152277), Ravager (156287), Ravager (227744), Ravager (228920)
+#4 (id=191015)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 0x7f | Target: Self(1)
-#3 (id=191014)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+#5 (id=191016)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 50 | Scaled Value: 50 | Target: Self(1)
                    Affected Spells: Bladestorm (46924), Bladestorm (50622), Bladestorm Off-Hand (95738), Bladestorm (168969), Bladestorm (222634), Bladestorm (227847)
-#4 (id=191015)   : Apply Aura (6) | Unknown effect sub type (218)
+#6 (id=261047)   : Apply Aura (6) | Unknown effect sub type (218)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf7 | Target: Self(1)
-#5 (id=191016)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#6 (id=261047)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #7 (id=261048)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #8 (id=261049)   : Apply Aura (6) | Dummy (4)
@@ -2638,14 +2644,16 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179734)   : Apply Aura (6) | Unknown effect sub type (213)
+#1 (id=179734)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 5 | Scaled Value: 5 | Target: Self(1)
+                   Affected Spells: Whirlwind (1680), Execute (5308), Bloodthirst (23881), Whirlwind Off-Hand (44949), Bladestorm (46924), Shockwave (46968), Bladestorm (50622), Heroic Throw (57755), Raging Blow (85288), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Dragon Roar (118000), Shockwave (132168), Storm Bolt (132169), Execute (163201), Execute Off-Hand (163558), Bladestorm (168969), Rampage (184367), Rampage (184707), Rampage (184709), Whirlwind (190411), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Odyn's Fury (205545), Rampage (218617), Bladestorm (222634), Bladestorm (227847)
+                   Hotfixed: Affects Spells
+#2 (id=191010)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self(1)
+#3 (id=191011)   : Apply Aura (6) | Unknown effect sub type (213)
                    Base Value: -20 | Scaled Value: -20 | Target: Self(1)
-#2 (id=191010)   : Apply Aura (6) | Unknown effect sub type (218)
+#4 (id=191012)   : Apply Aura (6) | Unknown effect sub type (218)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf7 | Target: Self(1)
-#3 (id=191011)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#4 (id=191012)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #5 (id=191013)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #6 (id=261037)   : Apply Aura (6) | Dummy (4)
@@ -2798,7 +2806,7 @@ GCD              : 1.5 seconds
 Velocity         : 30 yards/sec
 Duration         : 7 seconds
 Cooldown         : 60 seconds
-Affecting spells : Warrior (137047), Protection Warrior (137048)
+Affecting spells : Warrior (137047), Protection Warrior (137048), Arms Warrior (137049), 
 Attributes       : ....x... ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2858,7 +2866,7 @@ Name             : Ravager (id=156287) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Range            : 100 yards
-Affecting spells : Warrior (137047), Protection Warrior (137048)
+Affecting spells : Warrior (137047), Protection Warrior (137048), Arms Warrior (137049), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -2929,7 +2937,7 @@ Resource         : 10 Rage
 Spell Level      : 8
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Battle Cry (1719), Single-Minded Fury (81099), Protection (131086), Warrior (137047), Death Sentence (144442), Deathdealer (200846), Sense Death (200979), Juggernaut (201009), Dauntless (202297), Deathblow (209481), Precise Strikes (209493), Shattered Defenses (209706), Stone Heart (225947), Execute (231827), Execute (231830)
+Affecting spells : Battle Cry (1719), Single-Minded Fury (81099), Protection (131086), Warrior (137047), Arms Warrior (137049), Fury Warrior (137050), Death Sentence (144442), Deathdealer (200846), Sense Death (200979), Juggernaut (201009), Dauntless (202297), Deathblow (209481), Precise Strikes (209493), Shattered Defenses (209706), Stone Heart (225947), Execute (231827), Execute (231830)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ .x...... ........ ........   ........ ....x... ........ ........ 
@@ -2953,7 +2961,7 @@ School           : Physical
 Spell Level      : 7 (max 80)
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Battle Cry (1719), Single-Minded Fury (81099), Protection (131086), Warrior (137047), Death Sentence (144442), Deathdealer (200846), Sense Death (200979), Juggernaut (201009), Dauntless (202297), Deathblow (209481), Precise Strikes (209493), Shattered Defenses (209706), Stone Heart (225947), Execute (231827), Execute (231830)
+Affecting spells : Battle Cry (1719), Single-Minded Fury (81099), Protection (131086), Warrior (137047), Arms Warrior (137049), Fury Warrior (137050), Death Sentence (144442), Deathdealer (200846), Sense Death (200979), Juggernaut (201009), Dauntless (202297), Deathblow (209481), Precise Strikes (209493), Shattered Defenses (209706), Stone Heart (225947), Execute (231827), Execute (231830)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ..x..... x....... 
                  : ........ .x...... ........ ........   ........ ....x... ........ ........ 
@@ -2975,7 +2983,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 30 seconds
 Proc Chance      : 101%
-Affecting spells : Battle Cry (1719), Mastery: Colossal Might (76838), Warrior (137047), Titanic Might (202612), Focus in Battle (209554)
+Affecting spells : Battle Cry (1719), Mastery: Colossal Might (76838), Warrior (137047), Arms Warrior (137049), Titanic Might (202612), Focus in Battle (209554)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ...x.... 
@@ -2993,7 +3001,7 @@ Name             : Bladestorm (id=168969) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Spell Level      : 1
-Affecting spells : Demoralizing Shout (1160), Protection (131086), Warrior (137047), Arms Warrior (137049)
+Affecting spells : Demoralizing Shout (1160), Protection (131086), Warrior (137047), Arms Warrior (137049), Fury Warrior (137050)
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : .......x .......x ........ ........   ........ .......x ........ ........ 
@@ -3083,7 +3091,7 @@ Spell Level      : 12
 Range            : 5 yards
 GCD              : 2 seconds
 Cooldown         : 1.5 seconds
-Affecting spells : Meat Cleaver (85739), Warrior (137047), Unstoppable (200853), Carnage (202922), Massacre (206316)
+Affecting spells : Meat Cleaver (85739), Warrior (137047), Fury Warrior (137050), Unstoppable (200853), Carnage (202922), Massacre (206316)
 Attributes       : ........ ........ ..x..... ........   ........ .xx..... ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3113,7 +3121,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 8 yards
 Proc Chance      : 101%
-Affecting spells : Meat Cleaver (85739), Warrior (137047), Unstoppable (200853), Carnage (202922), Massacre (206316)
+Affecting spells : Meat Cleaver (85739), Warrior (137047), Fury Warrior (137050), Unstoppable (200853), Carnage (202922), Massacre (206316)
 Triggered by     : Rampage (184367)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ x....... 
@@ -3134,7 +3142,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 8 yards
 Proc Chance      : 101%
-Affecting spells : Meat Cleaver (85739), Warrior (137047), Unstoppable (200853), Carnage (202922), Massacre (206316)
+Affecting spells : Meat Cleaver (85739), Warrior (137047), Fury Warrior (137050), Unstoppable (200853), Carnage (202922), Massacre (206316)
 Triggered by     : Rampage (184367)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ....x... ........ ........   ........ .xx..... ........ ........ 
@@ -3213,7 +3221,7 @@ School           : Physical
 Spell Level      : 40 (max 80)
 GCD              : 1.5 seconds
 Category         : 891
-Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Warrior (137047), Cleave (188923), Dauntless (202297), Wrecking Ball (215570), Many Will Fall (216274)
+Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Warrior (137047), Arms Warrior (137049), Fury Warrior (137050), Cleave (188923), Dauntless (202297), Wrecking Ball (215570), Many Will Fall (216274)
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ .......x ........ ........ 
@@ -3392,7 +3400,7 @@ Name             : Whirlwind (id=199658) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Spell Level      : 1 (max 80)
-Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Warrior (137047), Cleave (188923), Dauntless (202297), Wrecking Ball (215570), Many Will Fall (216274)
+Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Warrior (137047), Arms Warrior (137049), Fury Warrior (137050), Cleave (188923), Dauntless (202297), Wrecking Ball (215570), Many Will Fall (216274)
 Triggered by     : Whirlwind (1680)
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
@@ -3412,7 +3420,7 @@ Name             : Whirlwind (id=199667) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Spell Level      : 1 (max 80)
-Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Warrior (137047), Cleave (188923), Dauntless (202297), Wrecking Ball (215570), Many Will Fall (216274)
+Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Warrior (137047), Arms Warrior (137049), Fury Warrior (137050), Cleave (188923), Dauntless (202297), Wrecking Ball (215570), Many Will Fall (216274)
 Triggered by     : Whirlwind (190411)
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
@@ -3432,7 +3440,7 @@ Name             : Whirlwind (id=199850) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Spell Level      : 1 (max 80)
-Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Warrior (137047), Cleave (188923), Dauntless (202297), Wrecking Ball (215570), Many Will Fall (216274)
+Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Warrior (137047), Arms Warrior (137049), Fury Warrior (137050), Cleave (188923), Dauntless (202297), Wrecking Ball (215570), Many Will Fall (216274)
 Triggered by     : Whirlwind (1680)
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -3493,7 +3501,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 8 yards
 Proc Chance      : 101%
-Affecting spells : Meat Cleaver (85739), Warrior (137047), Unstoppable (200853), Carnage (202922), Massacre (206316)
+Affecting spells : Meat Cleaver (85739), Warrior (137047), Fury Warrior (137050), Unstoppable (200853), Carnage (202922), Massacre (206316)
 Triggered by     : Rampage (184367)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ....x... ........ ........   ........ .xx..... ........ ........ 
@@ -3515,7 +3523,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 8 yards
 Proc Chance      : 101%
-Affecting spells : Meat Cleaver (85739), Warrior (137047), Unstoppable (200853), Carnage (202922), Massacre (206316)
+Affecting spells : Meat Cleaver (85739), Warrior (137047), Fury Warrior (137050), Unstoppable (200853), Carnage (202922), Massacre (206316)
 Triggered by     : Rampage (184367)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ x....... 
@@ -3649,7 +3657,7 @@ Resource         : 10 Rage
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 30 seconds
-Affecting spells : Victorious (32216), Warrior (137047), Protection Warrior (137048)
+Affecting spells : Victorious (32216), Warrior (137047), Protection Warrior (137048), Arms Warrior (137049)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4047,7 +4055,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=299587)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 150 | Scaled Value: 150 | Misc Value: 11 | Target: Self(1)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 11 | Target: Self(1)
 #2 (id=299588)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 12 | Target: Self(1)
                    Affected Spells: Shield Block (132404)
@@ -4179,7 +4187,7 @@ GCD              : 1.5 seconds
 Cooldown         : 45 seconds
 Category         : 891
 Artifact Power   : Id: 984, Max Rank: 1
-Affecting spells : Warrior (137047)
+Affecting spells : Warrior (137047), Fury Warrior (137050)
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ .......x ........ ........ 
@@ -4366,7 +4374,7 @@ Spell Level      : 1
 Range            : 50000 yards
 Duration         : 8 seconds
 Proc Chance      : 101%
-Affecting spells : Battle Cry (1719), Mastery: Colossal Might (76838), Warrior (137047), Titanic Might (202612), Focus in Battle (209554)
+Affecting spells : Battle Cry (1719), Mastery: Colossal Might (76838), Warrior (137047), Arms Warrior (137049), Titanic Might (202612), Focus in Battle (209554)
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   .......x ..x..... x.x..... ......x. 
                  : x....... ........ ........ ........   ........ ........ ........ ...x.... 
@@ -4827,7 +4835,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 8 yards
 Proc Chance      : 101%
-Affecting spells : Meat Cleaver (85739), Warrior (137047), Unstoppable (200853), Carnage (202922), Massacre (206316)
+Affecting spells : Meat Cleaver (85739), Warrior (137047), Fury Warrior (137050), Unstoppable (200853), Carnage (202922), Massacre (206316)
 Triggered by     : Rampage (184367)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ....x... ........ ........   ........ .xx..... ........ ........ 
@@ -5062,7 +5070,7 @@ School           : Physical
 Range            : 40 yards
 Velocity         : 30 yards/sec
 Duration         : 12 seconds
-Affecting spells : Warrior (137047), Protection Warrior (137048)
+Affecting spells : Warrior (137047), Protection Warrior (137048), Arms Warrior (137049), 
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5084,7 +5092,7 @@ GCD              : 1.5 seconds
 Velocity         : 10 yards/sec
 Duration         : 6 seconds
 Cooldown         : 90 seconds
-Affecting spells : Demoralizing Shout (1160), Protection (131086), Warrior (137047), Arms Warrior (137049)
+Affecting spells : Demoralizing Shout (1160), Protection (131086), Warrior (137047), Arms Warrior (137049), Fury Warrior (137050)
 Attributes       : ....x... ........ x.x..... ........   ....x... .xx....x ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -5113,7 +5121,7 @@ GCD              : 1.5 seconds
 Velocity         : 30 yards/sec
 Duration         : 7 seconds
 Cooldown         : 60 seconds
-Affecting spells : Warrior (137047), Protection Warrior (137048)
+Affecting spells : Warrior (137047), Protection Warrior (137048), Arms Warrior (137049), 
 Attributes       : ....x... ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

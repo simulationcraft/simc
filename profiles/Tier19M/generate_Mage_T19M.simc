@@ -19,7 +19,7 @@ level=110
 race=troll
 role=spell
 position=back
-talents=1021012
+talents=2022031
 artifact=4:139269:139259:142514:0:72:3:73:1:74:3:75:4:77:3:78:1:79:3:80:1:81:4:82:4:83:3:84:3:86:1:87:1:290:1:1169:1:1339:1
 spec=arcane
 
@@ -45,7 +45,7 @@ level=110
 race=troll
 role=spell
 position=back
-talents=1022021
+talents=2022022
 artifact=54:142516:139269:142516:0:748:1:749:3:750:3:751:3:752:3:753:3:754:3:755:6:756:3:757:3:758:1:759:1:760:1:761:1:762:1:763:1:1340:1
 spec=fire
 
@@ -81,7 +81,7 @@ neck=sorcerous_shadowruby_pendant,id=130233,bonus_id=1758/689/601/669,gem_id=130
 shoulders=amice_of_the_unfurling_tempest,id=134432,bonus_id=1727/1522
 back=drape_of_the_unworthy,id=142521,bonus_id=3469/1512,enchant=binding_of_intellect
 chest=robes_of_the_ancient_chronicle,id=142297
-wrists=cinch_of_cosmic_insignficance,id=139187,bonus_id=1806
+wrists=clasp_of_cosmic_insignificance,id=139187,bonus_id=1806
 hands=oiled_riggers_handwraps,id=142429,bonus_id=3469/1512
 waist=cinch_of_light,id=142411,bonus_id=3469
 legs=leggings_of_the_lower_planes,id=142413,bonus_id=3469

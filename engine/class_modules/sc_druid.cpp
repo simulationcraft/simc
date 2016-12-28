@@ -351,7 +351,14 @@ public:
     buff_t* feral_tier17_4pc;
 
     // Guardian
-    buff_t* adaptive_fur;
+    // adaptive fur for each basic magic school
+    buff_t* adaptive_fur_holy;
+	  buff_t* adaptive_fur_fire;
+	  buff_t* adaptive_fur_nature;
+	  buff_t* adaptive_fur_frost;
+	  buff_t* adaptive_fur_shadow;
+	  buff_t* adaptive_fur_arcane;
+    
     buff_t* barkskin;
     buff_t* bristling_fur;
     buff_t* earthwarden;
@@ -997,8 +1004,8 @@ public:
 
 struct adaptive_fur_t : public druid_buff_t< buff_t >
 {
-  adaptive_fur_t( druid_t& p ) :
-    base_t( p, buff_creator_t( &p, "adaptive_fur", p.find_spell( 200945 ) )
+  adaptive_fur_t( druid_t& p, const std::string& element ) :
+    base_t( p, buff_creator_t( &p, "adaptive_fur_" + element, p.find_spell( 200945 ) )
       .chance( p.artifact.adaptive_fur.data().proc_chance() )
       .default_value( p.find_spell( 200945 ) -> effectN( 1 ).percent() ) )
   {}
@@ -1020,6 +1027,7 @@ public:
     add_invalidate( CACHE_STAMINA );
     add_invalidate( CACHE_ARMOR );
     add_invalidate( CACHE_EXP );
+    add_invalidate( CACHE_CRIT_AVOIDANCE );
 
     if ( p.spec.killer_instinct -> ok() )
       add_invalidate( CACHE_AGILITY );
@@ -2112,6 +2120,8 @@ public:
   bool    requires_stealth;
   bool    consumes_combo_points;
   bool    consumes_clearcasting;
+  bool    triggers_ashamanes_bite;
+  bool    triggers_primal_fury;
   bool    trigger_tier17_2pc;
   struct {
     bool direct, tick;
@@ -2125,7 +2135,9 @@ public:
     base_t( token, p, s ),
     requires_stealth( false ),
     consumes_combo_points( false ),
-    consumes_clearcasting( true ),
+    consumes_clearcasting( false ),
+    triggers_ashamanes_bite ( true ),
+    triggers_primal_fury ( true ),
     trigger_tier17_2pc( false ),
     snapshots_tf( true ),
     snapshots_sr( true )
@@ -2341,9 +2353,12 @@ public:
 
     if ( energize_resource == RESOURCE_COMBO_POINT && energize_amount > 0 && hit_any_target )
     {
-      trigger_ashamanes_rip();
-
-      if ( attack_critical && p() -> specialization() == DRUID_FERAL )
+       if (triggers_ashamanes_bite) 
+       {
+          trigger_ashamanes_rip();
+       }
+      
+      if ( attack_critical && p() -> specialization() == DRUID_FERAL && triggers_primal_fury)
       {
         trigger_primal_fury();
       }
@@ -2549,6 +2564,8 @@ struct ashamanes_frenzy_driver_t : public cat_attack_t
       consumes_bloodtalons = false; // BT is applied by driver.
       ignite_multiplier = dot_duration / data().effectN( 3 ).period();
       dot_duration = timespan_t::zero(); // DoT is applied by ignite action.
+      triggers_ashamanes_bite = false;
+      triggers_primal_fury = false;
     }
 
     void impact( action_state_t* s ) override
@@ -2727,6 +2744,10 @@ struct ferocious_bite_t : public cat_attack_t
     energize_type      = ENERGIZE_NONE; // disable negative energy gain in spell data
 
     crit_bonus_multiplier *= 1.0 + p -> artifact.powerful_bite.percent();
+    if (p->talent.sabertooth->ok())
+    {
+       base_multiplier *= 1.0 + p->talent.sabertooth->effectN(1).percent();
+    }
   } 
 
   double maximum_energy() const
@@ -3041,6 +3062,7 @@ struct shred_t : public cat_attack_t
   {
     base_crit += p -> artifact.feral_power.percent();
     base_multiplier *= 1.0 + p -> artifact.shredder_fangs.percent();
+    consumes_clearcasting = true;
   }
 
   virtual void impact( action_state_t* s ) override
@@ -3081,6 +3103,11 @@ struct shred_t : public cat_attack_t
   {
     double m = cat_attack_t::action_multiplier();
 
+    if ( p()->talent.moment_of_clarity->ok() && p()->buff.clearcasting->up() )
+    {
+       m *= 1.0 + p()->talent.moment_of_clarity->effectN(5).percent();
+    }
+
     if ( stealthed() )
       m *= 1.0 + data().effectN( 4 ).percent();
 
@@ -3101,6 +3128,7 @@ public:
     energize_amount = data().effectN( 1 ).percent();
     energize_resource = RESOURCE_COMBO_POINT;
     energize_type = ENERGIZE_ON_HIT;
+    consumes_clearcasting = true;
 
     base_multiplier *= 1.0 + player -> artifact.sharpened_claws.percent();
   }
@@ -3120,6 +3148,11 @@ public:
 
   virtual void execute() override
   {
+    if ( p()->talent.moment_of_clarity->ok() && p()->buff.clearcasting->up() )
+    {
+      base_multiplier *= 1.0 + p()->talent.moment_of_clarity->effectN( 5 ).percent();
+    }
+
     cat_attack_t::execute();
 
     p() -> buff.scent_of_blood -> up();
@@ -3178,13 +3211,10 @@ struct tigers_fury_t : public cat_attack_t
 
 // Thrash (Cat) =============================================================
 
-struct thrash_cat_t : public cat_attack_t
-{
-  struct shadow_thrash_t : public cat_attack_t
-  {
-    struct shadow_thrash_tick_t : public cat_attack_t
-    {
-      shadow_thrash_tick_t( druid_t* p ) :
+struct thrash_cat_t: public cat_attack_t {
+  struct shadow_thrash_t: public cat_attack_t {
+    struct shadow_thrash_tick_t: public cat_attack_t {
+      shadow_thrash_tick_t( druid_t* p ):
         cat_attack_t( "shadow_thrash", p, p -> find_spell( 210687 ) )
       {
         background = dual = true;
@@ -3192,23 +3222,26 @@ struct thrash_cat_t : public cat_attack_t
       }
     };
 
-    shadow_thrash_t( druid_t* p ) :
+    shadow_thrash_t( druid_t* p ):
       cat_attack_t( "shadow_thrash", p, p -> artifact.shadow_thrash.data().effectN( 1 ).trigger() )
     {
       background = true;
       tick_action = new shadow_thrash_tick_t( p );
-    
+
       base_tick_time *= 1.0 + p -> talent.jagged_wounds -> effectN( 1 ).percent();
-      dot_duration   *= 1.0 + p -> talent.jagged_wounds -> effectN( 2 ).percent();
+      dot_duration *= 1.0 + p -> talent.jagged_wounds -> effectN( 2 ).percent();
     }
   };
 
-  thrash_cat_t( druid_t* p, const std::string& options_str ) :
+  thrash_cat_t( druid_t* p, const std::string& options_str ):
     cat_attack_t( "thrash_cat", p, p -> find_spell( 106830 ), options_str )
   {
     aoe = -1;
     spell_power_mod.direct = 0;
-    
+    triggers_primal_fury = false;
+    triggers_ashamanes_bite = false;
+    consumes_clearcasting = true;
+
     trigger_tier17_2pc = p -> sets.has_set_bonus( DRUID_FERAL, T17, B2 );
 
     if ( p -> sets.has_set_bonus( DRUID_FERAL, T19, B2 ) )
@@ -3219,23 +3252,28 @@ struct thrash_cat_t : public cat_attack_t
       energize_type = ENERGIZE_ON_HIT;
     }
 
-    if ( p -> artifact.shadow_thrash.rank() && ! p -> active.shadow_thrash )
+    if ( p -> artifact.shadow_thrash.rank() && !p -> active.shadow_thrash )
     {
       p -> active.shadow_thrash = new shadow_thrash_t( p );
       add_child( p -> active.shadow_thrash );
     }
-    
+
     base_tick_time *= 1.0 + p -> talent.jagged_wounds -> effectN( 1 ).percent();
-    dot_duration   *= 1.0 + p -> talent.jagged_wounds -> effectN( 2 ).percent();
+    dot_duration *= 1.0 + p -> talent.jagged_wounds -> effectN( 2 ).percent();
     base_multiplier *= 1.0 + p -> artifact.jagged_claws.percent();
   }
 
   void execute() override
   {
+    if ( p()->talent.moment_of_clarity->ok() && p()->buff.clearcasting->up() )
+    {
+      base_multiplier *= 1.0 + p()->talent.moment_of_clarity->effectN( 5 ).percent();
+    }
+
     cat_attack_t::execute();
 
     p() -> buff.scent_of_blood -> trigger( 1,
-      num_targets_hit * p() -> buff.scent_of_blood -> default_value );
+                                           num_targets_hit * p() -> buff.scent_of_blood -> default_value );
 
     if ( rng().roll( p() -> artifact.shadow_thrash.data().proc_chance() ) )
       p() -> active.shadow_thrash -> schedule_execute();
@@ -4853,11 +4891,16 @@ struct lunar_strike_t : public druid_spell_t
     aoe = -1;
     base_aoe_multiplier = data().effectN( 3 ).percent();
 
-    natures_balance    = timespan_t::from_seconds( player -> talent.natures_balance -> effectN( 1 ).base_value() );
+    natures_balance    = timespan_t::from_seconds( player -> talent.natures_balance -> effectN( 1 ).base_value() * 2 );
     
     base_execute_time *= 1.0 + player -> sets.set( DRUID_BALANCE, T17, B2 ) -> effectN( 1 ).percent();
     base_crit         += player -> artifact.dark_side_of_the_moon.percent();
     base_multiplier   *= 1.0 + player -> artifact.skywrath.percent();
+  }
+
+  timespan_t natures_balance_extension() const
+  {
+    return natures_balance - timespan_t::from_seconds( ( 1.0 - p() -> cache.spell_haste() ) * 5 );
   }
 
   double composite_crit_chance() const override
@@ -4903,22 +4946,23 @@ struct lunar_strike_t : public druid_spell_t
     return et;
   }
 
-  void impact( action_state_t* s ) override
-  {
-    druid_spell_t::impact( s );
-    // Nature's Balance only extends Moonfire on the primary target. FIXME: Actually extends the duration of ALL sunfires.
-    if ( natures_balance > timespan_t::zero() && hit_any_target )
-    {
-      td( s -> target ) -> dots.moonfire -> extend_duration( natures_balance, timespan_t::from_seconds( 20.0 ) );
-    }
-  }
-
   void execute() override
   {
     p() -> buff.lunar_empowerment -> up();
     p() -> buff.warrior_of_elune -> up();
 
     druid_spell_t::execute();
+
+    if ( natures_balance > timespan_t::zero() )
+    {
+      timespan_t extend_stuff = natures_balance_extension();
+      std::vector< player_t* >& tl = target_list();
+      for ( size_t i = 0, actors = tl.size(); i < actors; i++ )
+      {
+        player_t* t = tl[i];
+        td( t ) -> dots.moonfire -> extend_duration( extend_stuff, timespan_t::from_seconds( 28 ) );
+      }
+    }
 
     p() -> buff.lunar_empowerment -> decrement();
     p() -> buff.warrior_of_elune -> decrement();
@@ -5204,7 +5248,7 @@ struct solar_wrath_t : public druid_spell_t
   solar_wrath_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "solar_wrath", player, player -> find_affinity_spell( "Solar Wrath" ), options_str )
   {
-    natures_balance    = timespan_t::from_seconds( player -> talent.natures_balance -> effectN( 2 ).base_value() );
+    natures_balance    = timespan_t::from_seconds( player -> talent.natures_balance -> effectN( 2 ).base_value() * 2);
 
     base_execute_time *= 1.0 + player -> sets.set( DRUID_BALANCE, T17, B2 ) -> effectN( 1 ).percent();
     base_multiplier   *= 1.0 + player -> artifact.skywrath.percent();
@@ -5252,16 +5296,26 @@ struct solar_wrath_t : public druid_spell_t
     return et;
   }
 
+  timespan_t natures_balance_extension() const
+  {
+    return natures_balance - timespan_t::from_seconds( ( 1.0 - p() -> cache.spell_haste() ) * 5 );
+  }
+
+
   void execute() override
   {
     p() -> buff.solar_empowerment -> up();
 
     druid_spell_t::execute();
-    
-    if ( natures_balance > timespan_t::zero() && hit_any_target )
+
+    if ( natures_balance > timespan_t::zero() )
     {
-      td( execute_state -> target ) -> dots.sunfire ->
-        extend_duration( natures_balance, timespan_t::from_seconds( 20.0 ) );
+      timespan_t extend_stuff = natures_balance_extension();
+      for ( size_t i = 0, actors = sim -> target_non_sleeping_list.size(); i < actors; i++ )
+      {
+        player_t* t = sim -> target_non_sleeping_list[i];
+        td( t ) -> dots.sunfire -> extend_duration( extend_stuff, timespan_t::from_seconds( 23 ) );
+      }
     }
 
     if ( p() -> sets.has_set_bonus( DRUID_BALANCE, T17, B4 ) )
@@ -5403,7 +5457,7 @@ struct starfall_t : public druid_spell_t
   };
 
   starfall_t( druid_t* p, const std::string& options_str ):
-    druid_spell_t( "starfall", p, p -> find_spell( 191034 ), options_str )
+    druid_spell_t( "starfall", p, p -> find_specialization_spell( "Starfall" ), options_str )
   {
     may_miss = may_crit = false;
     base_tick_time = data().duration() / 8.0; // ticks 9 times (missing from spell data)
@@ -5427,7 +5481,7 @@ struct starfall_t : public druid_spell_t
       if ( sim -> distance_targeting_enabled )
       {
         echo -> aoe = 0;
-        echo -> radius = p -> active.starfall -> data().effectN( 2 ).radius();
+        echo -> radius = data().effectN( 2 ).radius_max();
       }
 
       add_child( echo );
@@ -6373,7 +6427,12 @@ void druid_t::create_buffs()
                                .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ); 
 
   // Guardian
-  buff.adaptive_fur          = new adaptive_fur_t( *this );
+  buff.adaptive_fur_holy     = new adaptive_fur_t( *this, "holy" );
+  buff.adaptive_fur_fire     = new adaptive_fur_t(*this, "fire");
+  buff.adaptive_fur_nature   = new adaptive_fur_t(*this, "nature");
+  buff.adaptive_fur_frost    = new adaptive_fur_t(*this, "frost");
+  buff.adaptive_fur_shadow   = new adaptive_fur_t(*this, "shadow");
+  buff.adaptive_fur_arcane   = new adaptive_fur_t(*this, "arcane");
 
   buff.barkskin              = buff_creator_t( this, "barkskin", find_specialization_spell( "Barkskin" ) )
                                .cd( timespan_t::zero() )
@@ -6415,7 +6474,7 @@ void druid_t::create_buffs()
 
   buff.rage_of_the_sleeper   = buff_creator_t( this, "rage_of_the_sleeper", &artifact.rage_of_the_sleeper.data() )
                                .cd( timespan_t::zero() )
-                               .default_value( -artifact.rage_of_the_sleeper.data().effectN( 1 ).percent() )
+                               .default_value( -artifact.rage_of_the_sleeper.data().effectN( 4 ).percent() )
                                .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                                .add_invalidate( CACHE_LEECH );
 
@@ -7389,7 +7448,7 @@ double druid_t::composite_rating_multiplier( rating_e rating ) const
     case RATING_SPELL_HASTE:
     case RATING_MELEE_HASTE:
     case RATING_RANGED_HASTE:
-      rm *= 1.0 + spec.feral -> effectN( 3 ).percent();
+      rm *= 1.0 + spec.feral -> effectN( 7 ).percent();
       break;
     default:
       break;
@@ -7824,15 +7883,32 @@ void druid_t::target_mitigation( school_e school, dmg_e type, action_state_t* s 
   {
     s -> result_amount *= 1.0 + buff.mark_of_ursol -> value();
   
-    if ( buff.adaptive_fur -> check() && dbc::is_school( school, ( school_e ) ( int ) buff.adaptive_fur -> check_value() ) ) // TOCHECK
-    {
-      s -> result_amount *= 1.0 + buff.adaptive_fur -> value();
-    }
-    else
-    {
-      debug_cast<buffs::adaptive_fur_t*>( buff.adaptive_fur ) -> no_benefit();
-    }
-  }
+    	// adaptive_fur only applies once even on multischool spells. But it applies as soon as one school is active.
+	  if (buff.adaptive_fur_holy->check() && dbc::is_school(school, SCHOOL_HOLY))
+	  {
+		  s->result_amount *= 1.0 + buff.adaptive_fur_holy->value();
+	  }
+	  else if (buff.adaptive_fur_fire->check() && dbc::is_school(school, SCHOOL_FIRE))
+	  {
+	  	s->result_amount *= 1.0 + buff.adaptive_fur_fire->value();
+	  } 
+	  else if (buff.adaptive_fur_nature->check() && dbc::is_school(school, SCHOOL_NATURE))
+	  {
+		  s->result_amount *= 1.0 + buff.adaptive_fur_nature->value();
+	  }
+	  else if (buff.adaptive_fur_frost->check() && dbc::is_school(school, SCHOOL_FROST))
+	  {
+		  s->result_amount *= 1.0 + buff.adaptive_fur_frost->value();
+	  }
+	  else if (buff.adaptive_fur_shadow->check() && dbc::is_school(school, SCHOOL_SHADOW))
+	  {
+		  s->result_amount *= 1.0 + buff.adaptive_fur_shadow->value();
+	  }
+	  else if (buff.adaptive_fur_nature->check() && dbc::is_school(school, SCHOOL_NATURE))
+	  {
+		  s->result_amount *= 1.0 + buff.adaptive_fur_nature->value();
+	  }
+	}
 
   player_t::target_mitigation( school, type, s );
 }
@@ -7853,11 +7929,36 @@ void druid_t::assess_damage( school_e school,
 
   if ( artifact.adaptive_fur.rank() && dbc::get_school_mask( school ) & SCHOOL_MAGIC_MASK )
   {
-    if ( buff.adaptive_fur -> trigger( 1, school ) && sim -> log )
-    {
-      sim -> out_log.printf( "%s %s adapts to %s (%d).", name(), buff.adaptive_fur -> name(),
+     if (dbc::is_school(school, SCHOOL_HOLY) && buff.adaptive_fur_holy -> trigger( 1 ) && sim -> log )
+     {
+       sim -> out_log.printf( "%s %s adapts to %s (%d).", name(), buff.adaptive_fur_holy -> name(),
         util::school_type_string( school ), school );
-    }
+     }
+	   if (dbc::is_school(school, SCHOOL_FIRE) && buff.adaptive_fur_fire->trigger(1) && sim->log)
+	   {
+		   sim->out_log.printf("%s %s adapts to %s (%d).", name(), buff.adaptive_fur_fire->name(),
+			   util::school_type_string(school), school);
+	   }
+	   if (dbc::is_school(school, SCHOOL_NATURE) && buff.adaptive_fur_nature->trigger(1) && sim->log)
+	   {
+		   sim->out_log.printf("%s %s adapts to %s (%d).", name(), buff.adaptive_fur_nature->name(),
+			   util::school_type_string(school), school);
+	   }
+	   if (dbc::is_school(school, SCHOOL_FROST) && buff.adaptive_fur_frost->trigger(1) && sim->log)
+	   {
+		   sim->out_log.printf("%s %s adapts to %s (%d).", name(), buff.adaptive_fur_frost->name(),
+			    util::school_type_string(school), school);
+	   }
+	   if (dbc::is_school(school, SCHOOL_SHADOW) && buff.adaptive_fur_shadow->trigger(1) && sim->log)
+	   {
+		   sim->out_log.printf("%s %s adapts to %s (%d).", name(), buff.adaptive_fur_shadow->name(),
+			   util::school_type_string(school), school);
+	   }
+	   if (dbc::is_school(school, SCHOOL_ARCANE) && buff.adaptive_fur_arcane->trigger(1) && sim->log)
+	   {
+		   sim->out_log.printf("%s %s adapts to %s (%d).", name(), buff.adaptive_fur_arcane->name(),
+			    util::school_type_string(school), school);
+	   }
   }
 }
 
@@ -8600,13 +8701,13 @@ struct druid_module_t : public module_t
 
   virtual void register_hotfixes() const override 
   {
+    
+    hotfix::register_spell( "Druid", "2016-12-18", "Incorrect spell level for starfall damage component.", 191037 )
+      .field( "spell_level" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 40 )
+      .verification_value( 76 );
     /*
-    hotfix::register_effect( "Druid", "2016-09-23", "Sunfire damage increased by 10%.", 232416 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 1.10 )
-      .verification_value( 1.0 );
-
     hotfix::register_effect( "Druid", "2016-09-23", "Sunfire damage increased by 10%.-dot", 232417 )
       .field( "sp_coefficient" )
       .operation( hotfix::HOTFIX_MUL )

@@ -1,4 +1,4 @@
-SimulationCraft 710-03 for World of Warcraft 7.1.0 PTR (wow build 22995, git build 2b2fc10)
+SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23244, git build 2679573)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -683,7 +683,7 @@ Description      : Increases all damage dealt by $s3%.
 Name             : Spinning Crane Kick (id=107270) [Spell Family (53)] 
 Class            : Monk
 School           : Physical
-Affecting spells : Mistweaver Monk (137024), Power of a Thousand Cranes (195269)
+Affecting spells : Mistweaver Monk (137024), Windwalker Monk (137025), Power of a Thousand Cranes (195269)
 Triggered by     : Spinning Crane Kick (101546)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -710,7 +710,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Charges          : 1 (10 seconds cooldown)
 Category         : 1518
-Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Monk (137022), Mistweaver Monk (137024), Serenity (152173), Rising Winds (195263), Mana Tea (197908), 
+Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Monk (137022), Mistweaver Monk (137024), Windwalker Monk (137025), Serenity (152173), Rising Winds (195263), Mana Tea (197908), 
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1111,7 +1111,7 @@ Spell Level      : 40
 GCD              : 1 seconds
 Cooldown         : 15 seconds
 Proc Chance      : 101%
-Affecting spells : Stagger (115069), Item - Monk WoD PvP Brewmaster 4P Bonus (171445), Blackout Combo (228563)
+Affecting spells : Stagger (115069), Brewmaster Monk (137023), Item - Monk WoD PvP Brewmaster 4P Bonus (171445), Blackout Combo (228563)
 Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1120,7 +1120,7 @@ Attributes       : ....x... ........ x....... ........   ........ .x...... .....
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=128879)   : School Damage: fire (2)
-                   Base Value: 0 | Scaled Value: 1 - 3 | Value Range: 3 | AP Coefficient: 1.62000 | Radius: 8 yards | Target: Cone Front(104)
+                   Base Value: 0 | Scaled Value: 1 - 3 | Value Range: 3 | AP Coefficient: 1.62000 | Radius: 12 yards | Target: Cone Front(104)
 Description      : Breathe fire on targets in front of you, causing $s1 Fire damage. Targets affected by Keg Smash will also burn for $123725o1 Fire damage over $123725d$?s123394[ and become Incapacitated for $123393d][].
 Tooltip          : If Dizzying Haze is on the target, they will burn for an additional $123725o1 damage over $123725d$?s123394[ and become Disoriented for $123393d.][.]
 
@@ -1694,7 +1694,7 @@ Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 6 seconds
-Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Monk (137022), Brewmaster Monk (137023), Mistweaver Monk (137024), Lucidity (137331), Serenity (152173), Mana Tea (197908)
+Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Monk (137022), Brewmaster Monk (137023), Mistweaver Monk (137024), Windwalker Monk (137025), Lucidity (137331), Serenity (152173), Mana Tea (197908)
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -1748,7 +1748,7 @@ Class            : Monk
 School           : Physical
 Spell Level      : 1
 Range            : 5 yards
-Affecting spells : Fists of the Wind (195291)
+Affecting spells : Windwalker Monk (137025), Fists of the Wind (195291)
 Triggered by     : Fists of Fury (113656)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ......x.   ........ .x...... ........ ........ 
@@ -1824,7 +1824,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 4 seconds
 Proc Chance      : 100%
-Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Mistweaver Monk (137024), Lucidity (137331), Mana Tea (197908), The Emperor's Capacitor (235054), 
+Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Brewmaster Monk (137023), Mistweaver Monk (137024), Windwalker Monk (137025), Lucidity (137331), Mana Tea (197908), The Emperor's Capacitor (235054), 
 Attributes       : ........ ........ ........ ........   ..x..... ......x. ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ...x.... 
@@ -2361,7 +2361,7 @@ Range            : 50000 yards
 GCD              : 1 seconds
 Duration         : 8 seconds
 Proc Chance      : 101%
-Affecting spells : Item - Monk WoD PvP Brewmaster 4P Bonus (171445), Hot Blooded (213049), Hot Blooded (227683), Hot Blooded (227684), Hot Blooded (227685), Hot Blooded (227686), Hot Blooded (227687), 
+Affecting spells : Brewmaster Monk (137023), Item - Monk WoD PvP Brewmaster 4P Bonus (171445), Hot Blooded (213049), Hot Blooded (227683), Hot Blooded (227684), Hot Blooded (227685), Hot Blooded (227686), Hot Blooded (227687), 
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2406,7 +2406,7 @@ GCD              : 1.5 seconds
 Velocity         : 30 yards/sec
 Duration         : 1 seconds
 Cooldown         : 30 seconds
-Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Brewmaster Monk (137023), Extend Life (185158)
+Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Brewmaster Monk (137023), Windwalker Monk (137025), Extend Life (185158)
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2538,10 +2538,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #3 (id=344130)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#4 (id=357677)   : Apply Aura (6) | Unknown effect sub type (171)
+#4 (id=357677)   : Apply Aura (6) | Unknown effect sub type (129)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #5 (id=357678)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7e
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7e | Target: Self(1)
 Description      : $@spelldesc124255
 Tooltip          : $w1 damage is being staggered every $124255t1 sec.
 
@@ -2566,10 +2566,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #3 (id=344131)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#4 (id=357679)   : Apply Aura (6) | Unknown effect sub type (171)
+#4 (id=357679)   : Apply Aura (6) | Unknown effect sub type (129)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #5 (id=357680)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7e
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7e | Target: Self(1)
 Description      : $@spelldesc124255
 Tooltip          : $w1 damage is being staggered every $124255t1 sec.
 
@@ -2594,10 +2594,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #3 (id=344132)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#4 (id=357681)   : Apply Aura (6) | Unknown effect sub type (171)
+#4 (id=357681)   : Apply Aura (6) | Unknown effect sub type (129)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #5 (id=357682)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7e
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7e | Target: Self(1)
 Description      : $@spelldesc124255
 Tooltip          : $w1 damage is being staggered every $124255t1 sec.
 
@@ -3111,7 +3111,7 @@ Class            : Monk
 School           : Nature
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Enveloping Mist (124682), Brewmaster Monk (137023), Storm, Earth, and Fire (137639), Extend Life (185158)
+Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Enveloping Mist (124682), Brewmaster Monk (137023), Windwalker Monk (137025), Storm, Earth, and Fire (137639), Extend Life (185158)
 Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ .x...... ........ ......x. 
                  : .......x .......x ........ ........   ...x.... .......x .xx..... ........ 
@@ -3174,7 +3174,7 @@ Class            : Monk
 School           : Nature
 Spell Level      : 1
 Range            : 50000 yards
-Affecting spells : Brewmaster Monk (137023)
+Affecting spells : Brewmaster Monk (137023), Windwalker Monk (137025)
 Attributes       : ........ ...x.... x......x ...x....   .....x.x ..x..... ........ ....x... 
                  : ........ ........ ...x.... ........   ........ ........ ....x... ..x...x. 
                  : ........ ........ ...xx... ........   .....x.. ........ ...x.... ..x..... 
@@ -3196,7 +3196,7 @@ Spell Level      : 1
 Range            : 50000 yards
 Velocity         : 20 yards/sec
 Duration         : 0.1 seconds
-Affecting spells : Brewmaster Monk (137023)
+Affecting spells : Brewmaster Monk (137023), Windwalker Monk (137025)
 Attributes       : ........ ........ ..x....x x..x....   .....x.x ........ ........ ....x... 
                  : ..x..... ......x. ...x.... ......x.   ........ .x...... ........ ......x. 
                  : .......x .......x ...x.... ........   ...x.... ........ .xxx.... ........ 
@@ -3290,30 +3290,35 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179707)   : Apply Aura (6) | Unknown effect sub type (416)
+#1 (id=179707)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 9 | Scaled Value: 9 | Target: Self(1)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Breath of Fire (115181), Rushing Jade Wind (116847), Keg Smash (121253), Chi Burst (123986), Chi Burst (130654), Chi Wave (132466), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Refreshing Jade Wind (196725), Song of Chi-Ji (198898), Blackout Strike (205523), Dragonfire Brew (227681), Blackout Kick (228649)
+                   Hotfixed: Base Value (4 -> 9)
+#2 (id=191108)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
+                   Base Value: 9 | Scaled Value: 9 | Misc Value: 22 | Target: Self(1)
+                   Affected Spells: Crackling Jade Lightning (117952), Breath of Fire (123725), Eye of the Tiger (196608)
+                   Hotfixed: Base Value (4 -> 9)
+#3 (id=191109)   : Apply Aura (6) | Unknown effect sub type (416)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
                    Affected Spells: Blackout Kick (100784), Keg Smash (121253), Blackout Strike (205523), Blackout Kick (228649)
-#2 (id=191108)   : Apply Aura (6) | Unknown effect sub type (457)
+#4 (id=191110)   : Apply Aura (6) | Unknown effect sub type (457)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1562 | Target: Self(1)
-#3 (id=191109)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+#5 (id=191111)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: -44 | Scaled Value: -44 | Target: Self(1)
                    Affected Spells: Rushing Jade Wind (116847), Rushing Jade Wind (148187), Refreshing Jade Wind (196725)
-#4 (id=191110)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+#6 (id=260837)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: -10 | Scaled Value: -10 | Target: Self(1)
                    Affected Spells: Tiger Palm (100780), Chi Burst (123986), Chi Burst (130654), Chi Wave (132466), Chi Wave (132467), Chi Burst (148135), Song of Chi-Ji (198898)
-#5 (id=191111)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
+#7 (id=260838)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Eye of the Tiger (196608)
-#6 (id=260837)   : Apply Aura (6) | Modify Base Resistance (142)
+#8 (id=260839)   : Apply Aura (6) | Modify Base Resistance (142)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 1 | Target: Self(1)
-#7 (id=260838)   : Apply Aura (6) | Unknown effect sub type (218)
+#9 (id=260840)   : Apply Aura (6) | Unknown effect sub type (218)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf8 | Target: Self(1)
-#8 (id=260839)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#9 (id=260840)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#10 (id=260841)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#10 (id=260841)   : Apply Aura (6) | Unknown effect sub type (218)
+                   Base Value: -40 | Scaled Value: -40 | Misc Value: 3 | Misc Value 2: 0x114 | Target: Self(1)
+                   Hotfixed: Sub Type (4 -> 218), Base Value (0 -> -40), Misc Value (0 -> 3), Misc Value 2 (0 -> 276)
 #11 (id=260842)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #12 (id=260843)   : Apply Aura (6) | Dummy (4)
@@ -3324,6 +3329,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #15 (id=260846)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#16 (id=362030)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+                   Hotfixed: NEW EFFECT
 
 Name             : Mistweaver Monk (id=137024) [Spell Family (53), Passive, Hidden] 
 Class            : Mistweaver Monk
@@ -3413,20 +3421,26 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179709)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
+#1 (id=179709)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 8 | Scaled Value: 8 | Target: Self(1)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Rising Sun Kick (107428), Rushing Jade Wind (116847), Fists of Fury (117418), Chi Burst (123986), Chi Burst (130654), Chi Wave (132466), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (152175), Rising Sun Kick (185099), Refreshing Jade Wind (196725), Song of Chi-Ji (198898), Strike of the Windlord (205320), Blackout Strike (205523), Blackout Kick (228649)
+                   Hotfixed: Base Value (4 -> 8)
+#2 (id=191100)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
+                   Base Value: 8 | Scaled Value: 8 | Misc Value: 22 | Target: Self(1)
+                   Affected Spells: Crackling Jade Lightning (117952), Eye of the Tiger (196608)
+                   Hotfixed: Base Value (4 -> 8)
+#3 (id=191101)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 11 | Target: Self(1)
                    Affected Spells: Blackout Kick (100784), Blackout Strike (205523), Blackout Kick (228649)
-#2 (id=191100)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
+#4 (id=191102)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 12 | Target: Self(1)
                    Affected Spells: Tiger Palm (100780)
-#3 (id=191101)   : Apply Aura (6) | Unknown effect sub type (218)
+#5 (id=191103)   : Apply Aura (6) | Unknown effect sub type (218)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf7 | Target: Self(1)
-#4 (id=191102)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#5 (id=191103)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#6 (id=260817)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#6 (id=260817)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 8 | Scaled Value: 8 | Target: Self(1)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Rising Sun Kick (107428), Rising Sun Kick (185099), Blackout Strike (205523), Blackout Kick (228649)
+                   Hotfixed: Sub Type (4 -> 108), Base Value (0 -> 8), Affects Spells
 #7 (id=260818)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #8 (id=260819)   : Apply Aura (6) | Dummy (4)
@@ -3523,7 +3537,7 @@ Class            : Monk
 School           : Nature
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Brewmaster Monk (137023), Extend Life (185158)
+Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Brewmaster Monk (137023), Windwalker Monk (137025), Extend Life (185158)
 Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ .x...... ........ ......x. 
                  : .......x .......x ........ ........   ...x.... .......x .xx..... ........ 
@@ -3539,7 +3553,7 @@ Description      : $@spelldesc123986
 Name             : Rushing Jade Wind (id=148187) [Spell Family (53)] 
 Class            : Monk
 School           : Physical
-Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Monk (137022), Brewmaster Monk (137023), Mistweaver Monk (137024), Lucidity (137331), Serenity (152173), Mana Tea (197908)
+Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Monk (137022), Brewmaster Monk (137023), Mistweaver Monk (137024), Windwalker Monk (137025), Lucidity (137331), Serenity (152173), Mana Tea (197908)
 Triggered by     : Rushing Jade Wind (116847)
 Attributes       : ....x... ........ ..x..... ...x....   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ .x...... ........ ........ 
@@ -3589,7 +3603,7 @@ School           : Physical
 GCD              : 1.5 seconds
 Duration         : 1 seconds
 Cooldown         : 24 seconds
-Affecting spells : Monk (137022)
+Affecting spells : Monk (137022), Windwalker Monk (137025)
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -3905,7 +3919,7 @@ Class            : Monk
 School           : Physical
 Spell Level      : 56
 Range            : 5 yards
-Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Monk (137022), Mistweaver Monk (137024), Serenity (152173), Rising Winds (195263), Mana Tea (197908), 
+Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Monk (137022), Mistweaver Monk (137024), Windwalker Monk (137025), Serenity (152173), Rising Winds (195263), Mana Tea (197908), 
 Triggered by     : Rising Sun Kick (107428)
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4154,7 +4168,7 @@ Class            : Monk
 School           : Nature
 Range            : 100 yards
 Duration         : 8 seconds
-Affecting spells : Brewmaster Monk (137023)
+Affecting spells : Brewmaster Monk (137023), Windwalker Monk (137025)
 Triggered by     : Eye of the Tiger (196607)
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4210,7 +4224,7 @@ Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 6 seconds
-Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Monk (137022), Brewmaster Monk (137023), Mistweaver Monk (137024), Lucidity (137331), Serenity (152173), Mana Tea (197908)
+Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Monk (137022), Brewmaster Monk (137023), Mistweaver Monk (137024), Windwalker Monk (137025), Lucidity (137331), Serenity (152173), Mana Tea (197908)
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -4671,7 +4685,7 @@ Cast Time        : 1.8 seconds
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 15 seconds
-Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Brewmaster Monk (137023), Extend Life (185158)
+Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Brewmaster Monk (137023), Windwalker Monk (137025), Extend Life (185158)
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4774,7 +4788,7 @@ Proc Chance      : 101%
 Artifact Power   : Id: 831, Max Rank: 1
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, AOE Hostile Spell, Hostile Spell
-Affecting spells : Serenity (152173), 
+Affecting spells : Windwalker Monk (137025), Serenity (152173), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5194,6 +5208,23 @@ Effects          :
 #2 (id=331356)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 12 yards | Target: Unknown(129)
 Description      : $@spelldesc205320
+
+Name             : Stomp (id=227291) [Spell Family (53)] 
+Class            : Monk
+School           : Physical
+Spell Level      : 1
+GCD              : 1 seconds
+Cooldown         : 5 seconds
+Attributes       : ....x... ........ x....... .....x..   ........ .x...... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=341557)   : School Damage: physical (2)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom(18) -> AOE enemy (instant)(16)
+Description      : Stomps the ground, dealing $s1 Physical damage to all nearby enemies.
 
 Name             : Face Palm (id=227679) [Spell Family (53), Passive] 
 Class            : Monk

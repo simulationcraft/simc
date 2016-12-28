@@ -31,8 +31,8 @@ actions+=/berserking,if=buff.pillar_of_frost.up
 actions+=/use_item,slot=finger2
 actions+=/use_item,slot=trinket1
 actions+=/potion,name=old_war
-actions+=/sindragosas_fury,if=buff.pillar_of_frost.up
-actions+=/obliteration
+actions+=/sindragosas_fury,if=buff.pillar_of_frost.up&(buff.unholy_strength.up|(buff.pillar_of_frost.remains<3&target.time_to_die<60))&debuff.razorice.stack==5&!buff.obliteration.up
+actions+=/obliteration,if=!talent.frozen_pulse.enabled|(rune<2&runic_power<28)
 actions+=/breath_of_sindragosa,if=runic_power>=50
 actions+=/run_action_list,name=bos,if=dot.breath_of_sindragosa.ticking
 actions+=/call_action_list,name=shatter,if=talent.shattering_strikes.enabled
@@ -57,8 +57,9 @@ actions.core+=/remorseless_winter,if=talent.frozen_pulse.enabled
 
 actions.generic=frost_strike,if=buff.icy_talons.remains<1.5&talent.icy_talons.enabled
 actions.generic+=/howling_blast,target_if=!dot.frost_fever.ticking
+actions.generic+=/obliterate,if=equipped.132366&talent.frozen_pulse.enabled&set_bonus.tier19_2pc=1
 actions.generic+=/howling_blast,if=buff.rime.react
-actions.generic+=/frost_strike,if=runic_power>=80
+actions.generic+=/frost_strike,if=runic_power.deficit<=10
 actions.generic+=/call_action_list,name=core
 actions.generic+=/horn_of_winter,if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains>15
 actions.generic+=/horn_of_winter,if=!talent.breath_of_sindragosa.enabled
@@ -102,11 +103,11 @@ off_hand=blades_of_the_fallen_prince,id=128293,ilevel=870,enchant=rune_of_the_fa
 
 # Gear Summary
 # gear_ilvl=843.75
-# gear_strength=9960
-# gear_stamina=17629
-# gear_crit_rating=7427
-# gear_haste_rating=5600
-# gear_mastery_rating=2677
-# gear_versatility_rating=1952
+# gear_strength=10445
+# gear_stamina=18510
+# gear_crit_rating=7968
+# gear_haste_rating=5977
+# gear_mastery_rating=2955
+# gear_versatility_rating=2165
 # gear_armor=3965
 # set_bonus=tier19p_plate_2pc=1

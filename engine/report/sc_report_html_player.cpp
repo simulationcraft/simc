@@ -2045,7 +2045,7 @@ void print_html_player_action_priority_list( report::sc_html_stream& os,
 
   // Sample Sequences
 
-  if ( !p.collected_data.action_sequence.empty() )
+  if ( !p.collected_data.action_sequence.empty() && !p.is_enemy()  )
   {
     std::vector<std::string> targets;
 

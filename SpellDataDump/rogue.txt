@@ -1,4 +1,4 @@
-SimulationCraft 710-03 for World of Warcraft 7.1.0 PTR (wow build 22995, git build 2b2fc10)
+SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23244, git build 2679573)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
@@ -1093,7 +1093,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points | Target: Self(1)
 #4 (id=134070)   : Apply Aura (6) | Unknown effect sub type (271)
                    Base Value: 25 | Scaled Value: 25 | Target: Enemy(6)
-                   Affected Spells: Garrote (703), Rupture (1943), Internal Bleeding (154953), Mutilated Flesh (211672)
+                   Affected Spells: Garrote (703), Rupture (1943), Internal Bleeding (154953)
 #5 (id=334438)   : Apply Aura (6) | Periodic Dummy: every 20 seconds (226)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
                    Affected Spells: Garrote (703), Rupture (1943), Internal Bleeding (154953)
@@ -1979,7 +1979,7 @@ Attributes       : ........ ........ ........ ........   .....x.. ..x..... .....
 Effects          :
 #1 (id=68390)    : Apply Aura (6) | Unknown effect sub type (271)
                    Base Value: 30 | Scaled Value: 30 | Target: Enemy(6)
-                   Affected Spells: Backstab (53), Kidney Shot (408), Garrote (703), Sinister Strike (1752), Kick (1766), Gouge (1776), Stealth (1784), Cheap Shot (1833), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Sprint (2983), Crippling Poison (3408), Crippling Poison (3409), Slice and Dice (5171), Evasion (5277), Mutilate (5374), Sap (6770), Ambush (8676), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Hemorrhage (16511), Mutilate Off-Hand (27576), Spore Cloud (32643), Envenom (32645), Fan of Knives (51723), Deadly Poison (113780), Shuriken Toss (114014), Shadow Blade (121473), Shadow Blade Off-hand (121474), Prey on the Weak (131511), Internal Bleeding (154953), Backstab (173458), Poisoned Knife (185565), Kingsbane (192759), Kingsbane (192760), Alacrity (193538), Eviscerate (196819), Finality: Eviscerate (197393), Shuriken Storm (197835), Agonizing Poison (200803), Mutilated Flesh (211672), Goremaw's Bite (220901), Kingsbane (222062)
+                   Affected Spells: Backstab (53), Kidney Shot (408), Garrote (703), Sinister Strike (1752), Kick (1766), Gouge (1776), Stealth (1784), Cheap Shot (1833), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Sprint (2983), Crippling Poison (3408), Crippling Poison (3409), Slice and Dice (5171), Evasion (5277), Mutilate (5374), Sap (6770), Ambush (8676), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Hemorrhage (16511), Mutilate Off-Hand (27576), Spore Cloud (32643), Envenom (32645), Fan of Knives (51723), Deadly Poison (113780), Shuriken Toss (114014), Shadow Blade (121473), Shadow Blade Off-hand (121474), Prey on the Weak (131511), Internal Bleeding (154953), Backstab (173458), Poisoned Knife (185565), Kingsbane (192759), Kingsbane (192760), Alacrity (193538), Eviscerate (196819), Finality: Eviscerate (197393), Shuriken Storm (197835), Agonizing Poison (200803), Goremaw's Bite (220901), Kingsbane (222062)
 #2 (id=68391)    : Apply Aura (6) | Unknown effect sub type (343)
                    Base Value: 30 | Scaled Value: 30 | Target: Enemy(6)
 #3 (id=87043)    : Apply Aura (6) | Stalked (68)
@@ -2551,11 +2551,13 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179719)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 7 | Scaled Value: 7 | Target: Self(1)
+                   Base Value: 9 | Scaled Value: 9 | Target: Self(1)
                    Affected Spells: Backstab (53), Shuriken Toss (114014), Death from Above (152150), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Eviscerate (196819), Finality: Eviscerate (197393), Shuriken Storm (197835), Gloomblade (200758)
+                   Hotfixed: Base Value (12 -> 9)
 #2 (id=191060)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 7 | Scaled Value: 7 | Misc Value: 22 | Target: Self(1)
+                   Base Value: 9 | Scaled Value: 9 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Weaponmaster (193536), Nightblade (195452), Finality: Nightblade (197395)
+                   Hotfixed: Base Value (12 -> 9)
 #3 (id=191061)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
                    Base Value: -38 | Scaled Value: -38 | Misc Value: 12 | Target: Self(1)
                    Affected Spells: Nightstalker (14062)
@@ -2601,8 +2603,9 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179720)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+                   Base Value: 16 | Scaled Value: 16 | Target: Self(1)
                    Affected Spells: Run Through (2098), Ambush (8676), Killing Spree (51690), Killing Spree (57841), Killing Spree Off-Hand (57842), Death from Above (152150), Pistol Shot (185763), Cannonball Barrage (185767), Cannonball Barrage (185779), Saber Slash (193315), Ghostly Strike (196937), Between the Eyes (199804), Blunderbuss (202895)
+                   Hotfixed: Base Value (7 -> 16)
 #2 (id=191056)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #3 (id=191057)   : Apply Aura (6) | Dummy (4)
@@ -2650,7 +2653,7 @@ Effects          :
                    Base Value: 7 | Scaled Value: 7 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Garrote (703), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Venomhide Poison (14795), Spore Cloud (32643), Deadly Poison (113780), Kingsbane (192759), Kingsbane (192760), Agonizing Poison (200803), Kingsbane (222062)
 #3 (id=191053)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 3 | Target: Self(1)
+                   Base Value: 13 | Scaled Value: 13 | Misc Value: 3 | Target: Self(1)
                    Affected Spells: Insignia of Ravenholdt (209041)
 #4 (id=191054)   : Apply Aura (6) | Add Flat Modifier: Spell Tick Time (107)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 8 | Target: Self(1)

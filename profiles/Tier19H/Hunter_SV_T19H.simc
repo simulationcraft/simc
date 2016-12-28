@@ -26,8 +26,8 @@ actions.precombat+=/harpoon
 # Executed every time the actor is available.
 actions=auto_attack
 actions+=/arcane_torrent,if=focus.deficit>=30
-actions+=/blood_fury
 actions+=/berserking
+actions+=/blood_fury
 actions+=/use_item,name=tirathons_betrayal
 actions+=/potion,name=old_war,if=buff.aspect_of_the_eagle.remains
 actions+=/fury_of_the_eagle,if=(buff.mongoose_fury.up&buff.mongoose_fury.remains<=gcd)|target.time_to_die<=execute_time
@@ -68,12 +68,12 @@ main_hand=talonclaw,id=128808,ilevel=894,gem_id=137550/137408/137350
 
 # Gear Summary
 # gear_ilvl=864.93
-# gear_agility=15817
-# gear_stamina=22317
-# gear_crit_rating=7206
-# gear_haste_rating=2294
-# gear_mastery_rating=1673
-# gear_versatility_rating=6302
+# gear_agility=16584
+# gear_stamina=23429
+# gear_crit_rating=7850
+# gear_haste_rating=2412
+# gear_mastery_rating=1756
+# gear_versatility_rating=7104
 # gear_armor=2630
 # set_bonus=tier19p_mail_2pc=1
 summon_pet=carrion_bird

@@ -1,19 +1,25 @@
-# T19M
-# Tier 19 Mythic
-# * Ilvl Cap: 885
-# * Artifact Rank Cap: 34
-# * 3 Relics with max ilevel of 885
+# T19M_NH
+# Tier 19 Mythic Nighthold
+# * Ilvl Cap: 905
+# * Artifact Rank Cap: 54
+# * 3 Relics with max ilevel of 905
 # * No Legendaries (see Raid_T19x_Legendary.simc)
-# * No items from Nighthold (including set bonuses) except in T19M_NH
 # * No items from World Bosses / World Quests / BoEs
 # * Mythic+ gear is permitted up to the Mythic+ item level cap
-# * No items from Violet Hold (unless 840 ilevel)
 # * No Random Gems (ie. Bonus RNG Gem Slots)
 # * No Tertiary Stats
 # * No Ranked Gear (ie. Warforged/Titanforged)
 # * No Hardcoded Stats (generally if an item gives wrong stats: either bonus_id is wrong, either the item no longer exists in-game)
 # * It is recommended to use enchant name (ex : ",enchant=binding_of_mastery") rather than id/hardcoded stats.
 
+# Death Knight
+generate_Death_Knight_T19M_NH.simc
 
 # Rogue
 generate_Rogue_T19M_NH.simc
+
+# Mage
+generate_Mage_T19M_NH.simc
+
+# Monk
+generate_Monk_T19M_NH.simc

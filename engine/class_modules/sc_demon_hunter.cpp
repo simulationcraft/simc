@@ -591,7 +591,7 @@ public:
     soul_fragment_e = SOUL_FRAGMENT_ALL ) const;
   unsigned get_total_soul_fragments(
     soul_fragment_e = SOUL_FRAGMENT_ALL ) const;
-  void spawn_soul_fragment( soul_fragment_e, unsigned = 1 );
+  void spawn_soul_fragment( soul_fragment_e, unsigned = 1 , bool = false);
   void invalidate_damage_calcs();
   double get_target_reach() const
   {
@@ -1425,6 +1425,15 @@ struct consume_soul_t : public demon_hunter_heal_t
       execute_action = new demonic_appetite_t( p );
     }
   }
+
+  void execute() override
+  {
+	  demon_hunter_heal_t::execute();
+	  
+	  if (p()->buff.soul_barrier->up()){
+		  p()->buff.soul_barrier->consume(-p()->buff.soul_barrier->data().effectN(2).ap_coeff() * p()->cache.attack_power() * (1+p()->cache.heal_versatility()));
+	  }
+  }
 };
 
 // Charred Warblades ========================================================
@@ -1488,7 +1497,7 @@ struct soul_barrier_t : public demon_hunter_action_t<absorb_t>
   {
     demon_hunter_action_t<absorb_t>::execute();
 
-    p() -> consume_soul_fragments( SOUL_FRAGMENT_ALL, false );
+    p() -> consume_soul_fragments();
   }
 
   void impact( action_state_t* s ) override
@@ -1583,15 +1592,6 @@ struct blur_t : public demon_hunter_spell_t
     demon_hunter_spell_t::execute();
 
     p() -> buff.blur -> trigger();
-
-    if ( p() -> artifact.demon_speed.rank() )
-    {
-		if (maybe_ptr(p()->dbc.ptr)){
-			return;
-		}
-
-      p() -> cooldown.fel_rush -> reset( false, true );
-    }
   }
 };
 
@@ -1800,31 +1800,27 @@ struct eye_beam_t : public demon_hunter_spell_t
 
     if ( p() -> talent.demonic -> ok() )
     {
-		timespan_t demonicTime;
-		if (maybe_ptr(p()->dbc.ptr)){
-			demonicTime = timespan_t::from_seconds(8);
-			if (p()->buff.metamorphosis->up()){
-				p()->buff.metamorphosis->extend_duration(p(), demonicTime);
-				return;
-			}
-		}
-		else{
-			demonicTime = timespan_t::from_seconds(5);
-		}
+      timespan_t demonicTime;
+      demonicTime = timespan_t::from_seconds( 8 );
+      if ( p()->buff.metamorphosis->up() )
+      {
+        p()->buff.metamorphosis->extend_duration( p(), demonicTime );
+        return;
+      }
 
       /* Buff starts when the channel does and lasts for 5 seconds +
       base channel duration. No duration data for demonic. */
       p() -> buff.metamorphosis -> trigger(
         1, p() -> buff.metamorphosis -> default_value, -1.0,
-		demonicTime + dot_duration);
+        demonicTime + dot_duration );
     }
 
     // If Metamorphosis has less than channel s remaining, it gets extended so the whole Eye Beam happens during Meta.
     // TOCHECK: Base channel duration or hasted channel duration?
-    if ( p() -> buff.metamorphosis -> remains_lt( dot_duration ) )
+    if (p() -> buff.metamorphosis -> up() &&  p() -> buff.metamorphosis -> remains_lt( dot_duration ) )
     {
       p() -> buff.metamorphosis -> trigger( 1, p() -> buff.metamorphosis -> current_value, -1.0,
-        dot_duration );
+                                            dot_duration );
     }
   }
 };
@@ -2071,7 +2067,7 @@ struct fiery_brand_t : public demon_hunter_spell_t
   struct fiery_brand_dot_t : public demon_hunter_spell_t
   {
     fiery_brand_dot_t( demon_hunter_t* p )
-      : demon_hunter_spell_t( "fiery_brand_dot", p, p -> find_spell( 204022 ) )
+      : demon_hunter_spell_t( "fiery_brand_dot", p, p -> find_spell( 207771 ) )
     {
       background = dual = true;
       hasted_ticks = may_crit = false;
@@ -2082,13 +2078,12 @@ struct fiery_brand_t : public demon_hunter_spell_t
 
       if ( p -> talent.burning_alive -> ok() )
       {
-        // Not in spell data.
-        attack_power_mod.tick = 1.0;
         // Spread radius used for Burning Alive.
         radius = p -> find_spell( 207760 ) -> effectN( 1 ).radius();
       }
       else
       {
+        attack_power_mod.tick = 0.0;
         /* If Burning alive isn't talented this isn't really a DoT, so let's
         turn off DoT callbacks and minimize the number of events generated.*/
         base_tick_time = dot_duration;
@@ -2185,7 +2180,8 @@ struct fiery_brand_t : public demon_hunter_spell_t
 
   fiery_brand_t( demon_hunter_t* p, const std::string& options_str )
     : demon_hunter_spell_t( "fiery_brand", p,
-      p -> find_specialization_spell( "Fiery Brand" ), options_str )
+      p -> find_specialization_spell( "Fiery Brand" ), options_str ),
+    dot( nullptr )
   {
     use_off_gcd = true;
 
@@ -2362,7 +2358,7 @@ struct immolation_aura_t : public demon_hunter_spell_t
         // FIXME: placeholder proc chance, lack of info on real proc chance.
         if ( initial && p() -> talent.fallout -> ok() && rng().roll( 0.60 ) )
         {
-          p() -> spawn_soul_fragment( SOUL_FRAGMENT_LESSER );
+          p() -> spawn_soul_fragment( SOUL_FRAGMENT_LESSER, 1, p() -> bugs );
         }
 
         if ( p() -> legendary.kirel_narak < timespan_t::zero() )
@@ -3340,8 +3336,7 @@ struct chaos_strike_state_t : public action_state_t
 
 struct chaos_strike_base_t : public demon_hunter_attack_t
 {
-  struct chaos_strike_damage_t : public demon_hunter_attack_t
-  {
+  struct chaos_strike_damage_t: public demon_hunter_attack_t {
     timespan_t delay;
     chaos_strike_base_t* parent;
     bool may_refund;
@@ -3349,21 +3344,16 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
     chaos_strike_damage_t( demon_hunter_t* p, const spelleffect_data_t& eff,
                            chaos_strike_base_t* a )
       : demon_hunter_attack_t( "chaos_strike_dmg", p, eff.trigger() ),
-        delay( timespan_t::from_millis( eff.misc_value1() ) ),
-        parent( a )
+      delay( timespan_t::from_millis( eff.misc_value1() ) ),
+      parent( a )
     {
       assert( eff.type() == E_TRIGGER_SPELL );
 
       dual = background = true;
-	  aoe = data().effectN(1).chain_target();
-
-	  if (!maybe_ptr(p->dbc.ptr))
-	  {
-		  aoe += p->talent.chaos_cleave->effectN(1).base_value();
-	  }
+      aoe = data().effectN( 1 ).chain_target();
 
       chain_multiplier = data().effectN( 1 ).chain_multiplier();
-      may_refund       = weapon == &( p -> off_hand_weapon );
+      may_refund = weapon == &( p -> off_hand_weapon );
 
       // Do not put crit chance modifiers here!
       base_multiplier *= 1.0 + p -> artifact.warglaives_of_chaos.percent();
@@ -3387,7 +3377,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
       /* Use the crit roll from our custom state instead of the roll done in
          attack_t::calculate_result. */
       return debug_cast<chaos_strike_state_t*>( s ) -> is_critical ? RESULT_CRIT
-             : RESULT_HIT;
+        : RESULT_HIT;
     }
 
     void schedule_execute( action_state_t* s = nullptr ) override
@@ -3402,22 +3392,22 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
       if ( weapon == &( p() -> off_hand_weapon ) && parent -> roll_refund( cs ) )
       {
         p() -> resource_gain( RESOURCE_FURY,
-                            parent -> composite_energize_amount( s ),
-                            parent -> gain );
+                              parent -> composite_energize_amount( s ),
+                              parent -> gain );
       }
     }
 
-	void impact(action_state_t* state) override
-	{
-		demon_hunter_attack_t::impact(state);
+    void impact( action_state_t* state ) override
+    {
+      demon_hunter_attack_t::impact( state );
 
-		if (p()->talent.chaos_cleave->ok() && maybe_ptr(p()->dbc.ptr))
-		{
-			p()->active.chaos_cleave->base_dd_min = state->result_total;
-			p()->active.chaos_cleave->base_dd_max = state->result_total;
-			p()->active.chaos_cleave->schedule_execute();
-		}
-	}
+      if ( p()->talent.chaos_cleave->ok() )
+      {
+        p()->active.chaos_cleave->base_dd_min = state->result_total;
+        p()->active.chaos_cleave->base_dd_max = state->result_total;
+        p()->active.chaos_cleave->schedule_execute();
+      }
+    }
   };
 
   struct chaos_strike_event_t : public event_t
@@ -3463,16 +3453,11 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
   {
     energize_amount =
       p -> spec.chaos_strike_refund -> effectN( 1 ).resource( RESOURCE_FURY );
-	aoe = s->effectN(1).chain_target();
-
-	if (!maybe_ptr(p->dbc.ptr))
-	{
-		aoe += p->talent.chaos_cleave->effectN(1).base_value();
-	}
+    aoe = s->effectN( 1 ).chain_target();
 
 
-    // Don't put damage modifiers here, they should go in chaos_strike_damage_t.
-    // Crit chance modifiers need to be in here, not chaos_strike_damage_t.
+      // Don't put damage modifiers here, they should go in chaos_strike_damage_t.
+      // Crit chance modifiers need to be in here, not chaos_strike_damage_t.
     base_crit +=
       p -> sets.set( DEMON_HUNTER_HAVOC, T19, B4 ) -> effectN( 1 ).percent();
   }
@@ -4758,7 +4743,7 @@ struct soul_barrier_t : public demon_hunter_buff_t<absorb_buff_t>
 
   double minimum_absorb() const
   {
-    return data().effectN( 3 ).ap_coeff() * p().cache.attack_power();
+    return data().effectN( 3 ).ap_coeff() * p().cache.attack_power() * (1+p().cache.heal_versatility());
   }
 
   // Custom consume implementation to allow minimum absorb amount.
@@ -4766,24 +4751,33 @@ struct soul_barrier_t : public demon_hunter_buff_t<absorb_buff_t>
   {
     // Limit the consumption to the current size of the buff.
     amount = std::min( amount, current_value );
+	if (amount > 0)
+	{
+		if (absorb_source)
+		{
+			absorb_source->add_result(amount, 0, ABSORB, RESULT_HIT,
+				BLOCK_RESULT_UNBLOCKED, player);
+		}
 
-    if ( absorb_source )
-    {
-      absorb_source -> add_result( amount, 0, ABSORB, RESULT_HIT,
-                                 BLOCK_RESULT_UNBLOCKED, player );
-    }
-
-    if ( absorb_gain )
-    {
-      absorb_gain -> add( RESOURCE_HEALTH, amount, 0 );
-    }
-
+		if (absorb_gain)
+		{
+			absorb_gain->add(RESOURCE_HEALTH, amount, 0);
+		}
+	}
+    
     current_value = std::max( current_value - amount, minimum_absorb() );
 
     if ( sim -> debug )
     {
-      sim -> out_debug.printf( "%s %s absorbs %.2f (remaining: %.2f)",
-                             player -> name(), name(), amount, current_value );
+		if (amount > 0)
+		{
+			sim->out_debug.printf("%s %s absorbs %.2f (remaining: %.2f)",
+				player->name(), name(), amount, current_value);
+		}
+		else{
+			sim->out_debug.printf("%s %s gains %.2f (remaining: %.2f)",
+				player->name(), name(), std::abs(amount), current_value);
+		}
     }
 
     absorb_used( amount );
@@ -5335,7 +5329,6 @@ void demon_hunter_t::create_buffs()
   buff.nemesis = buff_creator_t( this, "nemesis_buff", find_spell( 208605 ) )
                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   
-  if (maybe_ptr(dbc.ptr)){
 	  buff.prepared =
 		  buff_creator_t(this, "prepared",
 		  talent.prepared->effectN(1).trigger())
@@ -5344,21 +5337,9 @@ void demon_hunter_t::create_buffs()
 		  .default_value(talent.prepared->effectN(1).trigger()->effectN(1).resource( RESOURCE_FURY) *
 				(1.0 +sets.set(DEMON_HUNTER_HAVOC, T19, B2)->effectN(1).percent()) / 
 				(talent.prepared->effectN(1).trigger()->duration().total_millis() / 100))
-		  .tick_callback([this](buff_t* b, int, const timespan_t&) {
-		  resource_gain(RESOURCE_FURY, b->check_value(), gain.prepared);
-	  });
-  }
-  else{
-	  buff.prepared =
-		  buff_creator_t(this, "prepared",
-		  talent.prepared->effectN(1).trigger())
-		  .trigger_spell(talent.prepared)
-		  .default_value(talent.prepared->effectN(1).trigger()->effectN(1).resource(RESOURCE_FURY) *
-			(1.0 + sets.set(DEMON_HUNTER_HAVOC, T19, B2)->effectN(1).percent()))
-		  .tick_callback([this](buff_t* b, int, const timespan_t&) {
-		  resource_gain(RESOURCE_FURY, b->check_value(), gain.prepared);
-	  });
-  }
+      .tick_callback( [this]( buff_t* b, int, const timespan_t& ) {
+      resource_gain( RESOURCE_FURY, b->check_value(), gain.prepared );
+    } );
   
 
   buff.rage_of_the_illidari =
@@ -6418,6 +6399,17 @@ void demon_hunter_t::apl_vengeance()
   action_priority_list_t* def = get_action_priority_list( "default" );
 
   def -> add_action( "auto_attack" );
+  def->add_action(this, "Consume Magic");
+  
+  // On-use items
+  for (const auto& item : items)
+  {
+    if (item.has_special_effect(SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE))
+    {
+      def->add_action("use_item,slot=" + std::string(item.slot_name()));
+    }
+  }
+  
   def -> add_action( this, "Fiery Brand",
     "if=buff.demon_spikes.down&buff.metamorphosis.down" );
   def -> add_action( this, "Demon Spikes", "if=charges=2|buff.demon_spikes.d"
@@ -7110,14 +7102,14 @@ unsigned demon_hunter_t::get_total_soul_fragments( soul_fragment_e type ) const
 
 // demon_hunter_t::spawn_soul_fragment ======================================
 
-void demon_hunter_t::spawn_soul_fragment( soul_fragment_e type, unsigned n )
+void demon_hunter_t::spawn_soul_fragment( soul_fragment_e type, unsigned n, bool ignores_max )
 {
   proc_t* soul_proc = type == SOUL_FRAGMENT_GREATER ? proc.soul_fragment
                       : proc.soul_fragment_lesser;
 
   for ( unsigned i = 0; i < n; i++ )
   {
-    if ( get_total_soul_fragments( type ) == MAX_SOUL_FRAGMENTS )
+    if ( get_total_soul_fragments( type ) == MAX_SOUL_FRAGMENTS && !ignores_max)
     {
       // Find and delete the oldest fragment of this type.
       std::vector<soul_fragment_t*>::iterator it;

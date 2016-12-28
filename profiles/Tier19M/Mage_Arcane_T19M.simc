@@ -3,7 +3,7 @@ level=110
 race=troll
 role=spell
 position=back
-talents=1021012
+talents=2022031
 artifact=4:139269:139259:142514:0:72:3:73:1:74:3:75:4:77:3:78:1:79:3:80:1:81:4:82:4:83:3:84:3:86:1:87:1:290:1:1169:1:1339:1
 spec=arcane
 
@@ -27,7 +27,7 @@ actions.precombat+=/arcane_blast
 actions=counterspell,if=target.debuff.casting.react
 actions+=/time_warp,if=(time=0&buff.bloodlust.down)|(buff.bloodlust.down&equipped.132410)
 actions+=/mirror_image,if=buff.arcane_power.down
-actions+=/stop_burn_phase,if=prev_gcd.evocation&burn_phase_duration>gcd.max
+actions+=/stop_burn_phase,if=prev_gcd.1.evocation&burn_phase_duration>gcd.max
 actions+=/mark_of_aluneth,if=cooldown.arcane_power.remains>20
 actions+=/call_action_list,name=build,if=buff.arcane_charge.stack<4
 actions+=/call_action_list,name=init_burn,if=buff.arcane_power.down&buff.arcane_charge.stack=4&(cooldown.mark_of_aluneth.remains=0|cooldown.mark_of_aluneth.remains>20)&(!talent.rune_of_power.enabled|(cooldown.arcane_power.remains<=action.rune_of_power.cast_time|action.rune_of_power.recharge_time<cooldown.arcane_power.remains))|target.time_to_die<45
@@ -43,11 +43,10 @@ actions.build+=/arcane_blast
 
 actions.burn=call_action_list,name=cooldowns
 actions.burn+=/arcane_missiles,if=buff.arcane_missiles.react=3
-actions.burn+=/arcane_explosion,if=buff.quickening.remains<action.arcane_blast.cast_time&talent.quickening.enabled
-actions.burn+=/presence_of_mind,if=buff.arcane_power.remains>2*gcd
 actions.burn+=/nether_tempest,if=dot.nether_tempest.remains<=2|!ticking
 actions.burn+=/arcane_blast,if=active_enemies<=1&mana.pct%10*execute_time>target.time_to_die
 actions.burn+=/arcane_explosion,if=active_enemies>1&mana.pct%10*execute_time>target.time_to_die
+actions.burn+=/presence_of_mind,if=buff.rune_of_power.remains<=2*action.arcane_blast.execute_time
 actions.burn+=/arcane_missiles,if=buff.arcane_missiles.react>1
 actions.burn+=/arcane_explosion,if=active_enemies>1&buff.arcane_power.remains>cast_time
 actions.burn+=/arcane_blast,if=buff.presence_of_mind.up|buff.arcane_power.remains>cast_time
@@ -58,7 +57,6 @@ actions.burn+=/arcane_blast
 actions.burn+=/evocation,interrupt_if=mana.pct>99
 
 actions.conserve=arcane_missiles,if=buff.arcane_missiles.react=3
-actions.conserve+=/arcane_explosion,if=buff.quickening.remains<action.arcane_blast.cast_time&talent.quickening.enabled
 actions.conserve+=/arcane_blast,if=mana.pct>99
 actions.conserve+=/nether_tempest,if=(refreshable|!ticking)
 actions.conserve+=/arcane_blast,if=buff.rhonins_assaulting_armwraps.up&equipped.132413
@@ -80,12 +78,11 @@ actions.cooldowns+=/potion,name=deadly_grace,if=buff.arcane_power.up&(buff.berse
 
 actions.init_burn=mark_of_aluneth
 actions.init_burn+=/frost_nova,if=equipped.132452
-actions.init_burn+=/nether_tempest,if=dot.nether_tempest.remains<10&(prev_gcd.mark_of_aluneth|(talent.rune_of_power.enabled&cooldown.rune_of_power.remains<gcd.max))
+actions.init_burn+=/nether_tempest,if=dot.nether_tempest.remains<10&(prev_gcd.1.mark_of_aluneth|(talent.rune_of_power.enabled&cooldown.rune_of_power.remains<gcd.max))
 actions.init_burn+=/rune_of_power
 actions.init_burn+=/start_burn_phase,if=((cooldown.evocation.remains-(2*burn_phase_duration))%2<burn_phase_duration)|cooldown.arcane_power.remains=0|target.time_to_die<55
 
 actions.rop_phase=arcane_missiles,if=buff.arcane_missiles.react=3
-actions.rop_phase+=/arcane_explosion,if=buff.quickening.remains<action.arcane_blast.cast_time&talent.quickening.enabled
 actions.rop_phase+=/nether_tempest,if=dot.nether_tempest.remains<=2|!ticking
 actions.rop_phase+=/arcane_missiles,if=buff.arcane_charge.stack=4
 actions.rop_phase+=/arcane_explosion,if=active_enemies>1
@@ -110,10 +107,10 @@ main_hand=aluneth,id=127857,gem_id=139269/139259/142514,relic_id=1806/1806/3469
 
 # Gear Summary
 # gear_ilvl=885.60
-# gear_stamina=27489
-# gear_intellect=27704
-# gear_crit_rating=6116
-# gear_haste_rating=4723
-# gear_mastery_rating=7185
-# gear_versatility_rating=2953
+# gear_stamina=28855
+# gear_intellect=29077
+# gear_crit_rating=6913
+# gear_haste_rating=5241
+# gear_mastery_rating=7715
+# gear_versatility_rating=3618
 # gear_armor=1850

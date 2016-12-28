@@ -25,15 +25,14 @@ actions.precombat+=/frostbolt
 
 # Executed every time the actor is available.
 actions=counterspell,if=target.debuff.casting.react
-actions+=/ice_lance,if=buff.fingers_of_frost.react=0&prev_gcd.flurry
+actions+=/ice_lance,if=buff.fingers_of_frost.react=0&prev_gcd.1.flurry
 actions+=/time_warp,if=(time=0&buff.bloodlust.down)|(buff.bloodlust.down&equipped.132410)
 actions+=/call_action_list,name=cooldowns
 actions+=/ice_nova,if=debuff.winters_chill.up
 actions+=/frostbolt,if=prev_off_gcd.water_jet
-actions+=/water_jet,if=prev_gcd.frostbolt&buff.fingers_of_frost.stack<(2+artifact.icy_hand.enabled)&buff.brain_freeze.react=0
+actions+=/water_jet,if=prev_gcd.1.frostbolt&buff.fingers_of_frost.stack<(2+artifact.icy_hand.enabled)&buff.brain_freeze.react=0
 actions+=/ray_of_frost,if=buff.icy_veins.up|(cooldown.icy_veins.remains>action.ray_of_frost.cooldown&buff.rune_of_power.down)
-actions+=/flurry,if=buff.brain_freeze.react&buff.fingers_of_frost.react=0&prev_gcd.frostbolt
-actions+=/frozen_touch,if=buff.fingers_of_frost.stack<=(0+artifact.icy_hand.enabled)&((cooldown.icy_veins.remains>30&talent.thermal_void.enabled)|!talent.thermal_void.enabled)
+actions+=/flurry,if=buff.brain_freeze.react&buff.fingers_of_frost.react=0&prev_gcd.1.frostbolt
 actions+=/frost_bomb,if=debuff.frost_bomb.remains<action.ice_lance.travel_time&buff.fingers_of_frost.react>0
 actions+=/ice_lance,if=buff.fingers_of_frost.react>0&cooldown.icy_veins.remains>10|buff.fingers_of_frost.react>2
 actions+=/frozen_orb
@@ -70,11 +69,11 @@ main_hand=ebonchill,id=128862,gem_id=139250/139269/139250,relic_id=1805/1805/180
 
 # Gear Summary
 # gear_ilvl=866.93
-# gear_stamina=22645
-# gear_intellect=23442
-# gear_crit_rating=6575
-# gear_haste_rating=10252
-# gear_mastery_rating=1757
-# gear_versatility_rating=986
+# gear_stamina=23774
+# gear_intellect=24598
+# gear_crit_rating=7263
+# gear_haste_rating=11380
+# gear_mastery_rating=1845
+# gear_versatility_rating=1036
 # gear_armor=1715
 # set_bonus=tier19p_cloth_2pc=1

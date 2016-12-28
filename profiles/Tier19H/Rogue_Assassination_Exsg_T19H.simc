@@ -50,7 +50,7 @@ actions.cds+=/vendetta,if=!talent.exsanguinate.enabled&(!artifact.urge_to_kill.e
 actions.cds+=/vanish,if=talent.nightstalker.enabled&combo_points>=cp_max_spend&((talent.exsanguinate.enabled&cooldown.exsanguinate.remains<1&(dot.rupture.ticking|time>10))|(!talent.exsanguinate.enabled&dot.rupture.refreshable))
 actions.cds+=/vanish,if=talent.subterfuge.enabled&dot.garrote.refreshable&((spell_targets.fan_of_knives<=3&combo_points.deficit>=1+spell_targets.fan_of_knives)|(spell_targets.fan_of_knives>=4&combo_points.deficit>=4))
 actions.cds+=/vanish,if=talent.shadow_focus.enabled&energy.time_to_max>=2&combo_points.deficit>=4
-actions.cds+=/exsanguinate,if=prev_gcd.rupture&dot.rupture.remains>4+4*cp_max_spend
+actions.cds+=/exsanguinate,if=prev_gcd.1.rupture&dot.rupture.remains>4+4*cp_max_spend
 
 # Finishers
 actions.finish=death_from_above,if=combo_points>=cp_max_spend
@@ -82,11 +82,11 @@ off_hand=the_kingslayers,id=128869
 
 # Gear Summary
 # gear_ilvl=868.63
-# gear_agility=15339
-# gear_stamina=22227
-# gear_crit_rating=11452
-# gear_haste_rating=1666
-# gear_mastery_rating=1095
-# gear_versatility_rating=4141
+# gear_agility=16090
+# gear_stamina=23337
+# gear_crit_rating=12574
+# gear_haste_rating=1931
+# gear_mastery_rating=1150
+# gear_versatility_rating=4595
 # gear_armor=2126
 # set_bonus=tier19p_leather_2pc=1

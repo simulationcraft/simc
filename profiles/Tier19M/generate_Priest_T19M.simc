@@ -29,7 +29,7 @@ neck=blackened_portalstone_necklace,id=139332,bonus_id=1806,enchant=mark_of_the_
 shoulders=mantle_of_perpetual_bloom,id=139192,bonus_id=1806
 back=drape_of_the_unworthy,id=142521,bonus_id=3469/1512,enchant=200int
 chest=robes_of_the_ancient_chronicle,id=142297
-wrists=cinch_of_cosmic_insignficance,id=139187,bonus_id=1806
+wrists=clasp_of_cosmic_insignificance,id=139187,bonus_id=1806
 hands=oiled_riggers_handwraps,id=142429,bonus_id=3469/1512
 waist=cinch_of_light,id=142411,bonus_id=3469
 legs=leggings_of_the_lower_planes,id=142413,bonus_id=3469
@@ -57,7 +57,7 @@ neck=blackened_portalstone_necklace,id=139332,bonus_id=1806,enchant=mark_of_the_
 shoulders=amice_of_the_unfurling_tempest,id=134432,bonus_id=1727/1
 back=drape_of_the_unworthy,id=142521,bonus_id=3469/1512,enchant=200int
 chest=robes_of_celestial_adornment,id=142410,bonus_id=3469
-wrists=cinch_of_cosmic_insignficance,id=139187,bonus_id=1806
+wrists=clasp_of_cosmic_insignificance,id=139187,bonus_id=1806
 hands=handwraps_of_delusional_power,id=138212,bonus_id=1806
 waist=cinch_of_light,id=142411,bonus_id=3469
 legs=leggings_of_the_lower_planes,id=142413,bonus_id=3469
@@ -68,4 +68,4 @@ trinket1=swarming_plaguehive,id=139321,bonus_id=1806
 trinket2=brinewater_slime_in_a_bottle,id=142507,bonus_id=604/3469/1512
 main_hand=xalatath_blade_of_the_black_empire,id=128827,bonus_id=740,gem_id=142512/139257/142512,relic_id=3469/1806/3469
 off_hand=secrets_of_the_void,id=133958
-save=Priest_Shadow_T19M_S2M.simc
+save=Priest_Shadow_S2M_T19M.simc

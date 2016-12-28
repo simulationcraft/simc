@@ -3,7 +3,7 @@ level=110
 race=troll
 role=spell
 position=back
-talents=3201032
+talents=3201022
 artifact=37:137549:137492:133764:0:1170:1:1171:3:1173:3:1174:3:1176:6:1177:3:1178:3:1179:2:1180:1:1181:1:1182:1:1183:1:1185:1:1354:1
 spec=demonology
 
@@ -29,9 +29,9 @@ actions.precombat+=/shadow_bolt,if=!talent.demonbolt.enabled
 
 # Executed every time the actor is available.
 actions=implosion,if=wild_imp_remaining_duration<=action.shadow_bolt.execute_time&buff.demonic_synergy.remains
-actions+=/implosion,if=prev_gcd.hand_of_guldan&wild_imp_remaining_duration<=3&buff.demonic_synergy.remains
+actions+=/implosion,if=prev_gcd.1.hand_of_guldan&wild_imp_remaining_duration<=3&buff.demonic_synergy.remains
 actions+=/implosion,if=wild_imp_count<=4&wild_imp_remaining_duration<=action.shadow_bolt.execute_time&spell_targets.implosion>1
-actions+=/implosion,if=prev_gcd.hand_of_guldan&wild_imp_remaining_duration<=4&spell_targets.implosion>2
+actions+=/implosion,if=prev_gcd.1.hand_of_guldan&wild_imp_remaining_duration<=4&spell_targets.implosion>2
 actions+=/shadowflame,if=debuff.shadowflame.stack>0&remains<action.shadow_bolt.cast_time+travel_time
 actions+=/service_pet
 actions+=/summon_doomguard,if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<3&(target.time_to_die>180|target.health.pct<=20|target.time_to_die<30)
@@ -40,19 +40,19 @@ actions+=/summon_doomguard,if=talent.grimoire_of_supremacy.enabled&spell_targets
 actions+=/summon_infernal,if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>=3&equipped.132379&!cooldown.sindorei_spite_icd.remains
 actions+=/call_dreadstalkers,if=!talent.summon_darkglare.enabled&(spell_targets.implosion<3|!talent.implosion.enabled)
 actions+=/hand_of_guldan,if=soul_shard>=4&!talent.summon_darkglare.enabled
-actions+=/summon_darkglare,if=prev_gcd.hand_of_guldan
-actions+=/summon_darkglare,if=prev_gcd.call_dreadstalkers
+actions+=/summon_darkglare,if=prev_gcd.1.hand_of_guldan
+actions+=/summon_darkglare,if=prev_gcd.1.call_dreadstalkers
 actions+=/summon_darkglare,if=cooldown.call_dreadstalkers.remains>5&soul_shard<3
 actions+=/summon_darkglare,if=cooldown.call_dreadstalkers.remains<=action.summon_darkglare.cast_time&soul_shard>=3
 actions+=/summon_darkglare,if=cooldown.call_dreadstalkers.remains<=action.summon_darkglare.cast_time&soul_shard>=1&buff.demonic_calling.react
 actions+=/call_dreadstalkers,if=talent.summon_darkglare.enabled&(spell_targets.implosion<3|!talent.implosion.enabled)&cooldown.summon_darkglare.remains>2
-actions+=/call_dreadstalkers,if=talent.summon_darkglare.enabled&(spell_targets.implosion<3|!talent.implosion.enabled)&prev_gcd.summon_darkglare
+actions+=/call_dreadstalkers,if=talent.summon_darkglare.enabled&(spell_targets.implosion<3|!talent.implosion.enabled)&prev_gcd.1.summon_darkglare
 actions+=/call_dreadstalkers,if=talent.summon_darkglare.enabled&(spell_targets.implosion<3|!talent.implosion.enabled)&cooldown.summon_darkglare.remains<=action.call_dreadstalkers.cast_time&soul_shard>=3
 actions+=/call_dreadstalkers,if=talent.summon_darkglare.enabled&(spell_targets.implosion<3|!talent.implosion.enabled)&cooldown.summon_darkglare.remains<=action.call_dreadstalkers.cast_time&soul_shard>=1&buff.demonic_calling.react
-actions+=/hand_of_guldan,if=soul_shard>=3&prev_gcd.call_dreadstalkers
+actions+=/hand_of_guldan,if=soul_shard>=3&prev_gcd.1.call_dreadstalkers
 actions+=/hand_of_guldan,if=soul_shard>=5&cooldown.summon_darkglare.remains<=action.hand_of_guldan.cast_time
 actions+=/hand_of_guldan,if=soul_shard>=4&cooldown.summon_darkglare.remains>2
-actions+=/demonic_empowerment,if=wild_imp_no_de>3|prev_gcd.hand_of_guldan
+actions+=/demonic_empowerment,if=wild_imp_no_de>3|prev_gcd.1.hand_of_guldan
 actions+=/demonic_empowerment,if=dreadstalker_no_de>0|darkglare_no_de>0|doomguard_no_de>0|infernal_no_de>0|service_no_de>0
 actions+=/doom,cycle_targets=1,if=!talent.hand_of_doom.enabled&target.time_to_die>duration&(!ticking|remains<duration*0.3)
 actions+=/arcane_torrent
@@ -74,7 +74,7 @@ neck=pendant_of_the_watchful_eye,id=137536,bonus_id=1727/1517,enchant_id=5439
 shoulders=amice_of_the_unfurling_tempest,id=134432,bonus_id=1727/1517
 back=goldscar_pelt,id=133639,bonus_id=1727/1517,enchant_id=5436
 chest=fluxflow_robes,id=134413,bonus_id=1727/1517
-wrists=cinch_of_cosmic_insignficance,id=139187,bonus_id=1805
+wrists=clasp_of_cosmic_insignificance,id=139187,bonus_id=1805
 hands=handwraps_of_delusional_power,id=138212,bonus_id=1805
 waist=waistband_of_spiritual_doom,id=137507,bonus_id=1727/1517
 legs=leggings_of_swirling_runes,id=133610,bonus_id=1727/1517
@@ -88,13 +88,13 @@ off_hand=skull_of_the_manari,id=128943,gem_id=137549/137492/133764,relic_id=1517
 
 # Gear Summary
 # gear_ilvl=868.63
-# gear_stamina=22619
-# gear_intellect=14182
-# gear_spell_power=11193
-# gear_crit_rating=4900
-# gear_haste_rating=11801
-# gear_mastery_rating=1257
-# gear_versatility_rating=610
+# gear_stamina=23745
+# gear_intellect=14877
+# gear_spell_power=11750
+# gear_crit_rating=5353
+# gear_haste_rating=13054
+# gear_mastery_rating=1320
+# gear_versatility_rating=745
 # gear_armor=1715
 # set_bonus=tier19p_cloth_2pc=1
 default_pet=felguard

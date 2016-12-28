@@ -1,4 +1,4 @@
-SimulationCraft 710-03 for World of Warcraft 7.1.0 PTR (wow build 22995, git build 2b2fc10)
+SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23244, git build 2679573)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -1321,7 +1321,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=53887)    : Apply Aura (6) | Add Percent Modifier: Spell Critical Damage (108)
                    Base Value: 50 | Scaled Value: 50 | SP Coefficient: 1.00000 | Misc Value: 15 | Target: Self(1)
-                   Affected Spells: Lightning Bolt (403), Chain Lightning (421), Earth Shock (8042), Fire Nova (8349), Flametongue Attack (10444), Spore Cloud (32642), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Frozen Rune Weapon 2 (51385), Frozen Rune Weapon 3 (51386), Frozen Rune Weapon 4 (51387), Frozen Rune Weapon 5 (51388), Thunderstorm (51490), Lava Burst (51505), Earthquake (61882), Lava Burst Overload (77451), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Item - Shaman T18 Enhancement 4P Bonus (185872), Lightning Bolt (187837), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Flame Shock (188838), Lightning Shield (192106), Lightning Shield (192109), Liquid Magma (192231), Flametongue (194084), Frostbrand (196834), Frost Shock (196840), Lightning Rod (197568), Volcanic Inferno (205533), Icefury (210714), Lightning Bolt (214815), Lightning Bolt Overload (214816), Icefury Overload (219271)
+                   Affected Spells: Lightning Bolt (403), Chain Lightning (421), Earth Shock (8042), Fire Nova (8349), Flametongue Attack (10444), Spore Cloud (32642), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Frozen Rune Weapon 2 (51385), Frozen Rune Weapon 3 (51386), Frozen Rune Weapon 4 (51387), Frozen Rune Weapon 5 (51388), Thunderstorm (51490), Lava Burst (51505), Earthquake (61882), Lava Burst Overload (77451), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Item - Shaman T18 Enhancement 4P Bonus (185872), Lightning Bolt (187837), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Flame Shock (188838), Lightning Shield (192106), Lightning Shield (192109), Liquid Magma (192231), Flametongue (194084), Crash Lightning (195592), Frostbrand (196834), Frost Shock (196840), Lightning Rod (197568), Volcanic Inferno (205533), Icefury (210714), Lightning Bolt (214815), Lightning Bolt Overload (214816), Icefury Overload (219271)
 Description      : Your damaging critical strikes deal ${$m1+200}% damage instead of the usual 200%.
 
 Name             : Riptide (id=61295) [Spell Family (11)] 
@@ -2670,10 +2670,10 @@ Effects          :
                    Base Value: 220 | Scaled Value: 220 | Target: Self(1)
 #2 (id=190240)   : Apply Aura (6) | Unknown effect sub type (416)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-                   Affected Spells: Lightning Bolt (403), Stormstrike (17364), Windstrike (115356), Lightning Bolt (187837), Crash Lightning (187874), Lightning Bolt (188196), Flametongue (193796), Lightning Bolt (214815), Lightning Bolt Overload (214816)
+                   Affected Spells: Lightning Bolt (403), Stormstrike (17364), Windstrike (115356), Lightning Bolt (187837), Crash Lightning (187874), Lightning Bolt (188196), Flametongue (193796), Crash Lightning (195592), Lightning Bolt (214815), Lightning Bolt Overload (214816)
 #3 (id=190241)   : Apply Aura (6) | Unknown effect sub type (417)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 11 | Target: Self(1)
-                   Affected Spells: Stormstrike (17364), Feral Spirit (51533), Lava Lash (60103), Windstrike (115356), Crash Lightning (187874), Feral Lunge (196884), Sundering (197214), Feral Spirit (198506), Feral Spirit (228562)
+                   Affected Spells: Stormstrike (17364), Feral Spirit (51533), Lava Lash (60103), Windstrike (115356), Crash Lightning (187874), Crash Lightning (195592), Feral Lunge (196884), Sundering (197214), Feral Spirit (198506), Feral Spirit (228562)
 #4 (id=191050)   : Apply Aura (6) | Unknown effect sub type (457)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1634 | Target: Self(1)
 #5 (id=191051)   : Apply Aura (6) | Unknown effect sub type (218)
@@ -2815,8 +2815,9 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179725)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self(1)
-                   Affected Spells: Lightning Bolt (403), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Spore Cloud (32642), Windfury Attack (33750), Frozen Rune Weapon 2 (51385), Frozen Rune Weapon 3 (51386), Frozen Rune Weapon 4 (51387), Frozen Rune Weapon 5 (51388), Lava Lash (60103), Windstrike (115357), Windstrike Off-Hand (115360), Item - Shaman T18 Enhancement 4P Bonus (185872), Lightning Bolt (187837), Crash Lightning (187874), Lightning Bolt (188196), Lightning Shield (192106), Lightning Shield (192109), Rockbiter (193786), Flametongue (193796), Flametongue (194084), Boulderfist (201897), Windsong (201898), Lightning Bolt (214815), Lightning Bolt Overload (214816)
+                   Base Value: 16 | Scaled Value: 16 | Target: Self(1)
+                   Affected Spells: Lightning Bolt (403), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Spore Cloud (32642), Windfury Attack (33750), Frozen Rune Weapon 2 (51385), Frozen Rune Weapon 3 (51386), Frozen Rune Weapon 4 (51387), Frozen Rune Weapon 5 (51388), Lava Lash (60103), Windstrike (115357), Windstrike Off-Hand (115360), Item - Shaman T18 Enhancement 4P Bonus (185872), Lightning Bolt (187837), Crash Lightning (187874), Lightning Bolt (188196), Lightning Shield (192106), Lightning Shield (192109), Rockbiter (193786), Flametongue (193796), Flametongue (194084), Crash Lightning (195592), Boulderfist (201897), Windsong (201898), Lightning Bolt (214815), Lightning Bolt Overload (214816)
+                   Hotfixed: Base Value (10 -> 16)
 #2 (id=191038)   : Apply Aura (6) | Override Spell Power per Attack Power% (366)
                    Base Value: 120 | Scaled Value: 120 | Target: Self(1)
 #3 (id=191039)   : Apply Aura (6) | Unknown effect sub type (179)
@@ -4300,7 +4301,7 @@ Effects          :
 #1 (id=284355)   : School Damage: nature (2)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.55000 | Target: Enemy(6)
 #2 (id=284413)   : Energize Power (30)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: maelstrom | Target: Self(1)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: maelstrom | Target: Self(1)
 Description      : Assaults your target with earthen power, dealing $s1 Nature damage.
 
 |cFFFFFFFFGenerates $s2 Maelstrom.|r
@@ -4442,10 +4443,12 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Crash Lightning (id=195592) [Spell Family (11)] 
+Hotfixed         : Affecting Spells
 Class            : Shaman
 School           : Nature
 Spell Level      : 1
 Range            : 5 yards
+Affecting spells : Elemental Fury (60188), Shaman (137038), Enhancement Shaman (137041)
 Triggered by     : Crash Lightning (187878)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4457,7 +4460,8 @@ Effects          :
 #1 (id=287112)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: Cone Front(104)
 #2 (id=287113)   : Weapon Damage% (31)
-                   Base Value: 110 | Scaled Value: 1.1 | Radius: 8 yards | Target: Cone Front(104)
+                   Base Value: 100 | Scaled Value: 1 | Radius: 8 yards | Target: Cone Front(104)
+                   Hotfixed: Base Value (110 -> 100)
 Description      : $@spelldesc187874
 
 Name             : Maelstrom Power Decrease (id=195769) [Spell Family (11), Hidden] 
@@ -5293,7 +5297,7 @@ Class            : Shaman
 School           : Nature
 Range            : 10 yards
 GCD              : 1.5 seconds
-Charges          : 2 (7.5 seconds cooldown)
+Charges          : 2 (6 seconds cooldown)
 Category         : 1634
 Affecting spells : Enhancement Shaman (137041), Gathering of the Maelstrom (198349), Weapons of the Elements (215381)
 Attributes       : ........ ........ x.x..... ........   ........ .x...... .x...... ........ 
@@ -5310,7 +5314,7 @@ Effects          :
 #3 (id=297596)   : Trigger Spell: Boulderfist (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 218825 | Target: Self(1)
 #4 (id=359957)   : Dummy (3)
-                   Base Value: 2 | Scaled Value: 2 | AP Coefficient: 2.50000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 2.50000 | Target: Enemy(6)
 Description      : Slams your target with the power of stone, dealing $s1 Nature damage and enhancing your weapons for $218825d, increasing$@switch<$s4>[][ your critical strike chance by $218825s1% and] all damage you deal by $218825s2%.
 
 |cFFFFFFFFGenerates $s2 Maelstrom.|r
@@ -5710,7 +5714,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=307693)   : Unknown effect type (202) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Radius: 100 yards | Target: Self(1)
-Description      : Damaging enemies with your Fire, Frost, or Nature abilities increases all damage you deal by $207995s1% for $207995d. Each element adds a separate application.
+Description      : Damaging enemies with your Fire, Frost, or Nature abilities increases all damage you deal by ${$207995s1/10}.1% for $207995d. Each element adds a separate application.
 
 Name             : Fire of the Twisting Nether (id=207995) 
 Class            : Shaman
@@ -5724,9 +5728,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=307694)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 0x200007f | Target: Self(1)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 0x200007f | Target: Self(1)
 Description      : $@spelldesc207994
-Tooltip          : All damage done increased by $s1%.
+Tooltip          : All damage done increased by ${$s1/10}.1%.
 
 Name             : Chill of the Twisting Nether (id=207998) 
 Class            : Shaman
@@ -5740,9 +5744,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=307698)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 0x200007f | Target: Self(1)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 0x200007f | Target: Self(1)
 Description      : $@spelldesc207994
-Tooltip          : All damage done increased by $s1%.
+Tooltip          : All damage done increased by ${$s1/10}.1%.
 
 Name             : Shock of the Twisting Nether (id=207999) 
 Class            : Shaman
@@ -5756,9 +5760,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=307699)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 0x200007f | Target: Self(1)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 0x200007f | Target: Self(1)
 Description      : $@spelldesc207994
-Tooltip          : All damage done increased by $s1%.
+Tooltip          : All damage done increased by ${$s1/10}.1%.
 
 Name             : Totem Mastery (id=210643) [Spell Family (11)] 
 Class            : Shaman
@@ -6079,7 +6083,8 @@ Effects          :
 #1 (id=312326)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #2 (id=312327)   : Weapon Damage% (31)
-                   Base Value: 28 | Scaled Value: 0.28 | Target: Enemy(6)
+                   Base Value: 21 | Scaled Value: 0.21 | Target: Enemy(6)
+                   Hotfixed: Base Value (28 -> 21)
 Description      : $@spelldesc210853
 
 Name             : Hex (id=210873) [Spell Family (11)] 
@@ -6265,7 +6270,7 @@ Description      : $@spelldesc210727
 Name             : The Deceiver's Blood Pact (id=214131) [Spell Family (11), Passive] 
 Class            : Shaman
 School           : Nature
-Proc Chance      : 30%
+Proc Chance      : 15%
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6277,7 +6282,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=317947)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30 | Target: Self(1)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self(1)
 Description      : Earth Shock has a $h% chance to refund all of the Maelstrom spent.
 
 Name             : The Deceiver's Blood Pact (id=214134) [Spell Family (11)] 
@@ -6480,11 +6485,11 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=325882)   : Apply Aura (6) | Modify Critical Strike% (290)
-                   Base Value: 5 | Scaled Value: 5 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #2 (id=325883)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 0x7f | Target: Self(1)
 Description      : $@spelldesc201897
-Tooltip          : Critical strike chance increased by $s1%. Damage dealt increased by $s2%.
+Tooltip          : $@switch<$201897s4>[][Critical strike chance increased by $s1%. ]Damage dealt increased by $s2%.
 
 Name             : Icefury Overload (id=219271) [Spell Family (11)] 
 Class            : Shaman

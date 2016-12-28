@@ -4,7 +4,7 @@ race=worgen
 role=tank
 position=front
 talents=3323323
-artifact=57:0:0:0:0:948:3:949:3:950:3:951:3:952:3:953:3:954:3:955:3:956:3:957:1:958:1:959:1:960:1:961:1:962:1:979:1:1334:1
+artifact=57:0:0:0:0:948:3:950:3:951:3:952:3:954:2:956:3:957:1:958:1:960:1:961:1:979:1:1334:1
 spec=guardian
 
 # This default action priority list is automatically created based on your character.
@@ -14,37 +14,34 @@ spec=guardian
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
-
 actions.precombat=flask,type=flask_of_the_seventh_demon
 actions.precombat+=/food,type=azshari_salad
+actions.precombat+=/augmentation,type=defiled
 actions.precombat+=/bear_form
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 
 # Executed every time the actor is available.
-
 actions=auto_attack
-actions+=/skull_bash
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
 actions+=/use_item,slot=trinket2
-actions+=/barkskin
-actions+=/bristling_fur,if=buff.ironfur.remains<2&rage<40
-actions+=/ironfur,if=buff.ironfur.down|rage.deficit<25
-actions+=/frenzied_regeneration,if=!ticking&incoming_damage_6s%health.max>0.25+(2-charges_fractional)*0.15
-actions+=/pulverize,cycle_targets=1,if=buff.pulverize.down
-actions+=/mangle
-actions+=/pulverize,cycle_targets=1,if=buff.pulverize.remains<gcd
-actions+=/lunar_beam
 actions+=/incarnation
-actions+=/thrash_bear,if=active_enemies>=2
-actions+=/pulverize,cycle_targets=1,if=buff.pulverize.remains<3.6
-actions+=/thrash_bear,if=talent.pulverize.enabled&buff.pulverize.remains<3.6
-actions+=/moonfire,cycle_targets=1,if=!ticking
-actions+=/moonfire,cycle_targets=1,if=remains<3.6
-actions+=/moonfire,cycle_targets=1,if=remains<7.2
-actions+=/moonfire
+actions+=/rage_of_the_sleeper
+actions+=/lunar_beam
+actions+=/frenzied_regeneration,if=incoming_damage_5s%health.max>=0.5|health<=health.max*0.4
+actions+=/bristling_fur,if=buff.ironfur.stack=1|buff.ironfur.down
+actions+=/ironfur,if=(buff.ironfur.up=0)|(buff.gory_fur.up=1)|(rage>=80)
+actions+=/moonfire,if=buff.incarnation.up=1&dot.moonfire.remains<=4.8
+actions+=/thrash_bear,if=buff.incarnation.up=1&dot.thrash.remains<=4.5
+actions+=/mangle
+actions+=/thrash_bear
+actions+=/pulverize,if=buff.pulverize.up=0|buff.pulverize.remains<=6
+actions+=/moonfire,if=buff.galactic_guardian.up=1&(!ticking|dot.moonfire.remains<=4.8)
+actions+=/moonfire,if=buff.galactic_guardian.up=1
+actions+=/moonfire,if=dot.moonfire.remains<=4.8
+actions+=/swipe_bear
 
 head=hood_of_the_blind_executioner,id=137511
 neck=pendant_of_the_moon_temple,id=139605,enchant_id=5439
@@ -60,15 +57,15 @@ finger1=band_of_the_wyrm_matron,id=134524,enchant_id=5427
 finger2=utgarde_royal_signet,id=133637,enchant_id=5427
 trinket1=chaos_talisman,id=137459
 trinket2=horn_of_valor,id=133642
-main_hand=claws_of_ursoc,id=128821,bonus_id=724,ilevel=840
-off_hand=claws_of_ursoc,id=128822,ilevel=840
+main_hand=claws_of_ursoc,id=128821,bonus_id=724,ilevel=870,relic_id=3412/3412/3412
+off_hand=claws_of_ursoc,id=128822,ilevel=870
 
 # Gear Summary
-# gear_ilvl=822.50
-# gear_agility=8203
-# gear_stamina=14488
-# gear_crit_rating=9181
-# gear_haste_rating=834
-# gear_mastery_rating=1671
-# gear_versatility_rating=4695
+# gear_ilvl=826.25
+# gear_agility=8886
+# gear_stamina=15614
+# gear_crit_rating=9783
+# gear_haste_rating=868
+# gear_mastery_rating=1810
+# gear_versatility_rating=4970
 # gear_armor=1830

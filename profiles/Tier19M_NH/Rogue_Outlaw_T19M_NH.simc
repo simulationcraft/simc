@@ -5,7 +5,7 @@ timeofday=day
 role=attack
 position=back
 talents=1310022
-artifact=44:0:0:0:0:1052:1:1053:1:1054:1:1055:1:1056:1:1057:1:1058:1:1059:3:1060:3:1061:3:1062:3:1063:3:1064:3:1065:3:1066:3:1067:3:1348:1
+artifact=44:0:0:0:0:1052:1:1053:1:1054:1:1055:1:1056:1:1057:1:1058:1:1059:3:1060:3:1061:3:1062:3:1063:3:1064:3:1065:3:1066:3:1067:3:1348:1:1385:20
 spec=outlaw
 
 # This default action priority list is automatically created based on your character.
@@ -80,7 +80,7 @@ actions.stealth+=/shadowmeld,if=variable.stealth_condition
 head=doomblade_cowl,id=138332,bonus_id=3445
 neck=radiant_string_of_scorpid_eyes,id=140898,bonus_id=3445,enchant=mark_of_the_hidden_satyr
 shoulders=doomblade_spaulders,id=138338,bonus_id=3445
-back=doomblade_shadowwrap,id=138371,bonus_id=34453445,enchant=binding_of_agility
+back=doomblade_shadowwrap,id=138371,bonus_id=3445,enchant=binding_of_agility
 chest=doomblade_tunic,id=138326,bonus_id=3445
 wrists=wellflattened_wristguards,id=140857,bonus_id=3445
 hands=doomblade_gauntlets,id=138329,bonus_id=3445
@@ -95,13 +95,13 @@ main_hand=the_dreadblades,id=128872,bonus_id=742,gem_id=140819/140817/140841,rel
 off_hand=the_dreadblades,id=134552
 
 # Gear Summary
-# gear_ilvl=905.88
-# gear_agility=21733
-# gear_stamina=31602
-# gear_crit_rating=6705
-# gear_haste_rating=4869
-# gear_mastery_rating=7610
-# gear_versatility_rating=795
-# gear_armor=2414
+# gear_ilvl=903.00
+# gear_agility=22116
+# gear_stamina=32176
+# gear_crit_rating=8095
+# gear_haste_rating=5884
+# gear_mastery_rating=4314
+# gear_versatility_rating=4220
+# gear_armor=2391
 # set_bonus=tier19_2pc=1
 # set_bonus=tier19_4pc=1

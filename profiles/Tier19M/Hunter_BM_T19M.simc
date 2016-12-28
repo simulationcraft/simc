@@ -26,8 +26,8 @@ actions.precombat+=/volley,toggle=on
 # Executed every time the actor is available.
 actions=auto_shot
 actions+=/arcane_torrent,if=focus.deficit>=30
-actions+=/blood_fury
 actions+=/berserking
+actions+=/blood_fury
 actions+=/potion,name=prolonged_power,if=buff.bestial_wrath.remains|!cooldown.beastial_wrath.remains
 actions+=/a_murder_of_crows
 actions+=/stampede,if=buff.bloodlust.up|buff.bestial_wrath.up|cooldown.bestial_wrath.remains<=2|target.time_to_die<=14
@@ -61,11 +61,11 @@ main_hand=titanstrike,id=128861,gem_id=139262/139269/137543,relic_id=1806/1806/1
 
 # Gear Summary
 # gear_ilvl=884.87
-# gear_agility=18784
-# gear_stamina=26787
-# gear_crit_rating=2669
-# gear_haste_rating=5574
-# gear_mastery_rating=11168
-# gear_versatility_rating=405
+# gear_agility=19711
+# gear_stamina=28117
+# gear_crit_rating=3464
+# gear_haste_rating=6248
+# gear_mastery_rating=13079
+# gear_versatility_rating=425
 # gear_armor=2815
 summon_pet=cat

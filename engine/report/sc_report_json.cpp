@@ -403,8 +403,11 @@ js::sc_js_t to_json( const player_collected_data_t& cd, const sim_t& sim )
   node.set( "dpse", to_json( cd.dpse ) );
   node.set( "dtps", to_json( cd.dtps ) );
   node.set( "dmg_taken", to_json( cd.dmg_taken ) );
-  node.set( "timeline_dmg", to_json( cd.timeline_dmg ) );
-  node.set( "timeline_dmg_taken", to_json( cd.timeline_dmg_taken ) );
+  if ( sim.report_details != 0)
+  {
+    node.set( "timeline_dmg", to_json( cd.timeline_dmg ) );
+    node.set( "timeline_dmg_taken", to_json( cd.timeline_dmg_taken ) );
+  }
 
   node.set( "heal", to_json( cd.heal ) );
   node.set( "compound_heal", to_json( cd.compound_heal ) );
@@ -507,6 +510,7 @@ js::sc_js_t to_json( const dbc_t& dbc )
     js::sc_js_t subnode;
     subnode.set( "build_level", dbc::build_level( ptr ) );
     subnode.set( "wow_version", dbc::wow_version( ptr ) );
+
     node.set( dbc::wow_ptr_status( ptr ), subnode );
   }
   node.set( "version_used", dbc::wow_ptr_status( dbc.ptr ) );
@@ -595,6 +599,9 @@ js::sc_js_t to_json( const player_t& p )
   node.set( "gcd_ready", to_json( p.gcd_ready ) );
   node.set( "base_gcd", to_json( p.base_gcd ) );
   node.set( "started_waiting", to_json( p.started_waiting ) );
+  if (!p.report_information.thumbnail_url.empty()) {
+    node.set( "thumbnail_url", p.report_information.thumbnail_url.c_str() );
+  }
   for ( const auto& pet : p.pet_list )
   {
     node.add( "pets", to_json( *pet ) );
@@ -855,6 +862,9 @@ js::sc_js_t get_root( const sim_t& sim )
 {
   js::sc_js_t root;
   root.set( "version", SC_VERSION );
+#if defined( SC_GIT_REV )
+  root.set( "git_rev", SC_GIT_REV );
+#endif
   root.set( "ptr_enabled", SC_USE_PTR );
   root.set( "beta_enabled", SC_BETA );
   root.set( "build_date", __DATE__ );

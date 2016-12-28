@@ -1,4 +1,4 @@
-SimulationCraft 710-03 for World of Warcraft 7.1.0 PTR (wow build 22995, git build 2b2fc10)
+SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23244, git build 2679573)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Arcane Fire Frost Mage
@@ -326,7 +326,7 @@ Spell Level      : 12
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 2 seconds
-Affecting spells : Icy Veins (12472), Ice Floes (108839), Arcane Mage (137021), Arcane Instability (166872), Arcane Focus (171375), Ice Form (198144), Norgannon's Foresight (236380), Slipstream (236457)
+Affecting spells : Icy Veins (12472), Ice Floes (108839), Arcane Instability (166872), Arcane Focus (171375), Ice Form (198144), Norgannon's Foresight (236380), Slipstream (236457)
 Triggered by     : Arcane Missiles! (79683)
 Attributes       : ........ x....... x....... .....x..   ..x....x ..x...x. ........ ..x.x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -357,7 +357,7 @@ School           : Arcane
 Spell Level      : 14
 Range            : 60 yards
 Velocity         : 20 yards/sec
-Affecting spells : Shatter (12982), Arcane Charge (36032), Arcane Focus (171375), Aegwynn's Fury (187287), Erosion (210134), Norgannon's Foresight (236380)
+Affecting spells : Shatter (12982), Arcane Charge (36032), Arcane Mage (137021), Arcane Focus (171375), Aegwynn's Fury (187287), Erosion (210134), Norgannon's Foresight (236380)
 Triggered by     : Arcane Missiles (5143)
 Attributes       : ........ ........ x....... ........   ..x..... ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ .x...... ........ ......x. 
@@ -967,7 +967,7 @@ Effects          :
                    Base Value: 60 | Scaled Value: 60 | Target: Self(1)
                    Affected Spells: Arcane Explosion (1449), Arcane Blast (30451), Arcane Barrage (44425)
 #2 (id=26314)    : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 60 | Scaled Value: 60 | Target: Self(1)
+                   Base Value: 120 | Scaled Value: 120 | Target: Self(1)
                    Affected Spells: Arcane Missiles (7268)
 #3 (id=127870)   : Apply Aura (6) | Add Flat Modifier: Spell Targets (107)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 17 | Target: Self(1)
@@ -1663,7 +1663,7 @@ Stacks           : 1 initial, 3 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
-Affecting spells : Arcane Missiles (5143), Icy Veins (12472), Ice Floes (108839), Arcane Mage (137021), Arcane Instability (166872), Arcane Focus (171375), Ice Form (198144), Norgannon's Foresight (236380), Slipstream (236457)
+Affecting spells : Arcane Missiles (5143), Icy Veins (12472), Ice Floes (108839), Arcane Instability (166872), Arcane Focus (171375), Ice Form (198144), Norgannon's Foresight (236380), Slipstream (236457)
 Triggered by     : Arcane Missiles (79684)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -2145,7 +2145,7 @@ Class            : Mage
 School           : Frost
 Spell Level      : 1
 Range            : 50000 yards
-Affecting spells : Shatter (12982), Norgannon's Foresight (236380)
+Affecting spells : Shatter (12982), Frost Mage (137020), Norgannon's Foresight (236380)
 Attributes       : ........ ........ x.x....x x..x....   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ......x.   ........ ........ ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ..x..... 
@@ -2356,7 +2356,8 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=132772)   : Apply Aura (6) | Modify Spell Crit% (57)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self(1)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self(1)
+                   Hotfixed: Base Value (10 -> 15)
 #2 (id=132773)   : Apply Aura (6) | Modify Combat Rating Multiplier (405)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1792 | Target: Self(1)
 Description      : Your spells have a $s1% increased chance to deal a critical strike.$?s231630[
@@ -2615,7 +2616,8 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179703)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 12 | Scaled Value: 12 | Target: Self(1)
-                   Affected Spells: Frostbolt (116), Cone of Cold (120), Ice Lance (30455), Waterbolt (31707), Frozen Orb (84721), Comet Storm (153595), Comet Storm (153596), Ice Nova (157997), Blizzard (190356), Blizzard (190357), Ebonbolt (214634), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Ebonbolt (228599)
+                   Affected Spells: Frostbolt (116), Cone of Cold (120), Ice Lance (30455), Waterbolt (31707), Frozen Orb (84721), Frost Bomb (113092), Comet Storm (153595), Comet Storm (153596), Ice Nova (157997), Blizzard (190356), Blizzard (190357), Ebonbolt (214634), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Ebonbolt (228599)
+                   Hotfixed: Affects Spells
 #2 (id=191121)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 12 | Scaled Value: 12 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Water Jet (135029), Ray of Frost (205021)
@@ -2660,7 +2662,8 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179704)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 12 | Scaled Value: 12 | Target: Self(1)
-                   Affected Spells: Arcane Explosion (1449), Arcane Missiles (5143), Arcane Blast (30451), Arcane Barrage (44425), Arcane Missiles! (79683), Nether Tempest (114923), Nether Tempest (114954), Arcane Orb (153640), Supernova (157980)
+                   Affected Spells: Arcane Explosion (1449), Arcane Missiles (7268), Arcane Blast (30451), Arcane Barrage (44425), Nether Tempest (114923), Nether Tempest (114954), Arcane Orb (153640), Supernova (157980)
+                   Hotfixed: Affects Spells
 #2 (id=191116)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 12 | Scaled Value: 12 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Nether Tempest (114923), Nether Tempest (114954)
@@ -2845,7 +2848,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Cannot crit (93)
 Effects          :
 #1 (id=201127)   : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 1 | Chain Multiplier: 0.8 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | Chain Multiplier: 0.8 | Chain Targets: 1 | Target: Unknown(25)
+                   Hotfixed: Target 1 (6 -> 25)
 Description      : $@spelldesc76613
 
 Name             : Prismatic Crystal (id=152087) 
@@ -4885,7 +4889,7 @@ Attributes       : ........ ........ x......x x..x....   .....x.. ........ .....
                  : Does not break stealth (37), Not a proc (105)
 Effects          :
 #1 (id=344284)   : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.95000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.75000 | Target: Enemy(6)
 Description      : $@spelldesc116
 
 Name             : Ice Lance (id=228598) [Scaling Spell (5), Spell Family (3)] 
@@ -4904,7 +4908,8 @@ Attributes       : ........ ........ x.x....x x..x....   .....x.. ........ .....
                  : Does not break stealth (37), Not a proc (105)
 Effects          :
 #1 (id=344285)   : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=1, dl=0.1) | SP Coefficient: 1.20000 | Chain Multiplier: 0.8 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 0 (avg=1, dl=0.1) | SP Coefficient: 1.20000 | Chain Multiplier: 0.8 | Chain Targets: 1 | Target: Unknown(25)
+                   Hotfixed: Target 1 (6 -> 25)
 #2 (id=344286)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100
 Description      : $@spelldesc30455
@@ -4944,9 +4949,11 @@ Attributes       : ........ ........ .......x x..x....   .....x.. ........ .....
                  : Does not break stealth (37), Not a proc (105)
 Effects          :
 #1 (id=344289)   : School Damage: frost (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 10.00000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 10.00000 | Target: Unknown(25)
+                   Hotfixed: Target 1 (6 -> 25)
 #2 (id=344290)   : Apply Aura (6) | Unknown effect sub type (455)
-                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(58) | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(58) | Target: Unknown(25)
+                   Hotfixed: Target 1 (6 -> 25)
 Description      : $@spelldesc199786
 Tooltip          : Frozen in place.
 

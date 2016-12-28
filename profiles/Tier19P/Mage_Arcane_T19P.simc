@@ -27,7 +27,7 @@ actions.precombat+=/arcane_blast
 actions=counterspell,if=target.debuff.casting.react
 actions+=/time_warp,if=(time=0&buff.bloodlust.down)|(buff.bloodlust.down&equipped.132410)
 actions+=/mirror_image,if=buff.arcane_power.down
-actions+=/stop_burn_phase,if=prev_gcd.evocation&burn_phase_duration>gcd.max
+actions+=/stop_burn_phase,if=prev_gcd.1.evocation&burn_phase_duration>gcd.max
 actions+=/mark_of_aluneth,if=cooldown.arcane_power.remains>20
 actions+=/call_action_list,name=build,if=buff.arcane_charge.stack<4
 actions+=/call_action_list,name=init_burn,if=buff.arcane_power.down&buff.arcane_charge.stack=4&(cooldown.mark_of_aluneth.remains=0|cooldown.mark_of_aluneth.remains>20)&(!talent.rune_of_power.enabled|(cooldown.arcane_power.remains<=action.rune_of_power.cast_time|action.rune_of_power.recharge_time<cooldown.arcane_power.remains))|target.time_to_die<45
@@ -43,11 +43,10 @@ actions.build+=/arcane_blast
 
 actions.burn=call_action_list,name=cooldowns
 actions.burn+=/arcane_missiles,if=buff.arcane_missiles.react=3
-actions.burn+=/arcane_explosion,if=buff.quickening.remains<action.arcane_blast.cast_time&talent.quickening.enabled
-actions.burn+=/presence_of_mind,if=buff.arcane_power.remains>2*gcd
 actions.burn+=/nether_tempest,if=dot.nether_tempest.remains<=2|!ticking
 actions.burn+=/arcane_blast,if=active_enemies<=1&mana.pct%10*execute_time>target.time_to_die
 actions.burn+=/arcane_explosion,if=active_enemies>1&mana.pct%10*execute_time>target.time_to_die
+actions.burn+=/presence_of_mind,if=buff.rune_of_power.remains<=2*action.arcane_blast.execute_time
 actions.burn+=/arcane_missiles,if=buff.arcane_missiles.react>1
 actions.burn+=/arcane_explosion,if=active_enemies>1&buff.arcane_power.remains>cast_time
 actions.burn+=/arcane_blast,if=buff.presence_of_mind.up|buff.arcane_power.remains>cast_time
@@ -58,7 +57,6 @@ actions.burn+=/arcane_blast
 actions.burn+=/evocation,interrupt_if=mana.pct>99
 
 actions.conserve=arcane_missiles,if=buff.arcane_missiles.react=3
-actions.conserve+=/arcane_explosion,if=buff.quickening.remains<action.arcane_blast.cast_time&talent.quickening.enabled
 actions.conserve+=/arcane_blast,if=mana.pct>99
 actions.conserve+=/nether_tempest,if=(refreshable|!ticking)
 actions.conserve+=/arcane_blast,if=buff.rhonins_assaulting_armwraps.up&equipped.132413
@@ -80,12 +78,11 @@ actions.cooldowns+=/potion,name=deadly_grace,if=buff.arcane_power.up&(buff.berse
 
 actions.init_burn=mark_of_aluneth
 actions.init_burn+=/frost_nova,if=equipped.132452
-actions.init_burn+=/nether_tempest,if=dot.nether_tempest.remains<10&(prev_gcd.mark_of_aluneth|(talent.rune_of_power.enabled&cooldown.rune_of_power.remains<gcd.max))
+actions.init_burn+=/nether_tempest,if=dot.nether_tempest.remains<10&(prev_gcd.1.mark_of_aluneth|(talent.rune_of_power.enabled&cooldown.rune_of_power.remains<gcd.max))
 actions.init_burn+=/rune_of_power
 actions.init_burn+=/start_burn_phase,if=((cooldown.evocation.remains-(2*burn_phase_duration))%2<burn_phase_duration)|cooldown.arcane_power.remains=0|target.time_to_die<55
 
 actions.rop_phase=arcane_missiles,if=buff.arcane_missiles.react=3
-actions.rop_phase+=/arcane_explosion,if=buff.quickening.remains<action.arcane_blast.cast_time&talent.quickening.enabled
 actions.rop_phase+=/nether_tempest,if=dot.nether_tempest.remains<=2|!ticking
 actions.rop_phase+=/arcane_missiles,if=buff.arcane_charge.stack=4
 actions.rop_phase+=/arcane_explosion,if=active_enemies>1
@@ -110,11 +107,11 @@ main_hand=aluneth,id=127857,ilevel=870
 
 # Gear Summary
 # gear_ilvl=842.00
-# gear_stamina=17964
-# gear_intellect=18709
-# gear_crit_rating=7967
-# gear_haste_rating=3966
-# gear_mastery_rating=1603
-# gear_versatility_rating=4329
+# gear_stamina=18862
+# gear_intellect=19631
+# gear_crit_rating=8564
+# gear_haste_rating=4287
+# gear_mastery_rating=1683
+# gear_versatility_rating=4747
 # gear_armor=1570
 # set_bonus=tier19p_cloth_2pc=1

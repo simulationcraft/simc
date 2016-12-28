@@ -1,4 +1,4 @@
-SimulationCraft 710-03 for World of Warcraft 7.1.0 PTR (wow build 22995, git build 2b2fc10)
+SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23244, git build 2679573)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -300,7 +300,7 @@ Movement speed increased by $w4%.][]
 Name             : Immolation Aura (id=178741) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Fire
-Affecting spells : Aura of Pain (207347), Agonizing Flames (207548), 
+Affecting spells : Aura of Pain (207347), Agonizing Flames (207548), Vengeance Demon Hunter (212613)
 Triggered by     : Immolation Aura (178740)
 Attributes       : ....x... ........ ..x..... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -528,7 +528,7 @@ Effects          :
 Name             : Immolation Aura (id=187727) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Fire
-Affecting spells : Aura of Pain (207347), Agonizing Flames (207548), 
+Affecting spells : Aura of Pain (207347), Agonizing Flames (207548), Vengeance Demon Hunter (212613)
 Triggered by     : Immolation Aura (178740)
 Attributes       : ........ ........ ..x..... ........   ...x...x .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -555,7 +555,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ......x. ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=273949)   : Apply Aura (6) | Unknown effect sub type (56)
@@ -659,7 +659,7 @@ Cooldown         : 1 seconds
 Charges          : 2 (20 seconds cooldown)
 Category         : 1553
 Category Cooldown: 1 seconds
-Affecting spells : Infernal Force (207375), Abyssal Strike (207550), 
+Affecting spells : Infernal Force (207375), Abyssal Strike (207550), Vengeance Demon Hunter (212613)
 Attributes       : ....x... x....... ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -675,7 +675,7 @@ Name             : Infernal Strike (id=189112) [Spell Family (107)]
 Class            : Demon Hunter
 School           : Fire
 Range            : 50000 yards
-Affecting spells : Infernal Force (207375), Abyssal Strike (207550), 
+Affecting spells : Infernal Force (207375), Abyssal Strike (207550), Vengeance Demon Hunter (212613)
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ..x..... ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ..x...x. 
@@ -1457,7 +1457,7 @@ Effects          :
 #1 (id=300260)   : Apply Aura (6) | Proc Trigger Spell: Demon Blades (42)
                    Base Value: 65 | Scaled Value: 65 | Trigger Spell: 203796 | Target: Self(1)
 #2 (id=350250)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
-                   Base Value: -8 | Scaled Value: -8 | Misc Value: 3
+                   Base Value: -6 | Scaled Value: -6 | Misc Value: 3
                    Affected Spells: Anger of the Half-Giants (208827)
 Description      : Your auto attacks have a $h% chance to deal additional Shadow damage and generate Fury.
 
@@ -1737,7 +1737,7 @@ Range            : 30 yards
 Cooldown         : 60 seconds
 Category         : 1541
 Category Cooldown: 1 seconds
-Affecting spells : Demonic Flames (212894), Spirit of the Darkness Flame (235543)
+Affecting spells : Vengeance Demon Hunter (212613), Demonic Flames (212894), Spirit of the Darkness Flame (235543)
 Attributes       : ....x... ........ x.x..... ..x.....   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1826,7 +1826,7 @@ Class            : Demon Hunter
 School           : Physical
 Range            : 100 yards
 Duration         : 6 seconds
-Affecting spells : Concentrated Sigils (207666)
+Affecting spells : Concentrated Sigils (207666), Vengeance Demon Hunter (212613)
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ..x..... ......x. ........ ........   ........ ........ ........ ......x. 
                  : .......x ........ ........ ........   ...x.... ........ .xx..... ..x..... 
@@ -1894,7 +1894,7 @@ School           : Fire
 Range            : 100 yards
 Duration         : 6 seconds
 Proc Chance      : 101%
-Affecting spells : Concentrated Sigils (207666)
+Affecting spells : Concentrated Sigils (207666), Vengeance Demon Hunter (212613)
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ..x..... ......x. ........ ........   ........ ........ ........ ......x. 
                  : .......x ........ ........ ........   ...x.... ........ .xx..... ..x..... 
@@ -1917,7 +1917,7 @@ Class            : Demon Hunter
 School           : Physical
 Range            : 100 yards
 Duration         : 6 seconds
-Affecting spells : Concentrated Sigils (207666)
+Affecting spells : Concentrated Sigils (207666), Vengeance Demon Hunter (212613)
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ..x..... ......x. ........ ........   ........ ........ ........ ......x. 
                  : .......x ........ ........ ........   ...x.... ........ .xx..... ..x..... 
@@ -2270,7 +2270,7 @@ Proc Chance      : 100%
 Mechanic         : Unknown(42)
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Concentrated Sigils (207666)
+Affecting spells : Concentrated Sigils (207666), Vengeance Demon Hunter (212613)
 Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ ........ ........ 
                  : ..x..... ......x. ........ ........   ........ ........ ........ ......x. 
                  : .......x ........ ........ ........   ...x.... ........ .xx..... ..x..... 
@@ -2379,7 +2379,7 @@ Class            : Demon Hunter
 School           : Fire
 Range            : 100 yards
 Duration         : 8 seconds
-Affecting spells : Demonic Flames (212894), Spirit of the Darkness Flame (235543)
+Affecting spells : Vengeance Demon Hunter (212613), Demonic Flames (212894), Spirit of the Darkness Flame (235543)
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2397,7 +2397,7 @@ Class            : Demon Hunter
 School           : Fire
 Range            : 100 yards
 Duration         : 8 seconds
-Affecting spells : Demonic Flames (212894), Spirit of the Darkness Flame (235543)
+Affecting spells : Vengeance Demon Hunter (212613), Demonic Flames (212894), Spirit of the Darkness Flame (235543)
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3034,26 +3034,30 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=315250)   : Apply Aura (6) | Unknown effect sub type (417)
+#1 (id=315250)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 9 | Scaled Value: 9 | Target: Self(1)
+                   Affected Spells: Immolation Aura (178740), Immolation Aura (178741), Immolation Aura (187727), Infernal Strike (189110), Infernal Strike (189112), Shear (203782), Fiery Brand (204021), Sigil of Silence (204490), Sigil of Flame (204598), Sigil of Chains (204843), Sigil of Misery (207685), Fiery Brand (207744), Fiery Brand (207771), Soul Cleave (228478)
+                   Hotfixed: Base Value (4 -> 9)
+#2 (id=315251)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
+                   Base Value: 9 | Scaled Value: 9 | Misc Value: 22 | Target: Self(1)
+                   Hotfixed: Base Value (4 -> 9)
+#3 (id=315252)   : Apply Aura (6) | Unknown effect sub type (417)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Target: Self(1)
                    Affected Spells: Demon's Bite (162243), Chaos Strike (162794), Immolation Aura (178740), Throw Glaive (185123), Blade Dance (188499), Metamorphosis (191427), Annihilation (201427), Fury of the Illidari (201467), Sigil of Silence (202137), Sigil of Chains (202138), Shear (203782), Demon Blades (203796), Throw Glaive (204157), Sigil of Flame (204596), Soul Carver (207407), Sigil of Misery (207684), Fracture (209795), Death Sweep (210152), Fel Eruption (211881), Felblade (213241), Soul Carver (214743), Spirit Bomb (218679), Soul Cleave (228477), Felblade (232893), Sever (235964)
-#2 (id=315251)   : Apply Aura (6) | Unknown effect sub type (416)
+#4 (id=315253)   : Apply Aura (6) | Unknown effect sub type (416)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Target: Self(1)
                    Affected Spells: Immolation Aura (178740), Throw Glaive (185123), Blade Dance (188499), Shear (203782), Throw Glaive (204157), Death Sweep (210152), Felblade (213241), Felblade (232893), Sever (235964)
-#3 (id=315252)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+#5 (id=315254)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: -50 | Scaled Value: -50 | Target: Self(1)
                    Affected Spells: Felblade (213241), Felblade (213243), Felblade (232893)
-#4 (id=315253)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+#6 (id=315255)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: -68 | Scaled Value: -68 | Target: Self(1)
                    Affected Spells: Fel Eruption (225102)
-#5 (id=315254)   : Apply Aura (6) | Unknown effect sub type (218)
+#7 (id=315256)   : Apply Aura (6) | Unknown effect sub type (218)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf8 | Target: Self(1)
-#6 (id=315255)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#7 (id=315256)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#8 (id=315257)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#8 (id=315257)   : Apply Aura (6) | Unknown effect sub type (218)
+                   Base Value: -40 | Scaled Value: -40 | Misc Value: 3 | Misc Value 2: 0x114 | Target: Self(1)
+                   Hotfixed: Sub Type (4 -> 218), Base Value (0 -> -40), Misc Value (0 -> 3), Misc Value 2 (0 -> 276)
 #9 (id=315258)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #10 (id=315259)   : Apply Aura (6) | Dummy (4)
@@ -3115,6 +3119,7 @@ Effects          :
 Description      : You heal for $s1% of all Fire damage dealt.
 
 Name             : Felblade (id=213241) [Spell Family (107)] 
+Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Physical
 Range            : 15 yards
@@ -3123,7 +3128,7 @@ Cooldown         : 15 seconds
 Affecting spells : Metamorphosis (162264), Item - Demon Hunter T19 Havoc 2P Bonus (211054), Havoc Demon Hunter (212612), Vengeance Demon Hunter (212613), 
 Attributes       : ....x... ........ ..x..... .....x..   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .x...... ........ ........   ........ ........ ........ ........ 
+                 : ........ .x...... ........ ........   ........ ........ ........ .x...... 
                  : ........ ........ .......x ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3139,6 +3144,7 @@ $?s203513[Shear has a chance to reset the cooldown of Felblade.
 |cFFFFFFFFGenerates $213243s4 Fury.|r]
 
 Name             : Felblade (id=213243) [Spell Family (107)] 
+Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Fire
 Spell Level      : 98
@@ -3146,7 +3152,7 @@ Range            : 15 yards
 Affecting spells : Item - Demon Hunter T19 Havoc 2P Bonus (211054), Vengeance Demon Hunter (212613)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ .x...... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3691,7 +3697,7 @@ Name             : Soul Cleave (id=228478) [Spell Family (107)]
 Class            : Demon Hunter
 School           : Physical
 Range            : 5 yards
-Affecting spells : Devour Souls (212821), Tormented Souls (214744)
+Affecting spells : Vengeance Demon Hunter (212613), Devour Souls (212821), Tormented Souls (214744)
 Triggered by     : Soul Cleave (228477)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -3725,6 +3731,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 11 | Target: Self(1)
 
 Name             : Felblade (id=232893) [Spell Family (107)] 
+Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Physical
 Range            : 15 yards
@@ -3733,7 +3740,7 @@ Cooldown         : 15 seconds
 Affecting spells : Metamorphosis (162264), Item - Demon Hunter T19 Havoc 2P Bonus (211054), Havoc Demon Hunter (212612), Vengeance Demon Hunter (212613), 
 Attributes       : ....x... ........ ..x..... .....x..   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .x...... ........ ........   ........ ........ ........ ........ 
+                 : ........ .x...... ........ ........   ........ ........ ........ .x...... 
                  : ........ ........ .......x ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

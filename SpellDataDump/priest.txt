@@ -1,4 +1,4 @@
-SimulationCraft 710-03 for World of Warcraft 7.1.0 PTR (wow build 22995, git build 2b2fc10)
+SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23244, git build 2679573)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Discipline Shadow Priest
@@ -1904,6 +1904,7 @@ School           : Holy
 Spell Level      : 1
 Range            : 50000 yards
 Stance Mask      : 0x80000000
+Affecting spells : Power Word: Shield (211558)
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ...x.... ........   ........ .x...... ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ......x. ........ 
@@ -2638,7 +2639,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179717)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 25 | Scaled Value: 25 | Target: Self(1)
-                   Affected Spells: Shadow Word: Pain (589), Mind Blast (8092), Shadow Word: Death (32379), Mind Spike (73510), Shadowy Apparition (148859), Shadow Word: Death (199911), Shadow Word: Void (205351), Shadow Crash (205385), Void Bolt (205448), Void Eruption (228260), Void Eruption (228360), Mind Spike (236741), Mind Flay (237388)
+                   Affected Spells: Shadow Word: Pain (589), Mind Blast (8092), Shadow Word: Death (32379), Mind Spike (73510), Shadowy Apparition (148859), Shadow Word: Death (199911), Shadow Word: Void (205351), Shadow Crash (205385), Shadow Crash (205386), Void Bolt (205448), Void Eruption (228260), Void Eruption (228360), Mind Flay (237388)
 #2 (id=191068)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Shadow Word: Pain (589), Mind Flay (15407), Vampiric Touch (34914), Void Torrent (205065)
@@ -3156,9 +3157,6 @@ Tooltip          : Generating $s1% more Insanity.  When you exit Voidform, you w
 Name             : Legacy of the Void (id=193225) [Spell Family (6), Passive, Hidden] 
 Class            : Priest
 School           : Physical
-Proc Chance      : 100%
-Proc Flags       : ........ ........ x....... ........ 
-                 : Hostile Spell
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3168,12 +3166,18 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=283483)   : Apply Aura (6) | Add Flat Modifier: Spell Resource Cost (107)
-                   Base Value: -3000 | Scaled Value: -3000 | Misc Value: 14 | Target: Self(1)
+                   Base Value: -3500 | Scaled Value: -3500 | Misc Value: 14 | Target: Self(1)
                    Affected Spells: Void Eruption (228260), Void Eruption (228360)
 #2 (id=325209)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 4 (107)
-                   Base Value: -30 | Scaled Value: -30 | Misc Value: 32 | Target: Self(1)
+                   Base Value: -35 | Scaled Value: -35 | Misc Value: 32 | Target: Self(1)
                    Affected Spells: Voidform (185916)
-Description      : Void Eruption may be cast anytime your Insanity level is ${100+$m1/100} or higher.
+#3 (id=361454)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Target: Self(1)
+                   Affected Spells: Voidform (194249)
+#4 (id=361455)   : Dummy (3)
+                   Base Value: 1 | Scaled Value: 1 | Target: Self(1)
+                   Affected Spells: Voidform (194249)
+Description      : Void Eruption may be cast anytime your Insanity level is ${100+$m1/100} or higher$@switch<$s4>[][, and Voidform increases Shadow damage dealt by an additional $s3%].
 
 Name             : Mind Flay (id=193473) [Spell Family (6)] 
 Class            : Priest
@@ -3203,6 +3207,7 @@ Spell Level      : 10
 Duration         : Aura (infinite)
 Stacks           : 100 maximum
 Proc Chance      : 101%
+Affecting spells : Legacy of the Void (193225), 
 Triggered by     : Insanity (194251)
 Attributes       : ........ ........ ..x..... x..x.x.x   .....x.. ..x..... ........ ........ 
                  : ........ ......x. ...x.... ........   ........ ........ ........ ........ 
@@ -3220,7 +3225,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Self(1)
 #4 (id=285141)   : Apply Aura (6) | Add Percent Modifier: Spell Global Cooldown (108)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 21 | Target: Self(1)
-                   Affected Spells: Power Word: Shield (17), Shadow Word: Pain (589), Mind Blast (8092), Psychic Scream (8122), Mind Flay (15407), Mass Dispel (32375), Mass Dispel (32592), Shadowfiend (34433), Vampiric Touch (34914), Mind Spike (73510), Mindbender (123040), Shadow Mend (186263), Shadow Mend (187464), Mindbender (200174), Shadow Word: Void (205351), Shadow Crash (205385), Void Bolt (205448), Mind Spike (236741)
+                   Affected Spells: Power Word: Shield (17), Shadow Word: Pain (589), Mind Blast (8092), Psychic Scream (8122), Mind Flay (15407), Mass Dispel (32375), Mass Dispel (32592), Shadowfiend (34433), Vampiric Touch (34914), Mind Spike (73510), Mindbender (123040), Shadow Mend (186263), Shadow Mend (187464), Mindbender (200174), Shadow Word: Void (205351), Shadow Crash (205385), Shadow Crash (205386), Void Bolt (205448)
 #5 (id=285142)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #6 (id=286264)   : Apply Aura (6) | Unknown effect sub type (453)
@@ -3510,26 +3515,6 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | SP Coefficient: 1.00000 | Misc Value: 23 | Target: Self(1)
                    Affected Spells: Atonement (194384)
 Description      : Increases Atonement duration by $s1 sec.
-
-Name             : Lingering Insanity (id=197937) [Spell Family (6)] 
-Class            : Priest
-School           : Shadow
-Duration         : 60 seconds
-Stacks           : 100 maximum
-Proc Chance      : 101%
-Attributes       : ........ ........ ..x..... x..x.x..   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=290888)   : Apply Aura (6) | Modify All Haste% (193)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self(1)
-#2 (id=290890)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-Description      : $@spelldesc199849
-Tooltip          : Haste increased by $w1%.
 
 Name             : Lingering Insanity (id=199849) [Spell Family (6), Passive, Hidden] 
 Class            : Priest
@@ -4146,11 +4131,13 @@ Description      : Hurl a bolt of slow-moving Shadow energy at the destination, 
 
 |cFFFFFFFFGenerates $/100;s2 Insanity.|r
 
-Name             : Shadow Crash (id=205386) [Scaling Spell (8)] 
+Name             : Shadow Crash (id=205386) [Scaling Spell (8), Spell Family (6)] 
+Hotfixed         : Affecting Spells, Spell Family
 Class            : Priest
 School           : Shadow
 Spell Level      : 1
 Range            : 100 yards
+Affecting spells : Shadow Priest (137033), Voidform (194249)
 Triggered by     : Shadow Crash (205385)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -4600,9 +4587,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Activated by casting Void Eruption. Twists your Shadowform with the powers of the Void, increasing Shadow damage you deal by $194249s1%$?s8092[, reducing the cooldown on Mind Blast by ${$194249m6/-1000} sec,][] and granting an additional $194249m3% Haste every $194249t5 sec.
 
-Your Insanity will drain increasingly fast until it reaches 0 and Voidform ends.
-
-When Voidform ends, you return to normal Shadowform, and you gain Lingering Insanity, allowing the Haste bonus to persist for $197937d or until you next enter Voidform.
+Your Insanity will drain increasingly fast until it reaches 0 and Voidform ends.
 
 Name             : Void Bolt (id=228266) [Spell Family (6), Passive] 
 Class            : Shadow Priest
@@ -4811,38 +4796,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : When you cast Renew on yourself, it reduces all damage you take by $193065s2%.
 
-Name             : Mind Spike (id=236741) [Spell Family (6)] 
-Class            : Priest
-School           : Shadowfrost
-Spell Level      : 1
-Range            : 40 yards
-Cast Time        : 1.5 seconds
-GCD              : 1.5 seconds
-Affecting spells : Shadow Priest (137033), Lucidity (137323), Mental Fatigue (185104), Voidform (194249), Void Siphon (215322)
-Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
-                 : ........ ........ ...x.... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=358113)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
-#2 (id=358114)   : School Damage: shadowfrost (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.30000 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
-#3 (id=358115)   : Energize Power (30)
-                   Base Value: 500 | Scaled Value: 500 | Misc Value: insanity | Target: Self(1)
-#4 (id=358116)   : Dummy (3)
-                   Base Value: 100 | Scaled Value: 100 | Target: Enemy(6)
-#5 (id=358119)   : Dummy (3)
-                   Base Value: 25 | Scaled Value: 25 | Target: Enemy(6)
-Description      : Drive a shadowy spike into the target's mind, dealing $s2 Shadowfrost damage and detonating your damage over time effects on the target.
-
-For each damage over time effect detonated, Mind Spike gains $s4% damage and Insanity generation, and deals $s5% of its damage to all nearby targets. 
-
-|cFFFFFFFFGenerates ${$m3/100} Insanity.|r
-
-
 Name             : Mind Flay (id=237388) [Spell Family (6)] 
 Class            : Priest
 School           : Shadow
@@ -4860,5 +4813,20 @@ Effects          :
 #1 (id=359434)   : School Damage: shadow (2)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.40000 | Target: Enemy(6)
 Description      : $@spelldesc234702
+
+Name             : Misery (id=238558) [Spell Family (6), Passive] 
+Class            : Priest
+School           : Physical
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=361457)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+Description      : Vampiric Touch also applies Shadow Word: Pain to the target.
 
 

@@ -6885,8 +6885,8 @@ void death_knight_t::default_apl_frost()
   }
 
   // Cooldowns
-  def -> add_action( this, "Sindragosa's Fury", "if=buff.pillar_of_frost.up" );
-  def -> add_talent( this, "Obliteration" );
+  def -> add_action( this, "Sindragosa's Fury", "if=buff.pillar_of_frost.up&(buff.unholy_strength.up|(buff.pillar_of_frost.remains<3&target.time_to_die<60))&debuff.razorice.stack==5&!buff.obliteration.up" );
+  def -> add_talent( this, "Obliteration", "if=!talent.frozen_pulse.enabled|(rune<2&runic_power<28)" );
   def -> add_talent( this, "Breath of Sindragosa", "if=runic_power>=50" );
 
   // Choose APL
@@ -6910,12 +6910,17 @@ void death_knight_t::default_apl_frost()
   // Refresh Icy talons if it's about to expire
   generic -> add_action( this, "Frost Strike", "if=buff.icy_talons.remains<1.5&talent.icy_talons.enabled" );
 
-  // Howling blast disease upkeep and rimeing
+  // Howling blast disease upkeep
   generic -> add_action( this, "Howling Blast", "target_if=!dot.frost_fever.ticking" );
+  
+  // priotize Obliterate if Koltira's Newfound Will is equipped and talent Frozen Pulse and T19 2pc bonus active
+  generic -> add_action( this, "Obliterate", "if=equipped.132366&talent.frozen_pulse.enabled&set_bonus.tier19_2pc=1" );
+  
+  // Howling blast @rime proc
   generic -> add_action( this, "Howling Blast", "if=buff.rime.react" );
 
   // Prevent RP waste
-  generic -> add_action( this, "Frost Strike", "if=runic_power>=80" );
+  generic -> add_action( this, "Frost Strike", "if=runic_power.deficit<=10" );
 
   // Do core rotation
   generic -> add_action( "call_action_list,name=core" );
@@ -8395,11 +8400,6 @@ struct death_knight_module_t : public module_t {
 
   void register_hotfixes() const override
   {
-    hotfix::register_effect( "Death Knight", "2016-11-18", "Runic Empowerment base proc chance is intended to be 1.5% per Runic Power spent.", 68676, hotfix::HOTFIX_FLAG_LIVE )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 15 )
-      .verification_value( 1 );
     /*
     hotfix::register_effect( "Death Knight", "2016-08-23", "Clawing Shadows damage has been changed to 130% weapon damage (was 150% Attack Power).", 324719 )
       .field( "ap_coefficient" )
