@@ -4722,7 +4722,7 @@ struct earthquake_damage_t : public shaman_spell_t
     aoe = -1;
     ground_aoe = background = true;
     school = SCHOOL_PHYSICAL;
-    spell_power_mod.direct = 0.3; // Hardcoded into tooltip because it's cool
+    spell_power_mod.direct = 0.5; // Hardcoded into tooltip because it's cool
     base_multiplier *= 1.0 + p() -> artifact.the_ground_trembles.percent();
   }
 
