@@ -18,7 +18,8 @@ $(Tier)=T19M_NH
 
 
 # Death Knight
-DeathKnight_Legendaries.simc
+DeathKnight_Frost_Legendaries.simc
+DeathKnight_Unholy_Legendaries.simc
 
 # Demon Hunter
 
