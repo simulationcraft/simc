@@ -284,6 +284,7 @@ public:
   struct specs_t
   {
     const spell_data_t* critical_strikes;
+    const spell_data_t* hunter;
 
     // Beast Mastery
     const spell_data_t* cobra_shot;
@@ -531,6 +532,9 @@ public:
                    ab( n, player, s ),
                    benefits_from_sniper_training( false )
   {
+    if ( ab::data().affected_by( p() -> specs.hunter -> effectN( 2 ) ) )
+      ab::cooldown -> hasted = true;
+
     if ( ab::data().affected_by( p() -> mastery.sniper_training -> effectN( 2 ) ) )
       benefits_from_sniper_training = true;
   }
@@ -2922,7 +2926,6 @@ struct chimaera_shot_t: public hunter_ranged_attack_t
   {
     parse_options( options_str );
     callbacks = false;
-    cooldown -> hasted = true;
     frost = new chimaera_shot_impact_t( player, "chimaera_shot_frost", player -> find_spell( 171454 ) );
     add_child( frost );
     nature = new chimaera_shot_impact_t( player, "chimaera_shot_nature", player -> find_spell( 171457 ) );
@@ -3026,7 +3029,6 @@ struct black_arrow_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t( "black_arrow", player, player -> find_talent_spell( "Black Arrow" ) )
   {
     parse_options( options_str );
-    cooldown -> hasted = true;
     tick_may_crit = true;
     hasted_ticks = false;
     duration = this -> dot_duration;
@@ -3068,7 +3070,6 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
   aimed_shot_base_t( const std::string& name, hunter_t* p, const spell_data_t* s):
     hunter_ranged_attack_t( name, p, s )
   {
-    background = true;
     parse_spell_data( *p -> specs.aimed_shot );
 
     if ( p -> artifacts.wind_arrows.rank() )
@@ -3216,7 +3217,6 @@ struct aimed_shot_t: public aimed_shot_base_t
   {
     parse_options( options_str );
 
-    background = false;
     may_proc_mm_feet = true;
     if ( p -> sets.has_set_bonus( HUNTER_MARKSMANSHIP, T18, B4 ) )
       base_execute_time *= 1.0 - ( p -> sets.set( HUNTER_MARKSMANSHIP, T18, B4 ) -> effectN( 2 ).percent() );
@@ -3635,7 +3635,7 @@ struct sidewinders_t: hunter_ranged_attack_t
 
     aoe                       = -1;
     attack_power_mod.direct   = p -> find_spell( 214581 ) -> effectN( 1 ).ap_coeff();
-    cooldown -> hasted        = true;
+    cooldown -> hasted        = true; // not in spell data for some reason
 
     if ( p -> artifacts.critical_focus.rank() )
       energize_amount += p -> find_spell( 191328 ) -> effectN( 2 ).base_value();
@@ -3836,7 +3836,7 @@ struct mongoose_bite_t: hunter_melee_attack_t
     hunter_melee_attack_t( "mongoose_bite", p, p -> specs.mongoose_bite )
   {
     parse_options( options_str );
-    cooldown -> hasted = true;
+    cooldown -> hasted = true; // not in spell data for some reason
   }
 
   virtual void execute() override
@@ -3883,7 +3883,6 @@ struct flanking_strike_t: hunter_melee_attack_t
     hunter_melee_attack_t( "flanking_strike", p, p -> specs.flanking_strike )
   {
     parse_options( options_str );
-    cooldown -> hasted = true;
   }
 
   virtual void execute() override
@@ -3954,8 +3953,6 @@ struct lacerate_t: public hunter_melee_attack_t
     parse_options( options_str );
 
     base_tick_time = data().effectN( 1 ).period();
-    cooldown -> duration = data().cooldown();
-    cooldown -> hasted = false;
     direct_tick = false;
     dot_duration = data().duration();
     tick_zero = false;
@@ -4147,7 +4144,6 @@ struct butchery_t: public hunter_melee_attack_t
     parse_options( options_str );
 
     aoe = -1;
-    cooldown -> hasted = true;
   }
 
   virtual double action_multiplier() const override
@@ -4588,7 +4584,6 @@ struct dire_beast_t: public hunter_spell_t
   {
     parse_options( options_str );
 
-    cooldown -> hasted = true;
     harmful = false;
     hasted_ticks = false;
     may_crit = false;
@@ -4756,7 +4751,6 @@ struct kill_command_t: public hunter_spell_t
   {
     parse_options( options_str );
 
-    cooldown -> hasted = true;
     harmful = false;
   }
 
@@ -4818,7 +4812,6 @@ struct dire_frenzy_t: public hunter_spell_t
   {
     parse_options( options_str );
 
-    cooldown -> hasted = true;
     harmful = false;
     school = SCHOOL_PHYSICAL;
 
@@ -5603,6 +5596,7 @@ void hunter_t::init_spells()
 
   // Spec spells
   specs.critical_strikes     = find_spell( 157443 );
+  specs.hunter               = find_spell( 137014 );
 
   specs.beast_cleave         = find_specialization_spell( "Beast Cleave" );
   specs.exotic_beasts        = find_specialization_spell( "Exotic Beasts" );
