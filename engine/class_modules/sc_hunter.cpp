@@ -285,6 +285,9 @@ public:
   {
     const spell_data_t* critical_strikes;
     const spell_data_t* hunter;
+    const spell_data_t* beast_mastery_hunter;
+    const spell_data_t* marksmanship_hunter;
+    const spell_data_t* survival_hunter;
 
     // Beast Mastery
     const spell_data_t* cobra_shot;
@@ -558,6 +561,20 @@ public:
   hunter_td_t* td( player_t* t ) const
   {
     return p() -> get_target_data( t );
+  }
+
+  void init() override
+  {
+    ab::init();
+
+    if ( ab::data().affected_by( p() -> specs.beast_mastery_hunter -> effectN( 1 ) ) )
+      ab::base_dd_multiplier *= 1.0 + p() -> specs.beast_mastery_hunter -> effectN( 1 ).percent();
+
+    if ( ab::data().affected_by( p() -> specs.survival_hunter -> effectN( 1 ) ) )
+      ab::base_dd_multiplier *= 1.0 + p() -> specs.survival_hunter -> effectN( 1 ).percent();
+
+    if ( ab::data().affected_by( p() -> specs.survival_hunter -> effectN( 2 ) ) )
+      ab::base_td_multiplier *= 1.0 + p() -> specs.survival_hunter -> effectN( 2 ).percent();
   }
 
   void execute() override
@@ -927,6 +944,20 @@ public:
   {
     return static_cast<hunter_t*>( p() -> o() );
   }
+
+  void init() override
+  {
+    ab::init();
+
+    if ( ab::data().affected_by( o() -> specs.beast_mastery_hunter -> effectN( 1 ) ) )
+      ab::base_dd_multiplier *= 1.0 + o() -> specs.beast_mastery_hunter -> effectN( 1 ).percent();
+
+    if ( ab::data().affected_by( o() -> specs.survival_hunter -> effectN( 1 ) ) )
+      ab::base_dd_multiplier *= 1.0 + o() -> specs.survival_hunter -> effectN( 1 ).percent();
+
+    if ( ab::data().affected_by( o() -> specs.survival_hunter -> effectN( 2 ) ) )
+      ab::base_td_multiplier *= 1.0 + o() -> specs.survival_hunter -> effectN( 2 ).percent();
+  }
 };
 
 // COPY PASTE of blademaster trinket code so we can support mastery for beastmaster
@@ -1261,6 +1292,8 @@ public:
                       o() -> artifacts.furious_swipes
                       .percent();
     }
+    if ( o() -> find_spell( 118459 ) -> affected_by ( o() -> specs.beast_mastery_hunter -> effectN( 1 ) ) )
+      cleave_value *= 1.0 + o() -> specs.beast_mastery_hunter -> effectN( 1 ).percent();
     buffs.beast_cleave = 
       buff_creator_t( this, 118455, "beast_cleave" )
         .activated( true )
@@ -1729,6 +1762,8 @@ struct hati_t: public hunter_secondary_pet_t
                       o() -> artifacts.furious_swipes
                       .percent();
     }
+    if ( o() -> find_spell( 118459 ) -> affected_by ( o() -> specs.beast_mastery_hunter -> effectN( 1 ) ) )
+      cleave_value *= 1.0 + o() -> specs.beast_mastery_hunter -> effectN( 1 ).percent();
     buffs.beast_cleave = 
       buff_creator_t( this, 118455, "beast_cleave" )
         .activated( true )
@@ -2519,6 +2554,9 @@ struct volley_tick_t: hunter_ranged_attack_t
     aoe = -1;
     attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
     travel_speed = 0.0;
+
+    if ( data().affected_by( p -> specs.beast_mastery_hunter -> effectN( 6 ) ) )
+      base_multiplier *= 1.0 + p -> specs.beast_mastery_hunter -> effectN( 6 ).percent();
   }
 
   virtual void execute() override
@@ -2739,6 +2777,9 @@ struct barrage_t: public hunter_ranged_attack_t
       range = radius;
       range = 0;
       travel_speed = 0.0;
+
+      if ( data().affected_by( player -> specs.beast_mastery_hunter -> effectN( 5 ) ) )
+        base_multiplier *= 1.0 + player -> specs.beast_mastery_hunter -> effectN( 5 ).percent();
     }
 
     void impact(action_state_t* s) override {
@@ -5602,6 +5643,9 @@ void hunter_t::init_spells()
   // Spec spells
   specs.critical_strikes     = find_spell( 157443 );
   specs.hunter               = find_spell( 137014 );
+  specs.beast_mastery_hunter = find_specialization_spell( "Beast Mastery Hunter" );
+  specs.marksmanship_hunter  = find_specialization_spell( "Marksmanship Hunter" );
+  specs.survival_hunter      = find_specialization_spell( "Survival Hunter" );
 
   specs.beast_cleave         = find_specialization_spell( "Beast Cleave" );
   specs.exotic_beasts        = find_specialization_spell( "Exotic Beasts" );
