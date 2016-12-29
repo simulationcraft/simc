@@ -25,7 +25,7 @@ actions.precombat+=/potion,name=old_war
 actions=auto_attack
 actions+=/pillar_of_frost
 actions+=/mind_freeze
-actions+=/arcane_torrent,if=runic_power.deficit>20
+actions+=/arcane_torrent,if=runic_power.deficit>20&!talent.breath_of_sindragosa.enabled
 actions+=/blood_fury,if=!talent.breath_of_sindragosa.enabled|dot.breath_of_sindragosa.ticking
 actions+=/berserking,if=buff.pillar_of_frost.up
 actions+=/use_item,slot=finger2
@@ -33,17 +33,18 @@ actions+=/use_item,slot=trinket1
 actions+=/potion,name=old_war
 actions+=/sindragosas_fury,if=buff.pillar_of_frost.up&(buff.unholy_strength.up|(buff.pillar_of_frost.remains<3&target.time_to_die<60))&debuff.razorice.stack==5&!buff.obliteration.up
 actions+=/obliteration,if=!talent.frozen_pulse.enabled|(rune<2&runic_power<28)
-actions+=/breath_of_sindragosa,if=runic_power>=50
+actions+=/breath_of_sindragosa,if=runic_power>=90
 actions+=/run_action_list,name=bos,if=dot.breath_of_sindragosa.ticking
 actions+=/call_action_list,name=shatter,if=talent.shattering_strikes.enabled
 actions+=/call_action_list,name=generic,if=!talent.shattering_strikes.enabled
 
-actions.bos=howling_blast,target_if=!dot.frost_fever.ticking
-actions.bos+=/call_action_list,name=core
-actions.bos+=/horn_of_winter
-actions.bos+=/empower_rune_weapon,if=runic_power<=70
-actions.bos+=/hungering_rune_weapon
-actions.bos+=/howling_blast,if=buff.rime.react
+actions.bos=howling_blast,target_if=!dot.frost_fever.ticking|buff.rime.react&runic_power>40
+actions.bos+=/obliterate,if=runic_power<70|rune>=3
+actions.bos+=/horn_of_winter,if=runic_power<40
+actions.bos+=/empower_rune_weapon,if=runic_power<40
+actions.bos+=/hungering_rune_weapon,if=runic_power<40
+actions.bos+=/arcane_torrent,if=runic_power<40
+actions.bos+=/remorseless_winter,if=runic_power<15
 
 actions.core=frost_strike,if=buff.obliteration.up&!buff.killing_machine.react
 actions.core+=/remorseless_winter,if=(spell_targets.remorseless_winter>=2|talent.gathering_storm.enabled)&!(talent.frostscythe.enabled&buff.killing_machine.react&spell_targets.frostscythe>=2)
