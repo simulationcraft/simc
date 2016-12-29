@@ -4288,7 +4288,7 @@ struct touch_of_death_t: public monk_spell_t
 // Touch of Karma
 // ==========================================================================
 // When Touch of Karma (ToK) is activated, two spells are placed. A buff on the player (id: 125174), and a 
-// debuff on the target(id: 122470). Whenever a the player takes damage, a dot (id: 124280) is placed on 
+// debuff on the target (id: 122470). Whenever the player takes damage, a dot (id: 124280) is placed on 
 // the target that increases as the player takes damage. Each time the player takes damage, the dot is refreshed
 // and recalculates the dot size based on the current dot size. Just to make it easier to code, I'll wait until
 // the Touch of Karma buff expires before placing a dot on the target. Net result should be the same.
@@ -6881,6 +6881,30 @@ struct serenity_buff_t: public monk_buff_t < buff_t > {
     base_t::expire_override( expiration_stacks, remaining_duration );
   }
 };
+
+struct touch_of_karma_buff_t: public monk_buff_t < buff_t > {
+  touch_of_karma_buff_t( monk_t& p, const std::string& n, const spell_data_t* s ):
+    base_t( p, buff_creator_t( &p, n, s ) )
+  {
+    default_value = 0;
+    cooldown -> duration = timespan_t::zero();
+
+    buff_duration = s -> duration();
+  }
+
+  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
+  {
+    // Make sure the value is reset upon each trigger
+    current_value = 0;
+
+    return base_t::trigger( stacks, value, chance, duration );
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    base_t::expire_override( expiration_stacks, remaining_duration );
+  }
+};
 }
 
 // ==========================================================================
@@ -7727,8 +7751,7 @@ void monk_t::create_buffs()
                               .cd( timespan_t::zero() );
 
   // TODO: change spec.touch_of_karma to passives.touch_of_karma_buff once DBC updates
-  buff.touch_of_karma = buff_creator_t( this, "touch_of_karma", spec.touch_of_karma )
-    .default_value( 0 );
+  buff.touch_of_karma = new buffs::touch_of_karma_buff_t( *this, "touch_of_karma", spec.touch_of_karma );
 
   buff.transfer_the_power = buff_creator_t( this, "transfer_the_power", artifact.transfer_the_power.data().effectN( 1 ).trigger() )
     .default_value( artifact.transfer_the_power.rank() ? artifact.transfer_the_power.percent() : 0 ); 
