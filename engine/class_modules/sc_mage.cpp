@@ -4308,11 +4308,7 @@ struct flame_patch_driver_t : public fire_mage_spell_t
   void tick( dot_t* d ) override
   {
     fire_mage_spell_t::tick( d );
-    if (  ( sim -> current_time() - last_tick_time ) >= tick_time( d -> state ) )
-    {
-      flame_patch_hit -> execute();
-      last_tick_time = sim -> current_time();
-    }
+    flame_patch_hit -> execute();
   }
 };
 // Flamestrike Spell ==========================================================
@@ -4391,7 +4387,7 @@ struct flamestrike_t : public fire_mage_spell_t
       {
         td( state -> target ) -> dots.flame_patch_driver -> cancel();
       }
-      flame_patch_driver -> start_time = sim -> current_time();
+      flame_patch_driver -> target = state -> target;
       flame_patch_driver -> execute();
     }
   }
