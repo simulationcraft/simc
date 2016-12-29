@@ -6819,7 +6819,7 @@ void death_knight_t::default_apl_frost()
   def -> add_action( this, "Mind Freeze" );
 
   // Racials
-  def -> add_action( "arcane_torrent,if=runic_power.deficit>20" );
+  def -> add_action( "arcane_torrent,if=runic_power.deficit>20&!talent.breath_of_sindragosa.enabled" );
   def -> add_action( "blood_fury,if=!talent.breath_of_sindragosa.enabled|dot.breath_of_sindragosa.ticking" );
   def -> add_action( "berserking,if=buff.pillar_of_frost.up" );
 
@@ -6841,7 +6841,7 @@ void death_knight_t::default_apl_frost()
   // Cooldowns
   def -> add_action( this, "Sindragosa's Fury", "if=buff.pillar_of_frost.up&(buff.unholy_strength.up|(buff.pillar_of_frost.remains<3&target.time_to_die<60))&debuff.razorice.stack==5&!buff.obliteration.up" );
   def -> add_talent( this, "Obliteration", "if=!talent.frozen_pulse.enabled|(rune<2&runic_power<28)" );
-  def -> add_talent( this, "Breath of Sindragosa", "if=runic_power>=50" );
+  def -> add_talent( this, "Breath of Sindragosa", "if=runic_power>=90" );
 
   // Choose APL
   def -> add_action( "run_action_list,name=bos,if=dot.breath_of_sindragosa.ticking" );
@@ -6927,19 +6927,13 @@ void death_knight_t::default_apl_frost()
   shatter -> add_talent( this, "Hungering Rune Weapon", "if=!talent.breath_of_sindragosa.enabled" );
 
   // Breath of Sindragosa rotation
-
-  // Do keep up Frost Fevers, even in BoS
-  bos -> add_action( this, "Howling Blast", "target_if=!dot.frost_fever.ticking" );
-
-  // Do core rotation
-  bos -> add_action( "call_action_list,name=core" );
-
-  bos -> add_talent( this, "Horn of Winter" );
-  bos -> add_action( this, "Empower Rune Weapon", "if=runic_power<=70" );
-  bos -> add_talent( this, "Hungering Rune Weapon" );
-
-  // Low priority howling blasts, if they are free
-  bos -> add_action( this, "Howling Blast", "if=buff.rime.react" );
+  bos -> add_action( this, "Howling Blast", "target_if=!dot.frost_fever.ticking|buff.rime.react&runic_power>40" );
+  bos -> add_action( this, "Obliterate", "if=runic_power<70|rune>=3" );
+  bos -> add_action( this, "Horn of Winter", "if=runic_power<40" );
+  bos -> add_action( this, "Empower Rune Weapon", "if=runic_power<40" );
+  bos -> add_talent( this, "Hungering Rune Weapon", "if=runic_power<40" );
+  bos -> add_action( "arcane_torrent,if=runic_power<40" );
+  bos -> add_action( this, "Remorseless Winter", "if=runic_power<15" );
 }
 
 void death_knight_t::default_apl_unholy()
