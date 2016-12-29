@@ -2050,7 +2050,10 @@ void print_html_player_action_priority_list( report::sc_html_stream& os,
     std::vector<std::string> targets;
 
     targets.push_back( "none" );
-    targets.push_back( p.target->name() );
+    if ( p.target )
+    {
+      targets.push_back( p.target->name() );
+    }
 
     for ( const auto& sequence_data : p.collected_data.action_sequence )
     {
