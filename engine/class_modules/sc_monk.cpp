@@ -131,6 +131,7 @@ public:
     dot_t* renewing_mist;
     dot_t* soothing_mist;
     dot_t* touch_of_death;
+    dot_t* touch_of_karma;
   } dots;
 
   struct buffs_t
@@ -139,6 +140,7 @@ public:
     debuff_t* gale_burst;
     debuff_t* keg_smash;
     debuff_t* storm_earth_and_fire;
+    debuff_t* touch_of_karma;
   } debuff;
 
   monk_t& monk;
@@ -246,6 +248,7 @@ public:
     buff_t* spinning_crane_kick;
     buff_t* storm_earth_and_fire;
     buff_t* serenity;
+    buff_t* touch_of_karma;
     buff_t* transfer_the_power;
 
     // Legendaries
@@ -580,6 +583,7 @@ public:
     const spell_data_t* hit_combo;
     const spell_data_t* mark_of_the_crane;
     const spell_data_t* whirling_dragon_punch;
+    const spell_data_t* touch_of_karma_buff;
     const spell_data_t* touch_of_karma_tick;
     const spell_data_t* tier17_4pc_melee;
     const spell_data_t* tier18_2pc_melee;
@@ -4283,6 +4287,11 @@ struct touch_of_death_t: public monk_spell_t
 // ==========================================================================
 // Touch of Karma
 // ==========================================================================
+// When Touch of Karma (ToK) is activated, two spells are placed. A buff on the player (id: 125174), and a 
+// debuff on the target(id: 122470). Whenever a the player takes damage, a dot (id: 124280) is placed on 
+// the target that increases as the player takes damage. Each time the player takes damage, the dot is refreshed
+// and recalculates the dot size based on the current dot size. Just to make it easier to code, I'll wait until
+// the Touch of Karma buff expires before placing a dot on the target. Net result should be the same.
 
 struct touch_of_karma_dot_t: public residual_action::residual_periodic_action_t < monk_melee_attack_t >
 {
@@ -6894,6 +6903,10 @@ monk( *p )
       .spell( p -> passives.gale_burst )
       .default_value( 0 )
       .quiet( true );
+    debuff.touch_of_karma = buff_creator_t( *this, "touch_of_karma" )
+      .spell( p -> spec.touch_of_karma )
+      // set the percent of the max hp as the default value.
+      .default_value( p -> spec.touch_of_karma -> effectN( 3 ).percent() );
   }
 
   if ( p -> specialization() == MONK_BREWMASTER )
@@ -6911,6 +6924,7 @@ monk( *p )
   dots.renewing_mist = target -> get_dot( "renewing_mist", p );
   dots.soothing_mist = target -> get_dot( "soothing_mist", p );
   dots.touch_of_death = target -> get_dot( "touch_of_death", p );
+  dots.touch_of_karma = target -> get_dot( "touch_of_karma", p );
 }
 
 // monk_t::create_action ====================================================
@@ -7420,6 +7434,7 @@ void monk_t::init_spells()
   passives.hit_combo                        = find_spell( 196741 );
   passives.mark_of_the_crane                = find_spell( 228287 );
   passives.whirling_dragon_punch            = find_spell( 158221 );
+  passives.touch_of_karma_buff              = find_spell( 125174 );
   passives.touch_of_karma_tick              = find_spell( 124280 );
   passives.tier17_4pc_melee                 = find_spell( 166603 );
   passives.tier18_2pc_melee                 = find_spell( 216172 );
@@ -7486,7 +7501,7 @@ void monk_t::init_base_stats()
     case MONK_WINDWALKER:
     {
       base.distance = 3;
-      base_gcd += spec.stance_of_the_fierce_tiger -> effectN( 6 ).time_value(); // Saved as -500 milliseconds
+      base_gcd += spec.stance_of_the_fierce_tiger -> effectN( 5 ).time_value(); // Saved as -500 milliseconds
       base.attack_power_per_agility = 1.0;
       resources.base[RESOURCE_ENERGY] = 100;
       resources.base[RESOURCE_ENERGY] += sets.set(MONK_WINDWALKER, T18, B4) -> effectN( 2 ).base_value();
@@ -7710,6 +7725,10 @@ void monk_t::create_buffs()
                               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                               .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER )
                               .cd( timespan_t::zero() );
+
+  // TODO: change spec.touch_of_karma to passives.touch_of_karma_buff once DBC updates
+  buff.touch_of_karma = buff_creator_t( this, "touch_of_karma", spec.touch_of_karma )
+    .default_value( 0 );
 
   buff.transfer_the_power = buff_creator_t( this, "transfer_the_power", artifact.transfer_the_power.data().effectN( 1 ).trigger() )
     .default_value( artifact.transfer_the_power.rank() ? artifact.transfer_the_power.percent() : 0 ); 
@@ -8548,6 +8567,24 @@ void monk_t::target_mitigation( school_e school,
   // Damage Reduction Cooldowns
   if ( buff.fortifying_brew -> up() )
     s -> result_amount *= 1.0 - spec.fortifying_brew -> effectN( 1 ).percent();
+
+  // Touch of Karma Absorbtion
+  if ( buff.touch_of_karma -> up() )
+  {
+    double percent_HP = spec.touch_of_karma -> effectN( 3 ).percent() * max_health();
+    if ( ( buff.touch_of_karma -> value() + s -> result_amount ) >= percent_HP )
+    {
+      double difference = percent_HP - buff.touch_of_karma -> value();
+      buff.touch_of_karma -> current_value += difference;
+      s -> result_amount -= difference;
+      buff.touch_of_karma -> expire();
+    }
+    else
+    {
+      buff.touch_of_karma -> current_value += s -> result_amount;
+      s -> result_amount = 0;
+    }
+  }
 
   switch ( specialization() )
   {
