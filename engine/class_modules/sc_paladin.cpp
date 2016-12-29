@@ -1511,7 +1511,8 @@ struct consecration_t : public paladin_spell_t
         // spawn at feet of player
         .x( execute_state -> action -> player -> x_position )
         .y( execute_state -> action -> player -> y_position )
-        .duration( ground_effect_duration )
+        // TODO: this is a hack that doesn't work properly, fix this correctly
+        .duration( ground_effect_duration * ( p() -> cache.spell_haste() ) )
         .start_time( sim -> current_time()  )
         .action( damage_tick )
         .hasted( ground_aoe_params_t::SPELL_HASTE ), true );
