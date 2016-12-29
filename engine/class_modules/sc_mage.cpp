@@ -4287,12 +4287,10 @@ struct flame_patch_t : public fire_mage_spell_t
 struct flame_patch_driver_t : public fire_mage_spell_t
 {
   flame_patch_t* flame_patch_hit;
-  timespan_t start_time,
-             last_tick_time;
+  timespan_t last_tick_time;
   flame_patch_driver_t( mage_t* p ) :
     fire_mage_spell_t( "flame_patch_driver", p, p -> talents.flame_patch ),
     flame_patch_hit( new flame_patch_t( p ) ),
-    start_time( timespan_t::zero() ),
     last_tick_time( timespan_t::zero() )
   {
     background = true;
@@ -4308,7 +4306,11 @@ struct flame_patch_driver_t : public fire_mage_spell_t
   void tick( dot_t* d ) override
   {
     fire_mage_spell_t::tick( d );
-    flame_patch_hit -> execute();
+    if (  ( sim -> current_time() - last_tick_time ) >= tick_time( d -> state ) )
+    {
+      flame_patch_hit -> execute();
+      last_tick_time = sim -> current_time();
+    }
   }
 };
 // Flamestrike Spell ==========================================================
@@ -4383,11 +4385,18 @@ struct flamestrike_t : public fire_mage_spell_t
     }
     if ( state -> chain_target == 0 && p() -> talents.flame_patch -> ok() )
     {
-      if ( td( state -> target ) -> dots.flame_patch_driver -> is_ticking() )
-      {
-        td( state -> target ) -> dots.flame_patch_driver -> cancel();
-      }
+       std::vector< player_t*>& tl = target_list();
+
+       for ( size_t i = 0, targets = tl.size(); i < targets; i++ )
+       {
+         if ( td( tl[ i ] ) -> dots.flame_patch_driver -> is_ticking() )
+         {
+           td( tl[ i ] ) -> dots.flame_patch_driver -> cancel();
+         }
+       }
+
       flame_patch_driver -> target = state -> target;
+      flame_patch_driver -> last_tick_time = timespan_t::zero();
       flame_patch_driver -> execute();
     }
   }
