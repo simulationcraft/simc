@@ -549,6 +549,7 @@ namespace buffs {
   {
     liadrins_fury_unleashed_t( player_t* p ):
       buff_t( buff_creator_t( p, "liadrins_fury_unleashed", p -> find_spell( 208410 ) )
+      .tick_zero( true )
       .tick_callback( [ this, p ]( buff_t*, int, const timespan_t& ) {
         paladin_t* paladin = debug_cast<paladin_t*>( p );
         paladin -> resource_gain( RESOURCE_HOLY_POWER, data().effectN( 1 ).base_value(), paladin -> gains.hp_liadrins_fury_unleashed );
