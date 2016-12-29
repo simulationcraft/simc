@@ -111,6 +111,7 @@ struct mage_td_t : public actor_target_data_t
   struct dots_t
   {
     dot_t* flamestrike;
+    dot_t* flame_patch_driver;
     dot_t* frost_bomb;
     dot_t* ignite;
     dot_t* living_bomb;
@@ -4261,26 +4262,57 @@ struct fireball_t : public fire_mage_spell_t
 
 // Flame Patch Spell ==========================================================
 
+//TODO: For now, we're converting flame patch back to the old way of doing ground aoe effects
+// until it's able to handle non-overlap-able effects.
+
 struct flame_patch_t : public fire_mage_spell_t
 {
   flame_patch_t( mage_t* p ) :
-    fire_mage_spell_t( "flame_patch", p, p -> talents.flame_patch )
+    fire_mage_spell_t( "flame_patch", p, p -> find_spell( 205470 ) )
   {
-    hasted_ticks=true;
     spell_power_mod.direct = p -> find_spell( 205472 ) -> effectN( 1 ).sp_coeff();
     aoe = -1;
     background = true;
-    ground_aoe = background = true;
-    school = SCHOOL_FIRE;
     // PTR Multiplier
     base_multiplier *= 1.0 + p -> find_spell( 137019 ) -> effectN( 1 ).percent();
   }
 
-  // Override damage type to avoid triggering Doom Nova
   dmg_e amount_type( const action_state_t* /* state */,
                      bool /* periodic */ ) const override
   {
     return DMG_OVER_TIME;
+  }
+};
+
+struct flame_patch_driver_t : public fire_mage_spell_t
+{
+  flame_patch_t* flame_patch_hit;
+  timespan_t start_time,
+             last_tick_time;
+  flame_patch_driver_t( mage_t* p ) :
+    fire_mage_spell_t( "flame_patch_driver", p, p -> talents.flame_patch ),
+    flame_patch_hit( new flame_patch_t( p ) ),
+    start_time( timespan_t::zero() ),
+    last_tick_time( timespan_t::zero() )
+  {
+    background = true;
+    dot_duration = p -> find_spell( 205470 ) -> duration();
+    base_tick_time = timespan_t::from_seconds( 1.0 );
+    hasted_ticks = true;
+    callbacks = false;
+    add_child( flame_patch_hit );
+    tick_zero = true;
+    school = SCHOOL_FIRE;
+  }
+
+  void tick( dot_t* d ) override
+  {
+    fire_mage_spell_t::tick( d );
+    if (  ( sim -> current_time() - last_tick_time ) >= tick_time( d -> state ) )
+    {
+      flame_patch_hit -> execute();
+      last_tick_time = sim -> current_time();
+    }
   }
 };
 // Flamestrike Spell ==========================================================
@@ -4301,12 +4333,12 @@ struct aftershocks_t : public fire_mage_spell_t
 struct flamestrike_t : public fire_mage_spell_t
 {
   aftershocks_t* aftershocks;
-  flame_patch_t* flame_patch;
+  flame_patch_driver_t* flame_patch_driver;
 
   flamestrike_t( mage_t* p, const std::string& options_str ) :
     fire_mage_spell_t( "flamestrike", p,
                        p -> find_specialization_spell( "Flamestrike" ) ),
-                       flame_patch( new flame_patch_t( p ) )
+                       flame_patch_driver( new flame_patch_driver_t( p ) )
   {
     parse_options( options_str );
 
@@ -4355,13 +4387,12 @@ struct flamestrike_t : public fire_mage_spell_t
     }
     if ( state -> chain_target == 0 && p() -> talents.flame_patch -> ok() )
     {
-      // DurationID: 205470. 8s
-      make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
-        .pulse_time( timespan_t::from_seconds( 1.0 ) )
-        .target( execute_state -> target )
-        .duration( timespan_t::from_seconds( 8.0 ) )
-        .action( flame_patch )
-        .hasted( ground_aoe_params_t::SPELL_HASTE ), true );
+      if ( td( state -> target ) -> dots.flame_patch_driver -> is_ticking() )
+      {
+        td( state -> target ) -> dots.flame_patch_driver -> cancel();
+      }
+      flame_patch_driver -> start_time = sim -> current_time();
+      flame_patch_driver -> execute();
     }
   }
 
@@ -7635,6 +7666,7 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   debuffs( debuffs_t() )
 {
   dots.flamestrike    = target -> get_dot( "flamestrike",    mage );
+  dots.flame_patch_driver     = target -> get_dot( "flame_patch_driver", mage );
   dots.frost_bomb     = target -> get_dot( "frost_bomb",     mage );
   dots.ignite         = target -> get_dot( "ignite",         mage );
   dots.living_bomb    = target -> get_dot( "living_bomb",    mage );
