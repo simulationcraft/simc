@@ -656,8 +656,10 @@ public:
     //
     void adjust_end_event()
     {
+      double drain_per_second = insanity_drain_per_second();
+
       // Ensure that the current insanity level is correct
-      if ( last_drained != actor.sim->current_time() )
+      if ( drain_per_second > 0 && last_drained != actor.sim->current_time() )
       {
         drain();
         return;
@@ -671,7 +673,6 @@ public:
         return;
       }
 
-      double drain_per_second = insanity_drain_per_second();
       timespan_t seconds_left = drain_per_second
         ? timespan_t::from_seconds( actor.resources.current[ RESOURCE_INSANITY ] / drain_per_second )
         : timespan_t::zero();
@@ -3947,6 +3948,16 @@ struct voidform_t final : public priest_buff_t<haste_buff_t>
     priest.insanity.begin_tracking();
 
     return r;
+  }
+
+  bool freeze_stacks() override
+  {
+    // Hotfixed 2016-09-24: Voidform stacks no longer increase while Dispersion
+    // is active.
+    if ( priest.buffs.dispersion->check() )
+      return true;
+
+    return base_t::freeze_stacks();
   }
 
   void expire_override( int expiration_stacks,
