@@ -70,7 +70,6 @@ actions.generic+=/death_coil,if=runic_power.deficit<10
 actions.generic+=/death_coil,if=!talent.dark_arbiter.enabled&buff.sudden_doom.up&!buff.necrosis.up&rune<=3
 actions.generic+=/death_coil,if=talent.dark_arbiter.enabled&buff.sudden_doom.up&cooldown.dark_arbiter.remains>5&rune<=3
 actions.generic+=/festering_strike,if=debuff.festering_wound.stack<7&cooldown.apocalypse.remains<5
-actions.generic+=/wait,sec=cooldown.apocalypse.remains,if=cooldown.apocalypse.remains<=1&cooldown.apocalypse.remains
 actions.generic+=/soul_reaper,if=debuff.festering_wound.stack>=3
 actions.generic+=/festering_strike,if=debuff.soul_reaper.up&!debuff.festering_wound.up
 actions.generic+=/scourge_strike,if=debuff.soul_reaper.up&debuff.festering_wound.stack>=1

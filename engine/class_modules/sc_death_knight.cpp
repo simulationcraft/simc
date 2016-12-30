@@ -7047,9 +7047,6 @@ void death_knight_t::default_apl_unholy()
   // FW stacking
   generic->add_action(this, "Festering Strike", "if=debuff.festering_wound.stack<7&cooldown.apocalypse.remains<5");
 
-  //Wait if apocalypse not casted
-  generic->add_action("wait,sec=cooldown.apocalypse.remains,if=cooldown.apocalypse.remains<=1&cooldown.apocalypse.remains");
-
   // Soul reapering
   generic->add_talent(this, "Soul Reaper", "if=debuff.festering_wound.stack>=3");
   generic->add_action(this, "Festering Strike", "if=debuff.soul_reaper.up&!debuff.festering_wound.up");
