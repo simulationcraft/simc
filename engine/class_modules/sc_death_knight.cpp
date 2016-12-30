@@ -6792,11 +6792,11 @@ void death_knight_t::default_apl_blood()
 
 void death_knight_t::default_apl_frost()
 {
-  action_priority_list_t* def       = get_action_priority_list( "default"   );
-  action_priority_list_t* bos       = get_action_priority_list( "bos"       );
-  action_priority_list_t* generic   = get_action_priority_list( "generic"   );
-  action_priority_list_t* core      = get_action_priority_list( "core"      );
-  action_priority_list_t* shatter   = get_action_priority_list( "shatter"   );
+  action_priority_list_t* def         = get_action_priority_list( "default" );
+  action_priority_list_t* generic     = get_action_priority_list( "generic" );
+  action_priority_list_t* core        = get_action_priority_list( "core" );
+  action_priority_list_t* bos         = get_action_priority_list( "bos" );
+  action_priority_list_t* bos_ticking = get_action_priority_list( "bos_ticking" );
 
   std::string food_name = ( true_level > 100 ) ? "fishbrul_special" :
                           ( true_level >  90 ) ? "pickled_eel" :
@@ -6820,7 +6820,7 @@ void death_knight_t::default_apl_frost()
 
   // Racials
   def -> add_action( "arcane_torrent,if=runic_power.deficit>20" );
-  def -> add_action( "blood_fury,if=!talent.breath_of_sindragosa.enabled|dot.breath_of_sindragosa.ticking" );
+  def -> add_action( "blood_fury,if=buff.pillar_of_frost.up" );
   def -> add_action( "berserking,if=buff.pillar_of_frost.up" );
 
   // On-use items
@@ -6835,19 +6835,18 @@ void death_knight_t::default_apl_frost()
   // In-combat potion
   if ( sim -> allow_potions && true_level >= 80 )
   {
-    def -> add_action( "potion,name=" + potion_name );
+    def -> add_action( "potion,name=" + potion_name + ",if=buff.pillar_of_frost.up" );
   }
 
   // Cooldowns
   def -> add_action( this, "Sindragosa's Fury", "if=buff.pillar_of_frost.up&(buff.unholy_strength.up|(buff.pillar_of_frost.remains<3&target.time_to_die<60))&debuff.razorice.stack==5&!buff.obliteration.up" );
   def -> add_talent( this, "Obliteration", "if=!talent.frozen_pulse.enabled|(rune<2&runic_power<28)" );
-  def -> add_talent( this, "Breath of Sindragosa", "if=runic_power>=50" );
 
   // Choose APL
-  def -> add_action( "run_action_list,name=bos,if=dot.breath_of_sindragosa.ticking" );
-  def -> add_action( "call_action_list,name=shatter,if=talent.shattering_strikes.enabled" );
-  def -> add_action( "call_action_list,name=generic,if=!talent.shattering_strikes.enabled" );
-
+  def -> add_action( "call_action_list,name=generic,if=!talent.breath_of_sindragosa.enabled" );
+  def -> add_action( "call_action_list,name=bos,if=talent.breath_of_sindragosa.enabled&!dot.breath_of_sindragosa.ticking" );
+  def -> add_action( "call_action_list,name=bos_ticking,if=talent.breath_of_sindragosa.enabled&dot.breath_of_sindragosa.ticking" );
+  
   // Core rotation
   core -> add_action( this, "Frost Strike", "if=buff.obliteration.up&!buff.killing_machine.react" );
   core -> add_action( this, "Remorseless Winter", "if=(spell_targets.remorseless_winter>=2|talent.gathering_storm.enabled)&!(talent.frostscythe.enabled&buff.killing_machine.react&spell_targets.frostscythe>=2)" );
@@ -6861,16 +6860,19 @@ void death_knight_t::default_apl_frost()
 
   // Generic single target rotation
 
-  // Refresh Icy talons if it's about to expire
-  generic -> add_action( this, "Frost Strike", "if=buff.icy_talons.remains<1.5&talent.icy_talons.enabled" );
+  // Refresh Icy talons if it's about to expire (non Shatter version)
+  generic -> add_action( this, "Frost Strike", "if=!talent.shattering_strikes.enabled&(buff.icy_talons.remains<1.5&talent.icy_talons.enabled)" );
+  
+  // Frost Strike (Shattering Strikes)
+  generic -> add_action( this, "Frost Strike", "if=talent.shattering_strikes.enabled&debuff.razorice.stack=5" );
 
-  // Howling blast disease upkeep
+  // Howling Blast disease upkeep
   generic -> add_action( this, "Howling Blast", "target_if=!dot.frost_fever.ticking" );
   
-  // priotize Obliterate if Koltira's Newfound Will is equipped and talent Frozen Pulse and T19 2pc bonus active
+  // Priotize Obliterate if Koltira's Newfound Will is equipped and talent Frozen Pulse and T19 2pc bonus active
   generic -> add_action( this, "Obliterate", "if=equipped.132366&talent.frozen_pulse.enabled&set_bonus.tier19_2pc=1" );
   
-  // Howling blast @rime proc
+  // Howling Blast @rime proc
   generic -> add_action( this, "Howling Blast", "if=buff.rime.react" );
 
   // Prevent RP waste
@@ -6880,66 +6882,34 @@ void death_knight_t::default_apl_frost()
   generic -> add_action( "call_action_list,name=core" );
 
   // Continue the generic one with Horn of Winter stuff
-  generic -> add_talent( this, "Horn of Winter", "if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains>15" );
-  generic -> add_talent( this, "Horn of Winter", "if=!talent.breath_of_sindragosa.enabled" );
+  generic -> add_talent( this, "Horn of Winter" );
 
   // If nothing else to do, do Frost Strike
-  generic -> add_action( this, "Frost Strike", "if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains>15" );
-  generic -> add_action( this, "Frost Strike", "if=!talent.breath_of_sindragosa.enabled" );
+  generic -> add_action( this, "Frost Strike" );
 
-  // Misc actions, Breath of Sindragosa version
-  generic -> add_action( this, "Empower Rune Weapon", "if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains>15" );
-  generic -> add_talent( this, "Hungering Rune Weapon", "if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains>15" );
+  // Misc actions
+  generic -> add_action( this, "Empower Rune Weapon" );
+  generic -> add_talent( this, "Hungering Rune Weapon" );
 
-  // Misc actions, Bossless version
-  generic -> add_action( this, "Empower Rune Weapon", "if=!talent.breath_of_sindragosa.enabled" );
-  generic -> add_talent( this, "Hungering Rune Weapon", "if=!talent.breath_of_sindragosa.enabled" );
-
-  // Shattering Strikes single target rotation
-
-  // Frost Strike on 5 Razorice
-  shatter -> add_action( this, "Frost Strike", "if=debuff.razorice.stack=5" );
-
-  // Howling blast disease upkeep and rimeing
-  shatter -> add_action( this, "Howling Blast", "target_if=!dot.frost_fever.ticking" );
-  shatter -> add_action( this, "Howling Blast", "if=buff.rime.react" );
-
-  // Prevent RP waste
-  shatter -> add_action( this, "Frost Strike", "if=runic_power>=80" );
-
-  // Do core rotation
-  shatter -> add_action( "call_action_list,name=core" );
-
-  // Continue the generic one with Horn of Winter stuff
-  shatter -> add_talent( this, "Horn of Winter", "if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains>15" );
-  shatter -> add_talent( this, "Horn of Winter", "if=!talent.breath_of_sindragosa.enabled" );
-
-  // If nothing else to do, do Frost Strike
-  shatter -> add_action( this, "Frost Strike", "if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains>15" );
-  shatter -> add_action( this, "Frost Strike", "if=!talent.breath_of_sindragosa.enabled" );
-
-  // Misc actions, Breath of Sindragosa version
-  shatter -> add_action( this, "Empower Rune Weapon", "if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains>15" );
-  shatter -> add_talent( this, "Hungering Rune Weapon", "if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains>15" );
-
-  // Misc actions, Bossless version
-  shatter -> add_action( this, "Empower Rune Weapon", "if=!talent.breath_of_sindragosa.enabled" );
-  shatter -> add_talent( this, "Hungering Rune Weapon", "if=!talent.breath_of_sindragosa.enabled" );
-
-  // Breath of Sindragosa rotation
-
-  // Do keep up Frost Fevers, even in BoS
+  // Breath of Sindragosa core rotation
   bos -> add_action( this, "Howling Blast", "target_if=!dot.frost_fever.ticking" );
-
-  // Do core rotation
-  bos -> add_action( "call_action_list,name=core" );
-
-  bos -> add_talent( this, "Horn of Winter" );
-  bos -> add_action( this, "Empower Rune Weapon", "if=runic_power<=70" );
-  bos -> add_talent( this, "Hungering Rune Weapon" );
-
-  // Low priority howling blasts, if they are free
+  bos -> add_talent( this, "Breath of Sindragosa", "if=runic_power>=50" );
+  bos -> add_action( this, "Frost Strike", "if=runic_power>=90&set_bonus.tier19_4pc" );
   bos -> add_action( this, "Howling Blast", "if=buff.rime.react" );
+  bos -> add_action( this, "Frost Strike", "if=runic_power>=70" );
+  bos -> add_action( this, "Obliterate" );
+  bos -> add_talent( this, "Horn of Winter", "if=cooldown.breath_of_sindragosa.remains>15&runic_power<=70" );
+  bos -> add_action( this, "Frost Strike", "if=cooldown.breath_of_sindragosa.remains>15" );
+  bos -> add_action( this, "Remorseless Winter", "if=cooldown.breath_of_sindragosa.remains>10" );
+  
+  // Breath of Sindragosa ticking rotation
+  bos_ticking -> add_action( this, "Howling Blast", "target_if=!dot.frost_fever.ticking" );
+  bos_ticking -> add_action( this, "Howling Blast", "if=((runic_power>=20&set_bonus.tier19_4pc)|runic_power>=30)&buff.rime.react&!dot.hungering_rune_weapon.ticking" );
+  bos_ticking -> add_action( this, "Obliterate", "if=runic_power<=70|dot.hungering_rune_weapon.ticking|rune>=3" );
+  bos_ticking -> add_talent( this, "Horn of Winter", "if=runic_power<70&!dot.hungering_rune_weapon.ticking" );
+  bos_ticking -> add_talent( this, "Hungering Rune Weapon", "if=runic_power<20" );
+  bos_ticking -> add_action( this, "Empower Rune Weapon", "if=runic_power<20" );
+  bos_ticking -> add_action( this, "Remorseless Winter", "if=runic_power<20" );
 }
 
 void death_knight_t::default_apl_unholy()
