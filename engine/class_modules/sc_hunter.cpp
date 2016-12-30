@@ -3589,6 +3589,7 @@ struct sidewinders_t: hunter_ranged_attack_t
     hunter_ranged_attack_t( "sidewinders", p, p -> talents.sidewinders )
   {
     parse_options( options_str );
+    may_proc_mm_feet = true;
     may_proc_bullseye = false;
 
     aoe                       = -1;
