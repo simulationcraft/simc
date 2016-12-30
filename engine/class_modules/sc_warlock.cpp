@@ -330,6 +330,7 @@ public:
     const spell_data_t* nethermancy;
 
     // Affliction only
+    const spell_data_t* affliction;
     const spell_data_t* nightfall;
     const spell_data_t* unstable_affliction;
     const spell_data_t* unstable_affliction_2;
@@ -339,11 +340,13 @@ public:
     const spell_data_t* shadow_bite_2;
 
     // Demonology only
+    const spell_data_t* demonology;
     const spell_data_t* doom;
     const spell_data_t* demonic_empowerment;
     const spell_data_t* wild_imps;
 
     // Destruction only
+    const spell_data_t* destruction;
     const spell_data_t* immolate;
     const spell_data_t* conflagrate;
     const spell_data_t* conflagrate_2;
@@ -935,6 +938,15 @@ struct firebolt_t: public warlock_pet_spell_t
     base_multiplier *= 1.0 + p -> o() -> artifact.impish_incineration.percent();
   }
 
+  virtual double action_multiplier() const override
+  {
+    double m = warlock_pet_spell_t::action_multiplier();
+
+    m *= 1.0 + p() -> o() -> spec.destruction -> effectN( 1 ).percent();
+
+    return m;
+  }
+
   virtual double composite_target_multiplier( player_t* target ) const override
   {
     double m = warlock_pet_spell_t::composite_target_multiplier( target );
@@ -1146,6 +1158,15 @@ struct doom_bolt_t: public warlock_pet_spell_t
 
     if ( p -> o() -> talents.grimoire_of_supremacy -> ok() ) //FIXME spelldata?
       base_multiplier *= 0.8;
+  }
+
+  virtual double action_multiplier() const override
+  {
+    double m = warlock_pet_spell_t::action_multiplier();
+
+    m *= 1.0 + p() -> o() -> spec.destruction -> effectN( 1 ).percent();
+
+    return m;
   }
 
   virtual double composite_target_multiplier( player_t* target ) const override
@@ -2200,6 +2221,7 @@ public:
   bool affected_by_contagion;
   bool affected_by_flamelicked;
   bool affected_by_odr_shawl_of_the_ymirjar;
+  bool affected_by_destruction_hotfix;
   bool destro_mastery;
 
   // Warlock module overrides the "target" option handling to properly target their own Soul Effigy
@@ -2294,6 +2316,7 @@ public:
     }
 
     affected_by_odr_shawl_of_the_ymirjar = data().affected_by( p() -> find_spell( 212173 ) -> effectN( 1 ) );
+    affected_by_destruction_hotfix = data().affected_by( p() -> spec.destruction -> effectN( 1 ) );
   }
 
   int n_targets() const override
@@ -2486,6 +2509,9 @@ public:
       double chaotic_energies_rng = rng().range( 0, p() -> cache.mastery_value() );
       pm *= 1.0 + chaotic_energies_rng;
     }
+
+    if ( affected_by_destruction_hotfix )
+      pm *= 1.0 + p() -> spec.destruction -> effectN( 1 ).percent();
 
     return pm;
   }
@@ -5202,7 +5228,7 @@ struct demonic_power_damage_t : public warlock_spell_t
     // Hotfix on the aff hotfix spell, check regularly.
     if ( p -> specialization() == WARLOCK_AFFLICTION )
     {
-      base_multiplier *= 1.0 + p -> find_spell( 137043 ) -> effectN( 1 ).percent();
+      base_multiplier *= 1.0 + p -> spec.affliction -> effectN( 1 ).percent();
     }
   }
 };
@@ -5887,6 +5913,9 @@ void warlock_t::init_spells()
   // General
   spec.fel_armor   = find_spell( 104938 );
   spec.nethermancy = find_spell( 86091 );
+  spec.affliction = find_spell( 137043 );
+  spec.demonology = find_spell( 137044 );
+  spec.destruction = find_spell( 137046 );
 
   // Specialization Spells
   // PTR
@@ -6325,6 +6354,9 @@ void warlock_t::apl_precombat()
   if ( specialization() != WARLOCK_DEMONOLOGY )
     precombat_list += "/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled";
 
+  if ( specialization() != WARLOCK_DEMONOLOGY )
+    precombat_list += "/life_tap,if=talent.empowered_life_tap.enabled&!buff.empowered_life_tap.remains";
+
   if ( sim -> allow_potions )
   {
     // Pre-potion
@@ -6365,7 +6397,6 @@ void warlock_t::apl_affliction()
     action_list_str += "|buff.collapsing_shadow.remains";
   action_list_str += ")";
 
-  add_action( "Reap Souls", "if=!buff.deadwind_harvester.remains&!trinket.has_stacking_stat.any&!trinket.has_stat.any&prev_gcd.unstable_affliction" );
   action_list_str += "/soul_effigy,if=!pet.soul_effigy.active";
   add_action( "Agony", "cycle_targets=1,if=remains<=tick_time+gcd" );
   action_list_str += "/service_pet,if=dot.corruption.remains&dot.agony.remains";
@@ -6395,13 +6426,17 @@ void warlock_t::apl_affliction()
   if ( find_item( "obelisk of_the_void" ) )
     action_list_str += "|buff.collapsing_shadow.remains";
 
-  add_action( "Corruption", "cycle_targets=1,if=remains<=tick_time+gcd" );
-  add_action( "Siphon Life", "cycle_targets=1,if=remains<=tick_time+gcd" );
+  add_action( "Corruption", "if=remains<=tick_time+gcd" );
+  add_action( "Corruption", "cycle_targets=1,if=(talent.absolute_corruption.enabled|!talent.malefic_grasp.enabled|!talent.soul_effigy.enabled)&remains<=tick_time+gcd" );
+  add_action( "Siphon Life", "if=remains<=tick_time+gcd" );
+  add_action( "Siphon Life", "cycle_targets=1,if=(!talent.malefic_grasp.enabled||!talent.soul_effigy.enabled)&remains<=tick_time+gcd" );
+
   action_list_str += "/life_tap,if=talent.empowered_life_tap.enabled&buff.empowered_life_tap.remains<=gcd";
   action_list_str += "/phantom_singularity";
   action_list_str += "/haunt";
 
   add_action( "Unstable Affliction", "if=talent.writhe_in_agony.enabled&talent.contagion.enabled" );
+  
   add_action( "Unstable Affliction", "if=talent.writhe_in_agony.enabled&(soul_shard>=4|trinket.proc.intellect.react|trinket.stacking_proc.mastery.react|trinket.proc.mastery.react|trinket.proc.crit.react|trinket.proc.versatility.react|buff.soul_harvest.remains|buff.deadwind_harvester.remains|buff.compounding_horror.react=5|target.time_to_die<=20" );
   if ( find_item( "horn_of_valor" ) )
     action_list_str += "|buff.valarjars_path.remains";
@@ -6410,9 +6445,12 @@ void warlock_t::apl_affliction()
   if ( find_item( "obelisk of_the_void" ) )
     action_list_str += "|buff.collapsing_shadow.remains";
   action_list_str += ")";
-  add_action( "Unstable Affliction", "if=talent.malefic_grasp.enabled&(target.time_to_die<30|dot.agony.remains>cast_time+8*spell_haste&(dot.corruption.remains>cast_time+8*spell_haste|talent.absolute_corruption.enabled)&(dot.siphon_life.remains>cast_time+8*spell_haste|!talent.siphon_life.enabled)|soul_shard>=4)" );
-  add_action( "Unstable Affliction", "if=talent.haunt.enabled&(soul_shard>=4|debuff.haunt.remains|target.time_to_die<30" );
 
+  add_action( "Unstable Affliction", "if=talent.malefic_grasp.enabled&target.time_to_die<30" );
+  add_action( "Unstable Affliction", "if=talent.malefic_grasp.enabled&soul_shard>=4" );
+  add_action( "Unstable Affliction", "if=talent.malefic_grasp.enabled&!prev_gcd.3.unstable_affliction&dot.agony.remains>cast_time+6.5&(dot.corruption.remains>cast_time+6.5|talent.absolute_corruption.enabled)&(dot.siphon_life.remains>cast_time+6.5|!talent.siphon_life.enabled)" );
+  
+  add_action( "Unstable Affliction", "if=talent.haunt.enabled&(soul_shard>=4|debuff.haunt.remains|target.time_to_die<30" );
   if ( find_item( "horn_of_valor" ) )
     action_list_str += "|buff.valarjars_path.remains";
   if ( find_item( "moonlit_prism" ) )
@@ -6421,11 +6459,18 @@ void warlock_t::apl_affliction()
     action_list_str += "|buff.collapsing_shadow.remains";
   action_list_str += ")";
 
+  add_action( "Reap Souls", "if=!buff.deadwind_harvester.remains&!trinket.has_stacking_stat.any&!trinket.has_stat.any&prev_gcd.1.unstable_affliction" );
   action_list_str += "/life_tap,if=talent.empowered_life_tap.enabled&buff.empowered_life_tap.remains<duration*0.3";
-  add_action( "Agony", "cycle_targets=1,if=remains<=duration*0.3&target.time_to_die>=remains" );
-  add_action( "Corruption", "cycle_targets=1,if=remains<=duration*0.3&target.time_to_die>=remains" );
-  action_list_str += "/haunt";
-  add_action( "Siphon Life", "cycle_targets=1,if=remains<=duration*0.3&target.time_to_die>=remains" );
+
+  add_action( "Agony", "cycle_targets=1,if=!talent.malefic_grasp.enabled&remains<=duration*0.3&target.time_to_die>=remains" );
+  add_action( "Agony", "cycle_targets=1,if=remains<=duration*0.3&target.time_to_die>=remains&!dot.unstable_affliction_1.remains&!dot.unstable_affliction_2.remains&!dot.unstable_affliction_3.remains&!dot.unstable_affliction_4.remains&!dot.unstable_affliction_5.remains" );
+  add_action( "Corruption", "if=!talent.malefic_grasp.enabled&remains<=duration*0.3&target.time_to_die>=remains" );
+  add_action( "Corruption", "if=remains<=duration*0.3&target.time_to_die>=remains&!dot.unstable_affliction_1.remains&!dot.unstable_affliction_2.remains&!dot.unstable_affliction_3.remains&!dot.unstable_affliction_4.remains&!dot.unstable_affliction_5.remains" );
+  add_action( "Corruption", "cycle_targets=1,if=(talent.absolute_corruption.enabled|!talent.malefic_grasp.enabled|!talent.soul_effigy.enabled)&remains<=duration*0.3&target.time_to_die>=remains" );
+  add_action( "Siphon Life", "if=!talent.malefic_grasp.enabled&remains<=duration*0.3&target.time_to_die>=remains" );
+  add_action( "Siphon Life", "if=remains<=duration*0.3&target.time_to_die>=remains&!dot.unstable_affliction_1.remains&!dot.unstable_affliction_2.remains&!dot.unstable_affliction_3.remains&!dot.unstable_affliction_4.remains&!dot.unstable_affliction_5.remains" );
+  add_action( "Siphon Life", "cycle_targets=1,if=(!talent.malefic_grasp.enabled|!talent.soul_effigy.enabled)&remains<=duration*0.3&target.time_to_die>=remains" );
+
   add_action( "Life Tap", "if=mana.pct<=10" );
   action_list_str += "/drain_soul,chain=1,interrupt=1";
 }
@@ -6433,9 +6478,9 @@ void warlock_t::apl_affliction()
 void warlock_t::apl_demonology()
 {
   action_list_str += "/implosion,if=wild_imp_remaining_duration<=action.shadow_bolt.execute_time&buff.demonic_synergy.remains";
-  action_list_str += "/implosion,if=prev_gcd.hand_of_guldan&wild_imp_remaining_duration<=3&buff.demonic_synergy.remains";
+  action_list_str += "/implosion,if=prev_gcd.1.hand_of_guldan&wild_imp_remaining_duration<=3&buff.demonic_synergy.remains";
   action_list_str += "/implosion,if=wild_imp_count<=4&wild_imp_remaining_duration<=action.shadow_bolt.execute_time&spell_targets.implosion>1";
-  action_list_str += "/implosion,if=prev_gcd.hand_of_guldan&wild_imp_remaining_duration<=4&spell_targets.implosion>2";
+  action_list_str += "/implosion,if=prev_gcd.1.hand_of_guldan&wild_imp_remaining_duration<=4&spell_targets.implosion>2";
   action_list_str += "/shadowflame,if=debuff.shadowflame.stack>0&remains<action.shadow_bolt.cast_time+travel_time";
   action_list_str += "/service_pet";
   add_action( "Summon Doomguard", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<3&(target.time_to_die>180|target.health.pct<=20|target.time_to_die<30)" );
@@ -6444,19 +6489,19 @@ void warlock_t::apl_demonology()
   add_action( "Summon Infernal", "if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>=3&equipped.132379&!cooldown.sindorei_spite_icd.remains" );
   add_action( "Call Dreadstalkers", "if=!talent.summon_darkglare.enabled&(spell_targets.implosion<3|!talent.implosion.enabled)" );
   add_action( "Hand of Gul'dan", "if=soul_shard>=4&!talent.summon_darkglare.enabled" );
-  action_list_str += "/summon_darkglare,if=prev_gcd.hand_of_guldan";
-  action_list_str += "/summon_darkglare,if=prev_gcd.call_dreadstalkers";
+  action_list_str += "/summon_darkglare,if=prev_gcd.1.hand_of_guldan";
+  action_list_str += "/summon_darkglare,if=prev_gcd.1.call_dreadstalkers";
   action_list_str += "/summon_darkglare,if=cooldown.call_dreadstalkers.remains>5&soul_shard<3";
   action_list_str += "/summon_darkglare,if=cooldown.call_dreadstalkers.remains<=action.summon_darkglare.cast_time&soul_shard>=3";
   action_list_str += "/summon_darkglare,if=cooldown.call_dreadstalkers.remains<=action.summon_darkglare.cast_time&soul_shard>=1&buff.demonic_calling.react";
   add_action( "Call Dreadstalkers", "if=talent.summon_darkglare.enabled&(spell_targets.implosion<3|!talent.implosion.enabled)&cooldown.summon_darkglare.remains>2" );
-  add_action( "Call Dreadstalkers", "if=talent.summon_darkglare.enabled&(spell_targets.implosion<3|!talent.implosion.enabled)&prev_gcd.summon_darkglare" );
+  add_action( "Call Dreadstalkers", "if=talent.summon_darkglare.enabled&(spell_targets.implosion<3|!talent.implosion.enabled)&prev_gcd.1.summon_darkglare" );
   add_action( "Call Dreadstalkers", "if=talent.summon_darkglare.enabled&(spell_targets.implosion<3|!talent.implosion.enabled)&cooldown.summon_darkglare.remains<=action.call_dreadstalkers.cast_time&soul_shard>=3" );
   add_action( "Call Dreadstalkers", "if=talent.summon_darkglare.enabled&(spell_targets.implosion<3|!talent.implosion.enabled)&cooldown.summon_darkglare.remains<=action.call_dreadstalkers.cast_time&soul_shard>=1&buff.demonic_calling.react" );
-  add_action( "Hand of Gul'dan", "if=soul_shard>=3&prev_gcd.call_dreadstalkers" );
+  add_action( "Hand of Gul'dan", "if=soul_shard>=3&prev_gcd.1.call_dreadstalkers" );
   add_action( "Hand of Gul'dan", "if=soul_shard>=5&cooldown.summon_darkglare.remains<=action.hand_of_guldan.cast_time" );
   add_action( "Hand of Gul'dan", "if=soul_shard>=4&cooldown.summon_darkglare.remains>2" );
-  add_action( "Demonic Empowerment", "if=wild_imp_no_de>3|prev_gcd.hand_of_guldan" );
+  add_action( "Demonic Empowerment", "if=wild_imp_no_de>3|prev_gcd.1.hand_of_guldan" );
   add_action( "Demonic Empowerment", "if=dreadstalker_no_de>0|darkglare_no_de>0|doomguard_no_de>0|infernal_no_de>0|service_no_de>0" );
   add_action( "Doom", "cycle_targets=1,if=!talent.hand_of_doom.enabled&target.time_to_die>duration&(!ticking|remains<duration*0.3)" );
   for ( int i = as< int >( items.size() ) - 1; i >= 0; i-- )
@@ -6502,14 +6547,14 @@ void warlock_t::apl_destruction()
   add_action( "Dimensional Rift", "if=charges=3" );
   add_action( "Immolate", "if=remains<=tick_time" );
   add_action( "Immolate", "cycle_targets=1,if=active_enemies>1&remains<=tick_time&(!talent.roaring_blaze.enabled|(!debuff.roaring_blaze.remains&action.conflagrate.charges<2))");
-  add_action( "Immolate", "if=talent.roaring_blaze.enabled&remains<=duration&!debuff.roaring_blaze.remains&target.time_to_die>10&(action.conflagrate.charges=2|(action.conflagrate.charges>=1&action.conflagrate.recharge_time<cast_time+gcd)|target.time_to_die<24)" ); 
+  add_action( "Immolate", "if=talent.roaring_blaze.enabled&remains<=duration&!debuff.roaring_blaze.remains&target.time_to_die>10&(action.conflagrate.charges=2+set_bonus.tier19_2pc|(action.conflagrate.charges>=1+set_bonus.tier19_2pc&action.conflagrate.recharge_time<cast_time+gcd)|target.time_to_die<24)" ); 
   action_list_str += "/berserking";
   action_list_str += "/blood_fury";
   action_list_str += "/arcane_torrent";
   action_list_str += "/potion,name=deadly_grace,if=(buff.soul_harvest.remains|trinket.proc.any.react|target.time_to_die<=45)";
   action_list_str += "/shadowburn,if=buff.conflagration_of_chaos.remains<=action.chaos_bolt.cast_time";
   action_list_str += "/shadowburn,if=(charges=1&recharge_time<action.chaos_bolt.cast_time|charges=2)&soul_shard<5";
-  add_action( "Conflagrate", "if=talent.roaring_blaze.enabled&(charges=2|(charges>=1&recharge_time<gcd)|target.time_to_die<24)" );
+  add_action( "Conflagrate", "if=talent.roaring_blaze.enabled&(charges=2+set_bonus.tier19_2pc|(charges>=1+set_bonus.tier19_2pc&recharge_time<gcd)|target.time_to_die<24)" );
   add_action( "Conflagrate", "if=talent.roaring_blaze.enabled&debuff.roaring_blaze.stack>0&dot.immolate.remains>dot.immolate.duration*0.3&(active_enemies=1|soul_shard<3)&soul_shard<5" );
   add_action( "Conflagrate", "if=!talent.roaring_blaze.enabled&!buff.backdraft.remains&buff.conflagration_of_chaos.remains<=action.chaos_bolt.cast_time" );
   add_action( "Conflagrate", "if=!talent.roaring_blaze.enabled&!buff.backdraft.remains&(charges=1&recharge_time<action.chaos_bolt.cast_time|charges=2)&soul_shard<5" );
@@ -6523,9 +6568,6 @@ void warlock_t::apl_destruction()
   add_action( "Summon Infernal", "if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>=3&equipped.132379&!cooldown.sindorei_spite_icd.remains" );
   action_list_str += "/soul_harvest";
   action_list_str += "/channel_demonfire,if=dot.immolate.remains>cast_time";
-  add_action( "Chaos Bolt", "if=soul_shard>3|buff.backdraft.remains" );
-  add_action( "Chaos Bolt", "if=buff.backdraft.remains&prev_gcd.incinerate" );
-  add_action( "Incinerate", "if=buff.backdraft.remains" );
   add_action( "Havoc", "if=active_enemies=1&talent.wreak_havoc.enabled&equipped.132375&!debuff.havoc.remains" );
   add_action( "Rain of Fire", "if=active_enemies>=4&cooldown.havoc.remains<=12&!talent.wreak_havoc.enabled");
   add_action( "Rain of Fire", "if=active_enemies>=6&talent.wreak_havoc.enabled");

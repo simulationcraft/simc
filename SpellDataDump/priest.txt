@@ -1,4 +1,4 @@
-SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23244, git build c5141f9)
+SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23244, git build 2679573)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Discipline Shadow Priest
@@ -1904,6 +1904,7 @@ School           : Holy
 Spell Level      : 1
 Range            : 50000 yards
 Stance Mask      : 0x80000000
+Affecting spells : Power Word: Shield (211558)
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ...x.... ........   ........ .x...... ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ......x. ........ 
@@ -2638,7 +2639,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179717)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 25 | Scaled Value: 25 | Target: Self(1)
-                   Affected Spells: Shadow Word: Pain (589), Mind Blast (8092), Shadow Word: Death (32379), Mind Spike (73510), Shadowy Apparition (148859), Shadow Word: Death (199911), Shadow Word: Void (205351), Shadow Crash (205385), Void Bolt (205448), Void Eruption (228260), Void Eruption (228360), Mind Flay (237388)
+                   Affected Spells: Shadow Word: Pain (589), Mind Blast (8092), Shadow Word: Death (32379), Mind Spike (73510), Shadowy Apparition (148859), Shadow Word: Death (199911), Shadow Word: Void (205351), Shadow Crash (205385), Shadow Crash (205386), Void Bolt (205448), Void Eruption (228260), Void Eruption (228360), Mind Flay (237388)
 #2 (id=191068)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Shadow Word: Pain (589), Mind Flay (15407), Vampiric Touch (34914), Void Torrent (205065)
@@ -3224,7 +3225,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Self(1)
 #4 (id=285141)   : Apply Aura (6) | Add Percent Modifier: Spell Global Cooldown (108)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 21 | Target: Self(1)
-                   Affected Spells: Power Word: Shield (17), Shadow Word: Pain (589), Mind Blast (8092), Psychic Scream (8122), Mind Flay (15407), Mass Dispel (32375), Mass Dispel (32592), Shadowfiend (34433), Vampiric Touch (34914), Mind Spike (73510), Mindbender (123040), Shadow Mend (186263), Shadow Mend (187464), Mindbender (200174), Shadow Word: Void (205351), Shadow Crash (205385), Void Bolt (205448)
+                   Affected Spells: Power Word: Shield (17), Shadow Word: Pain (589), Mind Blast (8092), Psychic Scream (8122), Mind Flay (15407), Mass Dispel (32375), Mass Dispel (32592), Shadowfiend (34433), Vampiric Touch (34914), Mind Spike (73510), Mindbender (123040), Shadow Mend (186263), Shadow Mend (187464), Mindbender (200174), Shadow Word: Void (205351), Shadow Crash (205385), Shadow Crash (205386), Void Bolt (205448)
 #5 (id=285142)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #6 (id=286264)   : Apply Aura (6) | Unknown effect sub type (453)
@@ -4130,11 +4131,13 @@ Description      : Hurl a bolt of slow-moving Shadow energy at the destination, 
 
 |cFFFFFFFFGenerates $/100;s2 Insanity.|r
 
-Name             : Shadow Crash (id=205386) [Scaling Spell (8)] 
+Name             : Shadow Crash (id=205386) [Scaling Spell (8), Spell Family (6)] 
+Hotfixed         : Affecting Spells, Spell Family
 Class            : Priest
 School           : Shadow
 Spell Level      : 1
 Range            : 100 yards
+Affecting spells : Shadow Priest (137033), Voidform (194249)
 Triggered by     : Shadow Crash (205385)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 

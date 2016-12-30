@@ -1,0 +1,89 @@
+# T19M_NH
+# Tier 19 Mythic Nighthold
+# * Ilvl Cap: 905
+# * Artifact Rank Cap: 54
+# * 3 Relics with max ilevel of 905
+# * No Legendaries (see Raid_T19x_Legendary.simc)
+# * No items from World Bosses / World Quests / BoEs
+# * Mythic+ gear is permitted up to the Mythic+ item level cap
+# * No Random Gems (ie. Bonus RNG Gem Slots)
+# * No Tertiary Stats
+# * No Ranked Gear (ie. Warforged/Titanforged)
+# * No Hardcoded Stats (generally if an item gives wrong stats: either bonus_id is wrong, either the item no longer exists in-game)
+# * It is recommended to use enchant name (ex : ",enchant=binding_of_mastery") rather than id/hardcoded stats.
+
+mage="Mage_Arcane_T19M_NH"
+level=110
+race=troll
+role=spell
+position=back
+talents=2022031
+artifact=4:0:0:0:0:72:3:73:1:74:3:75:3:77:3:78:1:79:3:80:1:81:3:82:3:83:3:84:3:86:1:87:1:290:1:1169:1:1339:1:1371:20
+spec=Arcane
+head=hood_of_everburning_knowledge,id=138312,bonus_id=3518
+neck=sorcerous_shadowruby_pendant,id=130233,bonus_id=1758/689/601/669,gem_id=130219,enchant_id=5439
+shoulders=mantle_of_everburning_knowledge,id=138321,bonus_id=3518
+back=cloak_of_everburning_knowledge,id=138365,bonus_id=3518,enchant=binding_of_intellect
+chest=robe_of_everburning_knowledge,id=138318,bonus_id=3518
+wrists=bracers_of_harnessed_flame,id=140850,bonus_id=3518
+hands=gloves_of_everburning_knowledge,id=138309,bonus_id=3518
+waist=manari_skullbuckled_cinch,id=140887,bonus_id=3518
+legs=leggings_of_everburning_knowledge,id=138315,bonus_id=3518
+feet=treads_of_galactic_odyssey,id=140885,bonus_id=3518
+finger1=spellblades_gemmed_signet,id=140895,bonus_id=3518,enchant=binding_of_crit
+finger2=ring_of_exclusive_servitude,id=140906,bonus_id=3518,enchant=binding_of_crit
+trinket1=arans_relaxing_ruby,id=142157
+trinket2=naraxas_spiked_tongue,id=137349,bonus_id=1727/1522
+main_hand=aluneth,id=127857,gem_id=140810/140831/140810,relic_id=3518/3518/3518
+save=Mage_Arcane_T19M_NH.simc
+
+mage="Mage_Fire_T19M_NH"
+level=110
+race=troll
+role=spell
+position=back
+talents=1012022
+artifact=54:0:0:0:0:748:1:749:3:750:3:751:3:752:3:753:3:754:3:755:3:756:3:757:3:758:1:759:1:760:1:761:1:762:1:763:1:1340:1:1372:20
+spec=fire
+head=hood_of_everburning_knowledge,id=138312,bonus_id=3518
+neck=,id=140898,bonus_id=3445,enchant_id=5439
+shoulders=mantle_of_everburning_knowledge,id=138321,bonus_id=3518
+back=,id=140909,bonus_id=3518,enchant=binding_of_intellect
+chest=,id=140848,bonus_id=3445
+wrists=,id=140886,bonus_id=3518
+hands=gloves_of_everburning_knowledge,id=138309,bonus_id=3518
+waist=manari_skullbuckled_cinch,id=140887,bonus_id=3518
+legs=leggings_of_everburning_knowledge,id=138315,bonus_id=3518
+feet=,id=140914,bonus_id=3518
+finger1=,id=140896,bonus_id=3518,enchant=binding_of_crit
+finger2=,id=140906,bonus_id=3518,enchant=binding_of_crit
+trinket1=arans_relaxing_ruby,id=142157
+trinket2=bough_of_corruption,id=139336,ilevel=880
+main_hand=felomelorn,id=128820,gem_id=140834/140810/140834,relic_id=3518/3518/3518
+off_hand=heart_of_the_phoenix,id=133959
+save=Mage_Fire_T19M_NH.simc
+
+mage="Mage_Frost_T19M_NH"
+level=110
+race=troll
+role=spell
+position=back
+talents=3012021
+artifact=53:0:0:0:0:783:1:784:3:785:3:786:3:787:3:788:3:789:3:790:3:791:3:792:3:793:1:794:1:795:1:796:1:797:1:798:1:1296:1:1373:20
+spec=frost
+head=nighthold_custodians_hood,id=140851,bonus_id=3445
+neck=sorcerous_shadowruby_pendant,id=130233,bonus_id=1758/689/601/669,gem_id=130219,enchant_id=5439
+shoulders=mantle_of_everburning_knowledge,id=138321,bonus_id=3518
+back=cloak_of_everburning_knowledge,id=138365,bonus_id=3518,enchant=binding_of_intellect
+chest=robes_of_fluctuating_energy,id=140848,bonus_id=3445
+wrists=bracers_of_harnessed_flame,id=140850,bonus_id=3518
+hands=gloves_of_everburning_knowledge,id=138309,bonus_id=3518
+waist=manari_skullbuckled_cinch,id=140887,bonus_id=3518
+legs=leggings_of_everburning_knowledge,id=138315,bonus_id=3518
+feet=treads_of_galactic_odyssey,id=140885,bonus_id=3518
+finger1=spellblades_gemmed_signet,id=140895,bonus_id=3518,enchant=binding_of_haste
+finger2=ring_of_exclusive_servitude,id=140906,bonus_id=3518,enchant=binding_of_haste
+trinket1=arans_relaxing_ruby,id=142157
+trinket2=brinewater_slime_in_a_bottle,id=142507,bonus_id=604/3469/1512
+main_hand=ebonchill,id=128862,gem_id=140832/140812/140832,relic_id=3518/3518/3518
+save=Mage_Frost_T19M_NH.simc

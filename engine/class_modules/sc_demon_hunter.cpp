@@ -591,7 +591,7 @@ public:
     soul_fragment_e = SOUL_FRAGMENT_ALL ) const;
   unsigned get_total_soul_fragments(
     soul_fragment_e = SOUL_FRAGMENT_ALL ) const;
-  void spawn_soul_fragment( soul_fragment_e, unsigned = 1 );
+  void spawn_soul_fragment( soul_fragment_e, unsigned = 1 , bool = false);
   void invalidate_damage_calcs();
   double get_target_reach() const
   {
@@ -1817,7 +1817,7 @@ struct eye_beam_t : public demon_hunter_spell_t
 
     // If Metamorphosis has less than channel s remaining, it gets extended so the whole Eye Beam happens during Meta.
     // TOCHECK: Base channel duration or hasted channel duration?
-    if ( p() -> buff.metamorphosis -> remains_lt( dot_duration ) )
+    if (p() -> buff.metamorphosis -> up() &&  p() -> buff.metamorphosis -> remains_lt( dot_duration ) )
     {
       p() -> buff.metamorphosis -> trigger( 1, p() -> buff.metamorphosis -> current_value, -1.0,
                                             dot_duration );
@@ -2358,7 +2358,7 @@ struct immolation_aura_t : public demon_hunter_spell_t
         // FIXME: placeholder proc chance, lack of info on real proc chance.
         if ( initial && p() -> talent.fallout -> ok() && rng().roll( 0.60 ) )
         {
-          p() -> spawn_soul_fragment( SOUL_FRAGMENT_LESSER );
+          p() -> spawn_soul_fragment( SOUL_FRAGMENT_LESSER, 1, p() -> bugs );
         }
 
         if ( p() -> legendary.kirel_narak < timespan_t::zero() )
@@ -6400,6 +6400,16 @@ void demon_hunter_t::apl_vengeance()
 
   def -> add_action( "auto_attack" );
   def->add_action(this, "Consume Magic");
+  
+  // On-use items
+  for (const auto& item : items)
+  {
+    if (item.has_special_effect(SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE))
+    {
+      def->add_action("use_item,slot=" + std::string(item.slot_name()));
+    }
+  }
+  
   def -> add_action( this, "Fiery Brand",
     "if=buff.demon_spikes.down&buff.metamorphosis.down" );
   def -> add_action( this, "Demon Spikes", "if=charges=2|buff.demon_spikes.d"
@@ -7092,14 +7102,14 @@ unsigned demon_hunter_t::get_total_soul_fragments( soul_fragment_e type ) const
 
 // demon_hunter_t::spawn_soul_fragment ======================================
 
-void demon_hunter_t::spawn_soul_fragment( soul_fragment_e type, unsigned n )
+void demon_hunter_t::spawn_soul_fragment( soul_fragment_e type, unsigned n, bool ignores_max )
 {
   proc_t* soul_proc = type == SOUL_FRAGMENT_GREATER ? proc.soul_fragment
                       : proc.soul_fragment_lesser;
 
   for ( unsigned i = 0; i < n; i++ )
   {
-    if ( get_total_soul_fragments( type ) == MAX_SOUL_FRAGMENTS )
+    if ( get_total_soul_fragments( type ) == MAX_SOUL_FRAGMENTS && !ignores_max)
     {
       // Find and delete the oldest fragment of this type.
       std::vector<soul_fragment_t*>::iterator it;

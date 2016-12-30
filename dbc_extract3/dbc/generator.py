@@ -1259,6 +1259,8 @@ class SpellDataGenerator(DataGenerator):
          215754, 215750,           # Magma Spit / summon spell for Spawn of Serpentrix
          # 7.1.5 de-links Mark of the Hidden Satyr damage spell fully from the driver
          191259,
+         # 7.1.5 Entwined Elemental Foci buffs
+         225729, 225730
         ),
 
         # Warrior:
@@ -1317,6 +1319,7 @@ class SpellDataGenerator(DataGenerator):
           ( 191070, 0 ), # Call of the Hunter
           ( 217207, 0 ), # Dire Frenzy (pet)
           ( 201594, 0 ), # Stampede
+          ( 118459, 5 ), # Beast Cleave
         ),
 
         # Rogue:
@@ -1502,6 +1505,7 @@ class SpellDataGenerator(DataGenerator):
           ( 116768, 3 ), # Combo Breaker: Blackout Kick
           ( 121283, 0 ), # Chi Sphere from Power Strikes
           ( 228287, 3 ), # Spinning Crane Kick's Mark of the Crane debuff
+          ( 125174, 3 ), # Touch of Karma redirect buff
           ( 195651, 0 ), # Crosswinds Artifact trait trigger spell
           ( 196061, 0 ), # Crosswinds Artifact trait damage spell
           ( 211432, 3 ), # Tier 19 4-piece DPS Buff

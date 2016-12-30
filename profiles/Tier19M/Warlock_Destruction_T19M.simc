@@ -3,7 +3,7 @@ level=110
 race=troll
 role=spell
 position=back
-talents=2301013
+talents=2203022
 artifact=38:142513:142516:142513:0:803:1:804:3:805:3:806:5:807:3:808:3:809:4:810:3:811:3:812:3:813:1:814:1:815:1:816:1:817:1:818:1:1355:1
 spec=destruction
 
@@ -23,6 +23,7 @@ actions.precombat+=/summon_doomguard,if=talent.grimoire_of_supremacy.enabled&act
 actions.precombat+=/augmentation,type=defiled
 actions.precombat+=/snapshot_stats
 actions.precombat+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
+actions.precombat+=/life_tap,if=talent.empowered_life_tap.enabled&!buff.empowered_life_tap.remains
 actions.precombat+=/potion,name=deadly_grace
 actions.precombat+=/chaos_bolt
 
@@ -31,14 +32,14 @@ actions=havoc,target=2,if=active_enemies>1&active_enemies<6&!debuff.havoc.remain
 actions+=/dimensional_rift,if=charges=3
 actions+=/immolate,if=remains<=tick_time
 actions+=/immolate,cycle_targets=1,if=active_enemies>1&remains<=tick_time&(!talent.roaring_blaze.enabled|(!debuff.roaring_blaze.remains&action.conflagrate.charges<2))
-actions+=/immolate,if=talent.roaring_blaze.enabled&remains<=duration&!debuff.roaring_blaze.remains&target.time_to_die>10&(action.conflagrate.charges=2|(action.conflagrate.charges>=1&action.conflagrate.recharge_time<cast_time+gcd)|target.time_to_die<24)
+actions+=/immolate,if=talent.roaring_blaze.enabled&remains<=duration&!debuff.roaring_blaze.remains&target.time_to_die>10&(action.conflagrate.charges=2+set_bonus.tier19_2pc|(action.conflagrate.charges>=1+set_bonus.tier19_2pc&action.conflagrate.recharge_time<cast_time+gcd)|target.time_to_die<24)
 actions+=/berserking
 actions+=/blood_fury
 actions+=/arcane_torrent
 actions+=/potion,name=deadly_grace,if=(buff.soul_harvest.remains|trinket.proc.any.react|target.time_to_die<=45)
 actions+=/shadowburn,if=buff.conflagration_of_chaos.remains<=action.chaos_bolt.cast_time
 actions+=/shadowburn,if=(charges=1&recharge_time<action.chaos_bolt.cast_time|charges=2)&soul_shard<5
-actions+=/conflagrate,if=talent.roaring_blaze.enabled&(charges=2|(charges>=1&recharge_time<gcd)|target.time_to_die<24)
+actions+=/conflagrate,if=talent.roaring_blaze.enabled&(charges=2+set_bonus.tier19_2pc|(charges>=1+set_bonus.tier19_2pc&recharge_time<gcd)|target.time_to_die<24)
 actions+=/conflagrate,if=talent.roaring_blaze.enabled&debuff.roaring_blaze.stack>0&dot.immolate.remains>dot.immolate.duration*0.3&(active_enemies=1|soul_shard<3)&soul_shard<5
 actions+=/conflagrate,if=!talent.roaring_blaze.enabled&!buff.backdraft.remains&buff.conflagration_of_chaos.remains<=action.chaos_bolt.cast_time
 actions+=/conflagrate,if=!talent.roaring_blaze.enabled&!buff.backdraft.remains&(charges=1&recharge_time<action.chaos_bolt.cast_time|charges=2)&soul_shard<5
@@ -52,9 +53,6 @@ actions+=/summon_doomguard,if=talent.grimoire_of_supremacy.enabled&spell_targets
 actions+=/summon_infernal,if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>=3&equipped.132379&!cooldown.sindorei_spite_icd.remains
 actions+=/soul_harvest
 actions+=/channel_demonfire,if=dot.immolate.remains>cast_time
-actions+=/chaos_bolt,if=soul_shard>3|buff.backdraft.remains
-actions+=/chaos_bolt,if=buff.backdraft.remains&prev_gcd.incinerate
-actions+=/incinerate,if=buff.backdraft.remains
 actions+=/havoc,if=active_enemies=1&talent.wreak_havoc.enabled&equipped.132375&!debuff.havoc.remains
 actions+=/rain_of_fire,if=active_enemies>=4&cooldown.havoc.remains<=12&!talent.wreak_havoc.enabled
 actions+=/rain_of_fire,if=active_enemies>=6&talent.wreak_havoc.enabled
@@ -73,7 +71,7 @@ neck=blackened_portalstone_necklace,id=139332,bonus_id=1806,enchant_id=5439
 shoulders=amice_of_the_unfurling_tempest,id=134432,bonus_id=1727/1522
 back=drape_of_the_unworthy,id=142521,bonus_id=3469/1512,enchant_id=5436
 chest=robes_of_the_ancient_chronicle,id=142297
-wrists=cinch_of_cosmic_insignficance,id=139187,bonus_id=1806
+wrists=clasp_of_cosmic_insignificance,id=139187,bonus_id=1806
 hands=oiled_riggers_handwraps,id=142429,bonus_id=3469/1512
 waist=cinch_of_light,id=142411,bonus_id=3469
 legs=leggings_of_the_lower_planes,id=142413,bonus_id=3469

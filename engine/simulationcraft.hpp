@@ -3735,8 +3735,7 @@ struct player_t : public actor_t
   bool action_queued;
   bool first_cast;
   action_t* last_foreground_action;
-  action_t* last_gcd_action;
-  action_t* prev_prev_gcd_action;
+  std::vector<action_t*> prev_gcd_actions;
   std::vector<action_t*> off_gcdactions; // Returns all off gcd abilities used since the last gcd.
 
   // Delay time used by "cast_delay" expression to determine when an action
@@ -6632,10 +6631,10 @@ struct dbc_proc_callback_t : public action_callback_t
     }
   }
 
-private:
   rng::rng_t& rng() const
   { return listener -> rng(); }
 
+private:
   bool roll( action_t* action )
   {
     if ( rppm )

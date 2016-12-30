@@ -25,14 +25,14 @@ actions.precombat+=/frostbolt
 
 # Executed every time the actor is available.
 actions=counterspell,if=target.debuff.casting.react
-actions+=/ice_lance,if=buff.fingers_of_frost.react=0&prev_gcd.flurry
+actions+=/ice_lance,if=buff.fingers_of_frost.react=0&prev_gcd.1.flurry
 actions+=/time_warp,if=(time=0&buff.bloodlust.down)|(buff.bloodlust.down&equipped.132410)
 actions+=/call_action_list,name=cooldowns
 actions+=/ice_nova,if=debuff.winters_chill.up
 actions+=/frostbolt,if=prev_off_gcd.water_jet
-actions+=/water_jet,if=prev_gcd.frostbolt&buff.fingers_of_frost.stack<(2+artifact.icy_hand.enabled)&buff.brain_freeze.react=0
+actions+=/water_jet,if=prev_gcd.1.frostbolt&buff.fingers_of_frost.stack<(2+artifact.icy_hand.enabled)&buff.brain_freeze.react=0
 actions+=/ray_of_frost,if=buff.icy_veins.up|(cooldown.icy_veins.remains>action.ray_of_frost.cooldown&buff.rune_of_power.down)
-actions+=/flurry,if=buff.brain_freeze.react&buff.fingers_of_frost.react=0&prev_gcd.frostbolt
+actions+=/flurry,if=buff.brain_freeze.react&buff.fingers_of_frost.react=0&prev_gcd.1.frostbolt
 actions+=/frost_bomb,if=debuff.frost_bomb.remains<action.ice_lance.travel_time&buff.fingers_of_frost.react>0
 actions+=/ice_lance,if=buff.fingers_of_frost.react>0&cooldown.icy_veins.remains>10|buff.fingers_of_frost.react>2
 actions+=/frozen_orb
@@ -57,7 +57,7 @@ neck=sorcerous_shadowruby_pendant,id=130233,bonus_id=1758/689/601/669,gem_id=130
 shoulders=amice_of_the_unfurling_tempest,id=134432,bonus_id=1727/1522
 back=drape_of_the_unworthy,id=142521,bonus_id=3469/1512,enchant=binding_of_intellect
 chest=robes_of_the_ancient_chronicle,id=142297
-wrists=cinch_of_cosmic_insignficance,id=139187,bonus_id=1806
+wrists=clasp_of_cosmic_insignificance,id=139187,bonus_id=1806
 hands=oiled_riggers_handwraps,id=142429,bonus_id=3469/1512
 waist=cinch_of_light,id=142411,bonus_id=3469
 legs=leggings_of_the_lower_planes,id=142413,bonus_id=3469

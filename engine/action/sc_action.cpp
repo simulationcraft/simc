@@ -1447,7 +1447,16 @@ void action_t::execute()
       s -> target = tl[ t ];
       s -> n_targets = std::min( num_targets, tl.size() );
       s -> chain_target = as<int>( t );
-      if ( ! pre_execute_state ) snapshot_state( s, amount_type( s ) );
+      if ( ! pre_execute_state )
+      {
+        snapshot_state( s, amount_type( s ) );
+      }
+      // Even if pre-execute state is defined, we need to snapshot target-specific state variables
+      // for aoe spells.
+      else
+      {
+        snapshot_internal( s, snapshot_flags & STATE_TARGET, amount_type( s ) );
+      }
       s -> result = calculate_result( s );
       s -> block_result = calculate_block_result( s );
 
@@ -2780,40 +2789,6 @@ expr_t* action_t::create_expression( const std::string& name_str )
       };
       return new prev_expr_t( *this, splits[1] );
     }
-    else if ( splits[0] == "prev_gcd" )
-    {
-      struct prev_gcd_expr_t: public action_expr_t
-      {
-        action_t* previously_used;
-        prev_gcd_expr_t( action_t& a, const std::string& prev_action ): action_expr_t( "prev_gcd", a ),
-          previously_used( a.player -> find_action( prev_action ) )
-        {
-        }
-        virtual double evaluate() override
-        {
-          if ( previously_used != nullptr && action.player -> last_gcd_action )
-            return action.player -> last_gcd_action -> internal_id == previously_used -> internal_id;
-          return false;
-        }
-      };
-      return new prev_gcd_expr_t( *this, splits[1] );
-    }
-    else if ( splits[0] == "prev_prev_gcd" )
-    {
-      struct prev_prev_gcd_expr_t: public action_expr_t {
-        action_t* previously_used;
-        prev_prev_gcd_expr_t( action_t& a, const std::string& prev_action ): action_expr_t( "prev_prev_gcd", a ),
-          previously_used( a.player -> find_action( prev_action ) )
-        {}
-        virtual double evaluate() override
-        {
-          if ( previously_used != nullptr && action.player -> prev_prev_gcd_action )
-            return action.player -> prev_prev_gcd_action -> internal_id == previously_used -> internal_id;
-          return false;
-        }
-      };
-      return new prev_prev_gcd_expr_t( *this, splits[1] );
-    }
     else if ( splits[0] == "prev_off_gcd" )
     {
       struct prev_gcd_expr_t: public action_expr_t
@@ -2959,6 +2934,32 @@ expr_t* action_t::create_expression( const std::string& name_str )
     }
   }
 
+  if ( splits.size() == 3 && splits[0] == "prev_gcd" )
+  {
+    int gcd = util::to_int( splits[1] );
+    if ( gcd <= 0 )
+    {
+      sim -> errorf( "%s expression creation error: invalid parameters for expression 'prev_gcd.<number>.<action>'",
+            player -> name() );
+      return 0;
+    }
+
+    struct prevgcd_expr_t: public action_expr_t {
+      int gcd;
+      action_t* previously_used;
+      prevgcd_expr_t( action_t& a, int gcd, const std::string& prev_action ): action_expr_t( "prev_gcd", a ),
+        gcd( gcd ), // prevgcd.1.action will mean 1 gcd ago, prevgcd.2.action will mean 2 gcds ago, etc.
+        previously_used( a.player -> find_action( prev_action ) )
+      {}
+      virtual double evaluate() override
+      {
+        if ( action.player -> prev_gcd_actions.size() >= gcd )
+          return ( *( action.player -> prev_gcd_actions.end() - gcd ) ) -> internal_id == previously_used -> internal_id;
+        return false;
+      }
+    };
+    return new prevgcd_expr_t( *this, gcd, splits[2] );
+  }
   if ( splits.size() == 3 && splits[ 0 ] == "dot" )
   {
     auto expr = target -> get_dot( splits[ 1 ], player ) -> create_expression( this, splits[ 2 ], true );

@@ -549,6 +549,7 @@ namespace buffs {
   {
     liadrins_fury_unleashed_t( player_t* p ):
       buff_t( buff_creator_t( p, "liadrins_fury_unleashed", p -> find_spell( 208410 ) )
+      .tick_zero( true )
       .tick_callback( [ this, p ]( buff_t*, int, const timespan_t& ) {
         paladin_t* paladin = debug_cast<paladin_t*>( p );
         paladin -> resource_gain( RESOURCE_HOLY_POWER, data().effectN( 1 ).base_value(), paladin -> gains.hp_liadrins_fury_unleashed );
@@ -1511,7 +1512,8 @@ struct consecration_t : public paladin_spell_t
         // spawn at feet of player
         .x( execute_state -> action -> player -> x_position )
         .y( execute_state -> action -> player -> y_position )
-        .duration( ground_effect_duration )
+        // TODO: this is a hack that doesn't work properly, fix this correctly
+        .duration( ground_effect_duration * ( p() -> cache.spell_haste() ) )
         .start_time( sim -> current_time()  )
         .action( damage_tick )
         .hasted( ground_aoe_params_t::SPELL_HASTE ), true );
@@ -2792,7 +2794,7 @@ struct holy_power_generator_t : public paladin_melee_attack_t
       // leftover nonsense from when this was Conviction?
       bool success = p() -> buffs.the_fires_of_justice -> trigger( 1,
         p() -> buffs.the_fires_of_justice -> default_value,
-        p() -> sets.set( PALADIN_RETRIBUTION, T19, B4 ) -> effectN( 2 ).percent() );
+        p() -> sets.set( PALADIN_RETRIBUTION, T19, B4 ) -> proc_chance() );
       if ( success )
         p() -> procs.tfoj_set_bonus -> occur();
     }
@@ -3170,7 +3172,7 @@ struct echoed_divine_storm_t: public paladin_melee_attack_t
     base_multiplier *= 1.0 + p -> artifact.divine_tempest.percent( 2 );
     if ( p -> talents.final_verdict -> ok() )
       base_multiplier *= 1.0 + p -> talents.final_verdict -> effectN( 2 ).percent();
-    
+
     base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 1 ).percent();
 
     // TODO: figure out where this is from
@@ -3243,7 +3245,7 @@ struct divine_storm_t: public holy_power_consumer_t
     base_multiplier *= 1.0 + p -> artifact.divine_tempest.percent( 2 );
     if ( p -> talents.final_verdict -> ok() )
       base_multiplier *= 1.0 + p -> talents.final_verdict -> effectN( 2 ).percent();
-    
+
     base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 1 ).percent();
 
     // TODO: figure out where this is from
@@ -3781,7 +3783,7 @@ struct echoed_templars_verdict_t : public paladin_melee_attack_t
     if ( p -> talents.final_verdict -> ok() )
       base_multiplier *= 1.0 + p -> talents.final_verdict -> effectN( 1 ).percent();
 
-    // TODO: this happened in 7.1, but not sure where it came from - Removing for 7.1.5 for now. 
+    // TODO: this happened in 7.1, but not sure where it came from - Removing for 7.1.5 for now.
     //base_multiplier *= 0.9;
     base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 1 ).percent();
   }
@@ -5429,20 +5431,22 @@ double paladin_t::composite_player_multiplier( school_e school ) const
   // Avenging Wrath buffs everything
   if ( buffs.avenging_wrath -> check() )
   {
-    m *= 1.0 + buffs.avenging_wrath -> get_damage_mod();
+    double aw_multiplier = buffs.avenging_wrath -> get_damage_mod();
     if ( chain_of_thrayn )
     {
-      m *= 1.0 + spells.chain_of_thrayn -> effectN( 4 ).percent();
+      aw_multiplier += spells.chain_of_thrayn -> effectN( 4 ).percent();
     }
+    m *= 1.0 + aw_multiplier;
   }
 
   if ( buffs.crusade -> check() )
   {
-    m *= 1.0 + buffs.crusade -> get_damage_mod();
+    double aw_multiplier = buffs.crusade -> get_damage_mod();
     if ( chain_of_thrayn )
     {
-      m *= 1.0 + spells.chain_of_thrayn -> effectN( 4 ).percent();
+      aw_multiplier += spells.chain_of_thrayn -> effectN( 4 ).percent();
     }
+    m *= 1.0 + aw_multiplier;
   }
 
   m *= 1.0 + buffs.wings_of_liberty -> current_stack * buffs.wings_of_liberty -> current_value;

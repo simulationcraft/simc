@@ -610,7 +610,7 @@ public:
     ab::may_crit = true;
     tactician_per_rage += ( player -> spec.tactician -> effectN( 2 ).percent() / 100 );
     tactician_per_rage *= 1.0 + player -> artifact.exploit_the_weakness.percent();
-    arms_t19_4p_chance = p() -> sets.set( WARRIOR_ARMS, T19, B4 ) -> effectN( 1 ).percent();
+    arms_t19_4p_chance = p() -> sets.set( WARRIOR_ARMS, T19, B4 ) -> proc_chance();
 
     if ( arms_damage_increase )
       ab::weapon_multiplier *= 1.0 + player ->spell.arms_warrior -> effectN( 2 ).percent();
@@ -837,6 +837,8 @@ public:
     {
       p() -> proc.t19_4pc_arms -> occur();
       p() -> cooldown.colossus_smash -> reset( true );
+      p() -> cooldown.mortal_strike -> reset( true );
+      p() -> proc.tactician -> occur();
     }
   }
 
@@ -2675,6 +2677,16 @@ struct mortal_strike_t: public warrior_attack_t
     }
   }
 
+  void impact( action_state_t* s ) override
+  {
+    warrior_attack_t::impact( s );
+
+    if ( s -> result == RESULT_CRIT )
+    {
+      arms_t19_4p();
+    }
+  }
+
   bool ready() override
   {
     if ( p() -> main_hand_weapon.type == WEAPON_NONE )
@@ -3322,15 +3334,6 @@ struct slam_t: public warrior_attack_t
       p() -> cooldown.mortal_strike -> reset( true );
   }
 
-  void impact( action_state_t* s ) override
-  {
-    warrior_attack_t::impact( s );
-    if ( s -> result == RESULT_CRIT )
-    {
-      arms_t19_4p();
-    }
-  }
-
   bool ready() override
   {
     if ( p() -> main_hand_weapon.type == WEAPON_NONE )
@@ -3672,15 +3675,6 @@ struct arms_whirlwind_mh_t: public warrior_attack_t
 
     return am;
   }
-
-  void impact( action_state_t* s ) override
-  {
-    warrior_attack_t::impact( s );
-    if ( s -> result == RESULT_CRIT )
-    {
-      arms_t19_4p();
-    }
-  }
 };
 
 struct first_arms_whirlwind_mh_t: public warrior_attack_t
@@ -3695,10 +3689,6 @@ struct first_arms_whirlwind_mh_t: public warrior_attack_t
   void impact( action_state_t* s ) override
   {
     warrior_attack_t::impact( s );
-    if ( s -> result == RESULT_CRIT )
-    {
-      arms_t19_4p();
-    }
     if ( p() -> artifact.will_of_the_first_king.rank() )
     {
       p() -> resource_gain( RESOURCE_RAGE, p() -> artifact.will_of_the_first_king.data().effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ), p() -> gain.will_of_the_first_king );
@@ -5417,12 +5407,12 @@ void warrior_t::create_buffs()
     .trigger_spell( artifact.odyns_champion );
 
   buff.battle_cry = buff_creator_t( this, "battle_cry", spec.battle_cry )
-    .duration( spec.battle_cry -> duration() + sets.set( WARRIOR_ARMS, T19, B4 ) -> effectN( 1 ).time_value() )
+    .duration( spec.battle_cry -> duration() + sets.set( WARRIOR_ARMS, T19, B2 ) -> effectN( 1 ).time_value() )
     .add_invalidate( CACHE_CRIT_CHANCE )
     .cd( timespan_t::zero() );
 
   buff.battle_cry_deadly_calm = buff_creator_t( this, "battle_cry_deadly_calm", spec.battle_cry )
-    .duration( spec.battle_cry -> duration() + sets.set( WARRIOR_ARMS, T19, B4 ) -> effectN( 1 ).time_value() )
+    .duration( spec.battle_cry -> duration() + sets.set( WARRIOR_ARMS, T19, B2 ) -> effectN( 1 ).time_value() )
     .chance( talents.deadly_calm -> ok() )
     .cd( timespan_t::zero() )
     .quiet( true );

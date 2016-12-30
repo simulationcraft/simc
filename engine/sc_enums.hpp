@@ -1144,7 +1144,10 @@ enum snapshot_state_e
   // use.
   STATE_NO_MULTIPLIER = ~( STATE_MUL_DA | STATE_MUL_TA | STATE_VERSATILITY |
                            STATE_MUL_PERSISTENT | STATE_TGT_MUL_DA | STATE_MUL_PET |
-                           STATE_TGT_MUL_TA | STATE_TGT_ARMOR )
+                           STATE_TGT_MUL_TA | STATE_TGT_ARMOR ),
+  // Target-specific state variables
+  STATE_TARGET = ( STATE_TGT_CRIT | STATE_TGT_MUL_DA | STATE_TGT_MUL_TA | STATE_TGT_ARMOR |
+                   STATE_TGT_MITG_DA | STATE_TGT_MITG_TA )
 };
 
 enum ready_e

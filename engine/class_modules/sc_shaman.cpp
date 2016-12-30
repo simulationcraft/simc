@@ -1018,7 +1018,7 @@ public:
       ab::gcd_haste = HASTE_ATTACK;
     }
 
-    may_proc_unleash_doom = p() -> artifact.unleash_doom.rank() && ! ab::callbacks && ! ab::background && ab::harmful &&
+    may_proc_unleash_doom = p() -> artifact.unleash_doom.rank() && ab::callbacks && ! ab::background && ab::harmful &&
       ( ab::weapon_multiplier > 0 || ab::attack_power_mod.direct > 0 || ab::spell_power_mod.direct > 0 );
   }
 
@@ -1026,7 +1026,7 @@ public:
   {
     if ( may_proc_unleash_doom )
     {
-      proc_ud = ab::player -> get_proc( std::string( "Unleash Doom: " ) + full_name() );
+      proc_ud = ab::player -> get_proc( std::string( "Unleash Doom (damage): " ) + full_name() );
     }
 
     return ab::init_finished();
@@ -3379,7 +3379,7 @@ struct sundering_t : public shaman_attack_t
   {
     shaman_attack_t::init();
 
-    may_proc_stormbringer = may_proc_lightning_shield = may_proc_frostbrand = true;
+    may_proc_stormbringer = may_proc_lightning_shield = true;
     may_proc_hot_hand = p() -> talent.hot_hand -> ok();
   }
 };
@@ -4722,7 +4722,7 @@ struct earthquake_damage_t : public shaman_spell_t
     aoe = -1;
     ground_aoe = background = true;
     school = SCHOOL_PHYSICAL;
-    spell_power_mod.direct = 0.3; // Hardcoded into tooltip because it's cool
+    spell_power_mod.direct = 0.5; // Hardcoded into tooltip because it's cool
     base_multiplier *= 1.0 + p() -> artifact.the_ground_trembles.percent();
   }
 
@@ -6830,7 +6830,7 @@ void shaman_t::init_action_list_enhancement()
   // Use Feral Spirits before off-GCD CDs.
   def -> add_action( this, "Feral Spirit" );
   // Ensure Feral Spirits start using alpha wolf abilities immediately
-  def -> add_action( this, "Crash Lightning", "if=artifact.alpha_wolf.rank&prev_gcd.feral_spirit" );
+  def -> add_action( this, "Crash Lightning", "if=artifact.alpha_wolf.rank&prev_gcd.1.feral_spirit" );
 
   // On-use items
   for ( const auto& item : items )

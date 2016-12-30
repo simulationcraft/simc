@@ -23,17 +23,19 @@ actions.precombat+=/snapshot_stats
 actions.precombat+=/stealth
 actions.precombat+=/potion,name=old_war
 actions.precombat+=/marked_for_death,if=raid_event.adds.in>40
+# Defined variables that doesn't change during the fight
+actions.precombat+=/variable,name=ssw_refund,value=equipped.shadow_satyrs_walk*(4+ssw_refund_offset)
+actions.precombat+=/variable,name=stealth_threshold,value=(15+talent.vigor.enabled*35+talent.master_of_shadows.enabled*30+variable.ssw_refund)
+actions.precombat+=/enveloping_shadows,if=combo_points>=5
 actions.precombat+=/symbols_of_death
 
 # Executed every time the actor is available.
-actions=variable,name=ssw_refund,value=equipped.shadow_satyrs_walk*(4+ssw_refund_offset)
-actions+=/variable,name=ed_threshold,value=energy.deficit<=(15+talent.vigor.enabled*35+talent.master_of_shadows.enabled*30+variable.ssw_refund)
-actions+=/call_action_list,name=cds
+actions=call_action_list,name=cds
 # Fully switch to the Stealthed Rotation (by doing so, it forces pooling if nothing is available)
 actions+=/run_action_list,name=stealthed,if=stealthed.all
 actions+=/call_action_list,name=finish,if=combo_points>=5|(combo_points>=4&spell_targets.shuriken_storm>=3&spell_targets.shuriken_storm<=4)
-actions+=/call_action_list,name=stealth_cds,if=combo_points.deficit>=2+talent.premeditation.enabled&((variable.ed_threshold&(!equipped.shadow_satyrs_walk|cooldown.shadow_dance.charges_fractional>=2.45|energy.deficit>=10))|(cooldown.shadowmeld.up&!cooldown.vanish.up&cooldown.shadow_dance.charges<=1)|target.time_to_die<12*cooldown.shadow_dance.charges_fractional*(1+equipped.shadow_satyrs_walk*0.5)|spell_targets.shuriken_storm>=5)
-actions+=/call_action_list,name=build,if=variable.ed_threshold
+actions+=/call_action_list,name=stealth_als,if=combo_points.deficit>=2+talent.premeditation.enabled
+actions+=/call_action_list,name=build,if=energy.deficit<=variable.stealth_threshold
 
 # Builders
 actions.build=shuriken_storm,if=spell_targets.shuriken_storm>=2
@@ -56,12 +58,18 @@ actions.finish+=/nightblade,cycle_targets=1,if=target.time_to_die>8&((refreshabl
 actions.finish+=/death_from_above
 actions.finish+=/eviscerate
 
+# Stealth Action List Starter
+actions.stealth_als=call_action_list,name=stealth_cds,if=energy.deficit<=variable.stealth_threshold&(!equipped.shadow_satyrs_walk|cooldown.shadow_dance.charges_fractional>=2.45|energy.deficit>=10)
+actions.stealth_als+=/call_action_list,name=stealth_cds,if=spell_targets.shuriken_storm>=5
+actions.stealth_als+=/call_action_list,name=stealth_cds,if=(cooldown.shadowmeld.up&!cooldown.vanish.up&cooldown.shadow_dance.charges<=1)
+actions.stealth_als+=/call_action_list,name=stealth_cds,if=target.time_to_die<12*cooldown.shadow_dance.charges_fractional*(1+equipped.shadow_satyrs_walk*0.5)
+
 # Stealth Cooldowns
 actions.stealth_cds=shadow_dance,if=charges_fractional>=2.45
 actions.stealth_cds+=/vanish
 actions.stealth_cds+=/shadow_dance,if=charges>=2&combo_points<=1
-actions.stealth_cds+=/pool_resource,for_next=1,extra_amount=40-variable.ssw_refund
-actions.stealth_cds+=/shadowmeld,if=energy>=40-variable.ssw_refund&energy.deficit>=10+variable.ssw_refund
+actions.stealth_cds+=/pool_resource,for_next=1,extra_amount=40
+actions.stealth_cds+=/shadowmeld,if=energy>=40&energy.deficit>=10+variable.ssw_refund
 actions.stealth_cds+=/shadow_dance,if=combo_points<=1
 
 # Stealthed Rotation

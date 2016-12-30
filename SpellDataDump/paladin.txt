@@ -1,4 +1,4 @@
-SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23244, git build c5141f9)
+SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23244, git build 2679573)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -414,7 +414,8 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=15851)    : School Damage: holy (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=1.25, dl=0.08) | SP Coefficient: 3.50000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 0 (avg=1.25, dl=0.08) | SP Coefficient: 2.80000 | Target: Enemy(6)
+                   Hotfixed: SP Coefficient (3.5 -> 2.8)
 Description      : Blasts the target with Holy energy, causing $25912s1 Holy damage to an enemy, or $25914s1 healing to an ally.
 
 Name             : Holy Shock (id=25914) [Scaling Spell (7), Spell Family (10)] 

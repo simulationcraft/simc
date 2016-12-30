@@ -403,8 +403,11 @@ js::sc_js_t to_json( const player_collected_data_t& cd, const sim_t& sim )
   node.set( "dpse", to_json( cd.dpse ) );
   node.set( "dtps", to_json( cd.dtps ) );
   node.set( "dmg_taken", to_json( cd.dmg_taken ) );
-  node.set( "timeline_dmg", to_json( cd.timeline_dmg ) );
-  node.set( "timeline_dmg_taken", to_json( cd.timeline_dmg_taken ) );
+  if ( sim.report_details != 0)
+  {
+    node.set( "timeline_dmg", to_json( cd.timeline_dmg ) );
+    node.set( "timeline_dmg_taken", to_json( cd.timeline_dmg_taken ) );
+  }
 
   node.set( "heal", to_json( cd.heal ) );
   node.set( "compound_heal", to_json( cd.compound_heal ) );

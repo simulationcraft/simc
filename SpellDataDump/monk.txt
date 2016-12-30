@@ -1,4 +1,4 @@
-SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23244, git build c5141f9)
+SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23244, git build 2679573)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -1120,7 +1120,7 @@ Attributes       : ....x... ........ x....... ........   ........ .x...... .....
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=128879)   : School Damage: fire (2)
-                   Base Value: 0 | Scaled Value: 1 - 3 | Value Range: 3 | AP Coefficient: 1.62000 | Radius: 8 yards | Target: Cone Front(104)
+                   Base Value: 0 | Scaled Value: 1 - 3 | Value Range: 3 | AP Coefficient: 1.62000 | Radius: 12 yards | Target: Cone Front(104)
 Description      : Breathe fire on targets in front of you, causing $s1 Fire damage. Targets affected by Keg Smash will also burn for $123725o1 Fire damage over $123725d$?s123394[ and become Incapacitated for $123393d][].
 Tooltip          : If Dizzying Haze is on the target, they will burn for an additional $123725o1 damage over $123725d$?s123394[ and become Disoriented for $123393d.][.]
 
@@ -3291,11 +3291,13 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179707)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 4 | Scaled Value: 4 | Target: Self(1)
+                   Base Value: 9 | Scaled Value: 9 | Target: Self(1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Breath of Fire (115181), Rushing Jade Wind (116847), Keg Smash (121253), Chi Burst (123986), Chi Burst (130654), Chi Wave (132466), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Refreshing Jade Wind (196725), Song of Chi-Ji (198898), Blackout Strike (205523), Dragonfire Brew (227681), Blackout Kick (228649)
+                   Hotfixed: Base Value (4 -> 9)
 #2 (id=191108)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 4 | Scaled Value: 4 | Misc Value: 22 | Target: Self(1)
+                   Base Value: 9 | Scaled Value: 9 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Crackling Jade Lightning (117952), Breath of Fire (123725), Eye of the Tiger (196608)
+                   Hotfixed: Base Value (4 -> 9)
 #3 (id=191109)   : Apply Aura (6) | Unknown effect sub type (416)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
                    Affected Spells: Blackout Kick (100784), Keg Smash (121253), Blackout Strike (205523), Blackout Kick (228649)
@@ -3420,11 +3422,13 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179709)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 4 | Scaled Value: 4 | Target: Self(1)
+                   Base Value: 8 | Scaled Value: 8 | Target: Self(1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Rising Sun Kick (107428), Rushing Jade Wind (116847), Fists of Fury (117418), Chi Burst (123986), Chi Burst (130654), Chi Wave (132466), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (152175), Rising Sun Kick (185099), Refreshing Jade Wind (196725), Song of Chi-Ji (198898), Strike of the Windlord (205320), Blackout Strike (205523), Blackout Kick (228649)
+                   Hotfixed: Base Value (4 -> 8)
 #2 (id=191100)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 4 | Scaled Value: 4 | Misc Value: 22 | Target: Self(1)
+                   Base Value: 8 | Scaled Value: 8 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Crackling Jade Lightning (117952), Eye of the Tiger (196608)
+                   Hotfixed: Base Value (4 -> 8)
 #3 (id=191101)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 11 | Target: Self(1)
                    Affected Spells: Blackout Kick (100784), Blackout Strike (205523), Blackout Kick (228649)
@@ -3433,8 +3437,10 @@ Effects          :
                    Affected Spells: Tiger Palm (100780)
 #5 (id=191103)   : Apply Aura (6) | Unknown effect sub type (218)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf7 | Target: Self(1)
-#6 (id=260817)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#6 (id=260817)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 8 | Scaled Value: 8 | Target: Self(1)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Rising Sun Kick (107428), Rising Sun Kick (185099), Blackout Strike (205523), Blackout Kick (228649)
+                   Hotfixed: Sub Type (4 -> 108), Base Value (0 -> 8), Affects Spells
 #7 (id=260818)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #8 (id=260819)   : Apply Aura (6) | Dummy (4)
@@ -5202,6 +5208,23 @@ Effects          :
 #2 (id=331356)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 12 yards | Target: Unknown(129)
 Description      : $@spelldesc205320
+
+Name             : Stomp (id=227291) [Spell Family (53)] 
+Class            : Monk
+School           : Physical
+Spell Level      : 1
+GCD              : 1 seconds
+Cooldown         : 5 seconds
+Attributes       : ....x... ........ x....... .....x..   ........ .x...... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=341557)   : School Damage: physical (2)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom(18) -> AOE enemy (instant)(16)
+Description      : Stomps the ground, dealing $s1 Physical damage to all nearby enemies.
 
 Name             : Face Palm (id=227679) [Spell Family (53), Passive] 
 Class            : Monk

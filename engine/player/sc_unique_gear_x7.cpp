@@ -74,7 +74,6 @@ namespace item
 
   // 7.0 Raid
   void bloodthirsty_instinct( special_effect_t& );
-  void convergence_of_fates( special_effect_t& );
   void natures_call( special_effect_t& );
   void ravaged_seed_pod( special_effect_t& );
   void spontaneous_appendages( special_effect_t& );
@@ -83,6 +82,11 @@ namespace item
   void wriggling_sinew( special_effect_t& );
   void bough_of_corruption( special_effect_t& );
   void ursocs_rending_paw( special_effect_t& );
+
+  // 7.1.5 Raid
+  void draught_of_souls( special_effect_t& );
+  void convergence_of_fates( special_effect_t& );
+  void entwined_elemental_foci( special_effect_t& );
 
   // Legendary
 
@@ -1348,6 +1352,103 @@ void item::ursocs_rending_paw( special_effect_t& effect )
   new dbc_proc_callback_t( effect.item, effect );
 }
 
+// Draught of Souls =========================================================
+
+void item::draught_of_souls( special_effect_t& effect )
+{
+  struct felcrazed_rage_t : public proc_spell_t
+  {
+    felcrazed_rage_t( const special_effect_t& effect ) :
+      proc_spell_t( "felcrazed_rage", effect.player, effect.trigger(), effect.item )
+    { }
+  };
+
+  struct draught_of_souls_driver_t : public proc_spell_t
+  {
+    action_t* damage;
+
+    draught_of_souls_driver_t( const special_effect_t& effect ):
+      proc_spell_t( "draught_of_souls", effect.player, effect.driver(), effect.item ),
+      damage( nullptr )
+    {
+      channeled = quiet = true;
+      cooldown -> duration = timespan_t::zero();
+
+      damage = player -> find_action( "felcrazed_rage" );
+      if ( damage == nullptr )
+      {
+        damage = player -> create_proc_action( "felcrazed_rage", effect );
+      }
+
+      if ( damage == nullptr )
+      {
+        damage = new felcrazed_rage_t( effect );
+      }
+    }
+
+    void tick( dot_t* d ) override
+    {
+      proc_spell_t::tick( d );
+
+      damage -> target = d -> target;
+      damage -> execute();
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      proc_spell_t::last_tick( d );
+
+      // Since Draught of Souls must be modeled as a channel (player cannot be allowed to perform
+      // any actions for 3 seconds), we need to manually restart the player-ready event immediately
+      // after the channel ends. This is because the channel is flagged as a background action,
+      // which by default prohibits player-ready generation.
+      if ( player -> readying == nullptr )
+      {
+        player -> schedule_ready();
+      }
+    }
+  };
+
+  effect.execute_action = new draught_of_souls_driver_t( effect );
+}
+
+// Entwined Elemental Foci ==================================================
+
+// TODO: How do refresh procs for this trinket work?
+void item::entwined_elemental_foci( special_effect_t& effect )
+{
+  struct entwined_elemental_foci_cb_t : public dbc_proc_callback_t
+  {
+    std::vector<stat_buff_t*> buffs;
+
+    entwined_elemental_foci_cb_t( const special_effect_t& effect, double amount ) :
+      dbc_proc_callback_t( effect.item, effect ),
+      buffs( {
+        stat_buff_creator_t( effect.player, "fiery_enchant", effect.player -> find_spell( 225726 ), effect.item )
+          .cd( timespan_t::zero() )
+          .add_stat( STAT_CRIT_RATING, amount ),
+        stat_buff_creator_t( effect.player, "frost_enchant", effect.player -> find_spell( 225729 ), effect.item )
+          .cd( timespan_t::zero() )
+          .add_stat( STAT_MASTERY_RATING, amount ),
+        stat_buff_creator_t( effect.player, "arcane_enchant", effect.player -> find_spell( 225730 ), effect.item )
+          .cd( timespan_t::zero() )
+          .add_stat( STAT_HASTE_RATING, amount )
+      } )
+    { }
+
+    void execute( action_t*, action_state_t* )
+    {
+      size_t selected_buff = static_cast<size_t>( rng().range( 0, buffs.size() ) );
+
+      buffs[ selected_buff ] -> trigger();
+    }
+  };
+
+  double rating_amount = item_database::apply_combat_rating_multiplier( *effect.item,
+      effect.driver() -> effectN( 2 ).average( effect.item ) );
+  new entwined_elemental_foci_cb_t( effect, rating_amount );
+}
+
 // Horn of Valor ============================================================
 
 void item::horn_of_valor( special_effect_t& effect )
@@ -2478,17 +2579,17 @@ static const convergence_cd_t convergence_cds[] =
     if they have one, or this trinket may cause undesirable results.
 
   !!! NOTE !!! NOTE !!! NOTE !!! NOTE !!! NOTE !!! NOTE !!! NOTE !!! */
-  { DEATH_KNIGHT_FROST,   { "pillar_of_frost" } },
+  { DEATH_KNIGHT_FROST,   { "empower_rune_weapon", "hungering_rune_weapon" } },
   { DEATH_KNIGHT_UNHOLY,  { "summon_gargoyle" } },
   { DRUID_FERAL,          { "berserk", "incarnation_king_of_the_jungle" } },
   { HUNTER_BEAST_MASTERY, { "aspect_of_the_wild" } },
   { HUNTER_MARKSMANSHIP,  { "trueshot" } },
   { HUNTER_SURVIVAL,      { "aspect_of_the_eagle" } },
-  { MONK_WINDWALKER,      { "storm_earth_and_fire" } },
+  { MONK_WINDWALKER,      { "storm_earth_and_fire", "serenity" } },
   { PALADIN_RETRIBUTION,  { "avenging_wrath", "crusade" } },
-  { ROGUE_SUBTLETY,       { "vendetta" } },
+  { ROGUE_SUBTLETY,       { "shadow_blades" } },
   { ROGUE_OUTLAW,         { "adrenaline_rush" } },
-  { ROGUE_ASSASSINATION,  { "shadow_blades" } },
+  { ROGUE_ASSASSINATION,  { "vendetta" } },
   { SHAMAN_ENHANCEMENT,   { "feral_spirit" } },
   { WARRIOR_ARMS,         { "battle_cry" } },
   { WARRIOR_FURY,         { "battle_cry" } },
@@ -3407,7 +3508,6 @@ void unique_gear::register_special_effects_x7()
 
   /* Legion 7.0 Raid */
   // register_special_effect( 221786, item::bloodthirsty_instinct  );
-  register_special_effect( 225139, item::convergence_of_fates   );
   register_special_effect( 222512, item::natures_call           );
   register_special_effect( 222167, item::spontaneous_appendages );
   register_special_effect( 221803, item::ravaged_seed_pod       );
@@ -3416,6 +3516,11 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 222705, item::bough_of_corruption    );
   register_special_effect( 221767, item::ursocs_rending_paw     );
   register_special_effect( 222046, item::wriggling_sinew        );
+
+  /* Legion 7.1.5 Raid */
+  register_special_effect( 225141, item::draught_of_souls        );
+  register_special_effect( 225139, item::convergence_of_fates    );
+  register_special_effect( 225129, item::entwined_elemental_foci );
 
   /* Legion 7.0 Misc */
   register_special_effect( 188026, item::infernal_alchemist_stone       );

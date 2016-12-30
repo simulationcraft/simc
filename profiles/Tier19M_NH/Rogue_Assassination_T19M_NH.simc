@@ -4,7 +4,7 @@ race=orc
 role=attack
 position=back
 talents=2110111
-artifact=43:0:0:0:0:323:3:324:3:325:3:326:3:327:3:328:3:329:3:330:3:331:3:332:1:333:1:334:1:335:1:337:1:346:1:347:1:1276:1
+artifact=43:0:0:0:0:323:3:324:3:325:3:326:3:327:3:328:3:329:3:330:3:331:3:332:1:333:1:334:1:335:1:337:1:346:1:347:1:1276:1:1384:20
 spec=assassination
 
 # This default action priority list is automatically created based on your character.
@@ -49,7 +49,7 @@ actions.cds+=/vendetta,if=!talent.exsanguinate.enabled&(!artifact.urge_to_kill.e
 actions.cds+=/vanish,if=talent.nightstalker.enabled&combo_points>=cp_max_spend&((talent.exsanguinate.enabled&cooldown.exsanguinate.remains<1&(dot.rupture.ticking|time>10))|(!talent.exsanguinate.enabled&dot.rupture.refreshable))
 actions.cds+=/vanish,if=talent.subterfuge.enabled&dot.garrote.refreshable&((spell_targets.fan_of_knives<=3&combo_points.deficit>=1+spell_targets.fan_of_knives)|(spell_targets.fan_of_knives>=4&combo_points.deficit>=4))
 actions.cds+=/vanish,if=talent.shadow_focus.enabled&energy.time_to_max>=2&combo_points.deficit>=4
-actions.cds+=/exsanguinate,if=prev_gcd.rupture&dot.rupture.remains>4+4*cp_max_spend
+actions.cds+=/exsanguinate,if=prev_gcd.1.rupture&dot.rupture.remains>4+4*cp_max_spend
 
 # Finishers
 actions.finish=death_from_above,if=combo_points>=cp_max_spend
@@ -65,7 +65,7 @@ actions.maintain+=/garrote,cycle_targets=1,if=refreshable&(!exsanguinated|remain
 head=doomblade_cowl,id=138332,bonus_id=3445
 neck=belerons_choker_of_misery,id=140899,bonus_id=3445,enchant=mark_of_the_hidden_satyr
 shoulders=doomblade_spaulders,id=138338,bonus_id=3445
-back=doomblade_shadowwrap,id=138371,bonus_id=34453445,enchant=binding_of_agility
+back=doomblade_shadowwrap,id=138371,bonus_id=3445,enchant=binding_of_agility
 chest=doomblade_tunic,id=138326,bonus_id=3445
 wrists=bracers_of_impossible_choices,id=140889,bonus_id=3445
 hands=doomblade_gauntlets,id=138329,bonus_id=3445
@@ -80,13 +80,13 @@ main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=140822/140815/140819,rel
 off_hand=the_kingslayers,id=128869
 
 # Gear Summary
-# gear_ilvl=901.44
-# gear_agility=21862
-# gear_stamina=31795
+# gear_ilvl=903.00
+# gear_agility=22116
+# gear_stamina=32176
 # gear_crit_rating=8734
 # gear_haste_rating=3614
-# gear_mastery_rating=5484
-# gear_versatility_rating=4597
-# gear_armor=2377
+# gear_mastery_rating=5511
+# gear_versatility_rating=4653
+# gear_armor=2391
 # set_bonus=tier19_2pc=1
 # set_bonus=tier19_4pc=1

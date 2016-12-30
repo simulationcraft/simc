@@ -58,14 +58,14 @@ actions.rop_phase+=/pyroblast,if=buff.hot_streak.up
 actions.rop_phase+=/call_action_list,name=active_talents
 actions.rop_phase+=/pyroblast,if=buff.kaelthas_ultimate_ability.react
 actions.rop_phase+=/fire_blast,if=!prev_off_gcd.fire_blast
-actions.rop_phase+=/phoenixs_flames,if=!prev_gcd.phoenixs_flames
+actions.rop_phase+=/phoenixs_flames,if=!prev_gcd.1.phoenixs_flames
 actions.rop_phase+=/scorch,if=target.health.pct<=25&equipped.132454
 actions.rop_phase+=/fireball
 
 actions.single_target=pyroblast,if=buff.hot_streak.up&buff.hot_streak.remains<action.fireball.execute_time
 actions.single_target+=/phoenixs_flames,if=charges_fractional>2.7&active_enemies>2
 actions.single_target+=/flamestrike,if=talent.flame_patch.enabled&active_enemies>2&buff.hot_streak.react
-actions.single_target+=/pyroblast,if=buff.hot_streak.up&!prev_gcd.pyroblast
+actions.single_target+=/pyroblast,if=buff.hot_streak.up&!prev_gcd.1.pyroblast
 actions.single_target+=/pyroblast,if=buff.hot_streak.react&target.health.pct<=25&equipped.132454
 actions.single_target+=/pyroblast,if=buff.kaelthas_ultimate_ability.react
 actions.single_target+=/call_action_list,name=active_talents

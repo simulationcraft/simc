@@ -1,4 +1,4 @@
-SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23244, git build c5141f9)
+SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23244, git build 2679573)
 
 Name             : Mend Pet (id=136) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
@@ -2868,8 +2868,9 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179698)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 4 | Scaled Value: 4 | Target: Self(1)
+                   Base Value: 9 | Scaled Value: 9 | Target: Self(1)
                    Affected Spells: Kill Command (34026), Chimaera Shot (53209), Kill Command (83381), Beast Cleave (115939), Chimaera Shot (171454), Chimaera Shot (171457), Cobra Shot (193455), Chimaera Shot (204304), Dire Frenzy (217207)
+                   Hotfixed: Base Value (4 -> 9)
 #2 (id=191138)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self(1)
 #3 (id=191139)   : Apply Aura (6) | Add Flat Modifier: Spell Duration (107)
@@ -2951,8 +2952,9 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179700)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 7 | Scaled Value: 7 | Target: Self(1)
+                   Base Value: 12 | Scaled Value: 12 | Target: Self(1)
                    Affected Spells: Explosive Trap (13812), Lacerate (185855), Raptor Strike (186270), Carve (187708), Mongoose Bite (190928), Flanking Strike (202800), Flanking Strike (204740), Butchery (212436)
+                   Hotfixed: Base Value (7 -> 12)
 #2 (id=191130)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 7 | Scaled Value: 7 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Explosive Trap (13812), Serpent Sting (118253), Lacerate (185855)
@@ -3769,7 +3771,7 @@ Class            : Marksmanship Hunter
 School           : Physical
 Spell Level      : 20
 Proc Chance      : 100%
-Real PPM         : 5 (Haste multiplier)
+Real PPM         : 6.5 (Haste multiplier)
 Proc Flags       : ......x. ........ ........ ........ 
                  : White Ranged
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -5620,7 +5622,7 @@ GCD              : 1.5 seconds
 Velocity         : 50 yards/sec
 Cooldown         : 20 seconds
 Artifact Power   : Id: 307, Max Rank: 1
-Affecting spells : Hunter (137014), Mastery: Sniper Training (193468), 
+Affecting spells : Hunter (137014), Mastery: Sniper Training (193468), Trueshot (211327)
 Attributes       : .x..x... ........ x....... ........   ........ ........ ........ ...x.... 
                  : ........ ........ .x..x... ........   ........ ........ ........ ........ 
                  : ........ ........ ..x..... ...x....   ........ ........ ........ ........ 
@@ -5978,7 +5980,7 @@ Duration         : 4 seconds
 Cooldown         : 30 seconds
 Category         : 1620
 Category Cooldown: 0.33 seconds
-Affecting spells : Freezing Trap (3355), Hunter (137014), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468), Lock and Load (194594)
+Affecting spells : Freezing Trap (3355), Hunter (137014), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468), Lock and Load (194594), Trueshot (211327)
 Attributes       : .x..x... ........ x....... ........   ........ ........ ........ ....x... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : .....x.. ........ ........ ........   ........ ........ ........ ........ 
