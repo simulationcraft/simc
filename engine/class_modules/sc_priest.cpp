@@ -659,10 +659,9 @@ public:
       double drain_per_second = insanity_drain_per_second();
 
       // Ensure that the current insanity level is correct
-      if ( drain_per_second > 0 && last_drained != actor.sim->current_time() )
+      if ( last_drained != actor.sim->current_time() )
       {
         drain();
-        return;
       }
 
       // All drained, cancel voidform. TODO: Can this really even happen?
@@ -1769,6 +1768,10 @@ struct dispersion_t final : public priest_spell_t
     priest.buffs.dispersion->trigger();
 
     priest_spell_t::execute();
+
+    // Adjust the Voidform end event (essentially remove it) after the Dispersion buff is up, since
+    // it disables insanity drain for the duration of the channel
+    priest.insanity.adjust_end_event();
   }
 
   timespan_t composite_dot_duration( const action_state_t* ) const override
@@ -3696,6 +3699,10 @@ struct void_torrent_t final : public priest_spell_t
     priest_spell_t::execute();
 
     priest.buffs.void_torrent->trigger();
+
+    // Adjust the Voidform end event (essentially remove it) after the Void Torrent buff is up,
+    // since it disables insanity drain for the duration of the channel
+    priest.insanity.adjust_end_event();
   }
 
   bool ready() override
