@@ -84,6 +84,9 @@ namespace item
   void bough_of_corruption( special_effect_t& );
   void ursocs_rending_paw( special_effect_t& );
 
+  // 7.1.5 Raid
+  void draught_of_souls( special_effect_t& );
+
   // Legendary
 
   void aggramars_stride( special_effect_t& );
@@ -1346,6 +1349,66 @@ void item::ursocs_rending_paw( special_effect_t& effect )
   effect.execute_action = rend;
 
   new dbc_proc_callback_t( effect.item, effect );
+}
+
+// Draught of Souls =========================================================
+
+void item::draught_of_souls( special_effect_t& effect )
+{
+  struct felcrazed_rage_t : public proc_spell_t
+  {
+    felcrazed_rage_t( const special_effect_t& effect ) :
+      proc_spell_t( "felcrazed_rage", effect.player, effect.trigger(), effect.item )
+    { }
+  };
+
+  struct draught_of_souls_driver_t : public proc_spell_t
+  {
+    action_t* damage;
+
+    draught_of_souls_driver_t( const special_effect_t& effect ):
+      proc_spell_t( "draught_of_souls", effect.player, effect.driver(), effect.item ),
+      damage( nullptr )
+    {
+      channeled = quiet = true;
+      cooldown -> duration = timespan_t::zero();
+
+      damage = player -> find_action( "felcrazed_rage" );
+      if ( damage == nullptr )
+      {
+        damage = player -> create_proc_action( "felcrazed_rage", effect );
+      }
+
+      if ( damage == nullptr )
+      {
+        damage = new felcrazed_rage_t( effect );
+      }
+    }
+
+    void tick( dot_t* d ) override
+    {
+      proc_spell_t::tick( d );
+
+      damage -> target = d -> target;
+      damage -> execute();
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      proc_spell_t::last_tick( d );
+
+      // Since Draught of Souls must be modeled as a channel (player cannot be allowed to perform
+      // any actions for 3 seconds), we need to manually restart the player-ready event immediately
+      // after the channel ends. This is because the channel is flagged as a background action,
+      // which by default prohibits player-ready generation.
+      if ( player -> readying == nullptr )
+      {
+        player -> schedule_ready();
+      }
+    }
+  };
+
+  effect.execute_action = new draught_of_souls_driver_t( effect );
 }
 
 // Horn of Valor ============================================================
@@ -3416,6 +3479,9 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 222705, item::bough_of_corruption    );
   register_special_effect( 221767, item::ursocs_rending_paw     );
   register_special_effect( 222046, item::wriggling_sinew        );
+
+  /* Legion 7.1.5 Raid */
+  register_special_effect( 225141, item::draught_of_souls       );
 
   /* Legion 7.0 Misc */
   register_special_effect( 188026, item::infernal_alchemist_stone       );
