@@ -6631,10 +6631,10 @@ struct dbc_proc_callback_t : public action_callback_t
     }
   }
 
-private:
   rng::rng_t& rng() const
   { return listener -> rng(); }
 
+private:
   bool roll( action_t* action )
   {
     if ( rppm )

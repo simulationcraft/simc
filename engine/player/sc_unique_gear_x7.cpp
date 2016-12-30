@@ -74,7 +74,6 @@ namespace item
 
   // 7.0 Raid
   void bloodthirsty_instinct( special_effect_t& );
-  void convergence_of_fates( special_effect_t& );
   void natures_call( special_effect_t& );
   void ravaged_seed_pod( special_effect_t& );
   void spontaneous_appendages( special_effect_t& );
@@ -86,6 +85,8 @@ namespace item
 
   // 7.1.5 Raid
   void draught_of_souls( special_effect_t& );
+  void convergence_of_fates( special_effect_t& );
+  void entwined_elemental_foci( special_effect_t& );
 
   // Legendary
 
@@ -1409,6 +1410,43 @@ void item::draught_of_souls( special_effect_t& effect )
   };
 
   effect.execute_action = new draught_of_souls_driver_t( effect );
+}
+
+// Entwined Elemental Foci ==================================================
+
+// TODO: How do refresh procs for this trinket work?
+void item::entwined_elemental_foci( special_effect_t& effect )
+{
+  struct entwined_elemental_foci_cb_t : public dbc_proc_callback_t
+  {
+    std::vector<stat_buff_t*> buffs;
+
+    entwined_elemental_foci_cb_t( const special_effect_t& effect, double amount ) :
+      dbc_proc_callback_t( effect.item, effect ),
+      buffs( {
+        stat_buff_creator_t( effect.player, "fiery_enchant", effect.player -> find_spell( 225726 ), effect.item )
+          .cd( timespan_t::zero() )
+          .add_stat( STAT_CRIT_RATING, amount ),
+        stat_buff_creator_t( effect.player, "frost_enchant", effect.player -> find_spell( 225729 ), effect.item )
+          .cd( timespan_t::zero() )
+          .add_stat( STAT_MASTERY_RATING, amount ),
+        stat_buff_creator_t( effect.player, "arcane_enchant", effect.player -> find_spell( 225730 ), effect.item )
+          .cd( timespan_t::zero() )
+          .add_stat( STAT_HASTE_RATING, amount )
+      } )
+    { }
+
+    void execute( action_t*, action_state_t* )
+    {
+      size_t selected_buff = static_cast<size_t>( rng().range( 0, buffs.size() ) );
+
+      buffs[ selected_buff ] -> trigger();
+    }
+  };
+
+  double rating_amount = item_database::apply_combat_rating_multiplier( *effect.item,
+      effect.driver() -> effectN( 2 ).average( effect.item ) );
+  new entwined_elemental_foci_cb_t( effect, rating_amount );
 }
 
 // Horn of Valor ============================================================
@@ -3470,7 +3508,6 @@ void unique_gear::register_special_effects_x7()
 
   /* Legion 7.0 Raid */
   // register_special_effect( 221786, item::bloodthirsty_instinct  );
-  register_special_effect( 225139, item::convergence_of_fates   );
   register_special_effect( 222512, item::natures_call           );
   register_special_effect( 222167, item::spontaneous_appendages );
   register_special_effect( 221803, item::ravaged_seed_pod       );
@@ -3481,7 +3518,9 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 222046, item::wriggling_sinew        );
 
   /* Legion 7.1.5 Raid */
-  register_special_effect( 225141, item::draught_of_souls       );
+  register_special_effect( 225141, item::draught_of_souls        );
+  register_special_effect( 225139, item::convergence_of_fates    );
+  register_special_effect( 225129, item::entwined_elemental_foci );
 
   /* Legion 7.0 Misc */
   register_special_effect( 188026, item::infernal_alchemist_stone       );
