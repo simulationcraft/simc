@@ -1125,11 +1125,10 @@ void report::print_html_sample_data( report::sc_html_stream& os,
     os << ">\n";
     os.format(
         "\t\t\t\t\t\t\t\t\t<td class=\"left\">1%% Error</td>\n"
-        "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
+        "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
         "\t\t\t\t\t\t\t\t</tr>\n",
-        (int)( data.mean()
-                   ? ( ( mean_error * mean_error * ( (float)data.size() ) /
-                         ( 0.01 * data.mean() * 0.01 * data.mean() ) ) )
+        std::ceil( data.mean()
+                   ? ( mean_error * mean_error * data.size() / ( 0.01 * data.mean() * 0.01 * data.mean() ) )
                    : 0 ) );
 
     ++i;
@@ -1141,11 +1140,10 @@ void report::print_html_sample_data( report::sc_html_stream& os,
     os << ">\n";
     os.format(
         "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.1%% Error</td>\n"
-        "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
+        "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
         "\t\t\t\t\t\t\t\t</tr>\n",
-        (int)( data.mean()
-                   ? ( ( mean_error * mean_error * ( (float)data.size() ) /
-                         ( 0.001 * data.mean() * 0.001 * data.mean() ) ) )
+        std::ceil( data.mean()
+                   ? ( mean_error * mean_error * data.size() / ( 0.001 * data.mean() * 0.001 * data.mean() ) )
                    : 0 ) );
 
     ++i;
@@ -1158,10 +1156,9 @@ void report::print_html_sample_data( report::sc_html_stream& os,
     os.format(
         "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.1 Scale Factor Error with "
         "Delta=300</td>\n"
-        "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
+        "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
         "\t\t\t\t\t\t\t\t</tr>\n",
-        (int)( 2.0 * mean_error * mean_error * ( (float)data.size() ) /
-               ( 30 * 30 ) ) );
+        std::ceil( 2.0 * mean_error * mean_error * data.size() / ( 30.0 * 30.0 ) ) );
 
     ++i;
     os << "\t\t\t\t\t\t\t\t<tr";
@@ -1173,10 +1170,9 @@ void report::print_html_sample_data( report::sc_html_stream& os,
     os.format(
         "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.05 Scale Factor Error with "
         "Delta=300</td>\n"
-        "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
+        "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
         "\t\t\t\t\t\t\t\t</tr>\n",
-        (int)( 2.0 * mean_error * mean_error * ( (float)data.size() ) /
-               ( 15 * 15 ) ) );
+        std::ceil( 2.0 * mean_error * mean_error * data.size() / ( 15 * 15 ) ) );
 
     ++i;
     os << "\t\t\t\t\t\t\t\t<tr";
@@ -1188,10 +1184,9 @@ void report::print_html_sample_data( report::sc_html_stream& os,
     os.format(
         "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.01 Scale Factor Error with "
         "Delta=300</td>\n"
-        "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
+        "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
         "\t\t\t\t\t\t\t\t</tr>\n",
-        (int)( 2.0 * mean_error * mean_error * ( (float)data.size() ) /
-               ( 3 * 3 ) ) );
+        std::ceil( 2.0 * mean_error * mean_error * data.size() / ( 3 * 3 ) ) );
   }
 
   os << "\t\t\t\t\t\t\t\t</table>\n";

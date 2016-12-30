@@ -549,6 +549,7 @@ namespace buffs {
   {
     liadrins_fury_unleashed_t( player_t* p ):
       buff_t( buff_creator_t( p, "liadrins_fury_unleashed", p -> find_spell( 208410 ) )
+      .tick_zero( true )
       .tick_callback( [ this, p ]( buff_t*, int, const timespan_t& ) {
         paladin_t* paladin = debug_cast<paladin_t*>( p );
         paladin -> resource_gain( RESOURCE_HOLY_POWER, data().effectN( 1 ).base_value(), paladin -> gains.hp_liadrins_fury_unleashed );
@@ -1511,7 +1512,8 @@ struct consecration_t : public paladin_spell_t
         // spawn at feet of player
         .x( execute_state -> action -> player -> x_position )
         .y( execute_state -> action -> player -> y_position )
-        .duration( ground_effect_duration )
+        // TODO: this is a hack that doesn't work properly, fix this correctly
+        .duration( ground_effect_duration * ( p() -> cache.spell_haste() ) )
         .start_time( sim -> current_time()  )
         .action( damage_tick )
         .hasted( ground_aoe_params_t::SPELL_HASTE ), true );

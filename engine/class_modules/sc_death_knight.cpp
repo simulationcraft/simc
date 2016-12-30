@@ -924,6 +924,7 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* d
   actor_target_data_t( target, death_knight )
 {
   dot.blood_plague       = target -> get_dot( "blood_plague",       death_knight );
+  dot.breath_of_sindragosa = target -> get_dot( "breath_of_sindragosa", death_knight );
   dot.death_and_decay    = target -> get_dot( "death_and_decay",    death_knight );
   dot.defile             = target -> get_dot( "defile",             death_knight );
   dot.frost_fever        = target -> get_dot( "frost_fever",        death_knight );
@@ -4804,7 +4805,6 @@ struct hungering_rune_weapon_t : public death_knight_spell_t
     // Handle energize in a custom way
     energize_type = ENERGIZE_NONE;
     tick_zero = true;
-    target = player;
     // Spell has two different periodicities in two effects, weird++. Pick the one that is indicated
     // by the tooltip.
     base_tick_time = data().effectN( 1 ).period();
