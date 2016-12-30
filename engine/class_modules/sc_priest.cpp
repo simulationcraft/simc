@@ -404,8 +404,9 @@ public:
   // Options
   struct
   {
-    bool autoUnshift       = true;  // Shift automatically out of stance/form
-    bool priest_fixed_time = true;
+    bool autoUnshift           = true;  // Shift automatically out of stance/form
+    bool priest_fixed_time     = true;
+    bool priest_ignore_healing = false; 
   } options;
 
   // Glyphs
@@ -656,11 +657,12 @@ public:
     //
     void adjust_end_event()
     {
+      double drain_per_second = insanity_drain_per_second();
+
       // Ensure that the current insanity level is correct
       if ( last_drained != actor.sim->current_time() )
       {
         drain();
-        return;
       }
 
       // All drained, cancel voidform. TODO: Can this really even happen?
@@ -671,7 +673,6 @@ public:
         return;
       }
 
-      double drain_per_second = insanity_drain_per_second();
       timespan_t seconds_left = drain_per_second
         ? timespan_t::from_seconds( actor.resources.current[ RESOURCE_INSANITY ] / drain_per_second )
         : timespan_t::zero();
@@ -1356,6 +1357,7 @@ public:
 
   bool trigger_zeks()
   {
+
     if (priest.buffs.zeks_exterminatus->trigger())
     {
       // proc doesn't reset the CD :'(
@@ -1768,6 +1770,10 @@ struct dispersion_t final : public priest_spell_t
     priest.buffs.dispersion->trigger();
 
     priest_spell_t::execute();
+
+    // Adjust the Voidform end event (essentially remove it) after the Dispersion buff is up, since
+    // it disables insanity drain for the duration of the channel
+    priest.insanity.adjust_end_event();
   }
 
   timespan_t composite_dot_duration( const action_state_t* ) const override
@@ -3291,14 +3297,17 @@ struct vampiric_touch_t final : public priest_spell_t
 {
   double insanity_gain;
   shadow_word_pain_t* child_swp;
+  bool ignore_healing = false;
 
   vampiric_touch_t( priest_t& p, const std::string& options_str )
     : priest_spell_t( "vampiric_touch", p,
                       p.find_class_spell( "Vampiric Touch" ) ),
-      insanity_gain( data().effectN( 3 ).resource( RESOURCE_INSANITY ) )
+      insanity_gain( data().effectN( 3 ).resource( RESOURCE_INSANITY ) ),
+    ignore_healing(p.options.priest_ignore_healing)
   {
     parse_options( options_str );
-    init_mental_fortitude();
+    if( !ignore_healing )
+      init_mental_fortitude();
     may_crit = false;
     if (priest.talents.misery->ok())
     {
@@ -3324,9 +3333,12 @@ struct vampiric_touch_t final : public priest_spell_t
     }
   }
   void init_mental_fortitude();
-
+  
   void trigger_heal( action_state_t* s )
   {
+    if( ignore_healing )
+      return;
+
     double amount_to_heal =
         s->result_amount *
         0.5;  // TODO: 50% factor not yer available through spelldata
@@ -3351,7 +3363,7 @@ struct vampiric_touch_t final : public priest_spell_t
       priest.active_spells.mental_fortitude->execute();
     }
   }
-
+  
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
@@ -3370,7 +3382,10 @@ struct vampiric_touch_t final : public priest_spell_t
   {
     priest_spell_t::tick( d );
 
-    trigger_heal( d->state );
+    if ( !ignore_healing )
+    {
+      trigger_heal( d->state );
+    }
 
     if ( priest.artifact.unleash_the_shadows.rank() )
     {
@@ -3695,6 +3710,10 @@ struct void_torrent_t final : public priest_spell_t
     priest_spell_t::execute();
 
     priest.buffs.void_torrent->trigger();
+
+    // Adjust the Voidform end event (essentially remove it) after the Void Torrent buff is up,
+    // since it disables insanity drain for the duration of the channel
+    priest.insanity.adjust_end_event();
   }
 
   bool ready() override
@@ -3745,8 +3764,7 @@ struct power_word_shield_t final : public priest_absorb_t
   }
 };
 
-// Power Word: Shield Spell =================================================
-
+// Mental Fortitude (Vampiric Touch Shield) Spell ====================
 struct mental_fortitude_t final : public priest_absorb_t
 {
   mental_fortitude_t( priest_t& p )
@@ -3797,7 +3815,6 @@ struct mental_fortitude_t final : public priest_absorb_t
 };
 
 }  // NAMESPACE heals
-
 void spells::vampiric_touch_t::init_mental_fortitude()
 {
   if ( !priest.active_spells.mental_fortitude &&
@@ -3947,6 +3964,16 @@ struct voidform_t final : public priest_buff_t<haste_buff_t>
     priest.insanity.begin_tracking();
 
     return r;
+  }
+
+  bool freeze_stacks() override
+  {
+    // Hotfixed 2016-09-24: Voidform stacks no longer increase while Dispersion
+    // is active.
+    if ( priest.buffs.dispersion->check() )
+      return true;
+
+    return base_t::freeze_stacks();
   }
 
   void expire_override( int expiration_stacks,
@@ -5948,6 +5975,7 @@ void priest_t::create_options()
   add_option( opt_deprecated( "double_dot", "action_list=double_dot" ) );
   add_option( opt_bool( "autounshift", options.autoUnshift ) );
   add_option( opt_bool( "priest_fixed_time", options.priest_fixed_time ) );
+  add_option( opt_bool( "priest_ignore_healing", options.priest_ignore_healing ) );
 }
 
 // priest_t::create_profile =================================================

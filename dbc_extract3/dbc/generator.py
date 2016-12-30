@@ -1259,6 +1259,8 @@ class SpellDataGenerator(DataGenerator):
          215754, 215750,           # Magma Spit / summon spell for Spawn of Serpentrix
          # 7.1.5 de-links Mark of the Hidden Satyr damage spell fully from the driver
          191259,
+         # 7.1.5 Entwined Elemental Foci buffs
+         225729, 225730
         ),
 
         # Warrior:
