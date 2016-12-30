@@ -4074,6 +4074,9 @@ struct keg_smash_t: public monk_melee_attack_t
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
     cooldown -> duration = p.spec.keg_smash -> cooldown();
+    // Keg Smash does not appear to be picking up the baseline Trigger GCD reduction
+    // Forcing the trigger GCD to 1 second.
+    trigger_gcd = timespan_t::from_seconds( 1 );
   }
 
   virtual bool ready() override
