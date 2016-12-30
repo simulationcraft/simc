@@ -6777,8 +6777,7 @@ void rogue_t::init_action_list()
     precombat -> add_action( this, "Roll the Bones", "if=!talent.slice_and_dice.enabled" );
 
     // Main Rotation
-    def -> add_action( "variable,name=rtb_reroll,value=!talent.slice_and_dice.enabled&(rtb_buffs<=1&!rtb_list.any.6&((!buff.curse_of_the_dreadblades.up&!buff.adrenaline_rush.up)|!rtb_list.any.5))", "Condition to continue rerolling RtB (2- or not TB alone or not SIW alone during CDs); If SnD: consider that you never have to reroll." );
-      // variable,name=rtb_reroll,value=!talent.slice_and_dice.enabled&(rtb_buffs<=1|rtb_buffs=2&!rtb_list.any.56) is better in average but not really good in practical. (Fish 3+ or 2+ TB or 2+ SIW)
+    def -> add_action( "variable,name=rtb_reroll,value=!talent.slice_and_dice.enabled&(rtb_buffs<=2&!rtb_list.any.6)", "Fish for '3 Buffs' or 'True Bearing'. With SnD, consider that we never have to reroll." );
     def -> add_action( "variable,name=ss_useable_noreroll,value=(combo_points<5+talent.deeper_stratagem.enabled-(buff.broadsides.up|buff.jolly_roger.up)-(talent.alacrity.enabled&buff.alacrity.stack<=4))", "Condition to use Saber Slash when not rerolling RtB or when using SnD" );
     def -> add_action( "variable,name=ss_useable,value=(talent.anticipation.enabled&combo_points<4)|(!talent.anticipation.enabled&((variable.rtb_reroll&combo_points<4+talent.deeper_stratagem.enabled)|(!variable.rtb_reroll&variable.ss_useable_noreroll)))", "Condition to use Saber Slash, when you have RtB or not" );
     def -> add_action( "call_action_list,name=bf", "Normal rotation" );
