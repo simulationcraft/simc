@@ -5005,6 +5005,12 @@ struct ice_time_nova_t : public frost_mage_spell_t
     background = may_crit = true;
     aoe = -1;
   }
+
+  //This is a hack-ish way to sync Frozen Orb ending to Ice Time Nova executing
+  timespan_t travel_time() const override
+  {
+    return timespan_t::from_seconds( 10.0 );
+  }
 };
 
 // Frozen Orb Spell =========================================================
@@ -5127,7 +5133,8 @@ struct frozen_orb_t : public frost_mage_spell_t
     if ( ice_time )
     {
       ice_time_nova -> target = s -> target;
-      ice_time_nova -> execute();
+      // Schedule an execute so we get "travel time" on ice_time_nova
+      ice_time_nova -> schedule_execute();
     }
   }
 };
