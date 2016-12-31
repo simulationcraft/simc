@@ -253,7 +253,7 @@ public:
 
     // Legendaries
     buff_t* hidden_masters_forbidden_touch;
-    buff_t* emperors_electric_charge;
+    buff_t* the_emperors_capacitor;
   } buff;
 
 public:
@@ -591,7 +591,7 @@ public:
 
     // Legendaries
     const spell_data_t* hidden_masters_forbidden_touch;
-    const spell_data_t* the_emperor_capacitor;
+    const spell_data_t* the_emperors_capacitor;
   } passives;
 
   struct legendary_t
@@ -4748,8 +4748,8 @@ struct crackling_jade_lightning_t: public monk_spell_t
   {
     double c = monk_spell_t::cost_per_tick( resource );
 
-    if ( p() -> buff.emperors_electric_charge -> up() )
-      c *= 1 + ( p() -> buff.emperors_electric_charge -> current_stack * p() -> passives.the_emperor_capacitor -> effectN( 2 ).percent() );
+    if ( p() -> buff.the_emperors_capacitor -> up() )
+      c *= 1 + ( p() -> buff.the_emperors_capacitor -> current_stack * p() -> passives.the_emperors_capacitor -> effectN( 2 ).percent() );
 
     return c;
   }
@@ -4761,8 +4761,8 @@ struct crackling_jade_lightning_t: public monk_spell_t
     if ( p() -> buff.combo_strikes -> up() )
       pm *= 1 + p() -> cache.mastery_value();
 
-    if ( p() -> buff.emperors_electric_charge -> up() )
-      pm *= 1 + p() -> buff.emperors_electric_charge -> stack_value();
+    if ( p() -> buff.the_emperors_capacitor -> up() )
+      pm *= 1 + p() -> buff.the_emperors_capacitor -> stack_value();
 
     return pm;
   }
@@ -4791,8 +4791,8 @@ struct crackling_jade_lightning_t: public monk_spell_t
   {
     monk_spell_t::last_tick( dot );
 
-    if ( p() -> buff.emperors_electric_charge -> up() )
-      p() -> buff.emperors_electric_charge -> expire();
+    if ( p() -> buff.the_emperors_capacitor -> up() )
+      p() -> buff.the_emperors_capacitor -> expire();
 
     // Reset swing timer
     if ( player -> main_hand_attack )
@@ -7488,7 +7488,7 @@ void monk_t::init_spells()
 
   // Legendaries
   passives.hidden_masters_forbidden_touch   = find_spell( 213114 );
-  passives.the_emperor_capacitor            = find_spell( 235054 );
+  passives.the_emperors_capacitor           = find_spell( 235054 );
 
   // Mastery spells =========================================
   mastery.combo_strikes              = find_mastery_spell( MONK_WINDWALKER );
@@ -7782,8 +7782,8 @@ void monk_t::create_buffs()
   buff.hidden_masters_forbidden_touch = new buffs::hidden_masters_forbidden_touch_t( 
     *this, "hidden_masters_forbidden_touch", passives.hidden_masters_forbidden_touch );
 
-  buff.emperors_electric_charge = buff_creator_t( this, "emperors_electric_charge", passives.the_emperor_capacitor )
-    .default_value( passives.the_emperor_capacitor -> effectN( 1 ).percent() );
+  buff.the_emperors_capacitor = buff_creator_t( this, "the_emperors_capacitor", passives.the_emperors_capacitor )
+    .default_value( passives.the_emperors_capacitor -> effectN( 1 ).percent() );
 }
 
 // monk_t::init_gains =======================================================
