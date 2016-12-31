@@ -2573,6 +2573,7 @@ struct eye_of_the_tiger_heal_tick_t : public monk_heal_t
   {
     background = true;
     hasted_ticks = false;
+    may_crit = tick_may_crit = true;
     target = player;
   }
 
@@ -2581,6 +2582,8 @@ struct eye_of_the_tiger_heal_tick_t : public monk_heal_t
     double am = monk_heal_t::action_multiplier();
 
     am *= 1 + p() -> spec.brewmaster_monk -> effectN( 7 ).percent();
+
+    am *= 1 + p() -> spec.windwalker_monk -> effectN( 2 ).percent();
 
     return am;
   }
@@ -2593,6 +2596,7 @@ struct eye_of_the_tiger_dmg_tick_t: public monk_spell_t
   {
     background = true;
     hasted_ticks = false;
+    may_crit = tick_may_crit = true;
     attack_power_mod.direct = 0;
     attack_power_mod.tick = data().effectN( 2 ).ap_coeff();
   }
@@ -2602,6 +2606,8 @@ struct eye_of_the_tiger_dmg_tick_t: public monk_spell_t
     double am = monk_spell_t::action_multiplier();
 
     am *= 1 + p() -> spec.brewmaster_monk -> effectN( 7 ).percent();
+
+    am *= 1 + p() -> spec.windwalker_monk -> effectN( 2 ).percent();
 
     return am;
   }
