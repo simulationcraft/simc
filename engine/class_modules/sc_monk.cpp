@@ -2329,7 +2329,7 @@ public:
 
         // The Emperor's Capacitor Legendary
         if ( p() -> legendary.the_emperors_capacitor )
-          p() -> buff.emperors_electric_charge -> trigger( ab::cost() );
+          p() -> buff.the_emperors_capacitor -> trigger( ab::cost() );
       }
       // Chi Savings on Dodge & Parry & Miss
       if ( ab::resource_consumed > 0 )
