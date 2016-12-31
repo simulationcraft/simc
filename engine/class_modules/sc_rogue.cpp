@@ -5331,7 +5331,7 @@ void rogue_t::trigger_shadow_techniques( const action_state_t* state )
     }
 
     trigger_combo_point_gain( cp, gains.shadow_techniques, state -> action );
-    shadow_techniques = rng().range( 3, 5 );
+    shadow_techniques = rng().range( 4, 5 );
   }
 }
 
@@ -7949,7 +7949,7 @@ void rogue_t::reset()
   poisoned_enemies = 0;
 
   df_counter = 0;
-  shadow_techniques = rng().range( 3, 5 );
+  shadow_techniques = rng().range( 4, 5 );
 
   weapon_data[ WEAPON_MAIN_HAND ].reset();
   weapon_data[ WEAPON_OFF_HAND ].reset();
