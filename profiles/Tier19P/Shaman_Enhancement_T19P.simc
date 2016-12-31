@@ -32,7 +32,7 @@ actions+=/crash_lightning,if=artifact.alpha_wolf.rank&prev_gcd.1.feral_spirit
 actions+=/berserking,if=buff.ascendance.up|!talent.ascendance.enabled|level<100
 actions+=/blood_fury
 actions+=/potion,name=prolonged_power,if=feral_spirit.remains>5|target.time_to_die<=60
-actions+=/boulderfist,if=buff.boulderfist.remains<gcd&maelstrom>=50&active_enemies>=3
+actions+=/boulderfist,if=buff.boulderfist.remains<gcd|maelstrom<=50&active_enemies>=3
 actions+=/boulderfist,if=buff.boulderfist.remains<gcd|(charges_fractional>1.75&maelstrom<=100&active_enemies<=2)
 actions+=/rockbiter,if=talent.landslide.enabled&buff.landslide.remains<gcd
 actions+=/fury_of_air,if=!ticking&maelstrom>40
