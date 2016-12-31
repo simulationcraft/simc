@@ -199,7 +199,7 @@ struct rogue_t : public player_t
     buff_t* feint;
     buff_t* killing_spree;
     buff_t* master_of_subtlety;
-    buff_t* master_of_subtlety_passive;
+    buff_t* master_of_subtlety_aura;
     buff_t* opportunity; // TODO: Not its real name, need to see in game what it is
     buff_t* shadow_dance;
     buff_t* shadowstep;
@@ -226,7 +226,7 @@ struct rogue_t : public player_t
     buff_t* the_dreadlords_deceit;
     buff_t* the_dreadlords_deceit_driver;
     buff_t* mantle_of_the_master_assassin;
-    buff_t* mantle_of_the_master_assassin_passive;
+    buff_t* mantle_of_the_master_assassin_aura;
 
     buff_t* deceit;
     buff_t* shadow_strikes;
@@ -1396,7 +1396,7 @@ struct soul_rip_t : public rogue_attack_t
     double m = rogue_attack_t::action_multiplier();
 
     //FIXME: Probably not the best way to do it, but since it's done by the pet it does ignore those two player multiplier.
-    if ( p() -> buffs.master_of_subtlety -> check() || p() -> buffs.master_of_subtlety_passive -> check() )
+    if ( p() -> buffs.master_of_subtlety -> check() || p() -> buffs.master_of_subtlety_aura -> check() )
     {
       m /= 1.0 + p() -> talent.master_of_subtlety -> effectN( 1 ).percent();
     }
@@ -5839,9 +5839,10 @@ struct subterfuge_t : public buff_t
 struct stealth_like_buff_t : public buff_t
 {
   rogue_t* rogue;
+  bool procs_mantle_of_the_master_assassin;
 
   stealth_like_buff_t( rogue_t* r, const std::string& name, const spell_data_t* spell ) :
-    buff_t( buff_creator_t( r, name, spell ) ), rogue( r )
+    buff_t( buff_creator_t( r, name, spell ) ), rogue( r ), procs_mantle_of_the_master_assassin ( true )
   { }
 
   void execute( int stacks, double value, timespan_t duration ) override
@@ -5851,82 +5852,33 @@ struct stealth_like_buff_t : public buff_t
     if ( rogue -> in_combat && rogue -> talent.master_of_shadows -> ok() )
     {
       rogue -> resource_gain( RESOURCE_ENERGY, rogue -> spell.master_of_shadows -> effectN( 1 ).base_value(),
-          rogue -> gains.master_of_shadows );
+                              rogue -> gains.master_of_shadows );
     }
 
-    if ( rogue -> legendary.mantle_of_the_master_assassin )
+    if ( rogue -> legendary.mantle_of_the_master_assassin &&
+     procs_mantle_of_the_master_assassin )
     {
       rogue -> buffs.mantle_of_the_master_assassin -> expire();
-      rogue -> buffs.mantle_of_the_master_assassin_passive -> trigger();
+      rogue -> buffs.mantle_of_the_master_assassin_aura -> trigger();
     }
 
     rogue -> buffs.master_of_subtlety -> expire();
-    rogue -> buffs.master_of_subtlety_passive -> trigger();
+    rogue -> buffs.master_of_subtlety_aura -> trigger();
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     buff_t::expire_override( expiration_stacks, remaining_duration );
 
-    if ( rogue -> legendary.mantle_of_the_master_assassin )
+    if ( rogue -> legendary.mantle_of_the_master_assassin &&
+     procs_mantle_of_the_master_assassin )
     {
-      rogue -> buffs.mantle_of_the_master_assassin_passive -> expire();
+      rogue -> buffs.mantle_of_the_master_assassin_aura -> expire();
       rogue -> buffs.mantle_of_the_master_assassin -> trigger();
     }
 
-    rogue -> buffs.master_of_subtlety_passive -> expire();
+    rogue -> buffs.master_of_subtlety_aura -> expire();
     rogue -> buffs.master_of_subtlety -> trigger();
-  }
-};
-
-// Vanish does not give "stealth like abilities", except for some reason it does give Master of
-// Subtlety buff.
-struct vanish_t : public buff_t
-{
-  rogue_t* rogue;
-
-  vanish_t( rogue_t* r ) :
-    buff_t( buff_creator_t( r, "vanish", r -> find_spell( 11327 ) ) ),
-    rogue( r )
-  { }
-
-  void execute( int stacks, double value, timespan_t duration ) override
-  {
-    buff_t::execute( stacks, value, duration );
-
-    if ( rogue -> in_combat && rogue -> talent.master_of_shadows -> ok() )
-    {
-      rogue -> resource_gain( RESOURCE_ENERGY, rogue -> spell.master_of_shadows -> effectN( 1 ).base_value(),
-          rogue -> gains.master_of_shadows );
-    }
-
-    if ( rogue -> legendary.mantle_of_the_master_assassin )
-    {
-      rogue -> buffs.mantle_of_the_master_assassin -> expire();
-      rogue -> buffs.mantle_of_the_master_assassin_passive -> trigger();
-    }
-
-    rogue -> buffs.master_of_subtlety -> expire();
-    rogue -> buffs.master_of_subtlety_passive -> trigger();
-  }
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    buff_t::expire_override( expiration_stacks, remaining_duration );
-
-    if ( rogue -> legendary.mantle_of_the_master_assassin )
-    {
-      rogue -> buffs.mantle_of_the_master_assassin_passive -> expire();
-      rogue -> buffs.mantle_of_the_master_assassin -> trigger();
-    }
-
-    rogue -> buffs.master_of_subtlety_passive -> expire();
-    rogue -> buffs.master_of_subtlety -> trigger();
-
-    if ( remaining_duration == timespan_t::zero() )
-    {
-      rogue -> buffs.stealth -> trigger();
-    }
   }
 };
 
@@ -5941,12 +5893,33 @@ struct stealth_t : public stealth_like_buff_t
   }
 };
 
+// Vanish now acts like "stealth like abilities".
+struct vanish_t : public stealth_like_buff_t
+{
+  vanish_t( rogue_t* r ) :
+    stealth_like_buff_t( r, "vanish", r -> find_spell( 11327 ) )
+  { }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    stealth_like_buff_t::expire_override( expiration_stacks, remaining_duration );
+
+    if ( remaining_duration == timespan_t::zero() )
+    {
+      rogue -> buffs.stealth -> trigger();
+    }
+  }
+};
+
+// Shadow dance acts like "stealth like abilities" except for Mantle of the Master
+// Assassin legendary.
 struct shadow_dance_t : public stealth_like_buff_t
 {
   shadow_dance_t( rogue_t* p ) :
     stealth_like_buff_t( p, "shadow_dance", p -> spec.shadow_dance )
   {
     buff_duration += p -> talent.subterfuge -> effectN( 2 ).time_value();
+    procs_mantle_of_the_master_assassin = false;
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -6317,7 +6290,7 @@ double rogue_t::composite_melee_crit_chance() const
 
   crit += buffs.mantle_of_the_master_assassin -> stack_value(); // 7.1.5 Legendary
 
-  crit += buffs.mantle_of_the_master_assassin_passive -> stack_value(); // 7.1.5 Legendary
+  crit += buffs.mantle_of_the_master_assassin_aura -> stack_value(); // 7.1.5 Legendary
 
   return crit;
 }
@@ -6348,7 +6321,7 @@ double rogue_t::composite_spell_crit_chance() const
 
   crit += buffs.mantle_of_the_master_assassin -> stack_value(); // 7.1.5 Legendary
 
-  crit += buffs.mantle_of_the_master_assassin_passive -> stack_value(); // 7.1.5 Legendary
+  crit += buffs.mantle_of_the_master_assassin_aura -> stack_value(); // 7.1.5 Legendary
 
   return crit;
 }
@@ -6394,10 +6367,8 @@ double rogue_t::composite_player_multiplier( school_e school ) const
   m *= 1.0 + artifact.legionblade.percent();
   m *= 1.0 + artifact.cursed_steel.percent();
 
-  if ( buffs.master_of_subtlety -> check() || buffs.master_of_subtlety_passive -> check() )
-  {
-    m *= 1.0 + talent.master_of_subtlety -> effectN( 1 ).percent();
-  }
+  m *= 1.0 + buffs.master_of_subtlety -> stack_value();
+  m *= 1.0 + buffs.master_of_subtlety_aura -> stack_value();
 
   if ( main_hand_weapon.type == WEAPON_DAGGER && off_hand_weapon.type == WEAPON_DAGGER && spec.assassins_resolve -> ok() )
   {
@@ -7529,12 +7500,14 @@ void rogue_t::create_buffs()
   buffs.opportunity         = buff_creator_t( this, "opportunity", find_spell( 195627 ) );
   buffs.feint               = buff_creator_t( this, "feint", find_specialization_spell( "Feint" ) )
     .duration( find_class_spell( "Feint" ) -> duration() );
-  buffs.master_of_subtlety_passive = buff_creator_t( this, "master_of_subtlety_passive", talent.master_of_subtlety )
+  buffs.master_of_subtlety_aura = buff_creator_t( this, "master_of_subtlety_aura", talent.master_of_subtlety )
                                      .duration( sim -> max_time / 2 )
+                                   .default_value(0.1) // No longer shown in spell data, so we'll hardcode it, 10% dmg
+                                   .chance(talent.master_of_subtlety->ok())
                                      .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.master_of_subtlety  = buff_creator_t( this, "master_of_subtlety", talent.master_of_subtlety )
-                              .duration( timespan_t::from_seconds( 6 ) ) // FIXME: Should be Effect #1 from Spell (id: 31223)
-                              .default_value( talent.master_of_subtlety -> effectN( 1 ).percent() )
+                            .duration( timespan_t::from_seconds( talent.master_of_subtlety -> effectN(1).base_value() ) )
+                            .default_value( 0.1 ) // No longer shown in spell data, so we'll hardcode it, 10% dmg
                               .chance( talent.master_of_subtlety -> ok() )
                               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   // Killing spree buff has only 2 sec duration, main spell has 3, check.
@@ -7614,12 +7587,12 @@ void rogue_t::create_buffs()
                                      .tick_callback( [this]( buff_t*, int, const timespan_t& ) {
                                       buffs.the_dreadlords_deceit -> trigger(); } )
                                      .tick_time_behavior( BUFF_TICK_TIME_UNHASTED );
-  buffs.mantle_of_the_master_assassin_passive = buff_creator_t( this, "master_assassins_initiative_passive", find_spell( 235022 ) )
+  buffs.mantle_of_the_master_assassin_aura = buff_creator_t( this, "master_assassins_initiative_aura", find_spell( 235022 ) )
                                               .duration( sim -> max_time / 2 )
-                                              .default_value( find_spell( 235027 ) -> effectN( 1 ).percent() )
+                                            .default_value( find_spell(235027) -> effectN(1).percent() )
                                               .add_invalidate( CACHE_CRIT_CHANCE );
   buffs.mantle_of_the_master_assassin  = buff_creator_t( this, "master_assassins_initiative", find_spell( 235022 ) )
-                                      .duration( timespan_t::from_seconds( 6 ) ) // FIXME: Should be Effect #1 from Spell (id: 235022)
+                                      .duration( timespan_t::from_seconds( find_spell(235022) -> effectN(1).base_value() ) )
                                       .default_value( find_spell( 235027 ) -> effectN( 1 ).percent() )
                                       .add_invalidate( CACHE_CRIT_CHANCE );
 
