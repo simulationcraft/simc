@@ -6779,7 +6779,7 @@ void shaman_t::init_action_list_enhancement()
                           ( true_level >= 90  ) ? "sea_mist_rice_noodles" :
                           ( true_level >= 80  ) ? "seafood_magnifique_feast" :
                           "";
-  std::string potion_name = ( true_level > 100 ) ? "old_war" :
+  std::string potion_name = ( true_level > 100 ) ? "prolonged_power" :
                             ( true_level >= 90 ) ? "draenic_agility" :
                             ( true_level >= 85 ) ? "virmens_bite" :
                             ( true_level >= 80 ) ? "tolvir" :
@@ -6841,43 +6841,44 @@ void shaman_t::init_action_list_enhancement()
     }
   }
 
-  // In-combat potion
-  if ( sim -> allow_potions && true_level >= 80  )
-  {
-    def -> add_action( "potion,name=" + potion_name + ",if=feral_spirit.remains>5|target.time_to_die<=30" );
-  }
-
   // Racials
   def -> add_action( "berserking,if=buff.ascendance.up|!talent.ascendance.enabled|level<100" );
   def -> add_action( "blood_fury" );
 
+  // In-combat potion
+  if (sim->allow_potions && true_level >= 80)
+  {
+      def->add_action("potion,name=" + potion_name + ",if=feral_spirit.remains>5|target.time_to_die<=60");
+  }
+
   // Core rotation
-  def -> add_action( this, "Crash Lightning", "if=talent.crashing_storm.enabled&active_enemies>=3" );
   def -> add_talent( this, "Boulderfist", "if=buff.boulderfist.remains<gcd&maelstrom>=50&active_enemies>=3" );
   def -> add_talent( this, "Boulderfist", "if=buff.boulderfist.remains<gcd|(charges_fractional>1.75&maelstrom<=100&active_enemies<=2)" );
+  def -> add_action( this, "Rockbiter", "if=talent.landslide.enabled&buff.landslide.remains<gcd" );
+  def -> add_talent( this, "Fury of Air", "if=!ticking&maelstrom>40" );
+  def -> add_action( this, "Frostbrand", "if=talent.hailstorm.enabled&buff.frostbrand.remains>gcd" );
+  def -> add_action( this, "Crash Lightning", "if=talent.crashing_storm.enabled&active_enemies>=3&(!talent.hailstorm.enabled|buff.frostbrand.remains>gcd)");
+  def -> add_talent( this, "Earthen Spike");
+  def -> add_action( this, "Lightning Bolt", "if=(talent.overcharge.enabled&maelstrom>=40&!talent.fury_of_air.enabled)|(talent.overcharge.enabled&talent.fury_of_air.enabled&maelstrom>46)" );
   def -> add_action( this, "Crash Lightning", "if=buff.crash_lightning.remains<gcd&active_enemies>=2" );
   def -> add_action( this, "Windstrike", "if=active_enemies>=3&!talent.hailstorm.enabled" );
   def -> add_action( this, "Stormstrike", "if=active_enemies>=3&!talent.hailstorm.enabled" );
+  def -> add_talent( this, "Windsong" );
   def -> add_action( this, "Windstrike", "if=buff.stormbringer.react" );
   def -> add_action( this, "Stormstrike", "if=buff.stormbringer.react" );
-  def -> add_action( this, "Rockbiter", "if=talent.landslide.enabled&buff.landslide.remains<gcd" );
-  def -> add_action( this, "Frostbrand", "if=talent.hailstorm.enabled&buff.frostbrand.remains<gcd" );
-  def -> add_action( this, "Flametongue", "if=buff.flametongue.remains<gcd");
-  def -> add_talent( this, "Windsong");
+  def -> add_action( this, "Lava Lash", "if=talent.hot_hand.enabled&buff.hot_hand.react" );
   def -> add_talent( this, "Ascendance" );
-  def -> add_talent( this, "Fury of Air", "if=!ticking" );
   def -> add_action( this, "Doom Winds");
   def -> add_action( this, "Crash Lightning", "if=active_enemies>=3" );
   def -> add_action( this, "Windstrike" );
-  def -> add_action( this, "Stormstrike" );
-  def -> add_action( this, "Lightning Bolt", "if=talent.overcharge.enabled&maelstrom>=60" );
-  def -> add_action( this, "Lava Lash", "if=buff.hot_hand.react" );
-  def -> add_talent( this, "Earthen Spike" );
+  def -> add_action( this, "Stormstrike", "if=talent.overcharge.enabled&cooldown.lightning_bolt.remains<gcd&maelstrom>80" );
+  def -> add_action( this, "Stormstrike", "if=talent.fury_of_air.enabled&maelstrom>46&cooldown.lightning_bolt.remains>gcd" );
+  def -> add_action( this, "Stormstrike", "if=!talent.overchage.enabled&!talent.fury_of_air.enabled" );
   def -> add_action( this, "Crash Lightning", "if=active_enemies>1|talent.crashing_storm.enabled|feral_spirit.remains>5" );
   def -> add_action( this, "Frostbrand", "if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8" );
   def -> add_action( this, "Flametongue", "if=buff.flametongue.remains<4.8");
   def -> add_talent( this, "Sundering" );
-  def -> add_action( this, "Lava Lash", "if=maelstrom>=90" );
+  def -> add_action( this, "Lava Lash", "if=(talent.fury_of_air.enabled&talent.overcharge.enabled&maelstrom>=120)|(!talent.overcharge.enabled&maelstrom>=80)" );
   def -> add_action( this, "Rockbiter" );
   def -> add_action( this, "Flametongue" );
   def -> add_talent( this, "Boulderfist" );

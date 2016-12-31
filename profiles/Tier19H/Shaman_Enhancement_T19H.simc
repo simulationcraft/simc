@@ -1,9 +1,9 @@
 shaman="Shaman_Enhancement_T19H"
 level=110
-race=orc
+race=troll
 role=attack
 position=back
-talents=3003112
+talents=2002222
 artifact=41:137316:137408:133682:0:899:1:900:1:901:1:902:1:903:1:904:1:905:2:906:3:907:3:909:3:910:5:911:3:912:3:930:1:1351:1
 spec=enhancement
 
@@ -19,7 +19,7 @@ actions.precombat+=/augmentation,type=defiled
 actions.precombat+=/food,name=nightborne_delicacy_platter
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion,name=old_war
+actions.precombat+=/potion,name=prolonged_power
 actions.precombat+=/lightning_shield
 
 # Executed every time the actor is available.
@@ -29,35 +29,36 @@ actions+=/bloodlust,if=target.health.pct<25|time>0.500
 actions+=/auto_attack
 actions+=/feral_spirit
 actions+=/crash_lightning,if=artifact.alpha_wolf.rank&prev_gcd.1.feral_spirit
-actions+=/potion,name=old_war,if=feral_spirit.remains>5|target.time_to_die<=30
 actions+=/berserking,if=buff.ascendance.up|!talent.ascendance.enabled|level<100
 actions+=/blood_fury
-actions+=/crash_lightning,if=talent.crashing_storm.enabled&active_enemies>=3
+actions+=/potion,name=prolonged_power,if=feral_spirit.remains>5|target.time_to_die<=60
 actions+=/boulderfist,if=buff.boulderfist.remains<gcd&maelstrom>=50&active_enemies>=3
 actions+=/boulderfist,if=buff.boulderfist.remains<gcd|(charges_fractional>1.75&maelstrom<=100&active_enemies<=2)
+actions+=/rockbiter,if=talent.landslide.enabled&buff.landslide.remains<gcd
+actions+=/fury_of_air,if=!ticking&maelstrom>40
+actions+=/frostbrand,if=talent.hailstorm.enabled&buff.frostbrand.remains>gcd
+actions+=/crash_lightning,if=talent.crashing_storm.enabled&active_enemies>=3&(!talent.hailstorm.enabled|buff.frostbrand.remains>gcd)
+actions+=/earthen_spike
+actions+=/lightning_bolt,if=(talent.overcharge.enabled&maelstrom>=40&!talent.fury_of_air.enabled)|(talent.overcharge.enabled&talent.fury_of_air.enabled&maelstrom>46)
 actions+=/crash_lightning,if=buff.crash_lightning.remains<gcd&active_enemies>=2
 actions+=/windstrike,if=active_enemies>=3&!talent.hailstorm.enabled
 actions+=/stormstrike,if=active_enemies>=3&!talent.hailstorm.enabled
+actions+=/windsong
 actions+=/windstrike,if=buff.stormbringer.react
 actions+=/stormstrike,if=buff.stormbringer.react
-actions+=/rockbiter,if=talent.landslide.enabled&buff.landslide.remains<gcd
-actions+=/frostbrand,if=talent.hailstorm.enabled&buff.frostbrand.remains<gcd
-actions+=/flametongue,if=buff.flametongue.remains<gcd
-actions+=/windsong
+actions+=/lava_lash,if=talent.hot_hand.enabled&buff.hot_hand.react
 actions+=/ascendance
-actions+=/fury_of_air,if=!ticking
 actions+=/doom_winds
 actions+=/crash_lightning,if=active_enemies>=3
 actions+=/windstrike
-actions+=/stormstrike
-actions+=/lightning_bolt,if=talent.overcharge.enabled&maelstrom>=60
-actions+=/lava_lash,if=buff.hot_hand.react
-actions+=/earthen_spike
+actions+=/stormstrike,if=talent.overcharge.enabled&cooldown.lightning_bolt.remains<gcd&maelstrom>80
+actions+=/stormstrike,if=talent.fury_of_air.enabled&maelstrom>46&cooldown.lightning_bolt.remains>gcd
+actions+=/stormstrike,if=!talent.overchage.enabled&!talent.fury_of_air.enabled
 actions+=/crash_lightning,if=active_enemies>1|talent.crashing_storm.enabled|feral_spirit.remains>5
 actions+=/frostbrand,if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8
 actions+=/flametongue,if=buff.flametongue.remains<4.8
 actions+=/sundering
-actions+=/lava_lash,if=maelstrom>=90
+actions+=/lava_lash,if=(talent.fury_of_air.enabled&talent.overcharge.enabled&maelstrom>=120)|(!talent.overcharge.enabled&maelstrom>=80)
 actions+=/rockbiter
 actions+=/flametongue
 actions+=/boulderfist
