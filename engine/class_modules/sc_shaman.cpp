@@ -6852,7 +6852,7 @@ void shaman_t::init_action_list_enhancement()
   }
 
   // Core rotation
-  def -> add_talent( this, "Boulderfist", "if=buff.boulderfist.remains<gcd|maelstrom<=50&active_enemies>=3" );
+  def -> add_talent( this, "Boulderfist", "if=buff.boulderfist.remains<gcd|(maelstrom<=50&active_enemies>=3)" );
   def -> add_talent( this, "Boulderfist", "if=buff.boulderfist.remains<gcd|(charges_fractional>1.75&maelstrom<=100&active_enemies<=2)" );
   def -> add_action( this, "Rockbiter", "if=talent.landslide.enabled&buff.landslide.remains<gcd" );
   def -> add_talent( this, "Fury of Air", "if=!ticking&maelstrom>40" );
