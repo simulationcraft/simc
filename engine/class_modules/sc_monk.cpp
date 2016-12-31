@@ -2581,6 +2581,8 @@ struct eye_of_the_tiger_heal_tick_t : public monk_heal_t
   {
     double am = monk_heal_t::action_multiplier();
 
+    am *= 1 + p() -> spec.brewmaster_monk -> effectN( 2 ).percent();
+
     am *= 1 + p() -> spec.brewmaster_monk -> effectN( 7 ).percent();
 
     am *= 1 + p() -> spec.windwalker_monk -> effectN( 2 ).percent();
@@ -2604,6 +2606,8 @@ struct eye_of_the_tiger_dmg_tick_t: public monk_spell_t
   double action_multiplier() const override
   {
     double am = monk_spell_t::action_multiplier();
+
+    am *= 1 + p() -> spec.brewmaster_monk -> effectN( 2 ).percent();
 
     am *= 1 + p() -> spec.brewmaster_monk -> effectN( 7 ).percent();
 
@@ -4892,7 +4896,7 @@ struct breath_of_fire_t: public monk_spell_t
     {
       double am = monk_spell_t::action_multiplier();
 
-      am *= 1 + p() -> spec.brewmaster_monk -> effectN( 1 ).percent();
+      am *= 1 + p() -> spec.brewmaster_monk -> effectN( 2 ).percent();
 
       if ( p() -> artifact.hot_blooded.rank() )
         am *= 1 + p() -> artifact.hot_blooded.data().effectN( 1 ).percent();
@@ -4912,6 +4916,15 @@ struct breath_of_fire_t: public monk_spell_t
     parse_options( options_str );
 
     add_child( dragonfire );
+  }
+
+  double action_multiplier() const override
+  {
+    double am = monk_spell_t::action_multiplier();
+
+    am *= 1 + p() -> spec.brewmaster_monk -> effectN( 1 ).percent();
+
+    return am;
   }
 
   virtual void update_ready( timespan_t ) override
