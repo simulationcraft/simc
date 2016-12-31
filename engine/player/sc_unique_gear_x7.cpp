@@ -1386,6 +1386,16 @@ void item::draught_of_souls( special_effect_t& effect )
       }
     }
 
+    void execute() override
+    {
+      proc_spell_t::execute();
+
+      // Use_item_t (that executes this action) will trigger a player-ready event after execution.
+      // Since this action is a "background channel", we'll need to cancel the player ready event to
+      // prevent the player from picking something to do while channeling.
+      event_t::cancel( player -> readying );
+    }
+
     void tick( dot_t* d ) override
     {
       proc_spell_t::tick( d );
@@ -1396,13 +1406,17 @@ void item::draught_of_souls( special_effect_t& effect )
 
     void last_tick( dot_t* d ) override
     {
+      // Last_tick() will zero player_t::channeling if this action is being channeled, so check it
+      // before calling the parent.
+      auto was_channeling = player -> channeling == this;
+
       proc_spell_t::last_tick( d );
 
       // Since Draught of Souls must be modeled as a channel (player cannot be allowed to perform
       // any actions for 3 seconds), we need to manually restart the player-ready event immediately
       // after the channel ends. This is because the channel is flagged as a background action,
       // which by default prohibits player-ready generation.
-      if ( player -> readying == nullptr )
+      if ( was_channeling && player -> readying == nullptr )
       {
         player -> schedule_ready();
       }
