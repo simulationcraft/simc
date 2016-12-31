@@ -473,6 +473,7 @@ public:
     attack_t* demon_blades;
     spell_t* inner_demons;
 	attack_t* chaos_cleave;
+	attack_t* chaos_cleave_annihilation;
 
     // Vengeance
     heal_t* charred_warblades;
@@ -3403,9 +3404,10 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
 
       if ( p()->talent.chaos_cleave->ok() )
       {
-        p()->active.chaos_cleave->base_dd_min = state->result_total;
-        p()->active.chaos_cleave->base_dd_max = state->result_total;
-        p()->active.chaos_cleave->schedule_execute();
+		attack_t* const chaos_cleave = p()->buff.metamorphosis->up() ? p()->active.chaos_cleave_annihilation : p()->active.chaos_cleave;
+        chaos_cleave->base_dd_min = state->result_total;
+        chaos_cleave->base_dd_max = state->result_total;
+        chaos_cleave->schedule_execute();
       }
     }
   };
@@ -3589,6 +3591,11 @@ struct chaos_strike_t : public chaos_strike_base_t
     }
 
     attacks = p -> chaos_strike_attacks;
+
+	if (p->talent.chaos_cleave->ok())
+	{
+		add_child(p->active.chaos_cleave);
+	}
   }
 
   bool ready() override
@@ -3605,8 +3612,8 @@ struct chaos_strike_t : public chaos_strike_base_t
 // Chaos Cleave =============================================================
 struct chaos_cleave_t : public demon_hunter_attack_t
 {
-	chaos_cleave_t(demon_hunter_t* p) : demon_hunter_attack_t(
-		"chaos_cleave", p, p->find_talent_spell("Chaos Cleave"))
+	chaos_cleave_t(const std::string& n, demon_hunter_t* p) : demon_hunter_attack_t(
+		n, p, p->find_talent_spell("Chaos Cleave"))
 	{
 		may_miss = may_crit = proc = callbacks = may_dodge = may_parry = may_block = false;
 		background = true;
@@ -3657,6 +3664,11 @@ struct annihilation_t : public chaos_strike_base_t
     }
 
     attacks = p -> annihilation_attacks;
+
+	if (p->talent.chaos_cleave->ok())
+	{
+		add_child(p->active.chaos_cleave_annihilation);
+	}
   }
 
   bool ready() override
@@ -6079,7 +6091,8 @@ void demon_hunter_t::init_spells()
 
   if (talent.chaos_cleave->ok())
   {
-	  active.chaos_cleave = new chaos_cleave_t( this );
+	  active.chaos_cleave = new chaos_cleave_t("chaos_cleave", this );
+	  active.chaos_cleave_annihilation = new chaos_cleave_t("chaos_cleave_annihilation", this);
   }
 
   if ( artifact.charred_warblades.rank() )
