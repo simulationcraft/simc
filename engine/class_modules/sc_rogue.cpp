@@ -5839,9 +5839,10 @@ struct subterfuge_t : public buff_t
 struct stealth_like_buff_t : public buff_t
 {
   rogue_t* rogue;
+  bool procs_mantle_of_the_master_assassin;
 
   stealth_like_buff_t( rogue_t* r, const std::string& name, const spell_data_t* spell ) :
-    buff_t( buff_creator_t( r, name, spell ) ), rogue( r )
+    buff_t( buff_creator_t( r, name, spell ) ), rogue( r ), procs_mantle_of_the_master_assassin ( true )
   { }
 
   void execute( int stacks, double value, timespan_t duration ) override
@@ -5851,10 +5852,11 @@ struct stealth_like_buff_t : public buff_t
     if ( rogue -> in_combat && rogue -> talent.master_of_shadows -> ok() )
     {
       rogue -> resource_gain( RESOURCE_ENERGY, rogue -> spell.master_of_shadows -> effectN( 1 ).base_value(),
-          rogue -> gains.master_of_shadows );
+                              rogue -> gains.master_of_shadows );
     }
 
-    if ( rogue -> legendary.mantle_of_the_master_assassin )
+    if ( rogue -> legendary.mantle_of_the_master_assassin &&
+     procs_mantle_of_the_master_assassin )
     {
       rogue -> buffs.mantle_of_the_master_assassin -> expire();
       rogue -> buffs.mantle_of_the_master_assassin_passive -> trigger();
@@ -5868,7 +5870,8 @@ struct stealth_like_buff_t : public buff_t
   {
     buff_t::expire_override( expiration_stacks, remaining_duration );
 
-    if ( rogue -> legendary.mantle_of_the_master_assassin )
+    if ( rogue -> legendary.mantle_of_the_master_assassin &&
+     procs_mantle_of_the_master_assassin )
     {
       rogue -> buffs.mantle_of_the_master_assassin_passive -> expire();
       rogue -> buffs.mantle_of_the_master_assassin -> trigger();
@@ -5876,57 +5879,6 @@ struct stealth_like_buff_t : public buff_t
 
     rogue -> buffs.master_of_subtlety_passive -> expire();
     rogue -> buffs.master_of_subtlety -> trigger();
-  }
-};
-
-// Vanish does not give "stealth like abilities", except for some reason it does give Master of
-// Subtlety buff.
-struct vanish_t : public buff_t
-{
-  rogue_t* rogue;
-
-  vanish_t( rogue_t* r ) :
-    buff_t( buff_creator_t( r, "vanish", r -> find_spell( 11327 ) ) ),
-    rogue( r )
-  { }
-
-  void execute( int stacks, double value, timespan_t duration ) override
-  {
-    buff_t::execute( stacks, value, duration );
-
-    if ( rogue -> in_combat && rogue -> talent.master_of_shadows -> ok() )
-    {
-      rogue -> resource_gain( RESOURCE_ENERGY, rogue -> spell.master_of_shadows -> effectN( 1 ).base_value(),
-          rogue -> gains.master_of_shadows );
-    }
-
-    if ( rogue -> legendary.mantle_of_the_master_assassin )
-    {
-      rogue -> buffs.mantle_of_the_master_assassin -> expire();
-      rogue -> buffs.mantle_of_the_master_assassin_passive -> trigger();
-    }
-
-    rogue -> buffs.master_of_subtlety -> expire();
-    rogue -> buffs.master_of_subtlety_passive -> trigger();
-  }
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    buff_t::expire_override( expiration_stacks, remaining_duration );
-
-    if ( rogue -> legendary.mantle_of_the_master_assassin )
-    {
-      rogue -> buffs.mantle_of_the_master_assassin_passive -> expire();
-      rogue -> buffs.mantle_of_the_master_assassin -> trigger();
-    }
-
-    rogue -> buffs.master_of_subtlety_passive -> expire();
-    rogue -> buffs.master_of_subtlety -> trigger();
-
-    if ( remaining_duration == timespan_t::zero() )
-    {
-      rogue -> buffs.stealth -> trigger();
-    }
   }
 };
 
@@ -5941,12 +5893,33 @@ struct stealth_t : public stealth_like_buff_t
   }
 };
 
+// Vanish now acts like "stealth like abilities".
+struct vanish_t : public stealth_like_buff_t
+{
+  vanish_t( rogue_t* r ) :
+    stealth_like_buff_t( r, "vanish", r -> find_spell( 11327 ) )
+  { }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    stealth_like_buff_t::expire_override( expiration_stacks, remaining_duration );
+
+    if ( remaining_duration == timespan_t::zero() )
+    {
+      rogue -> buffs.stealth -> trigger();
+    }
+  }
+};
+
+// Shadow dance acts like "stealth like abilities" except for Mantle of the Master
+// Assassin legendary.
 struct shadow_dance_t : public stealth_like_buff_t
 {
   shadow_dance_t( rogue_t* p ) :
     stealth_like_buff_t( p, "shadow_dance", p -> spec.shadow_dance )
   {
     buff_duration += p -> talent.subterfuge -> effectN( 2 ).time_value();
+    procs_mantle_of_the_master_assassin = false;
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
