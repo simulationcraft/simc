@@ -6221,7 +6221,7 @@ void demon_hunter_t::apl_precombat()
   if ( sim -> allow_food )
   {
     if ( true_level > 100 )
-      pre -> add_action( "food,type=the_hungry_magister" );
+      pre -> add_action( "food,type=nightborne_delicacy_platter" );
     else
       pre -> add_action( "food,type=pickled_eel" );
   }
