@@ -7502,8 +7502,8 @@ void rogue_t::create_buffs()
     .duration( find_class_spell( "Feint" ) -> duration() );
   buffs.master_of_subtlety_aura = buff_creator_t( this, "master_of_subtlety_aura", talent.master_of_subtlety )
                                      .duration( sim -> max_time / 2 )
-                                   .default_value(0.1) // No longer shown in spell data, so we'll hardcode it, 10% dmg
-                                   .chance(talent.master_of_subtlety->ok())
+                                   .default_value( 0.1 ) // No longer shown in spell data, so we'll hardcode it, 10% dmg
+                                   .chance( talent.master_of_subtlety -> ok() )
                                      .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.master_of_subtlety  = buff_creator_t( this, "master_of_subtlety", talent.master_of_subtlety )
                             .duration( timespan_t::from_seconds( talent.master_of_subtlety -> effectN(1).base_value() ) )
