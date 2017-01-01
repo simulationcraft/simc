@@ -253,7 +253,7 @@ public:
 
     // Legendaries
     buff_t* hidden_masters_forbidden_touch;
-    buff_t* emperors_electric_charge;
+    buff_t* the_emperors_capacitor;
   } buff;
 
 public:
@@ -591,7 +591,7 @@ public:
 
     // Legendaries
     const spell_data_t* hidden_masters_forbidden_touch;
-    const spell_data_t* the_emperor_capacitor;
+    const spell_data_t* the_emperors_capacitor;
   } passives;
 
   struct legendary_t
@@ -2329,7 +2329,7 @@ public:
 
         // The Emperor's Capacitor Legendary
         if ( p() -> legendary.the_emperors_capacitor )
-          p() -> buff.emperors_electric_charge -> trigger( ab::cost() );
+          p() -> buff.the_emperors_capacitor -> trigger( ab::cost() );
       }
       // Chi Savings on Dodge & Parry & Miss
       if ( ab::resource_consumed > 0 )
@@ -2573,6 +2573,7 @@ struct eye_of_the_tiger_heal_tick_t : public monk_heal_t
   {
     background = true;
     hasted_ticks = false;
+    may_crit = tick_may_crit = true;
     target = player;
   }
 
@@ -2580,7 +2581,11 @@ struct eye_of_the_tiger_heal_tick_t : public monk_heal_t
   {
     double am = monk_heal_t::action_multiplier();
 
+    am *= 1 + p() -> spec.brewmaster_monk -> effectN( 2 ).percent();
+
     am *= 1 + p() -> spec.brewmaster_monk -> effectN( 7 ).percent();
+
+    am *= 1 + p() -> spec.windwalker_monk -> effectN( 2 ).percent();
 
     return am;
   }
@@ -2593,6 +2598,7 @@ struct eye_of_the_tiger_dmg_tick_t: public monk_spell_t
   {
     background = true;
     hasted_ticks = false;
+    may_crit = tick_may_crit = true;
     attack_power_mod.direct = 0;
     attack_power_mod.tick = data().effectN( 2 ).ap_coeff();
   }
@@ -2601,7 +2607,11 @@ struct eye_of_the_tiger_dmg_tick_t: public monk_spell_t
   {
     double am = monk_spell_t::action_multiplier();
 
+    am *= 1 + p() -> spec.brewmaster_monk -> effectN( 2 ).percent();
+
     am *= 1 + p() -> spec.brewmaster_monk -> effectN( 7 ).percent();
+
+    am *= 1 + p() -> spec.windwalker_monk -> effectN( 2 ).percent();
 
     return am;
   }
@@ -4738,8 +4748,8 @@ struct crackling_jade_lightning_t: public monk_spell_t
   {
     double c = monk_spell_t::cost_per_tick( resource );
 
-    if ( p() -> buff.emperors_electric_charge -> up() )
-      c *= 1 + ( p() -> buff.emperors_electric_charge -> current_stack * p() -> passives.the_emperor_capacitor -> effectN( 2 ).percent() );
+    if ( p() -> buff.the_emperors_capacitor -> up() )
+      c *= 1 + ( p() -> buff.the_emperors_capacitor -> current_stack * p() -> passives.the_emperors_capacitor -> effectN( 2 ).percent() );
 
     return c;
   }
@@ -4751,8 +4761,8 @@ struct crackling_jade_lightning_t: public monk_spell_t
     if ( p() -> buff.combo_strikes -> up() )
       pm *= 1 + p() -> cache.mastery_value();
 
-    if ( p() -> buff.emperors_electric_charge -> up() )
-      pm *= 1 + p() -> buff.emperors_electric_charge -> stack_value();
+    if ( p() -> buff.the_emperors_capacitor -> up() )
+      pm *= 1 + p() -> buff.the_emperors_capacitor -> stack_value();
 
     return pm;
   }
@@ -4781,8 +4791,8 @@ struct crackling_jade_lightning_t: public monk_spell_t
   {
     monk_spell_t::last_tick( dot );
 
-    if ( p() -> buff.emperors_electric_charge -> up() )
-      p() -> buff.emperors_electric_charge -> expire();
+    if ( p() -> buff.the_emperors_capacitor -> up() )
+      p() -> buff.the_emperors_capacitor -> expire();
 
     // Reset swing timer
     if ( player -> main_hand_attack )
@@ -4886,7 +4896,7 @@ struct breath_of_fire_t: public monk_spell_t
     {
       double am = monk_spell_t::action_multiplier();
 
-      am *= 1 + p() -> spec.brewmaster_monk -> effectN( 1 ).percent();
+      am *= 1 + p() -> spec.brewmaster_monk -> effectN( 2 ).percent();
 
       if ( p() -> artifact.hot_blooded.rank() )
         am *= 1 + p() -> artifact.hot_blooded.data().effectN( 1 ).percent();
@@ -4906,6 +4916,15 @@ struct breath_of_fire_t: public monk_spell_t
     parse_options( options_str );
 
     add_child( dragonfire );
+  }
+
+  double action_multiplier() const override
+  {
+    double am = monk_spell_t::action_multiplier();
+
+    am *= 1 + p() -> spec.brewmaster_monk -> effectN( 1 ).percent();
+
+    return am;
   }
 
   virtual void update_ready( timespan_t ) override
@@ -7469,7 +7488,7 @@ void monk_t::init_spells()
 
   // Legendaries
   passives.hidden_masters_forbidden_touch   = find_spell( 213114 );
-  passives.the_emperor_capacitor            = find_spell( 235054 );
+  passives.the_emperors_capacitor           = find_spell( 235054 );
 
   // Mastery spells =========================================
   mastery.combo_strikes              = find_mastery_spell( MONK_WINDWALKER );
@@ -7763,8 +7782,8 @@ void monk_t::create_buffs()
   buff.hidden_masters_forbidden_touch = new buffs::hidden_masters_forbidden_touch_t( 
     *this, "hidden_masters_forbidden_touch", passives.hidden_masters_forbidden_touch );
 
-  buff.emperors_electric_charge = buff_creator_t( this, "emperors_electric_charge", passives.the_emperor_capacitor )
-    .default_value( passives.the_emperor_capacitor -> effectN( 1 ).percent() );
+  buff.the_emperors_capacitor = buff_creator_t( this, "the_emperors_capacitor", passives.the_emperors_capacitor )
+    .default_value( passives.the_emperors_capacitor -> effectN( 1 ).percent() );
 }
 
 // monk_t::init_gains =======================================================

@@ -69,7 +69,7 @@ actions.generic=frost_strike,if=!talent.shattering_strikes.enabled&(buff.icy_tal
 actions.generic+=/frost_strike,if=talent.shattering_strikes.enabled&debuff.razorice.stack=5
 actions.generic+=/howling_blast,target_if=!dot.frost_fever.ticking
 actions.generic+=/obliterate,if=equipped.132366&talent.frozen_pulse.enabled&set_bonus.tier19_2pc=1
-actions.generic+=/howling_blast,if=buff.rime.react
+actions.generic+=/howling_blast,if=buff.rime.react&!buff.obliteration.up
 actions.generic+=/frost_strike,if=runic_power.deficit<=10
 actions.generic+=/call_action_list,name=core
 actions.generic+=/horn_of_winter

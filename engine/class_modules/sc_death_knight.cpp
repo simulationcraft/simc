@@ -6918,8 +6918,8 @@ void death_knight_t::default_apl_frost()
   // Priotize Obliterate if Koltira's Newfound Will is equipped and talent Frozen Pulse and T19 2pc bonus active
   generic -> add_action( this, "Obliterate", "if=equipped.132366&talent.frozen_pulse.enabled&set_bonus.tier19_2pc=1" );
   
-  // Howling Blast @rime proc
-  generic -> add_action( this, "Howling Blast", "if=buff.rime.react" );
+  // Howling Blast at Rime proc, but only if Obliteration is not up
+  generic -> add_action( this, "Howling Blast", "if=buff.rime.react&!buff.obliteration.up" );
 
   // Prevent RP waste
   generic -> add_action( this, "Frost Strike", "if=runic_power.deficit<=10" );
