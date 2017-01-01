@@ -6,6 +6,7 @@ position=back
 talents=2220311
 talent_override=fel_barrage,if=active_enemies>1|raid_event.adds.exists
 talent_override=fel_barrage,if=active_enemies>1|raid_event.adds.exists
+talent_override=momentum,if=active_enemies>1|raid_event.adds.exists
 artifact=3:142513:139251:142513:0:1000:3:1001:4:1002:5:1003:3:1004:3:1005:3:1006:3:1007:3:1008:3:1010:1:1011:1:1012:1:1013:1:1014:1:1015:1:1016:1:1330:1
 spec=havoc
 
@@ -22,12 +23,12 @@ actions.precombat+=/augmentation,type=defiled
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=old_war
-actions.precombat+=/metamorphosis
+actions.precombat+=/metamorphosis,if=!(talent.demon_reborn.enabled&talent.demonic.enabled)
 
 # Executed every time the actor is available.
 actions=auto_attack
 # "Getting ready to use meta" conditions, this is used in a few places.
-actions+=/variable,name=pooling_for_meta,value=cooldown.metamorphosis.ready&buff.metamorphosis.down&(!talent.demonic.enabled|!cooldown.eye_beam.ready)&(!talent.chaos_blades.enabled|cooldown.chaos_blades.ready)&(!talent.nemesis.enabled|debuff.nemesis.up|cooldown.nemesis.ready)
+actions+=/variable,name=pooling_for_meta,value=cooldown.metamorphosis.ready&(!talent.demonic.enabled|!cooldown.eye_beam.ready)&(!talent.chaos_blades.enabled|cooldown.chaos_blades.ready)&(!talent.nemesis.enabled|debuff.nemesis.up|cooldown.nemesis.ready)
 # Blade Dance conditions. Always if First Blood is talented, otherwise 5+ targets with Chaos Cleave or 3+ targets without.
 actions+=/variable,name=blade_dance,value=talent.first_blood.enabled|spell_targets.blade_dance1>=3+(talent.chaos_cleave.enabled*2)
 # Blade Dance pooling condition, so we don't spend too much fury when we need it soon. No need to pool on
@@ -46,11 +47,11 @@ actions+=/vengeful_retreat,if=(talent.prepared.enabled|talent.momentum.enabled)&
 # Fel Rush for Momentum and for fury from Fel Mastery.
 actions+=/fel_rush,if=(talent.momentum.enabled|talent.fel_mastery.enabled)&(!talent.momentum.enabled|(charges=2|cooldown.vengeful_retreat.remains>4)&buff.momentum.down)&(!talent.fel_mastery.enabled|fury.deficit>=25)&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))
 # Use Fel Barrage at max charges, saving it for Momentum and adds if possible.
-actions+=/fel_barrage,if=charges>=5&(buff.momentum.up|!talent.momentum.enabled)&(active_enemies>desired_targets|raid_event.adds.in>30)
+actions+=/fel_barrage,if=charges>=5&(buff.momentum.up|!talent.momentum.enabled)&((active_enemies>desired_targets&active_enemies>1)|raid_event.adds.in>30)
 actions+=/throw_glaive,if=talent.bloodlet.enabled&(!talent.momentum.enabled|buff.momentum.up)&charges=2
 actions+=/fel_eruption
-actions+=/fury_of_the_illidari,if=active_enemies>desired_targets|raid_event.adds.in>55&(!talent.momentum.enabled|buff.momentum.up)
-actions+=/eye_beam,if=talent.demonic.enabled&(talent.demon_blades.enabled|talent.blind_fury.enabled|(!talent.blind_fury.enabled&fury.deficit<30))&(active_enemies>desired_targets|raid_event.adds.in>30)
+actions+=/fury_of_the_illidari,if=(active_enemies>desired_targets&active_enemies>1)|raid_event.adds.in>55&(!talent.momentum.enabled|buff.momentum.up)
+actions+=/eye_beam,if=talent.demonic.enabled&(talent.demon_blades.enabled|talent.blind_fury.enabled|(!talent.blind_fury.enabled&fury.deficit<30))&((active_enemies>desired_targets&active_enemies>1)|raid_event.adds.in>30)
 actions+=/death_sweep,if=variable.blade_dance
 actions+=/blade_dance,if=variable.blade_dance
 actions+=/throw_glaive,if=talent.bloodlet.enabled&spell_targets>=2&(!talent.master_of_the_glaive.enabled|!talent.momentum.enabled|buff.momentum.up)&(spell_targets>=3|raid_event.adds.in>recharge_time+cooldown)
@@ -65,7 +66,7 @@ actions+=/demons_bite,if=talent.demonic.enabled&!talent.blind_fury.enabled&buff.
 actions+=/throw_glaive,if=buff.metamorphosis.down&spell_targets>=2
 actions+=/chaos_strike,if=(talent.demon_blades.enabled|!talent.momentum.enabled|buff.momentum.up|fury.deficit<30+buff.prepared.up*8)&!variable.pooling_for_chaos_strike&!variable.pooling_for_meta&!variable.pooling_for_blade_dance&(!talent.demonic.enabled|!cooldown.eye_beam.ready|(talent.blind_fury.enabled&fury.deficit<35))
 # Use Fel Barrage if its nearing max charges, saving it for Momentum and adds if possible.
-actions+=/fel_barrage,if=charges=4&buff.metamorphosis.down&(buff.momentum.up|!talent.momentum.enabled)&(active_enemies>desired_targets|raid_event.adds.in>30)
+actions+=/fel_barrage,if=charges=4&buff.metamorphosis.down&(buff.momentum.up|!talent.momentum.enabled)&((active_enemies>desired_targets&active_enemies>1)|raid_event.adds.in>30)
 actions+=/fel_rush,animation_cancel=1,if=!talent.momentum.enabled&raid_event.movement.in>charges*10
 actions+=/demons_bite
 actions+=/throw_glaive,if=buff.out_of_range.up
@@ -74,11 +75,11 @@ actions+=/fel_rush,if=movement.distance>15|(buff.out_of_range.up&!talent.momentu
 actions+=/vengeful_retreat,if=movement.distance>15
 actions+=/throw_glaive,if=talent.felblade.enabled
 
-actions.cooldown=nemesis,target_if=min:target.time_to_die,if=raid_event.adds.exists&debuff.nemesis.down&(active_enemies>desired_targets|raid_event.adds.in>60)
+actions.cooldown=nemesis,target_if=min:target.time_to_die,if=raid_event.adds.exists&debuff.nemesis.down&((active_enemies>desired_targets&active_enemies>1)|raid_event.adds.in>60)
 actions.cooldown+=/nemesis,if=!raid_event.adds.exists&(cooldown.metamorphosis.remains>100|target.time_to_die<70)
 actions.cooldown+=/nemesis,sync=metamorphosis,if=!raid_event.adds.exists
 actions.cooldown+=/chaos_blades,if=buff.metamorphosis.up|cooldown.metamorphosis.remains>100|target.time_to_die<20
-actions.cooldown+=/metamorphosis,if=variable.pooling_for_meta&fury.deficit<30&(talent.chaos_blades.enabled|!cooldown.fury_of_the_illidari.ready)
+actions.cooldown+=/metamorphosis,if=variable.pooling_for_meta&fury.deficit<30
 actions.cooldown+=/potion,name=old_war,if=buff.metamorphosis.remains>25|target.time_to_die<30
 
 head=mask_of_multitudinous_eyes,id=139204,bonus_id=1806
