@@ -54,7 +54,7 @@ actions+=/windstrike
 actions+=/stormstrike,if=talent.overcharge.enabled&cooldown.lightning_bolt.remains<gcd&maelstrom>80
 actions+=/stormstrike,if=talent.fury_of_air.enabled&maelstrom>46&cooldown.lightning_bolt.remains>gcd
 actions+=/stormstrike,if=!talent.overchage.enabled&!talent.fury_of_air.enabled
-actions+=/crash_lightning,if=active_enemies>1|talent.crashing_storm.enabled|feral_spirit.remains>5
+actions+=/crash_lightning,if=active_enemies>1|talent.crashing_storm.enabled|talent.boulderfist.enabled|feral_spirit.remains>5
 actions+=/frostbrand,if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8
 actions+=/flametongue,if=buff.flametongue.remains<4.8
 actions+=/sundering
