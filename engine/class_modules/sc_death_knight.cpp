@@ -6840,7 +6840,6 @@ void death_knight_t::default_apl_frost()
 {
   action_priority_list_t* def         = get_action_priority_list( "default" );
   action_priority_list_t* generic     = get_action_priority_list( "generic" );
-  action_priority_list_t* core        = get_action_priority_list( "core" );
   action_priority_list_t* bos         = get_action_priority_list( "bos" );
   action_priority_list_t* bos_ticking = get_action_priority_list( "bos_ticking" );
 
@@ -6893,18 +6892,7 @@ void death_knight_t::default_apl_frost()
   def -> add_action( "call_action_list,name=bos,if=talent.breath_of_sindragosa.enabled&!dot.breath_of_sindragosa.ticking" );
   def -> add_action( "call_action_list,name=bos_ticking,if=talent.breath_of_sindragosa.enabled&dot.breath_of_sindragosa.ticking" );
   
-  // Core rotation
-  core -> add_action( this, "Frost Strike", "if=buff.obliteration.up&!buff.killing_machine.react" );
-  core -> add_action( this, "Remorseless Winter", "if=(spell_targets.remorseless_winter>=2|talent.gathering_storm.enabled)&!(talent.frostscythe.enabled&buff.killing_machine.react&spell_targets.frostscythe>=2)" );
-  core -> add_talent( this, "Frostscythe", "if=(buff.killing_machine.react&spell_targets.frostscythe>=2)" );
-  core -> add_talent( this, "Glacial Advance", "if=spell_targets.glacial_advance>=2" );
-  core -> add_talent( this, "Frostscythe", "if=spell_targets.frostscythe>=3" );
-  core -> add_action( this, "Obliterate", "if=buff.killing_machine.react" );
-  core -> add_action( this, "Obliterate" );
-  core -> add_talent( this, "Glacial Advance" );
-  core -> add_action( this, "Remorseless Winter", "if=talent.frozen_pulse.enabled" );
-
-  // Generic single target rotation
+  // Generic rotation
 
   // Refresh Icy talons if it's about to expire (non Shatter version)
   generic -> add_action( this, "Frost Strike", "if=!talent.shattering_strikes.enabled&(buff.icy_talons.remains<1.5&talent.icy_talons.enabled)" );
@@ -6918,22 +6906,27 @@ void death_knight_t::default_apl_frost()
   // Priotize Obliterate if Koltira's Newfound Will is equipped and talent Frozen Pulse and T19 2pc bonus active
   generic -> add_action( this, "Obliterate", "if=equipped.132366&talent.frozen_pulse.enabled&set_bonus.tier19_2pc=1" );
   
+  // Priotize Remorseless Winter if Perseverance of the Ebon Martyr is equipped
+  generic -> add_action( this, "Remorseless Winter", "if=buff.rime.react&equipped.132459" );
+   
   // Howling Blast at Rime proc, but only if Obliteration is not up
-  generic -> add_action( this, "Howling Blast", "if=buff.rime.react&!buff.obliteration.up" );
+  generic -> add_action( this, "Howling Blast", "if=buff.rime.react&!(buff.obliteration.up&spell_targets.howling_blast<2)" );
 
   // Prevent RP waste
   generic -> add_action( this, "Frost Strike", "if=runic_power.deficit<=10" );
 
-  // Do core rotation
-  generic -> add_action( "call_action_list,name=core" );
-
-  // Continue the generic one with Horn of Winter stuff
+  // Core
+  generic -> add_action( this, "Frost Strike", "if=buff.obliteration.up&!buff.killing_machine.react" );
+  generic -> add_action( this, "Remorseless Winter", "if=(spell_targets.remorseless_winter>=2|talent.gathering_storm.enabled)&!(talent.frostscythe.enabled&buff.killing_machine.react&spell_targets.frostscythe>=2)" );
+  generic -> add_talent( this, "Frostscythe", "if=(buff.killing_machine.react&spell_targets.frostscythe>=2)" );
+  generic -> add_talent( this, "Glacial Advance", "if=spell_targets.glacial_advance>=2" );
+  generic -> add_talent( this, "Frostscythe", "if=spell_targets.frostscythe>=3" );
+  generic -> add_action( this, "Obliterate", "if=buff.killing_machine.react" );
+  generic -> add_action( this, "Obliterate" );
+  generic -> add_talent( this, "Glacial Advance" );
   generic -> add_talent( this, "Horn of Winter" );
-
-  // If nothing else to do, do Frost Strike
   generic -> add_action( this, "Frost Strike" );
-
-  // Misc actions
+  generic -> add_action( this, "Remorseless Winter", "if=talent.frozen_pulse.enabled" );
   generic -> add_action( this, "Empower Rune Weapon" );
   generic -> add_talent( this, "Hungering Rune Weapon" );
 
