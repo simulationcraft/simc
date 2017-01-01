@@ -66,13 +66,13 @@ actions+=/throw_glaive,if=buff.metamorphosis.down&spell_targets>=2
 actions+=/chaos_strike,if=(talent.demon_blades.enabled|!talent.momentum.enabled|buff.momentum.up|fury.deficit<30+buff.prepared.up*8)&!variable.pooling_for_chaos_strike&!variable.pooling_for_meta&!variable.pooling_for_blade_dance&(!talent.demonic.enabled|!cooldown.eye_beam.ready|(talent.blind_fury.enabled&fury.deficit<35))
 # Use Fel Barrage if its nearing max charges, saving it for Momentum and adds if possible.
 actions+=/fel_barrage,if=charges=4&buff.metamorphosis.down&(buff.momentum.up|!talent.momentum.enabled)&((active_enemies>desired_targets&active_enemies>1)|raid_event.adds.in>30)
-actions+=/fel_rush,animation_cancel=1,if=!talent.momentum.enabled&raid_event.movement.in>charges*10
+actions+=/fel_rush,if=!talent.momentum.enabled&raid_event.movement.in>charges*10
 actions+=/demons_bite
 actions+=/throw_glaive,if=buff.out_of_range.up
 actions+=/felblade,if=movement.distance|buff.out_of_range.up
 actions+=/fel_rush,if=movement.distance>15|(buff.out_of_range.up&!talent.momentum.enabled)
 actions+=/vengeful_retreat,if=movement.distance>15
-actions+=/throw_glaive,if=talent.felblade.enabled
+actions+=/throw_glaive,if=!talent.bloodlet.enabled
 
 actions.cooldown=use_item,slot=trinket2,if=buff.chaos_blades.up|!talent.chaos_blades.enabled
 actions.cooldown+=/nemesis,target_if=min:target.time_to_die,if=raid_event.adds.exists&debuff.nemesis.down&((active_enemies>desired_targets&active_enemies>1)|raid_event.adds.in>60)

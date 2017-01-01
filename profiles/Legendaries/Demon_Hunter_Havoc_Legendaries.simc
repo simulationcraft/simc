@@ -14,7 +14,7 @@
 # $(Tier)=T19M
 # Rogue_Legendaries.simc
 
-$(Tier)=T19M_NH
+
 # Havoc
 Demon_Hunter_Havoc_$(Tier).simc
 copy=Havoc_$(Tier)_Baseline
