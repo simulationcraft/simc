@@ -4,7 +4,7 @@ race=night_elf
 timeofday=night
 role=attack
 position=back
-talents=1130111
+talents=2220311
 artifact=3:137407:133684:137407:0:1001:6:1002:3:1003:3:1005:3:1006:3:1010:1:1012:1:1013:1:1016:1:1330:1
 spec=havoc
 head=vigilant_bondbreaker_headdress,id=134446,bonus_id=1727/1492
