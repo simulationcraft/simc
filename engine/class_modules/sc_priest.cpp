@@ -5448,7 +5448,7 @@ void priest_t::apl_shadow()
       "variable,op=set,name=actors_fight_time_mod,value=((450-(time+target."
       "time_to_die))%5),if=time+target.time_to_die<=450" );
   check->add_action(
-      "variable,op=set,name=s2mcheck,value=0.8*(83-(5*talent.sanlayn.enabled)"
+      "variable,op=set,name=s2mcheck,value=(0.8*(83-(5*talent.sanlayn.enabled)"
       "+(33*talent.reaper_of_souls.enabled)+set_bonus.tier19_2pc*4+8*variable"
       ".s2mbeltcheck+((raw_haste_pct*10))*"
       "(2+(0.8*set_bonus.tier19_2pc)+(1*talent.reaper_of_souls.enabled)+"

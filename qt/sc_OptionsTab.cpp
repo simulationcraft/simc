@@ -1217,8 +1217,7 @@ QString SC_OptionsTab::mergeOptions()
   options += "\n"
       "### End simulateText ###\n";
 
-  if ( choice.num_target -> currentIndex() >= 1 )
-    options += "desired_targets=" + QString::number( choice.num_target -> currentIndex() + 1 ) + "\n";
+  options += "desired_targets=" + QString::number( choice.num_target -> currentIndex() + 1 ) + "\n";
 
   options += "### Begin overrides ###\n";
   options += mainWindow -> overridesText -> toPlainText();

@@ -1357,7 +1357,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   auto_ready_trigger( 0 ), stat_cache( 1 ), max_aoe_enemies( 20 ), show_etmi( 0 ), tmi_window_global( 0 ), tmi_bin_size( 0.5 ),
   requires_regen_event( false ), single_actor_batch( false ),
   enemy_death_pct( 0 ), rel_target_level( -1 ), target_level( -1 ),
-  target_adds( 0 ), desired_targets( 0 ), enable_taunts( false ),
+  target_adds( 0 ), desired_targets( 1 ), enable_taunts( false ),
   use_item_verification( true ),
   challenge_mode( false ), timewalk( -1 ), scale_to_itemlevel( -1 ), scale_itemlevel_down_only( false ), disable_artifacts( false ),
   disable_set_bonuses( false ), disable_2_set( 1 ), disable_4_set( 1 ), enable_2_set( 1 ), enable_4_set( 1 ),
