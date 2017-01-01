@@ -338,7 +338,7 @@ public:
     artifact_power_t sharpened_glaives;
     artifact_power_t unleashed_demons;
     artifact_power_t warglaives_of_chaos;
-	artifact_power_t chaos_burn;
+  artifact_power_t chaos_burn;
 
     // NYI
     artifact_power_t deceivers_fury;
@@ -388,7 +388,7 @@ public:
     cooldown_t* fel_rush;
     cooldown_t* fel_rush_secondary;
     cooldown_t* fury_of_the_illidari;
-	cooldown_t* metamorphosis;
+  cooldown_t* metamorphosis;
     cooldown_t* nemesis;
     cooldown_t* netherwalk;
     cooldown_t* throw_glaive;
@@ -413,7 +413,7 @@ public:
     // Havoc
     gain_t* demonic_appetite;
     gain_t* prepared;
-	gain_t* blind_fury;
+  gain_t* blind_fury;
 
     // Vengeance
     gain_t* damage_taken;
@@ -472,8 +472,8 @@ public:
     spell_t* anguish;
     attack_t* demon_blades;
     spell_t* inner_demons;
-	attack_t* chaos_cleave;
-	attack_t* chaos_cleave_annihilation;
+  attack_t* chaos_cleave;
+  attack_t* chaos_cleave_annihilation;
 
     // Vengeance
     heal_t* charred_warblades;
@@ -504,8 +504,8 @@ public:
     // Havoc
     double eternal_hunger;
     timespan_t raddons_cascading_eyes;
-	timespan_t delusions_of_grandeur_reduction;
-	double delusions_of_grandeur_fury_per_time;
+  timespan_t delusions_of_grandeur_reduction;
+  double delusions_of_grandeur_fury_per_time;
 
     // Vengeance
     double cloak_of_fel_flames;
@@ -1429,11 +1429,11 @@ struct consume_soul_t : public demon_hunter_heal_t
 
   void execute() override
   {
-	  demon_hunter_heal_t::execute();
-	  
-	  if (p()->buff.soul_barrier->up()){
-		  p()->buff.soul_barrier->consume(-p()->buff.soul_barrier->data().effectN(2).ap_coeff() * p()->cache.attack_power() * (1+p()->cache.heal_versatility()));
-	  }
+    demon_hunter_heal_t::execute();
+    
+    if (p()->buff.soul_barrier->up()){
+      p()->buff.soul_barrier->consume(-p()->buff.soul_barrier->data().effectN(2).ap_coeff() * p()->cache.attack_power() * (1+p()->cache.heal_versatility()));
+    }
   }
 };
 
@@ -1752,9 +1752,9 @@ struct eye_beam_t : public demon_hunter_spell_t
         p() -> cooldown.eye_beam -> adjust( p() -> legendary.raddons_cascading_eyes );
       }
 
-	  if (p()->talent.blind_fury->ok()){
-		  p()->resource_gain(RESOURCE_FURY, 7, p()->gain.blind_fury);
-	  }
+    if (p()->talent.blind_fury->ok()){
+      p()->resource_gain(RESOURCE_FURY, 7, p()->gain.blind_fury);
+    }
     }
   };
 
@@ -2478,14 +2478,14 @@ struct metamorphosis_t : public demon_hunter_spell_t
     damage -> schedule_execute();
 
     // Buff is gained at the start of the leap.
-	if (p()->buff.metamorphosis->up())
-	{
-		p()->buff.metamorphosis->extend_duration(p(), p()->buff.metamorphosis->buff_duration);
-	}
-	else
-	{
-		p()->buff.metamorphosis->trigger();
-	}
+  if (p()->buff.metamorphosis->up())
+  {
+    p()->buff.metamorphosis->extend_duration(p(), p()->buff.metamorphosis->buff_duration);
+  }
+  else
+  {
+    p()->buff.metamorphosis->trigger();
+  }
     
 
     if ( p() -> talent.demon_reborn -> ok() )
@@ -2546,7 +2546,7 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
     void execute() override
     {
       // Evaluate if_expr to make sure the actor still wants to consume.
-	  if (frag && frag->active() && (!expr || expr->eval()) && dh->active.consume_soul_greater)
+    if (frag && frag->active() && (!expr || expr->eval()) && dh->active.consume_soul_greater)
       {
         frag -> consume( true, true );
       }
@@ -3412,7 +3412,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
 
       if ( p()->talent.chaos_cleave->ok() )
       {
-		attack_t* const chaos_cleave = p()->buff.metamorphosis->up() ? p()->active.chaos_cleave_annihilation : p()->active.chaos_cleave;
+    attack_t* const chaos_cleave = p()->buff.metamorphosis->up() ? p()->active.chaos_cleave_annihilation : p()->active.chaos_cleave;
         chaos_cleave->base_dd_min = state->result_total;
         chaos_cleave->base_dd_max = state->result_total;
         chaos_cleave->schedule_execute();
@@ -3600,10 +3600,10 @@ struct chaos_strike_t : public chaos_strike_base_t
 
     attacks = p -> chaos_strike_attacks;
 
-	if (p->talent.chaos_cleave->ok())
-	{
-		add_child(p->active.chaos_cleave);
-	}
+  if (p->talent.chaos_cleave->ok())
+  {
+    add_child(p->active.chaos_cleave);
+  }
   }
 
   bool ready() override
@@ -3620,36 +3620,36 @@ struct chaos_strike_t : public chaos_strike_base_t
 // Chaos Cleave =============================================================
 struct chaos_cleave_t : public demon_hunter_attack_t
 {
-	chaos_cleave_t(const std::string& n, demon_hunter_t* p) : demon_hunter_attack_t(
-		n, p, p->find_talent_spell("Chaos Cleave"))
-	{
-		may_miss = may_crit = proc = callbacks = may_dodge = may_parry = may_block = false;
-		background = true;
-		aoe = -1;
-		weapon = &p->main_hand_weapon;
-		weapon_multiplier = 0;
-		radius = 8;
-		range = -1.0;
-		school = SCHOOL_CHAOS;
-	}
+  chaos_cleave_t(const std::string& n, demon_hunter_t* p) : demon_hunter_attack_t(
+    n, p, p->find_talent_spell("Chaos Cleave"))
+  {
+    may_miss = may_crit = proc = callbacks = may_dodge = may_parry = may_block = false;
+    background = true;
+    aoe = -1;
+    weapon = &p->main_hand_weapon;
+    weapon_multiplier = 0;
+    radius = 8;
+    range = -1.0;
+    school = SCHOOL_CHAOS;
+  }
 
-	void snapshot_state(action_state_t* s, dmg_e rt) override
-	{
-		demon_hunter_attack_t::snapshot_state(s, rt);
-		s->da_multiplier =  p()->talent.chaos_cleave->effectN(2).percent();
-	}
+  void snapshot_state(action_state_t* s, dmg_e rt) override
+  {
+    demon_hunter_attack_t::snapshot_state(s, rt);
+    s->da_multiplier =  p()->talent.chaos_cleave->effectN(2).percent();
+  }
 
-	result_e calculate_result(action_state_t* s) const override
-	{
-		result_e r = demon_hunter_attack_t::calculate_result(s);
+  result_e calculate_result(action_state_t* s) const override
+  {
+    result_e r = demon_hunter_attack_t::calculate_result(s);
 
-		if (result_is_miss(r))
-		{
-			return r;
-		}
+    if (result_is_miss(r))
+    {
+      return r;
+    }
 
-		return RESULT_HIT;
-	}
+    return RESULT_HIT;
+  }
 };
 
 // Annihilation =============================================================
@@ -3673,10 +3673,10 @@ struct annihilation_t : public chaos_strike_base_t
 
     attacks = p -> annihilation_attacks;
 
-	if (p->talent.chaos_cleave->ok())
-	{
-		add_child(p->active.chaos_cleave_annihilation);
-	}
+  if (p->talent.chaos_cleave->ok())
+  {
+    add_child(p->active.chaos_cleave_annihilation);
+  }
   }
 
   bool ready() override
@@ -4771,33 +4771,33 @@ struct soul_barrier_t : public demon_hunter_buff_t<absorb_buff_t>
   {
     // Limit the consumption to the current size of the buff.
     amount = std::min( amount, current_value );
-	if (amount > 0)
-	{
-		if (absorb_source)
-		{
-			absorb_source->add_result(amount, 0, ABSORB, RESULT_HIT,
-				BLOCK_RESULT_UNBLOCKED, player);
-		}
+  if (amount > 0)
+  {
+    if (absorb_source)
+    {
+      absorb_source->add_result(amount, 0, ABSORB, RESULT_HIT,
+        BLOCK_RESULT_UNBLOCKED, player);
+    }
 
-		if (absorb_gain)
-		{
-			absorb_gain->add(RESOURCE_HEALTH, amount, 0);
-		}
-	}
+    if (absorb_gain)
+    {
+      absorb_gain->add(RESOURCE_HEALTH, amount, 0);
+    }
+  }
     
     current_value = std::max( current_value - amount, minimum_absorb() );
 
     if ( sim -> debug )
     {
-		if (amount > 0)
-		{
-			sim->out_debug.printf("%s %s absorbs %.2f (remaining: %.2f)",
-				player->name(), name(), amount, current_value);
-		}
-		else{
-			sim->out_debug.printf("%s %s gains %.2f (remaining: %.2f)",
-				player->name(), name(), std::abs(amount), current_value);
-		}
+    if (amount > 0)
+    {
+      sim->out_debug.printf("%s %s absorbs %.2f (remaining: %.2f)",
+        player->name(), name(), amount, current_value);
+    }
+    else{
+      sim->out_debug.printf("%s %s gains %.2f (remaining: %.2f)",
+        player->name(), name(), std::abs(amount), current_value);
+    }
     }
 
     absorb_used( amount );
@@ -5349,14 +5349,14 @@ void demon_hunter_t::create_buffs()
   buff.nemesis = buff_creator_t( this, "nemesis_buff", find_spell( 208605 ) )
                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   
-	  buff.prepared =
-		  buff_creator_t(this, "prepared",
-		  talent.prepared->effectN(1).trigger())
-		  .trigger_spell(talent.prepared)
-		  .period(timespan_t::from_millis(100))
-		  .default_value(talent.prepared->effectN(1).trigger()->effectN(1).resource( RESOURCE_FURY) *
-				(1.0 +sets.set(DEMON_HUNTER_HAVOC, T19, B2)->effectN(1).percent()) / 
-				(talent.prepared->effectN(1).trigger()->duration().total_millis() / 100))
+    buff.prepared =
+      buff_creator_t(this, "prepared",
+      talent.prepared->effectN(1).trigger())
+      .trigger_spell(talent.prepared)
+      .period(timespan_t::from_millis(100))
+      .default_value(talent.prepared->effectN(1).trigger()->effectN(1).resource( RESOURCE_FURY) *
+        (1.0 +sets.set(DEMON_HUNTER_HAVOC, T19, B2)->effectN(1).percent()) / 
+        (talent.prepared->effectN(1).trigger()->duration().total_millis() / 100))
       .tick_callback( [this]( buff_t* b, int, const timespan_t& ) {
       resource_gain( RESOURCE_FURY, b->check_value(), gain.prepared );
     } );
@@ -6099,8 +6099,8 @@ void demon_hunter_t::init_spells()
 
   if (talent.chaos_cleave->ok())
   {
-	  active.chaos_cleave = new chaos_cleave_t("chaos_cleave", this );
-	  active.chaos_cleave_annihilation = new chaos_cleave_t("chaos_cleave_annihilation", this);
+    active.chaos_cleave = new chaos_cleave_t("chaos_cleave", this );
+    active.chaos_cleave_annihilation = new chaos_cleave_t("chaos_cleave_annihilation", this);
   }
 
   if ( artifact.charred_warblades.rank() )
@@ -6306,7 +6306,7 @@ void demon_hunter_t::apl_havoc()
   talent_overrides_str +=
     "/fel_barrage,if=active_enemies>1|raid_event.adds.exists";
   talent_overrides_str +=
-	  "/momentum,if=active_enemies>1|raid_event.adds.exists";
+    "/momentum,if=active_enemies>1|raid_event.adds.exists";
 
   action_priority_list_t* def = get_action_priority_list( "default" );
 
@@ -6326,7 +6326,7 @@ void demon_hunter_t::apl_havoc()
     "to pool on\n# single target since First Blood already makes it cheap enough and delaying it a"
     " tiny bit isn't a big deal." );
   def->add_action("variable,name=pooling_for_chaos_strike,value=talent.chaos_cleave.enabled&fury.deficit>40&!raid_event.adds.up&raid_event.adds.in<2*gcd",
-	  "Chaos Strike pooling condition, so we don't spend too much fury when we need it for Chaos Cleave AoE");
+    "Chaos Strike pooling condition, so we don't spend too much fury when we need it for Chaos Cleave AoE");
   def -> add_action( this, "Blur", "if=artifact.demon_speed.enabled&"
     "cooldown.fel_rush.charges_fractional<0.5&"
     "cooldown.vengeful_retreat.remains-buff.momentum.remains>4" );
@@ -7397,17 +7397,17 @@ struct raddons_cascading_eyes_t : public scoped_actor_callback_t<demon_hunter_t>
 
 struct delusions_of_grandeur_t : public scoped_actor_callback_t<demon_hunter_t>
 {
-	delusions_of_grandeur_t() : super(DEMON_HUNTER_HAVOC)
-	{
-	}
+  delusions_of_grandeur_t() : super(DEMON_HUNTER_HAVOC)
+  {
+  }
 
-	void manipulate(demon_hunter_t* actor, const special_effect_t& e) override
-	{
-		actor->legendary.delusions_of_grandeur_reduction = -e.driver()->effectN(1).time_value();
-		
-		actor->legendary.delusions_of_grandeur_fury_per_time =
-			e.driver()->effectN(2).base_value();
-	}
+  void manipulate(demon_hunter_t* actor, const special_effect_t& e) override
+  {
+    actor->legendary.delusions_of_grandeur_reduction = -e.driver()->effectN(1).time_value();
+    
+    actor->legendary.delusions_of_grandeur_fury_per_time =
+      e.driver()->effectN(2).base_value();
+  }
 };
 
 struct loramus_thalipedes_sacrifice_t
@@ -7465,7 +7465,7 @@ public:
     register_special_effect( 215149, raddons_cascading_eyes_t() );
     register_special_effect( 210867, runemasters_pauldrons_t() );
     register_special_effect( 210840, the_defilers_lost_vambraces_t() );
-	register_special_effect(209354,  delusions_of_grandeur_t());
+  register_special_effect(209354,  delusions_of_grandeur_t());
   }
 
   void register_hotfixes() const override
