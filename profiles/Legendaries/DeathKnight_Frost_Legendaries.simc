@@ -7,48 +7,61 @@
 #
 # It will call the Rogue T19H Profiles then test with every legendaries defined below.
 # You only have to set $(Tier) one time. (i.e. you can call the Warrior and Rogue profiles altogether)
-# You can even do that to test 2 Tiers at the same time :
+# You can even do that to test 2 Tiers at the same time.
 #
-# $(Tier)=T19H
-# Rogue_Legendaries.simc
-# $(Tier)=T19M
-# Rogue_Legendaries.simc
+# $(Tier)=T19M_NH
+# DeathKnight_Frost_Legendaries.simc
 
+$(tmp_talents)=2230021
+#$(tmp_talents)=3320022
 
 # Frost
 Death_Knight_Frost_$(Tier).simc
+talents=$(tmp_talents)
+
 copy=Frost_$(Tier)_Baseline
+talents=$(tmp_talents)
 
 copy=Frost_$(Tier)_Koltiras,Frost_$(Tier)_Baseline
 waist=koltiras_newfound_will,id=132366
+talents=$(tmp_talents)
 
 copy=Frost_$(Tier)_Toravons,Frost_$(Tier)_Baseline
 wrists=toravons_whiteout_bindings,id=132458
+talents=$(tmp_talents)
 
 copy=Frost_$(Tier)_Perseverance,Frost_$(Tier)_Baseline
 head=perseverance_of_the_ebon_martyr,id=132459
+talents=$(tmp_talents)
 
 copy=Frost_$(Tier)_Aggramars,Frost_$(Tier)_Baseline
 feet=aggramars_stride,id=132443
+talents=$(tmp_talents)
 
 copy=Frost_$(Tier)_Necrofantasia,Frost_$(Tier)_Baseline
 finger2=seal_of_necrofantasia,id=137223,enchant=binding_of_haste,gems=150haste
+talents=$(tmp_talents)
 
 copy=Frost_$(Tier)_Sephuzs,Frost_$(Tier)_Baseline
 finger2=sephuzs_secret,id=132452,enchant=binding_of_haste,gems=150haste
+talents=$(tmp_talents)
 
 copy=Frost_$(Tier)_Prydaz,Frost_$(Tier)_Baseline
 neck=prydaz_xavarics_magnum_opus,id=132444,gems=150haste,enchant=mark_of_the_claw
+talents=$(tmp_talents)
 
 # also change hands to preserve 4pc nighthold bonus (only usable with T19M_NH profile)
 copy=Frost_$(Tier)_Consorts,Frost_$(Tier)_Baseline
 legs=consorts_cold_core,id=144293
 hands=dreadwyrm_gauntlets,id=138352,bonus_id=3445
+talents=$(tmp_talents)
 
 # also change hands to preserve 4pc nighthold bonus (only usable with T19M_NH profile)
 copy=Frost_$(Tier)_Acherus,Frost_$(Tier)_Baseline
 back=acherus_drapes,id=132376,enchant=binding_of_strength
 hands=dreadwyrm_gauntlets,id=138352,bonus_id=3445
+talents=$(tmp_talents)
 
 copy=Frost_$(Tier)_Kiljaedens,Frost_$(Tier)_Baseline
 trinket1=kiljaedens_burning_wish,id=144259
+talents=$(tmp_talents)
