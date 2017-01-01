@@ -5583,7 +5583,7 @@ struct flametongue_buff_t : public buff_t
   shaman_t* p;
 
   flametongue_buff_t( shaman_t* p ) :
-    buff_t( buff_creator_t( p, "flametongue", p -> find_specialization_spell( "Flametongue" ) -> effectN( 1 ).trigger() ).refresh_behavior( BUFF_REFRESH_PANDEMIC ) ),
+    buff_t( buff_creator_t( p, "flametongue", p -> find_specialization_spell( "Flametongue" ) -> effectN( 1 ).trigger() ).refresh_behavior( BUFF_REFRESH_PANDEMIC ).duration( timespan_t::from_seconds( 16 ) ) ),
     p( p )
   { }
 
