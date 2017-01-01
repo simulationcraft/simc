@@ -19,7 +19,7 @@ level=110
 race=blood_elf
 role=attack
 position=back
-talents=1230111
+talents=2220311
 talent_override=fel_barrage,if=active_enemies>1|raid_event.adds.exists
 artifact=3:142513:139251:142513:0:1000:3:1001:4:1002:5:1003:3:1004:3:1005:3:1006:3:1007:3:1008:3:1010:1:1011:1:1012:1:1013:1:1014:1:1015:1:1016:1:1330:1
 spec=havoc

@@ -1,4 +1,4 @@
-demonhunter="Demon_Hunter_Havoc_T19H_NH"
+demonhunter="Demon_Hunter_Havoc_T19M_NH"
 level=110
 race=blood_elf
 role=attack
@@ -6,7 +6,7 @@ position=back
 talents=1310311
 talent_override=fel_barrage,if=active_enemies>1|raid_event.adds.exists
 talent_override=momentum,if=active_enemies>1|raid_event.adds.exists
-artifact=12:0:0:0:0:108:3:109:3:110:3:111:3:113:3:114:3:115:3:117:3:119:1:120:1:122:1:123:1:124:1:1090:3:1091:1:1092:1:1332:1:1360:6
+artifact=12:0:0:0:0:108:3:109:3:110:3:111:3:113:3:114:3:115:3:117:3:119:1:120:1:122:1:123:1:124:1:1090:3:1091:1:1092:1:1332:1:1360:20
 spec=havoc
 
 # This default action priority list is automatically created based on your character.
@@ -82,31 +82,31 @@ actions.cooldown+=/chaos_blades,if=buff.metamorphosis.up|cooldown.metamorphosis.
 actions.cooldown+=/metamorphosis,if=variable.pooling_for_meta&fury.deficit<30
 actions.cooldown+=/potion,name=old_war,if=buff.metamorphosis.remains>25|target.time_to_die<30
 
-head=mask_of_second_sight,id=138378,bonus_id=3516
-neck=belerons_choker_of_misery,id=140899,bonus_id=3516,enchant=mark_of_the_claw
-shoulders=mantle_of_the_torn_sky,id=140864,bonus_id=3516
-back=cape_of_second_sight,id=138375,bonus_id=3516,enchant=binding_of_agility
-chest=tunic_of_second_sight,id=138376,bonus_id=3516
-wrists=bracers_of_impossible_choices,id=140889,bonus_id=3516
-hands=gloves_of_synchronus_elements,id=140905,bonus_id=3516
-waist=high_shadow_councilors_wrap,id=140919,bonus_id=3516
-legs=legwraps_of_second_sight,id=138379,bonus_id=3516
-feet=grovetenders_moccasins,id=140861,bonus_id=3516
-finger1=ring_of_the_scoured_clan,id=140897,bonus_id=3516,enchant=binding_of_mastery
-finger2=spellblades_gemmed_signet,id=140895,bonus_id=3516,enchant=binding_of_mastery
-trinket1=entwined_elemental_foci,id=140796,bonus_id=3516
-trinket2=draught_of_souls,id=140808,bonus_id=3516
-main_hand=twinblades_of_the_deceiver,id=127829,bonus_id=719,gem_id=140824/139251/140824,relic_id=3516/1806/3516
+head=mask_of_second_sight,id=138378,bonus_id=3518
+neck=belerons_choker_of_misery,id=140899,bonus_id=3518,enchant=mark_of_the_claw
+shoulders=mantle_of_the_torn_sky,id=140864,bonus_id=3518
+back=cape_of_second_sight,id=138375,bonus_id=3518,enchant=binding_of_agility
+chest=tunic_of_second_sight,id=138376,bonus_id=3518
+wrists=bracers_of_impossible_choices,id=140889,bonus_id=3518
+hands=gloves_of_synchronus_elements,id=140905,bonus_id=3518
+waist=high_shadow_councilors_wrap,id=140919,bonus_id=3518
+legs=legwraps_of_second_sight,id=138379,bonus_id=3518
+feet=grovetenders_moccasins,id=140861,bonus_id=3518
+finger1=ring_of_the_scoured_clan,id=140897,bonus_id=3518,enchant=binding_of_mastery
+finger2=spellblades_gemmed_signet,id=140895,bonus_id=3518,enchant=binding_of_mastery
+trinket1=entwined_elemental_foci,id=140796,bonus_id=3518
+trinket2=draught_of_souls,id=140808,bonus_id=3518
+main_hand=twinblades_of_the_deceiver,id=127829,bonus_id=719,gem_id=140826/140823/140826,relic_id=3519/3519/3519
 off_hand=twinblades_of_the_deceiver,id=127830,gem_id=0/0/0/0,relic_id=0/0
 
 # Gear Summary
-# gear_ilvl=892.75
-# gear_agility=18246
-# gear_stamina=29251
-# gear_crit_rating=9089
-# gear_haste_rating=2959
-# gear_mastery_rating=9400
-# gear_versatility_rating=1182
-# gear_armor=2310
+# gear_ilvl=908.50
+# gear_agility=21087
+# gear_stamina=33846
+# gear_crit_rating=9761
+# gear_haste_rating=3161
+# gear_mastery_rating=10089
+# gear_versatility_rating=1250
+# gear_armor=2430
 # set_bonus=tier19_2pc=1
 # set_bonus=tier19_4pc=1

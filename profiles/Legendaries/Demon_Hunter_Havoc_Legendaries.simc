@@ -1,0 +1,54 @@
+# This is a global profile used to check every relevant legendaries for one class.
+# You have to set "$(Tier)=..." before calling it.
+#
+# Example :
+# $(Tier)=T19H
+# Rogue_Legendaries.simc
+#
+# It will call the Rogue T19H Profiles then test with every legendaries defined below.
+# You only have to set $(Tier) one time. (i.e. you can call the Warrior and Rogue profiles altogether)
+# You can even do that to test 2 Tiers at the same time :
+#
+# $(Tier)=T19H
+# Rogue_Legendaries.simc
+# $(Tier)=T19M
+# Rogue_Legendaries.simc
+
+$(Tier)=T19M_NH
+# Havoc
+Demon_Hunter_Havoc_$(Tier).simc
+copy=Havoc_$(Tier)_Baseline
+
+copy=Havoc_$(Tier)_Anger,Havoc_$(Tier)_Baseline
+finger1=anger_of_the_halfgiants,id=137038,enchant=binding_of_mastery,gems=150mastery
+
+copy=Havoc_$(Tier)_Cinidaria,Havoc_$(Tier)_Baseline
+waist=cinidaria_the_symbiote,id=133976
+
+copy=Havoc_$(Tier)_Loramus,Havoc_$(Tier)_Baseline
+feet=loramus_thalipedes_sacrifice,id=137022
+
+copy=Havoc_$(Tier)_Sephuzs,Havoc_$(Tier)_Baseline
+finger2=sephuzs_secret,id=132452,enchant=binding_of_mastery,gems=150mastery
+
+copy=Havoc_$(Tier)_Prydaz,Havoc_$(Tier)_Baseline
+neck=prydaz_xavarics_magnum_opus,id=132444,gems=150haste,enchant=mark_of_the_claw
+
+copy=Havoc_$(Tier)_Kiljaedens,Havoc_$(Tier)_Baseline
+trinket2=kiljaedens_burning_wish,id=144259
+
+copy=Havoc_$(Tier)_Moarg,Havoc_$(Tier)_Baseline
+wrists=moarg_bionic_stabilizers,id=137090
+
+copy=Havoc_$(Tier)_Delusions,Havoc_$(Tier)_Baseline
+shoulders=delusions_of_grandeur,id=144279
+
+
+# also change pieces to preserve 4pc nighthold bonus (only usable with T19M_NH profile)
+copy=Havoc_$(Tier)_Achor,Havoc_$(Tier)_Baseline
+hands=gloves_of_second_sight,id=138377,bonus_id=3518
+chest=achor_the_eternal_hunger,id=137014
+
+copy=Havoc_$(Tier)_Raddons,Havoc_$(Tier)_Baseline
+hands=gloves_of_second_sight,id=138377,bonus_id=3518
+head=raddons_cascading_eyes,id=137061
