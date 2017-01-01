@@ -6385,7 +6385,7 @@ void demon_hunter_t::apl_havoc()
   def -> add_talent( this, "Fel Barrage", "if=charges=4&buff.metamorphosis.down&(buff.momentum.up|"
     "!talent.momentum.enabled)&((active_enemies>desired_targets&active_enemies>1)|raid_event.adds.in>30)",
     "Use Fel Barrage if its nearing max charges, saving it for Momentum and adds if possible." );
-  def -> add_action( this, "Fel Rush", "animation_cancel=1,if=!talent.momentum.enabled&"
+  def -> add_action( this, "Fel Rush", "if=!talent.momentum.enabled&"
     "raid_event.movement.in>charges*10" );
   def -> add_action( this, "Demon's Bite" );
   def -> add_action( this, "Throw Glaive", "if=buff.out_of_range.up" );
@@ -6393,7 +6393,7 @@ void demon_hunter_t::apl_havoc()
   def -> add_action( this, "Fel Rush", "if=movement.distance>15|(buff.out_of_range.up&"
     "!talent.momentum.enabled)" );
   def -> add_action( this, "Vengeful Retreat", "if=movement.distance>15" );
-  def -> add_action( this, "Throw Glaive", "if=talent.felblade.enabled" );
+  def -> add_action( this, "Throw Glaive", "if=!talent.bloodlet.enabled" );
 
   action_priority_list_t* cd = get_action_priority_list( "cooldown" );
 
