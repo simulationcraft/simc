@@ -5,6 +5,7 @@
 
 #include "simulationcraft.hpp"
 
+
 // ==========================================================================
 //
 // TODO
@@ -289,6 +290,9 @@ public:
     bool stretens_insanity;
     timespan_t wilfreds_sigil_of_superior_summoning;
     double power_cord_of_lethtendris_chance;
+    int wakeners_shard_counter;
+    double wakeners_loyalty_percent;
+    bool wakeners_loyalty_enabled;
 
   } legendary;
 
@@ -2019,11 +2023,11 @@ struct wild_imp_pet_t: public warlock_pet_t
       }
   }
 
-  void trigger(bool isdoge = false)
+  void trigger(int timespan, bool isdoge = false )
   {
     isnotdoge = !isdoge;
     *fel_firebolt_stats = regular_stats;
-    summon( timespan_t::from_millis( 12001 ) );
+    summon( timespan_t::from_millis( timespan ) );
   }
 };
 
@@ -2415,19 +2419,33 @@ public:
   {
     spell_t::consume_resource();
 
-    if ( resource_current == RESOURCE_SOUL_SHARD && p() -> talents.soul_conduit -> ok() )
+    if(resource_current == RESOURCE_SOUL_SHARD)
     {
-      double soul_conduit_rng = p() -> talents.soul_conduit -> effectN( 1 ).percent();
-
-      for ( int i = 0; i < resource_consumed; i++ )
-      {
-        if ( rng().roll( soul_conduit_rng ) )
+        if (  p() -> talents.soul_conduit -> ok() )
         {
-          p() -> resource_gain( RESOURCE_SOUL_SHARD, 1.0, p() -> gains.soul_conduit );
-          p()->procs.soul_conduit->occur();
+          double soul_conduit_rng = p() -> talents.soul_conduit -> effectN( 1 ).percent();
+
+          for ( int i = 0; i < resource_consumed; i++ )
+          {
+            if ( rng().roll( soul_conduit_rng ) )
+            {
+              p() -> resource_gain( RESOURCE_SOUL_SHARD, 1.0, p() -> gains.soul_conduit );
+              p()->procs.soul_conduit->occur();
+            }
+          }
         }
-      }
+        if(p()->legendary.wakeners_loyalty_enabled
+                && p()->specialization() == WARLOCK_DEMONOLOGY )
+        {
+            for(int i = 0; i < resource_consumed; i++)
+            {
+                p()->legendary.wakeners_shard_counter ++;
+            }
+        }
+
     }
+
+
   }
 
   void tick( dot_t* d ) override
@@ -2556,14 +2574,14 @@ public:
       td -> dots_seed_of_corruption -> cancel();
   }
 
-  static void trigger_wild_imp( warlock_t* p, bool doge = false )
+  static void trigger_wild_imp( warlock_t* p, bool doge = false, int duration = 12001 )
   {
     for ( size_t i = 0; i < p -> warlock_pet_list.wild_imps.size(); i++ )
     {
       if ( p -> warlock_pet_list.wild_imps[i] -> is_sleeping() )
       {
 
-        p -> warlock_pet_list.wild_imps[i] -> trigger(doge);
+        p -> warlock_pet_list.wild_imps[i] -> trigger(duration, doge);
         p -> procs.wild_imp -> occur();
         if( p -> legendary.wilfreds_sigil_of_superior_summoning_flag && !p -> talents.grimoire_of_supremacy -> ok() )
         {
@@ -3959,6 +3977,8 @@ struct dimensional_rift_t : public warlock_spell_t
 
 struct thalkiels_consumption_t : public warlock_spell_t
 {
+  bool enabled;
+
   thalkiels_consumption_t( warlock_t* p ) :
     warlock_spell_t( "thalkiels_consumption", p, p -> artifact.thalkiels_consumption )
   {
@@ -3984,6 +4004,15 @@ struct thalkiels_consumption_t : public warlock_spell_t
         }
       }
     }
+    if(p()->legendary.wakeners_loyalty_enabled)
+    {
+        double wakenersMod = 1 + (p()->legendary.wakeners_loyalty_percent *
+                (double) p()->legendary.wakeners_shard_counter);
+
+        p()->legendary.wakeners_shard_counter = 0;
+        damage *= wakenersMod;
+    }
+
     damage *= ta_mult;
     damage *= p_mult;
 
@@ -4588,7 +4617,7 @@ struct call_dreadstalkers_t : public warlock_spell_t
     {
       for ( size_t i = 0; i < improved_dreadstalkers; i++ )
       {
-        trigger_wild_imp( p(), true );
+        trigger_wild_imp( p(), true, dreadstalker_duration.total_millis() );
         p() -> procs.improved_dreadstalkers -> occur();
       }
     }
@@ -5148,6 +5177,8 @@ struct reap_souls_t: public warlock_spell_t
 {
   timespan_t base_duration;
   timespan_t total_duration;
+  timespan_t check_time;
+  timespan_t reap_and_sow_bonus;
   int souls_consumed;
     reap_souls_t( warlock_t* p ) :
         warlock_spell_t( "reap_souls", p, p -> artifact.reap_souls ), souls_consumed( 0 )
@@ -5172,8 +5203,11 @@ struct reap_souls_t: public warlock_spell_t
 
       if ( p() -> artifact.reap_souls.rank() && p() -> buffs.tormented_souls -> check() )
       {
+          check_time = base_duration + reap_and_sow_bonus;
+
         souls_consumed = p() -> buffs.tormented_souls -> stack();
-        total_duration = base_duration * souls_consumed;
+//        total_duration = base_duration * souls_consumed;
+        total_duration = check_time * souls_consumed;
         p() -> buffs.deadwind_harvester -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, total_duration );
         for ( int i = 0; i < souls_consumed; ++i )
         {
@@ -7364,8 +7398,6 @@ void warlock_t::trigger_effigy(pets::soul_effigy_t *effigy)
 {
     this->active.effigy_damage_override->setupEffigyStuff(effigy->damage);
     this->active.effigy_damage_override->execute();
-//    qDebug() << "Testing that we got here";
-//    qDebug() << "Test #2";
 }
 
 
@@ -7411,6 +7443,31 @@ struct power_cord_of_lethtendris_t : public scoped_actor_callback_t<warlock_t>
     {
         p -> legendary.power_cord_of_lethtendris_chance = e.driver() -> effectN( 1 ).percent();
     }
+};
+
+struct reap_and_sow_t : public scoped_action_callback_t<reap_souls_t>
+{
+    reap_and_sow_t() : super ( WARLOCK, "reap_souls" )
+    {}
+
+    void manipulate (reap_souls_t* a, const special_effect_t& e) override
+    {
+        a->reap_and_sow_bonus = timespan_t::from_millis(e.driver()->effectN(1).base_value());
+    }
+};
+
+struct wakeners_loyalty_t : public scoped_actor_callback_t<warlock_t>
+{
+    wakeners_loyalty_t() : super ( WARLOCK ){}
+
+    void manipulate (warlock_t* p, const special_effect_t& e) override
+    {
+        const spell_data_t * tmp = p->find_spell(236200);
+        p->legendary.wakeners_loyalty_enabled = true;
+        double tmp2 = (double)tmp->effectN(1).base_value();
+        p->legendary.wakeners_loyalty_percent = tmp2 / 100.0;   //fixing this later?
+    }
+
 };
 
 struct hood_of_eternal_disdain_t : public scoped_action_callback_t<agony_t>
@@ -7539,6 +7596,8 @@ struct warlock_module_t: public module_t
     register_special_effect( 205702, feretory_of_souls_t() );
     register_special_effect( 208821, stretens_insanity_t() );
     register_special_effect( 205753, power_cord_of_lethtendris_t() );
+    register_special_effect( 236114, reap_and_sow_t() );
+    register_special_effect( 236199, wakeners_loyalty_t() );
   }
 
   virtual void register_hotfixes() const override

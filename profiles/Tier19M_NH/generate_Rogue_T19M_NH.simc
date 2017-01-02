@@ -1,16 +1,13 @@
-# T19M
-# Tier 19 Mythic
-# * Ilvl Cap: 885
+# T19M_NH
+# Tier 19 Mythic Nighthold
+# * Ilvl Cap: 910
 # * Artifact Rank Cap: 54
-# * 3 Relics with max ilevel of 885
+# * 3 Relics with max ilevel of 910
 # * No Legendaries (see Raid_T19x_Legendary.simc)
-# * No items from Nighthold (including set bonuses) except in T19M_NH
 # * No items from World Bosses / World Quests / BoEs
 # * Mythic+ gear is permitted up to the Mythic+ item level cap
-# * No items from Violet Hold (unless 840 ilevel)
 # * No Random Gems (ie. Bonus RNG Gem Slots)
 # * No Tertiary Stats
-# * No Ranked Gear (ie. Warforged/Titanforged)
 # * No Hardcoded Stats (generally if an item gives wrong stats: either bonus_id is wrong, either the item no longer exists in-game)
 # * It is recommended to use enchant name (ex : ",enchant=binding_of_mastery") rather than id/hardcoded stats.
 
@@ -19,25 +16,25 @@ level=110
 race=orc
 role=attack
 position=back
-talents=2110111
+talents=1130111
 artifact=43:0:0:0:0:323:3:324:3:325:3:326:3:327:3:328:3:329:3:330:3:331:3:332:1:333:1:334:1:335:1:337:1:346:1:347:1:1276:1:1384:20
 spec=assassination
 
-head=doomblade_cowl,id=138332,bonus_id=3445
-neck=belerons_choker_of_misery,id=140899,bonus_id=3445,enchant=mark_of_the_hidden_satyr
-shoulders=doomblade_spaulders,id=138338,bonus_id=3445
-back=doomblade_shadowwrap,id=138371,bonus_id=3445,enchant=binding_of_agility
-chest=doomblade_tunic,id=138326,bonus_id=3445
-wrists=bracers_of_impossible_choices,id=140889,bonus_id=3445
-hands=doomblade_gauntlets,id=138329,bonus_id=3445
-waist=girdle_of_nefarious_strategy,id=140859,bonus_id=3445
-legs=doomblade_pants,id=138335,bonus_id=3445
-feet=stutterstep_treads,id=140860,bonus_id=3445
-finger1=spellblades_gemmed_signet,id=140895,bonus_id=3445,enchant=binding_of_versatility
-finger2=ring_of_exclusive_servitude,id=140906,bonus_id=3445,enchant=binding_of_versatility
-trinket1=arcanogolem_digit,id=140794,bonus_id=3445
-trinket2=convergence_of_fates,id=140806,bonus_id=3445
-main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=140822/140815/140819,relic_id=3445/3445/3445
+head=doomblade_cowl,id=138332,bonus_id=3519
+neck=belerons_choker_of_misery,id=140899,bonus_id=3519,enchant=mark_of_the_hidden_satyr
+shoulders=doomblade_spaulders,id=138338,bonus_id=3519
+back=doomblade_shadowwrap,id=138371,bonus_id=3519,enchant=binding_of_agility
+chest=doomblade_tunic,id=138326,bonus_id=3519
+wrists=bracers_of_impossible_choices,id=140889,bonus_id=3519
+hands=doomblade_gauntlets,id=138329,bonus_id=3519
+waist=girdle_of_nefarious_strategy,id=140859,bonus_id=3519
+legs=doomblade_pants,id=138335,bonus_id=3519
+feet=stutterstep_treads,id=140860,bonus_id=3519
+finger1=spellblades_gemmed_signet,id=140895,bonus_id=3519,enchant=binding_of_versatility
+finger2=ring_of_exclusive_servitude,id=140906,bonus_id=3519,enchant=binding_of_versatility
+trinket1=arcanogolem_digit,id=140794,bonus_id=3519
+trinket2=convergence_of_fates,id=140806,bonus_id=3519
+main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=140822/140815/140819,relic_id=3519/3519/3519
 off_hand=the_kingslayers,id=128869
 save=Rogue_Assassination_T19M_NH.simc
 
@@ -46,25 +43,25 @@ level=110
 race=orc
 role=attack
 position=back
-talents=2110131
+talents=2130131
 artifact=43:0:0:0:0:323:3:324:3:325:3:326:3:327:3:328:3:329:3:330:3:331:3:332:1:333:1:334:1:335:1:337:1:346:1:347:1:1276:1:1384:20
 spec=assassination
 
-head=doomblade_cowl,id=138332,bonus_id=3445
-neck=belerons_choker_of_misery,id=140899,bonus_id=3445,enchant=mark_of_the_hidden_satyr
-shoulders=doomblade_spaulders,id=138338,bonus_id=3445
-back=doomblade_shadowwrap,id=138371,bonus_id=3445,enchant=binding_of_agility
-chest=doomblade_tunic,id=138326,bonus_id=3445
-wrists=bracers_of_impossible_choices,id=140889,bonus_id=3445
-hands=doomblade_gauntlets,id=138329,bonus_id=3445
-waist=girdle_of_nefarious_strategy,id=140859,bonus_id=3445
-legs=doomblade_pants,id=138335,bonus_id=3445
-feet=stutterstep_treads,id=140860,bonus_id=3445
-finger1=spellblades_gemmed_signet,id=140895,bonus_id=3445,enchant=binding_of_versatility
-finger2=ring_of_exclusive_servitude,id=140906,bonus_id=3445,enchant=binding_of_versatility
-trinket1=arcanogolem_digit,id=140794,bonus_id=3445
-trinket2=convergence_of_fates,id=140806,bonus_id=3445
-main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=140823/140817/140819,relic_id=3445/3445/3445
+head=doomblade_cowl,id=138332,bonus_id=3519
+neck=belerons_choker_of_misery,id=140899,bonus_id=3519,enchant=mark_of_the_hidden_satyr
+shoulders=doomblade_spaulders,id=138338,bonus_id=3519
+back=doomblade_shadowwrap,id=138371,bonus_id=3519,enchant=binding_of_agility
+chest=doomblade_tunic,id=138326,bonus_id=3519
+wrists=bracers_of_impossible_choices,id=140889,bonus_id=3519
+hands=doomblade_gauntlets,id=138329,bonus_id=3519
+waist=girdle_of_nefarious_strategy,id=140859,bonus_id=3519
+legs=doomblade_pants,id=138335,bonus_id=3519
+feet=stutterstep_treads,id=140860,bonus_id=3519
+finger1=spellblades_gemmed_signet,id=140895,bonus_id=3519,enchant=binding_of_versatility
+finger2=ring_of_exclusive_servitude,id=140906,bonus_id=3519,enchant=binding_of_versatility
+trinket1=arcanogolem_digit,id=140794,bonus_id=3519
+trinket2=convergence_of_fates,id=140806,bonus_id=3519
+main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=140823/140817/140819,relic_id=3519/3519/3519
 off_hand=the_kingslayers,id=128869
 save=Rogue_Assassination_Exsg_T19M_NH.simc
 
@@ -78,21 +75,21 @@ talents=1310022
 artifact=44:0:0:0:0:1052:1:1053:1:1054:1:1055:1:1056:1:1057:1:1058:1:1059:3:1060:3:1061:3:1062:3:1063:3:1064:3:1065:3:1066:3:1067:3:1348:1:1385:20
 spec=outlaw
 
-head=doomblade_cowl,id=138332,bonus_id=3445
-neck=radiant_string_of_scorpid_eyes,id=140898,bonus_id=3445,enchant=mark_of_the_hidden_satyr
-shoulders=doomblade_spaulders,id=138338,bonus_id=3445
-back=doomblade_shadowwrap,id=138371,bonus_id=3445,enchant=binding_of_agility
-chest=doomblade_tunic,id=138326,bonus_id=3445
-wrists=wellflattened_wristguards,id=140857,bonus_id=3445
-hands=doomblade_gauntlets,id=138329,bonus_id=3445
-waist=cake_carriers_girdle,id=140858,bonus_id=3445
-legs=doomblade_pants,id=138335,bonus_id=3445
-feet=stutterstep_treads,id=140860,bonus_id=3445
-finger1=spellblades_gemmed_signet,id=140895,bonus_id=3445,enchant=binding_of_versatility
-finger2=ring_of_exclusive_servitude,id=140906,bonus_id=3445,enchant=binding_of_versatility
-trinket1=arcanogolem_digit,id=140794,bonus_id=3445
-trinket2=convergence_of_fates,id=140806,bonus_id=3445
-main_hand=the_dreadblades,id=128872,bonus_id=742,gem_id=140819/140817/140841,relic_id=3445/3445/3445
+head=doomblade_cowl,id=138332,bonus_id=3519
+neck=radiant_string_of_scorpid_eyes,id=140898,bonus_id=3519,enchant=mark_of_the_hidden_satyr
+shoulders=doomblade_spaulders,id=138338,bonus_id=3519
+back=doomblade_shadowwrap,id=138371,bonus_id=3519,enchant=binding_of_agility
+chest=doomblade_tunic,id=138326,bonus_id=3519
+wrists=wellflattened_wristguards,id=140857,bonus_id=3519
+hands=doomblade_gauntlets,id=138329,bonus_id=3519
+waist=cake_carriers_girdle,id=140858,bonus_id=3519
+legs=doomblade_pants,id=138335,bonus_id=3519
+feet=stutterstep_treads,id=140860,bonus_id=3519
+finger1=spellblades_gemmed_signet,id=140895,bonus_id=3519,enchant=binding_of_versatility
+finger2=ring_of_exclusive_servitude,id=140906,bonus_id=3519,enchant=binding_of_versatility
+trinket1=arcanogolem_digit,id=140794,bonus_id=3519
+trinket2=convergence_of_fates,id=140806,bonus_id=3519
+main_hand=the_dreadblades,id=128872,bonus_id=742,gem_id=140819/140817/140841,relic_id=3519/3519/3519
 off_hand=the_dreadblades,id=134552
 save=Rogue_Outlaw_T19M_NH.simc
 
@@ -102,24 +99,24 @@ race=night_elf
 timeofday=day
 role=attack
 position=back
-talents=2210011
+talents=1210011
 artifact=17:0:0:0:0:851:1:852:3:853:3:854:3:855:3:856:3:857:3:858:3:859:3:860:3:861:1:862:1:863:1:864:1:865:1:866:1:1349:1:1386:20
 spec=subtlety
 
-head=doomblade_cowl,id=138332,bonus_id=3445
-neck=belerons_choker_of_misery,id=140899,bonus_id=3445,enchant=mark_of_the_hidden_satyr
-shoulders=doomblade_spaulders,id=138338,bonus_id=3445
-back=doomblade_shadowwrap,id=138371,bonus_id=3445,enchant=binding_of_agility
-chest=doomblade_tunic,id=138326,bonus_id=3445
-wrists=bracers_of_impossible_choices,id=140889,bonus_id=3445
-hands=doomblade_gauntlets,id=138329,bonus_id=3445
-waist=girdle_of_nefarious_strategy,id=140859,bonus_id=3445
-legs=doomblade_pants,id=138335,bonus_id=3445
-feet=stutterstep_treads,id=140860,bonus_id=3445
-finger1=spellblades_gemmed_signet,id=140895,bonus_id=3445,enchant=binding_of_versatility
-finger2=ring_of_exclusive_servitude,id=140906,bonus_id=3445,enchant=binding_of_versatility
-trinket1=arcanogolem_digit,id=140794,bonus_id=3445
-trinket2=convergence_of_fates,id=140806,bonus_id=3445
-main_hand=fangs_of_the_devourer,id=128476,bonus_id=743,gem_id=140824/140823/140824,relic_id=3445/3445/3445
+head=doomblade_cowl,id=138332,bonus_id=3519
+neck=belerons_choker_of_misery,id=140899,bonus_id=3519,enchant=mark_of_the_hidden_satyr
+shoulders=doomblade_spaulders,id=138338,bonus_id=3519
+back=doomblade_shadowwrap,id=138371,bonus_id=3519,enchant=binding_of_agility
+chest=doomblade_tunic,id=138326,bonus_id=3519
+wrists=bracers_of_impossible_choices,id=140889,bonus_id=3519
+hands=doomblade_gauntlets,id=138329,bonus_id=3519
+waist=girdle_of_nefarious_strategy,id=140859,bonus_id=3519
+legs=doomblade_pants,id=138335,bonus_id=3519
+feet=stutterstep_treads,id=140860,bonus_id=3519
+finger1=spellblades_gemmed_signet,id=140895,bonus_id=3519,enchant=binding_of_versatility
+finger2=ring_of_exclusive_servitude,id=140906,bonus_id=3519,enchant=binding_of_versatility
+trinket1=arcanogolem_digit,id=140794,bonus_id=3519
+trinket2=convergence_of_fates,id=140806,bonus_id=3519
+main_hand=fangs_of_the_devourer,id=128476,bonus_id=743,gem_id=140824/140823/140824,relic_id=3519/3519/3519
 off_hand=fangs_of_the_devourer,id=128479
 save=Rogue_Subtlety_T19M_NH.simc

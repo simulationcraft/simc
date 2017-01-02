@@ -77,31 +77,31 @@ actions.generic+=/remorseless_winter,if=talent.frozen_pulse.enabled
 actions.generic+=/empower_rune_weapon
 actions.generic+=/hungering_rune_weapon
 
-head=eventide_casque,id=140881,bonus_id=3445
-neck=radiant_string_of_scorpid_eyes,id=140898,bonus_id=3445,enchant=mark_of_the_claw
-shoulders=dreadwyrm_shoulderguards,id=138361,bonus_id=3445
-back=dreadwyrm_greatcloak,id=138364,bonus_id=3445,enchant=binding_of_strength
-chest=dreadwyrm_breastplate,id=138349,bonus_id=3445
-wrists=eternally_recurring_bracers,id=140893,bonus_id=3445
-hands=bridgebreaker_gauntlets,id=140907,bonus_id=3445
-waist=gilded_nightborne_waistplate,id=140880,bonus_id=3445
-legs=dreadwyrm_legplates,id=138358,bonus_id=3445
-feet=leystonetoe_kickers,id=140884,bonus_id=3445
-finger1=ring_of_braided_stems,id=140896,bonus_id=3445,enchant=binding_of_haste
-finger2=spellblades_gemmed_signet,id=140895,bonus_id=3445,enchant=binding_of_haste
-trinket1=might_of_krosus,id=140799,bonus_id=3445
-trinket2=claw_of_the_crystalline_scorpid,id=140790,bonus_id=3445
-main_hand=blades_of_the_fallen_prince,id=128292,gem_id=140832/140821/140832,relic_id=3445/3445/3445,enchant=rune_of_razorice
+head=eventide_casque,id=140881,bonus_id=3519
+neck=radiant_string_of_scorpid_eyes,id=140898,bonus_id=3519,enchant=mark_of_the_claw
+shoulders=dreadwyrm_shoulderguards,id=138361,bonus_id=3519
+back=dreadwyrm_greatcloak,id=138364,bonus_id=3519,enchant=binding_of_strength
+chest=dreadwyrm_breastplate,id=138349,bonus_id=3519
+wrists=eternally_recurring_bracers,id=140893,bonus_id=3519
+hands=bridgebreaker_gauntlets,id=140907,bonus_id=3519
+waist=gilded_nightborne_waistplate,id=140880,bonus_id=3519
+legs=dreadwyrm_legplates,id=138358,bonus_id=3519
+feet=leystonetoe_kickers,id=140884,bonus_id=3519
+finger1=ring_of_braided_stems,id=140896,bonus_id=3519,enchant=binding_of_haste
+finger2=spellblades_gemmed_signet,id=140895,bonus_id=3519,enchant=binding_of_haste
+trinket1=might_of_krosus,id=140799,bonus_id=3519
+trinket2=claw_of_the_crystalline_scorpid,id=140790,bonus_id=3519
+main_hand=blades_of_the_fallen_prince,id=128292,gem_id=140832/140821/140832,relic_id=3519/3519/3519,enchant=rune_of_razorice
 off_hand=blades_of_the_fallen_prince,id=128293,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=903.00
-# gear_strength=22116
-# gear_stamina=32176
-# gear_crit_rating=8567
-# gear_haste_rating=8789
-# gear_mastery_rating=3677
-# gear_versatility_rating=1478
-# gear_armor=4539
+# gear_ilvl=912.88
+# gear_strength=24228
+# gear_stamina=35283
+# gear_crit_rating=8965
+# gear_haste_rating=9202
+# gear_mastery_rating=3836
+# gear_versatility_rating=1564
+# gear_armor=4642
 # set_bonus=tier19_2pc=1
 # set_bonus=tier19_4pc=1

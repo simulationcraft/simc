@@ -3940,7 +3940,8 @@ struct fel_rush_t : public demon_hunter_attack_t
 
     if ( !a_cancel )
     {
-      base_teleport_distance  = damage -> radius;
+      // fel rush does damage in a further line than it moves you
+	  base_teleport_distance  = damage -> radius - 5;
       movement_directionality = MOVEMENT_OMNI;
       ignore_false_positive   = true;
 

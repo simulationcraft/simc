@@ -6876,7 +6876,7 @@ void shaman_t::init_action_list_enhancement()
   def -> add_action( this, "Stormstrike", "if=talent.overcharge.enabled&cooldown.lightning_bolt.remains<gcd&maelstrom>80" );
   def -> add_action( this, "Stormstrike", "if=talent.fury_of_air.enabled&maelstrom>46&cooldown.lightning_bolt.remains>gcd" );
   def -> add_action( this, "Stormstrike", "if=!talent.overchage.enabled&!talent.fury_of_air.enabled" );
-  def -> add_action( this, "Crash Lightning", "if=active_enemies>1|talent.crashing_storm.enabled|feral_spirit.remains>5" );
+  def -> add_action( this, "Crash Lightning", "if=active_enemies>1|talent.crashing_storm.enabled|talent.boulderfist.enabled|feral_spirit.remains>5" );
   def -> add_action( this, "Frostbrand", "if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8" );
   def -> add_action( this, "Flametongue", "if=buff.flametongue.remains<4.8");
   def -> add_talent( this, "Sundering" );
