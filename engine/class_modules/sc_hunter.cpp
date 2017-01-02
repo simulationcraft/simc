@@ -245,7 +245,7 @@ public:
 
     const spell_data_t* caltrops;
     const spell_data_t* steel_trap;
-    const spell_data_t* improved_traps;
+    const spell_data_t* guerrilla_tactics;
 
     // tier 5
     const spell_data_t* binding_shot;
@@ -4203,9 +4203,6 @@ struct freezing_trap_t: public hunter_melee_attack_t
 
     cooldown -> duration = data().cooldown();
 
-    if ( p -> talents.improved_traps -> ok() )
-      cooldown -> duration *= 1.0 + p -> talents.improved_traps -> effectN( 1 ).percent();
-
     if ( p -> sets.has_set_bonus( p -> specialization(), PVP, B2 ) )
     {
       energize_type = ENERGIZE_ON_HIT;
@@ -5047,11 +5044,11 @@ struct explosive_trap_t: public hunter_spell_t
       tick_may_crit = true;
       trigger_gcd = p -> specs.explosive_trap -> gcd();
 
-      if ( p -> talents.improved_traps -> ok() )
-        cooldown -> duration *= 1.0 + p -> talents.improved_traps -> effectN( 2 ).percent();
-
       if ( p -> artifacts.hunters_guile.rank() )
         cooldown -> duration *= 1.0 + p -> artifacts.hunters_guile.percent();
+
+      if ( p -> talents.guerrilla_tactics -> ok() )
+        base_multiplier *= 1.0 + p -> talents.guerrilla_tactics -> effectN( 7 ).percent();
     }
 
   virtual double action_multiplier() const override
@@ -5456,7 +5453,7 @@ void hunter_t::init_spells()
 
   talents.caltrops                          = find_talent_spell( "Caltrops" );
   talents.steel_trap                        = find_talent_spell( "Steel Trap" );
-  talents.improved_traps                    = find_talent_spell( "Improved Traps" );
+  talents.guerrilla_tactics                 = find_talent_spell( "Guerrilla Tactics" );
 
   //Tier 5
   talents.intimidation                      = find_talent_spell( "Intimidation" );

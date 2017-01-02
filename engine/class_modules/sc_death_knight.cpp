@@ -6903,8 +6903,8 @@ void death_knight_t::default_apl_frost()
   // Howling Blast disease upkeep
   generic -> add_action( this, "Howling Blast", "target_if=!dot.frost_fever.ticking" );
   
-  // Priotize Obliterate if Koltira's Newfound Will is equipped and talent Frozen Pulse and T19 2pc bonus active
-  generic -> add_action( this, "Obliterate", "if=equipped.132366&talent.frozen_pulse.enabled&set_bonus.tier19_2pc=1" );
+  // Priotize Obliterate if Koltira's Newfound Will is equipped and talent Runic Attenuation and T19 2pc active
+  generic -> add_action( this, "Obliterate", "if=equipped.132366&talent.runic_attenuation.enabled&set_bonus.tier19_2pc=1" );
   
   // Priotize Remorseless Winter if Perseverance of the Ebon Martyr is equipped
   generic -> add_action( this, "Remorseless Winter", "if=buff.rime.react&equipped.132459" );
