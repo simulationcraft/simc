@@ -19,7 +19,7 @@ level=110
 race=orc
 role=attack
 position=back
-talents=2110111
+talents=1130111
 artifact=43:0:0:0:0:323:3:324:3:325:3:326:3:327:3:328:3:329:3:330:3:331:3:332:1:333:1:334:1:335:1:337:1:346:1:347:1:1276:1
 spec=assassination
 
@@ -46,7 +46,7 @@ level=110
 race=orc
 role=attack
 position=back
-talents=2110131
+talents=2130131
 artifact=43:0:0:0:0:323:3:324:3:325:3:326:3:327:3:328:3:329:3:330:3:331:3:332:1:333:1:334:1:335:1:337:1:346:1:347:1:1276:1
 spec=assassination
 
@@ -102,7 +102,7 @@ race=night_elf
 timeofday=day
 role=attack
 position=back
-talents=2210011
+talents=1210011
 artifact=17:0:0:0:0:851:1:852:3:853:3:854:3:855:3:856:3:857:3:858:3:859:3:860:3:861:1:862:1:863:1:864:1:865:1:866:1:1349:1
 spec=subtlety
 
