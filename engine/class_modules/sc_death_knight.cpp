@@ -6964,7 +6964,7 @@ void death_knight_t::default_apl_unholy()
   action_priority_list_t* castigator = get_action_priority_list("castigator");
   action_priority_list_t* instructors = get_action_priority_list("instructors");
 
-  std::string food_name = (true_level > 100) ? "the_hungry_magister" :
+  std::string food_name = (true_level > 100) ? "nightborne_delicacy_platter" :
     (true_level >  90) ? "buttered_sturgeon" :
     (true_level >= 85) ? "sea_mist_rice_noodles" :
     (true_level >= 80) ? "seafood_magnifique_feast" :
