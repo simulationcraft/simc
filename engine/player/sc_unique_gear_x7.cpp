@@ -1360,7 +1360,9 @@ void item::draught_of_souls( special_effect_t& effect )
   {
     felcrazed_rage_t( const special_effect_t& effect ) :
       proc_spell_t( "felcrazed_rage", effect.player, effect.trigger(), effect.item )
-    { }
+    {
+      aoe = 0; // This does not actually AOE
+    }
   };
 
   struct draught_of_souls_driver_t : public proc_spell_t
@@ -1396,12 +1398,39 @@ void item::draught_of_souls( special_effect_t& effect )
       event_t::cancel( player -> readying );
     }
 
+    player_t* select_random_target() const
+    {
+      if ( sim -> distance_targeting_enabled )
+      {
+        std::vector<player_t*> targets;
+        range::for_each( sim -> target_non_sleeping_list, [ &targets, this ]( player_t* t ) {
+          if ( t -> get_player_distance( *player ) <= radius + t -> combat_reach )
+          {
+            targets.push_back( t );
+          }
+        } );
+
+        auto random_idx = static_cast<size_t>( rng().range( 0, targets.size() ) );
+        return targets.size() ? targets[ random_idx ] : nullptr;
+      }
+      else
+      {
+        auto random_idx = static_cast<size_t>( rng().range( 0, sim -> target_non_sleeping_list.size() ) );
+        return sim -> target_non_sleeping_list[ random_idx ];
+      }
+    }
+
     void tick( dot_t* d ) override
     {
       proc_spell_t::tick( d );
 
-      damage -> target = d -> target;
-      damage -> execute();
+      auto t = select_random_target();
+
+      if ( t )
+      {
+        damage -> target = t;
+        damage -> execute();
+      }
     }
 
     void last_tick( dot_t* d ) override
