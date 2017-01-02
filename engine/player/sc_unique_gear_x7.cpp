@@ -84,10 +84,11 @@ namespace item
   void ursocs_rending_paw( special_effect_t& );
 
   // 7.1.5 Raid
-  void draught_of_souls( special_effect_t& );
-  void convergence_of_fates( special_effect_t& );
+  void draught_of_souls( special_effect_t&        );
+  void convergence_of_fates( special_effect_t&    );
   void entwined_elemental_foci( special_effect_t& );
   void fury_of_the_burning_sky( special_effect_t& );
+  void icon_of_rot( special_effect_t&             );
 
   // Legendary
   void aggramars_stride( special_effect_t& );
@@ -506,6 +507,68 @@ void item::bloodstained_hankerchief( special_effect_t& effect )
   effect.execute_action = a;
 }
 
+// Icon of Rot ==============================================================
+
+struct carrion_swarm_t : public spell_t
+{
+  carrion_swarm_t( const special_effect_t& effect ) :
+    spell_t( "carrion_swarm", effect.player, effect.driver() -> effectN( 1 ).trigger() )
+  {
+    background = true;
+    hasted_ticks = may_miss = may_dodge = may_parry = may_block = may_crit = false;
+    callbacks = false;
+    base_td = effect.driver() -> effectN( 1 ).average( effect.item );
+  }
+};
+
+struct icon_of_rot_driver_t : public dbc_proc_callback_t
+{
+  carrion_swarm_t* carrion_swarm;
+  icon_of_rot_driver_t( const special_effect_t& effect ) :
+    dbc_proc_callback_t( effect.player, effect ),
+    carrion_swarm( new carrion_swarm_t( effect ) )
+  { }
+
+  void initialize() override
+  {
+    dbc_proc_callback_t::initialize();
+    
+    action_t* damage_spell = listener -> find_action( "carrion_swarm" );
+
+    if( ! damage_spell )
+    {
+      damage_spell = listener -> create_proc_action( "carrion_swarm", effect );
+    }
+
+    if ( ! damage_spell )
+    {
+      damage_spell = new carrion_swarm_t( effect );
+    }
+  }
+
+  void execute( action_t*  /*a*/ , action_state_t* trigger_state ) override
+  {
+    actor_target_data_t* td = listener -> get_target_data( trigger_state -> target );
+    assert( td );
+
+    auto& tl = listener -> sim -> target_non_sleeping_list;
+
+    for ( size_t i = 0, targets = tl.size(); i < targets; i++ )
+    {
+      carrion_swarm -> target = tl[ i ];
+      carrion_swarm -> execute();
+    }
+  }
+};
+
+
+void item::icon_of_rot( special_effect_t& effect )
+{
+  effect.proc_flags_ = effect.driver() -> proc_flags();
+  effect.proc_flags2_ = PF2_ALL_HIT;
+
+  new icon_of_rot_driver_t( effect );
+}
 // Impact Tremor ============================================================
 
 void item::impact_tremor( special_effect_t& effect )
@@ -633,6 +696,7 @@ void item::fury_of_the_burning_sky( special_effect_t& effect )
 }
 
 // Mrrgria's Favor ==========================================================
+
 struct thunder_ritual_impact_t : public spell_t
 {
   //TODO: Are these multipliers multiplicative with one another or should they be added together then applied?
@@ -3670,6 +3734,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 225139, item::convergence_of_fates    );
   register_special_effect( 225129, item::entwined_elemental_foci );
   register_special_effect( 225134, item::fury_of_the_burning_sky );
+  register_special_effect( 225131, item::icon_of_rot             );
 
   /* Legion 7.0 Misc */
   register_special_effect( 188026, item::infernal_alchemist_stone       );
