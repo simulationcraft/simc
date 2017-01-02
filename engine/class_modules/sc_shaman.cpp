@@ -584,6 +584,7 @@ public:
   void trigger_doom_vortex( const action_state_t* state );
   void trigger_lightning_rod_damage( const action_state_t* state );
   void trigger_hot_hand( const action_state_t* state );
+  void trigger_eye_of_twisting_nether( const action_state_t* state );
 
   // Character Definition
   void      init_spells() override;
@@ -1053,17 +1054,17 @@ public:
     ab::execute();
 
     trigger_maelstrom_gain( ab::execute_state );
-    trigger_eye_of_twisting_nether( ab::execute_state );
+    p() -> trigger_eye_of_twisting_nether( ab::execute_state );
   }
 
   void tick( dot_t* d ) override
   {
     ab::tick( d );
 
-    trigger_eye_of_twisting_nether( d -> state );
+    p() -> trigger_eye_of_twisting_nether( d -> state );
   }
 
-  virtual void impact( action_state_t* state ) override
+  void impact( action_state_t* state ) override
   {
     ab::impact( state );
 
@@ -1201,27 +1202,6 @@ public:
     p() -> action.unleash_doom[ spell_idx ] -> target = state -> target;
     p() -> action.unleash_doom[ spell_idx ] -> schedule_execute();
     proc_ud -> occur();
-  }
-
-  void trigger_eye_of_twisting_nether( const action_state_t* state )
-  {
-    if ( ab::harmful && state -> result_amount > 0 )
-    {
-      if ( dbc::is_school( ab::get_school(), SCHOOL_FIRE ) )
-      {
-        p() -> buff.eotn_fire -> trigger();
-      }
-
-      if ( dbc::is_school( ab::get_school(), SCHOOL_NATURE ) )
-      {
-        p() -> buff.eotn_shock -> trigger();
-      }
-
-      if ( dbc::is_school( ab::get_school(), SCHOOL_FROST ) )
-      {
-        p() -> buff.eotn_chill -> trigger();
-      }
-    }
   }
 };
 
@@ -1856,16 +1836,44 @@ struct base_wolf_t : public shaman_pet_t
   }
 };
 
+template <typename T>
+struct wolf_base_attack_t : public pet_melee_attack_t<T>
+{
+  using super = wolf_base_attack_t<T>;
+
+  wolf_base_attack_t( T* wolf, const std::string& n,
+      const spell_data_t* spell = spell_data_t::nil(),
+      const std::string& options_str = std::string() ) :
+    pet_melee_attack_t<T>( wolf, n, spell )
+  {
+    this -> parse_options( options_str );
+  }
+
+  void execute() override
+  {
+    pet_melee_attack_t<T>::execute();
+
+    this -> p() -> o() -> trigger_eye_of_twisting_nether( this -> execute_state );
+  }
+
+  void tick( dot_t* d ) override
+  {
+    pet_melee_attack_t<T>::tick( d );
+
+    this -> p() -> o() -> trigger_eye_of_twisting_nether( d -> state );
+  }
+};
+
 struct spirit_wolf_t : public base_wolf_t
 {
-  struct windfury_t : public pet_melee_attack_t<spirit_wolf_t>
+  struct windfury_t : public wolf_base_attack_t<spirit_wolf_t>
   {
     windfury_t( spirit_wolf_t* player ) :
       super( player, "windfury_attack", player -> find_spell( 170512 ) )
     { }
   };
 
-  struct fs_melee_t : public pet_melee_attack_t<spirit_wolf_t>
+  struct fs_melee_t : public wolf_base_attack_t<spirit_wolf_t>
   {
     windfury_t* wf;
     const spell_data_t* maelstrom, * wf_driver;
@@ -1912,10 +1920,10 @@ struct spirit_wolf_t : public base_wolf_t
 };
 
 template <typename T>
-struct spirit_bomb_t : public pet_melee_attack_t<T>
+struct spirit_bomb_t : public wolf_base_attack_t<T>
 {
   spirit_bomb_t( T* player ) :
-    pet_melee_attack_t<T>( player, "spirit_bomb", player -> find_spell( 198455 ) )
+    wolf_base_attack_t<T>( player, "spirit_bomb", player -> find_spell( 198455 ) )
   {
     this -> background = true;
     this -> aoe = -1;
@@ -1938,7 +1946,7 @@ bool spirit_wolf_t::create_actions()
 
 struct doom_wolf_base_t : public base_wolf_t
 {
-  struct dw_melee_t : public pet_melee_attack_t<doom_wolf_base_t>
+  struct dw_melee_t : public wolf_base_attack_t<doom_wolf_base_t>
   {
     const spell_data_t* maelstrom;
 
@@ -1951,7 +1959,7 @@ struct doom_wolf_base_t : public base_wolf_t
 
     void impact( action_state_t* state ) override
     {
-      melee_attack_t::impact( state );
+      super::impact( state );
 
       p() -> o() -> resource_gain( RESOURCE_MAELSTROM,
           maelstrom -> effectN( 1 ).resource( RESOURCE_MAELSTROM ),
@@ -1985,14 +1993,14 @@ struct doom_wolf_base_t : public base_wolf_t
 
 struct frost_wolf_t : public doom_wolf_base_t
 {
-  struct frozen_bite_t : public pet_melee_attack_t<frost_wolf_t>
+  struct frozen_bite_t : public wolf_base_attack_t<frost_wolf_t>
   {
     frozen_bite_t( frost_wolf_t* player, const std::string& options ) :
       super( player, "frozen_bite", player -> find_spell( 224126 ), options )
     { p() -> special_ability_cd = cooldown; }
   };
 
-  struct snowstorm_t : public pet_melee_attack_t<frost_wolf_t>
+  struct snowstorm_t : public wolf_base_attack_t<frost_wolf_t>
   {
     snowstorm_t( frost_wolf_t* player ) :
       super( player, "snowstorm", player -> find_spell( 198483 ) )
@@ -2040,14 +2048,14 @@ struct frost_wolf_t : public doom_wolf_base_t
 
 struct fire_wolf_t : public doom_wolf_base_t
 {
-  struct fiery_jaws_t : public pet_melee_attack_t<fire_wolf_t>
+  struct fiery_jaws_t : public wolf_base_attack_t<fire_wolf_t>
   {
     fiery_jaws_t( fire_wolf_t* player, const std::string& options ) :
       super( player, "fiery_jaws", player -> find_spell( 224125 ), options )
     { p() -> special_ability_cd = cooldown; }
   };
 
-  struct fire_nova_t : public pet_melee_attack_t<fire_wolf_t>
+  struct fire_nova_t : public wolf_base_attack_t<fire_wolf_t>
   {
     fire_nova_t( fire_wolf_t* player ) :
       super( player, "fire_nova", player -> find_spell( 198480 ) )
@@ -2095,7 +2103,7 @@ struct fire_wolf_t : public doom_wolf_base_t
 
 struct lightning_wolf_t : public doom_wolf_base_t
 {
-  struct crackling_surge_t : public pet_melee_attack_t<lightning_wolf_t>
+  struct crackling_surge_t : public wolf_base_attack_t<lightning_wolf_t>
   {
     crackling_surge_t( lightning_wolf_t* player, const std::string& options ) :
       super( player, "crackling_surge", player -> find_spell( 224127 ), options )
@@ -2108,7 +2116,7 @@ struct lightning_wolf_t : public doom_wolf_base_t
     }
   };
 
-  struct thunder_bite_t : public pet_melee_attack_t<lightning_wolf_t>
+  struct thunder_bite_t : public wolf_base_attack_t<lightning_wolf_t>
   {
     thunder_bite_t( lightning_wolf_t* player ) :
       super( player, "thunder_bite", player -> find_spell( 198485 ) )
@@ -6270,6 +6278,30 @@ void shaman_t::trigger_lightning_rod_damage( const action_state_t* state )
     action.lightning_rod -> target = t;
     action.lightning_rod -> execute();
   } );
+}
+
+
+void shaman_t::trigger_eye_of_twisting_nether( const action_state_t* state )
+{
+  if ( state -> action -> harmful && state -> result_amount > 0 )
+  {
+    auto school = state -> action -> get_school();
+
+    if ( dbc::is_school( school, SCHOOL_FIRE ) )
+    {
+      buff.eotn_fire -> trigger();
+    }
+
+    if ( dbc::is_school( school, SCHOOL_NATURE ) )
+    {
+      buff.eotn_shock -> trigger();
+    }
+
+    if ( dbc::is_school( school, SCHOOL_FROST ) )
+    {
+      buff.eotn_chill -> trigger();
+    }
+  }
 }
 
 void shaman_t::trigger_windfury_weapon( const action_state_t* state )
