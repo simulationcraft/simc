@@ -2590,9 +2590,10 @@ struct hailstorm_attack_t : public shaman_attack_t
 struct stormstrike_attack_t : public shaman_attack_t
 {
   bool stormflurry;
+  const spell_data_t* t19_2pc;
 
   stormstrike_attack_t( const std::string& n, shaman_t* player, const spell_data_t* s, weapon_t* w ) :
-    shaman_attack_t( n, player, s ), stormflurry( false )
+    shaman_attack_t( n, player, s ), stormflurry( false ), t19_2pc( player -> find_spell( 211986 ) )
   {
     background = true;
     may_miss = may_dodge = may_parry = false;
@@ -2633,9 +2634,10 @@ struct stormstrike_attack_t : public shaman_attack_t
   {
     double c = shaman_attack_t::composite_crit_chance();
 
-    if ( p() -> buff.stormbringer -> up() )
+    if ( p() -> sets.has_set_bonus( SHAMAN_ENHANCEMENT, T19, B2 ) &&
+         p() -> buff.stormbringer -> up() )
     {
-      c += p() -> sets.set( SHAMAN_ENHANCEMENT, T19, B2 ) -> effectN( 1 ).percent();
+      c += t19_2pc -> effectN( 1 ).percent();
     }
 
     return c;
