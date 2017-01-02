@@ -87,9 +87,9 @@ namespace item
   void draught_of_souls( special_effect_t& );
   void convergence_of_fates( special_effect_t& );
   void entwined_elemental_foci( special_effect_t& );
+  void fury_of_the_burning_sky( special_effect_t& );
 
   // Legendary
-
   void aggramars_stride( special_effect_t& );
   void kiljadens_burning_wish( special_effect_t& );
 
@@ -525,6 +525,111 @@ void item::impact_tremor( special_effect_t& effect )
   effect.action_disabled = true;
 
   new dbc_proc_callback_t( effect.item, effect );
+}
+
+
+// Fury of the Burning Sky ==================================================
+struct solar_collapse_impact_t : public spell_t
+{
+  solar_collapse_impact_t( const special_effect_t& effect ) :
+    spell_t( "solar_collapse_damage", effect.player, effect.player -> find_spell( 229737 ) )
+  {
+    background = may_crit = true;
+    callbacks = false;
+    aoe = -1;
+    // FIXME: This value is returning a slightly lower damage amount vs. in game for the base ilvl trinket. (147k vs. 145k).
+    // Maybe hotfix things will fix.
+    base_dd_min = base_dd_max = data().effectN( 2 ).average( effect.item );
+  }
+};
+struct fury_of_the_burning_sky_driver_t : public dbc_proc_callback_t
+{
+  cooldown_t* icd;
+  fury_of_the_burning_sky_driver_t( const special_effect_t& effect ) :
+    dbc_proc_callback_t( effect.player, effect )
+  {
+    icd = effect.player -> get_cooldown( "solar_collapse_icd" );
+    icd -> duration = timespan_t::from_seconds( 3.0 );
+  }
+
+  void initialize() override
+  {
+    dbc_proc_callback_t::initialize();
+
+    action_t* damage_spell = listener -> find_action( "solar_collapse_damage" );
+
+    if( ! damage_spell )
+    {
+      damage_spell = listener -> create_proc_action( "solar_collapse_damage", effect );
+    }
+
+    if ( ! damage_spell )
+    {
+      damage_spell = new solar_collapse_impact_t( effect );
+    }
+  }
+
+  void execute( action_t*  /*a*/ , action_state_t* trigger_state ) override
+  {
+    actor_target_data_t* td = listener -> get_target_data( trigger_state -> target );
+    assert( td );
+
+    // FIXME: This might be in the wrong place - the ICD is on the RPPM trigger event, this
+    // might only be preventing debuff application, not the actual RPPM being rolled/firing.
+    if ( icd -> up() )
+    {
+      td -> debuff.solar_collapse -> trigger();
+    }
+    icd -> start();
+  }
+};
+
+struct solar_collapse_t : public debuff_t
+{
+  action_t* damage_event;
+
+  solar_collapse_t( const actor_pair_t& p, const special_effect_t& source_effect ) :
+    debuff_t( buff_creator_t( p, "solar_collapse", source_effect.driver() -> effectN( 1 ).trigger(), source_effect.item )
+                                  .duration( timespan_t::from_seconds( 3.0 ) ) ),
+                                  damage_event( source -> find_action( "solar_collapse_damage" ) )
+  { }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    debuff_t::expire_override( expiration_stacks, remaining_duration );
+    damage_event -> target = player;
+    damage_event -> execute();
+  }
+};
+struct fury_of_the_burning_sun_constructor_t : public item_targetdata_initializer_t
+{
+  fury_of_the_burning_sun_constructor_t( unsigned iid, const std::vector< slot_e >& s ) :
+    item_targetdata_initializer_t( iid, s )
+  { }
+
+  void operator()( actor_target_data_t* td ) const override
+  {
+    const special_effect_t* effect = find_effect( td -> source );
+    if( effect == 0 )
+    {
+      td -> debuff.solar_collapse = buff_creator_t( *td, "solar_collapse" );
+    }
+    else
+    {
+      assert( ! td -> debuff.solar_collapse );
+
+      td -> debuff.solar_collapse = new solar_collapse_t( *td, *effect );
+      td -> debuff.solar_collapse -> reset();
+    }
+  }
+};
+
+void item::fury_of_the_burning_sky( special_effect_t& effect )
+{
+  effect.proc_flags_ = effect.driver() -> proc_flags();
+  effect.proc_flags2_ = PF2_ALL_HIT;
+
+  new fury_of_the_burning_sky_driver_t( effect );
 }
 
 // Mrrgria's Favor ==========================================================
@@ -3564,6 +3669,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 225141, item::draught_of_souls        );
   register_special_effect( 225139, item::convergence_of_fates    );
   register_special_effect( 225129, item::entwined_elemental_foci );
+  register_special_effect( 225134, item::fury_of_the_burning_sky );
 
   /* Legion 7.0 Misc */
   register_special_effect( 188026, item::infernal_alchemist_stone       );
@@ -3656,5 +3762,5 @@ void unique_gear::register_target_data_initializers_x7( sim_t* sim )
   sim -> register_target_data_initializer( wriggling_sinew_constructor_t( 139326, trinkets ) );
   sim -> register_target_data_initializer( bough_of_corruption_constructor_t( 139336, trinkets ) );
   sim -> register_target_data_initializer( mrrgrias_favor_constructor_t( 142160, trinkets ) ) ;
+  sim -> register_target_data_initializer( fury_of_the_burning_sun_constructor_t( 140801, trinkets ) );
 }
-
