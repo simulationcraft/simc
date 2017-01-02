@@ -4255,7 +4255,7 @@ void player_t::reset()
   off_gcd = 0;
   in_combat = false;
 
-  current_attack_speed = 0;
+  current_attack_speed = 1.0;
   gcd_current_haste_value = 1.0;
   gcd_haste_type = HASTE_NONE;
 
@@ -4535,6 +4535,8 @@ void player_t::arise()
       }
     }
   }
+
+  current_attack_speed = cache.attack_speed();
 }
 
 // player_t::demise =========================================================
