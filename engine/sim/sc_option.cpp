@@ -886,8 +886,8 @@ option_db_t::option_db_t()
     prefix += "/";
 
     auto_path.push_back( prefix + "Legendaries" ); // Legendaries
-	auto_path.push_back( prefix + "Tier19H_NH" ); // T19M for Nighthold
-	auto_path.push_back( prefix + "Tier19M_NH" ); // T19M for Nighthold
+    auto_path.push_back( prefix + "Tier19H_NH" ); // T19H for Nighthold
+    auto_path.push_back( prefix + "Tier19M_NH" ); // T19M for Nighthold
 
     // Add profiles for each tier, except pvp
     for ( unsigned i = 0; i < N_TIER; ++i )
