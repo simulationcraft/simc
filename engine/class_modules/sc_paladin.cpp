@@ -6180,6 +6180,7 @@ struct paladin_module_t : public module_t
 
   virtual void register_hotfixes() const override
   {
+<<<<<<< HEAD
     /*
     hotfix::register_effect( "Paladin", "2016-09-23", "Templar�s Verdict damage increased by 10%.", 335615 )
       .field( "base_value" )
@@ -6212,6 +6213,13 @@ struct paladin_module_t : public module_t
       .verification_value( 120 );
       */
 
+=======
+    hotfix::register_effect( "Paladin", "2016-01-30", "Hammer of Wrath did not receive a 8% damage buff in 6.2.3.", 14488 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 2.4 )
+      .verification_value( 2.592 );
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
   }
 
   virtual void combat_begin( sim_t* ) const override {}

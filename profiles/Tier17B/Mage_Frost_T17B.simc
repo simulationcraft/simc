@@ -1,0 +1,152 @@
+mage="Mage_Frost_T17B"
+level=100
+race=dwarf
+role=spell
+position=back
+talents=3003122
+glyphs=icy_veins/splitting_ice/cone_of_cold
+spec=frost
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=greater_draenic_intellect_flask
+actions.precombat+=/food,type=salty_squid_roll
+actions.precombat+=/arcane_brilliance
+actions.precombat+=/water_elemental
+actions.precombat+=/snapshot_stats
+actions.precombat+=/rune_of_power
+actions.precombat+=/mirror_image
+actions.precombat+=/potion,name=draenic_intellect
+actions.precombat+=/frostbolt,if=!talent.frost_bomb.enabled
+actions.precombat+=/frost_bomb
+
+# Executed every time the actor is available.
+
+actions=counterspell,if=target.debuff.casting.react
+actions+=/time_warp,if=target.health.pct<25|time>5
+actions+=/call_action_list,name=movement,if=raid_event.movement.exists
+actions+=/mirror_image
+actions+=/rune_of_power,if=buff.rune_of_power.remains<cast_time
+actions+=/rune_of_power,if=(cooldown.icy_veins.remains<gcd.max&buff.rune_of_power.remains<20)|(cooldown.prismatic_crystal.remains<gcd.max&buff.rune_of_power.remains<10)
+# Water jet on pull for non PC talent combos
+actions+=/water_jet,if=time<1&active_enemies<4&!talent.prismatic_crystal.enabled
+actions+=/call_action_list,name=cooldowns,if=target.time_to_die<24
+actions+=/call_action_list,name=crystal_sequence,if=talent.prismatic_crystal.enabled&(cooldown.prismatic_crystal.remains<=gcd.max|pet.prismatic_crystal.active)&(legendary_ring.cooldown.remains<gcd.max|legendary_ring.cooldown.remains+15>target.time_to_die|!legendary_ring.has_cooldown)
+actions+=/call_action_list,name=water_jet,if=prev_off_gcd.water_jet|debuff.water_jet.remains>0
+actions+=/call_action_list,name=aoe,if=active_enemies>=4
+actions+=/call_action_list,name=single_target
+
+actions.movement=blink,if=movement.distance>10
+actions.movement+=/blazing_speed,if=movement.remains>0
+actions.movement+=/ice_floes,if=buff.ice_floes.down&(raid_event.movement.distance>0|raid_event.movement.in<action.frostbolt.cast_time)
+
+# Actions while Prismatic Crystal is active
+actions.crystal_sequence=frost_bomb,if=active_enemies=1&current_target!=pet.prismatic_crystal&remains<10
+actions.crystal_sequence+=/frozen_orb,target_if=max:target.time_to_die&target!=pet.prismatic_crystal
+actions.crystal_sequence+=/prismatic_crystal
+actions.crystal_sequence+=/water_jet,if=pet.prismatic_crystal.remains>(5+10*set_bonus.tier18_4pc)*spell_haste*0.9
+actions.crystal_sequence+=/call_action_list,name=cooldowns
+actions.crystal_sequence+=/frost_bomb,if=talent.prismatic_crystal.enabled&current_target=pet.prismatic_crystal&active_enemies>1&!ticking
+actions.crystal_sequence+=/ice_lance,if=!t18_class_trinket&(buff.fingers_of_frost.react>=2+set_bonus.tier18_4pc*2|(buff.fingers_of_frost.react>set_bonus.tier18_4pc*2&active_dot.frozen_orb))
+actions.crystal_sequence+=/ice_nova,if=charges=2|pet.prismatic_crystal.remains<4
+actions.crystal_sequence+=/ice_lance,if=buff.fingers_of_frost.react&buff.shatterlance.up
+actions.crystal_sequence+=/frostfire_bolt,if=buff.brain_freeze.react=2
+actions.crystal_sequence+=/frostbolt,target_if=max:debuff.water_jet.remains,if=t18_class_trinket&buff.fingers_of_frost.react&!buff.shatterlance.up&pet.prismatic_crystal.remains>cast_time
+actions.crystal_sequence+=/ice_lance,if=buff.fingers_of_frost.react
+actions.crystal_sequence+=/frostfire_bolt,if=buff.brain_freeze.react
+actions.crystal_sequence+=/ice_nova
+actions.crystal_sequence+=/blizzard,interrupt_if=cooldown.frozen_orb.up|(talent.frost_bomb.enabled&buff.fingers_of_frost.react>=2+set_bonus.tier18_4pc),if=active_enemies>=5
+actions.crystal_sequence+=/choose_target,if=pet.prismatic_crystal.remains<action.frostbolt.cast_time+action.frostbolt.travel_time
+actions.crystal_sequence+=/frostbolt
+
+# Consolidated damage cooldown abilities
+actions.cooldowns=icy_veins
+actions.cooldowns+=/blood_fury
+actions.cooldowns+=/berserking
+actions.cooldowns+=/arcane_torrent
+actions.cooldowns+=/potion,name=draenic_intellect,if=buff.bloodlust.up|buff.icy_veins.up
+
+# Water Jet initialization
+actions.init_water_jet=frost_bomb,if=remains<4*spell_haste*(1+set_bonus.tier18_4pc)+cast_time
+actions.init_water_jet+=/water_jet,if=prev_gcd.frostbolt|action.frostbolt.travel_time<spell_haste
+actions.init_water_jet+=/frostbolt
+
+# Water Jet sequence
+actions.water_jet=frostbolt,if=prev_off_gcd.water_jet
+actions.water_jet+=/ice_lance,if=set_bonus.tier18_4pc&buff.fingers_of_frost.react>2*set_bonus.tier18_4pc&buff.shatterlance.up
+actions.water_jet+=/frostfire_bolt,if=set_bonus.tier18_4pc&buff.brain_freeze.react=2
+actions.water_jet+=/frostbolt,if=t18_class_trinket&debuff.water_jet.remains>cast_time+travel_time&buff.fingers_of_frost.react&!buff.shatterlance.up
+actions.water_jet+=/ice_lance,if=!t18_class_trinket&buff.fingers_of_frost.react>=2+2*set_bonus.tier18_4pc&action.frostbolt.in_flight
+actions.water_jet+=/frostbolt,if=!set_bonus.tier18_4pc&debuff.water_jet.remains>cast_time+travel_time
+
+# AoE sequence
+actions.aoe=call_action_list,name=cooldowns
+actions.aoe+=/frost_bomb,if=remains<action.ice_lance.travel_time&(cooldown.frozen_orb.remains<gcd.max|buff.fingers_of_frost.react>=2)
+actions.aoe+=/frozen_orb
+actions.aoe+=/ice_lance,if=talent.frost_bomb.enabled&buff.fingers_of_frost.react&debuff.frost_bomb.up
+actions.aoe+=/comet_storm
+actions.aoe+=/ice_nova
+actions.aoe+=/blizzard,interrupt_if=cooldown.frozen_orb.up|(talent.frost_bomb.enabled&buff.fingers_of_frost.react>=2)
+
+# Single target sequence
+actions.single_target=call_action_list,name=cooldowns,if=!talent.prismatic_crystal.enabled|(cooldown.prismatic_crystal.remains>15&!legendary_ring.has_cooldown)
+# Safeguards against losing FoF and BF to buff expiry
+actions.single_target+=/ice_lance,if=buff.fingers_of_frost.react&(buff.fingers_of_frost.remains<action.frostbolt.execute_time|buff.fingers_of_frost.remains<buff.fingers_of_frost.react*gcd.max)
+actions.single_target+=/frostfire_bolt,if=buff.brain_freeze.react&(buff.brain_freeze.remains<action.frostbolt.execute_time|buff.brain_freeze.remains<buff.brain_freeze.react*gcd.max)
+# Frozen Orb usage without Prismatic Crystal
+actions.single_target+=/frost_bomb,if=(!talent.prismatic_crystal.enabled|legendary_ring.cooldown.remains>45)&cooldown.frozen_orb.remains<gcd.max&debuff.frost_bomb.remains<10
+actions.single_target+=/frozen_orb,if=(!talent.prismatic_crystal.enabled|legendary_ring.cooldown.remains>45)&buff.fingers_of_frost.stack<2&cooldown.icy_veins.remains>45-20*talent.thermal_void.enabled
+# Single target routine; Rough summary: IN2 > FoF2 > CmS > IN > BF > FoF
+actions.single_target+=/ice_lance,if=buff.fingers_of_frost.react&buff.shatterlance.up
+actions.single_target+=/frost_bomb,if=remains<action.ice_lance.travel_time+t18_class_trinket*action.frostbolt.execute_time&(buff.fingers_of_frost.react>=(2+set_bonus.tier18_4pc*2)%(1+t18_class_trinket)|(buff.fingers_of_frost.react&(talent.thermal_void.enabled|buff.fingers_of_frost.remains<gcd.max*(buff.fingers_of_frost.react+1))))
+actions.single_target+=/ice_nova,if=target.time_to_die<10|(charges=2&(!talent.prismatic_crystal.enabled|!cooldown.prismatic_crystal.up))
+actions.single_target+=/ice_lance,if=!t18_class_trinket&(buff.fingers_of_frost.react>=2+set_bonus.tier18_4pc*2|(buff.fingers_of_frost.react>1+set_bonus.tier18_4pc&active_dot.frozen_orb))
+actions.single_target+=/comet_storm
+actions.single_target+=/ice_nova,if=(!talent.prismatic_crystal.enabled|(charges=1&cooldown.prismatic_crystal.remains>recharge_time&(buff.incanters_flow.stack>3|!talent.ice_nova.enabled)))&(buff.icy_veins.up|(charges=1&cooldown.icy_veins.remains>recharge_time))
+actions.single_target+=/frostfire_bolt,if=buff.brain_freeze.react
+actions.single_target+=/call_action_list,name=init_water_jet,if=pet.water_elemental.cooldown.water_jet.remains<=gcd.max*talent.frost_bomb.enabled&buff.fingers_of_frost.react<2+2*set_bonus.tier18_4pc&!active_dot.frozen_orb
+actions.single_target+=/frostbolt,if=t18_class_trinket&buff.fingers_of_frost.react&!buff.shatterlance.up
+actions.single_target+=/ice_lance,if=talent.frost_bomb.enabled&buff.fingers_of_frost.react&debuff.frost_bomb.remains>travel_time&(!talent.thermal_void.enabled|cooldown.icy_veins.remains>8)
+# Camp procs and spam Frostbolt while 4T17 buff is up
+actions.single_target+=/frostbolt,if=set_bonus.tier17_2pc&buff.ice_shard.up&!(talent.thermal_void.enabled&buff.icy_veins.up&buff.icy_veins.remains<10)
+actions.single_target+=/ice_lance,if=!talent.frost_bomb.enabled&buff.fingers_of_frost.react&(!talent.thermal_void.enabled|cooldown.icy_veins.remains>8)
+actions.single_target+=/frostbolt
+actions.single_target+=/ice_lance,moving=1
+
+head=flareeyed_hood,id=113868,bonus_id=42/562/565/567,gem_id=115813
+neck=gruuls_lip_ring,id=113872,bonus_id=42/562/565/567,gem_id=115813,enchant=gift_of_multistrike
+shoulders=arcanoshatter_mantle,id=115551,bonus_id=42/562/565/567,gem_id=115813
+back=runescribed_gronncloak,id=120078,bonus_id=42/562/565/567,gem_id=115813,enchant=gift_of_multistrike
+chest=arcanoshatter_robes,id=115550,bonus_id=42/562/565/567,gem_id=115813
+wrists=bracers_of_darkened_skies,id=119332,bonus_id=42/562/565/567,gem_id=115813
+hands=arcanoshatter_gloves,id=115552,bonus_id=42/562/565/567,gem_id=115813
+waist=deckhands_rope_belt,id=113967,bonus_id=42/562/565/567,gem_id=115813
+legs=arcanoshatter_leggings,id=115554,bonus_id=42/562/565/567,gem_id=115813
+feet=inferno_breath_sandals,id=113942,bonus_id=42/562/565/567,gem_id=115813
+finger1=epicenter_loop,id=113947,bonus_id=42/562/565/567,gem_id=115813,enchant=gift_of_multistrike
+finger2=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_multistrike
+trinket1=darmacs_unstable_talisman,id=113948,bonus_id=42/562/565/567,gem_id=115813
+trinket2=blackiron_micro_crucible,id=113984,bonus_id=42/562/565/567,gem_id=115813
+main_hand=fang_of_the_earth,id=113934,bonus_id=42/562/565/567,gem_id=115813,enchant=mark_of_the_frostwolf
+off_hand=enginestokers_lantern,id=113960,bonus_id=42/562/565/567,gem_id=115813
+
+# Gear Summary
+# gear_ilvl=706.56
+# gear_stamina=5014
+# gear_intellect=4208
+# gear_spell_power=1940
+# gear_crit_rating=1119
+# gear_haste_rating=750
+# gear_mastery_rating=778
+# gear_multistrike_rating=2283
+# gear_versatility_rating=463
+# gear_speed_rating=2080
+# gear_armor=943
+# set_bonus=tier17_2pc=1
+# set_bonus=tier17_4pc=1

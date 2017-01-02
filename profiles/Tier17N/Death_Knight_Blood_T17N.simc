@@ -1,0 +1,117 @@
+deathknight="Death_Knight_Blood_T17N"
+level=100
+race=tauren
+role=tank
+position=front
+talents=2013102
+spec=blood
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=greater_draenic_strength_flask
+actions.precombat+=/food,type=salty_squid_roll
+actions.precombat+=/blood_presence
+actions.precombat+=/horn_of_winter
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion,name=draenic_armor
+actions.precombat+=/bone_shield
+actions.precombat+=/army_of_the_dead
+
+# Executed every time the actor is available.
+
+actions=auto_attack
+actions+=/potion,name=draenic_armor,if=buff.potion.down&buff.blood_shield.down&!unholy&!frost
+# if=time>10
+actions+=/blood_fury
+# if=time>10
+actions+=/berserking
+# if=time>10
+actions+=/arcane_torrent
+actions+=/antimagic_shell
+actions+=/conversion,if=!buff.conversion.up&runic_power>50&health.pct<90
+actions+=/lichborne,if=health.pct<90
+actions+=/death_strike,if=incoming_damage_5s>=health.max*0.65
+actions+=/army_of_the_dead,if=buff.bone_shield.down&buff.dancing_rune_weapon.down&buff.icebound_fortitude.down&buff.vampiric_blood.down
+actions+=/bone_shield,if=buff.army_of_the_dead.down&buff.bone_shield.down&buff.dancing_rune_weapon.down&buff.icebound_fortitude.down&buff.vampiric_blood.down
+actions+=/vampiric_blood,if=health.pct<50
+actions+=/icebound_fortitude,if=health.pct<30&buff.army_of_the_dead.down&buff.dancing_rune_weapon.down&buff.bone_shield.down&buff.vampiric_blood.down
+actions+=/rune_tap,if=health.pct<50&buff.army_of_the_dead.down&buff.dancing_rune_weapon.down&buff.bone_shield.down&buff.vampiric_blood.down&buff.icebound_fortitude.down
+actions+=/dancing_rune_weapon,if=health.pct<80&buff.army_of_the_dead.down&buff.icebound_fortitude.down&buff.bone_shield.down&buff.vampiric_blood.down
+actions+=/death_pact,if=health.pct<50
+actions+=/outbreak,if=(!talent.necrotic_plague.enabled&disease.min_remains<8)|!disease.ticking
+actions+=/death_coil,if=runic_power>90
+actions+=/plague_strike,if=(!talent.necrotic_plague.enabled&!dot.blood_plague.ticking)|(talent.necrotic_plague.enabled&!dot.necrotic_plague.ticking)
+actions+=/icy_touch,if=(!talent.necrotic_plague.enabled&!dot.frost_fever.ticking)|(talent.necrotic_plague.enabled&!dot.necrotic_plague.ticking)
+actions+=/defile
+actions+=/plague_leech,if=((!blood&!unholy)|(!blood&!frost)|(!unholy&!frost))&cooldown.outbreak.remains<=gcd
+actions+=/call_action_list,name=bt,if=talent.blood_tap.enabled
+actions+=/call_action_list,name=re,if=talent.runic_empowerment.enabled
+actions+=/call_action_list,name=rc,if=talent.runic_corruption.enabled
+actions+=/call_action_list,name=nrt,if=!talent.blood_tap.enabled&!talent.runic_empowerment.enabled&!talent.runic_corruption.enabled
+actions+=/defile,if=buff.crimson_scourge.react
+actions+=/death_and_decay,if=buff.crimson_scourge.react
+actions+=/blood_boil,if=buff.crimson_scourge.react
+actions+=/death_coil
+actions+=/empower_rune_weapon,if=!blood&!unholy&!frost
+
+actions.bt=death_strike,if=unholy=2|frost=2
+actions.bt+=/blood_tap,if=buff.blood_charge.stack>=5&!blood
+actions.bt+=/death_strike,if=buff.blood_charge.stack>=10&unholy&frost
+actions.bt+=/blood_tap,if=buff.blood_charge.stack>=10&!unholy&!frost
+actions.bt+=/blood_tap,if=buff.blood_charge.stack>=5&(!unholy|!frost)
+actions.bt+=/blood_tap,if=buff.blood_charge.stack>=5&blood.death&!unholy&!frost
+actions.bt+=/death_coil,if=runic_power>70
+actions.bt+=/soul_reaper,if=target.health.pct-3*(target.health.pct%target.time_to_die)<=35&(blood=2|(blood&!blood.death))
+actions.bt+=/blood_boil,if=blood=2|(blood&!blood.death)
+
+actions.re=death_strike,if=unholy&frost
+actions.re+=/death_coil,if=runic_power>70
+actions.re+=/soul_reaper,if=target.health.pct-3*(target.health.pct%target.time_to_die)<=35&blood=2
+actions.re+=/blood_boil,if=blood=2
+
+actions.rc=death_strike,if=unholy=2|frost=2
+actions.rc+=/death_coil,if=runic_power>70
+actions.rc+=/soul_reaper,if=target.health.pct-3*(target.health.pct%target.time_to_die)<=35&blood>=1
+actions.rc+=/blood_boil,if=blood=2
+
+actions.nrt=death_strike,if=unholy=2|frost=2
+actions.nrt+=/death_coil,if=runic_power>70
+actions.nrt+=/soul_reaper,if=target.health.pct-3*(target.health.pct%target.time_to_die)<=35&blood>=1
+actions.nrt+=/blood_boil,if=blood>=1
+
+head=ogreskull_boneplate_greathelm,id=115539
+neck=gluttons_kerchief,id=113882,enchant=gift_of_multistrike
+shoulders=unstable_slag_shoulderplates,id=113884
+back=gronnstitched_greatcloak,id=113873,enchant=gift_of_multistrike
+chest=ogreskull_boneplate_breastplate,id=115537
+wrists=bracers_of_visceral_force,id=119331
+hands=ogreskull_boneplate_gauntlets,id=115538
+waist=ironcrushers_collar,id=113950
+legs=ogreskull_boneplate_greaves,id=115535
+feet=sabatons_of_fractal_earth,id=113936
+finger1=timeless_solium_band_of_the_bulwark,id=118298,enchant=gift_of_multistrike
+finger2=seal_of_unquenchable_flame,id=113922,enchant=gift_of_multistrike
+trinket1=pillar_of_the_earth,id=113650
+trinket2=petrified_flesheating_spore,id=113663
+main_hand=kagrazs_burning_blade,id=113913,enchant=rune_of_the_stoneskin_gargoyle
+
+# Gear Summary
+# gear_ilvl=668.67
+# gear_strength=2390
+# gear_stamina=4600
+# gear_crit_rating=283
+# gear_haste_rating=568
+# gear_mastery_rating=421
+# gear_multistrike_rating=1353
+# gear_versatility_rating=523
+# gear_armor=2082
+# gear_bonus_armor=523
+# set_bonus=tier17_2pc=1
+# set_bonus=tier17_4pc=1

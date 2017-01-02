@@ -718,10 +718,20 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask,
 
     if ( s.has_direct_amount_results() || s.has_tick_amount_results() )
     {
+<<<<<<< HEAD
       highchart::time_series_t ts( highchart::build_id( s ), *s.player->sim );
       chart::generate_stats_timeline( ts, s );
       os << ts.to_target_div();
       s.player->sim->add_chart_data( ts );
+=======
+      if ( s.has_direct_amount_results() || s.has_tick_amount_results() )
+      {
+        highchart::time_series_t ts( highchart::build_id( s ), *s.player -> sim );
+        chart::generate_stats_timeline( ts, s );
+        os << ts.to_target_div();
+        s.player -> sim -> add_chart_data( ts );
+      }
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
     }
 
     os << "<div class=\"clear\">&#160;</div>\n";
@@ -2469,8 +2479,17 @@ void print_html_player_resources( report::sc_html_stream& os, const player_t& p,
           *p.sim );
       if ( chart::generate_gains( pc, p, r ) )
       {
+<<<<<<< HEAD
         os << pc.to_target_div();
         p.sim->add_chart_data( pc );
+=======
+        highchart::pie_chart_t pc( highchart::build_id( p, std::string("resource_gain_") + util::resource_type_string( r ) ), *p.sim );
+        if ( chart::generate_gains( pc, p, r ) )
+        {
+          os << pc.to_target_div();
+          p.sim -> add_chart_data( pc );
+        }
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
       }
     }
   }
@@ -2491,6 +2510,8 @@ void print_html_player_resources( report::sc_html_stream& os, const player_t& p,
     for ( size_t i = 1; i < timeline.timeline.data().size(); i++ )
     {
       if ( ival == std::numeric_limits<double>::min() )
+<<<<<<< HEAD
+=======
       {
         ival = timeline.timeline.data()[ i ];
       }
@@ -2505,7 +2526,193 @@ void print_html_player_resources( report::sc_html_stream& os, const player_t& p,
       continue;
     }
 
+    if ( ! p.sim -> enable_highcharts )
+    {
+      if ( ! ri.timeline_resource_chart[ timeline.type ].empty() )
+      {
+        os << "<img src=\"" << ri.timeline_resource_chart[ timeline.type ] << "\" alt=\"Resource Timeline Chart\" />\n";
+      }
+    }
+    else
+    {
+      std::string resource_str = util::resource_type_string( timeline.type );
+
+      highchart::time_series_t ts( highchart::build_id( p, "resource_" + resource_str ), *p.sim );
+      chart::generate_actor_timeline( ts, p, resource_str, color::resource_color( timeline.type ), timeline.timeline );
+      ts.set_mean( timeline.timeline.mean() );
+
+      os << ts.to_target_div();
+      p.sim -> add_chart_data( ts );
+    }
+  }
+  if ( p.primary_role() == ROLE_TANK &&  ! p.is_enemy() ) // Experimental, restrict to tanks for now
+  {
+    if ( ! p.sim -> enable_highcharts )
+    {
+      if ( ! ri.health_change_chart.empty() )
+        os << "<img src=\"" << ri.health_change_chart << "\" alt=\"Health Change Timeline Chart\" />\n";
+      if ( ! ri.health_change_sliding_chart.empty() )
+        os << "<img src=\"" << ri.health_change_sliding_chart << "\" alt=\"Health Change Sliding Timeline Chart\" />\n";
+
+      if ( ! p.is_enemy() )
+      {
+        // Tmp Debug Visualization
+        histogram tmi_hist;
+        tmi_hist.create_histogram( p.collected_data.theck_meloree_index, 50 );
+        std::string dist_chart = chart::distribution( tmi_hist.data(), "TMI", p.collected_data.theck_meloree_index.mean(), tmi_hist.min(), tmi_hist.max() );
+        os << "<img src=\"" << dist_chart << "\" alt=\"Theck meloree distribution Chart\" />\n";
+      }
+    }
+    else
+    {
+      highchart::time_series_t chart( highchart::build_id( p, "health_change" ), *p.sim );
+      chart::generate_actor_timeline( chart, p, "Health Change", color::resource_color( RESOURCE_HEALTH ), p.collected_data.health_changes.merged_timeline );
+      chart.set_mean( p.collected_data.health_changes.merged_timeline.mean() );
+
+      os << chart.to_target_div();
+      p.sim -> add_chart_data( chart );
+
+      sc_timeline_t sliding_average_tl;
+      p.collected_data.health_changes.merged_timeline.build_sliding_average_timeline( sliding_average_tl, 6 );
+      highchart::time_series_t chart2( highchart::build_id( p, "health_change_ma" ), *p.sim );
+      chart::generate_actor_timeline( chart2, p, "Health Change (moving average, 6s window)", color::resource_color( RESOURCE_HEALTH ), sliding_average_tl );
+      chart2.set_mean( sliding_average_tl.mean() );
+
+      os << chart2.to_target_div();
+      p.sim -> add_chart_data( chart2 );
+
+      // Tmp Debug Visualization
+      histogram tmi_hist;
+      tmi_hist.create_histogram( p.collected_data.theck_meloree_index, 50 );
+      highchart::histogram_chart_t tmi_chart( highchart::build_id( p, "tmi_dist" ), *p.sim );
+      if ( chart::generate_distribution( tmi_chart, &p, tmi_hist.data(), "TMI", p.collected_data.theck_meloree_index.mean(), tmi_hist.min(), tmi_hist.max() ) )
+      {
+        os << tmi_chart.to_target_div();
+        p.sim -> add_chart_data( tmi_chart );
+      }
+    }
+  }
+  os << "</div>\n";
+  os << "<div class=\"clear\"></div>\n";
+
+  os << "</div>\n";
+  os << "</div>\n";
+}
+
+// print_html_player_charts =================================================
+
+void print_html_player_charts( report::sc_html_stream& os, const player_t& p, const player_processed_report_information_t& ri )
+{
+  const sim_t& sim = *(p.sim);
+  size_t num_players = sim.players_by_name.size();
+
+  os << "<div class=\"player-section\">\n"
+     << "<h3 class=\"toggle open\">Charts</h3>\n"
+     << "<div class=\"toggle-content\">\n"
+     << "<div class=\"charts charts-left\">\n";
+
+  if ( ! p.sim -> enable_highcharts )
+  {
+    if ( ! ri.action_dpet_chart.empty() )
+    {
+      std::string chart_str;
+      if ( num_players == 1 )
+        chart_str = "<img src=\"" + ri.action_dpet_chart + "\" alt=\"Action DPET Chart\" />\n";
+      else
+        chart_str = "<span class=\"chart-action-dpet\" title=\"Action DPET Chart\">" + ri.action_dpet_chart + "</span>\n";
+      os << chart_str;
+    }
+
+    if ( ! ri.action_dmg_chart.empty() )
+    {
+      std::string chart_str;
+      if ( num_players == 1 )
+        chart_str = "<img src=\"" + ri.action_dmg_chart + "\" alt=\"Action Damage Chart\" />\n";
+      else
+        chart_str = "<span class=\"chart-action-dmg\" title=\"Action Damage Chart\">" + ri.action_dmg_chart + "</span>\n";
+      os << chart_str;
+    }
+
+    if ( ! ri.scaling_dps_chart.empty() )
+    {
+      std::string chart_str;
+      if ( num_players == 1 )
+        chart_str = "<img src=\"" + ri.scaling_dps_chart + "\" alt=\"Scaling DPS Chart\" />\n";
+      else
+        chart_str = "<span class=\"chart-scaling-dps\" title=\"Scaling DPS Chart\">" + ri.scaling_dps_chart + "</span>\n";
+      os << chart_str;
+    }
+
+    sc_timeline_t timeline_dps_taken;
+    p.collected_data.timeline_dmg_taken.build_derivative_timeline( timeline_dps_taken );
+    std::string timeline_dps_takenchart = chart::timeline( timeline_dps_taken.data(), "dps_taken", timeline_dps_taken.mean(), "FDD017" );
+    if ( ! timeline_dps_takenchart.empty() )
+    {
+      os << "<img src=\"" << timeline_dps_takenchart << "\" alt=\"DPS Taken Timeline Chart\" />\n";
+    }
+  }
+  else
+  {
+    if ( ! p.stats_list.empty() )
+    {
+      highchart::bar_chart_t bc( highchart::build_id( p, "dpet" ), *p.sim );
+      if ( chart::generate_action_dpet( bc, p ) )
+      {
+        os << bc.to_target_div();
+        p.sim -> add_chart_data( bc );
+      }
+
+      highchart::pie_chart_t damage_pie( highchart::build_id( p, "dps_sources" ), *p.sim );
+      if ( chart::generate_damage_stats_sources( damage_pie, p ) )
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
+      {
+        ival = timeline.timeline.data()[ i ];
+      }
+<<<<<<< HEAD
+      else if ( ival != timeline.timeline.data()[ i ] )
+=======
+
+      highchart::pie_chart_t heal_pie( highchart::build_id( p, "hps_sources" ), *p.sim );
+      if ( chart::generate_heal_stats_sources( heal_pie, p ) )
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
+      {
+        static_resource = false;
+      }
+    }
+
+<<<<<<< HEAD
+    if ( static_resource )
+=======
+    highchart::chart_t scaling_plot( highchart::build_id( p, "scaling_plot" ), *p.sim );
+    if ( chart::generate_scaling_plot( scaling_plot, p, p.sim -> scaling -> scaling_metric ) )
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
+    {
+      continue;
+    }
+
+<<<<<<< HEAD
     std::string resource_str = util::resource_type_string( timeline.type );
+=======
+    if ( p.collected_data.timeline_dmg_taken.mean() > 0 )
+    {
+      highchart::time_series_t dps_taken( highchart::build_id( p, "dps_taken" ), *p.sim );
+      sc_timeline_t timeline_dps_taken;
+      p.collected_data.timeline_dmg_taken.build_derivative_timeline( timeline_dps_taken );
+      dps_taken.set_yaxis_title( "Damage taken per second" );
+      dps_taken.set_title( p.name_str + " Damage taken per second" );
+      dps_taken.add_simple_series( "area", "#FDD017", "DPS taken", timeline_dps_taken.data() );
+      dps_taken.set_mean( timeline_dps_taken.mean() );
+
+      if ( p.sim -> player_no_pet_list.size() > 1 )
+      {
+        dps_taken.set_toggle_id( "player" + util::to_string( p.index ) + "toggle" );
+      }
+
+      os << dps_taken.to_target_div();
+      p.sim -> add_chart_data( dps_taken );
+    }
+  }
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
 
     highchart::time_series_t ts(
         highchart::build_id( p, "resource_" + resource_str ), *p.sim );
@@ -2520,6 +2727,7 @@ void print_html_player_resources( report::sc_html_stream& os, const player_t& p,
   if ( p.primary_role() == ROLE_TANK &&
        !p.is_enemy() )  // Experimental, restrict to tanks for now
   {
+<<<<<<< HEAD
     highchart::time_series_t chart( highchart::build_id( p, "health_change" ),
                                     *p.sim );
     chart::generate_actor_timeline(
@@ -2555,6 +2763,40 @@ void print_html_player_resources( report::sc_html_stream& os, const player_t& p,
     {
       os << tmi_chart.to_target_div();
       p.sim->add_chart_data( tmi_chart );
+=======
+    for ( const auto& reforge_dps_chart : ri.reforge_dps_charts )
+    {
+      if ( ! reforge_dps_chart.second.empty() )
+      {
+        std::string chart_str;
+        if ( reforge_dps_chart.first == 2 )
+        {
+          if ( reforge_dps_chart.second.length() < 2000 )
+          {
+            if ( num_players == 1 )
+              chart_str = "<img src=\"" + reforge_dps_chart.second + "\" alt=\"Reforge DPS Chart\" />\n";
+            else
+              chart_str = "<span class=\"chart-reforge-dps\" title=\"Reforge DPS Chart\">" + reforge_dps_chart.second + "</span>\n";
+          }
+          else
+            os << "<p> Reforge Chart: Can't display charts with more than 2000 characters.</p>\n";
+        }
+        else
+        {
+          if ( true )
+            chart_str = "" + reforge_dps_chart.second;
+          else
+          {
+            if ( num_players == 1 )
+              chart_str = "<iframe>" + reforge_dps_chart.second + "</iframe>\n";
+            else
+              chart_str = "<span class=\"chart-reforge-dps\" title=\"Reforge DPS Chart\">" + reforge_dps_chart.second + "</span>\n";
+          }
+        }
+        if ( ! chart_str.empty() )
+          os << chart_str;
+      }
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
     }
   }
   os << "</div>\n";
@@ -2599,6 +2841,25 @@ void print_html_player_charts( report::sc_html_stream& os, const player_t& p,
       p.sim->add_chart_data( heal_pie );
     }
   }
+<<<<<<< HEAD
+=======
+  else
+  {
+    if ( p.collected_data.timeline_dmg.mean() > 0 )
+    {
+      highchart::time_series_t dps( highchart::build_id( p, "dps" ), *p.sim );
+      sc_timeline_t timeline_dps;
+      p.collected_data.timeline_dmg.build_derivative_timeline( timeline_dps );
+      dps.set_yaxis_title( "Damage per Second" );
+      dps.set_title( p.name_str + " Damage per Second" );
+      dps.add_simple_series( "area", color::class_color( p.type ).str(), "DPS", timeline_dps.data() );
+      dps.set_mean( timeline_dps.mean() );
+
+      if ( p.sim -> player_no_pet_list.size() > 1 )
+      {
+        dps.set_toggle_id( "player" + util::to_string( p.index ) + "toggle" );
+      }
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
 
   highchart::chart_t scaling_plot( highchart::build_id( p, "scaling_plot" ),
                                    *p.sim );
@@ -2609,6 +2870,7 @@ void print_html_player_charts( report::sc_html_stream& os, const player_t& p,
     p.sim->add_chart_data( scaling_plot );
   }
 
+<<<<<<< HEAD
   if ( p.collected_data.timeline_dmg_taken.mean() > 0 )
   {
     highchart::time_series_t dps_taken( highchart::build_id( p, "dps_taken" ),
@@ -2648,6 +2910,45 @@ void print_html_player_charts( report::sc_html_stream& os, const player_t& p,
     os << ac.to_target_div();
     p.sim->add_chart_data( ac );
   }
+=======
+    size_t i = 0;
+    for ( const auto& plot_pair : p.reforge_plot_data ) {
+      std::string chart_name = "reforge_plot_";
+      chart_name += std::to_string(i);
+      highchart::chart_t ac( highchart::build_id( p, chart_name ), *p.sim );
+      if ( chart::generate_reforge_plot( ac, p, plot_pair ) )
+      {
+        os << ac.to_target_div();
+        p.sim -> add_chart_data( ac );
+      }
+      ++i;
+    }
+
+    scaling_metric_data_t scaling_data = p.scaling_for_metric( p.sim -> scaling -> scaling_metric );
+    std::string scale_factor_id = "scale_factor_";
+    scale_factor_id += util::scale_metric_type_abbrev( scaling_data.metric );
+    highchart::bar_chart_t bc( highchart::build_id( p, scale_factor_id ), *p.sim );
+    if ( chart::generate_scale_factors( bc, p, scaling_data.metric ) )
+    {
+      os << bc.to_target_div();
+      p.sim -> add_chart_data( bc );
+    }
+
+    highchart::time_series_t ts( highchart::build_id( p, "dps" ), *p.sim );
+    if ( chart::generate_actor_dps_series( ts, p ) )
+    {
+      os << ts.to_target_div();
+      p.sim -> add_chart_data( ts );
+    }
+
+    if ( p.collected_data.resolve_timeline.merged_timeline.mean() > 0 )
+    {
+      highchart::time_series_t resolve( highchart::build_id( p, "resolve" ), *p.sim );
+      if ( p.sim -> player_no_pet_list.size() > 1 )
+      {
+        resolve.set_toggle_id( "player" + util::to_string( p.index ) + "toggle" );
+      }
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
 
   scaling_metric_data_t scaling_data =
       p.scaling_for_metric( p.sim->scaling->scaling_metric );
@@ -2673,6 +2974,7 @@ void print_html_player_charts( report::sc_html_stream& os, const player_t& p,
     p.sim->add_chart_data( chart );
   }
 
+<<<<<<< HEAD
   if ( p.collected_data.hps.mean() > 0 || p.collected_data.aps.mean() > 0 )
   {
     highchart::histogram_chart_t chart( highchart::build_id( p, "hps_dist" ),
@@ -2681,12 +2983,37 @@ void print_html_player_charts( report::sc_html_stream& os, const player_t& p,
              chart, &p, p.collected_data.hps.distribution, p.name_str + " HPS",
              p.collected_data.hps.mean(), p.collected_data.hps.min(),
              p.collected_data.hps.max() ) )
+=======
+    highchart::histogram_chart_t chart( highchart::build_id( p, "dps_dist" ), *p.sim );
+    if ( chart::generate_distribution( chart, &p, p.collected_data.dps.distribution, p.name_str + " DPS",
+        p.collected_data.dps.mean(),
+        p.collected_data.dps.min(),
+        p.collected_data.dps.max() ) )
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
     {
       os << chart.to_target_div();
+<<<<<<< HEAD
       p.sim->add_chart_data( chart );
+=======
+      p.sim -> add_chart_data( chart );
+    }
+
+    if ( p.collected_data.hps.mean() > 0 || p.collected_data.aps.mean() > 0 )
+    {
+      highchart::histogram_chart_t chart( highchart::build_id( p, "hps_dist" ), *p.sim );
+      if ( chart::generate_distribution( chart, &p, p.collected_data.hps.distribution, p.name_str + " HPS",
+          p.collected_data.hps.mean(),
+          p.collected_data.hps.min(),
+          p.collected_data.hps.max() ) )
+      {
+        os << chart.to_target_div();
+        p.sim -> add_chart_data( chart );
+      }
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
     }
   }
 
+<<<<<<< HEAD
   highchart::pie_chart_t time_spent( highchart::build_id( p, "time_spent" ),
                                      *p.sim );
   if ( chart::generate_spent_time( time_spent, p ) )
@@ -2694,12 +3021,21 @@ void print_html_player_charts( report::sc_html_stream& os, const player_t& p,
     os << time_spent.to_target_div();
     p.sim->add_chart_data( time_spent );
   }
+=======
+    highchart::pie_chart_t time_spent( highchart::build_id( p, "time_spent" ), *p.sim );
+    if ( chart::generate_spent_time( time_spent, p ) )
+    {
+      os << time_spent.to_target_div();
+      p.sim -> add_chart_data( time_spent );
+    }
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
 
   for ( const auto& timeline : p.collected_data.stat_timelines )
   {
     if ( timeline.timeline.mean() == 0 )
       continue;
 
+<<<<<<< HEAD
     std::string stat_str = util::stat_type_string( timeline.type );
     highchart::time_series_t ts( highchart::build_id( p, "stat_" + stat_str ),
                                  *p.sim );
@@ -2707,6 +3043,12 @@ void print_html_player_charts( report::sc_html_stream& os, const player_t& p,
                                     color::stat_color( timeline.type ),
                                     timeline.timeline );
     ts.set_mean( timeline.timeline.mean() );
+=======
+      std::string stat_str = util::stat_type_string( timeline.type );
+      highchart::time_series_t ts( highchart::build_id( p, "stat_" + stat_str ), *p.sim );
+      chart::generate_actor_timeline( ts, p, stat_str, color::stat_color( timeline.type ), timeline.timeline );
+      ts.set_mean( timeline.timeline.mean() );
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
 
     os << ts.to_target_div();
     p.sim->add_chart_data( ts );
@@ -2881,9 +3223,18 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b,
       }
       else
       {
+<<<<<<< HEAD
         buff_uptime.set_xaxis_max(
             b.player->collected_data.fight_length.max() );
       }
+=======
+      highchart::time_series_t buff_uptime( highchart::build_id( b, "uptime" ), *b.sim );
+      buff_uptime.set_yaxis_title( "Average uptime" );
+      buff_uptime.set_title( b.name_str + " Uptime" );
+      buff_uptime.add_simple_series( "area", "#FF0000", "Uptime", b.uptime_array.data() );
+      buff_uptime.set_mean( b.uptime_array.mean() );
+      buff_uptime.set_xaxis_max( b.sim -> simulation_length.max() );
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
 
       os << "<tr><td colspan=\"2\" class=\"filler\">\n";
       os << buff_uptime.to_string();
@@ -4132,8 +4483,21 @@ void print_html_player_deaths( report::sc_html_stream& os, const player_t& p,
              p.name_str + " Death", p.collected_data.deaths.mean(),
              p.collected_data.deaths.min(), p.collected_data.deaths.max() ) )
     {
+<<<<<<< HEAD
       os << chart.to_target_div();
       p.sim->add_chart_data( chart );
+=======
+      highchart::histogram_chart_t chart( highchart::build_id( p, "death_dist" ), *p.sim );
+      if ( chart::generate_distribution( chart, &p,
+          p.collected_data.deaths.distribution, p.name_str + " Death",
+          p.collected_data.deaths.mean(),
+          p.collected_data.deaths.min(),
+          p.collected_data.deaths.max() ) )
+      {
+        os << chart.to_target_div();
+        p.sim -> add_chart_data( chart );
+      }
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
     }
 
     os << "</div>\n"

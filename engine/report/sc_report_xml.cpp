@@ -1012,6 +1012,7 @@ void print_xml_player_charts( xml_writer_t& writer, player_t* p )
     }
   }
 
+<<<<<<< HEAD
   highchart::chart_t scaling_plot( highchart::build_id( *p, "scaling_plot" ),
                                    p->sim );
   if ( chart::generate_scaling_plot( scaling_plot, *p,
@@ -1022,6 +1023,18 @@ void print_xml_player_charts( xml_writer_t& writer, player_t* p )
     writer.print_text( scaling_plot.to_xml() );
     writer.end_tag( "chart" );
   }
+=======
+    for ( const auto& reforge_dps_chart : ri.reforge_dps_charts )
+    {
+      if ( ! reforge_dps_chart.second.empty() )
+      {
+        writer.begin_tag( "chart" );
+        writer.print_attribute( "type", "reforge_dps" );
+        writer.print_attribute_unescaped( "href", reforge_dps_chart.second );
+        writer.end_tag( "chart" );
+      }
+    }
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
 
   highchart::chart_t reforge( highchart::build_id( *p, "reforge_plot" ),
                               p->sim );
@@ -1072,6 +1085,7 @@ void print_xml_player_charts( xml_writer_t& writer, player_t* p )
     writer.end_tag( "chart" );
   }
   {
+<<<<<<< HEAD
     highchart::histogram_chart_t chart( highchart::build_id( *p, "hps_dist" ),
                                         p->sim );
     chart::generate_distribution(
@@ -1083,6 +1097,104 @@ void print_xml_player_charts( xml_writer_t& writer, player_t* p )
     writer.print_text( chart.to_xml() );
     writer.end_tag( "chart" );
   }
+=======
+    if ( ! p -> stats_list.empty() )
+    {
+      highchart::bar_chart_t bc( highchart::build_id( *p, "dpet" ), p -> sim );
+      if ( chart::generate_action_dpet( bc, *p ) )
+      {
+        writer.begin_tag( "chart" );
+        writer.print_attribute( "type", "dpet" );
+        writer.print_text( bc.to_xml() );
+        writer.end_tag( "chart" );
+      }
+
+      highchart::pie_chart_t pc( highchart::build_id( *p, "dps_sources" ), p -> sim );
+      if ( chart::generate_damage_stats_sources( pc, *p ) )
+      {
+        writer.begin_tag( "chart" );
+        writer.print_attribute( "type", "dps_sources" );
+        writer.print_text( pc.to_xml() );
+        writer.end_tag( "chart" );
+      }
+
+      highchart::pie_chart_t pc2( highchart::build_id( *p, "hps_sources" ), p -> sim );
+      if ( chart::generate_heal_stats_sources( pc2, *p ) )
+      {
+        writer.begin_tag( "chart" );
+        writer.print_attribute( "type", "hps_sources" );
+        writer.print_text( pc2.to_xml() );
+        writer.end_tag( "chart" );
+      }
+    }
+
+    highchart::chart_t scaling_plot( highchart::build_id( *p, "scaling_plot" ), p -> sim );
+    if ( chart::generate_scaling_plot( scaling_plot, *p, p -> sim -> scaling -> scaling_metric ) )
+    {
+      writer.begin_tag( "chart" );
+      writer.print_attribute( "type", "scaling_dps" );
+      writer.print_text( scaling_plot.to_xml() );
+      writer.end_tag( "chart" );
+    }
+
+    for ( const auto& plot_pair : p->reforge_plot_data ) {
+      highchart::chart_t reforge( highchart::build_id( *p, "reforge_plot" ), p -> sim );
+      if ( chart::generate_reforge_plot( reforge, *p, plot_pair ) )
+      {
+        writer.begin_tag( "chart" );
+        writer.print_attribute( "type", "reforge_dps" );
+        writer.print_text( reforge.to_xml() );
+        writer.end_tag( "chart" );
+      }
+    }
+
+    scaling_metric_data_t scaling_data = p -> scaling_for_metric( p -> sim -> scaling -> scaling_metric );
+    std::string scale_factor_id = "scale_factor_";
+    scale_factor_id += util::scale_metric_type_abbrev( scaling_data.metric );
+    highchart::bar_chart_t bc( highchart::build_id( *p, scale_factor_id ), p -> sim );
+    if ( chart::generate_scale_factors( bc, *p, scaling_data.metric ) )
+    {
+      writer.begin_tag( "chart" );
+      writer.print_attribute( "type", "scale_factors" );
+      writer.print_text( bc.to_xml() );
+      writer.end_tag( "chart" );
+    }
+
+    if ( p -> collected_data.dps.mean() > 0 )
+    {
+      highchart::time_series_t ts( highchart::build_id( *p, "dps" ), p -> sim );
+      if ( chart::generate_actor_dps_series( ts, *p ) )
+      {
+        writer.begin_tag( "chart" );
+        writer.print_attribute( "type", "timeline_dps" );
+        writer.print_text( ts.to_xml() );
+        writer.end_tag( "chart" );
+      }
+    }
+
+    {
+      highchart::histogram_chart_t chart( highchart::build_id( *p, "dps_dist" ), p -> sim );
+      chart::generate_distribution( chart, p, p -> collected_data.dps.distribution, p -> name_str + " DPS",
+          p -> collected_data.dps.mean(),
+          p -> collected_data.dps.min(),
+          p -> collected_data.dps.max() );
+      writer.begin_tag( "chart" );
+      writer.print_attribute( "type", "distribution_dps" );
+      writer.print_text( chart.to_xml() );
+      writer.end_tag( "chart" );
+    }
+    {
+      highchart::histogram_chart_t chart( highchart::build_id( *p, "hps_dist" ), p -> sim );
+      chart::generate_distribution( chart, p, p -> collected_data.hps.distribution, p -> name_str + " HPS",
+          p -> collected_data.hps.mean(),
+          p -> collected_data.hps.min(),
+          p -> collected_data.hps.max() );
+      writer.begin_tag( "chart" );
+      writer.print_attribute( "type", "distribution_hps" );
+      writer.print_text( chart.to_xml() );
+      writer.end_tag( "chart" );
+    }
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
 
   highchart::pie_chart_t time_spent( highchart::build_id( *p, "time_spent" ),
                                      p->sim );
@@ -1498,6 +1610,7 @@ void print_xml_player_action_definitions( xml_writer_t& writer, player_t* p )
   writer.end_tag( "action_definitions" );
 }
 
+<<<<<<< HEAD
 }  // UNNAMED NAMESPACE ====================================================
 
 namespace report
@@ -1519,6 +1632,10 @@ void print_xml( sim_t* sim )
     sim->errorf( "Unable to open xml file '%s'\n", sim->xml_file_str.c_str() );
     return;
   }
+=======
+void print_xml_report( xml_writer_t& writer, sim_t* sim )
+{
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
 
   Timer t( "XML report" );
   writer.init_document( sim->xml_stylesheet_file_str );
@@ -1555,4 +1672,39 @@ void print_xml( sim_t* sim )
   writer.end_tag( "simulationcraft" );
 }
 
+<<<<<<< HEAD
 }  // END report NAMESPACE
+=======
+} // UNNAMED NAMESPACE ====================================================
+
+
+namespace report {
+
+void print_xml( sim_t* sim )
+{
+  if ( sim->simulation_length.mean() == 0 )
+    return;
+
+  if ( sim->xml_file_str.empty() )
+    return;
+
+  xml_writer_t writer( sim -> xml_file_str );
+  if ( !writer.ready() )
+  {
+    sim -> errorf( "Unable to open xml file '%s'\n", sim -> xml_file_str.c_str() );
+    return;
+  }
+
+  try
+  {
+    Timer t("xml report");
+    print_xml_report( writer, sim );
+  } catch ( const std::exception& e )
+  {
+    sim -> errorf( "Failed to print xml output! %s", e.what() );
+  }
+}
+
+} // END report NAMESPACE
+
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c

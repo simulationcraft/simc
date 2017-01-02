@@ -7359,11 +7359,14 @@ struct pool_resource_t : public action_t
     }
   }
 
+<<<<<<< HEAD
   ~pool_resource_t()
   {
     delete amount_expr;
   }
 
+=======
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
   bool init_finished() override
   {
     if ( ! action_t::init_finished() )
@@ -10932,6 +10935,10 @@ void player_collected_data_t::analyze( const player_t& p )
   dpse.analyze();
   dmg_taken.analyze();
   dtps.analyze();
+<<<<<<< HEAD
+=======
+  timeline_dmg_taken.adjust( *p.sim );
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
   // Heal
   heal.analyze();
   compound_heal.analyze();
@@ -10939,6 +10946,10 @@ void player_collected_data_t::analyze( const player_t& p )
   hpse.analyze();
   heal_taken.analyze();
   htps.analyze();
+<<<<<<< HEAD
+=======
+  timeline_healing_taken.adjust( *p.sim );
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
   // Absorb
   absorb.analyze();
   compound_absorb.analyze();
