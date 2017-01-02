@@ -3625,25 +3625,23 @@ void unique_gear::register_hotfixes_x7()
     .modifier( 1.65 )
     .verification_value( 0.92 );
 
-  /*
-  hotfix::register_spell( "Mark of the Hidden Satyr", "2016-12-31", "7.1.5 removed max scaling level.", 191259 )
-    .field( "max_scaling_level" )
-    .operation( hotfix::HOTFIX_SET )
-    .modifier( 120 )
-    .verification_value( 0 );
-
   hotfix::register_effect( "Mark of the Hidden Satyr", "2016-12-31", "7.1.5 removed base value.", 280531 )
     .field( "base_value" )
     .operation( hotfix::HOTFIX_SET )
     .modifier( 271 )
-    .verification_value( 0 );
+    .verification_value( -1 );
 
-  hotfix::register_effect( "Mark of the Hidden Satyr", "2016-12-31", "7.1.5 removed m_avg.", 280531 )
-    .field( "m_avg" )
+  hotfix::register_effect( "Mark of the Hidden Satyr", "2016-12-31-2", "7.1.5 removed damage information.", 280531 )
+    .field( "average" )
     .operation( hotfix::HOTFIX_SET )
     .modifier( 29.13479 )
     .verification_value( 0 );
-  */
+
+  hotfix::register_effect( "Mark of the Hidden Satyr", "2016-12-31-3", "7.1.5 removed damage information.", 280531 )
+    .field( "delta" )
+    .operation( hotfix::HOTFIX_SET )
+    .modifier( 0.15 )
+    .verification_value( 0 );
 }
 
 void unique_gear::register_target_data_initializers_x7( sim_t* sim )
