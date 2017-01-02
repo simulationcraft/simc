@@ -2023,11 +2023,11 @@ struct wild_imp_pet_t: public warlock_pet_t
       }
   }
 
-  void trigger(bool isdoge = false)
+  void trigger(int timespan, bool isdoge = false )
   {
     isnotdoge = !isdoge;
     *fel_firebolt_stats = regular_stats;
-    summon( timespan_t::from_millis( 12001 ) );
+    summon( timespan_t::from_millis( timespan ) );
   }
 };
 
@@ -2574,14 +2574,14 @@ public:
       td -> dots_seed_of_corruption -> cancel();
   }
 
-  static void trigger_wild_imp( warlock_t* p, bool doge = false )
+  static void trigger_wild_imp( warlock_t* p, bool doge = false, int duration = 12001 )
   {
     for ( size_t i = 0; i < p -> warlock_pet_list.wild_imps.size(); i++ )
     {
       if ( p -> warlock_pet_list.wild_imps[i] -> is_sleeping() )
       {
 
-        p -> warlock_pet_list.wild_imps[i] -> trigger(doge);
+        p -> warlock_pet_list.wild_imps[i] -> trigger(duration, doge);
         p -> procs.wild_imp -> occur();
         if( p -> legendary.wilfreds_sigil_of_superior_summoning_flag && !p -> talents.grimoire_of_supremacy -> ok() )
         {
@@ -4617,7 +4617,7 @@ struct call_dreadstalkers_t : public warlock_spell_t
     {
       for ( size_t i = 0; i < improved_dreadstalkers; i++ )
       {
-        trigger_wild_imp( p(), true );
+        trigger_wild_imp( p(), true, dreadstalker_duration.total_millis() );
         p() -> procs.improved_dreadstalkers -> occur();
       }
     }
