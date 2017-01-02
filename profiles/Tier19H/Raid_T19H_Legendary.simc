@@ -72,8 +72,8 @@ Shaman_Enhancement_T19H.simc
 finger1=eye_of_the_twisting_nether,id=137050,enchant=binding_of_mastery
  
 # Warlock
-Warlock_Affliction_T19H.simc
-head=hood_of_eternal_disdain,id=132394
+#Warlock_Affliction_T19H.simc
+#head=hood_of_eternal_disdain,id=132394
 Warlock_Demonology_T19H.simc
 wrists=sindorei_spite,id=132379
 Warlock_Destruction_T19H.simc

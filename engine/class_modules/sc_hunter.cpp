@@ -5110,6 +5110,9 @@ struct steel_trap_t: public hunter_spell_t
     may_crit = true;
     tick_may_crit = true;
     trigger_gcd = p -> talents.steel_trap -> gcd();
+
+    if ( p -> artifacts.hunters_guile.rank() )
+        cooldown -> duration *= 1.0 + p -> artifacts.hunters_guile.percent();
   }
 
   virtual void execute() override
