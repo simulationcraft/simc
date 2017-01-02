@@ -55,25 +55,24 @@ actions.bos_ticking+=/hungering_rune_weapon,if=runic_power<20&!dot.hungering_run
 actions.bos_ticking+=/empower_rune_weapon,if=runic_power<20
 actions.bos_ticking+=/remorseless_winter,if=runic_power<20
 
-actions.core=frost_strike,if=buff.obliteration.up&!buff.killing_machine.react
-actions.core+=/remorseless_winter,if=(spell_targets.remorseless_winter>=2|talent.gathering_storm.enabled)&!(talent.frostscythe.enabled&buff.killing_machine.react&spell_targets.frostscythe>=2)
-actions.core+=/frostscythe,if=(buff.killing_machine.react&spell_targets.frostscythe>=2)
-actions.core+=/glacial_advance,if=spell_targets.glacial_advance>=2
-actions.core+=/frostscythe,if=spell_targets.frostscythe>=3
-actions.core+=/obliterate,if=buff.killing_machine.react
-actions.core+=/obliterate
-actions.core+=/glacial_advance
-actions.core+=/remorseless_winter,if=talent.frozen_pulse.enabled
-
 actions.generic=frost_strike,if=!talent.shattering_strikes.enabled&(buff.icy_talons.remains<1.5&talent.icy_talons.enabled)
 actions.generic+=/frost_strike,if=talent.shattering_strikes.enabled&debuff.razorice.stack=5
 actions.generic+=/howling_blast,target_if=!dot.frost_fever.ticking
 actions.generic+=/obliterate,if=equipped.132366&talent.frozen_pulse.enabled&set_bonus.tier19_2pc=1
-actions.generic+=/howling_blast,if=buff.rime.react&!buff.obliteration.up
+actions.generic+=/remorseless_winter,if=buff.rime.react&equipped.132459
+actions.generic+=/howling_blast,if=buff.rime.react&!(buff.obliteration.up&spell_targets.howling_blast<2)
 actions.generic+=/frost_strike,if=runic_power.deficit<=10
-actions.generic+=/call_action_list,name=core
+actions.generic+=/frost_strike,if=buff.obliteration.up&!buff.killing_machine.react
+actions.generic+=/remorseless_winter,if=(spell_targets.remorseless_winter>=2|talent.gathering_storm.enabled)&!(talent.frostscythe.enabled&buff.killing_machine.react&spell_targets.frostscythe>=2)
+actions.generic+=/frostscythe,if=(buff.killing_machine.react&spell_targets.frostscythe>=2)
+actions.generic+=/glacial_advance,if=spell_targets.glacial_advance>=2
+actions.generic+=/frostscythe,if=spell_targets.frostscythe>=3
+actions.generic+=/obliterate,if=buff.killing_machine.react
+actions.generic+=/obliterate
+actions.generic+=/glacial_advance
 actions.generic+=/horn_of_winter
 actions.generic+=/frost_strike
+actions.generic+=/remorseless_winter,if=talent.frozen_pulse.enabled
 actions.generic+=/empower_rune_weapon
 actions.generic+=/hungering_rune_weapon
 

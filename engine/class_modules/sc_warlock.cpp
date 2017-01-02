@@ -3959,6 +3959,8 @@ struct dimensional_rift_t : public warlock_spell_t
 
 struct thalkiels_consumption_t : public warlock_spell_t
 {
+  bool enabled;
+
   thalkiels_consumption_t( warlock_t* p ) :
     warlock_spell_t( "thalkiels_consumption", p, p -> artifact.thalkiels_consumption )
   {
@@ -5148,6 +5150,8 @@ struct reap_souls_t: public warlock_spell_t
 {
   timespan_t base_duration;
   timespan_t total_duration;
+  timespan_t check_time;
+  timespan_t reap_and_sow_bonus;
   int souls_consumed;
     reap_souls_t( warlock_t* p ) :
         warlock_spell_t( "reap_souls", p, p -> artifact.reap_souls ), souls_consumed( 0 )
@@ -5172,8 +5176,11 @@ struct reap_souls_t: public warlock_spell_t
 
       if ( p() -> artifact.reap_souls.rank() && p() -> buffs.tormented_souls -> check() )
       {
+          check_time = base_duration + reap_and_sow_bonus;
+
         souls_consumed = p() -> buffs.tormented_souls -> stack();
-        total_duration = base_duration * souls_consumed;
+//        total_duration = base_duration * souls_consumed;
+        total_duration = check_time * souls_consumed;
         p() -> buffs.deadwind_harvester -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, total_duration );
         for ( int i = 0; i < souls_consumed; ++i )
         {
@@ -7364,8 +7371,6 @@ void warlock_t::trigger_effigy(pets::soul_effigy_t *effigy)
 {
     this->active.effigy_damage_override->setupEffigyStuff(effigy->damage);
     this->active.effigy_damage_override->execute();
-//    qDebug() << "Testing that we got here";
-//    qDebug() << "Test #2";
 }
 
 
@@ -7411,6 +7416,28 @@ struct power_cord_of_lethtendris_t : public scoped_actor_callback_t<warlock_t>
     {
         p -> legendary.power_cord_of_lethtendris_chance = e.driver() -> effectN( 1 ).percent();
     }
+};
+
+struct reap_and_sow_t : public scoped_action_callback_t<reap_souls_t>
+{
+    reap_and_sow_t() : super ( WARLOCK, "reap_souls" )
+    {}
+
+    void manipulate (reap_souls_t* a, const special_effect_t& e) override
+    {
+        a->reap_and_sow_bonus = timespan_t::from_millis(e.driver()->effectN(1).base_value());
+    }
+};
+
+struct wakeners_loyalty_t : public scoped_action_callback_t<thalkiels_consumption_t>
+{
+    wakeners_loyalty_t() : super (WARLOCK, "thalkiels_consumption"){}
+
+    void manipulate (thalkiels_consumption_t* a, const special_effect_t& e) override
+    {
+
+    }
+
 };
 
 struct hood_of_eternal_disdain_t : public scoped_action_callback_t<agony_t>
@@ -7539,6 +7566,7 @@ struct warlock_module_t: public module_t
     register_special_effect( 205702, feretory_of_souls_t() );
     register_special_effect( 208821, stretens_insanity_t() );
     register_special_effect( 205753, power_cord_of_lethtendris_t() );
+    register_special_effect( 236114, reap_and_sow_t() );
   }
 
   virtual void register_hotfixes() const override

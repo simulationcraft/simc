@@ -5,7 +5,7 @@ timeofday=day
 role=attack
 position=back
 talents=2210011
-artifact=17:142513:142512:142513:0:851:1:852:3:853:3:854:5:855:3:856:3:857:3:858:4:859:3:860:3:861:1:862:1:863:1:864:1:865:1:866:1:1349:1
+artifact=17:0:0:0:0:851:1:852:3:853:3:854:3:855:3:856:3:857:3:858:3:859:3:860:3:861:1:862:1:863:1:864:1:865:1:866:1:1349:1
 spec=subtlety
 
 # This default action priority list is automatically created based on your character.

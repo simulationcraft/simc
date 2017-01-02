@@ -106,6 +106,7 @@ struct rogue_td_t : public actor_target_data_t
   {
     dot_t* deadly_poison;
     dot_t* garrote;
+    dot_t* internal_bleeding;
     dot_t* killing_spree; // Strictly speaking, this should probably be on player
     dot_t* kingsbane;
     dot_t* mutilated_flesh; // Assassination T19 2PC
@@ -1317,6 +1318,33 @@ struct internal_bleeding_t : public rogue_attack_t
     base_costs[ RESOURCE_COMBO_POINT ] = 1; 
   }
 
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = rogue_attack_t::composite_target_multiplier( target );
+
+    if ( p() -> legendary.zoldyck_family_training_shackles )
+    {
+      if ( target -> health_percentage() < p() -> legendary.zoldyck_family_training_shackles -> effectN( 2 ).base_value() )
+      {
+        m *= 1.0 + p() -> legendary.zoldyck_family_training_shackles -> effectN( 1 ).percent();
+      }
+    }
+
+    return m;
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    timespan_t duration = rogue_attack_t::composite_dot_duration( s );
+
+    if ( cast_state( s ) -> exsanguinated )
+    {
+      duration *= 1.0 / ( 1.0 + p() -> talent.exsanguinate -> effectN( 1 ).percent() );
+    }
+
+    return duration;
+  }
+
   void tick( dot_t* d ) override
   {
     rogue_attack_t::tick( d );
@@ -1465,6 +1493,18 @@ struct from_the_shadows_driver_t : public rogue_attack_t
     callbacks = may_miss = may_crit = false;
   }
 
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = rogue_attack_t::composite_target_multiplier( target );
+
+    rogue_td_t* tdata = p() -> get_target_data( target );
+
+    // TODO: As of 01/01/2017, From the Shadows ignores Agonizing poison
+    m /= 1.0 + p() -> agonizing_poison_stack_multiplier( tdata );
+
+    return m;
+  }
+
   void tick( dot_t* d ) override
   {
     rogue_attack_t::tick( d );
@@ -1582,7 +1622,10 @@ struct insignia_of_ravenholdt_attack_t : public rogue_attack_t
 
 };
 
-// TODO: Check if this is an ignite or a normal dot
+// As of 01/01/2017 it acts like an Ignite (i.e. remaining damage are added).
+// Also it doesn't pandemic and doesn't work with any Assassination modifier (else it would double dip).
+// It doesn't work with Hemorrhage nor with Venomous Wounds nor Zoldyck Family Training Shackles.
+// The only time it is counted "as a bleed" is for T19 4PC (it increases envenom damage).
 using namespace residual_action;
 struct mutilated_flesh_t : public residual_periodic_action_t<melee_attack_t>
 {
@@ -2662,8 +2705,10 @@ struct envenom_t : public rogue_attack_t
       size_t bleeds = 0;
       rogue_td_t* tdata = td( target );
       bleeds += tdata -> dots.garrote -> is_ticking();
+      bleeds += tdata -> dots.internal_bleeding -> is_ticking();
       bleeds += tdata -> dots.rupture -> is_ticking();
-      bleeds += tdata -> dots.mutilated_flesh -> is_ticking(); // TODO: Presumably?
+      // As of 01/01/2017, Mutilated Flesh works on T19 4PC.
+      bleeds += tdata -> dots.mutilated_flesh -> is_ticking(); 
 
       m *= 1.0 + p() -> sets.set( ROGUE_ASSASSINATION, T19, B4 ) -> effectN( 1 ).percent() * bleeds;
     }
@@ -2724,7 +2769,8 @@ struct envenom_t : public rogue_attack_t
           .target( execute_state -> target )
           .x( player -> x_position )
           .y( player -> y_position )
-          .pulse_time( timespan_t::from_seconds( 0.5 ) ) //FIXME Hotfix 09-24: Hardcoded to 500ms instead of 1s since duration halved but damage conserved, still the case as of 10/22 (7.1 22882).
+          //FIXME Hotfix 09-24: Hardcoded to 500ms instead of 1s since duration halved but damage conserved, still the case as of 01/01 (7.1.5).
+          .pulse_time( timespan_t::from_seconds( 0.5 ) )
           .duration( p() -> spell.bag_of_tricks_driver -> duration() )
           .start_time( sim -> current_time() )
           .action( p() -> poison_bomb ), true );
@@ -2869,7 +2915,7 @@ struct garrote_t : public rogue_attack_t
   garrote_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "garrote", p, p -> spec.garrote, options_str )
   {
-    may_crit          = false;
+    may_crit = false;
   }
 
   double composite_persistent_multiplier( const action_state_t* state ) const override
@@ -2898,7 +2944,6 @@ struct garrote_t : public rogue_attack_t
 
     return m;
   };
-
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
@@ -3184,7 +3229,7 @@ struct kingsbane_strike_t : public rogue_attack_t
   {
     background = true;
     weapon = w;
-    base_multiplier *= 1.0 + p -> talent.master_poisoner -> effectN( 3 ).percent();
+    base_multiplier *= 1.0 + p -> talent.master_poisoner -> effectN( 1 ).percent();
   }
 
   double action_multiplier() const override
@@ -3203,8 +3248,8 @@ struct kingsbane_strike_t : public rogue_attack_t
   {
     double m = rogue_attack_t::composite_target_multiplier( target );
 
-    // TODO: Does this work?
-    //m *= 1.0 + td( target ) -> debuffs.surge_of_toxins -> stack_value();
+    m *= 1.0 + td( target ) -> debuffs.surge_of_toxins -> stack_value();
+
     if ( p() -> legendary.zoldyck_family_training_shackles )
     {
       if ( target -> health_percentage() < p() -> legendary.zoldyck_family_training_shackles -> effectN( 2 ).base_value() )
@@ -3228,7 +3273,7 @@ struct kingsbane_t : public rogue_attack_t
   {
     add_child( mh );
     add_child( oh );
-    base_multiplier *= 1.0 + p -> talent.master_poisoner -> effectN( 3 ).percent();
+    base_multiplier *= 1.0 + p -> talent.master_poisoner -> effectN( 1 ).percent();
   }
 
   double action_multiplier() const override
@@ -3248,8 +3293,8 @@ struct kingsbane_t : public rogue_attack_t
     double m = rogue_attack_t::composite_target_multiplier( target );
 
     m *= 1.0 + td( target ) -> debuffs.kingsbane -> stack_value();
-    // TODO: Does this work?
-    //m *= 1.0 + td( target ) -> debuffs.surge_of_toxins -> stack_value();
+
+    m *= 1.0 + td( target ) -> debuffs.surge_of_toxins -> stack_value();
 
     if ( p() -> legendary.zoldyck_family_training_shackles )
     {
@@ -4867,9 +4912,10 @@ expr_t* actions::rogue_attack_t::create_expression( const std::string& name_str 
   {
     return make_mem_fn_expr( "cp_gain", *this, &rogue_attack_t::generate_cp );
   }
-  // Rupture and Garrote APL lines using "exsanguinated"
+  // Garrote and Rupture and  APL lines using "exsanguinated"
+  // TODO: Add Internal Bleeding (not the same id as Kidney Shot)
   else if ( util::str_compare_ci( name_str, "exsanguinated" ) &&
-            ( data().id() == 1943 || data().id() == 703 ) )
+            ( data().id() == 703 || data().id() == 1943 ) )
   {
     return new exsanguinated_expr_t( this );
   }
@@ -4878,8 +4924,10 @@ expr_t* actions::rogue_attack_t::create_expression( const std::string& name_str 
     return make_fn_expr( name_str, [ this ]() {
       rogue_td_t* tdata = td( target );
       return tdata -> dots.garrote -> is_ticking() +
-             tdata -> dots.rupture -> is_ticking() +
-             tdata -> dots.mutilated_flesh -> is_ticking();
+             tdata -> dots.internal_bleeding -> is_ticking() +
+             tdata -> dots.rupture -> is_ticking();
+             // As of 01/01/2017 mutilated_flesh bleed isn't really considered as a bleed.
+             //+ tdata -> dots.mutilated_flesh -> is_ticking();
     } );
   }
   else if ( util::str_compare_ci( name_str, "dot.nightblade.finality" ) )
@@ -5569,8 +5617,10 @@ void rogue_t::trigger_exsanguinate( const action_state_t* state )
   rogue_td_t* td = get_target_data( state -> target );
 
   double coeff = 1.0 / ( 1.0 + talent.exsanguinate -> effectN( 1 ).percent() );
-  do_exsanguinate( td -> dots.rupture, coeff );
+  
   do_exsanguinate( td -> dots.garrote, coeff );
+  do_exsanguinate( td -> dots.internal_bleeding, coeff );
+  do_exsanguinate( td -> dots.rupture, coeff );
 }
 
 void rogue_t::trigger_relentless_strikes( const action_state_t* state )
@@ -6196,41 +6246,44 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   debuffs( debuffs_t() )
 {
 
-  dots.deadly_poison    = target -> get_dot( "deadly_poison_dot", source );
-  dots.garrote          = target -> get_dot( "garrote", source );
-  dots.mutilated_flesh  = target -> get_dot( "mutilated_flesh", source );
-  dots.rupture          = target -> get_dot( "rupture", source );
-  dots.kingsbane        = target -> get_dot( "kingsbane", source );
-  dots.nightblade       = target -> get_dot( "nightblade", source );
-  dots.killing_spree    = target -> get_dot( "killing_spree", source );
+  dots.deadly_poison      = target -> get_dot( "deadly_poison_dot", source );
+  dots.garrote            = target -> get_dot( "garrote", source );
+  dots.internal_bleeding  = target -> get_dot( "internal_bleeding", source );
+  dots.kingsbane          = target -> get_dot( "kingsbane", source );
+  dots.mutilated_flesh    = target -> get_dot( "mutilated_flesh", source );
+  dots.rupture            = target -> get_dot( "rupture", source );
 
-  const spell_data_t* vd = source -> find_specialization_spell( "Vendetta" );
-  debuffs.vendetta =           buff_creator_t( *this, "vendetta", vd )
-                               .cd( timespan_t::zero() )
-                               .default_value( vd -> effectN( 1 ).percent() );
+  dots.nightblade         = target -> get_dot( "nightblade", source );
+
+
+  debuffs.marked_for_death = new buffs::marked_for_death_debuff_t( *this );
 
   debuffs.agonizing_poison = new buffs::agonizing_poison_t( *this );
   debuffs.wound_poison = new buffs::wound_poison_t( *this );
   debuffs.crippling_poison = new buffs::crippling_poison_t( *this );
   debuffs.leeching_poison = new buffs::leeching_poison_t( *this );
-  debuffs.marked_for_death = new buffs::marked_for_death_debuff_t( *this );
-  debuffs.hemorrhage = buff_creator_t( *this, "hemorrhage", source -> talent.hemorrhage )
-    .default_value( 1.0 + source -> talent.hemorrhage -> effectN( 4 ).percent() )
-    .refresh_behavior( BUFF_REFRESH_PANDEMIC );
-  debuffs.ghostly_strike = buff_creator_t( *this, "ghostly_strike", source -> talent.ghostly_strike )
-    .default_value( source -> talent.ghostly_strike -> effectN( 5 ).percent() );
-  debuffs.garrote = new buffs::proxy_garrote_t( *this );
-  debuffs.surge_of_toxins = buff_creator_t( *this, "surge_of_toxins", source -> find_spell( 192425 ) )
-    .default_value( source -> find_spell( 192425 ) -> effectN( 1 ).base_value() * 0.002 )
-    .trigger_spell( source -> artifact.surge_of_toxins );
-  debuffs.kingsbane = buff_creator_t( *this, "kingsbane", source -> artifact.kingsbane.data().effectN( 5 ).trigger() )
-    .default_value( source -> artifact.kingsbane.data().effectN( 5 ).trigger() -> effectN( 1 ).percent() )
-    .refresh_behavior( BUFF_REFRESH_DISABLED );
-
   debuffs.blood_of_the_assassinated = buff_creator_t( *this, "blood_of_the_assassinated" )
     .spell( source -> artifact.blood_of_the_assassinated.data().effectN( 1 ).trigger() )
     .trigger_spell( source -> artifact.blood_of_the_assassinated )
     .default_value( source -> artifact.blood_of_the_assassinated.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() );
+  debuffs.garrote = new buffs::proxy_garrote_t( *this );
+  debuffs.hemorrhage = buff_creator_t( *this, "hemorrhage", source -> talent.hemorrhage )
+    .default_value( 1.0 + source -> talent.hemorrhage -> effectN( 4 ).percent() )
+    .refresh_behavior( BUFF_REFRESH_PANDEMIC );
+  debuffs.kingsbane = buff_creator_t( *this, "kingsbane", source -> artifact.kingsbane.data().effectN( 5 ).trigger() )
+    .default_value( source -> artifact.kingsbane.data().effectN( 5 ).trigger() -> effectN( 1 ).percent() )
+    .refresh_behavior( BUFF_REFRESH_DISABLED );
+  const spell_data_t* sot_debuff = source -> find_spell( 192425 );
+  debuffs.surge_of_toxins = buff_creator_t( *this, "surge_of_toxins", sot_debuff )
+    .default_value( sot_debuff -> effectN( 1 ).base_value() * 0.002 )
+    .trigger_spell( source -> artifact.surge_of_toxins );
+  const spell_data_t* vd = source -> find_specialization_spell( "Vendetta" );
+  debuffs.vendetta =           buff_creator_t( *this, "vendetta", vd )
+                               .cd( timespan_t::zero() )
+                               .default_value( vd -> effectN( 1 ).percent() );
+
+  debuffs.ghostly_strike = buff_creator_t( *this, "ghostly_strike", source -> talent.ghostly_strike )
+    .default_value( source -> talent.ghostly_strike -> effectN( 5 ).percent() );
 
   // Register on-demise callback for assassination to perform Venomous Wounds energy replenish on
   // death.
@@ -6435,7 +6488,7 @@ double rogue_t::agonizing_poison_stack_multiplier( const rogue_td_t* td ) const
 
   if ( talent.master_poisoner -> ok() )
   {
-    multiplier *= 1.0 + talent.master_poisoner -> effectN( 3 ).percent();
+    multiplier *= 1.0 + talent.master_poisoner -> effectN( 1 ).percent();
   }
 
   // Technically in game "features" and this should only apply after triggering a poison after the
@@ -6604,7 +6657,8 @@ void rogue_t::init_action_list()
     }
     cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit|combo_points.deficit>=5" );
     cds -> add_action( this, "Vendetta", "if=talent.exsanguinate.enabled&cooldown.exsanguinate.remains<5&dot.rupture.ticking" );
-    cds -> add_action( this, "Vendetta", "if=!talent.exsanguinate.enabled&(!artifact.urge_to_kill.enabled|energy.deficit>=70)" );
+    cds -> add_action( this, "Vendetta", "if=talent.exsanguinate.enabled&(artifact.master_assassin.rank>=4-equipped.convergence_of_fates|equipped.duskwalkers_footpads)&energy.deficit>=75&!(artifact.master_assassin.rank=5-equipped.convergence_of_fates&equipped.duskwalkers_footpads)" );
+    cds -> add_action( this, "Vendetta", "if=!talent.exsanguinate.enabled&energy.deficit>=88-!talent.venom_rush.enabled*10" );
     cds -> add_action( this, "Vanish", "if=talent.nightstalker.enabled&combo_points>=cp_max_spend&((talent.exsanguinate.enabled&cooldown.exsanguinate.remains<1&(dot.rupture.ticking|time>10))|(!talent.exsanguinate.enabled&dot.rupture.refreshable))" );
     cds -> add_action( this, "Vanish", "if=talent.subterfuge.enabled&dot.garrote.refreshable&((spell_targets.fan_of_knives<=3&combo_points.deficit>=1+spell_targets.fan_of_knives)|(spell_targets.fan_of_knives>=4&combo_points.deficit>=4))" );
     cds -> add_action( this, "Vanish", "if=talent.shadow_focus.enabled&energy.time_to_max>=2&combo_points.deficit>=4" );
@@ -6613,7 +6667,7 @@ void rogue_t::init_action_list()
     // Finishers
     action_priority_list_t* finish = get_action_priority_list( "finish", "Finishers" );
     finish -> add_talent( this, "Death from Above", "if=combo_points>=cp_max_spend" );
-    finish -> add_action( this, "Envenom", "if=combo_points>=cp_max_spend-talent.master_poisoner.enabled|(talent.elaborate_planning.enabled&combo_points>=3+!talent.exsanguinate.enabled&buff.elaborate_planning.remains<2)" );
+    finish -> add_action( this, "Envenom", "if=combo_points>=5|(talent.elaborate_planning.enabled&combo_points>=3+!talent.exsanguinate.enabled&buff.elaborate_planning.remains<0.1)" );
 
     // Maintain
     action_priority_list_t* maintain = get_action_priority_list( "maintain", "Maintain" );
@@ -6622,125 +6676,6 @@ void rogue_t::init_action_list()
     maintain -> add_action( this, "Kingsbane", "if=(talent.exsanguinate.enabled&dot.rupture.exsanguinated)|(!talent.exsanguinate.enabled&(debuff.vendetta.up|cooldown.vendetta.remains>10))" );
     maintain -> add_action( "pool_resource,for_next=1" );
     maintain -> add_action( this, "Garrote", "cycle_targets=1,if=refreshable&(!exsanguinated|remains<=1.5)&target.time_to_die-remains>4" );
-
-    /* Skasch APL
-    for ( size_t i = 0; i < items.size(); i++ )
-    {
-      if ( items[ i ].has_use_special_effect() )
-      {
-        std::string item_action = std::string( "use_item,slot=" ) + items[ i ].slot_name();
-        def -> add_action( item_action + ",if=buff.bloodlust.react|target.time_to_die<=20|debuff.vendetta.up" );
-      }
-    }
-    for ( size_t i = 0; i < racial_actions.size(); i++ )
-    {
-      if ( racial_actions[i] == "arcane_torrent" )
-      {
-        def -> add_action( racial_actions[i] + ",if=debuff.vendetta.up&energy.deficit>50" );
-      }
-      else
-      {
-        def -> add_action( racial_actions[i] + ",if=debuff.vendetta.up" );
-      }
-    }
-    def -> add_action( "call_action_list,name=cds" );
-    def -> add_action( this, "Rupture", "if=talent.exsanguinate.enabled&combo_points>=2+artifact.urge_to_kill.enabled*2&!ticking&(artifact.urge_to_kill.enabled|time<10)" );
-    def -> add_action( "pool_resource,for_next=1" );
-    def -> add_action( this, "Kingsbane", "if=(!talent.exsanguinate.enabled&(debuff.vendetta.up|cooldown.vendetta.remains>10))|(talent.exsanguinate.enabled&dot.rupture.exsanguinated)" );
-    // run_action_list forbids the simulator from running the following actions
-    def -> add_action( "run_action_list,name=exsang_combo,if=talent.exsanguinate.enabled&cooldown.exsanguinate.remains<3&(debuff.vendetta.up|cooldown.vendetta.remains>25)" );
-    def -> add_action( "call_action_list,name=garrote,if=spell_targets.fan_of_knives<=8-artifact.bag_of_tricks.enabled" );
-    def -> add_action( "call_action_list,name=exsang,if=dot.rupture.exsanguinated" );
-    // Refresh Rupture early to ensure a full pandemic Rupture when casting 
-    // Exsanguinate if the timing is not good
-    def -> add_action( this, "Rupture", "if=talent.exsanguinate.enabled&remains-cooldown.exsanguinate.remains<(4+cp_max_spend*4)*0.3&new_duration-cooldown.exsanguinate.remains>=(4+cp_max_spend*4)*0.3+3" );
-    def -> add_action( "call_action_list,name=finish_ex,if=talent.exsanguinate.enabled" );
-    def -> add_action( "call_action_list,name=finish_noex,if=!talent.exsanguinate.enabled" );
-    def -> add_action( "call_action_list,name=build_ex,if=talent.exsanguinate.enabled" );
-    def -> add_action( "call_action_list,name=build_noex,if=!talent.exsanguinate.enabled" );
-
-    // Cooldowns
-    action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );
-      // Targets the target who will die the sooner to fresh MfD
-    cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit|combo_points.deficit>=5" );
-      // If Urge to Kill, cast Vendetta sooner to have the time to dump the
-      // energy before Exsanguinate
-    cds -> add_action( this, "Vendetta", "if=target.time_to_die<20" );
-    cds -> add_action( this, "Vendetta", "if=dot.rupture.ticking&(!talent.exsanguinate.enabled|cooldown.exsanguinate.remains<1+4*!artifact.urge_to_kill.enabled)&(energy<55|time<10|spell_targets.fan_of_knives>=2|!artifact.urge_to_kill.enabled)" );
-      // Gives as much time as possible to spam Garrote if Subterfuge enabled 
-      // (only useful on AoE)
-    cds -> add_action( this, "Vanish", "if=!dot.rupture.exsanguinated&((talent.subterfuge.enabled&combo_points<=2)|(talent.shadow_focus.enabled&combo_points.deficit>=2))" );
-    cds -> add_action( this, "Vanish", "if=!talent.exsanguinate.enabled&talent.nightstalker.enabled&combo_points>=cp_max_spend&gcd.remains=0&energy>=25" );
-
-    // Exsanguinate Combo
-    action_priority_list_t* exsang_combo = get_action_priority_list( "exsang_combo", "Exsanguinate Combo" );
-      // Syncing Vanish with Rupture
-    exsang_combo -> add_action( this, "Vanish", "if=talent.nightstalker.enabled&combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1&gcd.remains=0&energy>=25" );
-    exsang_combo -> add_action( this, "Rupture", "if=combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1&(!talent.nightstalker.enabled|buff.vanish.up|cooldown.vanish.remains>15)" );
-      // Some safeguards to make sure Exsanguinate is casted at the right moment
-    exsang_combo -> add_talent( this, "Exsanguinate", "if=prev_gcd.1.rupture&dot.rupture.remains>22+4*talent.deeper_stratagem.enabled&cooldown.vanish.remains>10" );
-    exsang_combo -> add_action( "call_action_list,name=garrote,if=spell_targets.fan_of_knives<=8-artifact.bag_of_tricks.enabled" );
-      // AoE
-    exsang_combo -> add_talent( this, "Hemorrhage", "if=spell_targets.fan_of_knives>=2&!ticking" );
-    exsang_combo -> add_action( "call_action_list,name=build_ex" );
-
-    // Exsanguinated Finishers
-    action_priority_list_t* exsang = get_action_priority_list( "exsang", "Exsanguinated Finishers" );
-      // AoE
-    exsang -> add_action( this, "Rupture", "cycle_targets=1,max_cycle_targets=14-2*artifact.bag_of_tricks.enabled,if=!ticking&combo_points>=cp_max_spend-1&spell_targets.fan_of_knives>1&target.time_to_die>6" );
-      // Single
-      // Wait for Combo Points if Rupture is about to expire to reapply it as soon as possible
-    exsang -> add_action( this, "Rupture", "if=combo_points>=cp_max_spend&ticks_remain<2" );
-    exsang -> add_talent( this, "Death from Above", "if=combo_points>=cp_max_spend-1&(dot.rupture.remains>3|(dot.rupture.remains>2&spell_targets.fan_of_knives>=3))&(artifact.bag_of_tricks.enabled|spell_targets.fan_of_knives<=6+2*debuff.vendetta.up)" );
-    exsang -> add_action( this, "Envenom", "if=combo_points>=cp_max_spend-1&(dot.rupture.remains>3|(dot.rupture.remains>2&spell_targets.fan_of_knives>=3))&(artifact.bag_of_tricks.enabled|spell_targets.fan_of_knives<=6+2*debuff.vendetta.up)" );
-
-    // Builders Exsanguinate
-    action_priority_list_t* build_ex = get_action_priority_list( "build_ex", "Builders Exsanguinate" );
-      // AoE
-    build_ex -> add_talent( this, "Hemorrhage", "cycle_targets=1,if=combo_points.deficit>=1&refreshable&dot.rupture.remains>6&spell_targets.fan_of_knives>1&spell_targets.fan_of_knives<=4" );
-    build_ex -> add_talent( this, "Hemorrhage", "cycle_targets=1,max_cycle_targets=3,if=combo_points.deficit>=1&refreshable&dot.rupture.remains>6&spell_targets.fan_of_knives>1&spell_targets.fan_of_knives=5" );
-      // Replaces Envenom with Fan of Knives after 7 targets / 9 with Vendetta
-    build_ex -> add_action( this, "Fan of Knives", "if=(spell_targets>=2+debuff.vendetta.up&(combo_points.deficit>=1|energy.deficit<=30))|(!artifact.bag_of_tricks.enabled&spell_targets>=7+2*debuff.vendetta.up)" );
-      // Single
-    build_ex -> add_action( this, "Fan of Knives", "if=(debuff.vendetta.up&buff.the_dreadlords_deceit.stack>=29-(debuff.vendetta.remains<=3)*14)|(cooldown.vendetta.remains>60&cooldown.vendetta.remains<65&buff.the_dreadlords_deceit.stack>=5)" );
-    build_ex -> add_talent( this, "Hemorrhage", "if=(combo_points.deficit>=1&refreshable)|(combo_points.deficit=1&((dot.rupture.exsanguinated&dot.rupture.remains<=2)|cooldown.exsanguinate.remains<=2))" );
-    build_ex -> add_action( this, "Mutilate", "if=combo_points.deficit<=1&energy.deficit<=30" );
-    build_ex -> add_action( this, "Mutilate", "if=combo_points.deficit>=2&cooldown.garrote.remains>2" );
-
-    // Builder no Exsanguinate
-    action_priority_list_t* build_noex = get_action_priority_list( "build_noex", "Builders no Exsanguinate" );
-    build_noex -> add_talent( this, "Hemorrhage", "cycle_targets=1,if=combo_points.deficit>=1&refreshable&dot.rupture.remains>6&spell_targets.fan_of_knives>1&spell_targets.fan_of_knives<=4" );
-    build_noex -> add_talent( this, "Hemorrhage", "cycle_targets=1,max_cycle_targets=3,if=combo_points.deficit>=1&refreshable&dot.rupture.remains>6&spell_targets.fan_of_knives>1&spell_targets.fan_of_knives=5" );
-    build_noex -> add_action( this, "Fan of Knives", "if=(spell_targets>=2+debuff.vendetta.up&(combo_points.deficit>=1|energy.deficit<=30))|(!artifact.bag_of_tricks.enabled&spell_targets>=7+2*debuff.vendetta.up)" );
-    build_noex -> add_action( this, "Fan of Knives", "if=(debuff.vendetta.up&buff.the_dreadlords_deceit.stack>=29-(debuff.vendetta.remains<=3)*14)|(cooldown.vendetta.remains>60&cooldown.vendetta.remains<65&buff.the_dreadlords_deceit.stack>=5)" );
-    build_noex -> add_talent( this, "Hemorrhage", "if=combo_points.deficit>=1&refreshable" );
-    build_noex -> add_action( this, "Mutilate", "if=combo_points.deficit>=1&cooldown.garrote.remains>2" );
-
-    // Finishers Exsanguinate
-    action_priority_list_t* finish_ex = get_action_priority_list( "finish_ex", "Finishers Exsanguinate" );
-      // AoE
-    finish_ex -> add_action( this, "Rupture", "cycle_targets=1,max_cycle_targets=14-2*artifact.bag_of_tricks.enabled,if=!ticking&combo_points>=cp_max_spend-1&spell_targets.fan_of_knives>1&target.time_to_die-remains>6" );
-      // Single
-    finish_ex -> add_action( this, "Rupture", "if=combo_points>=cp_max_spend-1&refreshable&!exsanguinated" );
-    finish_ex -> add_talent( this, "Death from Above", "if=combo_points>=cp_max_spend-1&(artifact.bag_of_tricks.enabled|spell_targets.fan_of_knives<=6)" );
-    finish_ex -> add_action( this, "Envenom", "if=combo_points>=cp_max_spend-1&!dot.rupture.refreshable&buff.elaborate_planning.remains<2&energy.deficit<40&(artifact.bag_of_tricks.enabled|spell_targets.fan_of_knives<=6)" );
-    finish_ex -> add_action( this, "Envenom", "if=combo_points>=cp_max_spend&!dot.rupture.refreshable&buff.elaborate_planning.remains<2&cooldown.garrote.remains<1&(artifact.bag_of_tricks.enabled|spell_targets.fan_of_knives<=6)" );
-
-    // Finishers no Exsanguinate
-    action_priority_list_t* finish_noex = get_action_priority_list( "finish_noex", "Finishers no Exsanguinate" );
-    finish_noex -> add_action( "variable,name=envenom_condition,value=!(dot.rupture.refreshable&dot.rupture.pmultiplier<1.5)&(!talent.nightstalker.enabled|cooldown.vanish.remains>=6)&dot.rupture.remains>=6&buff.elaborate_planning.remains<1.5&(artifact.bag_of_tricks.enabled|spell_targets.fan_of_knives<=6)" );
-    finish_noex -> add_action( this, "Rupture", "cycle_targets=1,max_cycle_targets=14-2*artifact.bag_of_tricks.enabled,if=!ticking&combo_points>=cp_max_spend&spell_targets.fan_of_knives>1&target.time_to_die-remains>6" );
-    finish_noex -> add_action( this, "Rupture", "if=combo_points>=cp_max_spend&((dot.rupture.refreshable|dot.rupture.ticks_remain<=1)|(talent.nightstalker.enabled&buff.vanish.up))" );
-    finish_noex -> add_talent( this, "Death from Above", "if=variable.envenom_condition&(combo_points>=cp_max_spend-2*talent.elaborate_planning.enabled)&(refreshable|(talent.elaborate_planning.enabled&!buff.elaborate_planning.up)|cooldown.garrote.remains<1)" );
-    finish_noex -> add_action( this, "Envenom", "if=variable.envenom_condition&(combo_points>=cp_max_spend-2*talent.elaborate_planning.enabled)&(refreshable|(talent.elaborate_planning.enabled&!buff.elaborate_planning.up)|cooldown.garrote.remains<1)" );
-
-    // Garrote
-    action_priority_list_t* garrote = get_action_priority_list( "garrote", "Garrote" );
-    garrote -> add_action( "pool_resource,for_next=1" );
-    garrote -> add_action( this, "Garrote", "cycle_targets=1,if=talent.subterfuge.enabled&!ticking&combo_points.deficit>=1&spell_targets.fan_of_knives>=2" );
-    garrote -> add_action( "pool_resource,for_next=1" );
-    garrote -> add_action( this, "Garrote", "if=combo_points.deficit>=1&!exsanguinated&refreshable" );
-    */
   }
   else if ( specialization() == ROGUE_OUTLAW )
   {
@@ -7009,9 +6944,11 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
       } );
     }
   }
-  // dot.(rupture|garrote).exsanguinated
+  // dot.(garrote|internal_bleeding|rupture).exsanguinated
   else if ( split.size() == 3 && util::str_compare_ci( split[ 2 ], "exsanguinated" ) &&
-       ( util::str_compare_ci( split[ 1 ], "rupture" ) || util::str_compare_ci( split[ 1 ], "garrote" ) ) )
+       ( util::str_compare_ci( split[ 1 ], "garrote" ) ||
+         util::str_compare_ci( split[ 1 ], "internal_bleeding" ) ||
+         util::str_compare_ci( split[ 1 ], "rupture" ) ) )
   {
     action_t* action = find_action( split[ 1 ] );
     if ( ! action )
@@ -7502,8 +7439,8 @@ void rogue_t::create_buffs()
     .duration( find_class_spell( "Feint" ) -> duration() );
   buffs.master_of_subtlety_aura = buff_creator_t( this, "master_of_subtlety_aura", talent.master_of_subtlety )
                                      .duration( sim -> max_time / 2 )
-                                   .default_value(0.1) // No longer shown in spell data, so we'll hardcode it, 10% dmg
-                                   .chance(talent.master_of_subtlety->ok())
+                                   .default_value( 0.1 ) // No longer shown in spell data, so we'll hardcode it, 10% dmg
+                                   .chance( talent.master_of_subtlety -> ok() )
                                      .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.master_of_subtlety  = buff_creator_t( this, "master_of_subtlety", talent.master_of_subtlety )
                             .duration( timespan_t::from_seconds( talent.master_of_subtlety -> effectN(1).base_value() ) )

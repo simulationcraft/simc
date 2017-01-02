@@ -162,6 +162,7 @@ public:
     gain_t* hp_templars_verdict_refund;
     gain_t* hp_liadrins_fury_unleashed;
     gain_t* judgment;
+    gain_t* hp_t19_4p;
   } gains;
 
   // Spec Passives
@@ -2792,11 +2793,11 @@ struct holy_power_generator_t : public paladin_melee_attack_t
     {
       // for some reason this is the same spell as the talent
       // leftover nonsense from when this was Conviction?
-      bool success = p() -> buffs.the_fires_of_justice -> trigger( 1,
-        p() -> buffs.the_fires_of_justice -> default_value,
-        p() -> sets.set( PALADIN_RETRIBUTION, T19, B4 ) -> proc_chance() );
-      if ( success )
+      if ( p() -> rng().roll( p() -> sets.set( PALADIN_RETRIBUTION, T19, B4 ) -> proc_chance() ) )
+      {
+        p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_t19_4p );
         p() -> procs.tfoj_set_bonus -> occur();
+      }
     }
   }
 };
@@ -4357,6 +4358,7 @@ void paladin_t::init_gains()
   gains.hp_templars_verdict_refund  = get_gain( "templars_verdict_refund" );
   gains.hp_liadrins_fury_unleashed  = get_gain( "liadrins_fury_unleashed" );
   gains.judgment                    = get_gain( "judgment" );
+  gains.hp_t19_4p                   = get_gain( "t19_4p" );
 
   if ( ! retribution_trinket )
   {
