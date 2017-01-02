@@ -6210,6 +6210,7 @@ void hunter_t::apl_surv()
   action_priority_list_t* precombat     = get_action_priority_list( "precombat" );
 
   precombat -> add_action( "harpoon" );
+  precombat -> add_action( "dragonsfire_grenade" );
 
   default_list -> add_action( "auto_attack" );
 
@@ -6217,24 +6218,41 @@ void hunter_t::apl_surv()
   add_item_actions( default_list );
   
   default_list -> add_action( "potion,name=old_war,if=buff.aspect_of_the_eagle.remains" );
-  default_list -> add_action( "fury_of_the_eagle,if=(buff.mongoose_fury.up&buff.mongoose_fury.remains<=gcd)|target.time_to_die<=execute_time" );
-  default_list -> add_action( "raptor_strike,if=talent.way_of_the_moknathal.enabled&buff.moknathal_tactics.remains&buff.moknathal_tactics.remains<gcd.max" );
-  default_list -> add_action( "a_murder_of_crows" );
+  default_list -> add_action( "raptor_strike,if=talent.way_of_the_moknathal.enabled&(buff.moknathal_tactics.stack<=1|buff.moknathal_tactics.remains<gcd)" );
+  default_list -> add_action( "butchery,if=buff.butchers_bone_apron.stack=10" );
+  default_list -> add_action( "carve,if=buff.butchers_bone_apron.stack=10" );
+  default_list -> add_action( "snake_hunter,if=cooldown.mongoose_bite.charges<=0&buff.mongoose_fury.remains&buff.aspect_of_the_eagle.remains>3*gcd" );
+  default_list -> add_action( "fury_of_the_eagle,if=buff.mongoose_fury.stack=6|(talent.way_of_the_moknathal.enabled&buff.moknathal_tactics.remains>4&buff.mongoose_fury.stack=6)" );
+  default_list -> add_action( "mongoose_bite,if=buff.mongoose_fury.stack=6|(buff.aspect_of_the_eagle.up&buff.mongoose_fury.up)|(buff.aspect_of_the_eagle.up&buff.mongoose_fury.up&(talent.way_of_the_moknathal.enabled&buff.moknathal_tactics.remains>gcd&buff.moknathal_tactics.stack>=2))" );
+  default_list -> add_action( "flanking_strike,if=cooldown.mongoose_bite.charges<=0&buff.aspect_of_the_eagle.remains>=gcd&focus>75" );
+  default_list -> add_action( "mongoose_bite,if=buff.mongoose_fury.stack=2&buff.aspect_of_the_eagle.remains" );
+  default_list -> add_action( "a_murder_of_crows,if=buff.mongoose_fury.duration>=gcd&focus>55&cooldown.mongoose_bite.charges<=1" );
+  default_list -> add_action( "lacerate,if=buff.mongoose_fury.duration>=gcd&dot.lacerate.remains<=3&cooldown.mongoose_bite.charges<=1" );
+  default_list -> add_action( "spitting_cobra,if=buff.mongoose_fury.duration>=gcd&cooldown.mongoose_bite.charges<=1" );
+  default_list -> add_action( "steel_trap,if=buff.mongoose_fury.duration>=gcd&cooldown.mongoose_bite.charges<=1" );
+  default_list -> add_action( "explosive_trap,if=buff.mongoose_fury.duration>=gcd&cooldown.mongoose_bite.charges<=1");
+  default_list -> add_action( "dragonsfire_grenade,if=buff.mongoose_fury.duration>=gcd&cooldown.mongoose_bite.charges<=1" );
+  default_list -> add_action( "butchery,if=buff.mongoose_fury.duration>=gcd&focus>65&cooldown.mongoose_bite.charges<=1" );
+  default_list -> add_action( "caltrops,if=buff.mongoose_fury.duration>=gcd&cooldown.mongoose_bite.charges<=1" );
+  default_list -> add_action( "butchery,if=talent.serpent_sting.enabled&dot.serpent_sting.remains<gcd" );
+  default_list -> add_action( "raptor_strike,if=talent.serpent_sting.enabled&dot.serpent_sting.remains<gcd" );
+  default_list -> add_action( "raptor_strike,if=talent.way_of_the_moknathal.enabled&buff.moknathal_tactics.stack<=2" );
+  default_list -> add_action( "aspect_of_the_eagle,if=buff.mongoose_fury.up&buff.mongoose_fury.duration>6" );
+  default_list -> add_action( "raptor_strike,if=talent.way_of_the_moknathal.enabled&buff.moknathal_tactics.remains<gcd.max&buff.moknathal_tactics.stack<=2" );
+  default_list -> add_action( "flanking_strike,if=focus>75&((cooldown.mongoose_bite.charges=1&buff.mongoose_fury.remains>gcd)|(cooldown.mongoose_bite.charges=2&buff.mongoose_fury.remains>2*gcd))" );
+  default_list -> add_action( "mongoose_bite,if=buff.mongoose_fury.up&buff.mongoose_fury.remains<cooldown.aspect_of_the_eagle.remains" );
+  default_list -> add_action( "a_murder_of_crows,if=focus>55" );
+  default_list -> add_action( "spitting_cobra" );
   default_list -> add_action( "steel_trap" );
   default_list -> add_action( "explosive_trap" );
+  default_list -> add_action( "lacerate,if=!dot.lacerate.ticking|dot.lacerate.remains<3" );
   default_list -> add_action( "dragonsfire_grenade" );
+  default_list -> add_action( "throwing_axes,if=cooldown.throwing_axes.charges=2&buff.mongoose_fury.duration>=gcd" );
+  default_list -> add_action( "butchery" );
   default_list -> add_action( "caltrops" );
-  default_list -> add_action( "carve,cycle_targets=1,if=talent.serpent_sting.enabled&active_enemies>=3&(!dot.serpent_sting.ticking|dot.serpent_sting.remains<=gcd.max)" );
-  default_list -> add_action( "raptor_strike,cycle_targets=1,if=talent.serpent_sting.enabled&active_enemies<=2&(!dot.serpent_sting.ticking|dot.serpent_sting.remains<=gcd.max)|talent.way_of_the_moknathal.enabled&buff.moknathal_tactics.down" );
-  default_list -> add_action( "aspect_of_the_eagle" );
-  default_list -> add_action( "snake_hunter,if=action.mongoose_bite.charges<=0&buff.mongoose_fury.remains" );
-  default_list -> add_action( "mongoose_bite,if=buff.aspect_of_the_eagle.up&(charges>=2|charges>=1&cooldown.mongoose_bite.remains<=2)|(buff.mongoose_fury.up|cooldown.fury_of_the_eagle.remains<5|charges=3)" );
-  default_list -> add_action( "lacerate,if=dot.lacerate.ticking&dot.lacerate.remains<=3|target.time_to_die>=5" );
-  default_list -> add_action( "flanking_strike,if=talent.way_of_the_moknathal.enabled&(buff.moknathal_tactics.remains>=3)|!talent.way_of_the_moknathal.enabled" );
-  default_list -> add_action( "butchery,if=spell_targets.butchery>=2" );
-  default_list -> add_action( "carve,if=spell_targets.carve>=4" );
-  default_list -> add_action( "spitting_cobra" );
+  default_list -> add_action( "mongoose_bite,if=charges>=2" );
   default_list -> add_action( "throwing_axes" );
+  default_list -> add_action( "flanking_strike,if=focus>75" );
   default_list -> add_action( "raptor_strike,if=!talent.throwing_axes.enabled&focus>75-cooldown.flanking_strike.remains*focus.regen" );
 }
 
