@@ -90,30 +90,30 @@ actions.rop_phase+=/arcane_explosion,if=active_enemies>1
 actions.rop_phase+=/arcane_blast,if=mana.pct>45
 actions.rop_phase+=/arcane_barrage
 
-head=hood_of_everburning_knowledge,id=138312,bonus_id=3518
+head=hood_of_everburning_knowledge,id=138312,bonus_id=3519
 neck=sorcerous_shadowruby_pendant,id=130233,bonus_id=1758/689/601/669,gem_id=130219,enchant_id=5439
-shoulders=mantle_of_everburning_knowledge,id=138321,bonus_id=3518
-back=cloak_of_everburning_knowledge,id=138365,bonus_id=3518,enchant=binding_of_intellect
-chest=robe_of_everburning_knowledge,id=138318,bonus_id=3518
-wrists=bracers_of_harnessed_flame,id=140850,bonus_id=3518
-hands=gloves_of_everburning_knowledge,id=138309,bonus_id=3518
-waist=manari_skullbuckled_cinch,id=140887,bonus_id=3518
-legs=leggings_of_everburning_knowledge,id=138315,bonus_id=3518
-feet=treads_of_galactic_odyssey,id=140885,bonus_id=3518
-finger1=spellblades_gemmed_signet,id=140895,bonus_id=3518,enchant=binding_of_crit
-finger2=ring_of_exclusive_servitude,id=140906,bonus_id=3518,enchant=binding_of_crit
+shoulders=mantle_of_everburning_knowledge,id=138321,bonus_id=3519
+back=cloak_of_everburning_knowledge,id=138365,bonus_id=3519,enchant=binding_of_intellect
+chest=robe_of_everburning_knowledge,id=138318,bonus_id=3519
+wrists=bracers_of_harnessed_flame,id=140850,bonus_id=3519
+hands=gloves_of_everburning_knowledge,id=138309,bonus_id=3519
+waist=manari_skullbuckled_cinch,id=140887,bonus_id=3519
+legs=leggings_of_everburning_knowledge,id=138315,bonus_id=3519
+feet=treads_of_galactic_odyssey,id=140885,bonus_id=3519
+finger1=spellblades_gemmed_signet,id=140895,bonus_id=3519,enchant=binding_of_crit
+finger2=ring_of_exclusive_servitude,id=140906,bonus_id=3519,enchant=binding_of_crit
 trinket1=arans_relaxing_ruby,id=142157
 trinket2=naraxas_spiked_tongue,id=137349,bonus_id=1727/1522
-main_hand=aluneth,id=127857,gem_id=140810/140831/140810,relic_id=3518/3518/3518
+main_hand=aluneth,id=127857,gem_id=140810/140831/140810,relic_id=3519/3519/3519
 
 # Gear Summary
-# gear_ilvl=897.47
-# gear_stamina=33469
-# gear_intellect=34407
-# gear_crit_rating=7570
-# gear_haste_rating=5125
-# gear_mastery_rating=7028
-# gear_versatility_rating=4533
-# gear_armor=1979
+# gear_ilvl=901.53
+# gear_stamina=35055
+# gear_intellect=36221
+# gear_crit_rating=7725
+# gear_haste_rating=5209
+# gear_mastery_rating=7136
+# gear_versatility_rating=4644
+# gear_armor=2014
 # set_bonus=tier19_2pc=1
 # set_bonus=tier19_4pc=1

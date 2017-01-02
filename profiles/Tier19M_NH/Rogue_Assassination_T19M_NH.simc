@@ -63,31 +63,31 @@ actions.maintain+=/kingsbane,if=(talent.exsanguinate.enabled&dot.rupture.exsangu
 actions.maintain+=/pool_resource,for_next=1
 actions.maintain+=/garrote,cycle_targets=1,if=refreshable&(!exsanguinated|remains<=1.5)&target.time_to_die-remains>4
 
-head=doomblade_cowl,id=138332,bonus_id=3445
-neck=belerons_choker_of_misery,id=140899,bonus_id=3445,enchant=mark_of_the_hidden_satyr
-shoulders=doomblade_spaulders,id=138338,bonus_id=3445
-back=doomblade_shadowwrap,id=138371,bonus_id=3445,enchant=binding_of_agility
-chest=doomblade_tunic,id=138326,bonus_id=3445
-wrists=bracers_of_impossible_choices,id=140889,bonus_id=3445
-hands=doomblade_gauntlets,id=138329,bonus_id=3445
-waist=girdle_of_nefarious_strategy,id=140859,bonus_id=3445
-legs=doomblade_pants,id=138335,bonus_id=3445
-feet=stutterstep_treads,id=140860,bonus_id=3445
-finger1=spellblades_gemmed_signet,id=140895,bonus_id=3445,enchant=binding_of_versatility
-finger2=ring_of_exclusive_servitude,id=140906,bonus_id=3445,enchant=binding_of_versatility
-trinket1=arcanogolem_digit,id=140794,bonus_id=3445
-trinket2=convergence_of_fates,id=140806,bonus_id=3445
-main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=140822/140815/140819,relic_id=3445/3445/3445
+head=doomblade_cowl,id=138332,bonus_id=3519
+neck=belerons_choker_of_misery,id=140899,bonus_id=3519,enchant=mark_of_the_hidden_satyr
+shoulders=doomblade_spaulders,id=138338,bonus_id=3519
+back=doomblade_shadowwrap,id=138371,bonus_id=3519,enchant=binding_of_agility
+chest=doomblade_tunic,id=138326,bonus_id=3519
+wrists=bracers_of_impossible_choices,id=140889,bonus_id=3519
+hands=doomblade_gauntlets,id=138329,bonus_id=3519
+waist=girdle_of_nefarious_strategy,id=140859,bonus_id=3519
+legs=doomblade_pants,id=138335,bonus_id=3519
+feet=stutterstep_treads,id=140860,bonus_id=3519
+finger1=spellblades_gemmed_signet,id=140895,bonus_id=3519,enchant=binding_of_versatility
+finger2=ring_of_exclusive_servitude,id=140906,bonus_id=3519,enchant=binding_of_versatility
+trinket1=arcanogolem_digit,id=140794,bonus_id=3519
+trinket2=convergence_of_fates,id=140806,bonus_id=3519
+main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=140822/140815/140819,relic_id=3519/3519/3519
 off_hand=the_kingslayers,id=128869
 
 # Gear Summary
-# gear_ilvl=903.00
-# gear_agility=22116
-# gear_stamina=32176
-# gear_crit_rating=8734
-# gear_haste_rating=3614
-# gear_mastery_rating=5511
-# gear_versatility_rating=4653
-# gear_armor=2391
+# gear_ilvl=912.88
+# gear_agility=24228
+# gear_stamina=35283
+# gear_crit_rating=9181
+# gear_haste_rating=3751
+# gear_mastery_rating=5773
+# gear_versatility_rating=4863
+# gear_armor=2471
 # set_bonus=tier19_2pc=1
 # set_bonus=tier19_4pc=1
