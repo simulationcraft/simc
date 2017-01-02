@@ -2633,9 +2633,15 @@ struct stormstrike_attack_t : public shaman_attack_t
   {
     double c = shaman_attack_t::composite_crit_chance();
 
+
+
     if ( p() -> buff.stormbringer -> up() )
     {
-      c += p() -> sets.set( SHAMAN_ENHANCEMENT, T19, B2 ) -> effectN( 1 ).percent();
+		if (p()->sets.has_set_bonus(SHAMAN_ENHANCEMENT, T19, B2))
+		{
+			//Spell data is currently missing. Bonus is currently 40%, needs to be hardcoded.
+			c += p() -> sets.set( SHAMAN_ENHANCEMENT, T19, B2 ) -> effectN( 1 ).percent(); 
+		}
     }
 
     return c;
@@ -6874,7 +6880,7 @@ void shaman_t::init_action_list_enhancement()
   def -> add_action( this, "Crash Lightning", "if=active_enemies>=3" );
   def -> add_action( this, "Windstrike" );
   def -> add_action( this, "Stormstrike", "if=talent.overcharge.enabled&cooldown.lightning_bolt.remains<gcd&maelstrom>80" );
-  def -> add_action( this, "Stormstrike", "if=talent.fury_of_air.enabled&maelstrom>46&cooldown.lightning_bolt.remains>gcd" );
+  def -> add_action( this, "Stormstrike", "if=talent.fury_of_air.enabled&maelstrom>46&(cooldown.lightning_bolt.remains>gcd|!talent.overcharge.enabled)" );
   def -> add_action( this, "Stormstrike", "if=!talent.overchage.enabled&!talent.fury_of_air.enabled" );
   def -> add_action( this, "Crash Lightning", "if=active_enemies>1|talent.crashing_storm.enabled|talent.boulderfist.enabled|feral_spirit.remains>5" );
   def -> add_action( this, "Frostbrand", "if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8" );
