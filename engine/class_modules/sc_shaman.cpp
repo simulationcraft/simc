@@ -4505,7 +4505,7 @@ struct feral_spirit_spell_t : public shaman_spell_t
 
     if ( p() -> buff.spiritual_journey -> up() )
     {
-      m *= 1.0 - p() -> buff.spiritual_journey -> data().effectN( 1 ).percent();
+      m *= 1.0 / ( 1.0 + p() -> buff.spiritual_journey -> data().effectN( 1 ).percent() );
     }
 
     return m;
