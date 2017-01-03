@@ -90,11 +90,11 @@ namespace item
   void fury_of_the_burning_sky( special_effect_t& );
   void icon_of_rot( special_effect_t&             );
   void star_gate( special_effect_t&               );
+  void erratic_metronome( special_effect_t&       );
+
   // Adding this here to check it off the list.
   // The sim builds it automatically.
   //void pharameres_forbidden_grimoire( special_effect_t& );
-
-
   // Legendary
   void aggramars_stride( special_effect_t& );
   void kiljadens_burning_wish( special_effect_t& );
@@ -510,6 +510,43 @@ void item::bloodstained_hankerchief( special_effect_t& effect )
   }
 
   effect.execute_action = a;
+}
+// Erratic Metronome ========================================================
+void item::erratic_metronome( special_effect_t& effect )
+{
+  struct erratic_metronome_cb_t : public dbc_proc_callback_t 
+  {
+    erratic_metronome_cb_t ( const special_effect_t& effect, const double amount ) : 
+      dbc_proc_callback_t( effect.item, effect )
+    {
+      // TODO: FIX HARDCODED VALUES
+      proc_buff = stat_buff_creator_t( effect.player, "accelerando", effect.player -> find_spell( 225719 ), effect.item )
+        .cd( timespan_t::zero() )
+        .add_stat( STAT_HASTE_RATING, amount )
+        .max_stack( 5 )
+        .refresh_behavior( BUFF_REFRESH_DISABLED )
+        .duration( timespan_t::from_seconds( 12.0 ) );
+    }
+    void execute(action_t * a, action_state_t* trigger_state) override
+    {
+      int stack = proc_buff -> check();
+
+      if (stack == 0) 
+      {
+        proc_buff -> trigger();
+      }
+      else 
+      {
+        proc_buff -> bump( 1 );
+      }
+    }
+  };
+  // the amount is stored in another spell
+  double amount = item_database::apply_combat_rating_multiplier(
+                                 *effect.item, effect.player -> find_spell( 225719 ) ->
+                                 effectN( 1 ).average( effect.item ) );
+  new erratic_metronome_cb_t( effect, amount );
+
 }
 
 // Icon of Rot ==============================================================
@@ -3784,6 +3821,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 225134, item::fury_of_the_burning_sky );
   register_special_effect( 225131, item::icon_of_rot             );
   register_special_effect( 225137, item::star_gate               );
+  register_special_effect( 225125, item::erratic_metronome       );
 
   /* Legion 7.0 Misc */
   register_special_effect( 188026, item::infernal_alchemist_stone       );
