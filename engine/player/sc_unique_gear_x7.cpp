@@ -91,7 +91,7 @@ namespace item
   void icon_of_rot( special_effect_t&             );
   void star_gate( special_effect_t&               );
   void erratic_metronome( special_effect_t&       );
-
+  void whispers_in_the_dark( special_effect_t&    );
   // Adding this here to check it off the list.
   // The sim builds it automatically.
   //void pharameres_forbidden_grimoire( special_effect_t& );
@@ -1227,6 +1227,82 @@ void item::windscar_whetstone( special_effect_t& effect )
   effect.trigger_spell_id = 1;
 }
 
+// Whispers in the Dark =====================================================
+
+void item::whispers_in_the_dark( special_effect_t& effect )
+{
+  struct whispers_in_the_dark_bad_buff_t : public buff_t
+  {
+    double amount;
+    whispers_in_the_dark_bad_buff_t(special_effect_t& effect) :
+      buff_t( stat_buff_creator_t( effect.player, "devils_due", effect.player -> find_spell( 225776 ), effect.item ) )
+    {
+      amount = effect.player -> find_spell( 225776 ) -> effectN( 1 ).average( effect.item ) / 100.0;
+    }
+    void execute( int stacks, double value, timespan_t duration ) override
+    {
+      if ( current_stack == 0 )
+      {
+        // the spelldata is already a negative number
+        player -> composite_spell_speed_multiplier += amount;
+        player -> invalidate_cache( CACHE_HASTE );
+      }
+
+      buff_t::execute( stacks, value, duration );
+    }
+    void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+    {
+      buff_t::expire_override( expiration_stacks, remaining_duration );
+      player -> composite_spell_speed_multiplier -= amount;
+      player -> invalidate_cache( CACHE_HASTE );
+    }
+  };
+  struct whispers_in_the_dark_good_buff_t : public buff_t
+  {
+    double amount;
+    whispers_in_the_dark_bad_buff_t* bad_buff;
+
+    whispers_in_the_dark_good_buff_t(special_effect_t& effect) :
+      buff_t( buff_creator_t(effect.player, "nefarious_pact", effect.player->find_spell(225774), effect.item))
+    {
+      bad_buff = new whispers_in_the_dark_bad_buff_t(effect);
+      amount = effect.player->find_spell(225774)->effectN(1).average(effect.item) / 100.0;
+    }
+    void execute(int stacks, double value, timespan_t duration) override
+    {
+      if (current_stack == 0)
+      {
+        player->composite_spell_speed_multiplier += amount;
+        player->invalidate_cache( CACHE_HASTE );
+      }
+      
+      buff_t::execute(stacks, value, duration);
+    }
+    void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+    {
+      buff_t::expire_override(expiration_stacks, remaining_duration);
+      player->composite_spell_speed_multiplier -= amount;
+      player->invalidate_cache( CACHE_HASTE );
+      bad_buff -> trigger();
+    }
+  };
+
+  struct whispers_in_the_dark_cb_t : public dbc_proc_callback_t
+  {
+    whispers_in_the_dark_good_buff_t* whispers_in_the_dark_buff;
+    whispers_in_the_dark_cb_t( special_effect_t& effect ) :
+      dbc_proc_callback_t( effect.item, effect )
+    {
+      whispers_in_the_dark_buff = new whispers_in_the_dark_good_buff_t(effect);
+    }
+    void execute( action_t* a, action_state_t* ) override
+    {
+      whispers_in_the_dark_buff -> trigger();
+    }
+};
+
+	new whispers_in_the_dark_cb_t(effect);
+}
 // Tirathon's Betrayal ======================================================
 
 struct darkstrikes_absorb_t : public absorb_t
@@ -3822,6 +3898,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 225131, item::icon_of_rot             );
   register_special_effect( 225137, item::star_gate               );
   register_special_effect( 225125, item::erratic_metronome       );
+  register_special_effect( 225142, item::whispers_in_the_dark    );
 
   /* Legion 7.0 Misc */
   register_special_effect( 188026, item::infernal_alchemist_stone       );
