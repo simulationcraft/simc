@@ -1243,8 +1243,7 @@ void item::whispers_in_the_dark( special_effect_t& effect )
     {
       if ( current_stack == 0 )
       {
-        // Subtract so the -0.x is added for 1.0 -> 1.x
-        player -> composite_spell_speed_multiplier -= amount;
+        player -> composite_spell_speed_multiplier *= 1 - amount;
         player -> invalidate_cache( CACHE_HASTE );
       }
 
@@ -1253,8 +1252,7 @@ void item::whispers_in_the_dark( special_effect_t& effect )
     void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
     {
       buff_t::expire_override( expiration_stacks, remaining_duration );
-      // Reset the multiplier here: 1.x += -0.x -> 1.0.
-      player -> composite_spell_speed_multiplier += amount;
+      player -> composite_spell_speed_multiplier /= 1 - amount;
       player -> invalidate_cache( CACHE_HASTE );
     }
   };
@@ -1273,7 +1271,7 @@ void item::whispers_in_the_dark( special_effect_t& effect )
     {
       if ( current_stack == 0 )
       {
-        player -> composite_spell_speed_multiplier -= amount;
+        player -> composite_spell_speed_multiplier /= 1 + amount;
         player -> invalidate_cache( CACHE_HASTE );
       }
 
@@ -1282,7 +1280,7 @@ void item::whispers_in_the_dark( special_effect_t& effect )
     void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
     {
       buff_t::expire_override( expiration_stacks, remaining_duration );
-      player -> composite_spell_speed_multiplier += amount;
+      player -> composite_spell_speed_multiplier *= 1 + amount;
       player -> invalidate_cache( CACHE_HASTE );
       bad_buff -> trigger();
     }
