@@ -1262,25 +1262,25 @@ void item::whispers_in_the_dark( special_effect_t& effect )
     double amount;
     whispers_in_the_dark_bad_buff_t* bad_buff;
 
-    whispers_in_the_dark_good_buff_t(special_effect_t& effect) :
-      buff_t( buff_creator_t(effect.player, "nefarious_pact", effect.player->find_spell(225774), effect.item))
+    whispers_in_the_dark_good_buff_t( special_effect_t& effect ) :
+      buff_t( buff_creator_t( effect.player, "nefarious_pact", effect.player -> find_spell( 225774 ), effect.item ) )
     {
-      bad_buff = new whispers_in_the_dark_bad_buff_t(effect);
-      amount = effect.player->find_spell(225774)->effectN(1).average(effect.item) / 100.0;
+      bad_buff = new whispers_in_the_dark_bad_buff_t( effect );
+      amount = effect.player -> find_spell( 225774 ) -> effectN( 1 ).average( effect.item ) / 100.0;
     }
-    void execute(int stacks, double value, timespan_t duration) override
+    void execute( int stacks, double value, timespan_t duration ) override
     {
-      if (current_stack == 0)
+      if ( current_stack == 0 )
       {
         player->composite_spell_speed_multiplier += amount;
         player->invalidate_cache( CACHE_HASTE );
       }
       
-      buff_t::execute(stacks, value, duration);
+      buff_t::execute( stacks, value, duration );
     }
     void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
     {
-      buff_t::expire_override(expiration_stacks, remaining_duration);
+      buff_t::expire_override( expiration_stacks, remaining_duration );
       player->composite_spell_speed_multiplier -= amount;
       player->invalidate_cache( CACHE_HASTE );
       bad_buff -> trigger();
@@ -1293,15 +1293,14 @@ void item::whispers_in_the_dark( special_effect_t& effect )
     whispers_in_the_dark_cb_t( special_effect_t& effect ) :
       dbc_proc_callback_t( effect.item, effect )
     {
-      whispers_in_the_dark_buff = new whispers_in_the_dark_good_buff_t(effect);
+      whispers_in_the_dark_buff = new whispers_in_the_dark_good_buff_t( effect );
     }
     void execute( action_t* a, action_state_t* ) override
     {
       whispers_in_the_dark_buff -> trigger();
     }
 };
-
-	new whispers_in_the_dark_cb_t(effect);
+  new whispers_in_the_dark_cb_t( effect );
 }
 // Tirathon's Betrayal ======================================================
 
