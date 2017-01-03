@@ -514,9 +514,9 @@ void item::bloodstained_hankerchief( special_effect_t& effect )
 // Erratic Metronome ========================================================
 void item::erratic_metronome( special_effect_t& effect )
 {
-  struct erratic_metronome_cb_t : public dbc_proc_callback_t 
+  struct erratic_metronome_cb_t : public dbc_proc_callback_t
   {
-    erratic_metronome_cb_t ( const special_effect_t& effect, const double amount ) : 
+    erratic_metronome_cb_t ( const special_effect_t& effect, const double amount ) :
       dbc_proc_callback_t( effect.item, effect )
     {
       // TODO: FIX HARDCODED VALUES
@@ -531,11 +531,11 @@ void item::erratic_metronome( special_effect_t& effect )
     {
       int stack = proc_buff -> check();
 
-      if (stack == 0) 
+      if (stack == 0)
       {
         proc_buff -> trigger();
       }
-      else 
+      else
       {
         proc_buff -> bump( 1 );
       }
@@ -574,7 +574,7 @@ struct icon_of_rot_driver_t : public dbc_proc_callback_t
   void initialize() override
   {
     dbc_proc_callback_t::initialize();
-    
+
     action_t* damage_spell = listener -> find_action( "carrion_swarm" );
 
     if( ! damage_spell )
@@ -1243,8 +1243,8 @@ void item::whispers_in_the_dark( special_effect_t& effect )
     {
       if ( current_stack == 0 )
       {
-        // the spelldata is already a negative number
-        player -> composite_spell_speed_multiplier += amount;
+        // Subtract so the -0.x is added for 1.0 -> 1.x
+        player -> composite_spell_speed_multiplier -= amount;
         player -> invalidate_cache( CACHE_HASTE );
       }
 
@@ -1253,7 +1253,8 @@ void item::whispers_in_the_dark( special_effect_t& effect )
     void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
     {
       buff_t::expire_override( expiration_stacks, remaining_duration );
-      player -> composite_spell_speed_multiplier -= amount;
+      // Reset the multiplier here: 1.x += -0.x -> 1.0.
+      player -> composite_spell_speed_multiplier += amount;
       player -> invalidate_cache( CACHE_HASTE );
     }
   };
@@ -1272,17 +1273,17 @@ void item::whispers_in_the_dark( special_effect_t& effect )
     {
       if ( current_stack == 0 )
       {
-        player->composite_spell_speed_multiplier += amount;
-        player->invalidate_cache( CACHE_HASTE );
+        player -> composite_spell_speed_multiplier -= amount;
+        player -> invalidate_cache( CACHE_HASTE );
       }
-      
+
       buff_t::execute( stacks, value, duration );
     }
     void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
     {
       buff_t::expire_override( expiration_stacks, remaining_duration );
-      player->composite_spell_speed_multiplier -= amount;
-      player->invalidate_cache( CACHE_HASTE );
+      player -> composite_spell_speed_multiplier += amount;
+      player -> invalidate_cache( CACHE_HASTE );
       bad_buff -> trigger();
     }
   };
