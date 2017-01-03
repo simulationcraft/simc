@@ -89,6 +89,11 @@ namespace item
   void entwined_elemental_foci( special_effect_t& );
   void fury_of_the_burning_sky( special_effect_t& );
   void icon_of_rot( special_effect_t&             );
+  void star_gate( special_effect_t&               );
+  // Adding this here to check it off the list.
+  // The sim builds it automatically.
+  //void pharameres_forbidden_grimoire( special_effect_t& );
+
 
   // Legendary
   void aggramars_stride( special_effect_t& );
@@ -1123,6 +1128,49 @@ void item::spiked_counterweight( special_effect_t& effect )
   effect.execute_action -> add_child( new haymaker_damage_t( effect ) );
 
   new dbc_proc_callback_t( effect.item, effect );
+}
+
+// Star Gate ================================================================
+
+struct nether_meteor_t : public spell_t
+{
+  nether_meteor_t( const special_effect_t& effect ) :
+    spell_t( "nether_meteor", effect.player, effect.driver() )
+  {
+    background = may_crit = true;
+    callbacks = false;
+    school = SCHOOL_SPELLFIRE;
+    base_dd_min = base_dd_max = effect.player -> find_spell( 225764 ) -> effectN( 1 ).average( effect.item );
+    aoe = -1;
+  }
+
+   timespan_t travel_time() const override
+  {
+    // Hardcode this to override the 1y/s velocity in the spelldata and keep
+    // impact timings consistent with in game results.
+    return timespan_t::from_seconds( 1.0 );
+  }
+};
+
+void item::star_gate( special_effect_t& effect )
+{
+
+  action_t* action = effect.player -> find_action( "nether_meteor" ) ;
+  if ( ! action )
+  {
+    action = effect.player -> create_proc_action( "nether_meteor", effect );
+  }
+
+  if ( ! action )
+  {
+    action = new nether_meteor_t( effect );
+  }
+
+  effect.execute_action = action;
+  effect.proc_flags2_ = PF2_ALL_HIT;
+
+  new dbc_proc_callback_t( effect.player, effect );
+
 }
 
 // Windscar Whetstone =======================================================
@@ -3735,6 +3783,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 225129, item::entwined_elemental_foci );
   register_special_effect( 225134, item::fury_of_the_burning_sky );
   register_special_effect( 225131, item::icon_of_rot             );
+  register_special_effect( 225137, item::star_gate               );
 
   /* Legion 7.0 Misc */
   register_special_effect( 188026, item::infernal_alchemist_stone       );
