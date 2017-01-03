@@ -3959,22 +3959,28 @@ void unique_gear::register_hotfixes_x7()
     .modifier( 1.65 )
     .verification_value( 0.92 );
 
-  hotfix::register_effect( "Mark of the Hidden Satyr", "2016-12-31", "7.1.5 removed base value.", 280531 )
+  hotfix::register_effect( "Mark of the Hidden Satyr", "2016-12-31", "7.1.5 removed damage-related spell data.", 280531 )
     .field( "base_value" )
     .operation( hotfix::HOTFIX_SET )
     .modifier( 271 )
     .verification_value( -1 );
 
-  hotfix::register_effect( "Mark of the Hidden Satyr", "2016-12-31-2", "7.1.5 removed damage information.", 280531 )
+  hotfix::register_effect( "Mark of the Hidden Satyr", "2016-12-31-2", "7.1.5 removed damage information.", 280531, hotfix::HOTFIX_FLAG_DEFAULT | hotfix::HOTFIX_FLAG_QUIET )
     .field( "average" )
     .operation( hotfix::HOTFIX_SET )
     .modifier( 29.13479 )
     .verification_value( 0 );
 
-  hotfix::register_effect( "Mark of the Hidden Satyr", "2016-12-31-3", "7.1.5 removed damage information.", 280531 )
+  hotfix::register_effect( "Mark of the Hidden Satyr", "2016-12-31-3", "7.1.5 removed damage information.", 280531, hotfix::HOTFIX_FLAG_DEFAULT | hotfix::HOTFIX_FLAG_QUIET )
     .field( "delta" )
     .operation( hotfix::HOTFIX_SET )
     .modifier( 0.15 )
+    .verification_value( 0 );
+
+  hotfix::register_spell( "Mark of the Hidden Satyr", "2016-12-31-4", "7.1.5 removed damage information.", 191259, hotfix::HOTFIX_FLAG_DEFAULT | hotfix::HOTFIX_FLAG_QUIET )
+    .field( "scaling_class" )
+    .operation( hotfix::HOTFIX_SET )
+    .modifier( -1 )
     .verification_value( 0 );
 }
 
