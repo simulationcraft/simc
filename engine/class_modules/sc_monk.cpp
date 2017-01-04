@@ -8904,7 +8904,7 @@ void monk_t::apl_pre_windwalker()
   {
     // Food
     if ( level() > 100 )
-      pre -> add_action( "food,type=fishbrul_special" );
+      pre -> add_action( "food,type=the_hungry_magister" );
     else if ( level() > 90 )
       pre -> add_action( "food,type=salty_squid_roll" );
     else if ( level() >= 85 )
@@ -9146,6 +9146,18 @@ void monk_t::apl_combat_windwalker()
   serenity -> add_action( "call_action_list,name=cd" );
   serenity -> add_talent( this, "Serenity" );
   serenity -> add_action( this, "Strike of the Windlord" );
+
+  for ( int i = 0; i < num_items; i++ )
+  {
+    if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+    {
+      if ( items[i].name_str == "draught_of_souls" )
+      {
+        serenity -> add_action( "use_item,name=" + items[i].name_str );
+      }
+    }
+  }
+
   serenity -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=active_enemies<3" );
   serenity -> add_action( this, "Fists of Fury" );
   serenity -> add_action( this, "Spinning Crane Kick", "if=active_enemies>=3&!prev_gcd.1.spinning_crane_kick" );

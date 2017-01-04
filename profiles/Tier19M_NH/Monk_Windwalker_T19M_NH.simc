@@ -15,7 +15,7 @@ spec=windwalker
 
 # Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat=flask,type=flask_of_the_seventh_demon
-actions.precombat+=/food,type=fishbrul_special
+actions.precombat+=/food,type=the_hungry_magister
 actions.precombat+=/augmentation,type=defiled
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=old_war
@@ -48,6 +48,7 @@ actions.sef+=/call_action_list,name=st
 actions.serenity=call_action_list,name=cd
 actions.serenity+=/serenity
 actions.serenity+=/strike_of_the_windlord
+actions.serenity+=/use_item,name=draught_of_souls
 actions.serenity+=/rising_sun_kick,cycle_targets=1,if=active_enemies<3
 actions.serenity+=/fists_of_fury
 actions.serenity+=/spinning_crane_kick,if=active_enemies>=3&!prev_gcd.1.spinning_crane_kick
