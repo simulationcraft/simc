@@ -53,8 +53,8 @@ actions.serenity+=/rising_sun_kick,cycle_targets=1,if=active_enemies<3
 actions.serenity+=/fists_of_fury
 actions.serenity+=/spinning_crane_kick,if=active_enemies>=3&!prev_gcd.1.spinning_crane_kick
 actions.serenity+=/rising_sun_kick,cycle_targets=1,if=active_enemies>=3
-actions.serenity+=/blackout_kick,cycle_targets=1,if=!prev_gcd.1.blackout_kick
 actions.serenity+=/spinning_crane_kick,if=!prev_gcd.1.spinning_crane_kick
+actions.serenity+=/blackout_kick,cycle_targets=1,if=!prev_gcd.1.blackout_kick
 actions.serenity+=/rushing_jade_wind,if=!prev_gcd.1.rushing_jade_wind
 
 actions.st=call_action_list,name=cd
