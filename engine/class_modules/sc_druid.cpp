@@ -2763,6 +2763,19 @@ struct brutal_slash_t : public cat_attack_t
 
     return c;
   }
+
+  virtual double composite_target_multiplier(player_t* t) const override
+  {
+     double tm = cat_attack_t::composite_target_multiplier(t);
+
+     if (p()->sets.has_set_bonus(DRUID_FERAL, T19, B4))
+     {
+        tm *= 1.0 + td(t)->feral_tier19_4pc_bleeds() *
+           p()->sets.set(DRUID_FERAL, T19, B4)->effectN(1).percent();
+     }
+
+     return tm;
+  }
 };
 
 // Ferocious Bite ===========================================================
@@ -6872,8 +6885,8 @@ void druid_t::apl_feral()
   def -> add_action( this, "Ferocious Bite", "cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<3&target.time_to_die>3&(target.health.pct<25|talent.sabertooth.enabled)",
                      "Keep Rip from falling off during execute range." );
   def -> add_action( this, "Regrowth",
-                     "if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&(combo_points>=5|buff.predatory_swiftness.remains<1.5"
-                     "|(talent.bloodtalons.enabled&combo_points=2&buff.bloodtalons.down&cooldown.ashamanes_frenzy.remains<gcd)|"
+                     "if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&buff.bloodtalons.down&(combo_points>=5|buff.predatory_swiftness.remains<1.5"
+                     "|(talent.bloodtalons.enabled&combo_points=2&cooldown.ashamanes_frenzy.remains<gcd)|"
                      "(talent.elunes_guidance.enabled&((cooldown.elunes_guidance.remains<gcd&combo_points=0)|(buff.elunes_guidance.up&combo_points>=4))))",
                      "Use Healing Touch at 5 Combo Points, if Predatory Swiftness is about to fall off, at 2 Combo Points before Ashamane's Frenzy, "
                      "before Elune's Guidance is cast or before the Elune's Guidance buff gives you a 5th Combo Point." );
