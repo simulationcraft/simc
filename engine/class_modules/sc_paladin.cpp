@@ -3176,9 +3176,6 @@ struct echoed_divine_storm_t: public paladin_melee_attack_t
 
     base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 1 ).percent();
 
-    // TODO: figure out where this is from
-    base_multiplier *= 0.9;
-
     aoe = -1;
     background = true;
   }
@@ -3248,9 +3245,6 @@ struct divine_storm_t: public holy_power_consumer_t
       base_multiplier *= 1.0 + p -> talents.final_verdict -> effectN( 2 ).percent();
 
     base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 1 ).percent();
-
-    // TODO: figure out where this is from
-    base_multiplier *= 0.9;
 
     aoe = -1;
 
@@ -3784,8 +3778,6 @@ struct echoed_templars_verdict_t : public paladin_melee_attack_t
     if ( p -> talents.final_verdict -> ok() )
       base_multiplier *= 1.0 + p -> talents.final_verdict -> effectN( 1 ).percent();
 
-    // TODO: this happened in 7.1, but not sure where it came from - Removing for 7.1.5 for now.
-    //base_multiplier *= 0.9;
     base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 1 ).percent();
   }
 
