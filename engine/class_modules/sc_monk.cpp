@@ -3898,6 +3898,7 @@ struct strike_of_the_windlord_t: public monk_melee_attack_t
     radius = data().effectN( 3 ).trigger() -> effectN( 2 ).base_value();
     // Force the sim to use damage range
     sim -> average_range = 0;
+    trigger_gcd = data().gcd();
 
     oh_attack = new strike_of_the_windlord_off_hand_t( p, "strike_of_the_windlord_offhand", data().effectN( 4 ).trigger() );
     add_child( oh_attack );
