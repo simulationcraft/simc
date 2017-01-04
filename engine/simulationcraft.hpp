@@ -5,8 +5,13 @@
 #ifndef SIMULATIONCRAFT_H
 #define SIMULATIONCRAFT_H
 
+<<<<<<< HEAD
 #define SC_MAJOR_VERSION "715"
 #define SC_MINOR_VERSION "01"
+=======
+#define SC_MAJOR_VERSION "623"
+#define SC_MINOR_VERSION "03"
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
 #define SC_VERSION ( SC_MAJOR_VERSION "-" SC_MINOR_VERSION )
 #define SC_BETA 0
 #if SC_BETA
@@ -1976,7 +1981,7 @@ struct scaling_t
   void normalize();
   double progress( std::string& phase, std::string* detailed = nullptr );
   void create_options();
-  bool has_scale_factors();
+  bool has_scale_factors() const;
 };
 
 // Plot =====================================================================
@@ -2005,13 +2010,18 @@ private:
 };
 
 // Reforge Plot =============================================================
-
+class reforge_plot_run_t
+{
+public:
+  std::vector<stat_e> reforge_plot_stat_indices;
+};
 struct reforge_plot_t
 {
+
   sim_t* sim;
   sim_t* current_reforge_sim;
   std::string reforge_plot_stat_str;
-  std::vector<stat_e> reforge_plot_stat_indices;
+  std::vector<reforge_plot_run_t> reforge_plots;
   int    reforge_plot_step;
   int    reforge_plot_amount;
   int    reforge_plot_iterations;
@@ -2022,16 +2032,18 @@ struct reforge_plot_t
 
   reforge_plot_t( sim_t* s );
 
+  void start();
+  void run_plots();
+  double progress( std::string& phase, std::string* detailed = nullptr );
+private:
   void generate_stat_mods( std::vector<std::vector<int> > &stat_mods,
                            const std::vector<stat_e> &stat_indices,
                            int cur_mod_stat,
                            std::vector<int> cur_stat_mods );
-  void analyze();
-  void analyze_stats();
-  double progress( std::string& phase, std::string* detailed = nullptr );
-private:
   void write_output_file();
   void create_options();
+  void run_reforge_plot( const reforge_plot_run_t& );
+  void debug_plot(  const reforge_plot_run_t&, const std::vector<std::vector<int>>& stat_mods);
 };
 
 struct plot_data_t
@@ -2595,8 +2607,11 @@ struct item_t
   std::string option_gem_id_str;
   std::string option_bonus_id_str;
   std::string option_initial_cd_str;
+<<<<<<< HEAD
   std::string option_drop_level_str;
   std::string option_relic_id_str;
+=======
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
   double option_initial_cd;
 
   // Extracted data
@@ -2634,7 +2649,7 @@ struct item_t
   bool has_item_stat( stat_e stat ) const;
 
   std::string encoded_item() const;
-  void encoded_item( xml_writer_t& writer );
+  void encoded_item( xml_writer_t& writer ) const;
   std::string encoded_comment();
 
   std::string encoded_stats() const;
@@ -3158,9 +3173,23 @@ public:
 
 struct player_processed_report_information_t
 {
+<<<<<<< HEAD
   bool generated = false;
   bool buff_lists_generated = false;
   std::array<std::string, SCALE_METRIC_MAX> gear_weights_wowhead_std_link, gear_weights_pawn_string, gear_weights_askmrrobot_link;
+=======
+  bool charts_generated, buff_lists_generated;
+  std::string action_dpet_chart, action_dmg_chart, time_spent_chart;
+  std::array<std::string, RESOURCE_MAX> timeline_resource_chart, gains_chart;
+  std::array<std::string, STAT_MAX> timeline_stat_chart;
+  std::string timeline_dps_chart, timeline_dps_error_chart, timeline_resource_health_chart;
+  std::string distribution_dps_chart, scaling_dps_chart, scale_factors_chart;
+  std::vector<std::pair<unsigned,std::string>> reforge_dps_charts;
+  std::string dps_error_chart;
+  std::string distribution_deaths_chart;
+  std::string health_change_chart, health_change_sliding_chart;
+  std::array<std::string, SCALE_METRIC_MAX> gear_weights_lootrank_link, gear_weights_wowhead_std_link, gear_weights_pawn_string, gear_weights_askmrrobot_link;
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
   std::string save_str;
   std::string save_gear_str;
   std::string save_talents_str;
@@ -3788,7 +3817,7 @@ struct player_t : public actor_t
   auto_dispose< std::vector<real_ppm_t*> > rppm_list;
   std::vector<cooldown_t*> dynamic_cooldown_list;
   std::array< std::vector<plot_data_t>, STAT_MAX > dps_plot_data;
-  std::vector<std::vector<plot_data_t> > reforge_plot_data;
+  std::unordered_map<const reforge_plot_run_t*, std::vector<std::vector<plot_data_t>>> reforge_plot_data;
   auto_dispose< std::vector<luxurious_sample_data_t*> > sample_data_list;
 
   // All Data collected during / end of combat
@@ -6476,6 +6505,138 @@ inline void dot_end_event_t::execute()
   dot -> last_tick();
 }
 
+<<<<<<< HEAD
+=======
+// "Real" 'Procs per Minute' helper class =====================================
+
+struct real_ppm_t
+{
+private:
+  player_t*    player;
+  double       freq;
+  double       modifier;
+  double       rppm;
+  bool         first_proc_occurred;
+  timespan_t   last_trigger_attempt;
+  timespan_t   last_successful_trigger;
+  timespan_t   initial_precombat_time;
+  rppm_scale_e scales_with;
+
+  static double max_interval() { return 10.0; }
+  static double max_bad_luck_prot() { return 1000.0; }
+public:
+  static double proc_chance( player_t*         player,
+                             double            PPM,
+                             const timespan_t& last_trigger,
+                             const timespan_t& last_successful_proc,
+                             rppm_scale_e      scales_with )
+  {
+    double coeff = 1.0;
+    double seconds = std::min( ( player -> sim -> current_time() - last_trigger ).total_seconds(), max_interval() );
+
+    if ( scales_with == RPPM_HASTE )
+      coeff *= 1.0 / std::min( player -> cache.spell_haste(), player -> cache.attack_haste() );
+    // This might technically be two separate crit values, but this should be sufficient for our
+    // cases. In any case, the client data does not offer information which crit it is (attack or
+    // spell).
+    else if ( scales_with == RPPM_CRIT )
+      coeff *= 1.0 + std::max( player -> cache.attack_crit(), player -> cache.spell_crit() );
+
+    double real_ppm = PPM * coeff;
+    double old_rppm_chance = real_ppm * ( seconds / 60.0 );
+
+    // RPPM Extension added on 12. March 2013: http://us.battle.net/wow/en/blog/8953693?page=44
+    // Formula see http://us.battle.net/wow/en/forum/topic/8197741003#1
+    double last_success = std::min( ( player -> sim -> current_time() - last_successful_proc ).total_seconds(), max_bad_luck_prot() );
+    double expected_average_proc_interval = 60.0 / real_ppm;
+
+    double rppm_chance = std::max( 1.0, 1 + ( ( last_success / expected_average_proc_interval - 1.5 ) * 3.0 ) )  * old_rppm_chance;
+    if ( player -> sim -> debug )
+      player -> sim -> out_debug.printf( "base=%.3f coeff=%.3f last_trig=%.3f last_proc=%.3f scales=%d chance=%.5f%%",
+          PPM, coeff, last_trigger.total_seconds(), last_successful_proc.total_seconds(), scales_with,
+          rppm_chance * 100.0 );
+    return rppm_chance;
+  }
+
+  real_ppm_t() :
+    player( nullptr ), freq( 0 ), modifier( 0 ), rppm( 0 ),
+    first_proc_occurred( false ),
+    last_trigger_attempt( timespan_t::from_seconds( -10.0 ) ),
+    last_successful_trigger( timespan_t::from_seconds( -120.0 ) ),
+    initial_precombat_time( timespan_t::from_seconds( -120.0 ) ),
+    scales_with( RPPM_NONE )
+  { }
+
+  real_ppm_t( player_t& p, double frequency = 0, double mod = 1.0, rppm_scale_e s = RPPM_NONE ) :
+    player( &p ),
+    freq( frequency ),
+    modifier( mod ),
+    rppm( freq * mod ),
+    first_proc_occurred( false ),
+    last_trigger_attempt( timespan_t::from_seconds( -10.0 ) ),
+    last_successful_trigger( timespan_t::from_seconds( -120.0 ) ),
+    initial_precombat_time( timespan_t::from_seconds( -120.0 ) ),
+    scales_with( s )
+  { }
+
+  void set_frequency( double frequency )
+  { freq = frequency; rppm = freq * modifier; }
+
+  void set_initial_precombat_time( timespan_t precombat )
+  {
+    initial_precombat_time = precombat;
+  }
+
+  double get_frequency() const
+  { return freq; }
+
+  void set_modifier( double mod )
+  { modifier = mod; rppm = freq * modifier; }
+
+  double get_modifier() const
+  { return modifier; }
+
+  double get_rppm() const
+  { return rppm; }
+
+  void set_last_trigger_attempt( const timespan_t& ts )
+  { last_trigger_attempt = ts; }
+
+  void set_last_trigger_success( const timespan_t& ts )
+  { last_successful_trigger = ts; }
+
+  void reset()
+  {
+    last_trigger_attempt = timespan_t::from_seconds( -10.0 );
+    last_successful_trigger = initial_precombat_time;
+    first_proc_occurred = false;
+  }
+
+  bool trigger()
+  {
+    assert( freq != 0 && "Real PPM Frequency not set!" );
+
+    if ( last_trigger_attempt == player -> sim -> current_time() )
+      return false;
+
+    double chance = proc_chance( player, rppm, last_trigger_attempt,
+                                 last_successful_trigger, scales_with );
+    bool success = player -> rng().roll( chance );
+
+    if ( success )
+    {
+      first_proc_occurred = true;
+      last_successful_trigger = player -> sim -> current_time();
+    }
+    // Due to a bug, last attempt to trigger is fixed until first proc
+    if ( first_proc_occurred )
+      last_trigger_attempt = player -> sim -> current_time();
+
+    return success;
+  }
+};
+
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
 // Action Callback ==========================================================
 
 struct action_callback_t : private noncopyable

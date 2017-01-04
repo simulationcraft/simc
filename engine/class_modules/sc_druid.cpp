@@ -2998,6 +2998,10 @@ struct rip_t : public cat_attack_t
     /* FIXME: Does this even work correctly for tick_damage expression?
      probably just uses the CP of the Rip already on the target */
     rip_state_t* rip_state = debug_cast<rip_state_t*>( td( s -> target ) -> dots.rip -> state );
+    if ( ! rip_state )
+    {
+      return 0;
+    }
 
     if ( ! rip_state )
       return 0;
@@ -6764,6 +6768,8 @@ void druid_t::apl_feral()
   
   def -> add_action( this, "Dash", "if=!buff.cat_form.up" );
   def -> add_action( this, "Cat Form" );
+  if ( find_item( "maalus_the_blood_drinker") && find_item( "soul_capacitor" ) )
+    def -> add_action( "cancel_buff,name=spirit_shift,if=buff.maalus.remains<1&buff.maalus.up&buff.spirit_shift.remains-buff.maalus.remains<5", "Explode Spirit Shift at the end of Maalus if it has significant damage stored up." );
   def -> add_talent( this, "Wild Charge" );
   def -> add_talent( this, "Displacer Beast", "if=movement.distance>10" );
   def -> add_action( this, "Dash", "if=movement.distance&buff.displacer_beast.down&buff.wild_charge_movement.down" );

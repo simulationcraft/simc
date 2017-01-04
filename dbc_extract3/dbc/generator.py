@@ -457,6 +457,10 @@ class RealPPMModifierGenerator(DataGenerator):
                     continue
 
                 spell_id = aopts_data.id_spell
+<<<<<<< HEAD:dbc_extract3/dbc/generator.py
+=======
+
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c:dbc_extract/dbc/generator.py
                 if spell_id == 0:
                     continue
 

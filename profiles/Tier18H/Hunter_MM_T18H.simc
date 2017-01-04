@@ -1,0 +1,99 @@
+hunter="Hunter_MM_T18H"
+level=100
+race=blood_elf
+role=attack
+position=ranged_back
+talents=0003332
+talent_override=lone_wolf,if=raid_event.adds.count>=3|enemies>1
+spec=marksmanship
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=greater_draenic_agility_flask
+actions.precombat+=/food,type=pickled_eel
+actions.precombat+=/summon_pet
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/exotic_munitions,ammo_type=incendiary
+actions.precombat+=/potion,name=draenic_agility
+actions.precombat+=/glaive_toss
+actions.precombat+=/focusing_shot
+actions.precombat+=/powershot
+
+# Executed every time the actor is available.
+
+actions=auto_shot
+actions+=/use_item,name=mirror_of_the_blademaster
+actions+=/arcane_torrent,if=focus.deficit>=30&buff.rapid_fire.up
+actions+=/blood_fury
+actions+=/berserking
+actions+=/potion,name=draenic_agility,if=((buff.rapid_fire.up|buff.bloodlust.up)&(cooldown.stampede.remains<1))|target.time_to_die<=45
+actions+=/chimaera_shot
+actions+=/kill_shot
+actions+=/rapid_fire
+actions+=/stampede,if=buff.rapid_fire.up|buff.bloodlust.up|target.time_to_die<=25
+actions+=/call_action_list,name=careful_aim,if=buff.careful_aim.up
+actions+=/explosive_trap,if=spell_targets.explosive_trap_tick>1
+actions+=/a_murder_of_crows
+actions+=/dire_beast,if=cast_regen+action.aimed_shot.cast_regen<focus.deficit
+actions+=/glaive_toss
+actions+=/powershot,if=cast_regen<focus.deficit
+actions+=/barrage,if=spell_targets.barrage>1
+# Pool max focus for rapid fire so we can spam AimedShot with Careful Aim buff
+actions+=/steady_shot,if=focus.deficit*cast_time%(14+cast_regen)>cooldown.rapid_fire.remains
+# Pool max focus for rapid fire so we can spam AimedShot with Careful Aim buff
+actions+=/steady_shot,if=focus.deficit*cast_time%(14+cast_regen)>cooldown.rapid_fire.remains
+actions+=/focusing_shot,if=focus.deficit*cast_time%(50+cast_regen)>cooldown.rapid_fire.remains&focus<100
+# Cast a second shot for steady focus if that won't cap us.
+actions+=/steady_shot,if=buff.pre_steady_focus.up&(14+cast_regen+action.aimed_shot.cast_regen)<=focus.deficit
+actions+=/steady_shot,if=cooldown.chimaera_shot.remains<4&(14+cast_regen+action.aimed_shot.cast_regen)<=focus.deficit
+actions+=/multishot,if=spell_targets.multi_shot>=8
+actions+=/aimed_shot,if=talent.focusing_shot.enabled
+actions+=/aimed_shot,if=focus+cast_regen>=90
+actions+=/aimed_shot,if=buff.thrill_of_the_hunt.react&focus+cast_regen>=65
+# Allow FS to over-cap by 10 if we have nothing else to do
+actions+=/focusing_shot,if=50+cast_regen-10<focus.deficit
+actions+=/steady_shot
+
+actions.careful_aim=glaive_toss,if=active_enemies>2
+actions.careful_aim+=/powershot,if=spell_targets.powershot>1&cast_regen<focus.deficit
+actions.careful_aim+=/barrage,if=spell_targets.barrage>2
+actions.careful_aim+=/aimed_shot
+actions.careful_aim+=/focusing_shot,if=50+cast_regen<focus.deficit
+actions.careful_aim+=/steady_shot
+
+head=hood_of_the_savage_hunt,id=124296,bonus_id=566
+neck=shifting_taladite_pendant,id=115800,bonus_id=76/618,enchant_id=5317
+shoulders=pauldrons_of_the_savage_hunt,id=124307,bonus_id=566
+back=nimble_hexweave_cloak,id=114818,bonus_id=76/618,enchant_id=5310
+chest=hauberk_of_the_savage_hunt,id=124284,bonus_id=566
+wrists=bracers_of_fel_empowerment,id=124314,bonus_id=566
+hands=eredar_felchain_gloves,id=124291,bonus_id=566
+waist=wayfaring_belt,id=116194,bonus_id=76/618
+legs=leggings_of_the_savage_hunt,id=124301,bonus_id=566
+feet=spiked_throatcrusher_boots,id=124287,bonus_id=566
+finger1=portal_key_signet,id=124189,bonus_id=566,enchant_id=5324
+finger2=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant_id=5324
+trinket1=mirror_of_the_blademaster,id=124224,bonus_id=566
+trinket2=malicious_censer,id=124226,bonus_id=566
+main_hand=cursed_demonbone_longbow,id=124361,bonus_id=566,enchant_id=5276
+
+# Gear Summary
+# gear_ilvl=713.33
+# gear_agility=3984
+# gear_stamina=5353
+# gear_crit_rating=2209
+# gear_haste_rating=206
+# gear_mastery_rating=478
+# gear_multistrike_rating=2454
+# gear_versatility_rating=128
+# gear_armor=1585
+# set_bonus=tier18_2pc=1
+# set_bonus=tier18_4pc=1
+summon_pet=cat

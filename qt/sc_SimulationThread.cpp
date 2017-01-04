@@ -58,7 +58,7 @@ void SC_SimulateThread::run()
     {
       sim -> scaling -> analyze();
       sim -> plot -> analyze();
-      sim -> reforge_plot -> analyze();
+      sim -> reforge_plot -> start();
       report::print_suite( sim );
     }
   }

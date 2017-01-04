@@ -1581,11 +1581,226 @@ void action_t::tick( dot_t* d )
 
     action_state_t* state = tick_action -> get_state( d -> state );
     if ( dynamic_tick_action )
+<<<<<<< HEAD
       update_state( state, amount_type( state, tick_action -> direct_tick ) );
+=======
+      snapshot_state( state, amount_type( state, true ) );
+    else
+      update_state( state, amount_type( state, true ) );
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
     state -> da_multiplier = state -> ta_multiplier * d -> get_last_tick_factor();
     state -> target_da_multiplier = state -> target_ta_multiplier;
     tick_action -> target = d -> target;
     tick_action -> schedule_execute( state );
+<<<<<<< HEAD
+=======
+  }
+  else
+  {
+    d -> state -> result = RESULT_HIT;
+
+    if ( tick_may_crit && rng().roll( d -> state -> composite_crit() ) )
+      d -> state -> result = RESULT_CRIT;
+
+    d -> state -> result_amount = calculate_tick_amount( d -> state, d -> get_last_tick_factor() );
+
+    assess_damage( amount_type( d -> state, true ), d -> state );
+
+    if ( sim -> debug )
+      d -> state -> debug();
+
+    schedule_multistrike( d -> state, amount_type( d -> state, true ), d -> get_last_tick_factor() );
+  }
+
+  stats -> add_tick( d -> time_to_tick, d -> state -> target );
+
+  player -> trigger_ready();
+}
+
+// action_t::multistrike_tick ===============================================
+
+// Generate a periodic multistrike
+void action_t::multistrike_tick( const action_state_t* source_state, action_state_t* ms_state, double tick_multiplier )
+{
+  ms_state -> result_raw = source_state -> result_raw * composite_multistrike_multiplier( source_state );
+  double total = ms_state -> result_raw;
+  if ( ms_state -> result == RESULT_MULTISTRIKE_CRIT )
+    total *= ( 1.0 + total_crit_bonus() );
+  // Also apply last_tick_factor properly
+  total *= tick_multiplier;
+
+  ms_state -> result_total = ms_state -> result_amount = total;
+}
+
+// action_t::last_tick ======================================================
+
+void action_t::last_tick( dot_t* d )
+{
+  if ( get_school() == SCHOOL_PHYSICAL )
+  {
+    buff_t* b = d -> state -> target -> debuffs.bleeding;
+    if ( b -> current_value > 0 ) b -> current_value -= 1.0;
+    if ( b -> current_value == 0 ) b -> expire();
+  }
+
+  if ( channeled && player -> channeling == this )
+  {
+    player -> channeling = 0;
+  }
+}
+
+// action_t::update_resolve ======================================================
+
+void action_t::update_resolve( dmg_e type,
+                                 action_state_t* s )
+{
+  // pointers to make life easy
+  player_t* source = s -> action -> player;
+  player_t* target = s -> target;
+
+  // check that the target has Resolve, check for damage type, and check that the source player is an enemy
+  if ( target -> resolve_manager.is_started() && ( type == DMG_DIRECT || type == DMG_OVER_TIME ) && source -> is_enemy() )
+  {
+    assert( source -> actor_spawn_index >= 0 && "Trying to register resolve damage event from a unspawned player! Something is seriously broken in player_t::arise/demise." );
+
+    // bool for auto attack, to make code easier to read
+    bool is_auto_attack = ( player -> main_hand_attack && s -> action == player -> main_hand_attack ) 
+      || ( player -> off_hand_attack && s -> action == player -> off_hand_attack ) ||
+      !s -> action -> special;
+
+    // Resolve is only updated on damage taken events. The one exception is auto-attacks, which grant Resolve even on a dodge/parry.
+    // If this is a miss that isn't an auto-attack, we can bail out early (and not recalculate)
+    if ( result_is_miss( s -> result ) && ! is_auto_attack )
+      return;
+
+    // Store raw damage of attack result
+    double raw_resolve_amount = s -> result_raw;
+    
+    // If the attack does zero damage, it's irrelevant for the purposes
+    // Skip updating the Resolve tables if the damage is zero to limit unnecessary events
+    if ( raw_resolve_amount > 0.0 )
+    {
+      // modify according to damage type; spell damage and bleeds give 2.5x as much Resolve
+      if ( get_school() != SCHOOL_PHYSICAL || type == DMG_OVER_TIME )
+        raw_resolve_amount *= 2.5;
+      
+      // Diminishing Returns hotfixed out 10/2/2014 - will clean up code once we're sure this is a permanent change
+      // http://us.battle.net/wow/en/forum/topic/14058407204?page=10#198
+      //// update the player's resolve diminishing return list first!
+      //target -> resolve_manager.add_diminishing_return_entry( source, source -> get_raw_dps( s ), sim -> current_time() );
+
+      //assert( source -> actor_spawn_index >= 0 && "Trying to register resolve damage event from a unspawned player!" );
+
+      //// get diminishing returns - done at the time of the event, never recalculated
+      //// see http://us.battle.net/wow/en/forum/topic/13087818929?page=6#105
+      //int rank = target -> resolve_manager.get_diminsihing_return_rank( source -> actor_spawn_index );
+
+      // update the player's resolve damage table 
+      target -> resolve_manager.add_damage_event( raw_resolve_amount, sim -> current_time() );
+    
+      // cycle through the resolve damage table and add the appropriate amount of Resolve from each event
+      target -> resolve_manager.update();
+    }
+
+
+  } // END Resolve
+}
+
+// action_t::assess_damage ==================================================
+
+void action_t::assess_damage( dmg_e    type,
+                              action_state_t* s )
+{
+  // hook up resolve here, before armor mitigation, avoidance, and dmg reduction effects, etc.
+  update_resolve( type, s );
+
+  s -> target -> assess_damage( get_school(), type, s );
+
+  if ( sim -> debug )
+    s -> debug();
+
+  if ( ! player -> buffs.spirit_shift || ! player -> buffs.spirit_shift -> check() || ! target -> is_enemy() )
+  {
+    if ( type == DMG_DIRECT )
+    {
+      if ( sim -> log )
+      {
+        sim -> out_log.printf( "%s %s hits %s for %.0f %s damage (%s)",
+                       player -> name(), name(),
+                       s -> target -> name(), s -> result_amount,
+                       util::school_type_string( get_school() ),
+                       util::result_type_string( s -> result ) );
+      }
+    }
+    else // DMG_OVER_TIME
+    {
+      if ( sim -> log )
+      {
+        dot_t* dot = get_dot( s -> target );
+        sim -> out_log.printf( "%s %s ticks (%d of %d) %s for %.0f %s damage (%s)",
+                       player -> name(), name(),
+                       dot -> current_tick, dot -> num_ticks,
+                       s -> target -> name(), s -> result_amount,
+                       util::school_type_string( get_school() ),
+                       util::result_type_string( s -> result ) );
+      }
+    }
+
+    if ( ( s -> target == player -> sim -> target ) && s -> result_amount > 0 )
+    {
+      player -> priority_iteration_dmg += s -> result_amount;
+    }
+
+    if ( s -> target -> is_enemy() )
+    {
+      if ( player -> buffs.legendary_aoe_ring && player -> buffs.legendary_aoe_ring -> check() )
+      {
+        player -> buffs.legendary_aoe_ring -> current_value += s -> result_amount;
+        if ( sim -> debug )
+        {
+          sim -> out_debug.printf( "%s %s stores %.2f damage from %s on %s, new stored amount = %.2f",
+                           player -> name(),
+                           player -> buffs.legendary_aoe_ring -> name(),
+                           s -> result_amount, name(), s -> target -> name(),
+                           player -> buffs.legendary_aoe_ring -> current_value );
+        }
+      }
+      // (All?) pets contribute towards the owner's legendary ring.
+      // TODO: Check if this is all pets, or just "class pets/guardians".
+      else if ( player -> is_pet() && player -> cast_pet() -> affects_wod_legendary_ring )
+      {
+        player_t* owner = player -> cast_pet() -> owner;
+        if ( owner -> buffs.legendary_aoe_ring && owner -> buffs.legendary_aoe_ring -> check() )
+        {
+          owner -> buffs.legendary_aoe_ring -> current_value += s -> result_amount;
+          if ( sim -> debug )
+          {
+            sim -> out_debug.printf( "%s %s stores %.2f damage from %s %s on %s, new stored amount = %.2f",
+                             owner -> name(),
+                             owner -> buffs.legendary_aoe_ring -> name(),
+                             s -> result_amount, player -> name(), name(),
+                             s -> target -> name(),
+                             owner -> buffs.legendary_aoe_ring -> current_value );
+          }
+        }
+      }
+    }
+
+    if ( player -> spell.leech )
+    {
+      // Leeching .. sanity check that the result type is a damaging one, so things hopefully don't
+      // break in the future if we ever decide to not separate heal and damage assessing.
+      double leech_pct = 0;
+      if ( ( s -> result_type == DMG_DIRECT || s -> result_type == DMG_OVER_TIME ) &&
+        s -> result_amount > 0 &&
+        ( leech_pct = composite_leech( s ) ) > 0 )
+      {
+        double leech_amount = leech_pct * s -> result_amount;
+        player -> spell.leech -> base_dd_min = player -> spell.leech -> base_dd_max = leech_amount;
+        player -> spell.leech -> schedule_execute();
+      }
+    }
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
   }
   else
   {

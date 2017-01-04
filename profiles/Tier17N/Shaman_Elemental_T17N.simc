@@ -1,0 +1,107 @@
+shaman="Shaman_Elemental_T17N"
+level=100
+race=dwarf
+role=spell
+position=back
+professions=blacksmithing=600/engineering=600
+talents=0003011
+glyphs=chain_lightning
+spec=elemental
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=greater_draenic_intellect_flask
+actions.precombat+=/food,type=salty_squid_roll
+actions.precombat+=/lightning_shield,if=!buff.lightning_shield.up
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion,name=draenic_intellect
+
+# Executed every time the actor is available.
+
+actions=wind_shear
+# Bloodlust casting behavior mirrors the simulator settings for proxy bloodlust. See options 'bloodlust_percent', and 'bloodlust_time'. 
+actions+=/bloodlust,if=target.health.pct<25|time>0.500
+# In-combat potion is preferentially linked to Ascendance, unless combat will end shortly
+actions+=/potion,name=draenic_intellect,if=buff.ascendance.up|target.time_to_die<=30
+actions+=/berserking,if=!buff.bloodlust.up&!buff.elemental_mastery.up&buff.ascendance.cooldown_remains=0&(dot.flame_shock.remains>buff.ascendance.duration|level<87)
+actions+=/blood_fury,if=buff.bloodlust.up|buff.ascendance.up|((cooldown.ascendance.remains>10|level<87)&cooldown.fire_elemental_totem.remains>10)
+actions+=/arcane_torrent
+actions+=/elemental_mastery,if=action.lava_burst.cast_time>=1.2
+actions+=/ancestral_swiftness,if=!buff.ascendance.up
+actions+=/storm_elemental_totem
+actions+=/fire_elemental_totem,if=!active
+actions+=/ascendance,if=spell_targets.chain_lightning>1|(dot.flame_shock.remains>buff.ascendance.duration&(target.time_to_die<20|buff.bloodlust.up|buff.berserking.up|time>=60)&cooldown.lava_burst.remains>0)
+actions+=/liquid_magma,if=pet.searing_totem.remains>=15|pet.fire_elemental_totem.remains>=15
+# On multiple enemies, the priority follows the 'aoe' action list.
+actions+=/call_action_list,name=aoe,if=spell_targets.chain_lightning>(2+t18_class_trinket)
+# If one or two enemies, priority follows the 'single' action list.
+actions+=/call_action_list,name=single
+
+# Single target action priority list
+
+actions.single=unleash_flame,moving=1
+actions.single+=/spiritwalkers_grace,moving=1,if=buff.ascendance.up
+actions.single+=/earth_shock,if=buff.lightning_shield.react=buff.lightning_shield.max_stack
+actions.single+=/flame_shock,cycle_targets=1,if=(talent.elemental_fusion.enabled&buff.elemental_fusion.stack=2&buff.unleash_flame.up&dot.flame_shock.remains<(dot.flame_shock.duration*(0.3+t18_class_trinket*(0.48+talent.unleashed_fury.enabled*0.22))))
+actions.single+=/lava_burst,if=dot.flame_shock.remains>cast_time&(buff.ascendance.up|cooldown_react)
+actions.single+=/earth_shock,if=(set_bonus.tier17_4pc&buff.lightning_shield.react>=12&!buff.lava_surge.up)|(!set_bonus.tier17_4pc&buff.lightning_shield.react>15)
+actions.single+=/flame_shock,cycle_targets=1,if=dot.flame_shock.remains<=(dot.flame_shock.duration*0.3)
+actions.single+=/elemental_blast
+# After the initial Ascendance, use Flame Shock pre-emptively just before Ascendance to guarantee Flame Shock staying up for the full duration of the Ascendance buff
+actions.single+=/flame_shock,if=time>60&remains<=buff.ascendance.duration&cooldown.ascendance.remains+buff.ascendance.duration<duration
+# Keep Searing Totem up, unless Fire Elemental Totem is coming off cooldown in the next 20 seconds
+actions.single+=/searing_totem,if=(!talent.liquid_magma.enabled&(!totem.fire.active|(pet.searing_totem.remains<=10&!pet.fire_elemental_totem.active&talent.unleashed_fury.enabled)))|(talent.liquid_magma.enabled&pet.searing_totem.remains<=20&!pet.fire_elemental_totem.active&!buff.liquid_magma.up)
+actions.single+=/unleash_flame,if=talent.unleashed_fury.enabled&!buff.ascendance.up|(talent.elemental_fusion.enabled&buff.elemental_fusion.stack=2&(dot.flame_shock.remains)<(dot.flame_shock.duration*(0.3+t18_class_trinket*(0.48+talent.unleashed_fury.enabled*0.22)))&cooldown.flame_shock.remains<gcd)
+actions.single+=/spiritwalkers_grace,moving=1,if=((talent.elemental_blast.enabled&cooldown.elemental_blast.remains=0)|(cooldown.lava_burst.remains=0&!buff.lava_surge.react))&cooldown.ascendance.remains>cooldown.spiritwalkers_grace.remains
+actions.single+=/earthquake,cycle_targets=1,if=buff.enhanced_chain_lightning.up
+actions.single+=/chain_lightning,if=spell_targets.chain_lightning>=2
+actions.single+=/lightning_bolt
+actions.single+=/earth_shock,moving=1
+actions.single+=/searing_totem,if=(!totem.fire.active|(pet.searing_totem.remains<=40&!pet.fire_elemental_totem.active))
+
+# Multi target action priority list
+
+actions.aoe=earthquake,cycle_targets=1,if=buff.enhanced_chain_lightning.up
+actions.aoe+=/lava_beam
+actions.aoe+=/earth_shock,if=buff.lightning_shield.react=buff.lightning_shield.max_stack
+actions.aoe+=/searing_totem,if=(!talent.liquid_magma.enabled&!totem.fire.active)|(talent.liquid_magma.enabled&pet.searing_totem.remains<=20&!pet.fire_elemental_totem.active&!buff.liquid_magma.up)
+actions.aoe+=/chain_lightning,if=spell_targets.chain_lightning>=2
+actions.aoe+=/lightning_bolt
+
+head=windspeakers_faceguard,id=115579
+neck=choker_of_bloody_flame,id=120077,enchant=gift_of_multistrike
+shoulders=windspeakers_mantle,id=115576
+back=runescribed_gronncloak,id=120078,enchant=gift_of_multistrike
+chest=windspeakers_tunic,id=115577
+wrists=bloodwhirl_bracers,id=113968
+hands=windspeakers_handwraps,id=115578
+waist=grenadiers_belt,id=113955
+legs=legguards_of_the_stampede,id=113944
+feet=railwalkers_ratcheted_boots,id=113954
+finger1=timeless_solium_band_of_the_archmage,id=118296,enchant=gift_of_multistrike
+finger2=epicenter_loop,id=113947,enchant=gift_of_multistrike
+trinket1=darmacs_unstable_talisman,id=113948
+trinket2=blackiron_micro_crucible,id=113984
+main_hand=franzoks_headsmasher,id=113904,enchant=mark_of_the_frostwolf
+off_hand=enginestokers_lantern,id=113960
+
+# Gear Summary
+# gear_ilvl=670.63
+# gear_stamina=3585
+# gear_intellect=3006
+# gear_spell_power=1392
+# gear_crit_rating=350
+# gear_haste_rating=598
+# gear_mastery_rating=767
+# gear_multistrike_rating=1444
+# gear_versatility_rating=251
+# gear_armor=1312
+# set_bonus=tier17_2pc=1
+# set_bonus=tier17_4pc=1

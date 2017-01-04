@@ -4,7 +4,11 @@
 #ifndef MAX_CLASS
 #define MAX_CLASS (13)
 #endif
+<<<<<<< HEAD
 // Class based active abilities, wow build 23244
+=======
+// Class based active abilities, wow build 20886
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -1093,7 +1097,17 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
            0,
     },
   },
+<<<<<<< HEAD
   // Class active abilities for Demon Hunter
+=======
+};
+
+#define TREE_SPECIALIZATION_SIZE (28)
+
+// Talent tree specialization abilities, wow build 20886
+static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
+  // Specialization abilities for Hunter pets
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
   {
     // General tree, 17 abilities
     {
@@ -2261,7 +2275,11 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
 };
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
+<<<<<<< HEAD
 // Class mastery abilities, wow build 23244
+=======
+// Class mastery abilities, wow build 20886
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
 static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2500,7 +2518,11 @@ static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLA
 #define MAX_RACE (28)
 #endif
 
+<<<<<<< HEAD
 // Racial abilities, wow build 23244
+=======
+// Racial abilities, wow build 20886
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -3238,6 +3260,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
 };
 #define SET_BONUS_DATA_SIZE (544)
 
+<<<<<<< HEAD
 // Set bonus data, wow build 23244
 static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
@@ -3806,9 +3829,647 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Vestment of Second Sight"                   ,     "tier19",     12,  1282,   19,   2,  12,  581, 211075, { 138375, 138376, 138377, 138378, 138379, 138380,  0 } },
   { "Vestment of Second Sight"                   ,     "tier19",     12,  1282,   19,   4,  12,  577, 211074, { 138375, 138376, 138377, 138378, 138379, 138380,  0 } },
   { "Vestment of Second Sight"                   ,     "tier19",     12,  1282,   19,   4,  12,  581, 211077, { 138375, 138376, 138377, 138378, 138379, 138380,  0 } },
+=======
+#define GLYPH_ABILITIES_SIZE (41)
+
+// Glyph spells for classes, wow build 20886
+static unsigned __glyph_abilities_data[][3][GLYPH_ABILITIES_SIZE] = {
+  {
+    {
+           0,
+    },
+    {
+           0,
+    },
+    {
+           0,
+    },
+  },
+  // Glyph spells for Warrior
+  {
+    // Major Glyphs (31 spells)
+    {
+       58377, // Glyph of Blitz
+       58367, // Glyph of Bloodthirst
+       94372, // Glyph of Bull Rush
+      159701, // Glyph of Cleave
+       63325, // Glyph of Death from Above
+       58386, // Glyph of Die by the Sword
+       58355, // Glyph of Enraged Speed
+      159761, // Glyph of Flawless Defense
+       58357, // Glyph of Gag Order
+      159708, // Glyph of Heroic Leap
+       58366, // Glyph of Hindering Strikes
+       58097, // Glyph of Long Charge
+      159738, // Glyph of Mocking Banner
+       58368, // Glyph of Mortal Strike
+      159740, // Glyph of Raging Blow
+       58370, // Glyph of Raging Wind
+      159754, // Glyph of Rallying Cry
+       94374, // Glyph of Recklessness
+       58356, // Glyph of Resonating Power
+       58372, // Glyph of Rude Interruption
+      159759, // Glyph of Shattering Throw
+       58375, // Glyph of Shield Slam
+       63329, // Glyph of Shield Wall
+       63328, // Glyph of Spell Reflection
+       58384, // Glyph of Sweeping Strikes
+       58098, // Glyph of Unending Rage
+      146965, // Glyph of Victorious Throw
+       58382, // Glyph of Victory Rush
+       63324, // Glyph of Wind and Thunder
+      159703, // Glyph of the Drawn Sword
+      146971, // Glyph of the Executor
+           0,
+    },
+    // Minor Glyphs (14 spells)
+    {
+       58096, // Glyph of Bloodcurdling Shout
+       58369, // Glyph of Bloody Healing
+      115946, // Glyph of Burning Anger
+      115943, // Glyph of Crow Feast
+       58099, // Glyph of Gushing Wound
+       63327, // Glyph of Intimidating Shout
+       58104, // Glyph of Mighty Victory
+       58095, // Glyph of Mystic Shout
+       68164, // Glyph of Thunder Strike
+      123779, // Glyph of the Blazing Trail
+      146968, // Glyph of the Raging Whirlwind
+      146969, // Glyph of the Subtle Defender
+      146973, // Glyph of the Watchful Eye
+      146974, // Glyph of the Weaponmaster
+           0,
+    },
+    {
+           0,
+    },
+  },
+  // Glyph spells for Paladin
+  {
+    // Major Glyphs (35 spells)
+    {
+      159548, // Glyph of Ardent Defender
+       54927, // Glyph of Avenging Wrath
+       63218, // Glyph of Beacon of Light
+       54943, // Glyph of Blessed Life
+       54931, // Glyph of Burden of Guilt
+      171929, // Glyph of Cleanse
+       54928, // Glyph of Consecration
+       56414, // Glyph of Dazing Shield
+       56420, // Glyph of Denounce
+      146955, // Glyph of Devotion Aura
+       54924, // Glyph of Divine Protection
+      146956, // Glyph of Divine Shield
+       63220, // Glyph of Divine Storm
+      159572, // Glyph of Divine Wrath
+       54939, // Glyph of Divinity
+       54922, // Glyph of Double Jeopardy
+       54935, // Glyph of Final Wrath
+       57955, // Glyph of Flash of Light
+       54930, // Glyph of Focused Shield
+      159579, // Glyph of Hand of Freedom
+      146957, // Glyph of Hand of Sacrifice
+       54938, // Glyph of Harsh Words
+       63224, // Glyph of Holy Shock
+       54923, // Glyph of Holy Wrath
+       56416, // Glyph of Immediate Truth
+      159592, // Glyph of Judgment
+       54940, // Glyph of Light of Dawn
+      122028, // Glyph of Mass Exorcism
+      162604, // Glyph of Merciful Wrath
+       93466, // Glyph of Protector of the Innocent
+       54926, // Glyph of Templar's Verdict
+       54936, // Glyph of Word of Glory
+      119477, // Glyph of the Battle Healer
+      159557, // Glyph of the Consecrator
+      159573, // Glyph of the Liberator
+           0,
+    },
+    // Minor Glyphs (12 spells)
+    {
+      115934, // Glyph of Bladed Judgment
+      125043, // Glyph of Contemplation
+       57954, // Glyph of Fire From the Heavens
+      115738, // Glyph of Focused Wrath
+      146959, // Glyph of Pillar of Light
+      115933, // Glyph of Righteous Retreat
+       57947, // Glyph of Seal of Blood
+       57979, // Glyph of Winged Vengeance
+      146958, // Glyph of the Exorcist
+      115931, // Glyph of the Falling Avenger
+       89401, // Glyph of the Luminous Charger
+       57958, // Glyph of the Mounted King
+           0,
+    },
+    {
+           0,
+    },
+  },
+  // Glyph spells for Hunter
+  {
+    // Major Glyphs (25 spells)
+    {
+       20895, // Glyph of Animal Bond
+      109263, // Glyph of Black Ice
+      119449, // Glyph of Camouflage
+      119447, // Glyph of Chimaera Shot
+       56850, // Glyph of Deterrence
+       56844, // Glyph of Disengage
+      123632, // Glyph of Distracting Shot
+      119410, // Glyph of Endless Wrath
+      148475, // Glyph of Enduring Deceit
+      119403, // Glyph of Explosive Trap
+       56845, // Glyph of Freezing Trap
+       56847, // Glyph of Ice Trap
+      132106, // Glyph of Liberation
+       63068, // Glyph of Master's Call
+       19573, // Glyph of Mend Pet
+       56833, // Glyph of Mending
+       83495, // Glyph of Mirrored Blades
+       56829, // Glyph of Misdirection
+       53299, // Glyph of No Escape
+       19560, // Glyph of Pathfinding
+      159469, // Glyph of Quick Revival
+      159470, // Glyph of Snake Trap
+      119407, // Glyph of Solace
+      119384, // Glyph of Tranquilizing Shot
+      146657, // Glyph of the Lean Pack
+           0,
+    },
+    // Minor Glyphs (11 spells)
+    {
+      125042, // Glyph of Aspect of the Beast
+      119462, // Glyph of Aspect of the Cheetah
+       57904, // Glyph of Aspect of the Pack
+      122492, // Glyph of Aspects
+      126746, // Glyph of Fetch
+       57903, // Glyph of Fireworks
+       57870, // Glyph of Lesser Proportion
+      159459, // Glyph of Play Dead
+       57866, // Glyph of Revive Pet
+       57902, // Glyph of Stampede
+      119464, // Glyph of Tame Beast
+           0,
+    },
+    {
+           0,
+    },
+  },
+  // Glyph spells for Rogue
+  {
+    // Major Glyphs (24 spells)
+    {
+       56813, // Glyph of Ambush
+       56818, // Glyph of Blade Flurry
+       91299, // Glyph of Blind
+       56801, // Glyph of Cheap Shot
+       63269, // Glyph of Cloak of Shadows
+       63254, // Glyph of Deadly Momentum
+      159638, // Glyph of Disappearance
+      159635, // Glyph of Elusiveness
+      159634, // Glyph of Energy
+      159636, // Glyph of Energy Flows
+       56799, // Glyph of Evasion
+       56804, // Glyph of Feint
+       56812, // Glyph of Garrote
+       56809, // Glyph of Gouge
+      146631, // Glyph of Hemorrhaging Veins
+       56805, // Glyph of Kick
+      146625, // Glyph of Recovery
+       56806, // Glyph of Recuperate
+       56810, // Glyph of Shiv
+       56819, // Glyph of Smoke Bomb
+       56811, // Glyph of Sprint
+       63253, // Glyph of Stealth
+       89758, // Glyph of Vanish
+       63249, // Glyph of Vendetta
+           0,
+    },
+    // Minor Glyphs (13 spells)
+    {
+       58039, // Glyph of Blurred Speed
+       56800, // Glyph of Decoy
+      125044, // Glyph of Detection
+       63268, // Glyph of Disguise
+       58032, // Glyph of Distract
+       56807, // Glyph of Hemorrhage
+      146961, // Glyph of Improved Distraction
+       63252, // Glyph of Killing Spree
+       58027, // Glyph of Pick Lock
+       58017, // Glyph of Pick Pocket
+       58038, // Glyph of Poisons
+       58033, // Glyph of Safe Fall
+      146960, // Glyph of the Headhunter
+           0,
+    },
+    {
+           0,
+    },
+  },
+  // Glyph spells for Priest
+  {
+    // Major Glyphs (41 spells)
+    {
+       63248, // Glyph of Binding Heal
+       55675, // Glyph of Circle of Healing
+       55673, // Glyph of Deep Wells
+      159598, // Glyph of Delayed Coalescence
+      119864, // Glyph of Dispel Magic
+       63229, // Glyph of Dispersion
+       55684, // Glyph of Fade
+       55678, // Glyph of Fear Ward
+      147778, // Glyph of Focused Mending
+      159596, // Glyph of Free Action
+      159599, // Glyph of Guardian Spirit
+      119853, // Glyph of Holy Fire
+      119850, // Glyph of Leap of Faith
+      108939, // Glyph of Levitate
+      126133, // Glyph of Lightwell
+       55691, // Glyph of Mass Dispel
+       87195, // Glyph of Mind Blast
+      120585, // Glyph of Mind Flay
+      162532, // Glyph of Mind Harvest
+       33371, // Glyph of Mind Spike
+      159608, // Glyph of Miraculous Dispelling
+      119866, // Glyph of Penance
+       55672, // Glyph of Power Word: Shield
+       55685, // Glyph of Prayer of Mending
+       55688, // Glyph of Psychic Horror
+       55676, // Glyph of Psychic Scream
+      171921, // Glyph of Purification
+       55677, // Glyph of Purify
+       33202, // Glyph of Reflective Shield
+      119872, // Glyph of Renew
+      159606, // Glyph of Restored Faith
+       55690, // Glyph of Scourge Imprisonment
+      159628, // Glyph of Shadow Magic
+      120583, // Glyph of Shadow Word: Death
+      159626, // Glyph of Silence
+       55692, // Glyph of Smite
+      119873, // Glyph of Spirit of Redemption
+      120584, // Glyph of Vampiric Embrace
+       89489, // Glyph of Weakened Soul
+      159624, // Glyph of the Inquisitor
+      159627, // Glyph of the Redeemer
+    },
+    // Minor Glyphs (13 spells)
+    {
+      145722, // Glyph of Angels
+       58009, // Glyph of Borrowed Time
+      126152, // Glyph of Confession
+       58228, // Glyph of Dark Archangel
+      126174, // Glyph of Holy Resurrection
+      147072, // Glyph of Inspired Hymns
+       57986, // Glyph of Shackle Undead
+      107906, // Glyph of Shadow
+       57985, // Glyph of Shadow Ravens
+      126745, // Glyph of Shadowy Friends
+      120581, // Glyph of the Heavens
+      147776, // Glyph of the Sha
+      126094, // Glyph of the Val'kyr
+           0,
+    },
+    {
+           0,
+    },
+  },
+  // Glyph spells for Death Knight
+  {
+    // Major Glyphs (26 spells)
+    {
+      159415, // Glyph of Absorb Magic
+       58623, // Glyph of Anti-Magic Shell
+       58657, // Glyph of Blood Boil
+       58620, // Glyph of Chains of Ice
+       63330, // Glyph of Dancing Rune Weapon
+       63331, // Glyph of Dark Simulacrum
+       63333, // Glyph of Death Coil
+       62259, // Glyph of Death Grip
+       58629, // Glyph of Death and Decay
+      159421, // Glyph of Empowerment
+       58671, // Glyph of Enduring Infection
+       58673, // Glyph of Icebound Fortitude
+       58631, // Glyph of Icy Touch
+       58686, // Glyph of Mind Freeze
+       59332, // Glyph of Outbreak
+       58635, // Glyph of Pillar of Frost
+      159427, // Glyph of Raise Ally
+      146648, // Glyph of Regenerative Magic
+      159428, // Glyph of Rune Tap
+      159429, // Glyph of Runic Power
+       58647, // Glyph of Shifting Presences
+       58618, // Glyph of Strangulate
+      146645, // Glyph of Swift Death
+       59327, // Glyph of Unholy Command
+       58676, // Glyph of Vampiric Blood
+      159416, // Glyph of the Ice Reaper
+           0,
+    },
+    // Minor Glyphs (11 spells)
+    {
+       58669, // Glyph of Army of the Dead
+       59336, // Glyph of Corpse Explosion
+       60200, // Glyph of Death Gate
+       58677, // Glyph of Death's Embrace
+       58642, // Glyph of Foul Menagerie
+       58680, // Glyph of Horn of Winter
+       59307, // Glyph of Path of Frost
+       59309, // Glyph of Resilient Grip
+       63335, // Glyph of Tranquil Grip
+       58640, // Glyph of the Geist
+      146652, // Glyph of the Skeleton
+           0,
+    },
+    {
+           0,
+    },
+  },
+  // Glyph spells for Shaman
+  {
+    // Major Glyphs (38 spells)
+    {
+       55442, // Glyph of Capacitor Totem
+       55449, // Glyph of Chain Lightning
+       55452, // Glyph of Chaining
+       55445, // Glyph of Cleansing Waters
+      159640, // Glyph of Ephemeral Spirits
+      147781, // Glyph of Eternal Earth
+       63271, // Glyph of Feral Spirit
+       55455, // Glyph of Fire Elemental Totem
+       55450, // Glyph of Fire Nova
+       55447, // Glyph of Flame Shock
+       55443, // Glyph of Frost Shock
+      161654, // Glyph of Frostbrand Weapon
+       59289, // Glyph of Ghost Wolf
+      159643, // Glyph of Grounding
+       55441, // Glyph of Grounding Totem
+       55456, // Glyph of Healing Stream Totem
+       55440, // Glyph of Healing Wave
+       63291, // Glyph of Hex
+      159644, // Glyph of Lava Spread
+      101052, // Glyph of Lightning Shield
+       55439, // Glyph of Purge
+      147762, // Glyph of Purging
+      171933, // Glyph of Purify Spirit
+      159647, // Glyph of Reactive Shielding
+       63273, // Glyph of Riptide
+       63280, // Glyph of Shamanistic Rage
+      159648, // Glyph of Shamanistic Resolve
+      159649, // Glyph of Shocks
+       55454, // Glyph of Spirit Walk
+      159651, // Glyph of Spiritwalker's Aegis
+      159650, // Glyph of Spiritwalker's Focus
+       55446, // Glyph of Spiritwalker's Grace
+       63270, // Glyph of Thunder
+       55438, // Glyph of Totemic Recall
+       63298, // Glyph of Totemic Vigor
+       55437, // Glyph of Unstable Earth
+       55436, // Glyph of Water Shield
+       55451, // Glyph of Wind Shear
+           0,
+    },
+    // Minor Glyphs (18 spells)
+    {
+      186198, // Glyph of Ascendance
+      147787, // Glyph of Astral Fixation
+       58058, // Glyph of Astral Recall
+       63279, // Glyph of Deluge
+      147788, // Glyph of Elemental Familiars
+       58059, // Glyph of Far Sight
+      159642, // Glyph of Ghostly Speed
+       55444, // Glyph of Lava Lash
+      147784, // Glyph of Lingering Ancestors
+      147707, // Glyph of Rain of Frogs
+      147783, // Glyph of Spirit Raptors
+      147770, // Glyph of Spirit Wolf
+       62132, // Glyph of Thunderstorm
+       58057, // Glyph of Totemic Encirclement
+      147785, // Glyph of the Compy
+      147772, // Glyph of the Flaming Serpent
+       55448, // Glyph of the Lakestrider
+       58135, // Glyph of the Spectral Wolf
+           0,
+    },
+    {
+           0,
+    },
+  },
+  // Glyph spells for Mage
+  {
+    // Major Glyphs (21 spells)
+    {
+      115718, // Glyph of Arcane Explosion
+       62210, // Glyph of Arcane Power
+       56365, // Glyph of Blink
+       56368, // Glyph of Combustion
+      115705, // Glyph of Cone of Cold
+      115703, // Glyph of Counterspell
+      115710, // Glyph of Deep Freeze
+      159485, // Glyph of Dragon's Breath
+       56376, // Glyph of Frost Nova
+      115723, // Glyph of Ice Block
+       56364, // Glyph of Icy Veins
+       61205, // Glyph of Ignite
+       89926, // Glyph of Inferno Blast
+       56375, // Glyph of Polymorph
+      146659, // Glyph of Rapid Displacement
+      159486, // Glyph of Regenerative Ice
+      115700, // Glyph of Remove Curse
+       86209, // Glyph of Slow
+      115713, // Glyph of Spellsteal
+       56377, // Glyph of Splitting Ice
+       63090, // Glyph of Water Elemental
+           0,
+    },
+    // Minor Glyphs (9 spells)
+    {
+       57925, // Glyph of Arcane Language
+      147353, // Glyph of Condensation
+      126748, // Glyph of Conjure Familiar
+       56382, // Glyph of Crittermorph
+      146662, // Glyph of Evaporation
+       63092, // Glyph of Illusion
+       56384, // Glyph of Momentum
+       89749, // Glyph of Rapid Teleportation
+      146976, // Glyph of the Unbound Elemental
+           0,
+    },
+    {
+           0,
+    },
+  },
+  // Glyph spells for Warlock
+  {
+    // Major Glyphs (21 spells)
+    {
+       56235, // Glyph of Conflagrate
+      159665, // Glyph of Dark Soul
+       56249, // Glyph of Demon Training
+       63309, // Glyph of Demonic Circle
+       63302, // Glyph of Drain Life
+       63304, // Glyph of Ember Tap
+      148683, // Glyph of Eternal Resolve
+       56244, // Glyph of Fear
+      146962, // Glyph of Havoc
+       56224, // Glyph of Healthstone
+       56242, // Glyph of Imp Swarm
+      159669, // Glyph of Life Pact
+       63320, // Glyph of Life Tap
+      159688, // Glyph of Shadowflame
+       56218, // Glyph of Siphon Life
+       58070, // Glyph of Soul Consumption
+      159691, // Glyph of Soul Swap
+       56231, // Glyph of Soulstone
+      159697, // Glyph of Strengthened Resolve
+      146964, // Glyph of Unending Resolve
+       56233, // Glyph of Unstable Affliction
+           0,
+    },
+    // Minor Glyphs (15 spells)
+    {
+       63312, // Glyph of Crimson Banish
+       58107, // Glyph of Enslave Demon
+       58081, // Glyph of Eye of Kilrogg
+       56247, // Glyph of Falling Meteor
+       56246, // Glyph of Felguard
+      135557, // Glyph of Gateway Attunement
+       56248, // Glyph of Hand of Gul'dan
+       56238, // Glyph of Health Funnel
+      159680, // Glyph of Metamorphosis
+       56232, // Glyph of Nightmares
+       56240, // Glyph of Shadow Bolt
+       58094, // Glyph of Soulwell
+       56217, // Glyph of Subtlety
+       58079, // Glyph of Unending Breath
+       56241, // Glyph of Verdant Spheres
+           0,
+    },
+    {
+           0,
+    },
+  },
+  // Glyph spells for Monk
+  {
+    // Major Glyphs (30 spells)
+    {
+      123394, // Glyph of Breath of Fire
+      146954, // Glyph of Detox
+      171926, // Glyph of Detoxing
+      159487, // Glyph of Expel Harm
+      125671, // Glyph of Fists of Fury
+      173182, // Glyph of Flying Fists
+      124997, // Glyph of Fortifying Brew
+      146953, // Glyph of Fortuitous Spheres
+      159534, // Glyph of Freedom Roll
+      123401, // Glyph of Guard
+      159495, // Glyph of Keg Smash
+      125967, // Glyph of Leer of the Ox
+      124989, // Glyph of Life Cocoon
+      123763, // Glyph of Mana Tea
+      146952, // Glyph of Nimble Brew
+      125755, // Glyph of Paralysis
+      146951, // Glyph of Rapid Rolling
+      159496, // Glyph of Renewed Tea
+      123334, // Glyph of Renewing Mist
+      159536, // Glyph of Soothing Mist
+      120483, // Glyph of Surging Mist
+      146950, // Glyph of Targeted Expulsion
+      123391, // Glyph of Touch of Death
+      125678, // Glyph of Touch of Karma
+      123023, // Glyph of Transcendence
+      159497, // Glyph of Victory Roll
+      159545, // Glyph of Zen Focus
+      120477, // Glyph of Zen Meditation
+      159490, // Glyph of the Floating Butterfly
+      159492, // Glyph of the Flying Serpent
+           0,
+    },
+    // Minor Glyphs (10 spells)
+    {
+      132005, // Glyph of Blackout Kick
+      125931, // Glyph of Crackling Tiger Lightning
+      125872, // Glyph of Fighting Pose
+      123403, // Glyph of Flying Serpent Kick
+      125732, // Glyph of Honor
+      125660, // Glyph of Jab
+      125151, // Glyph of Rising Tiger Kick
+      125154, // Glyph of Spirit Roll
+      125901, // Glyph of Water Roll
+      125893, // Glyph of Zen Flight
+           0,
+    },
+    {
+           0,
+    },
+  },
+  // Glyph spells for Druid
+  {
+    // Major Glyphs (33 spells)
+    {
+      159432, // Glyph of Astral Communion
+       63057, // Glyph of Barkskin
+      121840, // Glyph of Blooming
+       47180, // Glyph of Cat Form
+      159445, // Glyph of Celestial Alignment
+       48514, // Glyph of Cyclone
+       59219, // Glyph of Dash
+      159436, // Glyph of Enchanted Bark
+       54812, // Glyph of Entangling Energy
+       54760, // Glyph of Entangling Roots
+      114237, // Glyph of Fae Silence
+       94386, // Glyph of Faerie Fire
+       67598, // Glyph of Ferocious Bite
+       54825, // Glyph of Healing Touch
+       54831, // Glyph of Hurricane
+      159434, // Glyph of Imbued Bark
+      159450, // Glyph of Maim
+       54811, // Glyph of Maul
+      159455, // Glyph of Moonwarding
+      171924, // Glyph of Nature's Cure
+       54821, // Glyph of Rake
+       54733, // Glyph of Rebirth
+      116218, // Glyph of Regrowth
+       17076, // Glyph of Rejuvenation
+      127540, // Glyph of Savage Roar
+      116216, // Glyph of Skull Bash
+      114222, // Glyph of Stampeding Roar
+      114223, // Glyph of Survival Instincts
+       62970, // Glyph of Wild Growth
+      116172, // Glyph of the Master Shapeshifter
+      159444, // Glyph of the Ninth Life
+      159453, // Glyph of the Shapemender
+      171752, // Savagery
+           0,
+    },
+    // Minor Glyphs (16 spells)
+    {
+       57856, // Glyph of Aquatic Form
+       57855, // Glyph of Charm Woodland Creature
+      114295, // Glyph of Grace
+      146656, // Glyph of One With Nature
+      114301, // Glyph of Stars
+      159456, // Glyph of Travel
+      146655, // Glyph of Untamed Stars
+      107059, // Glyph of the Chameleon
+      131113, // Glyph of the Cheetah
+      164997, // Glyph of the Flapping Owl
+      114333, // Glyph of the Orca
+      114280, // Glyph of the Predator
+      171803, // Glyph of the Solstice
+      146654, // Glyph of the Sprouting Mushroom
+      114338, // Glyph of the Stag
+      125047, // Glyph of the Treant
+           0,
+    },
+    {
+           0,
+    },
+  },
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
 };
 #define RPPMMOD_SIZE (358)
 
+<<<<<<< HEAD
 // 358 RPPM Modifiers, wow build level 23244
 static struct rppm_modifier_t __rppmmodifier_data[] = {
   {  45054,    4,  1,  1.0000 },
@@ -4170,9 +4831,438 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 236167,    4,  1,  1.0000 },
   { 236545,    3,  1,  1.0000 },
   {      0,    0,  0,  0.0000 },
+=======
+#define TIER_BONUSES_SIZE (8)
+#define TIER_BONUSES_MAX_TIER (5)
+
+#define TIER_BONUSES_TIER_BASE (13)
+
+// Tier item set bonuses for class, wow build 20886
+static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] = {
+  {
+    {
+          0,
+    },
+  },
+  // Tier bonuses for Warrior
+  {
+    // Tier 13 bonuses (4 spells)
+    {
+      105797, // Colossal Dragonplate Battlegear - 2 Piece Bonus (Item - Warrior T13 Arms and Fury 2P Bonus (Inner Rage))
+      105907, // Colossal Dragonplate Battlegear - 4 Piece Bonus (Item - Warrior T13 Arms and Fury 4P Bonus (Colossus Smash))
+      105908, // Colossal Dragonplate Armor - 2 Piece Bonus (Item - Warrior T13 Protection 2P Bonus (Revenge))
+      105911, // Colossal Dragonplate Armor - 4 Piece Bonus (Item - Warrior T13 Protection 4P Bonus (Shield Wall))
+          0,
+    },
+    // Tier 14 bonuses (4 spells)
+    {
+      123142, // Battleplate of Resounding Rings - 2 Piece Bonus (Item - Warrior T14 DPS 2P Bonus)
+      123144, // Battleplate of Resounding Rings - 4 Piece Bonus (Item - Warrior T14 DPS 4P Bonus)
+      123146, // Plate of Resounding Rings - 2 Piece Bonus (Item - Warrior T14 Protection 2P Bonus)
+      123147, // Plate of Resounding Rings - 4 Piece Bonus (Item - Warrior T14 Protection 4P Bonus)
+          0,
+    },
+    // Tier 15 bonuses (4 spells)
+    {
+      138120, // Battleplate of the Last Mogu - 2 Piece Bonus (Item - Warrior T15 DPS 2P Bonus)
+      138126, // Battleplate of the Last Mogu - 4 Piece Bonus (Item - Warrior T15 DPS 4P Bonus)
+      138280, // Plate of the Last Mogu - 2 Piece Bonus (Item - Warrior T15 Protection 2P Bonus)
+      138281, // Plate of the Last Mogu - 4 Piece Bonus (Item - Warrior T15 Protection 4P Bonus)
+          0,
+    },
+    // Tier 16 bonuses (4 spells)
+    {
+      60174, // Battleplate of the Prehistoric Marauder - 2 Piece Bonus (Mortal Strike and Bloodthirst Damage Up)
+      144441, // Battleplate of the Prehistoric Marauder - 4 Piece Bonus (Item - Warrior T16 DPS 4P Bonus)
+      144502, // Plate of the Prehistoric Marauder - 4 Piece Bonus (Item - Warrior T16 Protection 4P Bonus)
+      144503, // Plate of the Prehistoric Marauder - 2 Piece Bonus (Item - Warrior T16 Protection 2P Bonus)
+          0,
+    },
+    {
+          0,
+    },
+  },
+  // Tier bonuses for Paladin
+  {
+    // Tier 13 bonuses (6 spells)
+    {
+      105743, // Regalia of Radiant Glory - 2 Piece Bonus (Item - Paladin T13 Holy 2P Bonus (Avenging Wrath))
+      105744, // Armor of Radiant Glory - 4 Piece Bonus (Item - Paladin T13 Protection 4P Bonus (Divine Guardian))
+      105765, // Battleplate of Radiant Glory - 2 Piece Bonus (Item - Paladin T13 Retribution 2P Bonus (Judgment))
+      105798, // Regalia of Radiant Glory - 4 Piece Bonus (Item - Paladin T13 Holy 4P Bonus (Holy Radiance))
+      105800, // Armor of Radiant Glory - 2 Piece Bonus (Item - Paladin T13 Protection 2P Bonus (Judgment))
+      105820, // Battleplate of Radiant Glory - 4 Piece Bonus (Item - Paladin T13 Retribution 4P Bonus (Zealotry))
+          0,
+    },
+    // Tier 14 bonuses (6 spells)
+    {
+      70762, // White Tiger Battlegear - 4 Piece Bonus (Item - Paladin T10 Retribution 4P Bonus)
+      123102, // White Tiger Vestments - 2 Piece Bonus (Item - Paladin T14 Holy 2P Bonus)
+      123103, // White Tiger Vestments - 4 Piece Bonus (Item - Paladin T14 Holy 4P Bonus)
+      123104, // White Tiger Plate - 2 Piece Bonus (Item - Paladin T14 Protection 2P Bonus)
+      123107, // White Tiger Plate - 4 Piece Bonus (Item - Paladin T14 Protection 4P Bonus)
+      123108, // White Tiger Battlegear - 2 Piece Bonus (Item - Paladin T14 Retribution 2P Bonus)
+          0,
+    },
+    // Tier 15 bonuses (6 spells)
+    {
+      138159, // Battlegear of the Lightning Emperor - 2 Piece Bonus (Item - Paladin T15 Retribution 2P Bonus)
+      138164, // Battlegear of the Lightning Emperor - 4 Piece Bonus (Item - Paladin T15 Retribution 4P Bonus)
+      138238, // Plate of the Lightning Emperor - 2 Piece Bonus (Item - Paladin T15 Protection 2P Bonus)
+      138244, // Plate of the Lightning Emperor - 4 Piece Bonus (Item - Paladin T15 Protection 4P Bonus)
+      138291, // Vestments of the Lightning Emperor - 2 Piece Bonus (Item - Paladin T15 Holy 2P Bonus)
+      138292, // Vestments of the Lightning Emperor - 4 Piece Bonus (Item - Paladin T15 Holy 4P Bonus)
+          0,
+    },
+    // Tier 16 bonuses (6 spells)
+    {
+      144566, // Plate of Winged Triumph - 4 Piece Bonus (Item - Paladin T16 Protection 4P Bonus)
+      144580, // Plate of Winged Triumph - 2 Piece Bonus (Item - Paladin T16 Protection 2P Bonus)
+      144586, // Battlegear of Winged Triumph - 2 Piece Bonus (Item - Paladin T16 Retribution 2P Bonus)
+      144593, // Battlegear of Winged Triumph - 4 Piece Bonus (Item - Paladin T16 Retribution 4P Bonus)
+      144613, // Vestments of Winged Triumph - 4 Piece Bonus (Item - Paladin T16 Holy 4P Bonus)
+      144625, // Vestments of Winged Triumph - 2 Piece Bonus (Item - Paladin T16 Holy 2P Bonus)
+          0,
+    },
+    {
+          0,
+    },
+  },
+  // Tier bonuses for Hunter
+  {
+    // Tier 13 bonuses (2 spells)
+    {
+      105732, // Wyrmstalker Battlegear - 2 Piece Bonus (Item - Hunter T13 2P Bonus (Steady Shot and Cobra Shot))
+      105921, // Wyrmstalker Battlegear - 4 Piece Bonus (Item - Hunter T13 4P Bonus (Arcane Shot))
+          0,
+    },
+    // Tier 14 bonuses (2 spells)
+    {
+      123090, // Yaungol Slayer Battlegear - 2 Piece Bonus (Item - Hunter T14 2P Bonus)
+      123091, // Yaungol Slayer Battlegear - 4 Piece Bonus (Item - Hunter T14 4P Bonus)
+          0,
+    },
+    // Tier 15 bonuses (2 spells)
+    {
+      138365, // Battlegear of the Saurok Stalker - 2 Piece Bonus (Item - Hunter T15 2P Bonus)
+      138367, // Battlegear of the Saurok Stalker - 4 Piece Bonus (Item - Hunter T15 4P Bonus)
+          0,
+    },
+    // Tier 16 bonuses (2 spells)
+    {
+      144637, // Battlegear of the Unblinking Vigil - 2 Piece Bonus (Item - Hunter T16 2P Bonus)
+      144641, // Battlegear of the Unblinking Vigil - 4 Piece Bonus (Item - Hunter T16 4P Bonus)
+          0,
+    },
+    {
+          0,
+    },
+  },
+  // Tier bonuses for Rogue
+  {
+    // Tier 13 bonuses (2 spells)
+    {
+      105849, // Blackfang Battleweave - 2 Piece Bonus (Item - Rogue T13 2P Bonus (Tricks of the Trade))
+      105865, // Blackfang Battleweave - 4 Piece Bonus (Item - Rogue T13 4P Bonus (Shadow Dance, Adrenaline Rush, and Vendetta))
+          0,
+    },
+    // Tier 14 bonuses (2 spells)
+    {
+      123116, // Battlegear of the Thousandfold Blades - 2 Piece Bonus (Item - Rogue T14 2P Bonus)
+      123122, // Battlegear of the Thousandfold Blades - 4 Piece Bonus (Item - Rogue T14 4P Bonus)
+          0,
+    },
+    // Tier 15 bonuses (2 spells)
+    {
+      138148, // Nine-Tail Battlegear - 2 Piece Bonus (Item - Rogue T15 2P Bonus)
+      138150, // Nine-Tail Battlegear - 4 Piece Bonus (Item - Rogue T15 4P Bonus)
+          0,
+    },
+    // Tier 16 bonuses (2 spells)
+    {
+      145185, // Barbed Assassin Battlegear - 2 Piece Bonus (Item - Rogue T16 2P Bonus)
+      145210, // Barbed Assassin Battlegear - 4 Piece Bonus (Item - Rogue T16 4P Bonus)
+          0,
+    },
+    {
+          0,
+    },
+  },
+  // Tier bonuses for Priest
+  {
+    // Tier 13 bonuses (4 spells)
+    {
+      105827, // Vestments of Dying Light - 2 Piece Bonus (Item - Priest T13 Healer 2P Bonus (Power Word: Barrier and Divine Hymn))
+      105832, // Vestments of Dying Light - 4 Piece Bonus (Item - Priest T13 Healer 4P Bonus (Holy Word and Power Word: Shield))
+      105843, // Regalia of Dying Light - 2 Piece Bonus (Item - Priest T13 Shadow 2P Bonus (Shadow Word: Death))
+      105844, // Regalia of Dying Light - 4 Piece Bonus (Item - Priest T13 Shadow 4P Bonus (Shadow Word: Pain))
+          0,
+    },
+    // Tier 14 bonuses (4 spells)
+    {
+      123111, // Vestments of the Guardian Serpent - 2 Piece Bonus (Item - Priest T14 Healer 2P Bonus)
+      123113, // Vestments of the Guardian Serpent - 4 Piece Bonus (Item - Priest T14 Healer 4P Bonus)
+      123114, // Regalia of the Guardian Serpent - 2 Piece Bonus (Item - Priest T14 Shadow 2P Bonus)
+      123115, // Regalia of the Guardian Serpent - 4 Piece Bonus (Item - Priest T14 Shadow 4P Bonus)
+          0,
+    },
+    // Tier 15 bonuses (4 spells)
+    {
+      138156, // Regalia of the Exorcist - 2 Piece Bonus (Item - Priest T15 Shadow 2P Bonus)
+      138158, // Regalia of the Exorcist - 4 Piece Bonus (Item - Priest T15 Shadow 4P Bonus)
+      138293, // Vestments of the Exorcist - 2 Piece Bonus (Item - Priest T15 Healer 2P Bonus)
+      138301, // Vestments of the Exorcist - 4 Piece Bonus (Item - Priest T15 Healer 4P Bonus)
+          0,
+    },
+    // Tier 16 bonuses (4 spells)
+    {
+      145174, // Regalia of Ternion Glory - 2 Piece Bonus (Item - Priest T16 Shadow 2P Bonus)
+      145179, // Regalia of Ternion Glory - 4 Piece Bonus (Item - Priest T16 Shadow 4P Bonus)
+      145306, // Vestments of Ternion Glory - 2 Piece Bonus (Item - Priest T16 Healer 2P Bonus)
+      145334, // Vestments of Ternion Glory - 4 Piece Bonus (Item - Priest T16 Healer 4P Bonus)
+          0,
+    },
+    {
+          0,
+    },
+  },
+  // Tier bonuses for Death Knight
+  {
+    // Tier 13 bonuses (4 spells)
+    {
+      105552, // Necrotic Boneplate Armor - 2 Piece Bonus (Item - Death Knight T13 Blood 2P Bonus)
+      105587, // Necrotic Boneplate Armor - 4 Piece Bonus (Item - Death Knight T13 Blood 4P Bonus)
+      105609, // Necrotic Boneplate Battlegear - 2 Piece Bonus (Item - Death Knight T13 DPS 2P Bonus)
+      105646, // Necrotic Boneplate Battlegear - 4 Piece Bonus (Item - Death Knight T13 DPS 4P Bonus)
+          0,
+    },
+    // Tier 14 bonuses (4 spells)
+    {
+      123077, // Battlegear of the Lost Catacomb - 2 Piece Bonus (Item - Death Knight T14 DPS 2P Bonus)
+      123078, // Battlegear of the Lost Catacomb - 4 Piece Bonus (Item - Death Knight T14 DPS 4P Bonus)
+      123079, // Plate of the Lost Catacomb - 2 Piece Bonus (Item - Death Knight T14 Blood 2P Bonus)
+      123080, // Plate of the Lost Catacomb - 4 Piece Bonus (Item - Death Knight T14 Blood 4P Bonus)
+          0,
+    },
+    // Tier 15 bonuses (4 spells)
+    {
+      138195, // Plate of the All-Consuming Maw - 2 Piece Bonus (Item - Death Knight T15 Blood 2P Bonus)
+      138197, // Plate of the All-Consuming Maw - 4 Piece Bonus (Item - Death Knight T15 Blood 4P Bonus)
+      138343, // Battleplate of the All-Consuming Maw - 2 Piece Bonus (Item - Death Knight T15 DPS 2P Bonus)
+      138347, // Battleplate of the All-Consuming Maw - 4 Piece Bonus (Item - Death Knight T15 DPS 4P Bonus)
+          0,
+    },
+    // Tier 16 bonuses (4 spells)
+    {
+      144899, // Battleplate of Cyclopean Dread - 2 Piece Bonus (Item - Death Knight T16 DPS 2P Bonus)
+      144907, // Battleplate of Cyclopean Dread - 4 Piece Bonus (Item - Death Knight T16 DPS 4P Bonus)
+      144934, // Plate of Cyclopean Dread - 2 Piece Bonus (Item - Death Knight T16 Blood 2P Bonus)
+      144950, // Plate of Cyclopean Dread - 4 Piece Bonus (Item - Death Knight T16 Blood 4P Bonus)
+          0,
+    },
+    {
+          0,
+    },
+  },
+  // Tier bonuses for Shaman
+  {
+    // Tier 13 bonuses (6 spells)
+    {
+      105764, // Spiritwalker's Vestments - 2 Piece Bonus (Item - Shaman T13 Restoration 2P Bonus (Mana Tide))
+      105780, // Spiritwalker's Regalia - 2 Piece Bonus (Item - Shaman T13 Elemental 2P Bonus (Elemental Mastery))
+      105816, // Spiritwalker's Regalia - 4 Piece Bonus (Item - Shaman T13 Elemental 4P Bonus (Elemental Overload))
+      105866, // Spiritwalker's Battlegear - 2 Piece Bonus (Item - Shaman T13 Enhancement 2P Bonus (Maelstrom Weapon))
+      105872, // Spiritwalker's Battlegear - 4 Piece Bonus (Item - Shaman T13 Enhancement 4P Bonus (Feral Spirits))
+      105876, // Spiritwalker's Vestments - 4 Piece Bonus (Item - Shaman T13 Restoration 4P Bonus (Spiritwalker's Grace))
+          0,
+    },
+    // Tier 14 bonuses (6 spells)
+    {
+      123123, // Regalia of the Firebird - 2 Piece Bonus (Item - Shaman T14 Elemental 2P Bonus)
+      123124, // Regalia of the Firebird - 4 Piece Bonus (Item - Shaman T14 Elemental 4P Bonus)
+      123132, // Battlegear of the Firebird - 2 Piece Bonus (Item - Shaman T14 Enhancement 2P Bonus)
+      123133, // Battlegear of the Firebird - 4 Piece Bonus (Item - Shaman T14 Enhancement 4P Bonus)
+      123134, // Vestments of the Firebird - 2 Piece Bonus (Item - Shaman T14 Restoration 2P Bonus)
+      123135, // Vestments of the Firebird - 4 Piece Bonus (Item - Shaman T14 Restoration 4P Bonus)
+          0,
+    },
+    // Tier 15 bonuses (6 spells)
+    {
+      138136, // Battlegear of the Witch Doctor - 2 Piece Bonus (Item - Shaman T15 Enhancement 2P Bonus)
+      138141, // Battlegear of the Witch Doctor - 4 Piece Bonus (Item - Shaman T15 Enhancement 4P Bonus)
+      138144, // Regalia of the Witch Doctor - 4 Piece Bonus (Item - Shaman T15 Elemental 4P Bonus)
+      138145, // Regalia of the Witch Doctor - 2 Piece Bonus (Item - Shaman T15 Elemental 2P Bonus)
+      138303, // Vestments of the Witch Doctor - 2 Piece Bonus (Item - Shaman T15 Restoration 2P Bonus)
+      138305, // Vestments of the Witch Doctor - 4 Piece Bonus (Item - Shaman T15 Restoration 4P Bonus)
+          0,
+    },
+    // Tier 16 bonuses (6 spells)
+    {
+      144962, // Celestial Harmony Battlegear - 2 Piece Bonus (Item - Shaman T16 Enhancement 2P Bonus)
+      144966, // Celestial Harmony Battlegear - 4 Piece Bonus (Item - Shaman T16 Enhancement 4P Bonus)
+      144998, // Celestial Harmony Regalia - 2 Piece Bonus (Item - Shaman T16 Elemental 2P Bonus)
+      145003, // Celestial Harmony Regalia - 4 Piece Bonus (Item - Shaman T16 Elemental 4P Bonus)
+      145378, // Celestial Harmony Vestment - 2 Piece Bonus (Item - Shaman T16 Restoration 2P Bonus)
+      145380, // Celestial Harmony Vestment - 4 Piece Bonus (Item - Shaman T16 Restoration 4P Bonus)
+          0,
+    },
+    {
+          0,
+    },
+  },
+  // Tier bonuses for Mage
+  {
+    // Tier 13 bonuses (2 spells)
+    {
+      105788, // Time Lord's Regalia - 2 Piece Bonus (Item - Mage T13 2P Bonus (Haste))
+      105790, // Time Lord's Regalia - 4 Piece Bonus (Item - Mage T13 4P Bonus (Arcane Power, Combustion, and Icy Veins))
+          0,
+    },
+    // Tier 14 bonuses (2 spells)
+    {
+      123097, // Regalia of the Burning Scroll - 2 Piece Bonus (Item - Mage T14 2P Bonus)
+      123101, // Regalia of the Burning Scroll - 4 Piece Bonus (Item - Mage T14 4P Bonus)
+          0,
+    },
+    // Tier 15 bonuses (2 spells)
+    {
+      138316, // Regalia of the Chromatic Hydra - 2 Piece Bonus (Item - Mage T15 2P Bonus)
+      138376, // Regalia of the Chromatic Hydra - 4 Piece Bonus (Item - Mage T15 4P Bonus)
+          0,
+    },
+    // Tier 16 bonuses (2 spells)
+    {
+      145251, // Chronomancer Regalia - 2 Piece Bonus (Item - Mage T16 2P Bonus)
+      145257, // Chronomancer Regalia - 4 Piece Bonus (Item - Mage T16 4P Bonus)
+          0,
+    },
+    {
+          0,
+    },
+  },
+  // Tier bonuses for Warlock
+  {
+    // Tier 13 bonuses (2 spells)
+    {
+      105787, // Vestments of the Faceless Shroud - 4 Piece Bonus (Item - Warlock T13 4P Bonus (Soulburn))
+      105888, // Vestments of the Faceless Shroud - 2 Piece Bonus (Item - Warlock T13 2P Bonus (Haste))
+          0,
+    },
+    // Tier 14 bonuses (2 spells)
+    {
+      123136, // Sha-Skin Regalia - 2 Piece Bonus (Item - Warlock T14 2P Bonus)
+      123141, // Sha-Skin Regalia - 4 Piece Bonus (Item - Warlock T14 4P Bonus)
+          0,
+    },
+    // Tier 15 bonuses (2 spells)
+    {
+      138129, // Regalia of the Thousandfold Hells - 2 Piece Bonus (Item - Warlock T15 DPS 2P Bonus)
+      138134, // Regalia of the Thousandfold Hells - 4 Piece Bonus (Item - Warlock T15 DPS 4P Bonus)
+          0,
+    },
+    // Tier 16 bonuses (2 spells)
+    {
+      145072, // Regalia of the Horned Nightmare - 2 Piece Bonus (Item - Warlock T16 2P Bonus)
+      145091, // Regalia of the Horned Nightmare - 4 Piece Bonus (Item - Warlock T16 4P Bonus)
+          0,
+    },
+    {
+          0,
+    },
+  },
+  // Tier bonuses for Monk
+  {
+    {
+          0,
+    },
+    // Tier 14 bonuses (6 spells)
+    {
+      123149, // Battlegear of the Red Crane - 2 Piece Bonus (Item - Monk T14 Windwalker 2P Bonus)
+      123150, // Battlegear of the Red Crane - 4 Piece Bonus (Item - Monk T14 Windwalker 4P Bonus)
+      123152, // Vestments of the Red Crane - 2 Piece Bonus (Item - Monk T14 Mistweaver 2P Bonus)
+      123153, // Vestments of the Red Crane - 4 Piece Bonus (Item - Monk T14 Mistweaver 4P Bonus)
+      123157, // Armor of the Red Crane - 2 Piece Bonus (Item - Monk T14 Brewmaster 2P Bonus)
+      123159, // Armor of the Red Crane - 4 Piece Bonus (Item - Monk T14 Brewmaster 4P Bonus)
+          0,
+    },
+    // Tier 15 bonuses (6 spells)
+    {
+      138177, // Fire-Charm Battlegear - 2 Piece Bonus (Item - Monk T15 Windwalker 2P Bonus)
+      138231, // Fire-Charm Armor - 2 Piece Bonus (Item - Monk T15 Brewmaster 2P Bonus)
+      138236, // Fire-Charm Armor - 4 Piece Bonus (Item - Monk T15 Brewmaster 4P Bonus)
+      138289, // Fire-Charm Vestments - 4 Piece Bonus (Item - Monk T15 Mistweaver 4P Bonus)
+      138290, // Fire-Charm Vestments - 2 Piece Bonus (Item - Monk T15 Mistweaver 2P Bonus)
+      138315, // Fire-Charm Battlegear - 4 Piece Bonus (Item - Monk T15 Windwalker 4P Bonus)
+          0,
+    },
+    // Tier 16 bonuses (6 spells)
+    {
+      145004, // Battlegear of Seven Sacred Seals - 2 Piece Bonus (Item - Monk T16 Windwalker 2P Bonus)
+      145022, // Battlegear of Seven Sacred Seals - 4 Piece Bonus (Item - Monk T16 Windwalker 4P Bonus)
+      145049, // Armor of Seven Sacred Seals - 2 Piece Bonus (Item - Monk T16 Brewmaster 2P Bonus)
+      145055, // Armor of Seven Sacred Seals - 4 Piece Bonus (Item - Monk T16 Brewmaster 4P Bonus)
+      145439, // Vestments of Seven Sacred Seals - 2 Piece Bonus (Item - Monk T16 Mistweaver 2P Bonus)
+      145449, // Vestments of Seven Sacred Seals - 4 Piece Bonus (Item - Monk T16 Mistweaver 4P Bonus)
+          0,
+    },
+    {
+          0,
+    },
+  },
+  // Tier bonuses for Druid
+  {
+    // Tier 13 bonuses (6 spells)
+    {
+      60142, // Deep Earth Battlegarb - 4 Piece Bonus (Barkskin Duration Increase)
+      105715, // Deep Earth Vestments - 2 Piece Bonus (Item - Druid T13 Restoration 2P Bonus (Healing Touch and Rejuv))
+      105717, // Deep Earth Regalia - 4 Piece Bonus (Item - Druid T13 Balance 4P Bonus (Starsurge))
+      105722, // Deep Earth Regalia - 2 Piece Bonus (Item - Druid T13 Balance 2P Bonus (Insect Swarm))
+      105725, // Deep Earth Battlegarb - 2 Piece Bonus (Item - Druid T13 Feral 2P Bonus (Savage Defense and Blood In The Water))
+      105770, // Deep Earth Vestments - 4 Piece Bonus (Item - Druid T13 Restoration 4P Bonus (Rejuvenation))
+          0,
+    },
+    // Tier 14 bonuses (7 spells)
+    {
+      123082, // Regalia of the Eternal Blossom - 2 Piece Bonus (Item - Druid T14 Balance 2P Bonus)
+      123083, // Regalia of the Eternal Blossom - 4 Piece Bonus (Item - Druid T14 Balance 4P Bonus)
+      123084, // Battlegear of the Eternal Blossom - 2 Piece Bonus (Item - Druid T14 Feral 2P Bonus)
+      123085, // Battlegear of the Eternal Blossom - 4 Piece Bonus (Item - Druid T14 Feral 4P Bonus)
+      123087, // Armor of the Eternal Blossom - 4 Piece Bonus (Item - Druid T14 Guardian 4P Bonus)
+      123088, // Vestments of the Eternal Blossom - 2 Piece Bonus (Item - Druid T14 Restoration 2P Bonus)
+      123089, // Vestments of the Eternal Blossom - 4 Piece Bonus (Item - Druid T14 Restoration 4P Bonus)
+          0,
+    },
+    // Tier 15 bonuses (8 spells)
+    {
+      138216, // Armor of the Haunted Forest - 2 Piece Bonus (Item - Druid T15 Guardian 2P Bonus)
+      138222, // Armor of the Haunted Forest - 4 Piece Bonus (Item - Druid T15 Guardian 4P Bonus)
+      138284, // Vestments of the Haunted Forest - 2 Piece Bonus (Item - Druid T15 Restoration 2P Bonus)
+      138286, // Vestments of the Haunted Forest - 4 Piece Bonus (Item - Druid T15 Restoration 4P Bonus)
+      138348, // Regalia of the Haunted Forest - 2 Piece Bonus (Item - Druid T15 Balance 2P Bonus)
+      138350, // Regalia of the Haunted Forest - 4 Piece Bonus (Item - Druid T15 Balance 4P Bonus)
+      138352, // Battlegear of the Haunted Forest - 2 Piece Bonus (Item - Druid T15 Feral 2P Bonus)
+      138357, // Battlegear of the Haunted Forest - 4 Piece Bonus (Item - Druid T15 Feral 4P Bonus)
+    },
+    // Tier 16 bonuses (8 spells)
+    {
+      144756, // Regalia of the Shattered Vale - 4 Piece Bonus (Item - Druid T16 Balance 4P Bonus)
+      144767, // Regalia of the Shattered Vale - 2 Piece Bonus (Item - Druid T16 Balance 2P Bonus)
+      144841, // Battlegear of the Shattered Vale - 4 Piece Bonus (Item - Druid T16 Feral 4P Bonus)
+      144864, // Battlegear of the Shattered Vale - 2 Piece Bonus (Item - Druid T16 Feral 2P Bonus)
+      144869, // Vestments of the Shattered Vale - 2 Piece Bonus (Item - Druid T16 Restoration 2P Bonus)
+      144875, // Vestments of the Shattered Vale - 4 Piece Bonus (Item - Druid T16 Restoration 4P Bonus)
+      144879, // Armor of the Shattered Vale - 2 Piece Bonus (Item - Druid T16 Guardian 2P Bonus)
+      144887, // Armor of the Shattered Vale - 4 Piece Bonus (Item - Druid T16 Guardian 4P Bonus)
+    },
+    {
+          0,
+    },
+  },
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
 };
 #define ARTIFACT_SIZE (41)
 
+<<<<<<< HEAD
 // Artifact base data, wow build 23244
 static struct artifact_t __artifact_data[ARTIFACT_SIZE] = {
   {  2,  70 },
@@ -4216,6 +5306,551 @@ static struct artifact_t __artifact_data[ARTIFACT_SIZE] = {
   { 81,  65 },
   { 82,  66 },
   {  0,   0 },
+=======
+#define SET_BONUS_DATA_SIZE (518)
+
+// Set bonus data, wow build 20886
+static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
+  // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
+  { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,              {   0 },    0,   73, 165641, { 127055, 127081, 127092, 127103, 127114,  0 } },
+  { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   4,   1,              {   0 },    0,   73, 165670, { 127055, 127081, 127092, 127103, 127114,  0 } },
+  { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,              {   0 },    2,   71, 165636, { 127055, 127081, 127092, 127103, 127114,  0 } },
+  { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,              {   0 },    2,   72, 165639, { 127055, 127081, 127092, 127103, 127114,  0 } },
+  { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   4,   1,              {   0 },    2,   72, 165670, { 127055, 127081, 127092, 127103, 127114,  0 } },
+  { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   4,   1,              {   0 },    2,   71, 165670, { 127055, 127081, 127092, 127103, 127114,  0 } },
+  { "Gladiator's Vindication"                    ,        "pvp",      0,  1225,    0,   2,   2,              {   0 },    0,   66, 165905, { 127052, 127076, 127087, 127098, 127109,  0 } },
+  { "Gladiator's Vindication"                    ,        "pvp",      0,  1225,    0,   4,   2,              {   0 },    0,   66, 171427, { 127052, 127076, 127087, 127098, 127109,  0 } },
+  { "Gladiator's Vindication"                    ,        "pvp",      0,  1225,    0,   2,   2,              {   0 },    1,   65, 170860, { 127052, 127076, 127087, 127098, 127109,  0 } },
+  { "Gladiator's Vindication"                    ,        "pvp",      0,  1225,    0,   4,   2,              {   0 },    1,   65, 180766, { 127052, 127076, 127087, 127098, 127109,  0 } },
+  { "Gladiator's Vindication"                    ,        "pvp",      0,  1225,    0,   2,   2,              {   0 },    2,   70, 165886, { 127052, 127076, 127087, 127098, 127109,  0 } },
+  { "Gladiator's Vindication"                    ,        "pvp",      0,  1225,    0,   4,   2,              {   0 },    2,   70, 165895, { 127052, 127076, 127087, 127098, 127109,  0 } },
+  { "Gladiator's Pursuit"                        ,        "pvp",      0,  1222,    0,   2,   3,              {   0 },    2,  255, 166005, { 127050, 127073, 127084, 127095, 127106,  0 } },
+  { "Gladiator's Pursuit"                        ,        "pvp",      0,  1222,    0,   2,   3,              {   0 },    2,  253, 166005, { 127050, 127073, 127084, 127095, 127106,  0 } },
+  { "Gladiator's Pursuit"                        ,        "pvp",      0,  1222,    0,   2,   3,              {   0 },    2,  254, 166005, { 127050, 127073, 127084, 127095, 127106,  0 } },
+  { "Gladiator's Pursuit"                        ,        "pvp",      0,  1222,    0,   4,   3,              {   0 },    2,  253, 171478, { 127050, 127073, 127084, 127095, 127106,  0 } },
+  { "Gladiator's Pursuit"                        ,        "pvp",      0,  1222,    0,   4,   3,              {   0 },    2,  254, 170884, { 127050, 127073, 127084, 127095, 127106,  0 } },
+  { "Gladiator's Pursuit"                        ,        "pvp",      0,  1222,    0,   4,   3,              {   0 },    2,  255, 166012, { 127050, 127073, 127084, 127095, 127106,  0 } },
+  { "Gladiator's Vestments"                      ,        "pvp",      0,  1227,    0,   2,   4,              {   0 },    2,  259, 165995, { 127053, 127078, 127089, 127100, 127111,  0 } },
+  { "Gladiator's Vestments"                      ,        "pvp",      0,  1227,    0,   2,   4,              {   0 },    2,  261, 165995, { 127053, 127078, 127089, 127100, 127111,  0 } },
+  { "Gladiator's Vestments"                      ,        "pvp",      0,  1227,    0,   2,   4,              {   0 },    2,  260, 165995, { 127053, 127078, 127089, 127100, 127111,  0 } },
+  { "Gladiator's Vestments"                      ,        "pvp",      0,  1227,    0,   4,   4,              {   0 },    2,  259, 170883, { 127053, 127078, 127089, 127100, 127111,  0 } },
+  { "Gladiator's Vestments"                      ,        "pvp",      0,  1227,    0,   4,   4,              {   0 },    2,  261, 170877, { 127053, 127078, 127089, 127100, 127111,  0 } },
+  { "Gladiator's Vestments"                      ,        "pvp",      0,  1227,    0,   4,   4,              {   0 },    2,  260, 182303, { 127053, 127078, 127089, 127100, 127111,  0 } },
+  { "Gladiator's Investiture"                    ,        "pvp",      0,  1226,    0,   2,   5,              {   0 },    1,  256, 171124, { 127065, 127077, 127088, 127099, 127110,  0 } },
+  // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
+  { "Gladiator's Investiture"                    ,        "pvp",      0,  1226,    0,   2,   5,              {   0 },    1,  257, 171158, { 127065, 127077, 127088, 127099, 127110,  0 } },
+  { "Gladiator's Investiture"                    ,        "pvp",      0,  1226,    0,   4,   5,              {   0 },    1,  256, 171141, { 127065, 127077, 127088, 127099, 127110,  0 } },
+  { "Gladiator's Investiture"                    ,        "pvp",      0,  1226,    0,   4,   5,              {   0 },    1,  257, 171142, { 127065, 127077, 127088, 127099, 127110,  0 } },
+  { "Gladiator's Investiture"                    ,        "pvp",      0,  1226,    0,   2,   5,              {   0 },    3,  258, 171146, { 127065, 127077, 127088, 127099, 127110,  0 } },
+  { "Gladiator's Investiture"                    ,        "pvp",      0,  1226,    0,   4,   5,              {   0 },    3,  258, 171151, { 127065, 127077, 127088, 127099, 127110,  0 } },
+  { "Gladiator's Desecration"                    ,        "pvp",      0,  1220,    0,   2,   6,              {   0 },    0,  250, 166020, { 127049, 127071, 127082, 127093, 127104,  0 } },
+  { "Gladiator's Desecration"                    ,        "pvp",      0,  1220,    0,   4,   6,              {   0 },    0,  250, 171456, { 127049, 127071, 127082, 127093, 127104,  0 } },
+  { "Gladiator's Desecration"                    ,        "pvp",      0,  1220,    0,   2,   6,              {   0 },    2,  252, 166020, { 127049, 127071, 127082, 127093, 127104,  0 } },
+  { "Gladiator's Desecration"                    ,        "pvp",      0,  1220,    0,   2,   6,              {   0 },    2,  251, 166020, { 127049, 127071, 127082, 127093, 127104,  0 } },
+  { "Gladiator's Desecration"                    ,        "pvp",      0,  1220,    0,   4,   6,              {   0 },    2,  251, 166056, { 127049, 127071, 127082, 127093, 127104,  0 } },
+  { "Gladiator's Desecration"                    ,        "pvp",      0,  1220,    0,   4,   6,              {   0 },    2,  252, 166061, { 127049, 127071, 127082, 127093, 127104,  0 } },
+  { "Gladiator's Wartide"                        ,        "pvp",      0,  1228,    0,   2,   7,              {   0 },    1,  264, 171381, { 127054, 127079, 127090, 127101, 127112,  0 } },
+  { "Gladiator's Wartide"                        ,        "pvp",      0,  1228,    0,   4,   7,              {   0 },    1,  264, 166063, { 127054, 127079, 127090, 127101, 127112,  0 } },
+  { "Gladiator's Wartide"                        ,        "pvp",      0,  1228,    0,   2,   7,              {   0 },    2,  263, 166103, { 127054, 127079, 127090, 127101, 127112,  0 } },
+  { "Gladiator's Wartide"                        ,        "pvp",      0,  1228,    0,   4,   7,              {   0 },    2,  263, 171121, { 127054, 127079, 127090, 127101, 127112,  0 } },
+  { "Gladiator's Wartide"                        ,        "pvp",      0,  1228,    0,   2,   7,              {   0 },    3,  262, 171109, { 127054, 127079, 127090, 127101, 127112,  0 } },
+  { "Gladiator's Wartide"                        ,        "pvp",      0,  1228,    0,   4,   7,              {   0 },    3,  262, 166096, { 127054, 127079, 127090, 127101, 127112,  0 } },
+  { "Gladiator's Regalia"                        ,        "pvp",      0,  1223,    0,   2,   8,              {   0 },    3,   62, 171349, { 127064, 127074, 127085, 127096, 127107,  0 } },
+  { "Gladiator's Regalia"                        ,        "pvp",      0,  1223,    0,   2,   8,              {   0 },    3,   63, 165977, { 127064, 127074, 127085, 127096, 127107,  0 } },
+  { "Gladiator's Regalia"                        ,        "pvp",      0,  1223,    0,   2,   8,              {   0 },    3,   64, 180721, { 127064, 127074, 127085, 127096, 127107,  0 } },
+  { "Gladiator's Regalia"                        ,        "pvp",      0,  1223,    0,   4,   8,              {   0 },    3,   62, 171351, { 127064, 127074, 127085, 127096, 127107,  0 } },
+  { "Gladiator's Regalia"                        ,        "pvp",      0,  1223,    0,   4,   8,              {   0 },    3,   63, 171169, { 127064, 127074, 127085, 127096, 127107,  0 } },
+  { "Gladiator's Regalia"                        ,        "pvp",      0,  1223,    0,   4,   8,              {   0 },    3,   64, 180741, { 127064, 127074, 127085, 127096, 127107,  0 } },
+  { "Gladiator's Felshroud"                      ,        "pvp",      0,  1229,    0,   2,   9,              {   0 },    3,  265, 171377, { 127066, 127080, 127091, 127102, 127113,  0 } },
+  { "Gladiator's Felshroud"                      ,        "pvp",      0,  1229,    0,   2,   9,              {   0 },    3,  266, 171393, { 127066, 127080, 127091, 127102, 127113,  0 } },
+  // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
+  { "Gladiator's Felshroud"                      ,        "pvp",      0,  1229,    0,   2,   9,              {   0 },    3,  267, 171383, { 127066, 127080, 127091, 127102, 127113,  0 } },
+  { "Gladiator's Felshroud"                      ,        "pvp",      0,  1229,    0,   4,   9,              {   0 },    3,  265, 171379, { 127066, 127080, 127091, 127102, 127113,  0 } },
+  { "Gladiator's Felshroud"                      ,        "pvp",      0,  1229,    0,   4,   9,              {   0 },    3,  266, 165967, { 127066, 127080, 127091, 127102, 127113,  0 } },
+  { "Gladiator's Felshroud"                      ,        "pvp",      0,  1229,    0,   4,   9,              {   0 },    3,  267, 189209, { 127066, 127080, 127091, 127102, 127113,  0 } },
+  { "Gladiator's Ironskin"                       ,        "pvp",      0,  1224,    0,   2,  10,              {   0 },    0,  268, 165691, { 127051, 127075, 127086, 127097, 127108,  0 } },
+  { "Gladiator's Ironskin"                       ,        "pvp",      0,  1224,    0,   4,  10,              {   0 },    0,  268, 171445, { 127051, 127075, 127086, 127097, 127108,  0 } },
+  { "Gladiator's Ironskin"                       ,        "pvp",      0,  1224,    0,   2,  10,              {   0 },    1,  270, 170799, { 127051, 127075, 127086, 127097, 127108,  0 } },
+  { "Gladiator's Ironskin"                       ,        "pvp",      0,  1224,    0,   4,  10,              {   0 },    1,  270, 165697, { 127051, 127075, 127086, 127097, 127108,  0 } },
+  { "Gladiator's Ironskin"                       ,        "pvp",      0,  1224,    0,   2,  10,              {   0 },    2,  269, 180743, { 127051, 127075, 127086, 127097, 127108,  0 } },
+  { "Gladiator's Ironskin"                       ,        "pvp",      0,  1224,    0,   4,  10,              {   0 },    2,  269, 181742, { 127051, 127075, 127086, 127097, 127108,  0 } },
+  { "Gladiator's Sanctuary"                      ,        "pvp",      0,  1221,    0,   2,  11,              {   0 },    0,  104, 171408, { 127063, 127072, 127083, 127094, 127105,  0 } },
+  { "Gladiator's Sanctuary"                      ,        "pvp",      0,  1221,    0,   4,  11,              {   0 },    0,  104, 171489, { 127063, 127072, 127083, 127094, 127105,  0 } },
+  { "Gladiator's Sanctuary"                      ,        "pvp",      0,  1221,    0,   2,  11,              {   0 },    1,  105, 170853, { 127063, 127072, 127083, 127094, 127105,  0 } },
+  { "Gladiator's Sanctuary"                      ,        "pvp",      0,  1221,    0,   4,  11,              {   0 },    1,  105, 165707, { 127063, 127072, 127083, 127094, 127105,  0 } },
+  { "Gladiator's Sanctuary"                      ,        "pvp",      0,  1221,    0,   2,  11,              {   0 },    2,  103, 170848, { 127063, 127072, 127083, 127094, 127105,  0 } },
+  { "Gladiator's Sanctuary"                      ,        "pvp",      0,  1221,    0,   4,  11,              {   0 },    2,  103, 165698, { 127063, 127072, 127083, 127094, 127105,  0 } },
+  { "Gladiator's Sanctuary"                      ,        "pvp",      0,  1221,    0,   2,  11,              {   0 },    3,  102, 165701, { 127063, 127072, 127083, 127094, 127105,  0 } },
+  { "Gladiator's Sanctuary"                      ,        "pvp",      0,  1221,    0,   4,  11,              {   0 },    3,  102, 180717, { 127063, 127072, 127083, 127094, 127105,  0 } },
+  { "Blacksteel Battleplate"                     ,  "tier17lfr",      1,  1245,   17,   2,   1,              {   0 },    0,   73, 179142, { 120396, 120395, 120394, 120393, 120392, 120391,  0 } },
+  { "Blacksteel Battleplate"                     ,  "tier17lfr",      1,  1245,   17,   4,   1,              {   0 },    0,   73, 179143, { 120396, 120395, 120394, 120393, 120392, 120391,  0 } },
+  { "Blacksteel Battleplate"                     ,  "tier17lfr",      1,  1245,   17,   2,   1,              {   0 },    2,   71, 179139, { 120396, 120395, 120394, 120393, 120392, 120391,  0 } },
+  { "Blacksteel Battleplate"                     ,  "tier17lfr",      1,  1245,   17,   2,   1,              {   0 },    2,   72, 179139, { 120396, 120395, 120394, 120393, 120392, 120391,  0 } },
+  { "Blacksteel Battleplate"                     ,  "tier17lfr",      1,  1245,   17,   4,   1,              {   0 },    2,   71, 179140, { 120396, 120395, 120394, 120393, 120392, 120391,  0 } },
+  { "Blacksteel Battleplate"                     ,  "tier17lfr",      1,  1245,   17,   4,   1,              {   0 },    2,   72, 179140, { 120396, 120395, 120394, 120393, 120392, 120391,  0 } },
+  { "Blacksteel Battleplate"                     ,  "tier17lfr",      1,  1245,   17,   2,   2,              {   0 },    0,   66, 179142, { 120396, 120395, 120394, 120393, 120392, 120391,  0 } },
+  // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
+  { "Blacksteel Battleplate"                     ,  "tier17lfr",      1,  1245,   17,   4,   2,              {   0 },    0,   66, 179143, { 120396, 120395, 120394, 120393, 120392, 120391,  0 } },
+  { "Blacksteel Battleplate"                     ,  "tier17lfr",      1,  1245,   17,   2,   2,              {   0 },    1,   65, 179145, { 120396, 120395, 120394, 120393, 120392, 120391,  0 } },
+  { "Blacksteel Battleplate"                     ,  "tier17lfr",      1,  1245,   17,   4,   2,              {   0 },    1,   65, 179146, { 120396, 120395, 120394, 120393, 120392, 120391,  0 } },
+  { "Blacksteel Battleplate"                     ,  "tier17lfr",      1,  1245,   17,   2,   2,              {   0 },    2,   70, 179139, { 120396, 120395, 120394, 120393, 120392, 120391,  0 } },
+  { "Blacksteel Battleplate"                     ,  "tier17lfr",      1,  1245,   17,   4,   2,              {   0 },    2,   70, 179140, { 120396, 120395, 120394, 120393, 120392, 120391,  0 } },
+  { "Ashlink Armor"                              ,  "tier17lfr",      1,  1246,   17,   2,   3,              {   0 },    2,  255, 179130, { 120390, 120389, 120388, 120387, 120386, 120385,  0 } },
+  { "Ashlink Armor"                              ,  "tier17lfr",      1,  1246,   17,   2,   3,              {   0 },    2,  253, 179130, { 120390, 120389, 120388, 120387, 120386, 120385,  0 } },
+  { "Ashlink Armor"                              ,  "tier17lfr",      1,  1246,   17,   2,   3,              {   0 },    2,  254, 179130, { 120390, 120389, 120388, 120387, 120386, 120385,  0 } },
+  { "Ashlink Armor"                              ,  "tier17lfr",      1,  1246,   17,   4,   3,              {   0 },    2,  255, 179131, { 120390, 120389, 120388, 120387, 120386, 120385,  0 } },
+  { "Ashlink Armor"                              ,  "tier17lfr",      1,  1246,   17,   4,   3,              {   0 },    2,  253, 179131, { 120390, 120389, 120388, 120387, 120386, 120385,  0 } },
+  { "Ashlink Armor"                              ,  "tier17lfr",      1,  1246,   17,   4,   3,              {   0 },    2,  254, 179131, { 120390, 120389, 120388, 120387, 120386, 120385,  0 } },
+  { "Sootfur Garb"                               ,  "tier17lfr",      1,  1247,   17,   2,   4,              {   0 },    2,  259, 179114, { 120384, 120383, 120382, 120381, 120380, 120379,  0 } },
+  { "Sootfur Garb"                               ,  "tier17lfr",      1,  1247,   17,   2,   4,              {   0 },    2,  261, 179114, { 120384, 120383, 120382, 120381, 120380, 120379,  0 } },
+  { "Sootfur Garb"                               ,  "tier17lfr",      1,  1247,   17,   2,   4,              {   0 },    2,  260, 179114, { 120384, 120383, 120382, 120381, 120380, 120379,  0 } },
+  { "Sootfur Garb"                               ,  "tier17lfr",      1,  1247,   17,   4,   4,              {   0 },    2,  259, 179115, { 120384, 120383, 120382, 120381, 120380, 120379,  0 } },
+  { "Sootfur Garb"                               ,  "tier17lfr",      1,  1247,   17,   4,   4,              {   0 },    2,  261, 179115, { 120384, 120383, 120382, 120381, 120380, 120379,  0 } },
+  { "Sootfur Garb"                               ,  "tier17lfr",      1,  1247,   17,   4,   4,              {   0 },    2,  260, 179115, { 120384, 120383, 120382, 120381, 120380, 120379,  0 } },
+  { "Ebonflame Raiment"                          ,  "tier17lfr",      1,  1248,   17,   2,   5,              {   0 },    1,  257, 179110, { 120378, 120377, 120376, 120375, 120374, 120373,  0 } },
+  { "Ebonflame Raiment"                          ,  "tier17lfr",      1,  1248,   17,   2,   5,              {   0 },    1,  256, 179110, { 120378, 120377, 120376, 120375, 120374, 120373,  0 } },
+  { "Ebonflame Raiment"                          ,  "tier17lfr",      1,  1248,   17,   4,   5,              {   0 },    1,  257, 179111, { 120378, 120377, 120376, 120375, 120374, 120373,  0 } },
+  { "Ebonflame Raiment"                          ,  "tier17lfr",      1,  1248,   17,   4,   5,              {   0 },    1,  256, 179111, { 120378, 120377, 120376, 120375, 120374, 120373,  0 } },
+  { "Ebonflame Raiment"                          ,  "tier17lfr",      1,  1248,   17,   2,   5,              {   0 },    3,  258, 179108, { 120378, 120377, 120376, 120375, 120374, 120373,  0 } },
+  { "Ebonflame Raiment"                          ,  "tier17lfr",      1,  1248,   17,   4,   5,              {   0 },    3,  258, 179107, { 120378, 120377, 120376, 120375, 120374, 120373,  0 } },
+  { "Blacksteel Battleplate"                     ,  "tier17lfr",      1,  1245,   17,   2,   6,              {   0 },    0,  250, 179142, { 120396, 120395, 120394, 120393, 120392, 120391,  0 } },
+  { "Blacksteel Battleplate"                     ,  "tier17lfr",      1,  1245,   17,   4,   6,              {   0 },    0,  250, 179143, { 120396, 120395, 120394, 120393, 120392, 120391,  0 } },
+  // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
+  { "Blacksteel Battleplate"                     ,  "tier17lfr",      1,  1245,   17,   2,   6,              {   0 },    2,  251, 179139, { 120396, 120395, 120394, 120393, 120392, 120391,  0 } },
+  { "Blacksteel Battleplate"                     ,  "tier17lfr",      1,  1245,   17,   2,   6,              {   0 },    2,  252, 179139, { 120396, 120395, 120394, 120393, 120392, 120391,  0 } },
+  { "Blacksteel Battleplate"                     ,  "tier17lfr",      1,  1245,   17,   4,   6,              {   0 },    2,  251, 179140, { 120396, 120395, 120394, 120393, 120392, 120391,  0 } },
+  { "Blacksteel Battleplate"                     ,  "tier17lfr",      1,  1245,   17,   4,   6,              {   0 },    2,  252, 179140, { 120396, 120395, 120394, 120393, 120392, 120391,  0 } },
+  { "Ashlink Armor"                              ,  "tier17lfr",      1,  1246,   17,   2,   7,              {   0 },    1,  264, 179137, { 120390, 120389, 120388, 120387, 120386, 120385,  0 } },
+  { "Ashlink Armor"                              ,  "tier17lfr",      1,  1246,   17,   4,   7,              {   0 },    1,  264, 179138, { 120390, 120389, 120388, 120387, 120386, 120385,  0 } },
+  { "Ashlink Armor"                              ,  "tier17lfr",      1,  1246,   17,   2,   7,              {   0 },    2,  263, 179130, { 120390, 120389, 120388, 120387, 120386, 120385,  0 } },
+  { "Ashlink Armor"                              ,  "tier17lfr",      1,  1246,   17,   4,   7,              {   0 },    2,  263, 179131, { 120390, 120389, 120388, 120387, 120386, 120385,  0 } },
+  { "Ashlink Armor"                              ,  "tier17lfr",      1,  1246,   17,   2,   7,              {   0 },    3,  262, 179133, { 120390, 120389, 120388, 120387, 120386, 120385,  0 } },
+  { "Ashlink Armor"                              ,  "tier17lfr",      1,  1246,   17,   4,   7,              {   0 },    3,  262, 179134, { 120390, 120389, 120388, 120387, 120386, 120385,  0 } },
+  { "Ebonflame Raiment"                          ,  "tier17lfr",      1,  1248,   17,   2,   8,              {   0 },    3,   62, 179108, { 120378, 120377, 120376, 120375, 120374, 120373,  0 } },
+  { "Ebonflame Raiment"                          ,  "tier17lfr",      1,  1248,   17,   2,   8,              {   0 },    3,   63, 179108, { 120378, 120377, 120376, 120375, 120374, 120373,  0 } },
+  { "Ebonflame Raiment"                          ,  "tier17lfr",      1,  1248,   17,   2,   8,              {   0 },    3,   64, 179108, { 120378, 120377, 120376, 120375, 120374, 120373,  0 } },
+  { "Ebonflame Raiment"                          ,  "tier17lfr",      1,  1248,   17,   4,   8,              {   0 },    3,   62, 179107, { 120378, 120377, 120376, 120375, 120374, 120373,  0 } },
+  { "Ebonflame Raiment"                          ,  "tier17lfr",      1,  1248,   17,   4,   8,              {   0 },    3,   63, 179107, { 120378, 120377, 120376, 120375, 120374, 120373,  0 } },
+  { "Ebonflame Raiment"                          ,  "tier17lfr",      1,  1248,   17,   4,   8,              {   0 },    3,   64, 179107, { 120378, 120377, 120376, 120375, 120374, 120373,  0 } },
+  { "Ebonflame Raiment"                          ,  "tier17lfr",      1,  1248,   17,   2,   9,              {   0 },    3,  265, 179108, { 120378, 120377, 120376, 120375, 120374, 120373,  0 } },
+  { "Ebonflame Raiment"                          ,  "tier17lfr",      1,  1248,   17,   2,   9,              {   0 },    3,  266, 179108, { 120378, 120377, 120376, 120375, 120374, 120373,  0 } },
+  { "Ebonflame Raiment"                          ,  "tier17lfr",      1,  1248,   17,   2,   9,              {   0 },    3,  267, 179108, { 120378, 120377, 120376, 120375, 120374, 120373,  0 } },
+  { "Ebonflame Raiment"                          ,  "tier17lfr",      1,  1248,   17,   4,   9,              {   0 },    3,  265, 179107, { 120378, 120377, 120376, 120375, 120374, 120373,  0 } },
+  { "Ebonflame Raiment"                          ,  "tier17lfr",      1,  1248,   17,   4,   9,              {   0 },    3,  266, 179107, { 120378, 120377, 120376, 120375, 120374, 120373,  0 } },
+  { "Ebonflame Raiment"                          ,  "tier17lfr",      1,  1248,   17,   4,   9,              {   0 },    3,  267, 179107, { 120378, 120377, 120376, 120375, 120374, 120373,  0 } },
+  { "Sootfur Garb"                               ,  "tier17lfr",      1,  1247,   17,   2,  10,              {   0 },    0,  268, 179127, { 120384, 120383, 120382, 120381, 120380, 120379,  0 } },
+  { "Sootfur Garb"                               ,  "tier17lfr",      1,  1247,   17,   4,  10,              {   0 },    0,  268, 179128, { 120384, 120383, 120382, 120381, 120380, 120379,  0 } },
+  { "Sootfur Garb"                               ,  "tier17lfr",      1,  1247,   17,   2,  10,              {   0 },    1,  270, 179121, { 120384, 120383, 120382, 120381, 120380, 120379,  0 } },
+  // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
+  { "Sootfur Garb"                               ,  "tier17lfr",      1,  1247,   17,   4,  10,              {   0 },    1,  270, 179122, { 120384, 120383, 120382, 120381, 120380, 120379,  0 } },
+  { "Sootfur Garb"                               ,  "tier17lfr",      1,  1247,   17,   2,  10,              {   0 },    2,  269, 179114, { 120384, 120383, 120382, 120381, 120380, 120379,  0 } },
+  { "Sootfur Garb"                               ,  "tier17lfr",      1,  1247,   17,   4,  10,              {   0 },    2,  269, 179115, { 120384, 120383, 120382, 120381, 120380, 120379,  0 } },
+  { "Sootfur Garb"                               ,  "tier17lfr",      1,  1247,   17,   2,  11,              {   0 },    0,  104, 179127, { 120384, 120383, 120382, 120381, 120380, 120379,  0 } },
+  { "Sootfur Garb"                               ,  "tier17lfr",      1,  1247,   17,   4,  11,              {   0 },    0,  104, 179128, { 120384, 120383, 120382, 120381, 120380, 120379,  0 } },
+  { "Sootfur Garb"                               ,  "tier17lfr",      1,  1247,   17,   2,  11,              {   0 },    1,  105, 179121, { 120384, 120383, 120382, 120381, 120380, 120379,  0 } },
+  { "Sootfur Garb"                               ,  "tier17lfr",      1,  1247,   17,   4,  11,              {   0 },    1,  105, 179122, { 120384, 120383, 120382, 120381, 120380, 120379,  0 } },
+  { "Sootfur Garb"                               ,  "tier17lfr",      1,  1247,   17,   2,  11,              {   0 },    2,  103, 179114, { 120384, 120383, 120382, 120381, 120380, 120379,  0 } },
+  { "Sootfur Garb"                               ,  "tier17lfr",      1,  1247,   17,   4,  11,              {   0 },    2,  103, 179115, { 120384, 120383, 120382, 120381, 120380, 120379,  0 } },
+  { "Sootfur Garb"                               ,  "tier17lfr",      1,  1247,   17,   2,  11,              {   0 },    3,  102, 179117, { 120384, 120383, 120382, 120381, 120380, 120379,  0 } },
+  { "Sootfur Garb"                               ,  "tier17lfr",      1,  1247,   17,   4,  11,              {   0 },    3,  102, 179118, { 120384, 120383, 120382, 120381, 120380, 120379,  0 } },
+  { "The Twin Blades of Azzinoth"                ,    "glaives",      2,   699,    0,   2,  -1,              {   0 },   -1,   -1,  41434, {  32838,  32837,  0 } },
+  { "The Twin Blades of Azzinoth"                ,    "glaives",      2,   699,    0,   2,  -1,              {   0 },   -1,   -1,  41433, {  32838,  32837,  0 } },
+  { "Colossal Dragonplate Armor"                 ,     "tier13",      3,  1074,   13,   2,   1,              {  73 },    0,   -1, 105908, {  76988,  76989,  76990,  76991,  76992,  0 } },
+  { "Colossal Dragonplate Armor"                 ,     "tier13",      3,  1074,   13,   4,   1,              {  73 },    0,   -1, 105911, {  76988,  76989,  76990,  76991,  76992,  0 } },
+  { "Colossal Dragonplate Battlegear"            ,     "tier13",      3,  1073,   13,   2,   1,         {  71,  72 },    2,   -1, 105797, {  76983,  76984,  76985,  76986,  76987,  0 } },
+  { "Colossal Dragonplate Battlegear"            ,     "tier13",      3,  1073,   13,   4,   1,         {  71,  72 },    2,   -1, 105907, {  76983,  76984,  76985,  76986,  76987,  0 } },
+  { "Armor of Radiant Glory"                     ,     "tier13",      3,  1065,   13,   2,   2,              {  66 },    0,   -1, 105800, {  77003,  77004,  77005,  77006,  77007,  0 } },
+  { "Armor of Radiant Glory"                     ,     "tier13",      3,  1065,   13,   4,   2,              {  66 },    0,   -1, 105744, {  77003,  77004,  77005,  77006,  77007,  0 } },
+  { "Regalia of Radiant Glory"                   ,     "tier13",      3,  1063,   13,   2,   2,              {  65 },    1,   -1, 105743, {  76765,  76766,  76767,  76768,  76769,  0 } },
+  { "Regalia of Radiant Glory"                   ,     "tier13",      3,  1063,   13,   4,   2,              {  65 },    1,   -1, 105798, {  76765,  76766,  76767,  76768,  76769,  0 } },
+  { "Battleplate of Radiant Glory"               ,     "tier13",      3,  1064,   13,   2,   2,              {  70 },    2,   -1, 105765, {  76874,  76875,  76876,  76877,  76878,  0 } },
+  { "Battleplate of Radiant Glory"               ,     "tier13",      3,  1064,   13,   4,   2,              {  70 },    2,   -1, 105820, {  76874,  76875,  76876,  76877,  76878,  0 } },
+  { "Wyrmstalker Battlegear"                     ,     "tier13",      3,  1061,   13,   2,   3,    { 253, 254, 255 },    2,   -1, 105732, {  77028,  77029,  77030,  77031,  77032,  0 } },
+  { "Wyrmstalker Battlegear"                     ,     "tier13",      3,  1061,   13,   4,   3,    { 253, 254, 255 },    2,   -1, 105921, {  77028,  77029,  77030,  77031,  77032,  0 } },
+  // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
+  { "Blackfang Battleweave"                      ,     "tier13",      3,  1068,   13,   2,   4,    { 259, 260, 261 },    2,   -1, 105849, {  77023,  77024,  77025,  77026,  77027,  0 } },
+  { "Blackfang Battleweave"                      ,     "tier13",      3,  1068,   13,   4,   4,    { 259, 260, 261 },    2,   -1, 105865, {  77023,  77024,  77025,  77026,  77027,  0 } },
+  { "Vestments of Dying Light"                   ,     "tier13",      3,  1066,   13,   2,   5,         { 256, 257 },    1,   -1, 105827, {  76357,  76358,  76359,  76360,  76361,  0 } },
+  { "Vestments of Dying Light"                   ,     "tier13",      3,  1066,   13,   4,   5,         { 256, 257 },    1,   -1, 105832, {  76357,  76358,  76359,  76360,  76361,  0 } },
+  { "Regalia of Dying Light"                     ,     "tier13",      3,  1067,   13,   2,   5,              { 258 },    3,   -1, 105843, {  76348,  76347,  76346,  76345,  76344,  0 } },
+  { "Regalia of Dying Light"                     ,     "tier13",      3,  1067,   13,   4,   5,              { 258 },    3,   -1, 105844, {  76348,  76347,  76346,  76345,  76344,  0 } },
+  { "Necrotic Boneplate Armor"                   ,     "tier13",      3,  1056,   13,   2,   6,              { 250 },    0,   -1, 105552, {  77008,  77009,  77010,  77011,  77012,  0 } },
+  { "Necrotic Boneplate Armor"                   ,     "tier13",      3,  1056,   13,   4,   6,              { 250 },    0,   -1, 105587, {  77008,  77009,  77010,  77011,  77012,  0 } },
+  { "Necrotic Boneplate Battlegear"              ,     "tier13",      3,  1057,   13,   2,   6,         { 251, 252 },    2,   -1, 105609, {  76974,  76975,  76976,  76977,  76978,  0 } },
+  { "Necrotic Boneplate Battlegear"              ,     "tier13",      3,  1057,   13,   4,   6,         { 251, 252 },    2,   -1, 105646, {  76974,  76975,  76976,  76977,  76978,  0 } },
+  { "Spiritwalker's Vestments"                   ,     "tier13",      3,  1069,   13,   2,   7,              { 264 },    1,   -1, 105764, {  76756,  76757,  76758,  76759,  76760,  0 } },
+  { "Spiritwalker's Vestments"                   ,     "tier13",      3,  1069,   13,   4,   7,              { 264 },    1,   -1, 105876, {  76756,  76757,  76758,  76759,  76760,  0 } },
+  { "Spiritwalker's Battlegear"                  ,     "tier13",      3,  1071,   13,   2,   7,              { 263 },    2,   -1, 105866, {  77040,  77041,  77042,  77043,  77044,  0 } },
+  { "Spiritwalker's Battlegear"                  ,     "tier13",      3,  1071,   13,   4,   7,              { 263 },    2,   -1, 105872, {  77040,  77041,  77042,  77043,  77044,  0 } },
+  { "Spiritwalker's Regalia"                     ,     "tier13",      3,  1070,   13,   2,   7,              { 262 },    3,   -1, 105780, {  77039,  77038,  77037,  77036,  77035,  0 } },
+  { "Spiritwalker's Regalia"                     ,     "tier13",      3,  1070,   13,   4,   7,              { 262 },    3,   -1, 105816, {  77039,  77038,  77037,  77036,  77035,  0 } },
+  { "Time Lord's Regalia"                        ,     "tier13",      3,  1062,   13,   2,   8,    {  62,  63,  64 },    3,   -1, 105788, {  76212,  76213,  76214,  76215,  76216,  0 } },
+  { "Time Lord's Regalia"                        ,     "tier13",      3,  1062,   13,   4,   8,    {  62,  63,  64 },    3,   -1, 105790, {  76212,  76213,  76214,  76215,  76216,  0 } },
+  { "Vestments of the Faceless Shroud"           ,     "tier13",      3,  1072,   13,   2,   9,    { 265, 266, 267 },    3,   -1, 105888, {  76343,  76342,  76341,  76340,  76339,  0 } },
+  { "Vestments of the Faceless Shroud"           ,     "tier13",      3,  1072,   13,   4,   9,    { 265, 266, 267 },    3,   -1, 105787, {  76343,  76342,  76341,  76340,  76339,  0 } },
+  { "Deep Earth Vestments"                       ,     "tier13",      3,  1060,   13,   2,  11,              { 105 },    1,   -1, 105715, {  76749,  76750,  76751,  76752,  76753,  0 } },
+  { "Deep Earth Vestments"                       ,     "tier13",      3,  1060,   13,   4,  11,              { 105 },    1,   -1, 105770, {  76749,  76750,  76751,  76752,  76753,  0 } },
+  { "Deep Earth Battlegarb"                      ,     "tier13",      3,  1058,   13,   2,  11,              { 103 },    2,   -1, 105725, {  77013,  77014,  77015,  77016,  77017,  0 } },
+  { "Deep Earth Battlegarb"                      ,     "tier13",      3,  1058,   13,   4,  11,              { 103 },    2,   -1,  60142, {  77013,  77014,  77015,  77016,  77017,  0 } },
+  { "Deep Earth Regalia"                         ,     "tier13",      3,  1059,   13,   2,  11,              { 102 },    3,   -1, 105722, {  77018,  77019,  77020,  77021,  77022,  0 } },
+  // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
+  { "Deep Earth Regalia"                         ,     "tier13",      3,  1059,   13,   4,  11,              { 102 },    3,   -1, 105717, {  77018,  77019,  77020,  77021,  77022,  0 } },
+  { "Plate of Resounding Rings"                  ,     "tier14",      4,  1145,   14,   2,   1,              {  73 },    0,   -1, 123146, {  85324,  85325,  85326,  85327,  85328,  0 } },
+  { "Plate of Resounding Rings"                  ,     "tier14",      4,  1145,   14,   4,   1,              {  73 },    0,   -1, 123147, {  85324,  85325,  85326,  85327,  85328,  0 } },
+  { "Battleplate of Resounding Rings"            ,     "tier14",      4,  1144,   14,   2,   1,         {  71,  72 },    2,   -1, 123142, {  85329,  85330,  85331,  85332,  85333,  0 } },
+  { "Battleplate of Resounding Rings"            ,     "tier14",      4,  1144,   14,   4,   1,         {  71,  72 },    2,   -1, 123144, {  85329,  85330,  85331,  85332,  85333,  0 } },
+  { "White Tiger Plate"                          ,     "tier14",      4,  1136,   14,   2,   2,              {  66 },    0,   -1, 123104, {  85319,  85320,  85321,  85322,  85323,  0 } },
+  { "White Tiger Plate"                          ,     "tier14",      4,  1136,   14,   4,   2,              {  66 },    0,   -1, 123107, {  85319,  85320,  85321,  85322,  85323,  0 } },
+  { "White Tiger Vestments"                      ,     "tier14",      4,  1134,   14,   2,   2,              {  65 },    1,   -1, 123102, {  85344,  85345,  85346,  85347,  85348,  0 } },
+  { "White Tiger Vestments"                      ,     "tier14",      4,  1134,   14,   4,   2,              {  65 },    1,   -1, 123103, {  85344,  85345,  85346,  85347,  85348,  0 } },
+  { "White Tiger Battlegear"                     ,     "tier14",      4,  1135,   14,   2,   2,              {  70 },    2,   -1, 123108, {  85339,  85340,  85341,  85342,  85343,  0 } },
+  { "White Tiger Battlegear"                     ,     "tier14",      4,  1135,   14,   4,   2,              {  70 },    2,   -1,  70762, {  85339,  85340,  85341,  85342,  85343,  0 } },
+  { "Yaungol Slayer Battlegear"                  ,     "tier14",      4,  1129,   14,   2,   3,    { 253, 254, 255 },    2,   -1, 123090, {  85294,  85295,  85296,  85297,  85298,  0 } },
+  { "Yaungol Slayer Battlegear"                  ,     "tier14",      4,  1129,   14,   4,   3,    { 253, 254, 255 },    2,   -1, 123091, {  85294,  85295,  85296,  85297,  85298,  0 } },
+  { "Battlegear of the Thousandfold Blades"      ,     "tier14",      4,  1139,   14,   2,   4,    { 259, 260, 261 },    2,   -1, 123116, {  85299,  85300,  85301,  85302,  85303,  0 } },
+  { "Battlegear of the Thousandfold Blades"      ,     "tier14",      4,  1139,   14,   4,   4,    { 259, 260, 261 },    2,   -1, 123122, {  85299,  85300,  85301,  85302,  85303,  0 } },
+  { "Vestments of the Guardian Serpent"          ,     "tier14",      4,  1137,   14,   2,   5,         { 256, 257 },    1,   -1, 123111, {  85359,  85360,  85361,  85362,  85363,  0 } },
+  { "Vestments of the Guardian Serpent"          ,     "tier14",      4,  1137,   14,   4,   5,         { 256, 257 },    1,   -1, 123113, {  85359,  85360,  85361,  85362,  85363,  0 } },
+  { "Regalia of the Guardian Serpent"            ,     "tier14",      4,  1138,   14,   2,   5,              { 258 },    3,   -1, 123114, {  85368,  85367,  85366,  85365,  85364,  0 } },
+  { "Regalia of the Guardian Serpent"            ,     "tier14",      4,  1138,   14,   4,   5,              { 258 },    3,   -1, 123115, {  85368,  85367,  85366,  85365,  85364,  0 } },
+  { "Plate of the Lost Catacomb"                 ,     "tier14",      4,  1124,   14,   2,   6,              { 250 },    0,   -1, 123079, {  85314,  85315,  85316,  85317,  85318,  0 } },
+  { "Plate of the Lost Catacomb"                 ,     "tier14",      4,  1124,   14,   4,   6,              { 250 },    0,   -1, 123080, {  85314,  85315,  85316,  85317,  85318,  0 } },
+  { "Battlegear of the Lost Catacomb"            ,     "tier14",      4,  1123,   14,   2,   6,         { 251, 252 },    2,   -1, 123077, {  85334,  85335,  85336,  85337,  85338,  0 } },
+  { "Battlegear of the Lost Catacomb"            ,     "tier14",      4,  1123,   14,   4,   6,         { 251, 252 },    2,   -1, 123078, {  85334,  85335,  85336,  85337,  85338,  0 } },
+  { "Vestments of the Firebird"                  ,     "tier14",      4,  1140,   14,   2,   7,              { 264 },    1,   -1, 123134, {  85349,  85350,  85351,  85352,  85353,  0 } },
+  { "Vestments of the Firebird"                  ,     "tier14",      4,  1140,   14,   4,   7,              { 264 },    1,   -1, 123135, {  85349,  85350,  85351,  85352,  85353,  0 } },
+  // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
+  { "Battlegear of the Firebird"                 ,     "tier14",      4,  1142,   14,   2,   7,              { 263 },    2,   -1, 123132, {  85284,  85285,  85286,  85287,  85288,  0 } },
+  { "Battlegear of the Firebird"                 ,     "tier14",      4,  1142,   14,   4,   7,              { 263 },    2,   -1, 123133, {  85284,  85285,  85286,  85287,  85288,  0 } },
+  { "Regalia of the Firebird"                    ,     "tier14",      4,  1141,   14,   2,   7,              { 262 },    3,   -1, 123123, {  85293,  85292,  85291,  85290,  85289,  0 } },
+  { "Regalia of the Firebird"                    ,     "tier14",      4,  1141,   14,   4,   7,              { 262 },    3,   -1, 123124, {  85293,  85292,  85291,  85290,  85289,  0 } },
+  { "Regalia of the Burning Scroll"              ,     "tier14",      4,  1130,   14,   2,   8,    {  62,  63,  64 },    3,   -1, 123097, {  85374,  85375,  85376,  85377,  85378,  0 } },
+  { "Regalia of the Burning Scroll"              ,     "tier14",      4,  1130,   14,   4,   8,    {  62,  63,  64 },    3,   -1, 123101, {  85374,  85375,  85376,  85377,  85378,  0 } },
+  { "Sha-Skin Regalia"                           ,     "tier14",      4,  1143,   14,   2,   9,    { 265, 266, 267 },    3,   -1, 123136, {  85373,  85372,  85371,  85370,  85369,  0 } },
+  { "Sha-Skin Regalia"                           ,     "tier14",      4,  1143,   14,   4,   9,    { 265, 266, 267 },    3,   -1, 123141, {  85373,  85372,  85371,  85370,  85369,  0 } },
+  { "Armor of the Red Crane"                     ,     "tier14",      4,  1133,   14,   2,  10,              { 268 },    0,   -1, 123157, {  85384,  85385,  85386,  85387,  85388,  0 } },
+  { "Armor of the Red Crane"                     ,     "tier14",      4,  1133,   14,   4,  10,              { 268 },    0,   -1, 123159, {  85384,  85385,  85386,  85387,  85388,  0 } },
+  { "Vestments of the Red Crane"                 ,     "tier14",      4,  1131,   14,   2,  10,              { 270 },    1,   -1, 123152, {  85393,  85392,  85391,  85390,  85389,  0 } },
+  { "Vestments of the Red Crane"                 ,     "tier14",      4,  1131,   14,   4,  10,              { 270 },    1,   -1, 123153, {  85393,  85392,  85391,  85390,  85389,  0 } },
+  { "Battlegear of the Red Crane"                ,     "tier14",      4,  1132,   14,   2,  10,              { 269 },    2,   -1, 123149, {  85398,  85397,  85396,  85395,  85394,  0 } },
+  { "Battlegear of the Red Crane"                ,     "tier14",      4,  1132,   14,   4,  10,              { 269 },    2,   -1, 123150, {  85398,  85397,  85396,  85395,  85394,  0 } },
+  { "Armor of the Eternal Blossom"               ,     "tier14",      4,  1128,   14,   2,  11,              { 104 },    0,   -1, 144879, {  85383,  85382,  85381,  85380,  85379,  0 } },
+  { "Armor of the Eternal Blossom"               ,     "tier14",      4,  1128,   14,   4,  11,              { 104 },    0,   -1, 123087, {  85383,  85382,  85381,  85380,  85379,  0 } },
+  { "Vestments of the Eternal Blossom"           ,     "tier14",      4,  1125,   14,   2,  11,              { 105 },    1,   -1, 123088, {  85354,  85355,  85356,  85357,  85358,  0 } },
+  { "Vestments of the Eternal Blossom"           ,     "tier14",      4,  1125,   14,   4,  11,              { 105 },    1,   -1, 123089, {  85354,  85355,  85356,  85357,  85358,  0 } },
+  { "Battlegear of the Eternal Blossom"          ,     "tier14",      4,  1127,   14,   2,  11,              { 103 },    2,   -1, 123084, {  85309,  85310,  85311,  85312,  85313,  0 } },
+  { "Battlegear of the Eternal Blossom"          ,     "tier14",      4,  1127,   14,   4,  11,              { 103 },    2,   -1, 123085, {  85309,  85310,  85311,  85312,  85313,  0 } },
+  { "Regalia of the Eternal Blossom"             ,     "tier14",      4,  1126,   14,   2,  11,              { 102 },    3,   -1, 123082, {  85304,  85305,  85306,  85307,  85308,  0 } },
+  { "Regalia of the Eternal Blossom"             ,     "tier14",      4,  1126,   14,   4,  11,              { 102 },    3,   -1, 123083, {  85304,  85305,  85306,  85307,  85308,  0 } },
+  { "Plate of the Last Mogu"                     ,     "tier15",      5,  1173,   15,   2,   1,              {  73 },    0,   -1, 138280, {  95335,  95336,  95337,  95338,  95339,  0 } },
+  { "Plate of the Last Mogu"                     ,     "tier15",      5,  1173,   15,   4,   1,              {  73 },    0,   -1, 138281, {  95335,  95336,  95337,  95338,  95339,  0 } },
+  { "Battleplate of the Last Mogu"               ,     "tier15",      5,  1172,   15,   2,   1,         {  71,  72 },    2,   -1, 138120, {  95330,  95331,  95332,  95333,  95334,  0 } },
+  // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
+  { "Battleplate of the Last Mogu"               ,     "tier15",      5,  1172,   15,   4,   1,         {  71,  72 },    2,   -1, 138126, {  95330,  95331,  95332,  95333,  95334,  0 } },
+  { "Plate of the Lightning Emperor"             ,     "tier15",      5,  1164,   15,   2,   2,              {  66 },    0,   -1, 138238, {  95290,  95291,  95292,  95293,  95294,  0 } },
+  { "Plate of the Lightning Emperor"             ,     "tier15",      5,  1164,   15,   4,   2,              {  66 },    0,   -1, 138244, {  95290,  95291,  95292,  95293,  95294,  0 } },
+  { "Vestments of the Lightning Emperor"         ,     "tier15",      5,  1163,   15,   2,   2,              {  65 },    1,   -1, 138291, {  95285,  95286,  95287,  95288,  95289,  0 } },
+  { "Vestments of the Lightning Emperor"         ,     "tier15",      5,  1163,   15,   4,   2,              {  65 },    1,   -1, 138292, {  95285,  95286,  95287,  95288,  95289,  0 } },
+  { "Battlegear of the Lightning Emperor"        ,     "tier15",      5,  1162,   15,   2,   2,              {  70 },    2,   -1, 138159, {  95280,  95281,  95282,  95283,  95284,  0 } },
+  { "Battlegear of the Lightning Emperor"        ,     "tier15",      5,  1162,   15,   4,   2,              {  70 },    2,   -1, 138164, {  95280,  95281,  95282,  95283,  95284,  0 } },
+  { "Battlegear of the Saurok Stalker"           ,     "tier15",      5,  1157,   15,   2,   3,    { 253, 254, 255 },    2,   -1, 138365, {  95255,  95256,  95257,  95258,  95259,  0 } },
+  { "Battlegear of the Saurok Stalker"           ,     "tier15",      5,  1157,   15,   4,   3,    { 253, 254, 255 },    2,   -1, 138367, {  95255,  95256,  95257,  95258,  95259,  0 } },
+  { "Nine-Tail Battlegear"                       ,     "tier15",      5,  1167,   15,   2,   4,    { 259, 260, 261 },    2,   -1, 138148, {  95305,  95306,  95307,  95308,  95309,  0 } },
+  { "Nine-Tail Battlegear"                       ,     "tier15",      5,  1167,   15,   4,   4,    { 259, 260, 261 },    2,   -1, 138150, {  95305,  95306,  95307,  95308,  95309,  0 } },
+  { "Vestments of the Exorcist"                  ,     "tier15",      5,  1165,   15,   2,   5,         { 256, 257 },    1,   -1, 138293, {  95295,  95296,  95297,  95298,  95299,  0 } },
+  { "Vestments of the Exorcist"                  ,     "tier15",      5,  1165,   15,   4,   5,         { 256, 257 },    1,   -1, 138301, {  95295,  95296,  95297,  95298,  95299,  0 } },
+  { "Regalia of the Exorcist"                    ,     "tier15",      5,  1166,   15,   2,   5,              { 258 },    3,   -1, 138156, {  95300,  95301,  95302,  95303,  95304,  0 } },
+  { "Regalia of the Exorcist"                    ,     "tier15",      5,  1166,   15,   4,   5,              { 258 },    3,   -1, 138158, {  95300,  95301,  95302,  95303,  95304,  0 } },
+  { "Plate of the All-Consuming Maw"             ,     "tier15",      5,  1151,   15,   2,   6,              { 250 },    0,   -1, 138195, {  95230,  95231,  95232,  95233,  95234,  0 } },
+  { "Plate of the All-Consuming Maw"             ,     "tier15",      5,  1151,   15,   4,   6,              { 250 },    0,   -1, 138197, {  95230,  95231,  95232,  95233,  95234,  0 } },
+  { "Battleplate of the All-Consuming Maw"       ,     "tier15",      5,  1152,   15,   2,   6,         { 251, 252 },    2,   -1, 138343, {  95225,  95226,  95227,  95228,  95229,  0 } },
+  { "Battleplate of the All-Consuming Maw"       ,     "tier15",      5,  1152,   15,   4,   6,         { 251, 252 },    2,   -1, 138347, {  95225,  95226,  95227,  95228,  95229,  0 } },
+  { "Vestments of the Witch Doctor"              ,     "tier15",      5,  1168,   15,   2,   7,              { 264 },    1,   -1, 138303, {  95310,  95311,  95312,  95313,  95314,  0 } },
+  { "Vestments of the Witch Doctor"              ,     "tier15",      5,  1168,   15,   4,   7,              { 264 },    1,   -1, 138305, {  95310,  95311,  95312,  95313,  95314,  0 } },
+  { "Battlegear of the Witch Doctor"             ,     "tier15",      5,  1169,   15,   2,   7,              { 263 },    2,   -1, 138136, {  95315,  95316,  95317,  95318,  95319,  0 } },
+  { "Battlegear of the Witch Doctor"             ,     "tier15",      5,  1169,   15,   4,   7,              { 263 },    2,   -1, 138141, {  95315,  95316,  95317,  95318,  95319,  0 } },
+  { "Regalia of the Witch Doctor"                ,     "tier15",      5,  1170,   15,   2,   7,              { 262 },    3,   -1, 138145, {  95320,  95321,  95322,  95323,  95324,  0 } },
+  { "Regalia of the Witch Doctor"                ,     "tier15",      5,  1170,   15,   4,   7,              { 262 },    3,   -1, 138144, {  95320,  95321,  95322,  95323,  95324,  0 } },
+  // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
+  { "Regalia of the Chromatic Hydra"             ,     "tier15",      5,  1158,   15,   2,   8,    {  62,  63,  64 },    3,   -1, 138316, {  95260,  95261,  95262,  95263,  95264,  0 } },
+  { "Regalia of the Chromatic Hydra"             ,     "tier15",      5,  1158,   15,   4,   8,    {  62,  63,  64 },    3,   -1, 138376, {  95260,  95261,  95262,  95263,  95264,  0 } },
+  { "Regalia of the Thousandfold Hells"          ,     "tier15",      5,  1171,   15,   2,   9,    { 265, 266, 267 },    3,   -1, 138129, {  95325,  95326,  95327,  95328,  95329,  0 } },
+  { "Regalia of the Thousandfold Hells"          ,     "tier15",      5,  1171,   15,   4,   9,    { 265, 266, 267 },    3,   -1, 138134, {  95325,  95326,  95327,  95328,  95329,  0 } },
+  { "Fire-Charm Armor"                           ,     "tier15",      5,  1161,   15,   2,  10,              { 268 },    0,   -1, 138231, {  95275,  95276,  95277,  95278,  95279,  0 } },
+  { "Fire-Charm Armor"                           ,     "tier15",      5,  1161,   15,   4,  10,              { 268 },    0,   -1, 138236, {  95275,  95276,  95277,  95278,  95279,  0 } },
+  { "Fire-Charm Vestments"                       ,     "tier15",      5,  1160,   15,   2,  10,              { 270 },    1,   -1, 138290, {  95270,  95271,  95272,  95273,  95274,  0 } },
+  { "Fire-Charm Vestments"                       ,     "tier15",      5,  1160,   15,   4,  10,              { 270 },    1,   -1, 138289, {  95270,  95271,  95272,  95273,  95274,  0 } },
+  { "Fire-Charm Battlegear"                      ,     "tier15",      5,  1159,   15,   2,  10,              { 269 },    2,   -1, 138177, {  95265,  95266,  95267,  95268,  95269,  0 } },
+  { "Fire-Charm Battlegear"                      ,     "tier15",      5,  1159,   15,   4,  10,              { 269 },    2,   -1, 138315, {  95265,  95266,  95267,  95268,  95269,  0 } },
+  { "Armor of the Haunted Forest"                ,     "tier15",      5,  1156,   15,   2,  11,              { 104 },    0,   -1, 138216, {  95250,  95251,  95252,  95253,  95254,  0 } },
+  { "Armor of the Haunted Forest"                ,     "tier15",      5,  1156,   15,   4,  11,              { 104 },    0,   -1, 138222, {  95250,  95251,  95252,  95253,  95254,  0 } },
+  { "Vestments of the Haunted Forest"            ,     "tier15",      5,  1154,   15,   2,  11,              { 105 },    1,   -1, 138284, {  95240,  95241,  95242,  95243,  95244,  0 } },
+  { "Vestments of the Haunted Forest"            ,     "tier15",      5,  1154,   15,   4,  11,              { 105 },    1,   -1, 138286, {  95240,  95241,  95242,  95243,  95244,  0 } },
+  { "Battlegear of the Haunted Forest"           ,     "tier15",      5,  1153,   15,   2,  11,              { 103 },    2,   -1, 138352, {  95235,  95236,  95237,  95238,  95239,  0 } },
+  { "Battlegear of the Haunted Forest"           ,     "tier15",      5,  1153,   15,   4,  11,              { 103 },    2,   -1, 138357, {  95235,  95236,  95237,  95238,  95239,  0 } },
+  { "Regalia of the Haunted Forest"              ,     "tier15",      5,  1155,   15,   2,  11,              { 102 },    3,   -1, 138348, {  95245,  95246,  95247,  95248,  95249,  0 } },
+  { "Regalia of the Haunted Forest"              ,     "tier15",      5,  1155,   15,   4,  11,              { 102 },    3,   -1, 138350, {  95245,  95246,  95247,  95248,  95249,  0 } },
+  { "Plate of the Prehistoric Marauder"          ,     "tier16",      6,  1179,   16,   2,   1,              {  73 },    0,   -1, 144503, {  99195,  99196,  99201,  99202,  99203,  0 } },
+  { "Plate of the Prehistoric Marauder"          ,     "tier16",      6,  1179,   16,   4,   1,              {  73 },    0,   -1, 144502, {  99195,  99196,  99201,  99202,  99203,  0 } },
+  { "Battleplate of the Prehistoric Marauder"    ,     "tier16",      6,  1180,   16,   2,   1,         {  71,  72 },    2,   -1,  60174, {  99197,  99198,  99199,  99200,  99206,  0 } },
+  { "Battleplate of the Prehistoric Marauder"    ,     "tier16",      6,  1180,   16,   4,   1,         {  71,  72 },    2,   -1, 144441, {  99197,  99198,  99199,  99200,  99206,  0 } },
+  { "Plate of Winged Triumph"                    ,     "tier16",      6,  1188,   16,   2,   2,              {  66 },    0,   -1, 144580, {  99126,  99127,  99128,  99129,  99130,  0 } },
+  { "Plate of Winged Triumph"                    ,     "tier16",      6,  1188,   16,   4,   2,              {  66 },    0,   -1, 144566, {  99126,  99127,  99128,  99129,  99130,  0 } },
+  { "Vestments of Winged Triumph"                ,     "tier16",      6,  1189,   16,   2,   2,              {  65 },    1,   -1, 144625, {  99133,  99124,  99125,  99134,  99135,  0 } },
+  // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
+  { "Vestments of Winged Triumph"                ,     "tier16",      6,  1189,   16,   4,   2,              {  65 },    1,   -1, 144613, {  99133,  99124,  99125,  99134,  99135,  0 } },
+  { "Battlegear of Winged Triumph"               ,     "tier16",      6,  1190,   16,   2,   2,              {  70 },    2,   -1, 144586, {  99132,  99136,  99137,  99138,  99139,  0 } },
+  { "Battlegear of Winged Triumph"               ,     "tier16",      6,  1190,   16,   4,   2,              {  70 },    2,   -1, 144593, {  99132,  99136,  99137,  99138,  99139,  0 } },
+  { "Battlegear of the Unblinking Vigil"         ,     "tier16",      6,  1195,   16,   2,   3,    { 253, 254, 255 },    2,   -1, 144637, {  99157,  99158,  99159,  99167,  99168,  0 } },
+  { "Battlegear of the Unblinking Vigil"         ,     "tier16",      6,  1195,   16,   4,   3,    { 253, 254, 255 },    2,   -1, 144641, {  99157,  99158,  99159,  99167,  99168,  0 } },
+  { "Barbed Assassin Battlegear"                 ,     "tier16",      6,  1185,   16,   2,   4,    { 259, 260, 261 },    2,   -1, 145185, {  99113,  99112,  99114,  99115,  99116,  0 } },
+  { "Barbed Assassin Battlegear"                 ,     "tier16",      6,  1185,   16,   4,   4,    { 259, 260, 261 },    2,   -1, 145210, {  99113,  99112,  99114,  99115,  99116,  0 } },
+  { "Vestments of Ternion Glory"                 ,     "tier16",      6,  1187,   16,   2,   5,         { 256, 257 },    1,   -1, 145306, {  99117,  99118,  99119,  99120,  99131,  0 } },
+  { "Vestments of Ternion Glory"                 ,     "tier16",      6,  1187,   16,   4,   5,         { 256, 257 },    1,   -1, 145334, {  99117,  99118,  99119,  99120,  99131,  0 } },
+  { "Regalia of Ternion Glory"                   ,     "tier16",      6,  1186,   16,   2,   5,              { 258 },    3,   -1, 145174, {  99123,  99110,  99111,  99121,  99122,  0 } },
+  { "Regalia of Ternion Glory"                   ,     "tier16",      6,  1186,   16,   4,   5,              { 258 },    3,   -1, 145179, {  99123,  99110,  99111,  99121,  99122,  0 } },
+  { "Plate of Cyclopean Dread"                   ,     "tier16",      6,  1201,   16,   2,   6,              { 250 },    0,   -1, 144934, {  99179,  99188,  99189,  99190,  99191,  0 } },
+  { "Plate of Cyclopean Dread"                   ,     "tier16",      6,  1201,   16,   4,   6,              { 250 },    0,   -1, 144950, {  99179,  99188,  99189,  99190,  99191,  0 } },
+  { "Battleplate of Cyclopean Dread"             ,     "tier16",      6,  1200,   16,   2,   6,         { 251, 252 },    2,   -1, 144899, {  99186,  99187,  99192,  99193,  99194,  0 } },
+  { "Battleplate of Cyclopean Dread"             ,     "tier16",      6,  1200,   16,   4,   6,         { 251, 252 },    2,   -1, 144907, {  99186,  99187,  99192,  99193,  99194,  0 } },
+  { "Celestial Harmony Vestment"                 ,     "tier16",      6,  1184,   16,   2,   7,              { 264 },    1,   -1, 145378, {  99099,  99100,  99107,  99108,  99109,  0 } },
+  { "Celestial Harmony Vestment"                 ,     "tier16",      6,  1184,   16,   4,   7,              { 264 },    1,   -1, 145380, {  99099,  99100,  99107,  99108,  99109,  0 } },
+  { "Celestial Harmony Battlegear"               ,     "tier16",      6,  1183,   16,   2,   7,              { 263 },    2,   -1, 144962, {  99101,  99102,  99103,  99104,  99105,  0 } },
+  { "Celestial Harmony Battlegear"               ,     "tier16",      6,  1183,   16,   4,   7,              { 263 },    2,   -1, 144966, {  99101,  99102,  99103,  99104,  99105,  0 } },
+  { "Celestial Harmony Regalia"                  ,     "tier16",      6,  1182,   16,   2,   7,              { 262 },    3,   -1, 144998, {  99092,  99093,  99094,  99095,  99106,  0 } },
+  { "Celestial Harmony Regalia"                  ,     "tier16",      6,  1182,   16,   4,   7,              { 262 },    3,   -1, 145003, {  99092,  99093,  99094,  99095,  99106,  0 } },
+  { "Chronomancer Regalia"                       ,     "tier16",      6,  1194,   16,   2,   8,    {  62,  63,  64 },    3,   -1, 145251, {  99152,  99153,  99160,  99161,  99162,  0 } },
+  { "Chronomancer Regalia"                       ,     "tier16",      6,  1194,   16,   4,   8,    {  62,  63,  64 },    3,   -1, 145257, {  99152,  99153,  99160,  99161,  99162,  0 } },
+  { "Regalia of the Horned Nightmare"            ,     "tier16",      6,  1181,   16,   2,   9,    { 265, 266, 267 },    3,   -1, 145072, {  99096,  99097,  99098,  99204,  99205,  0 } },
+  { "Regalia of the Horned Nightmare"            ,     "tier16",      6,  1181,   16,   4,   9,    { 265, 266, 267 },    3,   -1, 145091, {  99096,  99097,  99098,  99204,  99205,  0 } },
+  // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
+  { "Armor of Seven Sacred Seals"                ,     "tier16",      6,  1191,   16,   2,  10,              { 268 },    0,   -1, 145049, {  99142,  99143,  99144,  99140,  99141,  0 } },
+  { "Armor of Seven Sacred Seals"                ,     "tier16",      6,  1191,   16,   4,  10,              { 268 },    0,   -1, 145055, {  99142,  99143,  99144,  99140,  99141,  0 } },
+  { "Vestments of Seven Sacred Seals"            ,     "tier16",      6,  1192,   16,   2,  10,              { 270 },    1,   -1, 145439, {  99151,  99147,  99148,  99149,  99150,  0 } },
+  { "Vestments of Seven Sacred Seals"            ,     "tier16",      6,  1192,   16,   4,  10,              { 270 },    1,   -1, 145449, {  99151,  99147,  99148,  99149,  99150,  0 } },
+  { "Battlegear of Seven Sacred Seals"           ,     "tier16",      6,  1193,   16,   2,  10,              { 269 },    2,   -1, 145004, {  99154,  99155,  99156,  99145,  99146,  0 } },
+  { "Battlegear of Seven Sacred Seals"           ,     "tier16",      6,  1193,   16,   4,  10,              { 269 },    2,   -1, 145022, {  99154,  99155,  99156,  99145,  99146,  0 } },
+  { "Armor of the Shattered Vale"                ,     "tier16",      6,  1196,   16,   2,  11,              { 104 },    0,   -1, 144879, {  99163,  99164,  99165,  99166,  99170,  0 } },
+  { "Armor of the Shattered Vale"                ,     "tier16",      6,  1196,   16,   4,  11,              { 104 },    0,   -1, 144887, {  99163,  99164,  99165,  99166,  99170,  0 } },
+  { "Vestments of the Shattered Vale"            ,     "tier16",      6,  1198,   16,   2,  11,              { 105 },    1,   -1, 144869, {  99171,  99172,  99173,  99178,  99185,  0 } },
+  { "Vestments of the Shattered Vale"            ,     "tier16",      6,  1198,   16,   4,  11,              { 105 },    1,   -1, 144875, {  99171,  99172,  99173,  99178,  99185,  0 } },
+  { "Battlegear of the Shattered Vale"           ,     "tier16",      6,  1199,   16,   2,  11,              { 103 },    2,   -1, 144864, {  99180,  99181,  99182,  99183,  99184,  0 } },
+  { "Battlegear of the Shattered Vale"           ,     "tier16",      6,  1199,   16,   4,  11,              { 103 },    2,   -1, 144841, {  99180,  99181,  99182,  99183,  99184,  0 } },
+  { "Regalia of the Shattered Vale"              ,     "tier16",      6,  1197,   16,   2,  11,              { 102 },    3,   -1, 144767, {  99169,  99174,  99175,  99176,  99177,  0 } },
+  { "Regalia of the Shattered Vale"              ,     "tier16",      6,  1197,   16,   4,  11,              { 102 },    3,   -1, 144756, {  99169,  99174,  99175,  99176,  99177,  0 } },
+  { "Blackhand's Battlegear"                     ,     "tier17",      7,  1242,   17,   2,   1,              {   0 },    0,   73, 165338, { 115580, 115581, 115582, 115583, 115584,  0 } },
+  { "Blackhand's Battlegear"                     ,     "tier17",      7,  1242,   17,   4,   1,              {   0 },    0,   73, 165351, { 115580, 115581, 115582, 115583, 115584,  0 } },
+  { "Blackhand's Battlegear"                     ,     "tier17",      7,  1242,   17,   2,   1,              {   0 },    2,   71, 165345, { 115580, 115581, 115582, 115583, 115584,  0 } },
+  { "Blackhand's Battlegear"                     ,     "tier17",      7,  1242,   17,   2,   1,              {   0 },    2,   72, 165337, { 115580, 115581, 115582, 115583, 115584,  0 } },
+  { "Blackhand's Battlegear"                     ,     "tier17",      7,  1242,   17,   4,   1,              {   0 },    2,   71, 165336, { 115580, 115581, 115582, 115583, 115584,  0 } },
+  { "Blackhand's Battlegear"                     ,     "tier17",      7,  1242,   17,   4,   1,              {   0 },    2,   72, 165349, { 115580, 115581, 115582, 115583, 115584,  0 } },
+  { "Battlegear of Guiding Light"                ,     "tier17",      7,  1238,   17,   2,   2,              {   0 },    0,   66, 165446, { 115565, 115566, 115567, 115568, 115569,  0 } },
+  { "Battlegear of Guiding Light"                ,     "tier17",      7,  1238,   17,   4,   2,              {   0 },    0,   66, 167740, { 115565, 115566, 115567, 115568, 115569,  0 } },
+  { "Battlegear of Guiding Light"                ,     "tier17",      7,  1238,   17,   2,   2,              {   0 },    1,   65, 165438, { 115565, 115566, 115567, 115568, 115569,  0 } },
+  { "Battlegear of Guiding Light"                ,     "tier17",      7,  1238,   17,   4,   2,              {   0 },    1,   65, 167697, { 115565, 115566, 115567, 115568, 115569,  0 } },
+  { "Battlegear of Guiding Light"                ,     "tier17",      7,  1238,   17,   2,   2,              {   0 },    2,   70, 165440, { 115565, 115566, 115567, 115568, 115569,  0 } },
+  // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
+  { "Battlegear of Guiding Light"                ,     "tier17",      7,  1238,   17,   4,   2,              {   0 },    2,   70, 165439, { 115565, 115566, 115567, 115568, 115569,  0 } },
+  { "Rylakstalker's Battlegear"                  ,     "tier17",      7,  1236,   17,   2,   3,              {   0 },    2,  253, 165517, { 115545, 115546, 115547, 115548, 115549,  0 } },
+  { "Rylakstalker's Battlegear"                  ,     "tier17",      7,  1236,   17,   2,   3,              {   0 },    2,  254, 165519, { 115545, 115546, 115547, 115548, 115549,  0 } },
+  { "Rylakstalker's Battlegear"                  ,     "tier17",      7,  1236,   17,   2,   3,              {   0 },    2,  255, 165544, { 115545, 115546, 115547, 115548, 115549,  0 } },
+  { "Rylakstalker's Battlegear"                  ,     "tier17",      7,  1236,   17,   4,   3,              {   0 },    2,  253, 165518, { 115545, 115546, 115547, 115548, 115549,  0 } },
+  { "Rylakstalker's Battlegear"                  ,     "tier17",      7,  1236,   17,   4,   3,              {   0 },    2,  254, 165525, { 115545, 115546, 115547, 115548, 115549,  0 } },
+  { "Rylakstalker's Battlegear"                  ,     "tier17",      7,  1236,   17,   4,   3,              {   0 },    2,  255, 165545, { 115545, 115546, 115547, 115548, 115549,  0 } },
+  { "Poisoner's Battlegear"                      ,     "tier17",      7,  1240,   17,   2,   4,              {   0 },    2,  259, 165516, { 115570, 115571, 115572, 115573, 115574,  0 } },
+  { "Poisoner's Battlegear"                      ,     "tier17",      7,  1240,   17,   2,   4,              {   0 },    2,  260, 165480, { 115570, 115571, 115572, 115573, 115574,  0 } },
+  { "Poisoner's Battlegear"                      ,     "tier17",      7,  1240,   17,   2,   4,              {   0 },    2,  261, 165482, { 115570, 115571, 115572, 115573, 115574,  0 } },
+  { "Poisoner's Battlegear"                      ,     "tier17",      7,  1240,   17,   4,   4,              {   0 },    2,  259, 166886, { 115570, 115571, 115572, 115573, 115574,  0 } },
+  { "Poisoner's Battlegear"                      ,     "tier17",      7,  1240,   17,   4,   4,              {   0 },    2,  260, 165478, { 115570, 115571, 115572, 115573, 115574,  0 } },
+  { "Poisoner's Battlegear"                      ,     "tier17",      7,  1240,   17,   4,   4,              {   0 },    2,  261, 165514, { 115570, 115571, 115572, 115573, 115574,  0 } },
+  { "Soul Priest's Raiment"                      ,     "tier17",      7,  1239,   17,   2,   5,              {   0 },    1,  256, 165614, { 115560, 115561, 115562, 115563, 115564,  0 } },
+  { "Soul Priest's Raiment"                      ,     "tier17",      7,  1239,   17,   2,   5,              {   0 },    1,  257, 165621, { 115560, 115561, 115562, 115563, 115564,  0 } },
+  { "Soul Priest's Raiment"                      ,     "tier17",      7,  1239,   17,   4,   5,              {   0 },    1,  256, 167694, { 115560, 115561, 115562, 115563, 115564,  0 } },
+  { "Soul Priest's Raiment"                      ,     "tier17",      7,  1239,   17,   4,   5,              {   0 },    1,  257, 167684, { 115560, 115561, 115562, 115563, 115564,  0 } },
+  { "Soul Priest's Raiment"                      ,     "tier17",      7,  1239,   17,   2,   5,              {   0 },    3,  258, 165628, { 115560, 115561, 115562, 115563, 115564,  0 } },
+  { "Soul Priest's Raiment"                      ,     "tier17",      7,  1239,   17,   4,   5,              {   0 },    3,  258, 165629, { 115560, 115561, 115562, 115563, 115564,  0 } },
+  { "Ogreskull Boneplate Battlegear"             ,     "tier17",      7,  1234,   17,   2,   6,              {   0 },    0,  250, 167192, { 115535, 115536, 115537, 115538, 115539,  0 } },
+  { "Ogreskull Boneplate Battlegear"             ,     "tier17",      7,  1234,   17,   4,   6,              {   0 },    0,  250, 165571, { 115535, 115536, 115537, 115538, 115539,  0 } },
+  { "Ogreskull Boneplate Battlegear"             ,     "tier17",      7,  1234,   17,   2,   6,              {   0 },    2,  251, 165547, { 115535, 115536, 115537, 115538, 115539,  0 } },
+  { "Ogreskull Boneplate Battlegear"             ,     "tier17",      7,  1234,   17,   2,   6,              {   0 },    2,  252, 165575, { 115535, 115536, 115537, 115538, 115539,  0 } },
+  { "Ogreskull Boneplate Battlegear"             ,     "tier17",      7,  1234,   17,   4,   6,              {   0 },    2,  251, 165568, { 115535, 115536, 115537, 115538, 115539,  0 } },
+  { "Ogreskull Boneplate Battlegear"             ,     "tier17",      7,  1234,   17,   4,   6,              {   0 },    2,  252, 165574, { 115535, 115536, 115537, 115538, 115539,  0 } },
+  // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
+  { "Windspeaker's Regalia"                      ,     "tier17",      7,  1241,   17,   2,   7,              {   0 },    1,  264, 165576, { 115575, 115576, 115577, 115578, 115579,  0 } },
+  { "Windspeaker's Regalia"                      ,     "tier17",      7,  1241,   17,   4,   7,              {   0 },    1,  264, 167702, { 115575, 115576, 115577, 115578, 115579,  0 } },
+  { "Windspeaker's Regalia"                      ,     "tier17",      7,  1241,   17,   2,   7,              {   0 },    2,  263, 165605, { 115575, 115576, 115577, 115578, 115579,  0 } },
+  { "Windspeaker's Regalia"                      ,     "tier17",      7,  1241,   17,   4,   7,              {   0 },    2,  263, 165610, { 115575, 115576, 115577, 115578, 115579,  0 } },
+  { "Windspeaker's Regalia"                      ,     "tier17",      7,  1241,   17,   2,   7,              {   0 },    3,  262, 165577, { 115575, 115576, 115577, 115578, 115579,  0 } },
+  { "Windspeaker's Regalia"                      ,     "tier17",      7,  1241,   17,   4,   7,              {   0 },    3,  262, 165580, { 115575, 115576, 115577, 115578, 115579,  0 } },
+  { "Arcanoshatter Regalia"                      ,     "tier17",      7,  1235,   17,   2,   8,              {   0 },    3,   62, 165475, { 115550, 115551, 115552, 115553, 115554,  0 } },
+  { "Arcanoshatter Regalia"                      ,     "tier17",      7,  1235,   17,   2,   8,              {   0 },    3,   63, 165458, { 115550, 115551, 115552, 115553, 115554,  0 } },
+  { "Arcanoshatter Regalia"                      ,     "tier17",      7,  1235,   17,   2,   8,              {   0 },    3,   64, 165469, { 115550, 115551, 115552, 115553, 115554,  0 } },
+  { "Arcanoshatter Regalia"                      ,     "tier17",      7,  1235,   17,   4,   8,              {   0 },    3,   62, 165476, { 115550, 115551, 115552, 115553, 115554,  0 } },
+  { "Arcanoshatter Regalia"                      ,     "tier17",      7,  1235,   17,   4,   8,              {   0 },    3,   63, 165459, { 115550, 115551, 115552, 115553, 115554,  0 } },
+  { "Arcanoshatter Regalia"                      ,     "tier17",      7,  1235,   17,   4,   8,              {   0 },    3,   64, 165470, { 115550, 115551, 115552, 115553, 115554,  0 } },
+  { "Shadow Council's Garb"                      ,     "tier17",      7,  1243,   17,   2,   9,              {   0 },    3,  265, 165448, { 115585, 115586, 115587, 115588, 115589,  0 } },
+  { "Shadow Council's Garb"                      ,     "tier17",      7,  1243,   17,   2,   9,              {   0 },    3,  266, 165450, { 115585, 115586, 115587, 115588, 115589,  0 } },
+  { "Shadow Council's Garb"                      ,     "tier17",      7,  1243,   17,   2,   9,              {   0 },    3,  267, 165455, { 115585, 115586, 115587, 115588, 115589,  0 } },
+  { "Shadow Council's Garb"                      ,     "tier17",      7,  1243,   17,   4,   9,              {   0 },    3,  265, 165449, { 115585, 115586, 115587, 115588, 115589,  0 } },
+  { "Shadow Council's Garb"                      ,     "tier17",      7,  1243,   17,   4,   9,              {   0 },    3,  266, 165451, { 115585, 115586, 115587, 115588, 115589,  0 } },
+  { "Shadow Council's Garb"                      ,     "tier17",      7,  1243,   17,   4,   9,              {   0 },    3,  267, 165452, { 115585, 115586, 115587, 115588, 115589,  0 } },
+  { "Battlegear of the Somber Gaze"              ,     "tier17",      7,  1237,   17,   2,  10,              {   0 },    0,  268, 165353, { 115555, 115556, 115557, 115558, 115559,  0 } },
+  { "Battlegear of the Somber Gaze"              ,     "tier17",      7,  1237,   17,   4,  10,              {   0 },    0,  268, 165352, { 115555, 115556, 115557, 115558, 115559,  0 } },
+  { "Battlegear of the Somber Gaze"              ,     "tier17",      7,  1237,   17,   2,  10,              {   0 },    1,  270, 165404, { 115555, 115556, 115557, 115558, 115559,  0 } },
+  { "Battlegear of the Somber Gaze"              ,     "tier17",      7,  1237,   17,   4,  10,              {   0 },    1,  270, 167718, { 115555, 115556, 115557, 115558, 115559,  0 } },
+  { "Battlegear of the Somber Gaze"              ,     "tier17",      7,  1237,   17,   2,  10,              {   0 },    2,  269, 165403, { 115555, 115556, 115557, 115558, 115559,  0 } },
+  { "Battlegear of the Somber Gaze"              ,     "tier17",      7,  1237,   17,   4,  10,              {   0 },    2,  269, 165402, { 115555, 115556, 115557, 115558, 115559,  0 } },
+  { "Living Wood Battlegear"                     ,     "tier17",      7,  1233,   17,   2,  11,              {   0 },    0,  104, 165410, { 115540, 115541, 115542, 115543, 115544,  0 } },
+  // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
+  { "Living Wood Battlegear"                     ,     "tier17",      7,  1233,   17,   4,  11,              {   0 },    0,  104, 165423, { 115540, 115541, 115542, 115543, 115544,  0 } },
+  { "Living Wood Battlegear"                     ,     "tier17",      7,  1233,   17,   2,  11,              {   0 },    1,  105, 165437, { 115540, 115541, 115542, 115543, 115544,  0 } },
+  { "Living Wood Battlegear"                     ,     "tier17",      7,  1233,   17,   4,  11,              {   0 },    1,  105, 167714, { 115540, 115541, 115542, 115543, 115544,  0 } },
+  { "Living Wood Battlegear"                     ,     "tier17",      7,  1233,   17,   2,  11,              {   0 },    2,  103, 165431, { 115540, 115541, 115542, 115543, 115544,  0 } },
+  { "Living Wood Battlegear"                     ,     "tier17",      7,  1233,   17,   4,  11,              {   0 },    2,  103, 165432, { 115540, 115541, 115542, 115543, 115544,  0 } },
+  { "Living Wood Battlegear"                     ,     "tier17",      7,  1233,   17,   2,  11,              {   0 },    3,  102, 165433, { 115540, 115541, 115542, 115543, 115544,  0 } },
+  { "Living Wood Battlegear"                     ,     "tier17",      7,  1233,   17,   4,  11,              {   0 },    3,  102, 166677, { 115540, 115541, 115542, 115543, 115544,  0 } },
+  { "Battlegear of Iron Wrath"                   ,     "tier18",      8,  1258,   18,   2,   1,              {   0 },    0,   73, 185796, { 124319, 124329, 124334, 124340, 124346,  0 } },
+  { "Battlegear of Iron Wrath"                   ,     "tier18",      8,  1258,   18,   4,   1,              {   0 },    0,   73, 185797, { 124319, 124329, 124334, 124340, 124346,  0 } },
+  { "Battlegear of Iron Wrath"                   ,     "tier18",      8,  1258,   18,   2,   1,              {   0 },    2,   71, 185800, { 124319, 124329, 124334, 124340, 124346,  0 } },
+  { "Battlegear of Iron Wrath"                   ,     "tier18",      8,  1258,   18,   2,   1,              {   0 },    2,   72, 185798, { 124319, 124329, 124334, 124340, 124346,  0 } },
+  { "Battlegear of Iron Wrath"                   ,     "tier18",      8,  1258,   18,   4,   1,              {   0 },    2,   71, 185804, { 124319, 124329, 124334, 124340, 124346,  0 } },
+  { "Battlegear of Iron Wrath"                   ,     "tier18",      8,  1258,   18,   4,   1,              {   0 },    2,   72, 185799, { 124319, 124329, 124334, 124340, 124346,  0 } },
+  { "Watch of the Ceaseless Vigil"               ,     "tier18",      8,  1254,   18,   2,   2,              {   0 },    0,   66, 185675, { 124318, 124328, 124333, 124339, 124345,  0 } },
+  { "Watch of the Ceaseless Vigil"               ,     "tier18",      8,  1254,   18,   4,   2,              {   0 },    0,   66, 185677, { 124318, 124328, 124333, 124339, 124345,  0 } },
+  { "Watch of the Ceaseless Vigil"               ,     "tier18",      8,  1254,   18,   2,   2,              {   0 },    1,   65, 185545, { 124318, 124328, 124333, 124339, 124345,  0 } },
+  { "Watch of the Ceaseless Vigil"               ,     "tier18",      8,  1254,   18,   4,   2,              {   0 },    1,   65, 185571, { 124318, 124328, 124333, 124339, 124345,  0 } },
+  { "Watch of the Ceaseless Vigil"               ,     "tier18",      8,  1254,   18,   2,   2,              {   0 },    2,   70, 185581, { 124318, 124328, 124333, 124339, 124345,  0 } },
+  { "Watch of the Ceaseless Vigil"               ,     "tier18",      8,  1254,   18,   4,   2,              {   0 },    2,   70, 185648, { 124318, 124328, 124333, 124339, 124345,  0 } },
+  { "Battlegear of the Savage Hunt"              ,     "tier18",      8,  1253,   18,   2,   3,              {   0 },    2,  253, 188200, { 124284, 124292, 124296, 124301, 124307,  0 } },
+  { "Battlegear of the Savage Hunt"              ,     "tier18",      8,  1253,   18,   2,   3,              {   0 },    2,  254, 188190, { 124284, 124292, 124296, 124301, 124307,  0 } },
+  { "Battlegear of the Savage Hunt"              ,     "tier18",      8,  1253,   18,   2,   3,              {   0 },    2,  255, 188198, { 124284, 124292, 124296, 124301, 124307,  0 } },
+  { "Battlegear of the Savage Hunt"              ,     "tier18",      8,  1253,   18,   4,   3,              {   0 },    2,  253, 188201, { 124284, 124292, 124296, 124301, 124307,  0 } },
+  { "Battlegear of the Savage Hunt"              ,     "tier18",      8,  1253,   18,   4,   3,              {   0 },    2,  254, 188191, { 124284, 124292, 124296, 124301, 124307,  0 } },
+  { "Battlegear of the Savage Hunt"              ,     "tier18",      8,  1253,   18,   4,   3,              {   0 },    2,  255, 188199, { 124284, 124292, 124296, 124301, 124307,  0 } },
+  // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
+  { "Felblade Armor"                             ,     "tier18",      8,  1256,   18,   2,   4,              {   0 },    2,  259, 186182, { 124248, 124257, 124263, 124269, 124274,  0 } },
+  { "Felblade Armor"                             ,     "tier18",      8,  1256,   18,   2,   4,              {   0 },    2,  260, 186285, { 124248, 124257, 124263, 124269, 124274,  0 } },
+  { "Felblade Armor"                             ,     "tier18",      8,  1256,   18,   2,   4,              {   0 },    2,  261, 186278, { 124248, 124257, 124263, 124269, 124274,  0 } },
+  { "Felblade Armor"                             ,     "tier18",      8,  1256,   18,   4,   4,              {   0 },    2,  259, 186277, { 124248, 124257, 124263, 124269, 124274,  0 } },
+  { "Felblade Armor"                             ,     "tier18",      8,  1256,   18,   4,   4,              {   0 },    2,  260, 186288, { 124248, 124257, 124263, 124269, 124274,  0 } },
+  { "Felblade Armor"                             ,     "tier18",      8,  1256,   18,   4,   4,              {   0 },    2,  261, 186279, { 124248, 124257, 124263, 124269, 124274,  0 } },
+  { "Attire of Piety"                            ,     "tier18",      8,  1255,   18,   2,   5,              {   0 },    1,  256, 186477, { 124155, 124161, 124166, 124172, 124178,  0 } },
+  { "Attire of Piety"                            ,     "tier18",      8,  1255,   18,   2,   5,              {   0 },    1,  257, 186298, { 124155, 124161, 124166, 124172, 124178,  0 } },
+  { "Attire of Piety"                            ,     "tier18",      8,  1255,   18,   4,   5,              {   0 },    1,  256, 186492, { 124155, 124161, 124166, 124172, 124178,  0 } },
+  { "Attire of Piety"                            ,     "tier18",      8,  1255,   18,   4,   5,              {   0 },    1,  257, 186378, { 124155, 124161, 124166, 124172, 124178,  0 } },
+  { "Attire of Piety"                            ,     "tier18",      8,  1255,   18,   2,   5,              {   0 },    3,  258, 186980, { 124155, 124161, 124166, 124172, 124178,  0 } },
+  { "Attire of Piety"                            ,     "tier18",      8,  1255,   18,   4,   5,              {   0 },    3,  258, 186981, { 124155, 124161, 124166, 124172, 124178,  0 } },
+  { "Demongaze Armor"                            ,     "tier18",      8,  1249,   18,   2,   6,              {   0 },    0,  250, 187872, { 124317, 124327, 124332, 124338, 124344,  0 } },
+  { "Demongaze Armor"                            ,     "tier18",      8,  1249,   18,   4,   6,              {   0 },    0,  250, 187873, { 124317, 124327, 124332, 124338, 124344,  0 } },
+  { "Demongaze Armor"                            ,     "tier18",      8,  1249,   18,   2,   6,              {   0 },    2,  251, 187868, { 124317, 124327, 124332, 124338, 124344,  0 } },
+  { "Demongaze Armor"                            ,     "tier18",      8,  1249,   18,   2,   6,              {   0 },    2,  252, 187865, { 124317, 124327, 124332, 124338, 124344,  0 } },
+  { "Demongaze Armor"                            ,     "tier18",      8,  1249,   18,   4,   6,              {   0 },    2,  251, 187870, { 124317, 124327, 124332, 124338, 124344,  0 } },
+  { "Demongaze Armor"                            ,     "tier18",      8,  1249,   18,   4,   6,              {   0 },    2,  252, 187866, { 124317, 124327, 124332, 124338, 124344,  0 } },
+  { "Embrace of the Living Mountain"             ,     "tier18",      8,  1257,   18,   2,   7,              {   0 },    1,  264, 185873, { 124293, 124297, 124302, 124303, 124308,  0 } },
+  { "Embrace of the Living Mountain"             ,     "tier18",      8,  1257,   18,   4,   7,              {   0 },    1,  264, 185874, { 124293, 124297, 124302, 124303, 124308,  0 } },
+  { "Embrace of the Living Mountain"             ,     "tier18",      8,  1257,   18,   2,   7,              {   0 },    2,  263, 185871, { 124293, 124297, 124302, 124303, 124308,  0 } },
+  { "Embrace of the Living Mountain"             ,     "tier18",      8,  1257,   18,   4,   7,              {   0 },    2,  263, 185872, { 124293, 124297, 124302, 124303, 124308,  0 } },
+  { "Embrace of the Living Mountain"             ,     "tier18",      8,  1257,   18,   2,   7,              {   0 },    3,  262, 185880, { 124293, 124297, 124302, 124303, 124308,  0 } },
+  { "Embrace of the Living Mountain"             ,     "tier18",      8,  1257,   18,   4,   7,              {   0 },    3,  262, 185881, { 124293, 124297, 124302, 124303, 124308,  0 } },
+  { "Raiment of the Arcanic Conclave"            ,     "tier18",      8,  1251,   18,   2,   8,              {   0 },    3,   62, 186166, { 124154, 124160, 124165, 124171, 124177,  0 } },
+  // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
+  { "Raiment of the Arcanic Conclave"            ,     "tier18",      8,  1251,   18,   2,   8,              {   0 },    3,   63, 186167, { 124154, 124160, 124165, 124171, 124177,  0 } },
+  { "Raiment of the Arcanic Conclave"            ,     "tier18",      8,  1251,   18,   2,   8,              {   0 },    3,   64, 185969, { 124154, 124160, 124165, 124171, 124177,  0 } },
+  { "Raiment of the Arcanic Conclave"            ,     "tier18",      8,  1251,   18,   4,   8,              {   0 },    3,   62, 186165, { 124154, 124160, 124165, 124171, 124177,  0 } },
+  { "Raiment of the Arcanic Conclave"            ,     "tier18",      8,  1251,   18,   4,   8,              {   0 },    3,   63, 186168, { 124154, 124160, 124165, 124171, 124177,  0 } },
+  { "Raiment of the Arcanic Conclave"            ,     "tier18",      8,  1251,   18,   4,   8,              {   0 },    3,   64, 185971, { 124154, 124160, 124165, 124171, 124177,  0 } },
+  { "Deathrattle Regalia"                        ,     "tier18",      8,  1259,   18,   2,   9,              {   0 },    3,  265, 185882, { 124156, 124162, 124167, 124173, 124179,  0 } },
+  { "Deathrattle Regalia"                        ,     "tier18",      8,  1259,   18,   2,   9,              {   0 },    3,  266, 185884, { 124156, 124162, 124167, 124173, 124179,  0 } },
+  { "Deathrattle Regalia"                        ,     "tier18",      8,  1259,   18,   2,   9,              {   0 },    3,  267, 185965, { 124156, 124162, 124167, 124173, 124179,  0 } },
+  { "Deathrattle Regalia"                        ,     "tier18",      8,  1259,   18,   4,   9,              {   0 },    3,  265, 185883, { 124156, 124162, 124167, 124173, 124179,  0 } },
+  { "Deathrattle Regalia"                        ,     "tier18",      8,  1259,   18,   4,   9,              {   0 },    3,  266, 185964, { 124156, 124162, 124167, 124173, 124179,  0 } },
+  { "Deathrattle Regalia"                        ,     "tier18",      8,  1259,   18,   4,   9,              {   0 },    3,  267, 185967, { 124156, 124162, 124167, 124173, 124179,  0 } },
+  { "Battlewrap of the Hurricane's Eye"          ,     "tier18",      8,  1252,   18,   2,  10,              {   0 },    0,  268, 185398, { 124247, 124256, 124262, 124268, 124273,  0 } },
+  { "Battlewrap of the Hurricane's Eye"          ,     "tier18",      8,  1252,   18,   4,  10,              {   0 },    0,  268, 185399, { 124247, 124256, 124262, 124268, 124273,  0 } },
+  { "Battlewrap of the Hurricane's Eye"          ,     "tier18",      8,  1252,   18,   2,  10,              {   0 },    1,  270, 185126, { 124247, 124256, 124262, 124268, 124273,  0 } },
+  { "Battlewrap of the Hurricane's Eye"          ,     "tier18",      8,  1252,   18,   4,  10,              {   0 },    1,  270, 185258, { 124247, 124256, 124262, 124268, 124273,  0 } },
+  { "Battlewrap of the Hurricane's Eye"          ,     "tier18",      8,  1252,   18,   2,  10,              {   0 },    2,  269, 185542, { 124247, 124256, 124262, 124268, 124273,  0 } },
+  { "Battlewrap of the Hurricane's Eye"          ,     "tier18",      8,  1252,   18,   4,  10,              {   0 },    2,  269, 185543, { 124247, 124256, 124262, 124268, 124273,  0 } },
+  { "Oathclaw Wargarb"                           ,     "tier18",      8,  1250,   18,   2,  11,              {   0 },    0,  104, 185813, { 124246, 124255, 124261, 124267, 124272,  0 } },
+  { "Oathclaw Wargarb"                           ,     "tier18",      8,  1250,   18,   4,  11,              {   0 },    0,  104, 185814, { 124246, 124255, 124261, 124267, 124272,  0 } },
+  { "Oathclaw Wargarb"                           ,     "tier18",      8,  1250,   18,   2,  11,              {   0 },    1,  105, 185294, { 124246, 124255, 124261, 124267, 124272,  0 } },
+  { "Oathclaw Wargarb"                           ,     "tier18",      8,  1250,   18,   4,  11,              {   0 },    1,  105, 185397, { 124246, 124255, 124261, 124267, 124272,  0 } },
+  { "Oathclaw Wargarb"                           ,     "tier18",      8,  1250,   18,   2,  11,              {   0 },    2,  103, 185805, { 124246, 124255, 124261, 124267, 124272,  0 } },
+  { "Oathclaw Wargarb"                           ,     "tier18",      8,  1250,   18,   4,  11,              {   0 },    2,  103, 185811, { 124246, 124255, 124261, 124267, 124272,  0 } },
+  { "Oathclaw Wargarb"                           ,     "tier18",      8,  1250,   18,   2,  11,              {   0 },    3,  102, 187875, { 124246, 124255, 124261, 124267, 124272,  0 } },
+  { "Oathclaw Wargarb"                           ,     "tier18",      8,  1250,   18,   4,  11,              {   0 },    3,  102, 187877, { 124246, 124255, 124261, 124267, 124272,  0 } },
+  // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
+  { "Demonbreaker Wargear"                       ,  "tier18lfr",      9,  1263,   18,   2,   1,              {   0 },    0,   73, 187142, { 128127, 128032, 128139, 128134, 128135, 128123,  0 } },
+  { "Demonbreaker Wargear"                       ,  "tier18lfr",      9,  1263,   18,   4,   1,              {   0 },    0,   73, 187143, { 128127, 128032, 128139, 128134, 128135, 128123,  0 } },
+  { "Demonbreaker Wargear"                       ,  "tier18lfr",      9,  1263,   18,   2,   1,              {   0 },    2,   72, 187141, { 128127, 128032, 128139, 128134, 128135, 128123,  0 } },
+  { "Demonbreaker Wargear"                       ,  "tier18lfr",      9,  1263,   18,   2,   1,              {   0 },    2,   71, 187141, { 128127, 128032, 128139, 128134, 128135, 128123,  0 } },
+  { "Demonbreaker Wargear"                       ,  "tier18lfr",      9,  1263,   18,   4,   1,              {   0 },    2,   72, 187151, { 128127, 128032, 128139, 128134, 128135, 128123,  0 } },
+  { "Demonbreaker Wargear"                       ,  "tier18lfr",      9,  1263,   18,   4,   1,              {   0 },    2,   71, 187151, { 128127, 128032, 128139, 128134, 128135, 128123,  0 } },
+  { "Demonbreaker Wargear"                       ,  "tier18lfr",      9,  1263,   18,   2,   2,              {   0 },    0,   66, 187142, { 128127, 128032, 128139, 128134, 128135, 128123,  0 } },
+  { "Demonbreaker Wargear"                       ,  "tier18lfr",      9,  1263,   18,   4,   2,              {   0 },    0,   66, 187143, { 128127, 128032, 128139, 128134, 128135, 128123,  0 } },
+  { "Demonbreaker Wargear"                       ,  "tier18lfr",      9,  1263,   18,   2,   2,              {   0 },    1,   65, 187140, { 128127, 128032, 128139, 128134, 128135, 128123,  0 } },
+  { "Demonbreaker Wargear"                       ,  "tier18lfr",      9,  1263,   18,   4,   2,              {   0 },    1,   65, 187155, { 128127, 128032, 128139, 128134, 128135, 128123,  0 } },
+  { "Demonbreaker Wargear"                       ,  "tier18lfr",      9,  1263,   18,   2,   2,              {   0 },    2,   70, 187141, { 128127, 128032, 128139, 128134, 128135, 128123,  0 } },
+  { "Demonbreaker Wargear"                       ,  "tier18lfr",      9,  1263,   18,   4,   2,              {   0 },    2,   70, 187151, { 128127, 128032, 128139, 128134, 128135, 128123,  0 } },
+  { "Rancorbite Battlegear"                      ,  "tier18lfr",      9,  1262,   18,   2,   3,              {   0 },    2,  255, 187137, { 128126, 128080, 128138, 128132, 128133, 128122,  0 } },
+  { "Rancorbite Battlegear"                      ,  "tier18lfr",      9,  1262,   18,   2,   3,              {   0 },    2,  254, 187137, { 128126, 128080, 128138, 128132, 128133, 128122,  0 } },
+  { "Rancorbite Battlegear"                      ,  "tier18lfr",      9,  1262,   18,   2,   3,              {   0 },    2,  253, 187137, { 128126, 128080, 128138, 128132, 128133, 128122,  0 } },
+  { "Rancorbite Battlegear"                      ,  "tier18lfr",      9,  1262,   18,   4,   3,              {   0 },    2,  255, 187688, { 128126, 128080, 128138, 128132, 128133, 128122,  0 } },
+  { "Rancorbite Battlegear"                      ,  "tier18lfr",      9,  1262,   18,   4,   3,              {   0 },    2,  254, 187688, { 128126, 128080, 128138, 128132, 128133, 128122,  0 } },
+  { "Rancorbite Battlegear"                      ,  "tier18lfr",      9,  1262,   18,   4,   3,              {   0 },    2,  253, 187688, { 128126, 128080, 128138, 128132, 128133, 128122,  0 } },
+  { "Ironpelt Armor"                             ,  "tier18lfr",      9,  1261,   18,   2,   4,              {   0 },    2,  259, 187135, { 128125, 128054, 128137, 128130, 128131, 128121,  0 } },
+  { "Ironpelt Armor"                             ,  "tier18lfr",      9,  1261,   18,   2,   4,              {   0 },    2,  260, 187135, { 128125, 128054, 128137, 128130, 128131, 128121,  0 } },
+  { "Ironpelt Armor"                             ,  "tier18lfr",      9,  1261,   18,   2,   4,              {   0 },    2,  261, 187135, { 128125, 128054, 128137, 128130, 128131, 128121,  0 } },
+  { "Ironpelt Armor"                             ,  "tier18lfr",      9,  1261,   18,   4,   4,              {   0 },    2,  259, 187863, { 128125, 128054, 128137, 128130, 128131, 128121,  0 } },
+  { "Ironpelt Armor"                             ,  "tier18lfr",      9,  1261,   18,   4,   4,              {   0 },    2,  260, 187863, { 128125, 128054, 128137, 128130, 128131, 128121,  0 } },
+  { "Ironpelt Armor"                             ,  "tier18lfr",      9,  1261,   18,   4,   4,              {   0 },    2,  261, 187863, { 128125, 128054, 128137, 128130, 128131, 128121,  0 } },
+  { "Felfume Raiment"                            ,  "tier18lfr",      9,  1260,   18,   2,   5,              {   0 },    1,  257, 187132, { 128052, 128136, 128128, 128129, 128124, 128120,  0 } },
+  // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
+  { "Felfume Raiment"                            ,  "tier18lfr",      9,  1260,   18,   2,   5,              {   0 },    1,  256, 187132, { 128052, 128136, 128128, 128129, 128124, 128120,  0 } },
+  { "Felfume Raiment"                            ,  "tier18lfr",      9,  1260,   18,   4,   5,              {   0 },    1,  257, 187430, { 128052, 128136, 128128, 128129, 128124, 128120,  0 } },
+  { "Felfume Raiment"                            ,  "tier18lfr",      9,  1260,   18,   4,   5,              {   0 },    1,  256, 187430, { 128052, 128136, 128128, 128129, 128124, 128120,  0 } },
+  { "Felfume Raiment"                            ,  "tier18lfr",      9,  1260,   18,   2,   5,              {   0 },    3,  258, 187075, { 128052, 128136, 128128, 128129, 128124, 128120,  0 } },
+  { "Felfume Raiment"                            ,  "tier18lfr",      9,  1260,   18,   4,   5,              {   0 },    3,  258, 187079, { 128052, 128136, 128128, 128129, 128124, 128120,  0 } },
+  { "Demonbreaker Wargear"                       ,  "tier18lfr",      9,  1263,   18,   2,   6,              {   0 },    0,  250, 187142, { 128127, 128032, 128139, 128134, 128135, 128123,  0 } },
+  { "Demonbreaker Wargear"                       ,  "tier18lfr",      9,  1263,   18,   4,   6,              {   0 },    0,  250, 187143, { 128127, 128032, 128139, 128134, 128135, 128123,  0 } },
+  { "Demonbreaker Wargear"                       ,  "tier18lfr",      9,  1263,   18,   2,   6,              {   0 },    2,  252, 187141, { 128127, 128032, 128139, 128134, 128135, 128123,  0 } },
+  { "Demonbreaker Wargear"                       ,  "tier18lfr",      9,  1263,   18,   2,   6,              {   0 },    2,  251, 187141, { 128127, 128032, 128139, 128134, 128135, 128123,  0 } },
+  { "Demonbreaker Wargear"                       ,  "tier18lfr",      9,  1263,   18,   4,   6,              {   0 },    2,  252, 187151, { 128127, 128032, 128139, 128134, 128135, 128123,  0 } },
+  { "Demonbreaker Wargear"                       ,  "tier18lfr",      9,  1263,   18,   4,   6,              {   0 },    2,  251, 187151, { 128127, 128032, 128139, 128134, 128135, 128123,  0 } },
+  { "Rancorbite Battlegear"                      ,  "tier18lfr",      9,  1262,   18,   2,   7,              {   0 },    1,  264, 187139, { 128126, 128080, 128138, 128132, 128133, 128122,  0 } },
+  { "Rancorbite Battlegear"                      ,  "tier18lfr",      9,  1262,   18,   4,   7,              {   0 },    1,  264, 187158, { 128126, 128080, 128138, 128132, 128133, 128122,  0 } },
+  { "Rancorbite Battlegear"                      ,  "tier18lfr",      9,  1262,   18,   2,   7,              {   0 },    2,  263, 187137, { 128126, 128080, 128138, 128132, 128133, 128122,  0 } },
+  { "Rancorbite Battlegear"                      ,  "tier18lfr",      9,  1262,   18,   4,   7,              {   0 },    2,  263, 187688, { 128126, 128080, 128138, 128132, 128133, 128122,  0 } },
+  { "Rancorbite Battlegear"                      ,  "tier18lfr",      9,  1262,   18,   2,   7,              {   0 },    3,  262, 187138, { 128126, 128080, 128138, 128132, 128133, 128122,  0 } },
+  { "Rancorbite Battlegear"                      ,  "tier18lfr",      9,  1262,   18,   4,   7,              {   0 },    3,  262, 187778, { 128126, 128080, 128138, 128132, 128133, 128122,  0 } },
+  { "Felfume Raiment"                            ,  "tier18lfr",      9,  1260,   18,   2,   8,              {   0 },    3,   62, 187075, { 128052, 128136, 128128, 128129, 128124, 128120,  0 } },
+  { "Felfume Raiment"                            ,  "tier18lfr",      9,  1260,   18,   2,   8,              {   0 },    3,   63, 187075, { 128052, 128136, 128128, 128129, 128124, 128120,  0 } },
+  { "Felfume Raiment"                            ,  "tier18lfr",      9,  1260,   18,   2,   8,              {   0 },    3,   64, 187075, { 128052, 128136, 128128, 128129, 128124, 128120,  0 } },
+  { "Felfume Raiment"                            ,  "tier18lfr",      9,  1260,   18,   4,   8,              {   0 },    3,   62, 187079, { 128052, 128136, 128128, 128129, 128124, 128120,  0 } },
+  { "Felfume Raiment"                            ,  "tier18lfr",      9,  1260,   18,   4,   8,              {   0 },    3,   63, 187079, { 128052, 128136, 128128, 128129, 128124, 128120,  0 } },
+  { "Felfume Raiment"                            ,  "tier18lfr",      9,  1260,   18,   4,   8,              {   0 },    3,   64, 187079, { 128052, 128136, 128128, 128129, 128124, 128120,  0 } },
+  { "Felfume Raiment"                            ,  "tier18lfr",      9,  1260,   18,   2,   9,              {   0 },    3,  265, 187075, { 128052, 128136, 128128, 128129, 128124, 128120,  0 } },
+  { "Felfume Raiment"                            ,  "tier18lfr",      9,  1260,   18,   2,   9,              {   0 },    3,  266, 187075, { 128052, 128136, 128128, 128129, 128124, 128120,  0 } },
+  // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls,         Derived Spec, Role, Spec,  Spell, Items
+  { "Felfume Raiment"                            ,  "tier18lfr",      9,  1260,   18,   2,   9,              {   0 },    3,  267, 187075, { 128052, 128136, 128128, 128129, 128124, 128120,  0 } },
+  { "Felfume Raiment"                            ,  "tier18lfr",      9,  1260,   18,   4,   9,              {   0 },    3,  265, 187079, { 128052, 128136, 128128, 128129, 128124, 128120,  0 } },
+  { "Felfume Raiment"                            ,  "tier18lfr",      9,  1260,   18,   4,   9,              {   0 },    3,  266, 187079, { 128052, 128136, 128128, 128129, 128124, 128120,  0 } },
+  { "Felfume Raiment"                            ,  "tier18lfr",      9,  1260,   18,   4,   9,              {   0 },    3,  267, 187079, { 128052, 128136, 128128, 128129, 128124, 128120,  0 } },
+  { "Ironpelt Armor"                             ,  "tier18lfr",      9,  1261,   18,   2,  10,              {   0 },    0,  268, 187136, { 128125, 128054, 128137, 128130, 128131, 128121,  0 } },
+  { "Ironpelt Armor"                             ,  "tier18lfr",      9,  1261,   18,   4,  10,              {   0 },    0,  268, 187862, { 128125, 128054, 128137, 128130, 128131, 128121,  0 } },
+  { "Ironpelt Armor"                             ,  "tier18lfr",      9,  1261,   18,   2,  10,              {   0 },    1,  270, 187134, { 128125, 128054, 128137, 128130, 128131, 128121,  0 } },
+  { "Ironpelt Armor"                             ,  "tier18lfr",      9,  1261,   18,   4,  10,              {   0 },    1,  270, 187604, { 128125, 128054, 128137, 128130, 128131, 128121,  0 } },
+  { "Ironpelt Armor"                             ,  "tier18lfr",      9,  1261,   18,   2,  10,              {   0 },    2,  269, 187135, { 128125, 128054, 128137, 128130, 128131, 128121,  0 } },
+  { "Ironpelt Armor"                             ,  "tier18lfr",      9,  1261,   18,   4,  10,              {   0 },    2,  269, 187863, { 128125, 128054, 128137, 128130, 128131, 128121,  0 } },
+  { "Ironpelt Armor"                             ,  "tier18lfr",      9,  1261,   18,   2,  11,              {   0 },    0,  104, 187136, { 128125, 128054, 128137, 128130, 128131, 128121,  0 } },
+  { "Ironpelt Armor"                             ,  "tier18lfr",      9,  1261,   18,   4,  11,              {   0 },    0,  104, 187862, { 128125, 128054, 128137, 128130, 128131, 128121,  0 } },
+  { "Ironpelt Armor"                             ,  "tier18lfr",      9,  1261,   18,   2,  11,              {   0 },    1,  105, 187134, { 128125, 128054, 128137, 128130, 128131, 128121,  0 } },
+  { "Ironpelt Armor"                             ,  "tier18lfr",      9,  1261,   18,   4,  11,              {   0 },    1,  105, 187604, { 128125, 128054, 128137, 128130, 128131, 128121,  0 } },
+  { "Ironpelt Armor"                             ,  "tier18lfr",      9,  1261,   18,   2,  11,              {   0 },    2,  103, 187135, { 128125, 128054, 128137, 128130, 128131, 128121,  0 } },
+  { "Ironpelt Armor"                             ,  "tier18lfr",      9,  1261,   18,   4,  11,              {   0 },    2,  103, 187863, { 128125, 128054, 128137, 128130, 128131, 128121,  0 } },
+  { "Ironpelt Armor"                             ,  "tier18lfr",      9,  1261,   18,   2,  11,              {   0 },    3,  102, 187133, { 128125, 128054, 128137, 128130, 128131, 128121,  0 } },
+  { "Ironpelt Armor"                             ,  "tier18lfr",      9,  1261,   18,   4,  11,              {   0 },    3,  102, 187435, { 128125, 128054, 128137, 128130, 128131, 128121,  0 } },
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
 };
 #define ARTIFACT_POWER_SIZE (715)
 
@@ -4939,6 +6574,7 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
 };
 #define ARTIFACT_POWER_RANK_SIZE (3063)
 
+<<<<<<< HEAD
 // Artifact power rank data, wow build 23244
 static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RANK_SIZE] = {
   { 2316,    40,  0, 205273,      0.000, 0x00000000, 0 },
@@ -8004,9 +9640,318 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 6524,  1455,  0, 226829,      0.000, 0x00000000, 0 },
   { 6525,  1456,  0, 226829,      0.000, 0x00000000, 0 },
   {    0,     0,  0,      0,      0.000, 0x00000000, 0 },
+=======
+// Perk specialization abilities, wow build 20886
+static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
+  {
+    {
+           0,
+    },
+    {
+           0,
+    },
+    {
+           0,
+    },
+    {
+           0,
+    },
+  },
+  {
+    // Arms
+    {
+      176051, // 0: Improved Recklessness
+      157452, // 1: Improved Die by the Sword
+      157461, // 2: Enhanced Sweeping Strikes
+      174737, // 3: Enhanced Rend
+    },
+    // Fury
+    {
+      157452, // 0: Improved Die by the Sword
+      157454, // 1: Empowered Execute
+      157473, // 2: Enhanced Whirlwind
+      176051, // 3: Improved Recklessness
+    },
+    // Protection
+    {
+      157449, // 0: Improved Heroic Leap
+      157497, // 1: Improved Block
+      157479, // 2: Improved Heroic Throw
+      157494, // 3: Improved Defensive Stance
+    },
+    {
+           0,
+    },
+  },
+  {
+    // Holy
+    {
+      157453, // 0: Empowered Beacon of Light
+      157478, // 1: Enhanced Holy Shock
+      157455, // 2: Improved Daybreak
+      157482, // 3: Improved Forbearance
+    },
+    // Protection
+    {
+      157482, // 0: Improved Forbearance
+      157485, // 1: Empowered Avenger's Shield
+      157488, // 2: Improved Block
+      157486, // 3: Improved Consecration
+    },
+    // Retribution
+    {
+      157482, // 0: Improved Forbearance
+      157493, // 1: Enhanced Hand of Sacrifice
+      157496, // 2: Empowered Hammer of Wrath
+      174718, // 3: Empowered Divine Storm
+    },
+    {
+           0,
+    },
+  },
+  {
+    // Beast Mastery
+    {
+      157715, // 0: Enhanced Basic Attacks
+      157714, // 1: Improved Beast Cleave
+      157705, // 2: Improved Focus Fire
+      157718, // 3: Enhanced Camouflage
+    },
+    // Marksmanship
+    {
+      157707, // 0: Enhanced Kill Shot
+      157718, // 1: Enhanced Camouflage
+      157724, // 2: Enhanced Aimed Shot
+      157726, // 3: Improved Focus
+    },
+    // Survival
+    {
+      157718, // 0: Enhanced Camouflage
+      157748, // 1: Empowered Explosive Shot
+      157752, // 2: Enhanced Entrapment
+      157751, // 3: Enhanced Traps
+    },
+    {
+           0,
+    },
+  },
+  {
+    // Assassination
+    {
+      157513, // 0: Improved Slice and Dice
+      157514, // 1: Enhanced Vendetta
+      157561, // 2: Enhanced Crimson Tempest
+      157569, // 3: Empowered Envenom
+    },
+    // Combat
+    {
+      157581, // 0: Empowered Bandit's Guile
+      157605, // 1: Swift Poison
+      157615, // 2: Enhanced Blade Flurry
+      157660, // 3: Improved Dual Wield
+    },
+    // Subtlety
+    {
+      157666, // 0: Enhanced Vanish
+      157669, // 1: Enhanced Shadow Dance
+      157671, // 2: Empowered Fan of Knives
+      157704, // 3: Enhanced Stealth
+    },
+    {
+           0,
+    },
+  },
+  {
+    // Discipline
+    {
+      157197, // 0: Empowered Archangel
+      157193, // 1: Enhanced Focused Will
+      157145, // 2: Enhanced Leap of Faith
+      157129, // 3: Enhanced Power Word: Shield
+    },
+    // Holy
+    {
+      157193, // 0: Enhanced Focused Will
+      157145, // 1: Enhanced Leap of Faith
+      157206, // 2: Enhanced Chakras
+      157207, // 3: Enhanced Renew
+    },
+    // Shadow
+    {
+      157129, // 0: Enhanced Power Word: Shield
+      157223, // 1: Enhanced Mind Flay
+      157217, // 2: Enhanced Shadow Orbs
+      157218, // 3: Enhanced Shadow Word: Death
+    },
+    {
+           0,
+    },
+  },
+  {
+    // Blood
+    {
+      157338, // 0: Enhanced Bone Shield
+      157337, // 1: Enhanced Death Grip
+      157343, // 2: Enhanced Death Coil
+      157336, // 3: Enhanced Rune Tap
+    },
+    // Frost
+    {
+      157389, // 0: Empowered Pillar of Frost
+      157409, // 1: Empowered Obliterate
+      157376, // 2: Improved Runeforges
+      157367, // 3: Improved Death Grip
+    },
+    // Unholy
+    {
+      157342, // 0: Improved Soul Reaper
+      157441, // 1: Empowered Gargoyle
+      157412, // 2: Enhanced Dark Transformation
+      157437, // 3: Enhanced Fallen Crusader
+    },
+    {
+           0,
+    },
+  },
+  {
+    // Elemental
+    {
+      157765, // 0: Enhanced Chain Lightning
+      157774, // 1: Improved Lightning Shield
+      157764, // 2: Improved Reincarnation
+      157784, // 3: Enhanced Unleash
+    },
+    // Enhancement
+    {
+      157764, // 0: Improved Reincarnation
+      157784, // 1: Enhanced Unleash
+      157804, // 2: Improved Flame Shock
+      157807, // 3: Improved Maelstrom Weapon
+    },
+    // Restoration
+    {
+      157764, // 0: Improved Reincarnation
+      157812, // 1: Improved Riptide
+      157813, // 2: Improved Chain Heal
+      157784, // 3: Enhanced Unleash
+    },
+    {
+           0,
+    },
+  },
+  {
+    // Arcane
+    {
+      157604, // 0: Improved Arcane Power
+      157606, // 1: Improved Blink
+      157595, // 2: Enhanced Arcane Blast
+      157614, // 3: Improved Evocation
+    },
+    // Fire
+    {
+      157642, // 0: Enhanced Pyrotechnics
+      157621, // 1: Improved Flamestrike
+      157629, // 2: Improved Inferno Blast
+      157632, // 3: Improved Scorch
+    },
+    // Frost
+    {
+      157727, // 0: Improved Blizzard
+      157646, // 1: Enhanced Frostbolt
+      157721, // 2: Improved Icy Veins
+      157738, // 3: Improved Water Elemental
+    },
+    {
+           0,
+    },
+  },
+  {
+    // Affliction
+    {
+      157072, // 0: Enhanced Haunt
+      157077, // 1: Improved Drain Soul
+      157078, // 2: Empowered Corruption
+      157069, // 3: Empowered Drain Life
+    },
+    // Demonology
+    {
+      157069, // 0: Empowered Drain Life
+      157096, // 1: Empowered Demons
+      157098, // 2: Enhanced Corruption
+      157100, // 3: Empowered Doom
+    },
+    // Destruction
+    {
+      157103, // 0: Enhanced Chaos Bolt
+      157114, // 1: Empowered Immolate
+      157121, // 2: Enhanced Ember Tap
+      157126, // 3: Enhanced Havoc
+    },
+    {
+           0,
+    },
+  },
+  {
+    // Brewmaster
+    {
+      157362, // 0: Improved Breath of Fire
+      157363, // 1: Improved Guard
+      157361, // 2: Enhanced Roll
+      157366, // 3: Enhanced Transcendence
+    },
+    // Mistweaver
+    {
+      157401, // 0: Improved Life Cocoon
+      157398, // 1: Improved Renewing Mist
+      157361, // 2: Enhanced Roll
+      157366, // 3: Enhanced Transcendence
+    },
+    // Windwalker
+    {
+      157411, // 0: Empowered Chi
+      157415, // 1: Empowered Spinning Crane Kick
+      157361, // 2: Enhanced Roll
+      157366, // 3: Enhanced Transcendence
+    },
+    {
+           0,
+    },
+  },
+  {
+    // Balance
+    {
+      157229, // 0: Empowered Moonkin
+      157227, // 1: Enhanced Moonkin Form
+      157301, // 2: Enhanced Rebirth
+      157232, // 3: Enhanced Starsurge
+    },
+    // Feral
+    {
+      157269, // 0: Enhanced Berserk
+      157274, // 1: Enhanced Prowl
+      157280, // 2: Enhanced Rejuvenation
+      157276, // 3: Improved Rake
+    },
+    // Guardian
+    {
+      157292, // 0: Empowered Bear Form
+      157284, // 1: Empowered Berserk
+      157286, // 2: Enhanced Faerie Fire
+      157283, // 3: Enhanced Tooth and Claw
+    },
+    // Restoration
+    {
+      157305, // 0: Empowered Ironbark
+      157300, // 1: Empowered Rejuvenation
+      157312, // 2: Enhanced Lifebloom
+      157301, // 3: Enhanced Rebirth
+    },
+  },
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
 };
 #define ARTIFACT_POWER_RANK_HOTFIX_SIZE (23)
 
+<<<<<<< HEAD
 // 23 artifact_power_rank hotfix entries, wow build level 23244
 static hotfix::client_hotfix_entry_t __artifact_power_rank_hotfix_data[] = {
   {   2577,  3, 192543U, 192542U },
@@ -8038,5 +9983,494 @@ static hotfix::client_hotfix_entry_t __artifact_power_rank_hotfix_data[] = {
   {   5163,  4, 35.000000, 20.000000 },
   {   5164,  4, 42.000000, 24.000000 },
   {      0,  0, 0, 0 },
+=======
+// Glyph properties, wow build 20886
+static glyph_property_data_t __glyph_property_data[485] = {
+  {   162,  54811 },
+  {   163,  54812 },
+  {   164, 114338 },
+  {   167,  54821 },
+  {   170,  54733 },
+  {   171, 116218 },
+  {   172,  17076 },
+  {   173,  54825 },
+  {   175, 146655 },
+  {   176, 114333 },
+  {   177,  54831 },
+  {   178, 116216 },
+  {   180, 127540 },
+  {   181,  54760 },
+  {   183,  54922 },
+  {   184, 146955 },
+  {   185,  54923 },
+  {   186,  54924 },
+  {   187,  54926 },
+  {   188,  54927 },
+  {   189,  54928 },
+  {   190,  89401 },
+  {   191,  54930 },
+  {   192,  54931 },
+  {   194,  54935 },
+  {   195,  54936 },
+  {   196,  54937 },
+  {   197,  54938 },
+  {   198,  54939 },
+  {   199,  54940 },
+  {   200,  54943 },
+  {   211,  55436 },
+  {   212,  55437 },
+  {   213,  55449 },
+  {   214,  55454 },
+  {   215,  55442 },
+  {   216,  55439 },
+  {   217,  55455 },
+  {   218,  55450 },
+  {   219,  55447 },
+  {   220,  55451 },
+  {   221,  55443 },
+  {   222,  55456 },
+  {   223,  55440 },
+  {   224,  55438 },
+  {   225,  55448 },
+  {   226,  55453 },
+  {   227,  55441 },
+  {   228,  55446 },
+  {   229,  55444 },
+  {   230,  55452 },
+  {   231,  55445 },
+  {   251,  55675 },
+  {   252,  55677 },
+  {   253,  55684 },
+  {   254,  55678 },
+  {   255,  14771 },
+  {   256, 125045 },
+  {   257,  55686 },
+  {   258,  55673 },
+  {   259,  55691 },
+  {   260,  55688 },
+  {   261, 119853 },
+  {   262,  89489 },
+  {   263,  55672 },
+  {   264, 119873 },
+  {   265,  55676 },
+  {   266, 119872 },
+  {   267,  55690 },
+  {   268,  87195 },
+  {   269, 119864 },
+  {   270,  55692 },
+  {   271,  55685 },
+  {   272,  56248 },
+  {   273,  56235 },
+  {   274,  56218 },
+  {   275,  56241 },
+  {   276,  56232 },
+  {   277,  56244 },
+  {   278,  56246 },
+  {   279,  56249 },
+  {   280,  56238 },
+  {   281,  56224 },
+  {   282,  56217 },
+  {   284,  56242 },
+  {   285,  56226 },
+  {   286,  56240 },
+  {   289,  56231 },
+  {   291,  56233 },
+  {   292,  56247 },
+  {   313, 115718 },
+  {   314,  56365 },
+  {   316,  56368 },
+  {   318,  56376 },
+  {   320,  56384 },
+  {   321, 115723 },
+  {   322,  56377 },
+  {   323, 115705 },
+  {   325, 146659 },
+  {   328,  56382 },
+  {   329,  56375 },
+  {   330,  56364 },
+  {   331, 115713 },
+  {   351, 122492 },
+  {   352, 119449 },
+  {   353, 132106 },
+  {   354,  56833 },
+  {   355, 123632 },
+  {   356, 119410 },
+  {   357,  56850 },
+  {   358,  56844 },
+  {   359,  56845 },
+  {   360,  56847 },
+  {   361,  56829 },
+  {   362, 119403 },
+  {   363,  20895 },
+  {   364,  53299 },
+  {   365,  19560 },
+  {   366, 119464 },
+  {   369,  19573 },
+  {   371, 119407 },
+  {   392,  56813 },
+  {   393,  56800 },
+  {   394,  56818 },
+  {   396,  56806 },
+  {   397,  56799 },
+  {   398, 146625 },
+  {   400,  56804 },
+  {   401,  56812 },
+  {   402, 125044 },
+  {   403,  56809 },
+  {   404,  56807 },
+  {   405,  56819 },
+  {   406,  56801 },
+  {   407, 146631 },
+  {   410,  56810 },
+  {   411,  56811 },
+  {   431,  57856 },
+  {   432, 107059 },
+  {   433,  57855 },
+  {   434, 121840 },
+  {   435, 114295 },
+  {   439,  57866 },
+  {   440,  57870 },
+  {   441,  57903 },
+  {   442,  57902 },
+  {   443,  57904 },
+  {   448, 126748 },
+  {   451,  57925 },
+  {   452, 125043 },
+  {   453,  57958 },
+  {   454,  57979 },
+  {   455,  57955 },
+  {   456,  57947 },
+  {   457,  57954 },
+  {   458,  57985 },
+  {   459, 108939 },
+  {   460,  58009 },
+  {   461,  57986 },
+  {   462,  33202 },
+  {   463,  58228 },
+  {   464,  58032 },
+  {   465,  58027 },
+  {   466,  58017 },
+  {   467,  58033 },
+  {   468,  58039 },
+  {   469,  58038 },
+  {   470,  58058 },
+  {   471,  58135 },
+  {   473,  58059 },
+  {   476,  58057 },
+  {   477,  58079 },
+  {   478,  58070 },
+  {   479,  58081 },
+  {   481,  58107 },
+  {   482,  58094 },
+  {   483,  58095 },
+  {   484,  58096 },
+  {   485,  58097 },
+  {   486,  58099 },
+  {   487,  58098 },
+  {   488,  58104 },
+  {   489,  58368 },
+  {   490,  58369 },
+  {   491,  58355 },
+  {   492,  58366 },
+  {   494,  58367 },
+  {   495,  58372 },
+  {   496,  58357 },
+  {   497,  58377 },
+  {   499,  58386 },
+  {   502,  58375 },
+  {   505,  58384 },
+  {   507,  58356 },
+  {   508,  58382 },
+  {   509,  58370 },
+  {   512,  58623 },
+  {   513,  58616 },
+  {   514,  58640 },
+  {   515,  58673 },
+  {   516,  58620 },
+  {   518,  58677 },
+  {   519,  62259 },
+  {   520,  58629 },
+  {   521,  58647 },
+  {   522,  58680 },
+  {   524,  58631 },
+  {   525,  58671 },
+  {   526,  58657 },
+  {   527,  58686 },
+  {   529,  58642 },
+  {   530,  58618 },
+  {   531,  58635 },
+  {   532,  58676 },
+  {   551,  59219 },
+  {   552,  59289 },
+  {   553,  59309 },
+  {   554,  59307 },
+  {   555,  60200 },
+  {   556,  59327 },
+  {   557,  59332 },
+  {   558,  59336 },
+  {   559,  56420 },
+  {   560,  56414 },
+  {   561,  56416 },
+  {   591,  61205 },
+  {   611, 115700 },
+  {   612,  62132 },
+  {   613, 114301 },
+  {   631, 116172 },
+  {   651,  62210 },
+  {   671, 114223 },
+  {   672,  62970 },
+  {   674, 114222 },
+  {   675,  48514 },
+  {   676,  63057 },
+  {   677, 119447 },
+  {   691, 119384 },
+  {   692, 119462 },
+  {   693,  63068 },
+  {   695,  83495 },
+  {   696,  63090 },
+  {   697,  86209 },
+  {   698,  63092 },
+  {   700, 115710 },
+  {   701,  63218 },
+  {   702,  63219 },
+  {   703,  63220 },
+  {   706,  63224 },
+  {   708,  63229 },
+  {   709, 119850 },
+  {   710, 119866 },
+  {   711, 147778 },
+  {   712,  33371 },
+  {   713,  63248 },
+  {   714,  63249 },
+  {   715,  63252 },
+  {   716,  63253 },
+  {   731,  63254 },
+  {   733,  63268 },
+  {   734,  63269 },
+  {   735,  63270 },
+  {   736,  63271 },
+  {   737,  63273 },
+  {   751,  63279 },
+  {   752,  63280 },
+  {   753,  63291 },
+  {   754,  63298 },
+  {   755,  63302 },
+  {   757,  63304 },
+  {   758,  63309 },
+  {   759, 146964 },
+  {   760,  63320 },
+  {   761,  63312 },
+  {   762,  63324 },
+  {   763,  63325 },
+  {   764, 146965 },
+  {   765,  63327 },
+  {   766,  63328 },
+  {   767,  63329 },
+  {   768,  63330 },
+  {   769,  63331 },
+  {   771,  63333 },
+  {   773,  63335 },
+  {   831,  67598 },
+  {   851,  68164 },
+  {   871, 115703 },
+  {   911, 148683 },
+  {   923,  89749 },
+  {   924,  89758 },
+  {   926,  56805 },
+  {   928,  89926 },
+  {   929,  91299 },
+  {   930,  93466 },
+  {   931,  94372 },
+  {   932,  94374 },
+  {   933, 114237 },
+  {   934,  94386 },
+  {   935, 114280 },
+  {   936,  47180 },
+  {   937, 125047 },
+  {   950, 101052 },
+  {   961, 107906 },
+  {   967, 111546 },
+  {   970, 112104 },
+  {   986, 115738 },
+  {   987, 115931 },
+  {   988, 115933 },
+  {   989, 115934 },
+  {   990, 115943 },
+  {   991, 115946 },
+  {   996, 119477 },
+  {   997, 146951 },
+  {   998, 123401 },
+  {   999, 120477 },
+  {  1001, 120483 },
+  {  1003, 120585 },
+  {  1004, 120581 },
+  {  1005, 120583 },
+  {  1006, 120584 },
+  {  1007, 120581 },
+  {  1009, 122028 },
+  {  1011, 123023 },
+  {  1013, 123334 },
+  {  1014, 123391 },
+  {  1015, 123394 },
+  {  1017, 123403 },
+  {  1019, 123763 },
+  {  1020, 123779 },
+  {  1021, 125967 },
+  {  1022, 125042 },
+  {  1023, 109263 },
+  {  1025, 146953 },
+  {  1026, 124989 },
+  {  1028, 125151 },
+  {  1029, 125154 },
+  {  1030, 124997 },
+  {  1031, 146954 },
+  {  1032, 146952 },
+  {  1033, 125660 },
+  {  1034, 146950 },
+  {  1035, 125671 },
+  {  1038, 125678 },
+  {  1039, 125732 },
+  {  1040, 125755 },
+  {  1041, 125872 },
+  {  1042, 125893 },
+  {  1043, 125872 },
+  {  1044, 125901 },
+  {  1045, 125931 },
+  {  1046, 126133 },
+  {  1047, 126152 },
+  {  1048, 126174 },
+  {  1049, 126094 },
+  {  1052, 126745 },
+  {  1053, 126746 },
+  {  1054, 131113 },
+  {  1055, 132005 },
+  {  1058, 135557 },
+  {  1060, 145722 },
+  {  1061, 147707 },
+  {  1063, 146645 },
+  {  1065, 146648 },
+  {  1067, 146956 },
+  {  1068, 146957 },
+  {  1069, 147762 },
+  {  1070, 147781 },
+  {  1071, 146962 },
+  {  1072, 146970 },
+  {  1073, 146971 },
+  {  1074, 146652 },
+  {  1076, 146654 },
+  {  1077, 146656 },
+  {  1078, 146656 },
+  {  1079, 146976 },
+  {  1080, 146662 },
+  {  1081, 147353 },
+  {  1082, 146958 },
+  {  1083, 146959 },
+  {  1084, 145722 },
+  {  1085, 147776 },
+  {  1087, 147072 },
+  {  1088, 146960 },
+  {  1089, 146961 },
+  {  1090, 147783 },
+  {  1091, 147784 },
+  {  1092, 147770 },
+  {  1093, 147772 },
+  {  1094, 147785 },
+  {  1095, 147788 },
+  {  1096, 147787 },
+  {  1097, 147707 },
+  {  1098, 146968 },
+  {  1099, 146969 },
+  {  1100, 146973 },
+  {  1101, 146974 },
+  {  1102, 146657 },
+  {  1104, 148475 },
+  {  1109, 159415 },
+  {  1110, 159416 },
+  {  1112, 159421 },
+  {  1114, 159427 },
+  {  1115, 159428 },
+  {  1116, 159429 },
+  {  1117, 159432 },
+  {  1118, 159434 },
+  {  1119, 159436 },
+  {  1121, 159444 },
+  {  1122, 159445 },
+  {  1124, 159450 },
+  {  1125, 159453 },
+  {  1126, 159455 },
+  {  1127, 159456 },
+  {  1128, 159459 },
+  {  1130, 159469 },
+  {  1131, 159470 },
+  {  1133, 159485 },
+  {  1134, 159486 },
+  {  1135, 159487 },
+  {  1136, 159490 },
+  {  1137, 159492 },
+  {  1138, 159495 },
+  {  1139, 159496 },
+  {  1140, 159497 },
+  {  1141, 159534 },
+  {  1142, 159536 },
+  {  1143, 159545 },
+  {  1144, 159548 },
+  {  1145, 159557 },
+  {  1146, 159572 },
+  {  1147, 159573 },
+  {  1148, 159579 },
+  {  1149, 159592 },
+  {  1150, 159596 },
+  {  1151, 159598 },
+  {  1152, 159599 },
+  {  1153, 159606 },
+  {  1154, 159608 },
+  {  1155, 159624 },
+  {  1156, 159626 },
+  {  1157, 159627 },
+  {  1158, 159628 },
+  {  1159, 159634 },
+  {  1160, 159635 },
+  {  1161, 159636 },
+  {  1162, 159638 },
+  {  1163, 159640 },
+  {  1164, 159642 },
+  {  1165, 159643 },
+  {  1166, 159644 },
+  {  1167, 159647 },
+  {  1168, 159648 },
+  {  1169, 159649 },
+  {  1170, 159650 },
+  {  1171, 159651 },
+  {  1173, 159665 },
+  {  1175, 159669 },
+  {  1176, 159680 },
+  {  1177, 159688 },
+  {  1178, 159691 },
+  {  1179, 159693 },
+  {  1180, 159697 },
+  {  1181, 159701 },
+  {  1182, 159703 },
+  {  1183, 159708 },
+  {  1184, 159738 },
+  {  1185, 159740 },
+  {  1186, 159754 },
+  {  1187, 159759 },
+  {  1188, 159761 },
+  {  1201, 161654 },
+  {  1202, 162532 },
+  {  1203, 162604 },
+  {  1204,  58669 },
+  {  1205, 171752 },
+  {  1206, 171803 },
+  {  1207, 171933 },
+  {  1208, 171929 },
+  {  1209, 171926 },
+  {  1210, 171924 },
+  {  1211, 171921 },
+  {  1212, 173182 },
+  {  1213, 164997 },
+  {  1215, 186198 },
+  {     0,      0 }
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
 };
 

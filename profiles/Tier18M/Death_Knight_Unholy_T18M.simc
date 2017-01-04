@@ -1,0 +1,125 @@
+deathknight="Death_Knight_Unholy_T18M"
+level=100
+race=blood_elf
+role=attack
+position=back
+talents=2001003
+talent_override=unholy_blight,if=raid_event.adds.count>=1|enemies>1
+talent_override=necrotic_plague,if=raid_event.adds.count>=1|enemies>1
+spec=unholy
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=greater_draenic_strength_flask
+actions.precombat+=/food,type=salty_squid_roll
+actions.precombat+=/horn_of_winter
+actions.precombat+=/unholy_presence
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/army_of_the_dead
+actions.precombat+=/potion,name=draenic_strength
+actions.precombat+=/raise_dead
+
+# Executed every time the actor is available.
+
+actions=auto_attack
+actions+=/deaths_advance,if=movement.remains>2
+actions+=/antimagic_shell,damage=100000,if=((dot.breath_of_sindragosa.ticking&runic_power<25)|cooldown.breath_of_sindragosa.remains>40)|!talent.breath_of_sindragosa.enabled
+actions+=/blood_fury,if=!talent.breath_of_sindragosa.enabled
+actions+=/berserking,if=!talent.breath_of_sindragosa.enabled
+actions+=/arcane_torrent,if=!talent.breath_of_sindragosa.enabled
+actions+=/use_item,slot=finger1,if=!talent.breath_of_sindragosa.enabled
+actions+=/use_item,slot=trinket1,if=!talent.breath_of_sindragosa.enabled
+actions+=/potion,name=draenic_strength,if=(buff.convulsive_shadows.up&target.health.pct<45)&!talent.breath_of_sindragosa.enabled
+actions+=/potion,name=draenic_strength,if=(buff.dark_transformation.up&target.time_to_die<=60)&!talent.breath_of_sindragosa.enabled
+actions+=/run_action_list,name=unholy
+
+actions.unholy=plague_leech,if=((cooldown.outbreak.remains<1)|disease.min_remains<1)&((blood<1&frost<1)|(blood<1&unholy<1)|(frost<1&unholy<1))
+actions.unholy+=/soul_reaper,if=(target.health.pct-3*(target.health.pct%target.time_to_die))<=45
+actions.unholy+=/blood_tap,if=((target.health.pct-3*(target.health.pct%target.time_to_die))<=45)&cooldown.soul_reaper.remains=0
+actions.unholy+=/summon_gargoyle
+actions.unholy+=/breath_of_sindragosa,if=runic_power>75
+actions.unholy+=/run_action_list,name=bos,if=dot.breath_of_sindragosa.ticking
+actions.unholy+=/unholy_blight,if=!disease.min_ticking
+actions.unholy+=/outbreak,cycle_targets=1,if=!talent.necrotic_plague.enabled&(!(dot.blood_plague.ticking|dot.frost_fever.ticking))
+actions.unholy+=/plague_strike,if=(!talent.necrotic_plague.enabled&!(dot.blood_plague.ticking|dot.frost_fever.ticking))|(talent.necrotic_plague.enabled&!dot.necrotic_plague.ticking)
+actions.unholy+=/blood_boil,cycle_targets=1,if=(spell_targets.blood_boil>1&!talent.necrotic_plague.enabled)&(!(dot.blood_plague.ticking|dot.frost_fever.ticking))
+actions.unholy+=/death_and_decay,if=spell_targets.death_and_decay>1&unholy>1
+actions.unholy+=/defile,if=unholy=2
+actions.unholy+=/blood_tap,if=talent.defile.enabled&cooldown.defile.remains=0
+actions.unholy+=/scourge_strike,if=unholy=2
+actions.unholy+=/festering_strike,if=talent.necrotic_plague.enabled&talent.unholy_blight.enabled&dot.necrotic_plague.remains<cooldown.unholy_blight.remains%2
+actions.unholy+=/dark_transformation
+actions.unholy+=/festering_strike,if=blood=2&frost=2&(((Frost-death)>0)|((Blood-death)>0))
+actions.unholy+=/festering_strike,if=(blood=2|frost=2)&(((Frost-death)>0)&((Blood-death)>0))
+actions.unholy+=/blood_boil,cycle_targets=1,if=(talent.necrotic_plague.enabled&!dot.necrotic_plague.ticking)&spell_targets.blood_boil>1
+actions.unholy+=/defile,if=blood=2|frost=2
+actions.unholy+=/death_and_decay,if=spell_targets.death_and_decay>1
+actions.unholy+=/defile
+actions.unholy+=/blood_boil,if=talent.breath_of_sindragosa.enabled&((spell_targets.blood_boil>=4&(blood=2|(frost=2&death=2)))&(cooldown.breath_of_sindragosa.remains>6|runic_power<75))
+actions.unholy+=/blood_boil,if=!talent.breath_of_sindragosa.enabled&(spell_targets.blood_boil>=4&(blood=2|(frost=2&death=2)))
+actions.unholy+=/blood_tap,if=buff.blood_charge.stack>10
+actions.unholy+=/outbreak,if=talent.necrotic_plague.enabled&debuff.necrotic_plague.stack<=14
+actions.unholy+=/death_coil,if=(buff.sudden_doom.react|runic_power>80)&(buff.blood_charge.stack<=10)
+actions.unholy+=/blood_boil,if=(spell_targets.blood_boil>=4&(cooldown.breath_of_sindragosa.remains>6|runic_power<75))|(!talent.breath_of_sindragosa.enabled&spell_targets.blood_boil>=4)
+actions.unholy+=/scourge_strike,if=(cooldown.breath_of_sindragosa.remains>6|runic_power<75|unholy=2)|!talent.breath_of_sindragosa.enabled
+actions.unholy+=/festering_strike,if=(cooldown.breath_of_sindragosa.remains>6|runic_power<75)|!talent.breath_of_sindragosa.enabled
+actions.unholy+=/death_coil,if=(cooldown.breath_of_sindragosa.remains>20)|!talent.breath_of_sindragosa.enabled
+actions.unholy+=/plague_leech
+actions.unholy+=/empower_rune_weapon,if=!talent.breath_of_sindragosa.enabled
+
+actions.bos=blood_fury,if=dot.breath_of_sindragosa.ticking
+actions.bos+=/berserking,if=dot.breath_of_sindragosa.ticking
+actions.bos+=/use_item,slot=finger1,if=dot.breath_of_sindragosa.ticking
+actions.bos+=/use_item,slot=trinket1,if=dot.breath_of_sindragosa.ticking
+actions.bos+=/potion,name=draenic_strength,if=dot.breath_of_sindragosa.ticking
+actions.bos+=/unholy_blight,if=!disease.ticking
+actions.bos+=/plague_strike,if=!disease.ticking
+actions.bos+=/blood_boil,cycle_targets=1,if=(spell_targets.blood_boil>=2&!(dot.blood_plague.ticking|dot.frost_fever.ticking))|spell_targets.blood_boil>=4&(runic_power<88&runic_power>30)
+actions.bos+=/death_and_decay,if=spell_targets.death_and_decay>=2&(runic_power<88&runic_power>30)
+actions.bos+=/festering_strike,if=(blood=2&frost=2&(((Frost-death)>0)|((Blood-death)>0)))&runic_power<80
+actions.bos+=/festering_strike,if=((blood=2|frost=2)&(((Frost-death)>0)&((Blood-death)>0)))&runic_power<80
+actions.bos+=/arcane_torrent,if=runic_power<70
+actions.bos+=/scourge_strike,if=spell_targets.blood_boil<=3&(runic_power<88&runic_power>30)
+actions.bos+=/blood_boil,if=spell_targets.blood_boil>=4&(runic_power<88&runic_power>30)
+actions.bos+=/festering_strike,if=runic_power<77
+actions.bos+=/scourge_strike,if=(spell_targets.blood_boil>=4&(runic_power<88&runic_power>30))|spell_targets.blood_boil<=3
+actions.bos+=/dark_transformation
+actions.bos+=/blood_tap,if=buff.blood_charge.stack>=5
+actions.bos+=/plague_leech
+actions.bos+=/empower_rune_weapon,if=runic_power<60
+actions.bos+=/death_coil,if=buff.sudden_doom.react
+
+head=demongaze_helm,id=124332,bonus_id=567,upgrade=2
+neck=corrupted_talonguard_pendant,id=124218,bonus_id=567,upgrade=2,enchant=gift_of_multistrike
+shoulders=demongaze_pauldrons,id=124344,bonus_id=567,upgrade=2
+back=cloak_of_incendiary_wrath,id=124144,bonus_id=567,upgrade=2,enchant=gift_of_multistrike
+chest=demongaze_chestplate,id=124317,bonus_id=567,upgrade=2
+wrists=breachscarred_wristplates,id=124353,bonus_id=567,upgrade=2
+hands=gauntlets_of_derision,id=124326,bonus_id=567,upgrade=2
+waist=ravenous_girdle,id=124348,bonus_id=567,upgrade=2
+legs=demongaze_legplates,id=124338,bonus_id=567,upgrade=2
+feet=treads_of_the_defiler,id=124322,bonus_id=567,upgrade=2
+finger1=thorasus_the_stone_heart_of_draenor,id=124634,bonus_id=641,enchant=gift_of_multistrike
+finger2=congealed_globule_loop,id=124197,bonus_id=567,upgrade=2,enchant=gift_of_multistrike
+trinket1=vial_of_convulsive_shadows,id=113969,bonus_id=567
+trinket2=unending_hunger,id=124236,bonus_id=567,upgrade=2
+main_hand=hellrender,id=124360,bonus_id=567,upgrade=2,enchant=rune_of_the_fallen_crusader
+
+# Gear Summary
+# gear_ilvl=739.00
+# gear_strength=5094
+# gear_stamina=6981
+# gear_crit_rating=2045
+# gear_haste_rating=1169
+# gear_mastery_rating=1410
+# gear_multistrike_rating=2933
+# gear_armor=2588
+# set_bonus=tier18_2pc=1
+# set_bonus=tier18_4pc=1

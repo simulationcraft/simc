@@ -1997,8 +1997,13 @@ void item::legendary_ring( special_effect_t& effect )
         double value;
 
         legendary_ring_delay_event_t( player_t* p, action_t* b, double v ) :
+<<<<<<< HEAD
           event_t( *p, timespan_t::from_seconds( 1.0 ) ), player( p ), boom( b ), value( v )
         { }
+=======
+          event_t( *p ), player( p ), boom( b ), value( v )
+        { add_event( timespan_t::from_seconds( 1.0 ) ); }
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
 
         const char* name() const override
         { return "legendary_ring_boom_delay"; }
@@ -2034,8 +2039,11 @@ void item::legendary_ring( special_effect_t& effect )
           boom = new legendary_ring_damage_t( originaleffect, damagespell );
         }
         p -> buffs.legendary_aoe_ring = this;
+<<<<<<< HEAD
         if ( p -> level() == 110 ) // No damage boost at level 110.
           default_value = 0;
+=======
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
       }
 
       void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -2045,7 +2053,11 @@ void item::legendary_ring( special_effect_t& effect )
         buff_t::expire_override( expiration_stacks, remaining_duration );
 
         if ( cv > 0 )
+<<<<<<< HEAD
           make_event<legendary_ring_delay_event_t>( *sim, p, boom, cv );
+=======
+          new ( *sim ) legendary_ring_delay_event_t( p, boom, cv );
+>>>>>>> 1c5f9bd6725cdfece4184bf1f8645dc1aab69b9c
       }
   };
 
