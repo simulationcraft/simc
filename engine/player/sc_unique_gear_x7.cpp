@@ -2342,7 +2342,7 @@ struct kiljaedens_burning_wish_t : public spell_t
     background = may_crit = true;
     aoe = -1;
     item = effect.item;
-    school = SCHOOL_NONE; // FIXME: Spelldata says physical. Is it really?
+    school = SCHOOL_FIRE;
 
     base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item );
 
@@ -2350,9 +2350,21 @@ struct kiljaedens_burning_wish_t : public spell_t
 
     //FIXME: Assume this is kind of slow from wording.
     //       Get real velocity from in game data after raids open.
-    travel_speed = 25;
+    travel_speed = 29;
   }
 
+  virtual void init() override
+  {
+    spell_t::init();
+    // Through testing with Rune of Power, Incanter's Flow, Arcane Power,
+    // and Enhacement multipliers we conclude this ignores all standard %dmg
+    // multipliers. It still gains crit damage multipliers.
+    snapshot_flags &= STATE_NO_MULTIPLIER;
+    snapshot_flags |= STATE_TGT_MUL_DA;
+  }
+
+
+  // This always crits.
   virtual double composite_crit_chance() const override
   { return 1.0; }
 
