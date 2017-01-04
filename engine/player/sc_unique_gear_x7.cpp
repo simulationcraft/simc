@@ -2360,7 +2360,6 @@ struct kiljaedens_burning_wish_t : public spell_t
     // and Enhacement multipliers we conclude this ignores all standard %dmg
     // multipliers. It still gains crit damage multipliers.
     snapshot_flags &= STATE_NO_MULTIPLIER;
-    snapshot_flags |= STATE_TGT_MUL_DA;
   }
 
 
