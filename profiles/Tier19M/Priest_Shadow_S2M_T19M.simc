@@ -135,3 +135,5 @@ off_hand=secrets_of_the_void,id=133958
 # gear_mastery_rating=2170
 # gear_armor=1818
 # set_bonus=tier19p_cloth_2pc=1
+autounshift=0
+priest_fixed_time=0
