@@ -230,6 +230,46 @@ void enchants::mark_of_the_distant_army( special_effect_t& effect )
 
 void enchants::mark_of_the_hidden_satyr( special_effect_t& effect )
 {
+  // Uses max of apcoeff*ap, spcoeff*sp to power the damage
+  struct mark_of_the_hidden_satyr_t : public proc_spell_t
+  {
+    mark_of_the_hidden_satyr_t( const special_effect_t& e ) :
+      proc_spell_t( "mark_of_the_hidden_satyr", e.player,
+        e.player -> find_spell( 191259 ), nullptr )
+    {
+      // Hardcoded somewhere in the bowels of the server
+      attack_power_mod.direct = 2.5;
+      spell_power_mod.direct = 2.0;
+    }
+
+    double amount_delta_modifier( const action_state_t* ) const override
+    { return 0.15; }
+
+    double attack_direct_power_coefficient( const action_state_t* s ) const override
+    {
+      auto total_ap = attack_power_mod.direct * s -> composite_attack_power();
+      auto total_sp = spell_power_mod.direct * s -> composite_spell_power();
+
+      if ( total_ap <= total_sp )
+      {
+        return 0;
+      }
+
+      return proc_spell_t::attack_direct_power_coefficient( s );
+    }
+
+    double spell_direct_power_coefficient( const action_state_t* s ) const override
+    {
+      auto total_ap = attack_power_mod.direct * s -> composite_attack_power();
+      auto total_sp = spell_power_mod.direct * s -> composite_spell_power();
+
+      if ( total_sp < total_ap )
+        return 0;
+
+      return proc_spell_t::spell_direct_power_coefficient( s );
+    }
+  };
+
   effect.execute_action = effect.player -> find_action( "mark_of_the_hidden_satyr" );
 
   if ( ! effect.execute_action )
@@ -239,9 +279,7 @@ void enchants::mark_of_the_hidden_satyr( special_effect_t& effect )
 
   if ( ! effect.execute_action )
   {
-    action_t* a = new proc_spell_t( "mark_of_the_hidden_satyr",
-      effect.player, effect.player -> find_spell( 191259 ), nullptr );
-
+    action_t* a = new mark_of_the_hidden_satyr_t( effect );
     effect.execute_action = a;
   }
 
@@ -3957,30 +3995,6 @@ void unique_gear::register_hotfixes_x7()
     .operation( hotfix::HOTFIX_SET )
     .modifier( 1.65 )
     .verification_value( 0.92 );
-
-  hotfix::register_effect( "Mark of the Hidden Satyr", "2016-12-31", "7.1.5 removed damage-related spell data.", 280531 )
-    .field( "base_value" )
-    .operation( hotfix::HOTFIX_SET )
-    .modifier( 271 )
-    .verification_value( -1 );
-
-  hotfix::register_effect( "Mark of the Hidden Satyr", "2016-12-31-2", "7.1.5 removed damage information.", 280531, hotfix::HOTFIX_FLAG_DEFAULT | hotfix::HOTFIX_FLAG_QUIET )
-    .field( "average" )
-    .operation( hotfix::HOTFIX_SET )
-    .modifier( 29.13479 )
-    .verification_value( 0 );
-
-  hotfix::register_effect( "Mark of the Hidden Satyr", "2016-12-31-3", "7.1.5 removed damage information.", 280531, hotfix::HOTFIX_FLAG_DEFAULT | hotfix::HOTFIX_FLAG_QUIET )
-    .field( "delta" )
-    .operation( hotfix::HOTFIX_SET )
-    .modifier( 0.15 )
-    .verification_value( 0 );
-
-  hotfix::register_spell( "Mark of the Hidden Satyr", "2016-12-31-4", "7.1.5 removed damage information.", 191259, hotfix::HOTFIX_FLAG_DEFAULT | hotfix::HOTFIX_FLAG_QUIET )
-    .field( "scaling_class" )
-    .operation( hotfix::HOTFIX_SET )
-    .modifier( -1 )
-    .verification_value( 0 );
 }
 
 void unique_gear::register_target_data_initializers_x7( sim_t* sim )

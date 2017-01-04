@@ -6787,8 +6787,8 @@ void shaman_t::init_action_list_elemental()
   single_if -> add_talent( this, "Icefury", "if=raid_event.movement.in<5|maelstrom<=76" );
   single_if -> add_talent( this, "Liquid Magma Totem", "if=raid_event.adds.count<3|raid_event.adds.in>50" );
   single_if -> add_action( this, "Lightning Bolt", "if=buff.power_of_the_maelstrom.up&buff.stormkeeper.up&spell_targets.chain_lightning<3" );
+  single_if -> add_action( this, "Lava Burst", "if=dot.flame_shock.remains>cast_time&cooldown_react" );
   single_if -> add_action( this, "Frost Shock", "if=buff.icefury.up&((maelstrom>=20&raid_event.movement.in>buff.icefury.remains)|buff.icefury.remains<(1.5*spell_haste*buff.icefury.stack))" );
-  single_if -> add_action( this, "Lava Burst" "if=dot.flame_shock.remains>cast_time&cooldown_react" );
   single_if -> add_action( this, "Flame Shock","if=maelstrom>=20&buff.elemental_focus.up,target_if=refreshable" );
   single_if -> add_action( this, "Frost Shock", "moving=1,if=buff.icefury.up" );
   single_if -> add_action( this, "Earth Shock", "if=maelstrom>=86" );
