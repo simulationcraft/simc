@@ -166,6 +166,7 @@ public:
   struct gains_t
   {
     gain_t* arcane_shot;
+    gain_t* critical_focus;
     gain_t* steady_focus;
     gain_t* cobra_shot;
     gain_t* aimed_shot;
@@ -3298,13 +3299,14 @@ struct aimed_shot_t: public aimed_shot_base_t
 
 struct arcane_shot_t: public hunter_ranged_attack_t
 {
-  double focus_gain;
   arcane_shot_t( hunter_t* p, const std::string& options_str ):
     hunter_ranged_attack_t( "arcane_shot", p, p -> find_specialization_spell( "Arcane Shot" ) )
   {
     parse_options( options_str );
     may_proc_mm_feet = true;
-    focus_gain = p -> find_spell( 187675 ) -> effectN( 1 ).base_value();
+    energize_type = ENERGIZE_ON_HIT;
+    energize_resource = RESOURCE_FOCUS;
+    energize_amount = p -> find_spell( 187675 ) -> effectN( 1 ).base_value();
   }
 
   void try_steady_focus() override
@@ -3324,11 +3326,6 @@ struct arcane_shot_t: public hunter_ranged_attack_t
         p() -> buffs.hunters_mark_exists -> trigger();
         p() -> buffs.marking_targets -> expire();
       }
-
-      double focus_multiplier = 1.0;
-      if ( p() -> artifacts.critical_focus.rank() && execute_state -> result == RESULT_CRIT )
-        focus_multiplier *= 1.0 + p() -> artifacts.critical_focus.percent();
-      p() -> resource_gain( RESOURCE_FOCUS, focus_multiplier * focus_gain, gain );
     }
   }
 
@@ -3338,6 +3335,9 @@ struct arcane_shot_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t::impact( s );
 
     trigger_true_aim( p(), s -> target );
+
+    if ( s -> result == RESULT_CRIT && p() -> artifacts.critical_focus.rank() )
+      p() -> resource_gain( RESOURCE_FOCUS, p() -> artifacts.critical_focus.value(), p() -> gains.critical_focus );
   }
 
   virtual double composite_target_crit_chance( player_t* t ) const override
@@ -3371,7 +3371,7 @@ struct arcane_shot_t: public hunter_ranged_attack_t
 
   virtual double cast_regen() const
   {
-    return base_t::cast_regen() + focus_gain;
+    return base_t::cast_regen() + energize_amount;
   }
 };
 
@@ -5937,6 +5937,7 @@ void hunter_t::init_gains()
   player_t::init_gains();
 
   gains.arcane_shot          = get_gain( "arcane_shot" );
+  gains.critical_focus       = get_gain( "critical_focus" );
   gains.steady_focus         = get_gain( "steady_focus" );
   gains.cobra_shot           = get_gain( "cobra_shot" );
   gains.aimed_shot           = get_gain( "aimed_shot" );
