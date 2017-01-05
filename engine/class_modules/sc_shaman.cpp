@@ -3856,7 +3856,7 @@ struct chained_base_t : public shaman_spell_t
     double base_chance = shaman_spell_t::overload_chance( s );
     base_chance += p() -> buff.storm_totem -> value();
 
-    return shaman_spell_t::overload_chance( s ) / 3.0;
+    return base_chance / 3.0;
   }
 
   void execute() override
