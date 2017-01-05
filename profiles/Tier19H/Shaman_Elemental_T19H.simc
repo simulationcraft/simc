@@ -20,8 +20,8 @@ actions.precombat+=/augmentation,type=defiled
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=deadly_grace
-actions.precombat+=/stormkeeper
 actions.precombat+=/totem_mastery
+actions.precombat+=/stormkeeper
 
 # Executed every time the actor is available.
 # Bloodlust casting behavior mirrors the simulator settings for proxy bloodlust. See options 'bloodlust_percent', and 'bloodlust_time'. 
