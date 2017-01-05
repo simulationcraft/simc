@@ -272,6 +272,11 @@ void cooldown_t::adjust( timespan_t amount, bool require_reaction )
       }
     }
   }
+
+  if ( player -> queueing && player -> queueing -> cooldown == this )
+  {
+    player -> queueing -> reschedule_queue_event();
+  }
 }
 
 void cooldown_t::reset_init()
