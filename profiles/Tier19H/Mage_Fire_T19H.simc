@@ -34,7 +34,7 @@ actions+=/call_action_list,name=single_target
 actions.active_talents=blast_wave,if=(buff.combustion.down)|(buff.combustion.up&action.fire_blast.charges<1&action.phoenixs_flames.charges<1)
 actions.active_talents+=/meteor,if=cooldown.combustion.remains>30|(cooldown.combustion.remains>target.time_to_die)|buff.rune_of_power.up
 actions.active_talents+=/cinderstorm,if=cooldown.combustion.remains<cast_time&(buff.rune_of_power.up|!talent.rune_on_power.enabled)|cooldown.combustion.remains>10*spell_haste&!buff.combustion.up
-actions.active_talents+=/dragons_breath,if=equipped.132863
+actions.active_talents+=/dragons_breath,if=equipped.132863|(talent.alexstrazas_fury.enabled&buff.hot_streak.down)
 actions.active_talents+=/living_bomb,if=active_enemies>1&buff.combustion.down
 
 actions.combustion_phase=rune_of_power,if=buff.combustion.down
