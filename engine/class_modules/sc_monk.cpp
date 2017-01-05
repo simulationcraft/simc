@@ -4767,7 +4767,7 @@ struct crackling_jade_lightning_t: public monk_spell_t
 
     parse_options( options_str );
 
-    channeled = tick_may_crit = interrupt = true;
+    channeled = tick_may_crit = true;
     hasted_ticks = false; // Channeled spells always have hasted ticks. Use hasted_ticks = false to disable the increase in the number of ticks.
     interrupt_auto_attack = true;
   }
@@ -4775,6 +4775,16 @@ struct crackling_jade_lightning_t: public monk_spell_t
   virtual double cost_per_tick( resource_e resource ) const override
   {
     double c = monk_spell_t::cost_per_tick( resource );
+
+    if ( p() -> buff.the_emperors_capacitor -> up() && resource == RESOURCE_ENERGY )
+      c *= 1 + ( p() -> buff.the_emperors_capacitor -> current_stack * p() -> passives.the_emperors_capacitor -> effectN( 2 ).percent() );
+
+    return c;
+  }
+
+  virtual double cost() const override
+  {
+    double c = monk_spell_t::cost();
 
     if ( p() -> buff.the_emperors_capacitor -> up() )
       c *= 1 + ( p() -> buff.the_emperors_capacitor -> current_stack * p() -> passives.the_emperors_capacitor -> effectN( 2 ).percent() );
@@ -9175,15 +9185,16 @@ void monk_t::apl_combat_windwalker()
   }
   st -> add_talent( this, "Energizing Elixir", "if=energy<energy.max&chi<=1" );
   st -> add_action( this, "Strike of the Windlord", "if=equipped.140806&talent.serenity.enabled&cooldown.serenity.remains>=10" );
-  st -> add_action( this, "Strike of the Windlord", "if=equipped.140806&(talent.whirling_dragon_punch.enabled|talent.chi_orbit.enabled)" );
+  st -> add_action( this, "Strike of the Windlord", "if=equipped.140806&!talent.serenity.enabled" );
   st -> add_action( this, "Strike of the Windlord", "if=!equipped.140806" );
   st -> add_action( this, "Fists of Fury", "if=equipped.140806&talent.serenity.enabled&cooldown.serenity.remains>=5" );
-  st -> add_action( this, "Fists of Fury", "if=equipped.140806&(talent.whirling_dragon_punch.enabled|talent.chi_orbit.enabled)" );
+  st -> add_action( this, "Fists of Fury", "if=equipped.140806&!talent.serenity.enabled" );
   st -> add_action( this, "Fists of Fury", "if=!equipped.140806" );
   st -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=equipped.140806&talent.serenity.enabled&cooldown.serenity.remains>=2" );
-  st -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=equipped.140806&(talent.whirling_dragon_punch.enabled|talent.chi_orbit.enabled)" );
+  st -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=equipped.140806&!talent.serenity.enabled" );
   st -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=!equipped.140806" );
   st -> add_talent( this, "Whirling Dragon Punch" );
+  st -> add_action( this, "Crackling Jade Lightning", "if=equipped.144239&buff.the_emperors_capacitor.stack>=19" );
   st -> add_action( this, "Spinning Crane Kick", "if=active_enemies>=3&!prev_gcd.1.spinning_crane_kick" );
   st -> add_talent( this, "Rushing Jade Wind", "if=chi.max-chi>1&!prev_gcd.1.rushing_jade_wind" );
   st -> add_action( this, "Blackout Kick", "cycle_targets=1,if=(chi>1|buff.bok_proc.up)&!prev_gcd.1.blackout_kick" );
