@@ -3572,6 +3572,7 @@ struct blizzard_t : public frost_mage_spell_t
   {
     parse_options( options_str );
     add_child( blizzard_shard );
+    cooldown -> hasted = true;
     dot_duration = timespan_t::zero(); // This is just a driver for the ground effect.
     may_miss = false;
   }
@@ -4522,14 +4523,12 @@ struct flurry_bolt_t : public frost_mage_spell_t
 
     frost_mage_spell_t::impact( s );
 
-    td( s -> target ) -> debuffs.winters_chill -> trigger();
+    if ( brain_freeze_buffed == true )
+    {
+      td( s -> target ) -> debuffs.winters_chill -> trigger();
+    }
   }
 
-  virtual void execute() override
-  {
-    frost_mage_spell_t::execute();
-
-  }
   virtual double action_multiplier() const override
   {
     double am = frost_mage_spell_t::action_multiplier();
@@ -4539,19 +4538,11 @@ struct flurry_bolt_t : public frost_mage_spell_t
       am *= 1.0 + p() -> artifact.ice_age.percent();
     }
 
-    return am;
-  }
-
-  double composite_persistent_multiplier( const action_state_t* state ) const override
-  {
-    double m = frost_mage_spell_t::composite_persistent_multiplier( state );
-
     if( brain_freeze_buffed == true )
     {
-      m *= 1.0 + p() -> buffs.brain_freeze -> data().effectN( 2 ).percent();
+      am *= 1.0 + p() -> buffs.brain_freeze -> data().effectN( 2 ).percent();
     }
-
-    return m;
+    return am;
   }
 
 };
@@ -4568,7 +4559,6 @@ struct flurry_t : public frost_mage_spell_t
     //TODO: Remove hardcoded values once it exists in spell data for bolt impact timing.
     dot_duration = timespan_t::from_seconds( 0.03 );
     base_tick_time = timespan_t::from_seconds( 0.01 );
-
   }
 
   virtual timespan_t travel_time() const override
@@ -4605,6 +4595,7 @@ struct flurry_t : public frost_mage_spell_t
     {
       flurry_bolt -> brain_freeze_buffed = false;
     }
+
     p() -> buffs.brain_freeze -> expire();
   }
 
