@@ -4523,7 +4523,7 @@ struct flurry_bolt_t : public frost_mage_spell_t
 
     frost_mage_spell_t::impact( s );
 
-    if ( brain_freeze_buffed == true )
+    if ( brain_freeze_buffed )
     {
       td( s -> target ) -> debuffs.winters_chill -> trigger();
     }
@@ -4538,7 +4538,7 @@ struct flurry_bolt_t : public frost_mage_spell_t
       am *= 1.0 + p() -> artifact.ice_age.percent();
     }
 
-    if( brain_freeze_buffed == true )
+    if( brain_freeze_buffed )
     {
       am *= 1.0 + p() -> buffs.brain_freeze -> data().effectN( 2 ).percent();
     }
