@@ -1342,7 +1342,7 @@ public:
       return;
     }
 
-    if ( p() -> buffs.ghost_wolf -> check() )
+    if ( p() -> buff.ghost_wolf -> check() )
     {
       return;
     }
@@ -3853,7 +3853,10 @@ struct chained_base_t : public shaman_spell_t
       return 1.0;
     }
 
-    return shaman_spell_t::overload_chance( s ) * .2;
+    double base_chance = shaman_spell_t::overload_chance( s );
+    base_chance += p() -> buff.storm_totem -> value();
+
+    return shaman_spell_t::overload_chance( s ) / 3.0;
   }
 
   void execute() override
