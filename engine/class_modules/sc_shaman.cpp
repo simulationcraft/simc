@@ -6723,8 +6723,8 @@ void shaman_t::init_action_list_elemental()
     precombat -> add_action( "potion,name=" + potion_name );
   }
 
-  precombat -> add_action( this, "Stormkeeper" );
   precombat -> add_talent( this, "Totem Mastery" );
+  precombat -> add_action( this, "Stormkeeper" );
 
   // All Shamans Bloodlust by default
   def -> add_action( this, "Bloodlust", generate_bloodlust_options(),
