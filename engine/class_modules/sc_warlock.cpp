@@ -3205,7 +3205,7 @@ struct shadow_bolt_t: public warlock_spell_t
   {
     warlock_spell_t::execute();
 
-    if ( p() -> talents.demonic_calling -> ok() )
+    if ( p() -> talents.demonic_calling -> ok() && rng().roll( p() -> talents.demonic_calling -> proc_chance() ) )
       p() -> buffs.demonic_calling -> trigger();
 
     if ( p() -> buffs.shadowy_inspiration -> check() )
@@ -4204,6 +4204,9 @@ struct demonwrath_tick_t: public warlock_spell_t
   {
     warlock_spell_t::impact( s );
 
+    if ( p() -> talents.demonic_calling -> ok() && rng().roll( p() -> talents.demonic_calling -> effectN( 2 ).percent() ) )
+      p() -> buffs.demonic_calling -> trigger();
+
     double accumulator_increment = rng().range( 0.0, 0.3 );
 
     p() -> demonwrath_accumulator += accumulator_increment;
@@ -4751,7 +4754,7 @@ struct demonbolt_t : public warlock_spell_t
   {
     warlock_spell_t::execute();
 
-    if ( p() -> talents.demonic_calling -> ok() )
+    if ( p() -> talents.demonic_calling -> ok() && rng().roll( p() -> talents.demonic_calling -> proc_chance() ) )
       p() -> buffs.demonic_calling -> trigger();
 
     if ( p() -> buffs.shadowy_inspiration -> check() )
@@ -6253,8 +6256,7 @@ void warlock_t::create_buffs()
   buffs.tier18_2pc_demonology = buff_creator_t( this, "demon_rush", sets.set( WARLOCK_DEMONOLOGY, T18, B2 ) -> effectN( 1 ).trigger() )
     .default_value( sets.set( WARLOCK_DEMONOLOGY, T18, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
   buffs.shadowy_inspiration = buff_creator_t( this, "shadowy_inspiration", find_spell( 196606 ) );
-  buffs.demonic_calling = buff_creator_t( this, "demonic_calling", talents.demonic_calling -> effectN( 1 ).trigger() )
-    .chance( find_spell( 205145 ) -> proc_chance() );
+  buffs.demonic_calling = buff_creator_t( this, "demonic_calling", talents.demonic_calling -> effectN( 1 ).trigger() );
   buffs.t18_4pc_driver = new t18_4pc_driver_t( this );
   buffs.stolen_power_stacks = new stolen_power_stack_t( this );
   buffs.stolen_power = buff_creator_t( this, "stolen_power", find_spell( 211583 ) )
