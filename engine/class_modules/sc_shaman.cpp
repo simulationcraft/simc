@@ -6245,6 +6245,12 @@ void shaman_t::trigger_stormlash( const action_state_t* )
     return;
   }
 
+  if ( ! buff.flametongue -> check() && ! buff.frostbrand -> check() &&
+       ! buff.crash_lightning -> check() )
+  {
+    return;
+  }
+
   if ( ! real_ppm.stormlash -> trigger() )
   {
     return;
