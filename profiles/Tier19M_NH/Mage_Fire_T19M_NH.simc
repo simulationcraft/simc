@@ -86,7 +86,7 @@ legs=,id=138315,bonus_id=3518
 feet=,id=140914,bonus_id=3519
 finger1=,id=140895,bonus_id=3518,enchant=binding_of_crit
 finger2=,id=140906,bonus_id=3518,enchant=binding_of_crit
-trinket1=,id=140792,bonus_id=3519
+trinket1=,id=140809,bonus_id=3519
 trinket2=,id=140792,bonus_id=3445
 main_hand=felomelorn,id=128820,gem_id=140834/140810/140834,relic_id=3518/3518/3518
 off_hand=heart_of_the_phoenix,id=133959
