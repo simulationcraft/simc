@@ -1404,7 +1404,7 @@ public:
       return true;
     }
 #ifndef NDEBUG
-    else
+    else if ( p() -> sim -> debug || p() -> sim -> log )
     {
       p() -> sim -> out_log.printf( "%s failed verification",
                              ab::name() );
