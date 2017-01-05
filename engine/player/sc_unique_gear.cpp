@@ -3771,12 +3771,12 @@ struct item_effect_base_expr_t : public expr_t
 
     for ( size_t i = 0; i < slots.size(); i++ )
     {
-      e = &( a -> player -> items[ slots[ i ] ].special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_EQUIP ) );
-      if ( e -> source != SPECIAL_EFFECT_SOURCE_NONE )
+      e = a -> player -> items[ slots[ i ] ].special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_EQUIP );
+      if ( e && e -> source != SPECIAL_EFFECT_SOURCE_NONE )
         effects.push_back( e );
 
-      e = &( a -> player -> items[ slots[ i ] ].special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) );
-      if ( e -> source != SPECIAL_EFFECT_SOURCE_NONE )
+      e = a -> player -> items[ slots[ i ] ].special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE );
+      if ( e && e -> source != SPECIAL_EFFECT_SOURCE_NONE )
         effects.push_back( e );
     }
   }

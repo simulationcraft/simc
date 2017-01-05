@@ -7039,43 +7039,43 @@ struct use_item_t : public action_t
       return;
 
     // Parse Special Effect
-    const special_effect_t& e = item -> special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE );
-    if ( e.type == SPECIAL_EFFECT_USE )
+    const special_effect_t* e = item -> special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE );
+    if ( e && e -> type == SPECIAL_EFFECT_USE )
     {
       // Create a buff
-      if ( e.buff_type() != SPECIAL_EFFECT_BUFF_NONE )
+      if ( e -> buff_type() != SPECIAL_EFFECT_BUFF_NONE )
       {
-        buff = buff_t::find( player, e.name() );
+        buff = buff_t::find( player, e -> name() );
         if ( ! buff )
         {
-          buff = e.create_buff();
+          buff = e -> create_buff();
         }
       }
 
       // Create an action
-      if ( e.action_type() != SPECIAL_EFFECT_ACTION_NONE )
+      if ( e -> action_type() != SPECIAL_EFFECT_ACTION_NONE )
       {
-        action = e.create_action();
+        action = e -> create_action();
       }
 
       stats = player ->  get_stats( name_str, this );
 
       // Setup the long-duration cooldown for this item effect
-      cooldown = player -> get_cooldown( e.cooldown_name() );
-      cooldown -> duration = e.cooldown();
+      cooldown = player -> get_cooldown( e -> cooldown_name() );
+      cooldown -> duration = e -> cooldown();
       trigger_gcd = timespan_t::zero();
 
       // Use DBC-backed item cooldown system for any item data coming from our local database that
       // has no user-given 'use' option on items.
-      if ( e.item && util::str_compare_ci( e.item -> source_str, "local" ) &&
-           e.item -> option_use_str.empty() )
+      if ( e -> item && util::str_compare_ci( e -> item -> source_str, "local" ) &&
+           e -> item -> option_use_str.empty() )
       {
-        std::string cdgrp = e.cooldown_group_name();
+        std::string cdgrp = e -> cooldown_group_name();
         // No cooldown group will not trigger a shared cooldown
         if ( ! cdgrp.empty() )
         {
           cooldown_group = player -> get_cooldown( cdgrp );
-          cooldown_group_duration = e.cooldown_group_duration();
+          cooldown_group_duration = e -> cooldown_group_duration();
         }
         else
         {
@@ -7185,9 +7185,13 @@ struct use_item_t : public action_t
       return 0;
     }
 
-    const special_effect_t& e = item -> special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE );
+    const special_effect_t* e = item -> special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE );
+    if ( ! e )
+    {
+      return 0;
+    }
 
-    return new use_item_buff_type_expr_t( e.stat_type() == stat );
+    return new use_item_buff_type_expr_t( e -> stat_type() == stat );
   }
 
   expr_t* create_expression( const std::string& name_str ) override

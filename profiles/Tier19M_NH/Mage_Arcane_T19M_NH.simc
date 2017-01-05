@@ -74,7 +74,6 @@ actions.cooldowns+=/arcane_power
 actions.cooldowns+=/blood_fury
 actions.cooldowns+=/berserking
 actions.cooldowns+=/arcane_torrent
-actions.cooldowns+=/use_item,slot=neck
 actions.cooldowns+=/potion,name=deadly_grace,if=buff.arcane_power.up&(buff.berserking.up|buff.blood_fury.up)
 
 actions.init_burn=mark_of_aluneth
@@ -90,30 +89,30 @@ actions.rop_phase+=/arcane_explosion,if=active_enemies>1
 actions.rop_phase+=/arcane_blast,if=mana.pct>45
 actions.rop_phase+=/arcane_barrage
 
-head=hood_of_everburning_knowledge,id=138312,bonus_id=3519
-neck=sorcerous_shadowruby_pendant,id=130233,bonus_id=1758/689/601/669,gem_id=130219,enchant_id=5439
-shoulders=mantle_of_everburning_knowledge,id=138321,bonus_id=3519
-back=cloak_of_everburning_knowledge,id=138365,bonus_id=3519,enchant=binding_of_intellect
-chest=robe_of_everburning_knowledge,id=138318,bonus_id=3519
-wrists=bracers_of_harnessed_flame,id=140850,bonus_id=3519
-hands=gloves_of_everburning_knowledge,id=138309,bonus_id=3519
-waist=manari_skullbuckled_cinch,id=140887,bonus_id=3519
-legs=leggings_of_everburning_knowledge,id=138315,bonus_id=3519
-feet=treads_of_galactic_odyssey,id=140885,bonus_id=3519
-finger1=spellblades_gemmed_signet,id=140895,bonus_id=3519,enchant=binding_of_crit
-finger2=ring_of_exclusive_servitude,id=140906,bonus_id=3519,enchant=binding_of_crit
-trinket1=arans_relaxing_ruby,id=142157
-trinket2=naraxas_spiked_tongue,id=137349,bonus_id=1727/1522
-main_hand=aluneth,id=127857,gem_id=140810/140831/140810,relic_id=3519/3519/3519
+head=nighthold_custodians_hood,id=140851,bonus_id=3445
+neck=sea_fan_pendant,id=142428,bonus_id=3469,enchant=mark_of_the_hidden_satyr
+shoulders=mantle_of_prestidigitation,id=140911,bonus_id=3518
+back=cloak_of_everburning_knowledge,id=138365,bonus_id=3518,enchant=binding_of_intellect
+chest=robe_of_everburning_knowledge,id=138318,bonus_id=3518
+wrists=woven_lasher_tendril_bracers,id=140886,bonus_id=3518
+hands=gloves_of_everburning_knowledge,id=138309,bonus_id=3518
+waist=manari_skullbuckled_cinch,id=140887,bonus_id=3518
+legs=leggings_of_everburning_knowledge,id=138315,bonus_id=3518
+feet=outcast_wanderers_footrags,id=140914,bonus_id=3519
+finger1=ring_of_exclusive_servitude,id=140906,bonus_id=3518,enchant=binding_of_crit
+finger2=ring_of_braided_stems,id=140896,bonus_id=3518,enchant=binding_of_crit
+trinket1=erratic_metronome,id=140792,bonus_id=3445
+trinket2=whispers_in_the_dark,id=140809,bonus_id=3519
+main_hand=aluneth,id=127857,gem_id=140810/140831/140810,relic_id=3518/3518/3518
 
 # Gear Summary
-# gear_ilvl=901.53
-# gear_stamina=35055
-# gear_intellect=36221
-# gear_crit_rating=7725
-# gear_haste_rating=5209
-# gear_mastery_rating=7136
-# gear_versatility_rating=4644
-# gear_armor=2014
+# gear_ilvl=905.47
+# gear_stamina=33955
+# gear_intellect=38712
+# gear_crit_rating=5556
+# gear_haste_rating=5372
+# gear_mastery_rating=4342
+# gear_versatility_rating=7353
+# gear_armor=1979
 # set_bonus=tier19_2pc=1
 # set_bonus=tier19_4pc=1

@@ -90,16 +90,14 @@ bool item_t::socket_color_match() const
 
 bool item_t::has_special_effect( special_effect_source_e source, special_effect_e type ) const
 {
-  return special_effect( source, type ).source != SPECIAL_EFFECT_SOURCE_NONE;
+  return special_effect( source, type ) != nullptr;
 }
 
 
 // item_t::special_effect ===================================================
 
-const special_effect_t& item_t::special_effect( special_effect_source_e source, special_effect_e type ) const
+const special_effect_t* item_t::special_effect( special_effect_source_e source, special_effect_e type ) const
 {
-  static special_effect_t nonevalue( this );
-
   // Note note returns first available, but odds that there are several on-
   // equip enchants in an item is slim to none
   for ( size_t i = 0; i < parsed.special_effects.size(); i++ )
@@ -107,11 +105,11 @@ const special_effect_t& item_t::special_effect( special_effect_source_e source, 
     if ( ( source == SPECIAL_EFFECT_SOURCE_NONE || parsed.special_effects[ i ] -> source == source ) &&
          ( type == SPECIAL_EFFECT_NONE || type == parsed.special_effects[ i ] -> type ) )
     {
-      return *parsed.special_effects[ i ];
+      return parsed.special_effects[ i ];
     }
   }
 
-  return nonevalue;
+  return nullptr;
 }
 
 gear_stats_t item_t::total_stats() const
