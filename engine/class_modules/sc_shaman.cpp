@@ -6136,6 +6136,11 @@ void shaman_t::trigger_stormbringer( const action_state_t* state )
     return;
   }
 
+  if ( buff.ghost_wolf -> check() )
+  {
+    return;
+  }
+
   if ( rng().roll( attack -> stormbringer_proc_chance() ) )
   {
     buff.stormbringer -> trigger( buff.stormbringer -> max_stack() );
@@ -6328,6 +6333,11 @@ void shaman_t::trigger_windfury_weapon( const action_state_t* state )
   if ( ! attack -> may_proc_windfury )
     return;
 
+  if ( buff.ghost_wolf -> check() )
+  {
+    return;
+  }
+
   // If doom winds is not up, block all off-hand weapon attacks
   if ( ! buff.doom_winds -> check() && attack -> weapon && attack -> weapon -> slot != SLOT_MAIN_HAND )
     return;
@@ -6430,6 +6440,11 @@ void shaman_t::trigger_flametongue_weapon( const action_state_t* state )
   if ( ! buff.flametongue -> up() )
     return;
 
+  if ( buff.ghost_wolf -> check() )
+  {
+    return;
+  }
+
   flametongue -> target = state -> target;
   flametongue -> schedule_execute();
   attack -> proc_ft -> occur();
@@ -6450,6 +6465,11 @@ void shaman_t::trigger_hailstorm( const action_state_t* state )
   }
 
   if ( ! buff.frostbrand -> up() )
+  {
+    return;
+  }
+
+  if ( buff.ghost_wolf -> check() )
   {
     return;
   }
@@ -6522,6 +6542,7 @@ void shaman_t::create_buffs()
   buff.unleash_doom = buff_creator_t( this, "unleash_doom", artifact.unleash_doom.data().effectN( 1 ).trigger() )
                       .trigger_spell( artifact.unleash_doom );
   buff.wind_strikes = haste_buff_creator_t( this, "wind_strikes", find_spell( 198293 ) )
+                      .activated( false )
                       .add_invalidate( CACHE_ATTACK_SPEED )
                       .chance( artifact.wind_strikes.rank() > 0 )
                       .default_value( 1.0 / ( 1.0 + artifact.wind_strikes.percent() ) );
