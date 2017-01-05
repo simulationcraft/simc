@@ -1342,6 +1342,11 @@ public:
       return;
     }
 
+    if ( p() -> buffs.ghost_wolf -> check() )
+    {
+      return;
+    }
+
     if ( source_state -> result_raw <= 0 )
     {
       return;
@@ -2746,6 +2751,16 @@ struct shaman_spontaneous_appendages_t : public shaman_attack_t
 
   double target_armor( player_t* ) const override
   { return 0; }
+
+  double stormbringer_proc_chance() const override
+  {
+    if ( p() -> buff.ghost_wolf -> check() )
+    {
+      return 0;
+    }
+
+    return shaman_attack_t::stormbringer_proc_chance();
+  }
 };
 
 struct electrocute_t : public shaman_spell_t
