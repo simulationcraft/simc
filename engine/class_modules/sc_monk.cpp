@@ -7815,8 +7815,7 @@ void monk_t::create_buffs()
                               .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER )
                               .cd( timespan_t::zero() );
 
-  // TODO: change spec.touch_of_karma to passives.touch_of_karma_buff once DBC updates
-  buff.touch_of_karma = new buffs::touch_of_karma_buff_t( *this, "touch_of_karma", spec.touch_of_karma );
+  buff.touch_of_karma = new buffs::touch_of_karma_buff_t( *this, "touch_of_karma", passives.touch_of_karma_buff );
 
   buff.transfer_the_power = buff_creator_t( this, "transfer_the_power", artifact.transfer_the_power.data().effectN( 1 ).trigger() )
     .default_value( artifact.transfer_the_power.rank() ? artifact.transfer_the_power.percent() : 0 ); 
