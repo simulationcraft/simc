@@ -3039,9 +3039,14 @@ struct bursting_shot_t : public hunter_ranged_attack_t
     hunter_ranged_attack_t( "bursting_shot", player, player -> find_spell( 186387 ) )
   {
     parse_options( options_str );
+  }
 
+  void init() override
+  {
     if ( p() -> legendary.mm_wrist )
       base_multiplier *= 1.0 + p() -> legendary.mm_wrist-> driver() -> effectN( 2 ).percent();
+
+    hunter_ranged_attack_t::init();
   }
 };
 // Aimed Shot base class ==============================================================
@@ -4563,9 +4568,13 @@ struct dire_beast_t: public hunter_spell_t
     may_crit = false;
     may_miss = false;
     school = SCHOOL_PHYSICAL;
+  }
 
-    if ( player -> legendary.bm_shoulders )
-      cooldown -> charges += player -> legendary.bm_shoulders -> driver() -> effectN( 1 ).base_value();
+  void init() override {
+    if ( p() -> legendary.bm_shoulders )
+      cooldown -> charges += p() -> legendary.bm_shoulders -> driver() -> effectN( 1 ).base_value();
+
+    hunter_spell_t::init();
   }
 
   bool init_finished() override
@@ -4591,8 +4600,13 @@ struct dire_beast_t: public hunter_spell_t
 
     // Adjust BW cd
     timespan_t t = timespan_t::from_seconds( p() -> specs.dire_beast -> effectN( 1 ).base_value() );
-    if ( p() -> sets.has_set_bonus( HUNTER_BEAST_MASTERY, T19, B2 ) )
-      t += timespan_t::from_seconds( p() -> sets.set( HUNTER_BEAST_MASTERY, T19, B2 ) -> effectN( 1 ).base_value() );
+    // FIXME: spell data still shows the new 4 set as the 2 set, it may be swapped out from under us sometime. For now check for 4 set and use 2 set values.
+    if ( p() -> sets.has_set_bonus( HUNTER_BEAST_MASTERY, T19, B4 ) )
+    {
+      // t += timespan_t::from_seconds( p() -> sets.set( HUNTER_BEAST_MASTERY, T19, B2 ) -> effectN( 1 ).base_value() );
+      // Not getting the right number from that for some reason.
+      t += timespan_t::from_seconds( p() -> dbc.effect( 312803 ) -> base_value() );
+    }
     p() -> cooldowns.bestial_wrath -> adjust( -t );
 
     if ( p() -> legendary.bm_feet )
@@ -4650,6 +4664,12 @@ struct dire_beast_t: public hunter_spell_t
         }
       }
     }
+
+    if ( p() -> sets.has_set_bonus( HUNTER_BEAST_MASTERY, T19, B2 ) )
+    {
+      const timespan_t player_duration = p() -> buffs.bestial_wrath -> buff_duration;
+      static_cast<pets::dire_critter_t *>( beast ) -> buffs.bestial_wrath -> trigger(1, buff_t::DEFAULT_VALUE(), -1.0, player_duration );
+    }
   }
 
   virtual bool ready() override
@@ -4675,7 +4695,7 @@ struct bestial_wrath_t: public hunter_spell_t
   {
     p() -> buffs.bestial_wrath  -> trigger();
     p() -> active.pet -> buffs.bestial_wrath -> trigger();
-    if ( p() -> sets.has_set_bonus( HUNTER_BEAST_MASTERY, T19, B4 ) )
+    if ( p() -> sets.has_set_bonus( HUNTER_BEAST_MASTERY, T19, B2 ) )
     {
       for ( size_t i = 0; i < p() -> pet_dire_beasts.size(); i++ )
       {
@@ -4784,9 +4804,14 @@ struct dire_frenzy_t: public hunter_spell_t
 
     if ( p -> talents.dire_stable -> ok() )
       energize_amount += p -> talents.dire_stable -> effectN( 2 ).base_value();
+  }
 
-    if ( p -> legendary.bm_shoulders )
-      cooldown -> charges += p -> legendary.bm_shoulders -> driver() -> effectN( 1 ).base_value();
+  void init() override
+  {
+    if ( p() -> legendary.bm_shoulders )
+      cooldown -> charges += p() -> legendary.bm_shoulders -> driver() -> effectN( 1 ).base_value();
+
+    hunter_spell_t::init();
   }
 
   bool init_finished() override
@@ -4806,9 +4831,15 @@ struct dire_frenzy_t: public hunter_spell_t
 
     // Adjust BW cd
     timespan_t t = timespan_t::from_seconds( p() -> specs.dire_beast -> effectN( 1 ).base_value() );
-    if ( p() -> sets.has_set_bonus( HUNTER_BEAST_MASTERY, T19, B2 ) )
-      t += timespan_t::from_seconds( p() -> sets.set( HUNTER_BEAST_MASTERY, T19, B2 ) -> effectN( 1 ).base_value() );
+    // FIXME: spell data still shows the new 4 set as the 2 set, it may be swapped out from under us sometime. For now check for 4 set and use 2 set values.
+    if ( p() -> sets.has_set_bonus( HUNTER_BEAST_MASTERY, T19, B4 ) )
+      // t += timespan_t::from_seconds( p() -> sets.set( HUNTER_BEAST_MASTERY, T19, B2 ) -> effectN( 1 ).base_value() );
+      // Not getting the right number from that for some reason.
+      t += timespan_t::from_seconds( p() -> dbc.effect( 312803 ) -> base_value() );
     p() -> cooldowns.bestial_wrath -> adjust( -t );
+
+    if ( p() -> legendary.bm_feet )
+      p() -> cooldowns.kill_command -> adjust( p() -> legendary.bm_feet -> driver() -> effectN( 1 ).time_value() );
 
     if ( p() -> active.pet )
     {
