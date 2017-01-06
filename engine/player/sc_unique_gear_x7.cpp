@@ -92,9 +92,11 @@ namespace item
   void star_gate( special_effect_t&               );
   void erratic_metronome( special_effect_t&       );
   void whispers_in_the_dark( special_effect_t&    );
+  void nightblooming_frond( special_effect_t&     );
   // Adding this here to check it off the list.
   // The sim builds it automatically.
   //void pharameres_forbidden_grimoire( special_effect_t& );
+
   // Legendary
   void aggramars_stride( special_effect_t& );
   void kiljadens_burning_wish( special_effect_t& );
@@ -565,7 +567,8 @@ void item::erratic_metronome( special_effect_t& effect )
         .refresh_behavior( BUFF_REFRESH_DISABLED )
         .duration( timespan_t::from_seconds( 12.0 ) );
     }
-    void execute(action_t * a, action_state_t* trigger_state) override
+
+    void execute(action_t*, action_state_t*) override
     {
       int stack = proc_buff -> check();
 
@@ -1294,6 +1297,7 @@ void item::whispers_in_the_dark( special_effect_t& effect )
       player -> invalidate_cache( CACHE_HASTE );
     }
   };
+
   struct whispers_in_the_dark_good_buff_t : public buff_t
   {
     double amount;
@@ -1332,13 +1336,126 @@ void item::whispers_in_the_dark( special_effect_t& effect )
     {
       whispers_in_the_dark_buff = new whispers_in_the_dark_good_buff_t( effect );
     }
-    void execute( action_t* a, action_state_t* ) override
+
+    void execute( action_t*, action_state_t* ) override
     {
       whispers_in_the_dark_buff -> trigger();
     }
-};
+  };
+
   new whispers_in_the_dark_cb_t( effect );
 }
+
+// Nightblooming Frond ======================================================
+
+void item::nightblooming_frond( special_effect_t& effect )
+{
+  struct recursive_strikes_attack_t : public proc_attack_t
+  {
+    buff_t* recursive_strikes_buff;
+
+    recursive_strikes_attack_t( const special_effect_t& e ) :
+      proc_attack_t( "recursive_strikes", e.player, e.trigger(), e.item ),
+      recursive_strikes_buff( buff_t::find( e.player, "recursive_strikes" ) )
+    { }
+
+    double action_multiplier() const override
+    {
+      double m = proc_attack_t::action_multiplier();
+
+      m *= 1.0 + recursive_strikes_buff -> stack();
+
+      return m;
+    }
+  };
+
+  struct recursive_strikes_dmg_cb_t : public dbc_proc_callback_t
+  {
+    recursive_strikes_dmg_cb_t( const special_effect_t* effect ) :
+      dbc_proc_callback_t( effect->item, *effect )
+    { }
+
+    // Have to override default dbc_proc_callback_t behavior here, as it would expire the buff upon
+    // reaching max stack.
+    void execute( action_t*, action_state_t* state ) override
+    {
+      proc_buff -> trigger();
+      proc_action -> target = target( state );
+      proc_action -> execute();
+    }
+  };
+
+  struct recursive_strikes_driver_t : public dbc_proc_callback_t
+  {
+    recursive_strikes_driver_t( const special_effect_t& effect ) :
+      dbc_proc_callback_t( effect.item, effect )
+    { }
+
+    // Since the basic refresh behavior of Recursive Strikes is to never refresh the duration,
+    // temporarily make the driver change the refresh behavior to "refresh to full duration", so if
+    // you get a lucky driver proc while recursive strikes is up, you get +1 stack, and a full 15
+    // seconds of additional buff time.
+    void execute( action_t*, action_state_t* ) override
+    {
+      proc_buff -> refresh_behavior = BUFF_REFRESH_DURATION;
+      proc_buff -> trigger();
+      proc_buff -> refresh_behavior = BUFF_REFRESH_DISABLED;
+    }
+  };
+
+  special_effect_t* effect2 = new special_effect_t( effect.item );
+  effect2 -> name_str = "recursive_strikes_intensity";
+  effect2 -> spell_id = effect.trigger() -> id();
+  effect2 -> item = effect.item;
+  effect.player -> special_effects.push_back( effect2 );
+
+  // The auto-attack callback is instantiated here but initialized below, because the secondary
+  // special effect struct needs to have the buff and action pointers initialized to their
+  // respective objects, before the initialization is run.
+  auto cb = new recursive_strikes_dmg_cb_t( effect2 );
+
+  buff_t* b = buff_t::find( effect.player, "recursive_strikes" );
+  if ( b == nullptr )
+  {
+    b = buff_creator_t( effect.player, "recursive_strikes", effect.trigger() )
+      .refresh_behavior( BUFF_REFRESH_DISABLED ) // Don't refresh duration when the buff gains stacks
+      .stack_change_callback( [ cb ]( buff_t*, int old_, int new_ ) {
+        if ( old_ == 0 ) // Buff goes up the first time
+        {
+          cb -> activate();
+        }
+        else if ( new_ == 0 ) // Buff expires
+        {
+          cb -> deactivate();
+        }
+      } );
+  }
+
+  action_t* a = effect.player -> find_action( "recursive_strikes" );
+  if ( a == nullptr )
+  {
+    a = effect.player -> create_proc_action( "recursive_strikes", *effect2 );
+  }
+
+  if ( a == nullptr )
+  {
+    a = new recursive_strikes_attack_t( *effect2 );
+  }
+
+  effect.custom_buff = b;
+  effect2 -> custom_buff = b;
+  effect2 -> execute_action = a;
+
+  // Manually initialize and deactivate the auto-attack proc callback that generates damage and
+  // procs more stacks on the Recursive Strikes buff.
+  cb -> initialize();
+  cb -> deactivate();
+
+  // Base Driver, responsible for triggering the Recursive Strikes buff. Recursive Strikes buff in
+  // turn will activate the secondary proc callback that generates stacks and triggers damage.
+  new recursive_strikes_driver_t( effect );
+}
+
 // Tirathon's Betrayal ======================================================
 
 struct darkstrikes_absorb_t : public absorb_t
@@ -3946,6 +4063,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 225137, item::star_gate               );
   register_special_effect( 225125, item::erratic_metronome       );
   register_special_effect( 225142, item::whispers_in_the_dark    );
+  register_special_effect( 225135, item::nightblooming_frond     );
 
   /* Legion 7.0 Misc */
   register_special_effect( 188026, item::infernal_alchemist_stone       );
