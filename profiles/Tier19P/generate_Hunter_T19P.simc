@@ -4,7 +4,7 @@ race=orc
 role=attack
 position=ranged_back
 talents=2102012
-artifact=56:137365:133768:137472:0:869:3:870:2:872:3:874:3:875:4:878:1:880:1:881:1:882:1:1095:3:1336:1
+artifact=56:0:0:0:0:869:3:870:3:872:3:874:3:875:3:878:1:880:1:881:1:882:1:1095:3:1336:1
 spec=beast_mastery
 
 head=collar_of_honorable_exultation,id=136777,bonus_id=1727
@@ -30,7 +30,7 @@ race=blood_elf
 role=attack
 position=ranged_back
 talents=1303013
-artifact=55:137493:137412:137327:0:307:1:308:1:310:1:312:3:313:3:315:3:318:3:319:3:320:3:322:1:1337:1
+artifact=55:0:0:0:0:307:1:308:1:310:1:312:3:313:3:315:3:318:2:319:3:320:3:321:1:322:1:1337:1
 spec=marksmanship
 
 head=collar_of_honorable_exultation,id=136777,bonus_id=1727
@@ -56,7 +56,7 @@ race=blood_elf
 role=attack
 position=back
 talents=3101032
-artifact=34:137550:137408:137544:0:1068:1:1070:6:1072:3:1073:3:1075:3:1076:3:1080:1:1082:1:1084:1:1338:1
+artifact=34:0:0:0:0:1068:1:1072:3:1073:3:1074:3:1075:3:1076:3:1077:2:1079:1:1080:1:1082:1:1084:1:1338:1
 spec=survival
 
 head=helm_of_endless_dunes,id=134471,bonus_id=1727

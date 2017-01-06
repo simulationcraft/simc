@@ -4,7 +4,7 @@ race=troll
 role=attack
 position=ranged_back
 talents=1303013
-artifact=55:142518:142510:142517:0:307:1:308:1:309:1:310:1:311:1:312:3:313:4:314:3:315:3:316:3:317:3:318:4:319:4:320:3:321:1:322:1:1337:1
+artifact=55:0:0:0:0:307:1:308:1:309:1:310:1:311:1:312:3:313:3:314:3:315:3:316:3:317:3:318:3:319:3:320:3:321:1:322:1:1337:1
 spec=marksmanship
 
 # This default action priority list is automatically created based on your character.
