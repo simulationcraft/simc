@@ -583,7 +583,7 @@ public:
     double cost = ab::cost();
 
     if ( p() -> sets.has_set_bonus( HUNTER_MARKSMANSHIP, T19, B4 ) && p() -> buffs.trueshot -> check() )
-      cost *= 0.50; //TODO: Wait to see if spell data is updated with a value
+      cost += cost * p() -> find_spell( 211327 ) -> effectN( 1 ).percent();
 
     if ( p() -> legendary.bm_waist && p() -> buffs.bestial_wrath -> check() )
       cost *= 1.0 + p() -> find_spell( 207318 ) -> effectN( 1 ).percent();
