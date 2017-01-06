@@ -4800,7 +4800,7 @@ struct earthquake_t : public shaman_spell_t
         .target( execute_state -> target )
         .duration( data().duration() )
         .action( rumble )
-        .hasted( ground_aoe_params_t::SPELL_HASTE ), true );
+        .hasted( ground_aoe_params_t::SPELL_SPEED ), true );
 
     // Note, needs to be decremented after ground_aoe_event_t is created so that the rumble gets the
     // buff multiplier as persistent.
