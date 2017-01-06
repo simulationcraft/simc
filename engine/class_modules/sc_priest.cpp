@@ -1075,6 +1075,17 @@ struct fiend_melee_t : public priest_pet_melee_t
     return am;
   }
 
+  timespan_t execute_time() const override
+  {
+    if ( base_execute_time == timespan_t::zero() )
+      return timespan_t::zero();
+
+    if ( !harmful && !player->in_combat )
+      return timespan_t::zero();
+
+    return base_execute_time * player->cache.spell_speed();
+  }
+
   void execute() override
   {
     priest_pet_melee_t::execute();
