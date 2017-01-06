@@ -4962,7 +4962,7 @@ struct frost_shock_t : public shaman_spell_t
     shaman_spell_t( "frost_shock", player, player -> find_specialization_spell( "Frost Shock" ), options_str ),
     damage_coefficient( data().effectN( 3 ).percent() / secondary_costs[ RESOURCE_MAELSTROM ] )
   {
-
+    // maybe this ability will get an increase at one point
   }
 
   double action_multiplier() const override
