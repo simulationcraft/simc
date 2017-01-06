@@ -76,7 +76,7 @@ actions.generic+=/horn_of_winter
 actions.generic+=/frost_strike
 actions.generic+=/remorseless_winter,if=talent.frozen_pulse.enabled
 actions.generic+=/empower_rune_weapon
-actions.generic+=/hungering_rune_weapon
+actions.generic+=/hungering_rune_weapon,if=!dot.hungering_rune_weapon.ticking
 
 head=venomfanged_barbute,id=139229,bonus_id=1806
 neck=blackened_portalstone_necklace,id=139332,bonus_id=1806,enchant=mark_of_the_hidden_satyr

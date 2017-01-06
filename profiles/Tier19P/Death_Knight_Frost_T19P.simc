@@ -78,7 +78,7 @@ actions.generic+=/horn_of_winter
 actions.generic+=/frost_strike
 actions.generic+=/remorseless_winter,if=talent.frozen_pulse.enabled
 actions.generic+=/empower_rune_weapon
-actions.generic+=/hungering_rune_weapon
+actions.generic+=/hungering_rune_weapon,if=!dot.hungering_rune_weapon.ticking
 
 head=crown_of_ash,id=137526,bonus_id=1727
 neck=raven_filigree_pendant,id=134499,bonus_id=1727,enchant=mark_of_the_claw

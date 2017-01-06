@@ -6928,7 +6928,7 @@ void death_knight_t::default_apl_frost()
   generic -> add_action( this, "Frost Strike" );
   generic -> add_action( this, "Remorseless Winter", "if=talent.frozen_pulse.enabled" );
   generic -> add_action( this, "Empower Rune Weapon" );
-  generic -> add_talent( this, "Hungering Rune Weapon" );
+  generic -> add_talent( this, "Hungering Rune Weapon", "if=!dot.hungering_rune_weapon.ticking" );
 
   // Breath of Sindragosa core rotation
   bos -> add_action( this, "Frost Strike", "if=talent.icy_talons.enabled&buff.icy_talons.remains<1.5&cooldown.breath_of_sindragosa.remains>6" );

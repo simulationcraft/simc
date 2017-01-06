@@ -77,7 +77,7 @@ actions.generic+=/horn_of_winter
 actions.generic+=/frost_strike
 actions.generic+=/remorseless_winter,if=talent.frozen_pulse.enabled
 actions.generic+=/empower_rune_weapon
-actions.generic+=/hungering_rune_weapon
+actions.generic+=/hungering_rune_weapon,if=!dot.hungering_rune_weapon.ticking
 
 head=eventide_casque,id=140881,bonus_id=3517
 neck=radiant_string_of_scorpid_eyes,id=140898,bonus_id=3517,enchant=mark_of_the_hidden_satyr
