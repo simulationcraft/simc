@@ -1,4 +1,4 @@
-SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23244, git build 2679573)
+SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23244, git build 3208abb)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
@@ -2653,8 +2653,9 @@ Effects          :
                    Base Value: 7 | Scaled Value: 7 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Garrote (703), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Venomhide Poison (14795), Spore Cloud (32643), Deadly Poison (113780), Kingsbane (192759), Kingsbane (192760), Agonizing Poison (200803), Kingsbane (222062)
 #3 (id=191053)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
-                   Base Value: 13 | Scaled Value: 13 | Misc Value: 3 | Target: Self(1)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 3 | Target: Self(1)
                    Affected Spells: Insignia of Ravenholdt (209041)
+                   Hotfixed: Base Value (13 -> 15)
 #4 (id=191054)   : Apply Aura (6) | Add Flat Modifier: Spell Tick Time (107)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 8 | Target: Self(1)
                    Affected Spells: Prey on the Weak (131511)

@@ -1,4 +1,4 @@
-SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23244, git build 2679573)
+SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23244, git build 3208abb)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -6632,8 +6632,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=312761)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 14 | Target: Self(1)
-                   Hotfixed: Base Value (8 -> 10)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 14 | Target: Self(1)
+                   Hotfixed: Base Value (8 -> 15)
 Description      : Shred and Swipe deal $s1% increased damage for each Bleed effect you have on the target.
 
 Name             : Fury of Elune (id=211545) [Spell Family (7)] 
