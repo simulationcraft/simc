@@ -4989,8 +4989,7 @@ struct lunar_strike_t : public druid_spell_t
 
     p() -> buff.power_of_elune -> trigger();
 
-    if ( rng().roll( p() -> sets.set( DRUID_BALANCE, T19, B4 ) -> effectN( 1 ).percent() ) )
-      p() -> buff.solar_empowerment -> trigger();
+
   }
 };
 
@@ -5347,9 +5346,6 @@ struct solar_wrath_t : public druid_spell_t
     p() -> buff.solar_empowerment -> decrement();
 
     p() -> buff.power_of_elune -> trigger();
-
-    if ( rng().roll( p() -> sets.set( DRUID_BALANCE, T19, B4 ) -> effectN( 2 ).percent() ) )
-      p() -> buff.lunar_empowerment -> trigger();
   }
 };
 
@@ -5616,6 +5612,18 @@ struct starsurge_t : public druid_spell_t
       am *= 1.0 + p() -> cache.mastery_value();
 
     return am;
+  }
+
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double tm = druid_spell_t::composite_target_multiplier( target );
+    if ( p()->sets.has_set_bonus( DRUID_BALANCE, T19, B4 ) )
+    {
+      bool apply = td( target )->dots.moonfire->is_ticking() & td(target)->dots.sunfire->is_ticking();
+      if ( apply )
+        tm *= 1.0 + p()->sets.set( DRUID_BALANCE, T19, B4 )->effectN( 1 ).percent();
+    }
+    return tm;
   }
 
   void execute() override

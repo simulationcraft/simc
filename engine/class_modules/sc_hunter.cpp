@@ -313,7 +313,6 @@ public:
     const spell_data_t* lacerate;
     const spell_data_t* aspect_of_the_eagle;
     const spell_data_t* carve;
-    const spell_data_t* tar_trap;
     const spell_data_t* survivalist;
     const spell_data_t* explosive_trap;
   } specs;
@@ -583,7 +582,7 @@ public:
     double cost = ab::cost();
 
     if ( p() -> sets.has_set_bonus( HUNTER_MARKSMANSHIP, T19, B4 ) && p() -> buffs.trueshot -> check() )
-      cost *= 0.50; //TODO: Wait to see if spell data is updated with a value
+      cost += cost * p() -> find_spell( 211327 ) -> effectN( 1 ).percent();
 
     if ( p() -> legendary.bm_waist && p() -> buffs.bestial_wrath -> check() )
       cost *= 1.0 + p() -> find_spell( 207318 ) -> effectN( 1 ).percent();
@@ -3995,29 +3994,36 @@ struct carve_t: public hunter_melee_attack_t
     if ( p() -> buffs.butchers_bone_apron -> up() )
       p() -> buffs.butchers_bone_apron -> expire();
 
-    if ( p() -> legendary.sv_ring && num_targets() > 1 )
+    if ( p() -> legendary.sv_ring )
     {
-      std::vector<player_t*> carve_targets = execute_state -> action -> target_list();
-      std::vector<player_t*> available_targets;
-      std::vector<player_t*> lacerated_targets;
-
-      // Split the target list into targets with and without debuffs
-      for ( size_t i = 0; i < carve_targets.size(); i++ )
+      if ( num_targets() > 1 )
       {
-        if ( td( carve_targets[ i ] ) -> dots.lacerate -> is_ticking() )
-          lacerated_targets.push_back( carve_targets[ i ] );
-        else
-          available_targets.push_back( carve_targets[ i ] );
+        std::vector<player_t*> carve_targets = execute_state -> action -> target_list();
+        std::vector<player_t*> available_targets;
+        std::vector<player_t*> lacerated_targets;
+
+        // Split the target list into targets with and without debuffs
+        for ( size_t i = 0; i < carve_targets.size(); i++ )
+        {
+          if ( td( carve_targets[ i ] ) -> dots.lacerate -> is_ticking() )
+            lacerated_targets.push_back( carve_targets[ i ] );
+          else
+            available_targets.push_back( carve_targets[ i ] );
+        }
+
+        // Spread the dots to available targets
+        for ( size_t i = 0; i < lacerated_targets.size(); i++ )
+        {
+          if ( available_targets.empty() )
+            break;
+
+          td( lacerated_targets[ i ] ) -> dots.lacerate -> copy( available_targets.back(), DOT_COPY_CLONE );
+          available_targets.pop_back();
+        }
       }
-
-      // Spread the dots to available targets
-      for ( size_t i = 0; i < lacerated_targets.size(); i++ )
+      else
       {
-        if ( available_targets.empty() ) 
-          break;
-
-        td( lacerated_targets[ i ] ) -> dots.lacerate -> copy( available_targets.back(), DOT_COPY_CLONE );
-        available_targets.pop_back();
+        td( execute_state -> target ) ->dots.lacerate -> refresh_duration( -1 );
       }
     }
   }
@@ -4132,29 +4138,36 @@ struct butchery_t: public hunter_melee_attack_t
     if ( p() -> buffs.butchers_bone_apron -> up() )
       p() -> buffs.butchers_bone_apron -> expire();
 
-    if ( p() -> legendary.sv_ring && num_targets() > 1 )
+    if ( p() -> legendary.sv_ring )
     {
-      std::vector<player_t*> butchery_targets = execute_state -> action -> target_list();
-      std::vector<player_t*> available_targets;
-      std::vector<player_t*> lacerated_targets;
-
-      // Split the target list into targets with and without debuffs
-      for ( size_t i = 0; i < butchery_targets.size(); i++ )
+      if ( num_targets() > 1 )
       {
-        if ( td( butchery_targets[ i ] ) -> dots.lacerate -> is_ticking() )
-          lacerated_targets.push_back( butchery_targets[ i ] );
-        else
-          available_targets.push_back( butchery_targets[ i ] );
+        std::vector<player_t*> butchery_targets = execute_state -> action -> target_list();
+        std::vector<player_t*> available_targets;
+        std::vector<player_t*> lacerated_targets;
+
+        // Split the target list into targets with and without debuffs
+        for ( size_t i = 0; i < butchery_targets.size(); i++ )
+        {
+          if ( td( butchery_targets[ i ] ) -> dots.lacerate -> is_ticking() )
+            lacerated_targets.push_back( butchery_targets[ i ] );
+          else
+            available_targets.push_back( butchery_targets[ i ] );
+        }
+
+        // Spread the dots to available targets
+        for ( size_t i = 0; i < lacerated_targets.size(); i++ )
+        {
+          if ( available_targets.empty() )
+            break;
+
+          td( lacerated_targets[ i ] ) -> dots.lacerate -> copy( available_targets.back(), DOT_COPY_CLONE );
+          available_targets.pop_back();
+        }
       }
-
-      // Spread the dots to available targets
-      for ( size_t i = 0; i < lacerated_targets.size(); i++ )
+      else
       {
-        if ( available_targets.empty() ) 
-          break;
-
-        td( lacerated_targets[ i ] ) -> dots.lacerate -> copy( available_targets.back(), DOT_COPY_CLONE );
-        available_targets.pop_back();
+        td( execute_state -> target ) ->dots.lacerate -> refresh_duration( -1 );
       }
     }
   }
@@ -4187,29 +4200,6 @@ struct throwing_axes_t: public hunter_melee_attack_t
     tick_action = new throwing_axes_tick_t( p );
     weapon_multiplier = 0.0;
     weapon_power_mod = 0.0;
-  }
-};
-
-
-// Freezing Trap =====================================================================
-// Implemented here because often there are buffs associated with it
-
-struct freezing_trap_t: public hunter_melee_attack_t
-{
-  freezing_trap_t( hunter_t* p, const std::string& options_str ):
-    hunter_melee_attack_t( "freezing_trap", p, p -> find_class_spell( "Freezing Trap" ) )
-  {
-    parse_options( options_str );
-
-    cooldown -> duration = data().cooldown();
-
-    if ( p -> sets.has_set_bonus( p -> specialization(), PVP, B2 ) )
-    {
-      energize_type = ENERGIZE_ON_HIT;
-      energize_resource = RESOURCE_FOCUS;
-      energize_amount = p -> sets.set( p -> specialization(), PVP, B2 ) ->
-        effectN( 1 ).trigger() -> effectN( 1 ).base_value();
-    }
   }
 };
 
@@ -4501,6 +4491,56 @@ struct summon_pet_t: public hunter_spell_t
       return false;
 
     return hunter_spell_t::ready();
+  }
+};
+
+// Tar Trap =====================================================================
+
+struct tar_trap_t : public hunter_spell_t
+{
+  tar_trap_t( hunter_t* p, const std::string& options_str ) :
+    hunter_spell_t( "tar_trap", p, p -> find_class_spell( "Tar Trap" ) )
+  {
+    parse_options( options_str );
+
+    cooldown -> duration = data().cooldown();
+  }
+
+  virtual void execute() override
+  {
+    hunter_spell_t::execute();
+
+    if ( p() -> legendary.sv_feet )
+      p() -> resource_gain( RESOURCE_FOCUS, p() -> find_spell( 212575 ) -> effectN( 1 ).resource( RESOURCE_FOCUS ), p() -> gains.nesingwarys_trapping_treads );
+  }
+};
+
+// Freezing Trap =====================================================================
+
+struct freezing_trap_t : public hunter_spell_t
+{
+  freezing_trap_t( hunter_t* p, const std::string& options_str ) :
+    hunter_spell_t( "freezing_trap", p, p -> find_class_spell( "Freezing Trap" ) )
+  {
+    parse_options( options_str );
+
+    cooldown -> duration = data().cooldown();
+
+    if ( p -> sets.has_set_bonus( p -> specialization(), PVP, B2 ) )
+    {
+      energize_type = ENERGIZE_ON_HIT;
+      energize_resource = RESOURCE_FOCUS;
+      energize_amount = p -> sets.set( p -> specialization(), PVP, B2 ) ->
+        effectN( 1 ).trigger() -> effectN( 1 ).base_value();
+    }
+  }
+
+  virtual void execute() override
+  {
+    hunter_spell_t::execute();
+
+    if ( p() -> legendary.sv_feet )
+      p() -> resource_gain( RESOURCE_FOCUS, p() -> find_spell( 212575 ) -> effectN( 1 ).resource( RESOURCE_FOCUS ), p() -> gains.nesingwarys_trapping_treads );
   }
 };
 
@@ -5156,6 +5196,14 @@ struct caltrops_t: public hunter_spell_t
     hasted_ticks = false;
     tick_action = new caltrops_tick_t( p );
   }
+
+  virtual void execute() override
+  {
+    hunter_spell_t::execute();
+
+    if ( p() -> legendary.sv_feet )
+      p() -> resource_gain( RESOURCE_FOCUS, p() -> find_spell( 212575 ) -> effectN( 1 ).resource( RESOURCE_FOCUS ), p() -> gains.nesingwarys_trapping_treads );
+  }
 };
 
 // Dragonsfire Grenade ==============================================================
@@ -5317,6 +5365,7 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "stampede"              ) return new               stampede_t( this, options_str );
   if ( name == "steel_trap"            ) return new             steel_trap_t( this, options_str );
   if ( name == "summon_pet"            ) return new             summon_pet_t( this, options_str );
+  if ( name == "tar_trap"              ) return new               tar_trap_t( this, options_str );
   if ( name == "throwing_axes"         ) return new          throwing_axes_t( this, options_str );
   if ( name == "titans_thunder"        ) return new         titans_thunder_t( this, options_str );
   if ( name == "trueshot"              ) return new               trueshot_t( this, options_str );
@@ -5524,7 +5573,6 @@ void hunter_t::init_spells()
   specs.lacerate             = find_specialization_spell( "Lacerate" );
   specs.aspect_of_the_eagle  = find_specialization_spell( "Aspect of the Eagle" );
   specs.carve                = find_specialization_spell( "Carve" );
-  specs.tar_trap             = find_specialization_spell( "Tar Trap" );
   specs.explosive_trap       = find_specialization_spell( "Explosive Trap" );
   specs.marksmans_focus       = find_specialization_spell( "Marksman's Focus" );
 
