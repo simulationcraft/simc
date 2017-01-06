@@ -13,8 +13,10 @@
 
 optimal_raid=1
 default_actions=1
+
 # Death Knight
 Death_Knight_Frost_T19H_NH.simc
+Death_Knight_Unholy_T19H_NH.simc
 
 # Demon Hunter
 Demon_Hunter_Havoc_T19H_NH.simc
@@ -29,7 +31,7 @@ Demon_Hunter_Havoc_T19H_NH.simc
 
 
 # Monk
-generate_Monk_T19H_NH.simc
+Monk_Windwalker_T19H_NH.simc
 
 # Paladin
 
@@ -47,4 +49,4 @@ generate_Monk_T19H_NH.simc
 
 
 # Warrior
-
+Warlock_Affliction_T19H_NH.simc
