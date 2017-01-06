@@ -1,4 +1,4 @@
-SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23244, git build 2679573)
+SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23244, git build 3208abb)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -246,7 +246,7 @@ Duration         : 15 seconds
 Proc Chance      : 100%
 Proc Flags       : ........ ..x...x. .....x.. ........ 
                  : AOE Heal, Heal, Trap Triggered
-Affecting spells : Mastery: Deep Healing (77226), Rushing Streams (147074), Wavecrash (207206)
+Affecting spells : Mastery: Deep Healing (77226), Rushing Streams (147074), Wavecrash (207206), Praetorian's Tidecallers (210604)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ .x...x.. ........ ........ 
@@ -1017,7 +1017,7 @@ Class            : Shaman
 School           : Nature
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Mastery: Deep Healing (77226), Rushing Streams (147074), Wavecrash (207206)
+Affecting spells : Mastery: Deep Healing (77226), Rushing Streams (147074), Wavecrash (207206), Praetorian's Tidecallers (210604)
 Triggered by     : Healing Stream (5672)
 Attributes       : ........ ........ ........ ...x....   ........ ..x..... ...x.... ........ 
                  : ..x..... ........ ........ ....x...   ........ ........ ........ .x....x. 
@@ -6268,9 +6268,10 @@ Effects          :
 Description      : $@spelldesc210727
 
 Name             : The Deceiver's Blood Pact (id=214131) [Spell Family (11), Passive] 
+Hotfixed         : Proc Chance (15 -> 20)
 Class            : Shaman
 School           : Nature
-Proc Chance      : 15%
+Proc Chance      : 20%
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 

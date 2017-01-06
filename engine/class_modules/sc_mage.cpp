@@ -3511,7 +3511,9 @@ struct blizzard_shard_t : public frost_mage_spell_t
     aoe = -1;
     background = true;
     ground_aoe = true;
-    spell_power_mod.direct *= 1.0 + p -> talents.arctic_gale -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p -> talents.arctic_gale -> effectN( 1 ).percent();
+    // PTR Multiplier
+    base_multiplier *= 1.0 + p -> find_spell( 137020 ) -> effectN( 1 ).percent();
     chills = true;
   }
 
@@ -3541,39 +3543,15 @@ struct blizzard_shard_t : public frost_mage_spell_t
     }
   }
 
-  virtual void snapshot_state( action_state_t* s, dmg_e rt ) override
-  { return frost_mage_spell_t::snapshot_state( s, rt ); }
-
-  virtual double calculate_direct_amount( action_state_t* s ) const override
+  double composite_persistent_multiplier( const action_state_t* s ) const override
   {
-    frost_mage_spell_t::calculate_direct_amount( s );
+    double cpm = frost_mage_spell_t::composite_persistent_multiplier( s );
 
-    //TODO: This should *probably* by an action_multiplier?
-    if ( p() -> legendary.zannesu_journey )
-    {
-      s -> result_total *= 1.0 + p() -> legendary.zannesu_journey_multiplier;
-    }
-    return s -> result_total;
-  }
-};
+    cpm *= 1.0 + p() -> buffs.zannesu_journey -> data().effectN( 1 ).percent() * p() -> buffs.zannesu_journey -> check();
 
-struct blizzard_t : public frost_mage_spell_t
-{
-  blizzard_t( mage_t* p, const std::string& options_str ) :
-    frost_mage_spell_t( "blizzard", p, p -> find_spell( 190356 ) )
-  {
-    parse_options( options_str );
-    may_miss     = false;
-    ignore_false_positive = true;
-    snapshot_flags = STATE_HASTE;
-    dot_duration = data().duration();
-    base_tick_time = timespan_t::from_seconds( 1.0 );
-    hasted_ticks = true;
-    cooldown -> hasted = true;
-    // PTR Multiplier
-    base_multiplier *= 1.0 + p -> find_spell( 137020 ) -> effectN( 1 ).percent();
-    tick_action = new blizzard_shard_t( p );
+    return cpm;
   }
+
   virtual double composite_crit_chance() const override
   {
     double c = frost_mage_spell_t::composite_crit_chance();
@@ -3583,34 +3561,34 @@ struct blizzard_t : public frost_mage_spell_t
     }
     return c;
   }
+};
+
+struct blizzard_t : public frost_mage_spell_t
+{
+  blizzard_shard_t* blizzard_shard;
+  blizzard_t( mage_t* p, const std::string& options_str ) :
+    frost_mage_spell_t( "blizzard", p, p -> find_spell( 190356 ) ),
+    blizzard_shard( new blizzard_shard_t( p ) )
+  {
+    parse_options( options_str );
+    add_child( blizzard_shard );
+    cooldown -> hasted = true;
+    dot_duration = timespan_t::zero(); // This is just a driver for the ground effect.
+    may_miss = false;
+  }
+
   virtual void execute() override
   {
-    // "Snapshot" multiplier before we execute blizzard
-    if ( p() -> legendary.zannesu_journey && p() -> buffs.zannesu_journey -> check() )
-    {
-      p() -> legendary.zannesu_journey_multiplier = p() -> buffs.zannesu_journey -> data().effectN( 1 ).percent() * p() -> buffs.zannesu_journey -> check();
-    }
 
     frost_mage_spell_t::execute();
 
+    make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
+      .target( execute_state -> target )
+      .duration( data().duration() * player -> cache.spell_speed() )
+      .action( blizzard_shard )
+      .hasted( ground_aoe_params_t::SPELL_SPEED ) );
+
     p() -> buffs.zannesu_journey -> expire();
-
-  }
-  timespan_t composite_dot_duration( const action_state_t* s ) const override
-  {
-    timespan_t duration = frost_mage_spell_t::composite_dot_duration( s );
-    return duration * ( tick_time( s ) / base_tick_time );
-  }
-
-  virtual void tick( dot_t* d ) override
-  {
-    frost_mage_spell_t::tick( d );
-    handle_frozen( d -> state );
-  }
-  virtual void last_tick( dot_t* d ) override
-  {
-    frost_mage_spell_t::last_tick( d );
-
   }
 };
 
@@ -4545,14 +4523,12 @@ struct flurry_bolt_t : public frost_mage_spell_t
 
     frost_mage_spell_t::impact( s );
 
-    td( s -> target ) -> debuffs.winters_chill -> trigger();
+    if ( brain_freeze_buffed )
+    {
+      td( s -> target ) -> debuffs.winters_chill -> trigger();
+    }
   }
 
-  virtual void execute() override
-  {
-    frost_mage_spell_t::execute();
-
-  }
   virtual double action_multiplier() const override
   {
     double am = frost_mage_spell_t::action_multiplier();
@@ -4562,19 +4538,11 @@ struct flurry_bolt_t : public frost_mage_spell_t
       am *= 1.0 + p() -> artifact.ice_age.percent();
     }
 
-    return am;
-  }
-
-  double composite_persistent_multiplier( const action_state_t* state ) const override
-  {
-    double m = frost_mage_spell_t::composite_persistent_multiplier( state );
-
-    if( brain_freeze_buffed == true )
+    if( brain_freeze_buffed )
     {
-      m *= 1.0 + p() -> buffs.brain_freeze -> data().effectN( 2 ).percent();
+      am *= 1.0 + p() -> buffs.brain_freeze -> data().effectN( 2 ).percent();
     }
-
-    return m;
+    return am;
   }
 
 };
@@ -4591,7 +4559,6 @@ struct flurry_t : public frost_mage_spell_t
     //TODO: Remove hardcoded values once it exists in spell data for bolt impact timing.
     dot_duration = timespan_t::from_seconds( 0.03 );
     base_tick_time = timespan_t::from_seconds( 0.01 );
-
   }
 
   virtual timespan_t travel_time() const override
@@ -4628,6 +4595,7 @@ struct flurry_t : public frost_mage_spell_t
     {
       flurry_bolt -> brain_freeze_buffed = false;
     }
+
     p() -> buffs.brain_freeze -> expire();
   }
 
@@ -5004,6 +4972,57 @@ struct ice_time_nova_t : public frost_mage_spell_t
   {
     background = may_crit = true;
     aoe = -1;
+  }
+
+  virtual void snapshot_state( action_state_t* s, dmg_e rt ) override
+  { return frost_mage_spell_t::snapshot_state( s, rt ); }
+
+  double calculate_direct_amount( action_state_t* s ) const override
+  {
+    frost_spell_state_t* fss = debug_cast<frost_spell_state_t*>( s );
+
+    if ( fss -> impact_override == true )
+    {
+      return frost_mage_spell_t::calculate_direct_amount( s );
+    }
+    else
+    {
+      return s -> result_amount;
+    }
+  }
+
+  virtual result_e calculate_result( action_state_t* s ) const override
+  {
+     frost_spell_state_t* fss = debug_cast<frost_spell_state_t*>( s );
+
+     if ( fss -> impact_override == true )
+     {
+       return frost_mage_spell_t::calculate_result( s );
+     }
+     else
+     {
+       return s -> result;
+     }
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    // Swap our flag to allow damage calculation again
+    frost_spell_state_t* fss = debug_cast<frost_spell_state_t*>( s );
+    fss -> impact_override = true;
+
+    // Re-call functions here, before the impact call to do the damage calculations as we impact.
+    handle_frozen( s );
+    snapshot_state( s, amount_type ( s ) );
+
+    s -> result = calculate_result( s );
+    s -> result_amount = calculate_direct_amount( s );
+
+    frost_mage_spell_t::impact( s );
+  }
+  virtual action_state_t* new_state() override
+  {
+    return new frost_spell_state_t( this, target );
   }
 
   //This is a hack-ish way to sync Frozen Orb ending to Ice Time Nova executing
@@ -8831,7 +8850,7 @@ void mage_t::apl_fire()
   active_talents   -> add_talent( this, "Blast Wave", "if=(buff.combustion.down)|(buff.combustion.up&action.fire_blast.charges<1&action.phoenixs_flames.charges<1)" );
   active_talents   -> add_talent( this, "Meteor", "if=cooldown.combustion.remains>30|(cooldown.combustion.remains>target.time_to_die)|buff.rune_of_power.up" );
   active_talents   -> add_talent( this, "Cinderstorm", "if=cooldown.combustion.remains<cast_time&(buff.rune_of_power.up|!talent.rune_on_power.enabled)|cooldown.combustion.remains>10*spell_haste&!buff.combustion.up" );
-  active_talents   -> add_action( this, "Dragon's Breath", "if=equipped.132863" );
+  active_talents   -> add_action( this, "Dragon's Breath", "if=equipped.132863|(talent.alexstraszas_fury.enabled&buff.hot_streak.down)" );
   active_talents   -> add_talent( this, "Living Bomb", "if=active_enemies>1&buff.combustion.down" );
 
   single_target    -> add_action( this, "Pyroblast", "if=buff.hot_streak.up&buff.hot_streak.remains<action.fireball.execute_time" );
@@ -8858,30 +8877,51 @@ void mage_t::apl_frost()
   std::vector<std::string> item_actions = get_item_actions();
   std::vector<std::string> racial_actions = get_racial_actions();
 
-  action_priority_list_t* default_list      = get_action_priority_list( "default"           );
-  action_priority_list_t* cooldowns         = get_action_priority_list( "cooldowns"         );
+  action_priority_list_t* default_list = get_action_priority_list( "default"           );
+  action_priority_list_t* single       = get_action_priority_list( "single"            );
+  action_priority_list_t* aoe          = get_action_priority_list( "aoe"               );
+  action_priority_list_t* cooldowns    = get_action_priority_list( "cooldowns"         );
 
   default_list -> add_action( this, "Counterspell", "if=target.debuff.casting.react" );
-  default_list -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react=0&prev_gcd.1.flurry" );
-  default_list -> add_action( this, "Time Warp", "if=(time=0&buff.bloodlust.down)|(buff.bloodlust.down&equipped.132410)" );
+  default_list -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react=0&prev_gcd.1.flurry&spell_haste<0.845" );
+  default_list -> add_action( this, "Time Warp", "if=(time=0&buff.bloodlust.down)|(buff.bloodlust.down&equipped.132410&(cooldown.icy_veins.remains<1|target.time_to_die<50))" );
   default_list -> add_action( "call_action_list,name=cooldowns" );
-  default_list -> add_talent( this, "Ice Nova", "if=debuff.winters_chill.up" );
-  default_list -> add_action( this, "Frostbolt", "if=prev_off_gcd.water_jet" );
-  default_list -> add_action( "water_jet,if=prev_gcd.1.frostbolt&buff.fingers_of_frost.stack<(2+artifact.icy_hand.enabled)&buff.brain_freeze.react=0" );
-  default_list -> add_talent( this, "Ray of Frost", "if=buff.icy_veins.up|(cooldown.icy_veins.remains>action.ray_of_frost.cooldown&buff.rune_of_power.down)" );
-  default_list -> add_action( this, "Flurry", "if=buff.brain_freeze.react&buff.fingers_of_frost.react=0&prev_gcd.1.frostbolt" );
-  default_list -> add_talent( this, "Frost Bomb", "if=debuff.frost_bomb.remains<action.ice_lance.travel_time&buff.fingers_of_frost.react>0" );
-  default_list -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react>0&cooldown.icy_veins.remains>10|buff.fingers_of_frost.react>2" );
-  default_list -> add_action( this, "Frozen Orb" );
-  default_list -> add_talent( this, "Ice Nova" );
-  default_list -> add_talent( this, "Comet Storm" );
-  default_list -> add_action( this, "Blizzard", "if=talent.arctic_gale.enabled|active_enemies>1|((buff.zannesu_journey.stack>4|buff.zannesu_journey.remains<cast_time+1)&equipped.133970)" );
-  default_list -> add_action( this, "Ebonbolt", "if=buff.fingers_of_frost.stack<=(0+artifact.icy_hand.enabled)" );
-  default_list -> add_talent( this, "Glacial Spike" );
-  default_list -> add_action( this, "Frostbolt" );
+  default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>=4" );
+  default_list -> add_action( "call_action_list,name=single" );
+
+
+  single -> add_talent( this, "Ice Nova", "if=debuff.winters_chill.up" );
+  single -> add_action( this, "Frostbolt", "if=prev_off_gcd.water_jet" );
+  single -> add_action( "water_jet,if=prev_gcd.1.frostbolt&buff.fingers_of_frost.stack<(2+artifact.icy_hand.enabled)&buff.brain_freeze.react=0" );
+
+  single -> add_talent( this, "Ray of Frost", "if=buff.icy_veins.up|(cooldown.icy_veins.remains>action.ray_of_frost.cooldown&buff.rune_of_power.down)" );
+  single -> add_action( this, "Flurry", "if=(buff.brain_freeze.react|prev_gcd.1.ebonbolt)&buff.fingers_of_frost.react=0" );
+  single -> add_talent( this, "Frost Bomb", "if=debuff.frost_bomb.remains<action.ice_lance.travel_time&buff.fingers_of_frost.react>0" );
+  single -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react>0&cooldown.icy_veins.remains>10|buff.fingers_of_frost.react>2" );
+  single -> add_action( this, "Frozen Orb" );
+  single -> add_talent( this, "Ice Nova" );
+  single -> add_talent( this, "Comet Storm" );
+  single -> add_action( this, "Blizzard", "if=talent.arctic_gale.enabled|active_enemies>1|(buff.zannesu_journey.stack=5&buff.zannesu_journey.remains>cast_time)" );
+  single -> add_action( this, "Ebonbolt", "if=buff.brain_freeze.react=0" );
+  single -> add_talent( this, "Glacial Spike" );
+  single -> add_action( this, "Frostbolt" );
+
+  aoe -> add_action( this, "Frostbolt", "if=prev_off_gcd.water_jet" );
+  aoe -> add_action( this, "Blizzard" );
+  aoe -> add_action( this, "Frozen Orb" );
+  aoe -> add_talent( this, "Comet Storm" );
+  aoe -> add_talent( this, "Ice Nova" );
+  aoe -> add_action( "water_jet,if=prev_gcd.1.frostbolt&buff.fingers_of_frost.stack<(2+artifact.icy_hand.enabled)&buff.brain_freeze.react=0" );
+  aoe -> add_action( this, "Flurry", "if=(buff.brain_freeze.react|prev_gcd.1.ebonbolt)&buff.fingers_of_frost.react=0" );
+  aoe -> add_talent( this, "Frost Bomb", "if=debuff.frost_bomb.remains<action.ice_lance.travel_time&buff.fingers_of_frost.react>0" );
+  aoe -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react>0" );
+  aoe -> add_action( this, "Ebonbolt", "if=buff.brain_freeze.react=0" );
+  aoe -> add_talent( this, "Glacial Spike" );
+  aoe -> add_action( this, "Frostbolt" );
 
   cooldowns    -> add_talent( this, "Rune of Power", "if=cooldown.icy_veins.remains<cast_time|charges_fractional>1.9&cooldown.icy_veins.remains>10|buff.icy_veins.up|target.time_to_die.remains+5<charges_fractional*10" );
-  cooldowns -> add_action( "potion,name=potion_of_prolonged_power,if=cooldown.icy_veins.remains<1" );
+  cooldowns    -> add_action( "potion,name=deadly_grace,if=cooldown.icy_veins.remains<1&active_enemies=1" );
+  cooldowns    -> add_action( "potion,name=prolonged_power,if=cooldown.icy_veins.remains<1" );
   cooldowns    -> add_action( this, "Icy Veins", "if=buff.icy_veins.down" );
   cooldowns    -> add_talent( this, "Mirror Image" );
   for( size_t i = 0; i < item_actions.size(); i++ )

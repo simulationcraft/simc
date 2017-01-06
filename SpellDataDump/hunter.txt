@@ -1,4 +1,4 @@
-SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23244, git build 2679573)
+SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23244, git build 3208abb)
 
 Name             : Mend Pet (id=136) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
@@ -2404,6 +2404,23 @@ Effects          :
 Description      : After you Multi-Shot, your pet's melee attacks also strike all other nearby enemy targets for $115939s1% as much for the next $d.
 Tooltip          : Melee attacks also strike all other nearby enemy targets.
 
+Name             : Beast Cleave (id=118459) [Spell Family (9)] 
+Class            : Hunter
+School           : Physical
+Range            : 5 yards
+Affecting spells : Beast Mastery Hunter (137015)
+Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
+                 : .......x ........ ......x. .....x..   ........ .x...... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Cannot crit (93), Not a proc (105)
+Effects          :
+#1 (id=134941)   : School Damage: physical (2)
+                   Base Value: 1 | Scaled Value: 1 | Radius: 0 - 10 yards | Target: Custom(18) -> AOE enemy (instant)(16)
+Description      : Melee attacks also strike all other nearby enemies.
+
 Name             : Posthaste (id=118922) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -2869,7 +2886,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179698)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 9 | Scaled Value: 9 | Target: Self(1)
-                   Affected Spells: Kill Command (34026), Chimaera Shot (53209), Kill Command (83381), Beast Cleave (115939), Chimaera Shot (171454), Chimaera Shot (171457), Cobra Shot (193455), Chimaera Shot (204304), Dire Frenzy (217207)
+                   Affected Spells: Kill Command (34026), Chimaera Shot (53209), Kill Command (83381), Beast Cleave (115939), Beast Cleave (118459), Chimaera Shot (171454), Chimaera Shot (171457), Cobra Shot (193455), Chimaera Shot (204304), Dire Frenzy (217207)
                    Hotfixed: Base Value (4 -> 9)
 #2 (id=191138)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self(1)

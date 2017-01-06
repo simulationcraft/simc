@@ -1,4 +1,4 @@
-SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23244, git build 2679573)
+SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23244, git build 3208abb)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -2750,6 +2750,24 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1028
 Description      : $@spelldesc125151
 
+Name             : Touch of Karma (id=125174) [Scaling Spell (6), Spell Family (53)] 
+Class            : Monk
+School           : Physical
+Spell Level      : 1
+Range            : 50000 yards
+Duration         : 10 seconds
+Attributes       : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=158688)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | Target: Self(1)
+Description      : $@spelldesc122470
+Tooltip          : All damage received is redirected to the victim afflicted by Touch of Karma.
+
 Name             : Healing Sphere (id=125355) [Spell Family (53)] 
 Class            : Monk
 School           : Nature
@@ -4972,7 +4990,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=313194)   : Apply Aura (6) | Dummy (4)
-                   Base Value: -2000 | Scaled Value: -2000 | Misc Value: 11 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 11 | Target: Self(1)
+                   Hotfixed: Base Value (-2000 -> 0)
 Description      : Using 3 sequentially different abilities grants $211432s1 Mastery for $211432d.
 
 Name             : Combo Master (id=211432) [Spell Family (53)] 
@@ -4987,7 +5006,8 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=313196)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 1500 | Scaled Value: 1500 | Misc Value: 33554432 | Target: Self(1)
+                   Base Value: 2000 | Scaled Value: 2000 | Misc Value: 33554432 | Target: Self(1)
+                   Hotfixed: Base Value (1500 -> 2000)
 Description      : $@spelldesc211430
 Tooltip          : Mastery increased by $s1.
 
