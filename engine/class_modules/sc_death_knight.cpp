@@ -6931,22 +6931,24 @@ void death_knight_t::default_apl_frost()
   generic -> add_talent( this, "Hungering Rune Weapon" );
 
   // Breath of Sindragosa core rotation
+  bos -> add_action( this, "Frost Strike", "if=talent.icy_talons.enabled&buff.icy_talons.remains<1.5&cooldown.breath_of_sindragosa.remains>6" );
   bos -> add_action( this, "Howling Blast", "target_if=!dot.frost_fever.ticking" );
   bos -> add_talent( this, "Breath of Sindragosa", "if=runic_power>=50" );
-  bos -> add_action( this, "Frost Strike", "if=runic_power>=90&set_bonus.tier19_4pc" );
+  bos -> add_action( this, "Frost Strike", "if=runic_power>=92&set_bonus.tier19_4pc" );
   bos -> add_action( this, "Remorseless Winter", "if=buff.rime.react&equipped.132459" );
-  bos -> add_action( this, "Howling Blast", "if=buff.rime.react" );
+  bos -> add_action( this, "Howling Blast", "if=buff.rime.react&(dot.remorseless_winter.ticking|cooldown.remorseless_winter.remains>1.5|!equipped.132459)" );
   bos -> add_action( this, "Frost Strike", "if=runic_power>=70" );
-  bos -> add_action( this, "Obliterate" );
+  bos -> add_action( this, "Obliterate", "if=!buff.rime.react" );
   bos -> add_talent( this, "Horn of Winter", "if=cooldown.breath_of_sindragosa.remains>15&runic_power<=70" );
   bos -> add_action( this, "Frost Strike", "if=cooldown.breath_of_sindragosa.remains>15" );
   bos -> add_action( this, "Remorseless Winter", "if=cooldown.breath_of_sindragosa.remains>10" );
   
   // Breath of Sindragosa ticking rotation
   bos_ticking -> add_action( this, "Howling Blast", "target_if=!dot.frost_fever.ticking" );
-  bos_ticking -> add_action( this, "Remorseless Winter", "if=((runic_power>=20&set_bonus.tier19_4pc)|runic_power>=30)&buff.rime.react&!dot.hungering_rune_weapon.ticking&equipped.132459" );
-  bos_ticking -> add_action( this, "Howling Blast", "if=((runic_power>=20&set_bonus.tier19_4pc)|runic_power>=30)&buff.rime.react&!dot.hungering_rune_weapon.ticking" );
-  bos_ticking -> add_action( this, "Obliterate", "if=runic_power<=70|dot.hungering_rune_weapon.ticking|rune>=3" );
+  bos_ticking -> add_action( this, "Remorseless Winter", "if=((runic_power>=22&set_bonus.tier19_4pc)|runic_power>=30)&buff.rime.react&!dot.hungering_rune_weapon.ticking&equipped.132459" );
+  bos_ticking -> add_action( this, "Howling Blast", "if=((runic_power>=22&set_bonus.tier19_4pc)|runic_power>=30)&buff.rime.react&!dot.hungering_rune_weapon.ticking" );
+  bos_ticking -> add_action( this, "Frost Strike", "if=runic_power>=95&dot.hungering_rune_weapon.ticking" );
+  bos_ticking -> add_action( this, "Obliterate", "if=runic_power<=70|rune>3" );
   bos_ticking -> add_talent( this, "Horn of Winter", "if=runic_power<70&!dot.hungering_rune_weapon.ticking" );
   bos_ticking -> add_talent( this, "Hungering Rune Weapon", "if=runic_power<20&!dot.hungering_rune_weapon.ticking" );
   bos_ticking -> add_action( this, "Empower Rune Weapon", "if=runic_power<20" );

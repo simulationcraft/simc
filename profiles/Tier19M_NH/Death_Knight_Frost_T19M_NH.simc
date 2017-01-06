@@ -36,21 +36,23 @@ actions+=/call_action_list,name=generic,if=!talent.breath_of_sindragosa.enabled
 actions+=/call_action_list,name=bos,if=talent.breath_of_sindragosa.enabled&!dot.breath_of_sindragosa.ticking
 actions+=/call_action_list,name=bos_ticking,if=talent.breath_of_sindragosa.enabled&dot.breath_of_sindragosa.ticking
 
-actions.bos=howling_blast,target_if=!dot.frost_fever.ticking
+actions.bos=frost_strike,if=talent.icy_talons.enabled&buff.icy_talons.remains<1.5&cooldown.breath_of_sindragosa.remains>6
+actions.bos+=/howling_blast,target_if=!dot.frost_fever.ticking
 actions.bos+=/breath_of_sindragosa,if=runic_power>=50
-actions.bos+=/frost_strike,if=runic_power>=90&set_bonus.tier19_4pc
+actions.bos+=/frost_strike,if=runic_power>=92&set_bonus.tier19_4pc
 actions.bos+=/remorseless_winter,if=buff.rime.react&equipped.132459
-actions.bos+=/howling_blast,if=buff.rime.react
+actions.bos+=/howling_blast,if=buff.rime.react&(dot.remorseless_winter.ticking|cooldown.remorseless_winter.remains>1.5|!equipped.132459)
 actions.bos+=/frost_strike,if=runic_power>=70
-actions.bos+=/obliterate
+actions.bos+=/obliterate,if=!buff.rime.react
 actions.bos+=/horn_of_winter,if=cooldown.breath_of_sindragosa.remains>15&runic_power<=70
 actions.bos+=/frost_strike,if=cooldown.breath_of_sindragosa.remains>15
 actions.bos+=/remorseless_winter,if=cooldown.breath_of_sindragosa.remains>10
 
 actions.bos_ticking=howling_blast,target_if=!dot.frost_fever.ticking
-actions.bos_ticking+=/remorseless_winter,if=((runic_power>=20&set_bonus.tier19_4pc)|runic_power>=30)&buff.rime.react&!dot.hungering_rune_weapon.ticking&equipped.132459
-actions.bos_ticking+=/howling_blast,if=((runic_power>=20&set_bonus.tier19_4pc)|runic_power>=30)&buff.rime.react&!dot.hungering_rune_weapon.ticking
-actions.bos_ticking+=/obliterate,if=runic_power<=70|dot.hungering_rune_weapon.ticking|rune>=3
+actions.bos_ticking+=/remorseless_winter,if=((runic_power>=22&set_bonus.tier19_4pc)|runic_power>=30)&buff.rime.react&!dot.hungering_rune_weapon.ticking&equipped.132459
+actions.bos_ticking+=/howling_blast,if=((runic_power>=22&set_bonus.tier19_4pc)|runic_power>=30)&buff.rime.react&!dot.hungering_rune_weapon.ticking
+actions.bos_ticking+=/frost_strike,if=runic_power>=95&dot.hungering_rune_weapon.ticking
+actions.bos_ticking+=/obliterate,if=runic_power<=70|rune>3
 actions.bos_ticking+=/horn_of_winter,if=runic_power<70&!dot.hungering_rune_weapon.ticking
 actions.bos_ticking+=/hungering_rune_weapon,if=runic_power<20&!dot.hungering_rune_weapon.ticking
 actions.bos_ticking+=/empower_rune_weapon,if=runic_power<20
