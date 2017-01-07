@@ -7045,7 +7045,7 @@ void druid_t::apl_restoration()
 {
   action_priority_list_t* default_list    = get_action_priority_list( "default" );
   action_priority_list_t* HEAL = get_action_priority_list("heal");
-  action_priority_list_t* DPS = get_action_priority_list("dps");
+  action_priority_list_t* DPS = get_action_priority_list("dps"); //Base DPS APL - Guardian affinity
   action_priority_list_t* BAFF = get_action_priority_list("baff"); //Balance affinity
   action_priority_list_t* FAFF = get_action_priority_list("faff"); //Feral affinity
 
