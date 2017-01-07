@@ -293,6 +293,10 @@ public:
     int wakeners_shard_counter;
     double wakeners_loyalty_percent;
     bool wakeners_loyalty_enabled;
+    bool lessons_of_spacetime;
+    timespan_t lessons_of_spacetime1;
+    timespan_t lessons_of_spacetime2;
+    timespan_t lessons_of_spacetime3;
 
   } legendary;
 
@@ -396,8 +400,8 @@ public:
 
     // legendary buffs
     buff_t* sindorei_spite;
-
     buff_t* stretens_insanity;
+    buff_t* lessons_of_spacetime;
   } buffs;
 
   // Gains
@@ -1428,8 +1432,8 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
      m *= 1.0 +  o() -> cache.mastery_value();
   }
 
-  if ( o() -> bugs && pet_type != PET_WILD_IMP ) //FIXME sindorei is currently not buffing imps.
-    m *= 1.0 + o() -> buffs.sindorei_spite -> check_stack_value();
+  m *= 1.0 + o() -> buffs.sindorei_spite -> check_stack_value();
+  m *= 1.0 + o() -> buffs.lessons_of_spacetime -> check_stack_value();
 
   return m;
 }
@@ -3948,6 +3952,9 @@ struct dimensional_rift_t : public warlock_spell_t
           break;
         }
       }
+
+      if ( p() -> legendary.lessons_of_spacetime )
+        p() -> buffs.lessons_of_spacetime -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, p() -> legendary.lessons_of_spacetime3 );
     }
     else if ( rift >= ( 2.0 / 3.0 ) )
     {
@@ -3960,6 +3967,9 @@ struct dimensional_rift_t : public warlock_spell_t
           break;
         }
       }
+
+      if ( p() -> legendary.lessons_of_spacetime )
+        p() -> buffs.lessons_of_spacetime -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, p() -> legendary.lessons_of_spacetime1 );
     }
     else
     {
@@ -3972,6 +3982,9 @@ struct dimensional_rift_t : public warlock_spell_t
           break;
         }
       }
+
+      if ( p() -> legendary.lessons_of_spacetime )
+        p() -> buffs.lessons_of_spacetime -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, p() -> legendary.lessons_of_spacetime2 );
     }
   }
 };
@@ -5666,6 +5679,7 @@ double warlock_t::composite_player_multiplier( school_e school ) const
   }
 
   m *= 1.0 + buffs.sindorei_spite -> check_stack_value();
+  m *= 1.0 + buffs.lessons_of_spacetime -> check_stack_value();
 
   return m;
 }
@@ -6236,6 +6250,10 @@ void warlock_t::create_buffs()
     .default_value( find_spell( 208822 ) -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
+  buffs.lessons_of_spacetime = buff_creator_t( this, "lessons_of_spacetime", find_spell( 236176 ) )
+    .default_value( find_spell( 236176 ) -> effectN( 1 ).percent() )
+    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
   //affliction buffs
   buffs.shard_instability = buff_creator_t( this, "shard_instability", find_spell( 216457 ) )
     .chance( sets.set( WARLOCK_AFFLICTION, T18, B2 ) -> proc_chance() );
@@ -6587,6 +6605,7 @@ void warlock_t::apl_destruction()
   add_action( "Conflagrate", "if=!talent.roaring_blaze.enabled&!buff.backdraft.remains&buff.conflagration_of_chaos.remains<=action.chaos_bolt.cast_time" );
   add_action( "Conflagrate", "if=!talent.roaring_blaze.enabled&!buff.backdraft.remains&(charges=1&recharge_time<action.chaos_bolt.cast_time|charges=2)&soul_shard<5" );
   action_list_str += "/life_tap,if=talent.empowered_life_tap.enabled&buff.empowered_life_tap.remains<=gcd";
+  add_action( "Dimensional Rift", "if=equipped.144369&!buff.lessons_of_spacetime.remains&((!talent.grimoire_of_supremacy.enabled&!cooldown.summon_doomguard.remains)|(talent.grimoire_of_service.enabled&!cooldown.service_pet.remains)|(talent.soul_harvest.enabled&!cooldown.soul_harvest.remains))");
   action_list_str += "/service_pet";
   add_action( "Summon Infernal", "if=artifact.lord_of_flames.rank>0&!buff.lord_of_flames.remains" );
   add_action( "Summon Doomguard", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<3&(target.time_to_die>180|target.health.pct<=20|target.time_to_die<30)" );
@@ -6599,7 +6618,7 @@ void warlock_t::apl_destruction()
   add_action( "Havoc", "if=active_enemies=1&talent.wreak_havoc.enabled&equipped.132375&!debuff.havoc.remains" );
   add_action( "Rain of Fire", "if=active_enemies>=4&cooldown.havoc.remains<=12&!talent.wreak_havoc.enabled");
   add_action( "Rain of Fire", "if=active_enemies>=6&talent.wreak_havoc.enabled");
-  add_action( "Dimensional Rift" );
+  add_action( "Dimensional Rift", "if=!equipped.144369|charges>1|((!talent.grimoire_of_service.enabled|recharge_time<cooldown.service_pet.remains)&(!talent.soul_harvest.enabled|recharge_time<cooldown.soul_harvest.remains)&(!talent.grimoire_of_supremacy.enabled|recharge_time<cooldown.summon_doomguard.remains))" );
   action_list_str += "/life_tap,if=talent.empowered_life_tap.enabled&buff.empowered_life_tap.remains<duration*0.3";
   action_list_str += "/cataclysm";
   add_action( "Chaos Bolt" );
@@ -7461,7 +7480,6 @@ struct wakeners_loyalty_t : public scoped_actor_callback_t<warlock_t>
         double tmp2 = (double)tmp->effectN(1).base_value();
         p->legendary.wakeners_loyalty_percent = tmp2 / 100.0;   //fixing this later?
     }
-
 };
 
 struct hood_of_eternal_disdain_t : public scoped_action_callback_t<agony_t>
@@ -7529,6 +7547,20 @@ struct sindorei_spite_t : public class_buff_cb_t<warlock_t>
   }
 };
 
+struct lessons_of_spacetime_t : public scoped_actor_callback_t<warlock_t>
+{
+  lessons_of_spacetime_t() : super( WARLOCK ){}
+
+  void manipulate( warlock_t* p, const special_effect_t& e ) override
+  {
+    const spell_data_t * tmp = p -> find_spell( 236176 );
+    p -> legendary.lessons_of_spacetime = true;
+    p -> legendary.lessons_of_spacetime1 = timespan_t::from_seconds( 5 );
+    p -> legendary.lessons_of_spacetime2 = timespan_t::from_seconds( 9 );
+    p -> legendary.lessons_of_spacetime3 = timespan_t::from_seconds( 16 );
+  }
+};
+
 struct odr_shawl_of_the_ymirjar_t : public scoped_actor_callback_t<warlock_t>
 {
   odr_shawl_of_the_ymirjar_t() : super( WARLOCK_DESTRUCTION )
@@ -7592,6 +7624,7 @@ struct warlock_module_t: public module_t
     register_special_effect( 205753, power_cord_of_lethtendris_t() );
     register_special_effect( 236114, reap_and_sow_t() );
     register_special_effect( 236199, wakeners_loyalty_t() );
+    register_special_effect( 236174, lessons_of_spacetime_t() );
   }
 
   virtual void register_hotfixes() const override
