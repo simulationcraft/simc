@@ -1916,6 +1916,9 @@ void item::draught_of_souls( special_effect_t& effect )
       }
     }
 
+    double composite_haste() const override
+    { return 1.0; } // Not hasted.
+
     void execute() override
     {
       proc_spell_t::execute();
