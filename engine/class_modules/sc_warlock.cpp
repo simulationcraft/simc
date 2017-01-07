@@ -6281,7 +6281,7 @@ void warlock_t::init_rng()
   demonic_power_rppm = get_rppm( "demonic_power", find_spell( 196099 ) );
   grimoire_of_synergy = get_rppm( "grimoire_of_synergy", talents.grimoire_of_synergy );
   grimoire_of_synergy_pet = get_rppm( "grimoire_of_synergy_pet", talents.grimoire_of_synergy );
-  tormented_souls_rppm = get_rppm( "tormented_souls", 4.5 );
+  tormented_souls_rppm = get_rppm( "tormented_souls", 5.0 ); // The only official post claimed 4.5 rppm but hours of logs suggest it's actually 5 rppm.
 }
 
 void warlock_t::init_gains()
