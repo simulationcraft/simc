@@ -72,18 +72,18 @@ legs=leggings_of_azjaqir,id=138317,bonus_id=3516
 feet=perpetually_muddy_sandals,id=140854,bonus_id=3444
 finger1=ring_of_the_scoured_clan,id=140897,bonus_id=3517,enchant_id=5428
 finger2=ring_of_braided_stems,id=140896,bonus_id=3516,enchant_id=5428
-trinket1=erratic_metronome,id=140792,bonus_id=3444
+trinket1=brinewater_slime_in_a_bottle,id=142507,bonus_id=604/3469/1512
 trinket2=whispers_in_the_dark,id=140809,bonus_id=3517
 main_hand=spine_of_thalkiel,id=137246
 off_hand=skull_of_the_manari,id=128943,gem_id=140826/140837/140822,relic_id=3517/3516/3516
 
 # Gear Summary
-# gear_ilvl=892.63
+# gear_ilvl=893.25
 # gear_stamina=29642
-# gear_intellect=20387
+# gear_intellect=20561
 # gear_spell_power=14427
 # gear_crit_rating=2942
-# gear_haste_rating=10667
+# gear_haste_rating=11825
 # gear_mastery_rating=5437
 # gear_versatility_rating=2660
 # gear_armor=1868
