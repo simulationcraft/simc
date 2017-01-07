@@ -6780,7 +6780,7 @@ void shaman_t::init_action_list_elemental()
   def -> add_talent( this, "Elemental Mastery" );
   def -> add_action( "blood_fury,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50" );
   def -> add_action( "berserking,if=!talent.ascendance.enabled|buff.ascendance.up" );
-  def -> add_action( "run_action_list,name=aoe,if=active_enemies>3&(spell_targets.chain_lightning>3|spell_targets.lava_beam>3)" );
+  def -> add_action( "run_action_list,name=aoe,if=active_enemies>2&(spell_targets.chain_lightning>2|spell_targets.lava_beam>2)" );
   def -> add_action( "run_action_list,name=single_asc,if=talent.ascendance.enabled" );
   def -> add_action( "run_action_list,name=single_if,if=talent.icefury.enabled" );
   def -> add_action( "run_action_list,name=single_lr,if=talent.lightning_rod.enabled" );
@@ -6789,10 +6789,10 @@ void shaman_t::init_action_list_elemental()
   aoe -> add_action( this, "Stormkeeper" );
   aoe -> add_talent( this, "Ascendance" );
   aoe -> add_talent( this, "Liquid Magma Totem" );
-  aoe -> add_action( this, "Flame Shock", "if=spell_targets.chain_lightning=4&maelstrom>=20,target_if=refreshable" );
+  aoe -> add_action( this, "Flame Shock", "if=spell_targets.chain_lightning<4&maelstrom>=20&!talent.lightning_rod.enabled,target_if=refreshable" );
   aoe -> add_action( this, "Earthquake" );
-  aoe -> add_action( this, "Lava Burst", "if=buff.lava_surge.up&spell_targets.chain_lightning=4" );
-  aoe -> add_talent( this, "Elemental Blast", "if=!talent.lightning_rod.enabled&spell_targets.chain_lightning=4" );
+  aoe -> add_action( this, "Lava Burst", "if=dot.flame_shock.remains>cast_time&buff.lava_surge.up&!talent.lightning_rod.enabled&spell_targets.chain_lightning<4" );
+  aoe -> add_talent( this, "Elemental Blast", "if=!talent.lightning_rod.enabled&spell_targets.chain_lightning<5" );
   aoe -> add_action( this, "Lava Beam" );
   aoe -> add_action( this, "Chain Lightning", "target_if=debuff.lightning_rod.down" );
   aoe -> add_action( this, "Chain Lightning" );
@@ -6800,11 +6800,10 @@ void shaman_t::init_action_list_elemental()
   aoe -> add_action( this, "Flame Shock", "moving=1,target_if=refreshable" );
 
   // Single target - Lightning Rod
-
   single_lr -> add_action( this, "Flame Shock", "if=!ticking" );
   single_lr -> add_action( this, "Earthquake", "if=buff.echoes_of_the_great_sundering.up&maelstrom>=86" );
   single_lr -> add_action( this, "Earth Shock", "if=maelstrom>=92" );
-  single_lr -> add_action( this, "Stormkeeper" );
+  single_lr -> add_action( this, "Stormkeeper", "if=raid_event.adds.count<3|raid_event.adds.in>50", "Keep SK for large or soon add waves." );
   single_lr -> add_talent( this, "Elemental Blast" );
   single_lr -> add_talent( this, "Liquid Magma Totem", "if=raid_event.adds.count<3|raid_event.adds.in>50" );
   single_lr -> add_action( this, "Lava Burst", "if=dot.flame_shock.remains>cast_time&cooldown_react" );
@@ -6823,17 +6822,16 @@ void shaman_t::init_action_list_elemental()
   single_lr -> add_action( this, "Flame Shock", "moving=1,if=movement.distance>6" );
 
   // Single target - Ice Fury
-
   single_if -> add_action( this, "Flame Shock", "if=!ticking" );
   single_if -> add_action( this, "Earthquake", "if=buff.echoes_of_the_great_sundering.up&maelstrom>=86" );
   single_if -> add_action( this, "Earth Shock", "if=maelstrom>=92" );
-  single_if -> add_action( this, "Stormkeeper" );
+  single_if -> add_action( this, "Stormkeeper", "if=raid_event.adds.count<3|raid_event.adds.in>50", "Keep SK for large or soon spawning add waves." );
   single_if -> add_talent( this, "Elemental Blast" );
   single_if -> add_talent( this, "Icefury", "if=raid_event.movement.in<5|maelstrom<=76" );
   single_if -> add_talent( this, "Liquid Magma Totem", "if=raid_event.adds.count<3|raid_event.adds.in>50" );
   single_if -> add_action( this, "Lightning Bolt", "if=buff.power_of_the_maelstrom.up&buff.stormkeeper.up&spell_targets.chain_lightning<3" );
   single_if -> add_action( this, "Lava Burst", "if=dot.flame_shock.remains>cast_time&cooldown_react" );
-  single_if -> add_action( this, "Frost Shock", "if=buff.icefury.up&((maelstrom>=20&raid_event.movement.in>buff.icefury.remains)|buff.icefury.remains<(1.5*spell_haste*buff.icefury.stack))" );
+  single_if -> add_action( this, "Frost Shock", "if=buff.icefury.up&((maelstrom>=20&raid_event.movement.in>buff.icefury.remains)|buff.icefury.remains<(1.5*spell_haste*buff.icefury.stack+1))" );
   single_if -> add_action( this, "Flame Shock","if=maelstrom>=20&buff.elemental_focus.up,target_if=refreshable" );
   single_if -> add_action( this, "Frost Shock", "moving=1,if=buff.icefury.up" );
   single_if -> add_action( this, "Earth Shock", "if=maelstrom>=86" );
@@ -6847,13 +6845,12 @@ void shaman_t::init_action_list_elemental()
   single_if -> add_action( this, "Flame Shock", "moving=1,if=movement.distance>6" );
 
   // Single target - Ascendance
-
   single_asc -> add_talent( this, "Ascendance", "if=dot.flame_shock.remains>buff.ascendance.duration&(time>=60|buff.bloodlust.up)&cooldown.lava_burst.remains>0&!buff.stormkeeper.up" );
   single_asc -> add_action( this, "Flame Shock", "if=!ticking" );
   single_asc -> add_action( this, "Flame Shock", "if=maelstrom>=20&remains<=buff.ascendance.duration&cooldown.ascendance.remains+buff.ascendance.duration<=duration" );
   single_asc -> add_action( this, "Earthquake", "if=buff.echoes_of_the_great_sundering.up&!buff.ascendance.up&maelstrom>=86" );
   single_asc -> add_action( this, "Earth Shock", "if=maelstrom>=92&!buff.ascendance.up" );
-  single_asc -> add_action( this, "Stormkeeper" );
+  single_asc -> add_action( this, "Stormkeeper", "if=raid_event.adds.count<3|raid_event.adds.in>50", "Keep SK for large or soon add waves." );
   single_asc -> add_talent( this, "Elemental Blast" );
   single_asc -> add_talent( this, "Liquid Magma Totem", "if=raid_event.adds.count<3|raid_event.adds.in>50" );
   single_asc -> add_action( this, "Lightning Bolt", "if=buff.power_of_the_maelstrom.up&buff.stormkeeper.up&spell_targets.chain_lightning<3" );
