@@ -8073,6 +8073,11 @@ void monk_t::retarget_storm_earth_and_fire( pet_t* pet, std::vector<player_t*>& 
 {
   player_t* original_target = pet -> target;
 
+  // Clones will now only re-target when you use an ability that applies Mark of the Crane, and their current target already has Mark of the Crane.
+  // https://us.battle.net/forums/en/wow/topic/20752377961?page=29#post-573
+  if ( ! get_target_data( original_target ) -> debuff.mark_of_the_crane -> up() )
+    return;
+
   // Everyone attacks the same (single) target
   if ( n_targets == 1 )
   {
@@ -8118,6 +8123,15 @@ void monk_t::retarget_storm_earth_and_fire( pet_t* pet, std::vector<player_t*>& 
 
       // Don't attack my own target
       if ( *it == pet -> target )
+      {
+        it++;
+        continue;
+      }
+
+      // Clones will no longer target Immune enemies, or crowd-controlled enemies, or enemies you aren’t in combat with.
+      // https://us.battle.net/forums/en/wow/topic/20752377961?page=29#post-573
+      player_t* player = *it;
+      if ( player -> debuffs.invulnerable || player -> debuffs.dazed )
       {
         it++;
         continue;
