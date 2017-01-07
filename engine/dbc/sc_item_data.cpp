@@ -815,22 +815,44 @@ stat_pair_t item_database::item_enchantment_effect_stats( player_t* player,
     stat = util::translate_item_mod( enchantment.ench_prop[ index ] );
 
   double value = 0;
-
-  if ( enchantment.id_scaling == 0 )
-    value = enchantment.ench_amount[ index ];
-  else
+  // First try to figure out the stat enchant through the spell that is associated with it (e.g.,
+  // the enchant spell)
+  if ( enchantment.id_spell > 0 )
   {
-    unsigned level = player -> level();
+    auto spell = player -> find_spell( enchantment.id_spell );
+    for ( size_t effect_idx = 1, end = spell -> effect_count(); effect_idx <= end; ++effect_idx )
+    {
+      const auto& effect = spell -> effectN( effect_idx );
+      // Use the first Enchant Item effect found in the spell
+      if ( effect.type() == E_ENCHANT_ITEM )
+      {
+        value = util::round( effect.average( player ) );
+        break;
+      }
+    }
+  }
 
-    if ( static_cast< unsigned >( level ) > enchantment.max_scaling_level )
-      level = enchantment.max_scaling_level;
+  // If we cannot find any value through spell data, revert back to using item enchantment data
+  if ( value == 0 )
+  {
+    if ( enchantment.id_scaling == 0 )
+      value = enchantment.ench_amount[ index ];
+    else
+    {
+      unsigned level = player -> level();
 
-    double budget = player -> dbc.spell_scaling( static_cast< player_e >( enchantment.id_scaling ), level );
-    value = util::round( budget * enchantment.ench_coeff[ index ] );
+      if ( static_cast< unsigned >( level ) > enchantment.max_scaling_level )
+        level = enchantment.max_scaling_level;
+
+      double budget = player -> dbc.spell_scaling( static_cast< player_e >( enchantment.id_scaling ), level );
+      value = util::round( budget * enchantment.ench_coeff[ index ] );
+    }
   }
 
   if ( stat != STAT_NONE && value != 0 )
+  {
     return stat_pair_t( stat, (int)value );
+  }
 
   return stat_pair_t();
 }

@@ -392,7 +392,7 @@ const char * _effect_type_strings[] =
   "Apply Party Aura",   "Learn Spell",              "Spell Defense",        "Dispel",                   "Language",              // 35
   "Dual Wield",         nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 40
   nullptr,                    nullptr,                          nullptr,                      "Stealth",                  "Detect",                // 45
-  nullptr,                    nullptr,                          "Guaranteed Hit",       nullptr,                          nullptr,                       // 50
+  nullptr,                    nullptr,                          "Guaranteed Hit",       "Enchant Item",                          nullptr,                       // 50
   nullptr,                    "Summon Pet",               nullptr,                      "Weapon Damage",            nullptr,                       // 55
   nullptr,                    nullptr,                          "Power Burn",           "Threat",                   "Trigger Spell",         // 60
   "Apply Raid Aura",    nullptr,                          nullptr,                      "Interrupt Cast",           "Distract",              // 65
