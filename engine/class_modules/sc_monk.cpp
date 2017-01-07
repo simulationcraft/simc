@@ -1220,6 +1220,9 @@ struct storm_earth_and_fire_pet_t : public pet_t
       if ( result_is_hit( state -> result ) )
       {
         o() -> trigger_mark_of_the_crane( state );
+
+        if ( o() -> artifact.transfer_the_power.rank() )
+          p() -> sef_transfer_the_power -> trigger();
       }
     }
    };
@@ -1307,6 +1310,9 @@ struct storm_earth_and_fire_pet_t : public pet_t
           rsk_tornado_kick -> base_dd_min = raw;
           rsk_tornado_kick -> execute();
         }
+
+        if ( o() -> artifact.transfer_the_power.rank() )
+          p() -> sef_transfer_the_power -> trigger();
       }
     }
   };
@@ -1356,28 +1362,46 @@ struct storm_earth_and_fire_pet_t : public pet_t
     {
       channeled = tick_zero = interrupt_auto_attack = true;
       may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
+      // Hard code a 25% reduced cast time to not cause any clipping issues
+      // https://us.battle.net/forums/en/wow/topic/20752377961?page=29#post-573
+      dot_duration = data().duration() / 1.25;
+      // Effect 1 shows a period of 166 milliseconds which appears to refer to the visual and not the tick period
+      base_tick_time = ( dot_duration / 4 );
 
       weapon_power_mod = 0;
 
       tick_action = new sef_fists_of_fury_tick_t( player );
     }
 
-  double composite_persistent_multiplier( const action_state_t* action_state ) const override
-  {
-    double pm = sef_melee_attack_t::composite_persistent_multiplier( action_state );
-
-    // Current bug where Transfer the Power is not being applied to SEF's Fists of Fury
-    if ( o() -> buff.transfer_the_power -> up() )
+    double composite_persistent_multiplier( const action_state_t* action_state ) const override
     {
-      pm /= 1 + o() -> buff.transfer_the_power -> stack_value();
+      double pm = sef_melee_attack_t::composite_persistent_multiplier( action_state );
+
+      if ( o() -> buff.transfer_the_power -> up() )
+      {
+        // Not count the owner's transfer the power
+        pm /= 1 + o() -> buff.transfer_the_power -> stack_value();
+
+        // Count the pet's transfer the power
+        if ( p() -> sef_transfer_the_power -> up() )
+          pm *= 1 + p() -> sef_transfer_the_power -> stack_value();
+      }
+
+      return pm;
     }
 
-    return pm;
-  }
+    timespan_t composite_dot_duration( const action_state_t* s ) const override
+    {
+      return ( dot_duration * ( tick_time( s ) / base_tick_time ) );
+    }
 
-//    timespan_t composite_dot_duration( const action_state_t* s ) const override { return timespan_t::from_millis( 4000 ); }
+    virtual void last_tick( dot_t* dot ) override
+    {
+      sef_melee_attack_t::last_tick( dot );
 
-//    timespan_t tick_time( const action_state_t* ) const override { return timespan_t::from_millis( 1000 ); }
+      if ( p() -> sef_transfer_the_power -> up() )
+        p() -> sef_transfer_the_power -> expire();
+    }
   };
 
   struct sef_spinning_crane_kick_t : public sef_melee_attack_t
@@ -1413,6 +1437,9 @@ struct storm_earth_and_fire_pet_t : public pet_t
     virtual void execute() override
     {
       sef_melee_attack_t::execute();
+
+      if ( o() -> artifact.transfer_the_power.rank() )
+        p() -> sef_transfer_the_power -> trigger();
       
       o() -> rjw_trigger_mark_of_the_crane();
     }
@@ -1577,6 +1604,7 @@ public:
 
   bool sticky_target; // When enabled, SEF pets will stick to the target they have
   buff_t* sef_hit_combo;
+  buff_t* sef_transfer_the_power;
 
   storm_earth_and_fire_pet_t( const std::string& name, sim_t* sim, monk_t* owner, bool dual_wield ):
     pet_t( sim, owner, name, true ),
@@ -1678,6 +1706,12 @@ public:
     pet_t::summon( duration );
 
     o() -> buff.storm_earth_and_fire -> trigger();
+
+    if ( o() -> buff.hit_combo -> up() )
+      sef_hit_combo -> trigger( o() -> buff.hit_combo -> stack() );
+
+    if ( o() -> buff.transfer_the_power -> up() )
+      sef_transfer_the_power -> trigger( o() -> buff.transfer_the_power -> stack() );
   }
 
   void dismiss( bool expired = false ) override
@@ -1694,6 +1728,9 @@ public:
     sef_hit_combo = buff_creator_t( this, "sef_hit_combo", o() -> passives.hit_combo )
                     .default_value( o() -> passives.hit_combo -> effectN( 1 ).percent() )
                     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
+    sef_transfer_the_power = buff_creator_t( this, "sef_transfer_the_power", o() -> artifact.transfer_the_power.data().effectN( 1 ).trigger() )
+                            .default_value( o() -> artifact.transfer_the_power.rank() ? o() -> artifact.transfer_the_power.percent() : 0 ); 
   }
 
   void trigger_attack( sef_ability_e ability, const action_t* source_action )
