@@ -1001,13 +1001,13 @@ struct storm_earth_and_fire_pet_t : public pet_t
           // Remove owner's Hit Combo
           state -> da_multiplier /= ( 1 + o() -> buff.hit_combo -> stack_value() );
           // .. aand add Pet's Hit Combo
-          state -> da_multiplier *= 1 + p() -> sef_hit_combo -> stack_value();
+          state -> da_multiplier *= 1 + p() -> buff.hit_combo_sef -> stack_value();
         }
 
         if ( rt == DMG_OVER_TIME && ( flags & STATE_MUL_TA ) )
         {
           state -> ta_multiplier /= ( 1 + o() -> buff.hit_combo -> stack_value() );
-          state -> ta_multiplier *= 1 + p() -> sef_hit_combo -> stack_value();
+          state -> ta_multiplier *= 1 + p() -> buff.hit_combo_sef -> stack_value();
         }
       }
     }
@@ -1221,8 +1221,8 @@ struct storm_earth_and_fire_pet_t : public pet_t
       {
         o() -> trigger_mark_of_the_crane( state );
 
-        if ( o() -> artifact.transfer_the_power.rank() )
-          p() -> sef_transfer_the_power -> trigger();
+        if ( o() -> artifact.transfer_the_power.rank() && o() -> buff.transfer_the_power -> up() )
+          p() -> buff.transfer_the_power_sef -> trigger();
       }
     }
    };
@@ -1311,8 +1311,8 @@ struct storm_earth_and_fire_pet_t : public pet_t
           rsk_tornado_kick -> execute();
         }
 
-        if ( o() -> artifact.transfer_the_power.rank() )
-          p() -> sef_transfer_the_power -> trigger();
+        if ( o() -> artifact.transfer_the_power.rank() && o() -> buff.transfer_the_power -> up() )
+          p() -> buff.transfer_the_power_sef -> trigger();
       }
     }
   };
@@ -1383,8 +1383,8 @@ struct storm_earth_and_fire_pet_t : public pet_t
         pm /= 1 + o() -> buff.transfer_the_power -> stack_value();
 
         // Count the pet's transfer the power
-        if ( p() -> sef_transfer_the_power -> up() )
-          pm *= 1 + p() -> sef_transfer_the_power -> stack_value();
+        if ( p() -> buff.transfer_the_power_sef -> up() )
+          pm *= 1 + p() -> buff.transfer_the_power_sef -> stack_value();
       }
 
       return pm;
@@ -1399,8 +1399,8 @@ struct storm_earth_and_fire_pet_t : public pet_t
     {
       sef_melee_attack_t::last_tick( dot );
 
-      if ( p() -> sef_transfer_the_power -> up() )
-        p() -> sef_transfer_the_power -> expire();
+      if ( p() -> buff.transfer_the_power_sef -> up() )
+        p() -> buff.transfer_the_power_sef -> expire();
     }
   };
 
@@ -1438,8 +1438,8 @@ struct storm_earth_and_fire_pet_t : public pet_t
     {
       sef_melee_attack_t::execute();
 
-      if ( o() -> artifact.transfer_the_power.rank() )
-        p() -> sef_transfer_the_power -> trigger();
+      if ( o() -> artifact.transfer_the_power.rank() && o() -> buff.transfer_the_power -> up() )
+        p() -> buff.transfer_the_power_sef -> trigger();
       
       o() -> rjw_trigger_mark_of_the_crane();
     }
@@ -1603,13 +1603,16 @@ public:
   // SEF applies the Cyclone Strike debuff as well
 
   bool sticky_target; // When enabled, SEF pets will stick to the target they have
-  buff_t* sef_hit_combo;
-  buff_t* sef_transfer_the_power;
+  struct buffs_t
+  {
+    buff_t* hit_combo_sef;
+    buff_t* transfer_the_power_sef;
+  } buff;
 
   storm_earth_and_fire_pet_t( const std::string& name, sim_t* sim, monk_t* owner, bool dual_wield ):
     pet_t( sim, owner, name, true ),
     attacks( SEF_ATTACK_MAX ), spells( SEF_SPELL_MAX - SEF_SPELL_MIN ),
-    sticky_target( false ), sef_hit_combo(nullptr)
+    sticky_target( false ), buff( buffs_t() )
   {
     // Storm, Earth, and Fire pets have to become "Windwalkers", so we can get
     // around some sanity checks in the action execution code, that prevents
@@ -1708,10 +1711,10 @@ public:
     o() -> buff.storm_earth_and_fire -> trigger();
 
     if ( o() -> buff.hit_combo -> up() )
-      sef_hit_combo -> trigger( o() -> buff.hit_combo -> stack() );
+      buff.hit_combo_sef -> trigger( o() -> buff.hit_combo -> stack() );
 
     if ( o() -> buff.transfer_the_power -> up() )
-      sef_transfer_the_power -> trigger( o() -> buff.transfer_the_power -> stack() );
+      buff.transfer_the_power_sef -> trigger( o() -> buff.transfer_the_power -> stack() );
   }
 
   void dismiss( bool expired = false ) override
@@ -1725,11 +1728,11 @@ public:
   {
     pet_t::create_buffs();
 
-    sef_hit_combo = buff_creator_t( this, "sef_hit_combo", o() -> passives.hit_combo )
+    buff.hit_combo_sef = buff_creator_t( this, "hit_combo_sef", o() -> passives.hit_combo )
                     .default_value( o() -> passives.hit_combo -> effectN( 1 ).percent() )
                     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
-    sef_transfer_the_power = buff_creator_t( this, "sef_transfer_the_power", o() -> artifact.transfer_the_power.data().effectN( 1 ).trigger() )
+    buff.transfer_the_power_sef = buff_creator_t( this, "transfer_the_power_sef", o() -> artifact.transfer_the_power.data().effectN( 1 ).trigger() )
                             .default_value( o() -> artifact.transfer_the_power.rank() ? o() -> artifact.transfer_the_power.percent() : 0 ); 
   }
 
@@ -1741,7 +1744,7 @@ public:
       assert( spells[ spell ] );
 
       if ( o() -> buff.combo_strikes -> up() && o() -> talent.hit_combo -> ok() )
-        sef_hit_combo -> trigger();
+        buff.hit_combo_sef -> trigger();
 
       spells[ spell ] -> source_action = source_action;
       spells[ spell ] -> execute();
@@ -1751,7 +1754,7 @@ public:
       assert( attacks[ ability ] );
 
       if ( o() -> buff.combo_strikes -> up() && o() -> talent.hit_combo -> ok() )
-        sef_hit_combo -> trigger();
+        buff.hit_combo_sef -> trigger();
 
       attacks[ ability ] -> source_action = source_action;
       attacks[ ability ] -> execute();
@@ -9160,10 +9163,10 @@ void monk_t::apl_combat_windwalker()
     if ( racial_actions[i] != "arcane_torrent" )
       cd -> add_action( racial_actions[i]  );
   }
-  cd -> add_action( this, "Touch of Death", "cycle_targets=1,max_cycle_targets=2,if=!artifact.gale_burst.enabled&equipped.137057&(prev_gcd.2.touch_of_death|prev_gcd.3.touch_of_death|prev_gcd.4.touch_of_death)" );
-  cd -> add_action( this, "Touch of Death", "if=!artifact.gale_burst.enabled&!equipped.137057" );
-  cd -> add_action( this, "Touch of Death", "cycle_targets=1,max_cycle_targets=2,if=artifact.gale_burst.enabled&equipped.137057&cooldown.strike_of_the_windlord.remains<8&cooldown.fists_of_fury.remains<=4&cooldown.rising_sun_kick.remains<7&(prev_gcd.2.touch_of_death|prev_gcd.3.touch_of_death|prev_gcd.4.touch_of_death)" );
-  cd -> add_action( this, "Touch of Death", "if=artifact.gale_burst.enabled&!equipped.137057&cooldown.strike_of_the_windlord.remains<8&cooldown.fists_of_fury.remains<=4&cooldown.rising_sun_kick.remains<7" );
+  cd -> add_action( this, "Touch of Death", "cycle_targets=1,max_cycle_targets=2,if=!artifact.gale_burst.enabled&equipped.hidden_masters_forbidden_touch&(prev_gcd.2.touch_of_death|prev_gcd.3.touch_of_death|prev_gcd.4.touch_of_death)" );
+  cd -> add_action( this, "Touch of Death", "if=!artifact.gale_burst.enabled&!equipped.hidden_masters_forbidden_touch" );
+  cd -> add_action( this, "Touch of Death", "cycle_targets=1,max_cycle_targets=2,if=artifact.gale_burst.enabled&equipped.hidden_masters_forbidden_touch&cooldown.strike_of_the_windlord.remains<8&cooldown.fists_of_fury.remains<=4&cooldown.rising_sun_kick.remains<7&(prev_gcd.2.touch_of_death|prev_gcd.3.touch_of_death|prev_gcd.4.touch_of_death)" );
+  cd -> add_action( this, "Touch of Death", "if=artifact.gale_burst.enabled&!equipped.hidden_masters_forbidden_touch&cooldown.strike_of_the_windlord.remains<8&cooldown.fists_of_fury.remains<=4&cooldown.rising_sun_kick.remains<7" );
   // Trinket usage for procs to add toward Touch of Death Gale Burst Artifact Trait
   for ( int i = 0; i < num_items; i++ )
   {
@@ -9220,17 +9223,17 @@ void monk_t::apl_combat_windwalker()
       st -> add_action( racial_actions[i] + ",if=chi.max-chi>=1&energy.time_to_max>=0.5" );
   }
   st -> add_talent( this, "Energizing Elixir", "if=energy<energy.max&chi<=1" );
-  st -> add_action( this, "Strike of the Windlord", "if=equipped.140806&talent.serenity.enabled&cooldown.serenity.remains>=10" );
-  st -> add_action( this, "Strike of the Windlord", "if=equipped.140806&!talent.serenity.enabled" );
-  st -> add_action( this, "Strike of the Windlord", "if=!equipped.140806" );
-  st -> add_action( this, "Fists of Fury", "if=equipped.140806&talent.serenity.enabled&cooldown.serenity.remains>=5" );
-  st -> add_action( this, "Fists of Fury", "if=equipped.140806&!talent.serenity.enabled" );
-  st -> add_action( this, "Fists of Fury", "if=!equipped.140806" );
-  st -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=equipped.140806&talent.serenity.enabled&cooldown.serenity.remains>=2" );
-  st -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=equipped.140806&!talent.serenity.enabled" );
-  st -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=!equipped.140806" );
+  st -> add_action( this, "Strike of the Windlord", "if=equipped.convergence_of_fates&talent.serenity.enabled&cooldown.serenity.remains>=10" );
+  st -> add_action( this, "Strike of the Windlord", "if=equipped.convergence_of_fates&!talent.serenity.enabled" );
+  st -> add_action( this, "Strike of the Windlord", "if=!equipped.convergence_of_fates" );
+  st -> add_action( this, "Fists of Fury", "if=equipped.convergence_of_fates&talent.serenity.enabled&cooldown.serenity.remains>=5" );
+  st -> add_action( this, "Fists of Fury", "if=equipped.convergence_of_fates&!talent.serenity.enabled" );
+  st -> add_action( this, "Fists of Fury", "if=!equipped.convergence_of_fates" );
+  st -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=equipped.convergence_of_fates&talent.serenity.enabled&cooldown.serenity.remains>=2" );
+  st -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=equipped.convergence_of_fates&!talent.serenity.enabled" );
+  st -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=!equipped.convergence_of_fates" );
   st -> add_talent( this, "Whirling Dragon Punch" );
-  st -> add_action( this, "Crackling Jade Lightning", "if=equipped.144239&buff.the_emperors_capacitor.stack>=19" );
+  st -> add_action( this, "Crackling Jade Lightning", "if=equipped.the_emperors_capacitor&buff.the_emperors_capacitor.stack>=19" );
   st -> add_action( this, "Spinning Crane Kick", "if=active_enemies>=3&!prev_gcd.1.spinning_crane_kick" );
   st -> add_talent( this, "Rushing Jade Wind", "if=chi.max-chi>1&!prev_gcd.1.rushing_jade_wind" );
   st -> add_action( this, "Blackout Kick", "cycle_targets=1,if=(chi>1|buff.bok_proc.up)&!prev_gcd.1.blackout_kick" );
