@@ -93,6 +93,8 @@ namespace item
   void erratic_metronome( special_effect_t&       );
   void whispers_in_the_dark( special_effect_t&    );
   void nightblooming_frond( special_effect_t&     );
+  void might_of_krosus( special_effect_t&         );
+
   // Adding this here to check it off the list.
   // The sim builds it automatically.
   //void pharameres_forbidden_grimoire( special_effect_t& );
@@ -1454,6 +1456,48 @@ void item::nightblooming_frond( special_effect_t& effect )
   // Base Driver, responsible for triggering the Recursive Strikes buff. Recursive Strikes buff in
   // turn will activate the secondary proc callback that generates stacks and triggers damage.
   new recursive_strikes_driver_t( effect );
+}
+
+// Might of Krosus ==========================================================
+
+void item::might_of_krosus( special_effect_t& effect )
+{
+  struct colossal_slam_t : public proc_attack_t
+  {
+    const special_effect_t& effect;
+    cooldown_t* use_cooldown;
+
+    colossal_slam_t( const special_effect_t& effect_ ) :
+      proc_attack_t( "colossal_slam", effect_.player, effect_.trigger(), effect_.item ),
+      effect( effect_ ),
+      use_cooldown( effect_.player -> get_cooldown( effect_.cooldown_name() ) )
+    {
+      split_aoe_damage = true;
+    }
+
+    void execute() override
+    {
+      proc_attack_t::execute();
+
+      if ( as<int>( execute_state -> n_targets ) < effect.driver() -> effectN( 2 ).base_value() )
+      {
+        use_cooldown -> adjust( -timespan_t::from_seconds( effect.driver() -> effectN( 3 ).base_value() ) );
+      }
+    }
+  };
+
+  action_t* a = effect.player -> find_action( "colossal_slam" );
+  if ( a == nullptr )
+  {
+    a = effect.player -> create_proc_action( "colossal_slam", effect );
+  }
+
+  if ( a == nullptr )
+  {
+    a = new colossal_slam_t( effect );
+  }
+
+  effect.execute_action = a;
 }
 
 // Tirathon's Betrayal ======================================================
@@ -4065,6 +4109,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 225125, item::erratic_metronome       );
   register_special_effect( 225142, item::whispers_in_the_dark    );
   register_special_effect( 225135, item::nightblooming_frond     );
+  register_special_effect( 225132, item::might_of_krosus         );
 
   /* Legion 7.0 Misc */
   register_special_effect( 188026, item::infernal_alchemist_stone       );
