@@ -7044,6 +7044,10 @@ void druid_t::apl_guardian()
 void druid_t::apl_restoration()
 {
   action_priority_list_t* default_list    = get_action_priority_list( "default" );
+  action_priority_list_t* HEAL = get_action_priority_list("heal");
+  action_priority_list_t* DPS = get_action_priority_list("dps");
+  action_priority_list_t* BAFF = get_action_priority_list("baff"); //Balance affinity
+  action_priority_list_t* FAFF = get_action_priority_list("faff"); //Feral affinity
 
   std::vector<std::string> item_actions       = get_item_actions();
   std::vector<std::string> racial_actions     = get_racial_actions();
@@ -7052,14 +7056,18 @@ void druid_t::apl_restoration()
     default_list -> add_action( racial_actions[i] );
   for ( size_t i = 0; i < item_actions.size(); i++ )
     default_list -> add_action( item_actions[i] );
+  
+  default_list -> add_action("call_action_list,name=dps,if=role.spell");
+  default_list -> add_action("call_action_list,name=dps,if=role.attack");
+  default_list -> add_action("call_action_list,name=heal,if=role.heal");
+  
+  HEAL -> add_action( this, "Healing Touch", "if=buff.clearcasting.up" );
+  HEAL -> add_action( this, "Rejuvenation", "if=remains<=duration*0.3" );
+  HEAL -> add_action( this, "Lifebloom", "if=debuff.lifebloom.down" );
+  HEAL -> add_action( this, "Swiftmend" );
+  HEAL -> add_action( this, "Healing Touch" );
 
-  default_list -> add_action( this, "Natures Swiftness" );
-  default_list -> add_talent( this, "Incarnation" );
-  default_list -> add_action( this, "Healing Touch", "if=buff.clearcasting.up" );
-  default_list -> add_action( this, "Rejuvenation", "if=remains<=duration*0.3" );
-  default_list -> add_action( this, "Lifebloom", "if=debuff.lifebloom.down" );
-  default_list -> add_action( this, "Swiftmend" );
-  default_list -> add_action( this, "Healing Touch" );
+  DPS -> add_action(this, "Moonfire", "if=remains<6.6");
 }
 
 // druid_t::init_scaling ====================================================
@@ -7104,8 +7112,8 @@ void druid_t::init()
 {
   player_t::init();
 
-  if ( specialization() == DRUID_RESTORATION )
-    sim -> errorf( "%s is using an unsupported spec.", name() );
+ // if ( specialization() == DRUID_RESTORATION )
+  // sim -> errorf( "%s is using an unsupported spec.", name() );
 }
 
 // druid_t::init_gains ======================================================
@@ -7208,10 +7216,10 @@ void druid_t::init_action_list()
   // Restoration isn't fully supported atm
   if ( specialization() == DRUID_RESTORATION )
   {
-    if ( ! quiet )
-      sim -> errorf( "Druid restoration healing for player %s is not currently supported.", name() );
+    //if ( ! quiet )
+    //  sim -> errorf( "Druid restoration healing for player %s is not currently supported.", name() );
 
-    quiet = true;
+   // quiet = true;
     return;
   }
 #endif
