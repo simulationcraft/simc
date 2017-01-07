@@ -2322,7 +2322,7 @@ struct fire_elemental_t : public primal_elemental_t
     }
     else
     {
-      def -> add_action( "fire_nova" );
+      // basic fire elemental doesn't have a second attack. Only fire_blast
     }
     def -> add_action( "fire_blast" );
   }
