@@ -1390,9 +1390,24 @@ struct storm_earth_and_fire_pet_t : public pet_t
       return pm;
     }
 
+    // Base tick_time(action_t) is somehow pulling the Owner's base_tick_time instead of the pet's
+    // Forcing SEF to use it's own base_tick_time for tick_time.
+    timespan_t tick_time( const action_state_t* state ) const override
+    {
+      timespan_t t = base_tick_time;
+      if ( channeled || hasted_ticks )
+      {
+        t *= state -> haste;
+      }
+      return t;
+    }
+
     timespan_t composite_dot_duration( const action_state_t* s ) const override
     {
-      return ( dot_duration * ( tick_time( s ) / base_tick_time ) );
+      if ( channeled )
+        return dot_duration * ( tick_time( s ) / base_tick_time );
+
+      return dot_duration;
     }
 
     virtual void last_tick( dot_t* dot ) override
