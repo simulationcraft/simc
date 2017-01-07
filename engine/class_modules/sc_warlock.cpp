@@ -1168,7 +1168,8 @@ struct doom_bolt_t: public warlock_pet_spell_t
   {
     double m = warlock_pet_spell_t::action_multiplier();
 
-    m *= 1.0 + p() -> o() -> spec.destruction -> effectN( 1 ).percent();
+    if ( p() -> o() -> specialization() == WARLOCK_DESTRUCTION )
+      m *= 1.0 + p() -> o() -> spec.destruction -> effectN( 1 ).percent();
 
     return m;
   }
