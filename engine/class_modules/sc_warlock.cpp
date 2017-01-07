@@ -6248,11 +6248,14 @@ void warlock_t::create_buffs()
 
   buffs.stretens_insanity = buff_creator_t( this, "stretens_insanity", find_spell( 208822 ) )
     .default_value( find_spell( 208822 ) -> effectN( 1 ).percent() )
-    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+    .tick_behavior( BUFF_TICK_NONE );
 
   buffs.lessons_of_spacetime = buff_creator_t( this, "lessons_of_spacetime", find_spell( 236176 ) )
     .default_value( find_spell( 236176 ) -> effectN( 1 ).percent() )
-    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+    .refresh_behavior( BUFF_REFRESH_NONE )
+    .tick_behavior( BUFF_TICK_NONE );
 
   //affliction buffs
   buffs.shard_instability = buff_creator_t( this, "shard_instability", find_spell( 216457 ) )
