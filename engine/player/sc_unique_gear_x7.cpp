@@ -1858,6 +1858,7 @@ void item::draught_of_souls( special_effect_t& effect )
     {
       channeled = quiet = true;
       cooldown -> duration = timespan_t::zero();
+      hasted_ticks = false;
 
       damage = player -> find_action( "felcrazed_rage" );
       if ( damage == nullptr )
