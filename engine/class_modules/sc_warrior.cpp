@@ -256,7 +256,7 @@ public:
     proc_t* tactician;
 
     //Tier bonuses
-    proc_t* t19_4pc_arms;
+    proc_t* t19_2pc_arms;
   } proc;
 
   // Spec Passives
@@ -585,7 +585,7 @@ struct warrior_action_t: public Base
 {
   bool headlongrush, headlongrushgcd, sweeping_strikes, dauntless, deadly_calm, 
     arms_damage_increase, fury_damage_increase;
-  double tactician_per_rage, arms_t19_4p_chance;
+  double tactician_per_rage, arms_t19_2p_chance;
 private:
   typedef Base ab; // action base, eg. spell_t
 public:
@@ -603,14 +603,14 @@ public:
     deadly_calm( ab::data().affected_by( player -> spec.battle_cry -> effectN( 4 ) ) ),
     arms_damage_increase( ab::data().affected_by( player -> spell.arms_warrior -> effectN( 2 ) ) ),
     fury_damage_increase( ab::data().affected_by( player -> spell.fury_warrior -> effectN( 1 ) ) ),
-    tactician_per_rage( 0 ), arms_t19_4p_chance( 0 ),
+    tactician_per_rage( 0 ), arms_t19_2p_chance( 0 ),
     track_cd_waste( s -> cooldown() > timespan_t::zero() || s -> charge_cooldown() > timespan_t::zero() ),
     cd_wasted_exec( nullptr ), cd_wasted_cumulative( nullptr ), cd_wasted_iter( nullptr )
   {
     ab::may_crit = true;
     tactician_per_rage += ( player -> spec.tactician -> effectN( 2 ).percent() / 100 );
     tactician_per_rage *= 1.0 + player -> artifact.exploit_the_weakness.percent();
-    arms_t19_4p_chance = p() -> sets.set( WARRIOR_ARMS, T19, B4 ) -> proc_chance();
+    arms_t19_2p_chance = p() -> sets.set( WARRIOR_ARMS, T19, B2 ) -> proc_chance();
 
     if ( arms_damage_increase )
       ab::weapon_multiplier *= 1.0 + player ->spell.arms_warrior -> effectN( 2 ).percent();
@@ -831,11 +831,11 @@ public:
     }
   }
 
-  void arms_t19_4p() const
+  void arms_t19_2p() const
   {
-    if ( ab::rng().roll( arms_t19_4p_chance ) )
+    if ( ab::rng().roll( arms_t19_2p_chance ) )
     {
-      p() -> proc.t19_4pc_arms -> occur();
+      p() -> proc.t19_2pc_arms -> occur();
       p() -> cooldown.colossus_smash -> reset( true );
       p() -> cooldown.mortal_strike -> reset( true );
       p() -> proc.tactician -> occur();
@@ -1889,7 +1889,7 @@ struct execute_sweep_t: public warrior_attack_t
 
     if ( s -> result == RESULT_CRIT )
     {
-      arms_t19_4p();
+      arms_t19_2p();
     }
   }
 };
@@ -2058,7 +2058,7 @@ struct execute_arms_t: public warrior_attack_t
 
     if ( s -> result == RESULT_CRIT )
     {
-      arms_t19_4p();
+      arms_t19_2p();
     }
   }
 
@@ -2683,7 +2683,7 @@ struct mortal_strike_t: public warrior_attack_t
 
     if ( s -> result == RESULT_CRIT )
     {
-      arms_t19_4p();
+      arms_t19_2p();
     }
   }
 
@@ -5407,12 +5407,12 @@ void warrior_t::create_buffs()
     .trigger_spell( artifact.odyns_champion );
 
   buff.battle_cry = buff_creator_t( this, "battle_cry", spec.battle_cry )
-    .duration( spec.battle_cry -> duration() + sets.set( WARRIOR_ARMS, T19, B2 ) -> effectN( 1 ).time_value() )
+    .duration( spec.battle_cry -> duration() + sets.set( WARRIOR_ARMS, T19, B4 ) -> effectN( 1 ).time_value() )
     .add_invalidate( CACHE_CRIT_CHANCE )
     .cd( timespan_t::zero() );
 
   buff.battle_cry_deadly_calm = buff_creator_t( this, "battle_cry_deadly_calm", spec.battle_cry )
-    .duration( spec.battle_cry -> duration() + sets.set( WARRIOR_ARMS, T19, B2 ) -> effectN( 1 ).time_value() )
+    .duration( spec.battle_cry -> duration() + sets.set( WARRIOR_ARMS, T19, B4 ) -> effectN( 1 ).time_value() )
     .chance( talents.deadly_calm -> ok() )
     .cd( timespan_t::zero() )
     .quiet( true );
@@ -5503,7 +5503,7 @@ void warrior_t::init_procs()
   player_t::init_procs();
   proc.delayed_auto_attack = get_proc( "delayed_auto_attack" );
 
-  proc.t19_4pc_arms = get_proc( "t19_4pc_arms" );
+  proc.t19_2pc_arms = get_proc( "t19_2pc_arms" );
   proc.arms_trinket = get_proc( "arms_trinket" );
   proc.tactician    = get_proc( "tactician"    );
 }
