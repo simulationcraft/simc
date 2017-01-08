@@ -7000,6 +7000,12 @@ struct hunter_module_t: public module_t
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 2 )
       .verification_value( 10 );
+      
+      hotfix::register_spell( "Hunter", "2017-1-8", "Spelldata claims that Marking Target's rppm was buffed from 5 to 6.5, but testing shows higher.", 185987 )
+      .field( "rppm" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 7.2 )
+      .verification_value( 6.5 );
 
   }
 
