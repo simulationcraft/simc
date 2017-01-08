@@ -2401,6 +2401,25 @@ bool player_t::create_actions()
     }
   }
 
+  int capacity = std::max( 1200, static_cast<int>( sim -> max_time.total_seconds() / 2.0 ) );
+  collected_data.action_sequence.reserve( capacity );
+  collected_data.action_sequence.clear();
+
+  return true;
+}
+
+
+// player_t::init_actions ===================================================
+
+bool player_t::init_actions()
+{
+  for ( size_t i = 0; i < action_list.size(); ++i )
+  {
+    action_list[ i ] -> init();
+  }
+
+  range::for_each( action_list, []( action_t* a ) { a -> consolidate_snapshot_flags(); } );
+
   bool have_off_gcd_actions = false;
   for ( auto action: action_list )
   {
@@ -2435,25 +2454,6 @@ bool player_t::create_actions()
   {
     sim -> errorf( "No Default Action List available.\n" );
   }
-
-  int capacity = std::max( 1200, static_cast<int>( sim -> max_time.total_seconds() / 2.0 ) );
-  collected_data.action_sequence.reserve( capacity );
-  collected_data.action_sequence.clear();
-
-  return true;
-}
-
-
-// player_t::init_actions ===================================================
-
-bool player_t::init_actions()
-{
-  for ( size_t i = 0; i < action_list.size(); ++i )
-  {
-    action_list[ i ] -> init();
-  }
-
-  range::for_each( action_list, []( action_t* a ) { a -> consolidate_snapshot_flags(); } );
 
   return true;
 }
