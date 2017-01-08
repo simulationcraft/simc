@@ -172,6 +172,7 @@ public:
     buff_t* fujiedas_fury;
     buff_t* destiny_driver; //215157
     buff_t* xavarics_magnum_opus; //207472
+    buff_t* sephuzs_secret;
   } buff;
 
   // Cooldowns
@@ -369,6 +370,12 @@ public:
     const spell_data_t* reckless_abandon;
   } talents;
 
+  struct legendary_t
+  {
+    // Eventually move all legendarys here for organization
+    const spell_data_t* sephuzs_secret;
+  } legendary;
+
   // Artifacts
   struct artifact_spell_data_t
   {
@@ -446,7 +453,9 @@ public:
     mastery( mastery_t() ),
     proc( procs_t() ),
     spec( spec_t() ),
-    talents( talents_t() )
+    talents( talents_t() ),
+    legendary( legendary_t() ),
+    artifact( artifact_spell_data_t() )
   {;
     non_dps_mechanics = false; // When set to false, disables stuff that isn't important, such as second wind, bloodthirst heal, etc.
     warrior_fixed_time = frothing_may_trigger = opportunity_strikes_once = true; //Frothing only triggers on the first ability that pushes you to 100 rage, until rage is consumed and then it may trigger again.
@@ -1504,6 +1513,12 @@ struct charge_t: public warrior_attack_t
     warrior_attack_t::execute();
 
     p() -> buff.furious_charge -> trigger();
+
+
+    if ( p() -> legendary.sephuzs_secret != nullptr && execute_state -> target -> type == ENEMY_ADD )
+    {
+      p() -> buff.sephuzs_secret -> trigger();
+    }
 
     if ( first_charge )
     {
@@ -2708,6 +2723,16 @@ struct pummel_t: public warrior_attack_t
     parse_options( options_str );
     ignore_false_positive = true;
     may_miss = may_block = may_dodge = may_parry = false;
+  }
+
+  void execute() override
+  {
+    warrior_attack_t::execute();
+
+    if ( p() -> legendary.sephuzs_secret != nullptr )
+    {
+      p() -> buff.sephuzs_secret -> trigger();
+    }
   }
 };
 
@@ -4630,6 +4655,7 @@ void warrior_t::init_spells()
     }
     this -> odyns_champion_cds.push_back( cooldown.enraged_regeneration );
   }
+  legendary.sephuzs_secret = nullptr;
 }
 
 // warrior_t::init_base =====================================================
@@ -5237,6 +5263,30 @@ struct debuff_demo_shout_t: public warrior_buff_t < buff_t >
     default_value = data().effectN( 1 ).percent();
   }
 };
+
+// That legendary crap ring ===========================================================
+
+struct sephuzs_secret_buff_t: public buff_t
+{
+  cooldown_t* icd;
+  sephuzs_secret_buff_t( warrior_t* p ):
+    buff_t( buff_creator_t( p, "sephuzs_secret", p -> find_spell( 208052 ) )
+            .default_value( p -> find_spell( 208502 ) -> effectN( 2 ).percent() )
+            .add_invalidate( CACHE_HASTE ) )
+  {
+    icd = p -> get_cooldown( "sephuzs_secret_cooldown" );
+    icd  -> duration = p -> find_spell( 226262 ) -> duration();
+  }
+
+  void execute( int stacks, double value, timespan_t duration ) override
+  {
+    if ( icd -> down() )
+      return;
+    buff_t::execute( stacks, value, duration );
+    icd -> start();
+  }
+};
+
 } // end namespace buffs
 
 // ==========================================================================
@@ -5445,6 +5495,8 @@ void warrior_t::create_buffs()
       .default_value( artifact.rage_of_the_valarjar.data().effectN( 1 ).trigger() -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
       .add_invalidate( CACHE_ATTACK_SPEED )
       .add_invalidate( CACHE_CRIT_CHANCE );
+
+  buff.sephuzs_secret = new buffs::sephuzs_secret_buff_t( this );
 }
 
 // warrior_t::init_scaling ==================================================
@@ -5785,6 +5837,8 @@ double warrior_t::composite_melee_haste() const
   a *= 1.0 / ( 1.0 + buff.frenzy -> check_stack_value() );
 
   a *= 1.0 / ( 1.0 + buff.into_the_fray -> check_stack_value() );
+
+  a *= 1.0 / ( 1.0 + buff.sephuzs_secret -> check_value() );
 
   return a;
 }
@@ -6588,6 +6642,17 @@ struct prydaz_xavarics_magnum_opus_t : public unique_gear::class_buff_cb_t<warri
   }
 };
 
+struct sephuzs_secret_t: public unique_gear::scoped_actor_callback_t<warrior_t>
+{
+  sephuzs_secret_t(): super( WARRIOR )
+  {}
+
+  void manipulate( warrior_t* warrior, const special_effect_t& e ) override
+  {
+    warrior -> legendary.sephuzs_secret = e.driver();
+  }
+};
+
 struct warrior_module_t: public module_t
 {
   warrior_module_t(): module_t( WARRIOR ) {}
@@ -6621,6 +6686,7 @@ struct warrior_module_t: public module_t
     unique_gear::register_special_effect( 208177, weight_of_the_earth_t() );
     unique_gear::register_special_effect( 222266, raging_fury_t() );
     unique_gear::register_special_effect( 222266, raging_fury2_t() );
+    unique_gear::register_special_effect( 208051, sephuzs_secret_t() );
   }
 
   virtual void register_hotfixes() const override
