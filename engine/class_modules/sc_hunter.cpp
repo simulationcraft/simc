@@ -1557,6 +1557,16 @@ struct dire_critter_t: public hunter_secondary_pet_t
 
       return hunter_secondary_pet_action_t::init_finished();
     }
+    
+    virtual double action_multiplier() const override
+    {
+      double am = hunter_secondary_pet_action_t::action_multiplier();
+
+      if ( o() -> sets.has_set_bonus( HUNTER_BEAST_MASTERY, T19, B2 ) && o() -> buffs.bestial_wrath -> up() )
+        am *= 1.0 + o() -> buffs.bestial_wrath -> current_value;
+
+      return am;
+    }
   };
 
   struct dire_beast_melee_t: public secondary_pet_melee_t
