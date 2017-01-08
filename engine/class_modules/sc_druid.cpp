@@ -6860,13 +6860,14 @@ void druid_t::apl_feral()
     if ( items[i].has_use_special_effect() )
     {
       std::string line = std::string( "use_item,slot=" ) + items[i].slot_name();
-      if ( items[i].name_str == "mirror_of_the_blademaster" )
-        line += ",if=raid_event.adds.in>60|!raid_event.adds.exists|spell_targets.swipe_cat>desired_targets";
-      else if ( items[i].name_str != "maalus_the_blood_drinker" )
-        line += ",if=(buff.tigers_fury.up&(target.time_to_die>trinket.stat.any.cooldown|target.time_to_die<45))|buff.incarnation.remains>20";
-      else if ( items[i].name_str == "ring_of_collapsing_futures" )
-        line += ",if=(buff.tigers_fury.up|target.time_to_die<45)";
-
+      if (items[i].name_str == "mirror_of_the_blademaster")
+         line += ",if=raid_event.adds.in>60|!raid_event.adds.exists|spell_targets.swipe_cat>desired_targets";
+      else if (items[i].name_str != "maalus_the_blood_drinker")
+         line += ",if=(buff.tigers_fury.up&(target.time_to_die>trinket.stat.any.cooldown|target.time_to_die<45))|buff.incarnation.remains>20";
+      else if (items[i].name_str == "ring_of_collapsing_futures")
+         line += ",if=(buff.tigers_fury.up|target.time_to_die<45)";
+      else if (items[i].name_str == "draught_of_souls")
+         line += ",if=buff.tigers_fury.up&energy.time_to_max>3&(!talent.savage_roar.enabled|buff.savage_roar.up)";
       def -> add_action( line );
     }
   }
@@ -6910,11 +6911,11 @@ void druid_t::apl_feral()
   finish -> add_action( this, "Rip", "cycle_targets=1,if=(!ticking|(remains<8&target.health.pct>25&!talent.sabertooth.enabled)|"
     "persistent_multiplier>dot.rip.pmultiplier)&target.time_to_die-remains>tick_time*4&combo_points=5&"
     "(energy.time_to_max<1|buff.berserk.up|buff.incarnation.up|buff.elunes_guidance.up|cooldown.tigers_fury.remains<3|"
-    "set_bonus.tier18_4pc|buff.clearcasting.react|talent.soul_of_the_forest.enabled|!dot.rip.ticking|(dot.rake.remains<1.5&spell_targets.swipe_cat<6))",
+    "set_bonus.tier18_4pc|(buff.clearcasting.react&energy>65)|talent.soul_of_the_forest.enabled|!dot.rip.ticking|(dot.rake.remains<1.5&spell_targets.swipe_cat<6))",
     "Refresh Rip at 8 seconds or for a stronger Rip" );
-  finish -> add_talent( this, "Savage Roar", "if=(buff.savage_roar.remains<=10.5|(buff.savage_roar.remains<=7.2&!talent.jagged_wounds.enabled))&"
+  finish -> add_talent( this, "Savage Roar", "if=((buff.savage_roar.remains<=10.5&talent.jagged_wounds.enabled)|(buff.savage_roar.remains<=7.2))&"
     "combo_points=5&(energy.time_to_max<1|buff.berserk.up|buff.incarnation.up|buff.elunes_guidance.up|cooldown.tigers_fury.remains<3|"
-    "set_bonus.tier18_4pc|buff.clearcasting.react|talent.soul_of_the_forest.enabled|!dot.rip.ticking|(dot.rake.remains<1.5&spell_targets.swipe_cat<6))",
+    "set_bonus.tier18_4pc|(buff.clearcasting.react&energy>65)|talent.soul_of_the_forest.enabled|!dot.rip.ticking|(dot.rake.remains<1.5&spell_targets.swipe_cat<6))",
     "Refresh Savage Roar early with Jagged Wounds" );
   finish -> add_action( "swipe_cat,if=combo_points=5&(spell_targets.swipe_cat>=6|(spell_targets.swipe_cat>=3&!talent.bloodtalons.enabled))&"
     "combo_points=5&(energy.time_to_max<1|buff.berserk.up|buff.incarnation.up|buff.elunes_guidance.up|cooldown.tigers_fury.remains<3|"
@@ -6948,7 +6949,10 @@ void druid_t::apl_feral()
     "persistent_multiplier>dot.rake.pmultiplier*0.80))&target.time_to_die-remains>tick_time" );
   generate -> add_action( "moonfire_cat,cycle_targets=1,if=combo_points<5&remains<=4.2&target.time_to_die-remains>tick_time*2" );
   generate -> add_action( "pool_resource,for_next=1" );
-  generate -> add_action( "thrash_cat,cycle_targets=1,if=remains<=duration*0.3&spell_targets.swipe_cat>=2" );
+  if ( sets.has_set_bonus( DRUID_FERAL, T19, B4 ) )
+     generate->add_action( "thrash_cat,cycle_targets=1,if=remains<=duration*0.3&spell_targets.swipe_cat>=2|(buff.clearcasting.up&buff.bloodtalons.down|buff.predatory_swiftness.up)|buff.berserk.up|buff.incarnation.up", "Use Thrash on Clearcasting, or during Berserk/Incarnation if you have T19 4set" );
+  else
+     generate -> add_action( "thrash_cat,cycle_targets=1,if=remains<=duration*0.3&spell_targets.swipe_cat>=2" );
   generate -> add_talent( this, "Brutal Slash",
     "if=combo_points<5&((raid_event.adds.exists&raid_event.adds.in>(1+max_charges-charges_fractional)*15)|(!raid_event.adds.exists&(charges_fractional>2.66&time>10)))",
     "Brutal Slash if you would cap out charges before the next adds spawn" );
