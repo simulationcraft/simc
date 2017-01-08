@@ -1894,16 +1894,16 @@ void item::draught_of_souls( special_effect_t& effect )
 
   struct draught_of_souls_driver_t : public proc_spell_t
   {
+    const special_effect_t& effect;
     action_t* damage;
 
-    draught_of_souls_driver_t( const special_effect_t& effect ):
-      proc_spell_t( "draught_of_souls", effect.player, effect.driver(), effect.item ),
-      damage( nullptr )
+    draught_of_souls_driver_t( const special_effect_t& effect_ ):
+      proc_spell_t( "draught_of_souls", effect_.player, effect_.driver(), effect_.item ),
+      effect( effect_ ), damage( nullptr )
     {
       channeled = quiet = true;
       cooldown -> duration = timespan_t::zero();
       hasted_ticks = false;
-      use_off_gcd = true; // This allows us to use the trinket immediately after a gcd, rather than immediately before a gcd.
 
       damage = player -> find_action( "felcrazed_rage" );
       if ( damage == nullptr )
@@ -1919,6 +1919,20 @@ void item::draught_of_souls( special_effect_t& effect )
 
     double composite_haste() const override
     { return 1.0; } // Not hasted.
+
+    void init() override
+    {
+      proc_spell_t::init();
+
+      auto cd = player -> get_cooldown( effect.cooldown_name() );
+      range::for_each( player -> action_list, [ cd ]( action_t* action ) {
+        if ( action -> cooldown == cd )
+        {
+          action -> use_off_gcd = true;
+        }
+      } );
+
+    }
 
     void execute() override
     {
