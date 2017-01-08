@@ -1,4 +1,4 @@
-SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23244, git build 3208abb)
+SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23360, git build 0a8dde1)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -1132,7 +1132,7 @@ Attributes       : .....x.x x....x.. x....... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Tradeskill ability (5), Hidden (7)
 Effects          :
-#1 (id=45979)    : Unknown effect type (53)
+#1 (id=45979)    : Enchant Item (53)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3370 | Misc Value 2: 0xb
 #2 (id=45980)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
@@ -1150,7 +1150,7 @@ Attributes       : .....x.x x....... x....... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Tradeskill ability (5), Hidden (7)
 Effects          :
-#1 (id=45981)    : Unknown effect type (53)
+#1 (id=45981)    : Enchant Item (53)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3368 | Misc Value 2: 0xb
 #2 (id=133696)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
@@ -1599,7 +1599,7 @@ Attributes       : .....x.x x....... x....... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Tradeskill ability (5), Hidden (7)
 Effects          :
-#1 (id=56130)    : Unknown effect type (53)
+#1 (id=56130)    : Enchant Item (53)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3847 | Misc Value 2: 0xb
 #2 (id=56131)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
