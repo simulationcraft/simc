@@ -43,7 +43,7 @@ off_hand=secrets_of_the_void,id=133958
 save=Priest_Shadow_T19H.simc
 
 # Shadow S2M
-priest="Priest_Shadow_T19H_S2M"
+priest="Priest_Shadow_S2M_T19H"
 level=110
 race=troll
 role=dps
