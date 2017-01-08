@@ -1602,16 +1602,20 @@ struct dire_critter_t: public hunter_secondary_pet_t
 
   virtual void init_spells() override;
 
-  virtual void summon( timespan_t duration = timespan_t::zero() ) override
+  void arise() override
   {
-    hunter_secondary_pet_t::summon( duration );
+    hunter_secondary_pet_t::arise();
 
-    // FIXME: First melee attack should also benefit from it
     if ( o() -> sets.has_set_bonus( HUNTER_BEAST_MASTERY, T19, B2 ) && o() -> buffs.bestial_wrath -> check() )
     {
       const timespan_t bw_duration = o() -> buffs.bestial_wrath -> remains();
       buffs.bestial_wrath -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, bw_duration );
     }
+  }
+
+  virtual void summon( timespan_t duration = timespan_t::zero() ) override
+  {
+    hunter_secondary_pet_t::summon( duration );
 
     if ( o() -> talents.stomp -> ok() )
       active.stomp -> execute();
