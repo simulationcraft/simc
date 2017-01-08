@@ -79,6 +79,7 @@ enum form_e {
   BEAR_FORM      = 0x10,
   DIRE_BEAR_FORM = 0x40, // Legacy
   MOONKIN_FORM   = 0x40000000,
+  MOONKIN_FORM_AFFINITY = 0x40000001, //Under Development Jan 08 2017
 };
 
 enum moon_stage_e {
@@ -381,6 +382,7 @@ public:
     buff_t* soul_of_the_forest; // needs checking
     buff_t* yseras_gift;
     buff_t* harmony; // NYI
+	buff_t* moonkin_form_affinity;
   } buff;
 
   // Cooldowns
@@ -541,6 +543,7 @@ public:
 
     // Resto
     const spell_data_t* yseras_gift; // Restoration Affinity
+	const spell_data_t* moonkin_form_affinity;
   } spec;
 
   // Talents
@@ -1046,6 +1049,7 @@ public:
   virtual void start( int stacks, double value, timespan_t duration ) override
   {
     druid.buff.moonkin_form -> expire();
+	druid.buff.moonkin_form_affinity -> expire(); //Balance affinity moonkin form.
     druid.buff.cat_form -> expire();
 
     druid.buff.tigers_fury -> expire(); // Mar 03 2016: Tiger's Fury ends when you enter bear form.
@@ -1167,6 +1171,7 @@ struct cat_form_t : public druid_buff_t< buff_t >
   {
     druid.buff.bear_form -> expire();
     druid.buff.moonkin_form -> expire();
+	druid.buff.moonkin_form_affinity -> expire(); //Balance affinity moonkin form.
 
     swap_melee( druid.cat_melee_attack, druid.cat_weapon );
 
@@ -1211,6 +1216,26 @@ struct moonkin_form_t : public druid_buff_t< buff_t >
 
     base_t::start( stacks, value, duration );
   }
+};
+
+// Moonkin Form Affinity
+
+struct moonkin_form_affinity_t : public druid_buff_t< buff_t >
+{
+	moonkin_form_affinity_t(druid_t& p) :
+		base_t(p, buff_creator_t(&p, "moonkin_form_affinity", p.spec.moonkin_form_affinity)
+			.add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER)
+			.add_invalidate(CACHE_ARMOR)
+			.chance(1.0))
+	{}
+
+	virtual void start(int stacks, double value, timespan_t duration) override
+	{
+		druid.buff.bear_form->expire();
+		druid.buff.cat_form->expire();
+
+		base_t::start(stacks, value, duration);
+	}
 };
 
 // Warrior of Elune Buff ====================================================
@@ -5193,6 +5218,28 @@ struct moonkin_form_t : public druid_spell_t
   }
 };
 
+// Moonkin Form Affinity Spell ===(Under development Jan 08 2017)============
+
+struct moonkin_form_affinity_t : public druid_spell_t
+{
+	moonkin_form_affinity_t(druid_t* player, const std::string& options_str) :
+		druid_spell_t("moonkin_form_affinity", player, player -> spec.moonkin_form_affinity, options_str)
+	{
+		form_mask = NO_FORM | CAT_FORM | BEAR_FORM;
+		may_autounshift = false;
+
+		harmful = false;
+		ignore_false_positive = true;
+	}
+
+	void execute() override
+	{
+		druid_spell_t::execute();
+
+		p()->shapeshift(MOONKIN_FORM_AFFINITY);
+	}
+};
+
 // Prowl ====================================================================
 
 struct prowl_t : public druid_spell_t
@@ -5937,6 +5984,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "new_moon"               ) return new               new_moon_t( this, options_str );
   if ( name == "sunfire"                ) return new                sunfire_t( this, options_str );
   if ( name == "moonkin_form"           ) return new   spells::moonkin_form_t( this, options_str );
+  if (name == "moonkin_form_affinity"   ) return new   spells::moonkin_form_affinity_t(this, options_str);
   if ( name == "pulverize"              ) return new              pulverize_t( this, options_str );
   if ( name == "rage_of_the_sleeper"    ) return new    rage_of_the_sleeper_t( this, options_str );
   if ( name == "rake"                   ) return new                   rake_t( this, options_str );
@@ -6061,6 +6109,9 @@ void druid_t::init_spells()
   spec.mangle_2 = find_specialization_spell( 231064 );
   spec.lightning_reflexes = find_specialization_spell( 231064 );
   spec.ironfur_2 = find_specialization_spell( 231070 );
+
+  // Restoration
+  spec.moonkin_form_affinity = find_spell(197625);
   
   // Talents ================================================================
 
@@ -6408,6 +6459,8 @@ void druid_t::create_buffs()
 
   buff.moonkin_form          = new buffs::moonkin_form_t( *this );
 
+  buff.moonkin_form_affinity = new buffs::moonkin_form_affinity_t(*this);
+
   buff.solar_empowerment     = buff_creator_t( this, "solar_empowerment", find_spell( 164545 ) )
                                .default_value( find_spell( 164545 ) -> effectN( 1 ).percent()
                                  + talent.soul_of_the_forest -> effectN( 1 ).percent()
@@ -6666,6 +6719,10 @@ void druid_t::apl_precombat()
   {
     precombat -> add_action( this, "Moonkin Form" );
     precombat -> add_action( "blessing_of_elune" );
+  }
+  else if (specialization() == DRUID_RESTORATION && (primary_role() == ROLE_DPS || primary_role() == ROLE_SPELL))
+  {
+	  precombat->add_action(this, "moonkin_form_affinity");
   }
 
   // Snapshot stats
@@ -7220,7 +7277,7 @@ void druid_t::init_action_list()
     //  sim -> errorf( "Druid restoration healing for player %s is not currently supported.", name() );
 
    // quiet = true;
-    return;
+   // return;
   }
 #endif
   if ( ! action_list_str.empty() )
@@ -8063,6 +8120,7 @@ void druid_t::shapeshift( form_e f )
   buff.cat_form     -> expire();
   buff.bear_form    -> expire();
   buff.moonkin_form -> expire();
+  buff.moonkin_form_affinity->expire();
 
   switch ( f )
   {
@@ -8080,6 +8138,9 @@ void druid_t::shapeshift( form_e f )
   case MOONKIN_FORM:
     buff.moonkin_form -> trigger();
     break;
+  case MOONKIN_FORM_AFFINITY:
+	buff.moonkin_form_affinity -> trigger();
+	break;
   default:
     assert( 0 );
     break;
