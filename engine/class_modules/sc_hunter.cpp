@@ -1436,7 +1436,7 @@ public:
     m *= 1.0 + specs.combat_experience -> effectN( 2 ).percent();
 
     if ( o() -> legendary.bm_ring )
-      m *= 1.1; //TODO: Find corresponding spell, or wait for spell data to be updated
+      m *= 1.05; //TODO: Find corresponding spell, or wait for spell data to be updated
 
     return m;
   }
