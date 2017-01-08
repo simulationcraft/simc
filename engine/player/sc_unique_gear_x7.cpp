@@ -1903,6 +1903,7 @@ void item::draught_of_souls( special_effect_t& effect )
       channeled = quiet = true;
       cooldown -> duration = timespan_t::zero();
       hasted_ticks = false;
+      use_off_gcd = true; // This allows us to use the trinket immediately after a gcd, rather than immediately before a gcd.
 
       damage = player -> find_action( "felcrazed_rage" );
       if ( damage == nullptr )
