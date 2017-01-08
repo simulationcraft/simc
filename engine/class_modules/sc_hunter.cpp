@@ -1436,7 +1436,7 @@ public:
     m *= 1.0 + specs.combat_experience -> effectN( 2 ).percent();
 
     if ( o() -> legendary.bm_ring )
-      m *= 1.1; //TODO: Find corresponding spell, or wait for spell data to be updated
+      m *= 1.05; //TODO: Find corresponding spell, or wait for spell data to be updated
 
     return m;
   }
@@ -1604,13 +1604,14 @@ struct dire_critter_t: public hunter_secondary_pet_t
 
   virtual void summon( timespan_t duration = timespan_t::zero() ) override
   {
+    hunter_secondary_pet_t::summon( duration );
+
+    // FIXME: First melee attack should also benefit from it
     if ( o() -> sets.has_set_bonus( HUNTER_BEAST_MASTERY, T19, B2 ) && o() -> buffs.bestial_wrath -> check() )
     {
       const timespan_t bw_duration = o() -> buffs.bestial_wrath -> remains();
       buffs.bestial_wrath -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, bw_duration );
     }
-
-    hunter_secondary_pet_t::summon( duration );
 
     if ( o() -> talents.stomp -> ok() )
       active.stomp -> execute();
@@ -7000,6 +7001,12 @@ struct hunter_module_t: public module_t
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 2 )
       .verification_value( 10 );
+      
+      hotfix::register_spell( "Hunter", "2017-1-8", "Spelldata claims that Marking Target's rppm was buffed from 5 to 6.5, but testing shows higher.", 185987 )
+      .field( "rppm" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 7.2 )
+      .verification_value( 6.5 );
 
   }
 
