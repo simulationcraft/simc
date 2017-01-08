@@ -1387,12 +1387,29 @@ private:
 public:
   typedef shaman_spell_base_t<Base> base_t;
 
+  bool affected_by_elemental_focus;
+
   shaman_spell_base_t( const std::string& n, shaman_t* player,
                        const spell_data_t* s = spell_data_t::nil() ) :
-    ab( n, player, s )
+    ab( n, player, s ),
+    // Spell data is extremely buggy here it seems, so default to true and disable on the things
+    // that are not affected (in terms of damage)
+    affected_by_elemental_focus( true /* s -> affected_by( player -> buff.elemental_focus -> data().effectN( 1 ) ) */ )
   { }
 
-  virtual void execute() override
+  double composite_persistent_multiplier( const action_state_t* state ) const override
+  {
+    double m = ab::composite_persistent_multiplier( state );
+
+    if ( affected_by_elemental_focus && ab::p() -> buff.elemental_focus -> up() )
+    {
+      m *= ab::p() -> buff.elemental_focus -> check_value();
+    }
+
+    return m;
+  }
+
+  void execute() override
   {
     ab::execute();
 
@@ -1414,12 +1431,11 @@ public:
     }
   }
 
-  virtual void schedule_travel( action_state_t* s ) override
+  void impact( action_state_t* state ) override
   {
-    ab::schedule_travel( s );
+    ab::impact( state );
 
-    // TODO: Check if Elemental Focus triggers per target (Chain Lightning)
-    ab::p() -> trigger_elemental_focus( s );
+    ab::p() -> trigger_elemental_focus( state );
   }
 };
 
@@ -1469,19 +1485,6 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
       return true;
 
     return base_t::usable_moving();
-  }
-
-  double composite_persistent_multiplier( const action_state_t* state ) const override
-  {
-    double m = base_t::composite_persistent_multiplier( state );
-
-    // TODO: Check if this is a persistent multiplier.
-    if ( p() -> buff.elemental_focus -> up() )
-    {
-      m *= p() -> buff.elemental_focus -> check_value();
-    }
-
-    return m;
   }
 
   virtual double overload_chance( const action_state_t* ) const
@@ -2822,6 +2825,7 @@ struct earthen_rage_spell_t : public shaman_spell_t
   {
     background = proc = true;
     callbacks = false;
+    affected_by_elemental_focus = false;
   }
 };
 
@@ -2884,6 +2888,7 @@ struct pristine_protoscale_girdle_dot_t : public shaman_spell_t
     callbacks = may_crit = false;
 
     dot_max_stack = data().max_stacks();
+    affected_by_elemental_focus = false;
   }
 };
 
@@ -4752,6 +4757,7 @@ struct earthquake_damage_t : public shaman_spell_t
     school = SCHOOL_PHYSICAL;
     spell_power_mod.direct = 0.5; // Hardcoded into tooltip because it's cool
     base_multiplier *= 1.0 + p() -> artifact.the_ground_trembles.percent();
+    affected_by_elemental_focus = true; // Needed to explicitly flag, since spell data lacks info
   }
 
   double target_armor( player_t* ) const override
@@ -4805,6 +4811,8 @@ struct earthquake_t : public shaman_spell_t
     // Note, needs to be decremented after ground_aoe_event_t is created so that the rumble gets the
     // buff multiplier as persistent.
     p() -> buff.echoes_of_the_great_sundering -> decrement();
+
+    p() -> buff.elemental_focus -> decrement();
   }
 };
 
@@ -6172,6 +6180,11 @@ void shaman_t::trigger_hot_hand( const action_state_t* state )
 
 void shaman_t::trigger_elemental_focus( const action_state_t* state )
 {
+  if ( state -> action -> background || state -> result_amount == 0 )
+  {
+    return;
+  }
+
   if ( ! spec.elemental_focus -> ok() )
   {
     return;
