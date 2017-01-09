@@ -5272,7 +5272,10 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
   {
     weapon = &( player -> main_hand_weapon );
 
-    instructors_chance = { { 0.20, 0.40, 0.20, 0.10, 0.05, 0.05 } };
+    //instructors_chance = { { 0.20, 0.40, 0.20, 0.10, 0.05, 0.05 } };
+    //
+    // TODO: Changed in 7.1.5, new probability distribution unknown/untested
+    instructors_chance = { { .3, .4, .2, .1 } };
   }
 
   int n_targets() const override
