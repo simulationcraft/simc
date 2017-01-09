@@ -4176,7 +4176,11 @@ void unique_gear::register_special_effects_x7()
 
 void unique_gear::register_hotfixes_x7()
 {
-
+  hotfix::register_spell( "Horrific Appendages", "2016-10-09", "In-game testing shows that the actual rppm is much closer to 1.3~ than 0.7, so we slightly underestimated down to 1.25.", 222167 )
+    .field( "rppm" )
+    .operation( hotfix::HOTFIX_SET )
+    .modifier( 1.25 )
+    .verification_value( 0.7 );
 }
 
 void unique_gear::register_target_data_initializers_x7( sim_t* sim )
