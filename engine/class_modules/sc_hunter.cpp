@@ -316,6 +316,10 @@ public:
     const spell_data_t* carve;
     const spell_data_t* survivalist;
     const spell_data_t* explosive_trap;
+
+    const spell_data_t* bm_hotfixes;
+    const spell_data_t* mm_hotfixes;
+    const spell_data_t* sv_hotfixes;
   } specs;
 
   // Glyphs
@@ -817,6 +821,8 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
 
 struct hunter_melee_attack_t: public hunter_action_t < melee_attack_t >
 {
+  bool affected_by_sv_hotfix;
+  bool affected_by_sv_hotfix2;
   hunter_melee_attack_t( const std::string& n, hunter_t* p,
                           const spell_data_t* s = spell_data_t::nil() ):
                           base_t( n, p, s )
@@ -832,6 +838,14 @@ struct hunter_melee_attack_t: public hunter_action_t < melee_attack_t >
     tick_may_crit = true;
   }
 
+  void init() override
+  {
+    action_t::init();
+
+    affected_by_sv_hotfix = data().affected_by( p() -> specs.sv_hotfixes -> effectN( 1 ) );
+    affected_by_sv_hotfix2 = data().affected_by( p() -> specs.sv_hotfixes -> effectN( 2 ) );
+  }
+
   virtual double composite_crit_chance() const override
   {
     double cc = base_t::composite_crit_chance();
@@ -841,11 +855,26 @@ struct hunter_melee_attack_t: public hunter_action_t < melee_attack_t >
 
     return cc;
   }
+
+  double action_multiplier() const override
+  {
+    double pm = hunter_action_t::action_multiplier();
+
+    if ( affected_by_sv_hotfix )
+      pm *= 1.0 + p() -> specs.sv_hotfixes -> effectN( 1 ).percent();
+    if ( affected_by_sv_hotfix2 )
+      pm *= 1.0 + p() -> specs.sv_hotfixes -> effectN( 2 ).percent();
+
+    return pm;
+  }
 };
 
 struct hunter_spell_t: public hunter_action_t < spell_t >
 {
 public:
+  bool affected_by_sv_hotfix;
+  bool affected_by_sv_hotfix2;
+
   hunter_spell_t( const std::string& n, hunter_t* player,
                   const spell_data_t* s = spell_data_t::nil() ):
                   base_t( n, player, s )
@@ -855,6 +884,26 @@ public:
   {
     base_t::execute();
     try_steady_focus();
+  }
+
+  void init() override
+  {
+    action_t::init();
+
+    affected_by_sv_hotfix = data().affected_by( p() -> specs.sv_hotfixes -> effectN( 1 ) );
+    affected_by_sv_hotfix2 = data().affected_by( p() -> specs.sv_hotfixes -> effectN( 2 ) );
+  }
+
+  double action_multiplier() const override
+  {
+    double pm = hunter_action_t::action_multiplier();
+
+    if ( affected_by_sv_hotfix )
+      pm *= 1.0 + p() -> specs.sv_hotfixes -> effectN( 1 ).percent();
+    if ( affected_by_sv_hotfix2 )
+      pm *= 1.0 + p() -> specs.sv_hotfixes -> effectN( 2 ).percent();
+
+    return pm;
   }
 };
 
@@ -2167,6 +2216,8 @@ struct flanking_strike_t: public hunter_main_pet_attack_t
     base_multiplier = 1.62; // Hotfixed on 09/23/2016 - not in tooltip as of 11/01/2016
     background = true;
     hunting_companion_multiplier = 2.0;
+
+    base_multiplier *= 1.0 + p -> o() -> specs.sv_hotfixes -> effectN( 1 ).percent();
 
     if ( p -> o() -> sets.has_set_bonus( HUNTER_SURVIVAL, T19, B2 ) )
       hunting_companion_multiplier *= p -> o() -> sets.set( HUNTER_SURVIVAL, T19, B2 ) -> effectN( 1 ).base_value();
@@ -5604,6 +5655,10 @@ void hunter_t::init_spells()
   specs.carve                = find_specialization_spell( "Carve" );
   specs.explosive_trap       = find_specialization_spell( "Explosive Trap" );
   specs.marksmans_focus       = find_specialization_spell( "Marksman's Focus" );
+
+  specs.bm_hotfixes = find_spell( 137015 );
+  specs.mm_hotfixes = find_spell( 137016 );
+  specs.sv_hotfixes = find_spell( 137017 );
 
 
   // Artifact spells
