@@ -4400,6 +4400,10 @@ struct peck_t : public hunter_spell_t
     may_block = false;
     may_dodge = false;
     travel_speed = 0.0;
+
+    // BM "negative multiplier" on AMoC, stored as a negative value in spell data
+    if ( data().affected_by( player -> specs.beast_mastery_hunter -> effectN( 4 ) ) )
+      base_multiplier /= 1.0 - player -> specs.beast_mastery_hunter -> effectN( 4 ).percent();
   }
 
   hunter_t* p() const { return static_cast<hunter_t*>( player ); }
