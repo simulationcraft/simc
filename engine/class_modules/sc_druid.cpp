@@ -3567,6 +3567,16 @@ struct swipe_bear_t : public bear_attack_t
     aoe = -1;
     gore = true;
   }
+
+  void update_ready( timespan_t ) override
+  {
+    timespan_t cd = cooldown -> duration;
+
+    if ( p() -> buff.incarnation_bear -> up() )
+      cd = timespan_t::zero();
+
+    bear_attack_t::update_ready( cd );
+  }
 };
 
 // Thrash (Bear) ============================================================
@@ -3595,6 +3605,16 @@ struct thrash_bear_t : public bear_attack_t
       blood_frenzy_amount = p -> find_spell( 203961 ) -> effectN( 1 ).resource( RESOURCE_RAGE );
 
     base_multiplier *= 1.0 + p -> artifact.jagged_claws.percent();
+  }
+
+  void update_ready( timespan_t ) override
+  {
+    timespan_t cd = cooldown -> duration;
+
+    if ( p() -> buff.incarnation_bear -> up() )
+      cd = timespan_t::zero();
+
+    bear_attack_t::update_ready( cd );
   }
 
   virtual void tick( dot_t* d ) override
