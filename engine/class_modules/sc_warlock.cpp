@@ -5965,9 +5965,9 @@ void warlock_t::init_spells()
   // General
   spec.fel_armor   = find_spell( 104938 );
   spec.nethermancy = find_spell( 86091 );
-  spec.affliction = find_spell( 137043 );
-  spec.demonology = find_spell( 137044 );
-  spec.destruction = find_spell( 137046 );
+  spec.affliction = find_specialization_spell( 137043 );
+  spec.demonology = find_specialization_spell( 137044 );
+  spec.destruction = find_specialization_spell( 137046 );
 
   // Specialization Spells
   // PTR
