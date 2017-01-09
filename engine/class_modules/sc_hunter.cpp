@@ -103,6 +103,9 @@ public:
     const special_effect_t* mm_ring;
     const special_effect_t* mm_waist;
     const special_effect_t* mm_wrist;
+
+    // Generic
+    const special_effect_t* sephuzs_secret;
   } legendary;
 
   // Buffs
@@ -139,6 +142,8 @@ public:
     buff_t* sentinels_sight;
     buff_t* butchers_bone_apron;
     buff_t* gyroscopic_stabilization;
+
+    buff_t* sephuzs_secret;
   } buffs;
 
   // Cooldowns
@@ -5355,6 +5360,26 @@ struct dragonsfire_grenade_t: public hunter_spell_t
   }
 };
 
+// Ranger's Net =====================================================================
+
+struct rangers_net_t: public hunter_spell_t
+{
+  rangers_net_t( hunter_t* p, const std::string& options_str ):
+    hunter_spell_t( "rangers_net", p, p -> talents.rangers_net )
+  {
+    parse_options( options_str );
+    may_miss = may_block = may_dodge = may_parry = false;
+  }
+
+  void execute() override
+  {
+    hunter_spell_t::execute();
+
+    if ( p() -> legendary.sephuzs_secret )
+      p() -> buffs.sephuzs_secret -> trigger();
+  }
+};
+
 //end spells
 }
 
@@ -5451,6 +5476,7 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "multishot"             ) return new             multi_shot_t( this, options_str );
   if ( name == "multi_shot"            ) return new             multi_shot_t( this, options_str );
   if ( name == "piercing_shot"         ) return new          piercing_shot_t( this, options_str );
+  if ( name == "rangers_net"           ) return new            rangers_net_t( this, options_str );
   if ( name == "raptor_strike"         ) return new          raptor_strike_t( this, options_str );
   if ( name == "sentinel"              ) return new               sentinel_t( this, options_str );
   if ( name == "sidewinders"           ) return new            sidewinders_t( this, options_str );
@@ -5975,6 +6001,11 @@ void hunter_t::create_buffs()
   buffs.gyroscopic_stabilization =
     buff_creator_t( this, 235712, "gyroscopic_stabilization" )
       .default_value( find_spell( 235712 ) -> effectN( 2 ).percent() );
+
+  buffs.sephuzs_secret =
+    haste_buff_creator_t( this, "sephuzs_secret", find_spell( 208052 ) )
+      .default_value( find_spell( 208052 ) -> effectN( 2 ).percent() )
+      .cd( find_spell( 226262 ) -> duration() );
 }
 
 bool hunter_t::init_special_effects()
@@ -6549,6 +6580,9 @@ double hunter_t::composite_melee_haste() const
   if ( buffs.t18_2p_rapid_fire -> check() )
     h *= 1.0 / ( 1.0 + buffs.t18_2p_rapid_fire -> default_value );
 
+  if ( buffs.sephuzs_secret -> check() )
+    h *= 1.0 / ( 1.0 + buffs.sephuzs_secret -> check_value() );
+
   return h;
 }
 
@@ -6563,6 +6597,9 @@ double hunter_t::composite_spell_haste() const
 
   if ( buffs.t18_2p_rapid_fire -> check() )
     h *= 1.0 / ( 1.0 + buffs.t18_2p_rapid_fire -> default_value );
+
+  if ( buffs.sephuzs_secret -> check() )
+    h *= 1.0 / ( 1.0 + buffs.sephuzs_secret -> check_value() );
 
   return h;
 }
@@ -6992,17 +7029,32 @@ private:
 
 // HUNTER MODULE INTERFACE ==================================================
 
-template <typename Getter>
-static unique_gear::custom_cb_t init_special_effect( specialization_e spec, const Getter& get )
-{
-  return [ spec, &get ]( special_effect_t& effect )
-  {
-    hunter_t* p = debug_cast<hunter_t*>( effect.player );
-    if ( ! p -> find_spell( effect.spell_id ) -> ok() || ( p -> specialization() != spec && spec != SPEC_NONE ) )
-      return;
+typedef std::function<const special_effect_t**(hunter_t*)> special_effect_getter_t;
 
-    *( get( p ) ) = &( effect );
+void register_special_effect( unsigned spell_id, specialization_e spec, const special_effect_getter_t& getter )
+{
+  struct initializer_t : public unique_gear::scoped_actor_callback_t<hunter_t>
+  {
+    special_effect_getter_t get;
+
+    initializer_t( const special_effect_getter_t& getter ):
+      super( HUNTER ), get( getter )
+    {}
+
+    initializer_t( specialization_e spec, const special_effect_getter_t& getter ):
+      super( spec ), get( getter )
+    {}
+
+    void manipulate( hunter_t* p, const special_effect_t& e ) override
+    {
+      *( get( p ) ) = &( e );
+    }
   };
+
+  if ( spec == SPEC_NONE )
+    unique_gear::register_special_effect( spell_id, initializer_t( getter ) );
+  else
+    unique_gear::register_special_effect( spell_id, initializer_t( spec, getter ) );
 }
 
 struct hunter_module_t: public module_t
@@ -7020,23 +7072,24 @@ struct hunter_module_t: public module_t
 
   virtual void static_init() const override
   {
-    unique_gear::register_special_effect( 184900, init_special_effect( HUNTER_BEAST_MASTERY, []( hunter_t* p ) { return &( p -> beastlord ); }) );
-    unique_gear::register_special_effect( 184901, init_special_effect( HUNTER_MARKSMANSHIP,  []( hunter_t* p ) { return &( p -> longview ); }) );
-    unique_gear::register_special_effect( 184902, init_special_effect( HUNTER_SURVIVAL,      []( hunter_t* p ) { return &( p -> blackness ); }) );
-    unique_gear::register_special_effect( 236447, init_special_effect( HUNTER_SURVIVAL,      []( hunter_t* p ) { return &( p -> legendary.sv_chest); }) );
-    unique_gear::register_special_effect( 212574, init_special_effect( HUNTER_SURVIVAL,      []( hunter_t* p ) { return &( p -> legendary.sv_feet ); }) );
-    unique_gear::register_special_effect( 225155, init_special_effect( HUNTER_SURVIVAL,      []( hunter_t* p ) { return &( p -> legendary.sv_ring ); }) );
-    unique_gear::register_special_effect( 213154, init_special_effect( HUNTER_SURVIVAL,      []( hunter_t* p ) { return &( p -> legendary.sv_waist ); }) );
-    unique_gear::register_special_effect( 212278, init_special_effect( HUNTER_BEAST_MASTERY, []( hunter_t* p ) { return &( p -> legendary.bm_feet ); }) );
-    unique_gear::register_special_effect( 212329, init_special_effect( HUNTER_BEAST_MASTERY, []( hunter_t* p ) { return &( p -> legendary.bm_ring ); }) );
-    unique_gear::register_special_effect( 235721, init_special_effect( HUNTER_BEAST_MASTERY, []( hunter_t* p ) { return &( p -> legendary.bm_shoulders ); }) );
-    unique_gear::register_special_effect( 207280, init_special_effect( HUNTER_BEAST_MASTERY, []( hunter_t* p ) { return &( p -> legendary.bm_waist ); }) );
-    unique_gear::register_special_effect( 206889, init_special_effect( HUNTER_MARKSMANSHIP,  []( hunter_t* p ) { return &( p -> legendary.mm_feet ); }) );
-    unique_gear::register_special_effect( 235691, init_special_effect( HUNTER_MARKSMANSHIP,  []( hunter_t* p ) { return &( p -> legendary.mm_gloves); }) );
-    unique_gear::register_special_effect( 224550, init_special_effect( HUNTER_MARKSMANSHIP,  []( hunter_t* p ) { return &( p -> legendary.mm_ring ); }) );
-    unique_gear::register_special_effect( 208912, init_special_effect( HUNTER_MARKSMANSHIP,  []( hunter_t* p ) { return &( p -> legendary.mm_waist ); }) );
-    unique_gear::register_special_effect( 226841, init_special_effect( HUNTER_MARKSMANSHIP,  []( hunter_t* p ) { return &( p -> legendary.mm_wrist ); }) );
-    unique_gear::register_special_effect( 206332, init_special_effect( SPEC_NONE,            []( hunter_t* p ) { return &( p -> legendary.wrist ); }) );
+    register_special_effect( 184900, HUNTER_BEAST_MASTERY, []( hunter_t* p ) { return &( p -> beastlord ); });
+    register_special_effect( 184901, HUNTER_MARKSMANSHIP,  []( hunter_t* p ) { return &( p -> longview ); });
+    register_special_effect( 184902, HUNTER_SURVIVAL,      []( hunter_t* p ) { return &( p -> blackness ); });
+    register_special_effect( 236447, HUNTER_SURVIVAL,      []( hunter_t* p ) { return &( p -> legendary.sv_chest); });
+    register_special_effect( 212574, HUNTER_SURVIVAL,      []( hunter_t* p ) { return &( p -> legendary.sv_feet ); });
+    register_special_effect( 225155, HUNTER_SURVIVAL,      []( hunter_t* p ) { return &( p -> legendary.sv_ring ); });
+    register_special_effect( 213154, HUNTER_SURVIVAL,      []( hunter_t* p ) { return &( p -> legendary.sv_waist ); });
+    register_special_effect( 212278, HUNTER_BEAST_MASTERY, []( hunter_t* p ) { return &( p -> legendary.bm_feet ); });
+    register_special_effect( 212329, HUNTER_BEAST_MASTERY, []( hunter_t* p ) { return &( p -> legendary.bm_ring ); });
+    register_special_effect( 235721, HUNTER_BEAST_MASTERY, []( hunter_t* p ) { return &( p -> legendary.bm_shoulders ); });
+    register_special_effect( 207280, HUNTER_BEAST_MASTERY, []( hunter_t* p ) { return &( p -> legendary.bm_waist ); });
+    register_special_effect( 206889, HUNTER_MARKSMANSHIP,  []( hunter_t* p ) { return &( p -> legendary.mm_feet ); });
+    register_special_effect( 235691, HUNTER_MARKSMANSHIP,  []( hunter_t* p ) { return &( p -> legendary.mm_gloves); });
+    register_special_effect( 224550, HUNTER_MARKSMANSHIP,  []( hunter_t* p ) { return &( p -> legendary.mm_ring ); });
+    register_special_effect( 208912, HUNTER_MARKSMANSHIP,  []( hunter_t* p ) { return &( p -> legendary.mm_waist ); });
+    register_special_effect( 226841, HUNTER_MARKSMANSHIP,  []( hunter_t* p ) { return &( p -> legendary.mm_wrist ); });
+    register_special_effect( 206332, SPEC_NONE,            []( hunter_t* p ) { return &( p -> legendary.wrist ); });
+    register_special_effect( 208051, SPEC_NONE,            []( hunter_t* p ) { return &( p -> legendary.sephuzs_secret ); } );
   }
 
   virtual void init( player_t* ) const override
