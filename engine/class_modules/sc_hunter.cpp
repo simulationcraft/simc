@@ -103,6 +103,9 @@ public:
     const special_effect_t* mm_ring;
     const special_effect_t* mm_waist;
     const special_effect_t* mm_wrist;
+
+    // Generic
+    const special_effect_t* sephuzs_secret;
   } legendary;
 
   // Buffs
@@ -139,6 +142,8 @@ public:
     buff_t* sentinels_sight;
     buff_t* butchers_bone_apron;
     buff_t* gyroscopic_stabilization;
+
+    buff_t* sephuzs_secret;
   } buffs;
 
   // Cooldowns
@@ -5355,6 +5360,26 @@ struct dragonsfire_grenade_t: public hunter_spell_t
   }
 };
 
+// Ranger's Net =====================================================================
+
+struct rangers_net_t: public hunter_spell_t
+{
+  rangers_net_t( hunter_t* p, const std::string& options_str ):
+    hunter_spell_t( "rangers_net", p, p -> talents.rangers_net )
+  {
+    parse_options( options_str );
+    may_miss = may_block = may_dodge = may_parry = false;
+  }
+
+  void execute() override
+  {
+    hunter_spell_t::execute();
+
+    if ( p() -> legendary.sephuzs_secret )
+      p() -> buffs.sephuzs_secret -> trigger();
+  }
+};
+
 //end spells
 }
 
@@ -5451,6 +5476,7 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "multishot"             ) return new             multi_shot_t( this, options_str );
   if ( name == "multi_shot"            ) return new             multi_shot_t( this, options_str );
   if ( name == "piercing_shot"         ) return new          piercing_shot_t( this, options_str );
+  if ( name == "rangers_net"           ) return new            rangers_net_t( this, options_str );
   if ( name == "raptor_strike"         ) return new          raptor_strike_t( this, options_str );
   if ( name == "sentinel"              ) return new               sentinel_t( this, options_str );
   if ( name == "sidewinders"           ) return new            sidewinders_t( this, options_str );
@@ -5975,6 +6001,11 @@ void hunter_t::create_buffs()
   buffs.gyroscopic_stabilization =
     buff_creator_t( this, 235712, "gyroscopic_stabilization" )
       .default_value( find_spell( 235712 ) -> effectN( 2 ).percent() );
+
+  buffs.sephuzs_secret =
+    haste_buff_creator_t( this, "sephuzs_secret", find_spell( 208052 ) )
+      .default_value( find_spell( 208052 ) -> effectN( 2 ).percent() )
+      .cd( find_spell( 226262 ) -> duration() );
 }
 
 bool hunter_t::init_special_effects()
@@ -6549,6 +6580,9 @@ double hunter_t::composite_melee_haste() const
   if ( buffs.t18_2p_rapid_fire -> check() )
     h *= 1.0 / ( 1.0 + buffs.t18_2p_rapid_fire -> default_value );
 
+  if ( buffs.sephuzs_secret -> check() )
+    h *= 1.0 / ( 1.0 + buffs.sephuzs_secret -> check_value() );
+
   return h;
 }
 
@@ -6563,6 +6597,9 @@ double hunter_t::composite_spell_haste() const
 
   if ( buffs.t18_2p_rapid_fire -> check() )
     h *= 1.0 / ( 1.0 + buffs.t18_2p_rapid_fire -> default_value );
+
+  if ( buffs.sephuzs_secret -> check() )
+    h *= 1.0 / ( 1.0 + buffs.sephuzs_secret -> check_value() );
 
   return h;
 }
@@ -7052,6 +7089,7 @@ struct hunter_module_t: public module_t
     register_special_effect( 208912, HUNTER_MARKSMANSHIP,  []( hunter_t* p ) { return &( p -> legendary.mm_waist ); });
     register_special_effect( 226841, HUNTER_MARKSMANSHIP,  []( hunter_t* p ) { return &( p -> legendary.mm_wrist ); });
     register_special_effect( 206332, SPEC_NONE,            []( hunter_t* p ) { return &( p -> legendary.wrist ); });
+    register_special_effect( 208051, SPEC_NONE,            []( hunter_t* p ) { return &( p -> legendary.sephuzs_secret ); } );
   }
 
   virtual void init( player_t* ) const override
