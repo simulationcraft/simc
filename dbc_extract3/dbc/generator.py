@@ -1447,7 +1447,7 @@ class SpellDataGenerator(DataGenerator):
           ( 187677, 0 ),                            # Aegwynn's Ascendance AOE
           ( 191764, 0 ), ( 191799, 0 ),             # Arcane T18 2P Pet
           ( 194432, 0 ),                            # Felo'melorn - Aftershocks
-          ( 205235, 5 ),                            # Arcane Familiar attack, Arcane Assault
+          ( 225119, 5 ),                            # Arcane Familiar attack, Arcane Assault
           ( 210833, 0 ),                            # Touch of the Magi
         ),
 
