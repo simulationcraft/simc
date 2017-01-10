@@ -1784,6 +1784,7 @@ combat_rating_multiplier_type item_database::item_combat_rating_type( const item
     case INVTYPE_WEAPONMAINHAND:
     case INVTYPE_WEAPONOFFHAND:
     case INVTYPE_RANGED:
+    case INVTYPE_RANGEDRIGHT:
     case INVTYPE_THROWN:
       return CR_MULTIPLIER_WEAPON;
     case INVTYPE_ROBE:
