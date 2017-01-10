@@ -45,7 +45,7 @@ actions.sef+=/arcane_torrent,if=chi.max-chi>=1&energy.time_to_max>=0.5
 actions.sef+=/call_action_list,name=cd
 actions.sef+=/storm_earth_and_fire,if=!buff.storm_earth_and_fire.up&(cooldown.touch_of_death.remains<=8|cooldown.touch_of_death.remains>85)
 actions.sef+=/storm_earth_and_fire,if=!buff.storm_earth_and_fire.up&cooldown.storm_earth_and_fire.charges=2
-actions.sef+=/storm_earth_and_fire,if=!buff.storm_earth_and_fire.up&cooldowntarget.time_to_die<=25
+actions.sef+=/storm_earth_and_fire,if=!buff.storm_earth_and_fire.up&target.time_to_die<=25
 actions.sef+=/storm_earth_and_fire,if=!buff.storm_earth_and_fire.up&cooldown.fists_of_fury.remains<=1&chi>=3
 actions.sef+=/fists_of_fury,if=buff.storm_earth_and_fire.up
 actions.sef+=/rising_sun_kick,if=buff.storm_earth_and_fire.up&chi=2&energy<energy.max
