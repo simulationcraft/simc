@@ -1901,7 +1901,7 @@ void item::draught_of_souls( special_effect_t& effect )
       proc_spell_t( "draught_of_souls", effect_.player, effect_.driver(), effect_.item ),
       effect( effect_ ), damage( nullptr )
     {
-      channeled = quiet = true;
+      channeled = quiet = tick_zero = true;
       cooldown -> duration = timespan_t::zero();
       hasted_ticks = false;
 
