@@ -228,9 +228,6 @@ public:
   action_t* unstable_magic_explosion;
   player_t* last_bomb_target;
 
-  // Artifact effects
-  int scorched_earth_counter;
-
   // Tier 18 (WoD 6.2) trinket effects
   const special_effect_t* wild_arcanist; // Arcane
   const special_effect_t* pyrosurge;     // Fire
@@ -511,6 +508,7 @@ public:
     // Arcane
     artifact_power_t arcane_rebound,
                      ancient_power,
+                     scorched_earth,
                      everywhere_at_once, //NYI
                      arcane_purification,
                      aegwynns_imperative,
@@ -530,7 +528,6 @@ public:
 
     // Fire
     artifact_power_t aftershocks,
-                     scorched_earth,
                      everburning_consumption,
                      blue_flame_special,
                      molten_skin, //NYI
@@ -6020,42 +6017,6 @@ struct scorch_t : public fire_mage_spell_t
     return c;
   }
 
-  virtual void execute() override
-  {
-    fire_mage_spell_t::execute();
-
-    if ( result_is_hit( execute_state -> result ) &&
-         p() -> artifact.scorched_earth.rank() )
-    {
-      // Can't use last_gcd_action because it misses IB/Counterspell/Combustion
-      // XXX: Fix this to allow item actions such as trinkets or potions
-      if ( p() -> last_foreground_action &&
-           p() -> last_foreground_action -> data().id() == data().id() )
-      {
-        p() -> scorched_earth_counter++;
-      }
-      else
-      {
-        p() -> scorched_earth_counter = 1;
-      }
-
-      if ( p() -> scorched_earth_counter ==
-           p() -> artifact.scorched_earth.data().effectN( 1 ).base_value() )
-      {
-        if ( sim -> debug )
-        {
-          sim -> out_debug.printf(
-              "%s generates hot_streak from scorched_earth",
-              player -> name()
-           );
-        }
-
-        p() -> scorched_earth_counter = 0;
-        p() -> buffs.hot_streak -> trigger();
-      }
-    }
-  }
-
   virtual bool usable_moving() const override
   { return true; }
 };
@@ -7201,7 +7162,6 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   touch_of_the_magi_explosion( nullptr ),
   unstable_magic_explosion( nullptr ),
   last_bomb_target( nullptr ),
-  scorched_earth_counter( 0 ),
   wild_arcanist( nullptr ),
   pyrosurge( nullptr ),
   shatterlance( nullptr ),
@@ -8757,7 +8717,6 @@ void mage_t::reset()
     recalculate_resource_max( RESOURCE_MANA );
   }
 
-  scorched_earth_counter = 0;
   last_bomb_target = nullptr;
   burn_phase.reset();
 
