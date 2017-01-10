@@ -537,6 +537,7 @@ public:
     // Generic
     const spell_data_t* plate_specialization;
     const spell_data_t* death_knight;
+    const spell_data_t* unholy_death_knight;
 
     // Blood
     const spell_data_t* blood_death_knight;
@@ -2350,6 +2351,16 @@ struct death_knight_action_t : public Base
       this -> energize_resource = RESOURCE_RUNIC_POWER;
       this -> energize_amount += std::fabs( this -> base_costs[ RESOURCE_RUNIC_POWER ] );
       this -> base_costs[ RESOURCE_RUNIC_POWER ] = 0;
+    }
+
+    if ( this -> data().affected_by( p -> spec.unholy_death_knight -> effectN( 1 ) ) )
+    {
+      this -> base_dd_multiplier *= 1.0 + p -> spec.unholy_death_knight -> effectN( 1 ).percent();
+    }
+
+    if ( this -> data().affected_by( p -> spec.unholy_death_knight -> effectN( 2 ) ) )
+    {
+      this -> base_td_multiplier *= 1.0 + p -> spec.unholy_death_knight -> effectN( 2 ).percent();
     }
   }
 
@@ -6600,6 +6611,7 @@ void death_knight_t::init_spells()
   spec.outbreak                   = find_specialization_spell( "Outbreak" );
   spec.runic_corruption           = find_specialization_spell( "Runic Corruption" );
   spec.sudden_doom                = find_specialization_spell( "Sudden Doom" );
+  spec.unholy_death_knight        = find_specialization_spell( "Unholy Death Knight" );
 
   mastery.blood_shield            = find_mastery_spell( DEATH_KNIGHT_BLOOD );
   mastery.frozen_heart            = find_mastery_spell( DEATH_KNIGHT_FROST );
