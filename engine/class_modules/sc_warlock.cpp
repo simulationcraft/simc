@@ -7476,7 +7476,7 @@ struct wakeners_loyalty_t : public scoped_actor_callback_t<warlock_t>
 {
     wakeners_loyalty_t() : super ( WARLOCK ){}
 
-    void manipulate (warlock_t* p, const special_effect_t& e) override
+    void manipulate (warlock_t* p, const special_effect_t& ) override
     {
         const spell_data_t * tmp = p->find_spell(236200);
         p->legendary.wakeners_loyalty_enabled = true;
@@ -7554,7 +7554,7 @@ struct lessons_of_spacetime_t : public scoped_actor_callback_t<warlock_t>
 {
   lessons_of_spacetime_t() : super( WARLOCK ){}
 
-  void manipulate( warlock_t* p, const special_effect_t& e ) override
+  void manipulate( warlock_t* p, const special_effect_t& ) override
   {
     const spell_data_t * tmp = p -> find_spell( 236176 );
     p -> legendary.lessons_of_spacetime = true;
