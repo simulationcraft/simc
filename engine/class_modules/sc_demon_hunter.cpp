@@ -455,6 +455,8 @@ public:
     // General
     real_ppm_t* felblade;
 
+	real_ppm_t* felblade_demons_bite;
+
     // Havoc
     real_ppm_t* inner_demons;
 
@@ -3787,7 +3789,7 @@ struct demons_bite_t : public demon_hunter_attack_t
     demon_hunter_attack_t::impact( s );
 
     if ( result_is_hit( s -> result ) && p() -> talent.felblade -> ok() &&
-         p() -> rppm.felblade -> trigger() )
+         p() -> rppm.felblade_demons_bite -> trigger() )
     {
       p() -> proc.felblade_reset -> occur();
       p() -> cooldown.felblade -> reset( true );
@@ -5873,6 +5875,8 @@ void demon_hunter_t::init_rng()
 
   // General
   rppm.felblade = get_rppm( "felblade", find_spell( 203557 ) );
+
+  rppm.felblade_demons_bite = get_rppm("felblade", find_spell( 236167 ));
 
   // Havoc
   rppm.inner_demons = get_rppm( "inner_demons", artifact.inner_demons );
