@@ -1,4 +1,4 @@
-SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23360, git build 0a8dde1)
+SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23360, git build e5ada11)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Arcane Fire Frost Mage
@@ -4388,7 +4388,8 @@ Attributes       : ........ ........ .......x x..x....   ...x.x.x ........ .....
                  : Does not break stealth (37), Requires line of sight (186)
 Effects          :
 #1 (id=303428)   : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.50000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.30000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
+                   Hotfixed: SP Coefficient (0.5 -> 0.3)
 Description      : Burning enemies for $s1 Fire damage.
 
 Name             : Chilled (id=205708) [Spell Family (3)] 
@@ -4831,6 +4832,22 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Target: Enemy(6) -> Unknown(87)
 Description      : Creates a rune around the target, inflicting ${$211088s1*6} Arcane damage over $d, and then detonating for Arcane damage equal to $s1% of your maximum mana.
 Tooltip          : Deals continuous Arcane damage, and then detonates for massive damage to nearby enemies.
+
+Name             : Arcane Assault (id=225119) [Spell Family (3)] 
+Class            : Mage
+School           : Arcane
+Range            : 100 yards
+Velocity         : 24 yards/sec
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=337222)   : School Damage: arcane (2)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.35000 | Target: Enemy(6)
+Description      : Launches bolts of arcane energy at the enemy target, causing $s1 Arcane damage. 
 
 Name             : Conflagration (id=226757) [Spell Family (3)] 
 Class            : Mage
@@ -5325,9 +5342,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=356242)   : Apply Aura (6) | Proc Trigger Spell: Chrono Shift (42)
-                   Base Value: 30 | Scaled Value: 30 | Trigger Spell: 236298 | Target: Self(1)
+                   Base Value: 50 | Scaled Value: 50 | Trigger Spell: 236298 | Target: Self(1)
+                   Hotfixed: Base Value (30 -> 50)
 #2 (id=357239)   : Apply Aura (6) | Proc Trigger Spell: Chrono Shift (42)
-                   Base Value: 30 | Scaled Value: 30 | Trigger Spell: 236299 | Target: Self(1)
+                   Base Value: 50 | Scaled Value: 50 | Trigger Spell: 236299 | Target: Self(1)
+                   Hotfixed: Base Value (30 -> 50)
 Description      : Arcane Barrage slows enemies by $236298s% and increases your movement speed by $236299s% for $236299d.
 
 Name             : Alexstrasza's Fury (id=235870) [Spell Family (3), Passive] 
@@ -5392,7 +5411,7 @@ Name             : Chrono Shift (id=236298) [Spell Family (3)]
 Class            : Mage
 School           : Arcane
 Spell Level      : 1
-Duration         : 8 seconds
+Duration         : 5 seconds
 Proc Chance      : 100%
 Proc Flags       : ........ ........ ..x..... ........ 
                  : Periodic
@@ -5405,7 +5424,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=357235)   : Apply Aura (6) | Unknown effect sub type (129)
-                   Base Value: 30 | Scaled Value: 30 | Target: Self(1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self(1)
+                   Hotfixed: Base Value (30 -> 50)
 Description      : $@spelldesc236298
 Tooltip          : Movement speed increased by $s1%.
 
@@ -5413,7 +5433,7 @@ Name             : Chrono Shift (id=236299) [Spell Family (3)]
 Class            : Mage
 School           : Arcane
 Spell Level      : 1
-Duration         : 8 seconds
+Duration         : 5 seconds
 Proc Chance      : 100%
 Proc Flags       : ........ ........ ..x..... ........ 
                  : Periodic
@@ -5426,7 +5446,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=357237)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: 30 | Scaled Value: 30 | Target: Enemy(6)
+                   Base Value: 50 | Scaled Value: 50 | Target: Enemy(6)
+                   Hotfixed: Base Value (30 -> 50)
 Description      : $@spelldesc235711
 Tooltip          : Movement speed slowed by $s1%.
 

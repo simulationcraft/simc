@@ -414,7 +414,7 @@ public:
     gain_t* demonic_appetite;
     gain_t* prepared;
     gain_t* blind_fury;
-	gain_t* anger_of_the_half_giants;
+    gain_t* anger_of_the_half_giants;
 
     // Vengeance
     gain_t* damage_taken;
@@ -455,6 +455,8 @@ public:
     // General
     real_ppm_t* felblade;
 
+	real_ppm_t* felblade_demons_bite;
+
     // Havoc
     real_ppm_t* inner_demons;
 
@@ -473,8 +475,8 @@ public:
     spell_t* anguish;
     attack_t* demon_blades;
     spell_t* inner_demons;
-	attack_t* chaos_cleave;
-	attack_t* chaos_cleave_annihilation;
+    attack_t* chaos_cleave;
+    attack_t* chaos_cleave_annihilation;
 
     // Vengeance
     heal_t* charred_warblades;
@@ -505,8 +507,8 @@ public:
     // Havoc
     double eternal_hunger;
     timespan_t raddons_cascading_eyes;
-	timespan_t delusions_of_grandeur_reduction;
-	double delusions_of_grandeur_fury_per_time;
+    timespan_t delusions_of_grandeur_reduction;
+    double delusions_of_grandeur_fury_per_time;
 
     // Vengeance
     double cloak_of_fel_flames;
@@ -514,7 +516,7 @@ public:
     timespan_t kirel_narak;
     bool runemasters_pauldrons;
     timespan_t the_defilers_lost_vambraces;
-	const special_effect_t* anger_of_the_half_giants;
+    const special_effect_t* anger_of_the_half_giants;
   } legendary;
 
   demon_hunter_t( sim_t* sim, const std::string& name, race_e r );
@@ -1067,6 +1069,7 @@ public:
   bool havoc_t19_2pc;
   bool hasted_gcd;
   bool may_proc_fel_barrage;
+  bool havoc_damage_increase;
 
   demon_hunter_action_t( const std::string& n, demon_hunter_t* p,
                          const spell_data_t* s = spell_data_t::nil(),
@@ -1077,7 +1080,8 @@ public:
       havoc_t19_2pc( ab::data().affected_by(
                        p -> sets.set( DEMON_HUNTER_HAVOC, T19, B2 ) ) ),
       hasted_gcd( false ),
-      may_proc_fel_barrage( false )
+      may_proc_fel_barrage( false ),
+	  havoc_damage_increase(ab::data().affected_by(p->spec.havoc->effectN(6)))
   {
     ab::parse_options( o );
     ab::may_crit      = true;
@@ -1089,6 +1093,11 @@ public:
         hasted_gcd = ab::data().affected_by( p -> spec.havoc -> effectN( 1 ) );
         ab::cooldown -> hasted =
           ab::data().affected_by( p -> spec.havoc -> effectN( 2 ) );
+
+		if (havoc_damage_increase)
+		{
+			ab::weapon_multiplier *= 1 + p->spec.havoc->effectN(6).percent();
+		}
         break;
       case DEMON_HUNTER_VENGEANCE:
         hasted_gcd = ab::data().affected_by( p -> spec.vengeance -> effectN( 1 ) );
@@ -3775,11 +3784,11 @@ struct demons_bite_t : public demon_hunter_attack_t
       p() -> proc.demons_bite_in_meta -> occur();
     }
 
-	if (p()->legendary.anger_of_the_half_giants)
-	{
-		auto range = p()->legendary.anger_of_the_half_giants -> driver() -> effectN(1).base_value();
-		p()->resource_gain(RESOURCE_FURY, (int)rng().range(1, 1 + range), p()->gain.anger_of_the_half_giants);
-	}
+    if (p()->legendary.anger_of_the_half_giants)
+    {
+        auto range = p()->legendary.anger_of_the_half_giants -> driver() -> effectN(1).base_value();
+        p()->resource_gain(RESOURCE_FURY, (int)rng().range(1, 1 + range), p()->gain.anger_of_the_half_giants);
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -3787,7 +3796,7 @@ struct demons_bite_t : public demon_hunter_attack_t
     demon_hunter_attack_t::impact( s );
 
     if ( result_is_hit( s -> result ) && p() -> talent.felblade -> ok() &&
-         p() -> rppm.felblade -> trigger() )
+         p() -> rppm.felblade_demons_bite -> trigger() )
     {
       p() -> proc.felblade_reset -> occur();
       p() -> cooldown.felblade -> reset( true );
@@ -3845,13 +3854,13 @@ struct demon_blades_t : public demon_hunter_attack_t
 
   void execute() override
   {
-	  demon_hunter_attack_t::execute();
-	  if (p()->legendary.anger_of_the_half_giants)
-	  {
-		  // dblades has a negative modifier for AotHG, go ahead and add that in
-		  auto range = p()->legendary.anger_of_the_half_giants->driver()->effectN(1).base_value() + p()->talent.demon_blades->effectN(2).base_value();
-		  p()->resource_gain(RESOURCE_FURY, (int)rng().range(1, 1 + range), p()->gain.anger_of_the_half_giants);
-	  }
+      demon_hunter_attack_t::execute();
+      if (p()->legendary.anger_of_the_half_giants)
+      {
+          // dblades has a negative modifier for AotHG, go ahead and add that in
+          auto range = p()->legendary.anger_of_the_half_giants->driver()->effectN(1).base_value() + p()->talent.demon_blades->effectN(2).base_value();
+          p()->resource_gain(RESOURCE_FURY, (int)rng().range(1, 1 + range), p()->gain.anger_of_the_half_giants);
+      }
   }
 };
 
@@ -3960,7 +3969,7 @@ struct fel_rush_t : public demon_hunter_attack_t
     if ( !a_cancel )
     {
       // fel rush does damage in a further line than it moves you
-	  base_teleport_distance  = damage -> radius - 5;
+      base_teleport_distance  = damage -> radius - 5;
       movement_directionality = MOVEMENT_OMNI;
       ignore_false_positive   = true;
 
@@ -5874,6 +5883,8 @@ void demon_hunter_t::init_rng()
   // General
   rppm.felblade = get_rppm( "felblade", find_spell( 203557 ) );
 
+  rppm.felblade_demons_bite = get_rppm("felblade", find_spell( 236167 ));
+
   // Havoc
   rppm.inner_demons = get_rppm( "inner_demons", artifact.inner_demons );
 
@@ -7299,7 +7310,7 @@ struct anger_of_the_halfgiants_t : scoped_actor_callback_t<demon_hunter_t>
   void manipulate(demon_hunter_t* dh, const special_effect_t& e ) override
   {
     // set the anger to a non nullptr so it's registered
-	dh->legendary.anger_of_the_half_giants = &e;
+    dh->legendary.anger_of_the_half_giants = &e;
   }
 };
 

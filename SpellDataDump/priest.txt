@@ -1,4 +1,4 @@
-SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23360, git build 0a8dde1)
+SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23360, git build e5ada11)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Discipline Shadow Priest
@@ -3172,11 +3172,13 @@ Effects          :
                    Base Value: -35 | Scaled Value: -35 | Misc Value: 32 | Target: Self(1)
                    Affected Spells: Voidform (185916)
 #3 (id=361454)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Target: Self(1)
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 3 | Target: Self(1)
                    Affected Spells: Voidform (194249)
+                   Hotfixed: Base Value (0 -> 5)
 #4 (id=361455)   : Dummy (3)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self(1)
+                   Base Value: 2 | Scaled Value: 2 | Target: Self(1)
                    Affected Spells: Voidform (194249)
+                   Hotfixed: Base Value (1 -> 2)
 Description      : Void Eruption may be cast anytime your Insanity level is ${100+$m1/100} or higher$@switch<$s4>[][, and Voidform increases Shadow damage dealt by an additional $s3%].
 
 Name             : Mind Flay (id=193473) [Spell Family (6)] 
@@ -4147,7 +4149,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=303255)   : School Damage: shadow (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 9.60000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 8.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
+                   Hotfixed: SP Coefficient (9.6 -> 8)
 Description      : $@spelldesc205385
 
 

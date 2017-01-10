@@ -5761,7 +5761,7 @@ void rogue_t::trigger_insignia_of_ravenholdt( action_state_t* state )
   insignia_of_ravenholdt_ -> execute();
 }
 
-void rogue_t::trigger_shadow_nova( const action_state_t* state )
+void rogue_t::trigger_shadow_nova( const action_state_t* )
 {
   /* TODO: Check if it triggers when the result is null or when the hit is failed.
   if ( state -> result_total <= 0 )

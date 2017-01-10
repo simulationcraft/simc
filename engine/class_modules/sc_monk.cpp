@@ -1099,6 +1099,18 @@ struct storm_earth_and_fire_pet_t : public pet_t
       }
     }
 
+    double action_multiplier() const override
+    {
+      double am = sef_melee_attack_t::action_multiplier();
+          
+      double sef_mult = o() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
+      if ( o() -> artifact.spiritual_focus.rank() )
+        sef_mult += o() -> artifact.spiritual_focus.data().effectN( 1 ).percent();
+      am *= 1.0 + sef_mult;
+
+      return am;
+    }
+
     // A wild equation appears
     double composite_attack_power() const override
     {
@@ -2736,6 +2748,14 @@ struct tiger_palm_t: public monk_melee_attack_t
 
     am *= 1 + p() -> spec.windwalker_monk -> effectN( 6 ).percent();
 
+    if ( p() -> buff.storm_earth_and_fire -> up() )
+    {
+      double sef_mult = p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
+      if ( p() -> artifact.spiritual_focus.rank() )
+        sef_mult += p() -> artifact.spiritual_focus.data().effectN( 1 ).percent();
+      am *= 1.0 + sef_mult;
+    }
+
     return am;
   }
 
@@ -2895,6 +2915,14 @@ struct rising_sun_kick_proc_t : public monk_melee_attack_t
 
     am *= 1 + p() -> spec.windwalker_monk -> effectN( 6 ).percent();
 
+    if ( p() -> buff.storm_earth_and_fire -> up() )
+    {
+      double sef_mult = p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
+      if ( p() -> artifact.spiritual_focus.rank() )
+        sef_mult += p() -> artifact.spiritual_focus.data().effectN( 1 ).percent();
+      am *= 1.0 + sef_mult;
+    }
+
     return am;
   }
 
@@ -3046,6 +3074,14 @@ struct rising_sun_kick_t: public monk_melee_attack_t
     am *= 1 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
 
     am *= 1 + p() -> spec.windwalker_monk -> effectN( 6 ).percent();
+
+    if ( p() -> buff.storm_earth_and_fire -> up() )
+    {
+      double sef_mult = p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
+      if ( p() -> artifact.spiritual_focus.rank() )
+        sef_mult += p() -> artifact.spiritual_focus.data().effectN( 1 ).percent();
+      am *= 1.0 + sef_mult;
+    }
 
     return am;
   }
@@ -3286,6 +3322,14 @@ struct blackout_kick_t: public monk_melee_attack_t
 
         am *= 1 + p() -> spec.windwalker_monk -> effectN( 6 ).percent();
 
+        if ( p() -> buff.storm_earth_and_fire -> up() )
+        {
+          double sef_mult = p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
+          if ( p() -> artifact.spiritual_focus.rank() )
+            sef_mult += p() -> artifact.spiritual_focus.data().effectN( 1 ).percent();
+          am *= 1.0 + sef_mult;
+        }
+
         break;
       }
       default: break;
@@ -3500,6 +3544,14 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
 
     am *= 1 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
 
+    if ( p() -> buff.storm_earth_and_fire -> up() )
+    {
+      double sef_mult = p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
+      if ( p() -> artifact.spiritual_focus.rank() )
+        sef_mult += p() -> artifact.spiritual_focus.data().effectN( 1 ).percent();
+      am *= 1.0 + sef_mult;
+    }
+
     am *= 1 + p() -> spec.brewmaster_monk -> effectN( 1 ).percent();
 
     am *= 1 + p() -> spec.brewmaster_monk -> effectN( 5 ).percent();
@@ -3595,6 +3647,14 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
       am *= 1 + p() -> artifact.power_of_a_thousand_cranes.percent();
 
     am *= 1 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
+
+    if ( p() -> buff.storm_earth_and_fire -> up() )
+    {
+      double sef_mult = p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
+      if ( p() -> artifact.spiritual_focus.rank() )
+        sef_mult += p() -> artifact.spiritual_focus.data().effectN( 1 ).percent();
+      am *= 1.0 + sef_mult;
+    }
 
     am *= 1 + p() -> spec.mistweaver_monk -> effectN( 12 ).percent();
 
@@ -3767,12 +3827,19 @@ struct fists_of_fury_t: public monk_melee_attack_t
     pm *= 1 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
 
     if ( p() -> buff.transfer_the_power -> up() )
-    {
       pm *= 1 + p() -> buff.transfer_the_power -> stack_value();
-    }
 
     if ( p() -> artifact.fists_of_the_wind.rank() )
       pm *= 1 + p() -> artifact.fists_of_the_wind.percent();
+    
+
+    if ( p() -> buff.storm_earth_and_fire -> up() )
+    {
+      double sef_mult = p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
+      if ( p() -> artifact.spiritual_focus.rank() )
+        sef_mult += p() -> artifact.spiritual_focus.data().effectN( 1 ).percent();
+      pm *= 1.0 + sef_mult;
+    }
 
     return pm;
   }
@@ -3899,6 +3966,14 @@ struct whirling_dragon_punch_t: public monk_melee_attack_t
 
     pm *= 1 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
 
+    if ( p() -> buff.storm_earth_and_fire -> up() )
+    {
+      double sef_mult = p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
+      if ( p() -> artifact.spiritual_focus.rank() )
+        sef_mult += p() -> artifact.spiritual_focus.data().effectN( 1 ).percent();
+      pm *= 1.0 + sef_mult;
+    }
+
     return pm;
   }
 
@@ -3959,6 +4034,14 @@ struct strike_of_the_windlord_off_hand_t: public monk_melee_attack_t
 
     pm *= 1 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
 
+    if ( p() -> buff.storm_earth_and_fire -> up() )
+    {
+      double sef_mult = p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
+      if ( p() -> artifact.spiritual_focus.rank() )
+        sef_mult += p() -> artifact.spiritual_focus.data().effectN( 1 ).percent();
+      pm *= 1.0 + sef_mult;
+    }
+
     return pm;
   }
 
@@ -4007,6 +4090,14 @@ struct strike_of_the_windlord_t: public monk_melee_attack_t
       pm *= 1 + p() -> cache.mastery_value();
 
     pm *= 1 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
+
+    if ( p() -> buff.storm_earth_and_fire -> up() )
+    {
+      double sef_mult = p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
+      if ( p() -> artifact.spiritual_focus.rank() )
+        sef_mult += p() -> artifact.spiritual_focus.data().effectN( 1 ).percent();
+      pm *= 1.0 + sef_mult;
+    }
 
     return pm;
   }
@@ -4057,6 +4148,21 @@ struct melee_t: public monk_melee_attack_t
       else
         base_hit -= 0.19;
     }
+  }
+  
+  virtual double action_multiplier() const override
+  {
+    double am = monk_melee_attack_t::action_multiplier();
+
+    if ( p() -> buff.storm_earth_and_fire -> up() )
+    {
+      double sef_mult = p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
+      if ( p() -> artifact.spiritual_focus.rank() )
+        sef_mult += p() -> artifact.spiritual_focus.data().effectN( 1 ).percent();
+      am *= 1.0 + sef_mult;
+    }
+
+    return am;
   }
 
   void reset() override
@@ -4870,6 +4976,14 @@ struct crackling_jade_lightning_t: public monk_spell_t
 
     am *= 1 + p() -> spec.windwalker_monk -> effectN( 2 ).percent();
 
+    if ( p() -> buff.storm_earth_and_fire -> up() )
+    {
+      double sef_mult = p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
+      if ( p() -> artifact.spiritual_focus.rank() )
+        sef_mult += p() -> artifact.spiritual_focus.data().effectN( 1 ).percent();
+      am *= 1.0 + sef_mult;
+    }
+
     return am;
   }
 
@@ -4915,6 +5029,16 @@ struct chi_orbit_t: public monk_spell_t
     attack_power_mod.direct = p -> passives.chi_orbit -> effectN( 1 ).ap_coeff();
     aoe = -1;
     school = p -> passives.chi_orbit -> get_school_type();
+  }
+
+  virtual double action_multiplier() const override
+  {
+    double am = monk_spell_t::action_multiplier();
+
+    if ( p() -> buff.storm_earth_and_fire -> up() )
+      am *= 3;
+
+    return am;
   }
 
   bool ready() override
@@ -6400,6 +6524,14 @@ struct chi_wave_dmg_tick_t: public monk_spell_t
 
     am *= 1 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
 
+    if ( p() -> buff.storm_earth_and_fire -> up() )
+    {
+      double sef_mult = p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
+      if ( p() -> artifact.spiritual_focus.rank() )
+        sef_mult += p() -> artifact.spiritual_focus.data().effectN( 1 ).percent();
+      am *= 1.0 + sef_mult;
+    }
+
     return am;
   }
 };
@@ -6522,6 +6654,14 @@ struct chi_burst_damage_t: public monk_spell_t
     am *= 1 + p() -> spec.brewmaster_monk -> effectN( 6 ).percent();
 
     am *= 1 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
+
+    if ( p() -> buff.storm_earth_and_fire -> up() )
+    {
+      double sef_mult = p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
+      if ( p() -> artifact.spiritual_focus.rank() )
+        sef_mult += p() -> artifact.spiritual_focus.data().effectN( 1 ).percent();
+      am *= 1.0 + sef_mult;
+    }
 
     return am;
   }
@@ -8258,14 +8398,6 @@ double monk_t::composite_player_multiplier( school_e school ) const
     m *= 1 + ser_mult;
   }
 
-  if ( buff.storm_earth_and_fire -> up() )
-  {
-    double sef_mult = spec.storm_earth_and_fire -> effectN( 1 ).percent();
-    if ( artifact.spiritual_focus.rank() )
-      sef_mult += artifact.spiritual_focus.data().effectN( 1 ).percent();
-    m *= 1.0 + sef_mult;
-  }
-
   if ( talent.hit_combo -> ok() )
     m *= 1.0 + buff.hit_combo -> stack_value();
 
@@ -8299,14 +8431,6 @@ double monk_t::composite_player_heal_multiplier( const action_state_t* s ) const
     if ( artifact.spiritual_focus.rank() )
       ser_mult += artifact.spiritual_focus.data().effectN( 6 ).percent();
     m *= 1+ ser_mult;
-  }
-
-  if ( buff.storm_earth_and_fire -> up() )
-  {
-    double sef_mult = spec.storm_earth_and_fire -> effectN( 2 ).percent();
-    if ( artifact.spiritual_focus.rank() )
-      sef_mult += artifact.spiritual_focus.data().effectN( 2 ).percent();
-    m *= 1.0 + sef_mult;
   }
 
   if ( artifact.mistweaving.rank() )
@@ -9221,9 +9345,8 @@ void monk_t::apl_combat_windwalker()
   sef -> add_action( "call_action_list,name=cd" );
   sef -> add_action( this, "Storm, Earth, and Fire", "if=!buff.storm_earth_and_fire.up&(cooldown.touch_of_death.remains<=8|cooldown.touch_of_death.remains>85)" );
   sef -> add_action( this, "Storm, Earth, and Fire", "if=!buff.storm_earth_and_fire.up&cooldown.storm_earth_and_fire.charges=2" );
-  sef -> add_action( this, "Storm, Earth, and Fire", "if=!buff.storm_earth_and_fire.up&cooldowntarget.time_to_die<=25" );
+  sef -> add_action( this, "Storm, Earth, and Fire", "if=!buff.storm_earth_and_fire.up&target.time_to_die<=25" );
   sef -> add_action( this, "Storm, Earth, and Fire", "if=!buff.storm_earth_and_fire.up&cooldown.fists_of_fury.remains<=1&chi>=3" );
-  sef -> add_action( this, "Storm, Earth, and Fire", "if=!buff.storm_earth_and_fire.up" );
   sef -> add_action( this, "Fists of Fury", "if=buff.storm_earth_and_fire.up" );
   sef -> add_action( this, "Rising Sun Kick", "if=buff.storm_earth_and_fire.up&chi=2&energy<energy.max" );
   sef -> add_action( "call_action_list,name=st" );

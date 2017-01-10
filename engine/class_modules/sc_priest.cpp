@@ -4622,7 +4622,10 @@ double priest_t::composite_player_multiplier( school_e school ) const
        ( dbc::is_school( SCHOOL_SHADOW, school ) ||
          dbc::is_school( SCHOOL_SHADOWFROST, school ) ) )
   {
-    m *= 1.0 + buffs.voidform->data().effectN( 1 ).percent();
+    m *= 1.0 + buffs.voidform->data().effectN(1).percent() +
+      (talents.legacy_of_the_void->ok()
+			? talents.legacy_of_the_void->effectN(3).percent()
+			: 0.0);
   }
 
   if ( specialization() == PRIEST_SHADOW && artifact.creeping_shadows.rank() &&

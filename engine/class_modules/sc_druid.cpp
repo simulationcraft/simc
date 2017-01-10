@@ -544,7 +544,6 @@ public:
     // Resto
     const spell_data_t* yseras_gift; // Restoration Affinity
     const spell_data_t* moonkin_form_affinity;
-	const spell_data_t* starsurge_affinity;
   } spec;
 
   // Talents
@@ -5740,28 +5739,6 @@ struct starsurge_t : public druid_spell_t
   }
 };
 
-// Starsurge Affinity =======================================================
-
-struct starsurge_affinity_t : public druid_spell_t
-{
-
-
-	starsurge_affinity_t(druid_t* p, const std::string& options_str) :
-		druid_spell_t("starsurge_affinity", p, p -> find_spell(197626), options_str)	{}
-
-
-	void execute() override
-	{
-		druid_spell_t::execute();
-
-		if (hit_any_target)
-		{
-			p()->buff.solar_empowerment->trigger();
-			p()->buff.lunar_empowerment->trigger();
-		}
-	}
-};
-
 // Stellar Flare ============================================================
 
 struct stellar_flare_t : public druid_spell_t
@@ -6054,7 +6031,6 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "stampeding_roar"        ) return new        stampeding_roar_t( this, options_str );
   if ( name == "starfall"               ) return new               starfall_t( this, options_str );
   if ( name == "starsurge"              ) return new              starsurge_t( this, options_str );
-  if ( name == "starsurge_affinity"     ) return new     starsurge_affinity_t( this, options_str );
   if ( name == "stellar_flare"          ) return new          stellar_flare_t( this, options_str );
   if ( name == "prowl"                  ) return new                  prowl_t( this, options_str );
   if ( name == "survival_instincts"     ) return new     survival_instincts_t( this, options_str );

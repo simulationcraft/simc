@@ -1,4 +1,4 @@
-SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23360, git build 0a8dde1)
+SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23360, git build e5ada11)
 
 Name             : Defensive Stance (id=71) [Spell Family (4), Passive, Hidden] 
 Class            : Protection Warrior
@@ -2493,7 +2493,7 @@ Effects          :
                    Affected Spells: Cleave (845), Thunder Clap (6343), Revenge (6572), Overpower (7384), Bloodthirst (23881), Shield Slam (23922), Raging Blow (85288), Raging Blow (85384), Raging Blow (96103), Furious Slash (100130), Focused Rage (207982)
 #2 (id=188987)   : Apply Aura (6) | Unknown effect sub type (417)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Misc Value: 11 | Target: Self(1)
-                   Affected Spells: Defensive Stance (71), Charge (100), Rend (772), Cleave (845), Slam (1464), Whirlwind (1680), Hamstring (1715), Intimidating Shout (5246), Execute (5308), Thunder Clap (6343), Pummel (6552), Revenge (6572), Overpower (7384), Mortal Strike (12294), Piercing Howl (12323), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Improved Hamstring (24428), Victory Rush (34428), Whirlwind Off-Hand (44949), Bladestorm (46924), Shockwave (46968), Bladestorm (50622), Heroic Throw (57755), Raging Blow (85288), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Shockwave (132168), Storm Bolt (132169), Ravager (152277), Ravager (156287), Execute (163201), Execute Off-Hand (163558), Colossus Smash (167105), Bladestorm (168969), Rampage (184367), Rampage (184707), Rampage (184709), Cleave (188923), Whirlwind (190411), Defensive Stance (197690), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Odyn's Fury (205545), Focused Rage (207982), Colossus Smash (208086), Warbreaker (209577), Rampage (218617), Bladestorm (222634), Ravager (227744), Bladestorm (227847), Ravager (228920), Devastator (236282)
+                   Affected Spells: Defensive Stance (71), Charge (100), Rend (772), Cleave (845), Slam (1464), Whirlwind (1680), Hamstring (1715), Intimidating Shout (5246), Execute (5308), Thunder Clap (6343), Pummel (6552), Revenge (6572), Overpower (7384), Mortal Strike (12294), Piercing Howl (12323), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Improved Hamstring (24428), Victory Rush (34428), Whirlwind Off-Hand (44949), Bladestorm (46924), Shockwave (46968), Bladestorm (50622), Heroic Throw (57755), Raging Blow (85288), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Shockwave (132168), Storm Bolt (132169), Ravager (152277), Ravager (156287), Execute (163201), Execute Off-Hand (163558), Colossus Smash (167105), Bladestorm (168969), Rampage (184367), Rampage (184707), Rampage (184709), Cleave (188923), Whirlwind (190411), Defensive Stance (197690), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Odyn's Fury (205545), Odyn's Fury (205546), Odyn's Fury (205547), Focused Rage (207982), Colossus Smash (208086), Warbreaker (209577), Rampage (218617), Bladestorm (222634), Ravager (227744), Bladestorm (227847), Ravager (228920), Devastator (236282)
 #3 (id=191020)   : Apply Aura (6) | Unknown effect sub type (457)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1385 | Target: Self(1)
 #4 (id=191021)   : Apply Aura (6) | Unknown effect sub type (457)
@@ -2597,10 +2597,11 @@ Effects          :
                    Base Value: 297 | Scaled Value: 297 | Target: Self(1)
 #2 (id=186754)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 5 | Scaled Value: 5 | Target: Self(1)
-                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Whirlwind (1680), Hamstring (1715), Execute (5308), Heroic Leap (6544), Overpower (7384), Mortal Strike (12294), Improved Hamstring (24428), Victory Rush (34428), Whirlwind Off-Hand (44949), Bladestorm (46924), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Bladestorm Off-Hand (95738), Storm Bolt (107570), Deep Wounds (115767), Shockwave (132168), Storm Bolt (132169), Ravager (152277), Ravager (156287), Execute (163201), Execute Off-Hand (163558), Colossus Smash (167105), Bladestorm (168969), Whirlwind (190411), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Impending Victory (202168), Colossus Smash (208086), Bladestorm (222634), Ravager (227744), Bladestorm (227847), Ravager (228920)
+                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Whirlwind (1680), Hamstring (1715), Execute (5308), Heroic Leap (6544), Overpower (7384), Mortal Strike (12294), Improved Hamstring (24428), Victory Rush (34428), Whirlwind Off-Hand (44949), Bladestorm (46924), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Bladestorm Off-Hand (95738), Storm Bolt (107570), Deep Wounds (115767), Shockwave (132168), Storm Bolt (132169), Ravager (152277), Ravager (156287), Execute (163201), Execute Off-Hand (163558), Colossus Smash (167105), Bladestorm (168969), Whirlwind (190411), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Impending Victory (202168), Opportunity Strikes (203178), Colossus Smash (208086), Bladestorm (222634), Ravager (227744), Bladestorm (227847), Ravager (228920)
 #3 (id=191014)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 22 | Target: Self(1)
-                   Affected Spells: Ravager (152277), Ravager (156287), Ravager (227744), Ravager (228920)
+                   Affected Spells: Rend (772), Deep Wounds (115767), Ravager (152277), Ravager (156287), Ravager (227744), Ravager (228920)
+                   Hotfixed: Affects Spells
 #4 (id=191015)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 0x7f | Target: Self(1)
 #5 (id=191016)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
@@ -2646,10 +2647,12 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179734)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 5 | Scaled Value: 5 | Target: Self(1)
-                   Affected Spells: Whirlwind (1680), Execute (5308), Bloodthirst (23881), Whirlwind Off-Hand (44949), Bladestorm (46924), Shockwave (46968), Bladestorm (50622), Heroic Throw (57755), Raging Blow (85288), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Dragon Roar (118000), Shockwave (132168), Storm Bolt (132169), Execute (163201), Execute Off-Hand (163558), Bladestorm (168969), Rampage (184367), Rampage (184707), Rampage (184709), Whirlwind (190411), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Odyn's Fury (205545), Rampage (218617), Bladestorm (222634), Bladestorm (227847)
+                   Affected Spells: Whirlwind (1680), Execute (5308), Bloodthirst (23881), Whirlwind Off-Hand (44949), Bladestorm (46924), Shockwave (46968), Bladestorm (50622), Heroic Throw (57755), Raging Blow (85288), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Dragon Roar (118000), Shockwave (132168), Storm Bolt (132169), Execute (163201), Execute Off-Hand (163558), Bladestorm (168969), Rampage (184367), Rampage (184707), Rampage (184709), Whirlwind (190411), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Odyn's Fury (205545), Odyn's Fury (205546), Odyn's Fury (205547), Rampage (218617), Bladestorm (222634), Bladestorm (227847)
                    Hotfixed: Affects Spells
 #2 (id=191010)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self(1)
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 22 | Target: Self(1)
+                   Affected Spells: Odyn's Fury (205545), Odyn's Fury (205546), Odyn's Fury (205547)
+                   Hotfixed: Base Value (0 -> 5), Affects Spells
 #3 (id=191011)   : Apply Aura (6) | Unknown effect sub type (213)
                    Base Value: -20 | Scaled Value: -20 | Target: Self(1)
 #4 (id=191012)   : Apply Aura (6) | Unknown effect sub type (218)
@@ -4061,10 +4064,12 @@ Effects          :
                    Affected Spells: Shield Block (132404)
 Description      : Shield Slam extends the duration of Shield Block by ${$m1/100}.1 sec, and Shield Block increases the damage of Shield Slam by an additional $s2%.
 
-Name             : Opportunity Strikes (id=203178) 
+Name             : Opportunity Strikes (id=203178) [Spell Family (4)] 
+Hotfixed         : Affecting Spells, Spell Family
 Class            : Warrior
 School           : Physical
 Range            : 100 yards
+Affecting spells : Arms Warrior (137049)
 Triggered by     : Opportunity Strikes (203179)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -4187,7 +4192,7 @@ GCD              : 1.5 seconds
 Cooldown         : 45 seconds
 Category         : 891
 Artifact Power   : Id: 984, Max Rank: 1
-Affecting spells : Warrior (137047), Fury Warrior (137050)
+Affecting spells : Warrior (137047), Fury Warrior (137050), 
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ .......x ........ ........ 
@@ -4202,10 +4207,12 @@ Effects          :
 Description      : Unleashes the fiery power Odyn bestowed the |cFFFFCC99Warswords|r, dealing ${$205546sw2+$205547sw2} Fire damage and an additional $205546o3 Fire damage over $205546d to all enemies within $205546A2 yards.
 
 Name             : Odyn's Fury (id=205546) [Spell Family (4)] 
+Hotfixed         : Affecting Spells
 Class            : Warrior
 School           : Fire
 Spell Level      : 28 (max 80)
 Duration         : 4 seconds
+Affecting spells : Warrior (137047), Fury Warrior (137050), 
 Triggered by     : Odyn's Fury (205545)
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
@@ -4225,9 +4232,11 @@ Description      : $@spelldesc205545
 Tooltip          : Suffering $o3 Fire damage over $d.
 
 Name             : Odyn's Fury (id=205547) [Spell Family (4)] 
+Hotfixed         : Affecting Spells
 Class            : Warrior
 School           : Fire
 Spell Level      : 28 (max 80)
+Affecting spells : Warrior (137047), Fury Warrior (137050), 
 Triggered by     : Odyn's Fury (205545)
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ x....... 

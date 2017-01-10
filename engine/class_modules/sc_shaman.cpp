@@ -1387,12 +1387,29 @@ private:
 public:
   typedef shaman_spell_base_t<Base> base_t;
 
+  bool affected_by_elemental_focus;
+
   shaman_spell_base_t( const std::string& n, shaman_t* player,
                        const spell_data_t* s = spell_data_t::nil() ) :
-    ab( n, player, s )
+    ab( n, player, s ),
+    // Spell data is extremely buggy here it seems, so default to true and disable on the things
+    // that are not affected (in terms of damage)
+    affected_by_elemental_focus( true /* s -> affected_by( player -> buff.elemental_focus -> data().effectN( 1 ) ) */ )
   { }
 
-  virtual void execute() override
+  double composite_persistent_multiplier( const action_state_t* state ) const override
+  {
+    double m = ab::composite_persistent_multiplier( state );
+
+    if ( affected_by_elemental_focus && ab::p() -> buff.elemental_focus -> up() )
+    {
+      m *= ab::p() -> buff.elemental_focus -> check_value();
+    }
+
+    return m;
+  }
+
+  void execute() override
   {
     ab::execute();
 
@@ -1414,12 +1431,11 @@ public:
     }
   }
 
-  virtual void schedule_travel( action_state_t* s ) override
+  void impact( action_state_t* state ) override
   {
-    ab::schedule_travel( s );
+    ab::impact( state );
 
-    // TODO: Check if Elemental Focus triggers per target (Chain Lightning)
-    ab::p() -> trigger_elemental_focus( s );
+    ab::p() -> trigger_elemental_focus( state );
   }
 };
 
@@ -1469,19 +1485,6 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
       return true;
 
     return base_t::usable_moving();
-  }
-
-  double composite_persistent_multiplier( const action_state_t* state ) const override
-  {
-    double m = base_t::composite_persistent_multiplier( state );
-
-    // TODO: Check if this is a persistent multiplier.
-    if ( p() -> buff.elemental_focus -> up() )
-    {
-      m *= p() -> buff.elemental_focus -> check_value();
-    }
-
-    return m;
   }
 
   virtual double overload_chance( const action_state_t* ) const
@@ -2822,6 +2825,7 @@ struct earthen_rage_spell_t : public shaman_spell_t
   {
     background = proc = true;
     callbacks = false;
+    affected_by_elemental_focus = false;
   }
 };
 
@@ -2884,6 +2888,7 @@ struct pristine_protoscale_girdle_dot_t : public shaman_spell_t
     callbacks = may_crit = false;
 
     dot_max_stack = data().max_stacks();
+    affected_by_elemental_focus = false;
   }
 };
 
@@ -4752,6 +4757,7 @@ struct earthquake_damage_t : public shaman_spell_t
     school = SCHOOL_PHYSICAL;
     spell_power_mod.direct = 0.5; // Hardcoded into tooltip because it's cool
     base_multiplier *= 1.0 + p() -> artifact.the_ground_trembles.percent();
+    affected_by_elemental_focus = true; // Needed to explicitly flag, since spell data lacks info
   }
 
   double target_armor( player_t* ) const override
@@ -4805,6 +4811,8 @@ struct earthquake_t : public shaman_spell_t
     // Note, needs to be decremented after ground_aoe_event_t is created so that the rumble gets the
     // buff multiplier as persistent.
     p() -> buff.echoes_of_the_great_sundering -> decrement();
+
+    p() -> buff.elemental_focus -> decrement();
   }
 };
 
@@ -6172,6 +6180,11 @@ void shaman_t::trigger_hot_hand( const action_state_t* state )
 
 void shaman_t::trigger_elemental_focus( const action_state_t* state )
 {
+  if ( state -> action -> background || state -> result_amount == 0 )
+  {
+    return;
+  }
+
   if ( ! spec.elemental_focus -> ok() )
   {
     return;
@@ -6537,8 +6550,7 @@ void shaman_t::create_buffs()
                   .add_invalidate( CACHE_ATTACK_SPEED )
                   .default_value( 1.0 / ( 1.0 + talent.windsong -> effectN( 2 ).percent() ) );
   buff.boulderfist = buff_creator_t( this, "boulderfist", talent.boulderfist -> effectN( 3 ).trigger() )
-                        .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-                        .add_invalidate( CACHE_CRIT_CHANCE );
+                        .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buff.landslide = buff_creator_t( this, "landslide", find_spell( 202004 ) )
                    .add_invalidate( CACHE_AGILITY )
                    .chance( talent.landslide -> ok() )
@@ -6970,30 +6982,31 @@ void shaman_t::init_action_list_enhancement()
   def -> add_talent( this, "Boulderfist", "if=buff.boulderfist.remains<gcd|(maelstrom<=50&active_enemies>=3)" );
   def -> add_talent( this, "Boulderfist", "if=buff.boulderfist.remains<gcd|(charges_fractional>1.75&maelstrom<=100&active_enemies<=2)" );
   def -> add_action( this, "Rockbiter", "if=talent.landslide.enabled&buff.landslide.remains<gcd" );
-  def -> add_talent( this, "Fury of Air", "if=!ticking&maelstrom>40" );
+  def -> add_talent( this, "Fury of Air", "if=!ticking&maelstrom>22" );
   def -> add_action( this, "Frostbrand", "if=talent.hailstorm.enabled&buff.frostbrand.remains<gcd" );
+  def -> add_action( this, "Flametongue", "if=buff.flametongue.remains<gcd|(cooldown.doom_winds.remains<6&buff.flametongue.remains<4)");
+  def -> add_action( this, "Doom Winds");
   def -> add_action( this, "Crash Lightning", "if=talent.crashing_storm.enabled&active_enemies>=3&(!talent.hailstorm.enabled|buff.frostbrand.remains>gcd)");
   def -> add_talent( this, "Earthen Spike");
   def -> add_action( this, "Lightning Bolt", "if=(talent.overcharge.enabled&maelstrom>=40&!talent.fury_of_air.enabled)|(talent.overcharge.enabled&talent.fury_of_air.enabled&maelstrom>46)" );
   def -> add_action( this, "Crash Lightning", "if=buff.crash_lightning.remains<gcd&active_enemies>=2" );
-  def -> add_action( this, "Windstrike", "if=active_enemies>=3&!talent.hailstorm.enabled" );
-  def -> add_action( this, "Stormstrike", "if=active_enemies>=3&!talent.hailstorm.enabled" );
   def -> add_talent( this, "Windsong" );
-  def -> add_action( this, "Windstrike", "if=buff.stormbringer.react" );
-  def -> add_action( this, "Stormstrike", "if=buff.stormbringer.react" );
+  def -> add_talent( this, "Ascendance", "if=buff.stormbringer.react" );
+  def -> add_action( this, "Windstrike", "if=buff.stormbringer.react&((talent.fury_of_air.enabled&maelstrom>=26)|(!talent.fury_of_air.enabled))" );
+  def -> add_action( this, "Stormstrike", "if=buff.stormbringer.react&((talent.fury_of_air.enabled&maelstrom>=26)|(!talent.fury_of_air.enabled))" );
   def -> add_action( this, "Lava Lash", "if=talent.hot_hand.enabled&buff.hot_hand.react" );
-  def -> add_talent( this, "Ascendance" );
-  def -> add_action( this, "Doom Winds");
-  def -> add_action( this, "Crash Lightning", "if=active_enemies>=3" );
+  def -> add_action( this, "Crash Lightning", "if=active_enemies>=4" );
   def -> add_action( this, "Windstrike" );
   def -> add_action( this, "Stormstrike", "if=talent.overcharge.enabled&cooldown.lightning_bolt.remains<gcd&maelstrom>80" );
   def -> add_action( this, "Stormstrike", "if=talent.fury_of_air.enabled&maelstrom>46&(cooldown.lightning_bolt.remains>gcd|!talent.overcharge.enabled)" );
-  def -> add_action( this, "Stormstrike", "if=!talent.overchage.enabled&!talent.fury_of_air.enabled" );
-  def -> add_action( this, "Crash Lightning", "if=active_enemies>1|talent.crashing_storm.enabled|talent.boulderfist.enabled|feral_spirit.remains>5" );
+  def -> add_action( this, "Stormstrike", "if=!talent.overcharge.enabled&!talent.fury_of_air.enabled" );
+  def -> add_action( this, "Crash Lightning", "if=((active_enemies>1|talent.crashing_storm.enabled|talent.boulderfist.enabled)&!set_bonus.tier19_4pc)|feral_spirit.remains>5" );
   def -> add_action( this, "Frostbrand", "if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8" );
+  def -> add_action( this, "Lava Lash", "if=talent.fury_of_air.enabled&talent.overcharge.enabled&(set_bonus.tier19_4pc&maelstrom>=80)" );
+  def -> add_action( this, "Lava Lash", "if=talent.fury_of_air.enabled&!talent.overcharge.enabled&(set_bonus.tier19_4pc&maelstrom>=53)" );
+  def -> add_action( this, "Lava Lash", "if=(!set_bonus.tier19_4pc&maelstrom>=120)|(!talent.fury_of_air.enabled&set_bonus.tier19_4pc&maelstrom>=40)" );
   def -> add_action( this, "Flametongue", "if=buff.flametongue.remains<4.8");
   def -> add_talent( this, "Sundering" );
-  def -> add_action( this, "Lava Lash", "if=(talent.fury_of_air.enabled&talent.overcharge.enabled&maelstrom>=120)|(!talent.overcharge.enabled&maelstrom>=80)" );
   def -> add_action( this, "Rockbiter" );
   def -> add_action( this, "Flametongue" );
   def -> add_talent( this, "Boulderfist" );
@@ -7159,11 +7172,6 @@ double shaman_t::composite_spell_crit_chance() const
 {
   double m = player_t::composite_spell_crit_chance();
 
-  if ( buff.boulderfist -> up() )
-  {
-    m += buff.boulderfist -> data().effectN( 1 ).percent();
-  }
-
   m += spec.critical_strikes -> effectN( 1 ).percent();
 
   return m;
@@ -7194,11 +7202,6 @@ double shaman_t::temporary_movement_modifier() const
 double shaman_t::composite_melee_crit_chance() const
 {
   double m = player_t::composite_melee_crit_chance();
-
-  if ( buff.boulderfist -> up() )
-  {
-    m += buff.boulderfist -> data().effectN( 1 ).percent();
-  }
 
   m += spec.critical_strikes -> effectN( 1 ).percent();
 

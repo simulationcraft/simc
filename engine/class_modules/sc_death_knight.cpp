@@ -537,6 +537,7 @@ public:
     // Generic
     const spell_data_t* plate_specialization;
     const spell_data_t* death_knight;
+    const spell_data_t* unholy_death_knight;
 
     // Blood
     const spell_data_t* blood_death_knight;
@@ -2351,6 +2352,16 @@ struct death_knight_action_t : public Base
       this -> energize_amount += std::fabs( this -> base_costs[ RESOURCE_RUNIC_POWER ] );
       this -> base_costs[ RESOURCE_RUNIC_POWER ] = 0;
     }
+
+    if ( this -> data().affected_by( p -> spec.unholy_death_knight -> effectN( 1 ) ) )
+    {
+      this -> base_dd_multiplier *= 1.0 + p -> spec.unholy_death_knight -> effectN( 1 ).percent();
+    }
+
+    if ( this -> data().affected_by( p -> spec.unholy_death_knight -> effectN( 2 ) ) )
+    {
+      this -> base_td_multiplier *= 1.0 + p -> spec.unholy_death_knight -> effectN( 2 ).percent();
+    }
   }
 
   death_knight_t* p() const
@@ -3225,7 +3236,8 @@ struct apocalypse_t : public death_knight_melee_attack_t
   void execute() override
   {
     death_knight_melee_attack_t::execute();
-    auto n_wounds = td( execute_state -> target ) -> debuff.festering_wound -> stack();
+    auto n_wounds = std::min( data().effectN( 3 ).base_value(),
+        td( execute_state -> target ) -> debuff.festering_wound -> stack() );
 
     if ( result_is_hit( execute_state -> result ) )
     {
@@ -5272,7 +5284,10 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
   {
     weapon = &( player -> main_hand_weapon );
 
-    instructors_chance = { { 0.20, 0.40, 0.20, 0.10, 0.05, 0.05 } };
+    //instructors_chance = { { 0.20, 0.40, 0.20, 0.10, 0.05, 0.05 } };
+    //
+    // TODO: Changed in 7.1.5, new probability distribution unknown/untested
+    instructors_chance = { { .3, .4, .2, .1 } };
   }
 
   int n_targets() const override
@@ -6596,6 +6611,7 @@ void death_knight_t::init_spells()
   spec.outbreak                   = find_specialization_spell( "Outbreak" );
   spec.runic_corruption           = find_specialization_spell( "Runic Corruption" );
   spec.sudden_doom                = find_specialization_spell( "Sudden Doom" );
+  spec.unholy_death_knight        = find_specialization_spell( "Unholy Death Knight" );
 
   mastery.blood_shield            = find_mastery_spell( DEATH_KNIGHT_BLOOD );
   mastery.frozen_heart            = find_mastery_spell( DEATH_KNIGHT_FROST );
@@ -7277,9 +7293,9 @@ void death_knight_t::create_buffs()
     // Unholy Frenzy duration is hard capped at 10 seconds
     .refresh_duration_callback( []( const buff_t* b, const timespan_t& duration ) {
       timespan_t total_duration = b -> remains() + duration;
-      if ( total_duration > timespan_t::from_seconds( 10 ) )
+      if ( total_duration > timespan_t::from_seconds( 25 ) )
       {
-        total_duration = timespan_t::from_seconds( 10 );
+        total_duration = timespan_t::from_seconds( 25 );
       }
       return total_duration;
     } );

@@ -35,37 +35,38 @@ actions+=/potion,name=prolonged_power,if=feral_spirit.remains>5|target.time_to_d
 actions+=/boulderfist,if=buff.boulderfist.remains<gcd|(maelstrom<=50&active_enemies>=3)
 actions+=/boulderfist,if=buff.boulderfist.remains<gcd|(charges_fractional>1.75&maelstrom<=100&active_enemies<=2)
 actions+=/rockbiter,if=talent.landslide.enabled&buff.landslide.remains<gcd
-actions+=/fury_of_air,if=!ticking&maelstrom>40
+actions+=/fury_of_air,if=!ticking&maelstrom>22
 actions+=/frostbrand,if=talent.hailstorm.enabled&buff.frostbrand.remains<gcd
+actions+=/flametongue,if=buff.flametongue.remains<gcd|(cooldown.doom_winds.remains<6&buff.flametongue.remains<4)
+actions+=/doom_winds
 actions+=/crash_lightning,if=talent.crashing_storm.enabled&active_enemies>=3&(!talent.hailstorm.enabled|buff.frostbrand.remains>gcd)
 actions+=/earthen_spike
 actions+=/lightning_bolt,if=(talent.overcharge.enabled&maelstrom>=40&!talent.fury_of_air.enabled)|(talent.overcharge.enabled&talent.fury_of_air.enabled&maelstrom>46)
 actions+=/crash_lightning,if=buff.crash_lightning.remains<gcd&active_enemies>=2
-actions+=/windstrike,if=active_enemies>=3&!talent.hailstorm.enabled
-actions+=/stormstrike,if=active_enemies>=3&!talent.hailstorm.enabled
 actions+=/windsong
-actions+=/windstrike,if=buff.stormbringer.react
-actions+=/stormstrike,if=buff.stormbringer.react
+actions+=/ascendance,if=buff.stormbringer.react
+actions+=/windstrike,if=buff.stormbringer.react&((talent.fury_of_air.enabled&maelstrom>=26)|(!talent.fury_of_air.enabled))
+actions+=/stormstrike,if=buff.stormbringer.react&((talent.fury_of_air.enabled&maelstrom>=26)|(!talent.fury_of_air.enabled))
 actions+=/lava_lash,if=talent.hot_hand.enabled&buff.hot_hand.react
-actions+=/ascendance
-actions+=/doom_winds
-actions+=/crash_lightning,if=active_enemies>=3
+actions+=/crash_lightning,if=active_enemies>=4
 actions+=/windstrike
 actions+=/stormstrike,if=talent.overcharge.enabled&cooldown.lightning_bolt.remains<gcd&maelstrom>80
 actions+=/stormstrike,if=talent.fury_of_air.enabled&maelstrom>46&(cooldown.lightning_bolt.remains>gcd|!talent.overcharge.enabled)
-actions+=/stormstrike,if=!talent.overchage.enabled&!talent.fury_of_air.enabled
-actions+=/crash_lightning,if=active_enemies>1|talent.crashing_storm.enabled|talent.boulderfist.enabled|feral_spirit.remains>5
+actions+=/stormstrike,if=!talent.overcharge.enabled&!talent.fury_of_air.enabled
+actions+=/crash_lightning,if=((active_enemies>1|talent.crashing_storm.enabled|talent.boulderfist.enabled)&!set_bonus.tier19_4pc)|feral_spirit.remains>5
 actions+=/frostbrand,if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8
+actions+=/lava_lash,if=talent.fury_of_air.enabled&talent.overcharge.enabled&(set_bonus.tier19_4pc&maelstrom>=80)
+actions+=/lava_lash,if=talent.fury_of_air.enabled&!talent.overcharge.enabled&(set_bonus.tier19_4pc&maelstrom>=53)
+actions+=/lava_lash,if=(!set_bonus.tier19_4pc&maelstrom>=120)|(!talent.fury_of_air.enabled&set_bonus.tier19_4pc&maelstrom>=40)
 actions+=/flametongue,if=buff.flametongue.remains<4.8
 actions+=/sundering
-actions+=/lava_lash,if=(talent.fury_of_air.enabled&talent.overcharge.enabled&maelstrom>=120)|(!talent.overcharge.enabled&maelstrom>=80)
 actions+=/rockbiter
 actions+=/flametongue
 actions+=/boulderfist
 
 head=collar_of_honorable_exultation,id=136777,bonus_id=1727
 neck=wolfstride_pendant,id=133633,bonus_id=1727,enchant=mark_of_the_hidden_satyr
-shoulders=thundercrush_pauldrons,id=134478,bonus_id=1727
+shoulders=epaulets_of_deceitful_intent,id=134480,bonus_id=1727
 back=cape_of_rigid_order,id=134402,bonus_id=1727,enchant=binding_of_agility
 chest=thunderfused_valkyr_hauberk,id=133622,bonus_id=1727
 wrists=remorseless_chain_armbands,id=137405,bonus_id=1727
@@ -84,7 +85,8 @@ off_hand=fury_of_the_stonemother,id=128873
 # gear_ilvl=843.75
 # gear_agility=11624
 # gear_stamina=18511
-# gear_crit_rating=1587
-# gear_haste_rating=5397
-# gear_mastery_rating=11137
+# gear_crit_rating=2209
+# gear_haste_rating=5009
+# gear_mastery_rating=10903
 # gear_armor=2433
+# set_bonus=tier19p_mail_2pc=1

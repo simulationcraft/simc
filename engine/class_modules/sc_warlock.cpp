@@ -5965,9 +5965,9 @@ void warlock_t::init_spells()
   // General
   spec.fel_armor   = find_spell( 104938 );
   spec.nethermancy = find_spell( 86091 );
-  spec.affliction = find_spell( 137043 );
-  spec.demonology = find_spell( 137044 );
-  spec.destruction = find_spell( 137046 );
+  spec.affliction = find_specialization_spell( 137043 );
+  spec.demonology = find_specialization_spell( 137044 );
+  spec.destruction = find_specialization_spell( 137046 );
 
   // Specialization Spells
   // PTR
@@ -7476,7 +7476,7 @@ struct wakeners_loyalty_t : public scoped_actor_callback_t<warlock_t>
 {
     wakeners_loyalty_t() : super ( WARLOCK ){}
 
-    void manipulate (warlock_t* p, const special_effect_t& e) override
+    void manipulate (warlock_t* p, const special_effect_t& ) override
     {
         const spell_data_t * tmp = p->find_spell(236200);
         p->legendary.wakeners_loyalty_enabled = true;
@@ -7554,7 +7554,7 @@ struct lessons_of_spacetime_t : public scoped_actor_callback_t<warlock_t>
 {
   lessons_of_spacetime_t() : super( WARLOCK ){}
 
-  void manipulate( warlock_t* p, const special_effect_t& e ) override
+  void manipulate( warlock_t* p, const special_effect_t& ) override
   {
     const spell_data_t * tmp = p -> find_spell( 236176 );
     p -> legendary.lessons_of_spacetime = true;

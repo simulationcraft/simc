@@ -1889,13 +1889,20 @@ void print_html_sample_sequence_table_entry(
   {
     os.format(
         "<td class=\"left\">%s</td>\n"
+        "<td class=\"left\">%c</td>\n"
+        "<td class=\"left\">%s</td>\n"
         "<td class=\"left\">%s</td>\n",
-        data.action->name(), data.target->name() );
+        data.action->action_list ? data.action->action_list->name_str.c_str() : "default",
+        data.action->marker != 0 ? data.action->marker : ' ',
+        data.action->name(),
+        data.target->name() );
   }
   else
   {
     os.format(
         "<td class=\"left\">Waiting</td>\n"
+        "<td class=\"left\">&nbsp;</td>\n"
+        "<td class=\"left\">&nbsp;</td>\n"
         "<td class=\"left\">%.3f sec</td>\n",
         data.wait_time.total_seconds() );
   }
@@ -2122,6 +2129,8 @@ void print_html_player_action_priority_list( report::sc_html_stream& os,
         "<table class=\"sc\">\n"
         "<tr>\n"
         "<th class=\"center\">time</th>\n"
+        "<th class=\"center\">list</th>\n"
+        "<th class=\"center\">#</th>\n"
         "<th class=\"center\">name</th>\n"
         "<th class=\"center\">target</th>\n"
         "<th class=\"center\">resources</th>\n"

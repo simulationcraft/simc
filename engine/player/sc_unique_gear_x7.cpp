@@ -1894,13 +1894,14 @@ void item::draught_of_souls( special_effect_t& effect )
 
   struct draught_of_souls_driver_t : public proc_spell_t
   {
+    const special_effect_t& effect;
     action_t* damage;
 
-    draught_of_souls_driver_t( const special_effect_t& effect ):
-      proc_spell_t( "draught_of_souls", effect.player, effect.driver(), effect.item ),
-      damage( nullptr )
+    draught_of_souls_driver_t( const special_effect_t& effect_ ):
+      proc_spell_t( "draught_of_souls", effect_.player, effect_.driver(), effect_.item ),
+      effect( effect_ ), damage( nullptr )
     {
-      channeled = quiet = true;
+      channeled = quiet = tick_zero = true;
       cooldown -> duration = timespan_t::zero();
       hasted_ticks = false;
 
@@ -1918,6 +1919,20 @@ void item::draught_of_souls( special_effect_t& effect )
 
     double composite_haste() const override
     { return 1.0; } // Not hasted.
+
+    void init() override
+    {
+      proc_spell_t::init();
+
+      auto cd = player -> get_cooldown( effect.cooldown_name() );
+      range::for_each( player -> action_list, [ cd ]( action_t* action ) {
+        if ( action -> cooldown == cd )
+        {
+          action -> use_off_gcd = true;
+        }
+      } );
+
+    }
 
     void execute() override
     {
@@ -3166,7 +3181,7 @@ static const convergence_cd_t convergence_cds[] =
   !!! NOTE !!! NOTE !!! NOTE !!! NOTE !!! NOTE !!! NOTE !!! NOTE !!! */
   { DEATH_KNIGHT_FROST,   { "empower_rune_weapon", "hungering_rune_weapon" } },
   { DEATH_KNIGHT_UNHOLY,  { "summon_gargoyle" } },
-  { DRUID_FERAL,          { "berserk", "incarnation_king_of_the_jungle" } },
+  { DRUID_FERAL,          { "berserk", "incarnation" } },
   { HUNTER_BEAST_MASTERY, { "aspect_of_the_wild" } },
   { HUNTER_MARKSMANSHIP,  { "trueshot" } },
   { HUNTER_SURVIVAL,      { "aspect_of_the_eagle" } },
@@ -4161,18 +4176,11 @@ void unique_gear::register_special_effects_x7()
 
 void unique_gear::register_hotfixes_x7()
 {
-
   hotfix::register_spell( "Horrific Appendages", "2016-10-09", "In-game testing shows that the actual rppm is much closer to 1.3~ than 0.7, so we slightly underestimated down to 1.25.", 222167 )
     .field( "rppm" )
     .operation( hotfix::HOTFIX_SET )
     .modifier( 1.25 )
     .verification_value( 0.7 );
-
-  hotfix::register_spell( "Aran's Relaxing Ruby", "2016-11-08", "In-game testing shows that the actual rppm is 1.7 rather than 0.92. We slightly underestimate at 1.65 here.", 230257 )
-    .field( "rppm" )
-    .operation( hotfix::HOTFIX_SET )
-    .modifier( 1.65 )
-    .verification_value( 0.92 );
 }
 
 void unique_gear::register_target_data_initializers_x7( sim_t* sim )

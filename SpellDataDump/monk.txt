@@ -1,4 +1,4 @@
-SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23360, git build 0a8dde1)
+SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23360, git build e5ada11)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -486,7 +486,7 @@ Resource         : 50 Energy w/ Windwalker Monk (id=137025)
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Brewmaster Monk (137023), Mistweaver Monk (137024), Windwalker Monk (137025), Heightened Senses (165692), Mana Tea (197908), Item - Monk T19 Brewmaster 4P Bonus (211417), Tiger Claws (218607), Blackout Combo (228563)
+Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Brewmaster Monk (137023), Mistweaver Monk (137024), Windwalker Monk (137025), Storm, Earth, and Fire (137639), Heightened Senses (165692), Mana Tea (197908), Item - Monk T19 Brewmaster 4P Bonus (211417), Tiger Claws (218607), Blackout Combo (228563)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -529,7 +529,7 @@ Cooldown         : 3 seconds
 Category         : 1561
 Category Cooldown: 3 seconds
 Proc Chance      : 101%
-Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Blackout Kick! (116768), Brewmaster Monk (137023), Mistweaver Monk (137024), Windwalker Monk (137025), Serenity (152173), Dark Skies (195265), Obsidian Fists (213051)
+Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Blackout Kick! (116768), Brewmaster Monk (137023), Mistweaver Monk (137024), Windwalker Monk (137025), Storm, Earth, and Fire (137639), Serenity (152173), Dark Skies (195265), Obsidian Fists (213051)
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -683,7 +683,7 @@ Description      : Increases all damage dealt by $s3%.
 Name             : Spinning Crane Kick (id=107270) [Spell Family (53)] 
 Class            : Monk
 School           : Physical
-Affecting spells : Mistweaver Monk (137024), Windwalker Monk (137025), Power of a Thousand Cranes (195269)
+Affecting spells : Mistweaver Monk (137024), Windwalker Monk (137025), Storm, Earth, and Fire (137639), Power of a Thousand Cranes (195269)
 Triggered by     : Spinning Crane Kick (101546)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -710,7 +710,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Charges          : 1 (10 seconds cooldown)
 Category         : 1518
-Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Monk (137022), Mistweaver Monk (137024), Windwalker Monk (137025), Serenity (152173), Rising Winds (195263), Mana Tea (197908), 
+Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Monk (137022), Mistweaver Monk (137024), Windwalker Monk (137025), Storm, Earth, and Fire (137639), Serenity (152173), Rising Winds (195263), Mana Tea (197908), 
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -769,6 +769,7 @@ Effects          :
 Description      : Roll a short distance.
 
 Name             : Fists of Fury (id=113656) [Spell Family (53)] 
+Hotfixed         : Attributes
 Class            : Windwalker Monk
 School           : Physical
 Resource         : 3 Chi
@@ -781,9 +782,9 @@ Affecting spells : Monk (137022), Serenity (152173), Katsuo's Eclipse (208045)
 Triggered by     : Katsuo's Eclipse (208045)
 Attributes       : ........ ........ ........ ........   ..x...x. .xx..... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ x....... 
-                 : ........ ........ ........ ........   ........ .x...... ........ ...x.... 
+                 : ........ ........ ........ ........   ........ .x...x.. ........ ...x.... 
                  : ........ .......x ...x.... ........   ........ ........ ........ ........ 
-                 : ........ ....x... .x....x. ........   ........ ........ ........ ........ 
+                 : ........ ....x... .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : Channeled (34), Channeled (38)
 Effects          :
@@ -1694,7 +1695,7 @@ Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 6 seconds
-Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Monk (137022), Brewmaster Monk (137023), Mistweaver Monk (137024), Windwalker Monk (137025), Lucidity (137331), Serenity (152173), Mana Tea (197908)
+Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Monk (137022), Brewmaster Monk (137023), Mistweaver Monk (137024), Windwalker Monk (137025), Lucidity (137331), Storm, Earth, and Fire (137639), Serenity (152173), Mana Tea (197908)
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -1748,7 +1749,7 @@ Class            : Monk
 School           : Physical
 Spell Level      : 1
 Range            : 5 yards
-Affecting spells : Windwalker Monk (137025), Fists of the Wind (195291)
+Affecting spells : Windwalker Monk (137025), Storm, Earth, and Fire (137639), Fists of the Wind (195291)
 Triggered by     : Fists of Fury (113656)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ......x.   ........ .x...... ........ ........ 
@@ -1824,7 +1825,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 4 seconds
 Proc Chance      : 100%
-Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Brewmaster Monk (137023), Mistweaver Monk (137024), Windwalker Monk (137025), Lucidity (137331), Mana Tea (197908), The Emperor's Capacitor (235054), 
+Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Brewmaster Monk (137023), Mistweaver Monk (137024), Windwalker Monk (137025), Lucidity (137331), Storm, Earth, and Fire (137639), Mana Tea (197908), The Emperor's Capacitor (235054), 
 Attributes       : ........ ........ ........ ........   ..x..... ......x. ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ...x.... 
@@ -2406,7 +2407,7 @@ GCD              : 1.5 seconds
 Velocity         : 30 yards/sec
 Duration         : 1 seconds
 Cooldown         : 30 seconds
-Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Brewmaster Monk (137023), Windwalker Monk (137025), Extend Life (185158)
+Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Brewmaster Monk (137023), Windwalker Monk (137025), Storm, Earth, and Fire (137639), Extend Life (185158)
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3192,7 +3193,7 @@ Class            : Monk
 School           : Nature
 Spell Level      : 1
 Range            : 50000 yards
-Affecting spells : Brewmaster Monk (137023), Windwalker Monk (137025)
+Affecting spells : Brewmaster Monk (137023), Windwalker Monk (137025), Storm, Earth, and Fire (137639), 
 Attributes       : ........ ...x.... x......x ...x....   .....x.x ..x..... ........ ....x... 
                  : ........ ........ ...x.... ........   ........ ........ ....x... ..x...x. 
                  : ........ ........ ...xx... ........   .....x.. ........ ...x.... ..x..... 
@@ -3214,7 +3215,7 @@ Spell Level      : 1
 Range            : 50000 yards
 Velocity         : 20 yards/sec
 Duration         : 0.1 seconds
-Affecting spells : Brewmaster Monk (137023), Windwalker Monk (137025)
+Affecting spells : Brewmaster Monk (137023), Windwalker Monk (137025), Storm, Earth, and Fire (137639), 
 Attributes       : ........ ........ ..x....x x..x....   .....x.x ........ ........ ....x... 
                  : ..x..... ......x. ...x.... ......x.   ........ .x...... ........ ......x. 
                  : .......x .......x ...x.... ........   ...x.... ........ .xxx.... ........ 
@@ -3262,7 +3263,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179705)   : Apply Aura (6) | Unknown effect sub type (416)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-                   Affected Spells: Rising Sun Kick (107428), Fists of Fury (113656), Rushing Jade Wind (116847), Fists of Fury (120086), Rushing Jade Wind (148187), Whirling Dragon Punch (152175), Item - Monk T17 Windwalker2P Bonus (165403), Rising Sun Kick (185099), Refreshing Jade Wind (196725)
+                   Affected Spells: Rising Sun Kick (107428), Fists of Fury (113656), Rushing Jade Wind (116847), Fists of Fury (120086), Rushing Jade Wind (148187), Whirling Dragon Punch (152175), Whirling Dragon Punch (158221), Item - Monk T17 Windwalker2P Bonus (165403), Rising Sun Kick (185099), Refreshing Jade Wind (196725)
 #2 (id=191112)   : Apply Aura (6) | Unknown effect sub type (457)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1518 | Target: Self(1)
 #3 (id=191113)   : Apply Aura (6) | Unknown effect sub type (218)
@@ -3441,7 +3442,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179709)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 8 | Scaled Value: 8 | Target: Self(1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Rising Sun Kick (107428), Rushing Jade Wind (116847), Fists of Fury (117418), Chi Burst (123986), Chi Burst (130654), Chi Wave (132466), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (152175), Rising Sun Kick (185099), Refreshing Jade Wind (196725), Song of Chi-Ji (198898), Strike of the Windlord (205320), Blackout Strike (205523), Blackout Kick (228649)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Rising Sun Kick (107428), Rushing Jade Wind (116847), Fists of Fury (117418), Chi Burst (123986), Chi Burst (130654), Chi Wave (132466), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (152175), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Refreshing Jade Wind (196725), Song of Chi-Ji (198898), Strike of the Windlord (205320), Strike of the Windlord (205414), Blackout Strike (205523), Strike of the Windlord (222029), Blackout Kick (228649)
                    Hotfixed: Base Value (4 -> 8)
 #2 (id=191100)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 8 | Scaled Value: 8 | Misc Value: 22 | Target: Self(1)
@@ -3513,16 +3514,22 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=180816)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: -55 | Scaled Value: -55 | Misc Value: 0x7f | Target: Self(1)
-#2 (id=181516)   : Apply Aura (6) | Modify Healing% Done (136)
-                   Base Value: -55 | Scaled Value: -55 | Misc Value: 127 | Target: Self(1)
-#3 (id=181626)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+#1 (id=180816)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: -55 | Scaled Value: -55 | Target: Self(1)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Rising Sun Kick (107428), Rushing Jade Wind (116847), Fists of Fury (117418), Crackling Jade Lightning (117952), Chi Burst (123986), Chi Burst (130654), Chi Wave (132463), Chi Wave (132466), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (152175), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Refreshing Jade Wind (196725), Song of Chi-Ji (198898), Strike of the Windlord (205320), Strike of the Windlord (205414), Blackout Strike (205523), Strike of the Windlord (222029), Blackout Kick (228649)
+                   Hotfixed: Sub Type (79 -> 108), Misc Value (127 -> 0), Affects Spells
+#2 (id=181516)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
+                   Base Value: -55 | Scaled Value: -55 | Misc Value: 22 | Target: Self(1)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Rising Sun Kick (107428), Rushing Jade Wind (116847), Fists of Fury (117418), Crackling Jade Lightning (117952), Chi Burst (123986), Chi Burst (130654), Chi Wave (132463), Chi Wave (132466), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (152175), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Refreshing Jade Wind (196725), Song of Chi-Ji (198898), Strike of the Windlord (205320), Strike of the Windlord (205414), Blackout Strike (205523), Strike of the Windlord (222029), Blackout Kick (228649)
+                   Hotfixed: Sub Type (136 -> 108), Misc Value (127 -> 22), Affects Spells
+#3 (id=181626)   : Apply Aura (6) | Unknown effect sub type (344)
                    Base Value: -55 | Scaled Value: -55 | Target: Self(1)
                    Affected Spells: Chi Burst (130654), Chi Wave (132463), Zen Pulse (198487)
-#4 (id=289040)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
+                   Hotfixed: Sub Type (108 -> 344)
+#4 (id=289040)   : Apply Aura (6) | Dummy (4)
                    Base Value: -55 | Scaled Value: -55 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Chi Burst (130654), Chi Wave (132463), Zen Pulse (198487)
+                   Hotfixed: Sub Type (108 -> 4)
 #5 (id=330909)   : Apply Aura (6) | Unknown effect sub type (332)
                    Base Value: 221771 | Scaled Value: 221771 | Misc Value: 127 | Target: Self(1)
                    Affected Spells: Storm, Earth, and Fire (137639)
@@ -3555,7 +3562,7 @@ Class            : Monk
 School           : Nature
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Brewmaster Monk (137023), Windwalker Monk (137025), Extend Life (185158)
+Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Brewmaster Monk (137023), Windwalker Monk (137025), Storm, Earth, and Fire (137639), Extend Life (185158)
 Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ .x...... ........ ......x. 
                  : .......x .......x ........ ........   ...x.... .......x .xx..... ........ 
@@ -3571,7 +3578,7 @@ Description      : $@spelldesc123986
 Name             : Rushing Jade Wind (id=148187) [Spell Family (53)] 
 Class            : Monk
 School           : Physical
-Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Monk (137022), Brewmaster Monk (137023), Mistweaver Monk (137024), Windwalker Monk (137025), Lucidity (137331), Serenity (152173), Mana Tea (197908)
+Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Monk (137022), Brewmaster Monk (137023), Mistweaver Monk (137024), Windwalker Monk (137025), Lucidity (137331), Storm, Earth, and Fire (137639), Serenity (152173), Mana Tea (197908)
 Triggered by     : Rushing Jade Wind (116847)
 Attributes       : ....x... ........ ..x..... ...x....   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ .x...... ........ ........ 
@@ -3600,17 +3607,17 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=210678)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self(1)
-                   Affected Spells: Blackout Kick (100784), Spinning Crane Kick (101546), Rising Sun Kick (107428), Fists of Fury (113656), Rushing Jade Wind (116847), Fists of Fury (120086), Rushing Jade Wind (148187), Item - Monk T17 Windwalker2P Bonus (165403), Rising Sun Kick (185099), Refreshing Jade Wind (196725), Strike of the Windlord (205320), Blackout Strike (205523), Blackout Kick (228649)
+                   Affected Spells: Blackout Kick (100784), Spinning Crane Kick (101546), Rising Sun Kick (107428), Fists of Fury (113656), Rushing Jade Wind (116847), Fists of Fury (120086), Rushing Jade Wind (148187), Item - Monk T17 Windwalker2P Bonus (165403), Rising Sun Kick (185099), Refreshing Jade Wind (196725), Strike of the Windlord (205320), Strike of the Windlord (205414), Blackout Strike (205523), Strike of the Windlord (222029), Blackout Kick (228649)
 #2 (id=303755)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 40 | Scaled Value: 40 | Misc Value: 0x7f | Misc Value 2: 0x1b | Target: Self(1)
 #3 (id=303756)   : Apply Aura (6) | Modify Healing% Done (136)
                    Base Value: 40 | Scaled Value: 40 | Misc Value: 127 | Target: Self(1)
 #4 (id=303757)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 11 | Target: Self(1)
-                   Affected Spells: Blackout Kick (100784), Spinning Crane Kick (101546), Rising Sun Kick (107428), Fists of Fury (113656), Rushing Jade Wind (116847), Fists of Fury (120086), Rushing Jade Wind (148187), Item - Monk T17 Windwalker2P Bonus (165403), Rising Sun Kick (185099), Refreshing Jade Wind (196725), Strike of the Windlord (205320), Blackout Strike (205523), Blackout Kick (228649)
+                   Affected Spells: Blackout Kick (100784), Spinning Crane Kick (101546), Rising Sun Kick (107428), Fists of Fury (113656), Rushing Jade Wind (116847), Fists of Fury (120086), Rushing Jade Wind (148187), Item - Monk T17 Windwalker2P Bonus (165403), Rising Sun Kick (185099), Refreshing Jade Wind (196725), Strike of the Windlord (205320), Strike of the Windlord (205414), Blackout Strike (205523), Strike of the Windlord (222029), Blackout Kick (228649)
 #5 (id=330099)   : Apply Aura (6) | Unknown effect sub type (454)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 1518 | Target: Self(1)
-                   Affected Spells: Blackout Kick (100784), Spinning Crane Kick (101546), Rising Sun Kick (107428), Fists of Fury (113656), Rushing Jade Wind (116847), Fists of Fury (120086), Rushing Jade Wind (148187), Item - Monk T17 Windwalker2P Bonus (165403), Rising Sun Kick (185099), Refreshing Jade Wind (196725), Strike of the Windlord (205320), Blackout Strike (205523), Blackout Kick (228649)
+                   Affected Spells: Blackout Kick (100784), Spinning Crane Kick (101546), Rising Sun Kick (107428), Fists of Fury (113656), Rushing Jade Wind (116847), Fists of Fury (120086), Rushing Jade Wind (148187), Item - Monk T17 Windwalker2P Bonus (165403), Rising Sun Kick (185099), Refreshing Jade Wind (196725), Strike of the Windlord (205320), Strike of the Windlord (205414), Blackout Strike (205523), Strike of the Windlord (222029), Blackout Kick (228649)
 Description      : Enter an elevated state of mental and physical serenity for $?s115069[$s1 sec][$d]. While in this state, you deal $s2% increased damage and healing, and all Chi consumers are free and have $s4% reduced cooldown.
 Tooltip          : Damage dealt increased by $s2%.
 All Chi consumers are free, and have $s4% reduced cooldown.
@@ -3621,7 +3628,7 @@ School           : Physical
 GCD              : 1.5 seconds
 Duration         : 1 seconds
 Cooldown         : 24 seconds
-Affecting spells : Monk (137022), Windwalker Monk (137025)
+Affecting spells : Monk (137022), Windwalker Monk (137025), Storm, Earth, and Fire (137639), 
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -3713,9 +3720,11 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Target: Self(1)
 Description      : Increases your chance to critically strike by $s1%.
 
-Name             : Whirling Dragon Punch (id=158221) 
+Name             : Whirling Dragon Punch (id=158221) [Spell Family (53)] 
+Hotfixed         : Affecting Spells, Spell Family
 Class            : Monk
 School           : Physical
+Affecting spells : Monk (137022), Windwalker Monk (137025), Storm, Earth, and Fire (137639), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -3937,7 +3946,7 @@ Class            : Monk
 School           : Physical
 Spell Level      : 56
 Range            : 5 yards
-Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Monk (137022), Mistweaver Monk (137024), Windwalker Monk (137025), Serenity (152173), Rising Winds (195263), Mana Tea (197908), 
+Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Monk (137022), Mistweaver Monk (137024), Windwalker Monk (137025), Storm, Earth, and Fire (137639), Serenity (152173), Rising Winds (195263), Mana Tea (197908), 
 Triggered by     : Rising Sun Kick (107428)
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4242,7 +4251,7 @@ Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 6 seconds
-Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Monk (137022), Brewmaster Monk (137023), Mistweaver Monk (137024), Windwalker Monk (137025), Lucidity (137331), Serenity (152173), Mana Tea (197908)
+Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Monk (137022), Brewmaster Monk (137023), Mistweaver Monk (137024), Windwalker Monk (137025), Lucidity (137331), Storm, Earth, and Fire (137639), Serenity (152173), Mana Tea (197908)
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -4485,7 +4494,8 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=288854)   : School Damage: nature (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.50000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.72000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
+                   Hotfixed: AP Coefficient (1.5 -> 1.72)
 Description      : $@spelldesc196743
 
 Name             : Uplifting Trance (id=197206) [Spell Family (53)] 
@@ -4703,7 +4713,7 @@ Cast Time        : 1.8 seconds
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 15 seconds
-Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Brewmaster Monk (137023), Windwalker Monk (137025), Extend Life (185158)
+Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Brewmaster Monk (137023), Windwalker Monk (137025), Storm, Earth, and Fire (137639), Extend Life (185158)
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4806,7 +4816,7 @@ Proc Chance      : 101%
 Artifact Power   : Id: 831, Max Rank: 1
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, AOE Hostile Spell, Hostile Spell
-Affecting spells : Windwalker Monk (137025), Serenity (152173), 
+Affecting spells : Windwalker Monk (137025), Storm, Earth, and Fire (137639), Serenity (152173), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4845,12 +4855,14 @@ Effects          :
 Description      : Draws in all nearby clouds of mist generated by |cFFFFCC99Sheilun|r, healing the target for $s1 per cloud absorbed.
 
 Name             : Strike of the Windlord (id=205414) [Spell Family (53)] 
+Hotfixed         : Affecting Spells
 Class            : Monk
 School           : Physical
 Range            : 12 yards
 Proc Chance      : 101%
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, AOE Hostile Spell, Hostile Spell
+Affecting spells : Windwalker Monk (137025), Storm, Earth, and Fire (137639), Serenity (152173), 
 Triggered by     : Strike of the Windlord (205320)
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ x....... 
@@ -4874,7 +4886,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 3 seconds
 Proc Chance      : 101%
-Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Blackout Kick! (116768), Brewmaster Monk (137023), Mistweaver Monk (137024), Windwalker Monk (137025), Serenity (152173), Dark Skies (195265), Obsidian Fists (213051)
+Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Blackout Kick! (116768), Brewmaster Monk (137023), Mistweaver Monk (137024), Windwalker Monk (137025), Storm, Earth, and Fire (137639), Serenity (152173), Dark Skies (195265), Obsidian Fists (213051)
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5209,12 +5221,14 @@ Effects          :
 Description      : $@spelldesc101546
 
 Name             : Strike of the Windlord (id=222029) [Spell Family (53)] 
+Hotfixed         : Affecting Spells
 Class            : Monk
 School           : Physical
 Range            : 12 yards
 Proc Chance      : 101%
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, AOE Hostile Spell, Hostile Spell
+Affecting spells : Windwalker Monk (137025), Storm, Earth, and Fire (137639), Serenity (152173), 
 Triggered by     : Strike of the Windlord (205320)
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5315,7 +5329,7 @@ Class            : Monk
 School           : Physical
 Spell Level      : 3
 Range            : 5 yards
-Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Blackout Kick! (116768), Brewmaster Monk (137023), Mistweaver Monk (137024), Windwalker Monk (137025), Serenity (152173), Dark Skies (195265), Obsidian Fists (213051)
+Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Blackout Kick! (116768), Brewmaster Monk (137023), Mistweaver Monk (137024), Windwalker Monk (137025), Storm, Earth, and Fire (137639), Serenity (152173), Dark Skies (195265), Obsidian Fists (213051)
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

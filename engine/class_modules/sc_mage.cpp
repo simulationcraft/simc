@@ -601,6 +601,7 @@ public:
   virtual double    mana_regen_per_second() const override;
   virtual double    composite_player_multiplier( school_e school ) const override;
   virtual double    composite_player_critical_damage_multiplier( const action_state_t* ) const override;
+  virtual double    composite_player_pet_damage_multiplier( const action_state_t* ) const override;
   virtual double    composite_spell_crit_chance() const override;
   virtual double    composite_spell_crit_rating() const override;
   virtual double    composite_spell_haste() const override;
@@ -871,10 +872,6 @@ struct water_elemental_pet_t : public mage_pet_t
                o()->incanters_flow_stack_mult;
     }
 
-    if (  o() -> artifact.spellborne )
-    {
-      m *= 1.0 + o() -> artifact.spellborne.percent();
-    }
     return m;
   }
 };
@@ -1149,10 +1146,6 @@ struct arcane_blast_t : public mirror_image_spell_t
                             p->find_pet_spell( "Arcane Blast" ) )
   {
     parse_options( options_str );
-    if ( o()-> artifact.ancient_power && o() -> specialization() == MAGE_ARCANE )
-    {
-      base_multiplier *= 1.0 + o() -> artifact.ancient_power.percent();
-    }
   }
 
   virtual void execute() override
@@ -1179,11 +1172,6 @@ struct fireball_t : public mirror_image_spell_t
     : mirror_image_spell_t( "fireball", p, p->find_pet_spell( "Fireball" ) )
   {
     parse_options( options_str );
-
-    if ( o()-> artifact.empowered_spellblade && o() -> specialization() == MAGE_FIRE )
-    {
-      base_multiplier *= 1.0 + o() -> artifact.empowered_spellblade.percent();
-    }
   }
 };
 
@@ -1193,11 +1181,6 @@ struct frostbolt_t : public mirror_image_spell_t
     : mirror_image_spell_t( "frostbolt", p, p->find_pet_spell( "Frostbolt" ) )
   {
     parse_options( options_str );
-    if ( o()-> artifact.spellborne && o() -> specialization() == MAGE_FROST )
-    {
-      base_multiplier *= 1.0 + o() -> artifact.spellborne.percent();
-    }
-
   }
 };
 
@@ -2101,22 +2084,6 @@ struct arcane_mage_spell_t : public mage_spell_t
 
   }
 
-  virtual double action_multiplier() const override
-  {
-    double am = mage_spell_t::action_multiplier();
-
-      if ( p() -> artifact.might_of_the_guardians && school == SCHOOL_ARCANE )
-      {
-         am *= 1.0 + p() -> artifact.might_of_the_guardians.percent();
-      }
-
-      if ( p() -> artifact.ancient_power && school == SCHOOL_ARCANE )
-      {
-        am *= 1.0 + p() -> artifact.ancient_power.percent();
-      }
-    return am;
-  }
-
   virtual timespan_t gcd() const override
   {
     timespan_t t = mage_spell_t::gcd();
@@ -2334,22 +2301,6 @@ struct fire_mage_spell_t : public mage_spell_t
       p -> procs.ignite_applied -> occur();
     }
   }
-
-  virtual double action_multiplier() const override
-  {
-    double am = mage_spell_t::action_multiplier();
-
-      if ( p() -> artifact.wings_of_flame && school == SCHOOL_FIRE )
-      {
-         am *= 1.0 + p() -> artifact.wings_of_flame.percent();
-      }
-
-      if ( p() -> artifact.empowered_spellblade && school == SCHOOL_FIRE )
-      {
-        am *= 1.0 + p() -> artifact.empowered_spellblade.percent();
-      }
-    return am;
-  }
 };
 
 
@@ -2486,6 +2437,10 @@ struct frost_mage_spell_t : public mage_spell_t
     {
       amount *= 2;
     }
+    if ( p() -> talents.splitting_ice -> ok() )
+    {
+      amount *= 1.0 + p() -> talents.splitting_ice -> effectN( 3 ).percent();
+    }
 
     assert( as<int>( p() -> icicles.size() ) <=
             p() -> spec.icicles -> effectN( 2 ).base_value() );
@@ -2508,21 +2463,6 @@ struct frost_mage_spell_t : public mage_spell_t
                                       amount,
                                       as<unsigned>( p() -> icicles.size() ) );
     }
-  }
-
-  virtual double action_multiplier() const override
-  {
-    // NOTE!!: As of Legion, Icicles benefit from anything inside frost_mage_spell_t::action_multiplier()! Always check
-    // for icicle interaction if something is added here, and adjust icicle_t::composite_da_multiplier() accordingly.
-    double am = mage_spell_t::action_multiplier();
-    // Divide effect percent by 10 to convert 5 into 0.5%, not into 5%.
-    am *= 1.0 + ( p() -> buffs.bone_chilling -> current_stack * p() -> talents.bone_chilling -> effectN( 1 ).percent() / 10 );
-
-    if ( p() -> artifact.spellborne && school == SCHOOL_FROST )
-    {
-      am *= 1.0 + p() -> artifact.spellborne.percent();
-    }
-    return am;
   }
 
   double calculate_direct_amount( action_state_t* s ) const override
@@ -2606,8 +2546,6 @@ struct icicle_t : public frost_mage_spell_t
 
     if ( p -> talents.splitting_ice -> ok() )
     {
-      base_multiplier *= 1.0 + p -> talents.splitting_ice
-                                 -> effectN( 3 ).percent();
       aoe = 1 + p -> talents.splitting_ice -> effectN( 1 ).base_value();
       base_aoe_multiplier *= p -> talents.splitting_ice
                                -> effectN( 2 ).percent();
@@ -2660,27 +2598,8 @@ struct icicle_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::init();
 
-    snapshot_flags &= ~( STATE_SP | STATE_CRIT | STATE_TGT_CRIT );
-  }
-
-  virtual double composite_da_multiplier( const action_state_t* s ) const override
-  {
-    // Override this to remove composite_player_multiplier benefits (RoP/IF/CttC)
-    // Also remove composite_player_dd_multipliers. Only return action and action_da multipliers.
-    // TODO: Really, should we be using any multipliers?
-    double am = action_multiplier();
-    // Icicles shouldn't be double dipping on Bone Chilling.
-    if ( p() -> buffs.bone_chilling -> up() )
-    {
-      am /= 1.0 + ( p() -> buffs.bone_chilling -> current_stack * p() -> talents.bone_chilling -> effectN( 1 ).percent() / 10 );
-    }
-    if ( p() -> artifact.spellborne )
-    {
-      am /= 1.0 + p() -> artifact.spellborne.percent();
-    }
-    // Don't double dip on versatility, we stored it when the icicle was gained.
-    am /= s -> versatility;
-    return am * action_da_multiplier();
+    snapshot_flags = STATE_NO_MULTIPLIER;
+    snapshot_flags |= STATE_TGT_MUL_DA;
   }
 };
 
@@ -4919,18 +4838,11 @@ struct glacial_spike_t : public frost_mage_spell_t
   {
     double icicle_damage_sum = 0;
     int icicle_count = as<int>( p() -> icicles.size() );
-    assert( icicle_count == p() -> spec.icicles -> effectN( 2 ).base_value() );
+    assert( icicle_count == p() -> spec.icicles -> effectN( 2 ).base_value() && s -> chain_target == 0 );
     for ( int i = 0; i < icicle_count; i++ )
     {
       icicle_data_t d = p() -> get_icicle_object();
       icicle_damage_sum += d.damage;
-    }
-
-
-    // Note: This needs to be manually added to icicle values for splitting ice, as normally it's a base multiplier.
-    if ( p() -> talents.splitting_ice -> ok() )
-    {
-      icicle_damage_sum *= 1.0 + p() -> talents.splitting_ice -> effectN( 3 ).percent();
     }
 
     if ( sim -> debug )
@@ -7771,7 +7683,8 @@ void mage_t::create_buffs()
   //TODO: Remove hardcoded duration once spelldata contains the value
   buffs.brain_freeze          = buff_creator_t( this, "brain_freeze", find_spell( 190446 ) )
                                   .duration( timespan_t::from_seconds( 15.0 ) );
-  buffs.bone_chilling         = buff_creator_t( this, "bone_chilling", find_spell( 205766 ) );
+  buffs.bone_chilling         = buff_creator_t( this, "bone_chilling", find_spell( 205766 ) )
+                                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.fingers_of_frost      = buff_creator_t( this, "fingers_of_frost", find_spell( 44544 ) )
                                   .max_stack( find_spell( 44544 ) -> max_stacks() +
                                               sets.set( MAGE_FROST, T18, B4 ) -> effectN( 2 ).base_value() +
@@ -8659,6 +8572,31 @@ double mage_t::composite_player_critical_damage_multiplier( const action_state_t
 
   return m;
 }
+
+// mage_t::composite_player_pet_damage_multiplier ============================
+
+double mage_t::composite_player_pet_damage_multiplier( const action_state_t* s ) const
+{
+  double m = player_t::composite_player_pet_damage_multiplier(s);
+
+  if ( artifact.ancient_power )
+  {
+    m *= 1.0 + artifact.ancient_power.percent();
+  }
+
+  if ( artifact.empowered_spellblade )
+  {
+    m *= 1.0 + artifact.empowered_spellblade.percent();
+  }
+
+  if ( artifact.spellborne )
+  {
+    m *= 1.0 + artifact.spellborne.percent();
+  }
+
+  return m;
+}
+
 // mage_t::composite_player_multiplier =======================================
 
 double mage_t::composite_player_multiplier( school_e school ) const
@@ -8705,7 +8643,38 @@ double mage_t::composite_player_multiplier( school_e school ) const
                    buffs.temporal_power -> check() );
   }
 
-  if ( buffs.chilled_to_the_core -> check() )
+  if ( artifact.might_of_the_guardians && dbc::get_school_mask( school ) & SCHOOL_MASK_ARCANE )
+  {
+    m *= 1.0 + artifact.might_of_the_guardians.percent();
+  }
+
+  if ( artifact.ancient_power && dbc::get_school_mask( school ) & SCHOOL_MASK_ARCANE )
+  {
+    m *= 1.0 + artifact.ancient_power.percent();
+  }
+
+  if ( artifact.wings_of_flame && dbc::get_school_mask( school ) & SCHOOL_MASK_FIRE )
+  {
+    m *= 1.0 + artifact.wings_of_flame.percent();
+  }
+
+  if ( artifact.empowered_spellblade && dbc::get_school_mask( school ) & SCHOOL_MASK_FIRE )
+  {
+    m *= 1.0 + artifact.empowered_spellblade.percent();
+  }
+
+  if ( buffs.bone_chilling -> check() && dbc::get_school_mask( school ) & SCHOOL_MASK_FROST )
+  {
+    // Divide effect percent by 10 to convert 5 into 0.5%, not into 5%.
+    m *= 1.0 + buffs.bone_chilling -> current_stack * talents.bone_chilling -> effectN( 1 ).percent() / 10;
+  }
+
+  if ( artifact.spellborne && dbc::get_school_mask( school ) & SCHOOL_MASK_FROST )
+  {
+    m *= 1.0 + artifact.spellborne.percent();
+  }
+
+  if ( buffs.chilled_to_the_core -> check() && dbc::get_school_mask( school ) & SCHOOL_MASK_FROST )
   {
     m *= 1.0 + buffs.chilled_to_the_core -> data().effectN( 1 ).percent();
   }
