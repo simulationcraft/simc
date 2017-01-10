@@ -7280,9 +7280,9 @@ void death_knight_t::create_buffs()
     // Unholy Frenzy duration is hard capped at 10 seconds
     .refresh_duration_callback( []( const buff_t* b, const timespan_t& duration ) {
       timespan_t total_duration = b -> remains() + duration;
-      if ( total_duration > timespan_t::from_seconds( 10 ) )
+      if ( total_duration > timespan_t::from_seconds( 25 ) )
       {
-        total_duration = timespan_t::from_seconds( 10 );
+        total_duration = timespan_t::from_seconds( 25 );
       }
       return total_duration;
     } );
