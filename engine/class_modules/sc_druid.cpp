@@ -382,7 +382,7 @@ public:
     buff_t* soul_of_the_forest; // needs checking
     buff_t* yseras_gift;
     buff_t* harmony; // NYI
-	buff_t* moonkin_form_affinity;
+    buff_t* moonkin_form_affinity;
   } buff;
 
   // Cooldowns
@@ -543,7 +543,7 @@ public:
 
     // Resto
     const spell_data_t* yseras_gift; // Restoration Affinity
-	const spell_data_t* moonkin_form_affinity;
+    const spell_data_t* moonkin_form_affinity;
   } spec;
 
   // Talents
@@ -1049,7 +1049,7 @@ public:
   virtual void start( int stacks, double value, timespan_t duration ) override
   {
     druid.buff.moonkin_form -> expire();
-	druid.buff.moonkin_form_affinity -> expire(); //Balance affinity moonkin form.
+    druid.buff.moonkin_form_affinity -> expire(); //Balance affinity moonkin form.
     druid.buff.cat_form -> expire();
 
     druid.buff.tigers_fury -> expire(); // Mar 03 2016: Tiger's Fury ends when you enter bear form.
@@ -1171,7 +1171,7 @@ struct cat_form_t : public druid_buff_t< buff_t >
   {
     druid.buff.bear_form -> expire();
     druid.buff.moonkin_form -> expire();
-	druid.buff.moonkin_form_affinity -> expire(); //Balance affinity moonkin form.
+    druid.buff.moonkin_form_affinity -> expire(); //Balance affinity moonkin form.
 
     swap_melee( druid.cat_melee_attack, druid.cat_weapon );
 
@@ -1222,20 +1222,20 @@ struct moonkin_form_t : public druid_buff_t< buff_t >
 
 struct moonkin_form_affinity_t : public druid_buff_t< buff_t >
 {
-	moonkin_form_affinity_t(druid_t& p) :
-		base_t(p, buff_creator_t(&p, "moonkin_form_affinity", p.spec.moonkin_form_affinity)
-			.add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER)
-			.add_invalidate(CACHE_ARMOR)
-			.chance(1.0))
-	{}
+  moonkin_form_affinity_t(druid_t& p) :
+    base_t(p, buff_creator_t(&p, "moonkin_form_affinity", p.spec.moonkin_form_affinity)
+      .add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER)
+      .add_invalidate(CACHE_ARMOR)
+      .chance(1.0))
+  {}
 
-	virtual void start(int stacks, double value, timespan_t duration) override
-	{
-		druid.buff.bear_form->expire();
-		druid.buff.cat_form->expire();
+  virtual void start(int stacks, double value, timespan_t duration) override
+  {
+    druid.buff.bear_form->expire();
+    druid.buff.cat_form->expire();
 
-		base_t::start(stacks, value, duration);
-	}
+    base_t::start(stacks, value, duration);
+  }
 };
 
 // Warrior of Elune Buff ====================================================
@@ -4978,7 +4978,7 @@ struct lunar_strike_t : public druid_spell_t
 
   timespan_t natures_balance_extension() const
   {
-    return natures_balance - timespan_t::from_seconds( ( 1.0 - p() -> cache.spell_haste() ) * 5 );
+    return natures_balance / ( 2.0 - p() -> cache.spell_haste() );
   }
 
   double composite_crit_chance() const override
@@ -5038,7 +5038,7 @@ struct lunar_strike_t : public druid_spell_t
       for ( size_t i = 0, actors = tl.size(); i < actors; i++ )
       {
         player_t* t = tl[i];
-        td( t ) -> dots.moonfire -> extend_duration( extend_stuff, timespan_t::from_seconds( 28 ) );
+        td( t ) -> dots.moonfire -> extend_duration( extend_stuff, timespan_t::from_seconds( 28.6 ) );
       }
     }
 
@@ -5255,22 +5255,22 @@ struct moonkin_form_t : public druid_spell_t
 
 struct moonkin_form_affinity_t : public druid_spell_t
 {
-	moonkin_form_affinity_t(druid_t* player, const std::string& options_str) :
-		druid_spell_t("moonkin_form_affinity", player, player -> spec.moonkin_form_affinity, options_str)
-	{
-		form_mask = NO_FORM | CAT_FORM | BEAR_FORM;
-		may_autounshift = false;
+  moonkin_form_affinity_t(druid_t* player, const std::string& options_str) :
+    druid_spell_t("moonkin_form_affinity", player, player -> spec.moonkin_form_affinity, options_str)
+  {
+    form_mask = NO_FORM | CAT_FORM | BEAR_FORM;
+    may_autounshift = false;
 
-		harmful = false;
-		ignore_false_positive = true;
-	}
+    harmful = false;
+    ignore_false_positive = true;
+  }
 
-	void execute() override
-	{
-		druid_spell_t::execute();
+  void execute() override
+  {
+    druid_spell_t::execute();
 
-		p()->shapeshift(MOONKIN_FORM_AFFINITY);
-	}
+    p()->shapeshift(MOONKIN_FORM_AFFINITY);
+  }
 };
 
 // Prowl ====================================================================
@@ -5397,9 +5397,8 @@ struct solar_wrath_t : public druid_spell_t
 
   timespan_t natures_balance_extension() const
   {
-    return natures_balance - timespan_t::from_seconds( ( 1.0 - p() -> cache.spell_haste() ) * 5 );
+    return natures_balance / ( 2.0 - p() -> cache.spell_haste() );
   }
-
 
   void execute() override
   {
@@ -5413,7 +5412,7 @@ struct solar_wrath_t : public druid_spell_t
       for ( size_t i = 0, actors = sim -> target_non_sleeping_list.size(); i < actors; i++ )
       {
         player_t* t = sim -> target_non_sleeping_list[i];
-        td( t ) -> dots.sunfire -> extend_duration( extend_stuff, timespan_t::from_seconds( 23 ) );
+        td( t ) -> dots.sunfire -> extend_duration( extend_stuff, timespan_t::from_seconds( 23.4 ) );
       }
     }
 
@@ -6755,7 +6754,7 @@ void druid_t::apl_precombat()
   }
   else if (specialization() == DRUID_RESTORATION && (primary_role() == ROLE_DPS || primary_role() == ROLE_SPELL))
   {
-	  precombat->add_action(this, "moonkin_form_affinity");
+    precombat->add_action(this, "moonkin_form_affinity");
   }
 
   // Snapshot stats
@@ -8176,8 +8175,8 @@ void druid_t::shapeshift( form_e f )
     buff.moonkin_form -> trigger();
     break;
   case MOONKIN_FORM_AFFINITY:
-	buff.moonkin_form_affinity -> trigger();
-	break;
+    buff.moonkin_form_affinity -> trigger();
+    break;
   default:
     assert( 0 );
     break;
