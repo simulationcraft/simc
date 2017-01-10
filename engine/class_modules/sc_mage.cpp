@@ -8355,6 +8355,9 @@ void mage_t::apl_frost()
   default_list -> add_action( this, "Counterspell", "if=target.debuff.casting.react" );
   default_list -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react=0&prev_gcd.1.flurry&spell_haste<0.845" );
   default_list -> add_action( this, "Time Warp", "if=(time=0&buff.bloodlust.down)|(buff.bloodlust.down&equipped.132410&(cooldown.icy_veins.remains<1|target.time_to_die<50))" );
+  default_list -> add_action( mage_t::get_special_use_items( "horn_of_valor", false ) );
+  default_list -> add_action( mage_t::get_special_use_items( "obelisk_of_the_void", false ) );
+  default_list -> add_action( mage_t::get_special_use_items( "mrrgrias_favor", false ) );
   default_list -> add_action( "call_action_list,name=cooldowns" );
   default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>=4" );
   default_list -> add_action( "call_action_list,name=single" );
