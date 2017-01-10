@@ -1,4 +1,4 @@
-SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23360, git build 0a8dde1)
+SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23360, git build 8d6ad52)
 
 Name             : Mend Pet (id=136) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
@@ -3788,7 +3788,7 @@ Class            : Marksmanship Hunter
 School           : Physical
 Spell Level      : 20
 Proc Chance      : 100%
-Real PPM         : 6.5 (Haste multiplier)
+Real PPM         : 7.2 (Haste multiplier)
 Proc Flags       : ......x. ........ ........ ........ 
                  : White Ranged
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 

@@ -1,4 +1,4 @@
-SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23360, git build 0a8dde1)
+SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23360, git build 8d6ad52)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -5260,6 +5260,7 @@ Effects          :
 Description      : Each of your main hand attacks has a $h% chance to reset the remaining cooldown on Stormstrike, and cause your next Stormstrike to cost $201846s3% less Maelstrom and trigger no cooldown.
 
 Name             : Stormbringer (id=201846) [Spell Family (11)] 
+Hotfixed         : Attributes
 Class            : Shaman
 School           : Physical
 Range            : 100 yards
@@ -5268,9 +5269,9 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
-Affecting spells : Tempest (192234), Raging Storms (198361)
+Affecting spells : Tempest (192234), Raging Storms (198361), Item - Shaman T19 Enhancement 2P Bonus (211987)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5287,8 +5288,13 @@ Effects          :
 #4 (id=302446)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
                    Affected Spells: Stormstrike (32175), Stormstrike Off-Hand (32176), Windstrike (115357), Windstrike Off-Hand (115360)
-#5 (id=342303)   : Apply Aura (6) | Unknown effect sub type (408)
+#5 (id=342303)   : Apply Aura (6) | Add Flat Modifier: Spell Critical Chance (107)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 7 | Target: Self(1)
+                   Affected Spells: Stormstrike (32175), Stormstrike Off-Hand (32176), Windstrike (115357), Windstrike Off-Hand (115360)
+                   Hotfixed: Sub Type (408 -> 107), Base Value (1 -> 0), Misc Value (0 -> 7), Affects Spells, Trigger Spell (115356 -> 0)
+#6 (id=363023)   : Apply Aura (6) | Unknown effect sub type (408)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 115356 | Target: Self(1)
+                   Hotfixed: NEW EFFECT
 Description      : $@spelldesc201845
 Tooltip          : Stormstrike has no cooldown and its cost is reduced by $s3%.
 
