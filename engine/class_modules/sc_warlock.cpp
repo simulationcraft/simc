@@ -297,6 +297,7 @@ public:
     timespan_t lessons_of_spacetime1;
     timespan_t lessons_of_spacetime2;
     timespan_t lessons_of_spacetime3;
+    bool sephuzs_secret;
 
   } legendary;
 
@@ -402,6 +403,7 @@ public:
     buff_t* sindorei_spite;
     buff_t* stretens_insanity;
     buff_t* lessons_of_spacetime;
+    haste_buff_t* sephuzs_secret;
   } buffs;
 
   // Gains
@@ -1210,6 +1212,9 @@ struct meteor_strike_t: public warlock_pet_spell_t
       p() -> o() -> trigger_lof_infernal();
       p() -> o() -> buffs.lord_of_flames -> trigger();
     }
+
+    if ( p() -> o() -> legendary.sephuzs_secret )
+      p() -> o() -> buffs.sephuzs_secret -> trigger();
   }
 };
 
@@ -5359,6 +5364,14 @@ struct mortal_coil_t: public warlock_spell_t
     if ( result_is_hit( s -> result ) )
       heal -> execute();
   }
+
+  virtual void execute() override
+  {
+    warlock_spell_t::execute();
+
+    if ( p() -> legendary.sephuzs_secret )
+      p() -> buffs.sephuzs_secret -> trigger();
+  }
 };
 
 struct channel_demonfire_tick_t : public warlock_spell_t
@@ -5712,6 +5725,11 @@ double warlock_t::composite_spell_haste() const
   if ( buffs.misery -> check() )
   {
     h *= 1.0 / ( 1.0 + buffs.misery -> stack_value() );
+  }
+
+  if ( buffs.sephuzs_secret -> check() )
+  {
+    h *= 1.0 / ( 1.0 + buffs.sephuzs_secret -> check_value() );
   }
 
   return h;
@@ -6246,16 +6264,20 @@ void warlock_t::create_buffs()
   buffs.soul_harvest = buff_creator_t( this, "soul_harvest", find_spell( 196098 ) )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
+  //legendary buffs
   buffs.stretens_insanity = buff_creator_t( this, "stretens_insanity", find_spell( 208822 ) )
     .default_value( find_spell( 208822 ) -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
     .tick_behavior( BUFF_TICK_NONE );
-
   buffs.lessons_of_spacetime = buff_creator_t( this, "lessons_of_spacetime", find_spell( 236176 ) )
     .default_value( find_spell( 236176 ) -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
     .refresh_behavior( BUFF_REFRESH_NONE )
     .tick_behavior( BUFF_TICK_NONE );
+  buffs.sephuzs_secret =
+    haste_buff_creator_t( this, "sephuzs_secret", find_spell( 208052 ) )
+    .default_value( find_spell( 208052 ) -> effectN( 2 ).percent() )
+    .cd( find_spell( 226262 ) -> duration() );
 
   //affliction buffs
   buffs.shard_instability = buff_creator_t( this, "shard_instability", find_spell( 216457 ) )
@@ -6483,7 +6505,7 @@ void warlock_t::apl_affliction()
     action_list_str += "|buff.elunes_light.remains";
   if ( find_item( "obelisk of_the_void" ) )
     action_list_str += "|buff.collapsing_shadow.remains";
-
+  add_action( "Mortal Coil", "if=equipped.132452" );
   add_action( "Corruption", "if=remains<=tick_time+gcd" );
   add_action( "Corruption", "cycle_targets=1,if=(talent.absolute_corruption.enabled|!talent.malefic_grasp.enabled|!talent.soul_effigy.enabled)&remains<=tick_time+gcd" );
   add_action( "Siphon Life", "if=remains<=tick_time+gcd" );
@@ -7597,6 +7619,16 @@ struct feretory_of_souls_t : public scoped_actor_callback_t<warlock_t>
   }
 };
 
+struct sephuzs_secret_t : public scoped_actor_callback_t<warlock_t>
+{
+  sephuzs_secret_t() : super( WARLOCK ){}
+
+  void manipulate( warlock_t* a, const special_effect_t& ) override
+  {
+    a -> legendary.sephuzs_secret = true;
+  }
+};
+
 struct warlock_module_t: public module_t
 {
   warlock_module_t(): module_t( WARLOCK ) {}
@@ -7628,6 +7660,7 @@ struct warlock_module_t: public module_t
     register_special_effect( 236114, reap_and_sow_t() );
     register_special_effect( 236199, wakeners_loyalty_t() );
     register_special_effect( 236174, lessons_of_spacetime_t() );
+    register_special_effect( 208051, sephuzs_secret_t() );
   }
 
   virtual void register_hotfixes() const override
