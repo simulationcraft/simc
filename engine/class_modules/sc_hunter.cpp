@@ -732,7 +732,7 @@ struct vulnerability_stats_t
   proc_t* no_vuln;
 
   bool has_patient_sniper;
-  std::array< proc_t*, 6 > patient_sniper;
+  std::array< proc_t*, 7 > patient_sniper;
 
   vulnerability_stats_t( hunter_t* p, action_t* a )
     : no_vuln( nullptr ), has_patient_sniper( p -> talents.patient_sniper -> ok() )
@@ -744,7 +744,7 @@ struct vulnerability_stats_t
     if ( has_patient_sniper )
     {
       for ( size_t i = 0; i < patient_sniper.size(); i++ )
-        patient_sniper[ i ] = p -> get_proc( "vuln_" + name + "_" + std::to_string( 15 * i ) );
+        patient_sniper[ i ] = p -> get_proc( "vuln_" + name + "_" + std::to_string( 10 * i ) );
     }
   }
 
@@ -842,8 +842,8 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
 
     if ( p() -> talents.patient_sniper -> ok() )
     {
-      // it looks like we can get called with current_tick == 6 (last tick) which can't happen in game
-      unsigned current_tick = std::min<unsigned>( td -> debuffs.vulnerable -> current_tick, 5 );
+      // it looks like we can get called with current_tick == 7 (last tick) which can't happen in game
+      unsigned current_tick = std::min<unsigned>( td -> debuffs.vulnerable -> current_tick, 6 );
       m += p() -> talents.patient_sniper -> effectN( 1 ).percent() * current_tick;
     }
 
