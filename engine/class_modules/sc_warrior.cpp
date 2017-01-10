@@ -517,10 +517,10 @@ public:
   bool      has_t18_class_trinket() const override;
 
   void      default_apl_dps_precombat( const std::string& food, const std::string& potion );
-  void              apl_default();
-  void              apl_fury();
-  void              apl_arms();
-  void              apl_prot();
+  void      apl_default();
+  void      apl_fury();
+  void      apl_arms();
+  void      apl_prot();
   void      init_action_list() override;
 
   action_t*  create_action( const std::string& name, const std::string& options ) override;
@@ -1880,7 +1880,7 @@ struct dragon_roar_t: public warrior_attack_t
 
 struct execute_sweep_t: public warrior_attack_t
 {
-  double dmg_mult;
+  double dmg_mult; // This number is set in the original parent attack. 
   execute_sweep_t( warrior_t* p ):
     warrior_attack_t( "execute_sweep", p, p -> spec.execute ), dmg_mult( 0 )
   {
@@ -1929,19 +1929,20 @@ struct sweeping_execute_t: public event_t
   void execute() override
   {
     player_t* new_target = nullptr;
+    size_t max_targets = 0;
     execute_sweeping_strike -> available_targets( execute_sweeping_strike -> target_cache.list );
-    // Gotta find a target for this bastard to hit. Also if the target dies in the 0.5 seconds between the original execute and this, we don't want to continue.
+    // Gotta find a target for this bastard to hit. Also if the target dies in the 0.25 seconds between the original execute and this, we don't want to continue.
     for ( size_t i = 0; i < execute_sweeping_strike -> target_cache.list.size(); ++i )
     {
       if ( execute_sweeping_strike -> target_cache.list[i] == original_target )
         continue;
       new_target = execute_sweeping_strike -> target_cache.list[i];
-      break;
-    }
-    if ( new_target )
-    {
       execute_sweeping_strike -> target = new_target;
       execute_sweeping_strike -> execute();
+      max_targets++;
+
+      if ( max_targets == 2 )
+        break;
     }
   }
 };
@@ -2053,7 +2054,6 @@ struct execute_arms_t: public warrior_attack_t
   void execute() override
   {
     warrior_attack_t::execute();
-
 
     if ( execute_sweeping_strike )
     {
