@@ -3012,7 +3012,7 @@ struct arcane_blast_t : public arcane_mage_spell_t
     double c = arcane_mage_spell_t::cost();
 
     c *= 1.0 +  p() -> buffs.arcane_charge -> check() *
-                p() -> spec.arcane_charge -> effectN( 2 ).percent();
+                p() -> spec.arcane_charge -> effectN( 5 ).percent();
 
     if ( p() -> buffs.arcane_affinity -> check() )
     {
@@ -3173,7 +3173,7 @@ struct arcane_explosion_t : public arcane_mage_spell_t
     double c = arcane_mage_spell_t::cost();
 
     c *= 1.0 +  p() -> buffs.arcane_charge -> check() *
-                p() -> spec.arcane_charge -> effectN( 2 ).percent();
+                p() -> spec.arcane_charge -> effectN( 5 ).percent();
 
     return c;
   }
