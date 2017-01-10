@@ -68,7 +68,7 @@ actions+=/incinerate
 actions+=/life_tap
 
 head=collar_of_enclosure,id=134424,bonus_id=1727
-neck=tightweb_choker,id=134541,bonus_id=1727,enchant_id=5439
+neck=tightweb_choker,id=134541,bonus_id=1727,enchant=mark_of_the_claw
 shoulders=amice_of_the_unfurling_tempest,id=134432,bonus_id=1727
 back=goldscar_pelt,id=133639,bonus_id=1727,enchant_id=5436
 chest=fluxflow_robes,id=134413,bonus_id=1727

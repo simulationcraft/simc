@@ -69,7 +69,7 @@ actions+=/drain_soul,chain=1,interrupt=1
 actions+=/life_tap
 
 head=collar_of_enclosure,id=134424,bonus_id=1727/1517
-neck=cursed_beartooth_necklace,id=139239,bonus_id=1805,enchant_id=5439
+neck=cursed_beartooth_necklace,id=139239,bonus_id=1805,enchant=mark_of_the_trained_soldier
 shoulders=amice_of_the_unfurling_tempest,id=134432,bonus_id=1727/1517
 back=drape_of_the_raven_lord,id=136770,bonus_id=1727/1517,enchant_id=5436
 chest=maddening_robe_of_secrets,id=139193,bonus_id=1805
@@ -90,7 +90,7 @@ main_hand=ulthalesh_the_deadwind_harvester,id=128942,gem_id=137347/137544/137347
 # gear_intellect=26087
 # gear_crit_rating=2179
 # gear_haste_rating=7233
-# gear_mastery_rating=11076
+# gear_mastery_rating=11676
 # gear_armor=1715
 # set_bonus=tier19p_cloth_2pc=1
 default_pet=felhunter

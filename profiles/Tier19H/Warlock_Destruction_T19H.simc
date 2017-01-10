@@ -68,7 +68,7 @@ actions+=/incinerate
 actions+=/life_tap
 
 head=collar_of_enclosure,id=134424,bonus_id=1727/1517
-neck=pendant_of_the_watchful_eye,id=137536,bonus_id=1727/1517,enchant_id=5439
+neck=pendant_of_the_watchful_eye,id=137536,bonus_id=1727/1517,enchant=mark_of_the_claw
 shoulders=amice_of_the_unfurling_tempest,id=134432,bonus_id=1727/1517
 back=goldscar_pelt,id=133639,bonus_id=1727/1517,enchant_id=5436
 chest=fluxflow_robes,id=134413,bonus_id=1727/1517
