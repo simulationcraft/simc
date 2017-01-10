@@ -25,7 +25,7 @@ spec=enhancement
 
 head=collar_of_honorable_exultation,id=136777,bonus_id=1727/1517
 neck=wolfstride_pendant,id=133633,bonus_id=1727/1517,enchant=mark_of_the_hidden_satyr
-shoulders=thundercrush_pauldrons,id=134478,bonus_id=1727/1517
+shoulders=epaulets_of_deceitful_intent,id=134480,bonus_id=1727/1517
 back=cape_of_rigid_order,id=134402,bonus_id=1727/1517,enchant=binding_of_agility
 chest=thunderfused_valkyr_hauberk,id=133622,bonus_id=1727/1517
 wrists=remorseless_chain_armbands,id=137405,bonus_id=1727/1517

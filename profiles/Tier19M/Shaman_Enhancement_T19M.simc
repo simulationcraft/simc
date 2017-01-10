@@ -66,10 +66,10 @@ actions+=/boulderfist
 
 head=greyed_dragonscale_coif,id=139214,bonus_id=1806
 neck=cursed_beartooth_necklace,id=139239,bonus_id=1806,enchant=mark_of_the_hidden_satyr
-shoulders=thorny_bramblemail_pauldrons,id=139218,bonus_id=1806
+shoulders=epaulets_of_deceitful_intent,id=134480,bonus_id=1727/1522
 back=drape_of_the_unworthy,id=142521,bonus_id=3469/1512,enchant=binding_of_agility
 chest=corroded_valkyr_chainmail,id=142433,bonus_id=3469/1512
-wrists=biteresistant_wristclamps,id=142423,bonus_id=3469
+wrists=remorseless_chain_armbands,id=137405,bonus_id=1727/1522
 hands=kvaldir_exults_grips,id=142434,bonus_id=3469
 waist=anchor_chain_waistguard,id=142420,bonus_id=3469/1512
 legs=leggings_of_the_undaunted,id=142421,bonus_id=3469
@@ -82,11 +82,12 @@ main_hand=doomhammer,id=128819,bonus_id=741,gem_id=139266/142511/139264,relic_id
 off_hand=fury_of_the_stonemother,id=128873
 
 # Gear Summary
-# gear_ilvl=888.94
-# gear_agility=17930
-# gear_stamina=28579
-# gear_crit_rating=3801
-# gear_haste_rating=6624
-# gear_mastery_rating=10452
+# gear_ilvl=887.06
+# gear_agility=17621
+# gear_stamina=28117
+# gear_crit_rating=4497
+# gear_haste_rating=6131
+# gear_mastery_rating=10142
 # gear_versatility_rating=1175
-# gear_armor=2837
+# gear_armor=2814
+# set_bonus=tier19p_mail_2pc=1

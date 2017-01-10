@@ -66,7 +66,7 @@ actions+=/boulderfist
 
 head=collar_of_honorable_exultation,id=136777,bonus_id=1727
 neck=wolfstride_pendant,id=133633,bonus_id=1727,enchant=mark_of_the_hidden_satyr
-shoulders=thundercrush_pauldrons,id=134478,bonus_id=1727
+shoulders=epaulets_of_deceitful_intent,id=134480,bonus_id=1727
 back=cape_of_rigid_order,id=134402,bonus_id=1727,enchant=binding_of_agility
 chest=thunderfused_valkyr_hauberk,id=133622,bonus_id=1727
 wrists=remorseless_chain_armbands,id=137405,bonus_id=1727
@@ -85,7 +85,8 @@ off_hand=fury_of_the_stonemother,id=128873
 # gear_ilvl=843.75
 # gear_agility=11624
 # gear_stamina=18511
-# gear_crit_rating=1587
-# gear_haste_rating=5397
-# gear_mastery_rating=11137
+# gear_crit_rating=2209
+# gear_haste_rating=5009
+# gear_mastery_rating=10903
 # gear_armor=2433
+# set_bonus=tier19p_mail_2pc=1
