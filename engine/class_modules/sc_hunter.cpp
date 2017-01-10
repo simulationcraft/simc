@@ -5305,6 +5305,35 @@ struct rangers_net_t: public hunter_spell_t
 //end spells
 }
 
+namespace buffs
+{
+
+struct hunters_mark_exists_buff_t: public buff_t
+{
+  proc_t* wasted;
+
+  hunters_mark_exists_buff_t( hunter_t* p ):
+    buff_t( buff_creator_t( p, 185365, "hunters_mark_exists" ).quiet( true ) )
+  {
+    wasted = p -> get_proc( "wasted_hunters_mark" );
+  }
+
+  void refresh( int stacks, double value, timespan_t duration ) override
+  {
+    buff_t::refresh( stacks, value, duration );
+    wasted -> occur();
+  }
+
+  void expire_override( int stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( stacks, remaining_duration );
+    if ( remaining_duration == timespan_t::zero() )
+      wasted -> occur();
+  }
+};
+
+} // end namespace buffs
+
 hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ):
 actor_target_data_t( target, p ),
 dots( dots_t() )
@@ -5811,8 +5840,7 @@ void hunter_t::create_buffs()
         .default_value( careful_aim_crit );
 
   buffs.hunters_mark_exists 
-    = buff_creator_t( this, 185365, "hunters_mark_exists" )
-      .quiet( true );
+    = new buffs::hunters_mark_exists_buff_t( this );
 
   buffs.lock_and_load = 
     buff_creator_t( this, "lock_and_load", talents.lock_and_load 
