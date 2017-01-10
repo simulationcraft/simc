@@ -6192,12 +6192,6 @@ void hunter_t::init_action_list()
     if ( true_level > 100 )
       precombat -> add_action( "augmentation,type=defiled" );
 
-    if ( specialization() == HUNTER_BEAST_MASTERY )
-    {
-      precombat -> add_action( "volley,toggle=on" );
-    }
-
-
     switch ( specialization() )
     {
     case HUNTER_SURVIVAL:
@@ -6278,6 +6272,8 @@ void hunter_t::apl_bm()
 
   add_item_actions( default_list );
   add_racial_actions( default_list );
+
+  default_list -> add_action( "volley,toggle=on" );
 
   default_list -> add_action( "potion,name=prolonged_power,if=buff.bestial_wrath.remains|!cooldown.beastial_wrath.remains" );
   default_list -> add_action( "a_murder_of_crows" );
