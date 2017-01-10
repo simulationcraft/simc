@@ -3225,7 +3225,8 @@ struct apocalypse_t : public death_knight_melee_attack_t
   void execute() override
   {
     death_knight_melee_attack_t::execute();
-    auto n_wounds = td( execute_state -> target ) -> debuff.festering_wound -> stack();
+    auto n_wounds = std::min( data().effectN( 3 ).base_value(),
+        td( execute_state -> target ) -> debuff.festering_wound -> stack() );
 
     if ( result_is_hit( execute_state -> result ) )
     {
