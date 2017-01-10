@@ -69,7 +69,7 @@ actions+=/drain_soul,chain=1,interrupt=1
 actions+=/life_tap
 
 head=eyes_of_azjaqir,id=138314,bonus_id=3516
-neck=belerons_choker_of_misery,id=140899,bonus_id=3516,enchant=mark_of_the_hidden_satyr
+neck=belerons_choker_of_misery,id=140899,bonus_id=3516,enchant=mark_of_the_trained_soldier
 shoulders=pauldrons_of_azjaqir,id=138323,bonus_id=3516
 back=drape_of_the_unworthy,id=142521,bonus_id=3469/1512,enchant_id=5436
 chest=finery_of_azjaqir,id=138320,bonus_id=3516
@@ -90,7 +90,7 @@ main_hand=ulthalesh_the_deadwind_harvester,id=128942,gem_id=140822/142510/140822
 # gear_intellect=34607
 # gear_crit_rating=6934
 # gear_haste_rating=4685
-# gear_mastery_rating=10410
+# gear_mastery_rating=11010
 # gear_versatility_rating=1026
 # gear_armor=1883
 # set_bonus=tier19_2pc=1

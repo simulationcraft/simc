@@ -68,7 +68,7 @@ actions+=/incinerate
 actions+=/life_tap
 
 head=collar_of_enclosure,id=134424,bonus_id=1727/1522
-neck=blackened_portalstone_necklace,id=139332,bonus_id=1806,enchant_id=5439
+neck=blackened_portalstone_necklace,id=139332,bonus_id=1806,enchant=mark_of_the_claw
 shoulders=amice_of_the_unfurling_tempest,id=134432,bonus_id=1727/1522
 back=drape_of_the_unworthy,id=142521,bonus_id=3469/1512,enchant_id=5436
 chest=robes_of_the_ancient_chronicle,id=142297

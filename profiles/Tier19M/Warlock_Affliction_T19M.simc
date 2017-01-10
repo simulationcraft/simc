@@ -69,7 +69,7 @@ actions+=/drain_soul,chain=1,interrupt=1
 actions+=/life_tap
 
 head=collar_of_enclosure,id=134424,bonus_id=1727/1522
-neck=cursed_beartooth_necklace,id=139239,bonus_id=1806,gems=150mastery,enchant=mark_of_the_hidden_satyr
+neck=cursed_beartooth_necklace,id=139239,bonus_id=1806,gems=150mastery,enchant=mark_of_the_trained_soldier
 shoulders=amice_of_the_unfurling_tempest,id=134432,bonus_id=1727/1522
 back=drape_of_the_unworthy,id=142521,bonus_id=3469/1512,enchant_id=5436
 chest=robes_of_the_ancient_chronicle,id=142297
@@ -90,7 +90,7 @@ main_hand=ulthalesh_the_deadwind_harvester,id=128942,gem_id=142512/142510/142512
 # gear_intellect=31863
 # gear_crit_rating=4510
 # gear_haste_rating=8177
-# gear_mastery_rating=9921
+# gear_mastery_rating=10521
 # gear_versatility_rating=776
 # gear_armor=1838
 # set_bonus=tier19p_cloth_2pc=1

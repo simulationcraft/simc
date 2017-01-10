@@ -61,7 +61,7 @@ actions+=/shadow_bolt
 actions+=/life_tap
 
 head=collar_of_enclosure,id=134424,bonus_id=1727/1522
-neck=pendant_of_the_watchful_eye,id=137536,bonus_id=1727/1522,enchant_id=5439
+neck=pendant_of_the_watchful_eye,id=137536,bonus_id=1727/1522,enchant=mark_of_the_claw
 shoulders=amice_of_the_unfurling_tempest,id=134432,bonus_id=1727/1522
 back=drape_of_the_unworthy,id=142521,bonus_id=3469/1512,enchant_id=5436
 chest=robes_of_celestial_adornment,id=142410,bonus_id=3469

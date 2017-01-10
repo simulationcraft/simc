@@ -61,7 +61,7 @@ actions+=/shadow_bolt
 actions+=/life_tap
 
 head=eyes_of_azjaqir,id=138314,bonus_id=3516
-neck=radiant_string_of_scorpid_eyes,id=140898,bonus_id=3444,enchant_id=5439
+neck=radiant_string_of_scorpid_eyes,id=140898,bonus_id=3444,enchant=mark_of_the_claw
 shoulders=pauldrons_of_azjaqir,id=138323,bonus_id=3516
 back=astromancers_greatcloak,id=140909,bonus_id=3516,enchant_id=5436
 chest=robes_of_fluctuating_energy,id=140848,bonus_id=3444

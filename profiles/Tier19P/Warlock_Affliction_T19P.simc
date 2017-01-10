@@ -69,7 +69,7 @@ actions+=/drain_soul,chain=1,interrupt=1
 actions+=/life_tap
 
 head=collar_of_enclosure,id=134424,bonus_id=1727
-neck=wolfstride_pendant,id=133633,bonus_id=1727,enchant_id=5439
+neck=wolfstride_pendant,id=133633,bonus_id=1727,enchant=mark_of_the_trained_soldier
 shoulders=amice_of_the_unfurling_tempest,id=134432,bonus_id=1727
 back=drape_of_the_raven_lord,id=136770,bonus_id=1727,enchant_id=5436
 chest=fetid_gutcover_apron,id=134414,bonus_id=1727
@@ -90,7 +90,7 @@ main_hand=ulthalesh_the_deadwind_harvester,id=128942,gem_id=142063/141283/142063
 # gear_intellect=20549
 # gear_crit_rating=1551
 # gear_haste_rating=5846
-# gear_mastery_rating=10944
+# gear_mastery_rating=11544
 # gear_armor=1570
 # set_bonus=tier19p_cloth_2pc=1
 default_pet=felhunter
