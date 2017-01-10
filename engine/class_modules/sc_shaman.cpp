@@ -6550,8 +6550,7 @@ void shaman_t::create_buffs()
                   .add_invalidate( CACHE_ATTACK_SPEED )
                   .default_value( 1.0 / ( 1.0 + talent.windsong -> effectN( 2 ).percent() ) );
   buff.boulderfist = buff_creator_t( this, "boulderfist", talent.boulderfist -> effectN( 3 ).trigger() )
-                        .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-                        .add_invalidate( CACHE_CRIT_CHANCE );
+                        .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buff.landslide = buff_creator_t( this, "landslide", find_spell( 202004 ) )
                    .add_invalidate( CACHE_AGILITY )
                    .chance( talent.landslide -> ok() )
@@ -7173,11 +7172,6 @@ double shaman_t::composite_spell_crit_chance() const
 {
   double m = player_t::composite_spell_crit_chance();
 
-  if ( buff.boulderfist -> up() )
-  {
-    m += buff.boulderfist -> data().effectN( 1 ).percent();
-  }
-
   m += spec.critical_strikes -> effectN( 1 ).percent();
 
   return m;
@@ -7208,11 +7202,6 @@ double shaman_t::temporary_movement_modifier() const
 double shaman_t::composite_melee_crit_chance() const
 {
   double m = player_t::composite_melee_crit_chance();
-
-  if ( buff.boulderfist -> up() )
-  {
-    m += buff.boulderfist -> data().effectN( 1 ).percent();
-  }
 
   m += spec.critical_strikes -> effectN( 1 ).percent();
 
