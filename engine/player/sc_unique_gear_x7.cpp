@@ -4181,6 +4181,18 @@ void unique_gear::register_hotfixes_x7()
     .operation( hotfix::HOTFIX_SET )
     .modifier( 1.25 )
     .verification_value( 0.7 );
+
+  hotfix::register_effect( "Mark of the Distant Army", "2017-01-10", "7.1.5 removed damage information.", 280734 )
+    .field( "average" )
+    .operation( hotfix::HOTFIX_SET )
+    .modifier( 8.828724 )
+    .verification_value( 0 );
+
+  hotfix::register_effect( "Mark of the Distant Army", "2017-01-10-2", "7.1.5 removed damage information.", 280734 )
+    .field( "delta" )
+    .operation( hotfix::HOTFIX_SET )
+    .modifier( 0.15 )
+    .verification_value( 0 );
 }
 
 void unique_gear::register_target_data_initializers_x7( sim_t* sim )
