@@ -8487,7 +8487,7 @@ double mage_t::composite_player_critical_damage_multiplier( const action_state_t
 {
   double m = player_t::composite_player_critical_damage_multiplier( s );
 
-  if ( artifact.burning_gaze.rank() && s -> action -> school == SCHOOL_FIRE )
+  if ( artifact.burning_gaze.rank() && dbc::get_school_mask( s -> action -> school ) & SCHOOL_MASK_FIRE )
   {
     m *= 1.0 + artifact.burning_gaze.percent();
   }
