@@ -1069,6 +1069,7 @@ public:
   bool havoc_t19_2pc;
   bool hasted_gcd;
   bool may_proc_fel_barrage;
+  bool havoc_damage_increase;
 
   demon_hunter_action_t( const std::string& n, demon_hunter_t* p,
                          const spell_data_t* s = spell_data_t::nil(),
@@ -1079,7 +1080,8 @@ public:
       havoc_t19_2pc( ab::data().affected_by(
                        p -> sets.set( DEMON_HUNTER_HAVOC, T19, B2 ) ) ),
       hasted_gcd( false ),
-      may_proc_fel_barrage( false )
+      may_proc_fel_barrage( false ),
+	  havoc_damage_increase(ab::data().affected_by(p->spec.havoc->effectN(6)))
   {
     ab::parse_options( o );
     ab::may_crit      = true;
@@ -1091,6 +1093,11 @@ public:
         hasted_gcd = ab::data().affected_by( p -> spec.havoc -> effectN( 1 ) );
         ab::cooldown -> hasted =
           ab::data().affected_by( p -> spec.havoc -> effectN( 2 ) );
+
+		if (havoc_damage_increase)
+		{
+			ab::weapon_multiplier *= 1 + p->spec.havoc->effectN(6).percent();
+		}
         break;
       case DEMON_HUNTER_VENGEANCE:
         hasted_gcd = ab::data().affected_by( p -> spec.vengeance -> effectN( 1 ) );
