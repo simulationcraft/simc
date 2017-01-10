@@ -134,9 +134,10 @@ struct druid_td_t : public actor_target_data_t
            dots.wild_growth   -> is_ticking();
   }
 
-  unsigned feral_tier19_4pc_bleeds() // TOCHECK
+  unsigned feral_tier19_4pc_bleeds()
   {
-    return dots.rip -> is_ticking()
+     return dots.rip->is_ticking()
+           + dots.ashamanes_frenzy->is_ticking()
            + dots.rake -> is_ticking()
            + dots.thrash_cat -> is_ticking();
   }
