@@ -3706,16 +3706,6 @@ struct crosswinds_t : public monk_melee_attack_t
     tick_action = new crosswinds_tick_t( p );
   }
 
-  virtual double action_multiplier() const override
-  {
-    double am = monk_melee_attack_t::action_multiplier();
-
-    if ( p() -> buff.storm_earth_and_fire -> up() )
-      am *= 3;
-
-    return am;
-  }
-
   player_t* select_random_target() const
   {
     if ( sim -> distance_targeting_enabled )
@@ -5001,16 +4991,6 @@ struct chi_orbit_t: public monk_spell_t
     attack_power_mod.direct = p -> passives.chi_orbit -> effectN( 1 ).ap_coeff();
     aoe = -1;
     school = p -> passives.chi_orbit -> get_school_type();
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double am = monk_spell_t::action_multiplier();
-
-    if ( p() -> buff.storm_earth_and_fire -> up() )
-      am *= 3;
-
-    return am;
   }
 
   bool ready() override
