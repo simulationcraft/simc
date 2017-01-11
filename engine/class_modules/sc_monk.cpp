@@ -3710,16 +3710,6 @@ struct crosswinds_tick_t : public monk_melee_attack_t
     dot_duration = timespan_t::zero();
     trigger_gcd = timespan_t::zero();
   }
-
-  virtual double action_multiplier() const override
-  {
-    double am = monk_melee_attack_t::action_multiplier();
-
-    if ( p() -> buff.storm_earth_and_fire -> up() )
-      am *= 3;
-
-    return am;
-  }
 };
 
 struct crosswinds_t : public monk_melee_attack_t
@@ -3732,6 +3722,16 @@ struct crosswinds_t : public monk_melee_attack_t
     channeled = false;
 
     tick_action = new crosswinds_tick_t( p );
+  }
+
+  virtual double action_multiplier() const override
+  {
+    double am = monk_melee_attack_t::action_multiplier();
+
+    if ( p() -> buff.storm_earth_and_fire -> up() )
+      am *= 3;
+
+    return am;
   }
 
   player_t* select_random_target() const
