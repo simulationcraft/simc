@@ -19,15 +19,15 @@ actions.precombat+=/food,name=fishbrul_special
 actions.precombat+=/augmentation,type=defiled
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion,name=deadly_grace
+actions.precombat+=/potion,name=prolonged_power
 actions.precombat+=/totem_mastery
 actions.precombat+=/stormkeeper
 
 # Executed every time the actor is available.
 # Bloodlust casting behavior mirrors the simulator settings for proxy bloodlust. See options 'bloodlust_percent', and 'bloodlust_time'. 
 actions=bloodlust,if=target.health.pct<25|time>0.500
-# In-combat potion is preferentially linked to Elemental Mastery or Bloodlust, unless combat will end shortly
-actions+=/potion,name=deadly_grace,if=buff.elemental_mastery.up|target.time_to_die<=30|buff.bloodlust.up
+# In-combat potion is preferentially linked to your Elemental, unless combat will end shortly
+actions+=/potion,name=prolonged_power,if=cooldown.fire_elemental.remains>280|target.time_to_die<=60
 actions+=/totem_mastery,if=buff.resonance_totem.remains<2
 actions+=/fire_elemental
 actions+=/storm_elemental
