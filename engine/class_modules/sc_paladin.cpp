@@ -3168,6 +3168,7 @@ struct echoed_divine_storm_t: public paladin_melee_attack_t
     parse_options( options_str );
 
     weapon = &( p -> main_hand_weapon );
+    ret_damage_increase = true;
 
     base_multiplier *= p -> artifact.echo_of_the_highlord.percent();
 
@@ -3222,6 +3223,7 @@ struct divine_storm_t: public holy_power_consumer_t
     {
       dual = background = true;
       may_miss = may_dodge = may_parry = false;
+      ret_damage_increase = true;
     }
   };
 
@@ -3232,6 +3234,7 @@ struct divine_storm_t: public holy_power_consumer_t
     parse_options( options_str );
 
     hasted_gcd = true;
+    ret_damage_increase = true;
 
     may_block = false;
     impact_action = new divine_storm_damage_t( p );
@@ -3766,7 +3769,7 @@ struct echoed_templars_verdict_t : public paladin_melee_attack_t
     parse_options( options_str );
 
     base_multiplier *= p -> artifact.echo_of_the_highlord.percent();
-
+    ret_damage_increase = true;
     background = true;
     base_multiplier *= 1.0 + p -> artifact.might_of_the_templar.percent();
     if ( p -> talents.final_verdict -> ok() )
@@ -3814,6 +3817,7 @@ struct templars_verdict_t : public holy_power_consumer_t
     {
       dual = background = true;
       may_miss = may_dodge = may_parry = false;
+      ret_damage_increase = true;
     }
   };
 
@@ -3828,6 +3832,7 @@ struct templars_verdict_t : public holy_power_consumer_t
     may_block = false;
     impact_action = new templars_verdict_damage_t( p );
     impact_action -> stats = stats;
+    ret_damage_increase = true;
 
     base_multiplier *= 1.0 + p -> artifact.might_of_the_templar.percent();
     if ( p -> talents.final_verdict -> ok() )
