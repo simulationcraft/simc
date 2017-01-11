@@ -1272,6 +1272,8 @@ public:
 
   bool rend_and_tear;
   bool hasted_gcd;
+  bool balance_damage;
+  bool balance_damage_periodic;
   double gore_chance;
   bool triggers_galactic_guardian;
 
@@ -1281,6 +1283,8 @@ public:
     form_mask( ab::data().stance_mask() ), may_autounshift( true ), autoshift( 0 ),
     rend_and_tear( ab::data().affected_by( player -> spec.thrash_bear_dot -> effectN( 2 ) ) ),
     hasted_gcd( ab::data().affected_by( player -> spec.druid -> effectN( 4 ) ) ),
+    balance_damage( ab::data().affected_by( player -> spec.balance -> effectN( 1 ) ) ),
+    balance_damage_periodic( ab::data().affected_by( player -> spec.balance -> effectN( 2 ) ) ),
     gore_chance( player -> spec.gore -> proc_chance() ), triggers_galactic_guardian( true )
   {
     ab::may_crit      = true;
@@ -1289,6 +1293,11 @@ public:
 
     gore_chance += p() -> artifact.bear_hug.percent();
     gore_chance += p() -> sets.set( DRUID_GUARDIAN, T19, B2 ) -> effectN( 1 ).percent();
+
+    if ( balance_damage )
+      ab::spell_power_mod.direct *= 1.0 + player -> spec.balance -> effectN( 1 ).percent();
+    if ( balance_damage_periodic )
+      ab::spell_power_mod.tick *= 1.0 + player -> spec.balance -> effectN( 2 ).percent();
   }
 
   druid_t* p()
