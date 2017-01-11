@@ -3,7 +3,7 @@ level=110
 race=orc
 role=spell
 position=ranged_back
-talents=2112333
+talents=3112333
 artifact=40:139262:139259:139262:0:291:1:292:1:293:1:294:1:295:1:296:1:297:1:298:3:299:3:300:5:301:3:302:3:303:4:304:3:305:3:306:3:1350:1
 spec=elemental
 
@@ -19,7 +19,7 @@ actions.precombat+=/food,name=fishbrul_special
 actions.precombat+=/augmentation,type=defiled
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion,name=deadly_grace
+actions.precombat+=/potion,name=prolonged_power
 actions.precombat+=/totem_mastery
 actions.precombat+=/stormkeeper
 
@@ -27,11 +27,12 @@ actions.precombat+=/stormkeeper
 # Bloodlust casting behavior mirrors the simulator settings for proxy bloodlust. See options 'bloodlust_percent', and 'bloodlust_time'. 
 actions=bloodlust,if=target.health.pct<25|time>0.500
 # In-combat potion is preferentially linked to Elemental Mastery or Bloodlust, unless combat will end shortly
-actions+=/potion,name=deadly_grace,if=buff.elemental_mastery.up|target.time_to_die<=30|buff.bloodlust.up
+actions+=/potion,name=prolonged_power,if=cooldown.fire_elemental.remains>280|target.time_to_die<=60
 actions+=/totem_mastery,if=buff.resonance_totem.remains<2
 actions+=/fire_elemental
 actions+=/storm_elemental
 actions+=/elemental_mastery
+actions+=/earth_elemental
 actions+=/blood_fury,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50
 actions+=/berserking,if=!talent.ascendance.enabled|buff.ascendance.up
 actions+=/run_action_list,name=aoe,if=active_enemies>2&(spell_targets.chain_lightning>2|spell_targets.lava_beam>2)

@@ -2268,7 +2268,7 @@ struct earth_elemental_t : public primal_elemental_t
     primal_elemental_t( owner, ( ! guardian ) ? "primal_earth_elemental" : "greater_earth_elemental", guardian )
   {
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
-    owner_coeff.ap_from_sp      = 0.05;
+    owner_coeff.ap_from_sp      = 0.25;
   }
 };
 
@@ -3563,6 +3563,33 @@ struct crash_lightning_t : public shaman_attack_t
       }
     }
   }
+};
+
+struct earth_elemental_t : public shaman_spell_t
+{
+    const spell_data_t* base_spell;
+
+    earth_elemental_t(shaman_t* player, const std::string& options_str) :
+        shaman_spell_t("earth_elemental", player, player -> find_specialization_spell("Earth Elemental"), options_str),
+        base_spell(player -> find_spell(198103))
+    {
+        harmful = may_crit = false;
+    }
+
+    void execute() override
+    {
+        shaman_spell_t::execute();
+
+        if (p()->talent.primal_elementalist->ok())
+        {
+            p()->pet.pet_earth_elemental->summon(base_spell->duration());
+        }
+        else
+        {
+            p()->pet.guardian_earth_elemental->summon(base_spell->duration());
+        }
+    }
+
 };
 
 struct fire_elemental_t : public shaman_spell_t
@@ -5654,6 +5681,7 @@ action_t* shaman_t::create_action( const std::string& name,
   if ( name == "chain_lightning"         ) return new          chain_lightning_t( this, options_str );
   if ( name == "crash_lightning"         ) return new          crash_lightning_t( this, options_str );
   if ( name == "doom_winds"              ) return new               doom_winds_t( this, options_str );
+  if ( name == "earth_elemental"         ) return new          earth_elemental_t( this, options_str );
   if ( name == "earthen_spike"           ) return new            earthen_spike_t( this, options_str );
   if ( name == "earth_shock"             ) return new              earth_shock_t( this, options_str );
   if ( name == "earthquake"              ) return new               earthquake_t( this, options_str );
@@ -6722,7 +6750,7 @@ void shaman_t::init_action_list_elemental()
   action_priority_list_t* single_asc = get_action_priority_list( "single_asc", "Single Target Action Priority List for Ascendance Spec" );
   action_priority_list_t* aoe       = get_action_priority_list( "aoe", "Multi target action priority list" );
 
-  std::string potion_name = ( true_level > 100 ) ? "deadly_grace" :
+  std::string potion_name = ( true_level > 100 ) ? "prolonged_power" :
                             ( true_level >= 90 ) ? "draenic_intellect" :
                             ( true_level >= 85 ) ? "jade_serpent" :
                             ( true_level >= 80 ) ? "volcanic" :
@@ -6781,8 +6809,8 @@ void shaman_t::init_action_list_elemental()
   // In-combat potion
   if ( sim -> allow_potions && true_level >= 80  )
   {
-    def -> add_action( "potion,name=" + potion_name + ",if=buff.elemental_mastery.up|target.time_to_die<=30|buff.bloodlust.up",
-        "In-combat potion is preferentially linked to Elemental Mastery or Bloodlust, unless combat will end shortly" );
+    def -> add_action( "potion,name=" + potion_name + ",if=cooldown.fire_elemental.remains>280|target.time_to_die<=60",
+        "In-combat potion is preferentially linked to your Elemental, unless combat will end shortly" );
   }
 
   // "Default" APL controlling logic flow to specialized sub-APLs

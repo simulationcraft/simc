@@ -455,7 +455,7 @@ public:
     // General
     real_ppm_t* felblade;
 
-	real_ppm_t* felblade_demons_bite;
+    real_ppm_t* felblade_havoc;
 
     // Havoc
     real_ppm_t* inner_demons;
@@ -1081,7 +1081,7 @@ public:
                        p -> sets.set( DEMON_HUNTER_HAVOC, T19, B2 ) ) ),
       hasted_gcd( false ),
       may_proc_fel_barrage( false ),
-	  havoc_damage_increase(ab::data().affected_by(p->spec.havoc->effectN(6)))
+      havoc_damage_increase(ab::data().affected_by(p->spec.havoc->effectN(6)))
   {
     ab::parse_options( o );
     ab::may_crit      = true;
@@ -1094,10 +1094,10 @@ public:
         ab::cooldown -> hasted =
           ab::data().affected_by( p -> spec.havoc -> effectN( 2 ) );
 
-		if (havoc_damage_increase)
-		{
-			ab::weapon_multiplier *= 1 + p->spec.havoc->effectN(6).percent();
-		}
+        if (havoc_damage_increase)
+        {
+            ab::weapon_multiplier *= 1 + p->spec.havoc->effectN(6).percent();
+        }
         break;
       case DEMON_HUNTER_VENGEANCE:
         hasted_gcd = ab::data().affected_by( p -> spec.vengeance -> effectN( 1 ) );
@@ -2929,7 +2929,7 @@ struct demon_hunter_attack_t : public demon_hunter_action_t<melee_attack_t>
       return;
 
     // All hits have an x% chance to generate 1 charge.
-    if ( !rng().roll( p() -> talent.demon_blades -> effectN( 1 ).percent() ) )
+    if ( !rng().roll( p() -> talent.demon_blades -> proc_chance() ) )
         return;
 
     p() -> active.demon_blades -> target = s -> target;
@@ -3796,7 +3796,7 @@ struct demons_bite_t : public demon_hunter_attack_t
     demon_hunter_attack_t::impact( s );
 
     if ( result_is_hit( s -> result ) && p() -> talent.felblade -> ok() &&
-         p() -> rppm.felblade_demons_bite -> trigger() )
+         p() -> rppm.felblade_havoc-> trigger() )
     {
       p() -> proc.felblade_reset -> occur();
       p() -> cooldown.felblade -> reset( true );
@@ -3845,7 +3845,7 @@ struct demon_blades_t : public demon_hunter_attack_t
     demon_hunter_attack_t::impact( s );
 
     if ( result_is_hit( s -> result ) && p() -> talent.felblade -> ok() &&
-         p() -> rppm.felblade -> trigger() )
+         p() -> rppm.felblade_havoc-> trigger() )
     {
       p() -> proc.felblade_reset -> occur();
       p() -> cooldown.felblade -> reset( true );
@@ -5883,7 +5883,14 @@ void demon_hunter_t::init_rng()
   // General
   rppm.felblade = get_rppm( "felblade", find_spell( 203557 ) );
 
-  rppm.felblade_demons_bite = get_rppm("felblade", find_spell( 236167 ));
+  if (specialization() == DEMON_HUNTER_HAVOC)
+  {
+      //rppm.felblade_havoc = get_rppm("felblade", find_spell( 236167 ));
+      //havoc's is 50% higher, current spelldata is borked
+      rppm.felblade_havoc = get_rppm("felblade", find_spell(203557));
+      rppm.felblade_havoc->set_frequency(rppm.felblade_havoc->get_frequency()*1.5);
+  }
+  
 
   // Havoc
   rppm.inner_demons = get_rppm( "inner_demons", artifact.inner_demons );
