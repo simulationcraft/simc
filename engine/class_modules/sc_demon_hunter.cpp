@@ -455,7 +455,7 @@ public:
     // General
     real_ppm_t* felblade;
 
-	real_ppm_t* felblade_havoc;
+    real_ppm_t* felblade_havoc;
 
     // Havoc
     real_ppm_t* inner_demons;
@@ -1081,7 +1081,7 @@ public:
                        p -> sets.set( DEMON_HUNTER_HAVOC, T19, B2 ) ) ),
       hasted_gcd( false ),
       may_proc_fel_barrage( false ),
-	  havoc_damage_increase(ab::data().affected_by(p->spec.havoc->effectN(6)))
+      havoc_damage_increase(ab::data().affected_by(p->spec.havoc->effectN(6)))
   {
     ab::parse_options( o );
     ab::may_crit      = true;
@@ -1094,10 +1094,10 @@ public:
         ab::cooldown -> hasted =
           ab::data().affected_by( p -> spec.havoc -> effectN( 2 ) );
 
-		if (havoc_damage_increase)
-		{
-			ab::weapon_multiplier *= 1 + p->spec.havoc->effectN(6).percent();
-		}
+        if (havoc_damage_increase)
+        {
+            ab::weapon_multiplier *= 1 + p->spec.havoc->effectN(6).percent();
+        }
         break;
       case DEMON_HUNTER_VENGEANCE:
         hasted_gcd = ab::data().affected_by( p -> spec.vengeance -> effectN( 1 ) );
@@ -5885,10 +5885,10 @@ void demon_hunter_t::init_rng()
 
   if (specialization() == DEMON_HUNTER_HAVOC)
   {
-	  //rppm.felblade_havoc = get_rppm("felblade", find_spell( 236167 ));
-	  //havoc's is 50% higher, current spelldata is borked
-	  rppm.felblade_havoc = get_rppm("felblade", find_spell(203557));
-	  rppm.felblade_havoc->set_frequency(rppm.felblade_havoc->get_frequency()*1.5);
+      //rppm.felblade_havoc = get_rppm("felblade", find_spell( 236167 ));
+      //havoc's is 50% higher, current spelldata is borked
+      rppm.felblade_havoc = get_rppm("felblade", find_spell(203557));
+      rppm.felblade_havoc->set_frequency(rppm.felblade_havoc->get_frequency()*1.5);
   }
   
 

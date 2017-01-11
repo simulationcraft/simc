@@ -3567,28 +3567,28 @@ struct crash_lightning_t : public shaman_attack_t
 
 struct earth_elemental_t : public shaman_spell_t
 {
-	const spell_data_t* base_spell;
+    const spell_data_t* base_spell;
 
-	earth_elemental_t(shaman_t* player, const std::string& options_str) :
-		shaman_spell_t("earth_elemental", player, player -> find_specialization_spell("Earth Elemental"), options_str),
-		base_spell(player -> find_spell(198103))
-	{
-		harmful = may_crit = false;
-	}
+    earth_elemental_t(shaman_t* player, const std::string& options_str) :
+        shaman_spell_t("earth_elemental", player, player -> find_specialization_spell("Earth Elemental"), options_str),
+        base_spell(player -> find_spell(198103))
+    {
+        harmful = may_crit = false;
+    }
 
-	void execute() override
-	{
-		shaman_spell_t::execute();
+    void execute() override
+    {
+        shaman_spell_t::execute();
 
-		if (p()->talent.primal_elementalist->ok())
-		{
-			p()->pet.pet_earth_elemental->summon(base_spell->duration());
-		}
-		else
-		{
-			p()->pet.guardian_earth_elemental->summon(base_spell->duration());
-		}
-	}
+        if (p()->talent.primal_elementalist->ok())
+        {
+            p()->pet.pet_earth_elemental->summon(base_spell->duration());
+        }
+        else
+        {
+            p()->pet.guardian_earth_elemental->summon(base_spell->duration());
+        }
+    }
 
 };
 
