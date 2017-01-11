@@ -1,4 +1,4 @@
-mage="Mage_Arcane_T19M_NH"
+mage="Arcane_4pc"
 level=110
 race=troll
 role=spell
@@ -89,7 +89,7 @@ actions.rop_phase+=/arcane_explosion,if=active_enemies>1
 actions.rop_phase+=/arcane_blast,if=mana.pct>45
 actions.rop_phase+=/arcane_barrage
 
-head=nighthold_custodians_hood,id=140851,bonus_id=3445
+head=,id=138312,bonus_id=3518
 neck=belerons_choker_of_misery,id=140899,bonus_id=3518,enchant=mark_of_the_hidden_satyr
 shoulders=chaosscarred_mantle,id=140853,bonus_id=3445
 back=cloak_of_everburning_knowledge,id=138365,bonus_id=3518,enchant=binding_of_intellect
@@ -114,4 +114,8 @@ main_hand=aluneth,id=127857,gem_id=140810/140831/140810,relic_id=3518/3518/3518
 # gear_mastery_rating=6461
 # gear_versatility_rating=4437
 # gear_armor=1971
-# set_bonus=tier19_2pc=1
+set_bonus=tier19_2pc=1
+set_bonus=tier19_4pc=1
+
+
+
