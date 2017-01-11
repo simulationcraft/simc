@@ -1,4 +1,4 @@
-SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23360, git build b5b7250)
+SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23360, git build 4568440)
 
 Name             : Mend Pet (id=136) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
@@ -2440,6 +2440,7 @@ Description      : $@spelldesc109215
 Tooltip          : Increased movement speed by $s1%.
 
 Name             : Barrage (id=120360) [Spell Family (9)] 
+Hotfixed         : Variables
 Class            : Hunter
 School           : Physical
 Resource         : 60 Focus
@@ -2462,8 +2463,7 @@ Effects          :
 #1 (id=139839)   : Apply Aura (6) | Periodic Trigger Spell: Barrage every 0.2 seconds (23)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 120361 | Target: Self(1)
 Description      : Rapidly fires a spray of shots for $120360d, dealing an average of $<damageSec> Physical damage to all enemies in front of you. Usable while moving.
-Variables        : $damagePri=${($rw+$RW)/2*0.7*15*(1+$@versadmg)*(1+$193468m2/100)}
-$damageSec=$?s137015[${($rw+$RW)*(1+$137015s3/100)/2*0.7*7.5*(1+$@versadmg)*(1+$193468m2/100)}][${($rw+$RW)/2*0.7*7.5*(1+$@versadmg)*(1+$193468m2/100)}]
+Variables        : $damageSec=${$120361sw2*8}
 
 Name             : Barrage (id=120361) [Spell Family (9)] 
 Class            : Hunter

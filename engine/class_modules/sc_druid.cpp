@@ -649,6 +649,7 @@ public:
     artifact_power_t twilight_glow;
     artifact_power_t echoing_stars;
     artifact_power_t sunblind;
+    artifact_power_t goldrinns_fury;
 
     // NYI
     artifact_power_t light_of_the_sun;
@@ -1271,6 +1272,8 @@ public:
 
   bool rend_and_tear;
   bool hasted_gcd;
+  bool balance_damage;
+  bool balance_damage_periodic;
   double gore_chance;
   bool triggers_galactic_guardian;
 
@@ -1280,6 +1283,8 @@ public:
     form_mask( ab::data().stance_mask() ), may_autounshift( true ), autoshift( 0 ),
     rend_and_tear( ab::data().affected_by( player -> spec.thrash_bear_dot -> effectN( 2 ) ) ),
     hasted_gcd( ab::data().affected_by( player -> spec.druid -> effectN( 4 ) ) ),
+    balance_damage( ab::data().affected_by( player -> spec.balance -> effectN( 1 ) ) ),
+    balance_damage_periodic( ab::data().affected_by( player -> spec.balance -> effectN( 2 ) ) ),
     gore_chance( player -> spec.gore -> proc_chance() ), triggers_galactic_guardian( true )
   {
     ab::may_crit      = true;
@@ -1288,6 +1293,11 @@ public:
 
     gore_chance += p() -> artifact.bear_hug.percent();
     gore_chance += p() -> sets.set( DRUID_GUARDIAN, T19, B2 ) -> effectN( 1 ).percent();
+
+    if ( balance_damage )
+      ab::spell_power_mod.direct *= 1.0 + player -> spec.balance -> effectN( 1 ).percent();
+    if ( balance_damage_periodic )
+      ab::spell_power_mod.tick *= 1.0 + player -> spec.balance -> effectN( 2 ).percent();
   }
 
   druid_t* p()
@@ -1877,7 +1887,7 @@ struct moonfire_t : public druid_spell_t
       benefits_from_galactic_guardian = true;
       dual = background = true;
       dot_duration       += p -> spec.balance_overrides -> effectN( 4 ).time_value();
-      base_dd_multiplier *= 1.0 + p -> spec.guardian -> effectN( 6 ).percent();
+      base_dd_multiplier *= 1.0 + p -> spec.guardian -> effectN( 8 ).percent();
 
       /* June 2016: This hotfix is negated if you shift into Moonkin Form (ever),
         so only apply it if the druid does not have balance affinity. */
@@ -3815,7 +3825,7 @@ struct healing_touch_t : public druid_heal_t
     ignore_false_positive = true; // Prevents cat/bear from failing a skill check and going into caster form.
     base_multiplier *= 1.0 + p -> spec.feral -> effectN( 2 ).percent()
       + p -> spec.balance -> effectN( 2 ).percent()
-      + p -> spec.guardian -> effectN( 2 ).percent();
+      + p -> spec.guardian -> effectN( 4 ).percent();
 
     // redirect to self if not specified
     /* if ( target -> is_enemy() || ( target -> type == HEALING_ENEMY && p -> specialization() == DRUID_GUARDIAN ) )
@@ -4007,7 +4017,7 @@ struct regrowth_t: public druid_heal_t
     ignore_false_positive = true; // Prevents cat/bear from failing a skill check and going into caster form.
     base_multiplier *= 1.0 + p -> spec.feral -> effectN( 2 ).percent()
       + p -> spec.balance -> effectN( 2 ).percent()
-      + p -> spec.guardian -> effectN( 2 ).percent();
+      + p -> spec.guardian -> effectN( 4 ).percent();
 
     // redirect to self if not specified
     /* if ( target -> is_enemy() || ( target -> type == HEALING_ENEMY && p -> specialization() == DRUID_GUARDIAN ) )
@@ -4317,7 +4327,7 @@ struct barkskin_t : public druid_spell_t
     harmful = false;
     use_off_gcd = true;
 
-    cooldown -> duration *= 1.0 + player -> spec.guardian -> effectN( 1 ).percent();
+    cooldown -> duration *= 1.0 + player -> spec.guardian -> effectN( 3 ).percent();
     cooldown -> duration *= 1.0 + player -> talent.survival_of_the_fittest -> effectN( 1 ).percent();
     dot_duration = timespan_t::zero();
 
@@ -6275,6 +6285,7 @@ void druid_t::init_spells()
   artifact.sunblind                     = find_artifact_spell( "Sunblind" );
   artifact.light_of_the_sun             = find_artifact_spell( "Light of the Sun" );
   artifact.empowerment                  = find_artifact_spell( "Empowerment" );
+  artifact.goldrinns_fury               = find_artifact_spell( "Goldrinn's Fury" );
 
   // Feral -- Fangs of Ashamane
   artifact.ashamanes_frenzy             = find_artifact_spell( "Ashamane's Frenzy" );
@@ -7565,6 +7576,7 @@ double druid_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buff.rage_of_the_sleeper -> check() * buff.rage_of_the_sleeper -> data().effectN( 5 ).percent();
 
   m *= 1.0 + artifact.fangs_of_the_first.percent();
+  m *= 1.0 + artifact.goldrinns_fury.percent();
 
   return m;
 }

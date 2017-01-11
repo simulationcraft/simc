@@ -170,6 +170,7 @@ public:
   {
     const spell_data_t* judgment_2;
     const spell_data_t* judgment_3;
+    const spell_data_t* retribution_paladin;
   } spec;
 
 
@@ -784,13 +785,25 @@ public:
   // haste scaling bools
   bool hasted_cd;
   bool hasted_gcd;
+  bool ret_damage_increase;
+  bool ret_dot_increase;
+  bool ret_damage_increase_two;
 
   paladin_action_t( const std::string& n, paladin_t* player,
                     const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, player, s ),
     hasted_cd( ab::data().affected_by( player -> passives.paladin -> effectN( 2 ) ) ),
-    hasted_gcd( ab::data().affected_by( player -> passives.paladin -> effectN( 3 ) ) )
+    hasted_gcd( ab::data().affected_by( player -> passives.paladin -> effectN( 3 ) ) ),
+    ret_damage_increase( ab::data().affected_by( player -> spec.retribution_paladin -> effectN( 1 ) ) ),
+    ret_dot_increase( ab::data().affected_by( player -> spec.retribution_paladin -> effectN( 2 ) ) ),
+    ret_damage_increase_two( ab::data().affected_by( player -> spec.retribution_paladin -> effectN( 7 ) ) )
   {
+    if ( ret_damage_increase )
+      ab::base_dd_multiplier *= 1.0 + player -> spec.retribution_paladin -> effectN( 1 ).percent();
+    if ( ret_dot_increase )
+      ab::base_td_multiplier *= 1.0 + player -> spec.retribution_paladin -> effectN( 2 ).percent();
+    if ( ret_damage_increase_two )
+      ab::base_dd_multiplier *= 1.0 + player -> spec.retribution_paladin -> effectN( 7 ).percent();
   }
 
   paladin_t* p()
@@ -1457,7 +1470,6 @@ struct consecration_tick_t: public paladin_spell_t {
     ground_aoe = true;
     if ( p -> specialization() == PALADIN_RETRIBUTION )
     {
-      base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 1 ).percent();
       base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 8 ).percent();
     }
   }
@@ -2630,8 +2642,6 @@ struct wake_of_ashes_t : public paladin_spell_t
       attack_power_mod.tick = 0;
       dot_duration = timespan_t::zero();
     }
-      // TODO: does the dot need this too?
-    base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 1 ).percent();
   }
 
   bool ready() override
@@ -2997,12 +3007,6 @@ struct crusader_strike_t : public holy_power_generator_t
     base_multiplier *= 1.0 + p -> artifact.blade_of_light.percent();
     base_crit       += p -> artifact.sharpened_edge.percent();
 
-    if ( p -> specialization() == PALADIN_RETRIBUTION )
-    {
-      base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 1 ).percent();
-      base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 7 ).percent();
-    }
-
     if ( p -> talents.fires_of_justice -> ok() )
     {
       cooldown -> duration += timespan_t::from_millis( p -> talents.fires_of_justice -> effectN( 2 ).base_value() );
@@ -3052,7 +3056,6 @@ struct zeal_t : public holy_power_generator_t
     parse_options( options_str );
 
     base_multiplier *= 1.0 + p -> artifact.blade_of_light.percent();
-    base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 1 ).percent();
     base_crit += p -> artifact.sharpened_edge.percent();
     chain_multiplier = data().effectN( 1 ).chain_multiplier();
 
@@ -3093,7 +3096,6 @@ struct blade_of_justice_t : public holy_power_generator_t
     base_costs[ RESOURCE_MANA ] = floor( base_costs[ RESOURCE_MANA ] + 0.5 );
 
     base_multiplier *= 1.0 + p -> artifact.deliver_the_justice.percent();
-    base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 1 ).percent();
 
     background = ( p -> talents.divine_hammer -> ok() );
 
@@ -3174,8 +3176,6 @@ struct echoed_divine_storm_t: public paladin_melee_attack_t
     if ( p -> talents.final_verdict -> ok() )
       base_multiplier *= 1.0 + p -> talents.final_verdict -> effectN( 2 ).percent();
 
-    base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 1 ).percent();
-
     aoe = -1;
     background = true;
   }
@@ -3243,8 +3243,6 @@ struct divine_storm_t: public holy_power_consumer_t
     base_multiplier *= 1.0 + p -> artifact.divine_tempest.percent( 2 );
     if ( p -> talents.final_verdict -> ok() )
       base_multiplier *= 1.0 + p -> talents.final_verdict -> effectN( 2 ).percent();
-
-    base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 1 ).percent();
 
     aoe = -1;
 
@@ -3472,8 +3470,6 @@ struct judgment_aoe_t : public paladin_melee_attack_t
       aoe = 1 + p -> spec.judgment_2 -> effectN( 1 ).base_value();
 
       base_multiplier *= 1.0 + p -> artifact.highlords_judgment.percent();
-      base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 1 ).percent();
-      base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 7 ).percent();
 
       if ( p -> talents.greater_judgment -> ok() )
       {
@@ -3555,8 +3551,6 @@ struct judgment_t : public paladin_melee_attack_t
     {
       base_costs[RESOURCE_MANA] = 0;
       base_multiplier *= 1.0 + p -> artifact.highlords_judgment.percent();
-      base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 1 ).percent();
-      base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 7 ).percent();
       impact_action = new judgment_aoe_t( p, options_str );
     }
     else if ( p -> specialization() == PALADIN_HOLY )
@@ -3777,8 +3771,6 @@ struct echoed_templars_verdict_t : public paladin_melee_attack_t
     base_multiplier *= 1.0 + p -> artifact.might_of_the_templar.percent();
     if ( p -> talents.final_verdict -> ok() )
       base_multiplier *= 1.0 + p -> talents.final_verdict -> effectN( 1 ).percent();
-
-    base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 1 ).percent();
   }
 
   virtual double action_multiplier() const override
@@ -3840,8 +3832,6 @@ struct templars_verdict_t : public holy_power_consumer_t
     base_multiplier *= 1.0 + p -> artifact.might_of_the_templar.percent();
     if ( p -> talents.final_verdict -> ok() )
       base_multiplier *= 1.0 + p -> talents.final_verdict -> effectN( 1 ).percent();
-
-    base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 1 ).percent();
 
   // Okay, when did this get reset to 1?
     weapon_multiplier = 0;
@@ -3908,8 +3898,6 @@ struct justicars_vengeance_t : public holy_power_consumer_t
     hasted_gcd = true;
 
     weapon_multiplier = 0; // why is this needed?
-
-    base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 1 ).percent();
   }
 
   virtual double cost() const override
@@ -5146,6 +5134,8 @@ void paladin_t::init_spells()
     default:
     break;
   }
+
+  spec.retribution_paladin = find_specialization_spell( "Retribution Paladin" );
 
   // Passives
 

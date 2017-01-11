@@ -1,4 +1,4 @@
-SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23360, git build b5b7250)
+SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23360, git build 4568440)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Arcane Fire Frost Mage
@@ -4013,6 +4013,7 @@ Effects          :
 Description      : Casting Pyroblast or Flamestrike while Hot Streak is active has a $s1% chance to instantly reactivate Hot Streak.
 
 Name             : Ray of Frost (id=205021) [Spell Family (3)] 
+Hotfixed         : Affecting Spells
 Class            : Mage
 School           : Frost
 Spell Level      : 1
@@ -4020,7 +4021,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 60 seconds
-Affecting spells : Shatter (12982), Frost Mage (137020), Ray of Frost (208141), Norgannon's Foresight (236380)
+Affecting spells : Shatter (12982), Frost Mage (137020), Ray of Frost (208141), Frigid Winds (235224), Norgannon's Foresight (236380)
 Attributes       : ........ ........ ........ ........   ..x..... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -4913,7 +4914,7 @@ Name             : Ice Lance (id=228598) [Scaling Spell (5), Spell Family (3)]
 Class            : Mage
 School           : Frost
 Spell Level      : 5
-Range            : 40 yards
+Range            : 100 yards
 GCD              : 1.5 seconds
 Affecting spells : Shatter (12982), Splitting Ice (56377), Frost Mage (137020), Let It Go (195322), Chain Reaction (195418), Lonely Winter (205024), Magtheridon's Might (214404), Norgannon's Foresight (236380)
 Attributes       : ........ ........ x.x....x x..x....   .....x.. ........ ........ ........ 
@@ -5185,7 +5186,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=355547)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
                    Base Value: -15 | Scaled Value: -15 | Misc Value: 3 | Target: Self(1)
-                   Affected Spells: Chilled (205708), Cone of Cold (212792), Flurry (228354)
+                   Affected Spells: Ray of Frost (205021), Chilled (205708), Cone of Cold (212792), Flurry (228354)
 Description      : All of your chilling effects reduces the target's movement speed by an additional $s1%.
 
 Name             : Glacial Insulation (id=235297) [Spell Family (3), Passive] 

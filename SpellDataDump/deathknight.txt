@@ -1,4 +1,4 @@
-SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23360, git build b5b7250)
+SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23360, git build 4568440)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -2136,9 +2136,11 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=95513)    : Dummy (3)
-                   Base Value: 135 | Scaled Value: 135 | Target: Enemy(6)
+                   Base Value: 80 | Scaled Value: 80 | Target: Enemy(6)
+                   Hotfixed: Base Value (135 -> 80)
 #2 (id=341774)   : Weapon Damage% (31)
-                   Base Value: 135 | Scaled Value: 1.35 | Radius: 8 yards | Target: Cone Front(104)
+                   Base Value: 80 | Scaled Value: 0.8 | Radius: 8 yards | Target: Cone Front(104)
+                   Hotfixed: Base Value (135 -> 80)
 Description      : Rakes an enemy with deformed claws, dealing $91778s1% of normal damage as Shadow to the target and nearby enemies.
 
 Name             : Monstrous Blow (id=91797) [Spell Family (15)] 
@@ -5676,7 +5678,8 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=314805)   : Weapon Damage% (31)
-                   Base Value: 135 | Scaled Value: 1.35 | Radius: 0 - 10 yards | Target: Custom(18) -> AOE enemy (instant)(16)
+                   Base Value: 80 | Scaled Value: 0.8 | Radius: 0 - 10 yards | Target: Custom(18) -> AOE enemy (instant)(16)
+                   Hotfixed: Base Value (135 -> 80)
 Description      : $@spelldesc212333
 
 Name             : Dark Arbiter (id=212412) [Spell Family (15), Hidden] 

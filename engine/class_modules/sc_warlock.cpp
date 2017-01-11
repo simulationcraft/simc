@@ -2235,7 +2235,8 @@ public:
   bool affected_by_contagion;
   bool affected_by_flamelicked;
   bool affected_by_odr_shawl_of_the_ymirjar;
-  bool affected_by_destruction_hotfix;
+  bool destruction_damage_increase;
+  bool destruction_dot_increase;
   bool destro_mastery;
 
   // Warlock module overrides the "target" option handling to properly target their own Soul Effigy
@@ -2330,7 +2331,12 @@ public:
     }
 
     affected_by_odr_shawl_of_the_ymirjar = data().affected_by( p() -> find_spell( 212173 ) -> effectN( 1 ) );
-    affected_by_destruction_hotfix = data().affected_by( p() -> spec.destruction -> effectN( 1 ) );
+    destruction_damage_increase = data().affected_by( p() -> spec.destruction -> effectN( 1 ) );
+    destruction_dot_increase = data().affected_by( p() -> spec.destruction -> effectN( 2 ) );
+    if ( destruction_damage_increase )
+      base_dd_multiplier *= 1.0 + p() -> spec.destruction -> effectN( 1 ).percent();
+    if ( destruction_dot_increase ) 
+      base_td_multiplier *= 1.0 + p() -> spec.destruction -> effectN( 2 ).percent();
   }
 
   int n_targets() const override
@@ -2537,9 +2543,6 @@ public:
       double chaotic_energies_rng = rng().range( 0, p() -> cache.mastery_value() );
       pm *= 1.0 + chaotic_energies_rng;
     }
-
-    if ( affected_by_destruction_hotfix )
-      pm *= 1.0 + p() -> spec.destruction -> effectN( 1 ).percent();
 
     return pm;
   }
