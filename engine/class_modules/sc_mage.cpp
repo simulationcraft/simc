@@ -6174,16 +6174,18 @@ struct time_warp_t : public mage_spell_t
       cooldown -> charges = 2;
       p() -> player_t::buffs.bloodlust -> cooldown -> duration = timespan_t::zero();
     }
+
+    // Let us use this to bloodlust ourselves if we have the legendary - disable the standard sim lust.
+    if ( p() -> legendary.shard_of_the_exodar )
+    {
+      p() -> player_t::buffs.bloodlust -> default_chance = 0.0;
+    }
+
   }
   virtual void execute() override
   {
     mage_spell_t::execute();
 
-    // Let us use this to bloodlust ourselves if we have the legendary and have disabled the standard sim lust.
-    if ( p() -> legendary.shard_of_the_exodar )
-    {
-      p() -> player_t::buffs.bloodlust -> default_chance = 1.0;
-    }
 
     // If we have no exhaustion, we're lusting for the raid and everyone gets it.
     if ( !player -> buffs.exhaustion -> check() )
