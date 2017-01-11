@@ -2782,9 +2782,6 @@ struct barrage_t: public hunter_ranged_attack_t
       range = radius;
       range = 0;
       travel_speed = 0.0;
-
-      if ( data().affected_by( player -> specs.beast_mastery_hunter -> effectN( 5 ) ) )
-        base_multiplier *= 1.0 + player -> specs.beast_mastery_hunter -> effectN( 5 ).percent();
     }
 
     void impact(action_state_t* s) override {
@@ -2810,6 +2807,9 @@ struct barrage_t: public hunter_ranged_attack_t
     tick_action = new barrage_damage_t( player );
 
     starved_proc = player -> get_proc( "starved: barrage" );
+
+    if ( data().affected_by( player -> specs.beast_mastery_hunter -> effectN( 5 ) ) )
+      base_multiplier *= 1.0 + player -> specs.beast_mastery_hunter -> effectN( 5 ).percent();
   }
 
   void schedule_execute( action_state_t* state = nullptr ) override
@@ -4405,10 +4405,6 @@ struct peck_t : public hunter_spell_t
     may_block = false;
     may_dodge = false;
     travel_speed = 0.0;
-
-    // BM "negative multiplier" on AMoC, stored as a negative value in spell data
-    if ( data().affected_by( player -> specs.beast_mastery_hunter -> effectN( 4 ) ) )
-      base_multiplier /= 1.0 - player -> specs.beast_mastery_hunter -> effectN( 4 ).percent();
   }
 
   hunter_t* p() const { return static_cast<hunter_t*>( player ); }
