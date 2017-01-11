@@ -649,6 +649,7 @@ public:
     artifact_power_t twilight_glow;
     artifact_power_t echoing_stars;
     artifact_power_t sunblind;
+    artifact_power_t goldrinns_fury;
 
     // NYI
     artifact_power_t light_of_the_sun;
@@ -6275,6 +6276,7 @@ void druid_t::init_spells()
   artifact.sunblind                     = find_artifact_spell( "Sunblind" );
   artifact.light_of_the_sun             = find_artifact_spell( "Light of the Sun" );
   artifact.empowerment                  = find_artifact_spell( "Empowerment" );
+  artifact.goldrinns_fury               = find_artifact_spell( "Goldrinn's Fury" );
 
   // Feral -- Fangs of Ashamane
   artifact.ashamanes_frenzy             = find_artifact_spell( "Ashamane's Frenzy" );
@@ -7565,6 +7567,7 @@ double druid_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buff.rage_of_the_sleeper -> check() * buff.rage_of_the_sleeper -> data().effectN( 5 ).percent();
 
   m *= 1.0 + artifact.fangs_of_the_first.percent();
+  m *= 1.0 + artifact.goldrinns_fury.percent();
 
   return m;
 }
