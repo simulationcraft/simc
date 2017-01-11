@@ -1887,7 +1887,7 @@ struct moonfire_t : public druid_spell_t
       benefits_from_galactic_guardian = true;
       dual = background = true;
       dot_duration       += p -> spec.balance_overrides -> effectN( 4 ).time_value();
-      base_dd_multiplier *= 1.0 + p -> spec.guardian -> effectN( 6 ).percent();
+      base_dd_multiplier *= 1.0 + p -> spec.guardian -> effectN( 8 ).percent();
 
       /* June 2016: This hotfix is negated if you shift into Moonkin Form (ever),
         so only apply it if the druid does not have balance affinity. */
@@ -3825,7 +3825,7 @@ struct healing_touch_t : public druid_heal_t
     ignore_false_positive = true; // Prevents cat/bear from failing a skill check and going into caster form.
     base_multiplier *= 1.0 + p -> spec.feral -> effectN( 2 ).percent()
       + p -> spec.balance -> effectN( 2 ).percent()
-      + p -> spec.guardian -> effectN( 2 ).percent();
+      + p -> spec.guardian -> effectN( 4 ).percent();
 
     // redirect to self if not specified
     /* if ( target -> is_enemy() || ( target -> type == HEALING_ENEMY && p -> specialization() == DRUID_GUARDIAN ) )
@@ -4017,7 +4017,7 @@ struct regrowth_t: public druid_heal_t
     ignore_false_positive = true; // Prevents cat/bear from failing a skill check and going into caster form.
     base_multiplier *= 1.0 + p -> spec.feral -> effectN( 2 ).percent()
       + p -> spec.balance -> effectN( 2 ).percent()
-      + p -> spec.guardian -> effectN( 2 ).percent();
+      + p -> spec.guardian -> effectN( 4 ).percent();
 
     // redirect to self if not specified
     /* if ( target -> is_enemy() || ( target -> type == HEALING_ENEMY && p -> specialization() == DRUID_GUARDIAN ) )
@@ -4327,7 +4327,7 @@ struct barkskin_t : public druid_spell_t
     harmful = false;
     use_off_gcd = true;
 
-    cooldown -> duration *= 1.0 + player -> spec.guardian -> effectN( 1 ).percent();
+    cooldown -> duration *= 1.0 + player -> spec.guardian -> effectN( 3 ).percent();
     cooldown -> duration *= 1.0 + player -> talent.survival_of_the_fittest -> effectN( 1 ).percent();
     dot_duration = timespan_t::zero();
 
