@@ -6186,7 +6186,11 @@ struct time_warp_t : public mage_spell_t
   {
     mage_spell_t::execute();
 
-
+    // Let us lust again.
+    if ( p() -> legendary.shard_of_the_exodar )
+    {
+      p() -> player_t::buffs.bloodlust -> default_chance = 1.0;
+    }
     // If we have no exhaustion, we're lusting for the raid and everyone gets it.
     if ( !player -> buffs.exhaustion -> check() )
     {
@@ -6205,6 +6209,11 @@ struct time_warp_t : public mage_spell_t
     if ( p() -> legendary.shard_of_the_exodar && player -> buffs.exhaustion -> check() )
     {
       p() -> player_t::buffs.bloodlust -> trigger();
+    }
+    // Safeguard against the default lust coming back
+    if ( p() -> legendary.shard_of_the_exodar )
+    {
+      p() -> player_t::buffs.bloodlust -> default_chance = 0.0;
     }
   }
 
