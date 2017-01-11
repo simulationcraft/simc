@@ -499,6 +499,7 @@ struct actor_target_data_t : public actor_pair_t, private noncopyable
     debuff_t* thunder_ritual;
     debuff_t* brutal_haymaker;
     debuff_t* taint_of_the_sea;
+    debuff_t* solar_collapse;
     debuff_t* volatile_magic;
     debuff_t* maddening_whispers;
   } debuff;
@@ -2685,7 +2686,7 @@ struct item_t
   { return has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ); }
   bool has_scaling_stat_bonus_id() const;
 
-  const special_effect_t& special_effect( special_effect_source_e source = SPECIAL_EFFECT_SOURCE_NONE, special_effect_e type = SPECIAL_EFFECT_NONE ) const;
+  const special_effect_t* special_effect( special_effect_source_e source = SPECIAL_EFFECT_SOURCE_NONE, special_effect_e type = SPECIAL_EFFECT_NONE ) const;
 };
 
 
@@ -3823,12 +3824,15 @@ struct player_t : public actor_t
   cooldown_t item_cooldown;
   cooldown_t* legendary_tank_cloak_cd; // non-Null if item available
 
+
   // Warlord's Unseeing Eye (6.2 Trinket)
   double warlords_unseeing_eye;
   stats_t* warlords_unseeing_eye_stats;
 
+  // Misc Multipliers
   // auto attack multiplier (for Jeweled Signet of Melandrus and similar effects)
   double auto_attack_multiplier;
+  double composite_spell_speed_multiplier; // For handling the odd spell speed effect.
 
   // Scale Factors
   std::array<gear_stats_t, SCALE_METRIC_MAX> scaling;
@@ -6467,7 +6471,7 @@ inline void dot_end_event_t::execute()
     assert( ! dot -> tick_event || ( dot -> tick_event && dot -> time_to_tick == dot -> tick_event -> remains() ) );
   }
 
-  // Aand sanity check that the dot has consumed all ticks just in case.
+  // Aand sanity check that the dot has consumed all ticks just in case./
   assert( dot -> current_tick == dot -> num_ticks );
   dot -> last_tick();
 }

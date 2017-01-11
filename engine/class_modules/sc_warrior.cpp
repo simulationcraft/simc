@@ -172,6 +172,7 @@ public:
     buff_t* fujiedas_fury;
     buff_t* destiny_driver; //215157
     buff_t* xavarics_magnum_opus; //207472
+    buff_t* sephuzs_secret;
   } buff;
 
   // Cooldowns
@@ -256,7 +257,7 @@ public:
     proc_t* tactician;
 
     //Tier bonuses
-    proc_t* t19_4pc_arms;
+    proc_t* t19_2pc_arms;
   } proc;
 
   // Spec Passives
@@ -369,6 +370,12 @@ public:
     const spell_data_t* reckless_abandon;
   } talents;
 
+  struct legendary_t
+  {
+    // Eventually move all legendarys here for organization
+    const spell_data_t* sephuzs_secret;
+  } legendary;
+
   // Artifacts
   struct artifact_spell_data_t
   {
@@ -446,7 +453,9 @@ public:
     mastery( mastery_t() ),
     proc( procs_t() ),
     spec( spec_t() ),
-    talents( talents_t() )
+    talents( talents_t() ),
+    legendary( legendary_t() ),
+    artifact( artifact_spell_data_t() )
   {;
     non_dps_mechanics = false; // When set to false, disables stuff that isn't important, such as second wind, bloodthirst heal, etc.
     warrior_fixed_time = frothing_may_trigger = opportunity_strikes_once = true; //Frothing only triggers on the first ability that pushes you to 100 rage, until rage is consumed and then it may trigger again.
@@ -508,10 +517,10 @@ public:
   bool      has_t18_class_trinket() const override;
 
   void      default_apl_dps_precombat( const std::string& food, const std::string& potion );
-  void              apl_default();
-  void              apl_fury();
-  void              apl_arms();
-  void              apl_prot();
+  void      apl_default();
+  void      apl_fury();
+  void      apl_arms();
+  void      apl_prot();
   void      init_action_list() override;
 
   action_t*  create_action( const std::string& name, const std::string& options ) override;
@@ -584,8 +593,8 @@ template <class Base>
 struct warrior_action_t: public Base
 {
   bool headlongrush, headlongrushgcd, sweeping_strikes, dauntless, deadly_calm, 
-    arms_damage_increase, fury_damage_increase;
-  double tactician_per_rage, arms_t19_4p_chance;
+    arms_damage_increase, fury_damage_increase, fury_dot_damage_increase, arms_dot_damage_increase;
+  double tactician_per_rage, arms_t19_2p_chance;
 private:
   typedef Base ab; // action base, eg. spell_t
 public:
@@ -603,19 +612,31 @@ public:
     deadly_calm( ab::data().affected_by( player -> spec.battle_cry -> effectN( 4 ) ) ),
     arms_damage_increase( ab::data().affected_by( player -> spell.arms_warrior -> effectN( 2 ) ) ),
     fury_damage_increase( ab::data().affected_by( player -> spell.fury_warrior -> effectN( 1 ) ) ),
-    tactician_per_rage( 0 ), arms_t19_4p_chance( 0 ),
+    fury_dot_damage_increase( ab::data().affected_by( player -> spell.fury_warrior -> effectN( 2 ) ) ),
+    arms_dot_damage_increase( ab::data().affected_by( player -> spell.arms_warrior -> effectN( 3 ) ) ),
+    tactician_per_rage( 0 ), arms_t19_2p_chance( 0 ),
     track_cd_waste( s -> cooldown() > timespan_t::zero() || s -> charge_cooldown() > timespan_t::zero() ),
     cd_wasted_exec( nullptr ), cd_wasted_cumulative( nullptr ), cd_wasted_iter( nullptr )
   {
     ab::may_crit = true;
     tactician_per_rage += ( player -> spec.tactician -> effectN( 2 ).percent() / 100 );
     tactician_per_rage *= 1.0 + player -> artifact.exploit_the_weakness.percent();
-    arms_t19_4p_chance = p() -> sets.set( WARRIOR_ARMS, T19, B4 ) -> proc_chance();
+    arms_t19_2p_chance = p() -> sets.set( WARRIOR_ARMS, T19, B2 ) -> proc_chance();
 
     if ( arms_damage_increase )
       ab::weapon_multiplier *= 1.0 + player ->spell.arms_warrior -> effectN( 2 ).percent();
     if ( fury_damage_increase )
       ab::weapon_multiplier *= 1.0 + player ->spell.fury_warrior ->effectN( 1 ).percent();
+    if ( fury_dot_damage_increase )
+    {
+      ab::attack_power_mod.tick *= 1.0 + player -> spell.fury_warrior -> effectN( 2 ).percent();
+      ab::attack_power_mod.direct *= 1.0 + player -> spell.fury_warrior -> effectN( 2 ).percent();
+    }
+    if ( arms_dot_damage_increase )
+    {
+      ab::attack_power_mod.tick *= 1.0 + player -> spell.arms_warrior -> effectN( 3 ).percent();
+      ab::attack_power_mod.direct *= 1.0 + player -> spell.arms_warrior -> effectN( 3 ).percent();
+    }
   }
 
   void init() override
@@ -831,11 +852,11 @@ public:
     }
   }
 
-  void arms_t19_4p() const
+  void arms_t19_2p() const
   {
-    if ( ab::rng().roll( arms_t19_4p_chance ) )
+    if ( ab::rng().roll( arms_t19_2p_chance ) )
     {
-      p() -> proc.t19_4pc_arms -> occur();
+      p() -> proc.t19_2pc_arms -> occur();
       p() -> cooldown.colossus_smash -> reset( true );
       p() -> cooldown.mortal_strike -> reset( true );
       p() -> proc.tactician -> occur();
@@ -1505,6 +1526,12 @@ struct charge_t: public warrior_attack_t
 
     p() -> buff.furious_charge -> trigger();
 
+
+    if ( p() -> legendary.sephuzs_secret != nullptr && execute_state -> target -> type == ENEMY_ADD )
+    {
+      p() -> buff.sephuzs_secret -> trigger();
+    }
+
     if ( first_charge )
     {
       first_charge = !first_charge;
@@ -1865,7 +1892,7 @@ struct dragon_roar_t: public warrior_attack_t
 
 struct execute_sweep_t: public warrior_attack_t
 {
-  double dmg_mult;
+  double dmg_mult; // This number is set in the original parent attack. 
   execute_sweep_t( warrior_t* p ):
     warrior_attack_t( "execute_sweep", p, p -> spec.execute ), dmg_mult( 0 )
   {
@@ -1889,7 +1916,7 @@ struct execute_sweep_t: public warrior_attack_t
 
     if ( s -> result == RESULT_CRIT )
     {
-      arms_t19_4p();
+      arms_t19_2p();
     }
   }
 };
@@ -1914,19 +1941,20 @@ struct sweeping_execute_t: public event_t
   void execute() override
   {
     player_t* new_target = nullptr;
+    size_t max_targets = 0;
     execute_sweeping_strike -> available_targets( execute_sweeping_strike -> target_cache.list );
-    // Gotta find a target for this bastard to hit. Also if the target dies in the 0.5 seconds between the original execute and this, we don't want to continue.
+    // Gotta find a target for this bastard to hit. Also if the target dies in the 0.25 seconds between the original execute and this, we don't want to continue.
     for ( size_t i = 0; i < execute_sweeping_strike -> target_cache.list.size(); ++i )
     {
       if ( execute_sweeping_strike -> target_cache.list[i] == original_target )
         continue;
       new_target = execute_sweeping_strike -> target_cache.list[i];
-      break;
-    }
-    if ( new_target )
-    {
       execute_sweeping_strike -> target = new_target;
       execute_sweeping_strike -> execute();
+      max_targets++;
+
+      if ( max_targets == 2 )
+        break;
     }
   }
 };
@@ -2039,7 +2067,6 @@ struct execute_arms_t: public warrior_attack_t
   {
     warrior_attack_t::execute();
 
-
     if ( execute_sweeping_strike )
     {
       make_event<sweeping_execute_t>( *sim, p(),
@@ -2058,7 +2085,7 @@ struct execute_arms_t: public warrior_attack_t
 
     if ( s -> result == RESULT_CRIT )
     {
-      arms_t19_4p();
+      arms_t19_2p();
     }
   }
 
@@ -2683,7 +2710,7 @@ struct mortal_strike_t: public warrior_attack_t
 
     if ( s -> result == RESULT_CRIT )
     {
-      arms_t19_4p();
+      arms_t19_2p();
     }
   }
 
@@ -2708,6 +2735,16 @@ struct pummel_t: public warrior_attack_t
     parse_options( options_str );
     ignore_false_positive = true;
     may_miss = may_block = may_dodge = may_parry = false;
+  }
+
+  void execute() override
+  {
+    warrior_attack_t::execute();
+
+    if ( p() -> legendary.sephuzs_secret != nullptr )
+    {
+      p() -> buff.sephuzs_secret -> trigger();
+    }
   }
 };
 
@@ -4630,6 +4667,7 @@ void warrior_t::init_spells()
     }
     this -> odyns_champion_cds.push_back( cooldown.enraged_regeneration );
   }
+  legendary.sephuzs_secret = nullptr;
 }
 
 // warrior_t::init_base =====================================================
@@ -5237,6 +5275,30 @@ struct debuff_demo_shout_t: public warrior_buff_t < buff_t >
     default_value = data().effectN( 1 ).percent();
   }
 };
+
+// That legendary crap ring ===========================================================
+
+struct sephuzs_secret_buff_t: public buff_t
+{
+  cooldown_t* icd;
+  sephuzs_secret_buff_t( warrior_t* p ):
+    buff_t( buff_creator_t( p, "sephuzs_secret", p -> find_spell( 208052 ) )
+            .default_value( p -> find_spell( 208502 ) -> effectN( 2 ).percent() )
+            .add_invalidate( CACHE_HASTE ) )
+  {
+    icd = p -> get_cooldown( "sephuzs_secret_cooldown" );
+    icd  -> duration = p -> find_spell( 226262 ) -> duration();
+  }
+
+  void execute( int stacks, double value, timespan_t duration ) override
+  {
+    if ( icd -> down() )
+      return;
+    buff_t::execute( stacks, value, duration );
+    icd -> start();
+  }
+};
+
 } // end namespace buffs
 
 // ==========================================================================
@@ -5407,12 +5469,12 @@ void warrior_t::create_buffs()
     .trigger_spell( artifact.odyns_champion );
 
   buff.battle_cry = buff_creator_t( this, "battle_cry", spec.battle_cry )
-    .duration( spec.battle_cry -> duration() + sets.set( WARRIOR_ARMS, T19, B2 ) -> effectN( 1 ).time_value() )
+    .duration( spec.battle_cry -> duration() + sets.set( WARRIOR_ARMS, T19, B4 ) -> effectN( 1 ).time_value() + talents.reckless_abandon -> effectN( 1 ).time_value() )
     .add_invalidate( CACHE_CRIT_CHANCE )
     .cd( timespan_t::zero() );
 
   buff.battle_cry_deadly_calm = buff_creator_t( this, "battle_cry_deadly_calm", spec.battle_cry )
-    .duration( spec.battle_cry -> duration() + sets.set( WARRIOR_ARMS, T19, B2 ) -> effectN( 1 ).time_value() )
+    .duration( spec.battle_cry -> duration() + sets.set( WARRIOR_ARMS, T19, B4 ) -> effectN( 1 ).time_value() )
     .chance( talents.deadly_calm -> ok() )
     .cd( timespan_t::zero() )
     .quiet( true );
@@ -5445,6 +5507,8 @@ void warrior_t::create_buffs()
       .default_value( artifact.rage_of_the_valarjar.data().effectN( 1 ).trigger() -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
       .add_invalidate( CACHE_ATTACK_SPEED )
       .add_invalidate( CACHE_CRIT_CHANCE );
+
+  buff.sephuzs_secret = new buffs::sephuzs_secret_buff_t( this );
 }
 
 // warrior_t::init_scaling ==================================================
@@ -5503,7 +5567,7 @@ void warrior_t::init_procs()
   player_t::init_procs();
   proc.delayed_auto_attack = get_proc( "delayed_auto_attack" );
 
-  proc.t19_4pc_arms = get_proc( "t19_4pc_arms" );
+  proc.t19_2pc_arms = get_proc( "t19_2pc_arms" );
   proc.arms_trinket = get_proc( "arms_trinket" );
   proc.tactician    = get_proc( "tactician"    );
 }
@@ -5785,6 +5849,8 @@ double warrior_t::composite_melee_haste() const
   a *= 1.0 / ( 1.0 + buff.frenzy -> check_stack_value() );
 
   a *= 1.0 / ( 1.0 + buff.into_the_fray -> check_stack_value() );
+
+  a *= 1.0 / ( 1.0 + buff.sephuzs_secret -> check_value() );
 
   return a;
 }
@@ -6588,6 +6654,17 @@ struct prydaz_xavarics_magnum_opus_t : public unique_gear::class_buff_cb_t<warri
   }
 };
 
+struct sephuzs_secret_t: public unique_gear::scoped_actor_callback_t<warrior_t>
+{
+  sephuzs_secret_t(): super( WARRIOR )
+  {}
+
+  void manipulate( warrior_t* warrior, const special_effect_t& e ) override
+  {
+    warrior -> legendary.sephuzs_secret = e.driver();
+  }
+};
+
 struct warrior_module_t: public module_t
 {
   warrior_module_t(): module_t( WARRIOR ) {}
@@ -6621,6 +6698,7 @@ struct warrior_module_t: public module_t
     unique_gear::register_special_effect( 208177, weight_of_the_earth_t() );
     unique_gear::register_special_effect( 222266, raging_fury_t() );
     unique_gear::register_special_effect( 222266, raging_fury2_t() );
+    unique_gear::register_special_effect( 208051, sephuzs_secret_t() );
   }
 
   virtual void register_hotfixes() const override

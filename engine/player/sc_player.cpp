@@ -595,7 +595,7 @@ player_t::player_t( sim_t*             s,
   // Events
   executing( 0 ), queueing( 0 ), channeling( 0 ), strict_sequence( 0 ), readying( 0 ), off_gcd( 0 ), in_combat( false ), action_queued( false ), first_cast( true ),
   last_foreground_action( 0 ), prev_gcd_actions( 0 ),
-  
+
   off_gcdactions(),
   cast_delay_reaction( timespan_t::zero() ), cast_delay_occurred( timespan_t::zero() ),
   callbacks( s ),
@@ -632,6 +632,7 @@ player_t::player_t( sim_t*             s,
   legendary_tank_cloak_cd( nullptr ),
   warlords_unseeing_eye( 0.0 ),
   auto_attack_multiplier( 1.0 ),
+  composite_spell_speed_multiplier( 1.0 ),
   // Movement & Position
   base_movement_speed( 7.0 ), passive_modifier( 0 ),
   x_position( 0.0 ), y_position( 0.0 ),
@@ -2400,6 +2401,25 @@ bool player_t::create_actions()
     }
   }
 
+  int capacity = std::max( 1200, static_cast<int>( sim -> max_time.total_seconds() / 2.0 ) );
+  collected_data.action_sequence.reserve( capacity );
+  collected_data.action_sequence.clear();
+
+  return true;
+}
+
+
+// player_t::init_actions ===================================================
+
+bool player_t::init_actions()
+{
+  for ( size_t i = 0; i < action_list.size(); ++i )
+  {
+    action_list[ i ] -> init();
+  }
+
+  range::for_each( action_list, []( action_t* a ) { a -> consolidate_snapshot_flags(); } );
+
   bool have_off_gcd_actions = false;
   for ( auto action: action_list )
   {
@@ -2434,25 +2454,6 @@ bool player_t::create_actions()
   {
     sim -> errorf( "No Default Action List available.\n" );
   }
-
-  int capacity = std::max( 1200, static_cast<int>( sim -> max_time.total_seconds() / 2.0 ) );
-  collected_data.action_sequence.reserve( capacity );
-  collected_data.action_sequence.clear();
-
-  return true;
-}
-
-
-// player_t::init_actions ===================================================
-
-bool player_t::init_actions()
-{
-  for ( size_t i = 0; i < action_list.size(); ++i )
-  {
-    action_list[ i ] -> init();
-  }
-
-  range::for_each( action_list, []( action_t* a ) { a -> consolidate_snapshot_flags(); } );
 
   return true;
 }
@@ -3178,6 +3179,8 @@ double player_t::composite_spell_haste() const
 double player_t::composite_spell_speed() const
 {
   double h = cache.spell_haste();
+
+  h *= composite_spell_speed_multiplier;
 
   return  h;
 }
@@ -4255,7 +4258,7 @@ void player_t::reset()
   off_gcd = 0;
   in_combat = false;
 
-  current_attack_speed = 0;
+  current_attack_speed = 1.0;
   gcd_current_haste_value = 1.0;
   gcd_haste_type = HASTE_NONE;
 
@@ -4535,6 +4538,8 @@ void player_t::arise()
       }
     }
   }
+
+  current_attack_speed = cache.attack_speed();
 }
 
 // player_t::demise =========================================================
@@ -7034,43 +7039,43 @@ struct use_item_t : public action_t
       return;
 
     // Parse Special Effect
-    const special_effect_t& e = item -> special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE );
-    if ( e.type == SPECIAL_EFFECT_USE )
+    const special_effect_t* e = item -> special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE );
+    if ( e && e -> type == SPECIAL_EFFECT_USE )
     {
       // Create a buff
-      if ( e.buff_type() != SPECIAL_EFFECT_BUFF_NONE )
+      if ( e -> buff_type() != SPECIAL_EFFECT_BUFF_NONE )
       {
-        buff = buff_t::find( player, e.name() );
+        buff = buff_t::find( player, e -> name() );
         if ( ! buff )
         {
-          buff = e.create_buff();
+          buff = e -> create_buff();
         }
       }
 
       // Create an action
-      if ( e.action_type() != SPECIAL_EFFECT_ACTION_NONE )
+      if ( e -> action_type() != SPECIAL_EFFECT_ACTION_NONE )
       {
-        action = e.create_action();
+        action = e -> create_action();
       }
 
       stats = player ->  get_stats( name_str, this );
 
       // Setup the long-duration cooldown for this item effect
-      cooldown = player -> get_cooldown( e.cooldown_name() );
-      cooldown -> duration = e.cooldown();
+      cooldown = player -> get_cooldown( e -> cooldown_name() );
+      cooldown -> duration = e -> cooldown();
       trigger_gcd = timespan_t::zero();
 
       // Use DBC-backed item cooldown system for any item data coming from our local database that
       // has no user-given 'use' option on items.
-      if ( e.item && util::str_compare_ci( e.item -> source_str, "local" ) &&
-           e.item -> option_use_str.empty() )
+      if ( e -> item && util::str_compare_ci( e -> item -> source_str, "local" ) &&
+           e -> item -> option_use_str.empty() )
       {
-        std::string cdgrp = e.cooldown_group_name();
+        std::string cdgrp = e -> cooldown_group_name();
         // No cooldown group will not trigger a shared cooldown
         if ( ! cdgrp.empty() )
         {
           cooldown_group = player -> get_cooldown( cdgrp );
-          cooldown_group_duration = e.cooldown_group_duration();
+          cooldown_group_duration = e -> cooldown_group_duration();
         }
         else
         {
@@ -7180,9 +7185,13 @@ struct use_item_t : public action_t
       return 0;
     }
 
-    const special_effect_t& e = item -> special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE );
+    const special_effect_t* e = item -> special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE );
+    if ( ! e )
+    {
+      return 0;
+    }
 
-    return new use_item_buff_type_expr_t( e.stat_type() == stat );
+    return new use_item_buff_type_expr_t( e -> stat_type() == stat );
   }
 
   expr_t* create_expression( const std::string& name_str ) override

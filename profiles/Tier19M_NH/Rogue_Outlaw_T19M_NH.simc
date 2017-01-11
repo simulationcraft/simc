@@ -26,8 +26,8 @@ actions.precombat+=/marked_for_death,if=raid_event.adds.in>40
 actions.precombat+=/roll_the_bones,if=!talent.slice_and_dice.enabled
 
 # Executed every time the actor is available.
-# Condition to continue rerolling RtB (2- or not TB alone or not SIW alone during CDs); If SnD: consider that you never have to reroll.
-actions=variable,name=rtb_reroll,value=!talent.slice_and_dice.enabled&(rtb_buffs<=1&!rtb_list.any.6&((!buff.curse_of_the_dreadblades.up&!buff.adrenaline_rush.up)|!rtb_list.any.5))
+# Fish for '3 Buffs' or 'True Bearing'. With SnD, consider that we never have to reroll.
+actions=variable,name=rtb_reroll,value=!talent.slice_and_dice.enabled&(rtb_buffs<=2&!rtb_list.any.6)
 # Condition to use Saber Slash when not rerolling RtB or when using SnD
 actions+=/variable,name=ss_useable_noreroll,value=(combo_points<5+talent.deeper_stratagem.enabled-(buff.broadsides.up|buff.jolly_roger.up)-(talent.alacrity.enabled&buff.alacrity.stack<=4))
 # Condition to use Saber Slash, when you have RtB or not
@@ -77,31 +77,31 @@ actions.stealth+=/ambush
 actions.stealth+=/vanish,if=variable.stealth_condition
 actions.stealth+=/shadowmeld,if=variable.stealth_condition
 
-head=doomblade_cowl,id=138332,bonus_id=3445
-neck=radiant_string_of_scorpid_eyes,id=140898,bonus_id=3445,enchant=mark_of_the_hidden_satyr
-shoulders=doomblade_spaulders,id=138338,bonus_id=3445
-back=doomblade_shadowwrap,id=138371,bonus_id=3445,enchant=binding_of_agility
-chest=doomblade_tunic,id=138326,bonus_id=3445
-wrists=wellflattened_wristguards,id=140857,bonus_id=3445
-hands=doomblade_gauntlets,id=138329,bonus_id=3445
-waist=cake_carriers_girdle,id=140858,bonus_id=3445
-legs=doomblade_pants,id=138335,bonus_id=3445
-feet=stutterstep_treads,id=140860,bonus_id=3445
-finger1=spellblades_gemmed_signet,id=140895,bonus_id=3445,enchant=binding_of_versatility
-finger2=ring_of_exclusive_servitude,id=140906,bonus_id=3445,enchant=binding_of_versatility
-trinket1=arcanogolem_digit,id=140794,bonus_id=3445
-trinket2=convergence_of_fates,id=140806,bonus_id=3445
-main_hand=the_dreadblades,id=128872,bonus_id=742,gem_id=140819/140817/140841,relic_id=3445/3445/3445
+head=doomblade_cowl,id=138332,bonus_id=3519
+neck=radiant_string_of_scorpid_eyes,id=140898,bonus_id=3519,enchant=mark_of_the_hidden_satyr
+shoulders=doomblade_spaulders,id=138338,bonus_id=3519
+back=doomblade_shadowwrap,id=138371,bonus_id=3519,enchant=binding_of_agility
+chest=doomblade_tunic,id=138326,bonus_id=3519
+wrists=wellflattened_wristguards,id=140857,bonus_id=3519
+hands=doomblade_gauntlets,id=138329,bonus_id=3519
+waist=cake_carriers_girdle,id=140858,bonus_id=3519
+legs=doomblade_pants,id=138335,bonus_id=3519
+feet=stutterstep_treads,id=140860,bonus_id=3519
+finger1=spellblades_gemmed_signet,id=140895,bonus_id=3519,enchant=binding_of_versatility
+finger2=ring_of_exclusive_servitude,id=140906,bonus_id=3519,enchant=binding_of_versatility
+trinket1=arcanogolem_digit,id=140794,bonus_id=3519
+trinket2=convergence_of_fates,id=140806,bonus_id=3519
+main_hand=the_dreadblades,id=128872,bonus_id=742,gem_id=140819/140817/140841,relic_id=3519/3519/3519
 off_hand=the_dreadblades,id=134552
 
 # Gear Summary
-# gear_ilvl=903.00
-# gear_agility=22116
-# gear_stamina=32176
-# gear_crit_rating=8095
-# gear_haste_rating=5884
-# gear_mastery_rating=4314
-# gear_versatility_rating=4220
-# gear_armor=2391
+# gear_ilvl=912.88
+# gear_agility=24228
+# gear_stamina=35283
+# gear_crit_rating=8499
+# gear_haste_rating=6157
+# gear_mastery_rating=4498
+# gear_versatility_rating=4413
+# gear_armor=2471
 # set_bonus=tier19_2pc=1
 # set_bonus=tier19_4pc=1

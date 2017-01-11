@@ -16,16 +16,16 @@
 
 shaman="Shaman_Enhancement_T19H"
 level=110
-race=orc
+race=troll
 role=attack
 position=back
-talents=3003112
+talents=2002222
 artifact=41:137316:137408:133682:0:899:1:900:1:901:1:902:1:903:1:904:1:905:2:906:3:907:3:909:3:910:5:911:3:912:3:930:1:1351:1
 spec=enhancement
 
 head=collar_of_honorable_exultation,id=136777,bonus_id=1727/1517
 neck=wolfstride_pendant,id=133633,bonus_id=1727/1517,enchant=mark_of_the_hidden_satyr
-shoulders=thundercrush_pauldrons,id=134478,bonus_id=1727/1517
+shoulders=epaulets_of_deceitful_intent,id=134480,bonus_id=1727/1517
 back=cape_of_rigid_order,id=134402,bonus_id=1727/1517,enchant=binding_of_agility
 chest=thunderfused_valkyr_hauberk,id=133622,bonus_id=1727/1517
 wrists=remorseless_chain_armbands,id=137405,bonus_id=1727/1517
@@ -46,7 +46,7 @@ level=110
 race=orc
 role=spell
 position=ranged_back
-talents=3112211
+talents=2112333
 artifact=40:139262:139259:139262:0:291:1:294:1:295:1:296:1:297:1:298:3:299:3:300:6:301:3:302:3:303:3:306:3:1350:1
 spec=elemental
 

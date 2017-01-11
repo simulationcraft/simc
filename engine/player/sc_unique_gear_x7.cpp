@@ -84,12 +84,22 @@ namespace item
   void ursocs_rending_paw( special_effect_t& );
 
   // 7.1.5 Raid
-  void draught_of_souls( special_effect_t& );
-  void convergence_of_fates( special_effect_t& );
+  void draught_of_souls( special_effect_t&        );
+  void convergence_of_fates( special_effect_t&    );
   void entwined_elemental_foci( special_effect_t& );
+  void fury_of_the_burning_sky( special_effect_t& );
+  void icon_of_rot( special_effect_t&             );
+  void star_gate( special_effect_t&               );
+  void erratic_metronome( special_effect_t&       );
+  void whispers_in_the_dark( special_effect_t&    );
+  void nightblooming_frond( special_effect_t&     );
+  void might_of_krosus( special_effect_t&         );
+
+  // Adding this here to check it off the list.
+  // The sim builds it automatically.
+  //void pharameres_forbidden_grimoire( special_effect_t& );
 
   // Legendary
-
   void aggramars_stride( special_effect_t& );
   void kiljadens_burning_wish( special_effect_t& );
 
@@ -224,6 +234,46 @@ void enchants::mark_of_the_distant_army( special_effect_t& effect )
 
 void enchants::mark_of_the_hidden_satyr( special_effect_t& effect )
 {
+  // Uses max of apcoeff*ap, spcoeff*sp to power the damage
+  struct mark_of_the_hidden_satyr_t : public proc_spell_t
+  {
+    mark_of_the_hidden_satyr_t( const special_effect_t& e ) :
+      proc_spell_t( "mark_of_the_hidden_satyr", e.player,
+        e.player -> find_spell( 191259 ), nullptr )
+    {
+      // Hardcoded somewhere in the bowels of the server
+      attack_power_mod.direct = 2.5;
+      spell_power_mod.direct = 2.0;
+    }
+
+    double amount_delta_modifier( const action_state_t* ) const override
+    { return 0.15; }
+
+    double attack_direct_power_coefficient( const action_state_t* s ) const override
+    {
+      auto total_ap = attack_power_mod.direct * s -> composite_attack_power();
+      auto total_sp = spell_power_mod.direct * s -> composite_spell_power();
+
+      if ( total_ap <= total_sp )
+      {
+        return 0;
+      }
+
+      return proc_spell_t::attack_direct_power_coefficient( s );
+    }
+
+    double spell_direct_power_coefficient( const action_state_t* s ) const override
+    {
+      auto total_ap = attack_power_mod.direct * s -> composite_attack_power();
+      auto total_sp = spell_power_mod.direct * s -> composite_spell_power();
+
+      if ( total_sp < total_ap )
+        return 0;
+
+      return proc_spell_t::spell_direct_power_coefficient( s );
+    }
+  };
+
   effect.execute_action = effect.player -> find_action( "mark_of_the_hidden_satyr" );
 
   if ( ! effect.execute_action )
@@ -233,9 +283,7 @@ void enchants::mark_of_the_hidden_satyr( special_effect_t& effect )
 
   if ( ! effect.execute_action )
   {
-    action_t* a = new proc_spell_t( "mark_of_the_hidden_satyr",
-      effect.player, effect.player -> find_spell( 191259 ), nullptr );
-
+    action_t* a = new mark_of_the_hidden_satyr_t( effect );
     effect.execute_action = a;
   }
 
@@ -505,7 +553,107 @@ void item::bloodstained_hankerchief( special_effect_t& effect )
 
   effect.execute_action = a;
 }
+// Erratic Metronome ========================================================
+void item::erratic_metronome( special_effect_t& effect )
+{
+  struct erratic_metronome_cb_t : public dbc_proc_callback_t
+  {
+    erratic_metronome_cb_t ( const special_effect_t& effect, const double amount ) :
+      dbc_proc_callback_t( effect.item, effect )
+    {
+      // TODO: FIX HARDCODED VALUES
+      proc_buff = stat_buff_creator_t( effect.player, "accelerando", effect.player -> find_spell( 225719 ), effect.item )
+        .cd( timespan_t::zero() )
+        .add_stat( STAT_HASTE_RATING, amount )
+        .max_stack( 5 )
+        .refresh_behavior( BUFF_REFRESH_DISABLED )
+        .duration( timespan_t::from_seconds( 12.0 ) );
+    }
 
+    void execute(action_t*, action_state_t*) override
+    {
+      int stack = proc_buff -> check();
+
+      if (stack == 0)
+      {
+        proc_buff -> trigger();
+      }
+      else
+      {
+        proc_buff -> bump( 1 );
+      }
+    }
+  };
+  // the amount is stored in another spell
+  double amount = item_database::apply_combat_rating_multiplier(
+                                 *effect.item, effect.player -> find_spell( 225719 ) ->
+                                 effectN( 1 ).average( effect.item ) );
+  new erratic_metronome_cb_t( effect, amount );
+
+}
+
+// Icon of Rot ==============================================================
+
+struct carrion_swarm_t : public spell_t
+{
+  carrion_swarm_t( const special_effect_t& effect ) :
+    spell_t( "carrion_swarm", effect.player, effect.driver() -> effectN( 1 ).trigger() )
+  {
+    background = true;
+    hasted_ticks = may_miss = may_dodge = may_parry = may_block = may_crit = false;
+    callbacks = false;
+    base_td = effect.driver() -> effectN( 1 ).average( effect.item );
+  }
+};
+
+struct icon_of_rot_driver_t : public dbc_proc_callback_t
+{
+  carrion_swarm_t* carrion_swarm;
+  icon_of_rot_driver_t( const special_effect_t& effect ) :
+    dbc_proc_callback_t( effect.player, effect ),
+    carrion_swarm( new carrion_swarm_t( effect ) )
+  { }
+
+  void initialize() override
+  {
+    dbc_proc_callback_t::initialize();
+
+    action_t* damage_spell = listener -> find_action( "carrion_swarm" );
+
+    if( ! damage_spell )
+    {
+      damage_spell = listener -> create_proc_action( "carrion_swarm", effect );
+    }
+
+    if ( ! damage_spell )
+    {
+      damage_spell = new carrion_swarm_t( effect );
+    }
+  }
+
+  void execute( action_t*  /*a*/ , action_state_t* trigger_state ) override
+  {
+    actor_target_data_t* td = listener -> get_target_data( trigger_state -> target );
+    assert( td );
+
+    auto& tl = listener -> sim -> target_non_sleeping_list;
+
+    for ( size_t i = 0, targets = tl.size(); i < targets; i++ )
+    {
+      carrion_swarm -> target = tl[ i ];
+      carrion_swarm -> execute();
+    }
+  }
+};
+
+
+void item::icon_of_rot( special_effect_t& effect )
+{
+  effect.proc_flags_ = effect.driver() -> proc_flags();
+  effect.proc_flags2_ = PF2_ALL_HIT;
+
+  new icon_of_rot_driver_t( effect );
+}
 // Impact Tremor ============================================================
 
 void item::impact_tremor( special_effect_t& effect )
@@ -527,7 +675,113 @@ void item::impact_tremor( special_effect_t& effect )
   new dbc_proc_callback_t( effect.item, effect );
 }
 
+
+// Fury of the Burning Sky ==================================================
+struct solar_collapse_impact_t : public spell_t
+{
+  solar_collapse_impact_t( const special_effect_t& effect ) :
+    spell_t( "solar_collapse_damage", effect.player, effect.player -> find_spell( 229737 ) )
+  {
+    background = may_crit = true;
+    callbacks = false;
+    aoe = -1;
+    // FIXME: This value is returning a slightly lower damage amount vs. in game for the base ilvl trinket. (147k vs. 145k).
+    // Maybe hotfix things will fix.
+    base_dd_min = base_dd_max = data().effectN( 2 ).average( effect.item );
+  }
+};
+struct fury_of_the_burning_sky_driver_t : public dbc_proc_callback_t
+{
+  cooldown_t* icd;
+  fury_of_the_burning_sky_driver_t( const special_effect_t& effect ) :
+    dbc_proc_callback_t( effect.player, effect )
+  {
+    icd = effect.player -> get_cooldown( "solar_collapse_icd" );
+    icd -> duration = timespan_t::from_seconds( 3.0 );
+  }
+
+  void initialize() override
+  {
+    dbc_proc_callback_t::initialize();
+
+    action_t* damage_spell = listener -> find_action( "solar_collapse_damage" );
+
+    if( ! damage_spell )
+    {
+      damage_spell = listener -> create_proc_action( "solar_collapse_damage", effect );
+    }
+
+    if ( ! damage_spell )
+    {
+      damage_spell = new solar_collapse_impact_t( effect );
+    }
+  }
+
+  void execute( action_t*  /*a*/ , action_state_t* trigger_state ) override
+  {
+    actor_target_data_t* td = listener -> get_target_data( trigger_state -> target );
+    assert( td );
+
+    // FIXME: This might be in the wrong place - the ICD is on the RPPM trigger event, this
+    // might only be preventing debuff application, not the actual RPPM being rolled/firing.
+    if ( icd -> up() )
+    {
+      td -> debuff.solar_collapse -> trigger();
+    }
+    icd -> start();
+  }
+};
+
+struct solar_collapse_t : public debuff_t
+{
+  action_t* damage_event;
+
+  solar_collapse_t( const actor_pair_t& p, const special_effect_t& source_effect ) :
+    debuff_t( buff_creator_t( p, "solar_collapse", source_effect.driver() -> effectN( 1 ).trigger(), source_effect.item )
+                                  .duration( timespan_t::from_seconds( 3.0 ) ) ),
+                                  damage_event( source -> find_action( "solar_collapse_damage" ) )
+  { }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    debuff_t::expire_override( expiration_stacks, remaining_duration );
+    damage_event -> target = player;
+    damage_event -> execute();
+  }
+};
+struct fury_of_the_burning_sun_constructor_t : public item_targetdata_initializer_t
+{
+  fury_of_the_burning_sun_constructor_t( unsigned iid, const std::vector< slot_e >& s ) :
+    item_targetdata_initializer_t( iid, s )
+  { }
+
+  void operator()( actor_target_data_t* td ) const override
+  {
+    const special_effect_t* effect = find_effect( td -> source );
+    if( effect == 0 )
+    {
+      td -> debuff.solar_collapse = buff_creator_t( *td, "solar_collapse" );
+    }
+    else
+    {
+      assert( ! td -> debuff.solar_collapse );
+
+      td -> debuff.solar_collapse = new solar_collapse_t( *td, *effect );
+      td -> debuff.solar_collapse -> reset();
+    }
+  }
+};
+
+void item::fury_of_the_burning_sky( special_effect_t& effect )
+{
+  effect.proc_flags_ = effect.driver() -> proc_flags();
+  effect.proc_flags2_ = PF2_ALL_HIT;
+
+  new fury_of_the_burning_sky_driver_t( effect );
+}
+
 // Mrrgria's Favor ==========================================================
+
 struct thunder_ritual_impact_t : public spell_t
 {
   //TODO: Are these multipliers multiplicative with one another or should they be added together then applied?
@@ -956,6 +1210,49 @@ void item::spiked_counterweight( special_effect_t& effect )
   new dbc_proc_callback_t( effect.item, effect );
 }
 
+// Star Gate ================================================================
+
+struct nether_meteor_t : public spell_t
+{
+  nether_meteor_t( const special_effect_t& effect ) :
+    spell_t( "nether_meteor", effect.player, effect.driver() )
+  {
+    background = may_crit = true;
+    callbacks = false;
+    school = SCHOOL_SPELLFIRE;
+    base_dd_min = base_dd_max = effect.player -> find_spell( 225764 ) -> effectN( 1 ).average( effect.item );
+    aoe = -1;
+  }
+
+   timespan_t travel_time() const override
+  {
+    // Hardcode this to override the 1y/s velocity in the spelldata and keep
+    // impact timings consistent with in game results.
+    return timespan_t::from_seconds( 1.0 );
+  }
+};
+
+void item::star_gate( special_effect_t& effect )
+{
+
+  action_t* action = effect.player -> find_action( "nether_meteor" ) ;
+  if ( ! action )
+  {
+    action = effect.player -> create_proc_action( "nether_meteor", effect );
+  }
+
+  if ( ! action )
+  {
+    action = new nether_meteor_t( effect );
+  }
+
+  effect.execute_action = action;
+  effect.proc_flags2_ = PF2_ALL_HIT;
+
+  new dbc_proc_callback_t( effect.player, effect );
+
+}
+
 // Windscar Whetstone =======================================================
 
 void item::windscar_whetstone( special_effect_t& effect )
@@ -971,6 +1268,236 @@ void item::windscar_whetstone( special_effect_t& effect )
 
   // Disable automatic creation of a trigger spell.
   effect.trigger_spell_id = 1;
+}
+
+// Whispers in the Dark =====================================================
+
+void item::whispers_in_the_dark( special_effect_t& effect )
+{
+  struct whispers_in_the_dark_bad_buff_t : public buff_t
+  {
+    double amount;
+    whispers_in_the_dark_bad_buff_t(special_effect_t& effect) :
+      buff_t( stat_buff_creator_t( effect.player, "devils_due", effect.player -> find_spell( 225776 ), effect.item ) )
+    {
+      amount = effect.player -> find_spell( 225776 ) -> effectN( 1 ).average( effect.item ) / 100.0;
+    }
+    void execute( int stacks, double value, timespan_t duration ) override
+    {
+      if ( current_stack == 0 )
+      {
+        player -> composite_spell_speed_multiplier *= 1 - amount;
+        player -> invalidate_cache( CACHE_HASTE );
+      }
+
+      buff_t::execute( stacks, value, duration );
+    }
+    void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+    {
+      buff_t::expire_override( expiration_stacks, remaining_duration );
+      player -> composite_spell_speed_multiplier /= 1 - amount;
+      player -> invalidate_cache( CACHE_HASTE );
+    }
+  };
+
+  struct whispers_in_the_dark_good_buff_t : public buff_t
+  {
+    double amount;
+    whispers_in_the_dark_bad_buff_t* bad_buff;
+
+    whispers_in_the_dark_good_buff_t( special_effect_t& effect ) :
+      buff_t( buff_creator_t( effect.player, "nefarious_pact", effect.player -> find_spell( 225774 ), effect.item ) )
+    {
+      bad_buff = new whispers_in_the_dark_bad_buff_t( effect );
+      amount = effect.player -> find_spell( 225774 ) -> effectN( 1 ).average( effect.item ) / 100.0;
+    }
+    void execute( int stacks, double value, timespan_t duration ) override
+    {
+      if ( current_stack == 0 )
+      {
+        player -> composite_spell_speed_multiplier /= 1 + amount;
+        player -> invalidate_cache( CACHE_HASTE );
+      }
+
+      buff_t::execute( stacks, value, duration );
+    }
+    void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+    {
+      buff_t::expire_override( expiration_stacks, remaining_duration );
+      player -> composite_spell_speed_multiplier *= 1 + amount;
+      player -> invalidate_cache( CACHE_HASTE );
+      bad_buff -> trigger();
+    }
+  };
+
+  struct whispers_in_the_dark_cb_t : public dbc_proc_callback_t
+  {
+    whispers_in_the_dark_good_buff_t* whispers_in_the_dark_buff;
+    whispers_in_the_dark_cb_t( special_effect_t& effect ) :
+      dbc_proc_callback_t( effect.item, effect )
+    {
+      whispers_in_the_dark_buff = new whispers_in_the_dark_good_buff_t( effect );
+    }
+
+    void execute( action_t*, action_state_t* ) override
+    {
+      whispers_in_the_dark_buff -> trigger();
+    }
+  };
+
+  new whispers_in_the_dark_cb_t( effect );
+}
+
+// Nightblooming Frond ======================================================
+
+void item::nightblooming_frond( special_effect_t& effect )
+{
+  struct recursive_strikes_attack_t : public proc_attack_t
+  {
+    buff_t* recursive_strikes_buff;
+
+    recursive_strikes_attack_t( const special_effect_t& e ) :
+      proc_attack_t( "recursive_strikes", e.player, e.trigger(), e.item ),
+      recursive_strikes_buff( buff_t::find( e.player, "recursive_strikes" ) )
+    { }
+
+    double action_multiplier() const override
+    {
+      double m = proc_attack_t::action_multiplier();
+
+      m *= 1.0 + recursive_strikes_buff -> stack();
+
+      return m;
+    }
+  };
+
+  struct recursive_strikes_dmg_cb_t : public dbc_proc_callback_t
+  {
+    recursive_strikes_dmg_cb_t( const special_effect_t* effect ) :
+      dbc_proc_callback_t( effect->item, *effect )
+    { }
+
+    // Have to override default dbc_proc_callback_t behavior here, as it would expire the buff upon
+    // reaching max stack.
+    void execute( action_t*, action_state_t* state ) override
+    {
+      proc_buff -> trigger();
+      proc_action -> target = target( state );
+      proc_action -> execute();
+    }
+  };
+
+  struct recursive_strikes_driver_t : public dbc_proc_callback_t
+  {
+    recursive_strikes_driver_t( const special_effect_t& effect ) :
+      dbc_proc_callback_t( effect.item, effect )
+    { }
+
+    // Since the basic refresh behavior of Recursive Strikes is to never refresh the duration,
+    // temporarily make the driver change the refresh behavior to "refresh to full duration", so if
+    // you get a lucky driver proc while recursive strikes is up, you get +1 stack, and a full 15
+    // seconds of additional buff time.
+    void execute( action_t*, action_state_t* ) override
+    {
+      proc_buff -> refresh_behavior = BUFF_REFRESH_DURATION;
+      proc_buff -> trigger();
+      proc_buff -> refresh_behavior = BUFF_REFRESH_DISABLED;
+    }
+  };
+
+  special_effect_t* effect2 = new special_effect_t( effect.item );
+  effect2 -> name_str = "recursive_strikes_intensity";
+  effect2 -> spell_id = effect.trigger() -> id();
+  effect2 -> item = effect.item;
+  effect.player -> special_effects.push_back( effect2 );
+
+  // The auto-attack callback is instantiated here but initialized below, because the secondary
+  // special effect struct needs to have the buff and action pointers initialized to their
+  // respective objects, before the initialization is run.
+  auto cb = new recursive_strikes_dmg_cb_t( effect2 );
+
+  buff_t* b = buff_t::find( effect.player, "recursive_strikes" );
+  if ( b == nullptr )
+  {
+    b = buff_creator_t( effect.player, "recursive_strikes", effect.trigger() )
+      .refresh_behavior( BUFF_REFRESH_DISABLED ) // Don't refresh duration when the buff gains stacks
+      .stack_change_callback( [ cb ]( buff_t*, int old_, int new_ ) {
+        if ( old_ == 0 ) // Buff goes up the first time
+        {
+          cb -> activate();
+        }
+        else if ( new_ == 0 ) // Buff expires
+        {
+          cb -> deactivate();
+        }
+      } );
+  }
+
+  action_t* a = effect.player -> find_action( "recursive_strikes" );
+  if ( a == nullptr )
+  {
+    a = effect.player -> create_proc_action( "recursive_strikes", *effect2 );
+  }
+
+  if ( a == nullptr )
+  {
+    a = new recursive_strikes_attack_t( *effect2 );
+  }
+
+  effect.custom_buff = b;
+  effect2 -> custom_buff = b;
+  effect2 -> execute_action = a;
+
+  // Manually initialize and deactivate the auto-attack proc callback that generates damage and
+  // procs more stacks on the Recursive Strikes buff.
+  cb -> initialize();
+  cb -> deactivate();
+
+  // Base Driver, responsible for triggering the Recursive Strikes buff. Recursive Strikes buff in
+  // turn will activate the secondary proc callback that generates stacks and triggers damage.
+  new recursive_strikes_driver_t( effect );
+}
+
+// Might of Krosus ==========================================================
+
+void item::might_of_krosus( special_effect_t& effect )
+{
+  struct colossal_slam_t : public proc_attack_t
+  {
+    const special_effect_t& effect;
+    cooldown_t* use_cooldown;
+
+    colossal_slam_t( const special_effect_t& effect_ ) :
+      proc_attack_t( "colossal_slam", effect_.player, effect_.trigger(), effect_.item ),
+      effect( effect_ ),
+      use_cooldown( effect_.player -> get_cooldown( effect_.cooldown_name() ) )
+    {
+      split_aoe_damage = true;
+    }
+
+    void execute() override
+    {
+      proc_attack_t::execute();
+
+      if ( as<int>( execute_state -> n_targets ) < effect.driver() -> effectN( 2 ).base_value() )
+      {
+        use_cooldown -> adjust( -timespan_t::from_seconds( effect.driver() -> effectN( 3 ).base_value() ) );
+      }
+    }
+  };
+
+  action_t* a = effect.player -> find_action( "colossal_slam" );
+  if ( a == nullptr )
+  {
+    a = effect.player -> create_proc_action( "colossal_slam", effect );
+  }
+
+  if ( a == nullptr )
+  {
+    a = new colossal_slam_t( effect );
+  }
+
+  effect.execute_action = a;
 }
 
 // Tirathon's Betrayal ======================================================
@@ -1360,19 +1887,23 @@ void item::draught_of_souls( special_effect_t& effect )
   {
     felcrazed_rage_t( const special_effect_t& effect ) :
       proc_spell_t( "felcrazed_rage", effect.player, effect.trigger(), effect.item )
-    { }
+    {
+      aoe = 0; // This does not actually AOE
+    }
   };
 
   struct draught_of_souls_driver_t : public proc_spell_t
   {
+    const special_effect_t& effect;
     action_t* damage;
 
-    draught_of_souls_driver_t( const special_effect_t& effect ):
-      proc_spell_t( "draught_of_souls", effect.player, effect.driver(), effect.item ),
-      damage( nullptr )
+    draught_of_souls_driver_t( const special_effect_t& effect_ ):
+      proc_spell_t( "draught_of_souls", effect_.player, effect_.driver(), effect_.item ),
+      effect( effect_ ), damage( nullptr )
     {
-      channeled = quiet = true;
+      channeled = quiet = tick_zero = true;
       cooldown -> duration = timespan_t::zero();
+      hasted_ticks = false;
 
       damage = player -> find_action( "felcrazed_rage" );
       if ( damage == nullptr )
@@ -1386,23 +1917,81 @@ void item::draught_of_souls( special_effect_t& effect )
       }
     }
 
+    double composite_haste() const override
+    { return 1.0; } // Not hasted.
+
+    void init() override
+    {
+      proc_spell_t::init();
+
+      auto cd = player -> get_cooldown( effect.cooldown_name() );
+      range::for_each( player -> action_list, [ cd ]( action_t* action ) {
+        if ( action -> cooldown == cd )
+        {
+          action -> use_off_gcd = true;
+        }
+      } );
+
+    }
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+
+      // Use_item_t (that executes this action) will trigger a player-ready event after execution.
+      // Since this action is a "background channel", we'll need to cancel the player ready event to
+      // prevent the player from picking something to do while channeling.
+      event_t::cancel( player -> readying );
+    }
+
+    player_t* select_random_target() const
+    {
+      if ( sim -> distance_targeting_enabled )
+      {
+        std::vector<player_t*> targets;
+        range::for_each( sim -> target_non_sleeping_list, [ &targets, this ]( player_t* t ) {
+          if ( t -> get_player_distance( *player ) <= radius + t -> combat_reach )
+          {
+            targets.push_back( t );
+          }
+        } );
+
+        auto random_idx = static_cast<size_t>( rng().range( 0, targets.size() ) );
+        return targets.size() ? targets[ random_idx ] : nullptr;
+      }
+      else
+      {
+        auto random_idx = static_cast<size_t>( rng().range( 0, sim -> target_non_sleeping_list.size() ) );
+        return sim -> target_non_sleeping_list[ random_idx ];
+      }
+    }
+
     void tick( dot_t* d ) override
     {
       proc_spell_t::tick( d );
 
-      damage -> target = d -> target;
-      damage -> execute();
+      auto t = select_random_target();
+
+      if ( t )
+      {
+        damage -> target = t;
+        damage -> execute();
+      }
     }
 
     void last_tick( dot_t* d ) override
     {
+      // Last_tick() will zero player_t::channeling if this action is being channeled, so check it
+      // before calling the parent.
+      auto was_channeling = player -> channeling == this;
+
       proc_spell_t::last_tick( d );
 
       // Since Draught of Souls must be modeled as a channel (player cannot be allowed to perform
       // any actions for 3 seconds), we need to manually restart the player-ready event immediately
       // after the channel ends. This is because the channel is flagged as a background action,
       // which by default prohibits player-ready generation.
-      if ( player -> readying == nullptr )
+      if ( was_channeling && player -> readying == nullptr )
       {
         player -> schedule_ready();
       }
@@ -1933,7 +2522,7 @@ struct kiljaedens_burning_wish_t : public spell_t
     background = may_crit = true;
     aoe = -1;
     item = effect.item;
-    school = SCHOOL_NONE; // FIXME: Spelldata says physical. Is it really?
+    school = SCHOOL_FIRE;
 
     base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item );
 
@@ -1941,9 +2530,21 @@ struct kiljaedens_burning_wish_t : public spell_t
 
     //FIXME: Assume this is kind of slow from wording.
     //       Get real velocity from in game data after raids open.
-    travel_speed = 25;
+    travel_speed = 29;
   }
 
+  virtual void init() override
+  {
+    spell_t::init();
+    // Through testing with Rune of Power, Incanter's Flow, Arcane Power,
+    // and Enhacement multipliers we conclude this ignores all standard %dmg
+    // multipliers. It still gains crit damage multipliers.
+    snapshot_flags &= STATE_NO_MULTIPLIER;
+    snapshot_flags |= STATE_TGT_MUL_DA;
+  }
+
+
+  // This always crits.
   virtual double composite_crit_chance() const override
   { return 1.0; }
 
@@ -1952,7 +2553,6 @@ struct kiljaedens_burning_wish_t : public spell_t
 void item::kiljadens_burning_wish( special_effect_t& effect )
 {
   effect.execute_action = new kiljaedens_burning_wish_t( effect );
-  effect.execute_action -> execute();
 }
 // Nature's Call ============================================================
 
@@ -2581,7 +3181,7 @@ static const convergence_cd_t convergence_cds[] =
   !!! NOTE !!! NOTE !!! NOTE !!! NOTE !!! NOTE !!! NOTE !!! NOTE !!! */
   { DEATH_KNIGHT_FROST,   { "empower_rune_weapon", "hungering_rune_weapon" } },
   { DEATH_KNIGHT_UNHOLY,  { "summon_gargoyle" } },
-  { DRUID_FERAL,          { "berserk", "incarnation_king_of_the_jungle" } },
+  { DRUID_FERAL,          { "berserk", "incarnation" } },
   { HUNTER_BEAST_MASTERY, { "aspect_of_the_wild" } },
   { HUNTER_MARKSMANSHIP,  { "trueshot" } },
   { HUNTER_SURVIVAL,      { "aspect_of_the_eagle" } },
@@ -3521,6 +4121,13 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 225141, item::draught_of_souls        );
   register_special_effect( 225139, item::convergence_of_fates    );
   register_special_effect( 225129, item::entwined_elemental_foci );
+  register_special_effect( 225134, item::fury_of_the_burning_sky );
+  register_special_effect( 225131, item::icon_of_rot             );
+  register_special_effect( 225137, item::star_gate               );
+  register_special_effect( 225125, item::erratic_metronome       );
+  register_special_effect( 225142, item::whispers_in_the_dark    );
+  register_special_effect( 225135, item::nightblooming_frond     );
+  register_special_effect( 225132, item::might_of_krosus         );
 
   /* Legion 7.0 Misc */
   register_special_effect( 188026, item::infernal_alchemist_stone       );
@@ -3569,19 +4176,29 @@ void unique_gear::register_special_effects_x7()
 
 void unique_gear::register_hotfixes_x7()
 {
-
   hotfix::register_spell( "Horrific Appendages", "2016-10-09", "In-game testing shows that the actual rppm is much closer to 1.3~ than 0.7, so we slightly underestimated down to 1.25.", 222167 )
     .field( "rppm" )
     .operation( hotfix::HOTFIX_SET )
     .modifier( 1.25 )
     .verification_value( 0.7 );
 
-  hotfix::register_spell( "Aran's Relaxing Ruby", "2016-11-08", "In-game testing shows that the actual rppm is 1.7 rather than 0.92. We slightly underestimate at 1.65 here.", 230257 )
-    .field( "rppm" )
+  hotfix::register_spell( "Mark of the Distant Army", "2017-01-10-3", "7.1.5 removed damage information.", 191380 )
+    .field( "scaling_class" )
     .operation( hotfix::HOTFIX_SET )
-    .modifier( 1.65 )
-    .verification_value( 0.92 );
+    .modifier( -1 )
+    .verification_value( 0 );
 
+  hotfix::register_effect( "Mark of the Distant Army", "2017-01-10", "7.1.5 removed damage information.", 280734 )
+    .field( "average" )
+    .operation( hotfix::HOTFIX_SET )
+    .modifier( 8.828724 )
+    .verification_value( 0 );
+
+  hotfix::register_effect( "Mark of the Distant Army", "2017-01-10-2", "7.1.5 removed damage information.", 280734 )
+    .field( "delta" )
+    .operation( hotfix::HOTFIX_SET )
+    .modifier( 0.15 )
+    .verification_value( 0 );
 }
 
 void unique_gear::register_target_data_initializers_x7( sim_t* sim )
@@ -3596,5 +4213,5 @@ void unique_gear::register_target_data_initializers_x7( sim_t* sim )
   sim -> register_target_data_initializer( wriggling_sinew_constructor_t( 139326, trinkets ) );
   sim -> register_target_data_initializer( bough_of_corruption_constructor_t( 139336, trinkets ) );
   sim -> register_target_data_initializer( mrrgrias_favor_constructor_t( 142160, trinkets ) ) ;
+  sim -> register_target_data_initializer( fury_of_the_burning_sun_constructor_t( 140801, trinkets ) );
 }
-

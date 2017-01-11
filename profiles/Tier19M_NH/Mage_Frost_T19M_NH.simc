@@ -25,57 +25,73 @@ actions.precombat+=/frostbolt
 
 # Executed every time the actor is available.
 actions=counterspell,if=target.debuff.casting.react
-actions+=/ice_lance,if=buff.fingers_of_frost.react=0&prev_gcd.1.flurry
-actions+=/time_warp,if=(time=0&buff.bloodlust.down)|(buff.bloodlust.down&equipped.132410)
+actions+=/ice_lance,if=buff.fingers_of_frost.react=0&prev_gcd.1.flurry&spell_haste<0.845
+actions+=/time_warp,if=(time=0&buff.bloodlust.down)|(buff.bloodlust.down&equipped.132410&(cooldown.icy_veins.remains<1|target.time_to_die<50))
 actions+=/call_action_list,name=cooldowns
-actions+=/ice_nova,if=debuff.winters_chill.up
-actions+=/frostbolt,if=prev_off_gcd.water_jet
-actions+=/water_jet,if=prev_gcd.1.frostbolt&buff.fingers_of_frost.stack<(2+artifact.icy_hand.enabled)&buff.brain_freeze.react=0
-actions+=/ray_of_frost,if=buff.icy_veins.up|(cooldown.icy_veins.remains>action.ray_of_frost.cooldown&buff.rune_of_power.down)
-actions+=/flurry,if=buff.brain_freeze.react&buff.fingers_of_frost.react=0&prev_gcd.1.frostbolt
-actions+=/frost_bomb,if=debuff.frost_bomb.remains<action.ice_lance.travel_time&buff.fingers_of_frost.react>0
-actions+=/ice_lance,if=buff.fingers_of_frost.react>0&cooldown.icy_veins.remains>10|buff.fingers_of_frost.react>2
-actions+=/frozen_orb
-actions+=/ice_nova
-actions+=/comet_storm
-actions+=/blizzard,if=talent.arctic_gale.enabled|active_enemies>1|((buff.zannesu_journey.stack>4|buff.zannesu_journey.remains<cast_time+1)&equipped.133970)
-actions+=/ebonbolt,if=buff.fingers_of_frost.stack<=(0+artifact.icy_hand.enabled)
-actions+=/glacial_spike
-actions+=/frostbolt
+actions+=/call_action_list,name=aoe,if=active_enemies>=4
+actions+=/call_action_list,name=single
+
+actions.aoe=frostbolt,if=prev_off_gcd.water_jet
+actions.aoe+=/blizzard
+actions.aoe+=/frozen_orb
+actions.aoe+=/comet_storm
+actions.aoe+=/ice_nova
+actions.aoe+=/water_jet,if=prev_gcd.1.frostbolt&buff.fingers_of_frost.stack<(2+artifact.icy_hand.enabled)&buff.brain_freeze.react=0
+actions.aoe+=/flurry,if=(buff.brain_freeze.react|prev_gcd.1.ebonbolt)&buff.fingers_of_frost.react=0
+actions.aoe+=/frost_bomb,if=debuff.frost_bomb.remains<action.ice_lance.travel_time&buff.fingers_of_frost.react>0
+actions.aoe+=/ice_lance,if=buff.fingers_of_frost.react>0
+actions.aoe+=/ebonbolt,if=buff.brain_freeze.react=0
+actions.aoe+=/glacial_spike
+actions.aoe+=/frostbolt
 
 actions.cooldowns=rune_of_power,if=cooldown.icy_veins.remains<cast_time|charges_fractional>1.9&cooldown.icy_veins.remains>10|buff.icy_veins.up|target.time_to_die.remains+5<charges_fractional*10
-actions.cooldowns+=/potion,name=potion_of_prolonged_power,if=cooldown.icy_veins.remains<1
+actions.cooldowns+=/potion,name=deadly_grace,if=cooldown.icy_veins.remains<1&active_enemies=1
+actions.cooldowns+=/potion,name=prolonged_power,if=cooldown.icy_veins.remains<1
 actions.cooldowns+=/icy_veins,if=buff.icy_veins.down
 actions.cooldowns+=/mirror_image
-actions.cooldowns+=/use_item,slot=neck
 actions.cooldowns+=/blood_fury
 actions.cooldowns+=/berserking
 actions.cooldowns+=/arcane_torrent
 
+actions.single=ice_nova,if=debuff.winters_chill.up
+actions.single+=/frostbolt,if=prev_off_gcd.water_jet
+actions.single+=/water_jet,if=prev_gcd.1.frostbolt&buff.fingers_of_frost.stack<(2+artifact.icy_hand.enabled)&buff.brain_freeze.react=0
+actions.single+=/ray_of_frost,if=buff.icy_veins.up|(cooldown.icy_veins.remains>action.ray_of_frost.cooldown&buff.rune_of_power.down)
+actions.single+=/flurry,if=(buff.brain_freeze.react|prev_gcd.1.ebonbolt)&buff.fingers_of_frost.react=0
+actions.single+=/frost_bomb,if=debuff.frost_bomb.remains<action.ice_lance.travel_time&buff.fingers_of_frost.react>0
+actions.single+=/ice_lance,if=buff.fingers_of_frost.react>0&cooldown.icy_veins.remains>10|buff.fingers_of_frost.react>2
+actions.single+=/frozen_orb
+actions.single+=/ice_nova
+actions.single+=/comet_storm
+actions.single+=/blizzard,if=talent.arctic_gale.enabled|active_enemies>1|(buff.zannesu_journey.stack=5&buff.zannesu_journey.remains>cast_time)
+actions.single+=/ebonbolt,if=buff.brain_freeze.react=0
+actions.single+=/glacial_spike
+actions.single+=/frostbolt
+
 head=nighthold_custodians_hood,id=140851,bonus_id=3445
-neck=sorcerous_shadowruby_pendant,id=130233,bonus_id=1758/689/601/669,gem_id=130219,enchant_id=5439
+neck=radiant_string_of_scorpid_eyes,id=140898,bonus_id=3445,enchant=mark_of_the_hidden_satyr,enchant_id=5439
 shoulders=mantle_of_everburning_knowledge,id=138321,bonus_id=3518
 back=cloak_of_everburning_knowledge,id=138365,bonus_id=3518,enchant=binding_of_intellect
 chest=robes_of_fluctuating_energy,id=140848,bonus_id=3445
-wrists=bracers_of_harnessed_flame,id=140850,bonus_id=3518
+wrists=woven_lasher_tendril_bracers,id=140886,bonus_id=3518
 hands=gloves_of_everburning_knowledge,id=138309,bonus_id=3518
 waist=manari_skullbuckled_cinch,id=140887,bonus_id=3518
 legs=leggings_of_everburning_knowledge,id=138315,bonus_id=3518
-feet=treads_of_galactic_odyssey,id=140885,bonus_id=3518
-finger1=spellblades_gemmed_signet,id=140895,bonus_id=3518,enchant=binding_of_haste
-finger2=ring_of_exclusive_servitude,id=140906,bonus_id=3518,enchant=binding_of_haste
-trinket1=arans_relaxing_ruby,id=142157
-trinket2=brinewater_slime_in_a_bottle,id=142507,bonus_id=604/3469/1512
+feet=outcast_wanderers_footrags,id=140914,bonus_id=3518
+finger1=ring_of_exclusive_servitude,id=140906,bonus_id=3518,enchant=binding_of_haste
+finger2=ring_of_braided_stems,id=140896,bonus_id=3518,enchant=binding_of_haste
+trinket1=erratic_metronome,id=140792,bonus_id=3445
+trinket2=whispers_in_the_dark,id=140809,bonus_id=3519
 main_hand=ebonchill,id=128862,gem_id=140832/140812/140832,relic_id=3518/3518/3518
 
 # Gear Summary
-# gear_ilvl=898.47
-# gear_stamina=33159
-# gear_intellect=36169
-# gear_crit_rating=8538
-# gear_haste_rating=7346
-# gear_mastery_rating=4905
-# gear_versatility_rating=3908
+# gear_ilvl=905.47
+# gear_stamina=33841
+# gear_intellect=38528
+# gear_crit_rating=5966
+# gear_haste_rating=9803
+# gear_mastery_rating=2759
+# gear_versatility_rating=4614
 # gear_armor=1969
 # set_bonus=tier19_2pc=1
 # set_bonus=tier19_4pc=1

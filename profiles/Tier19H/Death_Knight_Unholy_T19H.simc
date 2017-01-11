@@ -4,7 +4,7 @@ race=draenei
 role=attack
 position=back
 talents=1210023
-artifact=16:137492:137549:136718:0:149:1:150:1:152:1:153:1:154:1:156:3:157:3:264:3:265:3:266:6:267:3:1119:3:1333:1
+artifact=16:0:0:0:0:149:1:150:1:152:1:153:1:154:1:156:3:157:3:264:3:265:3:266:3:267:3:1119:3:1333:1
 spec=unholy
 
 # This default action priority list is automatically created based on your character.
@@ -15,7 +15,7 @@ spec=unholy
 
 # Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat=flask,name=countless_armies
-actions.precombat+=/food,name=the_hungry_magister
+actions.precombat+=/food,name=nightborne_delicacy_platter
 actions.precombat+=/augmentation,name=defiled
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
@@ -82,11 +82,11 @@ actions.generic+=/call_action_list,name=castigator,if=talent.castigator.enabled&
 
 actions.instructors=festering_strike,if=debuff.festering_wound.stack<=3&runic_power.deficit>13
 actions.instructors+=/death_coil,if=!buff.necrosis.up&talent.necrosis.enabled&rune<=3
-actions.instructors+=/scourge_strike,if=buff.necrosis.react&debuff.festering_wound.stack>=5&runic_power.deficit>29
+actions.instructors+=/scourge_strike,if=buff.necrosis.react&debuff.festering_wound.stack>=4&runic_power.deficit>29
 actions.instructors+=/clawing_shadows,if=buff.necrosis.react&debuff.festering_wound.stack>=4&runic_power.deficit>11
-actions.instructors+=/scourge_strike,if=buff.unholy_strength.react&debuff.festering_wound.stack>=5&runic_power.deficit>29
+actions.instructors+=/scourge_strike,if=buff.unholy_strength.react&debuff.festering_wound.stack>=4&runic_power.deficit>29
 actions.instructors+=/clawing_shadows,if=buff.unholy_strength.react&debuff.festering_wound.stack>=4&runic_power.deficit>11
-actions.instructors+=/scourge_strike,if=rune>=2&debuff.festering_wound.stack>=5&runic_power.deficit>29
+actions.instructors+=/scourge_strike,if=rune>=2&debuff.festering_wound.stack>=4&runic_power.deficit>29
 actions.instructors+=/clawing_shadows,if=rune>=2&debuff.festering_wound.stack>=4&runic_power.deficit>11
 actions.instructors+=/death_coil,if=talent.shadow_infusion.enabled&talent.dark_arbiter.enabled&!buff.dark_transformation.up&cooldown.dark_arbiter.remains>15
 actions.instructors+=/death_coil,if=talent.shadow_infusion.enabled&!talent.dark_arbiter.enabled&!buff.dark_transformation.up

@@ -1,13 +1,13 @@
 # T19M
-# Tier 19 Heroic
-# * Ilvl Cap: 865
-# * Artifact Rank Cap: 26
-# * 3 Relics with max ilevel of 865
-# * Mythic+ gear is permitted up to the item level cap.
-# * No items from Violet Hold (unless 840 ilevel)
+# Tier 19 Mythic
+# * Ilvl Cap: 885
+# * Artifact Rank Cap: 34
+# * 3 Relics with max ilevel of 885
+# * No Legendaries (see Raid_T19x_Legendary.simc)
+# * No items from Nighthold (including set bonuses) except in T19M_NH
 # * No items from World Bosses / World Quests / BoEs
-# * No items from Nighthold (including set bonuses)
-# * No Legendaries
+# * Mythic+ gear is permitted up to the Mythic+ item level cap
+# * No items from Violet Hold (unless 840 ilevel)
 # * No Random Gems (ie. Bonus RNG Gem Slots)
 # * No Tertiary Stats
 # * No Ranked Gear (ie. Warforged/Titanforged)
@@ -20,7 +20,7 @@ race=troll
 role=attack
 position=back
 talents=2230021
-artifact=12:139250:139251:139250:0:108:3:109:3:110:4:111:3:113:5:114:3:115:3:117:3:119:1:120:1:122:1:123:1:124:1:1090:3:1091:1:1092:1:1332:1
+artifact=12:0:0:0:0:108:3:109:3:110:3:111:3:113:3:114:3:115:3:117:3:119:1:120:1:122:1:123:1:124:1:1090:3:1091:1:1092:1:1332:1
 spec=frost
 
 head=venomfanged_barbute,id=139229,bonus_id=1806
@@ -46,23 +46,23 @@ level=110
 race=undead
 role=attack
 position=back
-talents=1210023
-artifact=16:142516:142512:142510:0:149:1:150:1:151:1:152:1:153:1:154:1:156:3:157:3:158:3:262:3:263:1:264:3:265:3:266:5:267:3:1119:4:1333:1
+talents=1230023
+artifact=16:0:0:0:0:149:1:150:1:151:1:152:1:153:1:154:1:156:3:157:3:158:3:262:3:263:1:264:3:265:3:266:3:267:3:1119:3:1333:1
 spec=unholy
 
 head=venomfanged_barbute,id=139229,bonus_id=1806
-neck=blackened_portalstone_necklace,id=139332,bonus_id=1806,enchant=mark_of_the_hidden_satyr
+neck=cursed_beartooth_necklace,id=139239,bonus_id=1806,enchant=mark_of_the_claw
 shoulders=frozen_pendulum_shoulderguards,id=134518,bonus_id=1727/1522
 back=drape_of_the_unworthy,id=142521,bonus_id=3469/1512,enchant=binding_of_strength
 chest=inferno_breastplate,id=134503,bonus_id=1727/1522
-wrists=calcareous_wristclamps,id=142427,bonus_id=3469/1512
-hands=reinforced_houndhandlers_gauntlets,id=142435,bonus_id=3469
+wrists=dragonbone_wristclamps,id=138218,bonus_id=1517/1806
+hands=fists_of_the_legion,id=134509,bonus_id=1542/3412
 waist=krakenbone_waistplate,id=142424,bonus_id=3469/1512
 legs=goldrune_legplates,id=142425,bonus_id=3469
-feet=leadsoled_seabed_striders,id=142426,bonus_id=3469
-finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1727/1522,enchant=binding_of_haste
-finger2=ring_of_ascended_glory,id=142520,bonus_id=3469,enchant=binding_of_haste
-trinket1=eye_of_command,id=142167
-trinket2=chains_of_the_valorous,id=142508,bonus_id=604/3469
-main_hand=apocalypse,id=128403,gem_id=142516/142512/142510,relic_id=3469/3469/3469:1512,enchant=rune_of_the_fallen_crusader
+feet=trampling_warboots,id=139234,bonus_id=1512
+finger1=ring_of_collapsing_futures,id=142173,enchant=binding_of_critical_strike
+finger2=grasping_tentacle_loop,id=133634,bonus_id=1542/1727,enchant=binding_of_critical_strike
+trinket1=unstable_arcanocrystal,id=141482,bonus_id=1492/3466
+trinket2=eye_of_command,id=142167,bonus_id=1502/3453
+main_hand=apocalypse,id=128403,gem_id=142516/142310/142510,relic_id=3469/1502:3453/3508,enchant=rune_of_the_fallen_crusader
 save=Death_Knight_Unholy_T19M.simc

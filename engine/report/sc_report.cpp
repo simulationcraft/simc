@@ -425,7 +425,7 @@ bool report::check_gear_ilevel( player_t& p, sim_t& sim )
   }
   else if ( p.report_information.save_str.find( "T19H_NH" ) != std::string::npos )
   {
-    max_ilevel_allowed           = 890;
+    max_ilevel_allowed           = 895;
     max_weapon_ilevel_allowed    = 927;
     tier_name                    = "T19H_NH";
   }
@@ -437,8 +437,8 @@ bool report::check_gear_ilevel( player_t& p, sim_t& sim )
   }
   else if ( p.report_information.save_str.find( "T19M_NH" ) != std::string::npos )
   {
-    max_ilevel_allowed           = 905;
-    max_weapon_ilevel_allowed    = 927;
+    max_ilevel_allowed           = 910;
+    max_weapon_ilevel_allowed    = 933;
     tier_name                    = "T19M_NH";
   }
   else if ( p.report_information.save_str.find( "T19M" ) != std::string::npos )

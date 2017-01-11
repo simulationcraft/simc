@@ -4,7 +4,7 @@
 #ifndef MAX_CLASS
 #define MAX_CLASS (13)
 #endif
-// Class based active abilities, wow build 23244
+// Class based active abilities, wow build 23360
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -119,8 +119,8 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       209202, // Eye of Tyr (Artifact)
        62124, // Hand of Reckoning
       162056, // Jailer's Judgment
-       20271, // Judgment
       228288, // Judgment
+       20271, // Judgment
          633, // Lay on Hands
       200652, // Tyr's Deliverance (Artifact)
       200654, // Tyr's Deliverance
@@ -213,8 +213,8 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
          982, // Revive Pet
       175686, // Stopping Power
         1515, // Tame Beast
-      207068, // Titan's Thunder (Artifact)
       207097, // Titan's Thunder
+      207068, // Titan's Thunder (Artifact)
       210000, // Wake Up
       204147, // Windburst (Artifact)
            0,
@@ -290,8 +290,8 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        92380, // Froststorm Breath (Exotic Ability)
         2649, // Growl (Basic Ability)
       159926, // Harden Shell (Special Ability)
-       24394, // Intimidation
        19577, // Intimidation
+       24394, // Intimidation
       138374, // Lightning Blast
        54680, // Monstrous Bite (Exotic Ability)
       160452, // Netherwinds
@@ -596,11 +596,11 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         2645, // Ghost Wolf
       207778, // Gift of the Queen (Artifact)
        32182, // Heroism
+      211004, // Hex
+      211010, // Hex
+      211015, // Hex
        51514, // Hex
       210873, // Hex
-      211004, // Hex
-      211015, // Hex
-      211010, // Hex
          370, // Purge
       205495, // Stormkeeper (Artifact)
       115356, // Windstrike
@@ -688,23 +688,23 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
          122, // Frost Nova
        45438, // Ice Block
       131784, // Illusion
-      210726, // Mark of Aluneth (Artifact)
-      211088, // Mark of Aluneth
       211076, // Mark of Aluneth
+      211088, // Mark of Aluneth
       224968, // Mark of Aluneth (Artifact)
+      210726, // Mark of Aluneth (Artifact)
       194466, // Phoenix's Flames (Artifact)
          118, // Polymorph (Sheep)
-       61305, // Polymorph (Black Cat)
-       28272, // Polymorph (Pig)
        61721, // Polymorph (Rabbit)
-       61025, // Polymorph (Serpent)
        61780, // Polymorph (Turkey)
-       28271, // Polymorph (Turtle)
-      161354, // Polymorph (Monkey)
-      161372, // Polymorph (Turtle)
-      161355, // Polymorph (Penguin)
       161353, // Polymorph (Polar Bear Cub)
+      161354, // Polymorph (Monkey)
+      161355, // Polymorph (Penguin)
+      161372, // Polymorph (Turtle)
+       61025, // Polymorph (Serpent)
+       28271, // Polymorph (Turtle)
+       28272, // Polymorph (Pig)
       126819, // Polymorph (Pig)
+       61305, // Polymorph (Black Cat)
        80353, // Time Warp
            0,
     },
@@ -756,8 +756,9 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     {
            0,
     },
-    // Pet tree, 7 abilities
+    // Pet tree, 8 abilities
     {
+      225119, // Arcane Assault
        88084, // Arcane Blast
        88082, // Fireball
        33395, // Freeze
@@ -874,8 +875,8 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        89808, // Singe Magic (Special Ability)
        19647, // Spell Lock (Special Ability)
        17735, // Suffering (Special Ability)
-      112042, // Threatening Presence (Special Ability)
       134477, // Threatening Presence (Special Ability)
+      112042, // Threatening Presence (Special Ability)
       171021, // Torch Magic (Special Ability)
         6360, // Whiplash (Special Ability)
            0,
@@ -1104,9 +1105,9 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       183752, // Consume Magic
       198013, // Eye Beam
       195072, // Fel Rush
+      201789, // Fury of the Illidari
       201467, // Fury of the Illidari (Artifact)
       201628, // Fury of the Illidari
-      201789, // Fury of the Illidari
       131347, // Glide
       217832, // Imprison
       191427, // Metamorphosis
@@ -1132,8 +1133,8 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       213011, // Charred Warblades
       203720, // Demon Spikes
       218256, // Empower Wards
-      204021, // Fiery Brand
       209245, // Fiery Brand
+      204021, // Fiery Brand
       178740, // Immolation Aura
       189110, // Infernal Strike
       187827, // Metamorphosis
@@ -1159,7 +1160,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
 };
 #define TREE_SPECIALIZATION_SIZE (36)
 
-// Talent tree specialization abilities, wow build 23244
+// Talent tree specialization abilities, wow build 23360
 static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -2261,7 +2262,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
 };
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 23244
+// Class mastery abilities, wow build 23360
 static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2500,7 +2501,7 @@ static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLA
 #define MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 23244
+// Racial abilities, wow build 23360
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -3238,7 +3239,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
 };
 #define SET_BONUS_DATA_SIZE (544)
 
-// Set bonus data, wow build 23244
+// Set bonus data, wow build 23360
 static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,   71, 165636, { 127055, 127081, 127092, 127103, 127114,  0 } },
@@ -3731,11 +3732,11 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Oathclaw Wargarb"                           ,     "tier18",     11,  1250,   18,   4,  11,  104, 185814, { 124246, 124255, 124261, 124267, 124272,  0 } },
   { "Oathclaw Wargarb"                           ,     "tier18",     11,  1250,   18,   4,  11,  105, 185397, { 124246, 124255, 124261, 124267, 124272,  0 } },
   { "Oathclaw Wargarb"                           ,     "tier18",     11,  1250,   18,   4,  11,  102, 187877, { 124246, 124255, 124261, 124267, 124272,  0 } },
-  { "Warplate of the Obsidian Aspect"            ,     "tier19",     12,  1292,   19,   2,   1,   71, 212149, { 138351, 138354, 138357, 138360, 138363, 138374,  0 } },
+  { "Warplate of the Obsidian Aspect"            ,     "tier19",     12,  1292,   19,   2,   1,   71, 212156, { 138351, 138354, 138357, 138360, 138363, 138374,  0 } },
   { "Warplate of the Obsidian Aspect"            ,     "tier19",     12,  1292,   19,   2,   1,   72, 212157, { 138351, 138354, 138357, 138360, 138363, 138374,  0 } },
   { "Warplate of the Obsidian Aspect"            ,     "tier19",     12,  1292,   19,   2,   1,   73, 212237, { 138351, 138354, 138357, 138360, 138363, 138374,  0 } },
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
-  { "Warplate of the Obsidian Aspect"            ,     "tier19",     12,  1292,   19,   4,   1,   71, 212156, { 138351, 138354, 138357, 138360, 138363, 138374,  0 } },
+  { "Warplate of the Obsidian Aspect"            ,     "tier19",     12,  1292,   19,   4,   1,   71, 212149, { 138351, 138354, 138357, 138360, 138363, 138374,  0 } },
   { "Warplate of the Obsidian Aspect"            ,     "tier19",     12,  1292,   19,   4,   1,   72, 212158, { 138351, 138354, 138357, 138360, 138363, 138374,  0 } },
   { "Warplate of the Obsidian Aspect"            ,     "tier19",     12,  1292,   19,   4,   1,   73, 212244, { 138351, 138354, 138357, 138360, 138363, 138374,  0 } },
   { "Battleplate of the Highlord"                ,     "tier19",     12,  1287,   19,   2,   2,   65, 211436, { 138350, 138353, 138356, 138359, 138362, 138369,  0 } },
@@ -3744,10 +3745,10 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Battleplate of the Highlord"                ,     "tier19",     12,  1287,   19,   4,   2,   65, 211438, { 138350, 138353, 138356, 138359, 138362, 138369,  0 } },
   { "Battleplate of the Highlord"                ,     "tier19",     12,  1287,   19,   4,   2,   70, 211448, { 138350, 138353, 138356, 138359, 138362, 138369,  0 } },
   { "Battleplate of the Highlord"                ,     "tier19",     12,  1287,   19,   4,   2,   66, 211554, { 138350, 138353, 138356, 138359, 138362, 138369,  0 } },
-  { "Eagletalon Battlegear"                      ,     "tier19",     12,  1284,   19,   2,   3,  253, 211172, { 138339, 138340, 138342, 138344, 138347, 138368,  0 } },
+  { "Eagletalon Battlegear"                      ,     "tier19",     12,  1284,   19,   2,   3,  253, 211181, { 138339, 138340, 138342, 138344, 138347, 138368,  0 } },
   { "Eagletalon Battlegear"                      ,     "tier19",     12,  1284,   19,   2,   3,  254, 211331, { 138339, 138340, 138342, 138344, 138347, 138368,  0 } },
   { "Eagletalon Battlegear"                      ,     "tier19",     12,  1284,   19,   2,   3,  255, 211340, { 138339, 138340, 138342, 138344, 138347, 138368,  0 } },
-  { "Eagletalon Battlegear"                      ,     "tier19",     12,  1284,   19,   4,   3,  253, 211181, { 138339, 138340, 138342, 138344, 138347, 138368,  0 } },
+  { "Eagletalon Battlegear"                      ,     "tier19",     12,  1284,   19,   4,   3,  253, 211172, { 138339, 138340, 138342, 138344, 138347, 138368,  0 } },
   { "Eagletalon Battlegear"                      ,     "tier19",     12,  1284,   19,   4,   3,  254, 211322, { 138339, 138340, 138342, 138344, 138347, 138368,  0 } },
   { "Eagletalon Battlegear"                      ,     "tier19",     12,  1284,   19,   4,   3,  255, 211357, { 138339, 138340, 138342, 138344, 138347, 138368,  0 } },
   { "Doomblade Battlegear"                       ,     "tier19",     12,  1289,   19,   2,   4,  261, 211661, { 138326, 138329, 138332, 138335, 138338, 138371,  0 } },
@@ -3809,7 +3810,7 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
 };
 #define RPPMMOD_SIZE (358)
 
-// 358 RPPM Modifiers, wow build level 23244
+// 358 RPPM Modifiers, wow build level 23360
 static struct rppm_modifier_t __rppmmodifier_data[] = {
   {  45054,    4,  1,  1.0000 },
   {  49530,    1,  1,  1.0000 },
@@ -3989,7 +3990,7 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 215658,    4,  1,  1.0000 },
   { 215745,    4,  1,  1.0000 },
   { 215745,  253,  4, -0.2700 },
-  { 215857,    0,  2,  1.0000 },
+  { 215857,    4,  2,  1.0000 },
   { 216085,    4,  1,  1.0000 },
   { 216085,  263,  4, -0.2400 },
   { 216085,  253,  4, -0.2700 },
@@ -4000,7 +4001,7 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 221845,  252,  4, -0.3200 },
   { 221873,    4,  1,  1.0000 },
   { 222015,    4,  1,  1.0000 },
-  { 222167,    0,  1,  1.0000 },
+  { 222167,    4,  1,  1.0000 },
   { 222187,    4,  1,  1.0000 },
   { 222187,  263,  4, -0.2400 },
   { 222207,    4,  1,  1.0000 },
@@ -4123,7 +4124,7 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 225138,  264,  4,  0.1200 },
   { 225139,  251,  4,  1.0000 },
   { 225139,  252,  4,  0.6600 },
-  { 225139,  577,  4,  0.4500 },
+  { 225139,  577,  4,  0.1200 },
   { 225139,  103,  4,  1.2400 },
   { 225139,  253,  4,  1.8000 },
   { 225139,  254,  4,  1.2400 },
@@ -4173,7 +4174,7 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
 };
 #define ARTIFACT_SIZE (41)
 
-// Artifact base data, wow build 23244
+// Artifact base data, wow build 23360
 static struct artifact_t __artifact_data[ARTIFACT_SIZE] = {
   {  2,  70 },
   {  3, 577 },
@@ -4219,7 +4220,7 @@ static struct artifact_t __artifact_data[ARTIFACT_SIZE] = {
 };
 #define ARTIFACT_POWER_SIZE (715)
 
-// Artifact power data, wow build 23244
+// Artifact power data, wow build 23360
 static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] = {
   {   40,   2,  18,  0,   0, 205273, "Wake of Ashes"                      }, // Wake of Ashes (id=205273, n_ranks=1)
   {   41,   2,   0,  4,   3, 186941, "Highlord's Judgment"                }, // Highlord's Judgment (id=186941, n_ranks=6)
@@ -4939,7 +4940,7 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
 };
 #define ARTIFACT_POWER_RANK_SIZE (3063)
 
-// Artifact power rank data, wow build 23244
+// Artifact power rank data, wow build 23360
 static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RANK_SIZE] = {
   { 2316,    40,  0, 205273,      0.000, 0x00000000, 0 },
   { 2317,    41,  0, 186941,      8.000, 0x00000000, 0 },
@@ -5430,9 +5431,9 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 2640,   314,  0, 190462,      0.000, 0x00000000, 0 },
   { 3346,   314,  1, 190462, -20000.000, 0x00000000, 0 },
   { 3347,   314,  2, 190462, -30000.000, 0x00000000, 0 },
-  { 3348,   314,  3, 190462, -40000.000, 0x00000000, 0 },
-  { 3349,   314,  4, 190462, -50000.000, 0x00000000, 0 },
-  { 3350,   314,  5, 190462, -60000.000, 0x00000000, 0 },
+  { 3348,   314,  3, 190462, -38000.000, 0x00000010, 0 },
+  { 3349,   314,  4, 190462, -45000.000, 0x00000010, 0 },
+  { 3350,   314,  5, 190462, -52000.000, 0x00000010, 0 },
   { 2643,   315,  0, 190467,      0.000, 0x00000000, 0 },
   { 3351,   315,  1, 190467,      6.000, 0x00000000, 0 },
   { 3352,   315,  2, 190467,     10.000, 0x00000000, 0 },
@@ -5516,9 +5517,9 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 2684,   330,  0, 192349,      0.000, 0x00000000, 0 },
   { 3326,   330,  1, 192349, -20000.000, 0x00000000, 0 },
   { 3327,   330,  2, 192349, -30000.000, 0x00000000, 0 },
-  { 3328,   330,  3, 192349, -40000.000, 0x00000000, 0 },
-  { 3329,   330,  4, 192349, -50000.000, 0x00000000, 0 },
-  { 3330,   330,  5, 192349, -60000.000, 0x00000000, 0 },
+  { 3328,   330,  3, 192349, -38000.000, 0x00000010, 0 },
+  { 3329,   330,  4, 192349, -44000.000, 0x00000010, 0 },
+  { 3330,   330,  5, 192349, -48000.000, 0x00000010, 0 },
   { 2687,   331,  0, 192376,      0.000, 0x00000000, 0 },
   { 3331,   331,  1, 192376,      8.000, 0x00000000, 0 },
   { 3332,   331,  2, 192376,     12.000, 0x00000000, 0 },
@@ -6472,9 +6473,9 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 4614,  1006,  0, 201460,      0.000, 0x00000000, 0 },
   { 4615,  1006,  1, 201460, -40000.000, 0x00000000, 0 },
   { 4616,  1006,  2, 201460, -60000.000, 0x00000000, 0 },
-  { 4617,  1006,  3, 201460, -80000.000, 0x00000000, 0 },
-  { 4618,  1006,  4, 201460, -100000.000, 0x00000000, 0 },
-  { 4619,  1006,  5, 201460, -120000.000, 0x00000000, 0 },
+  { 4617,  1006,  3, 201460, -75000.000, 0x00000010, 0 },
+  { 4618,  1006,  4, 201460, -90000.000, 0x00000010, 0 },
+  { 4619,  1006,  5, 201460, -100000.000, 0x00000010, 0 },
   { 4620,  1007,  0, 201463,      0.000, 0x00000000, 0 },
   { 4621,  1007,  1, 201463,     10.000, 0x00000000, 0 },
   { 4622,  1007,  2, 201463,     15.000, 0x00000000, 0 },
@@ -8005,14 +8006,23 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 6525,  1456,  0, 226829,      0.000, 0x00000000, 0 },
   {    0,     0,  0,      0,      0.000, 0x00000000, 0 },
 };
-#define ARTIFACT_POWER_RANK_HOTFIX_SIZE (23)
+#define ARTIFACT_POWER_RANK_HOTFIX_SIZE (32)
 
-// 23 artifact_power_rank hotfix entries, wow build level 23244
+// 32 artifact_power_rank hotfix entries, wow build level 23360
 static hotfix::client_hotfix_entry_t __artifact_power_rank_hotfix_data[] = {
   {   2577,  3, 192543U, 192542U },
   {   2577,  4, 0.000000, 10.000000 },
   {   2578,  3, 192544U, 192542U },
   {   2578,  4, 0.000000, 15.000000 },
+  {   3328,  4, -40000.000000, -38000.000000 },
+  {   3329,  4, -50000.000000, -44000.000000 },
+  {   3330,  4, -60000.000000, -48000.000000 },
+  {   3348,  4, -40000.000000, -38000.000000 },
+  {   3349,  4, -50000.000000, -45000.000000 },
+  {   3350,  4, -60000.000000, -52000.000000 },
+  {   4617,  4, -80000.000000, -75000.000000 },
+  {   4618,  4, -100000.000000, -90000.000000 },
+  {   4619,  4, -120000.000000, -100000.000000 },
   {   4741,  4, 6.000000, 4.000000 },
   {   4742,  4, 12.000000, 8.000000 },
   {   4743,  4, 18.000000, 12.000000 },

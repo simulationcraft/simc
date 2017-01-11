@@ -1,4 +1,4 @@
-SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23244, git build 2679573)
+SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23360, git build 3b52b5d)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -4385,7 +4385,7 @@ Spell Level      : 13
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
-Affecting spells : Malefic Grasp (235155)
+Affecting spells : Drained to a Husk (199120), Perdition (199158), Long Dark Night of the Soul (199214), Wrath of Consumption (199646), Malefic Grasp (235155)
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ...x.... 
@@ -4856,10 +4856,10 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 0x7f | Target: Self(1)
 #2 (id=331182)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 100 | Scaled Value: 100 | Target: Self(1)
-                   Affected Spells: Inimitable Agony (199111), Hideous Corruption (199112), Drained to a Husk (199120), Inherently Unstable (199152), Seeds of Doom (199153), Perdition (199158), Shadowy Incantations (199163), Shadows of the Flesh (199212), Long Dark Night of the Soul (199214), Sweet Souls (199220), Fatal Echoes (199257), Compounding Horror (199282), Soul Flame (199471), Wrath of Consumption (199472), Soul Flame (199581), Harvester of Souls (201424), Souls of the Damned (216463), Souls of the Damned (216721), Souls of the Damned (216722), Souls of the Damned (216724), Crystalline Shadows (221862)
+                   Affected Spells: Inimitable Agony (199111), Hideous Corruption (199112), Drained to a Husk (199120), Inherently Unstable (199152), Seeds of Doom (199153), Perdition (199158), Shadowy Incantations (199163), Shadows of the Flesh (199212), Long Dark Night of the Soul (199214), Sweet Souls (199220), Fatal Echoes (199257), Compounding Horror (199282), Soul Flame (199471), Wrath of Consumption (199472), Soul Flame (199581), Wrath of Consumption (199646), Harvester of Souls (201424), Souls of the Damned (216463), Souls of the Damned (216721), Souls of the Damned (216722), Souls of the Damned (216724), Crystalline Shadows (221862)
 #3 (id=345006)   : Apply Aura (6) | Add Percent Modifier: Spell Tick Time (108)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 8 | Target: Self(1)
-                   Affected Spells: Inimitable Agony (199111), Hideous Corruption (199112), Drained to a Husk (199120), Inherently Unstable (199152), Seeds of Doom (199153), Perdition (199158), Shadowy Incantations (199163), Shadows of the Flesh (199212), Long Dark Night of the Soul (199214), Sweet Souls (199220), Fatal Echoes (199257), Compounding Horror (199282), Soul Flame (199471), Wrath of Consumption (199472), Soul Flame (199581), Harvester of Souls (201424), Souls of the Damned (216463), Souls of the Damned (216721), Souls of the Damned (216722), Souls of the Damned (216724), Crystalline Shadows (221862)
+                   Affected Spells: Inimitable Agony (199111), Hideous Corruption (199112), Drained to a Husk (199120), Inherently Unstable (199152), Seeds of Doom (199153), Perdition (199158), Shadowy Incantations (199163), Shadows of the Flesh (199212), Long Dark Night of the Soul (199214), Sweet Souls (199220), Fatal Echoes (199257), Compounding Horror (199282), Soul Flame (199471), Wrath of Consumption (199472), Soul Flame (199581), Wrath of Consumption (199646), Harvester of Souls (201424), Souls of the Damned (216463), Souls of the Damned (216721), Souls of the Damned (216722), Souls of the Damned (216724), Crystalline Shadows (221862)
 Description      : $@spelldesc216698
 Tooltip          : Increases your damage by $s1%, and doubles the effectiveness of the other traits of the Deadwind Harvester.
 
@@ -5221,7 +5221,7 @@ Spell Level      : 13
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
-Affecting spells : Flamelicked (185229), Drained to a Husk (199120), Perdition (199158), Long Dark Night of the Soul (199214), Odr, Shawl of the Ymirjar (212173), Devourer of Life (215165), 
+Affecting spells : Flamelicked (185229), Drained to a Husk (199120), Perdition (199158), Long Dark Night of the Soul (199214), Wrath of Consumption (199646), Odr, Shawl of the Ymirjar (212173), Devourer of Life (215165), 
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ...x.... 

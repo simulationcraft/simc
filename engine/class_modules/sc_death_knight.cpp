@@ -537,6 +537,7 @@ public:
     // Generic
     const spell_data_t* plate_specialization;
     const spell_data_t* death_knight;
+    const spell_data_t* unholy_death_knight;
 
     // Blood
     const spell_data_t* blood_death_knight;
@@ -2351,6 +2352,16 @@ struct death_knight_action_t : public Base
       this -> energize_amount += std::fabs( this -> base_costs[ RESOURCE_RUNIC_POWER ] );
       this -> base_costs[ RESOURCE_RUNIC_POWER ] = 0;
     }
+
+    if ( this -> data().affected_by( p -> spec.unholy_death_knight -> effectN( 1 ) ) )
+    {
+      this -> base_dd_multiplier *= 1.0 + p -> spec.unholy_death_knight -> effectN( 1 ).percent();
+    }
+
+    if ( this -> data().affected_by( p -> spec.unholy_death_knight -> effectN( 2 ) ) )
+    {
+      this -> base_td_multiplier *= 1.0 + p -> spec.unholy_death_knight -> effectN( 2 ).percent();
+    }
   }
 
   death_knight_t* p() const
@@ -3225,7 +3236,8 @@ struct apocalypse_t : public death_knight_melee_attack_t
   void execute() override
   {
     death_knight_melee_attack_t::execute();
-    auto n_wounds = td( execute_state -> target ) -> debuff.festering_wound -> stack();
+    auto n_wounds = std::min( data().effectN( 3 ).base_value(),
+        td( execute_state -> target ) -> debuff.festering_wound -> stack() );
 
     if ( result_is_hit( execute_state -> result ) )
     {
@@ -5272,7 +5284,10 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
   {
     weapon = &( player -> main_hand_weapon );
 
-    instructors_chance = { { 0.20, 0.40, 0.20, 0.10, 0.05, 0.05 } };
+    //instructors_chance = { { 0.20, 0.40, 0.20, 0.10, 0.05, 0.05 } };
+    //
+    // TODO: Changed in 7.1.5, new probability distribution unknown/untested
+    instructors_chance = { { .3, .4, .2, .1 } };
   }
 
   int n_targets() const override
@@ -6596,6 +6611,7 @@ void death_knight_t::init_spells()
   spec.outbreak                   = find_specialization_spell( "Outbreak" );
   spec.runic_corruption           = find_specialization_spell( "Runic Corruption" );
   spec.sudden_doom                = find_specialization_spell( "Sudden Doom" );
+  spec.unholy_death_knight        = find_specialization_spell( "Unholy Death Knight" );
 
   mastery.blood_shield            = find_mastery_spell( DEATH_KNIGHT_BLOOD );
   mastery.frozen_heart            = find_mastery_spell( DEATH_KNIGHT_FROST );
@@ -6840,9 +6856,9 @@ void death_knight_t::default_apl_frost()
 {
   action_priority_list_t* def         = get_action_priority_list( "default" );
   action_priority_list_t* generic     = get_action_priority_list( "generic" );
-  action_priority_list_t* core        = get_action_priority_list( "core" );
   action_priority_list_t* bos         = get_action_priority_list( "bos" );
   action_priority_list_t* bos_ticking = get_action_priority_list( "bos_ticking" );
+  action_priority_list_t* gs_ticking  = get_action_priority_list( "gs_ticking" );
 
   std::string food_name = ( true_level > 100 ) ? "fishbrul_special" :
                           ( true_level >  90 ) ? "pickled_eel" :
@@ -6886,78 +6902,73 @@ void death_knight_t::default_apl_frost()
 
   // Cooldowns
   def -> add_action( this, "Sindragosa's Fury", "if=buff.pillar_of_frost.up&(buff.unholy_strength.up|(buff.pillar_of_frost.remains<3&target.time_to_die<60))&debuff.razorice.stack==5&!buff.obliteration.up" );
-  def -> add_talent( this, "Obliteration", "if=!talent.frozen_pulse.enabled|(rune<2&runic_power<28)" );
+  def -> add_talent( this, "Obliteration", "if=(!talent.frozen_pulse.enabled|(rune<2&runic_power<28))&!talent.gathering_storm.enabled" );
 
   // Choose APL
   def -> add_action( "call_action_list,name=generic,if=!talent.breath_of_sindragosa.enabled" );
   def -> add_action( "call_action_list,name=bos,if=talent.breath_of_sindragosa.enabled&!dot.breath_of_sindragosa.ticking" );
   def -> add_action( "call_action_list,name=bos_ticking,if=talent.breath_of_sindragosa.enabled&dot.breath_of_sindragosa.ticking" );
-  
-  // Core rotation
-  core -> add_action( this, "Frost Strike", "if=buff.obliteration.up&!buff.killing_machine.react" );
-  core -> add_action( this, "Remorseless Winter", "if=(spell_targets.remorseless_winter>=2|talent.gathering_storm.enabled)&!(talent.frostscythe.enabled&buff.killing_machine.react&spell_targets.frostscythe>=2)" );
-  core -> add_talent( this, "Frostscythe", "if=(buff.killing_machine.react&spell_targets.frostscythe>=2)" );
-  core -> add_talent( this, "Glacial Advance", "if=spell_targets.glacial_advance>=2" );
-  core -> add_talent( this, "Frostscythe", "if=spell_targets.frostscythe>=3" );
-  core -> add_action( this, "Obliterate", "if=buff.killing_machine.react" );
-  core -> add_action( this, "Obliterate" );
-  core -> add_talent( this, "Glacial Advance" );
-  core -> add_action( this, "Remorseless Winter", "if=talent.frozen_pulse.enabled" );
+  def -> add_action( "call_action_list,name=gs_ticking,if=talent.gathering_storm.enabled&buff.remorseless_winter.remains" );
 
-  // Generic single target rotation
-
-  // Refresh Icy talons if it's about to expire (non Shatter version)
+  // Generic rotation
   generic -> add_action( this, "Frost Strike", "if=!talent.shattering_strikes.enabled&(buff.icy_talons.remains<1.5&talent.icy_talons.enabled)" );
-  
-  // Frost Strike (Shattering Strikes)
   generic -> add_action( this, "Frost Strike", "if=talent.shattering_strikes.enabled&debuff.razorice.stack=5" );
-
-  // Howling Blast disease upkeep
   generic -> add_action( this, "Howling Blast", "target_if=!dot.frost_fever.ticking" );
-  
-  // Priotize Obliterate if Koltira's Newfound Will is equipped and talent Frozen Pulse and T19 2pc bonus active
-  generic -> add_action( this, "Obliterate", "if=equipped.132366&talent.frozen_pulse.enabled&set_bonus.tier19_2pc=1" );
-  
-  // Howling Blast @rime proc
-  generic -> add_action( this, "Howling Blast", "if=buff.rime.react" );
-
-  // Prevent RP waste
+  generic -> add_action( this, "Obliterate", "if=equipped.132366&talent.runic_attenuation.enabled&set_bonus.tier19_2pc=1" );
+  generic -> add_action( this, "Remorseless Winter", "if=(buff.rime.react&equipped.132459&!(buff.obliteration.up&spell_targets.howling_blast<2))|talent.gathering_storm.enabled" );
+  generic -> add_action( this, "Howling Blast", "if=buff.rime.react&!(buff.obliteration.up&spell_targets.howling_blast<2)" );
   generic -> add_action( this, "Frost Strike", "if=runic_power.deficit<=10" );
-
-  // Do core rotation
-  generic -> add_action( "call_action_list,name=core" );
-
-  // Continue the generic one with Horn of Winter stuff
-  generic -> add_talent( this, "Horn of Winter" );
-
-  // If nothing else to do, do Frost Strike
+  generic -> add_action( this, "Frost Strike", "if=buff.obliteration.up&!buff.killing_machine.react" );
+  generic -> add_action( this, "Remorseless Winter", "if=spell_targets.remorseless_winter>=2&!(talent.frostscythe.enabled&buff.killing_machine.react&spell_targets.frostscythe>=2)" );
+  generic -> add_talent( this, "Frostscythe", "if=(buff.killing_machine.react&spell_targets.frostscythe>=2)" );
+  generic -> add_talent( this, "Glacial Advance", "if=spell_targets.glacial_advance>=2" );
+  generic -> add_talent( this, "Frostscythe", "if=spell_targets.frostscythe>=3" );
+  generic -> add_action( this, "Obliterate", "if=buff.killing_machine.react" );
+  generic -> add_action( this, "Obliterate" );
+  generic -> add_talent( this, "Glacial Advance" );
+  generic -> add_talent( this, "Horn of Winter", "if=!dot.hungering_rune_weapon.ticking" );
   generic -> add_action( this, "Frost Strike" );
-
-  // Misc actions
+  generic -> add_action( this, "Remorseless Winter", "if=talent.frozen_pulse.enabled" );
   generic -> add_action( this, "Empower Rune Weapon" );
-  generic -> add_talent( this, "Hungering Rune Weapon" );
+  generic -> add_talent( this, "Hungering Rune Weapon", "if=!dot.hungering_rune_weapon.ticking" );
 
   // Breath of Sindragosa core rotation
+  bos -> add_action( this, "Frost Strike", "if=talent.icy_talons.enabled&buff.icy_talons.remains<1.5&cooldown.breath_of_sindragosa.remains>6" );
   bos -> add_action( this, "Howling Blast", "target_if=!dot.frost_fever.ticking" );
   bos -> add_talent( this, "Breath of Sindragosa", "if=runic_power>=50" );
   bos -> add_action( this, "Frost Strike", "if=runic_power>=90&set_bonus.tier19_4pc" );
-  bos -> add_action( this, "Remorseless Winter", "if=buff.rime.react&equipped.132459" );
-  bos -> add_action( this, "Howling Blast", "if=buff.rime.react" );
+  bos -> add_action( this, "Remorseless Winter", "if=(buff.rime.react&equipped.132459)|talent.gathering_storm.enabled" );
+  bos -> add_action( this, "Howling Blast", "if=buff.rime.react&(dot.remorseless_winter.ticking|cooldown.remorseless_winter.remains>1.5|!equipped.132459)" );
   bos -> add_action( this, "Frost Strike", "if=runic_power>=70" );
-  bos -> add_action( this, "Obliterate" );
+  bos -> add_action( this, "Obliterate", "if=!buff.rime.react" );
   bos -> add_talent( this, "Horn of Winter", "if=cooldown.breath_of_sindragosa.remains>15&runic_power<=70" );
   bos -> add_action( this, "Frost Strike", "if=cooldown.breath_of_sindragosa.remains>15" );
   bos -> add_action( this, "Remorseless Winter", "if=cooldown.breath_of_sindragosa.remains>10" );
   
   // Breath of Sindragosa ticking rotation
   bos_ticking -> add_action( this, "Howling Blast", "target_if=!dot.frost_fever.ticking" );
-  bos_ticking -> add_action( this, "Remorseless Winter", "if=((runic_power>=20&set_bonus.tier19_4pc)|runic_power>=30)&buff.rime.react&!dot.hungering_rune_weapon.ticking&equipped.132459" );
+  bos_ticking -> add_action( this, "Remorseless Winter", "if=((runic_power>=20&set_bonus.tier19_4pc)|runic_power>=30)&((buff.rime.react&!dot.hungering_rune_weapon.ticking&equipped.132459)|talent.gathering_storm.enabled)" );
   bos_ticking -> add_action( this, "Howling Blast", "if=((runic_power>=20&set_bonus.tier19_4pc)|runic_power>=30)&buff.rime.react&!dot.hungering_rune_weapon.ticking" );
-  bos_ticking -> add_action( this, "Obliterate", "if=runic_power<=70|dot.hungering_rune_weapon.ticking|rune>=3" );
+  bos_ticking -> add_action( this, "Frost Strike", "if=runic_power>=95&dot.hungering_rune_weapon.ticking" );
+  bos_ticking -> add_action( this, "Obliterate", "if=runic_power<=70|rune>3" );
   bos_ticking -> add_talent( this, "Horn of Winter", "if=runic_power<70&!dot.hungering_rune_weapon.ticking" );
   bos_ticking -> add_talent( this, "Hungering Rune Weapon", "if=runic_power<20&!dot.hungering_rune_weapon.ticking" );
   bos_ticking -> add_action( this, "Empower Rune Weapon", "if=runic_power<20" );
   bos_ticking -> add_action( this, "Remorseless Winter", "if=runic_power<20" );
+  
+  // Gathering Storm ticking rotation
+  gs_ticking -> add_action( this, "Frost Strike", "if=buff.icy_talons.remains<1.5&talent.icy_talons.enabled" );
+  gs_ticking -> add_action( this, "Howling Blast", "target_if=!dot.frost_fever.ticking" );
+  gs_ticking -> add_action( this, "Howling Blast", "if=buff.rime.react&!(buff.obliteration.up&spell_targets.howling_blast<2)" );
+  gs_ticking -> add_action( this, "Obliteration", "if=(!talent.frozen_pulse.enabled|(rune<2&runic_power<28))" );
+  gs_ticking -> add_action( this, "Obliterate", "if=rune>3|buff.killing_machine.react|buff.obliteration.up" );
+  gs_ticking -> add_action( this, "Frost Strike", "if=runic_power>80|(buff.obliteration.up&!buff.killing_machine.react)" );
+  gs_ticking -> add_action( this, "Obliterate" );
+  gs_ticking -> add_talent( this, "Horn of Winter", "if=runic_power<70&!dot.hungering_rune_weapon.ticking" );
+  gs_ticking -> add_talent( this, "Glacial Advance" );
+  gs_ticking -> add_action( this, "Frost Strike" );
+  gs_ticking -> add_talent( this, "Hungering Rune Weapon", "if=!dot.hungering_rune_weapon.ticking" );
+  gs_ticking -> add_action( this, "Empower Rune Weapon" );
 }
 
 void death_knight_t::default_apl_unholy()
@@ -6971,7 +6982,7 @@ void death_knight_t::default_apl_unholy()
   action_priority_list_t* castigator = get_action_priority_list("castigator");
   action_priority_list_t* instructors = get_action_priority_list("instructors");
 
-  std::string food_name = (true_level > 100) ? "the_hungry_magister" :
+  std::string food_name = (true_level > 100) ? "nightborne_delicacy_platter" :
     (true_level >  90) ? "buttered_sturgeon" :
     (true_level >= 85) ? "sea_mist_rice_noodles" :
     (true_level >= 80) ? "seafood_magnifique_feast" :
@@ -7089,11 +7100,11 @@ void death_knight_t::default_apl_unholy()
   // Standard single target instructors rotation
   instructors->add_action(this, "Festering Strike", "if=debuff.festering_wound.stack<=3&runic_power.deficit>13");
   instructors->add_action(this, "Death Coil", "if=!buff.necrosis.up&talent.necrosis.enabled&rune<=3");
-  instructors->add_action(this, "Scourge Strike", "if=buff.necrosis.react&debuff.festering_wound.stack>=5&runic_power.deficit>29");
+  instructors->add_action(this, "Scourge Strike", "if=buff.necrosis.react&debuff.festering_wound.stack>=4&runic_power.deficit>29");
   instructors->add_talent(this, "Clawing Shadows", "if=buff.necrosis.react&debuff.festering_wound.stack>=4&runic_power.deficit>11");
-  instructors->add_action(this, "Scourge Strike", "if=buff.unholy_strength.react&debuff.festering_wound.stack>=5&runic_power.deficit>29");
+  instructors->add_action(this, "Scourge Strike", "if=buff.unholy_strength.react&debuff.festering_wound.stack>=4&runic_power.deficit>29");
   instructors->add_talent(this, "Clawing Shadows", "if=buff.unholy_strength.react&debuff.festering_wound.stack>=4&runic_power.deficit>11");
-  instructors->add_action(this, "Scourge Strike", "if=rune>=2&debuff.festering_wound.stack>=5&runic_power.deficit>29");
+  instructors->add_action(this, "Scourge Strike", "if=rune>=2&debuff.festering_wound.stack>=4&runic_power.deficit>29");
   instructors->add_talent(this, "Clawing Shadows", "if=rune>=2&debuff.festering_wound.stack>=4&runic_power.deficit>11");
   instructors->add_action(this, "Death Coil", "if=talent.shadow_infusion.enabled&talent.dark_arbiter.enabled&!buff.dark_transformation.up&cooldown.dark_arbiter.remains>15");
   instructors->add_action(this, "Death Coil", "if=talent.shadow_infusion.enabled&!talent.dark_arbiter.enabled&!buff.dark_transformation.up");
@@ -7282,9 +7293,9 @@ void death_knight_t::create_buffs()
     // Unholy Frenzy duration is hard capped at 10 seconds
     .refresh_duration_callback( []( const buff_t* b, const timespan_t& duration ) {
       timespan_t total_duration = b -> remains() + duration;
-      if ( total_duration > timespan_t::from_seconds( 10 ) )
+      if ( total_duration > timespan_t::from_seconds( 25 ) )
       {
-        total_duration = timespan_t::from_seconds( 10 );
+        total_duration = timespan_t::from_seconds( 25 );
       }
       return total_duration;
     } );

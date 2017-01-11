@@ -5,6 +5,7 @@
 
 #include "simulationcraft.hpp"
 
+
 // ==========================================================================
 //
 // TODO
@@ -289,6 +290,14 @@ public:
     bool stretens_insanity;
     timespan_t wilfreds_sigil_of_superior_summoning;
     double power_cord_of_lethtendris_chance;
+    int wakeners_shard_counter;
+    double wakeners_loyalty_percent;
+    bool wakeners_loyalty_enabled;
+    bool lessons_of_spacetime;
+    timespan_t lessons_of_spacetime1;
+    timespan_t lessons_of_spacetime2;
+    timespan_t lessons_of_spacetime3;
+    bool sephuzs_secret;
 
   } legendary;
 
@@ -392,8 +401,9 @@ public:
 
     // legendary buffs
     buff_t* sindorei_spite;
-
     buff_t* stretens_insanity;
+    buff_t* lessons_of_spacetime;
+    haste_buff_t* sephuzs_secret;
   } buffs;
 
   // Gains
@@ -1164,7 +1174,8 @@ struct doom_bolt_t: public warlock_pet_spell_t
   {
     double m = warlock_pet_spell_t::action_multiplier();
 
-    m *= 1.0 + p() -> o() -> spec.destruction -> effectN( 1 ).percent();
+    if ( p() -> o() -> specialization() == WARLOCK_DESTRUCTION )
+      m *= 1.0 + p() -> o() -> spec.destruction -> effectN( 1 ).percent();
 
     return m;
   }
@@ -1201,6 +1212,9 @@ struct meteor_strike_t: public warlock_pet_spell_t
       p() -> o() -> trigger_lof_infernal();
       p() -> o() -> buffs.lord_of_flames -> trigger();
     }
+
+    if ( p() -> o() -> legendary.sephuzs_secret )
+      p() -> o() -> buffs.sephuzs_secret -> trigger();
   }
 };
 
@@ -1423,8 +1437,8 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
      m *= 1.0 +  o() -> cache.mastery_value();
   }
 
-  if ( o() -> bugs && pet_type != PET_WILD_IMP ) //FIXME sindorei is currently not buffing imps.
-    m *= 1.0 + o() -> buffs.sindorei_spite -> check_stack_value();
+  m *= 1.0 + o() -> buffs.sindorei_spite -> check_stack_value();
+  m *= 1.0 + o() -> buffs.lessons_of_spacetime -> check_stack_value();
 
   return m;
 }
@@ -2019,11 +2033,11 @@ struct wild_imp_pet_t: public warlock_pet_t
       }
   }
 
-  void trigger(bool isdoge = false)
+  void trigger(int timespan, bool isdoge = false )
   {
     isnotdoge = !isdoge;
     *fel_firebolt_stats = regular_stats;
-    summon( timespan_t::from_millis( 12001 ) );
+    summon( timespan_t::from_millis( timespan ) );
   }
 };
 
@@ -2221,7 +2235,8 @@ public:
   bool affected_by_contagion;
   bool affected_by_flamelicked;
   bool affected_by_odr_shawl_of_the_ymirjar;
-  bool affected_by_destruction_hotfix;
+  bool destruction_damage_increase;
+  bool destruction_dot_increase;
   bool destro_mastery;
 
   // Warlock module overrides the "target" option handling to properly target their own Soul Effigy
@@ -2316,7 +2331,12 @@ public:
     }
 
     affected_by_odr_shawl_of_the_ymirjar = data().affected_by( p() -> find_spell( 212173 ) -> effectN( 1 ) );
-    affected_by_destruction_hotfix = data().affected_by( p() -> spec.destruction -> effectN( 1 ) );
+    destruction_damage_increase = data().affected_by( p() -> spec.destruction -> effectN( 1 ) );
+    destruction_dot_increase = data().affected_by( p() -> spec.destruction -> effectN( 2 ) );
+    if ( destruction_damage_increase )
+      base_dd_multiplier *= 1.0 + p() -> spec.destruction -> effectN( 1 ).percent();
+    if ( destruction_dot_increase ) 
+      base_td_multiplier *= 1.0 + p() -> spec.destruction -> effectN( 2 ).percent();
   }
 
   int n_targets() const override
@@ -2415,19 +2435,33 @@ public:
   {
     spell_t::consume_resource();
 
-    if ( resource_current == RESOURCE_SOUL_SHARD && p() -> talents.soul_conduit -> ok() )
+    if(resource_current == RESOURCE_SOUL_SHARD)
     {
-      double soul_conduit_rng = p() -> talents.soul_conduit -> effectN( 1 ).percent();
-
-      for ( int i = 0; i < resource_consumed; i++ )
-      {
-        if ( rng().roll( soul_conduit_rng ) )
+        if (  p() -> talents.soul_conduit -> ok() )
         {
-          p() -> resource_gain( RESOURCE_SOUL_SHARD, 1.0, p() -> gains.soul_conduit );
-          p()->procs.soul_conduit->occur();
+          double soul_conduit_rng = p() -> talents.soul_conduit -> effectN( 1 ).percent();
+
+          for ( int i = 0; i < resource_consumed; i++ )
+          {
+            if ( rng().roll( soul_conduit_rng ) )
+            {
+              p() -> resource_gain( RESOURCE_SOUL_SHARD, 1.0, p() -> gains.soul_conduit );
+              p()->procs.soul_conduit->occur();
+            }
+          }
         }
-      }
+        if(p()->legendary.wakeners_loyalty_enabled
+                && p()->specialization() == WARLOCK_DEMONOLOGY )
+        {
+            for(int i = 0; i < resource_consumed; i++)
+            {
+                p()->legendary.wakeners_shard_counter ++;
+            }
+        }
+
     }
+
+
   }
 
   void tick( dot_t* d ) override
@@ -2510,9 +2544,6 @@ public:
       pm *= 1.0 + chaotic_energies_rng;
     }
 
-    if ( affected_by_destruction_hotfix )
-      pm *= 1.0 + p() -> spec.destruction -> effectN( 1 ).percent();
-
     return pm;
   }
 
@@ -2556,14 +2587,14 @@ public:
       td -> dots_seed_of_corruption -> cancel();
   }
 
-  static void trigger_wild_imp( warlock_t* p, bool doge = false )
+  static void trigger_wild_imp( warlock_t* p, bool doge = false, int duration = 12001 )
   {
     for ( size_t i = 0; i < p -> warlock_pet_list.wild_imps.size(); i++ )
     {
       if ( p -> warlock_pet_list.wild_imps[i] -> is_sleeping() )
       {
 
-        p -> warlock_pet_list.wild_imps[i] -> trigger(doge);
+        p -> warlock_pet_list.wild_imps[i] -> trigger(duration, doge);
         p -> procs.wild_imp -> occur();
         if( p -> legendary.wilfreds_sigil_of_superior_summoning_flag && !p -> talents.grimoire_of_supremacy -> ok() )
         {
@@ -3187,7 +3218,7 @@ struct shadow_bolt_t: public warlock_spell_t
   {
     warlock_spell_t::execute();
 
-    if ( p() -> talents.demonic_calling -> ok() )
+    if ( p() -> talents.demonic_calling -> ok() && rng().roll( p() -> talents.demonic_calling -> proc_chance() ) )
       p() -> buffs.demonic_calling -> trigger();
 
     if ( p() -> buffs.shadowy_inspiration -> check() )
@@ -3929,6 +3960,9 @@ struct dimensional_rift_t : public warlock_spell_t
           break;
         }
       }
+
+      if ( p() -> legendary.lessons_of_spacetime )
+        p() -> buffs.lessons_of_spacetime -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, p() -> legendary.lessons_of_spacetime3 );
     }
     else if ( rift >= ( 2.0 / 3.0 ) )
     {
@@ -3941,6 +3975,9 @@ struct dimensional_rift_t : public warlock_spell_t
           break;
         }
       }
+
+      if ( p() -> legendary.lessons_of_spacetime )
+        p() -> buffs.lessons_of_spacetime -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, p() -> legendary.lessons_of_spacetime1 );
     }
     else
     {
@@ -3953,12 +3990,17 @@ struct dimensional_rift_t : public warlock_spell_t
           break;
         }
       }
+
+      if ( p() -> legendary.lessons_of_spacetime )
+        p() -> buffs.lessons_of_spacetime -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, p() -> legendary.lessons_of_spacetime2 );
     }
   }
 };
 
 struct thalkiels_consumption_t : public warlock_spell_t
 {
+  bool enabled;
+
   thalkiels_consumption_t( warlock_t* p ) :
     warlock_spell_t( "thalkiels_consumption", p, p -> artifact.thalkiels_consumption )
   {
@@ -3984,6 +4026,15 @@ struct thalkiels_consumption_t : public warlock_spell_t
         }
       }
     }
+    if(p()->legendary.wakeners_loyalty_enabled)
+    {
+        double wakenersMod = 1 + (p()->legendary.wakeners_loyalty_percent *
+                (double) p()->legendary.wakeners_shard_counter);
+
+        p()->legendary.wakeners_shard_counter = 0;
+        damage *= wakenersMod;
+    }
+
     damage *= ta_mult;
     damage *= p_mult;
 
@@ -4174,6 +4225,9 @@ struct demonwrath_tick_t: public warlock_spell_t
   void impact( action_state_t* s ) override
   {
     warlock_spell_t::impact( s );
+
+    if ( p() -> talents.demonic_calling -> ok() && rng().roll( p() -> talents.demonic_calling -> effectN( 2 ).percent() ) )
+      p() -> buffs.demonic_calling -> trigger();
 
     double accumulator_increment = rng().range( 0.0, 0.3 );
 
@@ -4588,7 +4642,7 @@ struct call_dreadstalkers_t : public warlock_spell_t
     {
       for ( size_t i = 0; i < improved_dreadstalkers; i++ )
       {
-        trigger_wild_imp( p(), true );
+        trigger_wild_imp( p(), true, dreadstalker_duration.total_millis() );
         p() -> procs.improved_dreadstalkers -> occur();
       }
     }
@@ -4722,7 +4776,7 @@ struct demonbolt_t : public warlock_spell_t
   {
     warlock_spell_t::execute();
 
-    if ( p() -> talents.demonic_calling -> ok() )
+    if ( p() -> talents.demonic_calling -> ok() && rng().roll( p() -> talents.demonic_calling -> proc_chance() ) )
       p() -> buffs.demonic_calling -> trigger();
 
     if ( p() -> buffs.shadowy_inspiration -> check() )
@@ -5148,6 +5202,8 @@ struct reap_souls_t: public warlock_spell_t
 {
   timespan_t base_duration;
   timespan_t total_duration;
+  timespan_t check_time;
+  timespan_t reap_and_sow_bonus;
   int souls_consumed;
     reap_souls_t( warlock_t* p ) :
         warlock_spell_t( "reap_souls", p, p -> artifact.reap_souls ), souls_consumed( 0 )
@@ -5172,8 +5228,11 @@ struct reap_souls_t: public warlock_spell_t
 
       if ( p() -> artifact.reap_souls.rank() && p() -> buffs.tormented_souls -> check() )
       {
+          check_time = base_duration + reap_and_sow_bonus;
+
         souls_consumed = p() -> buffs.tormented_souls -> stack();
-        total_duration = base_duration * souls_consumed;
+//        total_duration = base_duration * souls_consumed;
+        total_duration = check_time * souls_consumed;
         p() -> buffs.deadwind_harvester -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, total_duration );
         for ( int i = 0; i < souls_consumed; ++i )
         {
@@ -5307,6 +5366,14 @@ struct mortal_coil_t: public warlock_spell_t
 
     if ( result_is_hit( s -> result ) )
       heal -> execute();
+  }
+
+  virtual void execute() override
+  {
+    warlock_spell_t::execute();
+
+    if ( p() -> legendary.sephuzs_secret )
+      p() -> buffs.sephuzs_secret -> trigger();
   }
 };
 
@@ -5628,6 +5695,7 @@ double warlock_t::composite_player_multiplier( school_e school ) const
   }
 
   m *= 1.0 + buffs.sindorei_spite -> check_stack_value();
+  m *= 1.0 + buffs.lessons_of_spacetime -> check_stack_value();
 
   return m;
 }
@@ -5660,6 +5728,11 @@ double warlock_t::composite_spell_haste() const
   if ( buffs.misery -> check() )
   {
     h *= 1.0 / ( 1.0 + buffs.misery -> stack_value() );
+  }
+
+  if ( buffs.sephuzs_secret -> check() )
+  {
+    h *= 1.0 / ( 1.0 + buffs.sephuzs_secret -> check_value() );
   }
 
   return h;
@@ -5913,9 +5986,9 @@ void warlock_t::init_spells()
   // General
   spec.fel_armor   = find_spell( 104938 );
   spec.nethermancy = find_spell( 86091 );
-  spec.affliction = find_spell( 137043 );
-  spec.demonology = find_spell( 137044 );
-  spec.destruction = find_spell( 137046 );
+  spec.affliction = find_specialization_spell( 137043 );
+  spec.demonology = find_specialization_spell( 137044 );
+  spec.destruction = find_specialization_spell( 137046 );
 
   // Specialization Spells
   // PTR
@@ -6194,9 +6267,20 @@ void warlock_t::create_buffs()
   buffs.soul_harvest = buff_creator_t( this, "soul_harvest", find_spell( 196098 ) )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
+  //legendary buffs
   buffs.stretens_insanity = buff_creator_t( this, "stretens_insanity", find_spell( 208822 ) )
     .default_value( find_spell( 208822 ) -> effectN( 1 ).percent() )
-    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+    .tick_behavior( BUFF_TICK_NONE );
+  buffs.lessons_of_spacetime = buff_creator_t( this, "lessons_of_spacetime", find_spell( 236176 ) )
+    .default_value( find_spell( 236176 ) -> effectN( 1 ).percent() )
+    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+    .refresh_behavior( BUFF_REFRESH_NONE )
+    .tick_behavior( BUFF_TICK_NONE );
+  buffs.sephuzs_secret =
+    haste_buff_creator_t( this, "sephuzs_secret", find_spell( 208052 ) )
+    .default_value( find_spell( 208052 ) -> effectN( 2 ).percent() )
+    .cd( find_spell( 226262 ) -> duration() );
 
   //affliction buffs
   buffs.shard_instability = buff_creator_t( this, "shard_instability", find_spell( 216457 ) )
@@ -6219,8 +6303,7 @@ void warlock_t::create_buffs()
   buffs.tier18_2pc_demonology = buff_creator_t( this, "demon_rush", sets.set( WARLOCK_DEMONOLOGY, T18, B2 ) -> effectN( 1 ).trigger() )
     .default_value( sets.set( WARLOCK_DEMONOLOGY, T18, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
   buffs.shadowy_inspiration = buff_creator_t( this, "shadowy_inspiration", find_spell( 196606 ) );
-  buffs.demonic_calling = buff_creator_t( this, "demonic_calling", talents.demonic_calling -> effectN( 1 ).trigger() )
-    .chance( find_spell( 205145 ) -> proc_chance() );
+  buffs.demonic_calling = buff_creator_t( this, "demonic_calling", talents.demonic_calling -> effectN( 1 ).trigger() );
   buffs.t18_4pc_driver = new t18_4pc_driver_t( this );
   buffs.stolen_power_stacks = new stolen_power_stack_t( this );
   buffs.stolen_power = buff_creator_t( this, "stolen_power", find_spell( 211583 ) )
@@ -6245,7 +6328,7 @@ void warlock_t::init_rng()
   demonic_power_rppm = get_rppm( "demonic_power", find_spell( 196099 ) );
   grimoire_of_synergy = get_rppm( "grimoire_of_synergy", talents.grimoire_of_synergy );
   grimoire_of_synergy_pet = get_rppm( "grimoire_of_synergy_pet", talents.grimoire_of_synergy );
-  tormented_souls_rppm = get_rppm( "tormented_souls", 4.5 );
+  tormented_souls_rppm = get_rppm( "tormented_souls", 5.0 ); // The only official post claimed 4.5 rppm but hours of logs suggest it's actually 5 rppm.
 }
 
 void warlock_t::init_gains()
@@ -6425,7 +6508,7 @@ void warlock_t::apl_affliction()
     action_list_str += "|buff.elunes_light.remains";
   if ( find_item( "obelisk of_the_void" ) )
     action_list_str += "|buff.collapsing_shadow.remains";
-
+  add_action( "Mortal Coil", "if=equipped.132452" );
   add_action( "Corruption", "if=remains<=tick_time+gcd" );
   add_action( "Corruption", "cycle_targets=1,if=(talent.absolute_corruption.enabled|!talent.malefic_grasp.enabled|!talent.soul_effigy.enabled)&remains<=tick_time+gcd" );
   add_action( "Siphon Life", "if=remains<=tick_time+gcd" );
@@ -6477,31 +6560,22 @@ void warlock_t::apl_affliction()
 
 void warlock_t::apl_demonology()
 {
-  action_list_str += "/implosion,if=wild_imp_remaining_duration<=action.shadow_bolt.execute_time&buff.demonic_synergy.remains";
-  action_list_str += "/implosion,if=prev_gcd.1.hand_of_guldan&wild_imp_remaining_duration<=3&buff.demonic_synergy.remains";
-  action_list_str += "/implosion,if=wild_imp_count<=4&wild_imp_remaining_duration<=action.shadow_bolt.execute_time&spell_targets.implosion>1";
-  action_list_str += "/implosion,if=prev_gcd.1.hand_of_guldan&wild_imp_remaining_duration<=4&spell_targets.implosion>2";
-  action_list_str += "/shadowflame,if=debuff.shadowflame.stack>0&remains<action.shadow_bolt.cast_time+travel_time";
+  action_list_str += "/implosion,if=wild_imp_remaining_duration<=action.shadow_bolt.execute_time&(buff.demonic_synergy.remains|talent.soul_conduit.enabled|(!talent.soul_conduit.enabled&spell_targets.implosion>1)|wild_imp_count<=4)";
+  action_list_str += "/implosion,if=prev_gcd.1.hand_of_guldan&((wild_imp_remaining_duration<=3&buff.demonic_synergy.remains)|(wild_imp_remaining_duration<=4&spell_targets.implosion>2))";
+  action_list_str += "/shadowflame,if=((debuff.shadowflame.stack>0&remains<action.shadow_bolt.cast_time+travel_time)|(charges=2&soul_shard<5))&spell_targets.demonwrath<5";
   action_list_str += "/service_pet";
   add_action( "Summon Doomguard", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<3&(target.time_to_die>180|target.health.pct<=20|target.time_to_die<30)" );
   add_action( "Summon Infernal", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>=3" );
   add_action( "Summon Doomguard", "if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal<3&equipped.132379&!cooldown.sindorei_spite_icd.remains" );
   add_action( "Summon Infernal", "if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>=3&equipped.132379&!cooldown.sindorei_spite_icd.remains" );
-  add_action( "Call Dreadstalkers", "if=!talent.summon_darkglare.enabled&(spell_targets.implosion<3|!talent.implosion.enabled)" );
+  add_action( "Call Dreadstalkers", "if=(!talent.summon_darkglare.enabled|talent.power_trip.enabled)&(spell_targets.implosion<3|!talent.implosion.enabled)" );
   add_action( "Hand of Gul'dan", "if=soul_shard>=4&!talent.summon_darkglare.enabled" );
-  action_list_str += "/summon_darkglare,if=prev_gcd.1.hand_of_guldan";
-  action_list_str += "/summon_darkglare,if=prev_gcd.1.call_dreadstalkers";
+  action_list_str += "/summon_darkglare,if=prev_gcd.1.hand_of_guldan|prev_gcd.1.call_dreadstalkers|talent.power_trip.enabled";
   action_list_str += "/summon_darkglare,if=cooldown.call_dreadstalkers.remains>5&soul_shard<3";
-  action_list_str += "/summon_darkglare,if=cooldown.call_dreadstalkers.remains<=action.summon_darkglare.cast_time&soul_shard>=3";
-  action_list_str += "/summon_darkglare,if=cooldown.call_dreadstalkers.remains<=action.summon_darkglare.cast_time&soul_shard>=1&buff.demonic_calling.react";
-  add_action( "Call Dreadstalkers", "if=talent.summon_darkglare.enabled&(spell_targets.implosion<3|!talent.implosion.enabled)&cooldown.summon_darkglare.remains>2" );
-  add_action( "Call Dreadstalkers", "if=talent.summon_darkglare.enabled&(spell_targets.implosion<3|!talent.implosion.enabled)&prev_gcd.1.summon_darkglare" );
-  add_action( "Call Dreadstalkers", "if=talent.summon_darkglare.enabled&(spell_targets.implosion<3|!talent.implosion.enabled)&cooldown.summon_darkglare.remains<=action.call_dreadstalkers.cast_time&soul_shard>=3" );
-  add_action( "Call Dreadstalkers", "if=talent.summon_darkglare.enabled&(spell_targets.implosion<3|!talent.implosion.enabled)&cooldown.summon_darkglare.remains<=action.call_dreadstalkers.cast_time&soul_shard>=1&buff.demonic_calling.react" );
-  add_action( "Hand of Gul'dan", "if=soul_shard>=3&prev_gcd.1.call_dreadstalkers" );
-  add_action( "Hand of Gul'dan", "if=soul_shard>=5&cooldown.summon_darkglare.remains<=action.hand_of_guldan.cast_time" );
-  add_action( "Hand of Gul'dan", "if=soul_shard>=4&cooldown.summon_darkglare.remains>2" );
-  add_action( "Demonic Empowerment", "if=wild_imp_no_de>3|prev_gcd.1.hand_of_guldan" );
+  action_list_str += "/summon_darkglare,if=cooldown.call_dreadstalkers.remains<=action.summon_darkglare.cast_time&(soul_shard>=3|soul_shard>=1&buff.demonic_calling.react)";
+  add_action( "Call Dreadstalkers", "if=talent.summon_darkglare.enabled&(spell_targets.implosion<3|!talent.implosion.enabled)&(cooldown.summon_darkglare.remains>2|prev_gcd.1.summon_darkglare|cooldown.summon_darkglare.remains<=action.call_dreadstalkers.cast_time&soul_shard>=3|cooldown.summon_darkglare.remains<=action.call_dreadstalkers.cast_time&soul_shard>=1&buff.demonic_calling.react)" );
+  add_action( "Hand of Gul'dan", "if=(soul_shard>=3&prev_gcd.1.call_dreadstalkers)|soul_shard>=5|(soul_shard>=4&cooldown.summon_darkglare.remains>2)" );
+  add_action( "Demonic Empowerment", "if=(((talent.power_trip.enabled&(!talent.implosion.enabled|spell_targets.demonwrath<=1))|!talent.implosion.enabled|(talent.implosion.enabled&!talent.soul_conduit.enabled&spell_targets.demonwrath<=3))&(wild_imp_no_de>3|prev_gcd.1.hand_of_guldan))|(prev_gcd.1.hand_of_guldan&wild_imp_no_de=0&wild_imp_remaining_duration<=0)|(prev_gcd.1.implosion&wild_imp_no_de>0)" );
   add_action( "Demonic Empowerment", "if=dreadstalker_no_de>0|darkglare_no_de>0|doomguard_no_de>0|infernal_no_de>0|service_no_de>0" );
   add_action( "Doom", "cycle_targets=1,if=!talent.hand_of_doom.enabled&target.time_to_die>duration&(!ticking|remains<duration*0.3)" );
   for ( int i = as< int >( items.size() ) - 1; i >= 0; i-- )
@@ -6517,7 +6591,7 @@ void warlock_t::apl_demonology()
   action_list_str += "/blood_fury";
   action_list_str += "/soul_harvest";
   action_list_str += "/potion,name=deadly_grace,if=buff.soul_harvest.remains|target.time_to_die<=45|trinket.proc.any.react";
-  action_list_str += "/shadowflame,if=charges=2";
+  action_list_str += "/shadowflame,if=charges=2&spell_targets.demonwrath<5";
   add_action( "Thal'kiel's Consumption", "if=(dreadstalker_remaining_duration>execute_time|talent.implosion.enabled&spell_targets.implosion>=3)&wild_imp_count>3&wild_imp_remaining_duration>execute_time" );
   add_action( "Life Tap", "if=mana.pct<=30" );
   add_action( "Demonwrath", "chain=1,interrupt=1,if=spell_targets.demonwrath>=3" );
@@ -6547,18 +6621,19 @@ void warlock_t::apl_destruction()
   add_action( "Dimensional Rift", "if=charges=3" );
   add_action( "Immolate", "if=remains<=tick_time" );
   add_action( "Immolate", "cycle_targets=1,if=active_enemies>1&remains<=tick_time&(!talent.roaring_blaze.enabled|(!debuff.roaring_blaze.remains&action.conflagrate.charges<2))");
-  add_action( "Immolate", "if=talent.roaring_blaze.enabled&remains<=duration&!debuff.roaring_blaze.remains&target.time_to_die>10&(action.conflagrate.charges=2+set_bonus.tier19_2pc|(action.conflagrate.charges>=1+set_bonus.tier19_2pc&action.conflagrate.recharge_time<cast_time+gcd)|target.time_to_die<24)" ); 
+  add_action( "Immolate", "if=talent.roaring_blaze.enabled&remains<=duration&!debuff.roaring_blaze.remains&target.time_to_die>10&(action.conflagrate.charges=2+set_bonus.tier19_4pc|(action.conflagrate.charges>=1+set_bonus.tier19_4pc&action.conflagrate.recharge_time<cast_time+gcd)|target.time_to_die<24)" ); 
   action_list_str += "/berserking";
   action_list_str += "/blood_fury";
   action_list_str += "/arcane_torrent";
   action_list_str += "/potion,name=deadly_grace,if=(buff.soul_harvest.remains|trinket.proc.any.react|target.time_to_die<=45)";
   action_list_str += "/shadowburn,if=buff.conflagration_of_chaos.remains<=action.chaos_bolt.cast_time";
   action_list_str += "/shadowburn,if=(charges=1&recharge_time<action.chaos_bolt.cast_time|charges=2)&soul_shard<5";
-  add_action( "Conflagrate", "if=talent.roaring_blaze.enabled&(charges=2+set_bonus.tier19_2pc|(charges>=1+set_bonus.tier19_2pc&recharge_time<gcd)|target.time_to_die<24)" );
+  add_action( "Conflagrate", "if=talent.roaring_blaze.enabled&(charges=2+set_bonus.tier19_4pc|(charges>=1+set_bonus.tier19_4pc&recharge_time<gcd)|target.time_to_die<24)" );
   add_action( "Conflagrate", "if=talent.roaring_blaze.enabled&debuff.roaring_blaze.stack>0&dot.immolate.remains>dot.immolate.duration*0.3&(active_enemies=1|soul_shard<3)&soul_shard<5" );
   add_action( "Conflagrate", "if=!talent.roaring_blaze.enabled&!buff.backdraft.remains&buff.conflagration_of_chaos.remains<=action.chaos_bolt.cast_time" );
   add_action( "Conflagrate", "if=!talent.roaring_blaze.enabled&!buff.backdraft.remains&(charges=1&recharge_time<action.chaos_bolt.cast_time|charges=2)&soul_shard<5" );
   action_list_str += "/life_tap,if=talent.empowered_life_tap.enabled&buff.empowered_life_tap.remains<=gcd";
+  add_action( "Dimensional Rift", "if=equipped.144369&!buff.lessons_of_spacetime.remains&((!talent.grimoire_of_supremacy.enabled&!cooldown.summon_doomguard.remains)|(talent.grimoire_of_service.enabled&!cooldown.service_pet.remains)|(talent.soul_harvest.enabled&!cooldown.soul_harvest.remains))");
   action_list_str += "/service_pet";
   add_action( "Summon Infernal", "if=artifact.lord_of_flames.rank>0&!buff.lord_of_flames.remains" );
   add_action( "Summon Doomguard", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<3&(target.time_to_die>180|target.health.pct<=20|target.time_to_die<30)" );
@@ -6571,7 +6646,7 @@ void warlock_t::apl_destruction()
   add_action( "Havoc", "if=active_enemies=1&talent.wreak_havoc.enabled&equipped.132375&!debuff.havoc.remains" );
   add_action( "Rain of Fire", "if=active_enemies>=4&cooldown.havoc.remains<=12&!talent.wreak_havoc.enabled");
   add_action( "Rain of Fire", "if=active_enemies>=6&talent.wreak_havoc.enabled");
-  add_action( "Dimensional Rift" );
+  add_action( "Dimensional Rift", "if=!equipped.144369|charges>1|((!talent.grimoire_of_service.enabled|recharge_time<cooldown.service_pet.remains)&(!talent.soul_harvest.enabled|recharge_time<cooldown.soul_harvest.remains)&(!talent.grimoire_of_supremacy.enabled|recharge_time<cooldown.summon_doomguard.remains))" );
   action_list_str += "/life_tap,if=talent.empowered_life_tap.enabled&buff.empowered_life_tap.remains<duration*0.3";
   action_list_str += "/cataclysm";
   add_action( "Chaos Bolt" );
@@ -7364,8 +7439,6 @@ void warlock_t::trigger_effigy(pets::soul_effigy_t *effigy)
 {
     this->active.effigy_damage_override->setupEffigyStuff(effigy->damage);
     this->active.effigy_damage_override->execute();
-//    qDebug() << "Testing that we got here";
-//    qDebug() << "Test #2";
 }
 
 
@@ -7410,6 +7483,30 @@ struct power_cord_of_lethtendris_t : public scoped_actor_callback_t<warlock_t>
     void manipulate (warlock_t* p, const special_effect_t& e) override
     {
         p -> legendary.power_cord_of_lethtendris_chance = e.driver() -> effectN( 1 ).percent();
+    }
+};
+
+struct reap_and_sow_t : public scoped_action_callback_t<reap_souls_t>
+{
+    reap_and_sow_t() : super ( WARLOCK, "reap_souls" )
+    {}
+
+    void manipulate (reap_souls_t* a, const special_effect_t& e) override
+    {
+        a->reap_and_sow_bonus = timespan_t::from_millis(e.driver()->effectN(1).base_value());
+    }
+};
+
+struct wakeners_loyalty_t : public scoped_actor_callback_t<warlock_t>
+{
+    wakeners_loyalty_t() : super ( WARLOCK ){}
+
+    void manipulate (warlock_t* p, const special_effect_t& ) override
+    {
+        const spell_data_t * tmp = p->find_spell(236200);
+        p->legendary.wakeners_loyalty_enabled = true;
+        double tmp2 = (double)tmp->effectN(1).base_value();
+        p->legendary.wakeners_loyalty_percent = tmp2 / 100.0;   //fixing this later?
     }
 };
 
@@ -7478,6 +7575,20 @@ struct sindorei_spite_t : public class_buff_cb_t<warlock_t>
   }
 };
 
+struct lessons_of_spacetime_t : public scoped_actor_callback_t<warlock_t>
+{
+  lessons_of_spacetime_t() : super( WARLOCK ){}
+
+  void manipulate( warlock_t* p, const special_effect_t& ) override
+  {
+    const spell_data_t * tmp = p -> find_spell( 236176 );
+    p -> legendary.lessons_of_spacetime = true;
+    p -> legendary.lessons_of_spacetime1 = timespan_t::from_seconds( 5 );
+    p -> legendary.lessons_of_spacetime2 = timespan_t::from_seconds( 9 );
+    p -> legendary.lessons_of_spacetime3 = timespan_t::from_seconds( 16 );
+  }
+};
+
 struct odr_shawl_of_the_ymirjar_t : public scoped_actor_callback_t<warlock_t>
 {
   odr_shawl_of_the_ymirjar_t() : super( WARLOCK_DESTRUCTION )
@@ -7511,6 +7622,16 @@ struct feretory_of_souls_t : public scoped_actor_callback_t<warlock_t>
   }
 };
 
+struct sephuzs_secret_t : public scoped_actor_callback_t<warlock_t>
+{
+  sephuzs_secret_t() : super( WARLOCK ){}
+
+  void manipulate( warlock_t* a, const special_effect_t& ) override
+  {
+    a -> legendary.sephuzs_secret = true;
+  }
+};
+
 struct warlock_module_t: public module_t
 {
   warlock_module_t(): module_t( WARLOCK ) {}
@@ -7539,6 +7660,10 @@ struct warlock_module_t: public module_t
     register_special_effect( 205702, feretory_of_souls_t() );
     register_special_effect( 208821, stretens_insanity_t() );
     register_special_effect( 205753, power_cord_of_lethtendris_t() );
+    register_special_effect( 236114, reap_and_sow_t() );
+    register_special_effect( 236199, wakeners_loyalty_t() );
+    register_special_effect( 236174, lessons_of_spacetime_t() );
+    register_special_effect( 208051, sephuzs_secret_t() );
   }
 
   virtual void register_hotfixes() const override

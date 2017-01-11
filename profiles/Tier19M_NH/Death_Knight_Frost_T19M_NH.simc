@@ -31,78 +31,92 @@ actions+=/berserking,if=buff.pillar_of_frost.up
 actions+=/use_item,slot=trinket1
 actions+=/potion,name=old_war,if=buff.pillar_of_frost.up
 actions+=/sindragosas_fury,if=buff.pillar_of_frost.up&(buff.unholy_strength.up|(buff.pillar_of_frost.remains<3&target.time_to_die<60))&debuff.razorice.stack==5&!buff.obliteration.up
-actions+=/obliteration,if=!talent.frozen_pulse.enabled|(rune<2&runic_power<28)
+actions+=/obliteration,if=(!talent.frozen_pulse.enabled|(rune<2&runic_power<28))&!talent.gathering_storm.enabled
 actions+=/call_action_list,name=generic,if=!talent.breath_of_sindragosa.enabled
 actions+=/call_action_list,name=bos,if=talent.breath_of_sindragosa.enabled&!dot.breath_of_sindragosa.ticking
 actions+=/call_action_list,name=bos_ticking,if=talent.breath_of_sindragosa.enabled&dot.breath_of_sindragosa.ticking
+actions+=/call_action_list,name=gs_ticking,if=talent.gathering_storm.enabled&buff.remorseless_winter.remains
 
-actions.bos=howling_blast,target_if=!dot.frost_fever.ticking
+actions.bos=frost_strike,if=talent.icy_talons.enabled&buff.icy_talons.remains<1.5&cooldown.breath_of_sindragosa.remains>6
+actions.bos+=/howling_blast,target_if=!dot.frost_fever.ticking
 actions.bos+=/breath_of_sindragosa,if=runic_power>=50
 actions.bos+=/frost_strike,if=runic_power>=90&set_bonus.tier19_4pc
-actions.bos+=/remorseless_winter,if=buff.rime.react&equipped.132459
-actions.bos+=/howling_blast,if=buff.rime.react
+actions.bos+=/remorseless_winter,if=(buff.rime.react&equipped.132459)|talent.gathering_storm.enabled
+actions.bos+=/howling_blast,if=buff.rime.react&(dot.remorseless_winter.ticking|cooldown.remorseless_winter.remains>1.5|!equipped.132459)
 actions.bos+=/frost_strike,if=runic_power>=70
-actions.bos+=/obliterate
+actions.bos+=/obliterate,if=!buff.rime.react
 actions.bos+=/horn_of_winter,if=cooldown.breath_of_sindragosa.remains>15&runic_power<=70
 actions.bos+=/frost_strike,if=cooldown.breath_of_sindragosa.remains>15
 actions.bos+=/remorseless_winter,if=cooldown.breath_of_sindragosa.remains>10
 
 actions.bos_ticking=howling_blast,target_if=!dot.frost_fever.ticking
-actions.bos_ticking+=/remorseless_winter,if=((runic_power>=20&set_bonus.tier19_4pc)|runic_power>=30)&buff.rime.react&!dot.hungering_rune_weapon.ticking&equipped.132459
+actions.bos_ticking+=/remorseless_winter,if=((runic_power>=20&set_bonus.tier19_4pc)|runic_power>=30)&((buff.rime.react&!dot.hungering_rune_weapon.ticking&equipped.132459)|talent.gathering_storm.enabled)
 actions.bos_ticking+=/howling_blast,if=((runic_power>=20&set_bonus.tier19_4pc)|runic_power>=30)&buff.rime.react&!dot.hungering_rune_weapon.ticking
-actions.bos_ticking+=/obliterate,if=runic_power<=70|dot.hungering_rune_weapon.ticking|rune>=3
+actions.bos_ticking+=/frost_strike,if=runic_power>=95&dot.hungering_rune_weapon.ticking
+actions.bos_ticking+=/obliterate,if=runic_power<=70|rune>3
 actions.bos_ticking+=/horn_of_winter,if=runic_power<70&!dot.hungering_rune_weapon.ticking
 actions.bos_ticking+=/hungering_rune_weapon,if=runic_power<20&!dot.hungering_rune_weapon.ticking
 actions.bos_ticking+=/empower_rune_weapon,if=runic_power<20
 actions.bos_ticking+=/remorseless_winter,if=runic_power<20
 
-actions.core=frost_strike,if=buff.obliteration.up&!buff.killing_machine.react
-actions.core+=/remorseless_winter,if=(spell_targets.remorseless_winter>=2|talent.gathering_storm.enabled)&!(talent.frostscythe.enabled&buff.killing_machine.react&spell_targets.frostscythe>=2)
-actions.core+=/frostscythe,if=(buff.killing_machine.react&spell_targets.frostscythe>=2)
-actions.core+=/glacial_advance,if=spell_targets.glacial_advance>=2
-actions.core+=/frostscythe,if=spell_targets.frostscythe>=3
-actions.core+=/obliterate,if=buff.killing_machine.react
-actions.core+=/obliterate
-actions.core+=/glacial_advance
-actions.core+=/remorseless_winter,if=talent.frozen_pulse.enabled
-
 actions.generic=frost_strike,if=!talent.shattering_strikes.enabled&(buff.icy_talons.remains<1.5&talent.icy_talons.enabled)
 actions.generic+=/frost_strike,if=talent.shattering_strikes.enabled&debuff.razorice.stack=5
 actions.generic+=/howling_blast,target_if=!dot.frost_fever.ticking
-actions.generic+=/obliterate,if=equipped.132366&talent.frozen_pulse.enabled&set_bonus.tier19_2pc=1
-actions.generic+=/howling_blast,if=buff.rime.react
+actions.generic+=/obliterate,if=equipped.132366&talent.runic_attenuation.enabled&set_bonus.tier19_2pc=1
+actions.generic+=/remorseless_winter,if=(buff.rime.react&equipped.132459&!(buff.obliteration.up&spell_targets.howling_blast<2))|talent.gathering_storm.enabled
+actions.generic+=/howling_blast,if=buff.rime.react&!(buff.obliteration.up&spell_targets.howling_blast<2)
 actions.generic+=/frost_strike,if=runic_power.deficit<=10
-actions.generic+=/call_action_list,name=core
-actions.generic+=/horn_of_winter
+actions.generic+=/frost_strike,if=buff.obliteration.up&!buff.killing_machine.react
+actions.generic+=/remorseless_winter,if=spell_targets.remorseless_winter>=2&!(talent.frostscythe.enabled&buff.killing_machine.react&spell_targets.frostscythe>=2)
+actions.generic+=/frostscythe,if=(buff.killing_machine.react&spell_targets.frostscythe>=2)
+actions.generic+=/glacial_advance,if=spell_targets.glacial_advance>=2
+actions.generic+=/frostscythe,if=spell_targets.frostscythe>=3
+actions.generic+=/obliterate,if=buff.killing_machine.react
+actions.generic+=/obliterate
+actions.generic+=/glacial_advance
+actions.generic+=/horn_of_winter,if=!dot.hungering_rune_weapon.ticking
 actions.generic+=/frost_strike
+actions.generic+=/remorseless_winter,if=talent.frozen_pulse.enabled
 actions.generic+=/empower_rune_weapon
-actions.generic+=/hungering_rune_weapon
+actions.generic+=/hungering_rune_weapon,if=!dot.hungering_rune_weapon.ticking
 
-head=eventide_casque,id=140881,bonus_id=3445
-neck=radiant_string_of_scorpid_eyes,id=140898,bonus_id=3445,enchant=mark_of_the_claw
-shoulders=dreadwyrm_shoulderguards,id=138361,bonus_id=3445
-back=dreadwyrm_greatcloak,id=138364,bonus_id=3445,enchant=binding_of_strength
-chest=dreadwyrm_breastplate,id=138349,bonus_id=3445
-wrists=eternally_recurring_bracers,id=140893,bonus_id=3445
-hands=bridgebreaker_gauntlets,id=140907,bonus_id=3445
-waist=gilded_nightborne_waistplate,id=140880,bonus_id=3445
-legs=dreadwyrm_legplates,id=138358,bonus_id=3445
-feet=leystonetoe_kickers,id=140884,bonus_id=3445
-finger1=ring_of_braided_stems,id=140896,bonus_id=3445,enchant=binding_of_haste
-finger2=spellblades_gemmed_signet,id=140895,bonus_id=3445,enchant=binding_of_haste
-trinket1=might_of_krosus,id=140799,bonus_id=3445
-trinket2=claw_of_the_crystalline_scorpid,id=140790,bonus_id=3445
-main_hand=blades_of_the_fallen_prince,id=128292,gem_id=140832/140821/140832,relic_id=3445/3445/3445,enchant=rune_of_razorice
+actions.gs_ticking=frost_strike,if=buff.icy_talons.remains<1.5&talent.icy_talons.enabled
+actions.gs_ticking+=/howling_blast,target_if=!dot.frost_fever.ticking
+actions.gs_ticking+=/howling_blast,if=buff.rime.react&!(buff.obliteration.up&spell_targets.howling_blast<2)
+actions.gs_ticking+=/obliterate,if=rune>3|buff.killing_machine.react|buff.obliteration.up
+actions.gs_ticking+=/frost_strike,if=runic_power>80|(buff.obliteration.up&!buff.killing_machine.react)
+actions.gs_ticking+=/obliterate
+actions.gs_ticking+=/horn_of_winter,if=runic_power<70&!dot.hungering_rune_weapon.ticking
+actions.gs_ticking+=/glacial_advance
+actions.gs_ticking+=/frost_strike
+actions.gs_ticking+=/hungering_rune_weapon,if=!dot.hungering_rune_weapon.ticking
+actions.gs_ticking+=/empower_rune_weapon
+
+head=eventide_casque,id=140881,bonus_id=3519
+neck=radiant_string_of_scorpid_eyes,id=140898,bonus_id=3519,enchant=mark_of_the_hidden_satyr
+shoulders=dreadwyrm_shoulderguards,id=138361,bonus_id=3519
+back=dreadwyrm_greatcloak,id=138364,bonus_id=3519,enchant=binding_of_strength
+chest=dreadwyrm_breastplate,id=138349,bonus_id=3519
+wrists=eternally_recurring_bracers,id=140893,bonus_id=3519
+hands=bridgebreaker_gauntlets,id=140907,bonus_id=3519
+waist=gilded_nightborne_waistplate,id=140880,bonus_id=3519
+legs=dreadwyrm_legplates,id=138358,bonus_id=3519
+feet=leystonetoe_kickers,id=140884,bonus_id=3519
+finger1=ring_of_braided_stems,id=140896,bonus_id=3519,enchant=binding_of_haste
+finger2=spellblades_gemmed_signet,id=140895,bonus_id=3519,enchant=binding_of_haste
+trinket1=draught_of_souls,id=140808,bonus_id=3519
+trinket2=entwined_elemental_foci,id=140796,bonus_id=3519
+main_hand=blades_of_the_fallen_prince,id=128292,gem_id=140832/140821/140832,relic_id=3519/3519/3519,enchant=rune_of_razorice
 off_hand=blades_of_the_fallen_prince,id=128293,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=903.00
-# gear_strength=22116
-# gear_stamina=32176
-# gear_crit_rating=8567
-# gear_haste_rating=8789
-# gear_mastery_rating=3677
-# gear_versatility_rating=1478
-# gear_armor=4539
+# gear_ilvl=912.88
+# gear_strength=21964
+# gear_stamina=35283
+# gear_crit_rating=8965
+# gear_haste_rating=10427
+# gear_mastery_rating=3836
+# gear_versatility_rating=1564
+# gear_armor=4642
 # set_bonus=tier19_2pc=1
 # set_bonus=tier19_4pc=1

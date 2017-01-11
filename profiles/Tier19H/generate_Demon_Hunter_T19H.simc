@@ -20,7 +20,7 @@ race=blood_elf
 timeofday=night
 role=attack
 position=back
-talents=1230111
+talents=2220311
 artifact=3:0:0:0:0:1001:3:1002:3:1003:3:1004:2:1005:3:1006:3:1007:3:1010:1:1011:1:1012:1:1014:1:1015:1:1016:1:1330:1
 spec=havoc
 head=mask_of_multitudinous_eyes,id=139204,bonus_id=1805

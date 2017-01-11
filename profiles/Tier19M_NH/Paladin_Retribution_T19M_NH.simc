@@ -1,0 +1,98 @@
+paladin="Paladin_Retribution_T19M_NH"
+level=110
+race=blood_elf
+role=attack
+position=back
+talents=2212212
+artifact=2:0:0:0:0:40:1:41:3:42:3:43:3:44:3:47:3:49:1:50:3:51:3:52:3:53:3:54:1:350:1:351:1:352:1:353:1:1118:20:1275:1
+spec=retribution
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask,type=flask_of_the_countless_armies
+actions.precombat+=/food,type=azshari_salad
+actions.precombat+=/augmentation,type=defiled
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion,name=old_war
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/rebuke
+actions+=/potion,name=old_war,if=(buff.bloodlust.react|buff.avenging_wrath.up|buff.crusade.up&buff.crusade.remains<25|target.time_to_die<=40)
+actions+=/use_item,name=draught_of_souls,if=(buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=15)
+actions+=/blood_fury
+actions+=/berserking
+actions+=/arcane_torrent,if=holy_power<5&(buff.crusade.up|buff.avenging_wrath.up|time<2)
+actions+=/judgment,if=time<2
+actions+=/blade_of_justice,if=time<2&(equipped.137048|race.blood_elf)
+actions+=/divine_hammer,if=time<2&(equipped.137048|race.blood_elf)
+actions+=/wake_of_ashes,if=holy_power<=1&time<2
+actions+=/holy_wrath
+actions+=/avenging_wrath
+actions+=/shield_of_vengeance
+actions+=/crusade,if=holy_power>=5&!equipped.137048|((equipped.137048|race.blood_elf)&time<2|time>2&holy_power>=4)
+actions+=/execution_sentence,if=spell_targets.divine_storm<=3&(cooldown.judgment.remains<gcd*4.5|debuff.judgment.remains>gcd*4.67)&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*2)
+actions+=/divine_storm,if=debuff.judgment.up&spell_targets.divine_storm>=2&buff.divine_purpose.up&buff.divine_purpose.remains<gcd*2
+actions+=/divine_storm,if=debuff.judgment.up&spell_targets.divine_storm>=2&holy_power>=5&buff.divine_purpose.react
+actions+=/divine_storm,if=debuff.judgment.up&spell_targets.divine_storm>=2&holy_power>=3&buff.crusade.up&(buff.crusade.stack<15|buff.bloodlust.up)
+actions+=/divine_storm,if=debuff.judgment.up&spell_targets.divine_storm>=2&holy_power>=5&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*3)
+actions+=/templars_verdict,if=debuff.judgment.up&buff.divine_purpose.up&buff.divine_purpose.remains<gcd*2
+actions+=/templars_verdict,if=debuff.judgment.up&holy_power>=5&buff.divine_purpose.react
+actions+=/templars_verdict,if=debuff.judgment.up&holy_power>=3&buff.crusade.up&(buff.crusade.stack<15|buff.bloodlust.up)
+actions+=/templars_verdict,if=debuff.judgment.up&holy_power>=5&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*3)
+actions+=/divine_storm,if=debuff.judgment.up&holy_power>=3&spell_targets.divine_storm>=2&(cooldown.wake_of_ashes.remains<gcd*2&artifact.wake_of_ashes.enabled|buff.whisper_of_the_nathrezim.up&buff.whisper_of_the_nathrezim.remains<gcd)&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*4)
+actions+=/templars_verdict,if=debuff.judgment.up&holy_power>=3&(cooldown.wake_of_ashes.remains<gcd*2&artifact.wake_of_ashes.enabled|buff.whisper_of_the_nathrezim.up&buff.whisper_of_the_nathrezim.remains<gcd)&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*4)
+actions+=/wake_of_ashes,if=holy_power=0|holy_power=1&(cooldown.blade_of_justice.remains>gcd|cooldown.divine_hammer.remains>gcd)|holy_power=2&(cooldown.zeal.charges_fractional<=0.65|cooldown.crusader_strike.charges_fractional<=0.65)
+actions+=/blade_of_justice,if=holy_power<=3&buff.whisper_of_the_nathrezim.up&buff.whisper_of_the_nathrezim.remains>gcd&buff.whisper_of_the_nathrezim.remains<gcd*3&debuff.judgment.up&debuff.judgment.remains>gcd*2
+actions+=/divine_hammer,if=holy_power<=3&buff.whisper_of_the_nathrezim.up&buff.whisper_of_the_nathrezim.remains>gcd&buff.whisper_of_the_nathrezim.remains<gcd*3&debuff.judgment.up&debuff.judgment.remains>gcd*2
+actions+=/blade_of_justice,if=talent.blade_of_wrath.enabled&holy_power<=3
+actions+=/zeal,if=charges=2&holy_power<=4
+actions+=/crusader_strike,if=charges=2&holy_power<=4
+actions+=/blade_of_justice,if=holy_power<=2|(holy_power<=3&(cooldown.zeal.charges_fractional<=1.34|cooldown.crusader_strike.charges_fractional<=1.34))
+actions+=/divine_hammer,if=holy_power<=2|(holy_power<=3&(cooldown.zeal.charges_fractional<=1.34|cooldown.crusader_strike.charges_fractional<=1.34))
+actions+=/judgment,if=holy_power>=3|((cooldown.zeal.charges_fractional<=1.67|cooldown.crusader_strike.charges_fractional<=1.67)&(cooldown.divine_hammer.remains>gcd|cooldown.blade_of_justice.remains>gcd))|(talent.greater_judgment.enabled&target.health.pct>50)
+actions+=/consecration
+actions+=/divine_storm,if=debuff.judgment.up&spell_targets.divine_storm>=2&buff.divine_purpose.react
+actions+=/divine_storm,if=debuff.judgment.up&spell_targets.divine_storm>=2&buff.the_fires_of_justice.react&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*3)
+actions+=/divine_storm,if=debuff.judgment.up&spell_targets.divine_storm>=2&(holy_power>=4|((cooldown.zeal.charges_fractional<=1.34|cooldown.crusader_strike.charges_fractional<=1.34)&(cooldown.divine_hammer.remains>gcd|cooldown.blade_of_justice.remains>gcd)))&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*4)
+actions+=/templars_verdict,if=debuff.judgment.up&buff.divine_purpose.react
+actions+=/templars_verdict,if=debuff.judgment.up&buff.the_fires_of_justice.react&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*3)
+actions+=/templars_verdict,if=debuff.judgment.up&(holy_power>=4|((cooldown.zeal.charges_fractional<=1.34|cooldown.crusader_strike.charges_fractional<=1.34)&(cooldown.divine_hammer.remains>gcd|cooldown.blade_of_justice.remains>gcd)))&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*4)
+actions+=/zeal,if=holy_power<=4
+actions+=/crusader_strike,if=holy_power<=4
+actions+=/divine_storm,if=debuff.judgment.up&holy_power>=3&spell_targets.divine_storm>=2&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*5)
+actions+=/templars_verdict,if=debuff.judgment.up&holy_power>=3&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*5)
+
+head=helmet_of_the_highlord,id=138356,bonus_id=3445
+neck=brooch_of_the_astral_scryer,id=140900,bonus_id=3445,enchant_id=5439
+shoulders=pauldrons_of_the_highlord,id=138362,bonus_id=3445,enchant_id=5883
+back=astromancers_greatcloak,id=140909,bonus_id=3445,enchant_id=5434
+chest=breastplate_of_the_highlord,id=138350,bonus_id=3445
+wrists=eternally_recurring_bracers,id=140893,bonus_id=3445
+hands=bridgebreaker_gauntlets,id=140907,bonus_id=3445
+waist=goresmeared_abyssal_waistplate,id=140892,bonus_id=3445
+legs=legplates_of_the_highlord,id=138359,bonus_id=3445
+feet=sabatons_of_unchanging_fate,id=140891,bonus_id=3445
+finger1=ring_of_braided_stems,id=140896,bonus_id=3445,enchant_id=5428
+finger2=ring_of_exclusive_servitude,id=140906,bonus_id=3445,enchant_id=5428
+trinket1=convergence_of_fates,id=140806,bonus_id=3445
+trinket2=draught_of_souls,id=140808,bonus_id=3445
+main_hand=ashbringer,id=120978,bonus_id=737,gem_id=140843/140837/140843,relic_id=3445/3445/3445
+
+# Gear Summary
+# gear_ilvl=901.60
+# gear_strength=20441
+# gear_stamina=32759
+# gear_crit_rating=4880
+# gear_haste_rating=9659
+# gear_mastery_rating=2266
+# gear_versatility_rating=7147
+# gear_armor=4539
+# set_bonus=tier19_2pc=1
+# set_bonus=tier19_4pc=1

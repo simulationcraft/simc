@@ -1,4 +1,4 @@
-SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23244, git build 2679573)
+SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23360, git build 3b52b5d)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -647,7 +647,7 @@ Spell Level      : 3
 Range            : 40 yards
 GCD              : 1.5 seconds
 Stance Mask      : 0x40000012
-Affecting spells : Balance Overrides Passive (106732), Guardian Druid (137010), Restoration Druid (137012), Balance Druid (137013), Lucidity (137247), Lunar Inspiration (155627), Persistence (186396), Thrash (192090), Astral Influence (197524), Stellar Empowerment (197637), Feral Overrides Passive (197692), Astral Power (197911), Twin Moonfire (200818), Twilight Glow (202386), Ekowraith, Creator of Worlds (210667), Galactic Guardian (213708), 
+Affecting spells : Balance Overrides Passive (106732), Guardian Druid (137010), Feral Druid (137011), Restoration Druid (137012), Balance Druid (137013), Lucidity (137247), Lunar Inspiration (155627), Persistence (186396), Thrash (192090), Astral Influence (197524), Stellar Empowerment (197637), Feral Overrides Passive (197692), Astral Power (197911), Twin Moonfire (200818), Twilight Glow (202386), Ekowraith, Creator of Worlds (210667), Galactic Guardian (213708), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -3384,12 +3384,12 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179694)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 8 | Scaled Value: 8 | Target: Self(1)
-                   Affected Spells: Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Thrash (77758), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Brutal Slash (202028), Shadow Thrash (210687), Ashamane's Frenzy (210722), Ashamane's Frenzy (210723), Swipe (213771)
+                   Affected Spells: Rake (1822), Shred (5221), Moonfire (8921), Ferocious Bite (22568), Maim (22570), Thrash (77758), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Brutal Slash (202028), Shadow Thrash (210687), Ashamane's Frenzy (210722), Ashamane's Frenzy (210723), Swipe (213771)
                    Hotfixed: Base Value (4 -> 8), Affects Spells
 #2 (id=191154)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 8 | Scaled Value: 8 | Misc Value: 22 | Target: Self(1)
-                   Affected Spells: Rip (1079), Rake (1822), Thrash (77758), Thrash (106830), Moonfire (155625), Rake (155722), Shadow Thrash (210687), Ashamane's Rip (210705), Ashamane's Frenzy (210722), Ashamane's Frenzy (210723)
-                   Hotfixed: Base Value (4 -> 8)
+                   Affected Spells: Rip (1079), Rake (1822), Moonfire (8921), Thrash (77758), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Thrash (192090), Shadow Thrash (210687), Ashamane's Rip (210705), Ashamane's Frenzy (210722), Ashamane's Frenzy (210723)
+                   Hotfixed: Base Value (4 -> 8), Affects Spells
 #3 (id=191155)   : Apply Aura (6) | Add Flat Modifier: Spell Cooldown (107)
                    Base Value: 90000 | Scaled Value: 90000 | Misc Value: 11 | Target: Self(1)
                    Affected Spells: Moonkin Form (24858), Incarnation: Chosen of Elune (102560), Moonkin Form (197625)
@@ -4263,7 +4263,7 @@ Spell Level      : 3
 Range            : 100 yards
 Duration         : 16 seconds
 Stance Mask      : 0x40000013
-Affecting spells : Balance Overrides Passive (106732), Guardian Druid (137010), Restoration Druid (137012), Balance Druid (137013), Lucidity (137247), Lunar Inspiration (155627), Persistence (186396), Thrash (192090), Astral Influence (197524), Stellar Empowerment (197637), Feral Overrides Passive (197692), Twin Moonfire (200818), Twilight Glow (202386), Ekowraith, Creator of Worlds (210667), 
+Affecting spells : Balance Overrides Passive (106732), Guardian Druid (137010), Feral Druid (137011), Restoration Druid (137012), Balance Druid (137013), Lucidity (137247), Lunar Inspiration (155627), Persistence (186396), Thrash (192090), Astral Influence (197524), Stellar Empowerment (197637), Feral Overrides Passive (197692), Twin Moonfire (200818), Twilight Glow (202386), Ekowraith, Creator of Worlds (210667), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ .x...... ..x..... ......x. 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -4767,7 +4767,7 @@ Range            : 100 yards
 Duration         : 15 seconds
 Stacks           : 3 maximum
 Proc Chance      : 101%
-Affecting spells : Incarnation: Guardian of Ursoc (102558), Druid (137009), Astral Influence (197524), Jagged Claws (200409), Sharpened Claws (202110), Rend and Tear (204053), Elize's Everlasting Encasement (208342), Luffa Wrappings (208681), Ekowraith, Creator of Worlds (210667), 
+Affecting spells : Incarnation: Guardian of Ursoc (102558), Druid (137009), Feral Druid (137011), Astral Influence (197524), Jagged Claws (200409), Sharpened Claws (202110), Rend and Tear (204053), Elize's Everlasting Encasement (208342), Luffa Wrappings (208681), Ekowraith, Creator of Worlds (210667), 
 Attributes       : ....x... ........ .....x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ..x..... ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6632,8 +6632,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=312761)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 14 | Target: Self(1)
-                   Hotfixed: Base Value (8 -> 10)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 14 | Target: Self(1)
+                   Hotfixed: Base Value (8 -> 15)
 Description      : Shred and Swipe deal $s1% increased damage for each Bleed effect you have on the target.
 
 Name             : Fury of Elune (id=211545) [Spell Family (7)] 

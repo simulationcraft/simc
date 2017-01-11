@@ -1,4 +1,4 @@
-SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23244, git build 2679573)
+SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23360, git build 3b52b5d)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -1060,7 +1060,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=44400)    : School Damage: shadowstorm (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.5, dl=0.5) | Value Multiplier: 1 | SP Coefficient: 2.00000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 0 (avg=0.5, dl=0.15) | Value Multiplier: 1 | SP Coefficient: 2.00000 | Target: Enemy(6)
+                   Hotfixed: Delta (0.5 -> 0.15)
 Description      : Inflicts Plague (Nature and Shadow) damage to an enemy.
 
 Name             : On a Pale Horse (id=51986) [Spell Family (15), Passive] 
@@ -1132,7 +1133,7 @@ Attributes       : .....x.x x....x.. x....... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Tradeskill ability (5), Hidden (7)
 Effects          :
-#1 (id=45979)    : Unknown effect type (53)
+#1 (id=45979)    : Enchant Item (53)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3370 | Misc Value 2: 0xb
 #2 (id=45980)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
@@ -1150,7 +1151,7 @@ Attributes       : .....x.x x....... x....... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Tradeskill ability (5), Hidden (7)
 Effects          :
-#1 (id=45981)    : Unknown effect type (53)
+#1 (id=45981)    : Enchant Item (53)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3368 | Misc Value 2: 0xb
 #2 (id=133696)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
@@ -1599,7 +1600,7 @@ Attributes       : .....x.x x....... x....... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Tradeskill ability (5), Hidden (7)
 Effects          :
-#1 (id=56130)    : Unknown effect type (53)
+#1 (id=56130)    : Enchant Item (53)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3847 | Misc Value 2: 0xb
 #2 (id=56131)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
@@ -2135,9 +2136,11 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=95513)    : Dummy (3)
-                   Base Value: 135 | Scaled Value: 135 | Target: Enemy(6)
+                   Base Value: 80 | Scaled Value: 80 | Target: Enemy(6)
+                   Hotfixed: Base Value (135 -> 80)
 #2 (id=341774)   : Weapon Damage% (31)
-                   Base Value: 135 | Scaled Value: 1.35 | Radius: 8 yards | Target: Cone Front(104)
+                   Base Value: 80 | Scaled Value: 0.8 | Radius: 8 yards | Target: Cone Front(104)
+                   Hotfixed: Base Value (135 -> 80)
 Description      : Rakes an enemy with deformed claws, dealing $91778s1% of normal damage as Shadow to the target and nearby enemies.
 
 Name             : Monstrous Blow (id=91797) [Spell Family (15)] 
@@ -2712,8 +2715,9 @@ Effects          :
                    Hotfixed: Base Value (3 -> 6)
 #3 (id=191171)   : Apply Aura (6) | Unknown effect sub type (218)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf7 | Target: Self(1)
-#4 (id=191172)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#4 (id=191172)   : Apply Aura (6) | Unknown effect sub type (218)
+                   Base Value: -40 | Scaled Value: -40 | Misc Value 2: 0x119 | Target: Self(1)
+                   Hotfixed: Sub Type (4 -> 218), Base Value (0 -> -40), Misc Value 2 (0 -> 281)
 #5 (id=191173)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #6 (id=260787)   : Apply Aura (6) | Dummy (4)
@@ -4345,7 +4349,8 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=292108)   : School Damage: shadow (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 7.00000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 7.50000 | Target: Enemy(6)
+                   Hotfixed: AP Coefficient (7 -> 7.5)
 Description      : Inflicts Shadow damage to an enemy.
 
 Name             : Shadow Infusion (id=198943) [Spell Family (15), Passive] 
@@ -4587,6 +4592,7 @@ Description      : Instantly strike the target and 1 other nearby enemy, causing
 Tooltip          : Movement speed reduced by $s5%.
 
 Name             : Blooddrinker (id=206931) [Spell Family (15)] 
+Hotfixed         : Attributes
 Class            : Death Knight
 School           : Shadow
 Resource         : 1 Rune
@@ -4598,9 +4604,9 @@ Duration         : 3 seconds
 Cooldown         : 30 seconds
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ...x.... 
+                 : ........ ........ ........ ........   ........ .....x.. ........ ...x.... 
                  : ........ ........ .......x ........   ........ ........ ........ .....x.. 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .x...... .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : Channeled (34)
 Effects          :
@@ -5672,7 +5678,8 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=314805)   : Weapon Damage% (31)
-                   Base Value: 135 | Scaled Value: 1.35 | Radius: 0 - 10 yards | Target: Custom(18) -> AOE enemy (instant)(16)
+                   Base Value: 80 | Scaled Value: 0.8 | Radius: 0 - 10 yards | Target: Custom(18) -> AOE enemy (instant)(16)
+                   Hotfixed: Base Value (135 -> 80)
 Description      : $@spelldesc212333
 
 Name             : Dark Arbiter (id=212412) [Spell Family (15), Hidden] 

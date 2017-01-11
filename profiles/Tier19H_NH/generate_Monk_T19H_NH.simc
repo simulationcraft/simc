@@ -1,39 +1,38 @@
 # T19H_NH
 # Tier 19 Heroic Nighthold
-# * Ilvl Cap: 890
+# * Ilvl Cap: 895
 # * Artifact Rank Cap: 40
-# * 3 Relics with max ilevel of 890
+# * 3 Relics with max ilevel of 895
 # * No Legendaries (see Raid_T19x_Legendary.simc)
 # * No items from World Bosses / World Quests / BoEs
 # * Mythic+ gear is permitted up to the Mythic+ item level cap
 # * No Random Gems (ie. Bonus RNG Gem Slots)
 # * No Tertiary Stats
-# * No Ranked Gear (ie. Warforged/Titanforged)
 # * No Hardcoded Stats (generally if an item gives wrong stats: either bonus_id is wrong, either the item no longer exists in-game)
 # * It is recommended to use enchant name (ex : ",enchant=binding_of_mastery") rather than id/hardcoded stats.
 
 monk="Monk_Windwalker_T19H_NH"
 level=110
-race=draenei
+race=blood_elf
 role=hybrid
 position=back
-talents=3010022
+talents=3010033
 artifact=50:0:0:0:0:800:3:801:3:820:3:821:3:822:3:824:3:825:3:826:1:827:1:828:1:829:3:830:1:831:1:832:1:833:1:1094:3:1341:1:1376:6
 spec=windwalker
-head=hood_of_enveloped_dissonance,id=138331,bonus_id=3444
-neck=zealous_timestone_pendant,id=140894,bonus_id=3444
-shoulders=pauldrons_of_enveloped_dissonance,id=138337,bonus_id=3444
-back=cloak_of_temporal_recalibration,id=140910,bonus_id=3444
-chest=tunic_of_enveloped_dissonance,id=138325,bonus_id=3444
-wrists=bracers_of_impossible_choices,id=140889,bonus_id=3444
-hands=gloves_of_synchronus_elements,id=140905,bonus_id=3444
-waist=high_shadow_councilors_wrap,id=140919,bonus_id=3444
-legs=leggings_of_enveloped_dissonance,id=138334,bonus_id=3444
-feet=grovetenders_moccasins,id=140861,bonus_id=3444
-finger1=ring_of_exclusive_servitude,id=140906,bonus_id=3444
-finger2=spellblades_gemmed_signet,id=140895,bonus_id=3444
-trinket1=arcanogolem_digit,id=140794,bonus_id=3444
-trinket2=convergence_of_fates,id=140806,bonus_id=3444
-main_hand=fists_of_the_heavens,id=128940,bonus_id=734,gem_id=140841/140815/140841,relic_id=3444/3444/3444
+head=hood_of_enveloped_dissonance,id=138331,bonus_id=3517
+neck=zealous_timestone_pendant,id=140894,bonus_id=3517,enchant=mark_of_the_hidden_satyr
+shoulders=pauldrons_of_enveloped_dissonance,id=138337,bonus_id=3517
+back=cloak_of_temporal_recalibration,id=140910,bonus_id=3517,enchant=binding_of_agility
+chest=tunic_of_enveloped_dissonance,id=138325,bonus_id=3517
+wrists=bracers_of_impossible_choices,id=140889,bonus_id=3517
+hands=gloves_of_synchronus_elements,id=140905,bonus_id=3517
+waist=high_shadow_councilors_wrap,id=140919,bonus_id=3517
+legs=leggings_of_enveloped_dissonance,id=138334,bonus_id=3517
+feet=grovetenders_moccasins,id=140861,bonus_id=3517
+finger1=ring_of_exclusive_servitude,id=140906,bonus_id=3517,enchant=binding_of_versatility
+finger2=spellblades_gemmed_signet,id=140895,bonus_id=3517,enchant=binding_of_mastery
+trinket1=entwined_elemental_foci,id=140796,bonus_id=3517
+trinket2=convergence_of_fates,id=140806,bonus_id=3517
+main_hand=fists_of_the_heavens,id=128940,bonus_id=734,gem_id=140841/140815/140841,relic_id=3517/3517/3517
 off_hand=fists_of_the_heavens,id=133948
 save=Monk_Windwalker_T19H_NH.simc

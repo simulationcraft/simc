@@ -21,13 +21,13 @@ actions.precombat+=/summon_pet
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=prolonged_power
 actions.precombat+=/augmentation,type=defiled
-actions.precombat+=/volley,toggle=on
 
 # Executed every time the actor is available.
 actions=auto_shot
 actions+=/arcane_torrent,if=focus.deficit>=30
 actions+=/berserking
 actions+=/blood_fury
+actions+=/volley,toggle=on
 actions+=/potion,name=prolonged_power,if=buff.bestial_wrath.remains|!cooldown.beastial_wrath.remains
 actions+=/a_murder_of_crows
 actions+=/stampede,if=buff.bloodlust.up|buff.bestial_wrath.up|cooldown.bestial_wrath.remains<=2|target.time_to_die<=14
@@ -63,9 +63,9 @@ main_hand=titanstrike,id=128861,ilevel=894,gem_id=137365/133768/137543
 # gear_ilvl=864.93
 # gear_agility=16584
 # gear_stamina=23428
-# gear_crit_rating=2071
+# gear_crit_rating=1504
 # gear_haste_rating=4946
-# gear_mastery_rating=13214
+# gear_mastery_rating=12669
 # gear_armor=2630
 # set_bonus=tier19p_mail_2pc=1
 summon_pet=cat

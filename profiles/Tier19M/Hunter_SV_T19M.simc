@@ -3,8 +3,8 @@ level=110
 race=troll
 role=attack
 position=ranged_back
-talents=3302022
-artifact=34:142518:142511:142510:0:1068:1:1070:3:1071:3:1072:3:1073:4:1074:4:1075:4:1076:3:1077:3:1078:3:1079:1:1080:1:1081:1:1082:1:1083:1:1084:1:1338:1
+talents=3101032
+artifact=34:0:0:0:0:1068:1:1070:3:1071:3:1072:3:1073:3:1074:3:1075:3:1076:3:1077:3:1078:3:1079:1:1080:1:1081:1:1082:1:1083:1:1084:1:1338:1
 spec=survival
 
 # This default action priority list is automatically created based on your character.
@@ -15,12 +15,13 @@ spec=survival
 
 # Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat=flask,type=flask_of_the_seventh_demon
-actions.precombat+=/food,type=seedbattered_fish_plate
+actions.precombat+=/food,type=fishbrul_special
 actions.precombat+=/summon_pet
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion,name=potion_of_the_old_war
+actions.precombat+=/potion,name=old_war
 actions.precombat+=/augmentation,type=defiled
+actions.precombat+=/dragonsfire_grenade
 actions.precombat+=/harpoon
 
 # Executed every time the actor is available.
@@ -29,50 +30,99 @@ actions+=/arcane_torrent,if=focus.deficit>=30
 actions+=/berserking
 actions+=/blood_fury
 actions+=/potion,name=old_war,if=buff.aspect_of_the_eagle.remains
-actions+=/fury_of_the_eagle,if=(buff.mongoose_fury.up&buff.mongoose_fury.remains<=gcd)|target.time_to_die<=execute_time
-actions+=/raptor_strike,if=talent.way_of_the_moknathal.enabled&buff.moknathal_tactics.remains&buff.moknathal_tactics.remains<gcd.max
-actions+=/a_murder_of_crows
-actions+=/steel_trap
-actions+=/explosive_trap
-actions+=/dragonsfire_grenade
-actions+=/caltrops
-actions+=/carve,cycle_targets=1,if=talent.serpent_sting.enabled&active_enemies>=3&(!dot.serpent_sting.ticking|dot.serpent_sting.remains<=gcd.max)
-actions+=/raptor_strike,cycle_targets=1,if=talent.serpent_sting.enabled&active_enemies<=2&(!dot.serpent_sting.ticking|dot.serpent_sting.remains<=gcd.max)|talent.way_of_the_moknathal.enabled&buff.moknathal_tactics.down
-actions+=/aspect_of_the_eagle
-actions+=/snake_hunter,if=action.mongoose_bite.charges<=0&buff.mongoose_fury.remains
-actions+=/mongoose_bite,if=buff.aspect_of_the_eagle.up&(charges>=2|charges>=1&cooldown.mongoose_bite.remains<=2)|(buff.mongoose_fury.up|cooldown.fury_of_the_eagle.remains<5|charges=3)
-actions+=/lacerate,if=dot.lacerate.ticking&dot.lacerate.remains<=3|target.time_to_die>=5
-actions+=/flanking_strike,if=talent.way_of_the_moknathal.enabled&(buff.moknathal_tactics.remains>=3)|!talent.way_of_the_moknathal.enabled
-actions+=/butchery,if=spell_targets.butchery>=2
-actions+=/carve,if=spell_targets.carve>=4
-actions+=/spitting_cobra
-actions+=/throwing_axes
-actions+=/raptor_strike,if=!talent.throwing_axes.enabled&focus>75-cooldown.flanking_strike.remains*focus.regen
+actions+=/call_action_list,name=moknathal,if=talent.way_of_the_moknathal.enabled
+actions+=/call_action_list,name=nomok,if=!talent.way_of_the_moknathal.enabled
+
+actions.moknathal=raptor_strike,if=buff.moknathal_tactics.stack<=1
+actions.moknathal+=/raptor_strike,if=buff.moknathal_tactics.remains<gcd
+actions.moknathal+=/snake_hunter,if=cooldown.mongoose_bite.charges<=0&buff.mongoose_fury.remains>3*gcd
+actions.moknathal+=/a_murder_of_crows,if=focus>55&buff.mongoose_fury.stack<4&buff.mongoose_fury.duration>=gcd
+actions.moknathal+=/steel_trap,if=buff.mongoose_fury.duration>=gcd&buff.mongoose_fury.stack<4
+actions.moknathal+=/caltrops,if=(buff.mongoose_fury.duration>=gcd&buff.mongoose_fury.stack<4&!dot.caltrops.ticking)
+actions.moknathal+=/flanking_strike,if=cooldown.mongoose_bite.charges<=0&buff.aspect_of_the_eagle.remains>=gcd&focus>75
+actions.moknathal+=/lacerate,if=focus>60&buff.mongoose_fury.duration>=gcd&dot.lacerate.remains<=3&cooldown.mongoose_bite.charges>=0&buff.mongoose_fury.stack<4
+actions.moknathal+=/spitting_cobra,if=buff.mongoose_fury.duration>=gcd&cooldown.mongoose_bite.charges>=0&buff.mongoose_fury.stack<4
+actions.moknathal+=/steel_trap,if=buff.mongoose_fury.duration>=gcd&buff.mongoose_fury.stack<4
+actions.moknathal+=/explosive_trap,if=buff.mongoose_fury.duration>=gcd&cooldown.mongoose_bite.charges>=0&buff.mongoose_fury.stack<4
+actions.moknathal+=/dragonsfire_grenade,if=buff.mongoose_fury.duration>=gcd&cooldown.mongoose_bite.charges>=0&buff.mongoose_fury.stack<4
+actions.moknathal+=/raptor_strike,if=talent.serpent_sting.enabled&dot.serpent_sting.remains<gcd
+actions.moknathal+=/raptor_strike,if=buff.moknathal_tactics.remains<4&buff.mongoose_fury.stack=6&buff.mongoose_fury.remains>=gcd
+actions.moknathal+=/fury_of_the_eagle,if=buff.moknathal_tactics.remains>4&buff.mongoose_fury.stack=6&cooldown.mongoose_bite.charges<=2
+actions.moknathal+=/mongoose_bite,if=buff.aspect_of_the_eagle.up&buff.mongoose_fury.up&buff.moknathal_tactics.stack>=4
+actions.moknathal+=/fury_of_the_eagle,if=(buff.moknathal_tactics.remains>4&(buff.mongoose_fury.stack=6&cooldown.mongoose_bite.charges<=0|buff.mongoose_fury.up&buff.mongoose_fury.remains<=2*gcd))
+actions.moknathal+=/raptor_strike,if=buff.moknathal_tactics.stack<=3
+actions.moknathal+=/aspect_of_the_eagle,if=buff.mongoose_fury.up&buff.mongoose_fury.remains>6&cooldown.mongoose_bite.charges>=2
+actions.moknathal+=/flanking_strike,if=cooldown.mongoose_bite.charges<=2&buff.mongoose_fury.remains>(1+action.mongoose_bite.charges*gcd)&focus>75
+actions.moknathal+=/mongoose_bite,if=buff.mongoose_fury.up&buff.mongoose_fury.remains<cooldown.aspect_of_the_eagle.remains
+actions.moknathal+=/a_murder_of_crows,if=focus>55
+actions.moknathal+=/spitting_cobra
+actions.moknathal+=/steel_trap
+actions.moknathal+=/explosive_trap
+actions.moknathal+=/caltrops,if=(!dot.caltrops.ticking)
+actions.moknathal+=/lacerate,if=(!dot.lacerate.ticking|dot.lacerate.remains<3)
+actions.moknathal+=/dragonsfire_grenade
+actions.moknathal+=/butchery,if=(charges=3&focus>65)
+actions.moknathal+=/mongoose_bite,if=(charges>=2&cooldown.mongoose_bite.remains<=gcd|charges=3)
+actions.moknathal+=/butchery,if=focus>65
+actions.moknathal+=/flanking_strike,if=focus>75
+actions.moknathal+=/raptor_strike,if=focus>75-cooldown.flanking_strike.remains*focus.regen
+
+actions.nomok=a_murder_of_crows,if=cooldown.mongoose_bite.charges>=0&buff.mongoose_fury.stack<4
+actions.nomok+=/snake_hunter,if=action.mongoose_bite.charges<=0&buff.mongoose_fury.remains>3*gcd
+actions.nomok+=/steel_trap,if=buff.mongoose_fury.duration>=gcd&buff.mongoose_fury.stack<4
+actions.nomok+=/caltrops,if=(buff.mongoose_fury.duration>=gcd&buff.mongoose_fury.stack<4&!dot.caltrops.ticking)
+actions.nomok+=/flanking_strike,if=cooldown.mongoose_bite.charges<=0&buff.aspect_of_the_eagle.remains>=gcd
+actions.nomok+=/lacerate,if=buff.mongoose_fury.duration>=gcd&dot.lacerate.remains<=1&&cooldown.mongoose_bite.charges>=0&buff.mongoose_fury.stack<4
+actions.nomok+=/spitting_cobra,if=buff.mongoose_fury.duration>=gcd&cooldown.mongoose_bite.charges>=0&buff.mongoose_fury.stack<4
+actions.nomok+=/steel_trap,if=buff.mongoose_fury.duration>=gcd&buff.mongoose_fury.stack<4
+actions.nomok+=/explosive_trap,if=buff.mongoose_fury.duration>=gcd&cooldown.mongoose_bite.charges>=0&buff.mongoose_fury.stack<4
+actions.nomok+=/dragonsfire_grenade,if=buff.mongoose_fury.duration>=gcd&cooldown.mongoose_bite.charges>=0&buff.mongoose_fury.stack<4
+actions.nomok+=/raptor_strike,if=talent.serpent_sting.enabled&dot.serpent_sting.remains<gcd
+actions.nomok+=/fury_of_the_eagle,if=buff.mongoose_fury.stack=6&cooldown.mongoose_bite.charges<=2
+actions.nomok+=/mongoose_bite,if=buff.aspect_of_the_eagle.up&buff.mongoose_fury.up
+actions.nomok+=/aspect_of_the_eagle,if=buff.mongoose_fury.up&buff.mongoose_fury.duration>6&cooldown.mongoose_bite.charges>=2
+actions.nomok+=/fury_of_the_eagle,if=cooldown.mongoose_bite.charges<=0&buff.mongoose_fury.duration>6
+actions.nomok+=/flanking_strike,if=cooldown.mongoose_bite.charges<2&buff.mongoose_fury.remains>(1+action.mongoose_bite.charges*gcd)
+actions.nomok+=/mongoose_bite,if=buff.mongoose_fury.up&buff.mongoose_fury.remains<cooldown.aspect_of_the_eagle.remains
+actions.nomok+=/flanking_strike,if=talent.animal_instincts.enabled&cooldown.mongoose_bite.charges<3
+actions.nomok+=/a_murder_of_crows
+actions.nomok+=/spitting_cobra
+actions.nomok+=/steel_trap
+actions.nomok+=/explosive_trap
+actions.nomok+=/caltrops,if=(!dot.caltrops.ticking)
+actions.nomok+=/lacerate,if=(!dot.lacerate.ticking|dot.lacerate.remains<3)
+actions.nomok+=/dragonsfire_grenade
+actions.nomok+=/butchery,if=(charges=3)
+actions.nomok+=/throwing_axes,if=cooldown.throwing_axes.charges=2
+actions.nomok+=/mongoose_bite,if=(charges>=2&cooldown.mongoose_bite.remains<=gcd|charges=3)
+actions.nomok+=/butchery
+actions.nomok+=/throwing_axes
+actions.nomok+=/flanking_strike
+actions.nomok+=/raptor_strike,if=focus>75-cooldown.flanking_strike.remains*focus.regen
 
 head=greyed_dragonscale_coif,id=139214,bonus_id=1806
-neck=blackened_portalstone_necklace,id=139332,bonus_id=1806,enchant=mark_of_the_hidden_satyr
-shoulders=epaulets_of_deceitful_intent,id=134480,bonus_id=1727/1522
+neck=blackened_portalstone_necklace,id=139332,bonus_id=1806,enchant=mark_of_the_claw
+shoulders=matted_fur_pauldrons,id=139217,bonus_id=1806
 back=mantle_of_the_victorious_dead,id=142540,bonus_id=3469,enchant=200agi
 chest=corroded_valkyr_chainmail,id=142433,bonus_id=3469/1512
-wrists=remorseless_chain_armbands,id=137405,bonus_id=1727/1522
+wrists=biteresistant_wristclamps,id=142423,bonus_id=3469
 hands=kvaldir_exults_grips,id=142434,bonus_id=3469
 waist=anchor_chain_waistguard,id=142420,bonus_id=3469/1512
 legs=leggings_of_the_undaunted,id=142421,bonus_id=3469
 feet=malignant_sabatons,id=138211,bonus_id=1806
-finger1=ring_of_ascended_glory,id=142520,bonus_id=3469,enchant=binding_of_haste
-finger2=dawnlight_band,id=130231,bonus_id=3370/670,gem_id=130220,enchant=binding_of_haste
+finger1=ring_of_ascended_glory,id=142520,bonus_id=3469,enchant=200vers
+finger2=mindrend_band,id=138220,bonus_id=1806,enchant=200vers
 trinket1=bloodthirsty_instinct,id=139329,bonus_id=1806
 trinket2=eye_of_guarm,id=142506,bonus_id=607/3469
 main_hand=talonclaw,id=128808,gem_id=142518/142511/142510,relic_id=3469/3469/3469:1512
 
 # Gear Summary
-# gear_ilvl=884.73
-# gear_agility=19812
-# gear_stamina=28420
-# gear_crit_rating=9074
-# gear_haste_rating=7207
-# gear_mastery_rating=3796
-# gear_versatility_rating=2086
-# gear_armor=2801
-# set_bonus=tier19p_mail_2pc=1
+# gear_ilvl=888.40
+# gear_agility=20121
+# gear_stamina=29197
+# gear_crit_rating=8413
+# gear_haste_rating=6142
+# gear_mastery_rating=5443
+# gear_versatility_rating=2486
+# gear_armor=2824
 summon_pet=carrion_bird

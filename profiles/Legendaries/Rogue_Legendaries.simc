@@ -29,6 +29,9 @@ feet=duskwalkers_footpads,id=137030
 copy=Asn_$(Tier)_Insignia,Asn_$(Tier)_Baseline
 finger1=insignia_of_ravenholdt,id=137049,gem_id=130221,enchant=binding_of_versatility
 
+copy=Asn_$(Tier)_Mantle,Asn_$(Tier)_Baseline
+shoulders=mantle_of_the_master_assassin,id=144236
+
 copy=Asn_$(Tier)_Dreadlords_Deceit,Asn_$(Tier)_Baseline
 back=the_dreadlords_deceit,id=137021
 
@@ -48,6 +51,9 @@ feet=duskwalkers_footpads,id=137030
 
 copy=Asn_Ex_$(Tier)_Insignia,Asn_Ex_$(Tier)_Baseline
 finger1=insignia_of_ravenholdt,id=137049,gem_id=130221,enchant=binding_of_versatility
+
+copy=Asn_Ex_$(Tier)_Mantle,Asn_Ex_$(Tier)_Baseline
+shoulders=mantle_of_the_master_assassin,id=144236
 
 copy=Asn_Ex_$(Tier)_Dreadlords_Deceit,Asn_Ex_$(Tier)_Baseline
 back=the_dreadlords_deceit,id=137021
@@ -70,6 +76,9 @@ wrist=greenskins_waterlogged_wristcuffs,id=137099
 copy=Otl_$(Tier)_Insignia,Otl_$(Tier)_Baseline
 finger1=insignia_of_ravenholdt,id=137049,gem_id=130221,enchant=binding_of_versatility
 
+copy=Otl_$(Tier)_Mantle,Otl_$(Tier)_Baseline
+shoulders=mantle_of_the_master_assassin,id=144236
+
 copy=Otl_$(Tier)_Shivarran_Symmetry,Otl_$(Tier)_Baseline
 hands=shivarran_symmetry,id=141321
 
@@ -89,6 +98,9 @@ wrist=denial_of_the_halfgiants,id=137100
 
 copy=Sub_$(Tier)_Insignia,Sub_$(Tier)_Baseline
 finger1=insignia_of_ravenholdt,id=137049,gem_id=130221,enchant=binding_of_versatility
+
+copy=Sub_$(Tier)_Mantle,Sub_$(Tier)_Baseline
+shoulders=mantle_of_the_master_assassin,id=144236
 
 copy=Sub_$(Tier)_Shadow_Satyrs_Walk,Sub_$(Tier)_Baseline
 feet=shadow_satyrs_walk,id=137032

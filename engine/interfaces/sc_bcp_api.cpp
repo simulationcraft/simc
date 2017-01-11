@@ -185,12 +185,7 @@ bool parse_talents( player_t*  p,
 
 void parse_artifact( item_t& item, const rapidjson::Value& artifact )
 {
-  if ( ! artifact.HasMember( "artifactId" ) )
-  {
-    return;
-  }
-
-  if ( artifact.HasMember( "artifactTraits" ) && artifact[ "artifactTraits" ].Size() == 0 )
+  if ( ! artifact.HasMember( "artifactId" ) || ! artifact.HasMember( "artifactTraits" ) )
   {
     return;
   }

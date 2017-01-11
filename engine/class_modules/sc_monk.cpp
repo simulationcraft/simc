@@ -253,7 +253,7 @@ public:
 
     // Legendaries
     buff_t* hidden_masters_forbidden_touch;
-    buff_t* emperors_electric_charge;
+    buff_t* the_emperors_capacitor;
   } buff;
 
 public:
@@ -591,7 +591,7 @@ public:
 
     // Legendaries
     const spell_data_t* hidden_masters_forbidden_touch;
-    const spell_data_t* the_emperor_capacitor;
+    const spell_data_t* the_emperors_capacitor;
   } passives;
 
   struct legendary_t
@@ -1001,13 +1001,13 @@ struct storm_earth_and_fire_pet_t : public pet_t
           // Remove owner's Hit Combo
           state -> da_multiplier /= ( 1 + o() -> buff.hit_combo -> stack_value() );
           // .. aand add Pet's Hit Combo
-          state -> da_multiplier *= 1 + p() -> sef_hit_combo -> stack_value();
+          state -> da_multiplier *= 1 + p() -> buff.hit_combo_sef -> stack_value();
         }
 
         if ( rt == DMG_OVER_TIME && ( flags & STATE_MUL_TA ) )
         {
           state -> ta_multiplier /= ( 1 + o() -> buff.hit_combo -> stack_value() );
-          state -> ta_multiplier *= 1 + p() -> sef_hit_combo -> stack_value();
+          state -> ta_multiplier *= 1 + p() -> buff.hit_combo_sef -> stack_value();
         }
       }
     }
@@ -1097,6 +1097,18 @@ struct storm_earth_and_fire_pet_t : public pet_t
         sim -> errorf( "%s has no auto_attack in APL, Storm, Earth, and Fire pets cannot auto-attack.",
             o() -> name() );
       }
+    }
+
+    double action_multiplier() const override
+    {
+      double am = sef_melee_attack_t::action_multiplier();
+          
+      double sef_mult = o() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
+      if ( o() -> artifact.spiritual_focus.rank() )
+        sef_mult += o() -> artifact.spiritual_focus.data().effectN( 1 ).percent();
+      am *= 1.0 + sef_mult;
+
+      return am;
     }
 
     // A wild equation appears
@@ -1220,6 +1232,9 @@ struct storm_earth_and_fire_pet_t : public pet_t
       if ( result_is_hit( state -> result ) )
       {
         o() -> trigger_mark_of_the_crane( state );
+
+        if ( o() -> artifact.transfer_the_power.rank() && o() -> buff.transfer_the_power -> up() )
+          p() -> buff.transfer_the_power_sef -> trigger();
       }
     }
    };
@@ -1307,6 +1322,9 @@ struct storm_earth_and_fire_pet_t : public pet_t
           rsk_tornado_kick -> base_dd_min = raw;
           rsk_tornado_kick -> execute();
         }
+
+        if ( o() -> artifact.transfer_the_power.rank() && o() -> buff.transfer_the_power -> up() )
+          p() -> buff.transfer_the_power_sef -> trigger();
       }
     }
   };
@@ -1356,28 +1374,61 @@ struct storm_earth_and_fire_pet_t : public pet_t
     {
       channeled = tick_zero = interrupt_auto_attack = true;
       may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
+      // Hard code a 25% reduced cast time to not cause any clipping issues
+      // https://us.battle.net/forums/en/wow/topic/20752377961?page=29#post-573
+      dot_duration = data().duration() / 1.25;
+      // Effect 1 shows a period of 166 milliseconds which appears to refer to the visual and not the tick period
+      base_tick_time = ( dot_duration / 4 );
 
       weapon_power_mod = 0;
 
       tick_action = new sef_fists_of_fury_tick_t( player );
     }
 
-  double composite_persistent_multiplier( const action_state_t* action_state ) const override
-  {
-    double pm = sef_melee_attack_t::composite_persistent_multiplier( action_state );
-
-    // Current bug where Transfer the Power is not being applied to SEF's Fists of Fury
-    if ( o() -> buff.transfer_the_power -> up() )
+    double composite_persistent_multiplier( const action_state_t* action_state ) const override
     {
-      pm /= 1 + o() -> buff.transfer_the_power -> stack_value();
+      double pm = sef_melee_attack_t::composite_persistent_multiplier( action_state );
+
+      if ( o() -> buff.transfer_the_power -> up() )
+      {
+        // Not count the owner's transfer the power
+        pm /= 1 + o() -> buff.transfer_the_power -> stack_value();
+
+        // Count the pet's transfer the power
+        if ( p() -> buff.transfer_the_power_sef -> up() )
+          pm *= 1 + p() -> buff.transfer_the_power_sef -> stack_value();
+      }
+
+      return pm;
     }
 
-    return pm;
-  }
+    // Base tick_time(action_t) is somehow pulling the Owner's base_tick_time instead of the pet's
+    // Forcing SEF to use it's own base_tick_time for tick_time.
+    timespan_t tick_time( const action_state_t* state ) const override
+    {
+      timespan_t t = base_tick_time;
+      if ( channeled || hasted_ticks )
+      {
+        t *= state -> haste;
+      }
+      return t;
+    }
 
-//    timespan_t composite_dot_duration( const action_state_t* s ) const override { return timespan_t::from_millis( 4000 ); }
+    timespan_t composite_dot_duration( const action_state_t* s ) const override
+    {
+      if ( channeled )
+        return dot_duration * ( tick_time( s ) / base_tick_time );
 
-//    timespan_t tick_time( const action_state_t* ) const override { return timespan_t::from_millis( 1000 ); }
+      return dot_duration;
+    }
+
+    virtual void last_tick( dot_t* dot ) override
+    {
+      sef_melee_attack_t::last_tick( dot );
+
+      if ( p() -> buff.transfer_the_power_sef -> up() )
+        p() -> buff.transfer_the_power_sef -> expire();
+    }
   };
 
   struct sef_spinning_crane_kick_t : public sef_melee_attack_t
@@ -1413,6 +1464,9 @@ struct storm_earth_and_fire_pet_t : public pet_t
     virtual void execute() override
     {
       sef_melee_attack_t::execute();
+
+      if ( o() -> artifact.transfer_the_power.rank() && o() -> buff.transfer_the_power -> up() )
+        p() -> buff.transfer_the_power_sef -> trigger();
       
       o() -> rjw_trigger_mark_of_the_crane();
     }
@@ -1451,8 +1505,6 @@ struct storm_earth_and_fire_pet_t : public pet_t
       dual = true;
       aoe = -1;
       radius = data().effectN( 2 ).base_value();
-      // Unlike the player, SEF don't have a damage variance. Possible bug
-      sim -> average_range = 1;
       weapon = &( player -> off_hand_weapon );
     }
 
@@ -1478,8 +1530,6 @@ struct storm_earth_and_fire_pet_t : public pet_t
       aoe = -1;
       radius = data().effectN( 2 ).base_value();
       weapon = &( player -> main_hand_weapon );
-      // Unlike the player, SEF don't have a damage variance. Possible bug
-      sim -> average_range = 1;
       normalize_weapon_speed = true;
     }
 
@@ -1580,12 +1630,16 @@ public:
   // SEF applies the Cyclone Strike debuff as well
 
   bool sticky_target; // When enabled, SEF pets will stick to the target they have
-  buff_t* sef_hit_combo;
+  struct buffs_t
+  {
+    buff_t* hit_combo_sef;
+    buff_t* transfer_the_power_sef;
+  } buff;
 
   storm_earth_and_fire_pet_t( const std::string& name, sim_t* sim, monk_t* owner, bool dual_wield ):
     pet_t( sim, owner, name, true ),
     attacks( SEF_ATTACK_MAX ), spells( SEF_SPELL_MAX - SEF_SPELL_MIN ),
-    sticky_target( false ), sef_hit_combo(nullptr)
+    sticky_target( false ), buff( buffs_t() )
   {
     // Storm, Earth, and Fire pets have to become "Windwalkers", so we can get
     // around some sanity checks in the action execution code, that prevents
@@ -1682,6 +1736,12 @@ public:
     pet_t::summon( duration );
 
     o() -> buff.storm_earth_and_fire -> trigger();
+
+    if ( o() -> buff.hit_combo -> up() )
+      buff.hit_combo_sef -> trigger( o() -> buff.hit_combo -> stack() );
+
+    if ( o() -> buff.transfer_the_power -> up() )
+      buff.transfer_the_power_sef -> trigger( o() -> buff.transfer_the_power -> stack() );
   }
 
   void dismiss( bool expired = false ) override
@@ -1695,9 +1755,12 @@ public:
   {
     pet_t::create_buffs();
 
-    sef_hit_combo = buff_creator_t( this, "sef_hit_combo", o() -> passives.hit_combo )
+    buff.hit_combo_sef = buff_creator_t( this, "hit_combo_sef", o() -> passives.hit_combo )
                     .default_value( o() -> passives.hit_combo -> effectN( 1 ).percent() )
                     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
+    buff.transfer_the_power_sef = buff_creator_t( this, "transfer_the_power_sef", o() -> artifact.transfer_the_power.data().effectN( 1 ).trigger() )
+                            .default_value( o() -> artifact.transfer_the_power.rank() ? o() -> artifact.transfer_the_power.percent() : 0 ); 
   }
 
   void trigger_attack( sef_ability_e ability, const action_t* source_action )
@@ -1708,7 +1771,7 @@ public:
       assert( spells[ spell ] );
 
       if ( o() -> buff.combo_strikes -> up() && o() -> talent.hit_combo -> ok() )
-        sef_hit_combo -> trigger();
+        buff.hit_combo_sef -> trigger();
 
       spells[ spell ] -> source_action = source_action;
       spells[ spell ] -> execute();
@@ -1718,7 +1781,7 @@ public:
       assert( attacks[ ability ] );
 
       if ( o() -> buff.combo_strikes -> up() && o() -> talent.hit_combo -> ok() )
-        sef_hit_combo -> trigger();
+        buff.hit_combo_sef -> trigger();
 
       attacks[ ability ] -> source_action = source_action;
       attacks[ ability ] -> execute();
@@ -2027,6 +2090,9 @@ struct monk_action_t: public Base
 {
   sef_ability_e sef_ability;
   bool hasted_gcd;
+  bool windwalker_damage_increase;
+  bool windwalker_damage_increase_dot;
+  bool windwalker_damage_increase_two;
 private:
   std::array < resource_e, MONK_MISTWEAVER + 1 > _resource_by_stance;
   typedef Base ab; // action base, eg. spell_t
@@ -2035,9 +2101,12 @@ public:
 
   monk_action_t( const std::string& n, monk_t* player,
                  const spell_data_t* s = spell_data_t::nil() ):
-                 ab( n, player, s ),
-                 sef_ability( SEF_NONE ),
-                 hasted_gcd( ab::data().affected_by( player -> spec.mistweaver_monk -> effectN( 4 ) ) )
+    ab( n, player, s ),
+    sef_ability( SEF_NONE ),
+    hasted_gcd( ab::data().affected_by( player -> spec.mistweaver_monk -> effectN( 4 ) ) ),
+    windwalker_damage_increase( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 1 ) ) ),
+    windwalker_damage_increase_dot( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 2 ) ) ),
+    windwalker_damage_increase_two( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 6 ) ) )
   {
     ab::may_crit = true;
     range::fill( _resource_by_stance, RESOURCE_MAX );
@@ -2066,6 +2135,12 @@ public:
       }
       case MONK_WINDWALKER:
       {
+        if ( windwalker_damage_increase )
+          ab::base_dd_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 1 ).percent();
+        if ( windwalker_damage_increase_dot )
+          ab::base_td_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 2 ).percent();
+        if ( windwalker_damage_increase_two )
+          ab::base_dd_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 6 ).percent();
 
         if ( ab::data().affected_by( player -> spec.stance_of_the_fierce_tiger -> effectN( 5 ) ) )
           ab::trigger_gcd += player -> spec.stance_of_the_fierce_tiger -> effectN( 5 ).time_value(); // Saved as -500 milliseconds
@@ -2329,7 +2404,7 @@ public:
 
         // The Emperor's Capacitor Legendary
         if ( p() -> legendary.the_emperors_capacitor )
-          p() -> buff.emperors_electric_charge -> trigger( ab::cost() );
+          p() -> buff.the_emperors_capacitor -> trigger( ab::cost() );
       }
       // Chi Savings on Dodge & Parry & Miss
       if ( ab::resource_consumed > 0 )
@@ -2573,12 +2648,15 @@ struct eye_of_the_tiger_heal_tick_t : public monk_heal_t
   {
     background = true;
     hasted_ticks = false;
+    may_crit = tick_may_crit = true;
     target = player;
   }
 
   double action_multiplier() const override
   {
     double am = monk_heal_t::action_multiplier();
+
+    am *= 1 + p() -> spec.brewmaster_monk -> effectN( 2 ).percent();
 
     am *= 1 + p() -> spec.brewmaster_monk -> effectN( 7 ).percent();
 
@@ -2593,6 +2671,7 @@ struct eye_of_the_tiger_dmg_tick_t: public monk_spell_t
   {
     background = true;
     hasted_ticks = false;
+    may_crit = tick_may_crit = true;
     attack_power_mod.direct = 0;
     attack_power_mod.tick = data().effectN( 2 ).ap_coeff();
   }
@@ -2600,6 +2679,8 @@ struct eye_of_the_tiger_dmg_tick_t: public monk_spell_t
   double action_multiplier() const override
   {
     double am = monk_spell_t::action_multiplier();
+
+    am *= 1 + p() -> spec.brewmaster_monk -> effectN( 2 ).percent();
 
     am *= 1 + p() -> spec.brewmaster_monk -> effectN( 7 ).percent();
 
@@ -2671,9 +2752,13 @@ struct tiger_palm_t: public monk_melee_attack_t
         am *= 1 + p() -> buff.blackout_combo -> data().effectN( 1 ).percent();
     }
 
-    am *= 1 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
-
-    am *= 1 + p() -> spec.windwalker_monk -> effectN( 6 ).percent();
+    if ( p() -> buff.storm_earth_and_fire -> up() )
+    {
+      double sef_mult = p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
+      if ( p() -> artifact.spiritual_focus.rank() )
+        sef_mult += p() -> artifact.spiritual_focus.data().effectN( 1 ).percent();
+      am *= 1.0 + sef_mult;
+    }
 
     return am;
   }
@@ -2830,9 +2915,13 @@ struct rising_sun_kick_proc_t : public monk_melee_attack_t
     if ( p() -> artifact.rising_winds.rank() )
       am *= 1 + p() -> artifact.rising_winds.percent();
 
-    am *= 1 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
-
-    am *= 1 + p() -> spec.windwalker_monk -> effectN( 6 ).percent();
+    if ( p() -> buff.storm_earth_and_fire -> up() )
+    {
+      double sef_mult = p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
+      if ( p() -> artifact.spiritual_focus.rank() )
+        sef_mult += p() -> artifact.spiritual_focus.data().effectN( 1 ).percent();
+      am *= 1.0 + sef_mult;
+    }
 
     return am;
   }
@@ -2982,9 +3071,13 @@ struct rising_sun_kick_t: public monk_melee_attack_t
     if ( p() -> artifact.rising_winds.rank() )
       am *= 1 + p() -> artifact.rising_winds.percent();
 
-    am *= 1 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
-
-    am *= 1 + p() -> spec.windwalker_monk -> effectN( 6 ).percent();
+    if ( p() -> buff.storm_earth_and_fire -> up() )
+    {
+      double sef_mult = p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
+      if ( p() -> artifact.spiritual_focus.rank() )
+        sef_mult += p() -> artifact.spiritual_focus.data().effectN( 1 ).percent();
+      am *= 1.0 + sef_mult;
+    }
 
     return am;
   }
@@ -3221,9 +3314,13 @@ struct blackout_kick_t: public monk_melee_attack_t
         if ( p() -> artifact.dark_skies.rank() )
           am *= 1 + p() -> artifact.dark_skies.percent();
 
-        am *= 1 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
-
-        am *= 1 + p() -> spec.windwalker_monk -> effectN( 6 ).percent();
+        if ( p() -> buff.storm_earth_and_fire -> up() )
+        {
+          double sef_mult = p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
+          if ( p() -> artifact.spiritual_focus.rank() )
+            sef_mult += p() -> artifact.spiritual_focus.data().effectN( 1 ).percent();
+          am *= 1.0 + sef_mult;
+        }
 
         break;
       }
@@ -3347,12 +3444,6 @@ struct blackout_strike_t: public monk_melee_attack_t
     // Just being a completionist about this.
     am *= 1 + p() -> spec.mistweaver_monk -> effectN( 10 ).percent();
 
-    // Windwalkers cannot learn this spell. However the effect to adjust this spell is in the database.
-    // Just being a completionist about this.
-    am *= 1 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
-
-    am *= 1 + p() -> spec.windwalker_monk -> effectN( 6 ).percent();
-
     return am;
   }
 
@@ -3437,7 +3528,13 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
   {
     double am = monk_melee_attack_t::action_multiplier();
 
-    am *= 1 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
+    if ( p() -> buff.storm_earth_and_fire -> up() )
+    {
+      double sef_mult = p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
+      if ( p() -> artifact.spiritual_focus.rank() )
+        sef_mult += p() -> artifact.spiritual_focus.data().effectN( 1 ).percent();
+      am *= 1.0 + sef_mult;
+    }
 
     am *= 1 + p() -> spec.brewmaster_monk -> effectN( 1 ).percent();
 
@@ -3533,7 +3630,13 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
     if ( p() -> artifact.power_of_a_thousand_cranes.rank() )
       am *= 1 + p() -> artifact.power_of_a_thousand_cranes.percent();
 
-    am *= 1 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
+    if ( p() -> buff.storm_earth_and_fire -> up() )
+    {
+      double sef_mult = p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
+      if ( p() -> artifact.spiritual_focus.rank() )
+        sef_mult += p() -> artifact.spiritual_focus.data().effectN( 1 ).percent();
+      am *= 1.0 + sef_mult;
+    }
 
     am *= 1 + p() -> spec.mistweaver_monk -> effectN( 12 ).percent();
 
@@ -3589,16 +3692,6 @@ struct crosswinds_tick_t : public monk_melee_attack_t
     dot_duration = timespan_t::zero();
     trigger_gcd = timespan_t::zero();
   }
-
-  virtual double action_multiplier() const override
-  {
-    double am = monk_melee_attack_t::action_multiplier();
-
-    if ( p() -> buff.storm_earth_and_fire -> up() )
-      am *= 3;
-
-    return am;
-  }
 };
 
 struct crosswinds_t : public monk_melee_attack_t
@@ -3612,6 +3705,41 @@ struct crosswinds_t : public monk_melee_attack_t
 
     tick_action = new crosswinds_tick_t( p );
   }
+
+  player_t* select_random_target() const
+  {
+    if ( sim -> distance_targeting_enabled )
+    {
+      std::vector<player_t*> targets;
+      range::for_each( sim -> target_non_sleeping_list, [ &targets, this ]( player_t* t ) {
+        if ( t -> get_player_distance( *player ) <= radius + t -> combat_reach )
+        {
+          targets.push_back( t );
+        }
+      } );
+      auto random_idx = static_cast<size_t>( rng().range( 0, targets.size() ) );
+      return targets.size() ? targets[ random_idx ] : nullptr;
+    }
+    else
+    {
+      auto random_idx = static_cast<size_t>( rng().range( 0, sim -> target_non_sleeping_list.size() ) );
+      return sim -> target_non_sleeping_list[ random_idx ];
+    }
+  }
+
+  // FIX ME so that I can work correctly
+/*  void tick( dot_t* d ) override
+  {
+    monk_melee_attack_t::tick( d );
+ 
+    auto t = select_random_target();
+
+    if ( t )
+    {
+      this -> target = t;
+      this -> execute();
+    }
+  }*/
 };
 
 struct fists_of_fury_tick_t: public monk_melee_attack_t
@@ -3668,15 +3796,20 @@ struct fists_of_fury_t: public monk_melee_attack_t
     if ( p() -> buff.combo_strikes -> up() )
       pm *= 1 + p() -> cache.mastery_value();
 
-    pm *= 1 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
-
     if ( p() -> buff.transfer_the_power -> up() )
-    {
       pm *= 1 + p() -> buff.transfer_the_power -> stack_value();
-    }
 
     if ( p() -> artifact.fists_of_the_wind.rank() )
       pm *= 1 + p() -> artifact.fists_of_the_wind.percent();
+    
+
+    if ( p() -> buff.storm_earth_and_fire -> up() )
+    {
+      double sef_mult = p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
+      if ( p() -> artifact.spiritual_focus.rank() )
+        sef_mult += p() -> artifact.spiritual_focus.data().effectN( 1 ).percent();
+      pm *= 1.0 + sef_mult;
+    }
 
     return pm;
   }
@@ -3801,7 +3934,13 @@ struct whirling_dragon_punch_t: public monk_melee_attack_t
     if ( p() -> buff.combo_strikes -> up() )
       pm *= 1 + p() -> cache.mastery_value();
 
-    pm *= 1 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
+    if ( p() -> buff.storm_earth_and_fire -> up() )
+    {
+      double sef_mult = p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
+      if ( p() -> artifact.spiritual_focus.rank() )
+        sef_mult += p() -> artifact.spiritual_focus.data().effectN( 1 ).percent();
+      pm *= 1.0 + sef_mult;
+    }
 
     return pm;
   }
@@ -3839,8 +3978,6 @@ struct strike_of_the_windlord_off_hand_t: public monk_melee_attack_t
     weapon = &( p -> off_hand_weapon );
     aoe = -1;
     radius = data().effectN( 2 ).base_value();
-    // Force the Sim to use damage range
-    sim -> average_range = 0;
 
     if ( sim -> pvp_crit )
       base_multiplier *= 0.70; // 08/03/2016
@@ -3863,7 +4000,13 @@ struct strike_of_the_windlord_off_hand_t: public monk_melee_attack_t
     if ( p() -> buff.combo_strikes -> up() )
       pm *= 1 + p() -> cache.mastery_value();
 
-    pm *= 1 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
+    if ( p() -> buff.storm_earth_and_fire -> up() )
+    {
+      double sef_mult = p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
+      if ( p() -> artifact.spiritual_focus.rank() )
+        sef_mult += p() -> artifact.spiritual_focus.data().effectN( 1 ).percent();
+      pm *= 1.0 + sef_mult;
+    }
 
     return pm;
   }
@@ -3886,8 +4029,7 @@ struct strike_of_the_windlord_t: public monk_melee_attack_t
     weapon = &( p -> main_hand_weapon );
     normalize_weapon_speed = true;
     radius = data().effectN( 3 ).trigger() -> effectN( 2 ).base_value();
-    // Force the sim to use damage range
-    sim -> average_range = 0;
+    trigger_gcd = data().gcd();
 
     oh_attack = new strike_of_the_windlord_off_hand_t( p, "strike_of_the_windlord_offhand", data().effectN( 4 ).trigger() );
     add_child( oh_attack );
@@ -3913,7 +4055,13 @@ struct strike_of_the_windlord_t: public monk_melee_attack_t
     if ( p() -> buff.combo_strikes -> up() )
       pm *= 1 + p() -> cache.mastery_value();
 
-    pm *= 1 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
+    if ( p() -> buff.storm_earth_and_fire -> up() )
+    {
+      double sef_mult = p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
+      if ( p() -> artifact.spiritual_focus.rank() )
+        sef_mult += p() -> artifact.spiritual_focus.data().effectN( 1 ).percent();
+      pm *= 1.0 + sef_mult;
+    }
 
     return pm;
   }
@@ -3964,6 +4112,21 @@ struct melee_t: public monk_melee_attack_t
       else
         base_hit -= 0.19;
     }
+  }
+  
+  virtual double action_multiplier() const override
+  {
+    double am = monk_melee_attack_t::action_multiplier();
+
+    if ( p() -> buff.storm_earth_and_fire -> up() )
+    {
+      double sef_mult = p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
+      if ( p() -> artifact.spiritual_focus.rank() )
+        sef_mult += p() -> artifact.spiritual_focus.data().effectN( 1 ).percent();
+      am *= 1.0 + sef_mult;
+    }
+
+    return am;
   }
 
   void reset() override
@@ -4074,6 +4237,9 @@ struct keg_smash_t: public monk_melee_attack_t
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
     cooldown -> duration = p.spec.keg_smash -> cooldown();
+    // Keg Smash does not appear to be picking up the baseline Trigger GCD reduction
+    // Forcing the trigger GCD to 1 second.
+    trigger_gcd = timespan_t::from_seconds( 1 );
   }
 
   virtual bool ready() override
@@ -4726,7 +4892,7 @@ struct crackling_jade_lightning_t: public monk_spell_t
 
     parse_options( options_str );
 
-    channeled = tick_may_crit = interrupt = true;
+    channeled = tick_may_crit = true;
     hasted_ticks = false; // Channeled spells always have hasted ticks. Use hasted_ticks = false to disable the increase in the number of ticks.
     interrupt_auto_attack = true;
   }
@@ -4735,8 +4901,18 @@ struct crackling_jade_lightning_t: public monk_spell_t
   {
     double c = monk_spell_t::cost_per_tick( resource );
 
-    if ( p() -> buff.emperors_electric_charge -> up() )
-      c *= 1 + ( p() -> buff.emperors_electric_charge -> current_stack * p() -> passives.the_emperor_capacitor -> effectN( 2 ).percent() );
+    if ( p() -> buff.the_emperors_capacitor -> up() && resource == RESOURCE_ENERGY )
+      c *= 1 + ( p() -> buff.the_emperors_capacitor -> current_stack * p() -> passives.the_emperors_capacitor -> effectN( 2 ).percent() );
+
+    return c;
+  }
+
+  virtual double cost() const override
+  {
+    double c = monk_spell_t::cost();
+
+    if ( p() -> buff.the_emperors_capacitor -> up() )
+      c *= 1 + ( p() -> buff.the_emperors_capacitor -> current_stack * p() -> passives.the_emperors_capacitor -> effectN( 2 ).percent() );
 
     return c;
   }
@@ -4748,8 +4924,8 @@ struct crackling_jade_lightning_t: public monk_spell_t
     if ( p() -> buff.combo_strikes -> up() )
       pm *= 1 + p() -> cache.mastery_value();
 
-    if ( p() -> buff.emperors_electric_charge -> up() )
-      pm *= 1 + p() -> buff.emperors_electric_charge -> stack_value();
+    if ( p() -> buff.the_emperors_capacitor -> up() )
+      pm *= 1 + p() -> buff.the_emperors_capacitor -> stack_value();
 
     return pm;
   }
@@ -4762,7 +4938,13 @@ struct crackling_jade_lightning_t: public monk_spell_t
 
     am *= 1 + p() -> spec.brewmaster_monk -> effectN( 2 ).percent();
 
-    am *= 1 + p() -> spec.windwalker_monk -> effectN( 2 ).percent();
+    if ( p() -> buff.storm_earth_and_fire -> up() )
+    {
+      double sef_mult = p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
+      if ( p() -> artifact.spiritual_focus.rank() )
+        sef_mult += p() -> artifact.spiritual_focus.data().effectN( 1 ).percent();
+      am *= 1.0 + sef_mult;
+    }
 
     return am;
   }
@@ -4778,8 +4960,8 @@ struct crackling_jade_lightning_t: public monk_spell_t
   {
     monk_spell_t::last_tick( dot );
 
-    if ( p() -> buff.emperors_electric_charge -> up() )
-      p() -> buff.emperors_electric_charge -> expire();
+    if ( p() -> buff.the_emperors_capacitor -> up() )
+      p() -> buff.the_emperors_capacitor -> expire();
 
     // Reset swing timer
     if ( player -> main_hand_attack )
@@ -4883,7 +5065,7 @@ struct breath_of_fire_t: public monk_spell_t
     {
       double am = monk_spell_t::action_multiplier();
 
-      am *= 1 + p() -> spec.brewmaster_monk -> effectN( 1 ).percent();
+      am *= 1 + p() -> spec.brewmaster_monk -> effectN( 2 ).percent();
 
       if ( p() -> artifact.hot_blooded.rank() )
         am *= 1 + p() -> artifact.hot_blooded.data().effectN( 1 ).percent();
@@ -4903,6 +5085,15 @@ struct breath_of_fire_t: public monk_spell_t
     parse_options( options_str );
 
     add_child( dragonfire );
+  }
+
+  double action_multiplier() const override
+  {
+    double am = monk_spell_t::action_multiplier();
+
+    am *= 1 + p() -> spec.brewmaster_monk -> effectN( 1 ).percent();
+
+    return am;
   }
 
   virtual void update_ready( timespan_t ) override
@@ -6250,8 +6441,6 @@ struct chi_wave_heal_tick_t: public monk_heal_t
 
     am *= 1 + p() -> spec.brewmaster_monk -> effectN( 6 ).percent();
 
-    am *= 1 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
-
     return am;
   }
 };
@@ -6283,7 +6472,13 @@ struct chi_wave_dmg_tick_t: public monk_spell_t
 
     am *= 1 + p() -> spec.brewmaster_monk -> effectN( 6 ).percent();
 
-    am *= 1 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
+    if ( p() -> buff.storm_earth_and_fire -> up() )
+    {
+      double sef_mult = p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
+      if ( p() -> artifact.spiritual_focus.rank() )
+        sef_mult += p() -> artifact.spiritual_focus.data().effectN( 1 ).percent();
+      am *= 1.0 + sef_mult;
+    }
 
     return am;
   }
@@ -6372,8 +6567,6 @@ struct chi_burst_heal_t: public monk_heal_t
 
     am *= 1 + p() -> spec.brewmaster_monk -> effectN( 6 ).percent();
 
-    am *= 1 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
-
     return am;
   }
 };
@@ -6406,7 +6599,13 @@ struct chi_burst_damage_t: public monk_spell_t
 
     am *= 1 + p() -> spec.brewmaster_monk -> effectN( 6 ).percent();
 
-    am *= 1 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
+    if ( p() -> buff.storm_earth_and_fire -> up() )
+    {
+      double sef_mult = p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
+      if ( p() -> artifact.spiritual_focus.rank() )
+        sef_mult += p() -> artifact.spiritual_focus.data().effectN( 1 ).percent();
+      am *= 1.0 + sef_mult;
+    }
 
     return am;
   }
@@ -6838,7 +7037,10 @@ struct serenity_buff_t: public monk_buff_t < buff_t > {
   void cooldown_extension( cooldown_t* cd )
   {
     if ( cd -> down() )
-      // adjustin by +100% of remaining cooldown
+      // adjusting by +100% of remaining cooldown
+      // Can probably future proof for non -50% values with this:
+      // cd -> adjust( ( cd -> remains() / -( percent_adjust ) ) / 2, true );
+      // but too much calc needed for the time being.
       cd -> adjust( cd -> remains(), true );
   }
 
@@ -6865,6 +7067,8 @@ struct serenity_buff_t: public monk_buff_t < buff_t > {
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
+    // When Serenity expires, it reverts any current cooldown by 50%
+    // Have to manually adjust each of the affected spells
     cooldown_extension( monk.cooldown.blackout_kick );
 
     cooldown_extension( monk.cooldown.blackout_strike );
@@ -7466,7 +7670,7 @@ void monk_t::init_spells()
 
   // Legendaries
   passives.hidden_masters_forbidden_touch   = find_spell( 213114 );
-  passives.the_emperor_capacitor            = find_spell( 235054 );
+  passives.the_emperors_capacitor           = find_spell( 235054 );
 
   // Mastery spells =========================================
   mastery.combo_strikes              = find_mastery_spell( MONK_WINDWALKER );
@@ -7750,8 +7954,7 @@ void monk_t::create_buffs()
                               .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER )
                               .cd( timespan_t::zero() );
 
-  // TODO: change spec.touch_of_karma to passives.touch_of_karma_buff once DBC updates
-  buff.touch_of_karma = new buffs::touch_of_karma_buff_t( *this, "touch_of_karma", spec.touch_of_karma );
+  buff.touch_of_karma = new buffs::touch_of_karma_buff_t( *this, "touch_of_karma", passives.touch_of_karma_buff );
 
   buff.transfer_the_power = buff_creator_t( this, "transfer_the_power", artifact.transfer_the_power.data().effectN( 1 ).trigger() )
     .default_value( artifact.transfer_the_power.rank() ? artifact.transfer_the_power.percent() : 0 ); 
@@ -7760,8 +7963,8 @@ void monk_t::create_buffs()
   buff.hidden_masters_forbidden_touch = new buffs::hidden_masters_forbidden_touch_t( 
     *this, "hidden_masters_forbidden_touch", passives.hidden_masters_forbidden_touch );
 
-  buff.emperors_electric_charge = buff_creator_t( this, "emperors_electric_charge", passives.the_emperor_capacitor )
-    .default_value( passives.the_emperor_capacitor -> effectN( 1 ).percent() );
+  buff.the_emperors_capacitor = buff_creator_t( this, "the_emperors_capacitor", passives.the_emperors_capacitor )
+    .default_value( passives.the_emperors_capacitor -> effectN( 1 ).percent() );
 }
 
 // monk_t::init_gains =======================================================
@@ -7954,6 +8157,11 @@ void monk_t::retarget_storm_earth_and_fire( pet_t* pet, std::vector<player_t*>& 
 {
   player_t* original_target = pet -> target;
 
+  // Clones will now only re-target when you use an ability that applies Mark of the Crane, and their current target already has Mark of the Crane.
+  // https://us.battle.net/forums/en/wow/topic/20752377961?page=29#post-573
+  if ( ! get_target_data( original_target ) -> debuff.mark_of_the_crane -> up() )
+    return;
+
   // Everyone attacks the same (single) target
   if ( n_targets == 1 )
   {
@@ -7999,6 +8207,15 @@ void monk_t::retarget_storm_earth_and_fire( pet_t* pet, std::vector<player_t*>& 
 
       // Don't attack my own target
       if ( *it == pet -> target )
+      {
+        it++;
+        continue;
+      }
+
+      // Clones will no longer target Immune enemies, or crowd-controlled enemies, or enemies you aren’t in combat with.
+      // https://us.battle.net/forums/en/wow/topic/20752377961?page=29#post-573
+      player_t* player = *it;
+      if ( player -> debuffs.invulnerable || player -> debuffs.dazed )
       {
         it++;
         continue;
@@ -8125,14 +8342,6 @@ double monk_t::composite_player_multiplier( school_e school ) const
     m *= 1 + ser_mult;
   }
 
-  if ( buff.storm_earth_and_fire -> up() )
-  {
-    double sef_mult = spec.storm_earth_and_fire -> effectN( 1 ).percent();
-    if ( artifact.spiritual_focus.rank() )
-      sef_mult += artifact.spiritual_focus.data().effectN( 1 ).percent();
-    m *= 1.0 + sef_mult;
-  }
-
   if ( talent.hit_combo -> ok() )
     m *= 1.0 + buff.hit_combo -> stack_value();
 
@@ -8166,14 +8375,6 @@ double monk_t::composite_player_heal_multiplier( const action_state_t* s ) const
     if ( artifact.spiritual_focus.rank() )
       ser_mult += artifact.spiritual_focus.data().effectN( 6 ).percent();
     m *= 1+ ser_mult;
-  }
-
-  if ( buff.storm_earth_and_fire -> up() )
-  {
-    double sef_mult = spec.storm_earth_and_fire -> effectN( 2 ).percent();
-    if ( artifact.spiritual_focus.rank() )
-      sef_mult += artifact.spiritual_focus.data().effectN( 2 ).percent();
-    m *= 1.0 + sef_mult;
   }
 
   if ( artifact.mistweaving.rank() )
@@ -8849,7 +9050,7 @@ void monk_t::apl_pre_windwalker()
   {
     // Food
     if ( level() > 100 )
-      pre -> add_action( "food,type=fishbrul_special" );
+      pre -> add_action( "food,type=the_hungry_magister" );
     else if ( level() > 90 )
       pre -> add_action( "food,type=salty_squid_roll" );
     else if ( level() >= 85 )
@@ -8871,7 +9072,7 @@ void monk_t::apl_pre_windwalker()
   {
     // Prepotion
     if ( true_level > 100 )
-      pre -> add_action( "potion,name=old_war" );
+      pre -> add_action( "potion,name=prolonged_power" );
     else if ( true_level > 90 )
       pre -> add_action( "potion,name=draenic_agility" );
     else if ( true_level >= 85 )
@@ -9019,17 +9220,17 @@ void monk_t::apl_combat_windwalker()
   if ( sim -> allow_potions )
   {
     if ( true_level > 100 )
-      def -> add_action( "potion,name=old_war,if=buff.serenity.up|buff.storm_earth_and_fire.up|(!talent.serenity.enabled&trinket.proc.agility.react)|buff.bloodlust.react|target.time_to_die<=60" );
+      def -> add_action( "potion,name=prolonged_power,if=buff.serenity.up|buff.storm_earth_and_fire.up|(!talent.serenity.enabled&trinket.proc.agility.react)|buff.bloodlust.react|target.time_to_die<=60" );
     else if ( true_level > 90 )
       def -> add_action( "potion,name=draenic_agility,if=buff.serenity.up|buff.storm_earth_and_fire.up|(!talent.serenity.enabled&trinket.proc.agility.react)|buff.bloodlust.react|target.time_to_die<=60" );
     else if ( true_level >= 85 )
       def -> add_action( "potion,name=virmens_bite,if=buff.bloodlust.react|target.time_to_die<=60" );
   }
 
-  def -> add_action( "call_action_list,name=serenity,if=(talent.serenity.enabled&cooldown.serenity.remains<=0)&((artifact.strike_of_the_windlord.enabled&cooldown.strike_of_the_windlord.remains<=15&cooldown.fists_of_fury.remains<8&cooldown.rising_sun_kick.remains<=4)|buff.serenity.up)" );
-  def -> add_action( "call_action_list,name=sef,if=!talent.serenity.enabled&((artifact.strike_of_the_windlord.enabled&cooldown.strike_of_the_windlord.remains<=14&cooldown.fists_of_fury.remains<=6&cooldown.rising_sun_kick.remains<=6)|buff.storm_earth_and_fire.up)" );
-  def -> add_action( "call_action_list,name=serenity,if=(talent.serenity.enabled&cooldown.serenity.remains<=0)&(!artifact.strike_of_the_windlord.enabled&cooldown.strike_of_the_windlord.remains<14&cooldown.fists_of_fury.remains<=15&cooldown.rising_sun_kick.remains<7)|buff.serenity.up" );
-  def -> add_action( "call_action_list,name=sef,if=!talent.serenity.enabled&((!artifact.strike_of_the_windlord.enabled&cooldown.fists_of_fury.remains<=9&cooldown.rising_sun_kick.remains<=5)|buff.storm_earth_and_fire.up)" );
+  def -> add_action( this, "Touch of Death", "if=target.time_to_die<=9" );
+  def -> add_action( "call_action_list,name=serenity,if=(talent.serenity.enabled&cooldown.serenity.remains<=0)|buff.serenity.up" );
+  def -> add_action( "call_action_list,name=sef,if=!talent.serenity.enabled&equipped.drinking_horn_cover&((cooldown.fists_of_fury.remains<=1&chi>=3)|buff.storm_earth_and_fire.up|cooldown.storm_earth_and_fire.charges=2|cooldowntarget.time_to_die<=25|cooldown.touch_of_death.remains>=85)" );
+  def -> add_action( "call_action_list,name=sef,if=!talent.serenity.enabled&!equipped.drinking_horn_cover&((artifact.strike_of_the_windlord.enabled&cooldown.strike_of_the_windlord.remains<=14&cooldown.fists_of_fury.remains<=6&cooldown.rising_sun_kick.remains<=6)|buff.storm_earth_and_fire.up)" );
   def -> add_action( "call_action_list,name=st" );
 
   // Cooldowns
@@ -9047,6 +9248,10 @@ void monk_t::apl_combat_windwalker()
       }
       else if ( items[i].name_str == "tiny_oozeling_in_a_jar" )
         cd -> add_action( "use_item,name=" + items[i].name_str + ",if=buff.congealing_goo.stack>=6" );
+      else if ( items[i].name_str == "draught_of_souls" )
+      {
+        // Keeping blank to make sure this is placed AFTER Touch of Death
+      }
       else
         cd -> add_action( "use_item,name=" + items[i].name_str );
     }
@@ -9056,47 +9261,84 @@ void monk_t::apl_combat_windwalker()
     if ( racial_actions[i] != "arcane_torrent" )
       cd -> add_action( racial_actions[i]  );
   }
-  cd -> add_action( this, "Touch of Death", "cycle_targets=1,max_cycle_targets=2,if=!artifact.gale_burst.enabled&equipped.137057&!prev_gcd.1.touch_of_death" );
-  cd -> add_action( this, "Touch of Death", "if=!artifact.gale_burst.enabled&!equipped.137057" );
-  cd -> add_action( this, "Touch of Death", "cycle_targets=1,max_cycle_targets=2,if=artifact.gale_burst.enabled&equipped.137057&cooldown.strike_of_the_windlord.remains<8&cooldown.fists_of_fury.remains<=4&cooldown.rising_sun_kick.remains<7&!prev_gcd.1.touch_of_death" );
-  cd -> add_action( this, "Touch of Death", "if=artifact.gale_burst.enabled&!equipped.137057&cooldown.strike_of_the_windlord.remains<8&cooldown.fists_of_fury.remains<=4&cooldown.rising_sun_kick.remains<7" );
+  cd -> add_action( this, "Touch of Death", "cycle_targets=1,max_cycle_targets=2,if=!artifact.gale_burst.enabled&equipped.hidden_masters_forbidden_touch&(prev_gcd.2.touch_of_death|prev_gcd.3.touch_of_death|prev_gcd.4.touch_of_death)" );
+  cd -> add_action( this, "Touch of Death", "if=!artifact.gale_burst.enabled&!equipped.hidden_masters_forbidden_touch" );
+  cd -> add_action( this, "Touch of Death", "cycle_targets=1,max_cycle_targets=2,if=artifact.gale_burst.enabled&equipped.hidden_masters_forbidden_touch&cooldown.strike_of_the_windlord.remains<8&cooldown.fists_of_fury.remains<=4&cooldown.rising_sun_kick.remains<7&(prev_gcd.2.touch_of_death|prev_gcd.3.touch_of_death|prev_gcd.4.touch_of_death)" );
+  cd -> add_action( this, "Touch of Death", "if=artifact.gale_burst.enabled&!talent.serenity.enabled&!equipped.hidden_masters_forbidden_touch&cooldown.strike_of_the_windlord.remains<8&cooldown.fists_of_fury.remains<=4&cooldown.rising_sun_kick.remains<7&chi>=2" );
+  cd -> add_action( this, "Touch of Death", "if=artifact.gale_burst.enabled&talent.serenity.enabled&!equipped.hidden_masters_forbidden_touch&cooldown.strike_of_the_windlord.remains<8&cooldown.fists_of_fury.remains<=4&cooldown.rising_sun_kick.remains<7" );
+  // Trinket usage for procs to add toward Touch of Death Gale Burst Artifact Trait
+  for ( int i = 0; i < num_items; i++ )
+  {
+    if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+    {
+      if ( items[i].name_str == "draught_of_souls" )
+      {
+        cd -> add_action( "use_item,name=" + items[i].name_str + ",if=talent.serenity.enabled&cooldown.serenity.remains>=20&!buff.serenity.up" );
+        cd -> add_action( "use_item,name=" + items[i].name_str + ",if=!talent.serenity.enabled&!buff.storm_earth_and_fire.up" );
+      }
+    }
+  }
 
   // Storm, Earth, and Fire
-  sef -> add_talent( this, "Energizing Elixir" );
+  sef -> add_action( this, "Tiger Palm", "if=energy=energy.max&chi<1" );
   for ( size_t i = 0; i < racial_actions.size(); i++ )
   {
     if ( racial_actions[i] == "arcane_torrent" )
       sef -> add_action( racial_actions[i] + ",if=chi.max-chi>=1&energy.time_to_max>=0.5" );
   }
   sef -> add_action( "call_action_list,name=cd" );
-  sef -> add_action( this, "Storm, Earth, and Fire" );
+  sef -> add_action( this, "Storm, Earth, and Fire", "if=!buff.storm_earth_and_fire.up&(cooldown.touch_of_death.remains<=8|cooldown.touch_of_death.remains>85)" );
+  sef -> add_action( this, "Storm, Earth, and Fire", "if=!buff.storm_earth_and_fire.up&cooldown.storm_earth_and_fire.charges=2" );
+  sef -> add_action( this, "Storm, Earth, and Fire", "if=!buff.storm_earth_and_fire.up&target.time_to_die<=25" );
+  sef -> add_action( this, "Storm, Earth, and Fire", "if=!buff.storm_earth_and_fire.up&cooldown.fists_of_fury.remains<=1&chi>=3" );
+  sef -> add_action( this, "Fists of Fury", "if=buff.storm_earth_and_fire.up" );
+  sef -> add_action( this, "Rising Sun Kick", "if=buff.storm_earth_and_fire.up&chi=2&energy<energy.max" );
   sef -> add_action( "call_action_list,name=st" );
 
   // Serenity
-  serenity -> add_talent( this, "Energizing Elixir" );
   serenity -> add_action( "call_action_list,name=cd" );
   serenity -> add_talent( this, "Serenity" );
   serenity -> add_action( this, "Strike of the Windlord" );
+
+  for ( int i = 0; i < num_items; i++ )
+  {
+    if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+    {
+      if ( items[i].name_str == "draught_of_souls" )
+      {
+        serenity -> add_action( "use_item,name=" + items[i].name_str );
+      }
+    }
+  }
+
   serenity -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=active_enemies<3" );
   serenity -> add_action( this, "Fists of Fury" );
   serenity -> add_action( this, "Spinning Crane Kick", "if=active_enemies>=3&!prev_gcd.1.spinning_crane_kick" );
   serenity -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=active_enemies>=3" );
-  serenity -> add_action( this, "Blackout Kick", "cycle_targets=1,if=!prev_gcd.1.blackout_kick" );
   serenity -> add_action( this, "Spinning Crane Kick", "if=!prev_gcd.1.spinning_crane_kick" );
+  serenity -> add_action( this, "Blackout Kick", "cycle_targets=1,if=!prev_gcd.1.blackout_kick" );
   serenity -> add_talent( this, "Rushing Jade Wind", "if=!prev_gcd.1.rushing_jade_wind" );
 
   // Single Target
   st -> add_action( "call_action_list,name=cd" );
+  st -> add_talent( this, "Energizing Elixir", "if=energy<energy.max&chi<=1" );
   for ( size_t i = 0; i < racial_actions.size(); i++ )
   {
     if ( racial_actions[i] == "arcane_torrent" )
       st -> add_action( racial_actions[i] + ",if=chi.max-chi>=1&energy.time_to_max>=0.5" );
   }
-  st -> add_talent( this, "Energizing Elixir", "if=energy<energy.max&chi<=1" );
-  st -> add_action( this, "Strike of the Windlord", "if=talent.serenity.enabled|active_enemies<6" );
-  st -> add_action( this, "Fists of Fury" );
-  st -> add_action( this, "Rising Sun Kick", "cycle_targets=1" );
+  st -> add_action( this, "Strike of the Windlord", "if=equipped.convergence_of_fates&talent.serenity.enabled&cooldown.serenity.remains>=10" );
+  st -> add_action( this, "Strike of the Windlord", "if=equipped.convergence_of_fates&!talent.serenity.enabled" );
+  st -> add_action( this, "Strike of the Windlord", "if=!equipped.convergence_of_fates" );
+  st -> add_action( this, "Fists of Fury", "if=equipped.convergence_of_fates&talent.serenity.enabled&cooldown.serenity.remains>=5" );
+  st -> add_action( this, "Fists of Fury", "if=equipped.convergence_of_fates&!talent.serenity.enabled" );
+  st -> add_action( this, "Fists of Fury", "if=!equipped.convergence_of_fates" );
+  st -> add_action( this, "Tiger Palm", "cycle_targets=1,if=!prev_gcd.1.tiger_palm&energy=energy.max&chi<=3&buff.storm_earth_and_fire.up" );
+  st -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=equipped.convergence_of_fates&talent.serenity.enabled&cooldown.serenity.remains>=2" );
+  st -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=equipped.convergence_of_fates&!talent.serenity.enabled" );
+  st -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=!equipped.convergence_of_fates" );
   st -> add_talent( this, "Whirling Dragon Punch" );
+  st -> add_action( this, "Crackling Jade Lightning", "if=equipped.the_emperors_capacitor&buff.the_emperors_capacitor.stack>=19" );
   st -> add_action( this, "Spinning Crane Kick", "if=active_enemies>=3&!prev_gcd.1.spinning_crane_kick" );
   st -> add_talent( this, "Rushing Jade Wind", "if=chi.max-chi>1&!prev_gcd.1.rushing_jade_wind" );
   st -> add_action( this, "Blackout Kick", "cycle_targets=1,if=(chi>1|buff.bok_proc.up)&!prev_gcd.1.blackout_kick" );

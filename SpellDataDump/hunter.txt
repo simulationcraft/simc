@@ -1,4 +1,4 @@
-SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23244, git build 2679573)
+SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23360, git build 3b52b5d)
 
 Name             : Mend Pet (id=136) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
@@ -558,7 +558,8 @@ Effects          :
 #1 (id=10651)    : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 (avg=2.2, dl=0.1) | Target: Enemy(6)
 #2 (id=101526)   : Weapon Damage% (31)
-                   Base Value: 300 | Scaled Value: 3 | Target: Enemy(6)
+                   Base Value: 275 | Scaled Value: 2.75 | Target: Enemy(6)
+                   Hotfixed: Base Value (300 -> 275)
 #3 (id=354901)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100
 Description      : A powerful aimed shot that deals ${$sw1*$<mult>} Physical damage.  Damage increased by $s3% against a target you have not yet damaged.  $?!s19434&c1[
@@ -2404,6 +2405,23 @@ Effects          :
 Description      : After you Multi-Shot, your pet's melee attacks also strike all other nearby enemy targets for $115939s1% as much for the next $d.
 Tooltip          : Melee attacks also strike all other nearby enemy targets.
 
+Name             : Beast Cleave (id=118459) [Spell Family (9)] 
+Class            : Hunter
+School           : Physical
+Range            : 5 yards
+Affecting spells : Beast Mastery Hunter (137015)
+Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
+                 : .......x ........ ......x. .....x..   ........ .x...... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Cannot crit (93), Not a proc (105)
+Effects          :
+#1 (id=134941)   : School Damage: physical (2)
+                   Base Value: 1 | Scaled Value: 1 | Radius: 0 - 10 yards | Target: Custom(18) -> AOE enemy (instant)(16)
+Description      : Melee attacks also strike all other nearby enemies.
+
 Name             : Posthaste (id=118922) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -2422,6 +2440,7 @@ Description      : $@spelldesc109215
 Tooltip          : Increased movement speed by $s1%.
 
 Name             : Barrage (id=120360) [Spell Family (9)] 
+Hotfixed         : Variables
 Class            : Hunter
 School           : Physical
 Resource         : 60 Focus
@@ -2444,8 +2463,7 @@ Effects          :
 #1 (id=139839)   : Apply Aura (6) | Periodic Trigger Spell: Barrage every 0.2 seconds (23)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 120361 | Target: Self(1)
 Description      : Rapidly fires a spray of shots for $120360d, dealing an average of $<damageSec> Physical damage to all enemies in front of you. Usable while moving.
-Variables        : $damagePri=${($rw+$RW)/2*0.7*15*(1+$@versadmg)*(1+$193468m2/100)}
-$damageSec=$?s137015[${($rw+$RW)*(1+$137015s3/100)/2*0.7*7.5*(1+$@versadmg)*(1+$193468m2/100)}][${($rw+$RW)/2*0.7*7.5*(1+$@versadmg)*(1+$193468m2/100)}]
+Variables        : $damageSec=${$120361sw2*8}
 
 Name             : Barrage (id=120361) [Spell Family (9)] 
 Class            : Hunter
@@ -2869,7 +2887,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179698)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 9 | Scaled Value: 9 | Target: Self(1)
-                   Affected Spells: Kill Command (34026), Chimaera Shot (53209), Kill Command (83381), Beast Cleave (115939), Chimaera Shot (171454), Chimaera Shot (171457), Cobra Shot (193455), Chimaera Shot (204304), Dire Frenzy (217207)
+                   Affected Spells: Kill Command (34026), Chimaera Shot (53209), Kill Command (83381), Beast Cleave (115939), Beast Cleave (118459), Chimaera Shot (171454), Chimaera Shot (171457), Cobra Shot (193455), Chimaera Shot (204304), Dire Frenzy (217207)
                    Hotfixed: Base Value (4 -> 9)
 #2 (id=191138)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self(1)
@@ -3746,7 +3764,7 @@ Tooltip          : Bleeding for $s1 damage every $t1 sec.
 Name             : Marked Shot (id=185901) [Spell Family (9)] 
 Class            : Marksmanship Hunter
 School           : Physical
-Resource         : 30 Focus
+Resource         : 25 Focus [Hotfixed: Cost (30 -> 25)]
 Spell Level      : 20
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -3771,7 +3789,7 @@ Class            : Marksmanship Hunter
 School           : Physical
 Spell Level      : 20
 Proc Chance      : 100%
-Real PPM         : 6.5 (Haste multiplier)
+Real PPM         : 7.2 (Haste multiplier)
 Proc Flags       : ......x. ........ ........ ........ 
                  : White Ranged
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -3979,7 +3997,7 @@ Class            : Hunter
 School           : Physical
 Spell Level      : 1
 Range            : 100 yards
-Duration         : 6 seconds
+Duration         : 7 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Affecting spells : Patient Sniper (234588)
@@ -5828,12 +5846,13 @@ Description      : $@spelldesc200108
 Tooltip          : Slowed by $s1%.
 
 Name             : Sentinel (id=206817) [Spell Family (9)] 
+Hotfixed         : Velocity (22 -> 20)
 Class            : Hunter
 School           : Physical
 Range            : 40 yards
 GCD              : 1.5 seconds
-Velocity         : 22 yards/sec
-Duration         : 20 seconds
+Velocity         : 20 yards/sec
+Duration         : 18 seconds
 Cooldown         : 60 seconds
 Affecting spells : Hunter (137014), Mastery: Sniper Training (193468)
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
@@ -5846,7 +5865,8 @@ Effects          :
 #1 (id=305849)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 10 yards | Target: Unknown(87)
 #2 (id=357342)   : Unknown effect type (179)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 9769 | Target: Unknown(87)
+                   Base Value: 6 | Scaled Value: 6 | Misc Value: 9769 | Target: Unknown(87)
+                   Hotfixed: Base Value (10 -> 6)
 Description      : Your Sentinel watches over the target area for $d, applying Hunter's Mark to all enemies every $s2 sec.
 
 Name             : Titan's Thunder (Artifact) (id=207068) [Spell Family (9)] 
@@ -6037,7 +6057,8 @@ Effects          :
 #1 (id=315281)   : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
 #2 (id=315282)   : Weapon Damage% (31)
-                   Base Value: 450 | Scaled Value: 4.5 | Target: Enemy(6)
+                   Base Value: 550 | Scaled Value: 5.5 | Target: Enemy(6)
+                   Hotfixed: Base Value (450 -> 550)
 Description      : $@spelldesc185901
 
 Name             : Hunting Party (id=212658) [Spell Family (9), Passive] 
@@ -6383,7 +6404,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=349268)   : Apply Aura (6) | Increase Energy (35)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 2 | Target: Self(1)
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 2 | Target: Self(1)
+                   Hotfixed: Base Value (20 -> 30)
 Description      : Increases your maximum Focus by $s1.
 
 Name             : Aspect of the Eagle (Rank 2) (id=231555) [Spell Family (9), Passive] 
@@ -6432,8 +6454,9 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=354479)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 4 (107)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 32 | Target: Self(1)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 32 | Target: Self(1)
                    Affected Spells: Vulnerable (187131)
+                   Hotfixed: Base Value (15 -> 10)
 Description      : Gain the patience of a veteran sniper, increasing the damage bonus of Vulnerable by $s1% every $187131t4 sec.
 
 Name             : Waylay (id=234955) [Spell Family (9), Passive] 
