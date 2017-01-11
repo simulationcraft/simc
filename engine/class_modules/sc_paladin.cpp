@@ -170,6 +170,7 @@ public:
   {
     const spell_data_t* judgment_2;
     const spell_data_t* judgment_3;
+    const spell_data_t* retribution_paladin;
   } spec;
 
 
@@ -784,13 +785,21 @@ public:
   // haste scaling bools
   bool hasted_cd;
   bool hasted_gcd;
+  bool ret_damage_increase;
+  bool ret_dot_increase;
 
   paladin_action_t( const std::string& n, paladin_t* player,
                     const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, player, s ),
     hasted_cd( ab::data().affected_by( player -> passives.paladin -> effectN( 2 ) ) ),
-    hasted_gcd( ab::data().affected_by( player -> passives.paladin -> effectN( 3 ) ) )
+    hasted_gcd( ab::data().affected_by( player -> passives.paladin -> effectN( 3 ) ) ),
+    ret_damage_increase( ab::data().affected_by( player -> spec.retribution_paladin -> effectN( 1 ) ) ),
+    ret_dot_increase( ab::data().affected_by( player -> spec.retribution_paladin -> effectN( 2 ) ) )
   {
+    if ( ret_damage_increase )
+      ab::base_dd_multiplier *= 1.0 + player -> spec.retribution_paladin -> effectN( 1 ).percent();
+    if ( ret_dot_increase )
+      ab::base_td_multiplier *= 1.0 + player -> spec.retribution_paladin -> effectN( 2 ).percent();
   }
 
   paladin_t* p()
@@ -5146,6 +5155,8 @@ void paladin_t::init_spells()
     default:
     break;
   }
+
+  spec.retribution_paladin = find_specialization_spell( "Retribution Paladin" );
 
   // Passives
 
