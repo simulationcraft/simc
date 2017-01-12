@@ -457,8 +457,7 @@ void item::naraxas_spiked_tongue( special_effect_t& effect )
   struct rancid_maw_t: public proc_spell_t
   {
     rancid_maw_t( const special_effect_t& e ):
-      proc_spell_t( "rancid_maw", e.player,
-                    e.player -> find_spell( 215405 ), nullptr )
+      proc_spell_t( "rancid_maw", e.player, e.player -> find_spell( 215405 ), e.item )
     {
     }
 
@@ -466,7 +465,7 @@ void item::naraxas_spiked_tongue( special_effect_t& effect )
     {
       double am = proc_spell_t::action_multiplier();
 
-      double distance = execute_state -> target -> get_player_distance( *player );
+      double distance = target -> get_player_distance( *player );
       am *= ( std::min( distance, 20.0 ) / 20.0 ); // Does less damage the closer player is to target.
       return am;
     }
