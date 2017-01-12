@@ -53,7 +53,7 @@ static std::vector<player_t*> __check_distance_targeting( const action_t* action
 
   std::vector<player_t*> original_targets( targets_left_to_try ); // This is just so we don't have to constantly remove the original target.
 
-  bool stop_trying = false; // It's not you, it's me.
+  bool stop_trying = false; 
 
   while ( !stop_trying )
   {

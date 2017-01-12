@@ -1019,10 +1019,7 @@ timespan_t action_t::travel_time() const
   if ( travel_speed == 0 ) return timespan_t::zero();
 
   double distance;
-  if ( sim -> distance_targeting_enabled )
-    distance = player -> get_player_distance( *target );
-  else
-    distance = player -> current.distance;
+  distance = player -> get_player_distance( *target );
 
   if ( execute_state && execute_state -> target )
     distance += execute_state -> target -> height;
@@ -1330,8 +1327,7 @@ std::vector< player_t* >& action_t::target_list() const
   if ( !target_cache.is_valid )
   {
     available_targets( target_cache.list ); // This grabs the full list of targets, which will also pickup various awfulness that some classes have.. such as prismatic crystal.
-    if ( sim -> distance_targeting_enabled )
-      check_distance_targeting( target_cache.list );
+    check_distance_targeting( target_cache.list );
     target_cache.is_valid = true;
   }
 

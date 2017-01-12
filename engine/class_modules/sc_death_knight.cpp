@@ -7224,7 +7224,7 @@ void death_knight_t::create_buffs()
                               .spell( find_spell( 81141 ) )
                               .trigger_spell( spec.crimson_scourge );
   buffs.dancing_rune_weapon = buff_creator_t( this, "dancing_rune_weapon", find_spell( 81256 ) )
-							  .duration( find_spell( 81256 ) -> duration() + artifact.dance_of_darkness.time_value() )
+                              .duration( find_spell( 81256 ) -> duration() + artifact.dance_of_darkness.time_value() )
                               .cd( timespan_t::zero() )
                               .add_invalidate( CACHE_PARRY );
   buffs.dark_transformation = buff_creator_t( this, "dark_transformation", find_class_spell( "Dark Transformation" ) )
@@ -7596,7 +7596,7 @@ double death_knight_t::composite_attribute_multiplier( attribute_e attr ) const
   else if ( attr == ATTR_STAMINA )
   {
     m *= 1.0 + spec.veteran_of_the_third_war -> effectN( 5 ).percent();
-	m *= 1.0 + artifact.meat_shield.percent();
+    m *= 1.0 + artifact.meat_shield.percent();
     if ( runeforge.rune_of_the_stoneskin_gargoyle -> check() )
       m *= 1.0 + runeforge.rune_of_the_stoneskin_gargoyle -> data().effectN( 2 ).percent();
   }
