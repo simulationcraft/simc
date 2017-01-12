@@ -6961,7 +6961,14 @@ void death_knight_t::default_apl_frost()
   {
     if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
     {
-      def -> add_action( "use_item,slot=" + std::string( item.slot_name() ) );
+      if ( item.name_str == "ring_of_collapsing_futures" )
+      {
+        def -> add_action( "use_item,name=" + item.name_str + ",if=buff.temptation.stack=0" );
+      }
+      else
+      {
+        def -> add_action( "use_item,slot=" + std::string( item.slot_name() ) );
+      }
     }
   }
 
@@ -7083,7 +7090,14 @@ void death_knight_t::default_apl_unholy()
   {
     if (item.has_special_effect(SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE))
     {
-      def->add_action("use_item,slot=" + std::string(item.slot_name()));
+      if ( item.name_str == "ring_of_collapsing_futures" )
+      {
+        def -> add_action( "use_item,name=" + item.name_str + ",if=(buff.temptation.stack<1&target.time_to_die>60)|target.time_to_die<60" );
+      }
+      else
+      {
+        def->add_action( "use_item,slot=" + std::string( item.slot_name() ) );
+      }
     }
   }
 
