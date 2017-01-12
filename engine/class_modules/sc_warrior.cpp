@@ -96,7 +96,7 @@ public:
   const special_effect_t* archavons_heavy_hand, *bindings_of_kakushan,
     *kargaths_sacrificed_hands, *thundergods_vigor, *ceannar_charger, *kazzalax_fujiedas_fury, *the_walls_fell,
     *destiny_driver, *prydaz_xavarics_magnum_opus, *mannoroths_bloodletting_manacles,
-    *najentuss_vertebrae, *ayalas_stone_heart, *aggramars_stride, *weight_of_the_earth, *raging_fury;
+    *najentuss_vertebrae, *ayalas_stone_heart, *weight_of_the_earth, *raging_fury;
 
   // Active
   struct active_t
@@ -466,7 +466,7 @@ public:
     arms_trinket = prot_trinket = nullptr;
     archavons_heavy_hand = bindings_of_kakushan = kargaths_sacrificed_hands = thundergods_vigor =
     ceannar_charger = kazzalax_fujiedas_fury = the_walls_fell = destiny_driver = prydaz_xavarics_magnum_opus = mannoroths_bloodletting_manacles =
-    najentuss_vertebrae = ayalas_stone_heart = aggramars_stride = weight_of_the_earth = raging_fury = nullptr;
+    najentuss_vertebrae = ayalas_stone_heart = weight_of_the_earth = raging_fury = nullptr;
     regen_type = REGEN_DISABLED;
   }
 
@@ -777,7 +777,7 @@ public:
         p() -> cache.attack_crit_chance() * 100,
         p() -> composite_player_critical_damage_multiplier( s ),
         p() -> cache.mastery_value() * 100,
-        ( ( 1 / ( p() -> cache.attack_haste() ) ) - 1 ) * 100,
+        ( 1 / p() -> cache.attack_haste() - 1 ) * 100,
         p() -> cache.damage_versatility() * 100,
         p() -> cache.bonus_armor(),
         s -> composite_ta_multiplier(),
@@ -799,7 +799,7 @@ public:
         p() -> cache.attack_crit_chance() * 100,
         p() -> composite_player_critical_damage_multiplier( d -> state ),
         p() -> cache.mastery_value() * 100,
-        ( ( 1 / ( p() -> cache.attack_haste() ) ) - 1 ) * 100,
+        ( 1 / p() -> cache.attack_haste()  - 1 ) * 100,
         p() -> cache.damage_versatility() * 100,
         p() -> cache.bonus_armor(),
         d -> state -> composite_ta_multiplier(),
