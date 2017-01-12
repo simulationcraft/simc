@@ -4988,7 +4988,7 @@ struct lunar_strike_t : public druid_spell_t
 
   timespan_t natures_balance_extension() const
   {
-    return natures_balance / ( 2.0 - p() -> cache.spell_haste() );
+    return natures_balance / ( 1.0 / p() -> cache.spell_haste() - 1.0 );
   }
 
   double composite_crit_chance() const override
@@ -5407,7 +5407,7 @@ struct solar_wrath_t : public druid_spell_t
 
   timespan_t natures_balance_extension() const
   {
-    return natures_balance / ( 2.0 - p() -> cache.spell_haste() );
+    return natures_balance / ( 1.0 / p() -> cache.spell_haste() - 1.0 );
   }
 
   void execute() override

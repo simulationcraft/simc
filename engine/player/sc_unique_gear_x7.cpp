@@ -457,8 +457,7 @@ void item::naraxas_spiked_tongue( special_effect_t& effect )
   struct rancid_maw_t: public proc_spell_t
   {
     rancid_maw_t( const special_effect_t& e ):
-      proc_spell_t( "rancid_maw", e.player,
-                    e.player -> find_spell( 215405 ), nullptr )
+      proc_spell_t( "rancid_maw", e.player, e.player -> find_spell( 215405 ), e.item )
     {
     }
 
@@ -466,7 +465,7 @@ void item::naraxas_spiked_tongue( special_effect_t& effect )
     {
       double am = proc_spell_t::action_multiplier();
 
-      double distance = execute_state -> target -> get_player_distance( *player );
+      double distance = target -> get_player_distance( *player );
       am *= ( std::min( distance, 20.0 ) / 20.0 ); // Does less damage the closer player is to target.
       return am;
     }
@@ -4216,12 +4215,6 @@ void unique_gear::register_special_effects_x7()
 
 void unique_gear::register_hotfixes_x7()
 {
-  hotfix::register_spell( "Horrific Appendages", "2016-10-09", "In-game testing shows that the actual rppm is much closer to 1.3~ than 0.7, so we slightly underestimated down to 1.25.", 222167 )
-    .field( "rppm" )
-    .operation( hotfix::HOTFIX_SET )
-    .modifier( 1.25 )
-    .verification_value( 0.7 );
-
   hotfix::register_spell( "Mark of the Distant Army", "2017-01-10-3", "7.1.5 removed damage information.", 191380 )
     .field( "scaling_class" )
     .operation( hotfix::HOTFIX_SET )

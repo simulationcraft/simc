@@ -316,9 +316,10 @@ public:
           * lady_vashjs_grasp,
           * magtheridons_might,
           * rhonins_assaulting_armwraps,
-          * sephuzs_secret,
           * shard_time_warp,
           * zannesu_journey;
+
+    haste_buff_t* sephuzs_secret;
 
     // Miscellaneous Buffs
     buff_t* greater_blessing_of_widsom;
@@ -1751,13 +1752,13 @@ struct icy_veins_buff_t : public haste_buff_t
   }
 };
 
-struct sephuzs_secret_buff_t : public buff_t
+struct sephuzs_secret_buff_t : public haste_buff_t
 {
   cooldown_t* icd;
   sephuzs_secret_buff_t( mage_t* p ) :
-    buff_t( buff_creator_t( p, "sephuzs_secret", p -> find_spell( 208052 ) )
+    haste_buff_t( haste_buff_creator_t( p, "sephuzs_secret", p -> find_spell( 208052 ) )
                             .default_value( p -> find_spell( 208502 ) -> effectN( 2 ).percent() )
-                            .add_invalidate( CACHE_SPELL_HASTE ) )
+                            .add_invalidate( CACHE_HASTE ) )
   {
     icd = p -> get_cooldown( "sephuzs_secret_cooldown" );
     icd  -> duration = p -> find_spell( 226262 ) -> duration();
@@ -1841,7 +1842,7 @@ struct ray_of_frost_buff_t : public buff_t
     mage_t* p = static_cast<mage_t*>( player );
     p -> cooldowns.ray_of_frost -> start( rof_cd );
 
-    if ( p -> channeling && p -> channeling -> name_str == "ray_of_frost" )
+    if ( p -> channeling && p -> channeling -> id == 205021 ) // 205021 is the spell id for ray of frost action
     {
       p -> channeling -> interrupt_action();
     }
@@ -9583,8 +9584,11 @@ public:
       .modifier( 120 )
       .verification_value( 60 );
 
-
-
+    hotfix::register_spell( "Mage", "2017-01-11", "Incorrect spell level for Frozen Orb Bolt.", 84721 )
+      .field( "spell_level" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 57 )
+      .verification_value( 81 );
   }
 
   virtual bool valid() const override { return true; }
