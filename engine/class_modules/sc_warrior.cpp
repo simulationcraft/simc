@@ -275,7 +275,6 @@ public:
     const spell_data_t* enraged_regeneration;
     const spell_data_t* execute;
     const spell_data_t* execute_2;
-    const spell_data_t* focused_rage;
     const spell_data_t* furious_slash;
     const spell_data_t* hamstring;
     const spell_data_t* ignore_pain;
@@ -334,6 +333,7 @@ public:
     const spell_data_t* furious_charge;
     const spell_data_t* second_wind; // NYI
     const spell_data_t* warpaint;
+    const spell_data_t* focused_rage;
 
     const spell_data_t* best_served_cold;
     const spell_data_t* bladestorm;
@@ -2287,7 +2287,7 @@ struct hamstring_t: public warrior_attack_t
 struct focused_rage_t: public warrior_attack_t
 {
   focused_rage_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "focused_rage", p, p -> spec.focused_rage )
+    warrior_attack_t( "focused_rage", p, p -> talents.focused_rage )
   {
     parse_options( options_str );
     use_off_gcd = true;
@@ -4411,7 +4411,6 @@ void warrior_t::init_spells()
   {
     spec.execute_2 = find_specialization_spell( 231830 );
   }
-  spec.focused_rage             = find_specialization_spell( "Focused Rage" );
   spec.furious_slash            = find_specialization_spell( "Furious Slash" );
   spec.hamstring                = find_specialization_spell( "Hamstring" );
   spec.ignore_pain              = find_specialization_spell( "Ignore Pain" );
@@ -4458,6 +4457,7 @@ void warrior_t::init_spells()
   talents.dragon_roar           = find_talent_spell( "Dragon Roar" );
   talents.endless_rage          = find_talent_spell( "Endless Rage" );
   talents.fervor_of_battle      = find_talent_spell( "Fervor of Battle" );
+  talents.focused_rage          = find_talent_spell( "Focused Rage" );
   talents.frenzy                = find_talent_spell( "Frenzy" );
   talents.fresh_meat            = find_talent_spell( "Fresh Meat" );
   talents.frothing_berserker    = find_talent_spell( "Frothing Berserker" );
@@ -5384,8 +5384,8 @@ void warrior_t::create_buffs()
     .default_value( find_spell( 202602 ) -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_HASTE );
 
-  buff.focused_rage = buff_creator_t( this, "focused_rage", spec.focused_rage )
-    .default_value( spec.focused_rage -> effectN( 1 ).percent() )
+  buff.focused_rage = buff_creator_t( this, "focused_rage", talents.focused_rage )
+    .default_value( talents.focused_rage -> effectN( 1 ).percent() )
     .cd( timespan_t::zero() );
 
   buff.last_stand = new buffs::last_stand_t( *this, "last_stand", spec.last_stand );
