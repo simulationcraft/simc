@@ -6980,7 +6980,7 @@ void druid_t::apl_feral()
   generate -> add_action( "moonfire_cat,cycle_targets=1,if=combo_points<5&remains<=4.2&target.time_to_die-remains>tick_time*2" );
   generate -> add_action( "pool_resource,for_next=1" );
   if ( sets.has_set_bonus( DRUID_FERAL, T19, B4 ) )
-     generate->add_action( "thrash_cat,cycle_targets=1,if=remains<=duration*0.3&spell_targets.swipe_cat>=2|(buff.clearcasting.up&buff.bloodtalons.down|buff.predatory_swiftness.up)|buff.berserk.up|buff.incarnation.up", "Use Thrash on Clearcasting, or during Berserk/Incarnation if you have T19 4set" );
+     generate->add_action( "thrash_cat,cycle_targets=1,if=remains<=duration*0.3&(spell_targets.swipe_cat>=2|(buff.clearcasting.up&buff.bloodtalons.down))", "Use Thrash on Clearcasting, or during Berserk/Incarnation if you have T19 4set" );
   else
      generate -> add_action( "thrash_cat,cycle_targets=1,if=remains<=duration*0.3&spell_targets.swipe_cat>=2" );
   generate -> add_talent( this, "Brutal Slash",
