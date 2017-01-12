@@ -469,7 +469,7 @@ public:
 
     stat_buff_t* t19oh_8pc;
     buff_t* skullflowers_haemostasis;
-    buff_t* sephuzs_secret;
+    haste_buff_t* sephuzs_secret;
   } buffs;
 
   struct runeforge_t {
@@ -5864,11 +5864,11 @@ struct antimagic_shell_t : public death_knight_spell_t
 
 // That legendary crap ring ===========================================================
 
-struct sephuzs_secret_buff_t: public buff_t
+struct sephuzs_secret_buff_t: public haste_buff_t
 {
   cooldown_t* icd;
   sephuzs_secret_buff_t( death_knight_t* p ):
-    buff_t( buff_creator_t( p, "sephuzs_secret", p -> find_spell( 208052 ) )
+    haste_buff_t( haste_buff_creator_t( p, "sephuzs_secret", p -> find_spell( 208052 ) )
             .default_value( p -> find_spell( 208502 ) -> effectN( 2 ).percent() )
             .add_invalidate( CACHE_HASTE ) )
   {

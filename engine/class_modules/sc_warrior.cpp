@@ -172,7 +172,7 @@ public:
     buff_t* fujiedas_fury;
     buff_t* destiny_driver; //215157
     buff_t* xavarics_magnum_opus; //207472
-    buff_t* sephuzs_secret;
+    haste_buff_t* sephuzs_secret;
   } buff;
 
   // Cooldowns
@@ -5278,11 +5278,11 @@ struct debuff_demo_shout_t: public warrior_buff_t < buff_t >
 
 // That legendary crap ring ===========================================================
 
-struct sephuzs_secret_buff_t: public buff_t
+struct sephuzs_secret_buff_t: public haste_buff_t
 {
   cooldown_t* icd;
   sephuzs_secret_buff_t( warrior_t* p ):
-    buff_t( buff_creator_t( p, "sephuzs_secret", p -> find_spell( 208052 ) )
+    haste_buff_t( haste_buff_creator_t( p, "sephuzs_secret", p -> find_spell( 208052 ) )
             .default_value( p -> find_spell( 208502 ) -> effectN( 2 ).percent() )
             .add_invalidate( CACHE_HASTE ) )
   {

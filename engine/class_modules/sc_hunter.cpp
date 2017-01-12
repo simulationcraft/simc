@@ -143,7 +143,7 @@ public:
     buff_t* butchers_bone_apron;
     buff_t* gyroscopic_stabilization;
 
-    buff_t* sephuzs_secret;
+    haste_buff_t* sephuzs_secret;
   } buffs;
 
   // Cooldowns
