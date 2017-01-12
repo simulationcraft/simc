@@ -1096,7 +1096,7 @@ public:
 
         if (havoc_damage_increase)
         {
-            ab::weapon_multiplier *= 1 + p->spec.havoc->effectN(6).percent();
+            ab::base_dd_multiplier *= 1 + p->spec.havoc->effectN(6).percent();
         }
         break;
       case DEMON_HUNTER_VENGEANCE:
