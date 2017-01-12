@@ -1841,7 +1841,7 @@ struct ray_of_frost_buff_t : public buff_t
     mage_t* p = static_cast<mage_t*>( player );
     p -> cooldowns.ray_of_frost -> start( rof_cd );
 
-    if ( p -> channeling && p -> channeling -> name_str == "ray_of_frost" )
+    if ( p -> channeling && p -> channeling -> id == 205021 ) // 205021 is the spell id for ray of frost action
     {
       p -> channeling -> interrupt_action();
     }
@@ -9583,8 +9583,11 @@ public:
       .modifier( 120 )
       .verification_value( 60 );
 
-
-
+    hotfix::register_spell( "Mage", "2017-01-11", "Incorrect spell level for Frozen Orb Bolt.", 84721 )
+      .field( "spell_level" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 57 )
+      .verification_value( 81 );
   }
 
   virtual bool valid() const override { return true; }
