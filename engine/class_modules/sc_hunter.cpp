@@ -5164,27 +5164,26 @@ struct spitting_cobra_t: public hunter_spell_t
 struct explosive_trap_t: public hunter_spell_t
 {
   explosive_trap_t( hunter_t* p, const std::string& options_str ):
-      hunter_spell_t( "explosive_trap", p, p -> find_spell( 13812 ) )
-    {
-      parse_options( options_str );
+    hunter_spell_t( "explosive_trap", p, p -> find_spell( 13812 ) )
+  {
+    parse_options( options_str );
 
-      aoe = -1;
-      attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
-      attack_power_mod.tick = data().effectN( 2 ).ap_coeff();
-      base_tick_time = data().effectN( 2 ).period();
-      cooldown -> duration = p -> specs.explosive_trap -> cooldown();
-      dot_duration = data().duration();
-      hasted_ticks = false;
-      may_crit = true;
-      tick_may_crit = true;
-      trigger_gcd = p -> specs.explosive_trap -> gcd();
+    aoe = -1;
+    attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
+    attack_power_mod.tick = data().effectN( 2 ).ap_coeff();
+    base_tick_time = data().effectN( 2 ).period();
+    cooldown -> duration = p -> specs.explosive_trap -> cooldown();
+    dot_duration = data().duration();
+    hasted_ticks = false;
+    may_crit = true;
+    tick_may_crit = true;
+    trigger_gcd = p -> specs.explosive_trap -> gcd();
 
-      if ( p -> artifacts.hunters_guile.rank() )
-        cooldown -> duration *= 1.0 + p -> artifacts.hunters_guile.percent();
+    if ( p -> artifacts.hunters_guile.rank() )
+      cooldown -> duration *= 1.0 + p -> artifacts.hunters_guile.percent();
 
-      if ( p -> talents.guerrilla_tactics -> ok() )
-        base_multiplier *= 1.0 + p -> talents.guerrilla_tactics -> effectN( 7 ).percent();
-    }
+    base_multiplier *= 1.0 + p -> talents.guerrilla_tactics -> effectN( 7 ).percent();
+  }
 
   virtual double action_multiplier() const override
   {
