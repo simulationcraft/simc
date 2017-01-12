@@ -469,6 +469,7 @@ public:
 
     stat_buff_t* t19oh_8pc;
     buff_t* skullflowers_haemostasis;
+    buff_t* sephuzs_secret;
   } buffs;
 
   struct runeforge_t {
@@ -760,6 +761,7 @@ public:
     const spell_data_t* koltiras_newfound_will;
     const spell_data_t* seal_of_necrofantasia;
     const spell_data_t* perseverance_of_the_ebon_martyr;
+    const spell_data_t* sephuzs_secret;
     double toravons;
 
     // Unholy
@@ -772,6 +774,7 @@ public:
       koltiras_newfound_will( spell_data_t::not_found() ),
       seal_of_necrofantasia( spell_data_t::not_found() ),
       perseverance_of_the_ebon_martyr( spell_data_t::not_found() ),
+      sephuzs_secret( nullptr ),
       toravons( 0 ), the_instructors_fourth_lesson( 0 ), draugr_girdle_everlasting_king( 0 ),
       uvanimor_the_unbeautiful( 0 ), death_march( timespan_t::zero() )
     { }
@@ -1675,6 +1678,14 @@ struct ghoul_pet_t : public dt_pet_t
     gnaw_t( ghoul_pet_t* player, const std::string& options_str ) :
       super( player, "gnaw", player -> find_spell( 91800 ), options_str, false )
     { }
+    void execute() override
+    {
+      dt_melee_ability_t::execute();
+      if ( p() -> o() -> legendary.sephuzs_secret != nullptr )
+      {
+        p() -> o() -> buffs.sephuzs_secret -> trigger();
+      }
+    }
   };
 
   struct monstrous_blow_t : public dt_melee_ability_t<ghoul_pet_t>
@@ -1683,6 +1694,14 @@ struct ghoul_pet_t : public dt_pet_t
       super( player, "monstrous_blow", player -> find_spell( 91797 ), options_str )
     {
       cooldown = player -> get_cooldown( "gnaw" ); // Shares CD with Gnaw
+    }
+    void execute() override
+    {
+      dt_melee_ability_t::execute();
+      if ( p() -> o() -> legendary.sephuzs_secret != nullptr )
+      {
+        p() -> o() -> buffs.sephuzs_secret -> trigger();
+      }
     }
   };
 
@@ -1746,6 +1765,15 @@ struct sludge_belcher_pet_t : public dt_pet_t
     smash_t( sludge_belcher_pet_t* player, const std::string& options_str ):
       super( player, "smash", player -> find_spell( 212332 ), options_str, false )
     { }
+
+    void execute() override
+    {
+      dt_melee_ability_t::execute();
+      if ( p() -> o() -> legendary.sephuzs_secret != nullptr )
+      {
+        p() -> o() -> buffs.sephuzs_secret -> trigger();
+      }
+    }
   };
 
   struct vile_gas_t : public dt_melee_ability_t<sludge_belcher_pet_t>
@@ -1764,6 +1792,14 @@ struct sludge_belcher_pet_t : public dt_pet_t
       super( player, "monstrous_blow", player -> find_spell( 91797 ), options_str )
     {
       cooldown = player -> get_cooldown( "smash" ); // Shares CD with Smash
+    }
+    void execute() override
+    {
+      dt_melee_ability_t::execute();
+      if ( p() -> o() -> legendary.sephuzs_secret != nullptr )
+      {
+        p() -> o() -> buffs.sephuzs_secret -> trigger();
+      }
     }
   };
 
@@ -4941,6 +4977,15 @@ struct mind_freeze_t : public death_knight_spell_t
     may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
   }
 
+  void execute() override
+  {
+    death_knight_spell_t::execute();
+    if ( p() -> legendary.sephuzs_secret != nullptr )
+    {
+      p() -> buffs.sephuzs_secret -> trigger();
+    }
+  }
+
   bool ready() override
   {
     if ( ! target -> debuffs.casting -> check() )
@@ -5817,6 +5862,29 @@ struct antimagic_shell_t : public death_knight_spell_t
   }
 };
 
+// That legendary crap ring ===========================================================
+
+struct sephuzs_secret_buff_t: public buff_t
+{
+  cooldown_t* icd;
+  sephuzs_secret_buff_t( death_knight_t* p ):
+    buff_t( buff_creator_t( p, "sephuzs_secret", p -> find_spell( 208052 ) )
+            .default_value( p -> find_spell( 208502 ) -> effectN( 2 ).percent() )
+            .add_invalidate( CACHE_HASTE ) )
+  {
+    icd = p -> get_cooldown( "sephuzs_secret_cooldown" );
+    icd  -> duration = p -> find_spell( 226262 ) -> duration();
+  }
+
+  void execute( int stacks, double value, timespan_t duration ) override
+  {
+    if ( icd -> down() )
+      return;
+    buff_t::execute( stacks, value, duration );
+    icd -> start();
+  }
+};
+
 // Vampiric Blood ===========================================================
 
 struct vampiric_blood_t : public death_knight_spell_t
@@ -6511,6 +6579,9 @@ double death_knight_t::composite_melee_haste() const
   double haste = player_t::composite_melee_haste();
 
   //haste *= 1.0 / ( 1.0 + buffs.unholy_presence -> value() );
+
+
+  haste *= 1.0 / ( 1.0 + buffs.sephuzs_secret -> check_value() );
 
   haste *= 1.0 / ( 1.0 + spec.veteran_of_the_third_war -> effectN( 6 ).percent() );
 
@@ -7210,6 +7281,9 @@ void death_knight_t::create_buffs()
                               .cd( timespan_t::zero() );
 
   buffs.antimagic_shell     = new antimagic_shell_buff_t( this );
+
+
+  buffs.sephuzs_secret = new sephuzs_secret_buff_t( this );
 
   buffs.bone_shield         = haste_buff_creator_t( this, "bone_shield", find_spell( 195181 ) )
                               .default_value( 1.0 / ( 1.0 + find_spell( 195181 ) -> effectN( 4 ).percent() ) )
@@ -8314,6 +8388,17 @@ struct death_march_t : public scoped_actor_callback_t<death_knight_t>
   { p -> legendary.death_march = timespan_t::from_seconds( -e.driver() -> effectN( 1 ).base_value() / 10 ); }
 };
 
+struct sephuzs_secret_t: public unique_gear::scoped_actor_callback_t<death_knight_t>
+{
+  sephuzs_secret_t(): super( DEATH_KNIGHT )
+  {}
+
+  void manipulate( death_knight_t* dk, const special_effect_t& e ) override
+  {
+    dk -> legendary.sephuzs_secret = e.driver();
+  }
+};
+
 struct skullflowers_haemostasis_t : public class_buff_cb_t<buff_t>
 {
   skullflowers_haemostasis_t() : super( DEATH_KNIGHT, "haemostasis" )
@@ -8382,6 +8467,7 @@ struct death_knight_module_t : public module_t {
     unique_gear::register_special_effect( 235605, consorts_cold_core_t() );
     unique_gear::register_special_effect( 235556, death_march_t() );
     unique_gear::register_special_effect( 235558, skullflowers_haemostasis_t(), true );
+    unique_gear::register_special_effect( 208051, sephuzs_secret_t() );
   }
 
   void register_hotfixes() const override
