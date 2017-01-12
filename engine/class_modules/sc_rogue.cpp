@@ -5388,7 +5388,7 @@ void rogue_t::trigger_shadow_techniques( const action_state_t* state )
     return;
   }
 
-  if ( --shadow_techniques == 0 )
+  if ( ++shadow_techniques == 5 || ( shadow_techniques == 4 && rng().roll( 0.5 ) ) )
   {
     double cp = 1;
     if ( rng().roll( artifact.fortunes_bite.percent() ) )
@@ -5397,7 +5397,7 @@ void rogue_t::trigger_shadow_techniques( const action_state_t* state )
     }
 
     trigger_combo_point_gain( cp, gains.shadow_techniques, state -> action );
-    shadow_techniques = rng().range( 4, 5 );
+    shadow_techniques = 0;
   }
 }
 
@@ -7037,6 +7037,39 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
       } );
     }
   }
+  // time_to_sht.(1|2|3|4|5)
+  // x: time until we will do the xth attack since last ShT proc.
+  if ( split.size() == 2 && util::str_compare_ci( split[ 0 ], "time_to_sht" ) )
+  {
+    return make_fn_expr( split[ 0 ], [ this, split ]() {
+      if ( strtoul( split[ 1 ].c_str(), nullptr, 0 ) > shadow_techniques ) {
+        unsigned remaining_aa = 5 - shadow_techniques;
+        timespan_t mh_next_swing = main_hand_attack -> execute_event -> remains();
+        timespan_t oh_next_swing = off_hand_attack -> execute_event -> remains();
+        timespan_t mh_swing_time = main_hand_attack -> execute_time();
+        timespan_t oh_swing_time = off_hand_attack -> execute_time();
+
+        if ( remaining_aa == 1 ) {
+          return std::min( mh_next_swing, oh_next_swing );
+        } else if ( remaining_aa == 2 ) {
+          return std::max( mh_next_swing, oh_next_swing );
+        } else {
+          timespan_t total_time = std::max( mh_next_swing, oh_next_swing );
+          for ( unsigned i = remaining_aa - 2; i > 0; i -= 2 )
+          {
+            if ( i == 1 ) {
+              total_time += std::min( mh_swing_time, oh_swing_time );
+            } else if ( i >= 2 ) {
+              total_time += std::max( mh_swing_time, oh_swing_time );
+            }
+          }
+          return total_time;
+        }
+      } else {
+        return timespan_t::from_seconds( 0.0 );
+      }
+    } );
+  }
 
   return player_t::create_expression( a, name_str );
 }
@@ -7905,7 +7938,7 @@ void rogue_t::reset()
   poisoned_enemies = 0;
 
   df_counter = 0;
-  shadow_techniques = rng().range( 4, 5 );
+  shadow_techniques = 0;
 
   weapon_data[ WEAPON_MAIN_HAND ].reset();
   weapon_data[ WEAPON_OFF_HAND ].reset();
