@@ -5164,27 +5164,26 @@ struct spitting_cobra_t: public hunter_spell_t
 struct explosive_trap_t: public hunter_spell_t
 {
   explosive_trap_t( hunter_t* p, const std::string& options_str ):
-      hunter_spell_t( "explosive_trap", p, p -> find_spell( 13812 ) )
-    {
-      parse_options( options_str );
+    hunter_spell_t( "explosive_trap", p, p -> find_spell( 13812 ) )
+  {
+    parse_options( options_str );
 
-      aoe = -1;
-      attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
-      attack_power_mod.tick = data().effectN( 2 ).ap_coeff();
-      base_tick_time = data().effectN( 2 ).period();
-      cooldown -> duration = p -> specs.explosive_trap -> cooldown();
-      dot_duration = data().duration();
-      hasted_ticks = false;
-      may_crit = true;
-      tick_may_crit = true;
-      trigger_gcd = p -> specs.explosive_trap -> gcd();
+    aoe = -1;
+    attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
+    attack_power_mod.tick = data().effectN( 2 ).ap_coeff();
+    base_tick_time = data().effectN( 2 ).period();
+    cooldown -> duration = p -> specs.explosive_trap -> cooldown();
+    dot_duration = data().duration();
+    hasted_ticks = false;
+    may_crit = true;
+    tick_may_crit = true;
+    trigger_gcd = p -> specs.explosive_trap -> gcd();
 
-      if ( p -> artifacts.hunters_guile.rank() )
-        cooldown -> duration *= 1.0 + p -> artifacts.hunters_guile.percent();
+    if ( p -> artifacts.hunters_guile.rank() )
+      cooldown -> duration *= 1.0 + p -> artifacts.hunters_guile.percent();
 
-      if ( p -> talents.guerrilla_tactics -> ok() )
-        base_multiplier *= 1.0 + p -> talents.guerrilla_tactics -> effectN( 7 ).percent();
-    }
+    base_multiplier *= 1.0 + p -> talents.guerrilla_tactics -> effectN( 7 ).percent();
+  }
 
   virtual double action_multiplier() const override
   {
@@ -6333,7 +6332,7 @@ void hunter_t::apl_mm()
   patient_sniper -> add_action( "sidewinders,if=buff.trueshot.down&debuff.vulnerability.remains<(2*attack_haste)&focus<60&(debuff.hunters_mark.down|(charges_fractional>1.3&spell_targets.sidewinders<2))" );
   patient_sniper -> add_action( "windburst,if=debuff.vulnerability.remains<(2*attack_haste)&(talent.sidewinders.enabled|focus>60)&!variable.pooling_for_piercing" );
   patient_sniper -> add_action( "black_arrow" );
-  patient_sniper -> add_action( "a_murder_of_crows,if=(target.time_to_die>=cooldown+duration|target.health.pct<20|taget.time_to_die<16)&(debuff.vulnerability.remains<1|debuff.vulnerability.remains>(4*attack_haste+gcd))" );
+  patient_sniper -> add_action( "a_murder_of_crows,if=(target.time_to_die>=cooldown+duration|target.health.pct<20|target.time_to_die<16)&(debuff.vulnerability.remains<1|debuff.vulnerability.remains>(4*attack_haste+gcd))" );
   patient_sniper -> add_action( "barrage,if=spell_targets>1|(target.health.pct<20&buff.bullseye.stack<25)" );
   patient_sniper -> add_action( "piercing_shot,if=debuff.vulnerability.up&debuff.vulnerability.remains<4&focus>80" );
   patient_sniper -> add_action( "marked_shot,if=!talent.sidewinders.enabled&spell_targets.multishot>1&(!variable.pooling_for_piercing|debuff.vulnerability.up)" );

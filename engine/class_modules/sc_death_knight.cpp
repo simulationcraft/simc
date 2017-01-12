@@ -701,7 +701,7 @@ public:
     artifact_power_t sanguinary_affinity;
     artifact_power_t vampiric_fangs;
     artifact_power_t rattling_bones;
-    artifact_power_t bone_breaker;
+    artifact_power_t bonebreaker;
     artifact_power_t allconsuming_rot;
     artifact_power_t unending_thirst;
     artifact_power_t blood_feast;
@@ -4903,7 +4903,7 @@ struct marrowrend_t : public death_knight_melee_attack_t
   {
     parse_options( options_str );
     
-    base_multiplier    *= 1.0 + p -> artifact.bone_breaker.percent();
+    base_multiplier    *= 1.0 + p -> artifact.bonebreaker.percent();
 
     weapon = &( p -> main_hand_weapon );
   }
@@ -6740,7 +6740,7 @@ void death_knight_t::init_spells()
   artifact.sanguinary_affinity = find_artifact_spell( "Sanguinary Affinity" );
   artifact.vampiric_fangs      = find_artifact_spell( "Vampiric Fangs" );
   artifact.rattling_bones      = find_artifact_spell( "Rattling Bones" );
-  artifact.bone_breaker        = find_artifact_spell( "Bone Breaker" );
+  artifact.bonebreaker        = find_artifact_spell( "Bonebreaker" );
   artifact.allconsuming_rot    = find_artifact_spell( "All-Consuming Rot" );
   artifact.unending_thirst     = find_artifact_spell( "Unending Thirst" );
   artifact.blood_feast         = find_artifact_spell( "Blood Feast" );
@@ -7224,6 +7224,7 @@ void death_knight_t::create_buffs()
                               .spell( find_spell( 81141 ) )
                               .trigger_spell( spec.crimson_scourge );
   buffs.dancing_rune_weapon = buff_creator_t( this, "dancing_rune_weapon", find_spell( 81256 ) )
+                              .duration( find_spell( 81256 ) -> duration() + artifact.dance_of_darkness.time_value() )
                               .cd( timespan_t::zero() )
                               .add_invalidate( CACHE_PARRY );
   buffs.dark_transformation = buff_creator_t( this, "dark_transformation", find_class_spell( "Dark Transformation" ) )
@@ -7572,6 +7573,8 @@ double death_knight_t::composite_armor_multiplier() const
     a *= 1.0 + runeforge.rune_of_the_stoneskin_gargoyle -> data().effectN( 1 ).percent();
 
   a *= 1.0 + artifact.frozen_skin.percent();
+  
+  a *= 1.0 + artifact.iron_heart.percent();
 
   return a;
 }
@@ -7593,7 +7596,7 @@ double death_knight_t::composite_attribute_multiplier( attribute_e attr ) const
   else if ( attr == ATTR_STAMINA )
   {
     m *= 1.0 + spec.veteran_of_the_third_war -> effectN( 5 ).percent();
-
+    m *= 1.0 + artifact.meat_shield.percent();
     if ( runeforge.rune_of_the_stoneskin_gargoyle -> check() )
       m *= 1.0 + runeforge.rune_of_the_stoneskin_gargoyle -> data().effectN( 2 ).percent();
   }
@@ -7662,6 +7665,8 @@ double death_knight_t::composite_parry_rating() const
 double death_knight_t::composite_parry() const
 {
   double parry = player_t::composite_parry();
+  
+  parry *= 1.0 + artifact.grim_perseverance.percent();
 
   if ( buffs.dancing_rune_weapon -> up() )
     parry += buffs.dancing_rune_weapon -> data().effectN( 1 ).percent();
@@ -7710,6 +7715,7 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
 
   m *= 1.0 + artifact.soulbiter.percent();
   m *= 1.0 + artifact.fleshsearer.percent();
+  m *= 1.0 + artifact.sanguinary_affinity.percent();
 
   if ( buffs.t18_4pc_unholy -> up() )
   {

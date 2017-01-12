@@ -67,7 +67,7 @@ actions.patient_sniper+=/sidewinders,if=buff.trueshot.up&(debuff.vulnerability.r
 actions.patient_sniper+=/sidewinders,if=buff.trueshot.down&debuff.vulnerability.remains<(2*attack_haste)&focus<60&(debuff.hunters_mark.down|(charges_fractional>1.3&spell_targets.sidewinders<2))
 actions.patient_sniper+=/windburst,if=debuff.vulnerability.remains<(2*attack_haste)&(talent.sidewinders.enabled|focus>60)&!variable.pooling_for_piercing
 actions.patient_sniper+=/black_arrow
-actions.patient_sniper+=/a_murder_of_crows,if=(target.time_to_die>=cooldown+duration|target.health.pct<20|taget.time_to_die<16)&(debuff.vulnerability.remains<1|debuff.vulnerability.remains>(4*attack_haste+gcd))
+actions.patient_sniper+=/a_murder_of_crows,if=(target.time_to_die>=cooldown+duration|target.health.pct<20|target.time_to_die<16)&(debuff.vulnerability.remains<1|debuff.vulnerability.remains>(4*attack_haste+gcd))
 actions.patient_sniper+=/barrage,if=spell_targets>1|(target.health.pct<20&buff.bullseye.stack<25)
 actions.patient_sniper+=/piercing_shot,if=debuff.vulnerability.up&debuff.vulnerability.remains<4&focus>80
 actions.patient_sniper+=/marked_shot,if=!talent.sidewinders.enabled&spell_targets.multishot>1&(!variable.pooling_for_piercing|debuff.vulnerability.up)

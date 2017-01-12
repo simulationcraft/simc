@@ -2152,10 +2152,8 @@ struct fiery_brand_t : public demon_hunter_spell_t
 
       // Retrieve target list, checking for distance if necessary.
       std::vector<player_t*> targets = target_list();
-      if ( sim -> distance_targeting_enabled )
-      {
-        targets = check_distance_targeting( targets );
-      }
+      
+      targets = check_distance_targeting( targets );
 
       if ( targets.size() == 1 )
       {
