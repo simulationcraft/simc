@@ -7042,6 +7042,7 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
   if ( split.size() == 2 && util::str_compare_ci( split[ 0 ], "time_to_sht" ) )
   {
     return make_fn_expr( split[ 0 ], [ this, split ]() {
+      timespan_t return_value = timespan_t::from_seconds( 0.0 );
       if ( strtoul( split[ 1 ].c_str(), nullptr, 0 ) > shadow_techniques ) {
         unsigned remaining_aa = 5 - shadow_techniques;
         timespan_t mh_next_swing = main_hand_attack -> execute_event -> remains();
@@ -7050,9 +7051,9 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
         timespan_t oh_swing_time = off_hand_attack -> execute_time();
 
         if ( remaining_aa == 1 ) {
-          return std::min( mh_next_swing, oh_next_swing );
+          return_value = std::min( mh_next_swing, oh_next_swing );
         } else if ( remaining_aa == 2 ) {
-          return std::max( mh_next_swing, oh_next_swing );
+          return_value = std::max( mh_next_swing, oh_next_swing );
         } else {
           timespan_t total_time = std::max( mh_next_swing, oh_next_swing );
           for ( unsigned i = remaining_aa - 2; i > 0; i -= 2 )
@@ -7063,11 +7064,12 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
               total_time += std::max( mh_swing_time, oh_swing_time );
             }
           }
-          return total_time;
+          return_value = total_time;
         }
       } else {
-        return timespan_t::from_seconds( 0.0 );
+        return_value = timespan_t::from_seconds( 0.0 );
       }
+    return return_value;
     } );
   }
 
