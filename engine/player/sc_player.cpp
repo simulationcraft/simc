@@ -6541,7 +6541,6 @@ struct arcane_torrent_t : public racial_spell_t
       case MONK_WINDWALKER:
       {
         parse_effect_data( data().effectN( 2 ) ); // Chi
-        gain_energy = data().effectN( 4 ).base_value(); // Energy
         break;
       }
       case MONK_BREWMASTER:
