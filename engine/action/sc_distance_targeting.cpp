@@ -285,14 +285,14 @@ double player_t::get_position_distance( double m, double v ) const
 
 // player_t::get_player_distance ===============================================
 
-double player_t::get_player_distance( const player_t& p ) const
+double player_t::get_player_distance( const player_t& target ) const
 {
   if ( sim -> distance_targeting_enabled )
   {
-    return get_position_distance( p.x_position, p.y_position );
+    return get_position_distance( target.x_position, target.y_position );
   }
   else
-    return p.base.distance;
+    return current.distance;
 }
 
 // player_t::get_ground_aoe_distance ===========================================
