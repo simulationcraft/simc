@@ -632,7 +632,6 @@ player_t::player_t( sim_t*             s,
   legendary_tank_cloak_cd( nullptr ),
   warlords_unseeing_eye( 0.0 ),
   auto_attack_multiplier( 1.0 ),
-  composite_spell_speed_multiplier( 1.0 ),
   // Movement & Position
   base_movement_speed( 7.0 ), passive_modifier( 0 ),
   x_position( 0.0 ), y_position( 0.0 ),
@@ -1007,6 +1006,8 @@ void player_t::init_base_stats()
 
   base.spell_power_multiplier    = 1.0;
   base.attack_power_multiplier   = 1.0;
+  base.spell_speed_multiplier    = 1.0;
+  base.attack_speed_multiplier   = 1.0;
 
   if ( ( meta_gem == META_EMBER_PRIMAL ) || ( meta_gem == META_EMBER_SHADOWSPIRIT ) || ( meta_gem == META_EMBER_SKYFIRE ) || ( meta_gem == META_EMBER_SKYFLARE ) )
   {
@@ -2922,7 +2923,16 @@ double player_t::composite_melee_speed() const
     h *= 1.0 / ( 1.0 + buffs.fel_winds -> value() );
   }
 
+  h *= composite_attack_speed_multiplier();
+
   return h;
+}
+
+// player_t::composite_attack_speed_multiplier() const
+
+double player_t::composite_attack_speed_multiplier() const
+{
+  return current.attack_speed_multiplier;
 }
 
 // player_t::composite_attack_power =========================================
@@ -3180,9 +3190,14 @@ double player_t::composite_spell_speed() const
 {
   double h = cache.spell_haste();
 
-  h *= composite_spell_speed_multiplier;
+  h *= composite_spell_speed_multiplier();
 
-  return  h;
+  return h;
+}
+
+double player_t::composite_spell_speed_multiplier() const
+{
+  return current.spell_speed_multiplier;
 }
 
 // player_t::composite_spell_power ==========================================
@@ -6526,7 +6541,6 @@ struct arcane_torrent_t : public racial_spell_t
       case MONK_WINDWALKER:
       {
         parse_effect_data( data().effectN( 2 ) ); // Chi
-        gain_energy = data().effectN( 4 ).base_value(); // Energy
         break;
       }
       case MONK_BREWMASTER:

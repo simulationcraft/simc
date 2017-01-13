@@ -5281,14 +5281,6 @@ struct rangers_net_t: public hunter_spell_t
     parse_options( options_str );
     may_miss = may_block = may_dodge = may_parry = false;
   }
-
-  void execute() override
-  {
-    hunter_spell_t::execute();
-
-    if ( p() -> legendary.sephuzs_secret )
-      p() -> buffs.sephuzs_secret -> trigger();
-  }
 };
 
 //end spells

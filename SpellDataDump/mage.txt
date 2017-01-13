@@ -1,4 +1,4 @@
-SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23360, git build 4568440)
+SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23360, git build c3aee88)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Arcane Fire Frost Mage
@@ -1806,7 +1806,7 @@ Enemies damaged by the Frost Orb are slowed by $205708s1% for $205708d.
 Name             : Frozen Orb (id=84721) [Spell Family (3)] 
 Class            : Mage
 School           : Frost
-Spell Level      : 81
+Spell Level      : 57
 Range            : 100 yards
 Affecting spells : Shatter (12982), Frost Mage (137020), Orbital Strike (195323), Lonely Winter (205024), Norgannon's Foresight (236380)
 Attributes       : ........ ........ x......x x..x....   .....x.x ........ ........ ........ 

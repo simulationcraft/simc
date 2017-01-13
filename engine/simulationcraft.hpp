@@ -3639,6 +3639,7 @@ struct player_t : public actor_t
 
     std::array<double, ATTRIBUTE_MAX> attribute_multiplier;
     double spell_power_multiplier, attack_power_multiplier, armor_multiplier;
+    double spell_speed_multiplier, attack_speed_multiplier;
     position_e position;
   }
   base, // Base values, from some database or overridden by user
@@ -3832,7 +3833,6 @@ struct player_t : public actor_t
   // Misc Multipliers
   // auto attack multiplier (for Jeweled Signet of Melandrus and similar effects)
   double auto_attack_multiplier;
-  double composite_spell_speed_multiplier; // For handling the odd spell speed effect.
 
   // Scale Factors
   std::array<gear_stats_t, SCALE_METRIC_MAX> scaling;
@@ -4104,6 +4104,9 @@ struct player_t : public actor_t
 
   virtual double composite_attack_power_multiplier() const;
   virtual double composite_spell_power_multiplier() const;
+
+  virtual double composite_attack_speed_multiplier() const;
+  virtual double composite_spell_speed_multiplier() const;
 
   virtual double matching_gear_multiplier( attribute_e /* attr */ ) const { return 0; }
 
