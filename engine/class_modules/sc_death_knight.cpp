@@ -381,6 +381,7 @@ struct death_knight_td_t : public actor_target_data_t {
     debuff_t* blood_mirror;
     debuff_t* scourge_of_worlds;
     debuff_t* death; // Armies of the Damned ghoul proc
+    debuff_t* perseverance_of_the_ebon_martyr;
   } debuff;
 
   // Check if DnD or Defile are up for ScS/CS AOE
@@ -955,6 +956,10 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* d
   debuff.death = buff_creator_t( *this, "death", death_knight -> find_spell( 191730 ) )
     .trigger_spell( death_knight -> artifact.armies_of_the_damned )
     .default_value( death_knight -> find_spell( 191730 ) -> effectN( 1 ).percent() );
+  debuff.perseverance_of_the_ebon_martyr = buff_creator_t( *this, "perseverance_of_the_ebon_martyr", death_knight -> find_spell( 216059 ) )
+    .chance( death_knight -> legendary.perseverance_of_the_ebon_martyr -> ok() )
+    .default_value( death_knight -> find_spell( 216059 ) -> effectN( 1 ).percent() )
+    .duration( timespan_t::from_seconds( 5 ) ); //In game testing shows it's around 5 seconds. 
 }
 
 // ==========================================================================
@@ -3072,6 +3077,8 @@ struct remorseless_winter_damage_t : public death_knight_spell_t
   {
     death_knight_spell_t::impact( state );
 
+    td( state -> target ) -> debuff.perseverance_of_the_ebon_martyr -> trigger();
+
     if ( state -> result_amount > 0 &&
          range::find( p() -> rw_damage_targets, state -> target ) == p() -> rw_damage_targets.end() )
     {
@@ -4803,13 +4810,7 @@ struct howling_blast_t : public death_knight_spell_t
   {
     double m = death_knight_spell_t::composite_target_multiplier( target );
 
-    // Technically, this should probably be keyed on the Remorseless Winter debuff, but this will do
-    // for now.
-    if ( p() -> legendary.perseverance_of_the_ebon_martyr -> ok() &&
-         range::find( p() -> rw_damage_targets, target ) != p() -> rw_damage_targets.end() )
-    {
-      m *= 1.0 + p() -> legendary.perseverance_of_the_ebon_martyr -> effectN( 1 ).percent();
-    }
+    m *= 1.0 + td( target ) -> debuff.perseverance_of_the_ebon_martyr -> check_value();
 
     return m;
   }
