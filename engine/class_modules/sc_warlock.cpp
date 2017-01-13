@@ -6478,6 +6478,9 @@ void warlock_t::apl_affliction()
   add_action( "Summon Infernal", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>=3" );
   add_action( "Summon Doomguard", "if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal<3&equipped.132379&!cooldown.sindorei_spite_icd.remains" );
   add_action( "Summon Infernal", "if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>=3&equipped.132379&!cooldown.sindorei_spite_icd.remains" );
+  add_action( "Summon Doomguard", "if=equipped.132452&talent.grimoire_of_supremacy.enabled&cooldown.molten_strike.remains&!pet.doomguard.active" );
+  add_action( "Summon Infernal", "if=equipped.132452&talent.grimoire_of_supremacy.enabled&!cooldown.molten_strike.remains&!pet.infernal.active" );
+
   action_list_str += "/berserking";
   action_list_str += "/blood_fury";
   action_list_str += "/arcane_torrent";
@@ -6499,7 +6502,6 @@ void warlock_t::apl_affliction()
     action_list_str += "|buff.elunes_light.remains";
   if ( find_item( "obelisk of_the_void" ) )
     action_list_str += "|buff.collapsing_shadow.remains";
-  add_action( "Mortal Coil", "if=equipped.132452" );
   add_action( "Corruption", "if=remains<=tick_time+gcd" );
   add_action( "Corruption", "cycle_targets=1,if=(talent.absolute_corruption.enabled|!talent.malefic_grasp.enabled|!talent.soul_effigy.enabled)&remains<=tick_time+gcd" );
   add_action( "Siphon Life", "if=remains<=tick_time+gcd" );
@@ -6559,6 +6561,8 @@ void warlock_t::apl_demonology()
   add_action( "Summon Infernal", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>=3" );
   add_action( "Summon Doomguard", "if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal<3&equipped.132379&!cooldown.sindorei_spite_icd.remains" );
   add_action( "Summon Infernal", "if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>=3&equipped.132379&!cooldown.sindorei_spite_icd.remains" );
+  add_action( "Summon Doomguard", "if=equipped.132452&talent.grimoire_of_supremacy.enabled&cooldown.molten_strike.remains&!pet.doomguard.active" );
+  add_action( "Summon Infernal", "if=equipped.132452&talent.grimoire_of_supremacy.enabled&!cooldown.molten_strike.remains&!pet.infernal.active" );
   add_action( "Call Dreadstalkers", "if=(!talent.summon_darkglare.enabled|talent.power_trip.enabled)&(spell_targets.implosion<3|!talent.implosion.enabled)" );
   add_action( "Hand of Gul'dan", "if=soul_shard>=4&!talent.summon_darkglare.enabled" );
   action_list_str += "/summon_darkglare,if=prev_gcd.1.hand_of_guldan|prev_gcd.1.call_dreadstalkers|talent.power_trip.enabled";
@@ -6632,6 +6636,8 @@ void warlock_t::apl_destruction()
   add_action( "Summon Doomguard", "if=talent.grimoire_of_supremacy.enabled&artifact.lord_of_flames.rank>0&buff.lord_of_flames.remains&!pet.doomguard.active" );
   add_action( "Summon Doomguard", "if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal<3&equipped.132379&!cooldown.sindorei_spite_icd.remains" );
   add_action( "Summon Infernal", "if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>=3&equipped.132379&!cooldown.sindorei_spite_icd.remains" );
+  add_action( "Summon Doomguard", "if=equipped.132452&talent.grimoire_of_supremacy.enabled&cooldown.molten_strike.remains&!pet.doomguard.active" );
+  add_action( "Summon Infernal", "if=equipped.132452&talent.grimoire_of_supremacy.enabled&!cooldown.molten_strike.remains&!pet.infernal.active" );
   action_list_str += "/soul_harvest";
   action_list_str += "/channel_demonfire,if=dot.immolate.remains>cast_time";
   add_action( "Havoc", "if=active_enemies=1&talent.wreak_havoc.enabled&equipped.132375&!debuff.havoc.remains" );

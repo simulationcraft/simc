@@ -52,6 +52,8 @@ actions+=/summon_infernal,if=!talent.grimoire_of_supremacy.enabled&spell_targets
 actions+=/summon_doomguard,if=talent.grimoire_of_supremacy.enabled&artifact.lord_of_flames.rank>0&buff.lord_of_flames.remains&!pet.doomguard.active
 actions+=/summon_doomguard,if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal<3&equipped.132379&!cooldown.sindorei_spite_icd.remains
 actions+=/summon_infernal,if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>=3&equipped.132379&!cooldown.sindorei_spite_icd.remains
+actions+=/summon_doomguard,if=equipped.132452&talent.grimoire_of_supremacy.enabled&cooldown.molten_strike.remains&!pet.doomguard.active
+actions+=/summon_infernal,if=equipped.132452&talent.grimoire_of_supremacy.enabled&!cooldown.molten_strike.remains&!pet.infernal.active
 actions+=/soul_harvest
 actions+=/channel_demonfire,if=dot.immolate.remains>cast_time
 actions+=/havoc,if=active_enemies=1&talent.wreak_havoc.enabled&equipped.132375&!debuff.havoc.remains

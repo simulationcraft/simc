@@ -36,6 +36,8 @@ actions+=/summon_doomguard,if=!talent.grimoire_of_supremacy.enabled&spell_target
 actions+=/summon_infernal,if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>=3
 actions+=/summon_doomguard,if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal<3&equipped.132379&!cooldown.sindorei_spite_icd.remains
 actions+=/summon_infernal,if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>=3&equipped.132379&!cooldown.sindorei_spite_icd.remains
+actions+=/summon_doomguard,if=equipped.132452&talent.grimoire_of_supremacy.enabled&cooldown.molten_strike.remains&!pet.doomguard.active
+actions+=/summon_infernal,if=equipped.132452&talent.grimoire_of_supremacy.enabled&!cooldown.molten_strike.remains&!pet.infernal.active
 actions+=/call_dreadstalkers,if=(!talent.summon_darkglare.enabled|talent.power_trip.enabled)&(spell_targets.implosion<3|!talent.implosion.enabled)
 actions+=/hand_of_guldan,if=soul_shard>=4&!talent.summon_darkglare.enabled
 actions+=/summon_darkglare,if=prev_gcd.1.hand_of_guldan|prev_gcd.1.call_dreadstalkers|talent.power_trip.enabled

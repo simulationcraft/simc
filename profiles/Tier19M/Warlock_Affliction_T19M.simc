@@ -35,12 +35,13 @@ actions+=/summon_doomguard,if=!talent.grimoire_of_supremacy.enabled&spell_target
 actions+=/summon_infernal,if=!talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>=3
 actions+=/summon_doomguard,if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal<3&equipped.132379&!cooldown.sindorei_spite_icd.remains
 actions+=/summon_infernal,if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>=3&equipped.132379&!cooldown.sindorei_spite_icd.remains
+actions+=/summon_doomguard,if=equipped.132452&talent.grimoire_of_supremacy.enabled&cooldown.molten_strike.remains&!pet.doomguard.active
+actions+=/summon_infernal,if=equipped.132452&talent.grimoire_of_supremacy.enabled&!cooldown.molten_strike.remains&!pet.infernal.active
 actions+=/berserking
 actions+=/blood_fury
 actions+=/arcane_torrent
 actions+=/soul_harvest
 actions+=/potion,name=deadly_grace,if=buff.soul_harvest.remains|trinket.proc.any.react|target.time_to_die<=45
-actions+=/mortal_coil,if=equipped.132452
 actions+=/corruption,if=remains<=tick_time+gcd
 actions+=/corruption,cycle_targets=1,if=(talent.absolute_corruption.enabled|!talent.malefic_grasp.enabled|!talent.soul_effigy.enabled)&remains<=tick_time+gcd
 actions+=/siphon_life,if=remains<=tick_time+gcd
