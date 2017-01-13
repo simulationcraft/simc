@@ -292,7 +292,7 @@ double player_t::get_player_distance( const player_t& p ) const
     return get_position_distance( p.x_position, p.y_position );
   }
   else
-    return p.current.distance;
+    return p.base.distance;
 }
 
 // player_t::get_ground_aoe_distance ===========================================
