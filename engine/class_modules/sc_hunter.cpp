@@ -143,7 +143,7 @@ public:
     buff_t* butchers_bone_apron;
     buff_t* gyroscopic_stabilization;
 
-    buff_t* sephuzs_secret;
+    haste_buff_t* sephuzs_secret;
   } buffs;
 
   // Cooldowns
@@ -1186,7 +1186,7 @@ public:
   {
     switch ( pet_type )
     {
-    case PET_CARRION_BIRD: return "bloody_screech";
+    case PET_CARRION_BIRD: return "";
     case PET_CAT:          return "";
     case PET_CORE_HOUND:   return "";
     case PET_DEVILSAUR:    return "";
@@ -1200,13 +1200,13 @@ public:
     case PET_BEAR:         return "";
     case PET_BOAR:         return "";
     case PET_CRAB:         return "";
-    case PET_CROCOLISK:    return "ankle_crack";
+    case PET_CROCOLISK:    return "";
     case PET_GORILLA:      return "";
     case PET_RHINO:        return "";
-    case PET_SCORPID:      return "deadly_sting";
+    case PET_SCORPID:      return "";
     case PET_SHALE_SPIDER: return "";
     case PET_TURTLE:       return "";
-    case PET_WARP_STALKER: return "warp_time";
+    case PET_WARP_STALKER: return "";
     case PET_WORM:         return "";
     case PET_BAT:          return "";
     case PET_BIRD_OF_PREY: return "";
@@ -1215,8 +1215,8 @@ public:
     case PET_NETHER_RAY:   return "";
     case PET_RAVAGER:      return "";
     case PET_SERPENT:      return "";
-    case PET_SILITHID:     return "tendon_rip";
-    case PET_SPIDER:       return "web_spray";
+    case PET_SILITHID:     return "";
+    case PET_SPIDER:       return "";
     case PET_SPOREBAT:     return "";
     case PET_WIND_SERPENT: return "";
     case PET_FOX:          return "";
@@ -1364,8 +1364,6 @@ public:
         action_list_str += "/";
         action_list_str += special;
       }
-      if ( o() -> specialization() == HUNTER_SURVIVAL )
-        action_list_str += "/growl";
       action_list_str += "/claw";
       action_list_str += "/wait_until_ready";
       use_default_action_list = true;
@@ -2322,17 +2320,6 @@ struct hunter_main_pet_spell_t: public hunter_main_pet_action_t < spell_t >
   }
 };
 
-// Growl ===================================================================
-
-struct growl_t : public hunter_main_pet_spell_t
-{
-  growl_t( hunter_main_pet_t* player, const std::string& options_str ) :
-    hunter_main_pet_spell_t( "growl", player, player -> find_pet_spell( "growl" ) )
-  {
-    parse_options( options_str );
-  }
-};
-
 // ==========================================================================
 // Unique Pet Specials
 // ==========================================================================
@@ -2376,69 +2363,6 @@ struct froststorm_breath_t: public hunter_main_pet_spell_t
   }
 };
 
-struct deadly_sting_t : public hunter_main_pet_spell_t
-{
-  deadly_sting_t( hunter_main_pet_t* player, const std::string& options_str ) :
-    hunter_main_pet_spell_t( "deadly_sting", player, player -> find_pet_spell( "Deadly Sting" ) )
-  {
-    parse_options( options_str );
-  }
-};
-
-struct bloody_screech_t : public hunter_main_pet_spell_t
-{
-  bloody_screech_t( hunter_main_pet_t* player, const std::string& options_str ) :
-    hunter_main_pet_spell_t( "bloody_screech", player, player -> find_pet_spell( "Bloody Screech" ) )
-  {
-    parse_options( options_str );
-  }
-};
-
-//struct gruesome_bite_t : public hunter_main_pet_spell_t
-//{
-//  gruesome_bite_t( hunter_main_pet_t* player, const std::string& options_str ) :
-//    hunter_main_pet_spell_t( "gruesome_bite", player, player -> find_spell( 160018 ) )
-//  {
-//    parse_options( options_str );
-//  }
-//};
-
-struct ankle_crack_t : public hunter_main_pet_spell_t
-{
-  ankle_crack_t( hunter_main_pet_t* player, const std::string& options_str ) :
-    hunter_main_pet_spell_t( "ankle_crack", player, player -> find_pet_spell( "Ankle Crack" ) )
-  {
-    parse_options( options_str );
-  }
-};
-
-struct web_spray_t : public hunter_main_pet_spell_t
-{
-  web_spray_t( hunter_main_pet_t* player, const std::string& options_str ) :
-    hunter_main_pet_spell_t( "web_spray", player, player -> find_pet_spell( "Web Spray" ) )
-  {
-    parse_options( options_str );
-  }
-};
-
-struct warp_time_t : public hunter_main_pet_spell_t
-{
-  warp_time_t( hunter_main_pet_t* player, const std::string& options_str ) :
-    hunter_main_pet_spell_t( "warp_time", player, player -> find_pet_spell( "Warp Time" ) )
-  {
-    parse_options( options_str );
-  }
-};
-
-struct tendon_rip_t : public hunter_main_pet_spell_t
-{
-  tendon_rip_t( hunter_main_pet_t* player, const std::string& options_str ) :
-    hunter_main_pet_spell_t( "tendon_rip", player, player -> find_pet_spell( "Tendon Rip" ) )
-  {
-    parse_options( options_str );
-  }
-};
-
 } // end namespace pets::actions
 
 
@@ -2459,14 +2383,6 @@ action_t* hunter_main_pet_t::create_action( const std::string& name,
   if ( name == "bite" ) return new                 basic_attack_t( this, "Bite", options_str );
   if ( name == "smack" ) return new                basic_attack_t( this, "Smack", options_str );
   if ( name == "froststorm_breath" ) return new    froststorm_breath_t( this, options_str );
-  if ( name == "growl" ) return new                growl_t( this, options_str );
-  if ( name == "deadly_sting" ) return new         deadly_sting_t( this, options_str );
-  if ( name == "bloody_screech" ) return new       bloody_screech_t( this, options_str );
-  //if ( name == "gruesome_bite" ) return new        gruesome_bite_t( this, options_str );
-  if ( name == "ankle_crack" ) return new          ankle_crack_t( this, options_str );
-  if ( name == "web_spray" ) return new            web_spray_t( this, options_str );
-  if ( name == "warp_time" ) return new            warp_time_t( this, options_str );
-  if ( name == "tendon_rip" ) return new           tendon_rip_t( this, options_str );
   return base_t::create_action( name, options_str );
 }
 
@@ -5164,27 +5080,26 @@ struct spitting_cobra_t: public hunter_spell_t
 struct explosive_trap_t: public hunter_spell_t
 {
   explosive_trap_t( hunter_t* p, const std::string& options_str ):
-      hunter_spell_t( "explosive_trap", p, p -> find_spell( 13812 ) )
-    {
-      parse_options( options_str );
+    hunter_spell_t( "explosive_trap", p, p -> find_spell( 13812 ) )
+  {
+    parse_options( options_str );
 
-      aoe = -1;
-      attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
-      attack_power_mod.tick = data().effectN( 2 ).ap_coeff();
-      base_tick_time = data().effectN( 2 ).period();
-      cooldown -> duration = p -> specs.explosive_trap -> cooldown();
-      dot_duration = data().duration();
-      hasted_ticks = false;
-      may_crit = true;
-      tick_may_crit = true;
-      trigger_gcd = p -> specs.explosive_trap -> gcd();
+    aoe = -1;
+    attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
+    attack_power_mod.tick = data().effectN( 2 ).ap_coeff();
+    base_tick_time = data().effectN( 2 ).period();
+    cooldown -> duration = p -> specs.explosive_trap -> cooldown();
+    dot_duration = data().duration();
+    hasted_ticks = false;
+    may_crit = true;
+    tick_may_crit = true;
+    trigger_gcd = p -> specs.explosive_trap -> gcd();
 
-      if ( p -> artifacts.hunters_guile.rank() )
-        cooldown -> duration *= 1.0 + p -> artifacts.hunters_guile.percent();
+    if ( p -> artifacts.hunters_guile.rank() )
+      cooldown -> duration *= 1.0 + p -> artifacts.hunters_guile.percent();
 
-      if ( p -> talents.guerrilla_tactics -> ok() )
-        base_multiplier *= 1.0 + p -> talents.guerrilla_tactics -> effectN( 7 ).percent();
-    }
+    base_multiplier *= 1.0 + p -> talents.guerrilla_tactics -> effectN( 7 ).percent();
+  }
 
   virtual double action_multiplier() const override
   {
@@ -5365,14 +5280,6 @@ struct rangers_net_t: public hunter_spell_t
   {
     parse_options( options_str );
     may_miss = may_block = may_dodge = may_parry = false;
-  }
-
-  void execute() override
-  {
-    hunter_spell_t::execute();
-
-    if ( p() -> legendary.sephuzs_secret )
-      p() -> buffs.sephuzs_secret -> trigger();
   }
 };
 

@@ -53,7 +53,7 @@ static std::vector<player_t*> __check_distance_targeting( const action_t* action
 
   std::vector<player_t*> original_targets( targets_left_to_try ); // This is just so we don't have to constantly remove the original target.
 
-  bool stop_trying = false; // It's not you, it's me.
+  bool stop_trying = false; 
 
   while ( !stop_trying )
   {
@@ -6864,6 +6864,7 @@ void shaman_t::init_action_list_elemental()
   // Single target - Ice Fury
   single_if -> add_action( this, "Flame Shock", "if=!ticking" );
   single_if -> add_action( this, "Earthquake", "if=buff.echoes_of_the_great_sundering.up&maelstrom>=86" );
+  single_if -> add_action( this, "Frost Shock", "if=buff.icefury.up&maelstrom>=86" );
   single_if -> add_action( this, "Earth Shock", "if=maelstrom>=92" );
   single_if -> add_action( this, "Stormkeeper", "if=raid_event.adds.count<3|raid_event.adds.in>50", "Keep SK for large or soon spawning add waves." );
   single_if -> add_talent( this, "Elemental Blast" );

@@ -80,6 +80,7 @@ actions.single_asc+=/flame_shock,moving=1,if=movement.distance>6
 # Single Target Action Priority List for Ice Fury Spec
 actions.single_if=flame_shock,if=!ticking
 actions.single_if+=/earthquake,if=buff.echoes_of_the_great_sundering.up&maelstrom>=86
+actions.single_if+=/frost_shock,if=buff.icefury.up&maelstrom>=86
 actions.single_if+=/earth_shock,if=maelstrom>=92
 # Keep SK for large or soon spawning add waves.
 actions.single_if+=/stormkeeper,if=raid_event.adds.count<3|raid_event.adds.in>50
