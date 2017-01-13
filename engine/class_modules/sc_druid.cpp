@@ -343,6 +343,7 @@ public:
     buff_t* bloodtalons;
     buff_t* elunes_guidance;
     buff_t* feral_instinct;
+    buff_t* fiery_red_maimers; // Legion Legendary
     buff_t* incarnation_cat;
     buff_t* predatory_swiftness;
     buff_t* protection_of_ashamane;
@@ -354,11 +355,11 @@ public:
     // Guardian
     // adaptive fur for each basic magic school
     buff_t* adaptive_fur_holy;
-     buff_t* adaptive_fur_fire;
-     buff_t* adaptive_fur_nature;
-     buff_t* adaptive_fur_frost;
-     buff_t* adaptive_fur_shadow;
-     buff_t* adaptive_fur_arcane;
+    buff_t* adaptive_fur_fire;
+    buff_t* adaptive_fur_nature;
+    buff_t* adaptive_fur_frost;
+    buff_t* adaptive_fur_shadow;
+    buff_t* adaptive_fur_arcane;
     
     buff_t* barkskin;
     buff_t* bristling_fur;
@@ -371,6 +372,7 @@ public:
     buff_t* incarnation_bear;
     buff_t* ironfur;
     buff_t* mark_of_ursol;
+    buff_t* oakhearts_puny_quods; // Legion Legendary
     buff_t* pulverize;
     buff_t* rage_of_the_sleeper;
     buff_t* survival_instincts;
@@ -443,6 +445,7 @@ public:
     gain_t* rage_refund;
     gain_t* guardian_tier17_2pc;
     gain_t* guardian_tier18_2pc;
+    gain_t* oakhearts_puny_quods;
   } gain;
 
   // Masteries
@@ -2658,6 +2661,13 @@ struct ashamanes_frenzy_driver_t : public cat_attack_t
     damage -> schedule_execute( s );
   }
 
+  void execute() override
+  {
+    cat_attack_t::execute();
+
+    p() -> buff.fiery_red_maimers -> trigger();
+  }
+
   // Does not trigger primal fury.
   void trigger_primal_fury() override {}
 };
@@ -2911,6 +2921,7 @@ struct lunar_inspiration_t : public cat_attack_t
     may_dodge = may_parry = may_block = may_glance = false;
     snapshots_sr = snapshots_tf = false; // June 6 2016
     hasted_ticks = true;
+    energize_type = ENERGIZE_ON_HIT;
   }
 
   void init() override
@@ -2939,13 +2950,34 @@ struct maim_t : public cat_attack_t
     weapon_multiplier = data().effectN( 3 ).pp_combo_points() / 100.0;
   }
 
+  int n_targets() const override
+  {
+    int n = cat_attack_t::n_targets();
+
+    n += p() -> buff.fiery_red_maimers -> data().effectN( 1 ).base_value();
+
+    return n;
+  }
+
   double action_multiplier() const override
   {
     double am = cat_attack_t::action_multiplier();
 
     am *= p() -> resources.current[ RESOURCE_COMBO_POINT ];
 
+    am *= 1.0 + p() -> buff.fiery_red_maimers -> check_value();
+
     return am;
+  }
+
+  void execute() override
+  {
+    cat_attack_t::execute();
+
+    if ( p() -> buff.fiery_red_maimers -> up() )
+    {
+      p() -> buff.fiery_red_maimers -> expire();
+    }
   }
 };
 
@@ -4342,6 +4374,7 @@ struct barkskin_t : public druid_spell_t
     druid_spell_t::execute();
 
     p() -> buff.barkskin -> trigger();
+    p() -> buff.oakhearts_puny_quods -> trigger();
   }
 };
 
@@ -7150,8 +7183,8 @@ void druid_t::apl_restoration()
   action_priority_list_t* default_list    = get_action_priority_list( "default" );
   action_priority_list_t* HEAL = get_action_priority_list("heal");
   action_priority_list_t* DPS = get_action_priority_list("dps"); //Base DPS APL - Guardian affinity
-  action_priority_list_t* BAFF = get_action_priority_list("baff"); //Balance affinity
-  action_priority_list_t* FAFF = get_action_priority_list("faff"); //Feral affinity
+  // action_priority_list_t* BAFF = get_action_priority_list("baff"); //Balance affinity
+  // action_priority_list_t* FAFF = get_action_priority_list("faff"); //Feral affinity
 
   std::vector<std::string> item_actions       = get_item_actions();
   std::vector<std::string> racial_actions     = get_racial_actions();
@@ -7268,6 +7301,9 @@ void druid_t::init_gains()
   gain.feral_tier19_2pc      = get_gain( "feral_tier19_2pc"      );
   gain.guardian_tier17_2pc   = get_gain( "guardian_tier17_2pc"   );
   gain.guardian_tier18_2pc   = get_gain( "guardian_tier18_2pc"   );
+  
+  // Legendaries
+  gain.oakhearts_puny_quods  = get_gain( "oakhearts_puny_quods"  );
 }
 
 // druid_t::init_procs ======================================================
@@ -8649,6 +8685,22 @@ struct the_wildshapers_clutch_t : public scoped_actor_callback_t<druid_t>
   }
 };
 
+struct fiery_red_maimers_t : public class_buff_cb_t<druid_t>
+{
+  fiery_red_maimers_t() : super( DRUID, "fiery_red_maimers" )
+  {}
+
+  buff_t*& buff_ptr( const special_effect_t& e ) override
+  { return actor( e ) -> buff.fiery_red_maimers; }
+
+  buff_creator_t creator( const special_effect_t& e ) const override
+  {
+    return super::creator( e )
+      .spell( e.driver() -> effectN( 1 ).trigger() )
+      .default_value( e.driver() -> effectN( 1 ).trigger() -> effectN( 2 ).percent() );
+  }
+};
+
 // Balance
 
 struct impeccable_fel_essence_t : public scoped_actor_callback_t<druid_t>
@@ -8727,6 +8779,21 @@ struct the_emerald_dreamcatcher_t : public class_buff_cb_t<druid_t>
   }
 };
 
+template<typename T>
+struct lady_and_the_child_t : public scoped_action_callback_t<T>
+{
+  lady_and_the_child_t( const std::string& name ) :
+    scoped_action_callback_t<T>( DRUID, name )
+  {}
+
+  void manipulate( T* a, const special_effect_t& e ) override
+  {
+    a -> aoe = 1 + e.driver() -> effectN( 1 ).base_value();
+    a -> base_dd_multiplier *= 1.0 + e.driver() -> effectN( 2 ).percent();
+    a -> base_td_multiplier *= 1.0 + e.driver() -> effectN( 3 ).percent();
+  }
+};
+
 // Guardian
 
 struct elizes_everlasting_encasement_t : public scoped_action_callback_t<thrash_bear_t>
@@ -8768,6 +8835,45 @@ struct skysecs_hold_t : public scoped_action_callback_t<frenzied_regeneration_t>
   void manipulate( frenzied_regeneration_t* a, const special_effect_t& e ) override
   {
     a -> skysecs_hold = new skysecs_hold_heal_t( e );
+  }
+};
+
+struct oakhearts_puny_quods_t : public scoped_action_callback_t<barkskin_t>
+{
+  oakhearts_puny_quods_t() : super( DRUID, "barkskin" )
+  {}
+
+  void manipulate( barkskin_t* a, const special_effect_t& e ) override
+  {
+    assert( a -> energize_resource == RESOURCE_NONE );
+
+    a -> energize_resource = RESOURCE_RAGE;
+    a -> energize_amount = e.driver() -> effectN( 1 ).trigger()
+      -> effectN( 1 ).resource( RESOURCE_RAGE );
+    a -> energize_type = ENERGIZE_ON_CAST;
+  }
+};
+
+struct oakhearts_puny_quods_buff_t : public class_buff_cb_t<druid_t>
+{
+  oakhearts_puny_quods_buff_t() : super( DRUID, "oakhearts_puny_quods" )
+  {}
+
+  buff_t*& buff_ptr( const special_effect_t& e ) override
+  {
+    return actor( e ) -> buff.oakhearts_puny_quods;
+  }
+
+  buff_creator_t creator(const special_effect_t& e) const override
+  {
+    return super::creator( e )
+      .spell( e.driver() -> effectN( 1 ).trigger() )
+      .default_value( e.driver() -> effectN( 1 ).trigger()
+        -> effectN( 2 ).resource( RESOURCE_RAGE ) )
+      .tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
+      b -> player -> resource_gain( RESOURCE_RAGE,
+        b -> default_value,
+        debug_cast<druid_t*>( b -> player ) -> gain.oakhearts_puny_quods ); } );
   }
 };
 
@@ -8839,6 +8945,11 @@ struct druid_module_t : public module_t
     register_special_effect( 208190, the_emerald_dreamcatcher_t(), true );
     register_special_effect( 208681, luffa_wrappings_t<thrash_cat_t>( "thrash_cat" ) );
     register_special_effect( 208681, luffa_wrappings_t<thrash_bear_t>( "thrash_bear" ) );
+    register_special_effect( 236478, oakhearts_puny_quods_t() );
+    register_special_effect( 236478, oakhearts_puny_quods_buff_t(), true );
+    register_special_effect( 200818, lady_and_the_child_t<moonfire_t::moonfire_damage_t>( "moonfire_dmg" ) );
+    register_special_effect( 200818, lady_and_the_child_t<lunar_inspiration_t>( "lunar_inspiration" ) );
+    register_special_effect( 212875, fiery_red_maimers_t(), true );
     // register_special_effect( 208220, amanthuls_wisdom );
     // register_special_effect( 207943, edraith_bonds_of_aglaya );
     // register_special_effect( 210667, ekowraith_creator_of_worlds );
