@@ -798,12 +798,6 @@ public:
     ret_dot_increase( ab::data().affected_by( player -> spec.retribution_paladin -> effectN( 2 ) ) ),
     ret_damage_increase_two( ab::data().affected_by( player -> spec.retribution_paladin -> effectN( 7 ) ) )
   {
-    if ( ret_damage_increase )
-      ab::base_dd_multiplier *= 1.0 + player -> spec.retribution_paladin -> effectN( 1 ).percent();
-    if ( ret_dot_increase )
-      ab::base_td_multiplier *= 1.0 + player -> spec.retribution_paladin -> effectN( 2 ).percent();
-    if ( ret_damage_increase_two )
-      ab::base_dd_multiplier *= 1.0 + player -> spec.retribution_paladin -> effectN( 7 ).percent();
   }
 
   paladin_t* p()
@@ -833,6 +827,12 @@ public:
         ab::gcd_haste = HASTE_ATTACK;
       }
     }
+    if ( ret_damage_increase )
+      ab::base_dd_multiplier *= 1.0 + p() -> spec.retribution_paladin -> effectN( 1 ).percent();
+    if ( ret_dot_increase )
+      ab::base_td_multiplier *= 1.0 + p() -> spec.retribution_paladin -> effectN( 2 ).percent();
+    if ( ret_damage_increase_two )
+      ab::base_dd_multiplier *= 1.0 + p() -> spec.retribution_paladin -> effectN( 7 ).percent();
   }
 
   double cost() const override
@@ -3176,6 +3176,8 @@ struct echoed_divine_storm_t: public paladin_melee_attack_t
     if ( p -> talents.final_verdict -> ok() )
       base_multiplier *= 1.0 + p -> talents.final_verdict -> effectN( 2 ).percent();
 
+    ret_damage_increase = true;
+
     aoe = -1;
     background = true;
   }
@@ -3245,6 +3247,8 @@ struct divine_storm_t: public holy_power_consumer_t
       base_multiplier *= 1.0 + p -> talents.final_verdict -> effectN( 2 ).percent();
 
     aoe = -1;
+
+    ret_damage_increase = true;
 
     // TODO: Okay, when did this get reset to 1?
     weapon_multiplier = 0;
@@ -3766,11 +3770,12 @@ struct echoed_templars_verdict_t : public paladin_melee_attack_t
     parse_options( options_str );
 
     base_multiplier *= p -> artifact.echo_of_the_highlord.percent();
-
     background = true;
     base_multiplier *= 1.0 + p -> artifact.might_of_the_templar.percent();
     if ( p -> talents.final_verdict -> ok() )
       base_multiplier *= 1.0 + p -> talents.final_verdict -> effectN( 1 ).percent();
+
+    ret_damage_increase = true;
   }
 
   virtual double action_multiplier() const override
@@ -3832,6 +3837,8 @@ struct templars_verdict_t : public holy_power_consumer_t
     base_multiplier *= 1.0 + p -> artifact.might_of_the_templar.percent();
     if ( p -> talents.final_verdict -> ok() )
       base_multiplier *= 1.0 + p -> talents.final_verdict -> effectN( 1 ).percent();
+
+    ret_damage_increase = true;
 
   // Okay, when did this get reset to 1?
     weapon_multiplier = 0;

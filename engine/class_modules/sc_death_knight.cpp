@@ -381,6 +381,7 @@ struct death_knight_td_t : public actor_target_data_t {
     debuff_t* blood_mirror;
     debuff_t* scourge_of_worlds;
     debuff_t* death; // Armies of the Damned ghoul proc
+    debuff_t* perseverance_of_the_ebon_martyr;
   } debuff;
 
   // Check if DnD or Defile are up for ScS/CS AOE
@@ -469,6 +470,7 @@ public:
 
     stat_buff_t* t19oh_8pc;
     buff_t* skullflowers_haemostasis;
+    haste_buff_t* sephuzs_secret;
   } buffs;
 
   struct runeforge_t {
@@ -760,6 +762,7 @@ public:
     const spell_data_t* koltiras_newfound_will;
     const spell_data_t* seal_of_necrofantasia;
     const spell_data_t* perseverance_of_the_ebon_martyr;
+    const spell_data_t* sephuzs_secret;
     double toravons;
 
     // Unholy
@@ -772,6 +775,7 @@ public:
       koltiras_newfound_will( spell_data_t::not_found() ),
       seal_of_necrofantasia( spell_data_t::not_found() ),
       perseverance_of_the_ebon_martyr( spell_data_t::not_found() ),
+      sephuzs_secret( nullptr ),
       toravons( 0 ), the_instructors_fourth_lesson( 0 ), draugr_girdle_everlasting_king( 0 ),
       uvanimor_the_unbeautiful( 0 ), death_march( timespan_t::zero() )
     { }
@@ -952,6 +956,10 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* d
   debuff.death = buff_creator_t( *this, "death", death_knight -> find_spell( 191730 ) )
     .trigger_spell( death_knight -> artifact.armies_of_the_damned )
     .default_value( death_knight -> find_spell( 191730 ) -> effectN( 1 ).percent() );
+  debuff.perseverance_of_the_ebon_martyr = buff_creator_t( *this, "perseverance_of_the_ebon_martyr", death_knight -> find_spell( 216059 ) )
+    .chance( death_knight -> legendary.perseverance_of_the_ebon_martyr -> ok() )
+    .default_value( death_knight -> find_spell( 216059 ) -> effectN( 1 ).percent() )
+    .duration( timespan_t::from_seconds( 5 ) ); //In game testing shows it's around 5 seconds. 
 }
 
 // ==========================================================================
@@ -1675,6 +1683,14 @@ struct ghoul_pet_t : public dt_pet_t
     gnaw_t( ghoul_pet_t* player, const std::string& options_str ) :
       super( player, "gnaw", player -> find_spell( 91800 ), options_str, false )
     { }
+    void execute() override
+    {
+      dt_melee_ability_t::execute();
+      if ( p() -> o() -> legendary.sephuzs_secret != nullptr )
+      {
+        p() -> o() -> buffs.sephuzs_secret -> trigger();
+      }
+    }
   };
 
   struct monstrous_blow_t : public dt_melee_ability_t<ghoul_pet_t>
@@ -1683,6 +1699,14 @@ struct ghoul_pet_t : public dt_pet_t
       super( player, "monstrous_blow", player -> find_spell( 91797 ), options_str )
     {
       cooldown = player -> get_cooldown( "gnaw" ); // Shares CD with Gnaw
+    }
+    void execute() override
+    {
+      dt_melee_ability_t::execute();
+      if ( p() -> o() -> legendary.sephuzs_secret != nullptr )
+      {
+        p() -> o() -> buffs.sephuzs_secret -> trigger();
+      }
     }
   };
 
@@ -1746,6 +1770,15 @@ struct sludge_belcher_pet_t : public dt_pet_t
     smash_t( sludge_belcher_pet_t* player, const std::string& options_str ):
       super( player, "smash", player -> find_spell( 212332 ), options_str, false )
     { }
+
+    void execute() override
+    {
+      dt_melee_ability_t::execute();
+      if ( p() -> o() -> legendary.sephuzs_secret != nullptr )
+      {
+        p() -> o() -> buffs.sephuzs_secret -> trigger();
+      }
+    }
   };
 
   struct vile_gas_t : public dt_melee_ability_t<sludge_belcher_pet_t>
@@ -1764,6 +1797,14 @@ struct sludge_belcher_pet_t : public dt_pet_t
       super( player, "monstrous_blow", player -> find_spell( 91797 ), options_str )
     {
       cooldown = player -> get_cooldown( "smash" ); // Shares CD with Smash
+    }
+    void execute() override
+    {
+      dt_melee_ability_t::execute();
+      if ( p() -> o() -> legendary.sephuzs_secret != nullptr )
+      {
+        p() -> o() -> buffs.sephuzs_secret -> trigger();
+      }
     }
   };
 
@@ -3035,6 +3076,8 @@ struct remorseless_winter_damage_t : public death_knight_spell_t
   void impact( action_state_t* state ) override
   {
     death_knight_spell_t::impact( state );
+
+    td( state -> target ) -> debuff.perseverance_of_the_ebon_martyr -> trigger();
 
     if ( state -> result_amount > 0 &&
          range::find( p() -> rw_damage_targets, state -> target ) == p() -> rw_damage_targets.end() )
@@ -4767,13 +4810,7 @@ struct howling_blast_t : public death_knight_spell_t
   {
     double m = death_knight_spell_t::composite_target_multiplier( target );
 
-    // Technically, this should probably be keyed on the Remorseless Winter debuff, but this will do
-    // for now.
-    if ( p() -> legendary.perseverance_of_the_ebon_martyr -> ok() &&
-         range::find( p() -> rw_damage_targets, target ) != p() -> rw_damage_targets.end() )
-    {
-      m *= 1.0 + p() -> legendary.perseverance_of_the_ebon_martyr -> effectN( 1 ).percent();
-    }
+    m *= 1.0 + td( target ) -> debuff.perseverance_of_the_ebon_martyr -> check_value();
 
     return m;
   }
@@ -4939,6 +4976,15 @@ struct mind_freeze_t : public death_knight_spell_t
     ignore_false_positive = true;
 
     may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
+  }
+
+  void execute() override
+  {
+    death_knight_spell_t::execute();
+    if ( p() -> legendary.sephuzs_secret != nullptr )
+    {
+      p() -> buffs.sephuzs_secret -> trigger();
+    }
   }
 
   bool ready() override
@@ -5817,6 +5863,29 @@ struct antimagic_shell_t : public death_knight_spell_t
   }
 };
 
+// That legendary crap ring ===========================================================
+
+struct sephuzs_secret_buff_t: public haste_buff_t
+{
+  cooldown_t* icd;
+  sephuzs_secret_buff_t( death_knight_t* p ):
+    haste_buff_t( haste_buff_creator_t( p, "sephuzs_secret", p -> find_spell( 208052 ) )
+            .default_value( p -> find_spell( 208502 ) -> effectN( 2 ).percent() )
+            .add_invalidate( CACHE_HASTE ) )
+  {
+    icd = p -> get_cooldown( "sephuzs_secret_cooldown" );
+    icd  -> duration = p -> find_spell( 226262 ) -> duration();
+  }
+
+  void execute( int stacks, double value, timespan_t duration ) override
+  {
+    if ( icd -> down() )
+      return;
+    buff_t::execute( stacks, value, duration );
+    icd -> start();
+  }
+};
+
 // Vampiric Blood ===========================================================
 
 struct vampiric_blood_t : public death_knight_spell_t
@@ -6512,6 +6581,9 @@ double death_knight_t::composite_melee_haste() const
 
   //haste *= 1.0 / ( 1.0 + buffs.unholy_presence -> value() );
 
+
+  haste *= 1.0 / ( 1.0 + buffs.sephuzs_secret -> check_value() );
+
   haste *= 1.0 / ( 1.0 + spec.veteran_of_the_third_war -> effectN( 6 ).percent() );
 
   haste *= 1.0 / ( 1.0 + buffs.soul_reaper -> stack_value() );
@@ -6890,7 +6962,14 @@ void death_knight_t::default_apl_frost()
   {
     if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
     {
-      def -> add_action( "use_item,slot=" + std::string( item.slot_name() ) );
+      if ( item.name_str == "ring_of_collapsing_futures" )
+      {
+        def -> add_action( "use_item,name=" + item.name_str + ",if=buff.temptation.stack=0" );
+      }
+      else
+      {
+        def -> add_action( "use_item,slot=" + std::string( item.slot_name() ) );
+      }
     }
   }
 
@@ -7012,7 +7091,14 @@ void death_knight_t::default_apl_unholy()
   {
     if (item.has_special_effect(SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE))
     {
-      def->add_action("use_item,slot=" + std::string(item.slot_name()));
+      if ( item.name_str == "ring_of_collapsing_futures" )
+      {
+        def -> add_action( "use_item,name=" + item.name_str + ",if=(buff.temptation.stack<1&target.time_to_die>60)|target.time_to_die<60" );
+      }
+      else
+      {
+        def->add_action( "use_item,slot=" + std::string( item.slot_name() ) );
+      }
     }
   }
 
@@ -7211,6 +7297,9 @@ void death_knight_t::create_buffs()
 
   buffs.antimagic_shell     = new antimagic_shell_buff_t( this );
 
+
+  buffs.sephuzs_secret = new sephuzs_secret_buff_t( this );
+
   buffs.bone_shield         = haste_buff_creator_t( this, "bone_shield", find_spell( 195181 ) )
                               .default_value( 1.0 / ( 1.0 + find_spell( 195181 ) -> effectN( 4 ).percent() ) )
                               .stack_change_callback( talent.foul_bulwark -> ok() ? [ this ]( buff_t*, int old_stacks, int new_stacks ) {
@@ -7224,7 +7313,7 @@ void death_knight_t::create_buffs()
                               .spell( find_spell( 81141 ) )
                               .trigger_spell( spec.crimson_scourge );
   buffs.dancing_rune_weapon = buff_creator_t( this, "dancing_rune_weapon", find_spell( 81256 ) )
-							  .duration( find_spell( 81256 ) -> duration() + artifact.dance_of_darkness.time_value() )
+                              .duration( find_spell( 81256 ) -> duration() + artifact.dance_of_darkness.time_value() )
                               .cd( timespan_t::zero() )
                               .add_invalidate( CACHE_PARRY );
   buffs.dark_transformation = buff_creator_t( this, "dark_transformation", find_class_spell( "Dark Transformation" ) )
@@ -7596,7 +7685,7 @@ double death_knight_t::composite_attribute_multiplier( attribute_e attr ) const
   else if ( attr == ATTR_STAMINA )
   {
     m *= 1.0 + spec.veteran_of_the_third_war -> effectN( 5 ).percent();
-	m *= 1.0 + artifact.meat_shield.percent();
+    m *= 1.0 + artifact.meat_shield.percent();
     if ( runeforge.rune_of_the_stoneskin_gargoyle -> check() )
       m *= 1.0 + runeforge.rune_of_the_stoneskin_gargoyle -> data().effectN( 2 ).percent();
   }
@@ -8314,6 +8403,17 @@ struct death_march_t : public scoped_actor_callback_t<death_knight_t>
   { p -> legendary.death_march = timespan_t::from_seconds( -e.driver() -> effectN( 1 ).base_value() / 10 ); }
 };
 
+struct sephuzs_secret_t: public unique_gear::scoped_actor_callback_t<death_knight_t>
+{
+  sephuzs_secret_t(): super( DEATH_KNIGHT )
+  {}
+
+  void manipulate( death_knight_t* dk, const special_effect_t& e ) override
+  {
+    dk -> legendary.sephuzs_secret = e.driver();
+  }
+};
+
 struct skullflowers_haemostasis_t : public class_buff_cb_t<buff_t>
 {
   skullflowers_haemostasis_t() : super( DEATH_KNIGHT, "haemostasis" )
@@ -8382,6 +8482,7 @@ struct death_knight_module_t : public module_t {
     unique_gear::register_special_effect( 235605, consorts_cold_core_t() );
     unique_gear::register_special_effect( 235556, death_march_t() );
     unique_gear::register_special_effect( 235558, skullflowers_haemostasis_t(), true );
+    unique_gear::register_special_effect( 208051, sephuzs_secret_t() );
   }
 
   void register_hotfixes() const override

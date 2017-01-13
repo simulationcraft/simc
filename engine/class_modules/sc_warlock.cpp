@@ -5367,14 +5367,6 @@ struct mortal_coil_t: public warlock_spell_t
     if ( result_is_hit( s -> result ) )
       heal -> execute();
   }
-
-  virtual void execute() override
-  {
-    warlock_spell_t::execute();
-
-    if ( p() -> legendary.sephuzs_secret )
-      p() -> buffs.sephuzs_secret -> trigger();
-  }
 };
 
 struct channel_demonfire_tick_t : public warlock_spell_t

@@ -54,6 +54,7 @@ namespace item
   void caged_horror( special_effect_t& );
   void tempered_egg_of_serpentrix( special_effect_t& );
   void gnawed_thumb_ring( special_effect_t& );
+  void naraxas_spiked_tongue( special_effect_t& );
 
   // 7.1 Dungeon
   void arans_relaxing_ruby( special_effect_t& );
@@ -447,6 +448,43 @@ void item::gnawed_thumb_ring( special_effect_t& effect )
     .default_value( effect.player -> find_spell( 228461 ) -> effectN( 1 ).percent() );
 
   effect.player -> buffs.taste_of_mana = effect.custom_buff;
+}
+
+// Naraxa's Spiked Tongue ==================================================
+
+void item::naraxas_spiked_tongue( special_effect_t& effect )
+{
+  struct rancid_maw_t: public proc_spell_t
+  {
+    rancid_maw_t( const special_effect_t& e ):
+      proc_spell_t( "rancid_maw", e.player, e.player -> find_spell( 215405 ), e.item )
+    {
+    }
+
+    double action_multiplier() const override
+    {
+      double am = proc_spell_t::action_multiplier();
+
+      double distance = target -> get_player_distance( *player );
+      am *= ( std::min( distance, 20.0 ) / 20.0 ); // Does less damage the closer player is to target.
+      return am;
+    }
+  };
+
+  effect.execute_action = effect.player -> find_action( "rancid_maw" );
+
+  if ( !effect.execute_action )
+  {
+    effect.execute_action = effect.player -> create_proc_action( "rancid_maw", effect );
+  }
+
+  if ( !effect.execute_action )
+  {
+    action_t* a = new rancid_maw_t( effect );
+    effect.execute_action = a;
+  }
+
+  new dbc_proc_callback_t( effect.item, effect );
 }
 
 // Deteriorated Construct Core ==============================================
@@ -4096,6 +4134,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 228462, item::jeweled_signet_of_melandrus    );
   register_special_effect( 215745, item::tempered_egg_of_serpentrix     );
   register_special_effect( 228461, item::gnawed_thumb_ring              );
+  register_special_effect( 215404, item::naraxas_spiked_tongue          );
 
   /* Legion 7.1 Dungeon */
   register_special_effect( 230257, item::arans_relaxing_ruby            );
@@ -4176,12 +4215,6 @@ void unique_gear::register_special_effects_x7()
 
 void unique_gear::register_hotfixes_x7()
 {
-  hotfix::register_spell( "Horrific Appendages", "2016-10-09", "In-game testing shows that the actual rppm is much closer to 1.3~ than 0.7, so we slightly underestimated down to 1.25.", 222167 )
-    .field( "rppm" )
-    .operation( hotfix::HOTFIX_SET )
-    .modifier( 1.25 )
-    .verification_value( 0.7 );
-
   hotfix::register_spell( "Mark of the Distant Army", "2017-01-10-3", "7.1.5 removed damage information.", 191380 )
     .field( "scaling_class" )
     .operation( hotfix::HOTFIX_SET )
