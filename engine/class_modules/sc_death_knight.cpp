@@ -7664,6 +7664,8 @@ double death_knight_t::composite_armor_multiplier() const
   a *= 1.0 + artifact.frozen_skin.percent();
   
   a *= 1.0 + artifact.iron_heart.percent();
+  
+  a *= 1.0 + artifact.the_hungering_maw.percent();
 
   return a;
 }
