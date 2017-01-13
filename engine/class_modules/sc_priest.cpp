@@ -1851,10 +1851,7 @@ public:
   {
     double distance;
 
-    if ( ab::player->sim->distance_targeting_enabled )
-      distance = ab::player->get_player_distance( *ab::target );
-    else
-      distance = ab::player->current.distance;
+    distance = ab::player->get_player_distance( *ab::target );
 
     if ( distance <= 28 )
     {
@@ -1933,17 +1930,7 @@ public:
     // http://us.battle.net/wow/en/forum/topic/5889309137?page=5#97
 
     double distance;
-    if ( s->action->player->sim->distance_targeting_enabled )
-    {
-      distance = s->action->player->get_player_distance( *s->target );
-    }
-    else
-    {
-      distance =
-          std::fabs( s->action->player->current.distance -
-                     s->target->current
-                         .distance );  // Distance from the caster to the target
-    }
+    distance = s->action->player->get_player_distance( *s->target );
 
     // double mult = 0.5 * pow( 1.01, -1 * pow( ( distance - 25 ) / 2, 4 ) ) +
     // 0.1 + 0.015 * distance;

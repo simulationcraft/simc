@@ -1259,7 +1259,7 @@ void report::generate_player_charts( player_t& p,
   {
     ri.gear_weights_wowhead_std_link = gear_weights::wowhead( p );
     ri.gear_weights_pawn_string      = gear_weights::pawn( p );
-    ri.gear_weights_askmrrobot_link  = gear_weights::askmrrobot( p );
+    //ri.gear_weights_askmrrobot_link  = gear_weights::askmrrobot( p ); AMR has changed their web api drastically, I doubt we'll be able to interface them anymore.
   }
 
   // Create html profile str

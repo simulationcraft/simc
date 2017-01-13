@@ -3448,7 +3448,8 @@ double player_t::passive_movement_modifier() const
   passive += racials.quickness -> effectN( 2 ).percent();
   if ( buffs.aggramars_stride )
   {
-    passive += ( buffs.aggramars_stride -> check_value() * composite_melee_haste() );
+    passive += ( buffs.aggramars_stride -> check_value() * 
+      ( ( 1.0 / cache.attack_haste() - 1.0 ) > cache.attack_crit_chance() ? ( 1.0 / cache.attack_haste() - 1.0 ) : cache.attack_crit_chance() ) ); //Takes the larger of the two values.
   }
   passive += composite_run_speed();
 

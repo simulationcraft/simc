@@ -19,7 +19,7 @@ position=back
 talents=2022031
 artifact=4:0:0:0:0:72:3:73:1:74:3:75:3:77:3:78:1:79:3:80:1:81:3:82:3:83:3:84:3:86:1:87:1:290:1:1169:1:1339:1:1371:20
 spec=Arcane
-head=nighthold_custodians_hood,id=140851,bonus_id=3445
+head=,id=138312,bonus_id=3518
 neck=belerons_choker_of_misery,id=140899,bonus_id=3518,enchant=mark_of_the_hidden_satyr
 shoulders=chaosscarred_mantle,id=140853,bonus_id=3445
 back=cloak_of_everburning_knowledge,id=138365,bonus_id=3518,enchant=binding_of_intellect
