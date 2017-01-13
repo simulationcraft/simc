@@ -17,11 +17,12 @@ race=troll
 role=spell
 priest_ignore_healing=1
 position=back
-talents=1001112
+talents=1001111
 artifact=47:0:0:0:0:764:1:765:1:766:1:767:3:768:1:769:1:770:1:771:3:772:4:773:3:774:3:775:3:776:5:777:3:778:3:779:1:1347:1:1381:20
 spec=shadow
+
 head=,id=140851,bonus_id=3519
-neck=,id=140898,bonus_id=3519,enchant=mark_of_the_hidden_satyr
+neck=,id=140898,bonus_id=3519,enchant=mark_of_the_trained_soldier
 shoulders=,id=138322,bonus_id=3519
 back=,id=138370,bonus_id=3519,enchant=binding_of_intellect
 chest=,id=138319,bonus_id=3519
