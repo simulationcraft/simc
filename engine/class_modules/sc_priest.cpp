@@ -2719,8 +2719,8 @@ struct shadow_word_death_t final : public priest_spell_t
 
     if (priest.buffs.zeks_exterminatus->up())
     {
-      d *= 1.0 + priest.buffs.zeks_exterminatus->data().effectN( 1 ).trigger()->effectN( 2 ).percent();
-
+      d *= 1.0 + (priest.buffs.zeks_exterminatus->data().effectN( 1 ).trigger()->effectN( 2 ).percent() * 4);
+      // TODO remove after it goes live
     }
 
     return d;
@@ -3619,7 +3619,8 @@ struct void_eruption_t final : public priest_spell_t
                   ->effectN(1)
                   .base_value();
 
-      priest.buffs.voidform->bump( mss_vf_stacks -1 ); // You start with 5 Stacks of Voidform 2016/12/22 N1gh7h4wk
+      priest.buffs.voidform->bump( mss_vf_stacks - 3 ); // You start with 3 Stacks of Voidform 2017/01/14 
+      // TODO fix
     }
   }
 
