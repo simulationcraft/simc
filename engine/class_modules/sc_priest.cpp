@@ -2108,6 +2108,9 @@ public:
       base_multiplier *= 1.0 + player.artifact.mind_shattering.percent();
     }
 
+    // TODO remove after the hotfixes are live
+    spell_power_mod.direct *= 0.96;
+
     // Disable dynamic hasted cooldown scaling as it is causing a double-dip in
     // haste. -- Twintop 2016/09/17
     // cooldown->hasted = true;
@@ -2303,6 +2306,9 @@ struct mind_flay_t final : public priest_spell_t
 
     spell_power_mod.tick *=
         1.0 + p.talents.fortress_of_the_mind->effectN( 3 ).percent();
+
+    // TODO remove after the hotfixes are live
+    spell_power_mod.tick *= 0.96;
   }
 
   double action_multiplier() const override
@@ -2720,6 +2726,10 @@ struct shadow_word_death_t final : public priest_spell_t
     {
       base_multiplier *= 1.0 + p.artifact.deaths_embrace.percent();
     }
+
+    // TODO Remove after 
+    base_multiplier *= 0.96;
+
   }
 
   double composite_da_multiplier(const action_state_t* state) const override
@@ -2809,6 +2819,9 @@ struct shadow_crash_t final : public priest_spell_t
     aoe                         = -1;
     radius                      = data().effectN( 1 ).radius();
 
+    // TODO Remove after 
+    spell_power_mod.direct *= 0.96;
+
     energize_type =
         ENERGIZE_NONE;  // disable resource generation from spell data
   }
@@ -2867,6 +2880,9 @@ struct shadowy_apparition_spell_t final : public priest_spell_t
 
     parse_effect_data( dmg_data->effectN( 1 ) );
     school = SCHOOL_SHADOW;
+
+    // TODO Remove after 
+    base_multiplier *= 0.96;
   }
 
   void impact( action_state_t* s ) override
@@ -2976,6 +2992,9 @@ struct shadow_word_pain_t final : public priest_spell_t
     {
       base_multiplier *= 1.0 + p.artifact.to_the_pain.percent();
     }
+
+    // TODO remove after the hotfixes are live
+    base_multiplier *= 0.89;
 
     if ( priest.specs.shadowy_apparitions->ok() &&
          !priest.active_spells.shadowy_apparitions )
@@ -3110,6 +3129,9 @@ struct shadow_word_void_t final : public priest_spell_t
 
     energize_type =
         ENERGIZE_NONE;  // disable resource generation from spell data
+
+    // TODO Remove after 
+    base_multiplier *= 0.96;
   }
 
   void impact( action_state_t* s ) override
@@ -3330,6 +3352,9 @@ struct vampiric_touch_t final : public priest_spell_t
 
     spell_power_mod.tick *= 1.0 + p.talents.sanlayn->effectN( 1 ).percent();
 
+    // TODO remove after the hotfixes are live
+    spell_power_mod.tick *= 0.86;
+
     if ( p.artifact.touch_of_darkness.rank() )
     {
       base_multiplier *= 1.0 + p.artifact.touch_of_darkness.percent();
@@ -3468,6 +3493,9 @@ struct void_bolt_t final : public priest_spell_t
       base_multiplier *= 1.0 + player.artifact.sinister_thoughts.percent();
     }
 
+    // TODO Remove after 
+    base_multiplier *= 0.96;
+
     cooldown->hasted = true;
   }
 
@@ -3549,6 +3577,9 @@ struct void_eruption_t final : public priest_spell_t
     radius   = 100.0;
     school   = SCHOOL_SHADOW;
     cooldown = priest.cooldowns.void_bolt;
+
+    // TODO Remove after 
+    base_multiplier *= 0.96;
   }
 
   void init() override
@@ -3679,6 +3710,9 @@ struct void_torrent_t final : public priest_spell_t
     tick_zero     = true;
 
     dot_duration = timespan_t::from_seconds( 4.0 );
+
+    // TODO Remove after 
+    base_multiplier *= 0.96;
   }
 
   timespan_t composite_dot_duration( const action_state_t* ) const override
