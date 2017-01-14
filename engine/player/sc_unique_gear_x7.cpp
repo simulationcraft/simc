@@ -202,7 +202,36 @@ struct mark_of_the_distant_army_t : public proc_spell_t
     proc_spell_t( "mark_of_the_distant_army",
       p, p -> find_spell( 191380 ), nullptr )
   {
-    may_crit = tick_may_crit = false;
+    // Hardcoded somewhere in the bowels of the server
+    attack_power_mod.tick = ( 2.5 / 3.0 );
+    spell_power_mod.tick = ( 2.0 / 3.0 );
+  }
+
+  double amount_delta_modifier( const action_state_t* ) const override
+  { return 0.15; }
+
+  double attack_tick_power_coefficient( const action_state_t* s ) const override
+  {
+    auto total_ap = attack_power_mod.tick * s -> composite_attack_power();
+    auto total_sp = spell_power_mod.tick * s -> composite_spell_power();
+
+    if ( total_ap <= total_sp )
+    {
+      return 0;
+    }
+
+    return proc_spell_t::attack_tick_power_coefficient( s );
+  }
+
+  double spell_tick_power_coefficient( const action_state_t* s ) const override
+  {
+    auto total_ap = attack_power_mod.tick * s -> composite_attack_power();
+    auto total_sp = spell_power_mod.tick * s -> composite_spell_power();
+
+    if ( total_sp < total_ap )
+      return 0;
+
+    return proc_spell_t::spell_tick_power_coefficient( s );
   }
 
   // Hack to force defender to mitigate the damage with armor.
@@ -4181,29 +4210,11 @@ void unique_gear::register_special_effects_x7()
 
 void unique_gear::register_hotfixes_x7()
 {
-  hotfix::register_spell( "Mark of the Distant Army", "2017-01-10-3", "7.1.5 removed damage information.", 191380 )
-    .field( "scaling_class" )
-    .operation( hotfix::HOTFIX_SET )
-    .modifier( -1 )
-    .verification_value( 0 );
-
   hotfix::register_spell( "Mark of the Distant Army", "2017-01-10-4", "Set Velocity to a reasonable value.", 191380 )
     .field( "prj_speed" )
     .operation( hotfix::HOTFIX_SET )
     .modifier( 40 )
     .verification_value( 1 );
-
-  hotfix::register_effect( "Mark of the Distant Army", "2017-01-10", "7.1.5 removed damage information.", 280734 )
-    .field( "average" )
-    .operation( hotfix::HOTFIX_SET )
-    .modifier( 8.828724 )
-    .verification_value( 0 );
-
-  hotfix::register_effect( "Mark of the Distant Army", "2017-01-10-2", "7.1.5 removed damage information.", 280734 )
-    .field( "delta" )
-    .operation( hotfix::HOTFIX_SET )
-    .modifier( 0.15 )
-    .verification_value( 0 );
 }
 
 void unique_gear::register_target_data_initializers_x7( sim_t* sim )
