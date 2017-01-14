@@ -5444,11 +5444,11 @@ double paladin_t::composite_player_multiplier( school_e school ) const
   if ( buffs.crusade -> check() )
   {
     double aw_multiplier = buffs.crusade -> get_damage_mod();
+    m *= 1.0 + aw_multiplier;
     if ( chain_of_thrayn )
     {
-      aw_multiplier += spells.chain_of_thrayn -> effectN( 4 ).percent();
+      m *= 1.0 + spells.chain_of_thrayn -> effectN( 4 ).percent();
     }
-    m *= 1.0 + aw_multiplier;
   }
 
   m *= 1.0 + buffs.wings_of_liberty -> current_stack * buffs.wings_of_liberty -> current_value;
