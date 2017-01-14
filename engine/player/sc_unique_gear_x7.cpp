@@ -2526,7 +2526,7 @@ struct kiljaedens_burning_wish_t : public spell_t
     item = effect.item;
     school = SCHOOL_FIRE;
 
-    base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item );
+    base_dd_min = base_dd_max = ( data().effectN( 1 ).average( effect.item )* 1.55 ); //FIXME hardcoded hotfix
 
     aoe = -1;
 
