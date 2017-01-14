@@ -4187,6 +4187,12 @@ void unique_gear::register_hotfixes_x7()
     .modifier( -1 )
     .verification_value( 0 );
 
+  hotfix::register_spell( "Mark of the Distant Army", "2017-01-10-3", "7.1.5 removed damage information.", 191380 )
+    .field( "prj_speed" )
+    .operation( hotfix::HOTFIX_SET )
+    .modifier( 40 )
+    .verification_value( 1 );
+
   hotfix::register_effect( "Mark of the Distant Army", "2017-01-10", "7.1.5 removed damage information.", 280734 )
     .field( "average" )
     .operation( hotfix::HOTFIX_SET )
