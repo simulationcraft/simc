@@ -8140,6 +8140,17 @@ struct shaman_module_t : public module_t
 
   void register_hotfixes() const override
   {
+    hotfix::register_effect("Shaman", "2017-01-13", "Lightning bolt damage increased by 9%", 274643)
+      .field("sp_coefficient")
+      .operation(hotfix::HOTFIX_MUL)
+      .modifier(1.09)
+      .verification_value(1.6);
+    hotfix::register_effect("Shaman", "2017-01-13", "Lightning bolt overload damage increased by 9%", 37246)
+      .field("sp_coefficient")
+      .operation(hotfix::HOTFIX_MUL)
+      .modifier(1.09)
+      .verification_value(1.6);
+
     /*
     hotfix::register_spell( "Shaman", "2016-08-23", "Windfury base proc rate has been increased to 10% (was 5%.)", 33757 )
       .field( "proc_chance" )
