@@ -10071,6 +10071,11 @@ struct monk_module_t: public module_t
 
   virtual void register_hotfixes() const override
   {
+    hotfix::register_effect( "Monk", "2017-01-17", "Rushing Jade Wind now applies Mark of the Crane to 4 targets (down from 5).", 359689 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 4 )
+      .verification_value( 5 );
   }
 
   virtual void init( player_t* p ) const override
