@@ -2557,8 +2557,8 @@ struct kiljaedens_burning_wish_t : public spell_t
     item = effect.item;
     school = SCHOOL_FIRE;
 
-    base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item );
-
+    base_dd_min = base_dd_max = ( data().effectN( 1 ).average( effect.item ) + 1.55 );
+    //FIXME hardcoded the damage buff for the upcoming hotfix 2017/1/14
     aoe = -1;
 
     //FIXME: Assume this is kind of slow from wording.
