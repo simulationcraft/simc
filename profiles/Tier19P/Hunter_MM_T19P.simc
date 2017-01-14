@@ -1,3 +1,4 @@
+### SimulationCraft
 hunter="Hunter_MM_T19P"
 level=110
 race=blood_elf
@@ -27,6 +28,7 @@ actions.precombat+=/windburst
 # Executed every time the actor is available.
 actions=auto_shot
 actions+=/arcane_torrent,if=focus.deficit>=30&(!talent.sidewinders.enabled|cooldown.sidewinders.charges<2)
+actions+=/counter_shot
 actions+=/berserking,if=buff.trueshot.up
 actions+=/blood_fury,if=buff.trueshot.up
 actions+=/volley,toggle=on
