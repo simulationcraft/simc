@@ -6188,6 +6188,7 @@ void hunter_t::apl_bm()
 
   default_list -> add_action( "volley,toggle=on" );
 
+  default_list -> add_action( "counter_shot" );
   default_list -> add_action( "potion,name=prolonged_power,if=buff.bestial_wrath.remains|!cooldown.beastial_wrath.remains" );
   default_list -> add_action( "a_murder_of_crows" );
   default_list -> add_action( "stampede,if=buff.bloodlust.up|buff.bestial_wrath.up|cooldown.bestial_wrath.remains<=2|target.time_to_die<=14" );
@@ -6226,6 +6227,7 @@ void hunter_t::apl_mm()
 
   default_list -> add_action( "volley,toggle=on" );
 
+  default_list -> add_action( "counter_shot" );
   default_list -> add_action( "variable,name=safe_to_build,value=debuff.hunters_mark.down|(buff.trueshot.down&buff.marking_targets.down)" );
   default_list -> add_action( "variable,name=use_multishot,value=((buff.marking_targets.up|buff.trueshot.up)&spell_targets.multishot>1)|(buff.marking_targets.down&buff.trueshot.down&spell_targets.multishot>2)" );
   default_list -> add_action( "variable,name=pooling_for_piercing,value=talent.piercing_shot.enabled&cooldown.piercing_shot.remains<5&focus<100&!buff.lock_and_load.up" );
@@ -6306,6 +6308,7 @@ void hunter_t::apl_surv()
   add_racial_actions( default_list );
   add_item_actions( default_list );
 
+  default_list -> add_action( "muzzle" );
   default_list -> add_action( "potion,name=old_war,if=buff.aspect_of_the_eagle.remains" );
   default_list -> add_action( "call_action_list,name=moknathal,if=talent.way_of_the_moknathal.enabled" );
   default_list -> add_action( "call_action_list,name=nomok,if=!talent.way_of_the_moknathal.enabled" );

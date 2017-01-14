@@ -4831,6 +4831,7 @@ void warrior_t::apl_fury()
 
   default_list -> add_action( "auto_attack" );
   default_list -> add_action( this, "Charge" );
+  default_list -> add_action( "pummel" );
   default_list -> add_action( "run_action_list,name=movement,if=movement.distance>5", "This is mostly to prevent cooldowns from being accidentally used during movement." );
   default_list -> add_action( this, "Heroic Leap", "if=(raid_event.movement.distance>25&raid_event.movement.in>45)|!raid_event.movement.exists" );
 
@@ -4953,6 +4954,7 @@ void warrior_t::apl_arms()
 
   default_list -> add_action( this, "Charge" );
   default_list -> add_action( "auto_attack" );
+  default_list -> add_action( "pummel" );
 
   if ( sim -> allow_potions && true_level >= 80 )
   {
@@ -5070,6 +5072,7 @@ void warrior_t::apl_prot()
   action_priority_list_t* prot = get_action_priority_list( "prot" );
 
   default_list -> add_action( "auto_attack" );
+  default_list -> add_action( "pummel" );
   default_list -> add_action( this, "intercept" );
 
   size_t num_items = items.size();
