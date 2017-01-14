@@ -3535,6 +3535,7 @@ struct blizzard_t : public frost_mage_spell_t
     parse_options( options_str );
     add_child( blizzard_shard );
     cooldown -> hasted = true;
+    ignore_false_positive = true;
     dot_duration = timespan_t::zero(); // This is just a driver for the ground effect.
     may_miss = false;
   }
