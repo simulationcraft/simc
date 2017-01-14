@@ -2721,16 +2721,10 @@ struct shadow_word_death_t final : public priest_spell_t
     {
       d *= 1.0 + (priest.buffs.zeks_exterminatus->data().effectN( 1 ).trigger()->effectN( 2 ).percent() * 4);
       // TODO remove after it goes live
+      priest.buffs.zeks_exterminatus->expire();
     }
 
     return d;
-  }
-
-  void schedule_execute(action_state_t* s) override
-  {
-    priest_spell_t::schedule_execute(s);
-
-    priest.buffs.zeks_exterminatus->expire();
   }
 
   void impact( action_state_t* s ) override
