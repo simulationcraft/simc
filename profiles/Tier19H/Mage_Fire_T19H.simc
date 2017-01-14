@@ -29,10 +29,10 @@ actions+=/mirror_image,if=buff.combustion.down
 actions+=/rune_of_power,if=cooldown.combustion.remains>40&buff.combustion.down&!talent.kindling.enabled|target.time_to_die.remains<11|talent.kindling.enabled&(charges_fractional>1.8|time<40)&cooldown.combustion.remains>40
 actions+=/call_action_list,name=combustion_phase,if=cooldown.combustion.remains<=action.rune_of_power.cast_time+(!talent.kindling.enabled*gcd)|buff.combustion.up
 actions+=/call_action_list,name=rop_phase,if=buff.rune_of_power.up&buff.combustion.down
-actions+=/call_action_list,name=single_target
+actions+=/call_action_list,name=standard_rotation
 
 actions.active_talents=blast_wave,if=(buff.combustion.down)|(buff.combustion.up&action.fire_blast.charges<1&action.phoenixs_flames.charges<1)
-actions.active_talents+=/meteor,if=cooldown.combustion.remains>30|(cooldown.combustion.remains>target.time_to_die)|buff.rune_of_power.up
+actions.active_talents+=/meteor,if=cooldown.combustion.remains>15|(cooldown.combustion.remains>target.time_to_die)|buff.rune_of_power.up
 actions.active_talents+=/cinderstorm,if=cooldown.combustion.remains<cast_time&(buff.rune_of_power.up|!talent.rune_on_power.enabled)|cooldown.combustion.remains>10*spell_haste&!buff.combustion.up
 actions.active_talents+=/dragons_breath,if=equipped.132863|(talent.alexstraszas_fury.enabled&buff.hot_streak.down)
 actions.active_talents+=/living_bomb,if=active_enemies>1&buff.combustion.down
@@ -55,27 +55,31 @@ actions.combustion_phase+=/dragons_breath,if=buff.hot_streak.down&action.fire_bl
 actions.combustion_phase+=/scorch,if=target.health.pct<=30&equipped.132454
 
 actions.rop_phase=rune_of_power
+actions.rop_phase+=/flamestrike,if=((talent.flame_patch.enabled&active_enemies>1)|(active_enemies>3))&buff.hot_streak.up
 actions.rop_phase+=/pyroblast,if=buff.hot_streak.up
 actions.rop_phase+=/call_action_list,name=active_talents
 actions.rop_phase+=/pyroblast,if=buff.kaelthas_ultimate_ability.react
 actions.rop_phase+=/fire_blast,if=!prev_off_gcd.fire_blast
 actions.rop_phase+=/phoenixs_flames,if=!prev_gcd.1.phoenixs_flames
 actions.rop_phase+=/scorch,if=target.health.pct<=30&equipped.132454
+actions.rop_phase+=/dragons_breath,if=active_enemies>2
+actions.rop_phase+=/flamestrike,if=(talent.flame_patch.enabled&active_enemies>2)|active_enemies>5
 actions.rop_phase+=/fireball
 
-actions.single_target=pyroblast,if=buff.hot_streak.up&buff.hot_streak.remains<action.fireball.execute_time
-actions.single_target+=/phoenixs_flames,if=charges_fractional>2.7&active_enemies>2
-actions.single_target+=/flamestrike,if=talent.flame_patch.enabled&active_enemies>2&buff.hot_streak.react
-actions.single_target+=/pyroblast,if=buff.hot_streak.up&!prev_gcd.1.pyroblast
-actions.single_target+=/pyroblast,if=buff.hot_streak.react&target.health.pct<=25&equipped.132454
-actions.single_target+=/pyroblast,if=buff.kaelthas_ultimate_ability.react
-actions.single_target+=/call_action_list,name=active_talents
-actions.single_target+=/fire_blast,if=!talent.kindling.enabled&buff.heating_up.up&(!talent.rune_of_power.enabled|charges_fractional>1.4|cooldown.combustion.remains<40)&(3-charges_fractional)*(12*spell_haste)<cooldown.combustion.remains+3|target.time_to_die.remains<4
-actions.single_target+=/fire_blast,if=talent.kindling.enabled&buff.heating_up.up&(!talent.rune_of_power.enabled|charges_fractional>1.5|cooldown.combustion.remains<40)&(3-charges_fractional)*(18*spell_haste)<cooldown.combustion.remains+3|target.time_to_die.remains<4
-actions.single_target+=/phoenixs_flames,if=(buff.combustion.up|buff.rune_of_power.up|buff.incanters_flow.stack>3|talent.mirror_image.enabled)&artifact.phoenix_reborn.enabled&(4-charges_fractional)*13<cooldown.combustion.remains+5|target.time_to_die.remains<10
-actions.single_target+=/phoenixs_flames,if=(buff.combustion.up|buff.rune_of_power.up)&(4-charges_fractional)*30<cooldown.combustion.remains+5
-actions.single_target+=/scorch,if=target.health.pct<=30&equipped.132454
-actions.single_target+=/fireball
+actions.standard_rotation=flamestrike,if=((talent.flame_patch.enabled&active_enemies>1)|active_enemies>3)&buff.hot_streak.up
+actions.standard_rotation+=/pyroblast,if=buff.hot_streak.up&buff.hot_streak.remains<action.fireball.execute_time
+actions.standard_rotation+=/phoenixs_flames,if=charges_fractional>2.7&active_enemies>2
+actions.standard_rotation+=/pyroblast,if=buff.hot_streak.up&!prev_gcd.1.pyroblast
+actions.standard_rotation+=/pyroblast,if=buff.hot_streak.react&target.health.pct<=25&equipped.132454
+actions.standard_rotation+=/pyroblast,if=buff.kaelthas_ultimate_ability.react
+actions.standard_rotation+=/call_action_list,name=active_talents
+actions.standard_rotation+=/fire_blast,if=!talent.kindling.enabled&buff.heating_up.up&(!talent.rune_of_power.enabled|charges_fractional>1.4|cooldown.combustion.remains<40)&(3-charges_fractional)*(12*spell_haste)<cooldown.combustion.remains+3|target.time_to_die.remains<4
+actions.standard_rotation+=/fire_blast,if=talent.kindling.enabled&buff.heating_up.up&(!talent.rune_of_power.enabled|charges_fractional>1.5|cooldown.combustion.remains<40)&(3-charges_fractional)*(18*spell_haste)<cooldown.combustion.remains+3|target.time_to_die.remains<4
+actions.standard_rotation+=/phoenixs_flames,if=(buff.combustion.up|buff.rune_of_power.up|buff.incanters_flow.stack>3|talent.mirror_image.enabled)&artifact.phoenix_reborn.enabled&(4-charges_fractional)*13<cooldown.combustion.remains+5|target.time_to_die.remains<10
+actions.standard_rotation+=/phoenixs_flames,if=(buff.combustion.up|buff.rune_of_power.up)&(4-charges_fractional)*30<cooldown.combustion.remains+5
+actions.standard_rotation+=/flamestrike,if=(talent.flame_patch.enabled&active_enemies>1)|active_enemies>5
+actions.standard_rotation+=/scorch,if=target.health.pct<=30&equipped.132454
+actions.standard_rotation+=/fireball
 
 head=collar_of_enclosure,id=134424,bonus_id=1727/1517
 neck=chain_of_the_underking,id=134495,bonus_id=1727/1517,enchant=mark_of_the_hidden_satyr

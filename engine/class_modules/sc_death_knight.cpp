@@ -6984,10 +6984,10 @@ void death_knight_t::default_apl_frost()
   def -> add_talent( this, "Obliteration", "if=(!talent.frozen_pulse.enabled|(rune<2&runic_power<28))&!talent.gathering_storm.enabled" );
 
   // Choose APL
-  def -> add_action( "call_action_list,name=generic,if=!talent.breath_of_sindragosa.enabled" );
+  def -> add_action( "call_action_list,name=generic,if=!talent.breath_of_sindragosa.enabled&!(talent.gathering_storm.enabled&buff.remorseless_winter.remains)" );
   def -> add_action( "call_action_list,name=bos,if=talent.breath_of_sindragosa.enabled&!dot.breath_of_sindragosa.ticking" );
   def -> add_action( "call_action_list,name=bos_ticking,if=talent.breath_of_sindragosa.enabled&dot.breath_of_sindragosa.ticking" );
-  def -> add_action( "call_action_list,name=gs_ticking,if=talent.gathering_storm.enabled&buff.remorseless_winter.remains" );
+  def -> add_action( "call_action_list,name=gs_ticking,if=talent.gathering_storm.enabled&buff.remorseless_winter.remains&!talent.breath_of_sindragosa.enabled" );
 
   // Generic rotation
   generic -> add_action( this, "Frost Strike", "if=!talent.shattering_strikes.enabled&(buff.icy_talons.remains<1.5&talent.icy_talons.enabled)" );
@@ -7013,10 +7013,11 @@ void death_knight_t::default_apl_frost()
 
   // Breath of Sindragosa core rotation
   bos -> add_action( this, "Frost Strike", "if=talent.icy_talons.enabled&buff.icy_talons.remains<1.5&cooldown.breath_of_sindragosa.remains>6" );
+  bos -> add_action( this, "Remorseless Winter", "if=talent.gathering_storm.enabled" );
   bos -> add_action( this, "Howling Blast", "target_if=!dot.frost_fever.ticking" );
   bos -> add_talent( this, "Breath of Sindragosa", "if=runic_power>=50" );
   bos -> add_action( this, "Frost Strike", "if=runic_power>=90&set_bonus.tier19_4pc" );
-  bos -> add_action( this, "Remorseless Winter", "if=(buff.rime.react&equipped.132459)|talent.gathering_storm.enabled" );
+  bos -> add_action( this, "Remorseless Winter", "if=buff.rime.react&equipped.132459" );
   bos -> add_action( this, "Howling Blast", "if=buff.rime.react&(dot.remorseless_winter.ticking|cooldown.remorseless_winter.remains>1.5|!equipped.132459)" );
   bos -> add_action( this, "Frost Strike", "if=runic_power>=70" );
   bos -> add_action( this, "Obliterate", "if=!buff.rime.react" );
@@ -7026,20 +7027,19 @@ void death_knight_t::default_apl_frost()
   
   // Breath of Sindragosa ticking rotation
   bos_ticking -> add_action( this, "Howling Blast", "target_if=!dot.frost_fever.ticking" );
-  bos_ticking -> add_action( this, "Remorseless Winter", "if=((runic_power>=20&set_bonus.tier19_4pc)|runic_power>=30)&((buff.rime.react&!dot.hungering_rune_weapon.ticking&equipped.132459)|talent.gathering_storm.enabled)" );
-  bos_ticking -> add_action( this, "Howling Blast", "if=((runic_power>=20&set_bonus.tier19_4pc)|runic_power>=30)&buff.rime.react&!dot.hungering_rune_weapon.ticking" );
-  bos_ticking -> add_action( this, "Frost Strike", "if=runic_power>=95&dot.hungering_rune_weapon.ticking" );
-  bos_ticking -> add_action( this, "Obliterate", "if=runic_power<=70|rune>3" );
+  bos_ticking -> add_action( this, "Remorseless Winter", "if=((runic_power>=20&set_bonus.tier19_4pc)|runic_power>=30)&buff.rime.react&(equipped.132459|talent.gathering_storm.enabled)" );
+  bos_ticking -> add_action( this, "Howling Blast", "if=((runic_power>=20&set_bonus.tier19_4pc)|runic_power>=30)&buff.rime.react" );
+  bos_ticking -> add_action( this, "Obliterate", "if=runic_power<=75|rune>3" );
   bos_ticking -> add_talent( this, "Horn of Winter", "if=runic_power<70&!dot.hungering_rune_weapon.ticking" );
-  bos_ticking -> add_talent( this, "Hungering Rune Weapon", "if=runic_power<20&!dot.hungering_rune_weapon.ticking" );
+  bos_ticking -> add_talent( this, "Hungering Rune Weapon", "if=runic_power<30&!dot.hungering_rune_weapon.ticking" );
   bos_ticking -> add_action( this, "Empower Rune Weapon", "if=runic_power<20" );
-  bos_ticking -> add_action( this, "Remorseless Winter", "if=runic_power<20" );
+  bos_ticking -> add_action( this, "Remorseless Winter", "if=talent.gathering_storm.enabled|!set_bonus.tier19_4pc|runic_power<30" );
   
   // Gathering Storm ticking rotation
   gs_ticking -> add_action( this, "Frost Strike", "if=buff.icy_talons.remains<1.5&talent.icy_talons.enabled" );
   gs_ticking -> add_action( this, "Howling Blast", "target_if=!dot.frost_fever.ticking" );
   gs_ticking -> add_action( this, "Howling Blast", "if=buff.rime.react&!(buff.obliteration.up&spell_targets.howling_blast<2)" );
-  gs_ticking -> add_action( this, "Obliteration", "if=(!talent.frozen_pulse.enabled|(rune<2&runic_power<28))" );
+  gs_ticking -> add_talent( this, "Obliteration", "if=(!talent.frozen_pulse.enabled|(rune<2&runic_power<28))" );
   gs_ticking -> add_action( this, "Obliterate", "if=rune>3|buff.killing_machine.react|buff.obliteration.up" );
   gs_ticking -> add_action( this, "Frost Strike", "if=runic_power>80|(buff.obliteration.up&!buff.killing_machine.react)" );
   gs_ticking -> add_action( this, "Obliterate" );

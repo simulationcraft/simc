@@ -21,6 +21,7 @@ actions.precombat+=/summon_pet
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=old_war
 actions.precombat+=/augmentation,type=defiled
+actions.precombat+=/explosive_trap
 actions.precombat+=/dragonsfire_grenade
 actions.precombat+=/harpoon
 

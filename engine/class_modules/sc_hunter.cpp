@@ -5079,64 +5079,73 @@ struct spitting_cobra_t: public hunter_spell_t
 
 struct explosive_trap_t: public hunter_spell_t
 {
+  struct explosive_trap_impact_t : public hunter_spell_t
+  {
+    explosive_trap_impact_t( hunter_t* p ):
+      hunter_spell_t( "explosive_trap_impact", p, p -> find_spell( 13812 ) )
+    {
+      aoe = -1;
+      background = true;
+      dual = true;
+
+      hasted_ticks = false;
+      may_crit = true;
+      tick_may_crit = true;
+
+      base_multiplier *= 1.0 + p -> talents.guerrilla_tactics -> effectN( 7 ).percent();
+    }
+
+    virtual double action_multiplier() const override
+    {
+      double am = hunter_spell_t::action_multiplier();
+
+      if ( p() -> artifacts.explosive_force.rank() )
+        am *= 1.0 + p() -> artifacts.explosive_force.percent();
+
+      return am;
+    }
+
+    virtual void execute() override
+    {
+      hunter_spell_t::execute();
+
+      if ( p() -> legendary.sv_feet )
+        p() -> resource_gain( RESOURCE_FOCUS, p() -> find_spell( 212575 ) -> effectN( 1 ).resource( RESOURCE_FOCUS ), p() -> gains.nesingwarys_trapping_treads );
+    }
+
+    virtual double composite_target_da_multiplier( player_t* t ) const override
+    {
+      double m = hunter_spell_t::composite_target_da_multiplier( t );
+
+      if ( t == p() -> target )
+        m *= 1.0 + p() -> talents.expert_trapper -> effectN( 1 ).percent();
+
+      return m;
+    }
+
+    virtual double composite_target_ta_multiplier( player_t* t ) const override
+    {
+      double m = hunter_spell_t::composite_target_ta_multiplier( t );
+
+      if ( t == p() -> target )
+        m *= 1.0 + p() -> talents.expert_trapper -> effectN( 1 ).percent();
+
+      return m;
+    }
+  };
+
   explosive_trap_t( hunter_t* p, const std::string& options_str ):
-    hunter_spell_t( "explosive_trap", p, p -> find_spell( 13812 ) )
+    hunter_spell_t( "explosive_trap", p, p -> specs.explosive_trap )
   {
     parse_options( options_str );
 
-    aoe = -1;
-    attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
-    attack_power_mod.tick = data().effectN( 2 ).ap_coeff();
-    base_tick_time = data().effectN( 2 ).period();
-    cooldown -> duration = p -> specs.explosive_trap -> cooldown();
-    dot_duration = data().duration();
-    hasted_ticks = false;
-    may_crit = true;
-    tick_may_crit = true;
-    trigger_gcd = p -> specs.explosive_trap -> gcd();
+    harmful = false;
+
+    impact_action = new explosive_trap_impact_t( p );
+    add_child( impact_action );
 
     if ( p -> artifacts.hunters_guile.rank() )
       cooldown -> duration *= 1.0 + p -> artifacts.hunters_guile.percent();
-
-    base_multiplier *= 1.0 + p -> talents.guerrilla_tactics -> effectN( 7 ).percent();
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double am = hunter_spell_t::action_multiplier();
-
-    if ( p() -> artifacts.explosive_force.rank() )
-      am *= 1.0 + p() -> artifacts.explosive_force.percent();
-
-    return am;
-  }
-
-  virtual void execute() override
-  {
-    hunter_spell_t::execute();
-
-    if ( p() -> legendary.sv_feet )
-      p() -> resource_gain( RESOURCE_FOCUS, p() -> find_spell( 212575 ) -> effectN( 1 ).resource( RESOURCE_FOCUS ), p() -> gains.nesingwarys_trapping_treads );
-  }
-
-  virtual double composite_target_da_multiplier( player_t* t ) const override
-  {
-    double m = hunter_spell_t::composite_target_da_multiplier( t );
-
-    if ( t == p() -> target )
-      m *= 1.0 + p() -> talents.expert_trapper -> effectN( 1 ).percent();
-
-    return m;
-  }  
-  
-  virtual double composite_target_ta_multiplier( player_t* t ) const override
-  {
-    double m = hunter_spell_t::composite_target_ta_multiplier( t );
-
-    if ( t == p() -> target )
-      m *= 1.0 + p() -> talents.expert_trapper -> effectN( 1 ).percent();
-
-    return m;
   }
 };
 
@@ -5280,6 +5289,16 @@ struct rangers_net_t: public hunter_spell_t
   {
     parse_options( options_str );
     may_miss = may_block = may_dodge = may_parry = false;
+  }
+
+  void execute() override
+  {
+    hunter_spell_t::execute();
+
+    if ( p() -> legendary.sephuzs_secret != nullptr && execute_state -> target -> type == ENEMY_ADD )
+    {
+      p() -> buffs.sephuzs_secret -> trigger();
+    }
   }
 };
 
@@ -6288,6 +6307,7 @@ void hunter_t::apl_surv()
   action_priority_list_t* moknathal    = get_action_priority_list( "moknathal" );
   action_priority_list_t* nomok        = get_action_priority_list( "nomok" );
 
+  precombat -> add_action( "explosive_trap" );
   precombat -> add_action( "dragonsfire_grenade" );
   precombat -> add_action( "harpoon" );
 

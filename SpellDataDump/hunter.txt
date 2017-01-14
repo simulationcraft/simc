@@ -1,4 +1,4 @@
-SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23360, git build c3aee88)
+SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23360, git build a0a9385)
 
 Name             : Mend Pet (id=136) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
@@ -5270,6 +5270,7 @@ Effects          :
 Description      : Your movement speed is increased by $231390s1% anytime you have not attacked for ${$s1/1000} seconds.
 
 Name             : Ranger's Net (id=200108) [Spell Family (9)] 
+Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Resource         : 30 Focus
@@ -5287,9 +5288,9 @@ Affecting spells : Hunter (137014)
 Attributes       : ........ ........ x.x..... ........   ...x...x .x...... ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ .....x.. ....x...   ........ ........ ........ ......x. 
+                 : ........ ........ .....x.. ....x...   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   .x...... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=294569)   : Apply Aura (6) | Unknown effect sub type (455)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
