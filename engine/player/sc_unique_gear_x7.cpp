@@ -575,19 +575,20 @@ void item::eye_of_command( special_effect_t& effect )
 
 // Note, custom implementations are going to have to apply the empower multiplier independent of
 // this function.
+
+struct cruel_garrote_t: public spell_t
+{
+  cruel_garrote_t( const special_effect_t& effect ):
+    spell_t( "cruel_garrote", effect.player, effect.driver() )
+  {
+    background = hasted_ticks = tick_may_crit = may_crit = true;
+    base_td *= util::composite_karazhan_empower_multiplier( effect.player );
+  }
+};
+
 void item::bloodstained_hankerchief( special_effect_t& effect )
 {
-  action_t* a = effect.player -> find_action( "cruel_garrote" );
-  if ( ! a )
-  {
-    a = effect.player -> create_proc_action( "cruel_garrote", effect );
-  }
-
-  if ( ! a )
-  {
-    a = effect.create_action();
-    a -> base_td *= util::composite_karazhan_empower_multiplier( effect.player );
-  }
+  action_t* a = new cruel_garrote_t( effect );
 
   effect.execute_action = a;
 }
@@ -983,6 +984,7 @@ struct flame_gale_driver_t : spell_t
         .pulse_time( timespan_t::from_seconds( 1.0 ) )
         .target( execute_state -> target )
         .duration( timespan_t::from_seconds( 8.0 ) )
+        .hasted( ground_aoe_params_t::ATTACK_HASTE )
         .action( flame_pulse ) );
   }
 };
