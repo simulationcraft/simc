@@ -1483,6 +1483,9 @@ double warlock_pet_t::composite_melee_speed() const
   // Make sure we get our overridden haste values applied to melee_speed
   double cmh = pet_t::composite_melee_speed();
 
+  if ( buffs.demonic_empowerment->up() )
+    cmh /= 1.0 + buffs.demonic_empowerment->data().effectN( 2 ).percent() + o()->artifact.summoners_prowess.percent();
+
   return cmh;
 }
 
@@ -1490,6 +1493,9 @@ double warlock_pet_t::composite_spell_speed() const
 {
   // Make sure we get our overridden haste values applied to spell_speed
   double css = pet_t::composite_spell_speed();
+
+  if ( buffs.demonic_empowerment->up() )
+    css /= 1.0 + buffs.demonic_empowerment->data().effectN( 2 ).percent() + o()->artifact.summoners_prowess.percent();
 
   return css;
 }
