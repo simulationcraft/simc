@@ -1440,7 +1440,7 @@ void print_html_( report::sc_html_stream& os, sim_t& sim )
   if ( sim.decorated_tooltips )
   {
     os << "<script type=\"text/javascript\" "
-          "src=\"http://static-azeroth.cursecdn.com/current/js/syndication/"
+          "src=\"https://static-azeroth.cursecdn.com/current/js/syndication/"
           "tt.js\"></script>\n";
   }
 

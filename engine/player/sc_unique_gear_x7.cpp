@@ -202,7 +202,36 @@ struct mark_of_the_distant_army_t : public proc_spell_t
     proc_spell_t( "mark_of_the_distant_army",
       p, p -> find_spell( 191380 ), nullptr )
   {
-    may_crit = tick_may_crit = false;
+    // Hardcoded somewhere in the bowels of the server
+    attack_power_mod.tick = ( 2.5 / 3.0 );
+    spell_power_mod.tick = ( 2.0 / 3.0 );
+  }
+
+  double amount_delta_modifier( const action_state_t* ) const override
+  { return 0.15; }
+
+  double attack_tick_power_coefficient( const action_state_t* s ) const override
+  {
+    auto total_ap = attack_power_mod.tick * s -> composite_attack_power();
+    auto total_sp = spell_power_mod.tick * s -> composite_spell_power();
+
+    if ( total_ap <= total_sp )
+    {
+      return 0;
+    }
+
+    return proc_spell_t::attack_tick_power_coefficient( s );
+  }
+
+  double spell_tick_power_coefficient( const action_state_t* s ) const override
+  {
+    auto total_ap = attack_power_mod.tick * s -> composite_attack_power();
+    auto total_sp = spell_power_mod.tick * s -> composite_spell_power();
+
+    if ( total_sp < total_ap )
+      return 0;
+
+    return proc_spell_t::spell_tick_power_coefficient( s );
   }
 
   // Hack to force defender to mitigate the damage with armor.
@@ -2528,8 +2557,8 @@ struct kiljaedens_burning_wish_t : public spell_t
     item = effect.item;
     school = SCHOOL_FIRE;
 
-    base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item );
-
+    base_dd_min = base_dd_max = ( data().effectN( 1 ).average( effect.item ) + 1.55 );
+    //FIXME hardcoded the damage buff for the upcoming hotfix 2017/1/14
     aoe = -1;
 
     //FIXME: Assume this is kind of slow from wording.
@@ -3862,7 +3891,7 @@ struct spawn_of_serpentrix_t : public pet_t
 struct spawn_of_serpentrix_cb_t : public dbc_proc_callback_t
 {
   const spell_data_t* summon;
-  std::array<spawn_of_serpentrix_t*, 5> pets;
+  std::array<spawn_of_serpentrix_t*, 7> pets;
 
   spawn_of_serpentrix_cb_t( const special_effect_t& effect ) :
     dbc_proc_callback_t( effect.item, effect ),
@@ -4181,23 +4210,11 @@ void unique_gear::register_special_effects_x7()
 
 void unique_gear::register_hotfixes_x7()
 {
-  hotfix::register_spell( "Mark of the Distant Army", "2017-01-10-3", "7.1.5 removed damage information.", 191380 )
-    .field( "scaling_class" )
+  hotfix::register_spell( "Mark of the Distant Army", "2017-01-10-4", "Set Velocity to a reasonable value.", 191380 )
+    .field( "prj_speed" )
     .operation( hotfix::HOTFIX_SET )
-    .modifier( -1 )
-    .verification_value( 0 );
-
-  hotfix::register_effect( "Mark of the Distant Army", "2017-01-10", "7.1.5 removed damage information.", 280734 )
-    .field( "average" )
-    .operation( hotfix::HOTFIX_SET )
-    .modifier( 8.828724 )
-    .verification_value( 0 );
-
-  hotfix::register_effect( "Mark of the Distant Army", "2017-01-10-2", "7.1.5 removed damage information.", 280734 )
-    .field( "delta" )
-    .operation( hotfix::HOTFIX_SET )
-    .modifier( 0.15 )
-    .verification_value( 0 );
+    .modifier( 40 )
+    .verification_value( 1 );
 }
 
 void unique_gear::register_target_data_initializers_x7( sim_t* sim )
