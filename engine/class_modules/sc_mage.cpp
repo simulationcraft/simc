@@ -5902,8 +5902,15 @@ struct ray_of_frost_t : public frost_mage_spell_t
 
     channeled         = true;
     hasted_ticks      = true;
+
     // PTR Multiplier
     base_multiplier *= 1.0 + p -> find_spell( 137020 ) -> effectN( 1 ).percent();
+  }
+
+  void init() override
+  {
+    frost_mage_spell_t::init();
+    update_flags |= STATE_HASTE; // Not snapshotted for this spell. 
   }
 
   virtual void execute() override
