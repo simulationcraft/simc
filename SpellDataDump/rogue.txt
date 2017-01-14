@@ -1,4 +1,4 @@
-SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23360, git build b5b7250)
+SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23360, git build a0a9385)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
@@ -2311,6 +2311,7 @@ Effects          :
 Description      : You may have a maximum of ${5+$m1} combo points. Finishers still consume a maximum of 5 combo points.
 
 Name             : Shroud of Concealment (id=114018) [Spell Family (8)] 
+Hotfixed         : Attributes
 Class            : Rogue
 School           : Physical
 Spell Level      : 68
@@ -2320,7 +2321,7 @@ Cooldown         : 360 seconds
 Stance Mask      : 0x20000000
 Attributes       : ........ ........ ........ ........   .....x.. ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ .x...... ........ ......x. 
+                 : ........ ........ x....... ........   ........ .x...... ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 

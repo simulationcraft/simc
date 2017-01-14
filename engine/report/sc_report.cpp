@@ -1259,7 +1259,7 @@ void report::generate_player_charts( player_t& p,
   {
     ri.gear_weights_wowhead_std_link = gear_weights::wowhead( p );
     ri.gear_weights_pawn_string      = gear_weights::pawn( p );
-    ri.gear_weights_askmrrobot_link  = gear_weights::askmrrobot( p );
+    //ri.gear_weights_askmrrobot_link  = gear_weights::askmrrobot( p ); AMR has changed their web api drastically, I doubt we'll be able to interface them anymore.
   }
 
   // Create html profile str
@@ -1292,8 +1292,7 @@ bool report::output_scale_factors( const player_t* p )
 
 std::string report::decoration_domain( const sim_t& sim )
 {
-return "ptr"; //todo: remove when 7.1.5 hits
-/*#if SC_BETA == 0
+#if SC_BETA == 0
   if ( maybe_ptr( sim.dbc.ptr ) )
   {
     return "ptr";
@@ -1304,7 +1303,7 @@ return "ptr"; //todo: remove when 7.1.5 hits
   }
 #else
   return "beta";
-#endif*/
+#endif
 }
 
 std::string report::decorated_buff_name( const buff_t* buff )

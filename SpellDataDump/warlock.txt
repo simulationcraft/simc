@@ -1,4 +1,4 @@
-SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23360, git build b5b7250)
+SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23360, git build a0a9385)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -4015,6 +4015,10 @@ Effects          :
 #2 (id=355431)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Self(1)
                    Affected Spells: Doom (603)
+#3 (id=363701)   : Apply Aura (6) | Add Flat Modifier: Unknown 2 (107)
+                   Base Value: -3000 | Scaled Value: -3000 | Misc Value: 19 | Target: Self(1)
+                   Affected Spells: Doom (603)
+                   Hotfixed: NEW EFFECT
 Description      : Doom deals damage ${$s1/-1000} sec faster, and it summons $s2 Wild $LImp:Imps; when it deals damage.
 
 Name             : Improved Dreadstalkers (id=196272) [Spell Family (5), Passive] 

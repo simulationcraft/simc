@@ -271,6 +271,7 @@ public:
     const spell_data_t* shadowy_apparitions;
     const spell_data_t* voidform;
     const spell_data_t* void_eruption;
+    const spell_data_t* shadow_priest;
   } specs;
 
   // Mastery Spells
@@ -1306,14 +1307,22 @@ namespace actions
 template <typename Base>
 struct priest_action_t : public Base
 {
+  bool shadow_damage_increase;
+  bool shadow_dot_increase;
 public:
   priest_action_t( const std::string& n, priest_t& p,
                    const spell_data_t* s = spell_data_t::nil() )
-    : ab( n, &p, s ), priest( p )
+    : ab( n, &p, s ), priest( p ),
+    shadow_damage_increase( ab::data().affected_by( p.specs.shadow_priest -> effectN( 1 ) ) ),
+    shadow_dot_increase( ab::data().affected_by( p.specs.shadow_priest -> effectN( 2 ) ) )
   {
     ab::may_crit          = true;
     ab::tick_may_crit     = true;
     ab::weapon_multiplier = 0.0;
+    if ( shadow_damage_increase )
+      ab::base_dd_multiplier *= 1.0 + p.specs.shadow_priest -> effectN( 1 ).percent();
+    if ( shadow_dot_increase )
+      ab::base_td_multiplier *= 1.0 + p.specs.shadow_priest -> effectN( 2 ).percent();
   }
 
   priest_td_t& get_td( player_t* t ) const
@@ -1512,8 +1521,6 @@ struct priest_spell_t : public priest_action_t<spell_t>
 {
   bool is_mind_spell;
   bool is_sphere_of_insanity_spell;
-  // PTR hotfix spell for Shadow
-  const spell_data_t* ptr_shadow_scaling_buff;
 
   priest_spell_t( const std::string& n, priest_t& player,
                   const spell_data_t* s = spell_data_t::nil() )
@@ -1522,7 +1529,6 @@ struct priest_spell_t : public priest_action_t<spell_t>
       is_sphere_of_insanity_spell( false )
   {
     weapon_multiplier = 0.0;
-    ptr_shadow_scaling_buff = priest.find_spell(137033);
   }
 
   bool usable_moving() const override
@@ -1845,10 +1851,7 @@ public:
   {
     double distance;
 
-    if ( ab::player->sim->distance_targeting_enabled )
-      distance = ab::player->get_player_distance( *ab::target );
-    else
-      distance = ab::player->current.distance;
+    distance = ab::player->get_player_distance( *ab::target );
 
     if ( distance <= 28 )
     {
@@ -1927,17 +1930,7 @@ public:
     // http://us.battle.net/wow/en/forum/topic/5889309137?page=5#97
 
     double distance;
-    if ( s->action->player->sim->distance_targeting_enabled )
-    {
-      distance = s->action->player->get_player_distance( *s->target );
-    }
-    else
-    {
-      distance =
-          std::fabs( s->action->player->current.distance -
-                     s->target->current
-                         .distance );  // Distance from the caster to the target
-    }
+    distance = s->action->player->get_player_distance( *s->target );
 
     // double mult = 0.5 * pow( 1.01, -1 * pow( ( distance - 25 ) / 2, 4 ) ) +
     // 0.1 + 0.015 * distance;
@@ -2138,15 +2131,6 @@ public:
     priest.buffs.shadowy_insight->expire();
   }
 
-  double composite_da_multiplier(const action_state_t* state) const override
-  {
-    double d = priest_spell_t::composite_da_multiplier(state);
-
-    d *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
-
-    return d;
-  }
-
   void execute() override
   {
     priest_spell_t::execute();
@@ -2319,9 +2303,6 @@ struct mind_flay_t final : public priest_spell_t
       am *= 1.0 +
             priest.buffs.void_ray->check() *
                 priest.buffs.void_ray->data().effectN( 1 ).percent();
-
-
-    am *= 1.0 + ptr_shadow_scaling_buff->effectN(2).percent();
 
     return am;
   }
@@ -2736,8 +2717,6 @@ struct shadow_word_death_t final : public priest_spell_t
   {
     double d = priest_spell_t::composite_da_multiplier(state);
 
-    d *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
-
     if (priest.buffs.zeks_exterminatus->up())
     {
       d *= 1.0 + priest.buffs.zeks_exterminatus->data().effectN( 1 ).trigger()->effectN( 2 ).percent();
@@ -2824,15 +2803,6 @@ struct shadow_crash_t final : public priest_spell_t
 
     energize_type =
         ENERGIZE_NONE;  // disable resource generation from spell data
-  }
-
-  double composite_da_multiplier(const action_state_t* state) const override
-  {
-    double d = priest_spell_t::composite_da_multiplier(state);
-
-    d *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
- 
-    return d;
   }
 
   void execute() override
@@ -3110,8 +3080,6 @@ struct shadow_word_pain_t final : public priest_spell_t
                    priest.buffs.voidform->stack() );
     }
 
-    m *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
-
     return m;
   }
 };
@@ -3145,16 +3113,6 @@ struct shadow_word_void_t final : public priest_spell_t
   {
     priest_spell_t::update_ready( cd_duration );
   }
-
-  double composite_da_multiplier( const action_state_t* state ) const override
-  {
-    double d = priest_spell_t::composite_da_multiplier( state );
-
-    d *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
-
-    return d;
-  }
-
 };
 
 struct silence_t final : public priest_spell_t
@@ -3463,9 +3421,7 @@ struct vampiric_touch_t final : public priest_spell_t
       m *= 1.0 + ( priest.artifact.mass_hysteria.percent() *
                    priest.buffs.voidform->stack() );
     }
-
-    m *= 1.0 + ptr_shadow_scaling_buff->effectN(2).percent();
-
+  
     return m;
   }
 };
@@ -3667,15 +3623,6 @@ struct void_eruption_t final : public priest_spell_t
     }
   }
 
-  double composite_da_multiplier(const action_state_t* state) const override
-  {
-    double d = priest_spell_t::composite_da_multiplier(state);
-
-    d *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
-   
-    return d;
-  }
-
   bool ready() override
   {
     if ( !priest.buffs.voidform->check() &&
@@ -3718,15 +3665,6 @@ struct void_torrent_t final : public priest_spell_t
   timespan_t composite_dot_duration( const action_state_t* ) const override
   {
     return timespan_t::from_seconds( 4.0 );
-  }
-
-  double action_multiplier() const override
-  {
-    double am = priest_spell_t::action_multiplier();
-
-    am *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
-
-    return am;
   }
 
   timespan_t tick_time( const action_state_t* ) const override
@@ -4658,8 +4596,8 @@ double priest_t::composite_player_multiplier( school_e school ) const
   {
     m *= 1.0 + buffs.voidform->data().effectN(1).percent() +
       (talents.legacy_of_the_void->ok()
-			? talents.legacy_of_the_void->effectN(3).percent()
-			: 0.0);
+            ? talents.legacy_of_the_void->effectN(3).percent()
+            : 0.0);
   }
 
   if ( specialization() == PRIEST_SHADOW && artifact.creeping_shadows.rank() &&
@@ -5097,6 +5035,7 @@ void priest_t::init_spells()
   specs.void_eruption = find_specialization_spell( "Void Eruption" );
   specs.shadowy_apparitions =
       find_specialization_spell( "Shadowy Apparitions" );
+  specs.shadow_priest = find_specialization_spell( "Shadow Priest" );
 
   // Mastery Spells
   mastery_spells.absolution    = find_mastery_spell( PRIEST_DISCIPLINE );

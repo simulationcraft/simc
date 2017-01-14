@@ -228,9 +228,6 @@ public:
   action_t* unstable_magic_explosion;
   player_t* last_bomb_target;
 
-  // Artifact effects
-  int scorched_earth_counter;
-
   // Tier 18 (WoD 6.2) trinket effects
   const special_effect_t* wild_arcanist; // Arcane
   const special_effect_t* pyrosurge;     // Fire
@@ -319,9 +316,10 @@ public:
           * lady_vashjs_grasp,
           * magtheridons_might,
           * rhonins_assaulting_armwraps,
-          * sephuzs_secret,
           * shard_time_warp,
           * zannesu_journey;
+
+    haste_buff_t* sephuzs_secret;
 
     // Miscellaneous Buffs
     buff_t* greater_blessing_of_widsom;
@@ -511,6 +509,7 @@ public:
     // Arcane
     artifact_power_t arcane_rebound,
                      ancient_power,
+                     scorched_earth,
                      everywhere_at_once, //NYI
                      arcane_purification,
                      aegwynns_imperative,
@@ -530,7 +529,6 @@ public:
 
     // Fire
     artifact_power_t aftershocks,
-                     scorched_earth,
                      everburning_consumption,
                      blue_flame_special,
                      molten_skin, //NYI
@@ -1754,13 +1752,13 @@ struct icy_veins_buff_t : public haste_buff_t
   }
 };
 
-struct sephuzs_secret_buff_t : public buff_t
+struct sephuzs_secret_buff_t : public haste_buff_t
 {
   cooldown_t* icd;
   sephuzs_secret_buff_t( mage_t* p ) :
-    buff_t( buff_creator_t( p, "sephuzs_secret", p -> find_spell( 208052 ) )
+    haste_buff_t( haste_buff_creator_t( p, "sephuzs_secret", p -> find_spell( 208052 ) )
                             .default_value( p -> find_spell( 208502 ) -> effectN( 2 ).percent() )
-                            .add_invalidate( CACHE_SPELL_HASTE ) )
+                            .add_invalidate( CACHE_HASTE ) )
   {
     icd = p -> get_cooldown( "sephuzs_secret_cooldown" );
     icd  -> duration = p -> find_spell( 226262 ) -> duration();
@@ -1844,7 +1842,7 @@ struct ray_of_frost_buff_t : public buff_t
     mage_t* p = static_cast<mage_t*>( player );
     p -> cooldowns.ray_of_frost -> start( rof_cd );
 
-    if ( p -> channeling && p -> channeling -> name_str == "ray_of_frost" )
+    if ( p -> channeling && p -> channeling -> id == 205021 ) // 205021 is the spell id for ray of frost action
     {
       p -> channeling -> interrupt_action();
     }
@@ -4183,7 +4181,7 @@ struct flamestrike_t : public fire_mage_spell_t
         .target( execute_state -> target )
         .duration( timespan_t::from_seconds( 8.0 ) )
         .action( flame_patch )
-        .hasted( ground_aoe_params_t::SPELL_HASTE ), true );
+        .hasted( ground_aoe_params_t::SPELL_SPEED ), true );
     }
   }
 
@@ -6020,42 +6018,6 @@ struct scorch_t : public fire_mage_spell_t
     return c;
   }
 
-  virtual void execute() override
-  {
-    fire_mage_spell_t::execute();
-
-    if ( result_is_hit( execute_state -> result ) &&
-         p() -> artifact.scorched_earth.rank() )
-    {
-      // Can't use last_gcd_action because it misses IB/Counterspell/Combustion
-      // XXX: Fix this to allow item actions such as trinkets or potions
-      if ( p() -> last_foreground_action &&
-           p() -> last_foreground_action -> data().id() == data().id() )
-      {
-        p() -> scorched_earth_counter++;
-      }
-      else
-      {
-        p() -> scorched_earth_counter = 1;
-      }
-
-      if ( p() -> scorched_earth_counter ==
-           p() -> artifact.scorched_earth.data().effectN( 1 ).base_value() )
-      {
-        if ( sim -> debug )
-        {
-          sim -> out_debug.printf(
-              "%s generates hot_streak from scorched_earth",
-              player -> name()
-           );
-        }
-
-        p() -> scorched_earth_counter = 0;
-        p() -> buffs.hot_streak -> trigger();
-      }
-    }
-  }
-
   virtual bool usable_moving() const override
   { return true; }
 };
@@ -6213,17 +6175,23 @@ struct time_warp_t : public mage_spell_t
       cooldown -> charges = 2;
       p() -> player_t::buffs.bloodlust -> cooldown -> duration = timespan_t::zero();
     }
+
+    // Let us use this to bloodlust ourselves if we have the legendary - disable the standard sim lust.
+    if ( p() -> legendary.shard_of_the_exodar )
+    {
+      p() -> player_t::buffs.bloodlust -> default_chance = 0.0;
+    }
+
   }
   virtual void execute() override
   {
     mage_spell_t::execute();
 
-    // Let us use this to bloodlust ourselves if we have the legendary and have disabled the standard sim lust.
+    // Let us lust again.
     if ( p() -> legendary.shard_of_the_exodar )
     {
       p() -> player_t::buffs.bloodlust -> default_chance = 1.0;
     }
-
     // If we have no exhaustion, we're lusting for the raid and everyone gets it.
     if ( !player -> buffs.exhaustion -> check() )
     {
@@ -6242,6 +6210,11 @@ struct time_warp_t : public mage_spell_t
     if ( p() -> legendary.shard_of_the_exodar && player -> buffs.exhaustion -> check() )
     {
       p() -> player_t::buffs.bloodlust -> trigger();
+    }
+    // Safeguard against the default lust coming back
+    if ( p() -> legendary.shard_of_the_exodar )
+    {
+      p() -> player_t::buffs.bloodlust -> default_chance = 0.0;
     }
   }
 
@@ -7201,7 +7174,6 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   touch_of_the_magi_explosion( nullptr ),
   unstable_magic_explosion( nullptr ),
   last_bomb_target( nullptr ),
-  scorched_earth_counter( 0 ),
   wild_arcanist( nullptr ),
   pyrosurge( nullptr ),
   shatterlance( nullptr ),
@@ -8177,10 +8149,13 @@ void mage_t::apl_arcane()
 
   default_list -> add_action( this, "Counterspell",
                               "if=target.debuff.casting.react" );
-  default_list -> add_action( this, "Time Warp", "if=(time=0&buff.bloodlust.down)|(buff.bloodlust.down&equipped.132410)" );
+  default_list -> add_action( this, "Time Warp", "if=(buff.bloodlust.down)&((time=0)|(equipped.132410&buff.arcane_power.up&prev_off_gcd.arcane_power)|(target.time_to_die<40))" );
   default_list -> add_talent( this, "Mirror Image", "if=buff.arcane_power.down" );
   default_list -> add_action( "stop_burn_phase,if=prev_gcd.1.evocation&burn_phase_duration>gcd.max" );
   default_list -> add_action( this, "Mark of Aluneth", "if=cooldown.arcane_power.remains>20" );
+  default_list -> add_action( mage_t::get_special_use_items( "horn_of_valor", false ) );
+  default_list -> add_action( mage_t::get_special_use_items( "obelisk_of_the_void", false ) );
+  default_list -> add_action( mage_t::get_special_use_items( "mrrgrias_favor", false ) );
   default_list -> add_action( "call_action_list,name=build,if=buff.arcane_charge.stack<4" );
   default_list -> add_action( "call_action_list,name=init_burn,if=buff.arcane_power.down&buff.arcane_charge.stack=4&(cooldown.mark_of_aluneth.remains=0|cooldown.mark_of_aluneth.remains>20)&(!talent.rune_of_power.enabled|(cooldown.arcane_power.remains<=action.rune_of_power.cast_time|action.rune_of_power.recharge_time<cooldown.arcane_power.remains))|target.time_to_die<45" );
   default_list -> add_action( "call_action_list,name=burn,if=burn_phase" );
@@ -8271,7 +8246,7 @@ void mage_t::apl_fire()
   action_priority_list_t* single_target       = get_action_priority_list( "single_target"     );
 
   default_list -> add_action( this, "Counterspell", "if=target.debuff.casting.react" );
-  default_list -> add_action( this, "Time Warp", "if=(time=0&buff.bloodlust.down)|(buff.bloodlust.down&equipped.132410)" );
+  default_list -> add_action( this, "Time Warp", "if=(time=0&buff.bloodlust.down)|(buff.bloodlust.down&equipped.132410&(cooldown.combustion.remains<1|target.time_to_die.remains<50))" );
   default_list -> add_talent( this, "Mirror Image", "if=buff.combustion.down" );
   default_list -> add_talent( this, "Rune of Power", "if=cooldown.combustion.remains>40&buff.combustion.down&!talent.kindling.enabled|target.time_to_die.remains<11|talent.kindling.enabled&(charges_fractional>1.8|time<40)&cooldown.combustion.remains>40" );
   default_list -> add_action( mage_t::get_special_use_items( "horn_of_valor", true ) );
@@ -8352,6 +8327,9 @@ void mage_t::apl_frost()
   default_list -> add_action( this, "Counterspell", "if=target.debuff.casting.react" );
   default_list -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react=0&prev_gcd.1.flurry&spell_haste<0.845" );
   default_list -> add_action( this, "Time Warp", "if=(time=0&buff.bloodlust.down)|(buff.bloodlust.down&equipped.132410&(cooldown.icy_veins.remains<1|target.time_to_die<50))" );
+  default_list -> add_action( mage_t::get_special_use_items( "horn_of_valor", false ) );
+  default_list -> add_action( mage_t::get_special_use_items( "obelisk_of_the_void", false ) );
+  default_list -> add_action( mage_t::get_special_use_items( "mrrgrias_favor", false ) );
   default_list -> add_action( "call_action_list,name=cooldowns" );
   default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>=4" );
   default_list -> add_action( "call_action_list,name=single" );
@@ -8521,7 +8499,7 @@ double mage_t::composite_player_critical_damage_multiplier( const action_state_t
 {
   double m = player_t::composite_player_critical_damage_multiplier( s );
 
-  if ( artifact.burning_gaze.rank() && s -> action -> school == SCHOOL_FIRE )
+  if ( artifact.burning_gaze.rank() && dbc::get_school_mask( s -> action -> school ) & SCHOOL_MASK_FIRE )
   {
     m *= 1.0 + artifact.burning_gaze.percent();
   }
@@ -8751,7 +8729,6 @@ void mage_t::reset()
     recalculate_resource_max( RESOURCE_MANA );
   }
 
-  scorched_earth_counter = 0;
   last_bomb_target = nullptr;
   burn_phase.reset();
 
@@ -9607,8 +9584,11 @@ public:
       .modifier( 120 )
       .verification_value( 60 );
 
-
-
+    hotfix::register_spell( "Mage", "2017-01-11", "Incorrect spell level for Frozen Orb Bolt.", 84721 )
+      .field( "spell_level" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 57 )
+      .verification_value( 81 );
   }
 
   virtual bool valid() const override { return true; }

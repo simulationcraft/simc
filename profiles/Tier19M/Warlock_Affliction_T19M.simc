@@ -18,8 +18,8 @@ actions.precombat=flask,type=whispered_pact
 actions.precombat+=/food,type=nightborne_delicacy_platter
 actions.precombat+=/summon_pet,if=!talent.grimoire_of_supremacy.enabled&(!talent.grimoire_of_sacrifice.enabled|buff.demonic_power.down)
 actions.precombat+=/summon_infernal,if=talent.grimoire_of_supremacy.enabled&artifact.lord_of_flames.rank>0
-actions.precombat+=/summon_infernal,if=talent.grimoire_of_supremacy.enabled&active_enemies>=3
-actions.precombat+=/summon_doomguard,if=talent.grimoire_of_supremacy.enabled&active_enemies<3&artifact.lord_of_flames.rank=0
+actions.precombat+=/summon_infernal,if=talent.grimoire_of_supremacy.enabled&active_enemies>1
+actions.precombat+=/summon_doomguard,if=talent.grimoire_of_supremacy.enabled&active_enemies=1&artifact.lord_of_flames.rank=0
 actions.precombat+=/augmentation,type=defiled
 actions.precombat+=/snapshot_stats
 actions.precombat+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
@@ -31,16 +31,15 @@ actions=reap_souls,if=!buff.deadwind_harvester.remains&(buff.soul_harvest.remain
 actions+=/soul_effigy,if=!pet.soul_effigy.active
 actions+=/agony,cycle_targets=1,if=remains<=tick_time+gcd
 actions+=/service_pet,if=dot.corruption.remains&dot.agony.remains
-actions+=/summon_doomguard,if=!talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal<3&(target.time_to_die>180|target.health.pct<=20|target.time_to_die<30)
-actions+=/summon_infernal,if=!talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>=3
-actions+=/summon_doomguard,if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal<3&equipped.132379&!cooldown.sindorei_spite_icd.remains
-actions+=/summon_infernal,if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>=3&equipped.132379&!cooldown.sindorei_spite_icd.remains
+actions+=/summon_doomguard,if=!talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal<=2&(target.time_to_die>180|target.health.pct<=20|target.time_to_die<30)
+actions+=/summon_infernal,if=!talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>2
+actions+=/summon_doomguard,if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal=1&equipped.132379&!cooldown.sindorei_spite_icd.remains
+actions+=/summon_infernal,if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>1&equipped.132379&!cooldown.sindorei_spite_icd.remains
 actions+=/berserking
 actions+=/blood_fury
 actions+=/arcane_torrent
 actions+=/soul_harvest
 actions+=/potion,name=deadly_grace,if=buff.soul_harvest.remains|trinket.proc.any.react|target.time_to_die<=45
-actions+=/mortal_coil,if=equipped.132452
 actions+=/corruption,if=remains<=tick_time+gcd
 actions+=/corruption,cycle_targets=1,if=(talent.absolute_corruption.enabled|!talent.malefic_grasp.enabled|!talent.soul_effigy.enabled)&remains<=tick_time+gcd
 actions+=/siphon_life,if=remains<=tick_time+gcd
@@ -69,7 +68,7 @@ actions+=/drain_soul,chain=1,interrupt=1
 actions+=/life_tap
 
 head=collar_of_enclosure,id=134424,bonus_id=1727/1522
-neck=cursed_beartooth_necklace,id=139239,bonus_id=1806,gems=150mastery,enchant=mark_of_the_hidden_satyr
+neck=cursed_beartooth_necklace,id=139239,bonus_id=1806,gems=150mastery,enchant=mark_of_the_trained_soldier
 shoulders=amice_of_the_unfurling_tempest,id=134432,bonus_id=1727/1522
 back=drape_of_the_unworthy,id=142521,bonus_id=3469/1512,enchant_id=5436
 chest=robes_of_the_ancient_chronicle,id=142297
@@ -90,7 +89,7 @@ main_hand=ulthalesh_the_deadwind_harvester,id=128942,gem_id=142512/142510/142512
 # gear_intellect=31863
 # gear_crit_rating=4510
 # gear_haste_rating=8177
-# gear_mastery_rating=9921
+# gear_mastery_rating=10521
 # gear_versatility_rating=776
 # gear_armor=1838
 # set_bonus=tier19p_cloth_2pc=1

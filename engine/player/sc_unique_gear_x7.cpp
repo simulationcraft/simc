@@ -54,6 +54,7 @@ namespace item
   void caged_horror( special_effect_t& );
   void tempered_egg_of_serpentrix( special_effect_t& );
   void gnawed_thumb_ring( special_effect_t& );
+  void naraxas_spiked_tongue( special_effect_t& );
 
   // 7.1 Dungeon
   void arans_relaxing_ruby( special_effect_t& );
@@ -447,6 +448,43 @@ void item::gnawed_thumb_ring( special_effect_t& effect )
     .default_value( effect.player -> find_spell( 228461 ) -> effectN( 1 ).percent() );
 
   effect.player -> buffs.taste_of_mana = effect.custom_buff;
+}
+
+// Naraxa's Spiked Tongue ==================================================
+
+void item::naraxas_spiked_tongue( special_effect_t& effect )
+{
+  struct rancid_maw_t: public proc_spell_t
+  {
+    rancid_maw_t( const special_effect_t& e ):
+      proc_spell_t( "rancid_maw", e.player, e.player -> find_spell( 215405 ), e.item )
+    {
+    }
+
+    double action_multiplier() const override
+    {
+      double am = proc_spell_t::action_multiplier();
+
+      double distance = target -> get_player_distance( *player );
+      am *= ( std::min( distance, 20.0 ) / 20.0 ); // Does less damage the closer player is to target.
+      return am;
+    }
+  };
+
+  effect.execute_action = effect.player -> find_action( "rancid_maw" );
+
+  if ( !effect.execute_action )
+  {
+    effect.execute_action = effect.player -> create_proc_action( "rancid_maw", effect );
+  }
+
+  if ( !effect.execute_action )
+  {
+    action_t* a = new rancid_maw_t( effect );
+    effect.execute_action = a;
+  }
+
+  new dbc_proc_callback_t( effect.item, effect );
 }
 
 // Deteriorated Construct Core ==============================================
@@ -1274,78 +1312,42 @@ void item::windscar_whetstone( special_effect_t& effect )
 
 void item::whispers_in_the_dark( special_effect_t& effect )
 {
-  struct whispers_in_the_dark_bad_buff_t : public buff_t
-  {
-    double amount;
-    whispers_in_the_dark_bad_buff_t(special_effect_t& effect) :
-      buff_t( stat_buff_creator_t( effect.player, "devils_due", effect.player -> find_spell( 225776 ), effect.item ) )
-    {
-      amount = effect.player -> find_spell( 225776 ) -> effectN( 1 ).average( effect.item ) / 100.0;
-    }
-    void execute( int stacks, double value, timespan_t duration ) override
-    {
-      if ( current_stack == 0 )
+  auto good_buff_data = effect.player -> find_spell( 225774 );
+  auto good_amount = good_buff_data -> effectN( 1 ).average( effect.item ) / 100.0;
+
+  auto bad_buff_data = effect.player -> find_spell( 225776 );
+  auto bad_amount = bad_buff_data -> effectN( 1 ).average( effect.item ) / 100.0;
+
+  buff_t* bad_buff = buff_creator_t( effect.player, "devils_due", bad_buff_data, effect.item )
+    .stack_change_callback( [ bad_amount ]( buff_t* buff, int old_, int ) {
+      if ( old_ == 0 )
       {
-        player -> composite_spell_speed_multiplier *= 1 - amount;
-        player -> invalidate_cache( CACHE_HASTE );
+        buff -> player -> current.spell_speed_multiplier *= 1 - bad_amount;
       }
-
-      buff_t::execute( stacks, value, duration );
-    }
-    void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-    {
-      buff_t::expire_override( expiration_stacks, remaining_duration );
-      player -> composite_spell_speed_multiplier /= 1 - amount;
-      player -> invalidate_cache( CACHE_HASTE );
-    }
-  };
-
-  struct whispers_in_the_dark_good_buff_t : public buff_t
-  {
-    double amount;
-    whispers_in_the_dark_bad_buff_t* bad_buff;
-
-    whispers_in_the_dark_good_buff_t( special_effect_t& effect ) :
-      buff_t( buff_creator_t( effect.player, "nefarious_pact", effect.player -> find_spell( 225774 ), effect.item ) )
-    {
-      bad_buff = new whispers_in_the_dark_bad_buff_t( effect );
-      amount = effect.player -> find_spell( 225774 ) -> effectN( 1 ).average( effect.item ) / 100.0;
-    }
-    void execute( int stacks, double value, timespan_t duration ) override
-    {
-      if ( current_stack == 0 )
+      else
       {
-        player -> composite_spell_speed_multiplier /= 1 + amount;
-        player -> invalidate_cache( CACHE_HASTE );
+        buff -> player -> current.spell_speed_multiplier /= 1 - bad_amount;
       }
+      buff -> player -> invalidate_cache( CACHE_HASTE );
+    } );
 
-      buff_t::execute( stacks, value, duration );
-    }
-    void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-    {
-      buff_t::expire_override( expiration_stacks, remaining_duration );
-      player -> composite_spell_speed_multiplier *= 1 + amount;
-      player -> invalidate_cache( CACHE_HASTE );
-      bad_buff -> trigger();
-    }
-  };
+  buff_t* good_buff = buff_creator_t( effect.player, "nefarious_pact", good_buff_data, effect.item )
+    .stack_change_callback( [ good_amount, bad_buff ]( buff_t* buff, int old_, int ) {
+      if ( old_ == 0 )
+      {
+        buff -> player -> current.spell_speed_multiplier /= 1 + good_amount;
+        buff -> player -> invalidate_cache( CACHE_HASTE );
+      }
+      else
+      {
+        buff -> player -> current.spell_speed_multiplier *= 1 + good_amount;
+        bad_buff -> trigger();
+      }
+    } );
 
-  struct whispers_in_the_dark_cb_t : public dbc_proc_callback_t
-  {
-    whispers_in_the_dark_good_buff_t* whispers_in_the_dark_buff;
-    whispers_in_the_dark_cb_t( special_effect_t& effect ) :
-      dbc_proc_callback_t( effect.item, effect )
-    {
-      whispers_in_the_dark_buff = new whispers_in_the_dark_good_buff_t( effect );
-    }
+  effect.custom_buff = good_buff;
 
-    void execute( action_t*, action_state_t* ) override
-    {
-      whispers_in_the_dark_buff -> trigger();
-    }
-  };
-
-  new whispers_in_the_dark_cb_t( effect );
+  new dbc_proc_callback_t( effect.item, effect );
 }
 
 // Nightblooming Frond ======================================================
@@ -4096,6 +4098,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 228462, item::jeweled_signet_of_melandrus    );
   register_special_effect( 215745, item::tempered_egg_of_serpentrix     );
   register_special_effect( 228461, item::gnawed_thumb_ring              );
+  register_special_effect( 215404, item::naraxas_spiked_tongue          );
 
   /* Legion 7.1 Dungeon */
   register_special_effect( 230257, item::arans_relaxing_ruby            );
@@ -4176,11 +4179,23 @@ void unique_gear::register_special_effects_x7()
 
 void unique_gear::register_hotfixes_x7()
 {
-  hotfix::register_spell( "Horrific Appendages", "2016-10-09", "In-game testing shows that the actual rppm is much closer to 1.3~ than 0.7, so we slightly underestimated down to 1.25.", 222167 )
-    .field( "rppm" )
+  hotfix::register_spell( "Mark of the Distant Army", "2017-01-10-3", "7.1.5 removed damage information.", 191380 )
+    .field( "scaling_class" )
     .operation( hotfix::HOTFIX_SET )
-    .modifier( 1.25 )
-    .verification_value( 0.7 );
+    .modifier( -1 )
+    .verification_value( 0 );
+
+  hotfix::register_effect( "Mark of the Distant Army", "2017-01-10", "7.1.5 removed damage information.", 280734 )
+    .field( "average" )
+    .operation( hotfix::HOTFIX_SET )
+    .modifier( 8.828724 )
+    .verification_value( 0 );
+
+  hotfix::register_effect( "Mark of the Distant Army", "2017-01-10-2", "7.1.5 removed damage information.", 280734 )
+    .field( "delta" )
+    .operation( hotfix::HOTFIX_SET )
+    .modifier( 0.15 )
+    .verification_value( 0 );
 }
 
 void unique_gear::register_target_data_initializers_x7( sim_t* sim )

@@ -1499,7 +1499,7 @@ struct from_the_shadows_driver_t : public rogue_attack_t
 
     rogue_td_t* tdata = p() -> get_target_data( target );
 
-    // TODO: As of 01/01/2017, From the Shadows ignores Agonizing poison
+    // As of 01/01/2017, From the Shadows ignores Agonizing poison
     m /= 1.0 + p() -> agonizing_poison_stack_multiplier( tdata );
 
     return m;
@@ -2832,7 +2832,20 @@ struct eviscerate_t : public rogue_attack_t
     }
     else
     {
-      p() -> buffs.finality_eviscerate -> trigger( cast_state( execute_state ) -> cp );
+      // As of 01/12/2017 Finality:Eviscerate seems to snapshot on current cp (before the cast) rather than
+      // the ones consumed by the cast, so :
+      // Anticipation: Up to 10 cp for normal and up to 5 cp for weaponmastered.
+      // Others: Up to 5/6 cp for normal and 0 cp for weaponmastered (put at 1 since we do not support buff with 0 stack)
+      if ( secondary_trigger != TRIGGER_WEAPONMASTER || ! p() -> bugs )
+      {
+        // I'll take execute cp + current cp since the ones for the execute are already gone in current cp.
+        p() -> buffs.finality_eviscerate -> trigger( cast_state( execute_state ) -> cp +
+                                                     p() -> resources.current[ RESOURCE_COMBO_POINT ] );
+      } else {
+        // FIXME: We'll trigger at least one stack (4% instead of 0%) since simc doesn't support buff with 0 stack.
+        // Need to do in another way to match in-game behavior in the future.
+        p() -> buffs.finality_eviscerate -> trigger( std::max( static_cast<unsigned>( 1 ), static_cast<unsigned>( p() -> resources.current[ RESOURCE_COMBO_POINT ] ) ) );
+      }
     }
   }
 };
@@ -4221,8 +4234,13 @@ struct shadowstrike_t : public rogue_attack_t
     if ( shadow_satyrs_walk )
     {
       const spell_data_t* base_proc = p() -> find_spell( 224914 );
-      // Distance set to 4y as a default value, use the offset for custom value instead of distance
-      double distance = 4;
+      // Distance set to 10y as a default value, use the offset for custom value instead of distance
+      // Due to the SSW bug (still present as of 01/12/17), we always get a 3 energy refund
+      // when properly placed, so we'll use 10 (so 9y for the computation) as default value.
+      // On larger bosses (like Helya), this value is higher and can be increased with the offset.
+      // Bug is that it computes the distance from the center of the boss instead of the edge,
+      // so it ignores the hitbox (or combat reach as it is often said).
+      double distance = 10;
       double grant_energy = base_proc -> effectN( 1 ).base_value();
       while (distance > shadow_satyrs_walk -> effectN( 2 ).base_value())
       {
@@ -4230,7 +4248,7 @@ struct shadowstrike_t : public rogue_attack_t
         distance -= shadow_satyrs_walk -> effectN( 2 ).base_value();
       }
       // Add the refund offset option
-      grant_energy += p()->ssw_refund_offset;
+      grant_energy += p() -> ssw_refund_offset;
       p() -> resource_gain( RESOURCE_ENERGY, grant_energy, p() -> gains.shadow_satyrs_walk );
     }
   }
@@ -5370,7 +5388,7 @@ void rogue_t::trigger_shadow_techniques( const action_state_t* state )
     return;
   }
 
-  if ( --shadow_techniques == 0 )
+  if ( ++shadow_techniques == 5 || ( shadow_techniques == 4 && rng().roll( 0.5 ) ) )
   {
     double cp = 1;
     if ( rng().roll( artifact.fortunes_bite.percent() ) )
@@ -5379,7 +5397,7 @@ void rogue_t::trigger_shadow_techniques( const action_state_t* state )
     }
 
     trigger_combo_point_gain( cp, gains.shadow_techniques, state -> action );
-    shadow_techniques = rng().range( 4, 5 );
+    shadow_techniques = 0;
   }
 }
 
@@ -6667,7 +6685,7 @@ void rogue_t::init_action_list()
     // Finishers
     action_priority_list_t* finish = get_action_priority_list( "finish", "Finishers" );
     finish -> add_talent( this, "Death from Above", "if=combo_points>=cp_max_spend" );
-    finish -> add_action( this, "Envenom", "if=combo_points>=5|(talent.elaborate_planning.enabled&combo_points>=3+!talent.exsanguinate.enabled&buff.elaborate_planning.remains<0.1)" );
+    finish -> add_action( this, "Envenom", "if=combo_points>=4|(talent.elaborate_planning.enabled&combo_points>=3+!talent.exsanguinate.enabled&buff.elaborate_planning.remains<0.1)" );
 
     // Maintain
     action_priority_list_t* maintain = get_action_priority_list( "maintain", "Maintain" );
@@ -7018,6 +7036,41 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
         return type == RTB_ANY ? 0 : 1;
       } );
     }
+  }
+  // time_to_sht.(1|2|3|4|5)
+  // x: time until we will do the xth attack since last ShT proc.
+  if ( split.size() == 2 && util::str_compare_ci( split[ 0 ], "time_to_sht" ) )
+  {
+    return make_fn_expr( split[ 0 ], [ this, split ]() {
+      timespan_t return_value = timespan_t::from_seconds( 0.0 );
+      if ( strtoul( split[ 1 ].c_str(), nullptr, 0 ) > shadow_techniques ) {
+        unsigned remaining_aa = 5 - shadow_techniques;
+        timespan_t mh_next_swing = main_hand_attack -> execute_event -> remains();
+        timespan_t oh_next_swing = off_hand_attack -> execute_event -> remains();
+        timespan_t mh_swing_time = main_hand_attack -> execute_time();
+        timespan_t oh_swing_time = off_hand_attack -> execute_time();
+
+        if ( remaining_aa == 1 ) {
+          return_value = std::min( mh_next_swing, oh_next_swing );
+        } else if ( remaining_aa == 2 ) {
+          return_value = std::max( mh_next_swing, oh_next_swing );
+        } else {
+          timespan_t total_time = std::max( mh_next_swing, oh_next_swing );
+          for ( unsigned i = remaining_aa - 2; i > 0; i -= 2 )
+          {
+            if ( i == 1 ) {
+              total_time += std::min( mh_swing_time, oh_swing_time );
+            } else if ( i >= 2 ) {
+              total_time += std::max( mh_swing_time, oh_swing_time );
+            }
+          }
+          return_value = total_time;
+        }
+      } else {
+        return_value = timespan_t::from_seconds( 0.0 );
+      }
+    return return_value;
+    } );
   }
 
   return player_t::create_expression( a, name_str );
@@ -7608,7 +7661,8 @@ void rogue_t::create_buffs()
   buffs.finality_eviscerate = buff_creator_t( this, "finality_eviscerate", find_spell( 197496 ) )
     .trigger_spell( artifact.finality )
     .default_value( find_spell( 197496 ) -> effectN( 1 ).percent() / COMBO_POINT_MAX )
-    .max_stack( consume_cp_max() );
+    // Due to Anticipation bug with eviscerate (see eviscerate action), we'll allow it up to 10.
+    .max_stack( 10 ); 
   buffs.finality_nightblade = buff_creator_t( this, "finality_nightblade", find_spell( 197498 ) )
     .trigger_spell( artifact.finality )
     .default_value( find_spell( 197498 ) -> effectN( 1 ).percent() / COMBO_POINT_MAX )
@@ -7886,7 +7940,7 @@ void rogue_t::reset()
   poisoned_enemies = 0;
 
   df_counter = 0;
-  shadow_techniques = rng().range( 4, 5 );
+  shadow_techniques = 0;
 
   weapon_data[ WEAPON_MAIN_HAND ].reset();
   weapon_data[ WEAPON_OFF_HAND ].reset();
