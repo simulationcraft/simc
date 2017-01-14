@@ -7821,6 +7821,30 @@ struct warlock_module_t: public module_t
       .modifier( 1.11 )
       .verification_value( 0.42 );
       */
+
+    hotfix::register_effect( "Warlock", "2017-01-17", "Malefic Grasp now increases the damage of damage over time effects by 70% (down from 80%).", 355427 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 70 )
+      .verification_value( 80 );
+
+    hotfix::register_effect( "Warlock", "2017-01-17", "Shadowbolt damage increased by 42%.", 267 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.42 )
+      .verification_value( 0.88 );
+
+    hotfix::register_effect( "Warlock", "2017-01-17", "Demonbolt damage increased by 42%", 219885 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.42 )
+      .verification_value( 0.88 );
+
+    hotfix::register_effect( "Warlock", "2017-01-17", "Demonbolt damage increased by 42%, but its damage is now increased by 10% per active demon (down from 18%).", 288119 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 10 )
+      .verification_value( 18 );
   }
 
   virtual bool valid() const override { return true; }
