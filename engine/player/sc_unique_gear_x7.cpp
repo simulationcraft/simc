@@ -3891,7 +3891,7 @@ struct spawn_of_serpentrix_t : public pet_t
 struct spawn_of_serpentrix_cb_t : public dbc_proc_callback_t
 {
   const spell_data_t* summon;
-  std::array<spawn_of_serpentrix_t*, 5> pets;
+  std::array<spawn_of_serpentrix_t*, 7> pets;
 
   spawn_of_serpentrix_cb_t( const special_effect_t& effect ) :
     dbc_proc_callback_t( effect.item, effect ),

@@ -282,7 +282,6 @@ public:
     spell_t*  goldrinns_fang;
     action_t* natures_guardian;
     spell_t*  rage_of_the_sleeper;
-    attack_t* shadow_thrash;
     spell_t*  shooting_stars;
     spell_t*  starfall;
     spell_t*  starshards;
@@ -3242,13 +3241,20 @@ public:
     return c;
   }
 
-  virtual void execute() override
+  double action_multiplier() const
   {
+    double am = cat_attack_t::action_multiplier();
+
     if ( p()->talent.moment_of_clarity->ok() && p()->buff.clearcasting->up() )
     {
-      base_multiplier *= 1.0 + p()->talent.moment_of_clarity->effectN( 5 ).percent();
+      am *= 1.0 + p()->talent.moment_of_clarity->effectN( 4 ).percent();
     }
 
+    return am;
+  }
+
+  virtual void execute() override
+  {
     cat_attack_t::execute();
 
     p() -> buff.scent_of_blood -> up();
@@ -3310,27 +3316,50 @@ struct tigers_fury_t : public cat_attack_t
 struct thrash_cat_t: public cat_attack_t {
   struct shadow_thrash_t: public cat_attack_t {
     struct shadow_thrash_tick_t: public cat_attack_t {
+      double multiplier;
       shadow_thrash_tick_t( druid_t* p ):
-        cat_attack_t( "shadow_thrash", p, p -> find_spell( 210687 ) )
+        cat_attack_t( "shadow_thrash", p, p -> find_spell( 210687 ) ),
+        multiplier( 0 )
       {
         background = dual = true;
         aoe = -1;
       }
+
+      double action_multiplier() const
+      {
+        double am = cat_attack_t::action_multiplier();
+
+        am *= 1.0 + multiplier;
+
+        return am;
+      }
     };
 
+    double multiplier;
+    shadow_thrash_tick_t* tick;
     shadow_thrash_t( druid_t* p ):
-      cat_attack_t( "shadow_thrash", p, p -> artifact.shadow_thrash.data().effectN( 1 ).trigger() )
+      cat_attack_t( "shadow_thrash", p, p -> artifact.shadow_thrash.data().effectN( 1 ).trigger() ),
+      multiplier( 0 ), tick( 0 )
     {
       background = true;
-      tick_action = new shadow_thrash_tick_t( p );
+      tick = new shadow_thrash_tick_t( p );
+      tick_action = tick;
 
       base_tick_time *= 1.0 + p -> talent.jagged_wounds -> effectN( 1 ).percent();
       dot_duration *= 1.0 + p -> talent.jagged_wounds -> effectN( 2 ).percent();
     }
+
+    void execute() override
+    {
+      tick -> multiplier = multiplier; 
+      cat_attack_t::execute();
+    }
   };
 
+  shadow_thrash_t* shadow_thrash;
   thrash_cat_t( druid_t* p, const std::string& options_str ):
-    cat_attack_t( "thrash_cat", p, p -> find_spell( 106830 ), options_str )
+    cat_attack_t( "thrash_cat", p, p -> find_spell( 106830 ), options_str ),
+    shadow_thrash( nullptr )
   {
     aoe = -1;
     spell_power_mod.direct = 0;
@@ -3346,10 +3375,10 @@ struct thrash_cat_t: public cat_attack_t {
       energize_type = ENERGIZE_ON_HIT;
     }
 
-    if ( p -> artifact.shadow_thrash.rank() && !p -> active.shadow_thrash )
+    if ( p -> artifact.shadow_thrash.rank() && shadow_thrash == nullptr )
     {
-      p -> active.shadow_thrash = new shadow_thrash_t( p );
-      add_child( p -> active.shadow_thrash );
+      shadow_thrash = new shadow_thrash_t( p );
+      add_child( shadow_thrash );
     }
 
     base_tick_time *= 1.0 + p -> talent.jagged_wounds -> effectN( 1 ).percent();
@@ -3357,26 +3386,36 @@ struct thrash_cat_t: public cat_attack_t {
     base_multiplier *= 1.0 + p -> artifact.jagged_claws.percent();
   }
 
-  void execute() override
+  double action_multiplier() const
   {
-     bool ccup = false;
+    double am = cat_attack_t::action_multiplier();
+
     if ( p() -> talent.moment_of_clarity -> ok() && p() -> buff.clearcasting -> up() )
     {
-      base_multiplier *= 1.0 + p() -> talent.moment_of_clarity -> effectN( 5 ).percent();
-      ccup = true;
+      double mom = p() -> talent.moment_of_clarity -> effectN( 5 ).percent();
+      am *= 1.0 + mom;
+      shadow_thrash -> multiplier = mom;
+    }
+    else
+    {
+      shadow_thrash -> multiplier = 0;
     }
 
+    return am;
+  }
+
+  void execute() override
+  {
     cat_attack_t::execute();
+    
+    if ( rng().roll( p()->artifact.shadow_thrash.data().proc_chance() ) )
+    {
+      shadow_thrash -> target = execute_state -> target;
+      shadow_thrash -> schedule_execute();
+    }
 
     p() -> buff.scent_of_blood -> trigger( 1,
                                            num_targets_hit * p() -> buff.scent_of_blood -> default_value );
-
-    if (rng().roll(p()->artifact.shadow_thrash.data().proc_chance()))
-    {
-       p() -> active.shadow_thrash -> schedule_execute();
-       if (ccup)
-          p() -> active.shadow_thrash -> base_multiplier *= 1.0 + p() -> talent.moment_of_clarity -> effectN(5).percent();
-    }
   }
 };
 
