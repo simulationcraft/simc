@@ -5912,7 +5912,7 @@ struct ray_of_frost_t : public frost_mage_spell_t
 
     // PTR Multiplier
     base_multiplier *= 1.0 + p -> find_spell( 137020 ) -> effectN( 1 ).percent();
-    base_multiplier *= 0.88; //FIXME Jan 17th Hotfix
+    base_multiplier *= 1.12; //FIXME Jan 17th Hotfix
   }
 
   void init() override
