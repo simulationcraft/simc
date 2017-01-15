@@ -3981,10 +3981,10 @@ struct serpent_sting_t: public hunter_melee_attack_t
   {
     background = true;
     tick_may_crit = true;
-    hasted_ticks = false;
+    hasted_ticks = tick_zero = false;
     weapon_multiplier = 0;
     if ( player -> specialization() == HUNTER_SURVIVAL )
-      base_multiplier *= 1.12; //FIXME
+      base_td_multiplier *= 1.12; //FIXME
   }
 };
 
