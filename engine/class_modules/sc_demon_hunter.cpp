@@ -201,7 +201,7 @@ public:
     buff_t* out_of_range;
     buff_t* nemesis;
     buff_t* prepared;
-	buff_t* blind_fury;
+    buff_t* blind_fury;
     buff_t* rage_of_the_illidari;
     movement_buff_t* vengeful_retreat_move;
 
@@ -305,7 +305,7 @@ public:
     const spell_data_t* chaos_strike_refund;
     const spell_data_t* death_sweep;
     const spell_data_t* demonic_appetite_fury;
-	const spell_data_t* eye_beam;
+    const spell_data_t* eye_beam;
     const spell_data_t* fel_barrage_proc;
     const spell_data_t* fel_rush_damage;
     const spell_data_t* vengeful_retreat;
@@ -499,11 +499,6 @@ public:
   struct demon_hunter_options_t
   {
   } options;
-
-  // Glyphs
-  struct
-  {
-  } glyphs;
 
   // Legion Legendaries
   struct
@@ -1810,38 +1805,38 @@ struct eye_beam_t : public demon_hunter_spell_t
 
   void execute() override
   {
-	  bool extend_meta = false;
+    bool extend_meta = false;
 
-	  if (p()->talent.demonic->ok())
-	  {
-		  timespan_t demonic_time = timespan_t::from_seconds(8);
-		  if (p()->buff.metamorphosis->up())
-		  {
-			  p()->buff.metamorphosis->extend_duration(p(), demonic_time);
-		  }
-		  else
-		  {
-			  // Trigger before the execute so that the duration is affected by Meta haste
-			  extend_meta = p()->buff.metamorphosis->trigger(1, p()->buff.metamorphosis->default_value, -1.0, demonic_time);
-		  }
-	  }
+    if (p()->talent.demonic->ok())
+    {
+      timespan_t demonic_time = timespan_t::from_seconds(8);
+      if (p()->buff.metamorphosis->up())
+      {
+        p()->buff.metamorphosis->extend_duration(p(), demonic_time);
+      }
+      else
+      {
+        // Trigger before the execute so that the duration is affected by Meta haste
+        extend_meta = p()->buff.metamorphosis->trigger(1, p()->buff.metamorphosis->default_value, -1.0, demonic_time);
+      }
+    }
 
-	  demon_hunter_spell_t::execute();
-	  timespan_t duration = composite_dot_duration(execute_state);
+    demon_hunter_spell_t::execute();
+    timespan_t duration = composite_dot_duration(execute_state);
 
-	  // Since Demonic triggers Meta with 8s + hasted duration, need to extend by the hasted duration after have an execute_state
-	  if (extend_meta)
-	  {
-		  p()->buff.metamorphosis->extend_duration(p(), duration);
-	  }
+    // Since Demonic triggers Meta with 8s + hasted duration, need to extend by the hasted duration after have an execute_state
+    if (extend_meta)
+    {
+      p()->buff.metamorphosis->extend_duration(p(), duration);
+    }
 
-	  if (p()->talent.blind_fury->ok())
-	  {
-		  // Blind Fury gains scale with the duration of the channel
-		  p()->buff.blind_fury->buff_duration = duration;
-		  p()->buff.blind_fury->buff_period = timespan_t::from_millis(100) * (duration / dot_duration);
-		  p()->buff.blind_fury->trigger();
-	  }
+    if (p()->talent.blind_fury->ok())
+    {
+      // Blind Fury gains scale with the duration of the channel
+      p()->buff.blind_fury->buff_duration = duration;
+      p()->buff.blind_fury->buff_period = timespan_t::from_millis(100) * (duration / dot_duration);
+      p()->buff.blind_fury->trigger();
+    }
   }
 };
 
@@ -5187,7 +5182,6 @@ demon_hunter_t::demon_hunter_t( sim_t* sim, const std::string& name, race_e r )
     active(),
     pets(),
     options(),
-    glyphs(),
     legendary()
 {
   base.distance = 5.0;
@@ -5440,17 +5434,17 @@ void demon_hunter_t::create_buffs()
       resource_gain( RESOURCE_FURY, b->check_value(), gain.prepared );
     } );
 
-	buff.blind_fury =
-		buff_creator_t(this, "blind_fury", spec.eye_beam)
-		.cd(timespan_t::zero())
-		.default_value(talent.blind_fury->effectN(3).resource(RESOURCE_FURY) *
-		(1.0 + sets.set(DEMON_HUNTER_HAVOC, T19, B2)->effectN(1).percent()) / 50)
-		.duration(spec.eye_beam->duration() * (1.0 + talent.blind_fury->effectN(1).percent()))
-		.period(timespan_t::from_millis(100))
-		.tick_zero(true)
-		.tick_callback([this](buff_t* b, int, const timespan_t&) {
-		resource_gain(RESOURCE_FURY, b->check_value(), gain.blind_fury);
-	});
+    buff.blind_fury =
+        buff_creator_t(this, "blind_fury", spec.eye_beam)
+        .cd(timespan_t::zero())
+        .default_value(talent.blind_fury->effectN(3).resource(RESOURCE_FURY) *
+        (1.0 + sets.set(DEMON_HUNTER_HAVOC, T19, B2)->effectN(1).percent()) / 50)
+        .duration(spec.eye_beam->duration() * (1.0 + talent.blind_fury->effectN(1).percent()))
+        .period(timespan_t::from_millis(100))
+        .tick_zero(true)
+        .tick_callback([this](buff_t* b, int, const timespan_t&) {
+        resource_gain(RESOURCE_FURY, b->check_value(), gain.blind_fury);
+    });
   
   buff.rage_of_the_illidari =
     buff_creator_t( this, "rage_of_the_illidari", find_spell( 217060 ) );
@@ -7595,25 +7589,25 @@ public:
 
   void register_hotfixes() const override
   {
-	  hotfix::register_effect("Demon Hunter", "2017-01-13", "Chaos Blades damage reduced to 150%", 313818)
-		  .field("base_value")
-		  .operation(hotfix::HOTFIX_SET)
-		  .modifier(250);
+      hotfix::register_effect("Demon Hunter", "2017-01-13", "Chaos Blades damage reduced to 150%", 313818)
+          .field("base_value")
+          .operation(hotfix::HOTFIX_SET)
+          .modifier(250);
 
-	  hotfix::register_effect("Demon Hunter", "2017-01-13", "Chaos Blades OH damage reduced to 150%", 313820)
-		  .field("base_value")
-		  .operation(hotfix::HOTFIX_SET)
-		  .modifier(250);
-	  
-	  hotfix::register_effect("Demon Hunter", "2017-01-13", "Ability modifier reduced to 8%", 315240)
-		  .field("base_value")
-		  .operation(hotfix::HOTFIX_SET)
-		  .modifier(8);
+      hotfix::register_effect("Demon Hunter", "2017-01-13", "Chaos Blades OH damage reduced to 150%", 313820)
+          .field("base_value")
+          .operation(hotfix::HOTFIX_SET)
+          .modifier(250);
+      
+      hotfix::register_effect("Demon Hunter", "2017-01-13", "Ability modifier reduced to 8%", 315240)
+          .field("base_value")
+          .operation(hotfix::HOTFIX_SET)
+          .modifier(8);
 
-	  hotfix::register_effect("Demon Hunter", "2017-01-13", "Fel Rush increased to 30 Fury per cast", 283035)
-		  .field("base_value")
-		  .operation(hotfix::HOTFIX_SET)
-		  .modifier(30);
+      hotfix::register_effect("Demon Hunter", "2017-01-13", "Fel Rush increased to 30 Fury per cast", 283035)
+          .field("base_value")
+          .operation(hotfix::HOTFIX_SET)
+          .modifier(30);
   }
 
   void combat_begin( sim_t* ) const override

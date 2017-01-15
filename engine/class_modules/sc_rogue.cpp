@@ -4,6 +4,7 @@
 // ==========================================================================
 
 // TODO + BlizzardFeatures + Bugs
+//   - UPDATE SPELLS BASED ON HOTFIXES JANUARY 17th. TEMPORARY //FIXME ADDED FOR NOW
 // Subtlety
 // - Dreadlord's Deceit doesn't work on weaponmastered Shuriken Storm (Blizzard Bug ?)
 // - Insignia of Ravenholdt doesn't proc from Shuriken Storm nor Shuriken Toss (Blizzard Bug ?)
@@ -4395,27 +4396,31 @@ struct sprint_offensive_t: public rogue_attack_t
   sprint_offensive_t( rogue_t* p, const std::string& options_str ):
     rogue_attack_t( "sprint", p, p -> spell.sprint, options_str )
   {
-    harmful = callbacks = false;
+    harmful = callbacks = hasted_ticks = false;
     cooldown = p -> cooldowns.sprint;
-    ignore_false_positive = true;
+    ignore_false_positive = channeled = special = true; //Force channel to disable all actions. 
+    dot_duration = timespan_t::from_seconds( 3 );
+    base_execute_time = timespan_t::from_seconds( 3 );
 
     cooldown -> duration += p -> artifact.shadow_walker.time_value();
   }
+
+  double composite_haste() const override
+  { return 1.0; } // Not hasted.
 
   void execute() override
   {
     rogue_attack_t::execute();
 
-    player -> main_hand_attack -> execute_event -> reschedule( timespan_t::from_seconds( 3.0 ) );
-    
-    player -> off_hand_attack -> execute_event -> reschedule( timespan_t::from_seconds( 3.0 ) );
+    // We must stop autoattacks
+    if ( p() -> main_hand_attack && p() -> main_hand_attack -> execute_event )
+      event_t::cancel( p() -> main_hand_attack -> execute_event );
+
+    if ( p() -> off_hand_attack && p() -> off_hand_attack -> execute_event )
+      event_t::cancel( p() -> off_hand_attack -> execute_event );
 
     p() -> buffs.sprint -> trigger();
-
     p() -> buffs.faster_than_light_trigger -> trigger();
-
-    // while this looks like working, it's making simc very slow and laggy/crashy
-    //p() -> player_t::schedule_ready( timespan_t::from_seconds( 3.0 ), true );
   }
 };
 
@@ -4474,6 +4479,14 @@ struct vanish_t : public rogue_attack_t
       p() -> trigger_combo_point_gain( p() -> sets.set( ROGUE_SUBTLETY, T18, B2 ) -> effectN( 1 ).base_value(),
                                        gain, this );
     }
+  }
+
+  bool ready() override
+  {
+    if ( p() -> buffs.vanish -> check() )
+      return false;
+
+    return rogue_attack_t::ready();
   }
 };
 
@@ -6098,7 +6111,7 @@ struct agonizing_poison_t : public rogue_poison_buff_t
   agonizing_poison_t( rogue_td_t& r ) :
     rogue_poison_buff_t( r, "agonizing_poison", r.source -> find_spell( 200803 ) )
   {
-    default_value = data().effectN( 1 ).percent();
+    default_value = ( data().effectN( 1 ).percent() * 0.875 ); //FIXME - 0.04 * 0.875 = 0.035 
     refresh_behavior = BUFF_REFRESH_PANDEMIC;
   }
 };
@@ -6812,7 +6825,7 @@ void rogue_t::init_action_list()
   {
     // Pre-Combat
     precombat -> add_action( "variable,name=ssw_refund,value=equipped.shadow_satyrs_walk*(4+ssw_refund_offset)", "Defined variables that doesn't change during the fight" );
-    precombat -> add_action( "variable,name=stealth_threshold,value=(15+talent.vigor.enabled*35+talent.master_of_shadows.enabled*30+variable.ssw_refund)" );
+    precombat -> add_action( "variable,name=stealth_threshold,value=(15+talent.vigor.enabled*35+talent.master_of_shadows.enabled*25+variable.ssw_refund)" );
     precombat -> add_talent( this, "Enveloping Shadows", "if=combo_points>=5" );
     precombat -> add_action( this, "Symbols of Death" );
 
@@ -6858,6 +6871,7 @@ void rogue_t::init_action_list()
     // Stealth Action List Starter
     action_priority_list_t* stealth_als = get_action_priority_list( "stealth_als", "Stealth Action List Starter" );
     stealth_als -> add_action( "call_action_list,name=stealth_cds,if=energy.deficit<=variable.stealth_threshold&(!equipped.shadow_satyrs_walk|cooldown.shadow_dance.charges_fractional>=2.45|energy.deficit>=10)" );
+    stealth_als -> add_action( "sprint_offensive,if=energy.time_to_max>3" );
     stealth_als -> add_action( "call_action_list,name=stealth_cds,if=spell_targets.shuriken_storm>=5" );
     stealth_als -> add_action( "call_action_list,name=stealth_cds,if=(cooldown.shadowmeld.up&!cooldown.vanish.up&cooldown.shadow_dance.charges<=1)" );
     stealth_als -> add_action( "call_action_list,name=stealth_cds,if=target.time_to_die<12*cooldown.shadow_dance.charges_fractional*(1+equipped.shadow_satyrs_walk*0.5)" );
@@ -6866,7 +6880,6 @@ void rogue_t::init_action_list()
     action_priority_list_t* stealth_cds = get_action_priority_list( "stealth_cds", "Stealth Cooldowns" );
     stealth_cds -> add_action( this, "Shadow Dance", "if=charges_fractional>=2.45" );
     stealth_cds -> add_action( this, "Vanish" );
-    stealth_cds -> add_action( "sprint_offensive" );
     stealth_cds -> add_action( this, "Shadow Dance", "if=charges>=2&combo_points<=1" );
     stealth_cds -> add_action( "pool_resource,for_next=1,extra_amount=40" );
     stealth_cds -> add_action( "shadowmeld,if=energy>=40&energy.deficit>=10+variable.ssw_refund" );
@@ -6875,8 +6888,9 @@ void rogue_t::init_action_list()
     // Stealthed Rotation
     action_priority_list_t* stealthed = get_action_priority_list( "stealthed", "Stealthed Rotation" );
     stealthed -> add_action( this, "Symbols of Death", "if=(buff.symbols_of_death.remains<target.time_to_die-4&buff.symbols_of_death.remains<=buff.symbols_of_death.duration*0.3)|equipped.shadow_satyrs_walk&energy.time_to_max<0.25" );
+    stealthed -> add_action( this, "Shuriken Storm", "if=combo_points.deficit>=1+buff.shadow_blades.up&buff.shadowmeld.down&((combo_points.deficit>=3&spell_targets.shuriken_storm>=2+talent.premeditation.enabled+equipped.shadow_satyrs_walk)|buff.the_dreadlords_deceit.stack>=29)" );
+    stealthed -> add_action( this, "Shadowstrike", "if=combo_points.deficit>=2+talent.premeditation.enabled+buff.shadow_blades.up" );
     stealthed -> add_action( "call_action_list,name=finish,if=combo_points>=5" );
-    stealthed -> add_action( this, "Shuriken Storm", "if=buff.shadowmeld.down&((combo_points.deficit>=3&spell_targets.shuriken_storm>=2+talent.premeditation.enabled+equipped.shadow_satyrs_walk)|buff.the_dreadlords_deceit.stack>=29)" );
     stealthed -> add_action( this, "Shadowstrike" );
   }
 
@@ -8410,6 +8424,11 @@ struct rogue_module_t : public module_t
 
   void register_hotfixes() const override
   {
+    hotfix::register_effect( "Rogue", "2017-01-15", "Energy needed per 1 second of CDR for Vendetta increased from 50 to 65.", 309173 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 65 )
+      .verification_value( 50 );
   }
 
   virtual void init( player_t* ) const override {}

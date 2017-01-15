@@ -1641,7 +1641,7 @@ struct divine_shield_t : public paladin_spell_t
     p() -> buffs.divine_shield -> trigger();
 
     // in this sim, the only debuffs we care about are enemy DoTs.
-    // Check for them and remove them when cast, and apply Glyph of Divine Shield appropriately
+    // Check for them and remove them when cast
     int num_destroyed = 0;
     for ( size_t i = 0, size = p() -> dot_list.size(); i < size; i++ )
     {
@@ -2703,7 +2703,7 @@ struct holy_wrath_t : public paladin_spell_t
 struct blinding_light_effect_t : public paladin_spell_t
 {
   blinding_light_effect_t( paladin_t* p )
-    : paladin_spell_t( "blinding_light_effect", p, p -> find_spell( 105421 ) )
+    : paladin_spell_t( "blinding_light_effect", p, dbc::find_spell( p, 105421 ) )
   {
     background = true;
   }
@@ -6191,6 +6191,12 @@ struct paladin_module_t : public module_t
       .operation(hotfix::HOTFIX_SET)
       .modifier(10.0)
       .verification_value(20.0);
+
+    hotfix::register_spell( "Paladin", "2017-01-15", "Incorrect spell level for Blinding Light's Effect.", 105421 )
+      .field( "spell_level" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 45 )
+      .verification_value( 87 );
   }
 
   virtual void combat_begin( sim_t* ) const override {}

@@ -301,11 +301,6 @@ public:
 
   } legendary;
 
-  // Glyphs
-  struct glyphs_t
-  {
-  } glyphs;
-
   // Mastery Spells
   struct mastery_spells_t
   {
@@ -5606,7 +5601,6 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
     active( active_t() ),
     talents( talents_t() ),
     legendary( legendary_t() ),
-    glyphs( glyphs_t() ),
     mastery_spells( mastery_spells_t() ),
     cooldowns( cooldowns_t() ),
     spec( specs_t() ),
@@ -6145,8 +6139,6 @@ void warlock_t::init_spells()
   artifact.planeswalker = find_artifact_spell( "Planeswalker" );
   artifact.conflagration_of_chaos = find_artifact_spell( "Conflagration of Chaos" );
 
-  // Glyphs
-
   // Active Spells
   active.demonic_power_proc = new actions::demonic_power_damage_t( this );
   active.thalkiels_discord = new actions::thalkiels_discord_t( this );
@@ -6446,7 +6438,12 @@ void warlock_t::apl_precombat()
   {
     // Pre-potion
     if ( true_level == 110 )
-      precombat_list += "/potion,name=deadly_grace";
+    {
+      if ( specialization() == WARLOCK_DEMONOLOGY )
+        precombat_list += "/potion,name=prolonged_power";
+      else
+        precombat_list += "/potion,name=deadly_grace";
+    }
     else if ( true_level >= 100 )
       precombat_list += "/potion,name=draenic_intellect";
   }
@@ -6592,7 +6589,7 @@ void warlock_t::apl_demonology()
   action_list_str += "/berserking";
   action_list_str += "/blood_fury";
   action_list_str += "/soul_harvest";
-  action_list_str += "/potion,name=deadly_grace,if=buff.soul_harvest.remains|target.time_to_die<=45|trinket.proc.any.react";
+  action_list_str += "/potion,name=prolonged_power,if=buff.soul_harvest.remains|target.time_to_die<=70|trinket.proc.any.react";
   action_list_str += "/shadowflame,if=charges=2&spell_targets.demonwrath<5";
   add_action( "Thal'kiel's Consumption", "if=(dreadstalker_remaining_duration>execute_time|talent.implosion.enabled&spell_targets.implosion>=3)&wild_imp_count>3&wild_imp_remaining_duration>execute_time" );
   add_action( "Life Tap", "if=mana.pct<=30" );
@@ -7583,7 +7580,7 @@ struct lessons_of_spacetime_t : public scoped_actor_callback_t<warlock_t>
 
   void manipulate( warlock_t* p, const special_effect_t& ) override
   {
-    const spell_data_t * tmp = p -> find_spell( 236176 );
+    //const spell_data_t * tmp = p -> find_spell( 236176 );
     p -> legendary.lessons_of_spacetime = true;
     p -> legendary.lessons_of_spacetime1 = timespan_t::from_seconds( 5 );
     p -> legendary.lessons_of_spacetime2 = timespan_t::from_seconds( 9 );

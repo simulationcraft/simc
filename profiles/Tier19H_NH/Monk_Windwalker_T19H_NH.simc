@@ -22,6 +22,7 @@ actions.precombat+=/potion,name=prolonged_power
 
 # Executed every time the actor is available.
 actions=auto_attack
+actions+=/windwalking_aura
 actions+=/spear_hand_strike,if=target.debuff.casting.react
 actions+=/potion,name=prolonged_power,if=buff.serenity.up|buff.storm_earth_and_fire.up|(!talent.serenity.enabled&trinket.proc.agility.react)|buff.bloodlust.react|target.time_to_die<=60
 actions+=/touch_of_death,if=target.time_to_die<=9

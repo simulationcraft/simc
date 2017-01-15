@@ -268,6 +268,7 @@ public:
   double predator_rppm_rate;
   double initial_astral_power;
   int    initial_moon_stage;
+  bool ahhhhh_the_great_outdoors;
 
   struct active_actions_t
   {
@@ -298,6 +299,7 @@ public:
   melee_attack_t* caster_melee_attack;
   melee_attack_t* cat_melee_attack;
   melee_attack_t* bear_melee_attack;
+  double sylvan_walker;
 
   double equipped_weapon_dps;
 
@@ -721,6 +723,7 @@ public:
     predator_rppm_rate( 0.0 ),
     initial_astral_power( 0 ),
     initial_moon_stage( NEW_MOON ),
+    ahhhhh_the_great_outdoors( true ),
     active( active_actions_t() ),
     pet_fey_moonwing(),
     caster_form_weapon(),
@@ -751,7 +754,7 @@ public:
     cooldown.wod_pvp_4pc_melee -> duration = timespan_t::from_seconds( 30.0 );
 
     legendary.the_wildshapers_clutch = 0.0;
-
+    sylvan_walker = 0;
     equipped_weapon_dps = 0;
 
     regen_type = REGEN_DYNAMIC;
@@ -786,6 +789,9 @@ public:
   virtual double    composite_crit_avoidance() const override;
   virtual double    composite_dodge() const override;
   virtual double    composite_dodge_rating() const override;
+  virtual double    composite_damage_versatility_rating() const override;
+  virtual double    composite_heal_versatility_rating() const override;
+  virtual double    composite_mitigation_versatility_rating() const override;
   virtual double    composite_leech() const override;
   virtual double    composite_melee_crit_chance() const override;
   virtual double    composite_melee_expertise( const weapon_t* ) const override;
@@ -7889,6 +7895,42 @@ double druid_t::composite_dodge_rating() const
   return dr;
 }
 
+// druid_t::composite_damage_versatility_rating ==========================================
+
+double druid_t::composite_damage_versatility_rating() const
+{
+  double cdvr = player_t::composite_damage_versatility_rating();
+
+  if ( ahhhhh_the_great_outdoors )
+    cdvr += sylvan_walker;
+
+  return cdvr;
+}
+
+// druid_t::composite_heal_versatility_rating ==========================================
+
+double druid_t::composite_heal_versatility_rating() const
+{
+  double chvr = player_t::composite_heal_versatility_rating();
+
+  if ( ahhhhh_the_great_outdoors )
+    chvr += sylvan_walker;
+
+  return chvr;
+}
+
+// druid_t::composite_mitigation_versatility_rating ==========================================
+
+double druid_t::composite_mitigation_versatility_rating() const
+{
+  double cmvr = player_t::composite_mitigation_versatility_rating();
+
+  if ( ahhhhh_the_great_outdoors )
+    cmvr += sylvan_walker;
+
+  return cmvr;
+}
+
 // druid_t::composite_leech =================================================
 
 double druid_t::composite_leech() const
@@ -7963,6 +8005,7 @@ void druid_t::create_options()
   add_option( opt_float( "predator_rppm", predator_rppm_rate ) );
   add_option( opt_float( "initial_astral_power", initial_astral_power ) );
   add_option( opt_int( "initial_moon_stage", initial_moon_stage ) );
+  add_option( opt_bool( "outside", ahhhhh_the_great_outdoors ) );
 }
 
 // druid_t::create_profile ==================================================
@@ -8899,6 +8942,17 @@ struct oakhearts_puny_quods_t : public scoped_action_callback_t<barkskin_t>
   }
 };
 
+struct sylvan_walker_t: public unique_gear::scoped_actor_callback_t<druid_t>
+{
+  sylvan_walker_t(): super( DRUID )
+  {}
+
+  void manipulate( druid_t* druid, const special_effect_t& e ) override
+  {
+    druid -> sylvan_walker = util::round( e.driver() -> effectN( 1 ).average( e.item ) );
+  }
+};
+
 struct oakhearts_puny_quods_buff_t : public class_buff_cb_t<druid_t>
 {
   oakhearts_puny_quods_buff_t() : super( DRUID, "oakhearts_puny_quods" )
@@ -8995,6 +9049,7 @@ struct druid_module_t : public module_t
     register_special_effect( 200818, lady_and_the_child_t<moonfire_t::moonfire_damage_t>( "moonfire_dmg" ) );
     register_special_effect( 200818, lady_and_the_child_t<lunar_inspiration_t>( "lunar_inspiration" ) );
     register_special_effect( 212875, fiery_red_maimers_t(), true );
+    register_special_effect( 222270, sylvan_walker_t() );
     // register_special_effect( 208220, amanthuls_wisdom );
     // register_special_effect( 207943, edraith_bonds_of_aglaya );
     // register_special_effect( 210667, ekowraith_creator_of_worlds );

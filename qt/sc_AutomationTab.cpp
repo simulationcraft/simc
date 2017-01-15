@@ -22,7 +22,6 @@ namespace automation {
                         QString player_race,
                         QString player_level,
                         QString player_talents,
-                        QString player_glyphs,
                         QString player_gear,
                         QString player_rotationHeader,
                         QString player_rotationFooter,
@@ -34,23 +33,13 @@ namespace automation {
   QString auto_talent_sim( QString player_class,
                            QString base_profile_info,
                            QStringList advanced_text,
-                           QString player_glyphs,
                            QString player_gear,
                            QString player_rotation
                          );
 
-  QString auto_glyph_sim( QString player_class,
-                          QString base_profile_info,
-                          QString player_talents,
-                          QStringList advanced_text,
-                          QString player_gear,
-                          QString player_rotation
-                        );
-
   QString auto_gear_sim( QString player_class,
                          QString base_profile_info,
                          QString player_talents,
-                         QString player_glyphs,
                          QStringList advanced_text,
                          QString player_rotation
                        );
@@ -59,7 +48,6 @@ namespace automation {
                              QString player_spec,
                              QString base_profile_info,
                              QString player_talents,
-                             QString player_glyphs,
                              QString player_gear,
                              QString player_rotationHeader,
                              QString player_rotationFooter,
@@ -153,7 +141,6 @@ QString automation::automation_main( int sim_type,
                                   QString player_race,
                                   QString player_level,
                                   QString player_talents,
-                                  QString player_glyphs,
                                   QString player_gear,
                                   QString player_rotationHeader,
                                   QString player_rotationFooter,
@@ -183,21 +170,17 @@ QString automation::automation_main( int sim_type,
   switch ( sim_type )
   {
     case 1: // talent simulation
-      profile += auto_talent_sim( player_class, base_profile_info, advanced_list, player_glyphs, player_gear, player_rotationHeader );
+      profile += auto_talent_sim( player_class, base_profile_info, advanced_list, player_gear, player_rotationHeader );
       break;
-    case 2: // glyph simulation
-      profile += auto_glyph_sim( player_class, base_profile_info, player_talents, advanced_list, player_gear, player_rotationHeader );
+    case 2: // gear simulation
+      profile += auto_gear_sim( player_class, base_profile_info, player_talents, advanced_list, player_rotationHeader );
       break;
-    case 3: // gear simulation
-      profile += auto_gear_sim( player_class, base_profile_info, player_talents, player_glyphs, advanced_list, player_rotationHeader );
-      break;
-    case 4: // rotation simulation
-      profile += auto_rotation_sim( player_class, player_spec, base_profile_info, player_talents, player_glyphs, player_gear, player_rotationHeader, player_rotationFooter, advanced_list, sidebar_text );
+    case 3: // rotation simulation
+      profile += auto_rotation_sim( player_class, player_spec, base_profile_info, player_talents, player_gear, player_rotationHeader, player_rotationFooter, advanced_list, sidebar_text );
       break;
     default: // default profile creation
       profile += base_profile_info;
       profile += "talents=" + player_talents + "\n";
-      profile += "glyphs=" + player_glyphs + "\n";
       profile += player_gear + "\n";
       profile += player_rotationHeader + "\n";
 
@@ -211,7 +194,6 @@ QString automation::automation_main( int sim_type,
 QString automation::auto_talent_sim( QString player_class,
                                      QString base_profile_info, 
                                      QStringList talentList,
-                                     QString player_glyphs,
                                      QString player_gear,
                                      QString player_rotation
                                    )
@@ -254,75 +236,11 @@ QString automation::auto_talent_sim( QString player_class,
     else 
       profile += "talents=" + splitEntry[ k ] + "\n";
 
-    if ( player_glyphs.startsWith( "glyphs=" ) )
-      profile += player_glyphs + "\n";
-    else
-      profile += "glyphs=" + player_glyphs + "\n";
-
     if ( player_gear.size() > 0 )
       profile += player_gear + "\n";
     if ( player_rotation.size() > 0 )
       profile += player_rotation + "\n";
 
-    // add the remaining options at the end
-    if ( splitEntry.size() > k + 1 )
-      for ( int j = k + 1; j < splitEntry.size(); j++ )
-        profile += splitEntry[ j ] + "\n";
-
-    profile += "\n";
-  }
-
-  return profile;
-}
-
-  // Method for profile creation for the specific GLYPHS simulation
-QString automation::auto_glyph_sim( QString player_class,
-                                    QString base_profile_info,
-                                    QString player_talents,
-                                    QStringList glyphList,
-                                    QString player_gear,
-                                    QString player_rotation
-                                  )
-{
-  QString profile;
-  
-  // make profile for each entry in glyphList
-   for ( int i = 0; i < glyphList.size(); i++ )
-  {
-    // first, check to see if the user has specified additional options within the list entry.
-    // If so, we want to split them off and append them to the end. We do this by splitting on spaces and \n
-    QStringList splitEntry = splitPreservingComments( glyphList[ i ] );
-    
-    // handle isolated comments
-    if ( splitEntry.size() == 1 && splitEntry[ 0 ].startsWith( "#" ) )
-      continue;
-
-    profile += tokenize( player_class ) + "=G_" + QString::number( i ) + "\n";
-    profile += base_profile_info;
-
-    if ( player_talents.startsWith( "talents=" ) )
-      profile += player_talents + "\n";
-    else
-      profile += "talents=" + player_talents + "\n";
-    
-    // skip comments
-    int k = 0;
-    while ( k < splitEntry.size() - 1 && splitEntry[ k ].startsWith( "#" ) )
-    {
-      profile += splitEntry[ k ] + "\n";
-      k++;
-    }
-    // the first non-comment entry should be our glyphs
-    if ( splitEntry[ k ].startsWith( "glyphs=" ) )
-      profile += splitEntry[ k ] + "\n";
-    else
-      profile += "glyphs=" + splitEntry[ k ] + "\n";
-
-    if ( player_gear.size() > 0 )
-      profile += player_gear + "\n";
-    if ( player_rotation.size() > 0 )
-      profile += player_rotation + "\n";
-    
     // add the remaining options at the end
     if ( splitEntry.size() > k + 1 )
       for ( int j = k + 1; j < splitEntry.size(); j++ )
@@ -338,7 +256,6 @@ QString automation::auto_glyph_sim( QString player_class,
 QString automation::auto_gear_sim( QString player_class,
                                    QString base_profile_info,
                                    QString player_talents,
-                                   QString player_glyphs,
                                    QStringList gearList,
                                    QString player_rotation
                                    )
@@ -363,11 +280,6 @@ QString automation::auto_gear_sim( QString player_class,
     else
       profile += "talents=" + player_talents + "\n";
     
-    if ( player_glyphs.startsWith( "glyphs=" ) )
-      profile += player_glyphs + "\n";
-    else
-      profile += "glyphs=" + player_glyphs + "\n";
-
     if ( player_rotation.size() > 0 )
       profile += player_rotation + "\n";
 
@@ -388,7 +300,6 @@ QString automation::auto_rotation_sim( QString player_class,
                                        QString player_spec,
                                        QString base_profile_info,
                                        QString player_talents,
-                                       QString player_glyphs,
                                        QString player_gear,
                                        QString player_rotationHeader,
                                        QString player_rotationFooter,
@@ -465,11 +376,6 @@ QString automation::auto_rotation_sim( QString player_class,
       profile += player_talents + "\n";
     else
       profile += "talents=" + player_talents + "\n";
-    
-    if ( player_glyphs.startsWith( "glyphs=" ) )
-      profile += player_glyphs + "\n";
-    else
-      profile += "glyphs=" + player_glyphs + "\n";
     
     if ( player_gear.size() > 0 )
       profile += player_gear + "\n";
@@ -759,30 +665,30 @@ QComboBox* addValidatorToComboBox( int lowerBound, int upperBound, QComboBox* co
 //}
 
 QString defaultOptions = "AC#=action.$ability.charges>=#\nAE#=active_enemies>=#\nDR=target.dot.$ability.remains\nDR#=target.dot.$ability.remains>=#\nE=target.health.pct<=20\nE#=target.health.pct<=#\nNT=!ticking\nNF=target.debuff.flying.down\nW#=/wait,sec=cooldown.$ability.remains,if=cooldown.$ability.remains<=#\n\n";
-QString defaultOperators = "BU=buff.$operand.up\nBA=buff.$operand.react\nBR=buff.$operand.remains\nBR#=buff.$operand.remains>#\nBC#=buff.$operand.charges>=#\nBS#=buff.$operand.stack>=#\nCD=cooldown.$operand.remains\nCD#=cooldown.$operand.remains>#\nDR=target.dot.$operand.remains\nDR#=target.dot.$operand.remains>=#\nDT=dot.$operand.ticking\nGCD=cooldown.$operand.remains<=gcd\nGCD#=cooldown.$operand.remains<=gcd*#\nT=talent.$operand.enabled\nG=glyph.$operand.enabled\n";
+QString defaultOperators = "BU=buff.$operand.up\nBA=buff.$operand.react\nBR=buff.$operand.remains\nBR#=buff.$operand.remains>#\nBC#=buff.$operand.charges>=#\nBS#=buff.$operand.stack>=#\nCD=cooldown.$operand.remains\nCD#=cooldown.$operand.remains>#\nDR=target.dot.$operand.remains\nDR#=target.dot.$operand.remains>=#\nDT=dot.$operand.ticking\nGCD=cooldown.$operand.remains<=gcd\nGCD#=cooldown.$operand.remains<=gcd*#\nT=talent.$operand.enabled\n";
 
 // constant for sidebar text (this will eventually get really long)
 QString sidebarText[ 12 ][ 4 ] = {
   { // DEATHKNIGHT Shorthand Declaration
-    ":::Abilities, Buffs, Glyphs, and Talents:::\nAMS=Anti Magic Shell\nAotD=Army of the Dead\nBP=Blood Plague\nCoI=Chains of Ice\nDSim=Dark Simulacrum\nDnD=Death and Decay\nDC=Death Coil\nDG=Death Grip\nDS=Death Strike\nERW=Empower Rune Weapon\nFF=Frost Fever\nHoW=Horn of Winter\nIBF=Icebound Fortitude\nIT=Icy Touch\nMF=Mind Freeze\nOB=Outbreak\nPS=Plague Strike\nSR=Soul Reaper\nPest=Pestilence\nAMZ=Anti Magic Zone\nBT=Blood Tap\nBoS=Breath of Sindragosa\nDP=Death Pact\nDSi=Death Siphon\nGG=Gorefiend's Grasp\nNP=Necrotic Plague\nPL=Plague Leech\nRC=Runic Corruption\nRE=Runic Empowerment\nUB=Unholy Blight\nRW=Remorseless Winter\nDesG=Desecrated Ground\nPATH=Path of Frost\nDef=Defile\n\n"
+    ":::Abilities, Buffs and Talents:::\nAMS=Anti Magic Shell\nAotD=Army of the Dead\nBP=Blood Plague\nCoI=Chains of Ice\nDSim=Dark Simulacrum\nDnD=Death and Decay\nDC=Death Coil\nDG=Death Grip\nDS=Death Strike\nERW=Empower Rune Weapon\nFF=Frost Fever\nHoW=Horn of Winter\nIBF=Icebound Fortitude\nIT=Icy Touch\nMF=Mind Freeze\nOB=Outbreak\nPS=Plague Strike\nSR=Soul Reaper\nPest=Pestilence\nAMZ=Anti Magic Zone\nBT=Blood Tap\nBoS=Breath of Sindragosa\nDP=Death Pact\nDSi=Death Siphon\nGG=Gorefiend's Grasp\nNP=Necrotic Plague\nPL=Plague Leech\nRC=Runic Corruption\nRE=Runic Empowerment\nUB=Unholy Blight\nRW=Remorseless Winter\nDesG=Desecrated Ground\nPATH=Path of Frost\nDef=Defile\n\n"
     "BPres=Blood Presence\nBS=Bone Shield\nDRW=Dancing Rune Weapon\nSoB=Scent of Blood\nVamp=Vampiric Blood\nWotN=Will of the Necropolis\n"
-    "Additional ability, buff, glyph, and talent shorthands can be added here"
+    "Additional ability, buff, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions +
     "Additional option shorthands can be added here"
     "\n\n:::Operators:::\n" + defaultOperators +
     "Additional operator shorthands can be added here\n\n",
 
-    ":::Abilities, Buffs, Glyphs, and Talents:::\nAMS=Anti Magic Shell\nAotD=Army of the Dead\nBP=Blood Plague\nCoI=Chains of Ice\nDSim=Dark Simulacrum\nDnD=Death and Decay\nDC=Death Coil\nDG=Death Grip\nDS=Death Strike\nERW=Empower Rune Weapon\nFF=Frost Fever\nHoW=Horn of Winter\nIBF=Icebound Fortitude\nIT=Icy Touch\nMF=Mind Freeze\nOB=Outbreak\nPS=Plague Strike\nSR=Soul Reaper\nPest=Pestilence\nAMZ=Anti Magic Zone\nBT=Blood Tap\nBoS=Breath of Sindragosa\nDP=Death Pact\nDSi=Death Siphon\nGG=Gorefiend's Grasp\nNP=Necrotic Plague\nPL=Plague Leech\nRC=Runic Corruption\nRE=Runic Empowerment\nUB=Unholy Blight\nRW=Remorseless Winter\nDesG=Desecrated Ground\nPATH=Path of Frost\nDef=Defile\n\n"
+    ":::Abilities, Buffs, and Talents:::\nAMS=Anti Magic Shell\nAotD=Army of the Dead\nBP=Blood Plague\nCoI=Chains of Ice\nDSim=Dark Simulacrum\nDnD=Death and Decay\nDC=Death Coil\nDG=Death Grip\nDS=Death Strike\nERW=Empower Rune Weapon\nFF=Frost Fever\nHoW=Horn of Winter\nIBF=Icebound Fortitude\nIT=Icy Touch\nMF=Mind Freeze\nOB=Outbreak\nPS=Plague Strike\nSR=Soul Reaper\nPest=Pestilence\nAMZ=Anti Magic Zone\nBT=Blood Tap\nBoS=Breath of Sindragosa\nDP=Death Pact\nDSi=Death Siphon\nGG=Gorefiend's Grasp\nNP=Necrotic Plague\nPL=Plague Leech\nRC=Runic Corruption\nRE=Runic Empowerment\nUB=Unholy Blight\nRW=Remorseless Winter\nDesG=Desecrated Ground\nPATH=Path of Frost\nDef=Defile\n\n"
     "FPres=Frost Presence\nFS=Frost Strike\nHB=Howling Blast\nKM=Killing Machine\nOblit=Obliterate\nPoF=Pillar of Frost\n"
-    "Additional ability, buff, glyph, and talent shorthands can be added here"
+    "Additional ability, buff, and talent shorthands can be added here"
    "\n\n:::Options:::\n" + defaultOptions + 
     "Additional option shorthands can be added here"
     "\n\n:::Operators:::\n" + defaultOperators +
     "Additional operator shorthands can be added here\n\n",
 
-    ":::Abilities, Buffs, Glyphs, and Talents:::\nAMS=Anti Magic Shell\nAotD=Army of the Dead\nBP=Blood Plague\nCoI=Chains of Ice\nDSim=Dark Simulacrum\nDnD=Death and Decay\nDC=Death Coil\nDG=Death Grip\nDS=Death Strike\nERW=Empower Rune Weapon\nFF=Frost Fever\nHoW=Horn of Winter\nIBF=Icebound Fortitude\nIT=Icy Touch\nMF=Mind Freeze\nOB=Outbreak\nPS=Plague Strike\nSR=Soul Reaper\nPest=Pestilence\nAMZ=Anti Magic Zone\nBT=Blood Tap\nBoS=Breath of Sindragosa\nDP=Death Pact\nDSi=Death Siphon\nGG=Gorefiend's Grasp\nNP=Necrotic Plague\nPL=Plague Leech\nRC=Runic Corruption\nRE=Runic Empowerment\nUB=Unholy Blight\nRW=Remorseless Winter\nDesG=Desecrated Ground\nPATH=Path of Frost\nDef=Defile\n\n"
+    ":::Abilities, Buffs, and Talents:::\nAMS=Anti Magic Shell\nAotD=Army of the Dead\nBP=Blood Plague\nCoI=Chains of Ice\nDSim=Dark Simulacrum\nDnD=Death and Decay\nDC=Death Coil\nDG=Death Grip\nDS=Death Strike\nERW=Empower Rune Weapon\nFF=Frost Fever\nHoW=Horn of Winter\nIBF=Icebound Fortitude\nIT=Icy Touch\nMF=Mind Freeze\nOB=Outbreak\nPS=Plague Strike\nSR=Soul Reaper\nPest=Pestilence\nAMZ=Anti Magic Zone\nBT=Blood Tap\nBoS=Breath of Sindragosa\nDP=Death Pact\nDSi=Death Siphon\nGG=Gorefiend's Grasp\nNP=Necrotic Plague\nPL=Plague Leech\nRC=Runic Corruption\nRE=Runic Empowerment\nUB=Unholy Blight\nRW=Remorseless Winter\nDesG=Desecrated Ground\nPATH=Path of Frost\nDef=Defile\n\n"
     "UPres=Unholy Presence\nDT=Dark Transformation\nFeS=Festering Strike\nSS=Scourge Strike\nSD=Sudden Doom\nGarg=Summon Gargoyle\n"
-    "Additional ability, buff, glyph, and talent shorthands can be added here"
+    "Additional ability, buff, and talent shorthands can be added here"
    "\n\n:::Options:::\n" + defaultOptions + 
     "Additional option shorthands can be added here"
     "\n\n:::Operators:::\n" + defaultOperators +
@@ -792,26 +698,26 @@ QString sidebarText[ 12 ][ 4 ] = {
   },
 
   { // DEMONHUNTER Shorthand Declaration
-    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
-    "Additional ability, buff, glyph, and talent shorthands can be added here"
+    ":::Abilities, Buffs, and Talents:::\n" 
+    "Additional ability, buff, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
     "Additional option shorthands can be added here"
     "\n\n:::Operators:::\n" + defaultOperators +
     "Additional operator shorthands can be added here\n\n",
     
-    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
-    "Additional ability, buff, glyph, and talent shorthands can be added here"
+    ":::Abilities, Buffs, and Talents:::\n" 
+    "Additional ability, buff, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
     
-    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
-    "Additional ability, buff, glyph, and talent shorthands can be added here"
+    ":::Abilities, Buffs, and Talents:::\n" 
+    "Additional ability, buff, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
     "Additional option shorthands can be added here"
     "\n\n:::Operators:::\n" + defaultOperators +
     "Additional operator shorthands can be added here\n\n",
     
-    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
-    "Additional ability, buff, glyph, and talent shorthands can be added here"
+    ":::Abilities, Buffs, and Talents:::\n" 
+    "Additional ability, buff, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
     "Additional option shorthands can be added here"
     "\n\n:::Operators:::\n" + defaultOperators +
@@ -819,26 +725,26 @@ QString sidebarText[ 12 ][ 4 ] = {
   },
 
   { // DRUID Shorthand Declaration
-    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
-    "Additional ability, buff, glyph, and talent shorthands can be added here"
+    ":::Abilities, Buffs, and Talents:::\n" 
+    "Additional ability, buff, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
     "Additional option shorthands can be added here"
     "\n\n:::Operators:::\n" + defaultOperators +
     "Additional operator shorthands can be added here\n\n",
     
-    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
-    "Additional ability, buff, glyph, and talent shorthands can be added here"
+    ":::Abilities, Buffs, and Talents:::\n" 
+    "Additional ability, buff, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
     
-    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
-    "Additional ability, buff, glyph, and talent shorthands can be added here"
+    ":::Abilities, Buffs, and Talents:::\n" 
+    "Additional ability, buff, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
     "Additional option shorthands can be added here"
     "\n\n:::Operators:::\n" + defaultOperators +
     "Additional operator shorthands can be added here\n\n",
     
-    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
-    "Additional ability, buff, glyph, and talent shorthands can be added here"
+    ":::Abilities, Buffs, and Talents:::\n" 
+    "Additional ability, buff, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
     "Additional option shorthands can be added here"
     "\n\n:::Operators:::\n" + defaultOperators +
@@ -846,22 +752,22 @@ QString sidebarText[ 12 ][ 4 ] = {
   },
 
   { // HUNTER Shorthand Declaration
-    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
-    "Additional ability, buff, glyph, and talent shorthands can be added here"
+    ":::Abilities, Buffs, and Talents:::\n" 
+    "Additional ability, buff, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
     "Additional option shorthands can be added here"
     "\n\n:::Operators:::\n" + defaultOperators +
     "Additional operator shorthands can be added here\n\n",
     
-    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
-    "Additional ability, buff, glyph, and talent shorthands can be added here"
+    ":::Abilities, Buffs, and Talents:::\n" 
+    "Additional ability, buff, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
     "Additional option shorthands can be added here"
     "\n\n:::Operators:::\n" + defaultOperators +
     "Additional operator shorthands can be added here\n\n",
     
-    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
-    "Additional ability, buff, glyph, and talent shorthands can be added here"
+    ":::Abilities, Buffs, and Talents:::\n" 
+    "Additional ability, buff, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
     "Additional option shorthands can be added here"
     "\n\n:::Operators:::\n" + defaultOperators +
@@ -871,28 +777,28 @@ QString sidebarText[ 12 ][ 4 ] = {
   },
   
   { // MAGE Shorthand Declaration
-    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
+    ":::Abilities, Buffs, and Talents:::\n" 
     "AB=arcane_blast\nAE=arcane_explosion\nAM=arcane_missiles\nABar=arcane_barrage\nCoC=cone_of_cold\nEvo=evocation\nFN = frost_nova\nPoM=presence_of_mind\nCS=counterspell\n\n"
     "BS=blazing_speed\nIF=ice_floes\nNT=nether_tempest\nSN=supernova\nAO=arcane_orb\nRoP=rune_of_power\nIF=incanters_flow\nMI=mirror_image\nPC=prismatic_crystal\nUM=unstable_magic\nOP=overpowered\n"
-    "Additional ability, buff, glyph, and talent shorthands can be added here"
+    "Additional ability, buff, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
     "Additional option shorthands can be added here"
     "\n\n:::Operators:::\n" + defaultOperators +
     "Additional operator shorthands can be added here\n\n",
     
-    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
+    ":::Abilities, Buffs, and Talents:::\n" 
     "FB=fireball\nFFB=frostfire_bolt\nSC=scorch\nIB=inferno_blast\nPB=pyroblast\nComb=combustion\nFN=frost_nova\nFS=flamestrike\nDB=dragons_breath\nCS=counterspell\n\n"
     "BS=blazing_speed\nIF=ice_floes\nLB=living_bomb\nBW=blast_wave\nMet=meteor\nHU=heating_up\nHS=pyroblast\nRoP=rune_of_power\nIF=incanters_flow\nMI=mirror_image\nPC=prismatic_crystal\nUM=unstable_magic\nKind=kindling\n"
-    "Additional ability, buff, glyph, and talent shorthands can be added here"
+    "Additional ability, buff, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
     "Additional option shorthands can be added here"
     "\n\n:::Operators:::\n" + defaultOperators +
     "Additional operator shorthands can be added here\n\n",
     
-    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
+    ":::Abilities, Buffs, and Talents:::\n" 
     "FB=frostbolt\nIL=ice_lance\nFFB=frostfire_bolt\nCoC=cone_of_cold\nWJ=water_jet\nFrz=freeze\nFN=frost_nova\nFO=frozen_orb\nIV=icy_veins\nBLY=blizzard\nBLZ=blizzard\nCS=counterspell\n\n"
     "BS=blazing_speed\nIF=ice_floes\nFBomb=frost_bomb\nIN=ice_nova\nCmS=comet_storm\nBF=brain_freeze\nFoF=fingers_of_frost\nRoP=rune_of_power\nIF=incanters_flow\nMI=mirror_image\nPC=prismatic_crystal\nUM=unstable_magic\nTV=thermal_void\n"
-    "Additional ability, buff, glyph, and talent shorthands can be added here"
+    "Additional ability, buff, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
     "Additional option shorthands can be added here"
     "\n\n:::Operators:::\n" + defaultOperators +
@@ -902,26 +808,26 @@ QString sidebarText[ 12 ][ 4 ] = {
   },
   
   { // MONK Shorthand Declaration
-    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
+    ":::Abilities, Buffs, and Talents:::\n" 
     "KS=keg_smash\nEB=elusive_brew\nEH=expel_harm\nPB=purifying_brew\nFB=fortifying_brew\nBoK=blackout_kick\nTP=tiger_palm\nTPow=buff.tiger_power\nBoF=breath_of_fire\nSCK=spinning_crane_kick\n\n"
     "CW=chi_wave\nZS=zen_sphere\nCBur=chi_burst\nPS=power_strikes\nAsc=ascension\nCB=chi_brew\nDH=dampen_harm\nRJW=rushing_jade_wind\nXuen=invoke_xuen\nCE=chi_explosion\nSer=serenity\n"
-    "Additional ability, buff, glyph, and talent shorthands can be added here"
+    "Additional ability, buff, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
     "Additional option shorthands can be added here"
     "\n\n:::Operators:::\n" + defaultOperators +
     "Additional operator shorthands can be added here\n\n",
     
-    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
-    "Additional ability, buff, glyph, and talent shorthands can be added here"
+    ":::Abilities, Buffs, and Talents:::\n" 
+    "Additional ability, buff, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
     "Additional option shorthands can be added here"
     "\n\n:::Operators:::\n" + defaultOperators +
     "Additional operator shorthands can be added here\n\n",
     
-    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
+    ":::Abilities, Buffs, and Talents:::\n" 
     "FoF=fists_of_fury\nBoK=blackout_kick\nCBBoK=buff.combo_breaker_bok.react\nTP=tiger_palm\nTPow=buff.tiger_power\nCBTP=buff.combo_breaker_tp.react\nRSK=rising_sun_kick\nTeB=tigereye_brew\nSCK=spinning_crane_kick\n\n"
     "CW=chi_wave\nZS=zen_sphere\nCBur=chi_burst\nPS=power_strikes\nAsc=ascension\nCB=chi_brew\nRJW=rushing_jade_wind\nXuen=invoke_xuen\nHS=hurricane_strike\nCE=chi_explosion\nCBCE=buff.combo_breaker_ce.react\nSer=serenity\n"
-    "Additional ability, buff, glyph, and talent shorthands can be added here"
+    "Additional ability, buff, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
     "Additional option shorthands can be added here"
     "\n\n:::Operators:::\n" + defaultOperators +
@@ -931,26 +837,26 @@ QString sidebarText[ 12 ][ 4 ] = {
   },
 
   { // PALADIN Shorthand Declaration
-    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
-    "Additional ability, buff, glyph, and talent shorthands can be added here"
+    ":::Abilities, Buffs, and Talents:::\n" 
+    "Additional ability, buff, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
     "Additional option shorthands can be added here"
     "\n\n:::Operators:::\n" + defaultOperators +
     "Additional operator shorthands can be added here\n\n",
     
-    ":::Abilities, Buffs, Glyphs, and Talents:::\n"
+    ":::Abilities, Buffs, and Talents:::\n"
     "AA=auto_attack\nAS=avengers_shield\nCons=consecration\nCS=crusader_strike\nEF=eternal_flame\nES=execution_sentence\nFoL=flash_of_light\nHotR=hammer_of_the_righteous\nHoW=hammer_of_wrath\nHPr=holy_prism\nHW=holy_wrath\nJ=judgment\nLH=lights_hammer\nSS=sacred_shield\nSoI=seal_of_insight\nSoR=seal_of_righteousness\nSoT=seal_of_truth\nSP=seraphim\nSotR=shield_of_the_righteous\nWoG=word_of_glory\n\n"
-    "DJ=double_jeopardy\nDP=divine_purpose\nFW=holy_wrath,if=glyph.final_wrath.enabled&target.health.pct<=20\nGC=grand_crusader\nHA=holy_avenger\nSP=seraphim\nSotR=shield_of_the_righteous\nSH=selfless_healer\nSW=sanctified_wrath\n\n"
-    "Additional ability, buff, glyph, and talent shorthands can be added here"
-    "\n\n:::Options:::\n" + defaultOptions + "HP=holy_power\nHP#=holy_power>=#\nFW=glyph.final_wrath.enabled&target.health.pct<=20\nEverything below this line is redundant with the buff syntax method, just here for ease of use\nDP=buff.divine_purpose.react\nSH#=buff.selfless_healer.stack>=#\nSW=talent.sanctified_wrath.enabled\nSP=buff.seraphim.react\n\nGC=buff.grand_crusader.react\nGC#=buff.grand_crusader.remains<#\n"
+    "DJ=double_jeopardy\nDP=divine_purpose\nFW=holy_wrath,if=target.health.pct<=20\nGC=grand_crusader\nHA=holy_avenger\nSP=seraphim\nSotR=shield_of_the_righteous\nSH=selfless_healer\nSW=sanctified_wrath\n\n"
+    "Additional ability, buff, and talent shorthands can be added here"
+    "\n\n:::Options:::\n" + defaultOptions + "HP=holy_power\nHP#=holy_power>=#\nFW=target.health.pct<=20\nEverything below this line is redundant with the buff syntax method, just here for ease of use\nDP=buff.divine_purpose.react\nSH#=buff.selfless_healer.stack>=#\nSW=talent.sanctified_wrath.enabled\nSP=buff.seraphim.react\n\nGC=buff.grand_crusader.react\nGC#=buff.grand_crusader.remains<#\n"
     "Additional option shorthands can be added here"
     "\n\n:::Operators:::\n" + defaultOperators +
     "Additional operator shorthands can be added here\n\n",
 
-    ":::Abilities, Buffs, Glyphs, and Talents:::\n"
+    ":::Abilities, Buffs, and Talents:::\n"
     "AA=auto_attack\nCS=crusader_strike\nJ=judgment\nEXO=exorcism\nHotR=hammer_of_the_righteous\nHoW=hammer_of_wrath\nTV=templars_verdict\nFV=final_verdict\nDS=divine_storm\nES=execution_sentence\nHPr=holy_prism\nLH=lights_hammer\nSP=seraphim\nSoT=seal_of_truth\nSoR=seal_of_righteousness\nSoI=seal_of_insight\nAW=avenging_wrath\nHA=holy_avenger\n\n"
     "AW=avenging_wrath\nDP=divine_purpose\nHA=holy_avenger\nDC=divine_crusader\nSP=seraphim\nSH=selfless_healer\nSW=sanctified_wrath\nDJ=double_jeopardy\n\n"
-    "Additional ability, buff, glyph, and talent shorthands can be added here"
+    "Additional ability, buff, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + "HP#=holy_power>=#\nHPL#=holy_power<=#\n"
     "Additional option shorthands can be added here"
     "\n\n:::Operators:::\n" + defaultOperators +
@@ -960,22 +866,22 @@ QString sidebarText[ 12 ][ 4 ] = {
   },
 
   { // PRIEST Shorthand Declaration
-    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
-    "Additional ability, buff, glyph, and talent shorthands can be added here"
+    ":::Abilities, Buffs, and Talents:::\n" 
+    "Additional ability, buff, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
     "Additional option shorthands can be added here"
     "\n\n:::Operators:::\n" + defaultOperators +
     "Additional operator shorthands can be added here\n\n",
     
-    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
-    "Additional ability, buff, glyph, and talent shorthands can be added here"
+    ":::Abilities, Buffs, and Talents:::\n" 
+    "Additional ability, buff, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
     "Additional option shorthands can be added here"
     "\n\n:::Operators:::\n" + defaultOperators +
     "Additional operator shorthands can be added here\n\n",
     
-    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
-    "Additional ability, buff, glyph, and talent shorthands can be added here"
+    ":::Abilities, Buffs, and Talents:::\n" 
+    "Additional ability, buff, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
     "Additional option shorthands can be added here"
     "\n\n:::Operators:::\n" + defaultOperators +
@@ -985,22 +891,22 @@ QString sidebarText[ 12 ][ 4 ] = {
   },
 
   { // ROGUE Shorthand Declaration
-    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
-    "Additional ability, buff, glyph, and talent shorthands can be added here"
+    ":::Abilities, Buffs, and Talents:::\n" 
+    "Additional ability, buff, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
     "Additional option shorthands can be added here"
     "\n\n:::Operators:::\n" + defaultOperators +
     "Additional operator shorthands can be added here\n\n",
     
-    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
-    "Additional ability, buff, glyph, and talent shorthands can be added here"
+    ":::Abilities, Buffs, and Talents:::\n" 
+    "Additional ability, buff, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
     "Additional option shorthands can be added here"
     "\n\n:::Operators:::\n" + defaultOperators +
     "Additional operator shorthands can be added here\n\n",
     
-    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
-    "Additional ability, buff, glyph, and talent shorthands can be added here"
+    ":::Abilities, Buffs, and Talents:::\n" 
+    "Additional ability, buff, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
     "Additional option shorthands can be added here"
     "\n\n:::Operators:::\n" + defaultOperators +
@@ -1010,25 +916,25 @@ QString sidebarText[ 12 ][ 4 ] = {
   },
 
   { // SHAMAN Shorthand Declaration
-    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
-    "Additional ability, buff, glyph, and talent shorthands can be added here"
+    ":::Abilities, Buffs, and Talents:::\n" 
+    "Additional ability, buff, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
     "Additional option shorthands can be added here"
     "\n\n:::Operators:::\n" + defaultOperators +
     "Additional operator shorthands can be added here\n\n",
     
-    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
+    ":::Abilities, Buffs, and Talents:::\n" 
     "AA=auto_attack\nEM=elemental_mastery\nSET=storm_elemental_totem\nFET=fire_elemental_totem\nASC=ascendance\nFS=feral_spirit\nLM=liquid_magma\nAS=ancestral_swiftness\nST=searing_totem\nUE=unleash_elements\nEB=elemental_blast\nLB=lightning_bolt\nWS=windstrike\nSS=stormstrike\nLL=lava_lash\nFlS=flame_shock\nFrS=frost_shock\n\n"
     "EM=elemental_mastery\nAS=ancestral_swiftness\nUF=unleashed_fury\nPE=primal_elementalist\nEB=elemental_blast\nEF=elemental_fusion\nSET=storm_elemental_totem\nLM=liquid_magma\n"
-    "Additional ability, buff, glyph, and talent shorthands can be added here"
+    "Additional ability, buff, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
     "MW#=buff.maelstrom_weapon.react>=#\nNFT=!totem.fire.active\nNASC=!buff.ascendance.up\nCFE#=cooldown.fire_elemental_totem.remains>=#\nFTR#=pet.searing_totem.remains>=#|pet.fire_elemental_totem.remains>=#\nUFl=buff.unleash_flame.up\nFlSR#=dot.flame_shock.remains<=#\nASU=buff.ancestral_swiftness.up\n"    
     "Additional option shorthands can be added here"
     "\n\n:::Operators:::\n" + defaultOperators +
     "Additional operator shorthands can be added here\n\n",
     
-    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
-    "Additional ability, buff, glyph, and talent shorthands can be added here"
+    ":::Abilities, Buffs, and Talents:::\n" 
+    "Additional ability, buff, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
     "Additional option shorthands can be added here"
     "\n\n:::Operators:::\n" + defaultOperators +
@@ -1038,22 +944,22 @@ QString sidebarText[ 12 ][ 4 ] = {
   },
 
   { // WARLOCK Shorthand Declaration
-    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
-    "Additional ability, buff, glyph, and talent shorthands can be added here"
+    ":::Abilities, Buffs, and Talents:::\n" 
+    "Additional ability, buff, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
     "Additional option shorthands can be added here"
     "\n\n:::Operators:::\n" + defaultOperators +
     "Additional operator shorthands can be added here\n\n",
     
-    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
-    "Additional ability, buff, glyph, and talent shorthands can be added here"
+    ":::Abilities, Buffs, and Talents:::\n" 
+    "Additional ability, buff, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
     "Additional option shorthands can be added here"
     "\n\n:::Operators:::\n" + defaultOperators +
     "Additional operator shorthands can be added here\n\n",
     
-    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
-    "Additional ability, buff, glyph, and talent shorthands can be added here"
+    ":::Abilities, Buffs, and Talents:::\n" 
+    "Additional ability, buff, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
     "Additional option shorthands can be added here"
     "\n\n:::Operators:::\n" + defaultOperators +
@@ -1063,27 +969,27 @@ QString sidebarText[ 12 ][ 4 ] = {
   },
 
   { // WARRIOR Shorthand Declaration
-    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
+    ":::Abilities, Buffs, and Talents:::\n" 
     ""
-    "Additional ability, buff, glyph, and talent shorthands can be added here"
+    "Additional ability, buff, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
     "Additional option shorthands can be added here"
     "\n\n:::Operators:::\n" + defaultOperators +
     "Additional operator shorthands can be added here\n\n",
     
-    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
+    ":::Abilities, Buffs, and Talents:::\n" 
     "AA=auto_attack\nBT=bloodthirst\nCS=colossus_smash\nWS=wild_strike\nRB=raging_blow\nDBTS=die_by_the_sword\nCharge=charge\n\n"
     "avatar=avatar\nBB=bloodbath\nSB=storm_bolt\nsbreak=siegebreaker\nDR=dragon_roar\nBS=bladestorm\nRavager=ravager\nUQT=talent.unquenchable_thirst.enabled\nFS=talent.furious_strikes.enabled\nSD=buff.sudden_death\nbloodsurge=buff.bloodsurge.react\nmc=buff.meat_cleaver.stack\n"
-    "Additional ability, buff, glyph, and talent shorthands can be added here"
+    "Additional ability, buff, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
     "CS = debuff.colossus_smash.up\nenrage = buff.enrage.up\nenrage<# = buff.enrage.remains<#\nenrage># = buff.enrage.remains>#\nRB# = buff.raging_blow.stack=#\n"
     "Additional option shorthands can be added here"
     "\n\n:::Operators:::\n" + defaultOperators +
     "Additional operator shorthands can be added here\n\n",
     
-    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
+    ":::Abilities, Buffs, and Talents:::\n" 
     "AA=auto_attack\nSS=shield_slam\nR=revenge\nD=devastate\nHS=heroic_strike\nTC=thunder_clap\nDR=dragon_roar\nSB=storm_bolt\nBS=bladestorm\nBB=bloodbath\nSD=sudden_death\nHL=heroic_leap\nExecute=execute\nRavager=ravager\nShockwave=shockwave\nAvatar=avatar\nCharge=charge\nSBk=shield_block\nSBr=shield_barrier\nSW=shield_wall\nLS=last_stand\nDS=demoralizing_shout\nER=enraged_regeneration\nIV=impending_victory\nRP=resonating_power\nUR=unending_rage\nDAP=potion,name=draenic_armor\n\n"
-    "Additional ability, buff, glyph, and talent shorthands can be added here"
+    "Additional ability, buff, and talent shorthands can be added here"
     "\n\n:::Options:::\n" + defaultOptions + 
     "mCD=(buff.shield_block.up|buff.shield_wall.up|buff.last_stand.up|debuff.demoralizing_shout.up|buff.ravager.up|buff.draenic_armor_potion.up|buff.enraged_regeneration.up)\nsCD=(buff.shield_wall.up|buff.last_stand.up|debuff.demoralizing_shout.up)|(buff.shield_barrier.value>health.max*0.25)\nsCD#=(buff.shield_wall.up|buff.last_stand.up|debuff.demoralizing_shout.up)|(buff.shield_barrier.value>health.max*#*0.01)\nUR=(buff.ultimatum.up|(talent.unyielding_strikes.enabled&buff.unyielding_strikes.max_stack))\nUR#=(buff.ultimatum.up|(talent.unyielding_strikes.enabled&buff.unyielding_strikes.stack>=#))\nrage#=rage>=#\nSBr#=(buff.shield_barrier.value>health.max*#*0.01)\n\n"
     "Additional option shorthands can be added here"
@@ -1095,14 +1001,13 @@ QString sidebarText[ 12 ][ 4 ] = {
 };
 
 // constant for the varying labels of the advanced text box
-QString advancedText[ 6 ] = {
-  "Unused", "Talent Configurations", "Glyph Configurations", "Gear Configurations", "Rotation Configurations", "Advanced Configuration Mode"
+QString advancedText[ 5 ] = {
+  "Unused", "Talent Configurations", "Gear Configurations", "Rotation Configurations", "Advanced Configuration Mode"
 };
 // constant for the varying labels of the helpbar text box
-QString helpbarText[ 6 ] = {
+QString helpbarText[ 5 ] = {
   "To automate generation of a comparison, choose a comparison type from the drop-down box to the left.",
   "List the talent configurations you want to test in the box below as seven-digit integer strings, i.e. 1231231.\nEach configuration should be its own new line.\nFor more advanced syntax options, see the wiki entry at https://github.com/simulationcraft/simc/wiki/Automation#talent-comparisons.",
-  "List the glyph configurations you want to test (i.e. alabaster_shield/focused_shield/word_of_glory) in the box below.\nEach configuration should be its own new line.\nFor more advanced syntax options, see the wiki entry at https://github.com/simulationcraft/simc/wiki/Automation#glyph-comparisons.",
   "List the different gear configurations you want to test in the box below.\nEach configuration should be separated by a blank line.\nFor more advanced syntax options, see the wiki entry at https://github.com/simulationcraft/simc/wiki/Automation#gear-comparisons.",
   "List the rotations you want to test in the box below. Rotations can be specified as usual for simc (with different configurations separated by a blank line) or as shorthands (each on a new line).\nThe sidebar lists the shorthand conventions for your class and spec. You can add your own using the syntax <Shorthand>=<Longhand> (see examples).\nFor more advanced syntax options, see the wiki entry at https://github.com/simulationcraft/simc/wiki/Automation#rotation-comparisons.",
   "To specify everything according to your needs. All configurations can be mixed up for more advanced multi-automated simulations but need to match the standard SimCraft input format"
@@ -1111,12 +1016,7 @@ QString helpbarText[ 6 ] = {
 QString advTalentToolTip = "Talent configurations can be specified as 7-digit numbers (e.g. 1231231).\n"
                            "Each configuration should be on its own new line.\n"
                            "Additional options can be added afterward, separated by a space, as in the example below:\n\n"
-                           "1231231 name=Alic\n1231232 name=Bob\n1231233 name=Carl glyphs+=/focused_shield";
-
-QString advGlyphToolTip = "Glyph configurations can be specified exactly the same way they are in SimC normally.\n"
-                           "Each configuration should be on its own new line.\n"
-                           "Additional options can be added afterward, separated by a space, as in the example below:\n\n"
-                           "focused_shield/alabaster_shield name=Alic\nfocused_shield/final_wrath name=Bob\nfinal_wrath/alabaster_shield name=Carl talents=1231233";
+                           "1231231 name=Alic\n1231232 name=Bob\n1231233 name=Carl";
 
 QString advGearToolTip = "Gear sets can be specified just like they are in SimC normally.\nSeparate each gear set by a blank line (two carriage returns).\n\n"
                          "Example:\nhead=fake_helm,id=1111\nneck=fake_neck,id=2222\n\nhead=another_fake_helm,id=3333\nneck=another_fake_neck,id=4444";
@@ -1157,7 +1057,7 @@ SC_AutomationTab::SC_AutomationTab( QWidget* parent ) :
     compLayout -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
 
     // Create Combo Box and add it to the layout
-    choice.comp_type = createChoice( 5 , tr( "None" ).toStdString().c_str(), tr( "Talents" ).toStdString().c_str(), tr( "Glyphs" ).toStdString().c_str(), tr( "Gear" ).toStdString().c_str(), tr( "Rotation" ).toStdString().c_str() );
+    choice.comp_type = createChoice( 4 , tr( "None" ).toStdString().c_str(), tr( "Talents" ).toStdString().c_str(), tr( "Gear" ).toStdString().c_str(), tr( "Rotation" ).toStdString().c_str() );
     compLayout -> addRow( tr( "Comparison Type" ), choice.comp_type );
 
     // Apply the layout to the compGroupBox
@@ -1199,14 +1099,10 @@ SC_AutomationTab::SC_AutomationTab( QWidget* parent ) :
     choice.player_level = addValidatorToComboBox( 1, 110, createChoice( 5, "80", "85", "90", "100", "110" ) );
     defaultsFormLayout -> addRow( tr( "Level" ), choice.player_level );
 
-    // Create text boxes for default talents and glyphs, and add them to the FormLayout
+    // Create text boxes for default talents and add them to the FormLayout
     label.talents = new QLabel( tr("Default Talents" ) );
     textbox.talents = new QLineEdit;
     defaultsFormLayout -> addRow( label.talents, textbox.talents );
-
-    label.glyphs = new QLabel( tr("Default Glyphs" ) );
-    textbox.glyphs = new QLineEdit;
-    defaultsFormLayout -> addRow( label.glyphs, textbox.glyphs );
 
     // set the GroupBox's layout now that we've defined it
     defaultsGroupBox -> setLayout( defaultsFormLayout );
@@ -1300,8 +1196,6 @@ void SC_AutomationTab::compTypeChanged( const int comp )
   // store whatever text is in the advanced window in the appropriate QString 
   if ( ! textbox.talents -> isEnabled() )
     advTalent = textbox.advanced -> document() -> toPlainText();
-  else if ( ! textbox.glyphs -> isEnabled() )
-    advGlyph = textbox.advanced -> document() -> toPlainText();
   else if ( ! textbox.gear -> isEnabled() )
     advGear = textbox.advanced -> document() -> toPlainText();
   else if ( textbox.rotationFooter -> isEnabled() )
@@ -1316,7 +1210,6 @@ void SC_AutomationTab::compTypeChanged( const int comp )
   // enable everything but the sidebar & rotation Footer (default state) - adjust based on selection below
   textbox.advanced -> setDisabled( false );
   textbox.gear     -> setDisabled( false );
-  textbox.glyphs   -> setDisabled( false );
   textbox.rotationHeader -> setDisabled( false );
   textbox.talents  -> setDisabled( false );
   textbox.sidebar  -> setDisabled( true  );
@@ -1346,18 +1239,12 @@ void SC_AutomationTab::compTypeChanged( const int comp )
       label.advanced   -> setToolTip( advTalentToolTip );
       break;
     case 2:
-      textbox.glyphs -> setDisabled( true );
-      textbox.advanced -> setPlainText( advGlyph );
-      textbox.advanced -> setToolTip( advGlyphToolTip );
-      label.advanced   -> setToolTip( advGlyphToolTip );
-      break;
-    case 3:
       textbox.gear -> setDisabled( true );
       textbox.advanced -> setPlainText( advGear );
       textbox.advanced -> setToolTip( advGearToolTip );
       label.advanced   -> setToolTip( advGearToolTip );
       break;
-    case 4:
+    case 3:
       //textbox.rotationHeader -> setDisabled( true );
       label.rotationHeader -> setText( "Actions Header" );
       label.rotationHeader -> setToolTip( "Use this box to specify precombat actions and any actions you want to apply to all configurations (ex: auto_attack).\nThe text in this box will be placed BEFORE each entry in the Rotation Configurations text box." );
@@ -1379,7 +1266,7 @@ void SC_AutomationTab::createTooltips()
   choice.comp_type -> setToolTip( "Choose the comparison type." );
 
   QString sidebarTooltip = "This box specifies the abbreviations used in rotation shorthands. It is divided into three sections.\n\n"
-                           "The :::Abilities, Buffs, Glyphs, and Talents::: section defines shorthands for abilities, buffs, glyphs, and talents.\n"
+                           "The :::Abilities, Buffs, and Talents::: section defines shorthands for abilities, buffs, and talents.\n"
                            "Example, \"HoW=hammer_of_wrath\", \"DP=divine_purpose\", \"NT=nether_tempest\", etc.\n\n"
                            "The :::Options::: section defines conditionals you want to apply to that action. For example, \"E=target.health.pct<20\" is an option you can use to specify execute range.\n"
                            "Thus, the shorthand \"HoW+E\" would convert to \"hammer_of_wrath,if=target.health.pc<20\".\n"
@@ -1400,7 +1287,6 @@ void SC_AutomationTab::createTooltips()
   label.footer -> setToolTip( footerTooltip );
 
   textbox.talents -> setToolTip( "Default talents, specified either as \"talents=1231231\" or \"1231231\"" );
-  textbox.glyphs -> setToolTip( "Default glyphs, specified either as \"glyphs=glyph1/glyph2/glyph3\" or \"glyph1/glyph2/glyph3\"" );
   textbox.gear -> setToolTip( "Default gear, specified the same way you would in a regular simc profile." );
   textbox.rotationHeader -> setToolTip( "Default rotation, specified the same way you would in a regular simc profile.\nIf left blank, the default APL for the chosen spec will be used automatically." );
   textbox.rotationFooter-> setToolTip( "This box is only used for Rotation comparisons." );
@@ -1419,13 +1305,11 @@ void SC_AutomationTab::encodeSettings()
   settings.setValue( "race", choice.player_race -> currentText() );
   settings.setValue( "level", choice.player_level -> currentText() );
   settings.setValue( "talentbox", textbox.talents -> text() );
-  settings.setValue( "glyphbox", textbox.glyphs -> text() );
   settings.setValue( "gearbox", textbox.gear -> document() -> toPlainText() );
   settings.setValue( "rotationFooterBox", textbox.rotationFooter -> document() -> toPlainText() );
   settings.setValue( "rotationHeaderBox", textbox.rotationHeader -> document() -> toPlainText() );
   settings.setValue( "advancedbox", textbox.advanced -> document() -> toPlainText() );
   settings.setValue( "advTalent", advTalent );
-  settings.setValue( "advGlyph", advGlyph );
   settings.setValue( "advGear", advGear );
   settings.setValue( "advRotation", advRotation );
   settings.setValue( "sidebox", textbox.sidebar -> document() -> toPlainText() );
@@ -1505,15 +1389,13 @@ void SC_AutomationTab::decodeSettings()
   load_setting( settings, "class", choice.player_class );
   load_setting( settings, "spec", choice.player_spec );
   load_setting( settings, "race", choice.player_race );
-  load_setting( settings, "level", choice.player_level );
+  load_setting( settings, "level", choice.player_level, "110" );
   load_setting( settings, "talentbox", textbox.talents, "0000000" );
-  load_setting( settings, "glyphbox", textbox.glyphs, "alabaster_shield/focused_shield/final_wrath" );
   load_setting( settings, "gearbox", textbox.gear, "fake_helm,stats=100sta\nneck=malachite_pendant,id=25438\n" );
   load_setting( settings, "rotationFooterBox", textbox.rotationFooter );
   load_setting( settings, "rotationHeaderBox", textbox.rotationHeader );
   load_setting( settings, "advancedbox", textbox.advanced );
   load_setting( settings, "advTalent", &advTalent, "0000000\n1111111\n2222222" );
-  load_setting( settings, "advGlyph", &advGlyph, "alabaster_shield/focused_shield\nfinal_wrath/word_of_glory" );
   load_setting( settings, "advGear", &advGear, "head=fake_helm,stats=100sta\nneck=malachite_pendant,id=25438\n\nhead=different_helm,stats=100str\nneck=thick_bronze_necklace,id=21933\n" );
   load_setting( settings, "advRotation", &advRotation, "CS>J>AS\nCS>J>AS+GC\nCS>AS+GC&(DP|!FW)>J+SW>J" );
   load_setting( settings, "sidebox", textbox.sidebar );
@@ -1530,7 +1412,6 @@ QString SC_AutomationTab::startImport()
                                       choice.player_race -> currentText(),
                                       choice.player_level -> currentText(),
                                       textbox.talents -> text(),
-                                      textbox.glyphs -> text(),
                                       textbox.gear -> document() -> toPlainText(),
                                       textbox.rotationHeader -> document() -> toPlainText(),
                                       textbox.rotationFooter -> document() -> toPlainText(),

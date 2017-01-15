@@ -2024,56 +2024,6 @@ bool item_t::download_item( item_t& item )
   return success;
 }
 
-// item_t::download_glyph ===================================================
-
-bool item_t::download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id )
-{
-  bool success = false;
-
-  if ( cache::items() != cache::CURRENT )
-  {
-    for ( unsigned i = 0; ! success && i < player -> sim -> item_db_sources.size(); i++ )
-    {
-      const std::string& src = player -> sim -> item_db_sources[ i ];
-      if ( src == "local" )
-        success = item_database::download_glyph( player, glyph_name, glyph_id );
-      else if ( src == "wowhead" )
-        success = wowhead::download_glyph( player, glyph_name, glyph_id, wowhead::LIVE, cache::ONLY );
-      else if ( src == "ptrhead" )
-        success = wowhead::download_glyph( player, glyph_name, glyph_id, wowhead::PTR, cache::ONLY );
-#if SC_BETA
-      else if ( src == SC_BETA_STR "head" )
-        success = wowhead::download_glyph( player, glyph_name, glyph_id, wowhead::BETA, cache::ONLY );
-#endif
-      else if ( src == "bcpapi" )
-        success = bcp_api::download_glyph( player, glyph_name, glyph_id, cache::ONLY );
-    }
-  }
-
-  if ( cache::items() != cache::ONLY )
-  {
-    // Download in earnest from a data source
-    for ( unsigned i = 0; ! success && i < player -> sim -> item_db_sources.size(); i++ )
-    {
-      const std::string& src = player -> sim -> item_db_sources[ i ];
-      if ( src == "wowhead" )
-        success = wowhead::download_glyph( player, glyph_name, glyph_id, wowhead::LIVE );
-      else if ( src == "ptrhead" )
-        success = wowhead::download_glyph( player, glyph_name, glyph_id, wowhead::PTR );
-#if SC_BETA
-      else if ( src == SC_BETA_STR "head" )
-        success = wowhead::download_glyph( player, glyph_name, glyph_id, wowhead::BETA );
-#endif
-      else if ( src == "bcpapi" )
-        success = bcp_api::download_glyph( player, glyph_name, glyph_id );
-    }
-  }
-
-  util::glyph_name( glyph_name );
-
-  return success;
-}
-
 // item_t::init_special_effects =============================================
 
 bool item_t::init_special_effects()

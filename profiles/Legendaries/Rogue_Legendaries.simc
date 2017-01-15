@@ -21,7 +21,7 @@ Rogue_Assassination_$(Tier).simc
 name=Asn_$(Tier)_Baseline
 
 copy=Asn_$(Tier)_Cinidaria,Asn_$(Tier)_Baseline
-waist=Cinidaria,id=133976
+waist=cinidaria_the_symbiote,id=133976
 
 copy=Asn_$(Tier)_Duskwalkers,Asn_$(Tier)_Baseline
 feet=duskwalkers_footpads,id=137030
@@ -44,7 +44,7 @@ Rogue_Assassination_Exsg_$(Tier).simc
 name=Asn_Ex_$(Tier)_Baseline
 
 copy=Asn_Ex_$(Tier)_Cinidaria,Asn_Ex_$(Tier)_Baseline
-waist=Cinidaria,id=133976
+waist=cinidaria_the_symbiote,id=133976
 
 copy=Asn_Ex_$(Tier)_Duskwalkers,Asn_Ex_$(Tier)_Baseline
 feet=duskwalkers_footpads,id=137030
@@ -67,7 +67,7 @@ Rogue_Outlaw_$(Tier).simc
 name=Otl_$(Tier)_Baseline
 
 copy=Otl_$(Tier)_Cinidaria,Otl_$(Tier)_Baseline
-waist=Cinidaria,id=133976
+waist=cinidaria_the_symbiote,id=133976
 
 copy=Otl_$(Tier)_Greenskins_Waterlogged,Otl_$(Tier)_Baseline
 talent_override=quick_draw
@@ -91,7 +91,7 @@ Rogue_Subtlety_$(Tier).simc
 name=Sub_$(Tier)_Baseline
 
 copy=Sub_$(Tier)_Cinidaria,Sub_$(Tier)_Baseline
-waist=Cinidaria,id=133976
+waist=cinidaria_the_symbiote,id=133976
 
 copy=Sub_$(Tier)_Denial_Halfgiants,Sub_$(Tier)_Baseline
 wrist=denial_of_the_halfgiants,id=137100
