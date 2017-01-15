@@ -248,6 +248,7 @@ struct rogue_t : public player_t
     buff_t* blunderbuss;
     buff_t* finality_eviscerate;
     buff_t* finality_nightblade;
+    buff_t* faster_than_light_trigger;
 
     // Roll the bones
     buff_t* roll_the_bones;
@@ -4389,6 +4390,36 @@ struct sprint_t: public rogue_attack_t
   }
 };
 
+struct sprint_offensive_t: public rogue_attack_t
+{
+  sprint_offensive_t( rogue_t* p, const std::string& options_str ):
+    rogue_attack_t( "sprint", p, p -> spell.sprint, options_str )
+  {
+    harmful = callbacks = false;
+    cooldown = p -> cooldowns.sprint;
+    ignore_false_positive = true;
+
+    cooldown -> duration += p -> artifact.shadow_walker.time_value();
+  }
+
+  void execute() override
+  {
+    rogue_attack_t::execute();
+
+    player -> main_hand_attack -> execute_event -> reschedule( timespan_t::from_seconds( 3.0 ) );
+    
+    player -> off_hand_attack -> execute_event -> reschedule( timespan_t::from_seconds( 3.0 ) );
+
+    p() -> buffs.sprint -> trigger();
+
+    p() -> buffs.faster_than_light_trigger -> trigger();
+
+    // while this looks like working, it's making simc very slow and laggy/crashy
+    //p() -> player_t::schedule_ready( timespan_t::from_seconds( 3.0 ), true );
+  }
+};
+
+
 // Symbols of Death =========================================================
 
 struct symbols_of_death_t : public rogue_attack_t
@@ -5879,6 +5910,21 @@ struct fof_fod_t : public buff_t
   }
 };
 
+struct faster_than_light_trigger_t : public buff_t
+{
+  faster_than_light_trigger_t( rogue_t* p ) :
+    buff_t( buff_creator_t( p, "faster_than_light_trigger", p -> find_spell( 197270 ) ) )
+  { }
+
+  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+
+    rogue_t* p = debug_cast< rogue_t* >( player );
+    p -> buffs.vanish -> trigger();
+  }
+};
+
 struct subterfuge_t : public buff_t
 {
   rogue_t* rogue;
@@ -6888,6 +6934,7 @@ action_t* rogue_t::create_action( const std::string& name,
   if ( name == "shuriken_toss"       ) return new shuriken_toss_t      ( this, options_str );
   if ( name == "slice_and_dice"      ) return new slice_and_dice_t     ( this, options_str );
   if ( name == "sprint"              ) return new sprint_t             ( this, options_str );
+  if ( name == "sprint_offensive"    ) return new sprint_offensive_t   ( this, options_str );
   if ( name == "stealth"             ) return new stealth_t            ( this, options_str );
   if ( name == "symbols_of_death"    ) return new symbols_of_death_t   ( this, options_str );
   if ( name == "vanish"              ) return new vanish_t             ( this, options_str );
@@ -7579,7 +7626,7 @@ void rogue_t::create_buffs()
                                      .tick_time_behavior( BUFF_TICK_TIME_UNHASTED );
   buffs.mantle_of_the_master_assassin_aura = buff_creator_t( this, "master_assassins_initiative_aura", find_spell( 235022 ) )
                                               .duration( sim -> max_time / 2 )
-                                            .default_value( find_spell(235027) -> effectN(1).percent() )
+                                              .default_value( find_spell(235027) -> effectN(1).percent() )
                                               .add_invalidate( CACHE_CRIT_CHANCE );
   buffs.mantle_of_the_master_assassin  = buff_creator_t( this, "master_assassins_initiative", find_spell( 235022 ) )
                                       .duration( timespan_t::from_seconds( find_spell(235022) -> effectN(1).base_value() ) )
@@ -7667,6 +7714,7 @@ void rogue_t::create_buffs()
     .trigger_spell( artifact.finality )
     .default_value( find_spell( 197498 ) -> effectN( 1 ).percent() / COMBO_POINT_MAX )
     .max_stack( consume_cp_max() );
+  buffs.faster_than_light_trigger = new buffs::faster_than_light_trigger_t( this ); // Flickering Shadows
 }
 
 // rogue_t::create_options ==================================================
