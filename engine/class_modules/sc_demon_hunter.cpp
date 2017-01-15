@@ -2489,15 +2489,15 @@ struct metamorphosis_t : public demon_hunter_spell_t
 
     damage -> schedule_execute();
 
-	// Buff is gained at the start of the leap.
-	if (p()->buff.metamorphosis->up())
-	{
-		p()->buff.metamorphosis->extend_duration(p(), p()->buff.metamorphosis->buff_duration);
-	}
-	else
-	{
-		p()->buff.metamorphosis->trigger();
-	}
+    // Buff is gained at the start of the leap.
+    if (p()->buff.metamorphosis->up())
+    {
+      p()->buff.metamorphosis->extend_duration(p(), p()->buff.metamorphosis->buff_duration);
+    }
+    else
+    {
+      p()->buff.metamorphosis->trigger();
+    }
     
     if ( p() -> talent.demon_reborn -> ok() )
     {
@@ -5656,21 +5656,21 @@ struct damage_calc_expr_t : public expr_t
 
 struct metamorphosis_buff_demonic_expr_t : public expr_t
 {
-	demon_hunter_t* dh;
+  demon_hunter_t* dh;
 
-	metamorphosis_buff_demonic_expr_t(demon_hunter_t* p, const std::string& name_str)
-		: expr_t(name_str), dh(p)
-	{
-	}
+  metamorphosis_buff_demonic_expr_t(demon_hunter_t* p, const std::string& name_str)
+    : expr_t(name_str), dh(p)
+  {
+  }
 
-	double evaluate() override
-	{
-		buffs::metamorphosis_buff_t* metamorphosis = debug_cast<buffs::metamorphosis_buff_t*>(dh->buff.metamorphosis);
-		if (metamorphosis && metamorphosis->triggered_by_demonic)
-			return true;
+  double evaluate() override
+  {
+    buffs::metamorphosis_buff_t* metamorphosis = debug_cast<buffs::metamorphosis_buff_t*>(dh->buff.metamorphosis);
+    if (metamorphosis && metamorphosis->triggered_by_demonic)
+      return true;
 
-		return false;
-	}
+    return false;
+  }
 };
 
 // demon_hunter_t::create_expression ========================================
@@ -5771,9 +5771,9 @@ expr_t* demon_hunter_t::create_expression( action_t* a,
       }
     }
   }
-  else if(name_str == "buff.metamorphosis.triggered_by_demonic")
-  { 
-	  return new metamorphosis_buff_demonic_expr_t( this, name_str );
+  else if (name_str == "buff.metamorphosis.triggered_by_demonic")
+  {
+    return new metamorphosis_buff_demonic_expr_t(this, name_str);
   }
 
   return player_t::create_expression( a, name_str );
