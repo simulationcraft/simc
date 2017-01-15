@@ -4,6 +4,7 @@
 // ==========================================================================
 
 // TODO + BlizzardFeatures + Bugs
+//   - UPDATE SPELLS BASED ON HOTFIXES JANUARY 17th. TEMPORARY //FIXME ADDED FOR NOW
 // Subtlety
 // - Dreadlord's Deceit doesn't work on weaponmastered Shuriken Storm (Blizzard Bug ?)
 // - Insignia of Ravenholdt doesn't proc from Shuriken Storm nor Shuriken Toss (Blizzard Bug ?)
@@ -6110,7 +6111,7 @@ struct agonizing_poison_t : public rogue_poison_buff_t
   agonizing_poison_t( rogue_td_t& r ) :
     rogue_poison_buff_t( r, "agonizing_poison", r.source -> find_spell( 200803 ) )
   {
-    default_value = data().effectN( 1 ).percent();
+    default_value = ( data().effectN( 1 ).percent() * 0.875 ); //FIXME - 0.04 * 0.875 = 0.035 
     refresh_behavior = BUFF_REFRESH_PANDEMIC;
   }
 };
@@ -8422,6 +8423,11 @@ struct rogue_module_t : public module_t
 
   void register_hotfixes() const override
   {
+    hotfix::register_effect( "Rogue", "2017-01-15", "Energy needed per 1 second of CDR for Vendetta increased from 50 to 65.", 309173 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 65 )
+      .verification_value( 50 );
   }
 
   virtual void init( player_t* ) const override {}

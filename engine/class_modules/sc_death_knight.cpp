@@ -4,6 +4,7 @@
 // ==========================================================================
 
 // TODO:
+//   - UPDATE SPELLS BASED ON HOTFIXES JANUARY 17th. TEMPORARY //FIXME ADDED FOR NOW
 // Unholy
 // - Does Festering Wound (generation|consumption) require a positive hit result?
 // - Festering Strike Festering Wound generation probability distribution
@@ -3680,6 +3681,7 @@ struct blooddrinker_t : public death_knight_spell_t
 
     channeled = true;
     base_tick_time = timespan_t::from_seconds( 1.0 );
+    base_multiplier *= 0.6; //FIXME Jan 17th Hotfix
   }
 
   void tick( dot_t* d ) override

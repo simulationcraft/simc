@@ -9,6 +9,7 @@ namespace { // UNNAMED NAMESPACE
 
 // ==========================================================================
 // Mage
+//   - UPDATE SPELLS BASED ON HOTFIXES JANUARY 17th. TEMPORARY //FIXME ADDED FOR NOW
 // ==========================================================================
 
 // Forward declarations
@@ -4099,6 +4100,7 @@ struct flame_patch_t : public fire_mage_spell_t
     school = SCHOOL_FIRE;
     // PTR Multiplier
     base_multiplier *= 1.0 + p -> find_spell( 137019 ) -> effectN( 1 ).percent();
+    base_multiplier *= 0.83; //FIXME Jan 17th Hotfix
   }
 
   // Override damage type to avoid triggering Doom Nova
@@ -5910,6 +5912,7 @@ struct ray_of_frost_t : public frost_mage_spell_t
 
     // PTR Multiplier
     base_multiplier *= 1.0 + p -> find_spell( 137020 ) -> effectN( 1 ).percent();
+    base_multiplier *= 0.88; //FIXME Jan 17th Hotfix
   }
 
   void init() override

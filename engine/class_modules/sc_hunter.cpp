@@ -9,7 +9,7 @@
 // TODO
 // General
 //   - Cleanup old spells
-//
+//   - UPDATE SPELLS BASED ON HOTFIXES JANUARY 17th. TEMPORARY //FIXME ADDED FOR NOW
 // Survival
 //   - Harpoon legendary
 //
@@ -1969,6 +1969,9 @@ struct kill_command_t: public hunter_pet_action_t < hunter_pet_t, attack_t >
 
     if ( o() -> artifacts.jaws_of_thunder.rank() )
       jaws_of_thunder = new jaws_of_thunder_t( p );
+
+    if ( player -> specialization() == HUNTER_BEAST_MASTERY )
+      base_multiplier *= 1.10; //FIXME Jan 17th Hotfix
   }
 
   virtual void impact( action_state_t* s ) override
@@ -2209,6 +2212,9 @@ struct flanking_strike_t: public hunter_main_pet_attack_t
 
     if ( p -> o() -> sets.has_set_bonus( HUNTER_SURVIVAL, T19, B2 ) )
       hunting_companion_multiplier *= p -> o() -> sets.set( HUNTER_SURVIVAL, T19, B2 ) -> effectN( 1 ).base_value();
+
+    if ( p -> specialization() == HUNTER_SURVIVAL )
+      base_multiplier *= 1.07; //FIXME
 
     if ( p -> o() -> talents.aspect_of_the_beast -> ok() )
     {
@@ -2462,6 +2468,9 @@ struct volley_tick_t: hunter_ranged_attack_t
 
     if ( data().affected_by( p -> specs.beast_mastery_hunter -> effectN( 6 ) ) )
       base_multiplier *= 1.0 + p -> specs.beast_mastery_hunter -> effectN( 6 ).percent();
+
+    if ( p -> specialization() == HUNTER_MARKSMANSHIP )
+      base_multiplier *= 1.08; //FIXME
   }
 
   virtual void execute() override
@@ -2682,12 +2691,12 @@ struct barrage_t: public hunter_ranged_attack_t
       range = radius;
       range = 0;
       travel_speed = 0.0;
-    }
-
-    void impact(action_state_t* s) override {
-      // Simulate the random chance of hitting for secondary targets.
-      if (rng().roll(0.5))
-        hunter_ranged_attack_t::impact(s);
+      if ( data().affected_by( player -> specs.beast_mastery_hunter -> effectN( 5 ) ) )
+        base_multiplier *= 1.0 + player -> specs.beast_mastery_hunter -> effectN( 5 ).percent();
+      if ( player -> specialization() == HUNTER_BEAST_MASTERY )
+        base_multiplier *= 1.10; //FIXME Jan 17th Hotfix
+      else if ( player -> specialization() == HUNTER_MARKSMANSHIP )
+        base_multiplier *= 1.08; //FIXME
     }
   };
 
@@ -2707,9 +2716,6 @@ struct barrage_t: public hunter_ranged_attack_t
     tick_action = new barrage_damage_t( player );
 
     starved_proc = player -> get_proc( "starved: barrage" );
-
-    if ( data().affected_by( player -> specs.beast_mastery_hunter -> effectN( 5 ) ) )
-      base_multiplier *= 1.0 + player -> specs.beast_mastery_hunter -> effectN( 5 ).percent();
   }
 
   void schedule_execute( action_state_t* state = nullptr ) override
@@ -2733,6 +2739,9 @@ struct multi_shot_t: public hunter_ranged_attack_t
     may_proc_mm_feet = true;
     may_proc_bullseye = false;
     aoe = -1;
+
+    if ( p -> specialization() == HUNTER_MARKSMANSHIP )
+      base_multiplier *= 1.08; //FIXME
 
     if ( p -> artifacts.called_shot.rank() )
       base_multiplier *= 1.0 + p -> artifacts.called_shot.percent();
@@ -2863,6 +2872,8 @@ struct chimaera_shot_impact_t: public hunter_ranged_attack_t
     energize_type = ENERGIZE_PER_HIT;
     energize_resource = RESOURCE_FOCUS;
     energize_amount = p -> find_spell( 204304 ) -> effectN( 1 ).resource( RESOURCE_FOCUS );
+    if ( player -> specialization() == HUNTER_BEAST_MASTERY )
+      base_multiplier *= 1.10; //FIXME Jan 17th Hotfix
   }
 };
 
@@ -2900,11 +2911,12 @@ struct chimaera_shot_t: public hunter_ranged_attack_t
 
 struct cobra_shot_t: public hunter_ranged_attack_t
 {
-
   cobra_shot_t( hunter_t* player, const std::string& options_str ):
     hunter_ranged_attack_t( "cobra_shot", player, player -> find_specialization_spell( "Cobra Shot" ) )
   {
     parse_options( options_str );
+    if ( player -> specialization() == HUNTER_BEAST_MASTERY )
+      base_multiplier *= 1.46; //FIXME Jan 17th Hotfix
   }
 
   virtual void execute() override
@@ -2983,6 +2995,8 @@ struct black_arrow_t: public hunter_ranged_attack_t
     tick_may_crit = true;
     hasted_ticks = false;
     duration = this -> dot_duration;
+    if ( player -> specialization() == HUNTER_MARKSMANSHIP )
+      base_multiplier *= 1.08; //FIXME
   }
 
   virtual void execute() override
@@ -3004,6 +3018,8 @@ struct bursting_shot_t : public hunter_ranged_attack_t
     hunter_ranged_attack_t( "bursting_shot", player, player -> find_spell( 186387 ) )
   {
     parse_options( options_str );
+    if ( player -> specialization() == HUNTER_MARKSMANSHIP )
+      base_multiplier *= 1.08; //FIXME
   }
 
   void init() override
@@ -3183,6 +3199,8 @@ struct aimed_shot_t: public aimed_shot_base_t
       legacy_of_the_windrunners = new legacy_of_the_windrunners_t( p );
       add_child( legacy_of_the_windrunners );
     }
+    if ( p -> specialization() == HUNTER_MARKSMANSHIP )
+      base_multiplier *= 1.08; //FIXME
   }
 
   virtual double cost() const override
@@ -3270,6 +3288,8 @@ struct arcane_shot_t: public hunter_ranged_attack_t
     energize_type = ENERGIZE_ON_HIT;
     energize_resource = RESOURCE_FOCUS;
     energize_amount = p -> find_spell( 187675 ) -> effectN( 1 ).base_value();
+    if ( p -> specialization() == HUNTER_MARKSMANSHIP )
+      base_multiplier *= 1.08; //FIXME
   }
 
   void try_steady_focus() override
@@ -3352,6 +3372,8 @@ struct marked_shot_t: public hunter_spell_t
 
       if ( p -> artifacts.windrunners_guidance.rank() )
         base_multiplier *= 1.0 + p -> artifacts.windrunners_guidance.percent();
+      if ( p -> specialization() == HUNTER_MARKSMANSHIP )
+        base_multiplier *= 1.08; //FIXME
     }
 
     void execute() override
@@ -3500,6 +3522,8 @@ struct piercing_shot_t: public hunter_ranged_attack_t
     // Spell data is currently bugged on alpha
     base_multiplier = 2.0;
     base_aoe_multiplier = 0.5;
+    if ( p -> specialization() == HUNTER_MARKSMANSHIP )
+      base_multiplier *= 1.08; //FIXME
   }
 
   virtual void execute() override
@@ -3593,6 +3617,9 @@ struct sidewinders_t: hunter_ranged_attack_t
 
     if ( p -> artifacts.called_shot.rank() )
       base_multiplier *= 1.0 + p -> artifacts.called_shot.percent();
+
+    if ( p -> specialization() == HUNTER_MARKSMANSHIP )
+      base_multiplier *= 1.08; //FIXME
   }
 
   virtual void execute() override
@@ -3644,6 +3671,8 @@ struct windburst_t: hunter_ranged_attack_t
     hunter_ranged_attack_t( "windburst", p, &p -> artifacts.windburst.data() )
   {
     parse_options( options_str );
+    if ( p -> specialization() == HUNTER_MARKSMANSHIP )
+      base_multiplier *= 1.08; //FIXME
   }
 
   void impact(action_state_t* s) override
@@ -3788,6 +3817,8 @@ struct mongoose_bite_t: hunter_melee_attack_t
   {
     parse_options( options_str );
     cooldown -> hasted = true; // not in spell data for some reason
+    if ( p -> specialization() == HUNTER_SURVIVAL )
+      base_multiplier *= 1.07; //FIXME
   }
 
   virtual void execute() override
@@ -3834,6 +3865,8 @@ struct flanking_strike_t: hunter_melee_attack_t
     hunter_melee_attack_t( "flanking_strike", p, p -> specs.flanking_strike )
   {
     parse_options( options_str );
+    if ( p -> specialization() == HUNTER_SURVIVAL )
+      base_multiplier *= 1.07; //FIXME
   }
 
   virtual void execute() override
@@ -3910,6 +3943,9 @@ struct lacerate_t: public hunter_melee_attack_t
     weapon_multiplier = 0.0;
     weapon_power_mod = 0.0;
 
+    if ( p -> specialization() == HUNTER_SURVIVAL )
+      base_multiplier *= 1.12; //FIXME
+
     if ( p -> artifacts.lacerating_talons.rank() )
       base_multiplier *= 1.0 + p -> artifacts.lacerating_talons.percent();
   }
@@ -3947,6 +3983,8 @@ struct serpent_sting_t: public hunter_melee_attack_t
     tick_may_crit = true;
     hasted_ticks = false;
     weapon_multiplier = 0;
+    if ( player -> specialization() == HUNTER_SURVIVAL )
+      base_multiplier *= 1.12; //FIXME
   }
 };
 
@@ -3965,6 +4003,8 @@ struct carve_t: public hunter_melee_attack_t
 
     if ( p -> talents.serpent_sting -> ok() )
       impact_action = new serpent_sting_t( p );
+    if ( p -> specialization() == HUNTER_SURVIVAL )
+      base_multiplier *= 1.07; //FIXME
   }
 
   virtual void execute() override
@@ -4190,7 +4230,8 @@ struct raptor_strike_t: public hunter_melee_attack_t
     hunter_melee_attack_t( "raptor_strike", p, p -> specs.raptor_strike )
   {
     parse_options( options_str );
-
+    if ( p -> specialization() == HUNTER_SURVIVAL )
+      base_multiplier *= 1.07; //FIXME
     if ( p -> talents.serpent_sting -> ok() )
       impact_action = new serpent_sting_t( p );
   }
@@ -4305,6 +4346,8 @@ struct peck_t : public hunter_spell_t
     may_block = false;
     may_dodge = false;
     travel_speed = 0.0;
+    if ( player -> specialization() == HUNTER_MARKSMANSHIP )
+      base_multiplier *= 1.08; //FIXME
   }
 
   hunter_t* p() const { return static_cast<hunter_t*>( player ); }
@@ -5079,6 +5122,18 @@ struct explosive_trap_t: public hunter_spell_t
       base_multiplier *= 1.0 + p -> talents.guerrilla_tactics -> effectN( 7 ).percent();
     }
 
+    void init() override
+    {
+      hunter_spell_t::init();
+
+      if ( p() -> specialization() == HUNTER_SURVIVAL )
+      {
+        base_dd_multiplier *= 1.07; //FIXME
+        base_td_multiplier *= 1.12;
+      }
+
+    }
+
     virtual double action_multiplier() const override
     {
       double am = hunter_spell_t::action_multiplier();
@@ -5183,6 +5238,9 @@ struct caltrops_t: public hunter_spell_t
 
       if ( p -> artifacts.hunters_guile.rank() )
         cooldown -> duration *= 1.0 + p -> artifacts.hunters_guile.percent();
+
+      if ( p -> specialization() == HUNTER_SURVIVAL )
+        base_multiplier *= 0.9; //FIXME
     }
   };
 
