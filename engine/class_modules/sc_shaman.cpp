@@ -6857,7 +6857,7 @@ void shaman_t::init_action_list_elemental()
   aoe -> add_action( this, "Flame Shock", "moving=1,target_if=refreshable" );
 
   // Single target - Lightning Rod
-  single_lr -> add_action( this, "Flame Shock", "if=!ticking" );
+  single_lr -> add_action( this, "Flame Shock", "if=!ticking|dot.flame_shock.remains<=gcd" );
   single_lr -> add_action( this, "Earthquake", "if=buff.echoes_of_the_great_sundering.up&maelstrom>=86" );
   single_lr -> add_action( this, "Earth Shock", "if=maelstrom>=92" );
   single_lr -> add_action( this, "Stormkeeper", "if=raid_event.adds.count<3|raid_event.adds.in>50", "Keep SK for large or soon add waves." );
@@ -6879,7 +6879,7 @@ void shaman_t::init_action_list_elemental()
   single_lr -> add_action( this, "Flame Shock", "moving=1,if=movement.distance>6" );
 
   // Single target - Ice Fury
-  single_if -> add_action( this, "Flame Shock", "if=!ticking" );
+  single_if -> add_action( this, "Flame Shock", "if=!ticking|dot.flame_shock.remains<=gcd" );
   single_if -> add_action( this, "Earthquake", "if=buff.echoes_of_the_great_sundering.up&maelstrom>=86" );
   single_if -> add_action( this, "Frost Shock", "if=buff.icefury.up&maelstrom>=86" );
   single_if -> add_action( this, "Earth Shock", "if=maelstrom>=92" );
@@ -6904,7 +6904,7 @@ void shaman_t::init_action_list_elemental()
 
   // Single target - Ascendance
   single_asc -> add_talent( this, "Ascendance", "if=dot.flame_shock.remains>buff.ascendance.duration&(time>=60|buff.bloodlust.up)&cooldown.lava_burst.remains>0&!buff.stormkeeper.up" );
-  single_asc -> add_action( this, "Flame Shock", "if=!ticking" );
+  single_asc -> add_action( this, "Flame Shock", "if=!ticking|dot.flame_shock.remains<=gcd" );
   single_asc -> add_action( this, "Flame Shock", "if=maelstrom>=20&remains<=buff.ascendance.duration&cooldown.ascendance.remains+buff.ascendance.duration<=duration" );
   single_asc -> add_action( this, "Earthquake", "if=buff.echoes_of_the_great_sundering.up&!buff.ascendance.up&maelstrom>=86" );
   single_asc -> add_action( this, "Earth Shock", "if=maelstrom>=92&!buff.ascendance.up" );
