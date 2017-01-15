@@ -2688,6 +2688,48 @@ struct eye_of_the_tiger_dmg_tick_t: public monk_spell_t
   }
 };
 
+// Windwalking Aura Toggle ==========================================================
+
+struct windwalking_aura_t: public monk_spell_t
+{
+  double movement_increase;
+  timespan_t duration;
+  windwalking_aura_t( monk_t* player, const std::string& options_str ):
+    monk_spell_t( "windwalking_aura_toggle", player ),
+    movement_increase( 0 ), duration( timespan_t::zero() )
+  {
+    parse_options( options_str );
+    harmful = false;
+    trigger_gcd = timespan_t::zero();
+    if ( !sim -> distance_targeting_enabled )
+    {
+      cooldown -> duration = timespan_t::from_seconds( 1000 ); //Only need to cast this once if there is no movement.
+      duration = timespan_t::from_seconds( 0 );
+    }
+    else
+    {
+      cooldown -> duration = timespan_t::from_seconds( 1 ); //In-game it spams every second... bleh.
+      duration = timespan_t::from_seconds( 10 );
+    }
+    movement_increase = p() -> buffs.windwalking_movement_aura -> data().effectN( 1 ).percent() + ( p() -> legendary.march_of_the_legion ? p() -> legendary.march_of_the_legion -> effectN( 1 ).percent() : 0.0 );
+  }
+
+  // ToDo: Add in support for distance-based aura.
+  void execute() override
+  {
+    monk_spell_t::execute();
+
+    for ( size_t i = 0; i < sim -> player_non_sleeping_list.size(); ++i )
+    {
+      player_t* p = sim -> player_non_sleeping_list[i];
+      if ( p -> type == PLAYER_GUARDIAN )
+        continue;
+
+      p -> buffs.windwalking_movement_aura -> trigger( 1, movement_increase, 1, duration );
+    }
+  }
+};
+
 // Tiger Palm base ability ===================================================
 struct tiger_palm_t: public monk_melee_attack_t
 {
@@ -7164,6 +7206,7 @@ action_t* monk_t::create_action( const std::string& name,
 {
   using namespace actions;
   // General
+  if ( name == "windwalking_aura" ) return new          windwalking_aura_t( this, options_str );
   if ( name == "auto_attack" ) return new               auto_attack_t( this, options_str );
   if ( name == "crackling_jade_lightning" ) return new  crackling_jade_lightning_t( *this, options_str );
   if ( name == "tiger_palm" ) return new                tiger_palm_t( this, options_str );
@@ -8683,18 +8726,6 @@ void monk_t::combat_begin()
   {
     resources.current[RESOURCE_CHI] = 0;
 
-    if ( !buffs.windwalking_movement_aura -> up() )
-    {
-      for ( size_t i = 0; i < sim -> player_non_sleeping_list.size(); ++i )
-      {
-        player_t* p = sim -> player_non_sleeping_list[i];
-        if ( p -> type == PLAYER_GUARDIAN )
-          continue;
-
-        p -> buffs.windwalking_movement_aura -> trigger();
-      }
-    }
-
     if ( talent.chi_orbit -> ok() )
     {
       // If Chi Orbit, start out with max stacks
@@ -9217,6 +9248,7 @@ void monk_t::apl_combat_windwalker()
   action_priority_list_t* st = get_action_priority_list("st");
 
   def -> add_action( "auto_attack" );
+  def -> add_action( "windwalking_aura" );
   def -> add_action( this, "Spear Hand Strike", "if=target.debuff.casting.react" );
 
   if ( sim -> allow_potions )
@@ -10004,7 +10036,9 @@ struct march_of_the_legion_t : public unique_gear::scoped_actor_callback_t<monk_
   { }
 
   void manipulate( monk_t* monk, const special_effect_t& e ) override
-  { monk -> legendary.march_of_the_legion = e.driver(); }
+  {
+    monk -> legendary.march_of_the_legion = e.driver();
+  }
 };
 
 struct the_emperors_capacitor_t : public unique_gear::scoped_actor_callback_t<monk_t>
@@ -10084,7 +10118,6 @@ struct monk_module_t: public module_t
   {
     p -> buffs.windwalking_movement_aura = buff_creator_t( p, "windwalking_movement_aura",
                                                             p -> find_spell( 166646 ) )
-      .duration( timespan_t::from_seconds( 0 ) )
       .add_invalidate( CACHE_RUN_SPEED );
   }
   virtual void combat_begin( sim_t* ) const override {}

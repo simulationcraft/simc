@@ -3405,7 +3405,7 @@ double player_t::temporary_movement_modifier() const
   if ( ! is_enemy() )
   {
     if ( buffs.windwalking_movement_aura -> up() )
-      temporary = std::max( buffs.windwalking_movement_aura -> data().effectN( 1 ).percent(), temporary );
+      temporary = std::max( buffs.windwalking_movement_aura -> current_value, temporary );
 
     if ( buffs.darkflight -> up() )
       temporary = std::max( buffs.darkflight -> data().effectN( 1 ).percent(), temporary );
