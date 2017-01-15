@@ -6381,12 +6381,7 @@ void demon_hunter_t::apl_havoc()
     " tiny bit isn't a big deal." );
   def->add_action("variable,name=pooling_for_chaos_strike,value=talent.chaos_cleave.enabled&fury.deficit>40&!raid_event.adds.up&raid_event.adds.in<2*gcd",
     "Chaos Strike pooling condition, so we don't spend too much fury when we need it for Chaos Cleave AoE");
-  def -> add_action( this, "Blur", "if=artifact.demon_speed.enabled&"
-    "cooldown.fel_rush.charges_fractional<0.5&"
-    "cooldown.vengeful_retreat.remains-buff.momentum.remains>4" );
   def -> add_action( "call_action_list,name=cooldown" );
-  def -> add_action( this, "Fel Rush", "animation_cancel=1,if=time=0",
-    "Fel Rush in at the start of combat." );
   def -> add_action(
     "pick_up_fragment,if=talent.demonic_appetite.enabled&fury.deficit>=35" );
   def -> add_action( this, "Consume Magic" );
@@ -6404,14 +6399,16 @@ void demon_hunter_t::apl_havoc()
     "Use Fel Barrage at max charges, saving it for Momentum and adds if possible." );
   def -> add_action( this, "Throw Glaive", "if=talent.bloodlet.enabled&(!talent.momentum.enabled|"
     "buff.momentum.up)&charges=2" );
+  def->add_talent(this, "Felblade", "if=fury<15&(cooldown.death_sweep.remains<2*gcd|cooldown.blade_dance.remains<2*gcd)");
+  def->add_action(this, spec.death_sweep, "death_sweep", "if=variable.blade_dance");
+  def->add_action(this, "Fel Rush", "if=charges=2&!talent.momentum.enabled&!talent.fel_mastery.enabled");
   def->add_talent(this, "Fel Eruption");
   def -> add_action( this, artifact.fury_of_the_illidari, "fury_of_the_illidari",
     "if=(active_enemies>desired_targets&active_enemies>1)|raid_event.adds.in>55&(!talent.momentum.enabled|"
     "buff.momentum.up)" );
-  def -> add_action( this, "Eye Beam", "if=talent.demonic.enabled&(talent.demon_blades.enabled|talent.blind_fury.enabled|(!talent.blind_fury.enabled&fury.deficit<30))"
+  def -> add_action( this, "Eye Beam", "if=talent.demonic.enabled&(talent.demon_blades.enabled|(talent.blind_fury.enabled&fury.deficit>=35)|(!talent.blind_fury.enabled&fury.deficit<30))"
     "&((active_enemies>desired_targets&active_enemies>1)|raid_event.adds.in>30)" );
-  def -> add_action( this, spec.death_sweep, "death_sweep", "if=variable.blade_dance" );
-  def -> add_action( this, "Blade Dance", "if=variable.blade_dance" );
+  def -> add_action( this, "Blade Dance", "if=variable.blade_dance&(!talent.demonic.enabled|cooldown.eye_beam.remains>5)" );
   def -> add_action( this, "Throw Glaive", "if=talent.bloodlet.enabled&"
     "spell_targets>=2&(!talent.master_of_the_glaive.enabled|"
     "!talent.momentum.enabled|buff.momentum.up)&(spell_targets>=3|raid_event.adds.in>recharge_time+cooldown)" );
