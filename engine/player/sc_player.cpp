@@ -1004,8 +1004,6 @@ void player_t::init_base_stats()
 
   base.spell_power_multiplier    = 1.0;
   base.attack_power_multiplier   = 1.0;
-  base.spell_speed_multiplier    = 1.0;
-  base.attack_speed_multiplier   = 1.0;
 
   if ( ( meta_gem == META_EMBER_PRIMAL ) || ( meta_gem == META_EMBER_SHADOWSPIRIT ) || ( meta_gem == META_EMBER_SKYFIRE ) || ( meta_gem == META_EMBER_SKYFLARE ) )
   {
@@ -2718,7 +2716,7 @@ void player_t::create_buffs()
         .add_invalidate( CACHE_INTELLECT );
 
       // Legendary meta haste buff
-      buffs.tempus_repit              = buff_creator_t( this, "tempus_repit", find_spell( 137590 ) ).add_invalidate( CACHE_HASTE ).activated( false );
+      buffs.tempus_repit              = haste_buff_creator_t( this, "tempus_repit", find_spell( 137590 ) ).add_invalidate( CACHE_SPELL_SPEED ).activated( false );
 
       buffs.darkflight         = buff_creator_t( this, "darkflight", find_racial_spell( "darkflight" ) );
 
@@ -2893,16 +2891,7 @@ double player_t::composite_melee_speed() const
     h *= 1.0 / ( 1.0 + buffs.fel_winds -> value() );
   }
 
-  h *= composite_attack_speed_multiplier();
-
   return h;
-}
-
-// player_t::composite_attack_speed_multiplier() const
-
-double player_t::composite_attack_speed_multiplier() const
-{
-  return current.attack_speed_multiplier;
 }
 
 // player_t::composite_attack_power =========================================
@@ -3140,9 +3129,6 @@ double player_t::composite_spell_haste() const
     if ( buffs.berserking -> up() )
       h *= 1.0 / ( 1.0 + buffs.berserking -> data().effectN( 1 ).percent() );
 
-    if ( buffs.tempus_repit -> up() )
-      h *= 1.0 / ( 1.0 + buffs.tempus_repit -> data().effectN( 1 ).percent() );
-
     h *= 1.0 / ( 1.0 + racials.nimble_fingers -> effectN( 1 ).percent() );
     h *= 1.0 / ( 1.0 + racials.time_is_money -> effectN( 1 ).percent() );
 
@@ -3158,16 +3144,27 @@ double player_t::composite_spell_haste() const
 
 double player_t::composite_spell_speed() const
 {
-  double h = cache.spell_haste();
+  auto speed = cache.spell_haste();
 
-  h *= composite_spell_speed_multiplier();
+  if ( ! is_pet() && ! is_enemy() )
+  {
+    if ( buffs.tempus_repit -> up() )
+    {
+      speed *= 1.0 / ( 1.0 + buffs.tempus_repit -> data().effectN( 1 ).percent() );
+    }
 
-  return h;
-}
+    if ( buffs.nefarious_pact )
+    {
+      speed *= 1.0 / ( 1.0 + buffs.nefarious_pact -> stack_value() );
+    }
 
-double player_t::composite_spell_speed_multiplier() const
-{
-  return current.spell_speed_multiplier;
+    if ( buffs.devils_due )
+    {
+      speed *= 1.0 / ( 1.0 + buffs.devils_due -> stack_value() );
+    }
+  }
+
+  return speed;
 }
 
 // player_t::composite_spell_power ==========================================

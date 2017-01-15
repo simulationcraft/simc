@@ -3634,7 +3634,6 @@ struct player_t : public actor_t
 
     std::array<double, ATTRIBUTE_MAX> attribute_multiplier;
     double spell_power_multiplier, attack_power_multiplier, armor_multiplier;
-    double spell_speed_multiplier, attack_speed_multiplier;
     position_e position;
   }
   base, // Base values, from some database or overridden by user
@@ -3877,7 +3876,7 @@ struct player_t : public actor_t
 
     // Legendary meta stuff
     buff_t* courageous_primal_diamond_lucidity;
-    buff_t* tempus_repit;
+    haste_buff_t* tempus_repit;
     buff_t* fortitude;
 
     buff_t* archmages_greater_incandescence_str;
@@ -3903,6 +3902,8 @@ struct player_t : public actor_t
 
     // 7.1
     buff_t* temptation; // Ring that goes on a 5 minute cd if you use it too much.
+    haste_buff_t* nefarious_pact; // Whispers in the dark good buff
+    haste_buff_t* devils_due; // Whispers in the dark bad buff
 
     // 6.2 trinket proxy buffs
     buff_t* naarus_discipline; // Priest-Discipline Boss 13 T18 trinket
@@ -4098,9 +4099,6 @@ struct player_t : public actor_t
 
   virtual double composite_attack_power_multiplier() const;
   virtual double composite_spell_power_multiplier() const;
-
-  virtual double composite_attack_speed_multiplier() const;
-  virtual double composite_spell_speed_multiplier() const;
 
   virtual double matching_gear_multiplier( attribute_e /* attr */ ) const { return 0; }
 
