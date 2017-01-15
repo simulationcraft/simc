@@ -4100,7 +4100,6 @@ struct flame_patch_t : public fire_mage_spell_t
     school = SCHOOL_FIRE;
     // PTR Multiplier
     base_multiplier *= 1.0 + p -> find_spell( 137019 ) -> effectN( 1 ).percent();
-    base_multiplier *= 0.83; //FIXME Jan 17th Hotfix
   }
 
   // Override damage type to avoid triggering Doom Nova
