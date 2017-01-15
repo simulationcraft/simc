@@ -282,7 +282,6 @@ public:
     spell_t*  goldrinns_fang;
     action_t* natures_guardian;
     spell_t*  rage_of_the_sleeper;
-    attack_t* shadow_thrash;
     spell_t*  shooting_stars;
     spell_t*  starfall;
     spell_t*  starshards;
@@ -3242,13 +3241,20 @@ public:
     return c;
   }
 
-  virtual void execute() override
+  double action_multiplier() const
   {
+    double am = cat_attack_t::action_multiplier();
+
     if ( p()->talent.moment_of_clarity->ok() && p()->buff.clearcasting->up() )
     {
-      base_multiplier *= 1.0 + p()->talent.moment_of_clarity->effectN( 5 ).percent();
+      am *= 1.0 + p()->talent.moment_of_clarity->effectN( 4 ).percent();
     }
 
+    return am;
+  }
+
+  virtual void execute() override
+  {
     cat_attack_t::execute();
 
     p() -> buff.scent_of_blood -> up();
@@ -3310,27 +3316,50 @@ struct tigers_fury_t : public cat_attack_t
 struct thrash_cat_t: public cat_attack_t {
   struct shadow_thrash_t: public cat_attack_t {
     struct shadow_thrash_tick_t: public cat_attack_t {
+      double multiplier;
       shadow_thrash_tick_t( druid_t* p ):
-        cat_attack_t( "shadow_thrash", p, p -> find_spell( 210687 ) )
+        cat_attack_t( "shadow_thrash", p, p -> find_spell( 210687 ) ),
+        multiplier( 0 )
       {
         background = dual = true;
         aoe = -1;
       }
+
+      double action_multiplier() const
+      {
+        double am = cat_attack_t::action_multiplier();
+
+        am *= 1.0 + multiplier;
+
+        return am;
+      }
     };
 
+    double multiplier;
+    shadow_thrash_tick_t* tick;
     shadow_thrash_t( druid_t* p ):
-      cat_attack_t( "shadow_thrash", p, p -> artifact.shadow_thrash.data().effectN( 1 ).trigger() )
+      cat_attack_t( "shadow_thrash", p, p -> artifact.shadow_thrash.data().effectN( 1 ).trigger() ),
+      multiplier( 0 ), tick( 0 )
     {
       background = true;
-      tick_action = new shadow_thrash_tick_t( p );
+      tick = new shadow_thrash_tick_t( p );
+      tick_action = tick;
 
       base_tick_time *= 1.0 + p -> talent.jagged_wounds -> effectN( 1 ).percent();
       dot_duration *= 1.0 + p -> talent.jagged_wounds -> effectN( 2 ).percent();
     }
+
+    void execute() override
+    {
+      tick -> multiplier = multiplier; 
+      cat_attack_t::execute();
+    }
   };
 
+  shadow_thrash_t* shadow_thrash;
   thrash_cat_t( druid_t* p, const std::string& options_str ):
-    cat_attack_t( "thrash_cat", p, p -> find_spell( 106830 ), options_str )
+    cat_attack_t( "thrash_cat", p, p -> find_spell( 106830 ), options_str ),
+    shadow_thrash( nullptr )
   {
     aoe = -1;
     spell_power_mod.direct = 0;
@@ -3346,10 +3375,10 @@ struct thrash_cat_t: public cat_attack_t {
       energize_type = ENERGIZE_ON_HIT;
     }
 
-    if ( p -> artifact.shadow_thrash.rank() && !p -> active.shadow_thrash )
+    if ( shadow_thrash == nullptr )
     {
-      p -> active.shadow_thrash = new shadow_thrash_t( p );
-      add_child( p -> active.shadow_thrash );
+      shadow_thrash = new shadow_thrash_t( p );
+      add_child( shadow_thrash );
     }
 
     base_tick_time *= 1.0 + p -> talent.jagged_wounds -> effectN( 1 ).percent();
@@ -3357,26 +3386,36 @@ struct thrash_cat_t: public cat_attack_t {
     base_multiplier *= 1.0 + p -> artifact.jagged_claws.percent();
   }
 
-  void execute() override
+  double action_multiplier() const
   {
-     bool ccup = false;
+    double am = cat_attack_t::action_multiplier();
+
     if ( p() -> talent.moment_of_clarity -> ok() && p() -> buff.clearcasting -> up() )
     {
-      base_multiplier *= 1.0 + p() -> talent.moment_of_clarity -> effectN( 5 ).percent();
-      ccup = true;
+      double mom = p() -> talent.moment_of_clarity -> effectN( 5 ).percent();
+      am *= 1.0 + mom;
+      shadow_thrash -> multiplier = mom;
+    }
+    else
+    {
+      shadow_thrash -> multiplier = 0;
     }
 
+    return am;
+  }
+
+  void execute() override
+  {
     cat_attack_t::execute();
+    
+    if ( rng().roll( p()->artifact.shadow_thrash.data().proc_chance() ) )
+    {
+      shadow_thrash -> target = execute_state -> target;
+      shadow_thrash -> schedule_execute();
+    }
 
     p() -> buff.scent_of_blood -> trigger( 1,
                                            num_targets_hit * p() -> buff.scent_of_blood -> default_value );
-
-    if (rng().roll(p()->artifact.shadow_thrash.data().proc_chance()))
-    {
-       p() -> active.shadow_thrash -> schedule_execute();
-       if (ccup)
-          p() -> active.shadow_thrash -> base_multiplier *= 1.0 + p() -> talent.moment_of_clarity -> effectN(5).percent();
-    }
   }
 };
 
@@ -7126,17 +7165,23 @@ void druid_t::apl_balance()
   FoE -> add_action( this, "Solar Wrath" );
 
   ED -> add_talent( this, "Astral Communion", "if=astral_power.deficit>=75&buff.the_emerald_dreamcatcher.up" );
-  ED -> add_action( "incarnation,if=astral_power>=85&!buff.the_emerald_dreamcatcher.up" );
+  ED -> add_action( "incarnation,if=astral_power>=85&!buff.the_emerald_dreamcatcher.up|buff.bloodlust.up" );
   ED -> add_action( this, "Celestial Alignment", "if=astral_power>=85&!buff.the_emerald_dreamcatcher.up" );
-  ED -> add_action( this, "Starsurge", "if=(buff.the_emerald_dreamcatcher.up&buff.the_emerald_dreamcatcher.remains<gcd.max)|astral_power>=90|((buff.celestial_alignment.up|buff.incarnation.up)&astral_power>=85)" );
+  ED -> add_action( this, "Starsurge", "if=(buff.celestial_alignment.up&buff.celestial_alignment.remains<(10))|(buff.incarnation.up&buff.incarnation.remains<(3*execute_time)&astral_power>78)|(buff.incarnation.up&buff.incarnation.remains<(2*execute_time)&astral_power>52)|(buff.incarnation.up&buff.incarnation.remains<execute_time&astral_power>26)" );
   ED -> add_talent( this, "Stellar Flare", "cycle_targets=1,max_cycle_targets=4,if=active_enemies<4&remains<7.2&astral_power>=15" );
-  ED -> add_action( this, "Moonfire", "if=(talent.natures_balance.enabled&remains<3)|(remains<6.6&!talent.natures_balance.enabled)" );
-  ED -> add_action( this, "Sunfire", "if=(talent.natures_balance.enabled&remains<3)|(remains<5.4&!talent.natures_balance.enabled)" );
-  ED -> add_action( this, "Solar Wrath", "if=buff.solar_empowerment.up&buff.the_emerald_dreamcatcher.remains>execute_time&astral_power>=12&dot.sunfire.remains<5.4&dot.moonfire.remains>6.6" );
-  ED -> add_action( this, "Lunar Strike", "if=buff.lunar_empowerment.up&buff.the_emerald_dreamcatcher.remains>execute_time&astral_power>=8&(!(buff.celestial_alignment.up|buff.incarnation.up)|(buff.celestial_alignment.up|buff.incarnation.up)&astral_power<=77)" );
+  ED -> add_action( this, "Moonfire", "if=((talent.natures_balance.enabled&remains<3)|(remains<6.6&!talent.natures_balance.enabled))&(buff.the_emerald_dreamcatcher.remains>gcd.max|!buff.the_emerald_dreamcatcher.up)" );
+  ED -> add_action( this, "Sunfire", "if=((talent.natures_balance.enabled&remains<3)|(remains<5.4&!talent.natures_balance.enabled))&(buff.the_emerald_dreamcatcher.remains>gcd.max|!buff.the_emerald_dreamcatcher.up)" );
+  ED -> add_action( this, "Starfall", "if=buff.oneths_overconfidence.up&buff.the_emerald_dreamcatcher.remains>execute_time&remains<2" );
+  ED -> add_action( this, "Half Moon", "if=astral_power<=80&buff.the_emerald_dreamcatcher.remains>execute_time&astral_power>=6" );
+  ED -> add_action( this, "Full Moon", "if=astral_power<=60&buff.the_emerald_dreamcatcher.remains>execute_time" );
+  ED -> add_action( this, "Solar Wrath", "if=buff.solar_empowerment.stack>1&buff.the_emerald_dreamcatcher.remains>2*execute_time&astral_power>=6&(dot.moonfire.remains>5|(dot.sunfire.remains<5.4&dot.moonfire.remains>6.6))&(!(buff.celestial_alignment.up|buff.incarnation.up)&astral_power<=90|(buff.celestial_alignment.up|buff.incarnation.up)&astral_power<=85)" );
+  ED -> add_action( this, "Lunar Strike", "if=buff.lunar_empowerment.up&buff.the_emerald_dreamcatcher.remains>execute_time&astral_power>=11&(!(buff.celestial_alignment.up|buff.incarnation.up)&astral_power<=85|(buff.celestial_alignment.up|buff.incarnation.up)&astral_power<=77.5)" );
+  ED -> add_action( this, "Solar Wrath", "if=buff.solar_empowerment.up&buff.the_emerald_dreamcatcher.remains>execute_time&astral_power>=16&(!(buff.celestial_alignment.up|buff.incarnation.up)&astral_power<=90|(buff.celestial_alignment.up|buff.incarnation.up)&astral_power<=85)" );
+  ED -> add_action( this, "Starsurge", "if=(buff.the_emerald_dreamcatcher.up&buff.the_emerald_dreamcatcher.remains<gcd.max)|astral_power>90|((buff.celestial_alignment.up|buff.incarnation.up)&astral_power>=85)|(buff.the_emerald_dreamcatcher.up&astral_power>=77.5&(buff.celestial_alignment.up|buff.incarnation.up))" );
+  ED -> add_action( this, "Starfall", "if=buff.oneths_overconfidence.up&remains<2" );
   ED -> add_action( this, "New Moon", "if=astral_power<=90" );
   ED -> add_action( this, "Half Moon", "if=astral_power<=80" );
-  ED -> add_action( this, "Full Moon", "if=astral_power<=60" );
+  ED -> add_action( this, "Full Moon", "if=astral_power<=60&((cooldown.incarnation.remains>65&cooldown.full_moon.charges>0)|(cooldown.incarnation.remains>50&cooldown.full_moon.charges>1)|(cooldown.incarnation.remains>25&cooldown.full_moon.charges>2))" );
   ED -> add_action( this, "Solar Wrath", "if=buff.solar_empowerment.up" );
   ED -> add_action( this, "Lunar Strike", "if=buff.lunar_empowerment.up" );
   ED -> add_action( this, "Solar Wrath" );

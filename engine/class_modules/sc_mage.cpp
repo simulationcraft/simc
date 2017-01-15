@@ -3535,14 +3535,18 @@ struct blizzard_t : public frost_mage_spell_t
     parse_options( options_str );
     add_child( blizzard_shard );
     cooldown -> hasted = true;
-    ignore_false_positive = true;
     dot_duration = timespan_t::zero(); // This is just a driver for the ground effect.
     may_miss = false;
   }
 
+  double false_positive_pct() const
+  {
+    // Players are probably less likely to accidentally use blizzard than other spells.
+    return ( frost_mage_spell_t::false_positive_pct() / 2 ); 
+  }
+
   virtual void execute() override
   {
-
     frost_mage_spell_t::execute();
 
     make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
@@ -8310,7 +8314,7 @@ void mage_t::apl_fire()
   standard    -> add_action( this, "Pyroblast", "if=buff.hot_streak.up&buff.hot_streak.remains<action.fireball.execute_time" );
   standard    -> add_action( this, "Phoenix's Flames", "if=charges_fractional>2.7&active_enemies>2" );
   standard    -> add_action( this, "Pyroblast", "if=buff.hot_streak.up&!prev_gcd.1.pyroblast" );
-  standard    -> add_action( this, "Pyroblast", "if=buff.hot_streak.react&target.health.pct<=25&equipped.132454" );
+  standard    -> add_action( this, "Pyroblast", "if=buff.hot_streak.react&target.health.pct<=30&equipped.132454" );
   standard    -> add_action( this, "Pyroblast", "if=buff.kaelthas_ultimate_ability.react" );
   standard    -> add_action( "call_action_list,name=active_talents" );
   standard    -> add_action( this, "Fire Blast", "if=!talent.kindling.enabled&buff.heating_up.up&(!talent.rune_of_power.enabled|charges_fractional>1.4|cooldown.combustion.remains<40)&(3-charges_fractional)*(12*spell_haste)<cooldown.combustion.remains+3|target.time_to_die.remains<4" );
