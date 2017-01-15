@@ -14,15 +14,15 @@
 #if defined( SC_WINDOWS )
 namespace
 {
-void __disable_decorated_tooltips( sim_t* sim )
+void __unload_module( MODULEENTRY32* module, sim_t* /* sim */ )
 {
-  sim->decorated_tooltips = 0;
+  FreeLibrary( module->hModule );
 }
 
-using dll_workaround_entry_t = std::pair<std::string, std::function<void( sim_t* )>>;
+using dll_workaround_entry_t = std::pair<std::string, std::function<void( MODULEENTRY32*, sim_t* )>>;
 
 static const std::vector<dll_workaround_entry_t> __dll_workarounds = {
-  { "LavasoftTcpService", __disable_decorated_tooltips },
+  { "LavasoftTcpService", __unload_module },
 };
 
 std::string convert_tchar( const TCHAR* carr )
@@ -47,6 +47,7 @@ void win32_dll_workarounds( sim_t* sim )
   module.dwSize = sizeof( MODULEENTRY32 );
   if ( ! Module32First( processHandle, &module ) )
   {
+    CloseHandle( processHandle );
     return;
   }
 
@@ -59,9 +60,11 @@ void win32_dll_workarounds( sim_t* sim )
 
     if ( it != __dll_workarounds.end() )
     {
-      it->second( sim );
+      it->second( &module, sim );
     }
   } while ( Module32Next( processHandle, &module ) );
+
+  CloseHandle( processHandle );
 }
 }
 #endif
