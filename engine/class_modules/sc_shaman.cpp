@@ -3689,7 +3689,7 @@ struct fury_of_air_aoe_t : public shaman_attack_t
     background = true;
     aoe = -1;
     school = SCHOOL_NATURE;
-    base_multiplier *= 1.12; //FIXME
+    base_multiplier *= 0.88; //FIXME
   }
 
   void init() override
