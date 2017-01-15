@@ -1,5 +1,6 @@
 #include "sc_SimulationThread.hpp"
 #include "simulationcraftqt.hpp"
+#include "sc_Workaround.hpp"
 
 SC_SimulateThread::SC_SimulateThread( SC_MainWindow* mw ) :
     mainWindow( mw ),
@@ -33,6 +34,7 @@ void SC_SimulateThread::run()
   try
   {
     sim -> setup( &description );
+    workaround::apply_workarounds( sim );
   }
   catch ( const std::exception& e )
   {

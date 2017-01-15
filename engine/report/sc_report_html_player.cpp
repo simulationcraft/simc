@@ -3526,23 +3526,6 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os,
       os << "</ul></td></tr>";
     }
 
-    // Glyphs
-    if ( !p.glyph_list.empty() )
-    {
-      os.format(
-          "<tr class=\"left\">\n"
-          "<th>Glyphs</th>\n"
-          "<td>\n"
-          "<ul class=\"float\">\n" );
-      for ( size_t i = 0; i < p.glyph_list.size(); ++i )
-      {
-        os << "<li>" << p.glyph_list[ i ]->name_cstr() << "</li>\n";
-      }
-      os << "</ul>\n"
-         << "</td>\n"
-         << "</tr>\n";
-    }
-
     // Professions
     if ( !p.professions_str.empty() )
     {

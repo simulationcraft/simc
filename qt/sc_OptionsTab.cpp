@@ -866,7 +866,7 @@ void SC_OptionsTab::createToolTips()
 
   choice.armory_region -> setToolTip( tr( "United States, Europe, Taiwan, China, Korea" ) );
 
-  choice.armory_spec -> setToolTip( tr( "Controls which Talent/Glyph specification is used when importing profiles from the Armory." ) );
+  choice.armory_spec -> setToolTip( tr( "Controls which Talent specification is used when importing profiles from the Armory." ) );
 
   choice.gui_localization -> setToolTip( tr( "Controls the GUI display language." ) );
 

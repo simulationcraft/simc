@@ -9,6 +9,7 @@ namespace { // UNNAMED NAMESPACE
 
 // ==========================================================================
 // Mage
+//   - UPDATE SPELLS BASED ON HOTFIXES JANUARY 17th. TEMPORARY //FIXME ADDED FOR NOW
 // ==========================================================================
 
 // Forward declarations
@@ -1005,14 +1006,14 @@ struct water_jet_t : public mage_pet_spell_t
 
     td( s->target )
         ->water_jet->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0,
-                              dot_duration * player->composite_spell_haste() );
+                              dot_duration * player->composite_spell_speed() );
 
     // Trigger hidden proxy water jet for the mage, so
     // debuff.water_jet.<expression> works
     o()->get_target_data( s->target )
         ->debuffs.water_jet->trigger(
             1, buff_t::DEFAULT_VALUE(), 1.0,
-            dot_duration * player->composite_spell_haste() );
+            dot_duration * player->composite_spell_speed() );
   }
 
   virtual double action_multiplier() const override
@@ -1757,7 +1758,7 @@ struct sephuzs_secret_buff_t : public haste_buff_t
   cooldown_t* icd;
   sephuzs_secret_buff_t( mage_t* p ) :
     haste_buff_t( haste_buff_creator_t( p, "sephuzs_secret", p -> find_spell( 208052 ) )
-                            .default_value( p -> find_spell( 208502 ) -> effectN( 2 ).percent() )
+                            .default_value( p -> find_spell( 208052 ) -> effectN( 2 ).percent() )
                             .add_invalidate( CACHE_HASTE ) )
   {
     icd = p -> get_cooldown( "sephuzs_secret_cooldown" );
@@ -4321,15 +4322,15 @@ struct flurry_t : public frost_mage_spell_t
     hasted_ticks = false;
     add_child( flurry_bolt );
     //TODO: Remove hardcoded values once it exists in spell data for bolt impact timing.
-    dot_duration = timespan_t::from_seconds( 0.03 );
-    base_tick_time = timespan_t::from_seconds( 0.01 );
+    dot_duration = timespan_t::from_seconds( 0.6 );
+    base_tick_time = timespan_t::from_seconds( 0.2 );
   }
 
   virtual timespan_t travel_time() const override
   {
     // Approximate travel time from in game data.
     // TODO: Improve approximation
-    return timespan_t::from_seconds( ( player -> current.distance / 29 ) );
+    return timespan_t::from_seconds( ( player -> current.distance / 38 ) );
   }
 
   virtual timespan_t execute_time() const override
@@ -4646,7 +4647,7 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
   frozen_orb_bolt_t( mage_t* p ) :
     frost_mage_spell_t( "frozen_orb_bolt", p,
                         p -> find_class_spell( "Frozen Orb" ) -> ok() ?
-                          p -> find_spell( 84721 ) :
+                        dbc::find_spell( p, 84721 ) : 
                           spell_data_t::not_found() )
   {
     aoe = -1;
@@ -8180,7 +8181,7 @@ void mage_t::apl_arcane()
   conserve     -> add_action( this, "Arcane Blast", "if=buff.rhonins_assaulting_armwraps.up&equipped.132413" );
   conserve     -> add_action( this, "Arcane Missiles" );
   conserve     -> add_talent( this, "Supernova", "if=mana.pct<100" );
-  conserve     -> add_action( this, "Frost Nova", "if=equipped.132452" );
+  //conserve     -> add_action( this, "Frost Nova", "if=equipped.132452" );
   conserve     -> add_action( this, "Arcane Explosion", "if=mana.pct>=82&equipped.132451&active_enemies>1" );
   conserve     -> add_action( this, "Arcane Blast", "if=mana.pct>=82&equipped.132451" );
   conserve     -> add_action( this, "Arcane Barrage", "if=mana.pct<100&cooldown.arcane_power.remains>5" );
@@ -8221,7 +8222,7 @@ void mage_t::apl_arcane()
   }
 
   init_burn -> add_action( this, "Mark of Aluneth" );
-  init_burn -> add_action( this, "Frost Nova", "if=equipped.132452" );
+  //init_burn -> add_action( this, "Frost Nova", "if=equipped.132452" );
   init_burn -> add_talent( this, "Nether Tempest", "if=dot.nether_tempest.remains<10&(prev_gcd.1.mark_of_aluneth|(talent.rune_of_power.enabled&cooldown.rune_of_power.remains<gcd.max))" );
   init_burn -> add_talent( this, "Rune of Power" );
   init_burn -> add_action( "start_burn_phase,if=((cooldown.evocation.remains-(2*burn_phase_duration))%2<burn_phase_duration)|cooldown.arcane_power.remains=0|target.time_to_die<55" );
@@ -8296,7 +8297,7 @@ void mage_t::apl_fire()
   rop_phase        -> add_action( this, "Flamestrike", "if=((talent.flame_patch.enabled&active_enemies>1)|(active_enemies>3))&buff.hot_streak.up" );
   rop_phase        -> add_action( this, "Pyroblast", "if=buff.hot_streak.up" );
   rop_phase        -> add_action( "call_action_list,name=active_talents" );
-  rop_phase        -> add_action( this, "Pyroblast", "if=buff.kaelthas_ultimate_ability.react" );
+  rop_phase        -> add_action( this, "Pyroblast", "if=buff.kaelthas_ultimate_ability.react&execute_time<buff.kaelthas_ultimate_ability.remains" );
   rop_phase        -> add_action( this, "Fire Blast", "if=!prev_off_gcd.fire_blast" );
   rop_phase        -> add_action( this, "Phoenix's Flames", "if=!prev_gcd.1.phoenixs_flames" );
   rop_phase        -> add_action( this, "Scorch", "if=target.health.pct<=30&equipped.132454" );
@@ -8315,7 +8316,7 @@ void mage_t::apl_fire()
   standard    -> add_action( this, "Phoenix's Flames", "if=charges_fractional>2.7&active_enemies>2" );
   standard    -> add_action( this, "Pyroblast", "if=buff.hot_streak.up&!prev_gcd.1.pyroblast" );
   standard    -> add_action( this, "Pyroblast", "if=buff.hot_streak.react&target.health.pct<=30&equipped.132454" );
-  standard    -> add_action( this, "Pyroblast", "if=buff.kaelthas_ultimate_ability.react" );
+  standard    -> add_action( this, "Pyroblast", "if=buff.kaelthas_ultimate_ability.react&execute_time<buff.kaelthas_ultimate_ability.remains" );
   standard    -> add_action( "call_action_list,name=active_talents" );
   standard    -> add_action( this, "Fire Blast", "if=!talent.kindling.enabled&buff.heating_up.up&(!talent.rune_of_power.enabled|charges_fractional>1.4|cooldown.combustion.remains<40)&(3-charges_fractional)*(12*spell_haste)<cooldown.combustion.remains+3|target.time_to_die.remains<4" );
   standard    -> add_action( this, "Fire Blast", "if=talent.kindling.enabled&buff.heating_up.up&(!talent.rune_of_power.enabled|charges_fractional>1.5|cooldown.combustion.remains<40)&(3-charges_fractional)*(18*spell_haste)<cooldown.combustion.remains+3|target.time_to_die.remains<4" );
@@ -9605,6 +9606,18 @@ public:
       .operation( hotfix::HOTFIX_SET )
       .modifier( 57 )
       .verification_value( 81 );
+
+    hotfix::register_effect( "Mage", "2017-01-15", "Adjust Ray of Frost tick coefficient up 12%", 303101 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 2.296 )
+      .verification_value( 2.05 );
+
+    hotfix::register_effect( "Mage", "2017-01-15", "Adjust Flame Patch down 17%", 303428 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.249 )
+      .verification_value( 0.3 );
   }
 
   virtual bool valid() const override { return true; }

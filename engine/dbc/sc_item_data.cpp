@@ -1317,21 +1317,6 @@ bool item_database::download_item( item_t& item )
   return ret;
 }
 
-// item_database_t::download_glyph ==========================================
-
-bool item_database::download_glyph( player_t* player, std::string& glyph_name,
-                                    const std::string& glyph_id )
-{
-  long gid                 = strtol( glyph_id.c_str(), nullptr, 10 );
-  const item_data_t* glyph = player -> dbc.item( gid );
-
-  if ( gid <= 0 || ! glyph ) return false;
-
-  glyph_name = glyph -> name;
-
-  return true;
-}
-
 // item_database::upgrade_ilevel ============================================
 
 // TODO: DBC Based upgrading system would be safer, this works for now, probably

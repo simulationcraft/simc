@@ -1349,34 +1349,23 @@ void item::whispers_in_the_dark( special_effect_t& effect )
   auto bad_buff_data = effect.player -> find_spell( 225776 );
   auto bad_amount = bad_buff_data -> effectN( 1 ).average( effect.item ) / 100.0;
 
-  buff_t* bad_buff = buff_creator_t( effect.player, "devils_due", bad_buff_data, effect.item )
-    .stack_change_callback( [ bad_amount ]( buff_t* buff, int old_, int ) {
-      if ( old_ == 0 )
-      {
-        buff -> player -> current.spell_speed_multiplier *= 1 - bad_amount;
-      }
-      else
-      {
-        buff -> player -> current.spell_speed_multiplier /= 1 - bad_amount;
-      }
-      buff -> player -> invalidate_cache( CACHE_HASTE );
-    } );
+  haste_buff_t* bad_buff = haste_buff_creator_t( effect.player, "devils_due", bad_buff_data, effect.item )
+    .add_invalidate( CACHE_SPELL_SPEED )
+    .default_value( bad_amount );
 
-  buff_t* good_buff = buff_creator_t( effect.player, "nefarious_pact", good_buff_data, effect.item )
-    .stack_change_callback( [ good_amount, bad_buff ]( buff_t* buff, int old_, int ) {
-      if ( old_ == 0 )
+  haste_buff_t* good_buff = haste_buff_creator_t( effect.player, "nefarious_pact", good_buff_data, effect.item )
+    .add_invalidate( CACHE_SPELL_SPEED )
+    .default_value( good_amount )
+    .stack_change_callback( [ bad_buff ]( buff_t*, int old_, int ) {
+      if ( old_ == 1 )
       {
-        buff -> player -> current.spell_speed_multiplier /= 1 + good_amount;
-        buff -> player -> invalidate_cache( CACHE_HASTE );
-      }
-      else
-      {
-        buff -> player -> current.spell_speed_multiplier *= 1 + good_amount;
         bad_buff -> trigger();
       }
     } );
 
   effect.custom_buff = good_buff;
+  effect.player -> buffs.nefarious_pact = good_buff;
+  effect.player -> buffs.devils_due = bad_buff;
 
   new dbc_proc_callback_t( effect.item, effect );
 }

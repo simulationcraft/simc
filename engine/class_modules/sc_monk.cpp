@@ -154,6 +154,7 @@ public:
 
   // Active
   heal_t*   active_celestial_fortune_proc;
+  action_t* windwalking_aura;
 
   struct
   {
@@ -250,6 +251,7 @@ public:
     buff_t* serenity;
     buff_t* touch_of_karma;
     buff_t* transfer_the_power;
+    buff_t* windwalking_driver;
 
     // Legendaries
     buff_t* hidden_masters_forbidden_touch;
@@ -682,6 +684,7 @@ public:
   {
     // actives
     active_celestial_fortune_proc = nullptr;
+    windwalking_aura = nullptr;
 
 
     cooldown.blackout_kick                = get_cooldown( "blackout_kick" );
@@ -2039,7 +2042,7 @@ public:
     main_hand_weapon.min_dmg = dbc.spell_scaling( o() -> type, level() );
     main_hand_weapon.max_dmg = dbc.spell_scaling( o() -> type, level() );
     main_hand_weapon.damage = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
-    main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
     owner_coeff.ap_from_ap = 3.30;
   }
 
@@ -2688,6 +2691,47 @@ struct eye_of_the_tiger_dmg_tick_t: public monk_spell_t
   }
 };
 
+// Windwalking Aura Toggle ==========================================================
+
+struct windwalking_aura_t: public monk_spell_t
+{
+  windwalking_aura_t( monk_t* player ):
+    monk_spell_t( "windwalking_aura_toggle", player )
+  {
+    harmful = false;
+    background = true;
+    trigger_gcd = timespan_t::zero();
+  }
+
+  size_t available_targets( std::vector< player_t* >& tl ) const
+  {
+    tl.clear();
+
+    for ( size_t i = 0, actors = sim -> player_non_sleeping_list.size(); i < actors; i++ )
+    {
+      player_t* t = sim -> player_non_sleeping_list[i];
+      tl.push_back( t );
+    }
+
+    return tl.size();
+  }
+
+  std::vector<player_t*> check_distance_targeting( std::vector< player_t* >& tl ) const override
+  {
+    size_t i = tl.size();
+    while ( i > 0 )
+    {
+      i--;
+      player_t* target_to_buff = tl[i];
+
+      if ( p() -> get_player_distance( *target_to_buff ) > 10.0 )
+        tl.erase( tl.begin() + i );
+    }
+
+    return tl;
+  }
+};
+
 // Tiger Palm base ability ===================================================
 struct tiger_palm_t: public monk_melee_attack_t
 {
@@ -2745,7 +2789,7 @@ struct tiger_palm_t: public monk_melee_attack_t
       if ( p() -> artifact.face_palm.rank() )
       {
         if ( rng().roll( p() -> artifact.face_palm.percent() ) )
-          am *= 1 + p() -> passives.face_palm -> effectN( 1 ).percent();
+          am *= 1 + p() -> artifact.face_palm.percent();
       }
 
       if ( p() -> buff.blackout_combo -> up() )
@@ -3452,7 +3496,7 @@ struct blackout_strike_t: public monk_melee_attack_t
     monk_melee_attack_t::execute();
 
     if ( p() -> talent.blackout_combo -> ok() )
-      p() -> buff.blackout_combo -> execute();
+      p() -> buff.blackout_combo -> trigger();
   }
 };
 
@@ -4274,6 +4318,8 @@ struct keg_smash_t: public monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
 
+    if ( p() -> legendary.salsalabims_lost_tunic != nullptr )
+      p() -> cooldown.breath_of_fire -> reset(false);
     // If cooldown was reset by Secret Ingredients talent, to end the buff
     if ( p() -> buff.keg_smash_talent -> check() )
       p() -> buff.keg_smash_talent -> expire();
@@ -7109,6 +7155,27 @@ struct touch_of_karma_buff_t: public monk_buff_t < buff_t > {
     base_t::expire_override( expiration_stacks, remaining_duration );
   }
 };
+
+struct windwalking_driver_t: public monk_buff_t < buff_t >
+{
+  double movement_increase;
+  windwalking_driver_t( monk_t& p, const std::string& n, const spell_data_t* s ):
+    base_t( p, buff_creator_t( &p, n, s ).tick_callback( [&p, this]( buff_t* /* buff */, int /* total_ticks */, timespan_t /* tick_time */ )
+  {
+    range::for_each( p.windwalking_aura -> target_list(), [&p, this]( player_t* target )
+    {
+      target -> buffs.windwalking_movement_aura -> trigger( 1, ( movement_increase + ( p.legendary.march_of_the_legion ? p.legendary.march_of_the_legion -> effectN( 1 ).percent() : 0.0 ) ), 1, timespan_t::from_seconds( 10 ) );
+    }
+  ); } ) ),
+    movement_increase( 0 )
+  {
+    cooldown -> duration = timespan_t::zero();
+    buff_duration = timespan_t::zero();
+    buff_period = timespan_t::from_seconds( 1 );
+    tick_behavior = BUFF_TICK_CLIP;
+    movement_increase = p.buffs.windwalking_movement_aura -> data().effectN( 1 ).percent();
+  }
+};
 }
 
 // ==========================================================================
@@ -7694,6 +7761,8 @@ void monk_t::init_spells()
 
   if ( specialization() == MONK_BREWMASTER )
     active_actions.stagger_self_damage = new actions::stagger_self_damage_t( this );
+  if ( specialization() == MONK_WINDWALKER )
+    windwalking_aura = new actions::windwalking_aura_t( this );
 }
 
 // monk_t::init_base ========================================================
@@ -7957,7 +8026,9 @@ void monk_t::create_buffs()
   buff.touch_of_karma = new buffs::touch_of_karma_buff_t( *this, "touch_of_karma", passives.touch_of_karma_buff );
 
   buff.transfer_the_power = buff_creator_t( this, "transfer_the_power", artifact.transfer_the_power.data().effectN( 1 ).trigger() )
-    .default_value( artifact.transfer_the_power.rank() ? artifact.transfer_the_power.percent() : 0 ); 
+    .default_value( artifact.transfer_the_power.rank() ? artifact.transfer_the_power.percent() : 0 );
+
+  buff.windwalking_driver = new buffs::windwalking_driver_t( *this, "windwalking_aura_driver", find_spell( 166646 ) );
 
   // Legendaries
   buff.hidden_masters_forbidden_touch = new buffs::hidden_masters_forbidden_touch_t( 
@@ -8679,19 +8750,16 @@ void monk_t::combat_begin()
 
   if ( specialization() == MONK_WINDWALKER)
   {
-    resources.current[RESOURCE_CHI] = 0;
-
-    if ( !buffs.windwalking_movement_aura -> up() )
+    if ( sim -> distance_targeting_enabled )
     {
-      for ( size_t i = 0; i < sim -> player_non_sleeping_list.size(); ++i )
-      {
-        player_t* p = sim -> player_non_sleeping_list[i];
-        if ( p -> type == PLAYER_GUARDIAN )
-          continue;
-
-        p -> buffs.windwalking_movement_aura -> trigger();
-      }
+      buff.windwalking_driver -> trigger();
     }
+    else
+    {
+      buffs.windwalking_movement_aura -> trigger(1, buffs.windwalking_movement_aura -> data().effectN( 1 ).percent() + 
+        ( legendary.march_of_the_legion ? legendary.march_of_the_legion -> effectN( 1 ).percent() : 0.0 ), 1, timespan_t::zero() );
+    }
+    resources.current[RESOURCE_CHI] = 0;
 
     if ( talent.chi_orbit -> ok() )
     {
@@ -10002,7 +10070,9 @@ struct march_of_the_legion_t : public unique_gear::scoped_actor_callback_t<monk_
   { }
 
   void manipulate( monk_t* monk, const special_effect_t& e ) override
-  { monk -> legendary.march_of_the_legion = e.driver(); }
+  {
+    monk -> legendary.march_of_the_legion = e.driver();
+  }
 };
 
 struct the_emperors_capacitor_t : public unique_gear::scoped_actor_callback_t<monk_t>
@@ -10082,7 +10152,6 @@ struct monk_module_t: public module_t
   {
     p -> buffs.windwalking_movement_aura = buff_creator_t( p, "windwalking_movement_aura",
                                                             p -> find_spell( 166646 ) )
-      .duration( timespan_t::from_seconds( 0 ) )
       .add_invalidate( CACHE_RUN_SPEED );
   }
   virtual void combat_begin( sim_t* ) const override {}

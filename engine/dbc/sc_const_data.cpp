@@ -1174,20 +1174,6 @@ unsigned dbc_t::mastery_ability( unsigned class_id, unsigned specialization, uns
 #endif
 }
 
-unsigned dbc_t::glyph_spell( unsigned /* class_id */, unsigned /* glyph_e */, unsigned /* n */ ) const
-{
-  return 0;
-/*
-  assert( class_id < dbc_t::class_max_size() && glyph_e < GLYPH_MAX && n < glyph_spell_size() );
-#if SC_USE_PTR
-  return ptr ? __ptr_glyph_abilities_data[ class_id ][ glyph_e ][ n ]
-             : __glyph_abilities_data[ class_id ][ glyph_e ][ n ];
-#else
-  return __glyph_abilities_data[ class_id ][ glyph_e ][ n ];
-#endif
-*/
-}
-
 unsigned dbc_t::class_max_size() const
 {
   return MAX_CLASS;
@@ -1259,18 +1245,6 @@ unsigned dbc_t::mastery_ability_size() const
 #else
   return CLASS_MASTERY_ABILITY_SIZE;
 #endif
-}
-
-unsigned dbc_t::glyph_spell_size() const
-{
-  return 0;
-/*
-#if SC_USE_PTR
-  return ptr ? PTR_GLYPH_ABILITIES_SIZE : GLYPH_ABILITIES_SIZE;
-#else
-  return GLYPH_ABILITIES_SIZE;
-#endif
-*/
 }
 
 std::vector<const rppm_modifier_t*> dbc_t::real_ppm_modifiers( unsigned spell_id ) const
@@ -2269,70 +2243,6 @@ bool dbc_t::ability_specialization( uint32_t spell_id, std::vector<specializatio
   return ! spec_list.empty();
 }
 
-unsigned dbc_t::glyph_spell_id( unsigned /* property_id */ ) const
-{
-/*
-#if SC_USE_PTR
-  const glyph_property_data_t* table = ptr ? &__ptr_glyph_property_data[0] : &__glyph_property_data[0];
-#else
-  const glyph_property_data_t* table = &__glyph_property_data[0];
-#endif
-
-  while ( table -> id != 0 )
-  {
-    if ( table -> id == property_id )
-      return table -> spell_id;
-    table++;
-  }
-*/
-  return 0;
-}
-
-unsigned dbc_t::glyph_spell_id( player_e /* c */, const char* /* spell_name */ ) const
-{
-/*
-  unsigned cid = util::class_id( c );
-  unsigned spell_id;
-  std::string token, token2;
-
-  if ( ! spell_name || ! *spell_name )
-    return 0;
-
-  token = spell_name;
-  util::glyph_name( token );
-
-  for ( unsigned type = 0; type < GLYPH_MAX; type++ )
-  {
-    for ( unsigned n = 0; n < glyph_spell_size(); n++ )
-    {
-      if ( ! ( spell_id = glyph_spell( cid, type, n ) ) )
-        break;
-
-      if ( ! spell( spell_id ) -> id() )
-        continue;
-
-      token2 = spell( spell_id ) -> name_cstr();
-      util::glyph_name( token2 );
-
-      if ( util::str_compare_ci( spell( spell_id ) -> name_cstr(), spell_name ) ||
-           util::str_compare_ci( token2, token ) )
-      {
-        // Spell has been replaced by another, so don't return id
-        if ( ! replaced_id( spell_id ) )
-        {
-          return spell_id;
-        }
-        else
-        {
-          return 0;
-        }
-      }
-    }
-  }
-*/
-  return 0;
-}
-
 unsigned dbc_t::mastery_ability_id( specialization_e spec, const char* spell_name ) const
 {
   unsigned class_idx = -1;
@@ -2441,23 +2351,6 @@ bool dbc_t::is_specialization_ability( uint32_t spell_id ) const
       for ( unsigned n = 0; n < specialization_ability_size(); n++ )
       {
         if ( specialization_ability( cls, tree, n ) == spell_id )
-          return true;
-      }
-    }
-  }
-
-  return false;
-}
-
-bool dbc_t::is_glyph_spell( uint32_t spell_id ) const
-{
-  for ( unsigned cls = 0; cls < dbc_t::class_max_size(); cls++ )
-  {
-    for ( unsigned glyph_type = 0; glyph_type < GLYPH_MAX; glyph_type++ )
-    {
-      for ( unsigned n = 0; n < glyph_spell_size(); n++ )
-      {
-        if ( glyph_spell( cls, glyph_type, n ) == spell_id )
           return true;
       }
     }

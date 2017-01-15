@@ -1460,9 +1460,6 @@ public:
   unsigned mastery_ability_size() const;
   int      mastery_ability_tree( player_e c, uint32_t spell_id ) const;
 
-  unsigned glyph_spell( unsigned class_id, unsigned glyph_e, unsigned n ) const;
-  unsigned glyph_spell_size() const;
-
   // Helper methods
   double   weapon_dps( unsigned item_id, unsigned ilevel = 0 ) const;
   double   weapon_dps( const item_data_t*, unsigned ilevel = 0 ) const;
@@ -1487,12 +1484,8 @@ public:
   unsigned mastery_ability_id( specialization_e spec, const char* spell_name ) const;
   unsigned mastery_ability_id( specialization_e spec, uint32_t idx ) const;
 
-  unsigned glyph_spell_id( player_e c, const char* spell_name ) const;
-  unsigned glyph_spell_id( unsigned property_id ) const;
-
   bool     is_specialization_ability( uint32_t spell_id ) const;
   bool     is_specialization_ability( specialization_e spec_id, unsigned spell_id ) const;
-  bool     is_glyph_spell( uint32_t spell_id ) const;
 
   specialization_e spec_by_spell( uint32_t spell_id ) const;
 
