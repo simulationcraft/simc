@@ -6438,7 +6438,12 @@ void warlock_t::apl_precombat()
   {
     // Pre-potion
     if ( true_level == 110 )
-      precombat_list += "/potion,name=deadly_grace";
+    {
+      if ( specialization() == WARLOCK_DEMONOLOGY )
+        precombat_list += "/potion,name=prolonged_power";
+      else
+        precombat_list += "/potion,name=deadly_grace";
+    }
     else if ( true_level >= 100 )
       precombat_list += "/potion,name=draenic_intellect";
   }
@@ -6584,7 +6589,7 @@ void warlock_t::apl_demonology()
   action_list_str += "/berserking";
   action_list_str += "/blood_fury";
   action_list_str += "/soul_harvest";
-  action_list_str += "/potion,name=deadly_grace,if=buff.soul_harvest.remains|target.time_to_die<=45|trinket.proc.any.react";
+  action_list_str += "/potion,name=prolonged_power,if=buff.soul_harvest.remains|target.time_to_die<=70|trinket.proc.any.react";
   action_list_str += "/shadowflame,if=charges=2&spell_targets.demonwrath<5";
   add_action( "Thal'kiel's Consumption", "if=(dreadstalker_remaining_duration>execute_time|talent.implosion.enabled&spell_targets.implosion>=3)&wild_imp_count>3&wild_imp_remaining_duration>execute_time" );
   add_action( "Life Tap", "if=mana.pct<=30" );
