@@ -4259,6 +4259,7 @@ struct spell_reflection_t: public warrior_spell_t
     warrior_spell_t( "spell_reflection", p, p -> spec.spell_reflection )
   {
     parse_options( options_str );
+    use_off_gcd = true;
   }
 
   void execute() override
@@ -5112,6 +5113,7 @@ void warrior_t::apl_prot()
   prot -> add_action( this, "Revenge", "if=(buff.vengeance_revenge.up&!buff.vengeance_ignore_pain.up&rage>=59)|!buff.vengeance_ignore_pain.up|(talent.vengeance.enabled&!buff.vengeance_ignore_pain.up&!buff.vengeance_revenge.up&rage>=69)|(rage>=100)" );
   prot -> add_action( this, "Thunder Clap", "if=spell_targets.thunder_clap>=4" );
   prot -> add_action( this, "Devastate" );
+  prot -> add_action( this, "Thunder Clap" );
 }
 
 // NO Spec Combat Action Priority List
