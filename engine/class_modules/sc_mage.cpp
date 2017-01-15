@@ -1006,14 +1006,14 @@ struct water_jet_t : public mage_pet_spell_t
 
     td( s->target )
         ->water_jet->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0,
-                              dot_duration * player->composite_spell_haste() );
+                              dot_duration * player->composite_spell_speed() );
 
     // Trigger hidden proxy water jet for the mage, so
     // debuff.water_jet.<expression> works
     o()->get_target_data( s->target )
         ->debuffs.water_jet->trigger(
             1, buff_t::DEFAULT_VALUE(), 1.0,
-            dot_duration * player->composite_spell_haste() );
+            dot_duration * player->composite_spell_speed() );
   }
 
   virtual double action_multiplier() const override
