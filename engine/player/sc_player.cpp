@@ -3159,7 +3159,7 @@ double player_t::composite_spell_speed() const
 
     if ( buffs.devils_due )
     {
-      speed *= 1.0 / ( 1.0 + buffs.devils_due -> stack_value() );
+      speed *= 1.0 - buffs.devils_due -> stack_value();
     }
   }
 
