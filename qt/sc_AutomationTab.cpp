@@ -1389,7 +1389,7 @@ void SC_AutomationTab::decodeSettings()
   load_setting( settings, "class", choice.player_class );
   load_setting( settings, "spec", choice.player_spec );
   load_setting( settings, "race", choice.player_race );
-  load_setting( settings, "level", choice.player_level );
+  load_setting( settings, "level", choice.player_level, "110" );
   load_setting( settings, "talentbox", textbox.talents, "0000000" );
   load_setting( settings, "gearbox", textbox.gear, "fake_helm,stats=100sta\nneck=malachite_pendant,id=25438\n" );
   load_setting( settings, "rotationFooterBox", textbox.rotationFooter );
