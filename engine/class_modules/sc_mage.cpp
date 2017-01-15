@@ -4646,7 +4646,7 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
   frozen_orb_bolt_t( mage_t* p ) :
     frost_mage_spell_t( "frozen_orb_bolt", p,
                         p -> find_class_spell( "Frozen Orb" ) -> ok() ?
-                          p -> find_spell( 84721 ) :
+                        dbc::find_spell( p, 84721 ) : 
                           spell_data_t::not_found() )
   {
     aoe = -1;
