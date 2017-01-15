@@ -7535,7 +7535,7 @@ public:
 		  .operation(hotfix::HOTFIX_SET)
 		  .modifier(8);
 
-	  hotfix::register_effect("Demon Hunter", "2017-01-13", "Fel Rush increased to 30 Fury per cast", 286340)
+	  hotfix::register_effect("Demon Hunter", "2017-01-13", "Fel Rush increased to 30 Fury per cast", 283035)
 		  .field("base_value")
 		  .operation(hotfix::HOTFIX_SET)
 		  .modifier(30);
