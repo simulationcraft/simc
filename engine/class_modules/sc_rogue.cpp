@@ -4395,27 +4395,31 @@ struct sprint_offensive_t: public rogue_attack_t
   sprint_offensive_t( rogue_t* p, const std::string& options_str ):
     rogue_attack_t( "sprint", p, p -> spell.sprint, options_str )
   {
-    harmful = callbacks = false;
+    harmful = callbacks = hasted_ticks = false;
     cooldown = p -> cooldowns.sprint;
-    ignore_false_positive = true;
+    ignore_false_positive = channeled = special = true; //Force channel to disable all actions. 
+    dot_duration = timespan_t::from_seconds( 3 );
+    base_execute_time = timespan_t::from_seconds( 3 );
 
     cooldown -> duration += p -> artifact.shadow_walker.time_value();
   }
+
+  double composite_haste() const override
+  { return 1.0; } // Not hasted.
 
   void execute() override
   {
     rogue_attack_t::execute();
 
-    player -> main_hand_attack -> execute_event -> reschedule( timespan_t::from_seconds( 3.0 ) );
-    
-    player -> off_hand_attack -> execute_event -> reschedule( timespan_t::from_seconds( 3.0 ) );
+    // We must stop autoattacks
+    if ( p() -> main_hand_attack && p() -> main_hand_attack -> execute_event )
+      event_t::cancel( p() -> main_hand_attack -> execute_event );
+
+    if ( p() -> off_hand_attack && p() -> off_hand_attack -> execute_event )
+      event_t::cancel( p() -> off_hand_attack -> execute_event );
 
     p() -> buffs.sprint -> trigger();
-
     p() -> buffs.faster_than_light_trigger -> trigger();
-
-    // while this looks like working, it's making simc very slow and laggy/crashy
-    //p() -> player_t::schedule_ready( timespan_t::from_seconds( 3.0 ), true );
   }
 };
 
@@ -4474,6 +4478,14 @@ struct vanish_t : public rogue_attack_t
       p() -> trigger_combo_point_gain( p() -> sets.set( ROGUE_SUBTLETY, T18, B2 ) -> effectN( 1 ).base_value(),
                                        gain, this );
     }
+  }
+
+  bool ready() override
+  {
+    if ( p() -> buffs.vanish -> check() )
+      return false;
+
+    return rogue_attack_t::ready();
   }
 };
 

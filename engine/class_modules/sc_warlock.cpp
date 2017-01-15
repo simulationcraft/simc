@@ -7575,7 +7575,7 @@ struct lessons_of_spacetime_t : public scoped_actor_callback_t<warlock_t>
 
   void manipulate( warlock_t* p, const special_effect_t& ) override
   {
-    const spell_data_t * tmp = p -> find_spell( 236176 );
+    //const spell_data_t * tmp = p -> find_spell( 236176 );
     p -> legendary.lessons_of_spacetime = true;
     p -> legendary.lessons_of_spacetime1 = timespan_t::from_seconds( 5 );
     p -> legendary.lessons_of_spacetime2 = timespan_t::from_seconds( 9 );
