@@ -1758,7 +1758,7 @@ struct sephuzs_secret_buff_t : public haste_buff_t
   cooldown_t* icd;
   sephuzs_secret_buff_t( mage_t* p ) :
     haste_buff_t( haste_buff_creator_t( p, "sephuzs_secret", p -> find_spell( 208052 ) )
-                            .default_value( p -> find_spell( 208502 ) -> effectN( 2 ).percent() )
+                            .default_value( p -> find_spell( 208052 ) -> effectN( 2 ).percent() )
                             .add_invalidate( CACHE_HASTE ) )
   {
     icd = p -> get_cooldown( "sephuzs_secret_cooldown" );
@@ -8181,7 +8181,7 @@ void mage_t::apl_arcane()
   conserve     -> add_action( this, "Arcane Blast", "if=buff.rhonins_assaulting_armwraps.up&equipped.132413" );
   conserve     -> add_action( this, "Arcane Missiles" );
   conserve     -> add_talent( this, "Supernova", "if=mana.pct<100" );
-  conserve     -> add_action( this, "Frost Nova", "if=equipped.132452" );
+  //conserve     -> add_action( this, "Frost Nova", "if=equipped.132452" );
   conserve     -> add_action( this, "Arcane Explosion", "if=mana.pct>=82&equipped.132451&active_enemies>1" );
   conserve     -> add_action( this, "Arcane Blast", "if=mana.pct>=82&equipped.132451" );
   conserve     -> add_action( this, "Arcane Barrage", "if=mana.pct<100&cooldown.arcane_power.remains>5" );
@@ -8222,7 +8222,7 @@ void mage_t::apl_arcane()
   }
 
   init_burn -> add_action( this, "Mark of Aluneth" );
-  init_burn -> add_action( this, "Frost Nova", "if=equipped.132452" );
+  //init_burn -> add_action( this, "Frost Nova", "if=equipped.132452" );
   init_burn -> add_talent( this, "Nether Tempest", "if=dot.nether_tempest.remains<10&(prev_gcd.1.mark_of_aluneth|(talent.rune_of_power.enabled&cooldown.rune_of_power.remains<gcd.max))" );
   init_burn -> add_talent( this, "Rune of Power" );
   init_burn -> add_action( "start_burn_phase,if=((cooldown.evocation.remains-(2*burn_phase_duration))%2<burn_phase_duration)|cooldown.arcane_power.remains=0|target.time_to_die<55" );
