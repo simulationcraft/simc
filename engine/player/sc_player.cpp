@@ -4980,7 +4980,7 @@ stat_e player_t::normalize_by() const
     return STAT_INTELLECT;
   else if ( role == ROLE_TANK && ( sm == SCALE_METRIC_TMI || sm == SCALE_METRIC_DEATHS ) && scaling[ sm ].get_stat( STAT_STAMINA) != 0.0 )
     return STAT_STAMINA;
-  else if ( type == DRUID || type == HUNTER || type == SHAMAN || type == ROGUE || type == MONK )
+  else if ( type == DRUID || type == HUNTER || type == SHAMAN || type == ROGUE || type == MONK || type == DEMON_HUNTER )
     return STAT_AGILITY;
   else if ( type == DEATH_KNIGHT || type == PALADIN || type == WARRIOR )
     return STAT_STRENGTH;
