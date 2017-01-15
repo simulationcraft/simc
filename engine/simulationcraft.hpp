@@ -5511,6 +5511,8 @@ public:
 
   virtual double calculate_weapon_damage( double attack_power ) const;
 
+  virtual double calculate_crit_damage_bonus( action_state_t* s ) const;
+
   virtual double target_armor( player_t* t ) const
   { return t -> cache.armor(); }
 

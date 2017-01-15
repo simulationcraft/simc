@@ -1109,13 +1109,14 @@ double action_t::calculate_tick_amount( action_state_t* state, double dot_multip
   // Record raw amount to state
   state -> result_raw = amount;
 
-  if ( state -> result == RESULT_CRIT )
-    amount *= 1.0 + total_crit_bonus( state );
-
   amount *= dot_multiplier;
 
   // Record total amount to state
   state -> result_total = amount;
+
+  // Apply crit damage bonus immediately to periodic damage since there is no travel time (and
+  // subsequent impact).
+  amount = calculate_crit_damage_bonus( state );
 
   if ( sim -> debug )
   {
@@ -1217,10 +1218,6 @@ double action_t::calculate_direct_amount( action_state_t* state ) const
 
     amount *= sim -> averaged_range( min_glance, max_glance ); // 0.75 against +3 targets.
   }
-  else if ( state -> result == RESULT_CRIT )
-  {
-    amount *= 1.0 + total_crit_bonus( state );
-  }
 
   if ( ! sim -> average_range ) amount = floor( amount + rng().real() );
 
@@ -1244,7 +1241,18 @@ double action_t::calculate_direct_amount( action_state_t* state ) const
     state -> result_total = amount;
     return amount;
   }
+}
 
+// action_t::calculate_crit_damage_bonus ====================================
+
+double action_t::calculate_crit_damage_bonus( action_state_t* state ) const
+{
+  if ( state -> result == RESULT_CRIT )
+  {
+    state -> result_total *= 1.0 + total_crit_bonus( state );
+  }
+
+  return state -> result_total;
 }
 
 // action_t::consume_resource ===============================================
@@ -2433,6 +2441,10 @@ expr_t* action_t::create_expression( const std::string& name_str )
       else
       {
         state -> result_amount = action.calculate_direct_amount( state );
+        if ( state -> result == RESULT_CRIT )
+        {
+          state -> result_amount = action.calculate_crit_damage_bonus( state );
+        }
         if ( amount_type == DMG_DIRECT )
           state -> target -> target_mitigation( action.get_school(), amount_type, state );
         a = state -> result_amount;
@@ -3281,6 +3293,9 @@ void action_t::impact( action_state_t* s )
 {
   if ( !impact_targeting( s ) )
     return;
+
+  // Note, Critical damage bonus for direct amounts is computed on impact, instead of cast finish.
+  s -> result_amount = calculate_crit_damage_bonus( s );
 
   assess_damage( ( type == ACTION_HEAL || type == ACTION_ABSORB ) ? HEAL_DIRECT : DMG_DIRECT, s );
 

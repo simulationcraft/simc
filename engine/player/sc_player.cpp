@@ -2430,7 +2430,6 @@ bool player_t::init_actions()
 // player_t::init_assessors =================================================
 void player_t::init_assessors()
 {
-
   // Target related mitigation
   assessor_out_damage.add( assessor::TARGET_MITIGATION, []( dmg_e dmg_type, action_state_t* state )
   {
