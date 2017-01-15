@@ -6825,7 +6825,7 @@ void rogue_t::init_action_list()
   {
     // Pre-Combat
     precombat -> add_action( "variable,name=ssw_refund,value=equipped.shadow_satyrs_walk*(4+ssw_refund_offset)", "Defined variables that doesn't change during the fight" );
-    precombat -> add_action( "variable,name=stealth_threshold,value=(15+talent.vigor.enabled*35+talent.master_of_shadows.enabled*30+variable.ssw_refund)" );
+    precombat -> add_action( "variable,name=stealth_threshold,value=(15+talent.vigor.enabled*35+talent.master_of_shadows.enabled*25+variable.ssw_refund)" );
     precombat -> add_talent( this, "Enveloping Shadows", "if=combo_points>=5" );
     precombat -> add_action( this, "Symbols of Death" );
 
@@ -6888,8 +6888,9 @@ void rogue_t::init_action_list()
     // Stealthed Rotation
     action_priority_list_t* stealthed = get_action_priority_list( "stealthed", "Stealthed Rotation" );
     stealthed -> add_action( this, "Symbols of Death", "if=(buff.symbols_of_death.remains<target.time_to_die-4&buff.symbols_of_death.remains<=buff.symbols_of_death.duration*0.3)|equipped.shadow_satyrs_walk&energy.time_to_max<0.25" );
+    stealthed -> add_action( this, "Shuriken Storm", "if=combo_points.deficit>=1+buff.shadow_blades.up&buff.shadowmeld.down&((combo_points.deficit>=3&spell_targets.shuriken_storm>=2+talent.premeditation.enabled+equipped.shadow_satyrs_walk)|buff.the_dreadlords_deceit.stack>=29)" );
+    stealthed -> add_action( this, "Shadowstrike", "if=combo_points.deficit>=2+talent.premeditation.enabled+buff.shadow_blades.up" );
     stealthed -> add_action( "call_action_list,name=finish,if=combo_points>=5" );
-    stealthed -> add_action( this, "Shuriken Storm", "if=buff.shadowmeld.down&((combo_points.deficit>=3&spell_targets.shuriken_storm>=2+talent.premeditation.enabled+equipped.shadow_satyrs_walk)|buff.the_dreadlords_deceit.stack>=29)" );
     stealthed -> add_action( this, "Shadowstrike" );
   }
 
