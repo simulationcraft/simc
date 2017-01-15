@@ -2039,7 +2039,7 @@ public:
     main_hand_weapon.min_dmg = dbc.spell_scaling( o() -> type, level() );
     main_hand_weapon.max_dmg = dbc.spell_scaling( o() -> type, level() );
     main_hand_weapon.damage = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
-    main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
     owner_coeff.ap_from_ap = 3.30;
   }
 
@@ -2745,7 +2745,7 @@ struct tiger_palm_t: public monk_melee_attack_t
       if ( p() -> artifact.face_palm.rank() )
       {
         if ( rng().roll( p() -> artifact.face_palm.percent() ) )
-          am *= 1 + p() -> passives.face_palm -> effectN( 1 ).percent();
+          am *= 1 + p() -> artifact.face_palm.percent();
       }
 
       if ( p() -> buff.blackout_combo -> up() )
@@ -3452,7 +3452,7 @@ struct blackout_strike_t: public monk_melee_attack_t
     monk_melee_attack_t::execute();
 
     if ( p() -> talent.blackout_combo -> ok() )
-      p() -> buff.blackout_combo -> execute();
+      p() -> buff.blackout_combo -> trigger();
   }
 };
 
@@ -4274,6 +4274,8 @@ struct keg_smash_t: public monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
 
+    if ( p() -> legendary.salsalabims_lost_tunic != nullptr )
+      p() -> cooldown.breath_of_fire -> reset(false);
     // If cooldown was reset by Secret Ingredients talent, to end the buff
     if ( p() -> buff.keg_smash_talent -> check() )
       p() -> buff.keg_smash_talent -> expire();
