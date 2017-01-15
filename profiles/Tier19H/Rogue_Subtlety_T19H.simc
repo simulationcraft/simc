@@ -25,7 +25,7 @@ actions.precombat+=/potion,name=old_war
 actions.precombat+=/marked_for_death,if=raid_event.adds.in>40
 # Defined variables that doesn't change during the fight
 actions.precombat+=/variable,name=ssw_refund,value=equipped.shadow_satyrs_walk*(4+ssw_refund_offset)
-actions.precombat+=/variable,name=stealth_threshold,value=(15+talent.vigor.enabled*35+talent.master_of_shadows.enabled*30+variable.ssw_refund)
+actions.precombat+=/variable,name=stealth_threshold,value=(15+talent.vigor.enabled*35+talent.master_of_shadows.enabled*25+variable.ssw_refund)
 actions.precombat+=/enveloping_shadows,if=combo_points>=5
 actions.precombat+=/symbols_of_death
 
@@ -75,8 +75,9 @@ actions.stealth_cds+=/shadow_dance,if=combo_points<=1
 
 # Stealthed Rotation
 actions.stealthed=symbols_of_death,if=(buff.symbols_of_death.remains<target.time_to_die-4&buff.symbols_of_death.remains<=buff.symbols_of_death.duration*0.3)|equipped.shadow_satyrs_walk&energy.time_to_max<0.25
+actions.stealthed+=/shuriken_storm,if=combo_points.deficit>=1+buff.shadow_blades.up&buff.shadowmeld.down&((combo_points.deficit>=3&spell_targets.shuriken_storm>=2+talent.premeditation.enabled+equipped.shadow_satyrs_walk)|buff.the_dreadlords_deceit.stack>=29)
+actions.stealthed+=/shadowstrike,if=combo_points.deficit>=2+talent.premeditation.enabled+buff.shadow_blades.up
 actions.stealthed+=/call_action_list,name=finish,if=combo_points>=5
-actions.stealthed+=/shuriken_storm,if=buff.shadowmeld.down&((combo_points.deficit>=3&spell_targets.shuriken_storm>=2+talent.premeditation.enabled+equipped.shadow_satyrs_walk)|buff.the_dreadlords_deceit.stack>=29)
 actions.stealthed+=/shadowstrike
 
 head=cowl_of_fright,id=139205,bonus_id=1805
