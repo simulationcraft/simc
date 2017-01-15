@@ -2547,6 +2547,7 @@ void item::elementium_bomb_squirrel( special_effect_t& effect )
 
 
 // Kil'jaeden's Burning Wish ================================================
+
 struct kiljaedens_burning_wish_t : public spell_t
 {
   kiljaedens_burning_wish_t( const special_effect_t& effect ) :
@@ -2557,8 +2558,7 @@ struct kiljaedens_burning_wish_t : public spell_t
     item = effect.item;
     school = SCHOOL_FIRE;
 
-    base_dd_min = base_dd_max = ( data().effectN( 1 ).average( effect.item ) + 1.55 );
-    //FIXME hardcoded the damage buff for the upcoming hotfix 2017/1/14
+    base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item );
     aoe = -1;
 
     //FIXME: Assume this is kind of slow from wording.
@@ -4215,6 +4215,12 @@ void unique_gear::register_hotfixes_x7()
     .operation( hotfix::HOTFIX_SET )
     .modifier( 40 )
     .verification_value( 1 );
+
+  hotfix::register_effect( "Kil'jaeden's Burning Wish", "2017-01-14", "Damage increased by 55%.", 356737 )
+    .field( "average" )
+    .operation( hotfix::HOTFIX_MUL )
+    .modifier( 1.55 )
+    .verification_value( 45 );
 }
 
 void unique_gear::register_target_data_initializers_x7( sim_t* sim )

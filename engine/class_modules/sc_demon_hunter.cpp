@@ -1102,7 +1102,7 @@ public:
 
         if (havoc_damage_increase)
         {
-            ab::weapon_multiplier *= 1 + p->spec.havoc->effectN(6).percent();
+            ab::base_dd_multiplier *= 1 + p->spec.havoc->effectN(6).percent();
         }
         break;
       case DEMON_HUNTER_VENGEANCE:
@@ -7595,6 +7595,25 @@ public:
 
   void register_hotfixes() const override
   {
+	  hotfix::register_effect("Demon Hunter", "2017-01-13", "Chaos Blades damage reduced to 150%", 313818)
+		  .field("base_value")
+		  .operation(hotfix::HOTFIX_SET)
+		  .modifier(250);
+
+	  hotfix::register_effect("Demon Hunter", "2017-01-13", "Chaos Blades OH damage reduced to 150%", 313820)
+		  .field("base_value")
+		  .operation(hotfix::HOTFIX_SET)
+		  .modifier(250);
+	  
+	  hotfix::register_effect("Demon Hunter", "2017-01-13", "Ability modifier reduced to 8%", 315240)
+		  .field("base_value")
+		  .operation(hotfix::HOTFIX_SET)
+		  .modifier(8);
+
+	  hotfix::register_effect("Demon Hunter", "2017-01-13", "Fel Rush increased to 30 Fury per cast", 283035)
+		  .field("base_value")
+		  .operation(hotfix::HOTFIX_SET)
+		  .modifier(30);
   }
 
   void combat_begin( sim_t* ) const override

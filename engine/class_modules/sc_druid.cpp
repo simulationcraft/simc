@@ -3375,7 +3375,7 @@ struct thrash_cat_t: public cat_attack_t {
       energize_type = ENERGIZE_ON_HIT;
     }
 
-    if ( p -> artifact.shadow_thrash.rank() && shadow_thrash == nullptr )
+    if ( shadow_thrash == nullptr )
     {
       shadow_thrash = new shadow_thrash_t( p );
       add_child( shadow_thrash );
@@ -7165,17 +7165,23 @@ void druid_t::apl_balance()
   FoE -> add_action( this, "Solar Wrath" );
 
   ED -> add_talent( this, "Astral Communion", "if=astral_power.deficit>=75&buff.the_emerald_dreamcatcher.up" );
-  ED -> add_action( "incarnation,if=astral_power>=85&!buff.the_emerald_dreamcatcher.up" );
+  ED -> add_action( "incarnation,if=astral_power>=85&!buff.the_emerald_dreamcatcher.up|buff.bloodlust.up" );
   ED -> add_action( this, "Celestial Alignment", "if=astral_power>=85&!buff.the_emerald_dreamcatcher.up" );
-  ED -> add_action( this, "Starsurge", "if=(buff.the_emerald_dreamcatcher.up&buff.the_emerald_dreamcatcher.remains<gcd.max)|astral_power>=90|((buff.celestial_alignment.up|buff.incarnation.up)&astral_power>=85)" );
+  ED -> add_action( this, "Starsurge", "if=(buff.celestial_alignment.up&buff.celestial_alignment.remains<(10))|(buff.incarnation.up&buff.incarnation.remains<(3*execute_time)&astral_power>78)|(buff.incarnation.up&buff.incarnation.remains<(2*execute_time)&astral_power>52)|(buff.incarnation.up&buff.incarnation.remains<execute_time&astral_power>26)" );
   ED -> add_talent( this, "Stellar Flare", "cycle_targets=1,max_cycle_targets=4,if=active_enemies<4&remains<7.2&astral_power>=15" );
-  ED -> add_action( this, "Moonfire", "if=(talent.natures_balance.enabled&remains<3)|(remains<6.6&!talent.natures_balance.enabled)" );
-  ED -> add_action( this, "Sunfire", "if=(talent.natures_balance.enabled&remains<3)|(remains<5.4&!talent.natures_balance.enabled)" );
-  ED -> add_action( this, "Solar Wrath", "if=buff.solar_empowerment.up&buff.the_emerald_dreamcatcher.remains>execute_time&astral_power>=12&dot.sunfire.remains<5.4&dot.moonfire.remains>6.6" );
-  ED -> add_action( this, "Lunar Strike", "if=buff.lunar_empowerment.up&buff.the_emerald_dreamcatcher.remains>execute_time&astral_power>=8&(!(buff.celestial_alignment.up|buff.incarnation.up)|(buff.celestial_alignment.up|buff.incarnation.up)&astral_power<=77)" );
+  ED -> add_action( this, "Moonfire", "if=((talent.natures_balance.enabled&remains<3)|(remains<6.6&!talent.natures_balance.enabled))&(buff.the_emerald_dreamcatcher.remains>gcd.max|!buff.the_emerald_dreamcatcher.up)" );
+  ED -> add_action( this, "Sunfire", "if=((talent.natures_balance.enabled&remains<3)|(remains<5.4&!talent.natures_balance.enabled))&(buff.the_emerald_dreamcatcher.remains>gcd.max|!buff.the_emerald_dreamcatcher.up)" );
+  ED -> add_action( this, "Starfall", "if=buff.oneths_overconfidence.up&buff.the_emerald_dreamcatcher.remains>execute_time&remains<2" );
+  ED -> add_action( this, "Half Moon", "if=astral_power<=80&buff.the_emerald_dreamcatcher.remains>execute_time&astral_power>=6" );
+  ED -> add_action( this, "Full Moon", "if=astral_power<=60&buff.the_emerald_dreamcatcher.remains>execute_time" );
+  ED -> add_action( this, "Solar Wrath", "if=buff.solar_empowerment.stack>1&buff.the_emerald_dreamcatcher.remains>2*execute_time&astral_power>=6&(dot.moonfire.remains>5|(dot.sunfire.remains<5.4&dot.moonfire.remains>6.6))&(!(buff.celestial_alignment.up|buff.incarnation.up)&astral_power<=90|(buff.celestial_alignment.up|buff.incarnation.up)&astral_power<=85)" );
+  ED -> add_action( this, "Lunar Strike", "if=buff.lunar_empowerment.up&buff.the_emerald_dreamcatcher.remains>execute_time&astral_power>=11&(!(buff.celestial_alignment.up|buff.incarnation.up)&astral_power<=85|(buff.celestial_alignment.up|buff.incarnation.up)&astral_power<=77.5)" );
+  ED -> add_action( this, "Solar Wrath", "if=buff.solar_empowerment.up&buff.the_emerald_dreamcatcher.remains>execute_time&astral_power>=16&(!(buff.celestial_alignment.up|buff.incarnation.up)&astral_power<=90|(buff.celestial_alignment.up|buff.incarnation.up)&astral_power<=85)" );
+  ED -> add_action( this, "Starsurge", "if=(buff.the_emerald_dreamcatcher.up&buff.the_emerald_dreamcatcher.remains<gcd.max)|astral_power>90|((buff.celestial_alignment.up|buff.incarnation.up)&astral_power>=85)|(buff.the_emerald_dreamcatcher.up&astral_power>=77.5&(buff.celestial_alignment.up|buff.incarnation.up))" );
+  ED -> add_action( this, "Starfall", "if=buff.oneths_overconfidence.up&remains<2" );
   ED -> add_action( this, "New Moon", "if=astral_power<=90" );
   ED -> add_action( this, "Half Moon", "if=astral_power<=80" );
-  ED -> add_action( this, "Full Moon", "if=astral_power<=60" );
+  ED -> add_action( this, "Full Moon", "if=astral_power<=60&((cooldown.incarnation.remains>65&cooldown.full_moon.charges>0)|(cooldown.incarnation.remains>50&cooldown.full_moon.charges>1)|(cooldown.incarnation.remains>25&cooldown.full_moon.charges>2))" );
   ED -> add_action( this, "Solar Wrath", "if=buff.solar_empowerment.up" );
   ED -> add_action( this, "Lunar Strike", "if=buff.lunar_empowerment.up" );
   ED -> add_action( this, "Solar Wrath" );
