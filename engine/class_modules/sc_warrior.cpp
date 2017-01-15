@@ -5265,7 +5265,7 @@ struct sephuzs_secret_buff_t: public haste_buff_t
   cooldown_t* icd;
   sephuzs_secret_buff_t( warrior_t* p ):
     haste_buff_t( haste_buff_creator_t( p, "sephuzs_secret", p -> find_spell( 208052 ) )
-            .default_value( p -> find_spell( 208502 ) -> effectN( 2 ).percent() )
+            .default_value( p -> find_spell( 208052 ) -> effectN( 2 ).percent() )
             .add_invalidate( CACHE_HASTE ) )
   {
     icd = p -> get_cooldown( "sephuzs_secret_cooldown" );
