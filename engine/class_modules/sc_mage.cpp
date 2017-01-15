@@ -4323,15 +4323,15 @@ struct flurry_t : public frost_mage_spell_t
     hasted_ticks = false;
     add_child( flurry_bolt );
     //TODO: Remove hardcoded values once it exists in spell data for bolt impact timing.
-    dot_duration = timespan_t::from_seconds( 0.03 );
-    base_tick_time = timespan_t::from_seconds( 0.01 );
+    dot_duration = timespan_t::from_seconds( 0.6 );
+    base_tick_time = timespan_t::from_seconds( 0.2 );
   }
 
   virtual timespan_t travel_time() const override
   {
     // Approximate travel time from in game data.
     // TODO: Improve approximation
-    return timespan_t::from_seconds( ( player -> current.distance / 29 ) );
+    return timespan_t::from_seconds( ( player -> current.distance / 38 ) );
   }
 
   virtual timespan_t execute_time() const override
@@ -5912,7 +5912,6 @@ struct ray_of_frost_t : public frost_mage_spell_t
 
     // PTR Multiplier
     base_multiplier *= 1.0 + p -> find_spell( 137020 ) -> effectN( 1 ).percent();
-    base_multiplier *= 1.12; //FIXME Jan 17th Hotfix
   }
 
   void init() override
@@ -9608,6 +9607,18 @@ public:
       .operation( hotfix::HOTFIX_SET )
       .modifier( 57 )
       .verification_value( 81 );
+
+    hotfix::register_effect( "Mage", "2017-01-15", "Adjust Ray of Frost tick coefficient up 12%", 303101 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 2.296 )
+      .verification_value( 2.05 );
+
+    hotfix::register_effect( "Mage", "2017-01-15", "Adjust Flame Patch down 17%", 303428 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.249 )
+      .verification_value( 0.3 );
   }
 
   virtual bool valid() const override { return true; }
