@@ -6855,7 +6855,7 @@ void rogue_t::init_action_list()
         cds -> add_action( racial_actions[i] + ",if=stealthed.rogue" );
     }
     cds -> add_action( this, "Shadow Blades", "if=combo_points<=2|(equipped.denial_of_the_halfgiants&combo_points>=1)" );
-    cds -> add_action( this, "Goremaw's Bite", "if=!stealthed.all&cooldown.shadow_dance.charges_fractional<=2.45&((combo_points.deficit>=4-(time<10)*2&energy.deficit>50+talent.vigor.enabled*25-(time>=10)*15)|target.time_to_die<8)" );
+    cds -> add_action( this, "Goremaw's Bite", "if=!stealthed.all&cooldown.shadow_dance.charges_fractional<=2.45&((combo_points.deficit>=4-(time<10)*2&energy.deficit>50+talent.vigor.enabled*25-(time>=10)*15)|(combo_points.deficit>=1&target.time_to_die<8))" );
     cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit|(raid_event.adds.in>40&combo_points.deficit>=4+talent.deeper_strategem.enabled+talent.anticipation.enabled)" );
 
     // Finishers
