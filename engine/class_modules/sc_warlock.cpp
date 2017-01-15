@@ -301,11 +301,6 @@ public:
 
   } legendary;
 
-  // Glyphs
-  struct glyphs_t
-  {
-  } glyphs;
-
   // Mastery Spells
   struct mastery_spells_t
   {
@@ -5606,7 +5601,6 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
     active( active_t() ),
     talents( talents_t() ),
     legendary( legendary_t() ),
-    glyphs( glyphs_t() ),
     mastery_spells( mastery_spells_t() ),
     cooldowns( cooldowns_t() ),
     spec( specs_t() ),
@@ -6144,8 +6138,6 @@ void warlock_t::init_spells()
   artifact.devourer_of_life = find_artifact_spell( "Devourer of Life" );
   artifact.planeswalker = find_artifact_spell( "Planeswalker" );
   artifact.conflagration_of_chaos = find_artifact_spell( "Conflagration of Chaos" );
-
-  // Glyphs
 
   // Active Spells
   active.demonic_power_proc = new actions::demonic_power_damage_t( this );

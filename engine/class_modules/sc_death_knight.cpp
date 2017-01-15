@@ -3762,8 +3762,6 @@ struct chains_of_ice_t : public death_knight_spell_t
   {
     parse_options( options_str );
 
-    int exclusivity_check = 0;
-
     for ( size_t i = 0, end = sizeof_array( p -> items[ SLOT_HANDS ].parsed.data.id_spell ); i < end; i++ )
     {
       if ( p -> items[ SLOT_HANDS ].parsed.data.id_spell[ i ] == static_cast<int>( pvp_bonus -> id() ) )
@@ -3773,12 +3771,6 @@ struct chains_of_ice_t : public death_knight_spell_t
         energize_amount   = pvp_bonus -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
         break;
       }
-    }
-
-    if ( exclusivity_check > 1 )
-    {
-      sim -> errorf( "Disabling Chains of Ice because multiple exclusive glyphs are affecting it." );
-      background = true;
     }
   }
 
@@ -5800,11 +5792,11 @@ struct antimagic_shell_t : public death_knight_spell_t
     add_option( opt_float( "damage", damage ) );
     parse_options( options_str );
 
-    // Allow as low as 15 second intervals, due to new glyph
-    if ( interval < 15.0 )
+    // Allow as low as 30 second intervals
+    if ( interval < 30.0 )
     {
-      sim -> errorf( "%s minimum interval for Anti-Magic Shell is 15 seconds.", player -> name() );
-      interval = 15.0;
+      sim -> errorf( "%s minimum interval for Anti-Magic Shell is 30 seconds.", player -> name() );
+      interval = 30.0;
     }
 
     // Less than a second standard deviation is translated to a percent of

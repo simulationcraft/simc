@@ -575,7 +575,6 @@ player_t::player_t( sim_t*             s,
   cooldown_tolerance_( timespan_t::min() ),
   dbc( s -> dbc ),
   talent_points(),
-  glyph_list(),
   artifact( artifact_data_t() ),
   base(),
   initial(),
@@ -890,14 +889,13 @@ void player_t::init()
   }
 }
 
-/* Determine Spec, Talents, Professions, Glyphs
+/* Determine Spec, Talents, Professions
  *
  */
 void player_t::init_character_properties()
 {
   init_race();
   init_talents();
-  init_glyphs();
   replace_spells();
   init_position();
   init_professions();
@@ -1912,34 +1910,6 @@ void player_t::init_artifact()
     for ( size_t i = 0; i < splits.size(); i++ )
     {
       override_artifact( powers, splits[ i ] );
-    }
-  }
-}
-
-// player_t::init_glyphs ====================================================
-
-void player_t::init_glyphs()
-{
-  if ( sim -> debug )
-    sim -> out_debug.printf( "Initializing glyphs for player (%s)", name() );
-
-  std::vector<std::string> glyph_names = util::string_split( glyphs_str, ",/" );
-
-  for ( size_t i = 0; i < glyph_names.size(); i++ )
-  {
-    unsigned glyph_id = util::to_unsigned( glyph_names[ i ] );
-    const spell_data_t* g;
-    if ( glyph_id > 0 && dbc.is_glyph_spell( glyph_id ) )
-      g = find_spell( glyph_id );
-    else
-      g = find_glyph( glyph_names[ i ] );
-
-    if ( g == spell_data_t::not_found() )
-      sim -> errorf( "Glyph %s not found in spell database for player %s.", glyph_names[ i ].c_str(), name() );
-
-    if ( g && g -> ok() )
-    {
-      glyph_list.push_back( g );
     }
   }
 }
@@ -8194,32 +8164,6 @@ void player_t::replace_spells()
     }
   }
 
-  // Search glyph spells for spells to replace.
-  for ( unsigned int j = 0; j < GLYPH_MAX; j++ )
-  {
-    for ( unsigned int i = 0; i < dbc.glyph_spell_size(); i++ )
-    {
-      unsigned id = dbc.glyph_spell( class_idx, j, i );
-      if ( id == 0 )
-      {
-        break;
-      }
-      const spell_data_t* s = dbc.spell( id );
-      if ( s -> replace_spell_id() )
-      {
-        // Found a spell that might need replacing. Check to see if we have that glyph activated
-        for ( std::vector<const spell_data_t*>::iterator it = glyph_list.begin(); it != glyph_list.end(); ++it )
-        {
-          assert( *it );
-          if ( ( *it ) -> id() == id )
-          {
-            dbc.replace_id( s -> replace_spell_id(), id );
-          }
-        }
-      }
-    }
-  }
-
   // Search general spells for spells to replace (a spell you learn earlier might be replaced by one you learn later)
   if ( _spec != SPEC_NONE )
   {
@@ -8292,42 +8236,6 @@ const spell_data_t* player_t::find_talent_spell( const std::string& n,
   }
 
   /* Talent not enabled */
-  return spell_data_t::not_found();
-}
-
-// player_t::find_glyph =====================================================
-
-const spell_data_t* player_t::find_glyph( const std::string& n ) const
-{
-  if ( unsigned spell_id = dbc.glyph_spell_id( type, n.c_str() ) )
-  {
-    return dbc::find_spell( this, spell_id );
-  }
-  else
-    return spell_data_t::not_found();
-}
-
-
-// player_t::find_glyph_spell ===============================================
-
-const spell_data_t* player_t::find_glyph_spell( const std::string& /* n */, const std::string& /* token */ ) const
-{
-  /*
-  if ( const spell_data_t* g = find_glyph( n ) )
-  {
-    for ( std::vector<const spell_data_t*>::const_iterator i = glyph_list.begin(); i != glyph_list.end(); ++i )
-    {
-      assert( *i );
-      if ( ( *i ) -> id() == g -> id() )
-      {
-        if ( dbc::get_token( g -> id() ).empty() )
-          dbc.add_token( g -> id(), token );
-
-        return dbc::find_spell( this, g );
-      }
-    }
-  }
-  */
   return spell_data_t::not_found();
 }
 
@@ -8477,7 +8385,7 @@ const spell_data_t* player_t::find_mastery_spell( specialization_e s, const std:
 /*
  * Tries to find spell data by name, by going through various spell lists in following order:
  *
- * class spell, specialization spell, mastery spell, talent spell, glyphs spell,
+ * class spell, specialization spell, mastery spell, talent spell,
  * racial spell, pet_spell
  */
 
@@ -8499,10 +8407,6 @@ const spell_data_t* player_t::find_spell( const std::string& name, const std::st
   }
 
   sp = find_talent_spell( name, token );
-  assert( sp );
-  if ( sp -> ok() ) return sp;
-
-  sp = find_glyph_spell( name, token );
   assert( sp );
   if ( sp -> ok() ) return sp;
 
@@ -9220,7 +9124,7 @@ expr_t* player_t::create_expression( action_t* a,
     }
   }
 
-  if ( ( splits.size() == 3 ) && ( ( splits[ 0 ] == "glyph" ) || ( splits[ 0 ] == "talent" ) ) )
+  if ( ( splits.size() == 3 ) && splits[ 0 ] == "talent" )
   {
     struct s_expr_t : public player_expr_t
     {
@@ -9242,10 +9146,6 @@ expr_t* player_t::create_expression( action_t* a,
     if ( splits[ 0 ] == "talent" )
     {
       s = const_cast< spell_data_t* >( find_talent_spell( splits[ 1 ], std::string(), specialization(), true ) );
-    }
-    else
-    {
-      s = const_cast< spell_data_t* >( find_glyph_spell( splits[ 1 ] ) );
     }
 
     if( sim -> optimize_expressions )
@@ -9670,11 +9570,6 @@ std::string player_t::create_profile( save_e stype )
       }
     }
 
-    if ( glyphs_str.size() > 0 )
-    {
-      profile_str += "glyphs=" + glyphs_str + term;
-    }
-
     if ( artifact_str.size() > 0 )
     {
       profile_str += "artifact=" + artifact_str + term;
@@ -9876,7 +9771,6 @@ void player_t::copy_from( player_t* source )
   }
   talent_overrides_str = source -> talent_overrides_str;
   artifact_overrides_str = source -> artifact_overrides_str;
-  glyphs_str = source -> glyphs_str;
   action_list_str = source -> action_list_str;
   alist_map = source -> alist_map;
   use_apl = source -> use_apl;
@@ -9911,7 +9805,6 @@ void player_t::create_options()
     add_option( opt_func( "talent_override", parse_talent_override ) );
     add_option( opt_func( "artifact", parse_artifact ) );
     add_option( opt_func( "artifact_override", parse_artifact_override ) );
-    add_option( opt_string( "glyphs", glyphs_str ) );
     add_option( opt_string( "race", race_str ) );
     add_option( opt_func( "timeofday", parse_timeofday ) );
     add_option( opt_int( "level", true_level, 0, MAX_LEVEL ) );

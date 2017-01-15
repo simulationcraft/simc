@@ -115,9 +115,6 @@ void print_text_action( FILE* file, stats_t* s, int max_name_length,
 
 void print_text_actions( FILE* file, player_t* p )
 {
-  if ( !p->glyphs_str.empty() )
-    util::fprintf( file, "  Glyphs: %s\n", p->glyphs_str.c_str() );
-
   for ( unsigned int idx = 0; idx < p->action_priority_list.size(); idx++ )
   {
     action_priority_list_t* alist = p->action_priority_list[ idx ];

@@ -170,7 +170,6 @@ const struct expr_data_map_t
   { "race_spell", DATA_RACIAL_SPELL },
   { "mastery", DATA_MASTERY_SPELL },
   { "spec_spell", DATA_SPECIALIZATION_SPELL },
-  { "glyph", DATA_GLYPH_SPELL },
   { "artifact", DATA_ARTIFACT_SPELL },
 };
 
@@ -358,23 +357,6 @@ struct spell_list_expr_t : public spell_data_expr_t
             for ( unsigned n = 0; n < sim -> dbc.specialization_ability_size(); n++ )
             {
               if ( ! ( spell_id = sim -> dbc.specialization_ability( cls, tree, n ) ) )
-                continue;
-
-              result_spell_list.push_back( spell_id );
-            }
-          }
-        }
-        break;
-      }
-      case DATA_GLYPH_SPELL:
-      {
-        for ( unsigned cls = 0; cls < sim -> dbc.specialization_max_class(); cls++ )
-        {
-          for ( unsigned type = 0; type < GLYPH_MAX; type++ )
-          {
-            for ( unsigned n = 0; n < sim -> dbc.glyph_spell_size(); n++ )
-            {
-              if ( ! ( spell_id = sim -> dbc.glyph_spell( cls, type, n ) ) )
                 continue;
 
               result_spell_list.push_back( spell_id );

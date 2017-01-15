@@ -131,22 +131,6 @@ bool util::str_compare_ci( const std::string& l,
     return std::equal( l.begin(), l.end(), r.begin(), pred_ci );
 }
 
-// glyph_name ===============================================================
-
-std::string& util::glyph_name( std::string& n )
-{
-  tokenize( n );
-
-  if ( n.compare( 0, 7, "glyph__" ) == 0 )
-    n.erase( 0, 7 );
-  else if ( n.compare( 0, 13, "glyph_of_the_" ) == 0 )
-    n.erase( 0, 13 );
-  else if ( n.compare( 0, 9, "glyph_of_" ) == 0 )
-    n.erase( 0, 9 );
-
-  return n;
-}
-
 // str_prefix_ci ============================================================
 
 bool util::str_prefix_ci( const std::string& str,

@@ -1641,7 +1641,7 @@ struct divine_shield_t : public paladin_spell_t
     p() -> buffs.divine_shield -> trigger();
 
     // in this sim, the only debuffs we care about are enemy DoTs.
-    // Check for them and remove them when cast, and apply Glyph of Divine Shield appropriately
+    // Check for them and remove them when cast
     int num_destroyed = 0;
     for ( size_t i = 0, size = p() -> dot_list.size(); i < size; i++ )
     {

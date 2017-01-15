@@ -327,21 +327,6 @@ public:
     const spell_data_t* explosive_trap;
   } specs;
 
-  // Glyphs
-  struct glyphs_t
-  {
-    const spell_data_t* arachnophobia;
-    const spell_data_t* lesser_proportion;
-    const spell_data_t* nesingwarys_nemesis;
-    const spell_data_t* sparks;
-    const spell_data_t* bullseye;
-    const spell_data_t* firecracker;
-    const spell_data_t* headhunter;
-    const spell_data_t* hook;
-    const spell_data_t* skullseye;
-    const spell_data_t* trident;
-  } glyphs;
-
   struct mastery_spells_t
   {
     const spell_data_t* master_of_beasts;
@@ -431,7 +416,6 @@ public:
     ppm_call_of_the_hunter( nullptr ),
     talents( talents_t() ),
     specs( specs_t() ),
-    glyphs( glyphs_t() ),
     mastery( mastery_spells_t() ),
     stats_tier17_4pc_bm( nullptr ),
     stats_tier18_4pc_bm( nullptr ),
@@ -5608,18 +5592,6 @@ void hunter_t::init_spells()
   mastery.master_of_beasts     = find_mastery_spell( HUNTER_BEAST_MASTERY );
   mastery.sniper_training      = find_mastery_spell( HUNTER_MARKSMANSHIP );
   mastery.hunting_companion    = find_mastery_spell( HUNTER_SURVIVAL );
-
-  // Glyphs
-  glyphs.arachnophobia       = find_glyph_spell( "Glyph of Arachnophobia" );
-  glyphs.lesser_proportion   = find_glyph_spell( "Glyph of Lesser Proportion" );
-  glyphs.nesingwarys_nemesis = find_glyph_spell( "Glyph of Nesingwary's Nemesis'" );
-  glyphs.sparks              = find_glyph_spell( "Glyph of Sparks" );
-  glyphs.bullseye            = find_glyph_spell( "Glyph of the Bullseye" );
-  glyphs.firecracker         = find_glyph_spell( "Glyph of the Firecracker" );
-  glyphs.headhunter          = find_glyph_spell( "Glyph of the Headhunter" );
-  glyphs.hook                = find_glyph_spell( "Glyph of the Hook" );
-  glyphs.skullseye           = find_glyph_spell( "Glyph of the Skullseye" );
-  glyphs.trident             = find_glyph_spell( "Glyph of the Trident" );
 
   // Spec spells
   specs.critical_strikes     = find_spell( 157443 );

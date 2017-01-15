@@ -23,7 +23,7 @@
 #include <QStandardPaths>
 #include <QDateTime>
 
-static int SC_GUI_HISTORY_VERSION = 705;
+static int SC_GUI_HISTORY_VERSION = 715;
 
 namespace { // UNNAMED NAMESPACE
 
@@ -444,7 +444,7 @@ void SC_MainWindow::createCustomTab()
 {
   //In Dev - Character Retrieval Boxes & Buttons
   //In Dev - Load & Save Profile Buttons
-  //In Dev - Profiler Slots, Talent & Glyph Layout
+  //In Dev - Profiler Slots, Talent Layout
   QHBoxLayout* customLayout = new QHBoxLayout();
   QGroupBox* customGroupBox = new QGroupBox();
   customGroupBox -> setLayout( customLayout );
@@ -460,15 +460,10 @@ void SC_MainWindow::createCustomTab()
   customTalentsTab = new QWidget();
   customTalentsTab -> setObjectName( QString::fromUtf8( "customTalentsTab" ) );
   createCustomProfileDock -> addTab( customTalentsTab, QString() );
-  customGlyphsTab = new QWidget();
-  customGlyphsTab -> setObjectName( QString::fromUtf8( "customGlyphsTab" ) );
-  createCustomProfileDock -> addTab( customGlyphsTab, QString() );
   createCustomProfileDock -> setTabText( createCustomProfileDock -> indexOf( customGearTab ), tr( "Gear", "createCustomTab" ) );
   createCustomProfileDock -> setTabToolTip( createCustomProfileDock -> indexOf( customGearTab ), tr( "Customize Gear Setup", "createCustomTab" ) );
   createCustomProfileDock -> setTabText( createCustomProfileDock -> indexOf( customTalentsTab ), tr( "Talents", "createCustomTab" ) );
   createCustomProfileDock -> setTabToolTip( createCustomProfileDock -> indexOf( customTalentsTab ), tr( "Customize Talents", "createCustomTab" ) );
-  createCustomProfileDock -> setTabText( createCustomProfileDock -> indexOf( customGlyphsTab ), tr( "Glyphs", "createCustomTab" ) );
-  createCustomProfileDock -> setTabToolTip( createCustomProfileDock -> indexOf( customGlyphsTab ), tr( "Customize Glyphs", "createCustomTab" ) );
 }
 
 void SC_MainWindow::createSimulateTab()

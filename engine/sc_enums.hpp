@@ -668,14 +668,6 @@ enum weapon_e
   WEAPON_MAX
 };
 
-enum glyph_e
-{
-  GLYPH_MAJOR = 0,
-  GLYPH_MINOR,
-  GLYPH_PRIME,
-  GLYPH_MAX
-};
-
 enum slot_e  // these enum values match armory settings
 {
   SLOT_INVALID   = -1,

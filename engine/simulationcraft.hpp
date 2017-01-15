@@ -1119,7 +1119,6 @@ enum expr_data_e
   DATA_RACIAL_SPELL,
   DATA_MASTERY_SPELL,
   DATA_SPECIALIZATION_SPELL,
-  DATA_GLYPH_SPELL,
   DATA_ARTIFACT_SPELL,
 };
 
@@ -1240,7 +1239,7 @@ struct player_description_t
 {
   // Add just enough to describe a player
 
-  // name, class, talents, glyphs, gear, professions, actions explicitly stored
+  // name, class, talents, gear, professions, actions explicitly stored
   std::string name;
   // etc
 
@@ -2668,7 +2667,6 @@ struct item_t
   bool init_special_effects();
 
   static bool download_item( item_t& );
-  static bool download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id );
 
   static std::vector<stat_pair_t> str_to_stat_pair( const std::string& stat_str );
   static std::string stat_pairs_to_str( const std::vector<stat_pair_t>& stat_pairs );
@@ -3536,7 +3534,7 @@ struct player_t : public actor_t
   bool        initialized;
   bool        potion_used;
 
-  std::string talents_str, glyphs_str, id_str, target_str, artifact_str;
+  std::string talents_str, id_str, target_str, artifact_str;
   std::string region_str, server_str, origin_str;
   std::string race_str, professions_str, position_str;
   enum timeofday_e { NIGHT_TIME, DAY_TIME, } timeofday; // Specify InGame time of day to determine Night Elf racial
@@ -3577,9 +3575,6 @@ struct player_t : public actor_t
 
   // Artifact Parsing
   std::string artifact_overrides_str;
-
-  // Glyph Parsing
-  std::vector<const spell_data_t*> glyph_list;
 
   // Profs
   std::array<int, PROFESSION_MAX> profession;
@@ -4015,7 +4010,6 @@ struct player_t : public actor_t
   virtual void init_race();
   virtual void init_talents();
   virtual void init_artifact();
-  virtual void init_glyphs();
   virtual void replace_spells();
   virtual void init_position();
   virtual void init_professions();
@@ -4279,12 +4273,10 @@ struct player_t : public actor_t
   void create_talents_armory();
   void create_talents_wowhead();
 
-  const spell_data_t* find_glyph( const std::string& name ) const;
   const spell_data_t* find_racial_spell( const std::string& name, const std::string& token = std::string(), race_e s = RACE_NONE ) const;
   const spell_data_t* find_class_spell( const std::string& name, const std::string& token = std::string(), specialization_e s = SPEC_NONE ) const;
   const spell_data_t* find_pet_spell( const std::string& name, const std::string& token = std::string() ) const;
   const spell_data_t* find_talent_spell( const std::string& name, const std::string& token = std::string(), specialization_e s = SPEC_NONE, bool name_tokenized = false, bool check_validity = true ) const;
-  const spell_data_t* find_glyph_spell( const std::string& name, const std::string& token = std::string() ) const;
   const spell_data_t* find_specialization_spell( const std::string& name, const std::string& token = std::string(), specialization_e s = SPEC_NONE ) const;
   const spell_data_t* find_specialization_spell( unsigned spell_id, specialization_e s = SPEC_NONE ) const;
   const spell_data_t* find_mastery_spell( specialization_e s, const std::string& token = std::string(), uint32_t idx = 0 ) const;
@@ -6752,7 +6744,6 @@ struct travel_event_t : public event_t
 namespace item_database
 {
 bool     download_item(      item_t& item );
-bool     download_glyph(     player_t* player, std::string& glyph_name, const std::string& glyph_id );
 bool     initialize_item_sources( item_t& item, std::vector<std::string>& source_list );
 
 int      random_suffix_type( item_t& item );
@@ -7329,8 +7320,6 @@ enum wowhead_e
 };
 
 bool download_item( item_t&, wowhead_e source = LIVE, cache::behavior_e b = cache::items() );
-bool download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id,
-                     wowhead_e source = LIVE, cache::behavior_e b = cache::items() );
 bool download_item_data( item_t&            item,
                          cache::behavior_e  caching,
                          wowhead_e          source );
@@ -7373,9 +7362,6 @@ player_t* from_local_json( sim_t*,
                          );
 
 bool download_item( item_t&, cache::behavior_e b = cache::items() );
-
-bool download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id,
-                     cache::behavior_e b = cache::items() );
 }
 
 // HTTP Download  ===========================================================

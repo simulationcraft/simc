@@ -410,31 +410,6 @@ public:
     bool priest_ignore_healing = false; 
   } options;
 
-  // Glyphs
-  struct
-  {
-    // All Specs
-    const spell_data_t* angels;
-    const spell_data_t* confession;
-    const spell_data_t* holy_resurrection;
-    const spell_data_t* shackle_undead;
-    const spell_data_t* the_heavens;
-    const spell_data_t* the_sha;
-
-    // Discipline
-    const spell_data_t* borrowed_time;
-
-    // Holy
-    const spell_data_t* inspired_hymns;
-    const spell_data_t* the_valkyr;
-
-    // Shadow
-    const spell_data_t* dark_archangel;
-    const spell_data_t* shadow;
-    const spell_data_t* shadow_ravens;
-    const spell_data_t* shadowy_friends;
-  } glyphs;
-
   priest_t( sim_t* sim, const std::string& name, race_e r );
 
   priest_td_t* find_target_data( player_t* target ) const;
@@ -1973,64 +1948,9 @@ private:
 /// the Wicked
 struct holy_fire_base_t : public priest_spell_t
 {
-  struct glyph_of_the_inquisitor_backlash_t : public priest_spell_t
-  {
-    double spellpower;
-    double multiplier;
-    bool critical;
-
-    glyph_of_the_inquisitor_backlash_t( priest_t& p )
-      : priest_spell_t( "glyph_of_the_inquisitor_backlash", p,
-                        p.talents.power_word_solace->ok()
-                            ? p.find_spell( 129250 )
-                            : p.find_class_spell( "Holy Fire" ) ),
-        spellpower( 0.0 ),
-        multiplier( 1.0 ),
-        critical( false )
-    {
-      background = true;
-      harmful    = false;
-      proc       = true;
-      may_crit   = false;
-      callbacks  = false;
-
-      target = &priest;
-
-      ability_lag        = sim->default_aura_delay;
-      ability_lag_stddev = sim->default_aura_delay_stddev;
-    }
-
-    void init() override
-    {
-      priest_spell_t::init();
-
-      stats->type = STATS_NEUTRAL;
-    }
-
-    double composite_spell_power() const override
-    {
-      return spellpower;
-    }
-
-    double composite_da_multiplier(
-        const action_state_t* /* state */ ) const override
-    {
-      double d = multiplier;
-      d /= 5;
-
-      if ( critical )
-        d *= 2;
-
-      return d;
-    }
-  };
-
-  glyph_of_the_inquisitor_backlash_t* backlash;
-
   holy_fire_base_t( const std::string& name, priest_t& p,
                     const spell_data_t* sd )
-    : priest_spell_t( name, p, sd ),
-      backlash( new glyph_of_the_inquisitor_backlash_t( p ) )
+    : priest_spell_t( name, p, sd )
   {
     procs_courageous_primal_diamond = false;
   }
@@ -4224,7 +4144,6 @@ priest_t::priest_t( sim_t* sim, const std::string& name, race_e r )
     active_items(),
     pets(),
     options(),
-    glyphs(),
     insanity( *this )
 {
   base.distance = 27.0;  // Halo
@@ -5688,13 +5607,6 @@ void priest_t::apl_disc_dmg()
 
   def->add_talent( this, "Schism" );
   def->add_action( this, "Penance" );
-
-  //  def->add_talent( this, "Power Word: Solace",
-  //                   "if=talent.power_word_solace.enabled" );
-
-  def->add_action( this, "Smite",
-                   "if=glyph.smite.enabled&(dot.power_word_solace.remains+dot."
-                   "holy_fire.remains)>cast_time" );
   def->add_talent( this, "Purge the Wicked", "if=remains<(duration*0.3)" );
   def->add_action(
       this, "Shadow Word: Pain",

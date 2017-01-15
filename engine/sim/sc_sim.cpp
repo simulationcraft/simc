@@ -456,7 +456,7 @@ bool parse_armory( sim_t*             sim,
       if ( name == "wowhead" )
       {
         sim -> errorf( "Wowhead profiler currently not support. "
-                       "Wowhead profiler does not provide spec, talent or glyph data.\n" );
+                       "Wowhead profiler does not provide spec or talent data.\n" );
         return false;
 
         //p = wowhead::download_player( sim, stuff.region, stuff.server, player_name, description, wowhead::LIVE, stuff.cache );
