@@ -6034,15 +6034,23 @@ void hunter_t::init_position()
 {
   player_t::init_position();
 
-  if ( base.position == POSITION_FRONT )
+  if ( specialization() == HUNTER_SURVIVAL )
   {
-    base.position = POSITION_RANGED_FRONT;
+    base.position = POSITION_BACK;
     position_str = util::position_type_string( base.position );
   }
-  else if ( initial.position == POSITION_BACK )
+  else
   {
-    base.position = POSITION_RANGED_BACK;
-    position_str = util::position_type_string( base.position );
+    if ( base.position == POSITION_FRONT )
+    {
+      base.position = POSITION_RANGED_FRONT;
+      position_str = util::position_type_string( base.position );
+    }
+    else if ( initial.position == POSITION_BACK )
+    {
+      base.position = POSITION_RANGED_BACK;
+      position_str = util::position_type_string( base.position );
+    }
   }
 
   if ( sim -> debug )

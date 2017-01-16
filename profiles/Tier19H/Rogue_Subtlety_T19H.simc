@@ -48,7 +48,7 @@ actions.cds+=/blood_fury,if=stealthed.rogue
 actions.cds+=/berserking,if=stealthed.rogue
 actions.cds+=/arcane_torrent,if=stealthed.rogue&energy.deficit>70
 actions.cds+=/shadow_blades,if=combo_points<=2|(equipped.denial_of_the_halfgiants&combo_points>=1)
-actions.cds+=/goremaws_bite,if=!stealthed.all&cooldown.shadow_dance.charges_fractional<=2.45&((combo_points.deficit>=4-(time<10)*2&energy.deficit>50+talent.vigor.enabled*25-(time>=10)*15)|target.time_to_die<8)
+actions.cds+=/goremaws_bite,if=!stealthed.all&cooldown.shadow_dance.charges_fractional<=2.45&((combo_points.deficit>=4-(time<10)*2&energy.deficit>50+talent.vigor.enabled*25-(time>=10)*15)|(combo_points.deficit>=1&target.time_to_die<8))
 actions.cds+=/marked_for_death,target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit|(raid_event.adds.in>40&combo_points.deficit>=4+talent.deeper_strategem.enabled+talent.anticipation.enabled)
 
 # Finishers
