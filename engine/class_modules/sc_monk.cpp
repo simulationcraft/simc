@@ -2789,7 +2789,7 @@ struct tiger_palm_t: public monk_melee_attack_t
       if ( p() -> artifact.face_palm.rank() )
       {
         if ( rng().roll( p() -> artifact.face_palm.percent() ) )
-          am *= 1 + p() -> artifact.face_palm.percent();
+          am *= p() -> passives.face_palm -> effectN( 1 ).percent();
       }
 
       if ( p() -> buff.blackout_combo -> up() )
@@ -5223,8 +5223,11 @@ struct stagger_self_damage_t : public residual_action::residual_periodic_action_
     base_tick_time = timespan_t::from_seconds( 1.0 );
     hasted_ticks = tick_may_crit = false;
     target = p;
+  }
 
-    callbacks = false;
+  proc_types proc_type() const override
+  {
+    return PROC1_ANY_DAMAGE_TAKEN;
   }
 
   virtual void init() override
