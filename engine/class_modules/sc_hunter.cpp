@@ -2687,16 +2687,25 @@ struct barrage_t: public hunter_ranged_attack_t
       may_crit = true;
       weapon = &( player -> main_hand_weapon );
       aoe = -1;
+      // Double the tick damage since the chance to hit is simulated.
+      base_multiplier *= 2.0;
 
       range = radius;
       range = 0;
       travel_speed = 0.0;
+      
       if ( data().affected_by( player -> specs.beast_mastery_hunter -> effectN( 5 ) ) )
         base_multiplier *= 1.0 + player -> specs.beast_mastery_hunter -> effectN( 5 ).percent();
       if ( player -> specialization() == HUNTER_BEAST_MASTERY )
         base_multiplier *= 1.10; //FIXME Jan 17th Hotfix
       else if ( player -> specialization() == HUNTER_MARKSMANSHIP )
         base_multiplier *= 1.08; //FIXME
+    }
+    
+    void impact(action_state_t* s) override {
+      // Simulate the random chance of hitting.
+      if (rng().roll(0.5))
+        hunter_ranged_attack_t::impact(s);
     }
   };
 
