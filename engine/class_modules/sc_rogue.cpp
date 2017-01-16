@@ -3511,6 +3511,7 @@ struct run_through_t: public rogue_attack_t
     ttt_multiplier( 0 )
   {
     weapon = &( player -> main_hand_weapon );
+    weapon_multiplier = 0;
     base_multiplier *= 1.0 + p -> artifact.fates_thirst.percent();
   }
 
