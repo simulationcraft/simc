@@ -1341,10 +1341,15 @@ unsigned item_database::upgrade_ilevel( const item_t& item, unsigned upgrade_lev
   return upgrades[ upgrade_level ] -> ilevel_delta;
 }
 
-double item_database::item_budget( const item_t* item )
+double item_database::item_budget( const item_t* item, unsigned max_ilevel )
 {
   double m_scale = 0;
-  const random_prop_data_t& budget = item -> player -> dbc.random_property( item -> item_level() );
+
+  unsigned scaling_level = item -> item_level();
+  if ( max_ilevel > 0 )
+    scaling_level = std::min( scaling_level, max_ilevel );
+
+  const random_prop_data_t& budget = item -> player -> dbc.random_property( scaling_level );
 
   if ( item -> parsed.data.quality >= 4 )
     m_scale = budget.p_epic[ 0 ];

@@ -1422,7 +1422,7 @@ double spelleffect_data_t::average( const item_t* item ) const
     return 0;
 
   if ( _m_avg != 0 && _spell -> scaling_class() != 0 )
-    m_scale = item_database::item_budget( item );
+    m_scale = item_database::item_budget( item, _spell -> max_scaling_level() );
 
   return scaled_average( m_scale, item -> item_level() );
 }
@@ -1482,7 +1482,7 @@ double spelleffect_data_t::delta( const item_t* item ) const
     return 0;
 
   if ( _m_delta != 0 && _spell -> scaling_class() != 0 )
-    m_scale = item_database::item_budget( item );
+    m_scale = item_database::item_budget( item, _spell -> max_scaling_level() );
 
   return scaled_delta( m_scale );
 }
