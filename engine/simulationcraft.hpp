@@ -6772,7 +6772,7 @@ int scaled_stat( const item_t& item, const dbc_t& dbc, size_t idx, unsigned new_
 unsigned upgrade_ilevel( const item_t& item, unsigned upgrade_level );
 stat_pair_t item_enchantment_effect_stats( const item_enchantment_data_t& enchantment, int index );
 stat_pair_t item_enchantment_effect_stats( player_t* player, const item_enchantment_data_t& enchantment, int index );
-double item_budget( const item_t* item, unsigned max_ilevel );
+double item_budget( const item_t* item );
 
 inline bool heroic( unsigned f ) { return ( f & RAID_TYPE_HEROIC ) == RAID_TYPE_HEROIC; }
 inline bool lfr( unsigned f ) { return ( f & RAID_TYPE_LFR ) == RAID_TYPE_LFR; }
