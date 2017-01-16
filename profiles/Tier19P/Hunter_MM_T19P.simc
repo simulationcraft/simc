@@ -19,7 +19,7 @@ actions.precombat+=/food,type=nightborne_delicacy_platter
 actions.precombat+=/summon_pet
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion,name=prolonged_power,if=spell_targets.multishot>2
+actions.precombat+=/potion,name=prolonged_power,if=spell_targets.multi_shot>2
 actions.precombat+=/potion,name=deadly_grace
 actions.precombat+=/augmentation,type=defiled
 actions.precombat+=/windburst
@@ -31,16 +31,16 @@ actions+=/berserking,if=buff.trueshot.up
 actions+=/blood_fury,if=buff.trueshot.up
 actions+=/volley,toggle=on
 actions+=/variable,name=safe_to_build,value=debuff.hunters_mark.down|(buff.trueshot.down&buff.marking_targets.down)
-actions+=/variable,name=use_multishot,value=((buff.marking_targets.up|buff.trueshot.up)&spell_targets.multishot>1)|(buff.marking_targets.down&buff.trueshot.down&spell_targets.multishot>2)
+actions+=/variable,name=use_multishot,value=((buff.marking_targets.up|buff.trueshot.up)&spell_targets.multi_shot>1)|(buff.marking_targets.down&buff.trueshot.down&spell_targets.multi_shot>2)
 actions+=/variable,name=pooling_for_piercing,value=talent.piercing_shot.enabled&cooldown.piercing_shot.remains<5&focus<100&!buff.lock_and_load.up
 actions+=/variable,name=sentinel_soon,value=talent.sentinel.enabled&!cooldown.sentinel.up&((cooldown.sentinel.remains>50&cooldown.sentinel.remains<(50+gcd.max))|(cooldown.sentinel.remains>40&cooldown.sentinel.remains<(40+gcd.max)))
 actions+=/a_murder_of_crows,if=time=0
 actions+=/call_action_list,name=cooldowns
-actions+=/call_action_list,name=targetdie,if=target.time_to_die<6&spell_targets.multishot=1
+actions+=/call_action_list,name=targetdie,if=target.time_to_die<6&spell_targets.multi_shot=1
 actions+=/call_action_list,name=patient_sniper,if=talent.patient_sniper.enabled
 actions+=/call_action_list,name=non_patient_sniper,if=!talent.patient_sniper.enabled
 
-actions.cooldowns=potion,name=prolonged_power,if=spell_targets.multishot>2&((buff.trueshot.react&buff.bloodlust.react)|buff.bullseye.react>=23|target.time_to_die<62)
+actions.cooldowns=potion,name=prolonged_power,if=spell_targets.multi_shot>2&((buff.trueshot.react&buff.bloodlust.react)|buff.bullseye.react>=23|target.time_to_die<62)
 actions.cooldowns+=/potion,name=deadly_grace,if=(buff.trueshot.react&buff.bloodlust.react)|buff.bullseye.react>=23|target.time_to_die<31
 actions.cooldowns+=/variable,name=trueshot_cooldown,op=set,value=time*1.1,if=time>15&cooldown.trueshot.up&variable.trueshot_cooldown=0
 actions.cooldowns+=/trueshot,if=time<=15|buff.bloodlust.react|(variable.trueshot_cooldown>0&target.time_to_die>(variable.trueshot_cooldown+duration))|buff.bullseye.react>25|target.time_to_die<16
@@ -53,12 +53,12 @@ actions.non_patient_sniper+=/a_murder_of_crows,if=debuff.vulnerability.remains<(
 actions.non_patient_sniper+=/barrage,if=spell_targets>1|(target.health.pct<20&buff.bullseye.stack<25)
 actions.non_patient_sniper+=/sentinel,if=debuff.hunters_mark.down
 actions.non_patient_sniper+=/sidewinders,if=variable.safe_to_build&focus.deficit>60&(((buff.marking_targets.up|buff.trueshot.up)&charges_fractional>1.2)|charges_fractional>1.8)&!variable.sentinel_soon
-actions.non_patient_sniper+=/marked_shot,if=cooldown.sentinel.remains>40|spell_targets.multishot>1
+actions.non_patient_sniper+=/marked_shot,if=cooldown.sentinel.remains>40|spell_targets.multi_shot>1
 actions.non_patient_sniper+=/marked_shot,if=talent.sidewinders.enabled&((debuff.vulnerability.remains<1&cooldown.sidewinders.charges_fractional<1.5&focus.deficit<80)|(cooldown.sidewinders.charges_fractional>1.7))
 actions.non_patient_sniper+=/marked_shot,if=!talent.sidewinders.enabled&debuff.vulnerability.remains<(2*attack_haste)
 actions.non_patient_sniper+=/aimed_shot,if=(debuff.vulnerability.remains>execute_time|(focus>80&cooldown.windburst.remains>3))&!variable.pooling_for_piercing
-actions.non_patient_sniper+=/arcane_shot,if=spell_targets.multishot<2
-actions.non_patient_sniper+=/multishot,if=spell_targets.multishot>1
+actions.non_patient_sniper+=/arcane_shot,if=spell_targets.multi_shot<2
+actions.non_patient_sniper+=/multishot,if=spell_targets.multi_shot>1
 
 actions.patient_sniper=variable,name=vuln_aim_casts,op=set,value=floor(debuff.vulnerability.remains%(2*attack_haste))
 actions.patient_sniper+=/variable,name=vuln_aim_casts,op=set,value=floor((focus.regen*(debuff.vulnerability.remains-(2*attack_haste))+focus)%50),if=variable.vuln_aim_casts>floor((focus.regen*(debuff.vulnerability.remains-(2*attack_haste))+focus)%50)
@@ -70,18 +70,18 @@ actions.patient_sniper+=/black_arrow
 actions.patient_sniper+=/a_murder_of_crows,if=(target.time_to_die>=cooldown+duration|target.health.pct<20|target.time_to_die<16)&(debuff.vulnerability.remains<1|debuff.vulnerability.remains>(4*attack_haste+gcd))
 actions.patient_sniper+=/barrage,if=spell_targets>1|(target.health.pct<20&buff.bullseye.stack<25)
 actions.patient_sniper+=/piercing_shot,if=debuff.vulnerability.up&debuff.vulnerability.remains<4&focus>80
-actions.patient_sniper+=/marked_shot,if=!talent.sidewinders.enabled&spell_targets.multishot>1&(!variable.pooling_for_piercing|debuff.vulnerability.up)
+actions.patient_sniper+=/marked_shot,if=!talent.sidewinders.enabled&spell_targets.multi_shot>1&(!variable.pooling_for_piercing|debuff.vulnerability.up)
 actions.patient_sniper+=/marked_shot,if=talent.sidewinders.enabled&((debuff.vulnerability.remains<(2*attack_haste)&focus>50)|spell_targets.sidewinders>1)
-actions.patient_sniper+=/marked_shot,if=!talent.sidewinders.enabled&spell_targets.multishot<2&debuff.vulnerability.remains<(2*attack_haste)&(debuff.hunters_mark.remains<gcd|focus>90)
-actions.patient_sniper+=/aimed_shot,if=debuff.vulnerability.remains>execute_time&(buff.trueshot.up|buff.lock_and_load.up)&(spell_targets.multishot<2|talent.sidewinders.enabled)&!variable.pooling_for_piercing
+actions.patient_sniper+=/marked_shot,if=!talent.sidewinders.enabled&spell_targets.multi_shot<2&debuff.vulnerability.remains<(2*attack_haste)&(debuff.hunters_mark.remains<gcd|focus>90)
+actions.patient_sniper+=/aimed_shot,if=debuff.vulnerability.remains>execute_time&(buff.trueshot.up|buff.lock_and_load.up)&(spell_targets.multi_shot<2|talent.sidewinders.enabled)&!variable.pooling_for_piercing
 actions.patient_sniper+=/aimed_shot,if=talent.sidewinders.enabled&variable.focus_after_vuln>60&!debuff.hunters_mark.up
 actions.patient_sniper+=/aimed_shot,if=debuff.vulnerability.remains>execute_time&debuff.vulnerability.remains-execute_time<1&!variable.pooling_for_piercing
 actions.patient_sniper+=/aimed_shot,if=debuff.vulnerability.remains>(execute_time*2)&(debuff.vulnerability.remains-(execute_time*2))<1&(focus+focus.regen*(debuff.vulnerability.remains-execute_time))>100&!variable.pooling_for_piercing
 actions.patient_sniper+=/aimed_shot,if=cast_regen+focus>focus.max&(debuff.vulnerability.remains>execute_time|cooldown.windburst.remains>3)&!variable.pooling_for_piercing
-actions.patient_sniper+=/arcane_shot,if=buff.trueshot.up&spell_targets.multishot<2
-actions.patient_sniper+=/multishot,if=buff.trueshot.up&spell_targets.multishot>1
-actions.patient_sniper+=/arcane_shot,if=spell_targets.multishot<2&(debuff.vulnerability.remains<(2*attack_haste)|(debuff.vulnerability.remains>(variable.vuln_aim_casts*2*attack_haste+gcd)&(debuff.vulnerability.remains-(variable.vuln_aim_casts*2*attack_haste+gcd))<1))
-actions.patient_sniper+=/multishot,if=spell_targets.multishot>1&(debuff.vulnerability.remains<(2*attack_haste)|(debuff.vulnerability.remains>(variable.vuln_aim_casts*2*attack_haste+gcd)&(debuff.vulnerability.remains-(variable.vuln_aim_casts*2*attack_haste+gcd))<1))
+actions.patient_sniper+=/arcane_shot,if=buff.trueshot.up&spell_targets.multi_shot<2
+actions.patient_sniper+=/multishot,if=buff.trueshot.up&spell_targets.multi_shot>1
+actions.patient_sniper+=/arcane_shot,if=spell_targets.multi_shot<2&(debuff.vulnerability.remains<(2*attack_haste)|(debuff.vulnerability.remains>(variable.vuln_aim_casts*2*attack_haste+gcd)&(debuff.vulnerability.remains-(variable.vuln_aim_casts*2*attack_haste+gcd))<1))
+actions.patient_sniper+=/multishot,if=spell_targets.multi_shot>1&(debuff.vulnerability.remains<(2*attack_haste)|(debuff.vulnerability.remains>(variable.vuln_aim_casts*2*attack_haste+gcd)&(debuff.vulnerability.remains-(variable.vuln_aim_casts*2*attack_haste+gcd))<1))
 
 actions.targetdie=windburst
 actions.targetdie+=/aimed_shot,if=debuff.vulnerability.remains>execute_time&target.time_to_die>execute_time
