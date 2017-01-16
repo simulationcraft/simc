@@ -9,11 +9,10 @@
 
 #if defined( SC_WINDOWS )
 #include <windows.h>
-#endif
 #include <tlhelp32.h>
 #include <tchar.h>
 
-#if defined( SC_WINDOWS )
+
 namespace
 {
 void __unload_module( MODULEENTRY32* module, sim_t* /* sim */ )
