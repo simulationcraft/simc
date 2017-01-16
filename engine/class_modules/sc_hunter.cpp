@@ -2687,8 +2687,6 @@ struct barrage_t: public hunter_ranged_attack_t
       may_crit = true;
       weapon = &( player -> main_hand_weapon );
       aoe = -1;
-      // Double the tick damage since the chance to hit is simulated.
-      base_multiplier *= 2.0;
 
       range = radius;
       range = 0;
@@ -2725,6 +2723,9 @@ struct barrage_t: public hunter_ranged_attack_t
     tick_action = new barrage_damage_t( player );
 
     starved_proc = player -> get_proc( "starved: barrage" );
+    
+    // Double the tick damage since the chance to hit is simulated.
+    base_multiplier *= 2.0;
   }
 
   void schedule_execute( action_state_t* state = nullptr ) override
