@@ -3510,6 +3510,7 @@ struct run_through_t: public rogue_attack_t
     rogue_attack_t( "run_through", p, p -> find_specialization_spell( "Run Through" ), options_str ),
     ttt_multiplier( 0 )
   {
+    weapon = &( player -> main_hand_weapon );
     base_multiplier *= 1.0 + p -> artifact.fates_thirst.percent();
   }
 
