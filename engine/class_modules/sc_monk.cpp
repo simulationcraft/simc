@@ -5361,7 +5361,7 @@ struct ironskin_brew_t : public monk_spell_t
 
     if ( p() -> buff.blackout_combo -> up() )
     {
-      p() -> active_actions.stagger_self_damage -> reschedule_execute( timespan_t::from_seconds( p() -> buff.blackout_combo -> data().effectN( 4 ).base_value() ) );
+      //p() -> active_actions.stagger_self_damage -> reschedule_execute( timespan_t::from_seconds( p() -> buff.blackout_combo -> data().effectN( 4 ).base_value() ) ); Crashes sim.
       p() -> buff.blackout_combo -> expire();
     }
 
