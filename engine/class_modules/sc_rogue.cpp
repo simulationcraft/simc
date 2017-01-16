@@ -6575,7 +6575,7 @@ double rogue_t::agonizing_poison_stack_multiplier( const rogue_td_t* td ) const
   {
     // Note, half effectiveness on Agonizing Poison
     multiplier *= 1.0 + td -> debuffs.surge_of_toxins -> stack_value() / 2;
-  }
+  }*/
 
   // To be confirmed: behavior of Zoldyck Family Training Shackles with Agonizing Poison
   if ( legendary.zoldyck_family_training_shackles &&
