@@ -456,7 +456,6 @@ public:
     non_dps_mechanics = false; // When set to false, disables stuff that isn't important, such as second wind, bloodthirst heal, etc.
     warrior_fixed_time = frothing_may_trigger = opportunity_strikes_once = true; //Frothing only triggers on the first ability that pushes you to 100 rage, until rage is consumed and then it may trigger again.
     expected_max_health = 0;
-    base.distance = 5.0;
     execute_enrage = double_bloodthirst = false;
 
     archavons_heavy_hand = bindings_of_kakushan = kargaths_sacrificed_hands = thundergods_vigor =
@@ -1029,16 +1028,65 @@ struct bloodbath_dot_t: public residual_action::residual_periodic_action_t < war
   }
 };
 
+// Devastate ================================================================
+
+struct devastate_t: public warrior_attack_t
+{
+  double shield_slam_reset;
+  devastate_t( warrior_t* p, const std::string& options_str ):
+    warrior_attack_t( "devastate", p, p -> spec.devastate ),
+    shield_slam_reset( p -> spec.devastate -> effectN( 3 ).percent() )
+  {
+    weapon = &( p -> main_hand_weapon );
+    impact_action = p -> active.deep_wounds;
+    weapon_multiplier *= 1.0 + p -> artifact.strength_of_the_earth_aspect.percent();
+    base_multiplier *= 0.95; //FIXME
+    if ( p -> talents.devastator -> ok() )
+    {
+      background = true;
+      trigger_gcd = timespan_t::zero(); 
+    }
+    else
+    {
+      parse_options( options_str );
+    }
+  }
+
+  void execute() override
+  {
+    warrior_attack_t::execute();
+
+    p() -> buff.bindings_of_kakushan -> trigger();
+
+    if ( result_is_hit( execute_state -> result ) && rng().roll( shield_slam_reset ) )
+    {
+      p() -> cooldown.shield_slam -> reset( true );
+    }
+  }
+
+  bool ready() override
+  {
+    if ( !p() -> has_shield_equipped() )
+    {
+      return false;
+    }
+
+    return warrior_attack_t::ready();
+  }
+};
+
 // Melee Attack =============================================================
 
 struct melee_t: public warrior_attack_t
 {
   bool mh_lost_melee_contact, oh_lost_melee_contact;
   double base_rage_generation, arms_rage_multiplier, fury_rage_multiplier;
+  devastate_t* devastator;
   melee_t( const std::string& name, warrior_t* p ):
     warrior_attack_t( name, p, spell_data_t::nil() ),
     mh_lost_melee_contact( true ), oh_lost_melee_contact( true ),
-    base_rage_generation( 1.75 ), arms_rage_multiplier( 4.0 ), fury_rage_multiplier( 0.80 )
+    base_rage_generation( 1.75 ), arms_rage_multiplier( 4.0 ), fury_rage_multiplier( 0.80 ),
+    devastator( nullptr )
   {
     school = SCHOOL_PHYSICAL;
     special = false;
@@ -1050,7 +1098,8 @@ struct melee_t: public warrior_attack_t
     }
     if ( p -> talents.devastator -> ok() )
     {
-      weapon_multiplier += ( p -> talents.devastator -> effectN( 1 ).trigger() -> effectN( 1 ).percent() * 0.95 );//FIXME
+      devastator = new devastate_t( p, "" );
+      add_child( devastator );
     }
   }
 
@@ -1124,15 +1173,13 @@ struct melee_t: public warrior_attack_t
       {
         if ( p() -> specialization() == WARRIOR_PROTECTION )
         {
-          if ( rng().roll( p() -> talents.devastator -> effectN( 2 ).percent() ) )
-          {
-            p() -> cooldown.shield_slam -> reset( true );
-          }
           if ( p() -> talents.devastator -> ok() )
           {
             p() -> resource_gain( RESOURCE_RAGE,
                                   p() -> talents.devastator -> effectN( 1 ).trigger() -> effectN( 3 ).resource( RESOURCE_RAGE ),
                                   p() -> gain.melee_main_hand );
+            devastator -> target = execute_state -> target;
+            devastator -> schedule_execute();
           }
         }
         else
@@ -1826,47 +1873,6 @@ struct demoralizing_shout: public warrior_attack_t
   {
     warrior_attack_t::impact( s );
     td( s -> target ) -> debuffs_demoralizing_shout -> trigger( 1, data().effectN( 1 ).percent(), 1.0, p() -> spec.demoralizing_shout -> duration() * ( 1.0 + p() -> artifact.rumbling_voice.percent() ) );
-  }
-};
-
-// Devastate ================================================================
-
-struct devastate_t: public warrior_attack_t
-{
-  double shield_slam_reset;
-  devastate_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "devastate", p, p -> spec.devastate ),
-    shield_slam_reset( p -> spec.devastate -> effectN( 3 ).percent() )
-  {
-    parse_options( options_str );
-    weapon = &( p -> main_hand_weapon );
-    impact_action = p -> active.deep_wounds;
-    weapon_multiplier *= 1.0 + p -> artifact.strength_of_the_earth_aspect.percent();
-    base_multiplier *= 0.95; //FIXME
-    if ( p -> talents.devastator -> ok() )
-      background = true; // Disabled with devastator.
-  }
-
-  void execute() override
-  {
-    warrior_attack_t::execute();
-
-    p() -> buff.bindings_of_kakushan -> trigger();
-
-    if ( result_is_hit( execute_state -> result ) && rng().roll( shield_slam_reset ) )
-    {
-      p() -> cooldown.shield_slam -> reset( true );
-    }
-  }
-
-  bool ready() override
-  {
-    if ( !p() -> has_shield_equipped() )
-    {
-      return false;
-    }
-
-    return warrior_attack_t::ready();
   }
 };
 
@@ -4674,6 +4680,7 @@ void warrior_t::init_spells()
 void warrior_t::init_base_stats()
 {
   player_t::init_base_stats();
+  base.distance = 5.0;
 
   resources.base[RESOURCE_RAGE] = 100 + ( ( artifact.unending_rage.value() + artifact.intolerance.value() ) / 10 );
   resources.max[RESOURCE_RAGE] = resources.base[RESOURCE_RAGE];

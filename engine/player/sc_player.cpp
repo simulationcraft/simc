@@ -960,6 +960,8 @@ void player_t::init_base_stats()
     // players have a base 7.5% hit/exp
     base.hit       = 0.075;
     base.expertise = 0.075;
+    if ( base.distance < 1 )
+      base.distance = 5; 
   }
 
   // only certain classes get Agi->Dodge conversions, dodge_per_agility defaults to 0.00
@@ -9808,7 +9810,7 @@ void player_t::create_options()
     add_option( opt_func( "role", parse_role_string ) );
     add_option( opt_string( "target", target_str ) );
     add_option( opt_float( "skill", base.skill, 0, 1.0 ) );
-    add_option( opt_float( "distance", base.distance, 0, std::numeric_limits<double>::max() ) );
+    add_option( opt_float( "distance", base.distance, 5, std::numeric_limits<double>::max() ) );
     add_option( opt_string( "position", position_str ) );
     add_option( opt_string( "professions", professions_str ) );
     add_option( opt_string( "actions", action_list_str ) );

@@ -5615,8 +5615,6 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
     demonology_trinket( nullptr ),
     destruction_trinket( nullptr )
   {
-    base.distance = 40;
-
     cooldowns.infernal = get_cooldown( "summon_infernal" );
     cooldowns.doomguard = get_cooldown( "summon_doomguard" );
     cooldowns.dimensional_rift = get_cooldown( "dimensional_rift" );
@@ -6155,6 +6153,8 @@ void warlock_t::init_base_stats()
 {
   player_t::init_base_stats();
 
+  base.distance = 40;
+
   base.attack_power_per_strength = 0.0;
   base.attack_power_per_agility = 0.0;
   base.spell_power_per_intellect = 1.0;
@@ -6470,7 +6470,7 @@ void warlock_t::apl_default()
 
 void warlock_t::apl_affliction()
 {
-  add_action( "Reap Souls", "if=!buff.deadwind_harvester.remains&(buff.soul_harvest.remains|buff.tormented_souls.react>=8|target.time_to_die<=buff.tormented_souls.react*5|trinket.proc.any.react|trinket.stacking_proc.any.react" );
+  add_action( "Reap Souls", "if=!buff.deadwind_harvester.remains&(buff.soul_harvest.remains|buff.tormented_souls.react>=8|target.time_to_die<=buff.tormented_souls.react*5|!talent.malefic_grasp.enabled&(trinket.proc.any.react|trinket.stacking_proc.any.react)" );
   if ( find_item( "horn_of_valor" ) )
     action_list_str += "|buff.valarjars_path.remains";
   if ( find_item( "moonlit_prism" ) )
@@ -6529,7 +6529,7 @@ void warlock_t::apl_affliction()
   action_list_str += ")";
 
   add_action( "Unstable Affliction", "if=talent.malefic_grasp.enabled&target.time_to_die<30" );
-  add_action( "Unstable Affliction", "if=talent.malefic_grasp.enabled&soul_shard>=4" );
+  add_action( "Unstable Affliction", "if=talent.malefic_grasp.enabled&soul_shard=5" );
   add_action( "Unstable Affliction", "if=talent.malefic_grasp.enabled&!prev_gcd.3.unstable_affliction&dot.agony.remains>cast_time+6.5&(dot.corruption.remains>cast_time+6.5|talent.absolute_corruption.enabled)&(dot.siphon_life.remains>cast_time+6.5|!talent.siphon_life.enabled)" );
   
   add_action( "Unstable Affliction", "if=talent.haunt.enabled&(soul_shard>=4|debuff.haunt.remains|target.time_to_die<30" );
@@ -6541,7 +6541,7 @@ void warlock_t::apl_affliction()
     action_list_str += "|buff.collapsing_shadow.remains";
   action_list_str += ")";
 
-  add_action( "Reap Souls", "if=!buff.deadwind_harvester.remains&!trinket.has_stacking_stat.any&!trinket.has_stat.any&prev_gcd.1.unstable_affliction" );
+  add_action( "Reap Souls", "if=!buff.deadwind_harvester.remains&prev_gcd.1.unstable_affliction&((!trinket.has_stacking_stat.any&!trinket.has_stat.any)|talent.malefic_grasp.enabled)" );
   action_list_str += "/life_tap,if=talent.empowered_life_tap.enabled&buff.empowered_life_tap.remains<duration*0.3";
 
   add_action( "Agony", "cycle_targets=1,if=!talent.malefic_grasp.enabled&remains<=duration*0.3&target.time_to_die>=remains" );

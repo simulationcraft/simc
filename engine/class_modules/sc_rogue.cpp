@@ -606,7 +606,6 @@ struct rogue_t : public player_t
     cooldowns.vendetta            = get_cooldown( "vendetta"            );
     cooldowns.shadow_nova         = get_cooldown( "shadow_nova"         );
 
-    base.distance = 3;
     regen_type = REGEN_DYNAMIC;
     regen_caches[CACHE_HASTE] = true;
     regen_caches[CACHE_ATTACK_HASTE] = true;
@@ -3510,6 +3509,8 @@ struct run_through_t: public rogue_attack_t
     rogue_attack_t( "run_through", p, p -> find_specialization_spell( "Run Through" ), options_str ),
     ttt_multiplier( 0 )
   {
+    weapon = &( player -> main_hand_weapon );
+    weapon_multiplier = 0;
     base_multiplier *= 1.0 + p -> artifact.fates_thirst.percent();
   }
 
@@ -6577,11 +6578,12 @@ double rogue_t::agonizing_poison_stack_multiplier( const rogue_td_t* td ) const
   }
 
   // To be confirmed: behavior of Zoldyck Family Training Shackles with Agonizing Poison
+  /* Looks like it is no longer working as of 01/16/2017 (7.1.5)
   if ( legendary.zoldyck_family_training_shackles &&
        td -> target -> health_percentage() < legendary.zoldyck_family_training_shackles -> effectN( 2 ).base_value() )
   {
     multiplier *= 1.0 + legendary.zoldyck_family_training_shackles -> effectN( 1 ).percent();
-  }
+  }*/
 
   return multiplier;
 }
@@ -6887,8 +6889,8 @@ void rogue_t::init_action_list()
 
     // Stealthed Rotation
     action_priority_list_t* stealthed = get_action_priority_list( "stealthed", "Stealthed Rotation" );
-    stealthed -> add_action( this, "Symbols of Death", "if=(buff.symbols_of_death.remains<target.time_to_die-4&buff.symbols_of_death.remains<=buff.symbols_of_death.duration*0.3)|equipped.shadow_satyrs_walk&energy.time_to_max<0.25" );
-    stealthed -> add_action( this, "Shuriken Storm", "if=combo_points.deficit>=1+buff.shadow_blades.up&buff.shadowmeld.down&((combo_points.deficit>=3&spell_targets.shuriken_storm>=2+talent.premeditation.enabled+equipped.shadow_satyrs_walk)|buff.the_dreadlords_deceit.stack>=29)" );
+    stealthed -> add_action( this, "Symbols of Death", "if=(buff.symbols_of_death.remains<target.time_to_die-4&buff.symbols_of_death.remains<=buff.symbols_of_death.duration*0.3)|(equipped.shadow_satyrs_walk&energy.time_to_max<0.25)" );
+    stealthed -> add_action( this, "Shuriken Storm", "if=buff.shadowmeld.down&((combo_points.deficit>=3&spell_targets.shuriken_storm>=2+talent.premeditation.enabled+equipped.shadow_satyrs_walk)|(combo_points.deficit>=1+buff.shadow_blades.up&buff.the_dreadlords_deceit.stack>=29))" );
     stealthed -> add_action( this, "Shadowstrike", "if=combo_points.deficit>=2+talent.premeditation.enabled+buff.shadow_blades.up" );
     stealthed -> add_action( "call_action_list,name=finish,if=combo_points>=5" );
     stealthed -> add_action( this, "Shadowstrike" );
@@ -7143,6 +7145,8 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
 void rogue_t::init_base_stats()
 {
   player_t::init_base_stats();
+
+  base.distance = 5;
 
   base.attack_power_per_strength = 0.0;
   base.attack_power_per_agility  = 1.0;

@@ -696,6 +696,9 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
     return;
   }
 
+  // Only use item level-based scaling if there's no max scaling level defined for the spell
+  bool item_scaling = item && data().max_scaling_level() == 0;
+
   // Technically, there could be both a single target and an aoe effect in a single spell, but that
   // probably will never happen.
   if ( spelleffect_data.chain_target() > 1 )
@@ -712,23 +715,23 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
       spell_power_mod.direct  = spelleffect_data.sp_coeff();
       attack_power_mod.direct = spelleffect_data.ap_coeff();
       amount_delta            = spelleffect_data.m_delta();
-      base_dd_min      = item ? spelleffect_data.min( item ) : spelleffect_data.min( player, player -> level() );
-      base_dd_max      = item ? spelleffect_data.max( item ) : spelleffect_data.max( player, player -> level() );
+      base_dd_min      = item_scaling ? spelleffect_data.min( item ) : spelleffect_data.min( player, player -> level() );
+      base_dd_max      = item_scaling ? spelleffect_data.max( item ) : spelleffect_data.max( player, player -> level() );
       radius           = spelleffect_data.radius_max();
       break;
 
     case E_NORMALIZED_WEAPON_DMG:
       normalize_weapon_speed = true;
     case E_WEAPON_DAMAGE:
-      base_dd_min      = item ? spelleffect_data.min( item ) : spelleffect_data.min( player, player -> level() );
-      base_dd_max      = item ? spelleffect_data.max( item ) : spelleffect_data.max( player, player -> level() );
+      base_dd_min      = item_scaling ? spelleffect_data.min( item ) : spelleffect_data.min( player, player -> level() );
+      base_dd_max      = item_scaling ? spelleffect_data.max( item ) : spelleffect_data.max( player, player -> level() );
       weapon           = &( player -> main_hand_weapon );
       radius           = spelleffect_data.radius_max();
       break;
 
     case E_WEAPON_PERCENT_DAMAGE:
       weapon            = &( player -> main_hand_weapon );
-      weapon_multiplier = item ? spelleffect_data.min( item ) : spelleffect_data.min( player, player -> level() );
+      weapon_multiplier = item_scaling ? spelleffect_data.min( item ) : spelleffect_data.min( player, player -> level() );
       radius            = spelleffect_data.radius_max();
       break;
 
@@ -747,7 +750,7 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
           spell_power_mod.tick  = spelleffect_data.sp_coeff();
           attack_power_mod.tick = spelleffect_data.ap_coeff();
           radius           = spelleffect_data.radius_max();
-          base_td          = item ? spelleffect_data.average( item ) : spelleffect_data.average( player, player -> level() );
+          base_td          = item_scaling ? spelleffect_data.average( item ) : spelleffect_data.average( player, player -> level() );
         case A_PERIODIC_ENERGIZE:
         case A_PERIODIC_TRIGGER_SPELL_WITH_VALUE:
         case A_PERIODIC_HEALTH_FUNNEL:
@@ -766,8 +769,8 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
           spell_power_mod.direct  = spelleffect_data.sp_coeff();
           attack_power_mod.direct = spelleffect_data.ap_coeff();
           amount_delta            = spelleffect_data.m_delta();
-          base_dd_min      = item ? spelleffect_data.min( item ) : spelleffect_data.min( player, player -> level() );
-          base_dd_max      = item ? spelleffect_data.max( item ) : spelleffect_data.max( player, player -> level() );
+          base_dd_min      = item_scaling ? spelleffect_data.min( item ) : spelleffect_data.min( player, player -> level() );
+          base_dd_max      = item_scaling ? spelleffect_data.max( item ) : spelleffect_data.max( player, player -> level() );
           radius           = spelleffect_data.radius_max();
           break;
         case A_ADD_FLAT_MODIFIER:

@@ -187,7 +187,7 @@ public:
     // General
     buff_t* demon_soul;
     buff_t* metamorphosis;
-	haste_buff_t* sephuzs_secret;
+    haste_buff_t* sephuzs_secret;
 
     // Havoc
     buff_t* blade_dance;
@@ -391,7 +391,7 @@ public:
     cooldown_t* fel_rush;
     cooldown_t* fel_rush_secondary;
     cooldown_t* fury_of_the_illidari;
-	cooldown_t* metamorphosis;
+    cooldown_t* metamorphosis;
     cooldown_t* nemesis;
     cooldown_t* netherwalk;
     cooldown_t* throw_glaive;
@@ -501,7 +501,7 @@ public:
   struct
   {
     // General
-	const spell_data_t* sephuzs_secret;
+    const spell_data_t* sephuzs_secret;
 
     // Havoc
     double eternal_hunger;
@@ -978,8 +978,6 @@ struct demon_hunter_pet_t : public pet_t
                       bool guardian = false )
     : pet_t( sim, &owner, pet_name, pt, guardian )
   {
-    base.position = POSITION_BACK;
-    base.distance = 3;
   }
 
   struct _stat_list_t
@@ -991,6 +989,9 @@ struct demon_hunter_pet_t : public pet_t
   void init_base_stats() override
   {
     pet_t::init_base_stats();
+
+    base.position = POSITION_BACK;
+    base.distance = 3;
 
     owner_coeff.ap_from_sp = 1.0;
     owner_coeff.sp_from_sp = 1.0;
@@ -1643,20 +1644,20 @@ struct chaos_nova_t : public demon_hunter_spell_t
 
   void execute() override
   {
-	  demon_hunter_spell_t::execute();
+      demon_hunter_spell_t::execute();
 
-	  if (execute_state->target->type == ENEMY_ADD)
-	  {
-		  if (p()->rng().roll(p()->artifact.overwhelming_power.percent()))
-		  {
-			  p()->spawn_soul_fragment(SOUL_FRAGMENT_LESSER);
-		  }
+      if (execute_state->target->type == ENEMY_ADD)
+      {
+          if (p()->rng().roll(p()->artifact.overwhelming_power.percent()))
+          {
+              p()->spawn_soul_fragment(SOUL_FRAGMENT_LESSER);
+          }
 
-		  if (p()->legendary.sephuzs_secret)
-		  {
-			  p()->buff.sephuzs_secret->trigger();
-		  }
-	  }
+          if (p()->legendary.sephuzs_secret)
+          {
+              p()->buff.sephuzs_secret->trigger();
+          }
+      }
   }
 };
 
@@ -1686,10 +1687,10 @@ struct consume_magic_t : public demon_hunter_spell_t
 
     p() -> resource_gain( resource, resource_amount, gain );
 
-	if (p()->legendary.sephuzs_secret && execute_state->target->type == ENEMY_ADD)
-	{
-		p()->buff.sephuzs_secret->trigger();
-	}
+    if (p()->legendary.sephuzs_secret && execute_state->target->type == ENEMY_ADD)
+    {
+        p()->buff.sephuzs_secret->trigger();
+    }
   }
 
   bool ready() override
@@ -2537,10 +2538,10 @@ struct metamorphosis_t : public demon_hunter_spell_t
       p() -> cooldown.sigil_of_silence -> reset( false, true );
     }
 
-	if (p()->legendary.sephuzs_secret && execute_state->target->type == ENEMY_ADD)
-	{
-		p()->buff.sephuzs_secret->trigger();
-	}
+    if (p()->legendary.sephuzs_secret && execute_state->target->type == ENEMY_ADD)
+    {
+        p()->buff.sephuzs_secret->trigger();
+    }
   }
 };
 
@@ -4867,23 +4868,23 @@ struct soul_barrier_t : public demon_hunter_buff_t<absorb_buff_t>
 
 struct sephuzs_secret_buff_t : public haste_buff_t
 {
-	cooldown_t* icd;
-	sephuzs_secret_buff_t(demon_hunter_t* p) :
-		haste_buff_t(haste_buff_creator_t(p, "sephuzs_secret", p -> find_spell(208052))
-			.default_value(p -> find_spell(208052) -> effectN(2).percent())
-			.add_invalidate(CACHE_HASTE))
-	{
-		icd = p->get_cooldown("sephuzs_secret_cooldown");
-		icd->duration = p->find_spell(226262)->duration();
-	}
+    cooldown_t* icd;
+    sephuzs_secret_buff_t(demon_hunter_t* p) :
+        haste_buff_t(haste_buff_creator_t(p, "sephuzs_secret", p -> find_spell(208052))
+            .default_value(p -> find_spell(208052) -> effectN(2).percent())
+            .add_invalidate(CACHE_HASTE))
+    {
+        icd = p->get_cooldown("sephuzs_secret_cooldown");
+        icd->duration = p->find_spell(226262)->duration();
+    }
 
-	void execute(int stacks, double value, timespan_t duration) override
-	{
-		if (icd->down())
-			return;
-		buff_t::execute(stacks, value, duration);
-		icd->start();
-	}
+    void execute(int stacks, double value, timespan_t duration) override
+    {
+        if (icd->down())
+            return;
+        buff_t::execute(stacks, value, duration);
+        icd->start();
+    }
 };
 }  // end namespace buffs
 
@@ -5177,7 +5178,6 @@ demon_hunter_t::demon_hunter_t( sim_t* sim, const std::string& name, race_e r )
     options(),
     legendary()
 {
-  base.distance = 5.0;
 
   create_cooldowns();
   create_gains();
@@ -5870,6 +5870,8 @@ void demon_hunter_t::init_action_list()
 void demon_hunter_t::init_base_stats()
 {
   base_t::init_base_stats();
+
+  base.distance = 5.0;
 
   switch ( specialization() )
   {
@@ -7247,7 +7249,7 @@ void demon_hunter_t::spawn_soul_fragment( soul_fragment_e type, unsigned n, bool
         {
           frag.remove();
           proc.soul_fragment_overflow -> occur();
-		  event_t::cancel(soul_fragment_pick_up);
+          event_t::cancel(soul_fragment_pick_up);
           break;
         }
       }
@@ -7371,13 +7373,13 @@ using namespace actions::attacks;
 
 struct sephuzs_secret_t : public unique_gear::scoped_actor_callback_t<demon_hunter_t>
 {
-	sephuzs_secret_t() : super(DEMON_HUNTER)
-	{}
+    sephuzs_secret_t() : super(DEMON_HUNTER)
+    {}
 
-	void manipulate(demon_hunter_t* dh, const special_effect_t& e) override
-	{
-		dh->legendary.sephuzs_secret = e.driver();
-	}
+    void manipulate(demon_hunter_t* dh, const special_effect_t& e) override
+    {
+        dh->legendary.sephuzs_secret = e.driver();
+    }
 };
 
 struct anger_of_the_halfgiants_t : scoped_actor_callback_t<demon_hunter_t>
@@ -7573,8 +7575,8 @@ public:
     register_special_effect( 215149, raddons_cascading_eyes_t() );
     register_special_effect( 210867, runemasters_pauldrons_t() );
     register_special_effect( 210840, the_defilers_lost_vambraces_t() );
-	register_special_effect(209354,  delusions_of_grandeur_t());
-	register_special_effect(208051, sephuzs_secret_t());
+    register_special_effect(209354,  delusions_of_grandeur_t());
+    register_special_effect(208051, sephuzs_secret_t());
   }
 
   void register_hotfixes() const override

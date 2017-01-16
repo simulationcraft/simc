@@ -714,13 +714,14 @@ struct priest_pet_t : public pet_t
                 pet_e pt, bool guardian = false )
     : pet_t( sim, &owner, pet_name, pt, guardian )
   {
-    base.position = POSITION_BACK;
-    base.distance = 3;
   }
 
   void init_base_stats() override
   {
     pet_t::init_base_stats();
+
+    base.position = POSITION_BACK;
+    base.distance = 3;
 
     owner_coeff.ap_from_sp = 1.0;
     owner_coeff.sp_from_sp = 1.0;
@@ -4150,8 +4151,6 @@ priest_t::priest_t( sim_t* sim, const std::string& name, race_e r )
     options(),
     insanity( *this )
 {
-  base.distance = 27.0;  // Halo
-
   create_cooldowns();
   create_gains();
   create_procs();
@@ -4753,6 +4752,7 @@ void priest_t::init_base_stats()
 {
   base_t::init_base_stats();
 
+  base.distance = 27.0;  // Halo
   base.attack_power_per_strength = 0.0;
   base.attack_power_per_agility  = 0.0;
   base.spell_power_per_intellect = 1.0;

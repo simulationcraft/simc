@@ -4,10 +4,10 @@
 // ==========================================================================
 #include "sc_Workaround.hpp"
 
+#if defined( SC_WINDOWS )
 #include <locale>
 #include <codecvt>
 
-#if defined( SC_WINDOWS )
 #include <windows.h>
 #include <tlhelp32.h>
 #include <tchar.h>
