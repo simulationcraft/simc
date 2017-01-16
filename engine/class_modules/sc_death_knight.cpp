@@ -809,7 +809,6 @@ public:
     _runes( this )
   {
     range::fill( pets.army_ghoul, nullptr );
-    base.distance = 0;
 
     cooldown.antimagic_shell = get_cooldown( "antimagic_shell" );
     cooldown.avalanche       = get_cooldown( "avalanche" );
@@ -6627,6 +6626,8 @@ void death_knight_t::init_rng()
 void death_knight_t::init_base_stats()
 {
   player_t::init_base_stats();
+
+  base.distance = 5;
 
   base.attack_power_per_strength = 1.0;
   base.attack_power_per_agility = 0.0;

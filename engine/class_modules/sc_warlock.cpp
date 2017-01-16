@@ -5615,8 +5615,6 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
     demonology_trinket( nullptr ),
     destruction_trinket( nullptr )
   {
-    base.distance = 40;
-
     cooldowns.infernal = get_cooldown( "summon_infernal" );
     cooldowns.doomguard = get_cooldown( "summon_doomguard" );
     cooldowns.dimensional_rift = get_cooldown( "dimensional_rift" );
@@ -6154,6 +6152,8 @@ void warlock_t::init_spells()
 void warlock_t::init_base_stats()
 {
   player_t::init_base_stats();
+
+  base.distance = 40;
 
   base.attack_power_per_strength = 0.0;
   base.attack_power_per_agility = 0.0;

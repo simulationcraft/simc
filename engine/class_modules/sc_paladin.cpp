@@ -410,7 +410,7 @@ public:
     active_protector_of_the_innocent   = nullptr;
 
     cooldowns.avengers_shield         = get_cooldown( "avengers_shield" );
-  cooldowns.judgment                = get_cooldown("judgment");
+    cooldowns.judgment                = get_cooldown("judgment");
     cooldowns.shield_of_the_righteous = get_cooldown( "shield_of_the_righteous" );
     cooldowns.avenging_wrath          = get_cooldown( "avenging_wrath" );
     cooldowns.light_of_the_protector  = get_cooldown( "light_of_the_protector" );
@@ -421,8 +421,6 @@ public:
     cooldowns.divine_hammer           = get_cooldown( "divine_hammer" );
 
     beacon_target = nullptr;
-
-    base.distance = 3;
     regen_type = REGEN_DYNAMIC;
   }
 
@@ -4310,6 +4308,7 @@ void paladin_t::init_base_stats()
   // Holy Insight increases max mana for Holy
   resources.base_multiplier[ RESOURCE_MANA ] = 1.0 + passives.holy_insight -> effectN( 1 ).percent();
 
+  base.distance = 5;
   // move holy paladins to range
   if ( specialization() == PALADIN_HOLY && primary_role() == ROLE_HEAL )
     base.distance = 30;

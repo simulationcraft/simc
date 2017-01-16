@@ -606,7 +606,6 @@ struct rogue_t : public player_t
     cooldowns.vendetta            = get_cooldown( "vendetta"            );
     cooldowns.shadow_nova         = get_cooldown( "shadow_nova"         );
 
-    base.distance = 3;
     regen_type = REGEN_DYNAMIC;
     regen_caches[CACHE_HASTE] = true;
     regen_caches[CACHE_ATTACK_HASTE] = true;
@@ -7145,6 +7144,8 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
 void rogue_t::init_base_stats()
 {
   player_t::init_base_stats();
+
+  base.distance = 5;
 
   base.attack_power_per_strength = 0.0;
   base.attack_power_per_agility  = 1.0;

@@ -6142,7 +6142,7 @@ void shaman_t::init_base_stats()
   if ( spec.enhancement_shaman -> ok() )
     resources.base[ RESOURCE_MAELSTROM ] += spec.enhancement_shaman -> effectN( 5 ).base_value();
 
-  base.distance = ( specialization() == SHAMAN_ENHANCEMENT ) ? 3 : 30;
+  base.distance = ( specialization() == SHAMAN_ENHANCEMENT ) ? 5 : 30;
   base.mana_regen_from_spirit_multiplier = spec.meditation -> effectN( 1 ).percent();
 
   //if ( specialization() == SHAMAN_ENHANCEMENT )
@@ -8172,35 +8172,35 @@ struct shaman_module_t : public module_t
       .modifier(1.09)
       .verification_value(1.6);
 
-	hotfix::register_effect("Shaman", "2017-01-13", "Crash Lightning, Flametongue, Lava Lash, Lightning Bolt, Lightning Shield, Rockbiter, Stormstrike, Windfury, and Windsong damage increased by 4%.", 179725)
-		.field("base_value")
-		.operation(hotfix::HOTFIX_SET)
-		.modifier(20)
-		.verification_value(16);
+    hotfix::register_effect("Shaman", "2017-01-13", "Crash Lightning, Flametongue, Lava Lash, Lightning Bolt, Lightning Shield, Rockbiter, Stormstrike, Windfury, and Windsong damage increased by 4%.", 179725)
+        .field("base_value")
+        .operation(hotfix::HOTFIX_SET)
+        .modifier(20)
+        .verification_value(16);
 
-	hotfix::register_effect("Shaman", "2017-01-13", "Hailstorm damage increased by 29%.", 312327)
-		.field("base_value")
-		.operation(hotfix::HOTFIX_MUL)
-		.modifier(1.29)
-		.verification_value(21);
+    hotfix::register_effect("Shaman", "2017-01-13", "Hailstorm damage increased by 29%.", 312327)
+        .field("base_value")
+        .operation(hotfix::HOTFIX_MUL)
+        .modifier(1.29)
+        .verification_value(21);
 
-	hotfix::register_effect("Shaman", "2017-01-13", "Boulderfist damage increased by 15%.", 297537)
-		.field("ap_coefficient")
-		.operation(hotfix::HOTFIX_MUL)
-		.modifier(1.15)
-		.verification_value(2.5);
+    hotfix::register_effect("Shaman", "2017-01-13", "Boulderfist damage increased by 15%.", 297537)
+        .field("ap_coefficient")
+        .operation(hotfix::HOTFIX_MUL)
+        .modifier(1.15)
+        .verification_value(2.5);
 
-	hotfix::register_effect("Shaman", "2017-01-13", "Fury of Air damage reduced by 12%.", 289974)
-		.field("ap_coefficient")
-		.operation(hotfix::HOTFIX_MUL)
-		.modifier(1 - 0.12)
-		.verification_value(0.4);
+    hotfix::register_effect("Shaman", "2017-01-13", "Fury of Air damage reduced by 12%.", 289974)
+        .field("ap_coefficient")
+        .operation(hotfix::HOTFIX_MUL)
+        .modifier(1 - 0.12)
+        .verification_value(0.4);
 
-	hotfix::register_effect("Shaman", "2017-01-13", "Doom Vortex damage increased by 33%.", 293003)
-		.field("ap_coefficient")
-		.operation(hotfix::HOTFIX_MUL)
-		.modifier(1.33)
-		.verification_value(0.45);
+    hotfix::register_effect("Shaman", "2017-01-13", "Doom Vortex damage increased by 33%.", 293003)
+        .field("ap_coefficient")
+        .operation(hotfix::HOTFIX_MUL)
+        .modifier(1.33)
+        .verification_value(0.45);
 
     /*
     hotfix::register_spell( "Shaman", "2016-08-23", "Windfury base proc rate has been increased to 10% (was 5%.)", 33757 )

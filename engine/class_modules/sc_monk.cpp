@@ -7780,7 +7780,7 @@ void monk_t::init_base_stats()
   {
     case MONK_BREWMASTER:
     {
-      base.distance = 3;
+      base.distance = 5;
       base_gcd += spec.stagger -> effectN( 11 ).time_value(); // Saved as -500 milliseconds
       base.attack_power_per_agility = 1.0;
       resources.base[RESOURCE_ENERGY] = 100;
@@ -7800,7 +7800,7 @@ void monk_t::init_base_stats()
     }
     case MONK_WINDWALKER:
     {
-      base.distance = 3;
+      base.distance = 5;
       base_gcd += spec.stance_of_the_fierce_tiger -> effectN( 5 ).time_value(); // Saved as -500 milliseconds
       base.attack_power_per_agility = 1.0;
       resources.base[RESOURCE_ENERGY] = 100;

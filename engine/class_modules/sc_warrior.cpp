@@ -456,7 +456,6 @@ public:
     non_dps_mechanics = false; // When set to false, disables stuff that isn't important, such as second wind, bloodthirst heal, etc.
     warrior_fixed_time = frothing_may_trigger = opportunity_strikes_once = true; //Frothing only triggers on the first ability that pushes you to 100 rage, until rage is consumed and then it may trigger again.
     expected_max_health = 0;
-    base.distance = 5.0;
     execute_enrage = double_bloodthirst = false;
 
     archavons_heavy_hand = bindings_of_kakushan = kargaths_sacrificed_hands = thundergods_vigor =
@@ -4674,6 +4673,7 @@ void warrior_t::init_spells()
 void warrior_t::init_base_stats()
 {
   player_t::init_base_stats();
+  base.distance = 5.0;
 
   resources.base[RESOURCE_RAGE] = 100 + ( ( artifact.unending_rage.value() + artifact.intolerance.value() ) / 10 );
   resources.max[RESOURCE_RAGE] = resources.base[RESOURCE_RAGE];
