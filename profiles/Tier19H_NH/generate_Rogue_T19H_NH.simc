@@ -50,7 +50,7 @@ spec=assassination
 head=doomblade_cowl,id=138332,bonus_id=1492/3516
 neck=belerons_choker_of_misery,id=140899,bonus_id=1492/3516,enchant=mark_of_the_hidden_satyr
 shoulder=mantle_of_the_torn_sky,id=140864,bonus_id=1492/3516
-back=dreadlords_tattered_wingcover,id=140855,bonus_id=1492/3516,enchant=binding_of_agility
+back=doomblade_shadowwrap,id=138371,bonus_id=1492/3516,enchant=binding_of_agility
 chest=doomblade_tunic,id=138326,bonus_id=1492/3516
 wrists=bracers_of_impossible_choices,id=140889,bonus_id=1492/3516
 hands=gloves_of_synchronus_elements,id=140905,bonus_id=1492/3516
