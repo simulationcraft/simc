@@ -5487,7 +5487,7 @@ struct purifying_brew_t: public monk_spell_t
 
     if ( p() -> buff.blackout_combo -> up() )
     {
-      p() -> buff.elusive_brawler -> trigger();
+      p() -> buff.elusive_brawler -> trigger(1);
       p() -> buff.blackout_combo -> expire();
     }
   }
@@ -7897,7 +7897,6 @@ void monk_t::create_buffs()
     .add_invalidate( CACHE_DODGE );
 
   buff.elusive_brawler = buff_creator_t( this, "elusive_brawler", mastery.elusive_brawler -> effectN( 3 ).trigger() )
-    .max_stack( 100 ) // Hard code 100 stacks based on testing 07/20/16 https://twitter.com/Phazius/status/755956860583149568
     .add_invalidate( CACHE_DODGE );
 
   buff.elusive_dance = buff_creator_t(this, "elusive_dance", passives.elusive_dance)
