@@ -3470,7 +3470,7 @@ struct bear_melee_t : public bear_attack_t
 
     energize_type     = ENERGIZE_ON_HIT;
     energize_resource = RESOURCE_RAGE;
-    energize_amount   = 7.875; // http://us.battle.net/wow/en/forum/topic/20743504316?page=13#248
+    energize_amount   = 7; // https://worldofwarcraft.com/en-gb/news/20457825#_ClassChanges
   }
 
   virtual timespan_t execute_time() const override
