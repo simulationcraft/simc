@@ -72,6 +72,7 @@ public:
 
   std::array< pets::dire_critter_t*, 8 >  pet_dire_beasts;
   pets::hati_t* hati;
+  pet_t* spitting_cobra;
   std::array< pets::hunter_secondary_pet_t*, 2 > dark_minion;
   std::array< pets::hunter_secondary_pet_t*, 10 > felboars;
 
@@ -1804,6 +1805,60 @@ struct bm_t18_4pc_felboar: public hunter_secondary_pet_t
     hunter_secondary_pet_t::init_base_stats();
 
     main_hand_attack = new felboar_melee_t( *this );
+  }
+};
+
+// ==========================================================================
+// SV Spitting Cobra
+// ==========================================================================
+
+struct spitting_cobra_t: public hunter_pet_t
+{
+  struct cobra_spit_t: public hunter_pet_action_t<spitting_cobra_t, spell_t>
+  {
+    cobra_spit_t( spitting_cobra_t* p, const std::string& options_str ):
+      base_t( "cobra_spit", *p, p -> o() -> find_spell( 206685 ) )
+    {
+      parse_options( options_str );
+
+      may_crit = true;
+    }
+
+    bool init_finished() override
+    {
+      if ( o() -> spitting_cobra )
+        stats = o() -> spitting_cobra -> get_stats( name_str );
+
+      return base_t::init_finished();
+    }
+  };
+
+  spitting_cobra_t( hunter_t* o ):
+    hunter_pet_t( *(o -> sim), *o, "spitting_cobra", PET_HUNTER, true )
+  {
+    /* nuoHep 16/01/2017 0vers no buffs
+     *    AP      DMG
+     *   9491    13420
+     *   22381   31646
+     * As Cobra Spit has 1x AP mult it works out to
+     * the pet having ~1.414 ap coeff
+     */
+    owner_coeff.ap_from_ap = 1.414;
+  }
+
+  action_t* create_action( const std::string& name,
+                           const std::string& options_str ) override
+  {
+    if ( name == "cobra_spit" )
+      return new cobra_spit_t( this, options_str );
+    return hunter_pet_t::create_action( name, options_str );
+  }
+
+  void init_action_list() override
+  {
+    action_list_str = "cobra_spit";
+
+    hunter_pet_t::init_action_list();
   }
 };
 
@@ -5084,33 +5139,25 @@ struct snake_hunter_t: public hunter_spell_t
 
 struct spitting_cobra_t: public hunter_spell_t
 {
-  struct spitting_cobra_tick_t: public hunter_spell_t
-  {
-    spitting_cobra_tick_t( hunter_t* p ):
-      hunter_spell_t( "spitting_cobra_tick", p, p -> find_spell( 206685 ) )
-    {
-      background = true;
-      may_crit = true;
-    }
-  };
-
   spitting_cobra_t( hunter_t* p, const std::string& options_str ):
     hunter_spell_t( "spitting_cobra", p, p -> talents.spitting_cobra )
   {
     parse_options( options_str );
+  }
 
-    attack_power_mod.tick = p -> find_spell( 206685 ) -> effectN( 1 ).ap_coeff();
-    base_tick_time = timespan_t::from_seconds( 2.0 );
-    hasted_ticks = false;
-    may_crit = true;
-    weapon_multiplier = 0;
+  bool init_finished() override
+  {
+    if ( p() -> spitting_cobra )
+      stats -> add_child( p() -> spitting_cobra -> get_stats( "cobra_spit" ) );
 
-    tick_action = new spitting_cobra_tick_t( p );
+    return hunter_spell_t::init_finished();
   }
 
   virtual void execute() override
   {
     hunter_spell_t::execute();
+
+    p() -> spitting_cobra -> summon( data().duration() );
 
     p() -> buffs.spitting_cobra -> trigger();
   }
@@ -5580,6 +5627,9 @@ void hunter_t::create_pets()
     for ( size_t i = 0; i < felboars.size(); i++ )
       felboars[ i ] = new pets::bm_t18_4pc_felboar( *this );
   }
+
+  if ( talents.spitting_cobra -> ok() )
+    spitting_cobra = new pets::spitting_cobra_t( this );
 }
 
 // hunter_t::init_spells ====================================================
