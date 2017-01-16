@@ -93,8 +93,8 @@ bool wowhead::download_item_data( item_t&            item,
     jsondata = "{" + jsondata + "}";
 
     rapidjson::Document json, jsonequip;
-    json.Parse< 0 >( jsondata.c_str() );
-    jsonequip.Parse< 0 >( jsonequipdata.c_str() );
+    json.Parse( jsondata.c_str() );
+    jsonequip.Parse( jsonequipdata.c_str() );
 
     if ( json.HasParseError() )
     {

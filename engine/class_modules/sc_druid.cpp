@@ -6439,7 +6439,7 @@ void druid_t::init_base_stats()
   player_t::init_base_stats();
 
   // Set base distance based on spec
-  base.distance = ( specialization() == DRUID_FERAL || specialization() == DRUID_GUARDIAN ) ? 3 : 30;
+  base.distance = ( specialization() == DRUID_FERAL || specialization() == DRUID_GUARDIAN ) ? 5 : 30;
 
   // All specs get benefit from both agi and intellect.
   // Nurturing Instinct overrides this behavior in composite_spell_power.

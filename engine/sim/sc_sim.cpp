@@ -3027,6 +3027,7 @@ void sim_t::create_options()
   add_option( opt_func( "debug_seed", parse_debug_seed ) );
   add_option( opt_string( "html", html_file_str ) );
   add_option( opt_string( "json", json_file_str ) );
+  add_option( opt_string( "json2", json2_file_str ) );
   add_option( opt_bool( "hosted_html", hosted_html ) );
   add_option( opt_int( "healing", healing ) );
   add_option( opt_string( "xml", xml_file_str ) );

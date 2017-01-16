@@ -410,7 +410,7 @@ public:
     active_protector_of_the_innocent   = nullptr;
 
     cooldowns.avengers_shield         = get_cooldown( "avengers_shield" );
-  cooldowns.judgment                = get_cooldown("judgment");
+    cooldowns.judgment                = get_cooldown("judgment");
     cooldowns.shield_of_the_righteous = get_cooldown( "shield_of_the_righteous" );
     cooldowns.avenging_wrath          = get_cooldown( "avenging_wrath" );
     cooldowns.light_of_the_protector  = get_cooldown( "light_of_the_protector" );
@@ -421,8 +421,6 @@ public:
     cooldowns.divine_hammer           = get_cooldown( "divine_hammer" );
 
     beacon_target = nullptr;
-
-    base.distance = 3;
     regen_type = REGEN_DYNAMIC;
   }
 
@@ -1526,10 +1524,10 @@ struct consecration_t : public paladin_spell_t
         .x( execute_state -> action -> player -> x_position )
         .y( execute_state -> action -> player -> y_position )
         // TODO: this is a hack that doesn't work properly, fix this correctly
-        .duration( ground_effect_duration * ( p() -> cache.spell_haste() ) )
+        .duration( ground_effect_duration )
         .start_time( sim -> current_time()  )
         .action( damage_tick )
-        .hasted( ground_aoe_params_t::SPELL_HASTE ), true );
+        .hasted( ground_aoe_params_t::NOTHING ), true );
 
     // push the pointer to the list of active consecrations
     // execute() and schedule_event() methods of paladin_ground_aoe_t handle updating the list
@@ -1547,7 +1545,7 @@ struct consecration_t : public paladin_spell_t
           .duration( ground_effect_duration )
           .start_time( sim -> current_time()  )
           .action( heal_tick )
-          .hasted( ground_aoe_params_t::SPELL_HASTE ), true );
+          .hasted( ground_aoe_params_t::NOTHING ), true );
     }
   }
 };
@@ -4310,6 +4308,7 @@ void paladin_t::init_base_stats()
   // Holy Insight increases max mana for Holy
   resources.base_multiplier[ RESOURCE_MANA ] = 1.0 + passives.holy_insight -> effectN( 1 ).percent();
 
+  base.distance = 5;
   // move holy paladins to range
   if ( specialization() == PALADIN_HOLY && primary_role() == ROLE_HEAL )
     base.distance = 30;

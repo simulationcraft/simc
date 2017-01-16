@@ -2789,7 +2789,7 @@ struct tiger_palm_t: public monk_melee_attack_t
       if ( p() -> artifact.face_palm.rank() )
       {
         if ( rng().roll( p() -> artifact.face_palm.percent() ) )
-          am *= 1 + p() -> artifact.face_palm.percent();
+          am *= p() -> passives.face_palm -> effectN( 1 ).percent();
       }
 
       if ( p() -> buff.blackout_combo -> up() )
@@ -5223,8 +5223,11 @@ struct stagger_self_damage_t : public residual_action::residual_periodic_action_
     base_tick_time = timespan_t::from_seconds( 1.0 );
     hasted_ticks = tick_may_crit = false;
     target = p;
+  }
 
-    callbacks = false;
+  proc_types proc_type() const override
+  {
+    return PROC1_ANY_DAMAGE_TAKEN;
   }
 
   virtual void init() override
@@ -5358,7 +5361,7 @@ struct ironskin_brew_t : public monk_spell_t
 
     if ( p() -> buff.blackout_combo -> up() )
     {
-      p() -> active_actions.stagger_self_damage -> reschedule_execute( timespan_t::from_seconds( p() -> buff.blackout_combo -> data().effectN( 4 ).base_value() ) );
+      //p() -> active_actions.stagger_self_damage -> reschedule_execute( timespan_t::from_seconds( p() -> buff.blackout_combo -> data().effectN( 4 ).base_value() ) ); Crashes sim.
       p() -> buff.blackout_combo -> expire();
     }
 
@@ -5484,7 +5487,7 @@ struct purifying_brew_t: public monk_spell_t
 
     if ( p() -> buff.blackout_combo -> up() )
     {
-      p() -> buff.elusive_brawler -> trigger();
+      p() -> buff.elusive_brawler -> trigger(1);
       p() -> buff.blackout_combo -> expire();
     }
   }
@@ -7777,7 +7780,7 @@ void monk_t::init_base_stats()
   {
     case MONK_BREWMASTER:
     {
-      base.distance = 3;
+      base.distance = 5;
       base_gcd += spec.stagger -> effectN( 11 ).time_value(); // Saved as -500 milliseconds
       base.attack_power_per_agility = 1.0;
       resources.base[RESOURCE_ENERGY] = 100;
@@ -7797,7 +7800,7 @@ void monk_t::init_base_stats()
     }
     case MONK_WINDWALKER:
     {
-      base.distance = 3;
+      base.distance = 5;
       base_gcd += spec.stance_of_the_fierce_tiger -> effectN( 5 ).time_value(); // Saved as -500 milliseconds
       base.attack_power_per_agility = 1.0;
       resources.base[RESOURCE_ENERGY] = 100;
@@ -7894,7 +7897,6 @@ void monk_t::create_buffs()
     .add_invalidate( CACHE_DODGE );
 
   buff.elusive_brawler = buff_creator_t( this, "elusive_brawler", mastery.elusive_brawler -> effectN( 3 ).trigger() )
-    .max_stack( 100 ) // Hard code 100 stacks based on testing 07/20/16 https://twitter.com/Phazius/status/755956860583149568
     .add_invalidate( CACHE_DODGE );
 
   buff.elusive_dance = buff_creator_t(this, "elusive_dance", passives.elusive_dance)

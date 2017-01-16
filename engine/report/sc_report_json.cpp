@@ -8,12 +8,249 @@
 #include "simulationcraft.hpp"
 #include "util/rapidjson/filewritestream.h"
 
+#include "util/rapidjson/document.h"
+#include "util/rapidjson/stringbuffer.h"
+#include "util/rapidjson/prettywriter.h"
+
+using namespace rapidjson;
+
 namespace
 {
+struct JsonOutput
+{
+private:
+  Document& d_;
+  Value& v_;
+
+public:
+  JsonOutput( Document& d, Value& v ) : d_( d ), v_( v )
+  { }
+
+  // Create a new object member (n) to the current object (v_), and return a reference to it
+  JsonOutput operator[]( const char* n )
+  {
+    if ( ! v_.HasMember( n ) )
+    {
+      auto obj = Value();
+      obj.SetObject();
+
+      v_.AddMember( StringRef( n ), obj, d_.GetAllocator() );
+    }
+
+    return JsonOutput( d_, v_[ n ] );
+  }
+
+  JsonOutput operator[]( const std::string& n )
+  { return operator[]( n.c_str() ); }
+
+  Value& val()
+  { return v_; }
+
+  Document& doc()
+  { return d_; }
+
+  // Makes v_ an array (instead of an Object which it is by default)
+  JsonOutput& make_array()
+  { v_.SetArray(); return *this; }
+
+  // Assign any primitive (supported value by RapidJSON) to the current value (v_)
+  template <typename T>
+  JsonOutput& operator=( T v )
+  { v_ = v; return *this; }
+
+  // Assign a string to the current value (v_)
+  JsonOutput& operator=( const char* v )
+  { v_ = StringRef( v ); return *this; }
+
+  JsonOutput operator=( const std::string& v )
+  { v_ = StringRef( v.c_str() ); return *this; }
+
+  // Assign an external RapidJSON Value to the current value (v_)
+  JsonOutput operator=( Value& v )
+  { v_ = v; return *this; }
+
+  // Assign a simc-internal timespan object to the current value (v_). Timespan object is converted
+  // to a double.
+  JsonOutput& operator=( const timespan_t& v )
+  { v_ = v.total_seconds(); return *this; }
+
+  // Assign a simc-internal sample data container to the current value (v_). The container is
+  // converted to an object with fixed fields.
+  JsonOutput& operator=( const extended_sample_data_t& v )
+  {
+    assert( v_.IsObject() );
+
+    v_.AddMember( StringRef( "sum" ), v.sum(), d_.GetAllocator() );
+    v_.AddMember( StringRef( "count" ), as<unsigned>( v.count() ), d_.GetAllocator() );
+    v_.AddMember( StringRef( "mean" ), v.mean(), d_.GetAllocator() );
+    v_.AddMember( StringRef( "min" ), v.min(), d_.GetAllocator() );
+    v_.AddMember( StringRef( "max" ), v.max(), d_.GetAllocator() );
+    if ( ! v.simple )
+    {
+      v_.AddMember( StringRef( "variance" ), v.variance, d_.GetAllocator() );
+      v_.AddMember( StringRef( "std_dev" ), v.std_dev, d_.GetAllocator() );
+      v_.AddMember( StringRef( "mean_variance" ), v.mean_variance, d_.GetAllocator() );
+      v_.AddMember( StringRef( "mean_std_dev" ), v.mean_std_dev, d_.GetAllocator() );
+    }
+
+    return *this;
+  }
+
+  // Assign a simc-internal sample data container to the current value (v_). The container is
+  // converted to an object with fixed fields.
+  JsonOutput& operator=( const simple_sample_data_t& v )
+  {
+    assert( v_.IsObject() );
+
+    v_.AddMember( StringRef( "sum" ), v.sum(), d_.GetAllocator() );
+    v_.AddMember( StringRef( "count" ), as<unsigned>( v.count() ), d_.GetAllocator() );
+    v_.AddMember( StringRef( "mean" ), v.mean(), d_.GetAllocator() );
+
+    return *this;
+  }
+
+  // Assign a simc-internal sample data container to the current value (v_). The container is
+  // converted to an object with fixed fields.
+  JsonOutput& operator=( const simple_sample_data_with_min_max_t& v )
+  {
+    assert( v_.IsObject() );
+
+    v_.AddMember( StringRef( "sum" ), v.sum(), d_.GetAllocator() );
+    v_.AddMember( StringRef( "count" ), as<unsigned>( v.count() ), d_.GetAllocator() );
+    v_.AddMember( StringRef( "mean" ), v.mean(), d_.GetAllocator() );
+    v_.AddMember( StringRef( "min" ), v.min(), d_.GetAllocator() );
+    v_.AddMember( StringRef( "max" ), v.max(), d_.GetAllocator() );
+
+    return *this;
+  }
+
+  JsonOutput& operator=( const std::vector<std::string>& v )
+  {
+    v_.SetArray();
+
+    range::for_each( v, [ this ]( const std::string& value ) {
+      v_.PushBack( StringRef( value.c_str() ), d_.GetAllocator() );
+    } );
+
+    return *this;
+  }
+
+  template <typename T>
+  JsonOutput& operator=( const std::vector<T>& v )
+  {
+    v_.SetArray();
+
+    range::for_each( v, [ this ]( const T& value ) {
+      v_.PushBack( value, d_.GetAllocator() );
+    } );
+
+    return *this;
+  }
+
+  // Assign a simc-internal timeline data container to the current value (v_). The container is
+  // converted to an object with fixed fields.
+  JsonOutput& operator=( const sc_timeline_t& v )
+  {
+    assert( v_.IsObject() );
+
+    v_.AddMember( StringRef( "mean" ), v.mean(), d_.GetAllocator() );
+    v_.AddMember( StringRef( "mean_std_dev" ), v.mean_stddev(), d_.GetAllocator() );
+    v_.AddMember( StringRef( "min" ), v.min(), d_.GetAllocator() );
+    v_.AddMember( StringRef( "max" ), v.max(), d_.GetAllocator() );
+
+    Value data_arr( kArrayType );
+    range::for_each( v.data(), [ &data_arr, this ]( double dp ) {
+      data_arr.PushBack( dp, d_.GetAllocator() );
+    } );
+
+    v_.AddMember( StringRef( "data" ), data_arr, d_.GetAllocator() );
+    return *this;
+  }
+
+  JsonOutput& operator=( const cooldown_t& v )
+  {
+    assert( v_.IsObject() );
+
+    v_.AddMember( StringRef( "name" ), StringRef( v.name() ), d_.GetAllocator() );
+    v_.AddMember( StringRef( "duration" ), v.duration.total_seconds(), d_.GetAllocator() );
+    if ( v.charges > 1 )
+    {
+      v_.AddMember( StringRef( "charges" ), v.charges, d_.GetAllocator() );
+    }
+    return *this;
+  }
+
+  JsonOutput& operator=( const rng::rng_t& v )
+  {
+    assert( v_.IsObject() );
+    v_.AddMember( StringRef( "name" ), StringRef( v.name() ), d_.GetAllocator() );
+
+    return *this;
+  }
+
+  template <typename T>
+  JsonOutput& add( T v )
+  { assert( v_.IsArray() ); v_.PushBack( v, d_.GetAllocator() ); return *this; }
+
+  JsonOutput& add( const char* v )
+  { assert( v_.IsArray() ); v_.PushBack( StringRef( v ), d_.GetAllocator() ); return *this; }
+
+  JsonOutput add( Value& v )
+  { assert( v_.IsArray() ); v_.PushBack( v, d_.GetAllocator() ); return JsonOutput( d_, v_[ v_.Size() - 1 ] ); }
+
+  JsonOutput add()
+  { auto v = Value(); v.SetObject(); return add( v ); }
+};
+
 double to_json( const timespan_t& t )
 {
   return t.total_seconds();
 }
+
+/**
+ * Template helper to add only non "default value" containers (sample data essentially) to the JSON
+ * root.
+ */
+template <typename T>
+void add_non_default( JsonOutput root, const char* name, const T& container )
+{
+  if ( container.mean() != 0 )
+  {
+    root[ name ] = container;
+  }
+}
+
+template <typename T>
+void add_non_default( JsonOutput root, const char* name, const T& v, const T& default_value )
+{
+  if ( v != default_value )
+  {
+    root[ name ] = v;
+  }
+}
+
+/* Template helper to add only non-zero "containers" (sample data essentially) to the JSON root. */
+template <typename T>
+void add_non_zero( JsonOutput root, const char* name, const T& container )
+{ add_non_default( root, name, container ); }
+
+void add_non_zero( JsonOutput root, const char* name, const timespan_t& v )
+{ add_non_default( root, name, v, timespan_t::zero() ); }
+
+void add_non_zero( JsonOutput root, const char* name, double v )
+{ add_non_default( root, name, v, 0.0 ); }
+
+void add_non_zero( JsonOutput root, const char* name, unsigned v )
+{ add_non_default( root, name, v, 0U ); }
+
+void add_non_zero( JsonOutput root, const char* name, int v )
+{ add_non_default( root, name, v, 0 ); }
+
+void add_non_zero( JsonOutput root, const char* name, bool v )
+{ add_non_default( root, name, v, false ); }
+
+void add_non_zero( JsonOutput root, const char* name, const std::string& v )
+{ add_non_default( root, name, v, std::string() ); }
 
 // js::sc_js_t to_json( const timespan_t& t )
 //{
@@ -76,6 +313,49 @@ js::sc_js_t to_json( const sc_timeline_t& tl )
   node.set( "max", tl.max() );
   node.set( "data", tl.data() );
   return node;
+}
+
+bool has_resources( const gain_t* gain )
+{
+  return range::find_if( gain -> count, []( double v ) { return v != 0; } ) != gain -> count.end();
+}
+
+bool has_resources( const gain_t& gain )
+{ return has_resources( &gain ); }
+
+void gain_to_json( JsonOutput root, const gain_t* g )
+{
+  root[ "name" ] = g -> name();
+
+  for ( resource_e r = RESOURCE_NONE; r < RESOURCE_MAX; ++r )
+  {
+    if ( g -> count[ r ] == 0 )
+    {
+      continue;
+    }
+
+    root[ util::resource_type_string( r ) ][ "actual" ] = g -> actual[ r ];
+    root[ util::resource_type_string( r ) ][ "overflow" ] = g -> overflow[ r ];
+    root[ util::resource_type_string( r ) ][ "count" ] = g -> count[ r ];
+  }
+}
+
+void gain_to_json( JsonOutput root, const gain_t& g )
+{ gain_to_json( root, &g ); }
+
+
+void gains_to_json( JsonOutput root, const player_t& p )
+{
+  root.make_array();
+
+  range::for_each( p.gain_list, [ & ]( const gain_t* g ) {
+    if ( ! has_resources( g ) )
+    {
+      return;
+    }
+
+    gain_to_json( root.add(), g );
+  } );
 }
 
 js::sc_js_t to_json( const gain_t& g )
@@ -176,6 +456,61 @@ js::sc_js_t to_json( const cooldown_t& cd )
   return node;
 }
 
+void to_json( JsonOutput root, const buff_t* b )
+{
+  root[ "name" ] = b -> name();
+  if ( b -> data().id() )
+  {
+    root[ "spell" ] = b -> data().id();
+  }
+  if ( b -> item )
+  {
+    root[ "item" ][ "id" ] = b -> item -> parsed.data.id;
+    root[ "item" ][ "ilevel" ] = b -> item -> item_level();
+  }
+
+  if ( b -> source && b -> source != b -> player )
+  {
+    root[ "source" ] = b -> source -> name();
+  }
+
+  if ( b -> cooldown && b -> cooldown -> duration > timespan_t::zero() )
+  {
+    root[ "cooldown" ] = *b -> cooldown;
+  }
+
+  root[ "start_count" ] = b -> avg_start.mean();
+  add_non_zero( root, "refresh_count", b -> avg_refresh.mean() );
+  add_non_zero( root, "interval", b -> start_intervals.mean() );
+  add_non_zero( root, "trigger", b -> trigger_intervals.mean() );
+  add_non_zero( root, "uptime", b -> uptime_pct.mean() );
+  add_non_zero( root, "benefit", b -> benefit_pct.mean() );
+  add_non_zero( root, "overflow_stacks", b -> avg_overflow_count.mean() );
+  add_non_zero( root, "overflow_total" , b -> avg_overflow_total.mean() );
+  add_non_zero( root, "expire_count", b -> avg_expire.mean() );
+  if ( b -> default_value != buff_t::DEFAULT_VALUE() )
+  {
+    root[ "default_value" ] = b -> default_value;
+  }
+
+  if ( b -> sim -> buff_uptime_timeline != 0 && b -> uptime_array.mean() != 0 )
+  {
+    root[ "stack_uptime" ] = b -> uptime_array;
+  }
+}
+
+void buffs_to_json( JsonOutput root, const player_t& p )
+{
+  root.make_array();
+  range::for_each( p.buff_list, [ &root, &p ]( const buff_t* b ) {
+    if ( b -> avg_start.mean() == 0 )
+    {
+      return;
+    }
+    to_json( root.add(), b );
+  } );
+}
+
 js::sc_js_t to_json( const buff_t& b )
 {
   js::sc_js_t node;
@@ -197,6 +532,18 @@ js::sc_js_t to_json( const buff_t& b )
   node.set( "default_chance", b.default_chance );
   // TODO
   return node;
+}
+
+void to_json( JsonOutput root, const stats_t::stats_results_t& sr )
+{
+  root[ "actual_amount" ] = sr.actual_amount;
+  root[ "avg_actual_amount" ] = sr.avg_actual_amount;
+  root[ "total_amount" ] = sr.total_amount;
+  root[ "fight_actual_amount" ] = sr.fight_actual_amount;
+  root[ "fight_total_amount" ] = sr.fight_total_amount;
+  root[ "overkill_pct" ] = sr.overkill_pct;
+  root[ "count" ] = sr.count;
+  root[ "pct" ] = sr.pct;
 }
 
 js::sc_js_t to_json( result_e i, const stats_t::stats_results_t& sr )
@@ -222,6 +569,23 @@ js::sc_js_t to_json( const benefit_t& b )
   return node;
 }
 */
+
+void procs_to_json( JsonOutput root, const player_t& p )
+{
+  root.make_array();
+  range::for_each( p.proc_list, [ & ]( const proc_t* proc ) {
+    if ( proc -> count.mean() == 0 )
+    {
+      return;
+    }
+
+    auto node = root.add();
+    node[ "name" ] = proc -> name();
+    node[ "interval" ] = proc -> interval_sum.mean();
+    node[ "count" ] = proc -> count.mean();
+  } );
+}
+
 js::sc_js_t to_json( const proc_t& p )
 {
   js::sc_js_t node;
@@ -229,6 +593,68 @@ js::sc_js_t to_json( const proc_t& p )
   node.set( "interval_sum", to_json( p.interval_sum ) );
   node.set( "count", to_json( p.count ) );
   return node;
+}
+
+void stats_to_json( JsonOutput root, const player_t& p )
+{
+  root.make_array();
+
+  range::for_each( p.stats_list, [ & ]( const stats_t* s ) {
+    if ( s -> quiet || s -> num_executes.mean() == 0 )
+    {
+      return;
+    }
+
+    auto node = root.add();
+
+    node[ "name" ] = s -> name();
+    if ( s -> school != SCHOOL_NONE )
+    {
+      node[ "school" ] = util::school_type_string( s -> school );
+    }
+    node[ "type" ] = util::stats_type_string( s -> type );
+
+    if ( has_resources( s -> resource_gain ) )
+    {
+      gain_to_json( node[ "resource_gain" ], s -> resource_gain );
+    }
+
+    node[ "num_executes" ] = s -> num_executes;
+
+    add_non_zero( node, "total_execute_time", s -> total_execute_time );
+    add_non_zero( node, "portion_aps", s -> portion_aps );
+    add_non_zero( node, "portion_apse", s -> portion_apse );
+    add_non_zero( node, "portion_amount", s -> portion_amount );
+    add_non_zero( node, "actual_amount", s -> actual_amount );
+    add_non_zero( node, "total_amount", s -> total_amount );
+
+    if ( s -> num_executes.mean() > 1 )
+    {
+      node[ "total_intervals" ] = s -> total_intervals;
+    }
+
+    add_non_zero( node, "num_ticks", s -> num_ticks );
+    add_non_zero( node, "num_tick_results", s -> num_tick_results );
+    add_non_zero( node, "total_tick_time", s -> total_tick_time );
+    add_non_zero( node, "num_refreshes", s -> num_refreshes );
+
+    add_non_zero( node, "num_direct_results", s -> num_direct_results );
+
+    for ( full_result_e r = FULLTYPE_NONE; r < FULLTYPE_MAX; ++r )
+    {
+      if ( s -> direct_results_detail[ r ].count.mean() != 0 )
+      {
+        to_json( node[ "direct_results" ][ util::full_result_type_string( r ) ],
+                 s -> direct_results_detail[ r ] );
+      }
+
+      if ( s -> tick_results_detail[ r ].count.mean() != 0 )
+      {
+        to_json( node[ "tick_results" ][ util::full_result_type_string( r ) ],
+                 s -> tick_results_detail[ r ] );
+      }
+    }
+  } );
 }
 
 js::sc_js_t to_json( const stats_t& s )
@@ -289,6 +715,47 @@ js::sc_js_t to_json(
   return node;
 }
 
+void to_json( JsonOutput root, const player_collected_data_t::buffed_stats_t& bs,
+                               const std::vector<resource_e>& relevant_resources )
+{
+  for ( attribute_e a = ATTRIBUTE_NONE; a < ATTRIBUTE_MAX; ++a )
+  {
+    if ( bs.attribute[ a ] != 0.0 )
+    {
+      root[ "attribute" ][ util::attribute_type_string( a ) ] = bs.attribute[ a ];
+    }
+  }
+
+  range::for_each( relevant_resources, [ &root, &bs ]( resource_e r ) {
+    root[ "resources" ][ util::resource_type_string( r ) ] = bs.resource[ r ];
+  } );
+
+  add_non_zero( root[ "stats" ], "spell_power", bs.spell_power );
+  add_non_zero( root[ "stats" ], "attack_power", bs.attack_power );
+  add_non_zero( root[ "stats" ], "spell_crit", bs.spell_crit_chance );
+  add_non_zero( root[ "stats" ], "attack_crit", bs.attack_crit_chance );
+  add_non_zero( root[ "stats" ], "spell_haste", bs.spell_haste );
+  add_non_zero( root[ "stats" ], "attack_haste", bs.attack_haste );
+  add_non_zero( root[ "stats" ], "spell_speed", bs.spell_speed );
+  add_non_zero( root[ "stats" ], "attack_speed", bs.attack_speed );
+
+  add_non_zero( root[ "stats" ], "mastery_value", bs.mastery_value );
+  add_non_zero( root[ "stats" ], "damage_versatility", bs.damage_versatility );
+  add_non_zero( root[ "stats" ], "heal_versatility", bs.heal_versatility );
+  add_non_zero( root[ "stats" ], "mitigation_versatility", bs.mitigation_versatility );
+
+  add_non_zero( root[ "stats" ], "leech", bs.leech );
+  add_non_zero( root[ "stats" ], "speed", bs.run_speed );
+  add_non_zero( root[ "stats" ], "avoidance", bs.avoidance );
+
+  add_non_zero( root[ "stats" ], "manareg_per_second", bs.manareg_per_second );
+
+  add_non_zero( root[ "stats" ], "armor", bs.armor );
+  add_non_zero( root[ "stats" ], "dodge", bs.dodge );
+  add_non_zero( root[ "stats" ], "parry", bs.parry );
+  add_non_zero( root[ "stats" ], "block", bs.block );
+}
+
 js::sc_js_t to_json( const player_collected_data_t::buffed_stats_t& bs )
 {
   js::sc_js_t node;
@@ -342,6 +809,48 @@ js::sc_js_t to_json( const player_collected_data_t::buffed_stats_t& bs )
   return node;
 }
 
+void to_json( JsonOutput root,
+              const std::vector<player_collected_data_t::action_sequence_data_t*>& asd,
+              const std::vector<resource_e>& relevant_resources )
+{
+  root.make_array();
+
+  range::for_each( asd, [ &root, &relevant_resources ]( const player_collected_data_t::action_sequence_data_t* entry ) {
+    auto json = root.add();
+
+    json[ "time" ] = entry -> time;
+    if ( entry -> action )
+    {
+      json[ "name" ] = entry -> action -> name();
+      json[ "target" ] = entry -> action -> target -> name();
+    }
+    else
+    {
+      json[ "wait" ] = entry -> wait_time;
+    }
+
+    if ( entry -> buff_list.size() > 0 )
+    {
+      auto buffs = json[ "buffs" ];
+      buffs.make_array();
+      range::for_each( entry -> buff_list, [ &buffs ]( const std::pair<buff_t*, int> data ) {
+        auto entry = buffs.add();
+
+        entry[ "name" ] = data.first -> name();
+        entry[ "stacks" ] = data.second;
+      } );
+    }
+
+    auto resources = json[ "resources" ];
+    auto resources_max = json[ "resources_max" ];
+    range::for_each( relevant_resources, [ &json, &resources, &resources_max, &entry ]( resource_e r ) {
+      resources[ util::resource_type_string( r ) ] = entry -> resource_snapshot[ r ];
+      // TODO: Why do we have this instead of using some static one?
+      resources_max[ util::resource_type_string( r ) ] = entry -> resource_max_snapshot[ r ];
+    } );
+  } );
+}
+
 js::sc_js_t to_json(
     const player_collected_data_t::action_sequence_data_t& asd )
 {
@@ -387,6 +896,118 @@ js::sc_js_t to_json(
   node.set( "resource_max_snapshot", resource_max_snapshot );
 
   return node;
+}
+
+void collected_data_to_json( JsonOutput root, const player_t& p )
+{
+  const auto& sim = *p.sim;
+  const auto& cd = p.collected_data;
+
+  add_non_zero( root, "fight_length", cd.fight_length );
+  add_non_zero( root, "waiting_time", cd.waiting_time );
+  add_non_zero( root, "executed_foreground_actions", cd.executed_foreground_actions );
+  add_non_zero( root, "dmg", cd.dmg );
+  add_non_zero( root, "compound_dmg", cd.compound_dmg );
+  add_non_zero( root, "timeline_dmg", cd.timeline_dmg );
+  if ( !p.is_enemy() && sim.target_list.size() > 1 )
+  {
+    add_non_zero( root, "prioritydps", cd.prioritydps );
+  }
+  add_non_zero( root, "dps", cd.dps );
+  add_non_zero( root, "dpse", cd.dpse );
+
+  if ( p.role == ROLE_TANK || p.role == ROLE_HEAL )
+  {
+    if ( p.role == ROLE_TANK )
+    {
+      root[ "dtps" ] = cd.dmg_taken;
+      root[ "timeline_dmg_taken" ] = cd.timeline_dmg_taken;
+      root[ "deaths" ] = cd.deaths;
+      root[ "theck_meloree_index" ] = cd.theck_meloree_index;
+      root[ "effective_theck_meloree_index" ] = cd.effective_theck_meloree_index;
+      root[ "max_spike_amount" ] = cd.max_spike_amount;
+    }
+
+    root[ "heal" ] = cd.heal;
+    root[ "compound_heal" ] = cd.compound_heal;
+    root[ "hps" ] = cd.hps;
+    root[ "hpse" ] = cd.hpse;
+    root[ "absorb" ] = cd.absorb;
+    root[ "compound_absorb" ] = cd.compound_absorb;
+    root[ "aps" ] = cd.aps;
+
+    if ( p.role == ROLE_TANK )
+    {
+      root[ "htps" ] = cd.htps;
+      root[ "heal_taken" ] = cd.heal_taken;
+      root[ "timeline_healing_taken" ] = cd.timeline_healing_taken;
+      root[ "atps" ] = cd.atps;
+      root[ "absorb_taken" ] = cd.absorb_taken;
+    }
+  }
+
+  // No point printing out target metric if target_error is not used
+  if ( cd.target_metric.count() > 0 )
+  {
+    root[ "target_metric" ] = cd.target_metric;
+  }
+
+  if ( sim.report_details != 0 )
+  {
+    // Key off of resource loss to figure out what resources are even relevant
+    std::vector<resource_e> relevant_resources;
+    for ( resource_e r = RESOURCE_NONE; r < RESOURCE_MAX; ++r )
+    {
+      if ( cd.resource_lost[ r ].mean() > 0 )
+      {
+        root[ "resource_lost" ][ util::resource_type_string( r ) ] = cd.resource_lost[ r ];
+        relevant_resources.push_back( r );
+      }
+    }
+
+    // Rest of the resource summaries are printed only based on relevant resources
+    range::for_each( relevant_resources, [ &root, &cd ]( resource_e r ) {
+      // Combat ending resources
+      add_non_zero( root[ "combat_end_resource" ], util::resource_type_string( r ), cd.combat_end_resource[ r ] );
+
+      // Resource timeline for a given resource with loss
+      auto it = range::find_if( cd.resource_timelines, [ r ]( const player_collected_data_t::resource_timeline_t& rtl ) {
+        return rtl.type == r;
+      } );
+
+      if ( it != cd.resource_timelines.end() )
+      {
+        root[ "resource_timelines" ][ util::resource_type_string( r ) ] = it -> timeline;
+      }
+    } );
+
+    // Stat timelines, if they exist
+    range::for_each( cd.stat_timelines, [ &root, &cd ]( const player_collected_data_t::stat_timeline_t& stl ) {
+      add_non_zero( root[ "stat_timelines" ], util::stat_type_string( stl.type ), stl.timeline );
+    } );
+
+    if ( cd.health_changes.collect )
+    {
+      root[ "health_changes" ] = cd.health_changes.merged_timeline;
+    }
+
+    if ( cd.health_changes_tmi.collect )
+    {
+      root[ "health_changes_tmi" ] = cd.health_changes_tmi.merged_timeline;
+    }
+
+    if ( ! cd.action_sequence_precombat.empty() )
+    {
+      to_json( root[ "action_sequence_precombat" ], cd.action_sequence_precombat, relevant_resources );
+    }
+
+    if ( ! cd.action_sequence.empty() )
+    {
+      to_json( root[ "action_sequence" ], cd.action_sequence, relevant_resources );
+    }
+
+    to_json( root[ "buffed_stats" ], cd.buffed_stats_snapshot, relevant_resources );
+  }
 }
 
 js::sc_js_t to_json( const player_collected_data_t& cd, const sim_t& sim )
@@ -501,6 +1122,18 @@ js::sc_js_t to_json( const pet_t& p )
   return node;
 }
 
+void to_json( JsonOutput root, const dbc_t& dbc )
+{
+  bool versions[] = { false, true };
+  for ( const auto& ptr : versions )
+  {
+    root[ dbc::wow_ptr_status( ptr ) ][ "build_level" ] = dbc::build_level( ptr );
+    root[ dbc::wow_ptr_status( ptr ) ][ "wow_version" ] = StringRef( dbc::wow_version( ptr ) );
+  }
+
+  root[ "version_used" ] = StringRef( dbc::wow_ptr_status( dbc.ptr ) );
+}
+
 js::sc_js_t to_json( const dbc_t& dbc )
 {
   js::sc_js_t node;
@@ -575,6 +1208,125 @@ js::sc_js_t to_json( const player_t& p,
     }
   }
   return node;
+}
+
+
+void scale_factors_to_json( JsonOutput root, const player_t& p )
+{
+  if ( p.sim -> report_precision < 0 )
+    p.sim -> report_precision = 2;
+
+  auto sm = p.sim -> scaling -> scaling_metric;
+  const auto& sf = ( p.sim -> scaling -> normalize_scale_factors )
+                   ? p.scaling_normalized[ sm ]
+                   : p.scaling[ sm ];
+
+  for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
+  {
+    if ( p.scales_with[ i ] )
+    {
+      root[ util::stat_type_abbrev( i ) ] = sf.get_stat( i );
+    }
+  }
+}
+
+void to_json( JsonOutput& arr, const player_t& p )
+{
+  auto root = arr.add(); // Add a fresh object to the players array and use it as root
+
+  root[ "name" ] = p.name();
+  root[ "race" ] = util::race_type_string( p.race );
+  root[ "role" ] = util::role_type_string( p.role );
+  root[ "specialization" ] = util::specialization_string( p.specialization() );
+
+  root[ "level" ] = p.true_level;
+  root[ "party" ] = p.party;
+  root[ "ready_type" ] = p.ready_type;
+  root[ "bugs" ] = p.bugs;
+  root[ "scale_player" ] = p.scale_player;
+  root[ "potion_used" ] = p.potion_used;
+  root[ "timeofday" ] = p.timeofday == player_t::NIGHT_TIME ? "NIGHT_TIME" : "DAY_TIME";
+
+  if ( p.is_enemy() )
+  {
+    root[ "death_pct" ] = p.death_pct;
+    root[ "height" ] = p.height;
+    root[ "combat_reach" ] = p.combat_reach;
+  }
+
+  if ( p.sim -> report_pets_separately )
+  {
+    // TODO: Pet reporting
+  }
+
+  root[ "invert_scaling" ] = p.invert_scaling;
+  root[ "reaction_offset" ] = p.reaction_offset;
+  root[ "reaction_mean" ] = p.reaction_mean;
+  root[ "reaction_stddev" ] = p.reaction_stddev;
+  root[ "reaction_nu" ] = p.reaction_nu;
+  root[ "world_lag" ] = p.world_lag;
+  root[ "brain_lag" ] = p.brain_lag;
+  root[ "brain_lag_stddev" ] = p.brain_lag_stddev;
+  root[ "world_lag_override" ] = p.world_lag_override;
+  root[ "world_lag_stddev_override" ] = p.world_lag_stddev_override;
+
+  to_json( root[ "dbc" ], p.dbc );
+
+  for ( auto i = PROFESSION_NONE; i < PROFESSION_MAX; ++i )
+  {
+    if ( p.profession[ i ] > 0 )
+    {
+      root[ "professions" ][ util::profession_type_string( i ) ] = p.profession[ i ];
+    }
+  }
+
+  add_non_zero( root, "base_energy_regen_per_second", p.base_energy_regen_per_second );
+  add_non_zero( root, "base_focus_regen_per_second", p.base_focus_regen_per_second );
+  add_non_zero( root, "base_chi_regen_per_second", p.base_chi_regen_per_second );
+
+  /* TODO: Not implemented reporting begins here
+
+  to_json( root[ "base_stats" ], p.base );
+  to_json( root[ "initial_stats" ], p.initial );
+  to_json( root[ "current_stats" ], p.current );
+
+  if ( p.main_hand_weapon -> slot != SLOT_NONE )
+  {
+    to_json( root[ "main_hand_weapon" ], p.main_hand_weapon );
+  }
+
+  if ( p.off_hand_weapon -> slot != SLOT_NONE )
+  {
+    to_json( root[ "off_hand_weapon" ], p.off_hand_weapon );
+  }
+
+  to_json( root[ "resources" ], p.resources );
+  to_json( root[ "consumables" ], p.consumables );
+  */
+
+  if ( p.sim -> scaling -> has_scale_factors() )
+  {
+    scale_factors_to_json( root[ "scale_factors" ], p );
+  }
+
+  collected_data_to_json( root[ "collected_data" ], p );
+
+  if ( p.sim -> report_details != 0 )
+  {
+    buffs_to_json( root[ "buffs" ], p );
+
+    if ( p.proc_list.size() > 0 )
+    {
+      procs_to_json( root[ "procs" ], p );
+    }
+
+    if ( p.gain_list.size() > 0 )
+    {
+      gains_to_json( root[ "gains" ], p );
+    }
+
+    stats_to_json( root[ "stats" ], p );
+  }
 }
 
 js::sc_js_t to_json( const player_t& p )
@@ -676,6 +1428,28 @@ js::sc_js_t to_json( const rng::rng_t& rng )
   return node;
 }
 
+void to_json( JsonOutput& arr, const raid_event_t& event )
+{
+  auto root = arr.add();
+  root[ "name" ] = event.name();
+  add_non_zero( root, "first", event.first );
+  add_non_zero( root, "last", event.last );
+  add_non_zero( root, "cooldown", event.cooldown );
+  add_non_zero( root, "cooldown_stddev", event.cooldown_stddev );
+  add_non_zero( root, "cooldown_min", event.cooldown_min );
+  add_non_zero( root, "cooldown_max", event.cooldown_max );
+  add_non_zero( root, "duration", event.duration );
+  add_non_zero( root, "duration_stddev", event.duration_stddev );
+  add_non_zero( root, "duration_min", event.duration_min );
+  add_non_zero( root, "duration_max", event.duration_max );
+  add_non_zero( root, "distance_min", event.distance_min );
+  add_non_zero( root, "distance_max", event.distance_max );
+  add_non_zero( root, "players_only", event.players_only );
+  add_non_default( root, "player_chance", event.player_chance, 1.0 );
+  add_non_default( root, "affected_role", event.affected_role, ROLE_NONE );
+  add_non_zero( root, "saved_duration", event.saved_duration );
+}
+
 js::sc_js_t to_json( const raid_event_t& re )
 {
   js::sc_js_t node;
@@ -745,6 +1519,166 @@ js::sc_js_t to_json( const iteration_data_entry_t& ide )
   node.set( "seed", ide.seed );
   node.set( "target_health", ide.target_health );
   return node;
+}
+
+void iteration_data_to_json( JsonOutput root, const std::vector<iteration_data_entry_t>& entries )
+{
+  root.make_array();
+
+  range::for_each( entries, [ &root ]( const iteration_data_entry_t& entry ) {
+    auto json_entry = root.add();
+
+    json_entry[ "metric" ] = entry.metric;
+    json_entry[ "seed" ] = entry.seed;
+    json_entry[ "target_health" ] = entry.target_health;
+  } );
+}
+
+void to_json( JsonOutput root, const sim_t& sim )
+{
+  // Sim-scope options
+  auto options_root = root[ "options" ];
+
+  options_root[ "debug" ] = sim.debug;
+  options_root[ "max_time" ] = sim.max_time.total_seconds();
+  options_root[ "expected_iteration_time" ] = sim.expected_iteration_time.total_seconds();
+  options_root[ "vary_combat_length" ] = sim.vary_combat_length;
+  options_root[ "iterations" ] = sim.iterations;
+  options_root[ "target_error" ] = sim.target_error;
+  options_root[ "threads" ] = sim.threads;
+  options_root[ "seed" ] = sim.seed;
+  options_root[ "single_actor_batch" ] = sim.single_actor_batch;
+  options_root[ "queue_lag" ] = sim.queue_lag;
+  options_root[ "queue_lag_stddev" ] = sim.queue_lag_stddev;
+  options_root[ "gcd_lag" ] = sim.gcd_lag;
+  options_root[ "gcd_lag_stddev" ] = sim.gcd_lag_stddev;
+  options_root[ "channel_lag" ] = sim.channel_lag;
+  options_root[ "channel_lag_stddev" ] = sim.channel_lag_stddev;
+  options_root[ "queue_gcd_reduction" ] = sim.queue_gcd_reduction;
+  options_root[ "strict_gcd_queue" ] = sim.strict_gcd_queue;
+  options_root[ "confidence" ] = sim.confidence;
+  options_root[ "confidence_estimator" ] = sim.confidence_estimator;
+  options_root[ "world_lag" ] =  sim.world_lag;
+  options_root[ "world_lag_stddev" ] =  sim.world_lag_stddev;
+  options_root[ "travel_variance" ] = sim.travel_variance;
+  options_root[ "default_skill" ] = sim.default_skill;
+  options_root[ "reaction_time" ] =  sim.reaction_time;
+  options_root[ "regen_periodicity" ] =  sim.regen_periodicity;
+  options_root[ "ignite_sampling_delta" ] =  sim.ignite_sampling_delta;
+  options_root[ "fixed_time" ] = sim.fixed_time;
+  options_root[ "optimize_expressions" ] = sim.optimize_expressions;
+  options_root[ "optimal_raid" ] = sim.optimal_raid;
+  options_root[ "log" ] = sim.log;
+  options_root[ "debug_each" ] = sim.debug_each;
+  options_root[ "auto_ready_trigger" ] = sim.auto_ready_trigger;
+  options_root[ "stat_cache" ] = sim.stat_cache;
+  options_root[ "max_aoe_enemies" ] = sim.max_aoe_enemies;
+  options_root[ "show_etmi" ] = sim.show_etmi;
+  options_root[ "tmi_window_global" ] = sim.tmi_window_global;
+  options_root[ "tmi_bin_size" ] = sim.tmi_bin_size;
+  options_root[ "enemy_death_pct" ] = sim.enemy_death_pct;
+  options_root[ "challenge_mode" ] = sim.challenge_mode;
+  options_root[ "timewalk" ] = sim.timewalk;
+  options_root[ "pvp_crit" ] = sim.pvp_crit;
+  options_root[ "rng" ] = sim.rng();
+  options_root[ "deterministic" ] = sim.deterministic;
+  options_root[ "average_range" ] = sim.average_range;
+  options_root[ "average_gauss" ] = sim.average_gauss;
+  options_root[ "fight_style" ] = sim.fight_style;
+  options_root[ "default_aura_delay" ] = sim.default_aura_delay;
+  options_root[ "default_aura_delay_stddev" ] = sim.default_aura_delay_stddev;
+
+  to_json( options_root[ "dbc" ], sim.dbc );
+
+  if ( sim.scaling -> calculate_scale_factors )
+  {
+    auto scaling_root = options_root[ "scaling" ];
+    scaling_root[ "calculate_scale_factors" ] = sim.scaling -> calculate_scale_factors;
+    scaling_root[ "normalize_scale_factors" ] = sim.scaling -> normalize_scale_factors;
+    add_non_zero( scaling_root, "scale_only", sim.scaling -> scale_only_str );
+    add_non_zero( scaling_root, "scale_over",  sim.scaling -> scale_over );
+    add_non_zero( scaling_root, "scale_over_player", sim.scaling -> scale_over_player );
+    add_non_default( scaling_root, "scale_delta_multiplier", sim.scaling -> scale_delta_multiplier, 1.0 );
+    add_non_zero( scaling_root, "positive_scale_delta", sim.scaling -> positive_scale_delta );
+    add_non_zero( scaling_root, "scale_lag", sim.scaling -> scale_lag );
+    add_non_zero( scaling_root, "center_scale_delta", sim.scaling -> center_scale_delta );
+  }
+
+  // Overrides
+  auto overrides = root[ "overrides" ];
+  add_non_zero( overrides, "mortal_wounds", sim.overrides.mortal_wounds );
+  add_non_zero( overrides, "bleeding", sim.overrides.bleeding );
+  add_non_zero( overrides, "bloodlust", sim.overrides.bloodlust );
+  if ( sim.overrides.bloodlust )
+  {
+    add_non_zero( overrides, "bloodlust_percent", sim.bloodlust_percent );
+    add_non_zero( overrides, "bloodlust_time", sim.bloodlust_time );
+  }
+
+  if ( ! sim.overrides.target_health.empty() )
+  {
+    overrides[ "target_health" ] = sim.overrides.target_health;
+  }
+
+  // Players
+  JsonOutput players_arr = root[ "players" ].make_array();
+
+  range::for_each( sim.player_no_pet_list.data(), [ &players_arr ]( const player_t* p ) {
+    to_json( players_arr, *p );
+  } );
+
+  if ( sim.report_details != 0 )
+  {
+    // Targets
+    JsonOutput targets_arr = root[ "targets" ].make_array();
+
+    range::for_each( sim.target_list.data(), [ &targets_arr ]( const player_t* p ) {
+      to_json( targets_arr, *p );
+    } );
+
+    // Raid events
+    if ( ! sim.raid_events.empty() )
+    {
+      auto arr = root[ "raid_events" ].make_array();
+
+      range::for_each( sim.raid_events, [ &arr ]( const std::unique_ptr<raid_event_t>& event ) {
+        to_json( arr, *event );
+      } );
+    }
+
+    if ( sim.buff_list.size() > 0 )
+    {
+      JsonOutput buffs_arr = root[ "sim_auras" ].make_array();
+      range::for_each( sim.buff_list, [ &buffs_arr ]( const buff_t* b ) {
+        if ( b -> avg_start.mean() == 0 )
+        {
+          return;
+        }
+        to_json( buffs_arr.add(), b );
+      } );
+    }
+
+    auto stats_root = root[ "statistics" ];
+    stats_root[ "elapsed_cpu_seconds" ] = sim.elapsed_cpu;
+    stats_root[ "elapsed_time_seconds" ] = sim.elapsed_time;
+    stats_root[ "simulation_length" ] = sim.simulation_length;
+    add_non_zero( stats_root, "raid_dps", sim.raid_dps );
+    add_non_zero( stats_root, "raid_hps", sim.raid_hps );
+    add_non_zero( stats_root, "raid_aps", sim.raid_aps );
+    add_non_zero( stats_root, "total_dmg", sim.total_dmg );
+    add_non_zero( stats_root, "total_heal", sim.total_heal );
+    add_non_zero( stats_root, "total_absorb", sim.total_absorb );
+
+    if ( sim.low_iteration_data.size() > 0 )
+    {
+      iteration_data_to_json( root[ "iteration_data" ][ "low" ], sim.low_iteration_data );
+    }
+
+    if ( sim.high_iteration_data.size() > 0 )
+    {
+      iteration_data_to_json( root[ "iteration_data" ][ "high" ], sim.high_iteration_data );
+    }
+  }
 }
 
 js::sc_js_t to_json( const sim_t& sim )
@@ -872,69 +1806,95 @@ js::sc_js_t get_root( const sim_t& sim )
   root.set( "sim", to_json( sim ) );
   return root;
 }
-/*
-void print_json_raw( FILE* o, const sim_t& sim )
+
+void print_json2_pretty( FILE* o, const sim_t& sim )
 {
-  js::sc_js_t root = get_root( sim );
-  std::array<char, 1024> buffer;
-  rapidjson::FileWriteStream b( o, buffer.data(), buffer.size() );
-  rapidjson::Writer<rapidjson::FileWriteStream> writer( b );
-  root.js_.Accept( writer );
-}*/
+  Document doc;
+  Value& v = doc;
+  v.SetObject();
+
+  JsonOutput root( doc, v );
+
+  root[ "version" ] = SC_VERSION;
+  root[ "ptr_enabled" ] = SC_USE_PTR;
+  root[ "beta_enabled" ] = SC_BETA;
+  root[ "build_date" ] = __DATE__;
+  root[ "build_time" ] = __TIME__;
+#if defined( SC_GIT_REV )
+  root[ "git_revision" ] = SC_GIT_REV;
+#endif
+
+  to_json( root[ "sim" ], sim );
+
+  if ( sim.error_list.size() > 0 )
+  {
+    root[ "notifications" ] = sim.error_list;
+  }
+
+  std::array<char, 65536> buffer;
+  FileWriteStream b( o, buffer.data(), buffer.size() );
+  PrettyWriter<FileWriteStream> writer( b );
+  doc.Accept( writer );
+}
 
 void print_json_pretty( FILE* o, const sim_t& sim )
 {
   js::sc_js_t root = get_root( sim );
   std::array<char, 1024> buffer;
-  rapidjson::FileWriteStream b( o, buffer.data(), buffer.size() );
-  rapidjson::PrettyWriter<rapidjson::FileWriteStream> writer( b );
+  FileWriteStream b( o, buffer.data(), buffer.size() );
+  PrettyWriter<FileWriteStream> writer( b );
   root.js_.Accept( writer );
 }
-/*
-std::string print_json_string_raw( const sim_t& sim )
-{
-  js::sc_js_t root = get_root( sim );
-  rapidjson::StringBuffer b;
-  rapidjson::Writer<rapidjson::StringBuffer> writer( b );
-  root.js_.Accept( writer );
-  return b.GetString();
-}
-
-std::string print_json_string_pretty( const sim_t& sim )
-{
-  js::sc_js_t root = get_root( sim );
-  rapidjson::StringBuffer b;
-  rapidjson::PrettyWriter<rapidjson::StringBuffer> writer( b );
-  root.js_.Accept( writer );
-  return b.GetString();
-}
-*/
 }  // unnamed namespace
 
 namespace report
 {
 void print_json( sim_t& sim )
 {
-  if ( sim.json_file_str.empty() )
-    return;
-  // Setup file stream and open file
-  io::cfile s( sim.json_file_str, "w" );
-  if ( !s )
+  if ( ! sim.json_file_str.empty() )
   {
-    sim.errorf( "Failed to open JSON output file '%s'.",
-                sim.json_file_str.c_str() );
-    return;
+    // Setup file stream and open file
+    io::cfile s( sim.json_file_str, "w" );
+    if ( !s )
+    {
+      sim.errorf( "Failed to open JSON output file '%s'.",
+                  sim.json_file_str.c_str() );
+      return;
+    }
+
+    // Print JSON report
+    try
+    {
+      Timer t( "JSON report" );
+      print_json_pretty( s, sim );
+    }
+    catch ( const std::exception& e )
+    {
+      sim.errorf( "Failed to print JSON output! %s", e.what() );
+    }
   }
 
-  // Print JSON report
-  try
+  if ( ! sim.json2_file_str.empty() )
   {
-    Timer t( "JSON report" );
-    print_json_pretty( s, sim );
-  }
-  catch ( const std::exception& e )
-  {
-    sim.errorf( "Failed to print JSON output! %s", e.what() );
+    // Setup file stream and open file
+    io::cfile s( sim.json2_file_str, "w" );
+    if ( !s )
+    {
+      sim.errorf( "Failed to open JSON output file '%s'.",
+                  sim.json2_file_str.c_str() );
+      return;
+    }
+
+    // Print JSON report
+    try
+    {
+      Timer t( "JSON-New report" );
+      print_json2_pretty( s, sim );
+    }
+    catch ( const std::exception& e )
+    {
+      sim.errorf( "Failed to print JSON output! %s", e.what() );
+    }
   }
 }
 

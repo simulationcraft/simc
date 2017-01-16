@@ -7220,7 +7220,6 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   cooldowns.ray_of_frost     = get_cooldown( "ray_of_frost"     );
 
   // Options
-  base.distance = 30;
   regen_type = REGEN_DYNAMIC;
   regen_caches[ CACHE_MASTERY ] = true;
 
@@ -7570,6 +7569,8 @@ void mage_t::init_spells()
 void mage_t::init_base_stats()
 {
   player_t::init_base_stats();
+
+  base.distance = 30;
 
   base.spell_power_per_intellect = 1.0;
 

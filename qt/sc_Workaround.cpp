@@ -4,6 +4,7 @@
 // ==========================================================================
 #include "sc_Workaround.hpp"
 
+#if defined( SC_WINDOWS )
 #include <locale>
 #include <codecvt>
 
@@ -11,7 +12,7 @@
 #include <tlhelp32.h>
 #include <tchar.h>
 
-#if defined( SC_WINDOWS )
+
 namespace
 {
 void __unload_module( MODULEENTRY32* module, sim_t* /* sim */ )
