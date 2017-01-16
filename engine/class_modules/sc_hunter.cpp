@@ -852,16 +852,6 @@ struct hunter_melee_attack_t: public hunter_action_t < melee_attack_t >
     special = true;
     tick_may_crit = true;
   }
-
-  virtual double composite_crit_chance() const override
-  {
-    double cc = base_t::composite_crit_chance();
-
-    if ( p() -> buffs.aspect_of_the_eagle -> up() )
-      cc += p() -> specs.aspect_of_the_eagle -> effectN( 1 ).percent();
-
-    return cc;
-  }
 };
 
 struct hunter_spell_t: public hunter_action_t < spell_t >
@@ -1238,7 +1228,8 @@ public:
       buff_creator_t( this, "aspect_of_the_wild", o() -> specs.aspect_of_the_wild )
         .affects_regen( true )
         .cd( timespan_t::zero() )
-        .default_value( o() -> specs.aspect_of_the_wild -> effectN( 1 ).percent() );
+        .default_value( o() -> specs.aspect_of_the_wild -> effectN( 1 ).percent() )
+        .add_invalidate( CACHE_CRIT_CHANCE );
 
     if ( o() -> artifacts.wilderness_expert.rank() )
       buffs.aspect_of_the_wild -> buff_duration += o() -> artifacts.wilderness_expert.time_value();
@@ -1368,6 +1359,9 @@ public:
 
     if ( buffs.aspect_of_the_wild -> check() )
       ac += buffs.aspect_of_the_wild -> check_value();
+
+    if ( o() -> buffs.aspect_of_the_eagle -> up() )
+      ac += o() -> specs.aspect_of_the_eagle -> effectN( 1 ).percent();
 
     return ac;
   }
@@ -1939,16 +1933,6 @@ struct hunter_main_pet_attack_t: public hunter_main_pet_action_t < melee_attack_
       return false;
 
     return base_t::ready();
-  }
-
-  virtual double composite_crit_chance() const override
-  {
-    double cc = base_t::composite_crit_chance();
-
-    if ( p() -> o() -> buffs.aspect_of_the_eagle -> up() )
-      cc += p() -> o() -> specs.aspect_of_the_eagle -> effectN( 1 ).percent();
-
-    return cc;
   }
 };
 
@@ -5986,6 +5970,7 @@ void hunter_t::create_buffs()
   buffs.aspect_of_the_eagle = 
     buff_creator_t( this, 186289, "aspect_of_the_eagle" )
       .cd( timespan_t::zero() )
+      .add_invalidate( CACHE_CRIT_CHANCE )
       .default_value( find_spell( 186289 ) 
                    -> effectN( 1 )
                      .percent() );
@@ -6595,6 +6580,9 @@ double hunter_t::composite_melee_crit_chance() const
   if ( buffs.aspect_of_the_wild -> check() )
     crit += buffs.aspect_of_the_wild -> check_value();
 
+  if ( buffs.aspect_of_the_eagle -> up() )
+    crit += specs.aspect_of_the_eagle -> effectN( 1 ).percent();
+
   crit +=  specs.critical_strikes -> effectN( 1 ).percent();
 
   return crit;
@@ -6611,6 +6599,9 @@ double hunter_t::composite_spell_crit_chance() const
 
   if ( buffs.aspect_of_the_wild -> check() )
     crit += buffs.aspect_of_the_wild -> check_value();
+
+  if ( buffs.aspect_of_the_eagle -> up() )
+    crit += specs.aspect_of_the_eagle -> effectN( 1 ).percent();
 
   crit +=  specs.critical_strikes -> effectN( 1 ).percent();
 
