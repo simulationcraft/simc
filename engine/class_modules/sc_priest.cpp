@@ -5,6 +5,8 @@
 
 #include "simulationcraft.hpp"
 /*
+
+//   - UPDATE SPELLS BASED ON HOTFIXES JANUARY 17th. TEMPORARY //FIXME ADDED FOR NOW
 TODO - Updated 2016-09-28 by scamille:
 
 Disc:
@@ -409,31 +411,6 @@ public:
     bool priest_fixed_time     = true;
     bool priest_ignore_healing = false; 
   } options;
-
-  // Glyphs
-  struct
-  {
-    // All Specs
-    const spell_data_t* angels;
-    const spell_data_t* confession;
-    const spell_data_t* holy_resurrection;
-    const spell_data_t* shackle_undead;
-    const spell_data_t* the_heavens;
-    const spell_data_t* the_sha;
-
-    // Discipline
-    const spell_data_t* borrowed_time;
-
-    // Holy
-    const spell_data_t* inspired_hymns;
-    const spell_data_t* the_valkyr;
-
-    // Shadow
-    const spell_data_t* dark_archangel;
-    const spell_data_t* shadow;
-    const spell_data_t* shadow_ravens;
-    const spell_data_t* shadowy_friends;
-  } glyphs;
 
   priest_t( sim_t* sim, const std::string& name, race_e r );
 
@@ -1973,64 +1950,9 @@ private:
 /// the Wicked
 struct holy_fire_base_t : public priest_spell_t
 {
-  struct glyph_of_the_inquisitor_backlash_t : public priest_spell_t
-  {
-    double spellpower;
-    double multiplier;
-    bool critical;
-
-    glyph_of_the_inquisitor_backlash_t( priest_t& p )
-      : priest_spell_t( "glyph_of_the_inquisitor_backlash", p,
-                        p.talents.power_word_solace->ok()
-                            ? p.find_spell( 129250 )
-                            : p.find_class_spell( "Holy Fire" ) ),
-        spellpower( 0.0 ),
-        multiplier( 1.0 ),
-        critical( false )
-    {
-      background = true;
-      harmful    = false;
-      proc       = true;
-      may_crit   = false;
-      callbacks  = false;
-
-      target = &priest;
-
-      ability_lag        = sim->default_aura_delay;
-      ability_lag_stddev = sim->default_aura_delay_stddev;
-    }
-
-    void init() override
-    {
-      priest_spell_t::init();
-
-      stats->type = STATS_NEUTRAL;
-    }
-
-    double composite_spell_power() const override
-    {
-      return spellpower;
-    }
-
-    double composite_da_multiplier(
-        const action_state_t* /* state */ ) const override
-    {
-      double d = multiplier;
-      d /= 5;
-
-      if ( critical )
-        d *= 2;
-
-      return d;
-    }
-  };
-
-  glyph_of_the_inquisitor_backlash_t* backlash;
-
   holy_fire_base_t( const std::string& name, priest_t& p,
                     const spell_data_t* sd )
-    : priest_spell_t( name, p, sd ),
-      backlash( new glyph_of_the_inquisitor_backlash_t( p ) )
+    : priest_spell_t( name, p, sd )
   {
     procs_courageous_primal_diamond = false;
   }
@@ -2100,10 +2022,7 @@ public:
     {
       base_multiplier *= 1.0 + player.artifact.mind_shattering.percent();
     }
-
-    // Disable dynamic hasted cooldown scaling as it is causing a double-dip in
-    // haste. -- Twintop 2016/09/17
-    // cooldown->hasted = true;
+    base_multiplier *= 0.96; //FIXME
   }
 
   void init() override
@@ -2701,6 +2620,7 @@ struct shadow_word_death_t final : public priest_spell_t
     {
       base_multiplier *= 1.0 + p.artifact.deaths_embrace.percent();
     }
+    base_multiplier *= 0.96; //FIXME
   }
 
   double composite_da_multiplier(const action_state_t* state) const override
@@ -2709,18 +2629,12 @@ struct shadow_word_death_t final : public priest_spell_t
 
     if (priest.buffs.zeks_exterminatus->up())
     {
-      d *= 1.0 + priest.buffs.zeks_exterminatus->data().effectN( 1 ).trigger()->effectN( 2 ).percent();
-
+      d *= 2.0; //FIXME
+      //d *= 1.0 + priest.buffs.zeks_exterminatus->data().effectN( 1 ).trigger()->effectN( 2 ).percent();
+      priest.buffs.zeks_exterminatus->expire();
     }
 
     return d;
-  }
-
-  void schedule_execute(action_state_t* s) override
-  {
-    priest_spell_t::schedule_execute(s);
-
-    priest.buffs.zeks_exterminatus->expire();
   }
 
   void impact( action_state_t* s ) override
@@ -2787,6 +2701,7 @@ struct shadow_crash_t final : public priest_spell_t
     spell_power_mod.direct      = missile->effectN( 1 ).sp_coeff();
     aoe                         = -1;
     radius                      = data().effectN( 1 ).radius();
+    base_multiplier *= 0.96; //FIXME
 
     energize_type =
         ENERGIZE_NONE;  // disable resource generation from spell data
@@ -2836,6 +2751,7 @@ struct shadowy_apparition_spell_t final : public priest_spell_t
         p.find_spell( 148859 );  // Hardcoded into tooltip 2014/06/01
 
     parse_effect_data( dmg_data->effectN( 1 ) );
+    base_multiplier *= 0.96; //FIXME
     school = SCHOOL_SHADOW;
   }
 
@@ -2967,6 +2883,7 @@ struct shadow_word_pain_t final : public priest_spell_t
           new sphere_of_insanity_spell_t( p );
       add_child( priest.active_spells.sphere_of_insanity );
     }
+    base_multiplier *= 0.89; //FIXME
   }
 
   double spell_direct_power_coefficient(const action_state_t* s) const override
@@ -3075,6 +2992,8 @@ struct shadow_word_void_t final : public priest_spell_t
       insanity_gain( data().effectN( 2 ).resource( RESOURCE_INSANITY ) )
   {
     parse_options( options_str );
+
+    base_multiplier *= 0.96; //FIXME
 
     energize_type =
         ENERGIZE_NONE;  // disable resource generation from spell data
@@ -3300,6 +3219,7 @@ struct vampiric_touch_t final : public priest_spell_t
       priest.active_spells.shadowy_apparitions =
           new shadowy_apparition_spell_t( p );
     }
+    base_multiplier *= 0.86; //FIXME
   }
   void init_mental_fortitude();
   
@@ -3424,6 +3344,8 @@ struct void_bolt_t final : public priest_spell_t
       base_multiplier *= 1.0 + player.artifact.sinister_thoughts.percent();
     }
 
+    base_multiplier *= 0.96; //FIXME
+
     cooldown->hasted = true;
   }
 
@@ -3505,6 +3427,7 @@ struct void_eruption_t final : public priest_spell_t
     radius   = 100.0;
     school   = SCHOOL_SHADOW;
     cooldown = priest.cooldowns.void_bolt;
+    base_multiplier *= 0.96; //FIXME
   }
 
   void init() override
@@ -3588,7 +3511,7 @@ struct void_eruption_t final : public priest_spell_t
                   ->effectN(1)
                   .base_value();
 
-      priest.buffs.voidform->bump( mss_vf_stacks -1 ); // You start with 5 Stacks of Voidform 2016/12/22 N1gh7h4wk
+      priest.buffs.voidform->bump( mss_vf_stacks -3 ); // You start with 3 Stacks of Voidform 2016/01/15
     }
   }
 
@@ -3625,6 +3548,7 @@ struct void_torrent_t final : public priest_spell_t
     is_mind_spell = false;
     tick_zero     = true;
 
+    base_multiplier *= 0.96; //FIXME
     dot_duration = timespan_t::from_seconds( 4.0 );
   }
 
@@ -4224,7 +4148,6 @@ priest_t::priest_t( sim_t* sim, const std::string& name, race_e r )
     active_items(),
     pets(),
     options(),
-    glyphs(),
     insanity( *this )
 {
   base.distance = 27.0;  // Halo
@@ -5688,13 +5611,6 @@ void priest_t::apl_disc_dmg()
 
   def->add_talent( this, "Schism" );
   def->add_action( this, "Penance" );
-
-  //  def->add_talent( this, "Power Word: Solace",
-  //                   "if=talent.power_word_solace.enabled" );
-
-  def->add_action( this, "Smite",
-                   "if=glyph.smite.enabled&(dot.power_word_solace.remains+dot."
-                   "holy_fire.remains)>cast_time" );
   def->add_talent( this, "Purge the Wicked", "if=remains<(duration*0.3)" );
   def->add_action(
       this, "Shadow Word: Pain",

@@ -473,17 +473,6 @@ void print_xml_player_attribute( xml_writer_t& writer,
 
 void print_xml_player_actions( xml_writer_t& writer, player_t* p )
 {
-  writer.begin_tag( "glyphs" );
-  std::vector<std::string> glyph_names =
-      util::string_split( p->glyphs_str.c_str(), "/" );
-  for ( size_t i = 0; i < glyph_names.size(); i++ )
-  {
-    writer.begin_tag( "glyph" );
-    writer.print_attribute( "name", glyph_names[ i ] );
-    writer.end_tag( "glyph" );
-  }
-  writer.end_tag( "glyphs" );
-
   int idx = 0;
   writer.begin_tag( "priorities" );
   for ( size_t alist = 0; alist < p->action_priority_list.size(); alist++ )

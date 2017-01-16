@@ -9,6 +9,7 @@ namespace
 { // UNNAMED NAMESPACE
 // ==========================================================================
 // Warrior
+//   - UPDATE SPELLS BASED ON HOTFIXES JANUARY 17th. TEMPORARY //FIXME ADDED FOR NOW
 // ==========================================================================
 
 struct warrior_t;
@@ -1049,7 +1050,7 @@ struct melee_t: public warrior_attack_t
     }
     if ( p -> talents.devastator -> ok() )
     {
-      weapon_multiplier += p -> talents.devastator -> effectN( 1 ).trigger() -> effectN( 1 ).percent();
+      weapon_multiplier += ( p -> talents.devastator -> effectN( 1 ).trigger() -> effectN( 1 ).percent() * 0.95 );//FIXME
     }
   }
 
@@ -1767,6 +1768,8 @@ struct deep_wounds_t: public warrior_attack_t
   {
     background = tick_may_crit = true;
     hasted_ticks = false;
+    if ( p -> specialization() == WARRIOR_PROTECTION )
+      base_multiplier *= 0.95; //FIXME
   }
 };
 
@@ -1839,6 +1842,7 @@ struct devastate_t: public warrior_attack_t
     weapon = &( p -> main_hand_weapon );
     impact_action = p -> active.deep_wounds;
     weapon_multiplier *= 1.0 + p -> artifact.strength_of_the_earth_aspect.percent();
+    base_multiplier *= 0.95; //FIXME
     if ( p -> talents.devastator -> ok() )
       background = true; // Disabled with devastator.
   }
@@ -2311,6 +2315,8 @@ struct heroic_throw_t: public warrior_attack_t
 
     weapon = &( player -> main_hand_weapon );
     may_dodge = may_parry = may_block = false;
+    if ( p -> specialization() == WARRIOR_PROTECTION )
+      base_multiplier *= 0.95; //FIXME .... why nerf this ability?
   }
 
   bool ready() override
@@ -3087,6 +3093,8 @@ struct ravager_tick_t: public warrior_attack_t
     {
       weapon_multiplier *= 1.0 + p->spell.arms_warrior->effectN( 3 ).percent();
     }
+    else if ( p -> specialization() == WARRIOR_PROTECTION )
+      base_multiplier *= 0.95; //FIXME
   }
 };
 
@@ -3139,6 +3147,8 @@ struct revenge_t: public warrior_attack_t
 
     impact_action = p -> active.deep_wounds;
     attack_power_mod.direct *= 1.0 + p -> artifact.rage_of_the_fallen.percent();
+    if ( p -> specialization() == WARRIOR_PROTECTION )
+      base_multiplier *= 0.86; //FIXME
   }
 
   void execute() override
@@ -3250,6 +3260,8 @@ struct shield_slam_t: public warrior_attack_t
   {
     parse_options( options_str );
     energize_type = ENERGIZE_NONE;
+    if ( p -> specialization() == WARRIOR_PROTECTION )
+      base_multiplier *= 0.95; 
   }
 
   double action_multiplier() const override
@@ -3473,6 +3485,8 @@ struct thunder_clap_t: public warrior_attack_t
     attack_power_mod.direct *= 1.0 + p -> artifact.thunder_crash.percent();
 
     radius *= 1.0 + p -> talents.crackling_thunder -> effectN( 1 ).percent();
+    if ( p -> specialization() == WARRIOR_PROTECTION )
+      base_multiplier *= 0.86; //FIXME
   }
 };
 
@@ -4259,6 +4273,7 @@ struct spell_reflection_t: public warrior_spell_t
     warrior_spell_t( "spell_reflection", p, p -> spec.spell_reflection )
   {
     parse_options( options_str );
+    use_off_gcd = true;
   }
 
   void execute() override
@@ -5112,6 +5127,7 @@ void warrior_t::apl_prot()
   prot -> add_action( this, "Revenge", "if=(buff.vengeance_revenge.up&!buff.vengeance_ignore_pain.up&rage>=59)|!buff.vengeance_ignore_pain.up|(talent.vengeance.enabled&!buff.vengeance_ignore_pain.up&!buff.vengeance_revenge.up&rage>=69)|(rage>=100)" );
   prot -> add_action( this, "Thunder Clap", "if=spell_targets.thunder_clap>=4" );
   prot -> add_action( this, "Devastate" );
+  prot -> add_action( this, "Thunder Clap" );
 }
 
 // NO Spec Combat Action Priority List
@@ -5249,7 +5265,7 @@ struct sephuzs_secret_buff_t: public haste_buff_t
   cooldown_t* icd;
   sephuzs_secret_buff_t( warrior_t* p ):
     haste_buff_t( haste_buff_creator_t( p, "sephuzs_secret", p -> find_spell( 208052 ) )
-            .default_value( p -> find_spell( 208502 ) -> effectN( 2 ).percent() )
+            .default_value( p -> find_spell( 208052 ) -> effectN( 2 ).percent() )
             .add_invalidate( CACHE_HASTE ) )
   {
     icd = p -> get_cooldown( "sephuzs_secret_cooldown" );

@@ -273,8 +273,6 @@ std::string tooltip_parser_t::parse()
           if ( player )
           {
             has_spell = player->find_class_spell( spell->name_cstr() )->ok();
-            if ( !has_spell )
-              has_spell = player->find_glyph_spell( spell->name_cstr() )->ok();
           }
           replacement_text = has_spell ? "true" : "false";
           break;

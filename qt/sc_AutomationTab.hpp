@@ -31,7 +31,6 @@ public:
     struct labels_t
     {
       QLabel* talents;
-      QLabel* glyphs;
       QLabel* gear;
       QLabel* rotationHeader;
       QLabel* rotationFooter;
@@ -43,7 +42,6 @@ public:
     struct textBoxes_t
     {
       QLineEdit* talents;
-      QLineEdit* glyphs;
       SC_TextEdit* gear;
       SC_TextEdit* rotationHeader;
       SC_TextEdit* rotationFooter;
@@ -54,7 +52,6 @@ public:
     } textbox;
 
     QString advTalent;
-    QString advGlyph;
     QString advGear;
     QString advRotation;
     SC_AutomationTab( QWidget* parent = 0 );

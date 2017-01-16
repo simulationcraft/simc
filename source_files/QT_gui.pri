@@ -12,6 +12,7 @@
  HEADERS += qt/simulationcraftqt.hpp
  HEADERS += qt/sc_importWindow.hpp
  HEADERS += qt/sc_importWidget.hpp
+ HEADERS += qt/sc_Workaround.hpp
  HEADERS += qt/sc_WelcomeTab.hpp
  HEADERS += qt/sc_SpellQueryTab.hpp
  HEADERS += qt/sc_SimulationThread.hpp
@@ -29,6 +30,7 @@
  SOURCES += qt/sc_window.cpp
  SOURCES += qt/sc_importWindow.cpp
  SOURCES += qt/sc_importWidget.cpp
+ SOURCES += qt/sc_Workaround.cpp
  SOURCES += qt/sc_WelcomeTab.cpp
  SOURCES += qt/sc_SpellQueryTab.cpp
  SOURCES += qt/sc_SimulationThread.cpp

@@ -198,6 +198,7 @@ public:
     buff_t* out_of_range;
     buff_t* nemesis;
     buff_t* prepared;
+    buff_t* blind_fury;
     buff_t* rage_of_the_illidari;
     movement_buff_t* vengeful_retreat_move;
 
@@ -300,6 +301,7 @@ public:
     const spell_data_t* chaos_strike_refund;
     const spell_data_t* death_sweep;
     const spell_data_t* demonic_appetite_fury;
+    const spell_data_t* eye_beam;
     const spell_data_t* fel_barrage_proc;
     const spell_data_t* fel_rush_damage;
     const spell_data_t* vengeful_retreat;
@@ -493,11 +495,6 @@ public:
   struct demon_hunter_options_t
   {
   } options;
-
-  // Glyphs
-  struct
-  {
-  } glyphs;
 
   // Legion Legendaries
   struct
@@ -1096,7 +1093,7 @@ public:
 
         if (havoc_damage_increase)
         {
-            ab::weapon_multiplier *= 1 + p->spec.havoc->effectN(6).percent();
+            ab::base_dd_multiplier *= 1 + p->spec.havoc->effectN(6).percent();
         }
         break;
       case DEMON_HUNTER_VENGEANCE:
@@ -1762,17 +1759,13 @@ struct eye_beam_t : public demon_hunter_spell_t
       {
         p() -> cooldown.eye_beam -> adjust( p() -> legendary.raddons_cascading_eyes );
       }
-
-    if (p()->talent.blind_fury->ok()){
-      p()->resource_gain(RESOURCE_FURY, 7, p()->gain.blind_fury);
-    }
     }
   };
 
   eye_beam_tick_t* beam;
 
   eye_beam_t( demon_hunter_t* p, const std::string& options_str )
-    : demon_hunter_spell_t( "eye_beam", p, p -> find_class_spell( "Eye Beam" ),
+    : demon_hunter_spell_t( "eye_beam", p, p -> spec.eye_beam,
                             options_str ),
       beam( new eye_beam_tick_t( p ) )
   {
@@ -1808,32 +1801,39 @@ struct eye_beam_t : public demon_hunter_spell_t
 
   void execute() override
   {
-    demon_hunter_spell_t::execute();
+      bool extend = false;
 
-    if ( p() -> talent.demonic -> ok() )
-    {
-      timespan_t demonicTime;
-      demonicTime = timespan_t::from_seconds( 8 );
-      if ( p()->buff.metamorphosis->up() )
+      if (p()->talent.demonic->ok())
       {
-        p()->buff.metamorphosis->extend_duration( p(), demonicTime );
-        return;
+          timespan_t demonicTime = timespan_t::from_seconds(8);
+          if (p()->buff.metamorphosis->up())
+          {
+              p()->buff.metamorphosis->extend_duration(p(), demonicTime);
+          }
+          else
+          {
+              // Trigger before the execute so that the duration is affected by Meta haste
+              p()->buff.metamorphosis->trigger(1, p()->buff.metamorphosis->default_value, -1.0, demonicTime);
+              extend = true;
+          }
       }
 
-      /* Buff starts when the channel does and lasts for 5 seconds +
-      base channel duration. No duration data for demonic. */
-      p() -> buff.metamorphosis -> trigger(
-        1, p() -> buff.metamorphosis -> default_value, -1.0,
-        demonicTime + dot_duration );
-    }
+      demon_hunter_spell_t::execute();
+      timespan_t duration = composite_dot_duration(execute_state);
 
-    // If Metamorphosis has less than channel s remaining, it gets extended so the whole Eye Beam happens during Meta.
-    // TOCHECK: Base channel duration or hasted channel duration?
-    if (p() -> buff.metamorphosis -> up() &&  p() -> buff.metamorphosis -> remains_lt( dot_duration ) )
-    {
-      p() -> buff.metamorphosis -> trigger( 1, p() -> buff.metamorphosis -> current_value, -1.0,
-                                            dot_duration );
-    }
+      // Since Demonic triggers Meta with 8s + hasted duration, need to extend by the hasted duration after have an execute_state
+      if (extend)
+      {
+          p()->buff.metamorphosis->extend_duration(p(), duration);
+      }
+
+      if (p()->talent.blind_fury->ok())
+      {
+          // Blind Fury gains scale with the duration of the channel
+          p()->buff.blind_fury->buff_duration = duration;
+          p()->buff.blind_fury->buff_period = timespan_t::from_millis(100) * (duration / dot_duration);
+          p()->buff.blind_fury->trigger();
+      }
   }
 };
 
@@ -5122,7 +5122,6 @@ demon_hunter_t::demon_hunter_t( sim_t* sim, const std::string& name, race_e r )
     active(),
     pets(),
     options(),
-    glyphs(),
     legendary()
 {
   base.distance = 5.0;
@@ -5382,14 +5381,25 @@ void demon_hunter_t::create_buffs()
       talent.prepared->effectN(1).trigger())
       .trigger_spell(talent.prepared)
       .period(timespan_t::from_millis(100))
-      .default_value(talent.prepared->effectN(1).trigger()->effectN(1).resource( RESOURCE_FURY) *
+      .default_value(talent.prepared->effectN(1).trigger()->effectN(1).resource( RESOURCE_FURY ) *
         (1.0 +sets.set(DEMON_HUNTER_HAVOC, T19, B2)->effectN(1).percent()) / 
         (talent.prepared->effectN(1).trigger()->duration().total_millis() / 100))
       .tick_callback( [this]( buff_t* b, int, const timespan_t& ) {
       resource_gain( RESOURCE_FURY, b->check_value(), gain.prepared );
     } );
-  
 
+    buff.blind_fury =
+        buff_creator_t(this, "blind_fury", spec.eye_beam)
+        .cd(timespan_t::zero())
+        .default_value(talent.blind_fury->effectN(3).resource(RESOURCE_FURY) *
+        (1.0 + sets.set(DEMON_HUNTER_HAVOC, T19, B2)->effectN(1).percent()) / 50)
+        .duration(spec.eye_beam->duration() * (1.0 + talent.blind_fury->effectN(1).percent()))
+        .period(timespan_t::from_millis(100))
+        .tick_zero(true)
+        .tick_callback([this](buff_t* b, int, const timespan_t&) {
+        resource_gain(RESOURCE_FURY, b->check_value(), gain.blind_fury);
+    });
+  
   buff.rage_of_the_illidari =
     buff_creator_t( this, "rage_of_the_illidari", find_spell( 217060 ) );
 
@@ -5944,6 +5954,7 @@ void demon_hunter_t::init_spells()
   spec.chaos_strike        = find_class_spell( "Chaos Strike" );
   spec.chaos_strike_refund = find_spell( 197125 );
   spec.death_sweep         = find_spell( 210152 );
+  spec.eye_beam            = find_class_spell( "Eye Beam" );
   spec.fel_rush_damage     = find_spell( 192611 );
   spec.vengeful_retreat    = find_class_spell( "Vengeful Retreat" );
 
@@ -7503,6 +7514,25 @@ public:
 
   void register_hotfixes() const override
   {
+      hotfix::register_effect("Demon Hunter", "2017-01-13", "Chaos Blades damage reduced to 150%", 313818)
+          .field("base_value")
+          .operation(hotfix::HOTFIX_SET)
+          .modifier(250);
+
+      hotfix::register_effect("Demon Hunter", "2017-01-13", "Chaos Blades OH damage reduced to 150%", 313820)
+          .field("base_value")
+          .operation(hotfix::HOTFIX_SET)
+          .modifier(250);
+      
+      hotfix::register_effect("Demon Hunter", "2017-01-13", "Ability modifier reduced to 8%", 315240)
+          .field("base_value")
+          .operation(hotfix::HOTFIX_SET)
+          .modifier(8);
+
+      hotfix::register_effect("Demon Hunter", "2017-01-13", "Fel Rush increased to 30 Fury per cast", 283035)
+          .field("base_value")
+          .operation(hotfix::HOTFIX_SET)
+          .modifier(30);
   }
 
   void combat_begin( sim_t* ) const override

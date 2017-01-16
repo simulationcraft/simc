@@ -202,7 +202,36 @@ struct mark_of_the_distant_army_t : public proc_spell_t
     proc_spell_t( "mark_of_the_distant_army",
       p, p -> find_spell( 191380 ), nullptr )
   {
-    may_crit = tick_may_crit = false;
+    // Hardcoded somewhere in the bowels of the server
+    attack_power_mod.tick = ( 2.5 / 3.0 );
+    spell_power_mod.tick = ( 2.0 / 3.0 );
+  }
+
+  double amount_delta_modifier( const action_state_t* ) const override
+  { return 0.15; }
+
+  double attack_tick_power_coefficient( const action_state_t* s ) const override
+  {
+    auto total_ap = attack_power_mod.tick * s -> composite_attack_power();
+    auto total_sp = spell_power_mod.tick * s -> composite_spell_power();
+
+    if ( total_ap <= total_sp )
+    {
+      return 0;
+    }
+
+    return proc_spell_t::attack_tick_power_coefficient( s );
+  }
+
+  double spell_tick_power_coefficient( const action_state_t* s ) const override
+  {
+    auto total_ap = attack_power_mod.tick * s -> composite_attack_power();
+    auto total_sp = spell_power_mod.tick * s -> composite_spell_power();
+
+    if ( total_sp < total_ap )
+      return 0;
+
+    return proc_spell_t::spell_tick_power_coefficient( s );
   }
 
   // Hack to force defender to mitigate the damage with armor.
@@ -575,19 +604,20 @@ void item::eye_of_command( special_effect_t& effect )
 
 // Note, custom implementations are going to have to apply the empower multiplier independent of
 // this function.
+
+struct cruel_garrote_t: public spell_t
+{
+  cruel_garrote_t( const special_effect_t& effect ):
+    spell_t( "cruel_garrote", effect.player, effect.driver() )
+  {
+    background = hasted_ticks = tick_may_crit = may_crit = true;
+    base_td *= util::composite_karazhan_empower_multiplier( effect.player );
+  }
+};
+
 void item::bloodstained_hankerchief( special_effect_t& effect )
 {
-  action_t* a = effect.player -> find_action( "cruel_garrote" );
-  if ( ! a )
-  {
-    a = effect.player -> create_proc_action( "cruel_garrote", effect );
-  }
-
-  if ( ! a )
-  {
-    a = effect.create_action();
-    a -> base_td *= util::composite_karazhan_empower_multiplier( effect.player );
-  }
+  action_t* a = new cruel_garrote_t( effect );
 
   effect.execute_action = a;
 }
@@ -983,6 +1013,7 @@ struct flame_gale_driver_t : spell_t
         .pulse_time( timespan_t::from_seconds( 1.0 ) )
         .target( execute_state -> target )
         .duration( timespan_t::from_seconds( 8.0 ) )
+        .hasted( ground_aoe_params_t::ATTACK_HASTE )
         .action( flame_pulse ) );
   }
 };
@@ -1318,34 +1349,23 @@ void item::whispers_in_the_dark( special_effect_t& effect )
   auto bad_buff_data = effect.player -> find_spell( 225776 );
   auto bad_amount = bad_buff_data -> effectN( 1 ).average( effect.item ) / 100.0;
 
-  buff_t* bad_buff = buff_creator_t( effect.player, "devils_due", bad_buff_data, effect.item )
-    .stack_change_callback( [ bad_amount ]( buff_t* buff, int old_, int ) {
-      if ( old_ == 0 )
-      {
-        buff -> player -> current.spell_speed_multiplier *= 1 - bad_amount;
-      }
-      else
-      {
-        buff -> player -> current.spell_speed_multiplier /= 1 - bad_amount;
-      }
-      buff -> player -> invalidate_cache( CACHE_HASTE );
-    } );
+  haste_buff_t* bad_buff = haste_buff_creator_t( effect.player, "devils_due", bad_buff_data, effect.item )
+    .add_invalidate( CACHE_SPELL_SPEED )
+    .default_value( bad_amount );
 
-  buff_t* good_buff = buff_creator_t( effect.player, "nefarious_pact", good_buff_data, effect.item )
-    .stack_change_callback( [ good_amount, bad_buff ]( buff_t* buff, int old_, int ) {
-      if ( old_ == 0 )
+  haste_buff_t* good_buff = haste_buff_creator_t( effect.player, "nefarious_pact", good_buff_data, effect.item )
+    .add_invalidate( CACHE_SPELL_SPEED )
+    .default_value( good_amount )
+    .stack_change_callback( [ bad_buff ]( buff_t*, int old_, int ) {
+      if ( old_ == 1 )
       {
-        buff -> player -> current.spell_speed_multiplier /= 1 + good_amount;
-        buff -> player -> invalidate_cache( CACHE_HASTE );
-      }
-      else
-      {
-        buff -> player -> current.spell_speed_multiplier *= 1 + good_amount;
         bad_buff -> trigger();
       }
     } );
 
   effect.custom_buff = good_buff;
+  effect.player -> buffs.nefarious_pact = good_buff;
+  effect.player -> buffs.devils_due = bad_buff;
 
   new dbc_proc_callback_t( effect.item, effect );
 }
@@ -2516,6 +2536,7 @@ void item::elementium_bomb_squirrel( special_effect_t& effect )
 
 
 // Kil'jaeden's Burning Wish ================================================
+
 struct kiljaedens_burning_wish_t : public spell_t
 {
   kiljaedens_burning_wish_t( const special_effect_t& effect ) :
@@ -2527,7 +2548,6 @@ struct kiljaedens_burning_wish_t : public spell_t
     school = SCHOOL_FIRE;
 
     base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item );
-
     aoe = -1;
 
     //FIXME: Assume this is kind of slow from wording.
@@ -3860,7 +3880,7 @@ struct spawn_of_serpentrix_t : public pet_t
 struct spawn_of_serpentrix_cb_t : public dbc_proc_callback_t
 {
   const spell_data_t* summon;
-  std::array<spawn_of_serpentrix_t*, 5> pets;
+  std::array<spawn_of_serpentrix_t*, 7> pets;
 
   spawn_of_serpentrix_cb_t( const special_effect_t& effect ) :
     dbc_proc_callback_t( effect.item, effect ),
@@ -4179,23 +4199,17 @@ void unique_gear::register_special_effects_x7()
 
 void unique_gear::register_hotfixes_x7()
 {
-  hotfix::register_spell( "Mark of the Distant Army", "2017-01-10-3", "7.1.5 removed damage information.", 191380 )
-    .field( "scaling_class" )
+  hotfix::register_spell( "Mark of the Distant Army", "2017-01-10-4", "Set Velocity to a reasonable value.", 191380 )
+    .field( "prj_speed" )
     .operation( hotfix::HOTFIX_SET )
-    .modifier( -1 )
-    .verification_value( 0 );
+    .modifier( 40 )
+    .verification_value( 1 );
 
-  hotfix::register_effect( "Mark of the Distant Army", "2017-01-10", "7.1.5 removed damage information.", 280734 )
+  hotfix::register_effect( "Kil'jaeden's Burning Wish", "2017-01-14", "Damage increased by 55%.", 356737 )
     .field( "average" )
-    .operation( hotfix::HOTFIX_SET )
-    .modifier( 8.828724 )
-    .verification_value( 0 );
-
-  hotfix::register_effect( "Mark of the Distant Army", "2017-01-10-2", "7.1.5 removed damage information.", 280734 )
-    .field( "delta" )
-    .operation( hotfix::HOTFIX_SET )
-    .modifier( 0.15 )
-    .verification_value( 0 );
+    .operation( hotfix::HOTFIX_MUL )
+    .modifier( 1.55 )
+    .verification_value( 45 );
 }
 
 void unique_gear::register_target_data_initializers_x7( sim_t* sim )

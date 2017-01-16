@@ -35,7 +35,6 @@ const QString sources[] =
   "race_spell",
   "mastery",
   "spec_spell",
-  "glyph",
   "set_bonus",
   "effect",
   "spell.effect",

@@ -1641,7 +1641,7 @@ struct divine_shield_t : public paladin_spell_t
     p() -> buffs.divine_shield -> trigger();
 
     // in this sim, the only debuffs we care about are enemy DoTs.
-    // Check for them and remove them when cast, and apply Glyph of Divine Shield appropriately
+    // Check for them and remove them when cast
     int num_destroyed = 0;
     for ( size_t i = 0, size = p() -> dot_list.size(); i < size; i++ )
     {
@@ -2703,7 +2703,7 @@ struct holy_wrath_t : public paladin_spell_t
 struct blinding_light_effect_t : public paladin_spell_t
 {
   blinding_light_effect_t( paladin_t* p )
-    : paladin_spell_t( "blinding_light_effect", p, p -> find_spell( 105421 ) )
+    : paladin_spell_t( "blinding_light_effect", p, dbc::find_spell( p, 105421 ) )
   {
     background = true;
   }
@@ -5444,11 +5444,11 @@ double paladin_t::composite_player_multiplier( school_e school ) const
   if ( buffs.crusade -> check() )
   {
     double aw_multiplier = buffs.crusade -> get_damage_mod();
+    m *= 1.0 + aw_multiplier;
     if ( chain_of_thrayn )
     {
-      aw_multiplier += spells.chain_of_thrayn -> effectN( 4 ).percent();
+      m *= 1.0 + spells.chain_of_thrayn -> effectN( 4 ).percent();
     }
-    m *= 1.0 + aw_multiplier;
   }
 
   m *= 1.0 + buffs.wings_of_liberty -> current_stack * buffs.wings_of_liberty -> current_value;
@@ -6180,38 +6180,23 @@ struct paladin_module_t : public module_t
 
   virtual void register_hotfixes() const override
   {
-    /*
-    hotfix::register_effect( "Paladin", "2016-09-23", "Templar�s Verdict damage increased by 10%.", 335615 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 1.10 )
-      .verification_value( 290 );
+    hotfix::register_effect("Paladin", "2017-01-13", "Execution Sentence damage reduced by 15%.", 317188)
+      .field("ap_coefficient")
+      .operation(hotfix::HOTFIX_MUL)
+      .modifier(0.85)
+      .verification_value(17);
 
-    hotfix::register_effect( "Paladin", "2016-09-23", "Divine Storm damage increased by 20%.", 335563 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 1.20 )
-      .verification_value( 180 );
+    hotfix::register_effect("Paladin", "2017-01-13", "Chain of Thrayn: Damage bonus reduced from 20% to 10%.", 357284)
+      .field("base_value")
+      .operation(hotfix::HOTFIX_SET)
+      .modifier(10.0)
+      .verification_value(20.0);
 
-    hotfix::register_effect( "Paladin", "2016-09-23", "Blade of Justice damage increased by 13%.", 267536 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 1.13 )
-      .verification_value( 352 );
-
-    hotfix::register_effect( "Paladin", "2016-09-23", "Zeal (Talent) damage increased by 13%.", 322915 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 1.13 )
-      .verification_value( 285 );
-
-    hotfix::register_effect( "Paladin", "2016-09-23", "Blade of Wrath (Talent) damage increased by 13%.", 298132 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 1.13 )
-      .verification_value( 120 );
-      */
-
+    hotfix::register_spell( "Paladin", "2017-01-15", "Incorrect spell level for Blinding Light's Effect.", 105421 )
+      .field( "spell_level" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 45 )
+      .verification_value( 87 );
   }
 
   virtual void combat_begin( sim_t* ) const override {}

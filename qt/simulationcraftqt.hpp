@@ -692,7 +692,6 @@ class SC_MainWindow : public QWidget
 public:
   QWidget* customGearTab;
   QWidget* customTalentsTab;
-  QWidget* customGlyphsTab;
   SC_MainTab* mainTab;
   SC_OptionsTab* optionsTab;
   SC_ImportTab* importTab;

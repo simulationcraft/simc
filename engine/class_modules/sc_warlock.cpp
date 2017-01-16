@@ -301,11 +301,6 @@ public:
 
   } legendary;
 
-  // Glyphs
-  struct glyphs_t
-  {
-  } glyphs;
-
   // Mastery Spells
   struct mastery_spells_t
   {
@@ -1481,7 +1476,10 @@ double warlock_pet_t::composite_spell_haste() const
 double warlock_pet_t::composite_melee_speed() const
 {
   // Make sure we get our overridden haste values applied to melee_speed
-  double cmh =  player_t::composite_melee_speed();
+  double cmh = pet_t::composite_melee_speed();
+
+  if ( buffs.demonic_empowerment->up() )
+    cmh /= 1.0 + buffs.demonic_empowerment->data().effectN( 2 ).percent() + o()->artifact.summoners_prowess.percent();
 
   return cmh;
 }
@@ -1489,8 +1487,10 @@ double warlock_pet_t::composite_melee_speed() const
 double warlock_pet_t::composite_spell_speed() const
 {
   // Make sure we get our overridden haste values applied to spell_speed
-  double css = player_t::composite_spell_speed();
+  double css = pet_t::composite_spell_speed();
 
+  if ( buffs.demonic_empowerment->up() )
+    css /= 1.0 + buffs.demonic_empowerment->data().effectN( 2 ).percent() + o()->artifact.summoners_prowess.percent();
 
   return css;
 }
@@ -5601,7 +5601,6 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
     active( active_t() ),
     talents( talents_t() ),
     legendary( legendary_t() ),
-    glyphs( glyphs_t() ),
     mastery_spells( mastery_spells_t() ),
     cooldowns( cooldowns_t() ),
     spec( specs_t() ),
@@ -5737,6 +5736,11 @@ double warlock_t::composite_melee_haste() const
   if ( buffs.misery -> check() )
   {
     h *= 1.0 / ( 1.0 + buffs.misery -> stack_value() );
+  }
+
+  if ( buffs.sephuzs_secret->check() )
+  {
+    h *= 1.0 / ( 1.0 + buffs.sephuzs_secret->check_value() );
   }
 
   return h;
@@ -6135,8 +6139,6 @@ void warlock_t::init_spells()
   artifact.planeswalker = find_artifact_spell( "Planeswalker" );
   artifact.conflagration_of_chaos = find_artifact_spell( "Conflagration of Chaos" );
 
-  // Glyphs
-
   // Active Spells
   active.demonic_power_proc = new actions::demonic_power_damage_t( this );
   active.thalkiels_discord = new actions::thalkiels_discord_t( this );
@@ -6418,8 +6420,8 @@ void warlock_t::apl_precombat()
 
   precombat_list += "/summon_pet,if=!talent.grimoire_of_supremacy.enabled&(!talent.grimoire_of_sacrifice.enabled|buff.demonic_power.down)";
   precombat_list += "/summon_infernal,if=talent.grimoire_of_supremacy.enabled&artifact.lord_of_flames.rank>0";
-  precombat_list += "/summon_infernal,if=talent.grimoire_of_supremacy.enabled&active_enemies>=3";
-  precombat_list += "/summon_doomguard,if=talent.grimoire_of_supremacy.enabled&active_enemies<3&artifact.lord_of_flames.rank=0";
+  precombat_list += "/summon_infernal,if=talent.grimoire_of_supremacy.enabled&active_enemies>1";
+  precombat_list += "/summon_doomguard,if=talent.grimoire_of_supremacy.enabled&active_enemies=1&artifact.lord_of_flames.rank=0";
 
   if ( true_level > 100 )
     precombat_list += "/augmentation,type=defiled";
@@ -6436,7 +6438,12 @@ void warlock_t::apl_precombat()
   {
     // Pre-potion
     if ( true_level == 110 )
-      precombat_list += "/potion,name=deadly_grace";
+    {
+      if ( specialization() == WARLOCK_DEMONOLOGY )
+        precombat_list += "/potion,name=prolonged_power";
+      else
+        precombat_list += "/potion,name=deadly_grace";
+    }
     else if ( true_level >= 100 )
       precombat_list += "/potion,name=draenic_intellect";
   }
@@ -6475,10 +6482,11 @@ void warlock_t::apl_affliction()
   action_list_str += "/soul_effigy,if=!pet.soul_effigy.active";
   add_action( "Agony", "cycle_targets=1,if=remains<=tick_time+gcd" );
   action_list_str += "/service_pet,if=dot.corruption.remains&dot.agony.remains";
-  add_action( "Summon Doomguard", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal<3&(target.time_to_die>180|target.health.pct<=20|target.time_to_die<30)" );
-  add_action( "Summon Infernal", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>=3" );
-  add_action( "Summon Doomguard", "if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal<3&equipped.132379&!cooldown.sindorei_spite_icd.remains" );
-  add_action( "Summon Infernal", "if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>=3&equipped.132379&!cooldown.sindorei_spite_icd.remains" );
+  add_action( "Summon Doomguard", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal<=2&(target.time_to_die>180|target.health.pct<=20|target.time_to_die<30)" );
+  add_action( "Summon Infernal", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>2" );
+  add_action( "Summon Doomguard", "if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal=1&equipped.132379&!cooldown.sindorei_spite_icd.remains" );
+  add_action( "Summon Infernal", "if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>1&equipped.132379&!cooldown.sindorei_spite_icd.remains" );
+
   action_list_str += "/berserking";
   action_list_str += "/blood_fury";
   action_list_str += "/arcane_torrent";
@@ -6500,7 +6508,6 @@ void warlock_t::apl_affliction()
     action_list_str += "|buff.elunes_light.remains";
   if ( find_item( "obelisk of_the_void" ) )
     action_list_str += "|buff.collapsing_shadow.remains";
-  add_action( "Mortal Coil", "if=equipped.132452" );
   add_action( "Corruption", "if=remains<=tick_time+gcd" );
   add_action( "Corruption", "cycle_targets=1,if=(talent.absolute_corruption.enabled|!talent.malefic_grasp.enabled|!talent.soul_effigy.enabled)&remains<=tick_time+gcd" );
   add_action( "Siphon Life", "if=remains<=tick_time+gcd" );
@@ -6556,10 +6563,10 @@ void warlock_t::apl_demonology()
   action_list_str += "/implosion,if=prev_gcd.1.hand_of_guldan&((wild_imp_remaining_duration<=3&buff.demonic_synergy.remains)|(wild_imp_remaining_duration<=4&spell_targets.implosion>2))";
   action_list_str += "/shadowflame,if=((debuff.shadowflame.stack>0&remains<action.shadow_bolt.cast_time+travel_time)|(charges=2&soul_shard<5))&spell_targets.demonwrath<5";
   action_list_str += "/service_pet";
-  add_action( "Summon Doomguard", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<3&(target.time_to_die>180|target.health.pct<=20|target.time_to_die<30)" );
-  add_action( "Summon Infernal", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>=3" );
-  add_action( "Summon Doomguard", "if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal<3&equipped.132379&!cooldown.sindorei_spite_icd.remains" );
-  add_action( "Summon Infernal", "if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>=3&equipped.132379&!cooldown.sindorei_spite_icd.remains" );
+  add_action( "Summon Doomguard", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<=2&(target.time_to_die>180|target.health.pct<=20|target.time_to_die<30)" );
+  add_action( "Summon Infernal", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>2" );
+  add_action( "Summon Doomguard", "if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal=1&equipped.132379&!cooldown.sindorei_spite_icd.remains" );
+  add_action( "Summon Infernal", "if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>1&equipped.132379&!cooldown.sindorei_spite_icd.remains" );
   add_action( "Call Dreadstalkers", "if=(!talent.summon_darkglare.enabled|talent.power_trip.enabled)&(spell_targets.implosion<3|!talent.implosion.enabled)" );
   add_action( "Hand of Gul'dan", "if=soul_shard>=4&!talent.summon_darkglare.enabled" );
   action_list_str += "/summon_darkglare,if=prev_gcd.1.hand_of_guldan|prev_gcd.1.call_dreadstalkers|talent.power_trip.enabled";
@@ -6582,7 +6589,7 @@ void warlock_t::apl_demonology()
   action_list_str += "/berserking";
   action_list_str += "/blood_fury";
   action_list_str += "/soul_harvest";
-  action_list_str += "/potion,name=deadly_grace,if=buff.soul_harvest.remains|target.time_to_die<=45|trinket.proc.any.react";
+  action_list_str += "/potion,name=prolonged_power,if=buff.soul_harvest.remains|target.time_to_die<=70|trinket.proc.any.react";
   action_list_str += "/shadowflame,if=charges=2&spell_targets.demonwrath<5";
   add_action( "Thal'kiel's Consumption", "if=(dreadstalker_remaining_duration>execute_time|talent.implosion.enabled&spell_targets.implosion>=3)&wild_imp_count>3&wild_imp_remaining_duration>execute_time" );
   add_action( "Life Tap", "if=mana.pct<=30" );
@@ -6628,11 +6635,11 @@ void warlock_t::apl_destruction()
   add_action( "Dimensional Rift", "if=equipped.144369&!buff.lessons_of_spacetime.remains&((!talent.grimoire_of_supremacy.enabled&!cooldown.summon_doomguard.remains)|(talent.grimoire_of_service.enabled&!cooldown.service_pet.remains)|(talent.soul_harvest.enabled&!cooldown.soul_harvest.remains))");
   action_list_str += "/service_pet";
   add_action( "Summon Infernal", "if=artifact.lord_of_flames.rank>0&!buff.lord_of_flames.remains" );
-  add_action( "Summon Doomguard", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<3&(target.time_to_die>180|target.health.pct<=20|target.time_to_die<30)" );
-  add_action( "Summon Infernal", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>=3" );
-  add_action( "Summon Doomguard", "if=talent.grimoire_of_supremacy.enabled&artifact.lord_of_flames.rank>0&buff.lord_of_flames.remains&!pet.doomguard.active" );
-  add_action( "Summon Doomguard", "if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal<3&equipped.132379&!cooldown.sindorei_spite_icd.remains" );
-  add_action( "Summon Infernal", "if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>=3&equipped.132379&!cooldown.sindorei_spite_icd.remains" );
+  add_action( "Summon Doomguard", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<=2&(target.time_to_die>180|target.health.pct<=20|target.time_to_die<30)" );
+  add_action( "Summon Infernal", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>2" );
+  add_action( "Summon Doomguard", "if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal=1&artifact.lord_of_flames.rank>0&buff.lord_of_flames.remains&!pet.doomguard.active" );
+  add_action( "Summon Doomguard", "if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal=1&equipped.132379&!cooldown.sindorei_spite_icd.remains" );
+  add_action( "Summon Infernal", "if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>1&equipped.132379&!cooldown.sindorei_spite_icd.remains" );
   action_list_str += "/soul_harvest";
   action_list_str += "/channel_demonfire,if=dot.immolate.remains>cast_time";
   add_action( "Havoc", "if=active_enemies=1&talent.wreak_havoc.enabled&equipped.132375&!debuff.havoc.remains" );
@@ -7573,7 +7580,7 @@ struct lessons_of_spacetime_t : public scoped_actor_callback_t<warlock_t>
 
   void manipulate( warlock_t* p, const special_effect_t& ) override
   {
-    const spell_data_t * tmp = p -> find_spell( 236176 );
+    //const spell_data_t * tmp = p -> find_spell( 236176 );
     p -> legendary.lessons_of_spacetime = true;
     p -> legendary.lessons_of_spacetime1 = timespan_t::from_seconds( 5 );
     p -> legendary.lessons_of_spacetime2 = timespan_t::from_seconds( 9 );
@@ -7817,6 +7824,30 @@ struct warlock_module_t: public module_t
       .modifier( 1.11 )
       .verification_value( 0.42 );
       */
+
+    hotfix::register_effect( "Warlock", "2017-01-17", "Malefic Grasp now increases the damage of damage over time effects by 70% (down from 80%).", 355427 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 70 )
+      .verification_value( 80 );
+
+    hotfix::register_effect( "Warlock", "2017-01-17", "Shadowbolt damage increased by 42%.", 267 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.42 )
+      .verification_value( 0.88 );
+
+    hotfix::register_effect( "Warlock", "2017-01-17", "Demonbolt damage increased by 42%", 219885 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.42 )
+      .verification_value( 0.88 );
+
+    hotfix::register_effect( "Warlock", "2017-01-17", "Demonbolt damage increased by 42%, but its damage is now increased by 10% per active demon (down from 18%).", 288119 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 10 )
+      .verification_value( 18 );
   }
 
   virtual bool valid() const override { return true; }

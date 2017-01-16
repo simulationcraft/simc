@@ -1394,27 +1394,3 @@ bool bcp_api::download_guild( sim_t* sim,
 
   return true;
 }
-
-// bcp_api::download_glyph ==================================================
-
-bool bcp_api::download_glyph( player_t*          player,
-                              std::string&       glyph_name,
-                              const std::string& glyph_id,
-                              cache::behavior_e  caching )
-{
-  const std::string& region =
-    ( player -> region_str.empty() ? player -> sim -> default_region_str : player -> region_str );
-
-  unsigned glyphid = strtoul( glyph_id.c_str(), nullptr, 10 );
-  rapidjson::Document js;
-  if ( ! download_id( js, region, glyphid, player -> sim -> apikey, caching ) || js.HasParseError() || ! js.HasMember( "name" ) )
-  {
-    if ( caching != cache::ONLY )
-      player -> sim -> errorf( "BCP API: Unable to download glyph id '%s'\n", glyph_id.c_str() );
-    return false;
-  }
-
-  glyph_name = js[ "name" ].GetString();
-
-  return true;
-}
