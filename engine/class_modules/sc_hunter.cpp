@@ -70,10 +70,14 @@ public:
     action_t*           surge_of_the_stormgod;
   } active;
 
-  std::array< pets::dire_critter_t*, 8 >  pet_dire_beasts;
-  pets::hati_t* hati;
-  std::array< pets::hunter_secondary_pet_t*, 2 > dark_minion;
-  std::array< pets::hunter_secondary_pet_t*, 10 > felboars;
+  struct pets_t
+  {
+    std::array< pets::dire_critter_t*, 8 >  dire_beasts;
+    pets::hati_t* hati;
+    pet_t* spitting_cobra;
+    std::array< pet_t*, 2 > dark_minions;
+    std::array< pet_t*, 10 > felboars;
+  } pets;
 
   // Tier 18 (WoD 6.2) trinket effects
   const special_effect_t* beastlord;
@@ -399,10 +403,7 @@ public:
   hunter_t( sim_t* sim, const std::string& name, race_e r = RACE_NONE ):
     player_t( sim, HUNTER, name, r ),
     active( actives_t() ),
-    pet_dire_beasts(),
-    hati(),
-    dark_minion(),
-    felboars(),
+    pets( pets_t() ),
     beastlord( nullptr ),
     longview( nullptr ),
     blackness( nullptr ),
@@ -851,16 +852,6 @@ struct hunter_melee_attack_t: public hunter_action_t < melee_attack_t >
     special = true;
     tick_may_crit = true;
   }
-
-  virtual double composite_crit_chance() const override
-  {
-    double cc = base_t::composite_crit_chance();
-
-    if ( p() -> buffs.aspect_of_the_eagle -> up() )
-      cc += p() -> specs.aspect_of_the_eagle -> effectN( 1 ).percent();
-
-    return cc;
-  }
 };
 
 struct hunter_spell_t: public hunter_action_t < spell_t >
@@ -1237,7 +1228,8 @@ public:
       buff_creator_t( this, "aspect_of_the_wild", o() -> specs.aspect_of_the_wild )
         .affects_regen( true )
         .cd( timespan_t::zero() )
-        .default_value( o() -> specs.aspect_of_the_wild -> effectN( 1 ).percent() );
+        .default_value( o() -> specs.aspect_of_the_wild -> effectN( 1 ).percent() )
+        .add_invalidate( CACHE_CRIT_CHANCE );
 
     if ( o() -> artifacts.wilderness_expert.rank() )
       buffs.aspect_of_the_wild -> buff_duration += o() -> artifacts.wilderness_expert.time_value();
@@ -1367,6 +1359,9 @@ public:
 
     if ( buffs.aspect_of_the_wild -> check() )
       ac += buffs.aspect_of_the_wild -> check_value();
+
+    if ( o() -> buffs.aspect_of_the_eagle -> up() )
+      ac += o() -> specs.aspect_of_the_eagle -> effectN( 1 ).percent();
 
     return ac;
   }
@@ -1590,8 +1585,8 @@ struct dire_critter_t: public hunter_secondary_pet_t
 
     bool init_finished() override
     {
-      if ( p() -> o() -> pet_dire_beasts[ 0 ] )
-        stats = p() -> o() -> pet_dire_beasts[ 0 ] -> get_stats( "stomp" );
+      if ( o() -> pets.dire_beasts[ 0 ] )
+        stats = o() -> pets.dire_beasts[ 0 ] -> get_stats( "stomp" );
 
       return hunter_secondary_pet_action_t::init_finished();
     }
@@ -1606,8 +1601,8 @@ struct dire_critter_t: public hunter_secondary_pet_t
 
     bool init_finished() override
     {
-      if ( p() -> o() -> pet_dire_beasts[ 0 ] )
-        stats = p() -> o() -> pet_dire_beasts[ 0 ] -> get_stats( "dire_beast_melee" );
+      if ( o() -> pets.dire_beasts[ 0 ] )
+        stats = o() -> pets.dire_beasts[ 0 ] -> get_stats( "dire_beast_melee" );
 
       return secondary_pet_melee_t::init_finished();
     }
@@ -1786,8 +1781,8 @@ struct bm_t18_4pc_felboar: public hunter_secondary_pet_t
 
     bool init_finished() override
     {
-      if ( p() -> o() -> felboars[ 0 ] )
-        stats = p() -> o() -> felboars[ 0 ] -> get_stats( "felboar_melee" );
+      if ( o() -> pets.felboars[ 0 ] )
+        stats = o() -> pets.felboars[ 0 ] -> get_stats( "felboar_melee" );
 
       return secondary_pet_melee_t::init_finished();
     }
@@ -1804,6 +1799,60 @@ struct bm_t18_4pc_felboar: public hunter_secondary_pet_t
     hunter_secondary_pet_t::init_base_stats();
 
     main_hand_attack = new felboar_melee_t( *this );
+  }
+};
+
+// ==========================================================================
+// SV Spitting Cobra
+// ==========================================================================
+
+struct spitting_cobra_t: public hunter_pet_t
+{
+  struct cobra_spit_t: public hunter_pet_action_t<spitting_cobra_t, spell_t>
+  {
+    cobra_spit_t( spitting_cobra_t* p, const std::string& options_str ):
+      base_t( "cobra_spit", *p, p -> o() -> find_spell( 206685 ) )
+    {
+      parse_options( options_str );
+
+      may_crit = true;
+    }
+
+    bool init_finished() override
+    {
+      if ( o() -> pets.spitting_cobra )
+        stats = o() -> pets.spitting_cobra -> get_stats( name_str );
+
+      return base_t::init_finished();
+    }
+  };
+
+  spitting_cobra_t( hunter_t* o ):
+    hunter_pet_t( *(o -> sim), *o, "spitting_cobra", PET_HUNTER, true )
+  {
+    /* nuoHep 16/01/2017 0vers no buffs
+     *    AP      DMG
+     *   9491    13420
+     *   22381   31646
+     * As Cobra Spit has 1x AP mult it works out to
+     * the pet having ~1.414 ap coeff
+     */
+    owner_coeff.ap_from_ap = 1.414;
+  }
+
+  action_t* create_action( const std::string& name,
+                           const std::string& options_str ) override
+  {
+    if ( name == "cobra_spit" )
+      return new cobra_spit_t( this, options_str );
+    return hunter_pet_t::create_action( name, options_str );
+  }
+
+  void init_action_list() override
+  {
+    action_list_str = "cobra_spit";
+
+    hunter_pet_t::init_action_list();
   }
 };
 
@@ -1884,16 +1933,6 @@ struct hunter_main_pet_attack_t: public hunter_main_pet_action_t < melee_attack_
       return false;
 
     return base_t::ready();
-  }
-
-  virtual double composite_crit_chance() const override
-  {
-    double cc = base_t::composite_crit_chance();
-
-    if ( p() -> o() -> buffs.aspect_of_the_eagle -> up() )
-      cc += p() -> o() -> specs.aspect_of_the_eagle -> effectN( 1 ).percent();
-
-    return cc;
   }
 };
 
@@ -2080,12 +2119,12 @@ static void trigger_beast_cleave( action_state_t* s )
   p -> active.beast_cleave -> base_dd_max = cleave;
   p -> active.beast_cleave -> execute();
 
-  if ( p -> o() -> hati && p -> o() -> artifacts.master_of_beasts.rank() )
+  if ( p -> o() -> pets.hati && p -> o() -> artifacts.master_of_beasts.rank() )
   {
     cleave *= 0.75; //Hotfix in game for Hati, no spelldata for it though. 2016-09-05
-    p -> o() -> hati -> active.beast_cleave -> base_dd_min = cleave;
-    p -> o() -> hati -> active.beast_cleave -> base_dd_max = cleave;
-    p -> o() -> hati -> active.beast_cleave -> execute();
+    p -> o() -> pets.hati -> active.beast_cleave -> base_dd_min = cleave;
+    p -> o() -> pets.hati -> active.beast_cleave -> base_dd_max = cleave;
+    p -> o() -> pets.hati -> active.beast_cleave -> execute();
   }
 }
 
@@ -2696,6 +2735,12 @@ struct barrage_t: public hunter_ranged_attack_t
       range = 0;
       travel_speed = 0.0;
     }
+    
+    void impact(action_state_t* s) override {
+      // Simulate the random chance of hitting.
+      if (rng().roll(0.5))
+        hunter_ranged_attack_t::impact(s);
+    }
   };
 
   barrage_t( hunter_t* player, const std::string& options_str ):
@@ -2714,6 +2759,9 @@ struct barrage_t: public hunter_ranged_attack_t
     tick_action = new barrage_damage_t( player );
 
     starved_proc = player -> get_proc( "starved: barrage" );
+
+    // Double the tick damage since the chance to hit is simulated.
+    base_multiplier *= 2.0;
 
     if ( data().affected_by( player -> specs.beast_mastery_hunter -> effectN( 5 ) ) )
       base_multiplier *= 1.0 + player -> specs.beast_mastery_hunter -> effectN( 5 ).percent();
@@ -2788,7 +2836,7 @@ struct multi_shot_t: public hunter_ranged_attack_t
     {
       pet -> buffs.beast_cleave -> trigger();
       if ( p() -> artifacts.master_of_beasts.rank() )
-        p() -> hati -> buffs.beast_cleave -> trigger();
+        p() -> pets.hati -> buffs.beast_cleave -> trigger();
     }
     if ( result_is_hit( execute_state -> result ) )
     {
@@ -2815,7 +2863,7 @@ struct multi_shot_t: public hunter_ranged_attack_t
     {
       if ( p() -> active.pet )
         p() -> active.surge_of_the_stormgod -> execute();
-      if ( p() -> hati )
+      if ( p() -> pets.hati )
         p() -> active.surge_of_the_stormgod -> execute();
     }
 
@@ -2952,11 +3000,11 @@ struct cobra_shot_t: public hunter_ranged_attack_t
     {
       int active_pets = 1;
 
-      if ( p() -> hati )
+      if ( p() -> pets.hati )
         active_pets++;
-      for ( size_t i = 0; i < p() -> pet_dire_beasts.size(); i++ )
+      for ( size_t i = 0; i < p() -> pets.dire_beasts.size(); i++ )
       {
-        if ( !p() -> pet_dire_beasts[ i ] -> is_sleeping() )
+        if ( !p() -> pets.dire_beasts[ i ] -> is_sleeping() )
           active_pets++;
       }
 
@@ -3008,10 +3056,10 @@ struct black_arrow_t: public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::execute();
 
-    if ( p() -> dark_minion[ 0 ] -> is_sleeping() )
-      p() -> dark_minion[ 0 ] -> summon( duration );
+    if ( p() -> pets.dark_minions[ 0 ] -> is_sleeping() )
+      p() -> pets.dark_minions[ 0 ] -> summon( duration );
     else
-      p() -> dark_minion[ 1 ] -> summon( duration );
+      p() -> pets.dark_minions[ 1 ] -> summon( duration );
   }
 };
 
@@ -4505,8 +4553,8 @@ struct summon_pet_t: public hunter_spell_t
     pet -> type = PLAYER_PET;
     pet -> summon();
 
-    if ( p() -> hati )
-      p() -> hati -> summon();
+    if ( p() -> pets.hati )
+      p() -> pets.hati -> summon();
 
     if ( p() -> main_hand_attack ) p() -> main_hand_attack -> cancel();
   }
@@ -4633,11 +4681,11 @@ struct dire_beast_t: public hunter_spell_t
       p() -> cooldowns.kill_command -> adjust( p() -> legendary.bm_feet -> driver() -> effectN( 1 ).time_value() );
 
     pet_t* beast = nullptr;
-    for( size_t i = 0; i < p() -> pet_dire_beasts.size(); i++ )
+    for( size_t i = 0; i < p() -> pets.dire_beasts.size(); i++ )
     {
-      if ( p() -> pet_dire_beasts[i] -> is_sleeping() )
+      if ( p() -> pets.dire_beasts[i] -> is_sleeping() )
       {
-        beast = p() -> pet_dire_beasts[i];
+        beast = p() -> pets.dire_beasts[i];
         break;
       }
     }
@@ -4675,11 +4723,11 @@ struct dire_beast_t: public hunter_spell_t
     {
       p() -> procs.tier18_4pc_bm -> occur();
 
-      for( size_t i = 0; i < p() -> felboars.size(); i++ )
+      for( size_t i = 0; i < p() -> pets.felboars.size(); i++ )
       {
-        if ( p() -> felboars[ i ] -> is_sleeping() )
+        if ( p() -> pets.felboars[ i ] -> is_sleeping() )
         {
-          p() -> felboars[ i ] -> summon( p() -> find_spell( 188507 ) -> duration() );
+          p() -> pets.felboars[ i ] -> summon( p() -> find_spell( 188507 ) -> duration() );
           break;
         }
       }
@@ -4711,14 +4759,14 @@ struct bestial_wrath_t: public hunter_spell_t
     p() -> active.pet -> buffs.bestial_wrath -> trigger();
     if ( p() -> sets.has_set_bonus( HUNTER_BEAST_MASTERY, T19, B2 ) )
     {
-      for ( size_t i = 0; i < p() -> pet_dire_beasts.size(); i++ )
+      for ( size_t i = 0; i < p() -> pets.dire_beasts.size(); i++ )
       {
-        if ( ! p() -> pet_dire_beasts[ i ] -> is_sleeping() )
-          p() -> pet_dire_beasts[ i ] -> buffs.bestial_wrath -> trigger();
+        if ( ! p() -> pets.dire_beasts[ i ] -> is_sleeping() )
+          p() -> pets.dire_beasts[ i ] -> buffs.bestial_wrath -> trigger();
       }
     }
     if ( p() -> artifacts.master_of_beasts.rank() )
-      p() -> hati -> buffs.bestial_wrath -> trigger();
+      p() -> pets.hati -> buffs.bestial_wrath -> trigger();
     if ( p() -> sets.has_set_bonus( HUNTER_BEAST_MASTERY, T17, B4 ) )
     {
       const timespan_t duration = p() -> buffs.bestial_wrath -> buff_duration;
@@ -4775,7 +4823,7 @@ struct kill_command_t: public hunter_spell_t
       trigger_tier17_2pc_bm();
     }
     if ( p() -> artifacts.master_of_beasts.rank() )
-      p() -> hati -> active.kill_command -> execute();
+      p() -> pets.hati -> active.kill_command -> execute();
   }
 
   virtual bool ready() override
@@ -4883,11 +4931,11 @@ struct titans_thunder_t: public hunter_spell_t
     if ( p() -> talents.dire_frenzy -> ok() )
       p() -> active.pet -> buffs.titans_frenzy -> trigger();
     p() -> active.pet -> active.titans_thunder -> execute();
-    p() -> hati -> active.titans_thunder -> execute();
-    for ( size_t i = 0; i < p() -> pet_dire_beasts.size(); i++ )
+    p() -> pets.hati -> active.titans_thunder -> execute();
+    for ( size_t i = 0; i < p() -> pets.dire_beasts.size(); i++ )
     {
-      if ( !p() -> pet_dire_beasts[ i ] -> is_sleeping() )
-        p() -> pet_dire_beasts[ i ] -> active.titans_thunder -> execute();
+      if ( !p() -> pets.dire_beasts[ i ] -> is_sleeping() )
+        p() -> pets.dire_beasts[ i ] -> active.titans_thunder -> execute();
     }
   }
 
@@ -5075,33 +5123,25 @@ struct snake_hunter_t: public hunter_spell_t
 
 struct spitting_cobra_t: public hunter_spell_t
 {
-  struct spitting_cobra_tick_t: public hunter_spell_t
-  {
-    spitting_cobra_tick_t( hunter_t* p ):
-      hunter_spell_t( "spitting_cobra_tick", p, p -> find_spell( 206685 ) )
-    {
-      background = true;
-      may_crit = true;
-    }
-  };
-
   spitting_cobra_t( hunter_t* p, const std::string& options_str ):
     hunter_spell_t( "spitting_cobra", p, p -> talents.spitting_cobra )
   {
     parse_options( options_str );
+  }
 
-    attack_power_mod.tick = p -> find_spell( 206685 ) -> effectN( 1 ).ap_coeff();
-    base_tick_time = timespan_t::from_seconds( 2.0 );
-    hasted_ticks = false;
-    may_crit = true;
-    weapon_multiplier = 0;
+  bool init_finished() override
+  {
+    if ( p() -> pets.spitting_cobra )
+      stats -> add_child( p() -> pets.spitting_cobra -> get_stats( "cobra_spit" ) );
 
-    tick_action = new spitting_cobra_tick_t( p );
+    return hunter_spell_t::init_finished();
   }
 
   virtual void execute() override
   {
     hunter_spell_t::execute();
+
+    p() -> pets.spitting_cobra -> summon( data().duration() );
 
     p() -> buffs.spitting_cobra -> trigger();
   }
@@ -5552,25 +5592,27 @@ void hunter_t::create_pets()
 
   if ( specs.dire_beast -> ok() )
   {
-    for ( size_t i = 0; i < pet_dire_beasts.size(); ++i )
-      pet_dire_beasts[ i ] = new pets::dire_critter_t( *this  );
+    for ( size_t i = 0; i < pets.dire_beasts.size(); ++i )
+      pets.dire_beasts[ i ] = new pets::dire_critter_t( *this  );
   }
 
   if ( artifacts.hatis_bond.rank() )
-    hati = new pets::hati_t( *this );
+    pets.hati = new pets::hati_t( *this );
 
   if ( talents.black_arrow -> ok() )
   {
-    //FIXME: Dark Minion should scale off MM Mastery
-    dark_minion[ 0 ] = new pets::hunter_secondary_pet_t( *this, std::string( "dark_minion" ) );
-    dark_minion[ 1 ] = new pets::hunter_secondary_pet_t( *this, std::string( "dark_minion_2" ) );
+    pets.dark_minions[ 0 ] = new pets::hunter_secondary_pet_t( *this, std::string( "dark_minion" ) );
+    pets.dark_minions[ 1 ] = new pets::hunter_secondary_pet_t( *this, std::string( "dark_minion_2" ) );
   }
 
   if ( sets.has_set_bonus( HUNTER_BEAST_MASTERY, T18, B4 ) )
   {
-    for ( size_t i = 0; i < felboars.size(); i++ )
-      felboars[ i ] = new pets::bm_t18_4pc_felboar( *this );
+    for ( size_t i = 0; i < pets.felboars.size(); i++ )
+      pets.felboars[ i ] = new pets::bm_t18_4pc_felboar( *this );
   }
+
+  if ( talents.spitting_cobra -> ok() )
+    pets.spitting_cobra = new pets::spitting_cobra_t( this );
 }
 
 // hunter_t::init_spells ====================================================
@@ -5927,6 +5969,7 @@ void hunter_t::create_buffs()
   buffs.aspect_of_the_eagle = 
     buff_creator_t( this, 186289, "aspect_of_the_eagle" )
       .cd( timespan_t::zero() )
+      .add_invalidate( CACHE_CRIT_CHANCE )
       .default_value( find_spell( 186289 ) 
                    -> effectN( 1 )
                      .percent() );
@@ -6536,6 +6579,9 @@ double hunter_t::composite_melee_crit_chance() const
   if ( buffs.aspect_of_the_wild -> check() )
     crit += buffs.aspect_of_the_wild -> check_value();
 
+  if ( buffs.aspect_of_the_eagle -> up() )
+    crit += specs.aspect_of_the_eagle -> effectN( 1 ).percent();
+
   crit +=  specs.critical_strikes -> effectN( 1 ).percent();
 
   return crit;
@@ -6552,6 +6598,9 @@ double hunter_t::composite_spell_crit_chance() const
 
   if ( buffs.aspect_of_the_wild -> check() )
     crit += buffs.aspect_of_the_wild -> check_value();
+
+  if ( buffs.aspect_of_the_eagle -> up() )
+    crit += specs.aspect_of_the_eagle -> effectN( 1 ).percent();
 
   crit +=  specs.critical_strikes -> effectN( 1 ).percent();
 
