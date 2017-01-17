@@ -2741,18 +2741,6 @@ struct barrage_t: public hunter_ranged_attack_t
       radius = 0; //Barrage attacks all targets in front of the hunter, so setting radius to 0 will prevent distance targeting from using a 40 yard radius around the target.
       // Todo: Add in support to only hit targets in the frontal cone. 
       travel_speed = 0.0;
-      // Double the tick damage since the chance to hit is simulated.
-      base_multiplier *= 2.0;
-
-      if ( data().affected_by( player -> specs.beast_mastery_hunter -> effectN( 5 ) ) )
-        base_multiplier *= 1.0 + player -> specs.beast_mastery_hunter -> effectN( 5 ).percent();
-
-      if ( data().affected_by( player -> specs.beast_mastery_hunter -> effectN( 5 ) ) )
-        base_multiplier *= 1.0 + player -> specs.beast_mastery_hunter -> effectN( 5 ).percent();
-      if ( player -> specialization() == HUNTER_BEAST_MASTERY )
-        base_multiplier *= 1.10; //FIXME Jan 17th Hotfix
-      else if ( player -> specialization() == HUNTER_MARKSMANSHIP )
-        base_multiplier *= 1.08; //FIXME
     }
     
     void impact(action_state_t* s) override {
@@ -2776,6 +2764,19 @@ struct barrage_t: public hunter_ranged_attack_t
     dynamic_tick_action = true;
     travel_speed = 0.0;
     tick_action = new barrage_damage_t( player );
+
+    // Double the tick damage since the chance to hit is simulated.
+    base_multiplier *= 2.0;
+
+    if ( data().affected_by( player -> specs.beast_mastery_hunter -> effectN( 5 ) ) )
+      base_multiplier *= 1.0 + player -> specs.beast_mastery_hunter -> effectN( 5 ).percent();
+
+    if ( data().affected_by( player -> specs.beast_mastery_hunter -> effectN( 5 ) ) )
+      base_multiplier *= 1.0 + player -> specs.beast_mastery_hunter -> effectN( 5 ).percent();
+    if ( player -> specialization() == HUNTER_BEAST_MASTERY )
+      base_multiplier *= 1.10; //FIXME Jan 17th Hotfix
+    else if ( player -> specialization() == HUNTER_MARKSMANSHIP )
+      base_multiplier *= 1.08; //FIXME
 
     starved_proc = player -> get_proc( "starved: barrage" );
   }
