@@ -3181,13 +3181,12 @@ struct revenge_t: public warrior_attack_t
   double action_multiplier() const override
   {
     double am = warrior_attack_t::action_multiplier();
-
-    am *= 1.0 + p() -> buff.bindings_of_kakushan -> stack_value();
-
+    
     am *= 1.0 + ( p() -> talents.best_served_cold -> effectN( 1 ).percent() * std::min( target_list().size(), static_cast<size_t>( p() -> talents.best_served_cold -> effectN( 1 ).base_value() ) ) );
 
     return am;
   }
+
   double cost() const override
   {
     double cost = warrior_attack_t::cost();
@@ -3493,6 +3492,16 @@ struct thunder_clap_t: public warrior_attack_t
     radius *= 1.0 + p -> talents.crackling_thunder -> effectN( 1 ).percent();
     if ( p -> specialization() == WARRIOR_PROTECTION )
       base_multiplier *= 0.86; //FIXME
+  }
+
+
+  double action_multiplier() const override
+  {
+    double am = warrior_attack_t::action_multiplier();
+
+    am *= 1.0 + p() -> buff.bindings_of_kakushan -> stack_value();
+
+    return am;
   }
 };
 
