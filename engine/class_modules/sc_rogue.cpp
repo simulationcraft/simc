@@ -6578,11 +6578,12 @@ double rogue_t::agonizing_poison_stack_multiplier( const rogue_td_t* td ) const
   }
 
   // To be confirmed: behavior of Zoldyck Family Training Shackles with Agonizing Poison
+  /* Looks like it is no longer working as of 01/16/2017 (7.1.5)
   if ( legendary.zoldyck_family_training_shackles &&
        td -> target -> health_percentage() < legendary.zoldyck_family_training_shackles -> effectN( 2 ).base_value() )
   {
     multiplier *= 1.0 + legendary.zoldyck_family_training_shackles -> effectN( 1 ).percent();
-  }
+  }*/
 
   return multiplier;
 }

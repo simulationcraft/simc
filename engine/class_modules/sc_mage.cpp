@@ -8229,6 +8229,7 @@ void mage_t::apl_arcane()
   init_burn -> add_action( "start_burn_phase,if=((cooldown.evocation.remains-(2*burn_phase_duration))%2<burn_phase_duration)|cooldown.arcane_power.remains=0|target.time_to_die<55" );
 
   burn      -> add_action( "call_action_list,name=cooldowns" );
+  burn      -> add_talent( this, "Charged Up", "if=(equipped.132451&buff.arcane_charge.stack<=1)" );
   burn      -> add_action( this, "Arcane Missiles", "if=buff.arcane_missiles.react=3" );
   burn      -> add_talent( this, "Nether Tempest", "if=dot.nether_tempest.remains<=2|!ticking" );
   burn      -> add_action( this, "Arcane Blast", "if=active_enemies<=1&mana.pct%10*execute_time>target.time_to_die" );
@@ -8240,6 +8241,7 @@ void mage_t::apl_arcane()
   burn      -> add_talent( this, "Supernova", "if=mana.pct<100" );
   burn      -> add_action( this, "Arcane Missiles", "if=mana.pct>10&(talent.overpowered.enabled|buff.arcane_power.down)" );
   burn      -> add_action( this, "Arcane Explosion", "if=active_enemies>1" );
+  burn      -> add_action( this, "Arcane Barrage", "if=(equipped.132451&cooldown.charged_up.remains=0&mana.pct<(100-(buff.arcane_charge.stack*0.03)))" );
   burn      -> add_action( this, "Arcane Blast" );
   burn      -> add_action( this, "Evocation", "interrupt_if=mana.pct>99" );
 
