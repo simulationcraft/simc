@@ -2763,8 +2763,6 @@ struct barrage_t: public hunter_ranged_attack_t
     if ( data().affected_by( player -> specs.beast_mastery_hunter -> effectN( 5 ) ) )
       base_multiplier *= 1.0 + player -> specs.beast_mastery_hunter -> effectN( 5 ).percent();
 
-    if ( data().affected_by( player -> specs.beast_mastery_hunter -> effectN( 5 ) ) )
-      base_multiplier *= 1.0 + player -> specs.beast_mastery_hunter -> effectN( 5 ).percent();
     if ( player -> specialization() == HUNTER_BEAST_MASTERY )
       base_multiplier *= 1.10; //FIXME Jan 17th Hotfix
     else if ( player -> specialization() == HUNTER_MARKSMANSHIP )
