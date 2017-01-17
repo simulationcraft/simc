@@ -6137,11 +6137,10 @@ struct remorseless_winter_buff_t : public buff_t
   {
     buff_t::execute( stacks, value, duration );
 
-    // Executing remorseless winter (either new buff or refresh) will cancel any accumulated
-    // Gathering Storms stacks
-    if ( gathering_storm )
+    // Refresh existing Gathering Storm duration (adds a stack too?)
+    if ( gathering_storm && gathering_storm -> check() )
     {
-      gathering_storm -> expire();
+      gathering_storm -> trigger();
     }
   }
 
