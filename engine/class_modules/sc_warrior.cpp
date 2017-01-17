@@ -3184,7 +3184,7 @@ struct revenge_t: public warrior_attack_t
 
     am *= 1.0 + p() -> buff.bindings_of_kakushan -> stack_value();
 
-    am *= 1.0 + ( p() -> talents.best_served_cold -> effectN( 1 ).percent() * target_list().size() );
+    am *= 1.0 + ( p() -> talents.best_served_cold -> effectN( 1 ).percent() * std::min( target_list().size(), static_cast<size_t>( p() -> talents.best_served_cold -> effectN( 1 ).base_value() ) ) );
 
     return am;
   }
