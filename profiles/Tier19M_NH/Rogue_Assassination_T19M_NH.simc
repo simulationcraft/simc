@@ -40,6 +40,7 @@ actions.build+=/mutilate
 
 # Cooldowns
 actions.cds=potion,name=old_war,if=buff.bloodlust.react|target.time_to_die<=25|debuff.vendetta.up
+actions.cds+=/use_item,slot=trinket2,if=buff.bloodlust.react|target.time_to_die<=20|debuff.vendetta.up
 actions.cds+=/blood_fury,if=debuff.vendetta.up
 actions.cds+=/berserking,if=debuff.vendetta.up
 actions.cds+=/arcane_torrent,if=debuff.vendetta.up&energy.deficit>50
@@ -65,29 +66,29 @@ actions.maintain+=/garrote,cycle_targets=1,if=refreshable&(!exsanguinated|remain
 
 head=doomblade_cowl,id=138332,bonus_id=3519
 neck=belerons_choker_of_misery,id=140899,bonus_id=3519,enchant=mark_of_the_hidden_satyr
-shoulders=doomblade_spaulders,id=138338,bonus_id=3519
+shoulders=mantle_of_the_torn_sky,id=140864,bonus_id=3519
 back=doomblade_shadowwrap,id=138371,bonus_id=3519,enchant=binding_of_agility
 chest=doomblade_tunic,id=138326,bonus_id=3519
 wrists=bracers_of_impossible_choices,id=140889,bonus_id=3519
-hands=doomblade_gauntlets,id=138329,bonus_id=3519
-waist=girdle_of_nefarious_strategy,id=140859,bonus_id=3519
+hands=gloves_of_synchronus_elements,id=140905,bonus_id=3519
+waist=high_shadow_councilors_wrap,id=140919,bonus_id=3519
 legs=doomblade_pants,id=138335,bonus_id=3519
-feet=stutterstep_treads,id=140860,bonus_id=3519
-finger1=spellblades_gemmed_signet,id=140895,bonus_id=3519,enchant=binding_of_versatility
-finger2=ring_of_exclusive_servitude,id=140906,bonus_id=3519,enchant=binding_of_versatility
-trinket1=arcanogolem_digit,id=140794,bonus_id=3519
-trinket2=convergence_of_fates,id=140806,bonus_id=3519
+feet=grovetenders_moccasins,id=140861,bonus_id=3519
+finger1=spellblades_gemmed_signet,id=140895,bonus_id=3519,enchant=binding_of_mastery
+finger2=ring_of_exclusive_servitude,id=140906,bonus_id=3519,enchant=binding_of_mastery
+trinket1=nightblooming_frond,id=140802,bonus_id=3519
+trinket2=draught_of_souls,id=140808,bonus_id=3519
 main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=140822/140815/140819,relic_id=3519/3519/3519
 off_hand=the_kingslayers,id=128869
 
 # Gear Summary
 # gear_ilvl=912.88
-# gear_agility=24228
+# gear_agility=21964
 # gear_stamina=35283
-# gear_crit_rating=9181
-# gear_haste_rating=3751
-# gear_mastery_rating=5773
-# gear_versatility_rating=4863
+# gear_crit_rating=10530
+# gear_haste_rating=1935
+# gear_mastery_rating=9105
+# gear_versatility_rating=3224
 # gear_armor=2471
 # set_bonus=tier19_2pc=1
 # set_bonus=tier19_4pc=1
