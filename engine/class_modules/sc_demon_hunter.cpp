@@ -1811,20 +1811,6 @@ struct eye_beam_t : public demon_hunter_spell_t
     }
   }
 
-  bool consume_cost_per_tick( const dot_t& dot ) override
-  {
-    bool ret = demon_hunter_spell_t::consume_cost_per_tick( dot );
-
-    if ( p() -> talent.blind_fury -> ok() )
-    {
-      p() -> resource_gain( RESOURCE_FURY,
-                            p() -> talent.blind_fury -> effectN( 3 ).resource( RESOURCE_FURY ) / 5,
-                            p() -> gain.blind_fury );
-    }
-
-    return ret;
-  }
-
   // Don't record data for this action.
   void record_data( action_state_t* s ) override
   {
