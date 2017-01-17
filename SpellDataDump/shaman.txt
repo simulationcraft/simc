@@ -780,7 +780,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=37246)    : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.90750 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.75000 | Target: Enemy(6)
                    Hotfixed: SP Coefficient (1.6 -> 1.75)
 Description      : Casts a bolt of lightning at the target for $s1 Nature damage.
 
@@ -2816,7 +2816,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179725)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self(1)
+                   Base Value: 21 | Scaled Value: 21 | Target: Self(1)
                    Affected Spells: Lightning Bolt (403), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Spore Cloud (32642), Windfury Attack (33750), Frozen Rune Weapon 2 (51385), Frozen Rune Weapon 3 (51386), Frozen Rune Weapon 4 (51387), Frozen Rune Weapon 5 (51388), Lava Lash (60103), Windstrike (115357), Windstrike Off-Hand (115360), Item - Shaman T18 Enhancement 4P Bonus (185872), Lightning Bolt (187837), Crash Lightning (187874), Lightning Bolt (188196), Lightning Shield (192106), Lightning Shield (192109), Rockbiter (193786), Flametongue (193796), Flametongue (194084), Crash Lightning (195592), Boulderfist (201897), Windsong (201898), Lightning Bolt (214815), Lightning Bolt Overload (214816)
                    Hotfixed: Base Value (10 -> 21)
 #2 (id=191038)   : Apply Aura (6) | Override Spell Power per Attack Power% (366)
@@ -3629,7 +3629,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=274643)   : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.90750 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.75000 | Target: Enemy(6)
                    Hotfixed: SP Coefficient (1.6 -> 1.75)
 Description      : Hurls a bolt of lightning at the target, dealing $s1 Nature damage.$?a187828[
 
@@ -4719,7 +4719,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=289974)   : School Damage: nature (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.30800 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.35000 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
                    Hotfixed: AP Coefficient (0.4 -> 0.35)
 #2 (id=289975)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -30 | Scaled Value: -30 | Radius: 0 - 8 yards | Mechanic: Unknown(88) | Target: At Caster(22) -> AOE enemy(15)
@@ -5317,7 +5317,7 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=297537)   : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 3.16250 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 2.75000 | Target: Enemy(6)
                    Hotfixed: AP Coefficient (2.5 -> 2.75)
 #2 (id=297594)   : Energize Power (30)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: maelstrom | Target: Self(1)
@@ -6093,7 +6093,7 @@ Effects          :
 #1 (id=312326)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #2 (id=312327)   : Weapon Damage% (31)
-                   Base Value: 34 | Scaled Value: 0.34 | Target: Enemy(6)
+                   Base Value: 27 | Scaled Value: 0.27 | Target: Enemy(6)
                    Hotfixed: Base Value (28 -> 27)
 Description      : $@spelldesc210853
 

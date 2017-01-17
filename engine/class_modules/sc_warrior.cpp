@@ -9,7 +9,6 @@ namespace
 { // UNNAMED NAMESPACE
 // ==========================================================================
 // Warrior
-//   - UPDATE SPELLS BASED ON HOTFIXES JANUARY 17th. TEMPORARY //FIXME ADDED FOR NOW
 // ==========================================================================
 
 struct warrior_t;
@@ -1040,7 +1039,6 @@ struct devastate_t: public warrior_attack_t
     weapon = &( p -> main_hand_weapon );
     impact_action = p -> active.deep_wounds;
     weapon_multiplier *= 1.0 + p -> artifact.strength_of_the_earth_aspect.percent();
-    base_multiplier *= 0.95; //FIXME
     if ( p -> talents.devastator -> ok() )
     {
       background = true;
@@ -1815,8 +1813,6 @@ struct deep_wounds_t: public warrior_attack_t
   {
     background = tick_may_crit = true;
     hasted_ticks = false;
-    if ( p -> specialization() == WARRIOR_PROTECTION )
-      base_multiplier *= 0.95; //FIXME
   }
 };
 
@@ -2321,8 +2317,6 @@ struct heroic_throw_t: public warrior_attack_t
 
     weapon = &( player -> main_hand_weapon );
     may_dodge = may_parry = may_block = false;
-    if ( p -> specialization() == WARRIOR_PROTECTION )
-      base_multiplier *= 0.95; //FIXME .... why nerf this ability?
   }
 
   bool ready() override
@@ -3099,8 +3093,6 @@ struct ravager_tick_t: public warrior_attack_t
     {
       weapon_multiplier *= 1.0 + p->spell.arms_warrior->effectN( 3 ).percent();
     }
-    else if ( p -> specialization() == WARRIOR_PROTECTION )
-      base_multiplier *= 0.95; //FIXME
   }
 };
 
@@ -3153,8 +3145,6 @@ struct revenge_t: public warrior_attack_t
 
     impact_action = p -> active.deep_wounds;
     attack_power_mod.direct *= 1.0 + p -> artifact.rage_of_the_fallen.percent();
-    if ( p -> specialization() == WARRIOR_PROTECTION )
-      base_multiplier *= 0.86; //FIXME
   }
 
   void execute() override
@@ -3490,8 +3480,6 @@ struct thunder_clap_t: public warrior_attack_t
     attack_power_mod.direct *= 1.0 + p -> artifact.thunder_crash.percent();
 
     radius *= 1.0 + p -> talents.crackling_thunder -> effectN( 1 ).percent();
-    if ( p -> specialization() == WARRIOR_PROTECTION )
-      base_multiplier *= 0.86; //FIXME
   }
 
 

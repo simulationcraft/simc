@@ -4237,12 +4237,6 @@ void unique_gear::register_hotfixes_x7()
     .operation( hotfix::HOTFIX_SET )
     .modifier( 40 )
     .verification_value( 1 );
-
-  hotfix::register_effect( "Kil'jaeden's Burning Wish", "2017-01-14", "Damage increased by 55%.", 356737 )
-    .field( "average" )
-    .operation( hotfix::HOTFIX_MUL )
-    .modifier( 1.55 )
-    .verification_value( 45 );
 }
 
 void unique_gear::register_target_data_initializers_x7( sim_t* sim )

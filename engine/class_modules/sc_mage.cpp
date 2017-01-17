@@ -9,7 +9,6 @@ namespace { // UNNAMED NAMESPACE
 
 // ==========================================================================
 // Mage
-//   - UPDATE SPELLS BASED ON HOTFIXES JANUARY 17th. TEMPORARY //FIXME ADDED FOR NOW
 // ==========================================================================
 
 // Forward declarations
@@ -9609,18 +9608,6 @@ public:
       .operation( hotfix::HOTFIX_SET )
       .modifier( 57 )
       .verification_value( 81 );
-
-    hotfix::register_effect( "Mage", "2017-01-15", "Adjust Ray of Frost tick coefficient up 12%", 303101 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 2.296 )
-      .verification_value( 2.05 );
-
-    hotfix::register_effect( "Mage", "2017-01-15", "Adjust Flame Patch down 17%", 303428 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 0.249 )
-      .verification_value( 0.3 );
   }
 
   virtual bool valid() const override { return true; }

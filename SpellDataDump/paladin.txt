@@ -1713,7 +1713,7 @@ Description      : Interrupts spellcasting and prevents any spell in that school
 Name             : Blinding Light (id=105421) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
-Spell Level      : 45
+Spell Level      : 87
 Duration         : 6 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
@@ -4313,7 +4313,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=317188)   : Apply Aura (6) | Periodic Damage: holy every 7 seconds (3)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 12.32500 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 14.50000 | Target: Enemy(6)
                    Hotfixed: AP Coefficient (17 -> 14.5)
 Description      : A hammer slowly falls from the sky, dealing $s2 Holy damage after $d.
 Tooltip          : Taking $s2 Holy damage when this expires.

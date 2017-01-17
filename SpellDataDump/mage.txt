@@ -4033,7 +4033,7 @@ Effects          :
 #1 (id=302648)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88) | Target: Enemy(6)
 #2 (id=303101)   : Apply Aura (6) | Periodic Damage: frost every 1 seconds (3)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.29600 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.30000 | Target: Enemy(6)
                    Hotfixed: SP Coefficient (2.05 -> 2.3)
 Description      : For the next $d, you can channel a beam of icy power at an enemy, slowing movement by $m1% and dealing $s2 Frost damage every $t2 sec. Each time Ray of Frost deals damage, its damage increases by $208141s1%.
 Tooltip          : Movement slowed by $w1% and taking $s2 Frost damage every $t2 sec.
@@ -4390,7 +4390,7 @@ Attributes       : ........ ........ .......x x..x....   ...x.x.x ........ .....
                  : Does not break stealth (37), Requires line of sight (186)
 Effects          :
 #1 (id=303428)   : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.24900 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.25000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
                    Hotfixed: SP Coefficient (0.5 -> 0.25)
 Description      : Burning enemies for $s1 Fire damage.
 

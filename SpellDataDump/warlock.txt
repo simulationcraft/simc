@@ -111,7 +111,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=267)      : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.77500 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.25000 | Target: Enemy(6)
                    Hotfixed: SP Coefficient (0.88 -> 1.25)
 Description      : Sends a shadowy bolt at the enemy, causing $s1 Shadow damage.$?c2[
 
@@ -3276,7 +3276,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=219885)   : School Damage: chaos (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.77500 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.25000 | Target: Enemy(6)
                    Hotfixed: SP Coefficient (0.88 -> 1.25)
 #2 (id=245223)   : Trigger Spell: Demonbolt (64)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 196300 | Target: Self(1)

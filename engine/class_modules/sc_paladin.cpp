@@ -6179,23 +6179,7 @@ struct paladin_module_t : public module_t
 
   virtual void register_hotfixes() const override
   {
-    hotfix::register_effect("Paladin", "2017-01-13", "Execution Sentence damage reduced by 15%.", 317188)
-      .field("ap_coefficient")
-      .operation(hotfix::HOTFIX_MUL)
-      .modifier(0.85)
-      .verification_value(17);
 
-    hotfix::register_effect("Paladin", "2017-01-13", "Chain of Thrayn: Damage bonus reduced from 20% to 10%.", 357284)
-      .field("base_value")
-      .operation(hotfix::HOTFIX_SET)
-      .modifier(10.0)
-      .verification_value(20.0);
-
-    hotfix::register_spell( "Paladin", "2017-01-15", "Incorrect spell level for Blinding Light's Effect.", 105421 )
-      .field( "spell_level" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 45 )
-      .verification_value( 87 );
   }
 
   virtual void combat_begin( sim_t* ) const override {}

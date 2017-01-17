@@ -760,7 +760,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=283035)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30 | Target: Self(1)
+                   Base Value: 25 | Scaled Value: 25 | Target: Self(1)
 #2 (id=297759)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 30 | Scaled Value: 30 | Target: Self(1)
                    Affected Spells: Fel Rush (192611)
