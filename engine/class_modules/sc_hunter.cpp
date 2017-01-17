@@ -3072,11 +3072,11 @@ struct bursting_shot_t : public hunter_ranged_attack_t
 
 struct aimed_shot_base_t: public hunter_ranged_attack_t
 {
-  aimed_shot_base_t( const std::string& name, hunter_t* p, const spell_data_t* s):
-    hunter_ranged_attack_t( name, p, s )
-  {
-    parse_spell_data( *p -> specs.aimed_shot );
+  bool procs_piercing_shots;
 
+  aimed_shot_base_t( const std::string& name, hunter_t* p, const spell_data_t* s ):
+    hunter_ranged_attack_t( name, p, s ), procs_piercing_shots( true )
+  {
     if ( p -> artifacts.wind_arrows.rank() )
       base_multiplier *= 1.0 +  p -> artifacts.wind_arrows.percent();
 
@@ -3127,6 +3127,9 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t::impact( s );
 
     trigger_true_aim( p(), s -> target );
+
+    if ( procs_piercing_shots && p() -> buffs.careful_aim -> check() && s -> result == RESULT_CRIT )
+      trigger_piercing_shots( s );
   }
 
   virtual double composite_target_crit_chance( player_t* t ) const override
@@ -3147,10 +3150,9 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
 struct trick_shot_t: public aimed_shot_base_t
 {
   trick_shot_t( hunter_t* p ):
-    aimed_shot_base_t( "trick_shot", p, p -> find_talent_spell( "Trick Shot" ) )
+    aimed_shot_base_t( "trick_shot", p, p -> specs.aimed_shot )
   {
     may_proc_bullseye = false;
-    benefits_from_sniper_training = true;
     // Simulated as aoe for simplicity
     aoe               = -1;
     background        = true;
@@ -3163,29 +3165,25 @@ struct trick_shot_t: public aimed_shot_base_t
   {
     aimed_shot_base_t::execute();
 
-    int count = 0;
-    std::vector<player_t*> trick_shot_targets = execute_state -> action -> target_list();
-    for( size_t i = 0; i < trick_shot_targets.size(); i++ )
-    {
-      if ( trick_shot_targets[ i ] != p() -> target && td( trick_shot_targets[ i ] ) -> debuffs.vulnerable -> up() )
-        count++;
-    }
-    if ( count == 0 )
+    if ( num_targets_hit == 0 )
       p() -> buffs.trick_shot -> trigger();
     else
       p() -> buffs.trick_shot -> expire();
   }
 
-  virtual void impact( action_state_t* s ) override
+  size_t available_targets( std::vector< player_t* >& tl ) const override
   {
-    // Do not hit current target, and only deal damage to targets with Vulnerable
-    if ( s -> target != p() -> target && ( td( s -> target ) -> debuffs.vulnerable -> up() ) )
-    {
-      aimed_shot_base_t::impact( s );
+    aimed_shot_base_t::available_targets( tl );
 
-      if ( p() -> buffs.careful_aim -> check() && s -> result == RESULT_CRIT )
-        trigger_piercing_shots( s );
+    for ( auto t = tl.begin(); t != tl.end(); )
+    {
+      // Does not hit original target, and only deals damage to targets with Vulnerable
+      if ( *t != target && td( *t ) -> debuffs.vulnerable -> up() )
+        ++t;
+      else
+        t = tl.erase( t );
     }
+    return tl.size();
   }
 };
 
@@ -3194,14 +3192,17 @@ struct trick_shot_t: public aimed_shot_base_t
 struct legacy_of_the_windrunners_t: aimed_shot_base_t
 {
   legacy_of_the_windrunners_t( hunter_t* p ):
-    aimed_shot_base_t( "legacy_of_the_windrunners", p, p -> artifacts.legacy_of_the_windrunners )
+    aimed_shot_base_t( "legacy_of_the_windrunners", p, p -> find_spell( 191043 ) )
   {
     may_proc_bullseye = false;
-    benefits_from_sniper_training = true;
+    procs_piercing_shots = false;
     background = true;
     dual = true;
     proc = true;
-    weapon_multiplier = p -> find_spell( 191043 ) -> effectN( 2 ).percent();
+    // LotW arrows behave more like AiS re cast time/speed
+    // TODO: test its behavior on lnl AiSes
+    base_execute_time = p -> specs.aimed_shot -> cast_time( p -> level() );
+    travel_speed = p -> specs.aimed_shot -> missile_speed();
   }
 };
 
@@ -3249,14 +3250,6 @@ struct aimed_shot_t: public aimed_shot_base_t
     return cost;
   }
 
-  virtual void impact(action_state_t* s) override
-  {
-    aimed_shot_base_t::impact(s);
-
-    if (p()->buffs.careful_aim->value() && s->result == RESULT_CRIT)
-      trigger_piercing_shots(s);
-  }
-
   void schedule_execute( action_state_t* s ) override
   {
     aimed_shot_base_t::schedule_execute( s );
@@ -3273,7 +3266,11 @@ struct aimed_shot_t: public aimed_shot_base_t
     aimed_shot_base_t::execute();
 
     if ( trick_shot )
+    {
+      trick_shot -> target = execute_state -> target;
+      trick_shot -> target_cache.is_valid = false;
       trick_shot -> execute();
+    }
 
     aimed_in_ca -> update( p() -> buffs.careful_aim -> check() != 0 );
 
