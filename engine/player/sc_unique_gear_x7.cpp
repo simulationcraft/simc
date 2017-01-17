@@ -521,11 +521,12 @@ void item::naraxas_spiked_tongue( special_effect_t& effect )
 
 void item::choker_of_barbed_reins( special_effect_t& effect )
 {
-  struct choker_of_barbed_reins_t: public proc_spell_t
+  struct choker_of_barbed_reins_t: public proc_attack_t
   {
     choker_of_barbed_reins_t( const special_effect_t& e ):
-      proc_spell_t( "barbed_rebuke", e.player, e.player -> find_spell( 234108 ), e.item )
+      proc_attack_t( "barbed_rebuke", e.player, e.player -> find_spell( 234108 ), e.item )
     {
+      may_block = true;
     }
     double target_armor( player_t* ) const override
     { return 0.0; }
