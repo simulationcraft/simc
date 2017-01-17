@@ -42,6 +42,7 @@ struct hunter_td_t: public actor_target_data_t
     buff_t* lacerate;
     buff_t* t18_2pc_open_wounds;
     buff_t* mark_of_helbrine;
+    buff_t* damaged;
   } debuffs;
 
   struct dots_t
@@ -551,6 +552,13 @@ public:
   hunter_td_t* td( player_t* t ) const
   {
     return p() -> get_target_data( t );
+  }
+
+  void assess_damage( dmg_e type, action_state_t* s ) override
+  {
+    ab::assess_damage( type, s );
+
+    s -> target -> debuffs.damage_taken -> trigger(); //This determines whether or not aimed shot will deal double damage.
   }
 
   void init() override
@@ -2730,10 +2738,21 @@ struct barrage_t: public hunter_ranged_attack_t
       may_crit = true;
       weapon = &( player -> main_hand_weapon );
       aoe = -1;
-
-      range = radius;
-      range = 0;
+      radius = 0; //Barrage attacks all targets in front of the hunter, so setting radius to 0 will prevent distance targeting from using a 40 yard radius around the target.
+      // Todo: Add in support to only hit targets in the frontal cone. 
       travel_speed = 0.0;
+      // Double the tick damage since the chance to hit is simulated.
+      base_multiplier *= 2.0;
+
+      if ( data().affected_by( player -> specs.beast_mastery_hunter -> effectN( 5 ) ) )
+        base_multiplier *= 1.0 + player -> specs.beast_mastery_hunter -> effectN( 5 ).percent();
+
+      if ( data().affected_by( player -> specs.beast_mastery_hunter -> effectN( 5 ) ) )
+        base_multiplier *= 1.0 + player -> specs.beast_mastery_hunter -> effectN( 5 ).percent();
+      if ( player -> specialization() == HUNTER_BEAST_MASTERY )
+        base_multiplier *= 1.10; //FIXME Jan 17th Hotfix
+      else if ( player -> specialization() == HUNTER_MARKSMANSHIP )
+        base_multiplier *= 1.08; //FIXME
     }
     
     void impact(action_state_t* s) override {
@@ -2759,16 +2778,6 @@ struct barrage_t: public hunter_ranged_attack_t
     tick_action = new barrage_damage_t( player );
 
     starved_proc = player -> get_proc( "starved: barrage" );
-
-    // Double the tick damage since the chance to hit is simulated.
-    base_multiplier *= 2.0;
-
-    if ( data().affected_by( player -> specs.beast_mastery_hunter -> effectN( 5 ) ) )
-      base_multiplier *= 1.0 + player -> specs.beast_mastery_hunter -> effectN( 5 ).percent();
-    if ( player -> specialization() == HUNTER_BEAST_MASTERY )
-      base_multiplier *= 1.10; //FIXME Jan 17th Hotfix
-    else if ( player -> specialization() == HUNTER_MARKSMANSHIP )
-      base_multiplier *= 1.08; //FIXME
   }
 
   void schedule_execute( action_state_t* state = nullptr ) override
@@ -3230,7 +3239,7 @@ struct aimed_shot_t: public aimed_shot_base_t
   vulnerability_stats_t vulnerability_stats;
 
   aimed_shot_t( hunter_t* p, const std::string& options_str ):
-    aimed_shot_base_t( "aimed_shot", p, p -> find_specialization_spell( "Aimed Shot" ) ),
+    aimed_shot_base_t( "aimed_shot", p, p -> specs.aimed_shot ),
     aimed_in_ca( p -> get_benefit( "aimed_in_careful_aim" ) ),
     trick_shot( nullptr ), legacy_of_the_windrunners( nullptr ),
     vulnerability_stats( p, this )
@@ -3264,6 +3273,16 @@ struct aimed_shot_t: public aimed_shot_base_t
       return 0;
 
     return cost;
+  }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double am = aimed_shot_base_t::composite_target_multiplier( t );
+
+    if ( !t -> debuffs.damage_taken -> check() )
+      am *= 1.0 + p() -> specs.aimed_shot -> effectN( 3 ).percent();
+
+    return am;
   }
 
   virtual void impact(action_state_t* s) override
@@ -5465,6 +5484,9 @@ dots( dots_t() )
         .default_value( p -> find_spell( 213154 ) 
                           -> effectN( 1 )
                             .percent() );
+
+  debuffs.damaged = buff_creator_t( *this, "damaged" ).duration( timespan_t::zero() )
+    .chance( p -> specialization() == HUNTER_MARKSMANSHIP );
 }
 
 
