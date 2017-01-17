@@ -42,7 +42,6 @@ struct hunter_td_t: public actor_target_data_t
     buff_t* lacerate;
     buff_t* t18_2pc_open_wounds;
     buff_t* mark_of_helbrine;
-    buff_t* damaged;
   } debuffs;
 
   struct dots_t
@@ -552,13 +551,6 @@ public:
   hunter_td_t* td( player_t* t ) const
   {
     return p() -> get_target_data( t );
-  }
-
-  void assess_damage( dmg_e type, action_state_t* s ) override
-  {
-    ab::assess_damage( type, s );
-
-    s -> target -> debuffs.damage_taken -> trigger(); //This determines whether or not aimed shot will deal double damage.
   }
 
   void init() override
@@ -3240,7 +3232,7 @@ struct aimed_shot_t: public aimed_shot_base_t
   vulnerability_stats_t vulnerability_stats;
 
   aimed_shot_t( hunter_t* p, const std::string& options_str ):
-    aimed_shot_base_t( "aimed_shot", p, p -> specs.aimed_shot ),
+    aimed_shot_base_t( "aimed_shot", p, p -> find_specialization_spell( "Aimed Shot" ) ),
     aimed_in_ca( p -> get_benefit( "aimed_in_careful_aim" ) ),
     trick_shot( nullptr ), legacy_of_the_windrunners( nullptr ),
     vulnerability_stats( p, this )
@@ -3274,16 +3266,6 @@ struct aimed_shot_t: public aimed_shot_base_t
       return 0;
 
     return cost;
-  }
-
-  double composite_target_multiplier( player_t* t ) const override
-  {
-    double am = aimed_shot_base_t::composite_target_multiplier( t );
-
-    if ( !t -> debuffs.damage_taken -> check() )
-      am *= 1.0 + p() -> specs.aimed_shot -> effectN( 3 ).percent();
-
-    return am;
   }
 
   virtual void impact(action_state_t* s) override
@@ -5485,9 +5467,6 @@ dots( dots_t() )
         .default_value( p -> find_spell( 213154 ) 
                           -> effectN( 1 )
                             .percent() );
-
-  debuffs.damaged = buff_creator_t( *this, "damaged" ).duration( timespan_t::zero() )
-    .chance( p -> specialization() == HUNTER_MARKSMANSHIP );
 }
 
 
