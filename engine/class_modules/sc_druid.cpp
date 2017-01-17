@@ -5881,13 +5881,14 @@ struct warrior_of_elune_t : public druid_spell_t
     druid_spell_t( "warrior_of_elune", player, player -> talent.warrior_of_elune, options_str )
   {
     harmful = false;
+
   }
 
   void execute() override
   {
     druid_spell_t::execute();
 
-    p() -> buff.warrior_of_elune -> trigger( 2 );
+    p() -> buff.warrior_of_elune -> trigger( p() -> talent.warrior_of_elune -> max_stacks() );
   }
 
   virtual bool ready() override
