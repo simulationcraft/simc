@@ -3499,7 +3499,7 @@ struct void_eruption_t final : public priest_spell_t
                   ->effectN(1)
                   .base_value();
 
-      priest.buffs.voidform->bump( mss_vf_stacks -3 ); // You start with 3 Stacks of Voidform 2016/01/15
+      priest.buffs.voidform->bump( mss_vf_stacks - 1 ); // You start with 3 Stacks of Voidform 2017/01/17
     }
   }
 
