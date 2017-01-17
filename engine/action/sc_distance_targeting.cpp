@@ -33,7 +33,7 @@ bool action_t::execute_targeting( action_t* action ) const
     }
     if ( action->time_to_execute > timespan_t::zero() && action->range > 0.0 )
     {  // No need to recheck if the execute time was zero.
-      if ( action->target->get_player_distance( *action->player ) >
+      if ( action->player->get_player_distance( *action->target ) >
            action->range + action->target->combat_reach )
       {  // Target is now out of range, we cannot finish the cast.
         return false;
@@ -51,7 +51,7 @@ std::vector<player_t*> action_t::targets_in_range_list(
   {
     i--;
     player_t* target_ = tl[ i ];
-    if ( range > 0.0 && target_->get_player_distance( *player ) > range )
+    if ( range > 0.0 && player->get_player_distance( *target_ ) > range )
     {
       tl.erase( tl.begin() + i );
     }

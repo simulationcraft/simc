@@ -3757,7 +3757,7 @@ struct crosswinds_t : public monk_melee_attack_t
     {
       std::vector<player_t*> targets;
       range::for_each( sim -> target_non_sleeping_list, [ &targets, this ]( player_t* t ) {
-        if ( t -> get_player_distance( *player ) <= radius + t -> combat_reach )
+        if ( player -> get_player_distance( *t ) <= radius + t -> combat_reach )
         {
           targets.push_back( t );
         }

@@ -495,7 +495,7 @@ void item::naraxas_spiked_tongue( special_effect_t& effect )
     {
       double am = proc_spell_t::action_multiplier();
 
-      double distance = target -> get_player_distance( *player );
+      double distance = player -> get_player_distance( *target );
       am *= ( std::min( distance, 20.0 ) / 20.0 ); // Does less damage the closer player is to target.
       return am;
     }
@@ -2004,7 +2004,7 @@ void item::draught_of_souls( special_effect_t& effect )
       {
         std::vector<player_t*> targets;
         range::for_each( sim -> target_non_sleeping_list, [ &targets, this ]( player_t* t ) {
-          if ( t -> get_player_distance( *player ) <= radius + t -> combat_reach )
+          if ( player -> get_player_distance( *t ) <= radius + t -> combat_reach )
           {
             targets.push_back( t );
           }
