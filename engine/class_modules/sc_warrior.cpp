@@ -585,7 +585,8 @@ template <class Base>
 struct warrior_action_t: public Base
 {
   bool headlongrush, headlongrushgcd, sweeping_strikes, dauntless, deadly_calm, 
-    arms_damage_increase, fury_damage_increase, fury_dot_damage_increase, arms_dot_damage_increase;
+    arms_damage_increase, fury_damage_increase, fury_dot_damage_increase, arms_dot_damage_increase,
+    prot_warrior_damage_increase, prot_dot_damage_increase;
   double tactician_per_rage, arms_t19_2p_chance;
 private:
   typedef Base ab; // action base, eg. spell_t
@@ -606,6 +607,8 @@ public:
     fury_damage_increase( ab::data().affected_by( player -> spell.fury_warrior -> effectN( 1 ) ) ),
     fury_dot_damage_increase( ab::data().affected_by( player -> spell.fury_warrior -> effectN( 2 ) ) ),
     arms_dot_damage_increase( ab::data().affected_by( player -> spell.arms_warrior -> effectN( 3 ) ) ),
+    prot_warrior_damage_increase( ab::data().affected_by( player -> spell.prot_warrior -> effectN( 7 ) ) ),
+    prot_dot_damage_increase( ab::data().affected_by( player -> spell.prot_warrior -> effectN( 8 ) ) ),
     tactician_per_rage( 0 ), arms_t19_2p_chance( 0 ),
     track_cd_waste( s -> cooldown() > timespan_t::zero() || s -> charge_cooldown() > timespan_t::zero() ),
     cd_wasted_exec( nullptr ), cd_wasted_cumulative( nullptr ), cd_wasted_iter( nullptr )
@@ -616,18 +619,31 @@ public:
     arms_t19_2p_chance = p() -> sets.set( WARRIOR_ARMS, T19, B2 ) -> proc_chance();
 
     if ( arms_damage_increase )
-      ab::weapon_multiplier *= 1.0 + player ->spell.arms_warrior -> effectN( 2 ).percent();
+    {
+      ab::weapon_multiplier *= 1.0 + player -> spell.arms_warrior -> effectN( 2 ).percent();
+      ab::attack_power_mod.direct *= 1.0 + player -> spell.arms_warrior -> effectN( 2 ).percent();
+    }
     if ( fury_damage_increase )
-      ab::weapon_multiplier *= 1.0 + player ->spell.fury_warrior ->effectN( 1 ).percent();
+    {
+      ab::weapon_multiplier *= 1.0 + player -> spell.fury_warrior ->effectN( 1 ).percent();
+      ab::attack_power_mod.direct *= 1.0 + player -> spell.fury_warrior -> effectN( 1 ).percent();
+    }
     if ( fury_dot_damage_increase )
     {
       ab::attack_power_mod.tick *= 1.0 + player -> spell.fury_warrior -> effectN( 2 ).percent();
-      ab::attack_power_mod.direct *= 1.0 + player -> spell.fury_warrior -> effectN( 2 ).percent();
     }
     if ( arms_dot_damage_increase )
     {
       ab::attack_power_mod.tick *= 1.0 + player -> spell.arms_warrior -> effectN( 3 ).percent();
-      ab::attack_power_mod.direct *= 1.0 + player -> spell.arms_warrior -> effectN( 3 ).percent();
+    }
+    if ( prot_warrior_damage_increase )
+    {
+      ab::weapon_multiplier *= 1.0 + player -> spell.prot_warrior -> effectN( 7 ).percent();
+      ab::attack_power_mod.direct *= 1.0 + player -> spell.prot_warrior -> effectN( 7 ).percent();
+    }
+    if ( prot_dot_damage_increase )
+    {
+      ab::attack_power_mod.tick *= 1.0 + player -> spell.prot_warrior -> effectN( 8 ).percent();
     }
   }
 
@@ -3089,10 +3105,7 @@ struct ravager_tick_t: public warrior_attack_t
   {
     aoe = -1;
     dual = ground_aoe = true;
-    if ( p->specialization() == WARRIOR_ARMS )
-    {
-      weapon_multiplier *= 1.0 + p->spell.arms_warrior->effectN( 3 ).percent();
-    }
+    attack_power_mod.direct *= 1.0 + p -> spec.protection -> effectN( 3 ).percent();//89% damage decrease for prot.
   }
 };
 
@@ -5667,7 +5680,7 @@ struct into_the_fray_callback_t
     {
       i--;
       player_t* target_ = w -> sim -> target_non_sleeping_list[i];
-      if ( target_-> get_player_distance( *w ) <= fray_distance )
+      if ( w-> get_player_distance( *target_ ) <= fray_distance )
       {
         buff_stacks_++;
       }
