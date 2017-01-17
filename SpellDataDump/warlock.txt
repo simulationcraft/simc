@@ -1,4 +1,4 @@
-SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23360, git build a0a9385)
+SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23360, git build a7ace21)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -111,7 +111,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=267)      : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.88000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.77500 | Target: Enemy(6)
+                   Hotfixed: SP Coefficient (0.88 -> 1.25)
 Description      : Sends a shadowy bolt at the enemy, causing $s1 Shadow damage.$?c2[
 
 |cFFFFFFFFGenerates 1 Soul Shard.|r][]
@@ -3275,11 +3276,13 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=219885)   : School Damage: chaos (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.88000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.77500 | Target: Enemy(6)
+                   Hotfixed: SP Coefficient (0.88 -> 1.25)
 #2 (id=245223)   : Trigger Spell: Demonbolt (64)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 196300 | Target: Self(1)
 #3 (id=288119)   : Dummy (3)
-                   Base Value: 18 | Scaled Value: 18 | Radius: 100 yards | Target: Unknown(120)
+                   Base Value: 10 | Scaled Value: 10 | Radius: 100 yards | Target: Unknown(120)
+                   Hotfixed: Base Value (18 -> 10)
 Description      : Draws energy from your demons and launches a ball of demonic energy at the target, dealing $s1 Chaos damage. Damage increased $s3% for each demon you have active.
 
 |cFFFFFFFFGenerates $s2 Soul Shard.|r
@@ -4661,7 +4664,8 @@ Effects          :
 #1 (id=303016)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
                    Base Value: 35 | Scaled Value: 35 | Target: Self(1)
 #2 (id=336317)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
-                   Base Value: 55 | Scaled Value: 55 | Target: Self(1)
+                   Base Value: 100 | Scaled Value: 100 | Target: Self(1)
+                   Hotfixed: Base Value (55 -> 100)
 Description      : $@spelldesc205178
 
 Name             : Soul Effigy (id=205260) 
@@ -5253,8 +5257,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=355427)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
-                   Base Value: 80 | Scaled Value: 80 | Misc Value: 12 | Target: Self(1)
+                   Base Value: 70 | Scaled Value: 70 | Misc Value: 12 | Target: Self(1)
                    Affected Spells: Drain Soul (198590)
+                   Hotfixed: Base Value (80 -> 70)
 Description      : While channeling Drain Soul, your damage over time effects deal $s1% increased damage to the target.
 
 Name             : Empowered Life Tap (id=235156) [Spell Family (5)] 

@@ -1,4 +1,4 @@
-SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23360, git build a0a9385)
+SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23360, git build a7ace21)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
@@ -2660,8 +2660,10 @@ Effects          :
 #4 (id=191054)   : Apply Aura (6) | Add Flat Modifier: Spell Tick Time (107)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 8 | Target: Self(1)
                    Affected Spells: Prey on the Weak (131511)
-#5 (id=191055)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#5 (id=191055)   : Apply Aura (6) | Add Percent Modifier: Spell Effect 1 (108)
+                   Base Value: -12 | Scaled Value: -12 | Misc Value: 3 | Target: Self(1)
+                   Affected Spells: Agonizing Poison (200803)
+                   Hotfixed: Sub Type (4 -> 108), Base Value (0 -> -12), Misc Value (0 -> 3), Affects Spells
 #6 (id=261017)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #7 (id=261018)   : Apply Aura (6) | Dummy (4)
