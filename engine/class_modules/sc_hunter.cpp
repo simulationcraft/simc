@@ -2760,8 +2760,11 @@ struct barrage_t: public hunter_ranged_attack_t
     // Double the tick damage since the chance to hit is simulated.
     base_multiplier *= 2.0;
 
-    if ( data().affected_by( player -> specs.beast_mastery_hunter -> effectN( 5 ) ) )
+    if ( data().affected_by( player -> specs.beast_mastery_hunter -> effectN( 5 ) ) ||
+         tick_action -> data().affected_by( player -> specs.beast_mastery_hunter -> effectN( 5 ) ) )
+    {
       base_multiplier *= 1.0 + player -> specs.beast_mastery_hunter -> effectN( 5 ).percent();
+    }
 
     starved_proc = player -> get_proc( "starved: barrage" );
   }
