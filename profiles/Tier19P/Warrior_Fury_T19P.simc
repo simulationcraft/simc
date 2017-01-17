@@ -3,7 +3,7 @@ level=110
 race=troll
 role=attack
 position=back
-talents=2232133
+talents=2333232
 artifact=35:0:0:0:0:982:1:984:1:985:1:986:1:988:3:990:3:991:3:995:3:996:3:1357:1
 spec=fury
 
@@ -67,7 +67,6 @@ actions.cooldowns+=/odyns_fury
 actions.cooldowns+=/bloodthirst
 actions.cooldowns+=/whirlwind,if=buff.wrecking_ball.react&buff.enrage.up
 actions.cooldowns+=/furious_slash
-actions.cooldowns+=/rampage
 
 actions.execute=bloodthirst,if=buff.fujiedas_fury.up&buff.fujiedas_fury.remains<2
 actions.execute+=/execute,if=artifact.juggernaut.enabled&(!buff.juggernaut.up|buff.juggernaut.remains<2)|buff.stone_heart.react

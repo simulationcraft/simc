@@ -4943,7 +4943,6 @@ void warrior_t::apl_fury()
   cooldowns -> add_action( this, "Bloodthirst" );
   cooldowns -> add_action( this, "Whirlwind", "if=buff.wrecking_ball.react&buff.enrage.up" );
   cooldowns -> add_action( this, "Furious Slash" );
-  cooldowns -> add_action( this, "Rampage", "" );
 
   execute -> add_action( this, "Bloodthirst", "if=buff.fujiedas_fury.up&buff.fujiedas_fury.remains<2" );
   execute -> add_action( this, "Execute", "if=artifact.juggernaut.enabled&(!buff.juggernaut.up|buff.juggernaut.remains<2)|buff.stone_heart.react" );
