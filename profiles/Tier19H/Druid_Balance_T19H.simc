@@ -32,12 +32,12 @@ actions+=/blood_fury,if=buff.celestial_alignment.up|buff.incarnation.up
 actions+=/berserking,if=buff.celestial_alignment.up|buff.incarnation.up
 actions+=/arcane_torrent,if=buff.celestial_alignment.up|buff.incarnation.up
 actions+=/call_action_list,name=fury_of_elune,if=talent.fury_of_elune.enabled&cooldown.fury_of_elue.remains<target.time_to_die
-actions+=/call_action_list,name=ed,if=equipped.the_emerald_dreamcatcher
+actions+=/call_action_list,name=ed,if=equipped.the_emerald_dreamcatcher&active_enemies<=2
 actions+=/new_moon,if=(charges=2&recharge_time<5)|charges=3
 actions+=/half_moon,if=(charges=2&recharge_time<5)|charges=3|(target.time_to_die<15&charges=2)
 actions+=/full_moon,if=(charges=2&recharge_time<5)|charges=3|target.time_to_die<15
 actions+=/stellar_flare,cycle_targets=1,max_cycle_targets=4,if=active_enemies<4&remains<7.2&astral_power>=15
-actions+=/moonfire,if=(talent.natures_balance.enabled&remains<3)|(remains<6.6&!talent.natures_balance.enabled)
+actions+=/moonfire,cycle_targets=1,if=(talent.natures_balance.enabled&remains<3)|(remains<6.6&!talent.natures_balance.enabled)
 actions+=/sunfire,if=(talent.natures_balance.enabled&remains<3)|(remains<5.4&!talent.natures_balance.enabled)
 actions+=/astral_communion,if=astral_power.deficit>=75
 actions+=/incarnation,if=astral_power>=40
@@ -48,7 +48,7 @@ actions+=/lunar_strike,if=buff.lunar_empowerment.stack=3
 actions+=/call_action_list,name=celestial_alignment_phase,if=buff.celestial_alignment.up|buff.incarnation.up
 actions+=/call_action_list,name=single_target
 
-actions.celestial_alignment_phase=starfall,if=(active_enemies>=2&talent.stellar_flare.enabled|active_enemies>=3)&((talent.fury_of_elune.enabled&cooldown.fury_of_elune.remains>12&buff.fury_of_elune_up.down)|!talent.fury_of_elune.enabled)
+actions.celestial_alignment_phase=starfall,if=((active_enemies>=2&talent.stellar_drift.enabled)|active_enemies>=3)
 actions.celestial_alignment_phase+=/starsurge,if=active_enemies<=2
 actions.celestial_alignment_phase+=/warrior_of_elune
 actions.celestial_alignment_phase+=/lunar_strike,if=buff.warrior_of_elune.up
@@ -104,7 +104,7 @@ actions.fury_of_elune+=/solar_wrath
 actions.single_target=new_moon,if=astral_power<=90
 actions.single_target+=/half_moon,if=astral_power<=80
 actions.single_target+=/full_moon,if=astral_power<=60
-actions.single_target+=/starfall,if=(active_enemies>=2&talent.stellar_flare.enabled|active_enemies>=3)&((talent.fury_of_elune.enabled&cooldown.fury_of_elune.remains>12&buff.fury_of_elune_up.down)|!talent.fury_of_elune.enabled)
+actions.single_target+=/starfall,if=((active_enemies>=2&talent.stellar_drift.enabled)|active_enemies>=3)
 actions.single_target+=/starsurge,if=active_enemies<=2
 actions.single_target+=/warrior_of_elune
 actions.single_target+=/lunar_strike,if=buff.warrior_of_elune.up

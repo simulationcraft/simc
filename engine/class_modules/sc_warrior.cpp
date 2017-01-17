@@ -3105,7 +3105,7 @@ struct ravager_tick_t: public warrior_attack_t
   {
     aoe = -1;
     dual = ground_aoe = true;
-    attack_power_mod.direct *= 1.0 + p -> spec.protection -> effectN( 3 ).percent();//89% damage decrease for prot.
+    attack_power_mod.direct *= 1.0 + p -> spell.prot_warrior -> effectN( 3 ).percent();//89% damage decrease for prot.
   }
 };
 
