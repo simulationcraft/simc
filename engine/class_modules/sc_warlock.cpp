@@ -5387,8 +5387,6 @@ struct channel_demonfire_tick_t : public warlock_spell_t
 
 struct channel_demonfire_t: public warlock_spell_t
 {
-  double backdraft_cast_time;
-  double backdraft_tick_time;
   channel_demonfire_tick_t* channel_demonfire;
   int immolate_action_id;
 
@@ -5442,33 +5440,10 @@ struct channel_demonfire_t: public warlock_spell_t
     warlock_spell_t::tick( d );
   }
 
-  timespan_t tick_time( const action_state_t* s ) const override
-  {
-    timespan_t t = warlock_spell_t::tick_time( s );
-
-    //if ( !maybe_ptr( p() -> dbc.ptr ) && p() -> buffs.backdraft -> check() ) //FIXME this might be an oversight on their part.
-      //t *= backdraft_tick_time;
-
-    return t;
-  }
-
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
     return s -> action -> tick_time( s ) * 15.0;
   }
-
-  //void execute() override
-  //{
-  //  warlock_spell_t::execute();
-
-  //  //p() -> buffs.backdraft -> decrement();
-
-  //  if ( p()->artifact.dimension_ripper.rank() && rng().roll( p()->find_spell( 219415 )->proc_chance() ) && p()->cooldowns.dimensional_rift->current_charge < p()->cooldowns.dimensional_rift->charges )
-  //  {
-  //    p()->cooldowns.dimensional_rift->adjust( -p()->cooldowns.dimensional_rift->duration ); //decrease remaining time by the duration of one charge, i.e., add one charge
-  //    p()->procs.dimension_ripper->occur();
-  //  }
-  //}
 
   virtual bool ready() override
   {

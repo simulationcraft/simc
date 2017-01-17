@@ -813,7 +813,7 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
         return;
     }
 
-    // either three required shots have happened or we don't require them
+    // either two required shots have happened or we don't require them
     double regen_buff = p() -> buffs.steady_focus -> data().effectN( 1 ).percent();
     p() -> buffs.steady_focus -> trigger( 1, regen_buff );
     p() -> buffs.pre_steady_focus -> expire();
@@ -5952,7 +5952,7 @@ void hunter_t::create_buffs()
 
   buffs.pre_steady_focus = 
     buff_creator_t( this, "pre_steady_focus" )
-      .max_stack( 3 )
+      .max_stack( 2 )
       .quiet( true );
 
   buffs.rapid_killing = 
