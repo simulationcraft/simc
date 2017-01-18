@@ -1830,6 +1830,19 @@ struct spitting_cobra_t: public hunter_pet_t
 
       return base_t::init_finished();
     }
+
+    // the cobra double dips off versatility & haste
+    double composite_versatility( const action_state_t* s ) const
+    {
+      double cdv = base_t::composite_versatility( s );
+      return cdv * cdv;
+    }
+
+    double composite_haste() const override
+    {
+      double css = base_t::composite_haste();
+      return css * css;
+    }
   };
 
   spitting_cobra_t( hunter_t* o ):
