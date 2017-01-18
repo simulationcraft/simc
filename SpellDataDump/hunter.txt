@@ -1,4 +1,4 @@
-SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23360, git build a0a9385)
+SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 2228653)
 
 Name             : Mend Pet (id=136) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
@@ -545,7 +545,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 100 yards/sec
-Affecting spells : Freezing Trap (3355), Refocus (24531), Mortal Shots (36413), Shot Power (37508), Hunter (137014), Guide: Sharpshooting (178549), Vulnerable (187131), Item - Hunter T18 Marksmanship 4P Bonus (188191), Deadly Aim (190449), Mastery: Sniper Training (193468), Lock and Load (194594), True Aim (199803), Sentinel's Sight (208913), Trueshot (211327), Wind Arrows (214826), Trick Shot (227272), Gyroscopic Stabilization (235712), 
+Affecting spells : Freezing Trap (3355), Refocus (24531), Mortal Shots (36413), Shot Power (37508), Hunter (137014), Marksmanship Hunter (137016), Guide: Sharpshooting (178549), Vulnerable (187131), Item - Hunter T18 Marksmanship 4P Bonus (188191), Deadly Aim (190449), Mastery: Sniper Training (193468), Lock and Load (194594), True Aim (199803), Sentinel's Sight (208913), Trueshot (211327), Wind Arrows (214826), Trick Shot (227272), Gyroscopic Stabilization (235712), 
 Triggered by     : Lock and Load (194594)
 Attributes       : .x..x... ........ x....... ........   ........ ........ ........ ...x.... 
                  : ........ ........ .x..x... ........   ........ ........ ........ ........ 
@@ -2329,7 +2329,6 @@ Name             : Beast Cleave (id=115939) [Spell Family (9), Passive]
 Class            : Beast Mastery Hunter
 School           : Physical
 Spell Level      : 50
-Affecting spells : Beast Mastery Hunter (137015)
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2409,7 +2408,6 @@ Name             : Beast Cleave (id=118459) [Spell Family (9)]
 Class            : Hunter
 School           : Physical
 Range            : 5 yards
-Affecting spells : Beast Mastery Hunter (137015)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : .......x ........ ......x. .....x..   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2451,7 +2449,7 @@ Velocity         : 30 yards/sec
 Duration         : 3 seconds
 Cooldown         : 20 seconds
 Category         : 85
-Affecting spells : Freezing Trap (3355), Hunter (137014), Beast Mastery Hunter (137015), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468), Roar of the Seven Lions (207318), Trueshot (211327)
+Affecting spells : Freezing Trap (3355), Hunter (137014), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468), Roar of the Seven Lions (207318), Trueshot (211327)
 Attributes       : .x...... ........ x....... ........   ..x...x. .x....x. ........ ..x.x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ...xx...   ........ .x...... ........ ........ 
@@ -2471,7 +2469,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 50 yards
 Velocity         : 30 yards/sec
-Affecting spells : Freezing Trap (3355), Beast Mastery Hunter (137015), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468), 
+Affecting spells : Freezing Trap (3355), Beast Mastery Hunter (137015), Marksmanship Hunter (137016), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468), 
 Triggered by     : Barrage (120360)
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ........ 
                  : ........ ........ .x...... ........   ........ .x...... ........ ......x. 
@@ -2674,7 +2672,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 60 seconds
-Affecting spells : Mastery: Master of Beasts (76657), Hunter (137014), Beast Mastery Hunter (137015), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468), Roar of the Seven Lions (207318), Trueshot (211327)
+Affecting spells : Mastery: Master of Beasts (76657), Hunter (137014), Beast Mastery Hunter (137015), Marksmanship Hunter (137016), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468), Roar of the Seven Lions (207318), Trueshot (211327)
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ...x.... 
@@ -2693,7 +2691,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 100 yards
 Velocity         : 1.5 yards/sec
-Affecting spells : Mastery: Master of Beasts (76657), Hunter (137014), Beast Mastery Hunter (137015), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468), Roar of the Seven Lions (207318), Trueshot (211327)
+Affecting spells : Mastery: Master of Beasts (76657), Hunter (137014), Beast Mastery Hunter (137015), Marksmanship Hunter (137016), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468), Roar of the Seven Lions (207318), Trueshot (211327)
 Attributes       : ........ ........ x....x.x ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2886,9 +2884,9 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179698)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 9 | Scaled Value: 9 | Target: Self(1)
-                   Affected Spells: Kill Command (34026), Chimaera Shot (53209), Kill Command (83381), Beast Cleave (115939), Beast Cleave (118459), Chimaera Shot (171454), Chimaera Shot (171457), Cobra Shot (193455), Chimaera Shot (204304), Dire Frenzy (217207)
-                   Hotfixed: Base Value (4 -> 9)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self(1)
+                   Affected Spells: Kill Command (34026), Chimaera Shot (53209), Kill Command (83381), Chimaera Shot (171454), Chimaera Shot (171457), Cobra Shot (193455), Chimaera Shot (204304), Dire Frenzy (217207)
+                   Hotfixed: Base Value (4 -> 20), Affects Spells
 #2 (id=191138)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self(1)
 #3 (id=191139)   : Apply Aura (6) | Add Flat Modifier: Spell Duration (107)
@@ -2898,8 +2896,9 @@ Effects          :
                    Base Value: -45 | Scaled Value: -45 | Target: Self(1)
                    Affected Spells: A Murder of Crows (131894), A Murder of Crows (131900), A Murder of Crows (206505)
 #5 (id=191141)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 80 | Scaled Value: 80 | Target: Self(1)
-                   Affected Spells: Barrage (120360), Barrage (120361)
+                   Base Value: 98 | Scaled Value: 98 | Target: Self(1)
+                   Affected Spells: Barrage (120361)
+                   Hotfixed: Base Value (80 -> 98), Affects Spells
 #6 (id=260897)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 50 | Scaled Value: 50 | Target: Self(1)
                    Affected Spells: Volley (194386), Volley (194392)
@@ -2931,10 +2930,14 @@ Effects          :
                    Affected Spells: Multi-Shot (2643)
 #2 (id=191134)   : Apply Aura (6) | Unknown effect sub type (218)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf8 | Target: Self(1)
-#3 (id=191135)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#4 (id=191136)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#3 (id=191135)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 8 | Scaled Value: 8 | Target: Self(1)
+                   Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Barrage (120361), A Murder of Crows (131894), A Murder of Crows (131900), Arcane Shot (185358), Bursting Shot (186387), Aimed Shot (191043), Volley (194386), Volley (194392), Black Arrow (194599), Piercing Shot (198670), Windburst (204147), A Murder of Crows (206505), Marked Shot (212621), Piercing Shot (213678), Sidewinders (214579), Sidewinders (214581)
+                   Hotfixed: Sub Type (4 -> 108), Base Value (0 -> 8), Affects Spells
+#4 (id=191136)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
+                   Base Value: 8 | Scaled Value: 8 | Misc Value: 22 | Target: Self(1)
+                   Affected Spells: Black Arrow (194599)
+                   Hotfixed: Sub Type (4 -> 108), Base Value (0 -> 8), Misc Value (0 -> 22), Affects Spells
 #5 (id=191137)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #6 (id=260887)   : Apply Aura (6) | Dummy (4)
@@ -2970,12 +2973,13 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179700)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 12 | Scaled Value: 12 | Target: Self(1)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self(1)
                    Affected Spells: Explosive Trap (13812), Lacerate (185855), Raptor Strike (186270), Carve (187708), Mongoose Bite (190928), Flanking Strike (202800), Flanking Strike (204740), Butchery (212436)
-                   Hotfixed: Base Value (7 -> 12)
+                   Hotfixed: Base Value (7 -> 20)
 #2 (id=191130)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 7 | Scaled Value: 7 | Misc Value: 22 | Target: Self(1)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Explosive Trap (13812), Serpent Sting (118253), Lacerate (185855)
+                   Hotfixed: Base Value (7 -> 20)
 #3 (id=191131)   : Apply Aura (6) | Unknown effect sub type (153)
                    Base Value: 3 | Scaled Value: 3 | Target: Self(1)
 #4 (id=191132)   : Apply Aura (6) | Dummy (4)
@@ -3661,7 +3665,7 @@ Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
-Affecting spells : Freezing Trap (3355), Mortal Shots (36413), Shot Power (37508), Hunter (137014), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468), True Aim (199803)
+Affecting spells : Freezing Trap (3355), Mortal Shots (36413), Shot Power (37508), Hunter (137014), Marksmanship Hunter (137016), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468), True Aim (199803)
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -3974,7 +3978,7 @@ Resource         : 10 Focus
 Spell Level      : 26
 GCD              : 1.5 seconds
 Cooldown         : 30 seconds
-Affecting spells : Freezing Trap (3355), Hunter (137014), Gust of Wind (190567), Mastery: Sniper Training (193468), Trueshot (211327), Magnetized Blasting Cap Launcher (226841), 
+Affecting spells : Freezing Trap (3355), Hunter (137014), Marksmanship Hunter (137016), Gust of Wind (190567), Mastery: Sniper Training (193468), Trueshot (211327), Magnetized Blasting Cap Launcher (226841), 
 Attributes       : .x..x... ........ x...x... ........   ........ ........ ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -4348,7 +4352,7 @@ School           : Physical
 Spell Level      : 10
 Range            : 100 yards
 Velocity         : 20 yards/sec
-Affecting spells : Freezing Trap (3355), Refocus (24531), Mortal Shots (36413), Shot Power (37508), Hunter (137014), Guide: Sharpshooting (178549), Vulnerable (187131), Item - Hunter T18 Marksmanship 4P Bonus (188191), Deadly Aim (190449), Mastery: Sniper Training (193468), Lock and Load (194594), True Aim (199803), Sentinel's Sight (208913), Trueshot (211327), Wind Arrows (214826), Trick Shot (227272), Gyroscopic Stabilization (235712), 
+Affecting spells : Freezing Trap (3355), Refocus (24531), Mortal Shots (36413), Shot Power (37508), Hunter (137014), Marksmanship Hunter (137016), Guide: Sharpshooting (178549), Vulnerable (187131), Item - Hunter T18 Marksmanship 4P Bonus (188191), Deadly Aim (190449), Mastery: Sniper Training (193468), Lock and Load (194594), True Aim (199803), Sentinel's Sight (208913), Trueshot (211327), Wind Arrows (214826), Trick Shot (227272), Gyroscopic Stabilization (235712), 
 Attributes       : .x..x... ........ x....... ........   ........ ........ ........ ...x.... 
                  : ........ ........ .x..x... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
@@ -4574,7 +4578,8 @@ Effects          :
 #1 (id=283801)   : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
 #2 (id=283802)   : Weapon Damage% (31)
-                   Base Value: 340 | Scaled Value: 3.4 | Target: Enemy(6)
+                   Base Value: 450 | Scaled Value: 4.5 | Target: Enemy(6)
+                   Hotfixed: Base Value (340 -> 450)
 Description      : A quick shot causing ${$sw2*$<mult>} Physical damage.
 Variables        : $mult=${($min($pl-1,19)*12+112)/340}
 
@@ -4757,7 +4762,8 @@ Effects          :
 #1 (id=285183)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -70 | Scaled Value: -70 | Mechanic: Unknown(88) | Target: Enemy(6)
 #2 (id=341541)   : Apply Aura (6) | Periodic Damage: physical every 1 seconds (3)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.50000 | Mechanic: Bleed | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.45000 | Mechanic: Bleed | Target: Enemy(6)
+                   Hotfixed: AP Coefficient (0.5 -> 0.45)
 Description      : $@spelldesc194277
 Tooltip          : Movement speed reduced by $s1%.
 Suffering $w2 Bleed damage every $t2 sec.
@@ -4787,7 +4793,7 @@ Cooldown         : 1.5 seconds
 Proc Chance      : 100%
 Proc Flags       : ......x. ........ ........ ........ 
                  : White Ranged
-Affecting spells : Hunter (137014), Beast Mastery Hunter (137015), Mastery: Sniper Training (193468), Roar of the Seven Lions (207318), Trueshot (211327)
+Affecting spells : Hunter (137014), Beast Mastery Hunter (137015), Marksmanship Hunter (137016), Mastery: Sniper Training (193468), Roar of the Seven Lions (207318), Trueshot (211327)
 Attributes       : .x...... ........ x.....x. ........   ...xx..x ........ ........ ........ 
                  : ........ ........ .x....x. ........   .....x.. ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -4807,7 +4813,7 @@ School           : Physical
 Resource         : 3 Focus
 Range            : 100 yards
 Velocity         : 0.3 yards/sec
-Affecting spells : Hunter (137014), Beast Mastery Hunter (137015), Mastery: Sniper Training (193468), Roar of the Seven Lions (207318), Trueshot (211327)
+Affecting spells : Hunter (137014), Beast Mastery Hunter (137015), Marksmanship Hunter (137016), Mastery: Sniper Training (193468), Roar of the Seven Lions (207318), Trueshot (211327)
 Triggered by     : Volley (194386)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4914,7 +4920,7 @@ GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Duration         : 8 seconds
 Cooldown         : 15 seconds
-Affecting spells : Freezing Trap (3355), Hunter (137014), Guide: Sharpshooting (178549), Deadly Aim (190449), Mastery: Sniper Training (193468), Trueshot (211327), Wind Arrows (214826)
+Affecting spells : Freezing Trap (3355), Hunter (137014), Marksmanship Hunter (137016), Guide: Sharpshooting (178549), Deadly Aim (190449), Mastery: Sniper Training (193468), Trueshot (211327), Wind Arrows (214826)
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ...x.... ........ ...x....   ........ ........ ........ ........ 
@@ -5005,7 +5011,7 @@ Resource         : 20 - 100 Focus
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 30 seconds
-Affecting spells : Hunter (137014), Vulnerable (187131), Mastery: Sniper Training (193468), Trueshot (211327)
+Affecting spells : Hunter (137014), Marksmanship Hunter (137016), Vulnerable (187131), Mastery: Sniper Training (193468), Trueshot (211327)
 Attributes       : .x..x... ........ x.x...x. ........   ........ ......x. ........ ........ 
                  : ........ ........ .x..x... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ...xx...   ........ ........ ........ ........ 
@@ -5641,7 +5647,7 @@ GCD              : 1.5 seconds
 Velocity         : 50 yards/sec
 Cooldown         : 20 seconds
 Artifact Power   : Id: 307, Max Rank: 1
-Affecting spells : Hunter (137014), Mastery: Sniper Training (193468), Trueshot (211327)
+Affecting spells : Hunter (137014), Marksmanship Hunter (137016), Mastery: Sniper Training (193468), Trueshot (211327)
 Attributes       : .x..x... ........ x....... ........   ........ ........ ........ ...x.... 
                  : ........ ........ .x..x... ........   ........ ........ ........ ........ 
                  : ........ ........ ..x..... ...x....   ........ ........ ........ ........ 
@@ -5793,7 +5799,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 60 seconds
-Affecting spells : Mastery: Master of Beasts (76657), Hunter (137014), Beast Mastery Hunter (137015), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468), Roar of the Seven Lions (207318), Trueshot (211327)
+Affecting spells : Mastery: Master of Beasts (76657), Hunter (137014), Beast Mastery Hunter (137015), Marksmanship Hunter (137016), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468), Roar of the Seven Lions (207318), Trueshot (211327)
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ...x.... 
@@ -6037,7 +6043,8 @@ Effects          :
 #1 (id=314957)   : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
 #2 (id=314958)   : Weapon Damage% (31)
-                   Base Value: 620 | Scaled Value: 6.2 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
+                   Base Value: 579 | Scaled Value: 5.79 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
+                   Hotfixed: Base Value (620 -> 579)
 Description      : Strike all nearby enemies in a flurry of strikes, inflicting $sw1 Physical damage to each.
 
 Name             : Marked Shot (id=212621) [Spell Family (9)] 
@@ -6046,7 +6053,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 100 yards
 Velocity         : 40 yards/sec
-Affecting spells : Windrunner's Guidance (190457), Precision (190520), Mastery: Sniper Training (193468), 
+Affecting spells : Marksmanship Hunter (137016), Windrunner's Guidance (190457), Precision (190520), Mastery: Sniper Training (193468), 
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6121,7 +6128,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 100 yards/sec
 Cooldown         : 10 seconds
-Affecting spells : Hunter (137014), Vulnerable (187131), Mastery: Sniper Training (193468), Trueshot (211327)
+Affecting spells : Hunter (137014), Marksmanship Hunter (137016), Vulnerable (187131), Mastery: Sniper Training (193468), Trueshot (211327)
 Attributes       : .x..x... ........ x.x...x. ........   ........ ......x. ........ ........ 
                  : ........ ........ .x..x... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ...xx...   ........ ........ ........ ........ 
@@ -6146,7 +6153,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 2 (12 seconds cooldown)
 Category         : 1628
-Affecting spells : Freezing Trap (3355), Hunter (137014), Guide: Sharpshooting (178549), Called Shot (190467), Critical Focus (191328), Mastery: Sniper Training (193468), 
+Affecting spells : Freezing Trap (3355), Hunter (137014), Marksmanship Hunter (137016), Guide: Sharpshooting (178549), Called Shot (190467), Critical Focus (191328), Mastery: Sniper Training (193468), 
 Attributes       : .x...... ........ x....... ........   ........ .xx..... ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
@@ -6173,7 +6180,7 @@ School           : Nature
 Spell Level      : 1
 Range            : 100 yards
 Velocity         : 18 yards/sec
-Affecting spells : Freezing Trap (3355), Hunter (137014), Guide: Sharpshooting (178549), Called Shot (190467), Critical Focus (191328), Mastery: Sniper Training (193468), 
+Affecting spells : Freezing Trap (3355), Hunter (137014), Marksmanship Hunter (137016), Guide: Sharpshooting (178549), Called Shot (190467), Critical Focus (191328), Mastery: Sniper Training (193468), 
 Attributes       : .x...... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ......x.   ........ ........ ........ ......x. 
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 

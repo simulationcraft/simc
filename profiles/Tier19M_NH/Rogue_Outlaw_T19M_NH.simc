@@ -77,20 +77,20 @@ actions.stealth+=/ambush
 actions.stealth+=/vanish,if=variable.stealth_condition
 actions.stealth+=/shadowmeld,if=variable.stealth_condition
 
-head=doomblade_cowl,id=138332,bonus_id=3519
-neck=radiant_string_of_scorpid_eyes,id=140898,bonus_id=3519,enchant=mark_of_the_hidden_satyr
+head=nightborne_battlemagus_hood,id=140866,bonus_id=1507/3518
+neck=brooch_of_the_astral_scryer,id=140900,bonus_id=1507/3518,enchant=mark_of_the_hidden_satyr
 shoulders=doomblade_spaulders,id=138338,bonus_id=3519
 back=doomblade_shadowwrap,id=138371,bonus_id=3519,enchant=binding_of_agility
-chest=doomblade_tunic,id=138326,bonus_id=3519
-wrists=wellflattened_wristguards,id=140857,bonus_id=3519
+chest=tunic_of_unwavering_devotion,id=140865,bonus_id=1507/3445
+wrists=bracers_of_impossible_choices,id=140889,bonus_id=1507/3518
 hands=doomblade_gauntlets,id=138329,bonus_id=3519
 waist=cake_carriers_girdle,id=140858,bonus_id=3519
 legs=doomblade_pants,id=138335,bonus_id=3519
 feet=stutterstep_treads,id=140860,bonus_id=3519
-finger1=spellblades_gemmed_signet,id=140895,bonus_id=3519,enchant=binding_of_versatility
+finger1=ring_of_braided_stems,id=140896,bonus_id=1507/3518,enchant=binding_of_versatility
 finger2=ring_of_exclusive_servitude,id=140906,bonus_id=3519,enchant=binding_of_versatility
-trinket1=arcanogolem_digit,id=140794,bonus_id=3519
-trinket2=convergence_of_fates,id=140806,bonus_id=3519
+trinket1=convergence_of_fates,id=140806,bonus_id=3519
+trinket2=nightblooming_frond,id=140802,bonus_id=3519
 main_hand=the_dreadblades,id=128872,bonus_id=742,gem_id=140819/140817/140841,relic_id=3519/3519/3519
 off_hand=the_dreadblades,id=134552
 
@@ -98,10 +98,10 @@ off_hand=the_dreadblades,id=134552
 # gear_ilvl=912.88
 # gear_agility=24228
 # gear_stamina=35283
-# gear_crit_rating=8499
-# gear_haste_rating=6157
-# gear_mastery_rating=4498
-# gear_versatility_rating=4413
+# gear_crit_rating=6181
+# gear_haste_rating=6945
+# gear_mastery_rating=2122
+# gear_versatility_rating=8321
 # gear_armor=2471
 # set_bonus=tier19_2pc=1
 # set_bonus=tier19_4pc=1

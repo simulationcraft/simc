@@ -10,6 +10,7 @@
 // ==========================================================================
 
 // Legion TODO
+//
 // Generic
 // - Clean up the "may proc" stuff
 // Elemental
@@ -1878,7 +1879,8 @@ struct spirit_wolf_t : public base_wolf_t
   {
     windfury_t( spirit_wolf_t* player ) :
       super( player, "windfury_attack", player -> find_spell( 170512 ) )
-    { }
+    { 
+    }
   };
 
   struct fs_melee_t : public wolf_base_attack_t<spirit_wolf_t>
@@ -3632,7 +3634,8 @@ struct windsong_t : public shaman_spell_t
 {
   windsong_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "windsong", player, player -> talent.windsong, options_str )
-  { }
+  {
+  }
 
   void execute() override
   {
@@ -3648,7 +3651,6 @@ struct boulderfist_t : public shaman_spell_t
     shaman_spell_t( "boulderfist", player, player -> talent.boulderfist, options_str )
   {
     base_multiplier *= 1.0 + player -> artifact.weapons_of_the_elements.percent();
-
     maelstrom_gain += player -> artifact.gathering_of_the_maelstrom.value();
   }
 
@@ -6121,7 +6123,7 @@ void shaman_t::init_base_stats()
   if ( spec.enhancement_shaman -> ok() )
     resources.base[ RESOURCE_MAELSTROM ] += spec.enhancement_shaman -> effectN( 5 ).base_value();
 
-  base.distance = ( specialization() == SHAMAN_ENHANCEMENT ) ? 3 : 30;
+  base.distance = ( specialization() == SHAMAN_ENHANCEMENT ) ? 5 : 30;
   base.mana_regen_from_spirit_multiplier = spec.meditation -> effectN( 1 ).percent();
 
   //if ( specialization() == SHAMAN_ENHANCEMENT )
@@ -6840,7 +6842,7 @@ void shaman_t::init_action_list_elemental()
   aoe -> add_action( this, "Flame Shock", "moving=1,target_if=refreshable" );
 
   // Single target - Lightning Rod
-  single_lr -> add_action( this, "Flame Shock", "if=!ticking" );
+  single_lr -> add_action( this, "Flame Shock", "if=!ticking|dot.flame_shock.remains<=gcd" );
   single_lr -> add_action( this, "Earthquake", "if=buff.echoes_of_the_great_sundering.up&maelstrom>=86" );
   single_lr -> add_action( this, "Earth Shock", "if=maelstrom>=92" );
   single_lr -> add_action( this, "Stormkeeper", "if=raid_event.adds.count<3|raid_event.adds.in>50", "Keep SK for large or soon add waves." );
@@ -6862,7 +6864,7 @@ void shaman_t::init_action_list_elemental()
   single_lr -> add_action( this, "Flame Shock", "moving=1,if=movement.distance>6" );
 
   // Single target - Ice Fury
-  single_if -> add_action( this, "Flame Shock", "if=!ticking" );
+  single_if -> add_action( this, "Flame Shock", "if=!ticking|dot.flame_shock.remains<=gcd" );
   single_if -> add_action( this, "Earthquake", "if=buff.echoes_of_the_great_sundering.up&maelstrom>=86" );
   single_if -> add_action( this, "Frost Shock", "if=buff.icefury.up&maelstrom>=86" );
   single_if -> add_action( this, "Earth Shock", "if=maelstrom>=92" );
@@ -6887,7 +6889,7 @@ void shaman_t::init_action_list_elemental()
 
   // Single target - Ascendance
   single_asc -> add_talent( this, "Ascendance", "if=dot.flame_shock.remains>buff.ascendance.duration&(time>=60|buff.bloodlust.up)&cooldown.lava_burst.remains>0&!buff.stormkeeper.up" );
-  single_asc -> add_action( this, "Flame Shock", "if=!ticking" );
+  single_asc -> add_action( this, "Flame Shock", "if=!ticking|dot.flame_shock.remains<=gcd" );
   single_asc -> add_action( this, "Flame Shock", "if=maelstrom>=20&remains<=buff.ascendance.duration&cooldown.ascendance.remains+buff.ascendance.duration<=duration" );
   single_asc -> add_action( this, "Earthquake", "if=buff.echoes_of_the_great_sundering.up&!buff.ascendance.up&maelstrom>=86" );
   single_asc -> add_action( this, "Earth Shock", "if=maelstrom>=92&!buff.ascendance.up" );
@@ -8140,6 +8142,8 @@ struct shaman_module_t : public module_t
 
   void register_hotfixes() const override
   {
+
+
     /*
     hotfix::register_spell( "Shaman", "2016-08-23", "Windfury base proc rate has been increased to 10% (was 5%.)", 33757 )
       .field( "proc_chance" )

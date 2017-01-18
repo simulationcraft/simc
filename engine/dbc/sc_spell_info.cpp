@@ -433,7 +433,7 @@ const char * _effect_subtype_strings[] =
   "Modify Critical Heal Bonus", "Modify Block%",            "Modify Crit%",         "Periodic Health Leech",    "Modify Hit%",                        // 50
   "Modify Spell Hit%",          nullptr,                          "Modify Spell Crit%",   nullptr,                          nullptr,                                    // 55
   "Pacify Silence",             "Scale%",                   nullptr,                      nullptr,                          "Periodic Mana Leech",                // 60
-  "Modify Spell Haste%",        "Feign Death",              "Disarm",               "Stalked",                  "Absorb Damage",                      // 65
+  "Modify Spell Speed%",        "Feign Death",              "Disarm",               "Stalked",                  "Absorb Damage",                      // 65
   nullptr,                            nullptr,                          "Modify Power Cost%",   "Modify Power Cost",        "Reflect Spells",                     // 70
   nullptr,                            nullptr,                          "Mechanic Immunity",    nullptr,                          "Modify Damage Done%",   // 75
   "Modify Attribute%",          nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 80

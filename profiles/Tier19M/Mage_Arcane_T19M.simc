@@ -42,6 +42,7 @@ actions.build+=/arcane_explosion,if=active_enemies>1
 actions.build+=/arcane_blast
 
 actions.burn=call_action_list,name=cooldowns
+actions.burn+=/charged_up,if=(equipped.132451&buff.arcane_charge.stack<=1)
 actions.burn+=/arcane_missiles,if=buff.arcane_missiles.react=3
 actions.burn+=/nether_tempest,if=dot.nether_tempest.remains<=2|!ticking
 actions.burn+=/arcane_blast,if=active_enemies<=1&mana.pct%10*execute_time>target.time_to_die
@@ -53,6 +54,7 @@ actions.burn+=/arcane_blast,if=buff.presence_of_mind.up|buff.arcane_power.remain
 actions.burn+=/supernova,if=mana.pct<100
 actions.burn+=/arcane_missiles,if=mana.pct>10&(talent.overpowered.enabled|buff.arcane_power.down)
 actions.burn+=/arcane_explosion,if=active_enemies>1
+actions.burn+=/arcane_barrage,if=(equipped.132451&cooldown.charged_up.remains=0&mana.pct<(100-(buff.arcane_charge.stack*0.03)))
 actions.burn+=/arcane_blast
 actions.burn+=/evocation,interrupt_if=mana.pct>99
 
@@ -62,7 +64,6 @@ actions.conserve+=/nether_tempest,if=(refreshable|!ticking)
 actions.conserve+=/arcane_blast,if=buff.rhonins_assaulting_armwraps.up&equipped.132413
 actions.conserve+=/arcane_missiles
 actions.conserve+=/supernova,if=mana.pct<100
-actions.conserve+=/frost_nova,if=equipped.132452
 actions.conserve+=/arcane_explosion,if=mana.pct>=82&equipped.132451&active_enemies>1
 actions.conserve+=/arcane_blast,if=mana.pct>=82&equipped.132451
 actions.conserve+=/arcane_barrage,if=mana.pct<100&cooldown.arcane_power.remains>5
@@ -77,7 +78,6 @@ actions.cooldowns+=/arcane_torrent
 actions.cooldowns+=/potion,name=deadly_grace,if=buff.arcane_power.up&(buff.berserking.up|buff.blood_fury.up)
 
 actions.init_burn=mark_of_aluneth
-actions.init_burn+=/frost_nova,if=equipped.132452
 actions.init_burn+=/nether_tempest,if=dot.nether_tempest.remains<10&(prev_gcd.1.mark_of_aluneth|(talent.rune_of_power.enabled&cooldown.rune_of_power.remains<gcd.max))
 actions.init_burn+=/rune_of_power
 actions.init_burn+=/start_burn_phase,if=((cooldown.evocation.remains-(2*burn_phase_duration))%2<burn_phase_duration)|cooldown.arcane_power.remains=0|target.time_to_die<55

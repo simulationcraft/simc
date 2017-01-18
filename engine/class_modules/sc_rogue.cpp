@@ -248,6 +248,7 @@ struct rogue_t : public player_t
     buff_t* blunderbuss;
     buff_t* finality_eviscerate;
     buff_t* finality_nightblade;
+    buff_t* faster_than_light_trigger;
 
     // Roll the bones
     buff_t* roll_the_bones;
@@ -604,7 +605,6 @@ struct rogue_t : public player_t
     cooldowns.vendetta            = get_cooldown( "vendetta"            );
     cooldowns.shadow_nova         = get_cooldown( "shadow_nova"         );
 
-    base.distance = 3;
     regen_type = REGEN_DYNAMIC;
     regen_caches[CACHE_HASTE] = true;
     regen_caches[CACHE_ATTACK_HASTE] = true;
@@ -3508,6 +3508,8 @@ struct run_through_t: public rogue_attack_t
     rogue_attack_t( "run_through", p, p -> find_specialization_spell( "Run Through" ), options_str ),
     ttt_multiplier( 0 )
   {
+    weapon = &( player -> main_hand_weapon );
+    weapon_multiplier = 0;
     base_multiplier *= 1.0 + p -> artifact.fates_thirst.percent();
   }
 
@@ -4389,6 +4391,40 @@ struct sprint_t: public rogue_attack_t
   }
 };
 
+struct sprint_offensive_t: public rogue_attack_t
+{
+  sprint_offensive_t( rogue_t* p, const std::string& options_str ):
+    rogue_attack_t( "sprint", p, p -> spell.sprint, options_str )
+  {
+    harmful = callbacks = hasted_ticks = false;
+    cooldown = p -> cooldowns.sprint;
+    ignore_false_positive = channeled = special = true; //Force channel to disable all actions. 
+    dot_duration = timespan_t::from_seconds( 3 );
+    base_execute_time = timespan_t::from_seconds( 3 );
+
+    cooldown -> duration += p -> artifact.shadow_walker.time_value();
+  }
+
+  double composite_haste() const override
+  { return 1.0; } // Not hasted.
+
+  void execute() override
+  {
+    rogue_attack_t::execute();
+
+    // We must stop autoattacks
+    if ( p() -> main_hand_attack && p() -> main_hand_attack -> execute_event )
+      event_t::cancel( p() -> main_hand_attack -> execute_event );
+
+    if ( p() -> off_hand_attack && p() -> off_hand_attack -> execute_event )
+      event_t::cancel( p() -> off_hand_attack -> execute_event );
+
+    p() -> buffs.sprint -> trigger();
+    p() -> buffs.faster_than_light_trigger -> trigger();
+  }
+};
+
+
 // Symbols of Death =========================================================
 
 struct symbols_of_death_t : public rogue_attack_t
@@ -4443,6 +4479,14 @@ struct vanish_t : public rogue_attack_t
       p() -> trigger_combo_point_gain( p() -> sets.set( ROGUE_SUBTLETY, T18, B2 ) -> effectN( 1 ).base_value(),
                                        gain, this );
     }
+  }
+
+  bool ready() override
+  {
+    if ( p() -> buffs.vanish -> check() )
+      return false;
+
+    return rogue_attack_t::ready();
   }
 };
 
@@ -5879,6 +5923,21 @@ struct fof_fod_t : public buff_t
   }
 };
 
+struct faster_than_light_trigger_t : public buff_t
+{
+  faster_than_light_trigger_t( rogue_t* p ) :
+    buff_t( buff_creator_t( p, "faster_than_light_trigger", p -> find_spell( 197270 ) ) )
+  { }
+
+  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+
+    rogue_t* p = debug_cast< rogue_t* >( player );
+    p -> buffs.vanish -> trigger();
+  }
+};
+
 struct subterfuge_t : public buff_t
 {
   rogue_t* rogue;
@@ -6052,7 +6111,7 @@ struct agonizing_poison_t : public rogue_poison_buff_t
   agonizing_poison_t( rogue_td_t& r ) :
     rogue_poison_buff_t( r, "agonizing_poison", r.source -> find_spell( 200803 ) )
   {
-    default_value = data().effectN( 1 ).percent();
+    default_value = data().effectN( 1 ).percent() * ( 1.0 + r.source -> find_spell( 137037 ) -> effectN( 5 ).percent() );
     refresh_behavior = BUFF_REFRESH_PANDEMIC;
   }
 };
@@ -6518,11 +6577,12 @@ double rogue_t::agonizing_poison_stack_multiplier( const rogue_td_t* td ) const
   }
 
   // To be confirmed: behavior of Zoldyck Family Training Shackles with Agonizing Poison
+  /* Looks like it is no longer working as of 01/16/2017 (7.1.5)
   if ( legendary.zoldyck_family_training_shackles &&
        td -> target -> health_percentage() < legendary.zoldyck_family_training_shackles -> effectN( 2 ).base_value() )
   {
     multiplier *= 1.0 + legendary.zoldyck_family_training_shackles -> effectN( 1 ).percent();
-  }
+  }*/
 
   return multiplier;
 }
@@ -6689,9 +6749,11 @@ void rogue_t::init_action_list()
 
     // Maintain
     action_priority_list_t* maintain = get_action_priority_list( "maintain", "Maintain" );
-    maintain -> add_action( this, "Rupture", "if=(talent.nightstalker.enabled&stealthed.rogue)|(talent.exsanguinate.enabled&((combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1)|(!ticking&(time>10|combo_points>=2+artifact.urge_to_kill.enabled))))" );
+    maintain -> add_action( this, "Rupture", "if=talent.nightstalker.enabled&stealthed.rogue" );
+    maintain -> add_action( this, "Rupture", "if=talent.exsanguinate.enabled&((combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1)|(!ticking&(time>10|combo_points>=2+artifact.urge_to_kill.enabled)))" );
+    maintain -> add_action( this, "Rupture", "if=!talent.exsanguinate.enabled&!ticking" );
     maintain -> add_action( this, "Rupture", "cycle_targets=1,if=combo_points>=cp_max_spend-talent.exsanguinate.enabled&refreshable&(!exsanguinated|remains<=1.5)&target.time_to_die-remains>4" );
-    maintain -> add_action( this, "Kingsbane", "if=(talent.exsanguinate.enabled&dot.rupture.exsanguinated)|(!talent.exsanguinate.enabled&(debuff.vendetta.up|cooldown.vendetta.remains>10))" );
+    maintain -> add_action( this, "Kingsbane", "if=(talent.exsanguinate.enabled&dot.rupture.exsanguinated)|(!talent.exsanguinate.enabled&buff.envenom.up&(debuff.vendetta.up|cooldown.vendetta.remains>10))" );
     maintain -> add_action( "pool_resource,for_next=1" );
     maintain -> add_action( this, "Garrote", "cycle_targets=1,if=refreshable&(!exsanguinated|remains<=1.5)&target.time_to_die-remains>4" );
   }
@@ -6766,7 +6828,7 @@ void rogue_t::init_action_list()
   {
     // Pre-Combat
     precombat -> add_action( "variable,name=ssw_refund,value=equipped.shadow_satyrs_walk*(4+ssw_refund_offset)", "Defined variables that doesn't change during the fight" );
-    precombat -> add_action( "variable,name=stealth_threshold,value=(15+talent.vigor.enabled*35+talent.master_of_shadows.enabled*30+variable.ssw_refund)" );
+    precombat -> add_action( "variable,name=stealth_threshold,value=(15+talent.vigor.enabled*35+talent.master_of_shadows.enabled*25+variable.ssw_refund)" );
     precombat -> add_talent( this, "Enveloping Shadows", "if=combo_points>=5" );
     precombat -> add_action( this, "Symbols of Death" );
 
@@ -6796,7 +6858,7 @@ void rogue_t::init_action_list()
         cds -> add_action( racial_actions[i] + ",if=stealthed.rogue" );
     }
     cds -> add_action( this, "Shadow Blades", "if=combo_points<=2|(equipped.denial_of_the_halfgiants&combo_points>=1)" );
-    cds -> add_action( this, "Goremaw's Bite", "if=!stealthed.all&cooldown.shadow_dance.charges_fractional<=2.45&((combo_points.deficit>=4-(time<10)*2&energy.deficit>50+talent.vigor.enabled*25-(time>=10)*15)|target.time_to_die<8)" );
+    cds -> add_action( this, "Goremaw's Bite", "if=!stealthed.all&cooldown.shadow_dance.charges_fractional<=2.45&((combo_points.deficit>=4-(time<10)*2&energy.deficit>50+talent.vigor.enabled*25-(time>=10)*15)|(combo_points.deficit>=1&target.time_to_die<8))" );
     cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit|(raid_event.adds.in>40&combo_points.deficit>=4+talent.deeper_strategem.enabled+talent.anticipation.enabled)" );
 
     // Finishers
@@ -6812,6 +6874,7 @@ void rogue_t::init_action_list()
     // Stealth Action List Starter
     action_priority_list_t* stealth_als = get_action_priority_list( "stealth_als", "Stealth Action List Starter" );
     stealth_als -> add_action( "call_action_list,name=stealth_cds,if=energy.deficit<=variable.stealth_threshold&(!equipped.shadow_satyrs_walk|cooldown.shadow_dance.charges_fractional>=2.45|energy.deficit>=10)" );
+    stealth_als -> add_action( "sprint_offensive,if=energy.time_to_max>3" );
     stealth_als -> add_action( "call_action_list,name=stealth_cds,if=spell_targets.shuriken_storm>=5" );
     stealth_als -> add_action( "call_action_list,name=stealth_cds,if=(cooldown.shadowmeld.up&!cooldown.vanish.up&cooldown.shadow_dance.charges<=1)" );
     stealth_als -> add_action( "call_action_list,name=stealth_cds,if=target.time_to_die<12*cooldown.shadow_dance.charges_fractional*(1+equipped.shadow_satyrs_walk*0.5)" );
@@ -6827,9 +6890,10 @@ void rogue_t::init_action_list()
 
     // Stealthed Rotation
     action_priority_list_t* stealthed = get_action_priority_list( "stealthed", "Stealthed Rotation" );
-    stealthed -> add_action( this, "Symbols of Death", "if=(buff.symbols_of_death.remains<target.time_to_die-4&buff.symbols_of_death.remains<=buff.symbols_of_death.duration*0.3)|equipped.shadow_satyrs_walk&energy.time_to_max<0.25" );
+    stealthed -> add_action( this, "Symbols of Death", "if=(buff.symbols_of_death.remains<target.time_to_die-4&buff.symbols_of_death.remains<=buff.symbols_of_death.duration*0.3)|(equipped.shadow_satyrs_walk&energy.time_to_max<0.25)" );
+    stealthed -> add_action( this, "Shuriken Storm", "if=buff.shadowmeld.down&((combo_points.deficit>=3&spell_targets.shuriken_storm>=2+talent.premeditation.enabled+equipped.shadow_satyrs_walk)|(combo_points.deficit>=1+buff.shadow_blades.up&buff.the_dreadlords_deceit.stack>=29))" );
+    stealthed -> add_action( this, "Shadowstrike", "if=combo_points.deficit>=2+talent.premeditation.enabled+buff.shadow_blades.up" );
     stealthed -> add_action( "call_action_list,name=finish,if=combo_points>=5" );
-    stealthed -> add_action( this, "Shuriken Storm", "if=buff.shadowmeld.down&((combo_points.deficit>=3&spell_targets.shuriken_storm>=2+talent.premeditation.enabled+equipped.shadow_satyrs_walk)|buff.the_dreadlords_deceit.stack>=29)" );
     stealthed -> add_action( this, "Shadowstrike" );
   }
 
@@ -6888,6 +6952,7 @@ action_t* rogue_t::create_action( const std::string& name,
   if ( name == "shuriken_toss"       ) return new shuriken_toss_t      ( this, options_str );
   if ( name == "slice_and_dice"      ) return new slice_and_dice_t     ( this, options_str );
   if ( name == "sprint"              ) return new sprint_t             ( this, options_str );
+  if ( name == "sprint_offensive"    ) return new sprint_offensive_t   ( this, options_str );
   if ( name == "stealth"             ) return new stealth_t            ( this, options_str );
   if ( name == "symbols_of_death"    ) return new symbols_of_death_t   ( this, options_str );
   if ( name == "vanish"              ) return new vanish_t             ( this, options_str );
@@ -7081,6 +7146,8 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
 void rogue_t::init_base_stats()
 {
   player_t::init_base_stats();
+
+  base.distance = 5;
 
   base.attack_power_per_strength = 0.0;
   base.attack_power_per_agility  = 1.0;
@@ -7579,7 +7646,7 @@ void rogue_t::create_buffs()
                                      .tick_time_behavior( BUFF_TICK_TIME_UNHASTED );
   buffs.mantle_of_the_master_assassin_aura = buff_creator_t( this, "master_assassins_initiative_aura", find_spell( 235022 ) )
                                               .duration( sim -> max_time / 2 )
-                                            .default_value( find_spell(235027) -> effectN(1).percent() )
+                                              .default_value( find_spell(235027) -> effectN(1).percent() )
                                               .add_invalidate( CACHE_CRIT_CHANCE );
   buffs.mantle_of_the_master_assassin  = buff_creator_t( this, "master_assassins_initiative", find_spell( 235022 ) )
                                       .duration( timespan_t::from_seconds( find_spell(235022) -> effectN(1).base_value() ) )
@@ -7667,6 +7734,7 @@ void rogue_t::create_buffs()
     .trigger_spell( artifact.finality )
     .default_value( find_spell( 197498 ) -> effectN( 1 ).percent() / COMBO_POINT_MAX )
     .max_stack( consume_cp_max() );
+  buffs.faster_than_light_trigger = new buffs::faster_than_light_trigger_t( this ); // Flickering Shadows
 }
 
 // rogue_t::create_options ==================================================

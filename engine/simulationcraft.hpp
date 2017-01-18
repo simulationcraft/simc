@@ -6,7 +6,7 @@
 #define SIMULATIONCRAFT_H
 
 #define SC_MAJOR_VERSION "715"
-#define SC_MINOR_VERSION "01"
+#define SC_MINOR_VERSION "02"
 #define SC_VERSION ( SC_MAJOR_VERSION "-" SC_MINOR_VERSION )
 #define SC_BETA 0
 #if SC_BETA
@@ -1119,7 +1119,6 @@ enum expr_data_e
   DATA_RACIAL_SPELL,
   DATA_MASTERY_SPELL,
   DATA_SPECIALIZATION_SPELL,
-  DATA_GLYPH_SPELL,
   DATA_ARTIFACT_SPELL,
 };
 
@@ -1240,7 +1239,7 @@ struct player_description_t
 {
   // Add just enough to describe a player
 
-  // name, class, talents, glyphs, gear, professions, actions explicitly stored
+  // name, class, talents, gear, professions, actions explicitly stored
   std::string name;
   // etc
 
@@ -1645,7 +1644,7 @@ struct sim_t : private sc_thread_t
   std::vector<player_t*> targets_by_name;
   std::vector<std::string> id_dictionary;
   std::map<double, std::vector<double> > divisor_timeline_cache;
-  std::string output_file_str, html_file_str, json_file_str;
+  std::string output_file_str, html_file_str, json_file_str, json2_file_str;
   std::string xml_file_str, xml_stylesheet_file_str;
   std::string reforge_plot_output_file_str;
   std::vector<std::string> error_list;
@@ -2668,7 +2667,6 @@ struct item_t
   bool init_special_effects();
 
   static bool download_item( item_t& );
-  static bool download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id );
 
   static std::vector<stat_pair_t> str_to_stat_pair( const std::string& stat_str );
   static std::string stat_pairs_to_str( const std::vector<stat_pair_t>& stat_pairs );
@@ -3536,7 +3534,7 @@ struct player_t : public actor_t
   bool        initialized;
   bool        potion_used;
 
-  std::string talents_str, glyphs_str, id_str, target_str, artifact_str;
+  std::string talents_str, id_str, target_str, artifact_str;
   std::string region_str, server_str, origin_str;
   std::string race_str, professions_str, position_str;
   enum timeofday_e { NIGHT_TIME, DAY_TIME, } timeofday; // Specify InGame time of day to determine Night Elf racial
@@ -3577,9 +3575,6 @@ struct player_t : public actor_t
 
   // Artifact Parsing
   std::string artifact_overrides_str;
-
-  // Glyph Parsing
-  std::vector<const spell_data_t*> glyph_list;
 
   // Profs
   std::array<int, PROFESSION_MAX> profession;
@@ -3639,7 +3634,6 @@ struct player_t : public actor_t
 
     std::array<double, ATTRIBUTE_MAX> attribute_multiplier;
     double spell_power_multiplier, attack_power_multiplier, armor_multiplier;
-    double spell_speed_multiplier, attack_speed_multiplier;
     position_e position;
   }
   base, // Base values, from some database or overridden by user
@@ -3882,7 +3876,7 @@ struct player_t : public actor_t
 
     // Legendary meta stuff
     buff_t* courageous_primal_diamond_lucidity;
-    buff_t* tempus_repit;
+    haste_buff_t* tempus_repit;
     buff_t* fortitude;
 
     buff_t* archmages_greater_incandescence_str;
@@ -3908,6 +3902,8 @@ struct player_t : public actor_t
 
     // 7.1
     buff_t* temptation; // Ring that goes on a 5 minute cd if you use it too much.
+    haste_buff_t* nefarious_pact; // Whispers in the dark good buff
+    haste_buff_t* devils_due; // Whispers in the dark bad buff
 
     // 6.2 trinket proxy buffs
     buff_t* naarus_discipline; // Priest-Discipline Boss 13 T18 trinket
@@ -4015,7 +4011,6 @@ struct player_t : public actor_t
   virtual void init_race();
   virtual void init_talents();
   virtual void init_artifact();
-  virtual void init_glyphs();
   virtual void replace_spells();
   virtual void init_position();
   virtual void init_professions();
@@ -4104,9 +4099,6 @@ struct player_t : public actor_t
 
   virtual double composite_attack_power_multiplier() const;
   virtual double composite_spell_power_multiplier() const;
-
-  virtual double composite_attack_speed_multiplier() const;
-  virtual double composite_spell_speed_multiplier() const;
 
   virtual double matching_gear_multiplier( attribute_e /* attr */ ) const { return 0; }
 
@@ -4279,17 +4271,15 @@ struct player_t : public actor_t
   void create_talents_armory();
   void create_talents_wowhead();
 
-  const spell_data_t* find_glyph( const std::string& name ) const;
   const spell_data_t* find_racial_spell( const std::string& name, const std::string& token = std::string(), race_e s = RACE_NONE ) const;
   const spell_data_t* find_class_spell( const std::string& name, const std::string& token = std::string(), specialization_e s = SPEC_NONE ) const;
   const spell_data_t* find_pet_spell( const std::string& name, const std::string& token = std::string() ) const;
   const spell_data_t* find_talent_spell( const std::string& name, const std::string& token = std::string(), specialization_e s = SPEC_NONE, bool name_tokenized = false, bool check_validity = true ) const;
-  const spell_data_t* find_glyph_spell( const std::string& name, const std::string& token = std::string() ) const;
   const spell_data_t* find_specialization_spell( const std::string& name, const std::string& token = std::string(), specialization_e s = SPEC_NONE ) const;
   const spell_data_t* find_specialization_spell( unsigned spell_id, specialization_e s = SPEC_NONE ) const;
   const spell_data_t* find_mastery_spell( specialization_e s, const std::string& token = std::string(), uint32_t idx = 0 ) const;
   const spell_data_t* find_spell( const std::string& name, const std::string& token = std::string(), specialization_e s = SPEC_NONE ) const;
-  const spell_data_t* find_spell( const unsigned int id, const std::string& token = std::string() ) const;
+  const spell_data_t* find_spell( unsigned int id, const std::string& token = std::string() ) const;
 
   artifact_power_t find_artifact_spell( const std::string& name, bool tokenized = false ) const;
 
@@ -4552,7 +4542,7 @@ private:
   {
     if ( ( yards >= current.distance_to_move ) && current.moving_away <= 0 )
     {
-      //x_position += current.distance_to_move; Maybe in wonderland we can track this type of player movement.
+      x_position += current.distance_to_move;
       current.distance_to_move = 0;
       current.movement_direction = MOVEMENT_NONE;
       buffs.raid_movement -> expire();
@@ -4561,13 +4551,13 @@ private:
     {
       if ( current.moving_away > 0 )
       {
-        //x_position -= yards;
+        x_position -= yards;
         current.moving_away -= yards;
         current.distance_to_move += yards;
       }
       else
       {
-        //x_position += yards;
+        x_position += yards;
         current.moving_away = 0;
         current.movement_direction = MOVEMENT_TOWARDS;
         current.distance_to_move -= yards;
@@ -5520,6 +5510,8 @@ public:
   virtual double calculate_tick_amount( action_state_t* state, double multiplier ) const;
 
   virtual double calculate_weapon_damage( double attack_power ) const;
+
+  virtual double calculate_crit_damage_bonus( action_state_t* s ) const;
 
   virtual double target_armor( player_t* t ) const
   { return t -> cache.armor(); }
@@ -6752,7 +6744,6 @@ struct travel_event_t : public event_t
 namespace item_database
 {
 bool     download_item(      item_t& item );
-bool     download_glyph(     player_t* player, std::string& glyph_name, const std::string& glyph_id );
 bool     initialize_item_sources( item_t& item, std::vector<std::string>& source_list );
 
 int      random_suffix_type( item_t& item );
@@ -7329,8 +7320,6 @@ enum wowhead_e
 };
 
 bool download_item( item_t&, wowhead_e source = LIVE, cache::behavior_e b = cache::items() );
-bool download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id,
-                     wowhead_e source = LIVE, cache::behavior_e b = cache::items() );
 bool download_item_data( item_t&            item,
                          cache::behavior_e  caching,
                          wowhead_e          source );
@@ -7373,9 +7362,6 @@ player_t* from_local_json( sim_t*,
                          );
 
 bool download_item( item_t&, cache::behavior_e b = cache::items() );
-
-bool download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id,
-                     cache::behavior_e b = cache::items() );
 }
 
 // HTTP Download  ===========================================================

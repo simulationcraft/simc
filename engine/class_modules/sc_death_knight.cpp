@@ -790,7 +790,8 @@ public:
     runic_power_decay_rate(),
     fallen_crusader( 0 ),
     fallen_crusader_rppm( find_spell( 166441 ) -> real_ppm() ),
-    aotd_proc_chance( 0.2 ),
+    // 2017-01-10: Armies of the Damned (Artifact trait) ghouls' chance to apply their additional effects increased to 30% (was 25%).
+    aotd_proc_chance( 0.3 ),
     antimagic_shell_absorbed( 0.0 ),
     pestilent_pustules( 0 ),
     antimagic_shell( nullptr ),
@@ -808,7 +809,6 @@ public:
     _runes( this )
   {
     range::fill( pets.army_ghoul, nullptr );
-    base.distance = 0;
 
     cooldown.antimagic_shell = get_cooldown( "antimagic_shell" );
     cooldown.avalanche       = get_cooldown( "avalanche" );
@@ -1929,6 +1929,9 @@ struct army_pet_t : public base_ghoul_pet_t
     base_ghoul_pet_t::init_base_stats();
 
     owner_coeff.ap_from_ap = 0.30;
+    // 2017-01-10: Army of the Dead and Apocalypse ghouls damage has been increased.
+    // FIXME: Exact number TBDiscovered, 33% sounds fine
+    owner_coeff.ap_from_ap *= 1.33;
   }
 
   void init_action_list() override
@@ -2018,6 +2021,8 @@ struct gargoyle_pet_t : public death_knight_pet_t
 
     // As per Blizzard
     owner_coeff.sp_from_ap = 0.46625;
+    // 2017-01-10: Gargoyle damage increased by 50%.
+    owner_coeff.sp_from_ap *= 1.5;
   }
 
   void init_action_list() override
@@ -2091,7 +2096,8 @@ struct valkyr_pet_t : public death_knight_pet_t
 
   buff_t* shadow_empowerment;
 
-  valkyr_pet_t( death_knight_t* owner ) : death_knight_pet_t( owner, "valkyr_battlemaiden", true, false ), shadow_empowerment(nullptr)
+  valkyr_pet_t( death_knight_t* owner ) :
+    death_knight_pet_t( owner, "valkyr_battlemaiden", true, false ), shadow_empowerment(nullptr)
   { regen_type = REGEN_DISABLED; }
 
   double composite_player_multiplier( school_e s ) const override
@@ -2107,7 +2113,11 @@ struct valkyr_pet_t : public death_knight_pet_t
   {
     death_knight_pet_t::init_base_stats();
 
-    owner_coeff.ap_from_ap = 1/3.0;
+    owner_coeff.ap_from_ap = 1 / 3.0;
+    // 2017-01-10: Dark Arbiter damage increased by 36%. NOTE: Valkyr Strike AP coefficient was
+    // increased 7 -> 7.5 in a hotfix, so apply the remaining increase here as a wonky number.
+    // Reality is probably something entirely different, but needs testing.
+    owner_coeff.ap_from_ap *= 1.27;
   }
 
   void init_action_list() override
@@ -2196,7 +2206,8 @@ struct risen_skulker_pet_t : public death_knight_pet_t
 
     // As per Blizzard
     // 2016-08-06 Changes to pet, AP ineritance to 200% (guesstimate, based on Skulker Shot data)
-    owner_coeff.ap_from_ap = 2.0;
+    // 2017-01-10 All Will Serve damage increased by 15%.
+    owner_coeff.ap_from_ap = 2.0 * 1.15;
   }
 
   void init_action_list() override
@@ -3468,6 +3479,7 @@ struct virulent_plague_t : public disease_t
   {
     base_tick_time *= 1.0 + p -> talent.ebon_fever -> effectN( 1 ).percent();
     dot_duration *= 1.0 + p -> talent.ebon_fever -> effectN( 2 ).percent();
+    base_multiplier *= 1.0 + p -> talent.ebon_fever -> effectN( 3 ).percent();
     base_multiplier *= 1.0 + p -> artifact.plaguebearer.percent();
 
     add_child( explosion );
@@ -3762,8 +3774,6 @@ struct chains_of_ice_t : public death_knight_spell_t
   {
     parse_options( options_str );
 
-    int exclusivity_check = 0;
-
     for ( size_t i = 0, end = sizeof_array( p -> items[ SLOT_HANDS ].parsed.data.id_spell ); i < end; i++ )
     {
       if ( p -> items[ SLOT_HANDS ].parsed.data.id_spell[ i ] == static_cast<int>( pvp_bonus -> id() ) )
@@ -3773,12 +3783,6 @@ struct chains_of_ice_t : public death_knight_spell_t
         energize_amount   = pvp_bonus -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
         break;
       }
-    }
-
-    if ( exclusivity_check > 1 )
-    {
-      sim -> errorf( "Disabling Chains of Ice because multiple exclusive glyphs are affecting it." );
-      background = true;
     }
   }
 
@@ -5800,11 +5804,11 @@ struct antimagic_shell_t : public death_knight_spell_t
     add_option( opt_float( "damage", damage ) );
     parse_options( options_str );
 
-    // Allow as low as 15 second intervals, due to new glyph
-    if ( interval < 15.0 )
+    // Allow as low as 30 second intervals
+    if ( interval < 30.0 )
     {
-      sim -> errorf( "%s minimum interval for Anti-Magic Shell is 15 seconds.", player -> name() );
-      interval = 15.0;
+      sim -> errorf( "%s minimum interval for Anti-Magic Shell is 30 seconds.", player -> name() );
+      interval = 30.0;
     }
 
     // Less than a second standard deviation is translated to a percent of
@@ -5870,7 +5874,7 @@ struct sephuzs_secret_buff_t: public haste_buff_t
   cooldown_t* icd;
   sephuzs_secret_buff_t( death_knight_t* p ):
     haste_buff_t( haste_buff_creator_t( p, "sephuzs_secret", p -> find_spell( 208052 ) )
-            .default_value( p -> find_spell( 208502 ) -> effectN( 2 ).percent() )
+            .default_value( p -> find_spell( 208052 ) -> effectN( 2 ).percent() )
             .add_invalidate( CACHE_HASTE ) )
   {
     icd = p -> get_cooldown( "sephuzs_secret_cooldown" );
@@ -6146,11 +6150,10 @@ struct remorseless_winter_buff_t : public buff_t
   {
     buff_t::execute( stacks, value, duration );
 
-    // Executing remorseless winter (either new buff or refresh) will cancel any accumulated
-    // Gathering Storms stacks
-    if ( gathering_storm )
+    // Refresh existing Gathering Storm duration (adds a stack too?)
+    if ( gathering_storm && gathering_storm -> check() )
     {
-      gathering_storm -> expire();
+      gathering_storm -> trigger();
     }
   }
 
@@ -6634,6 +6637,8 @@ void death_knight_t::init_base_stats()
 {
   player_t::init_base_stats();
 
+  base.distance = 5;
+
   base.attack_power_per_strength = 1.0;
   base.attack_power_per_agility = 0.0;
 
@@ -6984,10 +6989,10 @@ void death_knight_t::default_apl_frost()
   def -> add_talent( this, "Obliteration", "if=(!talent.frozen_pulse.enabled|(rune<2&runic_power<28))&!talent.gathering_storm.enabled" );
 
   // Choose APL
-  def -> add_action( "call_action_list,name=generic,if=!talent.breath_of_sindragosa.enabled" );
+  def -> add_action( "call_action_list,name=generic,if=!talent.breath_of_sindragosa.enabled&!(talent.gathering_storm.enabled&buff.remorseless_winter.remains)" );
   def -> add_action( "call_action_list,name=bos,if=talent.breath_of_sindragosa.enabled&!dot.breath_of_sindragosa.ticking" );
   def -> add_action( "call_action_list,name=bos_ticking,if=talent.breath_of_sindragosa.enabled&dot.breath_of_sindragosa.ticking" );
-  def -> add_action( "call_action_list,name=gs_ticking,if=talent.gathering_storm.enabled&buff.remorseless_winter.remains" );
+  def -> add_action( "call_action_list,name=gs_ticking,if=talent.gathering_storm.enabled&buff.remorseless_winter.remains&!talent.breath_of_sindragosa.enabled" );
 
   // Generic rotation
   generic -> add_action( this, "Frost Strike", "if=!talent.shattering_strikes.enabled&(buff.icy_talons.remains<1.5&talent.icy_talons.enabled)" );
@@ -7013,10 +7018,11 @@ void death_knight_t::default_apl_frost()
 
   // Breath of Sindragosa core rotation
   bos -> add_action( this, "Frost Strike", "if=talent.icy_talons.enabled&buff.icy_talons.remains<1.5&cooldown.breath_of_sindragosa.remains>6" );
+  bos -> add_action( this, "Remorseless Winter", "if=talent.gathering_storm.enabled" );
   bos -> add_action( this, "Howling Blast", "target_if=!dot.frost_fever.ticking" );
   bos -> add_talent( this, "Breath of Sindragosa", "if=runic_power>=50" );
   bos -> add_action( this, "Frost Strike", "if=runic_power>=90&set_bonus.tier19_4pc" );
-  bos -> add_action( this, "Remorseless Winter", "if=(buff.rime.react&equipped.132459)|talent.gathering_storm.enabled" );
+  bos -> add_action( this, "Remorseless Winter", "if=buff.rime.react&equipped.132459" );
   bos -> add_action( this, "Howling Blast", "if=buff.rime.react&(dot.remorseless_winter.ticking|cooldown.remorseless_winter.remains>1.5|!equipped.132459)" );
   bos -> add_action( this, "Frost Strike", "if=runic_power>=70" );
   bos -> add_action( this, "Obliterate", "if=!buff.rime.react" );
@@ -7026,20 +7032,19 @@ void death_knight_t::default_apl_frost()
   
   // Breath of Sindragosa ticking rotation
   bos_ticking -> add_action( this, "Howling Blast", "target_if=!dot.frost_fever.ticking" );
-  bos_ticking -> add_action( this, "Remorseless Winter", "if=((runic_power>=20&set_bonus.tier19_4pc)|runic_power>=30)&((buff.rime.react&!dot.hungering_rune_weapon.ticking&equipped.132459)|talent.gathering_storm.enabled)" );
-  bos_ticking -> add_action( this, "Howling Blast", "if=((runic_power>=20&set_bonus.tier19_4pc)|runic_power>=30)&buff.rime.react&!dot.hungering_rune_weapon.ticking" );
-  bos_ticking -> add_action( this, "Frost Strike", "if=runic_power>=95&dot.hungering_rune_weapon.ticking" );
-  bos_ticking -> add_action( this, "Obliterate", "if=runic_power<=70|rune>3" );
+  bos_ticking -> add_action( this, "Remorseless Winter", "if=((runic_power>=20&set_bonus.tier19_4pc)|runic_power>=30)&buff.rime.react&(equipped.132459|talent.gathering_storm.enabled)" );
+  bos_ticking -> add_action( this, "Howling Blast", "if=((runic_power>=20&set_bonus.tier19_4pc)|runic_power>=30)&buff.rime.react" );
+  bos_ticking -> add_action( this, "Obliterate", "if=runic_power<=75|rune>3" );
   bos_ticking -> add_talent( this, "Horn of Winter", "if=runic_power<70&!dot.hungering_rune_weapon.ticking" );
-  bos_ticking -> add_talent( this, "Hungering Rune Weapon", "if=runic_power<20&!dot.hungering_rune_weapon.ticking" );
+  bos_ticking -> add_talent( this, "Hungering Rune Weapon", "if=runic_power<30&!dot.hungering_rune_weapon.ticking" );
   bos_ticking -> add_action( this, "Empower Rune Weapon", "if=runic_power<20" );
-  bos_ticking -> add_action( this, "Remorseless Winter", "if=runic_power<20" );
+  bos_ticking -> add_action( this, "Remorseless Winter", "if=talent.gathering_storm.enabled|!set_bonus.tier19_4pc|runic_power<30" );
   
   // Gathering Storm ticking rotation
   gs_ticking -> add_action( this, "Frost Strike", "if=buff.icy_talons.remains<1.5&talent.icy_talons.enabled" );
   gs_ticking -> add_action( this, "Howling Blast", "target_if=!dot.frost_fever.ticking" );
   gs_ticking -> add_action( this, "Howling Blast", "if=buff.rime.react&!(buff.obliteration.up&spell_targets.howling_blast<2)" );
-  gs_ticking -> add_action( this, "Obliteration", "if=(!talent.frozen_pulse.enabled|(rune<2&runic_power<28))" );
+  gs_ticking -> add_talent( this, "Obliteration", "if=(!talent.frozen_pulse.enabled|(rune<2&runic_power<28))" );
   gs_ticking -> add_action( this, "Obliterate", "if=rune>3|buff.killing_machine.react|buff.obliteration.up" );
   gs_ticking -> add_action( this, "Frost Strike", "if=runic_power>80|(buff.obliteration.up&!buff.killing_machine.react)" );
   gs_ticking -> add_action( this, "Obliterate" );
@@ -8489,6 +8494,12 @@ struct death_knight_module_t : public module_t {
 
   void register_hotfixes() const override
   {
+    hotfix::register_effect( "Death Knight", "2017-01-10", "Portal to the Underworld damage increased by 33%.", 325047 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 4/3.0 )
+      .verification_value( 1.2 );
+
     /*
     hotfix::register_effect( "Death Knight", "2016-08-23", "Clawing Shadows damage has been changed to 130% weapon damage (was 150% Attack Power).", 324719 )
       .field( "ap_coefficient" )

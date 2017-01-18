@@ -56,25 +56,6 @@ std::shared_ptr<xml_node_t> download_id( sim_t*             sim,
 
 } // unnamed namespace
 
-// wowhead::download_glyph ==================================================
-
-bool wowhead::download_glyph( player_t*          player,
-                              std::string&       glyph_name,
-                              const std::string& glyph_id,
-                              wowhead_e          source,
-                              cache::behavior_e  caching )
-{
-  unsigned glyphid = strtoul( glyph_id.c_str(), nullptr, 10 );
-  std::shared_ptr<xml_node_t> node = download_id( player -> sim, glyphid, caching, source );
-  if ( ! node || ! node -> get_value( glyph_name, "name/cdata" ) )
-  {
-    if ( caching != cache::ONLY )
-      player -> sim -> errorf( "Unable to download glyph id %s from wowhead\n", glyph_id.c_str() );
-    return false;
-  }
-  return true;
-}
-
 // download_item_data =======================================================
 
 bool wowhead::download_item_data( item_t&            item,
@@ -112,8 +93,8 @@ bool wowhead::download_item_data( item_t&            item,
     jsondata = "{" + jsondata + "}";
 
     rapidjson::Document json, jsonequip;
-    json.Parse< 0 >( jsondata.c_str() );
-    jsonequip.Parse< 0 >( jsonequipdata.c_str() );
+    json.Parse( jsondata.c_str() );
+    jsonequip.Parse( jsonequipdata.c_str() );
 
     if ( json.HasParseError() )
     {

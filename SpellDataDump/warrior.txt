@@ -1,4 +1,4 @@
-SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23360, git build a0a9385)
+SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 2228653)
 
 Name             : Defensive Stance (id=71) [Spell Family (4), Passive, Hidden] 
 Class            : Protection Warrior
@@ -469,7 +469,7 @@ GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 6 seconds
 Proc Chance      : 101%
-Affecting spells : Demoralizing Shout (1160), Warrior (137047), Thunder Crash (188644), Might of the Vrykul (188783), Crackling Thunder (203201), Kakushan's Stormscale Gauntlets (207844), 
+Affecting spells : Demoralizing Shout (1160), Warrior (137047), Protection Warrior (137048), Thunder Crash (188644), Might of the Vrykul (188783), Crackling Thunder (203201), Kakushan's Stormscale Gauntlets (207844), 
 Attributes       : ....x... ........ x.x..x.. ........   ...x...x .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -479,7 +479,8 @@ Attributes       : ....x... ........ x.x..x.. ........   ...x...x .x...... .....
                  : Cannot dodge/parry/block (21)
 Effects          :
 #1 (id=2203)     : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 3.30800 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 3.00000 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
+                   Hotfixed: AP Coefficient (3.308 -> 3)
 #2 (id=236564)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Radius: 0 - 8 yards | Mechanic: Unknown(88) | Target: At Caster(22) -> AOE enemy(15)
 #3 (id=357188)   : Dummy (3)
@@ -543,7 +544,7 @@ Spell Level      : 22
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 3 seconds
-Affecting spells : Demoralizing Shout (1160), Revenge! (5302), Warrior (137047), Vengeance: Revenge (202573), Rage of the Fallen (216272)
+Affecting spells : Demoralizing Shout (1160), Revenge! (5302), Warrior (137047), Protection Warrior (137048), Vengeance: Revenge (202573), Rage of the Fallen (216272)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -552,7 +553,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=2316)     : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 4.40000 | Radius: 8 yards | Target: Cone Front(104)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 4.00000 | Radius: 8 yards | Target: Cone Front(104)
+                   Hotfixed: AP Coefficient (4.4 -> 4)
 Description      : Swing in a wide arc, dealing $s1 damage to all enemies in front of you.
 
 Your successful dodges and parries cause your next Revenge to become free.
@@ -584,22 +586,28 @@ Description      : Overpowers the enemy, causing $sw1 Physical damage. Cannot be
 All your melee attacks have a chance to activate Overpower.
 
 Name             : Warbringer (id=7922) [Spell Family (4)] 
+Hotfixed         : Attributes
 Class            : Warrior
 School           : Physical
 Spell Level      : 1
 Range            : 50000 yards
+Duration         : 2.5 seconds
 Proc Chance      : 101%
 Mechanic         : Unknown(95)
-Attributes       : ....x... ........ x.x..x.. ........   ...x...x .x...... ........ ........ 
+Affecting spells : Protection Warrior (137048)
+Attributes       : ....x... ........ x.x..x.. ........   ...x...x .x...... ........ ....x... 
                  : ..x..... ........ ........ ......x.   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
-                 : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ..x..... .......x ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Cannot dodge/parry/block (21), Requires line of sight (186)
 Effects          :
 #1 (id=3164)     : School Damage: physical (2)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.08000 | Radius: 0 - 5 yards | Target: Unknown(63) -> AOE enemy (instant)(16)
+#2 (id=364046)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 5 yards | Target: Unknown(63) -> AOE enemy (instant)(16)
+                   Hotfixed: NEW EFFECT
 Description      : Charge an enemy, generate Rage, and stun them for $7922d.
 Tooltip          : Knocked down.
 
@@ -756,7 +764,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Stacks           : 3 maximum
 Proc Chance      : 101%
-Affecting spells : Demoralizing Shout (1160), Warrior (137047), Strength of the Earth Aspect (188647)
+Affecting spells : Demoralizing Shout (1160), Warrior (137047), Protection Warrior (137048), Strength of the Earth Aspect (188647)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -874,7 +882,7 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 9 seconds
-Affecting spells : Demoralizing Shout (1160), Shield Block (132404), Warrior (137047), Vicious Strike (165642), Might of the Vrykul (188783), Kakushan's Stormscale Gauntlets (207844), 
+Affecting spells : Demoralizing Shout (1160), Shield Block (132404), Warrior (137047), Protection Warrior (137048), Vicious Strike (165642), Might of the Vrykul (188783), Kakushan's Stormscale Gauntlets (207844), 
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1302,7 +1310,7 @@ Range            : 8 - 30 yards
 GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Cooldown         : 6 seconds
-Affecting spells : Defensive Stance (71), Demoralizing Shout (1160), Warrior (137047), Arms Warrior (137049), Fury Warrior (137050)
+Affecting spells : Defensive Stance (71), Demoralizing Shout (1160), Warrior (137047), Protection Warrior (137048), Arms Warrior (137049), Fury Warrior (137050)
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2059,7 +2067,7 @@ Spell Level      : 1
 Range            : 100 yards
 Duration         : 15 seconds
 Mechanic         : Bleed
-Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Warrior (137047), Arms Warrior (137049), Dauntless (202297)
+Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Warrior (137047), Protection Warrior (137048), Arms Warrior (137049), Dauntless (202297)
 Triggered by     : Deep Wounds (115768)
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ........ 
                  : ..x....x ........ ........ ........   ........ ..x..... ..x..... ..x...x. 
@@ -2557,10 +2565,14 @@ Effects          :
 #6 (id=261027)   : Apply Aura (6) | Unknown effect sub type (218)
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 3 | Misc Value 2: 0x114 | Target: Self(1)
                    Hotfixed: Sub Type (4 -> 218), Base Value (0 -> -40), Misc Value (0 -> 3), Misc Value 2 (0 -> 276)
-#7 (id=261028)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#8 (id=261029)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#7 (id=261028)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: -5 | Scaled Value: -5 | Target: Self(1)
+                   Affected Spells: Thunder Clap (6343), Revenge (6572), Warbringer (7922), Devastate (20243), Shield Slam (23922), Victory Rush (34428), Heroic Throw (57755), Ravager (152277), Ravager (156287), Impending Victory (202168), Ravager (227744), Ravager (228920), Devastator (236282)
+                   Hotfixed: Sub Type (4 -> 108), Base Value (0 -> -5), Affects Spells
+#8 (id=261029)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
+                   Base Value: -5 | Scaled Value: -5 | Misc Value: 22 | Target: Self(1)
+                   Affected Spells: Deep Wounds (115767)
+                   Hotfixed: Sub Type (4 -> 108), Base Value (0 -> -5), Misc Value (0 -> 22), Affects Spells
 #9 (id=261030)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #10 (id=261031)   : Apply Aura (6) | Dummy (4)
@@ -5315,7 +5327,7 @@ Spell Level      : 10
 Range            : 5 yards
 Stacks           : 3 maximum
 Proc Chance      : 101%
-Affecting spells : Demoralizing Shout (1160), Warrior (137047), Strength of the Earth Aspect (188647)
+Affecting spells : Demoralizing Shout (1160), Warrior (137047), Protection Warrior (137048), Strength of the Earth Aspect (188647)
 Triggered by     : Devastator (236279)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

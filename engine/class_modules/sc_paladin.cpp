@@ -410,7 +410,7 @@ public:
     active_protector_of_the_innocent   = nullptr;
 
     cooldowns.avengers_shield         = get_cooldown( "avengers_shield" );
-  cooldowns.judgment                = get_cooldown("judgment");
+    cooldowns.judgment                = get_cooldown("judgment");
     cooldowns.shield_of_the_righteous = get_cooldown( "shield_of_the_righteous" );
     cooldowns.avenging_wrath          = get_cooldown( "avenging_wrath" );
     cooldowns.light_of_the_protector  = get_cooldown( "light_of_the_protector" );
@@ -421,8 +421,6 @@ public:
     cooldowns.divine_hammer           = get_cooldown( "divine_hammer" );
 
     beacon_target = nullptr;
-
-    base.distance = 3;
     regen_type = REGEN_DYNAMIC;
   }
 
@@ -1526,10 +1524,10 @@ struct consecration_t : public paladin_spell_t
         .x( execute_state -> action -> player -> x_position )
         .y( execute_state -> action -> player -> y_position )
         // TODO: this is a hack that doesn't work properly, fix this correctly
-        .duration( ground_effect_duration * ( p() -> cache.spell_haste() ) )
+        .duration( ground_effect_duration )
         .start_time( sim -> current_time()  )
         .action( damage_tick )
-        .hasted( ground_aoe_params_t::SPELL_HASTE ), true );
+        .hasted( ground_aoe_params_t::NOTHING ), true );
 
     // push the pointer to the list of active consecrations
     // execute() and schedule_event() methods of paladin_ground_aoe_t handle updating the list
@@ -1547,7 +1545,7 @@ struct consecration_t : public paladin_spell_t
           .duration( ground_effect_duration )
           .start_time( sim -> current_time()  )
           .action( heal_tick )
-          .hasted( ground_aoe_params_t::SPELL_HASTE ), true );
+          .hasted( ground_aoe_params_t::NOTHING ), true );
     }
   }
 };
@@ -1641,7 +1639,7 @@ struct divine_shield_t : public paladin_spell_t
     p() -> buffs.divine_shield -> trigger();
 
     // in this sim, the only debuffs we care about are enemy DoTs.
-    // Check for them and remove them when cast, and apply Glyph of Divine Shield appropriately
+    // Check for them and remove them when cast
     int num_destroyed = 0;
     for ( size_t i = 0, size = p() -> dot_list.size(); i < size; i++ )
     {
@@ -2703,7 +2701,7 @@ struct holy_wrath_t : public paladin_spell_t
 struct blinding_light_effect_t : public paladin_spell_t
 {
   blinding_light_effect_t( paladin_t* p )
-    : paladin_spell_t( "blinding_light_effect", p, p -> find_spell( 105421 ) )
+    : paladin_spell_t( "blinding_light_effect", p, dbc::find_spell( p, 105421 ) )
   {
     background = true;
   }
@@ -4310,6 +4308,7 @@ void paladin_t::init_base_stats()
   // Holy Insight increases max mana for Holy
   resources.base_multiplier[ RESOURCE_MANA ] = 1.0 + passives.holy_insight -> effectN( 1 ).percent();
 
+  base.distance = 5;
   // move holy paladins to range
   if ( specialization() == PALADIN_HOLY && primary_role() == ROLE_HEAL )
     base.distance = 30;
@@ -5444,11 +5443,11 @@ double paladin_t::composite_player_multiplier( school_e school ) const
   if ( buffs.crusade -> check() )
   {
     double aw_multiplier = buffs.crusade -> get_damage_mod();
+    m *= 1.0 + aw_multiplier;
     if ( chain_of_thrayn )
     {
-      aw_multiplier += spells.chain_of_thrayn -> effectN( 4 ).percent();
+      m *= 1.0 + spells.chain_of_thrayn -> effectN( 4 ).percent();
     }
-    m *= 1.0 + aw_multiplier;
   }
 
   m *= 1.0 + buffs.wings_of_liberty -> current_stack * buffs.wings_of_liberty -> current_value;
@@ -6180,37 +6179,6 @@ struct paladin_module_t : public module_t
 
   virtual void register_hotfixes() const override
   {
-    /*
-    hotfix::register_effect( "Paladin", "2016-09-23", "Templar�s Verdict damage increased by 10%.", 335615 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 1.10 )
-      .verification_value( 290 );
-
-    hotfix::register_effect( "Paladin", "2016-09-23", "Divine Storm damage increased by 20%.", 335563 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 1.20 )
-      .verification_value( 180 );
-
-    hotfix::register_effect( "Paladin", "2016-09-23", "Blade of Justice damage increased by 13%.", 267536 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 1.13 )
-      .verification_value( 352 );
-
-    hotfix::register_effect( "Paladin", "2016-09-23", "Zeal (Talent) damage increased by 13%.", 322915 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 1.13 )
-      .verification_value( 285 );
-
-    hotfix::register_effect( "Paladin", "2016-09-23", "Blade of Wrath (Talent) damage increased by 13%.", 298132 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 1.13 )
-      .verification_value( 120 );
-      */
 
   }
 

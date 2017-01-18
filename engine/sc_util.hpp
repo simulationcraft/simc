@@ -121,7 +121,6 @@ item_subclass_weapon translate_weapon( weapon_e weapon );
 profession_e translate_profession_id( int skill_id );
 bool socket_gem_match( item_socket_color socket, item_socket_color gem );
 double crit_multiplier( meta_gem_e gem );
-std::string& glyph_name( std::string& n );
 
 std::vector<std::string> string_split( const std::string& str, const std::string& delim );
 size_t string_split_allow_quotes( std::vector<std::string>& results, const std::string& str, const char* delim );

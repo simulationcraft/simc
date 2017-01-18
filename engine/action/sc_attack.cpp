@@ -124,8 +124,8 @@ double attack_t::block_chance( action_state_t* s ) const
   // for shield tanks)
   double block = s->target->cache.block();
 
-  // add or subtract 1.5% per level difference
-  block += ( s->target->level() - player->level() ) * 0.015;
+  // add or subtract 1.5% per level difference -- Level difference does not seem to matter anymore.
+  //block += ( s->target->level() - player->level() ) * 0.015;
 
   return block;
 }

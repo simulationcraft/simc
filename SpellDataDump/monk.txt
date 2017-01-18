@@ -1,4 +1,4 @@
-SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23360, git build a0a9385)
+SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 2228653)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -1706,7 +1706,8 @@ Effects          :
 #1 (id=132057)   : Apply Aura (6) | Periodic Trigger Spell: Rushing Jade Wind every 0.75 seconds (23)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 148187 | Target: Self(1)
 #2 (id=359689)   : Dummy (3)
-                   Base Value: 5 | Scaled Value: 5
+                   Base Value: 4 | Scaled Value: 4
+                   Hotfixed: Base Value (5 -> 4)
 Description      : Summons a whirling tornado around you, causing ${$148187s1*9} damage over $d to enemies within $107270A1 yards.$?s220357[ Applies Mark of the Crane to up to $s2 nearby targets.][]
 Tooltip          : Dealing physical damage to nearby enemies every $116847t1 sec.
 Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]

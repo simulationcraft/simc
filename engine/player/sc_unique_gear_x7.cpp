@@ -55,6 +55,7 @@ namespace item
   void tempered_egg_of_serpentrix( special_effect_t& );
   void gnawed_thumb_ring( special_effect_t& );
   void naraxas_spiked_tongue( special_effect_t& );
+  void choker_of_barbed_reins( special_effect_t& );
 
   // 7.1 Dungeon
   void arans_relaxing_ruby( special_effect_t& );
@@ -202,7 +203,36 @@ struct mark_of_the_distant_army_t : public proc_spell_t
     proc_spell_t( "mark_of_the_distant_army",
       p, p -> find_spell( 191380 ), nullptr )
   {
-    may_crit = tick_may_crit = false;
+    // Hardcoded somewhere in the bowels of the server
+    attack_power_mod.tick = ( 2.5 / 3.0 );
+    spell_power_mod.tick = ( 2.0 / 3.0 );
+  }
+
+  double amount_delta_modifier( const action_state_t* ) const override
+  { return 0.15; }
+
+  double attack_tick_power_coefficient( const action_state_t* s ) const override
+  {
+    auto total_ap = attack_power_mod.tick * s -> composite_attack_power();
+    auto total_sp = spell_power_mod.tick * s -> composite_spell_power();
+
+    if ( total_ap <= total_sp )
+    {
+      return 0;
+    }
+
+    return proc_spell_t::attack_tick_power_coefficient( s );
+  }
+
+  double spell_tick_power_coefficient( const action_state_t* s ) const override
+  {
+    auto total_ap = attack_power_mod.tick * s -> composite_attack_power();
+    auto total_sp = spell_power_mod.tick * s -> composite_spell_power();
+
+    if ( total_sp < total_ap )
+      return 0;
+
+    return proc_spell_t::spell_tick_power_coefficient( s );
   }
 
   // Hack to force defender to mitigate the damage with armor.
@@ -465,7 +495,7 @@ void item::naraxas_spiked_tongue( special_effect_t& effect )
     {
       double am = proc_spell_t::action_multiplier();
 
-      double distance = target -> get_player_distance( *player );
+      double distance = player -> get_player_distance( *target );
       am *= ( std::min( distance, 20.0 ) / 20.0 ); // Does less damage the closer player is to target.
       return am;
     }
@@ -481,6 +511,37 @@ void item::naraxas_spiked_tongue( special_effect_t& effect )
   if ( !effect.execute_action )
   {
     action_t* a = new rancid_maw_t( effect );
+    effect.execute_action = a;
+  }
+
+  new dbc_proc_callback_t( effect.item, effect );
+}
+
+// Choker of Barbed Reins ==================================================
+
+void item::choker_of_barbed_reins( special_effect_t& effect )
+{
+  struct choker_of_barbed_reins_t: public proc_attack_t
+  {
+    choker_of_barbed_reins_t( const special_effect_t& e ):
+      proc_attack_t( "barbed_rebuke", e.player, e.player -> find_spell( 234108 ), e.item )
+    {
+      may_block = true;
+    }
+    double target_armor( player_t* ) const override
+    { return 0.0; }
+  };
+
+  effect.execute_action = effect.player -> find_action( "barbed_rebuke" );
+
+  if ( !effect.execute_action )
+  {
+    effect.execute_action = effect.player -> create_proc_action( "barbed_rebuke", effect );
+  }
+
+  if ( !effect.execute_action )
+  {
+    action_t* a = new choker_of_barbed_reins_t( effect );
     effect.execute_action = a;
   }
 
@@ -575,19 +636,20 @@ void item::eye_of_command( special_effect_t& effect )
 
 // Note, custom implementations are going to have to apply the empower multiplier independent of
 // this function.
+
+struct cruel_garrote_t: public spell_t
+{
+  cruel_garrote_t( const special_effect_t& effect ):
+    spell_t( "cruel_garrote", effect.player, effect.driver() )
+  {
+    background = hasted_ticks = tick_may_crit = may_crit = true;
+    base_td *= util::composite_karazhan_empower_multiplier( effect.player );
+  }
+};
+
 void item::bloodstained_hankerchief( special_effect_t& effect )
 {
-  action_t* a = effect.player -> find_action( "cruel_garrote" );
-  if ( ! a )
-  {
-    a = effect.player -> create_proc_action( "cruel_garrote", effect );
-  }
-
-  if ( ! a )
-  {
-    a = effect.create_action();
-    a -> base_td *= util::composite_karazhan_empower_multiplier( effect.player );
-  }
+  action_t* a = new cruel_garrote_t( effect );
 
   effect.execute_action = a;
 }
@@ -983,6 +1045,7 @@ struct flame_gale_driver_t : spell_t
         .pulse_time( timespan_t::from_seconds( 1.0 ) )
         .target( execute_state -> target )
         .duration( timespan_t::from_seconds( 8.0 ) )
+        .hasted( ground_aoe_params_t::ATTACK_HASTE )
         .action( flame_pulse ) );
   }
 };
@@ -1318,34 +1381,23 @@ void item::whispers_in_the_dark( special_effect_t& effect )
   auto bad_buff_data = effect.player -> find_spell( 225776 );
   auto bad_amount = bad_buff_data -> effectN( 1 ).average( effect.item ) / 100.0;
 
-  buff_t* bad_buff = buff_creator_t( effect.player, "devils_due", bad_buff_data, effect.item )
-    .stack_change_callback( [ bad_amount ]( buff_t* buff, int old_, int ) {
-      if ( old_ == 0 )
-      {
-        buff -> player -> current.spell_speed_multiplier *= 1 - bad_amount;
-      }
-      else
-      {
-        buff -> player -> current.spell_speed_multiplier /= 1 - bad_amount;
-      }
-      buff -> player -> invalidate_cache( CACHE_HASTE );
-    } );
+  haste_buff_t* bad_buff = haste_buff_creator_t( effect.player, "devils_due", bad_buff_data, effect.item )
+    .add_invalidate( CACHE_SPELL_SPEED )
+    .default_value( bad_amount );
 
-  buff_t* good_buff = buff_creator_t( effect.player, "nefarious_pact", good_buff_data, effect.item )
-    .stack_change_callback( [ good_amount, bad_buff ]( buff_t* buff, int old_, int ) {
-      if ( old_ == 0 )
+  haste_buff_t* good_buff = haste_buff_creator_t( effect.player, "nefarious_pact", good_buff_data, effect.item )
+    .add_invalidate( CACHE_SPELL_SPEED )
+    .default_value( good_amount )
+    .stack_change_callback( [ bad_buff ]( buff_t*, int old_, int ) {
+      if ( old_ == 1 )
       {
-        buff -> player -> current.spell_speed_multiplier /= 1 + good_amount;
-        buff -> player -> invalidate_cache( CACHE_HASTE );
-      }
-      else
-      {
-        buff -> player -> current.spell_speed_multiplier *= 1 + good_amount;
         bad_buff -> trigger();
       }
     } );
 
   effect.custom_buff = good_buff;
+  effect.player -> buffs.nefarious_pact = good_buff;
+  effect.player -> buffs.devils_due = bad_buff;
 
   new dbc_proc_callback_t( effect.item, effect );
 }
@@ -1952,7 +2004,7 @@ void item::draught_of_souls( special_effect_t& effect )
       {
         std::vector<player_t*> targets;
         range::for_each( sim -> target_non_sleeping_list, [ &targets, this ]( player_t* t ) {
-          if ( t -> get_player_distance( *player ) <= radius + t -> combat_reach )
+          if ( player -> get_player_distance( *t ) <= radius + t -> combat_reach )
           {
             targets.push_back( t );
           }
@@ -2516,6 +2568,7 @@ void item::elementium_bomb_squirrel( special_effect_t& effect )
 
 
 // Kil'jaeden's Burning Wish ================================================
+
 struct kiljaedens_burning_wish_t : public spell_t
 {
   kiljaedens_burning_wish_t( const special_effect_t& effect ) :
@@ -2527,7 +2580,6 @@ struct kiljaedens_burning_wish_t : public spell_t
     school = SCHOOL_FIRE;
 
     base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item );
-
     aoe = -1;
 
     //FIXME: Assume this is kind of slow from wording.
@@ -3860,7 +3912,7 @@ struct spawn_of_serpentrix_t : public pet_t
 struct spawn_of_serpentrix_cb_t : public dbc_proc_callback_t
 {
   const spell_data_t* summon;
-  std::array<spawn_of_serpentrix_t*, 5> pets;
+  std::array<spawn_of_serpentrix_t*, 7> pets;
 
   spawn_of_serpentrix_cb_t( const special_effect_t& effect ) :
     dbc_proc_callback_t( effect.item, effect ),
@@ -4099,6 +4151,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 215745, item::tempered_egg_of_serpentrix     );
   register_special_effect( 228461, item::gnawed_thumb_ring              );
   register_special_effect( 215404, item::naraxas_spiked_tongue          );
+  register_special_effect( 234106, item::choker_of_barbed_reins         );
 
   /* Legion 7.1 Dungeon */
   register_special_effect( 230257, item::arans_relaxing_ruby            );
@@ -4179,23 +4232,11 @@ void unique_gear::register_special_effects_x7()
 
 void unique_gear::register_hotfixes_x7()
 {
-  hotfix::register_spell( "Mark of the Distant Army", "2017-01-10-3", "7.1.5 removed damage information.", 191380 )
-    .field( "scaling_class" )
+  hotfix::register_spell( "Mark of the Distant Army", "2017-01-10-4", "Set Velocity to a reasonable value.", 191380 )
+    .field( "prj_speed" )
     .operation( hotfix::HOTFIX_SET )
-    .modifier( -1 )
-    .verification_value( 0 );
-
-  hotfix::register_effect( "Mark of the Distant Army", "2017-01-10", "7.1.5 removed damage information.", 280734 )
-    .field( "average" )
-    .operation( hotfix::HOTFIX_SET )
-    .modifier( 8.828724 )
-    .verification_value( 0 );
-
-  hotfix::register_effect( "Mark of the Distant Army", "2017-01-10-2", "7.1.5 removed damage information.", 280734 )
-    .field( "delta" )
-    .operation( hotfix::HOTFIX_SET )
-    .modifier( 0.15 )
-    .verification_value( 0 );
+    .modifier( 40 )
+    .verification_value( 1 );
 }
 
 void unique_gear::register_target_data_initializers_x7( sim_t* sim )

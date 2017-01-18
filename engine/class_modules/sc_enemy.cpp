@@ -21,8 +21,7 @@ enum tank_dummy_e
 enum tmi_boss_e
 {
   TMI_NONE = 0,
-  TMI_T16L, TMI_T16N, TMI_T16H, TMI_T16M, TMI_17L, TMI_T17N, TMI_T17H, TMI_T17M,
-  TMI_T18L, TMI_T18N, TMI_T18H, TMI_T18M, TMI_T19L, TMI_T19N, TMI_T19H, TMI_T19M, TMI_MAX
+  TMI_T19L, TMI_T19N, TMI_T19H, TMI_T19M, TMI_MAX
 };
 
 
@@ -992,28 +991,6 @@ struct tmi_enemy_t : public enemy_t
     // eventually plan on using regular expressions here
     if ( util::str_in_str_ci( tmi_string, "none" ) )
       return TMI_NONE;
-    if ( util::str_in_str_ci( tmi_string, "T16L" ) )
-      return TMI_T16L;
-    if ( util::str_in_str_ci( tmi_string, "T16N" ) )
-      return TMI_T16N;
-    if ( util::str_in_str_ci( tmi_string, "T16H" ) )
-      return TMI_T16H;
-    if ( util::str_in_str_ci( tmi_string, "T16M" ) )
-      return TMI_T16M;
-    if ( util::str_in_str_ci( tmi_string, "T17N" ) )
-      return TMI_T17N;
-    if ( util::str_in_str_ci( tmi_string, "T17H" ) )
-      return TMI_T17H;
-    if ( util::str_in_str_ci( tmi_string, "T17M" ) )
-      return TMI_T17M;
-    if ( util::str_in_str_ci( tmi_string, "T18L" ) )
-      return TMI_T18L;
-    if ( util::str_in_str_ci( tmi_string, "T18N" ) )
-      return TMI_T18N;
-    if ( util::str_in_str_ci( tmi_string, "T18H" ) )
-      return TMI_T18H;
-    if ( util::str_in_str_ci( tmi_string, "T18M" ) )
-      return TMI_T18M;
     if ( util::str_in_str_ci( tmi_string, "T19L" ) )
       return TMI_T19L;
     if ( util::str_in_str_ci( tmi_string, "T19N" ) )
@@ -1058,10 +1035,7 @@ struct tmi_enemy_t : public enemy_t
     const int num_bosses = TMI_MAX;
     assert( tmi_boss_enum < TMI_MAX );
     int aa_damage[ num_bosses ] = { 0, // L       N       H       M
-                                        40000,  50000,  65000,  80000,  // T16
-                                        150000, 195000, 255000, 315000, // T17
-                                        255000, 315000, 475000, 650000,
-                                        1000000, 1300000, 1600000, 2000000// T18 -- L-H values are estimates
+                                        3000000, 4600000, 6200000, 8000000// T18 -- L-H values are estimates
                                   };
 
     als += "/auto_attack,damage=" + util::to_string( aa_damage[ tmi_boss_enum ] ) + ",attack_speed=1.5,aoe_tanks=1";

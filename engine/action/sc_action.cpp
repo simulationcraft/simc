@@ -696,6 +696,9 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
     return;
   }
 
+  // Only use item level-based scaling if there's no max scaling level defined for the spell
+  bool item_scaling = item && data().max_scaling_level() == 0;
+
   // Technically, there could be both a single target and an aoe effect in a single spell, but that
   // probably will never happen.
   if ( spelleffect_data.chain_target() > 1 )
@@ -712,23 +715,23 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
       spell_power_mod.direct  = spelleffect_data.sp_coeff();
       attack_power_mod.direct = spelleffect_data.ap_coeff();
       amount_delta            = spelleffect_data.m_delta();
-      base_dd_min      = item ? spelleffect_data.min( item ) : spelleffect_data.min( player, player -> level() );
-      base_dd_max      = item ? spelleffect_data.max( item ) : spelleffect_data.max( player, player -> level() );
+      base_dd_min      = item_scaling ? spelleffect_data.min( item ) : spelleffect_data.min( player, player -> level() );
+      base_dd_max      = item_scaling ? spelleffect_data.max( item ) : spelleffect_data.max( player, player -> level() );
       radius           = spelleffect_data.radius_max();
       break;
 
     case E_NORMALIZED_WEAPON_DMG:
       normalize_weapon_speed = true;
     case E_WEAPON_DAMAGE:
-      base_dd_min      = item ? spelleffect_data.min( item ) : spelleffect_data.min( player, player -> level() );
-      base_dd_max      = item ? spelleffect_data.max( item ) : spelleffect_data.max( player, player -> level() );
+      base_dd_min      = item_scaling ? spelleffect_data.min( item ) : spelleffect_data.min( player, player -> level() );
+      base_dd_max      = item_scaling ? spelleffect_data.max( item ) : spelleffect_data.max( player, player -> level() );
       weapon           = &( player -> main_hand_weapon );
       radius           = spelleffect_data.radius_max();
       break;
 
     case E_WEAPON_PERCENT_DAMAGE:
       weapon            = &( player -> main_hand_weapon );
-      weapon_multiplier = item ? spelleffect_data.min( item ) : spelleffect_data.min( player, player -> level() );
+      weapon_multiplier = item_scaling ? spelleffect_data.min( item ) : spelleffect_data.min( player, player -> level() );
       radius            = spelleffect_data.radius_max();
       break;
 
@@ -747,7 +750,7 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
           spell_power_mod.tick  = spelleffect_data.sp_coeff();
           attack_power_mod.tick = spelleffect_data.ap_coeff();
           radius           = spelleffect_data.radius_max();
-          base_td          = item ? spelleffect_data.average( item ) : spelleffect_data.average( player, player -> level() );
+          base_td          = item_scaling ? spelleffect_data.average( item ) : spelleffect_data.average( player, player -> level() );
         case A_PERIODIC_ENERGIZE:
         case A_PERIODIC_TRIGGER_SPELL_WITH_VALUE:
         case A_PERIODIC_HEALTH_FUNNEL:
@@ -766,8 +769,8 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
           spell_power_mod.direct  = spelleffect_data.sp_coeff();
           attack_power_mod.direct = spelleffect_data.ap_coeff();
           amount_delta            = spelleffect_data.m_delta();
-          base_dd_min      = item ? spelleffect_data.min( item ) : spelleffect_data.min( player, player -> level() );
-          base_dd_max      = item ? spelleffect_data.max( item ) : spelleffect_data.max( player, player -> level() );
+          base_dd_min      = item_scaling ? spelleffect_data.min( item ) : spelleffect_data.min( player, player -> level() );
+          base_dd_max      = item_scaling ? spelleffect_data.max( item ) : spelleffect_data.max( player, player -> level() );
           radius           = spelleffect_data.radius_max();
           break;
         case A_ADD_FLAT_MODIFIER:
@@ -1109,13 +1112,14 @@ double action_t::calculate_tick_amount( action_state_t* state, double dot_multip
   // Record raw amount to state
   state -> result_raw = amount;
 
-  if ( state -> result == RESULT_CRIT )
-    amount *= 1.0 + total_crit_bonus( state );
-
   amount *= dot_multiplier;
 
   // Record total amount to state
   state -> result_total = amount;
+
+  // Apply crit damage bonus immediately to periodic damage since there is no travel time (and
+  // subsequent impact).
+  amount = calculate_crit_damage_bonus( state );
 
   if ( sim -> debug )
   {
@@ -1217,10 +1221,6 @@ double action_t::calculate_direct_amount( action_state_t* state ) const
 
     amount *= sim -> averaged_range( min_glance, max_glance ); // 0.75 against +3 targets.
   }
-  else if ( state -> result == RESULT_CRIT )
-  {
-    amount *= 1.0 + total_crit_bonus( state );
-  }
 
   if ( ! sim -> average_range ) amount = floor( amount + rng().real() );
 
@@ -1244,7 +1244,18 @@ double action_t::calculate_direct_amount( action_state_t* state ) const
     state -> result_total = amount;
     return amount;
   }
+}
 
+// action_t::calculate_crit_damage_bonus ====================================
+
+double action_t::calculate_crit_damage_bonus( action_state_t* state ) const
+{
+  if ( state -> result == RESULT_CRIT )
+  {
+    state -> result_total *= 1.0 + total_crit_bonus( state );
+  }
+
+  return state -> result_total;
 }
 
 // action_t::consume_resource ===============================================
@@ -2005,7 +2016,7 @@ bool action_t::ready()
   }
 
   if ( sim -> distance_targeting_enabled && range > 0 &&
-    target -> get_player_distance( *player ) > range + target -> combat_reach )
+    player -> get_player_distance( *target ) > range + target -> combat_reach )
     return false;
 
   if ( target -> debuffs.invulnerable -> check() && harmful )
@@ -2433,6 +2444,10 @@ expr_t* action_t::create_expression( const std::string& name_str )
       else
       {
         state -> result_amount = action.calculate_direct_amount( state );
+        if ( state -> result == RESULT_CRIT )
+        {
+          state -> result_amount = action.calculate_crit_damage_bonus( state );
+        }
         if ( amount_type == DMG_DIRECT )
           state -> target -> target_mitigation( action.get_school(), amount_type, state );
         a = state -> result_amount;
@@ -3281,6 +3296,9 @@ void action_t::impact( action_state_t* s )
 {
   if ( !impact_targeting( s ) )
     return;
+
+  // Note, Critical damage bonus for direct amounts is computed on impact, instead of cast finish.
+  s -> result_amount = calculate_crit_damage_bonus( s );
 
   assess_damage( ( type == ACTION_HEAL || type == ACTION_ABSORB ) ? HEAL_DIRECT : DMG_DIRECT, s );
 

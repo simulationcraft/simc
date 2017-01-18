@@ -28,6 +28,9 @@ function class_sim2() {
       sim talents=${talent} threads=2 default_actions=1
       if [ ! "${status}" -eq 0 ]; then
         echo "Error in sim: "${SIMC_CLI_PATH}" "${SIMC_PROFILE}" iterations=${SIMC_ITERATIONS} talents=${talent} threads=2 default_actions=1"
+        echo "=== Output begins here ==="
+        echo "${output}"
+        echo "=== Output ends here ==="
       fi 
       [ "${status}" -eq 0 ]
     done
@@ -45,7 +48,7 @@ teardown() {
     if [ "${#lines[@]}" -gt 0 ]; then
       BATS_TEST_DESCRIPTION+="<br/>Test output:"
       for line in ${lines[@]}; do
-	BATS_TEST_DESCRIPTION+="<br/>${line}"
+        BATS_TEST_DESCRIPTION+="<br/>${line}"
       done
     fi
   fi

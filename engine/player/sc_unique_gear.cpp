@@ -3857,25 +3857,6 @@ struct item_buff_exists_expr_t : public item_effect_expr_t
   { return v; }
 };
 
-struct legendary_item_buff_exists_expr_t : public item_effect_expr_t
-{
-  legendary_item_buff_exists_expr_t( action_t* a, const std::vector<slot_e>& slots, const std::string& expr_str ) :
-    item_effect_expr_t( a, slots )
-  {
-    for (auto e : effects)
-    {
-      
-
-      buff_t* b = buff_t::find( a -> player, e -> name() );
-      if ( b )
-      {
-        if ( expr_t* expr_obj = buff_t::create_expression( b -> name(), a, expr_str, b ) )
-          exprs.push_back( expr_obj );
-      }
-    }
-  }
-};
-
 // Cooldown based item expressions, creates cooldown expressions for the items
 // from user input
 struct item_cooldown_expr_t : public item_effect_expr_t
@@ -3953,37 +3934,28 @@ expr_t* unique_gear::create_expression( action_t* a, const std::string& name_str
 
     std::vector<std::string> splits = util::string_split( name_str, "." );
 
-    if ( splits[0] != "legendary_ring" )
+    if ( util::is_number( splits[1] ) )
     {
-      if ( util::is_number( splits[1] ) )
-      {
-        if ( splits[1] == "1" )
-        {
-          slots.push_back( SLOT_TRINKET_1 );
-        }
-        else if ( splits[1] == "2" )
-        {
-          slots.push_back( SLOT_TRINKET_2 );
-        }
-        else
-          return 0;
-        ptype_idx++;
-
-        stat_idx++;
-        expr_idx++;
-      }
-      // No positional parameter given so check both trinkets
-      else
+      if ( splits[1] == "1" )
       {
         slots.push_back( SLOT_TRINKET_1 );
+      }
+      else if ( splits[1] == "2" )
+      {
         slots.push_back( SLOT_TRINKET_2 );
       }
+      else
+        return 0;
+      ptype_idx++;
+
+      stat_idx++;
+      expr_idx++;
     }
+      // No positional parameter given so check both trinkets
     else
     {
-      legendary_ring = true;
-      slots.push_back( SLOT_FINGER_1 );
-      slots.push_back( SLOT_FINGER_2 );
+      slots.push_back( SLOT_TRINKET_1 );
+      slots.push_back( SLOT_TRINKET_2 );
     }
 
   if ( util::str_prefix_ci( splits[ ptype_idx ], "has_" ) )
@@ -4012,12 +3984,9 @@ expr_t* unique_gear::create_expression( action_t* a, const std::string& name_str
     }
   }
 
-  if ( pexprtype == PROC_ENABLED && ptype != PROC_COOLDOWN && ( splits.size() >= 4 || legendary_ring ) )
+  if ( pexprtype == PROC_ENABLED && ptype != PROC_COOLDOWN && splits.size() >= 4 )
   {
-    if ( legendary_ring )
-      return new legendary_item_buff_exists_expr_t( a, slots, splits[ 1 ] );
-    else
-      return new item_buff_expr_t( a, slots, stat, ptype == PROC_STACKING_STAT, splits[ expr_idx ] );
+    return new item_buff_expr_t( a, slots, stat, ptype == PROC_STACKING_STAT, splits[ expr_idx ] );
   }
   else if ( pexprtype == PROC_ENABLED && ptype == PROC_COOLDOWN && splits.size() >= 3  )
   {

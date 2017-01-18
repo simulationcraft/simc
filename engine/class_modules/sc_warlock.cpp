@@ -301,11 +301,6 @@ public:
 
   } legendary;
 
-  // Glyphs
-  struct glyphs_t
-  {
-  } glyphs;
-
   // Mastery Spells
   struct mastery_spells_t
   {
@@ -1483,6 +1478,9 @@ double warlock_pet_t::composite_melee_speed() const
   // Make sure we get our overridden haste values applied to melee_speed
   double cmh = pet_t::composite_melee_speed();
 
+  if ( buffs.demonic_empowerment->up() )
+    cmh /= 1.0 + buffs.demonic_empowerment->data().effectN( 2 ).percent() + o()->artifact.summoners_prowess.percent();
+
   return cmh;
 }
 
@@ -1490,6 +1488,9 @@ double warlock_pet_t::composite_spell_speed() const
 {
   // Make sure we get our overridden haste values applied to spell_speed
   double css = pet_t::composite_spell_speed();
+
+  if ( buffs.demonic_empowerment->up() )
+    css /= 1.0 + buffs.demonic_empowerment->data().effectN( 2 ).percent() + o()->artifact.summoners_prowess.percent();
 
   return css;
 }
@@ -5386,8 +5387,6 @@ struct channel_demonfire_tick_t : public warlock_spell_t
 
 struct channel_demonfire_t: public warlock_spell_t
 {
-  double backdraft_cast_time;
-  double backdraft_tick_time;
   channel_demonfire_tick_t* channel_demonfire;
   int immolate_action_id;
 
@@ -5441,33 +5440,10 @@ struct channel_demonfire_t: public warlock_spell_t
     warlock_spell_t::tick( d );
   }
 
-  timespan_t tick_time( const action_state_t* s ) const override
-  {
-    timespan_t t = warlock_spell_t::tick_time( s );
-
-    //if ( !maybe_ptr( p() -> dbc.ptr ) && p() -> buffs.backdraft -> check() ) //FIXME this might be an oversight on their part.
-      //t *= backdraft_tick_time;
-
-    return t;
-  }
-
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
     return s -> action -> tick_time( s ) * 15.0;
   }
-
-  //void execute() override
-  //{
-  //  warlock_spell_t::execute();
-
-  //  //p() -> buffs.backdraft -> decrement();
-
-  //  if ( p()->artifact.dimension_ripper.rank() && rng().roll( p()->find_spell( 219415 )->proc_chance() ) && p()->cooldowns.dimensional_rift->current_charge < p()->cooldowns.dimensional_rift->charges )
-  //  {
-  //    p()->cooldowns.dimensional_rift->adjust( -p()->cooldowns.dimensional_rift->duration ); //decrease remaining time by the duration of one charge, i.e., add one charge
-  //    p()->procs.dimension_ripper->occur();
-  //  }
-  //}
 
   virtual bool ready() override
   {
@@ -5600,7 +5576,6 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
     active( active_t() ),
     talents( talents_t() ),
     legendary( legendary_t() ),
-    glyphs( glyphs_t() ),
     mastery_spells( mastery_spells_t() ),
     cooldowns( cooldowns_t() ),
     spec( specs_t() ),
@@ -5615,8 +5590,6 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
     demonology_trinket( nullptr ),
     destruction_trinket( nullptr )
   {
-    base.distance = 40;
-
     cooldowns.infernal = get_cooldown( "summon_infernal" );
     cooldowns.doomguard = get_cooldown( "summon_doomguard" );
     cooldowns.dimensional_rift = get_cooldown( "dimensional_rift" );
@@ -6139,8 +6112,6 @@ void warlock_t::init_spells()
   artifact.planeswalker = find_artifact_spell( "Planeswalker" );
   artifact.conflagration_of_chaos = find_artifact_spell( "Conflagration of Chaos" );
 
-  // Glyphs
-
   // Active Spells
   active.demonic_power_proc = new actions::demonic_power_damage_t( this );
   active.thalkiels_discord = new actions::thalkiels_discord_t( this );
@@ -6156,6 +6127,8 @@ void warlock_t::init_spells()
 void warlock_t::init_base_stats()
 {
   player_t::init_base_stats();
+
+  base.distance = 40;
 
   base.attack_power_per_strength = 0.0;
   base.attack_power_per_agility = 0.0;
@@ -6440,7 +6413,12 @@ void warlock_t::apl_precombat()
   {
     // Pre-potion
     if ( true_level == 110 )
-      precombat_list += "/potion,name=deadly_grace";
+    {
+      if ( specialization() == WARLOCK_DEMONOLOGY )
+        precombat_list += "/potion,name=prolonged_power";
+      else
+        precombat_list += "/potion,name=deadly_grace";
+    }
     else if ( true_level >= 100 )
       precombat_list += "/potion,name=draenic_intellect";
   }
@@ -6467,7 +6445,7 @@ void warlock_t::apl_default()
 
 void warlock_t::apl_affliction()
 {
-  add_action( "Reap Souls", "if=!buff.deadwind_harvester.remains&(buff.soul_harvest.remains|buff.tormented_souls.react>=8|target.time_to_die<=buff.tormented_souls.react*5|trinket.proc.any.react|trinket.stacking_proc.any.react" );
+  add_action( "Reap Souls", "if=!buff.deadwind_harvester.remains&(buff.soul_harvest.remains|buff.tormented_souls.react>=8|target.time_to_die<=buff.tormented_souls.react*5|!talent.malefic_grasp.enabled&(trinket.proc.any.react|trinket.stacking_proc.any.react)" );
   if ( find_item( "horn_of_valor" ) )
     action_list_str += "|buff.valarjars_path.remains";
   if ( find_item( "moonlit_prism" ) )
@@ -6526,7 +6504,7 @@ void warlock_t::apl_affliction()
   action_list_str += ")";
 
   add_action( "Unstable Affliction", "if=talent.malefic_grasp.enabled&target.time_to_die<30" );
-  add_action( "Unstable Affliction", "if=talent.malefic_grasp.enabled&soul_shard>=4" );
+  add_action( "Unstable Affliction", "if=talent.malefic_grasp.enabled&soul_shard=5" );
   add_action( "Unstable Affliction", "if=talent.malefic_grasp.enabled&!prev_gcd.3.unstable_affliction&dot.agony.remains>cast_time+6.5&(dot.corruption.remains>cast_time+6.5|talent.absolute_corruption.enabled)&(dot.siphon_life.remains>cast_time+6.5|!talent.siphon_life.enabled)" );
   
   add_action( "Unstable Affliction", "if=talent.haunt.enabled&(soul_shard>=4|debuff.haunt.remains|target.time_to_die<30" );
@@ -6538,7 +6516,7 @@ void warlock_t::apl_affliction()
     action_list_str += "|buff.collapsing_shadow.remains";
   action_list_str += ")";
 
-  add_action( "Reap Souls", "if=!buff.deadwind_harvester.remains&!trinket.has_stacking_stat.any&!trinket.has_stat.any&prev_gcd.1.unstable_affliction" );
+  add_action( "Reap Souls", "if=!buff.deadwind_harvester.remains&prev_gcd.1.unstable_affliction&((!trinket.has_stacking_stat.any&!trinket.has_stat.any)|talent.malefic_grasp.enabled)" );
   action_list_str += "/life_tap,if=talent.empowered_life_tap.enabled&buff.empowered_life_tap.remains<duration*0.3";
 
   add_action( "Agony", "cycle_targets=1,if=!talent.malefic_grasp.enabled&remains<=duration*0.3&target.time_to_die>=remains" );
@@ -6586,7 +6564,7 @@ void warlock_t::apl_demonology()
   action_list_str += "/berserking";
   action_list_str += "/blood_fury";
   action_list_str += "/soul_harvest";
-  action_list_str += "/potion,name=deadly_grace,if=buff.soul_harvest.remains|target.time_to_die<=45|trinket.proc.any.react";
+  action_list_str += "/potion,name=prolonged_power,if=buff.soul_harvest.remains|target.time_to_die<=70|trinket.proc.any.react";
   action_list_str += "/shadowflame,if=charges=2&spell_targets.demonwrath<5";
   add_action( "Thal'kiel's Consumption", "if=(dreadstalker_remaining_duration>execute_time|talent.implosion.enabled&spell_targets.implosion>=3)&wild_imp_count>3&wild_imp_remaining_duration>execute_time" );
   add_action( "Life Tap", "if=mana.pct<=30" );
@@ -6613,7 +6591,7 @@ void warlock_t::apl_destruction()
     }
   }
 
-  add_action( "Havoc", "target=2,if=active_enemies>1&active_enemies<6&!debuff.havoc.remains" );
+  add_action( "Havoc", "target=2,if=active_enemies>1&(active_enemies<4|talent.wreak_havoc.enabled&active_enemies<6)&!debuff.havoc.remains" );
   add_action( "Dimensional Rift", "if=charges=3" );
   add_action( "Immolate", "if=remains<=tick_time" );
   add_action( "Immolate", "cycle_targets=1,if=active_enemies>1&remains<=tick_time&(!talent.roaring_blaze.enabled|(!debuff.roaring_blaze.remains&action.conflagrate.charges<2))");
@@ -6640,12 +6618,12 @@ void warlock_t::apl_destruction()
   action_list_str += "/soul_harvest";
   action_list_str += "/channel_demonfire,if=dot.immolate.remains>cast_time";
   add_action( "Havoc", "if=active_enemies=1&talent.wreak_havoc.enabled&equipped.132375&!debuff.havoc.remains" );
-  add_action( "Rain of Fire", "if=active_enemies>=4&cooldown.havoc.remains<=12&!talent.wreak_havoc.enabled");
+  add_action( "Rain of Fire", "if=active_enemies>=3&cooldown.havoc.remains<=12&!talent.wreak_havoc.enabled");
   add_action( "Rain of Fire", "if=active_enemies>=6&talent.wreak_havoc.enabled");
   add_action( "Dimensional Rift", "if=!equipped.144369|charges>1|((!talent.grimoire_of_service.enabled|recharge_time<cooldown.service_pet.remains)&(!talent.soul_harvest.enabled|recharge_time<cooldown.soul_harvest.remains)&(!talent.grimoire_of_supremacy.enabled|recharge_time<cooldown.summon_doomguard.remains))" );
   action_list_str += "/life_tap,if=talent.empowered_life_tap.enabled&buff.empowered_life_tap.remains<duration*0.3";
   action_list_str += "/cataclysm";
-  add_action( "Chaos Bolt" );
+  add_action( "Chaos Bolt", "if=(cooldown.havoc.remains>12&cooldown.havoc.remains|active_enemies<3|talent.wreak_havoc.enabled&active_enemies<6)" );
   action_list_str += "/shadowburn";
   add_action( "Conflagrate", "if=!talent.roaring_blaze.enabled&!buff.backdraft.remains" );
   add_action( "Immolate", "if=!talent.roaring_blaze.enabled&remains<=duration*0.3" );
@@ -7577,7 +7555,7 @@ struct lessons_of_spacetime_t : public scoped_actor_callback_t<warlock_t>
 
   void manipulate( warlock_t* p, const special_effect_t& ) override
   {
-    const spell_data_t * tmp = p -> find_spell( 236176 );
+    //const spell_data_t * tmp = p -> find_spell( 236176 );
     p -> legendary.lessons_of_spacetime = true;
     p -> legendary.lessons_of_spacetime1 = timespan_t::from_seconds( 5 );
     p -> legendary.lessons_of_spacetime2 = timespan_t::from_seconds( 9 );
@@ -7821,6 +7799,7 @@ struct warlock_module_t: public module_t
       .modifier( 1.11 )
       .verification_value( 0.42 );
       */
+
   }
 
   virtual bool valid() const override { return true; }
