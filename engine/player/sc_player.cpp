@@ -5087,7 +5087,7 @@ void player_t::stat_gain( stat_e    stat,
       invalidate_cache( cache_type );
 
       adjust_dynamic_cooldowns();
-      adjust_global_cooldown( HASTE_ANY );
+      //adjust_global_cooldown( HASTE_ANY );
       adjust_auto_attack( HASTE_ANY );
       // Queued execute must be adjusted after dynamid cooldowns / global cooldown
       adjust_action_queue_time();
@@ -5259,7 +5259,7 @@ void player_t::stat_loss( stat_e    stat,
       invalidate_cache( cache_type );
 
       adjust_dynamic_cooldowns();
-      adjust_global_cooldown( HASTE_ANY );
+      //adjust_global_cooldown( HASTE_ANY );
       adjust_auto_attack( HASTE_ANY );
       // Queued execute must be adjusted after dynamid cooldowns / global cooldown
       adjust_action_queue_time();
