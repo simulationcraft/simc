@@ -3385,8 +3385,8 @@ struct arcane_orb_t : public arcane_mage_spell_t
 
   virtual timespan_t travel_time() const override
   {
-    return timespan_t::from_seconds( ( player -> current.distance - 10.0 ) /
-                                     16.0 );
+    return timespan_t::from_seconds( std::max( 0.1, ( ( player -> get_player_distance( *target ) - 10.0 ) /
+                                     16.0 ) ) );
   }
 
   virtual void impact( action_state_t* s ) override
@@ -3647,7 +3647,7 @@ struct cinderstorm_t : public fire_mage_spell_t
     }
     fire_mage_spell_t::execute();
 
-    double target_dist = player -> current.distance;
+    double target_dist = player -> get_player_distance( *execute_state -> target );
     double cinder_converge_distance =
       rng().range( cinder_converge_mean - cinder_converge_range,
                    cinder_converge_mean + cinder_converge_range );
@@ -4329,7 +4329,7 @@ struct flurry_t : public frost_mage_spell_t
   {
     // Approximate travel time from in game data.
     // TODO: Improve approximation
-    return timespan_t::from_seconds( ( player -> current.distance / 38 ) );
+    return timespan_t::from_seconds( ( player -> get_player_distance( *target ) / 38 ) );
   }
 
   virtual timespan_t execute_time() const override
