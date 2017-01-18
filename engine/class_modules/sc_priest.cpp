@@ -4374,12 +4374,12 @@ double priest_t::composite_spell_haste() const
 
   if ( buffs.power_infusion->check() )
     h /= 1.0 + buffs.power_infusion->data().effectN( 1 ).percent();
-
+/* FIXME Remove Mental Instinct
   if ( buffs.mental_instinct->check() )
     h /= 1.0 +
          buffs.mental_instinct->data().effectN( 1 ).percent() *
              buffs.mental_instinct->check();
-
+*/
   if ( buffs.lingering_insanity->check() )
   {
     h /= 1.0 +
@@ -4457,33 +4457,31 @@ double priest_t::composite_melee_speed() const
 double priest_t::composite_player_multiplier( school_e school ) const
 {
   double m = base_t::composite_player_multiplier( school );
-
-  if ( buffs.shadowform->check() )
+  
+  if ( specialization() == PRIEST_SHADOW && dbc::is_school( SCHOOL_SHADOW, school ) )
   {
-    m *= 1.0 +
+    if ( buffs.shadowform->check() )
+    {
+      m *= 1.0 +
          buffs.shadowform->data().effectN( 1 ).percent() *
              buffs.shadowform->check();
-  }
-  if ( specs.voidform->ok() && buffs.voidform->check() &&
-       ( dbc::is_school( SCHOOL_SHADOW, school ) ||
-         dbc::is_school( SCHOOL_SHADOWFROST, school ) ) )
-  {
-    m *= 1.0 + buffs.voidform->data().effectN(1).percent() + talents.legacy_of_the_void->effectN(3).percent();
-  }
-
-  if ( specialization() == PRIEST_SHADOW && artifact.creeping_shadows.rank() &&
-       ( dbc::is_school( SCHOOL_SHADOW, school ) ||
-         dbc::is_school( SCHOOL_SHADOWFROST, school ) ) )
-  {
-    m *= 1.0 + artifact.creeping_shadows.percent();
-  }
-
-  if ( specialization() == PRIEST_SHADOW &&
-       artifact.darkening_whispers.rank() &&
-       ( dbc::is_school( SCHOOL_SHADOW, school ) ||
-         dbc::is_school( SCHOOL_SHADOWFROST, school ) ) )
-  {
-    m *= 1.0 + artifact.darkening_whispers.percent();
+    }
+    
+    if ( specs.voidform->ok() && buffs.voidform->check() )
+    {
+      m *= 1.0 + buffs.voidform->data().effectN(1).percent() + 
+                    talents.legacy_of_the_void->effectN(3).percent();
+    }
+    
+    if ( artifact.creeping_shadows.rank() )
+    {
+      m *= 1.0 + artifact.creeping_shadows.percent();
+    }
+    
+    if ( artifact.darkening_whispers.rank() )
+    {
+      m *= 1.0 + artifact.darkening_whispers.percent();
+    }
   }
 
   if ( buffs.twist_of_fate->check() )
@@ -4513,10 +4511,6 @@ double priest_t::composite_player_heal_multiplier(
     m *= 1.0 + buffs.twist_of_fate->current_value;
   }
 
-  /*if ( specs.voidform->ok() && talents.void_lord->ok() &&
-       buffs.voidform->check() )
-    m *= 1.0 + talents.void_lord->effectN( 1 ).percent();
-    */
   if ( specs.grace->ok() )
     m *= 1.0 + specs.grace->effectN( 1 ).percent();
 
@@ -4535,10 +4529,6 @@ double priest_t::composite_player_absorb_multiplier(
 {
   double m = player_t::composite_player_absorb_multiplier( s );
 
-  /*if ( specs.voidform->ok() && talents.void_lord->ok() &&
-       buffs.voidform->check() )
-    m *= 1.0 + talents.void_lord->effectN( 1 ).percent();
-    */
   if ( specs.grace->ok() )
     m *= 1.0 + specs.grace->effectN( 2 ).percent();
 
