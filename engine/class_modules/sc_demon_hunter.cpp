@@ -4792,7 +4792,7 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
 
 	void extend_duration(player_t* p, timespan_t extra_seconds) override
 	{
-		if (this->p().specialization() == DEMON_HUNTER_HAVOC && extended_by_demonic && p->executing)
+		if (this->p().specialization() == DEMON_HUNTER_HAVOC && p->executing)
 		{
 			// If we extend the duration with a proper Meta cast, we can clear the flag as successive Eye Beams can extend again
 			if (p->executing->id == this->p().spec.metamorphosis->id())
@@ -4802,7 +4802,10 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
 			// If we are triggering from Eye Beam, we should disallow any additional full Demonic extensions
       else if (p->executing->id == this->p().spec.eye_beam->id() && extra_seconds == timespan_t::from_seconds(8))
       {
-        return;
+        if(extended_by_demonic)
+          return;
+
+        extended_by_demonic = true;
       }
 		}
 
