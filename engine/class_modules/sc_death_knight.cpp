@@ -790,7 +790,8 @@ public:
     runic_power_decay_rate(),
     fallen_crusader( 0 ),
     fallen_crusader_rppm( find_spell( 166441 ) -> real_ppm() ),
-    aotd_proc_chance( 0.2 ),
+    // 2017-01-10: Armies of the Damned (Artifact trait) ghouls' chance to apply their additional effects increased to 30% (was 25%).
+    aotd_proc_chance( 0.3 ),
     antimagic_shell_absorbed( 0.0 ),
     pestilent_pustules( 0 ),
     antimagic_shell( nullptr ),
@@ -1928,6 +1929,9 @@ struct army_pet_t : public base_ghoul_pet_t
     base_ghoul_pet_t::init_base_stats();
 
     owner_coeff.ap_from_ap = 0.30;
+    // 2017-01-10: Army of the Dead and Apocalypse ghouls damage has been increased.
+    // FIXME: Exact number TBDiscovered, 33% sounds fine
+    owner_coeff.ap_from_ap *= 1.33;
   }
 
   void init_action_list() override
@@ -2017,6 +2021,8 @@ struct gargoyle_pet_t : public death_knight_pet_t
 
     // As per Blizzard
     owner_coeff.sp_from_ap = 0.46625;
+    // 2017-01-10: Gargoyle damage increased by 50%.
+    owner_coeff.sp_from_ap *= 1.5;
   }
 
   void init_action_list() override
@@ -2090,7 +2096,8 @@ struct valkyr_pet_t : public death_knight_pet_t
 
   buff_t* shadow_empowerment;
 
-  valkyr_pet_t( death_knight_t* owner ) : death_knight_pet_t( owner, "valkyr_battlemaiden", true, false ), shadow_empowerment(nullptr)
+  valkyr_pet_t( death_knight_t* owner ) :
+    death_knight_pet_t( owner, "valkyr_battlemaiden", true, false ), shadow_empowerment(nullptr)
   { regen_type = REGEN_DISABLED; }
 
   double composite_player_multiplier( school_e s ) const override
@@ -2106,7 +2113,11 @@ struct valkyr_pet_t : public death_knight_pet_t
   {
     death_knight_pet_t::init_base_stats();
 
-    owner_coeff.ap_from_ap = 1/3.0;
+    owner_coeff.ap_from_ap = 1 / 3.0;
+    // 2017-01-10: Dark Arbiter damage increased by 36%. NOTE: Valkyr Strike AP coefficient was
+    // increased 7 -> 7.5 in a hotfix, so apply the remaining increase here as a wonky number.
+    // Reality is probably something entirely different, but needs testing.
+    owner_coeff.ap_from_ap *= 1.27;
   }
 
   void init_action_list() override
@@ -2195,7 +2206,8 @@ struct risen_skulker_pet_t : public death_knight_pet_t
 
     // As per Blizzard
     // 2016-08-06 Changes to pet, AP ineritance to 200% (guesstimate, based on Skulker Shot data)
-    owner_coeff.ap_from_ap = 2.0;
+    // 2017-01-10 All Will Serve damage increased by 15%.
+    owner_coeff.ap_from_ap = 2.0 * 1.15;
   }
 
   void init_action_list() override
@@ -3467,6 +3479,7 @@ struct virulent_plague_t : public disease_t
   {
     base_tick_time *= 1.0 + p -> talent.ebon_fever -> effectN( 1 ).percent();
     dot_duration *= 1.0 + p -> talent.ebon_fever -> effectN( 2 ).percent();
+    base_multiplier *= 1.0 + p -> talent.ebon_fever -> effectN( 3 ).percent();
     base_multiplier *= 1.0 + p -> artifact.plaguebearer.percent();
 
     add_child( explosion );
@@ -8481,6 +8494,12 @@ struct death_knight_module_t : public module_t {
 
   void register_hotfixes() const override
   {
+    hotfix::register_effect( "Death Knight", "2017-01-10", "Portal to the Underworld damage increased by 33%.", 325047 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 4/3.0 )
+      .verification_value( 1.2 );
+
     /*
     hotfix::register_effect( "Death Knight", "2016-08-23", "Clawing Shadows damage has been changed to 130% weapon damage (was 150% Attack Power).", 324719 )
       .field( "ap_coefficient" )
