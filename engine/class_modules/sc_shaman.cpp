@@ -10,10 +10,6 @@
 // ==========================================================================
 
 // Legion TODO
-//   - UPDATE SPELLS BASED ON HOTFIXES JANUARY 17th. TEMPORARY //FIXME ADDED FOR NOW
-//^COMMENTED OUT THE HOTFIXES MULTIPLIERS FOR ENHANCE, ADDED TO THE REGISTER_HOTFIXES INSTEAD - CLEANUP WHEN APPROPRIATE. - RUSAH
-//Did this because there's no visual indication in the UI that that hotfixes are applied, confusing many users
-//on whether the hotfixes are applied or not. Then users use overrides and we get sims in community at double hotfix.
 //
 // Generic
 // - Clean up the "may proc" stuff
@@ -1884,7 +1880,6 @@ struct spirit_wolf_t : public base_wolf_t
     windfury_t( spirit_wolf_t* player ) :
       super( player, "windfury_attack", player -> find_spell( 170512 ) )
     { 
-      //base_multiplier *= 1.04; //FIXME
     }
   };
 
@@ -2599,7 +2594,6 @@ struct hailstorm_attack_t : public shaman_attack_t
     weapon = w;
     background = true;
     callbacks = false;
-    //base_multiplier *= 1.29; //FIXME
   }
 
   void init() override
@@ -2623,7 +2617,6 @@ struct stormstrike_attack_t : public shaman_attack_t
     may_miss = may_dodge = may_parry = false;
     weapon = w;
     base_multiplier *= 1.0 + player -> artifact.hammer_of_storms.percent();
-    //base_multiplier *= 1.04; //FIXME
   }
 
   void init() override
@@ -2824,7 +2817,6 @@ struct lightning_shield_damage_t : public shaman_spell_t
   {
     background = true;
     callbacks = false;
-    //base_multiplier *= 1.04; //FIXME
   }
 };
 
@@ -3143,7 +3135,6 @@ struct lava_lash_t : public shaman_attack_t
     school = SCHOOL_FIRE;
 
     base_multiplier *= 1.0 + player -> artifact.forged_in_lava.percent();
-    //base_multiplier *= 1.04; //FIXME
 
     parse_options( options_str );
     weapon              = &( player -> off_hand_weapon );
@@ -3462,7 +3453,6 @@ struct flametongue_t : public shaman_spell_t
     shaman_spell_t( "flametongue", player, player -> find_specialization_spell( "Flametongue" ), options_str )
   {
     base_multiplier *= 1.0 + player -> artifact.weapons_of_the_elements.percent();
-    //base_multiplier *= 1.04; //FIXME
 
     add_child( player -> flametongue );
   }
@@ -3515,7 +3505,6 @@ struct crash_lightning_t : public shaman_attack_t
     {
       add_child( player -> action.crashing_storm );
     }
-    //base_multiplier *= 1.04; //FIXME
   }
 
   void execute() override
@@ -3646,7 +3635,6 @@ struct windsong_t : public shaman_spell_t
   windsong_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "windsong", player, player -> talent.windsong, options_str )
   {
-    //base_multiplier *= 1.04; //FIXME
   }
 
   void execute() override
@@ -3663,7 +3651,6 @@ struct boulderfist_t : public shaman_spell_t
     shaman_spell_t( "boulderfist", player, player -> talent.boulderfist, options_str )
   {
     base_multiplier *= 1.0 + player -> artifact.weapons_of_the_elements.percent();
-    //base_multiplier *= 1.15; //FIXME
     maelstrom_gain += player -> artifact.gathering_of_the_maelstrom.value();
   }
 
@@ -3693,7 +3680,6 @@ struct fury_of_air_aoe_t : public shaman_attack_t
     background = true;
     aoe = -1;
     school = SCHOOL_NATURE;
-    //base_multiplier *= 0.88; //FIXME
   }
 
   void init() override
@@ -4357,9 +4343,6 @@ struct lightning_bolt_t : public shaman_spell_t
     {
       add_child( p() -> action.doom_vortex_lb );
     }
-
-    //if ( player -> specialization() == SHAMAN_ENHANCEMENT )
-    //  //base_multiplier *= 1.04; //FIXME
   }
 
   double overload_chance( const action_state_t* s ) const override
@@ -5958,8 +5941,6 @@ bool shaman_t::create_actions()
   {
     action.doom_vortex_ll = new ground_aoe_spell_t( this, "doom_vortex_ll", find_spell( 199116 ) );
     action.doom_vortex_lb = new ground_aoe_spell_t( this, "doom_vortex_lb", find_spell( 199116 ) );
-    //action.doom_vortex_ll -> base_multiplier *= 1.04; //FIXME
-    //action.doom_vortex_lb -> base_multiplier *= 1.04; //FIXME
   }
 
   if ( artifact.volcanic_inferno.rank() )
@@ -8161,46 +8142,7 @@ struct shaman_module_t : public module_t
 
   void register_hotfixes() const override
   {
-    hotfix::register_effect("Shaman", "2017-01-13", "Lightning bolt damage increased by 9%", 274643)
-      .field("sp_coefficient")
-      .operation(hotfix::HOTFIX_MUL)
-      .modifier(1.09)
-      .verification_value(1.6);
-    hotfix::register_effect("Shaman", "2017-01-13", "Lightning bolt overload damage increased by 9%", 37246)
-      .field("sp_coefficient")
-      .operation(hotfix::HOTFIX_MUL)
-      .modifier(1.09)
-      .verification_value(1.6);
 
-    hotfix::register_effect("Shaman", "2017-01-13", "Crash Lightning, Flametongue, Lava Lash, Lightning Bolt, Lightning Shield, Rockbiter, Stormstrike, Windfury, and Windsong damage increased by 4%.", 179725)
-        .field("base_value")
-        .operation(hotfix::HOTFIX_SET)
-        .modifier(20)
-        .verification_value(16);
-
-    hotfix::register_effect("Shaman", "2017-01-13", "Hailstorm damage increased by 29%.", 312327)
-        .field("base_value")
-        .operation(hotfix::HOTFIX_MUL)
-        .modifier(1.29)
-        .verification_value(21);
-
-    hotfix::register_effect("Shaman", "2017-01-13", "Boulderfist damage increased by 15%.", 297537)
-        .field("ap_coefficient")
-        .operation(hotfix::HOTFIX_MUL)
-        .modifier(1.15)
-        .verification_value(2.5);
-
-    hotfix::register_effect("Shaman", "2017-01-13", "Fury of Air damage reduced by 12%.", 289974)
-        .field("ap_coefficient")
-        .operation(hotfix::HOTFIX_MUL)
-        .modifier(1 - 0.12)
-        .verification_value(0.4);
-
-    hotfix::register_effect("Shaman", "2017-01-13", "Doom Vortex damage increased by 33%.", 293003)
-        .field("ap_coefficient")
-        .operation(hotfix::HOTFIX_MUL)
-        .modifier(1.33)
-        .verification_value(0.45);
 
     /*
     hotfix::register_spell( "Shaman", "2016-08-23", "Windfury base proc rate has been increased to 10% (was 5%.)", 33757 )

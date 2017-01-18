@@ -4,7 +4,6 @@
 // ==========================================================================
 
 // TODO + BlizzardFeatures + Bugs
-//   - UPDATE SPELLS BASED ON HOTFIXES JANUARY 17th. TEMPORARY //FIXME ADDED FOR NOW
 // Subtlety
 // - Dreadlord's Deceit doesn't work on weaponmastered Shuriken Storm (Blizzard Bug ?)
 // - Insignia of Ravenholdt doesn't proc from Shuriken Storm nor Shuriken Toss (Blizzard Bug ?)
@@ -6112,7 +6111,7 @@ struct agonizing_poison_t : public rogue_poison_buff_t
   agonizing_poison_t( rogue_td_t& r ) :
     rogue_poison_buff_t( r, "agonizing_poison", r.source -> find_spell( 200803 ) )
   {
-    default_value = ( data().effectN( 1 ).percent() * 0.875 ); //FIXME - 0.04 * 0.875 = 0.035 
+    default_value = data().effectN( 1 ).percent() * ( 1.0 + r.source -> find_spell( 137037 ) -> effectN( 5 ).percent() );
     refresh_behavior = BUFF_REFRESH_PANDEMIC;
   }
 };
@@ -6750,9 +6749,11 @@ void rogue_t::init_action_list()
 
     // Maintain
     action_priority_list_t* maintain = get_action_priority_list( "maintain", "Maintain" );
-    maintain -> add_action( this, "Rupture", "if=(talent.nightstalker.enabled&stealthed.rogue)|(talent.exsanguinate.enabled&((combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1)|(!ticking&(time>10|combo_points>=2+artifact.urge_to_kill.enabled))))" );
+    maintain -> add_action( this, "Rupture", "if=talent.nightstalker.enabled&stealthed.rogue" );
+    maintain -> add_action( this, "Rupture", "if=talent.exsanguinate.enabled&((combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1)|(!ticking&(time>10|combo_points>=2+artifact.urge_to_kill.enabled)))" );
+    maintain -> add_action( this, "Rupture", "if=!talent.exsanguinate.enabled&!ticking" );
     maintain -> add_action( this, "Rupture", "cycle_targets=1,if=combo_points>=cp_max_spend-talent.exsanguinate.enabled&refreshable&(!exsanguinated|remains<=1.5)&target.time_to_die-remains>4" );
-    maintain -> add_action( this, "Kingsbane", "if=(talent.exsanguinate.enabled&dot.rupture.exsanguinated)|(!talent.exsanguinate.enabled&(debuff.vendetta.up|cooldown.vendetta.remains>10))" );
+    maintain -> add_action( this, "Kingsbane", "if=(talent.exsanguinate.enabled&dot.rupture.exsanguinated)|(!talent.exsanguinate.enabled&buff.envenom.up&(debuff.vendetta.up|cooldown.vendetta.remains>10))" );
     maintain -> add_action( "pool_resource,for_next=1" );
     maintain -> add_action( this, "Garrote", "cycle_targets=1,if=refreshable&(!exsanguinated|remains<=1.5)&target.time_to_die-remains>4" );
   }
@@ -8428,11 +8429,6 @@ struct rogue_module_t : public module_t
 
   void register_hotfixes() const override
   {
-    hotfix::register_effect( "Rogue", "2017-01-15", "Energy needed per 1 second of CDR for Vendetta increased from 50 to 65.", 309173 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 65 )
-      .verification_value( 50 );
   }
 
   virtual void init( player_t* ) const override {}

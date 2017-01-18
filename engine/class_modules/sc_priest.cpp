@@ -6,7 +6,6 @@
 #include "simulationcraft.hpp"
 /*
 
-//   - UPDATE SPELLS BASED ON HOTFIXES JANUARY 17th. TEMPORARY //FIXME ADDED FOR NOW
 TODO - Updated 2016-09-28 by scamille:
 
 Disc:
@@ -2023,7 +2022,6 @@ public:
     {
       base_multiplier *= 1.0 + player.artifact.mind_shattering.percent();
     }
-    base_multiplier *= 0.96; //FIXME
   }
 
   void init() override
@@ -2621,7 +2619,6 @@ struct shadow_word_death_t final : public priest_spell_t
     {
       base_multiplier *= 1.0 + p.artifact.deaths_embrace.percent();
     }
-    base_multiplier *= 0.96; //FIXME
   }
 
   double composite_da_multiplier(const action_state_t* state) const override
@@ -2630,8 +2627,7 @@ struct shadow_word_death_t final : public priest_spell_t
 
     if (priest.buffs.zeks_exterminatus->up())
     {
-      d *= 2.0; //FIXME
-      //d *= 1.0 + priest.buffs.zeks_exterminatus->data().effectN( 1 ).trigger()->effectN( 2 ).percent();
+      d *= 1.0 + priest.buffs.zeks_exterminatus->data().effectN( 1 ).trigger()->effectN( 2 ).percent();
       priest.buffs.zeks_exterminatus->expire();
     }
 
@@ -2702,7 +2698,6 @@ struct shadow_crash_t final : public priest_spell_t
     spell_power_mod.direct      = missile->effectN( 1 ).sp_coeff();
     aoe                         = -1;
     radius                      = data().effectN( 1 ).radius();
-    base_multiplier *= 0.96; //FIXME
 
     energize_type =
         ENERGIZE_NONE;  // disable resource generation from spell data
@@ -2752,7 +2747,6 @@ struct shadowy_apparition_spell_t final : public priest_spell_t
         p.find_spell( 148859 );  // Hardcoded into tooltip 2014/06/01
 
     parse_effect_data( dmg_data->effectN( 1 ) );
-    base_multiplier *= 0.96; //FIXME
     school = SCHOOL_SHADOW;
   }
 
@@ -2884,7 +2878,6 @@ struct shadow_word_pain_t final : public priest_spell_t
           new sphere_of_insanity_spell_t( p );
       add_child( priest.active_spells.sphere_of_insanity );
     }
-    base_multiplier *= 0.89; //FIXME
   }
 
   double spell_direct_power_coefficient(const action_state_t* s) const override
@@ -2993,8 +2986,6 @@ struct shadow_word_void_t final : public priest_spell_t
       insanity_gain( data().effectN( 2 ).resource( RESOURCE_INSANITY ) )
   {
     parse_options( options_str );
-
-    base_multiplier *= 0.96; //FIXME
 
     energize_type =
         ENERGIZE_NONE;  // disable resource generation from spell data
@@ -3220,7 +3211,6 @@ struct vampiric_touch_t final : public priest_spell_t
       priest.active_spells.shadowy_apparitions =
           new shadowy_apparition_spell_t( p );
     }
-    base_multiplier *= 0.86; //FIXME
   }
   void init_mental_fortitude();
   
@@ -3345,8 +3335,6 @@ struct void_bolt_t final : public priest_spell_t
       base_multiplier *= 1.0 + player.artifact.sinister_thoughts.percent();
     }
 
-    base_multiplier *= 0.96; //FIXME
-
     cooldown->hasted = true;
   }
 
@@ -3428,7 +3416,6 @@ struct void_eruption_t final : public priest_spell_t
     radius   = 100.0;
     school   = SCHOOL_SHADOW;
     cooldown = priest.cooldowns.void_bolt;
-    base_multiplier *= 0.96; //FIXME
   }
 
   void init() override
@@ -3512,7 +3499,7 @@ struct void_eruption_t final : public priest_spell_t
                   ->effectN(1)
                   .base_value();
 
-      priest.buffs.voidform->bump( mss_vf_stacks -3 ); // You start with 3 Stacks of Voidform 2016/01/15
+      priest.buffs.voidform->bump( mss_vf_stacks - 1 ); // You start with 3 Stacks of Voidform 2017/01/17
     }
   }
 
@@ -3548,8 +3535,7 @@ struct void_torrent_t final : public priest_spell_t
     use_off_gcd   = true;
     is_mind_spell = false;
     tick_zero     = true;
-
-    base_multiplier *= 0.96; //FIXME
+    
     dot_duration = timespan_t::from_seconds( 4.0 );
   }
 
@@ -4482,10 +4468,7 @@ double priest_t::composite_player_multiplier( school_e school ) const
        ( dbc::is_school( SCHOOL_SHADOW, school ) ||
          dbc::is_school( SCHOOL_SHADOWFROST, school ) ) )
   {
-    m *= 1.0 + buffs.voidform->data().effectN(1).percent() +
-      (talents.legacy_of_the_void->ok()
-            ? talents.legacy_of_the_void->effectN(3).percent()
-            : 0.0);
+    m *= 1.0 + buffs.voidform->data().effectN(1).percent() + talents.legacy_of_the_void->effectN(3).percent();
   }
 
   if ( specialization() == PRIEST_SHADOW && artifact.creeping_shadows.rank() &&

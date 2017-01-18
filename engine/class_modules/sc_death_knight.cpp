@@ -4,7 +4,6 @@
 // ==========================================================================
 
 // TODO:
-//   - UPDATE SPELLS BASED ON HOTFIXES JANUARY 17th. TEMPORARY //FIXME ADDED FOR NOW
 // Unholy
 // - Does Festering Wound (generation|consumption) require a positive hit result?
 // - Festering Strike Festering Wound generation probability distribution
@@ -3680,7 +3679,6 @@ struct blooddrinker_t : public death_knight_spell_t
 
     channeled = true;
     base_tick_time = timespan_t::from_seconds( 1.0 );
-    base_multiplier *= 0.6; //FIXME Jan 17th Hotfix
   }
 
   void tick( dot_t* d ) override
@@ -6139,11 +6137,10 @@ struct remorseless_winter_buff_t : public buff_t
   {
     buff_t::execute( stacks, value, duration );
 
-    // Executing remorseless winter (either new buff or refresh) will cancel any accumulated
-    // Gathering Storms stacks
-    if ( gathering_storm )
+    // Refresh existing Gathering Storm duration (adds a stack too?)
+    if ( gathering_storm && gathering_storm -> check() )
     {
-      gathering_storm -> expire();
+      gathering_storm -> trigger();
     }
   }
 

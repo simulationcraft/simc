@@ -3537,9 +3537,10 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
     parse_options( options_str );
 
     may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
-    tick_zero = true;
+    tick_zero = hasted_ticks = true;
 
     spell_power_mod.direct = 0.0;
+    cooldown -> hasted = true;
     dot_behavior = DOT_REFRESH; // Spell uses Pandemic Mechanics.
 
     tick_action = new tick_action_t( "rushing_jade_wind_tick", p, p -> talent.rushing_jade_wind -> effectN( 1 ).trigger() );
@@ -3756,7 +3757,7 @@ struct crosswinds_t : public monk_melee_attack_t
     {
       std::vector<player_t*> targets;
       range::for_each( sim -> target_non_sleeping_list, [ &targets, this ]( player_t* t ) {
-        if ( t -> get_player_distance( *player ) <= radius + t -> combat_reach )
+        if ( player -> get_player_distance( *t ) <= radius + t -> combat_reach )
         {
           targets.push_back( t );
         }
@@ -4363,6 +4364,7 @@ struct exploding_keg_t: public monk_melee_attack_t
     parse_options( options_str );
 
     aoe = -1;
+    trigger_gcd = timespan_t::from_seconds( 1 );
 
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
@@ -5129,6 +5131,8 @@ struct breath_of_fire_t: public monk_spell_t
     dot_action( new periodic_t( p ) )
   {
     parse_options( options_str );
+    
+    trigger_gcd = timespan_t::from_seconds( 1 );
 
     add_child( dragonfire );
   }
@@ -5296,6 +5300,7 @@ struct special_delivery_t : public monk_spell_t
   special_delivery_t( monk_t& p ) :
     monk_spell_t( "special_delivery", &p, p.passives.special_delivery )
   {
+    may_block = may_dodge = may_parry = true;
     background = true;
     trigger_gcd = timespan_t::zero();
     aoe = -1;
@@ -10143,11 +10148,6 @@ struct monk_module_t: public module_t
 
   virtual void register_hotfixes() const override
   {
-    hotfix::register_effect( "Monk", "2017-01-17", "Rushing Jade Wind now applies Mark of the Crane to 4 targets (down from 5).", 359689 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 4 )
-      .verification_value( 5 );
   }
 
   virtual void init( player_t* p ) const override

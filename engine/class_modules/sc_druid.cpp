@@ -3470,7 +3470,7 @@ struct bear_melee_t : public bear_attack_t
 
     energize_type     = ENERGIZE_ON_HIT;
     energize_resource = RESOURCE_RAGE;
-    energize_amount   = 7.875; // http://us.battle.net/wow/en/forum/topic/20743504316?page=13#248
+    energize_amount   = 7; // https://worldofwarcraft.com/en-gb/news/20457825#_ClassChanges
   }
 
   virtual timespan_t execute_time() const override
@@ -5881,13 +5881,14 @@ struct warrior_of_elune_t : public druid_spell_t
     druid_spell_t( "warrior_of_elune", player, player -> talent.warrior_of_elune, options_str )
   {
     harmful = false;
+
   }
 
   void execute() override
   {
     druid_spell_t::execute();
 
-    p() -> buff.warrior_of_elune -> trigger( 2 );
+    p() -> buff.warrior_of_elune -> trigger( p() -> talent.warrior_of_elune -> max_stacks() );
   }
 
   virtual bool ready() override
@@ -6516,6 +6517,7 @@ void druid_t::create_buffs()
   buff.incarnation_cat       = new incarnation_cat_buff_t( *this );
 
   buff.incarnation_bear      = buff_creator_t( this, "incarnation_guardian_of_ursoc", talent.incarnation_bear )
+                               .add_invalidate( CACHE_ARMOR )
                                .cd( timespan_t::zero() );
 
   buff.incarnation_tree      = buff_creator_t( this, "incarnation_tree_of_life", talent.incarnation_tree )
@@ -7030,8 +7032,7 @@ void druid_t::apl_feral()
     "set_bonus.tier18_4pc|(talent.moment_of_clarity.enabled&buff.clearcasting.react))",
     "Replace FB with Swipe at 6 targets for Bloodtalons or 3 targets otherwise." );
   finish -> add_action( this, "Ferocious Bite", "max_energy=1,cycle_targets=1,if=combo_points=5&"
-    "(energy.time_to_max<1|buff.berserk.up|buff.incarnation.up|buff.elunes_guidance.up|cooldown.tigers_fury.remains<3|"
-    "set_bonus.tier18_4pc|(talent.moment_of_clarity.enabled&buff.clearcasting.react))" );
+    "(energy.time_to_max<1|buff.berserk.up|buff.incarnation.up|buff.elunes_guidance.up|cooldown.tigers_fury.remains<3)" );
 
   // Generators
   generate -> add_talent( this, "Brutal Slash", "if=spell_targets.brutal_slash>desired_targets&combo_points<5",
@@ -7108,12 +7109,12 @@ void druid_t::apl_balance()
     default_list -> add_action( item_actions[i] );
 
   default_list -> add_action( "call_action_list,name=fury_of_elune,if=talent.fury_of_elune.enabled&cooldown.fury_of_elue.remains<target.time_to_die" );
-  default_list -> add_action( "call_action_list,name=ed,if=equipped.the_emerald_dreamcatcher" );
+  default_list -> add_action( "call_action_list,name=ed,if=equipped.the_emerald_dreamcatcher&active_enemies<=2" );
   default_list -> add_action( this, "New Moon", "if=(charges=2&recharge_time<5)|charges=3" );
   default_list -> add_action( this, "Half Moon", "if=(charges=2&recharge_time<5)|charges=3|(target.time_to_die<15&charges=2)");
   default_list -> add_action( this, "Full Moon", "if=(charges=2&recharge_time<5)|charges=3|target.time_to_die<15");
   default_list -> add_talent( this, "Stellar Flare", "cycle_targets=1,max_cycle_targets=4,if=active_enemies<4&remains<7.2&astral_power>=15");
-  default_list -> add_action( this, "Moonfire", "if=(talent.natures_balance.enabled&remains<3)|(remains<6.6&!talent.natures_balance.enabled)" );
+  default_list -> add_action( this, "Moonfire", "cycle_targets=1,if=(talent.natures_balance.enabled&remains<3)|(remains<6.6&!talent.natures_balance.enabled)" );
   default_list -> add_action( this, "Sunfire", "if=(talent.natures_balance.enabled&remains<3)|(remains<5.4&!talent.natures_balance.enabled)" );
   default_list -> add_talent( this, "Astral Communion", "if=astral_power.deficit>=75" );
   default_list -> add_action( "incarnation,if=astral_power>=40" );
@@ -7125,7 +7126,7 @@ void druid_t::apl_balance()
   default_list -> add_action( "call_action_list,name=celestial_alignment_phase,if=buff.celestial_alignment.up|buff.incarnation.up" );
   default_list -> add_action( "call_action_list,name=single_target" );
   
-  CA -> add_action( this, "Starfall", "if=(active_enemies>=2&talent.stellar_flare.enabled|active_enemies>=3)&((talent.fury_of_elune.enabled&cooldown.fury_of_elune.remains>12&buff.fury_of_elune_up.down)|!talent.fury_of_elune.enabled)" );
+  CA -> add_action( this, "Starfall", "if=((active_enemies>=2&talent.stellar_drift.enabled)|active_enemies>=3)" );
   CA -> add_action( this, "Starsurge", "if=active_enemies<=2" );
   CA -> add_talent( this, "Warrior of Elune" );
   CA -> add_action( this, "Lunar Strike", "if=buff.warrior_of_elune.up" );
@@ -7138,7 +7139,7 @@ void druid_t::apl_balance()
   ST -> add_action( this, "New Moon", "if=astral_power<=90" );
   ST -> add_action( this, "Half Moon", "if=astral_power<=80" );
   ST -> add_action( this, "Full Moon", "if=astral_power<=60" );
-  ST -> add_action( this, "Starfall", "if=(active_enemies>=2&talent.stellar_flare.enabled|active_enemies>=3)&((talent.fury_of_elune.enabled&cooldown.fury_of_elune.remains>12&buff.fury_of_elune_up.down)|!talent.fury_of_elune.enabled)" );
+  ST -> add_action( this, "Starfall", "if=((active_enemies>=2&talent.stellar_drift.enabled)|active_enemies>=3)" );
   ST -> add_action( this, "Starsurge", "if=active_enemies<=2" );
   ST -> add_talent( this, "Warrior of Elune" );
   ST -> add_action( this, "Lunar Strike", "if=buff.warrior_of_elune.up" );
@@ -7618,7 +7619,10 @@ double druid_t::composite_armor_multiplier() const
   double a = player_t::composite_armor_multiplier();
 
   if ( buff.bear_form -> check() )
+  {
     a *= 1.0 + buff.bear_form -> data().effectN( 3 ).percent();
+    a *= 1.0 + buff.incarnation_bear -> data().effectN( 5 ).percent();
+  }
 
   if ( buff.moonkin_form -> check() )
     a *= 1.0 + buff.moonkin_form -> data().effectN( 3 ).percent() + artifact.bladed_feathers.percent();

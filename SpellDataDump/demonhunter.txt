@@ -1,4 +1,4 @@
-SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23360, git build a0a9385)
+SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23360, git build a7ace21)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -2769,7 +2769,8 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=312610)   : Apply Aura (6) | Unknown effect sub type (361)
-                   Base Value: 200 | Scaled Value: 200 | Misc Value: 211796 | Trigger Spell: 211797 | Target: Self(1)
+                   Base Value: 150 | Scaled Value: 150 | Misc Value: 211796 | Trigger Spell: 211797 | Target: Self(1)
+                   Hotfixed: Base Value (200 -> 150)
 #2 (id=313822)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self(1)
 #3 (id=358934)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
@@ -2840,7 +2841,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=313818)   : Weapon Damage% (31)
-                   Base Value: 300 | Scaled Value: 3 | Target: Enemy(6)
+                   Base Value: 250 | Scaled Value: 2.5 | Target: Enemy(6)
+                   Hotfixed: Base Value (300 -> 250)
 Description      : Attack with pure Fel power, dealing Chaos damage equal to $s1% weapon damage.
 
 Name             : Chaos Blades (id=211797) [Spell Family (107)] 
@@ -2858,7 +2860,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=313820)   : Weapon Damage% (31)
-                   Base Value: 300 | Scaled Value: 3 | Target: Enemy(6)
+                   Base Value: 250 | Scaled Value: 2.5 | Target: Enemy(6)
+                   Hotfixed: Base Value (300 -> 250)
 Description      : Attack with pure Fel power, dealing Chaos damage equal to $s1% off-hand weapon damage.
 
 Name             : Fel Eruption (id=211881) [Spell Family (107)] 
@@ -3010,12 +3013,12 @@ Effects          :
 #5 (id=315239)   : Apply Aura (6) | Unknown effect sub type (218)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf7 | Target: Self(1)
 #6 (id=315240)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self(1)
+                   Base Value: 8 | Scaled Value: 8 | Target: Self(1)
                    Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Blade Dance (188499), Fel Rush (192611), Eye Beam (198030), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Fury of the Illidari (201467), Fury of the Illidari (201628), Fury of the Illidari (201789), Demon Blades (203796), Throw Glaive (204157), Death Sweep (210152), Death Sweep (210153), Death Sweep (210155), Fel Barrage (211052), Fel Barrage (211053), Felblade (213241), Felblade (213243), Chaos Strike (222031), Fel Eruption (225102), Annihilation (227518), Felblade (232893)
-                   Hotfixed: Sub Type (4 -> 108), Base Value (0 -> 10), Affects Spells
+                   Hotfixed: Sub Type (4 -> 108), Base Value (0 -> 8), Affects Spells
 #7 (id=315241)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Self(1)
-                   Hotfixed: Sub Type (4 -> 108), Base Value (0 -> 10), Misc Value (0 -> 22)
+                   Base Value: 8 | Scaled Value: 8 | Misc Value: 22 | Target: Self(1)
+                   Hotfixed: Sub Type (4 -> 108), Base Value (0 -> 8), Misc Value (0 -> 22)
 #8 (id=315242)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #9 (id=315243)   : Apply Aura (6) | Dummy (4)

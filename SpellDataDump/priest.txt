@@ -1,4 +1,4 @@
-SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23360, git build a0a9385)
+SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23360, git build a7ace21)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Discipline Shadow Priest
@@ -157,9 +157,11 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=242)      : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.41000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.38000 | Target: Enemy(6)
+                   Hotfixed: SP Coefficient (0.41 -> 0.38)
 #2 (id=254257)   : Apply Aura (6) | Periodic Damage: shadow every 2 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.41000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.38000 | Target: Enemy(6)
+                   Hotfixed: SP Coefficient (0.41 -> 0.38)
 #3 (id=323674)   : Energize Power (30)
                    Base Value: 400 | Scaled Value: 400 | Misc Value: insanity | Target: Self(1)
 Description      : A word of darkness that causes $s1 Shadow damage instantly, and an additional $o2 Shadow damage over $d.$?a185916[
@@ -938,7 +940,8 @@ Effects          :
 #1 (id=25009)    : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Enemy(6)
 #2 (id=25010)    : Apply Aura (6) | Periodic Health Leech (53)
-                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 0.5 | SP Coefficient: 0.79000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 0.5 | SP Coefficient: 0.71000 | Target: Enemy(6)
+                   Hotfixed: SP Coefficient (0.79 -> 0.71)
 #3 (id=323673)   : Energize Power (30)
                    Base Value: 600 | Scaled Value: 600 | Misc Value: insanity | Target: Self(1)
 Description      : A touch of darkness that causes $34914o2 Shadow damage over $34914d, and heals the Priest for ${$e2*100}% of damage dealt.
@@ -2583,26 +2586,34 @@ Effects          :
 #1 (id=179716)   : Apply Aura (6) | Unknown effect sub type (379)
                    Base Value: 25 | Scaled Value: 25 | Target: Self(1)
 #2 (id=191072)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 12 | Scaled Value: 12 | Target: Self(1)
+                   Base Value: 24 | Scaled Value: 24 | Target: Self(1)
                    Affected Spells: Shadow Word: Pain (589)
+                   Hotfixed: Base Value (12 -> 24)
 #3 (id=191073)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 12 | Scaled Value: 12 | Misc Value: 22 | Target: Self(1)
+                   Base Value: 24 | Scaled Value: 24 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Shadow Word: Pain (589)
+                   Hotfixed: Base Value (12 -> 24)
 #4 (id=191074)   : Apply Aura (6) | Add Flat Modifier: Spell Duration (107)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Self(1)
                    Affected Spells: Shadow Word: Pain (589)
 #5 (id=191075)   : Apply Aura (6) | Unknown effect sub type (218)
-                   Base Value: -60 | Scaled Value: -60 | Misc Value 2: 0xe5 | Target: Self(1)
+                   Base Value: -55 | Scaled Value: -55 | Misc Value 2: 0xe5 | Target: Self(1)
+                   Hotfixed: Base Value (-60 -> -55)
 #6 (id=260957)   : Apply Aura (6) | Unknown effect sub type (218)
-                   Base Value: -60 | Scaled Value: -60 | Misc Value: 22 | Misc Value 2: 0xe5 | Target: Self(1)
+                   Base Value: -55 | Scaled Value: -55 | Misc Value: 22 | Misc Value 2: 0xe5 | Target: Self(1)
+                   Hotfixed: Base Value (-60 -> -55)
 #7 (id=260958)   : Apply Aura (6) | Unknown effect sub type (218)
-                   Base Value: -60 | Scaled Value: -60 | Misc Value: 3 | Misc Value 2: 0xe7 | Target: Self(1)
+                   Base Value: -55 | Scaled Value: -55 | Misc Value: 3 | Misc Value 2: 0xe7 | Target: Self(1)
+                   Hotfixed: Base Value (-60 -> -55)
 #8 (id=260959)   : Apply Aura (6) | Unknown effect sub type (218)
-                   Base Value: -75 | Scaled Value: -75 | Misc Value 2: 0xe6 | Target: Self(1)
+                   Base Value: -65 | Scaled Value: -65 | Misc Value 2: 0xe6 | Target: Self(1)
+                   Hotfixed: Base Value (-75 -> -65)
 #9 (id=260960)   : Apply Aura (6) | Unknown effect sub type (218)
-                   Base Value: -75 | Scaled Value: -75 | Misc Value: 3 | Misc Value 2: 0xe8 | Target: Self(1)
+                   Base Value: -65 | Scaled Value: -65 | Misc Value: 3 | Misc Value 2: 0xe8 | Target: Self(1)
+                   Hotfixed: Base Value (-75 -> -65)
 #10 (id=260961)   : Apply Aura (6) | Unknown effect sub type (218)
-                   Base Value: -75 | Scaled Value: -75 | Misc Value: 12 | Misc Value 2: 0xf3 | Target: Self(1)
+                   Base Value: -65 | Scaled Value: -65 | Misc Value: 12 | Misc Value 2: 0xf3 | Target: Self(1)
+                   Hotfixed: Base Value (-75 -> -65)
 #11 (id=260962)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #12 (id=260963)   : Apply Aura (6) | Dummy (4)
@@ -2638,11 +2649,13 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179717)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 25 | Scaled Value: 25 | Target: Self(1)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self(1)
                    Affected Spells: Shadow Word: Pain (589), Mind Blast (8092), Shadow Word: Death (32379), Mind Spike (73510), Shadowy Apparition (148859), Shadow Word: Death (199911), Shadow Word: Void (205351), Shadow Crash (205385), Shadow Crash (205386), Void Bolt (205448), Void Eruption (228260), Void Eruption (228360), Mind Flay (237388)
+                   Hotfixed: Base Value (25 -> 20)
 #2 (id=191068)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 25 | Scaled Value: 25 | Misc Value: 22 | Target: Self(1)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Shadow Word: Pain (589), Mind Flay (15407), Vampiric Touch (34914), Void Torrent (205065)
+                   Hotfixed: Base Value (25 -> 20)
 #3 (id=191069)   : Apply Aura (6) | Unknown effect sub type (419)
                    Base Value: -80 | Scaled Value: -80 | Target: Self(1)
 #4 (id=191070)   : Apply Aura (6) | Unknown effect sub type (232)
@@ -4164,7 +4177,7 @@ Velocity         : 20 yards/sec
 Cooldown         : 4.5 seconds
 Category         : 1660
 Category Cooldown: 4.5 seconds
-Affecting spells : Mastery: Madness (77486), Priest (137030), Shadow Priest (137033), Sinister Thoughts (194026), Voidform (194249), Void (211657), Anund's Last Breath (215210)
+Affecting spells : Mastery: Madness (77486), Priest (137030), Shadow Priest (137033), Sinister Thoughts (194026), Voidform (194249), Void (211657)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

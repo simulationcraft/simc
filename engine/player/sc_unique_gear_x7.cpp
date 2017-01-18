@@ -55,6 +55,7 @@ namespace item
   void tempered_egg_of_serpentrix( special_effect_t& );
   void gnawed_thumb_ring( special_effect_t& );
   void naraxas_spiked_tongue( special_effect_t& );
+  void choker_of_barbed_reins( special_effect_t& );
 
   // 7.1 Dungeon
   void arans_relaxing_ruby( special_effect_t& );
@@ -494,7 +495,7 @@ void item::naraxas_spiked_tongue( special_effect_t& effect )
     {
       double am = proc_spell_t::action_multiplier();
 
-      double distance = target -> get_player_distance( *player );
+      double distance = player -> get_player_distance( *target );
       am *= ( std::min( distance, 20.0 ) / 20.0 ); // Does less damage the closer player is to target.
       return am;
     }
@@ -510,6 +511,37 @@ void item::naraxas_spiked_tongue( special_effect_t& effect )
   if ( !effect.execute_action )
   {
     action_t* a = new rancid_maw_t( effect );
+    effect.execute_action = a;
+  }
+
+  new dbc_proc_callback_t( effect.item, effect );
+}
+
+// Choker of Barbed Reins ==================================================
+
+void item::choker_of_barbed_reins( special_effect_t& effect )
+{
+  struct choker_of_barbed_reins_t: public proc_attack_t
+  {
+    choker_of_barbed_reins_t( const special_effect_t& e ):
+      proc_attack_t( "barbed_rebuke", e.player, e.player -> find_spell( 234108 ), e.item )
+    {
+      may_block = true;
+    }
+    double target_armor( player_t* ) const override
+    { return 0.0; }
+  };
+
+  effect.execute_action = effect.player -> find_action( "barbed_rebuke" );
+
+  if ( !effect.execute_action )
+  {
+    effect.execute_action = effect.player -> create_proc_action( "barbed_rebuke", effect );
+  }
+
+  if ( !effect.execute_action )
+  {
+    action_t* a = new choker_of_barbed_reins_t( effect );
     effect.execute_action = a;
   }
 
@@ -1972,7 +2004,7 @@ void item::draught_of_souls( special_effect_t& effect )
       {
         std::vector<player_t*> targets;
         range::for_each( sim -> target_non_sleeping_list, [ &targets, this ]( player_t* t ) {
-          if ( t -> get_player_distance( *player ) <= radius + t -> combat_reach )
+          if ( player -> get_player_distance( *t ) <= radius + t -> combat_reach )
           {
             targets.push_back( t );
           }
@@ -4119,6 +4151,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 215745, item::tempered_egg_of_serpentrix     );
   register_special_effect( 228461, item::gnawed_thumb_ring              );
   register_special_effect( 215404, item::naraxas_spiked_tongue          );
+  register_special_effect( 234106, item::choker_of_barbed_reins         );
 
   /* Legion 7.1 Dungeon */
   register_special_effect( 230257, item::arans_relaxing_ruby            );
@@ -4204,12 +4237,6 @@ void unique_gear::register_hotfixes_x7()
     .operation( hotfix::HOTFIX_SET )
     .modifier( 40 )
     .verification_value( 1 );
-
-  hotfix::register_effect( "Kil'jaeden's Burning Wish", "2017-01-14", "Damage increased by 55%.", 356737 )
-    .field( "average" )
-    .operation( hotfix::HOTFIX_MUL )
-    .modifier( 1.55 )
-    .verification_value( 45 );
 }
 
 void unique_gear::register_target_data_initializers_x7( sim_t* sim )

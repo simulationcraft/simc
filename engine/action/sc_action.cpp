@@ -2016,7 +2016,7 @@ bool action_t::ready()
   }
 
   if ( sim -> distance_targeting_enabled && range > 0 &&
-    target -> get_player_distance( *player ) > range + target -> combat_reach )
+    player -> get_player_distance( *target ) > range + target -> combat_reach )
     return false;
 
   if ( target -> debuffs.invulnerable -> check() && harmful )

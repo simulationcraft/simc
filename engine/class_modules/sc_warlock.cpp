@@ -5387,8 +5387,6 @@ struct channel_demonfire_tick_t : public warlock_spell_t
 
 struct channel_demonfire_t: public warlock_spell_t
 {
-  double backdraft_cast_time;
-  double backdraft_tick_time;
   channel_demonfire_tick_t* channel_demonfire;
   int immolate_action_id;
 
@@ -5442,33 +5440,10 @@ struct channel_demonfire_t: public warlock_spell_t
     warlock_spell_t::tick( d );
   }
 
-  timespan_t tick_time( const action_state_t* s ) const override
-  {
-    timespan_t t = warlock_spell_t::tick_time( s );
-
-    //if ( !maybe_ptr( p() -> dbc.ptr ) && p() -> buffs.backdraft -> check() ) //FIXME this might be an oversight on their part.
-      //t *= backdraft_tick_time;
-
-    return t;
-  }
-
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
     return s -> action -> tick_time( s ) * 15.0;
   }
-
-  //void execute() override
-  //{
-  //  warlock_spell_t::execute();
-
-  //  //p() -> buffs.backdraft -> decrement();
-
-  //  if ( p()->artifact.dimension_ripper.rank() && rng().roll( p()->find_spell( 219415 )->proc_chance() ) && p()->cooldowns.dimensional_rift->current_charge < p()->cooldowns.dimensional_rift->charges )
-  //  {
-  //    p()->cooldowns.dimensional_rift->adjust( -p()->cooldowns.dimensional_rift->duration ); //decrease remaining time by the duration of one charge, i.e., add one charge
-  //    p()->procs.dimension_ripper->occur();
-  //  }
-  //}
 
   virtual bool ready() override
   {
@@ -6616,7 +6591,7 @@ void warlock_t::apl_destruction()
     }
   }
 
-  add_action( "Havoc", "target=2,if=active_enemies>1&active_enemies<6&!debuff.havoc.remains" );
+  add_action( "Havoc", "target=2,if=active_enemies>1&(active_enemies<4|talent.wreak_havoc.enabled&active_enemies<6)&!debuff.havoc.remains" );
   add_action( "Dimensional Rift", "if=charges=3" );
   add_action( "Immolate", "if=remains<=tick_time" );
   add_action( "Immolate", "cycle_targets=1,if=active_enemies>1&remains<=tick_time&(!talent.roaring_blaze.enabled|(!debuff.roaring_blaze.remains&action.conflagrate.charges<2))");
@@ -6643,12 +6618,12 @@ void warlock_t::apl_destruction()
   action_list_str += "/soul_harvest";
   action_list_str += "/channel_demonfire,if=dot.immolate.remains>cast_time";
   add_action( "Havoc", "if=active_enemies=1&talent.wreak_havoc.enabled&equipped.132375&!debuff.havoc.remains" );
-  add_action( "Rain of Fire", "if=active_enemies>=4&cooldown.havoc.remains<=12&!talent.wreak_havoc.enabled");
+  add_action( "Rain of Fire", "if=active_enemies>=3&cooldown.havoc.remains<=12&!talent.wreak_havoc.enabled");
   add_action( "Rain of Fire", "if=active_enemies>=6&talent.wreak_havoc.enabled");
   add_action( "Dimensional Rift", "if=!equipped.144369|charges>1|((!talent.grimoire_of_service.enabled|recharge_time<cooldown.service_pet.remains)&(!talent.soul_harvest.enabled|recharge_time<cooldown.soul_harvest.remains)&(!talent.grimoire_of_supremacy.enabled|recharge_time<cooldown.summon_doomguard.remains))" );
   action_list_str += "/life_tap,if=talent.empowered_life_tap.enabled&buff.empowered_life_tap.remains<duration*0.3";
   action_list_str += "/cataclysm";
-  add_action( "Chaos Bolt" );
+  add_action( "Chaos Bolt", "if=(cooldown.havoc.remains>12&cooldown.havoc.remains|active_enemies<3|talent.wreak_havoc.enabled&active_enemies<6)" );
   action_list_str += "/shadowburn";
   add_action( "Conflagrate", "if=!talent.roaring_blaze.enabled&!buff.backdraft.remains" );
   add_action( "Immolate", "if=!talent.roaring_blaze.enabled&remains<=duration*0.3" );
@@ -7825,29 +7800,6 @@ struct warlock_module_t: public module_t
       .verification_value( 0.42 );
       */
 
-    hotfix::register_effect( "Warlock", "2017-01-17", "Malefic Grasp now increases the damage of damage over time effects by 70% (down from 80%).", 355427 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 70 )
-      .verification_value( 80 );
-
-    hotfix::register_effect( "Warlock", "2017-01-17", "Shadowbolt damage increased by 42%.", 267 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 1.42 )
-      .verification_value( 0.88 );
-
-    hotfix::register_effect( "Warlock", "2017-01-17", "Demonbolt damage increased by 42%", 219885 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 1.42 )
-      .verification_value( 0.88 );
-
-    hotfix::register_effect( "Warlock", "2017-01-17", "Demonbolt damage increased by 42%, but its damage is now increased by 10% per active demon (down from 18%).", 288119 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 10 )
-      .verification_value( 18 );
   }
 
   virtual bool valid() const override { return true; }
