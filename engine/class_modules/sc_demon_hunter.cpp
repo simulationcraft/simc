@@ -1816,7 +1816,7 @@ struct eye_beam_t : public demon_hunter_spell_t
       }
       else
       {
-        // Trigger before the execute so that the duration is affected by Meta haste
+        // Trigger Meta before the execute so that the duration is affected by Meta haste
         extend_meta = p()->buff.metamorphosis->trigger(1, p()->buff.metamorphosis->default_value, -1.0, demonic_time);
       }
     }
@@ -4732,7 +4732,7 @@ struct nemesis_debuff_t : public demon_hunter_buff_t<debuff_t>
 
 struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
 {
-	bool triggered_by_demonic = false;
+	bool extended_by_demonic = false;
 
 	static void vengeance_callback(buff_t* b, int, const timespan_t&)
 	{
@@ -4776,8 +4776,12 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
 			// If we have an initial trigger from Eye Beam, set the flag for future validation
 			if (p().executing && p().executing->id == p().spec.eye_beam->id())
 			{
-				triggered_by_demonic = true;
+        extended_by_demonic = true;
 			}
+      else
+      {
+        extended_by_demonic = false;
+      }
 
 			// If we enter Meta and Blade Dance is on cooldown, the cooldown of Death Sweep needs to be rescheduled
 			p().cooldown.blade_dance->adjust_recharge_multiplier();
@@ -4788,18 +4792,18 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
 
 	void extend_duration(player_t* p, timespan_t extra_seconds) override
 	{
-		if (this->p().specialization() == DEMON_HUNTER_HAVOC && triggered_by_demonic && p->executing)
+		if (this->p().specialization() == DEMON_HUNTER_HAVOC && extended_by_demonic && p->executing)
 		{
 			// If we extend the duration with a proper Meta cast, we can clear the flag as successive Eye Beams can extend again
 			if (p->executing->id == this->p().spec.metamorphosis->id())
 			{
-				triggered_by_demonic = false;
+        extended_by_demonic = false;
 			}
 			// If we are triggering from Eye Beam, we should disallow any additional full Demonic extensions
-			else if (p->executing->id == this->p().spec.eye_beam->id() && extra_seconds == timespan_t::from_seconds(8))
-			{
-				return;
-			}
+      else if (p->executing->id == this->p().spec.eye_beam->id() && extra_seconds == timespan_t::from_seconds(8))
+      {
+        return;
+      }
 		}
 
 		buff_t::extend_duration(p, extra_seconds);
@@ -4829,7 +4833,7 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
 		}
 		else
 		{
-			triggered_by_demonic = false;
+      extended_by_demonic = false;
 		}
 	}
 };
@@ -5666,7 +5670,7 @@ struct metamorphosis_buff_demonic_expr_t : public expr_t
   double evaluate() override
   {
     buffs::metamorphosis_buff_t* metamorphosis = debug_cast<buffs::metamorphosis_buff_t*>(dh->buff.metamorphosis);
-    if (metamorphosis && metamorphosis->triggered_by_demonic)
+    if (metamorphosis && metamorphosis->extended_by_demonic)
       return true;
 
     return false;
@@ -5771,7 +5775,7 @@ expr_t* demon_hunter_t::create_expression( action_t* a,
       }
     }
   }
-  else if (name_str == "buff.metamorphosis.triggered_by_demonic")
+  else if (name_str == "buff.metamorphosis.extended_by_demonic")
   {
     return new metamorphosis_buff_demonic_expr_t(this, name_str);
   }
