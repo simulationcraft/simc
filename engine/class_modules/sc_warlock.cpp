@@ -4073,12 +4073,6 @@ struct seed_of_corruption_t: public warlock_spell_t
     {
       warlock_spell_t::impact( s );
 
-      if ( p() -> active.corruption )
-      {
-        p() -> active.corruption -> target = s -> target;
-        p() -> active.corruption -> schedule_execute();
-      }
-
       if ( result_is_hit( s -> result ) )
       {
         warlock_td_t* tdata = td( s -> target );
@@ -4094,7 +4088,6 @@ struct seed_of_corruption_t: public warlock_spell_t
 
   double threshold_mod;
   double sow_the_seeds_targets;
-  double sow_the_seeds_cost;
   seed_of_corruption_aoe_t* explosion;
 
   seed_of_corruption_t( warlock_t* p ):
@@ -4107,7 +4100,6 @@ struct seed_of_corruption_t: public warlock_spell_t
     hasted_ticks = false;
 
     sow_the_seeds_targets = p -> talents.sow_the_seeds -> effectN( 1 ).base_value();
-    sow_the_seeds_cost    = 1.0;
 
     add_child( explosion );
   }
@@ -4121,22 +4113,11 @@ struct seed_of_corruption_t: public warlock_spell_t
 
   void execute() override
   {
-    bool sow_the_seeds = false;
-
-    if ( p() -> talents.sow_the_seeds -> ok() && p() -> resources.current[ RESOURCE_SOUL_SHARD ] >= sow_the_seeds_cost )
+    if ( p() -> talents.sow_the_seeds -> ok() )
     {
-      sow_the_seeds = true;
-      p() -> resource_loss( RESOURCE_SOUL_SHARD, sow_the_seeds_cost, 0, this );
-      stats -> consume_resource( RESOURCE_SOUL_SHARD, sow_the_seeds_cost );
-      aoe += sow_the_seeds_targets;
+      aoe = 3;
     }
-
     warlock_spell_t::execute();
-
-    if ( sow_the_seeds )
-    {
-      aoe -= sow_the_seeds_targets;
-    }
   }
 
   void impact( action_state_t* s ) override
@@ -4144,6 +4125,12 @@ struct seed_of_corruption_t: public warlock_spell_t
     if ( result_is_hit( s -> result ) )
     {
       td( s -> target ) -> soc_threshold = s -> composite_spell_power() * threshold_mod;
+    }
+
+    if ( p() -> active.corruption )
+    {
+      p() -> active.corruption -> target = s -> target;
+      p() -> active.corruption -> schedule_execute();
     }
 
     warlock_spell_t::impact( s );
@@ -6121,6 +6108,7 @@ void warlock_t::init_spells()
   {
     active.corruption = new actions::corruption_t( this );
     active.corruption -> background = true;
+    active.corruption -> aoe = -1;
   }
 }
 
@@ -6491,10 +6479,10 @@ void warlock_t::apl_affliction()
   action_list_str += "/life_tap,if=talent.empowered_life_tap.enabled&buff.empowered_life_tap.remains<=gcd";
   action_list_str += "/phantom_singularity";
   action_list_str += "/haunt";
-
-  add_action( "Unstable Affliction", "if=talent.writhe_in_agony.enabled&talent.contagion.enabled" );
+  add_action( "Seed of Corruption", "if=talent.sow_the_seeds.enabled&spell_targets.seed_of_corruption>=3" );
+  add_action( "Unstable Affliction", "if=(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&talent.writhe_in_agony.enabled&talent.contagion.enabled" );
   
-  add_action( "Unstable Affliction", "if=talent.writhe_in_agony.enabled&(soul_shard>=4|trinket.proc.intellect.react|trinket.stacking_proc.mastery.react|trinket.proc.mastery.react|trinket.proc.crit.react|trinket.proc.versatility.react|buff.soul_harvest.remains|buff.deadwind_harvester.remains|buff.compounding_horror.react=5|target.time_to_die<=20" );
+  add_action( "Unstable Affliction", "if=(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&talent.writhe_in_agony.enabled&(soul_shard>=4|trinket.proc.intellect.react|trinket.stacking_proc.mastery.react|trinket.proc.mastery.react|trinket.proc.crit.react|trinket.proc.versatility.react|buff.soul_harvest.remains|buff.deadwind_harvester.remains|buff.compounding_horror.react=5|target.time_to_die<=20" );
   if ( find_item( "horn_of_valor" ) )
     action_list_str += "|buff.valarjars_path.remains";
   if ( find_item( "moonlit_prism" ) )
@@ -6503,11 +6491,11 @@ void warlock_t::apl_affliction()
     action_list_str += "|buff.collapsing_shadow.remains";
   action_list_str += ")";
 
-  add_action( "Unstable Affliction", "if=talent.malefic_grasp.enabled&target.time_to_die<30" );
-  add_action( "Unstable Affliction", "if=talent.malefic_grasp.enabled&soul_shard=5" );
-  add_action( "Unstable Affliction", "if=talent.malefic_grasp.enabled&!prev_gcd.3.unstable_affliction&dot.agony.remains>cast_time+6.5&(dot.corruption.remains>cast_time+6.5|talent.absolute_corruption.enabled)&(dot.siphon_life.remains>cast_time+6.5|!talent.siphon_life.enabled)" );
+  add_action( "Unstable Affliction", "if=(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&talent.malefic_grasp.enabled&target.time_to_die<30" );
+  add_action( "Unstable Affliction", "if=(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&talent.malefic_grasp.enabled&soul_shard=5" );
+  add_action( "Unstable Affliction", "if=(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&talent.malefic_grasp.enabled&!prev_gcd.3.unstable_affliction&dot.agony.remains>cast_time+6.5&(dot.corruption.remains>cast_time+6.5|talent.absolute_corruption.enabled)&(dot.siphon_life.remains>cast_time+6.5|!talent.siphon_life.enabled)" );
   
-  add_action( "Unstable Affliction", "if=talent.haunt.enabled&(soul_shard>=4|debuff.haunt.remains|target.time_to_die<30" );
+  add_action( "Unstable Affliction", "if=(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&talent.haunt.enabled&(soul_shard>=4|debuff.haunt.remains|target.time_to_die<30" );
   if ( find_item( "horn_of_valor" ) )
     action_list_str += "|buff.valarjars_path.remains";
   if ( find_item( "moonlit_prism" ) )
