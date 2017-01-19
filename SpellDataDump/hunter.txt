@@ -1,4 +1,4 @@
-SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23360, git build a7ace21)
+SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 2228653)
 
 Name             : Mend Pet (id=136) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
@@ -2935,8 +2935,9 @@ Effects          :
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Barrage (120361), A Murder of Crows (131894), A Murder of Crows (131900), Arcane Shot (185358), Bursting Shot (186387), Aimed Shot (191043), Volley (194386), Volley (194392), Black Arrow (194599), Piercing Shot (198670), Windburst (204147), A Murder of Crows (206505), Marked Shot (212621), Piercing Shot (213678), Sidewinders (214579), Sidewinders (214581)
                    Hotfixed: Sub Type (4 -> 108), Base Value (0 -> 8), Affects Spells
 #4 (id=191136)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self(1)
-                   Hotfixed: Sub Type (4 -> 108), Misc Value (0 -> 22)
+                   Base Value: 8 | Scaled Value: 8 | Misc Value: 22 | Target: Self(1)
+                   Affected Spells: Black Arrow (194599)
+                   Hotfixed: Sub Type (4 -> 108), Base Value (0 -> 8), Misc Value (0 -> 22), Affects Spells
 #5 (id=191137)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #6 (id=260887)   : Apply Aura (6) | Dummy (4)

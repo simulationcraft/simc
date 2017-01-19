@@ -1,4 +1,4 @@
-SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23360, git build a7ace21)
+SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 2228653)
 
 Name             : Defensive Stance (id=71) [Spell Family (4), Passive, Hidden] 
 Class            : Protection Warrior
@@ -586,23 +586,28 @@ Description      : Overpowers the enemy, causing $sw1 Physical damage. Cannot be
 All your melee attacks have a chance to activate Overpower.
 
 Name             : Warbringer (id=7922) [Spell Family (4)] 
+Hotfixed         : Attributes
 Class            : Warrior
 School           : Physical
 Spell Level      : 1
 Range            : 50000 yards
+Duration         : 2.5 seconds
 Proc Chance      : 101%
 Mechanic         : Unknown(95)
 Affecting spells : Protection Warrior (137048)
-Attributes       : ....x... ........ x.x..x.. ........   ...x...x .x...... ........ ........ 
+Attributes       : ....x... ........ x.x..x.. ........   ...x...x .x...... ........ ....x... 
                  : ..x..... ........ ........ ......x.   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
-                 : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ..x..... .......x ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Cannot dodge/parry/block (21), Requires line of sight (186)
 Effects          :
 #1 (id=3164)     : School Damage: physical (2)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.08000 | Radius: 0 - 5 yards | Target: Unknown(63) -> AOE enemy (instant)(16)
+#2 (id=364046)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 5 yards | Target: Unknown(63) -> AOE enemy (instant)(16)
+                   Hotfixed: NEW EFFECT
 Description      : Charge an enemy, generate Rage, and stun them for $7922d.
 Tooltip          : Knocked down.
 

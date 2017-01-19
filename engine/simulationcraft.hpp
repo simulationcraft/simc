@@ -4279,7 +4279,7 @@ struct player_t : public actor_t
   const spell_data_t* find_specialization_spell( unsigned spell_id, specialization_e s = SPEC_NONE ) const;
   const spell_data_t* find_mastery_spell( specialization_e s, const std::string& token = std::string(), uint32_t idx = 0 ) const;
   const spell_data_t* find_spell( const std::string& name, const std::string& token = std::string(), specialization_e s = SPEC_NONE ) const;
-  const spell_data_t* find_spell( const unsigned int id, const std::string& token = std::string() ) const;
+  const spell_data_t* find_spell( unsigned int id, const std::string& token = std::string() ) const;
 
   artifact_power_t find_artifact_spell( const std::string& name, bool tokenized = false ) const;
 
@@ -4542,7 +4542,7 @@ private:
   {
     if ( ( yards >= current.distance_to_move ) && current.moving_away <= 0 )
     {
-      //x_position += current.distance_to_move; Maybe in wonderland we can track this type of player movement.
+      x_position += current.distance_to_move;
       current.distance_to_move = 0;
       current.movement_direction = MOVEMENT_NONE;
       buffs.raid_movement -> expire();
@@ -4551,13 +4551,13 @@ private:
     {
       if ( current.moving_away > 0 )
       {
-        //x_position -= yards;
+        x_position -= yards;
         current.moving_away -= yards;
         current.distance_to_move += yards;
       }
       else
       {
-        //x_position += yards;
+        x_position += yards;
         current.moving_away = 0;
         current.movement_direction = MOVEMENT_TOWARDS;
         current.distance_to_move -= yards;

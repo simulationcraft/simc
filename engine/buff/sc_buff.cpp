@@ -2033,7 +2033,7 @@ void haste_buff_t::haste_adjusted( bool is_changed )
     return;
 
   player->adjust_dynamic_cooldowns();
-  player->adjust_global_cooldown( haste_type );
+  //player->adjust_global_cooldown( haste_type );
   player->adjust_auto_attack( haste_type );
   player->adjust_action_queue_time();
 }
@@ -2049,7 +2049,7 @@ void haste_buff_t::expire( timespan_t delay )
   if ( is_changed )
   {
     player -> adjust_dynamic_cooldowns();
-    player -> adjust_global_cooldown( haste_type );
+    //player -> adjust_global_cooldown( haste_type );
     player -> adjust_auto_attack( haste_type );
     player -> adjust_action_queue_time();
   }

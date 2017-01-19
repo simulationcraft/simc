@@ -55,7 +55,8 @@ macx {
 
   Resources.files = ../Welcome.html ../Welcome.png ../Error.html
   Resources.path = Contents/Resources
-  Profiles.files = ../profiles/Tier19P ../profiles/Tier19H ../profiles/Tier19M
+  Profiles.files =  ../profiles/Tier19P ../profiles/Tier19H ../profiles/Tier19M
+  Profiles.files += ../profiles/Tier19H_NH ../profiles/Tier19M_NH
   Profiles.path = Contents/Resources/profiles
   Localization.files = ../locale/sc_de.qm ../locale/sc_it.qm ../locale/sc_zh.qm
   Localization.path = Contents/Resources/locale

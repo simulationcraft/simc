@@ -5087,7 +5087,7 @@ void player_t::stat_gain( stat_e    stat,
       invalidate_cache( cache_type );
 
       adjust_dynamic_cooldowns();
-      adjust_global_cooldown( HASTE_ANY );
+      //adjust_global_cooldown( HASTE_ANY );
       adjust_auto_attack( HASTE_ANY );
       // Queued execute must be adjusted after dynamid cooldowns / global cooldown
       adjust_action_queue_time();
@@ -5259,7 +5259,7 @@ void player_t::stat_loss( stat_e    stat,
       invalidate_cache( cache_type );
 
       adjust_dynamic_cooldowns();
-      adjust_global_cooldown( HASTE_ANY );
+      //adjust_global_cooldown( HASTE_ANY );
       adjust_auto_attack( HASTE_ANY );
       // Queued execute must be adjusted after dynamid cooldowns / global cooldown
       adjust_action_queue_time();
@@ -8245,13 +8245,14 @@ const spell_data_t* player_t::find_specialization_spell( const std::string& name
   {
     if ( unsigned spell_id = dbc.specialization_ability_id( _spec, name.c_str() ) )
     {
-      const spell_data_t* spell = dbc.spell( spell_id );
-      if ( ( ( int )spell -> level() <= true_level ) )
+      auto spell = dbc::find_spell( this, spell_id );
+
+      if ( ( as<int>( spell -> level() ) <= true_level ) )
       {
         if ( dbc::get_token( spell_id ).empty() )
           dbc.add_token( spell_id, token );
 
-        return dbc::find_spell( this, spell );
+        return spell;
       }
     }
   }
@@ -8263,11 +8264,11 @@ const spell_data_t* player_t::find_specialization_spell( unsigned spell_id, spec
 {
   if ( s == SPEC_NONE || s == _spec )
   {
-    auto spell = dbc.spell( spell_id );
+    auto spell = dbc::find_spell( this, spell_id );
     if ( dbc.is_specialization_ability( _spec, spell_id ) &&
          ( as<int>( spell -> level() ) <= true_level ) )
     {
-      return dbc::find_spell( this, spell );
+      return spell;
     }
   }
 
@@ -8366,13 +8367,13 @@ const spell_data_t* player_t::find_mastery_spell( specialization_e s, const std:
   {
     if ( unsigned spell_id = dbc.mastery_ability_id( s, idx ) )
     {
-      const spell_data_t* spell = dbc.spell( spell_id );
-      if ( ( int )spell -> level() <= true_level )
+      const spell_data_t* spell = dbc::find_spell( this, spell_id );
+      if ( as<int>( spell -> level() ) <= true_level )
       {
         if ( dbc::get_token( spell_id ).empty() )
           dbc.add_token( spell_id, token );
 
-        return dbc::find_spell( this, spell );
+        return spell;
       }
     }
   }
@@ -8480,16 +8481,16 @@ const spell_data_t* player_t::find_pet_spell( const std::string& name, const std
 
 // player_t::find_spell =====================================================
 
-const spell_data_t* player_t::find_spell( const unsigned int id, const std::string& token ) const
+const spell_data_t* player_t::find_spell( unsigned int id, const std::string& token ) const
 {
   if ( id )
   {
-    const spell_data_t* s = dbc.spell( id );
-    if ( s -> id() && ( int )s -> level() <= true_level )
+    auto spell = dbc::find_spell( this, id );
+    if ( spell -> id() && as<int>( spell -> level() ) <= true_level )
     {
       if ( dbc::get_token( id ).empty() )
         dbc.add_token( id, token );
-      return dbc::find_spell( this, s );
+      return spell;
     }
   }
 

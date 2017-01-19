@@ -3385,8 +3385,8 @@ struct arcane_orb_t : public arcane_mage_spell_t
 
   virtual timespan_t travel_time() const override
   {
-    return timespan_t::from_seconds( ( player -> current.distance - 10.0 ) /
-                                     16.0 );
+    return timespan_t::from_seconds( std::max( 0.1, ( ( player -> get_player_distance( *target ) - 10.0 ) /
+                                     16.0 ) ) );
   }
 
   virtual void impact( action_state_t* s ) override
@@ -3647,7 +3647,7 @@ struct cinderstorm_t : public fire_mage_spell_t
     }
     fire_mage_spell_t::execute();
 
-    double target_dist = player -> current.distance;
+    double target_dist = player -> get_player_distance( *execute_state -> target );
     double cinder_converge_distance =
       rng().range( cinder_converge_mean - cinder_converge_range,
                    cinder_converge_mean + cinder_converge_range );
@@ -4329,7 +4329,7 @@ struct flurry_t : public frost_mage_spell_t
   {
     // Approximate travel time from in game data.
     // TODO: Improve approximation
-    return timespan_t::from_seconds( ( player -> current.distance / 38 ) );
+    return timespan_t::from_seconds( ( player -> get_player_distance( *target ) / 38 ) );
   }
 
   virtual timespan_t execute_time() const override
@@ -8344,7 +8344,7 @@ void mage_t::apl_frost()
   action_priority_list_t* cooldowns    = get_action_priority_list( "cooldowns"         );
 
   default_list -> add_action( this, "Counterspell", "if=target.debuff.casting.react" );
-  default_list -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react=0&prev_gcd.1.flurry&spell_haste<0.845" );
+  default_list -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react=0&prev_gcd.1.flurry" );
   default_list -> add_action( this, "Time Warp", "if=(time=0&buff.bloodlust.down)|(buff.bloodlust.down&equipped.132410&(cooldown.icy_veins.remains<1|target.time_to_die<50))" );
   default_list -> add_action( mage_t::get_special_use_items( "horn_of_valor", false ) );
   default_list -> add_action( mage_t::get_special_use_items( "obelisk_of_the_void", false ) );

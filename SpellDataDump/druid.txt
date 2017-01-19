@@ -1,4 +1,4 @@
-SimulationCraft 715-01 for World of Warcraft 7.1.5 Live (wow build 23360, git build a7ace21)
+SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 2228653)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -5514,11 +5514,13 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=297867)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 100 | Scaled Value: 100 | Target: Self(1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self(1)
                    Affected Spells: Thrash (77758), Swipe (106785), Thrash (106830), Thrash (192090), Shadow Thrash (210687), Swipe (213764), Swipe (213771)
+                   Hotfixed: Base Value (100 -> 50)
 #2 (id=360004)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 22 | Target: Self(1)
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Thrash (192090)
+                   Hotfixed: Base Value (100 -> 50)
 Description      : Increases the damage done by your Swipe and Thrash by $m1%.
 
 Name             : Feral Affinity (id=202155) [Spell Family (7), Passive] 
@@ -7217,7 +7219,7 @@ GCD              : 1.5 seconds
 Duration         : 3 seconds
 Cooldown         : 30 seconds
 Proc Chance      : 101%
-Mechanic         : Unknown(110)
+Mechanic         : Unknown(42)
 Affecting spells : Balance Overrides Passive (106732), Feral Overrides Passive (106733), Guardian Overrides Passive (106734), Druid (137009), Restoration Druid (137012), Astral Influence (197524), Guttural Roars (204012), Ekowraith, Creator of Worlds (210667)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

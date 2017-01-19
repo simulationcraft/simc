@@ -1214,10 +1214,6 @@ public:
   {
     base_t::init_base_stats();
 
-    base.distance = 40;
-    if ( specialization() == HUNTER_SURVIVAL )
-      base.distance = 5;
-
     resources.base[RESOURCE_HEALTH] = util::interpolate( level(), 0, 4253, 6373 );
     resources.base[RESOURCE_FOCUS] = 100 + o() -> specs.kindred_spirits -> effectN( 1 ).resource( RESOURCE_FOCUS );
 
@@ -5739,6 +5735,10 @@ void hunter_t::init_spells()
 void hunter_t::init_base_stats()
 {
   player_t::init_base_stats();
+
+  base.distance = 40;
+  if ( specialization() == HUNTER_SURVIVAL )
+    base.distance = 5;
 
   base.attack_power_per_strength = 0.0;
   base.attack_power_per_agility  = 1.0;
