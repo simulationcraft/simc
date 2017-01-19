@@ -1215,10 +1215,12 @@ public:
 
     buffs.aspect_of_the_wild = 
       buff_creator_t( this, "aspect_of_the_wild", o() -> specs.aspect_of_the_wild )
-        .affects_regen( true )
         .cd( timespan_t::zero() )
         .default_value( o() -> specs.aspect_of_the_wild -> effectN( 1 ).percent() )
-        .add_invalidate( CACHE_CRIT_CHANCE );
+        .add_invalidate( CACHE_CRIT_CHANCE )
+        .tick_callback( [ this ]( buff_t *buff, int, const timespan_t& ){
+                          resource_gain( RESOURCE_FOCUS, buff -> data().effectN( 2 ).resource( RESOURCE_FOCUS ), gains.aspect_of_the_wild );
+                        } );
 
     if ( o() -> artifacts.wilderness_expert.rank() )
       buffs.aspect_of_the_wild -> buff_duration += o() -> artifacts.wilderness_expert.time_value();
@@ -1363,8 +1365,6 @@ public:
       double base = focus_regen_per_second() * o() -> buffs.steady_focus -> current_value;
       resource_gain( RESOURCE_FOCUS, base * periodicity.total_seconds(), gains.steady_focus );
     }
-    if ( buffs.aspect_of_the_wild -> up() )
-      resource_gain( RESOURCE_FOCUS, buffs.aspect_of_the_wild -> data().effectN( 2 ).resource( RESOURCE_FOCUS ) * periodicity.total_seconds(), gains.aspect_of_the_wild );
   }
 
   double focus_regen_per_second() const override
@@ -5732,9 +5732,11 @@ void hunter_t::create_buffs()
   buffs.aspect_of_the_wild           
     = buff_creator_t( this, 193530, "aspect_of_the_wild" )
       .cd( timespan_t::zero() )
-      .affects_regen( true )
       .add_invalidate( CACHE_CRIT_CHANCE )
-      .default_value( find_spell( 193530 ) -> effectN( 1 ).percent() );
+      .default_value( find_spell( 193530 ) -> effectN( 1 ).percent() )
+      .tick_callback( [ this ]( buff_t *buff, int, const timespan_t& ){
+                        resource_gain( RESOURCE_FOCUS, buff -> data().effectN( 2 ).resource( RESOURCE_FOCUS ), gains.aspect_of_the_wild );
+                      } );
   if ( artifacts.wilderness_expert.rank() )
   {
     buffs.aspect_of_the_wild 
@@ -5921,10 +5923,10 @@ void hunter_t::create_buffs()
 
   buffs.spitting_cobra = 
     buff_creator_t( this, "spitting_cobra", talents.spitting_cobra )
-    .affects_regen( true )
-    .default_value( find_spell( 194407 ) 
-                 -> effectN( 2 )
-                   .resource( RESOURCE_FOCUS ) );
+      .default_value( find_spell( 194407 ) -> effectN( 2 ).resource( RESOURCE_FOCUS ) )
+      .tick_callback( [ this ]( buff_t *buff, int, const timespan_t& ){
+                        resource_gain( RESOURCE_FOCUS, buff -> default_value, gains.spitting_cobra );
+                      } );
 
   buffs.t19_4p_mongoose_power = 
     buff_creator_t( this, 211362, "mongoose_power" )
@@ -6475,10 +6477,6 @@ void hunter_t::regen( timespan_t periodicity )
   }
   if ( buffs.dire_beast -> up() )
     resource_gain( RESOURCE_FOCUS, buffs.dire_beast -> check_stack_value() * periodicity.total_seconds(), gains.dire_beast );
-  if ( buffs.aspect_of_the_wild -> up() )
-    resource_gain( RESOURCE_FOCUS, buffs.aspect_of_the_wild -> data().effectN( 2 ).resource( RESOURCE_FOCUS ) * periodicity.total_seconds(), gains.aspect_of_the_wild );
-  if ( buffs.spitting_cobra -> up() )
-    resource_gain( RESOURCE_FOCUS, buffs.spitting_cobra -> default_value * periodicity.total_seconds(), gains.spitting_cobra );
 }
 
 // hunter_t::composite_attack_power_multiplier ==============================
