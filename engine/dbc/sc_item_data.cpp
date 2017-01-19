@@ -620,6 +620,14 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
     // support the bonus id stuff outside of our local item database.
     case ITEM_BONUS_MOD:
     {
+      // Check that Simulationcraft understands the stat the Blizzard's item bonus is proposing to
+      // add to the item
+      auto simc_stat_type = util::translate_item_mod( entry.value_1 );
+      if ( simc_stat_type == STAT_NONE )
+      {
+        break;
+      }
+
       // First, check if the item already has that stat
       int found = -1;
       int offset = -1;

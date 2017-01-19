@@ -14,7 +14,7 @@ spec=protection
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
-actions.precombat=flask,type=countless_armies
+actions.precombat=flask,type=ten_thousand_scars
 actions.precombat+=/food,type=azshari_salad
 actions.precombat+=/augmentation,type=defiled
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
@@ -30,23 +30,20 @@ actions+=/arcane_torrent
 actions+=/call_action_list,name=prot
 
 actions.prot=spell_reflection,if=incoming_damage_2500ms>health.max*0.20
-actions.prot+=/demoralizing_shout,if=incoming_damage_2500ms>health.max*0.20
-actions.prot+=/last_stand,if=incoming_damage_2500ms>health.max*0.50
-actions.prot+=/shield_wall,if=incoming_damage_2500ms>health.max*0.50&!cooldown.last_stand.remains=0
+actions.prot+=/demoralizing_shout,if=incoming_damage_2500ms>health.max*0.20&!talent.booming_voice.enabled
+actions.prot+=/last_stand,if=incoming_damage_2500ms>health.max*0.40
+actions.prot+=/shield_wall,if=incoming_damage_2500ms>health.max*0.40&!cooldown.last_stand.remains=0
 actions.prot+=/potion,name=unbending_potion,if=(incoming_damage_2500ms>health.max*0.15&!buff.potion.up)|target.time_to_die<=25
 actions.prot+=/battle_cry,if=cooldown.shield_slam.remains=0
-actions.prot+=/revenge,if=buff.revenge.react
 actions.prot+=/demoralizing_shout,if=talent.booming_voice.enabled&buff.battle_cry.up
 actions.prot+=/ravager,if=talent.ravager.enabled&buff.battle_cry.up
-actions.prot+=/neltharions_fury,if=!buff.shield_block.up&cooldown.shield_block.remains>3&cooldown.shield_slam.remains>3
-actions.prot+=/shield_block,if=!buff.neltharions_fury.up&(cooldown.shield_slam.remains=0|action.shield_block.charges=2)
-actions.prot+=/shield_slam,if=!(cooldown.shield_block.remains<=gcd.max*2&!buff.shield_block.up&talent.heavy_repercussions.enabled)
-actions.prot+=/revenge,if=cooldown.shield_slam.remains<=gcd.max*1.5|spell_targets.revenge>=2
-actions.prot+=/ignore_pain,if=(rage>=60&!talent.vengeance.enabled)|(buff.vengeance_ignore_pain.up&rage>=39)|(talent.vengeance.enabled&!buff.vengeance_ignore_pain.up&!buff.vengeance_revenge.up&rage<30)
-actions.prot+=/revenge,if=(buff.vengeance_revenge.up&!buff.vengeance_ignore_pain.up&rage>=59)|!buff.vengeance_ignore_pain.up|(talent.vengeance.enabled&!buff.vengeance_ignore_pain.up&!buff.vengeance_revenge.up&rage>=69)|(rage>=100)
-actions.prot+=/thunder_clap,if=spell_targets.thunder_clap>=4
-actions.prot+=/devastate
+actions.prot+=/neltharions_fury,if=!buff.shield_block.up&cooldown.shield_block.remains>3&((cooldown.shield_slam.remains>3&talent.heavy_repercussions.enabled)|(!talent.heavy_repercussions.enabled))
+actions.prot+=/shield_block,if=!buff.neltharions_fury.up&((cooldown.shield_slam.remains=0&talent.heavy_repercussions.enabled)|action.shield_block.charges=2|!talent.heavy_repercussions.enabled)
+actions.prot+=/ignore_pain,if=(rage>=60&!talent.vengeance.enabled)|(buff.vengeance_ignore_pain.up&rage>=39)|(talent.vengeance.enabled&!buff.vengeance_ignore_pain.up&!buff.vengeance_revenge.up&rage<30&!buff.revenge.react)
+actions.prot+=/shield_slam,if=(!(cooldown.shield_block.remains<=gcd.max*2&!buff.shield_block.up)&talent.heavy_repercussions.enabled)|!talent.heavy_repercussions.enabled
 actions.prot+=/thunder_clap
+actions.prot+=/revenge,if=(talent.vengeance.enabled&buff.revenge.react&!buff.vengeance_ignore_pain.up)|(buff.vengeance_revenge.up&rage>=59)|(talent.vengeance.enabled&!buff.vengeance_ignore_pain.up&!buff.vengeance_revenge.up&rage>=69)|(!talent.vengeance.enabled&buff.revenge.react)
+actions.prot+=/devastate
 
 head=venomfanged_barbute,id=139229,bonus_id=1502/1806
 neck=cursed_beartooth_necklace,id=139239,bonus_id=1502/1806,enchant=mark_of_the_heavy_hide
