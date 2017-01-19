@@ -4999,12 +4999,10 @@ struct stampede_t: public hunter_spell_t
 
 struct trueshot_t: public hunter_spell_t
 {
-  double value;
   trueshot_t( hunter_t* p, const std::string& options_str ):
     hunter_spell_t( "trueshot", p, p -> specs.trueshot )
   {
     parse_options( options_str );
-    value = data().effectN( 1 ).percent();
 
     // Quick Shot: spell data adds -30 seconds to CD
     if ( p -> artifacts.quick_shot.rank() )
@@ -5013,7 +5011,7 @@ struct trueshot_t: public hunter_spell_t
 
   virtual void execute() override
   {
-    p() -> buffs.trueshot -> trigger( 1, value );
+    p() -> buffs.trueshot -> trigger();
 
     if ( p() -> artifacts.rapid_killing.rank() )
       p() -> buffs.rapid_killing -> trigger();
@@ -5907,10 +5905,9 @@ void hunter_t::create_buffs()
                      .percent() );
 
   buffs.trueshot = 
-    buff_creator_t( this, "trueshot", specs.trueshot )
+    haste_buff_creator_t( this, "trueshot", specs.trueshot )
       .default_value( specs.trueshot -> effectN( 1 ).percent() )
-      .cd( timespan_t::zero() )
-      .add_invalidate( CACHE_HASTE );
+      .cd( timespan_t::zero() );
 
   // Survival
 
