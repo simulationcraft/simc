@@ -2685,10 +2685,10 @@ struct auto_shot_t: public hunter_action_t < ranged_attack_t >
   }
 };
 
-struct start_attack_t: public hunter_ranged_attack_t
+struct start_attack_t: public action_t
 {
   start_attack_t( hunter_t* p, const std::string& options_str ):
-    hunter_ranged_attack_t( "start_auto_shot", p, spell_data_t::nil() )
+    action_t( ACTION_OTHER, "start_auto_shot", p )
   {
     parse_options( options_str );
 
@@ -2701,7 +2701,7 @@ struct start_attack_t: public hunter_ranged_attack_t
 
   virtual void execute() override
   {
-    p() -> main_hand_attack -> schedule_execute();
+    player -> main_hand_attack -> schedule_execute();
   }
 
   virtual bool ready() override
@@ -3808,10 +3808,10 @@ struct melee_t: public hunter_melee_attack_t
 
 // Auto attack =======================================================================
 
-struct auto_attack_t: public hunter_melee_attack_t
+struct auto_attack_t: public action_t
 {
   auto_attack_t( hunter_t* player, const std::string& options_str ) :
-    hunter_melee_attack_t( "auto_attack", player, spell_data_t::nil() )
+    action_t( ACTION_OTHER, "auto_attack", player )
   {
     parse_options( options_str );
     player -> main_hand_attack = new melee_t( player );
