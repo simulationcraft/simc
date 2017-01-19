@@ -5163,7 +5163,7 @@ struct explosive_trap_t: public hunter_spell_t
   {
     parse_options( options_str );
 
-    harmful = false;
+    harmful = may_hit = false;
 
     impact_action = new explosive_trap_impact_t( p );
     add_child( impact_action );
@@ -5177,30 +5177,42 @@ struct explosive_trap_t: public hunter_spell_t
 
 struct steel_trap_t: public hunter_spell_t
 {
+  struct steel_trap_impact_t : public hunter_spell_t
+  {
+    steel_trap_impact_t( hunter_t* p ):
+      hunter_spell_t( "steel_trap_impact", p, p -> find_spell( 162487 ) )
+    {
+      if ( p -> talents.expert_trapper -> ok() )
+        parse_effect_data( p -> find_spell( 201199 ) -> effectN( 1 ) );
+
+      background = true;
+      dual = true;
+
+      hasted_ticks = false;
+      may_crit = tick_may_crit = true;
+    }
+
+    void execute() override
+    {
+      hunter_spell_t::execute();
+
+      if ( p() -> legendary.sv_feet )
+        p() -> resource_gain( RESOURCE_FOCUS, p() -> find_spell( 212575 ) -> effectN( 1 ).resource( RESOURCE_FOCUS ), p() -> gains.nesingwarys_trapping_treads );
+    }
+  };
+
   steel_trap_t( hunter_t* p, const std::string& options_str ):
     hunter_spell_t( "steel_trap", p, p -> talents.steel_trap )
   {
     parse_options( options_str );
 
-    attack_power_mod.direct = p -> talents.expert_trapper -> ok() ? p -> find_spell( 201199 ) -> effectN( 1 ).ap_coeff() : 0.0;
-    attack_power_mod.tick = 1.0;
-    base_tick_time = p -> find_spell( 162487 ) -> effectN( 1 ).period();
-    dot_duration = p -> find_spell ( 162487 ) -> duration();
-    hasted_ticks = false;
-    may_crit = true;
-    tick_may_crit = true;
-    trigger_gcd = p -> talents.steel_trap -> gcd();
+    harmful = may_hit = false;
+
+    impact_action = new steel_trap_impact_t( p );
+    add_child( impact_action );
 
     if ( p -> artifacts.hunters_guile.rank() )
-        cooldown -> duration *= 1.0 + p -> artifacts.hunters_guile.percent();
-  }
-
-  virtual void execute() override
-  {
-    hunter_spell_t::execute();
-
-    if ( p() -> legendary.sv_feet )
-      p() -> resource_gain( RESOURCE_FOCUS, p() -> find_spell( 212575 ) -> effectN( 1 ).resource( RESOURCE_FOCUS ), p() -> gains.nesingwarys_trapping_treads );
+      cooldown -> duration *= 1.0 + p -> artifacts.hunters_guile.percent();
   }
 };
 
