@@ -843,7 +843,6 @@ struct hunter_melee_attack_t: public hunter_action_t < melee_attack_t >
     if ( p -> main_hand_weapon.type == WEAPON_NONE )
       background = true;
 
-    weapon = &p -> main_hand_weapon;
     may_block = false;
     may_crit = true;
     may_parry = false;
@@ -3741,7 +3740,6 @@ struct talon_strike_t: public hunter_melee_attack_t
     hunter_melee_attack_t( "talon_strike", p, p -> find_spell( 203525 ) )
   {
     background = true;
-    weapon_multiplier = 0.0;
   }
 };
 
@@ -3962,8 +3960,6 @@ struct lacerate_t: public hunter_melee_attack_t
     direct_tick = false;
     dot_duration = data().duration();
     tick_zero = false;
-    weapon_multiplier = 0.0;
-    weapon_power_mod = 0.0;
 
     if ( p -> artifacts.lacerating_talons.rank() )
       base_multiplier *= 1.0 + p -> artifacts.lacerating_talons.percent();
@@ -4001,7 +3997,6 @@ struct serpent_sting_t: public hunter_melee_attack_t
     background = true;
     tick_may_crit = true;
     hasted_ticks = tick_zero = false;
-    weapon = nullptr;
   }
 };
 
@@ -4097,7 +4092,6 @@ struct fury_of_the_eagle_t: public hunter_melee_attack_t
       hunter_melee_attack_t( "fury_of_the_eagle_tick", p, p -> find_spell( 203413 ) )
     {
       aoe = -1;
-      weapon_multiplier = 0;
       background = true;
       may_crit = true;
       radius = data().max_range();
@@ -4111,7 +4105,6 @@ struct fury_of_the_eagle_t: public hunter_melee_attack_t
 
     channeled = true;
     tick_zero = true;
-    weapon_multiplier = 0;
     tick_action = new fury_of_the_eagle_tick_t( p );
   }
 
@@ -4218,7 +4211,6 @@ struct throwing_axes_t: public hunter_melee_attack_t
       hunter_melee_attack_t( "throwing_axes_tick", p, p -> find_spell( 200167 ) )
     {
       background = true;
-      weapon_multiplier = 0.0;
     }
   };
 
@@ -4232,8 +4224,6 @@ struct throwing_axes_t: public hunter_melee_attack_t
     dot_duration = timespan_t::from_seconds( 0.6 );
     range = data().max_range();
     tick_action = new throwing_axes_tick_t( p );
-    weapon_multiplier = 0.0;
-    weapon_power_mod = 0.0;
   }
 };
 
@@ -4277,7 +4267,6 @@ struct on_the_trail_t: public hunter_melee_attack_t
     hunter_melee_attack_t( "on_the_trail", p, p -> find_spell( 204081 ) )
   {
     background = true;
-    weapon_multiplier = 0.0;
     tick_may_crit = false;
   }
 
@@ -4300,7 +4289,6 @@ struct harpoon_t: public hunter_melee_attack_t
   {
     parse_options( options_str );
     harmful = false;
-    weapon_multiplier = 0.0;
 
     if ( p -> artifacts.eagles_bite.rank() )
       on_the_trail = new on_the_trail_t( p );
