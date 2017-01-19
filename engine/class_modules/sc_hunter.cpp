@@ -557,6 +557,8 @@ public:
   {
     ab::init();
 
+    ab::gcd_haste = hasted_gcd ? HASTE_ATTACK : HASTE_NONE;
+
     if ( ab::data().affected_by( p() -> specs.beast_mastery_hunter -> effectN( 1 ) ) )
       ab::base_dd_multiplier *= 1.0 + p() -> specs.beast_mastery_hunter -> effectN( 1 ).percent();
 
@@ -616,19 +618,6 @@ public:
       cost *= 1.0 + p() -> find_spell( 207318 ) -> effectN( 1 ).percent();
 
     return cost;
-  }
-
-  virtual timespan_t gcd() const override
-  {
-    timespan_t g = ab::gcd();
-
-    if ( g == timespan_t::zero() )
-      return g;
-
-    if ( hasted_gcd )
-      g *= p() -> cache.attack_haste();
-
-    return g < ab::min_gcd ? ab::min_gcd : g;
   }
 
   virtual double cast_regen() const
