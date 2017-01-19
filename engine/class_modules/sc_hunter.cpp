@@ -2525,12 +2525,12 @@ struct volley_tick_t: hunter_ranged_attack_t
   {}
 };
 
-struct volley_t: hunter_ranged_attack_t
+struct volley_t: hunter_spell_t
 {
   std::string onoff;
   bool onoffbool;
   volley_t( hunter_t* p, const std::string&  options_str  ):
-    hunter_ranged_attack_t( "volley", p, p -> talents.volley )
+    hunter_spell_t( "volley", p, p -> talents.volley )
   {
     harmful = false;
     add_option( opt_string( "toggle", onoff ) );
@@ -2553,7 +2553,7 @@ struct volley_t: hunter_ranged_attack_t
 
   virtual void execute() override
   {
-    hunter_ranged_attack_t::execute();
+    hunter_spell_t::execute();
 
     if ( onoffbool )
       p() -> buffs.volley -> trigger();
@@ -2571,7 +2571,7 @@ struct volley_t: hunter_ranged_attack_t
     {
       return false;
     }
-    return hunter_ranged_attack_t::ready();
+    return hunter_spell_t::ready();
   }
 };
 
