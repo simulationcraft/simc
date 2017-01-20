@@ -2429,6 +2429,11 @@ public:
     p() -> buffs.empowered_life_tap -> up();
 
     p() -> buffs.demonic_synergy -> up();
+
+    if ( p() -> legendary.feretory_of_souls && rng().roll( p() -> find_spell( 205702 ) -> proc_chance() ) && ( ( dbc::is_school( SCHOOL_FIRE, school ) || dbc::is_school( SCHOOL_CHROMATIC, school ) || dbc::is_school( SCHOOL_SHADOWFLAME, school ) || dbc::is_school( SCHOOL_CHAOS, school ) ) ) )
+    {
+      p() -> resource_gain( RESOURCE_SOUL_SHARD, 1.0, p() -> gains.feretory_of_souls );
+    }
   }
 
   void consume_resource() override
@@ -3589,16 +3594,6 @@ struct immolate_t: public warlock_spell_t
       td( d -> target ) -> debuffs_roaring_blaze -> expire();
   }
 
-  void execute() override
-  {
-    warlock_spell_t::execute();
-
-    if ( p() -> legendary.feretory_of_souls && rng().roll( p() -> find_spell( 205702 ) -> proc_chance() ) )
-    {
-      p() -> resource_gain( RESOURCE_SOUL_SHARD, 1.0, p() -> gains.feretory_of_souls );
-    }
-  }
-
   virtual void tick( dot_t* d ) override
   {
     warlock_spell_t::tick( d );
@@ -3692,10 +3687,6 @@ struct conflagrate_t: public warlock_spell_t
 
     p() -> buffs.conflagration_of_chaos -> trigger();
 
-    if ( p() -> legendary.feretory_of_souls && rng().roll( p() -> find_spell( 205702 ) -> proc_chance() ) )
-    {
-      p() -> resource_gain( RESOURCE_SOUL_SHARD, 1.0, p() -> gains.feretory_of_souls );
-    }
   }
 
   void impact( action_state_t* s ) override
@@ -3767,11 +3758,6 @@ struct incinerate_t: public warlock_spell_t
     {
       p() -> cooldowns.dimensional_rift -> adjust( -p() -> cooldowns.dimensional_rift -> duration ); //decrease remaining time by the duration of one charge, i.e., add one charge
       p() -> procs.dimension_ripper -> occur();
-    }
-
-    if ( p() -> legendary.feretory_of_souls && rng().roll( p() -> find_spell( 205702 ) -> proc_chance() ) )
-    {
-      p() -> resource_gain( RESOURCE_SOUL_SHARD, 1.0, p() -> gains.feretory_of_souls );
     }
 
     p() -> buffs.backdraft -> decrement();
@@ -4188,11 +4174,6 @@ struct rain_of_fire_t : public warlock_spell_t
       .duration( data().duration() * player -> cache.spell_haste() )
       .start_time( sim -> current_time() )
       .action( p() -> active.rain_of_fire ) );
-
-    if ( p() -> legendary.feretory_of_souls && rng().roll( p() -> find_spell( 205702 ) -> proc_chance() ) )
-    {
-      p() -> resource_gain( RESOURCE_SOUL_SHARD, 1.0, p() -> gains.feretory_of_souls );
-    }
   }
 };
 
@@ -5039,11 +5020,6 @@ struct shadowburn_t: public warlock_spell_t
       p()->buffs.conflagration_of_chaos -> expire();
 
     p() -> buffs.conflagration_of_chaos -> trigger();
-
-    if ( p() -> legendary.feretory_of_souls && rng().roll( p() -> find_spell( 205702 ) -> proc_chance() ) )
-    {
-      p() -> resource_gain( RESOURCE_SOUL_SHARD, 1.0, p() -> gains.feretory_of_souls );
-    }
   }
 };
 
@@ -7590,7 +7566,7 @@ struct stretens_insanity_t: public scoped_actor_callback_t<warlock_t>
 
 struct feretory_of_souls_t : public scoped_actor_callback_t<warlock_t>
 {
-  feretory_of_souls_t() : super( WARLOCK_DESTRUCTION )
+  feretory_of_souls_t() : super( WARLOCK )
   { }
 
   void manipulate( warlock_t* a, const special_effect_t& ) override
