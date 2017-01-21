@@ -4120,6 +4120,9 @@ struct aftershocks_t : public fire_mage_spell_t
     aoe = -1;
     triggers_ignite = true;
 
+    //Mana hotfix
+    base_costs[ RESOURCE_MANA ] = 27390;
+
   }
 };
 
@@ -5754,6 +5757,9 @@ struct pyroblast_t : public fire_mage_spell_t
       conjure_phoenix = new conjure_phoenix_t( p );
       add_child( conjure_phoenix );
     }
+
+    //mana hotfix
+    base_costs[ RESOURCE_MANA ] = 22000;
 
     base_multiplier *= 1.0 + p -> artifact.pyroclasmic_paranoia.percent();
   }
