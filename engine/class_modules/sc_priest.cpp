@@ -5157,7 +5157,7 @@ void priest_t::apl_precombat()
   if ( sim->allow_potions && true_level >= 80 )
   {
     if ( true_level > 100 )
-      precombat->add_action( "potion,name=deadly_grace" );
+      precombat->add_action( "potion,name=prolonged_power" );
     else if ( true_level > 90 )
       precombat->add_action( "potion,name=draenic_intellect" );
     else if ( true_level > 85 )
@@ -5177,11 +5177,8 @@ void priest_t::apl_precombat()
     default:
       precombat->add_action( this, "Shadowform", "if=!buff.shadowform.up" );
       precombat->add_action(
-        "variable,op=set,name=s2mbeltcheck,value=1,if=cooldown.mind_blast."
+        "variable,op=set,name=s2mbeltcheck,value=cooldown.mind_blast."
         "charges>=2" );
-      precombat->add_action(
-        "variable,op=set,name=s2mbeltcheck,value=0,if=cooldown.mind_blast."
-        "charges<=1" );
       precombat->add_action( "mind_blast" );
       break;
   }
@@ -5258,8 +5255,8 @@ void priest_t::apl_shadow()
   {
     if ( true_level > 100 )
       default_list->add_action(
-          "potion,name=deadly_grace,if=buff.bloodlust.react|target.time_to_die<"
-          "=40|(buff.voidform.stack>60&buff.power_infusion.up)" );
+          "potion,name=prolonged_power,if=buff.bloodlust.react|target.time_to_die<"
+          "=80|enemy_health_pct<35&cooldown.power_infusion.remains<30)" );
     else if ( true_level > 90 )
       default_list->add_action(
           "potion,name=draenic_intellect,if=buff.bloodlust.react|target.time_"
