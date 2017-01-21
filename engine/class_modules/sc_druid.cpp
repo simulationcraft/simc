@@ -7041,6 +7041,8 @@ void druid_t::apl_feral()
     "combo_points=5&(energy.time_to_max<1|buff.berserk.up|buff.incarnation.up|buff.elunes_guidance.up|cooldown.tigers_fury.remains<3|"
     "set_bonus.tier18_4pc|(talent.moment_of_clarity.enabled&buff.clearcasting.react))",
     "Replace FB with Swipe at 6 targets for Bloodtalons or 3 targets otherwise." );
+  finish->add_action(this, "Maim", ",if=combo_points=5&buff.fiery_red_maimers.up&"
+        "(energy.time_to_max<1|buff.berserk.up|buff.incarnation.up|buff.elunes_guidance.up|cooldown.tigers_fury.remains<3)");
   finish -> add_action( this, "Ferocious Bite", "max_energy=1,cycle_targets=1,if=combo_points=5&"
     "(energy.time_to_max<1|buff.berserk.up|buff.incarnation.up|buff.elunes_guidance.up|cooldown.tigers_fury.remains<3)" );
 
