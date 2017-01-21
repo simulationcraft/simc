@@ -578,19 +578,15 @@ public:
       ab::base_td_multiplier *= 1.0 + p() -> specs.survival_hunter -> effectN( 2 ).percent();
   }
 
-  void execute() override
+  void consume_resource() override
   {
-    ab::execute();
+    ab::consume_resource();
 
-    // TODO: Verify if only integer chunks of focus reduce the CD, or if there's rollover
-    if ( p() -> sets.has_set_bonus( HUNTER_MARKSMANSHIP, T19, B2 ) )
+    if ( ab::resource_consumed > 0 && p() -> sets.has_set_bonus( HUNTER_MARKSMANSHIP, T19, B2 ) )
     {
+      const double set_value = p() -> sets.set( HUNTER_MARKSMANSHIP, T19, B2 ) -> effectN( 1 ).base_value();
       p() -> cooldowns.trueshot
-        -> adjust( timespan_t::from_seconds( -1.0 *
-                                             cost() /
-                                               p() -> sets.set( HUNTER_MARKSMANSHIP, T19, B2 )
-                                            -> effectN( 1 )
-                                              .base_value() ) );
+        -> adjust( timespan_t::from_seconds( -1.0 * ab::resource_consumed / set_value ) );
     }
   }
 
