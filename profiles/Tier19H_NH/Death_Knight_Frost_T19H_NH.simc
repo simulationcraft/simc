@@ -30,7 +30,7 @@ actions+=/blood_fury,if=buff.pillar_of_frost.up
 actions+=/berserking,if=buff.pillar_of_frost.up
 actions+=/use_item,slot=trinket1
 actions+=/potion,name=old_war,if=buff.pillar_of_frost.up
-actions+=/sindragosas_fury,if=buff.pillar_of_frost.up&(buff.unholy_strength.up|(buff.pillar_of_frost.remains<3&target.time_to_die<60))&debuff.razorice.stack==5&!buff.obliteration.up
+actions+=/sindragosas_fury,if=buff.pillar_of_frost.up&(buff.unholy_strength.up|(buff.pillar_of_frost.remains<3&target.time_to_die<60))&debuff.razorice.stack=5&!buff.obliteration.up
 actions+=/obliteration,if=(!talent.frozen_pulse.enabled|(rune<2&runic_power<28))&!talent.gathering_storm.enabled
 actions+=/call_action_list,name=generic,if=!talent.breath_of_sindragosa.enabled&!(talent.gathering_storm.enabled&buff.remorseless_winter.remains)
 actions+=/call_action_list,name=bos,if=talent.breath_of_sindragosa.enabled&!dot.breath_of_sindragosa.ticking
@@ -62,7 +62,7 @@ actions.bos_ticking+=/remorseless_winter,if=talent.gathering_storm.enabled|!set_
 actions.generic=frost_strike,if=!talent.shattering_strikes.enabled&(buff.icy_talons.remains<1.5&talent.icy_talons.enabled)
 actions.generic+=/frost_strike,if=talent.shattering_strikes.enabled&debuff.razorice.stack=5
 actions.generic+=/howling_blast,target_if=!dot.frost_fever.ticking
-actions.generic+=/obliterate,if=equipped.132366&talent.runic_attenuation.enabled&set_bonus.tier19_2pc=1
+actions.generic+=/obliterate,if=equipped.132366&talent.frozen_pulse.enabled&set_bonus.tier19_2pc=1
 actions.generic+=/remorseless_winter,if=(buff.rime.react&equipped.132459&!(buff.obliteration.up&spell_targets.howling_blast<2))|talent.gathering_storm.enabled
 actions.generic+=/howling_blast,if=buff.rime.react&!(buff.obliteration.up&spell_targets.howling_blast<2)
 actions.generic+=/frost_strike,if=runic_power.deficit<=10
@@ -72,6 +72,7 @@ actions.generic+=/frostscythe,if=(buff.killing_machine.react&spell_targets.frost
 actions.generic+=/glacial_advance,if=spell_targets.glacial_advance>=2
 actions.generic+=/frostscythe,if=spell_targets.frostscythe>=3
 actions.generic+=/obliterate,if=buff.killing_machine.react
+actions.generic+=/frost_strike,if=(talent.horn_of_winter.enabled|talent.hungering_rune_weapon.enabled)&(set_bonus.tier19_2pc=1|set_bonus.tier19_4pc=1)
 actions.generic+=/obliterate
 actions.generic+=/glacial_advance
 actions.generic+=/horn_of_winter,if=!dot.hungering_rune_weapon.ticking

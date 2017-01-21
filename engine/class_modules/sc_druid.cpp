@@ -134,9 +134,10 @@ struct druid_td_t : public actor_target_data_t
            dots.wild_growth   -> is_ticking();
   }
 
-  unsigned feral_tier19_4pc_bleeds() // TOCHECK
+  unsigned feral_tier19_4pc_bleeds()
   {
-    return dots.rip -> is_ticking()
+     return dots.rip->is_ticking()
+           + dots.ashamanes_frenzy->is_ticking()
            + dots.rake -> is_ticking()
            + dots.thrash_cat -> is_ticking();
   }
@@ -3311,7 +3312,16 @@ struct tigers_fury_t : public cat_attack_t
   {
     cat_attack_t::execute();
 
-    p() -> buff.tigers_fury -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, duration );
+    if ( p() -> talent.predator -> ok() )
+    {
+       p() -> buff.tigers_fury -> trigger(1, buff_t::DEFAULT_VALUE(), 1.0, 
+          duration + duration.from_millis( p() -> talent.predator -> effectN(1).base_value() ));
+    }
+    else 
+    {
+       p() -> buff.tigers_fury -> trigger(1, buff_t::DEFAULT_VALUE(), 1.0, duration);
+    }
+    
 
     p() -> buff.ashamanes_energy -> trigger();
   }
@@ -7031,6 +7041,8 @@ void druid_t::apl_feral()
     "combo_points=5&(energy.time_to_max<1|buff.berserk.up|buff.incarnation.up|buff.elunes_guidance.up|cooldown.tigers_fury.remains<3|"
     "set_bonus.tier18_4pc|(talent.moment_of_clarity.enabled&buff.clearcasting.react))",
     "Replace FB with Swipe at 6 targets for Bloodtalons or 3 targets otherwise." );
+  finish->add_action(this, "Maim", ",if=combo_points=5&buff.fiery_red_maimers.up&"
+        "(energy.time_to_max<1|buff.berserk.up|buff.incarnation.up|buff.elunes_guidance.up|cooldown.tigers_fury.remains<3)");
   finish -> add_action( this, "Ferocious Bite", "max_energy=1,cycle_targets=1,if=combo_points=5&"
     "(energy.time_to_max<1|buff.berserk.up|buff.incarnation.up|buff.elunes_guidance.up|cooldown.tigers_fury.remains<3)" );
 
@@ -9070,6 +9082,17 @@ struct druid_module_t : public module_t
       .operation( hotfix::HOTFIX_SET )
       .modifier( 40 )
       .verification_value( 76 );
+    hotfix::register_effect("Druid", "2017-01-21", "(Direct) - Damage of most feral abilities increased by 8%", 179694 )
+       .field( "base_value" )
+       .operation( hotfix::HOTFIX_SET )
+       .modifier( 16.64 )
+       .verification_value( 8 );
+    hotfix::register_effect("Druid", "2017-01-21", "(Dot) - Damage of most feral abilities increased by 8%", 191154 )
+       .field( "base_value" )
+       .operation( hotfix::HOTFIX_SET )
+       .modifier( 16.64 )
+       .verification_value( 8 );
+
     /*
     hotfix::register_effect( "Druid", "2016-09-23", "Sunfire damage increased by 10%.-dot", 232417 )
       .field( "sp_coefficient" )

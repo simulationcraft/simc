@@ -24,7 +24,7 @@ actions.precombat+=/augmentation,type=defiled
 actions.precombat+=/snapshot_stats
 actions.precombat+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
 actions.precombat+=/life_tap,if=talent.empowered_life_tap.enabled&!buff.empowered_life_tap.remains
-actions.precombat+=/potion,name=deadly_grace
+actions.precombat+=/potion,name=prolonged_power
 actions.precombat+=/chaos_bolt
 
 # Executed every time the actor is available.
