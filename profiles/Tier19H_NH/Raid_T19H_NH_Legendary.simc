@@ -1,8 +1,8 @@
-# T19M_NH w/ 1x Legendary
-# Tier 19 Mythic Nighthold
-# * Ilvl Cap: 910
-# * Artifact Rank Cap: 54
-# * 3 Relics with max ilevel of 910
+# T19H_NH w/ 1x Legendary
+# Tier 19 Heroic Nighthold
+# * Ilvl Cap: 895
+# * Artifact Rank Cap: 40
+# * 3 Relics with max ilevel of 895
 # * No items from World Bosses / World Quests / BoEs
 # * Mythic+ gear is permitted up to the Mythic+ item level cap
 # * No Random Gems (ie. Bonus RNG Gem Slots)
@@ -13,12 +13,12 @@
 optimal_raid=1
 default_actions=1
 # This template variable is used to call the right profile from the Legendaries profiles (so only one profile for every Tiers)
-$(Tier)=T19M_NH
+$(Tier)=T19H_NH
 
 
 # Death Knight
-DeathKnight_Frost_Legendaries.simc
-DeathKnight_Unholy_Legendaries.simc
+#DeathKnight_Frost_Legendaries.simc
+#DeathKnight_Unholy_Legendaries.simc
 
 # Demon Hunter
 Demon_Hunter_Havoc_Legendaries.simc
@@ -39,7 +39,7 @@ Demon_Hunter_Havoc_Legendaries.simc
 #Paladin_Legendaries.simc
 
 # Priest
-Priest_Legendaries.simc
+#Priest_Legendaries.simc
 
 # Rogue
 Rogue_Legendaries.simc
