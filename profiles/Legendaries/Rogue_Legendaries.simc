@@ -72,11 +72,11 @@ wrists=greenskins_waterlogged_wristcuffs,id=137099,ilevel=$(iLvl)
 
 copy=Otl_$(Tier)_Bracers_Ring,Otl_$(Tier)_Baseline
 talent_override=quick_draw
-$(Item_$(Tier))
 wrists=greenskins_waterlogged_wristcuffs,id=137099,ilevel=$(iLvl)
 finger1=insignia_of_ravenholdt,id=137049,gem_id=130221,enchant=binding_of_versatility,ilevel=$(iLvl)
 
 copy=Otl_$(Tier)_Ring_Shoulders,Otl_$(Tier)_Baseline
+$(Item_$(Tier))
 shoulders=mantle_of_the_master_assassin,id=144236,ilevel=$(iLvl)
 finger1=insignia_of_ravenholdt,id=137049,gem_id=130221,enchant=binding_of_versatility,ilevel=$(iLvl)
 
