@@ -450,6 +450,7 @@ public:
     buff_t* will_of_the_necropolis;
     buff_t* remorseless_winter;
     buff_t* frozen_soul;
+    buff_t* hungering_rune_weapon;
 
     absorb_buff_t* blood_shield;
     buff_t* rune_tap;
@@ -4848,13 +4849,12 @@ struct hungering_rune_weapon_t : public death_knight_spell_t
   {
     parse_options( options_str );
 
-    harmful = hasted_ticks = false;
+    harmful = false;
     // Handle energize in a custom way
     energize_type = ENERGIZE_NONE;
-    tick_zero = true;
-    // Spell has two different periodicities in two effects, weird++. Pick the one that is indicated
-    // by the tooltip.
-    base_tick_time = data().effectN( 1 ).period();
+
+    // Buff handles the ticking, this one just triggers the buff
+    dot_duration = base_tick_time = timespan_t::zero();
   }
 
   void init() override
@@ -4867,12 +4867,14 @@ struct hungering_rune_weapon_t : public death_knight_spell_t
       ( 1.0 - p() -> legendary.seal_of_necrofantasia -> effectN( 2 ).percent() );
   }
 
-  void tick( dot_t* d ) override
+  void execute() override
   {
-    death_knight_spell_t::tick( d );
+    death_knight_spell_t::execute();
 
+    // Emulate immediate gain
     p() -> replenish_rune( data().effectN( 1 ).base_value(), p() -> gains.hungering_rune_weapon );
-    p() -> resource_gain( RESOURCE_RUNIC_POWER, data().effectN( 2 ).resource( RESOURCE_RUNIC_POWER ), p() -> gains.hungering_rune_weapon, this );
+    p() -> resource_gain( RESOURCE_RUNIC_POWER, data().effectN( 2 ).resource( RESOURCE_RUNIC_POWER ), p() -> gains.hungering_rune_weapon );
+    p() -> buffs.hungering_rune_weapon -> trigger();
   }
 };
 
@@ -7005,11 +7007,11 @@ void death_knight_t::default_apl_frost()
   generic -> add_action( this, "Frost Strike", "if=(talent.horn_of_winter.enabled|talent.hungering_rune_weapon.enabled)&(set_bonus.tier19_2pc=1|set_bonus.tier19_4pc=1)" );
   generic -> add_action( this, "Obliterate" );
   generic -> add_talent( this, "Glacial Advance" );
-  generic -> add_talent( this, "Horn of Winter", "if=!dot.hungering_rune_weapon.ticking" );
+  generic -> add_talent( this, "Horn of Winter", "if=!buff.hungering_rune_weapon.up" );
   generic -> add_action( this, "Frost Strike" );
   generic -> add_action( this, "Remorseless Winter", "if=talent.frozen_pulse.enabled" );
   generic -> add_action( this, "Empower Rune Weapon" );
-  generic -> add_talent( this, "Hungering Rune Weapon", "if=!dot.hungering_rune_weapon.ticking" );
+  generic -> add_talent( this, "Hungering Rune Weapon", "if=!buff.hungering_rune_weapon.up" );
 
   // Breath of Sindragosa core rotation
   bos -> add_action( this, "Frost Strike", "if=talent.icy_talons.enabled&buff.icy_talons.remains<1.5&cooldown.breath_of_sindragosa.remains>6" );
@@ -7030,8 +7032,8 @@ void death_knight_t::default_apl_frost()
   bos_ticking -> add_action( this, "Remorseless Winter", "if=((runic_power>=20&set_bonus.tier19_4pc)|runic_power>=30)&buff.rime.react&(equipped.132459|talent.gathering_storm.enabled)" );
   bos_ticking -> add_action( this, "Howling Blast", "if=((runic_power>=20&set_bonus.tier19_4pc)|runic_power>=30)&buff.rime.react" );
   bos_ticking -> add_action( this, "Obliterate", "if=runic_power<=75|rune>3" );
-  bos_ticking -> add_talent( this, "Horn of Winter", "if=runic_power<70&!dot.hungering_rune_weapon.ticking" );
-  bos_ticking -> add_talent( this, "Hungering Rune Weapon", "if=runic_power<30&!dot.hungering_rune_weapon.ticking" );
+  bos_ticking -> add_talent( this, "Horn of Winter", "if=runic_power<70&!buff.hungering_rune_weapon.up" );
+  bos_ticking -> add_talent( this, "Hungering Rune Weapon", "if=runic_power<30&!buff.hungering_rune_weapon.up" );
   bos_ticking -> add_action( this, "Empower Rune Weapon", "if=runic_power<20" );
   bos_ticking -> add_action( this, "Remorseless Winter", "if=talent.gathering_storm.enabled|!set_bonus.tier19_4pc|runic_power<30" );
   
@@ -7043,10 +7045,10 @@ void death_knight_t::default_apl_frost()
   gs_ticking -> add_action( this, "Obliterate", "if=rune>3|buff.killing_machine.react|buff.obliteration.up" );
   gs_ticking -> add_action( this, "Frost Strike", "if=runic_power>80|(buff.obliteration.up&!buff.killing_machine.react)" );
   gs_ticking -> add_action( this, "Obliterate" );
-  gs_ticking -> add_talent( this, "Horn of Winter", "if=runic_power<70&!dot.hungering_rune_weapon.ticking" );
+  gs_ticking -> add_talent( this, "Horn of Winter", "if=runic_power<70&!buff.hungering_rune_weapon.up" );
   gs_ticking -> add_talent( this, "Glacial Advance" );
   gs_ticking -> add_action( this, "Frost Strike" );
-  gs_ticking -> add_talent( this, "Hungering Rune Weapon", "if=!dot.hungering_rune_weapon.ticking" );
+  gs_ticking -> add_talent( this, "Hungering Rune Weapon", "if=!buff.hungering_rune_weapon.up" );
   gs_ticking -> add_action( this, "Empower Rune Weapon" );
 }
 
@@ -7425,6 +7427,14 @@ void death_knight_t::create_buffs()
 
   // Must be created after Gathering Storms buff (above) to get correct linkage
   buffs.remorseless_winter = new remorseless_winter_buff_t( this );
+
+  buffs.hungering_rune_weapon = buff_creator_t( this, "hungering_rune_weapon", talent.hungering_rune_weapon )
+    .cd( timespan_t::zero() ) // Handled in the action
+    .period( talent.hungering_rune_weapon -> effectN( 1 ).period() )
+    .tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
+      replenish_rune( b -> data().effectN( 1 ).base_value(), gains.hungering_rune_weapon );
+      resource_gain( RESOURCE_RUNIC_POWER, b -> data().effectN( 2 ).resource( RESOURCE_RUNIC_POWER ), gains.hungering_rune_weapon );
+    } );
 }
 
 // death_knight_t::init_gains ===============================================
