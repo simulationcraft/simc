@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 2228653)
+SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 05a6f98)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -5007,9 +5007,11 @@ Effects          :
                    Hotfixed: Base Value (-2000 -> 0)
 Description      : Using 3 sequentially different abilities grants $211432s1 Mastery for $211432d.
 
-Name             : Combo Master (id=211432) [Spell Family (53)] 
+Name             : Combo Master (id=211432) [Scaling Spell (-1), Spell Family (53)] 
+Hotfixed         : Scaling Spell, Max Scaling Level
 Class            : Monk
 School           : Physical
+Max Scaling Level: -1
 Duration         : 10 seconds
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5019,8 +5021,8 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=313196)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 2000 | Scaled Value: 2000 | Misc Value: 33554432 | Target: Self(1)
-                   Hotfixed: Base Value (1500 -> 2000)
+                   Base Value: 2000 | Scaled Value: 1999.723 (avg=1.177) | Misc Value: 33554432 | Target: Self(1)
+                   Hotfixed: Average, Delta, Bonus, Base Value (1500 -> 2000)
 Description      : $@spelldesc211430
 Tooltip          : Mastery increased by $s1.
 

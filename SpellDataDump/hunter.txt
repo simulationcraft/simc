@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 2228653)
+SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 05a6f98)
 
 Name             : Mend Pet (id=136) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
@@ -788,7 +788,7 @@ Effects          :
 #1 (id=11727)    : Apply Aura (6) | Unknown effect sub type (214)
                    Base Value: 2000 | Scaled Value: 2000 | Target: Self(1)
 #2 (id=141362)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 50 | Scaled Value: 50 | Misc Value: 0x7f | Target: Self(1)
+                   Base Value: 60 | Scaled Value: 60 | Misc Value: 0x7f | Target: Self(1)
 Description      : Increases all damage done by your pet by $s2%.
 
 Name             : Command (Racial Passive) (id=21563) [Spell Family (9), Passive] 
@@ -4084,7 +4084,7 @@ Attributes       : ........ ........ ........ ...x....   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=273716)   : Energize Power (30)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: focus | Target: Self(1)
+                   Base Value: 8 | Scaled Value: 8 | Misc Value: focus | Target: Self(1)
 Description      : Focus gained through use of Arcane Shot.
 
 Name             : Tar Trap (id=187698) [Spell Family (9)] 
@@ -6117,7 +6117,7 @@ Attributes       : ........ ........ ........ ...x....   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=316487)   : Energize Power (30)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: focus | Target: Self(1)
+                   Base Value: 3 | Scaled Value: 3 | Misc Value: focus | Target: Self(1)
 Description      : $@spelldesc2643
 
 Name             : Piercing Shot (id=213678) [Scaling Spell (4), Spell Family (9)] 
@@ -6190,7 +6190,7 @@ Attributes       : .x...... ........ ........ ........   ........ ........ .....
                  : Ranged Ability (1)
 Effects          :
 #1 (id=318698)   : School Damage: nature (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3.00000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 4.00000 | Target: Enemy(6)
 Description      : $@spelldesc214579
 
 Name             : Dire Frenzy (id=217200) [Spell Family (9)] 
