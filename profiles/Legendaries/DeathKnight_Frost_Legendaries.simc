@@ -17,53 +17,99 @@ $(tmp_talents)=2230021
 #$(tmp_talents)=2230033
 #$(tmp_talents)=3320022
 
-# Frost
+# Frost - 910
 Death_Knight_Frost_$(Tier).simc
 talents=$(tmp_talents)
 
 copy=Frost_$(Tier)_Baseline
 talents=$(tmp_talents)
 
-copy=Frost_$(Tier)_Koltiras,Frost_$(Tier)_Baseline
+copy=Koltiras_910,Frost_$(Tier)_Baseline
 waist=koltiras_newfound_will,id=132366
 talents=$(tmp_talents)
 
-copy=Frost_$(Tier)_Toravons,Frost_$(Tier)_Baseline
+copy=Toravons_910,Frost_$(Tier)_Baseline
 wrists=toravons_whiteout_bindings,id=132458
 talents=$(tmp_talents)
 
-copy=Frost_$(Tier)_Perseverance,Frost_$(Tier)_Baseline
+copy=Perseverance_910,Frost_$(Tier)_Baseline
 head=perseverance_of_the_ebon_martyr,id=132459
 talents=$(tmp_talents)
 
-copy=Frost_$(Tier)_Aggramars,Frost_$(Tier)_Baseline
+copy=Aggramars_910,Frost_$(Tier)_Baseline
 feet=aggramars_stride,id=132443
 talents=$(tmp_talents)
 
-copy=Frost_$(Tier)_Necrofantasia,Frost_$(Tier)_Baseline
+copy=Necrofantasia_910,Frost_$(Tier)_Baseline
 finger2=seal_of_necrofantasia,id=137223,enchant=binding_of_haste,gems=150haste
 talents=$(tmp_talents)
 
-copy=Frost_$(Tier)_Sephuzs,Frost_$(Tier)_Baseline
+copy=Sephuzs_910,Frost_$(Tier)_Baseline
 finger2=sephuzs_secret,id=132452,enchant=binding_of_haste,gems=150haste
 talents=$(tmp_talents)
 
-copy=Frost_$(Tier)_Prydaz,Frost_$(Tier)_Baseline
+copy=Prydaz_910,Frost_$(Tier)_Baseline
 neck=prydaz_xavarics_magnum_opus,id=132444,gems=150haste,enchant=mark_of_the_claw
 talents=$(tmp_talents)
 
 # also change hands to preserve 4pc nighthold bonus (only usable with T19H_NH profile)
-copy=Frost_$(Tier)_Consorts,Frost_$(Tier)_Baseline
+copy=Consorts_910,Frost_$(Tier)_Baseline
 legs=consorts_cold_core,id=144293
 hands=dreadwyrm_gauntlets,id=138352,bonus_id=3517
 talents=$(tmp_talents)
 
 # also change hands to preserve 4pc nighthold bonus (only usable with T19H_NH profile)
-copy=Frost_$(Tier)_Acherus,Frost_$(Tier)_Baseline
+copy=Acherus_910,Frost_$(Tier)_Baseline
 back=acherus_drapes,id=132376,enchant=binding_of_strength
 hands=dreadwyrm_gauntlets,id=138352,bonus_id=3517
 talents=$(tmp_talents)
 
-copy=Frost_$(Tier)_Kiljaedens,Frost_$(Tier)_Baseline
+copy=Kiljaedens_910,Frost_$(Tier)_Baseline
 trinket1=kiljaedens_burning_wish,id=144259
+talents=$(tmp_talents)
+
+
+# Frost - 940
+copy=Koltiras_940,Frost_$(Tier)_Baseline
+waist=koltiras_newfound_will,id=132366,bonus_id=3530
+talents=$(tmp_talents)
+
+copy=Toravons_940,Frost_$(Tier)_Baseline
+wrists=toravons_whiteout_bindings,id=132458,bonus_id=3530
+talents=$(tmp_talents)
+
+copy=Perseverance_940,Frost_$(Tier)_Baseline
+head=perseverance_of_the_ebon_martyr,id=132459,bonus_id=3530
+talents=$(tmp_talents)
+
+copy=Aggramars_940,Frost_$(Tier)_Baseline
+feet=aggramars_stride,id=132443,bonus_id=3530
+talents=$(tmp_talents)
+
+copy=Necrofantasia_940,Frost_$(Tier)_Baseline
+finger2=seal_of_necrofantasia,id=137223,enchant=binding_of_haste,gems=150haste,bonus_id=3530
+talents=$(tmp_talents)
+
+copy=Sephuzs_940,Frost_$(Tier)_Baseline
+finger2=sephuzs_secret,id=132452,enchant=binding_of_haste,gems=150haste,bonus_id=3530
+talents=$(tmp_talents)
+
+copy=Prydaz_940,Frost_$(Tier)_Baseline
+neck=prydaz_xavarics_magnum_opus,id=132444,gems=150haste,enchant=mark_of_the_claw,bonus_id=3530
+talents=$(tmp_talents)
+
+# also change hands to preserve 4pc nighthold bonus (only usable with T19H_NH profile)
+copy=Consorts_940,Frost_$(Tier)_Baseline
+legs=consorts_cold_core,id=144293,bonus_id=3530
+hands=dreadwyrm_gauntlets,id=138352,bonus_id=3517
+talents=$(tmp_talents)
+
+# also change hands to preserve 4pc nighthold bonus (only usable with T19H_NH profile)
+copy=Acherus_940,Frost_$(Tier)_Baseline
+back=acherus_drapes,id=132376,enchant=binding_of_strength,bonus_id=3530
+hands=dreadwyrm_gauntlets,id=138352,bonus_id=3517
+talents=$(tmp_talents)
+
+copy=Kiljaedens_940,Frost_$(Tier)_Baseline
+trinket1=kiljaedens_burning_wish,id=144259,bonus_id=3530
 talents=$(tmp_talents)

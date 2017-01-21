@@ -6985,7 +6985,7 @@ void death_knight_t::default_apl_frost()
   }
 
   // Cooldowns
-  def -> add_action( this, "Sindragosa's Fury", "if=buff.pillar_of_frost.up&(buff.unholy_strength.up|(buff.pillar_of_frost.remains<3&target.time_to_die<60))&debuff.razorice.stack==5&!buff.obliteration.up" );
+  def -> add_action( this, "Sindragosa's Fury", "if=buff.pillar_of_frost.up&(buff.unholy_strength.up|(buff.pillar_of_frost.remains<3&target.time_to_die<60))&debuff.razorice.stack=5&!buff.obliteration.up" );
   def -> add_talent( this, "Obliteration", "if=(!talent.frozen_pulse.enabled|(rune<2&runic_power<28))&!talent.gathering_storm.enabled" );
 
   // Choose APL
