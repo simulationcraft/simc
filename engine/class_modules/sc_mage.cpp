@@ -9597,17 +9597,73 @@ public:
 
   virtual void register_hotfixes() const override
   {
-    hotfix::register_effect( "Mage", "2016-11-30", "Reverse the incorrect AC mana cost adjustment from 60& back to 120%", 26314 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 120 )
-      .verification_value( 60 );
 
     hotfix::register_spell( "Mage", "2017-01-11", "Incorrect spell level for Frozen Orb Bolt.", 84721 )
       .field( "spell_level" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( 57 )
       .verification_value( 81 );
+
+    hotfix::register_effect( "Mage", "2017-01-20", "Hotfix OP to 60% from 70%", 215508 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 30 )
+      .verification_value( 40 );
+
+    hotfix::register_effect( "Mage", "2017-01-20", "5% AB damage", 20028 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 2.02 )
+      .verification_value( 1.924 );
+
+    hotfix::register_effect( "Mage", "2017-01-20", "5% ABarr damage", 36330 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 1.365 )
+      .verification_value( 1.30 );
+
+    hotfix::register_effect( "Mage", "2017-01-20", "5% AE damage", 457 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.7875 )
+      .verification_value( 0.75 );
+
+    hotfix::register_effect( "Mage", "2017-01-20", "5% AM damage", 2716 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.46515 )
+      .verification_value( 0.443 );
+
+    hotfix::register_effect( "Mage", "2017-01-20", "nerf amp to 12%", 357924 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 12 )
+      .verification_value( 15 );
+
+    hotfix::register_effect( "Mage", "2017-01-20", "5% AO Damage", 212926 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 5.25 )
+      .verification_value( 5.0 );
+
+    hotfix::register_effect( "Mage", "2017-01-20", "5% NT Damage", 128532 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.04935 )
+      .verification_value( 0.047 );
+    
+    hotfix::register_effect( "Mage", "2017-01-20", "5% NT AOE Damage", 128479 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.04935 )
+      .verification_value( 0.047 );
+
+    hotfix::register_effect( "Mage", "2017-01-20", "5% SN  Damage", 220358 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 1.785 )
+      .verification_value( 1.70 );
+
   }
 
   virtual bool valid() const override { return true; }
