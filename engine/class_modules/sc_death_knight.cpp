@@ -852,6 +852,7 @@ public:
   double    composite_melee_expertise( const weapon_t* ) const override;
   double    composite_player_multiplier( school_e school ) const override;
   double    composite_player_target_multiplier( player_t* target, school_e school ) const override;
+  double    composite_player_pet_damage_multiplier( const action_state_t* /* state */ ) const override;
   double    composite_player_critical_damage_multiplier( const action_state_t* ) const override;
   double    composite_crit_avoidance() const override;
   double    passive_movement_modifier() const override;
@@ -1274,13 +1275,6 @@ struct death_knight_pet_t : public pet_t
   double composite_player_multiplier( school_e school ) const override
   {
     double m = pet_t::composite_player_multiplier( school );
-
-    if ( dbc::is_school( school, SCHOOL_SHADOW ) && o() -> mastery.dreadblade -> ok() )
-    {
-      m *= 1.0 + o() -> cache.mastery_value();
-    }
-
-    m *= 1.0 + o() -> artifact.fleshsearer.percent();
 
     if ( taktheritrix )
     {
@@ -7812,14 +7806,32 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
 
   m *= 1.0 + artifact.soulbiter.percent();
   m *= 1.0 + artifact.fleshsearer.percent();
-  m *= 1.0 + artifact.sanguinary_affinity.percent();
+
+  if ( dbc::is_school( school, SCHOOL_PHYSICAL ) )
+  {
+    m *= 1.0 + artifact.sanguinary_affinity.percent();
+  }
 
   if ( buffs.t18_4pc_unholy -> up() )
   {
     m *= 1.0 + buffs.t18_4pc_unholy -> data().effectN( 2 ).percent();
   }
 
+  return m;
+}
 
+double death_knight_t::composite_player_pet_damage_multiplier( const action_state_t* state ) const
+{
+  double m = player_t::composite_player_pet_damage_multiplier( state );
+
+  auto school = state -> action -> get_school();
+  if ( dbc::is_school( school, SCHOOL_SHADOW ) && mastery.dreadblade -> ok() )
+  {
+    m *= 1.0 + cache.mastery_value();
+  }
+
+  m *= 1.0 + artifact.soulbiter.percent();
+  m *= 1.0 + artifact.fleshsearer.percent();
 
   return m;
 }
