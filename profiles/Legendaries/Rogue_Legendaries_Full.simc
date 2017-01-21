@@ -1,5 +1,5 @@
 #####
-# This is a global profile used to check the 3 bests 2 legendaries combo for one class. (Published on Website)
+# This is a global profile used to check every relevant legendaries for one class.
 # You have to set "$(Tier)=..." and "$(iLvl)=..." before calling it.
 #
 # Example :
