@@ -2528,28 +2528,29 @@ struct item_t
   // from user options, or a data source such as the Blizzard API, or Wowhead
   struct parsed_input_t
   {
-    unsigned                 item_level;
-    int                      upgrade_level;
-    int                      suffix_id;
-    unsigned                 enchant_id;
-    unsigned                 addon_id;
-    int                      armor;
-    std::array<int, 4>       gem_id;
-    std::array<int, 4>       gem_color;
-    std::vector<int>         bonus_id;
-    std::vector<stat_pair_t> gem_stats, meta_gem_stats, socket_bonus_stats;
-    std::string              encoded_enchant;
-    std::vector<stat_pair_t> enchant_stats;
-    std::string              encoded_addon;
-    std::vector<stat_pair_t> addon_stats;
-    std::vector<stat_pair_t> suffix_stats;
-    item_data_t              data;
-    auto_dispose< std::vector<special_effect_t*> > special_effects;
-    std::vector<std::string> source_list;
-    timespan_t               initial_cd;
-    unsigned                 drop_level;
-    std::array<std::vector<unsigned>, 4> relic_data;
-    std::array<unsigned, 4> relic_bonus_ilevel;
+    unsigned                                         item_level;
+    int                                              upgrade_level;
+    int                                              suffix_id;
+    unsigned                                         enchant_id;
+    unsigned                                         addon_id;
+    int                                              armor;
+    std::array<int, MAX_GEM_SLOTS>                   gem_id;
+    std::array<int, MAX_GEM_SLOTS>                   gem_color;
+    std::vector<int>                                 bonus_id;
+    std::vector<stat_pair_t>                         gem_stats, meta_gem_stats, socket_bonus_stats;
+    std::string                                      encoded_enchant;
+    std::vector<stat_pair_t>                         enchant_stats;
+    std::string                                      encoded_addon;
+    std::vector<stat_pair_t>                         addon_stats;
+    std::vector<stat_pair_t>                         suffix_stats;
+    item_data_t                                      data;
+    auto_dispose< std::vector<special_effect_t*> >   special_effects;
+    std::vector<std::string>                         source_list;
+    timespan_t                                       initial_cd;
+    unsigned                                         drop_level;
+    std::array<std::vector<unsigned>, MAX_GEM_SLOTS> relic_data;
+    std::array<unsigned, MAX_GEM_SLOTS>              relic_ilevel;
+    std::array<unsigned, MAX_GEM_SLOTS>              relic_bonus_ilevel;
 
     parsed_input_t() :
       item_level( 0 ), upgrade_level( 0 ), suffix_id( 0 ), enchant_id( 0 ), addon_id( 0 ),
@@ -2561,6 +2562,7 @@ struct item_t
       range::fill( bonus_id, 0 );
       range::fill( gem_color, SOCKET_COLOR_NONE );
       range::fill( relic_bonus_ilevel, 0 );
+      range::fill( relic_ilevel, 0 );
     }
   } parsed;
 
@@ -2596,6 +2598,7 @@ struct item_t
   std::string option_initial_cd_str;
   std::string option_drop_level_str;
   std::string option_relic_id_str;
+  std::string option_relic_ilevel_str;
   double option_initial_cd;
 
   // Extracted data

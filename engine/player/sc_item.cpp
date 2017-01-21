@@ -662,6 +662,7 @@ bool item_t::parse_options()
   options.push_back(opt_string("initial_cd", option_initial_cd_str));
   options.push_back(opt_string("drop_level", option_drop_level_str));
   options.push_back(opt_string("relic_id", option_relic_id_str));
+  options.push_back(opt_string("relic_ilevel", option_relic_ilevel_str));
 
   try
   {
@@ -724,6 +725,22 @@ bool item_t::parse_options()
       relic_slot++;
     }
 
+  }
+
+  if ( ! option_relic_ilevel_str.empty() )
+  {
+    auto split = util::string_split( option_relic_ilevel_str, "/:" );
+    auto relic_idx = 0U;
+    for ( const auto& ilevel_str : split )
+    {
+      auto ilevel = util::to_int( ilevel_str );
+      if ( ilevel >= 0 && ilevel < MAX_ILEVEL )
+      {
+        parsed.relic_ilevel[ relic_idx ] = ilevel;
+      }
+
+      ++relic_idx;
+    }
   }
 
   if ( ! option_enchant_id_str.empty() )
@@ -942,6 +959,11 @@ std::string item_t::encoded_item() const
         s << "/";
       }
     }
+  }
+
+  if ( ! option_relic_ilevel_str.empty() )
+  {
+    s << ",relic_ilevel=" << option_relic_ilevel_str;
   }
 
   if ( ! option_enchant_str.empty() )
