@@ -48,6 +48,9 @@ class demon_hunter_t;
 struct soul_fragment_t;
 struct damage_calc_helper_t;
 
+namespace buffs
+{
+}	
 namespace actions
 {
 struct demon_hunter_attack_t;
@@ -289,6 +292,7 @@ public:
     const spell_data_t* consume_soul_lesser;
     const spell_data_t* critical_strikes;
     const spell_data_t* leather_specialization;
+    const spell_data_t* metamorphosis;
     const spell_data_t* metamorphosis_buff;
     const spell_data_t* soul_fragment;
 
@@ -1827,39 +1831,38 @@ struct eye_beam_t : public demon_hunter_spell_t
 
   void execute() override
   {
-      bool extend = false;
+    bool extend_meta = false;
 
-      if (p()->talent.demonic->ok())
+    if (p()->talent.demonic->ok())
+    {
+      timespan_t demonic_time = timespan_t::from_seconds(8);
+      if (p()->buff.metamorphosis->up())
       {
-          timespan_t demonicTime = timespan_t::from_seconds(8);
-          if (p()->buff.metamorphosis->up())
-          {
-              p()->buff.metamorphosis->extend_duration(p(), demonicTime);
-          }
-          else
-          {
-              // Trigger before the execute so that the duration is affected by Meta haste
-              p()->buff.metamorphosis->trigger(1, p()->buff.metamorphosis->default_value, -1.0, demonicTime);
-              extend = true;
-          }
+        p()->buff.metamorphosis->extend_duration(p(), demonic_time);
       }
-
-      demon_hunter_spell_t::execute();
-      timespan_t duration = composite_dot_duration(execute_state);
-
-      // Since Demonic triggers Meta with 8s + hasted duration, need to extend by the hasted duration after have an execute_state
-      if (extend)
+      else
       {
-          p()->buff.metamorphosis->extend_duration(p(), duration);
+        // Trigger Meta before the execute so that the duration is affected by Meta haste
+        extend_meta = p()->buff.metamorphosis->trigger(1, p()->buff.metamorphosis->default_value, -1.0, demonic_time);
       }
+    }
 
-      if (p()->talent.blind_fury->ok())
-      {
-          // Blind Fury gains scale with the duration of the channel
-          p()->buff.blind_fury->buff_duration = duration;
-          p()->buff.blind_fury->buff_period = timespan_t::from_millis(100) * (duration / dot_duration);
-          p()->buff.blind_fury->trigger();
-      }
+    demon_hunter_spell_t::execute();
+    timespan_t duration = composite_dot_duration(execute_state);
+
+    // Since Demonic triggers Meta with 8s + hasted duration, need to extend by the hasted duration after have an execute_state
+    if (extend_meta)
+    {
+      p()->buff.metamorphosis->extend_duration(p(), duration);
+    }
+
+    if (p()->talent.blind_fury->ok())
+    {
+      // Blind Fury gains scale with the duration of the channel
+      p()->buff.blind_fury->buff_duration = duration;
+      p()->buff.blind_fury->buff_period = timespan_t::from_millis(100) * (duration / dot_duration);
+      p()->buff.blind_fury->trigger();
+    }
   }
 };
 
@@ -2485,7 +2488,7 @@ struct metamorphosis_t : public demon_hunter_spell_t
 
   metamorphosis_t( demon_hunter_t* p, const std::string& options_str )
     : demon_hunter_spell_t( "metamorphosis", p,
-                            p -> find_class_spell( "Metamorphosis" ),
+                            p -> spec.metamorphosis,
                             options_str )
   {
     may_miss = may_dodge = may_parry = may_crit = may_block = false;
@@ -2513,16 +2516,15 @@ struct metamorphosis_t : public demon_hunter_spell_t
     damage -> schedule_execute();
 
     // Buff is gained at the start of the leap.
-  if (p()->buff.metamorphosis->up())
-  {
-    p()->buff.metamorphosis->extend_duration(p(), p()->buff.metamorphosis->buff_duration);
-  }
-  else
-  {
-    p()->buff.metamorphosis->trigger();
-  }
+    if (p()->buff.metamorphosis->up())
+    {
+      p()->buff.metamorphosis->extend_duration(p(), p()->buff.metamorphosis->buff_duration);
+    }
+    else
+    {
+      p()->buff.metamorphosis->trigger();
+    }
     
-
     if ( p() -> talent.demon_reborn -> ok() )
     {
       p() -> cooldown.blur -> reset( false, true );
@@ -3763,10 +3765,9 @@ struct death_sweep_t : public blade_dance_base_t
     assert( p() -> buff.metamorphosis -> check() );
 
     // If Metamorphosis has less than 1s remaining, it gets extended so the whole Death Sweep happens during Meta.
-    if ( p() -> buff.metamorphosis -> remains_lt( p() -> buff.death_sweep -> buff_duration ) )
+    if (p()->buff.metamorphosis->remains_lt(p()->buff.death_sweep->buff_duration))
     {
-      p() -> buff.metamorphosis -> trigger( 1, p() -> buff.metamorphosis -> current_value, -1.0,
-        p() -> buff.death_sweep -> buff_duration );
+      p()->buff.metamorphosis->extend_duration(p(), p()->buff.death_sweep->buff_duration - p()->buff.metamorphosis->remains());
     }
   }
 
@@ -4762,46 +4763,112 @@ struct nemesis_debuff_t : public demon_hunter_buff_t<debuff_t>
 
 struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
 {
-  static void callback( buff_t* b, int, const timespan_t& )
+  bool extended_by_demonic = false;
+
+  static void vengeance_callback(buff_t* b, int, const timespan_t&)
   {
-    demon_hunter_t* p = debug_cast<demon_hunter_t*>( b -> player );
-    p -> resource_gain( RESOURCE_PAIN, p -> spec.metamorphosis_buff -> effectN( 4 )
-                      .resource( RESOURCE_PAIN ),
-                      p -> gain.metamorphosis );
+    demon_hunter_t* p = debug_cast<demon_hunter_t*>(b->player);
+    p->resource_gain(RESOURCE_PAIN, p->spec.metamorphosis_buff->effectN(4)
+      .resource(RESOURCE_PAIN),
+      p->gain.metamorphosis);
   }
 
-  metamorphosis_buff_t( demon_hunter_t* p )
+  metamorphosis_buff_t(demon_hunter_t* p)
     : demon_hunter_buff_t<buff_t>(
-        *p, buff_creator_t( p, "metamorphosis", p -> spec.metamorphosis_buff )
-        .cd( timespan_t::zero() )
-        .default_value(
-          p -> spec.metamorphosis_buff -> effectN( 2 ).percent() +
-          p -> artifact.embrace_the_pain.percent() )
-        .period( p -> spec.metamorphosis_buff -> effectN( 4 ).period() )
-        .tick_callback( &callback )
-        .add_invalidate( CACHE_LEECH ) )
+      *p, buff_creator_t(p, "metamorphosis", p->spec.metamorphosis_buff)
+      .cd(timespan_t::zero())
+      .add_invalidate(CACHE_LEECH))
   {
-    assert( p -> specialization() == DEMON_HUNTER_VENGEANCE );
+    if (p->specialization() == DEMON_HUNTER_HAVOC)
+    {
+      default_value = p->spec.metamorphosis_buff->effectN(7).percent();
+      buff_period = timespan_t::zero();
+      tick_behavior = BUFF_TICK_NONE;
+      add_invalidate(CACHE_HASTE);
+    }
+    else
+    {
+      default_value = p->spec.metamorphosis_buff->effectN(2).percent() + p->artifact.embrace_the_pain.percent();
+      buff_period = p->spec.metamorphosis_buff->effectN(4).period();
+      tick_callback = vengeance_callback;
+      add_invalidate(CACHE_ARMOR);
+    }
   }
 
-  void start( int stacks, double value, timespan_t duration ) override
+  bool trigger(int stacks, double value, double chance, timespan_t duration) override
   {
-    demon_hunter_buff_t<buff_t>::start( stacks, value, duration );
+    if (!buff_t::trigger(stacks, value, chance, duration))
+    {
+      return false;
+    }
 
-    p().metamorphosis_health = p().max_health() * value;
-    p().stat_gain( STAT_MAX_HEALTH, p().metamorphosis_health, ( gain_t* )nullptr,
-                   ( action_t* )nullptr, true );
+    if (p().specialization() == DEMON_HUNTER_HAVOC)
+    {
+      // If we have an initial trigger from Eye Beam, set the flag for future validation
+      if (p().executing && p().executing->id == p().spec.eye_beam->id())
+      {
+        extended_by_demonic = true;
+      }
+      else
+      {
+        extended_by_demonic = false;
+      }
+
+      // If we enter Meta and Blade Dance is on cooldown, the cooldown of Death Sweep needs to be rescheduled
+      p().cooldown.blade_dance->adjust_recharge_multiplier();
+    }
+
+    return true;
   }
 
-  void expire_override( int expiration_stacks,
-                        timespan_t remaining_duration ) override
+  void extend_duration(player_t* p, timespan_t extra_seconds) override
   {
-    demon_hunter_buff_t<buff_t>::expire_override( expiration_stacks,
-        remaining_duration );
+    if (this->p().specialization() == DEMON_HUNTER_HAVOC && p->executing)
+    {
+      // If we extend the duration with a proper Meta cast, we can clear the flag as successive Eye Beams can extend again
+      if (p->executing->id == this->p().spec.metamorphosis->id())
+      {
+        extended_by_demonic = false;
+      }
+      // If we are triggering from Eye Beam, we should disallow any additional full Demonic extensions
+      else if (p->executing->id == this->p().spec.eye_beam->id() && extra_seconds == timespan_t::from_seconds(8))
+      {
+        if (extended_by_demonic)
+          return;
 
-    p().stat_loss( STAT_MAX_HEALTH, p().metamorphosis_health, ( gain_t* )nullptr,
-                   ( action_t* )nullptr, true );
-    p().metamorphosis_health = 0;
+        extended_by_demonic = true;
+      }
+    }
+
+    buff_t::extend_duration(p, extra_seconds);
+  }
+
+  void start(int stacks, double value, timespan_t duration) override
+  {
+    demon_hunter_buff_t<buff_t>::start(stacks, value, duration);
+
+    if (p().specialization() == DEMON_HUNTER_VENGEANCE)
+    {
+      p().metamorphosis_health = p().max_health() * value;
+      p().stat_gain(STAT_MAX_HEALTH, p().metamorphosis_health, (gain_t*)nullptr,
+        (action_t*)nullptr, true);
+    }
+  }
+
+  void expire_override(int expiration_stacks, timespan_t remaining_duration) override
+  {
+    demon_hunter_buff_t<buff_t>::expire_override(expiration_stacks, remaining_duration);
+
+    if (p().specialization() == DEMON_HUNTER_VENGEANCE)
+    {
+      p().stat_loss(STAT_MAX_HEALTH, p().metamorphosis_health, (gain_t*)nullptr,
+        (action_t*)nullptr, true);
+      p().metamorphosis_health = 0;
+    }
+    else
+    {
+      extended_by_demonic = false;
+    }
   }
 };
 
@@ -5372,21 +5439,7 @@ void demon_hunter_t::create_buffs()
     .default_value( find_spell( 208195 ) -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
-  if ( specialization() == DEMON_HUNTER_HAVOC )
-  {
-    buff.metamorphosis =
-      buff_creator_t( this, "metamorphosis", spec.metamorphosis_buff )
-      .cd( timespan_t::zero() )
-      .add_invalidate( CACHE_LEECH )
-      .add_invalidate( CACHE_HASTE )
-      .tick_behavior( BUFF_TICK_NONE )
-      .period( timespan_t::zero() )
-      .default_value( spec.metamorphosis_buff -> effectN( 7 ).percent() );
-  }
-  else
-  {
-    buff.metamorphosis = new metamorphosis_buff_t( this );
-  }
+  buff.metamorphosis = new buffs::metamorphosis_buff_t( this );
 
   // Havoc
 
@@ -5663,6 +5716,25 @@ struct damage_calc_expr_t : public expr_t
   }
 };
 
+struct metamorphosis_buff_demonic_expr_t : public expr_t
+{
+  demon_hunter_t* dh;
+
+  metamorphosis_buff_demonic_expr_t(demon_hunter_t* p, const std::string& name_str)
+    : expr_t(name_str), dh(p)
+  {
+  }
+
+  double evaluate() override
+  {
+    buffs::metamorphosis_buff_t* metamorphosis = debug_cast<buffs::metamorphosis_buff_t*>(dh->buff.metamorphosis);
+    if (metamorphosis && metamorphosis->extended_by_demonic)
+      return true;
+
+    return false;
+  }
+};
+
 // demon_hunter_t::create_expression ========================================
 
 expr_t* demon_hunter_t::create_expression( action_t* a,
@@ -5760,6 +5832,10 @@ expr_t* demon_hunter_t::create_expression( action_t* a,
         return new damage_calc_expr_t( name_str, annihilation_dmg );
       }
     }
+  }
+  else if (name_str == "buff.metamorphosis.extended_by_demonic")
+  {
+    return new metamorphosis_buff_demonic_expr_t(this, name_str);
   }
 
   return player_t::create_expression( a, name_str );
@@ -5997,10 +6073,11 @@ void demon_hunter_t::init_spells()
   spec.leather_specialization = specialization() == DEMON_HUNTER_HAVOC
                                 ? find_spell( 178976 )
                                 : find_spell( 226359 );
-  spec.metamorphosis_buff = specialization() == DEMON_HUNTER_HAVOC
-                            ? find_spell( 162264 )
-                            : find_spell( 187827 );
+  spec.metamorphosis          = find_class_spell("Metamorphosis");
+  spec.metamorphosis_buff     = specialization() == DEMON_HUNTER_HAVOC
+                                 ? find_spell( 162264 ) : find_spell( 187827 );
   spec.soul_fragment = find_spell( 204255 );
+  
 
   // Havoc
   spec.havoc               = find_specialization_spell( "Havoc Demon Hunter" );
@@ -6650,6 +6727,11 @@ double demon_hunter_t::composite_armor_multiplier() const
   double am = player_t::composite_armor_multiplier();
 
   am *= 1.0 + spec.demonic_wards -> effectN( 5 ).percent();
+
+  if (specialization() == DEMON_HUNTER_VENGEANCE && buff.metamorphosis -> check())
+  {
+	  am *= 1.0 + spec.metamorphosis_buff->effectN(8).percent();
+  }
 
   return am;
 }

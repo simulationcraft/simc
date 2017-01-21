@@ -6998,7 +6998,7 @@ void death_knight_t::default_apl_frost()
   generic -> add_action( this, "Frost Strike", "if=!talent.shattering_strikes.enabled&(buff.icy_talons.remains<1.5&talent.icy_talons.enabled)" );
   generic -> add_action( this, "Frost Strike", "if=talent.shattering_strikes.enabled&debuff.razorice.stack=5" );
   generic -> add_action( this, "Howling Blast", "target_if=!dot.frost_fever.ticking" );
-  generic -> add_action( this, "Obliterate", "if=equipped.132366&talent.runic_attenuation.enabled&set_bonus.tier19_2pc=1" );
+  generic -> add_action( this, "Obliterate", "if=equipped.132366&talent.frozen_pulse.enabled&set_bonus.tier19_2pc=1" );
   generic -> add_action( this, "Remorseless Winter", "if=(buff.rime.react&equipped.132459&!(buff.obliteration.up&spell_targets.howling_blast<2))|talent.gathering_storm.enabled" );
   generic -> add_action( this, "Howling Blast", "if=buff.rime.react&!(buff.obliteration.up&spell_targets.howling_blast<2)" );
   generic -> add_action( this, "Frost Strike", "if=runic_power.deficit<=10" );
@@ -7008,6 +7008,7 @@ void death_knight_t::default_apl_frost()
   generic -> add_talent( this, "Glacial Advance", "if=spell_targets.glacial_advance>=2" );
   generic -> add_talent( this, "Frostscythe", "if=spell_targets.frostscythe>=3" );
   generic -> add_action( this, "Obliterate", "if=buff.killing_machine.react" );
+  generic -> add_action( this, "Frost Strike", "if=(talent.horn_of_winter.enabled|talent.hungering_rune_weapon.enabled)&(set_bonus.tier19_2pc=1|set_bonus.tier19_4pc=1)" );
   generic -> add_action( this, "Obliterate" );
   generic -> add_talent( this, "Glacial Advance" );
   generic -> add_talent( this, "Horn of Winter", "if=!dot.hungering_rune_weapon.ticking" );
