@@ -34,6 +34,7 @@ trinket=kiljaedens_burning_wish,id=144259
 copy=WW_$(Tier)_March,WW_$(Tier)_Baseline
 finger1=march_of_the_legion,id=137220,gem_id=130247
 
+# also change cloak to preserve 4pc nighthold bonus (only usable with T19H_NH profile)
 copy=WW_$(Tier)_Emperors_Capacitor,WW_$(Tier)_Baseline
 back=cloak_of_enveloped_dissonance,id=138367,bonus_id=3519,enchant=binding_of_agility
 chest=the_emperors_capacitor,id=144239
