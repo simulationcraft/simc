@@ -1,0 +1,39 @@
+# This is a global profile used to check every relevant legendaries for one class.
+# You have to set "$(Tier)=..." before calling it.
+#
+# Example :
+# $(Tier)=T19H
+# Rogue_Legendaries.simc
+#
+# It will call the Rogue T19H Profiles then test with every legendaries defined below.
+# You only have to set $(Tier) one time. (i.e. you can call the Warrior and Rogue profiles altogether)
+# You can even do that to test 2 Tiers at the same time :
+#
+# $(Tier)=T19H
+# Rogue_Legendaries.simc
+# $(Tier)=T19M
+# Rogue_Legendaries.simc
+
+# Windwalker
+Monk_Windwalker_$(Tier).simc
+name=WW_$(Tier)_Baseline
+
+copy=WW_$(Tier)_Cinidaria,WW_$(Tier)_Baseline
+waist=cinidaria_the_symbiote,id=133976
+
+copy=WW_$(Tier)_Drinking_Horn,WW_$(Tier)_Baseline
+talents=3010032
+wrists=drinking_horn_cover,id=137097
+
+copy=WW_$(Tier)_Katsuos,WW_$(Tier)_Baseline
+feet=katsuos_eclipse,id=137029
+
+copy=WW_$(Tier)_Kiljaedens,WW_$(Tier)_Baseline
+trinket=kiljaedens_burning_wish,id=144259
+
+copy=WW_$(Tier)_March,WW_$(Tier)_Baseline
+finger1=march_of_the_legion,id=137220,gem_id=130247
+
+copy=WW_$(Tier)_Emperors_Capacitor,WW_$(Tier)_Baseline
+back=cloak_of_enveloped_dissonance,id=138367,bonus_id=3519,enchant=binding_of_agility
+chest=the_emperors_capacitor,id=144239
