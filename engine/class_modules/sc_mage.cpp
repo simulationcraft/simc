@@ -775,7 +775,7 @@ struct arcane_familiar_pet_t : public mage_pet_t
 struct arcane_assault_t : public mage_pet_spell_t
 {
   arcane_assault_t( arcane_familiar_pet_t* p, const std::string& options_str )
-    : mage_pet_spell_t( "arcane_assault", p,  p -> find_spell( 205235 ) )
+    : mage_pet_spell_t( "arcane_assault", p,  p -> find_spell( 225119 ) )
   {
     parse_options( options_str );
     spell_power_mod.direct = p->find_spell( 225119 )->effectN( 1 ).sp_coeff();
