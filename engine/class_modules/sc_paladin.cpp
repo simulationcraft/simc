@@ -1800,7 +1800,7 @@ struct execution_sentence_t : public paladin_spell_t
     if ( td -> buffs.debuffs_judgment -> up() )
     {
       double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent() + p() -> get_divine_judgment();
-      judgment_multiplier *= 1.0 + p() -> passives.judgment -> effectN( 1 ).percent();
+      judgment_multiplier += p() -> passives.judgment -> effectN( 1 ).percent();
       m *= judgment_multiplier;
     }
 
@@ -2832,7 +2832,7 @@ struct holy_power_consumer_t : public paladin_melee_attack_t
     if ( td -> buffs.debuffs_judgment -> up() )
     {
       double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent() + p() -> get_divine_judgment();
-      judgment_multiplier *= 1.0 + p() -> passives.judgment -> effectN( 1 ).percent();
+      judgment_multiplier += p() -> passives.judgment -> effectN( 1 ).percent();
       m *= judgment_multiplier;
     }
 
@@ -3116,8 +3116,6 @@ struct divine_hammer_tick_t : public paladin_melee_attack_t
     background  = true;
     may_crit    = true;
     ground_aoe = true;
-
-    base_multiplier *= 1.0 + p -> artifact.deliver_the_justice.percent();
   }
 };
 
@@ -3139,6 +3137,8 @@ struct divine_hammer_t : public paladin_spell_t
 
     // TODO: figure out wtf happened to this spell data
     hasted_cd = hasted_gcd = true;
+
+    base_multiplier *= 1.0 + p -> artifact.deliver_the_justice.percent();
 
     tick_action = new divine_hammer_tick_t( p );
   }
@@ -3194,7 +3194,7 @@ struct echoed_divine_storm_t: public paladin_melee_attack_t
     if ( td -> buffs.debuffs_judgment -> up() )
     {
       double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent() + p() -> get_divine_judgment();
-      judgment_multiplier *= 1.0 + p() -> passives.judgment -> effectN( 1 ).percent();
+      judgment_multiplier += p() -> passives.judgment -> effectN( 1 ).percent();
       m *= judgment_multiplier;
     }
 
@@ -3793,7 +3793,7 @@ struct echoed_templars_verdict_t : public paladin_melee_attack_t
     if ( td -> buffs.debuffs_judgment -> up() )
     {
       double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent() + p() -> get_divine_judgment();
-      judgment_multiplier *= 1.0 + p() -> passives.judgment -> effectN( 1 ).percent();
+      judgment_multiplier += p() -> passives.judgment -> effectN( 1 ).percent();
       m *= judgment_multiplier;
     }
 
