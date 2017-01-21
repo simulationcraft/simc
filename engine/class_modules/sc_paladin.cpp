@@ -6179,13 +6179,13 @@ struct paladin_module_t : public module_t
 
   virtual void register_hotfixes() const override
   {
-    hotfix::register_effect("Paladin", "2017-01-24", "Crusade now increases damage and Haste by 3% per stack (down from 3.5%).", 349842)
+    hotfix::register_effect("Paladin", "2017-01-24", "Crusade now increases damage by 3% per stack (down from 3.5%).", 349842)
       .field("base_value")
       .operation(hotfix::HOTFIX_SET)
       .modifier(30.0)
       .verification_value(35.0);
 
-    hotfix::register_effect("Paladin", "2017-01-24", "Crusade now increases damage and Haste by 3% per stack (down from 3.5%).", 349843)
+    hotfix::register_effect("Paladin", "2017-01-24", "Crusade now increases Haste by 3% per stack (down from 3.5%).", 349843)
       .field("base_value")
       .operation(hotfix::HOTFIX_SET)
       .modifier(30.0)
