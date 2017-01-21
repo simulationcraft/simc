@@ -22,6 +22,8 @@ namespace
 // Hunter
 // ==========================================================================
 
+enum { DIRE_BEASTS_MAX = 8 };
+
 struct hunter_t;
 
 namespace pets
@@ -72,7 +74,7 @@ public:
 
   struct pets_t
   {
-    std::array< pets::dire_critter_t*, 8 >  dire_beasts;
+    std::array< pets::dire_critter_t*, DIRE_BEASTS_MAX >  dire_beasts;
     pets::hati_t* hati;
     pet_t* spitting_cobra;
     std::array< pet_t*, 2 > dark_minions;
@@ -123,7 +125,7 @@ public:
     buff_t* big_game_hunter;
     buff_t* bombardment;
     buff_t* careful_aim;
-    buff_t* dire_beast;
+    std::array<buff_t*, DIRE_BEASTS_MAX > dire_beast;
     buff_t* steady_focus;
     buff_t* pre_steady_focus;
     buff_t* marking_targets;
@@ -4610,8 +4612,16 @@ struct dire_beast_t: public hunter_spell_t
     hunter_spell_t::execute();
 
     // Trigger buffs
-    timespan_t duration = p() -> buffs.dire_beast -> buff_duration + timespan_t::from_millis( p() -> buffs.t18_2p_dire_longevity -> check_stack_value() );
-    p() -> buffs.dire_beast -> trigger( 1, p() -> buffs.dire_beast -> DEFAULT_VALUE(), -1.0, duration );
+    timespan_t duration = p() -> buffs.dire_beast[ 0 ] -> buff_duration +
+                          timespan_t::from_millis( p() -> buffs.t18_2p_dire_longevity -> check_stack_value() );
+    for ( buff_t* buff : p() -> buffs.dire_beast )
+    {
+      if ( ! buff -> check() )
+      {
+        buff -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
+        break;
+      }
+    }
     p() -> buffs.t18_2p_dire_longevity -> expire();
 
     // Adjust BW cd
@@ -5774,27 +5784,17 @@ void hunter_t::create_buffs()
       .activated( true )
       .default_value( big_game_hunter_crit );
 
-  buffs.dire_beast = 
-    buff_creator_t( this, 120694, "dire_beast" )
-      .max_stack( 8 )
-      .stack_behavior( BUFF_STACK_ASYNCHRONOUS )
-      .period( timespan_t::zero() )
-      .tick_behavior( BUFF_TICK_NONE )
-      .default_value( find_spell( 120694 ) 
-                   -> effectN( 1 )
-                     .resource( RESOURCE_FOCUS ) / 
-                        find_spell( 120694 ) 
-                     -> effectN( 1 )
-                       .period().total_seconds() ); // focus per second
+  double dire_beast_value = find_spell( 120694 ) -> effectN( 1 ).resource( RESOURCE_FOCUS );
   if ( talents.dire_stable -> ok() )
+    dire_beast_value += talents.dire_stable -> effectN( 1 ).base_value();
+  for ( size_t i = 0; i < buffs.dire_beast.size(); i++ )
   {
-    buffs.dire_beast
-      -> default_value += talents.dire_stable 
-                       -> effectN( 1 )
-                         .base_value() / 
-                            buffs.dire_beast 
-                         -> data().effectN( 1 )
-                           .period().total_seconds(); // focus per second
+    buffs.dire_beast[ i ] =
+      buff_creator_t( this, 120694, "dire_beast_" + util::to_string( i + 1 ) )
+        .default_value( dire_beast_value )
+        .tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
+                          resource_gain( RESOURCE_FOCUS, b -> default_value, gains.dire_beast );
+                        } );
   }
 
   buffs.t18_2p_dire_longevity = 
@@ -5998,7 +5998,6 @@ void hunter_t::init_gains()
   gains.dire_beast           = get_gain( "dire_beast" );
   gains.multi_shot           = get_gain( "multi_shot" );
   gains.chimaera_shot        = get_gain( "chimaera_shot" );
-  gains.dire_beast           = get_gain( "dire_beast" );
   gains.aspect_of_the_wild   = get_gain( "aspect_of_the_wild" );
   gains.spitting_cobra       = get_gain( "spitting_cobra" );
   gains.nesingwarys_trapping_treads = get_gain( "nesingwarys_trapping_treads" );
@@ -6475,8 +6474,6 @@ void hunter_t::regen( timespan_t periodicity )
     double base = focus_regen_per_second() * buffs.steady_focus -> current_value;
     resource_gain( RESOURCE_FOCUS, base * periodicity.total_seconds(), gains.steady_focus );
   }
-  if ( buffs.dire_beast -> up() )
-    resource_gain( RESOURCE_FOCUS, buffs.dire_beast -> check_stack_value() * periodicity.total_seconds(), gains.dire_beast );
 }
 
 // hunter_t::composite_attack_power_multiplier ==============================
