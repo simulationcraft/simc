@@ -2256,6 +2256,9 @@ public:
         p() -> buff.combo_strikes -> trigger();
         if ( p() -> talent.hit_combo -> ok() )
           p() -> buff.hit_combo -> trigger();
+
+        if ( p() -> artifact.master_of_combinations.rank() )
+          p() -> buff.master_of_combinations -> trigger();
       }
       else
       {
