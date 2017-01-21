@@ -1,10 +1,10 @@
-priest="Priest_Shadow_S2M_T19H"
+priest="Priest_Shadow_T19M_NH"
 level=110
 race=troll
 role=spell
 position=back
-talents=1212213
-artifact=47:139251:139257:139251:0:764:1:765:1:766:1:767:3:768:1:770:1:771:3:772:5:773:3:775:3:776:4:777:3:1347:1
+talents=1001111
+artifact=47:0:0:0:0:764:1:765:1:766:1:767:3:768:1:769:1:770:1:771:3:772:3:773:3:774:3:775:3:776:3:777:3:778:3:779:1:1347:1:1381:20
 spec=shadow
 
 # This default action priority list is automatically created based on your character.
@@ -108,29 +108,31 @@ actions.vf+=/shadow_word_pain,if=!talent.misery.enabled&!ticking&target.time_to_
 actions.vf+=/mind_flay,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&(action.void_bolt.usable|(current_insanity_drain*gcd.max>insanity&(insanity-(current_insanity_drain*gcd.max)+30)<100&cooldown.shadow_word_death.charges>=1))
 actions.vf+=/shadow_word_pain
 
-head=collar_of_enclosure,id=134424,bonus_id=1727/1517
-neck=pendant_of_the_watchful_eye,id=137536,bonus_id=1727/1517,enchant_id=5439
-shoulders=amice_of_the_unfurling_tempest,id=134432,bonus_id=1727/1517
-back=goldscar_pelt,id=133639,bonus_id=1727/1517,enchant_id=5436
-chest=fluxflow_robes,id=134413,bonus_id=1727/1517
-wrists=wristbands_of_the_swirling_deeps,id=137372,bonus_id=1727/1517
-hands=silken_bloodscent_gloves,id=133609,bonus_id=1727/1517
-waist=waistband_of_spiritual_doom,id=137507,bonus_id=1727/1517
-legs=legwraps_of_reverberating_shadows,id=137404,bonus_id=1727/1517
-feet=mistbound_helarjar_footwraps,id=133608,bonus_id=1727/1517
-finger1=band_of_fused_coral,id=134532,bonus_id=1727/1517,enchant_id=5428
-finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1727/1517,enchant_id=5428
-trinket1=naraxas_spiked_tongue,id=137349,bonus_id=1727/1517
-trinket2=swarming_plaguehive,id=139321,bonus_id=1805
-main_hand=xalatath_blade_of_the_black_empire,id=128827,bonus_id=740,gem_id=137347/137350/137347,relic_id=1517:1727/1517:1727/1517:1727
+head=nighthold_custodians_hood,id=140851,bonus_id=3519
+neck=radiant_string_of_scorpid_eyes,id=140898,bonus_id=3519,enchant=mark_of_the_trained_soldier
+shoulders=purifiers_mantle,id=138322,bonus_id=3519
+back=purifiers_drape,id=138370,bonus_id=3519,enchant=binding_of_intellect
+chest=robes_of_fluctuating_energy,id=140848,bonus_id=3519
+wrists=bracers_of_harnessed_flame,id=140850,bonus_id=3519
+hands=purifiers_gloves,id=138310,bonus_id=3519
+waist=manari_skullbuckled_cinch,id=140887,bonus_id=3519
+legs=purifiers_leggings,id=138316,bonus_id=3519
+feet=perpetually_muddy_sandals,id=140854,bonus_id=3519
+finger1=ring_of_the_scoured_clan,id=140897,bonus_id=3519,enchant=binding_of_haste
+finger2=spellblades_gemmed_signet,id=140895,bonus_id=3519,enchant=binding_of_haste
+trinket1=whispers_in_the_dark,id=140809,bonus_id=3519
+trinket2=erratic_metronome,id=140792,bonus_id=3519
+main_hand=xalatath_blade_of_the_black_empire,id=128827,bonus_id=740,gem_id=140823/140819/140823,relic_id=3519/3519/3519
 off_hand=secrets_of_the_void,id=133958
 
 # Gear Summary
-# gear_ilvl=868.63
-# gear_stamina=23747
-# gear_intellect=24579
-# gear_crit_rating=8202
-# gear_haste_rating=11927
-# gear_mastery_rating=1373
-# gear_armor=1715
-# set_bonus=tier19p_cloth_2pc=1
+# gear_ilvl=912.88
+# gear_stamina=35877
+# gear_intellect=40721
+# gear_crit_rating=6102
+# gear_haste_rating=9283
+# gear_mastery_rating=7375
+# gear_versatility_rating=1659
+# gear_armor=2014
+# set_bonus=tier19_2pc=1
+# set_bonus=tier19_4pc=1
