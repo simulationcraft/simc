@@ -5037,7 +5037,7 @@ void priest_t::create_buffs()
           .spell( find_spell( 211654 ) )
           .chance( 1.0 )
           .duration( timespan_t::from_seconds(
-              6.0 ) );  // TODO Update with spelldata once available
+              4.0 ) );  // TODO Update with spelldata once available
 
   buffs.anunds_last_breath = buff_creator_t( this, "anunds_last_breath" )
                                  .spell( find_spell( 215210 ) );
@@ -5256,7 +5256,7 @@ void priest_t::apl_shadow()
     if ( true_level > 100 )
       default_list->add_action(
           "potion,name=prolonged_power,if=buff.bloodlust.react|target.time_to_die<"
-          "=80|enemy_health_pct<35&cooldown.power_infusion.remains<30)" );
+          "=80|enemy_health_pct<35&cooldown.power_infusion.remains<30" );
     else if ( true_level > 90 )
       default_list->add_action(
           "potion,name=draenic_intellect,if=buff.bloodlust.react|target.time_"
