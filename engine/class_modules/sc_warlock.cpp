@@ -2222,6 +2222,7 @@ private:
 
     affected_by_contagion = true;
     destro_mastery = true;
+    can_feretory = true;
 
     parse_spell_coefficient( *this );
   }
@@ -2238,6 +2239,7 @@ public:
   bool destruction_damage_increase;
   bool destruction_dot_increase;
   bool destro_mastery;
+  bool can_feretory;
 
   // Warlock module overrides the "target" option handling to properly target their own Soul Effigy
   // if it's enabled
@@ -2430,7 +2432,7 @@ public:
 
     p() -> buffs.demonic_synergy -> up();
 
-    if ( p() -> legendary.feretory_of_souls && rng().roll( p() -> find_spell( 205702 ) -> proc_chance() ) && ( ( dbc::is_school( SCHOOL_FIRE, school ) || dbc::is_school( SCHOOL_CHROMATIC, school ) || dbc::is_school( SCHOOL_SHADOWFLAME, school ) || dbc::is_school( SCHOOL_CHAOS, school ) ) ) )
+    if ( can_feretory && p() -> legendary.feretory_of_souls && rng().roll( p() -> find_spell( 205702 ) -> proc_chance() ) && ( ( dbc::is_school( SCHOOL_FIRE, school ) || dbc::is_school( SCHOOL_CHROMATIC, school ) || dbc::is_school( SCHOOL_SHADOWFLAME, school ) || dbc::is_school( SCHOOL_CHAOS, school ) ) ) )
     {
       p() -> resource_gain( RESOURCE_SOUL_SHARD, 1.0, p() -> gains.feretory_of_souls );
     }
@@ -5340,6 +5342,8 @@ struct channel_demonfire_tick_t : public warlock_spell_t
     background = true;
     may_miss = false;
     dual = true;
+
+    can_feretory = false;
 
     spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
 
