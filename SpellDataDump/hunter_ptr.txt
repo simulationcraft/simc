@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 05a6f98)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23436, git build 05a6f98)
 
 Name             : Mend Pet (id=136) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
@@ -226,7 +226,7 @@ Resource         : 40 Focus
 Spell Level      : 16
 Range            : 40 yards
 GCD              : 1.5 seconds
-Velocity         : 30 yards/sec
+Velocity         : 50 yards/sec
 Affecting spells : Freezing Trap (3355), Refocus (24531), Multi-Shot Damage Increase (28539), Mortal Shots (36413), Shot Power (37508), Bombardment (82921), Hunter (137014), Marksmanship Hunter (137016), Guide: Sharpshooting (178549), Called Shot (190467), Mastery: Sniper Training (193468), Focus of the Titans (197139), Roar of the Seven Lions (207318), Trueshot (211327)
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
@@ -276,7 +276,7 @@ School           : Physical
 Spell Level      : 4
 Range            : 40 yards
 GCD              : 1.5 seconds
-Velocity         : 40 yards/sec
+Velocity         : 50 yards/sec
 Duration         : 6 seconds
 Cooldown         : 5 seconds
 Mechanic         : Unknown(88)
@@ -559,7 +559,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (avg=2.2, dl=0.1) | Target: Enemy(6)
 #2 (id=101526)   : Weapon Damage% (31)
                    Base Value: 275 | Scaled Value: 2.75 | Target: Enemy(6)
-                   Hotfixed: Base Value (300 -> 275)
 #3 (id=354901)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100
 Description      : A powerful aimed shot that deals ${$sw1*$<mult>} Physical damage.  Damage increased by $s3% against a target you have not yet damaged.  $?!s19434&c1[
@@ -2438,14 +2437,12 @@ Description      : $@spelldesc109215
 Tooltip          : Increased movement speed by $s1%.
 
 Name             : Barrage (id=120360) [Spell Family (9)] 
-Hotfixed         : Variables
 Class            : Hunter
 School           : Physical
 Resource         : 60 Focus
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
-Velocity         : 30 yards/sec
 Duration         : 3 seconds
 Cooldown         : 20 seconds
 Category         : 85
@@ -2886,7 +2883,6 @@ Effects          :
 #1 (id=179698)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 20 | Scaled Value: 20 | Target: Self(1)
                    Affected Spells: Kill Command (34026), Chimaera Shot (53209), Kill Command (83381), Chimaera Shot (171454), Chimaera Shot (171457), Cobra Shot (193455), Chimaera Shot (204304), Dire Frenzy (217207)
-                   Hotfixed: Base Value (4 -> 20), Affects Spells
 #2 (id=191138)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self(1)
 #3 (id=191139)   : Apply Aura (6) | Add Flat Modifier: Spell Duration (107)
@@ -2898,7 +2894,6 @@ Effects          :
 #5 (id=191141)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 98 | Scaled Value: 98 | Target: Self(1)
                    Affected Spells: Barrage (120361)
-                   Hotfixed: Base Value (80 -> 98), Affects Spells
 #6 (id=260897)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 50 | Scaled Value: 50 | Target: Self(1)
                    Affected Spells: Volley (194386), Volley (194392)
@@ -2933,11 +2928,9 @@ Effects          :
 #3 (id=191135)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 8 | Scaled Value: 8 | Target: Self(1)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Barrage (120361), A Murder of Crows (131894), A Murder of Crows (131900), Arcane Shot (185358), Bursting Shot (186387), Aimed Shot (191043), Volley (194386), Volley (194392), Black Arrow (194599), Piercing Shot (198670), Windburst (204147), A Murder of Crows (206505), Marked Shot (212621), Piercing Shot (213678), Sidewinders (214579), Sidewinders (214581)
-                   Hotfixed: Sub Type (4 -> 108), Base Value (0 -> 8), Affects Spells
 #4 (id=191136)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 8 | Scaled Value: 8 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Black Arrow (194599)
-                   Hotfixed: Sub Type (4 -> 108), Base Value (0 -> 8), Misc Value (0 -> 22), Affects Spells
 #5 (id=191137)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #6 (id=260887)   : Apply Aura (6) | Dummy (4)
@@ -2975,11 +2968,9 @@ Effects          :
 #1 (id=179700)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 20 | Scaled Value: 20 | Target: Self(1)
                    Affected Spells: Explosive Trap (13812), Lacerate (185855), Raptor Strike (186270), Carve (187708), Mongoose Bite (190928), Flanking Strike (202800), Flanking Strike (204740), Butchery (212436)
-                   Hotfixed: Base Value (7 -> 20)
 #2 (id=191130)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Explosive Trap (13812), Serpent Sting (118253), Lacerate (185855)
-                   Hotfixed: Base Value (7 -> 20)
 #3 (id=191131)   : Apply Aura (6) | Unknown effect sub type (153)
                    Base Value: 3 | Scaled Value: 3 | Target: Self(1)
 #4 (id=191132)   : Apply Aura (6) | Dummy (4)
@@ -3241,7 +3232,7 @@ Effects          :
 Description      : $@spelldesc159953
 Tooltip          : Regenerate $s1% of total health and focus every $t1 seconds.
 
-Name             : Dust of Life (Exotic Ability) (id=159956) [Spell Family (9)] 
+Name             : Dust of Life (Special Ability) (id=159956) [Spell Family (9)] 
 Class            : Hunter
 School           : Nature
 Spell Level      : 20
@@ -3664,7 +3655,7 @@ School           : Arcane
 Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
-Velocity         : 40 yards/sec
+Velocity         : 70 yards/sec
 Affecting spells : Freezing Trap (3355), Mortal Shots (36413), Shot Power (37508), Hunter (137014), Marksmanship Hunter (137016), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468), True Aim (199803)
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
@@ -3768,7 +3759,7 @@ Tooltip          : Bleeding for $s1 damage every $t1 sec.
 Name             : Marked Shot (id=185901) [Spell Family (9)] 
 Class            : Marksmanship Hunter
 School           : Physical
-Resource         : 25 Focus [Hotfixed: Cost (30 -> 25)]
+Resource         : 25 Focus
 Spell Level      : 20
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -3843,16 +3834,16 @@ Attributes       : ........ ........ x....... .....x..   ........ ..x....x .....
                  : .....x.. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
 Effects          :
-#1 (id=271164)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 25 | Scaled Value: 25 | SP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Active Pet(5)
-#2 (id=271165)   : Apply Aura (6) | Scale% (61)
+#1 (id=271164)   : Apply Aura (6) | Scale% (61)
                    Base Value: 50 | Scaled Value: 50 | SP Coefficient: 1.00000 | Target: Active Pet(5)
+#2 (id=271165)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 12 | Target: Active Pet(5)
 #3 (id=271166)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Active Pet(5)
 #4 (id=271167)   : Apply Aura (6) | Unknown effect sub type (103)
                    Base Value: 0 | Scaled Value: 0 | Target: Active Pet(5)
 Description      : $@spelldesc19574
-Tooltip          : Damage dealt increased by $s1%.
+Tooltip          : Damage dealt increased by $s2%.
 
 Name             : Aspect of the Cheetah (id=186257) [Spell Family (9)] 
 Class            : Hunter
@@ -3988,7 +3979,7 @@ Attributes       : .x..x... ........ x...x... ........   ........ ........ .....
                  : Ranged Ability (1), Stop attacks (20)
 Effects          :
 #1 (id=271387)   : Weapon Damage% (31)
-                   Base Value: 60 | Scaled Value: 0.6 | Radius: 8 yards | Target: Cone Front(104)
+                   Base Value: 40 | Scaled Value: 0.4 | Radius: 8 yards | Target: Cone Front(104)
 #2 (id=271388)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: Cone Front(104)
 #3 (id=272309)   : Knock Back (98)
@@ -4004,7 +3995,8 @@ Range            : 100 yards
 Duration         : 7 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Patient Sniper (234588)
+Affecting spells : Patient Sniper (234588), Unerring Arrows (238052)
+Triggered by     : Opportunist (238088)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4243,7 +4235,7 @@ Tooltip          : Fel Boar summoned.
 Name             : Marked for Death (id=190529) [Spell Family (9), Passive] 
 Class            : Hunter
 School           : Physical
-Artifact Power   : Id: 319, Max Rank: 6, Values: [ 2, 4, 6, 8, 10, 12 ]
+Artifact Power   : Id: 319, Max Rank: 8, Values: [ 2, 4, 6, 8, 10, 12, 14, 16 ]
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4309,7 +4301,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Charges          : 3 (12 seconds cooldown)
 Category         : 1557
-Affecting spells : Freezing Trap (3355), Hunter (137014), Survival Hunter (137017), Guide: Sharpshooting (178549), Blackness (184902), Mongoose Fury (190931), Mastery: Sniper Training (193468), Sharpened Fang (203566)
+Affecting spells : Freezing Trap (3355), Hunter (137014), Survival Hunter (137017), Guide: Sharpshooting (178549), Blackness (184902), Mongoose Fury (190931), Mastery: Sniper Training (193468), Sharpened Fang (203566), Jaws of the Mongoose (238053)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4565,8 +4557,8 @@ Resource         : 40 Focus
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
-Velocity         : 40 yards/sec
-Affecting spells : Freezing Trap (3355), Hunter (137014), Beast Mastery Hunter (137015), Guide: Sharpshooting (178549), Spitting Cobras (197140), Roar of the Seven Lions (207318)
+Velocity         : 45 yards/sec
+Affecting spells : Freezing Trap (3355), Hunter (137014), Beast Mastery Hunter (137015), Guide: Sharpshooting (178549), Spitting Cobras (197140), Roar of the Seven Lions (207318), Slithering Serpents (238051)
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -4579,7 +4571,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
 #2 (id=283802)   : Weapon Damage% (31)
                    Base Value: 450 | Scaled Value: 4.5 | Target: Enemy(6)
-                   Hotfixed: Base Value (340 -> 450)
 Description      : A quick shot causing ${$sw2*$<mult>} Physical damage.
 Variables        : $mult=${($min($pl-1,19)*12+112)/340}
 
@@ -4763,7 +4754,6 @@ Effects          :
                    Base Value: -70 | Scaled Value: -70 | Mechanic: Unknown(88) | Target: Enemy(6)
 #2 (id=341541)   : Apply Aura (6) | Periodic Damage: physical every 1 seconds (3)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.45000 | Mechanic: Bleed | Target: Enemy(6)
-                   Hotfixed: AP Coefficient (0.5 -> 0.45)
 Description      : $@spelldesc194277
 Tooltip          : Movement speed reduced by $s1%.
 Suffering $w2 Bleed damage every $t2 sec.
@@ -4913,11 +4903,11 @@ Description      : Your ranged auto attacks have a $194595h% chance to trigger L
 Name             : Black Arrow (id=194599) [Spell Family (9)] 
 Class            : Hunter
 School           : Shadow
-Resource         : 10 Focus
+Resource         : 40 Focus
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
-Velocity         : 40 yards/sec
+Velocity         : 60 yards/sec
 Duration         : 8 seconds
 Cooldown         : 15 seconds
 Affecting spells : Freezing Trap (3355), Hunter (137014), Marksmanship Hunter (137016), Guide: Sharpshooting (178549), Deadly Aim (190449), Mastery: Sniper Training (193468), Trueshot (211327), Wind Arrows (214826)
@@ -5276,7 +5266,6 @@ Effects          :
 Description      : Your movement speed is increased by $231390s1% anytime you have not attacked for ${$s1/1000} seconds.
 
 Name             : Ranger's Net (id=200108) [Spell Family (9)] 
-Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Resource         : 30 Focus
@@ -5467,7 +5456,7 @@ Attributes       : ........ ........ ........ x.xx....   .....x.. ..x..... .....
 Effects          :
 #1 (id=296184)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Radius: 0 - 5 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
-Description      : When Freezing Trap's incapacitate effect ends, the victim and all neaby enemies' movement speed is reduced by $s1% for $d.
+Description      : When Freezing Trap's incapacitate effect ends, the victim and all nearby enemies' movement speed is reduced by $s1% for $d.
 Tooltip          : Movement speed reduced by $s1%.
 
 Name             : Super Sticky Tar (id=201158) [Spell Family (9)] 
@@ -5853,7 +5842,6 @@ Description      : $@spelldesc200108
 Tooltip          : Slowed by $s1%.
 
 Name             : Sentinel (id=206817) [Spell Family (9)] 
-Hotfixed         : Velocity (22 -> 20)
 Class            : Hunter
 School           : Physical
 Range            : 40 yards
@@ -5873,7 +5861,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 10 yards | Target: Unknown(87)
 #2 (id=357342)   : Unknown effect type (179)
                    Base Value: 6 | Scaled Value: 6 | Misc Value: 9769 | Target: Unknown(87)
-                   Hotfixed: Base Value (10 -> 6)
 Description      : Your Sentinel watches over the target area for $d, applying Hunter's Mark to all enemies every $s2 sec.
 
 Name             : Titan's Thunder (Artifact) (id=207068) [Spell Family (9)] 
@@ -6044,7 +6031,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
 #2 (id=314958)   : Weapon Damage% (31)
                    Base Value: 579 | Scaled Value: 5.79 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
-                   Hotfixed: Base Value (620 -> 579)
 Description      : Strike all nearby enemies in a flurry of strikes, inflicting $sw1 Physical damage to each.
 
 Name             : Marked Shot (id=212621) [Spell Family (9)] 
@@ -6052,7 +6038,7 @@ Class            : Hunter
 School           : Physical
 Spell Level      : 1
 Range            : 100 yards
-Velocity         : 40 yards/sec
+Velocity         : 60 yards/sec
 Affecting spells : Marksmanship Hunter (137016), Windrunner's Guidance (190457), Precision (190520), Mastery: Sniper Training (193468), 
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
@@ -6066,7 +6052,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
 #2 (id=315282)   : Weapon Damage% (31)
                    Base Value: 550 | Scaled Value: 5.5 | Target: Enemy(6)
-                   Hotfixed: Base Value (450 -> 550)
 Description      : $@spelldesc185901
 
 Name             : Hunting Party (id=212658) [Spell Family (9), Passive] 
@@ -6168,7 +6153,7 @@ Effects          :
                    Base Value: 35 | Scaled Value: 35 | Misc Value: focus | Target: Self(1)
 #3 (id=318700)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 60 yards | Target: Custom(18) -> AOE enemy (instant)(16)
-Description      : Launches Sidewinders that travel toward the target, weaving back and forth and dealing $214581s1 Nature damage to each target they hit. Cannot hit the same target twice.  Applies Vulnerable to all targets hit.
+Description      : Launches Sidewinders that travel toward the target, weaving back and forth and dealing $214581s1 Nature damage to each target they hit. Cannot hit the same target twice. Applies Vulnerable to all targets hit.
 
 |cFFFFFFFFGenerates $s2 Focus.|r$?s214579[][
 
@@ -6413,7 +6398,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=349268)   : Apply Aura (6) | Increase Energy (35)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 2 | Target: Self(1)
-                   Hotfixed: Base Value (20 -> 30)
 Description      : Increases your maximum Focus by $s1.
 
 Name             : Aspect of the Eagle (Rank 2) (id=231555) [Spell Family (9), Passive] 
@@ -6464,7 +6448,6 @@ Effects          :
 #1 (id=354479)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 4 (107)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 32 | Target: Self(1)
                    Affected Spells: Vulnerable (187131)
-                   Hotfixed: Base Value (15 -> 10)
 Description      : Gain the patience of a veteran sniper, increasing the damage bonus of Vulnerable by $s1% every $187131t4 sec.
 
 Name             : Waylay (id=234955) [Spell Family (9), Passive] 

@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 05a6f98)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23436, git build 05a6f98)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -32,7 +32,7 @@ Resource         : 3% Base Mana (33000 @Level 110)
 Spell Level      : 3
 Range            : 40 yards
 GCD              : 1.5 seconds
-Affecting spells : Mastery: Potent Afflictions (77215), Epidemic (184922), Absolute Corruption (196103), Drain Soul (198590), Hideous Corruption (199112), Perdition (199158), Wrath of Consumption (199646)
+Affecting spells : Mastery: Potent Afflictions (77215), Epidemic (184922), Absolute Corruption (196103), Drain Soul (198590), Hideous Corruption (199112), Perdition (199158), Wrath of Consumption (199646), Entropic Instability (238072)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -112,7 +112,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=267)      : School Damage: shadow (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.25000 | Target: Enemy(6)
-                   Hotfixed: SP Coefficient (0.88 -> 1.25)
 Description      : Sends a shadowy bolt at the enemy, causing $s1 Shadow damage.$?c2[
 
 |cFFFFFFFFGenerates 1 Soul Shard.|r][]
@@ -288,7 +287,7 @@ GCD              : 1.5 seconds
 Duration         : 18 seconds
 Stacks           : 6 maximum
 Proc Chance      : 101%
-Affecting spells : Mastery: Potent Afflictions (77215), Epidemic (184922), Writhe in Agony (196102), Drain Soul (198590), Inimitable Agony (199111), Perdition (199158), Wrath of Consumption (199646), Hood of Eternal Disdain (205797), Agony (231792)
+Affecting spells : Mastery: Potent Afflictions (77215), Epidemic (184922), Writhe in Agony (196102), Drain Soul (198590), Inimitable Agony (199111), Perdition (199158), Wrath of Consumption (199646), Hood of Eternal Disdain (205797), Agony (231792), Entropic Instability (238072)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -847,7 +846,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 1 (12 seconds cooldown)
 Category         : 672
-Affecting spells : Destruction Warlock (137046), Flamelicked (185229), Conflagration of Chaos (196546), Odr, Shawl of the Ymirjar (212173)
+Affecting spells : Destruction Warlock (137046), Flamelicked (185229), Conflagration of Chaos (196546), Odr, Shawl of the Ymirjar (212173), Flames of Sargeras (238074)
 Attributes       : ........ ........ x....... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1197,7 +1196,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Stacks           : 10 maximum
 Proc Chance      : 101%
-Affecting spells : Mastery: Potent Afflictions (77215), Epidemic (184922), Drain Soul (198590), Inherently Unstable (199152), Perdition (199158), Wrath of Consumption (199646), Item - Warlock T19 Affliction 2P Bonus (212002)
+Affecting spells : Mastery: Potent Afflictions (77215), Epidemic (184922), Drain Soul (198590), Inherently Unstable (199152), Perdition (199158), Wrath of Consumption (199646), Item - Warlock T19 Affliction 2P Bonus (212002), Entropic Instability (238072)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1636,7 +1635,7 @@ School           : Shadow
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
-Affecting spells : Mastery: Potent Afflictions (77215), Drain Soul (198590)
+Affecting spells : Mastery: Potent Afflictions (77215), Drain Soul (198590), Entropic Instability (238072)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -2084,30 +2083,26 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 196406 | Misc Value 2: 0x217e4 | Target: Self(1)
 #9 (id=157562)   : Apply Aura (6) | Unknown effect sub type (403)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 117828 | Misc Value 2: 0x217e4 | Target: Self(1)
-#10 (id=157563)   : Apply Aura (6) | Unknown effect sub type (332)
-                   Base Value: 148970 | Scaled Value: 148970 | Misc Value 2: 0x225d9 | Target: Self(1)
-#11 (id=338097)   : Apply Aura (6) | Unknown effect sub type (403)
+#10 (id=157563)   : Apply Aura (6) | Unknown effect sub type (403)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 111400 | Misc Value 2: 0x217f5 | Target: Self(1)
-#12 (id=338098)   : Apply Aura (6) | Unknown effect sub type (403)
+#11 (id=338097)   : Apply Aura (6) | Unknown effect sub type (403)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 196408 | Misc Value 2: 0x217f9 | Target: Self(1)
-#13 (id=338099)   : Apply Aura (6) | Unknown effect sub type (403)
+#12 (id=338098)   : Apply Aura (6) | Unknown effect sub type (403)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 3110 | Misc Value 2: 0x217d9 | Target: Unknown(120)
-#14 (id=338100)   : Unknown effect type (174) | Unknown effect sub type (403)
+#13 (id=338099)   : Unknown effect type (174) | Unknown effect sub type (403)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 3110 | Misc Value 2: 0x217d9 | Radius: 100 yards | Target: Unknown(120)
-#15 (id=338101)   : Apply Aura (6) | Unknown effect sub type (403)
+#14 (id=338100)   : Apply Aura (6) | Unknown effect sub type (403)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 119899 | Misc Value 2: 0x217db | Target: Unknown(120)
-#16 (id=338102)   : Unknown effect type (174) | Unknown effect sub type (403)
+#15 (id=338101)   : Unknown effect type (174) | Unknown effect sub type (403)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 119899 | Misc Value 2: 0x217db | Radius: 100 yards | Target: Unknown(120)
-#17 (id=338103)   : Apply Aura (6) | Unknown effect sub type (403)
+#16 (id=338102)   : Apply Aura (6) | Unknown effect sub type (403)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 119905 | Misc Value 2: 0x217db | Target: Self(1)
-#18 (id=338104)   : Apply Aura (6) | Unknown effect sub type (403)
+#17 (id=338103)   : Apply Aura (6) | Unknown effect sub type (403)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 89808 | Misc Value 2: 0x217da | Target: Unknown(120)
-#19 (id=338105)   : Unknown effect type (174) | Unknown effect sub type (403)
+#18 (id=338104)   : Unknown effect type (174) | Unknown effect sub type (403)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 89808 | Misc Value 2: 0x217da | Radius: 100 yards | Target: Unknown(120)
-#20 (id=338106)   : Apply Aura (6) | Dummy (4)
+#19 (id=338105)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 112921 | Misc Value 2: 0x225db | Target: Self(1)
-#21 (id=338107)   : Apply Aura (6) | Unknown effect sub type (332)
-                   Base Value: 148972 | Scaled Value: 148972 | Misc Value 2: 0x225d9 | Target: Self(1)
 Description      : Corrupts all of your Warlock fire spells, infusing them with fel magic.
 
 Name             : Call Dreadstalkers (id=104316) [Spell Family (5)] 
@@ -3200,7 +3195,7 @@ School           : Shadow
 Spell Level      : 3
 Range            : 40 yards
 Duration         : 14 seconds
-Affecting spells : Mastery: Potent Afflictions (77215), Epidemic (184922), Absolute Corruption (196103), Drain Soul (198590), Hideous Corruption (199112), Perdition (199158), Wrath of Consumption (199646)
+Affecting spells : Mastery: Potent Afflictions (77215), Epidemic (184922), Absolute Corruption (196103), Drain Soul (198590), Hideous Corruption (199112), Perdition (199158), Wrath of Consumption (199646), Entropic Instability (238072)
 Triggered by     : Corruption (172)
 Attributes       : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ .x...... ........ ........ 
@@ -3277,12 +3272,10 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=219885)   : School Damage: chaos (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.25000 | Target: Enemy(6)
-                   Hotfixed: SP Coefficient (0.88 -> 1.25)
 #2 (id=245223)   : Trigger Spell: Demonbolt (64)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 196300 | Target: Self(1)
 #3 (id=288119)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | Radius: 100 yards | Target: Unknown(120)
-                   Hotfixed: Base Value (18 -> 10)
 Description      : Draws energy from your demons and launches a ball of demonic energy at the target, dealing $s1 Chaos damage. Damage increased $s3% for each demon you have active.
 
 |cFFFFFFFFGenerates $s2 Soul Shard.|r
@@ -4021,7 +4014,6 @@ Effects          :
 #3 (id=363701)   : Apply Aura (6) | Add Flat Modifier: Unknown 2 (107)
                    Base Value: -3000 | Scaled Value: -3000 | Misc Value: 19 | Target: Self(1)
                    Affected Spells: Doom (603)
-                   Hotfixed: NEW EFFECT
 Description      : Doom deals damage ${$s1/-1000} sec faster, and it summons $s2 Wild $LImp:Imps; when it deals damage.
 
 Name             : Improved Dreadstalkers (id=196272) [Spell Family (5), Passive] 
@@ -4392,7 +4384,7 @@ Spell Level      : 13
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
-Affecting spells : Drained to a Husk (199120), Perdition (199158), Long Dark Night of the Soul (199214), Wrath of Consumption (199646), Malefic Grasp (235155)
+Affecting spells : Drained to a Husk (199120), Perdition (199158), Long Dark Night of the Soul (199214), Wrath of Consumption (199646), Malefic Grasp (235155), Entropic Instability (238072)
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ...x.... 
@@ -4665,7 +4657,6 @@ Effects          :
                    Base Value: 35 | Scaled Value: 35 | Target: Self(1)
 #2 (id=336317)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
                    Base Value: 100 | Scaled Value: 100 | Target: Self(1)
-                   Hotfixed: Base Value (55 -> 100)
 Description      : $@spelldesc205178
 
 Name             : Soul Effigy (id=205260) 
@@ -4826,7 +4817,7 @@ Attributes       : ........ x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=321564)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 0x7f | Target: Self(1)
-Description      : $@spelldesc 108501
+Description      : $@spelldesc108501
 Tooltip          : Summoned by a Grimoire of Service.  Damage increased by $s1%.
 
 Name             : Reap Souls (Artifact) (id=216698) 
@@ -5124,7 +5115,7 @@ Range            : 40 yards
 Duration         : 8 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Mastery: Potent Afflictions (77215), Epidemic (184922), Drain Soul (198590), Inherently Unstable (199152), Perdition (199158), Wrath of Consumption (199646), Item - Warlock T19 Affliction 2P Bonus (212002)
+Affecting spells : Mastery: Potent Afflictions (77215), Epidemic (184922), Drain Soul (198590), Inherently Unstable (199152), Perdition (199158), Wrath of Consumption (199646), Item - Warlock T19 Affliction 2P Bonus (212002), Entropic Instability (238072)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -5145,7 +5136,7 @@ Range            : 40 yards
 Duration         : 8 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Mastery: Potent Afflictions (77215), Epidemic (184922), Drain Soul (198590), Inherently Unstable (199152), Perdition (199158), Wrath of Consumption (199646), Item - Warlock T19 Affliction 2P Bonus (212002)
+Affecting spells : Mastery: Potent Afflictions (77215), Epidemic (184922), Drain Soul (198590), Inherently Unstable (199152), Perdition (199158), Wrath of Consumption (199646), Item - Warlock T19 Affliction 2P Bonus (212002), Entropic Instability (238072)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -5166,7 +5157,7 @@ Range            : 40 yards
 Duration         : 8 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Mastery: Potent Afflictions (77215), Epidemic (184922), Drain Soul (198590), Inherently Unstable (199152), Perdition (199158), Wrath of Consumption (199646), Item - Warlock T19 Affliction 2P Bonus (212002)
+Affecting spells : Mastery: Potent Afflictions (77215), Epidemic (184922), Drain Soul (198590), Inherently Unstable (199152), Perdition (199158), Wrath of Consumption (199646), Item - Warlock T19 Affliction 2P Bonus (212002), Entropic Instability (238072)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -5187,7 +5178,7 @@ Range            : 40 yards
 Duration         : 8 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Mastery: Potent Afflictions (77215), Epidemic (184922), Drain Soul (198590), Inherently Unstable (199152), Perdition (199158), Wrath of Consumption (199646), Item - Warlock T19 Affliction 2P Bonus (212002)
+Affecting spells : Mastery: Potent Afflictions (77215), Epidemic (184922), Drain Soul (198590), Inherently Unstable (199152), Perdition (199158), Wrath of Consumption (199646), Item - Warlock T19 Affliction 2P Bonus (212002), Entropic Instability (238072)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -5208,7 +5199,7 @@ Range            : 40 yards
 Duration         : 8 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Mastery: Potent Afflictions (77215), Epidemic (184922), Drain Soul (198590), Inherently Unstable (199152), Perdition (199158), Wrath of Consumption (199646), Item - Warlock T19 Affliction 2P Bonus (212002)
+Affecting spells : Mastery: Potent Afflictions (77215), Epidemic (184922), Drain Soul (198590), Inherently Unstable (199152), Perdition (199158), Wrath of Consumption (199646), Item - Warlock T19 Affliction 2P Bonus (212002), Entropic Instability (238072)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -5229,7 +5220,7 @@ Spell Level      : 13
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
-Affecting spells : Flamelicked (185229), Drained to a Husk (199120), Perdition (199158), Long Dark Night of the Soul (199214), Wrath of Consumption (199646), Odr, Shawl of the Ymirjar (212173), Devourer of Life (215165), 
+Affecting spells : Flamelicked (185229), Drained to a Husk (199120), Perdition (199158), Long Dark Night of the Soul (199214), Wrath of Consumption (199646), Odr, Shawl of the Ymirjar (212173), Devourer of Life (215165), Entropic Instability (238072)
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ...x.... 
@@ -5259,7 +5250,6 @@ Effects          :
 #1 (id=355427)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
                    Base Value: 70 | Scaled Value: 70 | Misc Value: 12 | Target: Self(1)
                    Affected Spells: Drain Soul (198590)
-                   Hotfixed: Base Value (80 -> 70)
 Description      : While channeling Drain Soul, your damage over time effects deal $s1% increased damage to the target.
 
 Name             : Empowered Life Tap (id=235156) [Spell Family (5)] 

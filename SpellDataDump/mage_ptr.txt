@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 05a6f98)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23436, git build 05a6f98)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Arcane Fire Frost Mage
@@ -151,7 +151,7 @@ Cast Time        : 2.25 seconds
 GCD              : 1.5 seconds
 Velocity         : 28 yards/sec
 Proc Chance      : 101%
-Affecting spells : Icy Veins (12472), Shatter (12982), Ice Floes (108839), Mage (137018), Fire Mage (137019), Enhanced Pyrotechnics (157644), Ignition (165979), Firestarter (171170), Fire at Will (194224), Great Balls of Fire (194313), Ice Form (198144), Norgannon's Foresight (236380)
+Affecting spells : Icy Veins (12472), Ice Floes (108839), Mage (137018), Fire Mage (137019), Enhanced Pyrotechnics (157644), Ignition (165979), Firestarter (171170), Fire at Will (194224), Great Balls of Fire (194313), Ice Form (198144), Norgannon's Foresight (236380)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ..x..... ........   ........ ........ ........ ........ 
@@ -169,7 +169,7 @@ School           : Arcane
 Resource         : 2% Base Mana (22000 @Level 110)
 Spell Level      : 18
 GCD              : 1.5 seconds
-Affecting spells : Shatter (12982), Arcane Charge (36032), Arcane Mage (137021), Crackling Energy (187310), Arcane Purification (187313), Erosion (210134), Norgannon's Foresight (236380)
+Affecting spells : Arcane Charge (36032), Arcane Mage (137021), Crackling Energy (187310), Arcane Purification (187313), Erosion (210134), Norgannon's Foresight (236380)
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -241,7 +241,7 @@ Range            : 40 yards
 Cast Time        : 4 seconds
 GCD              : 1.5 seconds
 Duration         : 8 seconds
-Affecting spells : Icy Veins (12472), Shatter (12982), Hot Streak! (48108), Ice Floes (108839), Fire Mage (137019), Ice Form (198144), Blue Flame Special (210182), Norgannon's Foresight (236380)
+Affecting spells : Icy Veins (12472), Hot Streak! (48108), Ice Floes (108839), Fire Mage (137019), Ice Form (198144), Blue Flame Special (210182), Norgannon's Foresight (236380)
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ......x. 
@@ -287,7 +287,7 @@ Spell Level      : 18
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Icy Veins (12472), Shatter (12982), Mage (137018), Fire Mage (137019), Ice Form (198144), Norgannon's Foresight (236380)
+Affecting spells : Icy Veins (12472), Mage (137018), Fire Mage (137019), Ice Form (198144), Norgannon's Foresight (236380)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -357,7 +357,7 @@ School           : Arcane
 Spell Level      : 14
 Range            : 60 yards
 Velocity         : 20 yards/sec
-Affecting spells : Shatter (12982), Arcane Charge (36032), Arcane Mage (137021), Arcane Focus (171375), Aegwynn's Fury (187287), Erosion (210134), Norgannon's Foresight (236380)
+Affecting spells : Arcane Charge (36032), Arcane Mage (137021), Arcane Focus (171375), Aegwynn's Fury (187287), Erosion (210134), Norgannon's Foresight (236380), Aegwynn's Intensity (238054)
 Triggered by     : Arcane Missiles (5143)
 Attributes       : ........ ........ x....... ........   ..x..... ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ .x...... ........ ......x. 
@@ -381,7 +381,7 @@ Cast Time        : 4.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 24 yards/sec
 Proc Chance      : 101%
-Affecting spells : Icy Veins (12472), Shatter (12982), Hot Streak! (48108), Ice Floes (108839), Mage (137018), Fire Mage (137019), Pyromaniac (166868), Pyroclasmic Paranoia (194239), Ice Form (198144), Norgannon's Foresight (236380)
+Affecting spells : Icy Veins (12472), Hot Streak! (48108), Ice Floes (108839), Mage (137018), Fire Mage (137019), Pyromaniac (166868), Pyroclasmic Paranoia (194239), Ice Form (198144), Norgannon's Foresight (236380)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -562,7 +562,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=5792)     : Apply Aura (6) | Unknown effect sub type (112)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 911 | Target: Self(1)
-                   Affected Spells: Frostbolt (116), Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Ice Lance (30455), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44457), Living Bomb (44461), Flurry (44614), Frozen Orb (84721), Fire Blast (108853), Frost Bomb (113092), Nether Tempest (114923), Nether Tempest (114954), Comet Storm (153595), Comet Storm (153596), Blast Wave (157981), Ice Nova (157997), Combustion (190319), Blizzard (190356), Blizzard (190357), Aftershocks (194432), Glacial Spike (199786), Ray of Frost (205021), Ebonbolt (214634), Living Bomb (217694), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Ebonbolt (228599), Glacial Spike (228600), Frost Nova (235235)
+                   Affected Spells: Frostbolt (116), Cone of Cold (120), Frost Nova (122), Ice Lance (30455), Flurry (44614), Frost Bomb (113092), Comet Storm (153595), Comet Storm (153596), Ice Nova (157997), Blizzard (190356), Blizzard (190357), Glacial Spike (199786), Ray of Frost (205021), Ebonbolt (214634), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Ebonbolt (228599), Glacial Spike (228600), Frost Nova (235235)
 #2 (id=99824)    : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | Target: Self(1)
 Description      : Multiplies the critical strike chance of your spells against frozen targets by 1.5, and adds an additional $?a231582[${$s2+$231582s1$}%][$s2%] critical strike chance.
@@ -709,7 +709,7 @@ Spell Level      : 10
 Range            : 40 yards
 Cast Time        : 2.25 seconds
 GCD              : 1.5 seconds
-Affecting spells : Arcane Power (12042), Icy Veins (12472), Shatter (12982), Arcane Charge (36032), Ice Floes (108839), Arcane Mage (137021), Arcane Affinity (166871), Arcane Focus (171375), Blasting Rod (187258), Ice Form (198144), Presence of Mind (205025), Rhonin's Assaulting Armwraps (208081), Erosion (210134), Norgannon's Foresight (236380)
+Affecting spells : Arcane Power (12042), Icy Veins (12472), Arcane Charge (36032), Ice Floes (108839), Arcane Mage (137021), Arcane Affinity (166871), Arcane Focus (171375), Blasting Rod (187258), Ice Form (198144), Presence of Mind (205025), Rhonin's Assaulting Armwraps (208081), Erosion (210134), Norgannon's Foresight (236380)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -794,7 +794,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Shatter (12982), Fire Mage (137019), Darckli's Dragonfire Diadem (207547), Big Mouth (215796), Alexstrasza's Fury (235870), Norgannon's Foresight (236380)
+Affecting spells : Fire Mage (137019), Darckli's Dragonfire Diadem (207547), Big Mouth (215796), Alexstrasza's Fury (235870), Norgannon's Foresight (236380)
 Attributes       : ........ ........ x...x... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -849,7 +849,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=21340)    : School Damage: frost (2)
                    Base Value: 1 | Scaled Value: 0 (avg=0.5, dl=0.25) | SP Coefficient: 1.00000 | Target: Enemy(6)
-Description      : Deals ${$s1} Frost damage to the target.
+Description      : Deals ${$s1*0.75} Frost damage to the target.
 
 Name             : Invisibility (id=32612) [Spell Family (3)] 
 Class            : Mage
@@ -1031,7 +1031,7 @@ Velocity         : 24 yards/sec
 Cooldown         : 4.5 seconds
 Category         : 1189
 Category Cooldown: 4.5 seconds
-Affecting spells : Shatter (12982), Arcane Charge (36032), Mage (137018), Arcane Mage (137021), Torrential Barrage (187304), Erosion (210134), Norgannon's Foresight (236380)
+Affecting spells : Arcane Charge (36032), Mage (137018), Arcane Mage (137021), Torrential Barrage (187304), Erosion (210134), Norgannon's Foresight (236380)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1051,7 +1051,8 @@ Damage increased by $36032s1% per Arcane Charge$?a231564[
 
 Hits $36032s3 additional $Ltarget:targets; within $s3 yds per Arcane Charge for $s2% damage.][]
 
-|cFFFFFFFFConsumes all Arcane Charges.|r
+|cFFFFFFFFConsumes all Arcane Charges.|r
+
 
 Name             : Pyroblast Clearcasting Driver (id=44448) [Spell Family (3), Passive, Hidden] 
 Class            : Fire Mage
@@ -1079,7 +1080,7 @@ Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 12 seconds
-Affecting spells : Shatter (12982), Mage (137018), Fire Mage (137019), Norgannon's Foresight (236380)
+Affecting spells : Mage (137018), Fire Mage (137019), Norgannon's Foresight (236380)
 Attributes       : ........ ........ x....... ..x.....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -1099,7 +1100,7 @@ Class            : Mage
 School           : Fire
 Spell Level      : 1
 Range            : 50000 yards
-Affecting spells : Shatter (12982), Fire Mage (137019), Norgannon's Foresight (236380)
+Affecting spells : Fire Mage (137019), Norgannon's Foresight (236380)
 Attributes       : ........ ........ x.x..... x..x....   ........ ........ ........ ........ 
                  : x.x..... ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ..x..... 
@@ -1285,7 +1286,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=49437)    : Apply Aura (6) | Add Flat Modifier: Spell Targets (107)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 17 | Target: Self(1)
-                   Affected Spells: Ice Lance (30455), Icicle (148022), Glacial Spike (199786), Crystalline Swords (205165)
+                   Affected Spells: Ice Lance (30455), Icicle (148022), Glacial Spike (199786)
 #2 (id=136440)   : Dummy (3)
                    Base Value: 80 | Scaled Value: 80
 #3 (id=341171)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
@@ -1808,7 +1809,7 @@ Class            : Mage
 School           : Frost
 Spell Level      : 57
 Range            : 100 yards
-Affecting spells : Shatter (12982), Frost Mage (137020), Orbital Strike (195323), Lonely Winter (205024), Norgannon's Foresight (236380)
+Affecting spells : Frost Mage (137020), Orbital Strike (195323), Lonely Winter (205024), Norgannon's Foresight (236380)
 Attributes       : ........ ........ x......x x..x....   .....x.x ........ ........ ........ 
                  : ..x..... ......x. ...x.... ....x.x.   ........ .x...... ........ ......x. 
                  : x......x .......x ........ ........   ...x.... ........ .xx..... ..x..... 
@@ -2031,7 +2032,7 @@ Range            : 40 yards
 Cooldown         : 0.5 seconds
 Charges          : 1 (12 seconds cooldown)
 Category         : 1500
-Affecting spells : Shatter (12982), Mage Fire Blast Range Bonus (33066), Fire Mage (137019), Reignition Overdrive (194234), Flame On (205029), Fire Blast (231567), Fire Blast (231568), Norgannon's Foresight (236380)
+Affecting spells : Mage Fire Blast Range Bonus (33066), Fire Mage (137019), Reignition Overdrive (194234), Flame On (205029), Fire Blast (231567), Fire Blast (231568), Norgannon's Foresight (236380)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -2215,7 +2216,7 @@ Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 12 seconds
-Affecting spells : Shatter (12982), Arcane Mage (137021), Norgannon's Foresight (236380)
+Affecting spells : Arcane Mage (137021), Norgannon's Foresight (236380)
 Attributes       : ........ ........ x....... ..x.....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .....x.. .....x.. ........ ........ 
@@ -2238,7 +2239,7 @@ School           : Arcane
 Spell Level      : 1
 Range            : 50000 yards
 Velocity         : 1.25 yards/sec
-Affecting spells : Shatter (12982), Arcane Mage (137021), Norgannon's Foresight (236380)
+Affecting spells : Arcane Mage (137021), Norgannon's Foresight (236380)
 Attributes       : ........ ........ x.x....x x..x....   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ......x.   ........ ........ ........ .x....x. 
                  : ........ .......x ........ ........   ........ ........ ........ ..x..... 
@@ -2314,7 +2315,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #3 (id=150698)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 40 | Scaled Value: 40 | Target: Self(1)
-                   Affected Spells: Waterbolt (31707), Freeze (33395)
+                   Affected Spells: Waterbolt (31707), Freeze (33395), Water Jet (135029)
 Description      : $@spelldesc116011
 Tooltip          : Spell damage increased by $w1%.$?$w2=0[][
 Health restored by $w2% per second.]
@@ -2337,8 +2338,8 @@ Effects          :
 #1 (id=131165)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 4 | Scaled Value: 4 | Misc Value: 0x7e | Target: Self(1)
 #2 (id=168860)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 5 | Scaled Value: 5 | Target: Self(1)
-                   Affected Spells: Waterbolt (31707), Freeze (33395), Lonely Winter (205024)
+                   Base Value: 4 | Scaled Value: 4 | Target: Self(1)
+                   Affected Spells: Waterbolt (31707), Freeze (33395), Water Jet (135029)
 Description      : $@spelldesc1463
 Tooltip          : Increases spell damage by $w1%.
 
@@ -2357,7 +2358,6 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=132772)   : Apply Aura (6) | Modify Spell Crit% (57)
                    Base Value: 15 | Scaled Value: 15 | Target: Self(1)
-                   Hotfixed: Base Value (10 -> 15)
 #2 (id=132773)   : Apply Aura (6) | Modify Combat Rating Multiplier (405)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1792 | Target: Self(1)
 Description      : Your spells have a $s1% increased chance to deal a critical strike.$?s231630[
@@ -2471,7 +2471,7 @@ Duration         : 4 seconds
 Cooldown         : 25 seconds
 Category         : 35
 Category Cooldown: 25 seconds
-Affecting spells : Mastery: Icicles (76613), Frost Mage (137020), Item - Mage T18 Frost 4P Bonus (185971), Crushing Jets (198146), Norgannon's Foresight (236380)
+Affecting spells : Mastery: Icicles (76613), Rune of Power (116014), Incanter's Flow (116267), Frost Mage (137020), Item - Mage T18 Frost 4P Bonus (185971), Crushing Jets (198146), Norgannon's Foresight (236380)
 Attributes       : ........ ........ x....... ........   ..x..... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...x.. ........ ........ 
@@ -2617,7 +2617,6 @@ Effects          :
 #1 (id=179703)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 12 | Scaled Value: 12 | Target: Self(1)
                    Affected Spells: Frostbolt (116), Cone of Cold (120), Ice Lance (30455), Waterbolt (31707), Frozen Orb (84721), Frost Bomb (113092), Comet Storm (153595), Comet Storm (153596), Ice Nova (157997), Blizzard (190356), Blizzard (190357), Ebonbolt (214634), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Ebonbolt (228599)
-                   Hotfixed: Affects Spells
 #2 (id=191121)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 12 | Scaled Value: 12 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Water Jet (135029), Ray of Frost (205021)
@@ -2663,7 +2662,6 @@ Effects          :
 #1 (id=179704)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 12 | Scaled Value: 12 | Target: Self(1)
                    Affected Spells: Arcane Explosion (1449), Arcane Missiles (7268), Arcane Blast (30451), Arcane Barrage (44425), Nether Tempest (114923), Nether Tempest (114954), Arcane Orb (153640), Supernova (157980)
-                   Hotfixed: Affects Spells
 #2 (id=191116)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 12 | Scaled Value: 12 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Nether Tempest (114923), Nether Tempest (114954)
@@ -2849,7 +2847,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=201127)   : School Damage: frost (2)
                    Base Value: 1 | Scaled Value: 1 | Chain Multiplier: 0.8 | Chain Targets: 1 | Target: Unknown(25)
-                   Hotfixed: Target 1 (6 -> 25)
 Description      : $@spelldesc76613
 
 Name             : Prismatic Crystal (id=152087) 
@@ -3254,7 +3251,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 4 seconds
 Cooldown         : 25 seconds
-Affecting spells : Shatter (12982), Fire Mage (137019), Norgannon's Foresight (236380)
+Affecting spells : Fire Mage (137019), Norgannon's Foresight (236380)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3520,7 +3517,7 @@ Resource         : 10% Base Mana (110000 @Level 110)
 Spell Level      : 40
 Duration         : 10 seconds
 Cooldown         : 120 seconds
-Affecting spells : Shatter (12982), Norgannon's Foresight (236380)
+Affecting spells : Norgannon's Foresight (236380), Pre-Ignited (238055)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : .......x ........ ........ ........   ........ .x...... ........ ........ 
@@ -3751,7 +3748,7 @@ Description      : Shoots at an enemy, inflicting Physical damage.
 Name             : Molten Skin (id=194315) [Spell Family (3), Passive] 
 Class            : Mage
 School           : Physical
-Artifact Power   : Id: 757, Max Rank: 6, Values: [ -5, -10, -15, -20, -25, -30 ]
+Artifact Power   : Id: 757, Max Rank: 8, Values: [ -5, -10, -15, -20, -25, -30, -35, -40 ]
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3790,7 +3787,7 @@ School           : Fire
 Spell Level      : 44
 Range            : 40 yards
 Cast Time        : 2 seconds
-Affecting spells : Icy Veins (12472), Shatter (12982), Hot Streak! (48108), Ice Floes (108839), Fire Mage (137019), Ice Form (198144), Blue Flame Special (210182), Norgannon's Foresight (236380)
+Affecting spells : Icy Veins (12472), Hot Streak! (48108), Ice Floes (108839), Fire Mage (137019), Ice Form (198144), Blue Flame Special (210182), Norgannon's Foresight (236380)
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ .....x.. ........ ......x. 
@@ -4013,7 +4010,6 @@ Effects          :
 Description      : Casting Pyroblast or Flamestrike while Hot Streak is active has a $s1% chance to instantly reactivate Hot Streak.
 
 Name             : Ray of Frost (id=205021) [Spell Family (3)] 
-Hotfixed         : Affecting Spells
 Class            : Mage
 School           : Frost
 Spell Level      : 1
@@ -4034,9 +4030,8 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88) | Target: Enemy(6)
 #2 (id=303101)   : Apply Aura (6) | Periodic Damage: frost every 1 seconds (3)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.30000 | Target: Enemy(6)
-                   Hotfixed: SP Coefficient (2.05 -> 2.3)
 Description      : For the next $d, you can channel a beam of icy power at an enemy, slowing movement by $m1% and dealing $s2 Frost damage every $t2 sec. Each time Ray of Frost deals damage, its damage increases by $208141s1%.
-Tooltip          : Movement slowed by $w1% and taking $s2 Frost damage every $t2 sec.
+Tooltip          : Movement slowed by $w1% and taking $w2 Frost damage every $t2 sec.
 
 Name             : Arcane Familiar (id=205022) [Spell Family (3)] 
 Class            : Mage
@@ -4083,7 +4078,7 @@ Name             : Lonely Winter (id=205024) [Spell Family (3), Passive]
 Class            : Mage
 School           : Frost
 Spell Level      : 1
-Affecting spells : Mastery: Icicles (76613), Incanter's Flow (116267), It's Cold Outside (214776), Norgannon's Foresight (236380)
+Affecting spells : Mastery: Icicles (76613), It's Cold Outside (214776), Norgannon's Foresight (236380)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4391,7 +4386,6 @@ Attributes       : ........ ........ .......x x..x....   ...x.x.x ........ .....
 Effects          :
 #1 (id=303428)   : School Damage: fire (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.25000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
-                   Hotfixed: SP Coefficient (0.5 -> 0.25)
 Description      : Burning enemies for $s1 Fire damage.
 
 Name             : Chilled (id=205708) [Spell Family (3)] 
@@ -4641,6 +4635,8 @@ Attributes       : ........ ........ .......x ........   ........ ........ .....
 Effects          :
 #1 (id=312653)   : School Damage: arcane (2)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 6 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
+#2 (id=363686)   : Energize Power (30)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: mana | Target: Self(1)
 Description      : Deals $s1 Arcane damage to all targets within $A1 yards.
 Tooltip          : Deals $s1 Arcane damage to all targets within $A1 yards.
 
@@ -4773,7 +4769,7 @@ School           : Fire
 Spell Level      : 1
 Range            : 40 yards
 Duration         : 4 seconds
-Affecting spells : Shatter (12982), Mage (137018), Fire Mage (137019), Norgannon's Foresight (236380)
+Affecting spells : Mage (137018), Fire Mage (137019), Norgannon's Foresight (236380)
 Attributes       : ........ ........ x....... ..x.....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -4927,8 +4923,7 @@ Attributes       : ........ ........ x.x....x x..x....   .....x.. ........ .....
                  : Does not break stealth (37), Not a proc (105)
 Effects          :
 #1 (id=344285)   : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=1, dl=0.1) | SP Coefficient: 1.20000 | Chain Multiplier: 0.8 | Chain Targets: 1 | Target: Unknown(25)
-                   Hotfixed: Target 1 (6 -> 25)
+                   Base Value: 1 | Scaled Value: 0 (avg=1, dl=0.1) | SP Coefficient: 1.20000 | Chain Multiplier: 0.8 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=344286)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100
 Description      : $@spelldesc30455
@@ -4968,11 +4963,9 @@ Attributes       : ........ ........ .......x x..x....   .....x.. ........ .....
                  : Does not break stealth (37), Not a proc (105)
 Effects          :
 #1 (id=344289)   : School Damage: frost (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 10.00000 | Target: Unknown(25)
-                   Hotfixed: Target 1 (6 -> 25)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 10.00000 | Target: Enemy(6)
 #2 (id=344290)   : Apply Aura (6) | Unknown effect sub type (455)
-                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(58) | Target: Unknown(25)
-                   Hotfixed: Target 1 (6 -> 25)
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(58) | Target: Enemy(6)
 Description      : $@spelldesc199786
 Tooltip          : Frozen in place.
 
@@ -5345,10 +5338,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=356242)   : Apply Aura (6) | Proc Trigger Spell: Chrono Shift (42)
                    Base Value: 50 | Scaled Value: 50 | Trigger Spell: 236298 | Target: Self(1)
-                   Hotfixed: Base Value (30 -> 50)
 #2 (id=357239)   : Apply Aura (6) | Proc Trigger Spell: Chrono Shift (42)
                    Base Value: 50 | Scaled Value: 50 | Trigger Spell: 236299 | Target: Self(1)
-                   Hotfixed: Base Value (30 -> 50)
 Description      : Arcane Barrage slows enemies by $236298s% and increases your movement speed by $236299s% for $236299d.
 
 Name             : Alexstrasza's Fury (id=235870) [Spell Family (3), Passive] 
@@ -5427,7 +5418,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=357235)   : Apply Aura (6) | Unknown effect sub type (129)
                    Base Value: 50 | Scaled Value: 50 | Target: Self(1)
-                   Hotfixed: Base Value (30 -> 50)
 Description      : $@spelldesc236298
 Tooltip          : Movement speed increased by $s1%.
 
@@ -5449,7 +5439,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=357237)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: 50 | Scaled Value: 50 | Target: Enemy(6)
-                   Hotfixed: Base Value (30 -> 50)
 Description      : $@spelldesc235711
 Tooltip          : Movement speed slowed by $s1%.
 
