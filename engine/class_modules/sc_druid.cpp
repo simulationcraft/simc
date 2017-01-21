@@ -3312,7 +3312,16 @@ struct tigers_fury_t : public cat_attack_t
   {
     cat_attack_t::execute();
 
-    p() -> buff.tigers_fury -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, duration );
+    if ( p() -> talent.predator -> ok() )
+    {
+       p() -> buff.tigers_fury -> trigger(1, buff_t::DEFAULT_VALUE(), 1.0, 
+          duration + duration.from_millis( p() -> talent.predator -> effectN(1).base_value() ));
+    }
+    else 
+    {
+       p() -> buff.tigers_fury -> trigger(1, buff_t::DEFAULT_VALUE(), 1.0, duration);
+    }
+    
 
     p() -> buff.ashamanes_energy -> trigger();
   }
@@ -9071,6 +9080,17 @@ struct druid_module_t : public module_t
       .operation( hotfix::HOTFIX_SET )
       .modifier( 40 )
       .verification_value( 76 );
+    hotfix::register_effect("Druid", "2017-01-21", "(Direct) - Damage of most feral abilities increased by 8%", 179694 )
+       .field( "base_value" )
+       .operation( hotfix::HOTFIX_SET )
+       .modifier( 16.64 )
+       .verification_value( 8 );
+    hotfix::register_effect("Druid", "2017-01-21", "(Dot) - Damage of most feral abilities increased by 8%", 191154 )
+       .field( "base_value" )
+       .operation( hotfix::HOTFIX_SET )
+       .modifier( 16.64 )
+       .verification_value( 8 );
+
     /*
     hotfix::register_effect( "Druid", "2016-09-23", "Sunfire damage increased by 10%.-dot", 232417 )
       .field( "sp_coefficient" )
