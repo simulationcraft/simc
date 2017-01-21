@@ -3,38 +3,49 @@
 #
 # Example :
 # $(Tier)=T19H
+# $(iLvl)=910
 # Rogue_Legendaries.simc
 #
-# It will call the Rogue T19H Profiles then test with every legendaries defined below.
+# It will call the Rogue T19H Profiles then sim with every legendaries defined below.
 # You only have to set $(Tier) one time. (i.e. you can call the Warrior and Rogue profiles altogether)
 # You can even do that to test 2 Tiers at the same time :
 #
 # $(Tier)=T19H
+# $(iLvl)=910
 # Rogue_Legendaries.simc
-# $(Tier)=T19M
+# $(Tier)=T19H_NH
+# $(iLvl)=940
 # Rogue_Legendaries.simc
+#####
+
+# Leave this empty, it's for non-specific Tier items backward compatibility
+$(Item_$(Tier))=
+
 
 # Windwalker
-Monk_Windwalker_$(Tier).simc
+input=Monk_Windwalker_$(Tier).simc
 name=WW_$(Tier)_Baseline
 
+$(Item_T19H_NH)=back=cloak_of_enveloped_dissonance,id=138367,bonus_id=3517,enchant=binding_of_agility
+$(Item_T19M_NH)=back=cloak_of_enveloped_dissonance,id=138367,bonus_id=3519,enchant=binding_of_agility
+
 copy=WW_$(Tier)_Cinidaria,WW_$(Tier)_Baseline
-waist=cinidaria_the_symbiote,id=133976
+waist=cinidaria_the_symbiote,id=133976,ilevel=$(iLvl)
 
 copy=WW_$(Tier)_Drinking_Horn,WW_$(Tier)_Baseline
-talents=3010032
-wrists=drinking_horn_cover,id=137097
+talent_override=whirling_dragon_punch
+wrists=drinking_horn_cover,id=137097,ilevel=$(iLvl)
 
 copy=WW_$(Tier)_Katsuos,WW_$(Tier)_Baseline
-feet=katsuos_eclipse,id=137029
+feet=katsuos_eclipse,id=137029,ilevel=$(iLvl)
 
 copy=WW_$(Tier)_Kiljaedens,WW_$(Tier)_Baseline
-trinket=kiljaedens_burning_wish,id=144259
+trinket=kiljaedens_burning_wish,id=144259,ilevel=$(iLvl)
 
 copy=WW_$(Tier)_March,WW_$(Tier)_Baseline
-finger1=march_of_the_legion,id=137220,gem_id=130247
+finger1=march_of_the_legion,id=137220,gem_id=130247,ilevel=$(iLvl)
 
 # also change cloak to preserve 4pc nighthold bonus (only usable with T19H_NH profile)
 copy=WW_$(Tier)_Emperors_Capacitor,WW_$(Tier)_Baseline
-back=cloak_of_enveloped_dissonance,id=138367,bonus_id=3519,enchant=binding_of_agility
-chest=the_emperors_capacitor,id=144239
+$(Item_$(Tier))
+chest=the_emperors_capacitor,id=144239,ilvl=$(iLvl)
