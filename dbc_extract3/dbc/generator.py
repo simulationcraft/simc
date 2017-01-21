@@ -1511,8 +1511,9 @@ class SpellDataGenerator(DataGenerator):
           ( 121283, 0 ), # Chi Sphere from Power Strikes
           ( 228287, 3 ), # Spinning Crane Kick's Mark of the Crane debuff
           ( 125174, 3 ), # Touch of Karma redirect buff
-          ( 195651, 0 ), # Crosswinds Artifact trait trigger spell
-          ( 196061, 0 ), # Crosswinds Artifact trait damage spell
+          ( 195651, 3 ), # Crosswinds Artifact trait trigger spell
+          ( 196061, 3 ), # Crosswinds Artifact trait damage spell
+          ( 116007, 3 ), # Cestus of Storms Artifact trait damage spell
           ( 211432, 3 ), # Tier 19 4-piece DPS Buff
           # Legendary
           ( 213114, 3 ), # Hidden Master's Forbidden Touch buff

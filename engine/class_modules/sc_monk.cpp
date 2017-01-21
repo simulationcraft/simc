@@ -244,6 +244,7 @@ public:
     buff_t* forceful_winds;
     buff_t* hit_combo;
     buff_t* light_on_your_feet;
+    buff_t* master_of_combinations;
     buff_t* masterful_strikes;
     buff_t* power_strikes;
     buff_t* spinning_crane_kick;
@@ -478,6 +479,7 @@ public:
     artifact_power_t way_of_the_mistweaver;
 
     // Windwalker Artifact
+    artifact_power_t cestus_of_storms;
     artifact_power_t crosswinds;
     artifact_power_t dark_skies;
     artifact_power_t death_art;
@@ -485,11 +487,14 @@ public:
     artifact_power_t gale_burst;
     artifact_power_t good_karma;
     artifact_power_t healing_winds;
+    artifact_power_t infinite; // TODO: double check name
     artifact_power_t inner_peace;
     artifact_power_t light_on_your_feet_ww;
+    artifact_power_t master_of_combinations;
     artifact_power_t power_of_a_thousand_cranes;
     artifact_power_t rising_winds;
     artifact_power_t spiritual_focus;
+    artifact_power_t split_personality;
     artifact_power_t strike_of_the_windlord;
     artifact_power_t strength_of_xuen;
     artifact_power_t tiger_claws;
@@ -4695,6 +4700,9 @@ struct serenity_t: public monk_spell_t
     parse_options( options_str );
     harmful = false;
     trigger_gcd = timespan_t::zero();
+
+    if ( player -> artifact.split_personality.rank() )
+      cooldown -> duration += ( player -> artifact.split_personality.rank() * player -> artifact.split_personality.data().effectN( 2 ).time_value() );
   }
 
   void execute() override
@@ -4796,7 +4804,11 @@ struct storm_earth_and_fire_t: public monk_spell_t
 
     trigger_gcd = timespan_t::zero();
     callbacks = harmful = may_miss = may_crit = may_dodge = may_parry = may_block = false;
-    cooldown -> charges += p -> spec.storm_earth_and_fire_2 -> effectN( 1 ).base_value();
+
+    if ( p -> artifact.split_personality.rank() )
+      cooldown -> duration += p -> artifact.split_personality.time_value();
+
+      cooldown -> charges += p -> spec.storm_earth_and_fire_2 -> effectN( 1 ).base_value();
   }
 
   void update_ready( timespan_t cd_duration = timespan_t::min() ) override
@@ -7593,6 +7605,7 @@ void monk_t::init_spells()
   artifact.way_of_the_mistweaver      = find_artifact_spell( "Way of the Mistweaver" );
 
   // Windwalker
+  artifact.cestus_of_storms           = find_artifact_spell( "Cestus of Storms" );
   artifact.crosswinds                 = find_artifact_spell( "Crosswinds" );
   artifact.dark_skies                 = find_artifact_spell( "Dark Skies" );
   artifact.death_art                  = find_artifact_spell( "Death Art" );
@@ -7600,11 +7613,14 @@ void monk_t::init_spells()
   artifact.gale_burst                 = find_artifact_spell( "Gale Burst" );
   artifact.good_karma                 = find_artifact_spell( "Good Karma" );
   artifact.healing_winds              = find_artifact_spell( "Healing Winds" );
+  artifact.infinite                   = find_artifact_spell( "Infinite" );
   artifact.inner_peace                = find_artifact_spell( "Inner Peace" );
   artifact.light_on_your_feet_ww      = find_artifact_spell( "Light on Your Feet" );
+  artifact.master_of_combinations     = find_artifact_spell( "Master of Combinations" );
   artifact.power_of_a_thousand_cranes = find_artifact_spell( "Power of a Thousand Cranes" );
   artifact.rising_winds               = find_artifact_spell( "Rising Winds" );
   artifact.spiritual_focus            = find_artifact_spell( "Spiritual Focus" );
+  artifact.split_personality          = find_artifact_spell( "Split Personality" );
   artifact.strike_of_the_windlord     = find_artifact_spell( "Strike of the Windlord" );
   artifact.strength_of_xuen           = find_artifact_spell( "Strength of Xuen" );
   artifact.tiger_claws                = find_artifact_spell( "Tiger Claws" );
@@ -8019,6 +8035,8 @@ void monk_t::create_buffs()
     .default_value( passives.hit_combo -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
+  buff.master_of_combinations = stat_buff_creator_t( this, "master_of_combinations", artifact.master_of_combinations );
+
   buff.masterful_strikes = buff_creator_t( this, "masterful_strikes", passives.tier18_2pc_melee )
     .default_value( passives.tier18_2pc_melee -> effectN( 1 ).base_value() )
     .add_invalidate( CACHE_MASTERY );
@@ -8425,6 +8443,9 @@ double monk_t::composite_player_multiplier( school_e school ) const
 
   if ( artifact.windborne_blows.rank() )
     m *= 1.0 + artifact.windborne_blows.percent();
+
+  if ( artifact.infinite.rank() )
+    m *= 1.0 + artifact.infinite.percent();
 
   return m;
 }
