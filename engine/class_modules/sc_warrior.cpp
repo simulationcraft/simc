@@ -3484,8 +3484,10 @@ struct storm_bolt_t: public warrior_attack_t
 
 struct thunder_clap_t: public warrior_attack_t
 {
+  double shield_slam_reset;
   thunder_clap_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "thunder_clap", p, p -> spec.thunder_clap )
+    warrior_attack_t( "thunder_clap", p, p -> spec.thunder_clap ),
+    shield_slam_reset( p -> spec.devastate -> effectN( 3 ).percent() )
   {
     parse_options( options_str );
     aoe = -1;
@@ -3494,7 +3496,13 @@ struct thunder_clap_t: public warrior_attack_t
 
     radius *= 1.0 + p -> talents.crackling_thunder -> effectN( 1 ).percent();
   }
-
+  
+  void execute() override
+  {
+    warrior_attack_t::execute();
+    if ( rng().roll( shield_slam_reset ) )
+      p() -> cooldown.shield_slam -> reset( true );
+  }
 
   double action_multiplier() const override
   {
