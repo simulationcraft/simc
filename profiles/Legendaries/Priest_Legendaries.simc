@@ -37,7 +37,7 @@ copy=Shadow_$(Tier)_Cloak_Bracers,Priest_Shadow_S2M_$(Tier)
 wrist=anunds_seared_shackles,id=132409,ilevel=$(iLvl)
 back=,id=144438,enchant=binding_of_intellect,ilevel=$(iLvl)
 
-#copy=Shadow_$(Tier)_Cloak_Belt,Priest_Shadow_S2M_$(Tier)
+copy=Shadow_$(Tier)_Cloak_Belt,Priest_Shadow_S2M_$(Tier)
 waist=mangazas_madness,id=132864,ilevel=$(iLvl)
 back=,id=144438,enchant=binding_of_intellect,ilevel=$(iLvl)
 
