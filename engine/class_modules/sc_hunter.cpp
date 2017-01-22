@@ -2759,6 +2759,10 @@ struct barrage_t: public hunter_ranged_attack_t
       base_multiplier *= 1.0 + player -> specs.beast_mastery_hunter -> effectN( 5 ).percent();
     }
 
+    // MM spec aura affects only the "tick action" spell
+    if ( tick_action -> data().affected_by( player -> specs.marksmanship_hunter -> effectN( 3 ) ) )
+      base_multiplier *= 1.0 + p() -> specs.marksmanship_hunter -> effectN( 3 ).percent();
+
     starved_proc = player -> get_proc( "starved: barrage" );
   }
 
