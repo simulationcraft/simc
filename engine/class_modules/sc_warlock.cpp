@@ -3929,6 +3929,7 @@ struct dimensional_rift_t : public warlock_spell_t
     shadowy_tear_duration = timespan_t::from_millis( 14001 );
     chaos_tear_duration = timespan_t::from_millis( 5001 );
     chaos_portal_duration = timespan_t::from_millis( 5501 );
+    school = SCHOOL_NONE;
   }
 
   void execute() override
