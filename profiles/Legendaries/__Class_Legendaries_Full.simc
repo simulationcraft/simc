@@ -1,0 +1,43 @@
+# This is a template file that you can use to make your own profile.
+# Everything that is inside "{}" should be modified.
+
+#####
+# This is a global profile used to check every relevant legendaries for one class.
+# You have to set "$(Tier)=..." and "$(iLvl)=..." before calling it.
+#
+# Example :
+#
+# $(Tier)=T19H
+# $(iLvl)=910
+# Rogue_Legendaries_Full.simc
+#
+# It will call the Rogue T19H Profiles then sim with every legendaries defined below.
+# You only have to set $(Tier) and $(iLvl) one time.
+#
+# If you want to test 2 (or more) classes, you can do it this way :
+#
+# $(Tier)=T19M_NH
+# $(iLvl)=940
+# Rogue_Legendaries_Full.simc
+# Warrior_Legendaries_Full.simc
+#
+# You can even do that to test 2 Tiers at the same time :
+#
+# $(Tier)=T19H
+# $(iLvl)=910
+# Rogue_Legendaries_Full.simc
+# $(Tier)=T19H_NH
+# $(iLvl)=940
+# Rogue_Legendaries_Full.simc
+#####
+
+# Leave this empty, it's for non-specific Tier items backward compatibility
+$(Item_$(Tier))=
+
+
+### Specialization ###
+input={Class}_{Spec}_$(Tier).simc
+name={Spec3Chars}_$(Tier)_Baseline
+
+copy={Spec3Chars}_$(Tier)_{Slot},{Spec3Chars}_$(Tier)_Baseline
+{Slot1}={ItemName},id={ItemID},ilevel=$(iLvl)
