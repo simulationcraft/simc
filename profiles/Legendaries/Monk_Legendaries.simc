@@ -36,25 +36,16 @@ $(Item_$(Tier))=
 input=Monk_Windwalker_$(Tier).simc
 name=WW_$(Tier)_Baseline
 
-copy=WW_$(Tier)_Cinidaria,WW_$(Tier)_Baseline
+copy=WW_$(Tier)_Cinidaria_Katsuos,WW_$(Tier)_Baseline
 waist=cinidaria_the_symbiote,id=133976,ilevel=$(iLvl)
-
-copy=WW_$(Tier)_Drinking_Horn,WW_$(Tier)_Baseline
-talent_override=whirling_dragon_punch
-wrists=drinking_horn_cover,id=137097,ilevel=$(iLvl)
-
-copy=WW_$(Tier)_Katsuos,WW_$(Tier)_Baseline
 feet=katsuos_eclipse,id=137029,ilevel=$(iLvl)
 
-copy=WW_$(Tier)_Kiljaedens,WW_$(Tier)_Baseline
-trinket1=kiljaedens_burning_wish,id=144259,ilevel=$(iLvl)
+copy=WW_$(Tier)_Cinidaria_Drinking_Horn,WW_$(Tier)_Baseline
+talent_override=whirling_dragon_punch
+wrists=drinking_horn_cover,id=137097,ilevel=$(iLvl)
+waist=cinidaria_the_symbiote,id=133976,ilevel=$(iLvl)
 
-copy=WW_$(Tier)_March,WW_$(Tier)_Baseline
-finger1=march_of_the_legion,id=137220,gem_id=130247,ilevel=$(iLvl)
-
-copy=WW_$(Tier)_Emperors_Capacitor,WW_$(Tier)_Baseline
-# Change cloak to preserve 4pc nighthold bonus
-$(Item_T19H_NH)=back=cloak_of_enveloped_dissonance,id=138367,bonus_id=3517,enchant=binding_of_agility
-$(Item_T19M_NH)=back=cloak_of_enveloped_dissonance,id=138367,bonus_id=3519,enchant=binding_of_agility
-$(Item_$(Tier))
-chest=the_emperors_capacitor,id=144239,ilvl=$(iLvl)
+copy=WW_$(Tier)_Katsuos_Drinking_Horn,WW_$(Tier)_Baseline
+talent_override=whirling_dragon_punch
+wrists=drinking_horn_cover,id=137097,ilevel=$(iLvl)
+feet=katsuos_eclipse,id=137029,ilevel=$(iLvl)
