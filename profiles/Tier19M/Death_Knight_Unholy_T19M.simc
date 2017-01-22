@@ -19,7 +19,7 @@ actions.precombat+=/food,name=nightborne_delicacy_platter
 actions.precombat+=/augmentation,name=defiled
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion,name=old_war
+actions.precombat+=/potion,name=prolonged_power
 actions.precombat+=/raise_dead
 actions.precombat+=/army_of_the_dead
 
@@ -30,7 +30,7 @@ actions+=/arcane_torrent,if=runic_power.deficit>20
 actions+=/blood_fury
 actions+=/berserking
 actions+=/use_item,name=ring_of_collapsing_futures,if=(buff.temptation.stack<1&target.time_to_die>60)|target.time_to_die<60
-actions+=/potion,name=old_war,if=buff.unholy_strength.react
+actions+=/potion,name=prolonged_power,if=buff.unholy_strength.react
 actions+=/outbreak,target_if=!dot.virulent_plague.ticking
 actions+=/dark_transformation,if=equipped.137075&cooldown.dark_arbiter.remains>165
 actions+=/dark_transformation,if=equipped.137075&!talent.shadow_infusion.enabled&cooldown.dark_arbiter.remains>55
@@ -65,12 +65,12 @@ actions.generic=dark_arbiter,if=!equipped.137075&runic_power.deficit<30
 actions.generic+=/dark_arbiter,if=equipped.137075&runic_power.deficit<30&cooldown.dark_transformation.remains<2
 actions.generic+=/summon_gargoyle,if=!equipped.137075,if=rune<=3
 actions.generic+=/summon_gargoyle,if=equipped.137075&cooldown.dark_transformation.remains<10&rune<=3
-actions.generic+=/soul_reaper,if=debuff.festering_wound.stack>=7&cooldown.apocalypse.remains<2
-actions.generic+=/apocalypse,if=debuff.festering_wound.stack>=7
+actions.generic+=/soul_reaper,if=debuff.festering_wound.stack>=6&cooldown.apocalypse.remains<4
+actions.generic+=/apocalypse,if=debuff.festering_wound.stack>=6
 actions.generic+=/death_coil,if=runic_power.deficit<10
 actions.generic+=/death_coil,if=!talent.dark_arbiter.enabled&buff.sudden_doom.up&!buff.necrosis.up&rune<=3
 actions.generic+=/death_coil,if=talent.dark_arbiter.enabled&buff.sudden_doom.up&cooldown.dark_arbiter.remains>5&rune<=3
-actions.generic+=/festering_strike,if=debuff.festering_wound.stack<7&cooldown.apocalypse.remains<5
+actions.generic+=/festering_strike,if=debuff.festering_wound.stack<6&cooldown.apocalypse.remains<=6
 actions.generic+=/soul_reaper,if=debuff.festering_wound.stack>=3
 actions.generic+=/festering_strike,if=debuff.soul_reaper.up&!debuff.festering_wound.up
 actions.generic+=/scourge_strike,if=debuff.soul_reaper.up&debuff.festering_wound.stack>=1
@@ -84,11 +84,11 @@ actions.generic+=/call_action_list,name=castigator,if=talent.castigator.enabled&
 actions.instructors=festering_strike,if=debuff.festering_wound.stack<=3&runic_power.deficit>13
 actions.instructors+=/death_coil,if=!buff.necrosis.up&talent.necrosis.enabled&rune<=3
 actions.instructors+=/scourge_strike,if=buff.necrosis.react&debuff.festering_wound.stack>=4&runic_power.deficit>29
-actions.instructors+=/clawing_shadows,if=buff.necrosis.react&debuff.festering_wound.stack>=4&runic_power.deficit>11
+actions.instructors+=/clawing_shadows,if=buff.necrosis.react&debuff.festering_wound.stack>=3&runic_power.deficit>11
 actions.instructors+=/scourge_strike,if=buff.unholy_strength.react&debuff.festering_wound.stack>=4&runic_power.deficit>29
-actions.instructors+=/clawing_shadows,if=buff.unholy_strength.react&debuff.festering_wound.stack>=4&runic_power.deficit>11
+actions.instructors+=/clawing_shadows,if=buff.unholy_strength.react&debuff.festering_wound.stack>=3&runic_power.deficit>11
 actions.instructors+=/scourge_strike,if=rune>=2&debuff.festering_wound.stack>=4&runic_power.deficit>29
-actions.instructors+=/clawing_shadows,if=rune>=2&debuff.festering_wound.stack>=4&runic_power.deficit>11
+actions.instructors+=/clawing_shadows,if=rune>=2&debuff.festering_wound.stack>=3&runic_power.deficit>11
 actions.instructors+=/death_coil,if=talent.shadow_infusion.enabled&talent.dark_arbiter.enabled&!buff.dark_transformation.up&cooldown.dark_arbiter.remains>15
 actions.instructors+=/death_coil,if=talent.shadow_infusion.enabled&!talent.dark_arbiter.enabled&!buff.dark_transformation.up
 actions.instructors+=/death_coil,if=talent.dark_arbiter.enabled&cooldown.dark_arbiter.remains>15
