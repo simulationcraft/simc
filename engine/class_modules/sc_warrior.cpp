@@ -522,9 +522,10 @@ public:
   stat_e     convert_hybrid_stat( stat_e s ) const override;
   void       assess_damage_imminent_pre_absorb( school_e, dmg_e, action_state_t* s ) override;
   void       assess_damage_imminent( school_e, dmg_e, action_state_t* s ) override;
+  void       assess_damage( school_e, dmg_e, action_state_t* ) override;
   void       target_mitigation( school_e, dmg_e, action_state_t* ) override;
-  void       copy_from( player_t* source ) override;
-  void       merge( player_t& other ) override;
+  void       copy_from( player_t* ) override;
+  void       merge( player_t& ) override;
 
   void     datacollection_begin() override;
   void     datacollection_end() override;
@@ -3268,8 +3269,6 @@ struct shield_slam_t: public warrior_attack_t
   {
     parse_options( options_str );
     energize_type = ENERGIZE_NONE;
-    if ( p -> specialization() == WARRIOR_PROTECTION )
-      base_multiplier *= 0.95; 
   }
 
   double action_multiplier() const override
@@ -6245,6 +6244,20 @@ void warrior_t::assess_damage_imminent( school_e school, dmg_e dmg, action_state
   }
 }
 
+void warrior_t::assess_damage( school_e school, dmg_e type, action_state_t* s )
+{
+  player_t::assess_damage( school, type, s );
+
+  if ( s -> result == RESULT_DODGE || s -> result == RESULT_PARRY )
+  {
+    if ( cooldown.revenge_reset->up() )
+    {
+      buff.revenge->trigger();
+      cooldown.revenge_reset->start();
+    }
+  }
+}
+
 // warrior_t::target_mitigation ============================================
 
 void warrior_t::target_mitigation( school_e school,
@@ -6297,15 +6310,6 @@ void warrior_t::target_mitigation( school_e school,
     else if ( buff.enrage -> up() )
     { // yay we're furious and we take more damage
       s -> result_amount *= 1.0 + ( buff.enrage -> data().effectN( 2 ).percent() + talents.warpaint -> effectN( 1 ).percent() );
-    }
-  }
-
-  if ( ( s -> result == RESULT_DODGE || s -> result == RESULT_PARRY ) && !s -> action -> is_aoe() ) // AoE attacks do not reset revenge.
-  {
-    if ( cooldown.revenge_reset -> up() )
-    {
-      buff.revenge -> trigger();
-      cooldown.revenge_reset -> start();
     }
   }
 
