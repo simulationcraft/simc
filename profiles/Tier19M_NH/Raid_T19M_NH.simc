@@ -37,10 +37,11 @@ Mage_Frost_T19M_NH.simc
 Monk_Windwalker_T19M_NH.simc
 
 # Paladin
+Paladin_Retribution_T19M_NH.simc
 
 
 # Priest
-
+Priest_Shadow_T19M_NH.simc
 
 # Rogue
 Rogue_Assassination_T19M_NH.simc
@@ -49,10 +50,12 @@ Rogue_Outlaw_T19M_NH.simc
 Rogue_Subtlety_T19M_NH.simc
 
 # Shaman
-
+Shaman_Elemental_T19M_NH.simc
 
 # Warlock
 
 
 # Warrior
+Warrior_Arms_T19M_NH.simc
+Warrior_Fury_T19M_NH.simc
 
