@@ -4578,13 +4578,6 @@ struct dire_beast_t: public hunter_spell_t
     school = SCHOOL_PHYSICAL;
   }
 
-  void init() override {
-    if ( p() -> legendary.bm_shoulders )
-      cooldown -> charges += p() -> legendary.bm_shoulders -> driver() -> effectN( 1 ).base_value();
-
-    hunter_spell_t::init();
-  }
-
   bool init_finished() override
   {
     for (auto pet : p() -> pet_list)
@@ -4806,14 +4799,6 @@ struct dire_frenzy_t: public hunter_spell_t
       energize_amount += p -> talents.dire_stable -> effectN( 2 ).base_value();
   }
 
-  void init() override
-  {
-    if ( p() -> legendary.bm_shoulders )
-      cooldown -> charges += p() -> legendary.bm_shoulders -> driver() -> effectN( 1 ).base_value();
-
-    hunter_spell_t::init();
-  }
-
   bool init_finished() override
   {
     for (auto pet : p() -> pet_list)
@@ -4921,14 +4906,6 @@ struct aspect_of_the_wild_t: public hunter_spell_t
 
     return hunter_spell_t::ready();
   }
-
-  virtual void init() override
-  {
-    hunter_spell_t::init();
-
-    if ( p() -> legendary.wrist )
-      cooldown -> duration *= 1.0 + p() -> legendary.wrist -> driver() -> effectN( 1 ).percent();
-  }
 };
 
 // Stampede =================================================================
@@ -5025,14 +5002,6 @@ struct aspect_of_the_eagle_t: public hunter_spell_t
     hunter_spell_t::execute();
 
     p() -> buffs.aspect_of_the_eagle -> trigger();
-  }
-
-  virtual void init() override
-  {
-    hunter_spell_t::init();
-
-    if ( p() -> legendary.wrist )
-      cooldown -> duration *= 1.0 + p() -> legendary.wrist -> driver() -> effectN( 1 ).percent();
   }
 };
 
@@ -5962,6 +5931,8 @@ void hunter_t::create_buffs()
       .cd( find_spell( 226262 ) -> duration() );
 }
 
+// hunter_t::init_special_effects ===========================================
+
 bool hunter_t::init_special_effects()
 {
   bool ret = player_t::init_special_effects();
@@ -5978,6 +5949,20 @@ bool hunter_t::init_special_effects()
 
   if ( blackness )
     blackness_multiplier = find_spell( blackness -> spell_id ) -> effectN( 1 ).average( blackness -> item ) / 100.0;
+
+  // Cooldown adjustments
+
+  if ( legendary.bm_shoulders )
+  {
+    cooldowns.dire_beast -> charges += legendary.bm_shoulders -> driver() -> effectN( 1 ).base_value();
+    cooldowns.dire_frenzy -> charges += legendary.bm_shoulders -> driver() -> effectN( 1 ).base_value();
+  }
+
+  if ( legendary.wrist )
+  {
+    cooldowns.aspect_of_the_wild -> duration *= 1.0 + legendary.wrist -> driver() -> effectN( 1 ).percent();
+    cooldowns.aspect_of_the_eagle -> duration *= 1.0 + legendary.wrist -> driver() -> effectN( 1 ).percent();
+  }
 
   return ret;
 }
