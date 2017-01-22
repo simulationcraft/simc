@@ -2011,7 +2011,8 @@ struct agonizing_poison_t : public rogue_poison_t
       if ( result_is_hit( state -> result ) &&
            td( state -> target ) -> dots.kingsbane -> is_ticking() )
       {
-        td( state -> target ) -> debuffs.kingsbane -> trigger();
+        // As of 01/22/2017, Agonizing Poison applies 2 times per application.
+        td( state -> target ) -> debuffs.kingsbane -> trigger(2);
       }
     }
   };
