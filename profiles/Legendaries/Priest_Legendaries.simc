@@ -28,19 +28,16 @@ name=Shadow_$(Tier)_Baseline
 $(Item_T19H_NH)=chest=,id=138319,bonus_id=1492/3516
 $(Item_T19M_NH)=chest=,id=138319,bonus_id=3519
 
-# Head replacement to keep the 4pc.
-$(Item_T19H_NH)=head=,id=138313,bonus_id=1492/3516
-$(Item_T19M_NH)=head=,id=138313,bonus_id=3519
-
-
-copy=Shadow_$(Tier)_Cloak_Bracers,Priest_Shadow_S2M_$(Tier)
+copy=Shadow_$(Tier)_Cloak_Bracers,Shadow_$(Tier)_Baseline
 wrist=anunds_seared_shackles,id=132409,ilevel=$(iLvl)
 back=,id=144438,enchant=binding_of_intellect,ilevel=$(iLvl)
+$(Item_$(Tier))
 
-copy=Shadow_$(Tier)_Cloak_Belt,Priest_Shadow_S2M_$(Tier)
+copy=Shadow_$(Tier)_Cloak_Belt,Shadow_$(Tier)_Baseline
 waist=mangazas_madness,id=132864,ilevel=$(iLvl)
 back=,id=144438,enchant=binding_of_intellect,ilevel=$(iLvl)
+$(Item_$(Tier))
 
-copy=Shadow_$(Tier)_Belt_Bracers,Priest_Shadow_S2M_$(Tier)
+copy=Shadow_$(Tier)_Belt_Bracers,Shadow_$(Tier)_Baseline
 waist=mangazas_madness,id=132864,ilevel=$(iLvl)
 wrist=anunds_seared_shackles,id=132409,ilevel=$(iLvl)
