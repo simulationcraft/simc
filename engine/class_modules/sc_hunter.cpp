@@ -3585,42 +3585,53 @@ struct piercing_shot_t: public hunter_ranged_attack_t
 
 // Explosive Shot  ====================================================================
 
-struct explosive_shot_t: public hunter_ranged_attack_t
+struct explosive_shot_t: public hunter_spell_t
 {
-  player_t* initial_target;
+  struct explosive_shot_impact_t: hunter_ranged_attack_t
+  {
+    player_t* initial_target;
+
+    explosive_shot_impact_t( hunter_t* p ):
+      hunter_ranged_attack_t( "explosive_shot_impact", p, p -> find_spell( 212680 ) ), initial_target( nullptr )
+    {
+      background = true;
+      dual = true;
+      aoe = -1;
+
+      may_proc_bullseye = false;
+    }
+
+    virtual void execute() override
+    {
+      initial_target = target;
+
+      hunter_ranged_attack_t::execute();
+
+      if ( result_is_hit( execute_state -> result ) )
+        trigger_bullseye( p(), execute_state -> action );
+    }
+
+    virtual double composite_target_da_multiplier( player_t* t ) const override
+    {
+      double m = hunter_ranged_attack_t::composite_target_da_multiplier( t );
+
+      if ( sim -> distance_targeting_enabled )
+        m /= 1 + ( initial_target -> get_position_distance( t -> x_position, t -> y_position ) ) / radius;
+
+      return m;
+    }
+  };
 
   explosive_shot_t( hunter_t* p, const std::string& options_str ):
-    hunter_ranged_attack_t( "explosive_shot", p, p -> find_talent_spell( "Explosive Shot" ) ), initial_target( nullptr )
+    hunter_spell_t( "explosive_shot", p, p -> find_talent_spell( "Explosive Shot" ) )
   {
-    may_proc_bullseye = false;
     parse_options( options_str );
 
-    aoe = -1;
-    attack_power_mod.direct = p -> find_spell( 212680 ) -> effectN( 1 ).ap_coeff();
-    weapon = &p -> main_hand_weapon;
-    weapon_multiplier = 0.0;
-
     travel_speed = 20.0;
-  }
+    may_miss = false;
 
-  virtual void execute() override
-  {
-    initial_target = p()->target;
-
-    hunter_ranged_attack_t::execute();
-
-    if (result_is_hit(execute_state->result))
-      trigger_bullseye( p(), execute_state -> action );
-  }
-
-  virtual double composite_target_da_multiplier( player_t* t ) const override
-  {
-    double m = hunter_ranged_attack_t::composite_target_da_multiplier( t );
-
-    if ( sim -> distance_targeting_enabled )
-      m /= 1 + ( initial_target -> get_position_distance( t -> x_position, t -> y_position ) ) / radius;
-
-    return m;
+    impact_action = new explosive_shot_impact_t( p );
+    impact_action -> stats = stats;
   }
 };
 
