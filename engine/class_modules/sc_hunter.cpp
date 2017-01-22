@@ -5175,9 +5175,6 @@ struct caltrops_t: public hunter_spell_t
 
       if ( p -> talents.expert_trapper -> ok() )
         base_multiplier = 1.0 + p -> talents.expert_trapper -> effectN( 2 ).percent();
-
-      if ( p -> artifacts.hunters_guile.rank() )
-        cooldown -> duration *= 1.0 + p -> artifacts.hunters_guile.percent();
     }
   };
 
@@ -5193,6 +5190,9 @@ struct caltrops_t: public hunter_spell_t
     ground_aoe = true;
     hasted_ticks = false;
     tick_action = new caltrops_tick_t( p );
+
+    if ( p -> artifacts.hunters_guile.rank() )
+      cooldown -> duration *= 1.0 + p -> artifacts.hunters_guile.percent();
   }
 
   virtual void execute() override
