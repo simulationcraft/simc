@@ -8246,7 +8246,7 @@ void mage_t::apl_arcane()
   burn      -> add_talent( this, "Supernova", "if=mana.pct<100" );
   burn      -> add_action( this, "Arcane Missiles", "if=mana.pct>10&(talent.overpowered.enabled|buff.arcane_power.down)" );
   burn      -> add_action( this, "Arcane Explosion", "if=active_enemies>1" );
-  burn      -> add_action( this, "Arcane Barrage", "if=(equipped.132451&cooldown.charged_up.remains=0&mana.pct<(100-(buff.arcane_charge.stack*0.03)))" );
+  burn      -> add_action( this, "Arcane Barrage", "if=talent.charged_up.enabled&(equipped.132451&cooldown.charged_up.remains=0&mana.pct<(100-(buff.arcane_charge.stack*0.03)))" );
   burn      -> add_action( this, "Arcane Blast" );
   burn      -> add_action( this, "Evocation", "interrupt_if=mana.pct>99" );
 
