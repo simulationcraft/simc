@@ -24,7 +24,7 @@ actions.precombat+=/stealth
 actions.precombat+=/potion,name=old_war
 actions.precombat+=/marked_for_death,if=raid_event.adds.in>40
 # Defined variables that doesn't change during the fight
-actions.precombat+=/variable,name=ssw_refund,value=equipped.shadow_satyrs_walk*(4+ssw_refund_offset)
+actions.precombat+=/variable,name=ssw_refund,value=equipped.shadow_satyrs_walk*(6+ssw_refund_offset)
 actions.precombat+=/variable,name=stealth_threshold,value=(15+talent.vigor.enabled*35+talent.master_of_shadows.enabled*25+variable.ssw_refund)
 actions.precombat+=/enveloping_shadows,if=combo_points>=5
 actions.precombat+=/symbols_of_death
@@ -92,8 +92,8 @@ legs=doomblade_pants,id=138335,bonus_id=3519
 feet=grovetenders_moccasins,id=140861,bonus_id=3519
 finger1=ring_of_exclusive_servitude,id=140906,bonus_id=3519,enchant=binding_of_mastery
 finger2=ring_of_the_scoured_clan,id=140897,bonus_id=3519,enchant=binding_of_mastery
-trinket1=convergence_of_fates,id=140806,bonus_id=3519
-trinket2=nightblooming_frond,id=140802,bonus_id=3519
+trinket1=nightblooming_frond,id=140802,bonus_id=3519
+trinket2=convergence_of_fates,id=140806,bonus_id=3519
 main_hand=fangs_of_the_devourer,id=128476,bonus_id=743,gem_id=140824/140823/140824,relic_id=3519/3519/3519
 off_hand=fangs_of_the_devourer,id=128479,gem_id=0/0/0/0
 
