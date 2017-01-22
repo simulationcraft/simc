@@ -2222,7 +2222,7 @@ private:
 
     affected_by_contagion = true;
     destro_mastery = true;
-    can_feretory = true;
+    can_feretory = false;
 
     parse_spell_coefficient( *this );
   }
@@ -2432,7 +2432,7 @@ public:
 
     p() -> buffs.demonic_synergy -> up();
 
-    if ( can_feretory && p() -> legendary.feretory_of_souls && rng().roll( p() -> find_spell( 205702 ) -> proc_chance() ) && ( ( dbc::is_school( SCHOOL_FIRE, school ) || dbc::is_school( SCHOOL_CHROMATIC, school ) || dbc::is_school( SCHOOL_SHADOWFLAME, school ) || dbc::is_school( SCHOOL_CHAOS, school ) ) ) )
+    if ( can_feretory && p() -> legendary.feretory_of_souls && rng().roll( p() -> find_spell( 205702 ) -> proc_chance() ) )
     {
       p() -> resource_gain( RESOURCE_SOUL_SHARD, 1.0, p() -> gains.feretory_of_souls );
     }
@@ -3449,6 +3449,8 @@ struct hand_of_guldan_t: public warlock_spell_t
     doom -> dual = true;
     doom -> base_costs[RESOURCE_MANA] = 0;
     base_multiplier *= 1.0 + p -> artifact.dirty_hands.percent();
+
+    can_feretory = true;
   }
 
   virtual timespan_t travel_time() const override
@@ -3555,6 +3557,7 @@ struct immolate_t: public warlock_spell_t
     const spell_data_t* dmg_spell = player -> find_spell( 157736 );
 
     can_havoc = true;
+    can_feretory = true;
 
     base_tick_time = dmg_spell -> effectN( 1 ).period();
     dot_duration = dmg_spell -> duration();
@@ -3628,6 +3631,7 @@ struct conflagrate_t: public warlock_spell_t
     base_duration = p -> find_spell( 117828 ) -> duration();
 
     can_havoc = true;
+    can_feretory = true;
 
     cooldown -> charges += p -> spec.conflagrate_2 -> effectN( 1 ).base_value();
 
@@ -3717,6 +3721,7 @@ struct incinerate_t: public warlock_spell_t
       aoe = -1;
 
     can_havoc = true;
+    can_feretory = true;
 
     base_execute_time *= 1.0 + p -> artifact.fire_and_the_flames.percent();
     base_multiplier *= 1.0 + p -> artifact.master_of_distaster.percent();
@@ -3798,6 +3803,7 @@ struct chaos_bolt_t: public warlock_spell_t
       base_execute_time += p -> talents.reverse_entropy -> effectN( 2 ).time_value();
 
     can_havoc = true;
+    can_feretory = true;
 
     crit_bonus_multiplier *= 1.0 + p -> artifact.chaotic_instability.percent();
 
@@ -4691,6 +4697,8 @@ struct demonbolt_t : public warlock_spell_t
     energize_resource = RESOURCE_SOUL_SHARD;
     energize_amount = 1;
 
+    can_feretory = true;
+
     icd = p -> get_cooldown( "discord_icd" );
 
     if ( p -> sets.set( WARLOCK_DEMONOLOGY, T17, B4 ) )
@@ -4789,6 +4797,7 @@ struct implosion_t : public warlock_spell_t
         dual = true;
         background = true;
         callbacks = false;
+        can_feretory = true;
 
         p -> spells.implosion_aoe = this;
       }
@@ -4839,6 +4848,7 @@ struct shadowflame_t : public warlock_spell_t
     warlock_spell_t( "shadowflame", p, p -> talents.shadowflame )
   {
     hasted_ticks = tick_may_crit = true;
+    can_feretory = true;
 
     dot_duration = timespan_t::from_seconds( 8.0 );
     spell_power_mod.tick = data().effectN( 2 ).sp_coeff();
@@ -4969,6 +4979,7 @@ struct shadowburn_t: public warlock_spell_t
     base_duration = p -> find_spell( 117828 ) -> duration();
 
     can_havoc = true;
+    can_feretory = true;
 
     cooldown -> charges += p -> spec.conflagrate_2 -> effectN( 1 ).base_value();
 
@@ -5343,8 +5354,6 @@ struct channel_demonfire_tick_t : public warlock_spell_t
     may_miss = false;
     dual = true;
 
-    can_feretory = false;
-
     spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
 
     aoe = -1;
@@ -5364,7 +5373,7 @@ struct channel_demonfire_t: public warlock_spell_t
     channeled = true;
     hasted_ticks = true;
     may_crit = false;
-    //can_havoc = true;
+    can_feretory = true;
 
     channel_demonfire = new channel_demonfire_tick_t( p );
     add_child( channel_demonfire );
