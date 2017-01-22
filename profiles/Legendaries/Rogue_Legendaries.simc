@@ -3,12 +3,21 @@
 # You have to set "$(Tier)=..." and "$(iLvl)=..." before calling it.
 #
 # Example :
+#
 # $(Tier)=T19H
 # $(iLvl)=910
 # Rogue_Legendaries.simc
 #
 # It will call the Rogue T19H Profiles then sim with every legendaries defined below.
-# You only have to set $(Tier) one time. (i.e. you can call the Warrior and Rogue profiles altogether)
+# You only have to set $(Tier) and $(iLvl) one time.
+#
+# If you want to test 2 (or more) classes, you can do it this way :
+#
+# $(Tier)=T19M_NH
+# $(iLvl)=940
+# Rogue_Legendaries.simc
+# Warrior_Legendaries.simc
+#
 # You can even do that to test 2 Tiers at the same time :
 #
 # $(Tier)=T19H
@@ -23,7 +32,7 @@
 $(Item_$(Tier))=
 
 
-# Assassination
+### Assassination ###
 input=Rogue_Assassination_$(Tier).simc
 name=Asn_$(Tier)_Baseline
 
@@ -40,7 +49,7 @@ shoulders=mantle_of_the_master_assassin,id=144236,ilevel=$(iLvl)
 feet=duskwalkers_footpads,id=137030,ilevel=$(iLvl)
 
 
-# Assassination Exsanguinate
+### Assassination Exsanguinate ###
 input=Rogue_Assassination_Exsg_$(Tier).simc
 name=Asn_Ex_$(Tier)_Baseline
 
@@ -57,10 +66,11 @@ shoulders=mantle_of_the_master_assassin,id=144236,ilevel=$(iLvl)
 feet=duskwalkers_footpads,id=137030,ilevel=$(iLvl)
 
 
-# Outlaw
+### Outlaw ###
 input=Rogue_Outlaw_$(Tier).simc
 name=Otl_$(Tier)_Baseline
 
+# Head replacement to keep the 4pc.
 $(Item_T19H_NH)=head=doomblade_cowl,id=138332,bonus_id=1492/3516
 $(Item_T19M_NH)=head=doomblade_cowl,id=138332,bonus_id=3519
 
@@ -81,7 +91,7 @@ shoulders=mantle_of_the_master_assassin,id=144236,ilevel=$(iLvl)
 finger1=insignia_of_ravenholdt,id=137049,gem_id=130221,enchant=binding_of_versatility,ilevel=$(iLvl)
 
 
-# Subtlety
+### Subtlety ###
 input=Rogue_Subtlety_$(Tier).simc
 name=Sub_$(Tier)_Baseline
 

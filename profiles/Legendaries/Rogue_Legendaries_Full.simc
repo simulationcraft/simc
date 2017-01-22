@@ -3,27 +3,36 @@
 # You have to set "$(Tier)=..." and "$(iLvl)=..." before calling it.
 #
 # Example :
+#
 # $(Tier)=T19H
 # $(iLvl)=910
-# Rogue_Legendaries.simc
+# Rogue_Legendaries_Full.simc
 #
 # It will call the Rogue T19H Profiles then sim with every legendaries defined below.
-# You only have to set $(Tier) one time. (i.e. you can call the Warrior and Rogue profiles altogether)
+# You only have to set $(Tier) and $(iLvl) one time.
+#
+# If you want to test 2 (or more) classes, you can do it this way :
+#
+# $(Tier)=T19M_NH
+# $(iLvl)=940
+# Rogue_Legendaries_Full.simc
+# Warrior_Legendaries_Full.simc
+#
 # You can even do that to test 2 Tiers at the same time :
 #
 # $(Tier)=T19H
 # $(iLvl)=910
-# Rogue_Legendaries.simc
+# Rogue_Legendaries_Full.simc
 # $(Tier)=T19H_NH
 # $(iLvl)=940
-# Rogue_Legendaries.simc
+# Rogue_Legendaries_Full.simc
 #####
 
 # Leave this empty, it's for non-specific Tier items backward compatibility
 $(Item_$(Tier))=
 
 
-# Assassination
+### Assassination ###
 Rogue_Assassination_$(Tier).simc
 name=Asn_$(Tier)_Baseline
 
@@ -46,7 +55,7 @@ copy=Asn_$(Tier)_Zoldyck_Family,Asn_$(Tier)_Baseline
 wrist=zoldyck_family_training_shackles,id=137098,ilevel=$(iLvl)
 
 
-# Assassination Exsanguinate
+### Assassination Exsanguinate ###
 Rogue_Assassination_Exsg_$(Tier).simc
 name=Asn_Ex_$(Tier)_Baseline
 
@@ -69,7 +78,7 @@ copy=Asn_Ex_$(Tier)_Zoldyck_Family,Asn_Ex_$(Tier)_Baseline
 wrist=zoldyck_family_training_shackles,id=137098,ilevel=$(iLvl)
 
 
-# Outlaw
+### Outlaw ###
 Rogue_Outlaw_$(Tier).simc
 name=Otl_$(Tier)_Baseline
 
@@ -96,7 +105,7 @@ copy=Otl_$(Tier)_Thraxis_Tricksy,Otl_$(Tier)_Baseline
 feet=thraxis_tricksy_treads,id=137031,ilevel=$(iLvl)
 
 
-# Subtlety
+#### Subtlety ###
 Rogue_Subtlety_$(Tier).simc
 name=Sub_$(Tier)_Baseline
 
