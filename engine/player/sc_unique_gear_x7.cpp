@@ -1961,6 +1961,7 @@ void item::draught_of_souls( special_effect_t& effect )
     {
       channeled = quiet = tick_zero = true;
       cooldown -> duration = timespan_t::zero();
+      trigger_gcd = timespan_t::from_seconds( 3.0 );
       hasted_ticks = false;
 
       damage = player -> find_action( "felcrazed_rage" );
@@ -1977,20 +1978,6 @@ void item::draught_of_souls( special_effect_t& effect )
 
     double composite_haste() const override
     { return 1.0; } // Not hasted.
-
-    void init() override
-    {
-      proc_spell_t::init();
-
-      auto cd = player -> get_cooldown( effect.cooldown_name() );
-      range::for_each( player -> action_list, [ cd ]( action_t* action ) {
-        if ( action -> cooldown == cd )
-        {
-          action -> use_off_gcd = true;
-        }
-      } );
-
-    }
 
     void execute() override
     {
