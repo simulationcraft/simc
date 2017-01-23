@@ -585,7 +585,7 @@ namespace
 template <class Base>
 struct warrior_action_t: public Base
 {
-  bool headlongrush, headlongrushgcd, sweeping_strikes, dauntless, deadly_calm, 
+  bool headlongrush, headlongrushgcd, sweeping_strikes, dauntless, deadly_calm,
     arms_damage_increase, fury_damage_increase, fury_dot_damage_increase, arms_dot_damage_increase,
     prot_warrior_damage_increase, prot_dot_damage_increase;
   double tactician_per_rage, arms_t19_2p_chance;
@@ -1059,7 +1059,7 @@ struct devastate_t: public warrior_attack_t
     if ( p -> talents.devastator -> ok() )
     {
       background = true;
-      trigger_gcd = timespan_t::zero(); 
+      trigger_gcd = timespan_t::zero();
     }
     else
     {
@@ -1916,7 +1916,7 @@ struct dragon_roar_t: public warrior_attack_t
 
 struct execute_sweep_t: public warrior_attack_t
 {
-  double dmg_mult; // This number is set in the original parent attack. 
+  double dmg_mult; // This number is set in the original parent attack.
   execute_sweep_t( warrior_t* p ):
     warrior_attack_t( "execute_sweep", p, p -> spec.execute ), dmg_mult( 0 )
   {
@@ -3185,7 +3185,7 @@ struct revenge_t: public warrior_attack_t
   double action_multiplier() const override
   {
     double am = warrior_attack_t::action_multiplier();
-    
+
     am *= 1.0 + ( p() -> talents.best_served_cold -> effectN( 1 ).percent() * std::min( target_list().size(), static_cast<size_t>( p() -> talents.best_served_cold -> effectN( 1 ).base_value() ) ) );
 
     return am;
@@ -3495,7 +3495,7 @@ struct thunder_clap_t: public warrior_attack_t
 
     radius *= 1.0 + p -> talents.crackling_thunder -> effectN( 1 ).percent();
   }
-  
+
   void execute() override
   {
     warrior_attack_t::execute();
@@ -4208,6 +4208,7 @@ struct ignore_pain_t: public warrior_spell_t
     }
 
     amount *= 1.0 + p() -> buff.dragon_scales -> check_value();
+    amount *= 1.0 + p() -> artifact.dragon_skin.percent();
     amount += p() -> buff.ignore_pain -> current_value;
 
     if ( amount > max_ip() )
