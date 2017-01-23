@@ -4324,67 +4324,53 @@ namespace spells
 
 // A Murder of Crows ========================================================
 
-struct peck_t : public hunter_spell_t
-{
-  peck_t( hunter_t* player, const std::string& name ) :
-    hunter_spell_t( name, player, player -> find_spell( 131900 ) )
-  {
-    background = true;
-    dual = true;
-    may_crit = true;
-    may_parry = false;
-    may_block = false;
-    may_dodge = false;
-    travel_speed = 0.0;
-  }
-
-  hunter_t* p() const { return static_cast<hunter_t*>( player ); }
-
-  virtual double action_multiplier() const override
-  {
-    double am = hunter_spell_t::action_multiplier();
-
-    if ( p() -> mastery.master_of_beasts -> ok() )
-        am *= 1.0 + p() -> cache.mastery_value();
-
-    return am;
-  }
-
-  virtual void try_steady_focus() override
-  {}
-
-  virtual void impact(action_state_t* s) override
-  {
-    hunter_spell_t::impact(s);
-
-    if (p()->artifacts.bullseye.rank() && s->target->health_percentage() <= p()->artifacts.bullseye.value())
-      p()->buffs.bullseye->trigger();
-  }
-};
-
 // TODO this should reset CD if the target dies
 struct moc_t : public hunter_spell_t
 {
+  struct peck_t : public hunter_ranged_attack_t
+  {
+    peck_t( hunter_t* player ) :
+      hunter_ranged_attack_t( "crow_peck", player, player -> find_spell( 131900 ) )
+    {
+      background = true;
+      dual = true;
+
+      may_crit = true;
+      may_parry = may_block = may_dodge = false;
+      travel_speed = 0.0;
+    }
+
+    double action_multiplier() const override
+    {
+      double am = hunter_ranged_attack_t::action_multiplier();
+
+      if ( p() -> mastery.master_of_beasts -> ok() )
+          am *= 1.0 + p() -> cache.mastery_value();
+
+      return am;
+    }
+
+    void try_steady_focus() override {}
+  };
+
   peck_t* peck;
+
   moc_t( hunter_t* player, const std::string& options_str ) :
     hunter_spell_t( "a_murder_of_crows", player, player -> talents.a_murder_of_crows ),
-    peck( new peck_t( player, "crow_peck" ) )
+    peck( new peck_t( player ) )
   {
     parse_options( options_str );
+
     add_child( peck );
+
     hasted_ticks = false;
     callbacks = false;
-    may_crit = false;
-    may_miss = false;
-    may_parry = false;
-    may_block = false;
-    may_dodge = false;
+    may_miss = may_crit = false;
+
     tick_zero = true;
 
     starved_proc = player -> get_proc( "starved: a_murder_of_crows" );
   }
-
-  hunter_t* p() const { return static_cast<hunter_t*>( player ); }
 
   void tick( dot_t*d ) override
   {
