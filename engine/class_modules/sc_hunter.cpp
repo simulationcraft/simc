@@ -356,6 +356,9 @@ public:
     artifact_power_t unleash_the_beast;
     artifact_power_t focus_of_the_titans;
     artifact_power_t furious_swipes;
+    artifact_power_t slithering_serpents;
+    artifact_power_t thunderslash; // 7.2 NYI
+    artifact_power_t cobra_commander; // 7.2 NYI
 
     // Marksmanship
     artifact_power_t windburst;
@@ -372,6 +375,9 @@ public:
     artifact_power_t precision;
     artifact_power_t rapid_killing;
     artifact_power_t mark_of_the_windrunner;
+    artifact_power_t unerring_arrows;
+    artifact_power_t feet_of_wind;
+    artifact_power_t cyclonic_burst; // 7.2 NYI
 
     // Survival
     artifact_power_t fury_of_the_eagle;
@@ -389,11 +395,18 @@ public:
     artifact_power_t lacerating_talons;
     artifact_power_t embrace_of_the_aspects;
     artifact_power_t hunters_guile;
+    artifact_power_t jaws_of_the_mongoose;
+    artifact_power_t talon_bond; // 7.2 NYI
+    artifact_power_t echos_of_echero; // 7.2 NYI
 
     // Paragon points
     artifact_power_t windflight_arrows;
     artifact_power_t spiritbound;
     artifact_power_t voice_of_the_wild_gods;
+    // 7.2 Flat Boosts
+    artifact_power_t acuity_of_the_unseen_path;
+    artifact_power_t bond_of_the_unseen_path;
+    artifact_power_t ferocity_of_the_unseen_path;
   } artifacts;
 
   stats_t* stats_tier17_4pc_bm;
@@ -3007,6 +3020,9 @@ struct cobra_shot_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t( "cobra_shot", player, player -> find_specialization_spell( "Cobra Shot" ) )
   {
     parse_options( options_str );
+
+    if ( player -> artifacts.slithering_serpents.rank() )
+      base_costs[ RESOURCE_FOCUS ] += player -> artifacts.slithering_serpents.value();
   }
 
   virtual void execute() override
@@ -3897,6 +3913,9 @@ struct mongoose_bite_t: hunter_melee_attack_t
   {
     parse_options( options_str );
     cooldown -> hasted = true; // not in spell data for some reason
+
+    if ( p -> artifacts.jaws_of_the_mongoose.rank() )
+      crit_bonus_multiplier *= 1.0 + p -> artifacts.jaws_of_the_mongoose.percent();
   }
 
   virtual void execute() override
@@ -5353,10 +5372,11 @@ dots( dots_t() )
       .spell( p -> find_spell( 185365 ) );
 
   debuffs.vulnerable =
-    buff_creator_t(*this, "vulnerability")
-    .spell(p->find_spell(187131))
-    .default_value(p->find_spell(187131)->effectN(2).percent())
-    .refresh_behavior(BUFF_REFRESH_DURATION);
+    buff_creator_t( *this, 187131, "vulnerability" )
+      .default_value( p -> find_spell( 187131 ) -> effectN( 2 ).percent() )
+      .refresh_behavior( BUFF_REFRESH_DURATION );
+  if ( p -> artifacts.unerring_arrows.rank() )
+    debuffs.vulnerable -> default_value += p -> artifacts.unerring_arrows.percent();
 
   debuffs.true_aim = 
     buff_creator_t( *this, "true_aim" )
@@ -5674,6 +5694,9 @@ void hunter_t::init_spells()
   artifacts.unleash_the_beast        = find_artifact_spell( "Unleash the Beast" );
   artifacts.focus_of_the_titans      = find_artifact_spell( "Focus of the Titans" );
   artifacts.furious_swipes           = find_artifact_spell( "Furious Swipes" );
+  artifacts.slithering_serpents      = find_artifact_spell( "Slithering Serpents" );
+  artifacts.thunderslash             = find_artifact_spell( "Thunderslash" );
+  artifacts.cobra_commander          = find_artifact_spell( "Cobra Commander" );
 
   artifacts.windburst                 = find_artifact_spell( "Windburst" );
   artifacts.wind_arrows               = find_artifact_spell( "Wind Arrows" );
@@ -5689,6 +5712,9 @@ void hunter_t::init_spells()
   artifacts.marked_for_death          = find_artifact_spell( "Marked for Death" );
   artifacts.precision                 = find_artifact_spell( "Precision" );
   artifacts.rapid_killing             = find_artifact_spell( "Rapid Killing" );
+  artifacts.unerring_arrows           = find_artifact_spell( "Unerring Arrows" );
+  artifacts.feet_of_wind              = find_artifact_spell( "Feet of Wind" );
+  artifacts.cyclonic_burst            = find_artifact_spell( "Cyclonic Burst" );
 
   artifacts.fury_of_the_eagle        = find_artifact_spell( "Fury of the Eagle" );
   artifacts.talon_strike             = find_artifact_spell( "Talon Strike" );
@@ -5705,10 +5731,17 @@ void hunter_t::init_spells()
   artifacts.embrace_of_the_aspects   = find_artifact_spell( "Embrace of the Aspects" );
   artifacts.hunters_guile            = find_artifact_spell( "Hunter's Guile" );
   artifacts.lacerating_talons        = find_artifact_spell( "Lacerating Talons" );
+  artifacts.jaws_of_the_mongoose     = find_artifact_spell( "Jaws of the Mongoose" );
+  artifacts.talon_bond               = find_artifact_spell( "Talon Bond" );
+  artifacts.echos_of_echero          = find_artifact_spell( "Echos of Eche'ro" );
 
   artifacts.windflight_arrows        = find_artifact_spell( "Windflight Arrows" );
   artifacts.spiritbound              = find_artifact_spell( "Spiritbound" );
   artifacts.voice_of_the_wild_gods   = find_artifact_spell( "Voice of the Wild Gods" );
+
+  artifacts.acuity_of_the_unseen_path   = find_artifact_spell( "Acuity of the Unseen Path" );
+  artifacts.bond_of_the_unseen_path     = find_artifact_spell( "Bond  of the Unseen Path" );
+  artifacts.ferocity_of_the_unseen_path = find_artifact_spell( "Ferocity of the Unseen Path" );
 
   if ( talents.serpent_sting -> ok() )
     active.serpent_sting = new attacks::serpent_sting_t( this );
@@ -6654,6 +6687,15 @@ double hunter_t::composite_player_multiplier( school_e school ) const
 
   if ( artifacts.voice_of_the_wild_gods.rank() )
     m *= 1.0 + artifacts.voice_of_the_wild_gods.percent();
+
+  if ( artifacts.bond_of_the_unseen_path.rank() )
+    m *= 1.0 + artifacts.bond_of_the_unseen_path.percent( 1 );
+
+  if ( artifacts.acuity_of_the_unseen_path.rank() )
+    m *= 1.0 + artifacts.acuity_of_the_unseen_path.percent( 1 );
+
+  if ( artifacts.ferocity_of_the_unseen_path.rank() )
+    m *= 1.0 + artifacts.ferocity_of_the_unseen_path.percent( 1 );
 
   if ( talents.lone_wolf -> ok() )
     m *= 1.0 + talents.lone_wolf -> effectN( 1 ).percent();
