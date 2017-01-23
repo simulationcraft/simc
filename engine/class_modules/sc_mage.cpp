@@ -9670,6 +9670,11 @@ public:
       .modifier( 1.785 )
       .verification_value( 1.70 );
 
+    hotfix::register_effect( "Mage", "2017-01-20", "25% CmS Damage", 153596 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 1.3125 )
+      .verification_value( 1.05 );
   }
 
   virtual bool valid() const override { return true; }
