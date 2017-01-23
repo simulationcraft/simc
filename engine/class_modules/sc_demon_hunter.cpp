@@ -3344,7 +3344,8 @@ struct chaos_blade_t : public demon_hunter_attack_t
     : demon_hunter_attack_t( n, p, s )
   {
     base_execute_time = weapon -> swing_time;
-    special           = true;  // Apr 12 2016: Cannot miss.
+    special           = false;  // set false special to force it to proc a "white hit" so trinkets don't fall off
+	may_miss = may_glance = false; // however, it cannot miss or glance
     repeating = background = true;
   }
 
