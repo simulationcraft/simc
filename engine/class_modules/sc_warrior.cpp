@@ -216,6 +216,7 @@ public:
     gain_t* shield_slam;
     gain_t* will_of_the_first_king;
     gain_t* booming_voice;
+    gain_t* thunder_clap;
 
     // Legendarys
     gain_t* ceannar_rage;
@@ -3483,9 +3484,11 @@ struct storm_bolt_t: public warrior_attack_t
 
 struct thunder_clap_t: public warrior_attack_t
 {
+  double rage_gain;
   double shield_slam_reset;
   thunder_clap_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "thunder_clap", p, p -> spec.thunder_clap ),
+    rage_gain( data().effectN( 3 ).resource( RESOURCE_RAGE ) ),
     shield_slam_reset( p -> spec.devastate -> effectN( 3 ).percent() )
   {
     parse_options( options_str );
@@ -3496,13 +3499,6 @@ struct thunder_clap_t: public warrior_attack_t
     radius *= 1.0 + p -> talents.crackling_thunder -> effectN( 1 ).percent();
   }
 
-  void execute() override
-  {
-    warrior_attack_t::execute();
-    if ( rng().roll( shield_slam_reset ) )
-      p() -> cooldown.shield_slam -> reset( true );
-  }
-
   double action_multiplier() const override
   {
     double am = warrior_attack_t::action_multiplier();
@@ -3510,6 +3506,27 @@ struct thunder_clap_t: public warrior_attack_t
     am *= 1.0 + p() -> buff.bindings_of_kakushan -> stack_value();
 
     return am;
+  }
+
+  void execute() override
+  {
+    warrior_attack_t::execute();
+
+    if ( rng().roll( shield_slam_reset ) )
+    {
+      p() -> cooldown.shield_slam -> reset( true );
+    }
+
+    if ( p() -> buff.bindings_of_kakushan -> check() )
+    {
+      p() -> resource_gain( RESOURCE_RAGE, rage_gain * ( 1.0 + p() -> buff.bindings_of_kakushan -> check_value() ) * ( 1.0 + ( p() -> buff.demoralizing_shout -> check() ? p() -> artifact.might_of_the_vrykul.percent() : 0 ) ), p() -> gain.thunder_clap );
+    }
+    else
+    {
+      p() -> resource_gain( RESOURCE_RAGE, rage_gain * ( 1.0 + ( p() -> buff.demoralizing_shout -> check() ? p() -> artifact.might_of_the_vrykul.percent() : 0 ) ), p() -> gain.thunder_clap );
+    }
+
+    p() -> buff.bindings_of_kakushan -> expire();
   }
 };
 
@@ -5576,6 +5593,7 @@ void warrior_t::init_gains()
   gain.shield_slam = get_gain( "shield_slam" );
   gain.will_of_the_first_king = get_gain( "will_of_the_first_king" );
   gain.booming_voice = get_gain( "booming_voice" );
+  gain.thunder_clap = get_gain( "thunder_clap" );
 
   gain.ceannar_rage = get_gain( "ceannar_rage" );
   gain.rage_from_damage_taken = get_gain( "rage_from_damage_taken" );
