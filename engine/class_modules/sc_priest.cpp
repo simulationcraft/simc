@@ -3314,19 +3314,61 @@ struct vampiric_touch_t final : public priest_spell_t
 
 struct void_bolt_t final : public priest_spell_t
 {
+  struct void_bolt_extension_t : public priest_spell_t
+  {
+    const spell_data_t* rank2;
+    int dot_extension;
+
+    void_bolt_extension_t( priest_t& player ) :
+      priest_spell_t( "void_bolt_extension", player ),
+      rank2( player.find_specialization_spell( 231688 ) )
+    {
+      dot_extension = rank2 -> effectN( 1 ).base_value();
+      aoe = -1;
+      radius = player.find_spell( 234746 ) -> effectN( 1 ).radius();
+      may_miss = false;
+      background = dual = true;
+    }
+
+    virtual timespan_t travel_time() const override
+    {
+      return timespan_t::zero();
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      priest_spell_t::impact( s );
+
+      if ( rank2 -> ok() )
+      {
+        if ( const priest_td_t* td = find_td( s -> target ) )
+        {
+          if ( td -> dots.shadow_word_pain -> is_ticking() )
+          {
+            td -> dots.shadow_word_pain -> extend_duration( timespan_t::from_millis( dot_extension ), true );
+          }
+
+          if ( td -> dots.vampiric_touch -> is_ticking() )
+          {
+            td -> dots.vampiric_touch -> extend_duration( timespan_t::from_millis( dot_extension ), true );
+          }
+        }
+      }
+    }
+  };
+
   double insanity_gain;
-  int dot_extension;
   const spell_data_t* rank2;
+  void_bolt_extension_t* void_bolt_extension;
 
   void_bolt_t( priest_t& player, const std::string& options_str )
     : priest_spell_t( "void_bolt", player, player.find_spell( 205448 ) ),
       insanity_gain( data().effectN( 3 ).resource( RESOURCE_INSANITY ) ),
-      rank2( player.find_specialization_spell( 231688 ) )
+    rank2( player.find_specialization_spell( 231688 ) )
   {
     parse_options( options_str );
     use_off_gcd                 = true;
     is_sphere_of_insanity_spell = true;
-    dot_extension = rank2 ->effectN( 1 ).base_value();
     energize_type =
         ENERGIZE_NONE;  // disable resource generation from spell data.
 
@@ -3336,6 +3378,8 @@ struct void_bolt_t final : public priest_spell_t
     }
 
     cooldown->hasted = true;
+
+    void_bolt_extension = new void_bolt_extension_t( player );
   }
 
   void execute() override
@@ -3347,27 +3391,6 @@ struct void_bolt_t final : public priest_spell_t
     if ( priest.buffs.shadow_t19_4p->up() )
     {
       cooldown->reset( false );
-    }
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    priest_spell_t::impact( s );
-
-    if ( rank2->ok() )
-    {
-      if ( const priest_td_t* td = find_td( s->target ) )
-      {
-        if ( td->dots.shadow_word_pain->is_ticking() )
-        {
-          td->dots.shadow_word_pain->extend_duration(timespan_t::from_millis(dot_extension), true );
-        }
-
-        if ( td->dots.vampiric_touch->is_ticking() )
-        {
-          td->dots.vampiric_touch->extend_duration(timespan_t::from_millis(dot_extension), true);
-        }
-      }
     }
   }
 
@@ -3396,6 +3419,17 @@ struct void_bolt_t final : public priest_spell_t
       priest.buffs.anunds_last_breath->expire();
     }
     return m;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_spell_t::impact( s );
+
+    if ( rank2 -> ok() )
+    {
+      void_bolt_extension -> target = s -> target;
+      void_bolt_extension -> schedule_execute();
+    }
   }
 };
 
