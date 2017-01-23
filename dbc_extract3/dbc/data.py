@@ -239,11 +239,10 @@ class DBCRecord(RawDBCRecord):
         if self._id > -1:
             s.append('id=%u' % self._id)
 
-        for i in range(0, len(self._fi)):
+        for i in range(0, min(len(self._d), len(self._fi))):
             field = self._fi[i]
-            fmt = self._ff[i]
             type_ = self._fo[i]
-            if not field or 'x' in fmt:
+            if not field or 'x' in type_:
                 continue
 
             if type_ == 'S' and self._d[i] > 0:
@@ -412,9 +411,9 @@ def initialize_data_model(options, obj):
 
         # Setup data field names (_fi), data field types (_fo), and data field formats for output
         # (_ff)
-        setattr(cls, '_fi', tuple(data_fo['data-fields']))
-        setattr(cls, '_fo', tuple(data_fo['data-format']))
-        setattr(cls, '_ff', tuple(data_fo['cpp']))
+        setattr(cls, '_fi', tuple(_FORMATDB.fields(dbc_file_name, True)))
+        setattr(cls, '_fo', tuple(_FORMATDB.types(dbc_file_name, True)))
+        setattr(cls, '_ff', tuple(_FORMATDB.formats(dbc_file_name, True)))
 
         # Setup index lookup table for fields to speedup __getattr__ access
         setattr(cls, '_cd', {})
@@ -447,9 +446,16 @@ def initialize_data_model(options, obj):
         dbc.data.Item_sparse.link('spells', dbc.data.ItemEffect)
         dbc.data.Item_sparse.link('journal', dbc.data.JournalEncounterItem)
 
+    if 'ItemSparse' in dir(obj):
+        dbc.data.ItemSparse.link('spells', dbc.data.ItemEffect)
+        dbc.data.ItemSparse.link('journal', dbc.data.JournalEncounterItem)
+
     if 'ItemSet' in dir(obj):
         dbc.data.ItemSet.link('bonus', dbc.data.ItemSetSpell)
 
     if 'GemProperties' in dir(obj):
-        dbc.data.GemProperties.link('item', dbc.data.Item_sparse)
+        if 'Item_sparse' in dir(obj):
+            dbc.data.GemProperties.link('item', dbc.data.Item_sparse)
+        elif 'ItemSparse' in dir(obj):
+            dbc.data.GemProperties.link('item', dbc.data.ItemSparse)
 

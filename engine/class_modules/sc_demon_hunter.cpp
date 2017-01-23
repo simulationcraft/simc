@@ -89,6 +89,8 @@ public:
 };
 
 const unsigned MAX_SOUL_FRAGMENTS = 5;
+const unsigned DEMONIC_EXTEND_DURATION = 8;
+const double VENGEFUL_RETREAT_DISTANCE = 20.0;
 
 enum soul_fragment_e
 {
@@ -128,8 +130,6 @@ struct movement_buff_t : public buff_t
 
   void expire_override( int, timespan_t ) override;
 };
-
-const double VENGEFUL_RETREAT_DISTANCE = 20.0;
 
 /* Demon Hunter class definition
  *
@@ -333,7 +333,8 @@ public:
     // Havoc -- Twinblades of the Deceiver
     artifact_power_t anguish_of_the_deceiver;
     artifact_power_t balanced_blades;
-    artifact_power_t chaos_vision;
+    artifact_power_t chaos_burn;
+    artifact_power_t chaos_vision;    
     artifact_power_t contained_fury;
     artifact_power_t critical_chaos;
     artifact_power_t demon_rage;
@@ -341,16 +342,18 @@ public:
     artifact_power_t feast_on_the_souls;
     artifact_power_t fury_of_the_illidari;
     artifact_power_t inner_demons;
+    artifact_power_t overwhelming_power;
     artifact_power_t rage_of_the_illidari;
     artifact_power_t sharpened_glaives;
     artifact_power_t unleashed_demons;
     artifact_power_t warglaives_of_chaos;
-  artifact_power_t chaos_burn;
+    artifact_power_t wide_eyes;
 
     // NYI
+    artifact_power_t bladedancers_grace;
+    artifact_power_t chaotic_onslaught;
     artifact_power_t deceivers_fury;
     artifact_power_t illidari_knowledge;
-    artifact_power_t overwhelming_power;
 
     // Vengeance -- The Aldrachi Warblades
     artifact_power_t aldrachi_design;
@@ -1419,8 +1422,7 @@ struct consume_soul_t : public demon_hunter_heal_t
   struct demonic_appetite_t : public demon_hunter_spell_t
   {
     demonic_appetite_t( demon_hunter_t* p )
-      : demon_hunter_spell_t( "demonic_appetite_fury", p,
-                              p -> find_spell( 210041 ) )
+      : demon_hunter_spell_t( "demonic_appetite_fury", p, p->spec.demonic_appetite_fury)
     {
       may_miss = may_crit = callbacks = false;
       background = quiet = true;
@@ -1807,6 +1809,8 @@ struct eye_beam_t : public demon_hunter_spell_t
     school = SCHOOL_CHAOS;  // Jun 27 2016: Spell data states Chromatic damage,
     // just override it.
 
+    base_costs[RESOURCE_FURY] += p->artifact.wide_eyes.value();
+
     dot_duration *= 1.0 + p -> talent.blind_fury -> effectN( 1 ).percent();
 
     if ( p -> artifact.anguish_of_the_deceiver.rank() )
@@ -1835,7 +1839,7 @@ struct eye_beam_t : public demon_hunter_spell_t
 
     if (p()->talent.demonic->ok())
     {
-      timespan_t demonic_time = timespan_t::from_seconds(8);
+      timespan_t demonic_time = timespan_t::from_seconds(DEMONIC_EXTEND_DURATION);
       if (p()->buff.metamorphosis->up())
       {
         p()->buff.metamorphosis->extend_duration(p(), demonic_time);
@@ -3602,15 +3606,14 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
     if ( hit_any_target )
     {
       // TODO: Travel time
-      if ( p() -> talent.demonic_appetite -> ok() &&
-           !p() -> cooldown.demonic_appetite -> down() &&
-           p() -> rng().roll( p() -> talent.demonic_appetite -> proc_chance() ) )
+      if (p()->talent.demonic_appetite->ok() && !p()->cooldown.demonic_appetite->down())
       {
-        p() -> cooldown.demonic_appetite -> start();
-        p() -> proc.demonic_appetite -> occur();
-
-        p() -> spawn_soul_fragment( SOUL_FRAGMENT_LESSER );
-        // FIXME
+        if (p()->rng().roll(p()->talent.demonic_appetite->proc_chance()))
+        {
+          p()->cooldown.demonic_appetite->start();
+          p()->proc.demonic_appetite->occur();
+          p()->spawn_soul_fragment(SOUL_FRAGMENT_LESSER);
+        }
       }
 
       // Inner Demons procs on cast
@@ -4832,7 +4835,7 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
         extended_by_demonic = false;
       }
       // If we are triggering from Eye Beam, we should disallow any additional full Demonic extensions
-      else if (p->executing->id == this->p().spec.eye_beam->id() && extra_seconds == timespan_t::from_seconds(8))
+      else if (p->executing->id == this->p().spec.eye_beam->id() && extra_seconds == timespan_t::from_seconds(DEMONIC_EXTEND_DURATION))
       {
         if (extended_by_demonic)
           return;
@@ -5435,10 +5438,21 @@ void demon_hunter_t::create_buffs()
 
   // General
 
-  buff.demon_soul =
-    buff_creator_t( this, "demon_soul", find_spell( 208195 ) )
-    .default_value( find_spell( 208195 ) -> effectN( 1 ).percent() )
-    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  // FIXME: 1/22/2017 -- 7.2.0 PTR Spell Id 208195 was removed, but 163073 still remains
+  if (maybe_ptr)
+  {
+    buff.demon_soul =
+      buff_creator_t(this, "demon_soul", find_spell(163073))
+      .default_value(find_spell(163073)->effectN(1).percent())
+      .add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER);
+  }
+  else
+  {
+    buff.demon_soul =
+      buff_creator_t(this, "demon_soul", find_spell(208195))
+      .default_value(find_spell(208195)->effectN(1).percent())
+      .add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER);
+  }
 
   buff.metamorphosis = new buffs::metamorphosis_buff_t( this );
 
@@ -6077,8 +6091,12 @@ void demon_hunter_t::init_spells()
   spec.metamorphosis          = find_class_spell("Metamorphosis");
   spec.metamorphosis_buff     = specialization() == DEMON_HUNTER_HAVOC
                                  ? find_spell( 162264 ) : find_spell( 187827 );
-  spec.soul_fragment = find_spell( 204255 );
-  
+
+  // FIXME: 1/22/2017 -- 7.2.0 PTR Spell Id 204255 was removed, but 203795 still remains
+  if(maybe_ptr)
+    spec.soul_fragment = find_spell(203795);
+  else
+    spec.soul_fragment = find_spell(204255);
 
   // Havoc
   spec.havoc               = find_specialization_spell( "Havoc Demon Hunter" );
@@ -6173,44 +6191,46 @@ void demon_hunter_t::init_spells()
   // Artifacts ==============================================================
 
   // Havoc -- Twinblades of the Deceiver
-  artifact.anguish_of_the_deceiver =
-    find_artifact_spell( "Anguish of the Deceiver" );
-  artifact.balanced_blades      = find_artifact_spell( "Balanced Blades" );
-  artifact.chaos_vision         = find_artifact_spell( "Chaos Vision" );
-  artifact.contained_fury       = find_artifact_spell( "Contained Fury" );
-  artifact.critical_chaos       = find_artifact_spell( "Critical Chaos" );
-  artifact.deceivers_fury       = find_artifact_spell( "Deceiver's Fury" );
-  artifact.demon_rage           = find_artifact_spell( "Demon Rage" );
-  artifact.demon_speed          = find_artifact_spell( "Demon Speed" );
-  artifact.feast_on_the_souls   = find_artifact_spell( "Feast on the Souls" );
-  artifact.fury_of_the_illidari = find_artifact_spell( "Fury of the Illidari" );
-  artifact.illidari_knowledge   = find_artifact_spell( "Illidari Knowledge" );
-  artifact.inner_demons         = find_artifact_spell( "Inner Demons" );
-  artifact.overwhelming_power   = find_artifact_spell( "Overwhelming Power" );
-  artifact.rage_of_the_illidari = find_artifact_spell( "Rage of the Illidari" );
-  artifact.sharpened_glaives    = find_artifact_spell( "Sharpened Glaives" );
-  artifact.unleashed_demons     = find_artifact_spell( "Unleashed Demons" );
-  artifact.warglaives_of_chaos  = find_artifact_spell( "Warglaives of Chaos" );
-  artifact.chaos_burn			= find_artifact_spell("Chaos Burn");
+  artifact.anguish_of_the_deceiver  = find_artifact_spell("Anguish of the Deceiver");
+  artifact.balanced_blades          = find_artifact_spell("Balanced Blades");
+  artifact.bladedancers_grace       = find_artifact_spell("Bladedancer's Grace");
+  artifact.chaos_burn               = find_artifact_spell("Chaos Burn");
+  artifact.chaos_vision             = find_artifact_spell("Chaos Vision");
+  artifact.chaotic_onslaught        = find_artifact_spell("Chaotic Onslaught");
+  artifact.contained_fury           = find_artifact_spell("Contained Fury");
+  artifact.critical_chaos           = find_artifact_spell("Critical Chaos");
+  artifact.deceivers_fury           = find_artifact_spell("Deceiver's Fury");
+  artifact.demon_rage               = find_artifact_spell("Demon Rage");
+  artifact.demon_speed              = find_artifact_spell("Demon Speed");
+  artifact.feast_on_the_souls       = find_artifact_spell("Feast on the Souls");
+  artifact.fury_of_the_illidari     = find_artifact_spell("Fury of the Illidari");
+  artifact.illidari_knowledge       = find_artifact_spell("Illidari Knowledge");
+  artifact.inner_demons             = find_artifact_spell("Inner Demons");
+  artifact.overwhelming_power       = find_artifact_spell("Overwhelming Power");
+  artifact.rage_of_the_illidari     = find_artifact_spell("Rage of the Illidari");
+  artifact.sharpened_glaives        = find_artifact_spell("Sharpened Glaives");
+  artifact.unleashed_demons         = find_artifact_spell("Unleashed Demons");
+  artifact.warglaives_of_chaos      = find_artifact_spell("Warglaives of Chaos");
+  artifact.wide_eyes                = find_artifact_spell("Wide Eyes");
 
   // Vengeance -- The Aldrachi Warblades
-  artifact.aldrachi_design      = find_artifact_spell( "Aldrachi Design" );
-  artifact.aura_of_pain         = find_artifact_spell( "Aura of Pain" );
-  artifact.charred_warblades    = find_artifact_spell( "Charred Warblades" );
-  artifact.defensive_spikes     = find_artifact_spell( "Defensive Spikes" );
-  artifact.demonic_flames       = find_artifact_spell( "Demonic Flames" );
-  artifact.devour_souls         = find_artifact_spell( "Devour Souls" );
-  artifact.embrace_the_pain     = find_artifact_spell( "Embrace the Pain" );
-  artifact.fiery_demise         = find_artifact_spell( "Fiery Demise" );
-  artifact.fueled_by_pain       = find_artifact_spell( "Fueled by Pain" );
-  artifact.honed_warblades      = find_artifact_spell( "Honed Warblades" );
-  artifact.infernal_force       = find_artifact_spell( "Infernal Force" );
-  artifact.painbringer          = find_artifact_spell( "Painbringer" );
-  artifact.shatter_the_souls    = find_artifact_spell( "Shatter the Souls" );
-  artifact.siphon_power         = find_artifact_spell( "Siphon Power" );
-  artifact.soul_carver          = find_artifact_spell( "Soul Carver" );
-  artifact.tormented_souls      = find_artifact_spell( "Tormented Souls" );
-  artifact.will_of_the_illidari = find_artifact_spell( "Will of the Illidari" );
+  artifact.aldrachi_design          = find_artifact_spell("Aldrachi Design");
+  artifact.aura_of_pain             = find_artifact_spell("Aura of Pain");
+  artifact.charred_warblades        = find_artifact_spell("Charred Warblades");
+  artifact.defensive_spikes         = find_artifact_spell("Defensive Spikes");
+  artifact.demonic_flames           = find_artifact_spell("Demonic Flames");
+  artifact.devour_souls             = find_artifact_spell("Devour Souls");
+  artifact.embrace_the_pain         = find_artifact_spell("Embrace the Pain");
+  artifact.fiery_demise             = find_artifact_spell("Fiery Demise");
+  artifact.fueled_by_pain           = find_artifact_spell("Fueled by Pain");
+  artifact.honed_warblades          = find_artifact_spell("Honed Warblades");
+  artifact.infernal_force           = find_artifact_spell("Infernal Force");
+  artifact.painbringer              = find_artifact_spell("Painbringer");
+  artifact.shatter_the_souls        = find_artifact_spell("Shatter the Souls");
+  artifact.siphon_power             = find_artifact_spell("Siphon Power");
+  artifact.soul_carver              = find_artifact_spell("Soul Carver");
+  artifact.tormented_souls          = find_artifact_spell("Tormented Souls");
+  artifact.will_of_the_illidari     = find_artifact_spell("Will of the Illidari");
 
   // Spell Initialization ===================================================
 

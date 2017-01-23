@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 2228653)
+SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 05a6f98)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -4039,7 +4039,8 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | Target: Self(1)
 Description      : Call Dreadstalkers now also summons $s1 Wild $LImp:Imps;.
 
-Name             : Implosion (id=196277) 
+Name             : Implosion (id=196277) [Spell Family (5)] 
+Hotfixed         : Affecting Spells, Spell Family
 Class            : Warlock
 School           : Shadowflame
 Resource         : 6% Base Mana (66000 @Level 110)
@@ -4554,6 +4555,7 @@ Effects          :
 Description      : Summons a Darkglare for $d that launches Eye Lasers at all targets afflicted by your Doom, dealing $205231s1 Shadow damage.
 
 Name             : Shadowflame (id=205181) [Spell Family (5)] 
+Hotfixed         : Affecting Spells
 Class            : Warlock
 School           : Shadowflame
 Range            : 40 yards

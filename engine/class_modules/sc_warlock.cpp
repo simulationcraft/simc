@@ -2222,6 +2222,7 @@ private:
 
     affected_by_contagion = true;
     destro_mastery = true;
+    can_feretory = true;
 
     parse_spell_coefficient( *this );
   }
@@ -2238,6 +2239,7 @@ public:
   bool destruction_damage_increase;
   bool destruction_dot_increase;
   bool destro_mastery;
+  bool can_feretory;
 
   // Warlock module overrides the "target" option handling to properly target their own Soul Effigy
   // if it's enabled
@@ -2430,7 +2432,7 @@ public:
 
     p() -> buffs.demonic_synergy -> up();
 
-    if ( p() -> legendary.feretory_of_souls && rng().roll( p() -> find_spell( 205702 ) -> proc_chance() ) && ( ( dbc::is_school( SCHOOL_FIRE, school ) || dbc::is_school( SCHOOL_CHROMATIC, school ) || dbc::is_school( SCHOOL_SHADOWFLAME, school ) || dbc::is_school( SCHOOL_CHAOS, school ) ) ) )
+    if ( can_feretory && p() -> legendary.feretory_of_souls && rng().roll( p() -> find_spell( 205702 ) -> proc_chance() ) && dbc::is_school( school, SCHOOL_FIRE ) )
     {
       p() -> resource_gain( RESOURCE_SOUL_SHARD, 1.0, p() -> gains.feretory_of_souls );
     }
@@ -3927,6 +3929,7 @@ struct dimensional_rift_t : public warlock_spell_t
     shadowy_tear_duration = timespan_t::from_millis( 14001 );
     chaos_tear_duration = timespan_t::from_millis( 5001 );
     chaos_portal_duration = timespan_t::from_millis( 5501 );
+    school = SCHOOL_NONE;
   }
 
   void execute() override
@@ -5341,6 +5344,8 @@ struct channel_demonfire_tick_t : public warlock_spell_t
     may_miss = false;
     dual = true;
 
+    can_feretory = false;
+
     spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
 
     aoe = -1;
@@ -5585,12 +5590,12 @@ double warlock_t::composite_player_multiplier( school_e school ) const
   if ( buffs.instability -> check() )
     m *= 1.0 + find_spell( 216472 ) -> effectN( 1 ).percent();
 
-  if ( specialization() == WARLOCK_DESTRUCTION && ( dbc::is_school( SCHOOL_FIRE, school ) || dbc::is_school( SCHOOL_CHROMATIC, school ) ) )
+  if ( specialization() == WARLOCK_DESTRUCTION && dbc::is_school( school, SCHOOL_FIRE ) )
   {
     m *= 1.0 + artifact.flames_of_the_pit.percent();
   }
 
-  if ( specialization() == WARLOCK_DEMONOLOGY && ( dbc::is_school( SCHOOL_FIRE, school ) || dbc::is_school( SCHOOL_SHADOW, school ) || dbc::is_school( SCHOOL_SHADOWFLAME, school ) || dbc::is_school( SCHOOL_CHAOS, school ) ) )
+  if ( specialization() == WARLOCK_DEMONOLOGY && ( dbc::is_school( school, SCHOOL_FIRE ) || dbc::is_school( school, SCHOOL_SHADOW ) ) )
   {
     m *= 1.0 + artifact.breath_of_thalkiel.percent();
   }
@@ -5610,7 +5615,7 @@ double warlock_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + artifact.stolen_power.percent();
   }
 
-  if ( specialization() == WARLOCK_AFFLICTION && ( dbc::is_school( SCHOOL_SHADOW, school ) ) )
+  if ( specialization() == WARLOCK_AFFLICTION && ( dbc::is_school( school, SCHOOL_SHADOW ) ) )
   {
     m *= 1.0 + artifact.crystaline_shadows.percent() * ( buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
     m *= 1.0 + artifact.shadowy_incantations.percent() * ( buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
@@ -6480,7 +6485,7 @@ void warlock_t::apl_affliction()
   add_action( "Siphon Life", "if=remains<=duration*0.3&target.time_to_die>=remains&(dot.unstable_affliction_1.ticking+dot.unstable_affliction_2.ticking+dot.unstable_affliction_3.ticking+dot.unstable_affliction_4.ticking+dot.unstable_affliction_5.ticking)=0" );
   add_action( "Siphon Life", "cycle_targets=1,if=(!talent.malefic_grasp.enabled|!talent.soul_effigy.enabled)&remains<=duration*0.3&target.time_to_die>=remains" );
 
-  add_action( "Unstable Affliction", "if=(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&spell_targets.seed_of_corruption<4&talent.writhe_in_agony.enabled&talent.contagion.enabled" );
+  add_action( "Unstable Affliction", "if=(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&spell_targets.seed_of_corruption<4&talent.writhe_in_agony.enabled&talent.contagion.enabled&dot.unstable_affliction_1.remains<cast_time&dot.unstable_affliction_2.remains<cast_time&dot.unstable_affliction_3.remains<cast_time&dot.unstable_affliction_4.remains<cast_time&dot.unstable_affliction_5.remains<cast_time" );
 
   add_action( "Unstable Affliction", "if=(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&spell_targets.seed_of_corruption<4&talent.writhe_in_agony.enabled&(soul_shard>=4|trinket.proc.intellect.react|trinket.stacking_proc.mastery.react|trinket.proc.mastery.react|trinket.proc.crit.react|trinket.proc.versatility.react|buff.soul_harvest.remains|buff.deadwind_harvester.remains|buff.compounding_horror.react=5|target.time_to_die<=20" );
   if ( find_item( "horn_of_valor" ) )
@@ -6492,7 +6497,7 @@ void warlock_t::apl_affliction()
   action_list_str += ")";
 
   add_action( "Unstable Affliction", "if=(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&spell_targets.seed_of_corruption<4&talent.malefic_grasp.enabled&target.time_to_die<30" );
-  add_action( "Unstable Affliction", "if=(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&spell_targets.seed_of_corruption<4&talent.malefic_grasp.enabled&soul_shard=5" );
+  add_action( "Unstable Affliction", "if=(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&spell_targets.seed_of_corruption<4&talent.malefic_grasp.enabled&(soul_shard=5|talent.contagion.enabled&soul_shard>=4)" );
   add_action( "Unstable Affliction", "if=(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&spell_targets.seed_of_corruption<4&talent.malefic_grasp.enabled&!prev_gcd.3.unstable_affliction&dot.agony.remains>cast_time*3+6.5&(!talent.soul_effigy.enabled|pet.soul_effigy.dot.agony.remains>cast_time*3+6.5)&(dot.corruption.remains>cast_time+6.5|talent.absolute_corruption.enabled)&(dot.siphon_life.remains>cast_time+6.5|!talent.siphon_life.enabled)" );
 
   add_action( "Unstable Affliction", "if=(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&talent.haunt.enabled&(soul_shard>=4|debuff.haunt.remains>6.5|target.time_to_die<30" );

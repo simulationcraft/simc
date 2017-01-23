@@ -30,7 +30,7 @@ actions+=/blood_fury,if=buff.pillar_of_frost.up
 actions+=/berserking,if=buff.pillar_of_frost.up
 actions+=/use_item,slot=trinket1
 actions+=/potion,name=old_war,if=buff.pillar_of_frost.up
-actions+=/sindragosas_fury,if=buff.pillar_of_frost.up&(buff.unholy_strength.up|(buff.pillar_of_frost.remains<3&target.time_to_die<60))&debuff.razorice.stack==5&!buff.obliteration.up
+actions+=/sindragosas_fury,if=buff.pillar_of_frost.up&(buff.unholy_strength.up|(buff.pillar_of_frost.remains<3&target.time_to_die<60))&debuff.razorice.stack=5&!buff.obliteration.up
 actions+=/obliteration,if=(!talent.frozen_pulse.enabled|(rune<2&runic_power<28))&!talent.gathering_storm.enabled
 actions+=/call_action_list,name=generic,if=!talent.breath_of_sindragosa.enabled&!(talent.gathering_storm.enabled&buff.remorseless_winter.remains)
 actions+=/call_action_list,name=bos,if=talent.breath_of_sindragosa.enabled&!dot.breath_of_sindragosa.ticking
@@ -54,8 +54,8 @@ actions.bos_ticking=howling_blast,target_if=!dot.frost_fever.ticking
 actions.bos_ticking+=/remorseless_winter,if=((runic_power>=20&set_bonus.tier19_4pc)|runic_power>=30)&buff.rime.react&(equipped.132459|talent.gathering_storm.enabled)
 actions.bos_ticking+=/howling_blast,if=((runic_power>=20&set_bonus.tier19_4pc)|runic_power>=30)&buff.rime.react
 actions.bos_ticking+=/obliterate,if=runic_power<=75|rune>3
-actions.bos_ticking+=/horn_of_winter,if=runic_power<70&!dot.hungering_rune_weapon.ticking
-actions.bos_ticking+=/hungering_rune_weapon,if=runic_power<30&!dot.hungering_rune_weapon.ticking
+actions.bos_ticking+=/horn_of_winter,if=runic_power<70&!buff.hungering_rune_weapon.up
+actions.bos_ticking+=/hungering_rune_weapon,if=runic_power<30&!buff.hungering_rune_weapon.up
 actions.bos_ticking+=/empower_rune_weapon,if=runic_power<20
 actions.bos_ticking+=/remorseless_winter,if=talent.gathering_storm.enabled|!set_bonus.tier19_4pc|runic_power<30
 
@@ -75,11 +75,11 @@ actions.generic+=/obliterate,if=buff.killing_machine.react
 actions.generic+=/frost_strike,if=(talent.horn_of_winter.enabled|talent.hungering_rune_weapon.enabled)&(set_bonus.tier19_2pc=1|set_bonus.tier19_4pc=1)
 actions.generic+=/obliterate
 actions.generic+=/glacial_advance
-actions.generic+=/horn_of_winter,if=!dot.hungering_rune_weapon.ticking
+actions.generic+=/horn_of_winter,if=!buff.hungering_rune_weapon.up
 actions.generic+=/frost_strike
 actions.generic+=/remorseless_winter,if=talent.frozen_pulse.enabled
 actions.generic+=/empower_rune_weapon
-actions.generic+=/hungering_rune_weapon,if=!dot.hungering_rune_weapon.ticking
+actions.generic+=/hungering_rune_weapon,if=!buff.hungering_rune_weapon.up
 
 actions.gs_ticking=frost_strike,if=buff.icy_talons.remains<1.5&talent.icy_talons.enabled
 actions.gs_ticking+=/howling_blast,target_if=!dot.frost_fever.ticking
@@ -88,10 +88,10 @@ actions.gs_ticking+=/obliteration,if=(!talent.frozen_pulse.enabled|(rune<2&runic
 actions.gs_ticking+=/obliterate,if=rune>3|buff.killing_machine.react|buff.obliteration.up
 actions.gs_ticking+=/frost_strike,if=runic_power>80|(buff.obliteration.up&!buff.killing_machine.react)
 actions.gs_ticking+=/obliterate
-actions.gs_ticking+=/horn_of_winter,if=runic_power<70&!dot.hungering_rune_weapon.ticking
+actions.gs_ticking+=/horn_of_winter,if=runic_power<70&!buff.hungering_rune_weapon.up
 actions.gs_ticking+=/glacial_advance
 actions.gs_ticking+=/frost_strike
-actions.gs_ticking+=/hungering_rune_weapon,if=!dot.hungering_rune_weapon.ticking
+actions.gs_ticking+=/hungering_rune_weapon,if=!buff.hungering_rune_weapon.up
 actions.gs_ticking+=/empower_rune_weapon
 
 head=eventide_casque,id=140881,bonus_id=3519

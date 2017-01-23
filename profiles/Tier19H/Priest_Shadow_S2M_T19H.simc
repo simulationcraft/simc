@@ -19,14 +19,13 @@ actions.precombat+=/food,type=azshari_salad
 actions.precombat+=/augmentation,type=defiled
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion,name=deadly_grace
+actions.precombat+=/potion,name=prolonged_power
 actions.precombat+=/shadowform,if=!buff.shadowform.up
-actions.precombat+=/variable,op=set,name=s2mbeltcheck,value=1,if=cooldown.mind_blast.charges>=2
-actions.precombat+=/variable,op=set,name=s2mbeltcheck,value=0,if=cooldown.mind_blast.charges<=1
+actions.precombat+=/variable,op=set,name=s2mbeltcheck,value=cooldown.mind_blast.charges>=2
 actions.precombat+=/mind_blast
 
 # Executed every time the actor is available.
-actions=potion,name=deadly_grace,if=buff.bloodlust.react|target.time_to_die<=40|(buff.voidform.stack>60&buff.power_infusion.up)
+actions=potion,name=prolonged_power,if=buff.bloodlust.react|target.time_to_die<=80|(target.health.pct<35&cooldown.power_infusion.remains<30)
 actions+=/call_action_list,name=check,if=talent.surrender_to_madness.enabled&!buff.surrender_to_madness.up
 actions+=/run_action_list,name=s2m,if=buff.voidform.up&buff.surrender_to_madness.up
 actions+=/run_action_list,name=vf,if=buff.voidform.up

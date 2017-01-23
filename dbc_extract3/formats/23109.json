@@ -17,8 +17,7 @@
     { "data_type": "B", "field": "f7" }
   ],
   "ArtifactPower": [
-    { "data_type": "f", "field": "f2" },
-    { "data_type": "f", "field": "f3" },
+    { "data_type": "f", "field": "coords", "elements": 2 },
     { "data_type": "B", "field": "id_artifact", "formats": { "cpp": "%3u" } },
     { "data_type": "B", "field": "type", "formats": { "cpp": "%3u" } },
     { "data_type": "B", "field": "max_rank", "formats": { "cpp": "%3u" } },
@@ -37,8 +36,7 @@
     { "data_type": "B", "field": "index", "formats": { "cpp": "%2u" } }
   ],
   "ChrSpecialization": [
-    { "data_type": "I", "field": "id_mastery", "formats": { "cpp": "%-2u" } },
-    { "data_type": "I", "field": "id_mastery2","formats": { } },
+    { "data_type": "I", "field": "id_mastery", "elements": 2, "formats": { "cpp": "%-2u" } },
     { "data_type": "S", "field": "unk_4",      "formats": { } },
     { "data_type": "S", "field": "name",       "formats": { "cpp": "%25s" } },
     { "data_type": "S", "field": "desc",       "formats": { } },
@@ -53,8 +51,7 @@
     { "data_type": "H", "field": "unk_3",      "formats": { } }
   ],
   "CurvePoint": [
-    { "data_type": "f", "field": "val_1",           "formats": { "cpp": "%10.5f" } },
-    { "data_type": "f", "field": "val_2",           "formats": { "cpp": "%10.5f" } },
+    { "data_type": "f", "field": "val", "elements": 2, "formats": { "cpp": "%10.5f" } },
     { "data_type": "H", "field": "id_distribution", "formats": { "cpp": "%4u"    } },
     { "data_type": "B", "field": "curve_index",     "formats": { "cpp": "%2u"    } }
   ],
@@ -84,9 +81,7 @@
     { "data_type": "B", "field": "unk_3" }
   ],
   "Item-sparse": [
-    { "data_type": "I", "field": "flags_1", "format": { "cpp": "%#.8x" } },
-    { "data_type": "I", "field": "flags_2", "format": { "cpp": "%#.8x" } },
-    { "data_type": "I", "field": "flags_3", "format": { "cpp": "%#.8x" } },
+    { "data_type": "I", "field": "flags", "elements": 3, "format": { "cpp": "%#.8x" } },
     { "data_type": "f", "field": "unk_1" },
     { "data_type": "f", "field": "unk_2" },
 
@@ -99,27 +94,9 @@
     { "data_type": "i", "field": "max_count" },
     { "data_type": "i", "field": "stackable" },
 
-    { "data_type": "I", "field": "stat_alloc_1" },
-    { "data_type": "I", "field": "stat_alloc_2" },
-    { "data_type": "I", "field": "stat_alloc_3" },
-    { "data_type": "I", "field": "stat_alloc_4" },
-    { "data_type": "I", "field": "stat_alloc_5" },
-    { "data_type": "I", "field": "stat_alloc_6" },
-    { "data_type": "I", "field": "stat_alloc_7" },
-    { "data_type": "I", "field": "stat_alloc_8" },
-    { "data_type": "I", "field": "stat_alloc_9" },
-    { "data_type": "I", "field": "stat_alloc_10" },
+    { "data_type": "I", "field": "stat_alloc", "elements": 10 },
+    { "data_type": "f", "field": "stat_socket_mul", "elements": 10 },
 
-    { "data_type": "f", "field": "stat_socket_mul_1" },
-    { "data_type": "f", "field": "stat_socket_mul_2" },
-    { "data_type": "f", "field": "stat_socket_mul_3" },
-    { "data_type": "f", "field": "stat_socket_mul_4" },
-    { "data_type": "f", "field": "stat_socket_mul_5" },
-    { "data_type": "f", "field": "stat_socket_mul_6" },
-    { "data_type": "f", "field": "stat_socket_mul_7" },
-    { "data_type": "f", "field": "stat_socket_mul_8" },
-    { "data_type": "f", "field": "stat_socket_mul_9" },
-    { "data_type": "f", "field": "stat_socket_mul_10" },
     { "data_type": "f", "field": "ranged_mod_range" },
 
     { "data_type": "S", "field": "name" },
@@ -138,17 +115,7 @@
     { "data_type": "H", "field": "req_skill_rank" },
     { "data_type": "H", "field": "req_rep_faction" },
 
-    { "data_type": "h", "field": "stat_val_1" },
-    { "data_type": "h", "field": "stat_val_2" },
-    { "data_type": "h", "field": "stat_val_3" },
-    { "data_type": "h", "field": "stat_val_4" },
-    { "data_type": "h", "field": "stat_val_5" },
-    { "data_type": "h", "field": "stat_val_6" },
-    { "data_type": "h", "field": "stat_val_7" },
-    { "data_type": "h", "field": "stat_val_8" },
-    { "data_type": "h", "field": "stat_val_9" },
-    { "data_type": "h", "field": "stat_val_10" },
-
+    { "data_type": "h", "field": "stat_val", "elements": 10 },
 
     { "data_type": "H", "field": "scale_stat_dist" },
     { "data_type": "H", "field": "delay" },
@@ -176,16 +143,7 @@
     { "data_type": "B", "field": "req_rep_rank" },
     { "data_type": "B", "field": "container_slots" },
 
-    { "data_type": "b", "field": "stat_type_1" },
-    { "data_type": "b", "field": "stat_type_2" },
-    { "data_type": "b", "field": "stat_type_3" },
-    { "data_type": "b", "field": "stat_type_4" },
-    { "data_type": "b", "field": "stat_type_5" },
-    { "data_type": "b", "field": "stat_type_6" },
-    { "data_type": "b", "field": "stat_type_7" },
-    { "data_type": "b", "field": "stat_type_8" },
-    { "data_type": "b", "field": "stat_type_9" },
-    { "data_type": "b", "field": "stat_type_10" },
+    { "data_type": "b", "field": "stat_type", "elements": 10 },
 
     { "data_type": "B", "field": "damage_type" },
     { "data_type": "B", "field": "bonding" },
@@ -195,9 +153,7 @@
     { "data_type": "B", "field": "sheath" },
     { "data_type": "B", "field": "totem_category" },
 
-    { "data_type": "B", "field": "socket_color_1" },
-    { "data_type": "B", "field": "socket_color_2" },
-    { "data_type": "B", "field": "socket_color_3" },
+    { "data_type": "B", "field": "socket_color", "elements": 3 },
 
     { "data_type": "B", "field": "unk_6" },
     { "data_type": "B", "field": "unk_7" },
@@ -205,23 +161,11 @@
     { "data_type": "B", "field": "unk_9" }
   ],
   "ItemArmorQuality": [
-    { "data_type": "f", "field": "v_1",    "formats": { "cpp": "%6.3f" } },
-    { "data_type": "f", "field": "v_2",    "formats": { "cpp": "%6.3f" } },
-    { "data_type": "f", "field": "v_3",    "formats": { "cpp": "%6.3f" } },
-    { "data_type": "f", "field": "v_4",    "formats": { "cpp": "%6.3f" } },
-    { "data_type": "f", "field": "v_5",    "formats": { "cpp": "%6.3f" } },
-    { "data_type": "f", "field": "v_6",    "formats": { "cpp": "%6.3f" } },
-    { "data_type": "f", "field": "v_7",    "formats": { "cpp": "%6.3f" } },
+    { "data_type": "f", "field": "v", "elements": 7, "formats": { "cpp": "%6.3f" } },
     { "data_type": "H", "field": "ilevel", "formats": { "cpp": "%4u"   } }
   ],
   "ItemArmorShield": [
-    { "data_type": "f", "field": "v_1",    "formats": { "cpp": "%8.3f" } },
-    { "data_type": "f", "field": "v_2",    "formats": { "cpp": "%8.3f" } },
-    { "data_type": "f", "field": "v_3",    "formats": { "cpp": "%8.3f" } },
-    { "data_type": "f", "field": "v_4",    "formats": { "cpp": "%8.3f" } },
-    { "data_type": "f", "field": "v_5",    "formats": { "cpp": "%8.3f" } },
-    { "data_type": "f", "field": "v_6",    "formats": { "cpp": "%8.3f" } },
-    { "data_type": "f", "field": "v_7",    "formats": { "cpp": "%8.3f" } },
+    { "data_type": "f", "field": "v", "elements": 7, "formats": { "cpp": "%8.3f" } },
     { "data_type": "H", "field": "ilevel", "formats": { "cpp": "%4u"   } }
   ],
   "ItemArmorTotal": [
@@ -232,8 +176,7 @@
     { "data_type": "H", "field": "ilevel", "formats": { "cpp": "%4u"   } }
   ],
   "ItemBonus": [
-    { "data_type": "i", "field": "val_1",   "formats": { "cpp": "%6u" } },
-    { "data_type": "i", "field": "val_2",   "formats": { "cpp": "%6u" } },
+    { "data_type": "i", "field": "val", "elements": 2, "formats": { "cpp": "%6u" } },
     { "data_type": "H", "field": "id_node", "formats": { "cpp": "%4u" } },
     { "data_type": "B", "field": "type",    "formats": { "cpp": "%2u" } },
     { "data_type": "B", "field": "index",   "formats": { "cpp": "%2u" } }
@@ -250,43 +193,19 @@
     { "data_type": "B", "field": "unk_1" }
   ],
   "ItemDamageOneHand": [
-    { "data_type": "f", "field": "v_1",    "formats": { "cpp": "%9.3f" } },
-    { "data_type": "f", "field": "v_2",    "formats": { "cpp": "%9.3f" } },
-    { "data_type": "f", "field": "v_3",    "formats": { "cpp": "%9.3f" } },
-    { "data_type": "f", "field": "v_4",    "formats": { "cpp": "%9.3f" } },
-    { "data_type": "f", "field": "v_5",    "formats": { "cpp": "%9.3f" } },
-    { "data_type": "f", "field": "v_6",    "formats": { "cpp": "%9.3f" } },
-    { "data_type": "f", "field": "v_7",    "formats": { "cpp": "%9.3f" } },
+    { "data_type": "f", "field": "v", "elements": 7, "formats": { "cpp": "%9.3f" } },
     { "data_type": "H", "field": "ilevel", "formats": { "cpp": "%4u"   } }
   ],
   "ItemDamageOneHandCaster": [
-    { "data_type": "f", "field": "v_1",    "formats": { "cpp": "%9.3f" } },
-    { "data_type": "f", "field": "v_2",    "formats": { "cpp": "%9.3f" } },
-    { "data_type": "f", "field": "v_3",    "formats": { "cpp": "%9.3f" } },
-    { "data_type": "f", "field": "v_4",    "formats": { "cpp": "%9.3f" } },
-    { "data_type": "f", "field": "v_5",    "formats": { "cpp": "%9.3f" } },
-    { "data_type": "f", "field": "v_6",    "formats": { "cpp": "%9.3f" } },
-    { "data_type": "f", "field": "v_7",    "formats": { "cpp": "%9.3f" } },
+    { "data_type": "f", "field": "v", "elements": 7, "formats": { "cpp": "%9.3f" } },
     { "data_type": "H", "field": "ilevel", "formats": { "cpp": "%4u"   } }
   ],
   "ItemDamageTwoHand": [
-    { "data_type": "f", "field": "v_1",    "formats": { "cpp": "%9.3f" } },
-    { "data_type": "f", "field": "v_2",    "formats": { "cpp": "%9.3f" } },
-    { "data_type": "f", "field": "v_3",    "formats": { "cpp": "%9.3f" } },
-    { "data_type": "f", "field": "v_4",    "formats": { "cpp": "%9.3f" } },
-    { "data_type": "f", "field": "v_5",    "formats": { "cpp": "%9.3f" } },
-    { "data_type": "f", "field": "v_6",    "formats": { "cpp": "%9.3f" } },
-    { "data_type": "f", "field": "v_7",    "formats": { "cpp": "%9.3f" } },
+    { "data_type": "f", "field": "v", "elements": 7, "formats": { "cpp": "%9.3f" } },
     { "data_type": "H", "field": "ilevel", "formats": { "cpp": "%4u"   } }
   ],
   "ItemDamageTwoHandCaster": [
-    { "data_type": "f", "field": "v_1",    "formats": { "cpp": "%9.3f" } },
-    { "data_type": "f", "field": "v_2",    "formats": { "cpp": "%9.3f" } },
-    { "data_type": "f", "field": "v_3",    "formats": { "cpp": "%9.3f" } },
-    { "data_type": "f", "field": "v_4",    "formats": { "cpp": "%9.3f" } },
-    { "data_type": "f", "field": "v_5",    "formats": { "cpp": "%9.3f" } },
-    { "data_type": "f", "field": "v_6",    "formats": { "cpp": "%9.3f" } },
-    { "data_type": "f", "field": "v_7",    "formats": { "cpp": "%9.3f" } },
+    { "data_type": "f", "field": "v", "elements": 7, "formats": { "cpp": "%9.3f" } },
     { "data_type": "H", "field": "ilevel", "formats": { "cpp": "%4u"   } }
   ],
   "ItemEffect": [
@@ -306,16 +225,8 @@
   ],
   "ItemRandomSuffix": [
     { "data_type": "S", "field": "name",           "formats": { "cpp": "%-25s" } },
-    { "data_type": "H", "field": "id_property_1",  "formats": { "cpp": "%5u"  } },
-    { "data_type": "H", "field": "id_property_2",  "formats": { "cpp": "%5u"  } },
-    { "data_type": "H", "field": "id_property_3",  "formats": { "cpp": "%5u"  } },
-    { "data_type": "H", "field": "id_property_4",  "formats": { "cpp": "%5u"  } },
-    { "data_type": "H", "field": "id_property_5",  "formats": { "cpp": "%5u"  } },
-    { "data_type": "H", "field": "property_pct_1", "formats": { "cpp": "%5u"  } },
-    { "data_type": "H", "field": "property_pct_2", "formats": { "cpp": "%5u"  } },
-    { "data_type": "H", "field": "property_pct_3", "formats": { "cpp": "%5u"  } },
-    { "data_type": "H", "field": "property_pct_4", "formats": { "cpp": "%5u"  } },
-    { "data_type": "H", "field": "property_pct_5", "formats": { "cpp": "%5u"  } }
+    { "data_type": "H", "field": "id_property", "elements": 5, "formats": { "cpp": "%5u"  } },
+    { "data_type": "H", "field": "property_pct", "elements": 5, "formats": { "cpp": "%5u"  } }
   ],
   "ItemSearchName": [
     { "data_type": "S", "field": "f1" },
@@ -335,23 +246,7 @@
   ],
   "ItemSet": [
     { "data_type": "S", "field": "name" },
-    { "data_type": "I", "field": "id_item_1" },
-    { "data_type": "I", "field": "id_item_2" },
-    { "data_type": "I", "field": "id_item_3" },
-    { "data_type": "I", "field": "id_item_4" },
-    { "data_type": "I", "field": "id_item_5" },
-    { "data_type": "I", "field": "id_item_6" },
-    { "data_type": "I", "field": "id_item_7" },
-    { "data_type": "I", "field": "id_item_8" },
-    { "data_type": "I", "field": "id_item_9" },
-    { "data_type": "I", "field": "id_item_10" },
-    { "data_type": "I", "field": "id_item_11" },
-    { "data_type": "I", "field": "id_item_12" },
-    { "data_type": "I", "field": "id_item_13" },
-    { "data_type": "I", "field": "id_item_14" },
-    { "data_type": "I", "field": "id_item_15" },
-    { "data_type": "I", "field": "id_item_16" },
-    { "data_type": "I", "field": "id_item_17" },
+    { "data_type": "I", "field": "id_item", "elements": 17 },
     { "data_type": "H", "field": "val_req_skill" },
     { "data_type": "B", "field": "id_req_skill" },
     { "data_type": "B", "field": "unk_1" }
@@ -388,25 +283,12 @@
   "MinorTalent": [
     { "data_type": "I", "field": "id_spell" },
     { "data_type": "H", "field": "id_spec" },
-    { "data_type": "B", "field": "index" },
-    { "data_type": "B", "field": "unk_1" }
+    { "data_type": "B", "field": "index" }
   ],
   "RandPropPoints": [
-    { "data_type": "H", "field": "epic_points_1", "formats": { "cpp": "%5u" } },
-    { "data_type": "H", "field": "epic_points_2", "formats": { "cpp": "%5u" } },
-    { "data_type": "H", "field": "epic_points_3", "formats": { "cpp": "%5u" } },
-    { "data_type": "H", "field": "epic_points_4", "formats": { "cpp": "%5u" } },
-    { "data_type": "H", "field": "epic_points_5", "formats": { "cpp": "%5u" } },
-    { "data_type": "H", "field": "rare_points_1", "formats": { "cpp": "%5u" } },
-    { "data_type": "H", "field": "rare_points_2", "formats": { "cpp": "%5u" } },
-    { "data_type": "H", "field": "rare_points_3", "formats": { "cpp": "%5u" } },
-    { "data_type": "H", "field": "rare_points_4", "formats": { "cpp": "%5u" } },
-    { "data_type": "H", "field": "rare_points_5", "formats": { "cpp": "%5u" } },
-    { "data_type": "H", "field": "uncm_points_1", "formats": { "cpp": "%5u" } },
-    { "data_type": "H", "field": "uncm_points_2", "formats": { "cpp": "%5u" } },
-    { "data_type": "H", "field": "uncm_points_3", "formats": { "cpp": "%5u" } },
-    { "data_type": "H", "field": "uncm_points_4", "formats": { "cpp": "%5u" } },
-    { "data_type": "H", "field": "uncm_points_5", "formats": { "cpp": "%5u" } }
+    { "data_type": "H", "field": "epic_points", "elements": 5, "formats": { "cpp": "%5u" } },
+    { "data_type": "H", "field": "rare_points", "elements": 5, "formats": { "cpp": "%5u" } },
+    { "data_type": "H", "field": "uncm_points", "elements": 5, "formats": { "cpp": "%5u" } }
   ],
   "RulesetItemUpgrade": [
     { "data_type": "I", "field": "id_item",         "formats": { "cpp": "%6u" } },
@@ -485,10 +367,7 @@
   ],
   "SpellClassOptions": [
     { "data_type": "I", "field": "id_spell" },
-    { "data_type": "I", "field": "flags_1" },
-    { "data_type": "I", "field": "flags_2" },
-    { "data_type": "I", "field": "flags_3" },
-    { "data_type": "I", "field": "flags_4" },
+    { "data_type": "I", "field": "flags", "elements": 4 },
     { "data_type": "B", "field": "family" },
     { "data_type": "H", "field": "modal_next_spell" }
   ],
@@ -513,10 +392,7 @@
     { "data_type": "f", "field": "dmg_multiplier" },
     { "data_type": "f", "field": "points_per_combo_points" },
     { "data_type": "f", "field": "real_ppl" },
-    { "data_type": "I", "field": "class_mask_1" },
-    { "data_type": "I", "field": "class_mask_2" },
-    { "data_type": "I", "field": "class_mask_3" },
-    { "data_type": "I", "field": "class_mask_4" },
+    { "data_type": "I", "field": "class_mask", "elements": 4 },
     { "data_type": "f", "field": "unk_1" },
     { "data_type": "f", "field": "ap_coefficient" },
     { "data_type": "I", "field": "id",                       "formats": { "cpp": "%6u" } },
@@ -529,13 +405,10 @@
     { "data_type": "I", "field": "die_sides" },
     { "data_type": "I", "field": "item_type" },
     { "data_type": "B", "field": "id_mechanic" },
-    { "data_type": "i", "field": "misc_value" },
-    { "data_type": "i", "field": "misc_value_2" },
-    { "data_type": "B", "field": "id_radius" },
-    { "data_type": "B", "field": "id_radius_max" },
+    { "data_type": "i", "field": "misc_value", "elements": 2 },
+    { "data_type": "B", "field": "id_radius", "elements": 2 },
     { "data_type": "I", "field": "trigger_spell" },
-    { "data_type": "B", "field": "implicit_target_1" },
-    { "data_type": "B", "field": "implicit_target_2" },
+    { "data_type": "B", "field": "implicit_target", "elements": 2 },
     { "data_type": "I", "field": "id_spell" },
     { "data_type": "B", "field": "index" },
     { "data_type": "I", "field": "unk_2" }
@@ -556,27 +429,19 @@
     { "data_type": "S", "field": "icon" }
   ],
   "SpellItemEnchantment": [
-    { "data_type": "I", "field": "id_property_1", "formats": { "cpp": "%6u" } },
-    { "data_type": "I", "field": "id_property_2", "formats": { "cpp": "%6u" } },
-    { "data_type": "I", "field": "id_property_3", "formats": { "cpp": "%6u" } },
+    { "data_type": "I", "field": "id_property", "elements": 3, "formats": { "cpp": "%6u" } },
     { "data_type": "S", "field": "desc", "formats": { "cpp": "%-35s" } },
-    { "data_type": "f", "field": "coeff_1", "formats": { "cpp": "%7.4f" } },
-    { "data_type": "f", "field": "coeff_2", "formats": { "cpp": "%7.4f" } },
-    { "data_type": "f", "field": "coeff_3", "formats": { "cpp": "%7.4f" } },
+    { "data_type": "f", "field": "coeff", "elements": 3, "formats": { "cpp": "%7.4f" } },
     { "data_type": "I", "field": "unk_7" },
     { "data_type": "I", "field": "unk_8" },
-    { "data_type": "h", "field": "amount_1", "formats": { "cpp": "%4d" } },
-    { "data_type": "h", "field": "amount_2", "formats": { "cpp": "%4d" } },
-    { "data_type": "h", "field": "amount_3", "formats": { "cpp": "%4d" } },
+    { "data_type": "h", "field": "amount", "elements": 3, "formats": { "cpp": "%4d" } },
     { "data_type": "H", "field": "id_aura" },
     { "data_type": "H", "field": "slot", "formats": { "cpp": "%3u" } },
     { "data_type": "H", "field": "req_skill", "formats": { "cpp": "%3u" } },
     { "data_type": "H", "field": "req_skill_value", "formats": { "cpp": "%3u" } },
     { "data_type": "H", "field": "min_scaling_level", "formats": { "cpp": "%3u" } },
     { "data_type": "B", "field": "charges", "formats": { "cpp": "%3u" } },
-    { "data_type": "B", "field": "type_1", "formats": { "cpp": "%3u" } },
-    { "data_type": "B", "field": "type_2", "formats": { "cpp": "%3u" } },
-    { "data_type": "B", "field": "type_3", "formats": { "cpp": "%3u" } },
+    { "data_type": "B", "field": "type", "elements": 3, "formats": { "cpp": "%3u" } },
     { "data_type": "b", "field": "unk_1" },
     { "data_type": "B", "field": "req_player_level", "formats": { "cpp": "%3u" } },
     { "data_type": "b", "field": "max_scaling_level", "formats": { "cpp": "%3u" } },
@@ -589,26 +454,14 @@
     { "data_type": "H", "field": "base_level" },
     { "data_type": "H", "field": "max_level" },
     { "data_type": "H", "field": "spell_level" },
-    { "data_type": "B", "field": "unk_1" }
+    { "data_type": "B", "field": "unk_1" },
+    { "data_type": "B", "field": "unk_2" }
   ],
   "SpellMechanic": [
     { "data_type": "I", "field": "mechanic", "formats": { "cpp": "%2u" } }
   ],
   "SpellMisc": [
-    { "data_type": "I", "field": "flags_1" },
-    { "data_type": "I", "field": "flags_2" },
-    { "data_type": "I", "field": "flags_3" },
-    { "data_type": "I", "field": "flags_4" },
-    { "data_type": "I", "field": "flags_5" },
-    { "data_type": "I", "field": "flags_6" },
-    { "data_type": "I", "field": "flags_7" },
-    { "data_type": "I", "field": "flags_8" },
-    { "data_type": "I", "field": "flags_9" },
-    { "data_type": "I", "field": "flags_10" },
-    { "data_type": "I", "field": "flags_11" },
-    { "data_type": "I", "field": "flags_12" },
-    { "data_type": "I", "field": "flags_13" },
-    { "data_type": "I", "field": "flags_14" },
+    { "data_type": "I", "field": "flags", "elements": 14 },
     { "data_type": "f", "field": "proj_speed" },
     { "data_type": "I", "field": "unk_1" },
     { "data_type": "H", "field": "id_cast_time" },
@@ -659,10 +512,8 @@
     { "data_type": "f", "field": "radius_3" }
   ],
   "SpellRange": [
-    { "data_type": "f", "field": "min_range" },
-    { "data_type": "f", "field": "min_range_2" },
-    { "data_type": "f", "field": "max_range" },
-    { "data_type": "f", "field": "max_range_2" },
+    { "data_type": "f", "field": "min_range", "elements": 2 },
+    { "data_type": "f", "field": "max_range", "elements": 2 },
     { "data_type": "I", "field": "unk_1" },
     { "data_type": "I", "field": "unk_2" },
     { "data_type": "B", "field": "unk_3" }
@@ -676,10 +527,8 @@
   ],
   "SpellShapeshift": [
     { "data_type": "I", "field": "id_spell" },
-    { "data_type": "I", "field": "flags_not" },
-    { "data_type": "I", "field": "unk_1" },
-    { "data_type": "I", "field": "flags", "formats": { "cpp": "%#.8x" } },
-    { "data_type": "I", "field": "unk_2" },
+    { "data_type": "I", "field": "flags_not", "elements": 2 },
+    { "data_type": "I", "field": "flags", "elements": 2, "formats": { "cpp": "%#.8x" } },
     { "data_type": "B", "field": "unk_3" }
   ],
   "Talent": [
@@ -691,8 +540,7 @@
     { "data_type": "B", "field": "col",        "formats": { "cpp": "%3u" } },
 
     { "data_type": "B", "field": "pet"                                     },
-    { "data_type": "B", "field": "unk_1"                                   },
-    { "data_type": "B", "field": "unk_2"                                   },
+    { "data_type": "B", "field": "unk", "elements": 2                      },
     { "data_type": "B", "field": "class_id"                                }
   ]
 }

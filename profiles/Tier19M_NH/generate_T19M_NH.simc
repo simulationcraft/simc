@@ -20,9 +20,6 @@ generate_Demon_Hunter_T19M_NH.simc
 # Druid
 generate_Druid_T19M_NH.simc
 
-# Rogue
-generate_Rogue_T19M_NH.simc
-
 # Mage
 generate_Mage_T19M_NH.simc
 
@@ -32,5 +29,13 @@ generate_Monk_T19M_NH.simc
 # Paladin
 generate_Paladin_T19M_NH.simc
 
+# Paladin
+generate_Priest_T19M_NH.simc
+
+# Rogue
+generate_Rogue_T19M_NH.simc
+
 # Shaman
 generate_Shaman_T19M_NH.simc
+
+generate_Warrior_T19M_NH.simc

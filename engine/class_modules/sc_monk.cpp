@@ -244,6 +244,7 @@ public:
     buff_t* forceful_winds;
     buff_t* hit_combo;
     buff_t* light_on_your_feet;
+    buff_t* master_of_combinations;
     buff_t* masterful_strikes;
     buff_t* power_strikes;
     buff_t* spinning_crane_kick;
@@ -442,18 +443,22 @@ public:
     artifact_power_t brew_stache;
     artifact_power_t dark_side_of_the_moon;
     artifact_power_t dragonfire_brew;
+    artifact_power_t draught_of_darkness;
     artifact_power_t face_palm;
     artifact_power_t exploding_keg;
     artifact_power_t fortification;
     artifact_power_t gifted_student;
     artifact_power_t healthy_appetite;
+    artifact_power_t infinite_brm; // TODO: double check name
     artifact_power_t full_keg;
     artifact_power_t obsidian_fists;
     artifact_power_t obstinate_determination;
     artifact_power_t overflow;
     artifact_power_t potent_kick;
+    artifact_power_t quick_sip;
     artifact_power_t smashed;
     artifact_power_t staggering_around;
+    artifact_power_t stave_off;
     artifact_power_t swift_as_a_coursing_river;
     artifact_power_t wanderers_hardiness;
 
@@ -462,8 +467,10 @@ public:
     artifact_power_t celestial_breath;
     artifact_power_t coalescing_mists;
     artifact_power_t dancing_mists;
+    artifact_power_t effusive_mists;
     artifact_power_t essence_of_the_mists;
     artifact_power_t extended_healing;
+    artifact_power_t infinite_mw;
     artifact_power_t infusion_of_life;
     artifact_power_t light_on_your_feet_mw;
     artifact_power_t mists_of_life;
@@ -474,10 +481,13 @@ public:
     artifact_power_t shroud_of_mist;
     artifact_power_t soothing_remedies;
     artifact_power_t spirit_tether;
+    artifact_power_t tendrils_of_revival;
     artifact_power_t the_mists_of_sheilun;
     artifact_power_t way_of_the_mistweaver;
+    artifact_power_t whispers_of_shaohao;
 
     // Windwalker Artifact
+    artifact_power_t cestus_of_storms;
     artifact_power_t crosswinds;
     artifact_power_t dark_skies;
     artifact_power_t death_art;
@@ -485,11 +495,14 @@ public:
     artifact_power_t gale_burst;
     artifact_power_t good_karma;
     artifact_power_t healing_winds;
+    artifact_power_t infinite_ww; // TODO: double check name
     artifact_power_t inner_peace;
     artifact_power_t light_on_your_feet_ww;
+    artifact_power_t master_of_combinations;
     artifact_power_t power_of_a_thousand_cranes;
     artifact_power_t rising_winds;
     artifact_power_t spiritual_focus;
+    artifact_power_t split_personality;
     artifact_power_t strike_of_the_windlord;
     artifact_power_t strength_of_xuen;
     artifact_power_t tiger_claws;
@@ -2251,6 +2264,9 @@ public:
         p() -> buff.combo_strikes -> trigger();
         if ( p() -> talent.hit_combo -> ok() )
           p() -> buff.hit_combo -> trigger();
+
+        if ( p() -> artifact.master_of_combinations.rank() )
+          p() -> buff.master_of_combinations -> trigger();
       }
       else
       {
@@ -3482,6 +3498,9 @@ struct blackout_strike_t: public monk_melee_attack_t
   {
     double am = monk_melee_attack_t::action_multiplier();
 
+    if ( p() -> artifact.draught_of_darkness.rank() )
+      am *= 1 + p() -> artifact.draught_of_darkness.percent();
+
     am *= 1 + p() -> spec.brewmaster_monk -> effectN( 1 ).percent();
 
     // Mistweavers cannot learn this spell. However the effect to adjust this spell is in the database.
@@ -4695,6 +4714,9 @@ struct serenity_t: public monk_spell_t
     parse_options( options_str );
     harmful = false;
     trigger_gcd = timespan_t::zero();
+
+    if ( player -> artifact.split_personality.rank() )
+      cooldown -> duration += ( player -> artifact.split_personality.rank() * player -> artifact.split_personality.data().effectN( 2 ).time_value() );
   }
 
   void execute() override
@@ -4796,7 +4818,11 @@ struct storm_earth_and_fire_t: public monk_spell_t
 
     trigger_gcd = timespan_t::zero();
     callbacks = harmful = may_miss = may_crit = may_dodge = may_parry = may_block = false;
-    cooldown -> charges += p -> spec.storm_earth_and_fire_2 -> effectN( 1 ).base_value();
+
+    if ( p -> artifact.split_personality.rank() )
+      cooldown -> duration += p -> artifact.split_personality.time_value();
+
+      cooldown -> charges += p -> spec.storm_earth_and_fire_2 -> effectN( 1 ).base_value();
   }
 
   void update_ready( timespan_t cd_duration = timespan_t::min() ) override
@@ -7557,18 +7583,22 @@ void monk_t::init_spells()
   artifact.brew_stache                = find_artifact_spell( "Brew-Stache" );
   artifact.dark_side_of_the_moon      = find_artifact_spell( "Dark Side of the Moon" );
   artifact.dragonfire_brew            = find_artifact_spell( "Dragonfire Brew" );
+  artifact.draught_of_darkness        = find_artifact_spell( "Draught of Darkness" );
   artifact.face_palm                  = find_artifact_spell( "Face Palm" );
   artifact.exploding_keg              = find_artifact_spell( "Exploding Keg" );
   artifact.fortification              = find_artifact_spell( "Fortification" );
   artifact.full_keg                   = find_artifact_spell( "Full Keg" );
   artifact.gifted_student             = find_artifact_spell( "Gifted Student" );
   artifact.healthy_appetite           = find_artifact_spell( "Healthy Appetite" );
+  artifact.infinite_brm               = find_artifact_spell( "Infinite" );
   artifact.obsidian_fists             = find_artifact_spell( "Obsidian Fists" );
   artifact.obstinate_determination    = find_artifact_spell( "Obstinate Determination" );
   artifact.overflow                   = find_artifact_spell( "Overflow" );
   artifact.potent_kick                = find_artifact_spell( "Potent Kick" );
+  artifact.quick_sip                  = find_artifact_spell( "Quick Sip" );
   artifact.smashed                    = find_artifact_spell( "Smashed" );
   artifact.staggering_around          = find_artifact_spell( "Staggering Around" );
+  artifact.stave_off                  = find_artifact_spell( "Stave Off" );
   artifact.swift_as_a_coursing_river  = find_artifact_spell( "Swift as a Coursing River" );
   artifact.wanderers_hardiness        = find_artifact_spell( "Wanderer's Hardiness" );
 
@@ -7577,8 +7607,10 @@ void monk_t::init_spells()
   artifact.celestial_breath           = find_artifact_spell( "Celestial Breath" );
   artifact.coalescing_mists           = find_artifact_spell( "Coalescing Mists" );
   artifact.dancing_mists              = find_artifact_spell( "Dancing Mists" );
+  artifact.effusive_mists             = find_artifact_spell( "Effusive Mists" );
   artifact.essence_of_the_mists       = find_artifact_spell( "Essence of the Mists" );
   artifact.extended_healing           = find_artifact_spell( "Extended Healing" );
+  artifact.infinite_mw                = find_artifact_spell( "Infinite" );
   artifact.infusion_of_life           = find_artifact_spell( "Infusion of Life" );
   artifact.light_on_your_feet_mw      = find_artifact_spell( "Light on Your Feet" );
   artifact.mists_of_life              = find_artifact_spell( "Mists of Life" );
@@ -7589,10 +7621,13 @@ void monk_t::init_spells()
   artifact.shroud_of_mist             = find_artifact_spell( "Shroud of Mist" );
   artifact.soothing_remedies          = find_artifact_spell( "Soothing Remedies" );
   artifact.spirit_tether              = find_artifact_spell( "Spirit Tether" );
+  artifact.tendrils_of_revival        = find_artifact_spell( "Tendrils of Revival" );
   artifact.the_mists_of_sheilun       = find_artifact_spell( "The Mists of Sheilun" );
   artifact.way_of_the_mistweaver      = find_artifact_spell( "Way of the Mistweaver" );
+  artifact.whispers_of_shaohao        = find_artifact_spell( "Whispers of Shaohao" );
 
   // Windwalker
+  artifact.cestus_of_storms           = find_artifact_spell( "Cestus of Storms" );
   artifact.crosswinds                 = find_artifact_spell( "Crosswinds" );
   artifact.dark_skies                 = find_artifact_spell( "Dark Skies" );
   artifact.death_art                  = find_artifact_spell( "Death Art" );
@@ -7600,11 +7635,14 @@ void monk_t::init_spells()
   artifact.gale_burst                 = find_artifact_spell( "Gale Burst" );
   artifact.good_karma                 = find_artifact_spell( "Good Karma" );
   artifact.healing_winds              = find_artifact_spell( "Healing Winds" );
+  artifact.infinite_ww                = find_artifact_spell( "Infinite" );
   artifact.inner_peace                = find_artifact_spell( "Inner Peace" );
   artifact.light_on_your_feet_ww      = find_artifact_spell( "Light on Your Feet" );
+  artifact.master_of_combinations     = find_artifact_spell( "Master of Combinations" );
   artifact.power_of_a_thousand_cranes = find_artifact_spell( "Power of a Thousand Cranes" );
   artifact.rising_winds               = find_artifact_spell( "Rising Winds" );
   artifact.spiritual_focus            = find_artifact_spell( "Spiritual Focus" );
+  artifact.split_personality          = find_artifact_spell( "Split Personality" );
   artifact.strike_of_the_windlord     = find_artifact_spell( "Strike of the Windlord" );
   artifact.strength_of_xuen           = find_artifact_spell( "Strength of Xuen" );
   artifact.tiger_claws                = find_artifact_spell( "Tiger Claws" );
@@ -8019,6 +8057,8 @@ void monk_t::create_buffs()
     .default_value( passives.hit_combo -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
+  buff.master_of_combinations = stat_buff_creator_t( this, "master_of_combinations", artifact.master_of_combinations );
+
   buff.masterful_strikes = buff_creator_t( this, "masterful_strikes", passives.tier18_2pc_melee )
     .default_value( passives.tier18_2pc_melee -> effectN( 1 ).base_value() )
     .add_invalidate( CACHE_MASTERY );
@@ -8425,6 +8465,9 @@ double monk_t::composite_player_multiplier( school_e school ) const
 
   if ( artifact.windborne_blows.rank() )
     m *= 1.0 + artifact.windborne_blows.percent();
+
+  if ( artifact.infinite_ww.rank() )
+    m *= 1.0 + artifact.infinite_ww.percent();
 
   return m;
 }

@@ -59,8 +59,8 @@ legs=doomblade_pants,id=138335,bonus_id=1492/3516
 feet=grovetenders_moccasins,id=140861,bonus_id=1492/3516
 finger1=spellblades_gemmed_signet,id=140895,bonus_id=1492/3516,enchant=binding_of_critical_strike
 finger2=ring_of_exclusive_servitude,id=140906,bonus_id=1492/3516,enchant=binding_of_critical_strike
-trinket1=convergence_of_fates,id=140806,bonus_id=1492/3516
-trinket2=nightblooming_frond,id=140802,bonus_id=1492/3516
+trinket1=nightblooming_frond,id=140802,bonus_id=1492/3516
+trinket2=convergence_of_fates,id=140806,bonus_id=1492/3516
 main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=140823/140817/140819,relic_id=1492:3516/1492:3516/1492:3516
 off_hand=the_kingslayers,id=128869
 save=Rogue_Assassination_Exsg_T19H_NH.simc
@@ -75,7 +75,7 @@ talents=1310022
 artifact=44:0:0:0:0:1052:1:1053:1:1054:1:1055:1:1056:1:1057:1:1058:1:1059:3:1060:3:1061:3:1062:3:1063:3:1064:3:1065:3:1066:3:1067:3:1348:1:1385:6
 spec=outlaw
 
-head=nightborne_battle_magushood,id=140866,bonus_id=1492/3516
+head=nightborne_battlemagus_hood,id=140866,bonus_id=1492/3516
 neck=brooch_of_the_astral_scryer,id=140900,bonus_id=1492/3516,enchant=mark_of_the_hidden_satyr
 shoulders=doomblade_spaulders,id=138338,bonus_id=1492/3516
 back=doomblade_shadowwrap,id=138371,bonus_id=1492/3516,enchant=binding_of_agility
@@ -87,8 +87,8 @@ legs=doomblade_pants,id=138335,bonus_id=1492/3516
 feet=stutterstep_treads,id=140860,bonus_id=1492/3516
 finger1=ring_of_braided_stems,id=140896,bonus_id=1492/3516,enchant=binding_of_versatility
 finger2=ring_of_exclusive_servitude,id=140906,bonus_id=1492/3516,enchant=binding_of_versatility
-trinket1=convergence_of_fates,id=140806,bonus_id=1492/3516
-trinket2=nightblooming_frond,id=140802,bonus_id=1492/3516
+trinket1=nightblooming_frond,id=140802,bonus_id=1492/3516
+trinket2=convergence_of_fates,id=140806,bonus_id=1492/3516
 main_hand=the_dreadblades,id=128872,bonus_id=742,gem_id=140819/140817/140841,relic_id=1492:3516/1492:3516/1492:3516
 off_hand=the_dreadblades,id=134552
 save=Rogue_Outlaw_T19H_NH.simc
@@ -115,8 +115,8 @@ legs=doomblade_pants,id=138335,bonus_id=1492/3516
 feet=grovetenders_moccasins,id=140861,bonus_id=1492/3516
 finger1=ring_of_exclusive_servitude,id=140906,bonus_id=1492/3516,enchant=binding_of_mastery
 finger2=ring_of_the_scoured_clan,id=140897,bonus_id=1492/3516,enchant=binding_of_mastery
-trinket1=convergence_of_fates,id=140806,bonus_id=1492/3516
-trinket2=nightblooming_frond,id=140802,bonus_id=1492/3516
+trinket1=nightblooming_frond,id=140802,bonus_id=1492/3516
+trinket2=convergence_of_fates,id=140806,bonus_id=1492/3516
 main_hand=fangs_of_the_devourer,id=128476,relic_id=1492:3516/1492:3516/1492:3516,bonus_id=743,gem_id=140826/140822/140826
 off_hand=fangs_of_the_devourer,id=128479,gem_id=0/0/0/0
 save=Rogue_Subtlety_T19H_NH.simc

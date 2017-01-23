@@ -1419,7 +1419,9 @@ void item::nightblooming_frond( special_effect_t& effect )
     {
       double m = proc_attack_t::action_multiplier();
 
-      m *= 1.0 + recursive_strikes_buff -> stack();
+      // FIXME: As of 01/22/2017, the increase has been reduced to 50% of effectiveness per stack
+      // Check if it stays like this in the upcoming trinkets hotfix(es).
+      m *= 1.0 + (recursive_strikes_buff -> stack() * 0.5);
 
       return m;
     }

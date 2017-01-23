@@ -1,0 +1,55 @@
+# T19H_NH w/ 1x Legendary
+# Tier 19 Heroic Nighthold
+# * Ilvl Cap: 895
+# * Artifact Rank Cap: 40
+# * 3 Relics with max ilevel of 895
+# * No items from World Bosses / World Quests / BoEs
+# * Mythic+ gear is permitted up to the Mythic+ item level cap
+# * No Random Gems (ie. Bonus RNG Gem Slots)
+# * No Tertiary Stats
+# * No Hardcoded Stats (generally if an item gives wrong stats: either bonus_id is wrong, either the item no longer exists in-game)
+# * It is recommended to use enchant name (ex : ",enchant=binding_of_mastery") rather than id/hardcoded stats.
+
+optimal_raid=1
+default_actions=1
+# This template variable is used to call the right profile from the Legendaries profiles (so only one profile for every Tiers)
+$(Tier)=T19H_NH
+$(iLvl)=940
+
+
+# Death Knight
+#DeathKnight_Frost_Legendaries.simc
+#DeathKnight_Unholy_Legendaries.simc
+
+# Demon Hunter
+Demon_Hunter_Havoc_Legendaries.simc
+
+# Druid
+#Druid_Legendaries.simc
+
+# Hunter
+#Hunter_Legendaries.simc
+
+# Mage
+#Mage_Legendaries.simc
+
+# Monk
+Monk_Legendaries.simc
+
+# Paladin
+#Paladin_Legendaries.simc
+
+# Priest
+#Priest_Legendaries.simc
+
+# Rogue
+Rogue_Legendaries.simc
+ 
+# Shaman
+#Shaman_Legendaries.simc
+
+# Warlock
+#Warlock_Legendaries.simc
+
+# Warrior
+#Warrior_Legendaries.simc

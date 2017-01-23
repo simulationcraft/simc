@@ -7398,6 +7398,9 @@ double shaman_t::composite_player_pet_damage_multiplier( const action_state_t* s
 {
   double m = player_t::composite_player_pet_damage_multiplier( s );
 
+  m *= 1.0 + artifact.stormkeepers_power.percent();
+  m *= 1.0 + artifact.earthshattering_blows.percent();
+
   auto school = s -> action -> get_school();
   if ( ( dbc::is_school( school, SCHOOL_FIRE ) || dbc::is_school( school, SCHOOL_FROST ) ||
          dbc::is_school( school, SCHOOL_NATURE ) ) &&

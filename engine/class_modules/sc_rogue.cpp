@@ -2011,7 +2011,8 @@ struct agonizing_poison_t : public rogue_poison_t
       if ( result_is_hit( state -> result ) &&
            td( state -> target ) -> dots.kingsbane -> is_ticking() )
       {
-        td( state -> target ) -> debuffs.kingsbane -> trigger();
+        // As of 01/22/2017, Agonizing Poison applies 2 times per application.
+        td( state -> target ) -> debuffs.kingsbane -> trigger(2);
       }
     }
   };
@@ -4239,7 +4240,7 @@ struct shadowstrike_t : public rogue_attack_t
       // Distance set to 10y as a default value, use the offset for custom value instead of distance
       // Due to the SSW bug (still present as of 01/12/17), we always get a 3 energy refund
       // when properly placed, so we'll use 10 (so 9y for the computation) as default value.
-      // On larger bosses (like Helya), this value is higher and can be increased with the offset.
+      // On larger bosses (like Helya or Krosus), this value is higher and can be increased with the offset.
       // Bug is that it computes the distance from the center of the boss instead of the edge,
       // so it ignores the hitbox (or combat reach as it is often said).
       double distance = 10;
@@ -6827,7 +6828,7 @@ void rogue_t::init_action_list()
   else if ( specialization() == ROGUE_SUBTLETY )
   {
     // Pre-Combat
-    precombat -> add_action( "variable,name=ssw_refund,value=equipped.shadow_satyrs_walk*(4+ssw_refund_offset)", "Defined variables that doesn't change during the fight" );
+    precombat -> add_action( "variable,name=ssw_refund,value=equipped.shadow_satyrs_walk*(6+ssw_refund_offset)", "Defined variables that doesn't change during the fight" );
     precombat -> add_action( "variable,name=stealth_threshold,value=(15+talent.vigor.enabled*35+talent.master_of_shadows.enabled*25+variable.ssw_refund)" );
     precombat -> add_talent( this, "Enveloping Shadows", "if=combo_points>=5" );
     precombat -> add_action( this, "Symbols of Death" );

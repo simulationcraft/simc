@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 2228653)
+SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 05a6f98)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -3021,7 +3021,7 @@ Effects          :
 #1 (id=267535)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #2 (id=267536)   : Weapon Damage% (31)
-                   Base Value: 450 | Scaled Value: 4.5 | Target: Enemy(6)
+                   Base Value: 540 | Scaled Value: 5.4 | Target: Enemy(6)
 #3 (id=267537)   : Energize Power (30)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: holy_power | Target: Self(1)
 Description      : Strikes an enemy with the Blade of Justice, dealing ${$sw2*$<mult>} Physical damage.
@@ -4884,9 +4884,9 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=349842)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 35 | Scaled Value: 35 | Misc Value: 0x7f | Target: Self(1)
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 0x7f | Target: Self(1)
 #2 (id=349843)   : Apply Aura (6) | Modify All Haste% (193)
-                   Base Value: 35 | Scaled Value: 35 | Target: Self(1)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self(1)
 Description      : Increases your damage and haste by ${$s1/10}.1% for $d.
 
 Each Holy Power spent during Crusade increases damage and haste by an additional ${$s1/10}.1%.

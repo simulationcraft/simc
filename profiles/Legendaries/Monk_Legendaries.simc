@@ -1,0 +1,51 @@
+#####
+# This is a global profile used to check the 3 bests 2 legendaries combo for one class. (Published on Website)
+# You have to set "$(Tier)=..." and "$(iLvl)=..." before calling it.
+#
+# Example :
+#
+# $(Tier)=T19H
+# $(iLvl)=910
+# Rogue_Legendaries.simc
+#
+# It will call the Rogue T19H Profiles then sim with every legendaries defined below.
+# You only have to set $(Tier) and $(iLvl) one time.
+#
+# If you want to test 2 (or more) classes, you can do it this way :
+#
+# $(Tier)=T19M_NH
+# $(iLvl)=940
+# Rogue_Legendaries.simc
+# Warrior_Legendaries.simc
+#
+# You can even do that to test 2 Tiers at the same time :
+#
+# $(Tier)=T19H
+# $(iLvl)=910
+# Rogue_Legendaries.simc
+# $(Tier)=T19H_NH
+# $(iLvl)=940
+# Rogue_Legendaries.simc
+#####
+
+# Leave this empty, it's for non-specific Tier items backward compatibility
+$(Item_$(Tier))=
+
+
+### Windwalker ###
+input=Monk_Windwalker_$(Tier).simc
+name=WW_$(Tier)_Baseline
+
+copy=WW_$(Tier)_Cinidaria_Katsuos,WW_$(Tier)_Baseline
+waist=cinidaria_the_symbiote,id=133976,ilevel=$(iLvl)
+feet=katsuos_eclipse,id=137029,ilevel=$(iLvl)
+
+copy=WW_$(Tier)_Cinidaria_Drinking_Horn,WW_$(Tier)_Baseline
+talent_override=whirling_dragon_punch
+wrists=drinking_horn_cover,id=137097,ilevel=$(iLvl)
+waist=cinidaria_the_symbiote,id=133976,ilevel=$(iLvl)
+
+copy=WW_$(Tier)_Katsuos_Drinking_Horn,WW_$(Tier)_Baseline
+talent_override=whirling_dragon_punch
+wrists=drinking_horn_cover,id=137097,ilevel=$(iLvl)
+feet=katsuos_eclipse,id=137029,ilevel=$(iLvl)

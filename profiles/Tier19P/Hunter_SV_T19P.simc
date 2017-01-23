@@ -3,7 +3,7 @@ level=110
 race=blood_elf
 role=attack
 position=back
-talents=3101032
+talents=3101031
 artifact=34:0:0:0:0:1068:1:1072:3:1073:3:1074:3:1075:3:1076:3:1077:2:1079:1:1080:1:1082:1:1084:1:1338:1
 spec=survival
 
@@ -103,7 +103,7 @@ actions.nomok+=/flanking_strike
 actions.nomok+=/raptor_strike,if=focus>75-cooldown.flanking_strike.remains*focus.regen
 
 head=helm_of_endless_dunes,id=134471,bonus_id=1727
-neck=understone_gorget,id=134491,bonus_id=1727,enchant=mark_of_the_claw
+neck=understone_gorget,id=134491,bonus_id=1727,enchant=mark_of_the_hidden_satyr
 shoulders=epaulets_of_deceitful_intent,id=134480,bonus_id=1727
 back=cape_of_rigid_order,id=134402,bonus_id=1727,enchant=200agi
 chest=decontaminated_chain_tunic,id=134463,bonus_id=1727

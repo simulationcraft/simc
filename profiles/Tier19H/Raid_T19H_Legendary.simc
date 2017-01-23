@@ -17,6 +17,7 @@ optimal_raid=1
 default_actions=1
 # This template variable is used to call the right profile from the Legendaries profiles (so only one profile for every Tiers)
 $(Tier)=T19H
+$(iLvl)=910
 
 
 # Death Knight
@@ -52,8 +53,7 @@ Mage_Frost_T19H.simc
 hands=lady_vashjs_grasp,id=132411
  
 # Monk
-Monk_Windwalker_T19H.simc
-feet=katsuos_eclipse,id=137029
+Monk_Legendaries.simc
  
 # Paladin
 Paladin_Retribution_T19H.simc

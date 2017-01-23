@@ -827,7 +827,11 @@ class ItemDataGenerator(DataGenerator):
     }
 
     def __init__(self, options, data_store = None):
-        self._dbc = [ 'Item-sparse', 'Item', 'ItemEffect', 'SpellEffect', 'Spell', 'JournalEncounterItem', 'ItemNameDescription' ]
+        self._dbc = [ 'Item', 'ItemEffect', 'SpellEffect', 'Spell', 'JournalEncounterItem', 'ItemNameDescription' ]
+        if options.build < 23436:
+            self._dbc.append('Item-sparse')
+        else:
+            self._dbc.append('ItemSparse')
 
         super().__init__(options, data_store)
 
@@ -839,14 +843,15 @@ class ItemDataGenerator(DataGenerator):
         link(self._spelleffect_db, 'id_spell', self._spell_db, 'add_effect')
 
         # Various Item-related data model linkages
-        link(self._itemeffect_db, 'id_item', self._item_sparse_db, 'spells')
-        link(self._journalencounteritem_db, 'id_item', self._item_sparse_db, 'journal')
+        link(self._itemeffect_db, 'id_item', self._options.build < 23436 and self._item_sparse_db or self._itemsparse_db, 'spells')
+        link(self._journalencounteritem_db, 'id_item', self._options.build < 23436 and self._item_sparse_db or self._itemsparse_db, 'journal')
 
         return True
 
     def filter(self):
         ids = []
-        for item_id, data in self._item_sparse_db.items():
+        db = self._options.build < 23436 and self._item_sparse_db or self._itemsparse_db
+        for item_id, data in db.items():
             blacklist_item = False
 
             classdata = self._item_db[item_id]
@@ -999,7 +1004,7 @@ class ItemDataGenerator(DataGenerator):
 
         index = 0
         for id in ids + [ 0 ]:
-            item = self._item_sparse_db[id]
+            item = self._options.build < 23436 and self._item_sparse_db[id] or self._itemsparse_db[id]
             item2 = self._item_db[id]
 
             if not item.id and id > 0:
@@ -1071,7 +1076,7 @@ class ItemDataGenerator(DataGenerator):
         s2['items'] = list()
 
         for id in ids + [0]:
-            item = self._item_sparse_db[id]
+            item = self._options.build < 23436 and self._item_sparse_db[id] or self._itemsparse_db[id]
             item2 = self._item_db[id]
 
             if not item.id and id > 0:
@@ -1506,8 +1511,9 @@ class SpellDataGenerator(DataGenerator):
           ( 121283, 0 ), # Chi Sphere from Power Strikes
           ( 228287, 3 ), # Spinning Crane Kick's Mark of the Crane debuff
           ( 125174, 3 ), # Touch of Karma redirect buff
-          ( 195651, 0 ), # Crosswinds Artifact trait trigger spell
-          ( 196061, 0 ), # Crosswinds Artifact trait damage spell
+          ( 195651, 3 ), # Crosswinds Artifact trait trigger spell
+          ( 196061, 3 ), # Crosswinds Artifact trait damage spell
+          ( 116007, 3 ), # Cestus of Storms Artifact trait damage spell
           ( 211432, 3 ), # Tier 19 4-piece DPS Buff
           # Legendary
           ( 213114, 3 ), # Hidden Master's Forbidden Touch buff
@@ -1779,12 +1785,17 @@ class SpellDataGenerator(DataGenerator):
         self._dbc = [ 'Spell', 'SpellEffect', 'SpellScaling', 'SpellCooldowns', 'SpellRange',
                 'SpellClassOptions', 'SpellDuration', 'SpellPower', 'SpellLevels',
                 'SpellCategories', 'SpellCategory', 'Talent', 'SkillLineAbility',
-                'SpellAuraOptions', 'SpellRadius', 'GlyphProperties', 'Item-sparse', 'Item',
+                'SpellAuraOptions', 'SpellRadius', 'GlyphProperties', 'Item',
                 'SpellCastTimes', 'ItemSet', 'SpellDescriptionVariables', 'SpellItemEnchantment',
-                'SpellEquippedItems', 'SpellIcon', 'SpecializationSpells', 'ChrSpecialization',
+                'SpellEquippedItems', 'SpecializationSpells', 'ChrSpecialization',
                 'SpellEffectScaling', 'SpellMisc', 'SpellProcsPerMinute', 'ItemSetSpell',
                 'ItemEffect', 'MinorTalent', 'ArtifactPowerRank', 'ArtifactPower', 'Artifact',
                 'SpellShapeshift', 'SpellMechanic' ]
+
+        if self._options.build < 23436:
+            self._dbc.append('Item-sparse')
+        else:
+            self._dbc.append('ItemSparse')
 
     def initialize(self):
         super().initialize()
@@ -1806,7 +1817,7 @@ class SpellDataGenerator(DataGenerator):
 
             self._data_store.link('ItemSetSpell', 'id_item_set', 'ItemSet', 'bonus')
 
-            self._data_store.link('ItemEffect', 'id_item', 'Item-sparse', 'spells')
+            self._data_store.link('ItemEffect', 'id_item', self._options.build < 23436 and 'Item-sparse' or 'ItemSparse', 'spells')
         else:
             # Reverse map various things to Spell records so we can easily generate output
             link(self._spelleffect_db, 'id_spell', self._spell_db, 'add_effect')
@@ -1825,7 +1836,7 @@ class SpellDataGenerator(DataGenerator):
             link(self._spelleffectscaling_db, 'id_effect', self._spelleffect_db, 'scaling')
 
             # Various Item-related data model linkages
-            link(self._itemeffect_db, 'id_item', self._item_sparse_db, 'spells')
+            link(self._itemeffect_db, 'id_item', self._options.build < 23436 and self._item_sparse_db or self._itemsparse_db, 'spells')
             link(self._itemsetspell_db, 'id_item_set', self._itemset_db, 'bonus')
 
         return True
@@ -2075,7 +2086,7 @@ class SpellDataGenerator(DataGenerator):
                 ids[spell_id]['replace_spell_id'] = spec_spell_data.replace_spell_id
 
         for spec_id, spec_data in self._chrspecialization_db.items():
-            s = self._spell_db[spec_data.id_mastery]
+            s = self._spell_db[spec_data.id_mastery_1]
             if s.id == 0:
                 continue
 
@@ -2116,7 +2127,7 @@ class SpellDataGenerator(DataGenerator):
                 # Create Item, see if the created item has a spell that enchants an item, if so
                 # add the enchant spell. Also grab all gem spells
                 if effect.type == 24:
-                    item = self._item_sparse_db[effect.item_type]
+                    item = self._options.build < 23436 and self._item_sparse_db[effect.item_type] or self._itemsparse_db[effect.item_type]
                     if not item.id or item.gem_props == 0:
                         continue
 
@@ -2133,7 +2144,7 @@ class SpellDataGenerator(DataGenerator):
                         if enchant_spell_id > 0:
                             break
                 elif effect.type == 53:
-                    spell_item_ench = self._spellitemenchantment_db[effect.misc_value]
+                    spell_item_ench = self._spellitemenchantment_db[effect.misc_value_1]
                     #if (spell_item_ench.req_skill == 0 and self._spelllevels_db[spell.id_levels].base_level < 60) or \
                     #   (spell_item_ench.req_skill > 0 and spell_item_ench.req_skill_value <= 375):
                     #    continue
@@ -2146,8 +2157,9 @@ class SpellDataGenerator(DataGenerator):
             if enchant_spell_id > 0:
                 self.process_spell(enchant_spell_id, ids, 0, 0)
 
+        item_db = self._options.build < 23436 and self._item_sparse_db or self._itemsparse_db
         # Rest of the Item enchants relevant to us, such as Shoulder / Head enchants
-        for item_id, data in self._item_sparse_db.items():
+        for item_id, data in item_db.items():
             blacklist_item = False
 
             classdata = self._item_db[item_id]
@@ -2238,7 +2250,7 @@ class SpellDataGenerator(DataGenerator):
                     continue
 
                 # Filter some erroneous glyph data out
-                glyph_data = self._glyphproperties_db[effect.misc_value]
+                glyph_data = self._glyphproperties_db[effect.misc_value_1]
                 spell_id = glyph_data.id_spell
                 if not glyph_data.id or not spell_id:
                     continue
@@ -2254,7 +2266,7 @@ class SpellDataGenerator(DataGenerator):
                     self.process_spell(sid, ids, 0, 0)
 
         # Items with a spell identifier as "stats"
-        for iid, data in self._item_sparse_db.items():
+        for iid, data in item_db.items():
             # Allow neck, finger, trinkets, weapons, 2hweapons to bypass ilevel checking
             ilevel = data.ilevel
             if data.inv_type not in [ 2, 11, 12, 13, 15, 17, 21, 22, 26 ] and \
@@ -2404,8 +2416,8 @@ class SpellDataGenerator(DataGenerator):
             assert len(fields) == 11
             # 12, 13
             range_entry = self._spellrange_db[misc.id_range]
-            fields += range_entry.field('min_range', 'max_range')
-            f, hfd = range_entry.get_hotfix_info(('min_range', 11), ('max_range', 12))
+            fields += range_entry.field('min_range_1', 'max_range_1')
+            f, hfd = range_entry.get_hotfix_info(('min_range_1', 11), ('max_range_1', 12))
             hotfix_flags |= f
             hotfix_data += hfd
             assert len(fields) == 13
@@ -2513,8 +2525,8 @@ class SpellDataGenerator(DataGenerator):
             hotfix_flags |= f
             hotfix_data += hfd
             # 39
-            fields += spell.get_link('shapeshift').field('flags')
-            f, hfd= spell.get_link('shapeshift').get_hotfix_info(('flags', 38))
+            fields += spell.get_link('shapeshift').field('flags_1')
+            f, hfd= spell.get_link('shapeshift').get_hotfix_info(('flags_1', 38))
             hotfix_flags |= f
             hotfix_data += hfd
             # 40
@@ -2643,22 +2655,22 @@ class SpellDataGenerator(DataGenerator):
             hotfix_data += hfd
 
             # 13
-            radius_entry = self._spellradius_db[effect.id_radius]
+            radius_entry = self._spellradius_db[effect.id_radius_1]
             fields += radius_entry.field('radius_1')
             f, hfd = radius_entry.get_hotfix_info(('radius_1', 12))
             hotfix_flags |= f
             hotfix_data += hfd
 
             # 14
-            radius_max_entry = self._spellradius_db[effect.id_radius_max]
+            radius_max_entry = self._spellradius_db[effect.id_radius_2]
             fields += radius_max_entry.field('radius_1')
             f, hfd = radius_max_entry.get_hotfix_info(('radius_1', 13))
             hotfix_flags |= f
             hotfix_data += hfd
 
             # 15, 16, 17
-            fields += effect.field('base_value', 'misc_value', 'misc_value_2')
-            f, hfd = effect.get_hotfix_info(('base_value', 14), ('misc_value', 15), ('misc_value_2', 16))
+            fields += effect.field('base_value', 'misc_value_1', 'misc_value_2')
+            f, hfd = effect.get_hotfix_info(('base_value', 14), ('misc_value_1', 15), ('misc_value_2', 16))
             hotfix_flags |= f
             hotfix_data += hfd
 
@@ -2784,11 +2796,11 @@ class MasteryAbilityGenerator(DataGenerator):
             if v.class_id == 0:
                 continue
 
-            s = self._spell_db[v.id_mastery]
+            s = self._spell_db[v.id_mastery_1]
             if s.id == 0:
                 continue
 
-            ids[v.id_mastery] = { 'mask_class' : v.class_id, 'category' : v.index, 'spec_name' : v.name }
+            ids[v.id_mastery_1] = { 'mask_class' : v.class_id, 'category' : v.index, 'spec_name' : v.name }
 
         return ids
 
@@ -3096,8 +3108,8 @@ class SpellListGenerator(SpellDataGenerator):
         # Let's not accept spells that have over 100y range, as they cannot really be base abilities then
         if misc.id_range > 0:
             range_ = self._spellrange_db[misc.id_range]
-            if range_.max_range > 100.0 or range_.max_range_2 > 100.0:
-                logging.debug("Spell id %u (%s) has a high range (%f, %f)", spell.id, spell.name, range_.max_range, range_.max_range_2)
+            if range_.max_range_1 > 100.0 or range_.max_range_2 > 100.0:
+                logging.debug("Spell id %u (%s) has a high range (%f, %f)", spell.id, spell.name, range_.max_range_1, range_.max_range_2)
                 return False
 
         # And finally, spells that are forcibly activated/disabled in whitelisting for
@@ -3299,7 +3311,7 @@ class SpellListGenerator(SpellDataGenerator):
                     self._out.write('    // %s tree, %d abilities\n' % ( tree_name, len(keys[i][j]) ))
                     break
                 self._out.write('    {\n')
-                for spell_id in sorted(keys[i][j], key = lambda k_: k_[0]):
+                for spell_id in sorted(keys[i][j], key = lambda k_: k_):
                     r = ''
                     if self._spell_db[spell_id[1]].rank:
                         r = ' (%s)' % self._spell_db[spell_id[1]].rank
@@ -3532,7 +3544,11 @@ class SetBonusListGenerator(DataGenerator):
     ]
 
     def __init__(self, options, data_store = None):
-        self._dbc = [ 'ItemSet', 'ItemSetSpell', 'Spell', 'ChrSpecialization', 'Item-sparse' ]
+        self._dbc = [ 'ItemSet', 'ItemSetSpell', 'Spell', 'ChrSpecialization' ]
+        if options.build < 23436:
+            self._dbc.append('Item-sparse')
+        else:
+            self._dbc.append('ItemSparse')
 
         super().__init__(options, data_store)
 
@@ -3577,7 +3593,7 @@ class SetBonusListGenerator(DataGenerator):
                 spec_ = -1
                 # TODO: Fetch from first available item if blizzard for some
                 # reason decides to not use _1 as the first one?
-                item_data = self._item_sparse_db[item_set.id_item_1]
+                item_data = self._options.build < 23436 and self._item_sparse_db[item_set.id_item_1] or self._itemsparse_db[item_set.id_item_1]
                 for idx in range(0, len(self._class_masks)):
                     mask = self._class_masks[idx]
                     if mask == None:
@@ -3722,14 +3738,18 @@ class SpellItemEnchantmentGenerator(RandomSuffixGenerator):
     def __init__(self, options, data_store = None):
         RandomSuffixGenerator.__init__(self, options, data_store)
 
-        self._dbc += ['Spell', 'SpellEffect', 'Item-sparse', 'GemProperties']
+        self._dbc += ['Spell', 'SpellEffect', 'GemProperties']
+        if options.build < 23436:
+            self._dbc.append('Item-sparse')
+        else:
+            self._dbc.append('ItemSparse')
 
     def filter_linked_spells(self, source_db, data, target_db, target_attr):
         for effect in data._effects:
             if not effect or effect.type != 53:
                 continue
 
-            return effect.misc_value
+            return effect.misc_value_1
 
         return 0
 
@@ -3743,7 +3763,7 @@ class SpellItemEnchantmentGenerator(RandomSuffixGenerator):
         link(self._spell_db, self.filter_linked_spells, self._spellitemenchantment_db, 'spells')
 
         # Map items to gem properties
-        link(self._item_sparse_db, 'gem_props', self._gemproperties_db, 'item')
+        link(self._options.build < 23436 and self._item_sparse_db or self._itemsparse_db, 'gem_props', self._gemproperties_db, 'item')
 
         # Map gem properties to enchants
         link(self._gemproperties_db, 'id_enchant', self._spellitemenchantment_db, 'gem_property')

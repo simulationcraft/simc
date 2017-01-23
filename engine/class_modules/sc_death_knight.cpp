@@ -450,6 +450,7 @@ public:
     buff_t* will_of_the_necropolis;
     buff_t* remorseless_winter;
     buff_t* frozen_soul;
+    buff_t* hungering_rune_weapon;
 
     absorb_buff_t* blood_shield;
     buff_t* rune_tap;
@@ -852,6 +853,7 @@ public:
   double    composite_melee_expertise( const weapon_t* ) const override;
   double    composite_player_multiplier( school_e school ) const override;
   double    composite_player_target_multiplier( player_t* target, school_e school ) const override;
+  double    composite_player_pet_damage_multiplier( const action_state_t* /* state */ ) const override;
   double    composite_player_critical_damage_multiplier( const action_state_t* ) const override;
   double    composite_crit_avoidance() const override;
   double    passive_movement_modifier() const override;
@@ -1274,13 +1276,6 @@ struct death_knight_pet_t : public pet_t
   double composite_player_multiplier( school_e school ) const override
   {
     double m = pet_t::composite_player_multiplier( school );
-
-    if ( dbc::is_school( school, SCHOOL_SHADOW ) && o() -> mastery.dreadblade -> ok() )
-    {
-      m *= 1.0 + o() -> cache.mastery_value();
-    }
-
-    m *= 1.0 + o() -> artifact.fleshsearer.percent();
 
     if ( taktheritrix )
     {
@@ -4854,13 +4849,12 @@ struct hungering_rune_weapon_t : public death_knight_spell_t
   {
     parse_options( options_str );
 
-    harmful = hasted_ticks = false;
+    harmful = false;
     // Handle energize in a custom way
     energize_type = ENERGIZE_NONE;
-    tick_zero = true;
-    // Spell has two different periodicities in two effects, weird++. Pick the one that is indicated
-    // by the tooltip.
-    base_tick_time = data().effectN( 1 ).period();
+
+    // Buff handles the ticking, this one just triggers the buff
+    dot_duration = base_tick_time = timespan_t::zero();
   }
 
   void init() override
@@ -4873,12 +4867,14 @@ struct hungering_rune_weapon_t : public death_knight_spell_t
       ( 1.0 - p() -> legendary.seal_of_necrofantasia -> effectN( 2 ).percent() );
   }
 
-  void tick( dot_t* d ) override
+  void execute() override
   {
-    death_knight_spell_t::tick( d );
+    death_knight_spell_t::execute();
 
+    // Emulate immediate gain
     p() -> replenish_rune( data().effectN( 1 ).base_value(), p() -> gains.hungering_rune_weapon );
-    p() -> resource_gain( RESOURCE_RUNIC_POWER, data().effectN( 2 ).resource( RESOURCE_RUNIC_POWER ), p() -> gains.hungering_rune_weapon, this );
+    p() -> resource_gain( RESOURCE_RUNIC_POWER, data().effectN( 2 ).resource( RESOURCE_RUNIC_POWER ), p() -> gains.hungering_rune_weapon );
+    p() -> buffs.hungering_rune_weapon -> trigger();
   }
 };
 
@@ -6985,7 +6981,7 @@ void death_knight_t::default_apl_frost()
   }
 
   // Cooldowns
-  def -> add_action( this, "Sindragosa's Fury", "if=buff.pillar_of_frost.up&(buff.unholy_strength.up|(buff.pillar_of_frost.remains<3&target.time_to_die<60))&debuff.razorice.stack==5&!buff.obliteration.up" );
+  def -> add_action( this, "Sindragosa's Fury", "if=buff.pillar_of_frost.up&(buff.unholy_strength.up|(buff.pillar_of_frost.remains<3&target.time_to_die<60))&debuff.razorice.stack=5&!buff.obliteration.up" );
   def -> add_talent( this, "Obliteration", "if=(!talent.frozen_pulse.enabled|(rune<2&runic_power<28))&!talent.gathering_storm.enabled" );
 
   // Choose APL
@@ -7011,11 +7007,11 @@ void death_knight_t::default_apl_frost()
   generic -> add_action( this, "Frost Strike", "if=(talent.horn_of_winter.enabled|talent.hungering_rune_weapon.enabled)&(set_bonus.tier19_2pc=1|set_bonus.tier19_4pc=1)" );
   generic -> add_action( this, "Obliterate" );
   generic -> add_talent( this, "Glacial Advance" );
-  generic -> add_talent( this, "Horn of Winter", "if=!dot.hungering_rune_weapon.ticking" );
+  generic -> add_talent( this, "Horn of Winter", "if=!buff.hungering_rune_weapon.up" );
   generic -> add_action( this, "Frost Strike" );
   generic -> add_action( this, "Remorseless Winter", "if=talent.frozen_pulse.enabled" );
   generic -> add_action( this, "Empower Rune Weapon" );
-  generic -> add_talent( this, "Hungering Rune Weapon", "if=!dot.hungering_rune_weapon.ticking" );
+  generic -> add_talent( this, "Hungering Rune Weapon", "if=!buff.hungering_rune_weapon.up" );
 
   // Breath of Sindragosa core rotation
   bos -> add_action( this, "Frost Strike", "if=talent.icy_talons.enabled&buff.icy_talons.remains<1.5&cooldown.breath_of_sindragosa.remains>6" );
@@ -7036,8 +7032,8 @@ void death_knight_t::default_apl_frost()
   bos_ticking -> add_action( this, "Remorseless Winter", "if=((runic_power>=20&set_bonus.tier19_4pc)|runic_power>=30)&buff.rime.react&(equipped.132459|talent.gathering_storm.enabled)" );
   bos_ticking -> add_action( this, "Howling Blast", "if=((runic_power>=20&set_bonus.tier19_4pc)|runic_power>=30)&buff.rime.react" );
   bos_ticking -> add_action( this, "Obliterate", "if=runic_power<=75|rune>3" );
-  bos_ticking -> add_talent( this, "Horn of Winter", "if=runic_power<70&!dot.hungering_rune_weapon.ticking" );
-  bos_ticking -> add_talent( this, "Hungering Rune Weapon", "if=runic_power<30&!dot.hungering_rune_weapon.ticking" );
+  bos_ticking -> add_talent( this, "Horn of Winter", "if=runic_power<70&!buff.hungering_rune_weapon.up" );
+  bos_ticking -> add_talent( this, "Hungering Rune Weapon", "if=runic_power<30&!buff.hungering_rune_weapon.up" );
   bos_ticking -> add_action( this, "Empower Rune Weapon", "if=runic_power<20" );
   bos_ticking -> add_action( this, "Remorseless Winter", "if=talent.gathering_storm.enabled|!set_bonus.tier19_4pc|runic_power<30" );
   
@@ -7049,10 +7045,10 @@ void death_knight_t::default_apl_frost()
   gs_ticking -> add_action( this, "Obliterate", "if=rune>3|buff.killing_machine.react|buff.obliteration.up" );
   gs_ticking -> add_action( this, "Frost Strike", "if=runic_power>80|(buff.obliteration.up&!buff.killing_machine.react)" );
   gs_ticking -> add_action( this, "Obliterate" );
-  gs_ticking -> add_talent( this, "Horn of Winter", "if=runic_power<70&!dot.hungering_rune_weapon.ticking" );
+  gs_ticking -> add_talent( this, "Horn of Winter", "if=runic_power<70&!buff.hungering_rune_weapon.up" );
   gs_ticking -> add_talent( this, "Glacial Advance" );
   gs_ticking -> add_action( this, "Frost Strike" );
-  gs_ticking -> add_talent( this, "Hungering Rune Weapon", "if=!dot.hungering_rune_weapon.ticking" );
+  gs_ticking -> add_talent( this, "Hungering Rune Weapon", "if=!buff.hungering_rune_weapon.up" );
   gs_ticking -> add_action( this, "Empower Rune Weapon" );
 }
 
@@ -7072,7 +7068,7 @@ void death_knight_t::default_apl_unholy()
     (true_level >= 85) ? "sea_mist_rice_noodles" :
     (true_level >= 80) ? "seafood_magnifique_feast" :
     "";
-  std::string potion_name = (true_level > 100) ? "old_war" :
+  std::string potion_name = (true_level > 100) ? "prolonged_power" :
     (true_level >= 90) ? "draenic_strength" :
     (true_level >= 85) ? "mogu_power" :
     (true_level >= 80) ? "golemblood_potion" :
@@ -7139,8 +7135,8 @@ void death_knight_t::default_apl_unholy()
   generic->add_action(this, "Summon Gargoyle", "if=equipped.137075&cooldown.dark_transformation.remains<10&rune<=3");
 
   // Apocalypso
-  generic->add_talent(this, "Soul Reaper", "if=debuff.festering_wound.stack>=7&cooldown.apocalypse.remains<2");
-  generic->add_action(this, "Apocalypse", "if=debuff.festering_wound.stack>=7");
+  generic->add_talent(this, "Soul Reaper", "if=debuff.festering_wound.stack>=6&cooldown.apocalypse.remains<4");
+  generic->add_action(this, "Apocalypse", "if=debuff.festering_wound.stack>=6");
 
   // Death coilage
   generic->add_action(this, "Death Coil", "if=runic_power.deficit<10");
@@ -7148,7 +7144,7 @@ void death_knight_t::default_apl_unholy()
   generic->add_action(this, "Death Coil", "if=talent.dark_arbiter.enabled&buff.sudden_doom.up&cooldown.dark_arbiter.remains>5&rune<=3");
 
   // FW stacking
-  generic->add_action(this, "Festering Strike", "if=debuff.festering_wound.stack<7&cooldown.apocalypse.remains<5");
+  generic->add_action(this, "Festering Strike", "if=debuff.festering_wound.stack<6&cooldown.apocalypse.remains<=6");
 
   // Soul reapering
   generic->add_talent(this, "Soul Reaper", "if=debuff.festering_wound.stack>=3");
@@ -7193,11 +7189,11 @@ void death_knight_t::default_apl_unholy()
   instructors->add_action(this, "Festering Strike", "if=debuff.festering_wound.stack<=3&runic_power.deficit>13");
   instructors->add_action(this, "Death Coil", "if=!buff.necrosis.up&talent.necrosis.enabled&rune<=3");
   instructors->add_action(this, "Scourge Strike", "if=buff.necrosis.react&debuff.festering_wound.stack>=4&runic_power.deficit>29");
-  instructors->add_talent(this, "Clawing Shadows", "if=buff.necrosis.react&debuff.festering_wound.stack>=4&runic_power.deficit>11");
+  instructors->add_talent(this, "Clawing Shadows", "if=buff.necrosis.react&debuff.festering_wound.stack>=3&runic_power.deficit>11");
   instructors->add_action(this, "Scourge Strike", "if=buff.unholy_strength.react&debuff.festering_wound.stack>=4&runic_power.deficit>29");
-  instructors->add_talent(this, "Clawing Shadows", "if=buff.unholy_strength.react&debuff.festering_wound.stack>=4&runic_power.deficit>11");
+  instructors->add_talent(this, "Clawing Shadows", "if=buff.unholy_strength.react&debuff.festering_wound.stack>=3&runic_power.deficit>11");
   instructors->add_action(this, "Scourge Strike", "if=rune>=2&debuff.festering_wound.stack>=4&runic_power.deficit>29");
-  instructors->add_talent(this, "Clawing Shadows", "if=rune>=2&debuff.festering_wound.stack>=4&runic_power.deficit>11");
+  instructors->add_talent(this, "Clawing Shadows", "if=rune>=2&debuff.festering_wound.stack>=3&runic_power.deficit>11");
   instructors->add_action(this, "Death Coil", "if=talent.shadow_infusion.enabled&talent.dark_arbiter.enabled&!buff.dark_transformation.up&cooldown.dark_arbiter.remains>15");
   instructors->add_action(this, "Death Coil", "if=talent.shadow_infusion.enabled&!talent.dark_arbiter.enabled&!buff.dark_transformation.up");
   instructors->add_action(this, "Death Coil", "if=talent.dark_arbiter.enabled&cooldown.dark_arbiter.remains>15");
@@ -7431,6 +7427,14 @@ void death_knight_t::create_buffs()
 
   // Must be created after Gathering Storms buff (above) to get correct linkage
   buffs.remorseless_winter = new remorseless_winter_buff_t( this );
+
+  buffs.hungering_rune_weapon = buff_creator_t( this, "hungering_rune_weapon", talent.hungering_rune_weapon )
+    .cd( timespan_t::zero() ) // Handled in the action
+    .period( talent.hungering_rune_weapon -> effectN( 1 ).period() )
+    .tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
+      replenish_rune( b -> data().effectN( 1 ).base_value(), gains.hungering_rune_weapon );
+      resource_gain( RESOURCE_RUNIC_POWER, b -> data().effectN( 2 ).resource( RESOURCE_RUNIC_POWER ), gains.hungering_rune_weapon );
+    } );
 }
 
 // death_knight_t::init_gains ===============================================
@@ -7812,14 +7816,32 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
 
   m *= 1.0 + artifact.soulbiter.percent();
   m *= 1.0 + artifact.fleshsearer.percent();
-  m *= 1.0 + artifact.sanguinary_affinity.percent();
+
+  if ( dbc::is_school( school, SCHOOL_PHYSICAL ) )
+  {
+    m *= 1.0 + artifact.sanguinary_affinity.percent();
+  }
 
   if ( buffs.t18_4pc_unholy -> up() )
   {
     m *= 1.0 + buffs.t18_4pc_unholy -> data().effectN( 2 ).percent();
   }
 
+  return m;
+}
 
+double death_knight_t::composite_player_pet_damage_multiplier( const action_state_t* state ) const
+{
+  double m = player_t::composite_player_pet_damage_multiplier( state );
+
+  auto school = state -> action -> get_school();
+  if ( dbc::is_school( school, SCHOOL_SHADOW ) && mastery.dreadblade -> ok() )
+  {
+    m *= 1.0 + cache.mastery_value();
+  }
+
+  m *= 1.0 + artifact.soulbiter.percent();
+  m *= 1.0 + artifact.fleshsearer.percent();
 
   return m;
 }

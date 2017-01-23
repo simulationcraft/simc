@@ -1,0 +1,120 @@
+warrior="Warrior_Arms_T19M_NH"
+level=110
+race=blood_elf
+role=attack
+position=back
+talents=1332311
+artifact=36:139261:142510:142512:0:1136:1:1137:1:1138:1:1139:1:1140:1:1141:1:1142:1:1143:3:1144:3:1145:3:1146:3:1147:4:1148:3:1149:4:1150:4:1151:3:1356:1:1393:20
+spec=arms
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask,type=countless_armies
+actions.precombat+=/food,type=fishbrul_special
+actions.precombat+=/augmentation,type=defiled
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion,name=old_war
+
+# Executed every time the actor is available.
+actions=charge
+actions+=/auto_attack
+actions+=/potion,name=old_war,if=buff.avatar.up&buff.battle_cry.up&debuff.colossus_smash.up|target.time_to_die<=26
+actions+=/blood_fury,if=buff.battle_cry.up|target.time_to_die<=16
+actions+=/berserking,if=buff.battle_cry.up|target.time_to_die<=11
+actions+=/arcane_torrent,if=buff.battle_cry_deadly_calm.down&rage.deficit>40&cooldown.battle_cry.remains
+actions+=/battle_cry,if=gcd.remains<0.25&cooldown.avatar.remains>=10&(buff.shattered_defenses.up|cooldown.warbreaker.remains>7&cooldown.colossus_smash.remains>7|cooldown.colossus_smash.remains&debuff.colossus_smash.remains>gcd)|!cooldown.colossus_smash.remains<gcd|target.time_to_die<=7
+actions+=/avatar,if=gcd.remains<0.25&(buff.battle_cry.up|cooldown.battle_cry.remains<15)|target.time_to_die<=20
+actions+=/use_item,name=draught_of_souls,if=equipped.draught_of_souls&((prev_gcd.1.mortal_strike|cooldown.mortal_strike.remains>=3)&buff.battle_cry.remains>=3&debuff.colossus_smash.up&buff.avatar.remains>=3)
+actions+=/use_item,name=kiljaedens_burning_wish,if=equipped.kiljaedens_burning_wish&debuff.colossus_smash.up
+actions+=/use_item,name=draught_of_souls,if=buff.avatar.up&debuff.colossus_smash.up&buff.battle_cry.up
+actions+=/heroic_leap,if=(debuff.colossus_smash.down|debuff.colossus_smash.remains<2)&cooldown.colossus_smash.remains&equipped.weight_of_the_earth|!equipped.weight_of_the_earth&debuff.colossus_smash.up
+actions+=/rend,if=remains<gcd
+actions+=/focused_rage,if=buff.battle_cry_deadly_calm.remains>cooldown.focused_rage.remains&(buff.focused_rage.stack<3|cooldown.mortal_strike.remains)
+actions+=/colossus_smash,if=cooldown_react&debuff.colossus_smash.remains<gcd
+actions+=/warbreaker,if=debuff.colossus_smash.remains<gcd
+actions+=/ravager
+actions+=/overpower,if=buff.overpower.react
+actions+=/run_action_list,name=cleave,if=spell_targets.whirlwind>=2&talent.sweeping_strikes.enabled
+actions+=/run_action_list,name=aoe,if=spell_targets.whirlwind>=5&!talent.sweeping_strikes.enabled
+actions+=/run_action_list,name=execute,target_if=target.health.pct<=20&spell_targets.whirlwind<5
+actions+=/run_action_list,name=single,if=target.health.pct>20
+
+actions.aoe=mortal_strike,if=cooldown_react
+actions.aoe+=/execute,if=buff.stone_heart.react
+actions.aoe+=/colossus_smash,if=cooldown_react&buff.shattered_defenses.down&buff.precise_strikes.down
+actions.aoe+=/warbreaker,if=buff.shattered_defenses.down
+actions.aoe+=/whirlwind,if=talent.fervor_of_battle.enabled&(debuff.colossus_smash.up|rage.deficit<50)&(!talent.focused_rage.enabled|buff.battle_cry_deadly_calm.up|buff.cleave.up)
+actions.aoe+=/rend,if=remains<=duration*0.3
+actions.aoe+=/bladestorm
+actions.aoe+=/cleave
+actions.aoe+=/execute,if=rage>90
+actions.aoe+=/whirlwind,if=rage>=40
+actions.aoe+=/shockwave
+actions.aoe+=/storm_bolt
+
+actions.cleave=mortal_strike
+actions.cleave+=/execute,if=buff.stone_heart.react
+actions.cleave+=/colossus_smash,if=buff.shattered_defenses.down&buff.precise_strikes.down
+actions.cleave+=/warbreaker,if=buff.shattered_defenses.down
+actions.cleave+=/focused_rage,if=rage>100|buff.battle_cry_deadly_calm.up
+actions.cleave+=/whirlwind,if=talent.fervor_of_battle.enabled&(debuff.colossus_smash.up|rage.deficit<50)&(!talent.focused_rage.enabled|buff.battle_cry_deadly_calm.up|buff.cleave.up)
+actions.cleave+=/rend,if=remains<=duration*0.3
+actions.cleave+=/bladestorm
+actions.cleave+=/cleave
+actions.cleave+=/whirlwind,if=rage>40|buff.cleave.up
+actions.cleave+=/shockwave
+actions.cleave+=/storm_bolt
+
+actions.execute=mortal_strike,if=cooldown_react&buff.battle_cry.up&buff.focused_rage.stack=3
+# actions.execute+=/heroic_charge,if=rage.deficit>=40&(!cooldown.heroic_leap.remains|swing.mh.remains>1.2)
+#Remove the # above to run out of melee and charge back in for rage.
+actions.execute+=/execute,if=buff.battle_cry_deadly_calm.up
+actions.execute+=/colossus_smash,if=cooldown_react&buff.shattered_defenses.down
+actions.execute+=/execute,if=buff.shattered_defenses.up&(rage>=17.6|buff.stone_heart.react)
+actions.execute+=/mortal_strike,if=cooldown_react&equipped.archavons_heavy_hand&rage<60|talent.in_for_the_kill.enabled&buff.shattered_defenses.down
+actions.execute+=/execute,if=buff.shattered_defenses.down
+actions.execute+=/bladestorm,interrupt=1,if=raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets
+
+actions.single=colossus_smash,if=cooldown_react&buff.shattered_defenses.down&(buff.battle_cry.down|buff.battle_cry.up&buff.battle_cry.remains>=gcd|buff.corrupted_blood_of_zakajz.remains>=gcd)
+# actions.single+=/heroic_charge,if=rage.deficit>=40&(!cooldown.heroic_leap.remains|swing.mh.remains>1.2)&buff.battle_cry.down
+#Remove the # above to run out of melee and charge back in for rage.
+actions.single+=/focused_rage,if=!buff.battle_cry_deadly_calm.up&buff.focused_rage.stack<3&!cooldown.colossus_smash.up&(rage>=50|debuff.colossus_smash.down|cooldown.battle_cry.remains<=8)|cooldown.battle_cry.remains<=8&cooldown.battle_cry.remains>0&rage>100
+actions.single+=/mortal_strike,if=cooldown.battle_cry.remains>8|!buff.battle_cry.remains>(gcd.max*2)&buff.focused_rage.stack<3|buff.battle_cry.remains<=gcd
+actions.single+=/execute,if=buff.stone_heart.react
+actions.single+=/whirlwind,if=spell_targets.whirlwind>1|talent.fervor_of_battle.enabled
+actions.single+=/slam,if=spell_targets.whirlwind=1&!talent.fervor_of_battle.enabled
+actions.single+=/bladestorm,interrupt=1,if=raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets
+
+head=warhelm_of_the_obsidian_aspect,id=138357,bonus_id=3519
+neck=zealous_timestone_pendant,id=140894,bonus_id=3519,enchant=mark_of_the_trained_soldier
+shoulders=shoulderplates_of_the_obsidian_aspect,id=138363,bonus_id=3519
+back=greatcloak_of_the_obsidian_aspect,id=138374,bonus_id=3519,enchant=binding_of_strength
+chest=breastplate_of_the_remembered_king,id=140913,bonus_id=3519
+wrists=eternally_recurring_bracers,id=140893,bonus_id=3519
+hands=gauntlets_of_the_obsidian_aspect,id=138354,bonus_id=3519
+waist=gilded_nightborne_waistplate,id=140880,bonus_id=3519
+legs=chronotempered_legplates,id=140882,bonus_id=3519
+feet=sabatons_of_unchanging_fate,id=140891,bonus_id=3519
+finger1=ring_of_the_scoured_clan,id=140897,bonus_id=3519,enchant=binding_of_mastery
+finger2=spellblades_gemmed_signet,id=140895,bonus_id=3519,enchant=binding_of_mastery
+trinket1=draught_of_souls,id=140808,bonus_id=3519
+trinket2=convergence_of_fates,id=140806,bonus_id=3519
+main_hand=stromkar_the_warbreaker,id=128910,bonus_id=750,gem_id=139261/142510/142512,relic_id=1806/3469:1512/3469,relic_ilevel=910/910/910
+
+# Gear Summary
+# gear_ilvl=911.53
+# gear_strength=22385
+# gear_stamina=35916
+# gear_crit_rating=4512
+# gear_haste_rating=6798
+# gear_mastery_rating=11987
+# gear_versatility_rating=2366
+# gear_armor=4642
+# set_bonus=tier19_2pc=1
+# set_bonus=tier19_4pc=1

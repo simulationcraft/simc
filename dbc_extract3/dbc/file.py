@@ -7,6 +7,7 @@ _PARSERS = {
     b'WDB2': None,
     b'WDB4': dbc.parser.WDB4Parser,
     b'WDB5': dbc.parser.WDB5Parser,
+    b'WDB6': dbc.parser.WDB6Parser,
     b'WCH5': dbc.parser.LegionWCHParser,
     b'WCH6': dbc.parser.LegionWCHParser,
     b'WCH7': dbc.parser.WCH7Parser,
@@ -38,7 +39,6 @@ class DBCFileIterator:
 class DBCFile:
     def __init__(self, options, filename, wdb_file = None):
 
-        self.data_parser = None
         self.data_class = None
         self.magic = None
 
@@ -94,9 +94,6 @@ class DBCFile:
 
         return parser_obj
 
-    def wdb5(self):
-        return self.magic == b'WDB5'
-
     def name(self):
         return os.path.basename(self.file_name).split('.')[0].replace('-', '_').lower()
 
@@ -115,16 +112,14 @@ class DBCFile:
 
         try:
             if not self.options.raw:
-                self.data_parser = self.fmt.parser(self.class_name())
                 self.data_class = getattr(dbc.data, self.class_name().replace('-', '_'))
 
             else:
-                if self.wdb5():
+                if self.parser.raw_outputtable():
                     self.data_class = dbc.data.RawDBCRecord
         except KeyError:
             # WDB5 we can always display something
             if self.wdb5():
-                self.data_parser = self.parser.build_decoder()
                 self.data_class = dbc.data.RawDBCRecord
             # Others, not so much
             else:
