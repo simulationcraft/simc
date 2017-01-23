@@ -9670,10 +9670,10 @@ public:
       .modifier( 1.785 )
       .verification_value( 1.70 );
 
-    hotfix::register_effect( "Mage", "2017-01-20", "25% CmS Damage", 153596 )
+    hotfix::register_effect( "Mage", "2017-01-20", "24% CmS Damage", 153596 )
       .field( "sp_coefficient" )
       .operation( hotfix::HOTFIX_SET )
-      .modifier( 1.3125 )
+      .modifier( 1.302 )
       .verification_value( 1.05 );
   }
 
