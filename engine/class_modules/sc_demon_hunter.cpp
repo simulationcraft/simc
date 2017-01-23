@@ -6512,7 +6512,7 @@ void demon_hunter_t::apl_havoc()
     "Chaos Strike pooling condition, so we don't spend too much fury when we need it for Chaos Cleave AoE");
   def -> add_action( "call_action_list,name=cooldown" );
   def -> add_action(
-    "pick_up_fragment,if=talent.demonic_appetite.enabled&fury.deficit>=35" );
+    "pick_up_fragment,if=talent.demonic_appetite.enabled&fury.deficit>=35&(!talent.demonic.enabled|cooldown.eye_beam.remains>5)" );
   def -> add_action( this, "Consume Magic" );
   def -> add_action(
     this, "Vengeful Retreat", "if=(talent.prepared.enabled|talent.momentum.enabled)&"
@@ -6566,7 +6566,7 @@ void demon_hunter_t::apl_havoc()
     "!talent.momentum.enabled)&((active_enemies>desired_targets&active_enemies>1)|raid_event.adds.in>30)",
     "Use Fel Barrage if its nearing max charges, saving it for Momentum and adds if possible." );
   def -> add_action( this, "Fel Rush", "if=!talent.momentum.enabled&"
-    "raid_event.movement.in>charges*10" );
+    "raid_event.movement.in>charges*10&(talent.demon_blades.enabled|buff.metamorphosis.down)" );
   def -> add_action( this, "Demon's Bite" );
   def -> add_action( this, "Throw Glaive", "if=buff.out_of_range.up" );
   def -> add_talent( this, "Felblade", "if=movement.distance|buff.out_of_range.up" );
