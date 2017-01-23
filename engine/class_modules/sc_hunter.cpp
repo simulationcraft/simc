@@ -4047,24 +4047,18 @@ struct serpent_sting_t: public hunter_melee_attack_t
   }
 };
 
-// Carve =============================================================================
+// Carve Base ========================================================================
+// Base attack used by both Carve & Butchery
 
-struct carve_t: public hunter_melee_attack_t
+struct carve_base_t: public hunter_melee_attack_t
 {
-  carve_t( hunter_t* p, const std::string& options_str ):
-    hunter_melee_attack_t( "carve", p, p -> specs.carve )
+  carve_base_t( const std::string& n, hunter_t* p, const spell_data_t* s ):
+    hunter_melee_attack_t( n, p, s )
   {
-    parse_options( options_str );
-
     aoe = -1;
-    radius = data().effectN( 1 ).radius();
-    range = data().max_range();
-
-    if ( p -> talents.serpent_sting -> ok() )
-      impact_action = new serpent_sting_t( p );
   }
 
-  virtual void execute() override
+  void execute() override
   {
     hunter_melee_attack_t::execute();
 
@@ -4075,17 +4069,16 @@ struct carve_t: public hunter_melee_attack_t
     {
       if ( num_targets() > 1 )
       {
-        std::vector<player_t*> carve_targets = execute_state -> action -> target_list();
         std::vector<player_t*> available_targets;
         std::vector<player_t*> lacerated_targets;
 
         // Split the target list into targets with and without debuffs
-        for ( size_t i = 0; i < carve_targets.size(); i++ )
+        for ( player_t* t : execute_state -> action -> target_list() )
         {
-          if ( td( carve_targets[ i ] ) -> dots.lacerate -> is_ticking() )
-            lacerated_targets.push_back( carve_targets[ i ] );
+          if ( td( t ) -> dots.lacerate -> is_ticking() )
+            lacerated_targets.push_back( t );
           else
-            available_targets.push_back( carve_targets[ i ] );
+            available_targets.push_back( t );
         }
 
         // Spread the dots to available targets
@@ -4105,15 +4098,7 @@ struct carve_t: public hunter_melee_attack_t
     }
   }
 
-  virtual bool ready() override
-  {
-    if ( p() -> talents.butchery -> ok() )
-      return false;
-
-    return hunter_melee_attack_t::ready();
-  }
-
-  virtual double action_multiplier() const override
+  double action_multiplier() const override
   {
     double am = hunter_melee_attack_t::action_multiplier();
 
@@ -4127,7 +4112,38 @@ struct carve_t: public hunter_melee_attack_t
   }
 };
 
+// Carve =============================================================================
 
+struct carve_t: public carve_base_t
+{
+  carve_t( hunter_t* p, const std::string& options_str ):
+    carve_base_t( "carve", p, p -> specs.carve )
+  {
+    parse_options( options_str );
+
+    if ( p -> talents.serpent_sting -> ok() )
+      impact_action = new serpent_sting_t( p );
+  }
+
+  virtual bool ready() override
+  {
+    if ( p() -> talents.butchery -> ok() )
+      return false;
+
+    return hunter_melee_attack_t::ready();
+  }
+};
+
+// Butchery ==========================================================================
+
+struct butchery_t: public carve_base_t
+{
+  butchery_t( hunter_t* p, const std::string& options_str ):
+    carve_base_t( "butchery", p, p -> talents.butchery )
+  {
+    parse_options( options_str );
+  }
+};
 
 // Fury of the Eagle ================================================================
 
@@ -4178,74 +4194,6 @@ struct fury_of_the_eagle_t: public hunter_melee_attack_t
 
     return am;
   }
-};
-
-// Butchery ==========================================================================
-
-struct butchery_t: public hunter_melee_attack_t
-{
-  butchery_t( hunter_t* p, const std::string& options_str ):
-    hunter_melee_attack_t( "butchery", p, p -> talents.butchery )
-  {
-    parse_options( options_str );
-
-    aoe = -1;
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double am = hunter_melee_attack_t::action_multiplier();
-
-    if ( p() -> artifacts.hellcarver.rank() )
-      am *= 1.0 + num_targets() * p() -> artifacts.hellcarver.percent();
-
-    if ( p() -> buffs.butchers_bone_apron -> up() )
-      am *= 1.0 + p() -> buffs.butchers_bone_apron -> check_stack_value();
-
-    return am;
-  }
-
-  virtual void execute() override
-  {
-    hunter_melee_attack_t::execute();
-
-    if ( p() -> buffs.butchers_bone_apron -> up() )
-      p() -> buffs.butchers_bone_apron -> expire();
-
-    if ( p() -> legendary.sv_ring )
-    {
-      if ( num_targets() > 1 )
-      {
-        std::vector<player_t*> butchery_targets = execute_state -> action -> target_list();
-        std::vector<player_t*> available_targets;
-        std::vector<player_t*> lacerated_targets;
-
-        // Split the target list into targets with and without debuffs
-        for ( size_t i = 0; i < butchery_targets.size(); i++ )
-        {
-          if ( td( butchery_targets[ i ] ) -> dots.lacerate -> is_ticking() )
-            lacerated_targets.push_back( butchery_targets[ i ] );
-          else
-            available_targets.push_back( butchery_targets[ i ] );
-        }
-
-        // Spread the dots to available targets
-        for ( size_t i = 0; i < lacerated_targets.size(); i++ )
-        {
-          if ( available_targets.empty() )
-            break;
-
-          td( lacerated_targets[ i ] ) -> dots.lacerate -> copy( available_targets.back(), DOT_COPY_CLONE );
-          available_targets.pop_back();
-        }
-      }
-      else
-      {
-        td( execute_state -> target ) ->dots.lacerate -> refresh_duration( -1 );
-      }
-    }
-  }
-
 };
 
 // Throwing Axes =====================================================================
