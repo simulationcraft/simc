@@ -1945,6 +1945,8 @@ void item::draught_of_souls( special_effect_t& effect )
       proc_spell_t( "felcrazed_rage", effect.player, effect.trigger(), effect.item )
     {
       aoe = 0; // This does not actually AOE
+      if ( effect.player -> specialization() == DEATH_KNIGHT_UNHOLY )
+        base_multiplier *= 0.7; //Server side nerf for unholy. 
     }
   };
 
