@@ -2746,7 +2746,7 @@ struct start_attack_t: public action_t
 
 // Barrage ==================================================================
 
-struct barrage_t: public hunter_ranged_attack_t
+struct barrage_t: public hunter_spell_t
 {
   struct barrage_damage_t: public hunter_ranged_attack_t
   {
@@ -2754,59 +2754,60 @@ struct barrage_t: public hunter_ranged_attack_t
       hunter_ranged_attack_t( "barrage_primary", player, player -> talents.barrage -> effectN( 1 ).trigger() )
     {
       background = true;
+      dual = true;
+
       may_crit = true;
-      weapon = &( player -> main_hand_weapon );
       aoe = -1;
       radius = 0; //Barrage attacks all targets in front of the hunter, so setting radius to 0 will prevent distance targeting from using a 40 yard radius around the target.
       // Todo: Add in support to only hit targets in the frontal cone. 
-      travel_speed = 0.0;
+
+      if ( data().affected_by( player -> specs.beast_mastery_hunter -> effectN( 5 ) ) )
+        base_dd_multiplier *= 1.0 + player -> specs.beast_mastery_hunter -> effectN( 5 ).percent();
     }
-    
+
     void impact(action_state_t* s) override {
       // Simulate the random chance of hitting.
       if (rng().roll(0.5))
         hunter_ranged_attack_t::impact(s);
     }
+
+    void try_steady_focus() override {}
   };
 
+  barrage_damage_t* primary;
+
   barrage_t( hunter_t* player, const std::string& options_str ):
-    hunter_ranged_attack_t( "barrage", player, player -> talents.barrage )
+    hunter_spell_t( "barrage", player, player -> talents.barrage ),
+    primary( new barrage_damage_t( player ) )
   {
     parse_options( options_str );
-    
-    may_proc_bullseye = false;
-    may_block = false;
+
+    add_child( primary );
+
+    may_miss = may_crit = false;
+    callbacks = false;
     hasted_ticks = false;
     channeled = true;
 
     tick_zero = true;
-    dynamic_tick_action = true;
     travel_speed = 0.0;
-    tick_action = new barrage_damage_t( player );
-
-    // Double the tick damage since the chance to hit is simulated.
-    base_multiplier *= 2.0;
-
-    if ( data().affected_by( player -> specs.beast_mastery_hunter -> effectN( 5 ) ) ||
-         tick_action -> data().affected_by( player -> specs.beast_mastery_hunter -> effectN( 5 ) ) )
-    {
-      base_multiplier *= 1.0 + player -> specs.beast_mastery_hunter -> effectN( 5 ).percent();
-    }
-
-    // MM spec aura affects only the "tick action" spell
-    if ( tick_action -> data().affected_by( player -> specs.marksmanship_hunter -> effectN( 3 ) ) )
-      base_multiplier *= 1.0 + p() -> specs.marksmanship_hunter -> effectN( 3 ).percent();
 
     starved_proc = player -> get_proc( "starved: barrage" );
   }
 
   void schedule_execute( action_state_t* state = nullptr ) override
   {
-    hunter_ranged_attack_t::schedule_execute( state );
+    hunter_spell_t::schedule_execute( state );
 
     // Delay auto shot, add 500ms to simulate "wind up"
     if ( p() -> main_hand_attack && p() -> main_hand_attack -> execute_event )
       p() -> main_hand_attack -> reschedule_execute( dot_duration * composite_haste() + timespan_t::from_millis( 500 ) );
+  }
+
+  void tick( dot_t*d ) override
+  {
+    hunter_spell_t::tick( d );
+    primary -> execute();
   }
 };
 
