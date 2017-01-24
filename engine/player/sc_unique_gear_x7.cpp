@@ -3294,6 +3294,11 @@ void item::convergence_of_fates( special_effect_t& effect )
     {
       effect.rppm_modifier_ = 0.5;
     }
+    else if (effect.player -> find_talent_spell( "Serenity" ) -> ok() )
+    {
+      // Baseline Multiplier for WW Monks is -20%; or 2.4 RPPM. Serenity eventually needs a 1.6 RPPM. 1.6 / (1 - 0.2) = 2
+      effect.ppm_ = 2;
+    }
   }
 
   new convergence_of_fates_callback_t( effect );
