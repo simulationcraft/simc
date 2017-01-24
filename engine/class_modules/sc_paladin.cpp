@@ -4776,7 +4776,7 @@ void paladin_t::generate_action_prio_list_ret()
   def -> add_action( this, "Judgment", "if=dot.execution_sentence.ticking&dot.execution_sentence.remains<gcd*2&debuff.judgment.remains<gcd*2" );
   def -> add_action( this, "Wake of Ashes", "if=holy_power=0|holy_power=1&(cooldown.blade_of_justice.remains>gcd|cooldown.divine_hammer.remains>gcd)|holy_power=2&(cooldown.zeal.charges_fractional<=0.65|cooldown.crusader_strike.charges_fractional<=0.65)" );
   def -> add_talent( this, "Divine Hammer", "if=holy_power<=3&buff.whisper_of_the_nathrezim.up&buff.whisper_of_the_nathrezim.remains>gcd&buff.whisper_of_the_nathrezim.remains<gcd*3&debuff.judgment.up&debuff.judgment.remains>gcd*2" );
-  def -> add_action( this, "Blade of Justice", "if=if=holy_power<=3" );
+  def -> add_action( this, "Blade of Justice", "if=holy_power<=3" );
   def -> add_talent( this, "Zeal", "if=charges=2&holy_power<=4" );
   def -> add_action( this, "Crusader Strike", "if=charges=2&holy_power<=4" );
   def -> add_talent( this, "Divine Hammer", "if=holy_power<=2|(holy_power<=3&(cooldown.zeal.charges_fractional<=1.34|cooldown.crusader_strike.charges_fractional<=1.34))" );
