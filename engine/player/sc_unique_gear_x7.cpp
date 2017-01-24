@@ -3292,7 +3292,7 @@ void item::convergence_of_fates( special_effect_t& effect )
     // TODO: there's gotta be a better way to do this - I don't think there is. 
     if ( effect.player -> find_talent_spell( "Crusade" ) -> ok() )
     {
-      effect.rppm_modifier_ = 1.5; // The baseline 3.0 RPPM is for rets without Crusade.
+      effect.rppm_modifier_ = 0.5;
     }
   }
 
