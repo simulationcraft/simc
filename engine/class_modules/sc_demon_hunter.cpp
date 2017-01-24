@@ -1077,6 +1077,7 @@ public:
   bool hasted_gcd;
   bool may_proc_fel_barrage;
   bool havoc_damage_increase;
+  bool vengeance_damage_increase;
 
   demon_hunter_action_t( const std::string& n, demon_hunter_t* p,
                          const spell_data_t* s = spell_data_t::nil(),
@@ -1088,7 +1089,8 @@ public:
                        p -> sets.set( DEMON_HUNTER_HAVOC, T19, B2 ) ) ),
       hasted_gcd( false ),
       may_proc_fel_barrage( false ),
-      havoc_damage_increase(ab::data().affected_by(p->spec.havoc->effectN(6)))
+      havoc_damage_increase(ab::data().affected_by(p->spec.havoc->effectN(6))),
+	  vengeance_damage_increase(ab::data().affected_by(p->spec.vengeance->effectN(1)))
   {
     ab::parse_options( o );
     ab::may_crit      = true;
@@ -1110,6 +1112,11 @@ public:
         hasted_gcd = ab::data().affected_by( p -> spec.vengeance -> effectN( 1 ) );
         ab::cooldown -> hasted =
           ab::data().affected_by( p -> spec.vengeance -> effectN( 2 ) );
+
+		if (vengeance_damage_increase)
+		{
+			ab::base_dd_multiplier *= 1 + p->spec.vengeance->effectN(1).percent();
+		}
         break;
       default:
         break;
@@ -3922,7 +3929,7 @@ struct felblade_t : public demon_hunter_attack_t
       parse_effect_data( data().effectN( p -> specialization() == DEMON_HUNTER_HAVOC ? 4 : 3 ) );
 
       // Damage penalty for Vengeance DH
-      base_multiplier *= 1.0 + p -> spec.vengeance -> effectN( 3 ).percent();
+      base_multiplier *= 1.0 + p -> spec.vengeance -> effectN( 5 ).percent();
     }
   };
 
