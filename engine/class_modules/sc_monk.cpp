@@ -5268,6 +5268,18 @@ struct stagger_self_damage_t : public residual_action::residual_periodic_action_
     stats -> type = STATS_NEUTRAL;
   }
 
+  void delay_tick( timespan_t seconds )
+  {
+    dot_t* d = get_dot();
+    if ( d -> is_ticking() )
+    {
+      if ( d -> tick_event )
+        d -> tick_event -> reschedule( d -> tick_event -> remains() + seconds );
+      if ( d -> end_event )
+        d -> end_event -> reschedule( d -> tick_event -> remains() + seconds );
+    }
+  }
+
   /* Clears the dot and all damage. Used by Purifying Brew
   * Returns amount purged
   */
@@ -5392,7 +5404,7 @@ struct ironskin_brew_t : public monk_spell_t
 
     if ( p() -> buff.blackout_combo -> up() )
     {
-      //p() -> active_actions.stagger_self_damage -> reschedule_execute( timespan_t::from_seconds( p() -> buff.blackout_combo -> data().effectN( 4 ).base_value() ) ); Crashes sim.
+      p() -> active_actions.stagger_self_damage -> delay_tick( timespan_t::from_seconds( p() -> buff.blackout_combo -> data().effectN( 4 ).base_value() ) );
       p() -> buff.blackout_combo -> expire();
     }
 
