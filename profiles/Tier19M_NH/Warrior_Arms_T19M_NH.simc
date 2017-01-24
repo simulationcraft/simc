@@ -4,7 +4,7 @@ race=blood_elf
 role=attack
 position=back
 talents=1332311
-artifact=36:139261:142510:142512:0:1136:1:1137:1:1138:1:1139:1:1140:1:1141:1:1142:1:1143:3:1144:3:1145:3:1146:3:1147:4:1148:3:1149:4:1150:4:1151:3:1356:1:1393:20
+artifact=36:142512:139257:140817:0:1136:1:1137:1:1138:1:1139:1:1140:1:1141:1:1142:1:1143:3:1144:3:1145:3:1146:3:1147:4:1148:3:1149:4:1150:4:1151:3:1356:1:1393:20
 spec=arms
 
 # This default action priority list is automatically created based on your character.
@@ -32,6 +32,7 @@ actions+=/battle_cry,if=gcd.remains<0.25&cooldown.avatar.remains>=10&(buff.shatt
 actions+=/avatar,if=gcd.remains<0.25&(buff.battle_cry.up|cooldown.battle_cry.remains<15)|target.time_to_die<=20
 actions+=/use_item,name=draught_of_souls,if=equipped.draught_of_souls&((prev_gcd.1.mortal_strike|cooldown.mortal_strike.remains>=3)&buff.battle_cry.remains>=3&debuff.colossus_smash.up&buff.avatar.remains>=3)
 actions+=/use_item,name=kiljaedens_burning_wish,if=equipped.kiljaedens_burning_wish&debuff.colossus_smash.up
+actions+=/use_item,name=ring_of_collapsing_futures,if=buff.battle_cry.up&debuff.colossus_smash.up&!buff.temptation.up
 actions+=/use_item,name=draught_of_souls,if=buff.avatar.up&debuff.colossus_smash.up&buff.battle_cry.up
 actions+=/heroic_leap,if=(debuff.colossus_smash.down|debuff.colossus_smash.remains<2)&cooldown.colossus_smash.remains&equipped.weight_of_the_earth|!equipped.weight_of_the_earth&debuff.colossus_smash.up
 actions+=/rend,if=remains<gcd
@@ -96,25 +97,25 @@ neck=zealous_timestone_pendant,id=140894,bonus_id=3519,enchant=mark_of_the_train
 shoulders=shoulderplates_of_the_obsidian_aspect,id=138363,bonus_id=3519
 back=greatcloak_of_the_obsidian_aspect,id=138374,bonus_id=3519,enchant=binding_of_strength
 chest=breastplate_of_the_remembered_king,id=140913,bonus_id=3519
-wrists=eternally_recurring_bracers,id=140893,bonus_id=3519
+wrists=jagged_carapace_wristclamps,id=140902,bonus_id=3519
 hands=gauntlets_of_the_obsidian_aspect,id=138354,bonus_id=3519
 waist=gilded_nightborne_waistplate,id=140880,bonus_id=3519
 legs=chronotempered_legplates,id=140882,bonus_id=3519
 feet=sabatons_of_unchanging_fate,id=140891,bonus_id=3519
 finger1=ring_of_the_scoured_clan,id=140897,bonus_id=3519,enchant=binding_of_mastery
-finger2=spellblades_gemmed_signet,id=140895,bonus_id=3519,enchant=binding_of_mastery
+finger2=ring_of_collapsing_futures,id=142173,bonus_id=3519,enchant=binding_of_mastery
 trinket1=draught_of_souls,id=140808,bonus_id=3519
-trinket2=convergence_of_fates,id=140806,bonus_id=3519
-main_hand=stromkar_the_warbreaker,id=128910,bonus_id=750,gem_id=139261/142510/142512,relic_id=1806/3469:1512/3469,relic_ilevel=910/910/910
+trinket2=ethereal_urn,id=142166,bonus_id=3519
+main_hand=stromkar_the_warbreaker,id=128910,bonus_id=750,gem_id=142512/139257/140817,relic_ilevel=910/910/910
 
 # Gear Summary
 # gear_ilvl=911.53
 # gear_strength=22385
 # gear_stamina=35916
-# gear_crit_rating=4512
-# gear_haste_rating=6798
-# gear_mastery_rating=11987
-# gear_versatility_rating=2366
+# gear_crit_rating=2016
+# gear_haste_rating=7171
+# gear_mastery_rating=14936
+# gear_versatility_rating=2766
 # gear_armor=4642
 # set_bonus=tier19_2pc=1
 # set_bonus=tier19_4pc=1
