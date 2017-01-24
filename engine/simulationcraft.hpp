@@ -3862,8 +3862,7 @@ struct player_t : public actor_t
     buff_t* mongoose_oh;
     buff_t* nitro_boosts;
     buff_t* pain_supression;
-    buff_t* raid_movement;
-    buff_t* self_movement;
+    buff_t* movement;
     buff_t* stampeding_roar;
     buff_t* shadowmeld;
     buff_t* windwalking_movement_aura;
@@ -3905,6 +3904,8 @@ struct player_t : public actor_t
 
     // 7.1
     buff_t* temptation; // Ring that goes on a 5 minute cd if you use it too much.
+    buff_t* norgannons_foresight; //Legendary item that allows movement for 5 seconds if you stand still for 8.
+    buff_t* norgannons_foresight_ready;
     haste_buff_t* nefarious_pact; // Whispers in the dark good buff
     haste_buff_t* devils_due; // Whispers in the dark bad buff
 
@@ -3925,7 +3926,6 @@ struct player_t : public actor_t
     debuff_t* forbearance;
     debuff_t* invulnerable;
     debuff_t* vulnerable;
-    debuff_t* dazed;
     debuff_t* damage_taken;
 
     // WoD debuffs
@@ -4207,7 +4207,13 @@ struct player_t : public actor_t
   virtual void interrupt();
   virtual void halt();
   virtual void moving();
-  virtual void finish_moving() { }
+  virtual void finish_moving() 
+  {
+    if ( buffs.norgannons_foresight )
+    {
+      buffs.norgannons_foresight -> trigger();
+    }
+  }
   virtual void stun();
   virtual void clear_debuffs();
   virtual void trigger_ready();
@@ -4261,7 +4267,7 @@ struct player_t : public actor_t
   virtual void  summon_pet( const std::string& name, timespan_t duration = timespan_t::zero() );
   virtual void dismiss_pet( const std::string& name );
 
-  bool is_moving() const { return buffs.raid_movement -> check() || buffs.self_movement -> check(); }
+  bool is_moving() const { return buffs.movement -> check(); }
 
   bool parse_talents_numbers( const std::string& talent_string );
   bool parse_talents_armory( const std::string& talent_string );
@@ -4423,7 +4429,7 @@ struct player_t : public actor_t
       else
         current.distance_to_move = distance;
       current.movement_direction = direction;
-      buffs.raid_movement -> trigger();
+      buffs.movement -> trigger();
     }
   }
 
@@ -4548,7 +4554,7 @@ private:
       //x_position += current.distance_to_move;
       current.distance_to_move = 0;
       current.movement_direction = MOVEMENT_NONE;
-      buffs.raid_movement -> expire();
+      buffs.movement -> expire();
     }
     else
     {

@@ -8345,7 +8345,7 @@ void monk_t::retarget_storm_earth_and_fire( pet_t* pet, std::vector<player_t*>& 
       // Clones will no longer target Immune enemies, or crowd-controlled enemies, or enemies you aren’t in combat with.
       // https://us.battle.net/forums/en/wow/topic/20752377961?page=29#post-573
       player_t* player = *it;
-      if ( player -> debuffs.invulnerable || player -> debuffs.dazed )
+      if ( player -> debuffs.invulnerable )
       {
         it++;
         continue;

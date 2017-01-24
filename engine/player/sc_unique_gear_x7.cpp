@@ -104,6 +104,7 @@ namespace item
   // Legendary
   void aggramars_stride( special_effect_t& );
   void kiljadens_burning_wish( special_effect_t& );
+  void norgannons_foresight( special_effect_t& );
 
 
 
@@ -4011,6 +4012,15 @@ void item::aggramars_stride( special_effect_t& effect )
   effect.player -> buffs.aggramars_stride = effect.custom_buff;
 }
 
+// Aggramars Speed Boots ====================================================
+
+void item::norgannons_foresight( special_effect_t& effect )
+{
+  effect.player -> buffs.norgannons_foresight -> default_chance = 1;
+  effect.player -> buffs.norgannons_foresight_ready -> default_chance = 1;
+}
+
+
 // Eyasu's Mulligan =========================================================
 
 struct eyasus_driver_t : public spell_t
@@ -4223,6 +4233,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 207692, cinidaria_the_symbiote_t() );
   register_special_effect( 207438, item::aggramars_stride );
   register_special_effect( 235991, item::kiljadens_burning_wish );
+  register_special_effect( 236373, item::norgannons_foresight );
 
   /* Consumables */
   register_special_effect( 188028, consumable::potion_of_the_old_war );

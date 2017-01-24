@@ -2688,6 +2688,20 @@ void player_t::create_buffs()
   if ( sim -> debug )
     sim -> out_debug.printf( "Creating Auras, Buffs, and Debuffs for player (%s)", name() );
 
+  struct norgannons_foresight_buff_t : public buff_t
+  {
+    norgannons_foresight_buff_t( player_t* p ) :
+      buff_t( buff_creator_t( p, "norgannons_foresight", p -> find_spell( 234797 ) ).chance( 0 ) )
+    {
+    }
+
+    void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+    {
+      buff_t::expire_override( expiration_stacks, remaining_duration );
+      player -> buffs.norgannons_foresight_ready -> trigger();
+    }
+  };
+
   if ( ! is_enemy() && type != PLAYER_GUARDIAN )
   {
     if ( type != PLAYER_PET )
@@ -2738,6 +2752,11 @@ void player_t::create_buffs()
         .cd( timespan_t::zero() )
         .chance( 1 )
         .default_value( 0.1 ); //Not in spelldata
+
+      buffs.norgannons_foresight_ready = buff_creator_t( this, "norgannons_foresight_ready", find_spell( 236380 ) )
+        .chance( 0 );
+
+      buffs.norgannons_foresight = new norgannons_foresight_buff_t( this );     
     }
   }
 
@@ -2754,11 +2773,21 @@ void player_t::create_buffs()
                           .max_stack( 1 )
                           .duration( timespan_t::from_seconds( 6.0 ) );
 
-  struct raid_movement_buff_t : public buff_t
+  struct movement_buff_t : public buff_t
   {
-    raid_movement_buff_t( player_t* p ) :
-      buff_t( buff_creator_t( p, "raid_movement" ).max_stack( 1 ) )
+    movement_buff_t( player_t* p ) :
+      buff_t( buff_creator_t( p, "movement" ).max_stack( 1 ) )
     { }
+
+    bool trigger( int stacks, double value, double chance, timespan_t duration )
+    {
+      if ( player -> buffs.norgannons_foresight_ready )
+      {
+        player -> buffs.norgannons_foresight_ready -> expire( timespan_t::from_seconds( 5 ) );
+        player -> buffs.norgannons_foresight -> expire();
+      }
+      return buff_t::trigger( stacks, value, chance, duration );
+    }
 
     void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
     {
@@ -2767,8 +2796,7 @@ void player_t::create_buffs()
     }
   };
 
-  buffs.raid_movement = new raid_movement_buff_t( this );
-  buffs.self_movement = buff_creator_t( this, "self_movement" ).max_stack( 1 );
+  buffs.movement = new movement_buff_t( this );
 
   // Infinite-Stacking Buffs and De-Buffs
   buffs.stunned        = buff_creator_t( this, "stunned" ).max_stack( 1 );
@@ -2777,7 +2805,6 @@ void player_t::create_buffs()
   debuffs.invulnerable = buff_creator_t( this, "invulnerable" ).max_stack( 1 );
   debuffs.vulnerable   = buff_creator_t( this, "vulnerable" ).max_stack( 1 );
   debuffs.flying       = buff_creator_t( this, "flying" ).max_stack( 1 );
-  debuffs.dazed        = buff_creator_t( this, "dazed", find_spell( 15571 ) );
   debuffs.damage_taken = buff_creator_t( this, "damage_taken" ).duration( timespan_t::from_seconds( 20.0 ) ).max_stack( 999 );
 
   // stuff moved from old init_debuffs method
@@ -3450,8 +3477,8 @@ double player_t::composite_movement_speed() const
   speed *= ( 1 + passive + temporary );
 
   // Movement speed snares are multiplicative, works similarly to temporary speed boosts in that only the highest value counts.
-  if ( debuffs.dazed -> up() )
-    speed *= debuffs.dazed -> data().effectN( 1 ).percent();
+  //if ( debuffs.dazed -> up() ) No longer in spelldata
+    //speed *= debuffs.dazed -> data().effectN( 1 ).percent();
 
   return speed;
 }
@@ -3815,6 +3842,9 @@ void player_t::combat_begin()
 
   if ( buffs.aggramars_stride )
     buffs.aggramars_stride -> trigger();
+
+  if ( buffs.norgannons_foresight_ready )
+    buffs.norgannons_foresight_ready -> trigger();
 
   if ( buffs.tyrants_decree_driver )
   { // Assume actor has stacked the buff to max stack precombat.
@@ -4606,26 +4636,31 @@ void player_t::interrupt()
 {
   // FIXME! Players will need to override this to handle background repeating actions.
 
-  if ( sim -> log ) sim -> out_log.printf( "%s is interrupted", name() );
-
-  if ( executing  ) executing  -> interrupt_action();
-  if ( queueing   ) queueing   -> interrupt_action();
-  if ( channeling ) channeling -> interrupt_action();
-
-  if ( strict_sequence )
+  if ( buffs.norgannons_foresight_ready )
   {
-    strict_sequence -> cancel();
-    strict_sequence = 0;
-  }
+    if ( !buffs.norgannons_foresight_ready -> check() || buffs.stunned -> check() )
+    {
+      if ( sim -> log ) sim -> out_log.printf( "%s is interrupted", name() );
 
-  if ( buffs.stunned -> check() )
-  {
-    if ( readying ) event_t::cancel( readying );
-    if ( off_gcd ) event_t::cancel( off_gcd );
-  }
-  else
-  {
-    if ( ! readying && ! current.sleeping ) schedule_ready();
+      if ( executing ) executing  -> interrupt_action();
+      if ( queueing ) queueing   -> interrupt_action();
+      if ( channeling ) channeling -> interrupt_action();
+
+      if ( strict_sequence )
+      {
+        strict_sequence -> cancel();
+        strict_sequence = 0;
+      }
+      if ( buffs.stunned -> check() )
+      {
+        if ( readying ) event_t::cancel( readying );
+        if ( off_gcd ) event_t::cancel( off_gcd );
+      }
+      else
+      {
+        if ( !readying && !current.sleeping ) schedule_ready();
+      }
+    }
   }
 }
 
@@ -6186,7 +6221,7 @@ struct start_moving_t : public action_t
 
   virtual void execute() override
   {
-    player -> buffs.self_movement -> trigger();
+    player -> buffs.movement -> trigger();
 
     if ( sim -> log )
       sim -> out_log.printf( "%s starts moving.", player -> name() );
@@ -6196,7 +6231,7 @@ struct start_moving_t : public action_t
 
   virtual bool ready() override
   {
-    if ( player -> buffs.self_movement -> check() )
+    if ( player -> buffs.movement -> check() )
       return false;
 
     return action_t::ready();
@@ -6217,7 +6252,7 @@ struct stop_moving_t : public action_t
 
   virtual void execute() override
   {
-    player -> buffs.self_movement -> expire();
+    player -> buffs.movement -> expire();
 
     if ( sim -> log ) sim -> out_log.printf( "%s stops moving.", player -> name() );
     update_ready();
@@ -6225,7 +6260,7 @@ struct stop_moving_t : public action_t
 
   virtual bool ready() override
   {
-    if ( ! player -> buffs.self_movement -> check() )
+    if ( ! player -> buffs.movement -> check() )
       return false;
 
     return action_t::ready();
@@ -9076,21 +9111,21 @@ expr_t* player_t::create_expression( action_t* a,
 
     if ( splits[ 0 ] == "movement" )
     {
-      struct raid_movement_expr_t : public expr_t
+      struct movement_expr_t : public expr_t
       {
         player_t* player;
 
-        raid_movement_expr_t( const std::string& name, player_t* p ) :
+        movement_expr_t( const std::string& name, player_t* p ) :
           expr_t( name ), player( p )
         { }
       };
 
       if ( splits[ 1 ] == "remains" )
       {
-        struct rm_remains_expr_t : public raid_movement_expr_t
+        struct m_remains_expr_t : public movement_expr_t
         {
-          rm_remains_expr_t( const std::string& n, player_t* p ) :
-            raid_movement_expr_t( n, p )
+          m_remains_expr_t( const std::string& n, player_t* p ) :
+            movement_expr_t( n, p )
           { }
 
           double evaluate() override
@@ -9098,25 +9133,25 @@ expr_t* player_t::create_expression( action_t* a,
             if ( player -> current.distance_to_move > 0 )
               return ( player -> current.distance_to_move / player -> composite_movement_speed() );
             else
-              return player -> buffs.raid_movement -> remains().total_seconds();
+              return player -> buffs.movement -> remains().total_seconds();
           }
         };
 
-        return new rm_remains_expr_t( splits[ 1 ], this );
+        return new m_remains_expr_t( splits[ 1 ], this );
       }
       else if ( splits[ 1 ] == "distance" )
       {
-        struct rm_distance_expr_t : public raid_movement_expr_t
+        struct m_distance_expr_t : public movement_expr_t
         {
-          rm_distance_expr_t( const std::string& n, player_t* p ) :
-            raid_movement_expr_t( n, p )
+          m_distance_expr_t( const std::string& n, player_t* p ) :
+            movement_expr_t( n, p )
           { }
 
           double evaluate() override
           { return player -> current.distance_to_move; }
         };
 
-        return new rm_distance_expr_t( splits[ 1 ], this );
+        return new m_distance_expr_t( splits[ 1 ], this );
       }
       else if ( splits[ 1 ] == "speed" )
         return make_mem_fn_expr( splits[ 1 ], *this, &player_t::composite_movement_speed );

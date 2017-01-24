@@ -2620,7 +2620,7 @@ struct heroic_charge_t: public warrior_attack_t
 
   bool ready() override
   {
-    if ( p() -> cooldown.charge -> up() && !p() -> buffs.raid_movement -> check() && p() -> heroic_charge == nullptr )
+    if ( p() -> cooldown.charge -> up() && !p() -> buffs.movement -> check() && p() -> heroic_charge == nullptr )
     {
       return warrior_attack_t::ready();
     }
@@ -3497,6 +3497,7 @@ struct thunder_clap_t: public warrior_attack_t
     attack_power_mod.direct *= 1.0 + p -> artifact.thunder_crash.percent();
 
     radius *= 1.0 + p -> talents.crackling_thunder -> effectN( 1 ).percent();
+    energize_type = ENERGIZE_NONE;
   }
 
   double action_multiplier() const override
