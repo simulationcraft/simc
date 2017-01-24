@@ -2032,7 +2032,7 @@ struct fel_eruption_t : public demon_hunter_spell_t
       may_proc_fel_barrage = true;  // Jul 12 2016
 
       // Damage penalty for Vengeance DH
-      base_multiplier *= 1.0 + p -> spec.vengeance -> effectN( 4 ).percent();
+      base_multiplier *= 1.0 + p -> spec.vengeance -> effectN( 6 ).percent();
     }
   };
 
@@ -3358,6 +3358,11 @@ struct chaos_blade_t : public demon_hunter_attack_t
     demon_hunter_attack_t::impact( s );
 
     trigger_demon_blades( s );
+  }
+
+  double action_multiplier() const override
+  {
+	  return action_t::action_multiplier(); // skip attack_t's multiplier so we don't get the AA bonus.  Tested 2017/01/23
   }
 };
 
