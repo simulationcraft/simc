@@ -6204,6 +6204,12 @@ void hunter_t::add_racial_actions(action_priority_list_t* list)
     list->add_action("berserking,if=buff.trueshot.up");
     list->add_action("blood_fury,if=buff.trueshot.up");
   }
+  else if ( specialization() == HUNTER_SURVIVAL )
+  {
+    list->add_action( "arcane_torrent,if=focus.deficit>=30" );
+    list->add_action( "berserking,if=buff.spitting_cobra.up|!talent.spitting_cobra.enabled&buff.aspect_of_the_eagle.up" );
+    list->add_action( "blood_fury,if=buff.spitting_cobra.up|!talent.spitting_cobra.enabled&buff.aspect_of_the_eagle.up" );
+  }
   else {
     list->add_action("arcane_torrent,if=focus.deficit>=30");
     list->add_action("berserking");
@@ -6369,7 +6375,7 @@ void hunter_t::apl_surv()
   moknathal -> add_action( "caltrops,if=(buff.mongoose_fury.duration>=gcd&buff.mongoose_fury.stack<4&!dot.caltrops.ticking)" );
   moknathal -> add_action( "flanking_strike,if=cooldown.mongoose_bite.charges<=0&buff.aspect_of_the_eagle.remains>=gcd&focus>75" );
   moknathal -> add_action( "lacerate,if=focus>60&buff.mongoose_fury.duration>=gcd&dot.lacerate.remains<=3&cooldown.mongoose_bite.charges>=0&buff.mongoose_fury.stack<4" );
-  moknathal -> add_action( "spitting_cobra,if=buff.mongoose_fury.duration>=gcd&cooldown.mongoose_bite.charges>=0&buff.mongoose_fury.stack<4" );
+  moknathal -> add_action( "spitting_cobra,if=buff.mongoose_fury.duration>=gcd&cooldown.mongoose_bite.charges>=0&buff.mongoose_fury.stack<4&buff.moknathal_tactics.stack=4" );
   moknathal -> add_action( "steel_trap,if=buff.mongoose_fury.duration>=gcd&buff.mongoose_fury.stack<4" );
   moknathal -> add_action( "explosive_trap,if=buff.mongoose_fury.duration>=gcd&cooldown.mongoose_bite.charges>=0&buff.mongoose_fury.stack<4" );
   moknathal -> add_action( "dragonsfire_grenade,if=buff.mongoose_fury.duration>=gcd&cooldown.mongoose_bite.charges>=0&buff.mongoose_fury.stack<4" );

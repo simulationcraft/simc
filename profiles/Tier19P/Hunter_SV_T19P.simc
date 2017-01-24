@@ -28,8 +28,8 @@ actions.precombat+=/harpoon
 # Executed every time the actor is available.
 actions=auto_attack
 actions+=/arcane_torrent,if=focus.deficit>=30
-actions+=/berserking
-actions+=/blood_fury
+actions+=/berserking,if=buff.spitting_cobra.up|!talent.spitting_cobra.enabled&buff.aspect_of_the_eagle.up
+actions+=/blood_fury,if=buff.spitting_cobra.up|!talent.spitting_cobra.enabled&buff.aspect_of_the_eagle.up
 actions+=/use_item,name=tirathons_betrayal
 actions+=/potion,name=old_war,if=buff.aspect_of_the_eagle.remains
 actions+=/call_action_list,name=moknathal,if=talent.way_of_the_moknathal.enabled
@@ -43,7 +43,7 @@ actions.moknathal+=/steel_trap,if=buff.mongoose_fury.duration>=gcd&buff.mongoose
 actions.moknathal+=/caltrops,if=(buff.mongoose_fury.duration>=gcd&buff.mongoose_fury.stack<4&!dot.caltrops.ticking)
 actions.moknathal+=/flanking_strike,if=cooldown.mongoose_bite.charges<=0&buff.aspect_of_the_eagle.remains>=gcd&focus>75
 actions.moknathal+=/lacerate,if=focus>60&buff.mongoose_fury.duration>=gcd&dot.lacerate.remains<=3&cooldown.mongoose_bite.charges>=0&buff.mongoose_fury.stack<4
-actions.moknathal+=/spitting_cobra,if=buff.mongoose_fury.duration>=gcd&cooldown.mongoose_bite.charges>=0&buff.mongoose_fury.stack<4
+actions.moknathal+=/spitting_cobra,if=buff.mongoose_fury.duration>=gcd&cooldown.mongoose_bite.charges>=0&buff.mongoose_fury.stack<4&buff.moknathal_tactics.stack=4
 actions.moknathal+=/steel_trap,if=buff.mongoose_fury.duration>=gcd&buff.mongoose_fury.stack<4
 actions.moknathal+=/explosive_trap,if=buff.mongoose_fury.duration>=gcd&cooldown.mongoose_bite.charges>=0&buff.mongoose_fury.stack<4
 actions.moknathal+=/dragonsfire_grenade,if=buff.mongoose_fury.duration>=gcd&cooldown.mongoose_bite.charges>=0&buff.mongoose_fury.stack<4
