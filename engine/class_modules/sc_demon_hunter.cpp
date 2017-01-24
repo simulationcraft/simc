@@ -513,7 +513,7 @@ public:
     // Havoc
     double eternal_hunger;
     timespan_t raddons_cascading_eyes;
-    timespan_t delusions_of_grandeur_reduction;
+    double delusions_of_grandeur_reduction;
     double delusions_of_grandeur_fury_per_time;
 
     // Vengeance
@@ -1090,7 +1090,7 @@ public:
       hasted_gcd( false ),
       may_proc_fel_barrage( false ),
       havoc_damage_increase(ab::data().affected_by(p->spec.havoc->effectN(6))),
-	  vengeance_damage_increase(ab::data().affected_by(p->spec.vengeance->effectN(1)))
+    vengeance_damage_increase(ab::data().affected_by(p->spec.vengeance->effectN(1)))
   {
     ab::parse_options( o );
     ab::may_crit      = true;
@@ -1113,10 +1113,10 @@ public:
         ab::cooldown -> hasted =
           ab::data().affected_by( p -> spec.vengeance -> effectN( 2 ) );
 
-		if (vengeance_damage_increase)
-		{
-			ab::base_dd_multiplier *= 1 + p->spec.vengeance->effectN(1).percent();
-		}
+    if (vengeance_damage_increase)
+    {
+      ab::base_dd_multiplier *= 1 + p->spec.vengeance->effectN(1).percent();
+    }
         break;
       default:
         break;
@@ -1260,20 +1260,23 @@ public:
     }
   }
 
-  virtual void consume_resource() override
+  void consume_resource() override
   {
     ab::consume_resource();
-    resource_e cr = ab::current_resource();
 
-    if (cr != RESOURCE_FURY || ab::base_cost() == 0 || ab::proc) return;
+    if ( ab::current_resource() == RESOURCE_FURY )
+    {
+      delusions_of_grandeur( ab::resource_consumed );
+    }
+  }
 
-    if (p()->legendary.delusions_of_grandeur_reduction >= timespan_t::zero()) return;
-
-    ab::resource_consumed = ab::cost();
-
-    double ticks = ab::resource_consumed / p()->legendary.delusions_of_grandeur_fury_per_time;
-    double seconds = p()->legendary.delusions_of_grandeur_reduction.total_millis();
-    p()->cooldown.metamorphosis->adjust(timespan_t::from_seconds(ticks * seconds));
+  void delusions_of_grandeur( double fury )
+  {
+    if ( p()->legendary.delusions_of_grandeur_fury_per_time > 0 && fury > 0 )
+    {
+      fury /= p() -> legendary.delusions_of_grandeur_fury_per_time;
+      p() -> cooldown.metamorphosis -> adjust( timespan_t::from_seconds( p() -> legendary.delusions_of_grandeur_reduction * fury ) );
+    }
   }
 
   virtual bool ready() override
@@ -3356,7 +3359,7 @@ struct chaos_blade_t : public demon_hunter_attack_t
   {
     base_execute_time = weapon -> swing_time;
     special           = false;  // set false special to force it to proc a "white hit" so trinkets don't fall off
-	may_miss = may_glance = false; // however, it cannot miss or glance
+  may_miss = may_glance = false; // however, it cannot miss or glance
     repeating = background = true;
   }
 
@@ -3369,7 +3372,7 @@ struct chaos_blade_t : public demon_hunter_attack_t
 
   double action_multiplier() const override
   {
-	  return action_t::action_multiplier(); // skip attack_t's multiplier so we don't get the AA bonus.  Tested 2017/01/23
+    return action_t::action_multiplier(); // skip attack_t's multiplier so we don't get the AA bonus.  Tested 2017/01/23
   }
 };
 
@@ -5451,19 +5454,19 @@ void demon_hunter_t::create_buffs()
   // General
 
   // FIXME: 1/22/2017 -- 7.2.0 PTR Spell Id 208195 was removed, but 163073 still remains
-  if (maybe_ptr)
+  if ( maybe_ptr( dbc.ptr ) )
   {
     buff.demon_soul =
-      buff_creator_t(this, "demon_soul", find_spell(163073))
-      .default_value(find_spell(163073)->effectN(1).percent())
-      .add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER);
+      buff_creator_t( this, "demon_soul", find_spell( 163073 ) )
+      .default_value( find_spell( 163073 )->effectN( 1 ).percent() )
+      .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
   else
   {
     buff.demon_soul =
-      buff_creator_t(this, "demon_soul", find_spell(208195))
-      .default_value(find_spell(208195)->effectN(1).percent())
-      .add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER);
+      buff_creator_t( this, "demon_soul", find_spell( 208195 ) )
+      .default_value( find_spell( 208195 )->effectN( 1 ).percent() )
+      .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 
   buff.metamorphosis = new buffs::metamorphosis_buff_t( this );
@@ -6105,7 +6108,7 @@ void demon_hunter_t::init_spells()
                                  ? find_spell( 162264 ) : find_spell( 187827 );
 
   // FIXME: 1/22/2017 -- 7.2.0 PTR Spell Id 204255 was removed, but 203795 still remains
-  if(maybe_ptr)
+  if(maybe_ptr( dbc.ptr ) )
     spec.soul_fragment = find_spell(203795);
   else
     spec.soul_fragment = find_spell(204255);
@@ -6763,7 +6766,7 @@ double demon_hunter_t::composite_armor_multiplier() const
 
   if (specialization() == DEMON_HUNTER_VENGEANCE && buff.metamorphosis -> check())
   {
-	  am *= 1.0 + spec.metamorphosis_buff->effectN(8).percent();
+    am *= 1.0 + spec.metamorphosis_buff->effectN(8).percent();
   }
 
   return am;
@@ -7628,7 +7631,7 @@ struct delusions_of_grandeur_t : public scoped_actor_callback_t<demon_hunter_t>
 
   void manipulate(demon_hunter_t* actor, const special_effect_t& e) override
   {
-    actor->legendary.delusions_of_grandeur_reduction = -e.driver()->effectN(1).time_value();
+    actor->legendary.delusions_of_grandeur_reduction = -e.driver()->effectN(1).base_value();
     
     actor->legendary.delusions_of_grandeur_fury_per_time =
       e.driver()->effectN(2).base_value();
