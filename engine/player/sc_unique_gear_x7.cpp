@@ -1946,7 +1946,7 @@ void item::draught_of_souls( special_effect_t& effect )
     {
       aoe = 0; // This does not actually AOE
       if ( effect.player -> specialization() == DEATH_KNIGHT_UNHOLY )
-        base_multiplier *= 0.7; //Server side nerf for unholy. 
+        base_multiplier *= 0.7; //Server side nerf for unholy.
     }
   };
 
@@ -3288,6 +3288,19 @@ struct convergence_of_fates_callback_t : public dbc_proc_callback_t
 
 void item::convergence_of_fates( special_effect_t& effect )
 {
+  if ( effect.player -> specialization() == PALADIN_RETRIBUTION )
+  {
+    // TODO: there's gotta be a better way to do this
+    if ( effect.player -> find_talent_spell( "Crusade" ) -> ok() )
+    {
+        effect.rppm_modifier_ = 1.5 / 3.0;
+    }
+    else
+    {
+        effect.rppm_modifier_ = 4.2 / 3.0;
+    }
+  }
+
   new convergence_of_fates_callback_t( effect );
 }
 
