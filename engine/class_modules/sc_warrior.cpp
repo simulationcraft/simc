@@ -4898,7 +4898,7 @@ void warrior_t::apl_fury()
   {
     if ( items[i].name_str == "ring_of_collapsing_futures" )
     {
-      default_list -> add_action( "use_item,name=" + items[i].name_str + "if=equipped.ring_of_collapsing_futures&buff.battle_cry.up&buff.enrage.up&!buff.temptation.up" );
+      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=equipped.ring_of_collapsing_futures&buff.battle_cry.up&buff.enrage.up&!buff.temptation.up" );
     }
     else if ( items[i].name_str != "draught_of_souls" && items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
     {

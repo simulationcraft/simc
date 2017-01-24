@@ -37,7 +37,7 @@ actions+=/variable,name=pooling_for_blade_dance,value=variable.blade_dance&fury-
 # Chaos Strike pooling condition, so we don't spend too much fury when we need it for Chaos Cleave AoE
 actions+=/variable,name=pooling_for_chaos_strike,value=talent.chaos_cleave.enabled&fury.deficit>40&!raid_event.adds.up&raid_event.adds.in<2*gcd
 actions+=/call_action_list,name=cooldown
-actions+=/pick_up_fragment,if=talent.demonic_appetite.enabled&fury.deficit>=35
+actions+=/pick_up_fragment,if=talent.demonic_appetite.enabled&fury.deficit>=35&(!talent.demonic.enabled|cooldown.eye_beam.remains>5)
 actions+=/consume_magic
 # Vengeful Retreat backwards through the target to minimize downtime.
 actions+=/vengeful_retreat,if=(talent.prepared.enabled|talent.momentum.enabled)&buff.prepared.down&buff.momentum.down
@@ -66,7 +66,7 @@ actions+=/throw_glaive,if=buff.metamorphosis.down&spell_targets>=2
 actions+=/chaos_strike,if=(talent.demon_blades.enabled|!talent.momentum.enabled|buff.momentum.up|fury.deficit<30+buff.prepared.up*8)&!variable.pooling_for_chaos_strike&!variable.pooling_for_meta&!variable.pooling_for_blade_dance&(!talent.demonic.enabled|!cooldown.eye_beam.ready|(talent.blind_fury.enabled&fury.deficit<35))
 # Use Fel Barrage if its nearing max charges, saving it for Momentum and adds if possible.
 actions+=/fel_barrage,if=charges=4&buff.metamorphosis.down&(buff.momentum.up|!talent.momentum.enabled)&((active_enemies>desired_targets&active_enemies>1)|raid_event.adds.in>30)
-actions+=/fel_rush,if=!talent.momentum.enabled&raid_event.movement.in>charges*10
+actions+=/fel_rush,if=!talent.momentum.enabled&raid_event.movement.in>charges*10&(talent.demon_blades.enabled|buff.metamorphosis.down)
 actions+=/demons_bite
 actions+=/throw_glaive,if=buff.out_of_range.up
 actions+=/felblade,if=movement.distance|buff.out_of_range.up

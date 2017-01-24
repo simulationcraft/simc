@@ -4808,7 +4808,11 @@ struct glacial_spike_t : public frost_mage_spell_t
   {
     double icicle_damage_sum = 0;
     int icicle_count = as<int>( p() -> icicles.size() );
-    assert( icicle_count == p() -> spec.icicles -> effectN( 2 ).base_value() && s -> chain_target == 0 );
+
+    if ( s -> chain_target == 0 )
+    {
+      assert( icicle_count == p() -> spec.icicles -> effectN( 2 ).base_value() );
+    }
     for ( int i = 0; i < icicle_count; i++ )
     {
       icicle_data_t d = p() -> get_icicle_object();
@@ -9670,6 +9674,11 @@ public:
       .modifier( 1.785 )
       .verification_value( 1.70 );
 
+    hotfix::register_effect( "Mage", "2017-01-20", "24% CmS Damage", 153596 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 1.302 )
+      .verification_value( 1.05 );
   }
 
   virtual bool valid() const override { return true; }
