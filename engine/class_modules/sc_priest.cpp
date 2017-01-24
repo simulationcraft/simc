@@ -3793,7 +3793,12 @@ struct insanity_drain_stacks_t final : public priest_buff_t<buff_t>
       // Once the number of insanity drain stacks are increased, adjust the end-event to the new
       // value
       priest->insanity.adjust_end_event();
-      ids->stack_increase = make_event<stack_increase_event_t>( sim(), ids );
+      // Note, the drain() call above may have drained all insanity in very rare cases, in which
+      // case voidform is no longer up. Only keep creating stack increase events if is up.
+      if ( priest->buffs.voidform->check() )
+      {
+        ids->stack_increase = make_event<stack_increase_event_t>( sim(), ids );
+      }
     }
   };
 
