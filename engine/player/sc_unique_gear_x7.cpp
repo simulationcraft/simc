@@ -96,6 +96,7 @@ namespace item
   void whispers_in_the_dark( special_effect_t&    );
   void nightblooming_frond( special_effect_t&     );
   void might_of_krosus( special_effect_t&         );
+  void claw_of_the_crystalline_scorpid( special_effect_t& );
 
   // Adding this here to check it off the list.
   // The sim builds it automatically.
@@ -3048,6 +3049,19 @@ void item::devilsaurs_bite( special_effect_t& effect )
   new dbc_proc_callback_t( effect.item, effect );
 }
 
+// Claw of the Crystalline Scorpid =========================================
+
+void item::claw_of_the_crystalline_scorpid( special_effect_t& effect )
+{
+  auto a = effect.create_action();
+  // Shockwave ignores armor
+  a -> snapshot_flags &= ~STATE_TGT_ARMOR;
+  a -> aoe = -1;
+  effect.execute_action = a;
+
+  new dbc_proc_callback_t( effect.item, effect );
+}
+
 // Spontaneous Appendages ===================================================
 struct spontaneous_appendages_t: public proc_spell_t
 {
@@ -4197,6 +4211,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 225142, item::whispers_in_the_dark    );
   register_special_effect( 225135, item::nightblooming_frond     );
   register_special_effect( 225132, item::might_of_krosus         );
+  register_special_effect( 225123, item::claw_of_the_crystalline_scorpid );
 
   /* Legion 7.0 Misc */
   register_special_effect( 188026, item::infernal_alchemist_stone       );
@@ -4206,7 +4221,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 227868, item::sixfeather_fan                 );
   register_special_effect( 227388, item::eyasus_mulligan                );
   register_special_effect( 228141, item::marfisis_giant_censer          );
-  register_special_effect( 224073, item::devilsaurs_bite                );
+  register_special_effect( 224073, item::devilsaurs_bite );
 
   /* Legion Enchants */
   register_special_effect( 190888, "190909trigger" );
