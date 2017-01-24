@@ -18,7 +18,7 @@ race=troll
 role=attack
 position=back
 talents=2333232
-artifact=35:142516:142518:142511:0:980:1:981:1:982:1:984:1:985:1:986:1:987:1:988:3:989:3:990:3:991:4:992:4:993:3:994:3:995:4:996:3:1357:1:1394:6
+artifact=35:0:0:0:0:980:1:981:1:982:1:984:1:985:1:986:1:987:1:988:3:989:3:990:3:991:3:992:3:993:3:994:3:995:3:996:3:1357:1:1394:6
 spec=fury
 
 head=,id=138357,bonus_id=3517
@@ -35,7 +35,7 @@ finger1=,id=134542,bonus_id=3517,enchant=binding_of_haste
 finger2=,id=142173,bonus_id=3517,enchant=binding_of_haste
 trinket1=draught_of_souls,id=140808,bonus_id=3517
 trinket2=,id=140806,bonus_id=3517
-main_hand=warswords_of_the_valarjar,id=128908,bonus_id=751,gem_id=142516/140841/140815,relic_ilevel=910/910/910
+main_hand=warswords_of_the_valarjar,id=128908,bonus_id=751,gem_id=142516/140841/140815,relic_ilevel=895/895/895
 off_hand=warswords_of_the_valarjar,id=134553
 save=Warrior_Fury_T19H_NH.simc
 
@@ -46,7 +46,7 @@ race=blood_elf
 role=attack
 position=back
 talents=1332311
-artifact=36:142512:139257:140817:0:1136:1:1137:1:1138:1:1139:1:1140:1:1141:1:1142:1:1143:3:1144:3:1145:3:1146:3:1147:4:1148:3:1149:4:1150:4:1151:3:1356:1:1393:6
+artifact=36:0:0:0:0:1136:1:1137:1:1138:1:1139:1:1140:1:1141:1:1142:1:1143:3:1144:3:1145:3:1146:3:1147:3:1148:3:1149:3:1150:3:1151:3:1356:1:1393:6
 spec=arms
 
 head=,id=138357,bonus_id=3517
@@ -63,5 +63,5 @@ finger1=ring_of_the_scoured_clan,id=140897,bonus_id=3517,enchant=binding_of_mast
 finger2=,id=142173,bonus_id=3517,enchant=binding_of_mastery
 trinket1=draught_of_souls,id=140808,bonus_id=3517
 trinket2=,id=142166,bonus_id=3517
-main_hand=stromkar_the_warbreaker,id=128910,bonus_id=750,gem_id=142512/139257/140817,relic_ilevel=910/910/910
+main_hand=stromkar_the_warbreaker,id=128910,bonus_id=750,gem_id=142512/139257/140817,relic_ilevel=895/895/895
 save=Warrior_Arms_T19H_NH.simc

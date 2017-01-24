@@ -4,7 +4,7 @@ race=troll
 role=attack
 position=back
 talents=2333232
-artifact=35:142516:142518:142511:0:980:1:981:1:982:1:984:1:985:1:986:1:987:1:988:3:989:3:990:3:991:4:992:4:993:3:994:3:995:4:996:3:1357:1:1394:6
+artifact=35:0:0:0:0:980:1:981:1:982:1:984:1:985:1:986:1:987:1:988:3:989:3:990:3:991:3:992:3:993:3:994:3:995:3:996:3:1357:1:1394:6
 spec=fury
 
 # This default action priority list is automatically created based on your character.
@@ -27,6 +27,7 @@ actions+=/charge
 # This is mostly to prevent cooldowns from being accidentally used during movement.
 actions+=/run_action_list,name=movement,if=movement.distance>5
 actions+=/heroic_leap,if=(raid_event.movement.distance>25&raid_event.movement.in>45)|!raid_event.movement.exists
+actions+=/use_item,name=ring_of_collapsing_futures,if=equipped.ring_of_collapsing_futures&buff.battle_cry.up&buff.enrage.up&!buff.temptation.up
 actions+=/potion,name=old_war,if=(target.health.pct<20&buff.battle_cry.up)|target.time_to_die<30
 actions+=/battle_cry,if=gcd.remains=0&(!talent.reckless_abandon.enabled&(cooldown.bloodthirst.remains=0|buff.enrage.remains>cooldown.bloodthirst.remains))|(talent.reckless_abandon.enabled&(talent.dragon_roar.enabled&buff.dragon_roar.up|!talent.dragon_roar.enabled))
 actions+=/battle_cry,if=gcd.remains=0&talent.reckless_abandon.enabled
@@ -106,26 +107,26 @@ neck=radiant_string_of_scorpid_eyes,id=140898,bonus_id=3517,enchant=mark_of_the_
 shoulders=shoulderplates_of_the_obsidian_aspect,id=138363,bonus_id=3517
 back=greatcloak_of_the_obsidian_aspect,id=138374,bonus_id=3517,enchant=binding_of_strength
 chest=breastplate_of_the_remembered_king,id=140913,bonus_id=3517
-wrists=eternally_recurring_bracers,id=140893,bonus_id=3517
-hands=bridgebreaker_gauntlets,id=140907,bonus_id=3517
-waist=gilded_nightborne_waistplate,id=140880,bonus_id=3517
-legs=legplates_of_the_obsidian_aspect,id=138360,bonus_id=3517
-feet=leystonetoe_kickers,id=140884,bonus_id=3517
-finger1=ring_of_braided_stems,id=140896,bonus_id=3517,enchant=binding_of_haste
-finger2=spellblades_gemmed_signet,id=140895,bonus_id=3517,enchant=binding_of_haste
+wrists=jagged_carapace_wristclamps,id=140902,bonus_id=3517
+hands=gauntlets_of_the_obsidian_aspect,id=138354,bonus_id=3517
+waist=goresmeared_abyssal_waistplate,id=140892,bonus_id=3517
+legs=chronotempered_legplates,id=140882,bonus_id=3517
+feet=sabatons_of_unchanging_fate,id=140891,bonus_id=3517
+finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=3517,enchant=binding_of_haste
+finger2=ring_of_collapsing_futures,id=142173,bonus_id=3517,enchant=binding_of_haste
 trinket1=draught_of_souls,id=140808,bonus_id=3517
 trinket2=convergence_of_fates,id=140806,bonus_id=3517
-main_hand=warswords_of_the_valarjar,id=128908,bonus_id=751,gem_id=142516/142518/142511,relic_id=3469/3469:1512/3469,relic_ilevel=895/895/895
+main_hand=warswords_of_the_valarjar,id=128908,bonus_id=751,gem_id=142516/140841/140815,relic_ilevel=895/895/895
 off_hand=warswords_of_the_valarjar,id=134553
 
 # Gear Summary
 # gear_ilvl=897.88
 # gear_strength=22055
 # gear_stamina=35076
-# gear_crit_rating=7268
-# gear_haste_rating=10569
-# gear_mastery_rating=5048
-# gear_versatility_rating=2280
+# gear_crit_rating=4496
+# gear_haste_rating=10171
+# gear_mastery_rating=8136
+# gear_versatility_rating=2361
 # gear_armor=4488
 # set_bonus=tier19_2pc=1
 # set_bonus=tier19_4pc=1
