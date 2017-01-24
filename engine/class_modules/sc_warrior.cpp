@@ -3488,7 +3488,7 @@ struct thunder_clap_t: public warrior_attack_t
   double shield_slam_reset;
   thunder_clap_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "thunder_clap", p, p -> spec.thunder_clap ),
-    rage_gain( data().effectN( 3 ).resource( RESOURCE_RAGE ) ),
+    rage_gain( data().effectN( 4 ).resource( RESOURCE_RAGE ) ),
     shield_slam_reset( p -> spec.devastate -> effectN( 3 ).percent() )
   {
     parse_options( options_str );
