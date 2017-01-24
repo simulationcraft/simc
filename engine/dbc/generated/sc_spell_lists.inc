@@ -884,10 +884,11 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Monk
   {
-    // General tree, 16 abilities
+    // General tree, 17 abilities
     {
       100784, // Blackout Kick
       117952, // Crackling Jade Lightning
+      196061, // Crosswinds
       175697, // Disabling Technique
       214326, // Exploding Keg (Artifact)
       122281, // Healing Elixir
@@ -942,10 +943,11 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       116670, // Vivify
            0,
     },
-    // Windwalker tree, 15 abilities
+    // Windwalker tree, 17 abilities
     {
       116768, // Blackout Kick!
       211432, // Combo Master
+      196061, // Crosswinds
       218164, // Detox
       116095, // Disable
       116694, // Effuse
@@ -957,6 +959,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       116705, // Spear Hand Strike
       101546, // Spinning Crane Kick
       137639, // Storm, Earth, and Fire
+      116007, // Thunderfist
       115080, // Touch of Death
       122470, // Touch of Karma
            0,
@@ -4122,15 +4125,15 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 225138,  256,  4, -0.2400 },
   { 225138,   65,  4, -0.1300 },
   { 225138,  264,  4,  0.1200 },
-  { 225139,  251,  4,  1.0000 },
-  { 225139,  252,  4,  0.6600 },
+  { 225139,  251,  4,  1.2000 },
+  { 225139,  252,  4,  1.8000 },
   { 225139,  577,  4,  0.1200 },
   { 225139,  103,  4,  1.2400 },
   { 225139,  253,  4,  1.8000 },
   { 225139,  254,  4,  1.2400 },
   { 225139,  255,  4,  0.5000 },
-  { 225139,  269,  4,  1.1000 },
-  { 225139,   70,  4, -0.6000 },
+  { 225139,  269,  4, -0.2000 },
+  { 225139,   70,  4,  0.0000 },
   { 225139,  259,  4,  0.1700 },
   { 225139,  260,  4,  1.8000 },
   { 225139,  261,  4,  2.0000 },

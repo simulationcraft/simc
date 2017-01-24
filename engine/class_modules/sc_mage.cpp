@@ -9614,12 +9614,6 @@ public:
       .modifier( 57 )
       .verification_value( 81 );
 
-    hotfix::register_effect( "Mage", "2017-01-20", "Hotfix OP to 60% from 70%", 215508 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 30 )
-      .verification_value( 40 );
-
     hotfix::register_effect( "Mage", "2017-01-20", "5% AB damage", 20028 )
       .field( "sp_coefficient" )
       .operation( hotfix::HOTFIX_SET )
@@ -9643,12 +9637,6 @@ public:
       .operation( hotfix::HOTFIX_SET )
       .modifier( 0.46515 )
       .verification_value( 0.443 );
-
-    hotfix::register_effect( "Mage", "2017-01-20", "nerf amp to 12%", 357924 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 12 )
-      .verification_value( 15 );
 
     hotfix::register_effect( "Mage", "2017-01-20", "5% AO Damage", 212926 )
       .field( "sp_coefficient" )

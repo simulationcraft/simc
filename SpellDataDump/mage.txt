@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 05a6f98)
+SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 5b064d2)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Arcane Fire Frost Mage
@@ -235,7 +235,7 @@ Tooltip          : Blinking.
 Name             : Flamestrike (id=2120) [Spell Family (3)] 
 Class            : Fire Mage
 School           : Fire
-Resource         : 3% Base Mana (33000 @Level 110)
+Resource         : 2.5% Base Mana (27500 @Level 110) [Hotfixed: Percent Cost (3 -> 2.5)]
 Spell Level      : 20
 Range            : 40 yards
 Cast Time        : 4 seconds
@@ -374,7 +374,7 @@ Description      : $@spelldesc5143
 Name             : Pyroblast (id=11366) [Spell Family (3)] 
 Class            : Fire Mage
 School           : Fire
-Resource         : 2.5% Base Mana (27500 @Level 110)
+Resource         : 2% Base Mana (22000 @Level 110) [Hotfixed: Percent Cost (2.5 -> 2)]
 Spell Level      : 12
 Range            : 40 yards
 Cast Time        : 4.5 seconds
@@ -2569,11 +2569,13 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179702)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 15 | Scaled Value: 15 | Target: Self(1)
+                   Base Value: 18 | Scaled Value: 18 | Target: Self(1)
                    Affected Spells: Fireball (133), Flamestrike (2120), Scorch (2948), Pyroblast (11366), Dragon's Breath (31661), Living Bomb (44461), Fire Blast (108853), Meteor (153561), Meteor (153564), Meteor Burn (155158), Blast Wave (157981), Aftershocks (194432), Phoenix's Flames (194466), Cinderstorm (198928), Cinderstorm (198929), Flame Patch (205472), Phoenix's Flames (224637)
+                   Hotfixed: Base Value (15 -> 18)
 #2 (id=191125)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self(1)
+                   Base Value: 18 | Scaled Value: 18 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Living Bomb (44457), Meteor (153561), Meteor (153564), Meteor Burn (155158), Living Bomb (217694)
+                   Hotfixed: Base Value (15 -> 18)
 #3 (id=191126)   : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self(1)
 #4 (id=191127)   : Apply Aura (6) | Dummy (4)
@@ -2615,12 +2617,13 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179703)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 12 | Scaled Value: 12 | Target: Self(1)
+                   Base Value: 17 | Scaled Value: 17 | Target: Self(1)
                    Affected Spells: Frostbolt (116), Cone of Cold (120), Ice Lance (30455), Waterbolt (31707), Frozen Orb (84721), Frost Bomb (113092), Comet Storm (153595), Comet Storm (153596), Ice Nova (157997), Blizzard (190356), Blizzard (190357), Ebonbolt (214634), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Ebonbolt (228599)
-                   Hotfixed: Affects Spells
+                   Hotfixed: Base Value (12 -> 17), Affects Spells
 #2 (id=191121)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 12 | Scaled Value: 12 | Misc Value: 22 | Target: Self(1)
+                   Base Value: 17 | Scaled Value: 17 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Water Jet (135029), Ray of Frost (205021)
+                   Hotfixed: Base Value (12 -> 17)
 #3 (id=191122)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #4 (id=191123)   : Apply Aura (6) | Dummy (4)
@@ -2661,12 +2664,13 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179704)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 12 | Scaled Value: 12 | Target: Self(1)
+                   Base Value: 21 | Scaled Value: 21 | Target: Self(1)
                    Affected Spells: Arcane Explosion (1449), Arcane Missiles (7268), Arcane Blast (30451), Arcane Barrage (44425), Nether Tempest (114923), Nether Tempest (114954), Arcane Orb (153640), Supernova (157980)
-                   Hotfixed: Affects Spells
+                   Hotfixed: Base Value (12 -> 21), Affects Spells
 #2 (id=191116)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 12 | Scaled Value: 12 | Misc Value: 22 | Target: Self(1)
+                   Base Value: 21 | Scaled Value: 21 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Nether Tempest (114923), Nether Tempest (114954)
+                   Hotfixed: Base Value (12 -> 21)
 #3 (id=191117)   : Apply Aura (6) | Mod Power Regen (110)
                    Base Value: 60 | Scaled Value: 0 | Points Per Level: -2 | Target: Self(1)
 #4 (id=191118)   : Apply Aura (6) | Dummy (4)
@@ -2948,7 +2952,8 @@ Attributes       : ........ ........ .......x x..x....   .....x.. ........ .....
                  : Does not break stealth (37), Not a proc (105), Requires line of sight (186)
 Effects          :
 #1 (id=212872)   : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.05000 | Radius: 0 - 4 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.30000 | Radius: 0 - 4 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
+                   Hotfixed: SP Coefficient (1.05 -> 1.3)
 Description      : $@spelldesc153595
 
 Name             : Arcane Orb (id=153626) 
@@ -3007,9 +3012,11 @@ Effects          :
 #1 (id=215508)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 3 | Target: Self(1)
                    Affected Spells: Arcane Power (12042)
+                   Hotfixed: Base Value (40 -> 30)
 #2 (id=355469)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
-                   Base Value: -40 | Scaled Value: -40 | Misc Value: 12 | Target: Self(1)
+                   Base Value: -30 | Scaled Value: -30 | Misc Value: 12 | Target: Self(1)
                    Affected Spells: Arcane Power (12042)
+                   Hotfixed: Base Value (-40 -> -30)
 Description      : Arcane Power now increases damage by ${30+$s1}% and reduces mana costs by ${30-$s2}%.
 
 Name             : Kindling (id=155148) [Spell Family (3), Passive] 
@@ -5490,6 +5497,7 @@ Effects          :
 #1 (id=357924)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
                    Base Value: 12 | Scaled Value: 12 | Misc Value: 12 | Target: Self(1)
                    Affected Spells: Arcane Charge (36032)
+                   Hotfixed: Base Value (15 -> 12)
 Description      : Arcane Missiles deals an additional $s1% damage per Arcane Charge.
 
 Name             : Blizzard (Rank 2) (id=236662) [Spell Family (3), Passive] 

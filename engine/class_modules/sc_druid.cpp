@@ -9082,16 +9082,6 @@ struct druid_module_t : public module_t
       .operation( hotfix::HOTFIX_SET )
       .modifier( 40 )
       .verification_value( 76 );
-    hotfix::register_effect("Druid", "2017-01-21", "(Direct) - Damage of most feral abilities increased by 8%", 179694 )
-       .field( "base_value" )
-       .operation( hotfix::HOTFIX_SET )
-       .modifier( 16.64 )
-       .verification_value( 8 );
-    hotfix::register_effect("Druid", "2017-01-21", "(Dot) - Damage of most feral abilities increased by 8%", 191154 )
-       .field( "base_value" )
-       .operation( hotfix::HOTFIX_SET )
-       .modifier( 16.64 )
-       .verification_value( 8 );
 
     /*
     hotfix::register_effect( "Druid", "2016-09-23", "Sunfire damage increased by 10%.-dot", 232417 )

@@ -7065,30 +7065,6 @@ struct hunter_module_t: public module_t
       .verification_value( 6.5 );
 
     // Hotfixes announced for 24.01.2017
-
-    hotfix::register_effect( "Hunter", "2017-01-21", "Combat Experience (Pet Passive) now increases the damage of primary pets by 60% (up from 50%).", 141362 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 60 )
-      .verification_value( 50 );
-
-    hotfix::register_effect( "Hunter", "2017-01-21", "Arcane Shot now generates 8 Focus (up from 5).", 273716 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 8 )
-      .verification_value( 5 );
-
-    hotfix::register_effect( "Hunter", "2017-01-21", "Multi-Shot now generates 3 Focus per target hit (up from 2).", 316487 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 3 )
-      .verification_value( 2 );
-
-    hotfix::register_effect( "Hunter", "2017-01-21", "Sidewinders damage increased by 33%.", 318698 )
-      .field( "ap_coefficient" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 4/3.0 )
-      .verification_value( 3 );
   }
 
   virtual void combat_begin( sim_t* ) const override {}
