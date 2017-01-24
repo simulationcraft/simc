@@ -3294,6 +3294,10 @@ void item::convergence_of_fates( special_effect_t& effect )
     {
       effect.rppm_modifier_ = 0.5;
     }
+  } else if (effect.player->specialization() == DRUID_FERAL &&
+     effect.player -> find_talent_spell("Incarnation") -> ok() )
+  {
+     effect.rppm_modifier_ = 1.232; //45% lower than Berserks 2.24 as per https://eu.battle.net/forums/en/wow/topic/17614733750?page=3#post-47
   }
 
   new convergence_of_fates_callback_t( effect );
