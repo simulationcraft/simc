@@ -44,18 +44,20 @@ actions.bos+=/breath_of_sindragosa,if=runic_power>=50
 actions.bos+=/frost_strike,if=runic_power>=90&set_bonus.tier19_4pc
 actions.bos+=/remorseless_winter,if=buff.rime.react&equipped.132459
 actions.bos+=/howling_blast,if=buff.rime.react&(dot.remorseless_winter.ticking|cooldown.remorseless_winter.remains>1.5|!equipped.132459)
-actions.bos+=/frost_strike,if=runic_power>=70
-actions.bos+=/obliterate,if=!buff.rime.react
-actions.bos+=/horn_of_winter,if=cooldown.breath_of_sindragosa.remains>15&runic_power<=70
+actions.bos+=/frost_strike,if=runic_power>=70|((talent.gathering_storm.enabled&cooldown.remorseless_winter.remains<3&cooldown.breath_of_sindragosa.remains>10)&rune<5)
+actions.bos+=/obliterate,if=!buff.rime.react&!(talent.gathering_storm.enabled&!(cooldown.remorseless_winter.remains>2|rune>4))
+actions.bos+=/horn_of_winter,if=cooldown.breath_of_sindragosa.remains>15&runic_power<=70&rune<5
 actions.bos+=/frost_strike,if=cooldown.breath_of_sindragosa.remains>15
 actions.bos+=/remorseless_winter,if=cooldown.breath_of_sindragosa.remains>10
 
 actions.bos_ticking=howling_blast,target_if=!dot.frost_fever.ticking
-actions.bos_ticking+=/remorseless_winter,if=((runic_power>=20&set_bonus.tier19_4pc)|runic_power>=30)&buff.rime.react&(equipped.132459|talent.gathering_storm.enabled)
+actions.bos_ticking+=/remorseless_winter,if=runic_power>=30&((buff.rime.react&equipped.132459)|(talent.gathering_storm.enabled))
 actions.bos_ticking+=/howling_blast,if=((runic_power>=20&set_bonus.tier19_4pc)|runic_power>=30)&buff.rime.react
 actions.bos_ticking+=/obliterate,if=runic_power<=75|rune>3
-actions.bos_ticking+=/horn_of_winter,if=runic_power<70&!buff.hungering_rune_weapon.up
-actions.bos_ticking+=/hungering_rune_weapon,if=runic_power<30&!buff.hungering_rune_weapon.up
+actions.bos_ticking+=/horn_of_winter,if=runic_power<70&!buff.hungering_rune_weapon.up&rune<5
+actions.bos_ticking+=/hungering_rune_weapon,if=equipped.140806&(runic_power<30|(runic_power<70&talent.gathering_storm.enabled))&!buff.hungering_rune_weapon.up&rune<2
+actions.bos_ticking+=/hungering_rune_weapon,if=talent.runic_attenuation.enabled&runic_power<30&!buff.hungering_rune_weapon.up&rune<2
+actions.bos_ticking+=/hungering_rune_weapon,if=runic_power<25&!buff.hungering_rune_weapon.up&rune<2
 actions.bos_ticking+=/empower_rune_weapon,if=runic_power<20
 actions.bos_ticking+=/remorseless_winter,if=talent.gathering_storm.enabled|!set_bonus.tier19_4pc|runic_power<30
 
