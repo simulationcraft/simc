@@ -191,6 +191,11 @@ void parse_artifact( item_t& item, const rapidjson::Value& artifact )
   }
 
   auto artifact_id = artifact[ "artifactId" ].GetUint();
+  if ( artifact_id == 0 )
+  {
+    return;
+  }
+
   auto powers = item.player -> dbc.artifact_powers( artifact_id );
   for ( auto power_idx = 0U, end = artifact[ "artifactTraits" ].Size(); power_idx < end; ++power_idx )
   {
