@@ -3325,26 +3325,46 @@ void item::convergence_of_fates( special_effect_t& effect )
     // In order to find the value for Crusade, we do 1.2 * 1.25 = 1.5, we do have to add in special handling for that.
 
   case PALADIN_RETRIBUTION:
-  if ( player_talent( effect.player, "Crusade" ) )
-    effect.ppm_ = -1.5;
-  break;
+    if ( player_talent( effect.player, "Crusade" ) )
+    {
+      effect.ppm_ = -1.5;
+    }
+    else
+    {
+      effect.ppm_ = -4.2;
+    }
+    // This is there to safeguard the fixed RPPM rates given here
+    effect.rppm_modifier_ = 1.0;
+    break;
   case MONK_WINDWALKER:
-  if ( player_talent( effect.player, "Serenity" ) )
-    effect.ppm_ = -1.6;
-  break;
+    if ( player_talent( effect.player, "Serenity" ) )
+    {
+      effect.ppm_ = -1.6;
+      effect.rppm_modifier_ = 1.0;
+    }
+    break;
   case DEATH_KNIGHT_FROST:
-  if ( player_talent( effect.player, "Hungering Rune Weapon" ) )
-    effect.ppm_ = -4.62;
-  break;
+    if ( player_talent( effect.player, "Hungering Rune Weapon" ) )
+    {
+      effect.ppm_ = -4.62;
+      effect.rppm_modifier_ = 1.0;
+    }
+    break;
   case DEATH_KNIGHT_UNHOLY:
-  if ( !player_talent( effect.player, "Dark Arbiter" ) )
-    effect.ppm_ = -4.98;
-  break;
+    if ( ! player_talent( effect.player, "Dark Arbiter" ) )
+    {
+      effect.ppm_ = -4.98;
+      effect.rppm_modifier_ = 1.0;
+    }
+    break;
   case DRUID_FERAL:
-  if ( player_talent( effect.player, "Incarnation" ) )
-    effect.ppm_ = -3.7;
-  default:
-  break;
+    if ( player_talent( effect.player, "Incarnation" ) )
+    {
+      effect.ppm_ = -3.7;
+      effect.rppm_modifier_ = 1.0;
+    }
+    break;
+  default: break;
   }
 
   new convergence_of_fates_callback_t( effect );
