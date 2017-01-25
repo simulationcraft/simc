@@ -7930,16 +7930,19 @@ std::string mage_t::get_special_use_items( const std::string& item_name, bool sp
   std::string actions;
   std::string conditions;
 
-  // If we're dealing with a special item, find its special conditional.
+  // If we're dealing with a special item, find its special conditional for the right spec.
   if ( specials )
   {
-    if ( item_name == "obelisk_of_the_void" )
+    if ( specialization() == MAGE_FIRE )
     {
-      conditions = "if=buff.rune_of_power.up&cooldown.combustion.remains>50";
-    }
-    if ( item_name == "horn_of_valor" )
-    {
-      conditions = "if=cooldown.combustion.remains>30";
+      if ( item_name == "obelisk_of_the_void" )
+      {
+        conditions = "if=buff.rune_of_power.up&cooldown.combustion.remains>50";
+      }
+      if ( item_name == "horn_of_valor" )
+      {
+        conditions = "if=cooldown.combustion.remains>30";
+      }
     }
   }
 
@@ -7969,7 +7972,8 @@ std::string mage_t::get_special_use_items( const std::string& item_name, bool sp
 }
 
 // Because we care about both the ability to control special conditions AND position of our on use items,
-// we must use our own get_item_actions which knows to ignore all "special" items and let them be handled by get_special_use_items()
+// we must use our own get_item_actions which knows to ignore all "special" items so
+// that they can be handled by get_special_use_items()
 std::vector<std::string> mage_t::get_non_speical_item_actions()
 {
   std::vector<std::string> actions;
@@ -7978,7 +7982,8 @@ std::vector<std::string> mage_t::get_non_speical_item_actions()
 
   // very ugly construction of our list of special items
   specials.push_back( "obelisk_of_the_void" );
-  specials.push_back( "horn_of_valor" );
+  specials.push_back( "horn_of_valor"       );
+  specials.push_back( "mrrgrias_favor"      );
 
   for ( const auto& item : items )
   {
