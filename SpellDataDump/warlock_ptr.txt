@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23436, git build 05a6f98)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23436, git build ed53d25)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -32,7 +32,7 @@ Resource         : 3% Base Mana (33000 @Level 110)
 Spell Level      : 3
 Range            : 40 yards
 GCD              : 1.5 seconds
-Affecting spells : Mastery: Potent Afflictions (77215), Epidemic (184922), Absolute Corruption (196103), Drain Soul (198590), Hideous Corruption (199112), Perdition (199158), Wrath of Consumption (199646), Entropic Instability (238072)
+Affecting spells : Mastery: Potent Afflictions (77215), Epidemic (184922), Absolute Corruption (196103), Drain Soul (198590), Hideous Corruption (199112), Perdition (199158), Wrath of Consumption (199646), Winnowing (238072)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -287,7 +287,7 @@ GCD              : 1.5 seconds
 Duration         : 18 seconds
 Stacks           : 6 maximum
 Proc Chance      : 101%
-Affecting spells : Mastery: Potent Afflictions (77215), Epidemic (184922), Writhe in Agony (196102), Drain Soul (198590), Inimitable Agony (199111), Perdition (199158), Wrath of Consumption (199646), Hood of Eternal Disdain (205797), Agony (231792), Entropic Instability (238072)
+Affecting spells : Mastery: Potent Afflictions (77215), Epidemic (184922), Writhe in Agony (196102), Drain Soul (198590), Inimitable Agony (199111), Perdition (199158), Wrath of Consumption (199646), Hood of Eternal Disdain (205797), Agony (231792), Winnowing (238072)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -1196,7 +1196,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Stacks           : 10 maximum
 Proc Chance      : 101%
-Affecting spells : Mastery: Potent Afflictions (77215), Epidemic (184922), Drain Soul (198590), Inherently Unstable (199152), Perdition (199158), Wrath of Consumption (199646), Item - Warlock T19 Affliction 2P Bonus (212002), Entropic Instability (238072)
+Affecting spells : Mastery: Potent Afflictions (77215), Epidemic (184922), Drain Soul (198590), Inherently Unstable (199152), Perdition (199158), Wrath of Consumption (199646), Item - Warlock T19 Affliction 2P Bonus (212002), Winnowing (238072)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1428,7 +1428,7 @@ Attributes       : ........ ........ .......x x..x....   ...x.x.x ........ .....
                  : Does not break stealth (37), Not a proc (105), Requires line of sight (186)
 Effects          :
 #1 (id=33883)    : School Damage: fire (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.55500 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.72000 | Target: Enemy(6)
 Description      : $@spelldesc5740
 
 Name             : Annihilator Holo-Gogs (id=46111) 
@@ -1635,7 +1635,7 @@ School           : Shadow
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
-Affecting spells : Mastery: Potent Afflictions (77215), Drain Soul (198590), Entropic Instability (238072)
+Affecting spells : Mastery: Potent Afflictions (77215), Drain Soul (198590), Winnowing (238072)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -2837,7 +2837,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ......x. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=132079)   : School Damage: chromatic (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 3.66300 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 4.00000 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=177448)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Target: Enemy(6)
 #3 (id=283496)   : Energize Power% (137)
@@ -3195,7 +3195,7 @@ School           : Shadow
 Spell Level      : 3
 Range            : 40 yards
 Duration         : 14 seconds
-Affecting spells : Mastery: Potent Afflictions (77215), Epidemic (184922), Absolute Corruption (196103), Drain Soul (198590), Hideous Corruption (199112), Perdition (199158), Wrath of Consumption (199646), Entropic Instability (238072)
+Affecting spells : Mastery: Potent Afflictions (77215), Epidemic (184922), Absolute Corruption (196103), Drain Soul (198590), Hideous Corruption (199112), Perdition (199158), Wrath of Consumption (199646), Winnowing (238072)
 Triggered by     : Corruption (172)
 Attributes       : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ .x...... ........ ........ 
@@ -3251,7 +3251,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=210584)   : School Damage: shadowflame (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 7.77000 | Radius: 8 yards | Target: AOE enemy (instant)(16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 10.00000 | Radius: 8 yards | Target: AOE enemy (instant)(16)
 Description      : Conjures a cataclysm at the target location, dealing $s1 Shadowflame damage to all enemies within $A1 yards and afflicting them with $?s980[Agony and Unstable Affliction][]$?s104315[Corruption][]$?s348[Immolate][]$?!s980&!s104315&!s348[Agony, Unstable Affliction, Corruption, or Immolate][].
 
 Name             : Demonbolt (id=157695) [Spell Family (5)] 
@@ -4031,7 +4031,7 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | Target: Self(1)
 Description      : Call Dreadstalkers now also summons $s1 Wild $LImp:Imps;.
 
-Name             : Implosion (id=196277) 
+Name             : Implosion (id=196277) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadowflame
 Resource         : 6% Base Mana (66000 @Level 110)
@@ -4384,7 +4384,7 @@ Spell Level      : 13
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
-Affecting spells : Drained to a Husk (199120), Perdition (199158), Long Dark Night of the Soul (199214), Wrath of Consumption (199646), Malefic Grasp (235155), Entropic Instability (238072)
+Affecting spells : Drained to a Husk (199120), Perdition (199158), Long Dark Night of the Soul (199214), Wrath of Consumption (199646), Malefic Grasp (235155), Winnowing (238072)
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ...x.... 
@@ -5115,7 +5115,7 @@ Range            : 40 yards
 Duration         : 8 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Mastery: Potent Afflictions (77215), Epidemic (184922), Drain Soul (198590), Inherently Unstable (199152), Perdition (199158), Wrath of Consumption (199646), Item - Warlock T19 Affliction 2P Bonus (212002), Entropic Instability (238072)
+Affecting spells : Mastery: Potent Afflictions (77215), Epidemic (184922), Drain Soul (198590), Inherently Unstable (199152), Perdition (199158), Wrath of Consumption (199646), Item - Warlock T19 Affliction 2P Bonus (212002), Winnowing (238072)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -5136,7 +5136,7 @@ Range            : 40 yards
 Duration         : 8 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Mastery: Potent Afflictions (77215), Epidemic (184922), Drain Soul (198590), Inherently Unstable (199152), Perdition (199158), Wrath of Consumption (199646), Item - Warlock T19 Affliction 2P Bonus (212002), Entropic Instability (238072)
+Affecting spells : Mastery: Potent Afflictions (77215), Epidemic (184922), Drain Soul (198590), Inherently Unstable (199152), Perdition (199158), Wrath of Consumption (199646), Item - Warlock T19 Affliction 2P Bonus (212002), Winnowing (238072)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -5157,7 +5157,7 @@ Range            : 40 yards
 Duration         : 8 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Mastery: Potent Afflictions (77215), Epidemic (184922), Drain Soul (198590), Inherently Unstable (199152), Perdition (199158), Wrath of Consumption (199646), Item - Warlock T19 Affliction 2P Bonus (212002), Entropic Instability (238072)
+Affecting spells : Mastery: Potent Afflictions (77215), Epidemic (184922), Drain Soul (198590), Inherently Unstable (199152), Perdition (199158), Wrath of Consumption (199646), Item - Warlock T19 Affliction 2P Bonus (212002), Winnowing (238072)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -5178,7 +5178,7 @@ Range            : 40 yards
 Duration         : 8 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Mastery: Potent Afflictions (77215), Epidemic (184922), Drain Soul (198590), Inherently Unstable (199152), Perdition (199158), Wrath of Consumption (199646), Item - Warlock T19 Affliction 2P Bonus (212002), Entropic Instability (238072)
+Affecting spells : Mastery: Potent Afflictions (77215), Epidemic (184922), Drain Soul (198590), Inherently Unstable (199152), Perdition (199158), Wrath of Consumption (199646), Item - Warlock T19 Affliction 2P Bonus (212002), Winnowing (238072)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -5199,7 +5199,7 @@ Range            : 40 yards
 Duration         : 8 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Mastery: Potent Afflictions (77215), Epidemic (184922), Drain Soul (198590), Inherently Unstable (199152), Perdition (199158), Wrath of Consumption (199646), Item - Warlock T19 Affliction 2P Bonus (212002), Entropic Instability (238072)
+Affecting spells : Mastery: Potent Afflictions (77215), Epidemic (184922), Drain Soul (198590), Inherently Unstable (199152), Perdition (199158), Wrath of Consumption (199646), Item - Warlock T19 Affliction 2P Bonus (212002), Winnowing (238072)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -5220,7 +5220,7 @@ Spell Level      : 13
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
-Affecting spells : Flamelicked (185229), Drained to a Husk (199120), Perdition (199158), Long Dark Night of the Soul (199214), Wrath of Consumption (199646), Odr, Shawl of the Ymirjar (212173), Devourer of Life (215165), Entropic Instability (238072)
+Affecting spells : Flamelicked (185229), Drained to a Husk (199120), Perdition (199158), Long Dark Night of the Soul (199214), Wrath of Consumption (199646), Odr, Shawl of the Ymirjar (212173), Devourer of Life (215165), Winnowing (238072)
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ...x.... 

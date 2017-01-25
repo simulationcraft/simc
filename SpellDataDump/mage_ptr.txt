@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23436, git build 05a6f98)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23436, git build ed53d25)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Arcane Fire Frost Mage
@@ -178,7 +178,7 @@ Attributes       : ........ ........ x....... ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=457)      : School Damage: arcane (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.78750 | Radius: 0 - 10 yards | Target: At Caster(22) -> AOE enemy(15)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.75000 | Radius: 0 - 10 yards | Target: At Caster(22) -> AOE enemy(15)
 #2 (id=281175)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: none | Target: Self(1)
 Description      : Causes an explosion of magic around the caster, dealing $s1 Arcane damage to all enemies within $A1 yards.
@@ -235,7 +235,7 @@ Tooltip          : Blinking.
 Name             : Flamestrike (id=2120) [Spell Family (3)] 
 Class            : Fire Mage
 School           : Fire
-Resource         : 3% Base Mana (33000 @Level 110)
+Resource         : 2.5% Base Mana (27500 @Level 110)
 Spell Level      : 20
 Range            : 40 yards
 Cast Time        : 4 seconds
@@ -368,13 +368,13 @@ Attributes       : ........ ........ x....... ........   ..x..... ........ .....
                  : Channeled (34), Not a proc (105)
 Effects          :
 #1 (id=2716)     : School Damage: arcane (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.46515 | Chain Targets: 1 | Target: Unknown(77)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.44300 | Chain Targets: 1 | Target: Unknown(77)
 Description      : $@spelldesc5143
 
 Name             : Pyroblast (id=11366) [Spell Family (3)] 
 Class            : Fire Mage
 School           : Fire
-Resource         : 2.5% Base Mana (27500 @Level 110)
+Resource         : 2% Base Mana (22000 @Level 110)
 Spell Level      : 12
 Range            : 40 yards
 Cast Time        : 4.5 seconds
@@ -718,7 +718,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=20028)    : School Damage: arcane (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.02000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.92400 | Target: Enemy(6)
 #2 (id=20029)    : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: none | Target: Self(1)
 Description      : Blasts the target with energy, dealing $30451s1 Arcane damage.
@@ -1040,7 +1040,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=36330)    : School Damage: arcane (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.36500 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.30000 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=157070)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50
 #3 (id=331544)   : Dummy (3)
@@ -2225,7 +2225,7 @@ Attributes       : ........ ........ x....... ..x.....   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=128479)   : Apply Aura (6) | Periodic Damage: arcane every 1 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.04935 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.04700 | Target: Enemy(6)
 #2 (id=220453)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Enemy(6)
 Description      : Places a Nether Tempest on the target which deals $114923o1 Arcane damage over $114923d to the target and ${$114954m1*12/$t1} to all enemies within 10 yards. Limit 1 target.
@@ -2249,7 +2249,7 @@ Attributes       : ........ ........ x.x....x x..x....   ........ ........ .....
                  : Requires line of sight (186)
 Effects          :
 #1 (id=128532)   : School Damage: arcane (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.04935 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.04700 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
 Description      : $@spelldesc114923
 
 Name             : Player Damage Reduction (id=115043) [Passive, Hidden] 
@@ -2660,10 +2660,10 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179704)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 12 | Scaled Value: 12 | Target: Self(1)
+                   Base Value: 17 | Scaled Value: 17 | Target: Self(1)
                    Affected Spells: Arcane Explosion (1449), Arcane Missiles (7268), Arcane Blast (30451), Arcane Barrage (44425), Nether Tempest (114923), Nether Tempest (114954), Arcane Orb (153640), Supernova (157980)
 #2 (id=191116)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 12 | Scaled Value: 12 | Misc Value: 22 | Target: Self(1)
+                   Base Value: 17 | Scaled Value: 17 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Nether Tempest (114923), Nether Tempest (114954)
 #3 (id=191117)   : Apply Aura (6) | Mod Power Regen (110)
                    Base Value: 60 | Scaled Value: 0 | Points Per Level: -2 | Target: Self(1)
@@ -2945,7 +2945,7 @@ Attributes       : ........ ........ .......x x..x....   .....x.. ........ .....
                  : Does not break stealth (37), Not a proc (105), Requires line of sight (186)
 Effects          :
 #1 (id=212872)   : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.05000 | Radius: 0 - 4 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.30000 | Radius: 0 - 4 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
 Description      : $@spelldesc153595
 
 Name             : Arcane Orb (id=153626) 
@@ -2985,7 +2985,7 @@ Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ .....
                  : Does not break stealth (37), Not a proc (105)
 Effects          :
 #1 (id=212926)   : School Damage: arcane (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 5.25000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 5.00000 | Target: Enemy(6)
 #2 (id=212927)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: none | Target: Self(1)
 Description      : $@spelldesc153626
@@ -3005,7 +3005,7 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 3 | Target: Self(1)
                    Affected Spells: Arcane Power (12042)
 #2 (id=355469)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
-                   Base Value: -40 | Scaled Value: -40 | Misc Value: 12 | Target: Self(1)
+                   Base Value: -30 | Scaled Value: -30 | Misc Value: 12 | Target: Self(1)
                    Affected Spells: Arcane Power (12042)
 Description      : Arcane Power now increases damage by ${30+$s1}% and reduces mana costs by ${30-$s2}%.
 
@@ -3238,7 +3238,7 @@ Effects          :
 #1 (id=220357)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | Target: Unknown(25)
 #2 (id=220358)   : School Damage: arcane (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.78500 | Radius: 0 - 8 yards | Target: Unknown(63) -> AOE enemy (instant)(16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.70000 | Radius: 0 - 8 yards | Target: Unknown(63) -> AOE enemy (instant)(16)
 #3 (id=220359)   : Unknown effect type (144)
                    Base Value: 100 | Scaled Value: 100 | Radius: 0 - 8 yards | Target: Unknown(63) -> AOE enemy (instant)(16)
 Description      : Pulses arcane energy around the target enemy or ally, dealing $s2 Arcane damage to all enemies within $A2 yards, and knocking them upward. A primary enemy target will take $s1% increased damage.

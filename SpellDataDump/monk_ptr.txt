@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23436, git build 05a6f98)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23436, git build ed53d25)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -1074,7 +1074,7 @@ Attributes       : ....x... ........ x....... ........   ........ .x...... .....
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=128879)   : School Damage: fire (2)
-                   Base Value: 0 | Scaled Value: 1 - 3 | Value Range: 3 | AP Coefficient: 1.62000 | Radius: 12 yards | Target: Cone Front(104)
+                   Base Value: 0 | Scaled Value: 1 - 3 | Value Range: 3 | AP Coefficient: 1.80000 | Radius: 12 yards | Target: Cone Front(104)
 Description      : Breathe fire on targets in front of you, causing $s1 Fire damage. Targets affected by Keg Smash will also burn for $123725o1 Fire damage over $123725d$?s123394[ and become Incapacitated for $123393d][].
 Tooltip          : If Dizzying Haze is on the target, they will burn for an additional $123725o1 damage over $123725d$?s123394[ and become Disoriented for $123393d.][.]
 
@@ -1321,6 +1321,23 @@ Effects          :
                    Base Value: -25 | Scaled Value: -25 | Misc Value: 127 | Target: Enemy(6)
 Description      : Grievously wounds the target, reducing the effectiveness of any healing received for $115804d.
 Tooltip          : Healing effects received reduced by $w1%.
+
+Name             : Thunderfist (id=116007) 
+Class            : Monk
+School           : Nature
+Cooldown         : 5 seconds
+Category         : 1152
+Category Cooldown: 5 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=130572)   : Weapon Damage% (31)
+                   Base Value: 110 | Scaled Value: 1.1 | Radius: 0 - 5 yards | Target: At Caster(22) -> AOE enemy(15)
+Description      : Strikes all nearby enemies with thunder, inflicting Nature damage.
 
 Name             : Afterlife (id=116092) [Scaling Spell (6), Spell Family (53), Passive] 
 Class            : Windwalker Monk
@@ -2103,7 +2120,7 @@ Attributes       : ........ ........ ........ ........   ...x...x .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=150037)   : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 6.07500 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 6.70000 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
 #2 (id=229522)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Radius: 0 - 8 yards | Mechanic: Unknown(88) | Target: At Enemy(53) -> AOE enemy (instant)(16)
 #3 (id=283420)   : Dummy (3)
@@ -4917,9 +4934,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 11 | Target: Self(1)
 Description      : Using 3 sequentially different abilities grants $211432s1 Mastery for $211432d.
 
-Name             : Combo Master (id=211432) [Spell Family (53)] 
+Name             : Combo Master (id=211432) [Scaling Spell (-1), Spell Family (53)] 
 Class            : Monk
 School           : Physical
+Max Scaling Level: 110
 Duration         : 10 seconds
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4929,7 +4947,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=313196)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 2000 | Scaled Value: 2000 | Misc Value: 33554432 | Target: Self(1)
+                   Base Value: 2000 | Scaled Value: 1999.723 (avg=1.177) | Misc Value: 33554432 | Target: Self(1)
 Description      : $@spelldesc211430
 Tooltip          : Mastery increased by $s1.
 

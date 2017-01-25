@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23436, git build 05a6f98)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23436, git build ed53d25)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
@@ -1870,10 +1870,10 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=68022)    : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.00000 | Target: Self(1)
-                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Spore Cloud (32643), Envenom (32645), Deadly Poison (113780), Shadow Blade (121473), Shadow Blade Off-hand (121474), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Alacrity (193538), Agonizing Poison (200803), Kingsbane (222062)
+                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Spore Cloud (32643), Envenom (32645), Deadly Poison (113780), Shadow Blade (121473), Shadow Blade Off-hand (121474), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Alacrity (193538), Agonizing Poison (200803), Curse of the Dreadblades (202665), Kingsbane (222062)
 #2 (id=68023)    : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.00000 | Misc Value: 22 | Target: Self(1)
-                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Spore Cloud (32643), Deadly Poison (113780), Shadow Blade (121473), Shadow Blade Off-hand (121474), Kingsbane (192759), Kingsbane (192760), Alacrity (193538), Agonizing Poison (200803), Kingsbane (222062)
+                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Spore Cloud (32643), Deadly Poison (113780), Shadow Blade (121473), Shadow Blade Off-hand (121474), Kingsbane (192759), Kingsbane (192760), Alacrity (193538), Agonizing Poison (200803), Curse of the Dreadblades (202665), Kingsbane (222062)
 #3 (id=92122)    : Apply Aura (6) | Dummy (4)
                    Base Value: 350 | Scaled Value: 350 | Target: Self(1)
 #4 (id=322527)   : Apply Aura (6) | Add Percent Modifier: Spell Effect 1 (108)
@@ -1979,7 +1979,7 @@ Attributes       : ........ ........ ........ ........   .....x.. ..x..... .....
 Effects          :
 #1 (id=68390)    : Apply Aura (6) | Unknown effect sub type (271)
                    Base Value: 30 | Scaled Value: 30 | Target: Enemy(6)
-                   Affected Spells: Backstab (53), Kidney Shot (408), Garrote (703), Sinister Strike (1752), Kick (1766), Gouge (1776), Stealth (1784), Cheap Shot (1833), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Sprint (2983), Crippling Poison (3408), Crippling Poison (3409), Slice and Dice (5171), Evasion (5277), Mutilate (5374), Sap (6770), Ambush (8676), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Hemorrhage (16511), Mutilate Off-Hand (27576), Spore Cloud (32643), Envenom (32645), Fan of Knives (51723), Deadly Poison (113780), Shuriken Toss (114014), Shadow Blade (121473), Shadow Blade Off-hand (121474), Prey on the Weak (131511), Internal Bleeding (154953), Backstab (173458), Poisoned Knife (185565), Kingsbane (192759), Kingsbane (192760), Alacrity (193538), Eviscerate (196819), Finality: Eviscerate (197393), Shuriken Storm (197835), Agonizing Poison (200803), Goremaw's Bite (220901), Kingsbane (222062)
+                   Affected Spells: Backstab (53), Kidney Shot (408), Garrote (703), Sinister Strike (1752), Kick (1766), Gouge (1776), Stealth (1784), Cheap Shot (1833), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Sprint (2983), Crippling Poison (3408), Crippling Poison (3409), Slice and Dice (5171), Evasion (5277), Mutilate (5374), Sap (6770), Ambush (8676), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Hemorrhage (16511), Mutilate Off-Hand (27576), Spore Cloud (32643), Envenom (32645), Fan of Knives (51723), Deadly Poison (113780), Shuriken Toss (114014), Shadow Blade (121473), Shadow Blade Off-hand (121474), Prey on the Weak (131511), Internal Bleeding (154953), Backstab (173458), Poisoned Knife (185565), Kingsbane (192759), Kingsbane (192760), Alacrity (193538), Eviscerate (196819), Finality: Eviscerate (197393), Shuriken Storm (197835), Agonizing Poison (200803), Curse of the Dreadblades (202665), Goremaw's Bite (220901), Kingsbane (222062)
 #2 (id=68391)    : Apply Aura (6) | Unknown effect sub type (343)
                    Base Value: 30 | Scaled Value: 30 | Target: Enemy(6)
 #3 (id=87043)    : Apply Aura (6) | Stalked (68)
@@ -2645,10 +2645,10 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179721)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 7 | Scaled Value: 7 | Target: Self(1)
-                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Mutilate (5374), Ambush (8676), Venomhide Poison (14795), Hemorrhage (16511), Mutilate Off-Hand (27576), Spore Cloud (32643), Envenom (32645), Fan of Knives (51723), Deadly Poison (113780), Shuriken Toss (114014), Death from Above (152150), Poisoned Knife (185565), Kingsbane (192759), Kingsbane (192760), Shuriken Storm (197835), Agonizing Poison (200803), Kingsbane (222062)
+                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Mutilate (5374), Ambush (8676), Venomhide Poison (14795), Hemorrhage (16511), Mutilate Off-Hand (27576), Spore Cloud (32643), Envenom (32645), Fan of Knives (51723), Deadly Poison (113780), Shuriken Toss (114014), Death from Above (152150), Poisoned Knife (185565), Kingsbane (192759), Kingsbane (192760), Shuriken Storm (197835), Agonizing Poison (200803), Curse of the Dreadblades (202665), Kingsbane (222062)
 #2 (id=191052)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 7 | Scaled Value: 7 | Misc Value: 22 | Target: Self(1)
-                   Affected Spells: Garrote (703), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Venomhide Poison (14795), Spore Cloud (32643), Deadly Poison (113780), Kingsbane (192759), Kingsbane (192760), Agonizing Poison (200803), Kingsbane (222062)
+                   Affected Spells: Garrote (703), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Venomhide Poison (14795), Spore Cloud (32643), Deadly Poison (113780), Kingsbane (192759), Kingsbane (192760), Agonizing Poison (200803), Curse of the Dreadblades (202665), Kingsbane (222062)
 #3 (id=191053)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 3 | Target: Self(1)
                    Affected Spells: Insignia of Ravenholdt (209041)
@@ -3294,7 +3294,7 @@ Proc Chance      : 101%
 Artifact Power   : Id: 346, Max Rank: 1
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, AOE Hostile Spell, Hostile Spell
-Affecting spells : Mastery: Potent Poisons (76803), Vendetta (79140), Assassination Rogue (137037), Kingsbane (192853), Master Poisoner (196864), 
+Affecting spells : Mastery: Potent Poisons (76803), Vendetta (79140), Assassination Rogue (137037), Kingsbane (192853), Master Poisoner (196864), Dreadblade's Vigor (238103)
 Triggered by     : Push Active Ability to Bar (225882)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -3326,7 +3326,7 @@ Name             : Kingsbane (id=192760) [Spell Family (8)]
 Class            : Rogue
 School           : Nature
 Range            : 100 yards
-Affecting spells : Mastery: Potent Poisons (76803), Vendetta (79140), Assassination Rogue (137037), Kingsbane (192853), Master Poisoner (196864), 
+Affecting spells : Mastery: Potent Poisons (76803), Vendetta (79140), Assassination Rogue (137037), Kingsbane (192853), Master Poisoner (196864), Dreadblade's Vigor (238103)
 Triggered by     : Kingsbane (192759)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ x.....x. 
@@ -3359,7 +3359,7 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=282942)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self(1)
-                   Affected Spells: Kingsbane (192759), Kingsbane (192760), Kingsbane (222062)
+                   Affected Spells: Kingsbane (192759), Kingsbane (192760), Curse of the Dreadblades (202665), Kingsbane (222062)
 Description      : $@spelldesc192759
 Tooltip          : Kingsbane Damage increased by $s1%.
 
@@ -3825,10 +3825,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=289047)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 30 | Scaled Value: 30 | Target: Self(1)
-                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Spore Cloud (32643), Deadly Poison (113780), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Agonizing Poison (200803), Kingsbane (222062)
+                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Spore Cloud (32643), Deadly Poison (113780), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Agonizing Poison (200803), Curse of the Dreadblades (202665), Kingsbane (222062)
 #2 (id=289048)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 22 | Target: Self(1)
-                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Venomhide Poison (14795), Spore Cloud (32643), Deadly Poison (113780), Kingsbane (192759), Kingsbane (192760), Agonizing Poison (200803), Kingsbane (222062)
+                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Venomhide Poison (14795), Spore Cloud (32643), Deadly Poison (113780), Kingsbane (192759), Kingsbane (192760), Agonizing Poison (200803), Curse of the Dreadblades (202665), Kingsbane (222062)
 #3 (id=289049)   : Apply Aura (6) | Add Percent Modifier: Spell Effect 1 (108)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 3 | Target: Self(1)
                    Affected Spells: Crippling Poison (3408), Crippling Poison (3409), Leeching Poison (108211), Leeching Poison (112961)
@@ -4543,6 +4543,7 @@ Proc Chance      : 101%
 Artifact Power   : Id: 1052, Max Rank: 1
 Proc Flags       : ....x... ..x..... ........ ........ 
                  : Yellow Melee, AOE Heal
+Affecting spells : Mastery: Potent Poisons (76803), Vendetta (79140), Assassination Rogue (137037), Kingsbane (192853), Master Poisoner (196864), Dreadblade's Vigor (238103)
 Triggered by     : Push Active Ability to Bar (225881)
 Attributes       : ........ ........ ........ ..x..x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4553,6 +4554,8 @@ Attributes       : ........ ........ ........ ..x..x..   ........ ........ .....
 Effects          :
 #1 (id=298790)   : Apply Aura (6) | Proc Trigger Spell: Curse of the Dreadblades (42)
                    Base Value: 10 | Scaled Value: 10 | Trigger Spell: 202668 | Target: Self(1)
+#2 (id=364290)   : Apply Aura (6) | Mod Power Regen (110)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Target: Self(1)
 Description      : Invoke the Curse of the Dreadblades, causing each Saber Slash or Pistol Shot to fill your combo points. However, |cFFFFCC99The Dreadblades|r will consume $202669s1% of your current health when you use a finishing move for the next $d.
 Tooltip          : Saber Slash and Pistol Shot will refill all of your combo points when used.
 
@@ -4970,7 +4973,7 @@ Name             : Kingsbane (id=222062) [Spell Family (8)]
 Class            : Rogue
 School           : Nature
 Range            : 100 yards
-Affecting spells : Mastery: Potent Poisons (76803), Vendetta (79140), Assassination Rogue (137037), Kingsbane (192853), Master Poisoner (196864), 
+Affecting spells : Mastery: Potent Poisons (76803), Vendetta (79140), Assassination Rogue (137037), Kingsbane (192853), Master Poisoner (196864), Dreadblade's Vigor (238103)
 Triggered by     : Kingsbane (192759)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ......x. 

@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23436, git build 05a6f98)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23436, git build ed53d25)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -6038,7 +6038,7 @@ Proc Chance      : 100%
 Artifact Power   : Id: 149, Max Rank: 1
 Proc Flags       : ....x... ..x..... ........ ........ 
                  : Yellow Melee, AOE Heal
-Affecting spells : Death Knight (137005)
+Affecting spells : Death Knight (137005), Death's Harbinger (238080)
 Triggered by     : Push Active Ability to Bar (225862)
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 

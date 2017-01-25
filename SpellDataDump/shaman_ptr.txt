@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23436, git build 05a6f98)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23436, git build ed53d25)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -312,7 +312,7 @@ Resource         : 10 - 100 Maelstrom
 Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
-Affecting spells : Elemental Focus (16246), Shaman Shock Range Bonus (32973), Elemental Fury (60188), Lucidity (137326), Earthen Attunement (191598)
+Affecting spells : Elemental Focus (16246), Shaman Shock Range Bonus (32973), Elemental Fury (60188), Lucidity (137326), Earthen Attunement (191598), Swelling Maelstrom (238105)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

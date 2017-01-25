@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23436, git build 05a6f98)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23436, git build ed53d25)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -3385,10 +3385,10 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179694)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 16 | Scaled Value: 16 | Target: Self(1)
+                   Base Value: 17 | Scaled Value: 17 | Target: Self(1)
                    Affected Spells: Rake (1822), Shred (5221), Moonfire (8921), Ferocious Bite (22568), Maim (22570), Thrash (77758), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Brutal Slash (202028), Shadow Thrash (210687), Ashamane's Frenzy (210722), Ashamane's Frenzy (210723), Swipe (213771)
 #2 (id=191154)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 16 | Scaled Value: 16 | Misc Value: 22 | Target: Self(1)
+                   Base Value: 17 | Scaled Value: 17 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Rip (1079), Rake (1822), Moonfire (8921), Thrash (77758), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Thrash (192090), Shadow Thrash (210687), Ashamane's Rip (210705), Ashamane's Frenzy (210722), Ashamane's Frenzy (210723)
 #3 (id=191155)   : Apply Aura (6) | Add Flat Modifier: Spell Cooldown (107)
                    Base Value: 90000 | Scaled Value: 90000 | Misc Value: 11 | Target: Self(1)

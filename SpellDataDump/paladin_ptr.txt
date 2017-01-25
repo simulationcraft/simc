@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23436, git build 05a6f98)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23436, git build ed53d25)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -1094,6 +1094,10 @@ Effects          :
                    Base Value: 121163 | Scaled Value: 121163 | Misc Value: 31884 | Misc Value 2: 0x1d94b | Target: Self(1)
 #2 (id=254790)   : Apply Aura (6) | Unknown effect sub type (403)
                    Base Value: 121163 | Scaled Value: 121163 | Misc Value: 31842 | Misc Value 2: 0x1d94b | Target: Self(1)
+#3 (id=364395)   : Apply Aura (6) | Unknown effect sub type (403)
+                   Base Value: 121163 | Scaled Value: 121163 | Misc Value: 231895 | Misc Value 2: 0x1d94b | Target: Self(1)
+#4 (id=364396)   : Apply Aura (6) | Unknown effect sub type (403)
+                   Base Value: 121163 | Scaled Value: 121163 | Misc Value: 224668 | Misc Value 2: 0x1d94b | Target: Self(1)
 Description      : Your Avenging Wrath depicts 4 wings.
 
 Name             : Winged Vengeance (id=58244) 
