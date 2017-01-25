@@ -3299,20 +3299,46 @@ struct convergence_of_fates_callback_t : public dbc_proc_callback_t
   }
 };
 
+bool player_talent( player_t* player_, const std::string talent )
+{
+  return player_ -> find_talent_spell( talent ) -> ok();
+}
+
 void item::convergence_of_fates( special_effect_t& effect )
 {
-  if ( effect.player -> specialization() == PALADIN_RETRIBUTION )
+  switch ( effect.player -> specialization() )
   {
-    // TODO: there's gotta be a better way to do this - I don't think there is. 
-    if ( effect.player -> find_talent_spell( "Crusade" ) -> ok() )
-    {
-      effect.rppm_modifier_ = 0.5;
-    }
-    else if (effect.player -> find_talent_spell( "Serenity" ) -> ok() )
-    {
-      // Baseline Multiplier for WW Monks is -20%; or 2.4 RPPM. Serenity eventually needs a 1.6 RPPM. 1.6 / (1 - 0.2) = 2
-      effect.ppm_ = 2;
-    }
+    // Blizzard could have explained how they nerfed/buffed these rppm values a lot better by just saying what the the end result is.
+    // This is how I (Collision) calculated the following values:
+    // Ret Paladin
+    // with Avenging Wrath: +250% proc rate
+    // with Crusade : +25 % proc rate
+    // When they say +250% proc rate, they mean +250% based on whatever the rppm was on 2017/01/23.
+    // For Ret, this was 1.2. When the hotfixes hit, the rppm for ret went to 3, which is actually the 250% gain for Avenging Wrath, so we don't have to add any special handling for it.
+    // Ex : 1.2 * 2.5 = 3.0
+    // In order to find the value for Crusade, we do 1.2 * 1.25 = 1.5, we do have to add in special handling for that.
+
+  case PALADIN_RETRIBUTION:
+  if ( player_talent( effect.player, "Crusade" ) )
+    effect.ppm_ = -1.5;
+  break;
+  case MONK_WINDWALKER:
+  if ( player_talent( effect.player, "Serenity" ) )
+    effect.ppm_ = -1.575;
+  break;
+  case DEATH_KNIGHT_FROST:
+  if ( player_talent( effect.player, "Hungering Rune Weapon" ) )
+    effect.ppm_ = -4.62;
+  break;
+  case DEATH_KNIGHT_UNHOLY:
+  if ( !player_talent( effect.player, "Dark Arbiter" ) )
+    effect.ppm_ = -4.98;
+  break;
+  case DRUID_FERAL:
+  if ( player_talent( effect.player, "Incarnation" ) )
+    effect.ppm_ = -3.7;
+  default:
+  break;
   }
 
   new convergence_of_fates_callback_t( effect );
