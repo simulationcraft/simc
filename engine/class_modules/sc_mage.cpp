@@ -4320,8 +4320,8 @@ struct flurry_t : public frost_mage_spell_t
     hasted_ticks = false;
     add_child( flurry_bolt );
     //TODO: Remove hardcoded values once it exists in spell data for bolt impact timing.
-    dot_duration = timespan_t::from_seconds( 0.6 );
-    base_tick_time = timespan_t::from_seconds( 0.2 );
+    dot_duration = timespan_t::from_seconds( 0.45 );
+    base_tick_time = timespan_t::from_seconds( 0.15 );
   }
 
   virtual timespan_t travel_time() const override
