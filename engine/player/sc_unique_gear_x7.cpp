@@ -1947,6 +1947,7 @@ void item::draught_of_souls( special_effect_t& effect )
       proc_spell_t( "felcrazed_rage", effect.player, effect.trigger(), effect.item )
     {
       aoe = 0; // This does not actually AOE
+      dual = true;
       base_multiplier *= 1.0 + effect.player -> find_specialization_spell( "Unholy Death Knight" ) -> effectN( 4 ).percent();
     }
   };
@@ -1960,7 +1961,7 @@ void item::draught_of_souls( special_effect_t& effect )
       proc_spell_t( "draught_of_souls", effect_.player, effect_.driver(), effect_.item ),
       effect( effect_ ), damage( nullptr )
     {
-      channeled = quiet = tick_zero = true;
+      channeled = tick_zero = true;
       cooldown -> duration = timespan_t::zero();
       hasted_ticks = false;
 
@@ -1973,6 +1974,7 @@ void item::draught_of_souls( special_effect_t& effect )
       if ( damage == nullptr )
       {
         damage = new felcrazed_rage_t( effect );
+        add_child( damage );
       }
     }
 
@@ -2038,7 +2040,11 @@ void item::draught_of_souls( special_effect_t& effect )
       // which by default prohibits player-ready generation.
       if ( was_channeling && player -> readying == nullptr )
       {
-        player -> schedule_ready();
+        // Due to the client not allowing the ability queue here, we have to wait
+        // the amount of lag + how often the key is spammed until the next ability is used.
+        // Modeling this as 2 * lag for now. Might increase to 3 * lag after looking at logs of people using the trinket.
+        timespan_t time = ( player -> world_lag_override ? player -> world_lag : sim -> world_lag ) * 2.0;
+        player -> schedule_ready( time );
       }
     }
   };
