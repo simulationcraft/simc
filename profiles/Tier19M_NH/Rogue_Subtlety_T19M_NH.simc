@@ -44,6 +44,7 @@ actions.build+=/backstab
 
 # Cooldowns
 actions.cds=potion,name=old_war,if=buff.bloodlust.react|target.time_to_die<=25|buff.shadow_blades.up
+actions.cds+=/use_item,slot=trinket1,if=cooldown.shadow_dance.charges_fractional<2.45&buff.shadow_dance.down
 actions.cds+=/blood_fury,if=stealthed.rogue
 actions.cds+=/berserking,if=stealthed.rogue
 actions.cds+=/arcane_torrent,if=stealthed.rogue&energy.deficit>70
@@ -92,17 +93,17 @@ legs=doomblade_pants,id=138335,bonus_id=3519
 feet=grovetenders_moccasins,id=140861,bonus_id=3519
 finger1=ring_of_exclusive_servitude,id=140906,bonus_id=3519,enchant=binding_of_mastery
 finger2=ring_of_the_scoured_clan,id=140897,bonus_id=3519,enchant=binding_of_mastery
-trinket1=nightblooming_frond,id=140802,bonus_id=3519
+trinket1=draught_of_souls,id=140808,bonus_id=3519
 trinket2=convergence_of_fates,id=140806,bonus_id=3519
 main_hand=fangs_of_the_devourer,id=128476,bonus_id=743,gem_id=140824/140823/140824,relic_id=3519/3519/3519
 off_hand=fangs_of_the_devourer,id=128479,gem_id=0/0/0/0
 
 # Gear Summary
 # gear_ilvl=912.88
-# gear_agility=24228
+# gear_agility=21964
 # gear_stamina=35283
 # gear_crit_rating=6611
-# gear_haste_rating=1600
+# gear_haste_rating=2825
 # gear_mastery_rating=10977
 # gear_versatility_rating=4382
 # gear_armor=2471

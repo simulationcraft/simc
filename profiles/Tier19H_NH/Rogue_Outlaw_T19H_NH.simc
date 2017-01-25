@@ -77,21 +77,21 @@ actions.stealth+=/ambush
 actions.stealth+=/vanish,if=variable.stealth_condition
 actions.stealth+=/shadowmeld,if=variable.stealth_condition
 
-head=nightborne_battlemagus_hood,id=140866,bonus_id=1492/3516
-neck=brooch_of_the_astral_scryer,id=140900,bonus_id=1492/3516,enchant=mark_of_the_hidden_satyr
-shoulders=doomblade_spaulders,id=138338,bonus_id=1492/3516
-back=doomblade_shadowwrap,id=138371,bonus_id=1492/3516,enchant=binding_of_agility
+head=nightborne_battlemagus_hood,id=140866,bonus_id=3517
+neck=brooch_of_the_astral_scryer,id=140900,bonus_id=3517,enchant=mark_of_the_hidden_satyr
+shoulders=doomblade_spaulders,id=138338,bonus_id=3517
+back=doomblade_shadowwrap,id=138371,bonus_id=3517,enchant=binding_of_agility
 chest=tunic_of_unwavering_devotion,id=140865,bonus_id=1492/3444
-wrists=bracers_of_impossible_choices,id=140889,bonus_id=1492/3516
-hands=doomblade_gauntlets,id=138329,bonus_id=1492/3516
-waist=cake_carriers_girdle,id=140858,bonus_id=1492/3516
-legs=doomblade_pants,id=138335,bonus_id=1492/3516
-feet=stutterstep_treads,id=140860,bonus_id=1492/3516
-finger1=ring_of_braided_stems,id=140896,bonus_id=1492/3516,enchant=binding_of_versatility
-finger2=ring_of_exclusive_servitude,id=140906,bonus_id=1492/3516,enchant=binding_of_versatility
-trinket1=nightblooming_frond,id=140802,bonus_id=1492/3516
-trinket2=convergence_of_fates,id=140806,bonus_id=1492/3516
-main_hand=the_dreadblades,id=128872,bonus_id=742,gem_id=140819/140817/140841,relic_id=1492:3516/1492:3516/1492:3516
+wrists=bracers_of_impossible_choices,id=140889,bonus_id=3517
+hands=doomblade_gauntlets,id=138329,bonus_id=3517
+waist=cake_carriers_girdle,id=140858,bonus_id=3517
+legs=doomblade_pants,id=138335,bonus_id=3517
+feet=stutterstep_treads,id=140860,bonus_id=3517
+finger1=ring_of_braided_stems,id=140896,bonus_id=3517,enchant=binding_of_versatility
+finger2=ring_of_exclusive_servitude,id=140906,bonus_id=3517,enchant=binding_of_versatility
+trinket1=nightblooming_frond,id=140802,bonus_id=3517
+trinket2=convergence_of_fates,id=140806,bonus_id=3517
+main_hand=the_dreadblades,id=128872,bonus_id=742,gem_id=140819/140817/140841,relic_id=3517/3517/3517
 off_hand=the_dreadblades,id=134552
 
 # Gear Summary
