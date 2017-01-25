@@ -3328,13 +3328,8 @@ void item::convergence_of_fates( special_effect_t& effect )
     if ( player_talent( effect.player, "Crusade" ) )
     {
       effect.ppm_ = -1.5;
+      effect.rppm_modifier_ = 1.0;
     }
-    else
-    {
-      effect.ppm_ = -4.2;
-    }
-    // This is there to safeguard the fixed RPPM rates given here
-    effect.rppm_modifier_ = 1.0;
     break;
   case MONK_WINDWALKER:
     if ( player_talent( effect.player, "Serenity" ) )
