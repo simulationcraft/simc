@@ -3324,7 +3324,7 @@ void item::convergence_of_fates( special_effect_t& effect )
   break;
   case MONK_WINDWALKER:
   if ( player_talent( effect.player, "Serenity" ) )
-    effect.ppm_ = -1.575;
+    effect.ppm_ = -1.6;
   break;
   case DEATH_KNIGHT_FROST:
   if ( player_talent( effect.player, "Hungering Rune Weapon" ) )
