@@ -7987,9 +7987,10 @@ std::vector<std::string> mage_t::get_non_speical_item_actions()
   std::vector<std::string> specials;
 
   // very ugly construction of our list of special items
-  specials.push_back( "obelisk_of_the_void" );
-  specials.push_back( "horn_of_valor"       );
-  specials.push_back( "mrrgrias_favor"      );
+  specials.push_back( "obelisk_of_the_void"           );
+  specials.push_back( "horn_of_valor"                 );
+  specials.push_back( "mrrgrias_favor"                );
+  specials.push_back( "pharameres_forbidden_grimoire" );
 
   for ( const auto& item : items )
   {
@@ -8183,6 +8184,7 @@ void mage_t::apl_arcane()
   default_list -> add_action( mage_t::get_special_use_items( "horn_of_valor", false ) );
   default_list -> add_action( mage_t::get_special_use_items( "obelisk_of_the_void", false ) );
   default_list -> add_action( mage_t::get_special_use_items( "mrrgrias_favor", false ) );
+  default_list -> add_action( mage_t::get_special_use_items( "pharameres_forbidden_grimoire", false ) );
   default_list -> add_action( "call_action_list,name=build,if=buff.arcane_charge.stack<4" );
   default_list -> add_action( "call_action_list,name=init_burn,if=buff.arcane_power.down&buff.arcane_charge.stack=4&(cooldown.mark_of_aluneth.remains=0|cooldown.mark_of_aluneth.remains>20)&(!talent.rune_of_power.enabled|(cooldown.arcane_power.remains<=action.rune_of_power.cast_time|action.rune_of_power.recharge_time<cooldown.arcane_power.remains))|target.time_to_die<45" );
   default_list -> add_action( "call_action_list,name=burn,if=burn_phase" );
@@ -8281,6 +8283,7 @@ void mage_t::apl_fire()
   default_list -> add_action( mage_t::get_special_use_items( "horn_of_valor", true ) );
   default_list -> add_action( mage_t::get_special_use_items( "obelisk_of_the_void", true ) );
   default_list -> add_action( mage_t::get_special_use_items( "mrrgrias_favor", false ) );
+  default_list -> add_action( mage_t::get_special_use_items( "pharameres_forbidden_grimoire", false ) );
 
   default_list -> add_action( "call_action_list,name=combustion_phase,if=cooldown.combustion.remains<=action.rune_of_power.cast_time+(!talent.kindling.enabled*gcd)|buff.combustion.up" );
   default_list -> add_action( "call_action_list,name=rop_phase,if=buff.rune_of_power.up&buff.combustion.down" );
@@ -8363,7 +8366,7 @@ void mage_t::apl_frost()
   default_list -> add_action( mage_t::get_special_use_items( "horn_of_valor", false ) );
   default_list -> add_action( mage_t::get_special_use_items( "obelisk_of_the_void", false ) );
   default_list -> add_action( mage_t::get_special_use_items( "mrrgrias_favor", false ) );
-
+  default_list -> add_action( mage_t::get_special_use_items( "pharameres_forbidden_grimoire", false ) );
   default_list -> add_action( "call_action_list,name=cooldowns" );
   default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>=4" );
   default_list -> add_action( "call_action_list,name=single" );
