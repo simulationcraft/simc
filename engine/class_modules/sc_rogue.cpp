@@ -1636,12 +1636,21 @@ struct insignia_of_ravenholdt_attack_t : public rogue_attack_t
 // It doesn't work with Hemorrhage nor with Venomous Wounds nor Zoldyck Family Training Shackles.
 // The only time it is counted "as a bleed" is for T19 4PC (it increases envenom damage).
 using namespace residual_action;
-struct mutilated_flesh_t : public residual_periodic_action_t<melee_attack_t>
+struct mutilated_flesh_t : public residual_periodic_action_t<rogue_attack_t>
 {
   mutilated_flesh_t( rogue_t* p ) :
-    residual_periodic_action_t<melee_attack_t>( "mutilated_flesh", p, p -> find_spell( 211672 ) )
+    residual_periodic_action_t<rogue_attack_t>( "mutilated_flesh", p, p -> find_spell( 211672 ) )
   {
     background = true;
+  }
+
+  double calculate_tick_amount( action_state_t* state, double dmg_multiplier ) const override
+  {
+    rogue_td_t* tdata = p() -> get_target_data( target );
+
+    dmg_multiplier *= 1.0 + p() -> agonizing_poison_stack_multiplier( tdata );;
+
+    return residual_periodic_action_t::calculate_tick_amount( state, dmg_multiplier );
   }
 };
 
@@ -3649,10 +3658,7 @@ struct mutilate_strike_t : public rogue_attack_t
 
     if ( result_is_hit( state -> result ) && p() -> sets.has_set_bonus( ROGUE_ASSASSINATION, T19, B2 ) )
     {
-      // TODO: To be confirmed
-      // As of 01/26/2017, it seems that mutilated flesh damage are taken pre-mitigation.
-      // So result_total instead of result_amount.
-      double amount = state -> result_total * p() -> sets.set( ROGUE_ASSASSINATION, T19, B2 ) -> effectN( 1 ).percent();
+      double amount = state -> result_amount * p() -> sets.set( ROGUE_ASSASSINATION, T19, B2 ) -> effectN( 1 ).percent();
 
       residual_action::trigger( p() -> t19_2pc_assassination, state -> target, amount );
     }
