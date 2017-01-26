@@ -4964,7 +4964,13 @@ void warrior_t::apl_fury()
   cooldowns -> add_action( this, "Rampage", "if=talent.reckless_abandon.enabled" );
   cooldowns -> add_action( this, "Berserker Rage", "if=talent.outburst.enabled&buff.enrage.down&buff.battle_cry.up" );
   cooldowns -> add_action( this, "Bloodthirst", "if=buff.enrage.remains<1&!talent.outburst.enabled" );
-  cooldowns -> add_action( "use_item,name=draught_of_souls,if=equipped.trinket=draught_of_souls,if=buff.battle_cry.remains>3&((talent.dragon_roar.enabled&buff.dragon_roar.remains>=3)|!talent.dragon_roar.enabled)" );
+  for ( size_t i = 0; i < items.size(); i++ )
+  {
+    if ( items[i].name_str == "draught_of_souls" )
+    {
+      cooldowns -> add_action( "use_item,name=" + items[i].name_str + ",if=equipped.trinket=draught_of_souls,if=buff.battle_cry.remains>3&((talent.dragon_roar.enabled&buff.dragon_roar.remains>=3)|!talent.dragon_roar.enabled)" );
+    }
+  }
   cooldowns -> add_action( this, "Raging Blow" );
   cooldowns -> add_action( this, "Odyn's Fury" );
   cooldowns -> add_action( this, "Bloodthirst" );
@@ -5059,13 +5065,20 @@ void warrior_t::apl_arms()
 
   default_list -> add_action( this, "Battle Cry", "if=gcd.remains<0.25&cooldown.avatar.remains>=10&(buff.shattered_defenses.up|cooldown.warbreaker.remains>7&cooldown.colossus_smash.remains>7|cooldown.colossus_smash.remains&debuff.colossus_smash.remains>gcd)|!cooldown.colossus_smash.remains<gcd|target.time_to_die<=7" );
   default_list -> add_talent( this, "Avatar", "if=gcd.remains<0.25&(buff.battle_cry.up|cooldown.battle_cry.remains<15)|target.time_to_die<=20" );
-  default_list -> add_action( "use_item,name=draught_of_souls,if=equipped.draught_of_souls&((prev_gcd.1.mortal_strike|cooldown.mortal_strike.remains>=3)&buff.battle_cry.remains>=3&debuff.colossus_smash.up&buff.avatar.remains>=3)" );
-  default_list -> add_action( "use_item,name=kiljaedens_burning_wish,if=equipped.kiljaedens_burning_wish&debuff.colossus_smash.up" );
   for ( size_t i = 0; i < items.size(); i++ )
   {
     if ( items[i].name_str == "ring_of_collapsing_futures" )
     {
       default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=buff.battle_cry.up&debuff.colossus_smash.up&!buff.temptation.up" );
+    }
+    else if ( items[i].name_str == "draught_of_souls" )
+    {
+      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=equipped.draught_of_souls&((prev_gcd.1.mortal_strike|cooldown.mortal_strike.remains>=3)&buff.battle_cry.remains>=3&debuff.colossus_smash.up&buff.avatar.remains>=3)" );
+
+    }
+    else if ( items[i].name_str == "kiljaedens_burning_wish" )
+    {
+      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=equipped.kiljaedens_burning_wish&debuff.colossus_smash.up" );
     }
     else if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
     {

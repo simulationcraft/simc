@@ -61,7 +61,6 @@ actions.cooldowns+=/raging_blow,if=buff.enrage.up
 actions.cooldowns+=/rampage,if=talent.reckless_abandon.enabled
 actions.cooldowns+=/berserker_rage,if=talent.outburst.enabled&buff.enrage.down&buff.battle_cry.up
 actions.cooldowns+=/bloodthirst,if=buff.enrage.remains<1&!talent.outburst.enabled
-actions.cooldowns+=/use_item,name=draught_of_souls,if=equipped.trinket=draught_of_souls,if=buff.battle_cry.remains>3&((talent.dragon_roar.enabled&buff.dragon_roar.remains>=3)|!talent.dragon_roar.enabled)
 actions.cooldowns+=/raging_blow
 actions.cooldowns+=/odyns_fury
 actions.cooldowns+=/bloodthirst
