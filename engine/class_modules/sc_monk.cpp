@@ -9469,7 +9469,7 @@ void monk_t::apl_combat_windwalker()
   st -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=!equipped.convergence_of_fates" );
   st -> add_talent( this, "Whirling Dragon Punch" );
   st -> add_action( this, "Crackling Jade Lightning", "if=equipped.the_emperors_capacitor&buff.the_emperors_capacitor.stack>=19" );
-  st -> add_action( this, "Spinning Crane Kick", "if=active_enemies>=3&!prev_gcd.1.spinning_crane_kick" );
+  st -> add_action( this, "Spinning Crane Kick", "if=(active_enemies>=3|spinning_crane_kick.count>=3)&!prev_gcd.1.spinning_crane_kick" );
   st -> add_talent( this, "Rushing Jade Wind", "if=chi.max-chi>1&!prev_gcd.1.rushing_jade_wind" );
   st -> add_action( this, "Blackout Kick", "cycle_targets=1,if=(chi>1|buff.bok_proc.up)&!prev_gcd.1.blackout_kick" );
   st -> add_talent( this, "Chi Wave", "if=energy.time_to_max>=2.25" );
@@ -9716,7 +9716,7 @@ expr_t* monk_t::create_expression( action_t* a, const std::string& name_str )
     {
       monk_t& player;
       stagger_remains_expr_t(monk_t& p) :
-        expr_t("stagger_remains"),
+        expr_t( "stagger_remains" ),
         player(p)
       { }
 
@@ -9740,13 +9740,13 @@ expr_t* monk_t::create_expression( action_t* a, const std::string& name_str )
       return new stagger_remains_expr_t( *this );
   }
 
-  if ( splits.size() == 2 && splits[0] == "spinning_crane_kick" )
+  else if ( splits.size() == 2 && splits[0] == "spinning_crane_kick" )
   {
     struct sck_stack_expr_t : public expr_t
     {
       monk_t& player;
       sck_stack_expr_t( monk_t& p ) :
-        expr_t( "count" ),
+        expr_t( "sck count" ),
         player( p )
       { }
 
@@ -9756,6 +9756,8 @@ expr_t* monk_t::create_expression( action_t* a, const std::string& name_str )
       }
     };
 
+    if ( splits[1] == "count" )
+      return new sck_stack_expr_t( *this );
   }
 
   return base_t::create_expression( a, name_str );
