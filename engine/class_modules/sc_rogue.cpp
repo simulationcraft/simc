@@ -1636,19 +1636,20 @@ struct insignia_of_ravenholdt_attack_t : public rogue_attack_t
 // It doesn't work with Hemorrhage nor with Venomous Wounds nor Zoldyck Family Training Shackles.
 // The only time it is counted "as a bleed" is for T19 4PC (it increases envenom damage).
 using namespace residual_action;
-struct mutilated_flesh_t : public residual_periodic_action_t<rogue_attack_t>
+struct mutilated_flesh_t : public residual_periodic_action_t<melee_attack_t>
 {
+  rogue_t* rouge;
   mutilated_flesh_t( rogue_t* p ) :
-    residual_periodic_action_t<rogue_attack_t>( "mutilated_flesh", p, p -> find_spell( 211672 ) )
+    residual_periodic_action_t<melee_attack_t>( "mutilated_flesh", p, p -> find_spell( 211672 ) ), rouge( p )
   {
     background = true;
   }
 
   double calculate_tick_amount( action_state_t* state, double dmg_multiplier ) const override
   {
-    rogue_td_t* tdata = p() -> get_target_data( target );
+    rogue_td_t* tdata = rouge -> get_target_data( target );
 
-    dmg_multiplier *= 1.0 + p() -> agonizing_poison_stack_multiplier( tdata );;
+    dmg_multiplier *= 1.0 + rouge -> agonizing_poison_stack_multiplier( tdata );;
 
     return residual_periodic_action_t::calculate_tick_amount( state, dmg_multiplier );
   }
