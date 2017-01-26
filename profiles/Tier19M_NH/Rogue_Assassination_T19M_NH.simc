@@ -67,7 +67,7 @@ actions.maintain+=/pool_resource,for_next=1
 actions.maintain+=/garrote,cycle_targets=1,if=refreshable&(!exsanguinated|remains<=1.5)&target.time_to_die-remains>4
 
 head=doomblade_cowl,id=138332,bonus_id=3519
-neck=belerons_choker_of_misery,id=140899,bonus_id=3519,enchant=mark_of_the_hidden_satyr
+neck=zealous_timestone_pendant,id=140894,bonus_id=3519,enchant=mark_of_the_hidden_satyr
 shoulders=mantle_of_the_torn_sky,id=140864,bonus_id=3519
 back=doomblade_shadowwrap,id=138371,bonus_id=3519,enchant=binding_of_agility
 chest=doomblade_tunic,id=138326,bonus_id=3519
@@ -87,10 +87,10 @@ off_hand=the_kingslayers,id=128869
 # gear_ilvl=912.88
 # gear_agility=21964
 # gear_stamina=35283
-# gear_crit_rating=10530
+# gear_crit_rating=8749
 # gear_haste_rating=1935
-# gear_mastery_rating=9105
-# gear_versatility_rating=3224
+# gear_mastery_rating=9729
+# gear_versatility_rating=4382
 # gear_armor=2471
 # set_bonus=tier19_2pc=1
 # set_bonus=tier19_4pc=1
