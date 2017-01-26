@@ -6802,7 +6802,7 @@ void shaman_t::init_action_list_elemental()
   // On-use items
   for ( const auto& item : items )
   {
-    if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+    if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
     {
       def -> add_action( "use_item,slot=" + std::string( item.slot_name() ) );
     }
@@ -6993,7 +6993,7 @@ void shaman_t::init_action_list_enhancement()
   // On-use items
   for ( const auto& item : items )
   {
-    if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+    if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
     {
       def -> add_action( "use_item,slot=" + std::string( item.slot_name() ) );
     }
