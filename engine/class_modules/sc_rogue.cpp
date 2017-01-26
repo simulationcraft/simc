@@ -5361,7 +5361,7 @@ void rogue_t::trigger_blade_flurry( const action_state_t* state )
   // Note, unmitigated damage
   active_blade_flurry -> base_dd_min = state -> result_total;
   active_blade_flurry -> base_dd_max = state -> result_total;
-  active_blade_flurry -> schedule_execute();
+  active_blade_flurry -> execute();
 }
 
 void rogue_t::trigger_combo_point_gain( int     cp,
