@@ -3244,7 +3244,7 @@ static const convergence_cd_t convergence_cds[] =
 
   !!! NOTE !!! NOTE !!! NOTE !!! NOTE !!! NOTE !!! NOTE !!! NOTE !!! */
   { DEATH_KNIGHT_FROST,   { "empower_rune_weapon", "hungering_rune_weapon" } },
-  { DEATH_KNIGHT_UNHOLY,  { "summon_gargoyle" } },
+  { DEATH_KNIGHT_UNHOLY,  { "summon_gargoyle", "dark_arbiter" } },
   { DRUID_FERAL,          { "berserk", "incarnation" } },
   { HUNTER_BEAST_MASTERY, { "aspect_of_the_wild" } },
   { HUNTER_MARKSMANSHIP,  { "trueshot" } },
