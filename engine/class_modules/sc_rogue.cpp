@@ -1612,6 +1612,7 @@ struct insignia_of_ravenholdt_attack_t : public rogue_attack_t
       m += p() -> spec.assassination_rogue -> effectN( 3 ).percent();
 
       // It seems that Insignia ignores only Vendetta modifier
+      // See: https://github.com/simulationcraft/simc/issues/3435
       rogue_td_t* tdata = td( target );
       if ( tdata -> debuffs.vendetta -> check() )
       {
@@ -3648,7 +3649,10 @@ struct mutilate_strike_t : public rogue_attack_t
 
     if ( result_is_hit( state -> result ) && p() -> sets.has_set_bonus( ROGUE_ASSASSINATION, T19, B2 ) )
     {
-      double amount = state -> result_amount * p() -> sets.set( ROGUE_ASSASSINATION, T19, B2 ) -> effectN( 1 ).percent();
+      // TODO: To be confirmed
+      // As of 01/26/2017, it seems that mutilated flesh damage are taken pre-mitigation.
+      // So result_total instead of result_amount.
+      double amount = state -> result_total * p() -> sets.set( ROGUE_ASSASSINATION, T19, B2 ) -> effectN( 1 ).percent();
 
       residual_action::trigger( p() -> t19_2pc_assassination, state -> target, amount );
     }
