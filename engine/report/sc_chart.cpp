@@ -1052,6 +1052,8 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s,
     std::sort( player_list.begin(), player_list.end(),
                player_list_comparator_t( chart_metric, vm ) );
 
+    double lowest_value = get_data_value( player_list.back() -> collected_data, chart_metric, vm );
+
     // Compute median if applicable
     double median = compute_median( player_list, chart_metric, vm );
 
@@ -1080,11 +1082,11 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s,
              util::round( value, static_cast<unsigned int>( precision ) ) );
       e.set( "id", "#player" + util::to_string( p->index ) + "toggle" );
 
-      // If median is defined, add relative difference (in percent) to the data
-      if ( median > 0 )
+      // If lowest_value is defined, add relative difference (in percent) to the data
+      if ( lowest_value > 0 )
       {
         has_diff = true;
-        e.set( "reldiff", 100.0 * value / median - 100.0 );
+        e.set( "reldiff", 100.0 * value / lowest_value - 100.0 );
       }
 
       bc.add( "__data." + series_id_str + ".series.0.data", e );
