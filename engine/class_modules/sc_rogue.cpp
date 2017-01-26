@@ -1647,7 +1647,7 @@ struct mutilated_flesh_t : public residual_periodic_action_t<melee_attack_t>
 
   double calculate_tick_amount( action_state_t* state, double dmg_multiplier ) const override
   {
-    rogue_td_t* tdata = rouge -> get_target_data( target );
+    rogue_td_t* tdata = rouge -> get_target_data( state -> target );
 
     dmg_multiplier *= 1.0 + rouge -> agonizing_poison_stack_multiplier( tdata );;
 
