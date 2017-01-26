@@ -89,6 +89,8 @@ public:
 };
 
 const unsigned MAX_SOUL_FRAGMENTS = 5;
+const unsigned DEMONIC_EXTEND_DURATION = 8;
+const double VENGEFUL_RETREAT_DISTANCE = 20.0;
 
 enum soul_fragment_e
 {
@@ -128,8 +130,6 @@ struct movement_buff_t : public buff_t
 
   void expire_override( int, timespan_t ) override;
 };
-
-const double VENGEFUL_RETREAT_DISTANCE = 20.0;
 
 /* Demon Hunter class definition
  *
@@ -333,7 +333,8 @@ public:
     // Havoc -- Twinblades of the Deceiver
     artifact_power_t anguish_of_the_deceiver;
     artifact_power_t balanced_blades;
-    artifact_power_t chaos_vision;
+    artifact_power_t chaos_burn;
+    artifact_power_t chaos_vision;    
     artifact_power_t contained_fury;
     artifact_power_t critical_chaos;
     artifact_power_t demon_rage;
@@ -341,16 +342,18 @@ public:
     artifact_power_t feast_on_the_souls;
     artifact_power_t fury_of_the_illidari;
     artifact_power_t inner_demons;
+    artifact_power_t overwhelming_power;
     artifact_power_t rage_of_the_illidari;
     artifact_power_t sharpened_glaives;
     artifact_power_t unleashed_demons;
     artifact_power_t warglaives_of_chaos;
-  artifact_power_t chaos_burn;
+    artifact_power_t wide_eyes;
 
     // NYI
+    artifact_power_t bladedancers_grace;
+    artifact_power_t chaotic_onslaught;
     artifact_power_t deceivers_fury;
     artifact_power_t illidari_knowledge;
-    artifact_power_t overwhelming_power;
 
     // Vengeance -- The Aldrachi Warblades
     artifact_power_t aldrachi_design;
@@ -510,7 +513,7 @@ public:
     // Havoc
     double eternal_hunger;
     timespan_t raddons_cascading_eyes;
-    timespan_t delusions_of_grandeur_reduction;
+    double delusions_of_grandeur_reduction;
     double delusions_of_grandeur_fury_per_time;
 
     // Vengeance
@@ -1074,6 +1077,7 @@ public:
   bool hasted_gcd;
   bool may_proc_fel_barrage;
   bool havoc_damage_increase;
+  bool vengeance_damage_increase;
 
   demon_hunter_action_t( const std::string& n, demon_hunter_t* p,
                          const spell_data_t* s = spell_data_t::nil(),
@@ -1085,7 +1089,8 @@ public:
                        p -> sets.set( DEMON_HUNTER_HAVOC, T19, B2 ) ) ),
       hasted_gcd( false ),
       may_proc_fel_barrage( false ),
-      havoc_damage_increase(ab::data().affected_by(p->spec.havoc->effectN(6)))
+      havoc_damage_increase(ab::data().affected_by(p->spec.havoc->effectN(6))),
+    vengeance_damage_increase(ab::data().affected_by(p->spec.vengeance->effectN(1)))
   {
     ab::parse_options( o );
     ab::may_crit      = true;
@@ -1107,6 +1112,11 @@ public:
         hasted_gcd = ab::data().affected_by( p -> spec.vengeance -> effectN( 1 ) );
         ab::cooldown -> hasted =
           ab::data().affected_by( p -> spec.vengeance -> effectN( 2 ) );
+
+    if (vengeance_damage_increase)
+    {
+      ab::base_dd_multiplier *= 1 + p->spec.vengeance->effectN(1).percent();
+    }
         break;
       default:
         break;
@@ -1250,20 +1260,23 @@ public:
     }
   }
 
-  virtual void consume_resource() override
+  void consume_resource() override
   {
     ab::consume_resource();
-    resource_e cr = ab::current_resource();
 
-    if (cr != RESOURCE_FURY || ab::base_cost() == 0 || ab::proc) return;
+    if ( ab::current_resource() == RESOURCE_FURY )
+    {
+      delusions_of_grandeur( ab::resource_consumed );
+    }
+  }
 
-    if (p()->legendary.delusions_of_grandeur_reduction >= timespan_t::zero()) return;
-
-    ab::resource_consumed = ab::cost();
-
-    double ticks = ab::resource_consumed / p()->legendary.delusions_of_grandeur_fury_per_time;
-    double seconds = p()->legendary.delusions_of_grandeur_reduction.total_millis();
-    p()->cooldown.metamorphosis->adjust(timespan_t::from_seconds(ticks * seconds));
+  void delusions_of_grandeur( double fury )
+  {
+    if ( p()->legendary.delusions_of_grandeur_fury_per_time > 0 && fury > 0 )
+    {
+      fury /= p() -> legendary.delusions_of_grandeur_fury_per_time;
+      p() -> cooldown.metamorphosis -> adjust( timespan_t::from_seconds( p() -> legendary.delusions_of_grandeur_reduction * fury ) );
+    }
   }
 
   virtual bool ready() override
@@ -1419,8 +1432,7 @@ struct consume_soul_t : public demon_hunter_heal_t
   struct demonic_appetite_t : public demon_hunter_spell_t
   {
     demonic_appetite_t( demon_hunter_t* p )
-      : demon_hunter_spell_t( "demonic_appetite_fury", p,
-                              p -> find_spell( 210041 ) )
+      : demon_hunter_spell_t( "demonic_appetite_fury", p, p->spec.demonic_appetite_fury)
     {
       may_miss = may_crit = callbacks = false;
       background = quiet = true;
@@ -1807,6 +1819,8 @@ struct eye_beam_t : public demon_hunter_spell_t
     school = SCHOOL_CHAOS;  // Jun 27 2016: Spell data states Chromatic damage,
     // just override it.
 
+    base_costs[RESOURCE_FURY] += p->artifact.wide_eyes.value();
+
     dot_duration *= 1.0 + p -> talent.blind_fury -> effectN( 1 ).percent();
 
     if ( p -> artifact.anguish_of_the_deceiver.rank() )
@@ -1835,7 +1849,7 @@ struct eye_beam_t : public demon_hunter_spell_t
 
     if (p()->talent.demonic->ok())
     {
-      timespan_t demonic_time = timespan_t::from_seconds(8);
+      timespan_t demonic_time = timespan_t::from_seconds(DEMONIC_EXTEND_DURATION);
       if (p()->buff.metamorphosis->up())
       {
         p()->buff.metamorphosis->extend_duration(p(), demonic_time);
@@ -2028,7 +2042,7 @@ struct fel_eruption_t : public demon_hunter_spell_t
       may_proc_fel_barrage = true;  // Jul 12 2016
 
       // Damage penalty for Vengeance DH
-      base_multiplier *= 1.0 + p -> spec.vengeance -> effectN( 4 ).percent();
+      base_multiplier *= 1.0 + p -> spec.vengeance -> effectN( 6 ).percent();
     }
   };
 
@@ -3344,7 +3358,8 @@ struct chaos_blade_t : public demon_hunter_attack_t
     : demon_hunter_attack_t( n, p, s )
   {
     base_execute_time = weapon -> swing_time;
-    special           = true;  // Apr 12 2016: Cannot miss.
+    special           = false;  // set false special to force it to proc a "white hit" so trinkets don't fall off
+  may_miss = may_glance = false; // however, it cannot miss or glance
     repeating = background = true;
   }
 
@@ -3353,6 +3368,11 @@ struct chaos_blade_t : public demon_hunter_attack_t
     demon_hunter_attack_t::impact( s );
 
     trigger_demon_blades( s );
+  }
+
+  double action_multiplier() const override
+  {
+    return action_t::action_multiplier(); // skip attack_t's multiplier so we don't get the AA bonus.  Tested 2017/01/23
   }
 };
 
@@ -3601,15 +3621,14 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
     if ( hit_any_target )
     {
       // TODO: Travel time
-      if ( p() -> talent.demonic_appetite -> ok() &&
-           !p() -> cooldown.demonic_appetite -> down() &&
-           p() -> rng().roll( p() -> talent.demonic_appetite -> proc_chance() ) )
+      if (p()->talent.demonic_appetite->ok() && !p()->cooldown.demonic_appetite->down())
       {
-        p() -> cooldown.demonic_appetite -> start();
-        p() -> proc.demonic_appetite -> occur();
-
-        p() -> spawn_soul_fragment( SOUL_FRAGMENT_LESSER );
-        // FIXME
+        if (p()->rng().roll(p()->talent.demonic_appetite->proc_chance()))
+        {
+          p()->cooldown.demonic_appetite->start();
+          p()->proc.demonic_appetite->occur();
+          p()->spawn_soul_fragment(SOUL_FRAGMENT_LESSER);
+        }
       }
 
       // Inner Demons procs on cast
@@ -3913,7 +3932,7 @@ struct felblade_t : public demon_hunter_attack_t
       parse_effect_data( data().effectN( p -> specialization() == DEMON_HUNTER_HAVOC ? 4 : 3 ) );
 
       // Damage penalty for Vengeance DH
-      base_multiplier *= 1.0 + p -> spec.vengeance -> effectN( 3 ).percent();
+      base_multiplier *= 1.0 + p -> spec.vengeance -> effectN( 5 ).percent();
     }
   };
 
@@ -4831,7 +4850,7 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
         extended_by_demonic = false;
       }
       // If we are triggering from Eye Beam, we should disallow any additional full Demonic extensions
-      else if (p->executing->id == this->p().spec.eye_beam->id() && extra_seconds == timespan_t::from_seconds(8))
+      else if (p->executing->id == this->p().spec.eye_beam->id() && extra_seconds == timespan_t::from_seconds(DEMONIC_EXTEND_DURATION))
       {
         if (extended_by_demonic)
           return;
@@ -5434,10 +5453,21 @@ void demon_hunter_t::create_buffs()
 
   // General
 
-  buff.demon_soul =
-    buff_creator_t( this, "demon_soul", find_spell( 208195 ) )
-    .default_value( find_spell( 208195 ) -> effectN( 1 ).percent() )
-    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  // FIXME: 1/22/2017 -- 7.2.0 PTR Spell Id 208195 was removed, but 163073 still remains
+  if ( maybe_ptr( dbc.ptr ) )
+  {
+    buff.demon_soul =
+      buff_creator_t( this, "demon_soul", find_spell( 163073 ) )
+      .default_value( find_spell( 163073 )->effectN( 1 ).percent() )
+      .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  }
+  else
+  {
+    buff.demon_soul =
+      buff_creator_t( this, "demon_soul", find_spell( 208195 ) )
+      .default_value( find_spell( 208195 )->effectN( 1 ).percent() )
+      .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  }
 
   buff.metamorphosis = new buffs::metamorphosis_buff_t( this );
 
@@ -6076,8 +6106,12 @@ void demon_hunter_t::init_spells()
   spec.metamorphosis          = find_class_spell("Metamorphosis");
   spec.metamorphosis_buff     = specialization() == DEMON_HUNTER_HAVOC
                                  ? find_spell( 162264 ) : find_spell( 187827 );
-  spec.soul_fragment = find_spell( 204255 );
-  
+
+  // FIXME: 1/22/2017 -- 7.2.0 PTR Spell Id 204255 was removed, but 203795 still remains
+  if(maybe_ptr( dbc.ptr ) )
+    spec.soul_fragment = find_spell(203795);
+  else
+    spec.soul_fragment = find_spell(204255);
 
   // Havoc
   spec.havoc               = find_specialization_spell( "Havoc Demon Hunter" );
@@ -6172,44 +6206,46 @@ void demon_hunter_t::init_spells()
   // Artifacts ==============================================================
 
   // Havoc -- Twinblades of the Deceiver
-  artifact.anguish_of_the_deceiver =
-    find_artifact_spell( "Anguish of the Deceiver" );
-  artifact.balanced_blades      = find_artifact_spell( "Balanced Blades" );
-  artifact.chaos_vision         = find_artifact_spell( "Chaos Vision" );
-  artifact.contained_fury       = find_artifact_spell( "Contained Fury" );
-  artifact.critical_chaos       = find_artifact_spell( "Critical Chaos" );
-  artifact.deceivers_fury       = find_artifact_spell( "Deceiver's Fury" );
-  artifact.demon_rage           = find_artifact_spell( "Demon Rage" );
-  artifact.demon_speed          = find_artifact_spell( "Demon Speed" );
-  artifact.feast_on_the_souls   = find_artifact_spell( "Feast on the Souls" );
-  artifact.fury_of_the_illidari = find_artifact_spell( "Fury of the Illidari" );
-  artifact.illidari_knowledge   = find_artifact_spell( "Illidari Knowledge" );
-  artifact.inner_demons         = find_artifact_spell( "Inner Demons" );
-  artifact.overwhelming_power   = find_artifact_spell( "Overwhelming Power" );
-  artifact.rage_of_the_illidari = find_artifact_spell( "Rage of the Illidari" );
-  artifact.sharpened_glaives    = find_artifact_spell( "Sharpened Glaives" );
-  artifact.unleashed_demons     = find_artifact_spell( "Unleashed Demons" );
-  artifact.warglaives_of_chaos  = find_artifact_spell( "Warglaives of Chaos" );
-  artifact.chaos_burn			= find_artifact_spell("Chaos Burn");
+  artifact.anguish_of_the_deceiver  = find_artifact_spell("Anguish of the Deceiver");
+  artifact.balanced_blades          = find_artifact_spell("Balanced Blades");
+  artifact.bladedancers_grace       = find_artifact_spell("Bladedancer's Grace");
+  artifact.chaos_burn               = find_artifact_spell("Chaos Burn");
+  artifact.chaos_vision             = find_artifact_spell("Chaos Vision");
+  artifact.chaotic_onslaught        = find_artifact_spell("Chaotic Onslaught");
+  artifact.contained_fury           = find_artifact_spell("Contained Fury");
+  artifact.critical_chaos           = find_artifact_spell("Critical Chaos");
+  artifact.deceivers_fury           = find_artifact_spell("Deceiver's Fury");
+  artifact.demon_rage               = find_artifact_spell("Demon Rage");
+  artifact.demon_speed              = find_artifact_spell("Demon Speed");
+  artifact.feast_on_the_souls       = find_artifact_spell("Feast on the Souls");
+  artifact.fury_of_the_illidari     = find_artifact_spell("Fury of the Illidari");
+  artifact.illidari_knowledge       = find_artifact_spell("Illidari Knowledge");
+  artifact.inner_demons             = find_artifact_spell("Inner Demons");
+  artifact.overwhelming_power       = find_artifact_spell("Overwhelming Power");
+  artifact.rage_of_the_illidari     = find_artifact_spell("Rage of the Illidari");
+  artifact.sharpened_glaives        = find_artifact_spell("Sharpened Glaives");
+  artifact.unleashed_demons         = find_artifact_spell("Unleashed Demons");
+  artifact.warglaives_of_chaos      = find_artifact_spell("Warglaives of Chaos");
+  artifact.wide_eyes                = find_artifact_spell("Wide Eyes");
 
   // Vengeance -- The Aldrachi Warblades
-  artifact.aldrachi_design      = find_artifact_spell( "Aldrachi Design" );
-  artifact.aura_of_pain         = find_artifact_spell( "Aura of Pain" );
-  artifact.charred_warblades    = find_artifact_spell( "Charred Warblades" );
-  artifact.defensive_spikes     = find_artifact_spell( "Defensive Spikes" );
-  artifact.demonic_flames       = find_artifact_spell( "Demonic Flames" );
-  artifact.devour_souls         = find_artifact_spell( "Devour Souls" );
-  artifact.embrace_the_pain     = find_artifact_spell( "Embrace the Pain" );
-  artifact.fiery_demise         = find_artifact_spell( "Fiery Demise" );
-  artifact.fueled_by_pain       = find_artifact_spell( "Fueled by Pain" );
-  artifact.honed_warblades      = find_artifact_spell( "Honed Warblades" );
-  artifact.infernal_force       = find_artifact_spell( "Infernal Force" );
-  artifact.painbringer          = find_artifact_spell( "Painbringer" );
-  artifact.shatter_the_souls    = find_artifact_spell( "Shatter the Souls" );
-  artifact.siphon_power         = find_artifact_spell( "Siphon Power" );
-  artifact.soul_carver          = find_artifact_spell( "Soul Carver" );
-  artifact.tormented_souls      = find_artifact_spell( "Tormented Souls" );
-  artifact.will_of_the_illidari = find_artifact_spell( "Will of the Illidari" );
+  artifact.aldrachi_design          = find_artifact_spell("Aldrachi Design");
+  artifact.aura_of_pain             = find_artifact_spell("Aura of Pain");
+  artifact.charred_warblades        = find_artifact_spell("Charred Warblades");
+  artifact.defensive_spikes         = find_artifact_spell("Defensive Spikes");
+  artifact.demonic_flames           = find_artifact_spell("Demonic Flames");
+  artifact.devour_souls             = find_artifact_spell("Devour Souls");
+  artifact.embrace_the_pain         = find_artifact_spell("Embrace the Pain");
+  artifact.fiery_demise             = find_artifact_spell("Fiery Demise");
+  artifact.fueled_by_pain           = find_artifact_spell("Fueled by Pain");
+  artifact.honed_warblades          = find_artifact_spell("Honed Warblades");
+  artifact.infernal_force           = find_artifact_spell("Infernal Force");
+  artifact.painbringer              = find_artifact_spell("Painbringer");
+  artifact.shatter_the_souls        = find_artifact_spell("Shatter the Souls");
+  artifact.siphon_power             = find_artifact_spell("Siphon Power");
+  artifact.soul_carver              = find_artifact_spell("Soul Carver");
+  artifact.tormented_souls          = find_artifact_spell("Tormented Souls");
+  artifact.will_of_the_illidari     = find_artifact_spell("Will of the Illidari");
 
   // Spell Initialization ===================================================
 
@@ -6511,7 +6547,7 @@ void demon_hunter_t::apl_havoc()
     "Chaos Strike pooling condition, so we don't spend too much fury when we need it for Chaos Cleave AoE");
   def -> add_action( "call_action_list,name=cooldown" );
   def -> add_action(
-    "pick_up_fragment,if=talent.demonic_appetite.enabled&fury.deficit>=35" );
+    "pick_up_fragment,if=talent.demonic_appetite.enabled&fury.deficit>=35&(!talent.demonic.enabled|cooldown.eye_beam.remains>5)" );
   def -> add_action( this, "Consume Magic" );
   def -> add_action(
     this, "Vengeful Retreat", "if=(talent.prepared.enabled|talent.momentum.enabled)&"
@@ -6565,7 +6601,7 @@ void demon_hunter_t::apl_havoc()
     "!talent.momentum.enabled)&((active_enemies>desired_targets&active_enemies>1)|raid_event.adds.in>30)",
     "Use Fel Barrage if its nearing max charges, saving it for Momentum and adds if possible." );
   def -> add_action( this, "Fel Rush", "if=!talent.momentum.enabled&"
-    "raid_event.movement.in>charges*10" );
+    "raid_event.movement.in>charges*10&(talent.demon_blades.enabled|buff.metamorphosis.down)" );
   def -> add_action( this, "Demon's Bite" );
   def -> add_action( this, "Throw Glaive", "if=buff.out_of_range.up" );
   def -> add_talent( this, "Felblade", "if=movement.distance|buff.out_of_range.up" );
@@ -6730,7 +6766,7 @@ double demon_hunter_t::composite_armor_multiplier() const
 
   if (specialization() == DEMON_HUNTER_VENGEANCE && buff.metamorphosis -> check())
   {
-	  am *= 1.0 + spec.metamorphosis_buff->effectN(8).percent();
+    am *= 1.0 + spec.metamorphosis_buff->effectN(8).percent();
   }
 
   return am;
@@ -7595,7 +7631,7 @@ struct delusions_of_grandeur_t : public scoped_actor_callback_t<demon_hunter_t>
 
   void manipulate(demon_hunter_t* actor, const special_effect_t& e) override
   {
-    actor->legendary.delusions_of_grandeur_reduction = -e.driver()->effectN(1).time_value();
+    actor->legendary.delusions_of_grandeur_reduction = -e.driver()->effectN(1).base_value();
     
     actor->legendary.delusions_of_grandeur_fury_per_time =
       e.driver()->effectN(2).base_value();

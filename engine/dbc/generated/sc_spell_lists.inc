@@ -119,8 +119,8 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       209202, // Eye of Tyr (Artifact)
        62124, // Hand of Reckoning
       162056, // Jailer's Judgment
-      228288, // Judgment
        20271, // Judgment
+      228288, // Judgment
          633, // Lay on Hands
       200652, // Tyr's Deliverance (Artifact)
       200654, // Tyr's Deliverance
@@ -213,8 +213,8 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
          982, // Revive Pet
       175686, // Stopping Power
         1515, // Tame Beast
-      207097, // Titan's Thunder
       207068, // Titan's Thunder (Artifact)
+      207097, // Titan's Thunder
       210000, // Wake Up
       204147, // Windburst (Artifact)
            0,
@@ -596,11 +596,11 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         2645, // Ghost Wolf
       207778, // Gift of the Queen (Artifact)
        32182, // Heroism
+       51514, // Hex
+      210873, // Hex
       211004, // Hex
       211010, // Hex
       211015, // Hex
-       51514, // Hex
-      210873, // Hex
          370, // Purge
       205495, // Stormkeeper (Artifact)
       115356, // Windstrike
@@ -688,23 +688,23 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
          122, // Frost Nova
        45438, // Ice Block
       131784, // Illusion
+      210726, // Mark of Aluneth (Artifact)
       211076, // Mark of Aluneth
       211088, // Mark of Aluneth
       224968, // Mark of Aluneth (Artifact)
-      210726, // Mark of Aluneth (Artifact)
       194466, // Phoenix's Flames (Artifact)
          118, // Polymorph (Sheep)
+       28271, // Polymorph (Turtle)
+       28272, // Polymorph (Pig)
+       61025, // Polymorph (Serpent)
+       61305, // Polymorph (Black Cat)
        61721, // Polymorph (Rabbit)
        61780, // Polymorph (Turkey)
+      126819, // Polymorph (Pig)
       161353, // Polymorph (Polar Bear Cub)
       161354, // Polymorph (Monkey)
       161355, // Polymorph (Penguin)
       161372, // Polymorph (Turtle)
-       61025, // Polymorph (Serpent)
-       28271, // Polymorph (Turtle)
-       28272, // Polymorph (Pig)
-      126819, // Polymorph (Pig)
-       61305, // Polymorph (Black Cat)
        80353, // Time Warp
            0,
     },
@@ -875,8 +875,8 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        89808, // Singe Magic (Special Ability)
        19647, // Spell Lock (Special Ability)
        17735, // Suffering (Special Ability)
-      134477, // Threatening Presence (Special Ability)
       112042, // Threatening Presence (Special Ability)
+      134477, // Threatening Presence (Special Ability)
       171021, // Torch Magic (Special Ability)
         6360, // Whiplash (Special Ability)
            0,
@@ -884,10 +884,11 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Monk
   {
-    // General tree, 16 abilities
+    // General tree, 17 abilities
     {
       100784, // Blackout Kick
       117952, // Crackling Jade Lightning
+      196061, // Crosswinds
       175697, // Disabling Technique
       214326, // Exploding Keg (Artifact)
       122281, // Healing Elixir
@@ -942,10 +943,11 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       116670, // Vivify
            0,
     },
-    // Windwalker tree, 15 abilities
+    // Windwalker tree, 17 abilities
     {
       116768, // Blackout Kick!
       211432, // Combo Master
+      196061, // Crosswinds
       218164, // Detox
       116095, // Disable
       116694, // Effuse
@@ -957,6 +959,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       116705, // Spear Hand Strike
       101546, // Spinning Crane Kick
       137639, // Storm, Earth, and Fire
+      116007, // Thunderfist
       115080, // Touch of Death
       122470, // Touch of Karma
            0,
@@ -1105,9 +1108,9 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       183752, // Consume Magic
       198013, // Eye Beam
       195072, // Fel Rush
-      201789, // Fury of the Illidari
       201467, // Fury of the Illidari (Artifact)
       201628, // Fury of the Illidari
+      201789, // Fury of the Illidari
       131347, // Glide
       217832, // Imprison
       191427, // Metamorphosis
@@ -1133,8 +1136,8 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       213011, // Charred Warblades
       203720, // Demon Spikes
       218256, // Empower Wards
-      209245, // Fiery Brand
       204021, // Fiery Brand
+      209245, // Fiery Brand
       178740, // Immolation Aura
       189110, // Infernal Strike
       187827, // Metamorphosis
@@ -4122,15 +4125,15 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 225138,  256,  4, -0.2400 },
   { 225138,   65,  4, -0.1300 },
   { 225138,  264,  4,  0.1200 },
-  { 225139,  251,  4,  1.0000 },
-  { 225139,  252,  4,  0.6600 },
+  { 225139,  251,  4,  1.2000 },
+  { 225139,  252,  4,  1.8000 },
   { 225139,  577,  4,  0.1200 },
   { 225139,  103,  4,  1.2400 },
   { 225139,  253,  4,  1.8000 },
   { 225139,  254,  4,  1.2400 },
   { 225139,  255,  4,  0.5000 },
-  { 225139,  269,  4,  1.1000 },
-  { 225139,   70,  4, -0.6000 },
+  { 225139,  269,  4, -0.2000 },
+  { 225139,   70,  4,  0.0000 },
   { 225139,  259,  4,  0.1700 },
   { 225139,  260,  4,  1.8000 },
   { 225139,  261,  4,  2.0000 },

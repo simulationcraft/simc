@@ -2011,7 +2011,8 @@ struct agonizing_poison_t : public rogue_poison_t
       if ( result_is_hit( state -> result ) &&
            td( state -> target ) -> dots.kingsbane -> is_ticking() )
       {
-        td( state -> target ) -> debuffs.kingsbane -> trigger();
+        // As of 01/22/2017, Agonizing Poison applies 2 times per application.
+        td( state -> target ) -> debuffs.kingsbane -> trigger(2);
       }
     }
   };
@@ -4239,7 +4240,7 @@ struct shadowstrike_t : public rogue_attack_t
       // Distance set to 10y as a default value, use the offset for custom value instead of distance
       // Due to the SSW bug (still present as of 01/12/17), we always get a 3 energy refund
       // when properly placed, so we'll use 10 (so 9y for the computation) as default value.
-      // On larger bosses (like Helya), this value is higher and can be increased with the offset.
+      // On larger bosses (like Helya or Krosus), this value is higher and can be increased with the offset.
       // Bug is that it computes the distance from the center of the boss instead of the edge,
       // so it ignores the hitbox (or combat reach as it is often said).
       double distance = 10;
@@ -6714,13 +6715,9 @@ void rogue_t::init_action_list()
     // Cooldowns
     action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );
     cds -> add_action( potion_action );
-    for ( size_t i = 0; i < items.size(); i++ )
+    for ( size_t i = 0; i < item_actions.size(); i++ )
     {
-      if ( items[ i ].has_use_special_effect() )
-      {
-        std::string item_action = std::string( "use_item,slot=" ) + items[ i ].slot_name();
-        cds -> add_action( item_action + ",if=buff.bloodlust.react|target.time_to_die<=20|debuff.vendetta.up" );
-      }
+      cds -> add_action( item_actions[i] + ",if=buff.bloodlust.react|target.time_to_die<=20|debuff.vendetta.up" );
     }
     for ( size_t i = 0; i < racial_actions.size(); i++ )
     {
@@ -6827,7 +6824,7 @@ void rogue_t::init_action_list()
   else if ( specialization() == ROGUE_SUBTLETY )
   {
     // Pre-Combat
-    precombat -> add_action( "variable,name=ssw_refund,value=equipped.shadow_satyrs_walk*(4+ssw_refund_offset)", "Defined variables that doesn't change during the fight" );
+    precombat -> add_action( "variable,name=ssw_refund,value=equipped.shadow_satyrs_walk*(6+ssw_refund_offset)", "Defined variables that doesn't change during the fight" );
     precombat -> add_action( "variable,name=stealth_threshold,value=(15+talent.vigor.enabled*35+talent.master_of_shadows.enabled*25+variable.ssw_refund)" );
     precombat -> add_talent( this, "Enveloping Shadows", "if=combo_points>=5" );
     precombat -> add_action( this, "Symbols of Death" );
@@ -6849,7 +6846,10 @@ void rogue_t::init_action_list()
     action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );
     cds -> add_action( potion_action );
     for ( size_t i = 0; i < item_actions.size(); i++ )
-      cds -> add_action( item_actions[i] + ",if=(buff.shadow_blades.up&stealthed.rogue)|target.time_to_die<20" );
+      if ( find_item( "draught_of_souls" ) )
+        cds -> add_action( item_actions[i] + ",if=cooldown.shadow_dance.charges_fractional<2.45&buff.shadow_dance.down" );
+      else
+        cds -> add_action( item_actions[i] + ",if=(buff.shadow_blades.up&stealthed.rogue)|target.time_to_die<20" );
     for ( size_t i = 0; i < racial_actions.size(); i++ )
     {
       if ( racial_actions[i] == "arcane_torrent" )

@@ -1,109 +1,110 @@
-# This is a global profile used to check every relevant legendaries for one class.
-# You have to set "$(Tier)=..." before calling it.
+#####
+# This is a global profile used to check the 3 bests 2 legendaries combo for one class. (Published on Website)
+# You have to set "$(Tier)=..." and "$(iLvl)=..." before calling it.
 #
 # Example :
+#
 # $(Tier)=T19H
+# $(iLvl)=910
 # Rogue_Legendaries.simc
 #
-# It will call the Rogue T19H Profiles then test with every legendaries defined below.
-# You only have to set $(Tier) one time. (i.e. you can call the Warrior and Rogue profiles altogether)
+# It will call the Rogue T19H Profiles then sim with every legendaries defined below.
+# You only have to set $(Tier) and $(iLvl) one time.
+#
+# If you want to test 2 (or more) classes, you can do it this way :
+#
+# $(Tier)=T19M_NH
+# $(iLvl)=940
+# Rogue_Legendaries.simc
+# Warrior_Legendaries.simc
+#
 # You can even do that to test 2 Tiers at the same time :
 #
 # $(Tier)=T19H
+# $(iLvl)=910
 # Rogue_Legendaries.simc
-# $(Tier)=T19M
+# $(Tier)=T19H_NH
+# $(iLvl)=940
 # Rogue_Legendaries.simc
+#####
+
+# Leave this empty, it's for non-specific Tier items backward compatibility
+$(Item_$(Tier))=
 
 
-
-# Assassination
-Rogue_Assassination_$(Tier).simc
+### Assassination ###
+input=Rogue_Assassination_$(Tier).simc
 name=Asn_$(Tier)_Baseline
 
-copy=Asn_$(Tier)_Cinidaria,Asn_$(Tier)_Baseline
-waist=cinidaria_the_symbiote,id=133976
+copy=Asn_$(Tier)_Bracers_Boots,Asn_$(Tier)_Baseline
+shoulders=mantle_of_the_master_assassin,id=144236,ilevel=$(iLvl)
+wrists=zoldyck_family_training_shackles,id=137098,ilevel=$(iLvl)
 
-copy=Asn_$(Tier)_Duskwalkers,Asn_$(Tier)_Baseline
-feet=duskwalkers_footpads,id=137030
+copy=Asn_$(Tier)_Bracers_Shoulders,Asn_$(Tier)_Baseline
+wrists=zoldyck_family_training_shackles,id=137098,ilevel=$(iLvl)
+feet=duskwalkers_footpads,id=137030,ilevel=$(iLvl)
 
-copy=Asn_$(Tier)_Insignia,Asn_$(Tier)_Baseline
-finger1=insignia_of_ravenholdt,id=137049,gem_id=130221,enchant=binding_of_versatility
-
-copy=Asn_$(Tier)_Mantle,Asn_$(Tier)_Baseline
-shoulders=mantle_of_the_master_assassin,id=144236
-
-copy=Asn_$(Tier)_Dreadlords_Deceit,Asn_$(Tier)_Baseline
-back=the_dreadlords_deceit,id=137021
-
-copy=Asn_$(Tier)_Zoldyck_Family,Asn_$(Tier)_Baseline
-wrist=zoldyck_family_training_shackles,id=137098
+copy=Asn_$(Tier)_Boots_Shoulders,Asn_$(Tier)_Baseline
+shoulders=mantle_of_the_master_assassin,id=144236,ilevel=$(iLvl)
+feet=duskwalkers_footpads,id=137030,ilevel=$(iLvl)
 
 
-# Assassination Exsanguinate
-Rogue_Assassination_Exsg_$(Tier).simc
+### Assassination Exsanguinate ###
+input=Rogue_Assassination_Exsg_$(Tier).simc
 name=Asn_Ex_$(Tier)_Baseline
 
-copy=Asn_Ex_$(Tier)_Cinidaria,Asn_Ex_$(Tier)_Baseline
-waist=cinidaria_the_symbiote,id=133976
+copy=Asn_Ex_$(Tier)_Bracers_Boots,Asn_Ex_$(Tier)_Baseline
+shoulders=mantle_of_the_master_assassin,id=144236,ilevel=$(iLvl)
+wrists=zoldyck_family_training_shackles,id=137098,ilevel=$(iLvl)
 
-copy=Asn_Ex_$(Tier)_Duskwalkers,Asn_Ex_$(Tier)_Baseline
-feet=duskwalkers_footpads,id=137030
+copy=Asn_Ex_$(Tier)_Bracers_Shoulders,Asn_Ex_$(Tier)_Baseline
+wrists=zoldyck_family_training_shackles,id=137098,ilevel=$(iLvl)
+feet=duskwalkers_footpads,id=137030,ilevel=$(iLvl)
 
-copy=Asn_Ex_$(Tier)_Insignia,Asn_Ex_$(Tier)_Baseline
-finger1=insignia_of_ravenholdt,id=137049,gem_id=130221,enchant=binding_of_versatility
-
-copy=Asn_Ex_$(Tier)_Mantle,Asn_Ex_$(Tier)_Baseline
-shoulders=mantle_of_the_master_assassin,id=144236
-
-copy=Asn_Ex_$(Tier)_Dreadlords_Deceit,Asn_Ex_$(Tier)_Baseline
-back=the_dreadlords_deceit,id=137021
-
-copy=Asn_Ex_$(Tier)_Zoldyck_Family,Asn_Ex_$(Tier)_Baseline
-wrist=zoldyck_family_training_shackles,id=137098
+copy=Asn_Ex_$(Tier)_Boots_Shoulders,Asn_Ex_$(Tier)_Baseline
+shoulders=mantle_of_the_master_assassin,id=144236,ilevel=$(iLvl)
+feet=duskwalkers_footpads,id=137030,ilevel=$(iLvl)
 
 
-# Outlaw
-Rogue_Outlaw_$(Tier).simc
+### Outlaw ###
+input=Rogue_Outlaw_$(Tier).simc
 name=Otl_$(Tier)_Baseline
 
-copy=Otl_$(Tier)_Cinidaria,Otl_$(Tier)_Baseline
-waist=cinidaria_the_symbiote,id=133976
+# Head replacement to keep the 4pc.
+$(Item_T19H_NH)=head=doomblade_cowl,id=138332,bonus_id=1492/3516
+$(Item_T19M_NH)=head=doomblade_cowl,id=138332,bonus_id=3519
 
-copy=Otl_$(Tier)_Greenskins_Waterlogged,Otl_$(Tier)_Baseline
+copy=Otl_$(Tier)_Bracers_Shoulders,Otl_$(Tier)_Baseline
 talent_override=quick_draw
-wrist=greenskins_waterlogged_wristcuffs,id=137099
+$(Item_$(Tier))
+shoulders=mantle_of_the_master_assassin,id=144236,ilevel=$(iLvl)
+wrists=greenskins_waterlogged_wristcuffs,id=137099,ilevel=$(iLvl)
 
-copy=Otl_$(Tier)_Insignia,Otl_$(Tier)_Baseline
-finger1=insignia_of_ravenholdt,id=137049,gem_id=130221,enchant=binding_of_versatility
+copy=Otl_$(Tier)_Bracers_Ring,Otl_$(Tier)_Baseline
+talent_override=quick_draw
+wrists=greenskins_waterlogged_wristcuffs,id=137099,ilevel=$(iLvl)
+finger1=insignia_of_ravenholdt,id=137049,gem_id=130221,enchant=binding_of_versatility,ilevel=$(iLvl)
 
-copy=Otl_$(Tier)_Mantle,Otl_$(Tier)_Baseline
-shoulders=mantle_of_the_master_assassin,id=144236
-
-copy=Otl_$(Tier)_Shivarran_Symmetry,Otl_$(Tier)_Baseline
-hands=shivarran_symmetry,id=141321
-
-copy=Otl_$(Tier)_Thraxis_Tricksy,Otl_$(Tier)_Baseline
-feet=thraxis_tricksy_treads,id=137031
+copy=Otl_$(Tier)_Ring_Shoulders,Otl_$(Tier)_Baseline
+$(Item_$(Tier))
+shoulders=mantle_of_the_master_assassin,id=144236,ilevel=$(iLvl)
+finger1=insignia_of_ravenholdt,id=137049,gem_id=130221,enchant=binding_of_versatility,ilevel=$(iLvl)
 
 
-# Subtlety
-Rogue_Subtlety_$(Tier).simc
+### Subtlety ###
+input=Rogue_Subtlety_$(Tier).simc
 name=Sub_$(Tier)_Baseline
 
-copy=Sub_$(Tier)_Cinidaria,Sub_$(Tier)_Baseline
-waist=cinidaria_the_symbiote,id=133976
+copy=Sub_$(Tier)_Boots_Bracers,Sub_$(Tier)_Baseline
+talent_override=anticipation
+feet=shadow_satyrs_walk,id=137032,ilevel=$(iLvl)
+wrists=denial_of_the_halfgiants,id=137100,ilevel=$(iLvl)
 
-copy=Sub_$(Tier)_Denial_Halfgiants,Sub_$(Tier)_Baseline
-wrist=denial_of_the_halfgiants,id=137100
+copy=Sub_$(Tier)_Boots_Shoulders,Sub_$(Tier)_Baseline
+shoulders=mantle_of_the_master_assassin,id=144236,ilevel=$(iLvl)
+feet=shadow_satyrs_walk,id=137032,ilevel=$(iLvl)
 
-copy=Sub_$(Tier)_Insignia,Sub_$(Tier)_Baseline
-finger1=insignia_of_ravenholdt,id=137049,gem_id=130221,enchant=binding_of_versatility
-
-copy=Sub_$(Tier)_Mantle,Sub_$(Tier)_Baseline
-shoulders=mantle_of_the_master_assassin,id=144236
-
-copy=Sub_$(Tier)_Shadow_Satyrs_Walk,Sub_$(Tier)_Baseline
-feet=shadow_satyrs_walk,id=137032
-
-copy=Sub_$(Tier)_Dreadlords_Deceit,Sub_$(Tier)_Baseline
-back=the_dreadlords_deceit,id=137021
+copy=Sub_$(Tier)_Bracers_Shoulders,Sub_$(Tier)_Baseline
+talent_override=anticipation
+shoulders=mantle_of_the_master_assassin,id=144236,ilevel=$(iLvl)
+wrists=denial_of_the_halfgiants,id=137100,ilevel=$(iLvl)

@@ -13,23 +13,31 @@
 # Rogue_Legendaries.simc
 # $(Tier)=T19M
 # Rogue_Legendaries.simc
+################
+
+# Leave this empty, it's for non-specific Tier items backward compatibility
+$(Item_$(Tier))=
 
 
 
-# Shadow - S2M only
-Priest_Shadow_S2M_$(Tier).simc
+# Shadow - no s2m
+input=Priest_Shadow_$(Tier).simc
+name=Shadow_$(Tier)_Baseline
 
-copy=Shadow_$(Tier)_Anunds,Priest_Shadow_S2M_$(Tier)
-wrist=anunds_seared_shackles,id=132409
+# Chest replacement to keep the 4pc.
+$(Item_T19H_NH)=chest=,id=138319,bonus_id=1492/3516
+$(Item_T19M_NH)=chest=,id=138319,bonus_id=3519
 
-#copy=Shadow_$(Tier)_Zenk'aram,Priest_Shadow_S2M_$(Tier)
-#head=zenkaram_iridis_anadem,id=133971
+copy=Shadow_$(Tier)_Cloak_Bracers,Shadow_$(Tier)_Baseline
+wrist=anunds_seared_shackles,id=132409,ilevel=$(iLvl)
+back=,id=144438,enchant=binding_of_intellect,ilevel=$(iLvl)
+$(Item_$(Tier))
 
-#copy=Shadow_$(Tier)_Twin's,Priest_Shadow_S2M_$(Tier)
-#finger1=the_twins_painful_touch,id=133973,bonus_id=1811,enchant=binding_of_haste
+copy=Shadow_$(Tier)_Cloak_Belt,Shadow_$(Tier)_Baseline
+waist=mangazas_madness,id=132864,ilevel=$(iLvl)
+back=,id=144438,enchant=binding_of_intellect,ilevel=$(iLvl)
+$(Item_$(Tier))
 
-copy=Shadow_$(Tier)_Mangaza's,Priest_Shadow_S2M_$(Tier)
-waist=mangazas_madness,id=132864
-
-copy=Shadow_$(Tier)_Sharaz,Priest_Shadow_S2M_$(Tier)
-shoulder=mother_shahrazs_seduction,id=132437
+copy=Shadow_$(Tier)_Belt_Bracers,Shadow_$(Tier)_Baseline
+waist=mangazas_madness,id=132864,ilevel=$(iLvl)
+wrist=anunds_seared_shackles,id=132409,ilevel=$(iLvl)

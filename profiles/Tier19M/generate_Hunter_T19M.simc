@@ -71,12 +71,12 @@ level=110
 race=troll
 role=attack
 position=ranged_back
-talents=3101032
+talents=3101031
 artifact=34:0:0:0:0:1068:1:1070:3:1071:3:1072:3:1073:3:1074:3:1075:3:1076:3:1077:3:1078:3:1079:1:1080:1:1081:1:1082:1:1083:1:1084:1:1338:1
 spec=survival
 
 head=greyed_dragonscale_coif,id=139214,bonus_id=1806
-neck=blackened_portalstone_necklace,id=139332,bonus_id=1806,enchant=mark_of_the_claw
+neck=blackened_portalstone_necklace,id=139332,bonus_id=1806,enchant=mark_of_the_hidden_satyr
 shoulders=matted_fur_pauldrons,id=139217,bonus_id=1806
 back=mantle_of_the_victorious_dead,id=142540,bonus_id=3469,enchant=200agi
 chest=corroded_valkyr_chainmail,id=142433,bonus_id=3469/1512

@@ -4119,10 +4119,6 @@ struct aftershocks_t : public fire_mage_spell_t
     background = true;
     aoe = -1;
     triggers_ignite = true;
-
-    //Mana hotfix
-    base_costs[ RESOURCE_MANA ] = 27390;
-
   }
 };
 
@@ -4324,8 +4320,8 @@ struct flurry_t : public frost_mage_spell_t
     hasted_ticks = false;
     add_child( flurry_bolt );
     //TODO: Remove hardcoded values once it exists in spell data for bolt impact timing.
-    dot_duration = timespan_t::from_seconds( 0.6 );
-    base_tick_time = timespan_t::from_seconds( 0.2 );
+    dot_duration = timespan_t::from_seconds( 0.45 );
+    base_tick_time = timespan_t::from_seconds( 0.15 );
   }
 
   virtual timespan_t travel_time() const override
@@ -4808,7 +4804,11 @@ struct glacial_spike_t : public frost_mage_spell_t
   {
     double icicle_damage_sum = 0;
     int icicle_count = as<int>( p() -> icicles.size() );
-    assert( icicle_count == p() -> spec.icicles -> effectN( 2 ).base_value() && s -> chain_target == 0 );
+
+    if ( s -> chain_target == 0 )
+    {
+      assert( icicle_count == p() -> spec.icicles -> effectN( 2 ).base_value() );
+    }
     for ( int i = 0; i < icicle_count; i++ )
     {
       icicle_data_t d = p() -> get_icicle_object();
@@ -5757,9 +5757,6 @@ struct pyroblast_t : public fire_mage_spell_t
       conjure_phoenix = new conjure_phoenix_t( p );
       add_child( conjure_phoenix );
     }
-
-    //mana hotfix
-    base_costs[ RESOURCE_MANA ] = 22000;
 
     base_multiplier *= 1.0 + p -> artifact.pyroclasmic_paranoia.percent();
   }
@@ -6849,6 +6846,12 @@ struct water_jet_t : public action_t
 
   bool ready() override
   {
+    mage_t* m = debug_cast<mage_t*>( player );
+    if ( m -> talents.lonely_winter -> ok() )
+    {
+      return false;
+    }
+
     if ( !action )
       return false;
 
@@ -7933,16 +7936,19 @@ std::string mage_t::get_special_use_items( const std::string& item_name, bool sp
   std::string actions;
   std::string conditions;
 
-  // If we're dealing with a special item, find its special conditional.
+  // If we're dealing with a special item, find its special conditional for the right spec.
   if ( specials )
   {
-    if ( item_name == "obelisk_of_the_void" )
+    if ( specialization() == MAGE_FIRE )
     {
-      conditions = "if=buff.rune_of_power.up&cooldown.combustion.remains>50";
-    }
-    if ( item_name == "horn_of_valor" )
-    {
-      conditions = "if=cooldown.combustion.remains>30";
+      if ( item_name == "obelisk_of_the_void" )
+      {
+        conditions = "if=buff.rune_of_power.up&cooldown.combustion.remains>50";
+      }
+      if ( item_name == "horn_of_valor" )
+      {
+        conditions = "if=cooldown.combustion.remains>30";
+      }
     }
   }
 
@@ -7972,7 +7978,8 @@ std::string mage_t::get_special_use_items( const std::string& item_name, bool sp
 }
 
 // Because we care about both the ability to control special conditions AND position of our on use items,
-// we must use our own get_item_actions which knows to ignore all "special" items and let them be handled by get_special_use_items()
+// we must use our own get_item_actions which knows to ignore all "special" items so
+// that they can be handled by get_special_use_items()
 std::vector<std::string> mage_t::get_non_speical_item_actions()
 {
   std::vector<std::string> actions;
@@ -7980,8 +7987,10 @@ std::vector<std::string> mage_t::get_non_speical_item_actions()
   std::vector<std::string> specials;
 
   // very ugly construction of our list of special items
-  specials.push_back( "obelisk_of_the_void" );
-  specials.push_back( "horn_of_valor" );
+  specials.push_back( "obelisk_of_the_void"           );
+  specials.push_back( "horn_of_valor"                 );
+  specials.push_back( "mrrgrias_favor"                );
+  specials.push_back( "pharameres_forbidden_grimoire" );
 
   for ( const auto& item : items )
   {
@@ -8175,6 +8184,7 @@ void mage_t::apl_arcane()
   default_list -> add_action( mage_t::get_special_use_items( "horn_of_valor", false ) );
   default_list -> add_action( mage_t::get_special_use_items( "obelisk_of_the_void", false ) );
   default_list -> add_action( mage_t::get_special_use_items( "mrrgrias_favor", false ) );
+  default_list -> add_action( mage_t::get_special_use_items( "pharameres_forbidden_grimoire", false ) );
   default_list -> add_action( "call_action_list,name=build,if=buff.arcane_charge.stack<4" );
   default_list -> add_action( "call_action_list,name=init_burn,if=buff.arcane_power.down&buff.arcane_charge.stack=4&(cooldown.mark_of_aluneth.remains=0|cooldown.mark_of_aluneth.remains>20)&(!talent.rune_of_power.enabled|(cooldown.arcane_power.remains<=action.rune_of_power.cast_time|action.rune_of_power.recharge_time<cooldown.arcane_power.remains))|target.time_to_die<45" );
   default_list -> add_action( "call_action_list,name=burn,if=burn_phase" );
@@ -8246,7 +8256,7 @@ void mage_t::apl_arcane()
   burn      -> add_talent( this, "Supernova", "if=mana.pct<100" );
   burn      -> add_action( this, "Arcane Missiles", "if=mana.pct>10&(talent.overpowered.enabled|buff.arcane_power.down)" );
   burn      -> add_action( this, "Arcane Explosion", "if=active_enemies>1" );
-  burn      -> add_action( this, "Arcane Barrage", "if=(equipped.132451&cooldown.charged_up.remains=0&mana.pct<(100-(buff.arcane_charge.stack*0.03)))" );
+  burn      -> add_action( this, "Arcane Barrage", "if=talent.charged_up.enabled&(equipped.132451&cooldown.charged_up.remains=0&mana.pct<(100-(buff.arcane_charge.stack*0.03)))" );
   burn      -> add_action( this, "Arcane Blast" );
   burn      -> add_action( this, "Evocation", "interrupt_if=mana.pct>99" );
 
@@ -8273,6 +8283,7 @@ void mage_t::apl_fire()
   default_list -> add_action( mage_t::get_special_use_items( "horn_of_valor", true ) );
   default_list -> add_action( mage_t::get_special_use_items( "obelisk_of_the_void", true ) );
   default_list -> add_action( mage_t::get_special_use_items( "mrrgrias_favor", false ) );
+  default_list -> add_action( mage_t::get_special_use_items( "pharameres_forbidden_grimoire", false ) );
 
   default_list -> add_action( "call_action_list,name=combustion_phase,if=cooldown.combustion.remains<=action.rune_of_power.cast_time+(!talent.kindling.enabled*gcd)|buff.combustion.up" );
   default_list -> add_action( "call_action_list,name=rop_phase,if=buff.rune_of_power.up&buff.combustion.down" );
@@ -8355,6 +8366,7 @@ void mage_t::apl_frost()
   default_list -> add_action( mage_t::get_special_use_items( "horn_of_valor", false ) );
   default_list -> add_action( mage_t::get_special_use_items( "obelisk_of_the_void", false ) );
   default_list -> add_action( mage_t::get_special_use_items( "mrrgrias_favor", false ) );
+  default_list -> add_action( mage_t::get_special_use_items( "pharameres_forbidden_grimoire", false ) );
   default_list -> add_action( "call_action_list,name=cooldowns" );
   default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>=4" );
   default_list -> add_action( "call_action_list,name=single" );
@@ -8381,7 +8393,7 @@ void mage_t::apl_frost()
   aoe -> add_action( this, "Frozen Orb" );
   aoe -> add_talent( this, "Comet Storm" );
   aoe -> add_talent( this, "Ice Nova" );
-  aoe -> add_action( "water_jet,if=prev_gcd.1.frostbolt&buff.fingers_of_frost.stack<(2+artifact.icy_hand.enabled)&buff.brain_freeze.react=0" );
+  aoe -> add_action( "water_jet,if=prev_gcd.1.frostbolt&buff.fingers_of_frost.stack<(2+artifact.icy_hand.enabled)&buff.brain_freeze.react=0&" );
   aoe -> add_action( this, "Flurry", "if=(buff.brain_freeze.react|prev_gcd.1.ebonbolt)&buff.fingers_of_frost.react=0" );
   aoe -> add_talent( this, "Frost Bomb", "if=debuff.frost_bomb.remains<action.ice_lance.travel_time&buff.fingers_of_frost.react>0" );
   aoe -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react>0" );
@@ -9609,67 +9621,6 @@ public:
       .operation( hotfix::HOTFIX_SET )
       .modifier( 57 )
       .verification_value( 81 );
-
-    hotfix::register_effect( "Mage", "2017-01-20", "Hotfix OP to 60% from 70%", 215508 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 30 )
-      .verification_value( 40 );
-
-    hotfix::register_effect( "Mage", "2017-01-20", "5% AB damage", 20028 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 2.02 )
-      .verification_value( 1.924 );
-
-    hotfix::register_effect( "Mage", "2017-01-20", "5% ABarr damage", 36330 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 1.365 )
-      .verification_value( 1.30 );
-
-    hotfix::register_effect( "Mage", "2017-01-20", "5% AE damage", 457 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 0.7875 )
-      .verification_value( 0.75 );
-
-    hotfix::register_effect( "Mage", "2017-01-20", "5% AM damage", 2716 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 0.46515 )
-      .verification_value( 0.443 );
-
-    hotfix::register_effect( "Mage", "2017-01-20", "nerf amp to 12%", 357924 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 12 )
-      .verification_value( 15 );
-
-    hotfix::register_effect( "Mage", "2017-01-20", "5% AO Damage", 212926 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 5.25 )
-      .verification_value( 5.0 );
-
-    hotfix::register_effect( "Mage", "2017-01-20", "5% NT Damage", 128532 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 0.04935 )
-      .verification_value( 0.047 );
-    
-    hotfix::register_effect( "Mage", "2017-01-20", "5% NT AOE Damage", 128479 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 0.04935 )
-      .verification_value( 0.047 );
-
-    hotfix::register_effect( "Mage", "2017-01-20", "5% SN  Damage", 220358 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 1.785 )
-      .verification_value( 1.70 );
-
   }
 
   virtual bool valid() const override { return true; }

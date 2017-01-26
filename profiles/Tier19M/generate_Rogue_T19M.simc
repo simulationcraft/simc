@@ -35,8 +35,8 @@ legs=suckerscarred_leggings,id=142418,bonus_id=3469/1512
 feet=tunnel_trudger_footguards,id=137397,bonus_id=1727/1522
 finger1=ring_of_ascended_glory,id=142520,bonus_id=3469,enchant=binding_of_critical_strike
 finger2=grubby_silver_ring,id=139236,bonus_id=1806,enchant=binding_of_critical_strike
-trinket1=eye_of_guarm,id=142506,bonus_id=605/3469
-trinket2=spontaneous_appendages,id=139325,bonus_id=1806
+trinket1=hunger_of_the_pack,id=136975,bonus_id=1537/1727
+trinket2=eye_of_guarm,id=142506,bonus_id=605/3469
 main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=137549/137543/142510,relic_id=1522:1727/1522:1727/3469:1512
 off_hand=the_kingslayers,id=128869
 save=Rogue_Assassination_T19M.simc
@@ -62,7 +62,7 @@ legs=suckerscarred_leggings,id=142418,bonus_id=3469
 feet=tunnel_trudger_footguards,id=137397,bonus_id=1727/1522
 finger1=ring_of_ascended_glory,id=142520,bonus_id=3469,enchant=binding_of_critical_strike
 finger2=grubby_silver_ring,id=139236,bonus_id=1806,enchant=binding_of_critical_strike
-trinket1=eye_of_command,id=142167
+trinket1=hunger_of_the_pack,id=136975,bonus_id=1537/1727
 trinket2=eye_of_guarm,id=142506,bonus_id=603/3469
 main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=139268/139261/139260,relic_id=1806/1806/1806
 off_hand=the_kingslayers,id=128869

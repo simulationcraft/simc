@@ -160,7 +160,7 @@ void special_effect_t::reset()
   // ppm < 0 = real ppm, ppm > 0 = normal "ppm", min_double off
   ppm_ = std::numeric_limits<double>::min();
   rppm_scale_ = RPPM_NONE;
-  rppm_modifier_ = 1.0;
+  rppm_modifier_ = -1.0;
 
   // Must match buff creator defaults for now
   duration_ = timespan_t::min();
@@ -701,7 +701,7 @@ rppm_scale_e special_effect_t::rppm_scale() const
 
 double special_effect_t::rppm_modifier() const
 {
-  if ( rppm_modifier_ != 1.0 )
+  if ( rppm_modifier_ != -1.0 )
   {
     return rppm_modifier_;
   }

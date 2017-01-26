@@ -34,18 +34,26 @@ Demon_Hunter_Havoc_T19H_NH.simc
 Monk_Windwalker_T19H_NH.simc
 
 # Paladin
+Paladin_Retribution_T19H_NH.simc
 
 
 # Priest
 
 
 # Rogue
-
+Rogue_Assassination_Exsg_T19H_NH.simc
+Rogue_Assassination_T19H_NH.simc
+Rogue_Outlaw_T19H_NH.simc
+Rogue_Subtlety_T19H_NH.simc
 
 # Shaman
 
 
 # Warlock
 Warlock_Affliction_T19H_NH.simc
+Warlock_Demonology_T19H_NH.simc
+Warlock_Destruction_T19H_NH.simc
 
 # Warrior
+Warrior_Arms_T19H_NH.simc
+Warrior_Fury_T19H_NH.simc

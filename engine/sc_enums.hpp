@@ -20,7 +20,7 @@ enum retarget_event_e
   SELF_ARISE            // Actor has arisen (no context provided)
 };
 
-// Misc (legion) related constants
+// Misc (legion related) constants
 enum
 {
   MAX_ARTIFACT_POWER = 20, /// Maximum number of artifact perks per weapon. Looks like max is 17 on weapons but setting higher just in case -- 2016/04/04 - Twintop
@@ -28,6 +28,7 @@ enum
   RELIC_ILEVEL_BONUS_CURVE = 1718, /// Seemingly hard coded CurvePoint identifier for the data that returns the item level increase of a relic, based on the relic's own item level
 
   ITEM_TRINKET_BURST_CATEGORY = 1141, /// Trinket On-Use effect default category (for shared CD)
+  MAX_GEM_SLOTS = 4, /// Global maximum number of gem slots in any specific item
 };
 
 enum regen_type_e

@@ -54,7 +54,7 @@ actions.burn+=/arcane_blast,if=buff.presence_of_mind.up|buff.arcane_power.remain
 actions.burn+=/supernova,if=mana.pct<100
 actions.burn+=/arcane_missiles,if=mana.pct>10&(talent.overpowered.enabled|buff.arcane_power.down)
 actions.burn+=/arcane_explosion,if=active_enemies>1
-actions.burn+=/arcane_barrage,if=(equipped.132451&cooldown.charged_up.remains=0&mana.pct<(100-(buff.arcane_charge.stack*0.03)))
+actions.burn+=/arcane_barrage,if=talent.charged_up.enabled&(equipped.132451&cooldown.charged_up.remains=0&mana.pct<(100-(buff.arcane_charge.stack*0.03)))
 actions.burn+=/arcane_blast
 actions.burn+=/evocation,interrupt_if=mana.pct>99
 

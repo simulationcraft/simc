@@ -31,7 +31,7 @@ struct item_t;
 
 const unsigned NUM_SPELL_FLAGS = 12;
 const unsigned NUM_CLASS_FAMILY_FLAGS = 4;
-#define SC_USE_PTR 0
+#define SC_USE_PTR 1
 
 struct stat_data_t
 {
@@ -558,7 +558,7 @@ public:
   double           _real_ppl;        // 22 Effect real points per level
   int              _die_sides;       // 23 Effect damage range
   unsigned         _mechanic;        // 24 Effect Mechanic
-  unsigned         _chain_target;    // 25 Number of targets (for chained spells)
+  int              _chain_target;    // 25 Number of targets (for chained spells)
   unsigned         _targeting_1;     // 26 Targeting related field 1
   unsigned         _targeting_2;     // 27 Targeting related field 2
   double           _m_value;         // 28 Misc multiplier used for some spells(?)
@@ -670,7 +670,7 @@ public:
   unsigned mechanic() const
   { return _mechanic; }
 
-  unsigned chain_target() const
+  int chain_target() const
   { return _chain_target; }
 
   unsigned target_1() const
