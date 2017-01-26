@@ -1605,10 +1605,18 @@ struct insignia_of_ravenholdt_attack_t : public rogue_attack_t
   {
     double m = p() -> spell.insignia_of_ravenholdt -> effectN( 1 ).percent();
 
-    // Rogue Assassination Hidden Passive (Additive, it's +15% on the primary effect)
+    // Rogue Assassination Specific
     if ( p() -> specialization() == ROGUE_ASSASSINATION )
     {
+      // Hidden Passive (Additive, it's +15% on the primary effect)
       m += p() -> spec.assassination_rogue -> effectN( 3 ).percent();
+
+      // It seems that Insignia ignores only Vendetta modifier
+      rogue_td_t* tdata = td( target );
+      if ( tdata -> debuffs.vendetta -> check() )
+      {
+        m *= 1 - tdata -> debuffs.vendetta -> value();
+      }
     }
 
     return m;
