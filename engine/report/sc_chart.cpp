@@ -1051,11 +1051,7 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s,
     // Sort list of actors in the chart based on the value metric (and metric)
     std::sort( player_list.begin(), player_list.end(),
                player_list_comparator_t( chart_metric, vm ) );
-
     double lowest_value = get_data_value( player_list.back() -> collected_data, chart_metric, vm );
-
-    // Compute median if applicable
-    double median = compute_median( player_list, chart_metric, vm );
 
     bool candlebars = false;
     // Iterate over the players and output data
