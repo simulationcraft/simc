@@ -196,6 +196,13 @@ std::array<std::string, SCALE_METRIC_MAX> gear_weights::pawn(
     std::string s = "( Pawn: v1: \"";
     s += p.name();
     s += "\": ";
+    s += "Class=";
+    std::string name = util::player_type_string( p.type );
+    name[0] = toupper( name[0] );
+    s += name;
+    s += ", Spec=";
+    s += util::spec_string_no_class( p );
+    s += ", ";
 
     bool positive_normalizing_value =
         p.scaling[ sm ].get_stat( p.normalize_by() ) >= 0;
@@ -258,133 +265,6 @@ const char* askmrrobot_player_type_name( player_e type )
       return "Monk";
     default:
       // if this isn't a player, the AMR link is useless
-      assert( false );
-      break;
-  }
-  return nullptr;
-}
-
-const char* askmrrobot_player_type_spec( const player_t& p )
-{
-  // Player spec
-  switch ( p.specialization() )
-  {
-    case DEATH_KNIGHT_BLOOD:
-      return "Blood";
-    case DEATH_KNIGHT_FROST:
-    {
-      if ( p.main_hand_weapon.type == WEAPON_2H )
-      {
-        return "Frost2H";
-      }
-      else
-      {
-        return "FrostDw";
-      }
-    }
-    case DEATH_KNIGHT_UNHOLY:
-      return "Unholy";
-    case DEMON_HUNTER_HAVOC:
-      return "Havoc";
-    case DEMON_HUNTER_VENGEANCE:
-      return "Vengeance";
-    case DRUID_BALANCE:
-      return "Balance";
-    case DRUID_FERAL:
-      return "Feral";
-    case DRUID_GUARDIAN:
-      return "Guardian";
-    case DRUID_RESTORATION:
-      return "Restoration";
-    case HUNTER_BEAST_MASTERY:
-      return "BeastMastery";
-    case HUNTER_MARKSMANSHIP:
-      return "Marksmanship";
-    case HUNTER_SURVIVAL:
-      return "Survival";
-    case MAGE_ARCANE:
-      return "Arcane";
-    case MAGE_FIRE:
-      return "Fire";
-    case MAGE_FROST:
-      return "Frost";
-    case MONK_BREWMASTER:
-    {
-      if ( p.main_hand_weapon.type == WEAPON_STAFF ||
-           p.main_hand_weapon.type == WEAPON_POLEARM )
-      {
-        return "Brewmaster2h";
-      }
-      else
-      {
-        return "BrewmasterDw";
-      }
-    }
-    case MONK_MISTWEAVER:
-      return "Mistweaver";
-    case MONK_WINDWALKER:
-    {
-      if ( p.main_hand_weapon.type == WEAPON_STAFF ||
-           p.main_hand_weapon.type == WEAPON_POLEARM )
-      {
-        return "Windwalker2h";
-      }
-      else
-      {
-        return "WindwalkerDw";
-      }
-    }
-    case PALADIN_HOLY:
-      return "Holy";
-    case PALADIN_PROTECTION:
-      return "Protection";
-    case PALADIN_RETRIBUTION:
-      return "Retribution";
-    case PRIEST_DISCIPLINE:
-      return "Discipline";
-    case PRIEST_HOLY:
-      return "Holy";
-    case PRIEST_SHADOW:
-      return "Shadow";
-    case ROGUE_ASSASSINATION:
-      return "Assassination";
-    case ROGUE_OUTLAW:
-      return "Combat";
-    case ROGUE_SUBTLETY:
-      return "Subtlety";
-    case SHAMAN_ELEMENTAL:
-      return "Elemental";
-    case SHAMAN_ENHANCEMENT:
-      return "Enhancement";
-    case SHAMAN_RESTORATION:
-      return "Restoration";
-    case WARLOCK_AFFLICTION:
-      return "Affliction";
-    case WARLOCK_DEMONOLOGY:
-      return "Demonology";
-    case WARLOCK_DESTRUCTION:
-      return "Destruction";
-    case WARRIOR_ARMS:
-      return "Arms";
-    case WARRIOR_FURY:
-    {
-      if ( p.main_hand_weapon.type == WEAPON_SWORD_2H ||
-           p.main_hand_weapon.type == WEAPON_AXE_2H ||
-           p.main_hand_weapon.type == WEAPON_MACE_2H ||
-           p.main_hand_weapon.type == WEAPON_POLEARM )
-      {
-        return "Fury2H";
-      }
-      else
-      {
-        return "Fury";
-      }
-    }
-    case WARRIOR_PROTECTION:
-      return "Protection";
-
-    default:
-      // if this is a pet or an unknown spec, the AMR link is pointless anyway
       assert( false );
       break;
   }
@@ -495,7 +375,7 @@ std::array<std::string, SCALE_METRIC_MAX> gear_weights::askmrrobot(
 
     std::string spec;
     spec += askmrrobot_player_type_name( p.type );
-    spec += askmrrobot_player_type_spec( p );
+    spec += util::spec_string_no_class( p );
 
     // if we're using a generic character, need spec
     if ( use_generic )
