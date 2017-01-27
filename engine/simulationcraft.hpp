@@ -1670,7 +1670,6 @@ struct sim_t : private sc_thread_t
   int global_item_upgrade_level;
   bool maximize_reporting;
   std::string apikey;
-  bool ilevel_raid_report;
   bool distance_targeting_enabled;
   bool enable_dps_healing;
   double scaling_normalized;

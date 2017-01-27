@@ -1069,11 +1069,7 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s,
 
       sc_js_t e;
       e.set( "color", c.str() );
-      e.set( "name",
-             p->name_str +
-                 ( s.ilevel_raid_report
-                       ? ( "_" + util::to_string( p->avg_item_level(), 1 ) )
-                       : "" ) );
+      e.set( "name", p->name_str );
       e.set( "y",
              util::round( value, static_cast<unsigned int>( precision ) ) );
       e.set( "id", "#player" + util::to_string( p->index ) + "toggle" );
@@ -1095,11 +1091,7 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s,
         {
           candlebars = true;
           sc_js_t v;
-          v.set( "name",
-                 p->name_str +
-                     ( s.ilevel_raid_report
-                           ? ( "_" + util::to_string( p->avg_item_level(), 1 ) )
-                           : "" ) );
+          v.set( "name", p->name_str );
           v.set( "low", boxplot_data[ 0 ] );
           v.set( "q1", boxplot_data[ 1 ] );
           v.set( "median", boxplot_data[ 2 ] );

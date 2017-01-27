@@ -1393,7 +1393,6 @@ sim_t::sim_t( sim_t* p, int index ) :
   global_item_upgrade_level( 0 ),
   maximize_reporting( false ),
   apikey( get_api_key() ),
-  ilevel_raid_report( false ),
   distance_targeting_enabled( false ),
   enable_dps_healing( false ),
   scaling_normalized( 1.0 ),
@@ -3156,7 +3155,6 @@ void sim_t::create_options()
   add_option( opt_bool( "monitor_cpu", event_mgr.monitor_cpu ) );
   add_option( opt_func( "maximize_reporting", parse_maximize_reporting ) );
   add_option( opt_string( "apikey", apikey ) );
-  add_option( opt_bool( "ilevel_raid_report", ilevel_raid_report ) );
   add_option( opt_bool( "distance_targeting_enabled", distance_targeting_enabled ) );
   add_option( opt_bool( "enable_dps_healing", enable_dps_healing ) );
   add_option( opt_float( "scaling_normalized", scaling_normalized ) );
