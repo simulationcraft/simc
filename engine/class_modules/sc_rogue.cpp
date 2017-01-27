@@ -6901,7 +6901,9 @@ void rogue_t::init_action_list()
     // Stealth Action List Starter
     action_priority_list_t* stealth_als = get_action_priority_list( "stealth_als", "Stealth Action List Starter" );
     stealth_als -> add_action( "call_action_list,name=stealth_cds,if=energy.deficit<=variable.stealth_threshold&(!equipped.shadow_satyrs_walk|cooldown.shadow_dance.charges_fractional>=2.45|energy.deficit>=10)" );
-    stealth_als -> add_action( "sprint_offensive,if=energy.time_to_max>3" );
+    stealth_als -> add_action( "sprint_offensive,if=equipped.denial_of_the_halfgiants&energy.deficit>55" );
+    stealth_als -> add_action( "sprint_offensive,if=!equipped.denial_of_the_halfgiants&energy.time_to_max>3" );
+
     stealth_als -> add_action( "call_action_list,name=stealth_cds,if=spell_targets.shuriken_storm>=5" );
     stealth_als -> add_action( "call_action_list,name=stealth_cds,if=(cooldown.shadowmeld.up&!cooldown.vanish.up&cooldown.shadow_dance.charges<=1)" );
     stealth_als -> add_action( "call_action_list,name=stealth_cds,if=target.time_to_die<12*cooldown.shadow_dance.charges_fractional*(1+equipped.shadow_satyrs_walk*0.5)" );
