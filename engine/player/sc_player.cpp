@@ -560,7 +560,7 @@ player_t::player_t( sim_t*             s,
   initialized( false ), potion_used( false ),
 
   region_str( s -> default_region_str ), server_str( s -> default_server_str ), origin_str(),
-  timeofday( DAY_TIME ), //Set to Day by Default since in raid it always switch to Day, user can override.
+  timeofday( DAY_TIME ), //Set to Day by Default since in raid it always switches to Day, user can override.
   gcd_ready( timespan_t::zero() ), base_gcd( timespan_t::from_seconds( 1.5 ) ), min_gcd( timespan_t::from_millis( 750 ) ),
   gcd_haste_type( HASTE_NONE ), gcd_current_haste_value( 1.0 ),
   started_waiting( timespan_t::min() ),

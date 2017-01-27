@@ -822,6 +822,7 @@ public:
   virtual void      create_options() override;
   virtual std::string      create_profile( save_e type = SAVE_ALL ) override;
   virtual druid_td_t* get_target_data( player_t* target ) const override;
+  virtual void      copy_from( player_t* ) override;
 
   form_e get_form() const { return form; }
   void shapeshift( form_e );
@@ -8511,6 +8512,20 @@ bool has_amount_results( const std::array<stats_t::stats_results_t, RESULT_MAX>&
            res[ RESULT_HIT ].actual_amount.mean() > 0 ||
            res[ RESULT_CRIT ].actual_amount.mean() > 0
          );
+}
+
+// druid_t::copy_from =====================================================
+
+void druid_t::copy_from( player_t* source )
+{
+  player_t::copy_from( source );
+
+  druid_t* p = debug_cast<druid_t*>( source );
+
+  predator_rppm_rate = p -> predator_rppm_rate;
+  initial_astral_power = p -> initial_astral_power;
+  initial_moon_stage = p -> initial_moon_stage;
+  ahhhhh_the_great_outdoors = p -> ahhhhh_the_great_outdoors;
 }
 
 /* Report Extension Class
