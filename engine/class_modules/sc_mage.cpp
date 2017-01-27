@@ -244,6 +244,7 @@ public:
          incanters_flow_stack_mult,
          iv_haste;
   bool blessing_of_wisdom;
+  std::string mage_potion_choice;
 
   // Benefits
   struct benefits_t
@@ -7201,6 +7202,7 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   last_summoned( temporal_hero_e::INVALID ),
   distance_from_rune( 0.0 ),
   global_cinder_count( 0 ),
+  mage_potion_choice ("deadly_grace"),
   incanters_flow_stack_mult( find_spell( 116267 ) -> effectN( 1 ).percent() ),
   iv_haste( 1.0 ),
   blessing_of_wisdom( false ),
@@ -7369,6 +7371,7 @@ void mage_t::create_options()
 {
   add_option( opt_float( "global_cinder_count", global_cinder_count ) );
   add_option( opt_bool( "blessing_of_wisdom", blessing_of_wisdom ) );
+  add_option(opt_string("mage_potion_choice", mage_potion_choice ) );
   player_t::create_options();
 }
 // mage_t::create_pets ========================================================
@@ -8153,7 +8156,13 @@ std::string mage_t::get_potion_action()
   }
   else
   {
-    potion_action += "deadly_grace";
+    if (mage_potion_choice == "prolonged_power")
+    {
+      potion_action += "prolonged_power";
+    }
+    else {
+      potion_action += "deadly_grace";
+    }
   }
 
   return potion_action;
