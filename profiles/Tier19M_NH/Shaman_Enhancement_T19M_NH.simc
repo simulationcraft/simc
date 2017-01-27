@@ -1,0 +1,93 @@
+shaman="Shaman_Enhancement_T19M_NH"
+level=110
+race=troll
+role=attack
+position=back
+talents=3002112
+artifact=41:0:0:0:0:899:1:900:1:901:1:902:1:903:1:904:1:905:3:906:3:907:3:908:3:909:3:910:3:911:3:912:3:913:3:930:1:1351:1:1388:20
+spec=enhancement
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask,type=seventh_demon
+actions.precombat+=/augmentation,type=defiled
+actions.precombat+=/food,name=nightborne_delicacy_platter
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion,name=prolonged_power
+actions.precombat+=/lightning_shield
+
+# Executed every time the actor is available.
+actions=wind_shear
+# Bloodlust casting behavior mirrors the simulator settings for proxy bloodlust. See options 'bloodlust_percent', and 'bloodlust_time'. 
+actions+=/bloodlust,if=target.health.pct<25|time>0.500
+actions+=/auto_attack
+actions+=/feral_spirit,if=!artifact.alpha_wolf.rank|(maelstrom>=20&cooldown.crash_lightning.remains<=gcd)
+actions+=/crash_lightning,if=artifact.alpha_wolf.rank&prev_gcd.1.feral_spirit
+actions+=/berserking,if=buff.ascendance.up|!talent.ascendance.enabled|level<100
+actions+=/blood_fury
+actions+=/potion,name=prolonged_power,if=feral_spirit.remains>5|target.time_to_die<=60
+actions+=/boulderfist,if=buff.boulderfist.remains<gcd|(maelstrom<=50&active_enemies>=3)
+actions+=/boulderfist,if=buff.boulderfist.remains<gcd|(charges_fractional>1.75&maelstrom<=100&active_enemies<=2)
+actions+=/rockbiter,if=talent.landslide.enabled&buff.landslide.remains<gcd
+actions+=/fury_of_air,if=!ticking&maelstrom>22
+actions+=/frostbrand,if=talent.hailstorm.enabled&buff.frostbrand.remains<gcd
+actions+=/flametongue,if=buff.flametongue.remains<gcd|(cooldown.doom_winds.remains<6&buff.flametongue.remains<4)
+actions+=/doom_winds
+actions+=/crash_lightning,if=talent.crashing_storm.enabled&active_enemies>=3&(!talent.hailstorm.enabled|buff.frostbrand.remains>gcd)
+actions+=/earthen_spike
+actions+=/lightning_bolt,if=(talent.overcharge.enabled&maelstrom>=40&!talent.fury_of_air.enabled)|(talent.overcharge.enabled&talent.fury_of_air.enabled&maelstrom>46)
+actions+=/crash_lightning,if=buff.crash_lightning.remains<gcd&active_enemies>=2
+actions+=/windsong
+actions+=/ascendance,if=buff.stormbringer.react
+actions+=/windstrike,if=buff.stormbringer.react&((talent.fury_of_air.enabled&maelstrom>=26)|(!talent.fury_of_air.enabled))
+actions+=/stormstrike,if=buff.stormbringer.react&((talent.fury_of_air.enabled&maelstrom>=26)|(!talent.fury_of_air.enabled))
+actions+=/lava_lash,if=talent.hot_hand.enabled&buff.hot_hand.react
+actions+=/crash_lightning,if=active_enemies>=4
+actions+=/windstrike
+actions+=/stormstrike,if=talent.overcharge.enabled&cooldown.lightning_bolt.remains<gcd&maelstrom>80
+actions+=/stormstrike,if=talent.fury_of_air.enabled&maelstrom>46&(cooldown.lightning_bolt.remains>gcd|!talent.overcharge.enabled)
+actions+=/stormstrike,if=!talent.overcharge.enabled&!talent.fury_of_air.enabled
+actions+=/crash_lightning,if=((active_enemies>1|talent.crashing_storm.enabled|talent.boulderfist.enabled)&!set_bonus.tier19_4pc)|feral_spirit.remains>5
+actions+=/frostbrand,if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8
+actions+=/lava_lash,if=talent.fury_of_air.enabled&talent.overcharge.enabled&(set_bonus.tier19_4pc&maelstrom>=80)
+actions+=/lava_lash,if=talent.fury_of_air.enabled&!talent.overcharge.enabled&(set_bonus.tier19_4pc&maelstrom>=53)
+actions+=/lava_lash,if=(!set_bonus.tier19_4pc&maelstrom>=120)|(!talent.fury_of_air.enabled&set_bonus.tier19_4pc&maelstrom>=40)
+actions+=/flametongue,if=buff.flametongue.remains<4.8
+actions+=/sundering
+actions+=/rockbiter
+actions+=/flametongue
+actions+=/boulderfist
+
+head=helm_of_shackled_elements,id=138343,bonus_id=3518
+neck=cursed_beartooth_necklace,id=139239,bonus_id=1527/1806,enchant=mark_of_the_hidden_satyr
+shoulders=netherbranded_shoulderpads,id=140917,bonus_id=1502/3517
+back=cloak_of_shackled_elements,id=138372,bonus_id=3518
+chest=raiment_of_shackled_elements,id=138346,bonus_id=3518
+wrists=biteresistant_wristclamps,id=142423,bonus_id=1522/3469
+hands=sterilizers_insulated_gauntlets,id=140869,bonus_id=1502/3445
+waist=emblazoned_duskwatch_belt,id=140868,bonus_id=3518
+legs=leggings_of_shackled_elements,id=138345,bonus_id=3518
+feet=black_venom_sabatons,id=139219,bonus_id=1527/1807
+finger1=ring_of_the_scoured_clan,id=140897,bonus_id=1502/3517,enchant=binding_of_mastery
+finger2=mindrend_band,id=138220,bonus_id=1527/1806,enchant=binding_of_mastery
+trinket1=convergence_of_fates,id=140806,bonus_id=3518
+main_hand=doomhammer,id=128819,bonus_id=741,gem_id=139266/142511/139264,relic_id=1532:1806/1527:3469/1532:1806
+off_hand=fury_of_the_stonemother,id=128873
+
+# Gear Summary
+# gear_ilvl=908.73
+# gear_agility=20887
+# gear_stamina=33845
+# gear_crit_rating=2570
+# gear_haste_rating=8003
+# gear_mastery_rating=11789
+# gear_versatility_rating=697
+# gear_armor=2982
+# set_bonus=tier19_2pc=1
+# set_bonus=tier19_4pc=1
