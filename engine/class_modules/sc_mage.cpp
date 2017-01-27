@@ -610,6 +610,7 @@ public:
   virtual double    temporary_movement_modifier() const override;
   virtual void      arise() override;
   virtual action_t* select_action( const action_priority_list_t& ) override;
+  virtual void      copy_from( player_t* ) override;
 
   target_specific_t<mage_td_t> target_data;
 
@@ -7374,6 +7375,20 @@ void mage_t::create_options()
   add_option(opt_string("mage_potion_choice", mage_potion_choice ) );
   player_t::create_options();
 }
+
+// mage_t::copy_from =====================================================
+
+void mage_t::copy_from( player_t* source )
+{
+  player_t::copy_from( source );
+
+  mage_t* p = debug_cast<mage_t*>( source );
+
+  global_cinder_count = p -> global_cinder_count;
+  blessing_of_wisdom = p -> blessing_of_wisdom;
+  mage_potion_choice = p -> mage_potion_choice;
+}
+
 // mage_t::create_pets ========================================================
 
 void mage_t::create_pets()
