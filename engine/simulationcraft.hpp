@@ -5180,7 +5180,7 @@ public:
   bool initialized;
 
   /// Self explanatory.
-  bool may_hit, may_miss, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit, tick_may_crit;
+  bool may_hit, may_miss, may_dodge, may_parry, may_glance, may_block, may_crit, tick_may_crit;
 
   /// Whether or not the ability/dot ticks immediately on usage.
   bool tick_zero;
