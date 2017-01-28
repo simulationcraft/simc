@@ -1051,9 +1051,7 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s,
     // Sort list of actors in the chart based on the value metric (and metric)
     std::sort( player_list.begin(), player_list.end(),
                player_list_comparator_t( chart_metric, vm ) );
-
-    // Compute median if applicable
-    double median = compute_median( player_list, chart_metric, vm );
+    double lowest_value = get_data_value( player_list.back() -> collected_data, chart_metric, vm );
 
     bool candlebars = false;
     // Iterate over the players and output data
@@ -1071,20 +1069,16 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s,
 
       sc_js_t e;
       e.set( "color", c.str() );
-      e.set( "name",
-             p->name_str +
-                 ( s.ilevel_raid_report
-                       ? ( "_" + util::to_string( p->avg_item_level(), 1 ) )
-                       : "" ) );
+      e.set( "name", p->name_str );
       e.set( "y",
              util::round( value, static_cast<unsigned int>( precision ) ) );
       e.set( "id", "#player" + util::to_string( p->index ) + "toggle" );
 
-      // If median is defined, add relative difference (in percent) to the data
-      if ( median > 0 )
+      // If lowest_value is defined, add relative difference (in percent) to the data
+      if ( lowest_value > 0 )
       {
         has_diff = true;
-        e.set( "reldiff", 100.0 * value / median - 100.0 );
+        e.set( "reldiff", 100.0 * value / lowest_value - 100.0 );
       }
 
       bc.add( "__data." + series_id_str + ".series.0.data", e );
@@ -1097,11 +1091,7 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s,
         {
           candlebars = true;
           sc_js_t v;
-          v.set( "name",
-                 p->name_str +
-                     ( s.ilevel_raid_report
-                           ? ( "_" + util::to_string( p->avg_item_level(), 1 ) )
-                           : "" ) );
+          v.set( "name", p->name_str );
           v.set( "low", boxplot_data[ 0 ] );
           v.set( "q1", boxplot_data[ 1 ] );
           v.set( "median", boxplot_data[ 2 ] );

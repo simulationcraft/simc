@@ -892,7 +892,7 @@ public:
   void      default_apl_blood();
   void      default_apl_frost();
   void      default_apl_unholy();
-
+  void      copy_from( player_t* ) override;
   double    bone_shield_handler( const action_state_t* ) const;
 
   unsigned  replenish_rune( unsigned n, gain_t* gain = nullptr );
@@ -6994,9 +6994,9 @@ void death_knight_t::default_apl_frost()
   generic -> add_action( this, "Frost Strike", "if=!talent.shattering_strikes.enabled&(buff.icy_talons.remains<1.5&talent.icy_talons.enabled)" );
   generic -> add_action( this, "Frost Strike", "if=talent.shattering_strikes.enabled&debuff.razorice.stack=5" );
   generic -> add_action( this, "Howling Blast", "target_if=!dot.frost_fever.ticking" );
-  generic -> add_action( this, "Obliterate", "if=!buff.obliteration.up&(equipped.132366&talent.frozen_pulse.enabled&(set_bonus.tier19_2pc=1|set_bonus.tier19_4pc=1))" );
   generic -> add_action( this, "Remorseless Winter", "if=(buff.rime.react&equipped.132459&!(buff.obliteration.up&spell_targets.howling_blast<2))|talent.gathering_storm.enabled" );
   generic -> add_action( this, "Howling Blast", "if=buff.rime.react&!(buff.obliteration.up&spell_targets.howling_blast<2)" );
+  generic -> add_action( this, "Obliterate", "if=!buff.obliteration.up&(equipped.132366&talent.frozen_pulse.enabled&(set_bonus.tier19_2pc=1|set_bonus.tier19_4pc=1))" );
   generic -> add_action( this, "Frost Strike", "if=runic_power.deficit<=10" );
   generic -> add_action( this, "Frost Strike", "if=buff.obliteration.up&!buff.killing_machine.react" );
   generic -> add_action( this, "Remorseless Winter", "if=spell_targets.remorseless_winter>=2&!(talent.frostscythe.enabled&buff.killing_machine.react&spell_targets.frostscythe>=2)" );
@@ -7994,6 +7994,19 @@ void death_knight_t::create_options()
   add_option( opt_float( "fallen_crusader_rppm", fallen_crusader_rppm ) );
   add_option( opt_float( "aotd_proc_chance", aotd_proc_chance ) );
 
+}
+
+// death_knight_t::copy_from =====================================================
+
+void death_knight_t::copy_from( player_t* source )
+{
+  player_t::copy_from( source );
+
+  death_knight_t* p = debug_cast<death_knight_t*>( source );
+
+  fallen_crusader = p -> fallen_crusader;
+  fallen_crusader_rppm = p -> fallen_crusader_rppm;
+  aotd_proc_chance = p -> aotd_proc_chance;
 }
 
 // death_knight_t::convert_hybrid_stat ==============================================

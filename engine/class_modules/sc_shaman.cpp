@@ -634,6 +634,7 @@ public:
   void      arise() override;
   void      reset() override;
   void      merge( player_t& other ) override;
+  void      copy_from( player_t* ) override;
 
   void     datacollection_begin() override;
   void     datacollection_end() override;
@@ -5966,6 +5967,18 @@ void shaman_t::create_options()
   add_option( opt_bool( "raptor_glyph", raptor_glyph ) );
 }
 
+// paladin_t::copy_from =====================================================
+
+void shaman_t::copy_from( player_t* source )
+{
+  player_t::copy_from( source );
+
+  shaman_t* p = debug_cast<shaman_t*>( source );
+
+  stormlash_targets = p -> stormlash_targets;
+  raptor_glyph = p -> raptor_glyph;
+}
+
 // shaman_t::init_spells ====================================================
 
 void shaman_t::init_spells()
@@ -6802,7 +6815,7 @@ void shaman_t::init_action_list_elemental()
   // On-use items
   for ( const auto& item : items )
   {
-    if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+    if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
     {
       def -> add_action( "use_item,slot=" + std::string( item.slot_name() ) );
     }
@@ -6993,7 +7006,7 @@ void shaman_t::init_action_list_enhancement()
   // On-use items
   for ( const auto& item : items )
   {
-    if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+    if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
     {
       def -> add_action( "use_item,slot=" + std::string( item.slot_name() ) );
     }

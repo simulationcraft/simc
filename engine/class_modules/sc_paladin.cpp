@@ -477,6 +477,7 @@ public:
   virtual stat_e    convert_hybrid_stat( stat_e s ) const override;
   virtual void      regen( timespan_t periodicity ) override;
   virtual void      combat_begin() override;
+  virtual void      copy_from( player_t* ) override;
 
   virtual double current_health() const override;
 
@@ -5976,6 +5977,20 @@ void paladin_t::create_options()
   add_option( opt_bool( "paladin_fake_sov", fake_sov ) );
   player_t::create_options();
 }
+
+// paladin_t::copy_from =====================================================
+
+void paladin_t::copy_from( player_t* source )
+{
+  player_t::copy_from( source );
+
+  paladin_t* p = debug_cast<paladin_t*>( source );
+
+  fixed_holy_wrath_health_pct = p -> fixed_holy_wrath_health_pct;
+  fake_sov = p -> fake_sov;
+}
+
+// paladin_t::current_health =================================================
 
 double paladin_t::current_health() const
 {

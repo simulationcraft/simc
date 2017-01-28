@@ -1670,7 +1670,6 @@ struct sim_t : private sc_thread_t
   int global_item_upgrade_level;
   bool maximize_reporting;
   std::string apikey;
-  bool ilevel_raid_report;
   bool distance_targeting_enabled;
   bool enable_dps_healing;
   double scaling_normalized;
@@ -5181,7 +5180,7 @@ public:
   bool initialized;
 
   /// Self explanatory.
-  bool may_hit, may_miss, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit, tick_may_crit;
+  bool may_hit, may_miss, may_dodge, may_parry, may_glance, may_block, may_crit, tick_may_crit;
 
   /// Whether or not the ability/dot ticks immediately on usage.
   bool tick_zero;

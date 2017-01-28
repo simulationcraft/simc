@@ -244,6 +244,7 @@ public:
          incanters_flow_stack_mult,
          iv_haste;
   bool blessing_of_wisdom;
+  std::string mage_potion_choice;
 
   // Benefits
   struct benefits_t
@@ -609,6 +610,7 @@ public:
   virtual double    temporary_movement_modifier() const override;
   virtual void      arise() override;
   virtual action_t* select_action( const action_priority_list_t& ) override;
+  virtual void      copy_from( player_t* ) override;
 
   target_specific_t<mage_td_t> target_data;
 
@@ -7201,6 +7203,7 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   last_summoned( temporal_hero_e::INVALID ),
   distance_from_rune( 0.0 ),
   global_cinder_count( 0 ),
+  mage_potion_choice ("deadly_grace"),
   incanters_flow_stack_mult( find_spell( 116267 ) -> effectN( 1 ).percent() ),
   iv_haste( 1.0 ),
   blessing_of_wisdom( false ),
@@ -7369,8 +7372,23 @@ void mage_t::create_options()
 {
   add_option( opt_float( "global_cinder_count", global_cinder_count ) );
   add_option( opt_bool( "blessing_of_wisdom", blessing_of_wisdom ) );
+  add_option(opt_string("mage_potion_choice", mage_potion_choice ) );
   player_t::create_options();
 }
+
+// mage_t::copy_from =====================================================
+
+void mage_t::copy_from( player_t* source )
+{
+  player_t::copy_from( source );
+
+  mage_t* p = debug_cast<mage_t*>( source );
+
+  global_cinder_count = p -> global_cinder_count;
+  blessing_of_wisdom = p -> blessing_of_wisdom;
+  mage_potion_choice = p -> mage_potion_choice;
+}
+
 // mage_t::create_pets ========================================================
 
 void mage_t::create_pets()
@@ -8153,7 +8171,13 @@ std::string mage_t::get_potion_action()
   }
   else
   {
-    potion_action += "deadly_grace";
+    if (mage_potion_choice == "prolonged_power")
+    {
+      potion_action += "prolonged_power";
+    }
+    else {
+      potion_action += "deadly_grace";
+    }
   }
 
   return potion_action;
@@ -8393,7 +8417,7 @@ void mage_t::apl_frost()
   aoe -> add_action( this, "Frozen Orb" );
   aoe -> add_talent( this, "Comet Storm" );
   aoe -> add_talent( this, "Ice Nova" );
-  aoe -> add_action( "water_jet,if=prev_gcd.1.frostbolt&buff.fingers_of_frost.stack<(2+artifact.icy_hand.enabled)&buff.brain_freeze.react=0&" );
+  aoe -> add_action( "water_jet,if=prev_gcd.1.frostbolt&buff.fingers_of_frost.stack<(2+artifact.icy_hand.enabled)&buff.brain_freeze.react=0" );
   aoe -> add_action( this, "Flurry", "if=(buff.brain_freeze.react|prev_gcd.1.ebonbolt)&buff.fingers_of_frost.react=0" );
   aoe -> add_talent( this, "Frost Bomb", "if=debuff.frost_bomb.remains<action.ice_lance.travel_time&buff.fingers_of_frost.react>0" );
   aoe -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react>0" );

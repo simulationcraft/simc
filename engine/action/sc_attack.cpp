@@ -15,10 +15,10 @@ attack_t::attack_t( const std::string& n, player_t* p, const spell_data_t* s )
     attack_table()
 {
   crit_bonus = 1.0;
+  special = true; // Make sure to set this to false with autoattacks. 
 
   weapon_power_mod = 1.0 / 3.5;
   min_gcd          = p->min_gcd;
-  // min_gcd = timespan_t::from_seconds( 1.0 );
   hasted_ticks = false;
 
   crit_multiplier *= util::crit_multiplier( p->meta_gem );
