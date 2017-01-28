@@ -73,6 +73,7 @@ namespace item
   void eyasus_mulligan( special_effect_t& );
   void marfisis_giant_censer( special_effect_t& );
   void devilsaurs_bite( special_effect_t& );
+  void leyspark(special_effect_t& );
 
   // 7.0 Raid
   void bloodthirsty_instinct( special_effect_t& );
@@ -1611,7 +1612,6 @@ void item::pharameres_forbidden_grimoire( special_effect_t& effect )
     void execute()
     {
       impact -> target = target;
-      impact -> target_cache.is_valid = false;
       impact -> execute();
     }
   };
@@ -3128,6 +3128,20 @@ void item::devilsaurs_bite( special_effect_t& effect )
   new dbc_proc_callback_t( effect.item, effect );
 }
 
+// Ley Spark =========================================================
+
+void item::leyspark( special_effect_t& effect )
+{
+  effect.custom_buff = stat_buff_creator_t( effect.player, "sparking", effect.player -> find_spell( 231965 ), effect.item )
+    .spell( effect.player -> find_spell( 231941 ) )
+    .cd( timespan_t::zero() )
+    .add_invalidate( CACHE_AGILITY );
+
+  auto a = effect.create_action();
+
+  new dbc_proc_callback_t( effect.item, effect );
+}
+
 // Spontaneous Appendages ===================================================
 struct spontaneous_appendages_t: public proc_spell_t
 {
@@ -4329,6 +4343,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 227388, item::eyasus_mulligan                );
   register_special_effect( 228141, item::marfisis_giant_censer          );
   register_special_effect( 224073, item::devilsaurs_bite                );
+  register_special_effect( 231940 ,item::leyspark                       );
 
   /* Legion Enchants */
   register_special_effect( 190888, "190909trigger" );
