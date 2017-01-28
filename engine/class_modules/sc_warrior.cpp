@@ -3899,6 +3899,7 @@ struct avatar_t: public warrior_spell_t
     warrior_spell_t( "avatar", p, p -> talents.avatar )
   {
     parse_options( options_str );
+    callbacks = false;
     use_off_gcd = true;
   }
 
@@ -4022,6 +4023,7 @@ struct die_by_the_sword_t: public warrior_spell_t
     warrior_spell_t( "die_by_the_sword", p, p -> spec.die_by_the_sword )
   {
     parse_options( options_str );
+    callbacks = false;
     range = -1;
   }
 
@@ -4070,6 +4072,7 @@ struct commanding_shout_t: public warrior_spell_t
     warrior_spell_t( "commanding_shout", p, p -> spec.commanding_shout )
   {
     parse_options( options_str );
+    callbacks = false; 
     range = -1;
   }
 
