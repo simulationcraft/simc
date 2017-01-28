@@ -369,7 +369,7 @@ public:
   {
     actions::spells::mind_sear_tick_t* mind_sear_tick;
     actions::spells::shadowy_apparition_spell_t* shadowy_apparitions;
-    actions::spells::sphere_of_insanity_spell_t* sphere_of_insanity;
+    action_t* sphere_of_insanity;
     action_t* mental_fortitude;
   } active_spells;
 
@@ -1571,12 +1571,6 @@ struct priest_spell_t : public priest_action_t<spell_t>
       {
         priest.buffs.twist_of_fate->trigger();
       }
-
-      if ( is_sphere_of_insanity_spell &&
-           priest.buffs.sphere_of_insanity->up() && s->result_amount > 0 )
-      {
-        priest.buffs.sphere_of_insanity->current_value += s->result_amount;
-      }
     }
   }
 
@@ -1584,6 +1578,14 @@ struct priest_spell_t : public priest_action_t<spell_t>
   {
     base_t::assess_damage( type, s );
 
+    if ( is_sphere_of_insanity_spell &&
+         priest.buffs.sphere_of_insanity->up() && s->result_amount > 0 )
+    {
+      double damage = s -> result_amount * priest.buffs.sphere_of_insanity -> default_value;
+      priest.active_spells.sphere_of_insanity -> base_dd_min = damage;
+      priest.active_spells.sphere_of_insanity -> base_dd_max = damage;
+      priest.active_spells.sphere_of_insanity -> schedule_execute();
+    }
     if ( aoe == 0 && result_is_hit( s->result ) &&
          priest.buffs.vampiric_embrace->up() )
       trigger_vampiric_embrace( s );
@@ -2799,11 +2801,8 @@ struct shadowy_apparition_spell_t final : public priest_spell_t
 
 struct sphere_of_insanity_spell_t final : public priest_spell_t
 {
-  double damage_amount;
-
   sphere_of_insanity_spell_t( priest_t& p )
-    : priest_spell_t( "sphere_of_insanity", p, p.find_spell( 194182 ) ),
-      damage_amount( 0.0 )
+    : priest_spell_t( "sphere_of_insanity", p, p.find_spell( 194182 ) )
   {
     may_crit    = false;
     background  = true;
@@ -2817,31 +2816,23 @@ struct sphere_of_insanity_spell_t final : public priest_spell_t
     school      = SCHOOL_SHADOW;
   }
 
-  double calculate_direct_amount( action_state_t* state ) const override
+  std::vector< player_t* >& target_list() const
   {
-    dot_t* d = state->target->get_dot( "shadow_word_pain", &priest );
+    // Check if target cache is still valid. If not, recalculate it
+    if ( !target_cache.is_valid )
+    {
+      std::vector<player_t*> targets;
+      range::for_each( sim -> target_non_sleeping_list, [&targets, this]( player_t* t ) {
+        if ( find_td( t ) -> dots.shadow_word_pain -> is_ticking() )
+        {
+          targets.push_back( t );
+        }
+      } );
+      target_cache.list.swap( targets );
+      target_cache.is_valid = true;
+    }
 
-    if ( d )  // Shadow Word: Pain is ticking on the target; deal damage
-    {
-      return damage_amount *
-             0.05;  // TODO: replace with data from spell 194182, effect #3
-    }
-    else
-    {
-      return 0.0;
-    }
-  }
-
-  /// Trigger a sphere of insanity damage
-  void trigger( double amount )
-  {
-    if ( priest.sim->debug )
-    {
-      priest.sim->out_debug << priest.name()
-                            << " triggered Sphere of Insanity damage.";
-    }
-    damage_amount = amount;
-    schedule_execute();
+    return target_cache.list;
   }
 };
 
@@ -2915,16 +2906,22 @@ struct shadow_word_pain_t final : public priest_spell_t
                        priest.gains.insanity_shadow_word_pain_onhit );
     }
 
-    if ( priest.buffs.sphere_of_insanity->up() )
-    {
-      priest.active_spells.sphere_of_insanity->trigger(
-          priest.buffs.sphere_of_insanity->current_value );
-      priest.buffs.sphere_of_insanity->current_value = 0;
-    }
-
     if (priest.active_items.zeks_exterminatus)
     {
       trigger_zeks();
+    }
+    if ( priest.artifact.sphere_of_insanity.rank() )
+    {
+      priest.active_spells.sphere_of_insanity -> target_cache.is_valid = false;
+    }
+  }
+
+  void last_tick( dot_t*d ) override
+  {
+    priest_spell_t::last_tick(d);
+    if ( priest.artifact.sphere_of_insanity.rank() )
+    {
+      priest.active_spells.sphere_of_insanity -> target_cache.is_valid = false;
     }
   }
 
@@ -2944,13 +2941,6 @@ struct shadow_word_pain_t final : public priest_spell_t
     if ( d->state->result_amount > 0 )
     {
       trigger_shadowy_insight();
-    }
-
-    if ( priest.buffs.sphere_of_insanity->up() )
-    {
-      priest.active_spells.sphere_of_insanity->trigger(
-          priest.buffs.sphere_of_insanity->current_value );
-      priest.buffs.sphere_of_insanity->current_value = 0;
     }
 
     if ( priest.active_items.anunds_seared_shackles )
@@ -3549,12 +3539,6 @@ struct void_eruption_t final : public priest_spell_t
           true );
     }
 
-    if ( priest.artifact.sphere_of_insanity.rank() )
-    {
-      priest.buffs.sphere_of_insanity->trigger();
-      priest.buffs.sphere_of_insanity->current_value = 0.0;
-    }
-
     if ( priest.active_items.mother_shahrazs_seduction )
     {
       int mss_vf_stacks =
@@ -3893,6 +3877,11 @@ struct voidform_t final : public priest_buff_t<haste_buff_t>
     priest.buffs.the_twins_painful_touch->trigger();
     priest.buffs.shadowform->expire();
     priest.insanity.begin_tracking();
+    if ( priest.artifact.sphere_of_insanity.rank() )
+    {
+      priest.buffs.sphere_of_insanity->trigger();
+    }
+
 
     return r;
   }
@@ -3921,6 +3910,8 @@ struct voidform_t final : public priest_buff_t<haste_buff_t>
     {
       priest.buffs.shadowform->trigger();
     }
+
+    priest.buffs.sphere_of_insanity -> expire();
 
     if ( priest.buffs.surrender_to_madness->check() )
     {
@@ -5037,8 +5028,7 @@ void priest_t::create_buffs()
   buffs.sphere_of_insanity = buff_creator_t( this, "sphere_of_insanity" )
                                  .spell( find_spell( 194182 ) )
                                  .chance( 1.0 )
-                                 .duration( timespan_t::zero() )
-                                 .default_value( 0.0 );
+                                 .default_value( find_spell( 194182 ) -> effectN( 3 ).percent() );
 
   // Discipline
   buffs.archangel = new buffs::archangel_t( *this );
