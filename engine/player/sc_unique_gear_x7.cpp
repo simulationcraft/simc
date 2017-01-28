@@ -496,7 +496,7 @@ void item::naraxas_spiked_tongue( special_effect_t& effect )
     {
       double am = proc_spell_t::action_multiplier();
 
-      double distance = player -> get_player_distance( *target );
+      double distance = std::min( 20.0, player -> get_player_distance( *target ) );
       am *= ( std::min( distance, 20.0 ) / 20.0 ); // Does less damage the closer player is to target.
       return am;
     }
