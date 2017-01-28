@@ -99,7 +99,7 @@ namespace item
 
   // Adding this here to check it off the list.
   // The sim builds it automatically.
-  //void pharameres_forbidden_grimoire( special_effect_t& );
+  void pharameres_forbidden_grimoire( special_effect_t& );
 
   // Legendary
   void aggramars_stride( special_effect_t& );
@@ -1557,6 +1557,76 @@ void item::might_of_krosus( special_effect_t& effect )
   effect.execute_action = a;
 }
 
+void item::pharameres_forbidden_grimoire( special_effect_t& effect )
+{
+  struct orb_of_destruction_impact_t : public spell_t
+  {
+    orb_of_destruction_impact_t( const special_effect_t& effect ) :
+      spell_t( "orb_of_destruction_impact", effect.player, effect.driver() ->effectN( 1 ).trigger() )
+    {
+      background = may_crit = true;
+      aoe = -1;
+    }
+
+    double composite_target_multiplier( player_t* t ) const override
+    {
+      double am = spell_t::composite_target_multiplier( t );
+      am *= ( radius - target -> get_player_distance( *t ) ) / radius;
+      return am; // Assuming that damage is linear depending on distance from the original target
+    }
+  };
+
+  struct orb_of_destruction_t : public spell_t
+  {
+    double min_range;
+    orb_of_destruction_impact_t* impact;
+    orb_of_destruction_t( const special_effect_t& effect ) :
+      spell_t( "orb_of_destruction", effect.player, effect.driver() ),
+      impact( nullptr )
+    {
+      callbacks = false;
+      background = true;
+      impact = new orb_of_destruction_impact_t( effect );
+    }
+
+    void init() override
+    {
+      spell_t::init();
+      if ( player -> base.distance < 20 )
+        sim ->errorf( "Pharamere's Forbidden Grimoire can only be used when more than 20 yards away from the target. This warning will display when a melee tries to equip the trinket." );
+    }
+
+    bool ready() override
+    {
+      if ( player -> get_player_distance( *target ) < min_range )
+      {
+        return false;
+      }
+      return spell_t::ready();
+    }
+
+    void execute()
+    {
+      impact -> target = target;
+      impact -> target_cache.is_valid = false;
+      impact -> execute();
+    }
+  };
+
+  action_t* a = effect.player -> find_action( "orb_of_destruction" );
+  if ( a == nullptr )
+  {
+    a = effect.player -> create_proc_action( "orb_of_destruction", effect );
+  }
+
+  if ( a == nullptr )
+  {
+    a = new orb_of_destruction_t( effect );
+  }
+
+  effect.execute_action = a;
+}
+
 // Tirathon's Betrayal ======================================================
 
 struct darkstrikes_absorb_t : public absorb_t
@@ -1961,6 +2031,7 @@ void item::draught_of_souls( special_effect_t& effect )
       effect( effect_ ), damage( nullptr )
     {
       channeled = tick_zero = true;
+      interrupt_auto_attack = false;
       cooldown -> duration = timespan_t::zero();
       hasted_ticks = false;
 
@@ -4244,6 +4315,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 225142, item::whispers_in_the_dark    );
   register_special_effect( 225135, item::nightblooming_frond     );
   register_special_effect( 225132, item::might_of_krosus         );
+  register_special_effect( 225133, item::pharameres_forbidden_grimoire );
 
   /* Legion 7.0 Misc */
   register_special_effect( 188026, item::infernal_alchemist_stone       );
