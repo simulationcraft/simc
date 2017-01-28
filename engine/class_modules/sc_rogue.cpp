@@ -383,6 +383,8 @@ struct rogue_t : public player_t
     const spell_data_t* subterfuge;
     const spell_data_t* tier18_2pc_combat_ar;
     const spell_data_t* insignia_of_ravenholdt;
+    const spell_data_t* master_assassins_initiative;
+    const spell_data_t* master_assassins_initiative_2;
   } spell;
 
   // Talents
@@ -4264,7 +4266,7 @@ struct shadowstrike_t : public rogue_attack_t
       // so it ignores the hitbox (or combat reach as it is often said).
       double distance = 10;
       double grant_energy = base_proc -> effectN( 1 ).base_value();
-      while (distance > shadow_satyrs_walk -> effectN( 2 ).base_value())
+      while ( distance > shadow_satyrs_walk -> effectN( 2 ).base_value() )
       {
         grant_energy += shadow_satyrs_walk -> effectN( 1 ).base_value();
         distance -= shadow_satyrs_walk -> effectN( 2 ).base_value();
@@ -5967,19 +5969,24 @@ struct subterfuge_t : public buff_t
     rogue( r )
   { }
 
+  void execute( int stacks, double value, timespan_t duration ) override
+  {
+    buff_t::execute( stacks, value, duration );
+
+    // Subterfuge makes the vanish to fully lasts 3 seconds (instead of breaking on first ability use)
+    // It means that if we proc Subterfuge while having Vanish buff, we will let Vanish handle the
+    // legendary. In all others cases (i.e. normal stealth mostly), subterfuge will expires the legendary aura.
+    if ( rogue -> legendary.mantle_of_the_master_assassin && ! rogue -> buffs.vanish -> check() )
+    {
+      rogue -> buffs.mantle_of_the_master_assassin_aura -> expire();
+      rogue -> buffs.mantle_of_the_master_assassin -> trigger();
+    }
+  }
+
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     buff_t::expire_override( expiration_stacks, remaining_duration );
-    // The Glyph of Vanish bug is back, so if Vanish is still up when
-    // Subterfuge fades, don't cancel stealth. Instead, the next offensive
-    // action in the sim will trigger a new (3 seconds) of Subterfuge.
-    if ( ( rogue -> bugs && (
-            rogue -> buffs.vanish -> remains() == timespan_t::zero() ||
-            rogue -> buffs.vanish -> check() == 0 ) ) ||
-        ! rogue -> bugs )
-    {
-      actions::break_stealth( rogue );
-    }
+    actions::break_stealth( rogue );
   }
 };
 
@@ -7021,9 +7028,27 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
       return n_buffs;
     } );
   }
-  else if (util::str_compare_ci(name_str, "ssw_refund_offset"))
+  else if ( util::str_compare_ci(name_str, "ssw_refund_offset") )
   {
     return make_ref_expr(name_str, ssw_refund_offset);
+  }
+  else if ( util::str_compare_ci(name_str, "mantle_duration") )
+  {
+    return make_fn_expr( name_str, [ this ]() {
+      if ( buffs.mantle_of_the_master_assassin_aura -> check() )
+      {
+        timespan_t nominal_master_assassin_duration = timespan_t::from_seconds( spell.master_assassins_initiative -> effectN( 1 ).base_value() );
+        if ( buffs.vanish -> check() )
+          return buffs.vanish -> remains() + nominal_master_assassin_duration;
+        // Hardcoded 1.0 since we consider that stealth will break on next gcd.
+        else
+          return timespan_t::from_seconds( 1.0 ) + nominal_master_assassin_duration;
+      }
+      else if ( buffs.mantle_of_the_master_assassin -> check() )
+        return buffs.mantle_of_the_master_assassin -> remains();
+      else
+        return timespan_t::from_seconds( 0.0 );
+    } );
   }
 
   // Split expressions
@@ -7240,20 +7265,22 @@ void rogue_t::init_spells()
   mastery.executioner       = find_mastery_spell( ROGUE_SUBTLETY );
 
   // Misc spells
-  spell.bag_of_tricks_driver        = find_spell( 192661 );
-  spell.critical_strikes            = find_spell( 157442 );
-  spell.death_from_above            = find_spell( 163786 );
-  spell.fan_of_knives               = find_class_spell( "Fan of Knives" );
-  spell.fleet_footed                = find_spell( 31209 );
-  spell.master_of_shadows           = find_spell( 196980 );
-  spell.sprint                      = find_class_spell( "Sprint" );
-  spell.ruthlessness_driver         = find_spell( 14161 );
-  spell.ruthlessness_cp             = spec.ruthlessness -> effectN( 1 ).trigger();
-  spell.shadow_focus                = find_spell( 112942 );
-  spell.subterfuge                  = find_spell( 115192 );
-  spell.tier18_2pc_combat_ar        = find_spell( 186286 );
-  spell.relentless_strikes_energize = find_spell( 98440 );
-  spell.insignia_of_ravenholdt      = find_spell( 209041 );
+  spell.bag_of_tricks_driver          = find_spell( 192661 );
+  spell.critical_strikes              = find_spell( 157442 );
+  spell.death_from_above              = find_spell( 163786 );
+  spell.fan_of_knives                 = find_class_spell( "Fan of Knives" );
+  spell.fleet_footed                  = find_spell( 31209 );
+  spell.master_of_shadows             = find_spell( 196980 );
+  spell.sprint                        = find_class_spell( "Sprint" );
+  spell.ruthlessness_driver           = find_spell( 14161 );
+  spell.ruthlessness_cp               = spec.ruthlessness -> effectN( 1 ).trigger();
+  spell.shadow_focus                  = find_spell( 112942 );
+  spell.subterfuge                    = find_spell( 115192 );
+  spell.tier18_2pc_combat_ar          = find_spell( 186286 );
+  spell.relentless_strikes_energize   = find_spell( 98440 );
+  spell.insignia_of_ravenholdt        = find_spell( 209041 );
+  spell.master_assassins_initiative   = find_spell( 235022 );
+  spell.master_assassins_initiative_2 = find_spell( 235027 );
 
   // Talents
   talent.deeper_stratagem   = find_talent_spell( "Deeper Stratagem" );
@@ -7663,13 +7690,13 @@ void rogue_t::create_buffs()
                                      .tick_callback( [this]( buff_t*, int, const timespan_t& ) {
                                       buffs.the_dreadlords_deceit -> trigger(); } )
                                      .tick_time_behavior( BUFF_TICK_TIME_UNHASTED );
-  buffs.mantle_of_the_master_assassin_aura = buff_creator_t( this, "master_assassins_initiative_aura", find_spell( 235022 ) )
+  buffs.mantle_of_the_master_assassin_aura = buff_creator_t( this, "master_assassins_initiative_aura", spell.master_assassins_initiative )
                                               .duration( sim -> max_time / 2 )
-                                              .default_value( find_spell(235027) -> effectN(1).percent() )
+                                              .default_value( spell.master_assassins_initiative_2 -> effectN( 1 ).percent() )
                                               .add_invalidate( CACHE_CRIT_CHANCE );
-  buffs.mantle_of_the_master_assassin  = buff_creator_t( this, "master_assassins_initiative", find_spell( 235022 ) )
-                                      .duration( timespan_t::from_seconds( find_spell(235022) -> effectN(1).base_value() ) )
-                                      .default_value( find_spell( 235027 ) -> effectN( 1 ).percent() )
+  buffs.mantle_of_the_master_assassin  = buff_creator_t( this, "master_assassins_initiative", spell.master_assassins_initiative )
+                                      .duration( timespan_t::from_seconds( spell.master_assassins_initiative -> effectN( 1 ).base_value() ) )
+                                      .default_value( spell.master_assassins_initiative_2 -> effectN( 1 ).percent() )
                                       .add_invalidate( CACHE_CRIT_CHANCE );
 
   buffs.fof_fod           = new buffs::fof_fod_t( this );
