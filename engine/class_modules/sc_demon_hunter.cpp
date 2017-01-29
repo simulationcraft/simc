@@ -1184,6 +1184,25 @@ public:
     return ea;
   }
 
+  void track_benefits(action_state_t* s)
+  {
+    if (ab::snapshot_flags & STATE_TGT_MUL_TA)
+    {
+      demon_hunter_td_t* target_data = td(s->target);
+      if (target_data->debuffs.nemesis)
+      {
+        target_data->debuffs.nemesis->up();
+      }
+    }
+
+    if (ab::snapshot_flags & STATE_MUL_TA)
+    {
+      p()->buff.momentum->up();
+      p()->buff.demon_soul->up();
+      p()->buff.chaos_blades->up();
+    }
+  }
+
   virtual void tick( dot_t* d ) override
   {
     ab::tick( d );
@@ -1192,19 +1211,9 @@ public:
     trigger_charred_warblades( d -> state );
     accumulate_spirit_bomb( d -> state );
 
-    // Benefit tracking
     if ( d -> state -> result_amount > 0 )
     {
-      if ( ab::snapshot_flags & STATE_TGT_MUL_TA )
-      {
-        td( d -> state -> target ) -> debuffs.nemesis -> up();
-      }
-      if ( ab::snapshot_flags & STATE_MUL_TA )
-      {
-        p() -> buff.momentum -> up();
-        p() -> buff.demon_soul -> up();
-        p() -> buff.chaos_blades -> up();
-      }
+      track_benefits(d->state);
     }
   }
 
@@ -1221,16 +1230,7 @@ public:
       // Benefit tracking
       if ( s -> result_amount > 0 )
       {
-        if ( ab::snapshot_flags & STATE_TGT_MUL_DA )
-        {
-          td( s -> target ) -> debuffs.nemesis -> up();
-        }
-        if ( ab::snapshot_flags & STATE_MUL_DA )
-        {
-          p() -> buff.momentum -> up();
-          p() -> buff.demon_soul -> up();
-          p() -> buff.chaos_blades -> up();
-        }
+        track_benefits(s);
       }
     }
   }
@@ -5586,7 +5586,7 @@ void demon_hunter_t::create_buffs()
     buff_creator_t( this, "siphoned_power", find_spell( 218561 ) )
     .trigger_spell( artifact.siphon_power )
     .add_invalidate( CACHE_AGILITY )
-    .max_stack((int)artifact.siphon_power.value() ? (int)artifact.siphon_power.value() : 1 );
+    .max_stack(artifact.siphon_power.value() ? (int)artifact.siphon_power.value() : 1 );
 
   buff.soul_barrier = new buffs::soul_barrier_t( this );
 
@@ -6952,7 +6952,7 @@ double demon_hunter_t::composite_player_target_multiplier(player_t* target, scho
 
   demon_hunter_td_t* td = get_target_data(target);
 
-  if(td->debuffs.nemesis->up())
+  if(td->debuffs.nemesis && td->debuffs.nemesis->up())
   {
     m *= 1.0 + td->debuffs.nemesis->current_value;
   }
