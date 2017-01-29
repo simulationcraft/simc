@@ -1574,9 +1574,29 @@ void item::pharameres_forbidden_grimoire( special_effect_t& effect )
     double composite_target_multiplier( player_t* t ) const override
     {
       double am = spell_t::composite_target_multiplier( t );
-
-      am *= ( radius - std::min( target -> get_player_distance( *t ), 20.0 ) ) / radius;
-      return am; // Assuming that damage is linear depending on distance from the original target
+      //Formula for the damage reduction due to distance from the original target seems to fit
+      // damage_reduction = 1 - ( distance / 30 ) ^ 2
+      // Data used to find this approximation:
+      /* Distance, Damage Done
+         0.0,      506675
+         7.32e-5,  506669
+         2.3087,   503726
+         3.2249,   500923
+         5.8694,   487644
+         6.3789,   483542
+         7.7104,   470934
+         8.2765,   467706
+         10.2108,  448322
+         11.6349,  430007
+         12.1807,  423206
+         13.2231,  408371
+         16.2364,  358321
+         18.071,   323028
+         19.9642,  283293
+         20.0721,  0
+      */
+      am *= 1.0 - std::pow( std::min( target -> get_player_distance( *t ), 20.0 ) / 30.0, 2 );
+      return am;
     }
   };
 
