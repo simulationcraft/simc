@@ -6005,8 +6005,8 @@ struct stealth_like_buff_t : public buff_t
                               rogue -> gains.master_of_shadows );
     }
 
-    if ( rogue -> legendary.mantle_of_the_master_assassin &&
-     procs_mantle_of_the_master_assassin )
+    if ( procs_mantle_of_the_master_assassin &&
+      rogue -> legendary.mantle_of_the_master_assassin )
     {
       rogue -> buffs.mantle_of_the_master_assassin -> expire();
       rogue -> buffs.mantle_of_the_master_assassin_aura -> trigger();
@@ -6020,8 +6020,8 @@ struct stealth_like_buff_t : public buff_t
   {
     buff_t::expire_override( expiration_stacks, remaining_duration );
 
-    if ( rogue -> legendary.mantle_of_the_master_assassin &&
-     procs_mantle_of_the_master_assassin )
+    if ( procs_mantle_of_the_master_assassin &&
+      rogue -> legendary.mantle_of_the_master_assassin )
     {
       rogue -> buffs.mantle_of_the_master_assassin_aura -> expire();
       rogue -> buffs.mantle_of_the_master_assassin -> trigger();
@@ -6032,8 +6032,8 @@ struct stealth_like_buff_t : public buff_t
   }
 };
 
-// Note, stealth buff is set a max time of half the nominal fight duration, so it can be forced to
-// show in sample sequence tables.
+// Note, stealth buff is set a max time of half the nominal fight duration, so it can be
+// forced to show in sample sequence tables.
 struct stealth_t : public stealth_like_buff_t
 {
   stealth_t( rogue_t* r ) :
@@ -6052,12 +6052,14 @@ struct vanish_t : public stealth_like_buff_t
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
-    stealth_like_buff_t::expire_override( expiration_stacks, remaining_duration );
-
+    // Stealth proc on Vanish end ?
+    // Do it before Vanish expiration to avoid on-stealth buff bugs.
     if ( remaining_duration == timespan_t::zero() )
     {
       rogue -> buffs.stealth -> trigger();
     }
+
+    stealth_like_buff_t::expire_override( expiration_stacks, remaining_duration );
   }
 };
 
