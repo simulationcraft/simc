@@ -5974,13 +5974,8 @@ struct subterfuge_t : public buff_t
     buff_t::execute( stacks, value, duration );
 
     // Subterfuge makes the vanish to fully lasts 3 seconds (instead of breaking on first ability use)
-    // It means that if we proc Subterfuge while having Vanish buff, we will let Vanish handle the
-    // legendary. In all others cases (i.e. normal stealth mostly), subterfuge will expires the legendary aura.
-    if ( rogue -> legendary.mantle_of_the_master_assassin && ! rogue -> buffs.vanish -> check() )
-    {
-      rogue -> buffs.mantle_of_the_master_assassin_aura -> expire();
-      rogue -> buffs.mantle_of_the_master_assassin -> trigger();
-    }
+    if ( ! rogue -> buffs.vanish -> check() )
+      actions::break_stealth( rogue );
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
