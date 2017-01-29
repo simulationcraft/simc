@@ -5329,7 +5329,7 @@ public:
   /// This is used to cache/track spells that have a parent driver, such as most channeled/ground aoe abilities.
   dot_t* parent_dot;
 
-  action_t* child_action;
+  std::vector< action_t* > child_action;
 
   /// This ability leaves a ticking dot on the ground, and doesn't move when the target moves. Used with original_x and original_y
   bool ground_aoe;
