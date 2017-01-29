@@ -579,7 +579,6 @@ counter_t::counter_t( warrior_t* p ):
   p -> counters.push_back( this );
 }
 
-
 namespace
 { // UNNAMED NAMESPACE
 // Template for common warrior action code. See priest_action_t.
@@ -659,13 +658,10 @@ public:
       cd_wasted_cumulative = p() -> template get_data_entry<simple_sample_data_with_min_max_t, data_t>( ab::name_str, p() -> cd_waste_cumulative );
       cd_wasted_iter = p() -> template get_data_entry<simple_sample_data_t, simple_data_t>( ab::name_str, p() -> cd_waste_iter );
     }
-
-
     if ( sweeping_strikes )
     {
       ab::aoe = p() -> talents.sweeping_strikes -> effectN( 1 ).base_value() + 1;
     }
-
     if ( headlongrush )
     {
       ab::cooldown -> hasted = headlongrush;
@@ -713,12 +709,10 @@ public:
     {
       c *= 1.0 + p() -> talents.dauntless -> effectN( 1 ).percent();
     }
-
     if ( p() -> buff.battle_cry_deadly_calm -> check() && deadly_calm )
     {
       c *= 1.0 + p() -> talents.deadly_calm  -> effectN( 1 ).percent();
     }
-
     return c;
   }
 
@@ -733,13 +727,11 @@ public:
     {
       return false;
     }
-
     if ( p() -> current.distance_to_move > ab::range && ab::range != -1 )
     {
       // -1 melee range implies that the ability can be used at any distance from the target.
       return false;
     }
-
     return true;
   }
 
@@ -765,7 +757,6 @@ public:
         cd_wasted_iter -> add( time_ );
       }
     }
-
     ab::update_ready( cd );
   }
 
@@ -839,12 +830,10 @@ public:
     {
       p() -> frothing_may_trigger = true;
     }
-
     if ( p() -> talents.anger_management -> ok() )
     {
       anger_management( rage );
     }
-
     if ( ab::result_is_miss( ab::execute_state -> result ) && rage > 0 && !ab::aoe )
     {
       p() -> resource_gain( RESOURCE_RAGE, rage*0.8, p() -> gain.avoided_attacks );
@@ -1086,7 +1075,6 @@ struct devastate_t: public warrior_attack_t
     {
       return false;
     }
-
     return warrior_attack_t::ready();
   }
 };
@@ -1335,7 +1323,6 @@ struct bladestorm_tick_t: public warrior_attack_t
     {
       am *= 1.0 + p() -> spec.protection -> effectN( 1 ).percent();
     }
-
     return am;
   }
 };
@@ -1356,12 +1343,9 @@ struct bladestorm_t: public warrior_attack_t
       parse_options( options_str );
       channeled = tick_zero = true;
       callbacks = interrupt_auto_attack = false;
-
       travel_speed = 0;
-
       bladestorm_mh -> weapon = &( player -> main_hand_weapon );
       add_child( bladestorm_mh );
-
       if ( player -> off_hand_weapon.type != WEAPON_NONE && player -> specialization() == WARRIOR_FURY )
       {
         bladestorm_oh = new bladestorm_tick_t( p, "bladestorm_oh" );
@@ -1414,7 +1398,6 @@ struct bloodthirst_heal_t: public warrior_heal_t
 
     return am;
   }
-
   resource_e current_resource() const override { return RESOURCE_NONE; }
 };
 
@@ -1461,12 +1444,10 @@ struct bloodthirst_t: public warrior_attack_t
     {
       tc += fresh_meat_crit_chance;
     }
-
     if ( p() -> double_bloodthirst && target -> health_percentage() <= 20.0 )
     {
       tc *= 2.0;
     }
-
     return tc;
   }
 
@@ -1493,7 +1474,6 @@ struct bloodthirst_t: public warrior_attack_t
         bloodthirst_heal -> execute();
         p() -> buff.furious_charge -> expire();
       }
-
       if ( execute_state -> result == RESULT_CRIT )
       {
         p() -> enrage();
@@ -1540,7 +1520,6 @@ struct furious_slash_t: public warrior_attack_t
   {
     if ( p() -> off_hand_weapon.type == WEAPON_NONE )
       return false;
-
     return warrior_attack_t::ready();
   }
 };
@@ -1589,12 +1568,10 @@ struct charge_t: public warrior_attack_t
 
     p() -> buff.furious_charge -> trigger();
 
-
     if ( p() -> legendary.sephuzs_secret != nullptr && execute_state -> target -> type == ENEMY_ADD )
     {
       p() -> buff.sephuzs_secret -> trigger();
     }
-
     if ( first_charge )
     {
       first_charge = !first_charge;
@@ -1613,17 +1590,14 @@ struct charge_t: public warrior_attack_t
     {
       return warrior_attack_t::ready();
     }
-
     if ( p() -> current.distance_to_move < min_range ) // Cannot charge if too close to the target.
     {
       return false;
     }
-
     if ( p() -> buff.charge_movement -> check() || p() -> buff.heroic_leap_movement -> check() || p() -> buff.intervene_movement -> check() )
     {
       return false;
     }
-
     return warrior_attack_t::ready();
   }
 };
@@ -1644,7 +1618,6 @@ struct intercept_t: public warrior_attack_t
     energize_resource = RESOURCE_RAGE;
     if ( p -> raging_fury )
       energize_amount *= 1.0 + p -> raging_fury -> driver() -> effectN( 1 ).percent();
-
     if ( p -> talents.warbringer -> ok() )
     {
       aoe = -1;
@@ -1665,7 +1638,6 @@ struct intercept_t: public warrior_attack_t
         p() -> current.distance_to_move / (p() -> base_movement_speed * (1 + p() -> passive_movement_modifier() + movement_speed_increase)) ) );
       p() -> current.moving_away = 0;
     }
-
     warrior_attack_t::execute();
   }
 
@@ -1675,7 +1647,6 @@ struct intercept_t: public warrior_attack_t
     {
       return false;
     }
-
     return warrior_attack_t::ready();
   }
 };
@@ -1817,7 +1788,6 @@ struct corrupted_rage_t: public warrior_attack_t
     {
       return false;
     }
-
     return warrior_attack_t::ready();
   }
 };
@@ -1907,9 +1877,7 @@ struct dragon_roar_t: public warrior_attack_t
     warrior_attack_t::execute();
     p() -> buff.dragon_roar -> trigger();
   }
-
   double target_armor( player_t* ) const override { return 0; }
-
   double composite_crit_chance() const override { return 1.0; }
 };
 
@@ -1977,7 +1945,6 @@ struct sweeping_execute_t: public event_t
       execute_sweeping_strike -> target = new_target;
       execute_sweeping_strike -> execute();
       max_targets++;
-
       if ( max_targets == 2 )
         break;
     }
@@ -2018,9 +1985,7 @@ struct execute_arms_t: public warrior_attack_t
       am *= 4.0 * ( std::min( temp_max_rage, p() -> resources.current[RESOURCE_RAGE] ) / temp_max_rage );
     }
     if ( execute_sweeping_strike ) execute_sweeping_strike -> dmg_mult = am; // The sweeping strike deals damage based on the action multiplier of the original attack before shattered defenses.
-
     am *= 1.0 + p() -> buff.shattered_defenses -> stack_value();
-
     return am;
   }
 
@@ -2046,7 +2011,6 @@ struct execute_arms_t: public warrior_attack_t
       c = std::min( temp_max_rage, p() -> resources.current[RESOURCE_RAGE] );
       c = ( c / temp_max_rage ) * 40;
     }
-
     if ( sim -> log )
     {
       sim -> out_debug.printf( "Rage used to calculate tactician chance from ability %s: %4.4f, actual rage used: %4.4f",
@@ -2054,7 +2018,6 @@ struct execute_arms_t: public warrior_attack_t
                                c,
                                cost() );
     }
-
     return c;
   }
 
@@ -2062,7 +2025,6 @@ struct execute_arms_t: public warrior_attack_t
   {
     return ( p() -> buff.ayalas_stone_heart -> up() || p() -> buff.battle_cry_deadly_calm -> up() );
   }
-
 
   double cost() const override
   {
@@ -2072,19 +2034,16 @@ struct execute_arms_t: public warrior_attack_t
     {
       return c *= 1.0 + p() -> buff.ayalas_stone_heart -> data().effectN( 2 ).percent();
     }
-
     if ( p() -> buff.battle_cry_deadly_calm -> check() )
     {
       return c *= 1.0 + p() -> talents.deadly_calm  -> effectN( 1 ).percent();
     }
-
     if ( p() -> mastery.colossal_might -> ok() )
     {
       double temp_max_rage = max_rage * ( 1.0 + p() -> buff.precise_strikes -> check_value() );
       c *= 1.0 + p() -> buff.precise_strikes -> check_value();
       c = std::min( temp_max_rage, std::max( p() -> resources.current[RESOURCE_RAGE], c ) );
     }
-
     return c;
   }
 
@@ -2098,7 +2057,6 @@ struct execute_arms_t: public warrior_attack_t
                                       execute_state -> target,
                                       execute_sweeping_strike );
     }
-
     p() -> buff.shattered_defenses -> expire();
     p() -> buff.precise_strikes -> expire();
     p() -> buff.ayalas_stone_heart -> expire();
@@ -2120,12 +2078,10 @@ struct execute_arms_t: public warrior_attack_t
     {
       return false;
     }
-
     if ( p() -> buff.ayalas_stone_heart -> check() )
     {
       return warrior_attack_t::ready();
     }
-
     // Call warrior_attack_t::ready() first for proper targeting support.
     if ( warrior_attack_t::ready() && target -> health_percentage() <= 20 )
     {
@@ -2137,7 +2093,6 @@ struct execute_arms_t: public warrior_attack_t
     }
   }
 };
-
 
 // Fury Execute ======================================================================
 
@@ -2200,7 +2155,6 @@ struct execute_t: public warrior_attack_t
       weapon_multiplier *= 1.0 + p -> spec.singleminded_fury -> effectN( 3 ).percent();
     }
     weapon_multiplier *= 1.0 + p -> spec.execute_2 -> effectN( 1 ).percent();
-
     base_crit += p -> artifact.deathdealer.percent();
   }
 
@@ -2221,12 +2175,10 @@ struct execute_t: public warrior_attack_t
     {
       return c *= 1.0 + p() -> buff.ayalas_stone_heart -> data().effectN( 2 ).percent();
     }
-
     if ( p() -> buff.sense_death -> check() )
     {
       c *= 1.0 + p() -> buff.sense_death -> data().effectN( 1 ).percent();
     }
-
     return c;
   }
 
@@ -2344,12 +2296,10 @@ struct heroic_throw_t: public warrior_attack_t
     {
       return false;
     }
-
     if ( p() -> main_hand_weapon.type == WEAPON_NONE )
     {
       return false;
     }
-
     return warrior_attack_t::ready();
   }
 };
@@ -2688,16 +2638,13 @@ struct mortal_strike_t: public warrior_attack_t
       {
         execute_state -> target -> debuffs.mortal_wounds -> trigger();
       }
-
       if ( p() -> talents.in_for_the_kill -> ok() && execute_state -> target -> health_percentage() <= 20 )
       {
         p() -> resource_gain( RESOURCE_RAGE, p() -> talents.in_for_the_kill -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ),
                               p() -> gain.in_for_the_kill );
       }
-
       p() -> buff.focused_rage -> expire();
     }
-
     p() -> buff.shattered_defenses -> expire();
     p() -> buff.precise_strikes -> expire();
     if ( p() -> archavons_heavy_hand )
@@ -2722,7 +2669,6 @@ struct mortal_strike_t: public warrior_attack_t
     {
       return false;
     }
-
     return warrior_attack_t::ready();
   }
 };
@@ -2763,11 +2709,6 @@ struct raging_blow_attack_t: public warrior_attack_t
     weapon_multiplier *= 1.0 + p -> talents.inner_rage -> effectN( 3 ).percent();
     weapon_multiplier *= 1.0 + p -> artifact.wrath_and_fury.percent();
   }
-
-  void impact( action_state_t* s ) override
-  {
-    warrior_attack_t::impact( s );
-  }
 };
 
 struct raging_blow_t: public warrior_attack_t
@@ -2792,7 +2733,6 @@ struct raging_blow_t: public warrior_attack_t
 
   void execute() override
   {
-    // check attack
     warrior_attack_t::execute();
     if ( result_is_hit( execute_state -> result ) )
     {
@@ -2809,12 +2749,10 @@ struct raging_blow_t: public warrior_attack_t
     {
       return false;
     }
-
     if ( !p() -> buff.enrage -> check() && !p() -> talents.inner_rage -> ok() )
     {
       return false;
     }
-
     return warrior_attack_t::ready();
   }
 };
@@ -2935,7 +2873,6 @@ struct neltharions_fury_flame_t: public warrior_attack_t
     dual = background = true;
   }
 };
-
 
 struct neltharions_fury_t: public warrior_attack_t
 {
@@ -3093,7 +3030,6 @@ struct rampage_parent_t: public warrior_attack_t
     {
       return false;
     }
-
     return warrior_attack_t::ready();
   }
 };
@@ -3157,7 +3093,6 @@ struct revenge_t: public warrior_attack_t
   {
     parse_options( options_str );
     aoe = -1;
-
     impact_action = p -> active.deep_wounds;
     attack_power_mod.direct *= 1.0 + p -> artifact.rage_of_the_fallen.percent();
   }
@@ -3179,7 +3114,6 @@ struct revenge_t: public warrior_attack_t
     {
       return false;
     }
-
     return warrior_attack_t::ready();
   }
 
@@ -3231,7 +3165,6 @@ struct rend_t: public warrior_attack_t
     {
       return false;
     }
-
     return warrior_attack_t::ready();
   }
 };
@@ -3316,7 +3249,6 @@ struct shield_slam_t: public warrior_attack_t
     {
       p() -> resource_gain( RESOURCE_RAGE, rage_gain * ( 1.0 + ( p() -> buff.demoralizing_shout -> check() ? p() -> artifact.might_of_the_vrykul.percent() : 0 ) ), p() -> gain.shield_slam );
     }
-
     p() -> buff.bindings_of_kakushan -> expire();
   }
 
@@ -3326,7 +3258,6 @@ struct shield_slam_t: public warrior_attack_t
     {
       return false;
     }
-
     return warrior_attack_t::ready();
   }
 };
@@ -3375,7 +3306,6 @@ struct slam_t: public warrior_attack_t
     {
       return false;
     }
-
     return warrior_attack_t::ready();
   }
 };
@@ -3404,7 +3334,6 @@ struct trauma_dot_t: public residual_action::residual_periodic_action_t < warrio
     }
 
     state -> result_raw = amount;
-
     state -> result = RESULT_HIT; // Reset result to hit, as it has already been rolled inside tick().
     if ( rng().roll( composite_crit_chance() ) )
       state -> result = RESULT_CRIT;
@@ -3413,7 +3342,6 @@ struct trauma_dot_t: public residual_action::residual_periodic_action_t < warrio
       amount *= 1.0 + total_crit_bonus( state );
 
     amount *= dmg_multiplier;
-
     state -> result_total = amount;
 
     return amount;
@@ -3475,7 +3403,6 @@ struct storm_bolt_t: public warrior_attack_t
     {
       return false;
     }
-
     return warrior_attack_t::ready();
   }
 };
@@ -4652,7 +4579,6 @@ void warrior_t::init_spells()
     this -> rampage_attacks.push_back( fifth );
   }
 
-
   // Cooldowns
   cooldown.avatar                   = get_cooldown( "avatar" );
   cooldown.battle_cry               = get_cooldown( "battle_cry" );
@@ -4780,7 +4706,6 @@ void warrior_t::init_base_stats()
     }
   }
 }
-
 
 // warrior_t::merge ==========================================================
 
@@ -5986,7 +5911,6 @@ double warrior_t::composite_block() const
   {
     b += buff.shield_block -> data().effectN( 1 ).percent();
   }
-
   return b;
 }
 
@@ -5995,7 +5919,6 @@ double warrior_t::composite_block() const
 double warrior_t::composite_block_reduction() const
 {
   double br = player_t::composite_block_reduction();
-
   return br;
 }
 
@@ -6004,7 +5927,6 @@ double warrior_t::composite_block_reduction() const
 double warrior_t::composite_melee_attack_power() const
 {
   double ap = player_t::composite_melee_attack_power();
-
   return ap;
 }
 
@@ -6019,7 +5941,6 @@ double warrior_t::composite_parry_rating() const
   {
     p += composite_melee_crit_rating();
   }
-
   return p;
 }
 
@@ -6037,7 +5958,6 @@ double warrior_t::composite_parry() const
   {
     parry += spec.die_by_the_sword -> effectN( 1 ).percent();
   }
-
   return parry;
 }
 
@@ -6051,7 +5971,6 @@ double warrior_t::composite_attack_power_multiplier() const
   {
     ap += cache.mastery() * mastery.critical_block -> effectN( 5 ).mastery_value();
   }
-
   return ap;
 }
 
@@ -6068,7 +5987,6 @@ double warrior_t::composite_crit_block() const
   {
     b += cache.mastery() * mastery.critical_block -> effectN( 1 ).mastery_value();
   }
-
   return b;
 }
 
@@ -6077,9 +5995,7 @@ double warrior_t::composite_crit_block() const
 double warrior_t::composite_crit_avoidance() const
 {
   double c = player_t::composite_crit_avoidance();
-
   c += spec.unwavering_sentinel -> effectN( 4 ).percent();
-
   return c;
 }
 
@@ -6093,12 +6009,10 @@ double warrior_t::composite_melee_speed() const
   {
     s /= 1.0 + buff.enrage -> data().effectN( 1 ).percent();
   }
-
   if ( buff.berserking -> check() )
   {
     s /= 1.0 + buff.berserking -> check_stack_value();
   }
-
   return s;
 }
 
@@ -6109,7 +6023,6 @@ double warrior_t::composite_melee_crit_chance() const
   double c = player_t::composite_melee_crit_chance();
 
   c += buff.battle_cry -> check_value();
-
   c += buff.berserking -> check_stack_value();
 
   return c;
@@ -6125,7 +6038,6 @@ double warrior_t::composite_player_critical_damage_multiplier( const action_stat
   {
     cdm *= 1.0 + artifact.unrivaled_strength.percent();
   }
-
   return cdm;
 }
 
@@ -6157,7 +6069,6 @@ double warrior_t::resource_gain( resource_e r, double a, gain_t* gain, action_t*
     buff.frothing_berserker -> trigger();
     frothing_may_trigger = false;
   }
-
   return aa;
 }
 
@@ -6193,7 +6104,6 @@ double warrior_t::temporary_movement_modifier() const
   {
     temporary = std::max( buff.frothing_berserker -> data().effectN( 2 ).percent(), temporary );
   }
-
   return temporary;
 }
 
@@ -6411,7 +6321,6 @@ public:
     p( player )
   {}
 
-
   void cdwaste_table_header( report::sc_html_stream& os )
   {
     os << "<table class=\"sc\" style=\"float: left;margin-right: 10px;\">\n"
@@ -6435,7 +6344,6 @@ public:
   {
     os << "</table>\n";
   }
-
 
   void cdwaste_table_contents( report::sc_html_stream& os )
   {
@@ -6472,7 +6380,6 @@ public:
       os << "</tr>\n";
     }
   }
-
 
   virtual void html_customsection( report::sc_html_stream& os ) override
   {
