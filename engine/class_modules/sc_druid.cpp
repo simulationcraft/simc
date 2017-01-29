@@ -292,7 +292,7 @@ public:
 
   // Pets
   std::array<pet_t*, 11> pet_fey_moonwing; // 30 second duration, 3 second internal icd... create 11 to be safe.
-
+  std::array<pet_t*, 4> force_of_nature;
   // Auto-attacks
   weapon_t caster_form_weapon;
   weapon_t cat_weapon;
@@ -593,6 +593,7 @@ public:
 
     const spell_data_t* incarnation_moonkin;
     const spell_data_t* stellar_flare;
+    const spell_data_t* force_of_nature;
 
     const spell_data_t* stellar_drift;
     const spell_data_t* full_moon;
@@ -727,6 +728,7 @@ public:
     ahhhhh_the_great_outdoors( true ),
     active( active_actions_t() ),
     pet_fey_moonwing(),
+    force_of_nature(),
     caster_form_weapon(),
     caster_melee_attack( nullptr ),
     cat_melee_attack( nullptr ),
@@ -918,10 +920,59 @@ struct stalwart_guardian_t : public absorb_t
 
 namespace pets {
 
-
 // ==========================================================================
 // Pets and Guardians
 // ==========================================================================
+
+// Force of Nature ==================================================
+
+struct force_of_nature_t : public pet_t
+{
+  struct wrath_t : public spell_t
+  {
+    wrath_t( force_of_nature_t* player ) :
+      spell_t( "wrath", player, player -> find_spell( 113769 ) )
+    {
+      if ( player -> o() -> force_of_nature[0] )
+        stats = player -> o() -> force_of_nature[0] -> get_stats( "wrath" );
+      may_crit = true;
+    }
+  };
+
+  druid_t* o() { return static_cast< druid_t* >( owner ); }
+
+  force_of_nature_t( sim_t* sim, druid_t* owner ) :
+    pet_t( sim, owner, "treant", true /*GUARDIAN*/, true )
+  {
+    owner_coeff.sp_from_sp = 1.0 / 3;
+    owner_coeff.ap_from_ap = 1.0 / 3;
+    action_list_str = "wrath";
+    regen_type = REGEN_DISABLED;
+  }
+
+  virtual void init_base_stats()
+  {
+    pet_t::init_base_stats();
+
+    resources.base[RESOURCE_HEALTH] = owner -> resources.max[RESOURCE_HEALTH] * 0.4;
+    resources.base[RESOURCE_MANA] = 0;
+
+    initial.stats.attribute[ATTR_INTELLECT] = 0;
+    initial.spell_power_per_intellect = 0;
+    intellect_per_owner = 0;
+    stamina_per_owner = 0;
+  }
+
+  virtual resource_e primary_resource() const { return RESOURCE_MANA; }
+
+  virtual action_t* create_action( const std::string& name,
+                                   const std::string& options_str )
+  {
+    if ( name == "wrath" ) return new wrath_t( this );
+
+    return pet_t::create_action( name, options_str );
+  }
+};
 
 // T18 2PC Balance Fairies ==================================================
 
@@ -6175,6 +6226,12 @@ void druid_t::create_pets()
     for ( pet_t*& pet : pet_fey_moonwing )
       pet = new pets::fey_moonwing_t( sim, this );
   }
+
+  if ( talent.force_of_nature -> ok() )
+  {
+    for ( pet_t*& pet : force_of_nature )
+      pet = new pets::force_of_nature_t( sim, this );
+  }
 }
 
 // druid_t::init_spells =====================================================
@@ -6286,6 +6343,7 @@ void druid_t::init_spells()
 
   talent.incarnation_moonkin            = find_talent_spell( "Incarnation: Chosen of Elune" );
   talent.stellar_flare                  = find_talent_spell( "Stellar Flare" );
+  talent.force_of_nature                = find_talent_spell( "Force of Nature" );
 
   talent.stellar_drift                  = find_talent_spell( "Stellar Drift" );
   talent.full_moon                      = find_talent_spell( "Full Moon" );

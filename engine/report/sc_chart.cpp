@@ -212,7 +212,7 @@ double compute_median( const std::vector<const player_t*>& pl, metric_e metric,
     return 0;
   }
 
-  if ( !pl[ 0 ]->sim->output_relative_difference )
+  if ( !pl[ 0 ]->sim->chart_show_relative_difference )
   {
     return 0;
   }
@@ -1086,7 +1086,7 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s,
       if ( vm == VALUE_MEAN )
       {
         std::vector<double> boxplot_data = get_data_summary(
-            p->collected_data, chart_metric, s.boxplot_percentile );
+            p->collected_data, chart_metric, s.chart_boxplot_percentile );
         if ( boxplot_data[ 2 ] != 0 && boxplot_data[ 0 ] != boxplot_data[ 2 ] )
         {
           candlebars = true;
@@ -1150,7 +1150,7 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s,
     n_chars++;
   }
 
-  if ( s.output_relative_difference && has_diff )
+  if ( s.chart_show_relative_difference && has_diff )
   {
     n_chars += 5;
   }
@@ -1247,7 +1247,7 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s,
   // If relative difference is used, print out a absolutevalue (relative
   // difference%) label
   std::string formatter = "function() {";
-  if ( s.output_relative_difference )
+  if ( s.chart_show_relative_difference )
   {
     formatter +=
         "var fmt = '<span style=\"color:' + "

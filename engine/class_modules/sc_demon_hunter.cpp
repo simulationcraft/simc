@@ -578,6 +578,7 @@ public:
   double composite_parry() const override;
   double composite_parry_rating() const override;
   double composite_player_multiplier( school_e ) const override;
+  double composite_player_target_multiplier(player_t* target, school_e school) const override;
   double composite_spell_crit_chance() const override;
   double matching_gear_multiplier( attribute_e attr ) const override;
   double passive_movement_modifier() const override;
@@ -1183,20 +1184,23 @@ public:
     return ea;
   }
 
-  virtual double composite_target_multiplier( player_t* t ) const override
+  void track_benefits(action_state_t* s)
   {
-    double tm = ab::composite_target_multiplier( t );
-
-    tm *= 1.0 + td( t ) -> debuffs.nemesis -> current_value;
-
-    if ( dbc::is_school( ab::school, SCHOOL_FIRE ) )
+    if (ab::snapshot_flags & STATE_TGT_MUL_TA)
     {
-      tm *= 1.0 +
-            td( t ) -> dots.fiery_brand -> is_ticking() *
-            p() -> artifact.fiery_demise.percent();
+      demon_hunter_td_t* target_data = td(s->target);
+      if (target_data->debuffs.nemesis)
+      {
+        target_data->debuffs.nemesis->up();
+      }
     }
 
-    return tm;
+    if (ab::snapshot_flags & STATE_MUL_TA)
+    {
+      p()->buff.momentum->up();
+      p()->buff.demon_soul->up();
+      p()->buff.chaos_blades->up();
+    }
   }
 
   virtual void tick( dot_t* d ) override
@@ -1207,19 +1211,9 @@ public:
     trigger_charred_warblades( d -> state );
     accumulate_spirit_bomb( d -> state );
 
-    // Benefit tracking
     if ( d -> state -> result_amount > 0 )
     {
-      if ( ab::snapshot_flags & STATE_TGT_MUL_TA )
-      {
-        td( d -> state -> target ) -> debuffs.nemesis -> up();
-      }
-      if ( ab::snapshot_flags & STATE_MUL_TA )
-      {
-        p() -> buff.momentum -> up();
-        p() -> buff.demon_soul -> up();
-        p() -> buff.chaos_blades -> up();
-      }
+      track_benefits(d->state);
     }
   }
 
@@ -1236,16 +1230,7 @@ public:
       // Benefit tracking
       if ( s -> result_amount > 0 )
       {
-        if ( ab::snapshot_flags & STATE_TGT_MUL_DA )
-        {
-          td( s -> target ) -> debuffs.nemesis -> up();
-        }
-        if ( ab::snapshot_flags & STATE_MUL_DA )
-        {
-          p() -> buff.momentum -> up();
-          p() -> buff.demon_soul -> up();
-          p() -> buff.chaos_blades -> up();
-        }
+        track_benefits(s);
       }
     }
   }
@@ -2221,7 +2206,7 @@ struct fiery_brand_t : public demon_hunter_spell_t
 
       // Pick a random target.
       player_t* target =
-        candidates[ ( int ) p() -> rng().range( 0, candidates.size() ) ];
+        candidates[ ( int ) p() -> rng().range( 0, (double)candidates.size() ) ];
 
       // Execute a dot on that target.
       this -> target = target;
@@ -3468,13 +3453,13 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
       }
     }
 
-    void impact( action_state_t* state ) override
+    void impact(action_state_t* state) override
     {
-      demon_hunter_attack_t::impact( state );
+      demon_hunter_attack_t::impact(state);
 
-      if ( p()->talent.chaos_cleave->ok() )
+      if (p()->talent.chaos_cleave->ok())
       {
-    attack_t* const chaos_cleave = p()->buff.metamorphosis->up() ? p()->active.chaos_cleave_annihilation : p()->active.chaos_cleave;
+        attack_t* const chaos_cleave = p()->buff.metamorphosis->up() ? p()->active.chaos_cleave_annihilation : p()->active.chaos_cleave;
         chaos_cleave->base_dd_min = state->result_total;
         chaos_cleave->base_dd_max = state->result_total;
         chaos_cleave->schedule_execute();
@@ -3661,10 +3646,10 @@ struct chaos_strike_t : public chaos_strike_base_t
 
     attacks = p -> chaos_strike_attacks;
 
-  if (p->talent.chaos_cleave->ok())
-  {
-    add_child(p->active.chaos_cleave);
-  }
+    if (p->talent.chaos_cleave->ok())
+    {
+      add_child(p->active.chaos_cleave);
+    }
   }
 
   bool ready() override
@@ -3697,7 +3682,7 @@ struct chaos_cleave_t : public demon_hunter_attack_t
   void snapshot_state(action_state_t* s, dmg_e rt) override
   {
     demon_hunter_attack_t::snapshot_state(s, rt);
-    s->da_multiplier =  p()->talent.chaos_cleave->effectN(2).percent();
+    s->da_multiplier = p()->talent.chaos_cleave->effectN(2).percent();
   }
 
   result_e calculate_result(action_state_t* s) const override
@@ -3734,10 +3719,10 @@ struct annihilation_t : public chaos_strike_base_t
 
     attacks = p -> annihilation_attacks;
 
-  if (p->talent.chaos_cleave->ok())
-  {
-    add_child(p->active.chaos_cleave_annihilation);
-  }
+    if (p->talent.chaos_cleave->ok())
+    {
+      add_child(p->active.chaos_cleave_annihilation);
+    }
   }
 
   bool ready() override
@@ -4454,7 +4439,7 @@ struct soul_cleave_t : public demon_hunter_attack_t
     if ( p() -> legendary.the_defilers_lost_vambraces < timespan_t::zero() )
     {
       unsigned roll =
-        as<unsigned>( p() -> rng().range( 0, p() -> sigil_cooldowns.size() ) );
+        as<unsigned>( p() -> rng().range( 0, (double) p() -> sigil_cooldowns.size() ) );
       p() -> sigil_cooldowns[ roll ] -> adjust(
         p() -> legendary.the_defilers_lost_vambraces );
     }
@@ -4663,7 +4648,7 @@ struct anguish_debuff_t : public demon_hunter_buff_t<debuff_t>
                             .effectN( 1 )
                             .trigger() ) )
   {
-    anguish = p -> find_action( "anguish" );
+    anguish = p->active.anguish;
   }
 
   virtual void expire_override( int expiration_stacks,
@@ -4679,7 +4664,7 @@ struct anguish_debuff_t : public demon_hunter_buff_t<debuff_t>
       // Schedule an execute, but snapshot state right now so we can apply the
       // stack multiplier.
       action_state_t* s = anguish -> get_state();
-      s -> target         = player;
+      s -> target = player;
       anguish -> snapshot_state( s, DMG_DIRECT );
       s -> target_da_multiplier *= expiration_stacks;
       anguish -> schedule_execute( s );
@@ -5210,16 +5195,21 @@ struct damage_calc_invalidate_callback_t
 demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
   : actor_target_data_t( target, &p ), dots( dots_t() ), debuffs( debuffs_t() )
 {
-  // Havoc
-  debuffs.anguish = new buffs::anguish_debuff_t( &p, target );
-  debuffs.nemesis = new buffs::nemesis_debuff_t( &p, target );
-
-  // Vengeance
-  dots.fiery_brand    = target -> get_dot( "fiery_brand", &p );
-  dots.sigil_of_flame = target -> get_dot( "sigil_of_flame", &p );
-  debuffs.frailty =
-    buff_creator_t( target, "frailty", p.find_spell( 224509 ) )
-    .default_value( p.find_spell( 224509 ) -> effectN( 1 ).percent() );
+  if (p.specialization() == DEMON_HUNTER_HAVOC)
+  {
+    // Havoc
+    debuffs.anguish = new buffs::anguish_debuff_t(&p, target);
+    debuffs.nemesis = new buffs::nemesis_debuff_t(&p, target);
+  }
+  else
+  {
+    // Vengeance
+    dots.fiery_brand = target->get_dot("fiery_brand", &p);
+    dots.sigil_of_flame = target->get_dot("sigil_of_flame", &p);
+    debuffs.frailty =
+      buff_creator_t(target, "frailty", p.find_spell(224509))
+      .default_value(p.find_spell(224509)->effectN(1).percent());
+  }
 }
 
 // ==========================================================================
@@ -5596,7 +5586,7 @@ void demon_hunter_t::create_buffs()
     buff_creator_t( this, "siphoned_power", find_spell( 218561 ) )
     .trigger_spell( artifact.siphon_power )
     .add_invalidate( CACHE_AGILITY )
-    .max_stack( artifact.siphon_power.value() ? artifact.siphon_power.value() : 1 );
+    .max_stack(artifact.siphon_power.value() ? (int)artifact.siphon_power.value() : 1 );
 
   buff.soul_barrier = new buffs::soul_barrier_t( this );
 
@@ -6952,6 +6942,25 @@ double demon_hunter_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + talent.razor_spikes -> effectN( 1 ).percent();
 
   m *= 1.0 + artifact.chaos_burn.percent();
+
+  return m;
+}
+
+double demon_hunter_t::composite_player_target_multiplier(player_t* target, school_e school) const
+{
+  double m = player_t::composite_player_target_multiplier(target, school);
+
+  demon_hunter_td_t* td = get_target_data(target);
+
+  if(td->debuffs.nemesis && td->debuffs.nemesis->up())
+  {
+    m *= 1.0 + td->debuffs.nemesis->current_value;
+  }
+
+  if (school == SCHOOL_FIRE && td->dots.fiery_brand)
+  {
+    m *= 1.0 + td->dots.fiery_brand->is_ticking() * artifact.fiery_demise.percent();
+  }
 
   return m;
 }

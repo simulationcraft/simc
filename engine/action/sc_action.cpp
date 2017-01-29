@@ -404,7 +404,6 @@ action_t::action_t( action_e       ty,
   may_parry(),
   may_glance(),
   may_block(),
-  may_crush(),
   may_crit(),
   tick_may_crit(),
   tick_zero(),
@@ -507,6 +506,7 @@ action_t::action_t( action_e       ty,
   pre_execute_state = 0;
   action_list = 0;
   parent_dot = 0;
+  child_action.clear();
   ground_aoe = false;
   state_cache = 0;
   consume_per_tick_ = false;
@@ -1915,6 +1915,11 @@ bool action_t::ready()
       if ( n_targets() > 1 && potential_target != target )
       {
         target_cache.is_valid = false;
+      }
+      if ( child_action.size() > 0 )
+      {// If spell_targets is used on the child instead of the parent action, we need to reset the cache for that action as well.
+        for ( size_t i = 0; i < child_action.size(); i++ )
+          child_action[i] -> target_cache.is_valid = false;
       }
       target = potential_target;
     }
@@ -3537,6 +3542,7 @@ dot_t* action_t::find_dot( player_t* t ) const
 void action_t::add_child( action_t* child )
 {
   child -> parent_dot = target -> get_dot( name_str, player );
+  child_action.push_back( child );
   if ( child -> parent_dot && range > 0 && child -> radius > 0 && child -> is_aoe() )
    // If the parent spell has a range, the tick_action has a radius and is an aoe spell, then the tick action likely also has a range.
    // This will allow distance_target_t to correctly determine spells that radiate from the target, instead of the player.

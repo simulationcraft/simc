@@ -1402,8 +1402,8 @@ sim_t::sim_t( sim_t* p, int index ) :
   spell_query(), spell_query_level( MAX_LEVEL ),
   pause_mutex( nullptr ),
   paused( false ),
-  output_relative_difference( false ),
-  boxplot_percentile( .25 ),
+  chart_show_relative_difference( false ),
+  chart_boxplot_percentile( .25 ),
   display_hotfixes( false ),
   disable_hotfixes( false ),
   display_bonus_ids( false )
@@ -3161,8 +3161,8 @@ void sim_t::create_options()
   add_option( opt_int( "global_item_upgrade_level", global_item_upgrade_level ) );
   add_option( opt_int( "decorated_tooltips", decorated_tooltips ) );
   // Charts
-  add_option( opt_bool( "chart_show_relative_difference", output_relative_difference ) );
-  add_option( opt_float( "chart_boxplot_percentile", boxplot_percentile ) );
+  add_option( opt_bool( "chart_show_relative_difference", chart_show_relative_difference ) );
+  add_option( opt_float( "chart_boxplot_percentile", chart_boxplot_percentile ) );
   // Hotfix
   add_option( opt_bool( "show_hotfixes", display_hotfixes ) );
   // Bonus ids

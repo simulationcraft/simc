@@ -7130,6 +7130,7 @@ struct use_item_t : public action_t
     if ( triggered && action &&
          ( ! buff || buff -> check() == buff -> max_stack() ) )
     {
+      action -> target = target;
       action -> schedule_execute();
 
       // Decide whether to expire the buff even with 1 max stack

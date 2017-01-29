@@ -383,6 +383,8 @@ struct rogue_t : public player_t
     const spell_data_t* subterfuge;
     const spell_data_t* tier18_2pc_combat_ar;
     const spell_data_t* insignia_of_ravenholdt;
+    const spell_data_t* master_assassins_initiative;
+    const spell_data_t* master_assassins_initiative_2;
   } spell;
 
   // Talents
@@ -4264,7 +4266,7 @@ struct shadowstrike_t : public rogue_attack_t
       // so it ignores the hitbox (or combat reach as it is often said).
       double distance = 10;
       double grant_energy = base_proc -> effectN( 1 ).base_value();
-      while (distance > shadow_satyrs_walk -> effectN( 2 ).base_value())
+      while ( distance > shadow_satyrs_walk -> effectN( 2 ).base_value() )
       {
         grant_energy += shadow_satyrs_walk -> effectN( 1 ).base_value();
         distance -= shadow_satyrs_walk -> effectN( 2 ).base_value();
@@ -5967,19 +5969,20 @@ struct subterfuge_t : public buff_t
     rogue( r )
   { }
 
+  void execute( int stacks, double value, timespan_t duration ) override
+  {
+    buff_t::execute( stacks, value, duration );
+
+    // As of 01/09/2017, Subterfuge makes the vanish to fully lasts
+    // 3 seconds (instead of breaking on first ability use).
+    if ( ! rogue -> buffs.vanish -> check() || ! rogue -> bugs )
+      actions::break_stealth( rogue );
+  }
+
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     buff_t::expire_override( expiration_stacks, remaining_duration );
-    // The Glyph of Vanish bug is back, so if Vanish is still up when
-    // Subterfuge fades, don't cancel stealth. Instead, the next offensive
-    // action in the sim will trigger a new (3 seconds) of Subterfuge.
-    if ( ( rogue -> bugs && (
-            rogue -> buffs.vanish -> remains() == timespan_t::zero() ||
-            rogue -> buffs.vanish -> check() == 0 ) ) ||
-        ! rogue -> bugs )
-    {
-      actions::break_stealth( rogue );
-    }
+    actions::break_stealth( rogue );
   }
 };
 
@@ -6002,8 +6005,8 @@ struct stealth_like_buff_t : public buff_t
                               rogue -> gains.master_of_shadows );
     }
 
-    if ( rogue -> legendary.mantle_of_the_master_assassin &&
-     procs_mantle_of_the_master_assassin )
+    if ( procs_mantle_of_the_master_assassin &&
+      rogue -> legendary.mantle_of_the_master_assassin )
     {
       rogue -> buffs.mantle_of_the_master_assassin -> expire();
       rogue -> buffs.mantle_of_the_master_assassin_aura -> trigger();
@@ -6017,8 +6020,8 @@ struct stealth_like_buff_t : public buff_t
   {
     buff_t::expire_override( expiration_stacks, remaining_duration );
 
-    if ( rogue -> legendary.mantle_of_the_master_assassin &&
-     procs_mantle_of_the_master_assassin )
+    if ( procs_mantle_of_the_master_assassin &&
+      rogue -> legendary.mantle_of_the_master_assassin )
     {
       rogue -> buffs.mantle_of_the_master_assassin_aura -> expire();
       rogue -> buffs.mantle_of_the_master_assassin -> trigger();
@@ -6029,8 +6032,8 @@ struct stealth_like_buff_t : public buff_t
   }
 };
 
-// Note, stealth buff is set a max time of half the nominal fight duration, so it can be forced to
-// show in sample sequence tables.
+// Note, stealth buff is set a max time of half the nominal fight duration, so it can be
+// forced to show in sample sequence tables.
 struct stealth_t : public stealth_like_buff_t
 {
   stealth_t( rogue_t* r ) :
@@ -6049,12 +6052,14 @@ struct vanish_t : public stealth_like_buff_t
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
-    stealth_like_buff_t::expire_override( expiration_stacks, remaining_duration );
-
+    // Stealth proc on Vanish end ?
+    // Do it before Vanish expiration to avoid on-stealth buff bugs.
     if ( remaining_duration == timespan_t::zero() )
     {
       rogue -> buffs.stealth -> trigger();
     }
+
+    stealth_like_buff_t::expire_override( expiration_stacks, remaining_duration );
   }
 };
 
@@ -6853,6 +6858,7 @@ void rogue_t::init_action_list()
     // Pre-Combat
     precombat -> add_action( "variable,name=ssw_refund,value=equipped.shadow_satyrs_walk*(6+ssw_refund_offset)", "Defined variables that doesn't change during the fight" );
     precombat -> add_action( "variable,name=stealth_threshold,value=(15+talent.vigor.enabled*35+talent.master_of_shadows.enabled*25+variable.ssw_refund)" );
+    precombat -> add_action( "variable,name=shd_fractionnal,value=2.45" );
     precombat -> add_talent( this, "Enveloping Shadows", "if=combo_points>=5" );
     precombat -> add_action( this, "Symbols of Death" );
 
@@ -6860,6 +6866,7 @@ void rogue_t::init_action_list()
     def -> add_action( "call_action_list,name=cds" );
     def -> add_action( "run_action_list,name=stealthed,if=stealthed.all", "Fully switch to the Stealthed Rotation (by doing so, it forces pooling if nothing is available)" );
     def -> add_action( "call_action_list,name=finish,if=combo_points>=5|(combo_points>=4&spell_targets.shuriken_storm>=3&spell_targets.shuriken_storm<=4)" );
+    def -> add_action( "sprint_offensive,if=energy.time_to_max>=1.5&cooldown.shadow_dance.charges_fractional<variable.shd_fractionnal-1&!cooldown.vanish.up&target.time_to_die>=8" );
     def -> add_action( "call_action_list,name=stealth_als,if=combo_points.deficit>=2+talent.premeditation.enabled" );
     def -> add_action( "call_action_list,name=build,if=energy.deficit<=variable.stealth_threshold" );
 
@@ -6900,18 +6907,15 @@ void rogue_t::init_action_list()
 
     // Stealth Action List Starter
     action_priority_list_t* stealth_als = get_action_priority_list( "stealth_als", "Stealth Action List Starter" );
-    stealth_als -> add_action( "call_action_list,name=stealth_cds,if=energy.deficit<=variable.stealth_threshold&(!equipped.shadow_satyrs_walk|cooldown.shadow_dance.charges_fractional>=2.45|energy.deficit>=10)" );
-    stealth_als -> add_action( "sprint_offensive,if=equipped.denial_of_the_halfgiants&energy.deficit>55" );
-    stealth_als -> add_action( "sprint_offensive,if=!equipped.denial_of_the_halfgiants&energy.time_to_max>3" );
-
+    stealth_als -> add_action( "call_action_list,name=stealth_cds,if=energy.deficit<=variable.stealth_threshold&(!equipped.shadow_satyrs_walk|cooldown.shadow_dance.charges_fractional>=variable.shd_fractionnal|energy.deficit>=10)" );
     stealth_als -> add_action( "call_action_list,name=stealth_cds,if=spell_targets.shuriken_storm>=5" );
     stealth_als -> add_action( "call_action_list,name=stealth_cds,if=(cooldown.shadowmeld.up&!cooldown.vanish.up&cooldown.shadow_dance.charges<=1)" );
     stealth_als -> add_action( "call_action_list,name=stealth_cds,if=target.time_to_die<12*cooldown.shadow_dance.charges_fractional*(1+equipped.shadow_satyrs_walk*0.5)" );
 
     // Stealth Cooldowns
     action_priority_list_t* stealth_cds = get_action_priority_list( "stealth_cds", "Stealth Cooldowns" );
-    stealth_cds -> add_action( this, "Shadow Dance", "if=charges_fractional>=2.45" );
-    stealth_cds -> add_action( this, "Vanish" );
+    stealth_cds -> add_action( this, "Shadow Dance", "if=charges_fractional>=variable.shd_fractionnal" );
+    stealth_cds -> add_action( this, "Vanish", "if=mantle_duration<=3" );
     stealth_cds -> add_action( this, "Shadow Dance", "if=charges>=2&combo_points<=1" );
     stealth_cds -> add_action( "pool_resource,for_next=1,extra_amount=40" );
     stealth_cds -> add_action( "shadowmeld,if=energy>=40&energy.deficit>=10+variable.ssw_refund" );
@@ -7031,9 +7035,27 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
       return n_buffs;
     } );
   }
-  else if (util::str_compare_ci(name_str, "ssw_refund_offset"))
+  else if ( util::str_compare_ci(name_str, "ssw_refund_offset") )
   {
     return make_ref_expr(name_str, ssw_refund_offset);
+  }
+  else if ( util::str_compare_ci(name_str, "mantle_duration") )
+  {
+    return make_fn_expr( name_str, [ this ]() {
+      if ( buffs.mantle_of_the_master_assassin_aura -> check() )
+      {
+        timespan_t nominal_master_assassin_duration = timespan_t::from_seconds( spell.master_assassins_initiative -> effectN( 1 ).base_value() );
+        if ( buffs.vanish -> check() )
+          return buffs.vanish -> remains() + nominal_master_assassin_duration;
+        // Hardcoded 1.0 since we consider that stealth will break on next gcd.
+        else
+          return timespan_t::from_seconds( 1.0 ) + nominal_master_assassin_duration;
+      }
+      else if ( buffs.mantle_of_the_master_assassin -> check() )
+        return buffs.mantle_of_the_master_assassin -> remains();
+      else
+        return timespan_t::from_seconds( 0.0 );
+    } );
   }
 
   // Split expressions
@@ -7046,13 +7068,13 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
     if ( util::str_compare_ci( split[ 1 ], "rogue" ) )
     {
       return make_fn_expr( split[ 0 ], [ this ]() {
-        return buffs.stealth -> check() || buffs.vanish -> check() || buffs.shadow_dance -> check();
+        return buffs.stealth -> check() || buffs.vanish -> check() || buffs.shadow_dance -> check() || buffs.subterfuge -> check();
       } );
     }
     else if ( util::str_compare_ci( split[ 1 ], "all" ) )
     {
       return make_fn_expr( split[ 0 ], [ this ]() {
-        return buffs.stealth -> check() || buffs.vanish -> check() || buffs.shadow_dance -> check() || this -> player_t::buffs.shadowmeld -> check();
+        return buffs.stealth -> check() || buffs.vanish -> check() || buffs.shadow_dance -> check() || buffs.subterfuge -> check() || this -> player_t::buffs.shadowmeld -> check();
       } );
     }
   }
@@ -7250,20 +7272,22 @@ void rogue_t::init_spells()
   mastery.executioner       = find_mastery_spell( ROGUE_SUBTLETY );
 
   // Misc spells
-  spell.bag_of_tricks_driver        = find_spell( 192661 );
-  spell.critical_strikes            = find_spell( 157442 );
-  spell.death_from_above            = find_spell( 163786 );
-  spell.fan_of_knives               = find_class_spell( "Fan of Knives" );
-  spell.fleet_footed                = find_spell( 31209 );
-  spell.master_of_shadows           = find_spell( 196980 );
-  spell.sprint                      = find_class_spell( "Sprint" );
-  spell.ruthlessness_driver         = find_spell( 14161 );
-  spell.ruthlessness_cp             = spec.ruthlessness -> effectN( 1 ).trigger();
-  spell.shadow_focus                = find_spell( 112942 );
-  spell.subterfuge                  = find_spell( 115192 );
-  spell.tier18_2pc_combat_ar        = find_spell( 186286 );
-  spell.relentless_strikes_energize = find_spell( 98440 );
-  spell.insignia_of_ravenholdt      = find_spell( 209041 );
+  spell.bag_of_tricks_driver          = find_spell( 192661 );
+  spell.critical_strikes              = find_spell( 157442 );
+  spell.death_from_above              = find_spell( 163786 );
+  spell.fan_of_knives                 = find_class_spell( "Fan of Knives" );
+  spell.fleet_footed                  = find_spell( 31209 );
+  spell.master_of_shadows             = find_spell( 196980 );
+  spell.sprint                        = find_class_spell( "Sprint" );
+  spell.ruthlessness_driver           = find_spell( 14161 );
+  spell.ruthlessness_cp               = spec.ruthlessness -> effectN( 1 ).trigger();
+  spell.shadow_focus                  = find_spell( 112942 );
+  spell.subterfuge                    = find_spell( 115192 );
+  spell.tier18_2pc_combat_ar          = find_spell( 186286 );
+  spell.relentless_strikes_energize   = find_spell( 98440 );
+  spell.insignia_of_ravenholdt        = find_spell( 209041 );
+  spell.master_assassins_initiative   = find_spell( 235022 );
+  spell.master_assassins_initiative_2 = find_spell( 235027 );
 
   // Talents
   talent.deeper_stratagem   = find_talent_spell( "Deeper Stratagem" );
@@ -7673,13 +7697,13 @@ void rogue_t::create_buffs()
                                      .tick_callback( [this]( buff_t*, int, const timespan_t& ) {
                                       buffs.the_dreadlords_deceit -> trigger(); } )
                                      .tick_time_behavior( BUFF_TICK_TIME_UNHASTED );
-  buffs.mantle_of_the_master_assassin_aura = buff_creator_t( this, "master_assassins_initiative_aura", find_spell( 235022 ) )
+  buffs.mantle_of_the_master_assassin_aura = buff_creator_t( this, "master_assassins_initiative_aura", spell.master_assassins_initiative )
                                               .duration( sim -> max_time / 2 )
-                                              .default_value( find_spell(235027) -> effectN(1).percent() )
+                                              .default_value( spell.master_assassins_initiative_2 -> effectN( 1 ).percent() )
                                               .add_invalidate( CACHE_CRIT_CHANCE );
-  buffs.mantle_of_the_master_assassin  = buff_creator_t( this, "master_assassins_initiative", find_spell( 235022 ) )
-                                      .duration( timespan_t::from_seconds( find_spell(235022) -> effectN(1).base_value() ) )
-                                      .default_value( find_spell( 235027 ) -> effectN( 1 ).percent() )
+  buffs.mantle_of_the_master_assassin  = buff_creator_t( this, "master_assassins_initiative", spell.master_assassins_initiative )
+                                      .duration( timespan_t::from_seconds( spell.master_assassins_initiative -> effectN( 1 ).base_value() ) )
+                                      .default_value( spell.master_assassins_initiative_2 -> effectN( 1 ).percent() )
                                       .add_invalidate( CACHE_CRIT_CHANCE );
 
   buffs.fof_fod           = new buffs::fof_fod_t( this );
