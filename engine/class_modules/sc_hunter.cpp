@@ -620,7 +620,7 @@ public:
 
   virtual double cast_regen() const
   {
-    double cast_seconds = std::max( ab::execute_time().total_seconds(), gcd().total_seconds() );
+    double cast_seconds = std::max( ab::execute_time().total_seconds(), ab::gcd().total_seconds() );
     double sf_seconds = std::min( cast_seconds, p() -> buffs.steady_focus -> remains().total_seconds() );
     double regen = p() -> focus_regen_per_second();
     return ( regen * cast_seconds ) + ( regen * p() -> buffs.steady_focus -> current_value * sf_seconds );
