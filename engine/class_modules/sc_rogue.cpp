@@ -1317,7 +1317,7 @@ struct internal_bleeding_t : public rogue_attack_t
   {
     background = true;
     // Need to fake this here so it uses the correct AP coefficient
-    base_costs[ RESOURCE_COMBO_POINT ] = 1; 
+    base_costs[ RESOURCE_COMBO_POINT ] = 1;
   }
 
   double composite_target_multiplier( player_t* target ) const override
@@ -1435,7 +1435,7 @@ struct soul_rip_t : public rogue_attack_t
       m /= p() -> buffs.symbols_of_death -> check_value();
     }
 
-    return m; 
+    return m;
   }
 
   void init() override
@@ -1527,7 +1527,7 @@ struct poison_bomb_t : public rogue_attack_t
     base_multiplier *= 1.0 + p -> talent.master_poisoner -> effectN( 1 ).percent();
   }
 
-  
+
   double action_multiplier() const override
   {
     double m = rogue_attack_t::action_multiplier();
@@ -2290,7 +2290,7 @@ void rogue_attack_t::execute()
     p() -> buffs.shadow_strikes -> expire();
     double cp = player -> resources.max[ RESOURCE_COMBO_POINT ] - player -> resources.current[ RESOURCE_COMBO_POINT ];
 
-    if ( cp > 0 ) 
+    if ( cp > 0 )
     {
       player -> resource_gain( RESOURCE_COMBO_POINT, cp, p() -> gains.t17_4pc_subtlety );
     }
@@ -2628,8 +2628,8 @@ struct blade_flurry_t : public rogue_attack_t
     else
     {
       p() -> buffs.blade_flurry -> expire();
-      p() -> buffs.shivarran_symmetry -> expire(); 
-      // To be confirmed that turning Blade Flurry off removes also Shivarran 
+      p() -> buffs.shivarran_symmetry -> expire();
+      // To be confirmed that turning Blade Flurry off removes also Shivarran
       // Symmetry
     }
   }
@@ -2730,7 +2730,7 @@ struct envenom_t : public rogue_attack_t
       bleeds += tdata -> dots.internal_bleeding -> is_ticking();
       bleeds += tdata -> dots.rupture -> is_ticking();
       // As of 01/01/2017, Mutilated Flesh works on T19 4PC.
-      bleeds += tdata -> dots.mutilated_flesh -> is_ticking(); 
+      bleeds += tdata -> dots.mutilated_flesh -> is_ticking();
 
       m *= 1.0 + p() -> sets.set( ROGUE_ASSASSINATION, T19, B4 ) -> effectN( 1 ).percent() * bleeds;
     }
@@ -4420,7 +4420,7 @@ struct sprint_offensive_t: public rogue_attack_t
   {
     harmful = callbacks = hasted_ticks = false;
     cooldown = p -> cooldowns.sprint;
-    ignore_false_positive = channeled = special = true; //Force channel to disable all actions. 
+    ignore_false_positive = channeled = special = true; //Force channel to disable all actions.
     dot_duration = timespan_t::from_seconds( 3 );
     base_execute_time = timespan_t::from_seconds( 3 );
 
@@ -5701,7 +5701,7 @@ void rogue_t::trigger_exsanguinate( const action_state_t* state )
   rogue_td_t* td = get_target_data( state -> target );
 
   double coeff = 1.0 / ( 1.0 + talent.exsanguinate -> effectN( 1 ).percent() );
-  
+
   do_exsanguinate( td -> dots.garrote, coeff );
   do_exsanguinate( td -> dots.internal_bleeding, coeff );
   do_exsanguinate( td -> dots.rupture, coeff );
@@ -5839,7 +5839,7 @@ void rogue_t::trigger_insignia_of_ravenholdt( action_state_t* state )
   {
     amount /= 1.0 + state -> action -> total_crit_bonus( state );
   }
-  insignia_of_ravenholdt_ -> base_dd_min = amount; 
+  insignia_of_ravenholdt_ -> base_dd_min = amount;
   insignia_of_ravenholdt_ -> base_dd_max = amount;
   insignia_of_ravenholdt_ -> target = state -> target;
   insignia_of_ravenholdt_ -> execute();
@@ -6701,7 +6701,10 @@ void rogue_t::init_action_list()
   std::string potion_action = "potion,name=";
   if ( sim -> allow_potions && true_level >= 85 )
   {
-    potion_action += ( ( true_level >= 110 ) ? "old_war" : ( true_level >= 100 ) ? "draenic_agility" : ( true_level >= 90 ) ? "virmens_bite" : ( true_level >= 85 ) ? "tolvir" : "" );
+    if ( specialization() == ROGUE_ASSASSINATION )
+      potion_action += ( ( true_level >= 110 ) ? "old_war" : ( true_level >= 100 ) ? "draenic_agility" : ( true_level >= 90 ) ? "virmens_bite" : ( true_level >= 85 ) ? "tolvir" : "" );
+    else
+      potion_action += ( ( true_level >= 110 ) ? "prolonged_power" : ( true_level >= 100 ) ? "draenic_agility" : ( true_level >= 90 ) ? "virmens_bite" : ( true_level >= 85 ) ? "tolvir" : "" );
 
     // Pre-Pot
     precombat -> add_action( potion_action );
@@ -6709,7 +6712,7 @@ void rogue_t::init_action_list()
     // In-Combat Potion
     potion_action += ",if=buff.bloodlust.react|target.time_to_die<=25";
     if ( specialization() == ROGUE_ASSASSINATION )
-      potion_action += "|debuff.vendetta.up";
+      potion_action += "|debuff.vendetta.up&cooldown.vanish.remains<5";
     else if ( specialization() == ROGUE_OUTLAW )
       potion_action += "|buff.adrenaline_rush.up";
     else if ( specialization() == ROGUE_SUBTLETY )
@@ -6755,9 +6758,14 @@ void rogue_t::init_action_list()
       }
     }
     cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit|combo_points.deficit>=5" );
-    cds -> add_action( this, "Vendetta", "if=talent.exsanguinate.enabled&cooldown.exsanguinate.remains<5&dot.rupture.ticking" );
-    cds -> add_action( this, "Vendetta", "if=talent.exsanguinate.enabled&(artifact.master_assassin.rank>=4-equipped.convergence_of_fates|equipped.duskwalkers_footpads)&energy.deficit>=75&!(artifact.master_assassin.rank=5-equipped.convergence_of_fates&equipped.duskwalkers_footpads)" );
-    cds -> add_action( this, "Vendetta", "if=!talent.exsanguinate.enabled&energy.deficit>=88-!talent.venom_rush.enabled*10" );
+
+    //Vendetta optimisation with Urge to kill
+    //cds -> add_action( this, "Vendetta", "if=talent.exsanguinate.enabled&cooldown.exsanguinate.remains<5&dot.rupture.ticking" );
+    //cds -> add_action( this, "Vendetta", "if=talent.exsanguinate.enabled&(artifact.master_assassin.rank>=4-equipped.convergence_of_fates|equipped.duskwalkers_footpads)&energy.deficit>=75&!(artifact.master_assassin.rank=5-equipped.convergence_of_fates&equipped.duskwalkers_footpads)" );
+    //cds -> add_action( this, "Vendetta", "if=!talent.exsanguinate.enabled&energy.deficit>=88-!talent.venom_rush.enabled*10" );
+    cds -> add_action( this, "Vendetta", "if=talent.exsanguinate.enabled&(!artifact.urge_to_kill.enabled|(!talent.vigor.enabled&energy.deficit>=75)|(talent.vigor.enabled&energy.deficit>=125+!equipped.duskwalkers_footpads))" );
+    cds -> add_action( this, "Vendetta", "if=!talent.exsanguinate.enabled&(!artifact.urge_to_kill.enabled|(!talent.vigor.enabled&energy.deficit>=85)|(talent.vigor.enabled&energy.deficit>=125+equipped.duskwalkers_footpads))" );
+
     cds -> add_action( this, "Vanish", "if=talent.nightstalker.enabled&combo_points>=cp_max_spend&((talent.exsanguinate.enabled&cooldown.exsanguinate.remains<1&(dot.rupture.ticking|time>10))|(!talent.exsanguinate.enabled&dot.rupture.refreshable))" );
     cds -> add_action( this, "Vanish", "if=talent.subterfuge.enabled&dot.garrote.refreshable&((spell_targets.fan_of_knives<=3&combo_points.deficit>=1+spell_targets.fan_of_knives)|(spell_targets.fan_of_knives>=4&combo_points.deficit>=4))" );
     cds -> add_action( this, "Vanish", "if=talent.shadow_focus.enabled&energy.time_to_max>=2&combo_points.deficit>=4" );
@@ -7774,7 +7782,7 @@ void rogue_t::create_buffs()
     .trigger_spell( artifact.finality )
     .default_value( find_spell( 197496 ) -> effectN( 1 ).percent() / COMBO_POINT_MAX )
     // Due to Anticipation bug with eviscerate (see eviscerate action), we'll allow it up to 10.
-    .max_stack( 10 ); 
+    .max_stack( 10 );
   buffs.finality_nightblade = buff_creator_t( this, "finality_nightblade", find_spell( 197498 ) )
     .trigger_spell( artifact.finality )
     .default_value( find_spell( 197498 ) -> effectN( 1 ).percent() / COMBO_POINT_MAX )
@@ -8248,18 +8256,18 @@ stat_e rogue_t::convert_hybrid_stat( stat_e s ) const
   switch ( s )
   {
   case STAT_STR_AGI_INT:
-  case STAT_AGI_INT: 
+  case STAT_AGI_INT:
   case STAT_STR_AGI:
-    return STAT_AGILITY; 
-  // This is a guess at how STR/INT gear will work for Rogues, TODO: confirm  
+    return STAT_AGILITY;
+  // This is a guess at how STR/INT gear will work for Rogues, TODO: confirm
   // This should probably never come up since rogues can't equip plate, but....
   case STAT_STR_INT:
     return STAT_NONE;
   case STAT_SPIRIT:
       return STAT_NONE;
   case STAT_BONUS_ARMOR:
-      return STAT_NONE;     
-  default: return s; 
+      return STAT_NONE;
+  default: return s;
   }
 }
 
