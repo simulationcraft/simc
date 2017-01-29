@@ -5973,8 +5973,9 @@ struct subterfuge_t : public buff_t
   {
     buff_t::execute( stacks, value, duration );
 
-    // Subterfuge makes the vanish to fully lasts 3 seconds (instead of breaking on first ability use)
-    if ( ! rogue -> buffs.vanish -> check() )
+    // As of 01/09/2017, Subterfuge makes the vanish to fully lasts
+    // 3 seconds (instead of breaking on first ability use).
+    if ( ! rogue -> buffs.vanish -> check() || ! rogue -> bugs )
       actions::break_stealth( rogue );
   }
 
@@ -7057,13 +7058,13 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
     if ( util::str_compare_ci( split[ 1 ], "rogue" ) )
     {
       return make_fn_expr( split[ 0 ], [ this ]() {
-        return buffs.stealth -> check() || buffs.vanish -> check() || buffs.shadow_dance -> check();
+        return buffs.stealth -> check() || buffs.vanish -> check() || buffs.shadow_dance -> check() || buffs.subterfuge -> check();
       } );
     }
     else if ( util::str_compare_ci( split[ 1 ], "all" ) )
     {
       return make_fn_expr( split[ 0 ], [ this ]() {
-        return buffs.stealth -> check() || buffs.vanish -> check() || buffs.shadow_dance -> check() || this -> player_t::buffs.shadowmeld -> check();
+        return buffs.stealth -> check() || buffs.vanish -> check() || buffs.shadow_dance -> check() || buffs.subterfuge -> check() || this -> player_t::buffs.shadowmeld -> check();
       } );
     }
   }
