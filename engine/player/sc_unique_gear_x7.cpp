@@ -3152,12 +3152,29 @@ void item::devilsaurs_bite( special_effect_t& effect )
 
 void item::leyspark( special_effect_t& effect )
 {
-  effect.custom_buff = stat_buff_creator_t( effect.player, "sparking", effect.player -> find_spell( 231965 ), effect.item )
-    .spell( effect.player -> find_spell( 231941 ) )
-    .cd( timespan_t::zero() )
+  struct sparking_driver_t : public buff_t
+  {
+    stat_buff_t* sparking_;
+    sparking_driver_t( const special_effect_t& effect, stat_buff_t* sparking ) :
+      buff_t( buff_creator_t( effect.player, "sparking_driver", effect.driver() -> effectN( 1 ).trigger() )
+              .tick_callback( [sparking]( buff_t*, int, const timespan_t& ) { sparking -> trigger( 1 ); } ) ),
+      sparking_( sparking )
+    {
+    }
+
+    void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+    {
+      buff_t::expire_override( expiration_stacks, remaining_duration );
+
+      sparking_ -> expire();
+    }
+  };
+
+  stat_buff_t* sparking = stat_buff_creator_t( effect.player, "sparking", effect.driver() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
+    .default_value( effect.driver() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() -> effectN( 1 ).average( effect.item ) )
     .add_invalidate( CACHE_AGILITY );
 
-  auto a = effect.create_action();
+  effect.custom_buff = new sparking_driver_t( effect, sparking );
 
   new dbc_proc_callback_t( effect.item, effect );
 }
@@ -4363,7 +4380,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 227388, item::eyasus_mulligan                );
   register_special_effect( 228141, item::marfisis_giant_censer          );
   register_special_effect( 224073, item::devilsaurs_bite                );
-  register_special_effect( 231940 ,item::leyspark                       );
+  register_special_effect( 231941, item::leyspark                       );
 
   /* Legion Enchants */
   register_special_effect( 190888, "190909trigger" );
