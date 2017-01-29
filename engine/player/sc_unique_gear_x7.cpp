@@ -1568,7 +1568,6 @@ void item::pharameres_forbidden_grimoire( special_effect_t& effect )
       background = may_crit = true;
       aoe = -1;
       base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item );
-
     }
 
     double composite_target_multiplier( player_t* t ) const override
@@ -1611,6 +1610,7 @@ void item::pharameres_forbidden_grimoire( special_effect_t& effect )
       callbacks = false;
       background = true;
       impact = new orb_of_destruction_impact_t( effect );
+      add_child( impact );
     }
 
     void init() override
