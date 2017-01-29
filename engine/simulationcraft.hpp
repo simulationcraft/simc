@@ -1776,8 +1776,8 @@ struct sim_t : private sc_thread_t
   // to correct elements (toggled elements in the HTML report) based on the data.
   std::map<std::string, std::vector<std::string> > chart_data;
 
-  bool output_relative_difference;
-  double boxplot_percentile;
+  bool chart_show_relative_difference;
+  double chart_boxplot_percentile;
 
   // List of callbacks to call when an actor_target_data_t object is created. Currently used to
   // initialize the generic targetdata debuffs/dots we have.
