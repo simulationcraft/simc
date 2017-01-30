@@ -359,12 +359,6 @@ void item::arans_relaxing_ruby( special_effect_t& effect )
     action = effect.player -> create_proc_action( "flame_wreath", effect );
   }
 
-  // Adjust frost base RPPM: https://www.altered-time.com/forum/viewtopic.php?f=2&t=3416
-  if ( effect.player -> specialization() == MAGE_FROST )
-  {
-    effect.ppm_ = -1.35;
-  }
-
   if ( ! action )
   {
     action = new flame_wreath_t( effect );
