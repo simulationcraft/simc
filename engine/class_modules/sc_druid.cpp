@@ -7041,12 +7041,12 @@ void druid_t::apl_feral()
       std::string line = std::string( "use_item,slot=" ) + items[i].slot_name();
       if (items[i].name_str == "mirror_of_the_blademaster")
          line += ",if=raid_event.adds.in>60|!raid_event.adds.exists|spell_targets.swipe_cat>desired_targets";
-      else if (items[i].name_str != "maalus_the_blood_drinker")
-         line += ",if=(buff.tigers_fury.up&(target.time_to_die>trinket.stat.any.cooldown|target.time_to_die<45))|buff.incarnation.remains>20";
       else if (items[i].name_str == "ring_of_collapsing_futures")
          line += ",if=(buff.tigers_fury.up|target.time_to_die<45)";
       else if (items[i].name_str == "draught_of_souls")
          line += ",if=buff.tigers_fury.up&energy.time_to_max>3&(!talent.savage_roar.enabled|buff.savage_roar.up)";
+      else if (items[i].name_str != "maalus_the_blood_drinker") //NOTE: must be on the bottom of the if chain.
+         line += ",if=(buff.tigers_fury.up&(target.time_to_die>trinket.stat.any.cooldown|target.time_to_die<45))|buff.incarnation.remains>20";
       def -> add_action( line );
     }
   }
