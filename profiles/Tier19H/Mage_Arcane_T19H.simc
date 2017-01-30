@@ -22,10 +22,13 @@ actions.precombat+=/snapshot_stats
 actions.precombat+=/mirror_image
 actions.precombat+=/potion,name=deadly_grace
 actions.precombat+=/arcane_blast
+actions.precombat+=/variable,op=set,name=mystic_kilt_equipped,value=equipped.132451
+actions.precombat+=/variable,op=set,name=rhonins_bracers_equipped,value=equipped.132413
+actions.precombat+=/variable,op=set,name=shard_ring_equipped,value=equipped.132410
 
 # Executed every time the actor is available.
 actions=counterspell,if=target.debuff.casting.react
-actions+=/time_warp,if=(buff.bloodlust.down)&((time=0)|(equipped.132410&buff.arcane_power.up&prev_off_gcd.arcane_power)|(target.time_to_die<40))
+actions+=/time_warp,if=(buff.bloodlust.down)&((time=0)|(variable.shard_ring_equipped&buff.arcane_power.up&prev_off_gcd.arcane_power)|(target.time_to_die<40))
 actions+=/mirror_image,if=buff.arcane_power.down
 actions+=/stop_burn_phase,if=prev_gcd.1.evocation&burn_phase_duration>gcd.max
 actions+=/mark_of_aluneth,if=cooldown.arcane_power.remains>20
@@ -42,7 +45,7 @@ actions.build+=/arcane_explosion,if=active_enemies>1
 actions.build+=/arcane_blast
 
 actions.burn=call_action_list,name=cooldowns
-actions.burn+=/charged_up,if=(equipped.132451&buff.arcane_charge.stack<=1)
+actions.burn+=/charged_up,if=(variable.mystic_kilt_equipped&buff.arcane_charge.stack<=1)
 actions.burn+=/arcane_missiles,if=buff.arcane_missiles.react=3
 actions.burn+=/nether_tempest,if=dot.nether_tempest.remains<=2|!ticking
 actions.burn+=/arcane_blast,if=active_enemies<=1&mana.pct%10*execute_time>target.time_to_die
@@ -54,18 +57,18 @@ actions.burn+=/arcane_blast,if=buff.presence_of_mind.up|buff.arcane_power.remain
 actions.burn+=/supernova,if=mana.pct<100
 actions.burn+=/arcane_missiles,if=mana.pct>10&(talent.overpowered.enabled|buff.arcane_power.down)
 actions.burn+=/arcane_explosion,if=active_enemies>1
-actions.burn+=/arcane_barrage,if=talent.charged_up.enabled&(equipped.132451&cooldown.charged_up.remains=0&mana.pct<(100-(buff.arcane_charge.stack*0.03)))
+actions.burn+=/arcane_barrage,if=talent.charged_up.enabled&(variable.mystic_kilt_equipped&cooldown.charged_up.remains=0&mana.pct<(100-(buff.arcane_charge.stack*0.03)))
 actions.burn+=/arcane_blast
 actions.burn+=/evocation,interrupt_if=mana.pct>99
 
 actions.conserve=arcane_missiles,if=buff.arcane_missiles.react=3
 actions.conserve+=/arcane_blast,if=mana.pct>99
 actions.conserve+=/nether_tempest,if=(refreshable|!ticking)
-actions.conserve+=/arcane_blast,if=buff.rhonins_assaulting_armwraps.up&equipped.132413
+actions.conserve+=/arcane_blast,if=variable.rhonins_bracers_equipped&buff.rhonins_assaulting_armwraps.up
 actions.conserve+=/arcane_missiles
 actions.conserve+=/supernova,if=mana.pct<100
-actions.conserve+=/arcane_explosion,if=mana.pct>=82&equipped.132451&active_enemies>1
-actions.conserve+=/arcane_blast,if=mana.pct>=82&equipped.132451
+actions.conserve+=/arcane_explosion,if=mana.pct>=82&variable.mystic_kilt_equipped&active_enemies>1
+actions.conserve+=/arcane_blast,if=mana.pct>=82&variable.mystic_kilt_equipped
 actions.conserve+=/arcane_barrage,if=mana.pct<100&cooldown.arcane_power.remains>5
 actions.conserve+=/arcane_explosion,if=active_enemies>1
 actions.conserve+=/arcane_blast

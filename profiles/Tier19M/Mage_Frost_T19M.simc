@@ -22,11 +22,13 @@ actions.precombat+=/snapshot_stats
 actions.precombat+=/mirror_image
 actions.precombat+=/potion,name=deadly_grace
 actions.precombat+=/frostbolt
+actions.precombat+=/variable,op=set,name=zannesu_belt_equipped,value=equipped.133970
+actions.precombat+=/variable,op=set,name=shard_ring_equipped,value=equipped.132410
 
 # Executed every time the actor is available.
 actions=counterspell,if=target.debuff.casting.react
 actions+=/ice_lance,if=buff.fingers_of_frost.react=0&prev_gcd.1.flurry
-actions+=/time_warp,if=(time=0&buff.bloodlust.down)|(buff.bloodlust.down&equipped.132410&(cooldown.icy_veins.remains<1|target.time_to_die<50))
+actions+=/time_warp,if=(time=0&buff.bloodlust.down)|(buff.bloodlust.down&variable.shard_ring_equipped&(cooldown.icy_veins.remains<1|target.time_to_die<50))
 actions+=/call_action_list,name=cooldowns
 actions+=/call_action_list,name=aoe,if=active_enemies>=4
 actions+=/call_action_list,name=single
@@ -64,7 +66,7 @@ actions.single+=/ice_lance,if=buff.fingers_of_frost.react>0&cooldown.icy_veins.r
 actions.single+=/frozen_orb
 actions.single+=/ice_nova
 actions.single+=/comet_storm
-actions.single+=/blizzard,if=talent.arctic_gale.enabled|active_enemies>1|(buff.zannesu_journey.stack=5&buff.zannesu_journey.remains>cast_time)
+actions.single+=/blizzard,if=talent.arctic_gale.enabled|active_enemies>1|(variable.zannesu_belt_equipped&buff.zannesu_journey.stack=5&buff.zannesu_journey.remains>cast_time)
 actions.single+=/ebonbolt,if=buff.brain_freeze.react=0
 actions.single+=/glacial_spike
 actions.single+=/frostbolt
