@@ -3464,7 +3464,7 @@ void item::convergence_of_fates( special_effect_t& effect )
     }
     break;
   case DRUID_FERAL:
-    if ( player_talent( effect.player, "Incarnation" ) )
+    if ( player_talent( effect.player, "Incarnation: King of the Jungle" ) )
     {
       effect.ppm_ = -3.7;
       effect.rppm_modifier_ = 1.0;
