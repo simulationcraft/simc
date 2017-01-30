@@ -8171,9 +8171,13 @@ std::string mage_t::get_potion_action()
   }
   else
   {
-    if (mage_potion_choice == "prolonged_power")
+    if (mage_potion_choice == "prolonged_power" || mage_potion_choice == "pp")
     {
       potion_action += "prolonged_power";
+    }
+    else if (mage_potion_choice == "deadly_grace" || mage_potion_choice == "dg")
+    {
+      potion_action += "deadly_grace";
     }
     else {
       potion_action += "deadly_grace";
@@ -8254,11 +8258,11 @@ void mage_t::apl_arcane()
   }
   if ( race == RACE_TROLL || race == RACE_ORC )
   {
-    cooldowns -> add_action( "potion,name=deadly_grace,if=buff.arcane_power.up&(buff.berserking.up|buff.blood_fury.up)" );
+    cooldowns -> add_action( get_potion_action() + ",if=buff.arcane_power.up&(buff.berserking.up|buff.blood_fury.up)" );
   }
   else
   {
-    cooldowns -> add_action( "potion,name=deadly_grace,if=buff.arcane_power.up" );
+    cooldowns -> add_action( get_potion_action() + ",if=buff.arcane_power.up" );
   }
 
   init_burn -> add_action( this, "Mark of Aluneth" );
