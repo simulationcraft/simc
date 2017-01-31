@@ -8071,7 +8071,7 @@ void monk_t::create_buffs()
     .default_value( passives.hit_combo -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
-  buff.master_of_combinations = stat_buff_creator_t( this, "master_of_combinations", passive.master_of_combinations );
+  buff.master_of_combinations = stat_buff_creator_t( this, "master_of_combinations", passives.master_of_combinations );
 
   buff.masterful_strikes = buff_creator_t( this, "masterful_strikes", passives.tier18_2pc_melee )
     .default_value( passives.tier18_2pc_melee -> effectN( 1 ).base_value() )
