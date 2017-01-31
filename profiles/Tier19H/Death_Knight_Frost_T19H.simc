@@ -3,7 +3,7 @@ level=110
 race=blood_elf
 role=attack
 position=back
-talents=2230021
+talents=3320032
 artifact=12:0:0:0:0:108:3:109:3:110:3:113:3:114:3:117:3:119:1:120:1:122:1:123:1:124:1:1090:3:1332:1
 spec=frost
 
@@ -19,7 +19,7 @@ actions.precombat+=/food,name=fishbrul_special
 actions.precombat+=/augmentation,name=defiled
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion,name=old_war
+actions.precombat+=/potion,name=prolonged_power
 
 # Executed every time the actor is available.
 actions=auto_attack
@@ -29,7 +29,7 @@ actions+=/arcane_torrent,if=runic_power.deficit>20
 actions+=/blood_fury,if=buff.pillar_of_frost.up
 actions+=/berserking,if=buff.pillar_of_frost.up
 actions+=/use_item,slot=finger2
-actions+=/potion,name=old_war,if=buff.pillar_of_frost.up
+actions+=/potion,name=prolonged_power,if=buff.pillar_of_frost.up
 actions+=/sindragosas_fury,if=buff.pillar_of_frost.up&(buff.unholy_strength.up|(buff.pillar_of_frost.remains<3&target.time_to_die<60))&debuff.razorice.stack=5&!buff.obliteration.up
 actions+=/obliteration,if=(!talent.frozen_pulse.enabled|(rune<2&runic_power<28))&!talent.gathering_storm.enabled
 actions+=/call_action_list,name=generic,if=!talent.breath_of_sindragosa.enabled&!(talent.gathering_storm.enabled&buff.remorseless_winter.remains)

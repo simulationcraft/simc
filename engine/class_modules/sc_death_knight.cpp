@@ -6938,7 +6938,7 @@ void death_knight_t::default_apl_frost()
                           ( true_level >= 85 ) ? "sea_mist_rice_noodles" :
                           ( true_level >= 80 ) ? "seafood_magnifique_feast" :
                           "";
-  std::string potion_name = ( true_level > 100 ) ? "old_war" :
+  std::string potion_name = ( true_level > 100 ) ? "prolonged_power" :
                             ( true_level >= 90 ) ? "draenic_strength" :
                             ( true_level >= 85 ) ? "mogu_power" :
                             ( true_level >= 80 ) ? "golemblood_potion" :
