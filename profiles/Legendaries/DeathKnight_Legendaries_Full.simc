@@ -1,0 +1,116 @@
+#####
+# This is a global profile used to check the 3 bests 2 legendaries combo for one class. (Published on Website)
+# You have to set "$(Tier)=..." and "$(iLvl)=..." before calling it.
+#
+# Example :
+#
+# $(Tier)=T19H
+# $(iLvl)=910
+# Rogue_Legendaries.simc
+#
+# It will call the Rogue T19H Profiles then sim with every legendaries defined below.
+# You only have to set $(Tier) and $(iLvl) one time.
+#
+# If you want to test 2 (or more) classes, you can do it this way :
+#
+# $(Tier)=T19M_NH
+# $(iLvl)=940
+# DeathKnight_Legendaries.simc
+#
+# You can even do that to test 2 Tiers at the same time :
+#
+# $(Tier)=T19H_NH
+# $(iLvl)=910
+# DeathKnight_Legendaries.simc
+# $(Tier)=T19M_NH
+# $(iLvl)=940
+# DeathKnight_Legendaries.simc
+#####
+
+# Leave this empty, it's for non-specific Tier items backward compatibility
+$(Item_$(Tier))=
+
+
+### 4 pc ####
+$(Item_T19H_NH)=hands=dreadwyrm_gauntlets,id=138352,bonus_id=3517
+$(Item_T19M_NH)=hands=dreadwyrm_gauntlets,id=138352,bonus_id=3519
+
+
+### Frost ###
+input=Death_Knight_Frost_$(Tier).simc
+name=Frost_$(Tier)_Baseline
+
+copy=Frost_$(Tier)_Koltiras,Frost_$(Tier)_Baseline
+waist=koltiras_newfound_will,id=132366,ilevel=$(iLvl)
+
+copy=Frost_$(Tier)_Toravons,Frost_$(Tier)_Baseline
+wrists=toravons_whiteout_bindings,id=132458,ilevel=$(iLvl)
+
+copy=Frost_$(Tier)_Perseverance,Frost_$(Tier)_Baseline
+head=perseverance_of_the_ebon_martyr,id=132459,ilevel=$(iLvl)
+
+copy=Frost_$(Tier)_Aggramars,Frost_$(Tier)_Baseline
+feet=aggramars_stride,id=132443,ilevel=$(iLvl)
+
+copy=Frost_$(Tier)_Necrofantasia,Frost_$(Tier)_Baseline
+finger2=seal_of_necrofantasia,id=137223,enchant=binding_of_haste,gems=150haste,ilevel=$(iLvl)
+
+copy=Frost_$(Tier)_Sephuzs,Frost_$(Tier)_Baseline
+finger2=sephuzs_secret,id=132452,enchant=binding_of_haste,gems=150haste,ilevel=$(iLvl)
+
+copy=Frost_$(Tier)_Prydaz,Frost_$(Tier)_Baseline
+neck=prydaz_xavarics_magnum_opus,id=132444,gems=150haste,enchant=mark_of_the_hidden_satyr,ilevel=$(iLvl)
+
+# also change hands to preserve 4pc nighthold bonus
+copy=Frost_$(Tier)_Consorts,Frost_$(Tier)_Baseline
+legs=consorts_cold_core,id=144293,ilevel=$(iLvl)
+$(Item_$(Tier))
+
+# also change hands to preserve 4pc nighthold bonus
+copy=Frost_$(Tier)_Acherus,Frost_$(Tier)_Baseline
+back=acherus_drapes,id=132376,enchant=binding_of_strength,ilevel=$(iLvl)
+$(Item_$(Tier))
+
+copy=Frost_$(Tier)_Kiljaedens,Frost_$(Tier)_Baseline
+trinket1=kiljaedens_burning_wish,id=144259,ilevel=$(iLvl)
+
+
+### Unholy ###
+input=Death_Knight_Unholy_$(Tier).simc
+name=Unholy_$(Tier)_Baseline
+
+copy=Unholy_$(Tier)_Draugr,Unholy_$(Tier)_Baseline
+waist=draugr_girdle_of_the_everlasting_king,id=132441,ilevel=$(iLvl)
+
+copy=Unholy_$(Tier)_Instructors,Unholy_$(Tier)_Baseline
+wrists=the_instructors_fourth_lesson,id=132448,ilevel=$(iLvl)
+
+# also change hands to preserve 4pc nighthold bonus
+copy=Unholy_$(Tier)_Death-March,Unholy_$(Tier)_Baseline
+head=death_march,id=144280,ilevel=$(iLvl)
+$(Item_$(Tier))
+
+copy=Unholy_$(Tier)_Aggramars,Unholy_$(Tier)_Baseline
+feet=aggramars_stride,id=132443,ilevel=$(iLvl)
+
+copy=Unholy_$(Tier)_Uvanimor,Unholy_$(Tier)_Baseline
+finger2=uvanimor_the_unbeautiful,id=137037,enchant=binding_of_mastery,gems=150mastery,ilevel=$(iLvl)
+
+copy=Unholy_$(Tier)_Sephuzs,Unholy_$(Tier)_Baseline
+finger2=sephuzs_secret,id=132452,enchant=binding_of_mastery,gems=150mastery,ilevel=$(iLvl)
+
+copy=Unholy_$(Tier)_Prydaz,Unholy_$(Tier)_Baseline
+neck=prydaz_xavarics_magnum_opus,id=132444,gems=150haste,enchant=mark_of_the_trained_soldier,ilevel=$(iLvl)
+
+# also change hands to preserve 4pc nighthold bonus
+copy=Unholy_$(Tier)_Taktheritrixs,Unholy_$(Tier)_Baseline
+shoulders=taktheritrixs_shoulderpads,id=137075,ilevel=$(iLvl)
+$(Item_$(Tier))
+
+# also change hands to preserve 4pc nighthold bonus
+copy=Unholy_$(Tier)_Acherus,Unholy_$(Tier)_Baseline
+back=acherus_drapes,id=132376,enchant=binding_of_strength,ilevel=$(iLvl)
+$(Item_$(Tier))
+
+copy=Unholy_$(Tier)_Kiljaedens,Unholy_$(Tier)_Baseline
+trinket1=kiljaedens_burning_wish,id=144259,ilevel=$(iLvl)
