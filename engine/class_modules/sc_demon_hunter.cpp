@@ -3357,7 +3357,16 @@ struct chaos_blade_t : public demon_hunter_attack_t
 
   double action_multiplier() const override
   {
-    return action_t::action_multiplier(); // skip attack_t's multiplier so we don't get the AA bonus.  Tested 2017/01/23
+	  double am = action_t::action_multiplier();
+
+	  if (demonic_presence)
+	  {
+		  am *= 1.0 + p()->cache.mastery_value();
+	  }
+
+	  return am;
+
+    return am; // skip attack_t's multiplier so we don't get the AA bonus.  Tested 2017/01/23
   }
 };
 
