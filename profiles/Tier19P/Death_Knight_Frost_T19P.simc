@@ -66,7 +66,8 @@ actions.generic=frost_strike,if=!talent.shattering_strikes.enabled&(buff.icy_tal
 actions.generic+=/frost_strike,if=talent.shattering_strikes.enabled&debuff.razorice.stack=5
 actions.generic+=/howling_blast,target_if=!dot.frost_fever.ticking
 actions.generic+=/remorseless_winter,if=(buff.rime.react&equipped.132459&!(buff.obliteration.up&spell_targets.howling_blast<2))|talent.gathering_storm.enabled
-actions.generic+=/howling_blast,if=buff.rime.react&!(buff.obliteration.up&spell_targets.howling_blast<2)
+actions.generic+=/howling_blast,if=buff.rime.react&!(buff.obliteration.up&spell_targets.howling_blast<2)&!(equipped.132459&talent.gathering_storm.enabled)
+actions.generic+=/howling_blast,if=buff.rime.react&!(buff.obliteration.up&spell_targets.howling_blast<2)&equipped.132459&talent.gathering_storm.enabled&(debuff.perseverance_of_the_ebon_martyr.up|cooldown.remorseless_winter.remains>3)
 actions.generic+=/obliterate,if=!buff.obliteration.up&(equipped.132366&talent.frozen_pulse.enabled&(set_bonus.tier19_2pc=1|set_bonus.tier19_4pc=1))
 actions.generic+=/frost_strike,if=runic_power.deficit<=10
 actions.generic+=/frost_strike,if=buff.obliteration.up&!buff.killing_machine.react
