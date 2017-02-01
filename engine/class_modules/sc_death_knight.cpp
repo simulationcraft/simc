@@ -7004,6 +7004,7 @@ void death_knight_t::default_apl_frost()
   generic -> add_talent( this, "Glacial Advance", "if=spell_targets.glacial_advance>=2" );
   generic -> add_talent( this, "Frostscythe", "if=spell_targets.frostscythe>=3" );
   generic -> add_action( this, "Obliterate", "if=buff.killing_machine.react" );
+  generic -> add_action( this, "Frost Strike", "if=talent.gathering_storm.enabled&talent.murderous_efficiency.enabled&(set_bonus.tier19_2pc=1|set_bonus.tier19_4pc=1)" );
   generic -> add_action( this, "Frost Strike", "if=(talent.horn_of_winter.enabled|talent.hungering_rune_weapon.enabled)&(set_bonus.tier19_2pc=1|set_bonus.tier19_4pc=1)" );
   generic -> add_action( this, "Obliterate" );
   generic -> add_talent( this, "Glacial Advance" );

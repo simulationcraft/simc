@@ -75,6 +75,7 @@ actions.generic+=/frostscythe,if=(buff.killing_machine.react&spell_targets.frost
 actions.generic+=/glacial_advance,if=spell_targets.glacial_advance>=2
 actions.generic+=/frostscythe,if=spell_targets.frostscythe>=3
 actions.generic+=/obliterate,if=buff.killing_machine.react
+actions.generic+=/frost_strike,if=talent.gathering_storm.enabled&talent.murderous_efficiency.enabled&(set_bonus.tier19_2pc=1|set_bonus.tier19_4pc=1)
 actions.generic+=/frost_strike,if=(talent.horn_of_winter.enabled|talent.hungering_rune_weapon.enabled)&(set_bonus.tier19_2pc=1|set_bonus.tier19_4pc=1)
 actions.generic+=/obliterate
 actions.generic+=/glacial_advance
