@@ -7029,7 +7029,7 @@ void death_knight_t::default_apl_frost()
   
   // Breath of Sindragosa ticking rotation
   bos_ticking -> add_action( this, "Howling Blast", "target_if=!dot.frost_fever.ticking" );
-  bos_ticking -> add_action( this, "Remorseless Winter", "if=runic_power>=30&((buff.rime.react&equipped.132459)|(talent.gathering_storm.enabled))" );
+  bos_ticking -> add_action( this, "Remorseless Winter", "if=runic_power>=30&((buff.rime.react&equipped.132459)|(talent.gathering_storm.enabled&(dot.remorseless_winter.remains<=gcd|!dot.remorseless_winter.ticking)))" );
   bos_ticking -> add_action( this, "Howling Blast", "if=((runic_power>=20&set_bonus.tier19_4pc)|runic_power>=30)&buff.rime.react" );
   bos_ticking -> add_action( this, "Obliterate", "if=runic_power<=75|rune>3" );
   bos_ticking -> add_talent( this, "Horn of Winter", "if=runic_power<70&!buff.hungering_rune_weapon.up&rune<5" );
