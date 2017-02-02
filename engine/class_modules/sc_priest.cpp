@@ -44,6 +44,7 @@ namespace spells
 struct mind_sear_tick_t;
 struct shadowy_apparition_spell_t;
 struct sphere_of_insanity_spell_t;
+struct blessed_dawnlight_medallion_t;
 }
 }
 
@@ -426,6 +427,7 @@ public:
   std::string create_profile( save_e = SAVE_ALL ) override;
   action_t* create_action( const std::string& name,
                            const std::string& options ) override;
+  virtual action_t* create_proc_action(const std::string& name, const special_effect_t& effect) override;
   pet_t* create_pet( const std::string& name,
                      const std::string& type = std::string() ) override;
   void create_pets() override;
@@ -2798,6 +2800,24 @@ struct shadowy_apparition_spell_t final : public priest_spell_t
     schedule_execute();
   }
 };
+
+
+struct blessed_dawnlight_medallion_t : public priest_spell_t
+{
+  double insanity;
+  blessed_dawnlight_medallion_t(priest_t& p, const special_effect_t& effect) :
+    priest_spell_t("blessing", p, p.find_spell(187611)),
+    insanity( data().effectN(1).percent() )
+  {
+    
+  }
+
+  void execute() override
+  {
+    generate_insanity(data().effectN(1).percent());
+  }
+};
+
 
 struct sphere_of_insanity_spell_t final : public priest_spell_t
 {
@@ -5846,6 +5866,14 @@ void priest_t::target_mitigation( school_e school, dmg_e dt, action_state_t* s )
   }
 }
 
+// priest_t::create_proc_action =================================================
+action_t* priest_t::create_proc_action(const std::string& name, const special_effect_t& effect)
+{
+  if (util::str_compare_ci(name, "blessed_dawnlight_medallion"))     return new     actions::spells::blessed_dawnlight_medallion_t(*this, effect);
+
+  return nullptr;
+}
+
 // priest_t::create_options =================================================
 
 void priest_t::create_options()
@@ -5991,6 +6019,11 @@ struct priest_module_t final : public module_t
   {
   }
 };
+
+action_t * create_proc_action(const std::string & name, const special_effect_t & effect)
+{
+  return nullptr;
+}
 
 }  // UNNAMED NAMESPACE
 
