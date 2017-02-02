@@ -429,25 +429,10 @@ public:
   // Procs
   struct procs_t
   {
+    proc_t* soul_conduit;
     //aff
     proc_t* fatal_echos;
-    proc_t* wild_imp;
-    proc_t* fragment_wild_imp;
     proc_t* t18_2pc_affliction;
-    proc_t* t18_4pc_destruction;
-    proc_t* t18_illidari_satyr;
-    proc_t* t18_vicious_hellhound;
-    proc_t* t18_prince_malchezaar;
-    proc_t* shadowy_tear;
-    proc_t* chaos_tear;
-    proc_t* chaos_portal;
-    proc_t* dreadstalker_debug;
-    proc_t* dimension_ripper;
-    proc_t* soul_conduit;
-    proc_t* one_shard_hog;
-    proc_t* two_shard_hog;
-    proc_t* three_shard_hog;
-    proc_t* four_shard_hog;
     //demo
     proc_t* impending_doom;
     proc_t* improved_dreadstalkers;
@@ -462,6 +447,23 @@ public:
     proc_t* wilfreds_dog;
     proc_t* wilfreds_imp;
     proc_t* wilfreds_darkglare;
+    proc_t* one_shard_hog;
+    proc_t* two_shard_hog;
+    proc_t* three_shard_hog;
+    proc_t* four_shard_hog;
+    proc_t* dreadstalker_debug;
+    proc_t* t18_illidari_satyr;
+    proc_t* t18_vicious_hellhound;
+    proc_t* t18_prince_malchezaar;
+    proc_t* wild_imp;
+    proc_t* fragment_wild_imp;
+    //destro
+    proc_t* t18_4pc_destruction;
+    proc_t* shadowy_tear;
+    proc_t* chaos_tear;
+    proc_t* chaos_portal;
+    proc_t* dimension_ripper;
+    proc_t* t19_2pc_chaos_bolts;
   } procs;
 
   struct spells_t
@@ -2532,7 +2534,7 @@ public:
       }
     }
 
-    if ( p() -> talents.eradication -> ok() && td -> debuffs_eradication -> check() )
+    if ( td -> debuffs_eradication -> check() )
       m *= 1.0 + p() -> find_spell( 196414 ) -> effectN( 1 ).percent();
 
     if ( td -> debuffs_haunt -> check() )
@@ -3809,6 +3811,16 @@ struct chaos_bolt_t: public warlock_spell_t
     backdraft_gcd = 1.0 + p -> buffs.backdraft -> data().effectN( 2 ).percent();
   }
 
+  virtual void schedule_execute( action_state_t* state = nullptr ) override
+  {
+    warlock_spell_t::schedule_execute( state );
+
+    if ( p() -> buffs.embrace_chaos -> check() )
+    {
+      p() -> procs.t19_2pc_chaos_bolts -> occur();
+    }
+  }
+
   virtual timespan_t execute_time() const override
   {
     timespan_t h = spell_t::execute_time();
@@ -3839,7 +3851,7 @@ struct chaos_bolt_t: public warlock_spell_t
 
   void impact( action_state_t* s ) override
   {
-    if ( result_is_hit( s -> result ) )
+    if ( p() -> talents.eradication -> ok() && result_is_hit( s -> result ) )
       td( s -> target ) -> debuffs_eradication -> trigger();
 
     warlock_spell_t::impact( s );
@@ -6331,6 +6343,7 @@ void warlock_t::init_procs()
   procs.wilfreds_dog = get_proc( "wilfreds_dog" );
   procs.wilfreds_imp = get_proc( "wilfreds_imp" );
   procs.wilfreds_darkglare = get_proc( "wilfreds_darkglare" );
+  procs.t19_2pc_chaos_bolts = get_proc( "t19_2pc_chaos_bolt" );
 }
 
 void warlock_t::apl_precombat()
