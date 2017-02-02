@@ -1209,9 +1209,6 @@ struct meteor_strike_t: public warlock_pet_spell_t
       p() -> o() -> trigger_lof_infernal();
       p() -> o() -> buffs.lord_of_flames -> trigger();
     }
-
-    if ( p() -> o() -> legendary.sephuzs_secret )
-      p() -> o() -> buffs.sephuzs_secret -> trigger();
   }
 };
 
