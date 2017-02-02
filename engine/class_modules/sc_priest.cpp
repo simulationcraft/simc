@@ -44,6 +44,7 @@ namespace spells
 struct mind_sear_tick_t;
 struct shadowy_apparition_spell_t;
 struct sphere_of_insanity_spell_t;
+struct blessed_dawnlight_medallion_t;
 }
 }
 
@@ -323,8 +324,10 @@ public:
     gain_t* insanity_vampiric_touch_ondamage;
     gain_t* insanity_vampiric_touch_onhit;
     gain_t* insanity_void_bolt;
+    gain_t* insanity_blessing;
     gain_t* shadowy_insight;
     gain_t* vampiric_touch_health;
+
   } gains;
 
   // Benefits
@@ -426,6 +429,7 @@ public:
   std::string create_profile( save_e = SAVE_ALL ) override;
   action_t* create_action( const std::string& name,
                            const std::string& options ) override;
+  virtual action_t* create_proc_action(const std::string& name, const special_effect_t& effect) override;
   pet_t* create_pet( const std::string& name,
                      const std::string& type = std::string() ) override;
   void create_pets() override;
@@ -2022,7 +2026,7 @@ public:
     if ( player.artifact.mind_shattering.rank() )
     {
       base_multiplier *= 1.0 + player.artifact.mind_shattering.percent();
-    }
+    }    
   }
 
   void init() override
@@ -2206,6 +2210,7 @@ struct mind_flay_t final : public priest_spell_t
 
     spell_power_mod.tick *=
         1.0 + p.talents.fortress_of_the_mind->effectN( 3 ).percent();
+
   }
 
   double action_multiplier() const override
@@ -2620,6 +2625,7 @@ struct shadow_word_death_t final : public priest_spell_t
     {
       base_multiplier *= 1.0 + p.artifact.deaths_embrace.percent();
     }
+
   }
 
   double composite_da_multiplier(const action_state_t* state) const override
@@ -2783,6 +2789,26 @@ struct shadowy_apparition_spell_t final : public priest_spell_t
     schedule_execute();
   }
 };
+
+
+struct blessed_dawnlight_medallion_t : public priest_spell_t
+{
+  double insanity;
+  blessed_dawnlight_medallion_t(priest_t& p, const special_effect_t& effect) :
+    priest_spell_t("blessing", p, p.find_spell(227727)),
+    insanity( data().effectN(1).percent() )
+  {
+    energize_amount = RESOURCE_NONE;
+  }
+
+  void execute() override
+  {
+
+    priest_spell_t::execute();
+    priest.generate_insanity( data().effectN(1).percent(), priest.gains.insanity_blessing, execute_state -> action );
+  }
+};
+
 
 struct sphere_of_insanity_spell_t final : public priest_spell_t
 {
@@ -3555,6 +3581,7 @@ struct void_torrent_t final : public priest_spell_t
     tick_zero     = true;
     
     dot_duration = timespan_t::from_seconds( 4.0 );
+
   }
 
   timespan_t composite_dot_duration( const action_state_t* ) const override
@@ -4072,7 +4099,7 @@ void zeks_exterminatus(special_effect_t& effect)
   priest_t* priest = debug_cast<priest_t*>(effect.player);
   assert(priest);
   do_trinket_init(priest, PRIEST_SHADOW,
-    priest->active_items.zeks_exterminatus, effect);
+                  priest->active_items.zeks_exterminatus, effect);
 }
 
 void init()
@@ -4235,6 +4262,7 @@ void priest_t::create_gains()
   gains.insanity_void_bolt    = get_gain( "Insanity Gained from Void Bolt" );
   gains.insanity_void_torrent = get_gain( "Insanity Saved by Void Torrent" );
   gains.vampiric_touch_health = get_gain( "Health from Vampiric Touch Ticks" );
+  gains.insanity_blessing     = get_gain( "Insanity from Blessing Dawnlight Medallion" );
 }
 
 /* Construct priest procs
@@ -5811,6 +5839,14 @@ void priest_t::target_mitigation( school_e school, dmg_e dt, action_state_t* s )
     s->result_amount *=
         1.0 + ( buffs.dispersion->data().effectN( 1 ).percent() );
   }
+}
+
+// priest_t::create_proc_action =================================================
+action_t* priest_t::create_proc_action(const std::string& name, const special_effect_t& effect)
+{  
+  if (effect.driver()->id() == 222275) 
+    return new actions::spells::blessed_dawnlight_medallion_t(*this, effect);
+  return nullptr;
 }
 
 // priest_t::create_options =================================================
