@@ -489,6 +489,70 @@ private:
   target_specific_t<priest_td_t> _target_data;
 
 public:
+  void generate_insanity( double num_amount, gain_t* g, action_t* action )
+  {
+    if ( specialization() == PRIEST_SHADOW )
+    {
+      double amount = num_amount;
+      double amount_from_power_infusion = 0.0;
+      double amount_from_surrender_to_madness = 0.0;
+
+      if ( buffs.surrender_to_madness->check() &&
+           buffs.power_infusion->check() )
+      {
+        double total_amount =
+          amount *
+          ( 1.0 +
+            buffs.power_infusion->data().effectN( 3 ).percent() ) *
+            ( 1.0 +
+              talents.surrender_to_madness->effectN( 1 ).percent() );
+
+        amount_from_surrender_to_madness =
+          amount *
+          talents.surrender_to_madness->effectN( 1 ).percent();
+
+        // Since this effect is multiplicitive, we'll give the extra to Power
+        // Infusion since it does not last as long as Surrender to Madness
+        amount_from_power_infusion =
+          total_amount - amount - amount_from_surrender_to_madness;
+
+        // Make sure the maths line up.
+        assert( total_amount ==
+                amount + amount_from_power_infusion +
+                amount_from_surrender_to_madness );
+      }
+      else if ( buffs.surrender_to_madness->check() )
+      {
+        amount_from_surrender_to_madness =
+          ( amount * ( 1.0 +
+                       talents.surrender_to_madness->effectN( 1 )
+                       .percent() ) ) -
+          amount;
+      }
+      else if ( buffs.power_infusion->check() )
+      {
+        amount_from_power_infusion =
+          ( amount *
+          ( 1.0 +
+            buffs.power_infusion->data().effectN( 3 ).percent() ) ) -
+          amount;
+      }
+
+      insanity.gain( amount, g, action );
+
+      if ( amount_from_power_infusion > 0.0 )
+      {
+        insanity.gain( amount_from_power_infusion,
+                              gains.insanity_power_infusion, action );
+      }
+
+      if ( amount_from_surrender_to_madness > 0.0 )
+      {
+        insanity.gain( amount_from_surrender_to_madness,
+                              gains.insanity_surrender_to_madness, action );
+      }
+    }
+  }
   // Simple insanity expiration event that kicks the actor out of Voidform
   struct insanity_end_event_t : public event_t
   {
@@ -1622,71 +1686,6 @@ struct priest_spell_t : public priest_action_t<spell_t>
       }
     }
   }
-
-  void generate_insanity( double num_amount, gain_t* g = nullptr )
-  {
-    if ( priest.specialization() == PRIEST_SHADOW )
-    {
-      double amount                           = num_amount;
-      double amount_from_power_infusion       = 0.0;
-      double amount_from_surrender_to_madness = 0.0;
-
-      if ( priest.buffs.surrender_to_madness->check() &&
-           priest.buffs.power_infusion->check() )
-      {
-        double total_amount =
-            amount *
-            ( 1.0 +
-              priest.buffs.power_infusion->data().effectN( 3 ).percent() ) *
-            ( 1.0 +
-              priest.talents.surrender_to_madness->effectN( 1 ).percent() );
-
-        amount_from_surrender_to_madness =
-            amount *
-            priest.talents.surrender_to_madness->effectN( 1 ).percent();
-
-        // Since this effect is multiplicitive, we'll give the extra to Power
-        // Infusion since it does not last as long as Surrender to Madness
-        amount_from_power_infusion =
-            total_amount - amount - amount_from_surrender_to_madness;
-
-        // Make sure the maths line up.
-        assert( total_amount ==
-                amount + amount_from_power_infusion +
-                    amount_from_surrender_to_madness );
-      }
-      else if ( priest.buffs.surrender_to_madness->check() )
-      {
-        amount_from_surrender_to_madness =
-            ( amount * ( 1.0 +
-                         priest.talents.surrender_to_madness->effectN( 1 )
-                             .percent() ) ) -
-            amount;
-      }
-      else if ( priest.buffs.power_infusion->check() )
-      {
-        amount_from_power_infusion =
-            ( amount *
-              ( 1.0 +
-                priest.buffs.power_infusion->data().effectN( 3 ).percent() ) ) -
-            amount;
-      }
-
-      priest.insanity.gain( amount, g, this );
-
-      if ( amount_from_power_infusion > 0.0 )
-      {
-        priest.insanity.gain( amount_from_power_infusion,
-            priest.gains.insanity_power_infusion, this );
-      }
-
-      if ( amount_from_surrender_to_madness > 0.0 )
-      {
-        priest.insanity.gain( amount_from_surrender_to_madness,
-            priest.gains.insanity_surrender_to_madness, this );
-      }
-    }
-  }
 };
 
 namespace spells
@@ -2061,7 +2060,7 @@ public:
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
-    generate_insanity( insanity_gain, priest.gains.insanity_mind_blast );
+    priest.generate_insanity( insanity_gain, priest.gains.insanity_mind_blast, s -> action );
   }
 
   timespan_t execute_time() const override
@@ -2171,7 +2170,7 @@ struct mind_sear_tick_t final : public priest_spell_t
 
     if (result_is_hit(state->result))
     {
-      generate_insanity(insanity_gain, priest.gains.insanity_mind_sear);
+      priest.generate_insanity(insanity_gain, priest.gains.insanity_mind_sear, state -> action );
     }
   }
 
@@ -2319,7 +2318,7 @@ struct mind_flay_t final : public priest_spell_t
 
     trigger_void_tendril();
 
-    generate_insanity( insanity_gain, priest.gains.insanity_mind_flay );
+    priest.generate_insanity( insanity_gain, priest.gains.insanity_mind_flay, d -> state -> action );
   }
 
   void impact(action_state_t* s) override
@@ -2669,8 +2668,8 @@ struct shadow_word_death_t final : public priest_spell_t
         total_insanity_gain = insanity_gain;
       }
 
-      generate_insanity( total_insanity_gain,
-                         priest.gains.insanity_shadow_word_death );
+      priest.generate_insanity( total_insanity_gain,
+                         priest.gains.insanity_shadow_word_death, s -> action );
     }
   }
 
@@ -2722,7 +2721,7 @@ struct shadow_crash_t final : public priest_spell_t
   {
     priest_spell_t::execute();
 
-    generate_insanity( insanity_gain, priest.gains.insanity_shadow_crash );
+    priest.generate_insanity( insanity_gain, priest.gains.insanity_shadow_crash, execute_state -> action );
   }
 };
 
@@ -2774,8 +2773,8 @@ struct shadowy_apparition_spell_t final : public priest_spell_t
 
     if ( priest.talents.auspicious_spirits->ok() )
     {
-      generate_insanity( insanity_gain,
-                         priest.gains.insanity_auspicious_spirits );
+      priest.generate_insanity( insanity_gain,
+                         priest.gains.insanity_auspicious_spirits, s -> action );
     }
   }
 
@@ -2923,8 +2922,8 @@ struct shadow_word_pain_t final : public priest_spell_t
 
     if (casted)
     {
-    generate_insanity( insanity_gain,
-                       priest.gains.insanity_shadow_word_pain_onhit );
+    priest.generate_insanity( insanity_gain,
+                       priest.gains.insanity_shadow_word_pain_onhit, s -> action );
     }
 
     if (priest.active_items.zeks_exterminatus)
@@ -3026,7 +3025,7 @@ struct shadow_word_void_t final : public priest_spell_t
   {
     priest_spell_t::impact( s );
 
-    generate_insanity( insanity_gain, priest.gains.insanity_shadow_word_void );
+    priest.generate_insanity( insanity_gain, priest.gains.insanity_shadow_word_void, s -> action );
   }
 
   void update_ready( timespan_t cd_duration ) override
@@ -3282,8 +3281,8 @@ struct vampiric_touch_t final : public priest_spell_t
   {
     priest_spell_t::impact( s );
 
-    generate_insanity( insanity_gain,
-                       priest.gains.insanity_vampiric_touch_onhit );
+    priest.generate_insanity( insanity_gain,
+                       priest.gains.insanity_vampiric_touch_onhit, s -> action );
 
     if (priest.talents.misery->ok())
     {
@@ -3316,9 +3315,9 @@ struct vampiric_touch_t final : public priest_spell_t
 
     if ( priest.sets.has_set_bonus( PRIEST_SHADOW, T19, B2 ) )
     {
-      generate_insanity(
+      priest.generate_insanity(
           priest.sets.set( PRIEST_SHADOW, T19, B2 )->effectN( 1 ).base_value(),
-          priest.gains.insanity_vampiric_touch_ondamage );
+          priest.gains.insanity_vampiric_touch_ondamage, d -> state -> action );
     }
 
     if ( priest.active_items.anunds_seared_shackles )
@@ -3423,7 +3422,7 @@ struct void_bolt_t final : public priest_spell_t
   {
     priest_spell_t::execute();
 
-    generate_insanity( insanity_gain, priest.gains.insanity_void_bolt );
+    priest.generate_insanity( insanity_gain, priest.gains.insanity_void_bolt, execute_state -> action );
 
     if ( priest.buffs.shadow_t19_4p->up() )
     {
