@@ -5199,6 +5199,15 @@ struct steel_trap_t: public hunter_spell_t
       if ( p() -> legendary.sv_feet )
         p() -> resource_gain( RESOURCE_FOCUS, p() -> find_spell( 212575 ) -> effectN( 1 ).resource( RESOURCE_FOCUS ), p() -> gains.nesingwarys_trapping_treads );
     }
+
+    void impact( action_state_t* s ) override
+    {
+      hunter_spell_t::impact( s );
+
+      // 02/02/2017 nuoHep: Steel Trap triggers twice
+      if ( result_is_hit( s -> result ) )
+        get_dot( s -> target ) -> trigger( dot_duration );
+    }
   };
 
   steel_trap_t( hunter_t* p, const std::string& options_str ):
