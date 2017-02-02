@@ -1317,7 +1317,7 @@ struct internal_bleeding_t : public rogue_attack_t
   {
     background = true;
     // Need to fake this here so it uses the correct AP coefficient
-    base_costs[ RESOURCE_COMBO_POINT ] = 1; 
+    base_costs[ RESOURCE_COMBO_POINT ] = 1;
   }
 
   double composite_target_multiplier( player_t* target ) const override
@@ -1435,7 +1435,7 @@ struct soul_rip_t : public rogue_attack_t
       m /= p() -> buffs.symbols_of_death -> check_value();
     }
 
-    return m; 
+    return m;
   }
 
   void init() override
@@ -1527,7 +1527,7 @@ struct poison_bomb_t : public rogue_attack_t
     base_multiplier *= 1.0 + p -> talent.master_poisoner -> effectN( 1 ).percent();
   }
 
-  
+
   double action_multiplier() const override
   {
     double m = rogue_attack_t::action_multiplier();
@@ -2032,8 +2032,7 @@ struct agonizing_poison_t : public rogue_poison_t
       if ( result_is_hit( state -> result ) &&
            td( state -> target ) -> dots.kingsbane -> is_ticking() )
       {
-        // As of 01/22/2017, Agonizing Poison applies 2 times per application.
-        td( state -> target ) -> debuffs.kingsbane -> trigger(2);
+        td( state -> target ) -> debuffs.kingsbane -> trigger();
       }
     }
   };
@@ -2290,7 +2289,7 @@ void rogue_attack_t::execute()
     p() -> buffs.shadow_strikes -> expire();
     double cp = player -> resources.max[ RESOURCE_COMBO_POINT ] - player -> resources.current[ RESOURCE_COMBO_POINT ];
 
-    if ( cp > 0 ) 
+    if ( cp > 0 )
     {
       player -> resource_gain( RESOURCE_COMBO_POINT, cp, p() -> gains.t17_4pc_subtlety );
     }
@@ -2628,8 +2627,8 @@ struct blade_flurry_t : public rogue_attack_t
     else
     {
       p() -> buffs.blade_flurry -> expire();
-      p() -> buffs.shivarran_symmetry -> expire(); 
-      // To be confirmed that turning Blade Flurry off removes also Shivarran 
+      p() -> buffs.shivarran_symmetry -> expire();
+      // To be confirmed that turning Blade Flurry off removes also Shivarran
       // Symmetry
     }
   }
@@ -2730,7 +2729,7 @@ struct envenom_t : public rogue_attack_t
       bleeds += tdata -> dots.internal_bleeding -> is_ticking();
       bleeds += tdata -> dots.rupture -> is_ticking();
       // As of 01/01/2017, Mutilated Flesh works on T19 4PC.
-      bleeds += tdata -> dots.mutilated_flesh -> is_ticking(); 
+      bleeds += tdata -> dots.mutilated_flesh -> is_ticking();
 
       m *= 1.0 + p() -> sets.set( ROGUE_ASSASSINATION, T19, B4 ) -> effectN( 1 ).percent() * bleeds;
     }
@@ -4420,7 +4419,7 @@ struct sprint_offensive_t: public rogue_attack_t
   {
     harmful = callbacks = hasted_ticks = false;
     cooldown = p -> cooldowns.sprint;
-    ignore_false_positive = channeled = special = true; //Force channel to disable all actions. 
+    ignore_false_positive = channeled = special = true; //Force channel to disable all actions.
     dot_duration = timespan_t::from_seconds( 3 );
     base_execute_time = timespan_t::from_seconds( 3 );
 
@@ -5701,7 +5700,7 @@ void rogue_t::trigger_exsanguinate( const action_state_t* state )
   rogue_td_t* td = get_target_data( state -> target );
 
   double coeff = 1.0 / ( 1.0 + talent.exsanguinate -> effectN( 1 ).percent() );
-  
+
   do_exsanguinate( td -> dots.garrote, coeff );
   do_exsanguinate( td -> dots.internal_bleeding, coeff );
   do_exsanguinate( td -> dots.rupture, coeff );
@@ -5839,7 +5838,7 @@ void rogue_t::trigger_insignia_of_ravenholdt( action_state_t* state )
   {
     amount /= 1.0 + state -> action -> total_crit_bonus( state );
   }
-  insignia_of_ravenholdt_ -> base_dd_min = amount; 
+  insignia_of_ravenholdt_ -> base_dd_min = amount;
   insignia_of_ravenholdt_ -> base_dd_max = amount;
   insignia_of_ravenholdt_ -> target = state -> target;
   insignia_of_ravenholdt_ -> execute();
@@ -5973,14 +5972,10 @@ struct subterfuge_t : public buff_t
   {
     buff_t::execute( stacks, value, duration );
 
-    // Subterfuge makes the vanish to fully lasts 3 seconds (instead of breaking on first ability use)
-    // It means that if we proc Subterfuge while having Vanish buff, we will let Vanish handle the
-    // legendary. In all others cases (i.e. normal stealth mostly), subterfuge will expires the legendary aura.
-    if ( rogue -> legendary.mantle_of_the_master_assassin && ! rogue -> buffs.vanish -> check() )
-    {
-      rogue -> buffs.mantle_of_the_master_assassin_aura -> expire();
-      rogue -> buffs.mantle_of_the_master_assassin -> trigger();
-    }
+    // As of 01/09/2017, Subterfuge makes the vanish to fully lasts
+    // 3 seconds (instead of breaking on first ability use).
+    if ( ! rogue -> buffs.vanish -> check() || ! rogue -> bugs )
+      actions::break_stealth( rogue );
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -6009,8 +6004,8 @@ struct stealth_like_buff_t : public buff_t
                               rogue -> gains.master_of_shadows );
     }
 
-    if ( rogue -> legendary.mantle_of_the_master_assassin &&
-     procs_mantle_of_the_master_assassin )
+    if ( procs_mantle_of_the_master_assassin &&
+      rogue -> legendary.mantle_of_the_master_assassin )
     {
       rogue -> buffs.mantle_of_the_master_assassin -> expire();
       rogue -> buffs.mantle_of_the_master_assassin_aura -> trigger();
@@ -6024,8 +6019,8 @@ struct stealth_like_buff_t : public buff_t
   {
     buff_t::expire_override( expiration_stacks, remaining_duration );
 
-    if ( rogue -> legendary.mantle_of_the_master_assassin &&
-     procs_mantle_of_the_master_assassin )
+    if ( procs_mantle_of_the_master_assassin &&
+      rogue -> legendary.mantle_of_the_master_assassin )
     {
       rogue -> buffs.mantle_of_the_master_assassin_aura -> expire();
       rogue -> buffs.mantle_of_the_master_assassin -> trigger();
@@ -6036,8 +6031,8 @@ struct stealth_like_buff_t : public buff_t
   }
 };
 
-// Note, stealth buff is set a max time of half the nominal fight duration, so it can be forced to
-// show in sample sequence tables.
+// Note, stealth buff is set a max time of half the nominal fight duration, so it can be
+// forced to show in sample sequence tables.
 struct stealth_t : public stealth_like_buff_t
 {
   stealth_t( rogue_t* r ) :
@@ -6053,16 +6048,6 @@ struct vanish_t : public stealth_like_buff_t
   vanish_t( rogue_t* r ) :
     stealth_like_buff_t( r, "vanish", r -> find_spell( 11327 ) )
   { }
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    stealth_like_buff_t::expire_override( expiration_stacks, remaining_duration );
-
-    if ( remaining_duration == timespan_t::zero() )
-    {
-      rogue -> buffs.stealth -> trigger();
-    }
-  }
 };
 
 // Shadow dance acts like "stealth like abilities" except for Mantle of the Master
@@ -6703,7 +6688,10 @@ void rogue_t::init_action_list()
   std::string potion_action = "potion,name=";
   if ( sim -> allow_potions && true_level >= 85 )
   {
-    potion_action += ( ( true_level >= 110 ) ? "old_war" : ( true_level >= 100 ) ? "draenic_agility" : ( true_level >= 90 ) ? "virmens_bite" : ( true_level >= 85 ) ? "tolvir" : "" );
+    if ( specialization() == ROGUE_ASSASSINATION )
+      potion_action += ( ( true_level >= 110 ) ? "old_war" : ( true_level >= 100 ) ? "draenic_agility" : ( true_level >= 90 ) ? "virmens_bite" : ( true_level >= 85 ) ? "tolvir" : "" );
+    else
+      potion_action += ( ( true_level >= 110 ) ? "prolonged_power" : ( true_level >= 100 ) ? "draenic_agility" : ( true_level >= 90 ) ? "virmens_bite" : ( true_level >= 85 ) ? "tolvir" : "" );
 
     // Pre-Pot
     precombat -> add_action( potion_action );
@@ -6711,7 +6699,7 @@ void rogue_t::init_action_list()
     // In-Combat Potion
     potion_action += ",if=buff.bloodlust.react|target.time_to_die<=25";
     if ( specialization() == ROGUE_ASSASSINATION )
-      potion_action += "|debuff.vendetta.up";
+      potion_action += "|debuff.vendetta.up&cooldown.vanish.remains<5";
     else if ( specialization() == ROGUE_OUTLAW )
       potion_action += "|buff.adrenaline_rush.up";
     else if ( specialization() == ROGUE_SUBTLETY )
@@ -6722,7 +6710,6 @@ void rogue_t::init_action_list()
 
   if ( specialization() == ROGUE_ASSASSINATION )
   {
-    // New Assa APL WIP
     def -> add_action( "call_action_list,name=cds" );
     def -> add_action( "call_action_list,name=maintain" );
     def -> add_action( "call_action_list,name=finish,if=(!talent.exsanguinate.enabled|cooldown.exsanguinate.remains>2)&(!dot.rupture.refreshable|(dot.rupture.exsanguinated&dot.rupture.remains>=3.5)|target.time_to_die-dot.rupture.remains<=4)&active_dot.rupture>=spell_targets.rupture", "The 'active_dot.rupture>=spell_targets.rupture' means that we don't want to envenom as long as we can multi-rupture (i.e. units that don't have rupture yet)." );
@@ -6757,9 +6744,8 @@ void rogue_t::init_action_list()
       }
     }
     cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit|combo_points.deficit>=5" );
-    cds -> add_action( this, "Vendetta", "if=talent.exsanguinate.enabled&cooldown.exsanguinate.remains<5&dot.rupture.ticking" );
-    cds -> add_action( this, "Vendetta", "if=talent.exsanguinate.enabled&(artifact.master_assassin.rank>=4-equipped.convergence_of_fates|equipped.duskwalkers_footpads)&energy.deficit>=75&!(artifact.master_assassin.rank=5-equipped.convergence_of_fates&equipped.duskwalkers_footpads)" );
-    cds -> add_action( this, "Vendetta", "if=!talent.exsanguinate.enabled&energy.deficit>=88-!talent.venom_rush.enabled*10" );
+    cds -> add_action( this, "Vendetta", "if=talent.exsanguinate.enabled&(!artifact.urge_to_kill.enabled|(!talent.vigor.enabled&energy.deficit>=75)|(talent.vigor.enabled&energy.deficit>=125))" );
+    cds -> add_action( this, "Vendetta", "if=!talent.exsanguinate.enabled&(!artifact.urge_to_kill.enabled|(!talent.vigor.enabled&energy.deficit>=85)|(talent.vigor.enabled&energy.deficit>=125))" );
     cds -> add_action( this, "Vanish", "if=talent.nightstalker.enabled&combo_points>=cp_max_spend&((talent.exsanguinate.enabled&cooldown.exsanguinate.remains<1&(dot.rupture.ticking|time>10))|(!talent.exsanguinate.enabled&dot.rupture.refreshable))" );
     cds -> add_action( this, "Vanish", "if=talent.subterfuge.enabled&dot.garrote.refreshable&((spell_targets.fan_of_knives<=3&combo_points.deficit>=1+spell_targets.fan_of_knives)|(spell_targets.fan_of_knives>=4&combo_points.deficit>=4))" );
     cds -> add_action( this, "Vanish", "if=talent.shadow_focus.enabled&energy.time_to_max>=2&combo_points.deficit>=4" );
@@ -6852,6 +6838,7 @@ void rogue_t::init_action_list()
     // Pre-Combat
     precombat -> add_action( "variable,name=ssw_refund,value=equipped.shadow_satyrs_walk*(6+ssw_refund_offset)", "Defined variables that doesn't change during the fight" );
     precombat -> add_action( "variable,name=stealth_threshold,value=(15+talent.vigor.enabled*35+talent.master_of_shadows.enabled*25+variable.ssw_refund)" );
+    precombat -> add_action( "variable,name=shd_fractionnal,value=2.45" );
     precombat -> add_talent( this, "Enveloping Shadows", "if=combo_points>=5" );
     precombat -> add_action( this, "Symbols of Death" );
 
@@ -6859,6 +6846,7 @@ void rogue_t::init_action_list()
     def -> add_action( "call_action_list,name=cds" );
     def -> add_action( "run_action_list,name=stealthed,if=stealthed.all", "Fully switch to the Stealthed Rotation (by doing so, it forces pooling if nothing is available)" );
     def -> add_action( "call_action_list,name=finish,if=combo_points>=5|(combo_points>=4&spell_targets.shuriken_storm>=3&spell_targets.shuriken_storm<=4)" );
+    def -> add_action( "sprint_offensive,if=energy.time_to_max>=1.5&cooldown.shadow_dance.charges_fractional<variable.shd_fractionnal-1&!cooldown.vanish.up&target.time_to_die>=8" );
     def -> add_action( "call_action_list,name=stealth_als,if=combo_points.deficit>=2+talent.premeditation.enabled" );
     def -> add_action( "call_action_list,name=build,if=energy.deficit<=variable.stealth_threshold" );
 
@@ -6899,16 +6887,15 @@ void rogue_t::init_action_list()
 
     // Stealth Action List Starter
     action_priority_list_t* stealth_als = get_action_priority_list( "stealth_als", "Stealth Action List Starter" );
-    stealth_als -> add_action( "call_action_list,name=stealth_cds,if=energy.deficit<=variable.stealth_threshold&(!equipped.shadow_satyrs_walk|cooldown.shadow_dance.charges_fractional>=2.45|energy.deficit>=10)" );
-    stealth_als -> add_action( "sprint_offensive,if=energy.time_to_max>3" );
+    stealth_als -> add_action( "call_action_list,name=stealth_cds,if=energy.deficit<=variable.stealth_threshold&(!equipped.shadow_satyrs_walk|cooldown.shadow_dance.charges_fractional>=variable.shd_fractionnal|energy.deficit>=10)" );
     stealth_als -> add_action( "call_action_list,name=stealth_cds,if=spell_targets.shuriken_storm>=5" );
     stealth_als -> add_action( "call_action_list,name=stealth_cds,if=(cooldown.shadowmeld.up&!cooldown.vanish.up&cooldown.shadow_dance.charges<=1)" );
     stealth_als -> add_action( "call_action_list,name=stealth_cds,if=target.time_to_die<12*cooldown.shadow_dance.charges_fractional*(1+equipped.shadow_satyrs_walk*0.5)" );
 
     // Stealth Cooldowns
     action_priority_list_t* stealth_cds = get_action_priority_list( "stealth_cds", "Stealth Cooldowns" );
-    stealth_cds -> add_action( this, "Shadow Dance", "if=charges_fractional>=2.45" );
-    stealth_cds -> add_action( this, "Vanish" );
+    stealth_cds -> add_action( this, "Shadow Dance", "if=charges_fractional>=variable.shd_fractionnal" );
+    stealth_cds -> add_action( this, "Vanish", "if=mantle_duration<=3" );
     stealth_cds -> add_action( this, "Shadow Dance", "if=charges>=2&combo_points<=1" );
     stealth_cds -> add_action( "pool_resource,for_next=1,extra_amount=40" );
     stealth_cds -> add_action( "shadowmeld,if=energy>=40&energy.deficit>=10+variable.ssw_refund" );
@@ -7061,13 +7048,13 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
     if ( util::str_compare_ci( split[ 1 ], "rogue" ) )
     {
       return make_fn_expr( split[ 0 ], [ this ]() {
-        return buffs.stealth -> check() || buffs.vanish -> check() || buffs.shadow_dance -> check();
+        return buffs.stealth -> check() || buffs.vanish -> check() || buffs.shadow_dance -> check() || buffs.subterfuge -> check();
       } );
     }
     else if ( util::str_compare_ci( split[ 1 ], "all" ) )
     {
       return make_fn_expr( split[ 0 ], [ this ]() {
-        return buffs.stealth -> check() || buffs.vanish -> check() || buffs.shadow_dance -> check() || this -> player_t::buffs.shadowmeld -> check();
+        return buffs.stealth -> check() || buffs.vanish -> check() || buffs.shadow_dance -> check() || buffs.subterfuge -> check() || this -> player_t::buffs.shadowmeld -> check();
       } );
     }
   }
@@ -7775,7 +7762,7 @@ void rogue_t::create_buffs()
     .trigger_spell( artifact.finality )
     .default_value( find_spell( 197496 ) -> effectN( 1 ).percent() / COMBO_POINT_MAX )
     // Due to Anticipation bug with eviscerate (see eviscerate action), we'll allow it up to 10.
-    .max_stack( 10 ); 
+    .max_stack( 10 );
   buffs.finality_nightblade = buff_creator_t( this, "finality_nightblade", find_spell( 197498 ) )
     .trigger_spell( artifact.finality )
     .default_value( find_spell( 197498 ) -> effectN( 1 ).percent() / COMBO_POINT_MAX )
@@ -8249,18 +8236,18 @@ stat_e rogue_t::convert_hybrid_stat( stat_e s ) const
   switch ( s )
   {
   case STAT_STR_AGI_INT:
-  case STAT_AGI_INT: 
+  case STAT_AGI_INT:
   case STAT_STR_AGI:
-    return STAT_AGILITY; 
-  // This is a guess at how STR/INT gear will work for Rogues, TODO: confirm  
+    return STAT_AGILITY;
+  // This is a guess at how STR/INT gear will work for Rogues, TODO: confirm
   // This should probably never come up since rogues can't equip plate, but....
   case STAT_STR_INT:
     return STAT_NONE;
   case STAT_SPIRIT:
       return STAT_NONE;
   case STAT_BONUS_ARMOR:
-      return STAT_NONE;     
-  default: return s; 
+      return STAT_NONE;
+  default: return s;
   }
 }
 

@@ -21,7 +21,7 @@ actions.precombat+=/food,name=seedbattered_fish_plate
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/stealth
-actions.precombat+=/potion,name=old_war
+actions.precombat+=/potion,name=prolonged_power
 actions.precombat+=/marked_for_death,if=raid_event.adds.in>40
 actions.precombat+=/roll_the_bones,if=!talent.slice_and_dice.enabled
 
@@ -56,7 +56,7 @@ actions.build+=/pistol_shot,if=combo_points.deficit>=1+buff.broadsides.up&buff.o
 actions.build+=/saber_slash,if=variable.ss_useable
 
 # Cooldowns
-actions.cds=potion,name=old_war,if=buff.bloodlust.react|target.time_to_die<=25|buff.adrenaline_rush.up
+actions.cds=potion,name=prolonged_power,if=buff.bloodlust.react|target.time_to_die<=25|buff.adrenaline_rush.up
 actions.cds+=/blood_fury
 actions.cds+=/berserking
 actions.cds+=/arcane_torrent,if=energy.deficit>40

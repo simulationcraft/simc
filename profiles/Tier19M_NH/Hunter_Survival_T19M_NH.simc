@@ -1,0 +1,131 @@
+hunter="Hunter_Survival_T19M_NH"
+level=110
+race=troll
+role=attack
+position=back
+talents=3101031
+artifact=34:0:0:0:0:1068:1:1070:3:1071:3:1072:3:1073:3:1074:3:1075:3:1076:3:1077:3:1078:3:1079:1:1080:1:1081:1:1082:1:1083:1:1084:1:1338:1:1370:20
+spec=survival
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask,type=flask_of_the_seventh_demon
+actions.precombat+=/food,type=fishbrul_special
+actions.precombat+=/summon_pet
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion,name=old_war
+actions.precombat+=/augmentation,type=defiled
+actions.precombat+=/explosive_trap
+actions.precombat+=/dragonsfire_grenade
+actions.precombat+=/harpoon
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/arcane_torrent,if=focus.deficit>=30
+actions+=/berserking,if=buff.spitting_cobra.up|!talent.spitting_cobra.enabled&buff.aspect_of_the_eagle.up
+actions+=/blood_fury,if=buff.spitting_cobra.up|!talent.spitting_cobra.enabled&buff.aspect_of_the_eagle.up
+actions+=/potion,name=old_war,if=buff.aspect_of_the_eagle.remains
+actions+=/call_action_list,name=moknathal,if=talent.way_of_the_moknathal.enabled
+actions+=/call_action_list,name=nomok,if=!talent.way_of_the_moknathal.enabled
+
+actions.moknathal=raptor_strike,if=buff.moknathal_tactics.stack<=1
+actions.moknathal+=/raptor_strike,if=buff.moknathal_tactics.remains<gcd
+actions.moknathal+=/snake_hunter,if=cooldown.mongoose_bite.charges<=0&buff.mongoose_fury.remains>3*gcd
+actions.moknathal+=/a_murder_of_crows,if=focus>55&buff.mongoose_fury.stack<4&buff.mongoose_fury.duration>=gcd
+actions.moknathal+=/steel_trap,if=buff.mongoose_fury.duration>=gcd&buff.mongoose_fury.stack<4
+actions.moknathal+=/caltrops,if=(buff.mongoose_fury.duration>=gcd&buff.mongoose_fury.stack<4&!dot.caltrops.ticking)
+actions.moknathal+=/flanking_strike,if=cooldown.mongoose_bite.charges<=0&buff.aspect_of_the_eagle.remains>=gcd&focus>75
+actions.moknathal+=/lacerate,if=focus>60&buff.mongoose_fury.duration>=gcd&dot.lacerate.remains<=3&cooldown.mongoose_bite.charges>=0&buff.mongoose_fury.stack<4
+actions.moknathal+=/spitting_cobra,if=buff.mongoose_fury.duration>=gcd&cooldown.mongoose_bite.charges>=0&buff.mongoose_fury.stack<4&buff.moknathal_tactics.stack=4
+actions.moknathal+=/steel_trap,if=buff.mongoose_fury.duration>=gcd&buff.mongoose_fury.stack<4
+actions.moknathal+=/explosive_trap,if=buff.mongoose_fury.duration>=gcd&cooldown.mongoose_bite.charges>=0&buff.mongoose_fury.stack<4
+actions.moknathal+=/dragonsfire_grenade,if=buff.mongoose_fury.duration>=gcd&cooldown.mongoose_bite.charges>=0&buff.mongoose_fury.stack<4
+actions.moknathal+=/raptor_strike,if=talent.serpent_sting.enabled&dot.serpent_sting.remains<gcd
+actions.moknathal+=/raptor_strike,if=buff.moknathal_tactics.remains<4&buff.mongoose_fury.stack=6&buff.mongoose_fury.remains>=gcd
+actions.moknathal+=/fury_of_the_eagle,if=buff.moknathal_tactics.remains>4&buff.mongoose_fury.stack=6&cooldown.mongoose_bite.charges<=2
+actions.moknathal+=/mongoose_bite,if=buff.aspect_of_the_eagle.up&buff.mongoose_fury.up&buff.moknathal_tactics.stack>=4
+actions.moknathal+=/fury_of_the_eagle,if=(buff.moknathal_tactics.remains>4&(buff.mongoose_fury.stack=6&cooldown.mongoose_bite.charges<=0|buff.mongoose_fury.up&buff.mongoose_fury.remains<=2*gcd))
+actions.moknathal+=/raptor_strike,if=buff.moknathal_tactics.stack<=3
+actions.moknathal+=/aspect_of_the_eagle,if=buff.mongoose_fury.up&buff.mongoose_fury.remains>6&cooldown.mongoose_bite.charges>=2
+actions.moknathal+=/flanking_strike,if=cooldown.mongoose_bite.charges<=2&buff.mongoose_fury.remains>(1+action.mongoose_bite.charges*gcd)&focus>75
+actions.moknathal+=/mongoose_bite,if=buff.mongoose_fury.up&buff.mongoose_fury.remains<cooldown.aspect_of_the_eagle.remains
+actions.moknathal+=/a_murder_of_crows,if=focus>55
+actions.moknathal+=/spitting_cobra
+actions.moknathal+=/steel_trap
+actions.moknathal+=/explosive_trap
+actions.moknathal+=/caltrops,if=(!dot.caltrops.ticking)
+actions.moknathal+=/lacerate,if=(!dot.lacerate.ticking|dot.lacerate.remains<3)
+actions.moknathal+=/dragonsfire_grenade
+actions.moknathal+=/butchery,if=(charges=3&focus>65)
+actions.moknathal+=/mongoose_bite,if=(charges>=2&cooldown.mongoose_bite.remains<=gcd|charges=3)
+actions.moknathal+=/butchery,if=focus>65
+actions.moknathal+=/flanking_strike,if=focus>75
+actions.moknathal+=/raptor_strike,if=focus>75-cooldown.flanking_strike.remains*focus.regen
+
+actions.nomok=a_murder_of_crows,if=cooldown.mongoose_bite.charges>=0&buff.mongoose_fury.stack<4
+actions.nomok+=/snake_hunter,if=action.mongoose_bite.charges<=0&buff.mongoose_fury.remains>3*gcd
+actions.nomok+=/steel_trap,if=buff.mongoose_fury.duration>=gcd&buff.mongoose_fury.stack<4
+actions.nomok+=/caltrops,if=(buff.mongoose_fury.duration>=gcd&buff.mongoose_fury.stack<4&!dot.caltrops.ticking)
+actions.nomok+=/flanking_strike,if=cooldown.mongoose_bite.charges<=0&buff.aspect_of_the_eagle.remains>=gcd
+actions.nomok+=/lacerate,if=buff.mongoose_fury.duration>=gcd&dot.lacerate.remains<=1&&cooldown.mongoose_bite.charges>=0&buff.mongoose_fury.stack<4
+actions.nomok+=/spitting_cobra,if=buff.mongoose_fury.duration>=gcd&cooldown.mongoose_bite.charges>=0&buff.mongoose_fury.stack<4
+actions.nomok+=/steel_trap,if=buff.mongoose_fury.duration>=gcd&buff.mongoose_fury.stack<4
+actions.nomok+=/explosive_trap,if=buff.mongoose_fury.duration>=gcd&cooldown.mongoose_bite.charges>=0&buff.mongoose_fury.stack<4
+actions.nomok+=/dragonsfire_grenade,if=buff.mongoose_fury.duration>=gcd&cooldown.mongoose_bite.charges>=0&buff.mongoose_fury.stack<4
+actions.nomok+=/raptor_strike,if=talent.serpent_sting.enabled&dot.serpent_sting.remains<gcd
+actions.nomok+=/fury_of_the_eagle,if=buff.mongoose_fury.stack=6&cooldown.mongoose_bite.charges<=2
+actions.nomok+=/mongoose_bite,if=buff.aspect_of_the_eagle.up&buff.mongoose_fury.up
+actions.nomok+=/aspect_of_the_eagle,if=buff.mongoose_fury.up&buff.mongoose_fury.duration>6&cooldown.mongoose_bite.charges>=2
+actions.nomok+=/fury_of_the_eagle,if=cooldown.mongoose_bite.charges<=0&buff.mongoose_fury.duration>6
+actions.nomok+=/flanking_strike,if=cooldown.mongoose_bite.charges<2&buff.mongoose_fury.remains>(1+action.mongoose_bite.charges*gcd)
+actions.nomok+=/mongoose_bite,if=buff.mongoose_fury.up&buff.mongoose_fury.remains<cooldown.aspect_of_the_eagle.remains
+actions.nomok+=/flanking_strike,if=talent.animal_instincts.enabled&cooldown.mongoose_bite.charges<3
+actions.nomok+=/a_murder_of_crows
+actions.nomok+=/spitting_cobra
+actions.nomok+=/steel_trap
+actions.nomok+=/explosive_trap
+actions.nomok+=/caltrops,if=(!dot.caltrops.ticking)
+actions.nomok+=/lacerate,if=(!dot.lacerate.ticking|dot.lacerate.remains<3)
+actions.nomok+=/dragonsfire_grenade
+actions.nomok+=/butchery,if=(charges=3)
+actions.nomok+=/throwing_axes,if=cooldown.throwing_axes.charges=2
+actions.nomok+=/mongoose_bite,if=(charges>=2&cooldown.mongoose_bite.remains<=gcd|charges=3)
+actions.nomok+=/butchery
+actions.nomok+=/throwing_axes
+actions.nomok+=/flanking_strike
+actions.nomok+=/raptor_strike,if=focus>75-cooldown.flanking_strike.remains*focus.regen
+
+head=eagletalon_cowl,id=138342,bonus_id=3518
+neck=radiant_string_of_scorpid_eyes,id=140898,bonus_id=3445,enchant=mark_of_the_hidden_satyr
+shoulders=eagletalon_spaulders,id=138347,bonus_id=3518
+back=astromancers_greatcloak,id=140909,bonus_id=3518,enchant=binding_of_agility
+chest=eagletalon_tunic,id=138339,bonus_id=3518
+wrists=thistleproof_thorngrabbers,id=140874,bonus_id=3518
+hands=eagletalon_gauntlets,id=138340,bonus_id=3518
+waist=belt_of_celestial_alignment,id=140890,bonus_id=3518
+legs=pertinacious_legplates,id=140871,bonus_id=3445
+feet=shaldorei_weedstompers,id=140873,bonus_id=3518
+finger1=ring_of_exclusive_servitude,id=140906,bonus_id=3518,enchant=binding_of_mastery
+finger2=ring_of_braided_stems,id=140896,bonus_id=3518,enchant=binding_of_mastery
+trinket1=entwined_elemental_foci,id=140796,bonus_id=3518
+trinket2=eye_of_guarm,id=142506,bonus_id=605/3469
+main_hand=talonclaw,id=128808,gem_id=140842/140817/140820,relic_id=3518/3519/3519
+
+# Gear Summary
+# gear_ilvl=905.07
+# gear_agility=23230
+# gear_stamina=34155
+# gear_crit_rating=6461
+# gear_haste_rating=8727
+# gear_mastery_rating=3740
+# gear_versatility_rating=5398
+# gear_armor=2975
+# set_bonus=tier19_2pc=1
+# set_bonus=tier19_4pc=1
+summon_pet=carrion_bird

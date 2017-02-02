@@ -1514,6 +1514,7 @@ class SpellDataGenerator(DataGenerator):
           ( 195651, 3 ), # Crosswinds Artifact trait trigger spell
           ( 196061, 3 ), # Crosswinds Artifact trait damage spell
           ( 116007, 3 ), # Cestus of Storms Artifact trait damage spell
+          ( 240672, 3 ), # Master of Combinations Artifact trait buff
           ( 211432, 3 ), # Tier 19 4-piece DPS Buff
           # Legendary
           ( 213114, 3 ), # Hidden Master's Forbidden Touch buff

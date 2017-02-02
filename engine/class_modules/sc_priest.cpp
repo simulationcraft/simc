@@ -2823,7 +2823,8 @@ struct sphere_of_insanity_spell_t final : public priest_spell_t
     {
       std::vector<player_t*> targets;
       range::for_each( sim -> target_non_sleeping_list, [&targets, this]( player_t* t ) {
-        if ( find_td( t ) -> dots.shadow_word_pain -> is_ticking() )
+        const priest_td_t* td = find_td( t );
+        if ( td && td -> dots.shadow_word_pain -> is_ticking() )
         {
           targets.push_back( t );
         }

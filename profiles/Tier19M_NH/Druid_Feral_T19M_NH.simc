@@ -36,7 +36,7 @@ actions+=/auto_attack
 actions+=/skull_bash
 actions+=/berserk,if=buff.tigers_fury.up
 actions+=/incarnation,if=cooldown.tigers_fury.remains<gcd
-actions+=/use_item,slot=trinket2,if=(buff.tigers_fury.up&(target.time_to_die>trinket.stat.any.cooldown|target.time_to_die<45))|buff.incarnation.remains>20
+actions+=/use_item,slot=trinket2,if=buff.tigers_fury.up&energy.time_to_max>3&(!talent.savage_roar.enabled|buff.savage_roar.up)
 actions+=/potion,name=old_war,if=((buff.berserk.remains>10|buff.incarnation.remains>20)&(target.time_to_die<180|(trinket.proc.all.react&target.health.pct<25)))|target.time_to_die<=40
 actions+=/tigers_fury,if=(!buff.clearcasting.react&energy.deficit>=60)|energy.deficit>=80|(t18_class_trinket&buff.berserk.up&buff.tigers_fury.down)
 actions+=/incarnation,if=energy.time_to_max>1&energy>=35
