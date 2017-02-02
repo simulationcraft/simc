@@ -5873,6 +5873,7 @@ void priest_t::target_mitigation( school_e school, dmg_e dt, action_state_t* s )
 // priest_t::create_proc_action =================================================
 action_t* priest_t::create_proc_action(const std::string& name, const special_effect_t& effect)
 {
+  
   if (effect.driver()->id() == 222275) return new      actions::spells::blessed_dawnlight_medallion_t(*this, effect);
 
   return nullptr;
@@ -6023,11 +6024,6 @@ struct priest_module_t final : public module_t
   {
   }
 };
-
-action_t * create_proc_action(const std::string & name, const special_effect_t & effect)
-{
-  return nullptr;
-}
 
 }  // UNNAMED NAMESPACE
 
