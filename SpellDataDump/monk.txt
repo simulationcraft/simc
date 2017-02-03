@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 5bb8dd8)
+SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 09720ab)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -876,9 +876,11 @@ Effects          :
 #2 (id=128724)   : Apply Aura (6) | Unknown effect sub type (312)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 116 | Target: Self(1)
 #3 (id=134152)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Self(1)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 1 | Target: Self(1)
+                   Hotfixed: Base Value (0 -> 10)
 #4 (id=138807)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 126 | Target: Self(1)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 126 | Target: Self(1)
+                   Hotfixed: Base Value (0 -> 10)
 #5 (id=140824)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7e | Target: Self(1)
 #6 (id=141322)   : Apply Aura (6) | Modify Total Stat% (137)
@@ -2238,11 +2240,15 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
 Effects          :
 #1 (id=153848)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 127 | Target: Self(1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1 | Target: Self(1)
+                   Hotfixed: Misc Value (127 -> 1)
 #2 (id=240978)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | SP Coefficient: 1.00000 | Misc Value: 127 | Target: Self(1)
 #3 (id=358716)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | SP Coefficient: 1.00000 | Misc Value: 127 | Target: Self(1)
+#4 (id=365097)   : Apply Aura (6) | Absorb Damage (69)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 126 | Target: Self(1)
+                   Hotfixed: NEW EFFECT
 Description      : Reduces all damage you take by $m2% to $m3% for $d, with larger attacks being reduced by more.
 Tooltip          : Damage taken reduced by $m2% to $m3% for $d, with larger attacks being reduced by more.
 

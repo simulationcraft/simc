@@ -4835,15 +4835,13 @@ void warrior_t::apl_fury()
         default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=buff.battle_cry.up&buff.enrage.up" );
     }
   }
+  default_list -> add_talent( this, "Dragon Roar", "if=(equipped.convergence_of_fates&cooldown.battle_cry.remains<2)|!equipped.convergence_of_fates&(!cooldown.battle_cry.remains<=10|cooldown.battle_cry.remains<2)");
 
   if ( sim -> allow_potions && true_level >= 80 )
   {
     default_list -> add_action( "potion,name=" + potion_name + ",if=(target.health.pct<20&buff.battle_cry.up)|target.time_to_die<30" );
   }
 
-  default_list -> add_action( this, "Dragon Roar", "if=(equipped.convergence_of_fates&cooldown.battle_cry.remains<2)|!equipped.convergence_of_fates&(!cooldown.battle_cry.remains<=10|cooldown.battle_cry.remains<2)" );
-
-  default_list -> add_action( this, "Battle Cry", "if=gcd.remains=0&(!talent.reckless_abandon.enabled&(cooldown.bloodthirst.remains=0|buff.enrage.remains>cooldown.bloodthirst.remains))|(talent.reckless_abandon.enabled&(talent.dragon_roar.enabled&buff.dragon_roar.up|!talent.dragon_roar.enabled))" );
   default_list -> add_action( this, "Battle Cry", "if=gcd.remains=0&talent.reckless_abandon.enabled" );
   default_list -> add_action( this, "Battle Cry", "if=gcd.remains=0&buff.dragon_roar.up&(cooldown.bloodthirst.remains=0|buff.enrage.remains>cooldown.bloodthirst.remains)" );
 
@@ -4873,7 +4871,7 @@ void warrior_t::apl_fury()
   single_target -> add_action( this, "Execute", "if=buff.stone_heart.react" );
   single_target -> add_action( this, "Furious Slash", "if=talent.frenzy.enabled&(buff.frenzy.down|buff.frenzy.remains<=3)" );
   single_target -> add_action( this, "Raging Blow", "if=buff.enrage.up" );
-  single_target -> add_action( this, "Rampage", "if=(buff.enrage.down&!talent.frothing_berserker.enabled)|buff.massacre.react&cooldown.raging_blow.remains>1|rage>=100" );
+  single_target -> add_action( this, "Rampage", "if=(buff.enrage.down&!talent.frothing_berserker.enabled)|buff.massacre.react&cooldown.raging_blow.remains>1|rage=100" );
   single_target -> add_action( this, "Raging Blow" );
   single_target -> add_action( this, "Whirlwind", "if=buff.wrecking_ball.react&buff.enrage.up" );
   single_target -> add_action( this, "Bloodthirst" );
@@ -4887,18 +4885,18 @@ void warrior_t::apl_fury()
 
   cooldowns -> add_action( this, "Rampage", "if=talent.massacre.enabled&buff.massacre.react&buff.enrage.remains<1" );
   cooldowns -> add_action( this, "Bloodthirst", "if=target.health.pct<20&buff.enrage.remains<1" );
-  cooldowns -> add_action( this, "Execute" );
-  cooldowns -> add_action( this, "Raging Blow", "if=buff.enrage.up" );
-  cooldowns -> add_action( this, "Rampage", "if=talent.reckless_abandon.enabled" );
-  cooldowns -> add_action( this, "Berserker Rage", "if=talent.outburst.enabled&buff.enrage.down&buff.battle_cry.up" );
-  cooldowns -> add_action( this, "Bloodthirst", "if=buff.enrage.remains<1&!talent.outburst.enabled" );
+  cooldowns -> add_action( this, "Execute", "if=equipped.draught_of_souls&cooldown.draught_of_souls.remains<1&buff.juggernaut.remains<3" );
   for ( size_t i = 0; i < items.size(); i++ )
   {
     if ( items[i].name_str == "draught_of_souls" )
     {
-      cooldowns -> add_action( "use_item,name=" + items[i].name_str + ",if=equipped.trinket=draught_of_souls,if=buff.battle_cry.remains>3&((talent.dragon_roar.enabled&buff.dragon_roar.remains>=3)|!talent.dragon_roar.enabled)" );
+      cooldowns -> add_action( "use_item,name=" + items[i].name_str + ",if=equipped.trinket=draught_of_souls,if=buff.battle_cry.remains>2&buff.enrage.remains>2&((talent.dragon_roar.enabled&buff.dragon_roar.remains>=3)|!talent.dragon_roar.enabled)" );
     }
   }
+  cooldowns -> add_action( this, "Raging Blow", "if=buff.enrage.up" );
+  cooldowns -> add_action( this, "Rampage", "if=talent.reckless_abandon.enabled&!talent.frothing_berserker.enabled|(talent.frothing_berserker.enabled&rage=100)" );
+  cooldowns -> add_action( this, "Berserker Rage", "if=talent.outburst.enabled&buff.enrage.down&buff.battle_cry.up" );
+  cooldowns -> add_action( this, "Bloodthirst", "if=buff.enrage.remains<1&!talent.outburst.enabled" );
   cooldowns -> add_action( this, "Raging Blow" );
   cooldowns -> add_action( this, "Odyn's Fury" );
   cooldowns -> add_action( this, "Bloodthirst" );
@@ -4910,9 +4908,9 @@ void warrior_t::apl_fury()
   execute -> add_action( this, "Rampage", "if=buff.massacre.react&buff.enrage.remains<1" );
   execute -> add_action( this, "Execute" );
   execute -> add_action( this, "Bloodthirst" );
+  execute -> add_action( this, "Furious Slash", "if=set_bonus.tier19_4pc=1" );
   execute -> add_action( this, "Raging Blow" );
   execute -> add_action( this, "Whirlwind", "if=buff.wrecking_ball.react&buff.enrage.up" );
-  execute -> add_action( this, "Furious Slash" );
 
   two_targets -> add_action( this, "Whirlwind", "if=buff.meat_cleaver.down" );
   if ( true_level >= 100 )

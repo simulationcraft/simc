@@ -2380,6 +2380,25 @@ struct frost_mage_spell_t : public mage_spell_t
     calculate_on_impact( false )
   {}
 
+  struct brain_freeze_delay_event_t : public event_t
+  {
+    mage_t* mage;
+
+    brain_freeze_delay_event_t( mage_t* p, timespan_t delay )
+      : event_t( *p, delay ), mage( p )
+    { }
+
+    const char* name() const override
+    {
+      return "brain_freeze_delay";
+    }
+
+    void execute() override
+    {
+      mage -> buffs.brain_freeze -> trigger();
+    }
+  };
+
   void trigger_fof( int source_id, double chance, int stacks = 1 )
   {
     bool success = p() -> buffs.fingers_of_frost
@@ -2395,6 +2414,22 @@ struct frost_mage_spell_t : public mage_spell_t
       else
       {
         p() -> benefits.fingers_of_frost -> update( source_id, stacks );
+      }
+    }
+  }
+
+  void trigger_brain_freeze( double chance )
+  {
+    if ( rng().roll( chance ) )
+    {
+      if ( p() -> buffs.brain_freeze -> check() )
+      {
+        // Brain Freeze was already active, delay the new application
+        make_event<brain_freeze_delay_event_t>( *sim, p(), timespan_t::from_seconds( 0.15 ) );
+      }
+      else
+      {
+        p() -> buffs.brain_freeze -> trigger();
       }
     }
   }
@@ -3895,7 +3930,7 @@ struct ebonbolt_t : public frost_mage_spell_t
   virtual void execute() override
   {
     frost_mage_spell_t::execute();
-    p() -> buffs.brain_freeze -> trigger();
+    trigger_brain_freeze( 1.0 );
   }
 };
 // Evocation Spell ==========================================================
@@ -4319,11 +4354,12 @@ struct flurry_t : public frost_mage_spell_t
     flurry_bolt( new flurry_bolt_t( p ) )
   {
     parse_options( options_str );
+    tick_zero = true;
     hasted_ticks = false;
     add_child( flurry_bolt );
     //TODO: Remove hardcoded values once it exists in spell data for bolt impact timing.
     dot_duration = timespan_t::from_seconds( 0.45 );
-    base_tick_time = timespan_t::from_seconds( 0.15 );
+    base_tick_time = timespan_t::from_seconds( 0.225 );
   }
 
   virtual timespan_t travel_time() const override
@@ -4517,11 +4553,7 @@ struct frostbolt_t : public frost_mage_spell_t
         bf_proc_chance += p() -> artifact.clarity_of_thought.percent();
       }
 
-      if( rng().roll( bf_proc_chance ) )
-      {
-        p() -> buffs.brain_freeze -> trigger();
-      }
-
+      trigger_brain_freeze( bf_proc_chance );
       trigger_fof( fof_source_id, fof_proc_chance );
 
       if ( p() -> legendary.shatterlance )
@@ -8399,13 +8431,11 @@ void mage_t::apl_frost()
   default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>=4" );
   default_list -> add_action( "call_action_list,name=single" );
 
-
   single -> add_talent( this, "Ice Nova", "if=debuff.winters_chill.up" );
   single -> add_action( this, "Frostbolt", "if=prev_off_gcd.water_jet" );
   single -> add_action( "water_jet,if=prev_gcd.1.frostbolt&buff.fingers_of_frost.stack<(2+artifact.icy_hand.enabled)&buff.brain_freeze.react=0" );
-
   single -> add_talent( this, "Ray of Frost", "if=buff.icy_veins.up|(cooldown.icy_veins.remains>action.ray_of_frost.cooldown&buff.rune_of_power.down)" );
-  single -> add_action( this, "Flurry", "if=(buff.brain_freeze.react|prev_gcd.1.ebonbolt)&buff.fingers_of_frost.react=0" );
+  single -> add_action( this, "Flurry", "if=prev_gcd.1.frostbolt&buff.brain_freeze.react&buff.fingers_of_frost.react=0|prev_gcd.1.ebonbolt" );
   single -> add_talent( this, "Frost Bomb", "if=debuff.frost_bomb.remains<action.ice_lance.travel_time&buff.fingers_of_frost.react>0" );
   single -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react>0&cooldown.icy_veins.remains>10|buff.fingers_of_frost.react>2" );
   single -> add_action( this, "Frozen Orb" );

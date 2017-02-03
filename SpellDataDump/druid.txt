@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 5bb8dd8)
+SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 09720ab)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -1616,7 +1616,8 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .x...
                  : Disable target procs (113)
 Effects          :
 #1 (id=51495)    : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -30 | Scaled Value: -30 | Mechanic: Unknown(88) | Target: Enemy(6)
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88) | Target: Enemy(6)
+                   Hotfixed: Base Value (-30 -> -50)
 Description      : $@spelldesc48484
 Tooltip          : Movement speed slowed by $s1%.
 

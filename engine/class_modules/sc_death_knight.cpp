@@ -6938,7 +6938,7 @@ void death_knight_t::default_apl_frost()
                           ( true_level >= 85 ) ? "sea_mist_rice_noodles" :
                           ( true_level >= 80 ) ? "seafood_magnifique_feast" :
                           "";
-  std::string potion_name = ( true_level > 100 ) ? "old_war" :
+  std::string potion_name = ( true_level > 100 ) ? "prolonged_power" :
                             ( true_level >= 90 ) ? "draenic_strength" :
                             ( true_level >= 85 ) ? "mogu_power" :
                             ( true_level >= 80 ) ? "golemblood_potion" :
@@ -6995,7 +6995,8 @@ void death_knight_t::default_apl_frost()
   generic -> add_action( this, "Frost Strike", "if=talent.shattering_strikes.enabled&debuff.razorice.stack=5" );
   generic -> add_action( this, "Howling Blast", "target_if=!dot.frost_fever.ticking" );
   generic -> add_action( this, "Remorseless Winter", "if=(buff.rime.react&equipped.132459&!(buff.obliteration.up&spell_targets.howling_blast<2))|talent.gathering_storm.enabled" );
-  generic -> add_action( this, "Howling Blast", "if=buff.rime.react&!(buff.obliteration.up&spell_targets.howling_blast<2)" );
+  generic -> add_action( this, "Howling Blast", "if=buff.rime.react&!(buff.obliteration.up&spell_targets.howling_blast<2)&!(equipped.132459&talent.gathering_storm.enabled)" );
+  generic -> add_action( this, "Howling Blast", "if=buff.rime.react&!(buff.obliteration.up&spell_targets.howling_blast<2)&equipped.132459&talent.gathering_storm.enabled&(debuff.perseverance_of_the_ebon_martyr.up|cooldown.remorseless_winter.remains>3)" );
   generic -> add_action( this, "Obliterate", "if=!buff.obliteration.up&(equipped.132366&talent.frozen_pulse.enabled&(set_bonus.tier19_2pc=1|set_bonus.tier19_4pc=1))" );
   generic -> add_action( this, "Frost Strike", "if=runic_power.deficit<=10" );
   generic -> add_action( this, "Frost Strike", "if=buff.obliteration.up&!buff.killing_machine.react" );
@@ -7004,6 +7005,7 @@ void death_knight_t::default_apl_frost()
   generic -> add_talent( this, "Glacial Advance", "if=spell_targets.glacial_advance>=2" );
   generic -> add_talent( this, "Frostscythe", "if=spell_targets.frostscythe>=3" );
   generic -> add_action( this, "Obliterate", "if=buff.killing_machine.react" );
+  generic -> add_action( this, "Frost Strike", "if=talent.gathering_storm.enabled&talent.murderous_efficiency.enabled&(set_bonus.tier19_2pc=1|set_bonus.tier19_4pc=1)" );
   generic -> add_action( this, "Frost Strike", "if=(talent.horn_of_winter.enabled|talent.hungering_rune_weapon.enabled)&(set_bonus.tier19_2pc=1|set_bonus.tier19_4pc=1)" );
   generic -> add_action( this, "Obliterate" );
   generic -> add_talent( this, "Glacial Advance" );
@@ -7029,7 +7031,7 @@ void death_knight_t::default_apl_frost()
   
   // Breath of Sindragosa ticking rotation
   bos_ticking -> add_action( this, "Howling Blast", "target_if=!dot.frost_fever.ticking" );
-  bos_ticking -> add_action( this, "Remorseless Winter", "if=runic_power>=30&((buff.rime.react&equipped.132459)|(talent.gathering_storm.enabled))" );
+  bos_ticking -> add_action( this, "Remorseless Winter", "if=runic_power>=30&((buff.rime.react&equipped.132459)|(talent.gathering_storm.enabled&(dot.remorseless_winter.remains<=gcd|!dot.remorseless_winter.ticking)))" );
   bos_ticking -> add_action( this, "Howling Blast", "if=((runic_power>=20&set_bonus.tier19_4pc)|runic_power>=30)&buff.rime.react" );
   bos_ticking -> add_action( this, "Obliterate", "if=runic_power<=75|rune>3" );
   bos_ticking -> add_talent( this, "Horn of Winter", "if=runic_power<70&!buff.hungering_rune_weapon.up&rune<5" );

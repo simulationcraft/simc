@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 5bb8dd8)
+SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 09720ab)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Discipline Shadow Priest
@@ -1902,19 +1902,20 @@ Effects          :
 Description      : Enables Worgens to switch between human and Worgan forms
 
 Name             : Atonement (id=94472) [Spell Family (6)] 
+Hotfixed         : Attributes
 Class            : Priest
 School           : Holy
 Spell Level      : 1
 Range            : 50000 yards
 Stance Mask      : 0x80000000
 Affecting spells : Power Word: Shield (211558)
-Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ...x.... ........   ........ .x...... ........ ......x. 
-                 : ........ .......x ........ ........   ........ ........ ......x. ........ 
+Attributes       : ........ ........ x....... x..x....   .....x.. ..x..... ........ ........ 
+                 : ..x..... ......x. ...x.... ........   ........ .x...... ........ ......x. 
+                 : ........ .......x ........ ........   ...x.... ........ .xx...x. ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Not a proc (105)
+                 : ........ ........ ........ ........   ........ ...x.... ........ ........ 
+                 : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
+                 : Does not break stealth (37), Not a proc (105)
 Effects          :
 #1 (id=99434)    : Direct Heal (10)
                    Base Value: 1 | Scaled Value: 110 | Points Per Level: 1 | Target: Friend(21)

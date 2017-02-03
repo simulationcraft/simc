@@ -597,6 +597,7 @@ public:
     const spell_data_t* gale_burst;
     const spell_data_t* hit_combo;
     const spell_data_t* mark_of_the_crane;
+    const spell_data_t* master_of_combinations;
     const spell_data_t* whirling_dragon_punch;
     const spell_data_t* touch_of_karma_buff;
     const spell_data_t* touch_of_karma_tick;
@@ -7786,6 +7787,7 @@ void monk_t::init_spells()
   passives.gale_burst                       = find_spell( 195403 );
   passives.hit_combo                        = find_spell( 196741 );
   passives.mark_of_the_crane                = find_spell( 228287 );
+  passives.master_of_combinations           = find_spell( 240672 );
   passives.whirling_dragon_punch            = find_spell( 158221 );
   passives.touch_of_karma_buff              = find_spell( 125174 );
   passives.touch_of_karma_tick              = find_spell( 124280 );
@@ -8069,7 +8071,7 @@ void monk_t::create_buffs()
     .default_value( passives.hit_combo -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
-  buff.master_of_combinations = stat_buff_creator_t( this, "master_of_combinations", artifact.master_of_combinations );
+  buff.master_of_combinations = stat_buff_creator_t( this, "master_of_combinations", passives.master_of_combinations );
 
   buff.masterful_strikes = buff_creator_t( this, "masterful_strikes", passives.tier18_2pc_melee )
     .default_value( passives.tier18_2pc_melee -> effectN( 1 ).base_value() )

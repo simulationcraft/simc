@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 5bb8dd8)
+SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 09720ab)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
@@ -660,7 +660,8 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .x...
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=1114)     : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -30 | Scaled Value: -30 | Target: Enemy(6)
+                   Base Value: -50 | Scaled Value: -50 | Target: Enemy(6)
+                   Hotfixed: Base Value (-30 -> -50)
 Description      : Coats a weapon with poison that lasts for 1 hour.
 Each strike has a $3408h% chance of poisoning the enemy, slowing their movement speed by $3409s1% for $3409d.
 Tooltip          : Movement slowed by $s1%.
@@ -3147,7 +3148,8 @@ Effects          :
 #2 (id=269973)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.20000 | Misc Value: combo_points | Target: Self(1)
 #3 (id=269974)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -30 | Scaled Value: -30 | Mechanic: Unknown(88) | Target: Enemy(6)
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88) | Target: Enemy(6)
+                   Hotfixed: Base Value (-30 -> -50)
 #4 (id=316548)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Draw a concealed pistol and fire a quick shot at an enemy, dealing $s1 Physical damage and reducing movement speed by $s3% for $d.
@@ -4715,7 +4717,8 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .x...
                  : Disable target procs (113)
 Effects          :
 #1 (id=305751)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -30 | Scaled Value: -30 | Mechanic: Unknown(88) | Target: Enemy(6)
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88) | Target: Enemy(6)
+                   Hotfixed: Base Value (-30 -> -50)
 Description      : $@spelldesc195452
 Tooltip          : Movement speed slowed by $s1%.
 

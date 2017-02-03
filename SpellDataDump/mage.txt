@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 5bb8dd8)
+SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 09720ab)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Arcane Fire Frost Mage
@@ -3652,7 +3652,6 @@ Proc Chance      : 100%
 Proc Flags       : ........ ......x. x....... ........ 
                  : Heal, Hostile Spell
 Affecting spells : Norgannon's Foresight (236380)
-Triggered by     : Ebonbolt (214634)
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -4751,12 +4750,13 @@ Effects          :
 Description      : $@spelldesc148011
 
 Name             : Ebonbolt (Artifact) (id=214634) [Spell Family (3)] 
+Hotfixed         : Velocity (35 -> 30)
 Class            : Mage
 School           : Shadowfrost
 Range            : 40 yards
 Cast Time        : 3 seconds
 GCD              : 1.5 seconds
-Velocity         : 35 yards/sec
+Velocity         : 30 yards/sec
 Cooldown         : 45 seconds
 Artifact Power   : Id: 783, Max Rank: 1
 Affecting spells : Shatter (12982), Ice Floes (108839), Frost Mage (137020), Norgannon's Foresight (236380)
@@ -4770,8 +4770,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=318792)   : Trigger Missiles (32)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 228599 | Target: Enemy(6)
-#2 (id=355001)   : Trigger Spell: Brain Freeze (64)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 190446 | Target: Self(1)
+#2 (id=355001)   : Server Side Script (77)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+                   Hotfixed: Type (64 -> 77), Trigger Spell (190446 -> 0)
 Description      : Deals $228599s1 Shadowfrost damage and causes Brain Freeze.
 
 Name             : Living Bomb (id=217694) [Spell Family (3)] 

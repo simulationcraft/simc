@@ -3986,9 +3986,7 @@ struct lacerate_t: public hunter_melee_attack_t
   {
     parse_options( options_str );
 
-    base_tick_time = data().effectN( 1 ).period();
     direct_tick = false;
-    dot_duration = data().duration();
     tick_zero = false;
 
     if ( p -> artifacts.lacerating_talons.rank() )
@@ -4009,11 +4007,18 @@ struct lacerate_t: public hunter_melee_attack_t
   virtual void impact( action_state_t *s ) override
   {
     hunter_melee_attack_t::impact( s );
-     
+
     td( s -> target ) -> debuffs.lacerate -> trigger();
 
     if ( p() -> sets.has_set_bonus( HUNTER_SURVIVAL, T18, B2 ) )
       td( s -> target ) -> debuffs.t18_2pc_open_wounds -> trigger();
+  }
+
+  double target_armor( player_t* ) const override
+  {
+    // does bleed damage which ignores armor
+    assert( data().mechanic() == MECHANIC_BLEED );
+    return 0.0;
   }
 };
 
@@ -5163,7 +5168,7 @@ struct explosive_trap_t: public hunter_spell_t
   {
     parse_options( options_str );
 
-    harmful = false;
+    harmful = may_hit = false;
 
     impact_action = new explosive_trap_impact_t( p );
     add_child( impact_action );
@@ -5177,30 +5182,58 @@ struct explosive_trap_t: public hunter_spell_t
 
 struct steel_trap_t: public hunter_spell_t
 {
+  struct steel_trap_impact_t : public hunter_spell_t
+  {
+    steel_trap_impact_t( hunter_t* p ):
+      hunter_spell_t( "steel_trap_impact", p, p -> find_spell( 162487 ) )
+    {
+      if ( p -> talents.expert_trapper -> ok() )
+        parse_effect_data( p -> find_spell( 201199 ) -> effectN( 1 ) );
+
+      background = true;
+      dual = true;
+
+      hasted_ticks = false;
+      may_crit = tick_may_crit = true;
+    }
+
+    void execute() override
+    {
+      hunter_spell_t::execute();
+
+      if ( p() -> legendary.sv_feet )
+        p() -> resource_gain( RESOURCE_FOCUS, p() -> find_spell( 212575 ) -> effectN( 1 ).resource( RESOURCE_FOCUS ), p() -> gains.nesingwarys_trapping_treads );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      hunter_spell_t::impact( s );
+
+      // 02/02/2017 nuoHep: Steel Trap triggers twice
+      if ( result_is_hit( s -> result ) )
+        get_dot( s -> target ) -> trigger( dot_duration );
+    }
+
+    double target_armor( player_t* ) const override
+    {
+      // the trap does bleed damage which ignores armor
+      assert( data().mechanic() == MECHANIC_BLEED );
+      return 0.0;
+    }
+  };
+
   steel_trap_t( hunter_t* p, const std::string& options_str ):
     hunter_spell_t( "steel_trap", p, p -> talents.steel_trap )
   {
     parse_options( options_str );
 
-    attack_power_mod.direct = p -> talents.expert_trapper -> ok() ? p -> find_spell( 201199 ) -> effectN( 1 ).ap_coeff() : 0.0;
-    attack_power_mod.tick = 1.0;
-    base_tick_time = p -> find_spell( 162487 ) -> effectN( 1 ).period();
-    dot_duration = p -> find_spell ( 162487 ) -> duration();
-    hasted_ticks = false;
-    may_crit = true;
-    tick_may_crit = true;
-    trigger_gcd = p -> talents.steel_trap -> gcd();
+    harmful = may_hit = false;
+
+    impact_action = new steel_trap_impact_t( p );
+    add_child( impact_action );
 
     if ( p -> artifacts.hunters_guile.rank() )
-        cooldown -> duration *= 1.0 + p -> artifacts.hunters_guile.percent();
-  }
-
-  virtual void execute() override
-  {
-    hunter_spell_t::execute();
-
-    if ( p() -> legendary.sv_feet )
-      p() -> resource_gain( RESOURCE_FOCUS, p() -> find_spell( 212575 ) -> effectN( 1 ).resource( RESOURCE_FOCUS ), p() -> gains.nesingwarys_trapping_treads );
+      cooldown -> duration *= 1.0 + p -> artifacts.hunters_guile.percent();
   }
 };
 

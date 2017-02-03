@@ -28,8 +28,8 @@ actions+=/charge
 actions+=/run_action_list,name=movement,if=movement.distance>5
 actions+=/heroic_leap,if=(raid_event.movement.distance>25&raid_event.movement.in>45)|!raid_event.movement.exists
 actions+=/use_item,name=faulty_countermeasure,if=buff.battle_cry.up&buff.enrage.up
+actions+=/dragon_roar,if=(equipped.convergence_of_fates&cooldown.battle_cry.remains<2)|!equipped.convergence_of_fates&(!cooldown.battle_cry.remains<=10|cooldown.battle_cry.remains<2)
 actions+=/potion,name=old_war,if=(target.health.pct<20&buff.battle_cry.up)|target.time_to_die<30
-actions+=/battle_cry,if=gcd.remains=0&(!talent.reckless_abandon.enabled&(cooldown.bloodthirst.remains=0|buff.enrage.remains>cooldown.bloodthirst.remains))|(talent.reckless_abandon.enabled&(talent.dragon_roar.enabled&buff.dragon_roar.up|!talent.dragon_roar.enabled))
 actions+=/battle_cry,if=gcd.remains=0&talent.reckless_abandon.enabled
 actions+=/battle_cry,if=gcd.remains=0&buff.dragon_roar.up&(cooldown.bloodthirst.remains=0|buff.enrage.remains>cooldown.bloodthirst.remains)
 actions+=/avatar,if=buff.battle_cry.up|(target.time_to_die<(cooldown.battle_cry.remains+10))
@@ -56,9 +56,9 @@ actions.bladestorm=bladestorm,if=buff.enrage.remains>2&(raid_event.adds.in>90|!r
 
 actions.cooldowns=rampage,if=talent.massacre.enabled&buff.massacre.react&buff.enrage.remains<1
 actions.cooldowns+=/bloodthirst,if=target.health.pct<20&buff.enrage.remains<1
-actions.cooldowns+=/execute
+actions.cooldowns+=/execute,if=equipped.draught_of_souls&cooldown.draught_of_souls.remains<1&buff.juggernaut.remains<3
 actions.cooldowns+=/raging_blow,if=buff.enrage.up
-actions.cooldowns+=/rampage,if=talent.reckless_abandon.enabled
+actions.cooldowns+=/rampage,if=talent.reckless_abandon.enabled&!talent.frothing_berserker.enabled|(talent.frothing_berserker.enabled&rage=100)
 actions.cooldowns+=/berserker_rage,if=talent.outburst.enabled&buff.enrage.down&buff.battle_cry.up
 actions.cooldowns+=/bloodthirst,if=buff.enrage.remains<1&!talent.outburst.enabled
 actions.cooldowns+=/raging_blow
@@ -72,9 +72,9 @@ actions.execute+=/execute,if=artifact.juggernaut.enabled&(!buff.juggernaut.up|bu
 actions.execute+=/rampage,if=buff.massacre.react&buff.enrage.remains<1
 actions.execute+=/execute
 actions.execute+=/bloodthirst
+actions.execute+=/furious_slash,if=set_bonus.tier19_4pc=1
 actions.execute+=/raging_blow
 actions.execute+=/whirlwind,if=buff.wrecking_ball.react&buff.enrage.up
-actions.execute+=/furious_slash
 
 actions.movement=heroic_leap
 
@@ -82,7 +82,7 @@ actions.single_target=bloodthirst,if=buff.fujiedas_fury.up&buff.fujiedas_fury.re
 actions.single_target+=/execute,if=buff.stone_heart.react
 actions.single_target+=/furious_slash,if=talent.frenzy.enabled&(buff.frenzy.down|buff.frenzy.remains<=3)
 actions.single_target+=/raging_blow,if=buff.enrage.up
-actions.single_target+=/rampage,if=(buff.enrage.down&!talent.frothing_berserker.enabled)|buff.massacre.react&cooldown.raging_blow.remains>1|rage>=100
+actions.single_target+=/rampage,if=(buff.enrage.down&!talent.frothing_berserker.enabled)|buff.massacre.react&cooldown.raging_blow.remains>1|rage=100
 actions.single_target+=/raging_blow
 actions.single_target+=/whirlwind,if=buff.wrecking_ball.react&buff.enrage.up
 actions.single_target+=/bloodthirst

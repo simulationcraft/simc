@@ -359,12 +359,6 @@ void item::arans_relaxing_ruby( special_effect_t& effect )
     action = effect.player -> create_proc_action( "flame_wreath", effect );
   }
 
-  // Adjust frost base RPPM: https://www.altered-time.com/forum/viewtopic.php?f=2&t=3416
-  if ( effect.player -> specialization() == MAGE_FROST )
-  {
-    effect.ppm_ = -1.35;
-  }
-
   if ( ! action )
   {
     action = new flame_wreath_t( effect );
@@ -1421,9 +1415,7 @@ void item::nightblooming_frond( special_effect_t& effect )
     {
       double m = proc_attack_t::action_multiplier();
 
-      // FIXME: As of 01/22/2017, the increase has been reduced to 50% of effectiveness per stack
-      // Check if it stays like this in the upcoming trinkets hotfix(es).
-      m *= 1.0 + (recursive_strikes_buff -> stack() * 0.5);
+      m *= recursive_strikes_buff -> stack();
 
       return m;
     }
@@ -1440,8 +1432,11 @@ void item::nightblooming_frond( special_effect_t& effect )
     void execute( action_t*, action_state_t* state ) override
     {
       proc_buff -> trigger();
-      proc_action -> target = target( state );
-      proc_action -> execute();
+      if ( proc_buff -> check() > 1 )
+      {
+        proc_action -> target = target( state );
+        proc_action -> execute();
+      }
     }
   };
 
@@ -3464,7 +3459,7 @@ void item::convergence_of_fates( special_effect_t& effect )
     }
     break;
   case DRUID_FERAL:
-    if ( player_talent( effect.player, "Incarnation" ) )
+    if ( player_talent( effect.player, "Incarnation: King of the Jungle" ) )
     {
       effect.ppm_ = -3.7;
       effect.rppm_modifier_ = 1.0;
