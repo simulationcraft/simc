@@ -6423,8 +6423,6 @@ void hunter_t::apl_surv()
   default_list -> add_action( "potion,name=prolonged_power,if=buff.spitting_cobra.up" );
   default_list -> add_action( "call_action_list,name=moknathal,if=talent.way_of_the_moknathal.enabled" );
   default_list -> add_action( "call_action_list,name=nomok,if=!talent.way_of_the_moknathal.enabled" );
-  
-  actions+=/call_action_list,name=4pcmok,if=set_bonus.tier19_4pc&talent.way_of_the_moknathal.enabled
 
   moknathal -> add_action( "raptor_strike,if=buff.moknathal_tactics.stack<=1" );
   moknathal -> add_action( "raptor_strike,if=buff.moknathal_tactics.remains<gcd" );
