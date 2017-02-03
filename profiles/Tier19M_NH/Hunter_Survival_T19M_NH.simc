@@ -17,6 +17,7 @@ spec=survival
 actions.precombat=flask,type=flask_of_the_seventh_demon
 actions.precombat+=/food,type=azshari_salad
 actions.precombat+=/summon_pet
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=prolonged_power
 actions.precombat+=/augmentation,type=defiled
