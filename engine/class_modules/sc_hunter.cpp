@@ -6427,7 +6427,7 @@ void hunter_t::apl_surv()
 
   moknathal -> add_action( "raptor_strike,if=buff.moknathal_tactics.stack<=1" );
   moknathal -> add_action( "raptor_strike,if=buff.moknathal_tactics.remains<gcd" );
-  moknathal -> add_action( "snake_hunter,if=cooldown.mongoose_bite.charges<=0&buff.mongoose_fury.remains>3*gcd" );
+  moknathal -> add_action( "snake_hunter,if=cooldown.mongoose_bite.charges<=0&buff.mongoose_fury.remains>3*gcd&time>15" );
   moknathal -> add_action( "a_murder_of_crows,if=focus>55&buff.mongoose_fury.stack<4&buff.mongoose_fury.duration>=gcd" );
   moknathal -> add_action( "flanking_strike,if=cooldown.mongoose_bite.charges<=1&buff.aspect_of_the_eagle.remains>=gcd|cooldown.mongoose_bite.charges<=1&buff.aspect_of_the_eagle.down" );
   moknathal -> add_action( "lacerate,if=focus>60&buff.mongoose_fury.duration>=gcd&refreshable&cooldown.mongoose_bite.charges=0&buff.mongoose_fury.stack<3|buff.mongoose_fury.down&cooldown.mongoose_bite.charges<3&refreshable" );
