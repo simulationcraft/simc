@@ -6439,7 +6439,7 @@ void hunter_t::apl_surv()
   moknathal -> add_action( "raptor_strike,if=buff.moknathal_tactics.remains<4&buff.mongoose_fury.stack=6&buff.mongoose_fury.remains>=gcd" );
   moknathal -> add_action( "fury_of_the_eagle,if=buff.moknathal_tactics.remains>4&buff.mongoose_fury.stack=6&cooldown.mongoose_bite.charges<=0" );
   moknathal -> add_action( "aspect_of_the_eagle,if=buff.mongoose_fury.stack>1" );
-  moknathal -> add_action( "actions.4pcmok+=/aspect_of_the_eagle,if=buff.mongoose_fury.up&buff.mongoose_fury.remains>6&cooldown.mongoose_bite.charges<2" );
+  moknathal -> add_action( "aspect_of_the_eagle,if=buff.mongoose_fury.up&buff.mongoose_fury.remains>6&cooldown.mongoose_bite.charges<2" );
   moknathal -> add_action( "flanking_strike,if=cooldown.mongoose_bite.charges<=2&buff.mongoose_fury.remains>(1+action.mongoose_bite.charges*gcd)&focus>75" );
   moknathal -> add_action( "mongoose_bite,if=buff.mongoose_fury.up&buff.mongoose_fury.remains<cooldown.aspect_of_the_eagle.remains" );
   moknathal -> add_action( "a_murder_of_crows,if=focus>55" );
