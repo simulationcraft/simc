@@ -4434,7 +4434,7 @@ struct summon_pet_t: public hunter_spell_t
     hunter_spell_t( "summon_pet", player ),
     pet( nullptr )
   {
-    harmful = false;
+    harmful = may_hit = false;
     callbacks = false;
     ignore_false_positive = true;
     pet_name = options_str.empty() ? p() -> summon_pet_str : options_str;
@@ -4540,11 +4540,8 @@ struct dire_beast_t: public hunter_spell_t
   {
     parse_options( options_str );
 
-    harmful = false;
-    hasted_ticks = false;
-    may_crit = false;
-    may_miss = false;
-    school = SCHOOL_PHYSICAL;
+    harmful = may_hit = false;
+    dot_duration = timespan_t::zero();
   }
 
   bool init_finished() override
@@ -4660,7 +4657,7 @@ struct bestial_wrath_t: public hunter_spell_t
     hunter_spell_t( "bestial_wrath", player, player -> specs.bestial_wrath )
   {
     parse_options( options_str );
-    harmful = false;
+    harmful = may_hit = false;
   }
 
   virtual void execute() override
@@ -4712,7 +4709,7 @@ struct kill_command_t: public hunter_spell_t
   {
     parse_options( options_str );
 
-    harmful = false;
+    harmful = may_hit = false;
   }
 
   bool init_finished() override
@@ -4773,8 +4770,7 @@ struct dire_frenzy_t: public hunter_spell_t
   {
     parse_options( options_str );
 
-    harmful = false;
-    school = SCHOOL_PHYSICAL;
+    harmful = may_hit = false;
 
     if ( p -> talents.dire_stable -> ok() )
       energize_amount += p -> talents.dire_stable -> effectN( 2 ).base_value();
@@ -4827,7 +4823,7 @@ struct titans_thunder_t: public hunter_spell_t
     hunter_spell_t( "titans_thunder", p, p -> artifacts.titans_thunder )
   {
     parse_options( options_str );
-    harmful = false;
+    harmful = may_hit = false;
   }
 
   virtual void execute() override
@@ -4870,7 +4866,9 @@ struct aspect_of_the_wild_t: public hunter_spell_t
     hunter_spell_t( "aspect_of_the_wild", p, p -> specs.aspect_of_the_wild )
   {
     parse_options( options_str );
-    harmful = false;
+
+    harmful = may_hit = false;
+    dot_duration = timespan_t::zero();
   }
 
   virtual void execute() override
@@ -4943,6 +4941,8 @@ struct trueshot_t: public hunter_spell_t
   {
     parse_options( options_str );
 
+    harmful = may_hit = false;
+
     // Quick Shot: spell data adds -30 seconds to CD
     if ( p -> artifacts.quick_shot.rank() )
       cooldown -> duration += p -> artifacts.quick_shot.time_value();
@@ -4950,12 +4950,12 @@ struct trueshot_t: public hunter_spell_t
 
   virtual void execute() override
   {
+    hunter_spell_t::execute();
+
     p() -> buffs.trueshot -> trigger();
 
     if ( p() -> artifacts.rapid_killing.rank() )
       p() -> buffs.rapid_killing -> trigger();
-
-    hunter_spell_t::execute();
   }
 };
 
@@ -4972,7 +4972,7 @@ struct aspect_of_the_eagle_t: public hunter_spell_t
   {
     parse_options( options_str );
 
-    harmful = false;
+    harmful = may_hit = false;
 
     if ( p -> artifacts.embrace_of_the_aspects.rank() )
       cooldown -> duration *= 1.0 + p -> artifacts.embrace_of_the_aspects.percent();
@@ -4995,7 +4995,7 @@ struct snake_hunter_t: public hunter_spell_t
   {
     parse_options( options_str );
 
-    harmful = false;
+    harmful = may_hit = false;
   }
 
   virtual void execute() override
@@ -5015,6 +5015,9 @@ struct spitting_cobra_t: public hunter_spell_t
     hunter_spell_t( "spitting_cobra", p, p -> talents.spitting_cobra )
   {
     parse_options( options_str );
+
+    harmful = may_hit = false;
+    dot_duration = timespan_t::zero();
   }
 
   bool init_finished() override
