@@ -6186,7 +6186,7 @@ void hunter_t::init_action_list()
       if ( true_level > 100 )
       {
         if ( specialization() == HUNTER_SURVIVAL )
-          precombat -> add_action( "potion,name=old_war" );
+          precombat -> add_action( "potion,name=prolonged_power" );
         else if ( specialization() == HUNTER_BEAST_MASTERY )
         {
           precombat -> add_action( "potion,name=prolonged_power" );
@@ -6420,29 +6420,28 @@ void hunter_t::apl_surv()
   add_racial_actions( default_list );
   add_item_actions( default_list );
 
-  default_list -> add_action( "potion,name=old_war,if=buff.aspect_of_the_eagle.remains" );
+  default_list -> add_action( "potion,name=prolonged_power,if=buff.spitting_cobra.up" );
   default_list -> add_action( "call_action_list,name=moknathal,if=talent.way_of_the_moknathal.enabled" );
   default_list -> add_action( "call_action_list,name=nomok,if=!talent.way_of_the_moknathal.enabled" );
+  
+  actions+=/call_action_list,name=4pcmok,if=set_bonus.tier19_4pc&talent.way_of_the_moknathal.enabled
 
   moknathal -> add_action( "raptor_strike,if=buff.moknathal_tactics.stack<=1" );
   moknathal -> add_action( "raptor_strike,if=buff.moknathal_tactics.remains<gcd" );
   moknathal -> add_action( "snake_hunter,if=cooldown.mongoose_bite.charges<=0&buff.mongoose_fury.remains>3*gcd" );
   moknathal -> add_action( "a_murder_of_crows,if=focus>55&buff.mongoose_fury.stack<4&buff.mongoose_fury.duration>=gcd" );
-  moknathal -> add_action( "steel_trap,if=buff.mongoose_fury.duration>=gcd&buff.mongoose_fury.stack<4" );
-  moknathal -> add_action( "caltrops,if=(buff.mongoose_fury.duration>=gcd&buff.mongoose_fury.stack<4&!dot.caltrops.ticking)" );
-  moknathal -> add_action( "flanking_strike,if=cooldown.mongoose_bite.charges<=0&buff.aspect_of_the_eagle.remains>=gcd&focus>75" );
-  moknathal -> add_action( "lacerate,if=focus>60&buff.mongoose_fury.duration>=gcd&dot.lacerate.remains<=3&cooldown.mongoose_bite.charges>=0&buff.mongoose_fury.stack<4" );
+  moknathal -> add_action( "flanking_strike,if=cooldown.mongoose_bite.charges<=1&buff.aspect_of_the_eagle.remains>=gcd|cooldown.mongoose_bite.charges<=1&buff.aspect_of_the_eagle.down" );
+  moknathal -> add_action( "lacerate,if=focus>60&buff.mongoose_fury.duration>=gcd&refreshable&cooldown.mongoose_bite.charges=0&buff.mongoose_fury.stack<3|buff.mongoose_fury.down&cooldown.mongoose_bite.charges<3&refreshable" );
+  moknathal -> add_action( "caltrops,if=(buff.mongoose_fury.duration>=gcd&buff.mongoose_fury.stack<1&!dot.caltrops.ticking)" );
   moknathal -> add_action( "spitting_cobra,if=buff.mongoose_fury.duration>=gcd&cooldown.mongoose_bite.charges>=0&buff.mongoose_fury.stack<4&buff.moknathal_tactics.stack=4" );
-  moknathal -> add_action( "steel_trap,if=buff.mongoose_fury.duration>=gcd&buff.mongoose_fury.stack<4" );
-  moknathal -> add_action( "explosive_trap,if=buff.mongoose_fury.duration>=gcd&cooldown.mongoose_bite.charges>=0&buff.mongoose_fury.stack<4" );
-  moknathal -> add_action( "dragonsfire_grenade,if=buff.mongoose_fury.duration>=gcd&cooldown.mongoose_bite.charges>=0&buff.mongoose_fury.stack<4" );
+  moknathal -> add_action( "steel_trap,if=buff.mongoose_fury.duration>=gcd&buff.mongoose_fury.stack<1" );
+  moknathal -> add_action( "explosive_trap,if=buff.mongoose_fury.duration>=gcd&cooldown.mongoose_bite.charges=0&buff.mongoose_fury.stack<1" );
+  moknathal -> add_action( "dragonsfire_grenade,if=buff.mongoose_fury.duration>=gcd&cooldown.mongoose_bite.charges>=0&buff.mongoose_fury.stack<1" );
   moknathal -> add_action( "raptor_strike,if=talent.serpent_sting.enabled&dot.serpent_sting.remains<gcd" );
   moknathal -> add_action( "raptor_strike,if=buff.moknathal_tactics.remains<4&buff.mongoose_fury.stack=6&buff.mongoose_fury.remains>=gcd" );
-  moknathal -> add_action( "fury_of_the_eagle,if=buff.moknathal_tactics.remains>4&buff.mongoose_fury.stack=6&cooldown.mongoose_bite.charges<=2" );
-  moknathal -> add_action( "mongoose_bite,if=buff.aspect_of_the_eagle.up&buff.mongoose_fury.up&buff.moknathal_tactics.stack>=4" );
-  moknathal -> add_action( "fury_of_the_eagle,if=(buff.moknathal_tactics.remains>4&(buff.mongoose_fury.stack=6&cooldown.mongoose_bite.charges<=0|buff.mongoose_fury.up&buff.mongoose_fury.remains<=2*gcd))" );
-  moknathal -> add_action( "raptor_strike,if=buff.moknathal_tactics.stack<=3" );
-  moknathal -> add_action( "aspect_of_the_eagle,if=buff.mongoose_fury.up&buff.mongoose_fury.remains>6&cooldown.mongoose_bite.charges>=2" );
+  moknathal -> add_action( "fury_of_the_eagle,if=buff.moknathal_tactics.remains>4&buff.mongoose_fury.stack=6&cooldown.mongoose_bite.charges<=0" );
+  moknathal -> add_action( "aspect_of_the_eagle,if=buff.mongoose_fury.stack>1" );
+  moknathal -> add_action( "actions.4pcmok+=/aspect_of_the_eagle,if=buff.mongoose_fury.up&buff.mongoose_fury.remains>6&cooldown.mongoose_bite.charges<2" );
   moknathal -> add_action( "flanking_strike,if=cooldown.mongoose_bite.charges<=2&buff.mongoose_fury.remains>(1+action.mongoose_bite.charges*gcd)&focus>75" );
   moknathal -> add_action( "mongoose_bite,if=buff.mongoose_fury.up&buff.mongoose_fury.remains<cooldown.aspect_of_the_eagle.remains" );
   moknathal -> add_action( "a_murder_of_crows,if=focus>55" );
@@ -6450,12 +6449,11 @@ void hunter_t::apl_surv()
   moknathal -> add_action( "steel_trap" );
   moknathal -> add_action( "explosive_trap" );
   moknathal -> add_action( "caltrops,if=(!dot.caltrops.ticking)" );
-  moknathal -> add_action( "lacerate,if=(!dot.lacerate.ticking|dot.lacerate.remains<3)" );
+  moknathal -> add_action( "lacerate,if=refreshable" );
   moknathal -> add_action( "dragonsfire_grenade" );
   moknathal -> add_action( "butchery,if=(charges=3&focus>65)" );
   moknathal -> add_action( "mongoose_bite,if=(charges>=2&cooldown.mongoose_bite.remains<=gcd|charges=3)" );
   moknathal -> add_action( "butchery,if=focus>65" );
-  moknathal -> add_action( "flanking_strike,if=focus>75" );
   moknathal -> add_action( "raptor_strike,if=focus>75-cooldown.flanking_strike.remains*focus.regen" );
 
   nomok -> add_action( "a_murder_of_crows,if=cooldown.mongoose_bite.charges>=0&buff.mongoose_fury.stack<4" );
