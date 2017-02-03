@@ -2843,6 +2843,7 @@ struct blessed_dawnlight_medallion_t : public priest_spell_t
       insanity( data().effectN( 1 ).percent() )
   {
     energize_amount = RESOURCE_NONE;
+    background = true;
   }
 
   void execute() override
