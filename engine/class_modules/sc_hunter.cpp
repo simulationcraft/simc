@@ -6411,7 +6411,8 @@ void hunter_t::apl_surv()
   action_priority_list_t* moknathal    = get_action_priority_list( "moknathal" );
   action_priority_list_t* nomok        = get_action_priority_list( "nomok" );
 
-  precombat -> add_action( "explosive_trap" );
+  precombat -> add_action( "explosive_trap,if=!talent.steel_trap.enabled" );
+  precombat -> add_action( "steel_trap" );
   precombat -> add_action( "dragonsfire_grenade" );
   precombat -> add_action( "harpoon" );
 
