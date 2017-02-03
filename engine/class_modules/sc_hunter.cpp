@@ -3986,9 +3986,7 @@ struct lacerate_t: public hunter_melee_attack_t
   {
     parse_options( options_str );
 
-    base_tick_time = data().effectN( 1 ).period();
     direct_tick = false;
-    dot_duration = data().duration();
     tick_zero = false;
 
     if ( p -> artifacts.lacerating_talons.rank() )
@@ -4009,11 +4007,18 @@ struct lacerate_t: public hunter_melee_attack_t
   virtual void impact( action_state_t *s ) override
   {
     hunter_melee_attack_t::impact( s );
-     
+
     td( s -> target ) -> debuffs.lacerate -> trigger();
 
     if ( p() -> sets.has_set_bonus( HUNTER_SURVIVAL, T18, B2 ) )
       td( s -> target ) -> debuffs.t18_2pc_open_wounds -> trigger();
+  }
+
+  double target_armor( player_t* ) const override
+  {
+    // does bleed damage which ignores armor
+    assert( data().mechanic() == MECHANIC_BLEED );
+    return 0.0;
   }
 };
 
@@ -5207,6 +5212,13 @@ struct steel_trap_t: public hunter_spell_t
       // 02/02/2017 nuoHep: Steel Trap triggers twice
       if ( result_is_hit( s -> result ) )
         get_dot( s -> target ) -> trigger( dot_duration );
+    }
+
+    double target_armor( player_t* ) const override
+    {
+      // the trap does bleed damage which ignores armor
+      assert( data().mechanic() == MECHANIC_BLEED );
+      return 0.0;
     }
   };
 
