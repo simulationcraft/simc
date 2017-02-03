@@ -6421,7 +6421,7 @@ void warlock_t::apl_default()
 
 void warlock_t::apl_affliction()
 {
-  add_action( "Reap Souls", "if=!buff.deadwind_harvester.remains&(buff.tormented_souls.react>=8|target.time_to_die<=buff.tormented_souls.react*5|!talent.malefic_grasp.enabled&(trinket.proc.any.react|trinket.stacking_proc.any.react)" );
+  add_action( "Reap Souls", "if=!buff.deadwind_harvester.remains&(buff.soul_harvest.remains&!talent.malefic_grasp.enabled&(dot.unstable_affliction_1.ticking+dot.unstable_affliction_2.ticking+dot.unstable_affliction_3.ticking+dot.unstable_affliction_4.ticking+dot.unstable_affliction_5.ticking)>1|buff.tormented_souls.react>=8|target.time_to_die<=buff.tormented_souls.react*5+equipped.144364*1.5|!talent.malefic_grasp.enabled&(trinket.proc.any.react|trinket.stacking_proc.any.react)" );
   if ( find_item( "horn_of_valor" ) )
     action_list_str += "|buff.valarjars_path.remains";
   if ( find_item( "moonlit_prism" ) )
@@ -6442,7 +6442,7 @@ void warlock_t::apl_affliction()
   action_list_str += "/blood_fury";
   action_list_str += "/arcane_torrent";
   action_list_str += init_use_profession_actions();
-  action_list_str += "/soul_harvest,if=(dot.unstable_affliction_1.ticking+dot.unstable_affliction_2.ticking+dot.unstable_affliction_3.ticking+dot.unstable_affliction_4.ticking+dot.unstable_affliction_5.ticking)>=3";
+  action_list_str += "/soul_harvest,if=(dot.unstable_affliction_1.ticking+dot.unstable_affliction_2.ticking+dot.unstable_affliction_3.ticking+dot.unstable_affliction_4.ticking+dot.unstable_affliction_5.ticking)>=3|!equipped.132394&!equipped.132457&(debuff.haunt.remains|talent.writhe_in_agony.enabled)";
   for ( int i = as< int >( items.size() ) - 1; i >= 0; i-- )
   {
     if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
@@ -6495,6 +6495,16 @@ void warlock_t::apl_affliction()
   add_action( "Siphon Life", "if=remains<=duration*0.3&target.time_to_die>=remains&(dot.unstable_affliction_1.ticking+dot.unstable_affliction_2.ticking+dot.unstable_affliction_3.ticking+dot.unstable_affliction_4.ticking+dot.unstable_affliction_5.ticking)=0" );
   add_action( "Siphon Life", "cycle_targets=1,if=(!talent.malefic_grasp.enabled|!talent.soul_effigy.enabled)&remains<=duration*0.3&target.time_to_die>=remains" );
 
+
+  add_action( "Unstable Affliction", "if=(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&talent.haunt.enabled&(soul_shard>=4|debuff.haunt.remains>6.5|target.time_to_die<30" );
+  if ( find_item( "horn_of_valor" ) )
+    action_list_str += "|buff.valarjars_path.remains";
+  if ( find_item( "moonlit_prism" ) )
+    action_list_str += "|buff.elunes_light.remains";
+  if ( find_item( "obelisk of_the_void" ) )
+    action_list_str += "|buff.collapsing_shadow.remains";
+  action_list_str += ")";
+
   add_action( "Unstable Affliction", "if=(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&spell_targets.seed_of_corruption<4&talent.writhe_in_agony.enabled&talent.contagion.enabled&dot.unstable_affliction_1.remains<cast_time&dot.unstable_affliction_2.remains<cast_time&dot.unstable_affliction_3.remains<cast_time&dot.unstable_affliction_4.remains<cast_time&dot.unstable_affliction_5.remains<cast_time" );
 
   add_action( "Unstable Affliction", "if=(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&spell_targets.seed_of_corruption<4&talent.writhe_in_agony.enabled&(soul_shard>=4|trinket.proc.intellect.react|trinket.stacking_proc.mastery.react|trinket.proc.mastery.react|trinket.proc.crit.react|trinket.proc.versatility.react|buff.soul_harvest.remains|buff.deadwind_harvester.remains|buff.compounding_horror.react=5|target.time_to_die<=20" );
@@ -6508,17 +6518,9 @@ void warlock_t::apl_affliction()
 
   add_action( "Unstable Affliction", "if=(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&spell_targets.seed_of_corruption<4&talent.malefic_grasp.enabled&(target.time_to_die<30|prev_gcd.1.unstable_affliction&soul_shard>=4)" );
   add_action( "Unstable Affliction", "if=(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&spell_targets.seed_of_corruption<4&talent.malefic_grasp.enabled&(soul_shard=5|talent.contagion.enabled&soul_shard>=4)" );
-  add_action( "Unstable Affliction", "if=(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&spell_targets.seed_of_corruption<4&talent.malefic_grasp.enabled&(dot.unstable_affliction_1.ticking+dot.unstable_affliction_2.ticking+dot.unstable_affliction_3.ticking+dot.unstable_affliction_4.ticking+dot.unstable_affliction_5.ticking)=0" );
-  add_action( "Unstable Affliction", "if=(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&spell_targets.seed_of_corruption<4&talent.malefic_grasp.enabled&!prev_gcd.3.unstable_affliction&prev_gcd.1.unstable_affliction" );
-
-  add_action( "Unstable Affliction", "if=(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&talent.haunt.enabled&(soul_shard>=4|debuff.haunt.remains>6.5|target.time_to_die<30" );
-  if ( find_item( "horn_of_valor" ) )
-    action_list_str += "|buff.valarjars_path.remains";
-  if ( find_item( "moonlit_prism" ) )
-    action_list_str += "|buff.elunes_light.remains";
-  if ( find_item( "obelisk of_the_void" ) )
-    action_list_str += "|buff.collapsing_shadow.remains";
-  action_list_str += ")";
+  add_action( "Unstable Affliction", "if=(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&spell_targets.seed_of_corruption<4&talent.malefic_grasp.enabled&(talent.soul_effigy.enabled|equipped.132457)&(dot.unstable_affliction_1.ticking+dot.unstable_affliction_2.ticking+dot.unstable_affliction_3.ticking+dot.unstable_affliction_4.ticking+dot.unstable_affliction_5.ticking)=0" );
+  add_action( "Unstable Affliction", "if=(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&spell_targets.seed_of_corruption<4&talent.malefic_grasp.enabled&!talent.soul_effigy.enabled&!equipped.132457&!prev_gcd.3.unstable_affliction&dot.agony.remains>cast_time*3+6.5&(dot.corruption.remains>cast_time+6.5|talent.absolute_corruption.enabled)" );
+  add_action( "Unstable Affliction", "if=(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&spell_targets.seed_of_corruption<4&talent.malefic_grasp.enabled&(talent.soul_effigy.enabled|equipped.132457)&!prev_gcd.3.unstable_affliction&prev_gcd.1.unstable_affliction" );
 
   add_action( "Reap Souls", "if=!buff.deadwind_harvester.remains&(dot.unstable_affliction_1.ticking+dot.unstable_affliction_2.ticking+dot.unstable_affliction_3.ticking+dot.unstable_affliction_4.ticking+dot.unstable_affliction_5.ticking)>1&((!trinket.has_stacking_stat.any&!trinket.has_stat.any)|talent.malefic_grasp.enabled)" );
   add_action( "Reap Souls", "if=!buff.deadwind_harvester.remains&prev_gcd.1.unstable_affliction&((!trinket.has_stacking_stat.any&!trinket.has_stat.any)|talent.malefic_grasp.enabled)&buff.tormented_souls.react>1" );
