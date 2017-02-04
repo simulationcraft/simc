@@ -3621,8 +3621,6 @@ void item::ravaged_seed_pod( special_effect_t& effect )
 void set_bonus::march_of_the_legion( special_effect_t&  effect ) {
     const spell_data_t* spell = effect.player->find_spell( 228445 );
 
-    effect.proc_flags2_ = PF2_LANDED;
-
     std::string spell_name = spell->name_cstr();
     util::tokenize( spell_name );
 
