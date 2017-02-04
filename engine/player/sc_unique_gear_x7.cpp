@@ -3643,16 +3643,21 @@ struct cinidaria_the_symbiote_damage_t : public attack_t
 struct cinidaria_the_symbiote_cb_t : public dbc_proc_callback_t
 {
   cinidaria_the_symbiote_damage_t* damage;
+  int health_percentage;
+  double damage_multiplier;
 
   cinidaria_the_symbiote_cb_t( const special_effect_t& effect ) :
     dbc_proc_callback_t( effect.player, effect ),
     damage( new cinidaria_the_symbiote_damage_t( effect.player ) )
-  { }
+  {
+    damage_multiplier = effect.driver()->effectN(1).percent();
+    health_percentage = effect.driver()->effectN(2).base_value();
+  }
 
   void trigger( action_t* a, void* call_data ) override
   {
     auto state = reinterpret_cast<action_state_t*>( call_data );
-    if ( state -> target -> health_percentage() < effect.driver() -> effectN( 2 ).base_value() )
+    if ( state -> target -> health_percentage() < health_percentage )
     {
       return;
     }
@@ -3673,7 +3678,7 @@ struct cinidaria_the_symbiote_cb_t : public dbc_proc_callback_t
 
   void execute( action_t* /* a */, action_state_t* state ) override
   {
-    auto amount = state -> result_amount * effect.driver() -> effectN( 1 ).percent();
+    auto amount = state -> result_amount * damage_multiplier;
     damage -> target = state -> target;
     damage -> base_dd_min = damage -> base_dd_max = amount;
     damage -> execute();

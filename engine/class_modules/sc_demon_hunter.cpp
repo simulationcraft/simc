@@ -425,7 +425,7 @@ public:
     gain_t* demonic_appetite;
     gain_t* prepared;
     gain_t* blind_fury;
-    gain_t* anger_of_the_half_giants;
+    gain_t* anger_of_the_halfgiants;
 
     // Vengeance
     gain_t* damage_taken;
@@ -517,6 +517,7 @@ public:
     timespan_t raddons_cascading_eyes;
     double delusions_of_grandeur_reduction;
     double delusions_of_grandeur_fury_per_time;
+    int anger_of_the_halfgiants_fury;
 
     // Vengeance
     double cloak_of_fel_flames;
@@ -524,7 +525,6 @@ public:
     timespan_t kirel_narak;
     bool runemasters_pauldrons;
     timespan_t the_defilers_lost_vambraces;
-    const special_effect_t* anger_of_the_half_giants;
   } legendary;
 
   demon_hunter_t( sim_t* sim, const std::string& name, race_e r );
@@ -3814,10 +3814,10 @@ struct demons_bite_t : public demon_hunter_attack_t
       p() -> proc.demons_bite_in_meta -> occur();
     }
 
-    if (p()->legendary.anger_of_the_half_giants)
+    if (p()->legendary.anger_of_the_halfgiants_fury > 0)
     {
-        auto range = p()->legendary.anger_of_the_half_giants -> driver() -> effectN(1).base_value();
-        p()->resource_gain(RESOURCE_FURY, (int)rng().range(1, 1 + range), p()->gain.anger_of_the_half_giants);
+      const int range = p()->legendary.anger_of_the_halfgiants_fury;
+      p()->resource_gain(RESOURCE_FURY, (int)rng().range(1, 1 + range), p()->gain.anger_of_the_halfgiants);
     }
   }
 
@@ -3885,11 +3885,10 @@ struct demon_blades_t : public demon_hunter_attack_t
   void execute() override
   {
       demon_hunter_attack_t::execute();
-      if (p()->legendary.anger_of_the_half_giants)
+      if (p()->legendary.anger_of_the_halfgiants_fury > 0)
       {
-          // dblades has a negative modifier for AotHG, go ahead and add that in
-          auto range = p()->legendary.anger_of_the_half_giants->driver()->effectN(1).base_value() + p()->talent.demon_blades->effectN(2).base_value();
-          p()->resource_gain(RESOURCE_FURY, (int)rng().range(1, 1 + range), p()->gain.anger_of_the_half_giants);
+        const int range = p()->legendary.anger_of_the_halfgiants_fury + p()->talent.demon_blades->effectN(2).base_value();
+        p()->resource_gain(RESOURCE_FURY, (int)rng().range(1, 1 + range), p()->gain.anger_of_the_halfgiants);
       }
   }
 };
@@ -5326,7 +5325,6 @@ demon_hunter_t::demon_hunter_t( sim_t* sim, const std::string& name, race_e r )
   create_benefits();
 
   regen_type = REGEN_DISABLED;
-  legendary.anger_of_the_half_giants = nullptr;
 }
 
 demon_hunter_t::~demon_hunter_t()
@@ -6803,7 +6801,7 @@ void demon_hunter_t::create_gains()
   gain.demonic_appetite         = get_gain("demonic_appetite");
   gain.prepared                 = get_gain("prepared");
   gain.blind_fury               = get_gain("blind_fury");
-  gain.anger_of_the_half_giants = get_gain("anger_of_the_half_giants");
+  gain.anger_of_the_halfgiants  = get_gain("anger_of_the_halfgiants");
 
   // Vengeance
   gain.damage_taken             = get_gain("damage_taken");
@@ -7580,26 +7578,25 @@ using namespace actions::attacks;
 
 struct sephuzs_secret_t : public unique_gear::scoped_actor_callback_t<demon_hunter_t>
 {
-    sephuzs_secret_t() : super(DEMON_HUNTER)
-    {}
+  sephuzs_secret_t() : super(DEMON_HUNTER)
+  {
+  }
 
-    void manipulate(demon_hunter_t* dh, const special_effect_t& e) override
-    {
-        dh->legendary.sephuzs_secret = e.driver();
-    }
+  void manipulate(demon_hunter_t* dh, const special_effect_t& e) override
+  {
+    dh->legendary.sephuzs_secret = e.driver();
+  }
 };
 
 struct anger_of_the_halfgiants_t : scoped_actor_callback_t<demon_hunter_t>
 {
-  anger_of_the_halfgiants_t()
-    : super( DEMON_HUNTER )
+  anger_of_the_halfgiants_t() : super(DEMON_HUNTER)
   {
   }
 
-  void manipulate(demon_hunter_t* dh, const special_effect_t& e ) override
+  void manipulate(demon_hunter_t* dh, const special_effect_t& e) override
   {
-    // set the anger to a non nullptr so it's registered
-    dh->legendary.anger_of_the_half_giants = &e;
+    dh->legendary.anger_of_the_halfgiants_fury = e.driver()->effectN(1).base_value();
   }
 };
 
