@@ -152,7 +152,7 @@ double composite_karazhan_empower_multiplier( const player_t* player )
 namespace set_bonus
 {
   // 7.0 Dungeon
-  void march_of_the_legion( special_effect_t& ); // NYI
+  void march_of_the_legion( special_effect_t& ); 
   void journey_through_time( special_effect_t& ); // NYI
 
   // Generic passive stat aura adder for set bonuses
@@ -3618,7 +3618,32 @@ void item::ravaged_seed_pod( special_effect_t& effect )
 
 // March of the Legion ======================================================
 
-void set_bonus::march_of_the_legion( special_effect_t& /* effect */ ) {}
+void set_bonus::march_of_the_legion( special_effect_t&  effect ) {
+    const spell_data_t* spell = effect.player->find_spell( 228445 );
+
+    effect.proc_flags2_ = PF2_LANDED;
+
+    std::string spell_name = spell->name_cstr();
+    util::tokenize( spell_name );
+
+    struct march_t : public spell_t
+    {
+      march_t(player_t* player) :
+        spell_t("march_of_the_legion", player, player -> find_spell( 228446 ) )
+      {
+        background = proc = may_crit = true;
+        callbacks = false;
+        if (player->target->race != RACE_DEMON) {
+          base_dd_min = 0;
+          base_dd_max = 0;
+        }
+      }
+    };
+
+    effect.execute_action = new march_t( effect.player );
+
+    new dbc_proc_callback_t(effect.player, effect);
+}
 
 // Cinidaria, the Symbiote ==================================================
 
