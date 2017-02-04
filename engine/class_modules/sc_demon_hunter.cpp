@@ -2985,13 +2985,16 @@ struct melee_t : public demon_hunter_attack_t
     status_e main_hand, off_hand;
   } status;
 
-  melee_t( const std::string& name, demon_hunter_t* p )
-    : demon_hunter_attack_t( name, p, spell_data_t::nil() )
+  melee_t(const std::string& name, demon_hunter_t* p, weapon_t* w,
+          const spell_data_t* s = spell_data_t::nil())
+    : demon_hunter_attack_t( name, p, s )
   {
     school     = SCHOOL_PHYSICAL;
     special    = false;
     background = repeating = may_glance = true;
     trigger_gcd = timespan_t::zero();
+    weapon = w;
+    base_execute_time = weapon->swing_time;
 
     status.main_hand = status.off_hand = LOST_CONTACT_RANGE;
 
@@ -3043,14 +3046,14 @@ struct melee_t : public demon_hunter_attack_t
 
   void execute() override
   {
-    if ( p() -> current.distance_to_move > 5 || p() -> channeling ||
-         p() -> buff.out_of_range -> check() )
+    if (p()->current.distance_to_move > 5 || p()->buff.out_of_range->check() ||
+      (p()->channeling && p()->channeling->interrupt_auto_attack))
     {
       status_e s;
 
       // Cancel autoattacks, auto_attack_t will restart them when we're able to
       // attack again.
-      if ( p() -> channeling )
+      if ( p() -> channeling && p() -> channeling->interrupt_auto_attack)
       {
         p() -> proc.delayed_aa_channel -> occur();
         s = LOST_CONTACT_CHANNEL;
@@ -3090,16 +3093,12 @@ struct auto_attack_t : public demon_hunter_attack_t
     range                 = 5;
     trigger_gcd           = timespan_t::zero();
 
-    p -> melee_main_hand                     = new melee_t( "auto_attack_mh", p );
-    p -> main_hand_attack                    = p -> melee_main_hand;
-    p -> main_hand_attack -> weapon            = &( p -> main_hand_weapon );
-    p -> main_hand_attack -> base_execute_time = p -> main_hand_weapon.swing_time;
+    p -> melee_main_hand        = new melee_t("auto_attack_mh", p, &(p->main_hand_weapon));
+    p -> main_hand_attack       = p -> melee_main_hand;
 
-    p -> melee_off_hand                     = new melee_t( "auto_attack_oh", p );
-    p -> off_hand_attack                    = p -> melee_off_hand;
-    p -> off_hand_attack -> weapon            = &( p -> off_hand_weapon );
-    p -> off_hand_attack -> base_execute_time = p -> off_hand_weapon.swing_time;
-    p -> off_hand_attack -> id                = 1;
+    p -> melee_off_hand         = new melee_t("auto_attack_oh", p, &(p->off_hand_weapon));
+    p -> off_hand_attack        = p -> melee_off_hand;
+    p -> off_hand_attack -> id  = 1;
   }
 
   void execute() override
@@ -3336,23 +3335,13 @@ struct blade_dance_t : public blade_dance_base_t
 
 // Chaos Blades ============================================================
 
-struct chaos_blade_t : public demon_hunter_attack_t
+struct chaos_blade_t : public melee_t
 {
-  chaos_blade_t( const std::string& n, demon_hunter_t* p,
-                 const spell_data_t* s )
-    : demon_hunter_attack_t( n, p, s )
+  chaos_blade_t( const std::string& n, demon_hunter_t* p, weapon_t* w, const spell_data_t* s )
+    : melee_t( n, p, w, s )
   {
-    base_execute_time = weapon -> swing_time;
-    special           = false;  // set false special to force it to proc a "white hit" so trinkets don't fall off
-  may_miss = may_glance = false; // however, it cannot miss or glance
-    repeating = background = true;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    demon_hunter_attack_t::impact( s );
-
-    trigger_demon_blades( s );
+    school = s->get_school_type();
+    may_miss = may_glance = false; // Chaos Blades can't miss or glance since it is magical damage
   }
 
   double action_multiplier() const override
@@ -3363,8 +3352,6 @@ struct chaos_blade_t : public demon_hunter_attack_t
 	  {
 		  am *= 1.0 + p()->cache.mastery_value();
 	  }
-
-	  return am;
 
     return am; // skip attack_t's multiplier so we don't get the AA bonus.  Tested 2017/01/23
   }
@@ -6364,11 +6351,11 @@ void demon_hunter_t::init_spells()
     // Not linked via a trigger, so assert that the spell is there.
     assert( mh_spell -> ok() );
 
-    chaos_blade_main_hand =
-      new chaos_blade_t( "chaos_blade_mh", this, mh_spell );
+    chaos_blade_main_hand = new chaos_blade_t( "chaos_blade_mh", this,
+      &main_hand_weapon, mh_spell);
 
-    chaos_blade_off_hand = new chaos_blade_t(
-      "chaos_blade_oh", this, talent.chaos_blades -> effectN( 1 ).trigger() );
+    chaos_blade_off_hand = new chaos_blade_t("chaos_blade_oh", this, 
+      &off_hand_weapon, talent.chaos_blades->effectN(1).trigger());
   }
 
   if ( talent.demon_blades -> ok() )
@@ -6566,6 +6553,10 @@ void add_havoc_use_items( demon_hunter_t* p, action_priority_list_t* apl )
       {
         line += ",if=buff.congealing_goo.react=6|(buff.chaos_blades.up&buff.chaos_blades.remains<5&"
           "cooldown.chaos_blades.remains&buff.congealing_goo.up)";
+      }
+      else if (util::str_compare_ci(p->items[i].name_str, "draught_of_souls"))
+      {
+        line += ",if=(!talent.first_blood.enabled|!cooldown.blade_dance.ready)";
       }
       else
       {
