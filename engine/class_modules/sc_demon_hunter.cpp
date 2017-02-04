@@ -16,8 +16,6 @@ namespace
 // ==========================================================================
 
    General ------------------------------------------------------------------
-   Soul Fragments from Shattered Souls
-   Demon Soul buff
    Felblade movement mechanics
    Darkness
 
@@ -25,21 +23,17 @@ namespace
    Defensive talent tier
    Second look at Momentum skills' timings
    Fury of the Illidari distance targeting support
-   Overwhelming Power artifact trait
    Defensive artifact traits
    More thorough caching on blade_dance_expr_t
-   Fix Nemesis
 
    Vengeance ----------------------------------------------------------------
    Torment
-   Last Resort, Nether Bond talents
    True proc chance for Fallout
    Artificial Stamina
 
    Needs Documenting --------------------------------------------------------
    "activation_time" / "delay" sigil expression
    "sigil_placed" sigil expression
-   "jump_cancel" -> "animation_cancel" fel rush option
 */
 
 /* Forward declarations
@@ -59,6 +53,9 @@ namespace attacks
 struct melee_t;
 struct chaos_blade_t;
 }
+}
+namespace items
+{
 }
 
 /**
@@ -464,15 +461,12 @@ public:
   // RPPM objects
   struct rppms_t
   {
-    // General
-    real_ppm_t* felblade;
-
-    real_ppm_t* felblade_havoc;
-
     // Havoc
+    real_ppm_t* felblade_havoc;
     real_ppm_t* inner_demons;
 
     // Vengeance
+    real_ppm_t* felblade;
     real_ppm_t* fueled_by_pain;
   } rppm;
 
@@ -580,6 +574,7 @@ public:
   double composite_parry() const override;
   double composite_parry_rating() const override;
   double composite_player_multiplier( school_e ) const override;
+  double composite_player_dd_multiplier(school_e, const action_t* a) const override;
   double composite_player_target_multiplier(player_t* target, school_e school) const override;
   double composite_spell_crit_chance() const override;
   double matching_gear_multiplier( attribute_e attr ) const override;
@@ -962,7 +957,7 @@ struct soul_fragment_t
 
     dh -> buff.painbringer -> trigger();
 
-    if ( dh -> sim -> target -> race == RACE_DEMON )
+    if (type == SOUL_FRAGMENT_GREATER && dh->sim->target->race == RACE_DEMON)
     {
       dh -> buff.demon_soul -> trigger();
     }
@@ -7007,13 +7002,7 @@ double demon_hunter_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
-  m *= 1.0 + buff.demon_soul -> check_value();
-
   m *= 1.0 + buff.momentum -> check_value();
-
-  // TODO: Figure out how to access target's race.
-  m *=
-    1.0 + buff.nemesis -> check() * buff.nemesis -> data().effectN( 1 ).percent();
 
   m *= 1.0 + buff.chaos_blades -> check_value();
 
@@ -7021,6 +7010,23 @@ double demon_hunter_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + talent.razor_spikes -> effectN( 1 ).percent();
 
   m *= 1.0 + artifact.chaos_burn.percent();
+
+  return m;
+}
+
+double demon_hunter_t::composite_player_dd_multiplier(school_e school, const action_t * a) const
+{
+  double m = player_t::composite_player_dd_multiplier(school, a);
+
+  if (buff.nemesis->check() && a->target->race == buff.nemesis->current_value)
+  {
+    m *= 1.0 + buff.nemesis->data().effectN(1).percent();
+  }
+
+  if (a->target->race == RACE_DEMON && buff.demon_soul->check())
+  {
+    m *= 1.0 + buff.demon_soul->value();
+  }
 
   return m;
 }
@@ -7574,8 +7580,10 @@ using namespace unique_gear;
 using namespace actions::spells;
 using namespace actions::attacks;
 
-// Generic legendary items
+namespace items
+{
 
+// Generic legendary items
 struct sephuzs_secret_t : public unique_gear::scoped_actor_callback_t<demon_hunter_t>
 {
   sephuzs_secret_t() : super(DEMON_HUNTER)
@@ -7738,6 +7746,8 @@ struct loramus_thalipedes_sacrifice_t
   }
 };
 
+} // end namespace items
+
 // MODULE INTERFACE ==================================================
 
 class demon_hunter_module_t : public module_t
@@ -7766,6 +7776,8 @@ public:
 
   void static_init() const override
   {
+    using namespace items;
+
     register_special_effect(208827, anger_of_the_halfgiants_t());
     register_special_effect(217735, cloak_of_fel_flames_t());
     register_special_effect(208985, eternal_hunger_t());
