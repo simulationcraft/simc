@@ -4885,7 +4885,7 @@ void warrior_t::apl_fury()
 
   cooldowns -> add_action( this, "Rampage", "if=talent.massacre.enabled&buff.massacre.react&buff.enrage.remains<1" );
   cooldowns -> add_action( this, "Bloodthirst", "if=target.health.pct<20&buff.enrage.remains<1" );
-  cooldowns -> add_action( this, "Execute", "if=equipped.draught_of_souls&cooldown.draught_of_souls.remains<1&buff.juggernaut.remains<3" );
+  cooldowns -> add_action( this, "Execute" );
   for ( size_t i = 0; i < items.size(); i++ )
   {
     if ( items[i].name_str == "draught_of_souls" )
@@ -4894,7 +4894,7 @@ void warrior_t::apl_fury()
     }
   }
   cooldowns -> add_action( this, "Raging Blow", "if=buff.enrage.up" );
-  cooldowns -> add_action( this, "Rampage", "if=talent.reckless_abandon.enabled&!talent.frothing_berserker.enabled|(talent.frothing_berserker.enabled&rage=100)" );
+  cooldowns -> add_action( this, "Rampage", "if=(talent.reckless_abandon.enabled&!talent.frothing_berserker.enabled|(talent.frothing_berserker.enabled&rage=100))&target.health.pct>20" );
   cooldowns -> add_action( this, "Berserker Rage", "if=talent.outburst.enabled&buff.enrage.down&buff.battle_cry.up" );
   cooldowns -> add_action( this, "Bloodthirst", "if=buff.enrage.remains<1&!talent.outburst.enabled" );
   cooldowns -> add_action( this, "Raging Blow" );
