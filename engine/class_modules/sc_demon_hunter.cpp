@@ -6534,6 +6534,10 @@ void demon_hunter_t::apl_default()
 
 void add_havoc_use_items( demon_hunter_t* p, action_priority_list_t* apl )
 {
+  // talent.chaos_blades won't have valid spell data when importing if they don't have the talent selected
+  // We still need the valid cooldown to generate the default conditional
+  const timespan_t chaos_blades_cd = p->find_spell(211048)->cooldown();
+
   // On-Use Items
   for ( size_t i = 0; i < p -> items.size(); i++ )
   {
@@ -6553,14 +6557,11 @@ void add_havoc_use_items( demon_hunter_t* p, action_priority_list_t* apl )
       }
       else
       {
-        timespan_t use_cd = effect -> cooldown();
-
-        if ( use_cd > timespan_t::zero() &&
-          p -> talent.chaos_blades -> cooldown() % use_cd == timespan_t::zero() )
+        const timespan_t use_cd = effect -> cooldown();
+        if ( use_cd > timespan_t::zero() && chaos_blades_cd % use_cd == timespan_t::zero() )
         {
           line += ",if=buff.chaos_blades.up|!talent.chaos_blades.enabled";
-
-          if ( use_cd < p -> talent.chaos_blades -> cooldown() )
+          if ( use_cd < chaos_blades_cd)
           {
             char buffer[ 8 ];
             snprintf( buffer, sizeof( buffer ), "%.0f", use_cd.total_seconds() );
