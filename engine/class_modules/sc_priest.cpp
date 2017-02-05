@@ -5459,7 +5459,7 @@ void priest_t::apl_shadow()
   main->add_action(
       "shadow_word_death,if=(active_enemies<=4|(talent.reaper_of_souls.enabled"
       "&active_enemies<=2))&cooldown.shadow_word_death.charges=2&insanity<="
-      "(90-20*talent.reaper_of_souls.enabled)" );
+      "(85-15*talent.reaper_of_souls.enabled)" );
   main->add_action(
       "mind_blast,if=active_enemies<=4&talent.legacy_of_the_void.enabled&("
       "insanity"
@@ -5500,7 +5500,7 @@ void priest_t::apl_shadow()
   s2m->add_action( "berserking,if=buff.voidform.stack>=65" );
   s2m->add_action(
       "shadow_word_death,if=current_insanity_drain*gcd.max>insanity&!buff."
-      "power_infusion.up&(insanity-(current_insanity_drain*gcd.max)+(20+40*"
+      "power_infusion.up&(insanity-(current_insanity_drain*gcd.max)+(30+30*"
       "talent.reaper_of_souls.enabled)<100)" );
   s2m->add_action(
       "power_infusion,if=cooldown.shadow_word_death.charges=0&cooldown.shadow_"
@@ -5510,7 +5510,7 @@ void priest_t::apl_shadow()
       "shadow_word_death,if=(active_enemies<=4|(talent.reaper_of_souls.enabled&"
       "active_"
       "enemies<=2))&current_insanity_drain*gcd.max>insanity&(insanity-"
-      "(current_insanity_drain*gcd.max)+(20+40*talent.reaper_of_souls.enabled))"
+      "(current_insanity_drain*gcd.max)+(30+30*talent.reaper_of_souls.enabled))"
       "<100" );
   s2m->add_action(
       "wait,sec=action.void_bolt.usable_in,if=action.void_bolt.usable_in<gcd."
@@ -5609,7 +5609,7 @@ void priest_t::apl_shadow()
       "shadow_word_death,if=(active_enemies<=4|(talent.reaper_of_souls.enabled&"
       "active_"
       "enemies<=2))&current_insanity_drain*gcd.max>insanity&(insanity-"
-      "(current_insanity_drain*gcd.max)+(10+20*talent.reaper_of_souls.enabled))"
+      "(current_insanity_drain*gcd.max)+(15+15*talent.reaper_of_souls.enabled))"
       "<100" );
   vf->add_action(
       "wait,sec=action.void_bolt.usable_in,if=action.void_bolt.usable_in<gcd."
