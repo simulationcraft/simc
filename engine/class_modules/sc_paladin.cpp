@@ -4733,6 +4733,12 @@ void paladin_t::generate_action_prio_list_ret()
         std::string item_str;
         item_str = "use_item,name=" + items[i].name_str + ",if=(buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=15|cooldown.crusade.remains>20&!buff.crusade.up)";
         def -> add_action( item_str );
+      }
+      else if ( items[i].name_str == "kiljaedens_burning_wish" )
+      {
+        std::string item_str;
+        item_str = "use_item,name=" + items[i].name_str;
+        def -> add_action( item_str );
       } else {
         std::string item_str;
         item_str = "use_item,name=" + items[i].name_str + ",if=(buff.avenging_wrath.up|buff.crusade.up)";
