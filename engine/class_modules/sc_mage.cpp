@@ -7235,7 +7235,7 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   last_summoned( temporal_hero_e::INVALID ),
   distance_from_rune( 0.0 ),
   global_cinder_count( 0 ),
-  mage_potion_choice ("deadly_grace"),
+  mage_potion_choice( "" ),
   incanters_flow_stack_mult( find_spell( 116267 ) -> effectN( 1 ).percent() ),
   iv_haste( 1.0 ),
   blessing_of_wisdom( false ),

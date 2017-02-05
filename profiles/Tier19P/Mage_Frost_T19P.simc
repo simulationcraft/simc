@@ -20,7 +20,7 @@ actions.precombat+=/augmentation,type=defiled
 actions.precombat+=/water_elemental
 actions.precombat+=/snapshot_stats
 actions.precombat+=/mirror_image
-actions.precombat+=/potion,name=deadly_grace
+actions.precombat+=/potion,name=prolonged_power
 actions.precombat+=/frostbolt
 
 # Executed every time the actor is available.
