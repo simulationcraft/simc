@@ -8041,6 +8041,7 @@ std::vector<std::string> mage_t::get_non_speical_item_actions()
   specials.push_back( "horn_of_valor"                 );
   specials.push_back( "mrrgrias_favor"                );
   specials.push_back( "pharameres_forbidden_grimoire" );
+  specials.push_back( "kiljaedens_burning_wish"       );
 
   for ( const auto& item : items )
   {
@@ -8344,6 +8345,7 @@ void mage_t::apl_fire()
   default_list -> add_action( mage_t::get_special_use_items( "obelisk_of_the_void", true ) );
   default_list -> add_action( mage_t::get_special_use_items( "mrrgrias_favor", false ) );
   default_list -> add_action( mage_t::get_special_use_items( "pharameres_forbidden_grimoire", false ) );
+  default_list -> add_action( mage_t::get_special_use_items( "kiljaedens_burning_wish", false ) );
 
   default_list -> add_action( "call_action_list,name=combustion_phase,if=cooldown.combustion.remains<=action.rune_of_power.cast_time+(!talent.kindling.enabled*gcd)|buff.combustion.up" );
   default_list -> add_action( "call_action_list,name=rop_phase,if=buff.rune_of_power.up&buff.combustion.down" );
