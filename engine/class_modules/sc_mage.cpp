@@ -508,7 +508,10 @@ public:
   struct artifact_spell_data_t
   {
     // Arcane
-    artifact_power_t arcane_rebound,
+    artifact_power_t aegwynns_intensity,
+                     aluneths_avarice,
+                     time_and_space,
+                     arcane_rebound,
                      ancient_power,
                      scorched_earth,
                      everywhere_at_once, //NYI
@@ -537,6 +540,9 @@ public:
                      great_balls_of_fire,
                      cauterizing_blink, //NYI
                      fire_at_will,
+                     preignited,
+                     warmth_of_the_phoenix,
+                     strafing_run,
                      pyroclasmic_paranoia,
                      reignition_overdrive,
                      pyretic_incantation,
@@ -565,7 +571,10 @@ public:
                      icy_hand,
                      ice_age,
                      chilled_to_the_core,
-                     spellborne;
+                     spellborne,
+                     obsidian_lance,
+                     freezing_rain,
+                     glacial_eruption;
   } artifact;
 
 public:
@@ -7524,7 +7533,9 @@ void mage_t::init_spells()
   artifact.aegwynns_ascendance     = find_artifact_spell( "Aegwynn's Ascendance"   );
   artifact.aegwynns_fury           = find_artifact_spell( "Aegwynn's Fury"         );
   artifact.aegwynns_imperative     = find_artifact_spell( "Aegwynn's Imperative"   );
+  artifact.aegwynns_intensity      = find_artifact_spell( "Aegwynn's Intensity"    );
   artifact.aegwynns_wrath          = find_artifact_spell( "Aegwynn's Wrath"        );
+  artifact.aluneths_avarice        = find_artifact_spell( "Aluneth's Avarice"      );
   artifact.arcane_purification     = find_artifact_spell( "Arcane Purification"    );
   artifact.arcane_rebound          = find_artifact_spell( "Arcane Rebound"         );
   artifact.blasting_rod            = find_artifact_spell( "Blasting Rod"           );
@@ -7535,6 +7546,7 @@ void mage_t::init_spells()
   artifact.torrential_barrage      = find_artifact_spell( "Torrential Barrage"     );
   artifact.everywhere_at_once      = find_artifact_spell( "Everywhere At Once"     );
   artifact.ethereal_sensitivity    = find_artifact_spell( "Ethereal Sensitivity"   );
+  artifact.time_and_space          = find_artifact_spell( "Time and Space"         );
   artifact.touch_of_the_magi       = find_artifact_spell( "Touch of the Magi"      );
   artifact.ancient_power           = find_artifact_spell( "Ancient Power"          );
   //Fire
@@ -7549,32 +7561,39 @@ void mage_t::init_spells()
   artifact.great_balls_of_fire     = find_artifact_spell( "Great Balls of Fire"    );
   artifact.cauterizing_blink       = find_artifact_spell( "Cauterizing Blink"      );
   artifact.fire_at_will            = find_artifact_spell( "Fire At Will"           );
+  artifact.preignited              = find_artifact_spell( "Pre-Ignited"            );
   artifact.pyroclasmic_paranoia    = find_artifact_spell( "Pyroclasmic Paranoia"   );
-  artifact.reignition_overdrive    = find_artifact_spell( "Reignition Overdrive"   );
   artifact.pyretic_incantation     = find_artifact_spell( "Pyretic Incantation"    );
+  artifact.reignition_overdrive    = find_artifact_spell( "Reignition Overdrive"   );
+  artifact.strafing_run            = find_artifact_spell( "Strafing Run"           );
   artifact.burning_gaze            = find_artifact_spell( "Burning Gaze"           );
   artifact.blast_furnace           = find_artifact_spell( "Blast Furnace"          );
+  artifact.warmth_of_the_phoenix   = find_artifact_spell( "Warmth of the Phoenix"  );
   artifact.wings_of_flame          = find_artifact_spell( "Wings of Flame"         );
   artifact.empowered_spellblade    = find_artifact_spell( "Empowered Spellblade"   );
   //Frost
+  artifact.black_ice               = find_artifact_spell( "Black Ice"              );
+  artifact.chain_reaction          = find_artifact_spell( "Chain Reaction"         );
+  artifact.chilled_to_the_core     = find_artifact_spell( "Chilled To The Core"    );
+  artifact.clarity_of_thought      = find_artifact_spell( "Clarity of Thought"     );
   artifact.ebonbolt                = find_artifact_spell( "Ebonbolt"               );
+  artifact.freezing_rain           = find_artifact_spell( "Freezing Rain"          );
+  artifact.frozen_veins            = find_artifact_spell( "Frozen Veins"           );
+  artifact.glacial_eruption        = find_artifact_spell( "Glacial Eruption"       );
+  artifact.ice_age                 = find_artifact_spell( "Ice Age"                );
+  artifact.ice_nine                = find_artifact_spell( "Ice Nine"               );
+  artifact.icy_caress              = find_artifact_spell( "Icy Caress"             );
+  artifact.icy_hand                = find_artifact_spell( "Icy Hand"               );
+  artifact.its_cold_outside        = find_artifact_spell( "It's Cold Outside"      );
   artifact.jouster                 = find_artifact_spell( "Jouster"                );
   artifact.let_it_go               = find_artifact_spell( "Let It Go"              );
-  artifact.frozen_veins            = find_artifact_spell( "Frozen Veins"           );
-  artifact.the_storm_rages         = find_artifact_spell( "The Storm Rages"        );
-  artifact.black_ice               = find_artifact_spell( "Black Ice"              );
-  artifact.shield_of_alodi         = find_artifact_spell( "Shield of Alodi"        );
-  artifact.clarity_of_thought      = find_artifact_spell( "Clarity of Thought"     );
-  artifact.icy_caress              = find_artifact_spell( "Icy Caress"             );
-  artifact.chain_reaction          = find_artifact_spell( "Chain Reaction"         );
+  artifact.obsidian_lance          = find_artifact_spell( "Obsidian Lance"         );
   artifact.orbital_strike          = find_artifact_spell( "Orbital Strike"         );
-  artifact.its_cold_outside        = find_artifact_spell( "It's Cold Outside"      );
-  artifact.icy_hand                = find_artifact_spell( "Icy Hand"               );
-  artifact.ice_age                 = find_artifact_spell( "Ice Age"                );
-  artifact.chilled_to_the_core     = find_artifact_spell( "Chilled To The Core"    );
+  artifact.shield_of_alodi         = find_artifact_spell( "Shield of Alodi"        );
   artifact.shattering_bolts        = find_artifact_spell( "Shattering Bolts"       );
-  artifact.ice_nine                = find_artifact_spell( "Ice Nine"               );
   artifact.spellborne              = find_artifact_spell( "Spellborne"             );
+  artifact.the_storm_rages         = find_artifact_spell( "The Storm Rages"        );
+
 
 
   // Spec Spells
