@@ -3221,6 +3221,7 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     temporal_hero_duration = p -> find_spell( 188117 ) -> duration();
 
     base_multiplier *= 1.0 + p -> artifact.aegwynns_fury.percent();
+    base_multiplier *= 1.0 + p -> artifact.aegwynns_intensity.percent();
     // PTR Multiplier
     base_multiplier *= 1.0 + p -> find_spell( 137021 ) -> effectN( 1 ).percent();
 
