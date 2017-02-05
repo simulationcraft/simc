@@ -8130,6 +8130,20 @@ void mage_t::apl_precombat()
     precombat -> add_action( this, "Pyroblast" );
   else if ( specialization() == MAGE_FROST )
     precombat -> add_action( this, "Frostbolt" );
+
+
+  if ( specialization() == MAGE_ARCANE ) {
+    precombat -> add_action( "variable,op=set,name=mystic_kilt_equipped,value=equipped.132451" );
+    precombat -> add_action( "variable,op=set,name=rhonins_bracers_equipped,value=equipped.132413" );
+  } else if ( specialization() == MAGE_FIRE ) {
+    precombat -> add_action( "variable,op=set,name=marquee_bracers_equipped,value=equipped.132406" );
+    precombat -> add_action( "variable,op=set,name=darcklis_helm_equipped,value=equipped.132863" );
+    precombat -> add_action( "variable,op=set,name=koralons_belt_equipped,value=equipped.132454" );
+  } else if ( specialization() == MAGE_FROST ) {
+    precombat -> add_action( "variable,op=set,name=zannesu_belt_equipped,value=equipped.133970" );
+  }
+
+  precombat -> add_action( "variable,op=set,name=shard_ring_equipped,value=equipped.132410" );
 }
 
 std::string mage_t::get_food_action()
@@ -8236,9 +8250,8 @@ void mage_t::apl_arcane()
   action_priority_list_t* burn                = get_action_priority_list( "burn"             );
   action_priority_list_t* init_burn           = get_action_priority_list( "init_burn"        );
 
-  default_list -> add_action( this, "Counterspell",
-                              "if=target.debuff.casting.react" );
-  default_list -> add_action( this, "Time Warp", "if=(buff.bloodlust.down)&((time=0)|(equipped.132410&buff.arcane_power.up&prev_off_gcd.arcane_power)|(target.time_to_die<40))" );
+  default_list -> add_action( this, "Counterspell", "if=target.debuff.casting.react" );
+  default_list -> add_action( this, "Time Warp", "if=(buff.bloodlust.down)&((time=0)|(variable.shard_ring_equipped&buff.arcane_power.up&prev_off_gcd.arcane_power)|(target.time_to_die<40))" );
   default_list -> add_talent( this, "Mirror Image", "if=buff.arcane_power.down" );
   default_list -> add_action( "stop_burn_phase,if=prev_gcd.1.evocation&burn_phase_duration>gcd.max" );
   default_list -> add_action( this, "Mark of Aluneth", "if=cooldown.arcane_power.remains>20" );
@@ -8255,12 +8268,12 @@ void mage_t::apl_arcane()
   conserve     -> add_action( this, "Arcane Missiles", "if=buff.arcane_missiles.react=3" );
   conserve     -> add_action( this, "Arcane Blast", "if=mana.pct>99" );
   conserve     -> add_talent( this, "Nether Tempest", "if=(refreshable|!ticking)" );
-  conserve     -> add_action( this, "Arcane Blast", "if=buff.rhonins_assaulting_armwraps.up&equipped.132413" );
+  conserve     -> add_action( this, "Arcane Blast", "if=variable.rhonins_bracers_equipped&buff.rhonins_assaulting_armwraps.up" );
   conserve     -> add_action( this, "Arcane Missiles" );
   conserve     -> add_talent( this, "Supernova", "if=mana.pct<100" );
   //conserve     -> add_action( this, "Frost Nova", "if=equipped.132452" );
-  conserve     -> add_action( this, "Arcane Explosion", "if=mana.pct>=82&equipped.132451&active_enemies>1" );
-  conserve     -> add_action( this, "Arcane Blast", "if=mana.pct>=82&equipped.132451" );
+  conserve     -> add_action( this, "Arcane Explosion", "if=mana.pct>=82&variable.mystic_kilt_equipped&active_enemies>1" );
+  conserve     -> add_action( this, "Arcane Blast", "if=mana.pct>=82&variable.mystic_kilt_equipped" );
   conserve     -> add_action( this, "Arcane Barrage", "if=mana.pct<100&cooldown.arcane_power.remains>5" );
   conserve     -> add_action( this, "Arcane Explosion", "if=active_enemies>1" );
   conserve     -> add_action( this, "Arcane Blast" );
@@ -8305,7 +8318,7 @@ void mage_t::apl_arcane()
   init_burn -> add_action( "start_burn_phase,if=((cooldown.evocation.remains-(2*burn_phase_duration))%2<burn_phase_duration)|cooldown.arcane_power.remains=0|target.time_to_die<55" );
 
   burn      -> add_action( "call_action_list,name=cooldowns" );
-  burn      -> add_talent( this, "Charged Up", "if=(equipped.132451&buff.arcane_charge.stack<=1)" );
+  burn      -> add_talent( this, "Charged Up", "if=(variable.mystic_kilt_equipped&buff.arcane_charge.stack<=1)" );
   burn      -> add_action( this, "Arcane Missiles", "if=buff.arcane_missiles.react=3" );
   burn      -> add_talent( this, "Nether Tempest", "if=dot.nether_tempest.remains<=2|!ticking" );
   burn      -> add_action( this, "Arcane Blast", "if=active_enemies<=1&mana.pct%10*execute_time>target.time_to_die" );
@@ -8317,7 +8330,7 @@ void mage_t::apl_arcane()
   burn      -> add_talent( this, "Supernova", "if=mana.pct<100" );
   burn      -> add_action( this, "Arcane Missiles", "if=mana.pct>10&(talent.overpowered.enabled|buff.arcane_power.down)" );
   burn      -> add_action( this, "Arcane Explosion", "if=active_enemies>1" );
-  burn      -> add_action( this, "Arcane Barrage", "if=talent.charged_up.enabled&(equipped.132451&cooldown.charged_up.remains=0&mana.pct<(100-(buff.arcane_charge.stack*0.03)))" );
+  burn      -> add_action( this, "Arcane Barrage", "if=talent.charged_up.enabled&(variable.mystic_kilt_equipped&cooldown.charged_up.remains=0&mana.pct<(100-(buff.arcane_charge.stack*0.03)))" );
   burn      -> add_action( this, "Arcane Blast" );
   burn      -> add_action( this, "Evocation", "interrupt_if=mana.pct>99" );
 
@@ -8338,7 +8351,7 @@ void mage_t::apl_fire()
   action_priority_list_t* standard            = get_action_priority_list( "standard_rotation" );
 
   default_list -> add_action( this, "Counterspell", "if=target.debuff.casting.react" );
-  default_list -> add_action( this, "Time Warp", "if=(time=0&buff.bloodlust.down)|(buff.bloodlust.down&equipped.132410&(cooldown.combustion.remains<1|target.time_to_die.remains<50))" );
+  default_list -> add_action( this, "Time Warp", "if=(time=0&buff.bloodlust.down)|(buff.bloodlust.down&variable.shard_ring_equipped&(cooldown.combustion.remains<1|target.time_to_die.remains<50))" );
   default_list -> add_talent( this, "Mirror Image", "if=buff.combustion.down" );
   default_list -> add_talent( this, "Rune of Power", "if=cooldown.combustion.remains>40&buff.combustion.down&!talent.kindling.enabled|target.time_to_die.remains<11|talent.kindling.enabled&(charges_fractional>1.8|time<40)&cooldown.combustion.remains>40" );
   default_list -> add_action( mage_t::get_special_use_items( "horn_of_valor", true ) );
@@ -8366,22 +8379,22 @@ void mage_t::apl_fire()
     combustion_phase -> add_action( non_special_item_actions[i] );
   }
   combustion_phase -> add_action( mage_t::get_special_use_items( "obelisk_of_the_void", false ) );
-  combustion_phase -> add_action( this, "Pyroblast", "if=buff.kaelthas_ultimate_ability.react&buff.combustion.remains>execute_time" );
+  combustion_phase -> add_action( this, "Pyroblast", "if=variable.marquee_bracers_equipped&buff.kaelthas_ultimate_ability.react&buff.combustion.remains>execute_time" );
   combustion_phase -> add_action( this, "Pyroblast", "if=buff.hot_streak.up" );
   combustion_phase -> add_action( this, "Fire Blast", "if=buff.heating_up.up" );
   combustion_phase -> add_action( this, "Phoenix's Flames" );
   combustion_phase -> add_action( this, "Scorch", "if=buff.combustion.remains>cast_time" );
   combustion_phase -> add_action( this, "Dragon's Breath", "if=buff.hot_streak.down&action.fire_blast.charges<1&action.phoenixs_flames.charges<1" );
-  combustion_phase -> add_action( this, "Scorch", "if=target.health.pct<=30&equipped.132454");
+  combustion_phase -> add_action( this, "Scorch", "if=target.health.pct<=30&variable.koralons_belt_equipped");
 
   rop_phase        -> add_talent( this, "Rune of Power" );
   rop_phase        -> add_action( this, "Flamestrike", "if=((talent.flame_patch.enabled&active_enemies>1)|(active_enemies>3))&buff.hot_streak.up" );
   rop_phase        -> add_action( this, "Pyroblast", "if=buff.hot_streak.up" );
   rop_phase        -> add_action( "call_action_list,name=active_talents" );
-  rop_phase        -> add_action( this, "Pyroblast", "if=buff.kaelthas_ultimate_ability.react&execute_time<buff.kaelthas_ultimate_ability.remains" );
+  rop_phase        -> add_action( this, "Pyroblast", "if=variable.marquee_bracers_equipped&buff.kaelthas_ultimate_ability.react&execute_time<buff.kaelthas_ultimate_ability.remains" );
   rop_phase        -> add_action( this, "Fire Blast", "if=!prev_off_gcd.fire_blast" );
   rop_phase        -> add_action( this, "Phoenix's Flames", "if=!prev_gcd.1.phoenixs_flames" );
-  rop_phase        -> add_action( this, "Scorch", "if=target.health.pct<=30&equipped.132454" );
+  rop_phase        -> add_action( this, "Scorch", "if=target.health.pct<=30&variable.koralons_belt_equipped" );
   rop_phase        -> add_action( this, "Dragon's Breath", "if=active_enemies>2" );
   rop_phase        -> add_action( this, "Flamestrike", "if=(talent.flame_patch.enabled&active_enemies>2)|active_enemies>5" );
   rop_phase        -> add_action( this, "Fireball" );
@@ -8389,22 +8402,22 @@ void mage_t::apl_fire()
   active_talents   -> add_talent( this, "Blast Wave", "if=(buff.combustion.down)|(buff.combustion.up&action.fire_blast.charges<1&action.phoenixs_flames.charges<1)" );
   active_talents   -> add_talent( this, "Meteor", "if=cooldown.combustion.remains>15|(cooldown.combustion.remains>target.time_to_die)|buff.rune_of_power.up" );
   active_talents   -> add_talent( this, "Cinderstorm", "if=cooldown.combustion.remains<cast_time&(buff.rune_of_power.up|!talent.rune_on_power.enabled)|cooldown.combustion.remains>10*spell_haste&!buff.combustion.up" );
-  active_talents   -> add_action( this, "Dragon's Breath", "if=equipped.132863|(talent.alexstraszas_fury.enabled&buff.hot_streak.down)" );
+  active_talents   -> add_action( this, "Dragon's Breath", "if=variable.darcklis_helm_equipped|(talent.alexstraszas_fury.enabled&buff.hot_streak.down)" );
   active_talents   -> add_talent( this, "Living Bomb", "if=active_enemies>1&buff.combustion.down" );
 
   standard    -> add_action( this, "Flamestrike", "if=((talent.flame_patch.enabled&active_enemies>1)|active_enemies>3)&buff.hot_streak.up" );
   standard    -> add_action( this, "Pyroblast", "if=buff.hot_streak.up&buff.hot_streak.remains<action.fireball.execute_time" );
   standard    -> add_action( this, "Phoenix's Flames", "if=charges_fractional>2.7&active_enemies>2" );
   standard    -> add_action( this, "Pyroblast", "if=buff.hot_streak.up&!prev_gcd.1.pyroblast" );
-  standard    -> add_action( this, "Pyroblast", "if=buff.hot_streak.react&target.health.pct<=30&equipped.132454" );
-  standard    -> add_action( this, "Pyroblast", "if=buff.kaelthas_ultimate_ability.react&execute_time<buff.kaelthas_ultimate_ability.remains" );
+  standard    -> add_action( this, "Pyroblast", "if=buff.hot_streak.react&target.health.pct<=30&variable.koralons_belt_equipped" );
+  standard    -> add_action( this, "Pyroblast", "if=variable.marquee_bracers_equipped&buff.kaelthas_ultimate_ability.react&execute_time<buff.kaelthas_ultimate_ability.remains" );
   standard    -> add_action( "call_action_list,name=active_talents" );
   standard    -> add_action( this, "Fire Blast", "if=!talent.kindling.enabled&buff.heating_up.up&(!talent.rune_of_power.enabled|charges_fractional>1.4|cooldown.combustion.remains<40)&(3-charges_fractional)*(12*spell_haste)<cooldown.combustion.remains+3|target.time_to_die.remains<4" );
   standard    -> add_action( this, "Fire Blast", "if=talent.kindling.enabled&buff.heating_up.up&(!talent.rune_of_power.enabled|charges_fractional>1.5|cooldown.combustion.remains<40)&(3-charges_fractional)*(18*spell_haste)<cooldown.combustion.remains+3|target.time_to_die.remains<4" );
   standard    -> add_action( this, "Phoenix's Flames", "if=(buff.combustion.up|buff.rune_of_power.up|buff.incanters_flow.stack>3|talent.mirror_image.enabled)&artifact.phoenix_reborn.enabled&(4-charges_fractional)*13<cooldown.combustion.remains+5|target.time_to_die.remains<10" );
   standard    -> add_action( this, "Phoenix's Flames", "if=(buff.combustion.up|buff.rune_of_power.up)&(4-charges_fractional)*30<cooldown.combustion.remains+5" );
   standard    -> add_action( this, "Flamestrike", "if=(talent.flame_patch.enabled&active_enemies>1)|active_enemies>5" );
-  standard    -> add_action( this, "Scorch", "if=target.health.pct<=30&equipped.132454" );
+  standard    -> add_action( this, "Scorch", "if=target.health.pct<=30&variable.koralons_belt_equipped" );
   standard    -> add_action( this, "Fireball" );
 
 
@@ -8424,7 +8437,7 @@ void mage_t::apl_frost()
 
   default_list -> add_action( this, "Counterspell", "if=target.debuff.casting.react" );
   default_list -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react=0&prev_gcd.1.flurry" );
-  default_list -> add_action( this, "Time Warp", "if=(time=0&buff.bloodlust.down)|(buff.bloodlust.down&equipped.132410&(cooldown.icy_veins.remains<1|target.time_to_die<50))" );
+  default_list -> add_action( this, "Time Warp", "if=(time=0&buff.bloodlust.down)|(buff.bloodlust.down&variable.shard_ring_equipped&(cooldown.icy_veins.remains<1|target.time_to_die<50))" );
   default_list -> add_action( mage_t::get_special_use_items( "horn_of_valor", false ) );
   default_list -> add_action( mage_t::get_special_use_items( "obelisk_of_the_void", false ) );
   default_list -> add_action( mage_t::get_special_use_items( "mrrgrias_favor", false ) );
@@ -8443,7 +8456,7 @@ void mage_t::apl_frost()
   single -> add_action( this, "Frozen Orb" );
   single -> add_talent( this, "Ice Nova" );
   single -> add_talent( this, "Comet Storm" );
-  single -> add_action( this, "Blizzard", "if=talent.arctic_gale.enabled|active_enemies>1|(buff.zannesu_journey.stack=5&buff.zannesu_journey.remains>cast_time)" );
+  single -> add_action( this, "Blizzard", "if=talent.arctic_gale.enabled|active_enemies>1|(variable.zannesu_belt_equipped&buff.zannesu_journey.stack=5&buff.zannesu_journey.remains>cast_time)" );
   single -> add_action( this, "Ebonbolt", "if=buff.brain_freeze.react=0" );
   single -> add_talent( this, "Glacial Spike" );
   single -> add_action( this, "Frostbolt" );
