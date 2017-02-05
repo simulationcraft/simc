@@ -4,7 +4,7 @@
 #ifndef ptr_MAX_CLASS
 #define ptr_MAX_CLASS (13)
 #endif
-// Class based active abilities, wow build 23445
+// Class based active abilities, wow build 23514
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
@@ -943,7 +943,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       116670, // Vivify
            0,
     },
-    // Windwalker tree, 17 abilities
+    // Windwalker tree, 18 abilities
     {
       116768, // Blackout Kick!
       211432, // Combo Master
@@ -955,6 +955,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       101545, // Flying Serpent Kick
       213114, // Hidden Master's Forbidden Touch
       228287, // Mark of the Crane
+      240672, // Master of Combinations
       107428, // Rising Sun Kick
       116705, // Spear Hand Strike
       101546, // Spinning Crane Kick
@@ -1163,7 +1164,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
 };
 #define PTR_TREE_SPECIALIZATION_SIZE (36)
 
-// Talent tree specialization abilities, wow build 23445
+// Talent tree specialization abilities, wow build 23514
 static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -2264,7 +2265,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
 };
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 23445
+// Class mastery abilities, wow build 23514
 static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2503,7 +2504,7 @@ static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS]
 #define ptr_MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 23445
+// Racial abilities, wow build 23514
 static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -3241,7 +3242,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
 };
 #define PTR_SET_BONUS_DATA_SIZE (544)
 
-// Set bonus data, wow build 23445
+// Set bonus data, wow build 23514
 static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,   71, 165636, { 127055, 127081, 127092, 127103, 127114,  0 } },
@@ -3810,9 +3811,9 @@ static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   { "Vestment of Second Sight"                   ,     "tier19",     12,  1282,   19,   4,  12,  577, 211074, { 138375, 138376, 138377, 138378, 138379, 138380,  0 } },
   { "Vestment of Second Sight"                   ,     "tier19",     12,  1282,   19,   4,  12,  581, 211077, { 138375, 138376, 138377, 138378, 138379, 138380,  0 } },
 };
-#define PTR_RPPMMOD_SIZE (368)
+#define PTR_RPPMMOD_SIZE (369)
 
-// 368 RPPM Modifiers, wow build level 23445
+// 369 RPPM Modifiers, wow build level 23514
 static struct rppm_modifier_t __ptr_rppmmodifier_data[] = {
   {  45054,    4,  1,  1.0000 },
   {  49530,    1,  1,  1.0000 },
@@ -4124,15 +4125,15 @@ static struct rppm_modifier_t __ptr_rppmmodifier_data[] = {
   { 225138,  256,  4, -0.2400 },
   { 225138,   65,  4, -0.1300 },
   { 225138,  264,  4,  0.1200 },
-  { 225139,  251,  4,  1.0000 },
-  { 225139,  252,  4,  0.6600 },
+  { 225139,  251,  4,  1.2000 },
+  { 225139,  252,  4,  1.8000 },
   { 225139,  577,  4,  0.1200 },
   { 225139,  103,  4,  1.2400 },
   { 225139,  253,  4,  1.8000 },
   { 225139,  254,  4,  1.2400 },
   { 225139,  255,  4,  0.5000 },
-  { 225139,  269,  4,  1.1000 },
-  { 225139,   70,  4, -0.6000 },
+  { 225139,  269,  4, -0.2000 },
+  { 225139,   70,  4,  0.0000 },
   { 225139,  259,  4,  0.1700 },
   { 225139,  260,  4,  1.8000 },
   { 225139,  261,  4,  2.0000 },
@@ -4182,11 +4183,12 @@ static struct rppm_modifier_t __ptr_rppmmodifier_data[] = {
   { 238498,   66,  4, -0.5000 },
   { 238524,  435,  3, -0.5000 },
   { 238524,    4,  1,  1.0000 },
+  { 240909,    4,  1,  1.0000 },
   {      0,    0,  0,  0.0000 },
 };
 #define PTR_ARTIFACT_SIZE (41)
 
-// Artifact base data, wow build 23445
+// Artifact base data, wow build 23514
 static struct artifact_t __ptr_artifact_data[PTR_ARTIFACT_SIZE] = {
   {  2,  70 },
   {  3, 577 },
@@ -4232,7 +4234,7 @@ static struct artifact_t __ptr_artifact_data[PTR_ARTIFACT_SIZE] = {
 };
 #define PTR_ARTIFACT_POWER_SIZE (859)
 
-// Artifact power data, wow build 23445
+// Artifact power data, wow build 23514
 static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER_SIZE] = {
   {   40,   2,  18,  0,   0, 205273, "Wake of Ashes"                      }, // Wake of Ashes (id=205273, n_ranks=1)
   {   41,   2,  32,  4,   3, 186941, "Highlord's Judgment"                }, // Highlord's Judgment (id=186941, n_ranks=8)
@@ -4931,7 +4933,7 @@ static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER
   { 1340,  54,   0,  0,   1, 221844, "Wings of Flame"                     }, // Wings of Flame (id=221844, n_ranks=1)
   { 1372,  54,   5,  0,  20, 214918, "Empowered Spellblade"               }, // Empowered Spellblade (id=214918, n_ranks=20)
   { 1533,  54,  34, 13,   4, 238055, "Pre-Ignited"                        }, // Pre-Ignited (id=238055, n_ranks=8)
-  { 1534,  54,   0,  0,   1, 238091, "Phoenix's Warmth"                   }, // Phoenix's Warmth (id=238091, n_ranks=1)
+  { 1534,  54,   0,  0,   1, 238091, "Warmth of the Phoenix"              }, // Warmth of the Phoenix (id=238091, n_ranks=1)
   { 1535,  54,   1,  0,   1, 238127, "Strafing Run"                       }, // Strafing Run (id=238127, n_ranks=1)
   { 1536,  54,   5,  0,  20, 239042, "Infinite"                           }, // Infinite (id=239042, n_ranks=1)
   {  307,  55,  18,  0,   0, 204147, "Windburst"                          }, // Windburst (id=204147, n_ranks=1)
@@ -4954,7 +4956,7 @@ static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER
   { 1337,  55,   0,  0,   1, 214826, "Wind Arrows"                        }, // Wind Arrows (id=214826, n_ranks=1)
   { 1369,  55,   5,  0,  20, 214915, "Windflight Arrows"                  }, // Windflight Arrows (id=214915, n_ranks=20)
   { 1521,  55,  34, 13,   4, 238052, "Unerring Arrows"                    }, // Unerring Arrows (id=238052, n_ranks=8)
-  { 1522,  55,   0,  0,   1, 238088, "Opportunist"                        }, // Opportunist (id=238088, n_ranks=1)
+  { 1522,  55,   0,  0,   1, 238088, "Feet of Wind"                       }, // Feet of Wind (id=238088, n_ranks=1)
   { 1523,  55,   1,  0,   1, 238124, "Cyclonic Burst"                     }, // Cyclonic Burst (id=238124, n_ranks=1)
   { 1524,  55,   5,  0,  20, 239042, "Infinite"                           }, // Infinite (id=239042, n_ranks=1)
   {  868,  56,  32,  4,   3, 197038, "Wilderness Expert"                  }, // Wilderness Expert (id=197038, n_ranks=8)
@@ -5096,7 +5098,7 @@ static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER
 };
 #define PTR_ARTIFACT_POWER_RANK_SIZE (4105)
 
-// Artifact power rank data, wow build 23445
+// Artifact power rank data, wow build 23514
 static struct artifact_power_rank_t __ptr_artifact_power_rank_data[PTR_ARTIFACT_POWER_RANK_SIZE] = {
   { 2316,    40,  0, 205273,      0.000, 0x00000000, 0 },
   { 2317,    41,  0, 186941,      8.000, 0x00000000, 0 },
@@ -9206,7 +9208,7 @@ static struct artifact_power_rank_t __ptr_artifact_power_rank_data[PTR_ARTIFACT_
 };
 #define PTR_PTR_ARTIFACT_POWER_RANK_HOTFIX_SIZE (0)
 
-// 0 ptr_artifact_power_rank hotfix entries, wow build level 23445
+// 0 ptr_artifact_power_rank hotfix entries, wow build level 23514
 static hotfix::client_hotfix_entry_t __ptr_ptr_artifact_power_rank_hotfix_data[] = {
   {      0,  0, 0, 0 },
 };

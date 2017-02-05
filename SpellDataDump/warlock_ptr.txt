@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23436, git build ed53d25)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23436, git build 7d86112)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -32,7 +32,7 @@ Resource         : 3% Base Mana (33000 @Level 110)
 Spell Level      : 3
 Range            : 40 yards
 GCD              : 1.5 seconds
-Affecting spells : Mastery: Potent Afflictions (77215), Epidemic (184922), Absolute Corruption (196103), Drain Soul (198590), Hideous Corruption (199112), Perdition (199158), Wrath of Consumption (199646), Winnowing (238072)
+Affecting spells : Mastery: Potent Afflictions (77215), Epidemic (184922), Absolute Corruption (196103), Drain Soul (198590), Hideous Corruption (199112), Perdition (199158), Wrath of Consumption (199646), Sacrolash's Dark Strike (207952), Winnowing (238072)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -242,7 +242,7 @@ Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Category         : 1363
-Affecting spells : Demon Skin (219272)
+Affecting spells : Demon Skin (219272), Corrupted Sayaad Orb (240264)
 Attributes       : ........ ........ ........ ........   x....... ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
@@ -3195,7 +3195,7 @@ School           : Shadow
 Spell Level      : 3
 Range            : 40 yards
 Duration         : 14 seconds
-Affecting spells : Mastery: Potent Afflictions (77215), Epidemic (184922), Absolute Corruption (196103), Drain Soul (198590), Hideous Corruption (199112), Perdition (199158), Wrath of Consumption (199646), Winnowing (238072)
+Affecting spells : Mastery: Potent Afflictions (77215), Epidemic (184922), Absolute Corruption (196103), Drain Soul (198590), Hideous Corruption (199112), Perdition (199158), Wrath of Consumption (199646), Sacrolash's Dark Strike (207952), Winnowing (238072)
 Triggered by     : Corruption (172)
 Attributes       : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ .x...... ........ ........ 
