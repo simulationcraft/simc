@@ -29,13 +29,15 @@ struct adds_event_t : public raid_event_t
   double spawn_radius;
   double spawn_angle_start;
   double spawn_angle_end;
+  std::string race_str;
+  race_e race;
 
   adds_event_t( sim_t* s, const std::string& options_str ) :
     raid_event_t( s, "adds" ),
     count( 1 ), health( 100000 ), master_str( "Fluffy_Pillow" ), name_str( "Add" ),
     master( 0 ), count_range( false ), adds_to_remove( 0 ), spawn_x_coord( 0 ),
     spawn_y_coord( 0 ), spawn_stacked( 0 ), spawn_radius_min( 0 ), spawn_radius_max( 0 ),
-    spawn_radius( 0 ), spawn_angle_start( -1 ), spawn_angle_end( -1 )
+    spawn_radius( 0 ), spawn_angle_start( -1 ), spawn_angle_end( -1 ), race(RACE_NONE)
   {
     add_option( opt_string( "name", name_str ) );
     add_option( opt_string( "master", master_str ) );
@@ -50,6 +52,7 @@ struct adds_event_t : public raid_event_t
     add_option( opt_float( "distance", spawn_radius ) );
     add_option( opt_float( "angle_start", spawn_angle_start ) );
     add_option( opt_float( "angle_end", spawn_angle_end ) );
+    add_option( opt_string( "race", race_str ) );
     parse_options( options_str );
 
     master = sim -> find_player( master_str );
@@ -77,6 +80,15 @@ struct adds_event_t : public raid_event_t
       sim -> errorf( "Simc does not support overlapping add spawning in a single raid event (duration of %.3fs > reasonable minimum cooldown of %.3fs).", duration.total_seconds(), min_cd.total_seconds() );
       overlap = 1;
       duration = min_cd - timespan_t::from_seconds( 0.001 );
+    }
+
+    if (!race_str.empty())
+    {
+      race = util::parse_race_type(race_str);
+    }
+    else if (!sim->target_race.empty())
+    {
+      race = util::parse_race_type(sim->target_race);
     }
 
     sim -> add_waves++;
@@ -173,6 +185,8 @@ struct adds_event_t : public raid_event_t
         pet_t* p = master -> create_pet( add_name_str );
         assert( p );
         p -> resources.base[ RESOURCE_HEALTH ] = health;
+        p -> race = race;
+        p -> race_str = util::race_type_string(race);
         adds.push_back( p );
       }
     }

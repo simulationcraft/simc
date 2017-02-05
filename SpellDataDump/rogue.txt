@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 09720ab)
+SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 4849e27)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
@@ -2649,11 +2649,13 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179721)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 7 | Scaled Value: 7 | Target: Self(1)
+                   Base Value: 11 | Scaled Value: 11 | Target: Self(1)
                    Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Mutilate (5374), Ambush (8676), Venomhide Poison (14795), Hemorrhage (16511), Mutilate Off-Hand (27576), Spore Cloud (32643), Envenom (32645), Fan of Knives (51723), Deadly Poison (113780), Shuriken Toss (114014), Death from Above (152150), Poisoned Knife (185565), Kingsbane (192759), Kingsbane (192760), Shuriken Storm (197835), Agonizing Poison (200803), Kingsbane (222062)
+                   Hotfixed: Base Value (7 -> 11)
 #2 (id=191052)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 7 | Scaled Value: 7 | Misc Value: 22 | Target: Self(1)
+                   Base Value: 11 | Scaled Value: 11 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Garrote (703), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Venomhide Poison (14795), Spore Cloud (32643), Deadly Poison (113780), Kingsbane (192759), Kingsbane (192760), Agonizing Poison (200803), Kingsbane (222062)
+                   Hotfixed: Base Value (7 -> 11)
 #3 (id=191053)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 3 | Target: Self(1)
                    Affected Spells: Insignia of Ravenholdt (209041)
