@@ -29,7 +29,7 @@ actions+=/arcane_torrent,if=runic_power.deficit>20
 actions+=/blood_fury,if=buff.pillar_of_frost.up
 actions+=/berserking,if=buff.pillar_of_frost.up
 actions+=/use_item,slot=trinket1
-actions+=/potion,name=prolonged_power,if=buff.pillar_of_frost.up
+actions+=/potion,name=prolonged_power,if=buff.pillar_of_frost.up&(!talent.breath_of_sindragosa.enabled|!cooldown.breath_of_sindragosa.remains)
 actions+=/sindragosas_fury,if=buff.pillar_of_frost.up&(buff.unholy_strength.up|(buff.pillar_of_frost.remains<3&target.time_to_die<60))&debuff.razorice.stack=5&!buff.obliteration.up
 actions+=/obliteration,if=(!talent.frozen_pulse.enabled|(rune<2&runic_power<28))&!talent.gathering_storm.enabled
 actions+=/call_action_list,name=generic,if=!talent.breath_of_sindragosa.enabled&!(talent.gathering_storm.enabled&buff.remorseless_winter.remains)
@@ -44,9 +44,10 @@ actions.bos+=/breath_of_sindragosa,if=runic_power>=50
 actions.bos+=/frost_strike,if=runic_power>=90&set_bonus.tier19_4pc
 actions.bos+=/remorseless_winter,if=buff.rime.react&equipped.132459
 actions.bos+=/howling_blast,if=buff.rime.react&(dot.remorseless_winter.ticking|cooldown.remorseless_winter.remains>1.5|!equipped.132459)
+actions.bos+=/obliterate,if=!buff.rime.react&!(talent.gathering_storm.enabled&!(cooldown.remorseless_winter.remains>2|rune>4))&rune>3
 actions.bos+=/frost_strike,if=runic_power>=70|((talent.gathering_storm.enabled&cooldown.remorseless_winter.remains<3&cooldown.breath_of_sindragosa.remains>10)&rune<5)
 actions.bos+=/obliterate,if=!buff.rime.react&!(talent.gathering_storm.enabled&!(cooldown.remorseless_winter.remains>2|rune>4))
-actions.bos+=/horn_of_winter,if=cooldown.breath_of_sindragosa.remains>15&runic_power<=70&rune<5
+actions.bos+=/horn_of_winter,if=cooldown.breath_of_sindragosa.remains>15&runic_power<=70&rune<4
 actions.bos+=/frost_strike,if=cooldown.breath_of_sindragosa.remains>15
 actions.bos+=/remorseless_winter,if=cooldown.breath_of_sindragosa.remains>10
 
