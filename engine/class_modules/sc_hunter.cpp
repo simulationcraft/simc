@@ -131,7 +131,6 @@ public:
     buff_t* marking_targets;
     buff_t* hunters_mark_exists;
     buff_t* lock_and_load;
-    buff_t* stampede;
     buff_t* trick_shot;
     buff_t* trueshot;
     buff_t* volley;
@@ -201,7 +200,6 @@ public:
     proc_t* mortal_wounds;
     proc_t* t18_4pc_sv;
     proc_t* zevrims_hunger;
-    proc_t* convergence;
     proc_t* marking_targets;
     proc_t* wasted_marking_targets;
     proc_t* animal_instincts_mongoose;
@@ -1530,7 +1528,6 @@ struct dire_critter_t: public hunter_secondary_pet_t
 
   struct actives_t
   {
-    action_t* jaws_of_thunder;
     action_t* stomp;
     action_t* titans_thunder;
   } active;
@@ -5996,7 +5993,6 @@ void hunter_t::init_procs()
   procs.mortal_wounds                = get_proc( "mortal_wounds" );
   procs.t18_4pc_sv                   = get_proc( "t18_4pc_sv" );
   procs.zevrims_hunger               = get_proc( "zevrims_hunger" );
-  procs.convergence                  = get_proc( "convergence" );
   procs.marking_targets              = get_proc( "marking_targets" );
   procs.wasted_marking_targets       = get_proc( "wasted_marking_targets" );
   procs.animal_instincts_mongoose    = get_proc( "animal_instincts_mongoose" );
