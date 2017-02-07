@@ -5389,15 +5389,14 @@ expr_t* hunter_t::create_expression( action_t* a, const std::string& expression_
       {
         hunter_t* hunter = static_cast<hunter_t*>( action -> player );
 
-        double lowest_duration = static_cast<hunter_td_t*>( hunter -> get_target_data( action -> target ) ) -> debuffs.vulnerable -> remains().total_seconds();
+        timespan_t lowest_duration = hunter -> get_target_data( action -> target ) -> debuffs.vulnerable -> remains();
 
-        for ( size_t i = 0, actors = hunter -> sim -> target_non_sleeping_list.size(); i < actors; i++ )
+        for ( player_t* t : hunter -> sim -> target_non_sleeping_list )
         {
-          player_t* t = hunter -> sim -> target_non_sleeping_list[ i ];
           if ( ! hunter -> sim -> distance_targeting_enabled || action -> target -> get_player_distance( *t ) <= radius )
-            lowest_duration = std::min( lowest_duration, static_cast<hunter_td_t*>( hunter -> get_target_data( t ) ) -> debuffs.vulnerable -> remains().total_seconds() );
+            lowest_duration = std::min( lowest_duration, hunter -> get_target_data( t ) -> debuffs.vulnerable -> remains() );
         }
-        return lowest_duration;
+        return lowest_duration.total_seconds();
       }
     };
     return new lowest_piercing_vuln_expr_t( a, util::str_to_num<int>( splits[ 1 ] ) );
