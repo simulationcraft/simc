@@ -298,6 +298,7 @@ public:
     timespan_t lessons_of_spacetime2;
     timespan_t lessons_of_spacetime3;
     bool sephuzs_secret;
+    bool magistrike;
 
   } legendary;
 
@@ -3785,13 +3786,69 @@ struct incinerate_t: public warlock_spell_t
   }
 };
 
+struct duplicate_chaos_bolt_t : public warlock_spell_t
+{
+  duplicate_chaos_bolt_t( warlock_t* p ) :
+    warlock_spell_t( "chaos_bolt_magistrike", p, p -> find_spell( 213229 ) )
+  {
+    can_havoc = background = dual = true;
+    crit_bonus_multiplier *= 1.0 + p -> artifact.chaotic_instability.percent();
+    base_multiplier *= 1.0 + ( p -> sets.set( WARLOCK_DESTRUCTION, T18, B2 ) -> effectN( 2 ).percent() );
+    base_multiplier *= 1.0 + ( p -> sets.set( WARLOCK_DESTRUCTION, T17, B4 ) -> effectN( 1 ).percent() );
+  }
+
+  std::vector< player_t* >& target_list() const override
+  {
+    if ( !sim -> distance_targeting_enabled )
+      return warlock_spell_t::target_list();
+
+    target_cache.list.clear();
+    for ( size_t j = 0; j < sim -> target_non_sleeping_list.size(); ++j )
+    {
+      player_t* duplicate_target = sim -> target_non_sleeping_list[j];
+      if ( target == duplicate_target )
+        continue;
+      if ( target -> get_player_distance( *duplicate_target ) <= 30 )
+        target_cache.list.push_back( duplicate_target );
+    }
+    return target_cache.list;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    warlock_spell_t::impact( s );
+    if ( p() -> talents.eradication -> ok() && result_is_hit( s -> result ) )
+      td( s -> target ) -> debuffs_eradication -> trigger();
+  }
+
+  // Force spell to always crit
+  double composite_crit_chance() const override
+  {
+    return 1.0;
+  }
+
+  double calculate_direct_amount( action_state_t* state ) const override
+  {
+    warlock_spell_t::calculate_direct_amount( state );
+
+    // Can't use player-based crit chance from the state object as it's hardcoded to 1.0. Use cached
+    // player spell crit instead. The state target crit chance of the state object is correct.
+    // Targeted Crit debuffs function as a separate multiplier.
+    state -> result_total *= 1.0 + player -> cache.spell_crit_chance() + state -> target_crit_chance;
+
+    return state -> result_total;
+  }
+};
+
 struct chaos_bolt_t: public warlock_spell_t
 {
   double backdraft_gcd;
   double backdraft_cast_time;
   double refund;
-  chaos_bolt_t( warlock_t* p ):
-    warlock_spell_t( p, "Chaos Bolt" ), refund(0)
+  duplicate_chaos_bolt_t* duplicate;
+  double duplicate_chance;
+  chaos_bolt_t( warlock_t* p ) :
+    warlock_spell_t( p, "Chaos Bolt" ), refund( 0 ), duplicate( nullptr ), duplicate_chance( 0 )
   {
     if ( p -> talents.reverse_entropy -> ok() )
       base_execute_time += p -> talents.reverse_entropy -> effectN( 2 ).time_value();
@@ -3806,6 +3863,10 @@ struct chaos_bolt_t: public warlock_spell_t
 
     backdraft_cast_time = 1.0 + p -> buffs.backdraft -> data().effectN( 1 ).percent();
     backdraft_gcd = 1.0 + p -> buffs.backdraft -> data().effectN( 2 ).percent();
+
+    duplicate = new duplicate_chaos_bolt_t( p );
+    duplicate_chance = p -> find_spell( 213014 ) -> proc_chance();
+    add_child( duplicate );
   }
 
   virtual void schedule_execute( action_state_t* state = nullptr ) override
@@ -3848,10 +3909,20 @@ struct chaos_bolt_t: public warlock_spell_t
 
   void impact( action_state_t* s ) override
   {
+    warlock_spell_t::impact( s );
     if ( p() -> talents.eradication -> ok() && result_is_hit( s -> result ) )
       td( s -> target ) -> debuffs_eradication -> trigger();
-
-    warlock_spell_t::impact( s );
+    if ( p() -> legendary.magistrike && rng().roll( duplicate_chance ) )
+    {
+      duplicate -> target = s -> target;
+      duplicate -> target_cache.is_valid = false;
+      duplicate -> target_list();
+      if ( duplicate -> target_cache.list.size() > 0 )
+      {
+        duplicate -> target = duplicate -> target_cache.list.front();
+        duplicate -> execute();
+      }
+    }
   }
 
   void execute() override
@@ -7612,6 +7683,16 @@ struct sephuzs_secret_t : public scoped_actor_callback_t<warlock_t>
   }
 };
 
+struct magistrike_t : public scoped_actor_callback_t<warlock_t>
+{
+  magistrike_t() : super( WARLOCK ) {}
+
+  void manipulate( warlock_t* a, const special_effect_t& ) override
+  {
+    a -> legendary.magistrike = true;
+  }
+};
+
 struct warlock_module_t: public module_t
 {
   warlock_module_t(): module_t( WARLOCK ) {}
@@ -7644,6 +7725,7 @@ struct warlock_module_t: public module_t
     register_special_effect( 236199, wakeners_loyalty_t() );
     register_special_effect( 236174, lessons_of_spacetime_t() );
     register_special_effect( 208051, sephuzs_secret_t() );
+    register_special_effect( 213014, magistrike_t() );
   }
 
   virtual void register_hotfixes() const override
