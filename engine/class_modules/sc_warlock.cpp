@@ -3760,20 +3760,39 @@ struct incinerate_t: public warlock_spell_t
 
 struct duplicate_chaos_bolt_t : public warlock_spell_t
 {
+  player_t* original_target;
   duplicate_chaos_bolt_t( warlock_t* p ) :
-    warlock_spell_t( "chaos_bolt_magistrike", p, p -> find_spell( 213229 ) )
+    warlock_spell_t( "chaos_bolt_magistrike", p, p -> find_spell( 213229 ) ),
+    original_target( nullptr )
   {
-    can_havoc = background = dual = true;
+    background = dual = true;
     crit_bonus_multiplier *= 1.0 + p -> artifact.chaotic_instability.percent();
     base_multiplier *= 1.0 + ( p -> sets.set( WARLOCK_DESTRUCTION, T18, B2 ) -> effectN( 2 ).percent() );
     base_multiplier *= 1.0 + ( p -> sets.set( WARLOCK_DESTRUCTION, T17, B4 ) -> effectN( 1 ).percent() );
   }
 
+  timespan_t travel_time() const override
+  {
+    double distance;
+    distance = original_target -> get_player_distance( *target );
+
+    if ( execute_state && execute_state -> target )
+      distance += execute_state -> target -> height;
+
+    if ( distance == 0 ) return timespan_t::zero();
+
+    double t = distance / travel_speed;
+
+    double v = sim -> travel_variance;
+
+    if ( v )
+      t = rng().gauss( t, v );
+
+    return timespan_t::from_seconds( t );
+  }
+
   std::vector< player_t* >& target_list() const override
   {
-    if ( !sim -> distance_targeting_enabled )
-      return warlock_spell_t::target_list();
-
     target_cache.list.clear();
     for ( size_t j = 0; j < sim -> target_non_sleeping_list.size(); ++j )
     {
@@ -3784,13 +3803,6 @@ struct duplicate_chaos_bolt_t : public warlock_spell_t
         target_cache.list.push_back( duplicate_target );
     }
     return target_cache.list;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    warlock_spell_t::impact( s );
-    if ( p() -> talents.eradication -> ok() && result_is_hit( s -> result ) )
-      td( s -> target ) -> debuffs_eradication -> trigger();
   }
 
   // Force spell to always crit
@@ -3838,6 +3850,7 @@ struct chaos_bolt_t: public warlock_spell_t
 
     duplicate = new duplicate_chaos_bolt_t( p );
     duplicate_chance = p -> find_spell( 213014 ) -> proc_chance();
+    duplicate -> travel_speed = travel_speed;
     add_child( duplicate );
   }
 
@@ -3886,12 +3899,15 @@ struct chaos_bolt_t: public warlock_spell_t
       td( s -> target ) -> debuffs_eradication -> trigger();
     if ( p() -> legendary.magistrike && rng().roll( duplicate_chance ) )
     {
+      duplicate -> original_target = s -> target;
       duplicate -> target = s -> target;
       duplicate -> target_cache.is_valid = false;
       duplicate -> target_list();
+      duplicate ->target_cache.is_valid = true;
       if ( duplicate -> target_cache.list.size() > 0 )
       {
-        duplicate -> target = duplicate -> target_cache.list.front();
+        size_t target_to_strike = static_cast<size_t>( rng().range( 0.0, duplicate -> target_cache.list.size() - 1 ) );
+        duplicate -> target = duplicate -> target_cache.list[target_to_strike];
         duplicate -> execute();
       }
     }
