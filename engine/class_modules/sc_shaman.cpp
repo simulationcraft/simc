@@ -4789,17 +4789,15 @@ struct seismic_storm_t : public shaman_spell_t
 		affected_by_elemental_focus = false;
 		//TODO: Take out these test-values, currently game data lacks values
 		school = SCHOOL_NATURE;
-		spell_power_mod.direct = 100.0;
+		spell_power_mod.direct = 1.0;
 	}
 };
 
 struct earthquake_damage_t : public shaman_spell_t
 {
   seismic_storm_t* thunderstruck;
-  
   earthquake_damage_t( shaman_t* player ) :
-    shaman_spell_t( "earthquake_", player, player -> find_spell( 77478 ) ),
-    thunderstruck( new seismic_storm_t( player ) )
+    shaman_spell_t( "earthquake_", player, player -> find_spell( 77478 ) )
   {
     aoe = -1;
     ground_aoe = background = true;
@@ -4807,6 +4805,12 @@ struct earthquake_damage_t : public shaman_spell_t
     spell_power_mod.direct = 0.5; // Hardcoded into tooltip because it's cool
     base_multiplier *= 1.0 + p() -> artifact.the_ground_trembles.percent();
     affected_by_elemental_focus = true; // Needed to explicitly flag, since spell data lacks info
+
+	if ( rng().roll( p() -> artifact.seismic_storm.data().proc_chance() ) )
+	{
+		thunderstruck = new seismic_storm_t( player );
+		add_child( thunderstruck );
+	}
   }
 
   double target_armor( player_t* ) const override
@@ -4822,16 +4826,6 @@ struct earthquake_damage_t : public shaman_spell_t
     }
 
     return m;
-  }
-
-  void execute() override
-  {
-    if ( rng().roll( p() -> artifact.seismic_storm.data().proc_chance() ) )
-    {
-      add_child( thunderstruck );
-    }
-
-	shaman_spell_t::execute();
   }
 };
 
