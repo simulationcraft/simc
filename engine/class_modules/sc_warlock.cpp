@@ -1284,34 +1284,6 @@ struct soul_effigy_spell_t : public warlock_pet_spell_t
     may_miss = may_crit = false;
   }
 
-  void init() override
-  {
-    warlock_pet_spell_t::init();
-    snapshot_flags = STATE_TGT_MUL_DA;
-    update_flags = 0;
-  }
-
-  virtual double composite_target_multiplier( player_t* target ) const override
-  {
-    double m = warlock_pet_spell_t::composite_target_multiplier( target );
-
-    warlock_td_t* td = this -> td( target );
-
-    if ( p() -> o() -> talents.contagion -> ok() )
-    {
-      for ( int i = 0; i < MAX_UAS; i++ )
-      {
-        if ( td -> dots_unstable_affliction[i] -> is_ticking() )
-        {
-          m *= 1.0 + p() -> o() -> talents.contagion -> effectN( 1 ).percent();
-          break;
-        }
-      }
-    }
-
-    return m;
-  }
-
   void execute() override
   {
     this->p()->o()->trigger_effigy(effi);
@@ -2517,8 +2489,14 @@ public:
 
     warlock_td_t* td = this -> td( t );
 
+    if ( td -> debuffs_eradication -> check() )
+      m *= 1.0 + p() -> find_spell( 196414 ) -> effectN( 1 ).percent();
+
     if ( target == p() -> havoc_target && affected_by_odr_shawl_of_the_ymirjar && p() -> legendary.odr_shawl_of_the_ymirjar )
       m*= 1.0 + p() -> find_spell( 212173 ) -> effectN( 1 ).percent();
+
+    if ( td -> debuffs_haunt -> check() )
+      m *= 1.0 + p() -> find_spell( 48181 ) -> effectN( 2 ).percent();
 
     if ( p() -> talents.contagion -> ok() && affected_by_contagion )
     {
@@ -2531,12 +2509,6 @@ public:
         }
       }
     }
-
-    if ( td -> debuffs_eradication -> check() )
-      m *= 1.0 + p() -> find_spell( 196414 ) -> effectN( 1 ).percent();
-
-    if ( td -> debuffs_haunt -> check() )
-      m *= 1.0 + p() -> find_spell( 48181 ) -> effectN( 2 ).percent();
 
     return spell_t::composite_target_multiplier( t ) * m;
   }
@@ -4739,6 +4711,12 @@ struct effigy_damage_override_t: public warlock_spell_t
   effigy_damage_override_t( warlock_t * p ):
     warlock_spell_t( "effigy_damage", p, NULL )
   {
+  }
+
+  void init() override
+  {
+    warlock_spell_t::init();
+    snapshot_flags = STATE_TGT_MUL_DA;
   }
 
   void setupEffigyStuff( pets::soul_effigy_spell_t *t )
