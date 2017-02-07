@@ -61,7 +61,6 @@ struct hunter_t: public player_t
 public:
 
   // Active
-  std::vector<pets::hunter_main_pet_t*> hunter_main_pets;
   std::vector<std::pair<cooldown_t*, proc_t*>> animal_instincts_cds;
   struct actives_t
   {
@@ -194,7 +193,6 @@ public:
   {
     proc_t* lock_and_load;
     proc_t* wild_call;
-    proc_t* tier17_2pc_bm;
     proc_t* tier18_4pc_bm;
     proc_t* hunting_companion;
     proc_t* wasted_hunting_companion;
@@ -409,7 +407,6 @@ public:
     artifact_power_t ferocity_of_the_unseen_path;
   } artifacts;
 
-  stats_t* stats_tier17_4pc_bm;
   stats_t* stats_tier18_4pc_bm;
 
   player_t* last_true_aim_target;
@@ -434,7 +431,6 @@ public:
     talents( talents_t() ),
     specs( specs_t() ),
     mastery( mastery_spells_t() ),
-    stats_tier17_4pc_bm( nullptr ),
     stats_tier18_4pc_bm( nullptr ),
     last_true_aim_target( nullptr ),
     clear_next_hunters_mark( true )
@@ -992,7 +988,6 @@ public:
     buff_t* beast_cleave;
     buff_t* dire_frenzy;
     buff_t* titans_frenzy;
-    buff_t* tier17_4pc_bm;
     buff_t* tier18_4pc_bm;
     buff_t* tier19_2pc_bm;
   } buffs;
@@ -1018,8 +1013,6 @@ public:
     gains( gains_t() ),
     benefits( benefits_t() )
   {
-    owner -> hunter_main_pets.push_back( this );
-
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = dbc.spell_scaling( owner -> type, owner -> level() ) * 0.25;
     main_hand_weapon.max_dmg    = dbc.spell_scaling( owner -> type, owner -> level() ) * 0.25;
@@ -1191,11 +1184,6 @@ public:
       buff_creator_t( this, "titans_frenzy", o() -> artifacts.titans_thunder )
         .duration( timespan_t::from_seconds( 30.0 ) );
 
-    buffs.tier17_4pc_bm = 
-      buff_creator_t( this, "tier17_4pc_bm", find_spell(178875) )
-        .default_value( owner -> find_spell( 178875 ) -> effectN( 2 ).percent() )
-        .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-
     buffs.tier18_4pc_bm = 
       buff_creator_t( this, "tier18_4pc_bm" )
         .default_value( owner -> find_spell( 178875 ) -> effectN( 2 ).percent() )
@@ -1292,49 +1280,6 @@ public:
     o() -> active.pet = this;
   }
 
-  bool tier_pet_summon( timespan_t duration )
-  {
-    // More than one 4pc pet could be up at a time
-    if ( this == o() -> active.pet || buffs.tier17_4pc_bm -> check() || buffs.tier18_4pc_bm -> check() )
-      return false;
-
-    type = PLAYER_GUARDIAN;
-
-    bool is_t18 = o() -> sets.has_set_bonus( HUNTER_BEAST_MASTERY, T18, B4 );
-
-    for ( size_t i = 0; i < stats_list.size(); ++i )
-    {
-      if ( !( stats_list[i] -> parent ) )
-      {
-        if ( is_t18 )
-          o() -> stats_tier18_4pc_bm -> add_child( stats_list[i] );
-        else
-          o() -> stats_tier17_4pc_bm -> add_child( stats_list[i] );
-      }
-    }
-    base_t::summon( duration );
-
-    double ap_coeff = 0.6; // default coefficient for pets
-    if ( is_t18 )
-    {
-      ap_coeff = 0.4; //  (1.0 + o() -> buffs.focus_fire -> current_value)
-      buffs.tier18_4pc_bm -> trigger();
-    }
-    else if ( o() -> sets.has_set_bonus( HUNTER_BEAST_MASTERY, T18, B4 ) )
-    {
-      // pet appears at the target
-      current.distance = 0;
-      buffs.tier17_4pc_bm -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, duration );
-    }
-
-    owner_coeff.ap_from_ap = ap_coeff;
-    owner_coeff.sp_from_ap = ap_coeff;
-
-    // pet swings immediately (without an execute time)
-    if ( !main_hand_attack -> execute_event ) main_hand_attack -> execute();
-    return true;
-  }
-
   virtual void demise() override
   {
     base_t::demise();
@@ -1349,10 +1294,6 @@ public:
 
     if ( buffs.bestial_wrath -> up() )
       m *= 1.0 + buffs.bestial_wrath -> current_value;
-
-    // from Nimox: 178875 is the 4pc BM pet damage buff
-    if ( buffs.tier17_4pc_bm -> up() )
-      m *= 1.0 + buffs.tier17_4pc_bm -> current_value;
 
     if ( buffs.tier19_2pc_bm -> up() )
       m *= 1.0 + buffs.tier19_2pc_bm -> check_value();
@@ -1972,7 +1913,7 @@ struct hunter_main_pet_attack_t: public hunter_main_pet_action_t < melee_attack_
   virtual bool ready() override
   {
     // Stampede pets don't use abilities or spells
-    if ( p() -> buffs.tier17_4pc_bm -> check() || p() -> buffs.tier18_4pc_bm -> check() )
+    if ( p() -> buffs.tier18_4pc_bm -> check() )
       return false;
 
     return base_t::ready();
@@ -2420,7 +2361,7 @@ struct hunter_main_pet_spell_t: public hunter_main_pet_action_t < spell_t >
   virtual bool ready() override
   {
     // Stampede pets don't use abilities or spells
-    if ( p() -> buffs.tier17_4pc_bm -> check() || p() -> buffs.tier18_4pc_bm -> check() )
+    if ( p() -> buffs.tier18_4pc_bm -> check() )
       return false;
 
     return base_t::ready();
@@ -4842,16 +4783,7 @@ struct bestial_wrath_t: public hunter_spell_t
     }
     if ( p() -> artifacts.master_of_beasts.rank() )
       p() -> pets.hati -> buffs.bestial_wrath -> trigger();
-    if ( p() -> sets.has_set_bonus( HUNTER_BEAST_MASTERY, T17, B4 ) )
-    {
-      const timespan_t duration = p() -> buffs.bestial_wrath -> buff_duration;
-      // start from the back so we don't overlap stampede pets in reporting
-      for ( size_t i = p() -> hunter_main_pets.size(); i-- > 0; )
-      {
-        if ( p() -> hunter_main_pets[i] -> tier_pet_summon( duration ) )
-          break;
-      }
-    }
+
     hunter_spell_t::execute();
   }
 
@@ -4893,10 +4825,8 @@ struct kill_command_t: public hunter_spell_t
     hunter_spell_t::execute();
 
     if ( p() -> active.pet )
-    {
       p() -> active.pet -> active.kill_command -> execute();
-      trigger_tier17_2pc_bm();
-    }
+
     if ( p() -> artifacts.master_of_beasts.rank() )
       p() -> pets.hati -> active.kill_command -> execute();
   }
@@ -4907,21 +4837,6 @@ struct kill_command_t: public hunter_spell_t
       return hunter_spell_t::ready();
 
     return false;
-  }
-
-  bool trigger_tier17_2pc_bm()
-  {
-    if ( !p() -> sets.has_set_bonus( HUNTER_BEAST_MASTERY, T17, B2 ) )
-      return false;
-
-    bool procced = rng().roll( p() -> sets.set( HUNTER_BEAST_MASTERY, T17, B2 ) -> proc_chance() );
-    if ( procced )
-    {
-      p() -> cooldowns.bestial_wrath -> reset( true );
-      p() -> procs.tier17_2pc_bm -> occur();
-    }
-
-    return procced;
   }
 };
 
@@ -5663,12 +5578,6 @@ void hunter_t::create_pets()
 {
   create_pet( summon_pet_str, summon_pet_str );
 
-  if ( sets.has_set_bonus( HUNTER_BEAST_MASTERY, T17, B4 ) )
-  {
-    create_pet( "t17_pet_2", "wolf" );
-    create_pet( "t17_pet_1", "wolf" );
-  }
-
   if ( sets.has_set_bonus( HUNTER_BEAST_MASTERY, T18, B4 ) )
     create_pet( "t18_fel_boar", "boar" );
 
@@ -5909,7 +5818,6 @@ void hunter_t::init_base_stats()
 
   resources.base[RESOURCE_FOCUS] = 100 + specs.kindred_spirits -> effectN( 1 ).resource( RESOURCE_FOCUS ) + specs.marksmans_focus -> effectN( 1 ).resource( RESOURCE_FOCUS );
 
-  stats_tier17_4pc_bm = get_stats( "tier17_4pc_bm" );
   stats_tier18_4pc_bm = get_stats( "tier18_4pc_bm" );
 }
 
@@ -6226,7 +6134,6 @@ void hunter_t::init_procs()
 
   procs.lock_and_load                = get_proc( "lock_and_load" );
   procs.wild_call                    = get_proc( "wild_call" );
-  procs.tier17_2pc_bm                = get_proc( "tier17_2pc_bm" );
   procs.tier18_4pc_bm                = get_proc( "tier18_4pc_bm" );
   procs.hunting_companion            = get_proc( "hunting_companion" );
   procs.wasted_hunting_companion     = get_proc( "wasted_hunting_companion" );
@@ -6778,16 +6685,6 @@ double hunter_t::composite_spell_haste() const
 double hunter_t::composite_player_critical_damage_multiplier( const action_state_t* s ) const
 {
   double cdm = player_t::composite_player_critical_damage_multiplier( s );
-
-  // we use check() for rapid_fire becuase it's usage is reported from value() above
-  if ( sets.has_set_bonus( HUNTER_MARKSMANSHIP, T17, B4 ) && buffs.trueshot -> check() )
-  {
-    // deadly_aim_driver
-    double seconds_buffed = floor( buffs.trueshot -> elapsed( sim -> current_time() ).total_seconds() );
-    // from Nimox
-    cdm += bugs ? std::min(15.0, seconds_buffed) * 0.03
-                : seconds_buffed * sets.set( HUNTER_MARKSMANSHIP, T17, B4 ) -> effectN( 1 ).percent();
-  }
 
   if ( buffs.rapid_killing -> up() )
     cdm *= 1.0 + buffs.rapid_killing -> value();
