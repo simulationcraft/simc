@@ -5127,7 +5127,6 @@ struct siphon_life_t : public warlock_spell_t
 
 struct soul_harvest_t : public warlock_spell_t
 {
-  int agony_action_id;
   int doom_action_id;
   int immolate_action_id;
   timespan_t base_duration;
@@ -5146,20 +5145,31 @@ struct soul_harvest_t : public warlock_spell_t
 
     if ( p() -> specialization() == WARLOCK_AFFLICTION )
     {
-      total_duration = base_duration + timespan_t::from_seconds( 2.0 ) * p() -> get_active_dots( agony_action_id );
-      p() -> buffs.soul_harvest -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, total_duration );
+      size_t num_targets = 0;
+      for ( size_t j = 0; j < sim -> target_non_sleeping_list.size(); ++j )
+      {
+        if ( sim -> target_non_sleeping_list[j] == p() -> warlock_pet_list.soul_effigy )
+          continue;
+        warlock_td_t* td = this -> td( sim -> target_non_sleeping_list[j] );
+        if ( td -> dots_agony && td -> dots_agony -> is_ticking() )
+        {
+          num_targets++;
+        }
+      }
+      total_duration = base_duration + timespan_t::from_seconds( 2.0 ) * num_targets;
+      p() -> buffs.soul_harvest -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, std::min( total_duration, timespan_t::from_seconds( 35 ) ) );
     }
 
     if ( p() -> specialization() == WARLOCK_DEMONOLOGY )
     {
       total_duration = base_duration + timespan_t::from_seconds( 2.0 ) * p() -> get_active_dots( doom_action_id );
-      p() -> buffs.soul_harvest -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, total_duration );
+      p() -> buffs.soul_harvest -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, std::min( total_duration, timespan_t::from_seconds( 35 ) ) );
     }
 
     if ( p() -> specialization() == WARLOCK_DESTRUCTION )
     {
       total_duration = base_duration + timespan_t::from_seconds( 2.0 ) * p() -> get_active_dots( immolate_action_id );
-      p() -> buffs.soul_harvest -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, total_duration );
+      p() -> buffs.soul_harvest -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, std::min( total_duration, timespan_t::from_seconds( 35 ) ) );
     }
   }
 
@@ -5167,7 +5177,6 @@ struct soul_harvest_t : public warlock_spell_t
   {
     warlock_spell_t::init();
 
-    agony_action_id = p() -> find_action_id( "agony" );
     doom_action_id = p() -> find_action_id( "doom" );
     immolate_action_id = p() -> find_action_id( "immolate" );
   }
