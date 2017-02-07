@@ -935,7 +935,6 @@ struct force_of_nature_t : public pet_t
     {
       school = SCHOOL_PHYSICAL;
       weapon = &( p -> main_hand_weapon );
-      weapon -> type = WEAPON_BEAST;
       base_execute_time = weapon -> swing_time;
       may_crit = background = repeating = true;
     }
@@ -967,6 +966,7 @@ struct force_of_nature_t : public pet_t
   {
     owner_coeff.ap_from_sp = 3;
     regen_type = REGEN_DISABLED;
+    main_hand_weapon.type = WEAPON_BEAST;
   }
 
   void init_action_list() override
