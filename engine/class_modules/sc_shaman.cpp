@@ -4783,19 +4783,19 @@ struct storm_elemental_t : public shaman_spell_t
 
 struct seismic_storm_t : public shaman_spell_t
 {
-	seismic_storm_t(shaman_t* p) :
-		shaman_spell_t("seismic_storm", p, p -> find_spell( 238141 ))
-	{
-		affected_by_elemental_focus = false;
-		//TODO: Take out these test-values, currently game data lacks values
-		school = SCHOOL_NATURE;
-		spell_power_mod.direct = 1.0;
-	}
+  seismic_storm_t( shaman_t* p ) :
+    shaman_spell_t("seismic_storm", p, p -> find_spell( 238141 ))
+  {
+    background = true;
+    affected_by_elemental_focus = false;
+    //TODO: Take out these test-values, currently game data lacks values
+    school = SCHOOL_NATURE;
+    spell_power_mod.direct = 1.0;
+  }
 };
 
 struct earthquake_damage_t : public shaman_spell_t
 {
-  seismic_storm_t* thunderstruck;
   earthquake_damage_t( shaman_t* player ) :
     shaman_spell_t( "earthquake_", player, player -> find_spell( 77478 ) )
   {
@@ -4806,11 +4806,10 @@ struct earthquake_damage_t : public shaman_spell_t
     base_multiplier *= 1.0 + p() -> artifact.the_ground_trembles.percent();
     affected_by_elemental_focus = true; // Needed to explicitly flag, since spell data lacks info
 
-	if ( rng().roll( p() -> artifact.seismic_storm.data().proc_chance() ) )
-	{
-		thunderstruck = new seismic_storm_t( player );
-		add_child( thunderstruck );
-	}
+    if ( player -> action.seismic_storm )
+    {
+      add_child( player -> action.seismic_storm );
+    }
   }
 
   double target_armor( player_t* ) const override
@@ -4826,6 +4825,19 @@ struct earthquake_damage_t : public shaman_spell_t
     }
 
     return m;
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    shaman_spell_t::impact( state );
+
+    // Note, there's no proc chance in the spell data as it is. Also, is this per target or per
+    // cast?
+    if ( rng().roll( p() -> artifact.seismic_storm.data().proc_chance() ) )
+    {
+      p() -> action.seismic_storm -> target = state -> target;
+      p() -> action.seismic_storm -> execute();
+    }
   }
 };
 
