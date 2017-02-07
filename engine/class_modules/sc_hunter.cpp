@@ -5579,23 +5579,7 @@ pet_t* hunter_t::create_pet( const std::string& pet_name,
 
 void hunter_t::create_pets()
 {
-  size_t create_pets = 1;
-  if ( talents.stampede -> ok() ) // We only need to create 1 main pet if we are not using the stampede talent.
-    create_pets += 4;
-  for ( size_t i = 0; i < create_pets; i++ )
-  {
-    if ( !talents.stampede -> ok() )
-      create_pet( summon_pet_str, summon_pet_str );
-    else
-    {
-      create_pet( "raptor", "raptor" );
-      create_pet( "wolf", "wolf" );
-      create_pet( "hyena", "hyena" );
-      create_pet( "devilsaur", "devilsaur" );
-      create_pet( "cat", "cat" );
-      break;
-    }
-  }
+  create_pet( summon_pet_str, summon_pet_str );
 
   if ( sets.has_set_bonus( HUNTER_BEAST_MASTERY, T17, B4 ) )
   {
