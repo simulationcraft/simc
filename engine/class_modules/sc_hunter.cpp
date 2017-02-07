@@ -79,13 +79,6 @@ public:
     std::array< pet_t*, 28 > sneaky_snakes;
   } pets;
 
-  // Tier 18 (WoD 6.2) trinket effects
-  const special_effect_t* beastlord;
-  const special_effect_t* longview;
-  const special_effect_t* blackness;
-
-  double blackness_multiplier;
-
   struct legendary_t
   {
     // Survival
@@ -409,10 +402,6 @@ public:
     player_t( sim, HUNTER, name, r ),
     active( actives_t() ),
     pets( pets_t() ),
-    beastlord( nullptr ),
-    longview( nullptr ),
-    blackness( nullptr ),
-    blackness_multiplier(),
     legendary( legendary_t() ),
     buffs( buffs_t() ),
     cooldowns( cooldowns_t() ),
@@ -1126,15 +1115,6 @@ public:
         -> default_value += o() -> artifacts.unleash_the_beast
                                   .percent();
     }
-    if ( o() -> beastlord )
-    {
-      buffs.bestial_wrath 
-        -> buff_duration *= 1.0 + ( 
-                              find_spell( o() -> beastlord -> spell_id ) 
-                              -> effectN( 1 )
-                              .average( o() -> beastlord -> item ) 
-                              / 100.0 );
-    }
 
     // Beast Cleave
     double cleave_value = o() -> find_specialization_spell( "Beast Cleave" ) 
@@ -1572,15 +1552,6 @@ struct hati_t: public hunter_secondary_pet_t
       buffs.bestial_wrath 
         -> default_value += o() -> artifacts.unleash_the_beast
                                   .percent();
-    }
-    if ( o() -> beastlord )
-    {
-      buffs.bestial_wrath 
-        -> buff_duration *= 1.0 + ( 
-                              find_spell( o() -> beastlord -> spell_id ) 
-                              -> effectN( 1 )
-                              .average( o() -> beastlord -> item ) 
-                              / 100.0 );
     }
 
     // Beast Cleave
@@ -3895,9 +3866,6 @@ struct mongoose_bite_t: hunter_melee_attack_t
     if ( p() -> artifacts.sharpened_fang.rank() )
       am *= 1.0 + p() -> artifacts.sharpened_fang.percent();
 
-    if ( p() -> blackness )
-      am *= 1.0 + p() -> blackness_multiplier;
-
     return am;
   }
 };
@@ -5906,19 +5874,6 @@ bool hunter_t::init_special_effects()
 {
   bool ret = player_t::init_special_effects();
 
-  if ( beastlord )
-  {
-    buffs.bestial_wrath 
-      -> buff_duration *= 1.0 + (
-                          find_spell( beastlord -> spell_id ) 
-                       -> effectN( 1 )
-                         .average( beastlord -> item ) 
-                        / 100.0 );
-  }
-
-  if ( blackness )
-    blackness_multiplier = find_spell( blackness -> spell_id ) -> effectN( 1 ).average( blackness -> item ) / 100.0;
-
   // Cooldown adjustments
 
   if ( legendary.bm_shoulders )
@@ -6551,16 +6506,6 @@ double hunter_t::composite_player_multiplier( school_e school ) const
   if ( buffs.bestial_wrath -> up() )
     m *= 1.0 + buffs.bestial_wrath -> current_value;
 
-  if ( longview && specialization() == HUNTER_MARKSMANSHIP )
-  {
-    const spell_data_t* data = find_spell( longview -> spell_id );
-    double factor = data -> effectN( 1 ).average( longview -> item ) / 100.0 / 100.0;
-    if ( sim -> distance_targeting_enabled )
-      m*= 1.0 + target -> get_position_distance( x_position, y_position ) * factor;
-    else
-      m *= 1.0 + base.distance * factor;
-  }
-
   if ( school == SCHOOL_PHYSICAL && artifacts.iron_talons.rank() )
     m *= 1.0 + artifacts.iron_talons.data().effectN( 1 ).percent();
 
@@ -7006,9 +6951,6 @@ struct hunter_module_t: public module_t
 
   virtual void static_init() const override
   {
-    register_special_effect( 184900, HUNTER_BEAST_MASTERY, []( hunter_t* p ) { return &( p -> beastlord ); });
-    register_special_effect( 184901, HUNTER_MARKSMANSHIP,  []( hunter_t* p ) { return &( p -> longview ); });
-    register_special_effect( 184902, HUNTER_SURVIVAL,      []( hunter_t* p ) { return &( p -> blackness ); });
     register_special_effect( 236447, HUNTER_SURVIVAL,      []( hunter_t* p ) { return &( p -> legendary.sv_chest); });
     register_special_effect( 212574, HUNTER_SURVIVAL,      []( hunter_t* p ) { return &( p -> legendary.sv_feet ); });
     register_special_effect( 225155, HUNTER_SURVIVAL,      []( hunter_t* p ) { return &( p -> legendary.sv_ring ); });
