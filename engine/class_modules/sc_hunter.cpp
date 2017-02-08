@@ -1123,6 +1123,7 @@ public:
     buff_t* titans_frenzy;
     buff_t* tier17_4pc_bm;
     buff_t* tier18_4pc_bm;
+    buff_t* tier19_2pc_bm;
   } buffs;
 
   // Gains
@@ -1327,6 +1328,11 @@ public:
       buff_creator_t( this, "tier18_4pc_bm" )
         .default_value( owner -> find_spell( 178875 ) -> effectN( 2 ).percent() )
         .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
+    buffs.tier19_2pc_bm =
+      buff_creator_t( this, 211183, "tier19_2pc_bm" )
+        .default_value( .1 ) // XXX: ptr spell data has it as the second effect of 211183
+        .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 
   virtual void init_gains() override
@@ -1475,6 +1481,9 @@ public:
     // from Nimox: 178875 is the 4pc BM pet damage buff
     if ( buffs.tier17_4pc_bm -> up() )
       m *= 1.0 + buffs.tier17_4pc_bm -> current_value;
+
+    if ( buffs.tier19_2pc_bm -> up() )
+      m *= 1.0 + buffs.tier19_2pc_bm -> check_value();
 
     // Pet combat experience
     m *= 1.0 + specs.combat_experience -> effectN( 2 ).percent();
@@ -4742,6 +4751,12 @@ struct bestial_wrath_t: public hunter_spell_t
     p() -> active.pet -> buffs.bestial_wrath -> trigger();
     if ( p() -> sets.has_set_bonus( HUNTER_BEAST_MASTERY, T19, B2 ) )
     {
+      // XXX: 2017-02-08 nuoHep:
+      //   2017-02-06 hotfix: "With the Dire Frenzy talent, the Eagletalon Battlegear Beast Mastery 2-piece bonus should now grant your pet 10% increased damage for 15 seconds."
+      // actual testing in game shows that, contrary to what the hotfix states, the buff gets applied even without Dire Frenzy talented
+      // for reference: https://goo.gl/pCzJ13 pet melee at 0:35.502 & 0:37.881
+      p() -> active.pet -> buffs.tier19_2pc_bm -> trigger();
+
       for ( size_t i = 0; i < p() -> pets.dire_beasts.size(); i++ )
       {
         if ( ! p() -> pets.dire_beasts[ i ] -> is_sleeping() )
