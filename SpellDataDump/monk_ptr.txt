@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23436, git build 7d86112)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23436, git build 197aafa)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -4972,7 +4972,7 @@ Attributes       : ........ ........ ........ ....x...   ........ ........ .x...
 Effects          :
 #1 (id=314340)   : Unknown effect type (172)
                    Base Value: 35 | Scaled Value: 35 | Radius: 100 yards | Target: Unknown(119)
-Description      : Returns all dead party members to life with $s1% of maximum health and mana.  Cannot be cast when in combat.
+Description      : Returns all dead party members to life with $s1% of maximum health and mana. Cannot be cast when in combat.
 
 Name             : Hidden Master's Forbidden Touch (id=213112) [Spell Family (53), Passive] 
 Class            : Monk

@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23436, git build 7d86112)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23436, git build 197aafa)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -191,7 +191,7 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | Target: Enemy(6)
 #3 (id=117626)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6 | Target: Enemy(6)
-Description      : Finishing move that causes Bleed damage over $d.  Damage increases per combo point:
+Description      : Finishing move that causes Bleed damage over $d. Damage increases per combo point:
 
    1 point : ${$floor(1*$<rip>*12)} damage
    2 points: ${$floor(2*$<rip>*12)} damage
@@ -1631,7 +1631,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .x...
                  : Disable target procs (113)
 Effects          :
 #1 (id=51495)    : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -30 | Scaled Value: -30 | Mechanic: Unknown(88) | Target: Enemy(6)
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88) | Target: Enemy(6)
 Description      : $@spelldesc48484
 Tooltip          : Movement speed slowed by $s1%.
 
@@ -3736,8 +3736,8 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Radius: 10 yards | Target: Unknown(87)
 #2 (id=195465)   : Unknown effect type (179)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 9049 | Target: Unknown(87)
-#3 (id=195466)   : None (0)
-                   Base Value: 6 | Scaled Value: 6
+#3 (id=195466)   : Summon (28)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 120984 | Misc Value 2: 0xbb8 | Target: Unknown(87)
 Description      : Grows a healing blossom at the target location, restoring $81269s1 health to $?p138284[four][three] injured allies within $81269A1 yards every $81262t2 sec for $d. Limit 1.
 
 Name             : Feral Rage (id=146874) [Spell Family (7)] 
