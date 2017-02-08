@@ -8575,6 +8575,11 @@ double druid_t::calculate_expected_max_health() const
 
     const random_prop_data_t item_data = dbc.random_property( item -> item_level() );
     int index = item_database::random_suffix_type( &item -> parsed.data );
+    if ( item_data.p_epic[ 0 ] == 0 )
+    {
+      continue;
+    }
+
     slot_weights += item_data.p_epic[ index ] / item_data.p_epic[ 0 ];
 
     if ( ! item -> active() )
