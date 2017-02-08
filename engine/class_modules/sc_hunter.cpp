@@ -719,7 +719,7 @@ struct vulnerability_stats_t
   std::array< proc_t*, 7 > patient_sniper;
 
   vulnerability_stats_t( hunter_t* p, action_t* a , bool secondary = false )
-    : no_vuln( nullptr ), has_patient_sniper( p -> talents.patient_sniper -> ok() ), check_secondary( secondary )
+    : no_vuln( nullptr ), check_secondary( secondary ), has_patient_sniper( p -> talents.patient_sniper -> ok() )
   {
     const std::string name = a -> name();
 
