@@ -6555,6 +6555,10 @@ void add_havoc_use_items( demon_hunter_t* p, action_priority_list_t* apl )
       {
         line += ",if=(!talent.first_blood.enabled|!cooldown.blade_dance.ready)";
       }
+      else if (util::str_compare_ci(p->items[i].name_str, "kiljaedens_burning_wish"))
+      {
+        line += ",if=(active_enemies>desired_targets)|raid_event.adds.in>75";
+      }
       else
       {
         const timespan_t use_cd = effect -> cooldown();
