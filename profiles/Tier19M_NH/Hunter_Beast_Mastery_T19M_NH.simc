@@ -3,7 +3,7 @@ level=110
 race=orc
 role=attack
 position=ranged_back
-talents=2102012
+talents=2202012
 artifact=56:0:0:0:0:868:3:869:3:870:3:871:3:872:3:873:3:874:3:875:3:876:1:877:1:878:1:879:1:880:1:881:1:882:1:1095:3:1336:1:1368:20
 spec=beast_mastery
 
