@@ -4751,11 +4751,9 @@ struct bestial_wrath_t: public hunter_spell_t
     p() -> active.pet -> buffs.bestial_wrath -> trigger();
     if ( p() -> sets.has_set_bonus( HUNTER_BEAST_MASTERY, T19, B2 ) )
     {
-      // XXX: 2017-02-08 nuoHep:
-      //   2017-02-06 hotfix: "With the Dire Frenzy talent, the Eagletalon Battlegear Beast Mastery 2-piece bonus should now grant your pet 10% increased damage for 15 seconds."
-      // actual testing in game shows that, contrary to what the hotfix states, the buff gets applied even without Dire Frenzy talented
-      // for reference: https://goo.gl/pCzJ13 pet melee at 0:35.502 & 0:37.881
-      p() -> active.pet -> buffs.tier19_2pc_bm -> trigger();
+      // 2017-02-06 hotfix: "With the Dire Frenzy talent, the Eagletalon Battlegear Beast Mastery 2-piece bonus should now grant your pet 10% increased damage for 15 seconds."
+      if ( p() -> talents.dire_frenzy -> ok() )
+          p() -> active.pet -> buffs.tier19_2pc_bm -> trigger();
 
       for ( size_t i = 0; i < p() -> pets.dire_beasts.size(); i++ )
       {
