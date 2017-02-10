@@ -6836,29 +6836,6 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
     return new shard_react_expr_t( *this );
   }
 
-  else if ( name_str == "ua_count" )
-  {
-    struct ua_count_expr_t : public expr_t
-    {
-      warlock_t& player;
-
-      ua_count_expr_t( warlock_t& p ) :
-        expr_t( "ua_count" ), player( p ) { }
-      virtual double evaluate() override
-      {
-        double t = 0;
-        for ( auto& pet : player.warlock_pet_list.wild_imps )
-        {
-          if ( !pet->is_sleeping() )
-            t++;
-        }
-        return t;
-      }
-
-    };
-    return new ua_count_expr_t( *this );
-  }
-
   else if ( name_str == "felstorm_is_ticking" )
   {
     struct felstorm_is_ticking_expr_t: public expr_t
