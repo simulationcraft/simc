@@ -2927,6 +2927,7 @@ struct unstable_affliction_t: public warlock_spell_t
         if ( ! ( curr_ua -> is_ticking() ) )
         {
           real_ua = ua_dots[i];
+          p() -> buffs.active_uas -> increment( 1 );
           break;
         }
 
@@ -2957,8 +2958,6 @@ struct unstable_affliction_t: public warlock_spell_t
 
     p() -> buffs.shard_instability -> expire();
     p() -> procs.t18_2pc_affliction -> occur();
-    p() -> buffs.active_uas -> increment( 1 );
-
 
     if ( p()->buffs.compounding_horror->check() )
     {
@@ -6316,7 +6315,7 @@ void warlock_t::create_buffs()
   buffs.active_uas = buff_creator_t( this, "active_uas" )
     .tick_behavior( BUFF_TICK_NONE )
     .refresh_behavior( BUFF_REFRESH_NONE )
-    .max_stack( 10 );
+    .max_stack( 20 );
 
   //demonology buffs
   buffs.demonic_synergy = buff_creator_t( this, "demonic_synergy", find_spell( 171982 ) )
