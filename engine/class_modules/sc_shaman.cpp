@@ -363,6 +363,7 @@ public:
   // Various legendary related values
   struct legendary_t
   {
+	bool uncertain_reminder; // 7.1.5 TODO: effect bloodlust's duration if which doesn't affected in-game.
   } legendary;
 
   // Class Specializations
@@ -537,7 +538,7 @@ public:
     gain(),
     proc(),
     real_ppm(),
-    legendary(),
+    legendary(legendary_t()),
     spec(),
     mastery(),
     talent(),
@@ -7962,6 +7963,19 @@ struct echoes_of_the_great_sundering_t : public scoped_action_callback_t<earth_s
   { action -> eotgs_base_chance = e.driver() -> effectN( 1 ).percent() / action -> base_cost(); }
 };
 
+struct uncertain_reminder_t : public scoped_actor_callback_t<shaman_t>
+{
+	uncertain_reminder_t() : super( SHAMAN )
+	{ }
+
+	void manipulate(shaman_t * actor, const special_effect_t& /* e */) override
+	{
+		actor -> legendary.uncertain_reminder = true;
+		actor -> buffs.bloodlust = haste_buff_creator_t(actor, "bloodlust", actor->find_spell(2825))
+			                          .max_stack(1).duration(timespan_t::from_seconds(70));
+	}
+};
+
 struct echoes_of_the_great_sundering_buff_t : public class_buff_cb_t<buff_t>
 {
   echoes_of_the_great_sundering_buff_t() : super( SHAMAN, "echoes_of_the_great_sundering" )
@@ -8155,7 +8169,7 @@ struct shaman_module_t : public module_t
   {
     p -> buffs.bloodlust  = haste_buff_creator_t( p, "bloodlust", p -> find_spell( 2825 ) )
                             .max_stack( 1 );
-
+	
     p -> buffs.exhaustion = buff_creator_t( p, "exhaustion", p -> find_spell( 57723 ) )
                             .max_stack( 1 )
                             .quiet( true );

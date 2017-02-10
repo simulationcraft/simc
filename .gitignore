@@ -101,5 +101,6 @@ cli/debug
 cli/*.vcxproj*
 simulationcraft.sln
 simulationcraft*.db
+simc*.db
 engine/simulationcraft.hpp.cpp
 gui/*_resource*
