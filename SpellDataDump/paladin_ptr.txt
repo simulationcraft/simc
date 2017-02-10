@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23436, git build ed53d25)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23436, git build 197aafa)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -642,7 +642,7 @@ Attributes       : ......x. x....... x.x..... x..x....   ........ ........ .....
 Effects          :
 #1 (id=21964)    : Apply Aura (6) | Unknown effect sub type (172)
                    Base Value: 20 | Scaled Value: 20 | Target: Self(1)
-Description      : Increases your mounted speed by $s1%.  This does not stack with other movement speed increasing effects.
+Description      : Increases your mounted speed by $s1%. This does not stack with other movement speed increasing effects.
 Tooltip          : Mounted speed increased by $w1%.  This does not stack with other movement speed increasing effects.
 
 Name             : Interrupt (id=32747) 

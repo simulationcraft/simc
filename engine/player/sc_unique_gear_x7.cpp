@@ -152,7 +152,7 @@ double composite_karazhan_empower_multiplier( const player_t* player )
 namespace set_bonus
 {
   // 7.0 Dungeon
-  void march_of_the_legion( special_effect_t& ); // NYI
+  void march_of_the_legion( special_effect_t& ); 
   void journey_through_time( special_effect_t& ); // NYI
 
   // Generic passive stat aura adder for set bonuses
@@ -2663,13 +2663,10 @@ struct kiljaedens_burning_wish_t : public spell_t
     aoe = -1;
     item = effect.item;
     school = SCHOOL_FIRE;
-
     base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item );
-    aoe = -1;
 
-    //FIXME: Assume this is kind of slow from wording.
-    //       Get real velocity from in game data after raids open.
-    travel_speed = 29;
+    // Projectile is very slow, combat log show 8 seconds to travel the maximum 80 yard range of the item
+    travel_speed = 10;
   }
 
   virtual void init() override
@@ -3618,7 +3615,30 @@ void item::ravaged_seed_pod( special_effect_t& effect )
 
 // March of the Legion ======================================================
 
-void set_bonus::march_of_the_legion( special_effect_t& /* effect */ ) {}
+void set_bonus::march_of_the_legion( special_effect_t&  effect ) {
+    const spell_data_t* spell = effect.player->find_spell( 228445 );
+
+    std::string spell_name = spell->name_cstr();
+    util::tokenize( spell_name );
+
+    struct march_t : public spell_t
+    {
+      march_t(player_t* player) :
+        spell_t("march_of_the_legion", player, player -> find_spell( 228446 ) )
+      {
+        background = proc = may_crit = true;
+        callbacks = false;
+        if (player->target->race != RACE_DEMON) {
+          base_dd_min = 0;
+          base_dd_max = 0;
+        }
+      }
+    };
+
+    effect.execute_action = new march_t( effect.player );
+
+    new dbc_proc_callback_t(effect.player, effect);
+}
 
 // Cinidaria, the Symbiote ==================================================
 
@@ -3643,16 +3663,21 @@ struct cinidaria_the_symbiote_damage_t : public attack_t
 struct cinidaria_the_symbiote_cb_t : public dbc_proc_callback_t
 {
   cinidaria_the_symbiote_damage_t* damage;
+  int health_percentage;
+  double damage_multiplier;
 
   cinidaria_the_symbiote_cb_t( const special_effect_t& effect ) :
     dbc_proc_callback_t( effect.player, effect ),
     damage( new cinidaria_the_symbiote_damage_t( effect.player ) )
-  { }
+  {
+    damage_multiplier = effect.driver()->effectN(1).percent();
+    health_percentage = effect.driver()->effectN(2).base_value();
+  }
 
   void trigger( action_t* a, void* call_data ) override
   {
     auto state = reinterpret_cast<action_state_t*>( call_data );
-    if ( state -> target -> health_percentage() < effect.driver() -> effectN( 2 ).base_value() )
+    if ( state -> target -> health_percentage() < health_percentage )
     {
       return;
     }
@@ -3673,7 +3698,7 @@ struct cinidaria_the_symbiote_cb_t : public dbc_proc_callback_t
 
   void execute( action_t* /* a */, action_state_t* state ) override
   {
-    auto amount = state -> result_amount * effect.driver() -> effectN( 1 ).percent();
+    auto amount = state -> result_amount * damage_multiplier;
     damage -> target = state -> target;
     damage -> base_dd_min = damage -> base_dd_max = amount;
     damage -> execute();

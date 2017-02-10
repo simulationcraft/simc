@@ -6948,7 +6948,8 @@ void death_knight_t::default_apl_frost()
   default_apl_dps_precombat( food_name, potion_name );
 
   def -> add_action( "auto_attack" );
-  def -> add_action( this, "Pillar of Frost" );
+  def -> add_action( this, "Pillar of Frost", "if=!equipped.140806|!talent.breath_of_sindragosa.enabled" );
+  def -> add_action( this, "Pillar of Frost", "if=equipped.140806&talent.breath_of_sindragosa.enabled&((runic_power>=50&cooldown.hungering_rune_weapon.remains<10)|(cooldown.breath_of_sindragosa.remains>20))" );
 
   // Interrupt
   def -> add_action( this, "Mind Freeze" );
@@ -6977,7 +6978,7 @@ void death_knight_t::default_apl_frost()
   // In-combat potion
   if ( sim -> allow_potions && true_level >= 80 )
   {
-    def -> add_action( "potion,name=" + potion_name + ",if=buff.pillar_of_frost.up" );
+    def -> add_action( "potion,name=" + potion_name + ",if=buff.pillar_of_frost.up&(!talent.breath_of_sindragosa.enabled|!cooldown.breath_of_sindragosa.remains)" );
   }
 
   // Cooldowns
@@ -7019,13 +7020,14 @@ void death_knight_t::default_apl_frost()
   bos -> add_action( this, "Frost Strike", "if=talent.icy_talons.enabled&buff.icy_talons.remains<1.5&cooldown.breath_of_sindragosa.remains>6" );
   bos -> add_action( this, "Remorseless Winter", "if=talent.gathering_storm.enabled" );
   bos -> add_action( this, "Howling Blast", "target_if=!dot.frost_fever.ticking" );
-  bos -> add_talent( this, "Breath of Sindragosa", "if=runic_power>=50" );
+  bos -> add_talent( this, "Breath of Sindragosa", "if=runic_power>=50&(!equipped.140806|cooldown.hungering_rune_weapon.remains<10)" );
   bos -> add_action( this, "Frost Strike", "if=runic_power>=90&set_bonus.tier19_4pc" );
   bos -> add_action( this, "Remorseless Winter", "if=buff.rime.react&equipped.132459" );
   bos -> add_action( this, "Howling Blast", "if=buff.rime.react&(dot.remorseless_winter.ticking|cooldown.remorseless_winter.remains>1.5|!equipped.132459)" );
+  bos -> add_action( this, "Obliterate", "if=!buff.rime.react&!(talent.gathering_storm.enabled&!(cooldown.remorseless_winter.remains>2|rune>4))&rune>3" );
   bos -> add_action( this, "Frost Strike", "if=runic_power>=70|((talent.gathering_storm.enabled&cooldown.remorseless_winter.remains<3&cooldown.breath_of_sindragosa.remains>10)&rune<5)" );
   bos -> add_action( this, "Obliterate", "if=!buff.rime.react&!(talent.gathering_storm.enabled&!(cooldown.remorseless_winter.remains>2|rune>4))" );
-  bos -> add_talent( this, "Horn of Winter", "if=cooldown.breath_of_sindragosa.remains>15&runic_power<=70&rune<5" );
+  bos -> add_talent( this, "Horn of Winter", "if=cooldown.breath_of_sindragosa.remains>15&runic_power<=70&rune<4" );
   bos -> add_action( this, "Frost Strike", "if=cooldown.breath_of_sindragosa.remains>15" );
   bos -> add_action( this, "Remorseless Winter", "if=cooldown.breath_of_sindragosa.remains>10" );
   
@@ -7037,12 +7039,14 @@ void death_knight_t::default_apl_frost()
   bos_ticking -> add_talent( this, "Horn of Winter", "if=runic_power<70&!buff.hungering_rune_weapon.up&rune<5" );
   bos_ticking -> add_talent( this, "Hungering Rune Weapon", "if=equipped.140806&(runic_power<30|(runic_power<70&talent.gathering_storm.enabled))&!buff.hungering_rune_weapon.up&rune<2" );
   bos_ticking -> add_talent( this, "Hungering Rune Weapon", "if=talent.runic_attenuation.enabled&runic_power<30&!buff.hungering_rune_weapon.up&rune<2" );
-  bos_ticking -> add_talent( this, "Hungering Rune Weapon", "if=runic_power<25&!buff.hungering_rune_weapon.up&rune<2" );
+  bos_ticking -> add_talent( this, "Hungering Rune Weapon", "if=runic_power<35&!buff.hungering_rune_weapon.up&rune<2" );
+  bos_ticking -> add_talent( this, "Hungering Rune Weapon", "if=runic_power<25&!buff.hungering_rune_weapon.up&rune<1" );
   bos_ticking -> add_action( this, "Empower Rune Weapon", "if=runic_power<20" );
   bos_ticking -> add_action( this, "Remorseless Winter", "if=talent.gathering_storm.enabled|!set_bonus.tier19_4pc|runic_power<30" );
   
   // Gathering Storm ticking rotation
   gs_ticking -> add_action( this, "Frost Strike", "if=buff.icy_talons.remains<1.5&talent.icy_talons.enabled" );
+  gs_ticking -> add_action( this, "Remorseless Winter" );
   gs_ticking -> add_action( this, "Howling Blast", "target_if=!dot.frost_fever.ticking" );
   gs_ticking -> add_action( this, "Howling Blast", "if=buff.rime.react&!(buff.obliteration.up&spell_targets.howling_blast<2)" );
   gs_ticking -> add_talent( this, "Obliteration", "if=(!talent.frozen_pulse.enabled|(rune<2&runic_power<28))" );

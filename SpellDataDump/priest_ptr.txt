@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23436, git build ed53d25)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23436, git build 197aafa)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Discipline Shadow Priest
@@ -1905,13 +1905,13 @@ Spell Level      : 1
 Range            : 50000 yards
 Stance Mask      : 0x80000000
 Affecting spells : Power Word: Shield (211558)
-Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ...x.... ........   ........ .x...... ........ ......x. 
-                 : ........ .......x ........ ........   ........ ........ ......x. ........ 
+Attributes       : ........ ........ x....... x..x....   .....x.. ..x..... ........ ........ 
+                 : ..x..... ......x. ...x.... ........   ........ .x...... ........ ......x. 
+                 : ........ .......x ........ ........   ...x.... ........ .xx...x. ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Not a proc (105)
+                 : ........ ........ ........ ........   ........ ...x.... ........ ........ 
+                 : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
+                 : Does not break stealth (37), Not a proc (105)
 Effects          :
 #1 (id=99434)    : Direct Heal (10)
                    Base Value: 1 | Scaled Value: 110 | Points Per Level: 1 | Target: Friend(21)
@@ -4274,7 +4274,7 @@ Effects          :
                    Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Sunwell Torrent (28516), Binding Heal (32546), Prayer of Mending (33110), Holy Word: Sanctify (34861), Divine Hymn (64844), Divine Star (110744), Divine Star (110745), Halo (120517), Halo (120692), Halo (120696), Divine Star (122128), Holy Mending (196781), Light of T'uure (208065), Body and Mind (214121)
 #2 (id=308008)   : Direct Heal (10)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 4.00000 | Target: Friend(21)
-Description      : Applies Light of the Naaru to the target, healing for $s2 and increasing all healing you do to that target by $208065s1% for $d. Maximum 2 charges.
+Description      : Applies Light of the Naaru to the target, healing for $s2 and increasing your healing done to that target by $208065s1% for $d. Maximum 2 charges.
 Tooltip          : Healing taken from the Priest increased by $s1%.
 
 Name             : Mind Flay (id=208232) [Spell Family (6)] 

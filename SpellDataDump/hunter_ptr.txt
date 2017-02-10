@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23436, git build ed53d25)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23436, git build 197aafa)
 
 Name             : Mend Pet (id=136) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
@@ -276,7 +276,7 @@ School           : Physical
 Spell Level      : 4
 Range            : 40 yards
 GCD              : 1.5 seconds
-Velocity         : 50 yards/sec
+Velocity         : 40 yards/sec
 Duration         : 6 seconds
 Cooldown         : 5 seconds
 Mechanic         : Unknown(88)
@@ -2465,7 +2465,7 @@ Class            : Hunter
 School           : Physical
 Spell Level      : 1
 Range            : 50 yards
-Velocity         : 30 yards/sec
+Velocity         : 45 yards/sec
 Affecting spells : Freezing Trap (3355), Beast Mastery Hunter (137015), Marksmanship Hunter (137016), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468), 
 Triggered by     : Barrage (120360)
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ........ 
@@ -3996,7 +3996,6 @@ Duration         : 7 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Affecting spells : Patient Sniper (234588), Unerring Arrows (238052)
-Triggered by     : Opportunist (238088)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

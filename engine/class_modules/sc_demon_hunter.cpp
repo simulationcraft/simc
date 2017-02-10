@@ -16,8 +16,6 @@ namespace
 // ==========================================================================
 
    General ------------------------------------------------------------------
-   Soul Fragments from Shattered Souls
-   Demon Soul buff
    Felblade movement mechanics
    Darkness
 
@@ -25,21 +23,17 @@ namespace
    Defensive talent tier
    Second look at Momentum skills' timings
    Fury of the Illidari distance targeting support
-   Overwhelming Power artifact trait
    Defensive artifact traits
    More thorough caching on blade_dance_expr_t
-   Fix Nemesis
 
    Vengeance ----------------------------------------------------------------
    Torment
-   Last Resort, Nether Bond talents
    True proc chance for Fallout
    Artificial Stamina
 
    Needs Documenting --------------------------------------------------------
    "activation_time" / "delay" sigil expression
    "sigil_placed" sigil expression
-   "jump_cancel" -> "animation_cancel" fel rush option
 */
 
 /* Forward declarations
@@ -59,6 +53,9 @@ namespace attacks
 struct melee_t;
 struct chaos_blade_t;
 }
+}
+namespace items
+{
 }
 
 /**
@@ -425,7 +422,7 @@ public:
     gain_t* demonic_appetite;
     gain_t* prepared;
     gain_t* blind_fury;
-    gain_t* anger_of_the_half_giants;
+    gain_t* anger_of_the_halfgiants;
 
     // Vengeance
     gain_t* damage_taken;
@@ -464,15 +461,12 @@ public:
   // RPPM objects
   struct rppms_t
   {
-    // General
-    real_ppm_t* felblade;
-
-    real_ppm_t* felblade_havoc;
-
     // Havoc
+    real_ppm_t* felblade_havoc;
     real_ppm_t* inner_demons;
 
     // Vengeance
+    real_ppm_t* felblade;
     real_ppm_t* fueled_by_pain;
   } rppm;
 
@@ -517,6 +511,7 @@ public:
     timespan_t raddons_cascading_eyes;
     double delusions_of_grandeur_reduction;
     double delusions_of_grandeur_fury_per_time;
+    int anger_of_the_halfgiants_fury;
 
     // Vengeance
     double cloak_of_fel_flames;
@@ -524,7 +519,6 @@ public:
     timespan_t kirel_narak;
     bool runemasters_pauldrons;
     timespan_t the_defilers_lost_vambraces;
-    const special_effect_t* anger_of_the_half_giants;
   } legendary;
 
   demon_hunter_t( sim_t* sim, const std::string& name, race_e r );
@@ -580,6 +574,7 @@ public:
   double composite_parry() const override;
   double composite_parry_rating() const override;
   double composite_player_multiplier( school_e ) const override;
+  double composite_player_dd_multiplier(school_e, const action_t* a) const override;
   double composite_player_target_multiplier(player_t* target, school_e school) const override;
   double composite_spell_crit_chance() const override;
   double matching_gear_multiplier( attribute_e attr ) const override;
@@ -962,7 +957,7 @@ struct soul_fragment_t
 
     dh -> buff.painbringer -> trigger();
 
-    if ( dh -> sim -> target -> race == RACE_DEMON )
+    if (type == SOUL_FRAGMENT_GREATER && dh->sim->target->race == RACE_DEMON)
     {
       dh -> buff.demon_soul -> trigger();
     }
@@ -2985,13 +2980,16 @@ struct melee_t : public demon_hunter_attack_t
     status_e main_hand, off_hand;
   } status;
 
-  melee_t( const std::string& name, demon_hunter_t* p )
-    : demon_hunter_attack_t( name, p, spell_data_t::nil() )
+  melee_t(const std::string& name, demon_hunter_t* p, weapon_t* w,
+          const spell_data_t* s = spell_data_t::nil())
+    : demon_hunter_attack_t( name, p, s )
   {
     school     = SCHOOL_PHYSICAL;
     special    = false;
     background = repeating = may_glance = true;
     trigger_gcd = timespan_t::zero();
+    weapon = w;
+    base_execute_time = weapon->swing_time;
 
     status.main_hand = status.off_hand = LOST_CONTACT_RANGE;
 
@@ -3043,14 +3041,14 @@ struct melee_t : public demon_hunter_attack_t
 
   void execute() override
   {
-    if ( p() -> current.distance_to_move > 5 || p() -> channeling ||
-         p() -> buff.out_of_range -> check() )
+    if (p()->current.distance_to_move > 5 || p()->buff.out_of_range->check() ||
+      (p()->channeling && p()->channeling->interrupt_auto_attack))
     {
       status_e s;
 
       // Cancel autoattacks, auto_attack_t will restart them when we're able to
       // attack again.
-      if ( p() -> channeling )
+      if ( p() -> channeling && p() -> channeling->interrupt_auto_attack)
       {
         p() -> proc.delayed_aa_channel -> occur();
         s = LOST_CONTACT_CHANNEL;
@@ -3090,16 +3088,12 @@ struct auto_attack_t : public demon_hunter_attack_t
     range                 = 5;
     trigger_gcd           = timespan_t::zero();
 
-    p -> melee_main_hand                     = new melee_t( "auto_attack_mh", p );
-    p -> main_hand_attack                    = p -> melee_main_hand;
-    p -> main_hand_attack -> weapon            = &( p -> main_hand_weapon );
-    p -> main_hand_attack -> base_execute_time = p -> main_hand_weapon.swing_time;
+    p -> melee_main_hand        = new melee_t("auto_attack_mh", p, &(p->main_hand_weapon));
+    p -> main_hand_attack       = p -> melee_main_hand;
 
-    p -> melee_off_hand                     = new melee_t( "auto_attack_oh", p );
-    p -> off_hand_attack                    = p -> melee_off_hand;
-    p -> off_hand_attack -> weapon            = &( p -> off_hand_weapon );
-    p -> off_hand_attack -> base_execute_time = p -> off_hand_weapon.swing_time;
-    p -> off_hand_attack -> id                = 1;
+    p -> melee_off_hand         = new melee_t("auto_attack_oh", p, &(p->off_hand_weapon));
+    p -> off_hand_attack        = p -> melee_off_hand;
+    p -> off_hand_attack -> id  = 1;
   }
 
   void execute() override
@@ -3336,23 +3330,13 @@ struct blade_dance_t : public blade_dance_base_t
 
 // Chaos Blades ============================================================
 
-struct chaos_blade_t : public demon_hunter_attack_t
+struct chaos_blade_t : public melee_t
 {
-  chaos_blade_t( const std::string& n, demon_hunter_t* p,
-                 const spell_data_t* s )
-    : demon_hunter_attack_t( n, p, s )
+  chaos_blade_t( const std::string& n, demon_hunter_t* p, weapon_t* w, const spell_data_t* s )
+    : melee_t( n, p, w, s )
   {
-    base_execute_time = weapon -> swing_time;
-    special           = false;  // set false special to force it to proc a "white hit" so trinkets don't fall off
-  may_miss = may_glance = false; // however, it cannot miss or glance
-    repeating = background = true;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    demon_hunter_attack_t::impact( s );
-
-    trigger_demon_blades( s );
+    school = s->get_school_type();
+    may_miss = may_glance = false; // Chaos Blades can't miss or glance since it is magical damage
   }
 
   double action_multiplier() const override
@@ -3363,8 +3347,6 @@ struct chaos_blade_t : public demon_hunter_attack_t
 	  {
 		  am *= 1.0 + p()->cache.mastery_value();
 	  }
-
-	  return am;
 
     return am; // skip attack_t's multiplier so we don't get the AA bonus.  Tested 2017/01/23
   }
@@ -3827,10 +3809,10 @@ struct demons_bite_t : public demon_hunter_attack_t
       p() -> proc.demons_bite_in_meta -> occur();
     }
 
-    if (p()->legendary.anger_of_the_half_giants)
+    if (p()->legendary.anger_of_the_halfgiants_fury > 0)
     {
-        auto range = p()->legendary.anger_of_the_half_giants -> driver() -> effectN(1).base_value();
-        p()->resource_gain(RESOURCE_FURY, (int)rng().range(1, 1 + range), p()->gain.anger_of_the_half_giants);
+      const int range = p()->legendary.anger_of_the_halfgiants_fury;
+      p()->resource_gain(RESOURCE_FURY, (int)rng().range(1, 1 + range), p()->gain.anger_of_the_halfgiants);
     }
   }
 
@@ -3898,11 +3880,10 @@ struct demon_blades_t : public demon_hunter_attack_t
   void execute() override
   {
       demon_hunter_attack_t::execute();
-      if (p()->legendary.anger_of_the_half_giants)
+      if (p()->legendary.anger_of_the_halfgiants_fury > 0)
       {
-          // dblades has a negative modifier for AotHG, go ahead and add that in
-          auto range = p()->legendary.anger_of_the_half_giants->driver()->effectN(1).base_value() + p()->talent.demon_blades->effectN(2).base_value();
-          p()->resource_gain(RESOURCE_FURY, (int)rng().range(1, 1 + range), p()->gain.anger_of_the_half_giants);
+        const int range = p()->legendary.anger_of_the_halfgiants_fury + p()->talent.demon_blades->effectN(2).base_value();
+        p()->resource_gain(RESOURCE_FURY, (int)rng().range(1, 1 + range), p()->gain.anger_of_the_halfgiants);
       }
   }
 };
@@ -5339,7 +5320,6 @@ demon_hunter_t::demon_hunter_t( sim_t* sim, const std::string& name, race_e r )
   create_benefits();
 
   regen_type = REGEN_DISABLED;
-  legendary.anger_of_the_half_giants = nullptr;
 }
 
 demon_hunter_t::~demon_hunter_t()
@@ -6364,11 +6344,11 @@ void demon_hunter_t::init_spells()
     // Not linked via a trigger, so assert that the spell is there.
     assert( mh_spell -> ok() );
 
-    chaos_blade_main_hand =
-      new chaos_blade_t( "chaos_blade_mh", this, mh_spell );
+    chaos_blade_main_hand = new chaos_blade_t( "chaos_blade_mh", this,
+      &main_hand_weapon, mh_spell);
 
-    chaos_blade_off_hand = new chaos_blade_t(
-      "chaos_blade_oh", this, talent.chaos_blades -> effectN( 1 ).trigger() );
+    chaos_blade_off_hand = new chaos_blade_t("chaos_blade_oh", this, 
+      &off_hand_weapon, talent.chaos_blades->effectN(1).trigger());
   }
 
   if ( talent.demon_blades -> ok() )
@@ -6554,6 +6534,10 @@ void demon_hunter_t::apl_default()
 
 void add_havoc_use_items( demon_hunter_t* p, action_priority_list_t* apl )
 {
+  // talent.chaos_blades won't have valid spell data when importing if they don't have the talent selected
+  // We still need the valid cooldown to generate the default conditional
+  const timespan_t chaos_blades_cd = p->find_spell(211048)->cooldown();
+
   // On-Use Items
   for ( size_t i = 0; i < p -> items.size(); i++ )
   {
@@ -6567,16 +6551,21 @@ void add_havoc_use_items( demon_hunter_t* p, action_priority_list_t* apl )
         line += ",if=buff.congealing_goo.react=6|(buff.chaos_blades.up&buff.chaos_blades.remains<5&"
           "cooldown.chaos_blades.remains&buff.congealing_goo.up)";
       }
+      else if (util::str_compare_ci(p->items[i].name_str, "draught_of_souls"))
+      {
+        line += ",if=(!talent.first_blood.enabled|!cooldown.blade_dance.ready)";
+      }
+      else if (util::str_compare_ci(p->items[i].name_str, "kiljaedens_burning_wish"))
+      {
+        line += ",if=(active_enemies>desired_targets)|raid_event.adds.in>75";
+      }
       else
       {
-        timespan_t use_cd = effect -> cooldown();
-
-        if ( use_cd > timespan_t::zero() &&
-          p -> talent.chaos_blades -> cooldown() % use_cd == timespan_t::zero() )
+        const timespan_t use_cd = effect -> cooldown();
+        if ( use_cd > timespan_t::zero() && chaos_blades_cd % use_cd == timespan_t::zero() )
         {
           line += ",if=buff.chaos_blades.up|!talent.chaos_blades.enabled";
-
-          if ( use_cd < p -> talent.chaos_blades -> cooldown() )
+          if ( use_cd < chaos_blades_cd)
           {
             char buffer[ 8 ];
             snprintf( buffer, sizeof( buffer ), "%.0f", use_cd.total_seconds() );
@@ -6812,7 +6801,7 @@ void demon_hunter_t::create_gains()
   gain.demonic_appetite         = get_gain("demonic_appetite");
   gain.prepared                 = get_gain("prepared");
   gain.blind_fury               = get_gain("blind_fury");
-  gain.anger_of_the_half_giants = get_gain("anger_of_the_half_giants");
+  gain.anger_of_the_halfgiants  = get_gain("anger_of_the_halfgiants");
 
   // Vengeance
   gain.damage_taken             = get_gain("damage_taken");
@@ -7018,13 +7007,7 @@ double demon_hunter_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
-  m *= 1.0 + buff.demon_soul -> check_value();
-
   m *= 1.0 + buff.momentum -> check_value();
-
-  // TODO: Figure out how to access target's race.
-  m *=
-    1.0 + buff.nemesis -> check() * buff.nemesis -> data().effectN( 1 ).percent();
 
   m *= 1.0 + buff.chaos_blades -> check_value();
 
@@ -7032,6 +7015,23 @@ double demon_hunter_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + talent.razor_spikes -> effectN( 1 ).percent();
 
   m *= 1.0 + artifact.chaos_burn.percent();
+
+  return m;
+}
+
+double demon_hunter_t::composite_player_dd_multiplier(school_e school, const action_t * a) const
+{
+  double m = player_t::composite_player_dd_multiplier(school, a);
+
+  if (buff.nemesis->check() && a->target->race == buff.nemesis->current_value)
+  {
+    m *= 1.0 + buff.nemesis->data().effectN(1).percent();
+  }
+
+  if (a->target->race == RACE_DEMON && buff.demon_soul->check())
+  {
+    m *= 1.0 + buff.demon_soul->value();
+  }
 
   return m;
 }
@@ -7124,6 +7124,10 @@ double demon_hunter_t::calculate_expected_max_health() const
 
     const random_prop_data_t item_data = dbc.random_property(item->item_level());
     int index = item_database::random_suffix_type(&item->parsed.data);
+    if ( item_data.p_epic[0] == 0 )
+    {
+      continue;
+    }
     slot_weights += item_data.p_epic[index] / item_data.p_epic[0];
 
     if (!item->active())
@@ -7585,30 +7589,31 @@ using namespace unique_gear;
 using namespace actions::spells;
 using namespace actions::attacks;
 
-// Generic legendary items
+namespace items
+{
 
+// Generic legendary items
 struct sephuzs_secret_t : public unique_gear::scoped_actor_callback_t<demon_hunter_t>
 {
-    sephuzs_secret_t() : super(DEMON_HUNTER)
-    {}
+  sephuzs_secret_t() : super(DEMON_HUNTER)
+  {
+  }
 
-    void manipulate(demon_hunter_t* dh, const special_effect_t& e) override
-    {
-        dh->legendary.sephuzs_secret = e.driver();
-    }
+  void manipulate(demon_hunter_t* dh, const special_effect_t& e) override
+  {
+    dh->legendary.sephuzs_secret = e.driver();
+  }
 };
 
 struct anger_of_the_halfgiants_t : scoped_actor_callback_t<demon_hunter_t>
 {
-  anger_of_the_halfgiants_t()
-    : super( DEMON_HUNTER )
+  anger_of_the_halfgiants_t() : super(DEMON_HUNTER)
   {
   }
 
-  void manipulate(demon_hunter_t* dh, const special_effect_t& e ) override
+  void manipulate(demon_hunter_t* dh, const special_effect_t& e) override
   {
-    // set the anger to a non nullptr so it's registered
-    dh->legendary.anger_of_the_half_giants = &e;
+    dh->legendary.anger_of_the_halfgiants_fury = e.driver()->effectN(1).base_value();
   }
 };
 
@@ -7750,6 +7755,8 @@ struct loramus_thalipedes_sacrifice_t
   }
 };
 
+} // end namespace items
+
 // MODULE INTERFACE ==================================================
 
 class demon_hunter_module_t : public module_t
@@ -7778,6 +7785,8 @@ public:
 
   void static_init() const override
   {
+    using namespace items;
+
     register_special_effect(208827, anger_of_the_halfgiants_t());
     register_special_effect(217735, cloak_of_fel_flames_t());
     register_special_effect(208985, eternal_hunger_t());

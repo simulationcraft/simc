@@ -219,6 +219,7 @@ public:
     action_t* lightning_strike;
     spell_t*  electrocute;
     action_t* volcanic_inferno;
+    spell_t* seismic_storm;
     spell_t*  lightning_shield;
     spell_t*  earthen_rage;
     spell_t* crashing_storm;
@@ -285,7 +286,6 @@ public:
     buff_t* gathering_storms;
     buff_t* ghost_wolf;
     buff_t* elemental_focus;
-    buff_t* earth_surge;
     buff_t* icefury;
     buff_t* hot_hand;
     haste_buff_t* elemental_mastery;
@@ -480,6 +480,9 @@ public:
     artifact_power_t power_of_the_maelstrom;
     artifact_power_t fury_of_the_storms;
     artifact_power_t stormkeepers_power;
+    artifact_power_t seismic_storm;
+    artifact_power_t elemental_destabilization;
+    artifact_power_t swelling_maelstrom;
 
     // Enhancement
     artifact_power_t doom_winds;
@@ -1458,7 +1461,7 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
 
     if ( data().affected_by( p -> spec.elemental_fury -> effectN( 1 ) ) )
     {
-      crit_bonus_multiplier *= 1.0 + p -> spec.elemental_fury -> effectN( 1 ).percent();
+      crit_bonus_multiplier *= 1.0 + p -> spec.elemental_fury -> effectN( 1 ).percent() + p -> artifact.elemental_destabilization.percent();
     }
 
     if ( data().affected_by( player -> sets.set( SHAMAN_ELEMENTAL, T19, B2 ) ) )
@@ -2810,6 +2813,7 @@ struct volcanic_inferno_t : public ground_aoe_spell_t
     aoe = -1;
   }
 };
+
 
 struct lightning_shield_damage_t : public shaman_spell_t
 {
@@ -4775,7 +4779,20 @@ struct storm_elemental_t : public shaman_spell_t
   }
 };
 
-// Earthquake totem =========================================================
+// Earthquake ===============================================================
+
+struct seismic_storm_t : public shaman_spell_t
+{
+  seismic_storm_t( shaman_t* p ) :
+    shaman_spell_t("seismic_storm", p, p -> find_spell( 238141 ))
+  {
+    background = true;
+    affected_by_elemental_focus = false;
+    //TODO: Take out these test-values, currently game data lacks values
+    school = SCHOOL_NATURE;
+    spell_power_mod.direct = 1.0;
+  }
+};
 
 struct earthquake_damage_t : public shaman_spell_t
 {
@@ -4788,6 +4805,11 @@ struct earthquake_damage_t : public shaman_spell_t
     spell_power_mod.direct = 0.5; // Hardcoded into tooltip because it's cool
     base_multiplier *= 1.0 + p() -> artifact.the_ground_trembles.percent();
     affected_by_elemental_focus = true; // Needed to explicitly flag, since spell data lacks info
+
+    if ( player -> action.seismic_storm )
+    {
+      add_child( player -> action.seismic_storm );
+    }
   }
 
   double target_armor( player_t* ) const override
@@ -4803,6 +4825,19 @@ struct earthquake_damage_t : public shaman_spell_t
     }
 
     return m;
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    shaman_spell_t::impact( state );
+
+    // Note, there's no proc chance in the spell data as it is. Also, is this per target or per
+    // cast?
+    if ( rng().roll( p() -> artifact.seismic_storm.data().proc_chance() ) )
+    {
+      p() -> action.seismic_storm -> target = state -> target;
+      p() -> action.seismic_storm -> execute();
+    }
   }
 };
 
@@ -4846,6 +4881,7 @@ struct earthquake_t : public shaman_spell_t
   }
 };
 
+
 // Elemental Mastery Spell ==================================================
 
 struct elemental_mastery_t : public shaman_spell_t
@@ -4884,22 +4920,11 @@ struct earth_shock_t : public shaman_spell_t
     tdbp_proc_chance( 0 )
   {
     base_multiplier *= 1.0 + player -> artifact.earthen_attunement.percent();
+	secondary_costs[ RESOURCE_MAELSTROM ] += player -> artifact.swelling_maelstrom.data().effectN( 1 ).base_value();
   }
 
   double spell_direct_power_coefficient( const action_state_t* ) const override
   { return base_coefficient * cost(); }
-
-  double action_multiplier() const override
-  {
-    double m = shaman_spell_t::action_multiplier();
-
-    if ( p() -> buff.earth_surge -> up() )
-    {
-      m *= p() -> buff.earth_surge -> check_value();
-    }
-
-    return m;
-  }
 
   void execute() override
   {
@@ -5007,11 +5032,6 @@ struct frost_shock_t : public shaman_spell_t
   {
     double m = shaman_spell_t::action_multiplier();
 
-    if ( p() -> buff.earth_surge -> up() )
-    {
-      m *= p() -> buff.earth_surge -> check_value();
-    }
-
     m *= 1.0 + cost() * damage_coefficient;
 
     m *= 1.0 + p() -> buff.icefury -> value();
@@ -5025,7 +5045,6 @@ struct frost_shock_t : public shaman_spell_t
 
     p() -> buff.icefury -> decrement();
   }
-
 };
 
 // Wind Shear Spell =========================================================
@@ -5375,7 +5394,7 @@ struct totem_pulse_action_t : public spell_t
     may_crit = harmful = background = true;
     callbacks = false;
 
-    crit_bonus_multiplier *= 1.0 + totem -> o() -> spec.elemental_fury -> effectN( 1 ).percent();
+    crit_bonus_multiplier *= 1.0 + totem -> o() -> spec.elemental_fury -> effectN( 1 ).percent() + totem -> o() -> artifact.elemental_destabilization.percent();
   }
 
   shaman_t* o() const
@@ -5949,6 +5968,11 @@ bool shaman_t::create_actions()
     action.volcanic_inferno = new volcanic_inferno_t( this );
   }
 
+  if ( artifact.seismic_storm.rank() )
+  {
+    action.seismic_storm = new seismic_storm_t( this );
+  }
+
   if ( sets.has_set_bonus( SHAMAN_ENHANCEMENT, T18, B2 ) )
   {
     action.electrocute = new electrocute_t( this );
@@ -6035,19 +6059,19 @@ void shaman_t::init_spells()
   talent.earthen_rage                = find_talent_spell( "Earthen Rage"         );
   talent.totem_mastery               = find_talent_spell( "Totem Mastery"        );
 
-  talent.elemental_blast             = find_talent_spell( "Elemental Blast"      );
-  talent.echo_of_the_elements        = find_talent_spell( "Echo of the Elements" );
+  talent.aftershock                  = find_talent_spell( "Aftershock"           );
+  talent.elemental_mastery           = find_talent_spell( "Elemental Mastery"    );
 
   talent.elemental_fusion            = find_talent_spell( "Elemental Fusion"     );
   talent.primal_elementalist         = find_talent_spell( "Primal Elementalist"  );
-  talent.icefury                     = find_talent_spell( "Icefury"              );
+  talent.elemental_blast             = find_talent_spell( "Elemental Blast"      );
 
-  talent.elemental_mastery           = find_talent_spell( "Elemental Mastery"    );
+  talent.liquid_magma_totem          = find_talent_spell( "Liquid Magma Totem"   );
   talent.storm_elemental             = find_talent_spell( "Storm Elemental"      );
-  talent.aftershock                  = find_talent_spell( "Aftershock"           );
+  talent.echo_of_the_elements        = find_talent_spell( "Echo of the Elements" );
 
   talent.lightning_rod               = find_talent_spell( "Lightning Rod"        );
-  talent.liquid_magma_totem          = find_talent_spell( "Liquid Magma Totem"   );
+  talent.icefury                     = find_talent_spell( "Icefury"              );
 
   // Enhancement
   talent.windsong                    = find_talent_spell( "Windsong"             );
@@ -6088,6 +6112,9 @@ void shaman_t::init_spells()
   artifact.firestorm                 = find_artifact_spell( "Firestorm"          );
   artifact.power_of_the_maelstrom    = find_artifact_spell( "Power of the Maelstrom" );
   artifact.fury_of_the_storms        = find_artifact_spell( "Fury of the Storms" );
+  artifact.elemental_destabilization = find_artifact_spell( "Elemental Destabilization" );
+  artifact.swelling_maelstrom        = find_artifact_spell( "Swelling Maelstrom" );
+  artifact.seismic_storm             = find_artifact_spell( "Seismic Storm"      );
   artifact.stormkeepers_power        = find_artifact_spell( "Stormkeeper's Power" );
 
   // Enhancement
@@ -6132,6 +6159,10 @@ void shaman_t::init_base_stats()
 
   if ( specialization() == SHAMAN_ELEMENTAL || specialization() == SHAMAN_ENHANCEMENT )
     resources.base[ RESOURCE_MAELSTROM ] = 100;
+
+  // There is no check for spec.elemental yet...
+  if ( artifact.swelling_maelstrom.rank() )
+    resources.base[ RESOURCE_MAELSTROM ] += artifact.swelling_maelstrom.value();
 
   if ( spec.enhancement_shaman -> ok() )
     resources.base[ RESOURCE_MAELSTROM ] += spec.enhancement_shaman -> effectN( 5 ).base_value();
@@ -6621,8 +6652,6 @@ void shaman_t::create_buffs()
     .default_value( 1.0 + spec.elemental_focus -> effectN( 1 ).trigger() -> effectN( 1 ).percent() +
                           sets.set( SHAMAN_ELEMENTAL, T19, B4 ) -> effectN( 1 ).percent() )
     .activated( false );
-  buff.earth_surge = buff_creator_t( this, "earth_surge", find_spell( 189797 ) )
-    .default_value( 1.0 + find_spell( 189797 ) -> effectN( 1 ).percent() );
   buff.stormkeeper = buff_creator_t( this, "stormkeeper", artifact.stormkeeper )
     .cd( timespan_t::zero() ); // Handled by the action
   buff.static_overload = buff_creator_t( this, "static_overload", find_spell( 191634 ) )

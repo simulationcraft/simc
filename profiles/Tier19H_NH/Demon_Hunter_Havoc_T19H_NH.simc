@@ -77,7 +77,7 @@ actions.cooldown=nemesis,target_if=min:target.time_to_die,if=raid_event.adds.exi
 actions.cooldown+=/nemesis,if=!raid_event.adds.exists&(cooldown.metamorphosis.remains>100|target.time_to_die<70)
 actions.cooldown+=/nemesis,sync=metamorphosis,if=!raid_event.adds.exists
 actions.cooldown+=/chaos_blades,if=buff.metamorphosis.up|cooldown.metamorphosis.remains>100|target.time_to_die<20
-actions.cooldown+=/use_item,slot=trinket2
+actions.cooldown+=/use_item,slot=trinket2,if=(!talent.first_blood.enabled|!cooldown.blade_dance.ready)
 actions.cooldown+=/metamorphosis,if=variable.pooling_for_meta&fury.deficit<30
 actions.cooldown+=/potion,name=old_war,if=buff.metamorphosis.remains>25|target.time_to_die<30
 

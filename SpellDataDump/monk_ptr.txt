@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23436, git build ed53d25)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23436, git build 197aafa)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -829,9 +829,9 @@ Effects          :
 #2 (id=128724)   : Apply Aura (6) | Unknown effect sub type (312)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 116 | Target: Self(1)
 #3 (id=134152)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Self(1)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 1 | Target: Self(1)
 #4 (id=138807)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 126 | Target: Self(1)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 126 | Target: Self(1)
 #5 (id=140824)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7e | Target: Self(1)
 #6 (id=141322)   : Apply Aura (6) | Modify Total Stat% (137)
@@ -2188,11 +2188,13 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
 Effects          :
 #1 (id=153848)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 127 | Target: Self(1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1 | Target: Self(1)
 #2 (id=240978)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | SP Coefficient: 1.00000 | Misc Value: 127 | Target: Self(1)
 #3 (id=358716)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | SP Coefficient: 1.00000 | Misc Value: 127 | Target: Self(1)
+#4 (id=365097)   : Apply Aura (6) | Absorb Damage (69)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 126 | Target: Self(1)
 Description      : Reduces all damage you take by $m2% to $m3% for $d, with larger attacks being reduced by more.
 Tooltip          : Damage taken reduced by $m2% to $m3% for $d, with larger attacks being reduced by more.
 
@@ -3962,7 +3964,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=281444)   : Direct Heal (10)
@@ -4970,7 +4972,7 @@ Attributes       : ........ ........ ........ ....x...   ........ ........ .x...
 Effects          :
 #1 (id=314340)   : Unknown effect type (172)
                    Base Value: 35 | Scaled Value: 35 | Radius: 100 yards | Target: Unknown(119)
-Description      : Returns all dead party members to life with $s1% of maximum health and mana.  Cannot be cast when in combat.
+Description      : Returns all dead party members to life with $s1% of maximum health and mana. Cannot be cast when in combat.
 
 Name             : Hidden Master's Forbidden Touch (id=213112) [Spell Family (53), Passive] 
 Class            : Monk
@@ -5399,5 +5401,23 @@ Effects          :
                    Base Value: 40 | Scaled Value: 40 | Misc Value: 3 | Target: Self(1)
                    Affected Spells: Stagger (115069)
 Description      : Stagger is $s1% more effective against magical attacks.
+
+Name             : Master of Combinations (id=240672) 
+Class            : Monk
+School           : Physical
+Range            : 100 yards
+Duration         : 10 seconds
+Triggered by     : Master of Combinations (238095)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=364982)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 600 | Scaled Value: 600 | Misc Value: 33554432 | Radius: 100 yards | Target: Unknown(118)
+Description      : Grants $s1 Mastery Rating.
+Tooltip          : Grants $s1 Mastery Rating.
 
 

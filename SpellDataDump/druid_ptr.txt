@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23436, git build ed53d25)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23436, git build 197aafa)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -177,7 +177,7 @@ GCD              : 1 seconds
 Duration         : 24 seconds
 Stance Mask      : 0x00000001
 Mechanic         : Bleed
-Affecting spells : Mastery: Razor Claws (77493), Incarnation: King of the Jungle (102543), Berserk (106951), Feral Druid (137011), Bloodletting (165699), Thrash (192090), Feral Affinity (197490), Astral Influence (197524), Jagged Wounds (202032), Feral Affinity (202155), Feral Affinity (202157), Razor Fangs (210570), Ekowraith, Creator of Worlds (210667), 
+Affecting spells : Mastery: Razor Claws (77493), Incarnation: King of the Jungle (102543), Berserk (106951), Feral Druid (137011), Bloodletting (165699), Thrash (192090), Feral Affinity (197490), Astral Influence (197524), Jagged Wounds (202032), Feral Affinity (202155), Feral Affinity (202157), Razor Fangs (210570), Ekowraith, Creator of Worlds (210667), Ashamane's Frenzy (210723)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
@@ -191,7 +191,7 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | Target: Enemy(6)
 #3 (id=117626)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6 | Target: Enemy(6)
-Description      : Finishing move that causes Bleed damage over $d.  Damage increases per combo point:
+Description      : Finishing move that causes Bleed damage over $d. Damage increases per combo point:
 
    1 point : ${$floor(1*$<rip>*12)} damage
    2 points: ${$floor(2*$<rip>*12)} damage
@@ -234,7 +234,7 @@ Range            : 5 yards
 GCD              : 1 seconds
 Stance Mask      : 0x00000001
 Mechanic         : Bleed
-Affecting spells : Mastery: Razor Claws (77493), Incarnation: King of the Jungle (102543), Prowl (102547), Berserk (106951), Feral Druid (137011), Bloodletting (165699), Thrash (192090), Feral Affinity (197490), Astral Influence (197524), Jagged Wounds (202032), Feral Affinity (202155), Feral Affinity (202157), Tear the Flesh (210593), Ekowraith, Creator of Worlds (210667), 
+Affecting spells : Mastery: Razor Claws (77493), Incarnation: King of the Jungle (102543), Prowl (102547), Berserk (106951), Feral Druid (137011), Bloodletting (165699), Thrash (192090), Feral Affinity (197490), Astral Influence (197524), Jagged Wounds (202032), Feral Affinity (202155), Feral Affinity (202157), Tear the Flesh (210593), Ekowraith, Creator of Worlds (210667), Ashamane's Frenzy (210723)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
@@ -449,7 +449,7 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Incarnation: King of the Jungle (102543), Berserk (106951), Clearcasting (135700), Feral Druid (137011), Bloodtalons (145152), Thrash (192090), Feral Affinity (197490), Astral Influence (197524), Feral Affinity (202155), Feral Affinity (202157), Feral Power (210571), Ekowraith, Creator of Worlds (210667), Shredder Fangs (214736)
+Affecting spells : Incarnation: King of the Jungle (102543), Berserk (106951), Clearcasting (135700), Feral Druid (137011), Bloodtalons (145152), Thrash (192090), Feral Affinity (197490), Astral Influence (197524), Feral Affinity (202155), Feral Affinity (202157), Feral Power (210571), Ekowraith, Creator of Worlds (210667), Ashamane's Frenzy (210723), Shredder Fangs (214736)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -647,7 +647,7 @@ Spell Level      : 3
 Range            : 40 yards
 GCD              : 1.5 seconds
 Stance Mask      : 0x40000012
-Affecting spells : Balance Overrides Passive (106732), Guardian Druid (137010), Feral Druid (137011), Restoration Druid (137012), Balance Druid (137013), Lucidity (137247), Lunar Inspiration (155627), Persistence (186396), Thrash (192090), Astral Influence (197524), Stellar Empowerment (197637), Feral Overrides Passive (197692), Astral Power (197911), Twin Moonfire (200818), Twilight Glow (202386), Ekowraith, Creator of Worlds (210667), Galactic Guardian (213708), Wax and Wane (239952)
+Affecting spells : Balance Overrides Passive (106732), Guardian Druid (137010), Feral Druid (137011), Restoration Druid (137012), Balance Druid (137013), Lucidity (137247), Lunar Inspiration (155627), Persistence (186396), Thrash (192090), Astral Influence (197524), Stellar Empowerment (197637), Feral Overrides Passive (197692), Astral Power (197911), Twin Moonfire (200818), Twilight Glow (202386), Ekowraith, Creator of Worlds (210667), Ashamane's Frenzy (210723), Galactic Guardian (213708), Wax and Wane (239952)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -964,7 +964,7 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Incarnation: King of the Jungle (102543), Berserk (106951), Feral Druid (137011), Bloodtalons (145152), Thrash (192090), Feral Affinity (197490), Astral Influence (197524), Sabertooth (202031), Feral Affinity (202155), Feral Affinity (202157), Powerful Bite (210575), Ekowraith, Creator of Worlds (210667), 
+Affecting spells : Incarnation: King of the Jungle (102543), Berserk (106951), Feral Druid (137011), Bloodtalons (145152), Thrash (192090), Feral Affinity (197490), Astral Influence (197524), Sabertooth (202031), Feral Affinity (202155), Feral Affinity (202157), Powerful Bite (210575), Ekowraith, Creator of Worlds (210667), Ashamane's Frenzy (210723)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -998,7 +998,7 @@ Cooldown         : 10 seconds
 Category         : 33
 Category Cooldown: 10 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Maim Damage (61252), Incarnation: King of the Jungle (102543), Berserk (106951), Feral Druid (137011), Bloodtalons (145152), Thrash (192090), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), Fiery Red Maimers (236757)
+Affecting spells : Maim Damage (61252), Incarnation: King of the Jungle (102543), Berserk (106951), Feral Druid (137011), Bloodtalons (145152), Thrash (192090), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), Ashamane's Frenzy (210723), Fiery Red Maimers (236757)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ..x..... ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -1277,6 +1277,21 @@ Attributes       : ........ x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=28451)    : Unknown effect type (46)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+
+Name             : Swift Flight Form (Passive) (Passive) (id=40121) [Spell Family (7), Passive] 
+Class            : Druid
+School           : Nature
+Spell Level      : 68
+Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=31186)    : Apply Aura (6) | Increase Speed% (31)
+                   Base Value: 100 | Scaled Value: 100 | Target: Self(1)
 
 Name             : Deathblow X11 Goggles (id=41317) 
 Class            : Rogue, Monk, Druid, Demon Hunter
@@ -1616,7 +1631,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .x...
                  : Disable target procs (113)
 Effects          :
 #1 (id=51495)    : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -30 | Scaled Value: -30 | Mechanic: Unknown(88) | Target: Enemy(6)
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88) | Target: Enemy(6)
 Description      : $@spelldesc48484
 Tooltip          : Movement speed slowed by $s1%.
 
@@ -1861,14 +1876,13 @@ Name             : Thrash (Feral, Guardian) (id=77758) [Spell Family (7)]
 Class            : Druid
 School           : Physical
 Resource         : 0 Rage
-Resource         : 15 Rage w/ Sharpened Claws (id=202110)
 Spell Level      : 12
 Range            : 8 yards
 GCD              : 1.5 seconds
 Cooldown         : 6 seconds
 Stance Mask      : 0x00000010
 Mechanic         : Bleed
-Affecting spells : Bear Form (5487), Incarnation: King of the Jungle (102543), Incarnation: Guardian of Ursoc (102558), Guardian Overrides Passive (106734), Berserk (106951), Druid (137009), Guardian Druid (137010), Feral Druid (137011), Bloodtalons (145152), Bloodletting (165699), Thrash (192090), Astral Influence (197524), Jagged Claws (200409), Sharpened Claws (202110), Luffa Wrappings (208681), Ekowraith, Creator of Worlds (210667), Thrashing Claws (238048)
+Affecting spells : Bear Form (5487), Incarnation: King of the Jungle (102543), Incarnation: Guardian of Ursoc (102558), Guardian Overrides Passive (106734), Berserk (106951), Druid (137009), Guardian Druid (137010), Feral Druid (137011), Bloodtalons (145152), Bloodletting (165699), Thrash (192090), Astral Influence (197524), Jagged Claws (200409), Luffa Wrappings (208681), Ekowraith, Creator of Worlds (210667), Ashamane's Frenzy (210723), Thrashing Claws (238048)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ .......x ........ ........ 
@@ -2034,7 +2048,7 @@ Class            : Druid
 School           : Nature
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Incarnation: Tree of Life (5420), Ironbark (102342), Grovewalker (186320), Essence of Nordrassil (189760)
+Affecting spells : Incarnation: Tree of Life (5420), Ironbark (102342), Grovewalker (186320), Essence of Nordrassil (189760), Joy of Spring (240484)
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : .......x .......x ........ ........   ...x.... ........ .xx..... ........ 
@@ -2687,7 +2701,7 @@ Spell Level      : 32
 Range            : 8 yards
 GCD              : 1 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Incarnation: King of the Jungle (102543), Berserk (106951), Clearcasting (135700), Feral Druid (137011), Bloodtalons (145152), Feral Affinity (197490), Astral Influence (197524), Sharpened Claws (202110), Feral Affinity (202155), Feral Affinity (202157), Sharpened Claws (210637), Scent of Blood (210664), Ekowraith, Creator of Worlds (210667), 
+Affecting spells : Incarnation: King of the Jungle (102543), Berserk (106951), Clearcasting (135700), Feral Druid (137011), Bloodtalons (145152), Feral Affinity (197490), Astral Influence (197524), Feral Affinity (202155), Feral Affinity (202157), Sharpened Claws (210637), Scent of Blood (210664), Ekowraith, Creator of Worlds (210667), Ashamane's Frenzy (210723)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .......x ........ ........ 
@@ -2715,7 +2729,7 @@ GCD              : 1 seconds
 Duration         : 15 seconds
 Stance Mask      : 0x00000001
 Mechanic         : Bleed
-Affecting spells : Mastery: Razor Claws (77493), Incarnation: King of the Jungle (102543), Incarnation: Guardian of Ursoc (102558), Berserk (106951), Clearcasting (135700), Guardian Druid (137010), Feral Druid (137011), Bloodletting (165699), Astral Influence (197524), Jagged Claws (200409), Jagged Wounds (202032), Sharpened Claws (202110), Luffa Wrappings (208681), Ekowraith, Creator of Worlds (210667), Thrashing Claws (238048), 
+Affecting spells : Mastery: Razor Claws (77493), Incarnation: King of the Jungle (102543), Incarnation: Guardian of Ursoc (102558), Berserk (106951), Clearcasting (135700), Guardian Druid (137010), Feral Druid (137011), Bloodletting (165699), Astral Influence (197524), Jagged Claws (200409), Jagged Wounds (202032), Luffa Wrappings (208681), Ekowraith, Creator of Worlds (210667), Ashamane's Frenzy (210723), Thrashing Claws (238048), 
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ .......x ........ ........ 
@@ -3722,8 +3736,8 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Radius: 10 yards | Target: Unknown(87)
 #2 (id=195465)   : Unknown effect type (179)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 9049 | Target: Unknown(87)
-#3 (id=195466)   : None (0)
-                   Base Value: 6 | Scaled Value: 6
+#3 (id=195466)   : Summon (28)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 120984 | Misc Value 2: 0xbb8 | Target: Unknown(87)
 Description      : Grows a healing blossom at the target location, restoring $81269s1 health to $?p138284[four][three] injured allies within $81269A1 yards every $81262t2 sec for $d. Limit 1.
 
 Name             : Feral Rage (id=146874) [Spell Family (7)] 
@@ -3812,7 +3826,7 @@ Range            : 40 yards
 GCD              : 1 seconds
 Duration         : 14 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Incarnation: King of the Jungle (102543), Berserk (106951), Feral Druid (137011), Astral Influence (197524), Twin Moonfire (200818), Ekowraith, Creator of Worlds (210667), 
+Affecting spells : Incarnation: King of the Jungle (102543), Berserk (106951), Feral Druid (137011), Astral Influence (197524), Twin Moonfire (200818), Ekowraith, Creator of Worlds (210667), Ashamane's Frenzy (210723)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ..x..... 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -3887,7 +3901,7 @@ Range            : 100 yards
 Duration         : 15 seconds
 Stance Mask      : 0x00000001
 Mechanic         : Bleed
-Affecting spells : Mastery: Razor Claws (77493), Incarnation: King of the Jungle (102543), Prowl (102547), Berserk (106951), Feral Druid (137011), Bloodletting (165699), Thrash (192090), Feral Affinity (197490), Astral Influence (197524), Jagged Wounds (202032), Feral Affinity (202155), Feral Affinity (202157), Tear the Flesh (210593), Ekowraith, Creator of Worlds (210667), 
+Affecting spells : Mastery: Razor Claws (77493), Incarnation: King of the Jungle (102543), Prowl (102547), Berserk (106951), Feral Druid (137011), Bloodletting (165699), Thrash (192090), Feral Affinity (197490), Astral Influence (197524), Jagged Wounds (202032), Feral Affinity (202155), Feral Affinity (202157), Tear the Flesh (210593), Ekowraith, Creator of Worlds (210667), Ashamane's Frenzy (210723)
 Triggered by     : Rake (1822)
 Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ..x..... ......x. 
@@ -4263,7 +4277,7 @@ Spell Level      : 3
 Range            : 100 yards
 Duration         : 16 seconds
 Stance Mask      : 0x40000013
-Affecting spells : Balance Overrides Passive (106732), Guardian Druid (137010), Feral Druid (137011), Restoration Druid (137012), Balance Druid (137013), Lucidity (137247), Lunar Inspiration (155627), Persistence (186396), Thrash (192090), Astral Influence (197524), Stellar Empowerment (197637), Feral Overrides Passive (197692), Twin Moonfire (200818), Twilight Glow (202386), Ekowraith, Creator of Worlds (210667), Scintillating Moonlight (238049), Wax and Wane (239952)
+Affecting spells : Balance Overrides Passive (106732), Guardian Druid (137010), Feral Druid (137011), Restoration Druid (137012), Balance Druid (137013), Lucidity (137247), Lunar Inspiration (155627), Persistence (186396), Thrash (192090), Astral Influence (197524), Stellar Empowerment (197637), Feral Overrides Passive (197692), Twin Moonfire (200818), Twilight Glow (202386), Ekowraith, Creator of Worlds (210667), Ashamane's Frenzy (210723), Scintillating Moonlight (238049), Wax and Wane (239952)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ .x...... ..x..... ......x. 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -4362,7 +4376,7 @@ Cooldown         : 10 seconds
 Category         : 33
 Category Cooldown: 10 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Maim Damage (61252), Incarnation: King of the Jungle (102543), Berserk (106951), Feral Druid (137011), Bloodtalons (145152), Thrash (192090), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), Fiery Red Maimers (236757)
+Affecting spells : Maim Damage (61252), Incarnation: King of the Jungle (102543), Berserk (106951), Feral Druid (137011), Bloodtalons (145152), Thrash (192090), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), Ashamane's Frenzy (210723), Fiery Red Maimers (236757)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ..x..... ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -4391,7 +4405,7 @@ Cooldown         : 10 seconds
 Category         : 33
 Category Cooldown: 10 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Maim Damage (61252), Incarnation: King of the Jungle (102543), Berserk (106951), Feral Druid (137011), Bloodtalons (145152), Thrash (192090), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), Fiery Red Maimers (236757)
+Affecting spells : Maim Damage (61252), Incarnation: King of the Jungle (102543), Berserk (106951), Feral Druid (137011), Bloodtalons (145152), Thrash (192090), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), Ashamane's Frenzy (210723), Fiery Red Maimers (236757)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ..x..... ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -4420,7 +4434,7 @@ Cooldown         : 10 seconds
 Category         : 33
 Category Cooldown: 10 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Maim Damage (61252), Incarnation: King of the Jungle (102543), Berserk (106951), Feral Druid (137011), Bloodtalons (145152), Thrash (192090), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), Fiery Red Maimers (236757)
+Affecting spells : Maim Damage (61252), Incarnation: King of the Jungle (102543), Berserk (106951), Feral Druid (137011), Bloodtalons (145152), Thrash (192090), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), Ashamane's Frenzy (210723), Fiery Red Maimers (236757)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ..x..... ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -4449,7 +4463,7 @@ Cooldown         : 10 seconds
 Category         : 33
 Category Cooldown: 10 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Maim Damage (61252), Incarnation: King of the Jungle (102543), Berserk (106951), Feral Druid (137011), Bloodtalons (145152), Thrash (192090), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), Fiery Red Maimers (236757)
+Affecting spells : Maim Damage (61252), Incarnation: King of the Jungle (102543), Berserk (106951), Feral Druid (137011), Bloodtalons (145152), Thrash (192090), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), Ashamane's Frenzy (210723), Fiery Red Maimers (236757)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ..x..... ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -4478,7 +4492,7 @@ Cooldown         : 10 seconds
 Category         : 33
 Category Cooldown: 10 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Maim Damage (61252), Incarnation: King of the Jungle (102543), Berserk (106951), Feral Druid (137011), Bloodtalons (145152), Thrash (192090), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), Fiery Red Maimers (236757)
+Affecting spells : Maim Damage (61252), Incarnation: King of the Jungle (102543), Berserk (106951), Feral Druid (137011), Bloodtalons (145152), Thrash (192090), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), Ashamane's Frenzy (210723), Fiery Red Maimers (236757)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ..x..... ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -4769,7 +4783,7 @@ Range            : 100 yards
 Duration         : 15 seconds
 Stacks           : 3 maximum
 Proc Chance      : 101%
-Affecting spells : Incarnation: Guardian of Ursoc (102558), Druid (137009), Feral Druid (137011), Astral Influence (197524), Jagged Claws (200409), Sharpened Claws (202110), Rend and Tear (204053), Elize's Everlasting Encasement (208342), Luffa Wrappings (208681), Ekowraith, Creator of Worlds (210667), Thrashing Claws (238048)
+Affecting spells : Incarnation: Guardian of Ursoc (102558), Druid (137009), Feral Druid (137011), Astral Influence (197524), Jagged Claws (200409), Rend and Tear (204053), Elize's Everlasting Encasement (208342), Luffa Wrappings (208681), Ekowraith, Creator of Worlds (210667), Ashamane's Frenzy (210723), Thrashing Claws (238048)
 Attributes       : ....x... ........ .....x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ..x..... ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5432,7 +5446,7 @@ GCD              : 1 seconds
 Charges          : 3 (12 seconds cooldown)
 Category         : 1581
 Stance Mask      : 0x00000001
-Affecting spells : Incarnation: King of the Jungle (102543), Feral Druid (137011), Thrash (192090), Astral Influence (197524), Sharpened Claws (210637), Scent of Blood (210664), Ekowraith, Creator of Worlds (210667), 
+Affecting spells : Incarnation: King of the Jungle (102543), Feral Druid (137011), Thrash (192090), Astral Influence (197524), Sharpened Claws (210637), Scent of Blood (210664), Ekowraith, Creator of Worlds (210667), Ashamane's Frenzy (210723)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .......x ........ ........ 
@@ -5503,25 +5517,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 139546 | Target: Self(1)
 Description      : Immediately gain $s1 combo points and an additional $s2 combo point every $t2 sec for $d.
 Tooltip          : Gaining $s2 combo point every $t2 sec.
-
-Name             : Sharpened Claws (Honor Talent) (id=202110) [Spell Family (7), Passive, Hidden] 
-Class            : Druid
-School           : Physical
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=297867)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 50 | Scaled Value: 50 | Target: Self(1)
-                   Affected Spells: Thrash (77758), Swipe (106785), Thrash (106830), Thrash (192090), Shadow Thrash (210687), Swipe (213764), Swipe (213771)
-#2 (id=360004)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 50 | Scaled Value: 50 | Misc Value: 22 | Target: Self(1)
-                   Affected Spells: Thrash (192090)
-Description      : Increases the damage done by your Swipe and Thrash by $m1%.
 
 Name             : Feral Affinity (id=202155) [Spell Family (7), Passive] 
 Class            : Druid
@@ -6519,7 +6514,7 @@ School           : Shadow
 Spell Level      : 22
 Range            : 100 yards
 Duration         : 24 seconds
-Affecting spells : Mastery: Razor Claws (77493), Incarnation: King of the Jungle (102543), Berserk (106951), Feral Druid (137011), Bloodletting (165699), Thrash (192090), Feral Affinity (197490), Astral Influence (197524), Jagged Wounds (202032), Feral Affinity (202155), Feral Affinity (202157), Razor Fangs (210570), Ekowraith, Creator of Worlds (210667), 
+Affecting spells : Mastery: Razor Claws (77493), Incarnation: King of the Jungle (102543), Berserk (106951), Feral Druid (137011), Bloodletting (165699), Thrash (192090), Feral Affinity (197490), Astral Influence (197524), Jagged Wounds (202032), Feral Affinity (202155), Feral Affinity (202157), Razor Fangs (210570), Ekowraith, Creator of Worlds (210667), Ashamane's Frenzy (210723)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
@@ -6566,7 +6561,7 @@ Duration         : 3 seconds
 Cooldown         : 75 seconds
 Stance Mask      : 0x00000001
 Artifact Power   : Id: 1153, Max Rank: 1
-Affecting spells : Mastery: Razor Claws (77493), Feral Druid (137011), Lucidity (137247), Astral Influence (197524), Ekowraith, Creator of Worlds (210667)
+Affecting spells : Mastery: Razor Claws (77493), Feral Druid (137011), Lucidity (137247), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), Ashamane's Frenzy (210723), Bloodletter's Frailty (238120)
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6580,6 +6575,8 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Target: Self(1)
 #3 (id=338650)   : Energize Power (30)
                    Base Value: 3 | Scaled Value: 3 | Misc Value: combo_points | Target: Self(1)
+#4 (id=364768)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0
 Description      : Unleash Ashamane's Frenzy, clawing your target $m2 times over $d for ${$210723s1*$m2} Physical damage and an additional ${$210723s3*3*$m2} Bleed damage over $210723d.
 
 |cFFFFFFFFAwards $s3 combo $Lpoint:points;.|r
@@ -6589,7 +6586,7 @@ Class            : Druid
 School           : Physical
 Range            : 5 yards
 Duration         : 6 seconds
-Affecting spells : Mastery: Razor Claws (77493), Feral Druid (137011), Lucidity (137247), Astral Influence (197524), Ekowraith, Creator of Worlds (210667)
+Affecting spells : Mastery: Razor Claws (77493), Feral Druid (137011), Lucidity (137247), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), Bloodletter's Frailty (238120)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6603,6 +6600,9 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Mechanic: Bleed | Target: Enemy(6)
 #3 (id=335909)   : Apply Aura (6) | Periodic Damage: physical every 2 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.20000 | Mechanic: Bleed
+#4 (id=364769)   : Apply Aura (6) | Unknown effect sub type (271)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.20000 | Target: Enemy(6)
+                   Affected Spells: Rip (1079), Rake (1822), Shred (5221), Moonfire (8921), Ferocious Bite (22568), Maim (22570), Thrash (77758), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Thrash (192090), Brutal Slash (202028), Shadow Thrash (210687), Ashamane's Rip (210705), Ashamane's Frenzy (210722), Ashamane's Frenzy (210723), Swipe (213771)
 Description      : $@spelldesc210722
 Tooltip          : Bleeding for $w2 damage every $t2 sec.
 
@@ -6784,7 +6784,7 @@ Spell Level      : 32
 Range            : 8 yards
 GCD              : 1 seconds
 Stance Mask      : 0x00000011
-Affecting spells : Astral Influence (197524), Sharpened Claws (202110), Ekowraith, Creator of Worlds (210667), 
+Affecting spells : Astral Influence (197524), Ekowraith, Creator of Worlds (210667), 
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .......x ........ ........ 
@@ -6805,7 +6805,7 @@ Spell Level      : 32
 Range            : 8 yards
 GCD              : 1.5 seconds
 Stance Mask      : 0x00000010
-Affecting spells : Bear Form (5487), Incarnation: Guardian of Ursoc (102558), Druid (137009), Guardian Druid (137010), Feral Druid (137011), Bloodtalons (145152), Thrash (192090), Astral Influence (197524), Sharpened Claws (202110), Ekowraith, Creator of Worlds (210667), 
+Affecting spells : Bear Form (5487), Incarnation: Guardian of Ursoc (102558), Druid (137009), Guardian Druid (137010), Feral Druid (137011), Bloodtalons (145152), Thrash (192090), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), Ashamane's Frenzy (210723)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .......x ........ ........ 
@@ -7196,6 +7196,31 @@ Effects          :
 #1 (id=348787)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 37 | Target: Self(1)
 Description      : Swipe deals $106785s2% increased damage against bleeding targets.
+
+Name             : Archdruid's Lunarwing Form (Shapeshift) (id=231437) 
+Class            : Druid
+School           : Physical
+Duration         : Aura (infinite)
+Proc Chance      : 101%
+Attributes       : ....x... .......x x.x.x... ....x...   ........ ..x..... x....... ....x... 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Stop attacks (20), Cannot be used in combat (28)
+Effects          :
+#1 (id=349051)   : Apply Aura (6) | Shapeshift (36)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 27 | Misc Value 2: 0xe | Target: Self(1)
+#2 (id=349052)   : Apply Aura (6) | Mechanic Immunity (77)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 17 | Target: Self(1)
+#3 (id=349053)   : Apply Aura (6) | Unknown effect sub type (201)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+Description      : Shapeshift into Lunarwing Form, increasing movement speed by $40121s2% and allowing you to fly.  Cannot use in combat.
+
+The act of shapeshifting frees the caster of movement impairing effects.
+Tooltip          : Immune to Polymorph effects.
+Movement speed increased by $j1f% and allows you to fly.
 
 Name             : Moment of Clarity (id=236068) [Spell Family (7), Passive] 
 Class            : Druid

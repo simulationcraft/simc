@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23436, git build ed53d25)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23436, git build 197aafa)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -32,7 +32,7 @@ Attributes       : ....x... ........ ..x..... x..x....   ........ ..x..... .x...
 Effects          :
 #2 (id=1295)     : Apply Aura (6) | Periodic Dummy: every 0.25 seconds (226)
                    Base Value: 60068 | Scaled Value: 60068 | Target: Self(1)
-Description      : Activates a freezing aura for $d that creates ice beneath your feet, allowing party or raid members within $a1 yards to walk on water.  Usable while mounted, but being attacked or damaged will cancel the effect.
+Description      : Activates a freezing aura for $d that creates ice beneath your feet, allowing party or raid members within $a1 yards to walk on water. Usable while mounted, but being attacked or damaged will cancel the effect.
 Tooltip          : Grants the ability to walk across water.
 
 Name             : Bite (Basic Attack) (id=17253) [Scaling Spell (4), Spell Family (9)] 
@@ -1766,7 +1766,7 @@ School           : Shadow
 Spell Level      : 80
 Range            : 100 yards
 Proc Chance      : 101%
-Affecting spells : Unholy Death Knight (137007), Death and Decay (188290), Scourge of Worlds (191748), Necrosis (216974)
+Affecting spells : Unholy Death Knight (137007), Death and Decay (188290), Scourge of Worlds (191748), Necrosis (216974), Lash of Shadows (238044)
 Triggered by     : Scourge Strike (55090)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ..x..... ......x. 
@@ -2710,7 +2710,7 @@ Effects          :
 #3 (id=191171)   : Apply Aura (6) | Unknown effect sub type (218)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf7 | Target: Self(1)
 #4 (id=191172)   : Apply Aura (6) | Unknown effect sub type (218)
-                   Base Value: -40 | Scaled Value: -40 | Misc Value 2: 0x119 | Target: Self(1)
+                   Base Value: -30 | Scaled Value: -30 | Misc Value 2: 0x119 | Target: Self(1)
 #5 (id=191173)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #6 (id=260787)   : Apply Aura (6) | Dummy (4)
@@ -3727,7 +3727,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=285787)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 23 | Target: Self(1)
-                   Affected Spells: Death and Decay (188290), Lash of Shadows (238044)
+                   Affected Spells: Death and Decay (188290), Lash of Shadows (238044), Cunning of the Ebon Blade (241050)
 #2 (id=287223)   : Apply Aura (6) | Add Percent Modifier: Unknown 2 (108)
                    Base Value: -13 | Scaled Value: -13 | Misc Value: 19 | Target: Self(1)
                    Affected Spells: Death and Decay (43265), Tightening Grasp (143375), Defile (152280)
@@ -6038,7 +6038,7 @@ Proc Chance      : 100%
 Artifact Power   : Id: 149, Max Rank: 1
 Proc Flags       : ....x... ..x..... ........ ........ 
                  : Yellow Melee, AOE Heal
-Affecting spells : Death Knight (137005), Death's Harbinger (238080)
+Affecting spells : Death Knight (137005)
 Triggered by     : Push Active Ability to Bar (225862)
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 

@@ -20,7 +20,7 @@ actions.precombat+=/augmentation,type=defiled
 actions.precombat+=/water_elemental
 actions.precombat+=/snapshot_stats
 actions.precombat+=/mirror_image
-actions.precombat+=/potion,name=deadly_grace
+actions.precombat+=/potion,name=prolonged_power
 actions.precombat+=/frostbolt
 
 # Executed every time the actor is available.
@@ -37,7 +37,7 @@ actions.aoe+=/frozen_orb
 actions.aoe+=/comet_storm
 actions.aoe+=/ice_nova
 actions.aoe+=/water_jet,if=prev_gcd.1.frostbolt&buff.fingers_of_frost.stack<(2+artifact.icy_hand.enabled)&buff.brain_freeze.react=0
-actions.aoe+=/flurry,if=(buff.brain_freeze.react|prev_gcd.1.ebonbolt)&buff.fingers_of_frost.react=0
+actions.aoe+=/flurry,if=prev_gcd.1.ebonbolt|prev_gcd.1.frostbolt&buff.brain_freeze.react
 actions.aoe+=/frost_bomb,if=debuff.frost_bomb.remains<action.ice_lance.travel_time&buff.fingers_of_frost.react>0
 actions.aoe+=/ice_lance,if=buff.fingers_of_frost.react>0
 actions.aoe+=/ebonbolt,if=buff.brain_freeze.react=0
@@ -45,7 +45,6 @@ actions.aoe+=/glacial_spike
 actions.aoe+=/frostbolt
 
 actions.cooldowns=rune_of_power,if=cooldown.icy_veins.remains<cast_time|charges_fractional>1.9&cooldown.icy_veins.remains>10|buff.icy_veins.up|target.time_to_die.remains+5<charges_fractional*10
-actions.cooldowns+=/potion,name=deadly_grace,if=cooldown.icy_veins.remains<1&active_enemies=1
 actions.cooldowns+=/potion,name=prolonged_power,if=cooldown.icy_veins.remains<1
 actions.cooldowns+=/icy_veins,if=buff.icy_veins.down
 actions.cooldowns+=/mirror_image
@@ -58,13 +57,13 @@ actions.single=ice_nova,if=debuff.winters_chill.up
 actions.single+=/frostbolt,if=prev_off_gcd.water_jet
 actions.single+=/water_jet,if=prev_gcd.1.frostbolt&buff.fingers_of_frost.stack<(2+artifact.icy_hand.enabled)&buff.brain_freeze.react=0
 actions.single+=/ray_of_frost,if=buff.icy_veins.up|(cooldown.icy_veins.remains>action.ray_of_frost.cooldown&buff.rune_of_power.down)
-actions.single+=/flurry,if=(buff.brain_freeze.react|prev_gcd.1.ebonbolt)&buff.fingers_of_frost.react=0
+actions.single+=/flurry,if=prev_gcd.1.ebonbolt|prev_gcd.1.frostbolt&buff.brain_freeze.react
 actions.single+=/frost_bomb,if=debuff.frost_bomb.remains<action.ice_lance.travel_time&buff.fingers_of_frost.react>0
 actions.single+=/ice_lance,if=buff.fingers_of_frost.react>0&cooldown.icy_veins.remains>10|buff.fingers_of_frost.react>2
 actions.single+=/frozen_orb
 actions.single+=/ice_nova
 actions.single+=/comet_storm
-actions.single+=/blizzard,if=talent.arctic_gale.enabled|active_enemies>1|(buff.zannesu_journey.stack=5&buff.zannesu_journey.remains>cast_time)
+actions.single+=/blizzard,if=talent.arctic_gale.enabled|active_enemies>2|active_enemies>1&!(talent.glacial_spike.enabled&talent.splitting_ice.enabled)|(buff.zannesu_journey.stack=5&buff.zannesu_journey.remains>cast_time)
 actions.single+=/ebonbolt,if=buff.brain_freeze.react=0
 actions.single+=/glacial_spike
 actions.single+=/frostbolt

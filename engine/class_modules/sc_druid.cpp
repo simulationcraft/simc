@@ -292,7 +292,7 @@ public:
 
   // Pets
   std::array<pet_t*, 11> pet_fey_moonwing; // 30 second duration, 3 second internal icd... create 11 to be safe.
-  std::array<pet_t*, 4> force_of_nature;
+  std::array<pet_t*, 3> force_of_nature;
   // Auto-attacks
   weapon_t caster_form_weapon;
   weapon_t cat_weapon;
@@ -928,14 +928,34 @@ namespace pets {
 
 struct force_of_nature_t : public pet_t
 {
-  struct wrath_t : public spell_t
+  struct fon_melee_t : public melee_attack_t
   {
-    wrath_t( force_of_nature_t* player ) :
-      spell_t( "wrath", player, player -> find_spell( 113769 ) )
+    fon_melee_t( pet_t* p, const char* name = "melee" ) :
+      melee_attack_t( name, p, spell_data_t::nil() )
     {
-      if ( player -> o() -> force_of_nature[0] )
-        stats = player -> o() -> force_of_nature[0] -> get_stats( "wrath" );
-      may_crit = true;
+      school = SCHOOL_PHYSICAL;
+      weapon = &( p -> main_hand_weapon );
+      base_execute_time = weapon -> swing_time;
+      may_crit = background = repeating = true;
+    }
+  };
+
+  struct auto_attack_t : public melee_attack_t
+  {
+    auto_attack_t( pet_t* player ) : melee_attack_t( "auto_attack", player )
+    {
+      assert( player -> main_hand_weapon.type != WEAPON_NONE );
+      player -> main_hand_attack = new fon_melee_t( player );
+      trigger_gcd = timespan_t::zero();
+    }
+
+    void execute() override
+    { player -> main_hand_attack -> schedule_execute(); }
+
+    bool ready() override
+    {
+      if ( player -> is_moving() ) return false;
+      return ( player -> main_hand_attack -> execute_event == nullptr );
     }
   };
 
@@ -944,10 +964,32 @@ struct force_of_nature_t : public pet_t
   force_of_nature_t( sim_t* sim, druid_t* owner ) :
     pet_t( sim, owner, "treant", true /*GUARDIAN*/, true )
   {
-    owner_coeff.sp_from_sp = 1.0 / 3;
-    owner_coeff.ap_from_ap = 1.0 / 3;
-    action_list_str = "wrath";
+    owner_coeff.ap_from_sp = 3;
     regen_type = REGEN_DISABLED;
+    main_hand_weapon.type = WEAPON_BEAST;
+  }
+
+  void init_action_list() override
+  {
+    action_priority_list_t* def = get_action_priority_list( "default" );
+    def -> add_action( "auto_attack" );
+
+    pet_t::init_action_list();
+  }
+
+  double composite_melee_crit_chance() const override
+  {
+    return owner -> cache.spell_crit_chance();
+  }
+
+  double composite_spell_haste() const override
+  {
+    return owner -> cache.spell_haste();
+  }
+
+  double composite_damage_versatility() const override
+  {
+    return owner -> cache.damage_versatility();
   }
 
   virtual void init_base_stats()
@@ -963,12 +1005,11 @@ struct force_of_nature_t : public pet_t
     stamina_per_owner = 0;
   }
 
-  virtual resource_e primary_resource() const { return RESOURCE_MANA; }
+  virtual resource_e primary_resource() const { return RESOURCE_NONE; }
 
-  virtual action_t* create_action( const std::string& name,
-                                   const std::string& options_str )
+  virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
   {
-    if ( name == "wrath" ) return new wrath_t( this );
+    if ( name == "auto_attack" ) return new auto_attack_t( this );
 
     return pet_t::create_action( name, options_str );
   }
@@ -6008,6 +6049,32 @@ struct wild_charge_t : public druid_spell_t
   }
 };
 
+
+struct force_of_nature_t : public druid_spell_t
+{
+  timespan_t summon_duration;
+  force_of_nature_t( druid_t* p, const std::string options ) :
+    druid_spell_t( "force_of_nature", p, p -> talent.force_of_nature ),
+    summon_duration( timespan_t::zero() )
+  {
+    parse_options( options );
+    harmful = may_crit = false;
+    summon_duration = data().duration();
+  }
+
+  virtual void execute() override
+  {
+    druid_spell_t::execute();
+
+    for ( size_t i = 0; i < p() -> force_of_nature.size(); i++ )
+    {
+      if ( p() -> force_of_nature[i] -> is_sleeping() )
+      {
+        p() -> force_of_nature[i] -> summon( summon_duration );
+      }
+    }
+  }
+};
 } // end namespace spells
 
 // ==========================================================================
@@ -6145,6 +6212,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "displacer_beast"        ) return new        displacer_beast_t( this, options_str );
   if ( name == "elunes_guidance"        ) return new        elunes_guidance_t( this, options_str );
   if ( name == "ferocious_bite"         ) return new         ferocious_bite_t( this, options_str );
+  if ( name == "force_of_nature"        ) return new        force_of_nature_t( this, options_str );
   if ( name == "frenzied_regeneration"  ) return new  frenzied_regeneration_t( this, options_str );
   if ( name == "full_moon"              ) return new              full_moon_t( this, options_str );
   if ( name == "fury_of_elune"          ) return new          fury_of_elune_t( this, options_str );
@@ -7560,7 +7628,7 @@ double druid_t::mana_regen_per_second() const
 {
   double mp5 = player_t::mana_regen_per_second();
 
-  if ( buff.moonkin_form -> check() ) // Boomkins get 150% increased mana regeneration, scaling with haste. Legion TOCHECK
+  if ( buff.moonkin_form -> check() )
     mp5 *= 1.0 + buff.moonkin_form -> data().effectN( 5 ).percent() + ( 1 / cache.spell_haste() );
 
   return mp5;
@@ -8507,6 +8575,11 @@ double druid_t::calculate_expected_max_health() const
 
     const random_prop_data_t item_data = dbc.random_property( item -> item_level() );
     int index = item_database::random_suffix_type( &item -> parsed.data );
+    if ( item_data.p_epic[ 0 ] == 0 )
+    {
+      continue;
+    }
+
     slot_weights += item_data.p_epic[ index ] / item_data.p_epic[ 0 ];
 
     if ( ! item -> active() )

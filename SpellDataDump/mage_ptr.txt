@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23436, git build ed53d25)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23436, git build 197aafa)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Arcane Fire Frost Mage
@@ -178,7 +178,7 @@ Attributes       : ........ ........ x....... ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=457)      : School Damage: arcane (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.75000 | Radius: 0 - 10 yards | Target: At Caster(22) -> AOE enemy(15)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.75000 | Radius: 0 - 10 yards | Target: At Caster(22) -> AOE enemy(15)
 #2 (id=281175)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: none | Target: Self(1)
 Description      : Causes an explosion of magic around the caster, dealing $s1 Arcane damage to all enemies within $A1 yards.
@@ -2569,10 +2569,10 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179702)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 15 | Scaled Value: 15 | Target: Self(1)
-                   Affected Spells: Fireball (133), Flamestrike (2120), Scorch (2948), Pyroblast (11366), Dragon's Breath (31661), Living Bomb (44461), Fire Blast (108853), Meteor (153561), Meteor (153564), Meteor Burn (155158), Blast Wave (157981), Aftershocks (194432), Phoenix's Flames (194466), Cinderstorm (198928), Cinderstorm (198929), Flame Patch (205472), Phoenix's Flames (224637)
+                   Base Value: 18 | Scaled Value: 18 | Target: Self(1)
+                   Affected Spells: Fireball (133), Flamestrike (2120), Scorch (2948), Pyroblast (11366), Dragon's Breath (31661), Living Bomb (44461), Fire Blast (108853), Meteor (153561), Meteor (153564), Meteor Burn (155158), Blast Wave (157981), Aftershocks (194432), Phoenix's Flames (194466), Cinderstorm (198928), Cinderstorm (198929), Flame Patch (205472), Phoenix's Flames (224637), Warmth of the Phoenix (238091)
 #2 (id=191125)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self(1)
+                   Base Value: 18 | Scaled Value: 18 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Living Bomb (44457), Meteor (153561), Meteor (153564), Meteor Burn (155158), Living Bomb (217694)
 #3 (id=191126)   : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self(1)
@@ -2615,10 +2615,10 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179703)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 12 | Scaled Value: 12 | Target: Self(1)
+                   Base Value: 17 | Scaled Value: 17 | Target: Self(1)
                    Affected Spells: Frostbolt (116), Cone of Cold (120), Ice Lance (30455), Waterbolt (31707), Frozen Orb (84721), Frost Bomb (113092), Comet Storm (153595), Comet Storm (153596), Ice Nova (157997), Blizzard (190356), Blizzard (190357), Ebonbolt (214634), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Ebonbolt (228599)
 #2 (id=191121)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 12 | Scaled Value: 12 | Misc Value: 22 | Target: Self(1)
+                   Base Value: 17 | Scaled Value: 17 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Water Jet (135029), Ray of Frost (205021)
 #3 (id=191122)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
@@ -2660,10 +2660,10 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179704)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 17 | Scaled Value: 17 | Target: Self(1)
+                   Base Value: 21 | Scaled Value: 21 | Target: Self(1)
                    Affected Spells: Arcane Explosion (1449), Arcane Missiles (7268), Arcane Blast (30451), Arcane Barrage (44425), Nether Tempest (114923), Nether Tempest (114954), Arcane Orb (153640), Supernova (157980)
 #2 (id=191116)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 17 | Scaled Value: 17 | Misc Value: 22 | Target: Self(1)
+                   Base Value: 21 | Scaled Value: 21 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Nether Tempest (114923), Nether Tempest (114954)
 #3 (id=191117)   : Apply Aura (6) | Mod Power Regen (110)
                    Base Value: 60 | Scaled Value: 0 | Points Per Level: -2 | Target: Self(1)
@@ -3566,7 +3566,7 @@ GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 8 seconds
 Proc Chance      : 100%
-Affecting spells : Icy Veins (12472), Shatter (12982), Ice Floes (108839), Mage (137018), Frost Mage (137020), The Storm Rages (195352), Ice Form (198144), Arctic Gale (205038), Norgannon's Foresight (236380)
+Affecting spells : Icy Veins (12472), Shatter (12982), Ice Floes (108839), Mage (137018), Frost Mage (137020), The Storm Rages (195352), Ice Form (198144), Arctic Gale (205038), Norgannon's Foresight (236380), Freezing Rain (240555)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -3642,7 +3642,6 @@ Proc Chance      : 100%
 Proc Flags       : ........ ......x. x....... ........ 
                  : Heal, Hostile Spell
 Affecting spells : Norgannon's Foresight (236380)
-Triggered by     : Ebonbolt (214634)
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -4745,7 +4744,7 @@ School           : Shadowfrost
 Range            : 40 yards
 Cast Time        : 3 seconds
 GCD              : 1.5 seconds
-Velocity         : 35 yards/sec
+Velocity         : 30 yards/sec
 Cooldown         : 45 seconds
 Artifact Power   : Id: 783, Max Rank: 1
 Affecting spells : Shatter (12982), Ice Floes (108839), Frost Mage (137020), Norgannon's Foresight (236380)
@@ -4759,8 +4758,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=318792)   : Trigger Missiles (32)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 228599 | Target: Enemy(6)
-#2 (id=355001)   : Trigger Spell: Brain Freeze (64)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 190446 | Target: Self(1)
+#2 (id=355001)   : Server Side Script (77)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Deals $228599s1 Shadowfrost damage and causes Brain Freeze.
 
 Name             : Living Bomb (id=217694) [Spell Family (3)] 

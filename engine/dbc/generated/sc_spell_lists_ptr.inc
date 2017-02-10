@@ -4,7 +4,7 @@
 #ifndef ptr_MAX_CLASS
 #define ptr_MAX_CLASS (13)
 #endif
-// Class based active abilities, wow build 23445
+// Class based active abilities, wow build 23530
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
@@ -943,7 +943,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       116670, // Vivify
            0,
     },
-    // Windwalker tree, 17 abilities
+    // Windwalker tree, 18 abilities
     {
       116768, // Blackout Kick!
       211432, // Combo Master
@@ -955,6 +955,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       101545, // Flying Serpent Kick
       213114, // Hidden Master's Forbidden Touch
       228287, // Mark of the Crane
+      240672, // Master of Combinations
       107428, // Rising Sun Kick
       116705, // Spear Hand Strike
       101546, // Spinning Crane Kick
@@ -1163,7 +1164,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
 };
 #define PTR_TREE_SPECIALIZATION_SIZE (36)
 
-// Talent tree specialization abilities, wow build 23445
+// Talent tree specialization abilities, wow build 23530
 static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -2264,7 +2265,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
 };
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 23445
+// Class mastery abilities, wow build 23530
 static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2503,7 +2504,7 @@ static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS]
 #define ptr_MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 23445
+// Racial abilities, wow build 23530
 static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -3241,7 +3242,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
 };
 #define PTR_SET_BONUS_DATA_SIZE (544)
 
-// Set bonus data, wow build 23445
+// Set bonus data, wow build 23530
 static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,   71, 165636, { 127055, 127081, 127092, 127103, 127114,  0 } },
@@ -3810,9 +3811,9 @@ static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   { "Vestment of Second Sight"                   ,     "tier19",     12,  1282,   19,   4,  12,  577, 211074, { 138375, 138376, 138377, 138378, 138379, 138380,  0 } },
   { "Vestment of Second Sight"                   ,     "tier19",     12,  1282,   19,   4,  12,  581, 211077, { 138375, 138376, 138377, 138378, 138379, 138380,  0 } },
 };
-#define PTR_RPPMMOD_SIZE (368)
+#define PTR_RPPMMOD_SIZE (369)
 
-// 368 RPPM Modifiers, wow build level 23445
+// 369 RPPM Modifiers, wow build level 23530
 static struct rppm_modifier_t __ptr_rppmmodifier_data[] = {
   {  45054,    4,  1,  1.0000 },
   {  49530,    1,  1,  1.0000 },
@@ -4124,15 +4125,15 @@ static struct rppm_modifier_t __ptr_rppmmodifier_data[] = {
   { 225138,  256,  4, -0.2400 },
   { 225138,   65,  4, -0.1300 },
   { 225138,  264,  4,  0.1200 },
-  { 225139,  251,  4,  1.0000 },
-  { 225139,  252,  4,  0.6600 },
+  { 225139,  251,  4,  1.2000 },
+  { 225139,  252,  4,  1.8000 },
   { 225139,  577,  4,  0.1200 },
   { 225139,  103,  4,  1.2400 },
   { 225139,  253,  4,  1.8000 },
   { 225139,  254,  4,  1.2400 },
   { 225139,  255,  4,  0.5000 },
-  { 225139,  269,  4,  1.1000 },
-  { 225139,   70,  4, -0.6000 },
+  { 225139,  269,  4, -0.2000 },
+  { 225139,   70,  4,  0.0000 },
   { 225139,  259,  4,  0.1700 },
   { 225139,  260,  4,  1.8000 },
   { 225139,  261,  4,  2.0000 },
@@ -4182,11 +4183,12 @@ static struct rppm_modifier_t __ptr_rppmmodifier_data[] = {
   { 238498,   66,  4, -0.5000 },
   { 238524,  435,  3, -0.5000 },
   { 238524,    4,  1,  1.0000 },
+  { 241496,    4,  1,  1.0000 },
   {      0,    0,  0,  0.0000 },
 };
 #define PTR_ARTIFACT_SIZE (41)
 
-// Artifact base data, wow build 23445
+// Artifact base data, wow build 23530
 static struct artifact_t __ptr_artifact_data[PTR_ARTIFACT_SIZE] = {
   {  2,  70 },
   {  3, 577 },
@@ -4230,9 +4232,9 @@ static struct artifact_t __ptr_artifact_data[PTR_ARTIFACT_SIZE] = {
   { 82,  66 },
   {  0,   0 },
 };
-#define PTR_ARTIFACT_POWER_SIZE (859)
+#define PTR_ARTIFACT_POWER_SIZE (895)
 
-// Artifact power data, wow build 23445
+// Artifact power data, wow build 23530
 static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER_SIZE] = {
   {   40,   2,  18,  0,   0, 205273, "Wake of Ashes"                      }, // Wake of Ashes (id=205273, n_ranks=1)
   {   41,   2,  32,  4,   3, 186941, "Highlord's Judgment"                }, // Highlord's Judgment (id=186941, n_ranks=8)
@@ -4253,10 +4255,11 @@ static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER
   { 1118,   2,   5,  0,  20, 207604, "Ashbringer's Light"                 }, // Ashbringer's Light (id=207604, n_ranks=20)
   { 1207,   2,   8,  0,   0, 211309, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
   { 1275,   2,   0,  0,   1, 214081, "Blade of Light"                     }, // Blade of Light (id=214081, n_ranks=1)
-  { 1561,   2,  34, 13,   4, 238062, "Righteous Verdict"                  }, // Righteous Verdict (id=238062, n_ranks=8)
+  { 1561,   2,  32, 13,   4, 238062, "Righteous Verdict"                  }, // Righteous Verdict (id=238062, n_ranks=8)
   { 1562,   2,   0,  0,   1, 238098, "Blessing of the Ashbringer"         }, // Blessing of the Ashbringer (id=238098, n_ranks=1)
   { 1563,   2,   1,  0,   1, 238134, "Judge Unworthy"                     }, // Judge Unworthy (id=238134, n_ranks=1)
   { 1564,   2,   5,  0,  20, 239042, "Infinite"                           }, // Infinite (id=239042, n_ranks=1)
+  { 1647,   2,   2,  0,   1, 241147, "Ferocity of the Silver Hand"        }, // Ferocity of the Silver Hand (id=241147, n_ranks=1)
   { 1000,   3,  32,  4,   3, 201454, "Contained Fury"                     }, // Contained Fury (id=201454, n_ranks=8)
   { 1001,   3,  32,  5,   3, 201455, "Critical Chaos"                     }, // Critical Chaos (id=201455, n_ranks=8)
   { 1002,   3,  32,  6,   3, 201456, "Chaos Vision"                       }, // Chaos Vision (id=201456, n_ranks=8)
@@ -4276,10 +4279,11 @@ static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER
   { 1190,   3,   8,  0,   0, 211309, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
   { 1330,   3,   0,  0,   1, 214795, "Warglaives of Chaos"                }, // Warglaives of Chaos (id=214795, n_ranks=1)
   { 1362,   3,   5,  0,  20, 214907, "Chaos Burn"                         }, // Chaos Burn (id=214907, n_ranks=20)
-  { 1493,   3,  34, 13,   4, 238045, "Wide Eyes"                          }, // Wide Eyes (id=238045, n_ranks=8)
+  { 1493,   3,  32, 13,   4, 238045, "Wide Eyes"                          }, // Wide Eyes (id=238045, n_ranks=8)
   { 1494,   3,   0,  0,   1, 238081, "Bladedancer's Grace"                }, // Bladedancer's Grace (id=238081, n_ranks=1)
   { 1495,   3,   1,  0,   1, 238117, "Chaotic Onslaught"                  }, // Chaotic Onslaught (id=238117, n_ranks=1)
   { 1496,   3,   5,  0,  20, 239042, "Infinite"                           }, // Infinite (id=239042, n_ranks=1)
+  { 1630,   3,   2,  0,   1, 241090, "Illidari Ferocity"                  }, // Illidari Ferocity (id=241090, n_ranks=1)
   {   72,   4,  32,  4,   3, 187304, "Torrential Barrage"                 }, // Torrential Barrage (id=187304, n_ranks=8)
   {   73,   4,   1,  1,   1, 188006, "Arcane Rebound"                     }, // Arcane Rebound (id=188006, n_ranks=1)
   {   74,   4,  32,  5,   3, 187258, "Blasting Rod"                       }, // Blasting Rod (id=187258, n_ranks=8)
@@ -4299,10 +4303,11 @@ static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER
   { 1199,   4,   8,  0,   0, 211309, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
   { 1339,   4,   0,  0,   1, 187318, "Might of the Guardians"             }, // Might of the Guardians (id=187318, n_ranks=1)
   { 1371,   4,   5,  0,  20, 214917, "Ancient Power"                      }, // Ancient Power (id=214917, n_ranks=20)
-  { 1529,   4,  34, 13,   4, 238054, "Aegwynn's Intensity"                }, // Aegwynn's Intensity (id=238054, n_ranks=8)
+  { 1529,   4,  32, 13,   4, 238054, "Aegwynn's Intensity"                }, // Aegwynn's Intensity (id=238054, n_ranks=8)
   { 1530,   4,   0,  0,   1, 238090, "Aluneth's Avarice"                  }, // Aluneth's Avarice (id=238090, n_ranks=1)
   { 1531,   4,   1,  0,   1, 238126, "Time and Space"                     }, // Time and Space (id=238126, n_ranks=1)
   { 1532,   4,   5,  0,  20, 239042, "Infinite"                           }, // Infinite (id=239042, n_ranks=1)
+  { 1639,   4,   2,  0,   1, 241121, "Intensity of the Tirisgarde"        }, // Intensity of the Tirisgarde (id=241121, n_ranks=1)
   {   91,  11,  18,  0,   0, 203524, "Neltharion's Fury"                  }, // Neltharion's Fury (id=203524, n_ranks=1)
   {   92,  11,   1,  1,   1, 189059, "Scales of Earth"                    }, // Scales of Earth (id=189059, n_ranks=1)
   {   93,  11,   1,  2,   1, 203576, "Dragon Scales"                      }, // Dragon Scales (id=203576, n_ranks=1)
@@ -4323,10 +4328,11 @@ static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER
   { 1358,  11,   0,  0,   1, 188647, "Strength of the Earth Aspect"       }, // Strength of the Earth Aspect (id=188647, n_ranks=1)
   { 1395,  11,   5,  0,  20, 214939, "Unbreakable Bulwark"                }, // Unbreakable Bulwark (id=214939, n_ranks=20)
   { 1456,  11,   8,  0,   0, 226829, "Artificial Damage"                  }, // Artificial Damage (id=226829, n_ranks=1)
-  { 1621,  11,  34, 13,   4, 238077, "Bastion of the Aspects"             }, // Bastion of the Aspects (id=238077, n_ranks=8)
+  { 1621,  11,  32, 13,   4, 238077, "Bastion of the Aspects"             }, // Bastion of the Aspects (id=238077, n_ranks=8)
   { 1622,  11,   0,  0,   1, 238113, "Revengeance"                        }, // Revengeance (id=238113, n_ranks=1)
   { 1623,  11,   1,  0,   1, 238149, "Neltharion's Thunder"               }, // Neltharion's Thunder (id=238149, n_ranks=1)
   { 1624,  11,   5,  0,  20, 239042, "Infinite"                           }, // Infinite (id=239042, n_ranks=1)
+  { 1716,  11,   2,  0,   1, 241270, "Protection of the Valarjar"         }, // Protection of the Valarjar (id=241270, n_ranks=1)
   {  108,  12,  32,  4,   3, 189080, "Cold as Ice"                        }, // Cold as Ice (id=189080, n_ranks=8)
   {  109,  12,  32,  6,   3, 189086, "Blast Radius"                       }, // Blast Radius (id=189086, n_ranks=8)
   {  110,  12,  32,  5,   3, 189092, "Ambidexterity"                      }, // Ambidexterity (id=189092, n_ranks=8)
@@ -4346,10 +4352,11 @@ static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER
   { 1188,  12,   8,  0,   0, 211309, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
   { 1332,  12,   0,  0,   1, 218931, "Blades of Frost"                    }, // Blades of Frost (id=218931, n_ranks=1)
   { 1360,  12,   5,  0,  20, 214904, "Soulbiter"                          }, // Soulbiter (id=214904, n_ranks=20)
-  { 1485,  12,  34, 13,   4, 238043, "Runefrost"                          }, // Runefrost (id=238043, n_ranks=8)
+  { 1485,  12,  32, 13,   4, 238043, "Runefrost"                          }, // Runefrost (id=238043, n_ranks=8)
   { 1486,  12,   0,  0,   1, 238079, "Runic Chills"                       }, // Runic Chills (id=238079, n_ranks=1)
   { 1487,  12,   1,  0,   1, 238115, "Thronebreaker"                      }, // Thronebreaker (id=238115, n_ranks=1)
   { 1488,  12,   5,  0,  20, 239042, "Infinite"                           }, // Infinite (id=239042, n_ranks=1)
+  { 1628,  12,   2,  0,   1, 241047, "Ferocity of the Ebon Blade"         }, // Ferocity of the Ebon Blade (id=241047, n_ranks=1)
   {  125,  13,  18,  0,   0, 208253, "Essence of G'Hanir"                 }, // Essence of G'Hanir (id=208253, n_ranks=1)
   {  126,  13,   1,  1,   1, 189849, "Dreamwalker"                        }, // Dreamwalker (id=189849, n_ranks=1)
   {  127,  13,   1,  2,   1, 189857, "Tranquil Mind"                      }, // Tranquil Mind (id=189857, n_ranks=1)
@@ -4370,10 +4377,11 @@ static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER
   { 1254,  13,   8,  0,   0, 213428, "Artificial Damage"                  }, // Artificial Damage (id=213428, n_ranks=1)
   { 1335,  13,   0,  0,   1, 222644, "Nature's Vigor"                     }, // Nature's Vigor (id=222644, n_ranks=1)
   { 1367,  13,   5,  0,  20, 214913, "G'Hanir's Bloom"                    }, // G'Hanir's Bloom (id=214913, n_ranks=20)
-  { 1513,  13,  34, 13,   4, 238050, "Eternal Restoration"                }, // Eternal Restoration (id=238050, n_ranks=8)
+  { 1513,  13,  32, 13,   4, 238050, "Eternal Restoration"                }, // Eternal Restoration (id=238050, n_ranks=8)
   { 1514,  13,   0,  0,   1, 238086, "Joy of Spring"                      }, // Joy of Spring (id=238086, n_ranks=1)
   { 1515,  13,   1,  0,   1, 238122, "Deep Rooted"                        }, // Deep Rooted (id=238122, n_ranks=1)
   { 1516,  13,   5,  0,  20, 239042, "Infinite"                           }, // Infinite (id=239042, n_ranks=1)
+  { 1635,  13,   2,  0,   1, 241102, "Grace of the Cenarion Circle"       }, // Grace of the Cenarion Circle (id=241102, n_ranks=1)
   {  272,  15,  32,  4,   3, 192450, "Iron Heart"                         }, // Iron Heart (id=192450, n_ranks=8)
   {  273,  15,  32,  5,   3, 192453, "Meat Shield"                        }, // Meat Shield (id=192453, n_ranks=8)
   {  274,  15,  32,  6,   3, 192447, "Grim Perseverance"                  }, // Grim Perseverance (id=192447, n_ranks=8)
@@ -4394,10 +4402,11 @@ static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER
   { 1331,  15,   0,  0,   1, 221775, "Sanguinary Affinity"                }, // Sanguinary Affinity (id=221775, n_ranks=1)
   { 1359,  15,   5,  0,  20, 214903, "The Hungering Maw"                  }, // The Hungering Maw (id=214903, n_ranks=20)
   { 1451,  15,   8,  0,   0, 226829, "Artificial Damage"                  }, // Artificial Damage (id=226829, n_ranks=1)
-  { 1481,  15,  34, 13,   4, 238042, "Carrion Feast"                      }, // Carrion Feast (id=238042, n_ranks=8)
+  { 1481,  15,  32, 13,   4, 238042, "Carrion Feast"                      }, // Carrion Feast (id=238042, n_ranks=8)
   { 1482,  15,   0,  0,   1, 238078, "Vampiric Aura"                      }, // Vampiric Aura (id=238078, n_ranks=1)
   { 1483,  15,   1,  0,   1, 238114, "Souldrinker"                        }, // Souldrinker (id=238114, n_ranks=1)
   { 1484,  15,   5,  0,  20, 239042, "Infinite"                           }, // Infinite (id=239042, n_ranks=1)
+  { 1627,  15,   2,  0,   1, 241018, "Fortitude of the Ebon Blade"        }, // Fortitude of the Ebon Blade (id=241018, n_ranks=1)
   {  149,  16,  18,  0,   0, 220143, "Apocalypse"                         }, // Apocalypse (id=220143, n_ranks=1)
   {  150,  16,   1,  1,   1, 191760, "The Shambler"                       }, // The Shambler (id=191760, n_ranks=1)
   {  151,  16,   1,  2,   1, 191741, "Double Doom"                        }, // Double Doom (id=191741, n_ranks=1)
@@ -4417,10 +4426,11 @@ static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER
   { 1189,  16,   8,  0,   0, 211309, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
   { 1333,  16,   0,  0,   1, 218280, "Feast of Souls"                     }, // Feast of Souls (id=218280, n_ranks=1)
   { 1361,  16,   5,  0,  20, 214906, "Fleshsearer"                        }, // Fleshsearer (id=214906, n_ranks=20)
-  { 1489,  16,  34, 13,   4, 238044, "Lash of Shadows"                    }, // Lash of Shadows (id=238044, n_ranks=8)
+  { 1489,  16,  32, 13,   4, 238044, "Lash of Shadows"                    }, // Lash of Shadows (id=238044, n_ranks=8)
   { 1490,  16,   0,  0,   1, 238080, "Death's Harbinger"                  }, // Death's Harbinger (id=238080, n_ranks=1)
   { 1491,  16,   1,  0,   1, 238116, "Festering Talons"                   }, // Festering Talons (id=238116, n_ranks=1)
   { 1492,  16,   5,  0,  20, 239042, "Infinite"                           }, // Infinite (id=239042, n_ranks=1)
+  { 1629,  16,   2,  0,   1, 241050, "Cunning of the Ebon Blade"          }, // Cunning of the Ebon Blade (id=241050, n_ranks=1)
   {  851,  17,  18,  0,   0, 209782, "Goremaw's Bite"                     }, // Goremaw's Bite (id=209782, n_ranks=1)
   {  852,  17,  32,  4,   3, 197231, "The Quiet Knife"                    }, // The Quiet Knife (id=197231, n_ranks=8)
   {  853,  17,  32,  5,   3, 197233, "Demon's Kiss"                       }, // Demon's Kiss (id=197233, n_ranks=8)
@@ -4440,10 +4450,11 @@ static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER
   { 1213,  17,   8,  0,   0, 211309, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
   { 1349,  17,   0,  0,   1, 221856, "Shadow Fangs"                       }, // Shadow Fangs (id=221856, n_ranks=1)
   { 1386,  17,   5,  0,  20, 214930, "Legionblade"                        }, // Legionblade (id=214930, n_ranks=20)
-  { 1585,  17,  34, 13,   4, 238068, "Etched in Shadow"                   }, // Etched in Shadow (id=238068, n_ranks=8)
+  { 1585,  17,  32, 13,   4, 238068, "Etched in Shadow"                   }, // Etched in Shadow (id=238068, n_ranks=8)
   { 1586,  17,   0,  0,   1, 238104, "Shadow's Whisper"                   }, // Shadow's Whisper (id=238104, n_ranks=1)
   { 1587,  17,   1,  0,   1, 238140, "Feeding Frenzy"                     }, // Feeding Frenzy (id=238140, n_ranks=1)
   { 1588,  17,   5,  0,  20, 239042, "Infinite"                           }, // Infinite (id=239042, n_ranks=1)
+  { 1653,  17,   2,  0,   1, 241154, "Shadows of the Uncrowned"           }, // Shadows of the Uncrowned (id=241154, n_ranks=1)
   { 1068,  34,  18,  0,   0, 203415, "Fury of the Eagle"                  }, // Fury of the Eagle (id=203415, n_ranks=1)
   { 1070,  34,  32,  4,   3, 203566, "Sharpened Fang"                     }, // Sharpened Fang (id=203566, n_ranks=8)
   { 1071,  34,  32,  5,   3, 203577, "My Beloved Monster"                 }, // My Beloved Monster (id=203577, n_ranks=8)
@@ -4463,10 +4474,11 @@ static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER
   { 1198,  34,   8,  0,   0, 211309, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
   { 1338,  34,   0,  0,   1, 221773, "Iron Talons"                        }, // Iron Talons (id=221773, n_ranks=1)
   { 1370,  34,   5,  0,  20, 214916, "Voice of the Wild Gods"             }, // Voice of the Wild Gods (id=214916, n_ranks=20)
-  { 1525,  34,  34, 13,   4, 238053, "Jaws of the Mongoose"               }, // Jaws of the Mongoose (id=238053, n_ranks=8)
+  { 1525,  34,  32, 13,   4, 238053, "Jaws of the Mongoose"               }, // Jaws of the Mongoose (id=238053, n_ranks=8)
   { 1526,  34,   0,  0,   1, 238089, "Talon Bond"                         }, // Talon Bond (id=238089, n_ranks=1)
   { 1527,  34,   1,  0,   1, 238125, "Echos of Eche'ro"                   }, // Echos of Eche'ro (id=238125, n_ranks=1)
   { 1528,  34,   5,  0,  20, 239042, "Infinite"                           }, // Infinite (id=239042, n_ranks=1)
+  { 1638,  34,   2,  0,   1, 241115, "Ferocity of the Unseen Path"        }, // Ferocity of the Unseen Path (id=241115, n_ranks=1)
   {  980,  35,   1,  1,   1, 200875, "Juggernaut"                         }, // Juggernaut (id=200875, n_ranks=1)
   {  981,  35,   1,  2,   1, 200845, "Rage of the Valarjar"               }, // Rage of the Valarjar (id=200845, n_ranks=1)
   {  982,  35,   1,  3,   1, 200872, "Odyn's Champion"                    }, // Odyn's Champion (id=200872, n_ranks=1)
@@ -4486,10 +4498,11 @@ static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER
   { 1221,  35,   8,  0,   0, 211309, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
   { 1357,  35,   0,  0,   1, 200847, "Thirst for Battle"                  }, // Thirst for Battle (id=200847, n_ranks=1)
   { 1394,  35,   5,  0,  20, 214938, "Titanic Power"                      }, // Titanic Power (id=214938, n_ranks=20)
-  { 1617,  35,  34, 13,   4, 238076, "Pulse of Battle"                    }, // Pulse of Battle (id=238076, n_ranks=8)
+  { 1617,  35,  32, 13,   4, 238076, "Pulse of Battle"                    }, // Pulse of Battle (id=238076, n_ranks=8)
   { 1618,  35,   0,  0,   1, 238112, "Oathblood"                          }, // Oathblood (id=238112, n_ranks=1)
   { 1619,  35,   1,  0,   1, 238148, "Death and Glory"                    }, // Death and Glory (id=238148, n_ranks=1)
   { 1620,  35,   5,  0,  20, 239042, "Infinite"                           }, // Infinite (id=239042, n_ranks=1)
+  { 1715,  35,   2,  0,   1, 241269, "Fury of the Valarjar"               }, // Fury of the Valarjar (id=241269, n_ranks=1)
   { 1136,  36,  18,  0,   0, 209577, "Warbreaker"                         }, // Warbreaker (id=209577, n_ranks=1)
   { 1137,  36,   1,  1,   1, 209574, "Shattered Defenses"                 }, // Shattered Defenses (id=209574, n_ranks=1)
   { 1138,  36,   1,  2,   1, 209573, "Void Cleave"                        }, // Void Cleave (id=209573, n_ranks=1)
@@ -4509,10 +4522,11 @@ static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER
   { 1220,  36,   8,  0,   0, 211309, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
   { 1356,  36,   0,  0,   1, 209480, "Thoradin's Might"                   }, // Thoradin's Might (id=209480, n_ranks=1)
   { 1393,  36,   5,  0,  20, 214937, "Unbreakable Steel"                  }, // Unbreakable Steel (id=214937, n_ranks=20)
-  { 1613,  36,  34, 13,   4, 238075, "Storm of Swords"                    }, // Storm of Swords (id=238075, n_ranks=8)
+  { 1613,  36,  32, 13,   4, 238075, "Storm of Swords"                    }, // Storm of Swords (id=238075, n_ranks=8)
   { 1614,  36,   0,  0,   1, 238111, "Soul of the Slaughter"              }, // Soul of the Slaughter (id=238111, n_ranks=1)
   { 1615,  36,   1,  0,   1, 238147, "Executioner's Precision"            }, // Executioner's Precision (id=238147, n_ranks=1)
   { 1616,  36,   5,  0,  20, 239042, "Infinite"                           }, // Infinite (id=239042, n_ranks=1)
+  { 1714,  36,   2,  0,   1, 241264, "Arms of the Valarjar"               }, // Arms of the Valarjar (id=241264, n_ranks=1)
   { 1170,  37,  18,  0,   0, 211714, "Thal'kiel's Consumption"            }, // Thal'kiel's Consumption (id=211714, n_ranks=1)
   { 1171,  37,  32,  4,   3, 211108, "Summoner's Prowess"                 }, // Summoner's Prowess (id=211108, n_ranks=8)
   { 1172,  37,  32,  5,   3, 211126, "Legionwrath"                        }, // Legionwrath (id=211126, n_ranks=8)
@@ -4532,10 +4546,11 @@ static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER
   { 1218,  37,   8,  0,   0, 211309, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
   { 1354,  37,   0,  0,   1, 221882, "Breath of Thal'kiel"                }, // Breath of Thal'kiel (id=221882, n_ranks=1)
   { 1391,  37,   5,  0,  20, 214935, "Thal'kiel's Lingering Power"        }, // Thal'kiel's Lingering Power (id=214935, n_ranks=20)
-  { 1605,  37,  34, 13,   4, 238073, "Left Hand of Darkness"              }, // Left Hand of Darkness (id=238073, n_ranks=8)
+  { 1605,  37,  32, 13,   4, 238073, "Left Hand of Darkness"              }, // Left Hand of Darkness (id=238073, n_ranks=8)
   { 1606,  37,   0,  0,   1, 238109, "Jaws of Shadow"                     }, // Jaws of Shadow (id=238109, n_ranks=1)
   { 1607,  37,   1,  0,   1, 238145, "Thal'kiel's Ascendance"             }, // Thal'kiel's Ascendance (id=238145, n_ranks=1)
   { 1608,  37,   5,  0,  20, 239042, "Infinite"                           }, // Infinite (id=239042, n_ranks=1)
+  { 1712,  37,   2,  0,   1, 241252, "Swarms of the Black Harvest"        }, // Swarms of the Black Harvest (id=241252, n_ranks=1)
   {  803,  38,  18,  0,   0, 196586, "Dimensional Rift"                   }, // Dimensional Rift (id=196586, n_ranks=1)
   {  804,  38,  32,  4,   3, 196211, "Master of Disaster"                 }, // Master of Disaster (id=196211, n_ranks=8)
   {  805,  38,  32,  5,   3, 196217, "Chaotic Instability"                }, // Chaotic Instability (id=196217, n_ranks=8)
@@ -4555,10 +4570,11 @@ static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER
   { 1219,  38,   8,  0,   0, 211309, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
   { 1355,  38,   0,  0,   1, 215183, "Flames of the Pit"                  }, // Flames of the Pit (id=215183, n_ranks=1)
   { 1392,  38,   5,  0,  20, 214936, "Stolen Power"                       }, // Stolen Power (id=214936, n_ranks=20)
-  { 1609,  38,  34, 13,   4, 238074, "Flames of Sargeras"                 }, // Flames of Sargeras (id=238074, n_ranks=8)
+  { 1609,  38,  32, 13,   4, 238074, "Flames of Sargeras"                 }, // Flames of Sargeras (id=238074, n_ranks=8)
   { 1610,  38,   0,  0,   1, 238110, "Cry Havoc"                          }, // Cry Havoc (id=238110, n_ranks=1)
   { 1611,  38,   1,  0,   1, 238146, "Tomb-Born Rift"                     }, // Tomb-Born Rift (id=238146, n_ranks=1)
   { 1612,  38,   5,  0,  20, 239042, "Infinite"                           }, // Infinite (id=239042, n_ranks=1)
+  { 1713,  38,   2,  0,   1, 241253, "Flames of the Black Harvest"        }, // Flames of the Black Harvest (id=241253, n_ranks=1)
   {  915,  39,  32,  4,   3, 199111, "Inimitable Agony"                   }, // Inimitable Agony (id=199111, n_ranks=8)
   {  916,  39,  32,  5,   3, 199112, "Hideous Corruption"                 }, // Hideous Corruption (id=199112, n_ranks=8)
   {  917,  39,  32,  6,   3, 199120, "Drained to a Husk"                  }, // Drained to a Husk (id=199120, n_ranks=8)
@@ -4578,10 +4594,11 @@ static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER
   { 1217,  39,   8,  0,   0, 211309, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
   { 1353,  39,   0,  0,   1, 221862, "Crystalline Shadows"                }, // Crystalline Shadows (id=221862, n_ranks=1)
   { 1390,  39,   5,  0,  20, 214934, "Soulstealer"                        }, // Soulstealer (id=214934, n_ranks=20)
-  { 1601,  39,  34, 13,   4, 238072, "Winnowing"                          }, // Winnowing (id=238072, n_ranks=8)
+  { 1601,  39,  32, 13,   4, 238072, "Winnowing"                          }, // Winnowing (id=238072, n_ranks=8)
   { 1602,  39,   0,  0,   1, 238108, "Sinister Seeds"                     }, // Sinister Seeds (id=238108, n_ranks=1)
   { 1603,  39,   1,  0,   1, 238144, "Rend Soul"                          }, // Rend Soul (id=238144, n_ranks=1)
   { 1604,  39,   5,  0,  20, 239042, "Infinite"                           }, // Infinite (id=239042, n_ranks=1)
+  { 1711,  39,   2,  0,   1, 241257, "Degradation of the Black Harvest"   }, // Degradation of the Black Harvest (id=241257, n_ranks=1)
   {  291,  40,  18,  0,   0, 205495, "Stormkeeper"                        }, // Stormkeeper (id=205495, n_ranks=1)
   {  292,  40,   0,  0,   1, 191602, "Static Overload"                    }, // Static Overload (id=191602, n_ranks=1)
   {  293,  40,   0,  0,   1, 191647, "Master of the Elements"             }, // Master of the Elements (id=191647, n_ranks=1)
@@ -4601,10 +4618,11 @@ static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER
   { 1214,  40,   8,  0,   0, 211309, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
   { 1350,  40,   0,  0,   1, 215414, "Surge of Power"                     }, // Surge of Power (id=215414, n_ranks=1)
   { 1387,  40,   5,  0,  20, 214931, "Stormkeeper's Power"                }, // Stormkeeper's Power (id=214931, n_ranks=20)
-  { 1589,  40,  34, 13,   4, 238069, "Elemental Destabilization"          }, // Elemental Destabilization (id=238069, n_ranks=8)
+  { 1589,  40,  32, 13,   4, 238069, "Elemental Destabilization"          }, // Elemental Destabilization (id=238069, n_ranks=8)
   { 1590,  40,   0,  0,   1, 238105, "Swelling Maelstrom"                 }, // Swelling Maelstrom (id=238105, n_ranks=1)
   { 1591,  40,   1,  0,   1, 238141, "Seismic Storm"                      }, // Seismic Storm (id=238141, n_ranks=1)
   { 1592,  40,   5,  0,  20, 239042, "Infinite"                           }, // Infinite (id=239042, n_ranks=1)
+  { 1683,  40,   2,  0,   1, 241202, "Power of the Earthen Ring"          }, // Power of the Earthen Ring (id=241202, n_ranks=1)
   {  899,  41,  18,  0,   0, 204945, "Doom Winds"                         }, // Doom Winds (id=204945, n_ranks=1)
   {  900,  41,   1,  1,   1, 198736, "Unleash Doom"                       }, // Unleash Doom (id=198736, n_ranks=1)
   {  901,  41,   1,  2,   1, 198505, "Doom Wolves"                        }, // Doom Wolves (id=198505, n_ranks=1)
@@ -4624,10 +4642,11 @@ static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER
   { 1215,  41,   8,  0,   0, 211309, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
   { 1351,  41,   0,  0,   1, 198228, "Hammer of Storms"                   }, // Hammer of Storms (id=198228, n_ranks=1)
   { 1388,  41,   5,  0,  20, 214932, "Earthshattering Blows"              }, // Earthshattering Blows (id=214932, n_ranks=20)
-  { 1593,  41,  34, 13,   4, 238070, "Crashing Hammer"                    }, // Crashing Hammer (id=238070, n_ranks=8)
+  { 1593,  41,  32, 13,   4, 238070, "Crashing Hammer"                    }, // Crashing Hammer (id=238070, n_ranks=8)
   { 1594,  41,   0,  0,   1, 238106, "Winds of Change"                    }, // Winds of Change (id=238106, n_ranks=1)
   { 1595,  41,   1,  0,   1, 238142, "Lashing Flames"                     }, // Lashing Flames (id=238142, n_ranks=1)
   { 1596,  41,   5,  0,  20, 239042, "Infinite"                           }, // Infinite (id=239042, n_ranks=1)
+  { 1687,  41,   2,  0,   1, 241203, "Might of the Earthen Ring"          }, // Might of the Earthen Ring (id=241203, n_ranks=1)
   { 1102,  42,  18,  0,   0, 207778, "Gift of the Queen"                  }, // Gift of the Queen (id=207778, n_ranks=1)
   { 1103,  42,  32,  4,   3, 207088, "Tidal Chains"                       }, // Tidal Chains (id=207088, n_ranks=8)
   { 1104,  42,  32,  5,   3, 207092, "Buffeting Waves"                    }, // Buffeting Waves (id=207092, n_ranks=8)
@@ -4648,10 +4667,11 @@ static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER
   { 1258,  42,   8,  0,   0, 213428, "Artificial Damage"                  }, // Artificial Damage (id=213428, n_ranks=1)
   { 1352,  42,   0,  0,   1, 224841, "Grace of the Sea"                   }, // Grace of the Sea (id=224841, n_ranks=1)
   { 1389,  42,   5,  0,  20, 214933, "Flow of the Tides"                  }, // Flow of the Tides (id=214933, n_ranks=20)
-  { 1597,  42,  34, 13,   4, 238071, "Tidewalker"                         }, // Tidewalker (id=238071, n_ranks=8)
+  { 1597,  42,  32, 13,   4, 238071, "Tidewalker"                         }, // Tidewalker (id=238071, n_ranks=8)
   { 1598,  42,   0,  0,   1, 238107, "Surging Winds"                      }, // Surging Winds (id=238107, n_ranks=1)
   { 1599,  42,   1,  0,   1, 238143, "Deep Waters"                        }, // Deep Waters (id=238143, n_ranks=1)
   { 1600,  42,   5,  0,  20, 239042, "Infinite"                           }, // Infinite (id=239042, n_ranks=1)
+  { 1693,  42,   2,  0,   1, 241205, "Echo of the Earthen Ring"           }, // Echo of the Earthen Ring (id=241205, n_ranks=1)
   {  323,  43,  32,  4,   3, 192310, "Toxic Blades"                       }, // Toxic Blades (id=192310, n_ranks=8)
   {  324,  43,  32,  5,   3, 192315, "Serrated Edge"                      }, // Serrated Edge (id=192315, n_ranks=8)
   {  325,  43,  32,  6,   3, 192318, "Master Alchemist"                   }, // Master Alchemist (id=192318, n_ranks=8)
@@ -4671,10 +4691,11 @@ static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER
   { 1211,  43,   8,  0,   0, 211309, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
   { 1276,  43,   0,  0,   1, 214368, "Assassin's Blades"                  }, // Assassin's Blades (id=214368, n_ranks=1)
   { 1384,  43,   5,  0,  20, 214928, "Slayer's Precision"                 }, // Slayer's Precision (id=214928, n_ranks=20)
-  { 1577,  43,  34, 13,   4, 238066, "Strangler"                          }, // Strangler (id=238066, n_ranks=8)
+  { 1577,  43,  32, 13,   4, 238066, "Strangler"                          }, // Strangler (id=238066, n_ranks=8)
   { 1578,  43,   0,  0,   1, 238102, "Dense Concoction"                   }, // Dense Concoction (id=238102, n_ranks=1)
   { 1579,  43,   1,  0,   1, 238138, "Sinister Circulation"               }, // Sinister Circulation (id=238138, n_ranks=1)
   { 1580,  43,   5,  0,  20, 239042, "Infinite"                           }, // Infinite (id=239042, n_ranks=1)
+  { 1651,  43,   2,  0,   1, 241152, "Silence of the Uncrowned"           }, // Silence of the Uncrowned (id=241152, n_ranks=1)
   { 1052,  44,  18,  0,   0, 202665, "Curse of the Dreadblades"           }, // Curse of the Dreadblades (id=202665, n_ranks=1)
   { 1053,  44,   1,  1,   1, 202897, "Blunderbuss"                        }, // Blunderbuss (id=202897, n_ranks=1)
   { 1054,  44,   1,  2,   1, 202820, "Greed"                              }, // Greed (id=202820, n_ranks=1)
@@ -4694,10 +4715,11 @@ static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER
   { 1212,  44,   8,  0,   0, 211309, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
   { 1348,  44,   0,  0,   1, 202463, "Cursed Edges"                       }, // Cursed Edges (id=202463, n_ranks=1)
   { 1385,  44,   5,  0,  20, 214929, "Cursed Steel"                       }, // Cursed Steel (id=214929, n_ranks=20)
-  { 1581,  44,  34, 13,   4, 238067, "Sabermetrics"                       }, // Sabermetrics (id=238067, n_ranks=8)
+  { 1581,  44,  32, 13,   4, 238067, "Sabermetrics"                       }, // Sabermetrics (id=238067, n_ranks=8)
   { 1582,  44,   0,  0,   1, 238103, "Dreadblade's Vigor"                 }, // Dreadblade's Vigor (id=238103, n_ranks=1)
   { 1583,  44,   1,  0,   1, 238139, "Loaded Dice"                        }, // Loaded Dice (id=238139, n_ranks=1)
   { 1584,  44,   5,  0,  20, 239042, "Infinite"                           }, // Infinite (id=239042, n_ranks=1)
+  { 1652,  44,   2,  0,   1, 241153, "Bravado of the Uncrowned"           }, // Bravado of the Uncrowned (id=241153, n_ranks=1)
   {  834,  45,  18,  0,   0, 196684, "Invoke the Naaru"                   }, // Invoke the Naaru (id=196684, n_ranks=1)
   {  835,  45,   1,  1,   1, 196492, "Renew the Faith"                    }, // Renew the Faith (id=196492, n_ranks=1)
   {  836,  45,   1,  2,   1, 208065, "Light of T'uure"                    }, // Light of T'uure (id=208065, n_ranks=1)
@@ -4718,10 +4740,11 @@ static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER
   { 1257,  45,   8,  0,   0, 213428, "Artificial Damage"                  }, // Artificial Damage (id=213428, n_ranks=1)
   { 1346,  45,   0,  0,   1, 222646, "Follower of the Light"              }, // Follower of the Light (id=222646, n_ranks=1)
   { 1380,  45,   5,  0,  20, 214926, "Beacon of Light"                    }, // Beacon of Light (id=214926, n_ranks=20)
-  { 1569,  45,  34, 13,   4, 238064, "Caress of the Naaru"                }, // Caress of the Naaru (id=238064, n_ranks=8)
+  { 1569,  45,  32, 13,   4, 238064, "Caress of the Naaru"                }, // Caress of the Naaru (id=238064, n_ranks=8)
   { 1570,  45,   0,  0,   1, 238100, "Times and Measures"                 }, // Times and Measures (id=238100, n_ranks=1)
   { 1571,  45,   1,  0,   1, 238136, "Cosmic Ripple"                      }, // Cosmic Ripple (id=238136, n_ranks=1)
   { 1572,  45,   5,  0,  20, 239042, "Infinite"                           }, // Infinite (id=239042, n_ranks=1)
+  { 1649,  45,   2,  0,   1, 241149, "Light of the Conclave"              }, // Light of the Conclave (id=241149, n_ranks=1)
   {  883,  46,  18,  0,   0, 207946, "Light's Wrath"                      }, // Light's Wrath (id=207946, n_ranks=1)
   {  884,  46,   0,  0,   1, 197779, "Taming the Shadows"                 }, // Taming the Shadows (id=197779, n_ranks=1)
   {  885,  46,   0,  0,   1, 197781, "Share in the Light"                 }, // Share in the Light (id=197781, n_ranks=1)
@@ -4742,10 +4765,11 @@ static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER
   { 1345,  46,   0,  0,   1, 216122, "Invoke the Light"                   }, // Invoke the Light (id=216122, n_ranks=1)
   { 1379,  46,   5,  0,  20, 214925, "Forbidden Flame"                    }, // Forbidden Flame (id=214925, n_ranks=20)
   { 1436,  46,   8,  0,   0, 219655, "Artificial Damage"                  }, // Artificial Damage (id=219655, n_ranks=1)
-  { 1565,  46,  34, 13,   4, 238063, "Lenience's Reward"                  }, // Lenience's Reward (id=238063, n_ranks=8)
+  { 1565,  46,  32, 13,   4, 238063, "Lenience's Reward"                  }, // Lenience's Reward (id=238063, n_ranks=8)
   { 1566,  46,   0,  0,   1, 238099, "Tyranny of Pain"                    }, // Tyranny of Pain (id=238099, n_ranks=1)
   { 1567,  46,   1,  0,   1, 238135, "Aegis of Wrath"                     }, // Aegis of Wrath (id=238135, n_ranks=1)
   { 1568,  46,   5,  0,  20, 239042, "Infinite"                           }, // Infinite (id=239042, n_ranks=1)
+  { 1648,  46,   2,  0,   1, 241148, "Will of the Conclave"               }, // Will of the Conclave (id=241148, n_ranks=1)
   {  764,  47,  18,  0,   0, 205065, "Void Torrent"                       }, // Void Torrent (id=205065, n_ranks=1)
   {  765,  47,   0,  0,   1, 194024, "Thrive in the Shadows"              }, // Thrive in the Shadows (id=194024, n_ranks=1)
   {  766,  47,   0,  0,   1, 194026, "Sinister Thoughts"                  }, // Sinister Thoughts (id=194026, n_ranks=1)
@@ -4765,10 +4789,11 @@ static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER
   { 1210,  47,   8,  0,   0, 211309, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
   { 1347,  47,   0,  0,   1, 215322, "Void Siphon"                        }, // Void Siphon (id=215322, n_ranks=1)
   { 1381,  47,   5,  0,  20, 214927, "Darkening Whispers"                 }, // Darkening Whispers (id=214927, n_ranks=20)
-  { 1573,  47,  34, 13,   4, 238065, "Fiending Dark"                      }, // Fiending Dark (id=238065, n_ranks=8)
+  { 1573,  47,  32, 13,   4, 238065, "Fiending Dark"                      }, // Fiending Dark (id=238065, n_ranks=8)
   { 1574,  47,   0,  0,   1, 238101, "Mind Quickening"                    }, // Mind Quickening (id=238101, n_ranks=1)
   { 1575,  47,   1,  0,   1, 238137, "Lash of Insanity"                   }, // Lash of Insanity (id=238137, n_ranks=1)
   { 1576,  47,   5,  0,  20, 239042, "Infinite"                           }, // Infinite (id=239042, n_ranks=1)
+  { 1650,  47,   2,  0,   1, 241150, "Darkness of the Conclave"           }, // Darkness of the Conclave (id=241150, n_ranks=1)
   {  963,  48,   1,  2,   1, 200474, "Power of the Silver Hand"           }, // Power of the Silver Hand (id=200474, n_ranks=1)
   {  964,  48,   1,  3,   1, 200430, "Protection of Tyr"                  }, // Protection of Tyr (id=200430, n_ranks=1)
   {  965,  48,  18,  0,   0, 200652, "Tyr's Deliverance"                  }, // Tyr's Deliverance (id=200652, n_ranks=1)
@@ -4789,10 +4814,11 @@ static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER
   { 1256,  48,   8,  0,   0, 213428, "Artificial Damage"                  }, // Artificial Damage (id=213428, n_ranks=1)
   { 1342,  48,   0,  0,   1, 222648, "Virtues of the Light"               }, // Virtues of the Light (id=222648, n_ranks=1)
   { 1377,  48,   5,  0,  20, 214923, "Silver Touch"                       }, // Silver Touch (id=214923, n_ranks=20)
-  { 1553,  48,  34, 13,   4, 238060, "Tyr's Munificence"                  }, // Tyr's Munificence (id=238060, n_ranks=8)
+  { 1553,  48,  32, 13,   4, 238060, "Tyr's Munificence"                  }, // Tyr's Munificence (id=238060, n_ranks=8)
   { 1554,  48,   0,  0,   1, 238096, "Sacrificial Martyr"                 }, // Sacrificial Martyr (id=238096, n_ranks=1)
   { 1555,  48,   1,  0,   1, 238132, "Sacred Dawn"                        }, // Sacred Dawn (id=238132, n_ranks=1)
   { 1556,  48,   5,  0,  20, 239042, "Infinite"                           }, // Infinite (id=239042, n_ranks=1)
+  { 1645,  48,   2,  0,   1, 241145, "Light of the Silver Hand"           }, // Light of the Silver Hand (id=241145, n_ranks=1)
   { 1120,  49,  18,  0,   0, 209202, "Eye of Tyr"                         }, // Eye of Tyr (id=209202, n_ranks=1)
   { 1121,  49,  32,  4,   3, 209229, "Hammer Time"                        }, // Hammer Time (id=209229, n_ranks=8)
   { 1122,  49,  32,  5,   3, 209217, "Stern Judgment"                     }, // Stern Judgment (id=209217, n_ranks=8)
@@ -4813,10 +4839,11 @@ static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER
   { 1343,  49,   0,  0,   1, 221841, "Truthguard's Light"                 }, // Truthguard's Light (id=221841, n_ranks=1)
   { 1378,  49,   5,  0,  20, 214924, "Unrelenting Light"                  }, // Unrelenting Light (id=214924, n_ranks=20)
   { 1455,  49,   8,  0,   0, 226829, "Artificial Damage"                  }, // Artificial Damage (id=226829, n_ranks=1)
-  { 1557,  49,  34, 13,   4, 238061, "Holy Aegis"                         }, // Holy Aegis (id=238061, n_ranks=8)
+  { 1557,  49,  32, 13,   4, 238061, "Holy Aegis"                         }, // Holy Aegis (id=238061, n_ranks=8)
   { 1558,  49,   0,  0,   1, 238097, "Defender of Truth"                  }, // Defender of Truth (id=238097, n_ranks=1)
   { 1559,  49,   0,  0,   1, 238133, "Decree of Justice"                  }, // Decree of Justice (id=238133, n_ranks=1)
   { 1560,  49,   5,  0,  20, 239042, "Infinite"                           }, // Infinite (id=239042, n_ranks=1)
+  { 1646,  49,   2,  0,   1, 241146, "Bulwark of the Silver Hand"         }, // Bulwark of the Silver Hand (id=241146, n_ranks=1)
   {  800,  50,  32,  4,   3, 195243, "Inner Peace"                        }, // Inner Peace (id=195243, n_ranks=8)
   {  801,  50,  32, 11,   3, 195244, "Light on Your Feet"                 }, // Light on Your Feet (id=195244, n_ranks=8)
   {  820,  50,  32,  5,   3, 195263, "Rising Winds"                       }, // Rising Winds (id=195263, n_ranks=8)
@@ -4836,10 +4863,11 @@ static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER
   { 1204,  50,   8,  0,   0, 211309, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
   { 1341,  50,   0,  0,   1, 195265, "Dark Skies"                         }, // Dark Skies (id=195265, n_ranks=1)
   { 1376,  50,   5,  0,  20, 214922, "Windborne Blows"                    }, // Windborne Blows (id=214922, n_ranks=20)
-  { 1549,  50,  34, 13,   4, 238059, "Split Personality"                  }, // Split Personality (id=238059, n_ranks=8)
+  { 1549,  50,  32, 13,   4, 238059, "Split Personality"                  }, // Split Personality (id=238059, n_ranks=8)
   { 1550,  50,   0,  0,   1, 238095, "Master of Combinations"             }, // Master of Combinations (id=238095, n_ranks=1)
   { 1551,  50,   1,  0,   1, 238131, "Cestus of Storms"                   }, // Cestus of Storms (id=238131, n_ranks=1)
   { 1552,  50,   5,  0,  20, 239042, "Infinite"                           }, // Infinite (id=239042, n_ranks=1)
+  { 1644,  50,   2,  0,   1, 241136, "Ferocity of the Broken Temple"      }, // Ferocity of the Broken Temple (id=241136, n_ranks=1)
   {  931,  51,  18,  0,   0, 205406, "Sheilun's Gift"                     }, // Sheilun's Gift (id=205406, n_ranks=1)
   {  932,  51,   1,  1,   1, 199887, "The Mists of Sheilun"               }, // The Mists of Sheilun (id=199887, n_ranks=1)
   {  933,  51,   1,  2,   1, 199665, "Blessings of Yu'lon"                }, // Blessings of Yu'lon (id=199665, n_ranks=1)
@@ -4860,10 +4888,11 @@ static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER
   { 1255,  51,   8,  0,   0, 213428, "Artificial Damage"                  }, // Artificial Damage (id=213428, n_ranks=1)
   { 1295,  51,   0,  0,   1, 214516, "Mists of Wisdom"                    }, // Mists of Wisdom (id=214516, n_ranks=1)
   { 1375,  51,   5,  0,  20, 214921, "Mistweaving"                        }, // Mistweaving (id=214921, n_ranks=20)
-  { 1545,  51,  34, 13,   4, 238058, "Tendrils of Revival"                }, // Tendrils of Revival (id=238058, n_ranks=8)
+  { 1545,  51,  32, 13,   4, 238058, "Tendrils of Revival"                }, // Tendrils of Revival (id=238058, n_ranks=8)
   { 1546,  51,   0,  0,   1, 238094, "Effusive Mists"                     }, // Effusive Mists (id=238094, n_ranks=1)
   { 1547,  51,   1,  0,   1, 238130, "Whispers of Shaohao"                }, // Whispers of Shaohao (id=238130, n_ranks=1)
   { 1548,  51,   5,  0,  20, 239042, "Infinite"                           }, // Infinite (id=239042, n_ranks=1)
+  { 1643,  51,   2,  0,   1, 241134, "Mists of the Broken Temple"         }, // Mists of the Broken Temple (id=241134, n_ranks=1)
   { 1202,  52,   8,  0,   0, 211309, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
   { 1277,  52,  18,  0,   0, 214326, "Exploding Keg"                      }, // Exploding Keg (id=214326, n_ranks=1)
   { 1278,  52,  32,  4,   3, 213051, "Obsidian Fists"                     }, // Obsidian Fists (id=213051, n_ranks=8)
@@ -4884,10 +4913,11 @@ static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER
   { 1293,  52,   0,  0,   1, 214428, "Full Keg"                           }, // Full Keg (id=214428, n_ranks=1)
   { 1374,  52,   5,  0,  20, 214920, "Wanderer's Hardiness"               }, // Wanderer's Hardiness (id=214920, n_ranks=20)
   { 1454,  52,   8,  0,   0, 226829, "Artificial Damage"                  }, // Artificial Damage (id=226829, n_ranks=1)
-  { 1541,  52,  34, 13,   4, 238057, "Draught of Darkness"                }, // Draught of Darkness (id=238057, n_ranks=8)
+  { 1541,  52,  32, 13,   4, 238057, "Draught of Darkness"                }, // Draught of Darkness (id=238057, n_ranks=8)
   { 1542,  52,   0,  0,   1, 238093, "Stave Off"                          }, // Stave Off (id=238093, n_ranks=1)
   { 1543,  52,   1,  0,   1, 238129, "Quick Sip"                          }, // Quick Sip (id=238129, n_ranks=1)
   { 1544,  52,   5,  0,  20, 239042, "Infinite"                           }, // Infinite (id=239042, n_ranks=1)
+  { 1642,  52,   2,  0,   1, 241131, "Endurance of the Broken Temple"     }, // Endurance of the Broken Temple (id=241131, n_ranks=1)
   {  783,  53,  18,  0,   0, 214634, "Ebonbolt"                           }, // Ebonbolt (id=214634, n_ranks=1)
   {  784,  53,  32,  4,   3, 195315, "Icy Caress"                         }, // Icy Caress (id=195315, n_ranks=8)
   {  785,  53,  32,  5,   3, 195317, "Ice Age"                            }, // Ice Age (id=195317, n_ranks=8)
@@ -4907,10 +4937,11 @@ static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER
   { 1200,  53,   8,  0,   0, 211309, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
   { 1296,  53,   0,  0,   1, 214629, "Shattering Bolts"                   }, // Shattering Bolts (id=214629, n_ranks=1)
   { 1373,  53,   5,  0,  20, 214919, "Spellborne"                         }, // Spellborne (id=214919, n_ranks=20)
-  { 1537,  53,  34, 13,   4, 238056, "Obsidian Lance"                     }, // Obsidian Lance (id=238056, n_ranks=8)
+  { 1537,  53,  32, 13,   4, 238056, "Obsidian Lance"                     }, // Obsidian Lance (id=238056, n_ranks=8)
   { 1538,  53,   0,  0,   1, 238092, "Freezing Rain"                      }, // Freezing Rain (id=238092, n_ranks=1)
   { 1539,  53,   1,  0,   1, 238128, "Glacial Eruption"                   }, // Glacial Eruption (id=238128, n_ranks=1)
   { 1540,  53,   5,  0,  20, 239042, "Infinite"                           }, // Infinite (id=239042, n_ranks=1)
+  { 1641,  53,   2,  0,   1, 241125, "Frigidity of the Tirisgarde"        }, // Frigidity of the Tirisgarde (id=241125, n_ranks=1)
   {  748,  54,  18,  0,   0, 194466, "Phoenix's Flames"                   }, // Phoenix's Flames (id=194466, n_ranks=1)
   {  749,  54,  32,  4,   3, 194224, "Fire at Will"                       }, // Fire at Will (id=194224, n_ranks=8)
   {  750,  54,  32,  5,   3, 194234, "Reignition Overdrive"               }, // Reignition Overdrive (id=194234, n_ranks=8)
@@ -4930,10 +4961,11 @@ static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER
   { 1201,  54,   8,  0,   0, 211309, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
   { 1340,  54,   0,  0,   1, 221844, "Wings of Flame"                     }, // Wings of Flame (id=221844, n_ranks=1)
   { 1372,  54,   5,  0,  20, 214918, "Empowered Spellblade"               }, // Empowered Spellblade (id=214918, n_ranks=20)
-  { 1533,  54,  34, 13,   4, 238055, "Pre-Ignited"                        }, // Pre-Ignited (id=238055, n_ranks=8)
-  { 1534,  54,   0,  0,   1, 238091, "Phoenix's Warmth"                   }, // Phoenix's Warmth (id=238091, n_ranks=1)
+  { 1533,  54,  32, 13,   4, 238055, "Pre-Ignited"                        }, // Pre-Ignited (id=238055, n_ranks=8)
+  { 1534,  54,   0,  0,   1, 238091, "Warmth of the Phoenix"              }, // Warmth of the Phoenix (id=238091, n_ranks=1)
   { 1535,  54,   1,  0,   1, 238127, "Strafing Run"                       }, // Strafing Run (id=238127, n_ranks=1)
   { 1536,  54,   5,  0,  20, 239042, "Infinite"                           }, // Infinite (id=239042, n_ranks=1)
+  { 1640,  54,   2,  0,   1, 241124, "Instability of the Tirisgarde"      }, // Instability of the Tirisgarde (id=241124, n_ranks=1)
   {  307,  55,  18,  0,   0, 204147, "Windburst"                          }, // Windburst (id=204147, n_ranks=1)
   {  308,  55,   0,  0,   1, 204219, "Mark of the Windrunner"             }, // Mark of the Windrunner (id=204219, n_ranks=1)
   {  309,  55,   0,  0,   1, 191328, "Critical Focus"                     }, // Critical Focus (id=191328, n_ranks=1)
@@ -4953,10 +4985,11 @@ static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER
   { 1197,  55,   8,  0,   0, 211309, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
   { 1337,  55,   0,  0,   1, 214826, "Wind Arrows"                        }, // Wind Arrows (id=214826, n_ranks=1)
   { 1369,  55,   5,  0,  20, 214915, "Windflight Arrows"                  }, // Windflight Arrows (id=214915, n_ranks=20)
-  { 1521,  55,  34, 13,   4, 238052, "Unerring Arrows"                    }, // Unerring Arrows (id=238052, n_ranks=8)
-  { 1522,  55,   0,  0,   1, 238088, "Opportunist"                        }, // Opportunist (id=238088, n_ranks=1)
+  { 1521,  55,  32, 13,   4, 238052, "Unerring Arrows"                    }, // Unerring Arrows (id=238052, n_ranks=8)
+  { 1522,  55,   0,  0,   1, 238088, "Feet of Wind"                       }, // Feet of Wind (id=238088, n_ranks=1)
   { 1523,  55,   1,  0,   1, 238124, "Cyclonic Burst"                     }, // Cyclonic Burst (id=238124, n_ranks=1)
   { 1524,  55,   5,  0,  20, 239042, "Infinite"                           }, // Infinite (id=239042, n_ranks=1)
+  { 1637,  55,   2,  0,   1, 241114, "Acuity of the Unseen Path"          }, // Acuity of the Unseen Path (id=241114, n_ranks=1)
   {  868,  56,  32,  4,   3, 197038, "Wilderness Expert"                  }, // Wilderness Expert (id=197038, n_ranks=8)
   {  869,  56,  32,  5,   3, 197047, "Furious Swipes"                     }, // Furious Swipes (id=197047, n_ranks=8)
   {  870,  56,  32,  6,   3, 197080, "Pack Leader"                        }, // Pack Leader (id=197080, n_ranks=8)
@@ -4976,10 +5009,11 @@ static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER
   { 1196,  56,   8,  0,   0, 211309, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
   { 1336,  56,   0,  0,   1, 215779, "Beast Master"                       }, // Beast Master (id=215779, n_ranks=1)
   { 1368,  56,   5,  0,  20, 214914, "Spiritbound"                        }, // Spiritbound (id=214914, n_ranks=20)
-  { 1517,  56,  34, 13,   4, 238051, "Slithering Serpents"                }, // Slithering Serpents (id=238051, n_ranks=8)
+  { 1517,  56,  32, 13,   4, 238051, "Slithering Serpents"                }, // Slithering Serpents (id=238051, n_ranks=8)
   { 1518,  56,   0,  0,   1, 238087, "Thunderslash"                       }, // Thunderslash (id=238087, n_ranks=1)
   { 1519,  56,   1,  0,   1, 238123, "Cobra Commander"                    }, // Cobra Commander (id=238123, n_ranks=1)
   { 1520,  56,   5,  0,  20, 239042, "Infinite"                           }, // Infinite (id=239042, n_ranks=1)
+  { 1636,  56,   2,  0,   1, 241110, "Bond  of the Unseen Path"           }, // Bond  of the Unseen Path (id=241110, n_ranks=1)
   {  948,  57,  32,  4,   3, 200395, "Reinforced Fur"                     }, // Reinforced Fur (id=200395, n_ranks=8)
   {  949,  57,  32,  5,   3, 200399, "Ursoc's Endurance"                  }, // Ursoc's Endurance (id=200399, n_ranks=8)
   {  950,  57,  32, 11,   3, 200400, "Wildflesh"                          }, // Wildflesh (id=200400, n_ranks=8)
@@ -5000,10 +5034,11 @@ static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER
   { 1334,  57,   0,  0,   1, 215061, "Iron Claws"                         }, // Iron Claws (id=215061, n_ranks=1)
   { 1366,  57,   5,  0,  20, 214912, "Ursoc's Bond"                       }, // Ursoc's Bond (id=214912, n_ranks=20)
   { 1453,  57,   8,  0,   0, 226829, "Artificial Damage"                  }, // Artificial Damage (id=226829, n_ranks=1)
-  { 1509,  57,  34, 13,   4, 238049, "Scintillating Moonlight"            }, // Scintillating Moonlight (id=238049, n_ranks=8)
+  { 1509,  57,  32, 13,   4, 238049, "Scintillating Moonlight"            }, // Scintillating Moonlight (id=238049, n_ranks=8)
   { 1510,  57,   0,  0,   1, 238085, "Fleshknitting"                      }, // Fleshknitting (id=238085, n_ranks=1)
   { 1511,  57,   1,  0,   1, 238121, "Pawsitive Outlook"                  }, // Pawsitive Outlook (id=238121, n_ranks=1)
   { 1512,  57,   5,  0,  20, 239042, "Infinite"                           }, // Infinite (id=239042, n_ranks=1)
+  { 1634,  57,   2,  0,   1, 241101, "Fortitude of the Cenarion Circle"   }, // Fortitude of the Cenarion Circle (id=241101, n_ranks=1)
   { 1153,  58,  18,  0,   0, 210722, "Ashamane's Frenzy"                  }, // Ashamane's Frenzy (id=210722, n_ranks=1)
   { 1154,  58,   1,  1,   1, 210702, "Ashamane's Bite"                    }, // Ashamane's Bite (id=210702, n_ranks=1)
   { 1155,  58,   1,  2,   1, 210676, "Shadow Thrash"                      }, // Shadow Thrash (id=210676, n_ranks=1)
@@ -5023,10 +5058,11 @@ static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER
   { 1193,  58,   8,  0,   0, 211309, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
   { 1327,  58,   0,  0,   1, 214736, "Shredder Fangs"                     }, // Shredder Fangs (id=214736, n_ranks=1)
   { 1365,  58,   5,  0,  20, 214911, "Fangs of the First"                 }, // Fangs of the First (id=214911, n_ranks=20)
-  { 1505,  58,  34, 13,   4, 238048, "Thrashing Claws"                    }, // Thrashing Claws (id=238048, n_ranks=8)
+  { 1505,  58,  32, 13,   4, 238048, "Thrashing Claws"                    }, // Thrashing Claws (id=238048, n_ranks=8)
   { 1506,  58,   0,  0,   1, 238084, "Fury of Ashamane"                   }, // Fury of Ashamane (id=238084, n_ranks=1)
   { 1507,  58,   1,  0,   1, 238120, "Bloodletter's Frailty"              }, // Bloodletter's Frailty (id=238120, n_ranks=1)
   { 1508,  58,   5,  0,  20, 239042, "Infinite"                           }, // Infinite (id=239042, n_ranks=1)
+  { 1633,  58,   2,  0,   1, 241100, "Ferocity of the Cenarion Circle"    }, // Ferocity of the Cenarion Circle (id=241100, n_ranks=1)
   { 1034,  59,  32, 11,   3, 202302, "Bladed Feathers"                    }, // Bladed Feathers (id=202302, n_ranks=8)
   { 1035,  59,  32, 12,   3, 203018, "Touch of the Moon"                  }, // Touch of the Moon (id=203018, n_ranks=8)
   { 1036,  59,  32,  4,   3, 202384, "Dark Side of the Moon"              }, // Dark Side of the Moon (id=202384, n_ranks=8)
@@ -5046,10 +5082,11 @@ static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER
   { 1192,  59,   8,  0,   0, 211309, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
   { 1294,  59,   0,  0,   1, 214514, "Skywrath"                           }, // Skywrath (id=214514, n_ranks=1)
   { 1364,  59,   5,  0,  20, 214910, "Goldrinn's Fury"                    }, // Goldrinn's Fury (id=214910, n_ranks=20)
-  { 1501,  59,  34, 13,   4, 238047, "Light of the Evening Star"          }, // Light of the Evening Star (id=238047, n_ranks=8)
+  { 1501,  59,  32, 13,   4, 238047, "Light of the Evening Star"          }, // Light of the Evening Star (id=238047, n_ranks=8)
   { 1502,  59,   0,  0,   1, 238083, "Wax and Wane"                       }, // Wax and Wane (id=238083, n_ranks=1)
   { 1503,  59,   1,  0,   1, 238119, "Circadian Invocation"               }, // Circadian Invocation (id=238119, n_ranks=1)
   { 1504,  59,   5,  0,  20, 239042, "Infinite"                           }, // Infinite (id=239042, n_ranks=1)
+  { 1632,  59,   2,  0,   1, 241099, "Radiance of the Cenarion Circle"    }, // Radiance of the Cenarion Circle (id=241099, n_ranks=1)
   { 1096,  60,  18,  0,   0, 207407, "Soul Carver"                        }, // Soul Carver (id=207407, n_ranks=1)
   { 1097,  60,   0,  0,   1, 212894, "Demonic Flames"                     }, // Demonic Flames (id=212894, n_ranks=1)
   { 1098,  60,   1,  1,   1, 207387, "Painbringer"                        }, // Painbringer (id=207387, n_ranks=1)
@@ -5070,11 +5107,12 @@ static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER
   { 1363,  60,   5,  0,  20, 214909, "Soulgorger"                         }, // Soulgorger (id=214909, n_ranks=20)
   { 1434,  60,   0,  0,   1, 218910, "Siphon Power"                       }, // Siphon Power (id=218910, n_ranks=1)
   { 1452,  60,   8,  0,   0, 226829, "Artificial Damage"                  }, // Artificial Damage (id=226829, n_ranks=1)
-  { 1497,  60,  34, 13,   4, 238046, "Lingering Ordeal"                   }, // Lingering Ordeal (id=238046, n_ranks=8)
+  { 1497,  60,  32, 13,   4, 238046, "Lingering Ordeal"                   }, // Lingering Ordeal (id=238046, n_ranks=8)
   { 1498,  60,   0,  0,   1, 238082, "Erupting Souls"                     }, // Erupting Souls (id=238082, n_ranks=1)
   { 1499,  60,   1,  0,   1, 238118, "Duality"                            }, // Duality (id=238118, n_ranks=1)
   { 1500,  60,   5,  0,  20, 239042, "Infinite"                           }, // Infinite (id=239042, n_ranks=1)
-  { 1089,  74,   0,  0,   0, 239042, 0                                    },
+  { 1631,  60,   2,  0,   1, 241091, "Illidari Durability"                }, // Illidari Durability (id=241091, n_ranks=1)
+  { 1089,  74,   0,  0,   0, 241091, 0                                    },
   { 1237,  80,   1,  3,   1, 193108, "Blades of Light"                    }, // Blades of Light (id=193108, n_ranks=1)
   { 1238,  80,   0,  0,   1, 193058, "Healing Storm"                      }, // Healing Storm (id=193058, n_ranks=1)
   { 1239,  80,   0,  0,   1, 182234, "Unbreakable Will"                   }, // Unbreakable Will (id=182234, n_ranks=1)
@@ -5094,9 +5132,9 @@ static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER
   { 1253,  80,   2,  0,   1, 179546, "Ashes to Ashes"                     }, // Ashes to Ashes (id=179546, n_ranks=1)
   {    0,   0,   0,  0,   0, 179546, 0                                    },
 };
-#define PTR_ARTIFACT_POWER_RANK_SIZE (4105)
+#define PTR_ARTIFACT_POWER_RANK_SIZE (4141)
 
-// Artifact power rank data, wow build 23445
+// Artifact power rank data, wow build 23530
 static struct artifact_power_rank_t __ptr_artifact_power_rank_data[PTR_ARTIFACT_POWER_RANK_SIZE] = {
   { 2316,    40,  0, 205273,      0.000, 0x00000000, 0 },
   { 2317,    41,  0, 186941,      8.000, 0x00000000, 0 },
@@ -9202,11 +9240,47 @@ static struct artifact_power_rank_t __ptr_artifact_power_rank_data[PTR_ARTIFACT_
   { 6758,  1622,  0, 238113,      0.000, 0x00000000, 0 },
   { 6759,  1623,  0, 238149,      0.000, 0x00000000, 0 },
   { 6760,  1624,  0, 239042,      0.000, 0x00000000, 0 },
+  { 7618,  1627,  0, 241018,      0.000, 0x00000000, 0 },
+  { 7619,  1628,  0, 241047,      0.000, 0x00000000, 0 },
+  { 7620,  1629,  0, 241050,      0.000, 0x00000000, 0 },
+  { 7621,  1630,  0, 241090,      0.000, 0x00000000, 0 },
+  { 7622,  1631,  0, 241091,      0.000, 0x00000000, 0 },
+  { 7623,  1632,  0, 241099,      0.000, 0x00000000, 0 },
+  { 7624,  1633,  0, 241100,      0.000, 0x00000000, 0 },
+  { 7625,  1634,  0, 241101,      0.000, 0x00000000, 0 },
+  { 7626,  1635,  0, 241102,      0.000, 0x00000000, 0 },
+  { 7627,  1636,  0, 241110,      0.000, 0x00000000, 0 },
+  { 7628,  1637,  0, 241114,      0.000, 0x00000000, 0 },
+  { 7629,  1638,  0, 241115,      0.000, 0x00000000, 0 },
+  { 7630,  1639,  0, 241121,      0.000, 0x00000000, 0 },
+  { 7631,  1640,  0, 241124,      0.000, 0x00000000, 0 },
+  { 7632,  1641,  0, 241125,      0.000, 0x00000000, 0 },
+  { 7633,  1642,  0, 241131,      0.000, 0x00000000, 0 },
+  { 7634,  1643,  0, 241134,      0.000, 0x00000000, 0 },
+  { 7635,  1644,  0, 241136,      0.000, 0x00000000, 0 },
+  { 7636,  1645,  0, 241145,      0.000, 0x00000000, 0 },
+  { 7637,  1646,  0, 241146,      0.000, 0x00000000, 0 },
+  { 7638,  1647,  0, 241147,      0.000, 0x00000000, 0 },
+  { 7639,  1648,  0, 241148,      0.000, 0x00000000, 0 },
+  { 7640,  1649,  0, 241149,      0.000, 0x00000000, 0 },
+  { 7641,  1650,  0, 241150,      0.000, 0x00000000, 0 },
+  { 7642,  1651,  0, 241152,      0.000, 0x00000000, 0 },
+  { 7643,  1652,  0, 241153,      0.000, 0x00000000, 0 },
+  { 7644,  1653,  0, 241154,      0.000, 0x00000000, 0 },
+  { 7666,  1683,  0, 241202,      0.000, 0x00000000, 0 },
+  { 7670,  1687,  0, 241203,      0.000, 0x00000000, 0 },
+  { 7676,  1693,  0, 241205,      0.000, 0x00000000, 0 },
+  { 7694,  1711,  0, 241257,      0.000, 0x00000000, 0 },
+  { 7695,  1712,  0, 241252,      0.000, 0x00000000, 0 },
+  { 7696,  1713,  0, 241253,      0.000, 0x00000000, 0 },
+  { 7697,  1714,  0, 241264,      0.000, 0x00000000, 0 },
+  { 7698,  1715,  0, 241269,      0.000, 0x00000000, 0 },
+  { 7699,  1716,  0, 241270,      0.000, 0x00000000, 0 },
   {    0,     0,  0,      0,      0.000, 0x00000000, 0 },
 };
 #define PTR_PTR_ARTIFACT_POWER_RANK_HOTFIX_SIZE (0)
 
-// 0 ptr_artifact_power_rank hotfix entries, wow build level 23445
+// 0 ptr_artifact_power_rank hotfix entries, wow build level 23530
 static hotfix::client_hotfix_entry_t __ptr_ptr_artifact_power_rank_hotfix_data[] = {
   {      0,  0, 0, 0 },
 };

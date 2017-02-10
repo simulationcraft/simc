@@ -7235,7 +7235,7 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   last_summoned( temporal_hero_e::INVALID ),
   distance_from_rune( 0.0 ),
   global_cinder_count( 0 ),
-  mage_potion_choice ("deadly_grace"),
+  mage_potion_choice( "" ),
   incanters_flow_stack_mult( find_spell( 116267 ) -> effectN( 1 ).percent() ),
   iv_haste( 1.0 ),
   blessing_of_wisdom( false ),
@@ -8041,6 +8041,7 @@ std::vector<std::string> mage_t::get_non_speical_item_actions()
   specials.push_back( "horn_of_valor"                 );
   specials.push_back( "mrrgrias_favor"                );
   specials.push_back( "pharameres_forbidden_grimoire" );
+  specials.push_back( "kiljaedens_burning_wish"       );
 
   for ( const auto& item : items )
   {
@@ -8203,15 +8204,20 @@ std::string mage_t::get_potion_action()
   }
   else
   {
-    if (mage_potion_choice == "prolonged_power" || mage_potion_choice == "pp")
+    if ( mage_potion_choice == "prolonged_power" || mage_potion_choice == "pp" )
     {
       potion_action += "prolonged_power";
     }
-    else if (mage_potion_choice == "deadly_grace" || mage_potion_choice == "dg")
+    else if ( mage_potion_choice == "deadly_grace" || mage_potion_choice == "dg" )
     {
       potion_action += "deadly_grace";
     }
-    else {
+    else if ( specialization() == MAGE_FROST )
+    {
+      potion_action += "prolonged_power";
+    }
+    else
+    {
       potion_action += "deadly_grace";
     }
   }
@@ -8344,6 +8350,7 @@ void mage_t::apl_fire()
   default_list -> add_action( mage_t::get_special_use_items( "obelisk_of_the_void", true ) );
   default_list -> add_action( mage_t::get_special_use_items( "mrrgrias_favor", false ) );
   default_list -> add_action( mage_t::get_special_use_items( "pharameres_forbidden_grimoire", false ) );
+  default_list -> add_action( mage_t::get_special_use_items( "kiljaedens_burning_wish", false ) );
 
   default_list -> add_action( "call_action_list,name=combustion_phase,if=cooldown.combustion.remains<=action.rune_of_power.cast_time+(!talent.kindling.enabled*gcd)|buff.combustion.up" );
   default_list -> add_action( "call_action_list,name=rop_phase,if=buff.rune_of_power.up&buff.combustion.down" );
@@ -8435,13 +8442,13 @@ void mage_t::apl_frost()
   single -> add_action( this, "Frostbolt", "if=prev_off_gcd.water_jet" );
   single -> add_action( "water_jet,if=prev_gcd.1.frostbolt&buff.fingers_of_frost.stack<(2+artifact.icy_hand.enabled)&buff.brain_freeze.react=0" );
   single -> add_talent( this, "Ray of Frost", "if=buff.icy_veins.up|(cooldown.icy_veins.remains>action.ray_of_frost.cooldown&buff.rune_of_power.down)" );
-  single -> add_action( this, "Flurry", "if=prev_gcd.1.frostbolt&buff.brain_freeze.react&buff.fingers_of_frost.react=0|prev_gcd.1.ebonbolt" );
+  single -> add_action( this, "Flurry", "if=prev_gcd.1.ebonbolt|prev_gcd.1.frostbolt&buff.brain_freeze.react" );
   single -> add_talent( this, "Frost Bomb", "if=debuff.frost_bomb.remains<action.ice_lance.travel_time&buff.fingers_of_frost.react>0" );
   single -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react>0&cooldown.icy_veins.remains>10|buff.fingers_of_frost.react>2" );
   single -> add_action( this, "Frozen Orb" );
   single -> add_talent( this, "Ice Nova" );
   single -> add_talent( this, "Comet Storm" );
-  single -> add_action( this, "Blizzard", "if=talent.arctic_gale.enabled|active_enemies>1|(buff.zannesu_journey.stack=5&buff.zannesu_journey.remains>cast_time)" );
+  single -> add_action( this, "Blizzard", "if=talent.arctic_gale.enabled|active_enemies>2|active_enemies>1&!(talent.glacial_spike.enabled&talent.splitting_ice.enabled)|(buff.zannesu_journey.stack=5&buff.zannesu_journey.remains>cast_time)" );
   single -> add_action( this, "Ebonbolt", "if=buff.brain_freeze.react=0" );
   single -> add_talent( this, "Glacial Spike" );
   single -> add_action( this, "Frostbolt" );
@@ -8452,7 +8459,7 @@ void mage_t::apl_frost()
   aoe -> add_talent( this, "Comet Storm" );
   aoe -> add_talent( this, "Ice Nova" );
   aoe -> add_action( "water_jet,if=prev_gcd.1.frostbolt&buff.fingers_of_frost.stack<(2+artifact.icy_hand.enabled)&buff.brain_freeze.react=0" );
-  aoe -> add_action( this, "Flurry", "if=(buff.brain_freeze.react|prev_gcd.1.ebonbolt)&buff.fingers_of_frost.react=0" );
+  aoe -> add_action( this, "Flurry", "if=prev_gcd.1.ebonbolt|prev_gcd.1.frostbolt&buff.brain_freeze.react" );
   aoe -> add_talent( this, "Frost Bomb", "if=debuff.frost_bomb.remains<action.ice_lance.travel_time&buff.fingers_of_frost.react>0" );
   aoe -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react>0" );
   aoe -> add_action( this, "Ebonbolt", "if=buff.brain_freeze.react=0" );
@@ -8460,8 +8467,7 @@ void mage_t::apl_frost()
   aoe -> add_action( this, "Frostbolt" );
 
   cooldowns    -> add_talent( this, "Rune of Power", "if=cooldown.icy_veins.remains<cast_time|charges_fractional>1.9&cooldown.icy_veins.remains>10|buff.icy_veins.up|target.time_to_die.remains+5<charges_fractional*10" );
-  cooldowns    -> add_action( "potion,name=deadly_grace,if=cooldown.icy_veins.remains<1&active_enemies=1" );
-  cooldowns    -> add_action( "potion,name=prolonged_power,if=cooldown.icy_veins.remains<1" );
+  cooldowns    -> add_action( get_potion_action() + ",if=cooldown.icy_veins.remains<1" );
   cooldowns    -> add_action( this, "Icy Veins", "if=buff.icy_veins.down" );
   cooldowns    -> add_talent( this, "Mirror Image" );
   for( size_t i = 0; i < item_actions.size(); i++ )
