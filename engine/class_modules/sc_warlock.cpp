@@ -379,6 +379,7 @@ public:
     buff_t* deadwind_harvester;
     buff_t* tormented_souls;
     buff_t* compounding_horror;
+    buff_t* active_uas;
 
     //demonology buffs
     buff_t* tier18_2pc_demonology;
@@ -2817,6 +2818,8 @@ struct unstable_affliction_t: public warlock_spell_t
           p() -> buffs.stretens_insanity -> decrement( 1 );
       }
 
+      p() -> buffs.active_uas -> decrement( 1 );
+
       warlock_spell_t::last_tick( d );
     }
 
@@ -2954,6 +2957,7 @@ struct unstable_affliction_t: public warlock_spell_t
 
     p() -> buffs.shard_instability -> expire();
     p() -> procs.t18_2pc_affliction -> occur();
+    p() -> buffs.active_uas -> increment( 1 );
 
 
     if ( p()->buffs.compounding_horror->check() )
@@ -6309,6 +6313,10 @@ void warlock_t::create_buffs()
   buffs.tormented_souls = buff_creator_t( this, "tormented_souls", find_spell( 216695 ) )
     .tick_behavior( BUFF_TICK_NONE );
   buffs.compounding_horror = buff_creator_t( this, "compounding_horror", find_spell( 199281 ) );
+  buffs.active_uas = buff_creator_t( this, "active_uas" )
+    .tick_behavior( BUFF_TICK_NONE )
+    .refresh_behavior( BUFF_REFRESH_NONE )
+    .max_stack( 10 );
 
   //demonology buffs
   buffs.demonic_synergy = buff_creator_t( this, "demonic_synergy", find_spell( 171982 ) )
@@ -6828,6 +6836,30 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
     };
     return new shard_react_expr_t( *this );
   }
+
+  else if ( name_str == "ua_count" )
+  {
+    struct ua_count_expr_t : public expr_t
+    {
+      warlock_t& player;
+
+      ua_count_expr_t( warlock_t& p ) :
+        expr_t( "ua_count" ), player( p ) { }
+      virtual double evaluate() override
+      {
+        double t = 0;
+        for ( auto& pet : player.warlock_pet_list.wild_imps )
+        {
+          if ( !pet->is_sleeping() )
+            t++;
+        }
+        return t;
+      }
+
+    };
+    return new ua_count_expr_t( *this );
+  }
+
   else if ( name_str == "felstorm_is_ticking" )
   {
     struct felstorm_is_ticking_expr_t: public expr_t
