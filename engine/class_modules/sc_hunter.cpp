@@ -499,7 +499,6 @@ public:
   void              apl_mm();
 
   void              add_item_actions( action_priority_list_t* list );
-  void              add_racial_actions( action_priority_list_t* list );
 
   target_specific_t<hunter_td_t> target_data;
 
@@ -6205,33 +6204,10 @@ void hunter_t::init_action_list()
 
 void hunter_t::add_item_actions( action_priority_list_t* list )
 {
-  int num_items = (int)items.size();
-  for ( int i = 0; i < num_items; i++ )
+  for ( const item_t& item : items )
   {
-    if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
-      list -> add_action( "use_item,name=" + items[i].name_str );
-  }
-}
-
-// Racial Actions =======================================================================
-
-void hunter_t::add_racial_actions(action_priority_list_t* list)
-{
-  if (specialization() == HUNTER_MARKSMANSHIP) {
-    list->add_action("arcane_torrent,if=focus.deficit>=30&(!talent.sidewinders.enabled|cooldown.sidewinders.charges<2)");
-    list->add_action("berserking,if=buff.trueshot.up");
-    list->add_action("blood_fury,if=buff.trueshot.up");
-  }
-  else if ( specialization() == HUNTER_SURVIVAL )
-  {
-    list->add_action( "arcane_torrent,if=focus.deficit>=30" );
-    list->add_action( "berserking,if=buff.spitting_cobra.up&buff.mongoose_fury.stack>2&buff.aspect_of_the_eagle.up|!talent.spitting_cobra.enabled&buff.aspect_of_the_eagle.up" );
-    list->add_action( "blood_fury,if=buff.spitting_cobra.up&buff.mongoose_fury.stack>2&buff.aspect_of_the_eagle.up|!talent.spitting_cobra.enabled&buff.aspect_of_the_eagle.up" );
-  }
-  else {
-    list->add_action("arcane_torrent,if=focus.deficit>=30");
-    list->add_action("berserking");
-    list->add_action("blood_fury");
+    if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+      list -> add_action( "use_item,name=" + item.name_str );
   }
 }
 
@@ -6244,7 +6220,11 @@ void hunter_t::apl_bm()
   default_list -> add_action( "auto_shot" );
 
   add_item_actions( default_list );
-  add_racial_actions( default_list );
+
+  // Racials
+  default_list -> add_action( "arcane_torrent,if=focus.deficit>=30" );
+  default_list -> add_action( "berserking" );
+  default_list -> add_action( "blood_fury" );
 
   default_list -> add_action( "volley,toggle=on" );
 
@@ -6282,7 +6262,6 @@ void hunter_t::apl_mm()
   default_list -> add_action( "auto_shot" );
 
   add_item_actions( default_list );
-  add_racial_actions( default_list );
 
   default_list -> add_action( "volley,toggle=on" );
   default_list -> add_action( "variable,name=pooling_for_piercing,value=talent.piercing_shot.enabled&cooldown.piercing_shot.remains<5&lowest_vuln_within.5>0&lowest_vuln_within.5>cooldown.piercing_shot.remains&(buff.trueshot.down|spell_targets=1)" );
@@ -6291,6 +6270,11 @@ void hunter_t::apl_mm()
   default_list -> add_action( "call_action_list,name=targetdie,if=target.time_to_die<6&spell_targets.multishot=1" );
   default_list -> add_action( "call_action_list,name=patient_sniper,if=talent.patient_sniper.enabled" );
   default_list -> add_action( "call_action_list,name=non_patient_sniper,if=!talent.patient_sniper.enabled" );
+
+  // Racials
+  cooldowns -> add_action( "arcane_torrent,if=focus.deficit>=30&(!talent.sidewinders.enabled|cooldown.sidewinders.charges<2)" );
+  cooldowns -> add_action( "berserking,if=buff.trueshot.up" );
+  cooldowns -> add_action( "blood_fury,if=buff.trueshot.up" );
 
   cooldowns -> add_action( "potion,name=prolonged_power,if=spell_targets.multishot>2&((buff.trueshot.react&buff.bloodlust.react)|buff.bullseye.react>=23|target.time_to_die<62)" );
   cooldowns -> add_action( "potion,name=deadly_grace,if=(buff.trueshot.react&buff.bloodlust.react)|buff.bullseye.react>=23|target.time_to_die<31" );
@@ -6372,10 +6356,12 @@ void hunter_t::apl_surv()
   default_list -> add_action( "auto_attack" );
 
   add_item_actions( default_list );
-  
-  default_list -> add_action("arcane_torrent,if=focus.deficit>=30" );
-  default_list -> add_action("berserking,if=(buff.spitting_cobra.up&buff.mongoose_fury.stack>2&buff.aspect_of_the_eagle.up)|(!talent.spitting_cobra.enabled&buff.aspect_of_the_eagle.up)" );
-  default_list -> add_action("blood_fury,if=(buff.spitting_cobra.up&buff.mongoose_fury.stack>2&buff.aspect_of_the_eagle.up)|(!talent.spitting_cobra.enabled&buff.aspect_of_the_eagle.up)" );
+
+  // Racials
+  default_list -> add_action( "arcane_torrent,if=focus.deficit>=30" );
+  default_list -> add_action( "berserking,if=(buff.spitting_cobra.up&buff.mongoose_fury.stack>2&buff.aspect_of_the_eagle.up)|(!talent.spitting_cobra.enabled&buff.aspect_of_the_eagle.up)" );
+  default_list -> add_action( "blood_fury,if=(buff.spitting_cobra.up&buff.mongoose_fury.stack>2&buff.aspect_of_the_eagle.up)|(!talent.spitting_cobra.enabled&buff.aspect_of_the_eagle.up)" );
+
   default_list -> add_action( "potion,name=prolonged_power,if=(talent.spitting_cobra.enabled&buff.spitting_cobra.remains)|(!talent.spitting_cobra.enabled&buff.aspect_of_the_eagle.remains)" );
   default_list -> add_action( "call_action_list,name=moknathal,if=talent.way_of_the_moknathal.enabled" );
   default_list -> add_action( "call_action_list,name=nomok,if=!talent.way_of_the_moknathal.enabled" );
