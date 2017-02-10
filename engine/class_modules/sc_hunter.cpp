@@ -328,6 +328,7 @@ public:
     const spell_data_t* muzzle;
     const spell_data_t* lacerate;
     const spell_data_t* aspect_of_the_eagle;
+    const spell_data_t* aspect_of_the_eagle_2;
     const spell_data_t* carve;
     const spell_data_t* survivalist;
     const spell_data_t* explosive_trap;
@@ -1380,7 +1381,7 @@ public:
       ac += buffs.aspect_of_the_wild -> check_value();
 
     if ( o() -> buffs.aspect_of_the_eagle -> up() )
-      ac += o() -> specs.aspect_of_the_eagle -> effectN( 1 ).percent();
+      ac += o() -> specs.aspect_of_the_eagle_2 -> effectN( 1 ).percent();
 
     return ac;
   }
@@ -5722,6 +5723,7 @@ void hunter_t::init_spells()
   specs.harpoon              = find_specialization_spell( "Harpoon" );
   specs.lacerate             = find_specialization_spell( "Lacerate" );
   specs.aspect_of_the_eagle  = find_specialization_spell( "Aspect of the Eagle" );
+  specs.aspect_of_the_eagle_2= find_specialization_spell( 231555 );
   specs.carve                = find_specialization_spell( "Carve" );
   specs.explosive_trap       = find_specialization_spell( "Explosive Trap" );
   specs.marksmans_focus      = find_specialization_spell( "Marksman's Focus" );
@@ -6593,7 +6595,7 @@ double hunter_t::composite_melee_crit_chance() const
     crit += buffs.aspect_of_the_wild -> check_value();
 
   if ( buffs.aspect_of_the_eagle -> up() )
-    crit += specs.aspect_of_the_eagle -> effectN( 1 ).percent();
+    crit += specs.aspect_of_the_eagle_2 -> effectN( 1 ).percent();
 
   crit +=  specs.critical_strikes -> effectN( 1 ).percent();
 
@@ -6613,7 +6615,7 @@ double hunter_t::composite_spell_crit_chance() const
     crit += buffs.aspect_of_the_wild -> check_value();
 
   if ( buffs.aspect_of_the_eagle -> up() )
-    crit += specs.aspect_of_the_eagle -> effectN( 1 ).percent();
+    crit += specs.aspect_of_the_eagle_2 -> effectN( 1 ).percent();
 
   crit +=  specs.critical_strikes -> effectN( 1 ).percent();
 
