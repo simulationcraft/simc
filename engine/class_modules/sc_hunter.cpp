@@ -3944,7 +3944,7 @@ struct flanking_strike_t: hunter_melee_attack_t
       if ( !p() -> cooldowns.flanking_strike -> up() )
         p() -> animal_instincts_cds.push_back( std::make_pair( p() -> cooldowns.flanking_strike,
                                                                p() -> procs.animal_instincts_flanking ) );
-      if ( !p() -> cooldowns.mongoose_bite -> up() )
+      if ( p() -> cooldowns.mongoose_bite -> current_charge != p() -> cooldowns.mongoose_bite -> charges )
         p() -> animal_instincts_cds.push_back( std::make_pair( p() -> cooldowns.mongoose_bite,
                                                                p() -> procs.animal_instincts_mongoose ) );
       if ( !p() -> cooldowns.aspect_of_the_eagle -> up() )
