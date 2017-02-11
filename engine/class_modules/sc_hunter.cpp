@@ -197,6 +197,7 @@ public:
     proc_t* tier17_2pc_bm;
     proc_t* tier18_4pc_bm;
     proc_t* hunting_companion;
+    proc_t* wasted_hunting_companion;
     proc_t* mortal_wounds;
     proc_t* t18_4pc_sv;
     proc_t* zevrims_hunger;
@@ -1938,8 +1939,10 @@ public:
 
       if ( ab::rng().roll( proc_chance ) )
       {
-        p() -> o() -> cooldowns.mongoose_bite -> reset( true );
-        p() -> o() -> procs.hunting_companion -> occur();
+        o() -> procs.hunting_companion -> occur();
+        if ( o() -> cooldowns.mongoose_bite -> current_charge == o() -> cooldowns.mongoose_bite -> charges )
+          o() -> procs.wasted_hunting_companion -> occur();
+        o() -> cooldowns.mongoose_bite -> reset( true );
       }
     }
   }
@@ -6124,6 +6127,7 @@ void hunter_t::init_procs()
   procs.tier17_2pc_bm                = get_proc( "tier17_2pc_bm" );
   procs.tier18_4pc_bm                = get_proc( "tier18_4pc_bm" );
   procs.hunting_companion            = get_proc( "hunting_companion" );
+  procs.wasted_hunting_companion     = get_proc( "wasted_hunting_companion" );
   procs.mortal_wounds                = get_proc( "mortal_wounds" );
   procs.t18_4pc_sv                   = get_proc( "t18_4pc_sv" );
   procs.zevrims_hunger               = get_proc( "zevrims_hunger" );
