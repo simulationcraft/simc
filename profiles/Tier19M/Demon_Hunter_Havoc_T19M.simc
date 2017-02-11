@@ -28,7 +28,7 @@ actions.precombat+=/metamorphosis,if=!(talent.demon_reborn.enabled&talent.demoni
 # Executed every time the actor is available.
 actions=auto_attack
 # "Getting ready to use meta" conditions, this is used in a few places.
-actions+=/variable,name=pooling_for_meta,value=cooldown.metamorphosis.adjusted_remains<6&fury.deficit>30&!talent.demonic.enabled
+actions+=/variable,name=pooling_for_meta,value=cooldown.metamorphosis.remains<6&fury.deficit>30&!talent.demonic.enabled
 # Blade Dance conditions. Always if First Blood is talented, otherwise 5+ targets with Chaos Cleave or 3+ targets without.
 actions+=/variable,name=blade_dance,value=talent.first_blood.enabled|spell_targets.blade_dance1>=3+(talent.chaos_cleave.enabled*2)
 # Blade Dance pooling condition, so we don't spend too much fury when we need it soon. No need to pool on

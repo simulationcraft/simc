@@ -5822,19 +5822,19 @@ struct metamorphosis_adjusted_cooldown_expr_t : public expr_t
 {
   demon_hunter_t* dh;
   double cooldown_multiplier;
-  double reduction_per_second;
   bool has_grandeur;
   item_t* item_convergence;
 
   metamorphosis_adjusted_cooldown_expr_t(demon_hunter_t* p, const std::string& name_str, 
     item_t* item_convergence, bool has_grandeur)
-    : expr_t(name_str), dh(p), cooldown_multiplier(1.0), reduction_per_second(0.0), 
-      item_convergence(item_convergence), has_grandeur(has_grandeur)
+    : expr_t(name_str), dh(p), cooldown_multiplier(1.0), item_convergence(item_convergence), has_grandeur(has_grandeur)
   {
   }
 
   void calculate_multiplier()
   {
+    double reduction_per_second = 0.0;
+
     if (item_convergence)
     {
       const spell_data_t* driver = dh->find_spell(item_convergence->special_effect()->spell_id);
@@ -6687,7 +6687,7 @@ void demon_hunter_t::apl_havoc()
   action_priority_list_t* def = get_action_priority_list( "default" );
 
   def -> add_action( "auto_attack" );
-  def -> add_action( "variable,name=pooling_for_meta,value=cooldown.metamorphosis.adjusted_remains<6&fury.deficit>30&!talent.demonic.enabled",
+  def -> add_action( "variable,name=pooling_for_meta,value=cooldown.metamorphosis.remains<6&fury.deficit>30&!talent.demonic.enabled",
     "\"Getting ready to use meta\" conditions, this is used in a few places." );
   def -> add_action( "variable,name=blade_dance,value=talent.first_blood.enabled|"
     "spell_targets.blade_dance1>=3+(talent.chaos_cleave.enabled*2)",
