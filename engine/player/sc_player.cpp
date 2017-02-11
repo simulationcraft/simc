@@ -7027,6 +7027,7 @@ struct use_item_t : public action_t
       {
         sim -> errorf( "Player %s attempting 'use_item' action with invalid slot name '%s'.", player -> name(), item_slot.c_str() );
         background = true;
+        return;
       }
 
       item = &( player -> items[ s ] );

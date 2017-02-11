@@ -6645,9 +6645,13 @@ void add_havoc_use_items( demon_hunter_t* p, action_priority_list_t* apl )
         line += ",if=buff.congealing_goo.react=6|(buff.chaos_blades.up&buff.chaos_blades.remains<5&"
           "cooldown.chaos_blades.remains&buff.congealing_goo.up)";
       }
+      else if (util::str_compare_ci(p->items[i].name_str, "gnawed_thumb_ring"))
+      {
+        line += ",if=!talent.chaos_blades.enabled|buff.chaos_blades.up|cooldown.chaos_blades.remains>60";
+      }
       else if (util::str_compare_ci(p->items[i].name_str, "draught_of_souls"))
       {
-        line += ",if=(!talent.first_blood.enabled|!cooldown.blade_dance.ready)";
+        line += ",if=!buff.metamorphosis.up&(!talent.first_blood.enabled|!cooldown.blade_dance.ready)&(!talent.nemesis.enabled|cooldown.nemesis.remains>30|target.time_to_die<cooldown.nemesis.remains+3)";
       }
       else if (util::str_compare_ci(p->items[i].name_str, "kiljaedens_burning_wish"))
       {
