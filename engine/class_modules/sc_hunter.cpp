@@ -4025,13 +4025,6 @@ struct lacerate_t: public hunter_melee_attack_t
     if ( p() -> sets.has_set_bonus( HUNTER_SURVIVAL, T18, B2 ) )
       td( s -> target ) -> debuffs.t18_2pc_open_wounds -> trigger();
   }
-
-  double target_armor( player_t* ) const override
-  {
-    // does bleed damage which ignores armor
-    assert( data().mechanic() == MECHANIC_BLEED );
-    return 0.0;
-  }
 };
 
 // Serpent Sting =====================================================================
