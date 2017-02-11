@@ -284,6 +284,7 @@ public:
     spell_t*  goldrinns_fang;
     action_t* natures_guardian;
     spell_t*  rage_of_the_sleeper;
+    attack_t* shadow_thrash;
     spell_t*  shooting_stars;
     spell_t*  starfall;
     spell_t*  starshards;
@@ -2258,8 +2259,6 @@ public:
   bool    requires_stealth;
   bool    consumes_combo_points;
   bool    consumes_clearcasting;
-  bool    triggers_ashamanes_bite;
-  bool    triggers_primal_fury;
   bool    trigger_tier17_2pc;
   struct {
     bool direct, tick;
@@ -2267,15 +2266,17 @@ public:
   bool    snapshots_tf;
   bool    snapshots_sr;
 
+  // whether the attack gets a damage bonus from Moment of Clarity
+  bool    moment_of_clarity;
+
   cat_attack_t( const std::string& token, druid_t* p,
                 const spell_data_t* s = spell_data_t::nil(),
                 const std::string& options = std::string() ) :
     base_t( token, p, s ),
     requires_stealth( false ),
     consumes_combo_points( false ),
-    consumes_clearcasting( false ),
-    triggers_ashamanes_bite ( true ),
-    triggers_primal_fury ( true ),
+    consumes_clearcasting( data().affected_by( p -> spec.omen_of_clarity -> effectN( 1 ).trigger() -> effectN( 1 ) ) ),
+    moment_of_clarity( data().affected_by( p -> spec.omen_of_clarity -> effectN( 1 ).trigger() -> effectN( 3 ) ) ),
     trigger_tier17_2pc( false ),
     snapshots_tf( true ),
     snapshots_sr( true )
@@ -2292,7 +2293,7 @@ public:
     razor_claws.tick = data().affected_by( p -> mastery.razor_claws -> effectN( 2 ) );
 
     // Apply Feral Druid Aura damage modifiers
-    if (p -> specialization() == DRUID_FERAL)
+    if ( p -> specialization() == DRUID_FERAL )
     {
        //dots
        if ( s -> affected_by( p -> spec.feral -> effectN(2) ))
@@ -2451,6 +2452,9 @@ public:
     if ( snapshots_sr )
       pm *= 1.0 + p() -> buff.savage_roar -> check_value();
 
+    if ( moment_of_clarity )
+      pm *= 1.0 + p() -> buff.clearcasting -> check_value();
+
     return pm;
   }
 
@@ -2506,12 +2510,9 @@ public:
 
     if ( energize_resource == RESOURCE_COMBO_POINT && energize_amount > 0 && hit_any_target )
     {
-       if (triggers_ashamanes_bite) 
-       {
-          trigger_ashamanes_rip();
-       }
+      trigger_ashamanes_rip();
       
-      if ( attack_critical && p() -> specialization() == DRUID_FERAL && triggers_primal_fury)
+      if ( attack_critical && p() -> specialization() == DRUID_FERAL )
       {
         trigger_primal_fury();
       }
@@ -2593,7 +2594,7 @@ public:
     }
   }
 
-  void trigger_ashamanes_rip()
+  virtual void trigger_ashamanes_rip()
   {
     if ( ! p() -> artifact.ashamanes_bite.rank() )
       return;
@@ -2717,8 +2718,6 @@ struct ashamanes_frenzy_driver_t : public cat_attack_t
       consumes_bloodtalons = false; // BT is applied by driver.
       ignite_multiplier = dot_duration / data().effectN( 3 ).period();
       dot_duration = timespan_t::zero(); // DoT is applied by ignite action.
-      triggers_ashamanes_bite = false;
-      triggers_primal_fury = false;
     }
 
     void impact( action_state_t* s ) override
@@ -2727,6 +2726,9 @@ struct ashamanes_frenzy_driver_t : public cat_attack_t
 
       residual_action::trigger( ignite, s -> target, s -> result_raw * ignite_multiplier );
     }
+
+    // Does not trigger Ashamane's Rip.
+    void trigger_ashamanes_rip() override {}
   };
 
   ashamanes_frenzy_t* damage;
@@ -2782,6 +2784,7 @@ struct ashamanes_rip_t : public cat_attack_t
     may_miss = may_block = may_dodge = may_parry = false;
     // Copies benefit from rip, so need to flag this as snapshotting so its damage doesn't get modified dynamically.
     snapshots_tf = snapshots_sr = true;
+    // "dot_behavior" will have no effect, see ashamanes_rip_t::impact()
       
     base_tick_time *= 1.0 + p -> talent.jagged_wounds -> effectN( 1 ).percent();
     base_multiplier *= 1.0 + p -> artifact.razor_fangs.percent();
@@ -2822,6 +2825,15 @@ struct ashamanes_rip_t : public cat_attack_t
 
     cat_attack_t::execute();
   }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    // To mimick blizz-like behavior, DoT does not clip but instead ends the
+    // previous DoT prior to applying the new one.
+    td( s -> target ) -> dots.shadow_rip -> cancel();
+
+    cat_attack_t::impact( s );
+  }
 };
 
 // Berserk ==================================================================
@@ -2831,7 +2843,7 @@ struct berserk_t : public cat_attack_t
   berserk_t( druid_t* player, const std::string& options_str ) :
     cat_attack_t( "berserk", player, player -> find_specialization_spell( "Berserk" ), options_str )
   {
-    harmful = consumes_clearcasting = may_miss = may_parry = may_dodge = may_crit = false;
+    harmful = may_miss = may_parry = may_dodge = may_crit = false;
   }
 
   void execute() override
@@ -3005,7 +3017,7 @@ struct gushing_wound_t : public residual_action::residual_periodic_action_t<cat_
     residual_action::residual_periodic_action_t<cat_attack_t>( "gushing_wound", p, p -> find_spell( 166638 ) )
   {
     background = dual = proc = true;
-    consumes_clearcasting = may_miss = may_dodge = may_parry = false;
+    may_miss = may_dodge = may_parry = false;
     trigger_tier17_2pc = p -> sets.has_set_bonus( DRUID_FERAL, T17, B2 );
   }
 };
@@ -3257,7 +3269,6 @@ struct shred_t : public cat_attack_t
   {
     base_crit += p -> artifact.feral_power.percent();
     base_multiplier *= 1.0 + p -> artifact.shredder_fangs.percent();
-    consumes_clearcasting = true;
   }
 
   virtual void impact( action_state_t* s ) override
@@ -3298,11 +3309,6 @@ struct shred_t : public cat_attack_t
   {
     double m = cat_attack_t::action_multiplier();
 
-    if ( p()->talent.moment_of_clarity->ok() && p()->buff.clearcasting->up() )
-    {
-       m *= 1.0 + p()->talent.moment_of_clarity->effectN(5).percent();
-    }
-
     if ( stealthed() )
       m *= 1.0 + data().effectN( 4 ).percent();
 
@@ -3323,7 +3329,6 @@ public:
     energize_amount = data().effectN( 1 ).percent();
     energize_resource = RESOURCE_COMBO_POINT;
     energize_type = ENERGIZE_ON_HIT;
-    consumes_clearcasting = true;
 
     base_multiplier *= 1.0 + player -> artifact.sharpened_claws.percent();
   }
@@ -3339,18 +3344,6 @@ public:
     c += reduction;
 
     return c;
-  }
-
-  double action_multiplier() const
-  {
-    double am = cat_attack_t::action_multiplier();
-
-    if ( p()->talent.moment_of_clarity->ok() && p()->buff.clearcasting->up() )
-    {
-      am *= 1.0 + p()->talent.moment_of_clarity->effectN( 4 ).percent();
-    }
-
-    return am;
   }
 
   virtual void execute() override
@@ -3395,7 +3388,7 @@ struct tigers_fury_t : public cat_attack_t
     cat_attack_t( "tigers_fury", p, p -> find_specialization_spell( "Tiger's Fury" ), options_str ),
     duration( p -> buff.tigers_fury -> buff_duration )
   {
-    harmful = consumes_clearcasting = may_miss = may_parry = may_dodge = may_crit = false;
+    harmful = may_miss = may_parry = may_dodge = may_crit = false;
     autoshift = form_mask = CAT_FORM;
     energize_type = ENERGIZE_ON_CAST;
     energize_amount += p -> spec.tigers_fury_2 -> effectN( 1 ).resource( RESOURCE_ENERGY );
@@ -3422,57 +3415,64 @@ struct tigers_fury_t : public cat_attack_t
 
 // Thrash (Cat) =============================================================
 
-struct thrash_cat_t: public cat_attack_t {
-  struct shadow_thrash_t: public cat_attack_t {
-    struct shadow_thrash_tick_t: public cat_attack_t {
-      double multiplier;
+struct thrash_cat_t : public cat_attack_t
+{
+  struct shadow_thrash_t : public cat_attack_t
+  {
+    struct shadow_thrash_tick_t : public cat_attack_t
+    {
       shadow_thrash_tick_t( druid_t* p ):
-        cat_attack_t( "shadow_thrash", p, p -> find_spell( 210687 ) ),
-        multiplier( 0 )
+        cat_attack_t( "shadow_thrash", p, p -> find_spell( 210687 ) )
       {
         background = dual = true;
         aoe = -1;
-      }
-
-      double action_multiplier() const
-      {
-        double am = cat_attack_t::action_multiplier();
-
-        am *= 1.0 + multiplier;
-
-        return am;
+        // Disable benefit from snapshotted damage bonuses, those will be applied in driver::tick().
+        snapshots_tf = snapshots_sr = moment_of_clarity = false;
       }
     };
 
-    double multiplier;
-    shadow_thrash_tick_t* tick;
-    shadow_thrash_t( druid_t* p ):
+    cat_attack_t* damage;
+
+    shadow_thrash_t( druid_t* p ) :
       cat_attack_t( "shadow_thrash", p, p -> artifact.shadow_thrash.data().effectN( 1 ).trigger() ),
-      multiplier( 0 ), tick( 0 )
+      damage( new shadow_thrash_tick_t( p ) )
     {
       background = true;
-      tick = new shadow_thrash_tick_t( p );
-      tick_action = tick;
+      // Enable snapshotted damage bonuses so we can pass those on to the tick action (DoT-like behavior).
+      // TF and SR should be on by default, but just make sure since we are hard overriding.
+      snapshots_tf = snapshots_sr = moment_of_clarity = true;
 
       base_tick_time *= 1.0 + p -> talent.jagged_wounds -> effectN( 1 ).percent();
+      // dot_duration doesn't matter but set it anyway to be safe.
       dot_duration *= 1.0 + p -> talent.jagged_wounds -> effectN( 2 ).percent();
     }
 
-    void execute() override
+    // Shadow Thrash uses "legacy" refresh, carrying over no more than 1 tick.
+    timespan_t composite_dot_duration( const action_state_t* s ) const override
     {
-      tick -> multiplier = multiplier; 
-      cat_attack_t::execute();
+      // Hardcode 2 base ticks because of Jagged Wounds granularity issue.
+      return base_tick_time * 2 + td( s -> target ) -> dots.shadow_thrash -> time_to_next_tick();
+    }
+
+    void tick( dot_t* d ) override
+    {
+      cat_attack_t::tick( d );
+
+      // Create & snapshot state
+      action_state_t* s = damage -> get_state();
+      s -> target = d -> state -> target;
+      damage -> snapshot_state( s, DMG_DIRECT );
+      // Apply snapshotted damage bonuses.
+      s -> persistent_multiplier = d -> state -> persistent_multiplier;
+      damage -> schedule_execute( s );
     }
   };
 
-  shadow_thrash_t* shadow_thrash;
   thrash_cat_t( druid_t* p, const std::string& options_str ):
-    cat_attack_t( "thrash_cat", p, p -> find_spell( 106830 ), options_str ),
-    shadow_thrash( nullptr )
+    cat_attack_t( "thrash_cat", p, p -> find_spell( 106830 ), options_str )
   {
     aoe = -1;
     spell_power_mod.direct = 0;
-    consumes_clearcasting = true;
 
     trigger_tier17_2pc = p -> sets.has_set_bonus( DRUID_FERAL, T17, B2 );
 
@@ -3484,10 +3484,14 @@ struct thrash_cat_t: public cat_attack_t {
       energize_type = ENERGIZE_ON_HIT;
     }
 
-    if ( shadow_thrash == nullptr )
+    if ( p -> artifact.shadow_thrash.rank() )
     {
-      shadow_thrash = new shadow_thrash_t( p );
-      add_child( shadow_thrash );
+      if ( ! p -> active.shadow_thrash )
+      {
+        p -> active.shadow_thrash = new shadow_thrash_t( p );
+      }
+
+      add_child( p -> active.shadow_thrash );
     }
 
     base_tick_time *= 1.0 + p -> talent.jagged_wounds -> effectN( 1 ).percent();
@@ -3495,36 +3499,32 @@ struct thrash_cat_t: public cat_attack_t {
     base_multiplier *= 1.0 + p -> artifact.jagged_claws.percent();
   }
 
-  double action_multiplier() const
+  void impact( action_state_t* s ) override
   {
-    double am = cat_attack_t::action_multiplier();
+    cat_attack_t::impact( s );
 
-    if ( p() -> talent.moment_of_clarity -> ok() && p() -> buff.clearcasting -> up() )
-    {
-      double mom = p() -> talent.moment_of_clarity -> effectN( 5 ).percent();
-      am *= 1.0 + mom;
-      shadow_thrash -> multiplier = mom;
-    }
-    else
-    {
-      shadow_thrash -> multiplier = 0;
-    }
-
-    return am;
+    // Trigger in impact, before consume_resource(), so it can get the damage bonus from Moment of Clarity.
+    trigger_shadow_thrash( s );
   }
 
   void execute() override
   {
     cat_attack_t::execute();
-    
-    if ( rng().roll( p()->artifact.shadow_thrash.data().proc_chance() ) )
-    {
-      shadow_thrash -> target = execute_state -> target;
-      shadow_thrash -> schedule_execute();
-    }
 
     p() -> buff.scent_of_blood -> trigger( 1,
-                                           num_targets_hit * p() -> buff.scent_of_blood -> default_value );
+      num_targets_hit * p() -> buff.scent_of_blood -> default_value );
+  }
+
+  void trigger_shadow_thrash( const action_state_t* ts )
+  {
+    if ( ! rng().roll( p() -> artifact.shadow_thrash.data().proc_chance() ) )
+      return;
+
+    // Snapshot now so we can use schedule_execute().
+    action_state_t* s = p() -> active.shadow_thrash -> get_state();
+    s -> target = ts -> target;
+    p() -> active.shadow_thrash -> snapshot_state( s, DMG_OVER_TIME );
+    p() -> active.shadow_thrash -> schedule_execute( s );
   }
 };
 
@@ -6628,7 +6628,8 @@ void druid_t::create_buffs()
                                .chance( specialization() == DRUID_RESTORATION ? find_spell( 113043 ) -> proc_chance()
                                         : find_spell( 16864 ) -> proc_chance() )
                                .cd( timespan_t::zero() )
-                               .max_stack( 1 + talent.moment_of_clarity -> effectN( 1 ).base_value() );
+                               .max_stack( 1 + talent.moment_of_clarity -> effectN( 1 ).base_value() )
+                               .default_value( talent.moment_of_clarity -> effectN( 4 ).percent() );
 
   buff.dash                  = buff_creator_t( this, "dash", find_class_spell( "Dash" ) )
                                .cd( timespan_t::zero() )
