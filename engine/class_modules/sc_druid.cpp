@@ -6074,7 +6074,6 @@ struct wild_charge_t : public druid_spell_t
   }
 };
 
-
 struct force_of_nature_t : public druid_spell_t
 {
   timespan_t summon_duration;
