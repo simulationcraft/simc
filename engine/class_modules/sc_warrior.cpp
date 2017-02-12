@@ -4644,8 +4644,10 @@ void warrior_t::init_spells()
 
 void warrior_t::init_base_stats()
 {
+  if ( base.distance < 1 )
+    base.distance = 5.0;
+
   player_t::init_base_stats();
-  base.distance = 5.0;
 
   resources.base[RESOURCE_RAGE] = 100 + ( ( artifact.unending_rage.value() + artifact.intolerance.value() ) / 10 );
   resources.max[RESOURCE_RAGE] = resources.base[RESOURCE_RAGE];

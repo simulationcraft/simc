@@ -6121,9 +6121,10 @@ void demon_hunter_t::init_action_list()
 
 void demon_hunter_t::init_base_stats()
 {
-  base_t::init_base_stats();
+  if ( base.distance < 1 )
+    base.distance = 5.0;
 
-  base.distance = 5.0;
+  base_t::init_base_stats();
 
   switch ( specialization() )
   {

@@ -7626,9 +7626,10 @@ void mage_t::init_spells()
 
 void mage_t::init_base_stats()
 {
-  player_t::init_base_stats();
+  if ( base.distance < 1 )
+    base.distance = 30;
 
-  base.distance = 30;
+  player_t::init_base_stats();
 
   base.spell_power_per_intellect = 1.0;
 

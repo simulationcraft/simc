@@ -6174,9 +6174,10 @@ void warlock_t::init_spells()
 
 void warlock_t::init_base_stats()
 {
-  player_t::init_base_stats();
+  if ( base.distance < 1 )
+    base.distance = 40;
 
-  base.distance = 40;
+  player_t::init_base_stats();
 
   base.attack_power_per_strength = 0.0;
   base.attack_power_per_agility = 0.0;

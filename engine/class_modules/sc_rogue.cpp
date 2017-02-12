@@ -7177,9 +7177,10 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
 
 void rogue_t::init_base_stats()
 {
-  player_t::init_base_stats();
+  if ( base.distance < 1 )
+    base.distance = 5;
 
-  base.distance = 5;
+  player_t::init_base_stats();
 
   base.attack_power_per_strength = 0.0;
   base.attack_power_per_agility  = 1.0;

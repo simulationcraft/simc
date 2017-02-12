@@ -5723,11 +5723,14 @@ void hunter_t::init_spells()
 
 void hunter_t::init_base_stats()
 {
-  player_t::init_base_stats();
+  if ( base.distance < 1 )
+  {
+    base.distance = 40;
+    if ( specialization() == HUNTER_SURVIVAL )
+      base.distance = 5;
+  }
 
-  base.distance = 40;
-  if ( specialization() == HUNTER_SURVIVAL )
-    base.distance = 5;
+  player_t::init_base_stats();
 
   base.attack_power_per_strength = 0.0;
   base.attack_power_per_agility  = 1.0;

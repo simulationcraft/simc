@@ -4282,6 +4282,14 @@ void paladin_t::update_forbearance_recharge_multipliers() const
 
 void paladin_t::init_base_stats()
 {
+  if ( base.distance < 1 )
+  {
+    base.distance = 5;
+    // move holy paladins to range
+    if ( specialization() == PALADIN_HOLY && primary_role() == ROLE_HEAL )
+      base.distance = 30;
+  }
+
   player_t::init_base_stats();
 
   base.attack_power_per_agility = 0.0;
@@ -4308,11 +4316,6 @@ void paladin_t::init_base_stats()
 
   // Holy Insight increases max mana for Holy
   resources.base_multiplier[ RESOURCE_MANA ] = 1.0 + passives.holy_insight -> effectN( 1 ).percent();
-
-  base.distance = 5;
-  // move holy paladins to range
-  if ( specialization() == PALADIN_HOLY && primary_role() == ROLE_HEAL )
-    base.distance = 30;
 }
 
 // paladin_t::reset =========================================================

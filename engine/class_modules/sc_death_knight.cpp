@@ -6631,9 +6631,10 @@ void death_knight_t::init_rng()
 
 void death_knight_t::init_base_stats()
 {
-  player_t::init_base_stats();
+  if ( base.distance < 1 )
+    base.distance = 5;
 
-  base.distance = 5;
+  player_t::init_base_stats();
 
   base.attack_power_per_strength = 1.0;
   base.attack_power_per_agility = 0.0;
