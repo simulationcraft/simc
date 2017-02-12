@@ -4728,13 +4728,18 @@ void paladin_t::generate_action_prio_list_ret()
   {
     if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
     {
+      std::string item_str;
       if ( items[i].name_str == "draught_of_souls" )
       {
-        std::string item_str;
         item_str = "use_item,name=" + items[i].name_str + ",if=(buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=15|cooldown.crusade.remains>20&!buff.crusade.up)";
         def -> add_action( item_str );
-      } else {
-        std::string item_str;
+      }
+      else if ( items[i].name_str == "might_of_krosus" ) 
+      {
+        item_str = "use_item,name=" + items[i].name_str + ",if=(buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=15|cooldown.crusade.remains>5&!buff.crusade.up)";
+        def -> add_action( item_str );
+      }
+      else {
         item_str = "use_item,name=" + items[i].name_str + ",if=(buff.avenging_wrath.up|buff.crusade.up)";
         def -> add_action( item_str );
       }

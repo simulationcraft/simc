@@ -3341,12 +3341,12 @@ struct chaos_blade_t : public melee_t
 
   double action_multiplier() const override
   {
-	  double am = action_t::action_multiplier();
+    double am = action_t::action_multiplier();
 
-	  if (demonic_presence)
-	  {
-		  am *= 1.0 + p()->cache.mastery_value();
-	  }
+    if (demonic_presence)
+    {
+      am *= 1.0 + p()->cache.mastery_value();
+    }
 
     return am; // skip attack_t's multiplier so we don't get the AA bonus.  Tested 2017/01/23
   }
