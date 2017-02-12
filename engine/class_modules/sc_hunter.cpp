@@ -1934,7 +1934,7 @@ public:
       double proc_chance = p() -> o() -> cache.mastery_value() * hunting_companion_multiplier;
 
       if ( p() -> o() -> buffs.aspect_of_the_eagle -> up() )
-        proc_chance *= 1.0 + p() -> o() -> specs.aspect_of_the_eagle -> effectN( 2 ).percent();
+        proc_chance += o() -> specs.aspect_of_the_eagle -> effectN( 2 ).percent();
 
       if ( ab::rng().roll( proc_chance ) )
       {
