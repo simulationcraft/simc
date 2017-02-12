@@ -931,13 +931,39 @@ struct force_of_nature_t : public pet_t
 {
   struct fon_melee_t : public melee_attack_t
   {
+    bool first_attack;
     fon_melee_t( pet_t* p, const char* name = "melee" ) :
-      melee_attack_t( name, p, spell_data_t::nil() )
+      melee_attack_t( name, p, spell_data_t::nil() ),
+      first_attack( true )
     {
       school = SCHOOL_PHYSICAL;
       weapon = &( p -> main_hand_weapon );
       base_execute_time = weapon -> swing_time;
       may_crit = background = repeating = true;
+    }
+
+    timespan_t execute_time() const override
+    {
+      if ( first_attack )
+      {
+        return timespan_t::zero();
+      }
+      else
+      {
+        return melee_attack_t::execute_time();
+      }
+    }
+
+    void cancel()
+    {
+      melee_attack_t::cancel();
+      first_attack = true;
+    }
+
+    void schedule_execute( action_state_t* s ) override
+    {
+      melee_attack_t::schedule_execute( s );
+      first_attack = false;
     }
   };
 
@@ -955,7 +981,6 @@ struct force_of_nature_t : public pet_t
 
     bool ready() override
     {
-      if ( player -> is_moving() ) return false;
       return ( player -> main_hand_attack -> execute_event == nullptr );
     }
   };
@@ -6059,7 +6084,7 @@ struct force_of_nature_t : public druid_spell_t
   {
     parse_options( options );
     harmful = may_crit = false;
-    summon_duration = data().duration();
+    summon_duration = data().duration() + timespan_t::from_millis( 1 );
   }
 
   virtual void execute() override
