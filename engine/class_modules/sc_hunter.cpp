@@ -7076,7 +7076,7 @@ struct hunter_module_t: public module_t
     register_special_effect( 225155, HUNTER_SURVIVAL,      []( hunter_t* p ) { return &( p -> legendary.sv_ring ); });
     register_special_effect( 213154, HUNTER_SURVIVAL,      []( hunter_t* p ) { return &( p -> legendary.sv_waist ); });
     register_special_effect( 212278, HUNTER_BEAST_MASTERY, []( hunter_t* p ) { return &( p -> legendary.bm_feet ); });
-    register_special_effect( 212329, HUNTER_BEAST_MASTERY, []( hunter_t* p ) { return &( p -> legendary.bm_ring ); });
+    register_special_effect( 212329, SPEC_NONE,            []( hunter_t* p ) { return &( p -> legendary.bm_ring ); });
     register_special_effect( 235721, HUNTER_BEAST_MASTERY, []( hunter_t* p ) { return &( p -> legendary.bm_shoulders ); });
     register_special_effect( 207280, HUNTER_BEAST_MASTERY, []( hunter_t* p ) { return &( p -> legendary.bm_waist ); });
     register_special_effect( 206889, HUNTER_MARKSMANSHIP,  []( hunter_t* p ) { return &( p -> legendary.mm_feet ); });
