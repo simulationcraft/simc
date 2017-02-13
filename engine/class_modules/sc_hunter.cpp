@@ -6401,6 +6401,8 @@ void hunter_t::apl_surv()
   moknathal -> add_action( "steel_trap,if=buff.mongoose_fury.duration>=gcd&buff.mongoose_fury.stack<1" );
   moknathal -> add_action( "a_murder_of_crows,if=focus>55-buff.moknathal_tactics.remains*focus.regen&buff.mongoose_fury.stack<4&buff.mongoose_fury.duration>=gcd" );
   moknathal -> add_action( "flanking_strike,if=cooldown.mongoose_bite.charges<=1&focus>75-buff.moknathal_tactics.remains*focus.regen" );
+  moknathal -> add_action( "carve,if=equipped.frizzos_fingertrap&focus>65-buff.moknathal_tactics.remains*focus.regen&buff.mongoose_fury.remains>=gcd&dot.lacerate.remains<=3&dot.lacerate.ticking" );
+  moknathal -> add_action( "butchery,if=equipped.frizzos_fingertrap&focus>65-buff.moknathal_tactics.remains*focus.regen&buff.mongoose_fury.remains>=gcd&dot.lacerate.remains<=3&dot.lacerate.ticking" );
   moknathal -> add_action( "lacerate,if=(focus>55-buff.moknathal_tactics.remains*focus.regen&buff.mongoose_fury.duration>=gcd&refreshable&cooldown.mongoose_bite.charges=0&buff.mongoose_fury.stack<3)|(focus>65-buff.moknathal_tactics.remains*focus.regen&buff.mongoose_fury.down&cooldown.mongoose_bite.charges<3&refreshable)" );
   moknathal -> add_action( "caltrops,if=(buff.mongoose_fury.duration>=gcd&buff.mongoose_fury.stack<1&!dot.caltrops.ticking)" );
   moknathal -> add_action( "explosive_trap,if=buff.mongoose_fury.duration>=gcd&cooldown.mongoose_bite.charges=0&buff.mongoose_fury.stack<1" );
@@ -6421,6 +6423,8 @@ void hunter_t::apl_surv()
   moknathal -> add_action( "a_murder_of_crows,if=focus>55-buff.moknathal_tactics.remains*focus.regen" );
   moknathal -> add_action( "caltrops,if=(!dot.caltrops.ticking)" );
   moknathal -> add_action( "explosive_trap" );
+  moknathal -> add_action( "carve,if=equipped.frizzos_fingertrap&focus>65-buff.moknathal_tactics.remains*focus.regen&dot.lacerate.remains<=3&dot.lacerate.ticking" );
+  moknathal -> add_action( "butchery,if=equipped.frizzos_fingertrap&focus>65-buff.moknathal_tactics.remains*focus.regen&dot.lacerate.remains<=3&dot.lacerate.ticking" );
   moknathal -> add_action( "lacerate,if=refreshable&focus>55-buff.moknathal_tactics.remains*focus.regen" );
   moknathal -> add_action( "dragonsfire_grenade" );
   moknathal -> add_action( "mongoose_bite,if=(charges>=2&cooldown.mongoose_bite.remains<=gcd|charges=3)" );
@@ -6434,6 +6438,8 @@ void hunter_t::apl_surv()
   nomok -> add_action( "snake_hunter,if=action.mongoose_bite.charges<=0&buff.mongoose_fury.remains>3*gcd&time>15" );
   nomok -> add_action( "caltrops,if=(buff.mongoose_fury.duration>=gcd&buff.mongoose_fury.stack<4&!dot.caltrops.ticking)" );
   nomok -> add_action( "flanking_strike,if=cooldown.mongoose_bite.charges<=1&buff.aspect_of_the_eagle.remains>=gcd" );
+  nomok -> add_action( "carve,if=equipped.frizzos_fingertrap&focus>65-buff.moknathal_tactics.remains*focus.regen&buff.mongoose_fury.remains>=gcd&dot.lacerate.remains<=3&dot.lacerate.ticking" );
+  nomok -> add_action( "butchery,if=equipped.frizzos_fingertrap&focus>65-buff.moknathal_tactics.remains*focus.regen&buff.mongoose_fury.remains>=gcd&dot.lacerate.remains<=3&dot.lacerate.ticking" );
   nomok -> add_action( "lacerate,if=buff.mongoose_fury.duration>=gcd&refreshable&cooldown.mongoose_bite.charges=0&buff.mongoose_fury.stack<2|buff.mongoose_fury.down&cooldown.mongoose_bite.charges<3&refreshable" );
   nomok -> add_action( "dragonsfire_grenade,if=buff.mongoose_fury.duration>=gcd&cooldown.mongoose_bite.charges<=1&buff.mongoose_fury.stack<3|buff.mongoose_fury.down&cooldown.mongoose_bite.charges<3" );
   nomok -> add_action( "explosive_trap,if=buff.mongoose_fury.duration>=gcd&cooldown.mongoose_bite.charges>=0&buff.mongoose_fury.stack<4" );
@@ -6450,6 +6456,8 @@ void hunter_t::apl_surv()
   nomok -> add_action( "a_murder_of_crows" );
   nomok -> add_action( "caltrops,if=(!dot.caltrops.ticking)" );
   nomok -> add_action( "explosive_trap" );
+  nomok -> add_action( "carve,if=equipped.frizzos_fingertrap&focus>65-buff.moknathal_tactics.remains*focus.regen&dot.lacerate.remains<=3&dot.lacerate.ticking" );
+  nomok -> add_action( "butchery,if=equipped.frizzos_fingertrap&focus>65-buff.moknathal_tactics.remains*focus.regen&dot.lacerate.remains<=3&dot.lacerate.ticking" );
   nomok -> add_action( "lacerate,if=refreshable" );
   nomok -> add_action( "dragonsfire_grenade" );
   nomok -> add_action( "throwing_axes,if=cooldown.throwing_axes.charges=2" );
