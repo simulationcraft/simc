@@ -4282,6 +4282,14 @@ void paladin_t::update_forbearance_recharge_multipliers() const
 
 void paladin_t::init_base_stats()
 {
+  if ( base.distance < 1 )
+  {
+    base.distance = 5;
+    // move holy paladins to range
+    if ( specialization() == PALADIN_HOLY && primary_role() == ROLE_HEAL )
+      base.distance = 30;
+  }
+
   player_t::init_base_stats();
 
   base.attack_power_per_agility = 0.0;
@@ -4308,11 +4316,6 @@ void paladin_t::init_base_stats()
 
   // Holy Insight increases max mana for Holy
   resources.base_multiplier[ RESOURCE_MANA ] = 1.0 + passives.holy_insight -> effectN( 1 ).percent();
-
-  base.distance = 5;
-  // move holy paladins to range
-  if ( specialization() == PALADIN_HOLY && primary_role() == ROLE_HEAL )
-    base.distance = 30;
 }
 
 // paladin_t::reset =========================================================
@@ -4728,13 +4731,18 @@ void paladin_t::generate_action_prio_list_ret()
   {
     if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
     {
+      std::string item_str;
       if ( items[i].name_str == "draught_of_souls" )
       {
-        std::string item_str;
         item_str = "use_item,name=" + items[i].name_str + ",if=(buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=15|cooldown.crusade.remains>20&!buff.crusade.up)";
         def -> add_action( item_str );
-      } else {
-        std::string item_str;
+      }
+      else if ( items[i].name_str == "might_of_krosus" ) 
+      {
+        item_str = "use_item,name=" + items[i].name_str + ",if=(buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=15|cooldown.crusade.remains>5&!buff.crusade.up)";
+        def -> add_action( item_str );
+      }
+      else {
         item_str = "use_item,name=" + items[i].name_str + ",if=(buff.avenging_wrath.up|buff.crusade.up)";
         def -> add_action( item_str );
       }

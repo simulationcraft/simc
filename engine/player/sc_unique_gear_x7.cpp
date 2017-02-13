@@ -1528,6 +1528,11 @@ void item::might_of_krosus( special_effect_t& effect )
       split_aoe_damage = true;
     }
 
+    double composite_crit_chance() const override
+    {
+      return 1.0; // Always crits
+    }
+
     void execute() override
     {
       proc_attack_t::execute();

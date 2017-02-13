@@ -4850,7 +4850,6 @@ void priest_t::init_base_stats()
 {
   base_t::init_base_stats();
 
-  base.distance                  = 27.0;  // Halo
   base.attack_power_per_strength = 0.0;
   base.attack_power_per_agility  = 0.0;
   base.spell_power_per_intellect = 1.0;
@@ -5030,12 +5029,15 @@ void priest_t::init_spells()
   mastery_spells.madness       = find_mastery_spell( PRIEST_SHADOW );
 
   // Range Based on Talents
-  if ( talents.divine_star->ok() )
-    base.distance = 24.0;
-  else if ( talents.halo->ok() )
-    base.distance = 27.0;
-  else
-    base.distance = 27.0;
+  if ( base.distance != 5 )
+  {
+    if ( talents.divine_star->ok() )
+      base.distance = 24.0;
+    else if ( talents.halo->ok() )
+      base.distance = 27.0;
+    else
+      base.distance = 27.0;
+  }
 }
 
 // priest_t::init_buffs =====================================================
