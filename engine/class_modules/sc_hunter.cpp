@@ -6437,7 +6437,7 @@ void hunter_t::apl_surv()
   nomok -> add_action( "lacerate,if=buff.mongoose_fury.duration>=gcd&refreshable&cooldown.mongoose_bite.charges=0&buff.mongoose_fury.stack<2|buff.mongoose_fury.down&cooldown.mongoose_bite.charges<3&refreshable" );
   nomok -> add_action( "dragonsfire_grenade,if=buff.mongoose_fury.duration>=gcd&cooldown.mongoose_bite.charges<=1&buff.mongoose_fury.stack<3|buff.mongoose_fury.down&cooldown.mongoose_bite.charges<3" );
   nomok -> add_action( "explosive_trap,if=buff.mongoose_fury.duration>=gcd&cooldown.mongoose_bite.charges>=0&buff.mongoose_fury.stack<4" );
-  nomok -> add_action( "raptor_strike,if=talent.serpent_sting.enabled&refreshable&buff.mongoose_fury.stack<3&cooldown.mongoose_bite.charges<1" );
+  nomok -> add_action( "raptor_strike,if=talent.serpent_sting.enabled&dot.serpent_sting.refreshable&buff.mongoose_fury.stack<3&cooldown.mongoose_bite.charges<1" );
   nomok -> add_action( "fury_of_the_eagle,if=buff.mongoose_fury.stack=6&cooldown.mongoose_bite.charges<=1" );
   nomok -> add_action( "mongoose_bite,if=buff.aspect_of_the_eagle.up&buff.mongoose_fury.up" );
   nomok -> add_action( "aspect_of_the_eagle,if=buff.mongoose_fury.up&buff.mongoose_fury.duration>6&cooldown.mongoose_bite.charges>=2" );

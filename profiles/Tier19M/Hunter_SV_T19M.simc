@@ -78,7 +78,7 @@ actions.nomok+=/flanking_strike,if=cooldown.mongoose_bite.charges<=1&buff.aspect
 actions.nomok+=/lacerate,if=buff.mongoose_fury.duration>=gcd&refreshable&cooldown.mongoose_bite.charges=0&buff.mongoose_fury.stack<2|buff.mongoose_fury.down&cooldown.mongoose_bite.charges<3&refreshable
 actions.nomok+=/dragonsfire_grenade,if=buff.mongoose_fury.duration>=gcd&cooldown.mongoose_bite.charges<=1&buff.mongoose_fury.stack<3|buff.mongoose_fury.down&cooldown.mongoose_bite.charges<3
 actions.nomok+=/explosive_trap,if=buff.mongoose_fury.duration>=gcd&cooldown.mongoose_bite.charges>=0&buff.mongoose_fury.stack<4
-actions.nomok+=/raptor_strike,if=talent.serpent_sting.enabled&refreshable&buff.mongoose_fury.stack<3&cooldown.mongoose_bite.charges<1
+actions.nomok+=/raptor_strike,if=talent.serpent_sting.enabled&dot.serpent_sting.refreshable&buff.mongoose_fury.stack<3&cooldown.mongoose_bite.charges<1
 actions.nomok+=/fury_of_the_eagle,if=buff.mongoose_fury.stack=6&cooldown.mongoose_bite.charges<=1
 actions.nomok+=/mongoose_bite,if=buff.aspect_of_the_eagle.up&buff.mongoose_fury.up
 actions.nomok+=/aspect_of_the_eagle,if=buff.mongoose_fury.up&buff.mongoose_fury.duration>6&cooldown.mongoose_bite.charges>=2
