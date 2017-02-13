@@ -1003,6 +1003,11 @@ struct force_of_nature_t : public pet_t
     pet_t::init_action_list();
   }
 
+  double composite_player_multiplier( school_e school ) const
+  {
+    return owner -> cache.player_multiplier( school );
+  }
+
   double composite_melee_crit_chance() const override
   {
     return owner -> cache.spell_crit_chance();
