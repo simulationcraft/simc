@@ -42,6 +42,8 @@ actions.moknathal+=/spitting_cobra,if=buff.mongoose_fury.duration>=gcd&cooldown.
 actions.moknathal+=/steel_trap,if=buff.mongoose_fury.duration>=gcd&buff.mongoose_fury.stack<1
 actions.moknathal+=/a_murder_of_crows,if=focus>55-buff.moknathal_tactics.remains*focus.regen&buff.mongoose_fury.stack<4&buff.mongoose_fury.duration>=gcd
 actions.moknathal+=/flanking_strike,if=cooldown.mongoose_bite.charges<=1&focus>75-buff.moknathal_tactics.remains*focus.regen
+actions.moknathal+=/carve,if=equipped.frizzos_fingertrap&focus>65-buff.moknathal_tactics.remains*focus.regen&buff.mongoose_fury.remains>=gcd&dot.lacerate.refreshable
+actions.moknathal+=/butchery,if=equipped.frizzos_fingertrap&focus>65-buff.moknathal_tactics.remains*focus.regen&buff.mongoose_fury.remains>=gcd&dot.lacerate.refreshable
 actions.moknathal+=/lacerate,if=(focus>55-buff.moknathal_tactics.remains*focus.regen&buff.mongoose_fury.duration>=gcd&refreshable&cooldown.mongoose_bite.charges=0&buff.mongoose_fury.stack<3)|(focus>65-buff.moknathal_tactics.remains*focus.regen&buff.mongoose_fury.down&cooldown.mongoose_bite.charges<3&refreshable)
 actions.moknathal+=/caltrops,if=(buff.mongoose_fury.duration>=gcd&buff.mongoose_fury.stack<1&!dot.caltrops.ticking)
 actions.moknathal+=/explosive_trap,if=buff.mongoose_fury.duration>=gcd&cooldown.mongoose_bite.charges=0&buff.mongoose_fury.stack<1
@@ -62,6 +64,8 @@ actions.moknathal+=/steel_trap
 actions.moknathal+=/a_murder_of_crows,if=focus>55-buff.moknathal_tactics.remains*focus.regen
 actions.moknathal+=/caltrops,if=(!dot.caltrops.ticking)
 actions.moknathal+=/explosive_trap
+actions.moknathal+=/carve,if=equipped.frizzos_fingertrap&focus>65-buff.moknathal_tactics.remains*focus.regen&dot.lacerate.refreshable
+actions.moknathal+=/butchery,if=equipped.frizzos_fingertrap&focus>65-buff.moknathal_tactics.remains*focus.regen&dot.lacerate.refreshable
 actions.moknathal+=/lacerate,if=refreshable&focus>55-buff.moknathal_tactics.remains*focus.regen
 actions.moknathal+=/dragonsfire_grenade
 actions.moknathal+=/mongoose_bite,if=(charges>=2&cooldown.mongoose_bite.remains<=gcd|charges=3)
@@ -75,6 +79,8 @@ actions.nomok+=/a_murder_of_crows,if=cooldown.mongoose_bite.charges>=0&buff.mong
 actions.nomok+=/snake_hunter,if=action.mongoose_bite.charges<=0&buff.mongoose_fury.remains>3*gcd&time>15
 actions.nomok+=/caltrops,if=(buff.mongoose_fury.duration>=gcd&buff.mongoose_fury.stack<4&!dot.caltrops.ticking)
 actions.nomok+=/flanking_strike,if=cooldown.mongoose_bite.charges<=1&buff.aspect_of_the_eagle.remains>=gcd
+actions.nomok+=/carve,if=equipped.frizzos_fingertrap&focus>65-buff.moknathal_tactics.remains*focus.regen&buff.mongoose_fury.remains>=gcd&dot.lacerate.refreshable
+actions.nomok+=/butchery,if=equipped.frizzos_fingertrap&focus>65-buff.moknathal_tactics.remains*focus.regen&buff.mongoose_fury.remains>=gcd&dot.lacerate.refreshable
 actions.nomok+=/lacerate,if=buff.mongoose_fury.duration>=gcd&refreshable&cooldown.mongoose_bite.charges=0&buff.mongoose_fury.stack<2|buff.mongoose_fury.down&cooldown.mongoose_bite.charges<3&refreshable
 actions.nomok+=/dragonsfire_grenade,if=buff.mongoose_fury.duration>=gcd&cooldown.mongoose_bite.charges<=1&buff.mongoose_fury.stack<3|buff.mongoose_fury.down&cooldown.mongoose_bite.charges<3
 actions.nomok+=/explosive_trap,if=buff.mongoose_fury.duration>=gcd&cooldown.mongoose_bite.charges>=0&buff.mongoose_fury.stack<4
@@ -91,6 +97,8 @@ actions.nomok+=/steel_trap
 actions.nomok+=/a_murder_of_crows
 actions.nomok+=/caltrops,if=(!dot.caltrops.ticking)
 actions.nomok+=/explosive_trap
+actions.nomok+=/carve,if=equipped.frizzos_fingertrap&focus>65-buff.moknathal_tactics.remains*focus.regen&dot.lacerate.refreshable
+actions.nomok+=/butchery,if=equipped.frizzos_fingertrap&focus>65-buff.moknathal_tactics.remains*focus.regen&dot.lacerate.refreshable
 actions.nomok+=/lacerate,if=refreshable
 actions.nomok+=/dragonsfire_grenade
 actions.nomok+=/throwing_axes,if=cooldown.throwing_axes.charges=2
