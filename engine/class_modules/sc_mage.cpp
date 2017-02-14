@@ -7994,7 +7994,7 @@ std::string mage_t::get_special_use_items( const std::string& item_name, bool sp
     {
       if ( item_name == "obelisk_of_the_void" )
       {
-        conditions = "if=buff.rune_of_power.up&cooldown.combustion.remains>50";
+        conditions = "if=cooldown.combustion.remains>50";
       }
       if ( item_name == "horn_of_valor" )
       {
