@@ -1528,6 +1528,11 @@ void item::might_of_krosus( special_effect_t& effect )
       split_aoe_damage = true;
     }
 
+    double composite_crit_chance() const override
+    {
+      return 1.0; // Always crits
+    }
+
     void execute() override
     {
       proc_attack_t::execute();
@@ -2663,13 +2668,10 @@ struct kiljaedens_burning_wish_t : public spell_t
     aoe = -1;
     item = effect.item;
     school = SCHOOL_FIRE;
-
     base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item );
-    aoe = -1;
 
-    //FIXME: Assume this is kind of slow from wording.
-    //       Get real velocity from in game data after raids open.
-    travel_speed = 29;
+    // Projectile is very slow, combat log show 8 seconds to travel the maximum 80 yard range of the item
+    travel_speed = 10;
   }
 
   virtual void init() override

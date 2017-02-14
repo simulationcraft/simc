@@ -7245,7 +7245,7 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   last_summoned( temporal_hero_e::INVALID ),
   distance_from_rune( 0.0 ),
   global_cinder_count( 0 ),
-  mage_potion_choice ("deadly_grace"),
+  mage_potion_choice( "" ),
   incanters_flow_stack_mult( find_spell( 116267 ) -> effectN( 1 ).percent() ),
   iv_haste( 1.0 ),
   blessing_of_wisdom( false ),
@@ -7646,9 +7646,10 @@ void mage_t::init_spells()
 
 void mage_t::init_base_stats()
 {
-  player_t::init_base_stats();
+  if ( base.distance < 1 )
+    base.distance = 30;
 
-  base.distance = 30;
+  player_t::init_base_stats();
 
   base.spell_power_per_intellect = 1.0;
 
@@ -8487,7 +8488,7 @@ void mage_t::apl_frost()
   aoe -> add_action( this, "Frostbolt" );
 
   cooldowns    -> add_talent( this, "Rune of Power", "if=cooldown.icy_veins.remains<cast_time|charges_fractional>1.9&cooldown.icy_veins.remains>10|buff.icy_veins.up|target.time_to_die.remains+5<charges_fractional*10" );
-  cooldowns    -> add_action( "potion,name=prolonged_power,if=cooldown.icy_veins.remains<1" );
+  cooldowns    -> add_action( get_potion_action() + ",if=cooldown.icy_veins.remains<1" );
   cooldowns    -> add_action( this, "Icy Veins", "if=buff.icy_veins.down" );
   cooldowns    -> add_talent( this, "Mirror Image" );
   for( size_t i = 0; i < item_actions.size(); i++ )
