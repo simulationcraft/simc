@@ -4348,6 +4348,8 @@ struct flurry_bolt_t : public frost_mage_spell_t
 };
 struct flurry_t : public frost_mage_spell_t
 {
+  timespan_t initial_delay;
+
   flurry_bolt_t* flurry_bolt;
   flurry_t( mage_t* p, const std::string& options_str ) :
     frost_mage_spell_t( "flurry", p, p -> find_spell( 44614 ) ),
@@ -4358,6 +4360,7 @@ struct flurry_t : public frost_mage_spell_t
     hasted_ticks = false;
     add_child( flurry_bolt );
     //TODO: Remove hardcoded values once it exists in spell data for bolt impact timing.
+    initial_delay = timespan_t::from_seconds( 0.11 );
     dot_duration = timespan_t::from_seconds( 0.45 );
     base_tick_time = timespan_t::from_seconds( 0.225 );
   }
@@ -4366,7 +4369,7 @@ struct flurry_t : public frost_mage_spell_t
   {
     // Approximate travel time from in game data.
     // TODO: Improve approximation
-    return timespan_t::from_seconds( ( player -> get_player_distance( *target ) / 38 ) );
+    return initial_delay + frost_mage_spell_t::travel_time();
   }
 
   virtual timespan_t execute_time() const override
@@ -9686,6 +9689,12 @@ public:
       .operation( hotfix::HOTFIX_SET )
       .modifier( 57 )
       .verification_value( 81 );
+
+    hotfix::register_spell( "Mage", "2017-02-04", "Manually set Flurry's travel speed.", 44614 )
+      .field( "prj_speed" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 45.0 )
+      .verification_value( 0.0 );
   }
 
   virtual bool valid() const override { return true; }
