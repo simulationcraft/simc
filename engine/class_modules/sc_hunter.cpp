@@ -2025,6 +2025,7 @@ struct bestial_ferocity_t: public hunter_main_pet_attack_t
   {
     background = true;
     can_hunting_companion = false;
+    tick_may_crit = true;
   }
 };
 
@@ -4258,7 +4259,7 @@ struct on_the_trail_t: public hunter_melee_attack_t
     hunter_melee_attack_t( "on_the_trail", p, p -> find_spell( 204081 ) )
   {
     background = true;
-    tick_may_crit = false;
+    tick_may_crit = true;
   }
 
   virtual void execute() override
