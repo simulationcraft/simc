@@ -500,7 +500,6 @@ public:
 
   void              add_item_actions( action_priority_list_t* list );
   void              add_racial_actions( action_priority_list_t* list );
-  void              add_potion_action( action_priority_list_t* list, const std::string big_potion, const std::string little_potion, const std::string options = std::string() );
 
   target_specific_t<hunter_td_t> target_data;
 
@@ -6233,20 +6232,6 @@ void hunter_t::add_racial_actions(action_priority_list_t* list)
     list->add_action("arcane_torrent,if=focus.deficit>=30");
     list->add_action("berserking");
     list->add_action("blood_fury");
-  }
-}
-
-// Potions Actions =======================================================================
-
-void hunter_t::add_potion_action( action_priority_list_t* list, const std::string big_potion, const std::string little_potion, const std::string options )
-{
-  std::string action_options = options.empty() ? options : "," + options;
-  if ( sim -> allow_potions )
-  {
-    if ( true_level > 90 )
-      list -> add_action( "potion,name=" + big_potion + action_options );
-    else if ( true_level >= 85 )
-      list -> add_action( "potion,name=" + little_potion + action_options );
   }
 }
 
