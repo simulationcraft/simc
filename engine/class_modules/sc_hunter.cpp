@@ -4261,13 +4261,6 @@ struct on_the_trail_t: public hunter_melee_attack_t
     background = true;
     tick_may_crit = true;
   }
-
-  virtual void execute() override
-  {
-    hunter_melee_attack_t::execute();
-
-    td( execute_state -> target ) -> dots.on_the_trail -> trigger( data().duration() );
-  }
 };
 
 // Harpoon ==================================================================
