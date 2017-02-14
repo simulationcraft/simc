@@ -345,7 +345,8 @@ public:
   // Gains
   struct gains_t
   {
-    gain_t* greater_blessing_of_wisdom,
+    gain_t* aluneths_avarice,
+          * greater_blessing_of_wisdom,
           * evocation,
           * mystic_kilt_of_the_rune_master;
   } gains;
@@ -3589,7 +3590,7 @@ struct blizzard_t : public frost_mage_spell_t
   double false_positive_pct() const
   {
     // Players are probably less likely to accidentally use blizzard than other spells.
-    return ( frost_mage_spell_t::false_positive_pct() / 2 ); 
+    return ( frost_mage_spell_t::false_positive_pct() / 2 );
   }
 
   virtual void execute() override
@@ -4689,7 +4690,7 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
   frozen_orb_bolt_t( mage_t* p ) :
     frost_mage_spell_t( "frozen_orb_bolt", p,
                         p -> find_class_spell( "Frozen Orb" ) -> ok() ?
-                        dbc::find_spell( p, 84721 ) : 
+                        dbc::find_spell( p, 84721 ) :
                           spell_data_t::not_found() )
   {
     aoe = -1;
@@ -5373,6 +5374,12 @@ struct mark_of_aluneth_explosion_t : public arcane_mage_spell_t
     base_dd_min = p() -> resources.max[ RESOURCE_MANA ] * data().effectN( 1 ).percent();
 
     arcane_mage_spell_t::execute();
+    if ( p() -> artifact.aluneths_avarice.rank() )
+    {
+      p() -> resource_gain( RESOURCE_MANA,
+                            p() -> artifact.aluneths_avarice.percent()
+                          * p() -> resources.max[ RESOURCE_MANA ], p() -> gains.aluneths_avarice );
+    }
   }
 };
 struct mark_of_aluneth_t : public arcane_mage_spell_t
@@ -5962,7 +5969,7 @@ struct ray_of_frost_t : public frost_mage_spell_t
   void init() override
   {
     frost_mage_spell_t::init();
-    update_flags |= STATE_HASTE; // Not snapshotted for this spell. 
+    update_flags |= STATE_HASTE; // Not snapshotted for this spell.
   }
 
   virtual void execute() override
@@ -7788,6 +7795,7 @@ void mage_t::init_gains()
   gains.evocation                      = get_gain( "evocation"                      );
   gains.mystic_kilt_of_the_rune_master = get_gain( "Mystic Kilt of the Rune Master" );
   gains.greater_blessing_of_wisdom     = get_gain( "Greater Blessing of Wisdom"     );
+  gains.aluneths_avarice               = get_gain( "Aluneth's Avarice"              );
 }
 
 // mage_t::init_procs =======================================================
