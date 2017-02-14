@@ -18,8 +18,7 @@ $(iLvl)=910
 
 
 # Death Knight
-DeathKnight_Frost_Legendaries.simc
-DeathKnight_Unholy_Legendaries.simc
+DeathKnight_Legendaries_Full.simc
 
 # Demon Hunter
 Demon_Hunter_Havoc_Legendaries.simc

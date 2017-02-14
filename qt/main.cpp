@@ -61,15 +61,6 @@ int main( int argc, char *argv[] )
   hotfix::apply();
   QApplication a( argc, argv );
 
-#ifdef SC_WINDOWS
-  if ( !qEnvironmentVariableIsSet( "QT_OPENGL" ) )
-  { // We are using ANGLE as the default for windows, however, there are rare cases where software opengl
-    // is the only solution to get simc running. Creating an environmental variable named
-    // QT_OPENGL and setting it to software will override this, and checking for QT_OPENGL
-    // will ensure that we don't override the override. 
-    QCoreApplication::setAttribute( Qt::AA_UseOpenGLES );
-  }
-#endif
   QApplication::setStyle( QStyleFactory::create( "Fusion" ) );
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
   QCoreApplication::setAttribute( Qt::AA_EnableHighDpiScaling );

@@ -4920,7 +4920,7 @@ struct earth_shock_t : public shaman_spell_t
     tdbp_proc_chance( 0 )
   {
     base_multiplier *= 1.0 + player -> artifact.earthen_attunement.percent();
-	secondary_costs[ RESOURCE_MAELSTROM ] += player -> artifact.swelling_maelstrom.data().effectN( 1 ).base_value();
+  secondary_costs[ RESOURCE_MAELSTROM ] += player -> artifact.swelling_maelstrom.data().effectN( 1 ).base_value();
   }
 
   double spell_direct_power_coefficient( const action_state_t* ) const override
@@ -6151,6 +6151,9 @@ void shaman_t::init_spells()
 
 void shaman_t::init_base_stats()
 {
+  if ( base.distance < 1 )
+    base.distance = ( specialization() == SHAMAN_ENHANCEMENT ) ? 5 : 30;
+
   player_t::init_base_stats();
 
   base.attack_power_per_strength = 0.0;
@@ -6167,7 +6170,6 @@ void shaman_t::init_base_stats()
   if ( spec.enhancement_shaman -> ok() )
     resources.base[ RESOURCE_MAELSTROM ] += spec.enhancement_shaman -> effectN( 5 ).base_value();
 
-  base.distance = ( specialization() == SHAMAN_ENHANCEMENT ) ? 5 : 30;
   base.mana_regen_from_spirit_multiplier = spec.meditation -> effectN( 1 ).percent();
 
   //if ( specialization() == SHAMAN_ENHANCEMENT )

@@ -2956,7 +2956,7 @@ struct garrote_t : public rogue_attack_t
   {
     double m = rogue_attack_t::composite_persistent_multiplier( state );
 
-    if ( p() -> buffs.subterfuge -> up() )
+    if ( p() -> buffs.stealth -> up() || p() -> buffs.vanish -> up() || p() -> buffs.subterfuge -> up() )
     {
       m *= 1.0 + p() -> spell.subterfuge -> effectN( 2 ).percent();
     }
@@ -2993,7 +2993,7 @@ struct garrote_t : public rogue_attack_t
 
   void update_ready( timespan_t cd_duration = timespan_t::min() ) override
   {
-    if ( p() -> buffs.subterfuge -> check() )
+    if ( p() -> buffs.stealth -> check() || p() -> buffs.vanish -> check() || p() -> buffs.subterfuge -> check() )
     {
       cd_duration = timespan_t::zero();
     }
@@ -7177,9 +7177,10 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
 
 void rogue_t::init_base_stats()
 {
-  player_t::init_base_stats();
+  if ( base.distance < 1 )
+    base.distance = 5;
 
-  base.distance = 5;
+  player_t::init_base_stats();
 
   base.attack_power_per_strength = 0.0;
   base.attack_power_per_agility  = 1.0;

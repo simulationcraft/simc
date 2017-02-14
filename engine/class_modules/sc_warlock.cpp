@@ -6174,9 +6174,10 @@ void warlock_t::init_spells()
 
 void warlock_t::init_base_stats()
 {
-  player_t::init_base_stats();
+  if ( base.distance < 1 )
+    base.distance = 40;
 
-  base.distance = 40;
+  player_t::init_base_stats();
 
   base.attack_power_per_strength = 0.0;
   base.attack_power_per_agility = 0.0;
@@ -6495,7 +6496,7 @@ void warlock_t::apl_default()
 
 void warlock_t::apl_affliction()
 {
-  add_action( "Reap Souls", "if=!buff.deadwind_harvester.remains&(buff.soul_harvest.remains>5+equipped.144364*1.5&!talent.malefic_grasp.enabled&(dot.unstable_affliction_1.ticking+dot.unstable_affliction_2.ticking+dot.unstable_affliction_3.ticking+dot.unstable_affliction_4.ticking+dot.unstable_affliction_5.ticking)>1|buff.tormented_souls.react>=8|target.time_to_die<=buff.tormented_souls.react*5+equipped.144364*1.5|!talent.malefic_grasp.enabled&(trinket.proc.any.react|trinket.stacking_proc.any.react)" );
+  add_action( "Reap Souls", "if=!buff.deadwind_harvester.remains&(buff.soul_harvest.remains>5+equipped.144364*1.5&!talent.malefic_grasp.enabled&buff.active_uas.stack>1|buff.tormented_souls.react>=8|target.time_to_die<=buff.tormented_souls.react*5+equipped.144364*1.5|!talent.malefic_grasp.enabled&(trinket.proc.any.react|trinket.stacking_proc.any.react)" );
   if ( find_item( "horn_of_valor" ) )
     action_list_str += "|buff.valarjars_path.remains";
   if ( find_item( "moonlit_prism" ) )
@@ -6516,7 +6517,7 @@ void warlock_t::apl_affliction()
   action_list_str += "/blood_fury";
   action_list_str += "/arcane_torrent";
   action_list_str += init_use_profession_actions();
-  action_list_str += "/soul_harvest,if=(dot.unstable_affliction_1.ticking+dot.unstable_affliction_2.ticking+dot.unstable_affliction_3.ticking+dot.unstable_affliction_4.ticking+dot.unstable_affliction_5.ticking)>=3|!equipped.132394&!equipped.132457&(debuff.haunt.remains|talent.writhe_in_agony.enabled)";
+  action_list_str += "/soul_harvest,if=buff.active_uas.stack>=3|!equipped.132394&!equipped.132457&(debuff.haunt.remains|talent.writhe_in_agony.enabled)";
   for ( int i = as< int >( items.size() ) - 1; i >= 0; i-- )
   {
     if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
@@ -6526,7 +6527,7 @@ void warlock_t::apl_affliction()
     }
   }
 
-  action_list_str += "/potion,name=prolonged_power,if=!talent.soul_harvest.enabled&(trinket.proc.any.react|trinket.stack_proc.any.react|target.time_to_die<=70|!cooldown.haunt.remains|(dot.unstable_affliction_1.ticking+dot.unstable_affliction_2.ticking+dot.unstable_affliction_3.ticking+dot.unstable_affliction_4.ticking+dot.unstable_affliction_5.ticking)>2";
+  action_list_str += "/potion,name=prolonged_power,if=!talent.soul_harvest.enabled&(trinket.proc.any.react|trinket.stack_proc.any.react|target.time_to_die<=70|!cooldown.haunt.remains|buff.active_uas.stack>2";
   if ( find_item( "horn_of_valor" ) )
     action_list_str += "|buff.valarjars_path.remains";
   if ( find_item( "moonlit_prism" ) )
@@ -6537,7 +6538,7 @@ void warlock_t::apl_affliction()
     action_list_str += "|buff.nefarious_pact.react";
   action_list_str += ")";
 
-  action_list_str += "/potion,name=prolonged_power,if=talent.soul_harvest.enabled&buff.soul_harvest.remains&(trinket.proc.any.react|trinket.stack_proc.any.react|target.time_to_die<=70|!cooldown.haunt.remains|(dot.unstable_affliction_1.ticking+dot.unstable_affliction_2.ticking+dot.unstable_affliction_3.ticking+dot.unstable_affliction_4.ticking+dot.unstable_affliction_5.ticking)>2";
+  action_list_str += "/potion,name=prolonged_power,if=talent.soul_harvest.enabled&buff.soul_harvest.remains&(trinket.proc.any.react|trinket.stack_proc.any.react|target.time_to_die<=70|!cooldown.haunt.remains|buff.active_uas.stack>2";
   if ( find_item( "horn_of_valor" ) )
     action_list_str += "|buff.valarjars_path.remains";
   if ( find_item( "moonlit_prism" ) )
@@ -6548,9 +6549,9 @@ void warlock_t::apl_affliction()
     action_list_str += "|buff.nefarious_pact.react";
   action_list_str += ")";
 
-  add_action( "Corruption", "if=remains<=tick_time+gcd&(spell_targets.seed_of_corruption<3&talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<4)&((dot.unstable_affliction_1.ticking+dot.unstable_affliction_2.ticking+dot.unstable_affliction_3.ticking+dot.unstable_affliction_4.ticking+dot.unstable_affliction_5.ticking)<2&soul_shard=0|!talent.malefic_grasp.enabled)" );
+  add_action( "Corruption", "if=remains<=tick_time+gcd&(spell_targets.seed_of_corruption<3&talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<4)&(buff.active_uas.stack<2&soul_shard=0|!talent.malefic_grasp.enabled)" );
   add_action( "Corruption", "cycle_targets=1,if=(talent.absolute_corruption.enabled|!talent.malefic_grasp.enabled|!talent.soul_effigy.enabled)&active_enemies>1&remains<=tick_time+gcd&(spell_targets.seed_of_corruption<3&talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<4)" );
-  add_action( "Siphon Life", "if=remains<=tick_time+gcd&((dot.unstable_affliction_1.ticking+dot.unstable_affliction_2.ticking+dot.unstable_affliction_3.ticking+dot.unstable_affliction_4.ticking+dot.unstable_affliction_5.ticking)<2&soul_shard=0|!talent.malefic_grasp.enabled)" );
+  add_action( "Siphon Life", "if=remains<=tick_time+gcd&(buff.active_uas.stack<2&soul_shard=0|!talent.malefic_grasp.enabled)" );
   add_action( "Siphon Life", "cycle_targets=1,if=(!talent.malefic_grasp.enabled|!talent.soul_effigy.enabled)&active_enemies>1&remains<=tick_time+gcd" );
 
   action_list_str += "/life_tap,if=talent.empowered_life_tap.enabled&buff.empowered_life_tap.remains<=gcd";
@@ -6559,14 +6560,14 @@ void warlock_t::apl_affliction()
 
 
   add_action( "Agony", "cycle_targets=1,if=!talent.malefic_grasp.enabled&remains<=duration*0.3&target.time_to_die>=remains" );
-  add_action( "Agony", "cycle_targets=1,if=remains<=duration*0.3&target.time_to_die>=remains&(dot.unstable_affliction_1.ticking+dot.unstable_affliction_2.ticking+dot.unstable_affliction_3.ticking+dot.unstable_affliction_4.ticking+dot.unstable_affliction_5.ticking)=0" );
+  add_action( "Agony", "cycle_targets=1,if=remains<=duration*0.3&target.time_to_die>=remains&buff.active_uas.stack=0" );
   action_list_str += "/life_tap,if=talent.empowered_life_tap.enabled&buff.empowered_life_tap.remains<duration*0.3|talent.malefic_grasp.enabled&target.time_to_die>15&mana.pct<10";
   add_action( "Seed of Corruption", "if=talent.sow_the_seeds.enabled&spell_targets.seed_of_corruption>=3|spell_targets.seed_of_corruption>=4|spell_targets.seed_of_corruption=3&dot.corruption.remains<=cast_time+travel_time" );
   add_action( "Corruption", "if=!talent.malefic_grasp.enabled&remains<=duration*0.3&target.time_to_die>=remains" );
-  add_action( "Corruption", "if=remains<=duration*0.3&target.time_to_die>=remains&(dot.unstable_affliction_1.ticking+dot.unstable_affliction_2.ticking+dot.unstable_affliction_3.ticking+dot.unstable_affliction_4.ticking+dot.unstable_affliction_5.ticking)=0" );
+  add_action( "Corruption", "if=remains<=duration*0.3&target.time_to_die>=remains&buff.active_uas.stack=0" );
   add_action( "Corruption", "cycle_targets=1,if=(talent.absolute_corruption.enabled|!talent.malefic_grasp.enabled|!talent.soul_effigy.enabled)&remains<=duration*0.3&target.time_to_die>=remains" );
   add_action( "Siphon Life", "if=!talent.malefic_grasp.enabled&remains<=duration*0.3&target.time_to_die>=remains" );
-  add_action( "Siphon Life", "if=remains<=duration*0.3&target.time_to_die>=remains&(dot.unstable_affliction_1.ticking+dot.unstable_affliction_2.ticking+dot.unstable_affliction_3.ticking+dot.unstable_affliction_4.ticking+dot.unstable_affliction_5.ticking)=0" );
+  add_action( "Siphon Life", "if=remains<=duration*0.3&target.time_to_die>=remains&buff.active_uas.stack=0" );
   add_action( "Siphon Life", "cycle_targets=1,if=(!talent.malefic_grasp.enabled|!talent.soul_effigy.enabled)&remains<=duration*0.3&target.time_to_die>=remains" );
 
 
@@ -6593,11 +6594,11 @@ void warlock_t::apl_affliction()
   add_action( "Unstable Affliction", "if=(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&spell_targets.seed_of_corruption<4&talent.malefic_grasp.enabled&(target.time_to_die<30|prev_gcd.1.unstable_affliction&soul_shard>=4)" );
   add_action( "Unstable Affliction", "if=(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&spell_targets.seed_of_corruption<4&talent.malefic_grasp.enabled&(soul_shard=5|talent.contagion.enabled&soul_shard>=4)" );
   add_action( "Unstable Affliction", "if=(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&spell_targets.seed_of_corruption<4&talent.malefic_grasp.enabled&(talent.soul_effigy.enabled|equipped.132457)&!prev_gcd.3.unstable_affliction&prev_gcd.1.unstable_affliction" );
-  add_action( "Unstable Affliction", "if=(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&spell_targets.seed_of_corruption<4&talent.malefic_grasp.enabled&equipped.132457&(dot.unstable_affliction_1.ticking+dot.unstable_affliction_2.ticking+dot.unstable_affliction_3.ticking+dot.unstable_affliction_4.ticking+dot.unstable_affliction_5.ticking)=0" );
-  add_action( "Unstable Affliction", "if=(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&spell_targets.seed_of_corruption<4&talent.malefic_grasp.enabled&talent.soul_effigy.enabled&!equipped.132457&(dot.unstable_affliction_1.ticking+dot.unstable_affliction_2.ticking+dot.unstable_affliction_3.ticking+dot.unstable_affliction_4.ticking+dot.unstable_affliction_5.ticking)=0&dot.agony.remains>cast_time*3+6.5&(!talent.soul_effigy.enabled|pet.soul_effigy.dot.agony.remains>cast_time*3+6.5)" );
+  add_action( "Unstable Affliction", "if=(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&spell_targets.seed_of_corruption<4&talent.malefic_grasp.enabled&equipped.132457&buff.active_uas.stack=0" );
+  add_action( "Unstable Affliction", "if=(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&spell_targets.seed_of_corruption<4&talent.malefic_grasp.enabled&talent.soul_effigy.enabled&!equipped.132457&buff.active_uas.stack=0&dot.agony.remains>cast_time*3+6.5&(!talent.soul_effigy.enabled|pet.soul_effigy.dot.agony.remains>cast_time*3+6.5)" );
   add_action( "Unstable Affliction", "if=(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&spell_targets.seed_of_corruption<4&talent.malefic_grasp.enabled&!talent.soul_effigy.enabled&!equipped.132457&!prev_gcd.3.unstable_affliction&dot.agony.remains>cast_time*3+6.5&(dot.corruption.remains>cast_time+6.5|talent.absolute_corruption.enabled)" );
 
-  add_action( "Reap Souls", "if=!buff.deadwind_harvester.remains&(dot.unstable_affliction_1.ticking+dot.unstable_affliction_2.ticking+dot.unstable_affliction_3.ticking+dot.unstable_affliction_4.ticking+dot.unstable_affliction_5.ticking)>1&((!trinket.has_stacking_stat.any&!trinket.has_stat.any)|talent.malefic_grasp.enabled)" );
+  add_action( "Reap Souls", "if=!buff.deadwind_harvester.remains&buff.active_uas.stack>1&((!trinket.has_stacking_stat.any&!trinket.has_stat.any)|talent.malefic_grasp.enabled)" );
   add_action( "Reap Souls", "if=!buff.deadwind_harvester.remains&prev_gcd.1.unstable_affliction&((!trinket.has_stacking_stat.any&!trinket.has_stat.any)|talent.malefic_grasp.enabled)&buff.tormented_souls.react>1" );
 
   add_action( "Life Tap", "if=mana.pct<=10" );
@@ -6666,18 +6667,18 @@ void warlock_t::apl_destruction()
   add_action( "Havoc", "target=2,if=active_enemies>1&(active_enemies<4|talent.wreak_havoc.enabled&active_enemies<6)&!debuff.havoc.remains" );
   add_action( "Dimensional Rift", "if=charges=3" );
   add_action( "Immolate", "if=remains<=tick_time" );
-  add_action( "Immolate", "cycle_targets=1,if=active_enemies>1&remains<=tick_time&(!talent.roaring_blaze.enabled|(!debuff.roaring_blaze.remains&action.conflagrate.charges<2))");
+  add_action( "Immolate", "cycle_targets=1,if=active_enemies>1&remains<=tick_time&(!talent.roaring_blaze.enabled|(!debuff.roaring_blaze.remains&action.conflagrate.charges<2+set_bonus.tier19_4pc))");
   add_action( "Immolate", "if=talent.roaring_blaze.enabled&remains<=duration&!debuff.roaring_blaze.remains&target.time_to_die>10&(action.conflagrate.charges=2+set_bonus.tier19_4pc|(action.conflagrate.charges>=1+set_bonus.tier19_4pc&action.conflagrate.recharge_time<cast_time+gcd)|target.time_to_die<24)" ); 
   action_list_str += "/berserking";
   action_list_str += "/blood_fury";
   action_list_str += "/arcane_torrent";
   action_list_str += "/potion,name=deadly_grace,if=(buff.soul_harvest.remains|trinket.proc.any.react|target.time_to_die<=45)";
   action_list_str += "/shadowburn,if=buff.conflagration_of_chaos.remains<=action.chaos_bolt.cast_time";
-  action_list_str += "/shadowburn,if=(charges=1&recharge_time<action.chaos_bolt.cast_time|charges=2)&soul_shard<5";
+  action_list_str += "/shadowburn,if=(charges=1+set_bonus.tier19_4pc&recharge_time<action.chaos_bolt.cast_time|charges=2+set_bonus.tier19_4pc)&soul_shard<5";
   add_action( "Conflagrate", "if=talent.roaring_blaze.enabled&(charges=2+set_bonus.tier19_4pc|(charges>=1+set_bonus.tier19_4pc&recharge_time<gcd)|target.time_to_die<24)" );
   add_action( "Conflagrate", "if=talent.roaring_blaze.enabled&debuff.roaring_blaze.stack>0&dot.immolate.remains>dot.immolate.duration*0.3&(active_enemies=1|soul_shard<3)&soul_shard<5" );
-  add_action( "Conflagrate", "if=!talent.roaring_blaze.enabled&!buff.backdraft.remains&buff.conflagration_of_chaos.remains<=action.chaos_bolt.cast_time" );
-  add_action( "Conflagrate", "if=!talent.roaring_blaze.enabled&!buff.backdraft.remains&(charges=1&recharge_time<action.chaos_bolt.cast_time|charges=2)&soul_shard<5" );
+  add_action( "Conflagrate", "if=!talent.roaring_blaze.enabled&buff.backdraft.stack<3&buff.conflagration_of_chaos.remains<=action.chaos_bolt.cast_time" );
+  add_action( "Conflagrate", "if=!talent.roaring_blaze.enabled&buff.backdraft.stack<3&(charges=1+set_bonus.tier19_4pc&recharge_time<action.chaos_bolt.cast_time|charges=2+set_bonus.tier19_4pc)&soul_shard<5" );
   action_list_str += "/life_tap,if=talent.empowered_life_tap.enabled&buff.empowered_life_tap.remains<=gcd";
   add_action( "Dimensional Rift", "if=equipped.144369&!buff.lessons_of_spacetime.remains&((!talent.grimoire_of_supremacy.enabled&!cooldown.summon_doomguard.remains)|(talent.grimoire_of_service.enabled&!cooldown.service_pet.remains)|(talent.soul_harvest.enabled&!cooldown.soul_harvest.remains))");
   action_list_str += "/service_pet";
@@ -6695,9 +6696,9 @@ void warlock_t::apl_destruction()
   add_action( "Dimensional Rift", "if=!equipped.144369|charges>1|((!talent.grimoire_of_service.enabled|recharge_time<cooldown.service_pet.remains)&(!talent.soul_harvest.enabled|recharge_time<cooldown.soul_harvest.remains)&(!talent.grimoire_of_supremacy.enabled|recharge_time<cooldown.summon_doomguard.remains))" );
   action_list_str += "/life_tap,if=talent.empowered_life_tap.enabled&buff.empowered_life_tap.remains<duration*0.3";
   action_list_str += "/cataclysm";
-  add_action( "Chaos Bolt", "if=(cooldown.havoc.remains>12&cooldown.havoc.remains|active_enemies<3|talent.wreak_havoc.enabled&active_enemies<6)" );
+  add_action( "Chaos Bolt", "if=(cooldown.havoc.remains>12&cooldown.havoc.remains|active_enemies<3|talent.wreak_havoc.enabled&active_enemies<6)&(set_bonus.tier19_4pc=0|!talent.eradication.enabled|buff.embrace_chaos.remains<=cast_time|soul_shard>=3)" );
   action_list_str += "/shadowburn";
-  add_action( "Conflagrate", "if=!talent.roaring_blaze.enabled&!buff.backdraft.remains" );
+  add_action( "Conflagrate", "if=!talent.roaring_blaze.enabled&buff.backdraft.stack<3" );
   add_action( "Immolate", "if=!talent.roaring_blaze.enabled&remains<=duration*0.3" );
   add_action( "Incinerate" );
 }
