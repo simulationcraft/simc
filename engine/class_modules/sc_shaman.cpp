@@ -219,11 +219,11 @@ public:
     action_t* lightning_strike;
     spell_t*  electrocute;
     action_t* volcanic_inferno;
-    spell_t* seismic_storm;
+    spell_t*  seismic_storm;
     spell_t*  lightning_shield;
     spell_t*  earthen_rage;
-    spell_t* crashing_storm;
-    spell_t* doom_vortex_ll, * doom_vortex_lb;
+    spell_t*  crashing_storm;
+    spell_t*  doom_vortex_ll, * doom_vortex_lb;
     action_t* lightning_rod;
     action_t* ppsg; // Pristine Proto-Scale Girdle legendary dot
     action_t* storm_tempests; // Storm Tempests legendary damage spell
@@ -6862,6 +6862,7 @@ void shaman_t::init_action_list_elemental()
   def -> add_action( this, "Fire Elemental" );
   def -> add_talent( this, "Storm Elemental" );
   def -> add_talent( this, "Elemental Mastery" );
+  def -> add_action( this, "use_item,name=gnawed_thumb_ring,if=equipped.gnawed_thumb_ring&(talent.ascendance.enabled&!buff.ascendance.up|!talent.ascendance.enabled)" );
   def -> add_action( "blood_fury,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50" );
   def -> add_action( "berserking,if=!talent.ascendance.enabled|buff.ascendance.up" );
   def -> add_action( "run_action_list,name=aoe,if=active_enemies>2&(spell_targets.chain_lightning>2|spell_targets.lava_beam>2)" );
@@ -6876,7 +6877,7 @@ void shaman_t::init_action_list_elemental()
   aoe -> add_action( this, "Flame Shock", "if=spell_targets.chain_lightning<4&maelstrom>=20&!talent.lightning_rod.enabled,target_if=refreshable" );
   aoe -> add_action( this, "Earthquake" );
   aoe -> add_action( this, "Lava Burst", "if=dot.flame_shock.remains>cast_time&buff.lava_surge.up&!talent.lightning_rod.enabled&spell_targets.chain_lightning<4" );
-  aoe -> add_talent( this, "Elemental Blast", "if=!talent.lightning_rod.enabled&spell_targets.chain_lightning<5" );
+  aoe -> add_talent( this, "Elemental Blast", "if=!talent.lightning_rod.enabled&spell_targets.chain_lightning<5|talent.lightning_rod.enabled&spell_targets.chain_lightning<4" );
   aoe -> add_action( this, "Lava Beam" );
   aoe -> add_action( this, "Chain Lightning", "target_if=debuff.lightning_rod.down" );
   aoe -> add_action( this, "Chain Lightning" );
