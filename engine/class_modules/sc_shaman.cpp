@@ -6864,7 +6864,7 @@ void shaman_t::init_action_list_elemental()
   def -> add_action( this, "Fire Elemental" );
   def -> add_talent( this, "Storm Elemental" );
   def -> add_talent( this, "Elemental Mastery" );
-  def -> add_action( this, "use_item,name=gnawed_thumb_ring,if=equipped.gnawed_thumb_ring&(talent.ascendance.enabled&!buff.ascendance.up|!talent.ascendance.enabled)" );
+  def -> add_action( "use_item,name=gnawed_thumb_ring,if=equipped.gnawed_thumb_ring&(talent.ascendance.enabled&!buff.ascendance.up|!talent.ascendance.enabled)" );
   def -> add_action( "blood_fury,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50" );
   def -> add_action( "berserking,if=!talent.ascendance.enabled|buff.ascendance.up" );
   def -> add_action( "run_action_list,name=aoe,if=active_enemies>2&(spell_targets.chain_lightning>2|spell_targets.lava_beam>2)" );
