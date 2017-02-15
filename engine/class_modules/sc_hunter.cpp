@@ -1870,6 +1870,8 @@ struct spitting_cobra_t: public hunter_pet_t
      * the pet having ~1.414 ap coeff
      */
     owner_coeff.ap_from_ap = 1.414;
+
+    regen_type = REGEN_DISABLED;
   }
 
   action_t* create_action( const std::string& name,
