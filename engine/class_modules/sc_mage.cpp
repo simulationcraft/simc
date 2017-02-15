@@ -8314,7 +8314,6 @@ void mage_t::apl_arcane()
   burn      -> add_talent( this, "Charged Up", "if=(equipped.132451&buff.arcane_charge.stack<=1)" );
   burn      -> add_action( this, "Arcane Missiles", "if=buff.arcane_missiles.react=3" );
   burn      -> add_talent( this, "Nether Tempest", "if=dot.nether_tempest.remains<=2|!ticking" );
-  burn      -> add_action( this, "Arcane Blast", "if=active_enemies<=1&mana.pct%10*execute_time>target.time_to_die" );
   burn      -> add_action( this, "Arcane Explosion", "if=active_enemies>1&mana.pct%10*execute_time>target.time_to_die" );
   burn      -> add_action( this, "Presence of Mind", "if=buff.rune_of_power.remains<=2*action.arcane_blast.execute_time");
   burn      -> add_action( this, "Arcane Missiles", "if=buff.arcane_missiles.react>1" );
