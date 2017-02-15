@@ -1835,6 +1835,13 @@ struct spitting_cobra_t: public hunter_pet_t
       parse_options( options_str );
 
       may_crit = true;
+
+      /* nuoHep 2017-02-15 data from a couple krosus logs from wcl
+       *      N           Min           Max        Median           Avg        Stddev
+       *   2146           0.0         805.0         421.0     341.03262     168.89531
+       */
+      ability_lag = timespan_t::from_millis(340);
+      ability_lag_stddev = timespan_t::from_millis(170);
     }
 
     bool init_finished() override
@@ -1860,7 +1867,8 @@ struct spitting_cobra_t: public hunter_pet_t
   };
 
   spitting_cobra_t( hunter_t* o ):
-    hunter_pet_t( *(o -> sim), *o, "spitting_cobra", PET_HUNTER, true )
+    hunter_pet_t( *(o -> sim), *o, "spitting_cobra", PET_HUNTER,
+                  false /* a "hack" to make ability_lag work */ )
   {
     /* nuoHep 16/01/2017 0vers no buffs
      *    AP      DMG
@@ -1887,6 +1895,12 @@ struct spitting_cobra_t: public hunter_pet_t
     action_list_str = "cobra_spit";
 
     hunter_pet_t::init_action_list();
+  }
+
+  // for some reason it gets the player's multipliers
+  double composite_player_multiplier( school_e school ) const override
+  {
+    return owner -> composite_player_multiplier( school );
   }
 };
 
