@@ -3543,6 +3543,11 @@ class SetBonusListGenerator(DataGenerator):
             'bonuses': [ 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291, 1292 ],
             'tier'   : 19
         },
+        {
+            'name'   : 'tier20',
+            'bonuses': [ 1301, 1302, 1303, 1304, 1305, 1306, 1307, 1308, 1309, 1310, 1311, 1312 ],
+            'tier'   : 20
+        }
     ]
 
     def __init__(self, options, data_store = None):
