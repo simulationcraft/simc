@@ -595,9 +595,6 @@ public:
   {
     double am = ab::action_multiplier();
 
-    if ( p() -> buffs.t19_4p_mongoose_power -> up() && ab::special )
-      am *= 1.0 + p() -> buffs.t19_4p_mongoose_power -> default_value;
-
     if ( benefits_from_sniper_training && p() -> mastery.sniper_training -> ok() )
       am *= 1.0 + p() -> cache.mastery() * p() -> mastery.sniper_training -> effectN( 2 ).mastery_value();
 
@@ -5939,11 +5936,10 @@ void hunter_t::create_buffs()
                         resource_gain( RESOURCE_FOCUS, buff -> default_value, gains.spitting_cobra );
                       } );
 
-  buffs.t19_4p_mongoose_power = 
+  buffs.t19_4p_mongoose_power =
     buff_creator_t( this, 211362, "mongoose_power" )
-      .default_value( find_spell( 211362 ) 
-                   -> effectN( 1 )
-                     .percent() );
+      .default_value( find_spell( 211362 ) -> effectN( 1 ).percent() )
+      .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buffs.butchers_bone_apron =
     buff_creator_t( this, 236446, "butchers_bone_apron" )
@@ -6651,6 +6647,9 @@ double hunter_t::composite_player_multiplier( school_e school ) const
 
   if ( talents.lone_wolf -> ok() )
     m *= 1.0 + talents.lone_wolf -> effectN( 1 ).percent();
+
+  if ( buffs.t19_4p_mongoose_power -> up() )
+    m *= 1.0 + buffs.t19_4p_mongoose_power -> check_value();
 
   return m;
 }
