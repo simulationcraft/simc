@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23436, git build 197aafa)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build ea39c9d)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
@@ -2194,18 +2194,18 @@ Effects          :
                    Affected Spells: Gouge (1776), Cheap Shot (1833), Blind (2094), Sap (6770), Dismantle (207777)
 Description      : Gouge, $?s207777[Dismantle, ][]Blind, Cheap Shot, and Sap no longer cost Energy.
 
-Name             : Shadow Focus (id=112942) [Spell Family (8), Hidden] 
+Name             : Shadow Focus (id=112942) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
 Duration         : Aura (infinite)
 Affecting spells : Subtlety Rogue (137035)
-Attributes       : .......x ........ ........ ...x...x   .....x.. ........ ........ ........ 
+Attributes       : ........ ........ ........ ...x...x   .....x.. ........ ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Hidden (7), Cannot cancel aura (31), Does not break stealth (37)
+                 : Cannot cancel aura (31), Does not break stealth (37)
 Effects          :
 #1 (id=125596)   : Apply Aura (6) | Modify Power Cost% (72)
                    Base Value: -75 | Scaled Value: -75 | Misc Value: 127 | Misc Value 2: 0x8 | Target: Self(1)

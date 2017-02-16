@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23436, git build 197aafa)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build ea39c9d)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -262,8 +262,6 @@ Attributes       : ........ ........ ..x..... x..x....   .....x.. ..x..... .....
 Effects          :
 #1 (id=229227)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 0x7f | Target: Self(1)
-#2 (id=354086)   : Unknown effect type (134)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 117952 | Target: Self(1)
 Description      : $@spelldesc163063
 Tooltip          : Dealing $s1% increased damage.
 
