@@ -4974,6 +4974,23 @@ struct flame_shock_t : public shaman_spell_t
     }
   }
 
+  // FIXME: add when T20 is properly linked
+  //double composite_target_crit_chance(player_t* t) const override
+  //{
+  //  double m = shaman_spell_t::composite_target_crit_chance(t);
+
+  //  if ( player -> sets.has_set_bonus( SHAMAN_ELEMENTAL, T20, B2) &&
+  //    ( p() -> pet.guardian_fire_elemental  && ! p() -> pet.guardian_fire_elemental   -> is_sleeping() ||
+  //      p() -> pet.guardian_storm_elemental && ! p() -> pet.guardian_storm_elemental  -> is_sleeping() ||
+  //      p() -> pet.pet_fire_elemental       && ! p() -> pet.pet_fire_elemental        -> is_sleeping() ||
+  //      p() -> pet.pet_storm_elemental      && ! p() -> pet.pet_storm_elemental       -> is_sleeping() )  )
+  //  {
+  //    m = 1.0;
+  //  }
+
+  //  return m;
+  //}
+
   timespan_t composite_dot_duration( const action_state_t* ) const override
   { return ( dot_duration + duration_per_maelstrom * cost() ) * duration_multiplier; }
 
@@ -4985,6 +5002,16 @@ struct flame_shock_t : public shaman_spell_t
     {
       m *= p () -> buff.ember_totem -> check_value();
     }
+
+    // FIXME: add when T20 is properly linked
+    /*if (player->sets.has_set_bonus( SHAMAN_ELEMENTAL, T20, B2 ) &&
+      ( p() -> pet.guardian_fire_elemental  && ! p() -> pet.guardian_fire_elemental   -> is_sleeping() ||
+        p() -> pet.guardian_storm_elemental && ! p() -> pet.guardian_storm_elemental  -> is_sleeping() ||
+        p() -> pet.pet_fire_elemental       && ! p() -> pet.pet_fire_elemental        -> is_sleeping() ||
+        p() -> pet.pet_storm_elemental      && ! p() -> pet.pet_storm_elemental       -> is_sleeping()  ) )
+    {
+      m *= 1 + p() -> sets.set( SHAMAN_ELEMENTAL, T20, B2 ) -> effectN(1).percent();
+    }*/
 
     return m;
   }
@@ -5012,6 +5039,13 @@ struct flame_shock_t : public shaman_spell_t
 
       p() -> buff.lava_surge -> trigger();
     }
+
+    // FIXME: add when T20 bonuses are properly linked
+    //if ( d -> state -> result == RESULT_CRIT )
+    //{
+    //  p() -> cooldown.fire_elemental  -> adjust( timespan_t::from_seconds( -1.0 * p() -> sets.set( SHAMAN_ELEMENTAL, T20, B4 ) -> effectN(1).base_value / 10.0 ) );
+    //  p() -> cooldown.storm_elemental -> adjust( timespan_t::from_seconds( -1.0 * p() -> sets.set( SHAMAN_ELEMENTAL, T20, B4 ) -> effectN(2).base_value / 10.0 ) );
+    //}
   }
 };
 
