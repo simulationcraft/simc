@@ -8449,7 +8449,7 @@ void mage_t::apl_frost()
   single -> add_action( this, "Frozen Orb" );
   single -> add_talent( this, "Ice Nova" );
   single -> add_talent( this, "Comet Storm" );
-  single -> add_action( this, "Blizzard", "if=talent.arctic_gale.enabled|active_enemies>2|active_enemies>1&!(talent.glacial_spike.enabled&talent.splitting_ice.enabled)|(buff.zannesu_journey.stack=5&buff.zannesu_journey.remains>cast_time)" );
+  single -> add_action( this, "Blizzard", "if=active_enemies>2|active_enemies>1&!(talent.glacial_spike.enabled&talent.splitting_ice.enabled)|(buff.zannesu_journey.stack=5&buff.zannesu_journey.remains>cast_time)" );
   single -> add_action( this, "Ebonbolt", "if=buff.brain_freeze.react=0" );
   single -> add_talent( this, "Glacial Spike" );
   single -> add_action( this, "Frostbolt" );
