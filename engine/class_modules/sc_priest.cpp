@@ -647,7 +647,7 @@ public:
       }
 
       return base_drain_per_sec +
-             ( actor.buffs.insanity_drain_stacks->check() - 1 ) *
+             ( actor.buffs.insanity_drain_stacks->current_value - 1 ) *
                  stack_drain_multiplier;
     }
 
@@ -3875,10 +3875,12 @@ struct insanity_drain_stacks_t final : public priest_buff_t<buff_t>
 
   insanity_drain_stacks_t( priest_t& p )
     : base_t( p, buff_creator_t( &p, "insanity_drain_stacks" )
-                     .max_stack( 999 )
+                     .max_stack( 1 )
                      .chance( 1.0 )
-                     .duration( timespan_t::zero() ) ),
+                     .duration( timespan_t::zero() )
+                     ),
       stack_increase( nullptr )
+     
   {
   }
 
@@ -3888,8 +3890,7 @@ struct insanity_drain_stacks_t final : public priest_buff_t<buff_t>
     bool r = base_t::trigger( stacks, value, chance, duration );
 
     assert( stack_increase == nullptr );
-    stack_increase = make_event<stack_increase_event_t>( *sim, this );
-
+    stack_increase = make_event<stack_increase_event_t>( *sim, this );    
     return r;
   }
 
@@ -3899,6 +3900,12 @@ struct insanity_drain_stacks_t final : public priest_buff_t<buff_t>
     event_t::cancel( stack_increase );
 
     base_t::expire_override( expiration_stacks, remaining_duration );
+  }
+
+  void bump(int stacks, double value) override
+  {
+    //buff_t::bump(stacks, value+1);
+    current_value = value + 1;
   }
 
   void reset() override
