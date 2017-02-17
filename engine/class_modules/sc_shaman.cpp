@@ -302,6 +302,7 @@ public:
     buff_t* eotn_fire;
     buff_t* eotn_shock;
     buff_t* eotn_chill;
+    haste_buff_t* sephuzs_secret;
 
     // Artifact related buffs
     buff_t* stormkeeper;
@@ -363,6 +364,7 @@ public:
   // Various legendary related values
   struct legendary_t
   {
+    bool sephuzs_secret;
   } legendary;
 
   // Class Specializations
@@ -4838,6 +4840,11 @@ struct earthquake_damage_t : public shaman_spell_t
       p() -> action.seismic_storm -> target = state -> target;
       p() -> action.seismic_storm -> execute();
     }
+
+    if( execute_state->target->type == ENEMY_ADD && p()->legendary.sephuzs_secret && rng().roll( 0.1 ))
+    {
+      p()->buff.sephuzs_secret->trigger();
+    }
   }
 };
 
@@ -5719,6 +5726,27 @@ struct flametongue_buff_t : public buff_t
     buff_t::execute( stacks, value, duration );
 
     p -> buff.t18_4pc_enhancement -> trigger();
+  }
+};
+
+struct sephuzs_secret_buff_t : public haste_buff_t
+{
+  cooldown_t* icd;
+  sephuzs_secret_buff_t(shaman_t* p) :
+    haste_buff_t(haste_buff_creator_t(p, "sephuzs_secret", p -> find_spell(208052))
+      .default_value(p -> find_spell(208052) -> effectN(2).percent())
+      .add_invalidate(CACHE_HASTE))
+  {
+    icd = p->get_cooldown("sephuzs_secret_cooldown");
+    icd->duration = p->find_spell(226262)->duration();
+  }
+
+  void execute(int stacks, double value, timespan_t duration) override
+  {
+    if (icd->down())
+      return;
+    buff_t::execute(stacks, value, duration);
+    icd->start();
   }
 };
 
@@ -6735,6 +6763,7 @@ void shaman_t::create_buffs()
     .trigger_spell( sets.set( SHAMAN_ENHANCEMENT, T18, B4 ) )
     .default_value( sets.set( SHAMAN_ENHANCEMENT, T18, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buff.sephuzs_secret = new sephuzs_secret_buff_t(this);
 }
 
 // shaman_t::init_gains =====================================================
@@ -7273,6 +7302,11 @@ double shaman_t::composite_spell_haste() const
     h *= buff.elemental_mastery -> check_value();
   }
 
+  if ( buff.sephuzs_secret -> check() )
+  {
+    h *= 1.0 / (1.0 + buff.sephuzs_secret->default_value);
+  }
+
   return h;
 }
 
@@ -7335,6 +7369,11 @@ double shaman_t::composite_melee_haste() const
   if ( buff.elemental_mastery -> up() )
   {
     h *= buff.elemental_mastery -> check_value();
+  }
+
+  if ( buff.sephuzs_secret -> check() )
+  {
+    h *= 1.0 / (1.0 + buff.sephuzs_secret->default_value);
   }
 
   return h;
@@ -8174,6 +8213,17 @@ struct uncertain_reminder_t : public scoped_actor_callback_t<shaman_t>
   }
 };
 
+struct sephuzs_secret_t : public scoped_actor_callback_t<shaman_t>
+{
+  sephuzs_secret_t() : scoped_actor_callback_t(SHAMAN)
+  { }
+
+  void manipulate(shaman_t* actor, const special_effect_t& /* e */) override
+  {
+    actor->legendary.sephuzs_secret = true;
+  }
+};
+
 struct shaman_module_t : public module_t
 {
   shaman_module_t() : module_t( SHAMAN ) {}
@@ -8220,6 +8270,7 @@ struct shaman_module_t : public module_t
     register_special_effect( 207994, eotn_buff_shock_t(), true );
     register_special_effect( 207994, eotn_buff_chill_t(), true );
     register_special_effect( 234814, uncertain_reminder_t() );
+    register_special_effect( 208051, sephuzs_secret_t() );
   }
 
   void register_hotfixes() const override
