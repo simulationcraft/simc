@@ -3868,6 +3868,16 @@ struct mongoose_bite_t: hunter_melee_attack_t
 
     return am;
   }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double tm = hunter_melee_attack_t::composite_target_multiplier( t );
+
+    if ( p() -> sets -> has_set_bonus( HUNTER_SURVIVAL, T20, B4 ) && td( t ) -> dots.lacerate -> is_ticking() )
+      tm *= 1.0 + p() -> sets -> set( HUNTER_SURVIVAL, T20, B4 ) -> effectN( 1 ).percent();
+
+    return tm;
+  }
 };
 
 // Flanking Strike =====================================================================
@@ -3983,6 +3993,14 @@ struct lacerate_t: public hunter_melee_attack_t
     tick_zero = false;
 
     base_td_multiplier *= 1.0 + p -> artifacts.lacerating_talons.percent();
+
+    if ( p -> sets -> has_set_bonus( HUNTER_SURVIVAL, T20, B2 ) )
+    {
+      auto t20_2p = p -> sets -> set( HUNTER_SURVIVAL, T20, B2 );
+      base_td_multiplier *= 1 + t20_2p -> effectN( 1 ).percent();
+      base_dd_multiplier *= 1 + t20_2p -> effectN( 2 ).percent();
+      dot_duration += t20_2p -> effectN( 3 ).time_value();
+    }
   }
 
   void tick( dot_t* d ) override
