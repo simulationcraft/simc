@@ -1252,7 +1252,8 @@ public:
         .default_value( o() -> specs.bestial_wrath 
                             -> effectN( 1 )
                               .percent() )
-        .duration( timespan_t::from_seconds( 15.0 ) );
+        .duration( timespan_t::from_seconds( 15.0 ) )
+        .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
     if ( o() -> talents.bestial_fury -> ok() )
     {
@@ -1689,7 +1690,8 @@ struct dire_critter_t: public hunter_secondary_pet_t
 
     buffs.bestial_wrath = 
       buff_creator_t( this, 211183, "bestial_wrath" )
-        .default_value( find_spell( 211183 ) -> effectN( 1 ).percent() );
+        .default_value( find_spell( 211183 ) -> effectN( 1 ).percent() )
+        .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 };
 
@@ -1730,7 +1732,8 @@ struct hati_t: public hunter_secondary_pet_t
         .activated( true )
         .cd( timespan_t::zero() )
         .default_value( o() -> specs.bestial_wrath -> effectN( 1 ).percent() )
-        .duration( timespan_t::from_seconds( 15.0 ) );
+        .duration( timespan_t::from_seconds( 15.0 ) )
+        .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
     if ( o() -> talents.bestial_fury -> ok() )
     {
       buffs.bestial_wrath 
