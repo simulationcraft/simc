@@ -647,7 +647,7 @@ public:
 
   virtual void try_steady_focus()
   {
-    if ( p() -> talents.steady_focus -> ok() )
+    if ( !background && p() -> talents.steady_focus -> ok() )
       p() -> buffs.pre_steady_focus -> expire();
   }
 };
@@ -2552,9 +2552,6 @@ struct volley_tick_t: hunter_ranged_attack_t
     if (result_is_hit(execute_state->result))
       trigger_bullseye( p(), execute_state -> action );
   }
-
-  virtual void try_steady_focus() override
-  {}
 };
 
 struct volley_t: hunter_spell_t
@@ -2774,8 +2771,6 @@ struct barrage_t: public hunter_spell_t
       else
         action_state_t::release( s );
     }
-
-    void try_steady_focus() override {}
   };
 
   barrage_damage_t* primary;
@@ -4347,8 +4342,6 @@ struct moc_t : public hunter_spell_t
 
       return am;
     }
-
-    void try_steady_focus() override {}
   };
 
   peck_t* peck;
@@ -4398,9 +4391,6 @@ struct sentinel_t : public hunter_spell_t
       p()->buffs.hunters_mark_exists->trigger();
       td(s->target)->debuffs.hunters_mark->trigger();
     }
-
-    virtual void try_steady_focus() override
-    {}
   };
 
   sentinel_mark_t* sentinel_mark;
