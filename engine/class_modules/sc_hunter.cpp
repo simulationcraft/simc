@@ -2439,6 +2439,30 @@ void hati_t::init_spells()
 
 } // end namespace pets
 
+// T20 BM 2pc trigger
+void trigger_t20_2pc_bm( hunter_t* p )
+{
+  if ( p -> buffs.bestial_wrath -> check() )
+  {
+    const spell_data_t* driver = p -> sets -> set( HUNTER_BEAST_MASTERY, T20, B2 ) -> effectN( 1 ).trigger();
+    const double value = driver -> effectN( 1 ).percent() / 10.0;
+    p -> buffs.bestial_wrath -> current_value += value;
+    p -> buffs.bestial_wrath -> invalidate_cache();
+    // we don't have to invalidate the caches for pets as they don't use the stat cache in the first place
+    if ( p -> active.pet )
+      p -> active.pet -> buffs.bestial_wrath -> current_value += value;
+    if ( p -> pets.hati )
+      p -> pets.hati -> buffs.bestial_wrath -> current_value += value;
+
+    if ( p -> sim -> debug )
+    {
+      p -> sim -> out_debug.printf( "%s triggers t20 2pc: %s ( value=.3f )",
+                                    p -> name(), p -> buffs.bestial_wrath -> name(),
+                                    p -> buffs.bestial_wrath -> check_value() );
+    }
+  }
+}
+
 namespace attacks
 {
 
@@ -2808,6 +2832,9 @@ struct multi_shot_t: public hunter_ranged_attack_t
       if ( p() -> pets.hati )
         p() -> active.surge_of_the_stormgod -> execute();
     }
+
+    if ( p() -> sets -> has_set_bonus( HUNTER_BEAST_MASTERY, T20, B2 ) )
+      trigger_t20_2pc_bm( p() );
   }
 
   void impact( action_state_t* s ) override
@@ -2943,6 +2970,9 @@ struct cobra_shot_t: public hunter_ranged_attack_t
 
     if ( p() -> legendary.bm_chest -> ok() )
       p() -> buffs.parsels_tongue -> trigger();
+
+    if ( p() -> sets -> has_set_bonus( HUNTER_BEAST_MASTERY, T20, B2 ) )
+      trigger_t20_2pc_bm( p() );
   }
 
   double composite_target_crit_chance( player_t* t ) const override
@@ -4779,6 +4809,9 @@ struct kill_command_t: public hunter_spell_t
 
     if ( p() -> artifacts.master_of_beasts.rank() )
       p() -> pets.hati -> active.kill_command -> execute();
+
+    if ( p() -> sets -> has_set_bonus( HUNTER_BEAST_MASTERY, T20, B2 ) )
+      trigger_t20_2pc_bm( p() );
   }
 
   bool ready() override
