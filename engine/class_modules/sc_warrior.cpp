@@ -4276,7 +4276,7 @@ struct taunt_t: public warrior_spell_t
     warrior_spell_t::impact( s );
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( p() -> buff.berserker_rage -> check() && p() -> talents.warlords_challenge -> ok() )
       return true;

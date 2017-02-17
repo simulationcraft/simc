@@ -2720,7 +2720,7 @@ struct windwalking_aura_t: public monk_spell_t
     trigger_gcd = timespan_t::zero();
   }
 
-  size_t available_targets( std::vector< player_t* >& tl ) const
+  size_t available_targets( std::vector< player_t* >& tl ) const override
   {
     tl.clear();
 

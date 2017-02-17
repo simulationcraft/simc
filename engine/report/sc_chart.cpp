@@ -81,7 +81,9 @@ void add_color_data( sc_js_t& data,
 {
   for ( auto p : player_list )
   {
-    data.set( "__colors." + p->name_str, color::class_color( p->type ).str() );
+    std::string sanitized_name = p -> name_str;
+    util::replace_all( sanitized_name, ".", "_" );
+    data.set( "__colors.C_" + sanitized_name, color::class_color( p->type ).str() );
   }
 }
 
@@ -1198,7 +1200,7 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s,
       "'\xe2\x80\xa6';";
   xaxis_label += "}";
   xaxis_label +=
-      "return '<span style=\"color:' + this.chart.options.__colors[this.value] "
+      "return '<span style=\"color:' + this.chart.options.__colors['C_' + this.value.replace('.', '_')] "
       "+ ';\">' + formatted_name + '</span>';";
   xaxis_label += " }";
 
@@ -1251,7 +1253,7 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s,
   {
     formatter +=
         "var fmt = '<span style=\"color:' + "
-        "this.series.chart.options.__colors[this.point.name] + ';\">';";
+        "this.series.chart.options.__colors['C_' + this.point.name.replace('.', '_')] + ';\">';";
     formatter +=
         "if (this.point.reldiff === undefined || this.point.reldiff === 0) { "
         "fmt += Highcharts.numberFormat(this.point.y, " +
@@ -1271,7 +1273,7 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s,
   {
     formatter +=
         "return '<span style=\"color:' + "
-        "this.series.chart.options.__colors[this.point.name] + ';\">' + "
+        "this.series.chart.options.__colors['C_' + this.point.name.replace('.', '_')] + ';\">' + "
         "Highcharts.numberFormat(this.y, " +
         util::to_string( precision ) + ") + '</span>';";
     formatter += " }";

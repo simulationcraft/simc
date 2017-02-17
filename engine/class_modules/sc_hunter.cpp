@@ -499,8 +499,6 @@ public:
   void              apl_mm();
 
   void              add_item_actions( action_priority_list_t* list );
-  void              add_racial_actions( action_priority_list_t* list );
-  void              add_potion_action( action_priority_list_t* list, const std::string big_potion, const std::string little_potion, const std::string options = std::string() );
 
   target_specific_t<hunter_td_t> target_data;
 
@@ -596,9 +594,6 @@ public:
   double action_multiplier() const override
   {
     double am = ab::action_multiplier();
-
-    if ( p() -> buffs.t19_4p_mongoose_power -> up() && ab::special )
-      am *= 1.0 + p() -> buffs.t19_4p_mongoose_power -> default_value;
 
     if ( benefits_from_sniper_training && p() -> mastery.sniper_training -> ok() )
       am *= 1.0 + p() -> cache.mastery() * p() -> mastery.sniper_training -> effectN( 2 ).mastery_value();
@@ -1257,7 +1252,8 @@ public:
         .default_value( o() -> specs.bestial_wrath 
                             -> effectN( 1 )
                               .percent() )
-        .duration( timespan_t::from_seconds( 15.0 ) );
+        .duration( timespan_t::from_seconds( 15.0 ) )
+        .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
     if ( o() -> talents.bestial_fury -> ok() )
     {
@@ -1694,7 +1690,8 @@ struct dire_critter_t: public hunter_secondary_pet_t
 
     buffs.bestial_wrath = 
       buff_creator_t( this, 211183, "bestial_wrath" )
-        .default_value( find_spell( 211183 ) -> effectN( 1 ).percent() );
+        .default_value( find_spell( 211183 ) -> effectN( 1 ).percent() )
+        .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 };
 
@@ -1735,7 +1732,8 @@ struct hati_t: public hunter_secondary_pet_t
         .activated( true )
         .cd( timespan_t::zero() )
         .default_value( o() -> specs.bestial_wrath -> effectN( 1 ).percent() )
-        .duration( timespan_t::from_seconds( 15.0 ) );
+        .duration( timespan_t::from_seconds( 15.0 ) )
+        .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
     if ( o() -> talents.bestial_fury -> ok() )
     {
       buffs.bestial_wrath 
@@ -1848,7 +1846,7 @@ struct spitting_cobra_t: public hunter_pet_t
     }
 
     // the cobra double dips off versatility & haste
-    double composite_versatility( const action_state_t* s ) const
+    double composite_versatility( const action_state_t* s ) const override
     {
       double cdv = base_t::composite_versatility( s );
       return cdv * cdv;
@@ -1872,6 +1870,8 @@ struct spitting_cobra_t: public hunter_pet_t
      * the pet having ~1.414 ap coeff
      */
     owner_coeff.ap_from_ap = 1.414;
+
+    regen_type = REGEN_DISABLED;
   }
 
   action_t* create_action( const std::string& name,
@@ -2928,7 +2928,7 @@ struct multi_shot_t: public hunter_ranged_attack_t
     return hunter_ranged_attack_t::ready();
   }
 
-  virtual double cast_regen() const
+  virtual double cast_regen() const override
   {
     double base = hunter_ranged_attack_t::cast_regen();
     double energize = target_list().size() * energize_amount;
@@ -3421,7 +3421,7 @@ struct arcane_shot_t: public hunter_ranged_attack_t
     return hunter_ranged_attack_t::ready();
   }
 
-  virtual double cast_regen() const
+  virtual double cast_regen() const override
   {
     return hunter_ranged_attack_t::cast_regen() + energize_amount;
   }
@@ -3730,7 +3730,7 @@ struct sidewinders_t: hunter_ranged_attack_t
       p() -> buffs.sentinels_sight -> trigger();
   }
 
-  virtual double cast_regen() const 
+  virtual double cast_regen() const override
   {
     return hunter_ranged_attack_t::cast_regen() + energize_amount;
   }
@@ -4260,13 +4260,6 @@ struct on_the_trail_t: public hunter_melee_attack_t
   {
     background = true;
     tick_may_crit = true;
-  }
-
-  virtual void execute() override
-  {
-    hunter_melee_attack_t::execute();
-
-    td( execute_state -> target ) -> dots.on_the_trail -> trigger( data().duration() );
   }
 };
 
@@ -5946,11 +5939,10 @@ void hunter_t::create_buffs()
                         resource_gain( RESOURCE_FOCUS, buff -> default_value, gains.spitting_cobra );
                       } );
 
-  buffs.t19_4p_mongoose_power = 
+  buffs.t19_4p_mongoose_power =
     buff_creator_t( this, 211362, "mongoose_power" )
-      .default_value( find_spell( 211362 ) 
-                   -> effectN( 1 )
-                     .percent() );
+      .default_value( find_spell( 211362 ) -> effectN( 1 ).percent() )
+      .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buffs.butchers_bone_apron =
     buff_creator_t( this, 236446, "butchers_bone_apron" )
@@ -6206,47 +6198,10 @@ void hunter_t::init_action_list()
 
 void hunter_t::add_item_actions( action_priority_list_t* list )
 {
-  int num_items = (int)items.size();
-  for ( int i = 0; i < num_items; i++ )
+  for ( const item_t& item : items )
   {
-    if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
-      list -> add_action( "use_item,name=" + items[i].name_str );
-  }
-}
-
-// Racial Actions =======================================================================
-
-void hunter_t::add_racial_actions(action_priority_list_t* list)
-{
-  if (specialization() == HUNTER_MARKSMANSHIP) {
-    list->add_action("arcane_torrent,if=focus.deficit>=30&(!talent.sidewinders.enabled|cooldown.sidewinders.charges<2)");
-    list->add_action("berserking,if=buff.trueshot.up");
-    list->add_action("blood_fury,if=buff.trueshot.up");
-  }
-  else if ( specialization() == HUNTER_SURVIVAL )
-  {
-    list->add_action( "arcane_torrent,if=focus.deficit>=30" );
-    list->add_action( "berserking,if=buff.spitting_cobra.up&buff.mongoose_fury.stack>2&buff.aspect_of_the_eagle.up|!talent.spitting_cobra.enabled&buff.aspect_of_the_eagle.up" );
-    list->add_action( "blood_fury,if=buff.spitting_cobra.up&buff.mongoose_fury.stack>2&buff.aspect_of_the_eagle.up|!talent.spitting_cobra.enabled&buff.aspect_of_the_eagle.up" );
-  }
-  else {
-    list->add_action("arcane_torrent,if=focus.deficit>=30");
-    list->add_action("berserking");
-    list->add_action("blood_fury");
-  }
-}
-
-// Potions Actions =======================================================================
-
-void hunter_t::add_potion_action( action_priority_list_t* list, const std::string big_potion, const std::string little_potion, const std::string options )
-{
-  std::string action_options = options.empty() ? options : "," + options;
-  if ( sim -> allow_potions )
-  {
-    if ( true_level > 90 )
-      list -> add_action( "potion,name=" + big_potion + action_options );
-    else if ( true_level >= 85 )
-      list -> add_action( "potion,name=" + little_potion + action_options );
+    if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+      list -> add_action( "use_item,name=" + item.name_str );
   }
 }
 
@@ -6259,24 +6214,34 @@ void hunter_t::apl_bm()
   default_list -> add_action( "auto_shot" );
 
   add_item_actions( default_list );
-  add_racial_actions( default_list );
 
-  default_list -> add_action( "volley,toggle=on" );
+  // Racials
+  default_list -> add_action( "arcane_torrent,if=focus.deficit>=30" );
+  default_list -> add_action( "berserking" );
+  default_list -> add_action( "blood_fury" );
 
+  // Always keep Volley up if talented
+  default_list -> add_talent( this, "Volley", "toggle=on" );
+
+  // In-combat potion
   default_list -> add_action( "potion,name=prolonged_power,if=buff.bestial_wrath.remains|!cooldown.beastial_wrath.remains" );
-  default_list -> add_action( "a_murder_of_crows" );
-  default_list -> add_action( "stampede,if=buff.bloodlust.up|buff.bestial_wrath.up|cooldown.bestial_wrath.remains<=2|target.time_to_die<=14" );
-  default_list -> add_action( "dire_beast,if=cooldown.bestial_wrath.remains>3" );
-  default_list -> add_action( "dire_frenzy,if=cooldown.bestial_wrath.remains>6|target.time_to_die<9" );
-  default_list -> add_action( "aspect_of_the_wild,if=buff.bestial_wrath.up|target.time_to_die<12" );
-  default_list -> add_action( "barrage,if=spell_targets.barrage>1" );
-  default_list -> add_action( "titans_thunder,if=talent.dire_frenzy.enabled|cooldown.dire_beast.remains>=3|buff.bestial_wrath.up&pet.dire_beast.active" );
-  default_list -> add_action( "bestial_wrath" );
-  default_list -> add_action( "multi_shot,if=spell_targets>4&(pet.buff.beast_cleave.remains<gcd.max|pet.buff.beast_cleave.down)" );
-  default_list -> add_action( "kill_command" );
-  default_list -> add_action( "multi_shot,if=spell_targets>1&(pet.buff.beast_cleave.remains<gcd.max*2|pet.buff.beast_cleave.down)" );
-  default_list -> add_action( "chimaera_shot,if=focus<90" );
-  default_list -> add_action( "cobra_shot,if=cooldown.kill_command.remains>focus.time_to_max&cooldown.bestial_wrath.remains>focus.time_to_max|(buff.bestial_wrath.up&focus.regen*cooldown.kill_command.remains>30)|target.time_to_die<cooldown.kill_command.remains" );
+
+  // Generic APL
+  default_list -> add_talent( this, "A Murder of Crows" );
+  default_list -> add_talent( this, "Stampede", "if=buff.bloodlust.up|buff.bestial_wrath.up|cooldown.bestial_wrath.remains<=2|target.time_to_die<=14" );
+  default_list -> add_action( this, "Dire Beast", "if=cooldown.bestial_wrath.remains>3" );
+  default_list -> add_talent( this, "Dire Frenzy", "if=cooldown.bestial_wrath.remains>6|target.time_to_die<9" );
+  default_list -> add_action( this, "Aspect of the Wild", "if=buff.bestial_wrath.up|target.time_to_die<12" );
+  default_list -> add_talent( this, "Barrage", "if=spell_targets.barrage>1" );
+  default_list -> add_action( this, "Titan's Thunder", "if=talent.dire_frenzy.enabled|cooldown.dire_beast.remains>=3|buff.bestial_wrath.up&pet.dire_beast.active" );
+  default_list -> add_action( this, "Bestial Wrath" );
+  default_list -> add_action( this, "Multi-Shot", "if=spell_targets>4&(pet.buff.beast_cleave.remains<gcd.max|pet.buff.beast_cleave.down)" );
+  default_list -> add_action( this, "Kill Command" );
+  default_list -> add_action( this, "Multi-Shot", "if=spell_targets>1&(pet.buff.beast_cleave.remains<gcd.max*2|pet.buff.beast_cleave.down)" );
+  default_list -> add_talent( this, "Chimaera Shot", "if=focus<90" );
+  default_list -> add_action( this, "Cobra Shot", "if=cooldown.kill_command.remains>focus.time_to_max&cooldown.bestial_wrath.remains>focus.time_to_max|"
+                                                  "(buff.bestial_wrath.up&focus.regen*cooldown.kill_command.remains>30)|"
+                                                  "target.time_to_die<cooldown.kill_command.remains" );
 }
 
 // Marksman Action List ======================================================================
@@ -6291,83 +6256,97 @@ void hunter_t::apl_mm()
   action_priority_list_t* patient_sniper = get_action_priority_list( "patient_sniper" );
   action_priority_list_t* non_patient_sniper = get_action_priority_list( "non_patient_sniper" );
 
+  // Precombat actions
   if ( artifacts.windburst.rank() )
-    precombat -> add_action( "windburst" );
+    precombat -> add_action( this, "Windburst" );
 
   default_list -> add_action( "auto_shot" );
 
   add_item_actions( default_list );
-  add_racial_actions( default_list );
 
-  default_list -> add_action( "volley,toggle=on" );
+  // Always keep Volley up if talented
+  default_list -> add_talent( this, "Volley", "toggle=on" );
+
   default_list -> add_action( "variable,name=pooling_for_piercing,value=talent.piercing_shot.enabled&cooldown.piercing_shot.remains<5&lowest_vuln_within.5>0&lowest_vuln_within.5>cooldown.piercing_shot.remains&(buff.trueshot.down|spell_targets=1)" );
   default_list -> add_action( "variable,name=waiting_for_sentinel,value=talent.sentinel.enabled&(buff.marking_targets.up|buff.trueshot.up)&!cooldown.sentinel.up&((cooldown.sentinel.remains>54&cooldown.sentinel.remains<(54+gcd.max))|(cooldown.sentinel.remains>48&cooldown.sentinel.remains<(48+gcd.max))|(cooldown.sentinel.remains>42&cooldown.sentinel.remains<(42+gcd.max)))" );
+
+  // Choose APL
   default_list -> add_action( "call_action_list,name=cooldowns" );
   default_list -> add_action( "call_action_list,name=targetdie,if=target.time_to_die<6&spell_targets.multishot=1" );
   default_list -> add_action( "call_action_list,name=patient_sniper,if=talent.patient_sniper.enabled" );
   default_list -> add_action( "call_action_list,name=non_patient_sniper,if=!talent.patient_sniper.enabled" );
 
+  // Racials
+  cooldowns -> add_action( "arcane_torrent,if=focus.deficit>=30&(!talent.sidewinders.enabled|cooldown.sidewinders.charges<2)" );
+  cooldowns -> add_action( "berserking,if=buff.trueshot.up" );
+  cooldowns -> add_action( "blood_fury,if=buff.trueshot.up" );
+
+  // In-combat potion
   cooldowns -> add_action( "potion,name=prolonged_power,if=spell_targets.multishot>2&((buff.trueshot.react&buff.bloodlust.react)|buff.bullseye.react>=23|target.time_to_die<62)" );
   cooldowns -> add_action( "potion,name=deadly_grace,if=(buff.trueshot.react&buff.bloodlust.react)|buff.bullseye.react>=23|target.time_to_die<31" );
+  // Trueshot
   cooldowns -> add_action( "variable,name=trueshot_cooldown,op=set,value=time*1.1,if=time>15&cooldown.trueshot.up&variable.trueshot_cooldown=0" );
-  cooldowns -> add_action( "trueshot,if=variable.trueshot_cooldown=0|buff.bloodlust.up|(variable.trueshot_cooldown>0&target.time_to_die>(variable.trueshot_cooldown+duration))|buff.bullseye.react>25|target.time_to_die<16" );
+  cooldowns -> add_action( this, "Trueshot", "if=variable.trueshot_cooldown=0|buff.bloodlust.up|(variable.trueshot_cooldown>0&target.time_to_die>(variable.trueshot_cooldown+duration))|buff.bullseye.react>25|target.time_to_die<16" );
 
-  non_patient_sniper->add_action( "explosive_shot" );
-  non_patient_sniper->add_action( "piercing_shot,if=lowest_vuln_within.5>0&focus>100" );
-  non_patient_sniper->add_action( "aimed_shot,if=spell_targets>1&debuff.vulnerability.remains>cast_time&talent.trick_shot.enabled&buff.sentinels_sight.stack=20" );
-  non_patient_sniper->add_action( "marked_shot,if=spell_targets>1" );
-  non_patient_sniper->add_action( "multishot,if=spell_targets>1&(buff.marking_targets.up|buff.trueshot.up)" );
-  non_patient_sniper->add_action( "sentinel,if=!debuff.hunters_mark.up" );
-  non_patient_sniper->add_action( "black_arrow,if=talent.sidewinders.enabled|spell_targets.multishot<6" );
-  non_patient_sniper->add_action( "a_murder_of_crows" );
-  non_patient_sniper->add_action( "windburst" );
-  non_patient_sniper->add_action( "barrage,if=spell_targets>2|(target.health.pct<20&buff.bullseye.stack<25)" );
-  non_patient_sniper->add_action( "marked_shot,if=buff.marking_targets.up|buff.trueshot.up" );
-  non_patient_sniper->add_action( "sidewinders,if=!variable.waiting_for_sentinel&(debuff.hunters_mark.down|(buff.trueshot.down&buff.marking_targets.down))&((buff.marking_targets.up|buff.trueshot.up)|charges_fractional>1.8)&(focus.deficit>cast_regen)" );
-  non_patient_sniper->add_action( "aimed_shot,if=talent.sidewinders.enabled&debuff.vulnerability.remains>cast_time" );
-  non_patient_sniper->add_action( "aimed_shot,if=!talent.sidewinders.enabled&debuff.vulnerability.remains>cast_time&(!variable.pooling_for_piercing|(buff.lock_and_load.up&lowest_vuln_within.5>gcd.max))&(spell_targets.multishot<4|talent.trick_shot.enabled|buff.sentinels_sight.stack=20)" );
-  non_patient_sniper->add_action( "marked_shot" );
-  non_patient_sniper->add_action( "aimed_shot,if=talent.sidewinders.enabled&spell_targets.multi_shot=1&focus>110" );
-  non_patient_sniper->add_action( "multishot,if=spell_targets.multi_shot>1&!variable.waiting_for_sentinel" );
-  non_patient_sniper->add_action( "arcane_shot,if=spell_targets.multi_shot<2&!variable.waiting_for_sentinel" );
+  // Generic APL
+  non_patient_sniper -> add_talent( this, "Explosive Shot" );
+  non_patient_sniper -> add_talent( this, "Piercing Shot", "if=lowest_vuln_within.5>0&focus>100" );
+  non_patient_sniper -> add_action( this, "Aimed Shot", "if=spell_targets>1&debuff.vulnerability.remains>cast_time&talent.trick_shot.enabled&buff.sentinels_sight.stack=20" );
+  non_patient_sniper -> add_action( this, "Marked Shot", "if=spell_targets>1" );
+  non_patient_sniper -> add_action( this, "Multi-Shot", "if=spell_targets>1&(buff.marking_targets.up|buff.trueshot.up)" );
+  non_patient_sniper -> add_talent( this, "Sentinel", "if=!debuff.hunters_mark.up" );
+  non_patient_sniper -> add_talent( this, "Black Arrow", "if=talent.sidewinders.enabled|spell_targets.multishot<6" );
+  non_patient_sniper -> add_talent( this, "A Murder of Crows" );
+  non_patient_sniper -> add_action( this, "Windburst");
+  non_patient_sniper -> add_talent( this, "Barrage", "if=spell_targets>2|(target.health.pct<20&buff.bullseye.stack<25)" );
+  non_patient_sniper -> add_action( this, "Marked Shot", "if=buff.marking_targets.up|buff.trueshot.up" );
+  non_patient_sniper -> add_talent( this, "Sidewinders", "if=!variable.waiting_for_sentinel&(debuff.hunters_mark.down|(buff.trueshot.down&buff.marking_targets.down))&((buff.marking_targets.up|buff.trueshot.up)|charges_fractional>1.8)&(focus.deficit>cast_regen)" );
+  non_patient_sniper -> add_action( this, "Aimed Shot", "if=talent.sidewinders.enabled&debuff.vulnerability.remains>cast_time" );
+  non_patient_sniper -> add_action( this, "Aimed Shot", "if=!talent.sidewinders.enabled&debuff.vulnerability.remains>cast_time&(!variable.pooling_for_piercing|(buff.lock_and_load.up&lowest_vuln_within.5>gcd.max))&(spell_targets.multishot<4|talent.trick_shot.enabled|buff.sentinels_sight.stack=20)" );
+  non_patient_sniper -> add_action( this, "Marked Shot" );
+  non_patient_sniper -> add_action( this, "Aimed Shot", "if=talent.sidewinders.enabled&spell_targets.multi_shot=1&focus>110" );
+  non_patient_sniper -> add_action( this, "Multi-Shot", "if=spell_targets.multi_shot>1&!variable.waiting_for_sentinel" );
+  non_patient_sniper -> add_action( this, "Arcane Shot", "if=spell_targets.multi_shot<2&!variable.waiting_for_sentinel" );
 
+  // Patient Sniper APL
   patient_sniper -> add_action( "variable,name=vuln_window,op=set,value=debuff.vulnerability.remains" );
   patient_sniper -> add_action( "variable,name=vuln_window,op=set,value=(24-cooldown.sidewinders.charges_fractional*12)*attack_haste,if=talent.sidewinders.enabled&(24-cooldown.sidewinders.charges_fractional*12)*attack_haste<variable.vuln_window" );
   patient_sniper -> add_action( "variable,name=vuln_aim_casts,op=set,value=floor(variable.vuln_window%(2*attack_haste))" );
   patient_sniper -> add_action( "variable,name=vuln_aim_casts,op=set,value=floor((focus+20*(variable.vuln_aim_casts-1))%50),if=variable.vuln_aim_casts>0&variable.vuln_aim_casts>floor((focus+20*(variable.vuln_aim_casts-1))%50)" );
   patient_sniper -> add_action( "variable,name=can_gcd,value=variable.vuln_window>variable.vuln_aim_casts*(2*attack_haste)+gcd.max" );
 
-  patient_sniper -> add_action( "piercing_shot,if=cooldown.piercing_shot.up&spell_targets=1&lowest_vuln_within.5>0&lowest_vuln_within.5<1" );
-  patient_sniper -> add_action( "piercing_shot,if=cooldown.piercing_shot.up&spell_targets>1&lowest_vuln_within.5>0&((!buff.trueshot.up&focus>80&(lowest_vuln_within.5<1|debuff.hunters_mark.up))|(buff.trueshot.up&focus>105&lowest_vuln_within.5<6))" );
-  patient_sniper -> add_action( "aimed_shot,if=spell_targets>1&debuff.vulnerability.remains>cast_time&talent.trick_shot.enabled&buff.sentinels_sight.stack=20" );
-  patient_sniper -> add_action( "marked_shot,if=spell_targets>1" );
-  patient_sniper -> add_action( "multishot,if=spell_targets>1&(buff.marking_targets.up|buff.trueshot.up)" );
-  patient_sniper -> add_action( "windburst,if=variable.vuln_aim_casts<1&!variable.pooling_for_piercing" );
-  patient_sniper -> add_action( "black_arrow,if=variable.can_gcd&(talent.sidewinders.enabled|spell_targets.multishot<6)&(!variable.pooling_for_piercing|(lowest_vuln_within.5>gcd.max&focus>85))" );
-  patient_sniper -> add_action( "a_murder_of_crows,if=(!variable.pooling_for_piercing|lowest_vuln_within.5>gcd.max)&(target.time_to_die>=cooldown+duration|target.health.pct<20|target.time_to_die<16)" );
-  patient_sniper -> add_action( "barrage,if=spell_targets>2|(target.health.pct<20&buff.bullseye.stack<25)" );
-  patient_sniper -> add_action( "aimed_shot,if=debuff.vulnerability.up&buff.lock_and_load.up&(!variable.pooling_for_piercing|lowest_vuln_within.5>gcd.max)&(spell_targets.multi_shot<4|talent.trick_shot.enabled)" );
-  patient_sniper -> add_action( "aimed_shot,if=spell_targets.multishot>1&debuff.vulnerability.remains>execute_time&(!variable.pooling_for_piercing|(focus>100&lowest_vuln_within.5>(execute_time+gcd.max)))&(spell_targets.multishot<4|buff.sentinels_sight.stack=20|talent.trick_shot.enabled)" );
-  patient_sniper -> add_action( "multishot,if=spell_targets>1&variable.can_gcd&focus+cast_regen+20<focus.max&(!variable.pooling_for_piercing|lowest_vuln_within.5>gcd.max)" );
-  patient_sniper -> add_action( "arcane_shot,if=spell_targets.multi_shot=1&variable.vuln_aim_casts>0&debuff.vulnerability.remains>(2*attack_haste)&variable.can_gcd&focus+cast_regen+20<focus.max&(!variable.pooling_for_piercing|lowest_vuln_within.5>gcd.max)" );
-  patient_sniper -> add_action( "aimed_shot,if=talent.sidewinders.enabled&(debuff.vulnerability.remains>cast_time|(buff.lock_and_load.down&action.windburst.in_flight))&(variable.vuln_window-(2*attack_haste*variable.vuln_aim_casts)<1|focus.deficit<25|buff.trueshot.up)&(spell_targets.multishot=1|focus>100)" );
-  patient_sniper -> add_action( "aimed_shot,if=!talent.sidewinders.enabled&debuff.vulnerability.remains>cast_time&(!variable.pooling_for_piercing|(focus>100&lowest_vuln_within.5>(execute_time+gcd.max)))" );
-  patient_sniper -> add_action( "marked_shot,if=!talent.sidewinders.enabled&!variable.pooling_for_piercing" );
-  patient_sniper -> add_action( "marked_shot,if=talent.sidewinders.enabled&(variable.vuln_aim_casts<1|buff.trueshot.up|variable.vuln_window<(2*attack_haste))" );
-  patient_sniper -> add_action( "aimed_shot,if=spell_targets.multi_shot=1&focus>110" );
-  patient_sniper -> add_action( "sidewinders,if=(!debuff.hunters_mark.up|(!buff.marking_targets.up&!buff.trueshot.up))&((buff.marking_targets.up&variable.vuln_aim_casts<1)|buff.trueshot.up|charges_fractional>1.9)" );
-  patient_sniper -> add_action( "arcane_shot,if=spell_targets.multi_shot=1&(!variable.pooling_for_piercing|lowest_vuln_within.5>gcd.max)" );
-  patient_sniper -> add_action( "multishot,if=spell_targets>1&(!variable.pooling_for_piercing|lowest_vuln_within.5>gcd.max)" );
+  patient_sniper -> add_talent( this, "Piercing Shot", "if=cooldown.piercing_shot.up&spell_targets=1&lowest_vuln_within.5>0&lowest_vuln_within.5<1" );
+  patient_sniper -> add_talent( this, "Piercing Shot", "if=cooldown.piercing_shot.up&spell_targets>1&lowest_vuln_within.5>0&((!buff.trueshot.up&focus>80&(lowest_vuln_within.5<1|debuff.hunters_mark.up))|(buff.trueshot.up&focus>105&lowest_vuln_within.5<6))" );
+  patient_sniper -> add_action( this, "Aimed Shot", "if=spell_targets>1&debuff.vulnerability.remains>cast_time&talent.trick_shot.enabled&buff.sentinels_sight.stack=20" );
+  patient_sniper -> add_action( this, "Marked Shot", "if=spell_targets>1" );
+  patient_sniper -> add_action( this, "Multi-Shot", "if=spell_targets>1&(buff.marking_targets.up|buff.trueshot.up)" );
+  patient_sniper -> add_action( this, "Windburst", "if=variable.vuln_aim_casts<1&!variable.pooling_for_piercing" );
+  patient_sniper -> add_talent( this, "Black Arrow", "if=variable.can_gcd&(talent.sidewinders.enabled|spell_targets.multishot<6)&(!variable.pooling_for_piercing|(lowest_vuln_within.5>gcd.max&focus>85))" );
+  patient_sniper -> add_talent( this, "A Murder of Crows", "if=(!variable.pooling_for_piercing|lowest_vuln_within.5>gcd.max)&(target.time_to_die>=cooldown+duration|target.health.pct<20|target.time_to_die<16)" );
+  patient_sniper -> add_talent( this, "Barrage", "if=spell_targets>2|(target.health.pct<20&buff.bullseye.stack<25)" );
+  patient_sniper -> add_action( this, "Aimed Shot", "if=debuff.vulnerability.up&buff.lock_and_load.up&(!variable.pooling_for_piercing|lowest_vuln_within.5>gcd.max)&(spell_targets.multi_shot<4|talent.trick_shot.enabled)" );
+  patient_sniper -> add_action( this, "Aimed Shot", "if=spell_targets.multishot>1&debuff.vulnerability.remains>execute_time&(!variable.pooling_for_piercing|(focus>100&lowest_vuln_within.5>(execute_time+gcd.max)))&(spell_targets.multishot<4|buff.sentinels_sight.stack=20|talent.trick_shot.enabled)" );
+  patient_sniper -> add_action( this, "Multi-Shot", "if=spell_targets>1&variable.can_gcd&focus+cast_regen+20<focus.max&(!variable.pooling_for_piercing|lowest_vuln_within.5>gcd.max)" );
+  patient_sniper -> add_action( this, "Arcane Shot", "if=spell_targets.multi_shot=1&variable.vuln_aim_casts>0&debuff.vulnerability.remains>(2*attack_haste)&variable.can_gcd&focus+cast_regen+20<focus.max&(!variable.pooling_for_piercing|lowest_vuln_within.5>gcd.max)" );
+  patient_sniper -> add_action( this, "Aimed Shot", "if=talent.sidewinders.enabled&(debuff.vulnerability.remains>cast_time|(buff.lock_and_load.down&action.windburst.in_flight))&(variable.vuln_window-(2*attack_haste*variable.vuln_aim_casts)<1|focus.deficit<25|buff.trueshot.up)&(spell_targets.multishot=1|focus>100)" );
+  patient_sniper -> add_action( this, "Aimed Shot", "if=!talent.sidewinders.enabled&debuff.vulnerability.remains>cast_time&(!variable.pooling_for_piercing|(focus>100&lowest_vuln_within.5>(execute_time+gcd.max)))" );
+  patient_sniper -> add_action( this, "Marked Shot", "if=!talent.sidewinders.enabled&!variable.pooling_for_piercing" );
+  patient_sniper -> add_action( this, "Marked Shot", "if=talent.sidewinders.enabled&(variable.vuln_aim_casts<1|buff.trueshot.up|variable.vuln_window<(2*attack_haste))" );
+  patient_sniper -> add_action( this, "Aimed Shot", "if=spell_targets.multi_shot=1&focus>110" );
+  patient_sniper -> add_talent( this, "Sidewinders", "if=(!debuff.hunters_mark.up|(!buff.marking_targets.up&!buff.trueshot.up))&((buff.marking_targets.up&variable.vuln_aim_casts<1)|buff.trueshot.up|charges_fractional>1.9)" );
+  patient_sniper -> add_action( this, "Arcane Shot", "if=spell_targets.multi_shot=1&(!variable.pooling_for_piercing|lowest_vuln_within.5>gcd.max)" );
+  patient_sniper -> add_action( this, "Multi-Shot", "if=spell_targets>1&(!variable.pooling_for_piercing|lowest_vuln_within.5>gcd.max)" );
 
-  targetdie -> add_action( "piercing_shot,if=debuff.vulnerability.up" );
-  targetdie -> add_action( "explosive_shot" );
-  targetdie -> add_action( "windburst" );
-  targetdie -> add_action( "aimed_shot,if=debuff.vulnerability.up&buff.lock_and_load.up" );
-  targetdie -> add_action( "marked_shot" );
-  targetdie -> add_action( "arcane_shot,if=buff.marking_targets.up|buff.trueshot.up" );
-  targetdie -> add_action( "aimed_shot,if=debuff.vulnerability.remains>execute_time&target.time_to_die>cast_time" );
-  targetdie -> add_action( "sidewinders" );
-  targetdie -> add_action( "arcane_shot" );
+  // APL for the last ~6 seconds of a fight
+  targetdie -> add_talent( this, "Piercing Shot", "if=debuff.vulnerability.up" );
+  targetdie -> add_talent( this, "Explosive Shot" );
+  targetdie -> add_action( this, "Windburst" );
+  targetdie -> add_action( this, "Aimed Shot", "if=debuff.vulnerability.up&buff.lock_and_load.up" );
+  targetdie -> add_action( this, "Marked Shot" );
+  targetdie -> add_action( this, "Arcane Shot", "if=buff.marking_targets.up|buff.trueshot.up" );
+  targetdie -> add_action( this, "Aimed Shot", "if=debuff.vulnerability.remains>execute_time&target.time_to_die>cast_time" );
+  targetdie -> add_talent( this, "Sidewinders" );
+  targetdie -> add_action( this, "Arcane Shot" );
 }
 
 // Survival Action List ===================================================================
@@ -6379,94 +6358,102 @@ void hunter_t::apl_surv()
   action_priority_list_t* moknathal    = get_action_priority_list( "moknathal" );
   action_priority_list_t* nomok        = get_action_priority_list( "nomok" );
 
-  precombat -> add_action( "explosive_trap" );
-  precombat -> add_action( "steel_trap" );
-  precombat -> add_action( "dragonsfire_grenade" );
-  precombat -> add_action( "harpoon" );
+  // Precombat actions
+  precombat -> add_action( this, "Explosive Trap" );
+  precombat -> add_talent( this, "Steel Trap" );
+  precombat -> add_talent( this, "Dragonsfire Grenade" );
+  precombat -> add_action( this, "Harpoon" );
 
   default_list -> add_action( "auto_attack" );
 
   add_item_actions( default_list );
-  
-  default_list -> add_action("arcane_torrent,if=focus.deficit>=30" );
-  default_list -> add_action("berserking,if=(buff.spitting_cobra.up&buff.mongoose_fury.stack>2&buff.aspect_of_the_eagle.up)|(!talent.spitting_cobra.enabled&buff.aspect_of_the_eagle.up)" );
-  default_list -> add_action("blood_fury,if=(buff.spitting_cobra.up&buff.mongoose_fury.stack>2&buff.aspect_of_the_eagle.up)|(!talent.spitting_cobra.enabled&buff.aspect_of_the_eagle.up)" );
+
+  // Racials
+  default_list -> add_action( "arcane_torrent,if=focus.deficit>=30" );
+  default_list -> add_action( "berserking,if=(buff.spitting_cobra.up&buff.mongoose_fury.stack>2&buff.aspect_of_the_eagle.up)|(!talent.spitting_cobra.enabled&buff.aspect_of_the_eagle.up)" );
+  default_list -> add_action( "blood_fury,if=(buff.spitting_cobra.up&buff.mongoose_fury.stack>2&buff.aspect_of_the_eagle.up)|(!talent.spitting_cobra.enabled&buff.aspect_of_the_eagle.up)" );
+
+  // In-combat potion
   default_list -> add_action( "potion,name=prolonged_power,if=(talent.spitting_cobra.enabled&buff.spitting_cobra.remains)|(!talent.spitting_cobra.enabled&buff.aspect_of_the_eagle.remains)" );
+
+  // Choose APL
   default_list -> add_action( "call_action_list,name=moknathal,if=talent.way_of_the_moknathal.enabled" );
   default_list -> add_action( "call_action_list,name=nomok,if=!talent.way_of_the_moknathal.enabled" );
 
-  moknathal -> add_action( "raptor_strike,if=buff.moknathal_tactics.stack<=1" );
-  moknathal -> add_action( "raptor_strike,if=buff.moknathal_tactics.remains<gcd" );
-  moknathal -> add_action( "snake_hunter,if=cooldown.mongoose_bite.charges<=0&buff.mongoose_fury.remains>3*gcd&time>15" );
-  moknathal -> add_action( "spitting_cobra,if=buff.mongoose_fury.duration>=gcd&cooldown.mongoose_bite.charges>=0&buff.mongoose_fury.stack<4&buff.moknathal_tactics.stack=3" );
-  moknathal -> add_action( "steel_trap,if=buff.mongoose_fury.duration>=gcd&buff.mongoose_fury.stack<1" );
-  moknathal -> add_action( "a_murder_of_crows,if=focus>55-buff.moknathal_tactics.remains*focus.regen&buff.mongoose_fury.stack<4&buff.mongoose_fury.duration>=gcd" );
-  moknathal -> add_action( "flanking_strike,if=cooldown.mongoose_bite.charges<=1&focus>75-buff.moknathal_tactics.remains*focus.regen" );
-  moknathal -> add_action( "carve,if=equipped.frizzos_fingertrap&focus>65-buff.moknathal_tactics.remains*focus.regen&buff.mongoose_fury.remains>=gcd&dot.lacerate.refreshable" );
-  moknathal -> add_action( "butchery,if=equipped.frizzos_fingertrap&focus>65-buff.moknathal_tactics.remains*focus.regen&buff.mongoose_fury.remains>=gcd&dot.lacerate.refreshable" );
-  moknathal -> add_action( "lacerate,if=(focus>55-buff.moknathal_tactics.remains*focus.regen&buff.mongoose_fury.duration>=gcd&refreshable&cooldown.mongoose_bite.charges=0&buff.mongoose_fury.stack<3)|(focus>65-buff.moknathal_tactics.remains*focus.regen&buff.mongoose_fury.down&cooldown.mongoose_bite.charges<3&refreshable)" );
-  moknathal -> add_action( "caltrops,if=(buff.mongoose_fury.duration>=gcd&buff.mongoose_fury.stack<1&!dot.caltrops.ticking)" );
-  moknathal -> add_action( "explosive_trap,if=buff.mongoose_fury.duration>=gcd&cooldown.mongoose_bite.charges=0&buff.mongoose_fury.stack<1" );
-  moknathal -> add_action( "butchery,if=active_enemies>1&focus>65-buff.moknathal_tactics.remains*focus.regen&(buff.mongoose_fury.down|buff.mongoose_fury.remains>gcd*cooldown.mongoose_bite.charges)" );
-  moknathal -> add_action( "carve,if=active_enemies>1&focus>65-buff.moknathal_tactics.remains*focus.regen&(buff.mongoose_fury.down&focus>65-buff.moknathal_tactics.remains*focus.regen|buff.mongoose_fury.remains>gcd*cooldown.mongoose_bite.charges&focus>70-buff.moknathal_tactics.remains*focus.regen)" );
-  moknathal -> add_action( "raptor_strike,if=buff.moknathal_tactics.stack=2" ); 
-  moknathal -> add_action( "dragonsfire_grenade,if=buff.mongoose_fury.duration>=gcd&cooldown.mongoose_bite.charges>=0&buff.mongoose_fury.stack<1" );
-  moknathal -> add_action( "raptor_strike,if=buff.moknathal_tactics.remains<4&buff.mongoose_fury.stack=6&buff.mongoose_fury.remains>cooldown.fury_of_the_eagle.remains&cooldown.fury_of_the_eagle.remains<=5" );
-  moknathal -> add_action( "fury_of_the_eagle,if=buff.moknathal_tactics.remains>4&buff.mongoose_fury.stack=6&cooldown.mongoose_bite.charges<=1" );
-  moknathal -> add_action( "mongoose_bite,if=buff.aspect_of_the_eagle.up&buff.mongoose_fury.up&buff.moknathal_tactics.stack>=4" );
-  moknathal -> add_action( "fury_of_the_eagle,if=buff.mongoose_fury.up&buff.mongoose_fury.remains<=2*gcd" );
-  moknathal -> add_action( "aspect_of_the_eagle,if=buff.mongoose_fury.stack>4&time<15" );
-  moknathal -> add_action( "aspect_of_the_eagle,if=buff.mongoose_fury.stack>1&time>15" );
-  moknathal -> add_action( "aspect_of_the_eagle,if=buff.mongoose_fury.up&buff.mongoose_fury.remains>6&cooldown.mongoose_bite.charges<2" );
-  moknathal -> add_action( "mongoose_bite,if=buff.mongoose_fury.up&buff.mongoose_fury.remains<cooldown.aspect_of_the_eagle.remains" );
-  moknathal -> add_action( "spitting_cobra" );
-  moknathal -> add_action( "steel_trap" );
-  moknathal -> add_action( "a_murder_of_crows,if=focus>55-buff.moknathal_tactics.remains*focus.regen" );
-  moknathal -> add_action( "caltrops,if=(!dot.caltrops.ticking)" );
-  moknathal -> add_action( "explosive_trap" );
-  moknathal -> add_action( "carve,if=equipped.frizzos_fingertrap&focus>65-buff.moknathal_tactics.remains*focus.regen&dot.lacerate.refreshable" );
-  moknathal -> add_action( "butchery,if=equipped.frizzos_fingertrap&focus>65-buff.moknathal_tactics.remains*focus.regen&dot.lacerate.refreshable" );
-  moknathal -> add_action( "lacerate,if=refreshable&focus>55-buff.moknathal_tactics.remains*focus.regen" );
-  moknathal -> add_action( "dragonsfire_grenade" );
-  moknathal -> add_action( "mongoose_bite,if=(charges>=2&cooldown.mongoose_bite.remains<=gcd|charges=3)" );
-  moknathal -> add_action( "flanking_strike" );
-  moknathal -> add_action( "butchery,if=focus>65-buff.moknathal_tactics.remains*focus.regen" );
-  moknathal -> add_action( "raptor_strike,if=focus>75-cooldown.flanking_strike.remains*focus.regen" );
+  // Way of the Mok'Nathal APL
+  moknathal -> add_action( this, "Raptor Strike", "if=buff.moknathal_tactics.stack<=1" );
+  moknathal -> add_action( this, "Raptor Strike", "if=buff.moknathal_tactics.remains<gcd" );
+  moknathal -> add_talent( this, "Snake Hunter", "if=cooldown.mongoose_bite.charges<=0&buff.mongoose_fury.remains>3*gcd&time>15" );
+  moknathal -> add_talent( this, "Spitting Cobra", "if=buff.mongoose_fury.duration>=gcd&cooldown.mongoose_bite.charges>=0&buff.mongoose_fury.stack<4&buff.moknathal_tactics.stack=3" );
+  moknathal -> add_talent( this, "Steel Trap", "if=buff.mongoose_fury.duration>=gcd&buff.mongoose_fury.stack<1" );
+  moknathal -> add_talent( this, "A Murder of Crows", "if=focus>55-buff.moknathal_tactics.remains*focus.regen&buff.mongoose_fury.stack<4&buff.mongoose_fury.duration>=gcd" );
+  moknathal -> add_action( this, "Flanking Strike", "if=cooldown.mongoose_bite.charges<=1&focus>75-buff.moknathal_tactics.remains*focus.regen" );
+  moknathal -> add_action( this, "Carve", "if=equipped.frizzos_fingertrap&dot.lacerate.ticking&dot.lacerate.refreshable&focus>65-buff.moknathal_tactics.remains*focus.regen&buff.mongoose_fury.remains>=gcd" );
+  moknathal -> add_talent( this, "Butchery", "if=equipped.frizzos_fingertrap&dot.lacerate.ticking&dot.lacerate.refreshable&focus>65-buff.moknathal_tactics.remains*focus.regen&buff.mongoose_fury.remains>=gcd" );
+  moknathal -> add_action( this, "Lacerate", "if=refreshable&((focus>55-buff.moknathal_tactics.remains*focus.regen&buff.mongoose_fury.duration>=gcd&cooldown.mongoose_bite.charges=0&buff.mongoose_fury.stack<3)|(focus>65-buff.moknathal_tactics.remains*focus.regen&buff.mongoose_fury.down&cooldown.mongoose_bite.charges<3))" );
+  moknathal -> add_talent( this, "Caltrops", "if=(buff.mongoose_fury.duration>=gcd&buff.mongoose_fury.stack<1&!dot.caltrops.ticking)" );
+  moknathal -> add_action( this, "Explosive Trap", "if=buff.mongoose_fury.duration>=gcd&cooldown.mongoose_bite.charges=0&buff.mongoose_fury.stack<1" );
+  moknathal -> add_talent( this, "Butchery", "if=active_enemies>1&focus>65-buff.moknathal_tactics.remains*focus.regen&(buff.mongoose_fury.down|buff.mongoose_fury.remains>gcd*cooldown.mongoose_bite.charges)" );
+  moknathal -> add_action( this, "Carve", "if=active_enemies>1&focus>65-buff.moknathal_tactics.remains*focus.regen&(buff.mongoose_fury.down&focus>65-buff.moknathal_tactics.remains*focus.regen|buff.mongoose_fury.remains>gcd*cooldown.mongoose_bite.charges&focus>70-buff.moknathal_tactics.remains*focus.regen)" );
+  moknathal -> add_action( this, "Raptor Strike", "if=buff.moknathal_tactics.stack=2" );
+  moknathal -> add_talent( this, "Dragonsfire Grenade", "if=buff.mongoose_fury.duration>=gcd&cooldown.mongoose_bite.charges>=0&buff.mongoose_fury.stack<1" );
+  moknathal -> add_action( this, "Raptor Strike", "if=buff.moknathal_tactics.remains<4&buff.mongoose_fury.stack=6&buff.mongoose_fury.remains>cooldown.fury_of_the_eagle.remains&cooldown.fury_of_the_eagle.remains<=5" );
+  moknathal -> add_action( this, "Fury of the Eagle", "if=buff.moknathal_tactics.remains>4&buff.mongoose_fury.stack=6&cooldown.mongoose_bite.charges<=1" );
+  moknathal -> add_action( this, "Mongoose Bite", "if=buff.aspect_of_the_eagle.up&buff.mongoose_fury.up&buff.moknathal_tactics.stack>=4" );
+  moknathal -> add_action( this, "Fury of the Eagle", "if=buff.mongoose_fury.up&buff.mongoose_fury.remains<=2*gcd" );
+  moknathal -> add_action( this, "Aspect of the Eagle", "if=buff.mongoose_fury.stack>4&time<15" );
+  moknathal -> add_action( this, "Aspect of the Eagle", "if=buff.mongoose_fury.stack>1&time>15" );
+  moknathal -> add_action( this, "Aspect of the Eagle", "if=buff.mongoose_fury.up&buff.mongoose_fury.remains>6&cooldown.mongoose_bite.charges<2" );
+  moknathal -> add_action( this, "Mongoose Bite", "if=buff.mongoose_fury.up&buff.mongoose_fury.remains<cooldown.aspect_of_the_eagle.remains" );
+  moknathal -> add_talent( this, "Spitting Cobra" );
+  moknathal -> add_talent( this, "Steel Trap" );
+  moknathal -> add_talent( this, "A Murder of Crows", "if=focus>55-buff.moknathal_tactics.remains*focus.regen" );
+  moknathal -> add_talent( this, "Caltrops", "if=(!dot.caltrops.ticking)" );
+  moknathal -> add_action( this, "Explosive Trap" );
+  moknathal -> add_action( this, "Carve", "if=equipped.frizzos_fingertrap&dot.lacerate.ticking&dot.lacerate.refreshable&focus>65-buff.moknathal_tactics.remains*focus.regen" );
+  moknathal -> add_talent( this, "Butchery", "if=equipped.frizzos_fingertrap&dot.lacerate.ticking&dot.lacerate.refreshable&focus>65-buff.moknathal_tactics.remains*focus.regen" );
+  moknathal -> add_action( this, "Lacerate", "if=refreshable&focus>55-buff.moknathal_tactics.remains*focus.regen" );
+  moknathal -> add_talent( this, "Dragonsfire Grenade" );
+  moknathal -> add_action( this, "Mongoose Bite", "if=(charges>=2&cooldown.mongoose_bite.remains<=gcd|charges=3)" );
+  moknathal -> add_action( this, "Flanking Strike" );
+  moknathal -> add_talent( this, "Butchery", "if=focus>65-buff.moknathal_tactics.remains*focus.regen" );
+  moknathal -> add_action( this, "Raptor Strike", "if=focus>75-cooldown.flanking_strike.remains*focus.regen" );
 
-  nomok -> add_action( "spitting_cobra,if=buff.mongoose_fury.duration>=gcd&cooldown.mongoose_bite.charges>=0&buff.mongoose_fury.stack<4" );
-  nomok -> add_action( "steel_trap,if=buff.mongoose_fury.duration>=gcd&buff.mongoose_fury.stack<1" );
-  nomok -> add_action( "a_murder_of_crows,if=cooldown.mongoose_bite.charges>=0&buff.mongoose_fury.stack<4" );
-  nomok -> add_action( "snake_hunter,if=action.mongoose_bite.charges<=0&buff.mongoose_fury.remains>3*gcd&time>15" );
-  nomok -> add_action( "caltrops,if=(buff.mongoose_fury.duration>=gcd&buff.mongoose_fury.stack<4&!dot.caltrops.ticking)" );
-  nomok -> add_action( "flanking_strike,if=cooldown.mongoose_bite.charges<=1&buff.aspect_of_the_eagle.remains>=gcd" );
-  nomok -> add_action( "carve,if=equipped.frizzos_fingertrap&focus>65-buff.moknathal_tactics.remains*focus.regen&buff.mongoose_fury.remains>=gcd&dot.lacerate.refreshable" );
-  nomok -> add_action( "butchery,if=equipped.frizzos_fingertrap&focus>65-buff.moknathal_tactics.remains*focus.regen&buff.mongoose_fury.remains>=gcd&dot.lacerate.refreshable" );
-  nomok -> add_action( "lacerate,if=buff.mongoose_fury.duration>=gcd&refreshable&cooldown.mongoose_bite.charges=0&buff.mongoose_fury.stack<2|buff.mongoose_fury.down&cooldown.mongoose_bite.charges<3&refreshable" );
-  nomok -> add_action( "dragonsfire_grenade,if=buff.mongoose_fury.duration>=gcd&cooldown.mongoose_bite.charges<=1&buff.mongoose_fury.stack<3|buff.mongoose_fury.down&cooldown.mongoose_bite.charges<3" );
-  nomok -> add_action( "explosive_trap,if=buff.mongoose_fury.duration>=gcd&cooldown.mongoose_bite.charges>=0&buff.mongoose_fury.stack<4" );
-  nomok -> add_action( "raptor_strike,if=talent.serpent_sting.enabled&dot.serpent_sting.refreshable&buff.mongoose_fury.stack<3&cooldown.mongoose_bite.charges<1" );
-  nomok -> add_action( "fury_of_the_eagle,if=buff.mongoose_fury.stack=6&cooldown.mongoose_bite.charges<=1" );
-  nomok -> add_action( "mongoose_bite,if=buff.aspect_of_the_eagle.up&buff.mongoose_fury.up" );
-  nomok -> add_action( "aspect_of_the_eagle,if=buff.mongoose_fury.up&buff.mongoose_fury.duration>6&cooldown.mongoose_bite.charges>=2" );
-  nomok -> add_action( "fury_of_the_eagle,if=cooldown.mongoose_bite.charges<=1&buff.mongoose_fury.duration>6" );
-  nomok -> add_action( "flanking_strike,if=cooldown.mongoose_bite.charges<=1&buff.mongoose_fury.remains>(1+action.mongoose_bite.charges*gcd)" );
-  nomok -> add_action( "mongoose_bite,if=buff.mongoose_fury.up&buff.mongoose_fury.remains<cooldown.aspect_of_the_eagle.remains" );
-  nomok -> add_action( "flanking_strike,if=talent.animal_instincts.enabled&cooldown.mongoose_bite.charges<3" );
-  nomok -> add_action( "spitting_cobra" );
-  nomok -> add_action( "steel_trap" );
-  nomok -> add_action( "a_murder_of_crows" );
-  nomok -> add_action( "caltrops,if=(!dot.caltrops.ticking)" );
-  nomok -> add_action( "explosive_trap" );
-  nomok -> add_action( "carve,if=equipped.frizzos_fingertrap&focus>65-buff.moknathal_tactics.remains*focus.regen&dot.lacerate.refreshable" );
-  nomok -> add_action( "butchery,if=equipped.frizzos_fingertrap&focus>65-buff.moknathal_tactics.remains*focus.regen&dot.lacerate.refreshable" );
-  nomok -> add_action( "lacerate,if=refreshable" );
-  nomok -> add_action( "dragonsfire_grenade" );
-  nomok -> add_action( "throwing_axes,if=cooldown.throwing_axes.charges=2" );
-  nomok -> add_action( "mongoose_bite,if=(charges>=2&cooldown.mongoose_bite.remains<=gcd|charges=3)" );
-  nomok -> add_action( "flanking_strike" );
-  nomok -> add_action( "butchery" );
-  nomok -> add_action( "throwing_axes" );
-  nomok -> add_action( "raptor_strike,if=focus>75-cooldown.flanking_strike.remains*focus.regen" );
+  // Generic APL
+  nomok -> add_talent( this, "Spitting Cobra", "if=buff.mongoose_fury.duration>=gcd&cooldown.mongoose_bite.charges>=0&buff.mongoose_fury.stack<4" );
+  nomok -> add_talent( this, "Steel Trap", "if=buff.mongoose_fury.duration>=gcd&buff.mongoose_fury.stack<1" );
+  nomok -> add_talent( this, "A Murder of Crows", "if=cooldown.mongoose_bite.charges>=0&buff.mongoose_fury.stack<4" );
+  nomok -> add_talent( this, "Snake Hunter", "if=action.mongoose_bite.charges<=0&buff.mongoose_fury.remains>3*gcd&time>15" );
+  nomok -> add_talent( this, "Caltrops", "if=(buff.mongoose_fury.duration>=gcd&buff.mongoose_fury.stack<4&!dot.caltrops.ticking)" );
+  nomok -> add_action( this, "Flanking Strike", "if=cooldown.mongoose_bite.charges<=1&buff.aspect_of_the_eagle.remains>=gcd" );
+  nomok -> add_action( this, "Carve", "if=equipped.frizzos_fingertrap&dot.lacerate.ticking&dot.lacerate.refreshable&focus>65&buff.mongoose_fury.remains>=gcd" );
+  nomok -> add_talent( this, "Butchery", "if=equipped.frizzos_fingertrap&dot.lacerate.ticking&dot.lacerate.refreshable&focus>65&buff.mongoose_fury.remains>=gcd" );
+  nomok -> add_action( this, "Lacerate", "if=buff.mongoose_fury.duration>=gcd&refreshable&cooldown.mongoose_bite.charges=0&buff.mongoose_fury.stack<2|buff.mongoose_fury.down&cooldown.mongoose_bite.charges<3&refreshable" );
+  nomok -> add_talent( this, "Dragonsfire Grenade", "if=buff.mongoose_fury.duration>=gcd&cooldown.mongoose_bite.charges<=1&buff.mongoose_fury.stack<3|buff.mongoose_fury.down&cooldown.mongoose_bite.charges<3" );
+  nomok -> add_action( this, "Explosive Trap", "if=buff.mongoose_fury.duration>=gcd&cooldown.mongoose_bite.charges>=0&buff.mongoose_fury.stack<4" );
+  nomok -> add_action( this, "Raptor Strike", "if=talent.serpent_sting.enabled&dot.serpent_sting.refreshable&buff.mongoose_fury.stack<3&cooldown.mongoose_bite.charges<1" );
+  nomok -> add_action( this, "Fury of the Eagle", "if=buff.mongoose_fury.stack=6&cooldown.mongoose_bite.charges<=1" );
+  nomok -> add_action( this, "Mongoose Bite", "if=buff.aspect_of_the_eagle.up&buff.mongoose_fury.up" );
+  nomok -> add_action( this, "Aspect of the Eagle", "if=buff.mongoose_fury.up&buff.mongoose_fury.duration>6&cooldown.mongoose_bite.charges>=2" );
+  nomok -> add_action( this, "Fury of the Eagle", "if=cooldown.mongoose_bite.charges<=1&buff.mongoose_fury.duration>6" );
+  nomok -> add_action( this, "Flanking Strike", "if=cooldown.mongoose_bite.charges<=1&buff.mongoose_fury.remains>(1+action.mongoose_bite.charges*gcd)" );
+  nomok -> add_action( this, "Mongoose Bite", "if=buff.mongoose_fury.up&buff.mongoose_fury.remains<cooldown.aspect_of_the_eagle.remains" );
+  nomok -> add_action( this, "Flanking Strike", "if=talent.animal_instincts.enabled&cooldown.mongoose_bite.charges<3" );
+  nomok -> add_talent( this, "Spitting Cobra" );
+  nomok -> add_talent( this, "Steel Trap" );
+  nomok -> add_talent( this, "A Murder of Crows" );
+  nomok -> add_talent( this, "Caltrops", "if=(!dot.caltrops.ticking)" );
+  nomok -> add_action( this, "Explosive Trap" );
+  nomok -> add_action( this, "Carve", "if=equipped.frizzos_fingertrap&dot.lacerate.ticking&dot.lacerate.refreshable&focus>65" );
+  nomok -> add_talent( this, "Butchery", "if=equipped.frizzos_fingertrap&dot.lacerate.ticking&dot.lacerate.refreshable&focus>65" );
+  nomok -> add_action( this, "Lacerate", "if=refreshable" );
+  nomok -> add_talent( this, "Dragonsfire Grenade" );
+  nomok -> add_talent( this, "Throwing Axes", "if=cooldown.throwing_axes.charges=2" );
+  nomok -> add_action( this, "Mongoose Bite", "if=(charges>=2&cooldown.mongoose_bite.remains<=gcd|charges=3)" );
+  nomok -> add_action( this, "Flanking Strike" );
+  nomok -> add_talent( this, "Butchery" );
+  nomok -> add_talent( this, "Throwing Axes" );
+  nomok -> add_action( this, "Raptor Strike", "if=focus>75-cooldown.flanking_strike.remains*focus.regen" );
 }
 
 
@@ -6663,6 +6650,9 @@ double hunter_t::composite_player_multiplier( school_e school ) const
 
   if ( talents.lone_wolf -> ok() )
     m *= 1.0 + talents.lone_wolf -> effectN( 1 ).percent();
+
+  if ( buffs.t19_4p_mongoose_power -> up() )
+    m *= 1.0 + buffs.t19_4p_mongoose_power -> check_value();
 
   return m;
 }
@@ -7081,7 +7071,7 @@ struct hunter_module_t: public module_t
     register_special_effect( 225155, HUNTER_SURVIVAL,      []( hunter_t* p ) { return &( p -> legendary.sv_ring ); });
     register_special_effect( 213154, HUNTER_SURVIVAL,      []( hunter_t* p ) { return &( p -> legendary.sv_waist ); });
     register_special_effect( 212278, HUNTER_BEAST_MASTERY, []( hunter_t* p ) { return &( p -> legendary.bm_feet ); });
-    register_special_effect( 212329, HUNTER_BEAST_MASTERY, []( hunter_t* p ) { return &( p -> legendary.bm_ring ); });
+    register_special_effect( 212329, SPEC_NONE,            []( hunter_t* p ) { return &( p -> legendary.bm_ring ); });
     register_special_effect( 235721, HUNTER_BEAST_MASTERY, []( hunter_t* p ) { return &( p -> legendary.bm_shoulders ); });
     register_special_effect( 207280, HUNTER_BEAST_MASTERY, []( hunter_t* p ) { return &( p -> legendary.bm_waist ); });
     register_special_effect( 206889, HUNTER_MARKSMANSHIP,  []( hunter_t* p ) { return &( p -> legendary.mm_feet ); });

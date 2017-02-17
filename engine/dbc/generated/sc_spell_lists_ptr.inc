@@ -4,7 +4,7 @@
 #ifndef ptr_MAX_CLASS
 #define ptr_MAX_CLASS (13)
 #endif
-// Class based active abilities, wow build 23530
+// Class based active abilities, wow build 23578
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
@@ -1164,7 +1164,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
 };
 #define PTR_TREE_SPECIALIZATION_SIZE (36)
 
-// Talent tree specialization abilities, wow build 23530
+// Talent tree specialization abilities, wow build 23578
 static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -2265,7 +2265,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
 };
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 23530
+// Class mastery abilities, wow build 23578
 static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2504,7 +2504,7 @@ static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS]
 #define ptr_MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 23530
+// Racial abilities, wow build 23578
 static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -3240,9 +3240,9 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
     {     0, },
   },
 };
-#define PTR_SET_BONUS_DATA_SIZE (544)
+#define PTR_SET_BONUS_DATA_SIZE (616)
 
-// Set bonus data, wow build 23530
+// Set bonus data, wow build 23578
 static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,   71, 165636, { 127055, 127081, 127092, 127103, 127114,  0 } },
@@ -3810,10 +3810,85 @@ static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   { "Vestment of Second Sight"                   ,     "tier19",     12,  1282,   19,   2,  12,  581, 211075, { 138375, 138376, 138377, 138378, 138379, 138380,  0 } },
   { "Vestment of Second Sight"                   ,     "tier19",     12,  1282,   19,   4,  12,  577, 211074, { 138375, 138376, 138377, 138378, 138379, 138380,  0 } },
   { "Vestment of Second Sight"                   ,     "tier19",     12,  1282,   19,   4,  12,  581, 211077, { 138375, 138376, 138377, 138378, 138379, 138380,  0 } },
+  { "[PH] 7.2 Raid Set - Warrior"                ,     "tier20",     13,  1312,   20,   2,   1,   71, 212156, { 147187, 147188, 147189, 147190, 147191, 147192,  0 } },
+  { "[PH] 7.2 Raid Set - Warrior"                ,     "tier20",     13,  1312,   20,   2,   1,   72, 212157, { 147187, 147188, 147189, 147190, 147191, 147192,  0 } },
+  { "[PH] 7.2 Raid Set - Warrior"                ,     "tier20",     13,  1312,   20,   2,   1,   73, 212237, { 147187, 147188, 147189, 147190, 147191, 147192,  0 } },
+  { "[PH] 7.2 Raid Set - Warrior"                ,     "tier20",     13,  1312,   20,   4,   1,   71, 212149, { 147187, 147188, 147189, 147190, 147191, 147192,  0 } },
+  { "[PH] 7.2 Raid Set - Warrior"                ,     "tier20",     13,  1312,   20,   4,   1,   72, 212158, { 147187, 147188, 147189, 147190, 147191, 147192,  0 } },
+  { "[PH] 7.2 Raid Set - Warrior"                ,     "tier20",     13,  1312,   20,   4,   1,   73, 212244, { 147187, 147188, 147189, 147190, 147191, 147192,  0 } },
+  // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
+  { "[PH] 7.2 Raid Set - Paladin"                ,     "tier20",     13,  1307,   20,   2,   2,   65, 211436, { 147157, 147158, 147159, 147160, 147161, 147162,  0 } },
+  { "[PH] 7.2 Raid Set - Paladin"                ,     "tier20",     13,  1307,   20,   2,   2,   70, 211444, { 147157, 147158, 147159, 147160, 147161, 147162,  0 } },
+  { "[PH] 7.2 Raid Set - Paladin"                ,     "tier20",     13,  1307,   20,   2,   2,   66, 211553, { 147157, 147158, 147159, 147160, 147161, 147162,  0 } },
+  { "[PH] 7.2 Raid Set - Paladin"                ,     "tier20",     13,  1307,   20,   4,   2,   65, 211438, { 147157, 147158, 147159, 147160, 147161, 147162,  0 } },
+  { "[PH] 7.2 Raid Set - Paladin"                ,     "tier20",     13,  1307,   20,   4,   2,   70, 211448, { 147157, 147158, 147159, 147160, 147161, 147162,  0 } },
+  { "[PH] 7.2 Raid Set - Paladin"                ,     "tier20",     13,  1307,   20,   4,   2,   66, 211554, { 147157, 147158, 147159, 147160, 147161, 147162,  0 } },
+  { "[PH] 7.2 Raid Set - Hunter"                 ,     "tier20",     13,  1304,   20,   2,   3,  253, 211181, { 147139, 147140, 147141, 147142, 147143, 147144,  0 } },
+  { "[PH] 7.2 Raid Set - Hunter"                 ,     "tier20",     13,  1304,   20,   2,   3,  254, 211331, { 147139, 147140, 147141, 147142, 147143, 147144,  0 } },
+  { "[PH] 7.2 Raid Set - Hunter"                 ,     "tier20",     13,  1304,   20,   2,   3,  255, 211340, { 147139, 147140, 147141, 147142, 147143, 147144,  0 } },
+  { "[PH] 7.2 Raid Set - Hunter"                 ,     "tier20",     13,  1304,   20,   4,   3,  253, 211172, { 147139, 147140, 147141, 147142, 147143, 147144,  0 } },
+  { "[PH] 7.2 Raid Set - Hunter"                 ,     "tier20",     13,  1304,   20,   4,   3,  254, 211322, { 147139, 147140, 147141, 147142, 147143, 147144,  0 } },
+  { "[PH] 7.2 Raid Set - Hunter"                 ,     "tier20",     13,  1304,   20,   4,   3,  255, 211357, { 147139, 147140, 147141, 147142, 147143, 147144,  0 } },
+  { "[PH] 7.2 Raid Set - Rogue"                  ,     "tier20",     13,  1309,   20,   2,   4,  261, 211661, { 147169, 147170, 147171, 147172, 147173, 147174,  0 } },
+  { "[PH] 7.2 Raid Set - Rogue"                  ,     "tier20",     13,  1309,   20,   2,   4,  260, 211667, { 147169, 147170, 147171, 147172, 147173, 147174,  0 } },
+  { "[PH] 7.2 Raid Set - Rogue"                  ,     "tier20",     13,  1309,   20,   2,   4,  259, 211671, { 147169, 147170, 147171, 147172, 147173, 147174,  0 } },
+  { "[PH] 7.2 Raid Set - Rogue"                  ,     "tier20",     13,  1309,   20,   4,   4,  261, 211663, { 147169, 147170, 147171, 147172, 147173, 147174,  0 } },
+  { "[PH] 7.2 Raid Set - Rogue"                  ,     "tier20",     13,  1309,   20,   4,   4,  260, 211668, { 147169, 147170, 147171, 147172, 147173, 147174,  0 } },
+  { "[PH] 7.2 Raid Set - Rogue"                  ,     "tier20",     13,  1309,   20,   4,   4,  259, 211673, { 147169, 147170, 147171, 147172, 147173, 147174,  0 } },
+  { "[PH] 7.2 Raid Set - Priest"                 ,     "tier20",     13,  1308,   20,   2,   5,  256, 211556, { 147163, 147164, 147165, 147166, 147167, 147168,  0 } },
+  { "[PH] 7.2 Raid Set - Priest"                 ,     "tier20",     13,  1308,   20,   2,   5,  257, 211638, { 147163, 147164, 147165, 147166, 147167, 147168,  0 } },
+  { "[PH] 7.2 Raid Set - Priest"                 ,     "tier20",     13,  1308,   20,   2,   5,  258, 211646, { 147163, 147164, 147165, 147166, 147167, 147168,  0 } },
+  { "[PH] 7.2 Raid Set - Priest"                 ,     "tier20",     13,  1308,   20,   4,   5,  256, 211563, { 147163, 147164, 147165, 147166, 147167, 147168,  0 } },
+  { "[PH] 7.2 Raid Set - Priest"                 ,     "tier20",     13,  1308,   20,   4,   5,  257, 211640, { 147163, 147164, 147165, 147166, 147167, 147168,  0 } },
+  { "[PH] 7.2 Raid Set - Priest"                 ,     "tier20",     13,  1308,   20,   4,   5,  258, 211654, { 147163, 147164, 147165, 147166, 147167, 147168,  0 } },
+  { "[PH] 7.2 Raid Set - Death Knight"           ,     "tier20",     13,  1301,   20,   2,   6,  250, 211039, { 147121, 147122, 147123, 147124, 147125, 147126,  0 } },
+  // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
+  { "[PH] 7.2 Raid Set - Death Knight"           ,     "tier20",     13,  1301,   20,   2,   6,  251, 211042, { 147121, 147122, 147123, 147124, 147125, 147126,  0 } },
+  { "[PH] 7.2 Raid Set - Death Knight"           ,     "tier20",     13,  1301,   20,   2,   6,  252, 211047, { 147121, 147122, 147123, 147124, 147125, 147126,  0 } },
+  { "[PH] 7.2 Raid Set - Death Knight"           ,     "tier20",     13,  1301,   20,   4,   6,  250, 211041, { 147121, 147122, 147123, 147124, 147125, 147126,  0 } },
+  { "[PH] 7.2 Raid Set - Death Knight"           ,     "tier20",     13,  1301,   20,   4,   6,  251, 211045, { 147121, 147122, 147123, 147124, 147125, 147126,  0 } },
+  { "[PH] 7.2 Raid Set - Death Knight"           ,     "tier20",     13,  1301,   20,   4,   6,  252, 211050, { 147121, 147122, 147123, 147124, 147125, 147126,  0 } },
+  { "[PH] 7.2 Raid Set - Shaman"                 ,     "tier20",     13,  1310,   20,   2,   7,  262, 211951, { 147175, 147176, 147177, 147178, 147179, 147180,  0 } },
+  { "[PH] 7.2 Raid Set - Shaman"                 ,     "tier20",     13,  1310,   20,   2,   7,  263, 211987, { 147175, 147176, 147177, 147178, 147179, 147180,  0 } },
+  { "[PH] 7.2 Raid Set - Shaman"                 ,     "tier20",     13,  1310,   20,   2,   7,  264, 211992, { 147175, 147176, 147177, 147178, 147179, 147180,  0 } },
+  { "[PH] 7.2 Raid Set - Shaman"                 ,     "tier20",     13,  1310,   20,   4,   7,  262, 211963, { 147175, 147176, 147177, 147178, 147179, 147180,  0 } },
+  { "[PH] 7.2 Raid Set - Shaman"                 ,     "tier20",     13,  1310,   20,   4,   7,  263, 211988, { 147175, 147176, 147177, 147178, 147179, 147180,  0 } },
+  { "[PH] 7.2 Raid Set - Shaman"                 ,     "tier20",     13,  1310,   20,   4,   7,  264, 211993, { 147175, 147176, 147177, 147178, 147179, 147180,  0 } },
+  { "[PH] 7.2 Raid Set - Mage"                   ,     "tier20",     13,  1305,   20,   2,   8,   62, 211379, { 147145, 147146, 147147, 147148, 147149, 147150,  0 } },
+  { "[PH] 7.2 Raid Set - Mage"                   ,     "tier20",     13,  1305,   20,   2,   8,   63, 211394, { 147145, 147146, 147147, 147148, 147149, 147150,  0 } },
+  { "[PH] 7.2 Raid Set - Mage"                   ,     "tier20",     13,  1305,   20,   2,   8,   64, 211411, { 147145, 147146, 147147, 147148, 147149, 147150,  0 } },
+  { "[PH] 7.2 Raid Set - Mage"                   ,     "tier20",     13,  1305,   20,   4,   8,   62, 211386, { 147145, 147146, 147147, 147148, 147149, 147150,  0 } },
+  { "[PH] 7.2 Raid Set - Mage"                   ,     "tier20",     13,  1305,   20,   4,   8,   63, 211395, { 147145, 147146, 147147, 147148, 147149, 147150,  0 } },
+  { "[PH] 7.2 Raid Set - Mage"                   ,     "tier20",     13,  1305,   20,   4,   8,   64, 211404, { 147145, 147146, 147147, 147148, 147149, 147150,  0 } },
+  { "[PH] 7.2 Raid Set - Warlock"                ,     "tier20",     13,  1311,   20,   2,   9,  265, 212002, { 147181, 147182, 147183, 147184, 147185, 147186,  0 } },
+  { "[PH] 7.2 Raid Set - Warlock"                ,     "tier20",     13,  1311,   20,   2,   9,  266, 212005, { 147181, 147182, 147183, 147184, 147185, 147186,  0 } },
+  { "[PH] 7.2 Raid Set - Warlock"                ,     "tier20",     13,  1311,   20,   2,   9,  267, 212018, { 147181, 147182, 147183, 147184, 147185, 147186,  0 } },
+  { "[PH] 7.2 Raid Set - Warlock"                ,     "tier20",     13,  1311,   20,   4,   9,  265, 212003, { 147181, 147182, 147183, 147184, 147185, 147186,  0 } },
+  { "[PH] 7.2 Raid Set - Warlock"                ,     "tier20",     13,  1311,   20,   4,   9,  266, 212007, { 147181, 147182, 147183, 147184, 147185, 147186,  0 } },
+  { "[PH] 7.2 Raid Set - Warlock"                ,     "tier20",     13,  1311,   20,   4,   9,  267, 212017, { 147181, 147182, 147183, 147184, 147185, 147186,  0 } },
+  { "[PH] 7.2 Raid Set - Monk"                   ,     "tier20",     13,  1306,   20,   2,  10,  268, 211415, { 147151, 147152, 147153, 147154, 147155, 147156,  0 } },
+  { "[PH] 7.2 Raid Set - Monk"                   ,     "tier20",     13,  1306,   20,   2,  10,  270, 211418, { 147151, 147152, 147153, 147154, 147155, 147156,  0 } },
+  // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
+  { "[PH] 7.2 Raid Set - Monk"                   ,     "tier20",     13,  1306,   20,   2,  10,  269, 211427, { 147151, 147152, 147153, 147154, 147155, 147156,  0 } },
+  { "[PH] 7.2 Raid Set - Monk"                   ,     "tier20",     13,  1306,   20,   4,  10,  268, 211417, { 147151, 147152, 147153, 147154, 147155, 147156,  0 } },
+  { "[PH] 7.2 Raid Set - Monk"                   ,     "tier20",     13,  1306,   20,   4,  10,  270, 211423, { 147151, 147152, 147153, 147154, 147155, 147156,  0 } },
+  { "[PH] 7.2 Raid Set - Monk"                   ,     "tier20",     13,  1306,   20,   4,  10,  269, 211430, { 147151, 147152, 147153, 147154, 147155, 147156,  0 } },
+  { "[PH] 7.2 Raid Set - Druid"                  ,     "tier20",     13,  1303,   20,   2,  11,  102, 211092, { 147133, 147134, 147135, 147136, 147137, 147138,  0 } },
+  { "[PH] 7.2 Raid Set - Druid"                  ,     "tier20",     13,  1303,   20,   2,  11,  103, 211140, { 147133, 147134, 147135, 147136, 147137, 147138,  0 } },
+  { "[PH] 7.2 Raid Set - Druid"                  ,     "tier20",     13,  1303,   20,   2,  11,  104, 211149, { 147133, 147134, 147135, 147136, 147137, 147138,  0 } },
+  { "[PH] 7.2 Raid Set - Druid"                  ,     "tier20",     13,  1303,   20,   2,  11,  105, 211165, { 147133, 147134, 147135, 147136, 147137, 147138,  0 } },
+  { "[PH] 7.2 Raid Set - Druid"                  ,     "tier20",     13,  1303,   20,   4,  11,  102, 211104, { 147133, 147134, 147135, 147136, 147137, 147138,  0 } },
+  { "[PH] 7.2 Raid Set - Druid"                  ,     "tier20",     13,  1303,   20,   4,  11,  103, 211142, { 147133, 147134, 147135, 147136, 147137, 147138,  0 } },
+  { "[PH] 7.2 Raid Set - Druid"                  ,     "tier20",     13,  1303,   20,   4,  11,  104, 211150, { 147133, 147134, 147135, 147136, 147137, 147138,  0 } },
+  { "[PH] 7.2 Raid Set - Druid"                  ,     "tier20",     13,  1303,   20,   4,  11,  105, 211170, { 147133, 147134, 147135, 147136, 147137, 147138,  0 } },
+  { "[PH] 7.2 Raid Set - Demon Hunter"           ,     "tier20",     13,  1302,   20,   2,  12,  577, 211054, { 147127, 147128, 147129, 147130, 147131, 147132,  0 } },
+  { "[PH] 7.2 Raid Set - Demon Hunter"           ,     "tier20",     13,  1302,   20,   2,  12,  581, 211075, { 147127, 147128, 147129, 147130, 147131, 147132,  0 } },
+  { "[PH] 7.2 Raid Set - Demon Hunter"           ,     "tier20",     13,  1302,   20,   4,  12,  577, 211074, { 147127, 147128, 147129, 147130, 147131, 147132,  0 } },
+  { "[PH] 7.2 Raid Set - Demon Hunter"           ,     "tier20",     13,  1302,   20,   4,  12,  581, 211077, { 147127, 147128, 147129, 147130, 147131, 147132,  0 } },
 };
-#define PTR_RPPMMOD_SIZE (369)
+#define PTR_RPPMMOD_SIZE (411)
 
-// 369 RPPM Modifiers, wow build level 23530
+// 411 RPPM Modifiers, wow build level 23578
 static struct rppm_modifier_t __ptr_rppmmodifier_data[] = {
   {  45054,    4,  1,  1.0000 },
   {  49530,    1,  1,  1.0000 },
@@ -3944,7 +4019,6 @@ static struct rppm_modifier_t __ptr_rppmmodifier_data[] = {
   { 190890,    4,  1,  1.0000 },
   { 191048,    4,  1,  1.0000 },
   { 192623,    4,  1,  1.0000 },
-  { 192657,    4,  1,  1.0000 },
   { 193371,    4,  1,  1.0000 },
   { 195255,    4,  1,  1.0000 },
   { 195679,    4,  2,  1.0000 },
@@ -4184,11 +4258,54 @@ static struct rppm_modifier_t __ptr_rppmmodifier_data[] = {
   { 238524,  435,  3, -0.5000 },
   { 238524,    4,  1,  1.0000 },
   { 241496,    4,  1,  1.0000 },
+  { 242207,  476,  3, -0.5000 },
+  { 242207,  251,  4, -0.5000 },
+  { 242207,  252,  4, -0.5000 },
+  { 242207,  577,  4, -0.5000 },
+  { 242207,  102,  4, -0.5000 },
+  { 242207,  103,  4, -0.5000 },
+  { 242207,  105,  4, -0.5000 },
+  { 242207,  270,  4, -0.5000 },
+  { 242207,  269,  4, -0.5000 },
+  { 242207,   65,  4, -0.5000 },
+  { 242207,   70,  4, -0.5000 },
+  { 242207,   71,  4, -0.5000 },
+  { 242207,   72,  4, -0.5000 },
+  { 242215,  400,  3, -0.5000 },
+  { 242215,  250,  4, -0.5000 },
+  { 242215,  581,  4, -0.5000 },
+  { 242215,  102,  4, -0.5000 },
+  { 242215,  104,  4, -0.5000 },
+  { 242215,  105,  4, -0.5000 },
+  { 242215,  253,  4, -0.5000 },
+  { 242215,  254,  4, -0.5000 },
+  { 242215,  268,  4, -0.5000 },
+  { 242215,  270,  4, -0.5000 },
+  { 242215,   65,  4, -0.5000 },
+  { 242215,   66,  4, -0.5000 },
+  { 242215,  262,  4, -0.5000 },
+  { 242215,  264,  4, -0.5000 },
+  { 242215,   73,  4, -0.5000 },
+  { 242217,  400,  3, -0.5000 },
+  { 242217,  250,  4, -0.5000 },
+  { 242217,  581,  4, -0.5000 },
+  { 242217,  102,  4, -0.5000 },
+  { 242217,  104,  4, -0.5000 },
+  { 242217,  105,  4, -0.5000 },
+  { 242217,  253,  4, -0.5000 },
+  { 242217,  254,  4, -0.5000 },
+  { 242217,  268,  4, -0.5000 },
+  { 242217,  270,  4, -0.5000 },
+  { 242217,   65,  4, -0.5000 },
+  { 242217,   66,  4, -0.5000 },
+  { 242217,  262,  4, -0.5000 },
+  { 242217,  264,  4, -0.5000 },
+  { 242217,   73,  4, -0.5000 },
   {      0,    0,  0,  0.0000 },
 };
 #define PTR_ARTIFACT_SIZE (41)
 
-// Artifact base data, wow build 23530
+// Artifact base data, wow build 23578
 static struct artifact_t __ptr_artifact_data[PTR_ARTIFACT_SIZE] = {
   {  2,  70 },
   {  3, 577 },
@@ -4234,7 +4351,7 @@ static struct artifact_t __ptr_artifact_data[PTR_ARTIFACT_SIZE] = {
 };
 #define PTR_ARTIFACT_POWER_SIZE (895)
 
-// Artifact power data, wow build 23530
+// Artifact power data, wow build 23578
 static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER_SIZE] = {
   {   40,   2,  18,  0,   0, 205273, "Wake of Ashes"                      }, // Wake of Ashes (id=205273, n_ranks=1)
   {   41,   2,  32,  4,   3, 186941, "Highlord's Judgment"                }, // Highlord's Judgment (id=186941, n_ranks=8)
@@ -5134,7 +5251,7 @@ static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER
 };
 #define PTR_ARTIFACT_POWER_RANK_SIZE (4141)
 
-// Artifact power rank data, wow build 23530
+// Artifact power rank data, wow build 23578
 static struct artifact_power_rank_t __ptr_artifact_power_rank_data[PTR_ARTIFACT_POWER_RANK_SIZE] = {
   { 2316,    40,  0, 205273,      0.000, 0x00000000, 0 },
   { 2317,    41,  0, 186941,      8.000, 0x00000000, 0 },
@@ -9280,7 +9397,7 @@ static struct artifact_power_rank_t __ptr_artifact_power_rank_data[PTR_ARTIFACT_
 };
 #define PTR_PTR_ARTIFACT_POWER_RANK_HOTFIX_SIZE (0)
 
-// 0 ptr_artifact_power_rank hotfix entries, wow build level 23530
+// 0 ptr_artifact_power_rank hotfix entries, wow build level 23578
 static hotfix::client_hotfix_entry_t __ptr_ptr_artifact_power_rank_hotfix_data[] = {
   {      0,  0, 0, 0 },
 };

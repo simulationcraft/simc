@@ -62,7 +62,7 @@ actions.single+=/ice_lance,if=buff.fingers_of_frost.react>0&cooldown.icy_veins.r
 actions.single+=/frozen_orb
 actions.single+=/ice_nova
 actions.single+=/comet_storm
-actions.single+=/blizzard,if=talent.arctic_gale.enabled|active_enemies>2|active_enemies>1&!(talent.glacial_spike.enabled&talent.splitting_ice.enabled)|(buff.zannesu_journey.stack=5&buff.zannesu_journey.remains>cast_time)
+actions.single+=/blizzard,if=active_enemies>2|active_enemies>1&!(talent.glacial_spike.enabled&talent.splitting_ice.enabled)|(buff.zannesu_journey.stack=5&buff.zannesu_journey.remains>cast_time)
 actions.single+=/ebonbolt,if=buff.brain_freeze.react=0
 actions.single+=/glacial_spike
 actions.single+=/frostbolt
