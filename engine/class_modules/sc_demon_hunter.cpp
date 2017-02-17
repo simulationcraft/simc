@@ -423,6 +423,7 @@ public:
     gain_t* prepared;
     gain_t* blind_fury;
     gain_t* anger_of_the_halfgiants;
+    gain_t* havoc_t20_2pc;
 
     // Vengeance
     gain_t* damage_taken;
@@ -1617,8 +1618,7 @@ struct chaos_blades_t : public demon_hunter_spell_t
   void execute() override
   {
     demon_hunter_spell_t::execute();
-
-    p() -> buff.chaos_blades -> trigger( 1, p() -> cache.mastery_value() );
+    p()->buff.chaos_blades->trigger();
   }
 };
 
@@ -3162,6 +3162,16 @@ struct blade_dance_attack_t : public demon_hunter_attack_t
 
     return dm;
   }
+
+  double composite_crit_chance() const override
+  {
+    double cc = demon_hunter_attack_t::composite_crit_chance();
+
+    // FIX: Enable T20 when spelldata is hooked up
+    //cc += p()->sets.set(DEMON_HUNTER_HAVOC, T20, B4)->effectN(1).percent();
+
+    return cc;
+  }
 };
 
 struct blade_dance_event_t : public event_t
@@ -3290,6 +3300,13 @@ struct blade_dance_base_t : public demon_hunter_attack_t
 
     assert( dodge_buff );
     dodge_buff -> trigger();
+
+    // FIX: Enable T20 when spelldata is hooked up
+    //if (target_list().size() > 0)
+    //{
+    //  const double refund = p()->sets.set(DEMON_HUNTER_HAVOC, T20, B2)->effectN(1).resource(RESOURCE_FURY);
+    //  p()->resource_gain(RESOURCE_FURY, refund, p()->gain.havoc_t20_2pc);
+    //}
   }
 };
 
@@ -6896,6 +6913,7 @@ void demon_hunter_t::create_gains()
   gain.prepared                 = get_gain("prepared");
   gain.blind_fury               = get_gain("blind_fury");
   gain.anger_of_the_halfgiants  = get_gain("anger_of_the_halfgiants");
+  gain.havoc_t20_2pc            = get_gain("havoc_t20_2pc");
 
   // Vengeance
   gain.damage_taken             = get_gain("damage_taken");
@@ -7103,7 +7121,8 @@ double demon_hunter_t::composite_player_multiplier( school_e school ) const
 
   m *= 1.0 + buff.momentum -> check_value();
 
-  m *= 1.0 + buff.chaos_blades -> check_value();
+  if (buff.chaos_blades->check())
+    m *= 1.0 + cache.mastery_value();
 
   if ( dbc::is_school( school, SCHOOL_PHYSICAL ) && buff.demon_spikes -> check() )
     m *= 1.0 + talent.razor_spikes -> effectN( 1 ).percent();
