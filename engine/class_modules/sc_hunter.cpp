@@ -156,6 +156,9 @@ public:
     buff_t* moknathal_tactics;
     buff_t* spitting_cobra;
     buff_t* t19_4p_mongoose_power;
+    buff_t* t20_2p_aimed_shot;
+    buff_t* t20_4p_critical_aimed_damage;
+    buff_t* pre_t20_4p_critical_aimed_damage;
     buff_t* sentinels_sight;
     buff_t* butchers_bone_apron;
     buff_t* gyroscopic_stabilization;
@@ -659,6 +662,12 @@ public:
     if ( !ab::background && p() -> talents.steady_focus -> ok() )
       p() -> buffs.pre_steady_focus -> expire();
   }
+
+  virtual void try_t20_4p_mm()
+  {
+    if ( !ab::background && p() -> sets.has_set_bonus( HUNTER_MARKSMANSHIP, T20, B4 ) )
+      p() -> buffs.pre_t20_4p_critical_aimed_damage -> expire();
+  }
 };
 
 // True Aim can only exist on one target at a time
@@ -808,6 +817,7 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
   {
     base_t::execute();
     try_steady_focus();
+    try_t20_4p_mm();
 
     if ( may_proc_mm_feet )
       trigger_mm_feet( p() );
@@ -889,6 +899,7 @@ public:
   {
     base_t::execute();
     try_steady_focus();
+    try_t20_4p_mm();
   }
 };
 
@@ -3187,6 +3198,9 @@ struct aimed_shot_t: public aimed_shot_base_t
     if ( p() -> buffs.lock_and_load -> check() )
       return 0;
 
+    if ( p() -> buffs.t20_2p_aimed_shot -> check() )
+      cost *= 1.0 - p() -> buffs.t20_2p_aimed_shot -> check_value();
+
     return cost;
   }
 
@@ -3225,6 +3239,21 @@ struct aimed_shot_t: public aimed_shot_base_t
     else if ( p() -> legendary.mm_gloves -> ok() )
       p() -> buffs.gyroscopic_stabilization -> trigger();
 
+    if ( p() -> buffs.t20_2p_aimed_shot -> up() )
+      p() -> buffs.t20_2p_aimed_shot -> expire();
+    else if ( p() -> sets.has_set_bonus( HUNTER_MARKSMANSHIP, T20, B2 ) )
+      p() -> buffs.t20_2p_aimed_shot -> trigger();
+
+    if ( p() -> sets.has_set_bonus( HUNTER_MARKSMANSHIP, T20, B4 ) )
+    {
+      p() -> buffs.pre_t20_4p_critical_aimed_damage -> trigger();
+      if ( p() -> buffs.pre_t20_4p_critical_aimed_damage-> stack() == 2 )
+      {
+        p() -> buffs.t20_4p_critical_aimed_damage -> trigger();
+        p() -> buffs.pre_t20_4p_critical_aimed_damage-> expire();
+      }
+    }
+
     vulnerability_stats.update( p(), this );
   }
 
@@ -3235,6 +3264,9 @@ struct aimed_shot_t: public aimed_shot_base_t
     if ( p() -> buffs.lock_and_load -> up() )
       t = timespan_t::zero();
 
+    if ( p() -> buffs.t20_2p_aimed_shot -> check() )
+      t *= 1.0 - p() -> sets.set( HUNTER_MARKSMANSHIP, T20, B2 ) -> effectN( 1 ).percent();
+
     return t;
   }
 
@@ -3244,6 +3276,8 @@ struct aimed_shot_t: public aimed_shot_base_t
       return true;
     return false;
   }
+
+  void try_t20_4p_mm() override {}
 };
 
 // Arcane Shot Attack ================================================================
@@ -5859,6 +5893,19 @@ void hunter_t::create_buffs()
     buff_creator_t( this, "gyroscopic_stabilization", find_spell( 235712 ) )
       .default_value( find_spell( 235712 ) -> effectN( 2 ).percent() );
 
+  buffs.t20_2p_aimed_shot =
+    buff_creator_t( this, "t20_2p_aimed_shot" )
+      .default_value( sets.set( HUNTER_MARKSMANSHIP, T20, B2 ) -> effectN( 2 ).percent() );
+
+  buffs.pre_t20_4p_critical_aimed_damage =
+    buff_creator_t( this, "pre_t20_4p_critical_aimed_damage" )
+      .max_stack( 2 )
+      .quiet( true );
+
+  buffs.t20_4p_critical_aimed_damage =
+    buff_creator_t( this, "t20_4p_critical_aimed_damage", find_spell( 242243 ) )
+      .default_value( find_spell( 242243 ) -> effectN( 1 ).percent() );
+
   buffs.sephuzs_secret =
     haste_buff_creator_t( this, "sephuzs_secret", find_spell( 208052 ) )
       .default_value( find_spell( 208052 ) -> effectN( 2 ).percent() )
@@ -6478,6 +6525,9 @@ double hunter_t::composite_player_critical_damage_multiplier( const action_state
 
   if ( buffs.rapid_killing -> up() )
     cdm *= 1.0 + buffs.rapid_killing -> value();
+
+  if ( buffs.t20_4p_critical_aimed_damage -> up() )
+    cdm *= 1.0 + buffs.t20_4p_critical_aimed_damage -> value();
 
   return cdm;
 }
