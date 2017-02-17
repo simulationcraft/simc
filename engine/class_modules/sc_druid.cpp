@@ -954,7 +954,7 @@ struct force_of_nature_t : public pet_t
       }
     }
 
-    void cancel()
+    void cancel() override
     {
       melee_attack_t::cancel();
       first_attack = true;
@@ -1003,7 +1003,7 @@ struct force_of_nature_t : public pet_t
     pet_t::init_action_list();
   }
 
-  double composite_player_multiplier( school_e school ) const
+  double composite_player_multiplier( school_e school ) const override
   {
     return owner -> cache.player_multiplier( school );
   }
@@ -1023,7 +1023,7 @@ struct force_of_nature_t : public pet_t
     return owner -> cache.damage_versatility();
   }
 
-  virtual void init_base_stats()
+  void init_base_stats() override
   {
     pet_t::init_base_stats();
 
@@ -1036,9 +1036,9 @@ struct force_of_nature_t : public pet_t
     stamina_per_owner = 0;
   }
 
-  virtual resource_e primary_resource() const { return RESOURCE_NONE; }
+  resource_e primary_resource() const override { return RESOURCE_NONE; }
 
-  virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
+  action_t* create_action( const std::string& name, const std::string& options_str ) override
   {
     if ( name == "auto_attack" ) return new auto_attack_t( this );
 
@@ -2300,16 +2300,18 @@ public:
   bool    moment_of_clarity;
 
   cat_attack_t( const std::string& token, druid_t* p,
-                const spell_data_t* s = spell_data_t::nil(),
-                const std::string& options = std::string() ) :
-    base_t( token, p, s ),
-    requires_stealth( false ),
-    consumes_combo_points( false ),
-    consumes_clearcasting( data().affected_by( p -> spec.omen_of_clarity -> effectN( 1 ).trigger() -> effectN( 1 ) ) ),
-    moment_of_clarity( data().affected_by( p -> spec.omen_of_clarity -> effectN( 1 ).trigger() -> effectN( 3 ) ) ),
-    trigger_tier17_2pc( false ),
-    snapshots_tf( true ),
-    snapshots_sr( true )
+                const spell_data_t* s      = spell_data_t::nil(),
+                const std::string& options = std::string() )
+    : base_t( token, p, s ),
+      requires_stealth( false ),
+      consumes_combo_points( false ),
+      consumes_clearcasting( data().affected_by(
+          p->spec.omen_of_clarity->effectN( 1 ).trigger()->effectN( 1 ) ) ),
+      trigger_tier17_2pc( false ),
+      snapshots_tf( true ),
+      snapshots_sr( true ),
+      moment_of_clarity( data().affected_by(
+          p->spec.omen_of_clarity->effectN( 1 ).trigger()->effectN( 3 ) ) )
   {
     parse_options( options );
     

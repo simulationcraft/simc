@@ -2779,7 +2779,7 @@ void player_t::create_buffs()
       buff_t( buff_creator_t( p, "movement" ).max_stack( 1 ) )
     { }
 
-    bool trigger( int stacks, double value, double chance, timespan_t duration )
+    bool trigger( int stacks, double value, double chance, timespan_t duration ) override
     {
       if ( player -> buffs.norgannons_foresight_ready )
       {

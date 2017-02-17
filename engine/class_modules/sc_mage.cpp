@@ -2373,12 +2373,13 @@ struct frost_mage_spell_t : public mage_spell_t
   int fof_source_id;
 
   frost_mage_spell_t( const std::string& n, mage_t* p,
-                      const spell_data_t* s = spell_data_t::nil() ) :
-    mage_spell_t( n, p, s ),
-    chills( false ),
-    fof_source_id( -1 ),
-    calculate_on_impact( false )
-  {}
+                      const spell_data_t* s = spell_data_t::nil() )
+    : mage_spell_t( n, p, s ),
+      chills( false ),
+      calculate_on_impact( false ),
+      fof_source_id( -1 )
+  {
+  }
 
   struct brain_freeze_delay_event_t : public event_t
   {
@@ -3530,7 +3531,7 @@ struct blizzard_shard_t : public frost_mage_spell_t
     return DMG_OVER_TIME;
   }
 
-  virtual void impact( action_state_t* s )
+  void impact( action_state_t* s ) override
   {
     frost_mage_spell_t::impact( s );
 
@@ -3576,7 +3577,7 @@ struct blizzard_t : public frost_mage_spell_t
     may_miss = false;
   }
 
-  double false_positive_pct() const
+  double false_positive_pct() const override
   {
     // Players are probably less likely to accidentally use blizzard than other spells.
     return ( frost_mage_spell_t::false_positive_pct() / 2 ); 
@@ -7238,10 +7239,10 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   last_summoned( temporal_hero_e::INVALID ),
   distance_from_rune( 0.0 ),
   global_cinder_count( 0 ),
-  mage_potion_choice( "" ),
   incanters_flow_stack_mult( find_spell( 116267 ) -> effectN( 1 ).percent() ),
   iv_haste( 1.0 ),
   blessing_of_wisdom( false ),
+  mage_potion_choice( "" ),
   benefits( benefits_t() ),
   buffs( buffs_t() ),
   cooldowns( cooldowns_t() ),

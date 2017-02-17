@@ -1846,7 +1846,7 @@ struct spitting_cobra_t: public hunter_pet_t
     }
 
     // the cobra double dips off versatility & haste
-    double composite_versatility( const action_state_t* s ) const
+    double composite_versatility( const action_state_t* s ) const override
     {
       double cdv = base_t::composite_versatility( s );
       return cdv * cdv;
@@ -2928,7 +2928,7 @@ struct multi_shot_t: public hunter_ranged_attack_t
     return hunter_ranged_attack_t::ready();
   }
 
-  virtual double cast_regen() const
+  virtual double cast_regen() const override
   {
     double base = hunter_ranged_attack_t::cast_regen();
     double energize = target_list().size() * energize_amount;
@@ -3421,7 +3421,7 @@ struct arcane_shot_t: public hunter_ranged_attack_t
     return hunter_ranged_attack_t::ready();
   }
 
-  virtual double cast_regen() const
+  virtual double cast_regen() const override
   {
     return hunter_ranged_attack_t::cast_regen() + energize_amount;
   }
@@ -3730,7 +3730,7 @@ struct sidewinders_t: hunter_ranged_attack_t
       p() -> buffs.sentinels_sight -> trigger();
   }
 
-  virtual double cast_regen() const 
+  virtual double cast_regen() const override
   {
     return hunter_ranged_attack_t::cast_regen() + energize_amount;
   }

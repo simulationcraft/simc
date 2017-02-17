@@ -5842,9 +5842,15 @@ struct metamorphosis_adjusted_cooldown_expr_t : public expr_t
   bool has_grandeur;
   item_t* item_convergence;
 
-  metamorphosis_adjusted_cooldown_expr_t(demon_hunter_t* p, const std::string& name_str, 
-    item_t* item_convergence, bool has_grandeur)
-    : expr_t(name_str), dh(p), cooldown_multiplier(1.0), item_convergence(item_convergence), has_grandeur(has_grandeur)
+  metamorphosis_adjusted_cooldown_expr_t( demon_hunter_t* p,
+                                          const std::string& name_str,
+                                          item_t* item_convergence,
+                                          bool has_grandeur )
+    : expr_t( name_str ),
+      dh( p ),
+      cooldown_multiplier( 1.0 ),
+      has_grandeur( has_grandeur ),
+      item_convergence( item_convergence )
   {
   }
 

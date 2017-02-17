@@ -1629,7 +1629,7 @@ void item::pharameres_forbidden_grimoire( special_effect_t& effect )
       return spell_t::ready();
     }
 
-    void execute()
+    void execute() override
     {
       impact -> target = target;
       impact -> execute();
