@@ -2536,6 +2536,7 @@ struct volley_tick_t: hunter_ranged_attack_t
     hunter_ranged_attack_t( "volley_tick", p, p -> find_spell( 194392 ) )
   {
     may_proc_bullseye = false;
+    background = true;
     aoe = -1;
     attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
     travel_speed = 0.0;
