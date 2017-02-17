@@ -307,9 +307,9 @@ public:
           * rune_of_power;
 
     // Artifact
-    // Frost
     buff_t* chain_reaction,
-          * chilled_to_the_core;
+          * chilled_to_the_core,
+          * time_and_space;
 
     // Legendary
     buff_t* cord_of_infinity,
@@ -3102,11 +3102,39 @@ struct arcane_blast_t : public arcane_mage_spell_t
 
 // Arcane Explosion Spell =====================================================
 
+struct time_and_space_t : public arcane_mage_spell_t
+{
+  time_and_space_t( mage_t* p ) :
+    arcane_mage_spell_t( "arcane_explosion_echo", p, p -> find_artifact_spell( "Time and Space" ) )
+  {
+    may_miss = may_dodge = may_parry = may_crit = may_block = false;
+    callbacks = false;
+    aoe = -1;
+    base_costs[ RESOURCE_MANA ] = 0;
+    trigger_gcd = timespan_t::zero();
+    background = true;
+  }
+
+  virtual void init() override
+  {
+    mage_spell_t::init();
+    // disable the snapshot_flags for all multipliers
+    snapshot_flags &= STATE_NO_MULTIPLIER;
+    snapshot_flags |= STATE_TGT_MUL_DA;
+  }
+
+};
+
+
+
+
 struct arcane_explosion_t : public arcane_mage_spell_t
 {
+  time_and_space_t* arcane_explosion_echo;
   arcane_explosion_t( mage_t* p, const std::string& options_str ) :
     arcane_mage_spell_t( "arcane_explosion", p,
-                         p -> find_class_spell( "Arcane Explosion" ) )
+                         p -> find_class_spell( "Arcane Explosion" ) ),
+                         arcane_explosion_echo( nullptr )
   {
     parse_options( options_str );
     aoe = -1;
@@ -3114,6 +3142,13 @@ struct arcane_explosion_t : public arcane_mage_spell_t
     // PTR Multiplier
     base_multiplier *= 1.0 + p -> find_spell( 137021 ) -> effectN( 1 ).percent();
     radius += p -> artifact.crackling_energy.data().effectN( 1 ).base_value();
+
+    if ( p -> artifact.time_and_space.rank() )
+    {
+      arcane_explosion_echo = new time_and_space_t( p );
+      add_child( arcane_explosion_echo );
+    }
+
   }
 
   virtual void execute() override
@@ -3130,6 +3165,25 @@ struct arcane_explosion_t : public arcane_mage_spell_t
 
       p() -> buffs.arcane_instability -> trigger();
     }
+
+    if ( p() -> artifact.time_and_space.rank() )
+    {
+      if ( p() -> buffs.time_and_space -> check() )
+      {
+        arcane_explosion_echo -> target = execute_state -> target;
+        arcane_explosion_echo -> base_dd_min = 
+        arcane_explosion_echo -> base_dd_max = execute_state -> result_amount * p() -> artifact.time_and_space.percent();
+        arcane_explosion_echo -> execute();
+        p() -> buffs.time_and_space -> trigger();
+      }
+      else
+      {
+        p() -> buffs.time_and_space -> trigger();
+      }
+    }
+
+
+
   }
 
   virtual double cost() const override
@@ -7763,11 +7817,13 @@ void mage_t::create_buffs()
                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   // Artifact
-  // Frost
   buffs.chain_reaction   = buff_creator_t( this, "chain_reaction", find_spell( 195418 ) );
 
   buffs.chilled_to_the_core = buff_creator_t( this, "chilled_to_the_core", find_spell( 195446 ) )
                                    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
+  buffs.time_and_space   = buff_creator_t( this, "time_and_space", find_spell( 240692 ) );
+
 
   // Legendary
   buffs.cord_of_infinity   = buff_creator_t( this, "cord_of_infinity", find_spell( 209316 ) )
