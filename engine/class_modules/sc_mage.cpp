@@ -310,7 +310,8 @@ public:
     buff_t* chain_reaction,
           * chilled_to_the_core,
           * freezing_rain,
-          * time_and_space;
+          * time_and_space,
+          * warmth_of_the_phoenix;
 
     // Legendary
     buff_t* cord_of_infinity,
@@ -5818,6 +5819,11 @@ struct phoenixs_flames_t : public fire_mage_spell_t
       p() -> cooldowns.combustion
           -> adjust( -1000 * pyrotex_ignition_cloth_reduction );
     }
+
+    if ( p() -> artifact.warmth_of_the_phoenix.rank() )
+    {
+      p() -> buffs.warmth_of_the_phoenix -> trigger();
+    }
   }
 
   virtual void impact( action_state_t* s ) override
@@ -7849,7 +7855,9 @@ void mage_t::create_buffs()
 
   buffs.time_and_space   = buff_creator_t( this, "time_and_space", find_spell( 240692 ) );
 
-
+  buffs.warmth_of_the_phoenix = buff_creator_t( this, "warmth_of_the_phoenix", find_spell( 240671 ) )
+                                                 .add_invalidate( CACHE_SPELL_CRIT_CHANCE )
+                                                 .default_value( find_spell( 240671 ) -> effectN( 1 ).base_value() );
   // Legendary
   buffs.cord_of_infinity   = buff_creator_t( this, "cord_of_infinity", find_spell( 209316 ) )
                                              .default_value( find_spell( 209311 ) -> effectN( 1 ).percent() );
@@ -8858,10 +8866,19 @@ double mage_t::composite_spell_crit_rating() const
 {
   double cr = player_t::composite_spell_crit_rating();
 
+  sim -> out_debug.printf( " %f prebuff",cr );
+
+  if ( buffs.warmth_of_the_phoenix -> check() )
+  {
+    cr += buffs.warmth_of_the_phoenix -> default_value;
+  }
+  sim -> out_debug.printf( " %f post",cr );
   if ( spec.critical_mass -> ok() )
   {
     cr *= 1.0 + ( spec.critical_mass_2 -> effectN( 1 ).percent() );
   }
+  sim -> out_debug.printf( " %f multiplied",cr );
+
   return cr;
 
 }
