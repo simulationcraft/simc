@@ -3629,9 +3629,6 @@ struct mutilate_strike_t : public rogue_attack_t
     base_multiplier *= 1.0 + p -> artifact.assassins_blades.percent();
   }
 
-  bool procs_insignia_of_ravenholdt() const override
-  { return true; }
-
   double composite_crit_chance() const override
   {
     double c = rogue_attack_t::composite_crit_chance();
