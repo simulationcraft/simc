@@ -6828,9 +6828,9 @@ void rogue_t::init_action_list()
 
     // Stealth
     action_priority_list_t* stealth = get_action_priority_list( "stealth", "Stealth" );
-    stealth -> add_action( "variable,name=stealth_condition,value=(combo_points.deficit>=2+2*(talent.ghostly_strike.enabled&!debuff.ghostly_strike.up)+buff.broadsides.up&energy>60&!buff.jolly_roger.up&!buff.hidden_blade.up&!buff.curse_of_the_dreadblades.up)", "Condition to use stealth abilities" );
+    stealth -> add_action( "variable,name=stealth_condition,value=combo_points.deficit>=2+2*(talent.ghostly_strike.enabled&!debuff.ghostly_strike.up)+buff.broadsides.up&energy>60&!buff.jolly_roger.up&!buff.hidden_blade.up&!buff.curse_of_the_dreadblades.up", "Condition to use stealth abilities" );
     stealth -> add_action( this, "Ambush" );
-    stealth -> add_action( this, "Vanish", "if=variable.stealth_condition" );
+    stealth -> add_action( this, "Vanish", "if=(equipped.mantle_of_the_master_assassin&buff.true_bearing.up)|variable.stealth_condition" );
     stealth -> add_action( "shadowmeld,if=variable.stealth_condition" );
   }
   else if ( specialization() == ROGUE_SUBTLETY )
