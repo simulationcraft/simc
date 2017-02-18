@@ -5127,7 +5127,7 @@ struct ice_lance_t : public frost_mage_spell_t
 
     if ( fss -> frozen() )
     {
-      m *= 3;
+      m *= 3.0 +  p() -> artifact.obsidian_lance.percent();
     }
 
     return m;
