@@ -2320,6 +2320,11 @@ void rogue_attack_t::execute()
 
 inline bool rogue_attack_t::ready()
 {
+  if ( p() -> buffs.faster_than_light_trigger -> check() )
+  {
+    return false;
+  }
+
   if ( ! melee_attack_t::ready() )
     return false;
 
@@ -4389,10 +4394,10 @@ struct slice_and_dice_t : public rogue_attack_t
 
 // Sprint ===================================================================
 
-struct sprint_t: public rogue_attack_t
+struct sprint_base_t : public rogue_attack_t
 {
-  sprint_t( rogue_t* p, const std::string& options_str ):
-    rogue_attack_t( "sprint", p, p -> spell.sprint, options_str )
+  sprint_base_t( rogue_t* p, const std::string& name, const std::string& options_str ):
+    rogue_attack_t( name, p, p -> spell.sprint, options_str )
   {
     harmful = callbacks = false;
     cooldown = p -> cooldowns.sprint;
@@ -4409,26 +4414,22 @@ struct sprint_t: public rogue_attack_t
   }
 };
 
-struct sprint_offensive_t: public rogue_attack_t
+struct sprint_t : public sprint_base_t
 {
-  sprint_offensive_t( rogue_t* p, const std::string& options_str ):
-    rogue_attack_t( "sprint", p, p -> spell.sprint, options_str )
-  {
-    harmful = callbacks = hasted_ticks = false;
-    cooldown = p -> cooldowns.sprint;
-    ignore_false_positive = channeled = special = true; //Force channel to disable all actions.
-    dot_duration = timespan_t::from_seconds( 3 );
-    base_execute_time = timespan_t::from_seconds( 3 );
+  sprint_t( rogue_t* p, const std::string& options_str ) :
+    sprint_base_t( p, "sprint", options_str )
+  { }
+};
 
-    cooldown -> duration += p -> artifact.shadow_walker.time_value();
-  }
-
-  double composite_haste() const override
-  { return 1.0; } // Not hasted.
+struct sprint_offensive_t : public sprint_base_t
+{
+  sprint_offensive_t( rogue_t* p, const std::string& options_str ) :
+    sprint_base_t( p, "sprint_offensive", options_str )
+  { }
 
   void execute() override
   {
-    rogue_attack_t::execute();
+    sprint_base_t::execute();
 
     // We must stop autoattacks
     if ( p() -> main_hand_attack && p() -> main_hand_attack -> execute_event )
@@ -4437,11 +4438,9 @@ struct sprint_offensive_t: public rogue_attack_t
     if ( p() -> off_hand_attack && p() -> off_hand_attack -> execute_event )
       event_t::cancel( p() -> off_hand_attack -> execute_event );
 
-    p() -> buffs.sprint -> trigger();
     p() -> buffs.faster_than_light_trigger -> trigger();
   }
 };
-
 
 // Symbols of Death =========================================================
 
