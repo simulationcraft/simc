@@ -309,6 +309,7 @@ public:
     // Artifact
     buff_t* chain_reaction,
           * chilled_to_the_core,
+          * freezing_rain,
           * time_and_space;
 
     // Legendary
@@ -1860,7 +1861,6 @@ struct ray_of_frost_buff_t : public buff_t
     }
   }
 };
-
 
 } // buffs
 
@@ -3647,7 +3647,15 @@ struct blizzard_t : public frost_mage_spell_t
     // Players are probably less likely to accidentally use blizzard than other spells.
     return ( frost_mage_spell_t::false_positive_pct() / 2 );
   }
+  virtual timespan_t execute_time() const override
+  {
+    if ( p() -> artifact.freezing_rain.rank() && p() -> buffs.freezing_rain -> check() )
+    {
+      return timespan_t::zero();
+    }
 
+    return frost_mage_spell_t::execute_time();
+  }
   virtual void execute() override
   {
     frost_mage_spell_t::execute();
@@ -4766,6 +4774,8 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
     base_multiplier *= 1.0 + p -> find_spell( 137020 ) -> effectN( 1 ).percent();
     crit_bonus_multiplier *= 1.0 + p -> artifact.orbital_strike.percent();
     chills = true;
+
+
   }
 
   virtual bool init_finished() override
@@ -4794,6 +4804,7 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
         fof_proc_chance *= 1.0 + ( p() -> talents.frozen_touch -> effectN( 1 ).percent() );
       }
       trigger_fof( fof_source_id, fof_proc_chance );
+
     }
   }
 
@@ -4807,6 +4818,8 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
 struct frozen_orb_t : public frost_mage_spell_t
 {
   bool ice_time;
+  timespan_t freezing_rain_base_duration;
+  timespan_t freezing_rain_scaled_duration;
   ice_time_nova_t* ice_time_nova;
 
   //TODO: Redo how frozen_orb_bolt is set up to take base_multipler from parent.
@@ -4824,6 +4837,10 @@ struct frozen_orb_t : public frost_mage_spell_t
     may_miss       = false;
     may_crit       = false;
     travel_speed = 20;
+    if ( p -> artifact.freezing_rain.rank() )
+    {
+      freezing_rain_base_duration = p -> find_spell( 240555 ) -> duration();
+    }
   }
 
   virtual bool init_finished() override
@@ -4841,6 +4858,11 @@ struct frozen_orb_t : public frost_mage_spell_t
     if ( p() -> sets.has_set_bonus( MAGE_FROST, T17, B4 ) )
     {
       p() -> buffs.frost_t17_4pc -> trigger();
+    }
+    if ( p() -> artifact.freezing_rain.rank() )
+    {
+      freezing_rain_scaled_duration = freezing_rain_base_duration * p() -> cache.spell_speed();
+      p() -> buffs.freezing_rain -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, freezing_rain_scaled_duration  );
     }
   }
 
@@ -5127,7 +5149,7 @@ struct ice_lance_t : public frost_mage_spell_t
 
     if ( fss -> frozen() )
     {
-      m *= 3.0 +  p() -> artifact.obsidian_lance.percent();
+      m *= 3.0 + p() -> artifact.obsidian_lance.percent();
     }
 
     return m;
@@ -7821,6 +7843,8 @@ void mage_t::create_buffs()
 
   buffs.chilled_to_the_core = buff_creator_t( this, "chilled_to_the_core", find_spell( 195446 ) )
                                    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
+  buffs.freezing_rain    = buff_creator_t( this, "freezing_rain", find_spell( 240555 ) );
 
   buffs.time_and_space   = buff_creator_t( this, "time_and_space", find_spell( 240692 ) );
 
