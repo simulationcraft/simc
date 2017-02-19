@@ -6905,7 +6905,7 @@ void rogue_t::init_action_list()
     stealthed -> add_action( this, "Symbols of Death", "if=buff.symbols_of_death.remains<target.time_to_die-4&buff.symbols_of_death.remains<=buff.symbols_of_death.duration*0.3" );
     stealthed -> add_action( "call_action_list,name=finish,if=combo_points>=5&(spell_targets.shuriken_storm>=2+talent.premeditation.enabled+equipped.shadow_satyrs_walk|(mantle_duration>0&mantle_duration<=1.2))" );
     stealthed -> add_action( this, "Shuriken Storm", "if=buff.shadowmeld.down&((combo_points.deficit>=3&spell_targets.shuriken_storm>=2+talent.premeditation.enabled+equipped.shadow_satyrs_walk)|(combo_points.deficit>=1+buff.shadow_blades.up&buff.the_dreadlords_deceit.stack>=29))" );
-    stealthed -> add_action( this, "Shadowstrike", "shadowstrike,if=combo_points.deficit>=2+talent.premeditation.enabled+buff.shadow_blades.up-equipped.mantle_of_the_master_assassin" );
+    stealthed -> add_action( this, "Shadowstrike", "if=combo_points.deficit>=2+talent.premeditation.enabled+buff.shadow_blades.up-equipped.mantle_of_the_master_assassin" );
     stealthed -> add_action( "call_action_list,name=finish,if=combo_points>=5" );
     stealthed -> add_action( this, "Shadowstrike" );
   }
