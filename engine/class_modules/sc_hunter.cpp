@@ -660,7 +660,7 @@ public:
 
   virtual void try_steady_focus()
   {
-    if ( !background && p() -> talents.steady_focus -> ok() )
+    if ( !ab::background && p() -> talents.steady_focus -> ok() )
       p() -> buffs.pre_steady_focus -> expire();
   }
 };
