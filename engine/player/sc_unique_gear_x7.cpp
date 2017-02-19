@@ -65,6 +65,7 @@ namespace item
   void deteriorated_construct_core( special_effect_t& );
   void eye_of_command( special_effect_t& );
   void bloodstained_hankerchief( special_effect_t& );
+  void majordomos_dinner_bell( special_effect_t& );
 
   // 7.0 Misc
   void darkmoon_deck( special_effect_t& );
@@ -1049,6 +1050,70 @@ void item::toe_knees_promise( special_effect_t& effect )
 {
   effect.execute_action = new flame_gale_driver_t( effect );
 }
+
+// Majordomo's Dinner Bell ==================================================
+
+struct majordomos_dinner_bell_t : proc_spell_t
+{
+  std::vector<stat_buff_t*> buffs;
+
+  majordomos_dinner_bell_t(const special_effect_t& effect) :
+    proc_spell_t("dinner_bell", effect.player, effect.player -> find_spell(230101), effect.item)
+  {
+    // Spell used for tooltips, game uses buffs 230102-230105 based on a script but not all are in DBC spell data
+    const spell_data_t* buff_spell = effect.player->find_spell(230102);
+    const double buff_amount = item_database::apply_combat_rating_multiplier(*effect.item,
+      buff_spell->effectN(1).average(effect.item)) * util::composite_karazhan_empower_multiplier(effect.player);
+
+    buffs =
+    {
+      stat_buff_creator_t(effect.player, "quite_satisfied_crit", buff_spell, effect.item)
+        .add_stat(STAT_CRIT_RATING, buff_amount),
+      stat_buff_creator_t(effect.player, "quite_satisfied_haste", buff_spell, effect.item)
+        .add_stat(STAT_HASTE_RATING, buff_amount),
+      stat_buff_creator_t(effect.player, "quite_satisfied_mastery", buff_spell, effect.item)
+        .add_stat(STAT_MASTERY_RATING, buff_amount),
+      stat_buff_creator_t(effect.player, "quite_satisfied_vers", buff_spell, effect.item)
+        .add_stat(STAT_VERSATILITY_RATING, buff_amount),
+    };
+  }
+
+  void execute()
+  {
+    // The way this works, despite the tooltip, is that the buff matches your current food buff
+    // If you don't have a food buff, it is random
+    if(player->consumables.food)
+    {
+      const stat_buff_t* food_buff = dynamic_cast<stat_buff_t*>(player->consumables.food);
+      if (food_buff && food_buff->stats.size() > 0)
+      {
+        const auto it = range::find_if(buffs, [food_buff](const stat_buff_t* buff) {
+          if (buff->stats.size() > 0)
+            return buff->stats.front().stat == food_buff->stats.front().stat;
+          else
+            return false;
+        });
+
+        if (it != buffs.end())
+        {
+          (*it)->trigger();
+          return;
+        }
+      }
+    }
+
+    // We didn't find a matching food buff, so pick randomly
+    const int selected_buff = (int)(player->sim->rng().real() * buffs.size());
+    buffs[selected_buff]->trigger();
+  }
+};
+
+void item::majordomos_dinner_bell(special_effect_t& effect)
+{
+  effect.execute_action = new majordomos_dinner_bell_t( effect );
+}
+
+
 // Memento of Angerboda =====================================================
 
 struct memento_callback_t : public dbc_proc_callback_t
@@ -4371,6 +4436,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 230236, item::deteriorated_construct_core    );
   register_special_effect( 230150, item::eye_of_command                 );
   register_special_effect( 230011, item::bloodstained_hankerchief       );
+  register_special_effect( 230101, item::majordomos_dinner_bell         );
 
   /* Legion 7.0 Raid */
   // register_special_effect( 221786, item::bloodthirsty_instinct  );
