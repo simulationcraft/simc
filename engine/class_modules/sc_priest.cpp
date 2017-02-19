@@ -3878,6 +3878,7 @@ struct insanity_drain_stacks_t final : public priest_buff_t<buff_t>
                      .max_stack( 1 )
                      .chance( 1.0 )
                      .duration( timespan_t::zero() )
+                     .default_value(1)
                      ),
       stack_increase( nullptr )
      
@@ -3904,8 +3905,8 @@ struct insanity_drain_stacks_t final : public priest_buff_t<buff_t>
 
   void bump(int stacks, double value) override
   {
-    //buff_t::bump(stacks, value+1);
-    current_value = value + 1;
+    buff_t::bump(stacks, current_value + 1);
+    //current_value = value + 1;
   }
 
   void reset() override
