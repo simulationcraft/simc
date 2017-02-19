@@ -2373,12 +2373,13 @@ struct frost_mage_spell_t : public mage_spell_t
   int fof_source_id;
 
   frost_mage_spell_t( const std::string& n, mage_t* p,
-                      const spell_data_t* s = spell_data_t::nil() ) :
-    mage_spell_t( n, p, s ),
-    chills( false ),
-    fof_source_id( -1 ),
-    calculate_on_impact( false )
-  {}
+                      const spell_data_t* s = spell_data_t::nil() )
+    : mage_spell_t( n, p, s ),
+      chills( false ),
+      calculate_on_impact( false ),
+      fof_source_id( -1 )
+  {
+  }
 
   struct brain_freeze_delay_event_t : public event_t
   {
@@ -3530,7 +3531,7 @@ struct blizzard_shard_t : public frost_mage_spell_t
     return DMG_OVER_TIME;
   }
 
-  virtual void impact( action_state_t* s )
+  void impact( action_state_t* s ) override
   {
     frost_mage_spell_t::impact( s );
 
@@ -3576,7 +3577,7 @@ struct blizzard_t : public frost_mage_spell_t
     may_miss = false;
   }
 
-  double false_positive_pct() const
+  double false_positive_pct() const override
   {
     // Players are probably less likely to accidentally use blizzard than other spells.
     return ( frost_mage_spell_t::false_positive_pct() / 2 ); 
@@ -4348,6 +4349,8 @@ struct flurry_bolt_t : public frost_mage_spell_t
 };
 struct flurry_t : public frost_mage_spell_t
 {
+  timespan_t initial_delay;
+
   flurry_bolt_t* flurry_bolt;
   flurry_t( mage_t* p, const std::string& options_str ) :
     frost_mage_spell_t( "flurry", p, p -> find_spell( 44614 ) ),
@@ -4358,6 +4361,7 @@ struct flurry_t : public frost_mage_spell_t
     hasted_ticks = false;
     add_child( flurry_bolt );
     //TODO: Remove hardcoded values once it exists in spell data for bolt impact timing.
+    initial_delay = timespan_t::from_seconds( 0.11 );
     dot_duration = timespan_t::from_seconds( 0.45 );
     base_tick_time = timespan_t::from_seconds( 0.225 );
   }
@@ -4366,7 +4370,7 @@ struct flurry_t : public frost_mage_spell_t
   {
     // Approximate travel time from in game data.
     // TODO: Improve approximation
-    return timespan_t::from_seconds( ( player -> get_player_distance( *target ) / 38 ) );
+    return initial_delay + frost_mage_spell_t::travel_time();
   }
 
   virtual timespan_t execute_time() const override
@@ -7235,10 +7239,10 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   last_summoned( temporal_hero_e::INVALID ),
   distance_from_rune( 0.0 ),
   global_cinder_count( 0 ),
-  mage_potion_choice( "" ),
   incanters_flow_stack_mult( find_spell( 116267 ) -> effectN( 1 ).percent() ),
   iv_haste( 1.0 ),
   blessing_of_wisdom( false ),
+  mage_potion_choice( "" ),
   benefits( benefits_t() ),
   buffs( buffs_t() ),
   cooldowns( cooldowns_t() ),
@@ -7994,7 +7998,7 @@ std::string mage_t::get_special_use_items( const std::string& item_name, bool sp
     {
       if ( item_name == "obelisk_of_the_void" )
       {
-        conditions = "if=buff.rune_of_power.up&cooldown.combustion.remains>50";
+        conditions = "if=cooldown.combustion.remains>50";
       }
       if ( item_name == "horn_of_valor" )
       {
@@ -8252,6 +8256,7 @@ void mage_t::apl_arcane()
   default_list -> add_action( mage_t::get_special_use_items( "obelisk_of_the_void", false ) );
   default_list -> add_action( mage_t::get_special_use_items( "mrrgrias_favor", false ) );
   default_list -> add_action( mage_t::get_special_use_items( "pharameres_forbidden_grimoire", false ) );
+  default_list -> add_action( mage_t::get_special_use_items( "kiljaedens_burning_wish", false ) );
   default_list -> add_action( "call_action_list,name=build,if=buff.arcane_charge.stack<4" );
   default_list -> add_action( "call_action_list,name=init_burn,if=buff.arcane_power.down&buff.arcane_charge.stack=4&(cooldown.mark_of_aluneth.remains=0|cooldown.mark_of_aluneth.remains>20)&(!talent.rune_of_power.enabled|(cooldown.arcane_power.remains<=action.rune_of_power.cast_time|action.rune_of_power.recharge_time<cooldown.arcane_power.remains))|target.time_to_die<45" );
   default_list -> add_action( "call_action_list,name=burn,if=burn_phase" );
@@ -8314,7 +8319,6 @@ void mage_t::apl_arcane()
   burn      -> add_talent( this, "Charged Up", "if=(equipped.132451&buff.arcane_charge.stack<=1)" );
   burn      -> add_action( this, "Arcane Missiles", "if=buff.arcane_missiles.react=3" );
   burn      -> add_talent( this, "Nether Tempest", "if=dot.nether_tempest.remains<=2|!ticking" );
-  burn      -> add_action( this, "Arcane Blast", "if=active_enemies<=1&mana.pct%10*execute_time>target.time_to_die" );
   burn      -> add_action( this, "Arcane Explosion", "if=active_enemies>1&mana.pct%10*execute_time>target.time_to_die" );
   burn      -> add_action( this, "Presence of Mind", "if=buff.rune_of_power.remains<=2*action.arcane_blast.execute_time");
   burn      -> add_action( this, "Arcane Missiles", "if=buff.arcane_missiles.react>1" );
@@ -8435,6 +8439,7 @@ void mage_t::apl_frost()
   default_list -> add_action( mage_t::get_special_use_items( "obelisk_of_the_void", false ) );
   default_list -> add_action( mage_t::get_special_use_items( "mrrgrias_favor", false ) );
   default_list -> add_action( mage_t::get_special_use_items( "pharameres_forbidden_grimoire", false ) );
+  default_list -> add_action( mage_t::get_special_use_items( "kiljaedens_burning_wish", false ) );
   default_list -> add_action( "call_action_list,name=cooldowns" );
   default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>=4" );
   default_list -> add_action( "call_action_list,name=single" );
@@ -8449,7 +8454,7 @@ void mage_t::apl_frost()
   single -> add_action( this, "Frozen Orb" );
   single -> add_talent( this, "Ice Nova" );
   single -> add_talent( this, "Comet Storm" );
-  single -> add_action( this, "Blizzard", "if=talent.arctic_gale.enabled|active_enemies>2|active_enemies>1&!(talent.glacial_spike.enabled&talent.splitting_ice.enabled)|(buff.zannesu_journey.stack=5&buff.zannesu_journey.remains>cast_time)" );
+  single -> add_action( this, "Blizzard", "if=active_enemies>2|active_enemies>1&!(talent.glacial_spike.enabled&talent.splitting_ice.enabled)|(buff.zannesu_journey.stack=5&buff.zannesu_journey.remains>cast_time)" );
   single -> add_action( this, "Ebonbolt", "if=buff.brain_freeze.react=0" );
   single -> add_talent( this, "Glacial Spike" );
   single -> add_action( this, "Frostbolt" );
@@ -9686,6 +9691,12 @@ public:
       .operation( hotfix::HOTFIX_SET )
       .modifier( 57 )
       .verification_value( 81 );
+
+    hotfix::register_spell( "Mage", "2017-02-04", "Manually set Flurry's travel speed.", 44614 )
+      .field( "prj_speed" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 45.0 )
+      .verification_value( 0.0 );
   }
 
   virtual bool valid() const override { return true; }

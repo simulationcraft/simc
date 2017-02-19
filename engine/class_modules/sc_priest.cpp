@@ -1398,11 +1398,11 @@ public:
   priest_action_t( const std::string& n, priest_t& p,
                    const spell_data_t* s = spell_data_t::nil() )
     : ab( n, &p, s ),
-      priest( p ),
       shadow_damage_increase(
           ab::data().affected_by( p.specs.shadow_priest->effectN( 1 ) ) ),
       shadow_dot_increase(
-          ab::data().affected_by( p.specs.shadow_priest->effectN( 2 ) ) )
+          ab::data().affected_by( p.specs.shadow_priest->effectN( 2 ) ) ),
+      priest( p )
   {
     ab::may_crit          = true;
     ab::tick_may_crit     = true;
@@ -2840,7 +2840,7 @@ struct shadowy_apparition_spell_t final : public priest_spell_t
 struct blessed_dawnlight_medallion_t : public priest_spell_t
 {
   double insanity;
-  blessed_dawnlight_medallion_t( priest_t& p, const special_effect_t& effect )
+  blessed_dawnlight_medallion_t( priest_t& p, const special_effect_t& )
     : priest_spell_t( "blessing", p, p.find_spell( 227727 ) ),
       insanity( data().effectN( 1 ).percent() )
   {
@@ -4039,7 +4039,7 @@ struct lingering_insanity_t final : public priest_buff_t<haste_buff_t>
     buff_t::decrement( hidden_lingering_insanity );
   }
 
-  void expire_override( int stacks, timespan_t )
+  void expire_override( int stacks, timespan_t ) override
   {
     if ( stacks <= 0 )
     {
@@ -5957,7 +5957,7 @@ void priest_t::target_mitigation( school_e school, dmg_e dt, action_state_t* s )
 
 // priest_t::create_proc_action
 // =================================================
-action_t* priest_t::create_proc_action( const std::string& name,
+action_t* priest_t::create_proc_action( const std::string& /*name*/,
                                         const special_effect_t& effect )
 {
   if ( effect.driver()->id() == 222275 )

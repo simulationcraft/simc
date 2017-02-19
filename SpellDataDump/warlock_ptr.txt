@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23436, git build 197aafa)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build ea39c9d)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -4868,6 +4868,7 @@ Name             : Reap Souls (Artifact) (id=216698)
 Class            : Warlock
 School           : Shadow
 Velocity         : 20 yards/sec
+Cooldown         : 5 seconds
 Artifact Power   : Id: 999, Max Rank: 1
 Triggered by     : Tormented Souls (216695), Push Active Ability to Bar (225888)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
