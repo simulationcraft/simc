@@ -1078,7 +1078,7 @@ struct majordomos_dinner_bell_t : proc_spell_t
     };
   }
 
-  void execute()
+  void execute() override
   {
     // The way this works, despite the tooltip, is that the buff matches your current food buff
     // If you don't have a food buff, it is random
@@ -1087,9 +1087,10 @@ struct majordomos_dinner_bell_t : proc_spell_t
       const stat_buff_t* food_buff = dynamic_cast<stat_buff_t*>(player->consumables.food);
       if (food_buff && food_buff->stats.size() > 0)
       {
-        const auto it = range::find_if(buffs, [food_buff](const stat_buff_t* buff) {
+        const stat_e food_stat = food_buff->stats.front().stat;
+        const auto it = range::find_if(buffs, [food_stat](const stat_buff_t* buff) {
           if (buff->stats.size() > 0)
-            return buff->stats.front().stat == food_buff->stats.front().stat;
+            return buff->stats.front().stat == food_stat;
           else
             return false;
         });
