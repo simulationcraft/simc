@@ -4406,7 +4406,7 @@ struct sprint_base_t : public rogue_attack_t
     cooldown = p -> cooldowns.sprint;
     ignore_false_positive = true;
 
-    cooldown -> duration += p -> artifact.shadow_walker.time_value();
+    cooldown -> duration = data().cooldown() + p -> artifact.shadow_walker.time_value();
   }
 
   void execute() override
