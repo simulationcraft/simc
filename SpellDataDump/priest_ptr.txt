@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23436, git build 7d86112)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build ea39c9d)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Discipline Shadow Priest
@@ -116,7 +116,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=236)      : School Damage: holy (2)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.25000 | Target: Enemy(6)
-Description      : Smites an enemy for $s1 Holy damage$?s231682[ and absorbs the next $<shield> damage dealt by the enemy]?s231687[ and has a $231687s2% chance to reset the cooldown of Holy Fire][].
+Description      : Smites an enemy for $s1 Holy damage$?s231682[ and absorbs the next $<shield> damage dealt by the enemy]?s231687[ and has a $231687s1% chance to reset the cooldown of Holy Fire][].
 Variables        : $shield=${($SPS*2.25)*(1+$@versadmg)}
 
 Name             : Fade (id=586) [Spell Family (6)] 
@@ -855,6 +855,9 @@ Spell Level      : 48
 Range            : 40 yards
 Duration         : 8 seconds
 Cooldown         : 240 seconds
+Proc Chance      : 100%
+Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Lucidity (137323), Item - Priest WoD PvP Discipline 4P Bonus (171141), Item - Priest WoD PvP Holy4P Bonus (171142), Pain is in Your Mind (197713)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -1385,7 +1388,7 @@ Description      : Summons a holy barrier to protect all allies at the target lo
 
 Name             : Shadowcrawl (id=63619) [Spell Family (6)] 
 Class            : Priest
-School           : Arcane
+School           : Shadow
 Spell Level      : 1
 Range            : 30 yards
 GCD              : 1.5 seconds
@@ -3602,7 +3605,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=294269)   : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 3.60000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 3.25000 | Target: Enemy(6)
 #2 (id=294270)   : Dummy (3)
                    Base Value: 35 | Scaled Value: 35
 Description      : A word of dark binding that inflicts $s1 Shadow damage to the target. Only usable on enemies that have less than $s2% health.
@@ -4274,7 +4277,7 @@ Effects          :
                    Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Sunwell Torrent (28516), Binding Heal (32546), Prayer of Mending (33110), Holy Word: Sanctify (34861), Divine Hymn (64844), Divine Star (110744), Divine Star (110745), Halo (120517), Halo (120692), Halo (120696), Divine Star (122128), Holy Mending (196781), Light of T'uure (208065), Body and Mind (214121)
 #2 (id=308008)   : Direct Heal (10)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 4.00000 | Target: Friend(21)
-Description      : Applies Light of the Naaru to the target, healing for $s2 and increasing all healing you do to that target by $208065s1% for $d. Maximum 2 charges.
+Description      : Applies Light of the Naaru to the target, healing for $s2 and increasing your healing done to that target by $208065s1% for $d. Maximum 2 charges.
 Tooltip          : Healing taken from the Priest increased by $s1%.
 
 Name             : Mind Flay (id=208232) [Spell Family (6)] 

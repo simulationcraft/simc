@@ -284,6 +284,7 @@ public:
     spell_t*  goldrinns_fang;
     action_t* natures_guardian;
     spell_t*  rage_of_the_sleeper;
+    attack_t* shadow_thrash;
     spell_t*  shooting_stars;
     spell_t*  starfall;
     spell_t*  starshards;
@@ -292,7 +293,7 @@ public:
 
   // Pets
   std::array<pet_t*, 11> pet_fey_moonwing; // 30 second duration, 3 second internal icd... create 11 to be safe.
-  std::array<pet_t*, 4> force_of_nature;
+  std::array<pet_t*, 3> force_of_nature;
   // Auto-attacks
   weapon_t caster_form_weapon;
   weapon_t cat_weapon;
@@ -928,14 +929,59 @@ namespace pets {
 
 struct force_of_nature_t : public pet_t
 {
-  struct wrath_t : public spell_t
+  struct fon_melee_t : public melee_attack_t
   {
-    wrath_t( force_of_nature_t* player ) :
-      spell_t( "wrath", player, player -> find_spell( 113769 ) )
+    bool first_attack;
+    fon_melee_t( pet_t* p, const char* name = "melee" ) :
+      melee_attack_t( name, p, spell_data_t::nil() ),
+      first_attack( true )
     {
-      if ( player -> o() -> force_of_nature[0] )
-        stats = player -> o() -> force_of_nature[0] -> get_stats( "wrath" );
-      may_crit = true;
+      school = SCHOOL_PHYSICAL;
+      weapon = &( p -> main_hand_weapon );
+      base_execute_time = weapon -> swing_time;
+      may_crit = background = repeating = true;
+    }
+
+    timespan_t execute_time() const override
+    {
+      if ( first_attack )
+      {
+        return timespan_t::zero();
+      }
+      else
+      {
+        return melee_attack_t::execute_time();
+      }
+    }
+
+    void cancel() override
+    {
+      melee_attack_t::cancel();
+      first_attack = true;
+    }
+
+    void schedule_execute( action_state_t* s ) override
+    {
+      melee_attack_t::schedule_execute( s );
+      first_attack = false;
+    }
+  };
+
+  struct auto_attack_t : public melee_attack_t
+  {
+    auto_attack_t( pet_t* player ) : melee_attack_t( "auto_attack", player )
+    {
+      assert( player -> main_hand_weapon.type != WEAPON_NONE );
+      player -> main_hand_attack = new fon_melee_t( player );
+      trigger_gcd = timespan_t::zero();
+    }
+
+    void execute() override
+    { player -> main_hand_attack -> schedule_execute(); }
+
+    bool ready() override
+    {
+      return ( player -> main_hand_attack -> execute_event == nullptr );
     }
   };
 
@@ -944,13 +990,40 @@ struct force_of_nature_t : public pet_t
   force_of_nature_t( sim_t* sim, druid_t* owner ) :
     pet_t( sim, owner, "treant", true /*GUARDIAN*/, true )
   {
-    owner_coeff.sp_from_sp = 1.0 / 3;
-    owner_coeff.ap_from_ap = 1.0 / 3;
-    action_list_str = "wrath";
+    owner_coeff.ap_from_sp = 3;
     regen_type = REGEN_DISABLED;
+    main_hand_weapon.type = WEAPON_BEAST;
   }
 
-  virtual void init_base_stats()
+  void init_action_list() override
+  {
+    action_priority_list_t* def = get_action_priority_list( "default" );
+    def -> add_action( "auto_attack" );
+
+    pet_t::init_action_list();
+  }
+
+  double composite_player_multiplier( school_e school ) const override
+  {
+    return owner -> cache.player_multiplier( school );
+  }
+
+  double composite_melee_crit_chance() const override
+  {
+    return owner -> cache.spell_crit_chance();
+  }
+
+  double composite_spell_haste() const override
+  {
+    return owner -> cache.spell_haste();
+  }
+
+  double composite_damage_versatility() const override
+  {
+    return owner -> cache.damage_versatility();
+  }
+
+  void init_base_stats() override
   {
     pet_t::init_base_stats();
 
@@ -963,12 +1036,11 @@ struct force_of_nature_t : public pet_t
     stamina_per_owner = 0;
   }
 
-  virtual resource_e primary_resource() const { return RESOURCE_MANA; }
+  resource_e primary_resource() const override { return RESOURCE_NONE; }
 
-  virtual action_t* create_action( const std::string& name,
-                                   const std::string& options_str )
+  action_t* create_action( const std::string& name, const std::string& options_str ) override
   {
-    if ( name == "wrath" ) return new wrath_t( this );
+    if ( name == "auto_attack" ) return new auto_attack_t( this );
 
     return pet_t::create_action( name, options_str );
   }
@@ -2217,8 +2289,6 @@ public:
   bool    requires_stealth;
   bool    consumes_combo_points;
   bool    consumes_clearcasting;
-  bool    triggers_ashamanes_bite;
-  bool    triggers_primal_fury;
   bool    trigger_tier17_2pc;
   struct {
     bool direct, tick;
@@ -2226,18 +2296,22 @@ public:
   bool    snapshots_tf;
   bool    snapshots_sr;
 
+  // whether the attack gets a damage bonus from Moment of Clarity
+  bool    moment_of_clarity;
+
   cat_attack_t( const std::string& token, druid_t* p,
-                const spell_data_t* s = spell_data_t::nil(),
-                const std::string& options = std::string() ) :
-    base_t( token, p, s ),
-    requires_stealth( false ),
-    consumes_combo_points( false ),
-    consumes_clearcasting( false ),
-    triggers_ashamanes_bite ( true ),
-    triggers_primal_fury ( true ),
-    trigger_tier17_2pc( false ),
-    snapshots_tf( true ),
-    snapshots_sr( true )
+                const spell_data_t* s      = spell_data_t::nil(),
+                const std::string& options = std::string() )
+    : base_t( token, p, s ),
+      requires_stealth( false ),
+      consumes_combo_points( false ),
+      consumes_clearcasting( data().affected_by(
+          p->spec.omen_of_clarity->effectN( 1 ).trigger()->effectN( 1 ) ) ),
+      trigger_tier17_2pc( false ),
+      snapshots_tf( true ),
+      snapshots_sr( true ),
+      moment_of_clarity( data().affected_by(
+          p->spec.omen_of_clarity->effectN( 1 ).trigger()->effectN( 3 ) ) )
   {
     parse_options( options );
     
@@ -2251,7 +2325,7 @@ public:
     razor_claws.tick = data().affected_by( p -> mastery.razor_claws -> effectN( 2 ) );
 
     // Apply Feral Druid Aura damage modifiers
-    if (p -> specialization() == DRUID_FERAL)
+    if ( p -> specialization() == DRUID_FERAL )
     {
        //dots
        if ( s -> affected_by( p -> spec.feral -> effectN(2) ))
@@ -2410,6 +2484,9 @@ public:
     if ( snapshots_sr )
       pm *= 1.0 + p() -> buff.savage_roar -> check_value();
 
+    if ( moment_of_clarity )
+      pm *= 1.0 + p() -> buff.clearcasting -> check_value();
+
     return pm;
   }
 
@@ -2465,12 +2542,9 @@ public:
 
     if ( energize_resource == RESOURCE_COMBO_POINT && energize_amount > 0 && hit_any_target )
     {
-       if (triggers_ashamanes_bite) 
-       {
-          trigger_ashamanes_rip();
-       }
+      trigger_ashamanes_rip();
       
-      if ( attack_critical && p() -> specialization() == DRUID_FERAL && triggers_primal_fury)
+      if ( attack_critical && p() -> specialization() == DRUID_FERAL )
       {
         trigger_primal_fury();
       }
@@ -2552,7 +2626,7 @@ public:
     }
   }
 
-  void trigger_ashamanes_rip()
+  virtual void trigger_ashamanes_rip()
   {
     if ( ! p() -> artifact.ashamanes_bite.rank() )
       return;
@@ -2676,8 +2750,6 @@ struct ashamanes_frenzy_driver_t : public cat_attack_t
       consumes_bloodtalons = false; // BT is applied by driver.
       ignite_multiplier = dot_duration / data().effectN( 3 ).period();
       dot_duration = timespan_t::zero(); // DoT is applied by ignite action.
-      triggers_ashamanes_bite = false;
-      triggers_primal_fury = false;
     }
 
     void impact( action_state_t* s ) override
@@ -2686,6 +2758,9 @@ struct ashamanes_frenzy_driver_t : public cat_attack_t
 
       residual_action::trigger( ignite, s -> target, s -> result_raw * ignite_multiplier );
     }
+
+    // Does not trigger Ashamane's Rip.
+    void trigger_ashamanes_rip() override {}
   };
 
   ashamanes_frenzy_t* damage;
@@ -2741,6 +2816,7 @@ struct ashamanes_rip_t : public cat_attack_t
     may_miss = may_block = may_dodge = may_parry = false;
     // Copies benefit from rip, so need to flag this as snapshotting so its damage doesn't get modified dynamically.
     snapshots_tf = snapshots_sr = true;
+    // "dot_behavior" will have no effect, see ashamanes_rip_t::impact()
       
     base_tick_time *= 1.0 + p -> talent.jagged_wounds -> effectN( 1 ).percent();
     base_multiplier *= 1.0 + p -> artifact.razor_fangs.percent();
@@ -2781,6 +2857,15 @@ struct ashamanes_rip_t : public cat_attack_t
 
     cat_attack_t::execute();
   }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    // To mimick blizz-like behavior, DoT does not clip but instead ends the
+    // previous DoT prior to applying the new one.
+    td( s -> target ) -> dots.shadow_rip -> cancel();
+
+    cat_attack_t::impact( s );
+  }
 };
 
 // Berserk ==================================================================
@@ -2790,7 +2875,7 @@ struct berserk_t : public cat_attack_t
   berserk_t( druid_t* player, const std::string& options_str ) :
     cat_attack_t( "berserk", player, player -> find_specialization_spell( "Berserk" ), options_str )
   {
-    harmful = consumes_clearcasting = may_miss = may_parry = may_dodge = may_crit = false;
+    harmful = may_miss = may_parry = may_dodge = may_crit = false;
   }
 
   void execute() override
@@ -2964,7 +3049,7 @@ struct gushing_wound_t : public residual_action::residual_periodic_action_t<cat_
     residual_action::residual_periodic_action_t<cat_attack_t>( "gushing_wound", p, p -> find_spell( 166638 ) )
   {
     background = dual = proc = true;
-    consumes_clearcasting = may_miss = may_dodge = may_parry = false;
+    may_miss = may_dodge = may_parry = false;
     trigger_tier17_2pc = p -> sets.has_set_bonus( DRUID_FERAL, T17, B2 );
   }
 };
@@ -3216,7 +3301,6 @@ struct shred_t : public cat_attack_t
   {
     base_crit += p -> artifact.feral_power.percent();
     base_multiplier *= 1.0 + p -> artifact.shredder_fangs.percent();
-    consumes_clearcasting = true;
   }
 
   virtual void impact( action_state_t* s ) override
@@ -3257,11 +3341,6 @@ struct shred_t : public cat_attack_t
   {
     double m = cat_attack_t::action_multiplier();
 
-    if ( p()->talent.moment_of_clarity->ok() && p()->buff.clearcasting->up() )
-    {
-       m *= 1.0 + p()->talent.moment_of_clarity->effectN(5).percent();
-    }
-
     if ( stealthed() )
       m *= 1.0 + data().effectN( 4 ).percent();
 
@@ -3282,7 +3361,6 @@ public:
     energize_amount = data().effectN( 1 ).percent();
     energize_resource = RESOURCE_COMBO_POINT;
     energize_type = ENERGIZE_ON_HIT;
-    consumes_clearcasting = true;
 
     base_multiplier *= 1.0 + player -> artifact.sharpened_claws.percent();
   }
@@ -3298,18 +3376,6 @@ public:
     c += reduction;
 
     return c;
-  }
-
-  double action_multiplier() const
-  {
-    double am = cat_attack_t::action_multiplier();
-
-    if ( p()->talent.moment_of_clarity->ok() && p()->buff.clearcasting->up() )
-    {
-      am *= 1.0 + p()->talent.moment_of_clarity->effectN( 4 ).percent();
-    }
-
-    return am;
   }
 
   virtual void execute() override
@@ -3354,7 +3420,7 @@ struct tigers_fury_t : public cat_attack_t
     cat_attack_t( "tigers_fury", p, p -> find_specialization_spell( "Tiger's Fury" ), options_str ),
     duration( p -> buff.tigers_fury -> buff_duration )
   {
-    harmful = consumes_clearcasting = may_miss = may_parry = may_dodge = may_crit = false;
+    harmful = may_miss = may_parry = may_dodge = may_crit = false;
     autoshift = form_mask = CAT_FORM;
     energize_type = ENERGIZE_ON_CAST;
     energize_amount += p -> spec.tigers_fury_2 -> effectN( 1 ).resource( RESOURCE_ENERGY );
@@ -3381,57 +3447,64 @@ struct tigers_fury_t : public cat_attack_t
 
 // Thrash (Cat) =============================================================
 
-struct thrash_cat_t: public cat_attack_t {
-  struct shadow_thrash_t: public cat_attack_t {
-    struct shadow_thrash_tick_t: public cat_attack_t {
-      double multiplier;
+struct thrash_cat_t : public cat_attack_t
+{
+  struct shadow_thrash_t : public cat_attack_t
+  {
+    struct shadow_thrash_tick_t : public cat_attack_t
+    {
       shadow_thrash_tick_t( druid_t* p ):
-        cat_attack_t( "shadow_thrash", p, p -> find_spell( 210687 ) ),
-        multiplier( 0 )
+        cat_attack_t( "shadow_thrash", p, p -> find_spell( 210687 ) )
       {
         background = dual = true;
         aoe = -1;
-      }
-
-      double action_multiplier() const
-      {
-        double am = cat_attack_t::action_multiplier();
-
-        am *= 1.0 + multiplier;
-
-        return am;
+        // Disable benefit from snapshotted damage bonuses, those will be applied in driver::tick().
+        snapshots_tf = snapshots_sr = moment_of_clarity = false;
       }
     };
 
-    double multiplier;
-    shadow_thrash_tick_t* tick;
-    shadow_thrash_t( druid_t* p ):
+    cat_attack_t* damage;
+
+    shadow_thrash_t( druid_t* p ) :
       cat_attack_t( "shadow_thrash", p, p -> artifact.shadow_thrash.data().effectN( 1 ).trigger() ),
-      multiplier( 0 ), tick( 0 )
+      damage( new shadow_thrash_tick_t( p ) )
     {
       background = true;
-      tick = new shadow_thrash_tick_t( p );
-      tick_action = tick;
+      // Enable snapshotted damage bonuses so we can pass those on to the tick action (DoT-like behavior).
+      // TF and SR should be on by default, but just make sure since we are hard overriding.
+      snapshots_tf = snapshots_sr = moment_of_clarity = true;
 
       base_tick_time *= 1.0 + p -> talent.jagged_wounds -> effectN( 1 ).percent();
+      // dot_duration doesn't matter but set it anyway to be safe.
       dot_duration *= 1.0 + p -> talent.jagged_wounds -> effectN( 2 ).percent();
     }
 
-    void execute() override
+    // Shadow Thrash uses "legacy" refresh, carrying over no more than 1 tick.
+    timespan_t composite_dot_duration( const action_state_t* s ) const override
     {
-      tick -> multiplier = multiplier; 
-      cat_attack_t::execute();
+      // Hardcode 2 base ticks because of Jagged Wounds granularity issue.
+      return base_tick_time * 2 + td( s -> target ) -> dots.shadow_thrash -> time_to_next_tick();
+    }
+
+    void tick( dot_t* d ) override
+    {
+      cat_attack_t::tick( d );
+
+      // Create & snapshot state
+      action_state_t* s = damage -> get_state();
+      s -> target = d -> state -> target;
+      damage -> snapshot_state( s, DMG_DIRECT );
+      // Apply snapshotted damage bonuses.
+      s -> persistent_multiplier = d -> state -> persistent_multiplier;
+      damage -> schedule_execute( s );
     }
   };
 
-  shadow_thrash_t* shadow_thrash;
   thrash_cat_t( druid_t* p, const std::string& options_str ):
-    cat_attack_t( "thrash_cat", p, p -> find_spell( 106830 ), options_str ),
-    shadow_thrash( nullptr )
+    cat_attack_t( "thrash_cat", p, p -> find_spell( 106830 ), options_str )
   {
     aoe = -1;
     spell_power_mod.direct = 0;
-    consumes_clearcasting = true;
 
     trigger_tier17_2pc = p -> sets.has_set_bonus( DRUID_FERAL, T17, B2 );
 
@@ -3443,10 +3516,14 @@ struct thrash_cat_t: public cat_attack_t {
       energize_type = ENERGIZE_ON_HIT;
     }
 
-    if ( shadow_thrash == nullptr )
+    if ( p -> artifact.shadow_thrash.rank() )
     {
-      shadow_thrash = new shadow_thrash_t( p );
-      add_child( shadow_thrash );
+      if ( ! p -> active.shadow_thrash )
+      {
+        p -> active.shadow_thrash = new shadow_thrash_t( p );
+      }
+
+      add_child( p -> active.shadow_thrash );
     }
 
     base_tick_time *= 1.0 + p -> talent.jagged_wounds -> effectN( 1 ).percent();
@@ -3454,36 +3531,32 @@ struct thrash_cat_t: public cat_attack_t {
     base_multiplier *= 1.0 + p -> artifact.jagged_claws.percent();
   }
 
-  double action_multiplier() const
+  void impact( action_state_t* s ) override
   {
-    double am = cat_attack_t::action_multiplier();
+    cat_attack_t::impact( s );
 
-    if ( p() -> talent.moment_of_clarity -> ok() && p() -> buff.clearcasting -> up() )
-    {
-      double mom = p() -> talent.moment_of_clarity -> effectN( 5 ).percent();
-      am *= 1.0 + mom;
-      shadow_thrash -> multiplier = mom;
-    }
-    else
-    {
-      shadow_thrash -> multiplier = 0;
-    }
-
-    return am;
+    // Trigger in impact, before consume_resource(), so it can get the damage bonus from Moment of Clarity.
+    trigger_shadow_thrash( s );
   }
 
   void execute() override
   {
     cat_attack_t::execute();
-    
-    if ( rng().roll( p()->artifact.shadow_thrash.data().proc_chance() ) )
-    {
-      shadow_thrash -> target = execute_state -> target;
-      shadow_thrash -> schedule_execute();
-    }
 
     p() -> buff.scent_of_blood -> trigger( 1,
-                                           num_targets_hit * p() -> buff.scent_of_blood -> default_value );
+      num_targets_hit * p() -> buff.scent_of_blood -> default_value );
+  }
+
+  void trigger_shadow_thrash( const action_state_t* ts )
+  {
+    if ( ! rng().roll( p() -> artifact.shadow_thrash.data().proc_chance() ) )
+      return;
+
+    // Snapshot now so we can use schedule_execute().
+    action_state_t* s = p() -> active.shadow_thrash -> get_state();
+    s -> target = ts -> target;
+    p() -> active.shadow_thrash -> snapshot_state( s, DMG_OVER_TIME );
+    p() -> active.shadow_thrash -> schedule_execute( s );
   }
 };
 
@@ -6008,6 +6081,31 @@ struct wild_charge_t : public druid_spell_t
   }
 };
 
+struct force_of_nature_t : public druid_spell_t
+{
+  timespan_t summon_duration;
+  force_of_nature_t( druid_t* p, const std::string options ) :
+    druid_spell_t( "force_of_nature", p, p -> talent.force_of_nature ),
+    summon_duration( timespan_t::zero() )
+  {
+    parse_options( options );
+    harmful = may_crit = false;
+    summon_duration = data().duration() + timespan_t::from_millis( 1 );
+  }
+
+  virtual void execute() override
+  {
+    druid_spell_t::execute();
+
+    for ( size_t i = 0; i < p() -> force_of_nature.size(); i++ )
+    {
+      if ( p() -> force_of_nature[i] -> is_sleeping() )
+      {
+        p() -> force_of_nature[i] -> summon( summon_duration );
+      }
+    }
+  }
+};
 } // end namespace spells
 
 // ==========================================================================
@@ -6145,6 +6243,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "displacer_beast"        ) return new        displacer_beast_t( this, options_str );
   if ( name == "elunes_guidance"        ) return new        elunes_guidance_t( this, options_str );
   if ( name == "ferocious_bite"         ) return new         ferocious_bite_t( this, options_str );
+  if ( name == "force_of_nature"        ) return new        force_of_nature_t( this, options_str );
   if ( name == "frenzied_regeneration"  ) return new  frenzied_regeneration_t( this, options_str );
   if ( name == "full_moon"              ) return new              full_moon_t( this, options_str );
   if ( name == "fury_of_elune"          ) return new          fury_of_elune_t( this, options_str );
@@ -6506,10 +6605,11 @@ void druid_t::init_spells()
 
 void druid_t::init_base_stats()
 {
-  player_t::init_base_stats();
-
   // Set base distance based on spec
-  base.distance = ( specialization() == DRUID_FERAL || specialization() == DRUID_GUARDIAN ) ? 5 : 30;
+  if ( base.distance < 1 )
+    base.distance = ( specialization() == DRUID_FERAL || specialization() == DRUID_GUARDIAN ) ? 5 : 30;
+
+  player_t::init_base_stats();
 
   // All specs get benefit from both agi and intellect.
   // Nurturing Instinct overrides this behavior in composite_spell_power.
@@ -6560,7 +6660,8 @@ void druid_t::create_buffs()
                                .chance( specialization() == DRUID_RESTORATION ? find_spell( 113043 ) -> proc_chance()
                                         : find_spell( 16864 ) -> proc_chance() )
                                .cd( timespan_t::zero() )
-                               .max_stack( 1 + talent.moment_of_clarity -> effectN( 1 ).base_value() );
+                               .max_stack( 1 + talent.moment_of_clarity -> effectN( 1 ).base_value() )
+                               .default_value( talent.moment_of_clarity -> effectN( 4 ).percent() );
 
   buff.dash                  = buff_creator_t( this, "dash", find_class_spell( "Dash" ) )
                                .cd( timespan_t::zero() )
@@ -7560,7 +7661,7 @@ double druid_t::mana_regen_per_second() const
 {
   double mp5 = player_t::mana_regen_per_second();
 
-  if ( buff.moonkin_form -> check() ) // Boomkins get 150% increased mana regeneration, scaling with haste. Legion TOCHECK
+  if ( buff.moonkin_form -> check() )
     mp5 *= 1.0 + buff.moonkin_form -> data().effectN( 5 ).percent() + ( 1 / cache.spell_haste() );
 
   return mp5;
@@ -8507,6 +8608,11 @@ double druid_t::calculate_expected_max_health() const
 
     const random_prop_data_t item_data = dbc.random_property( item -> item_level() );
     int index = item_database::random_suffix_type( &item -> parsed.data );
+    if ( item_data.p_epic[ 0 ] == 0 )
+    {
+      continue;
+    }
+
     slot_weights += item_data.p_epic[ index ] / item_data.p_epic[ 0 ];
 
     if ( ! item -> active() )

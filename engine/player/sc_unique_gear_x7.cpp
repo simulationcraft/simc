@@ -65,6 +65,7 @@ namespace item
   void deteriorated_construct_core( special_effect_t& );
   void eye_of_command( special_effect_t& );
   void bloodstained_hankerchief( special_effect_t& );
+  void majordomos_dinner_bell( special_effect_t& );
 
   // 7.0 Misc
   void darkmoon_deck( special_effect_t& );
@@ -1049,6 +1050,71 @@ void item::toe_knees_promise( special_effect_t& effect )
 {
   effect.execute_action = new flame_gale_driver_t( effect );
 }
+
+// Majordomo's Dinner Bell ==================================================
+
+struct majordomos_dinner_bell_t : proc_spell_t
+{
+  std::vector<stat_buff_t*> buffs;
+
+  majordomos_dinner_bell_t(const special_effect_t& effect) :
+    proc_spell_t("dinner_bell", effect.player, effect.player -> find_spell(230101), effect.item)
+  {
+    // Spell used for tooltips, game uses buffs 230102-230105 based on a script but not all are in DBC spell data
+    const spell_data_t* buff_spell = effect.player->find_spell(230102);
+    const double buff_amount = item_database::apply_combat_rating_multiplier(*effect.item,
+      buff_spell->effectN(1).average(effect.item)) * util::composite_karazhan_empower_multiplier(effect.player);
+
+    buffs =
+    {
+      stat_buff_creator_t(effect.player, "quite_satisfied_crit", buff_spell, effect.item)
+        .add_stat(STAT_CRIT_RATING, buff_amount),
+      stat_buff_creator_t(effect.player, "quite_satisfied_haste", buff_spell, effect.item)
+        .add_stat(STAT_HASTE_RATING, buff_amount),
+      stat_buff_creator_t(effect.player, "quite_satisfied_mastery", buff_spell, effect.item)
+        .add_stat(STAT_MASTERY_RATING, buff_amount),
+      stat_buff_creator_t(effect.player, "quite_satisfied_vers", buff_spell, effect.item)
+        .add_stat(STAT_VERSATILITY_RATING, buff_amount),
+    };
+  }
+
+  void execute() override
+  {
+    // The way this works, despite the tooltip, is that the buff matches your current food buff
+    // If you don't have a food buff, it is random
+    if(player->consumables.food)
+    {
+      const stat_buff_t* food_buff = dynamic_cast<stat_buff_t*>(player->consumables.food);
+      if (food_buff && food_buff->stats.size() > 0)
+      {
+        const stat_e food_stat = food_buff->stats.front().stat;
+        const auto it = range::find_if(buffs, [food_stat](const stat_buff_t* buff) {
+          if (buff->stats.size() > 0)
+            return buff->stats.front().stat == food_stat;
+          else
+            return false;
+        });
+
+        if (it != buffs.end())
+        {
+          (*it)->trigger();
+          return;
+        }
+      }
+    }
+
+    // We didn't find a matching food buff, so pick randomly
+    const int selected_buff = (int)(player->sim->rng().real() * buffs.size());
+    buffs[selected_buff]->trigger();
+  }
+};
+
+void item::majordomos_dinner_bell(special_effect_t& effect)
+{
+  effect.execute_action = new majordomos_dinner_bell_t( effect );
+}
+
+
 // Memento of Angerboda =====================================================
 
 struct memento_callback_t : public dbc_proc_callback_t
@@ -1528,6 +1594,11 @@ void item::might_of_krosus( special_effect_t& effect )
       split_aoe_damage = true;
     }
 
+    double composite_crit_chance() const override
+    {
+      return 1.0; // Always crits
+    }
+
     void execute() override
     {
       proc_attack_t::execute();
@@ -1624,7 +1695,7 @@ void item::pharameres_forbidden_grimoire( special_effect_t& effect )
       return spell_t::ready();
     }
 
-    void execute()
+    void execute() override
     {
       impact -> target = target;
       impact -> execute();
@@ -2663,13 +2734,10 @@ struct kiljaedens_burning_wish_t : public spell_t
     aoe = -1;
     item = effect.item;
     school = SCHOOL_FIRE;
-
     base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item );
-    aoe = -1;
 
-    //FIXME: Assume this is kind of slow from wording.
-    //       Get real velocity from in game data after raids open.
-    travel_speed = 29;
+    // Projectile is very slow, combat log show 8 seconds to travel the maximum 80 yard range of the item
+    travel_speed = 10;
   }
 
   virtual void init() override
@@ -4369,6 +4437,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 230236, item::deteriorated_construct_core    );
   register_special_effect( 230150, item::eye_of_command                 );
   register_special_effect( 230011, item::bloodstained_hankerchief       );
+  register_special_effect( 230101, item::majordomos_dinner_bell         );
 
   /* Legion 7.0 Raid */
   // register_special_effect( 221786, item::bloodthirsty_instinct  );

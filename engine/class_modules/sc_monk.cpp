@@ -2720,7 +2720,7 @@ struct windwalking_aura_t: public monk_spell_t
     trigger_gcd = timespan_t::zero();
   }
 
-  size_t available_targets( std::vector< player_t* >& tl ) const
+  size_t available_targets( std::vector< player_t* >& tl ) const override
   {
     tl.clear();
 
@@ -7829,6 +7829,13 @@ void monk_t::init_spells()
 
 void monk_t::init_base_stats()
 {
+  if ( base.distance < 1 )
+  {
+    if ( specialization() == MONK_MISTWEAVER )
+      base.distance = 40;
+    else
+      base.distance = 5;
+  }
   base_t::init_base_stats();
 
   base_gcd = timespan_t::from_seconds( 1.5 );
@@ -7837,7 +7844,6 @@ void monk_t::init_base_stats()
   {
     case MONK_BREWMASTER:
     {
-      base.distance = 5;
       base_gcd += spec.stagger -> effectN( 11 ).time_value(); // Saved as -500 milliseconds
       base.attack_power_per_agility = 1.0;
       resources.base[RESOURCE_ENERGY] = 100;
@@ -7848,7 +7854,6 @@ void monk_t::init_base_stats()
     }
     case MONK_MISTWEAVER:
     {
-      base.distance = 40;
       base.spell_power_per_intellect = 1.0;
       resources.base[RESOURCE_ENERGY] = 0;
       resources.base[RESOURCE_CHI] = 0;
@@ -7857,7 +7862,8 @@ void monk_t::init_base_stats()
     }
     case MONK_WINDWALKER:
     {
-      base.distance = 5;
+      if ( base.distance < 1 )
+        base.distance = 5;
       base_gcd += spec.stance_of_the_fierce_tiger -> effectN( 5 ).time_value(); // Saved as -500 milliseconds
       base.attack_power_per_agility = 1.0;
       resources.base[RESOURCE_ENERGY] = 100;

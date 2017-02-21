@@ -241,7 +241,8 @@ struct dbc_consumable_base_t : public action_t
   buff_t*                  consumable_buff;
 
   dbc_consumable_base_t( player_t* p, const std::string& name_str ) :
-    action_t( ACTION_USE, name_str, p ), item_data( nullptr ), type( ITEM_SUBCLASS_CONSUMABLE )
+    action_t( ACTION_USE, name_str, p ), item_data( nullptr ), type( ITEM_SUBCLASS_CONSUMABLE ),
+    consumable_action( nullptr ), consumable_buff( nullptr )
   {
     add_option( opt_string( "name", consumable_name ) );
     add_option( opt_string( "type", consumable_name ) );

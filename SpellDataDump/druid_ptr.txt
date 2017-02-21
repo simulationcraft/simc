@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23436, git build 7d86112)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build ea39c9d)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -191,7 +191,7 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | Target: Enemy(6)
 #3 (id=117626)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6 | Target: Enemy(6)
-Description      : Finishing move that causes Bleed damage over $d.  Damage increases per combo point:
+Description      : Finishing move that causes Bleed damage over $d. Damage increases per combo point:
 
    1 point : ${$floor(1*$<rip>*12)} damage
    2 points: ${$floor(2*$<rip>*12)} damage
@@ -1631,7 +1631,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .x...
                  : Disable target procs (113)
 Effects          :
 #1 (id=51495)    : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -30 | Scaled Value: -30 | Mechanic: Unknown(88) | Target: Enemy(6)
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88) | Target: Enemy(6)
 Description      : $@spelldesc48484
 Tooltip          : Movement speed slowed by $s1%.
 
@@ -2027,6 +2027,7 @@ Name             : Efflorescence (id=81262) [Spell Family (7)]
 Class            : Druid
 School           : Nature
 Spell Level      : 1
+Range            : 100 yards
 Duration         : 30 seconds
 Attributes       : ........ ........ ........ x..x.x..   .....x.. ..x..... ........ ........ 
                  : x....... ......x. ...x.... ........   ........ ........ ....x... ....x.x. 
@@ -2038,8 +2039,6 @@ Attributes       : ........ ........ ........ x..x.x..   .....x.. ..x..... .....
 Effects          :
 #1 (id=68689)    : Apply Aura (6) | Periodic Dummy: every 2 seconds (226)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#2 (id=345139)   : Apply Aura (6) | Periodic Trigger Spell: Efflorescence every 2 seconds (23)
-                   Base Value: -50 | Scaled Value: -50 | Trigger Spell: 228952 | Target: Self(1)
 Description      : $@spelldesc81269
 Tooltip          : Restores health to three injured allies within $81269A1 yards every $81262t1 sec for $81262d.
 
@@ -2359,8 +2358,8 @@ Duration         : 30 seconds
 Cooldown         : 30 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
-Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
-                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
+Proc Flags       : ...x.x.x .x...x.x .x.x.... .......x 
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Bear Form (5487), Ironbark (102342), Druid (137009), Lucidity (137247), Grovewalker (186320), Astral Influence (197524), Essence of G'Hanir (208253), Ekowraith, Creator of Worlds (210667), 
 Attributes       : ....x... ...x.... x....... ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ..x..... 
@@ -3734,11 +3733,11 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=195464)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Radius: 10 yards | Target: Unknown(87)
-#2 (id=195465)   : Unknown effect type (179)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 9049 | Target: Unknown(87)
+#2 (id=195465)   : Summon (28)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 47649 | Misc Value 2: 0xd80 | Target: Unknown(87)
 #3 (id=195466)   : None (0)
                    Base Value: 6 | Scaled Value: 6
-Description      : Grows a healing blossom at the target location, restoring $81269s1 health to $?p138284[four][three] injured allies within $81269A1 yards every $81262t2 sec for $d. Limit 1.
+Description      : Grows a healing blossom at the target location, restoring $81269s1 health to $?p138284[four][three] injured allies within $81269A1 yards every $81262t1 sec for $81262d. Limit 1.
 
 Name             : Feral Rage (id=146874) [Spell Family (7)] 
 Class            : Druid
@@ -6893,7 +6892,7 @@ Attributes       : ........ ........ ..x..... x..x....   ........ ..x..... .....
                  : Cannot crit (93), Disable target procs (113)
 Effects          :
 #1 (id=326922)   : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 2.25000 | Target: Unknown(25)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 2.25000 | Target: Enemy(6)
 Description      : Deals $s1 Nature damage.
 
 Name             : Nature's Guardian (id=227034) [Spell Family (7)] 
@@ -6932,22 +6931,6 @@ Description      : Shapeshift into Cat Form, increasing movement speed by $11363
 The act of shapeshifting frees you from movement impairing effects.
 Tooltip          : Immune to Polymorph effects.
 Movement speed increased by $113636s1% and falling damage reduced.
-
-Name             : Efflorescence (id=228952) [Spell Family (7), Hidden] 
-Class            : Druid
-School           : Nature
-Range            : 100 yards
-Triggered by     : Efflorescence (81262)
-Attributes       : .......x ........ ..x..... x..x....   .....x.. ..x..... ........ ........ 
-                 : ........ ......x. ........ ....x...   ........ ........ x....... ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Hidden (7), Does not break stealth (37), Disable player procs (112)
-Effects          :
-#1 (id=345141)   : Dummy (3)
-                   Base Value: -50 | Scaled Value: -50 | Radius: 0 - 10 yards | Target: Unknown(87) -> AOE Custom(8)
 
 Name             : Starsurge (Rank 2) (id=231021) [Spell Family (7), Passive] 
 Class            : Balance Druid
@@ -7201,9 +7184,8 @@ Name             : Archdruid's Lunarwing Form (Shapeshift) (id=231437)
 Class            : Druid
 School           : Physical
 Duration         : Aura (infinite)
-Proc Chance      : 101%
-Attributes       : ....x... .......x x.x.x... ....x...   ........ ..x..... x....... ....x... 
-                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+Attributes       : ....x... .......x ..x.x... ....x...   ........ ........ x....... ........ 
+                 : .x...... x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 

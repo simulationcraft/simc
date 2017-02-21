@@ -3,7 +3,7 @@ level=110
 race=orc
 role=attack
 position=ranged_back
-talents=2102012
+talents=2202012
 artifact=56:0:0:0:0:868:3:869:3:870:3:871:3:872:3:873:3:874:3:875:3:876:1:877:1:878:1:879:1:880:1:881:1:882:1:1095:3:1336:1:1368:20
 spec=beast_mastery
 
@@ -37,9 +37,9 @@ actions+=/aspect_of_the_wild,if=buff.bestial_wrath.up|target.time_to_die<12
 actions+=/barrage,if=spell_targets.barrage>1
 actions+=/titans_thunder,if=talent.dire_frenzy.enabled|cooldown.dire_beast.remains>=3|buff.bestial_wrath.up&pet.dire_beast.active
 actions+=/bestial_wrath
-actions+=/multi_shot,if=spell_targets>4&(pet.buff.beast_cleave.remains<gcd.max|pet.buff.beast_cleave.down)
+actions+=/multishot,if=spell_targets>4&(pet.buff.beast_cleave.remains<gcd.max|pet.buff.beast_cleave.down)
 actions+=/kill_command
-actions+=/multi_shot,if=spell_targets>1&(pet.buff.beast_cleave.remains<gcd.max*2|pet.buff.beast_cleave.down)
+actions+=/multishot,if=spell_targets>1&(pet.buff.beast_cleave.remains<gcd.max*2|pet.buff.beast_cleave.down)
 actions+=/chimaera_shot,if=focus<90
 actions+=/cobra_shot,if=cooldown.kill_command.remains>focus.time_to_max&cooldown.bestial_wrath.remains>focus.time_to_max|(buff.bestial_wrath.up&focus.regen*cooldown.kill_command.remains>30)|target.time_to_die<cooldown.kill_command.remains
 

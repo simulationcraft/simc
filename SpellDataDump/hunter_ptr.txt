@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23436, git build 7d86112)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build ea39c9d)
 
 Name             : Mend Pet (id=136) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
@@ -276,7 +276,7 @@ School           : Physical
 Spell Level      : 4
 Range            : 40 yards
 GCD              : 1.5 seconds
-Velocity         : 50 yards/sec
+Velocity         : 40 yards/sec
 Duration         : 6 seconds
 Cooldown         : 5 seconds
 Mechanic         : Unknown(88)
@@ -2465,7 +2465,7 @@ Class            : Hunter
 School           : Physical
 Spell Level      : 1
 Range            : 50 yards
-Velocity         : 30 yards/sec
+Velocity         : 45 yards/sec
 Affecting spells : Freezing Trap (3355), Beast Mastery Hunter (137015), Marksmanship Hunter (137016), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468), 
 Triggered by     : Barrage (120360)
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ........ 
@@ -2763,7 +2763,7 @@ Effects          :
 #6 (id=342165)   : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #7 (id=351564)   : Apply Aura (6) | Unknown effect sub type (309)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+                   Base Value: -3500 | Scaled Value: -3500 | Target: Self(1)
 Description      : $@spelldesc134732
 Tooltip          : Reduces healing received from critical heals by $w1%.$?$w2>0[
 Damage taken increased by $w2.][]
@@ -4483,7 +4483,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=280784)   : Apply Aura (6) | Periodic Damage: physical every 2 seconds (3)
@@ -4902,7 +4902,7 @@ Description      : Your ranged auto attacks have a $194595h% chance to trigger L
 Name             : Black Arrow (id=194599) [Spell Family (9)] 
 Class            : Hunter
 School           : Shadow
-Resource         : 40 Focus
+Resource         : 10 Focus
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds

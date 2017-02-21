@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23436, git build 7d86112)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build ea39c9d)
 
 Name             : Defensive Stance (id=71) [Spell Family (4), Passive, Hidden] 
 Class            : Protection Warrior
@@ -639,7 +639,7 @@ GCD              : 1.5 seconds
 Charges          : 1 (6 seconds cooldown)
 Category         : 971
 Proc Chance      : 101%
-Affecting spells : Battle Cry (1719), Warrior (137047), Arms Warrior (137049), Item - Warrior T17 Arms 4P Bonus (165336), Vicious Strike (165638), Sweeping Strikes (202161), Dauntless (202297), Archavon's Heavy Hand (205144), Focused Rage (207982), Thoradin's Might (209480), Precise Strikes (209493), Shattered Defenses (209706), 
+Affecting spells : Battle Cry (1719), Warrior (137047), Arms Warrior (137049), Item - Warrior T17 Arms 4P Bonus (165336), Vicious Strike (165638), Sweeping Strikes (202161), Dauntless (202297), Archavon's Heavy Hand (205144), Focused Rage (207982), Thoradin's Might (209480), Precise Strikes (209493), Shattered Defenses (209706), Executioner's Precision (242188)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ....x... ........ ........ 
@@ -4439,7 +4439,7 @@ Effects          :
                    Affected Spells: Mortal Strike (12294)
 #2 (id=307673)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-Description      : Focus your rage on your next Mortal Strike, increasing its damage by $s1%, stacking up to $u times. Unaffected by the global cooldown
+Description      : Focus your rage on your next Mortal Strike, increasing its damage by $s1%, stacking up to $u times. Unaffected by the global cooldown.
 Tooltip          : Next Mortal Strike deals $s1% increased damage.
 
 Name             : Colossus Smash (id=208086) [Spell Family (4)] 

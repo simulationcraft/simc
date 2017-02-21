@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23436, git build 7d86112)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build ea39c9d)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -2391,7 +2391,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1316 | Target: Custom(18)
 #2 (id=201318)   : Unknown effect type (179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1315 | Target: Custom(18)
-Description      : Hurls a torrent of Chi energy up to 40 yds forward, dealing $<damage> Nature damage to all enemies, and $<healing> healing to the Monk and all allies in its path.$?c1[
+Description      : Hurls a torrent of Chi energy up to 40 yds forward, dealing $148135s1 Nature damage to all enemies, and $130654s1 healing to the Monk and all allies in its path.$?c1[
 
 Casting Chi Burst does not prevent avoiding attacks.][]
 Variables        : $dmgMult=$?a103985[${1.1}][${1.0}]
@@ -3112,7 +3112,7 @@ Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ .....
                  : Does not break stealth (37), Not a proc (105)
 Effects          :
 #1 (id=168072)   : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 0 (avg=1) | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 (avg=1) | AP Coefficient: 4.12500 | Target: Unknown(25)
 Description      : $@spelldesc123986
 
 Name             : Chi Wave (id=132463) [Spell Family (53)] 
@@ -3506,7 +3506,7 @@ Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ .....
                  : Does not break stealth (37), Not a proc (105)
 Effects          :
 #1 (id=201313)   : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 4.12500 | Target: Unknown(25)
 Description      : $@spelldesc123986
 
 Name             : Rushing Jade Wind (id=148187) [Spell Family (53)] 
@@ -4972,7 +4972,7 @@ Attributes       : ........ ........ ........ ....x...   ........ ........ .x...
 Effects          :
 #1 (id=314340)   : Unknown effect type (172)
                    Base Value: 35 | Scaled Value: 35 | Radius: 100 yards | Target: Unknown(119)
-Description      : Returns all dead party members to life with $s1% of maximum health and mana.  Cannot be cast when in combat.
+Description      : Returns all dead party members to life with $s1% of maximum health and mana. Cannot be cast when in combat.
 
 Name             : Hidden Master's Forbidden Touch (id=213112) [Spell Family (53), Passive] 
 Class            : Monk

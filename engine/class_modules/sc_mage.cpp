@@ -129,7 +129,8 @@ struct mage_td_t : public actor_target_data_t
     buff_t* chilled,
           * frost_bomb,
           * water_jet, // Proxy Water Jet to compensate for expression system
-          * winters_chill;
+          * winters_chill,
+          * frozen;
   } debuffs;
 
   mage_td_t( player_t* target, mage_t* mage );
@@ -817,10 +818,17 @@ struct water_elemental_pet_t : public mage_pet_t
 {
   target_specific_t<water_elemental_pet_td_t> target_data;
 
+  struct cooldowns_t
+  {
+    cooldown_t* wj_freeze; // Shared Freeze/Water Jet cooldown.
+  } cooldown;
+
   water_elemental_pet_t( sim_t* sim, mage_t* owner )
     : mage_pet_t( sim, owner, "water_elemental" )
   {
     owner_coeff.sp_from_sp = 0.75;
+    cooldown.wj_freeze = get_cooldown( "wj_freeze" );
+    cooldown.wj_freeze -> duration = timespan_t::from_seconds( 25.0 );
   }
 
   void init_action_list() override
@@ -830,6 +838,7 @@ struct water_elemental_pet_t : public mage_pet_t
 
     default_list->add_action( this, find_pet_spell( "Water Jet" ), "Water Jet" );
     default_list->add_action( this, find_pet_spell( "Waterbolt" ), "Waterbolt" );
+    default_list->add_action( this, find_pet_spell( "Freeze"    ), "Freeze"    );
 
     // Default
     use_default_action_list = true;
@@ -944,6 +953,8 @@ struct freeze_t : public mage_pet_spell_t
     may_crit              = true;
     ignore_false_positive = true;
     action_skill          = 1;
+
+    cooldown = p -> cooldown.wj_freeze;
   }
 
   virtual bool init_finished() override
@@ -958,6 +969,8 @@ struct freeze_t : public mage_pet_spell_t
   virtual void impact( action_state_t* s ) override
   {
     spell_t::impact( s );
+
+    o() -> get_target_data( s -> target ) -> debuffs.frozen -> trigger();
 
     if ( result_is_hit( s->result ) )
     {
@@ -986,6 +999,8 @@ struct water_jet_t : public mage_pet_spell_t
     {
       dot_duration += p->find_spell( 185971 )->effectN( 1 ).time_value();
     }
+
+    cooldown = p -> cooldown.wj_freeze;
   }
   water_elemental_pet_td_t* td( player_t* t ) const
   {
@@ -995,10 +1010,16 @@ struct water_jet_t : public mage_pet_spell_t
 
   void execute() override
   {
-    mage_pet_spell_t::execute();
     // If this is a queued execute, disable queued status
     if ( !autocast && queued )
       queued = false;
+
+    // Don't execute Water Jet if Water Elemental used Freeze
+    // during the cast
+    if ( cooldown -> up() )
+    {
+      mage_pet_spell_t::execute();
+    }
   }
 
   virtual void impact( action_state_t* s ) override
@@ -2344,9 +2365,11 @@ struct frost_spell_state_t : action_state_t
   bool frozen() const
   {
     const mage_t* p = debug_cast<const mage_t*>( action -> player );
+    const mage_td_t* td = p -> get_target_data( target );
 
     return ( action -> s_data -> _id == 30455 && fof )
-        || ( p -> get_target_data( target ) -> debuffs.winters_chill -> up() );
+        || ( td -> debuffs.winters_chill -> up() )
+        || ( td -> debuffs.frozen -> up() );
   }
 
   virtual double composite_crit_chance() const override
@@ -2373,12 +2396,13 @@ struct frost_mage_spell_t : public mage_spell_t
   int fof_source_id;
 
   frost_mage_spell_t( const std::string& n, mage_t* p,
-                      const spell_data_t* s = spell_data_t::nil() ) :
-    mage_spell_t( n, p, s ),
-    chills( false ),
-    fof_source_id( -1 ),
-    calculate_on_impact( false )
-  {}
+                      const spell_data_t* s = spell_data_t::nil() )
+    : mage_spell_t( n, p, s ),
+      chills( false ),
+      calculate_on_impact( false ),
+      fof_source_id( -1 )
+  {
+  }
 
   struct brain_freeze_delay_event_t : public event_t
   {
@@ -3530,7 +3554,7 @@ struct blizzard_shard_t : public frost_mage_spell_t
     return DMG_OVER_TIME;
   }
 
-  virtual void impact( action_state_t* s )
+  void impact( action_state_t* s ) override
   {
     frost_mage_spell_t::impact( s );
 
@@ -3576,7 +3600,7 @@ struct blizzard_t : public frost_mage_spell_t
     may_miss = false;
   }
 
-  double false_positive_pct() const
+  double false_positive_pct() const override
   {
     // Players are probably less likely to accidentally use blizzard than other spells.
     return ( frost_mage_spell_t::false_positive_pct() / 2 ); 
@@ -4348,6 +4372,8 @@ struct flurry_bolt_t : public frost_mage_spell_t
 };
 struct flurry_t : public frost_mage_spell_t
 {
+  timespan_t initial_delay;
+
   flurry_bolt_t* flurry_bolt;
   flurry_t( mage_t* p, const std::string& options_str ) :
     frost_mage_spell_t( "flurry", p, p -> find_spell( 44614 ) ),
@@ -4358,6 +4384,7 @@ struct flurry_t : public frost_mage_spell_t
     hasted_ticks = false;
     add_child( flurry_bolt );
     //TODO: Remove hardcoded values once it exists in spell data for bolt impact timing.
+    initial_delay = timespan_t::from_seconds( 0.11 );
     dot_duration = timespan_t::from_seconds( 0.45 );
     base_tick_time = timespan_t::from_seconds( 0.225 );
   }
@@ -4366,7 +4393,7 @@ struct flurry_t : public frost_mage_spell_t
   {
     // Approximate travel time from in game data.
     // TODO: Improve approximation
-    return timespan_t::from_seconds( ( player -> get_player_distance( *target ) / 38 ) );
+    return initial_delay + frost_mage_spell_t::travel_time();
   }
 
   virtual timespan_t execute_time() const override
@@ -4650,6 +4677,13 @@ struct frost_nova_t : public mage_spell_t
     {
       p() -> buffs.sephuzs_secret -> trigger();
     }
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    mage_spell_t::impact( s );
+
+    td( s -> target ) -> debuffs.frozen -> trigger();
   }
 };
 
@@ -6823,6 +6857,70 @@ void mage_spell_t::trigger_unstable_magic( action_state_t* s )
   }
 }
 
+// Proxy Freeze action ========================================================
+
+struct freeze_t : public action_t
+{
+  pets::water_elemental::freeze_t* action;
+
+  freeze_t( mage_t* p, const std::string& options_str ) :
+    action_t( ACTION_OTHER, "freeze", p ), action( nullptr )
+  {
+    parse_options( options_str );
+
+    may_miss = may_crit = callbacks = false;
+    dual = true;
+    trigger_gcd = timespan_t::zero();
+    ignore_false_positive = true;
+    action_skill = 1;
+  }
+
+  void reset() override
+  {
+    action_t::reset();
+
+    if ( !action )
+    {
+      mage_t* m = debug_cast<mage_t*>( player );
+      action = debug_cast<pets::water_elemental::freeze_t*>( m -> pets.water_elemental -> find_action( "freeze" ) );
+      if ( action )
+      {
+        // Disable autocast on Water Jet.
+        pets::water_elemental::water_jet_t* wj_action
+          = debug_cast<pets::water_elemental::water_jet_t*>( m -> pets.water_elemental -> find_action( "water_jet" ) );
+        if ( wj_action )
+        {
+          wj_action -> autocast = false;
+        }
+      }
+    }
+  }
+
+  void execute() override
+  {
+    assert( action );
+
+    action -> target = target;
+    action -> execute();
+  }
+
+  bool ready() override
+  {
+    mage_t* m = debug_cast<mage_t*>( player );
+    if ( m -> talents.lonely_winter -> ok() )
+    {
+      return false;
+    }
+
+    if ( !action )
+      return false;
+
+    if ( !action -> ready() )
+      return false;
+
+    return action_t::ready();
+  }
+};
 
 // Proxy cast Water Jet Action ================================================
 
@@ -7210,6 +7308,8 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   debuffs.chilled     = new buffs::chilled_t( this );
   debuffs.frost_bomb  = buff_creator_t( *this, "frost_bomb",
                                         mage -> talents.frost_bomb );
+  debuffs.frozen      = buff_creator_t( *this, "frozen" )
+                          .duration( timespan_t::from_seconds( 0.5 ) );
   debuffs.water_jet   = buff_creator_t( *this, "water_jet",
                                         mage -> find_spell( 135029 ) )
                           .quiet( true )
@@ -7217,6 +7317,7 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   //TODO: Find spelldata for this!
   debuffs.winters_chill = buff_creator_t( *this, "winters_chill" )
                           .duration( timespan_t::from_seconds( 1.0 ) );
+
 }
 
 mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
@@ -7235,10 +7336,10 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   last_summoned( temporal_hero_e::INVALID ),
   distance_from_rune( 0.0 ),
   global_cinder_count( 0 ),
-  mage_potion_choice( "" ),
   incanters_flow_stack_mult( find_spell( 116267 ) -> effectN( 1 ).percent() ),
   iv_haste( 1.0 ),
   blessing_of_wisdom( false ),
+  mage_potion_choice( "" ),
   benefits( benefits_t() ),
   buffs( buffs_t() ),
   cooldowns( cooldowns_t() ),
@@ -7335,6 +7436,7 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "blizzard"          ) return new                blizzard_t( this, options_str );
   if ( name == "comet_storm"       ) return new             comet_storm_t( this, options_str );
   if ( name == "flurry"            ) return new                  flurry_t( this, options_str );
+  if ( name == "freeze"            ) return new                  freeze_t( this, options_str );
   if ( name == "frost_bomb"        ) return new              frost_bomb_t( this, options_str );
   if ( name == "frostbolt"         ) return new               frostbolt_t( this, options_str );
   if ( name == "frost_nova"        ) return new              frost_nova_t( this, options_str );
@@ -7626,9 +7728,10 @@ void mage_t::init_spells()
 
 void mage_t::init_base_stats()
 {
-  player_t::init_base_stats();
+  if ( base.distance < 1 )
+    base.distance = 30;
 
-  base.distance = 30;
+  player_t::init_base_stats();
 
   base.spell_power_per_intellect = 1.0;
 
@@ -7993,7 +8096,7 @@ std::string mage_t::get_special_use_items( const std::string& item_name, bool sp
     {
       if ( item_name == "obelisk_of_the_void" )
       {
-        conditions = "if=buff.rune_of_power.up&cooldown.combustion.remains>50";
+        conditions = "if=cooldown.combustion.remains>50";
       }
       if ( item_name == "horn_of_valor" )
       {
@@ -8251,6 +8354,7 @@ void mage_t::apl_arcane()
   default_list -> add_action( mage_t::get_special_use_items( "obelisk_of_the_void", false ) );
   default_list -> add_action( mage_t::get_special_use_items( "mrrgrias_favor", false ) );
   default_list -> add_action( mage_t::get_special_use_items( "pharameres_forbidden_grimoire", false ) );
+  default_list -> add_action( mage_t::get_special_use_items( "kiljaedens_burning_wish", false ) );
   default_list -> add_action( "call_action_list,name=build,if=buff.arcane_charge.stack<4" );
   default_list -> add_action( "call_action_list,name=init_burn,if=buff.arcane_power.down&buff.arcane_charge.stack=4&(cooldown.mark_of_aluneth.remains=0|cooldown.mark_of_aluneth.remains>20)&(!talent.rune_of_power.enabled|(cooldown.arcane_power.remains<=action.rune_of_power.cast_time|action.rune_of_power.recharge_time<cooldown.arcane_power.remains))|target.time_to_die<45" );
   default_list -> add_action( "call_action_list,name=burn,if=burn_phase" );
@@ -8313,7 +8417,6 @@ void mage_t::apl_arcane()
   burn      -> add_talent( this, "Charged Up", "if=(equipped.132451&buff.arcane_charge.stack<=1)" );
   burn      -> add_action( this, "Arcane Missiles", "if=buff.arcane_missiles.react=3" );
   burn      -> add_talent( this, "Nether Tempest", "if=dot.nether_tempest.remains<=2|!ticking" );
-  burn      -> add_action( this, "Arcane Blast", "if=active_enemies<=1&mana.pct%10*execute_time>target.time_to_die" );
   burn      -> add_action( this, "Arcane Explosion", "if=active_enemies>1&mana.pct%10*execute_time>target.time_to_die" );
   burn      -> add_action( this, "Presence of Mind", "if=buff.rune_of_power.remains<=2*action.arcane_blast.execute_time");
   burn      -> add_action( this, "Arcane Missiles", "if=buff.arcane_missiles.react>1" );
@@ -8434,6 +8537,7 @@ void mage_t::apl_frost()
   default_list -> add_action( mage_t::get_special_use_items( "obelisk_of_the_void", false ) );
   default_list -> add_action( mage_t::get_special_use_items( "mrrgrias_favor", false ) );
   default_list -> add_action( mage_t::get_special_use_items( "pharameres_forbidden_grimoire", false ) );
+  default_list -> add_action( mage_t::get_special_use_items( "kiljaedens_burning_wish", false ) );
   default_list -> add_action( "call_action_list,name=cooldowns" );
   default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>=4" );
   default_list -> add_action( "call_action_list,name=single" );
@@ -8448,7 +8552,7 @@ void mage_t::apl_frost()
   single -> add_action( this, "Frozen Orb" );
   single -> add_talent( this, "Ice Nova" );
   single -> add_talent( this, "Comet Storm" );
-  single -> add_action( this, "Blizzard", "if=talent.arctic_gale.enabled|active_enemies>2|active_enemies>1&!(talent.glacial_spike.enabled&talent.splitting_ice.enabled)|(buff.zannesu_journey.stack=5&buff.zannesu_journey.remains>cast_time)" );
+  single -> add_action( this, "Blizzard", "if=active_enemies>2|active_enemies>1&!(talent.glacial_spike.enabled&talent.splitting_ice.enabled)|(buff.zannesu_journey.stack=5&buff.zannesu_journey.remains>cast_time)" );
   single -> add_action( this, "Ebonbolt", "if=buff.brain_freeze.react=0" );
   single -> add_talent( this, "Glacial Spike" );
   single -> add_action( this, "Frostbolt" );
@@ -8467,7 +8571,7 @@ void mage_t::apl_frost()
   aoe -> add_action( this, "Frostbolt" );
 
   cooldowns    -> add_talent( this, "Rune of Power", "if=cooldown.icy_veins.remains<cast_time|charges_fractional>1.9&cooldown.icy_veins.remains>10|buff.icy_veins.up|target.time_to_die.remains+5<charges_fractional*10" );
-  cooldowns    -> add_action( "potion,name=prolonged_power,if=cooldown.icy_veins.remains<1" );
+  cooldowns    -> add_action( get_potion_action() + ",if=cooldown.icy_veins.remains<1" );
   cooldowns    -> add_action( this, "Icy Veins", "if=buff.icy_veins.down" );
   cooldowns    -> add_talent( this, "Mirror Image" );
   for( size_t i = 0; i < item_actions.size(); i++ )
@@ -9685,6 +9789,12 @@ public:
       .operation( hotfix::HOTFIX_SET )
       .modifier( 57 )
       .verification_value( 81 );
+
+    hotfix::register_spell( "Mage", "2017-02-04", "Manually set Flurry's travel speed.", 44614 )
+      .field( "prj_speed" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 45.0 )
+      .verification_value( 0.0 );
   }
 
   virtual bool valid() const override { return true; }
