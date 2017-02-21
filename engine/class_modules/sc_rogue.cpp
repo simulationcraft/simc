@@ -6732,9 +6732,9 @@ void rogue_t::init_action_list()
     cds -> add_action( potion_action );
     for ( size_t i = 0; i < item_actions.size(); i++ )
       if ( find_item( "draught_of_souls" ) )
-        cds -> add_action( item_actions[i] + ",if=buff.bloodlust.react|target.time_to_die<=20|debuff.vendetta.up" );
-      else
         cds -> add_action( item_actions[i] + ",if=energy.time_to_max>3.5&!debuff.kingsbane.up&(!talent.agonizing_poison.enabled|(debuff.agonizing_poison.stack=5&debuff.surge_of_toxins.remains>3))" );
+      else
+        cds -> add_action( item_actions[i] + ",if=buff.bloodlust.react|target.time_to_die<=20|debuff.vendetta.up" );
     for ( size_t i = 0; i < racial_actions.size(); i++ )
     {
       if ( racial_actions[i] == "arcane_torrent" )
