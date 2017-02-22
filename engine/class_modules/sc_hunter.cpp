@@ -1341,7 +1341,7 @@ public:
 
     buffs.tier19_2pc_bm =
       buff_creator_t( this, 211183, "tier19_2pc_bm" )
-        .default_value( .1 ) // XXX: ptr spell data has it as the second effect of 211183
+        .default_value( owner -> find_spell( 211183 ) -> effectN( 2 ).percent() )
         .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 
