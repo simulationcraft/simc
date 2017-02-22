@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build ea39c9d)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build 5694ad03)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -438,7 +438,7 @@ GCD              : 1.5 seconds
 Velocity         : 50 yards/sec
 Charges          : 1 (10 seconds cooldown)
 Category         : 1612
-Affecting spells : Metamorphosis (162264), Sharpened Glaives (201457), Mo'arg Bionic Stabilizers (208826), Havoc Demon Hunter (212612), Vengeance Demon Hunter (212613), 
+Affecting spells : Metamorphosis (162264), Sharpened Glaives (201457), Havoc Demon Hunter (212612), Vengeance Demon Hunter (212613), 
 Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ..x..... ........   ........ ........ ........ ........ 
@@ -899,7 +899,7 @@ Duration         : 2 seconds
 Cooldown         : 45 seconds
 Category         : 1582
 Category Cooldown: 45 seconds
-Affecting spells : Chaos Vision (201456), Blind Fury (203550), Soul Flame of Insight (226334), Wide Eyes (238045)
+Affecting spells : Chaos Vision (201456), Blind Fury (203550), Wide Eyes (238045)
 Attributes       : ........ ........ ........ ........   ..x...x. .x...... ........ ....xx.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ...x.... 
@@ -923,7 +923,7 @@ Name             : Eye Beam (id=198030) [Spell Family (107)]
 Class            : Demon Hunter
 School           : Chromatic
 Range            : 50000 yards
-Affecting spells : Mastery: Demonic Presence (185164), Chaos Vision (201456), Blind Fury (203550), Havoc Demon Hunter (212612), Soul Flame of Insight (226334), Wide Eyes (238045)
+Affecting spells : Mastery: Demonic Presence (185164), Chaos Vision (201456), Blind Fury (203550), Havoc Demon Hunter (212612), Wide Eyes (238045)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -1149,7 +1149,6 @@ Duration         : 3 seconds
 Cooldown         : 60 seconds
 Artifact Power   : Id: 1010, Max Rank: 1
 Affecting spells : Metamorphosis (162264), Havoc Demon Hunter (212612), Vengeance Demon Hunter (212613)
-Triggered by     : Push Active Ability to Bar (225863)
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ .x...... ........ ....x... 
@@ -1458,7 +1457,6 @@ Effects          :
                    Base Value: 65 | Scaled Value: 65 | Trigger Spell: 203796 | Target: Self(1)
 #2 (id=350250)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
                    Base Value: -6 | Scaled Value: -6 | Misc Value: 3
-                   Affected Spells: Anger of the Half-Giants (208827)
 Description      : Your auto attacks have a $h% chance to deal additional Shadow damage and generate Fury.
 
 Name             : Master of the Glaive (id=203556) [Spell Family (107), Passive] 
@@ -1714,7 +1712,7 @@ Range            : 30 yards
 Cooldown         : 60 seconds
 Category         : 1541
 Category Cooldown: 1 seconds
-Affecting spells : Vengeance Demon Hunter (212613), Demonic Flames (212894), Spirit of the Darkness Flame (235543)
+Affecting spells : Vengeance Demon Hunter (212613), Demonic Flames (212894)
 Attributes       : ....x... ........ x.x..... ..x.....   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1738,7 +1736,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Velocity         : 50 yards/sec
 Cooldown         : 3 seconds
-Affecting spells : Metamorphosis (162264), Sharpened Glaives (201457), Mo'arg Bionic Stabilizers (208826), Havoc Demon Hunter (212612), Vengeance Demon Hunter (212613), 
+Affecting spells : Metamorphosis (162264), Sharpened Glaives (201457), Havoc Demon Hunter (212612), Vengeance Demon Hunter (212613), 
 Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ..x..... ........   ........ ........ ........ ........ 
@@ -2100,7 +2098,6 @@ Duration         : 3 seconds
 Cooldown         : 40 seconds
 Artifact Power   : Id: 1096, Max Rank: 1
 Affecting spells : Metamorphosis (162264), Havoc Demon Hunter (212612), Vengeance Demon Hunter (212613)
-Triggered by     : Push Active Ability to Bar (225864)
 Attributes       : ........ ........ ..x..... .......x   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2334,7 +2331,7 @@ Class            : Demon Hunter
 School           : Fire
 Range            : 100 yards
 Duration         : 8 seconds
-Affecting spells : Vengeance Demon Hunter (212613), Demonic Flames (212894), Spirit of the Darkness Flame (235543)
+Affecting spells : Vengeance Demon Hunter (212613), Demonic Flames (212894)
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2352,7 +2349,7 @@ Class            : Demon Hunter
 School           : Fire
 Range            : 100 yards
 Duration         : 8 seconds
-Affecting spells : Vengeance Demon Hunter (212613), Demonic Flames (212894), Spirit of the Darkness Flame (235543)
+Affecting spells : Vengeance Demon Hunter (212613), Demonic Flames (212894)
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2994,8 +2991,8 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf8 | Target: Self(1)
 #8 (id=315257)   : Apply Aura (6) | Unknown effect sub type (218)
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 3 | Misc Value 2: 0x114 | Target: Self(1)
-#9 (id=315258)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#9 (id=315258)   : Apply Aura (6) | Unknown effect sub type (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0x121 | Target: Self(1)
 #10 (id=315259)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #11 (id=315260)   : Apply Aura (6) | Dummy (4)
@@ -3009,6 +3006,8 @@ Effects          :
 #15 (id=315264)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #16 (id=327140)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#17 (id=368364)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Blur (id=212800) [Spell Family (107)] 
