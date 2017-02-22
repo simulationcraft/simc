@@ -3488,20 +3488,15 @@ void item::convergence_of_fates( special_effect_t& effect )
 {
   switch ( effect.player -> specialization() )
   {
-    // Blizzard could have explained how they nerfed/buffed these rppm values a lot better by just saying what the the end result is.
-    // This is how I (Collision) calculated the following values:
-    // Ret Paladin
-    // with Avenging Wrath: +250% proc rate
-    // with Crusade : +25 % proc rate
-    // When they say +250% proc rate, they mean +250% based on whatever the rppm was on 2017/01/23.
-    // For Ret, this was 1.2. When the hotfixes hit, the rppm for ret went to 3, which is actually the 250% gain for Avenging Wrath, so we don't have to add any special handling for it.
-    // Ex : 1.2 * 2.5 = 3.0
-    // In order to find the value for Crusade, we do 1.2 * 1.25 = 1.5, we do have to add in special handling for that.
-
   case PALADIN_RETRIBUTION:
     if ( player_talent( effect.player, "Crusade" ) )
     {
       effect.ppm_ = -1.5;
+      effect.rppm_modifier_ = 1.0;
+    }
+    else
+    {
+      effect.ppm_ = -4.2; //Blizz fudged up the spelldata for ret, 4.2 is the baseline, not 3. 
       effect.rppm_modifier_ = 1.0;
     }
     break;
