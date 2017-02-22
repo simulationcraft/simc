@@ -2522,7 +2522,11 @@ void dire_critter_t::init_spells()
     active.stomp = new dire_beast_stomp_t( *this );
 
   if ( o() -> artifacts.titans_thunder.rank() )
+  {
     active.titans_thunder = new actions::titans_thunder_t( this );
+    if ( o() -> pets.dire_beasts[ 0 ] )
+      active.titans_thunder -> stats = o() -> pets.dire_beasts[ 0 ] -> get_stats( "titans_thunder" );
+  }
 }
 
 void hati_t::init_spells() 
