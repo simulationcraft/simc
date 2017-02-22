@@ -3726,58 +3726,87 @@ struct cinidaria_the_symbiote_damage_t : public attack_t
   }
 };
 
-struct cinidaria_the_symbiote_cb_t : public dbc_proc_callback_t
-{
-  cinidaria_the_symbiote_damage_t* damage;
-  int health_percentage;
-  double damage_multiplier;
-
-  cinidaria_the_symbiote_cb_t( const special_effect_t& effect ) :
-    dbc_proc_callback_t( effect.player, effect ),
-    damage( new cinidaria_the_symbiote_damage_t( effect.player ) )
-  {
-    damage_multiplier = effect.driver()->effectN(1).percent();
-    health_percentage = effect.driver()->effectN(2).base_value();
-  }
-
-  void trigger( action_t* a, void* call_data ) override
-  {
-    auto state = reinterpret_cast<action_state_t*>( call_data );
-    if ( state -> target -> health_percentage() < health_percentage )
-    {
-      return;
-    }
-
-    if ( state -> result_amount <= 0 )
-    {
-      return;
-    }
-
-    // Ensure this is an attack
-    if ( state -> action -> type != ACTION_SPELL && state -> action -> type != ACTION_ATTACK )
-    {
-      return;
-    }
-
-    dbc_proc_callback_t::trigger( a, call_data );
-  }
-
-  void execute( action_t* /* a */, action_state_t* state ) override
-  {
-    auto amount = state -> result_amount * damage_multiplier;
-    damage -> target = state -> target;
-    damage -> base_dd_min = damage -> base_dd_max = amount;
-    damage -> execute();
-  }
-};
-
 struct cinidaria_the_symbiote_t : public class_scoped_callback_t
 {
+  // Vector of blacklisted spell ids that cannot proc Cinidaria.
+  const std::unordered_map<unsigned, bool> spell_blacklist = {
+    { 207694, true }, // Symbiote Strike (Cinidaria itself)
+    { 191259, true }, // Mark of the Hidden Satyr
+    { 191380, true }, // Mark of the Distant Army
+    { 220893, true }, // Soul Rip (Subtlety Rogue Akaari pet)
+  };
+
   cinidaria_the_symbiote_t() : class_scoped_callback_t( { DEMON_HUNTER, DRUID, MONK, ROGUE } )
   { }
 
+  // Cinidaria needs special handling on the modeling. Since it is allowed to proc from nearly any
+  // damage, we need to circumvent the normal "special effect" system in Simulationcraft. Instead,
+  // hook Cinidaria into the outgoing damage assessor pipeline, since all outgoing damage resolution
+  // of a source actor is done through it.
+  //
+  // NOTE NOTE NOTE: This also requires that if there is some (direct or periodic) damage that is
+  // not allowed to generate Cinidaria damage, the spell id of such spells is listed above in the
+  // "spell_blacklist" map.
+  //
   void initialize( special_effect_t& effect ) override
-  { new cinidaria_the_symbiote_cb_t( effect ); }
+  {
+    // Health percentage threshold and damage multiplier
+    double threshold = effect.driver() -> effectN( 2 ).base_value();
+    double multiplier = effect.driver() -> effectN( 1 ).percent();
+
+    // Damage spell
+    auto spell = new cinidaria_the_symbiote_damage_t( effect.player );
+
+    // Install an outgoing damage assessor that triggers Cinidaria after the target damage has been
+    // resolved. This ensures most of the esoteric mitigation mechanisms that the sim might have are
+    // also resolved, and that state -> result_amount will hold the "final actual damage" of the
+    // ability.
+    effect.player -> assessor_out_damage.add( assessor::TARGET_DAMAGE + 1,
+      [ this, threshold, multiplier, spell ]( dmg_e, action_state_t* state )
+      {
+        const auto source_action = state -> action;
+        const auto target = state -> target;
+
+        // Must be a reasonably valid action (a harmful spell or attack)
+        if ( ! source_action -> harmful ||
+             ( source_action -> type != ACTION_SPELL && source_action -> type != ACTION_ATTACK ) )
+        {
+          return assessor::CONTINUE;
+        }
+
+        // Must do damage
+        if ( state -> result_amount == 0 )
+        {
+          return assessor::CONTINUE;
+        }
+
+        // Target must be equal or above threshold health%
+        if ( target -> health_percentage() < threshold )
+        {
+          return assessor::CONTINUE;
+        }
+
+        // Spell cannot be blacklisted
+        if ( spell_blacklist.find( source_action -> id ) != spell_blacklist.end() )
+        {
+          return assessor::CONTINUE;
+        }
+
+        if ( source_action -> sim -> debug )
+        {
+          source_action -> sim -> out_debug.printf( "%s cinidaria_the_symbiote proc from %s",
+            spell -> player -> name(), source_action -> name() );
+        }
+
+        // All ok, trigger the damage
+        spell -> target = target;
+        spell -> base_dd_min = spell -> base_dd_max = state -> result_amount * multiplier;
+        spell -> execute();
+
+        return assessor::CONTINUE;
+      }
+    );
+  }
 };
 
 // Combined legion potion action ============================================
