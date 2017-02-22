@@ -3728,14 +3728,6 @@ struct cinidaria_the_symbiote_damage_t : public attack_t
 
 struct cinidaria_the_symbiote_t : public class_scoped_callback_t
 {
-  // Vector of blacklisted spell ids that cannot proc Cinidaria.
-  const std::unordered_map<unsigned, bool> spell_blacklist = {
-    { 207694, true }, // Symbiote Strike (Cinidaria itself)
-    { 191259, true }, // Mark of the Hidden Satyr
-    { 191380, true }, // Mark of the Distant Army
-    { 220893, true }, // Soul Rip (Subtlety Rogue Akaari pet)
-  };
-
   cinidaria_the_symbiote_t() : class_scoped_callback_t( { DEMON_HUNTER, DRUID, MONK, ROGUE } )
   { }
 
@@ -3745,11 +3737,19 @@ struct cinidaria_the_symbiote_t : public class_scoped_callback_t
   // of a source actor is done through it.
   //
   // NOTE NOTE NOTE: This also requires that if there is some (direct or periodic) damage that is
-  // not allowed to generate Cinidaria damage, the spell id of such spells is listed above in the
+  // not allowed to generate Cinidaria damage, the spell id of such spells is listed below in the
   // "spell_blacklist" map.
   //
   void initialize( special_effect_t& effect ) override
   {
+    // Vector of blacklisted spell ids that cannot proc Cinidaria.
+    const std::unordered_map<unsigned, bool> spell_blacklist = {
+      { 207694, true }, // Symbiote Strike (Cinidaria itself)
+      { 191259, true }, // Mark of the Hidden Satyr
+      { 191380, true }, // Mark of the Distant Army
+      { 220893, true }, // Soul Rip (Subtlety Rogue Akaari pet)
+    };
+
     // Health percentage threshold and damage multiplier
     double threshold = effect.driver() -> effectN( 2 ).base_value();
     double multiplier = effect.driver() -> effectN( 1 ).percent();
@@ -3762,7 +3762,7 @@ struct cinidaria_the_symbiote_t : public class_scoped_callback_t
     // also resolved, and that state -> result_amount will hold the "final actual damage" of the
     // ability.
     effect.player -> assessor_out_damage.add( assessor::TARGET_DAMAGE + 1,
-      [ this, threshold, multiplier, spell ]( dmg_e, action_state_t* state )
+      [ &spell_blacklist, threshold, multiplier, spell ]( dmg_e, action_state_t* state )
       {
         const auto source_action = state -> action;
         const auto target = state -> target;
