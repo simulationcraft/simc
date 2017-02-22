@@ -2318,10 +2318,7 @@ struct flanking_strike_t: public hunter_main_pet_attack_t
       hunting_companion_multiplier *= p -> o() -> sets.set( HUNTER_SURVIVAL, T19, B2 ) -> effectN( 1 ).base_value();
 
     if ( p -> o() -> talents.aspect_of_the_beast -> ok() )
-    {
       impact_action = new bestial_ferocity_t( p );
-      add_child( impact_action );
-    }
   }
 
   virtual double composite_crit_chance() const override
@@ -3962,6 +3959,17 @@ struct flanking_strike_t: hunter_melee_attack_t
     hunter_melee_attack_t( "flanking_strike", p, p -> specs.flanking_strike )
   {
     parse_options( options_str );
+  }
+
+  bool init_finished() override
+  {
+    for ( auto pet : p() -> pet_list )
+    {
+      stats -> add_child( pet -> get_stats( "flanking_strike" ) );
+      stats -> add_child( pet -> get_stats( "bestial_ferocity" ) );
+    }
+
+    return hunter_melee_attack_t::init_finished();
   }
 
   virtual void execute() override
