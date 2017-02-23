@@ -2080,6 +2080,76 @@ struct moonfire_t : public druid_spell_t
         p() -> buff.galactic_guardian -> expire();
       }
     }
+
+    size_t available_targets( std::vector< player_t* >& tl ) const
+    {
+      /* When Lady and the Child is active, this is an AoE action meaning it will impact onto the
+      first 2 targets in the target list. Instead, we want it to impact on the target of the action
+      and 1 additional, so we'll override the target_list to make it so. */
+      if ( is_aoe() )
+      {
+        // Get the full target list.
+        druid_spell_t::available_targets( tl );
+        std::vector<player_t*> full_list = tl;
+
+        tl.clear();
+        // Add the target of the action.
+        tl.push_back( target );
+
+        // Loop through the full list and sort into afflicted/unafflicted.
+        std::vector<player_t*> afflicted;
+        std::vector<player_t*> unafflicted;
+
+        for ( size_t i = 0; i < full_list.size(); i++ )
+        {
+          if ( full_list[ i ] == target )
+          {
+            continue;
+          }
+
+          if ( td( full_list[ i ] ) -> dots.moonfire -> is_ticking() )
+          {
+            afflicted.push_back( full_list[ i ] );
+          }
+          else
+          {
+            unafflicted.push_back( full_list[ i ] );
+          }
+        }
+
+        // Fill list with random unafflicted targets.
+        while ( tl.size() < aoe && unafflicted.size() > 0 )
+        {
+          // Random target
+          size_t i = ( size_t ) p() -> rng().range( 0, ( double ) unafflicted.size() );
+
+          tl.push_back( unafflicted[ i ] );
+          unafflicted.erase( unafflicted.begin() + i );
+        }
+
+        // Fill list with random afflicted targets.
+        while ( tl.size() < aoe && afflicted.size() > 0 )
+        {
+          // Random target
+          size_t i = ( size_t ) p() -> rng().range( 0, ( double ) afflicted.size() );
+
+          tl.push_back( afflicted[ i ] );
+          afflicted.erase( afflicted.begin() + i );
+        }
+        
+        return tl.size();
+      }
+
+      return druid_spell_t::available_targets( tl );
+    }
+
+    void execute() override
+    {
+      // Force invalidate target cache so that it will impact on the correct targets.
+      target_cache.is_valid = false;
+
+      druid_spell_t::execute();
+    }
   };
 
   struct galactic_guardian_damage_t : public moonfire_damage_t
@@ -3072,6 +3142,76 @@ struct lunar_inspiration_t : public cat_attack_t
     cat_attack_t::init();
 
     consumes_bloodtalons = false;
+  }
+
+  size_t available_targets( std::vector< player_t* >& tl ) const
+  {
+    /* When Lady and the Child is active, this is an AoE action meaning it will impact onto the
+    first 2 targets in the target list. Instead, we want it to impact on the target of the action
+    and 1 additional, so we'll override the target_list to make it so. */
+    if ( is_aoe() )
+    {
+      // Get the full target list.
+      cat_attack_t::available_targets( tl );
+      std::vector<player_t*> full_list = tl;
+
+      tl.clear();
+      // Add the target of the action.
+      tl.push_back( target );
+
+      // Loop through the full list and sort into afflicted/unafflicted.
+      std::vector<player_t*> afflicted;
+      std::vector<player_t*> unafflicted;
+
+      for ( size_t i = 0; i < full_list.size(); i++ )
+      {
+        if ( full_list[ i ] == target )
+        {
+          continue;
+        }
+
+        if ( td( full_list[ i ] ) -> dots.moonfire -> is_ticking() )
+        {
+          afflicted.push_back( full_list[ i ] );
+        }
+        else
+        {
+          unafflicted.push_back( full_list[ i ] );
+        }
+      }
+
+      // Fill list with random unafflicted targets.
+      while ( tl.size() < aoe && unafflicted.size() > 0 )
+      {
+        // Random target
+        size_t i = ( size_t ) p() -> rng().range( 0, ( double ) unafflicted.size() );
+
+        tl.push_back( unafflicted[ i ] );
+        unafflicted.erase( unafflicted.begin() + i );
+      }
+
+      // Fill list with random afflicted targets.
+      while ( tl.size() < aoe && afflicted.size() > 0 )
+      {
+        // Random target
+        size_t i = ( size_t ) p() -> rng().range( 0, ( double ) afflicted.size() );
+
+        tl.push_back( afflicted[ i ] );
+        afflicted.erase( afflicted.begin() + i );
+      }
+
+      return tl.size();
+    }
+
+    return cat_attack_t::available_targets( tl );
+  }
+
+  void execute() override
+  {
+    // Force invalidate target cache so that it will impact on the correct targets.
+    target_cache.is_valid = false;
+
+    cat_attack_t::execute();
   }
 
   virtual bool ready() override
@@ -5767,7 +5907,7 @@ struct starfall_t : public druid_spell_t
       if ( targets.size() > 0 )
       {
         // Select a random target
-        return targets[ p() -> rng().range( 0, targets.size() ) ];
+        return targets[ ( int ) p() -> rng().range( 0, ( double ) targets.size() ) ];
       }
 
       return nullptr;
