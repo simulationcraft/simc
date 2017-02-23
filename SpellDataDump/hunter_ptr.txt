@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build 5694ad03)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build ff6af4d)
 
 Name             : Mend Pet (id=136) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
@@ -45,7 +45,7 @@ Range            : 50000 yards
 Cooldown         : 1 seconds
 Charges          : 1 (30 seconds cooldown)
 Category         : 1449
-Affecting spells : Hunter (137014)
+Affecting spells : Hunter (137014), Guide: Disengage (162116)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ xx...... ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -84,7 +84,7 @@ Spell Level      : 1
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 3 seconds
-Affecting spells : Glyph of Lesser Proportion (57870), Hunter (137014), 
+Affecting spells : Glyph of Lesser Proportion (57870), Hunter (137014), Roar of the Seven Lions (207318)
 Attributes       : ........ ........ x....... .......x   ........ ..x..... .x...... ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ...x.... 
@@ -187,7 +187,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 25 yards/sec
 Cooldown         : 20 seconds
-Affecting spells : Hunter (137014), Mastery: Sniper Training (193468)
+Affecting spells : Hunter (137014), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468)
 Attributes       : ....x... ........ x....... ........   ........ ..x....x .x...... ........ 
                  : ........ ........ ......x. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -227,7 +227,7 @@ Spell Level      : 16
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 50 yards/sec
-Affecting spells : Freezing Trap (3355), Bombardment (82921), Hunter (137014), Marksmanship Hunter (137016), Called Shot (190467), Mastery: Sniper Training (193468), Focus of the Titans (197139), Trueshot (211327)
+Affecting spells : Freezing Trap (3355), Refocus (24531), Multi-Shot Damage Increase (28539), Mortal Shots (36413), Shot Power (37508), Bombardment (82921), Hunter (137014), Marksmanship Hunter (137016), Guide: Sharpshooting (178549), Called Shot (190467), Mastery: Sniper Training (193468), Focus of the Titans (197139), Roar of the Seven Lions (207318), Trueshot (211327)
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .......x ........ ........ 
@@ -266,7 +266,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #2 (id=1072)     : Apply Aura (6) | Unknown effect sub type (308)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7 | Target: Enemy(6)
-                   Affected Spells: Multi-Shot (2643), Freezing Trap (3355), Concussive Shot (5116), Ice Trap (13809), Explosive Trap (13812), Explosive Trap (13813), Wyvern Sting (19386), Aimed Shot (19434), Intimidation (19577), Chimaera Shot (53209), Bullheaded (63896), Serpent Sting (118253), Barrage (120360), Barrage (120361), Glaive Toss (120761), Glaive Toss (121414), Steel Trap (162488), Steel Trap (162496), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Aspect of the Turtle (186265), Bursting Shot (186387), Freezing Trap (187650), Freezing Trap (187651), Tar Trap (187698), Tar Trap (187699), Mongoose Bite (190928), Aimed Shot (191043), Explosive Trap (191433), Cobra Shot (193455), Black Arrow (194599), Throwing Axes (200163), Flanking Strike (202800), Chimaera Shot (204304), Flanking Strike (204740), Explosive Shot (212431), Explosive Shot (212680), Sidewinders (214579), Sidewinders (214581), Dire Frenzy (217200)
+                   Affected Spells: Multi-Shot (2643), Freezing Trap (3355), Concussive Shot (5116), Ice Trap (13809), Explosive Trap (13812), Explosive Trap (13813), Wyvern Sting (19386), Aimed Shot (19434), Intimidation (19577), Chimaera Shot (53209), Bullheaded (63896), Serpent Sting (118253), Barrage (120360), Barrage (120361), Glaive Toss (120761), Glaive Toss (121414), Iron Horde Trip Mine (155918), Steel Trap (162488), Steel Trap (162496), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Aspect of the Turtle (186265), Bursting Shot (186387), Freezing Trap (187650), Freezing Trap (187651), Tar Trap (187698), Tar Trap (187699), Mongoose Bite (190928), Aimed Shot (191043), Explosive Trap (191433), Cobra Shot (193455), Black Arrow (194599), Throwing Axes (200163), Flanking Strike (202800), Chimaera Shot (204304), Flanking Strike (204740), Explosive Shot (212431), Explosive Shot (212680), Sidewinders (214579), Sidewinders (214581), Dire Frenzy (217200)
 Description      : $@spelldesc187650
 Tooltip          : Incapacitated.
 
@@ -280,7 +280,7 @@ Velocity         : 40 yards/sec
 Duration         : 6 seconds
 Cooldown         : 5 seconds
 Mechanic         : Unknown(88)
-Affecting spells : Freezing Trap (3355), Hunter (137014), Item - Hunter WoD PvP 2P Bonus (166005), Mastery: Sniper Training (193468)
+Affecting spells : Freezing Trap (3355), Mortal Shots (36413), Hunter (137014), Item - Hunter WoD PvP 2P Bonus (166005), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468)
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -300,7 +300,7 @@ School           : Physical
 Spell Level      : 28
 Duration         : 360 seconds
 Cooldown         : 30 seconds
-Affecting spells : Hunter (137014)
+Affecting spells : Improved Feign Death (24432), Hunter (137014)
 Attributes       : ........ x....... x.x.x... .x......   ........ ..x..... .xx..... ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -521,7 +521,7 @@ Proc Chance      : 100%
 Mechanic         : Unknown(81)
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Freezing Trap (3355), Hunter (137014), Mastery: Sniper Training (193468)
+Affecting spells : Freezing Trap (3355), Hunter (137014), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468)
 Attributes       : .x..x... ........ x...x... ........   ........ ..x..... .x...... .x.x.... 
                  : ........ ........ .x...... ........   x....... ........ ........ ........ 
                  : ........ ........ .......x ...x....   .....x.. ........ ........ ........ 
@@ -545,7 +545,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 100 yards/sec
-Affecting spells : Freezing Trap (3355), Hunter (137014), Marksmanship Hunter (137016), Vulnerable (187131), Item - Hunter T18 Marksmanship 4P Bonus (188191), Deadly Aim (190449), Mastery: Sniper Training (193468), Lock and Load (194594), True Aim (199803), Trueshot (211327), Wind Arrows (214826), Trick Shot (227272)
+Affecting spells : Freezing Trap (3355), Refocus (24531), Mortal Shots (36413), Shot Power (37508), Hunter (137014), Marksmanship Hunter (137016), Guide: Sharpshooting (178549), Vulnerable (187131), Item - Hunter T18 Marksmanship 4P Bonus (188191), Deadly Aim (190449), Mastery: Sniper Training (193468), Lock and Load (194594), True Aim (199803), Sentinel's Sight (208913), Trueshot (211327), Wind Arrows (214826), Trick Shot (227272), Gyroscopic Stabilization (235712), 
 Triggered by     : Lock and Load (194594)
 Attributes       : .x..x... ........ x....... ........   ........ ........ ........ ...x.... 
                  : ........ ........ .x..x... ........   ........ ........ ........ ........ 
@@ -573,7 +573,7 @@ Spell Level      : 40
 Range            : 100 yards
 Duration         : 10 seconds
 Cooldown         : 90 seconds
-Affecting spells : Beast Mastery Hunter (137015), Bestial Fury (194306), Unleash the Beast (206910), Item - Hunter T19 Beast Mastery 2P Bonus (211172)
+Affecting spells : Beast Mastery Hunter (137015), Beastlord (184900), Bestial Fury (194306), Unleash the Beast (206910), Item - Hunter T19 Beast Mastery 2P Bonus (211172)
 Attributes       : ........ ........ x....... .....x..   ........ ..x....x ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ...x.... ........ .xx..... ........ 
@@ -775,6 +775,7 @@ Name             : Combat Experience (id=20782) [Spell Family (9), Passive]
 Class            : Ferocity Tenacity Cunning Hunter Pet
 School           : Physical
 Spell Level      : 1
+Affecting spells : The Apex Predator's Claw (212329)
 Attributes       : ....x.x. x....... ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -927,7 +928,7 @@ Spell Level      : 10
 Range            : 100 yards
 GCD              : 1.5 seconds
 Cooldown         : 7.5 seconds
-Affecting spells : Hunter (137014), Beast Mastery Hunter (137015), Pack Leader (197080)
+Affecting spells : Hunter (137014), Beast Mastery Hunter (137015), Pack Leader (197080), Roar of the Seven Lions (207318)
 Attributes       : ........ ........ x.x..x.. ........   ........ .xx..... ........ ..xxx... 
                  : ..x..... ........ ........ ........   ........ .....x.. ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -953,7 +954,7 @@ Spell Level      : 42
 Range            : 100 yards
 Duration         : 8 seconds
 Cooldown         : 30 seconds
-Affecting spells : Hunter (137014)
+Affecting spells : Hunter (137014), Guide: Sharpshooting (178549)
 Attributes       : ....x... ........ x....... ........   ........ ..x..... ...x.... ..x..... 
                  : ...x.... x....... ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   .....x.. ........ ........ ........ 
@@ -1146,7 +1147,7 @@ Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 9 seconds
-Affecting spells : Freezing Trap (3355), Hunter (137014), Beast Mastery Hunter (137015), Mastery: Sniper Training (193468)
+Affecting spells : Freezing Trap (3355), Hunter (137014), Beast Mastery Hunter (137015), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468)
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1636,7 +1637,7 @@ Class            : Hunter
 School           : Physical
 Spell Level      : 1
 Duration         : 12 seconds
-Affecting spells : Freezing Trap (3355), Mastery: Sniper Training (193468)
+Affecting spells : Freezing Trap (3355), Mortal Shots (36413), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468)
 Triggered by     : Bullheaded (53490)
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1887,7 +1888,7 @@ Class            : Hunter
 School           : Physical
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Hunter (137014), Beast Mastery Hunter (137015), Pack Leader (197080)
+Affecting spells : Hunter (137014), Beast Mastery Hunter (137015), Pack Leader (197080), Roar of the Seven Lions (207318)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2223,7 +2224,7 @@ School           : Nature
 Range            : 30 yards
 Duration         : 10 seconds
 Cooldown         : 45 seconds
-Affecting spells : Hunter (137014), Mastery: Sniper Training (193468)
+Affecting spells : Hunter (137014), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468)
 Attributes       : ....x... ........ ........ ........   ........ ........ .x...... ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -2352,7 +2353,7 @@ School           : Nature
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 15 seconds
-Affecting spells : Freezing Trap (3355), Hunter (137014), Survival Hunter (137017)
+Affecting spells : Freezing Trap (3355), Hunter (137014), Survival Hunter (137017), Guide: Sharpshooting (178549)
 Attributes       : ........ ........ x....... ........   ........ .x...... ........ ........ 
                  : ..x..... ........ .x...... ........   .......x ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
@@ -2429,7 +2430,7 @@ GCD              : 1.5 seconds
 Duration         : 3 seconds
 Cooldown         : 20 seconds
 Category         : 85
-Affecting spells : Freezing Trap (3355), Hunter (137014), Mastery: Sniper Training (193468), Trueshot (211327)
+Affecting spells : Freezing Trap (3355), Hunter (137014), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468), Roar of the Seven Lions (207318), Trueshot (211327)
 Attributes       : .x...... ........ x....... ........   ..x...x. .x....x. ........ ..x.x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ...xx...   ........ .x...... ........ ........ 
@@ -2449,7 +2450,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 50 yards
 Velocity         : 45 yards/sec
-Affecting spells : Freezing Trap (3355), Beast Mastery Hunter (137015), Marksmanship Hunter (137016), Mastery: Sniper Training (193468), 
+Affecting spells : Freezing Trap (3355), Beast Mastery Hunter (137015), Marksmanship Hunter (137016), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468), 
 Triggered by     : Barrage (120360)
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ........ 
                  : ........ ........ .x...... ........   ........ .x...... ........ ......x. 
@@ -2476,7 +2477,7 @@ GCD              : 1.5 seconds
 Duration         : 8 seconds
 Charges          : 1 (12 seconds cooldown)
 Category         : 1674
-Affecting spells : Hunter (137014), Mastery: Sniper Training (193468), Dire Longevity (215911)
+Affecting spells : Hunter (137014), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468), Dire Longevity (215911)
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2512,7 +2513,7 @@ Name             : Glaive Toss (id=120761) [Spell Family (9)]
 Class            : Hunter
 School           : Physical
 Duration         : 3 seconds
-Affecting spells : Freezing Trap (3355), Mastery: Sniper Training (193468)
+Affecting spells : Freezing Trap (3355), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ......x.   ........ .x...... ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2532,7 +2533,7 @@ Name             : Glaive Toss (id=121414) [Spell Family (9)]
 Class            : Hunter
 School           : Physical
 Duration         : 3 seconds
-Affecting spells : Freezing Trap (3355), Mastery: Sniper Training (193468)
+Affecting spells : Freezing Trap (3355), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ......x.   ........ .x...... ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2652,7 +2653,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 60 seconds
-Affecting spells : Mastery: Master of Beasts (76657), Hunter (137014), Beast Mastery Hunter (137015), Marksmanship Hunter (137016), Mastery: Sniper Training (193468), Trueshot (211327)
+Affecting spells : Mastery: Master of Beasts (76657), Hunter (137014), Beast Mastery Hunter (137015), Marksmanship Hunter (137016), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468), Roar of the Seven Lions (207318), Trueshot (211327)
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ...x.... 
@@ -2671,7 +2672,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 100 yards
 Velocity         : 1.5 yards/sec
-Affecting spells : Mastery: Master of Beasts (76657), Hunter (137014), Beast Mastery Hunter (137015), Marksmanship Hunter (137016), Mastery: Sniper Training (193468), Trueshot (211327)
+Affecting spells : Mastery: Master of Beasts (76657), Hunter (137014), Beast Mastery Hunter (137015), Marksmanship Hunter (137016), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468), Roar of the Seven Lions (207318), Trueshot (211327)
 Attributes       : ........ ........ x....x.x ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2690,7 +2691,7 @@ School           : Arcane
 Spell Level      : 38
 Range            : 50000 yards
 Duration         : 20 seconds
-Affecting spells : Hunter (137014), Mastery: Sniper Training (193468)
+Affecting spells : Hunter (137014), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468)
 Triggered by     : Flare (1543)
 Attributes       : ........ ........ ........ ........   ........ ..x..... .x...... ........ 
                  : ..x..... ........ ......x. ........   ........ ........ ........ ........ 
@@ -2812,7 +2813,7 @@ Effects          :
                    Affected Spells: Kill Command (34026), Chimaera Shot (53209), Kill Command (83381), Dire Beast (120679), Chimaera Shot (171454), Chimaera Shot (171457), Volley (194386), Volley (194392), Black Arrow (194599), Throwing Axes (200163), Flanking Strike (202800), Chimaera Shot (204304), Flanking Strike (204740), Butchery (212436), Dire Longevity (215911), Dire Frenzy (217200), Dire Frenzy (217207)
 #3 (id=191143)   : Apply Aura (6) | Unknown effect sub type (417)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-                   Affected Spells: Disengage (781), Call Pet 1 (883), Revive Pet (982), Flare (1543), Multi-Shot (2643), Concussive Shot (5116), Feign Death (5384), Ice Trap (13809), Explosive Trap (13813), Wyvern Sting (19386), Aimed Shot (19434), Intimidation (19577), Kill Command (34026), Misdirection (34477), Chimaera Shot (53209), Gift of the Naaru (59543), Call Pet 2 (83242), Call Pet 3 (83243), Call Pet 4 (83244), Call Pet 5 (83245), Kill Command (83381), Binding Shot (109248), Exhilaration (109304), Serpent Sting (118253), Barrage (120360), Dire Beast (120679), A Murder of Crows (131894), A Murder of Crows (131900), Flare (132950), Counter Shot (147362), Steel Trap (162488), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Lacerate (185855), Marked Shot (185901), Aspect of the Cheetah (186257), Aspect of the Cheetah (186258), Aspect of the Turtle (186265), Raptor Strike (186270), Aspect of the Eagle (186289), Bursting Shot (186387), Freezing Trap (187650), Tar Trap (187698), Muzzle (187707), Carve (187708), Harpoon (190925), Mongoose Bite (190928), Aimed Shot (191043), Sticky Bomb (191241), Explosive Trap (191433), Hatchet Toss (193265), Cobra Shot (193455), Aspect of the Wild (193530), Caltrops (194277), Caltrops (194279), Volley (194386), Volley (194392), Spitting Cobra (194407), Black Arrow (194599), Dragonsfire Grenade (194855), Wing Clip (195645), Piercing Shot (198670), Camouflage (199483), Ranger's Net (200108), Throwing Axes (200163), Stampede (201594), Flanking Strike (202800), Fury of the Eagle (203415), Windburst (204147), Chimaera Shot (204304), Flanking Strike (204740), A Murder of Crows (206505), Sentinel (206817), Explosive Shot (212431), Butchery (212436), Piercing Shot (213678), Sidewinders (214579), Sidewinders (214581), Dire Longevity (215911), Dire Frenzy (217200), Dire Frenzy (217207)
+                   Affected Spells: Disengage (781), Call Pet 1 (883), Revive Pet (982), Flare (1543), Multi-Shot (2643), Concussive Shot (5116), Feign Death (5384), Ice Trap (13809), Explosive Trap (13813), Wyvern Sting (19386), Aimed Shot (19434), Intimidation (19577), Kill Command (34026), Misdirection (34477), Chimaera Shot (53209), Gift of the Naaru (59543), Call Pet 2 (83242), Call Pet 3 (83243), Call Pet 4 (83244), Call Pet 5 (83245), Kill Command (83381), Binding Shot (109248), Exhilaration (109304), Serpent Sting (118253), Barrage (120360), Dire Beast (120679), A Murder of Crows (131894), A Murder of Crows (131900), Flare (132950), Counter Shot (147362), Iron Horde Trip Mine (155918), Steel Trap (162488), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Lacerate (185855), Marked Shot (185901), Aspect of the Cheetah (186257), Aspect of the Cheetah (186258), Aspect of the Turtle (186265), Raptor Strike (186270), Aspect of the Eagle (186289), Bursting Shot (186387), Freezing Trap (187650), Tar Trap (187698), Muzzle (187707), Carve (187708), Harpoon (190925), Mongoose Bite (190928), Aimed Shot (191043), Sticky Bomb (191241), Explosive Trap (191433), Hatchet Toss (193265), Cobra Shot (193455), Aspect of the Wild (193530), Caltrops (194277), Caltrops (194279), Volley (194386), Volley (194392), Spitting Cobra (194407), Black Arrow (194599), Dragonsfire Grenade (194855), Wing Clip (195645), Piercing Shot (198670), Camouflage (199483), Ranger's Net (200108), Throwing Axes (200163), Stampede (201594), Flanking Strike (202800), Fury of the Eagle (203415), Windburst (204147), Chimaera Shot (204304), Flanking Strike (204740), A Murder of Crows (206505), Sentinel (206817), Explosive Shot (212431), Butchery (212436), Piercing Shot (213678), Sidewinders (214579), Sidewinders (214581), Dire Longevity (215911), Dire Frenzy (217200), Dire Frenzy (217207)
 #4 (id=191144)   : Apply Aura (6) | Unknown effect sub type (457)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1628 | Target: Self(1)
 #5 (id=191145)   : Apply Aura (6) | Unknown effect sub type (457)
@@ -3025,7 +3026,7 @@ Range            : 40 yards
 Duration         : 3 seconds
 Cooldown         : 24 seconds
 Proc Chance      : 101%
-Affecting spells : Hunter (137014), Mastery: Sniper Training (193468)
+Affecting spells : Hunter (137014), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468)
 Attributes       : .x...... ........ x....... ........   ........ .x...... .x...... ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3559,7 +3560,7 @@ School           : Frost
 Spell Level      : 1
 Range            : 40 yards
 Velocity         : 40 yards/sec
-Affecting spells : Freezing Trap (3355), Hunter (137014), Beast Mastery Hunter (137015), Mastery: Sniper Training (193468)
+Affecting spells : Freezing Trap (3355), Hunter (137014), Beast Mastery Hunter (137015), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468)
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3582,7 +3583,7 @@ School           : Nature
 Spell Level      : 1
 Range            : 40 yards
 Velocity         : 40 yards/sec
-Affecting spells : Freezing Trap (3355), Hunter (137014), Beast Mastery Hunter (137015), Mastery: Sniper Training (193468)
+Affecting spells : Freezing Trap (3355), Hunter (137014), Beast Mastery Hunter (137015), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468)
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3639,7 +3640,7 @@ Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 70 yards/sec
-Affecting spells : Freezing Trap (3355), Hunter (137014), Marksmanship Hunter (137016), Mastery: Sniper Training (193468), True Aim (199803)
+Affecting spells : Freezing Trap (3355), Mortal Shots (36413), Shot Power (37508), Hunter (137014), Marksmanship Hunter (137016), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468), True Aim (199803)
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -3808,7 +3809,7 @@ Spell Level      : 40
 Range            : 100 yards
 Duration         : 10 seconds
 Cooldown         : 90 seconds
-Affecting spells : Beast Mastery Hunter (137015), Bestial Fury (194306), Unleash the Beast (206910), Item - Hunter T19 Beast Mastery 2P Bonus (211172)
+Affecting spells : Beast Mastery Hunter (137015), Beastlord (184900), Bestial Fury (194306), Unleash the Beast (206910), Item - Hunter T19 Beast Mastery 2P Bonus (211172)
 Triggered by     : Bestial Wrath (19574)
 Attributes       : ........ ........ x....... .....x..   ........ ..x....x ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
@@ -3834,7 +3835,7 @@ School           : Physical
 Spell Level      : 22
 Duration         : 3 seconds
 Cooldown         : 180 seconds
-Affecting spells : Hunter (137014), Pathfinder (197343), Embrace of the Aspects (225092)
+Affecting spells : Hunter (137014), Pathfinder (197343), Call of the Wild (206332), Embrace of the Aspects (225092)
 Attributes       : ....x... ........ x....... ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3853,7 +3854,7 @@ Class            : Hunter
 School           : Physical
 Spell Level      : 5
 Duration         : 9 seconds
-Affecting spells : Hunter (137014), Pathfinder (197343), Embrace of the Aspects (225092)
+Affecting spells : Hunter (137014), Pathfinder (197343), Call of the Wild (206332), Embrace of the Aspects (225092)
 Attributes       : ....x... ........ x....... ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3873,7 +3874,7 @@ School           : Physical
 Spell Level      : 70
 Duration         : 8 seconds
 Cooldown         : 180 seconds
-Affecting spells : Freezing Trap (3355), Hunter (137014), Embrace of the Aspects (225092)
+Affecting spells : Freezing Trap (3355), Hunter (137014), Call of the Wild (206332), Embrace of the Aspects (225092)
 Attributes       : ....x... ........ x.x..... ........   ....x... ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3929,7 +3930,7 @@ Spell Level      : 40
 Range            : 100 yards
 Duration         : 10 seconds
 Cooldown         : 120 seconds
-Affecting spells : Hunter (137014), Wilderness Expert (197038), Embrace of the Aspects (225092), Aspect of the Eagle (231555), Flanking Strike (237327)
+Affecting spells : Hunter (137014), Wilderness Expert (197038), Call of the Wild (206332), Embrace of the Aspects (225092), Aspect of the Eagle (231555), Flanking Strike (237327)
 Attributes       : ....x... ........ x....... ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3952,7 +3953,7 @@ Resource         : 10 Focus
 Spell Level      : 26
 GCD              : 1.5 seconds
 Cooldown         : 30 seconds
-Affecting spells : Freezing Trap (3355), Hunter (137014), Marksmanship Hunter (137016), Gust of Wind (190567), Mastery: Sniper Training (193468), Trueshot (211327)
+Affecting spells : Freezing Trap (3355), Hunter (137014), Marksmanship Hunter (137016), Gust of Wind (190567), Mastery: Sniper Training (193468), Trueshot (211327), Magnetized Blasting Cap Launcher (226841), 
 Attributes       : .x..x... ........ x...x... ........   ........ ........ ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -4133,7 +4134,7 @@ Resource         : 40 Focus
 Spell Level      : 42
 Range            : 8 yards
 GCD              : 1.5 seconds
-Affecting spells : Hunter (137014), Survival Hunter (137017)
+Affecting spells : Hunter (137014), Survival Hunter (137017), Butcher's Bone Apron (236446)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4283,7 +4284,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Charges          : 3 (12 seconds cooldown)
 Category         : 1557
-Affecting spells : Freezing Trap (3355), Hunter (137014), Survival Hunter (137017), Mongoose Fury (190931), Mastery: Sniper Training (193468), Sharpened Fang (203566), Jaws of the Mongoose (238053)
+Affecting spells : Freezing Trap (3355), Hunter (137014), Survival Hunter (137017), Guide: Sharpshooting (178549), Blackness (184902), Mongoose Fury (190931), Mastery: Sniper Training (193468), Sharpened Fang (203566), Jaws of the Mongoose (238053)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4326,7 +4327,7 @@ School           : Physical
 Spell Level      : 10
 Range            : 100 yards
 Velocity         : 20 yards/sec
-Affecting spells : Freezing Trap (3355), Hunter (137014), Marksmanship Hunter (137016), Vulnerable (187131), Item - Hunter T18 Marksmanship 4P Bonus (188191), Deadly Aim (190449), Mastery: Sniper Training (193468), Lock and Load (194594), True Aim (199803), Trueshot (211327), Wind Arrows (214826), Trick Shot (227272)
+Affecting spells : Freezing Trap (3355), Refocus (24531), Mortal Shots (36413), Shot Power (37508), Hunter (137014), Marksmanship Hunter (137016), Guide: Sharpshooting (178549), Vulnerable (187131), Item - Hunter T18 Marksmanship 4P Bonus (188191), Deadly Aim (190449), Mastery: Sniper Training (193468), Lock and Load (194594), True Aim (199803), Sentinel's Sight (208913), Trueshot (211327), Wind Arrows (214826), Trick Shot (227272), Gyroscopic Stabilization (235712), 
 Attributes       : .x..x... ........ x....... ........   ........ ........ ........ ...x.... 
                  : ........ ........ .x..x... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
@@ -4540,7 +4541,7 @@ Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 45 yards/sec
-Affecting spells : Freezing Trap (3355), Hunter (137014), Beast Mastery Hunter (137015), Spitting Cobras (197140), Slithering Serpents (238051)
+Affecting spells : Freezing Trap (3355), Hunter (137014), Beast Mastery Hunter (137015), Guide: Sharpshooting (178549), Spitting Cobras (197140), Roar of the Seven Lions (207318), Slithering Serpents (238051)
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -4612,7 +4613,7 @@ Spell Level      : 26
 Range            : 100 yards
 Duration         : 10 seconds
 Cooldown         : 120 seconds
-Affecting spells : Hunter (137014), Wilderness Expert (197038), Embrace of the Aspects (225092), Aspect of the Eagle (231555), Flanking Strike (237327)
+Affecting spells : Hunter (137014), Wilderness Expert (197038), Call of the Wild (206332), Embrace of the Aspects (225092), Aspect of the Eagle (231555), Flanking Strike (237327)
 Attributes       : ....x... ........ x....... ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4765,7 +4766,7 @@ Cooldown         : 1.5 seconds
 Proc Chance      : 100%
 Proc Flags       : ......x. ........ ........ ........ 
                  : White Ranged
-Affecting spells : Hunter (137014), Beast Mastery Hunter (137015), Marksmanship Hunter (137016), Mastery: Sniper Training (193468), Trueshot (211327)
+Affecting spells : Hunter (137014), Beast Mastery Hunter (137015), Marksmanship Hunter (137016), Mastery: Sniper Training (193468), Roar of the Seven Lions (207318), Trueshot (211327)
 Attributes       : .x...... ........ x.....x. ........   ...xx..x ........ ........ ........ 
                  : ........ ........ .x....x. ........   .....x.. ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -4785,7 +4786,7 @@ School           : Physical
 Resource         : 3 Focus
 Range            : 100 yards
 Velocity         : 0.3 yards/sec
-Affecting spells : Hunter (137014), Beast Mastery Hunter (137015), Marksmanship Hunter (137016), Mastery: Sniper Training (193468), Trueshot (211327)
+Affecting spells : Hunter (137014), Beast Mastery Hunter (137015), Marksmanship Hunter (137016), Mastery: Sniper Training (193468), Roar of the Seven Lions (207318), Trueshot (211327)
 Triggered by     : Volley (194386)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4892,7 +4893,7 @@ GCD              : 1.5 seconds
 Velocity         : 60 yards/sec
 Duration         : 8 seconds
 Cooldown         : 15 seconds
-Affecting spells : Freezing Trap (3355), Hunter (137014), Marksmanship Hunter (137016), Deadly Aim (190449), Mastery: Sniper Training (193468), Trueshot (211327), Wind Arrows (214826)
+Affecting spells : Freezing Trap (3355), Hunter (137014), Marksmanship Hunter (137016), Guide: Sharpshooting (178549), Deadly Aim (190449), Mastery: Sniper Training (193468), Trueshot (211327), Wind Arrows (214826)
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ...x.... ........ ...x....   ........ ........ ........ ........ 
@@ -5506,7 +5507,7 @@ Name             : Stampede (id=201594) [Spell Family (9)]
 Class            : Hunter
 School           : Physical
 Range            : 150 yards
-Affecting spells : Mastery: Master of Beasts (76657), Hunter (137014), Mastery: Sniper Training (193468)
+Affecting spells : Mastery: Master of Beasts (76657), Hunter (137014), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468)
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ........ ........   ........ ........ ........ ......x. 
                  : .......x ........ ........ ........   ...x.... ........ .xx..... ........ 
@@ -5541,7 +5542,7 @@ Spell Level      : 12
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 6 seconds
-Affecting spells : Freezing Trap (3355), Hunter (137014), Survival Hunter (137017), My Beloved Monster (203577)
+Affecting spells : Freezing Trap (3355), Hunter (137014), Survival Hunter (137017), Guide: Sharpshooting (178549), My Beloved Monster (203577)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5595,7 +5596,7 @@ Proc Chance      : 100%
 Artifact Power   : Id: 1068, Max Rank: 1
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
-Affecting spells : Hunter (137014), Mastery: Sniper Training (193468)
+Affecting spells : Hunter (137014), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468)
 Attributes       : ........ ........ ........ ........   ..x...x. .xx..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ...x.... 
@@ -5638,7 +5639,7 @@ Class            : Hunter
 School           : Nature
 Spell Level      : 1
 Range            : 50000 yards
-Affecting spells : Freezing Trap (3355), Hunter (137014), Beast Mastery Hunter (137015), Mastery: Sniper Training (193468)
+Affecting spells : Freezing Trap (3355), Hunter (137014), Beast Mastery Hunter (137015), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468)
 Triggered by     : Chimaera Shot (171454), Chimaera Shot (171457)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5734,7 +5735,7 @@ Class            : Hunter
 School           : Physical
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Freezing Trap (3355), Hunter (137014), Survival Hunter (137017), My Beloved Monster (203577)
+Affecting spells : Freezing Trap (3355), Hunter (137014), Survival Hunter (137017), Guide: Sharpshooting (178549), My Beloved Monster (203577)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5770,7 +5771,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 60 seconds
-Affecting spells : Mastery: Master of Beasts (76657), Hunter (137014), Beast Mastery Hunter (137015), Marksmanship Hunter (137016), Mastery: Sniper Training (193468), Trueshot (211327)
+Affecting spells : Mastery: Master of Beasts (76657), Hunter (137014), Beast Mastery Hunter (137015), Marksmanship Hunter (137016), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468), Roar of the Seven Lions (207318), Trueshot (211327)
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ...x.... 
@@ -5976,7 +5977,7 @@ Duration         : 4 seconds
 Cooldown         : 30 seconds
 Category         : 1620
 Category Cooldown: 0.33 seconds
-Affecting spells : Freezing Trap (3355), Hunter (137014), Mastery: Sniper Training (193468), Lock and Load (194594), Trueshot (211327)
+Affecting spells : Freezing Trap (3355), Hunter (137014), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468), Lock and Load (194594), Trueshot (211327)
 Attributes       : .x..x... ........ x....... ........   ........ ........ ........ ....x... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : .....x.. ........ ........ ........   ........ ........ ........ ........ 
@@ -6001,7 +6002,7 @@ Range            : 8 yards
 GCD              : 1.5 seconds
 Charges          : 3 (12 seconds cooldown)
 Category         : 1616
-Affecting spells : Hunter (137014), Survival Hunter (137017)
+Affecting spells : Hunter (137014), Survival Hunter (137017), Butcher's Bone Apron (236446)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .......x ........ ........ 
@@ -6120,7 +6121,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 2 (12 seconds cooldown)
 Category         : 1628
-Affecting spells : Freezing Trap (3355), Hunter (137014), Marksmanship Hunter (137016), Called Shot (190467), Critical Focus (191328), Mastery: Sniper Training (193468), 
+Affecting spells : Freezing Trap (3355), Hunter (137014), Marksmanship Hunter (137016), Guide: Sharpshooting (178549), Called Shot (190467), Critical Focus (191328), Mastery: Sniper Training (193468), 
 Attributes       : .x...... ........ x....... ........   ........ .xx..... ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
@@ -6147,7 +6148,7 @@ School           : Nature
 Spell Level      : 1
 Range            : 100 yards
 Velocity         : 18 yards/sec
-Affecting spells : Freezing Trap (3355), Hunter (137014), Marksmanship Hunter (137016), Called Shot (190467), Critical Focus (191328), Mastery: Sniper Training (193468), 
+Affecting spells : Freezing Trap (3355), Hunter (137014), Marksmanship Hunter (137016), Guide: Sharpshooting (178549), Called Shot (190467), Critical Focus (191328), Mastery: Sniper Training (193468), 
 Attributes       : .x...... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ......x.   ........ ........ ........ ......x. 
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
@@ -6195,7 +6196,7 @@ Class            : Hunter
 School           : Physical
 Spell Level      : 1
 Range            : 5 yards
-Affecting spells : Hunter (137014), Beast Mastery Hunter (137015), Pack Leader (197080)
+Affecting spells : Hunter (137014), Beast Mastery Hunter (137015), Pack Leader (197080), Roar of the Seven Lions (207318)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

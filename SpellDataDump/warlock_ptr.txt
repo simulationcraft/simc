@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build 5694ad03)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build ff6af4d)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -32,7 +32,7 @@ Resource         : 3% Base Mana (33000 @Level 110)
 Spell Level      : 3
 Range            : 40 yards
 GCD              : 1.5 seconds
-Affecting spells : Mastery: Potent Afflictions (77215), Absolute Corruption (196103), Drain Soul (198590), Hideous Corruption (199112), Perdition (199158), Wrath of Consumption (199646), Winnowing (238072)
+Affecting spells : Mastery: Potent Afflictions (77215), Epidemic (184922), Absolute Corruption (196103), Drain Soul (198590), Hideous Corruption (199112), Perdition (199158), Wrath of Consumption (199646), Sacrolash's Dark Strike (207952), Winnowing (238072)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -54,7 +54,7 @@ Spell Level      : 10
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Destruction Warlock (137046), Residual Flames (196227), Burning Hunger (196432)
+Affecting spells : Destruction Warlock (137046), Flamelicked (185229), Residual Flames (196227), Burning Hunger (196432), Odr, Shawl of the Ymirjar (212173)
 Attributes       : ........ ........ x....... .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -242,7 +242,7 @@ Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Category         : 1363
-Affecting spells : Demon Skin (219272)
+Affecting spells : Demon Skin (219272), Orb of the Fel Temptress (240264)
 Attributes       : ........ ........ ........ ........   x....... ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
@@ -287,7 +287,7 @@ GCD              : 1.5 seconds
 Duration         : 18 seconds
 Stacks           : 6 maximum
 Proc Chance      : 101%
-Affecting spells : Mastery: Potent Afflictions (77215), Writhe in Agony (196102), Drain Soul (198590), Inimitable Agony (199111), Perdition (199158), Wrath of Consumption (199646), Agony (231792), Winnowing (238072)
+Affecting spells : Mastery: Potent Afflictions (77215), Epidemic (184922), Writhe in Agony (196102), Drain Soul (198590), Inimitable Agony (199111), Perdition (199158), Wrath of Consumption (199646), Hood of Eternal Disdain (205797), Agony (231792), Winnowing (238072)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -315,6 +315,7 @@ GCD              : 1.5 seconds
 Duration         : 300 seconds
 Proc Chance      : 101%
 Mechanic         : Unknown(2)
+Affecting spells : Grimoire of Convert Demon (168800)
 Attributes       : ........ ........ x....... ......x.   x....... ..x..... .x...... ........ 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ...x.... ........ .....x..   ........ ........ ........ ........ 
@@ -397,7 +398,7 @@ Range            : 40 yards
 Cast Time        : 1.75 seconds
 GCD              : 0.5 seconds
 Velocity         : 16 yards/sec
-Affecting spells : Destruction Warlock (137046), Impish Incineration (215273)
+Affecting spells : Increased Imp Firebolt Damage (22855), Destruction Warlock (137046), Impish Incineration (215273)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -516,6 +517,7 @@ Range            : 30 yards
 Cast Time        : 1.7 seconds
 GCD              : 1.5 seconds
 Category         : 1266
+Affecting spells : Increased Fear Break Threshold (95677)
 Attributes       : ........ ........ x....... ......x.   ........ ..x..... ........ .x...... 
                  : ........ ........ ........ ........   x....... ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -655,6 +657,7 @@ Cooldown         : 45 seconds
 Category         : 633
 Category Cooldown: 45 seconds
 Proc Chance      : 101%
+Affecting spells : Odr, Shawl of the Ymirjar (212173)
 Attributes       : ........ ........ x....... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -801,7 +804,7 @@ GCD              : 1.5 seconds
 Duration         : 5 seconds
 Charges          : 1 (12 seconds cooldown)
 Category         : 672
-Affecting spells : Destruction Warlock (137046), Conflagration of Chaos (196546)
+Affecting spells : Destruction Warlock (137046), Flamelicked (185229), Conflagration of Chaos (196546), Odr, Shawl of the Ymirjar (212173)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -843,7 +846,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 1 (12 seconds cooldown)
 Category         : 672
-Affecting spells : Destruction Warlock (137046), Conflagration of Chaos (196546), Flames of Sargeras (238074)
+Affecting spells : Destruction Warlock (137046), Flamelicked (185229), Conflagration of Chaos (196546), Odr, Shawl of the Ymirjar (212173), Flames of Sargeras (238074)
 Attributes       : ........ ........ x....... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1167,7 +1170,7 @@ GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Stacks           : 5 maximum
 Proc Chance      : 101%
-Affecting spells : Backdraft (117828), Destruction Warlock (137046), Master of Disaster (196211), Fire and the Flames (196222)
+Affecting spells : Backdraft (117828), Destruction Warlock (137046), Flamelicked (185229), Master of Disaster (196211), Fire and the Flames (196222), Odr, Shawl of the Ymirjar (212173)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1191,7 +1194,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Stacks           : 10 maximum
 Proc Chance      : 101%
-Affecting spells : Mastery: Potent Afflictions (77215), Drain Soul (198590), Inherently Unstable (199152), Perdition (199158), Wrath of Consumption (199646), Item - Warlock T19 Affliction 2P Bonus (212002), Winnowing (238072)
+Affecting spells : Mastery: Potent Afflictions (77215), Epidemic (184922), Drain Soul (198590), Inherently Unstable (199152), Perdition (199158), Wrath of Consumption (199646), Item - Warlock T19 Affliction 2P Bonus (212002), Winnowing (238072)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1413,7 +1416,7 @@ Class            : Warlock
 School           : Fire
 Spell Level      : 20
 Range            : 100 yards
-Affecting spells : Destruction Warlock (137046), Fire From the Sky (196258)
+Affecting spells : Destruction Warlock (137046), Flamelicked (185229), Fire From the Sky (196258)
 Attributes       : ........ ........ .......x x..x....   ...x.x.x ........ ........ ........ 
                  : ..x..... ......x. ...x.... ......x.   ........ .x...... ........ .x....x. 
                  : .......x .......x ........ ........   ...x.... .......x .xx..... ..x..... 
@@ -2434,6 +2437,7 @@ Cast Time        : 3 seconds
 GCD              : 1.5 seconds
 Duration         : 0.001 seconds
 Cooldown         : 10 seconds
+Affecting spells : Pillars of the Dark Portal (217519)
 Attributes       : ........ ........ ........ ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2605,6 +2609,7 @@ School           : Shadow
 Range            : 50000 yards
 Duration         : 900 seconds
 Cooldown         : 10 seconds
+Affecting spells : Pillars of the Dark Portal (217519)
 Triggered by     : Demonic Gateway (111771)
 Attributes       : ........ ........ .......x x..x....   .....x.. ........ ........ ........ 
                  : x.xx.... ......x. ........ ........   ........ ........ ....x... ......x. 
@@ -2821,7 +2826,7 @@ Range            : 40 yards
 Cast Time        : 3 seconds
 GCD              : 1.5 seconds
 Velocity         : 16 yards/sec
-Affecting spells : Backdraft (117828), Destruction Warlock (137046), Item - Warlock T17 Destruction 4P Bonus (165452), Item - Warlock T18 Destruction 2P Bonus (185965), Chaotic Instability (196217), Reverse Entropy (205148), Embrace Chaos (212019)
+Affecting spells : Backdraft (117828), Destruction Warlock (137046), Item - Warlock T17 Destruction 4P Bonus (165452), Flamelicked (185229), Item - Warlock T18 Destruction 2P Bonus (185965), Chaotic Instability (196217), Reverse Entropy (205148), Embrace Chaos (212019), Odr, Shawl of the Ymirjar (212173)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2890,6 +2895,7 @@ Proc Chance      : 100%
 Mechanic         : Unknown(42)
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
+Affecting spells : Increased Fear Break Threshold (95677)
 Attributes       : ........ ........ x....... ......x.   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ..x..... 
                  : x....... ........ ........ ........   .....x.. ........ ........ ........ 
@@ -3187,7 +3193,7 @@ School           : Shadow
 Spell Level      : 3
 Range            : 40 yards
 Duration         : 14 seconds
-Affecting spells : Mastery: Potent Afflictions (77215), Absolute Corruption (196103), Drain Soul (198590), Hideous Corruption (199112), Perdition (199158), Wrath of Consumption (199646), Winnowing (238072)
+Affecting spells : Mastery: Potent Afflictions (77215), Epidemic (184922), Absolute Corruption (196103), Drain Soul (198590), Hideous Corruption (199112), Perdition (199158), Wrath of Consumption (199646), Sacrolash's Dark Strike (207952), Winnowing (238072)
 Triggered by     : Corruption (172)
 Attributes       : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ .x...... ........ ........ 
@@ -3234,7 +3240,7 @@ School           : Shadowflame
 Range            : 40 yards
 Cast Time        : 3 seconds
 Cooldown         : 45 seconds
-Affecting spells : Destruction Warlock (137046)
+Affecting spells : Destruction Warlock (137046), Flamelicked (185229)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3278,7 +3284,7 @@ School           : Fire
 Spell Level      : 12
 Range            : 100 yards
 Duration         : 18 seconds
-Affecting spells : Destruction Warlock (137046), Residual Flames (196227), Burning Hunger (196432), Roaring Blaze (205690)
+Affecting spells : Destruction Warlock (137046), Flamelicked (185229), Residual Flames (196227), Burning Hunger (196432), Roaring Blaze (205690), Odr, Shawl of the Ymirjar (212173)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -3603,6 +3609,7 @@ Class            : Warlock
 School           : Magic
 Range            : 100 yards
 Velocity         : 24 yards/sec
+Affecting spells : Odr, Shawl of the Ymirjar (212173)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3790,7 +3797,7 @@ Class            : Warlock
 School           : Fire
 Spell Level      : 12
 Range            : 100 yards
-Affecting spells : Destruction Warlock (137046), Residual Flames (196227), Burning Hunger (196432), Roaring Blaze (205690)
+Affecting spells : Destruction Warlock (137046), Flamelicked (185229), Residual Flames (196227), Burning Hunger (196432), Roaring Blaze (205690), Odr, Shawl of the Ymirjar (212173)
 Triggered by     : Immolate (193541)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4204,7 +4211,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Cooldown         : 15 seconds
-Affecting spells : Warlock (137042)
+Affecting spells : Improved Rain of Fire/Hellfire (24430), Warlock (137042)
 Attributes       : ........ ........ ........ ........   ..x...x. ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -4222,7 +4229,7 @@ Class            : Warlock
 School           : Fire
 Range            : 100 yards
 Velocity         : 24 yards/sec
-Affecting spells : Destruction Warlock (137046)
+Affecting spells : Destruction Warlock (137046), Odr, Shawl of the Ymirjar (212173)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4262,6 +4269,7 @@ GCD              : 1.5 seconds
 Charges          : 3 (45 seconds cooldown)
 Category         : 1630
 Artifact Power   : Id: 803, Max Rank: 1
+Triggered by     : Push Active Ability to Bar (225886)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4336,6 +4344,7 @@ School           : Shadow
 Spell Level      : 1
 Range            : 100 yards
 Velocity         : 20 yards/sec
+Affecting spells : Odr, Shawl of the Ymirjar (212173)
 Triggered by     : Shadow Barrage (196659)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4744,7 +4753,7 @@ Class            : Warlock
 School           : Chromatic
 Spell Level      : 26
 Range            : 50000 yards
-Affecting spells : Backdraft (117828), Destruction Warlock (137046), Item - Warlock T17 Destruction 4P Bonus (165452), Item - Warlock T18 Destruction 2P Bonus (185965), Chaotic Instability (196217), Reverse Entropy (205148), Embrace Chaos (212019)
+Affecting spells : Backdraft (117828), Destruction Warlock (137046), Item - Warlock T17 Destruction 4P Bonus (165452), Flamelicked (185229), Item - Warlock T18 Destruction 2P Bonus (185965), Chaotic Instability (196217), Reverse Entropy (205148), Embrace Chaos (212019), Odr, Shawl of the Ymirjar (212173)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ...x.... 
                  : ........ x....... ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4788,6 +4797,7 @@ School           : Chromatic
 Spell Level      : 1
 Range            : 100 yards
 Velocity         : 16 yards/sec
+Affecting spells : Odr, Shawl of the Ymirjar (212173)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4855,7 +4865,7 @@ School           : Shadow
 Velocity         : 20 yards/sec
 Cooldown         : 5 seconds
 Artifact Power   : Id: 999, Max Rank: 1
-Triggered by     : Tormented Souls (216695)
+Triggered by     : Tormented Souls (216695), Push Active Ability to Bar (225888)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4873,6 +4883,7 @@ Name             : Deadwind Harvester (id=216708) [Spell Family (5)]
 Class            : Warlock
 School           : Physical
 Duration         : 5 seconds
+Affecting spells : Reap and Sow (236114)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -4884,10 +4895,10 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 0x7f | Target: Self(1)
 #2 (id=331182)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 100 | Scaled Value: 100 | Target: Self(1)
-                   Affected Spells: Inimitable Agony (199111), Hideous Corruption (199112), Drained to a Husk (199120), Inherently Unstable (199152), Seeds of Doom (199153), Perdition (199158), Shadowy Incantations (199163), Shadows of the Flesh (199212), Long Dark Night of the Soul (199214), Sweet Souls (199220), Fatal Echoes (199257), Compounding Horror (199282), Soul Flame (199471), Wrath of Consumption (199472), Soul Flame (199581), Wrath of Consumption (199646), Harvester of Souls (201424), Souls of the Damned (216463), Crystalline Shadows (221862), Rend Soul (242834)
+                   Affected Spells: Inimitable Agony (199111), Hideous Corruption (199112), Drained to a Husk (199120), Inherently Unstable (199152), Seeds of Doom (199153), Perdition (199158), Shadowy Incantations (199163), Shadows of the Flesh (199212), Long Dark Night of the Soul (199214), Sweet Souls (199220), Fatal Echoes (199257), Compounding Horror (199282), Soul Flame (199471), Wrath of Consumption (199472), Soul Flame (199581), Wrath of Consumption (199646), Harvester of Souls (201424), Souls of the Damned (216463), Souls of the Damned (216721), Souls of the Damned (216722), Souls of the Damned (216724), Crystalline Shadows (221862), Rend Soul (242834)
 #3 (id=345006)   : Apply Aura (6) | Add Percent Modifier: Spell Tick Time (108)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 8 | Target: Self(1)
-                   Affected Spells: Inimitable Agony (199111), Hideous Corruption (199112), Drained to a Husk (199120), Inherently Unstable (199152), Seeds of Doom (199153), Perdition (199158), Shadowy Incantations (199163), Shadows of the Flesh (199212), Long Dark Night of the Soul (199214), Sweet Souls (199220), Fatal Echoes (199257), Compounding Horror (199282), Soul Flame (199471), Wrath of Consumption (199472), Soul Flame (199581), Wrath of Consumption (199646), Harvester of Souls (201424), Souls of the Damned (216463), Crystalline Shadows (221862), Rend Soul (242834)
+                   Affected Spells: Inimitable Agony (199111), Hideous Corruption (199112), Drained to a Husk (199120), Inherently Unstable (199152), Seeds of Doom (199153), Perdition (199158), Shadowy Incantations (199163), Shadows of the Flesh (199212), Long Dark Night of the Soul (199214), Sweet Souls (199220), Fatal Echoes (199257), Compounding Horror (199282), Soul Flame (199471), Wrath of Consumption (199472), Soul Flame (199581), Wrath of Consumption (199646), Harvester of Souls (201424), Souls of the Damned (216463), Souls of the Damned (216721), Souls of the Damned (216722), Souls of the Damned (216724), Crystalline Shadows (221862), Rend Soul (242834)
 Description      : $@spelldesc216698
 Tooltip          : Increases your damage by $s1%, and doubles the effectiveness of the other traits of the Deadwind Harvester.
 
@@ -4896,6 +4907,7 @@ Class            : Warlock
 School           : Physical
 Spell Level      : 44
 Proc Chance      : 101%
+Affecting spells : Improved Rain of Fire/Hellfire (24430)
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4926,7 +4938,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=326947)   : Apply Aura (6) | Unknown effect sub type (332)
                    Base Value: 112869 | Scaled Value: 112869 | Target: Self(1)
-                   Affected Spells: Summon Felhunter (691)
+                   Affected Spells: Summon Felhunter (691), Summon Voidwalker (25112)
 Description      : Transforms your Felhunter into an Observer.
 
 Name             : Lord of Flames (id=224103) [Spell Family (5), Passive] 
@@ -5143,7 +5155,7 @@ Range            : 40 yards
 Duration         : 8 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Mastery: Potent Afflictions (77215), Drain Soul (198590), Inherently Unstable (199152), Perdition (199158), Wrath of Consumption (199646), Item - Warlock T19 Affliction 2P Bonus (212002), Winnowing (238072)
+Affecting spells : Mastery: Potent Afflictions (77215), Epidemic (184922), Drain Soul (198590), Inherently Unstable (199152), Perdition (199158), Wrath of Consumption (199646), Item - Warlock T19 Affliction 2P Bonus (212002), Winnowing (238072)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -5164,7 +5176,7 @@ Range            : 40 yards
 Duration         : 8 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Mastery: Potent Afflictions (77215), Drain Soul (198590), Inherently Unstable (199152), Perdition (199158), Wrath of Consumption (199646), Item - Warlock T19 Affliction 2P Bonus (212002), Winnowing (238072)
+Affecting spells : Mastery: Potent Afflictions (77215), Epidemic (184922), Drain Soul (198590), Inherently Unstable (199152), Perdition (199158), Wrath of Consumption (199646), Item - Warlock T19 Affliction 2P Bonus (212002), Winnowing (238072)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -5185,7 +5197,7 @@ Range            : 40 yards
 Duration         : 8 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Mastery: Potent Afflictions (77215), Drain Soul (198590), Inherently Unstable (199152), Perdition (199158), Wrath of Consumption (199646), Item - Warlock T19 Affliction 2P Bonus (212002), Winnowing (238072)
+Affecting spells : Mastery: Potent Afflictions (77215), Epidemic (184922), Drain Soul (198590), Inherently Unstable (199152), Perdition (199158), Wrath of Consumption (199646), Item - Warlock T19 Affliction 2P Bonus (212002), Winnowing (238072)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -5206,7 +5218,7 @@ Range            : 40 yards
 Duration         : 8 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Mastery: Potent Afflictions (77215), Drain Soul (198590), Inherently Unstable (199152), Perdition (199158), Wrath of Consumption (199646), Item - Warlock T19 Affliction 2P Bonus (212002), Winnowing (238072)
+Affecting spells : Mastery: Potent Afflictions (77215), Epidemic (184922), Drain Soul (198590), Inherently Unstable (199152), Perdition (199158), Wrath of Consumption (199646), Item - Warlock T19 Affliction 2P Bonus (212002), Winnowing (238072)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -5227,7 +5239,7 @@ Range            : 40 yards
 Duration         : 8 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Mastery: Potent Afflictions (77215), Drain Soul (198590), Inherently Unstable (199152), Perdition (199158), Wrath of Consumption (199646), Item - Warlock T19 Affliction 2P Bonus (212002), Winnowing (238072)
+Affecting spells : Mastery: Potent Afflictions (77215), Epidemic (184922), Drain Soul (198590), Inherently Unstable (199152), Perdition (199158), Wrath of Consumption (199646), Item - Warlock T19 Affliction 2P Bonus (212002), Winnowing (238072)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -5248,7 +5260,7 @@ Spell Level      : 13
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
-Affecting spells : Drained to a Husk (199120), Perdition (199158), Long Dark Night of the Soul (199214), Wrath of Consumption (199646), Devourer of Life (215165), Winnowing (238072)
+Affecting spells : Flamelicked (185229), Drained to a Husk (199120), Perdition (199158), Long Dark Night of the Soul (199214), Wrath of Consumption (199646), Odr, Shawl of the Ymirjar (212173), Devourer of Life (215165), Winnowing (238072)
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ...x.... 
