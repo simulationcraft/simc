@@ -1992,8 +1992,13 @@ struct moonfire_t : public druid_spell_t
       bool benefits_from_galactic_guardian;
 
     public:
+
     moonfire_damage_t( druid_t* p ) :
-      druid_spell_t( "moonfire_dmg", p, p -> find_spell( 164812 ) )
+      moonfire_damage_t( p, "moonfire_dmg" )
+    {}
+
+    moonfire_damage_t( druid_t* p, const std::string& n ) :
+      druid_spell_t( n, p, p -> find_spell( 164812 ) )
     {
       if ( p -> spec.astral_power -> ok() )
       {
@@ -2155,7 +2160,7 @@ struct moonfire_t : public druid_spell_t
   struct galactic_guardian_damage_t : public moonfire_damage_t
   {
     galactic_guardian_damage_t( druid_t* p ) :
-      moonfire_damage_t( p )
+      moonfire_damage_t( p, "galactic_guardian" )
     {
       benefits_from_galactic_guardian = false;
     }
@@ -9382,6 +9387,7 @@ struct druid_module_t : public module_t
     register_special_effect( 236478, oakhearts_puny_quods_t() );
     register_special_effect( 236478, oakhearts_puny_quods_buff_t(), true );
     register_special_effect( 200818, lady_and_the_child_t<moonfire_t::moonfire_damage_t>( "moonfire_dmg" ) );
+    register_special_effect( 200818, lady_and_the_child_t<moonfire_t::galactic_guardian_damage_t>( "galactic_guardian" ) );
     register_special_effect( 200818, lady_and_the_child_t<lunar_inspiration_t>( "lunar_inspiration" ) );
     register_special_effect( 212875, fiery_red_maimers_t(), true );
     register_special_effect( 222270, sylvan_walker_t() );
