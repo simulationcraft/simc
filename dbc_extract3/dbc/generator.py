@@ -1454,6 +1454,7 @@ class SpellDataGenerator(DataGenerator):
           ( 194432, 0 ),                            # Felo'melorn - Aftershocks
           ( 225119, 5 ),                            # Arcane Familiar attack, Arcane Assault
           ( 210833, 0 ),                            # Touch of the Magi
+          ( 228358, 0 ),                            # Winter's Chill
         ),
 
         # Warlock:
