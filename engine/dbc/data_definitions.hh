@@ -242,7 +242,7 @@ struct item_data_t {
   int      id_socket_bonus;
   int      id_set;
   int      id_suffix_group;
-  unsigned id_scaling_distribution;
+  int      id_scaling_distribution;
   unsigned id_artifact;
 
   bool is_armor()
