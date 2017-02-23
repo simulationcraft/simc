@@ -2355,7 +2355,6 @@ struct fire_elemental_t : public primal_elemental_t
 
 struct storm_elemental_t : public primal_elemental_t
 {
-  // TODO: Healing
   struct wind_gust_t : public pet_spell_t<storm_elemental_t>
   {
     const spell_data_t* energize;
@@ -2418,7 +2417,6 @@ struct storm_elemental_t : public primal_elemental_t
   {
     double m = primal_elemental_t::composite_player_multiplier( school );
 
-    // TODO-WOD: Enhance/Elemental has damage, Restoration has healing
     if ( call_lightning -> up() )
       m *= 1.0 + call_lightning -> data().effectN( 2 ).percent();
 
@@ -5104,6 +5102,17 @@ struct wind_shear_t : public shaman_spell_t
     if ( ! target -> debuffs.casting -> check() ) return false;
     return shaman_spell_t::ready();
   }
+
+  void execute() override
+  {
+    shaman_spell_t::execute();
+
+    if (p()->legendary.sephuzs_secret)
+    {
+      p()->buff.sephuzs_secret->trigger();
+    }
+  }
+
 };
 
 // Ascendancy Spell =========================================================
