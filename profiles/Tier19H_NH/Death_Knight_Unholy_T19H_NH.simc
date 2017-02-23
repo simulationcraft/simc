@@ -3,7 +3,7 @@ level=110
 race=blood_elf
 role=attack
 position=back
-talents=1230023
+talents=3230021
 artifact=16:0:0:0:0:149:1:150:1:151:1:152:1:153:1:154:1:156:3:157:3:158:3:262:3:263:1:264:3:265:3:266:3:267:3:1119:3:1333:1:1361:6
 spec=unholy
 
@@ -120,7 +120,7 @@ neck=zealous_timestone_pendant,id=140894,bonus_id=3517,enchant=mark_of_the_train
 shoulders=dreadwyrm_shoulderguards,id=138361,bonus_id=3517
 back=dreadwyrm_greatcloak,id=138364,bonus_id=3517,enchant=binding_of_strength
 chest=dreadwyrm_breastplate,id=138349,bonus_id=3517
-wrists=eternally_recurring_bracers,id=140893,bonus_id=3517
+wrists=jagged_carapace_wristclamps,id=140902,bonus_id=3517
 hands=gauntlets_of_fractured_eons,id=140879,bonus_id=3517
 waist=gilded_nightborne_waistplate,id=140880,bonus_id=3517
 legs=chronotempered_legplates,id=140882,bonus_id=3517
@@ -128,17 +128,17 @@ feet=sabatons_of_unchanging_fate,id=140891,bonus_id=3517
 finger1=ring_of_the_scoured_clan,id=140897,bonus_id=3517,enchant=binding_of_mastery
 finger2=spellblades_gemmed_signet,id=140895,bonus_id=3517,enchant=binding_of_mastery
 trinket1=draught_of_souls,id=140808,bonus_id=3517
-trinket2=entwined_elemental_foci,id=140796,bonus_id=3517
+trinket2=convergence_of_fates,id=140806,bonus_id=3517
 main_hand=apocalypse,id=128403,gem_id=140837/140822/140820,relic_id=3517/3517/3517,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
 # gear_ilvl=896.53
 # gear_strength=19489
 # gear_stamina=31226
-# gear_crit_rating=4528
-# gear_haste_rating=6440
-# gear_mastery_rating=11114
-# gear_versatility_rating=1923
+# gear_crit_rating=4189
+# gear_haste_rating=5867
+# gear_mastery_rating=11648
+# gear_versatility_rating=2300
 # gear_armor=4488
 # set_bonus=tier19_2pc=1
 # set_bonus=tier19_4pc=1

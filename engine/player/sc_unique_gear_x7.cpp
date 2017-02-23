@@ -3751,18 +3751,18 @@ struct cinidaria_the_symbiote_t : public class_scoped_callback_t
     };
 
     // Health percentage threshold and damage multiplier
-    double threshold = effect.driver() -> effectN( 2 ).base_value();
-    double multiplier = effect.driver() -> effectN( 1 ).percent();
+    const double threshold = effect.driver() -> effectN( 2 ).base_value();
+    const double multiplier = effect.driver() -> effectN( 1 ).percent();
 
     // Damage spell
-    auto spell = new cinidaria_the_symbiote_damage_t( effect.player );
+    const auto spell = new cinidaria_the_symbiote_damage_t( effect.player );
 
     // Install an outgoing damage assessor that triggers Cinidaria after the target damage has been
     // resolved. This ensures most of the esoteric mitigation mechanisms that the sim might have are
     // also resolved, and that state -> result_amount will hold the "final actual damage" of the
     // ability.
     effect.player -> assessor_out_damage.add( assessor::TARGET_DAMAGE + 1,
-      [ &spell_blacklist, threshold, multiplier, spell ]( dmg_e, action_state_t* state )
+      [ spell_blacklist, threshold, multiplier, spell ]( dmg_e, action_state_t* state )
       {
         const auto source_action = state -> action;
         const auto target = state -> target;

@@ -970,10 +970,14 @@ struct freeze_t : public mage_pet_spell_t
   {
     spell_t::impact( s );
 
-    o() -> get_target_data( s -> target ) -> debuffs.frozen -> trigger();
-
-    if ( result_is_hit( s->result ) )
+    if ( result_is_hit( s -> result ) && s -> target -> is_add() )
     {
+      o() -> get_target_data( s -> target ) -> debuffs.frozen -> trigger();
+      if ( o() -> legendary.sephuzs_secret )
+      {
+        o() -> buffs.sephuzs_secret -> trigger();
+      }
+
       o() -> buffs.fingers_of_frost->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 );
       o() -> benefits.fingers_of_frost->update( fof_source_id );
     }
@@ -2009,6 +2013,20 @@ public:
       else
       {
         p() -> benefits.arcane_missiles -> update( source_id, stacks );
+      }
+    }
+  }
+
+  // Apply freeze effect to a target that can be frozen. If the actor has
+  // Sephuz's Secret, also trigger the haste buff.
+  void trigger_frozen( action_state_t* s )
+  {
+    if ( result_is_hit( s -> result ) && s -> target -> is_add() )
+    {
+      td( s -> target ) -> debuffs.frozen -> trigger();
+      if ( p() -> legendary.sephuzs_secret )
+      {
+        p() -> buffs.sephuzs_secret -> trigger();
       }
     }
   }
@@ -3874,6 +3892,16 @@ struct counterspell_t : public mage_spell_t
     triggers_arcane_missiles = false;
   }
 
+  virtual void execute() override
+  {
+    mage_spell_t::execute();
+
+    if ( p() -> legendary.sephuzs_secret )
+    {
+      p() -> buffs.sephuzs_secret -> trigger();
+    }
+  }
+
   virtual bool ready() override
   {
     if ( ! target -> debuffs.casting -> check() )
@@ -3930,6 +3958,11 @@ struct dragons_breath_t : public fire_mage_spell_t
     if ( p() -> talents.alexstraszas_fury -> ok() && s -> chain_target == 0 )
     {
       handle_hot_streak( s );
+    }
+
+    if ( result_is_hit( s -> result ) && s -> target -> is_add() && p() -> legendary.sephuzs_secret )
+    {
+      p() -> buffs.sephuzs_secret -> trigger();
     }
   }
 };
@@ -4669,21 +4702,10 @@ struct frost_nova_t : public mage_spell_t
     triggers_arcane_missiles = true;
   }
 
-  virtual void execute() override
-  {
-    mage_spell_t::execute();
-
-    if ( p() -> legendary.sephuzs_secret )
-    {
-      p() -> buffs.sephuzs_secret -> trigger();
-    }
-  }
-
   virtual void impact( action_state_t* s ) override
   {
     mage_spell_t::impact( s );
-
-    td( s -> target ) -> debuffs.frozen -> trigger();
+    trigger_frozen( s );
   }
 };
 
@@ -4703,6 +4725,12 @@ struct ice_time_nova_t : public frost_mage_spell_t
   timespan_t travel_time() const override
   {
     return timespan_t::from_seconds( 10.0 );
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    frost_mage_spell_t::impact( s );
+    trigger_frozen( s );
   }
 };
 
@@ -4905,8 +4933,9 @@ struct glacial_spike_t : public frost_mage_spell_t
     base_dd_max = icicle_damage_sum;
 
     frost_mage_spell_t::impact( s );
-    p() -> buffs.icicles -> expire();
+    trigger_frozen( s );
 
+    p() -> buffs.icicles -> expire();
   }
 };
 
@@ -5116,6 +5145,12 @@ struct ice_nova_t : public frost_mage_spell_t
     double in_mult = 1.0 + p -> talents.ice_nova -> effectN( 1 ).percent();
     base_multiplier *= in_mult;
     base_aoe_multiplier = 1.0 / in_mult;
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    frost_mage_spell_t::impact( s );
+    trigger_frozen( s );
   }
 };
 

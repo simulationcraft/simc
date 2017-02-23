@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build 5694ad03)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build ff6af4d)
 
 Name             : Defensive Stance (id=71) [Spell Family (4), Passive, Hidden] 
 Class            : Protection Warrior
@@ -10,7 +10,7 @@ Category Cooldown: 1.5 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Bladestorm (46924), Warrior (137047), Bladestorm (227847)
+Affecting spells : Bladestorm (46924), Warrior (137047), Bladestorm (222634), Bladestorm (227847)
 Attributes       : ....x.xx ........ x.x..... x..x.x.x   ........ ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ..x..... 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -39,7 +39,7 @@ Range            : 8 - 25 yards
 Cooldown         : 1.5 seconds
 Charges          : 1 (20 seconds cooldown)
 Category         : 1386
-Affecting spells : Warrior (137047), Uncontrolled Rage (200856)
+Affecting spells : Warrior (137047), Uncontrolled Rage (200856), Raging Fury (222266)
 Attributes       : ....x... ........ x.x..... .....x..   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -81,7 +81,7 @@ Cooldown         : 8 seconds
 Category         : 82
 Category Cooldown: 8 seconds
 Proc Chance      : 101%
-Affecting spells : Berserker Rage (18499), Bladestorm (46924), Neltharion's Fury (203524), Bladestorm (227847)
+Affecting spells : Berserker Rage (18499), Bladestorm (46924), Neltharion's Fury (203524), Bladestorm (222634), Bladestorm (227847)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ x.x..... ........ 
                  : ........ ...x.... .......x ........   ........ ........ ........ ........ 
@@ -166,7 +166,7 @@ School           : Physical
 Spell Level      : 55
 Duration         : 8 seconds
 Cooldown         : 240 seconds
-Affecting spells : Bladestorm (46924), Neltharion's Fury (203524), Bladestorm (227847)
+Affecting spells : Bladestorm (46924), Neltharion's Fury (203524), Bladestorm (222634), Bladestorm (227847)
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -186,7 +186,7 @@ Spell Level      : 48
 Duration         : 8 seconds
 Cooldown         : 90 seconds
 Proc Chance      : 101%
-Affecting spells : Bladestorm (46924), Rumbling Voice (188651), Morale Killer (199023), Booming Voice (202743), Neltharion's Fury (203524), Bladestorm (227847)
+Affecting spells : Bladestorm (46924), Rumbling Voice (188651), Morale Killer (199023), Booming Voice (202743), Neltharion's Fury (203524), Bladestorm (222634), Bladestorm (227847)
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -200,10 +200,10 @@ Effects          :
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 0x7f | Radius: 0 - 10 yards | Target: At Caster(22) -> AOE enemy(15)
 #3 (id=292881)   : Apply Aura (6) | Unknown effect sub type (271)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Target: At Caster(22) -> AOE enemy(15)
-                   Affected Spells: Cleave (845), Whirlwind (1680), Thunder Clap (6343), Heroic Leap (6544), Revenge (6572), Overpower (7384), Devastate (20243), Shield Slam (23922), Whirlwind Off-Hand (44949), Bladestorm (46924), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Bladestorm Off-Hand (95738), Deep Wounds (115767), Shockwave (132168), Bladestorm (168969), Whirlwind (190411), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Focused Rage (207982), Bladestorm (227847), Devastator (236282)
+                   Affected Spells: Cleave (845), Whirlwind (1680), Thunder Clap (6343), Heroic Leap (6544), Revenge (6572), Overpower (7384), Devastate (20243), Shield Slam (23922), Whirlwind Off-Hand (44949), Bladestorm (46924), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Bladestorm Off-Hand (95738), Deep Wounds (115767), Shockwave (132168), Bladestorm (168969), Whirlwind (190411), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Focused Rage (207982), Bladestorm (222634), Bladestorm (227847), Devastator (236282)
 #4 (id=298857)   : Apply Aura (6) | Unknown effect sub type (343)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Target: At Caster(22) -> AOE enemy(15)
-                   Affected Spells: Cleave (845), Whirlwind (1680), Thunder Clap (6343), Heroic Leap (6544), Revenge (6572), Overpower (7384), Devastate (20243), Shield Slam (23922), Whirlwind Off-Hand (44949), Bladestorm (46924), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Bladestorm Off-Hand (95738), Deep Wounds (115767), Shockwave (132168), Bladestorm (168969), Whirlwind (190411), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Focused Rage (207982), Bladestorm (227847), Devastator (236282)
+                   Affected Spells: Cleave (845), Whirlwind (1680), Thunder Clap (6343), Heroic Leap (6544), Revenge (6572), Overpower (7384), Devastate (20243), Shield Slam (23922), Whirlwind Off-Hand (44949), Bladestorm (46924), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Bladestorm Off-Hand (95738), Deep Wounds (115767), Shockwave (132168), Bladestorm (168969), Whirlwind (190411), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Focused Rage (207982), Bladestorm (222634), Bladestorm (227847), Devastator (236282)
 #5 (id=298858)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: rage | Target: Self(1)
 Description      : $?s199023[Demoralizes all enemies within $A2 yards, reducing the damage they do by $s1% for $d.][Demoralizes all enemies within $A2 yards, reducing the damage they do to you by $s1% for $d.]$?s202743[
@@ -265,7 +265,7 @@ Spell Level      : 32
 Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
-Affecting spells : Battle Cry (1719), Hamstring Rage Reduction (22778), Warrior (137047), Arms Warrior (137049), Dauntless (202297)
+Affecting spells : Battle Cry (1719), Hamstring Rage Reduction (22778), Improved Hamstring (24428), Warrior (137047), Arms Warrior (137049), Dauntless (202297)
 Attributes       : ........ ........ x.x..... ........   ...x...x .x...... ........ ........ 
                  : ........ ........ ........ ........   ...x.... ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -304,7 +304,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: rage | Target: Self(1)
 #4 (id=341514)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 14 | Target: Self(1)
-                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Whirlwind (1680), Hamstring (1715), Execute (5308), Overpower (7384), Mortal Strike (12294), Whirlwind Off-Hand (44949), Deep Wounds (115767), Execute (163201), Execute Off-Hand (163558), Colossus Smash (167105), Whirlwind (190411), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Focused Rage (207982), Colossus Smash (208086)
+                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Whirlwind (1680), Hamstring (1715), Execute (5308), Overpower (7384), Mortal Strike (12294), Improved Hamstring (24428), Whirlwind Off-Hand (44949), Deep Wounds (115767), Execute (163201), Execute Off-Hand (163558), Colossus Smash (167105), Whirlwind (190411), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Focused Rage (207982), Colossus Smash (208086)
 Description      : Lets loose a battle cry, granting $s1% increased critical strike chance for $d.$?a202751[
 
 |cFFFFFFFFGenerates ${$202751s2/10} Rage.|r][]
@@ -318,7 +318,7 @@ Spell Level      : 20
 Cooldown         : 1 seconds
 Charges          : 1 (13 seconds cooldown)
 Category         : 1385
-Affecting spells : Bladestorm (46924), Neltharion's Fury (203524), Bladestorm (227847)
+Affecting spells : Bladestorm (46924), Neltharion's Fury (203524), Bladestorm (222634), Bladestorm (227847)
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -352,7 +352,7 @@ School           : Physical
 Spell Level      : 72
 Range            : 100 yards
 Cooldown         : 30 seconds
-Affecting spells : Wall of Steel (203261), 
+Affecting spells : Wall of Steel (203261), Raging Fury (222266)
 Attributes       : ....x... ........ ........ .....x..   ........ ..x..... ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -451,7 +451,7 @@ Resource         : 25 Rage
 Spell Level      : 8 (max 80)
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Battle Cry (1719), Single-Minded Fury (81099), Protection (131086), Warrior (137047), Arms Warrior (137049), Fury Warrior (137050), Death Sentence (144442), Deathdealer (200846), Sense Death (200979), Juggernaut (201009), Dauntless (202297), Deathblow (209481), Precise Strikes (209493), Shattered Defenses (209706), Execute (231827), Execute (231830)
+Affecting spells : Battle Cry (1719), Single-Minded Fury (81099), Protection (131086), Warrior (137047), Arms Warrior (137049), Fury Warrior (137050), Death Sentence (144442), Deathdealer (200846), Sense Death (200979), Juggernaut (201009), Dauntless (202297), Deathblow (209481), Precise Strikes (209493), Shattered Defenses (209706), Stone Heart (225947), Execute (231827), Execute (231830)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ .x...... ........ ........   ........ ....x... ........ ........ 
@@ -473,7 +473,7 @@ GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 6 seconds
 Proc Chance      : 101%
-Affecting spells : Demoralizing Shout (1160), Warrior (137047), Protection Warrior (137048), Thunder Crash (188644), Might of the Vrykul (188783), Crackling Thunder (203201)
+Affecting spells : Demoralizing Shout (1160), Warrior (137047), Protection Warrior (137048), Thunder Crash (188644), Might of the Vrykul (188783), Crackling Thunder (203201), Kakushan's Stormscale Gauntlets (207844), 
 Attributes       : ....x... ........ x.x..x.. ........   ...x...x .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -504,7 +504,7 @@ Cooldown         : 0.8 seconds
 Charges          : 1 (45 seconds cooldown)
 Category         : 1211
 Category Cooldown: 0.8 seconds
-Affecting spells : Demoralizing Shout (1160), Arms Warrior (137049)
+Affecting spells : Demoralizing Shout (1160), Arms Warrior (137049), Weight of the Earth (208177)
 Attributes       : ....x... x....... x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -639,7 +639,7 @@ GCD              : 1.5 seconds
 Charges          : 1 (6 seconds cooldown)
 Category         : 971
 Proc Chance      : 101%
-Affecting spells : Battle Cry (1719), Warrior (137047), Arms Warrior (137049), Item - Warrior T17 Arms 4P Bonus (165336), Vicious Strike (165638), Sweeping Strikes (202161), Dauntless (202297), Focused Rage (207982), Thoradin's Might (209480), Precise Strikes (209493), Shattered Defenses (209706), Executioner's Precision (242188)
+Affecting spells : Battle Cry (1719), Warrior (137047), Arms Warrior (137049), Item - Warrior T17 Arms 4P Bonus (165336), Vicious Strike (165638), Sweeping Strikes (202161), Dauntless (202297), Archavon's Heavy Hand (205144), Focused Rage (207982), Thoradin's Might (209480), Precise Strikes (209493), Shattered Defenses (209706), Executioner's Precision (242188)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ....x... ........ ........ 
@@ -707,7 +707,7 @@ Duration         : 15 seconds
 Cooldown         : 180 seconds
 Category         : 1251
 Category Cooldown: 20 seconds
-Affecting spells : Bladestorm (46924), Item - Warrior T18 Protection 2P Bonus (185796), Will to Survive (188683), Neltharion's Fury (203524), Bladestorm (227847)
+Affecting spells : Bladestorm (46924), Item - Warrior T18 Protection 2P Bonus (185796), Will to Survive (188683), Neltharion's Fury (203524), Bladestorm (222634), Bladestorm (227847)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -856,7 +856,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : .....x.x .x...x.. .x...... ........ 
                  : Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken
-Affecting spells : Neltharion's Fury (203524)
+Affecting spells : Manual of Spell Reflection (168801), Neltharion's Fury (203524)
 Attributes       : ....x... ........ x.x..... ...x....   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ..x..... 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -879,7 +879,7 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 9 seconds
-Affecting spells : Demoralizing Shout (1160), Shield Block (132404), Warrior (137047), Protection Warrior (137048), Vicious Strike (165642), Might of the Vrykul (188783)
+Affecting spells : Demoralizing Shout (1160), Shield Block (132404), Warrior (137047), Protection Warrior (137048), Vicious Strike (165642), Might of the Vrykul (188783), Kakushan's Stormscale Gauntlets (207844), 
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1256,7 +1256,7 @@ Class            : Warrior
 School           : Physical
 Spell Level      : 26
 Range            : 50000 yards
-Affecting spells : Demoralizing Shout (1160), Arms Warrior (137049)
+Affecting spells : Demoralizing Shout (1160), Arms Warrior (137049), Weight of the Earth (208177)
 Attributes       : ....x... ........ x.x..x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ..x..... ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ..x...x. 
@@ -2383,7 +2383,7 @@ Class            : Warrior
 School           : Physical
 Spell Level      : 1
 Duration         : 9 seconds
-Affecting spells : Bladestorm (46924), Rumbling Voice (188651), Morale Killer (199023), Booming Voice (202743), Neltharion's Fury (203524), Bladestorm (227847)
+Affecting spells : Bladestorm (46924), Rumbling Voice (188651), Morale Killer (199023), Booming Voice (202743), Neltharion's Fury (203524), Bladestorm (222634), Bladestorm (227847)
 Triggered by     : Demoralizing Shout (1160)
 Attributes       : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2443,7 +2443,7 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=168884)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 40 | Scaled Value: 40 | Target: Self(1)
-                   Affected Spells: Bladestorm (46924), Bladestorm (50622), Bladestorm Off-Hand (95738), Bladestorm (168969), Bladestorm (227847)
+                   Affected Spells: Bladestorm (46924), Bladestorm (50622), Bladestorm Off-Hand (95738), Bladestorm (168969), Bladestorm (222634), Bladestorm (227847)
 #2 (id=256725)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 100 | Scaled Value: 100 | Target: Self(1)
                    Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558)
@@ -2496,7 +2496,7 @@ Class            : Warrior
 School           : Physical
 Spell Level      : 20
 Duration         : 6 seconds
-Affecting spells : Shatter the Bones (188639), Heavy Repercussions (203177)
+Affecting spells : Shield Mastery (184927), Shatter the Bones (188639), Heavy Repercussions (203177)
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2534,7 +2534,7 @@ Effects          :
                    Affected Spells: Cleave (845), Thunder Clap (6343), Revenge (6572), Overpower (7384), Bloodthirst (23881), Shield Slam (23922), Raging Blow (85288), Raging Blow (85384), Raging Blow (96103), Furious Slash (100130), Focused Rage (207982)
 #2 (id=188987)   : Apply Aura (6) | Unknown effect sub type (417)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Misc Value: 11 | Target: Self(1)
-                   Affected Spells: Defensive Stance (71), Charge (100), Rend (772), Cleave (845), Slam (1464), Whirlwind (1680), Hamstring (1715), Intimidating Shout (5246), Execute (5308), Thunder Clap (6343), Pummel (6552), Revenge (6572), Overpower (7384), Mortal Strike (12294), Piercing Howl (12323), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Bladestorm (46924), Shockwave (46968), Bladestorm (50622), Heroic Throw (57755), Raging Blow (85288), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Shockwave (132168), Storm Bolt (132169), Ravager (152277), Ravager (156287), Execute (163201), Execute Off-Hand (163558), Colossus Smash (167105), Bladestorm (168969), Rampage (184367), Rampage (184707), Rampage (184709), Cleave (188923), Whirlwind (190411), Defensive Stance (197690), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Odyn's Fury (205545), Odyn's Fury (205546), Odyn's Fury (205547), Focused Rage (207982), Colossus Smash (208086), Warbreaker (209577), Rampage (218617), Ravager (227744), Bladestorm (227847), Ravager (228920), Devastator (236282)
+                   Affected Spells: Defensive Stance (71), Charge (100), Rend (772), Cleave (845), Slam (1464), Whirlwind (1680), Hamstring (1715), Intimidating Shout (5246), Execute (5308), Thunder Clap (6343), Pummel (6552), Revenge (6572), Overpower (7384), Mortal Strike (12294), Piercing Howl (12323), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Improved Hamstring (24428), Victory Rush (34428), Whirlwind Off-Hand (44949), Bladestorm (46924), Shockwave (46968), Bladestorm (50622), Heroic Throw (57755), Raging Blow (85288), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Shockwave (132168), Storm Bolt (132169), Ravager (152277), Ravager (156287), Execute (163201), Execute Off-Hand (163558), Colossus Smash (167105), Bladestorm (168969), Rampage (184367), Rampage (184707), Rampage (184709), Cleave (188923), Whirlwind (190411), Defensive Stance (197690), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Odyn's Fury (205545), Odyn's Fury (205546), Odyn's Fury (205547), Focused Rage (207982), Colossus Smash (208086), Warbreaker (209577), Rampage (218617), Bladestorm (222634), Ravager (227744), Bladestorm (227847), Ravager (228920), Devastator (236282)
 #3 (id=191020)   : Apply Aura (6) | Unknown effect sub type (457)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1385 | Target: Self(1)
 #4 (id=191021)   : Apply Aura (6) | Unknown effect sub type (457)
@@ -2640,7 +2640,7 @@ Effects          :
                    Base Value: 297 | Scaled Value: 297 | Target: Self(1)
 #2 (id=186754)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 5 | Scaled Value: 5 | Target: Self(1)
-                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Whirlwind (1680), Hamstring (1715), Execute (5308), Heroic Leap (6544), Overpower (7384), Mortal Strike (12294), Victory Rush (34428), Whirlwind Off-Hand (44949), Bladestorm (46924), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Bladestorm Off-Hand (95738), Storm Bolt (107570), Deep Wounds (115767), Shockwave (132168), Storm Bolt (132169), Ravager (152277), Ravager (156287), Execute (163201), Execute Off-Hand (163558), Colossus Smash (167105), Bladestorm (168969), Whirlwind (190411), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Impending Victory (202168), Opportunity Strikes (203178), Colossus Smash (208086), Ravager (227744), Bladestorm (227847), Ravager (228920)
+                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Whirlwind (1680), Hamstring (1715), Execute (5308), Heroic Leap (6544), Overpower (7384), Mortal Strike (12294), Improved Hamstring (24428), Victory Rush (34428), Whirlwind Off-Hand (44949), Bladestorm (46924), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Bladestorm Off-Hand (95738), Storm Bolt (107570), Deep Wounds (115767), Shockwave (132168), Storm Bolt (132169), Ravager (152277), Ravager (156287), Execute (163201), Execute Off-Hand (163558), Colossus Smash (167105), Bladestorm (168969), Whirlwind (190411), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Impending Victory (202168), Opportunity Strikes (203178), Colossus Smash (208086), Bladestorm (222634), Ravager (227744), Bladestorm (227847), Ravager (228920)
 #3 (id=191014)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Rend (772), Deep Wounds (115767), Ravager (152277), Ravager (156287), Ravager (227744), Ravager (228920)
@@ -2648,7 +2648,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 0x7f | Target: Self(1)
 #5 (id=191016)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 50 | Scaled Value: 50 | Target: Self(1)
-                   Affected Spells: Bladestorm (46924), Bladestorm (50622), Bladestorm Off-Hand (95738), Bladestorm (168969), Bladestorm (227847)
+                   Affected Spells: Bladestorm (46924), Bladestorm (50622), Bladestorm Off-Hand (95738), Bladestorm (168969), Bladestorm (222634), Bladestorm (227847)
 #6 (id=261047)   : Apply Aura (6) | Unknown effect sub type (218)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf7 | Target: Self(1)
 #7 (id=261048)   : Apply Aura (6) | Dummy (4)
@@ -2689,7 +2689,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179734)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 5 | Scaled Value: 5 | Target: Self(1)
-                   Affected Spells: Whirlwind (1680), Execute (5308), Bloodthirst (23881), Whirlwind Off-Hand (44949), Bladestorm (46924), Shockwave (46968), Bladestorm (50622), Heroic Throw (57755), Raging Blow (85288), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Dragon Roar (118000), Shockwave (132168), Storm Bolt (132169), Execute (163201), Execute Off-Hand (163558), Bladestorm (168969), Rampage (184367), Rampage (184707), Rampage (184709), Whirlwind (190411), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Odyn's Fury (205545), Odyn's Fury (205546), Odyn's Fury (205547), Rampage (218617), Bladestorm (227847)
+                   Affected Spells: Whirlwind (1680), Execute (5308), Bloodthirst (23881), Whirlwind Off-Hand (44949), Bladestorm (46924), Shockwave (46968), Bladestorm (50622), Heroic Throw (57755), Raging Blow (85288), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Dragon Roar (118000), Shockwave (132168), Storm Bolt (132169), Execute (163201), Execute Off-Hand (163558), Bladestorm (168969), Rampage (184367), Rampage (184707), Rampage (184709), Whirlwind (190411), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Odyn's Fury (205545), Odyn's Fury (205546), Odyn's Fury (205547), Rampage (218617), Bladestorm (222634), Bladestorm (227847)
 #2 (id=191010)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Odyn's Fury (205545), Odyn's Fury (205546), Odyn's Fury (205547)
@@ -2810,7 +2810,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...... ........ ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken
-Affecting spells : Wall of Steel (203261), 
+Affecting spells : Wall of Steel (203261), Raging Fury (222266)
 Attributes       : ....x... ........ ........ .....x..   ........ ..x..... ...x.... ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ...x.... ........ ........ 
@@ -2980,7 +2980,7 @@ Resource         : 10 Rage
 Spell Level      : 8
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Battle Cry (1719), Single-Minded Fury (81099), Protection (131086), Warrior (137047), Arms Warrior (137049), Fury Warrior (137050), Death Sentence (144442), Deathdealer (200846), Sense Death (200979), Juggernaut (201009), Dauntless (202297), Deathblow (209481), Precise Strikes (209493), Shattered Defenses (209706), Execute (231827), Execute (231830)
+Affecting spells : Battle Cry (1719), Single-Minded Fury (81099), Protection (131086), Warrior (137047), Arms Warrior (137049), Fury Warrior (137050), Death Sentence (144442), Deathdealer (200846), Sense Death (200979), Juggernaut (201009), Dauntless (202297), Deathblow (209481), Precise Strikes (209493), Shattered Defenses (209706), Stone Heart (225947), Execute (231827), Execute (231830)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ .x...... ........ ........   ........ ....x... ........ ........ 
@@ -3004,7 +3004,7 @@ School           : Physical
 Spell Level      : 7 (max 80)
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Battle Cry (1719), Single-Minded Fury (81099), Protection (131086), Warrior (137047), Arms Warrior (137049), Fury Warrior (137050), Death Sentence (144442), Deathdealer (200846), Sense Death (200979), Juggernaut (201009), Dauntless (202297), Deathblow (209481), Precise Strikes (209493), Shattered Defenses (209706), Execute (231827), Execute (231830)
+Affecting spells : Battle Cry (1719), Single-Minded Fury (81099), Protection (131086), Warrior (137047), Arms Warrior (137049), Fury Warrior (137050), Death Sentence (144442), Deathdealer (200846), Sense Death (200979), Juggernaut (201009), Dauntless (202297), Deathblow (209481), Precise Strikes (209493), Shattered Defenses (209706), Stone Heart (225947), Execute (231827), Execute (231830)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ..x..... x....... 
                  : ........ .x...... ........ ........   ........ ....x... ........ ........ 
@@ -3109,7 +3109,7 @@ School           : Physical
 Spell Level      : 36
 Duration         : 8 seconds
 Cooldown         : 120 seconds
-Affecting spells : Unwavering Sentinel (29144), Bladestorm (46924), Neltharion's Fury (203524), Bladestorm (227847)
+Affecting spells : Unwavering Sentinel (29144), Bladestorm (46924), Neltharion's Fury (203524), Bladestorm (222634), Bladestorm (227847)
 Attributes       : ....x... ........ x.x..... ........   ........ .......x x....... ........ 
                  : ........ ........ ........ .....x..   ........ ........ x....... ........ 
                  : ........ ........ ........ ........   ...x.... ........ ........ ........ 
@@ -3296,7 +3296,7 @@ Spell Level      : 40
 Range            : 5 yards
 Duration         : 15 seconds
 Cooldown         : 1 seconds
-Affecting spells : Indomitable (202095), Vengeance: Ignore Pain (202574), Dragon Skin (203225), Neltharion's Fury (203524), Dragon Scales (203581)
+Affecting spells : Shield Mastery (184927), Indomitable (202095), Vengeance: Ignore Pain (202574), Dragon Skin (203225), Neltharion's Fury (203524), Dragon Scales (203581)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3349,7 +3349,7 @@ Range            : 25 yards
 Cooldown         : 1.5 seconds
 Charges          : 1 (20 seconds cooldown)
 Category         : 1386
-Affecting spells : Wall of Steel (203261), 
+Affecting spells : Wall of Steel (203261), Raging Fury (222266)
 Attributes       : ....x... ........ ........ .....x..   ........ ..x..... ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3377,7 +3377,7 @@ Range            : 25 yards
 Cooldown         : 1.5 seconds
 Charges          : 1 (20 seconds cooldown)
 Category         : 1386
-Affecting spells : Wall of Steel (203261), 
+Affecting spells : Wall of Steel (203261), Raging Fury (222266)
 Attributes       : ....x... ........ ........ .....x..   ........ ..x..... ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3845,7 +3845,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=298223)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 14 | Target: Self(1)
-                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Whirlwind (1680), Hamstring (1715), Execute (5308), Overpower (7384), Mortal Strike (12294), Whirlwind Off-Hand (44949), Deep Wounds (115767), Execute (163201), Execute Off-Hand (163558), Whirlwind (190411), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Focused Rage (207982)
+                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Whirlwind (1680), Hamstring (1715), Execute (5308), Overpower (7384), Mortal Strike (12294), Improved Hamstring (24428), Whirlwind Off-Hand (44949), Deep Wounds (115767), Execute (163201), Execute Off-Hand (163558), Whirlwind (190411), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Focused Rage (207982)
 #2 (id=325812)   : Apply Aura (6) | Add Percent Modifier: Spell Effect 3 (108)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 23 | Target: Self(1)
                    Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558)
@@ -4651,6 +4651,7 @@ Cooldown         : 30 seconds
 Proc Chance      : 100%
 Proc Flags       : .....x.x .x...x.. .x...... ........ 
                  : Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken
+Affecting spells : Manual of Spell Reflection (168801)
 Attributes       : ....x... ........ x.x..... ...x....   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ..x..... 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 

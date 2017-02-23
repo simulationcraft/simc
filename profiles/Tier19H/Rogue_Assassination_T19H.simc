@@ -16,7 +16,8 @@ spec=assassination
 # Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat=flask,name=flask_of_the_seventh_demon
 actions.precombat+=/augmentation,name=defiled
-actions.precombat+=/food,name=seedbattered_fish_plate,if=talent.exanguinate.enablednightborne_delicacy_platter,if=!talent.exanguinate.enabled
+actions.precombat+=/food,name=seedbattered_fish_plate,if=talent.exsanguinate.enabled
+actions.precombat+=/food,name=nightborne_delicacy_platter,if=!talent.exsanguinate.enabled
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/apply_poison
