@@ -16,7 +16,8 @@ spec=assassination
 # Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat=flask,name=flask_of_the_seventh_demon
 actions.precombat+=/augmentation,name=defiled
-actions.precombat+=/food,name=seedbattered_fish_plate,if=talent.exanguinate.enablednightborne_delicacy_platter,if=!talent.exanguinate.enabled
+actions.precombat+=/food,name=seedbattered_fish_plate,if=talent.exsanguinate.enabled
+actions.precombat+=/food,name=nightborne_delicacy_platter,if=!talent.exsanguinate.enabled
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/apply_poison
@@ -40,7 +41,7 @@ actions.build+=/mutilate,if=debuff.vendetta.up|debuff.kingsbane.up|(set_bonus.ti
 
 # Cooldowns
 actions.cds=potion,name=old_war,if=buff.bloodlust.react|target.time_to_die<=25|debuff.vendetta.up&cooldown.vanish.remains<5
-actions.cds+=/use_item,slot=trinket2,if=energy.time_to_max>3.5&!debuff.kingsbane.up&(!talent.agonizing_poison.enabled|(debuff.agonizing_poison.stack=5&debuff.surge_of_toxins.remains>3))
+actions.cds+=/use_item,slot=trinket2,if=energy.time_to_max>3.5&(!talent.agonizing_poison.enabled|(debuff.agonizing_poison.stack=5&debuff.surge_of_toxins.remains>3))
 actions.cds+=/blood_fury,if=debuff.vendetta.up
 actions.cds+=/berserking,if=debuff.vendetta.up
 actions.cds+=/arcane_torrent,if=debuff.vendetta.up&energy.deficit>50
