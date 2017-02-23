@@ -3894,6 +3894,8 @@ struct counterspell_t : public mage_spell_t
 
   virtual void execute() override
   {
+    mage_spell_t::execute();
+
     if ( p() -> legendary.sephuzs_secret )
     {
       p() -> buffs.sephuzs_secret -> trigger();
