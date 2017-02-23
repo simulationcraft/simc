@@ -6664,8 +6664,9 @@ void rogue_t::init_action_list()
     std::string food_action = "food,name=";
     if ( specialization() == ROGUE_ASSASSINATION )
     {
-      food_action += ( ( level() >= 110 ) ? "seedbattered_fish_plate,if=talent.exanguinate.enabled" : ( level() >= 100 ) ? "jumbo_sea_dog" : ( level() >= 90 ) ? "sea_mist_rice_noodles" : ( level() >= 85 ) ? "seafood_magnifique_feast" : "" );
-      food_action += ( ( level() >= 110 ) ? "nightborne_delicacy_platter,if=!talent.exanguinate.enabled" : "" );
+      food_action += ( ( level() >= 110 ) ? "nightborne_delicacy_platter,if=!talent.exsanguinate.enabled" : ( level() >= 100 ) ? "jumbo_sea_dog" : ( level() >= 90 ) ? "sea_mist_rice_noodles" : ( level() >= 85 ) ? "seafood_magnifique_feast" : "" );
+      if ( level() >= 110 )
+        precombat -> add_action( "food,name=seedbattered_fish_plate,if=talent.exsanguinate.enabled" );
     }
     else if ( specialization() == ROGUE_OUTLAW )
       food_action += ( ( level() >= 110 ) ? "seedbattered_fish_plate" : ( level() >= 100 ) ? "jumbo_sea_dog" : ( level() >= 90 ) ? "sea_mist_rice_noodles" : ( level() >= 85 ) ? "seafood_magnifique_feast" : "" );
@@ -6732,7 +6733,7 @@ void rogue_t::init_action_list()
     cds -> add_action( potion_action );
     for ( size_t i = 0; i < item_actions.size(); i++ )
       if ( find_item( "draught_of_souls" ) )
-        cds -> add_action( item_actions[i] + ",if=energy.time_to_max>3.5&!debuff.kingsbane.up&(!talent.agonizing_poison.enabled|(debuff.agonizing_poison.stack=5&debuff.surge_of_toxins.remains>3))" );
+        cds -> add_action( item_actions[i] + ",if=energy.time_to_max>3.5&(!talent.agonizing_poison.enabled|(debuff.agonizing_poison.stack=5&debuff.surge_of_toxins.remains>3))" );
       else
         cds -> add_action( item_actions[i] + ",if=buff.bloodlust.react|target.time_to_die<=20|debuff.vendetta.up" );
     for ( size_t i = 0; i < racial_actions.size(); i++ )
@@ -6909,7 +6910,7 @@ void rogue_t::init_action_list()
     // Stealthed Rotation
     action_priority_list_t* stealthed = get_action_priority_list( "stealthed", "Stealthed Rotation" );
     stealthed -> add_action( this, "Symbols of Death", "if=buff.symbols_of_death.remains<target.time_to_die-4&buff.symbols_of_death.remains<=buff.symbols_of_death.duration*0.3" );
-    stealthed -> add_action( "call_action_list,name=finish,if=combo_points>=5&(spell_targets.shuriken_storm>=2+talent.premeditation.enabled+equipped.shadow_satyrs_walk|(mantle_duration>0&mantle_duration<=1.2))" );
+    stealthed -> add_action( "call_action_list,name=finish,if=combo_points>=5&(spell_targets.shuriken_storm>=2+talent.premeditation.enabled+equipped.shadow_satyrs_walk|(mantle_duration<=1.3&mantle_duration-gcd.remains>=0.3))" );
     stealthed -> add_action( this, "Shuriken Storm", "if=buff.shadowmeld.down&((combo_points.deficit>=3&spell_targets.shuriken_storm>=2+talent.premeditation.enabled+equipped.shadow_satyrs_walk)|(combo_points.deficit>=1+buff.shadow_blades.up&buff.the_dreadlords_deceit.stack>=29))" );
     stealthed -> add_action( this, "Shadowstrike", "if=combo_points.deficit>=2+talent.premeditation.enabled+buff.shadow_blades.up-equipped.mantle_of_the_master_assassin" );
     stealthed -> add_action( "call_action_list,name=finish,if=combo_points>=5" );
