@@ -7349,9 +7349,8 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
                                         mage -> find_spell( 135029 ) )
                           .quiet( true )
                           .cd( timespan_t::zero() );
-  //TODO: Find spelldata for this!
-  debuffs.winters_chill = buff_creator_t( *this, "winters_chill" )
-                          .duration( timespan_t::from_seconds( 1.0 ) );
+  debuffs.winters_chill = buff_creator_t( *this, "winters_chill",
+                                        mage -> find_spell( 228358 ) );
 
 }
 
@@ -7825,9 +7824,7 @@ void mage_t::create_buffs()
                                   .add_invalidate( CACHE_SPELL_HASTE );
 
   // Frost
-  //TODO: Remove hardcoded duration once spelldata contains the value
-  buffs.brain_freeze          = buff_creator_t( this, "brain_freeze", find_spell( 190446 ) )
-                                  .duration( timespan_t::from_seconds( 15.0 ) );
+  buffs.brain_freeze          = buff_creator_t( this, "brain_freeze", find_spell( 190446 ) );
   buffs.bone_chilling         = buff_creator_t( this, "bone_chilling", find_spell( 205766 ) )
                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.fingers_of_frost      = buff_creator_t( this, "fingers_of_frost", find_spell( 44544 ) )
