@@ -79,6 +79,8 @@ public:
     pet_t* spitting_cobra;
     std::array< pet_t*, 2 > dark_minions;
     std::array< pet_t*, 10 > felboars;
+    // the theoretical limit is ( 6 / .75 - 1 ) * 4 = 28 snakes up at the same time
+    std::array< pet_t*, 28 > sneaky_snakes;
   } pets;
 
   // Tier 18 (WoD 6.2) trinket effects
@@ -207,6 +209,7 @@ public:
     proc_t* animal_instincts_harpoon;
     proc_t* animal_instincts_flanking;
     proc_t* animal_instincts;
+    proc_t* cobra_commander;
   } procs;
 
   real_ppm_t* ppm_hunters_mark;
@@ -355,8 +358,8 @@ public:
     artifact_power_t focus_of_the_titans;
     artifact_power_t furious_swipes;
     artifact_power_t slithering_serpents;
-    artifact_power_t thunderslash; // 7.2 NYI
-    artifact_power_t cobra_commander; // 7.2 NYI
+    artifact_power_t thunderslash;
+    artifact_power_t cobra_commander;
 
     // Marksmanship
     artifact_power_t windburst;
@@ -375,7 +378,7 @@ public:
     artifact_power_t mark_of_the_windrunner;
     artifact_power_t unerring_arrows;
     artifact_power_t feet_of_wind;
-    artifact_power_t cyclonic_burst; // 7.2 NYI
+    artifact_power_t cyclonic_burst;
 
     // Survival
     artifact_power_t fury_of_the_eagle;
@@ -394,8 +397,8 @@ public:
     artifact_power_t embrace_of_the_aspects;
     artifact_power_t hunters_guile;
     artifact_power_t jaws_of_the_mongoose;
-    artifact_power_t talon_bond; // 7.2 NYI
-    artifact_power_t echos_of_echero; // 7.2 NYI
+    artifact_power_t talon_bond;
+    artifact_power_t echoes_of_ohnara;
 
     // Paragon points
     artifact_power_t windflight_arrows;
@@ -954,6 +957,8 @@ public:
     action_t* flanking_strike;
     attack_t* beast_cleave;
     action_t* titans_thunder;
+    action_t* thunderslash;
+    action_t* talon_slash;
   } active;
 
   struct specs_t
@@ -1572,12 +1577,28 @@ struct dire_critter_t: public hunter_secondary_pet_t
 
 struct hati_t: public hunter_secondary_pet_t
 {
+  struct hati_melee_t : public secondary_pet_melee_t<hati_t>
+  {
+    hati_melee_t( hati_t* p ):
+      base_t( "hati_melee", p )
+    {}
+
+    void execute() override
+    {
+      base_t::execute();
+
+      if ( p() -> active.thunderslash && o() -> buffs.aspect_of_the_wild -> check() )
+        p() -> active.thunderslash -> execute();
+    }
+  };
+
   struct actives_t
   {
     action_t* beast_cleave;
     action_t* jaws_of_thunder;
     action_t* kill_command;
     action_t* titans_thunder;
+    action_t* thunderslash;
   } active;
 
   struct buffs_t
@@ -1587,8 +1608,16 @@ struct hati_t: public hunter_secondary_pet_t
   } buffs;
 
   hati_t( hunter_t* owner ):
-    hunter_secondary_pet_t( owner, std::string( "hati" ) )
+    hunter_secondary_pet_t( owner, std::string( "hati" ) ),
+    active( actives_t() )
   {
+  }
+
+  void init_base_stats() override
+  {
+    hunter_secondary_pet_t::init_base_stats();
+
+    main_hand_attack = new hati_melee_t( this );
   }
 
   virtual void init_spells() override;
@@ -1772,6 +1801,110 @@ struct spitting_cobra_t: public hunter_pet_t
   double composite_player_multiplier( school_e school ) const override
   {
     return owner -> composite_player_multiplier( school );
+  }
+};
+
+// ==========================================================================
+// BM Sneaky Snake (Cobra Commander snake)
+// ==========================================================================
+
+struct sneaky_snake_t: public hunter_secondary_pet_t
+{
+  struct deathstrike_venom_t: public hunter_pet_action_t<hunter_secondary_pet_t, spell_t>
+  {
+    /* TODO: model the way it actually works in-game
+     *  As of 2017-03-09 all of the snakes share a single instance of the dot but
+     *  it [the dot] drops as soon as the snake that first applied it despawns.
+     */
+    double proc_chance;
+
+    deathstrike_venom_t( sneaky_snake_t* p ):
+      base_t( "deathstrike_venom", p, p -> find_spell( 243121 ) ),
+      proc_chance( p -> find_spell( 243120 ) -> proc_chance() )
+    {
+      background = true;
+      hasted_ticks = tick_may_crit = false;
+
+      internal_cooldown -> duration = p -> find_spell( 243120 ) -> internal_cooldown();
+    }
+
+    bool init_finished() override
+    {
+      if ( o() -> pets.sneaky_snakes[ 0 ] )
+        stats = o() -> pets.sneaky_snakes[ 0 ] -> get_stats( name_str );
+
+      return base_t::init_finished();
+    }
+
+    void trigger( action_state_t* s )
+    {
+      if ( internal_cooldown -> down() )
+        return;
+
+      if ( rng().roll( proc_chance ) )
+      {
+        target = s -> target;
+        execute();
+      }
+    }
+  };
+
+  struct sneaky_snake_melee_t: public secondary_pet_melee_t<sneaky_snake_t>
+  {
+    bool first;
+    deathstrike_venom_t* deathstrike_venom;
+
+    sneaky_snake_melee_t( sneaky_snake_t* p ):
+      base_t( "sneaky_snake_melee", p ),
+      first( true ),
+      deathstrike_venom( new deathstrike_venom_t( p ) )
+    {
+    }
+
+    bool init_finished() override
+    {
+      if ( o() -> pets.sneaky_snakes[ 0 ] )
+        stats = o() -> pets.sneaky_snakes[ 0 ] -> get_stats( name_str );
+
+      return base_t::init_finished();
+    }
+
+    void cancel() override
+    {
+      base_t::cancel();
+      first = true;
+    }
+
+    void execute() override
+    {
+      base_t::execute();
+
+      if ( first )
+        first = false;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      base_t::impact( s );
+
+      // the snakes buff themselves with deathstrike venom aura ~200ms after summon
+      // that means their first hit can't really apply the debuff
+      if ( !first && result_is_hit( s -> result ) )
+        deathstrike_venom -> trigger( s );
+    }
+  };
+
+  sneaky_snake_t( hunter_t* o ):
+    hunter_secondary_pet_t( o, "sneaky_snake" )
+  {
+    owner_coeff.ap_from_ap = .1;
+  }
+
+  void init_base_stats() override
+  {
+    hunter_secondary_pet_t::init_base_stats();
+
+    main_hand_attack = new sneaky_snake_melee_t( this );
   }
 };
 
@@ -2053,6 +2186,14 @@ struct pet_melee_t: public hunter_main_pet_attack_t
     school = SCHOOL_PHYSICAL;
   }
 
+  void execute() override
+  {
+    hunter_main_pet_attack_t::execute();
+
+    if ( p() -> active.thunderslash && o() -> buffs.aspect_of_the_wild -> check() )
+      p() -> active.thunderslash -> execute();
+  }
+
   virtual void impact( action_state_t* s ) override
   {
     hunter_main_pet_attack_t::impact( s );
@@ -2193,7 +2334,6 @@ struct flanking_strike_t: public hunter_main_pet_attack_t
   { return o() -> cache.attack_power() * o() -> composite_attack_power_multiplier(); }
 };
 
-
 // Dire Frenzy (pet) =======================================================
 
 struct dire_frenzy_t: public hunter_main_pet_attack_t
@@ -2232,6 +2372,37 @@ struct dire_frenzy_t: public hunter_main_pet_attack_t
     if ( p() -> buffs.titans_frenzy -> up() && titans_frenzy )
       titans_frenzy -> schedule_execute();
   }
+};
+
+// Thunderslash =============================================================
+
+struct thunderslash_t : public hunter_pet_action_t< hunter_pet_t, spell_t >
+{
+  thunderslash_t( hunter_pet_t* p ) :
+    base_t( "thunderslash", p, p -> find_spell( 243234 ) )
+  {
+    background = true;
+    aoe = -1; // it's actually a frontal cone
+    may_crit = true;
+    proc = true;
+  }
+};
+
+// Talon Slash ==============================================================
+
+struct talon_slash_t : public hunter_main_pet_attack_t
+{
+  talon_slash_t( hunter_main_pet_t* p ):
+    hunter_main_pet_attack_t( "talon_slash", p, p -> find_spell( 242735 ) )
+  {
+    background = true;
+    attack_power_mod.direct = 1.0 / 3.0; // data hardcoded in a tooltip
+    // XXX: this is going to be hard to test... be on the safe side for now
+    can_hunting_companion = false;
+  }
+
+  double composite_attack_power() const override
+  { return o() -> cache.attack_power() * o() -> composite_attack_power_multiplier(); }
 };
 
 // ==========================================================================
@@ -2360,6 +2531,12 @@ void hunter_main_pet_t::init_spells()
 
   if ( o() -> specialization() == HUNTER_SURVIVAL )
     active.flanking_strike = new actions::flanking_strike_t( this );
+
+  if ( o() -> artifacts.thunderslash.rank() )
+    active.thunderslash = new actions::thunderslash_t( this );
+
+  if ( o() -> artifacts.talon_bond.rank() )
+    active.talon_slash = new actions::talon_slash_t( this );
 }
 
 void dire_critter_t::init_spells()
@@ -2393,6 +2570,9 @@ void hati_t::init_spells()
 
   if ( o() -> artifacts.jaws_of_thunder.rank() )
     active.jaws_of_thunder = new actions::jaws_of_thunder_t( this );
+
+  if ( o() -> artifacts.thunderslash.rank() )
+    active.thunderslash = new actions::thunderslash_t( this );
 }
 
 } // end namespace pets
@@ -2864,7 +3044,6 @@ struct chimaera_shot_t: public hunter_ranged_attack_t
 
 struct cobra_shot_t: public hunter_ranged_attack_t
 {
-
   cobra_shot_t( hunter_t* player, const std::string& options_str ):
     hunter_ranged_attack_t( "cobra_shot", player, player -> find_specialization_spell( "Cobra Shot" ) )
   {
@@ -2883,6 +3062,27 @@ struct cobra_shot_t: public hunter_ranged_attack_t
 
     if ( p() -> sets.has_set_bonus( HUNTER_BEAST_MASTERY, T18, B2 ) )
       p() -> buffs.t18_2p_dire_longevity -> trigger();
+
+    if ( p() -> artifacts.cobra_commander.rank() &&
+         rng().roll( p() -> artifacts.cobra_commander.data().proc_chance() ) )
+    {
+      p() -> procs.cobra_commander -> occur();
+
+      const spell_data_t* driver = p() -> find_spell( 243042 );
+
+      auto count = static_cast<int>( rng().range( driver -> effectN( 2 ).min( p() ),
+                                                  driver -> effectN( 2 ).max( p() ) ) );
+      for ( auto snake : p() -> pets.sneaky_snakes )
+      {
+        if ( snake -> is_sleeping() )
+        {
+          snake -> summon( driver -> duration() );
+          count--;
+        }
+        if ( count == 0 )
+          break;
+      }
+    }
   }
 
   virtual double composite_target_crit_chance( player_t* t ) const override
@@ -2904,9 +3104,10 @@ struct cobra_shot_t: public hunter_ranged_attack_t
 
       if ( p() -> pets.hati )
         active_pets++;
-      for ( size_t i = 0; i < p() -> pets.dire_beasts.size(); i++ )
+
+      for ( auto beast : p() -> pets.dire_beasts )
       {
-        if ( !p() -> pets.dire_beasts[ i ] -> is_sleeping() )
+        if ( !beast -> is_sleeping() )
           active_pets++;
       }
 
@@ -3615,20 +3816,57 @@ struct sidewinders_t: hunter_ranged_attack_t
 
 struct windburst_t: hunter_ranged_attack_t
 {
+  /* XXX: in-game this is actually a ticking ground aoe
+   *  the problem with implementing it in simc is that the trail is not
+   *  round, it's either a rectangle or a series of overlapping circles
+   *  and we have no way of doing either of them in simc atm
+   */
+  struct cyclonic_burst_t : public hunter_ranged_attack_t
+  {
+    cyclonic_burst_t( hunter_t* p ):
+      hunter_ranged_attack_t( "cyclonic_burst", p, p -> find_spell( 242712 ) )
+    {
+      background = true;
+      aoe = -1;
+      tick_may_crit = false;
+
+      // XXX: looks like it can actually trigger it, but only once "per trail"
+      may_proc_bullseye = false;
+    }
+  };
+
+  cyclonic_burst_t* cyclonic_burst;
+
   windburst_t( hunter_t* p, const std::string& options_str ):
-    hunter_ranged_attack_t( "windburst", p, &p -> artifacts.windburst.data() )
+    hunter_ranged_attack_t( "windburst", p, &p -> artifacts.windburst.data() ),
+    cyclonic_burst( nullptr )
   {
     parse_options( options_str );
+
+    if ( p -> artifacts.cyclonic_burst.rank() )
+    {
+      cyclonic_burst = new cyclonic_burst_t( p );
+      add_child( cyclonic_burst );
+    }
   }
 
-  void impact(action_state_t* s) override
+  void execute() override
   {
-    hunter_ranged_attack_t::impact(s);
+    hunter_ranged_attack_t::execute();
 
-    if (p()->artifacts.mark_of_the_windrunner.rank())
+    if ( cyclonic_burst )
     {
-      td( s -> target ) -> debuffs.vulnerable -> trigger();
+      cyclonic_burst -> target = execute_state -> target;
+      cyclonic_burst -> execute();
     }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    hunter_ranged_attack_t::impact( s );
+
+    if ( p() -> artifacts.mark_of_the_windrunner.rank() )
+      td( s -> target ) -> debuffs.vulnerable -> trigger();
   }
 
   virtual bool usable_moving() const override
@@ -3668,6 +3906,7 @@ struct melee_t: public hunter_melee_attack_t
 {
   bool first;
   talon_strike_t* talon_strike;
+
   melee_t( hunter_t* player, const std::string &name = "auto_attack_mh", const spell_data_t* s = spell_data_t::nil() ):
     hunter_melee_attack_t( name, player, s ), first( true ), talon_strike( nullptr )
   {
@@ -3721,6 +3960,13 @@ struct melee_t: public hunter_melee_attack_t
     {
       talon_strike -> schedule_execute();
       talon_strike -> schedule_execute();
+
+      if ( p() -> active.pet && p() -> artifacts.talon_bond.rank() )
+      {
+        p() -> active.pet -> active.talon_slash -> target = s -> target;
+        for ( int i = 0; i < p() -> artifacts.talon_bond.data().effectN( 1 ).base_value(); i++ )
+          p() -> active.pet -> active.talon_slash -> execute();
+      }
     }
   }
 };
@@ -3807,10 +4053,28 @@ struct mongoose_bite_t: hunter_melee_attack_t
 
 struct flanking_strike_t: hunter_melee_attack_t
 {
+  struct echo_of_ohnara_t : public hunter_ranged_attack_t
+  {
+    echo_of_ohnara_t( hunter_t* p ):
+      hunter_ranged_attack_t( "echo_of_ohnara", p, p -> artifacts.echoes_of_ohnara.data().effectN( 1 ).trigger() )
+    {
+      background = true;
+    }
+  };
+
+  echo_of_ohnara_t* echo_of_ohnara;
+
   flanking_strike_t( hunter_t* p, const std::string& options_str ):
-    hunter_melee_attack_t( "flanking_strike", p, p -> specs.flanking_strike )
+    hunter_melee_attack_t( "flanking_strike", p, p -> specs.flanking_strike ),
+    echo_of_ohnara( nullptr )
   {
     parse_options( options_str );
+
+    if ( p -> artifacts.echoes_of_ohnara.rank() )
+    {
+      echo_of_ohnara = new echo_of_ohnara_t( p );
+      add_child( echo_of_ohnara );
+    }
   }
 
   bool init_finished() override
@@ -3858,6 +4122,17 @@ struct flanking_strike_t: hunter_melee_attack_t
         p() -> animal_instincts_cds[roll].first -> adjust( animal_instincts );
         p() -> animal_instincts_cds[roll].second -> occur();
       }
+    }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    hunter_melee_attack_t::impact( s );
+
+    if ( result_is_hit( s -> result ) && echo_of_ohnara && rng().roll( p() -> artifacts.echoes_of_ohnara.data().proc_chance() ) )
+    {
+      echo_of_ohnara -> target = execute_state -> target;
+      echo_of_ohnara -> execute();
     }
   }
 
@@ -5442,6 +5717,12 @@ void hunter_t::create_pets()
 
   if ( talents.spitting_cobra -> ok() )
     pets.spitting_cobra = new pets::spitting_cobra_t( this );
+
+  if ( artifacts.cobra_commander.rank() )
+  {
+    for ( pet_t*& snake : pets.sneaky_snakes )
+      snake = new pets::sneaky_snake_t( this );
+  }
 }
 
 // hunter_t::init_spells ====================================================
@@ -5610,14 +5891,14 @@ void hunter_t::init_spells()
   artifacts.lacerating_talons        = find_artifact_spell( "Lacerating Talons" );
   artifacts.jaws_of_the_mongoose     = find_artifact_spell( "Jaws of the Mongoose" );
   artifacts.talon_bond               = find_artifact_spell( "Talon Bond" );
-  artifacts.echos_of_echero          = find_artifact_spell( "Echos of Eche'ro" );
+  artifacts.echoes_of_ohnara         = find_artifact_spell( "Echoes of Ohn'ara" );
 
   artifacts.windflight_arrows        = find_artifact_spell( "Windflight Arrows" );
   artifacts.spiritbound              = find_artifact_spell( "Spiritbound" );
   artifacts.voice_of_the_wild_gods   = find_artifact_spell( "Voice of the Wild Gods" );
 
   artifacts.acuity_of_the_unseen_path   = find_artifact_spell( "Acuity of the Unseen Path" );
-  artifacts.bond_of_the_unseen_path     = find_artifact_spell( "Bond  of the Unseen Path" );
+  artifacts.bond_of_the_unseen_path     = find_artifact_spell( "Bond of the Unseen Path" );
   artifacts.ferocity_of_the_unseen_path = find_artifact_spell( "Ferocity of the Unseen Path" );
 
   if ( talents.serpent_sting -> ok() )
@@ -5981,6 +6262,7 @@ void hunter_t::init_procs()
   procs.animal_instincts_harpoon     = get_proc( "animal_instincts_harpoon" );
   procs.animal_instincts_flanking    = get_proc( "animal_instincts_flanking" );
   procs.animal_instincts             = get_proc( "animal_instincts" );
+  procs.cobra_commander              = get_proc( "cobra_commander" );
 }
 
 // hunter_t::init_rng =======================================================
@@ -6620,6 +6902,15 @@ double hunter_t::composite_player_pet_damage_multiplier( const action_state_t* s
 
   if ( artifacts.voice_of_the_wild_gods.rank() )
     m *= 1.0 + artifacts.voice_of_the_wild_gods.percent();
+
+  if ( artifacts.bond_of_the_unseen_path.rank() )
+    m *= 1.0 + artifacts.bond_of_the_unseen_path.percent( 3 );
+
+  if ( artifacts.acuity_of_the_unseen_path.rank() )
+    m *= 1.0 + artifacts.acuity_of_the_unseen_path.percent( 3 );
+
+  if ( artifacts.ferocity_of_the_unseen_path.rank() )
+    m *= 1.0 + artifacts.ferocity_of_the_unseen_path.percent( 3 );
 
   return m;
 }
