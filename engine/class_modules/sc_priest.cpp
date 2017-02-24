@@ -2151,16 +2151,14 @@ public:
       if (priest.talents.mindbender->ok())
       {
         priest.cooldowns.mindbender->adjust(
-          - timespan_t::from_seconds(3));
           - priest.sets.set(PRIEST_SHADOW, T20, B4)->
-                                                effectN(2).time_value() / 10;
+                                                effectN(2).time_value() / 10);
       }
       else
       {
         priest.cooldowns.shadowfiend->adjust(
-          - timespan_t::from_seconds(3));
-            priest.sets.set(PRIEST_SHADOW, T20, B4)->
-                                                effectN(1).time_value() / 10;
+          - priest.sets.set(PRIEST_SHADOW, T20, B4)->
+                                                effectN(1).time_value() / 10);
       }
     }
   }
@@ -2182,7 +2180,7 @@ public:
     timespan_t cd = priest_spell_t::cooldown_base_duration( cooldown );
     if ( priest.buffs.voidform->check() )
     {
-      cd += -timespan_t::from_millis( priest.buffs.voidform->data().effectN(6).base_value() );
+      cd += -timespan_t::from_seconds( 3 );
     }
     return cd;
   }
