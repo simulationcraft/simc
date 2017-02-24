@@ -133,14 +133,9 @@ class DBCParserBase:
 
         return True
 
-    # Sanitize data, blizzard started using dynamic width ints in WDB5, so
-    # 3-byte ints have to be expanded to 4 bytes to parse them properly (with
-    # struct module)
-    def build_formatted_parser(self):
-        field_offset = 0
-        field_idx = 0
-        format_str = '<'
-
+    # Validate the json-based data format against the DB2-included data format
+    # for field information.
+    def validate_format(self):
         if not self.data_format:
             logging.error('No data format found for %s', self.class_name())
             return False
@@ -150,8 +145,8 @@ class DBCParserBase:
                 self.full_name(), len(self.field_data), len(self.data_format))
             return False
 
+        # Ensure fields from our json formats and internal field data stay consistent
         for field_data_idx in range(0, len(self.field_data)):
-            # Ensure fields from our json formats and internal field data stay consistent
             field_data = self.field_data[field_data_idx]
             field_format = self.data_format[field_data_idx]
 
@@ -170,6 +165,28 @@ class DBCParserBase:
                     ', '.join([str(x) for x in field_format.field_size()]),
                     field_format.data_type)
                 return False
+
+
+        return True
+
+    # Sanitize data, blizzard started using dynamic width ints in WDB5, so
+    # 3-byte ints have to be expanded to 4 bytes to parse them properly (with
+    # struct module)
+    def build_formatted_parser(self):
+        field_offset = 0
+        field_idx = 0
+        format_str = '<'
+
+        if not self.validate_format():
+            return False
+
+        for field_data_idx in range(0, len(self.field_data)):
+            # Ensure fields from our json formats and internal field data stay consistent
+            field_data = self.field_data[field_data_idx]
+            field_format = self.data_format[field_data_idx]
+
+            field_size = field_data[1]
+            field_count = field_data[2]
 
             # The final field needs special handling because of padding
             # concerns. For formatted data, always presume that the format
@@ -540,6 +557,9 @@ class LegionWDBParser(DBCParserBase):
     # Inline strings need some (very heavy) custom parsing
     def build_parser(self):
         if self.has_offset_map():
+            if not self.validate_format():
+                return False
+
             self.record_parser = InlineStringRecordParser(self)
             return True
         else:

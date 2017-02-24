@@ -60,6 +60,13 @@ class Field:
             return ( 1, 2, 3, 4 )
         elif self.data_type in 'f':
             return ( 4, )
+        elif 'x' in self.data_type:
+            mobj = re.match('^([0-9]*)x$', self.data_type)
+            if mobj.group(1):
+                return (int(mobj.group(1)),)
+
+            return (1,)
+
 
         return ()
 
