@@ -2151,14 +2151,16 @@ public:
       if (priest.talents.mindbender->ok())
       {
         priest.cooldowns.mindbender->adjust(
-          - priest.sets.set(PRIEST_SHADOW, T20, B4)->
-                                                effectN(2).time_value() / 10);
+            timespan_t::from_seconds( 
+                    - priest.sets.set(PRIEST_SHADOW, T20, B4)->
+                                                effectN(2).base_value() / 10 ) );
       }
       else
       {
         priest.cooldowns.shadowfiend->adjust(
-          - priest.sets.set(PRIEST_SHADOW, T20, B4)->
-                                                effectN(1).time_value() / 10);
+            timespan_t::from_seconds( 
+                                - priest.sets.set(PRIEST_SHADOW, T20, B4)->
+                                                            effectN(1).base_value() / 10 ) );
       }
     }
   }
@@ -3230,8 +3232,9 @@ struct summon_shadowfiend_t final : public summon_pet_t
         priest.sets.set( PRIEST_SHADOW, T18, B2 )->effectN( 1 ).time_value();
     if( priest.artifact.fiending_dark.rank() )
     {
-      summoning_duration += timespan_t::from_millis(priest.artifact.fiending_dark
-                                   .data().effectN( 1 ).base_value());
+      summoning_duration += timespan_t::from_millis( priest.artifact.fiending_dark
+                                   .data().effectN( 1 ).base_value()
+                                  * priest.artifact.fiending_dark.rank() );
     }
   }
 };
@@ -3251,7 +3254,8 @@ struct summon_mindbender_t final : public summon_pet_t
     if( priest.artifact.fiending_dark.rank() )
     {
       summoning_duration += timespan_t::from_millis(priest.artifact.fiending_dark
-                                   .data().effectN( 1 ).base_value());
+                                   .data().effectN( 2 ).base_value()
+                                  * priest.artifact.fiending_dark.rank() );
     }
   }
 };
@@ -3646,7 +3650,7 @@ struct void_eruption_t final : public priest_spell_t
       priest.cooldowns.void_bolt->start( void_bolt );
       priest.cooldowns.void_bolt->adjust(
           -timespan_t::from_millis( 1000 *
-                                    ( 1.5 * priest.composite_spell_speed() ) ),
+                                    ( 3.0 * priest.composite_spell_speed() ) ),
           true );
     }
 
