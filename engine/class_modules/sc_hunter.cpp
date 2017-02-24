@@ -1883,14 +1883,14 @@ struct spitting_cobra_t: public hunter_pet_t
     hunter_pet_t( *(o -> sim), *o, "spitting_cobra", PET_HUNTER,
                   false /* a "hack" to make ability_lag work */ )
   {
-    /* nuoHep 16/01/2017 0vers no buffs
+    /* nuoHep 16/01/2017 0vers no buffs, orc
      *    AP      DMG
      *   9491    13420
      *   22381   31646
      * As Cobra Spit has 1x AP mult it works out to
-     * the pet having ~1.414 ap coeff
+     * the pet having exactly 1.4 ap coeff
      */
-    owner_coeff.ap_from_ap = 1.414;
+    owner_coeff.ap_from_ap = 1.4;
 
     regen_type = REGEN_DISABLED;
   }
