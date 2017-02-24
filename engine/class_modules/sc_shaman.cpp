@@ -6481,6 +6481,13 @@ void shaman_t::trigger_sephuzs_secret( const action_state_t* state, double overr
     return;
   }
 
+  // Ensure Sephuz's Secret can even be procced. If the ring is not equipped, a fallback buff with
+  // proc chance of 0 (disabled) will be created
+  if ( buff.sephuzs_secret -> default_chance == 0 )
+  {
+    return;
+  }
+
   buff.sephuzs_secret -> trigger( 1, buff_t::DEFAULT_VALUE(), override_proc_chance );
 }
 
