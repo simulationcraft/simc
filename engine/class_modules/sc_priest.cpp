@@ -244,6 +244,11 @@ public:
     artifact_power_t void_corruption;
     artifact_power_t void_siphon;
     artifact_power_t void_torrent;
+    artifact_power_t darkness_of_the_conclave;
+    artifact_power_t fiending_dark;
+    artifact_power_t mind_quickening;
+    artifact_power_t lash_of_insanity;
+    artifact_power_t concordance_of_the_legionfall;    
   } artifact;
 
   // Specialization Spells
@@ -327,6 +332,7 @@ public:
     gain_t* insanity_blessing;
     gain_t* shadowy_insight;
     gain_t* vampiric_touch_health;
+    gain_t* insanity_call_to_the_void;
 
   } gains;
 
@@ -1157,9 +1163,8 @@ struct fiend_melee_t : public priest_pet_melee_t
           p().buffs.shadowcrawl->check() *
               p().buffs.shadowcrawl->data().effectN( 2 ).percent();
 
-    if (   p().o().specialization() == PRIEST_SHADOW )
-        //&& p().o().sets.has_set_bonus(PRIEST_SHADOW, T20, B2))
-               
+    if (   p().o().specialization() == PRIEST_SHADOW 
+        && p().o().sets.has_set_bonus(PRIEST_SHADOW, T20, B2))        
     {
       if (p().o().talents.mindbender->ok())
       { 
@@ -1352,6 +1357,16 @@ struct void_tendril_mind_flay_t final : public priest_pet_spell_t
   timespan_t tick_time( const action_state_t* ) const override
   {
     return timespan_t::from_seconds( 1.0 );
+  }
+
+  void tick(dot_t* d) override
+  {
+    if ( p().o().artifact.lash_of_insanity.rank() )
+    {
+      p().o().generate_insanity( p().o().find_spell( 240843 )->effectN( 1 ).percent(), 
+                                 p().o().gains.insanity_call_to_the_void, 
+                                 d->state->action );
+    }
   }
 
   void_tendril_pet_t& p()
@@ -2127,8 +2142,8 @@ public:
     priest.generate_insanity( insanity_gain, priest.gains.insanity_mind_blast,
                               s->action );
 
-    /*if (priest.sets.has_set_bonus(PRIEST_SHADOW, T20, B4))
-    {*/
+    if (priest.sets.has_set_bonus(PRIEST_SHADOW, T20, B4))
+    {
       if ( sim->debug )
       {
         sim->out_debug << priest.name() << " Mind Blast reduced pet cooldown.";
@@ -2147,7 +2162,7 @@ public:
             priest.sets.set(PRIEST_SHADOW, T20, B4)->
                                                 effectN(1).time_value() / 10;
       }
-    //}
+    }
   }
 
   timespan_t execute_time() const override
@@ -2167,7 +2182,7 @@ public:
     timespan_t cd = priest_spell_t::cooldown_base_duration( cooldown );
     if ( priest.buffs.voidform->check() )
     {
-      cd += -timespan_t::from_seconds( 3.0 );
+      cd += -timespan_t::from_millis( priest.buffs.voidform->data().effectN(6).base_value() );
     }
     return cd;
   }
@@ -3215,6 +3230,11 @@ struct summon_shadowfiend_t final : public summon_pet_t
     cooldown->duration = data().cooldown();
     cooldown->duration +=
         priest.sets.set( PRIEST_SHADOW, T18, B2 )->effectN( 1 ).time_value();
+    if( priest.artifact.fiending_dark.rank() )
+    {
+      summoning_duration += timespan_t::from_millis(priest.artifact.fiending_dark
+                                   .data().effectN( 1 ).base_value());
+    }
   }
 };
 
@@ -3230,6 +3250,11 @@ struct summon_mindbender_t final : public summon_pet_t
     cooldown->duration = data().cooldown();
     cooldown->duration +=
         priest.sets.set( PRIEST_SHADOW, T18, B2 )->effectN( 2 ).time_value();
+    if( priest.artifact.fiending_dark.rank() )
+    {
+      summoning_duration += timespan_t::from_millis(priest.artifact.fiending_dark
+                                   .data().effectN( 1 ).base_value());
+    }
   }
 };
 
@@ -4374,6 +4399,8 @@ void priest_t::create_gains()
   gains.vampiric_touch_health = get_gain( "Health from Vampiric Touch Ticks" );
   gains.insanity_blessing =
       get_gain( "Insanity from Blessing Dawnlight Medallion" );
+  gains.insanity_call_to_the_void = 
+      get_gain( "Insanity Gained from Call to the Void" );
 }
 
 /* Construct priest procs
@@ -4653,6 +4680,11 @@ double priest_t::composite_player_multiplier( school_e school ) const
     if ( artifact.darkening_whispers.rank() )
     {
       m *= 1.0 + artifact.darkening_whispers.percent();
+    }
+
+    if ( artifact.darkness_of_the_conclave.rank() )
+    {
+      m *= 1.0 + artifact.darkness_of_the_conclave.percent();
     }
   }
 
@@ -5032,14 +5064,21 @@ void priest_t::init_spells()
   artifact.sphere_of_insanity   = find_artifact_spell( "Sphere of Insanity" );
   artifact.thoughts_of_insanity = find_artifact_spell( "Thoughts of Insanity" );
   artifact.thrive_in_the_shadows =
-      find_artifact_spell( "Thrive in the Shadows" );
-  artifact.to_the_pain         = find_artifact_spell( "To the Pain" );
-  artifact.touch_of_darkness   = find_artifact_spell( "Touch of Darkness" );
-  artifact.unleash_the_shadows = find_artifact_spell( "Unleash the Shadows" );
-  artifact.void_corruption     = find_artifact_spell( "Void Corruption" );
-  artifact.void_siphon         = find_artifact_spell( "Void Siphon" );
-  artifact.void_torrent        = find_artifact_spell( "Void Torrent" );
-
+                                  find_artifact_spell( "Thrive in the Shadows" );
+  artifact.to_the_pain          = find_artifact_spell( "To the Pain" );
+  artifact.touch_of_darkness    = find_artifact_spell( "Touch of Darkness" );
+  artifact.unleash_the_shadows  = find_artifact_spell( "Unleash the Shadows" );
+  artifact.void_corruption      = find_artifact_spell( "Void Corruption" );
+  artifact.void_siphon          = find_artifact_spell( "Void Siphon" );
+  artifact.void_torrent         = find_artifact_spell( "Void Torrent" );
+  artifact.darkness_of_the_conclave =
+                                  find_artifact_spell( "Darkness of the Conclave" );
+  artifact.fiending_dark        = find_artifact_spell( "Fiending Dark" );
+  artifact.mind_quickening      = find_artifact_spell( "Mind Quickening" );
+  artifact.lash_of_insanity     = find_artifact_spell( "Lash of Insanity" );
+  artifact.concordance_of_the_legionfall
+                                = find_artifact_spell( "Accordance of the Legionfall" );
+                          
   // General Spells
 
   // Discipline
