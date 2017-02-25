@@ -465,23 +465,6 @@ struct rogue_t : public player_t
   // Artifact powers
   struct artifact_t
   {
-    // Subtlety
-    artifact_power_t goremaws_bite;
-    artifact_power_t shadow_fangs;
-    artifact_power_t the_quiet_knife;
-    artifact_power_t demons_kiss;
-    artifact_power_t gutripper;
-    artifact_power_t precision_strike;
-    artifact_power_t fortunes_bite;
-    artifact_power_t soul_shadows;
-    artifact_power_t energetic_stabbing;
-    artifact_power_t catwalk;
-    artifact_power_t second_shuriken;
-    artifact_power_t akaaris_soul;
-    artifact_power_t shadow_nova;
-    artifact_power_t finality;
-    artifact_power_t legionblade;
-
     // Assassination
     artifact_power_t kingsbane;
     artifact_power_t assassins_blades;
@@ -500,7 +483,7 @@ struct rogue_t : public player_t
     artifact_power_t from_the_shadows;
     artifact_power_t slayers_precision;
 
-    // Swashbuckler
+    // Outlaw
     artifact_power_t curse_of_the_dreadblades;
     artifact_power_t cursed_edges;
     artifact_power_t black_powder;
@@ -516,6 +499,24 @@ struct rogue_t : public player_t
     artifact_power_t fates_thirst;
     artifact_power_t fortunes_strike;
     artifact_power_t cursed_steel;
+
+    // Subtlety
+    artifact_power_t goremaws_bite;
+    artifact_power_t shadow_fangs;
+    artifact_power_t the_quiet_knife;
+    artifact_power_t demons_kiss;
+    artifact_power_t gutripper;
+    artifact_power_t precision_strike;
+    artifact_power_t fortunes_bite;
+    artifact_power_t soul_shadows;
+    artifact_power_t energetic_stabbing;
+    artifact_power_t catwalk;
+    artifact_power_t flickering_shadows;
+    artifact_power_t second_shuriken;
+    artifact_power_t akaaris_soul;
+    artifact_power_t shadow_nova;
+    artifact_power_t finality;
+    artifact_power_t legionblade;
   } artifact;
 
   // Procs
@@ -2320,10 +2321,6 @@ void rogue_attack_t::execute()
 
 inline bool rogue_attack_t::ready()
 {
-  if ( p() -> buffs.faster_than_light_trigger -> check() )
-  {
-    return false;
-  }
 
   if ( ! melee_attack_t::ready() )
     return false;
@@ -4397,10 +4394,10 @@ struct slice_and_dice_t : public rogue_attack_t
 
 // Sprint ===================================================================
 
-struct sprint_base_t : public rogue_attack_t
+struct sprint_t : public rogue_attack_t
 {
-  sprint_base_t( rogue_t* p, const std::string& name, const std::string& options_str ):
-    rogue_attack_t( name, p, p -> spell.sprint, options_str )
+  sprint_t( rogue_t* p, const std::string& options_str ):
+    rogue_attack_t( "sprint", p, p -> spell.sprint, options_str )
   {
     harmful = callbacks = false;
     cooldown = p -> cooldowns.sprint;
@@ -4414,34 +4411,11 @@ struct sprint_base_t : public rogue_attack_t
     rogue_attack_t::execute();
 
     p() -> buffs.sprint -> trigger();
-  }
-};
 
-struct sprint_t : public sprint_base_t
-{
-  sprint_t( rogue_t* p, const std::string& options_str ) :
-    sprint_base_t( p, "sprint", options_str )
-  { }
-};
-
-struct sprint_offensive_t : public sprint_base_t
-{
-  sprint_offensive_t( rogue_t* p, const std::string& options_str ) :
-    sprint_base_t( p, "sprint_offensive", options_str )
-  { }
-
-  void execute() override
-  {
-    sprint_base_t::execute();
-
-    // We must stop autoattacks
-    if ( p() -> main_hand_attack && p() -> main_hand_attack -> execute_event )
-      event_t::cancel( p() -> main_hand_attack -> execute_event );
-
-    if ( p() -> off_hand_attack && p() -> off_hand_attack -> execute_event )
-      event_t::cancel( p() -> off_hand_attack -> execute_event );
-
-    p() -> buffs.faster_than_light_trigger -> trigger();
+    if ( p() -> artifact.flickering_shadows.rank() )
+    {
+      p() -> buffs.faster_than_light_trigger -> trigger();
+    }
   }
 };
 
@@ -6997,12 +6971,10 @@ action_t* rogue_t::create_action( const std::string& name,
   if ( name == "shuriken_toss"       ) return new shuriken_toss_t      ( this, options_str );
   if ( name == "slice_and_dice"      ) return new slice_and_dice_t     ( this, options_str );
   if ( name == "sprint"              ) return new sprint_t             ( this, options_str );
-  if ( name == "sprint_offensive"    ) return new sprint_offensive_t   ( this, options_str );
   if ( name == "stealth"             ) return new stealth_t            ( this, options_str );
   if ( name == "symbols_of_death"    ) return new symbols_of_death_t   ( this, options_str );
   if ( name == "vanish"              ) return new vanish_t             ( this, options_str );
   if ( name == "vendetta"            ) return new vendetta_t           ( this, options_str );
-
   if ( name == "cancel_autoattack"   ) return new cancel_autoattack_t  ( this, options_str );
   if ( name == "swap_weapon"         ) return new weapon_swap_t        ( this, options_str );
 
@@ -7361,6 +7333,7 @@ void rogue_t::init_spells()
   artifact.soul_shadows     = find_artifact_spell( "Soul Shadows" );
   artifact.energetic_stabbing = find_artifact_spell( "Energetic Stabbing" );
   artifact.catwalk          = find_artifact_spell( "Catwalk" );
+  artifact.flickering_shadows = find_artifact_spell( "Flickering Shadows" );
   artifact.second_shuriken  = find_artifact_spell( "Second Shuriken" );
   artifact.akaaris_soul     = find_artifact_spell( "Akaari's Soul" );
   artifact.shadow_nova      = find_artifact_spell( "Shadow Nova" );
