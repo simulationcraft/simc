@@ -4820,6 +4820,31 @@ struct poisoned_knife_t : public rogue_attack_t
 };
 
 // ==========================================================================
+// Cancel AutoAttack
+// ==========================================================================
+
+struct cancel_autoattack_t : public action_t
+{
+  rogue_t* rogue;
+  cancel_autoattack_t( rogue_t* rogue_, const std::string& options_str ) :
+    action_t( ACTION_OTHER, "cancel_autoattack", rogue_ ),
+    rogue( rogue_ )
+  { }
+
+  void execute() override
+  {
+    action_t::execute();
+
+    // Cancel the scheduled AA
+    if ( rogue -> main_hand_attack && rogue -> main_hand_attack -> execute_event )
+      event_t::cancel( rogue -> main_hand_attack -> execute_event );
+
+    if ( rogue -> off_hand_attack && rogue -> off_hand_attack -> execute_event )
+      event_t::cancel( rogue -> off_hand_attack -> execute_event );
+  }
+};
+
+// ==========================================================================
 // Experimental weapon swapping
 // ==========================================================================
 
@@ -6978,6 +7003,7 @@ action_t* rogue_t::create_action( const std::string& name,
   if ( name == "vanish"              ) return new vanish_t             ( this, options_str );
   if ( name == "vendetta"            ) return new vendetta_t           ( this, options_str );
 
+  if ( name == "cancel_autoattack"   ) return new cancel_autoattack_t  ( this, options_str );
   if ( name == "swap_weapon"         ) return new weapon_swap_t        ( this, options_str );
 
   return player_t::create_action( name, options_str );
