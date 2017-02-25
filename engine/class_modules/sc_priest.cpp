@@ -1361,6 +1361,8 @@ struct void_tendril_mind_flay_t final : public priest_pet_spell_t
 
   void tick(dot_t* d) override
   {
+    priest_pet_spell_t::tick( d );
+
     if ( p().o().artifact.lash_of_insanity.rank() )
     {
       p().o().generate_insanity( p().o().find_spell( 240843 )->effectN( 1 ).percent(), 
