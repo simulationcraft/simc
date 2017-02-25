@@ -32,16 +32,16 @@ actions+=/potion,name=prolonged_power,if=buff.bestial_wrath.remains|!cooldown.be
 actions+=/a_murder_of_crows
 actions+=/stampede,if=buff.bloodlust.up|buff.bestial_wrath.up|cooldown.bestial_wrath.remains<=2|target.time_to_die<=14
 actions+=/dire_beast,if=cooldown.bestial_wrath.remains>3
-actions+=/dire_frenzy,if=cooldown.bestial_wrath.remains>6|target.time_to_die<9
+actions+=/dire_frenzy,if=(cooldown.bestial_wrath.remains>6&(!equipped.the_mantle_of_command|pet.cat.buff.dire_frenzy.remains<=gcd.max*1.2))|(charges>=2&focus.deficit>=25+talent.dire_stable.enabled*12)|target.time_to_die<9
 actions+=/aspect_of_the_wild,if=buff.bestial_wrath.up|target.time_to_die<12
 actions+=/barrage,if=spell_targets.barrage>1
-actions+=/titans_thunder,if=talent.dire_frenzy.enabled|cooldown.dire_beast.remains>=3|buff.bestial_wrath.up&pet.dire_beast.active
+actions+=/titans_thunder,if=talent.dire_frenzy.enabled|cooldown.dire_beast.remains>=3|(buff.bestial_wrath.up&pet.dire_beast.active)
 actions+=/bestial_wrath
-actions+=/multishot,if=spell_targets>4&(pet.buff.beast_cleave.remains<gcd.max|pet.buff.beast_cleave.down)
+actions+=/multishot,if=spell_targets>4&(pet.cat.buff.beast_cleave.remains<gcd.max|pet.cat.buff.beast_cleave.down)
 actions+=/kill_command
-actions+=/multishot,if=spell_targets>1&(pet.buff.beast_cleave.remains<gcd.max*2|pet.buff.beast_cleave.down)
+actions+=/multishot,if=spell_targets>1&(pet.cat.buff.beast_cleave.remains<gcd.max*2|pet.cat.buff.beast_cleave.down)
 actions+=/chimaera_shot,if=focus<90
-actions+=/cobra_shot,if=cooldown.kill_command.remains>focus.time_to_max&cooldown.bestial_wrath.remains>focus.time_to_max|(buff.bestial_wrath.up&focus.regen*cooldown.kill_command.remains>30)|target.time_to_die<cooldown.kill_command.remains
+actions+=/cobra_shot,if=(cooldown.kill_command.remains>focus.time_to_max&cooldown.bestial_wrath.remains>focus.time_to_max)|(buff.bestial_wrath.up&focus.regen*cooldown.kill_command.remains>30)|target.time_to_die<cooldown.kill_command.remains
 
 head=eagletalon_cowl,id=138342,bonus_id=3518
 neck=belerons_choker_of_misery,id=140899,bonus_id=3518,enchant=mark_of_the_claw
