@@ -1640,18 +1640,18 @@ struct insignia_of_ravenholdt_attack_t : public rogue_attack_t
 using namespace residual_action;
 struct mutilated_flesh_t : public residual_periodic_action_t<melee_attack_t>
 {
-  rogue_t* rouge;
-  mutilated_flesh_t( rogue_t* p ) :
-    residual_periodic_action_t<melee_attack_t>( "mutilated_flesh", p, p -> find_spell( 211672 ) ), rouge( p )
+  rogue_t* rogue;
+  mutilated_flesh_t( rogue_t* rogue_ ) :
+    residual_periodic_action_t<melee_attack_t>( "mutilated_flesh", rogue_, rogue_ -> find_spell( 211672 ) ), rogue( rogue_ )
   {
     background = true;
   }
 
   double calculate_tick_amount( action_state_t* state, double dmg_multiplier ) const override
   {
-    rogue_td_t* tdata = rouge -> get_target_data( state -> target );
+    rogue_td_t* tdata = rogue -> get_target_data( state -> target );
 
-    dmg_multiplier *= 1.0 + rouge -> agonizing_poison_stack_multiplier( tdata );;
+    dmg_multiplier *= 1.0 + rogue -> agonizing_poison_stack_multiplier( tdata );;
 
     return residual_periodic_action_t::calculate_tick_amount( state, dmg_multiplier );
   }
