@@ -6881,7 +6881,7 @@ void rogue_t::init_action_list()
     precombat -> add_action( this, "Symbols of Death" );
 
     // Main Rotation
-    def -> add_action( "run_action_list,name=sprinted,if=buff.faster_than_light_trigger.up|(equipped.mantle_of_the_master_assassin&equipped.draught_of_souls&buff.sprint.up&buff.vanish.up)" );
+    def -> add_action( "run_action_list,name=sprinted,if=buff.faster_than_light_trigger.up" );
     def -> add_action( "call_action_list,name=cds" );
     def -> add_action( "run_action_list,name=stealthed,if=stealthed.all", "Fully switch to the Stealthed Rotation (by doing so, it forces pooling if nothing is available)" );
     def -> add_action( "call_action_list,name=finish,if=combo_points>=5|(combo_points>=4&spell_targets.shuriken_storm>=3&spell_targets.shuriken_storm<=4)" );
@@ -6927,8 +6927,7 @@ void rogue_t::init_action_list()
     sprinted -> add_action( "cancel_autoattack" );
     for ( size_t i = 0; i < item_actions.size(); i++ )
       if ( find_item( "draught_of_souls" ) )
-        sprinted -> add_action( item_actions[i] + ",if=!equipped.mantle_of_the_master_assassin|buff.faster_than_light_trigger.remains<=0.5" );
-    sprinted -> add_action( this, "Shadow Dance", "if=equipped.mantle_of_the_master_assassin&equipped.draught_of_souls&buff.vanish.up&buff.vanish.remains<=0.5" );
+        sprinted -> add_action( item_actions[i] );
 
     // Stealth Action List Starter
     action_priority_list_t* stealth_als = get_action_priority_list( "stealth_als", "Stealth Action List Starter" );
