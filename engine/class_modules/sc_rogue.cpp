@@ -4803,7 +4803,10 @@ struct cancel_autoattack_t : public action_t
   cancel_autoattack_t( rogue_t* rogue_, const std::string& options_str ) :
     action_t( ACTION_OTHER, "cancel_autoattack", rogue_ ),
     rogue( rogue_ )
-  { }
+  {
+    trigger_gcd = timespan_t::zero();
+    background = true;
+  }
 
   void execute() override
   {
@@ -6892,7 +6895,7 @@ void rogue_t::init_action_list()
     finish -> add_action( this, "Eviscerate" );
 
     action_priority_list_t* sprinted = get_action_priority_list( "sprinted", "Sprinted" );
-    stealth_als -> add_action( "cancel_autoattack" );
+    sprinted -> add_action( "cancel_autoattack" );
 
     // Stealth Action List Starter
     action_priority_list_t* stealth_als = get_action_priority_list( "stealth_als", "Stealth Action List Starter" );
