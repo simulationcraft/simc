@@ -6881,7 +6881,7 @@ void rogue_t::init_action_list()
     precombat -> add_action( this, "Symbols of Death" );
 
     // Main Rotation
-    def -> add_action( "run_action_list,name=sprinted,if=buff.faster_than_light_trigger.up" );
+    def -> add_action( "run_action_list,name=sprinted,if=buff.faster_than_light_trigger.up|(equipped.mantle_of_the_master_assassin&equipped.draught_of_souls&buff.sprint.up&buff.vanish.up)" );
     def -> add_action( "call_action_list,name=cds" );
     def -> add_action( "run_action_list,name=stealthed,if=stealthed.all", "Fully switch to the Stealthed Rotation (by doing so, it forces pooling if nothing is available)" );
     def -> add_action( "call_action_list,name=finish,if=combo_points>=5|(combo_points>=4&spell_targets.shuriken_storm>=3&spell_targets.shuriken_storm<=4)" );
