@@ -5586,7 +5586,7 @@ void priest_t::apl_shadow()
 
   // Surrender to Madness APL
   s2m->add_action(
-      "void_bolt,if=buff.insanity_drain_stacks.stack<6&set_bonus.tier19_4pc" );
+      "void_bolt,if=buff.insanity_drain_stacks.value<6&set_bonus.tier19_4pc" );
   s2m->add_action( "shadow_crash,if=talent.shadow_crash.enabled" );
   s2m->add_action( "mindbender,if=talent.mindbender.enabled" );
   s2m->add_action(
@@ -5668,7 +5668,7 @@ void priest_t::apl_shadow()
       "surrender_to_madness,if=talent.surrender_to_madness.enabled&insanity>="
       "25&(cooldown.void_bolt.up|cooldown.void_torrent.up|cooldown.shadow_word_"
       "death.up|buff.shadowy_insight.up)&target.time_to_die<=variable.s2mcheck-"
-      "(buff.insanity_drain_stacks.stack)" );
+      "(buff.insanity_drain_stacks.value)" );
   vf->add_action( "void_bolt" );
   vf->add_action( "shadow_crash,if=talent.shadow_crash.enabled" );
   vf->add_action(
@@ -5683,21 +5683,21 @@ void priest_t::apl_shadow()
       "enabled"
       "|(talent.surrender_to_madness.enabled&target.time_to_die>variable."
       "s2mcheck-"
-      "(buff.insanity_drain_stacks.stack)+30))" );
+      "(buff.insanity_drain_stacks.value)+30))" );
   vf->add_action(
-      "power_infusion,if=buff.insanity_drain_stacks.stack>=(10+2*set_bonus."
+      "power_infusion,if=buff.insanity_drain_stacks.value>=(10+2*set_bonus."
       "tier19_2pc+"
       "5*buff.bloodlust.up+5*variable.s2mbeltcheck)&(!talent.surrender_to_"
       "madness.enabled"
       "|(talent.surrender_to_madness.enabled&target.time_to_die>variable."
       "s2mcheck-(buff."
-      "insanity_drain_stacks.stack)+61))" );
+      "insanity_drain_stacks.value)+61))" );
   vf->add_action(
-      "berserking,if=buff.voidform.stack>=10&buff.insanity_drain_stacks.stack<="
+      "berserking,if=buff.voidform.stack>=10&buff.insanity_drain_stacks.value<="
       "20&"
       "(!talent.surrender_to_madness.enabled|(talent.surrender_to_madness."
       "enabled&"
-      "target.time_to_die>variable.s2mcheck-(buff.insanity_drain_stacks.stack)+"
+      "target.time_to_die>variable.s2mcheck-(buff.insanity_drain_stacks.value)+"
       "60))" );
   vf->add_action( "void_bolt" );
   vf->add_action(
