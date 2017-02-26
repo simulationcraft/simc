@@ -6924,11 +6924,11 @@ void rogue_t::init_action_list()
     finish -> add_action( this, "Eviscerate" );
 
     action_priority_list_t* sprinted = get_action_priority_list( "sprinted", "Sprinted" );
+    sprinted -> add_action( "cancel_autoattack" );
     for ( size_t i = 0; i < item_actions.size(); i++ )
       if ( find_item( "draught_of_souls" ) )
         sprinted -> add_action( item_actions[i] + ",if=!equipped.mantle_of_the_master_assassin|buff.faster_than_light_trigger.remains<=0.5" );
     sprinted -> add_action( this, "Shadow Dance", "if=equipped.mantle_of_the_master_assassin&equipped.draught_of_souls&buff.vanish.up&buff.vanish.remains<=0.5" );
-    sprinted -> add_action( "cancel_autoattack" );
 
     // Stealth Action List Starter
     action_priority_list_t* stealth_als = get_action_priority_list( "stealth_als", "Stealth Action List Starter" );
