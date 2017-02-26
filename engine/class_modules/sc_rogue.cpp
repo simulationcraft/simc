@@ -722,7 +722,13 @@ namespace actions { // namespace actions
 
 static void break_stealth( rogue_t* p )
 {
-  if ( p -> buffs.stealth -> check() )
+  // As of 02/26/2017, if you have the Shadow Dance buff while stealthed, stealth doesn't break
+  // until the end of shadow dance. It is commonly "Extended Stealth".
+  // The only way to trigger it since recent hotfix is :
+  // - Do Shadow Dance -> Stealth (So only when Out of Combat)
+  // - Not triggering Subterfuge during a Vanish (to proc Stealth at the end of the Vanish)
+  //   and using Shadow Dance before Vanish expires.
+  if ( p -> buffs.stealth -> check() && ! p -> buffs.shadow_dance -> check() )
     p -> buffs.stealth -> expire();
 
   if ( p -> buffs.vanish -> check() )
