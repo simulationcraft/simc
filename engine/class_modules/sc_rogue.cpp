@@ -6880,7 +6880,8 @@ void rogue_t::init_action_list()
     def -> add_action( "call_action_list,name=cds" );
     def -> add_action( "run_action_list,name=stealthed,if=stealthed.all", "Fully switch to the Stealthed Rotation (by doing so, it forces pooling if nothing is available)" );
     def -> add_action( "call_action_list,name=finish,if=combo_points>=5|(combo_points>=4&spell_targets.shuriken_storm>=3&spell_targets.shuriken_storm<=4)" );
-    def -> add_action( this, "Sprint", "if=energy.time_to_max>=1.5&cooldown.shadow_dance.charges_fractional<variable.shd_fractionnal-1&!cooldown.vanish.up&target.time_to_die>=8" );
+    def -> add_action( this, "Sprint", "if=!equipped.draught_of_souls&energy.time_to_max>=1.5&cooldown.shadow_dance.charges_fractional<variable.shd_fractionnal-1&!cooldown.vanish.up&target.time_to_die>=8" );
+    def -> add_action( this, "Sprint", "if=equipped.draught_of_souls&!stealthed.all&time>10&mantle_duration=0" );
     def -> add_action( "call_action_list,name=stealth_als,if=combo_points.deficit>=2+talent.premeditation.enabled" );
     def -> add_action( "call_action_list,name=build,if=energy.deficit<=variable.stealth_threshold" );
 
@@ -6894,9 +6895,7 @@ void rogue_t::init_action_list()
     action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );
     cds -> add_action( "potion,name=old_war,if=buff.bloodlust.react|target.time_to_die<=25|buff.shadow_blades.up" );
     for ( size_t i = 0; i < item_actions.size(); i++ )
-      if ( find_item( "draught_of_souls" ) )
-        cds -> add_action( item_actions[i] + ",if=cooldown.shadow_dance.charges_fractional<2.45&buff.shadow_dance.down" );
-      else
+      if ( ! find_item( "draught_of_souls" ) )
         cds -> add_action( item_actions[i] + ",if=(buff.shadow_blades.up&stealthed.rogue)|target.time_to_die<20" );
     for ( size_t i = 0; i < racial_actions.size(); i++ )
     {
@@ -6920,6 +6919,10 @@ void rogue_t::init_action_list()
     finish -> add_action( this, "Eviscerate" );
 
     action_priority_list_t* sprinted = get_action_priority_list( "sprinted", "Sprinted" );
+    for ( size_t i = 0; i < item_actions.size(); i++ )
+      if ( find_item( "draught_of_souls" ) )
+        sprinted -> add_action( item_actions[i] + ",if=!equipped.mantle_of_the_master_assassin|buff.faster_than_light_trigger.remains<=0.5" );
+    sprinted -> add_action( this, "Shadow Dance", "if=equipped.mantle_of_the_master_assassin&equipped.draught_of_souls&buff.vanish.up&buff.vanish.remains<=0.5" );
     sprinted -> add_action( "cancel_autoattack" );
 
     // Stealth Action List Starter
