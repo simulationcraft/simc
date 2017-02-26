@@ -4811,7 +4811,6 @@ struct cancel_autoattack_t : public action_t
     rogue( rogue_ )
   {
     trigger_gcd = timespan_t::zero();
-    background = true;
   }
 
   void execute() override
@@ -4824,6 +4823,12 @@ struct cancel_autoattack_t : public action_t
 
     if ( rogue -> off_hand_attack && rogue -> off_hand_attack -> execute_event )
       event_t::cancel( rogue -> off_hand_attack -> execute_event );
+  }
+
+  virtual bool ready() override
+  {
+    return rogue -> main_hand_attack && rogue -> main_hand_attack -> execute_event ||
+           rogue -> off_hand_attack && rogue -> off_hand_attack -> execute_event;
   }
 };
 
