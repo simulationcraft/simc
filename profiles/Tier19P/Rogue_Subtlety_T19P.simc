@@ -32,7 +32,7 @@ actions.precombat+=/shadow_dance,if=equipped.mantle_of_the_master_assassin
 actions.precombat+=/symbols_of_death
 
 # Executed every time the actor is available.
-actions=run_action_list,name=sprinted,if=buff.faster_than_light_trigger.up|(equipped.mantle_of_the_master_assassin&equipped.draught_of_souls&buff.sprint.up&buff.vanish.up)
+actions=run_action_list,name=sprinted,if=buff.faster_than_light_trigger.up
 actions+=/call_action_list,name=cds
 # Fully switch to the Stealthed Rotation (by doing so, it forces pooling if nothing is available)
 actions+=/run_action_list,name=stealthed,if=stealthed.all
@@ -65,7 +65,6 @@ actions.finish+=/eviscerate
 
 # Sprinted
 actions.sprinted=cancel_autoattack
-actions.sprinted+=/shadow_dance,if=equipped.mantle_of_the_master_assassin&equipped.draught_of_souls&buff.vanish.up&buff.vanish.remains<=0.5
 
 # Stealth Action List Starter
 actions.stealth_als=call_action_list,name=stealth_cds,if=energy.deficit<=variable.stealth_threshold&(!equipped.shadow_satyrs_walk|cooldown.shadow_dance.charges_fractional>=variable.shd_fractionnal|energy.deficit>=10)
