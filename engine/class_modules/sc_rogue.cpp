@@ -6055,6 +6055,24 @@ struct vanish_t : public stealth_like_buff_t
   vanish_t( rogue_t* r ) :
     stealth_like_buff_t( r, "vanish", r -> find_spell( 11327 ) )
   { }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    // As of 02/26/2017, if you have Subterfuge talent and manages to no proc it during Vanish
+    // (For example, if you do not attack or use a trinket like Draught of Souls)
+    // It will wrongly proc Master of Shadows, but considering we have 3s of AFK + the proc from Vanish, we will
+    // likely be full energy already.
+    // Currently, it's used only when Sprint + DoS + ShD, so 6s of AFK and 2 procs of MoSh, so :
+    // 6*10 + 2*25 = 110 energy minimum, i.e. more than our normal cap.
+    // Altough, it's pertubating Energy Stats in report ^^
+    // FIXME: Trigger stealth without triggering Master of Shadows.
+    if ( rogue -> talent.subterfuge -> ok() && ! rogue -> buffs.subterfuge -> check() )
+    {
+      rogue -> buffs.stealth -> trigger();
+    }
+
+    stealth_like_buff_t::expire_override( expiration_stacks, remaining_duration );
+  }
 };
 
 // Shadow dance acts like "stealth like abilities" except for Mantle of the Master
