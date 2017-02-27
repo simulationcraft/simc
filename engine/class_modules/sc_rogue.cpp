@@ -6747,17 +6747,17 @@ void rogue_t::init_action_list()
     def -> add_action( "call_action_list,name=cds" );
     def -> add_action( "call_action_list,name=maintain" );
     def -> add_action( "call_action_list,name=finish,if=(!talent.exsanguinate.enabled|cooldown.exsanguinate.remains>2)&(!dot.rupture.refreshable|(dot.rupture.exsanguinated&dot.rupture.remains>=3.5)|target.time_to_die-dot.rupture.remains<=4)&active_dot.rupture>=spell_targets.rupture", "The 'active_dot.rupture>=spell_targets.rupture' means that we don't want to envenom as long as we can multi-rupture (i.e. units that don't have rupture yet)." );
-    def -> add_action( "call_action_list,name=build,if=(combo_points.deficit>0|energy.time_to_max<1)" );
+    def -> add_action( "call_action_list,name=build,if=combo_points.deficit>0|energy.time_to_max<1" );
 
     // Builders
     action_priority_list_t* build = get_action_priority_list( "build", "Builders" );
     build -> add_talent( this, "Hemorrhage", "if=refreshable" );
-    build -> add_talent( this, "Hemorrhage", "cycle_targets=1,if=refreshable&dot.rupture.ticking&((talent.agonizing_poison.enabled&spell_targets<3+equipped.insignia_of_ravenholdt)|(!talent.agonizing_poison.enabled&spell_targets<2))" );
-    build -> add_action( this, "Fan of Knives", "if=(talent.agonizing_poison.enabled&spell_targets>=3+equipped.insignia_of_ravenholdt)|(!talent.agonizing_poison.enabled&spell_targets>=2)|buff.the_dreadlords_deceit.stack>=29" );
+    build -> add_talent( this, "Hemorrhage", "cycle_targets=1,if=refreshable&dot.rupture.ticking&spell_targets.fan_of_knives<2+talent.agonizing_poison.enabled+(talent.agonizing_poison.enabled&equipped.insignia_of_ravenholdt)" );
+    build -> add_action( this, "Fan of Knives", "if=spell_targets>=2+talent.agonizing_poison.enabled+(talent.agonizing_poison.enabled&equipped.insignia_of_ravenholdt)|buff.the_dreadlords_deceit.stack>=29" );
       // We want to apply poison on the unit that have the most bleeds on and that meet the condition for Venomous Wound (and also for T19 dmg bonus).
       // This would be done with target_if=max:bleeds but it seems to be bugged atm
     build -> add_action( this, "Mutilate", "cycle_targets=1,if=(!talent.agonizing_poison.enabled&dot.deadly_poison_dot.refreshable)|(talent.agonizing_poison.enabled&debuff.agonizing_poison.remains<debuff.agonizing_poison.duration*0.3)" );
-    build -> add_action( this, "Mutilate", "if=debuff.vendetta.up|debuff.kingsbane.up|(set_bonus.tier19_2pc=1&dot.mutilated_flesh.refreshable)|(energy.deficit<=22&target.time_to_die-remains>4)|cooldown.vendetta.remains<7" );
+    build -> add_action( this, "Mutilate", "if=cooldown.vendetta.remains<7|debuff.vendetta.up|debuff.kingsbane.up|energy.deficit<=22|target.time_to_die<6" );
 
     // Cooldowns
     action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );
@@ -6771,16 +6771,16 @@ void rogue_t::init_action_list()
     {
       if ( racial_actions[i] == "arcane_torrent" )
       {
-        cds -> add_action( racial_actions[i] + ",if=debuff.vendetta.up&energy.deficit>50" );
+        cds -> add_action( racial_actions[i] + ",if=debuff.vendetta.up&energy.deficit>30" );
       }
       else
       {
         cds -> add_action( racial_actions[i] + ",if=debuff.vendetta.up" );
       }
     }
-    cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit|combo_points.deficit>=5" );
-    cds -> add_action( this, "Vendetta", "if=talent.exsanguinate.enabled&(!artifact.urge_to_kill.enabled|(!talent.vigor.enabled&energy.deficit>=75)|(talent.vigor.enabled&energy.deficit>=125))" );
-    cds -> add_action( this, "Vendetta", "if=!talent.exsanguinate.enabled&(!artifact.urge_to_kill.enabled|(!talent.vigor.enabled&energy.deficit>=85)|(talent.vigor.enabled&energy.deficit>=125))" );
+    cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit*1.5|(raid_event.adds.in>40&combo_points.deficit>=cp_max_spend)" );
+    cds -> add_action( this, "Vendetta", "if=talent.exsanguinate.enabled&(!artifact.urge_to_kill.enabled|energy.deficit>=75+talent.vigor.enabled*50)" );
+    cds -> add_action( this, "Vendetta", "if=!talent.exsanguinate.enabled&(!artifact.urge_to_kill.enabled|energy.deficit>=85+talent.vigor.enabled*40)" );
     cds -> add_action( this, "Vanish", "if=talent.nightstalker.enabled&combo_points>=cp_max_spend&((talent.exsanguinate.enabled&cooldown.exsanguinate.remains<1&(dot.rupture.ticking|time>10))|(!talent.exsanguinate.enabled&dot.rupture.refreshable))" );
     cds -> add_action( this, "Vanish", "if=talent.subterfuge.enabled&dot.garrote.refreshable&((spell_targets.fan_of_knives<=3&combo_points.deficit>=1+spell_targets.fan_of_knives)|(spell_targets.fan_of_knives>=4&combo_points.deficit>=4))" );
     cds -> add_action( this, "Vanish", "if=talent.shadow_focus.enabled&energy.time_to_max>=2&combo_points.deficit>=4" );
@@ -6789,7 +6789,7 @@ void rogue_t::init_action_list()
     // Finishers
     action_priority_list_t* finish = get_action_priority_list( "finish", "Finishers" );
     finish -> add_talent( this, "Death from Above", "if=combo_points>=cp_max_spend" );
-    finish -> add_action( this, "Envenom", "if=combo_points>=4|(talent.elaborate_planning.enabled&combo_points>=3+!talent.exsanguinate.enabled&buff.elaborate_planning.remains<0.1)" );
+    finish -> add_action( this, "Envenom", "if=combo_points>=4|(talent.elaborate_planning.enabled&combo_points>=3+!talent.exsanguinate.enabled&buff.elaborate_planning.remains<0.3)" );
 
     // Maintain
     action_priority_list_t* maintain = get_action_priority_list( "maintain", "Maintain" );
