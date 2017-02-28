@@ -1455,6 +1455,8 @@ class SpellDataGenerator(DataGenerator):
           ( 225119, 5 ),                            # Arcane Familiar attack, Arcane Assault
           ( 210833, 0 ),                            # Touch of the Magi
           ( 228358, 0 ),                            # Winter's Chill
+          ( 242253, 0 ),                            # Frost T20 2P Frozen Mass
+          ( 240689, 0 ),                            # Aluneth - Time and Space
         ),
 
         # Warlock:
