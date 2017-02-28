@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build ea39c9d)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build ff6af4d)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -242,7 +242,7 @@ Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Category         : 1363
-Affecting spells : Demon Skin (219272), Corrupted Sayaad Orb (240264)
+Affecting spells : Demon Skin (219272), Orb of the Fel Temptress (240264)
 Attributes       : ........ ........ ........ ........   x....... ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
@@ -1182,9 +1182,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=288276)   : School Damage: fire (2)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.33100 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
-Description      : Draws fire toward the enemy, dealing $s2 Fire damage.$?s29722|!c3[][
-
-Replaces Shadow Bolt.]
+Description      : Draws fire toward the enemy, dealing $s2 Fire damage.
 
 Name             : Unstable Affliction (id=30108) [Spell Family (5)] 
 Class            : Affliction Warlock
@@ -4400,10 +4398,7 @@ Effects          :
                    Affected Spells: Corruption (172), Agony (980), Unstable Affliction (30108), Siphon Life (63106), Corruption (146739), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499)
 Description      : Drains the target's soul, causing $o1 Shadow damage over $d, and healing you for ${$e1*100}% of the damage done.
 
-|cFFFFFFFFGenerates 1 Soul Shard if the target dies during this effect.|r$?c1&!s198590[
-
-Replaces Shadow Bolt.][]
-
+|cFFFFFFFFGenerates 1 Soul Shard if the target dies during this effect.|r
 Tooltip          : Suffering $w1 Shadow damage every $t1 seconds. Restoring ${$e1*100}% of that damage as health to the caster.
 
 Name             : Activating Specialization (id=200749) [Hidden] 
@@ -4900,10 +4895,10 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 0x7f | Target: Self(1)
 #2 (id=331182)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 100 | Scaled Value: 100 | Target: Self(1)
-                   Affected Spells: Inimitable Agony (199111), Hideous Corruption (199112), Drained to a Husk (199120), Inherently Unstable (199152), Seeds of Doom (199153), Perdition (199158), Shadowy Incantations (199163), Shadows of the Flesh (199212), Long Dark Night of the Soul (199214), Sweet Souls (199220), Fatal Echoes (199257), Compounding Horror (199282), Soul Flame (199471), Wrath of Consumption (199472), Soul Flame (199581), Wrath of Consumption (199646), Harvester of Souls (201424), Souls of the Damned (216463), Souls of the Damned (216721), Souls of the Damned (216722), Souls of the Damned (216724), Crystalline Shadows (221862)
+                   Affected Spells: Inimitable Agony (199111), Hideous Corruption (199112), Drained to a Husk (199120), Inherently Unstable (199152), Seeds of Doom (199153), Perdition (199158), Shadowy Incantations (199163), Shadows of the Flesh (199212), Long Dark Night of the Soul (199214), Sweet Souls (199220), Fatal Echoes (199257), Compounding Horror (199282), Soul Flame (199471), Wrath of Consumption (199472), Soul Flame (199581), Wrath of Consumption (199646), Harvester of Souls (201424), Souls of the Damned (216463), Souls of the Damned (216721), Souls of the Damned (216722), Souls of the Damned (216724), Crystalline Shadows (221862), Rend Soul (242834)
 #3 (id=345006)   : Apply Aura (6) | Add Percent Modifier: Spell Tick Time (108)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 8 | Target: Self(1)
-                   Affected Spells: Inimitable Agony (199111), Hideous Corruption (199112), Drained to a Husk (199120), Inherently Unstable (199152), Seeds of Doom (199153), Perdition (199158), Shadowy Incantations (199163), Shadows of the Flesh (199212), Long Dark Night of the Soul (199214), Sweet Souls (199220), Fatal Echoes (199257), Compounding Horror (199282), Soul Flame (199471), Wrath of Consumption (199472), Soul Flame (199581), Wrath of Consumption (199646), Harvester of Souls (201424), Souls of the Damned (216463), Souls of the Damned (216721), Souls of the Damned (216722), Souls of the Damned (216724), Crystalline Shadows (221862)
+                   Affected Spells: Inimitable Agony (199111), Hideous Corruption (199112), Drained to a Husk (199120), Inherently Unstable (199152), Seeds of Doom (199153), Perdition (199158), Shadowy Incantations (199163), Shadows of the Flesh (199212), Long Dark Night of the Soul (199214), Sweet Souls (199220), Fatal Echoes (199257), Compounding Horror (199282), Soul Flame (199471), Wrath of Consumption (199472), Soul Flame (199581), Wrath of Consumption (199646), Harvester of Souls (201424), Souls of the Damned (216463), Souls of the Damned (216721), Souls of the Damned (216722), Souls of the Damned (216724), Crystalline Shadows (221862), Rend Soul (242834)
 Description      : $@spelldesc216698
 Tooltip          : Increases your damage by $s1%, and doubles the effectiveness of the other traits of the Deadwind Harvester.
 

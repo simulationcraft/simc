@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build ea39c9d)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build ff6af4d)
 
 Name             : Defensive Stance (id=71) [Spell Family (4), Passive, Hidden] 
 Class            : Protection Warrior
@@ -895,9 +895,9 @@ Effects          :
                    Base Value: 200 | Scaled Value: 200 | Misc Value: rage | Target: Self(1)
 Description      : Slams the target with your shield, causing $s1 Physical damage.$?a231834[
 
-Devastate, Thunder Clap, and Revenge have a $231834% chance to reset the cooldown of Shield Slam.][]
+Devastate, Thunder Clap, and Revenge have a $231834s1% chance to reset the cooldown of Shield Slam.][]
 
-|cFFFFFFFFGenerates $/10;s3 Rage.|r
+|cFFFFFFFFGenerates ${$s3/10} Rage.|r
 
 Name             : Gift of the Naaru (Racial) (id=28880) [Spell Family (4)] 
 Class            : Warrior, Paladin, Hunter, Priest, Death Knight, Shaman, Mage, Monk
@@ -1671,7 +1671,7 @@ School           : Physical
 Spell Level      : 20
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Warrior (137047), Fury Warrior (137050), Wrath and Fury (200849), Inner Rage (215573), 
+Affecting spells : Warrior (137047), Fury Warrior (137050), Wrath and Fury (200849), Inner Rage (215573), Raging Thirst (242300)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ x....... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1697,7 +1697,7 @@ Class            : Warrior
 School           : Physical
 Spell Level      : 20
 Range            : 100 yards
-Affecting spells : Warrior (137047), Fury Warrior (137050), Wrath and Fury (200849), Inner Rage (215573), 
+Affecting spells : Warrior (137047), Fury Warrior (137050), Wrath and Fury (200849), Inner Rage (215573), Raging Thirst (242300)
 Triggered by     : Raging Blow (85288)
 Attributes       : ....x... ........ x.x..... ........   ....x... ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ .x...... ........ x.....x. 
@@ -1845,7 +1845,7 @@ Class            : Warrior
 School           : Physical
 Spell Level      : 20
 Range            : 100 yards
-Affecting spells : Warrior (137047), Fury Warrior (137050), Wrath and Fury (200849), Inner Rage (215573), 
+Affecting spells : Warrior (137047), Fury Warrior (137050), Wrath and Fury (200849), Inner Rage (215573), Raging Thirst (242300)
 Triggered by     : Raging Blow (85288)
 Attributes       : ....x... ........ x.x..... ........   ....x... ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ .xx..... ........ ......x. 
@@ -2603,8 +2603,8 @@ Effects          :
 #8 (id=261029)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: -5 | Scaled Value: -5 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Deep Wounds (115767)
-#9 (id=261030)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#9 (id=261030)   : Apply Aura (6) | Unknown effect sub type (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0x121 | Target: Self(1)
 #10 (id=261031)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #11 (id=261032)   : Apply Aura (6) | Dummy (4)
@@ -2618,6 +2618,8 @@ Effects          :
 #15 (id=261036)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #16 (id=362031)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#17 (id=368363)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Arms Warrior (id=137049) [Spell Family (4), Passive, Hidden] 

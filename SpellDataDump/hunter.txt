@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 4849e27)
+SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 74c9f6b)
 
 Name             : Mend Pet (id=136) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
@@ -4485,6 +4485,7 @@ Description      : $@spelldesc191384
 Tooltip          : Movement slowed by $s1%.
 
 Name             : Bestial Ferocity (id=191413) [Spell Family (9)] 
+Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Spell Level      : 1
@@ -4494,7 +4495,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=280784)   : Apply Aura (6) | Periodic Damage: physical every 2 seconds (3)

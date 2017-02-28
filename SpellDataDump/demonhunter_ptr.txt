@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build ea39c9d)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build ff6af4d)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -2994,8 +2994,8 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf8 | Target: Self(1)
 #8 (id=315257)   : Apply Aura (6) | Unknown effect sub type (218)
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 3 | Misc Value 2: 0x114 | Target: Self(1)
-#9 (id=315258)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#9 (id=315258)   : Apply Aura (6) | Unknown effect sub type (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0x121 | Target: Self(1)
 #10 (id=315259)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #11 (id=315260)   : Apply Aura (6) | Dummy (4)
@@ -3009,6 +3009,8 @@ Effects          :
 #15 (id=315264)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #16 (id=327140)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#17 (id=368364)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Blur (id=212800) [Spell Family (107)] 

@@ -2674,15 +2674,17 @@ struct holy_wrath_t : public paladin_spell_t
       background = true;
   }
 
-  virtual void impact( action_state_t* s ) override
+  virtual double calculate_direct_amount( action_state_t* state ) const
   {
     double base_amount = 0;
     if ( p() -> fixed_holy_wrath_health_pct > 0 )
       base_amount = p() -> max_health() * ( 100 - p() -> fixed_holy_wrath_health_pct ) / 100.0;
     else
       base_amount = p() -> max_health() - p() -> current_health();
-    s -> result_amount = base_amount * data().effectN( 3 ).percent();
-    paladin_spell_t::impact( s );
+    double amount = base_amount * data().effectN( 3 ).percent();
+
+    state -> result_total = amount;
+    return amount;
   }
 
   bool ready() override
@@ -4740,6 +4742,11 @@ void paladin_t::generate_action_prio_list_ret()
       else if ( items[i].name_str == "might_of_krosus" ) 
       {
         item_str = "use_item,name=" + items[i].name_str + ",if=(buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=15|cooldown.crusade.remains>5&!buff.crusade.up)";
+        def -> add_action( item_str );
+      }
+      else if ( items[i].name_str == "kiljaedens_burning_wish" )
+      {
+        item_str = "use_item,name=" + items[i].name_str;
         def -> add_action( item_str );
       }
       else {

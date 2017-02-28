@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 4849e27)
+SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 74c9f6b)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -2575,6 +2575,7 @@ Description      : $@spelldesc114163
 Tooltip          : Healing $w1 health every $t2 sec.
 
 Name             : Beacon of Faith (id=156910) [Spell Family (10)] 
+Hotfixed         : Max stacks, Proc Chance, Proc Stacks, Proc Flags, Internal Cooldown
 Class            : Paladin
 School           : Holy
 Resource         : 3.125% Base Mana (6875 @Level 110)
@@ -2582,6 +2583,9 @@ Spell Level      : 1
 Range            : 60 yards
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
+Proc Chance      : 100%
+Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Lucidity (137288), Rule of Law (214202), 
 Attributes       : ........ ........ x.x..... .....x..   ........ ........ .x...... ........ 
                  : ...x.... x....... ........ ........   ........ ........ ........ ........ 

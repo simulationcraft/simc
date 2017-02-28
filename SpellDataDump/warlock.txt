@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 4849e27)
+SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 74c9f6b)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -2886,10 +2886,10 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
 Effects          :
 #1 (id=133885)   : Apply Aura (6) | Add Percent Modifier: Spell Cast Time (108)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 10 | Target: Self(1)
-                   Affected Spells: Incinerate (29722), Chaos Bolt (116858)
+                   Affected Spells: Incinerate (29722), Chaos Bolt (116858), Chaos Bolt (213229)
 #2 (id=288652)   : Apply Aura (6) | Add Percent Modifier: Spell Global Cooldown (108)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 21 | Target: Self(1)
-                   Affected Spells: Incinerate (29722), Chaos Bolt (116858)
+                   Affected Spells: Incinerate (29722), Chaos Bolt (116858), Chaos Bolt (213229)
 Description      : $@spelldesc196406
 Tooltip          : Incinerate and Chaos Bolt cast times reduced by $s1%.
 
@@ -3157,7 +3157,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179730)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 4 | Scaled Value: 4 | Target: Self(1)
-                   Affected Spells: Immolate (348), Doom (603), Firebolt (3110), Shadowburn (17877), Conflagrate (17962), Incinerate (29722), Rain of Fire (42223), Doom Bolt (85692), Chaos Bolt (116858), Cataclysm (152108), Channel Demonfire (196448)
+                   Affected Spells: Immolate (348), Doom (603), Firebolt (3110), Shadowburn (17877), Conflagrate (17962), Incinerate (29722), Rain of Fire (42223), Doom Bolt (85692), Chaos Bolt (116858), Cataclysm (152108), Channel Demonfire (196448), Chaos Bolt (213229)
 #2 (id=191023)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 4 | Scaled Value: 4 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Immolate (157736), Immolate (193540)
@@ -4492,10 +4492,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=302855)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
                    Base Value: 35 | Scaled Value: 35 | Misc Value: 23 | Target: Self(1)
-                   Affected Spells: Rain of Fire (5740), Chaos Bolt (116858)
+                   Affected Spells: Rain of Fire (5740), Chaos Bolt (116858), Chaos Bolt (213229)
 #2 (id=322167)   : Apply Aura (6) | Add Flat Modifier: Spell Cast Time (107)
                    Base Value: -500 | Scaled Value: -500 | Misc Value: 10 | Target: Self(1)
-                   Affected Spells: Rain of Fire (5740), Chaos Bolt (116858)
+                   Affected Spells: Rain of Fire (5740), Chaos Bolt (116858), Chaos Bolt (213229)
 Description      : Chaos Bolt and Rain of Fire restore $s1% of your maximum mana, and Chaos Bolt's cast time is reduced by ${-$m2/1000}.1 sec.
 
 Name             : Soul Effigy (id=205178) [Spell Family (5)] 
@@ -4745,6 +4745,50 @@ Effects          :
 #1 (id=313706)   : School Damage: shadow (2)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : $@spelldesc211714
+
+Name             : Varo'then's Restraint (id=213014) [Spell Family (5), Passive] 
+Class            : Warlock
+School           : Shadow
+Spell Level      : 1
+Proc Chance      : 20%
+Proc Flags       : ........ ........ x....... ........ 
+                 : Hostile Spell
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=315981)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#2 (id=315982)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self(1)
+Description      : Chaos Bolt has a $h% chance to strike an additional enemy within $s2 yards.
+
+Name             : Chaos Bolt (id=213229) [Spell Family (5)] 
+Class            : Warlock
+School           : Chromatic
+Spell Level      : 26
+Range            : 50000 yards
+Affecting spells : Backdraft (117828), Destruction Warlock (137046), Item - Warlock T17 Destruction 4P Bonus (165452), Flamelicked (185229), Item - Warlock T18 Destruction 2P Bonus (185965), Chaotic Instability (196217), Reverse Entropy (205148), Embrace Chaos (212019), Odr, Shawl of the Ymirjar (212173)
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ...x.... 
+                 : ........ x....... ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ......x. ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=316299)   : School Damage: chromatic (2)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 3.66300 | Chain Targets: 1 | Target: Enemy(6)
+#2 (id=316300)   : Dummy (3)
+                   Base Value: 20 | Scaled Value: 20 | Target: Enemy(6)
+#3 (id=316301)   : Energize Power% (137)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+Description      : $@spelldesc213014
+Tooltip          : Deals Shadow damage every $t2 sec.
+Variables        : $masteryMod=${$cond($gt($pl,79),1,0)}
 
 Name             : Chaos Tear (id=215276) [Spell Family (107)] 
 Class            : Warlock

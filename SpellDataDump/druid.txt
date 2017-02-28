@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 4849e27)
+SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 74c9f6b)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -2334,6 +2334,7 @@ Description      : The target's skin becomes as tough as Ironwood, reducing all 
 Tooltip          : All damage taken is reduced by $w1%$?a197061[ and healing over time from the caster increased by $w3%][].
 
 Name             : Cenarion Ward (id=102351) [Spell Family (7)] 
+Hotfixed         : Proc Flags (2148147880 -> 2148180648)
 Class            : Druid
 School           : Nature
 Resource         : 9.2% Base Mana (20240 @Level 110)
@@ -2343,8 +2344,8 @@ Duration         : 30 seconds
 Cooldown         : 30 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
-Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
-                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
+Proc Flags       : ...x.x.x .x...x.x .x.x.... .......x 
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Bear Form (5487), Ironbark (102342), Druid (137009), Lucidity (137247), Grovewalker (186320), Astral Influence (197524), Essence of G'Hanir (208253), Ekowraith, Creator of Worlds (210667), 
 Attributes       : ....x... ...x.... x....... ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ..x..... 
@@ -6894,7 +6895,8 @@ Attributes       : ........ ........ ..x..... x..x....   ........ ..x..... .....
                  : Cannot crit (93), Disable target procs (113)
 Effects          :
 #1 (id=326922)   : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 2.25000 | Target: Unknown(25)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 2.25000 | Target: Enemy(6)
+                   Hotfixed: Target 1 (25 -> 6)
 Description      : Deals $s1 Nature damage.
 
 Name             : Nature's Guardian (id=227034) [Spell Family (7)] 

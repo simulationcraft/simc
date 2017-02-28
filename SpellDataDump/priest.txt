@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 4849e27)
+SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 74c9f6b)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Discipline Shadow Priest
@@ -3600,7 +3600,8 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=294269)   : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 3.60000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 3.25000 | Target: Enemy(6)
+                   Hotfixed: SP Coefficient (3.6 -> 3.25)
 #2 (id=294270)   : Dummy (3)
                    Base Value: 35 | Scaled Value: 35
 Description      : A word of dark binding that inflicts $s1 Shadow damage to the target. Only usable on enemies that have less than $s2% health.

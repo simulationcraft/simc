@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 4849e27)
+SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 74c9f6b)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -1060,8 +1060,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=44400)    : School Damage: shadowstorm (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.5, dl=0.15) | Value Multiplier: 1 | SP Coefficient: 2.00000 | Target: Enemy(6)
-                   Hotfixed: Delta (0.5 -> 0.15)
+                   Base Value: 1 | Scaled Value: 0 (avg=0.5, dl=0.15) | Value Multiplier: 1 | SP Coefficient: 3.00000 | Target: Enemy(6)
+                   Hotfixed: Delta (0.5 -> 0.15), SP Coefficient (2 -> 3)
 Description      : Inflicts Plague (Nature and Shadow) damage to an enemy.
 
 Name             : On a Pale Horse (id=51986) [Spell Family (15), Passive] 
@@ -3576,7 +3576,8 @@ Attributes       : ....x... ........ ........ ..x.....   ........ ........ .....
                  : Disable weapon procs (151)
 Effects          :
 #1 (id=281049)   : Apply Aura (6) | Periodic Damage: shadow every 3 seconds (3)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.42000 | Misc Value: 127 | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.70000 | Misc Value: 127 | Target: Unknown(25)
+                   Hotfixed: AP Coefficient (0.42 -> 0.7)
 #2 (id=288070)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30
 Description      : A disease that deals ${7*$s1} Shadow damage over $d. It erupts when the infected target dies, dealing $191685s1 Shadow damage divided among nearby enemies, and has a $s2% chance to erupt each time it deals damage.
@@ -4349,8 +4350,8 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=292108)   : School Damage: shadow (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 7.50000 | Target: Enemy(6)
-                   Hotfixed: AP Coefficient (7 -> 7.5)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 8.70000 | Target: Enemy(6)
+                   Hotfixed: AP Coefficient (7 -> 8.7)
 Description      : Inflicts Shadow damage to an enemy.
 
 Name             : Shadow Infusion (id=198943) [Spell Family (15), Passive] 

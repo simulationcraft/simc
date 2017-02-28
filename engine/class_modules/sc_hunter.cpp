@@ -356,6 +356,9 @@ public:
     artifact_power_t unleash_the_beast;
     artifact_power_t focus_of_the_titans;
     artifact_power_t furious_swipes;
+    artifact_power_t slithering_serpents;
+    artifact_power_t thunderslash; // 7.2 NYI
+    artifact_power_t cobra_commander; // 7.2 NYI
 
     // Marksmanship
     artifact_power_t windburst;
@@ -372,6 +375,9 @@ public:
     artifact_power_t precision;
     artifact_power_t rapid_killing;
     artifact_power_t mark_of_the_windrunner;
+    artifact_power_t unerring_arrows;
+    artifact_power_t feet_of_wind;
+    artifact_power_t cyclonic_burst; // 7.2 NYI
 
     // Survival
     artifact_power_t fury_of_the_eagle;
@@ -389,11 +395,18 @@ public:
     artifact_power_t lacerating_talons;
     artifact_power_t embrace_of_the_aspects;
     artifact_power_t hunters_guile;
+    artifact_power_t jaws_of_the_mongoose;
+    artifact_power_t talon_bond; // 7.2 NYI
+    artifact_power_t echos_of_echero; // 7.2 NYI
 
     // Paragon points
     artifact_power_t windflight_arrows;
     artifact_power_t spiritbound;
     artifact_power_t voice_of_the_wild_gods;
+    // 7.2 Flat Boosts
+    artifact_power_t acuity_of_the_unseen_path;
+    artifact_power_t bond_of_the_unseen_path;
+    artifact_power_t ferocity_of_the_unseen_path;
   } artifacts;
 
   stats_t* stats_tier17_4pc_bm;
@@ -647,7 +660,7 @@ public:
 
   virtual void try_steady_focus()
   {
-    if ( p() -> talents.steady_focus -> ok() )
+    if ( !ab::background && p() -> talents.steady_focus -> ok() )
       p() -> buffs.pre_steady_focus -> expire();
   }
 };
@@ -1328,7 +1341,7 @@ public:
 
     buffs.tier19_2pc_bm =
       buff_creator_t( this, 211183, "tier19_2pc_bm" )
-        .default_value( .1 ) // XXX: ptr spell data has it as the second effect of 211183
+        .default_value( owner -> find_spell( 211183 ) -> effectN( 2 ).percent() )
         .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 
@@ -1835,6 +1848,13 @@ struct spitting_cobra_t: public hunter_pet_t
       parse_options( options_str );
 
       may_crit = true;
+
+      /* nuoHep 2017-02-15 data from a couple krosus logs from wcl
+       *      N           Min           Max        Median           Avg        Stddev
+       *   2146           0.0         805.0         421.0     341.03262     168.89531
+       */
+      ability_lag = timespan_t::from_millis(340);
+      ability_lag_stddev = timespan_t::from_millis(170);
     }
 
     bool init_finished() override
@@ -1860,16 +1880,17 @@ struct spitting_cobra_t: public hunter_pet_t
   };
 
   spitting_cobra_t( hunter_t* o ):
-    hunter_pet_t( *(o -> sim), *o, "spitting_cobra", PET_HUNTER, true )
+    hunter_pet_t( *(o -> sim), *o, "spitting_cobra", PET_HUNTER,
+                  false /* a "hack" to make ability_lag work */ )
   {
-    /* nuoHep 16/01/2017 0vers no buffs
+    /* nuoHep 16/01/2017 0vers no buffs, orc
      *    AP      DMG
      *   9491    13420
      *   22381   31646
      * As Cobra Spit has 1x AP mult it works out to
-     * the pet having ~1.414 ap coeff
+     * the pet having exactly 1.4 ap coeff
      */
-    owner_coeff.ap_from_ap = 1.414;
+    owner_coeff.ap_from_ap = 1.4;
 
     regen_type = REGEN_DISABLED;
   }
@@ -1887,6 +1908,12 @@ struct spitting_cobra_t: public hunter_pet_t
     action_list_str = "cobra_spit";
 
     hunter_pet_t::init_action_list();
+  }
+
+  // for some reason it gets the player's multipliers
+  double composite_player_multiplier( school_e school ) const override
+  {
+    return owner -> composite_player_multiplier( school );
   }
 };
 
@@ -2291,10 +2318,7 @@ struct flanking_strike_t: public hunter_main_pet_attack_t
       hunting_companion_multiplier *= p -> o() -> sets.set( HUNTER_SURVIVAL, T19, B2 ) -> effectN( 1 ).base_value();
 
     if ( p -> o() -> talents.aspect_of_the_beast -> ok() )
-    {
       impact_action = new bestial_ferocity_t( p );
-      add_child( impact_action );
-    }
   }
 
   virtual double composite_crit_chance() const override
@@ -2498,7 +2522,11 @@ void dire_critter_t::init_spells()
     active.stomp = new dire_beast_stomp_t( *this );
 
   if ( o() -> artifacts.titans_thunder.rank() )
+  {
     active.titans_thunder = new actions::titans_thunder_t( this );
+    if ( o() -> pets.dire_beasts[ 0 ] )
+      active.titans_thunder -> stats = o() -> pets.dire_beasts[ 0 ] -> get_stats( "titans_thunder" );
+  }
 }
 
 void hati_t::init_spells() 
@@ -2536,6 +2564,7 @@ struct volley_tick_t: hunter_ranged_attack_t
     hunter_ranged_attack_t( "volley_tick", p, p -> find_spell( 194392 ) )
   {
     may_proc_bullseye = false;
+    background = true;
     aoe = -1;
     attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
     travel_speed = 0.0;
@@ -2551,9 +2580,6 @@ struct volley_tick_t: hunter_ranged_attack_t
     if (result_is_hit(execute_state->result))
       trigger_bullseye( p(), execute_state -> action );
   }
-
-  virtual void try_steady_focus() override
-  {}
 };
 
 struct volley_t: hunter_spell_t
@@ -2773,8 +2799,6 @@ struct barrage_t: public hunter_spell_t
       else
         action_state_t::release( s );
     }
-
-    void try_steady_focus() override {}
   };
 
   barrage_damage_t* primary;
@@ -2997,6 +3021,9 @@ struct cobra_shot_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t( "cobra_shot", player, player -> find_specialization_spell( "Cobra Shot" ) )
   {
     parse_options( options_str );
+
+    if ( player -> artifacts.slithering_serpents.rank() )
+      base_costs[ RESOURCE_FOCUS ] += player -> artifacts.slithering_serpents.value();
   }
 
   virtual void execute() override
@@ -3887,6 +3914,9 @@ struct mongoose_bite_t: hunter_melee_attack_t
   {
     parse_options( options_str );
     cooldown -> hasted = true; // not in spell data for some reason
+
+    if ( p -> artifacts.jaws_of_the_mongoose.rank() )
+      crit_bonus_multiplier *= 1.0 + p -> artifacts.jaws_of_the_mongoose.percent();
   }
 
   virtual void execute() override
@@ -3933,6 +3963,17 @@ struct flanking_strike_t: hunter_melee_attack_t
     hunter_melee_attack_t( "flanking_strike", p, p -> specs.flanking_strike )
   {
     parse_options( options_str );
+  }
+
+  bool init_finished() override
+  {
+    for ( auto pet : p() -> pet_list )
+    {
+      stats -> add_child( pet -> get_stats( "flanking_strike" ) );
+      stats -> add_child( pet -> get_stats( "bestial_ferocity" ) );
+    }
+
+    return hunter_melee_attack_t::init_finished();
   }
 
   virtual void execute() override
@@ -4346,8 +4387,6 @@ struct moc_t : public hunter_spell_t
 
       return am;
     }
-
-    void try_steady_focus() override {}
   };
 
   peck_t* peck;
@@ -4397,9 +4436,6 @@ struct sentinel_t : public hunter_spell_t
       p()->buffs.hunters_mark_exists->trigger();
       td(s->target)->debuffs.hunters_mark->trigger();
     }
-
-    virtual void try_steady_focus() override
-    {}
   };
 
   sentinel_mark_t* sentinel_mark;
@@ -4443,7 +4479,7 @@ struct summon_pet_t: public hunter_spell_t
     hunter_spell_t( "summon_pet", player ),
     pet( nullptr )
   {
-    harmful = false;
+    harmful = may_hit = false;
     callbacks = false;
     ignore_false_positive = true;
     pet_name = options_str.empty() ? p() -> summon_pet_str : options_str;
@@ -4549,11 +4585,8 @@ struct dire_beast_t: public hunter_spell_t
   {
     parse_options( options_str );
 
-    harmful = false;
-    hasted_ticks = false;
-    may_crit = false;
-    may_miss = false;
-    school = SCHOOL_PHYSICAL;
+    harmful = may_hit = false;
+    dot_duration = timespan_t::zero();
   }
 
   bool init_finished() override
@@ -4669,7 +4702,7 @@ struct bestial_wrath_t: public hunter_spell_t
     hunter_spell_t( "bestial_wrath", player, player -> specs.bestial_wrath )
   {
     parse_options( options_str );
-    harmful = false;
+    harmful = may_hit = false;
   }
 
   virtual void execute() override
@@ -4721,7 +4754,7 @@ struct kill_command_t: public hunter_spell_t
   {
     parse_options( options_str );
 
-    harmful = false;
+    harmful = may_hit = false;
   }
 
   bool init_finished() override
@@ -4782,8 +4815,7 @@ struct dire_frenzy_t: public hunter_spell_t
   {
     parse_options( options_str );
 
-    harmful = false;
-    school = SCHOOL_PHYSICAL;
+    harmful = may_hit = false;
 
     if ( p -> talents.dire_stable -> ok() )
       energize_amount += p -> talents.dire_stable -> effectN( 2 ).base_value();
@@ -4836,7 +4868,7 @@ struct titans_thunder_t: public hunter_spell_t
     hunter_spell_t( "titans_thunder", p, p -> artifacts.titans_thunder )
   {
     parse_options( options_str );
-    harmful = false;
+    harmful = may_hit = false;
   }
 
   virtual void execute() override
@@ -4879,7 +4911,9 @@ struct aspect_of_the_wild_t: public hunter_spell_t
     hunter_spell_t( "aspect_of_the_wild", p, p -> specs.aspect_of_the_wild )
   {
     parse_options( options_str );
-    harmful = false;
+
+    harmful = may_hit = false;
+    dot_duration = timespan_t::zero();
   }
 
   virtual void execute() override
@@ -4952,6 +4986,8 @@ struct trueshot_t: public hunter_spell_t
   {
     parse_options( options_str );
 
+    harmful = may_hit = false;
+
     // Quick Shot: spell data adds -30 seconds to CD
     if ( p -> artifacts.quick_shot.rank() )
       cooldown -> duration += p -> artifacts.quick_shot.time_value();
@@ -4959,12 +4995,12 @@ struct trueshot_t: public hunter_spell_t
 
   virtual void execute() override
   {
+    hunter_spell_t::execute();
+
     p() -> buffs.trueshot -> trigger();
 
     if ( p() -> artifacts.rapid_killing.rank() )
       p() -> buffs.rapid_killing -> trigger();
-
-    hunter_spell_t::execute();
   }
 };
 
@@ -4981,7 +5017,7 @@ struct aspect_of_the_eagle_t: public hunter_spell_t
   {
     parse_options( options_str );
 
-    harmful = false;
+    harmful = may_hit = false;
 
     if ( p -> artifacts.embrace_of_the_aspects.rank() )
       cooldown -> duration *= 1.0 + p -> artifacts.embrace_of_the_aspects.percent();
@@ -5004,7 +5040,7 @@ struct snake_hunter_t: public hunter_spell_t
   {
     parse_options( options_str );
 
-    harmful = false;
+    harmful = may_hit = false;
   }
 
   virtual void execute() override
@@ -5024,6 +5060,9 @@ struct spitting_cobra_t: public hunter_spell_t
     hunter_spell_t( "spitting_cobra", p, p -> talents.spitting_cobra )
   {
     parse_options( options_str );
+
+    harmful = may_hit = false;
+    dot_duration = timespan_t::zero();
   }
 
   bool init_finished() override
@@ -5345,10 +5384,11 @@ dots( dots_t() )
       .spell( p -> find_spell( 185365 ) );
 
   debuffs.vulnerable =
-    buff_creator_t(*this, "vulnerability")
-    .spell(p->find_spell(187131))
-    .default_value(p->find_spell(187131)->effectN(2).percent())
-    .refresh_behavior(BUFF_REFRESH_DURATION);
+    buff_creator_t( *this, 187131, "vulnerability" )
+      .default_value( p -> find_spell( 187131 ) -> effectN( 2 ).percent() )
+      .refresh_behavior( BUFF_REFRESH_DURATION );
+  if ( p -> artifacts.unerring_arrows.rank() )
+    debuffs.vulnerable -> default_value += p -> artifacts.unerring_arrows.percent();
 
   debuffs.true_aim = 
     buff_creator_t( *this, "true_aim" )
@@ -5398,15 +5438,14 @@ expr_t* hunter_t::create_expression( action_t* a, const std::string& expression_
       {
         hunter_t* hunter = static_cast<hunter_t*>( action -> player );
 
-        double lowest_duration = static_cast<hunter_td_t*>( hunter -> get_target_data( action -> target ) ) -> debuffs.vulnerable -> remains().total_seconds();
+        timespan_t lowest_duration = hunter -> get_target_data( action -> target ) -> debuffs.vulnerable -> remains();
 
-        for ( size_t i = 0, actors = hunter -> sim -> target_non_sleeping_list.size(); i < actors; i++ )
+        for ( player_t* t : hunter -> sim -> target_non_sleeping_list )
         {
-          player_t* t = hunter -> sim -> target_non_sleeping_list[ i ];
           if ( ! hunter -> sim -> distance_targeting_enabled || action -> target -> get_player_distance( *t ) <= radius )
-            lowest_duration = std::min( lowest_duration, static_cast<hunter_td_t*>( hunter -> get_target_data( t ) ) -> debuffs.vulnerable -> remains().total_seconds() );
+            lowest_duration = std::min( lowest_duration, hunter -> get_target_data( t ) -> debuffs.vulnerable -> remains() );
         }
-        return lowest_duration;
+        return lowest_duration.total_seconds();
       }
     };
     return new lowest_piercing_vuln_expr_t( a, util::str_to_num<int>( splits[ 1 ] ) );
@@ -5667,6 +5706,9 @@ void hunter_t::init_spells()
   artifacts.unleash_the_beast        = find_artifact_spell( "Unleash the Beast" );
   artifacts.focus_of_the_titans      = find_artifact_spell( "Focus of the Titans" );
   artifacts.furious_swipes           = find_artifact_spell( "Furious Swipes" );
+  artifacts.slithering_serpents      = find_artifact_spell( "Slithering Serpents" );
+  artifacts.thunderslash             = find_artifact_spell( "Thunderslash" );
+  artifacts.cobra_commander          = find_artifact_spell( "Cobra Commander" );
 
   artifacts.windburst                 = find_artifact_spell( "Windburst" );
   artifacts.wind_arrows               = find_artifact_spell( "Wind Arrows" );
@@ -5682,6 +5724,9 @@ void hunter_t::init_spells()
   artifacts.marked_for_death          = find_artifact_spell( "Marked for Death" );
   artifacts.precision                 = find_artifact_spell( "Precision" );
   artifacts.rapid_killing             = find_artifact_spell( "Rapid Killing" );
+  artifacts.unerring_arrows           = find_artifact_spell( "Unerring Arrows" );
+  artifacts.feet_of_wind              = find_artifact_spell( "Feet of Wind" );
+  artifacts.cyclonic_burst            = find_artifact_spell( "Cyclonic Burst" );
 
   artifacts.fury_of_the_eagle        = find_artifact_spell( "Fury of the Eagle" );
   artifacts.talon_strike             = find_artifact_spell( "Talon Strike" );
@@ -5698,10 +5743,17 @@ void hunter_t::init_spells()
   artifacts.embrace_of_the_aspects   = find_artifact_spell( "Embrace of the Aspects" );
   artifacts.hunters_guile            = find_artifact_spell( "Hunter's Guile" );
   artifacts.lacerating_talons        = find_artifact_spell( "Lacerating Talons" );
+  artifacts.jaws_of_the_mongoose     = find_artifact_spell( "Jaws of the Mongoose" );
+  artifacts.talon_bond               = find_artifact_spell( "Talon Bond" );
+  artifacts.echos_of_echero          = find_artifact_spell( "Echos of Eche'ro" );
 
   artifacts.windflight_arrows        = find_artifact_spell( "Windflight Arrows" );
   artifacts.spiritbound              = find_artifact_spell( "Spiritbound" );
   artifacts.voice_of_the_wild_gods   = find_artifact_spell( "Voice of the Wild Gods" );
+
+  artifacts.acuity_of_the_unseen_path   = find_artifact_spell( "Acuity of the Unseen Path" );
+  artifacts.bond_of_the_unseen_path     = find_artifact_spell( "Bond  of the Unseen Path" );
+  artifacts.ferocity_of_the_unseen_path = find_artifact_spell( "Ferocity of the Unseen Path" );
 
   if ( talents.serpent_sting -> ok() )
     active.serpent_sting = new attacks::serpent_sting_t( this );
@@ -6230,16 +6282,18 @@ void hunter_t::apl_bm()
   default_list -> add_talent( this, "A Murder of Crows" );
   default_list -> add_talent( this, "Stampede", "if=buff.bloodlust.up|buff.bestial_wrath.up|cooldown.bestial_wrath.remains<=2|target.time_to_die<=14" );
   default_list -> add_action( this, "Dire Beast", "if=cooldown.bestial_wrath.remains>3" );
-  default_list -> add_talent( this, "Dire Frenzy", "if=cooldown.bestial_wrath.remains>6|target.time_to_die<9" );
+  default_list -> add_talent( this, "Dire Frenzy", "if=(cooldown.bestial_wrath.remains>6&(!equipped.the_mantle_of_command|pet.cat.buff.dire_frenzy.remains<=gcd.max*1.2))|"
+                                                   "(charges>=2&focus.deficit>=25+talent.dire_stable.enabled*12)|"
+                                                   "target.time_to_die<9" );
   default_list -> add_action( this, "Aspect of the Wild", "if=buff.bestial_wrath.up|target.time_to_die<12" );
   default_list -> add_talent( this, "Barrage", "if=spell_targets.barrage>1" );
-  default_list -> add_action( this, "Titan's Thunder", "if=talent.dire_frenzy.enabled|cooldown.dire_beast.remains>=3|buff.bestial_wrath.up&pet.dire_beast.active" );
+  default_list -> add_action( this, "Titan's Thunder", "if=talent.dire_frenzy.enabled|cooldown.dire_beast.remains>=3|(buff.bestial_wrath.up&pet.dire_beast.active)" );
   default_list -> add_action( this, "Bestial Wrath" );
-  default_list -> add_action( this, "Multi-Shot", "if=spell_targets>4&(pet.buff.beast_cleave.remains<gcd.max|pet.buff.beast_cleave.down)" );
+  default_list -> add_action( this, "Multi-Shot", "if=spell_targets>4&(pet.cat.buff.beast_cleave.remains<gcd.max|pet.cat.buff.beast_cleave.down)" );
   default_list -> add_action( this, "Kill Command" );
-  default_list -> add_action( this, "Multi-Shot", "if=spell_targets>1&(pet.buff.beast_cleave.remains<gcd.max*2|pet.buff.beast_cleave.down)" );
+  default_list -> add_action( this, "Multi-Shot", "if=spell_targets>1&(pet.cat.buff.beast_cleave.remains<gcd.max*2|pet.cat.buff.beast_cleave.down)" );
   default_list -> add_talent( this, "Chimaera Shot", "if=focus<90" );
-  default_list -> add_action( this, "Cobra Shot", "if=cooldown.kill_command.remains>focus.time_to_max&cooldown.bestial_wrath.remains>focus.time_to_max|"
+  default_list -> add_action( this, "Cobra Shot", "if=(cooldown.kill_command.remains>focus.time_to_max&cooldown.bestial_wrath.remains>focus.time_to_max)|"
                                                   "(buff.bestial_wrath.up&focus.regen*cooldown.kill_command.remains>30)|"
                                                   "target.time_to_die<cooldown.kill_command.remains" );
 }
@@ -6383,6 +6437,8 @@ void hunter_t::apl_surv()
   // Way of the Mok'Nathal APL
   moknathal -> add_action( this, "Raptor Strike", "if=buff.moknathal_tactics.stack<=1" );
   moknathal -> add_action( this, "Raptor Strike", "if=buff.moknathal_tactics.remains<gcd" );
+  moknathal -> add_action( this, "Fury of the Eagle", "if=buff.mongoose_fury.stack>=4&buff.mongoose_fury.remains<gcd" );
+  moknathal -> add_action( this, "Raptor Strike", "if=buff.mongoose_fury.stack>=4&buff.mongoose_fury.remains>gcd&buff.moknathal_tactics.stack>=3&buff.moknathal_tactics.remains<4&cooldown.fury_of_the_eagle.remains<buff.mongoose_fury.remains" );
   moknathal -> add_talent( this, "Snake Hunter", "if=cooldown.mongoose_bite.charges<=0&buff.mongoose_fury.remains>3*gcd&time>15" );
   moknathal -> add_talent( this, "Spitting Cobra", "if=buff.mongoose_fury.duration>=gcd&cooldown.mongoose_bite.charges>=0&buff.mongoose_fury.stack<4&buff.moknathal_tactics.stack=3" );
   moknathal -> add_talent( this, "Steel Trap", "if=buff.mongoose_fury.duration>=gcd&buff.mongoose_fury.stack<1" );
@@ -6400,6 +6456,7 @@ void hunter_t::apl_surv()
   moknathal -> add_action( this, "Raptor Strike", "if=buff.moknathal_tactics.remains<4&buff.mongoose_fury.stack=6&buff.mongoose_fury.remains>cooldown.fury_of_the_eagle.remains&cooldown.fury_of_the_eagle.remains<=5" );
   moknathal -> add_action( this, "Fury of the Eagle", "if=buff.moknathal_tactics.remains>4&buff.mongoose_fury.stack=6&cooldown.mongoose_bite.charges<=1" );
   moknathal -> add_action( this, "Mongoose Bite", "if=buff.aspect_of_the_eagle.up&buff.mongoose_fury.up&buff.moknathal_tactics.stack>=4" );
+  moknathal -> add_action( this, "Raptor Strike", "if=buff.mongoose_fury.up&buff.mongoose_fury.remains<=3*gcd&buff.moknathal_tactics.remains<4+gcd&cooldown.fury_of_the_eagle.remains<gcd" );
   moknathal -> add_action( this, "Fury of the Eagle", "if=buff.mongoose_fury.up&buff.mongoose_fury.remains<=2*gcd" );
   moknathal -> add_action( this, "Aspect of the Eagle", "if=buff.mongoose_fury.stack>4&time<15" );
   moknathal -> add_action( this, "Aspect of the Eagle", "if=buff.mongoose_fury.stack>1&time>15" );
@@ -6647,6 +6704,15 @@ double hunter_t::composite_player_multiplier( school_e school ) const
 
   if ( artifacts.voice_of_the_wild_gods.rank() )
     m *= 1.0 + artifacts.voice_of_the_wild_gods.percent();
+
+  if ( artifacts.bond_of_the_unseen_path.rank() )
+    m *= 1.0 + artifacts.bond_of_the_unseen_path.percent( 1 );
+
+  if ( artifacts.acuity_of_the_unseen_path.rank() )
+    m *= 1.0 + artifacts.acuity_of_the_unseen_path.percent( 1 );
+
+  if ( artifacts.ferocity_of_the_unseen_path.rank() )
+    m *= 1.0 + artifacts.ferocity_of_the_unseen_path.percent( 1 );
 
   if ( talents.lone_wolf -> ok() )
     m *= 1.0 + talents.lone_wolf -> effectN( 1 ).percent();

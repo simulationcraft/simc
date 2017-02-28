@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 4849e27)
+SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 74c9f6b)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Arcane Fire Frost Mage
@@ -1149,6 +1149,7 @@ Spell Level      : 20
 Range            : 40 yards
 Cast Time        : 3 seconds
 GCD              : 1.5 seconds
+Velocity         : 45 yards/sec
 Affecting spells : Icy Veins (12472), Shatter (12982), Ice Floes (108839), Mage (137018), Enhanced Pyrotechnics (157644), Brain Freeze (190446), Ice Form (198144), Norgannon's Foresight (236380)
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

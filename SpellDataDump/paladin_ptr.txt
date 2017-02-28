@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build ea39c9d)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build ff6af4d)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -568,10 +568,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 127 | Target: Self(1)
 #2 (id=21514)    : Apply Aura (6) | Dummy (4)
                    Base Value: 12 | Scaled Value: 12 | Target: Self(1)
-Description      : Reduces all damage you take by $s1% for $d. While Ardent Defender is active, the next attack that would otherwise kill you will instead bring you to $s2% of your maximum health.$?s31850|!c2[][
-
-Replaces Divine Protection.]
-
+Description      : Reduces all damage you take by $s1% for $d. While Ardent Defender is active, the next attack that would otherwise kill you will instead bring you to $s2% of your maximum health.
 Tooltip          : Damage taken reduced by $w1%.
 The next attack that would otherwise kill you will instead bring you to $w2% of your maximum health.
 
@@ -934,7 +931,7 @@ Range            : 5 yards
 Cooldown         : 1 seconds
 Charges          : 3 (16 seconds cooldown)
 Category         : 1543
-Affecting spells : Paladin (137026), Consecration (188370), Consecrated Hammer (203785), Righteous Crusader (209226), Righteous Crusader (213570), Righteous Crusader (213571), Righteous Crusader (213572), Righteous Crusader (213573), Righteous Crusader (213574), Righteous Crusader (239293), Righteous Crusader (239294)
+Affecting spells : Paladin (137026), Consecration (188370), Consecrated Hammer (203785), Righteous Crusader (209226), Righteous Crusader (213570), Righteous Crusader (213571), Righteous Crusader (213572), Righteous Crusader (213573), Righteous Crusader (213574), Righteous Crusader (239293), Righteous Crusader (239294), Blessed Stalwart (242869)
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2137,7 +2134,7 @@ School           : Holy
 Spell Level      : 1
 Range            : 5 yards
 Duration         : 4.5 seconds
-Affecting spells : Mastery: Divine Bulwark (76671), Consecration (188370), Consecrated Hammer (203785), Righteous Crusader (209226), Righteous Crusader (213570), Righteous Crusader (213571), Righteous Crusader (213572), Righteous Crusader (213573), Righteous Crusader (213574), Righteous Crusader (239293), Righteous Crusader (239294)
+Affecting spells : Mastery: Divine Bulwark (76671), Consecration (188370), Consecrated Hammer (203785), Righteous Crusader (209226), Righteous Crusader (213570), Righteous Crusader (213571), Righteous Crusader (213572), Righteous Crusader (213573), Righteous Crusader (213574), Righteous Crusader (239293), Righteous Crusader (239294), Blessed Stalwart (242869)
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2284,8 +2281,8 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf8 | Target: Self(1)
 #6 (id=260917)   : Apply Aura (6) | Unknown effect sub type (218)
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 3 | Misc Value 2: 0x114 | Target: Self(1)
-#7 (id=260918)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#7 (id=260918)   : Apply Aura (6) | Unknown effect sub type (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0x121 | Target: Self(1)
 #8 (id=260919)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #9 (id=260920)   : Apply Aura (6) | Dummy (4)
@@ -2581,6 +2578,9 @@ Spell Level      : 1
 Range            : 60 yards
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
+Proc Chance      : 100%
+Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Lucidity (137288), Rule of Law (214202), 
 Attributes       : ........ ........ x.x..... .....x..   ........ ........ .x...... ........ 
                  : ...x.... x....... ........ ........   ........ ........ ........ ........ 
@@ -3198,6 +3198,9 @@ Class            : Paladin
 School           : Holy
 Range            : 100 yards
 Duration         : 8 seconds
+Proc Chance      : 100%
+Proc Flags       : .....x.. .....x.. .x...... ........ 
+                 : Yellow Melee Taken, AOE Hostile Spell Taken, Hostile Spell Taken
 Affecting spells : Seal of the Crusader Judgment Increase (23300), Item - Icecrown 25 Normal Tank Weapon Proc (71871), Item - Icecrown 25 Heroic Slow Melee Weapon Proc (71878), Item - Icecrown 25 Normal Dagger Proc (71880), Mastery: Divine Judgment (76672), Item - Proc Mastery Rating (95878), Paladin (137026), Retribution Paladin (137027), Protection Paladin (137028), Holy Paladin (137029), Lucidity (137288), Seal of the Crusader Judgment Increase (144307), Seal of the Crusader Judgment Increase (144310), Seal of the Crusader Judgment Increase (144311), Highlord's Judgment (186941), Stern Judgment (209217), Crusade (224668), Judgment (231663)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3209,6 +3212,8 @@ Effects          :
 #1 (id=289735)   : Apply Aura (6) | Unknown effect sub type (271)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
                    Affected Spells: Execution Sentence (213757), Justicar's Vengeance (215661), Divine Storm (224239), Templar's Verdict (224266)
+#2 (id=368486)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0
 Description      : $@spelldesc20271
 Tooltip          : Taking $w1% increased damage from the Paladin's Holy Power consuming abilities.
 
@@ -3589,7 +3594,7 @@ Tooltip          : $?$w2>1[Absorbs the next ${$w2-1} damage.][]
 Refreshed to $w1 absorption every $t1 sec.
 Variables        : $shield=${2.7*$SPH}
 
-Name             : Greater Blessing of Wisdom (id=203539) [Scaling Spell (-1), Spell Family (10)] 
+Name             : Greater Blessing of Wisdom (id=203539) [Spell Family (10)] 
 Class            : Retribution Paladin
 School           : Holy
 Spell Level      : 65

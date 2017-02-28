@@ -129,7 +129,8 @@ struct mage_td_t : public actor_target_data_t
     buff_t* chilled,
           * frost_bomb,
           * water_jet, // Proxy Water Jet to compensate for expression system
-          * winters_chill;
+          * winters_chill,
+          * frozen;
   } debuffs;
 
   mage_td_t( player_t* target, mage_t* mage );
@@ -829,10 +830,17 @@ struct water_elemental_pet_t : public mage_pet_t
 {
   target_specific_t<water_elemental_pet_td_t> target_data;
 
+  struct cooldowns_t
+  {
+    cooldown_t* wj_freeze; // Shared Freeze/Water Jet cooldown.
+  } cooldown;
+
   water_elemental_pet_t( sim_t* sim, mage_t* owner )
     : mage_pet_t( sim, owner, "water_elemental" )
   {
     owner_coeff.sp_from_sp = 0.75;
+    cooldown.wj_freeze = get_cooldown( "wj_freeze" );
+    cooldown.wj_freeze -> duration = timespan_t::from_seconds( 25.0 );
   }
 
   void init_action_list() override
@@ -842,6 +850,7 @@ struct water_elemental_pet_t : public mage_pet_t
 
     default_list->add_action( this, find_pet_spell( "Water Jet" ), "Water Jet" );
     default_list->add_action( this, find_pet_spell( "Waterbolt" ), "Waterbolt" );
+    default_list->add_action( this, find_pet_spell( "Freeze"    ), "Freeze"    );
 
     // Default
     use_default_action_list = true;
@@ -956,6 +965,8 @@ struct freeze_t : public mage_pet_spell_t
     may_crit              = true;
     ignore_false_positive = true;
     action_skill          = 1;
+
+    cooldown = p -> cooldown.wj_freeze;
   }
 
   virtual bool init_finished() override
@@ -971,8 +982,14 @@ struct freeze_t : public mage_pet_spell_t
   {
     spell_t::impact( s );
 
-    if ( result_is_hit( s->result ) )
+    if ( result_is_hit( s -> result ) && s -> target -> is_add() )
     {
+      o() -> get_target_data( s -> target ) -> debuffs.frozen -> trigger();
+      if ( o() -> legendary.sephuzs_secret )
+      {
+        o() -> buffs.sephuzs_secret -> trigger();
+      }
+
       o() -> buffs.fingers_of_frost->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 );
       o() -> benefits.fingers_of_frost->update( fof_source_id );
     }
@@ -998,6 +1015,8 @@ struct water_jet_t : public mage_pet_spell_t
     {
       dot_duration += p->find_spell( 185971 )->effectN( 1 ).time_value();
     }
+
+    cooldown = p -> cooldown.wj_freeze;
   }
   water_elemental_pet_td_t* td( player_t* t ) const
   {
@@ -1007,10 +1026,16 @@ struct water_jet_t : public mage_pet_spell_t
 
   void execute() override
   {
-    mage_pet_spell_t::execute();
     // If this is a queued execute, disable queued status
     if ( !autocast && queued )
       queued = false;
+
+    // Don't execute Water Jet if Water Elemental used Freeze
+    // during the cast
+    if ( cooldown -> up() )
+    {
+      mage_pet_spell_t::execute();
+    }
   }
 
   virtual void impact( action_state_t* s ) override
@@ -2003,6 +2028,20 @@ public:
     }
   }
 
+  // Apply freeze effect to a target that can be frozen. If the actor has
+  // Sephuz's Secret, also trigger the haste buff.
+  void trigger_frozen( action_state_t* s )
+  {
+    if ( result_is_hit( s -> result ) && s -> target -> is_add() )
+    {
+      td( s -> target ) -> debuffs.frozen -> trigger();
+      if ( p() -> legendary.sephuzs_secret )
+      {
+        p() -> buffs.sephuzs_secret -> trigger();
+      }
+    }
+  }
+
   virtual void execute() override
   {
     player_t* original_target = nullptr;
@@ -2355,9 +2394,11 @@ struct frost_spell_state_t : action_state_t
   bool frozen() const
   {
     const mage_t* p = debug_cast<const mage_t*>( action -> player );
+    const mage_td_t* td = p -> get_target_data( target );
 
     return ( action -> s_data -> _id == 30455 && fof )
-        || ( p -> get_target_data( target ) -> debuffs.winters_chill -> up() );
+        || ( td -> debuffs.winters_chill -> up() )
+        || ( td -> debuffs.frozen -> up() );
   }
 
   virtual double composite_crit_chance() const override
@@ -3925,6 +3966,16 @@ struct counterspell_t : public mage_spell_t
     triggers_arcane_missiles = false;
   }
 
+  virtual void execute() override
+  {
+    mage_spell_t::execute();
+
+    if ( p() -> legendary.sephuzs_secret )
+    {
+      p() -> buffs.sephuzs_secret -> trigger();
+    }
+  }
+
   virtual bool ready() override
   {
     if ( ! target -> debuffs.casting -> check() )
@@ -3981,6 +4032,11 @@ struct dragons_breath_t : public fire_mage_spell_t
     if ( p() -> talents.alexstraszas_fury -> ok() && s -> chain_target == 0 )
     {
       handle_hot_streak( s );
+    }
+
+    if ( result_is_hit( s -> result ) && s -> target -> is_add() && p() -> legendary.sephuzs_secret )
+    {
+      p() -> buffs.sephuzs_secret -> trigger();
     }
   }
 };
@@ -4720,14 +4776,10 @@ struct frost_nova_t : public mage_spell_t
     triggers_arcane_missiles = true;
   }
 
-  virtual void execute() override
+  virtual void impact( action_state_t* s ) override
   {
-    mage_spell_t::execute();
-
-    if ( p() -> legendary.sephuzs_secret )
-    {
-      p() -> buffs.sephuzs_secret -> trigger();
-    }
+    mage_spell_t::impact( s );
+    trigger_frozen( s );
   }
 };
 
@@ -4747,6 +4799,12 @@ struct ice_time_nova_t : public frost_mage_spell_t
   timespan_t travel_time() const override
   {
     return timespan_t::from_seconds( 10.0 );
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    frost_mage_spell_t::impact( s );
+    trigger_frozen( s );
   }
 };
 
@@ -4963,8 +5021,9 @@ struct glacial_spike_t : public frost_mage_spell_t
     base_dd_max = icicle_damage_sum;
 
     frost_mage_spell_t::impact( s );
-    p() -> buffs.icicles -> expire();
+    trigger_frozen( s );
 
+    p() -> buffs.icicles -> expire();
   }
 };
 
@@ -5174,6 +5233,12 @@ struct ice_nova_t : public frost_mage_spell_t
     double in_mult = 1.0 + p -> talents.ice_nova -> effectN( 1 ).percent();
     base_multiplier *= in_mult;
     base_aoe_multiplier = 1.0 / in_mult;
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    frost_mage_spell_t::impact( s );
+    trigger_frozen( s );
   }
 };
 
@@ -6926,6 +6991,70 @@ void mage_spell_t::trigger_unstable_magic( action_state_t* s )
   }
 }
 
+// Proxy Freeze action ========================================================
+
+struct freeze_t : public action_t
+{
+  pets::water_elemental::freeze_t* action;
+
+  freeze_t( mage_t* p, const std::string& options_str ) :
+    action_t( ACTION_OTHER, "freeze", p ), action( nullptr )
+  {
+    parse_options( options_str );
+
+    may_miss = may_crit = callbacks = false;
+    dual = true;
+    trigger_gcd = timespan_t::zero();
+    ignore_false_positive = true;
+    action_skill = 1;
+  }
+
+  void reset() override
+  {
+    action_t::reset();
+
+    if ( !action )
+    {
+      mage_t* m = debug_cast<mage_t*>( player );
+      action = debug_cast<pets::water_elemental::freeze_t*>( m -> pets.water_elemental -> find_action( "freeze" ) );
+      if ( action )
+      {
+        // Disable autocast on Water Jet.
+        pets::water_elemental::water_jet_t* wj_action
+          = debug_cast<pets::water_elemental::water_jet_t*>( m -> pets.water_elemental -> find_action( "water_jet" ) );
+        if ( wj_action )
+        {
+          wj_action -> autocast = false;
+        }
+      }
+    }
+  }
+
+  void execute() override
+  {
+    assert( action );
+
+    action -> target = target;
+    action -> execute();
+  }
+
+  bool ready() override
+  {
+    mage_t* m = debug_cast<mage_t*>( player );
+    if ( m -> talents.lonely_winter -> ok() )
+    {
+      return false;
+    }
+
+    if ( !action )
+      return false;
+
+    if ( !action -> ready() )
+      return false;
+
+    return action_t::ready();
+  }
+};
 
 // Proxy cast Water Jet Action ================================================
 
@@ -7313,13 +7442,15 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   debuffs.chilled     = new buffs::chilled_t( this );
   debuffs.frost_bomb  = buff_creator_t( *this, "frost_bomb",
                                         mage -> talents.frost_bomb );
+  debuffs.frozen      = buff_creator_t( *this, "frozen" )
+                          .duration( timespan_t::from_seconds( 0.5 ) );
   debuffs.water_jet   = buff_creator_t( *this, "water_jet",
                                         mage -> find_spell( 135029 ) )
                           .quiet( true )
                           .cd( timespan_t::zero() );
-  //TODO: Find spelldata for this!
-  debuffs.winters_chill = buff_creator_t( *this, "winters_chill" )
-                          .duration( timespan_t::from_seconds( 1.0 ) );
+  debuffs.winters_chill = buff_creator_t( *this, "winters_chill",
+                                        mage -> find_spell( 228358 ) );
+
 }
 
 mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
@@ -7438,6 +7569,7 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "blizzard"          ) return new                blizzard_t( this, options_str );
   if ( name == "comet_storm"       ) return new             comet_storm_t( this, options_str );
   if ( name == "flurry"            ) return new                  flurry_t( this, options_str );
+  if ( name == "freeze"            ) return new                  freeze_t( this, options_str );
   if ( name == "frost_bomb"        ) return new              frost_bomb_t( this, options_str );
   if ( name == "frostbolt"         ) return new               frostbolt_t( this, options_str );
   if ( name == "frost_nova"        ) return new              frost_nova_t( this, options_str );
@@ -7802,9 +7934,7 @@ void mage_t::create_buffs()
                                   .add_invalidate( CACHE_SPELL_HASTE );
 
   // Frost
-  //TODO: Remove hardcoded duration once spelldata contains the value
-  buffs.brain_freeze          = buff_creator_t( this, "brain_freeze", find_spell( 190446 ) )
-                                  .duration( timespan_t::from_seconds( 15.0 ) );
+  buffs.brain_freeze          = buff_creator_t( this, "brain_freeze", find_spell( 190446 ) );
   buffs.bone_chilling         = buff_creator_t( this, "bone_chilling", find_spell( 205766 ) )
                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.fingers_of_frost      = buff_creator_t( this, "fingers_of_frost", find_spell( 44544 ) )

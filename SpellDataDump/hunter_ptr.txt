@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build ea39c9d)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build ff6af4d)
 
 Name             : Mend Pet (id=136) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
@@ -589,9 +589,9 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Target: Self(1)
 Description      : Sends you and your pet into a rage, increasing all damage you both deal by $s1% for $d. $?s231548&s217200[
 
-Bestial Wrath's remaining cooldown is reduced by $s3 sec each time you use Dire Frenzy.]$?s231548&!s217200[
+Bestial Wrath's remaining cooldown is reduced by $s3 sec each time you use Dire Frenzy.][]$?s231548&!s217200[
 
-Bestial Wrath's remaining cooldown is reduced by $s3 sec each time you use Dire Beast.]
+Bestial Wrath's remaining cooldown is reduced by $s3 sec each time you use Dire Beast.][]
 Tooltip          : Damage dealt increased by $s1%.
 
 Name             : Intimidation (id=19577) [Spell Family (9)] 
@@ -2025,22 +2025,6 @@ Effects          :
 Description      : The Spirit Beast heals the current friendly target for ${$m1+(($RAP*0.6)*3*1.0504)} plus an additional ${$m2+(($RAP*0.6)*2*1.0504)} over $d.
 Tooltip          : Heals $w2 every $t2 sec for $d.
 
-Name             : Kill Shot (id=90967) [Spell Family (9), Hidden] 
-Class            : Hunter
-School           : Holy
-Range            : 50000 yards
-Duration         : 6 seconds
-Attributes       : .......x x....... ........ ...x.x..   ........ ..x..... ........ ........ 
-                 : ..x..... ........ ........ ........   ........ ........ ....x... ....x... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Hidden (7)
-Effects          :
-#1 (id=94364)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-
 Name             : Froststorm Breath (Exotic Ability) (id=92380) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
 School           : Froststorm
@@ -2252,7 +2236,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1524 | Target: Unknown(138)
 #2 (id=133047)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Radius: 5 yards | Target: Unknown(87)
-Description      : Fires a magical projectile, tethering the enemy and any other enemies within $s2 yards for $d, stunning them for $117526d if they move more than $s2 yards from the arrow.
+Description      : Fires a magical projectile, tethering the enemy and any other enemies within $s2 yards for $d, stunning them for $117526d if they move more than $s2 yards from the arrow. Player targets are stunned for a shorter duration.
 
 Name             : Narrow Escape (id=109298) [Spell Family (9), Passive] 
 Class            : Hunter
@@ -3741,7 +3725,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 12 seconds
 Mechanic         : Bleed
-Affecting spells : Hunter (137014), Survival Hunter (137017), Lacerating Talons (203578)
+Affecting spells : Hunter (137014), Survival Hunter (137017), Lacerating Talons (203578), 
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... .x...... ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3834,10 +3818,10 @@ Attributes       : ........ ........ x....... .....x..   ........ ..x....x .....
                  : .....x.. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
 Effects          :
-#1 (id=271164)   : Apply Aura (6) | Scale% (61)
+#1 (id=271164)   : Apply Aura (6) | Modify Damage Done% (79)
+                   Base Value: 25 | Scaled Value: 25 | SP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Active Pet(5)
+#2 (id=271165)   : Apply Aura (6) | Scale% (61)
                    Base Value: 50 | Scaled Value: 50 | SP Coefficient: 1.00000 | Target: Active Pet(5)
-#2 (id=271165)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 12 | Target: Active Pet(5)
 #3 (id=271166)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Active Pet(5)
 #4 (id=271167)   : Apply Aura (6) | Unknown effect sub type (103)
@@ -5019,7 +5003,7 @@ Effects          :
                    Base Value: 500 | Scaled Value: 5 | Radius: 0 - 5 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
 #5 (id=292035)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 5 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
-Description      : A powerful shot which deals up to ${2*$213678sw2} Physical damage to the target and up to $213678sw2 Physical damage to all enemies between you and the target.  Damage increased against targets with Vulnerable.
+Description      : A powerful shot which deals up to ${2*$213678sw2} Physical damage to the target and up to $213678sw2 Physical damage to all enemies between you and the target. Damage increased against targets with Vulnerable.
 
 Name             : Camouflage (id=199483) [Spell Family (9)] 
 Class            : Hunter
@@ -5136,7 +5120,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=293625)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 8 | Target: Self(1)
-Description      : When your Dire Beasts charge in, they will stomp the ground, dealing ${($76657m1/100+1)*($201754s1)*1.35} Physical damage to all nearby enemies.
+Description      : When your Dire Beasts charge in, they will stomp the ground, dealing ${($76657m1/100+1)*($201754s1)*1.4} Physical damage to all nearby enemies.
 
 Name             : Killer Cobra (id=199532) [Spell Family (9), Passive] 
 Class            : Hunter
@@ -6554,5 +6538,20 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 3 | Target: Self(1)
                    Affected Spells: Aspect of the Eagle (186289), Aspect of the Wild (193530)
 Description      : Flanking strike has double the normal chance to trigger Hunting Companion.
+
+Name             : Hybrid Kinship (id=242155) [Hidden] 
+Class            : Hunter
+School           : Nature
+Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : .......x .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Hidden (7)
+Effects          :
+#1 (id=367717)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+Description      : Learn the secrets of taming Feathermanes.
 
 

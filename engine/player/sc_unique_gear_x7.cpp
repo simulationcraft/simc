@@ -65,6 +65,7 @@ namespace item
   void deteriorated_construct_core( special_effect_t& );
   void eye_of_command( special_effect_t& );
   void bloodstained_hankerchief( special_effect_t& );
+  void majordomos_dinner_bell( special_effect_t& );
 
   // 7.0 Misc
   void darkmoon_deck( special_effect_t& );
@@ -1049,6 +1050,71 @@ void item::toe_knees_promise( special_effect_t& effect )
 {
   effect.execute_action = new flame_gale_driver_t( effect );
 }
+
+// Majordomo's Dinner Bell ==================================================
+
+struct majordomos_dinner_bell_t : proc_spell_t
+{
+  std::vector<stat_buff_t*> buffs;
+
+  majordomos_dinner_bell_t(const special_effect_t& effect) :
+    proc_spell_t("dinner_bell", effect.player, effect.player -> find_spell(230101), effect.item)
+  {
+    // Spell used for tooltips, game uses buffs 230102-230105 based on a script but not all are in DBC spell data
+    const spell_data_t* buff_spell = effect.player->find_spell(230102);
+    const double buff_amount = item_database::apply_combat_rating_multiplier(*effect.item,
+      buff_spell->effectN(1).average(effect.item)) * util::composite_karazhan_empower_multiplier(effect.player);
+
+    buffs =
+    {
+      stat_buff_creator_t(effect.player, "quite_satisfied_crit", buff_spell, effect.item)
+        .add_stat(STAT_CRIT_RATING, buff_amount),
+      stat_buff_creator_t(effect.player, "quite_satisfied_haste", buff_spell, effect.item)
+        .add_stat(STAT_HASTE_RATING, buff_amount),
+      stat_buff_creator_t(effect.player, "quite_satisfied_mastery", buff_spell, effect.item)
+        .add_stat(STAT_MASTERY_RATING, buff_amount),
+      stat_buff_creator_t(effect.player, "quite_satisfied_vers", buff_spell, effect.item)
+        .add_stat(STAT_VERSATILITY_RATING, buff_amount),
+    };
+  }
+
+  void execute() override
+  {
+    // The way this works, despite the tooltip, is that the buff matches your current food buff
+    // If you don't have a food buff, it is random
+    if(player->consumables.food)
+    {
+      const stat_buff_t* food_buff = dynamic_cast<stat_buff_t*>(player->consumables.food);
+      if (food_buff && food_buff->stats.size() > 0)
+      {
+        const stat_e food_stat = food_buff->stats.front().stat;
+        const auto it = range::find_if(buffs, [food_stat](const stat_buff_t* buff) {
+          if (buff->stats.size() > 0)
+            return buff->stats.front().stat == food_stat;
+          else
+            return false;
+        });
+
+        if (it != buffs.end())
+        {
+          (*it)->trigger();
+          return;
+        }
+      }
+    }
+
+    // We didn't find a matching food buff, so pick randomly
+    const int selected_buff = (int)(player->sim->rng().real() * buffs.size());
+    buffs[selected_buff]->trigger();
+  }
+};
+
+void item::majordomos_dinner_bell(special_effect_t& effect)
+{
+  effect.execute_action = new majordomos_dinner_bell_t( effect );
+}
+
+
 // Memento of Angerboda =====================================================
 
 struct memento_callback_t : public dbc_proc_callback_t
@@ -3422,20 +3488,15 @@ void item::convergence_of_fates( special_effect_t& effect )
 {
   switch ( effect.player -> specialization() )
   {
-    // Blizzard could have explained how they nerfed/buffed these rppm values a lot better by just saying what the the end result is.
-    // This is how I (Collision) calculated the following values:
-    // Ret Paladin
-    // with Avenging Wrath: +250% proc rate
-    // with Crusade : +25 % proc rate
-    // When they say +250% proc rate, they mean +250% based on whatever the rppm was on 2017/01/23.
-    // For Ret, this was 1.2. When the hotfixes hit, the rppm for ret went to 3, which is actually the 250% gain for Avenging Wrath, so we don't have to add any special handling for it.
-    // Ex : 1.2 * 2.5 = 3.0
-    // In order to find the value for Crusade, we do 1.2 * 1.25 = 1.5, we do have to add in special handling for that.
-
   case PALADIN_RETRIBUTION:
     if ( player_talent( effect.player, "Crusade" ) )
     {
       effect.ppm_ = -1.5;
+      effect.rppm_modifier_ = 1.0;
+    }
+    else
+    {
+      effect.ppm_ = -4.2; //Blizz fudged up the spelldata for ret, 4.2 is the baseline, not 3. 
       effect.rppm_modifier_ = 1.0;
     }
     break;
@@ -3665,58 +3726,87 @@ struct cinidaria_the_symbiote_damage_t : public attack_t
   }
 };
 
-struct cinidaria_the_symbiote_cb_t : public dbc_proc_callback_t
-{
-  cinidaria_the_symbiote_damage_t* damage;
-  int health_percentage;
-  double damage_multiplier;
-
-  cinidaria_the_symbiote_cb_t( const special_effect_t& effect ) :
-    dbc_proc_callback_t( effect.player, effect ),
-    damage( new cinidaria_the_symbiote_damage_t( effect.player ) )
-  {
-    damage_multiplier = effect.driver()->effectN(1).percent();
-    health_percentage = effect.driver()->effectN(2).base_value();
-  }
-
-  void trigger( action_t* a, void* call_data ) override
-  {
-    auto state = reinterpret_cast<action_state_t*>( call_data );
-    if ( state -> target -> health_percentage() < health_percentage )
-    {
-      return;
-    }
-
-    if ( state -> result_amount <= 0 )
-    {
-      return;
-    }
-
-    // Ensure this is an attack
-    if ( state -> action -> type != ACTION_SPELL && state -> action -> type != ACTION_ATTACK )
-    {
-      return;
-    }
-
-    dbc_proc_callback_t::trigger( a, call_data );
-  }
-
-  void execute( action_t* /* a */, action_state_t* state ) override
-  {
-    auto amount = state -> result_amount * damage_multiplier;
-    damage -> target = state -> target;
-    damage -> base_dd_min = damage -> base_dd_max = amount;
-    damage -> execute();
-  }
-};
-
 struct cinidaria_the_symbiote_t : public class_scoped_callback_t
 {
   cinidaria_the_symbiote_t() : class_scoped_callback_t( { DEMON_HUNTER, DRUID, MONK, ROGUE } )
   { }
 
+  // Cinidaria needs special handling on the modeling. Since it is allowed to proc from nearly any
+  // damage, we need to circumvent the normal "special effect" system in Simulationcraft. Instead,
+  // hook Cinidaria into the outgoing damage assessor pipeline, since all outgoing damage resolution
+  // of a source actor is done through it.
+  //
+  // NOTE NOTE NOTE: This also requires that if there is some (direct or periodic) damage that is
+  // not allowed to generate Cinidaria damage, the spell id of such spells is listed below in the
+  // "spell_blacklist" map.
+  //
   void initialize( special_effect_t& effect ) override
-  { new cinidaria_the_symbiote_cb_t( effect ); }
+  {
+    // Vector of blacklisted spell ids that cannot proc Cinidaria.
+    const std::unordered_map<unsigned, bool> spell_blacklist = {
+      { 207694, true }, // Symbiote Strike (Cinidaria itself)
+      { 191259, true }, // Mark of the Hidden Satyr
+      { 191380, true }, // Mark of the Distant Army
+      { 220893, true }, // Soul Rip (Subtlety Rogue Akaari pet)
+    };
+
+    // Health percentage threshold and damage multiplier
+    const double threshold = effect.driver() -> effectN( 2 ).base_value();
+    const double multiplier = effect.driver() -> effectN( 1 ).percent();
+
+    // Damage spell
+    const auto spell = new cinidaria_the_symbiote_damage_t( effect.player );
+
+    // Install an outgoing damage assessor that triggers Cinidaria after the target damage has been
+    // resolved. This ensures most of the esoteric mitigation mechanisms that the sim might have are
+    // also resolved, and that state -> result_amount will hold the "final actual damage" of the
+    // ability.
+    effect.player -> assessor_out_damage.add( assessor::TARGET_DAMAGE + 1,
+      [ spell_blacklist, threshold, multiplier, spell ]( dmg_e, action_state_t* state )
+      {
+        const auto source_action = state -> action;
+        const auto target = state -> target;
+
+        // Must be a reasonably valid action (a harmful spell or attack)
+        if ( ! source_action -> harmful ||
+             ( source_action -> type != ACTION_SPELL && source_action -> type != ACTION_ATTACK ) )
+        {
+          return assessor::CONTINUE;
+        }
+
+        // Must do damage
+        if ( state -> result_amount == 0 )
+        {
+          return assessor::CONTINUE;
+        }
+
+        // Target must be equal or above threshold health%
+        if ( target -> health_percentage() < threshold )
+        {
+          return assessor::CONTINUE;
+        }
+
+        // Spell cannot be blacklisted
+        if ( spell_blacklist.find( source_action -> id ) != spell_blacklist.end() )
+        {
+          return assessor::CONTINUE;
+        }
+
+        if ( source_action -> sim -> debug )
+        {
+          source_action -> sim -> out_debug.printf( "%s cinidaria_the_symbiote proc from %s",
+            spell -> player -> name(), source_action -> name() );
+        }
+
+        // All ok, trigger the damage
+        spell -> target = target;
+        spell -> base_dd_min = spell -> base_dd_max = state -> result_amount * multiplier;
+        spell -> execute();
+
+        return assessor::CONTINUE;
+      }
+    );
+  }
 };
 
 // Combined legion potion action ============================================
@@ -4371,6 +4461,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 230236, item::deteriorated_construct_core    );
   register_special_effect( 230150, item::eye_of_command                 );
   register_special_effect( 230011, item::bloodstained_hankerchief       );
+  register_special_effect( 230101, item::majordomos_dinner_bell         );
 
   /* Legion 7.0 Raid */
   // register_special_effect( 221786, item::bloodthirsty_instinct  );
