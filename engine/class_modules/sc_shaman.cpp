@@ -6951,7 +6951,7 @@ void shaman_t::init_action_list_elemental()
   }
 
   // "Default" APL controlling logic flow to specialized sub-APLs
-  def -> add_action( "run_action_list,name=default_ptr,if=ptr" );
+  def -> add_action( "run_action_list,name=ptr_default,if=ptr" );
   def -> add_talent( this, "Totem Mastery", "if=buff.resonance_totem.remains<2" );
   def -> add_action( this, "Fire Elemental" );
   def -> add_talent( this, "Storm Elemental" );
