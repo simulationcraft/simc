@@ -8847,6 +8847,14 @@ public:
     p( player )
   { }
 
+  virtual void html_customsection(report::sc_html_stream& os) override
+  {
+     if (p.specialization() == DRUID_FERAL)
+     {
+        feral_snapshot_table(os);
+     }
+  }
+
   void feral_snapshot_table( report::sc_html_stream& os )
   {
     // Write header
