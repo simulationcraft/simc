@@ -5885,7 +5885,7 @@ struct phoenixs_flames_t : public fire_mage_spell_t
           -> adjust( -1000 * pyrotex_ignition_cloth_reduction );
     }
 
-    if ( p() -> artifact.warmth_of_the_phoenix.rank() )
+    if ( p() -> artifact.warmth_of_the_phoenix.rank() && rng().roll( p() -> artifact.warmth_of_the_phoenix.data().proc_chance() ) )
     {
       p() -> buffs.warmth_of_the_phoenix -> trigger();
     }
