@@ -2624,6 +2624,15 @@ struct power_infusion_t final : public priest_spell_t
   {
     priest_spell_t::execute();
     priest.buffs.power_infusion->trigger();
+    if ( sim->debug )
+    {
+      std::string out = std::string(priest.name()) 
+        + " used Power Infusion with " 
+        + std::to_string(priest.buffs.insanity_drain_stacks->value()) 
+        + " Insanity drain stacks.";
+      priest.sim->out_debug << out;
+    }
+    printf("\n%d\n", (int)(priest.buffs.insanity_drain_stacks)->value() );
   }
 };
 
