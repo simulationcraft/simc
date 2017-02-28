@@ -2632,7 +2632,6 @@ struct power_infusion_t final : public priest_spell_t
         + " Insanity drain stacks.";
       priest.sim->out_debug << out;
     }
-    printf("\n%d\n", (int)(priest.buffs.insanity_drain_stacks)->value() );
   }
 };
 
