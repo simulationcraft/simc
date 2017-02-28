@@ -731,7 +731,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
     s << " | AP Coefficient: " << tmp_buffer;
   }
 
-  if ( e -> chain_multiplier() != 0 && e -> chain_multiplier() != 1.0 )
+  if ( e -> chain_target() != 0 )
     s << " | Chain Multiplier: " << e -> chain_multiplier();
 
   if ( e -> misc_value1() != 0 || e -> type() == E_ENERGIZE )
