@@ -4810,8 +4810,16 @@ struct cancel_autoattack_t : public action_t
     action_t( ACTION_OTHER, "cancel_autoattack", rogue_ ),
     rogue( rogue_ )
   {
+    parse_options( options_str );
+
     trigger_gcd = timespan_t::zero();
   }
+
+  result_e calculate_result( action_state_t* ) const override
+  { return RESULT_HIT; }
+
+  block_result_e calculate_block_result( action_state_t* ) const override
+  { return BLOCK_RESULT_UNBLOCKED; }
 
   void execute() override
   {
@@ -4825,10 +4833,15 @@ struct cancel_autoattack_t : public action_t
       event_t::cancel( rogue -> off_hand_attack -> execute_event );
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
-    return rogue -> main_hand_attack && rogue -> main_hand_attack -> execute_event ||
-           rogue -> off_hand_attack && rogue -> off_hand_attack -> execute_event;
+    if ( ( rogue -> main_hand_attack && rogue -> main_hand_attack -> execute_event ) ||
+         ( rogue -> off_hand_attack && rogue -> off_hand_attack -> execute_event ) )
+    {
+      return action_t::ready();
+    }
+
+    return false;
   }
 };
 
