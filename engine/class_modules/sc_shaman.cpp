@@ -233,10 +233,11 @@ public:
   struct pets_t
   {
     pet_t* pet_fire_elemental;
-    pet_t* guardian_fire_elemental;
-    pet_t* pet_storm_elemental;
-    pet_t* guardian_storm_elemental;
     pet_t* pet_earth_elemental;
+    pet_t* pet_storm_elemental;
+
+    std::array<pet_t*, 2> guardian_fire_elemental;
+    std::array<pet_t*, 2> guardian_storm_elemental;
     pet_t* guardian_earth_elemental;
 
     pet_t* guardian_greater_lightning_elemental;
@@ -1633,7 +1634,27 @@ struct shaman_heal_t : public shaman_spell_base_t<heal_t>
 
 namespace pet
 {
+// Simple helper to summon n (default 1) sleeping pet(s) from a container
+template <typename T>
+void summon( const T& container, const timespan_t& duration, size_t n = 1 )
+{
+  size_t summoned = 0;
 
+  for ( size_t i = 0, end = container.size(); i < end; ++i )
+  {
+    auto ptr = container[ i ];
+    if ( ! ptr -> is_sleeping() )
+    {
+      continue;
+    }
+
+    ptr -> summon( duration );
+    if ( ++summoned == n )
+    {
+      break;
+    }
+  }
+}
 // ==========================================================================
 // Base Shaman Pet
 // ==========================================================================
@@ -3581,29 +3602,28 @@ struct crash_lightning_t : public shaman_attack_t
 
 struct earth_elemental_t : public shaman_spell_t
 {
-    const spell_data_t* base_spell;
+  const spell_data_t* base_spell;
 
-    earth_elemental_t(shaman_t* player, const std::string& options_str) :
-        shaman_spell_t("earth_elemental", player, player -> find_specialization_spell("Earth Elemental"), options_str),
-        base_spell(player -> find_spell(198103))
+  earth_elemental_t( shaman_t* player, const std::string& options_str ) :
+    shaman_spell_t( "earth_elemental", player, player -> find_specialization_spell( "Earth Elemental" ), options_str ),
+    base_spell( player -> find_spell( 198103 ) )
+  {
+    harmful = may_crit = false;
+  }
+
+  void execute() override
+  {
+    shaman_spell_t::execute();
+
+    if ( p() -> talent.primal_elementalist -> ok() )
     {
-        harmful = may_crit = false;
+      p() -> pet.pet_earth_elemental -> summon( base_spell -> duration() );
     }
-
-    void execute() override
+    else
     {
-        shaman_spell_t::execute();
-
-        if (p()->talent.primal_elementalist->ok())
-        {
-            p()->pet.pet_earth_elemental->summon(base_spell->duration());
-        }
-        else
-        {
-            p()->pet.guardian_earth_elemental->summon(base_spell->duration());
-        }
+      p() -> pet.guardian_earth_elemental -> summon( base_spell -> duration() );
     }
-
+  }
 };
 
 struct fire_elemental_t : public shaman_spell_t
@@ -3621,13 +3641,15 @@ struct fire_elemental_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    if ( p() -> talent.primal_elementalist -> ok() )
+    if ( p() -> talent.primal_elementalist -> ok() &&
+         p() -> pet.pet_fire_elemental -> is_sleeping() )
     {
       p() -> pet.pet_fire_elemental -> summon( base_spell -> duration() );
     }
-    else
+    else if ( ! p() -> talent.primal_elementalist -> ok() )
     {
-      p() -> pet.guardian_fire_elemental -> summon( base_spell -> duration() );
+      // Summon first non sleeping Fire Elemental
+      pet::summon( p() -> pet.guardian_fire_elemental, base_spell -> duration() );
     }
   }
 
@@ -4612,9 +4634,8 @@ struct feral_spirit_spell_t : public shaman_spell_t
     }
     else
     {
-      range::for_each( p() -> pet.spirit_wolves, [ this ]( pet_t* p ) {
-        p -> summon( summon_duration() );
-      } );
+      // Summon all Spirit Wolves
+      pet::summon( p() -> pet.spirit_wolves, summon_duration(), p() -> pet.spirit_wolves.size() );
       p() -> buff.feral_spirit -> trigger();
     }
   }
@@ -4781,13 +4802,15 @@ struct storm_elemental_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    if ( p() -> talent.primal_elementalist -> ok() )
+    if ( p() -> talent.primal_elementalist -> ok() &&
+         p() -> pet.pet_storm_elemental -> is_sleeping() )
     {
       p() -> pet.pet_storm_elemental -> summon( summon_spell -> duration() );
     }
-    else
+    else if ( ! p() -> talent.primal_elementalist -> ok() )
     {
-      p() -> pet.guardian_storm_elemental -> summon( summon_spell -> duration() );
+      // Summon first non sleeping Fire Elemental
+      pet::summon( p() -> pet.guardian_storm_elemental, summon_spell -> duration() );
     }
   }
 };
@@ -5859,7 +5882,10 @@ void shaman_t::create_pets()
   {
     if ( find_action( "fire_elemental" ) )
     {
-      pet.guardian_fire_elemental = create_pet( "greater_fire_elemental" );
+      for ( size_t i = 0; i < pet.guardian_fire_elemental.size(); ++i )
+      {
+        pet.guardian_fire_elemental[ i ] = new pet::fire_elemental_t( this, false );
+      }
     }
 
     if ( find_action( "earth_elemental" ) )
@@ -5869,7 +5895,10 @@ void shaman_t::create_pets()
 
     if ( talent.storm_elemental -> ok() && find_action( "storm_elemental" ) )
     {
-      pet.guardian_storm_elemental = create_pet( "greater_storm_elemental" );
+      for ( size_t i = 0; i < pet.guardian_storm_elemental.size(); ++i )
+      {
+        pet.guardian_storm_elemental[ i ] = new pet::storm_elemental_t( this, false );
+      }
     }
   }
 
@@ -6264,10 +6293,30 @@ void shaman_t::init_scaling()
 
 bool shaman_t::active_elemental_pet() const
 {
-  return ( pet.guardian_fire_elemental && ! pet.guardian_fire_elemental -> is_sleeping() ) ||
-         ( pet.pet_fire_elemental && ! pet.pet_fire_elemental -> is_sleeping() ) ||
-         ( pet.guardian_storm_elemental && ! pet.guardian_storm_elemental -> is_sleeping() ) ||
-         ( pet.pet_storm_elemental && ! pet.pet_storm_elemental -> is_sleeping() );
+  if ( talent.primal_elementalist -> ok() )
+  {
+    return ( pet.pet_fire_elemental && ! pet.pet_fire_elemental -> is_sleeping() ) ||
+      ( pet.pet_storm_elemental && ! pet.pet_storm_elemental -> is_sleeping() );
+  }
+  else
+  {
+    if ( talent.storm_elemental -> ok() )
+    {
+      auto it = range::find_if( pet.guardian_storm_elemental, []( const pet_t* p ) {
+        return p && ! p -> is_sleeping();
+      } );
+
+      return it != pet.guardian_storm_elemental.end();
+    }
+    else
+    {
+      auto it = range::find_if( pet.guardian_fire_elemental, []( const pet_t* p ) {
+        return p && ! p -> is_sleeping();
+      } );
+
+      return it != pet.guardian_fire_elemental.end();
+    }
+  }
 }
 
 // ==========================================================================
