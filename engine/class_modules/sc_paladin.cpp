@@ -2674,15 +2674,17 @@ struct holy_wrath_t : public paladin_spell_t
       background = true;
   }
 
-  virtual void impact( action_state_t* s ) override
+  virtual double calculate_direct_amount( action_state_t* state ) const
   {
     double base_amount = 0;
     if ( p() -> fixed_holy_wrath_health_pct > 0 )
       base_amount = p() -> max_health() * ( 100 - p() -> fixed_holy_wrath_health_pct ) / 100.0;
     else
       base_amount = p() -> max_health() - p() -> current_health();
-    s -> result_amount = base_amount * data().effectN( 3 ).percent();
-    paladin_spell_t::impact( s );
+    double amount = base_amount * data().effectN( 3 ).percent();
+
+    state -> result_total = amount;
+    return amount;
   }
 
   bool ready() override

@@ -2522,7 +2522,11 @@ void dire_critter_t::init_spells()
     active.stomp = new dire_beast_stomp_t( *this );
 
   if ( o() -> artifacts.titans_thunder.rank() )
+  {
     active.titans_thunder = new actions::titans_thunder_t( this );
+    if ( o() -> pets.dire_beasts[ 0 ] )
+      active.titans_thunder -> stats = o() -> pets.dire_beasts[ 0 ] -> get_stats( "titans_thunder" );
+  }
 }
 
 void hati_t::init_spells() 
@@ -6278,16 +6282,18 @@ void hunter_t::apl_bm()
   default_list -> add_talent( this, "A Murder of Crows" );
   default_list -> add_talent( this, "Stampede", "if=buff.bloodlust.up|buff.bestial_wrath.up|cooldown.bestial_wrath.remains<=2|target.time_to_die<=14" );
   default_list -> add_action( this, "Dire Beast", "if=cooldown.bestial_wrath.remains>3" );
-  default_list -> add_talent( this, "Dire Frenzy", "if=cooldown.bestial_wrath.remains>6|target.time_to_die<9" );
+  default_list -> add_talent( this, "Dire Frenzy", "if=(cooldown.bestial_wrath.remains>6&(!equipped.the_mantle_of_command|pet.cat.buff.dire_frenzy.remains<=gcd.max*1.2))|"
+                                                   "(charges>=2&focus.deficit>=25+talent.dire_stable.enabled*12)|"
+                                                   "target.time_to_die<9" );
   default_list -> add_action( this, "Aspect of the Wild", "if=buff.bestial_wrath.up|target.time_to_die<12" );
   default_list -> add_talent( this, "Barrage", "if=spell_targets.barrage>1" );
-  default_list -> add_action( this, "Titan's Thunder", "if=talent.dire_frenzy.enabled|cooldown.dire_beast.remains>=3|buff.bestial_wrath.up&pet.dire_beast.active" );
+  default_list -> add_action( this, "Titan's Thunder", "if=talent.dire_frenzy.enabled|cooldown.dire_beast.remains>=3|(buff.bestial_wrath.up&pet.dire_beast.active)" );
   default_list -> add_action( this, "Bestial Wrath" );
-  default_list -> add_action( this, "Multi-Shot", "if=spell_targets>4&(pet.buff.beast_cleave.remains<gcd.max|pet.buff.beast_cleave.down)" );
+  default_list -> add_action( this, "Multi-Shot", "if=spell_targets>4&(pet.cat.buff.beast_cleave.remains<gcd.max|pet.cat.buff.beast_cleave.down)" );
   default_list -> add_action( this, "Kill Command" );
-  default_list -> add_action( this, "Multi-Shot", "if=spell_targets>1&(pet.buff.beast_cleave.remains<gcd.max*2|pet.buff.beast_cleave.down)" );
+  default_list -> add_action( this, "Multi-Shot", "if=spell_targets>1&(pet.cat.buff.beast_cleave.remains<gcd.max*2|pet.cat.buff.beast_cleave.down)" );
   default_list -> add_talent( this, "Chimaera Shot", "if=focus<90" );
-  default_list -> add_action( this, "Cobra Shot", "if=cooldown.kill_command.remains>focus.time_to_max&cooldown.bestial_wrath.remains>focus.time_to_max|"
+  default_list -> add_action( this, "Cobra Shot", "if=(cooldown.kill_command.remains>focus.time_to_max&cooldown.bestial_wrath.remains>focus.time_to_max)|"
                                                   "(buff.bestial_wrath.up&focus.regen*cooldown.kill_command.remains>30)|"
                                                   "target.time_to_die<cooldown.kill_command.remains" );
 }
@@ -6431,6 +6437,8 @@ void hunter_t::apl_surv()
   // Way of the Mok'Nathal APL
   moknathal -> add_action( this, "Raptor Strike", "if=buff.moknathal_tactics.stack<=1" );
   moknathal -> add_action( this, "Raptor Strike", "if=buff.moknathal_tactics.remains<gcd" );
+  moknathal -> add_action( this, "Fury of the Eagle", "if=buff.mongoose_fury.stack>=4&buff.mongoose_fury.remains<gcd" );
+  moknathal -> add_action( this, "Raptor Strike", "if=buff.mongoose_fury.stack>=4&buff.mongoose_fury.remains>gcd&buff.moknathal_tactics.stack>=3&buff.moknathal_tactics.remains<4&cooldown.fury_of_the_eagle.remains<buff.mongoose_fury.remains" );
   moknathal -> add_talent( this, "Snake Hunter", "if=cooldown.mongoose_bite.charges<=0&buff.mongoose_fury.remains>3*gcd&time>15" );
   moknathal -> add_talent( this, "Spitting Cobra", "if=buff.mongoose_fury.duration>=gcd&cooldown.mongoose_bite.charges>=0&buff.mongoose_fury.stack<4&buff.moknathal_tactics.stack=3" );
   moknathal -> add_talent( this, "Steel Trap", "if=buff.mongoose_fury.duration>=gcd&buff.mongoose_fury.stack<1" );
@@ -6448,6 +6456,7 @@ void hunter_t::apl_surv()
   moknathal -> add_action( this, "Raptor Strike", "if=buff.moknathal_tactics.remains<4&buff.mongoose_fury.stack=6&buff.mongoose_fury.remains>cooldown.fury_of_the_eagle.remains&cooldown.fury_of_the_eagle.remains<=5" );
   moknathal -> add_action( this, "Fury of the Eagle", "if=buff.moknathal_tactics.remains>4&buff.mongoose_fury.stack=6&cooldown.mongoose_bite.charges<=1" );
   moknathal -> add_action( this, "Mongoose Bite", "if=buff.aspect_of_the_eagle.up&buff.mongoose_fury.up&buff.moknathal_tactics.stack>=4" );
+  moknathal -> add_action( this, "Raptor Strike", "if=buff.mongoose_fury.up&buff.mongoose_fury.remains<=3*gcd&buff.moknathal_tactics.remains<4+gcd&cooldown.fury_of_the_eagle.remains<gcd" );
   moknathal -> add_action( this, "Fury of the Eagle", "if=buff.mongoose_fury.up&buff.mongoose_fury.remains<=2*gcd" );
   moknathal -> add_action( this, "Aspect of the Eagle", "if=buff.mongoose_fury.stack>4&time<15" );
   moknathal -> add_action( this, "Aspect of the Eagle", "if=buff.mongoose_fury.stack>1&time>15" );
