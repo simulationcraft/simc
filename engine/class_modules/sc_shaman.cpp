@@ -2134,7 +2134,13 @@ struct lightning_wolf_t : public doom_wolf_base_t
   {
     thunder_bite_t( lightning_wolf_t* player ) :
       super( player, "thunder_bite", player -> find_spell( 198485 ) )
-    { background = true; chain_multiplier = data().effectN( 1 ).chain_multiplier(); }
+    {
+      background = true;
+      if ( data().effectN( 1 ).chain_multiplier() != 0 )
+      {
+        chain_multiplier = data().effectN( 1 ).chain_multiplier();
+      }
+    }
   };
 
   buff_t* crackling_surge;
@@ -2452,7 +2458,10 @@ struct greater_lightning_elemental_t : public shaman_pet_t
     chain_lightning_t( greater_lightning_elemental_t* p ) :
       super( p, "chain_lightning", p -> find_spell( 191732 ) )
     {
-      chain_multiplier = data().effectN( 1 ).chain_multiplier();
+      if ( data().effectN( 1 ).chain_multiplier() != 0 )
+      {
+        chain_multiplier = data().effectN( 1 ).chain_multiplier();
+      }
       ability_lag         = timespan_t::from_millis( 300 );
       ability_lag_stddev  = timespan_t::from_millis( 25 );
     }
@@ -3798,7 +3807,10 @@ struct chained_overload_base_t: public elemental_overload_spell_t
     elemental_overload_spell_t( p, name, spell )
   {
     base_multiplier *= 1.0 + p -> artifact.electric_discharge.percent();
-    chain_multiplier = data().effectN( 1 ).chain_multiplier();
+    if ( data().effectN( 1 ).chain_multiplier() != 0 )
+    {
+      chain_multiplier = data().effectN( 1 ).chain_multiplier();
+    }
     energize_type = ENERGIZE_NONE; // disable resource generation from spell data.
     maelstrom_gain = mg;
     radius = 10.0;
@@ -3855,7 +3867,10 @@ struct chained_base_t : public shaman_spell_t
     shaman_spell_t( name, player, spell, options_str )
   {
     base_multiplier *= 1.0 + player -> artifact.electric_discharge.percent();
-    chain_multiplier = data().effectN( 1 ).chain_multiplier();
+    if ( data().effectN( 1 ).chain_multiplier() != 0 )
+    {
+      chain_multiplier = data().effectN( 1 ).chain_multiplier();
+    }
     radius = 10.0;
 
     maelstrom_gain = mg;
