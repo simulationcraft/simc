@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build ff6af4d)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build 3d249f6)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -681,7 +681,7 @@ Resource         : 25 Runic Power
 Spell Level      : 55
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Death Knight (137005), Biting Cold (166057), Chill of the Grave (205209), Runefrost (238043)
+Affecting spells : Death Knight (137005), Biting Cold (166057), Chill of the Grave (205209)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -805,7 +805,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=42113)    : Normalized Weapon Damage (121)
-                   Base Value: 1 | Scaled Value: 1 | Chain Multiplier: 5 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
 #2 (id=42114)    : Weapon Damage% (31)
                    Base Value: 258 | Scaled Value: 2.58 | Target: Enemy(6)
 #3 (id=287354)   : Dummy (3)
@@ -1210,7 +1210,7 @@ Resource         : -10 Runic Power
 Spell Level      : 55
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Death Knight (137005), Unholy Death Knight (137007), Death and Decay (188290), Scourge of Worlds (191748), Necrosis (216974), Lash of Shadows (238044)
+Affecting spells : Death Knight (137005), Unholy Death Knight (137007), Death and Decay (188290), Scourge of Worlds (191748), Necrosis (216974)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1659,7 +1659,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
                  : Cannot dodge/parry/block (21)
 Effects          :
 #1 (id=60359)    : Normalized Weapon Damage (121)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.2) | Chain Multiplier: 5 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 0 (avg=0.2) | Target: Enemy(6)
 #2 (id=60360)    : Weapon Damage% (31)
                    Base Value: 250 | Scaled Value: 2.5 | Target: Enemy(6)
 Description      : $@spelldesc49998
@@ -1668,7 +1668,7 @@ Name             : Frost Strike Off-Hand (id=66196) [Scaling Spell (1), Spell Fa
 Class            : Death Knight
 School           : Frost
 Range            : 100 yards
-Affecting spells : Biting Cold (166057), Ambidexterity (189092), Chill of the Grave (205209), Runefrost (238043)
+Affecting spells : Biting Cold (166057), Ambidexterity (189092), Chill of the Grave (205209)
 Triggered by     : Frost Strike (49143)
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ..x..... x.....x. 
@@ -1766,7 +1766,7 @@ School           : Shadow
 Spell Level      : 80
 Range            : 100 yards
 Proc Chance      : 101%
-Affecting spells : Unholy Death Knight (137007), Death and Decay (188290), Scourge of Worlds (191748), Necrosis (216974), Lash of Shadows (238044)
+Affecting spells : Unholy Death Knight (137007), Death and Decay (188290), Scourge of Worlds (191748), Necrosis (216974)
 Triggered by     : Scourge Strike (55090)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ..x..... ......x. 
@@ -3701,7 +3701,7 @@ School           : Shadow
 Spell Level      : 57
 Range            : 50000 yards
 Proc Chance      : 101%
-Affecting spells : Unholy Death Knight (137007), Bursting Sores (207264)
+Affecting spells : Unholy Death Knight (137007), Bursting Sores (207264), Lash of Shadows (238044)
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : x.x..... ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ........ .......x .......x ........   ........ ........ ........ ........ 
@@ -3980,11 +3980,11 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=286507)   : Normalized Weapon Damage (121)
-                   Base Value: 1 | Scaled Value: 1 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=286508)   : Weapon Damage% (31)
-                   Base Value: 315 | Scaled Value: 3.15 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 315 | Scaled Value: 3.15 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy(6)
 #3 (id=286519)   : Dummy (3)
-                   Base Value: 3 | Scaled Value: 3 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 3 | Scaled Value: 3 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy(6)
 Description      : Smash the target, dealing $sw2 Physical damage and generating $s3 charges of Bone Shield.
 
 |Tinterface\icons\ability_deathknight_boneshield.blp:24|t |cFFFFFFFFBone Shield|r
@@ -4568,15 +4568,15 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=306039)   : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0 (avg=0.756) | Chain Targets: 2 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 (avg=0.756) | Chain Multiplier: 0 | Chain Targets: 2 | Target: Enemy(6)
 #2 (id=306040)   : Weapon Damage% (31)
-                   Base Value: 185 | Scaled Value: 1.85 | Chain Targets: 2 | Target: Enemy(6)
+                   Base Value: 185 | Scaled Value: 1.85 | Chain Multiplier: 0 | Chain Targets: 2 | Target: Enemy(6)
 #3 (id=306041)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 #4 (id=312174)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3
 #5 (id=321496)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88) | Chain Targets: 2 | Target: Enemy(6)
+                   Base Value: -50 | Scaled Value: -50 | Chain Multiplier: 0 | Mechanic: Unknown(88) | Chain Targets: 2 | Target: Enemy(6)
 Description      : Instantly strike the target and 1 other nearby enemy, causing $sw2 Physical damage, and reducing enemies' movement speed by $s5% for $d.
 
 |cFFFFFFFFGenerates $?s221536[${$s3+$221536s1}][$s3] bonus Runic Power$?s221536[, plus ${$210738s1/10} Runic Power per additional enemy struck][].|r
@@ -5291,7 +5291,7 @@ Resource         : -10 Runic Power
 Spell Level      : 1
 Range            : 30 yards
 GCD              : 1.5 seconds
-Affecting spells : Death Knight (137005), Unholy Death Knight (137007), Death and Decay (188290), Scourge of Worlds (191748), Necrosis (216974), Lash of Shadows (238044)
+Affecting spells : Death Knight (137005), Unholy Death Knight (137007), Death and Decay (188290), Scourge of Worlds (191748), Necrosis (216974)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6195,7 +6195,7 @@ Name             : Frost Strike (id=222026) [Scaling Spell (1), Spell Family (15
 Class            : Death Knight
 School           : Frost
 Range            : 100 yards
-Affecting spells : Biting Cold (166057), Chill of the Grave (205209), Runefrost (238043)
+Affecting spells : Biting Cold (166057), Chill of the Grave (205209)
 Triggered by     : Frost Strike (49143)
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ..x..... ......x. 

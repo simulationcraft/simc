@@ -4,7 +4,7 @@
 #ifndef ptr_MAX_CLASS
 #define ptr_MAX_CLASS (13)
 #endif
-// Class based active abilities, wow build 23623
+// Class based active abilities, wow build 23657
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
@@ -1165,7 +1165,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
 };
 #define PTR_TREE_SPECIALIZATION_SIZE (36)
 
-// Talent tree specialization abilities, wow build 23623
+// Talent tree specialization abilities, wow build 23657
 static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -2266,7 +2266,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
 };
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 23623
+// Class mastery abilities, wow build 23657
 static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2505,7 +2505,7 @@ static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS]
 #define ptr_MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 23623
+// Racial abilities, wow build 23657
 static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -3243,7 +3243,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
 };
 #define PTR_SET_BONUS_DATA_SIZE (616)
 
-// Set bonus data, wow build 23623
+// Set bonus data, wow build 23657
 static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,   71, 165636, { 127055, 127081, 127092, 127103, 127114,  0 } },
@@ -3824,12 +3824,12 @@ static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   { "Radiant Lightbringer Armor"                 ,     "tier20",     13,  1307,   20,   4,   2,   65, 242262, { 147157, 147158, 147159, 147160, 147161, 147162,  0 } },
   { "Radiant Lightbringer Armor"                 ,     "tier20",     13,  1307,   20,   4,   2,   66, 242264, { 147157, 147158, 147159, 147160, 147161, 147162,  0 } },
   { "Radiant Lightbringer Armor"                 ,     "tier20",     13,  1307,   20,   4,   2,   70, 242267, { 147157, 147158, 147159, 147160, 147161, 147162,  0 } },
-  { "Giantbane Armor"                            ,     "tier20",     13,  1304,   20,   2,   3,  253, 242239, { 147139, 147140, 147141, 147142, 147143, 147144,  0 } },
-  { "Giantbane Armor"                            ,     "tier20",     13,  1304,   20,   2,   3,  254, 242241, { 147139, 147140, 147141, 147142, 147143, 147144,  0 } },
-  { "Giantbane Armor"                            ,     "tier20",     13,  1304,   20,   2,   3,  255, 242244, { 147139, 147140, 147141, 147142, 147143, 147144,  0 } },
-  { "Giantbane Armor"                            ,     "tier20",     13,  1304,   20,   4,   3,  253, 242240, { 147139, 147140, 147141, 147142, 147143, 147144,  0 } },
-  { "Giantbane Armor"                            ,     "tier20",     13,  1304,   20,   4,   3,  254, 242242, { 147139, 147140, 147141, 147142, 147143, 147144,  0 } },
-  { "Giantbane Armor"                            ,     "tier20",     13,  1304,   20,   4,   3,  255, 242245, { 147139, 147140, 147141, 147142, 147143, 147144,  0 } },
+  { "Wildstalker Armor"                          ,     "tier20",     13,  1304,   20,   2,   3,  253, 242239, { 147139, 147140, 147141, 147142, 147143, 147144,  0 } },
+  { "Wildstalker Armor"                          ,     "tier20",     13,  1304,   20,   2,   3,  254, 242241, { 147139, 147140, 147141, 147142, 147143, 147144,  0 } },
+  { "Wildstalker Armor"                          ,     "tier20",     13,  1304,   20,   2,   3,  255, 242244, { 147139, 147140, 147141, 147142, 147143, 147144,  0 } },
+  { "Wildstalker Armor"                          ,     "tier20",     13,  1304,   20,   4,   3,  253, 242240, { 147139, 147140, 147141, 147142, 147143, 147144,  0 } },
+  { "Wildstalker Armor"                          ,     "tier20",     13,  1304,   20,   4,   3,  254, 242242, { 147139, 147140, 147141, 147142, 147143, 147144,  0 } },
+  { "Wildstalker Armor"                          ,     "tier20",     13,  1304,   20,   4,   3,  255, 242245, { 147139, 147140, 147141, 147142, 147143, 147144,  0 } },
   { "Fanged Slayer's Armor"                      ,     "tier20",     13,  1309,   20,   2,   4,  259, 242274, { 147169, 147170, 147171, 147172, 147173, 147174,  0 } },
   { "Fanged Slayer's Armor"                      ,     "tier20",     13,  1309,   20,   2,   4,  260, 242276, { 147169, 147170, 147171, 147172, 147173, 147174,  0 } },
   { "Fanged Slayer's Armor"                      ,     "tier20",     13,  1309,   20,   2,   4,  261, 242279, { 147169, 147170, 147171, 147172, 147173, 147174,  0 } },
@@ -3889,7 +3889,7 @@ static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
 };
 #define PTR_RPPMMOD_SIZE (498)
 
-// 498 RPPM Modifiers, wow build level 23623
+// 498 RPPM Modifiers, wow build level 23657
 static struct rppm_modifier_t __ptr_rppmmodifier_data[] = {
   {  45054,    4,  1,  1.0000 },
   {  49530,    1,  1,  1.0000 },
@@ -4393,7 +4393,7 @@ static struct rppm_modifier_t __ptr_rppmmodifier_data[] = {
 };
 #define PTR_ARTIFACT_SIZE (41)
 
-// Artifact base data, wow build 23623
+// Artifact base data, wow build 23657
 static struct artifact_t __ptr_artifact_data[PTR_ARTIFACT_SIZE] = {
   {  2,  70 },
   {  3, 577 },
@@ -4439,7 +4439,7 @@ static struct artifact_t __ptr_artifact_data[PTR_ARTIFACT_SIZE] = {
 };
 #define PTR_ARTIFACT_POWER_SIZE (895)
 
-// Artifact power data, wow build 23623
+// Artifact power data, wow build 23657
 static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER_SIZE] = {
   {   40,   2,  18,  0,   0, 205273, "Wake of Ashes"                      }, // Wake of Ashes (id=205273, n_ranks=1)
   {   41,   2,  32,  4,   3, 186941, "Highlord's Judgment"                }, // Highlord's Judgment (id=186941, n_ranks=8)
@@ -4485,7 +4485,7 @@ static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER
   { 1330,   3,   0,  0,   1, 214795, "Warglaives of Chaos"                }, // Warglaives of Chaos (id=214795, n_ranks=1)
   { 1362,   3,   5,  0,  20, 214907, "Chaos Burn"                         }, // Chaos Burn (id=214907, n_ranks=20)
   { 1493,   3,  32, 13,   4, 238045, "Wide Eyes"                          }, // Wide Eyes (id=238045, n_ranks=8)
-  { 1494,   3,   0,  0,   1, 238081, "Bladedancer's Grace"                }, // Bladedancer's Grace (id=238081, n_ranks=1)
+  { 1494,   3,   0,  0,   1, 243188, "Bladedancer's Grace"                }, // Bladedancer's Grace (id=243188, n_ranks=1)
   { 1495,   3,   1,  0,   1, 238117, "Chaotic Onslaught"                  }, // Chaotic Onslaught (id=238117, n_ranks=1)
   { 1496,   3,   5,  0,  50, 239042, "Concordance of the Legionfall"      }, // Concordance of the Legionfall (id=239042, n_ranks=50)
   { 1630,   3,   2,  0,   1, 241090, "Illidari Ferocity"                  }, // Illidari Ferocity (id=241090, n_ranks=1)
@@ -4534,7 +4534,7 @@ static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER
   { 1395,  11,   5,  0,  20, 214939, "Unbreakable Bulwark"                }, // Unbreakable Bulwark (id=214939, n_ranks=20)
   { 1456,  11,   8,  0,   0, 226829, "Artificial Damage"                  }, // Artificial Damage (id=226829, n_ranks=1)
   { 1621,  11,  32, 13,   4, 238077, "Bastion of the Aspects"             }, // Bastion of the Aspects (id=238077, n_ranks=8)
-  { 1622,  11,   0,  0,   1, 238113, "Revengeance"                        }, // Revengeance (id=238113, n_ranks=1)
+  { 1622,  11,   0,  0,   1, 238113, "Gleaming Scales"                    }, // Gleaming Scales (id=238113, n_ranks=1)
   { 1623,  11,   1,  0,   1, 238149, "Neltharion's Thunder"               }, // Neltharion's Thunder (id=238149, n_ranks=1)
   { 1624,  11,   5,  0,  50, 239042, "Concordance of the Legionfall"      }, // Concordance of the Legionfall (id=239042, n_ranks=50)
   { 1716,  11,   2,  0,   1, 241270, "Protection of the Valarjar"         }, // Protection of the Valarjar (id=241270, n_ranks=1)
@@ -4633,7 +4633,7 @@ static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER
   { 1361,  16,   5,  0,  20, 214906, "Fleshsearer"                        }, // Fleshsearer (id=214906, n_ranks=20)
   { 1489,  16,  32, 13,   4, 238044, "Lash of Shadows"                    }, // Lash of Shadows (id=238044, n_ranks=8)
   { 1490,  16,   0,  0,   1, 238080, "Death's Harbinger"                  }, // Death's Harbinger (id=238080, n_ranks=1)
-  { 1491,  16,   1,  0,   1, 238116, "Festering Talons"                   }, // Festering Talons (id=238116, n_ranks=1)
+  { 1491,  16,   1,  0,   1, 238116, "Black Claws"                        }, // Black Claws (id=238116, n_ranks=1)
   { 1492,  16,   5,  0,  50, 239042, "Concordance of the Legionfall"      }, // Concordance of the Legionfall (id=239042, n_ranks=50)
   { 1629,  16,   2,  0,   1, 241050, "Cunning of the Ebon Blade"          }, // Cunning of the Ebon Blade (id=241050, n_ranks=1)
   {  851,  17,  18,  0,   0, 209782, "Goremaw's Bite"                     }, // Goremaw's Bite (id=209782, n_ranks=1)
@@ -4777,7 +4777,7 @@ static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER
   { 1392,  38,   5,  0,  20, 214936, "Stolen Power"                       }, // Stolen Power (id=214936, n_ranks=20)
   { 1609,  38,  32, 13,   4, 238074, "Flames of Sargeras"                 }, // Flames of Sargeras (id=238074, n_ranks=8)
   { 1610,  38,   0,  0,   1, 238110, "Cry Havoc"                          }, // Cry Havoc (id=238110, n_ranks=1)
-  { 1611,  38,   1,  0,   1, 238146, "Tomb-Born Rift"                     }, // Tomb-Born Rift (id=238146, n_ranks=1)
+  { 1611,  38,   1,  0,   1, 238146, "Flame Rift"                         }, // Flame Rift (id=238146, n_ranks=1)
   { 1612,  38,   5,  0,  50, 239042, "Concordance of the Legionfall"      }, // Concordance of the Legionfall (id=239042, n_ranks=50)
   { 1713,  38,   2,  0,   1, 241253, "Flames of the Black Harvest"        }, // Flames of the Black Harvest (id=241253, n_ranks=1)
   {  915,  39,  32,  4,   3, 199111, "Inimitable Agony"                   }, // Inimitable Agony (id=199111, n_ranks=8)
@@ -5020,7 +5020,7 @@ static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER
   { 1342,  48,   0,  0,   1, 222648, "Virtues of the Light"               }, // Virtues of the Light (id=222648, n_ranks=1)
   { 1377,  48,   5,  0,  20, 214923, "Silver Touch"                       }, // Silver Touch (id=214923, n_ranks=20)
   { 1553,  48,  32, 13,   4, 238060, "Tyr's Munificence"                  }, // Tyr's Munificence (id=238060, n_ranks=8)
-  { 1554,  48,   0,  0,   1, 238096, "Sacrificial Martyr"                 }, // Sacrificial Martyr (id=238096, n_ranks=1)
+  { 1554,  48,   0,  0,   1, 238096, "Stoicism"                           }, // Stoicism (id=238096, n_ranks=1)
   { 1555,  48,   1,  0,   1, 238132, "Sacred Dawn"                        }, // Sacred Dawn (id=238132, n_ranks=1)
   { 1556,  48,   5,  0,  50, 239042, "Concordance of the Legionfall"      }, // Concordance of the Legionfall (id=239042, n_ranks=50)
   { 1645,  48,   2,  0,   1, 241145, "Light of the Silver Hand"           }, // Light of the Silver Hand (id=241145, n_ranks=1)
@@ -5046,7 +5046,7 @@ static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER
   { 1455,  49,   8,  0,   0, 226829, "Artificial Damage"                  }, // Artificial Damage (id=226829, n_ranks=1)
   { 1557,  49,  32, 13,   4, 238061, "Holy Aegis"                         }, // Holy Aegis (id=238061, n_ranks=8)
   { 1558,  49,   0,  0,   1, 238097, "Defender of Truth"                  }, // Defender of Truth (id=238097, n_ranks=1)
-  { 1559,  49,   0,  0,   1, 238133, "Decree of Justice"                  }, // Decree of Justice (id=238133, n_ranks=1)
+  { 1559,  49,   0,  0,   1, 238133, "Blessed Stalwart"                   }, // Blessed Stalwart (id=238133, n_ranks=1)
   { 1560,  49,   5,  0,  50, 239042, "Concordance of the Legionfall"      }, // Concordance of the Legionfall (id=239042, n_ranks=50)
   { 1646,  49,   2,  0,   1, 241146, "Bulwark of the Silver Hand"         }, // Bulwark of the Silver Hand (id=241146, n_ranks=1)
   {  800,  50,  32,  4,   3, 195243, "Inner Peace"                        }, // Inner Peace (id=195243, n_ranks=8)
@@ -5314,7 +5314,7 @@ static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER
   { 1452,  60,   8,  0,   0, 226829, "Artificial Damage"                  }, // Artificial Damage (id=226829, n_ranks=1)
   { 1497,  60,  32, 13,   4, 238046, "Lingering Ordeal"                   }, // Lingering Ordeal (id=238046, n_ranks=8)
   { 1498,  60,   0,  0,   1, 238082, "Erupting Souls"                     }, // Erupting Souls (id=238082, n_ranks=1)
-  { 1499,  60,   1,  0,   1, 238118, "Duality"                            }, // Duality (id=238118, n_ranks=1)
+  { 1499,  60,   1,  0,   1, 238118, "Flaming Soul"                       }, // Flaming Soul (id=238118, n_ranks=1)
   { 1500,  60,   5,  0,  50, 239042, "Concordance of the Legionfall"      }, // Concordance of the Legionfall (id=239042, n_ranks=50)
   { 1631,  60,   2,  0,   1, 241091, "Illidari Durability"                }, // Illidari Durability (id=241091, n_ranks=1)
   { 1089,  74,   0,  0,   0, 241091, 0                                    },
@@ -5339,7 +5339,7 @@ static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER
 };
 #define PTR_ARTIFACT_POWER_RANK_SIZE (5907)
 
-// Artifact power rank data, wow build 23623
+// Artifact power rank data, wow build 23657
 static struct artifact_power_rank_t __ptr_artifact_power_rank_data[PTR_ARTIFACT_POWER_RANK_SIZE] = {
   { 2316,    40,  0, 205273,      0.000, 0x00000000, 0 },
   { 2317,    41,  0, 186941,      8.000, 0x00000000, 0 },
@@ -8483,26 +8483,26 @@ static struct artifact_power_rank_t __ptr_artifact_power_rank_data[PTR_ARTIFACT_
   { 5794,  1365, 17, 214911,     13.500, 0x00000000, 0 },
   { 5795,  1365, 18, 214911,     14.000, 0x00000000, 0 },
   { 5796,  1365, 19, 214911,     14.500, 0x00000000, 0 },
-  { 5797,  1366,  0, 214912,     10.000, 0x00000000, 0 },
-  { 5798,  1366,  1, 214912,     11.000, 0x00000000, 0 },
-  { 5799,  1366,  2, 214912,     12.000, 0x00000000, 0 },
-  { 5800,  1366,  3, 214912,     13.000, 0x00000000, 0 },
-  { 5801,  1366,  4, 214912,     14.000, 0x00000000, 0 },
-  { 5802,  1366,  5, 214912,     15.000, 0x00000000, 0 },
-  { 5803,  1366,  6, 214912,     16.000, 0x00000000, 0 },
-  { 5804,  1366,  7, 214912,     17.000, 0x00000000, 0 },
-  { 5805,  1366,  8, 214912,     18.000, 0x00000000, 0 },
-  { 5806,  1366,  9, 214912,     19.000, 0x00000000, 0 },
-  { 5807,  1366, 10, 214912,     20.000, 0x00000000, 0 },
-  { 5808,  1366, 11, 214912,     21.000, 0x00000000, 0 },
-  { 5809,  1366, 12, 214912,     22.000, 0x00000000, 0 },
-  { 5810,  1366, 13, 214912,     23.000, 0x00000000, 0 },
-  { 5811,  1366, 14, 214912,     24.000, 0x00000000, 0 },
-  { 5812,  1366, 15, 214912,     25.000, 0x00000000, 0 },
-  { 5813,  1366, 16, 214912,     26.000, 0x00000000, 0 },
-  { 5814,  1366, 17, 214912,     27.000, 0x00000000, 0 },
-  { 5815,  1366, 18, 214912,     28.000, 0x00000000, 0 },
-  { 5816,  1366, 19, 214912,     29.000, 0x00000000, 0 },
+  { 5797,  1366,  0, 214912,      6.000, 0x00000000, 0 },
+  { 5798,  1366,  1, 214912,      7.000, 0x00000000, 0 },
+  { 5799,  1366,  2, 214912,      8.000, 0x00000000, 0 },
+  { 5800,  1366,  3, 214912,      9.000, 0x00000000, 0 },
+  { 5801,  1366,  4, 214912,     10.000, 0x00000000, 0 },
+  { 5802,  1366,  5, 214912,     11.000, 0x00000000, 0 },
+  { 5803,  1366,  6, 214912,     12.000, 0x00000000, 0 },
+  { 5804,  1366,  7, 214912,     13.000, 0x00000000, 0 },
+  { 5805,  1366,  8, 214912,     14.000, 0x00000000, 0 },
+  { 5806,  1366,  9, 214912,     15.000, 0x00000000, 0 },
+  { 5807,  1366, 10, 214912,     16.000, 0x00000000, 0 },
+  { 5808,  1366, 11, 214912,     17.000, 0x00000000, 0 },
+  { 5809,  1366, 12, 214912,     18.000, 0x00000000, 0 },
+  { 5810,  1366, 13, 214912,     19.000, 0x00000000, 0 },
+  { 5811,  1366, 14, 214912,     20.000, 0x00000000, 0 },
+  { 5812,  1366, 15, 214912,     21.000, 0x00000000, 0 },
+  { 5813,  1366, 16, 214912,     22.000, 0x00000000, 0 },
+  { 5814,  1366, 17, 214912,     23.000, 0x00000000, 0 },
+  { 5815,  1366, 18, 214912,     24.000, 0x00000000, 0 },
+  { 5816,  1366, 19, 214912,     25.000, 0x00000000, 0 },
   { 5817,  1367,  0, 214913,      5.000, 0x00000000, 0 },
   { 5818,  1367,  1, 214913,      5.500, 0x00000000, 0 },
   { 5819,  1367,  2, 214913,      6.000, 0x00000000, 0 },
@@ -8643,26 +8643,26 @@ static struct artifact_power_rank_t __ptr_artifact_power_rank_data[PTR_ARTIFACT_
   { 5954,  1373, 17, 214919,     13.500, 0x00000000, 0 },
   { 5955,  1373, 18, 214919,     14.000, 0x00000000, 0 },
   { 5956,  1373, 19, 214919,     14.500, 0x00000000, 0 },
-  { 5957,  1374,  0, 214920,     10.000, 0x00000000, 0 },
-  { 5958,  1374,  1, 214920,     11.000, 0x00000000, 0 },
-  { 5959,  1374,  2, 214920,     12.000, 0x00000000, 0 },
-  { 5960,  1374,  3, 214920,     13.000, 0x00000000, 0 },
-  { 5961,  1374,  4, 214920,     14.000, 0x00000000, 0 },
-  { 5962,  1374,  5, 214920,     15.000, 0x00000000, 0 },
-  { 5963,  1374,  6, 214920,     16.000, 0x00000000, 0 },
-  { 5964,  1374,  7, 214920,     17.000, 0x00000000, 0 },
-  { 5965,  1374,  8, 214920,     18.000, 0x00000000, 0 },
-  { 5966,  1374,  9, 214920,     19.000, 0x00000000, 0 },
-  { 5967,  1374, 10, 214920,     20.000, 0x00000000, 0 },
-  { 5968,  1374, 11, 214920,     21.000, 0x00000000, 0 },
-  { 5969,  1374, 12, 214920,     22.000, 0x00000000, 0 },
-  { 5970,  1374, 13, 214920,     23.000, 0x00000000, 0 },
-  { 5971,  1374, 14, 214920,     24.000, 0x00000000, 0 },
-  { 5972,  1374, 15, 214920,     25.000, 0x00000000, 0 },
-  { 5973,  1374, 16, 214920,     26.000, 0x00000000, 0 },
-  { 5974,  1374, 17, 214920,     27.000, 0x00000000, 0 },
-  { 5975,  1374, 18, 214920,     28.000, 0x00000000, 0 },
-  { 5976,  1374, 19, 214920,     29.000, 0x00000000, 0 },
+  { 5957,  1374,  0, 214920,     17.000, 0x00000000, 0 },
+  { 5958,  1374,  1, 214920,     18.000, 0x00000000, 0 },
+  { 5959,  1374,  2, 214920,     19.000, 0x00000000, 0 },
+  { 5960,  1374,  3, 214920,     20.000, 0x00000000, 0 },
+  { 5961,  1374,  4, 214920,     21.000, 0x00000000, 0 },
+  { 5962,  1374,  5, 214920,     22.000, 0x00000000, 0 },
+  { 5963,  1374,  6, 214920,     23.000, 0x00000000, 0 },
+  { 5964,  1374,  7, 214920,     24.000, 0x00000000, 0 },
+  { 5965,  1374,  8, 214920,     25.000, 0x00000000, 0 },
+  { 5966,  1374,  9, 214920,     26.000, 0x00000000, 0 },
+  { 5967,  1374, 10, 214920,     27.000, 0x00000000, 0 },
+  { 5968,  1374, 11, 214920,     28.000, 0x00000000, 0 },
+  { 5969,  1374, 12, 214920,     29.000, 0x00000000, 0 },
+  { 5970,  1374, 13, 214920,     30.000, 0x00000000, 0 },
+  { 5971,  1374, 14, 214920,     31.000, 0x00000000, 0 },
+  { 5972,  1374, 15, 214920,     32.000, 0x00000000, 0 },
+  { 5973,  1374, 16, 214920,     33.000, 0x00000000, 0 },
+  { 5974,  1374, 17, 214920,     34.000, 0x00000000, 0 },
+  { 5975,  1374, 18, 214920,     35.000, 0x00000000, 0 },
+  { 5976,  1374, 19, 214920,     36.000, 0x00000000, 0 },
   { 5977,  1375,  0, 214921,      5.000, 0x00000000, 0 },
   { 5978,  1375,  1, 214921,      5.500, 0x00000000, 0 },
   { 5979,  1375,  2, 214921,      6.000, 0x00000000, 0 },
@@ -8743,26 +8743,26 @@ static struct artifact_power_rank_t __ptr_artifact_power_rank_data[PTR_ARTIFACT_
   { 6054,  1378, 17, 214924,     27.000, 0x00000000, 0 },
   { 6055,  1378, 18, 214924,     28.000, 0x00000000, 0 },
   { 6056,  1378, 19, 214924,     29.000, 0x00000000, 0 },
-  { 6057,  1379,  0, 214925,      4.000, 0x00000000, 0 },
-  { 6058,  1379,  1, 214925,      4.400, 0x00000000, 0 },
-  { 6059,  1379,  2, 214925,      4.800, 0x00000000, 0 },
-  { 6060,  1379,  3, 214925,      5.200, 0x00000000, 0 },
-  { 6061,  1379,  4, 214925,      5.600, 0x00000000, 0 },
-  { 6062,  1379,  5, 214925,      6.000, 0x00000000, 0 },
-  { 6063,  1379,  6, 214925,      6.400, 0x00000000, 0 },
-  { 6064,  1379,  7, 214925,      6.800, 0x00000000, 0 },
-  { 6065,  1379,  8, 214925,      7.200, 0x00000000, 0 },
-  { 6066,  1379,  9, 214925,      7.600, 0x00000000, 0 },
-  { 6067,  1379, 10, 214925,      8.000, 0x00000000, 0 },
-  { 6068,  1379, 11, 214925,      8.400, 0x00000000, 0 },
-  { 6069,  1379, 12, 214925,      8.800, 0x00000000, 0 },
-  { 6070,  1379, 13, 214925,      9.200, 0x00000000, 0 },
-  { 6071,  1379, 14, 214925,      9.600, 0x00000000, 0 },
-  { 6072,  1379, 15, 214925,     10.000, 0x00000000, 0 },
-  { 6073,  1379, 16, 214925,     10.400, 0x00000000, 0 },
-  { 6074,  1379, 17, 214925,     10.800, 0x00000000, 0 },
-  { 6075,  1379, 18, 214925,     11.200, 0x00000000, 0 },
-  { 6076,  1379, 19, 214925,     11.600, 0x00000000, 0 },
+  { 6057,  1379,  0, 214925,      5.000, 0x00000000, 0 },
+  { 6058,  1379,  1, 214925,      5.500, 0x00000000, 0 },
+  { 6059,  1379,  2, 214925,      6.000, 0x00000000, 0 },
+  { 6060,  1379,  3, 214925,      6.500, 0x00000000, 0 },
+  { 6061,  1379,  4, 214925,      7.000, 0x00000000, 0 },
+  { 6062,  1379,  5, 214925,      7.500, 0x00000000, 0 },
+  { 6063,  1379,  6, 214925,      8.000, 0x00000000, 0 },
+  { 6064,  1379,  7, 214925,      8.500, 0x00000000, 0 },
+  { 6065,  1379,  8, 214925,      9.000, 0x00000000, 0 },
+  { 6066,  1379,  9, 214925,      9.500, 0x00000000, 0 },
+  { 6067,  1379, 10, 214925,     10.000, 0x00000000, 0 },
+  { 6068,  1379, 11, 214925,     10.500, 0x00000000, 0 },
+  { 6069,  1379, 12, 214925,     11.000, 0x00000000, 0 },
+  { 6070,  1379, 13, 214925,     11.500, 0x00000000, 0 },
+  { 6071,  1379, 14, 214925,     12.000, 0x00000000, 0 },
+  { 6072,  1379, 15, 214925,     12.500, 0x00000000, 0 },
+  { 6073,  1379, 16, 214925,     13.000, 0x00000000, 0 },
+  { 6074,  1379, 17, 214925,     13.500, 0x00000000, 0 },
+  { 6075,  1379, 18, 214925,     14.000, 0x00000000, 0 },
+  { 6076,  1379, 19, 214925,     14.500, 0x00000000, 0 },
   { 6077,  1380,  0, 214926,      5.000, 0x00000000, 0 },
   { 6078,  1380,  1, 214926,      5.500, 0x00000000, 0 },
   { 6079,  1380,  2, 214926,      6.000, 0x00000000, 0 },
@@ -9239,7 +9239,7 @@ static struct artifact_power_rank_t __ptr_artifact_power_rank_data[PTR_ARTIFACT_
   { 7398,  1493,  5, 238045,    -30.000, 0x00000000, 0 },
   { 7399,  1493,  6, 238045,    -35.000, 0x00000000, 0 },
   { 7400,  1493,  7, 238045,    -40.000, 0x00000000, 0 },
-  { 6630,  1494,  0, 238081,      0.000, 0x00000000, 0 },
+  { 6630,  1494,  0, 243188,      0.000, 0x00000000, 0 },
   { 6631,  1495,  0, 238117,      0.000, 0x00000000, 0 },
   { 6632,  1496,  0, 239042,   2000.000, 0x00000000, 0 },
   { 7969,  1496,  1, 239042,   2200.000, 0x00000000, 0 },
@@ -11251,7 +11251,7 @@ static struct artifact_power_rank_t __ptr_artifact_power_rank_data[PTR_ARTIFACT_
 };
 #define PTR_PTR_ARTIFACT_POWER_RANK_HOTFIX_SIZE (0)
 
-// 0 ptr_artifact_power_rank hotfix entries, wow build level 23623
+// 0 ptr_artifact_power_rank hotfix entries, wow build level 23657
 static hotfix::client_hotfix_entry_t __ptr_ptr_artifact_power_rank_hotfix_data[] = {
   {      0,  0, 0, 0 },
 };

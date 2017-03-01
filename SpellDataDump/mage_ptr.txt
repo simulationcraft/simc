@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build ff6af4d)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build 3d249f6)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Arcane Fire Frost Mage
@@ -215,7 +215,7 @@ Duration         : 0.3 seconds
 Cooldown         : 0.5 seconds
 Charges          : 1 (15 seconds cooldown)
 Category         : 1446
-Affecting spells : Reduced Blink GCD (44301), Tome of Blink (168795), Norgannon's Foresight (236380)
+Affecting spells : Reduced Blink GCD (44301), Norgannon's Foresight (236380)
 Attributes       : ........ ........ x....... ........   ........ ..x....x ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -368,7 +368,7 @@ Attributes       : ........ ........ x....... ........   ..x..... ........ .....
                  : Channeled (34), Not a proc (105)
 Effects          :
 #1 (id=2716)     : School Damage: arcane (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.44300 | Chain Targets: 1 | Target: Unknown(77)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.44300 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Unknown(77)
 Description      : $@spelldesc5143
 
 Name             : Pyroblast (id=11366) [Spell Family (3)] 
@@ -965,7 +965,7 @@ Attributes       : ........ x....... ..x..... ..x..x..   ........ ..x..... .....
 Effects          :
 #1 (id=26313)    : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 60 | Scaled Value: 60 | Target: Self(1)
-                   Affected Spells: Arcane Explosion (1449), Arcane Blast (30451), Arcane Barrage (44425)
+                   Affected Spells: Arcane Explosion (1449), Arcane Blast (30451), Arcane Barrage (44425), Time and Space (240689)
 #2 (id=26314)    : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 60 | Scaled Value: 60 | Target: Self(1)
                    Affected Spells: Arcane Missiles (7268)
@@ -977,7 +977,7 @@ Effects          :
                    Affected Spells: Arcane Blast (30451)
 #5 (id=219758)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: 125 | Scaled Value: 125 | Misc Value: 14 | Target: Self(1)
-                   Affected Spells: Arcane Explosion (1449), Arcane Blast (30451)
+                   Affected Spells: Arcane Explosion (1449), Arcane Blast (30451), Time and Space (240689)
 #6 (id=357921)   : Apply Aura (6) | Add Percent Modifier: Spell Global Cooldown (108)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 21 | Target: Self(1)
                    Affected Spells: Arcane Blast (30451)
@@ -1040,7 +1040,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=36330)    : School Damage: arcane (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.30000 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.30000 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=157070)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50
 #3 (id=331544)   : Dummy (3)
@@ -2663,7 +2663,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179704)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 21 | Scaled Value: 21 | Target: Self(1)
-                   Affected Spells: Arcane Explosion (1449), Arcane Missiles (7268), Arcane Blast (30451), Arcane Barrage (44425), Nether Tempest (114923), Nether Tempest (114954), Arcane Orb (153640), Supernova (157980)
+                   Affected Spells: Arcane Explosion (1449), Arcane Missiles (7268), Arcane Blast (30451), Arcane Barrage (44425), Nether Tempest (114923), Nether Tempest (114954), Arcane Orb (153640), Supernova (157980), Time and Space (240689)
 #2 (id=191116)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 21 | Scaled Value: 21 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Nether Tempest (114923), Nether Tempest (114954)
@@ -3823,7 +3823,7 @@ Effects          :
 #1 (id=285474)   : School Damage: fire (2)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.89400 | Chain Multiplier: 0.75 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=368574)   : Server Side Script (77)
-                   Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy(6)
 Description      : Hurls a Phoenix that causes $s1 Fire damage to the target and splashes $224637s2 Fire damage to other nearby enemies. This damage is always a critical strike.
 
 Name             : Hot Streak (id=195283) [Spell Family (3), Passive] 
@@ -4508,7 +4508,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=311119)   : Apply Aura (6) | Unknown effect sub type (271)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
-                   Affected Spells: Invisibility (66), Arcane Explosion (1449), Arcane Missiles (7268), Arcane Blast (30451), Slow (31589), Invisibility (32612), Arcane Barrage (44425), Greater Invisibility (110959), Greater Invisibility (110960), Ancient Teleport: Dalaran (120145), Arcane Orb (153640), Sloooow Down (210732)
+                   Affected Spells: Invisibility (66), Arcane Explosion (1449), Arcane Missiles (7268), Arcane Blast (30451), Slow (31589), Invisibility (32612), Arcane Barrage (44425), Greater Invisibility (110959), Greater Invisibility (110960), Ancient Teleport: Dalaran (120145), Arcane Orb (153640), Sloooow Down (210732), Time and Space (240689)
 Description      : $@spelldesc205039
 Tooltip          : Damage taken from the Mage's Arcane spells increased by $s1%.
 
@@ -4639,8 +4639,8 @@ Attributes       : ........ ........ .......x ........   ........ ........ .....
 Effects          :
 #1 (id=312653)   : School Damage: arcane (2)
                    Base Value: 1 | Scaled Value: 1 | Radius: 0 - 6 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
-#2 (id=363686)   : Energize Power (30)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: mana | Target: Self(1)
+#2 (id=363686)   : Energize Power% (137)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self(1)
 Description      : Deals $s1 Arcane damage to all targets within $A1 yds.
 Tooltip          : Deals $s1 Arcane damage to all targets within $A1 yds.
 
@@ -4665,11 +4665,11 @@ Class            : Mage
 School           : Arcane
 Resource         : 2% Base Mana (22000 @Level 110)
 Spell Level      : 1
-Duration         : 0.3 seconds
+Duration         : 0.5 seconds
 Cooldown         : 0.5 seconds
 Charges          : 2 (15 seconds cooldown)
 Category         : 1632
-Affecting spells : Reduced Blink GCD (44301), Tome of Blink (168795), Norgannon's Foresight (236380)
+Affecting spells : Reduced Blink GCD (44301), Norgannon's Foresight (236380)
 Attributes       : ........ ........ x....... ........   ........ ..x....x ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -4892,6 +4892,24 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.52300 | Target: Enemy(6)
 Description      : $@spelldesc44614
 Tooltip          : Movement slowed by $s1%.
+
+Name             : Winter's Chill (id=228358) [Scaling Spell (5)] 
+Class            : Mage
+School           : Frost
+Spell Level      : 1
+Range            : 100 yards
+Duration         : 1 seconds
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   .x...... ........ ........ ........ 
+Effects          :
+#1 (id=343742)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 100 | Scaled Value: 100 | Target: Enemy(6)
+Description      : $@spelldesc44614
+Tooltip          : Taking damage from the Mage's spells as if frozen.
 
 Name             : Frostbolt (id=228597) [Spell Family (3)] 
 Class            : Mage
@@ -5443,7 +5461,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=357237)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: 50 | Scaled Value: 50 | Target: Enemy(6)
+                   Base Value: 50 | Scaled Value: 50 | Mechanic: Unknown(88) | Target: Enemy(6)
 Description      : $@spelldesc235711
 Tooltip          : Movement speed slowed by $s1%.
 
@@ -5504,5 +5522,94 @@ Effects          :
 #1 (id=357968)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Target: Self(1)
 Description      : Each time Blizzard deals damage, the cooldown of Frozen Orb is reduced by ${$s1/100}.1 sec.
+
+Name             : Time and Space (id=238126) [Spell Family (3), Passive] 
+Class            : Mage
+School           : Physical
+Proc Chance      : 100%
+Artifact Power   : Id: 1531, Max Rank: 1
+Proc Flags       : ........ ........ x....... ........ 
+                 : Hostile Spell
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=360811)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self(1)
+Description      : When you cast Arcane Explosion, Aluneth will echo the Arcane Explosion for $s1% of its damage, at the location of your previous Arcane Explosion cast within $240692d.
+
+Name             : Time and Space (id=240689) [Spell Family (3)] 
+Class            : Mage
+School           : Arcane
+Spell Level      : 1
+Range            : 100 yards
+Affecting spells : Arcane Charge (36032), Arcane Mage (137021), Crackling Energy (187310), Arcane Purification (187313), Erosion (210134), Norgannon's Foresight (236380)
+Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=365006)   : School Damage: arcane (2)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.15000 | Radius: 0 - 10 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
+Description      : $@spelldesc238126
+
+Name             : Time and Space (id=240692) [Spell Family (3)] 
+Class            : Mage
+School           : Arcane
+Duration         : 6 seconds
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
+Proc Flags       : ........ ........ x....... ........ 
+                 : Hostile Spell
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=365009)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#2 (id=365030)   : Unknown effect type (179)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 10228 | Target: Custom(18)
+Description      : $@spelldesc238126
+Tooltip          : Aluneth will echo your next Arcane Explosion.
+
+Name             : Item - Mage T20 Frost 2P Bonus (id=242252) [Spell Family (3), Passive, Hidden] 
+Class            : Mage
+School           : Physical
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ x....... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=367838)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+Description      : Frozen Orb increases your critical strike damage by 30% for 10 seconds.
+
+Name             : Frozen Mass (id=242253) [Spell Family (3)] 
+Class            : Mage
+School           : Frost
+Duration         : 10 seconds
+Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ .x......   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=367839)   : Apply Aura (6) | Unknown effect sub type (163)
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 127 | Target: Self(1)
+Description      : $@spelldesc242252
+Tooltip          : Critical strike damage increased by $s1%.
 
 

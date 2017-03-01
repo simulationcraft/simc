@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build ff6af4d)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build 3d249f6)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -240,7 +240,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=228690)   : Dummy (3)
-                   Base Value: 30 | Scaled Value: 30 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 30 | Scaled Value: 30 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=230219)   : Trigger Spell: Chaos Strike (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 222031 | Target: Enemy(6)
 #3 (id=293650)   : Trigger Spell: Chaos Strike (64)
@@ -448,9 +448,9 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... .....
                  : Cannot dodge/parry/block (21)
 Effects          :
 #1 (id=268504)   : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0 | Chain Targets: 3 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 0 | Chain Targets: 3 | Target: Enemy(6)
 #2 (id=309171)   : Weapon Damage% (31)
-                   Base Value: 490 | Scaled Value: 4.9 | Chain Targets: 3 | Target: Enemy(6)
+                   Base Value: 490 | Scaled Value: 4.9 | Chain Multiplier: 0 | Chain Targets: 3 | Target: Enemy(6)
 Description      : Throw a demonic glaive at the target, dealing $sw1 Physical damage. The glaive can ricochet to ${$x1-1} additional enemies within 10 yards.
 
 Name             : Mastery: Demonic Presence (id=185164) [Spell Family (107), Passive] 
@@ -592,7 +592,7 @@ Duration         : 1 seconds
 Cooldown         : 10 seconds
 Category         : 1640
 Category Cooldown: 10 seconds
-Affecting spells : Metamorphosis (162264), First Blood (206416), Havoc Demon Hunter (212612), Vengeance Demon Hunter (212613), 
+Affecting spells : Metamorphosis (162264), First Blood (206416), Havoc Demon Hunter (212612), Vengeance Demon Hunter (212613), Bladedancer's Grace (243188)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1026,7 +1026,7 @@ Description      : $@spelldesc162794
 Name             : Blade Dance (id=199552) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
-Affecting spells : Metamorphosis (162264), First Blood (206416), Havoc Demon Hunter (212612)
+Affecting spells : Metamorphosis (162264), First Blood (206416), Havoc Demon Hunter (212612), Bladedancer's Grace (243188)
 Triggered by     : Blade Dance (188499)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -1063,7 +1063,7 @@ Tooltip          : Stunned.
 Name             : Blade Dance (id=200685) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
-Affecting spells : Metamorphosis (162264), First Blood (206416), Havoc Demon Hunter (212612)
+Affecting spells : Metamorphosis (162264), First Blood (206416), Havoc Demon Hunter (212612), Bladedancer's Grace (243188)
 Triggered by     : Blade Dance (188499)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -1112,7 +1112,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=296756)   : Dummy (3)
-                   Base Value: 30 | Scaled Value: 30 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 30 | Scaled Value: 30 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=296757)   : Trigger Spell: Annihilation (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 227518 | Target: Self(1)
 #3 (id=296758)   : Trigger Spell: Annihilation (64)
@@ -1126,7 +1126,7 @@ Range            : 15 yards
 Affecting spells : Mastery: Demonic Presence (185164), Critical Chaos (201455), Havoc Demon Hunter (212612), Warglaives of Chaos (214795)
 Triggered by     : Annihilation (201427)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
-                 : ........ ........ ........ ........   ........ .x...... ........ x....... 
+                 : ........ ........ ........ ........   ........ .x...... ........ x.....x. 
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ .x...... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1748,9 +1748,9 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... .....
                  : Cannot dodge/parry/block (21)
 Effects          :
 #1 (id=301300)   : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0 | Chain Targets: 3 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 0 | Chain Targets: 3 | Target: Enemy(6)
 #2 (id=301301)   : Weapon Damage% (31)
-                   Base Value: 135 | Scaled Value: 1.35 | Chain Targets: 3 | Target: Enemy(6)
+                   Base Value: 135 | Scaled Value: 1.35 | Chain Multiplier: 0 | Chain Targets: 3 | Target: Enemy(6)
 Description      : Throw a demonic glaive at the target, dealing $sw2 Physical damage. The glaive can ricochet to ${$x1-1} additional enemies within 10 yards. Generates high threat.
 
 Name             : Shattered Souls (id=204254) [Spell Family (107), Passive] 
@@ -2173,18 +2173,18 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ......x. ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=307123)   : Apply Aura (6) | Unknown effect sub type (332)
-                   Base Value: 207665 | Scaled Value: 207665 | Misc Value: 202138 | Target: Self(1)
+                   Base Value: 207665 | Scaled Value: 207665 | Misc Value: 202138 | Misc Value 2: 0x2 | Target: Self(1)
 #2 (id=307155)   : Apply Aura (6) | Unknown effect sub type (332)
-                   Base Value: 207682 | Scaled Value: 207682 | Misc Value: 202137 | Target: Self(1)
+                   Base Value: 207682 | Scaled Value: 207682 | Misc Value: 202137 | Misc Value 2: 0x2 | Target: Self(1)
 #3 (id=307157)   : Apply Aura (6) | Unknown effect sub type (332)
-                   Base Value: 204513 | Scaled Value: 204513 | Misc Value: 204596 | Target: Self(1)
+                   Base Value: 204513 | Scaled Value: 204513 | Misc Value: 204596 | Misc Value 2: 0x2 | Target: Self(1)
 #4 (id=307163)   : Apply Aura (6) | Unknown effect sub type (332)
-                   Base Value: 202140 | Scaled Value: 202140 | Misc Value: 207684 | Target: Self(1)
+                   Base Value: 202140 | Scaled Value: 202140 | Misc Value: 207684 | Misc Value 2: 0x2 | Target: Self(1)
 #5 (id=309811)   : Apply Aura (6) | Add Flat Modifier: Spell Duration (107)
                    Base Value: 2000 | Scaled Value: 2000 | Misc Value: 1 | Target: Self(1)
                    Affected Spells: Sigil of Silence (204490), Sigil of Flame (204598), Sigil of Chains (204843), Sigil of Misery (207685)
@@ -2334,9 +2334,12 @@ Class            : Demon Hunter
 School           : Fire
 Range            : 100 yards
 Duration         : 8 seconds
+Proc Chance      : 100%
+Proc Flags       : .....x.. .....x.. .x.x.... ........ 
+                 : Yellow Melee Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Vengeance Demon Hunter (212613), Demonic Flames (212894), Spirit of the Darkness Flame (235543)
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -2352,9 +2355,12 @@ Class            : Demon Hunter
 School           : Fire
 Range            : 100 yards
 Duration         : 8 seconds
+Proc Chance      : 100%
+Proc Flags       : .....x.. .....x.. .x.x.... ........ 
+                 : Yellow Melee Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Vengeance Demon Hunter (212613), Demonic Flames (212894), Spirit of the Darkness Flame (235543)
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
@@ -3597,7 +3603,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=342016)   : Weapon Damage% (31)
                    Base Value: 397 | Scaled Value: 3.97 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy(6)
-Description      : Slice your target for ${$sw1+$201428sw1} Chaos damage.  Critical strikes do not consume Fury.
+Description      : $@spelldesc201427
 
 Name             : Soul Cleave (id=228477) [Spell Family (107)] 
 Replaces         : Chaos Strike (id=162794)
