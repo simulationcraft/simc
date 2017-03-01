@@ -4817,16 +4817,34 @@ struct storm_elemental_t : public shaman_spell_t
 
 // Earthquake ===============================================================
 
+struct seismic_lightning_t : public shaman_spell_t
+{
+  seismic_lightning_t( shaman_t* p ) :
+    shaman_spell_t("seismic_lightning", p, p -> find_spell( 243073 ))
+  {
+    background = true;
+    // TODO: test whether lightning is affected by elemental focus
+    affected_by_elemental_focus = false;
+  }
+};
+
+
 struct seismic_storm_t : public shaman_spell_t
 {
+  seismic_lightning_t* zapp;
+
   seismic_storm_t( shaman_t* p ) :
-    shaman_spell_t("seismic_storm", p, p -> find_spell( 238141 ))
+    shaman_spell_t("seismic_storm", p, p -> find_spell( 238141 )),
+    zapp( new seismic_lightning_t( p ) )
   {
     background = true;
     affected_by_elemental_focus = false;
-    //TODO: Take out these test-values, currently game data lacks values
-    school = SCHOOL_NATURE;
-    spell_power_mod.direct = 1.0;
+    add_child(zapp);
+  }
+
+  void execute() override
+  {
+    zapp -> execute();
   }
 };
 
