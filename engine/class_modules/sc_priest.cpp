@@ -138,6 +138,10 @@ public:
     buff_t* anunds_last_breath;       // Anund's Seared Shackles stack counter
     buff_t* the_twins_painful_touch;  // To track first casting
     buff_t* zeks_exterminatus;        // Aura for Zeks proc
+
+    // Artifact Buffs
+    // Shadow 
+    buff_t* mind_quickening;
   } buffs;
 
   // Talents
@@ -3747,6 +3751,11 @@ struct void_torrent_t final : public priest_spell_t
 
     priest.buffs.void_torrent->trigger();
 
+    if (priest.artifact.mind_quickening.rank())
+    {
+      priest.buffs.mind_quickening->trigger();
+    }
+
     // Adjust the Voidform end event (essentially remove it) after the Void
     // Torrent buff is up,
     // since it disables insanity drain for the duration of the channel
@@ -4604,7 +4613,12 @@ double priest_t::composite_spell_haste() const
          ( buffs.voidform->check() ) *
              buffs.voidform->data().effectN( 3 ).percent();
   }
-
+  /* FIXME Automagically done?
+  if ( buffs.mind_quickening->check() )
+  {
+    h /= 1.0 + buffs.mind_quickening->data().effectN(1).percent();
+  }
+  */
   return h;
 }
 
@@ -4635,7 +4649,12 @@ double priest_t::composite_melee_haste() const
          ( buffs.voidform->check() - 1 ) *
              buffs.voidform->data().effectN( 3 ).percent();
   }
-
+  /* FIXME automagically done?
+  if (buffs.mind_quickening->check())
+  {
+    h /= 1.0 + buffs.mind_quickening->data().effectN(1).percent();
+  }
+  */
   return h;
 }
 
@@ -5194,6 +5213,11 @@ void priest_t::create_buffs()
           .spell( find_spell( 194182 ) )
           .chance( 1.0 )
           .default_value( find_spell( 194182 )->effectN( 3 ).percent() );
+
+  buffs.mind_quickening = stat_buff_creator_t(this, 
+                                              "mind_quickening", 
+                                              find_spell( 240673 ) )
+                            .max_stack(1); 
 
   // Discipline
   buffs.archangel = new buffs::archangel_t( *this );
