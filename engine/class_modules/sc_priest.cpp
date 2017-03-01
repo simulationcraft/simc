@@ -4612,12 +4612,6 @@ double priest_t::composite_spell_haste() const
          ( buffs.voidform->check() ) *
              buffs.voidform->data().effectN( 3 ).percent();
   }
-  /* FIXME Automagically done?
-  if ( buffs.mind_quickening->check() )
-  {
-    h /= 1.0 + buffs.mind_quickening->data().effectN(1).percent();
-  }
-  */
   return h;
 }
 
@@ -4648,12 +4642,6 @@ double priest_t::composite_melee_haste() const
          ( buffs.voidform->check() - 1 ) *
              buffs.voidform->data().effectN( 3 ).percent();
   }
-  /* FIXME automagically done?
-  if (buffs.mind_quickening->check())
-  {
-    h /= 1.0 + buffs.mind_quickening->data().effectN(1).percent();
-  }
-  */
   return h;
 }
 
