@@ -1552,6 +1552,20 @@ static int get_bonus_id_sockets( const std::vector<const item_bonus_entry_t*>& e
   return 0;
 }
 
+static int get_bonus_power_index( const std::vector<const item_bonus_entry_t*>& entries )
+{
+  auto it = range::find_if( entries, []( const item_bonus_entry_t* entry ) {
+    return entry -> type == ITEM_BONUS_ADD_RANK;
+  } );
+
+  if ( it != entries.end() )
+  {
+    return ( *it ) -> value_1;
+  }
+
+  return -1;
+}
+
 std::vector< std::tuple< item_mod_type, double, double > > get_bonus_id_stats(
     const std::vector<const item_bonus_entry_t*>& entries )
 {
@@ -1598,7 +1612,8 @@ std::string dbc::bonus_ids_str( dbc_t& dbc)
     // Need at least one "relevant" type for us
     if ( e -> type != ITEM_BONUS_ILEVEL && e -> type != ITEM_BONUS_MOD &&
          e -> type != ITEM_BONUS_SOCKET && e -> type != ITEM_BONUS_SCALING &&
-         e -> type != ITEM_BONUS_SCALING_2 && e -> type != ITEM_BONUS_SET_ILEVEL )
+         e -> type != ITEM_BONUS_SCALING_2 && e -> type != ITEM_BONUS_SET_ILEVEL &&
+         e -> type != ITEM_BONUS_ADD_RANK )
     {
       e++;
       continue;
@@ -1628,6 +1643,7 @@ std::string dbc::bonus_ids_str( dbc_t& dbc)
     int base_ilevel = get_bonus_id_base_ilevel( entries );
     auto stats = get_bonus_id_stats( entries );
     std::pair< std::pair<int, double>, std::pair<int, double> > scaling = get_bonus_id_scaling( dbc, entries );
+    auto power_index = get_bonus_power_index( entries );
 
     std::vector<std::string> fields;
 
@@ -1660,6 +1676,11 @@ std::string dbc::bonus_ids_str( dbc_t& dbc)
     if ( sockets > 0 )
     {
       fields.push_back( "socket={ " + util::to_string( sockets ) + " }" );
+    }
+
+    if ( power_index > -1 )
+    {
+      fields.push_back( "add_rank={ power_index=" + util::to_string( power_index ) + " }" );
     }
 
     if ( stats.size() > 0 )
