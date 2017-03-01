@@ -786,6 +786,33 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
       }
       break;
     }
+    case ITEM_BONUS_ADD_RANK:
+    {
+      auto player = item.player;
+      auto artifact_id = player -> dbc.artifact_by_spec( player -> specialization() );
+      if ( artifact_id == 0 )
+      {
+        break;
+      }
+
+      auto powers = player -> dbc.artifact_powers( artifact_id );
+      auto it = range::find_if( powers, [ &entry ]( const artifact_power_data_t* power ) {
+        return as<int>( power -> power_index ) == entry.value_1;
+      } );
+
+      if ( it != powers.end() )
+      {
+        auto internal_power_index = std::distance( powers.begin(), it );
+        player -> artifact.add_bonus_rank( internal_power_index );
+        if ( player -> sim -> debug )
+        {
+          auto spell = player -> dbc.spell( ( *it ) -> power_spell_id );
+          player -> sim -> out_debug.printf( "Player %s item '%s' adding +1 rank to %s (id=%u/%u, int_idx=%u, power_idx=%u)",
+            player -> name(), item.name(), spell -> name_cstr(), spell -> id(), ( *it ) -> id,
+            internal_power_index, ( *it ) -> power_index );
+        }
+      }
+    }
     default:
       break;
   }
