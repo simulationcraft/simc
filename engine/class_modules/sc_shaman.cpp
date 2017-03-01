@@ -4862,11 +4862,6 @@ struct earthquake_damage_t : public shaman_spell_t
     spell_power_mod.direct = 0.5; // Hardcoded into tooltip because it's cool
     base_multiplier *= 1.0 + p() -> artifact.the_ground_trembles.percent();
     affected_by_elemental_focus = true; // Needed to explicitly flag, since spell data lacks info
-
-    if ( player -> action.seismic_storm )
-    {
-      add_child( player -> action.seismic_storm );
-    }
   }
 
   double target_armor( player_t* ) const override
@@ -4888,8 +4883,6 @@ struct earthquake_damage_t : public shaman_spell_t
   {
     shaman_spell_t::impact( state );
 
-    // Note, there's no proc chance in the spell data as it is. Also, is this per target or per
-    // cast?
     if ( rng().roll( p() -> artifact.seismic_storm.data().proc_chance() ) )
     {
       p() -> action.seismic_storm -> target = state -> target;
