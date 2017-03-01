@@ -2541,6 +2541,26 @@ unsigned dbc_t::artifact_by_spec( specialization_e spec ) const
   return 0;
 }
 
+const artifact_power_data_t* dbc_t::artifact_power( unsigned power_id ) const
+{
+#if SC_USE_PTR
+  const artifact_power_data_t * p = ptr ? __ptr_artifact_power_data : __artifact_power_data;
+#else
+  const artifact_power_data_t * p = __artifact_power_data;
+#endif
+
+  while ( p -> id != 0 )
+  {
+    if ( p -> id == power_id )
+    {
+      return p;
+    }
+    p++;
+  }
+
+  return nullptr;
+}
+
 std::vector<const artifact_power_data_t*> dbc_t::artifact_powers( unsigned artifact_id ) const
 {
   std::vector<const artifact_power_data_t*> powers;

@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build ff6af4d)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build 3d249f6)
 
 Name             : Defensive Stance (id=71) [Spell Family (4), Passive, Hidden] 
 Class            : Protection Warrior
@@ -51,7 +51,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #2 (id=64)       : Energize Power (30)
                    Base Value: 200 | Scaled Value: 200 | Misc Value: rage | Target: Self(1)
-Description      : Charge to an enemy, dealing $126664s2 Physical damage and reducing its movement speed by $236027s1% for $236027d$?s103828[, and stunning it for $7922d][].
+Description      : Charge to an enemy, dealing $126664s2 Physical damage, rooting it for $105771d and then reducing its movement speed by $236027s1% for $236027d$?s103828[, and stunning it for $7922d][].
 
 |cFFFFFFFFGenerates $/10;s2 Rage.|r
 
@@ -427,7 +427,6 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... ....x... ........ ........ 
                  : Yellow Melee, AOE Hostile Spell
-Affecting spells : Revengeance (238113)
 Triggered by     : Revenge Trigger (5301)
 Attributes       : ....x..x x....... ........ .....x..   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -460,9 +459,9 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=1900)     : Normalized Weapon Damage (121)
-                   Base Value: 1 | Scaled Value: 1 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=229536)   : Weapon Damage% (31)
-                   Base Value: 333 | Scaled Value: 3.33 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 333 | Scaled Value: 3.33 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy(6)
 Description      : Attempt to finish off a wounded foe, causing ${$sw2+$163558sw2} Physical damage. Only usable on enemies that have less than 20% health.
 
 Name             : Thunder Clap (id=6343) [Spell Family (4)] 
@@ -648,11 +647,11 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=5274)     : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=5275)     : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy(6)
 #3 (id=99581)    : Weapon Damage% (31)
-                   Base Value: 327 | Scaled Value: 3.27 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 327 | Scaled Value: 3.27 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy(6)
 #4 (id=156241)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: rage | Target: Self(1)
 Description      : A vicious strike that deals ${$sw3*$<mult>} Physical damage and reduces the effectiveness of healing on the target for $115804d.
@@ -825,7 +824,7 @@ GCD              : 1.5 seconds
 Cooldown         : 4.5 seconds
 Category         : 971
 Category Cooldown: 4.5 seconds
-Affecting spells : Meat Cleaver (85739), Warrior (137047), Fury Warrior (137050), Vicious Strike (165640), Thirst for Battle (200847), Taste for Blood (206333)
+Affecting spells : Meat Cleaver (85739), Warrior (137047), Fury Warrior (137050), Vicious Strike (165640), Thirst for Battle (200847), Taste for Blood (206333), Item - Warrior T20 Fury 4P Bonus (242952), Item - Warrior T20 Fury 4P Bonus (242953)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -834,9 +833,9 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=14120)    : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=134421)   : Weapon Damage% (31)
-                   Base Value: 262 | Scaled Value: 2.62 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 262 | Scaled Value: 2.62 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy(6)
 #3 (id=156242)   : Energize Power (30)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: rage | Target: Self(1)
 #4 (id=226744)   : Dummy (3)
@@ -856,7 +855,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : .....x.x .x...x.. .x...... ........ 
                  : Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken
-Affecting spells : Manual of Spell Reflection (168801), Neltharion's Fury (203524)
+Affecting spells : Manual of Spell Reflection (168801), Neltharion's Fury (203524), Gleaming Scales (238113)
 Attributes       : ....x... ........ x.x..... ...x....   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ..x..... 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -1708,9 +1707,9 @@ Attributes       : ....x... ........ x.x..... ........   ....x... ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=86555)    : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=86556)    : Weapon Damage% (31)
-                   Base Value: 165 | Scaled Value: 1.65 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 165 | Scaled Value: 1.65 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy(6)
 Description      : $@spelldesc85288
 Variables        : $mult=${($max(0,$min($pl-13,7))*4+118)/146}
 
@@ -1856,9 +1855,9 @@ Attributes       : ....x... ........ x.x..... ........   ....x... ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=101983)   : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=101984)   : Weapon Damage% (31)
-                   Base Value: 165 | Scaled Value: 1.65 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 165 | Scaled Value: 1.65 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy(6)
 Description      : $@spelldesc85288
 Variables        : $mult=${($max(0,$min($pl-13,7))*4+118)/146}
 
@@ -1974,7 +1973,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : Requires line of sight (186)
 Effects          :
 #1 (id=115753)   : Apply Aura (6) | Unknown effect sub type (455)
-                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(58) | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 0 | Mechanic: Unknown(58) | Chain Targets: 1 | Target: Enemy(6)
 Description      : $@spelldesc100
 Tooltip          : Rooted.
 
@@ -2226,7 +2225,7 @@ Name             : Bloodthirst Heal (id=117313) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Spell Level      : 1
-Affecting spells : Enraged Regeneration (184364), Furious Charge (202225)
+Affecting spells : Enraged Regeneration (184364), Furious Charge (202225), Item - Warrior T20 Fury 4P Bonus (242952), Item - Warrior T20 Fury 4P Bonus (242953)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2989,14 +2988,15 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=229520)   : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=229537)   : Weapon Damage% (31)
-                   Base Value: 162 | Scaled Value: 1.62 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 162 | Scaled Value: 1.62 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy(6)
 #3 (id=344393)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: rage | Target: Self(1)
 #4 (id=349774)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | Target: Self(1)
-Description      : Attempts to finish off a foe, causing $sw2 Physical damage, and consuming up to $m4 additional Rage to deal up to ${$sw2*$m4/10} additional damage. Only usable on enemies that have less than 20% health.
+Description      : Attempts to finish off a foe, causing $sw2 Physical damage, and consuming up to $<extraCost> additional Rage to deal up to ${$sw2*$m4/10} additional damage. Only usable on enemies that have less than 20% health.
+Variables        : $extraCost=$?s202297[${$m4*((100+$202297s2)/100)}][${$m4}]
 
 Name             : Execute Off-Hand (id=163558) [Spell Family (4)] 
 Class            : Warrior
@@ -3013,9 +3013,9 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=230085)   : Normalized Weapon Damage (121)
-                   Base Value: 1 | Scaled Value: 1 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=230086)   : Weapon Damage% (31)
-                   Base Value: 333 | Scaled Value: 3.33 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 333 | Scaled Value: 3.33 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy(6)
 Description      : $@spelldesc5308
 
 Name             : Colossus Smash (id=167105) [Spell Family (4)] 
@@ -3174,9 +3174,9 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=267757)   : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=267758)   : Weapon Damage% (31)
-                   Base Value: 172 | Scaled Value: 1.72 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 172 | Scaled Value: 1.72 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy(6)
 Description      : $@spelldesc184367
 
 Name             : Rampage (id=184709) [Spell Family (4)] 
@@ -3196,9 +3196,9 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=267761)   : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=267762)   : Weapon Damage% (31)
-                   Base Value: 114 | Scaled Value: 1.14 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 114 | Scaled Value: 1.14 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy(6)
 Description      : $@spelldesc184367
 
 Name             : Tactician (id=184783) [Spell Family (4), Passive] 
@@ -3363,7 +3363,7 @@ Effects          :
                    Base Value: 150 | Scaled Value: 150 | Misc Value: rage | Target: Self(1)
 Description      : Run at high speed toward an ally or enemy.
 
-When targeting an enemy, Intercept deals $126664s2 Physical damage and reduces the target's movement speed by $236027s1% for $236027d, but has a minimum range of $s1 yds.
+When targeting an enemy, Intercept deals $126664s2 Physical damage, roots the target for $105771d and then reduces the target's movement speed by $236027s1% for $236027d, but has a minimum range of $s1 yds.
 
 When targeting an ally, Intercept will intercept the next melee or ranged attack against the ally within $147833d while the target remains within $147833A2 yards.
 
@@ -3585,9 +3585,9 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=296642)   : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=296643)   : Weapon Damage% (31)
-                   Base Value: 201 | Scaled Value: 2.01 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 201 | Scaled Value: 2.01 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy(6)
 Description      : $@spelldesc184367
 
 Name             : Rampage (id=201364) [Spell Family (4)] 
@@ -3606,9 +3606,9 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=296644)   : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=296645)   : Weapon Damage% (31)
-                   Base Value: 345 | Scaled Value: 3.45 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 345 | Scaled Value: 3.45 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy(6)
 Description      : $@spelldesc184367
 
 Name             : Indomitable (id=202095) [Spell Family (4), Passive] 
@@ -4923,9 +4923,9 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=325560)   : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=325561)   : Weapon Damage% (31)
-                   Base Value: 57 | Scaled Value: 0.57 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 57 | Scaled Value: 0.57 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy(6)
 Description      : $@spelldesc184367
 
 Name             : Gaze of the Val'kyr (id=218822) [Spell Family (4), Hidden] 

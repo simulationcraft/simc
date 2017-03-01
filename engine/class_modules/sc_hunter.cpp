@@ -131,7 +131,6 @@ public:
     buff_t* marking_targets;
     buff_t* hunters_mark_exists;
     buff_t* lock_and_load;
-    buff_t* stampede;
     buff_t* trick_shot;
     buff_t* trueshot;
     buff_t* volley;
@@ -201,7 +200,6 @@ public:
     proc_t* mortal_wounds;
     proc_t* t18_4pc_sv;
     proc_t* zevrims_hunger;
-    proc_t* convergence;
     proc_t* marking_targets;
     proc_t* wasted_marking_targets;
     proc_t* animal_instincts_mongoose;
@@ -964,116 +962,6 @@ public:
   }
 };
 
-// COPY PASTE of blademaster trinket code so we can support mastery for beastmaster
-const std::string BLADEMASTER_PET_NAME = "mirror_image_(trinket)";
-
-struct felstorm_tick_t : public melee_attack_t
-{
-  felstorm_tick_t( pet_t* p ) :
-    melee_attack_t( "felstorm_tick", p, p -> find_spell( 184280 ) )
-  {
-    aoe = -1;
-    background = special = may_crit = true;
-    callbacks = false;
-    range = data().effectN( 1 ).radius();
-    school = SCHOOL_PHYSICAL;
-    weapon = &( p -> main_hand_weapon );
-  }
-
-  bool init_finished() override
-  {
-    // Find first blademaster pet, it'll be the first trinket-created pet
-    pet_t* main_pet = player -> cast_pet() -> owner -> find_pet( BLADEMASTER_PET_NAME );
-
-    if ( player != main_pet )
-      stats = main_pet -> find_action( "felstorm_tick" ) -> stats;
-
-    return melee_attack_t::init_finished();
-  }
-};
-
-struct felstorm_t : public melee_attack_t
-{
-  felstorm_t( pet_t* p, const std::string& opts ) :
-    melee_attack_t( "felstorm", p, p -> find_spell( 184279 ) )
-  {
-    parse_options( opts );
-
-    callbacks = may_miss = may_block = may_parry = false;
-    dynamic_tick_action = hasted_ticks = true;
-    trigger_gcd = timespan_t::from_seconds( 1.0 );
-
-    tick_action = new felstorm_tick_t( p );
-  }
-
-  // Make dot long enough to last for the duration of the summon
-  timespan_t composite_dot_duration( const action_state_t* ) const override
-  { return sim -> expected_iteration_time; }
-
-  bool init_finished() override
-  {
-    pet_t* main_pet = player -> cast_pet() -> owner -> find_pet( BLADEMASTER_PET_NAME );
-
-    if ( player != main_pet )
-      stats = main_pet -> find_action( "felstorm" ) -> stats;
-
-    return melee_attack_t::init_finished();
-  }
-};
-
-struct blademaster_pet_t : public hunter_pet_t
-{
-  action_t* felstorm;
-
-  blademaster_pet_t( player_t* owner ) :
-    hunter_pet_t( *(owner -> sim), *static_cast<hunter_t*>(owner), BLADEMASTER_PET_NAME, PET_NONE, true, true ),
-    felstorm( nullptr )
-  {
-    main_hand_weapon.type = WEAPON_BEAST;
-    // Verified 5/11/15, TODO: Check if this is still the same on live
-    owner_coeff.ap_from_ap = 1.0;
-
-    // Magical constants for base damage
-    double damage_range = 0.4;
-    double base_dps = owner -> dbc.spell_scaling( PLAYER_SPECIAL_SCALE, owner -> level() ) * 4.725;
-    double min_dps = base_dps * ( 1 - damage_range / 2.0 );
-    double max_dps = base_dps * ( 1 + damage_range / 2.0 );
-    main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
-    main_hand_weapon.min_dmg =  min_dps * main_hand_weapon.swing_time.total_seconds();
-    main_hand_weapon.max_dmg =  max_dps * main_hand_weapon.swing_time.total_seconds();
-  }
-
-  timespan_t available() const override
-  { return timespan_t::from_seconds( 20.0 ); }
-
-  void init_action_list() override
-  {
-    action_list_str = "felstorm,if=!ticking";
-
-    pet_t::init_action_list();
-  }
-
-  void dismiss( bool expired = false ) override
-  {
-    hunter_pet_t::dismiss( expired );
-
-    if ( dot_t* d = felstorm -> find_dot( felstorm -> target ) )
-      d -> cancel();
-  }
-
-  action_t* create_action( const std::string& name,
-                           const std::string& options_str ) override
-  {
-    if ( name == "felstorm" )
-    {
-      felstorm = new felstorm_t( this, options_str );
-      return felstorm;
-    }
-
-    return pet_t::create_action( name, options_str );
-  }
-};
-
 // ==========================================================================
 // Hunter Main Pet
 // ==========================================================================
@@ -1640,7 +1528,6 @@ struct dire_critter_t: public hunter_secondary_pet_t
 
   struct actives_t
   {
-    action_t* jaws_of_thunder;
     action_t* stomp;
     action_t* titans_thunder;
   } active;
@@ -5518,9 +5405,6 @@ pet_t* hunter_t::create_pet( const std::string& pet_name,
                              const std::string& pet_type )
 {
   using namespace pets;
-  // Blademaster pets have to always be explicitly created, cannot re-use the same pet as there are
-  // many of them.
-  if (pet_name == BLADEMASTER_PET_NAME) return new blademaster_pet_t(this);
 
   pet_t* p = find_pet( pet_name );
 
@@ -6109,7 +5993,6 @@ void hunter_t::init_procs()
   procs.mortal_wounds                = get_proc( "mortal_wounds" );
   procs.t18_4pc_sv                   = get_proc( "t18_4pc_sv" );
   procs.zevrims_hunger               = get_proc( "zevrims_hunger" );
-  procs.convergence                  = get_proc( "convergence" );
   procs.marking_targets              = get_proc( "marking_targets" );
   procs.wasted_marking_targets       = get_proc( "wasted_marking_targets" );
   procs.animal_instincts_mongoose    = get_proc( "animal_instincts_mongoose" );

@@ -563,8 +563,7 @@ item_socket_color enchant::initialize_relic( item_t&                    item,
         // so we need to map the blizzard's indexing system to our own (seemingly arbitrary indexing
         // based on development cycle).
         auto internal_power_index = std::distance( powers.begin(), power_it );
-        item.player -> artifact.points[ internal_power_index ].second += data.ench_amount[ i ];
-        item.player -> artifact.n_points += data.ench_amount[ i ];
+        item.player -> artifact.add_bonus_rank( internal_power_index, data.ench_amount[ i ] );
         break;
       }
       default:

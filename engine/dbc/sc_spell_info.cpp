@@ -731,7 +731,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
     s << " | AP Coefficient: " << tmp_buffer;
   }
 
-  if ( e -> chain_multiplier() != 0 && e -> chain_multiplier() != 1.0 )
+  if ( e -> chain_target() != 0 )
     s << " | Chain Multiplier: " << e -> chain_multiplier();
 
   if ( e -> misc_value1() != 0 || e -> type() == E_ENERGIZE )
@@ -1160,7 +1160,13 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
   if ( spell -> power_id() > 0 )
   {
     auto powers = dbc.artifact_power_ranks( spell -> power_id() );
-    s << "Artifact Power   : Id: " << spell -> power_id() << ", Max Rank: " << ( powers.back() -> index() + 1 );
+    auto power_data = dbc.artifact_power( spell -> power_id() );
+    s << "Artifact Power   : Id: " << spell -> power_id();
+    if ( power_data )
+    {
+      s << ", Index: " << power_data -> power_index;
+    }
+    s << ", Max Rank: " << ( powers.back() -> index() + 1 );
     if ( powers.size() > 1 )
     {
       std::vector<std::string> artifact_hotfixes;
