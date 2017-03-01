@@ -1160,7 +1160,13 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
   if ( spell -> power_id() > 0 )
   {
     auto powers = dbc.artifact_power_ranks( spell -> power_id() );
-    s << "Artifact Power   : Id: " << spell -> power_id() << ", Max Rank: " << ( powers.back() -> index() + 1 );
+    auto power_data = dbc.artifact_power( spell -> power_id() );
+    s << "Artifact Power   : Id: " << spell -> power_id();
+    if ( power_data )
+    {
+      s << ", Index: " << power_data -> power_index;
+    }
+    s << ", Max Rank: " << ( powers.back() -> index() + 1 );
     if ( powers.size() > 1 )
     {
       std::vector<std::string> artifact_hotfixes;
