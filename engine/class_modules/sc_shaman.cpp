@@ -4823,28 +4823,9 @@ struct seismic_lightning_t : public shaman_spell_t
     shaman_spell_t("seismic_lightning", p, p -> find_spell( 243073 ))
   {
     background = true;
+    callbacks = false;
     // TODO: test whether lightning is affected by elemental focus
     affected_by_elemental_focus = false;
-  }
-};
-
-
-struct seismic_storm_t : public shaman_spell_t
-{
-  seismic_lightning_t* zapp;
-
-  seismic_storm_t( shaman_t* p ) :
-    shaman_spell_t("seismic_storm", p, p -> find_spell( 238141 )),
-    zapp( new seismic_lightning_t( p ) )
-  {
-    background = true;
-    affected_by_elemental_focus = false;
-    add_child(zapp);
-  }
-
-  void execute() override
-  {
-    zapp -> execute();
   }
 };
 
@@ -6062,7 +6043,7 @@ bool shaman_t::create_actions()
 
   if ( artifact.seismic_storm.rank() )
   {
-    action.seismic_storm = new seismic_storm_t( this );
+    action.seismic_storm = new seismic_lightning_t( this );
   }
 
   if ( sets.has_set_bonus( SHAMAN_ENHANCEMENT, T18, B2 ) )
