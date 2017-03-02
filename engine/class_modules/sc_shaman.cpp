@@ -4203,6 +4203,11 @@ struct lava_burst_t : public shaman_spell_t
       overload = new lava_burst_overload_t( player );
       add_child( overload );
     }
+
+    if ( player -> artifact.volcanic_inferno.rank() )
+    {
+      add_child( player -> action.volcanic_inferno );
+    }
   }
 
   void init() override
@@ -4885,6 +4890,10 @@ struct earthquake_t : public shaman_spell_t
   {
     dot_duration = timespan_t::zero(); // The periodic effect is handled by ground_aoe_event_t
     add_child( rumble );
+    if ( player -> artifact.seismic_storm )
+    {
+      add_child( player -> action.seismic_storm );
+    }
   }
 
   double cost() const override
