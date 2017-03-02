@@ -5012,7 +5012,7 @@ struct earth_shock_t : public shaman_spell_t
     tdbp_proc_chance( 0 )
   {
     base_multiplier *= 1.0 + player -> artifact.earthen_attunement.percent();
-  secondary_costs[ RESOURCE_MAELSTROM ] += player -> artifact.swelling_maelstrom.data().effectN( 1 ).base_value();
+    secondary_costs[ RESOURCE_MAELSTROM ] += player -> artifact.swelling_maelstrom.data().effectN( 1 ).base_value();
   }
 
   double spell_direct_power_coefficient( const action_state_t* ) const override
@@ -7063,6 +7063,7 @@ void shaman_t::init_action_list_elemental()
   }
 
   // "Default" APL controlling logic flow to specialized sub-APLs
+  def -> add_action( this, "Wind Shear", "" , "Interrupt of casts and enables reliable trigger of Sephuz Secret." );
   def -> add_action( "run_action_list,name=ptr_default,if=ptr" );
   def -> add_talent( this, "Totem Mastery", "if=buff.resonance_totem.remains<2" );
   def -> add_action( this, "Fire Elemental" );
