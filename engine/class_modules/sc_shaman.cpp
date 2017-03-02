@@ -589,7 +589,7 @@ public:
   void trigger_lightning_rod_damage( const action_state_t* state );
   void trigger_hot_hand( const action_state_t* state );
   void trigger_eye_of_twisting_nether( const action_state_t* state );
-  void trigger_sephuzs_secret( const action_state_t* state, double proc_chance = -1.0 );
+  void trigger_sephuzs_secret( const action_state_t* state, spell_mechanic mechanic, double proc_chance = -1.0 );
 
   // Character Definition
   void      init_spells() override;
@@ -4870,7 +4870,8 @@ struct earthquake_damage_t : public shaman_spell_t
       p() -> action.seismic_storm -> execute();
     }
 
-    p() -> trigger_sephuzs_secret( state, kb_chance );
+    // Knockdown is probably a stun internally
+    p() -> trigger_sephuzs_secret( state, MECHANIC_STUN, kb_chance );
   }
 };
 
@@ -5127,7 +5128,7 @@ struct wind_shear_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    p() -> trigger_sephuzs_secret( execute_state );
+    p() -> trigger_sephuzs_secret( execute_state, MECHANIC_INTERRUPT );
   }
 
 };
@@ -6527,14 +6528,24 @@ void shaman_t::trigger_eye_of_twisting_nether( const action_state_t* state )
   }
 }
 
-void shaman_t::trigger_sephuzs_secret( const action_state_t* state, double override_proc_chance )
+void shaman_t::trigger_sephuzs_secret( const action_state_t* state,
+                                       spell_mechanic        mechanic,
+                                       double                override_proc_chance )
 {
-  // Proc sephuz on persistent enemies if they are below the "boss level" (playerlevel + 3), and on
-  // any kind of transient adds.
-  if ( state -> target -> type != ENEMY_ADD &&
-       ( state -> target -> level() >= sim -> max_player_level + 3 ) )
+  switch ( mechanic )
   {
-    return;
+    // Interrupts will always trigger sephuz
+    case MECHANIC_INTERRUPT:
+      break;
+    default:
+      // By default, proc sephuz on persistent enemies if they are below the "boss level"
+      // (playerlevel + 3), and on any kind of transient adds.
+      if ( state -> target -> type != ENEMY_ADD &&
+           ( state -> target -> level() >= sim -> max_player_level + 3 ) )
+      {
+        return;
+      }
+      break;
   }
 
   // Ensure Sephuz's Secret can even be procced. If the ring is not equipped, a fallback buff with
