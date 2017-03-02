@@ -6494,14 +6494,12 @@ void shaman_t::trigger_lightning_rod_damage( const action_state_t* state )
     return;
   }
 
-  shaman_td_t* td = get_target_data( state -> target );
-
-  if ( ! td -> debuff.lightning_rod -> up() )
+  if ( lightning_rods.size() == 0 )
   {
     return;
   }
 
-  double amount = state -> result_amount * td -> debuff.lightning_rod -> check_value();
+  double amount = state -> result_amount * talent.lightning_rod -> effectN( 2 ).percent();
   action.lightning_rod -> base_dd_min = action.lightning_rod -> base_dd_max = amount;
 
   // Can't schedule_execute here, since Chain Lightning may trigger immediately on multiple
