@@ -4890,7 +4890,7 @@ struct earthquake_t : public shaman_spell_t
   {
     dot_duration = timespan_t::zero(); // The periodic effect is handled by ground_aoe_event_t
     add_child( rumble );
-    if ( player -> artifact.seismic_storm )
+    if ( player -> artifact.seismic_storm.rank() )
     {
       add_child( player -> action.seismic_storm );
     }
