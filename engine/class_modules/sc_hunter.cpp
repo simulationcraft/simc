@@ -4606,12 +4606,16 @@ struct bestial_wrath_t: public hunter_spell_t
     {
       // 2017-02-06 hotfix: "With the Dire Frenzy talent, the Eagletalon Battlegear Beast Mastery 2-piece bonus should now grant your pet 10% increased damage for 15 seconds."
       if ( p() -> talents.dire_frenzy -> ok() )
-          p() -> active.pet -> buffs.tier19_2pc_bm -> trigger();
-
-      for ( size_t i = 0; i < p() -> pets.dire_beasts.size(); i++ )
       {
-        if ( ! p() -> pets.dire_beasts[ i ] -> is_sleeping() )
-          p() -> pets.dire_beasts[ i ] -> buffs.bestial_wrath -> trigger();
+        p() -> active.pet -> buffs.tier19_2pc_bm -> trigger();
+      }
+      else
+      {
+        for ( auto dire_beast : p() -> pets.dire_beasts )
+        {
+          if ( ! dire_beast -> is_sleeping() )
+            dire_beast -> buffs.bestial_wrath -> trigger();
+        }
       }
     }
     if ( p() -> artifacts.master_of_beasts.rank() )
@@ -4769,14 +4773,20 @@ struct titans_thunder_t: public hunter_spell_t
     hunter_spell_t::execute();
 
     if ( p() -> talents.dire_frenzy -> ok() )
+    {
       p() -> active.pet -> buffs.titans_frenzy -> trigger();
+    }
+    else
+    {
+      for ( auto dire_beast : p() -> pets.dire_beasts )
+      {
+        if ( !dire_beast -> is_sleeping() )
+          dire_beast -> active.titans_thunder -> execute();
+      }
+    }
+
     p() -> active.pet -> active.titans_thunder -> execute();
     p() -> pets.hati -> active.titans_thunder -> execute();
-    for ( size_t i = 0; i < p() -> pets.dire_beasts.size(); i++ )
-    {
-      if ( !p() -> pets.dire_beasts[ i ] -> is_sleeping() )
-        p() -> pets.dire_beasts[ i ] -> active.titans_thunder -> execute();
-    }
   }
 
   bool init_finished() override
