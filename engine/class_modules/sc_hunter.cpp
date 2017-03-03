@@ -1976,6 +1976,7 @@ struct kill_command_t: public hunter_pet_action_t < hunter_pet_t, attack_t >
                                             .percent() * 
                                             s -> result_amount;
       jaws_of_thunder -> base_dd_max = jaws_of_thunder -> base_dd_min;
+      jaws_of_thunder -> target = s -> target;
       jaws_of_thunder -> execute();
     }
   }
@@ -4214,7 +4215,10 @@ struct harpoon_t: public hunter_melee_attack_t
     first_harpoon = false;
 
     if ( on_the_trail )
+    {
+      on_the_trail -> target = execute_state -> target;
       on_the_trail -> execute();
+    }
 
     if ( p() -> legendary.sv_waist )
       td( execute_state -> target ) -> debuffs.mark_of_helbrine -> trigger();
@@ -4295,9 +4299,11 @@ struct moc_t : public hunter_spell_t
     starved_proc = player -> get_proc( "starved: a_murder_of_crows" );
   }
 
-  void tick( dot_t*d ) override
+  void tick( dot_t* d ) override
   {
     hunter_spell_t::tick( d );
+
+    peck -> target = d -> target;
     peck -> execute();
   }
 };
