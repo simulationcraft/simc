@@ -3388,9 +3388,6 @@ struct aimed_shot_t: public aimed_shot_base_t
 
     aimed_in_ca -> update( p() -> buffs.careful_aim -> check() != 0 );
 
-    if ( p() -> sets.has_set_bonus( HUNTER_MARKSMANSHIP, PVP, B4 ) )
-      p() -> cooldowns.trueshot -> adjust( -p() -> sets.set( HUNTER_MARKSMANSHIP, PVP, B4 ) -> effectN( 1 ).time_value() );
-
     if ( p() -> buffs.lock_and_load -> up() )
       p() -> buffs.lock_and_load -> decrement();
 
@@ -4679,14 +4676,6 @@ struct freezing_trap_t : public hunter_spell_t
     parse_options( options_str );
 
     cooldown -> duration = data().cooldown();
-
-    if ( p -> sets.has_set_bonus( p -> specialization(), PVP, B2 ) )
-    {
-      energize_type = ENERGIZE_ON_HIT;
-      energize_resource = RESOURCE_FOCUS;
-      energize_amount = p -> sets.set( p -> specialization(), PVP, B2 ) ->
-        effectN( 1 ).trigger() -> effectN( 1 ).base_value();
-    }
   }
 
   virtual void execute() override
