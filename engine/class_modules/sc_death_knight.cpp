@@ -6203,6 +6203,41 @@ struct frozen_soul_buff_t : public buff_t
   }
 };
 
+// Hungering Rune Weapon
+
+// Hungering Rune Weapon buff needs two tick periods for the Rune and Runic Power replenishment.
+// Simc does not really support this, so we fake it by ticking faster (every 500ms), and triggering
+// the replenishment every third and second tick, respectively.
+struct hungering_rune_weapon_buff_t : public buff_t
+{
+  int rune_divisor, rp_divisor;
+
+  hungering_rune_weapon_buff_t( death_knight_t* p ) :
+   buff_t( buff_creator_t( p, "hungering_rune_weapon", p -> talent.hungering_rune_weapon )
+    .cd( timespan_t::zero() ) // Handled in the action
+    // 500MS tick time
+    .period( p -> talent.hungering_rune_weapon -> effectN( 1 ).period() / 3.0 )
+    .tick_callback( [ this, p ]( buff_t* b, int, const timespan_t& ) {
+      if ( b -> current_tick % rune_divisor == 0 )
+      {
+        p -> replenish_rune( b -> data().effectN( 1 ).base_value(),
+                             p -> gains.hungering_rune_weapon );
+      }
+
+      if ( b -> current_tick % rp_divisor == 0 )
+      {
+        p -> resource_gain( RESOURCE_RUNIC_POWER,
+                            b -> data().effectN( 2 ).resource( RESOURCE_RUNIC_POWER ),
+                            p -> gains.hungering_rune_weapon );
+      }
+    } ) ),
+    // NOTE: Apparently Hungering Rune Weapon is bugged(?) in game, and is actually ticking every
+    // second for runes, instead of every 1.5 seconds.
+    rune_divisor( p -> talent.hungering_rune_weapon -> effectN( p -> bugs ? 2 : 1 ).period() / buff_period ),
+    rp_divisor( p -> talent.hungering_rune_weapon -> effectN( 2 ).period() / buff_period )
+  { }
+};
+
 } // UNNAMED NAMESPACE
 
 // Runeforges ==============================================================
@@ -7437,13 +7472,7 @@ void death_knight_t::create_buffs()
   // Must be created after Gathering Storms buff (above) to get correct linkage
   buffs.remorseless_winter = new remorseless_winter_buff_t( this );
 
-  buffs.hungering_rune_weapon = buff_creator_t( this, "hungering_rune_weapon", talent.hungering_rune_weapon )
-    .cd( timespan_t::zero() ) // Handled in the action
-    .period( talent.hungering_rune_weapon -> effectN( 1 ).period() )
-    .tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
-      replenish_rune( b -> data().effectN( 1 ).base_value(), gains.hungering_rune_weapon );
-      resource_gain( RESOURCE_RUNIC_POWER, b -> data().effectN( 2 ).resource( RESOURCE_RUNIC_POWER ), gains.hungering_rune_weapon );
-    } );
+  buffs.hungering_rune_weapon = new hungering_rune_weapon_buff_t( this );
 }
 
 // death_knight_t::init_gains ===============================================
