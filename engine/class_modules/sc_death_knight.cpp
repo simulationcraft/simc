@@ -1579,6 +1579,7 @@ struct dt_pet_auto_attack_t : public auto_attack_melee_t<T>
   {
     auto_attack_melee_t<T>::impact( s );
 
+    /*
     if ( this -> result_is_hit( s -> result ) )
     {
       if ( ! this -> rng().roll( this -> p() -> o() -> legendary.uvanimor_the_unbeautiful ) )
@@ -1597,6 +1598,7 @@ struct dt_pet_auto_attack_t : public auto_attack_melee_t<T>
         log_rune_status( this -> p() -> o() );
       }
     }
+    */
   }
 };
 
