@@ -741,9 +741,9 @@ struct vulnerability_stats_t
 
   void update( hunter_t* p, const action_t* a )
   {
-    std::vector<player_t*> target_list = a -> target_list();
+    const action_state_t* s = a -> execute_state;
 
-    if ( ! p -> get_target_data( p -> target ) -> debuffs.vulnerable -> check() )
+    if ( ! p -> get_target_data( s -> target ) -> debuffs.vulnerable -> check() )
     {
       no_vuln -> occur();
     }
@@ -752,15 +752,15 @@ struct vulnerability_stats_t
       if ( has_patient_sniper )
       {
         // it looks like we can get called with current_tick == 6 (last tick) which is oor
-        size_t current_tick = std::min<size_t>( p -> get_target_data( p -> target ) -> debuffs.vulnerable -> current_tick, patient_sniper.size() - 1 );
+        size_t current_tick = std::min<size_t>( p -> get_target_data( s -> target ) -> debuffs.vulnerable -> current_tick, patient_sniper.size() - 1 );
         patient_sniper[ current_tick ] -> occur();
       }
 
       if ( check_secondary )
       {
-        for ( player_t* tar : target_list )
+        for ( player_t* tar : a -> target_list() )
         {
-          if ( tar != p -> target && !p -> get_target_data( tar ) -> debuffs.vulnerable -> check() )
+          if ( tar != s -> target && !p -> get_target_data( tar ) -> debuffs.vulnerable -> check() )
           {
             no_vuln_secondary -> occur();
             return;
@@ -2219,16 +2219,16 @@ struct flanking_strike_t: public hunter_main_pet_attack_t
     return cc;
   }
 
-  virtual double action_multiplier() const override
+  double composite_target_multiplier( player_t* t ) const override
   {
-    double am = hunter_main_pet_attack_t::action_multiplier();
+    double am = hunter_main_pet_attack_t::composite_target_multiplier( t );
 
-    if ( p() -> target -> target == o() )
+    if ( t -> target == o() )
       am *= 1.0 + p() -> o() -> specs.flanking_strike -> effectN( 3 ).percent();
 
     return am;
-  }  
-  
+  }
+
   virtual double composite_attack_power() const override
   { return o() -> cache.attack_power() * o() -> composite_attack_power_multiplier(); }
 };
@@ -3911,11 +3911,11 @@ struct flanking_strike_t: hunter_melee_attack_t
     return cc;
   }
 
-  virtual double action_multiplier() const override
+  double composite_target_multiplier( player_t* t ) const override
   {
-    double am = hunter_melee_attack_t::action_multiplier();
+    double am = hunter_melee_attack_t::composite_target_multiplier( t );
 
-    if ( p() -> target -> target != p() )
+    if ( t -> target != p() )
       am *= 1.0 + p() -> specs.flanking_strike -> effectN( 3 ).percent();
 
     return am;
@@ -4992,8 +4992,11 @@ struct explosive_trap_t: public hunter_spell_t
 {
   struct explosive_trap_impact_t : public hunter_spell_t
   {
+    player_t* original_target;
+
     explosive_trap_impact_t( hunter_t* p ):
-      hunter_spell_t( "explosive_trap_impact", p, p -> find_spell( 13812 ) )
+      hunter_spell_t( "explosive_trap_impact", p, p -> find_spell( 13812 ) ),
+      original_target( nullptr )
     {
       aoe = -1;
       background = true;
@@ -5020,6 +5023,8 @@ struct explosive_trap_t: public hunter_spell_t
     {
       hunter_spell_t::execute();
 
+      original_target = execute_state -> target;
+
       if ( p() -> legendary.sv_feet )
         p() -> resource_gain( RESOURCE_FOCUS, p() -> find_spell( 212575 ) -> effectN( 1 ).resource( RESOURCE_FOCUS ), p() -> gains.nesingwarys_trapping_treads );
     }
@@ -5028,7 +5033,7 @@ struct explosive_trap_t: public hunter_spell_t
     {
       double m = hunter_spell_t::composite_target_da_multiplier( t );
 
-      if ( t == p() -> target )
+      if ( t == original_target )
         m *= 1.0 + p() -> talents.expert_trapper -> effectN( 1 ).percent();
 
       return m;
@@ -5038,7 +5043,7 @@ struct explosive_trap_t: public hunter_spell_t
     {
       double m = hunter_spell_t::composite_target_ta_multiplier( t );
 
-      if ( t == p() -> target )
+      if ( t == original_target )
         m *= 1.0 + p() -> talents.expert_trapper -> effectN( 1 ).percent();
 
       return m;
