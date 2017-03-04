@@ -331,6 +331,7 @@ public:
     // Havoc -- Twinblades of the Deceiver
     artifact_power_t anguish_of_the_deceiver;
     artifact_power_t balanced_blades;
+    artifact_power_t bladedancers_grace;
     artifact_power_t chaos_burn;
     artifact_power_t chaos_vision;    
     artifact_power_t contained_fury;
@@ -339,6 +340,7 @@ public:
     artifact_power_t demon_speed;
     artifact_power_t feast_on_the_souls;
     artifact_power_t fury_of_the_illidari;
+    artifact_power_t illidari_ferocity;
     artifact_power_t inner_demons;
     artifact_power_t overwhelming_power;
     artifact_power_t rage_of_the_illidari;
@@ -348,10 +350,8 @@ public:
     artifact_power_t wide_eyes;
 
     // NYI
-    artifact_power_t bladedancers_grace;
     artifact_power_t chaotic_onslaught;
-    artifact_power_t deceivers_fury;
-    artifact_power_t illidari_knowledge;
+    artifact_power_t deceivers_fury;    
 
     // Vengeance -- The Aldrachi Warblades
     artifact_power_t aldrachi_design;
@@ -3163,12 +3163,20 @@ struct blade_dance_attack_t : public demon_hunter_attack_t
     return dm;
   }
 
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+    double cd = demon_hunter_attack_t::composite_crit_damage_bonus_multiplier();
+
+    cd *= 1.0 + p()->artifact.bladedancers_grace.percent();
+
+    return cd;
+  }
+
   double composite_crit_chance() const override
   {
     double cc = demon_hunter_attack_t::composite_crit_chance();
 
-    // FIX: Enable T20 when spelldata is hooked up
-    //cc += p()->sets.set(DEMON_HUNTER_HAVOC, T20, B4)->effectN(1).percent();
+    cc += p()->sets.set(DEMON_HUNTER_HAVOC, T20, B4)->effectN(1).percent();
 
     return cc;
   }
@@ -3301,12 +3309,11 @@ struct blade_dance_base_t : public demon_hunter_attack_t
     assert( dodge_buff );
     dodge_buff -> trigger();
 
-    // FIX: Enable T20 when spelldata is hooked up
-    //if (target_list().size() > 0)
-    //{
-    //  const double refund = p()->sets.set(DEMON_HUNTER_HAVOC, T20, B2)->effectN(1).resource(RESOURCE_FURY);
-    //  p()->resource_gain(RESOURCE_FURY, refund, p()->gain.havoc_t20_2pc);
-    //}
+    if (target_list().size() > 0)
+    {
+      const double refund = p()->sets.set(DEMON_HUNTER_HAVOC, T20, B2)->effectN(1).resource(RESOURCE_FURY);
+      p()->resource_gain(RESOURCE_FURY, refund, p()->gain.havoc_t20_2pc);
+    }
   }
 };
 
@@ -6388,7 +6395,7 @@ void demon_hunter_t::init_spells()
   artifact.demon_speed              = find_artifact_spell("Demon Speed");
   artifact.feast_on_the_souls       = find_artifact_spell("Feast on the Souls");
   artifact.fury_of_the_illidari     = find_artifact_spell("Fury of the Illidari");
-  artifact.illidari_knowledge       = find_artifact_spell("Illidari Knowledge");
+  artifact.illidari_ferocity        = find_artifact_spell("Illidari Ferocity");
   artifact.inner_demons             = find_artifact_spell("Inner Demons");
   artifact.overwhelming_power       = find_artifact_spell("Overwhelming Power");
   artifact.rage_of_the_illidari     = find_artifact_spell("Rage of the Illidari");
@@ -6992,6 +6999,7 @@ double demon_hunter_t::composite_attribute_multiplier( attribute_e a ) const
   {
     case ATTR_STAMINA:
       am *= 1.0 + spec.demonic_wards -> effectN( 4 ).percent();
+      am *= 1.0 + artifact.illidari_ferocity.data().effectN(2).percent();
       break;
     case ATTR_AGILITY:
     // Deliberately ignore stacks.
@@ -7150,6 +7158,8 @@ double demon_hunter_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + talent.razor_spikes -> effectN( 1 ).percent();
 
   m *= 1.0 + artifact.chaos_burn.percent();
+
+  m *= 1.0 + artifact.illidari_ferocity.data().effectN(1).percent();
 
   return m;
 }
