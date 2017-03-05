@@ -589,7 +589,7 @@ public:
   void trigger_lightning_rod_damage( const action_state_t* state );
   void trigger_hot_hand( const action_state_t* state );
   void trigger_eye_of_twisting_nether( const action_state_t* state );
-  void trigger_sephuzs_secret( const action_state_t* state, double proc_chance = -1.0 );
+  void trigger_sephuzs_secret( const action_state_t* state, spell_mechanic mechanic, double proc_chance = -1.0 );
 
   // Character Definition
   void      init_spells() override;
@@ -4203,6 +4203,11 @@ struct lava_burst_t : public shaman_spell_t
       overload = new lava_burst_overload_t( player );
       add_child( overload );
     }
+
+    if ( player -> artifact.volcanic_inferno.rank() )
+    {
+      add_child( player -> action.volcanic_inferno );
+    }
   }
 
   void init() override
@@ -4823,28 +4828,9 @@ struct seismic_lightning_t : public shaman_spell_t
     shaman_spell_t("seismic_lightning", p, p -> find_spell( 243073 ))
   {
     background = true;
+    callbacks = false;
     // TODO: test whether lightning is affected by elemental focus
     affected_by_elemental_focus = false;
-  }
-};
-
-
-struct seismic_storm_t : public shaman_spell_t
-{
-  seismic_lightning_t* zapp;
-
-  seismic_storm_t( shaman_t* p ) :
-    shaman_spell_t("seismic_storm", p, p -> find_spell( 238141 )),
-    zapp( new seismic_lightning_t( p ) )
-  {
-    background = true;
-    affected_by_elemental_focus = false;
-    add_child(zapp);
-  }
-
-  void execute() override
-  {
-    zapp -> execute();
   }
 };
 
@@ -4889,7 +4875,8 @@ struct earthquake_damage_t : public shaman_spell_t
       p() -> action.seismic_storm -> execute();
     }
 
-    p() -> trigger_sephuzs_secret( state, kb_chance );
+    // Knockdown is probably a stun internally
+    p() -> trigger_sephuzs_secret( state, MECHANIC_STUN, kb_chance );
   }
 };
 
@@ -4903,6 +4890,10 @@ struct earthquake_t : public shaman_spell_t
   {
     dot_duration = timespan_t::zero(); // The periodic effect is handled by ground_aoe_event_t
     add_child( rumble );
+    if ( player -> artifact.seismic_storm.rank() )
+    {
+      add_child( player -> action.seismic_storm );
+    }
   }
 
   double cost() const override
@@ -5146,7 +5137,7 @@ struct wind_shear_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    p() -> trigger_sephuzs_secret( execute_state );
+    p() -> trigger_sephuzs_secret( execute_state, MECHANIC_INTERRUPT );
   }
 
 };
@@ -6062,7 +6053,7 @@ bool shaman_t::create_actions()
 
   if ( artifact.seismic_storm.rank() )
   {
-    action.seismic_storm = new seismic_storm_t( this );
+    action.seismic_storm = new seismic_lightning_t( this );
   }
 
   if ( sets.has_set_bonus( SHAMAN_ENHANCEMENT, T18, B2 ) )
@@ -6503,14 +6494,12 @@ void shaman_t::trigger_lightning_rod_damage( const action_state_t* state )
     return;
   }
 
-  shaman_td_t* td = get_target_data( state -> target );
-
-  if ( ! td -> debuff.lightning_rod -> up() )
+  if ( lightning_rods.size() == 0 )
   {
     return;
   }
 
-  double amount = state -> result_amount * td -> debuff.lightning_rod -> check_value();
+  double amount = state -> result_amount * talent.lightning_rod -> effectN( 2 ).percent();
   action.lightning_rod -> base_dd_min = action.lightning_rod -> base_dd_max = amount;
 
   // Can't schedule_execute here, since Chain Lightning may trigger immediately on multiple
@@ -6546,14 +6535,24 @@ void shaman_t::trigger_eye_of_twisting_nether( const action_state_t* state )
   }
 }
 
-void shaman_t::trigger_sephuzs_secret( const action_state_t* state, double override_proc_chance )
+void shaman_t::trigger_sephuzs_secret( const action_state_t* state,
+                                       spell_mechanic        mechanic,
+                                       double                override_proc_chance )
 {
-  // Proc sephuz on persistent enemies if they are below the "boss level" (playerlevel + 3), and on
-  // any kind of transient adds.
-  if ( state -> target -> type != ENEMY_ADD &&
-       ( state -> target -> level() >= sim -> max_player_level + 3 ) )
+  switch ( mechanic )
   {
-    return;
+    // Interrupts will always trigger sephuz
+    case MECHANIC_INTERRUPT:
+      break;
+    default:
+      // By default, proc sephuz on persistent enemies if they are below the "boss level"
+      // (playerlevel + 3), and on any kind of transient adds.
+      if ( state -> target -> type != ENEMY_ADD &&
+           ( state -> target -> level() >= sim -> max_player_level + 3 ) )
+      {
+        return;
+      }
+      break;
   }
 
   // Ensure Sephuz's Secret can even be procced. If the ring is not equipped, a fallback buff with

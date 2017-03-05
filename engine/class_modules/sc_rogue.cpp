@@ -728,7 +728,9 @@ static void break_stealth( rogue_t* p )
   // - Do Shadow Dance -> Stealth while out of combat (only possible with Subterfuge)
   // - Not triggering Subterfuge during a Vanish (to proc Stealth at the end of the Vanish)
   //   and using Shadow Dance before Vanish expires.
-  if ( p -> buffs.stealth -> check() && (p -> talent.subterfuge -> ok() && ! p -> buffs.shadow_dance -> check() ) )
+  if ( p -> buffs.stealth -> check() &&
+      ( (p -> talent.subterfuge -> ok() && ! p -> buffs.shadow_dance -> check() ) ||
+      ! p -> talent.subterfuge -> ok() ) )
     p -> buffs.stealth -> expire();
 
   if ( p -> buffs.vanish -> check() )
