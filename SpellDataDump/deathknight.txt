@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 3d249f6)
+SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 3249f8a)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -3502,7 +3502,7 @@ Name             : Crystalline Swords (id=189186) [Spell Family (15), Passive]
 Class            : Death Knight
 School           : Physical
 Proc Chance      : 45%
-Artifact Power   : Id: 122, Max Rank: 1
+Artifact Power   : Id: 122, Index: 1, Max Rank: 1
 Proc Flags       : ..x.x... ........ ........ ........ 
                  : White Melee, Yellow Melee
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -3524,7 +3524,7 @@ GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 300 seconds
 Category         : 1652
-Artifact Power   : Id: 124, Max Rank: 1
+Artifact Power   : Id: 124, Index: 3, Max Rank: 1
 Affecting spells : Consort's Cold Core (235605)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4468,7 +4468,7 @@ Spell Level      : 56
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 45 seconds
-Artifact Power   : Id: 289, Max Rank: 1
+Artifact Power   : Id: 289, Index: 0, Max Rank: 1
 Affecting spells : Death Knight (137005), Blood Death Knight (137008)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -6050,7 +6050,7 @@ GCD              : 1.5 seconds
 Cooldown         : 90 seconds
 Internal Cooldown: 1 seconds
 Proc Chance      : 100%
-Artifact Power   : Id: 149, Max Rank: 1
+Artifact Power   : Id: 149, Index: 0, Max Rank: 1
 Proc Flags       : ....x... ..x..... ........ ........ 
                  : Yellow Melee, AOE Heal
 Affecting spells : Death Knight (137005)
