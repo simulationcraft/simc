@@ -1325,6 +1325,7 @@ class SpellDataGenerator(DataGenerator):
           ( 217207, 0 ), # Dire Frenzy (pet)
           ( 201594, 0 ), # Stampede
           ( 118459, 5 ), # Beast Cleave
+          ( 243120, 5 ), ( 243121, 5 ) # Deathstrike Venom (Cobra Commander snakes)
         ),
 
         # Rogue:
