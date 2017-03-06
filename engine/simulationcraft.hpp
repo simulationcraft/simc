@@ -3600,6 +3600,14 @@ struct player_t : public actor_t
       range::fill( points, { 0, 0 } );
       range::fill( relics, 0 );
     }
+
+    void add_bonus_rank( size_t index, uint8_t n_ranks = 1 )
+    {
+      assert( index < points.size() );
+
+      points[ index ].second += n_ranks;
+      n_points += n_ranks;
+    }
   } artifact;
 
   bool artifact_enabled() const;

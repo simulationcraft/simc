@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build ff6af4d)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build 3d249f6)
 
 Name             : Mend Pet (id=136) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
@@ -45,7 +45,7 @@ Range            : 50000 yards
 Cooldown         : 1 seconds
 Charges          : 1 (30 seconds cooldown)
 Category         : 1449
-Affecting spells : Hunter (137014), Guide: Disengage (162116)
+Affecting spells : Hunter (137014)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ xx...... ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -276,7 +276,7 @@ School           : Physical
 Spell Level      : 4
 Range            : 40 yards
 GCD              : 1.5 seconds
-Velocity         : 40 yards/sec
+Velocity         : 50 yards/sec
 Duration         : 6 seconds
 Cooldown         : 5 seconds
 Mechanic         : Unknown(88)
@@ -511,7 +511,7 @@ Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Velocity         : 40 yards/sec
+Velocity         : 60 yards/sec
 Duration         : 30 seconds
 Cooldown         : 45 seconds
 Category         : 1111
@@ -1146,6 +1146,7 @@ School           : Nature
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
+Velocity         : 40 yards/sec
 Cooldown         : 9 seconds
 Affecting spells : Freezing Trap (3355), Hunter (137014), Beast Mastery Hunter (137015), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468)
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
@@ -1157,7 +1158,7 @@ Attributes       : .x...... ........ x....... ........   ........ .x...... .....
                  : Ranged Ability (1)
 Effects          :
 #1 (id=45831)    : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Chain Targets: 2 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 0 | Chain Targets: 2 | Target: Enemy(6)
 Description      : A two-headed shot that hits your primary target and another nearby target, dealing $171457sw2 Nature damage to one and $171454sw2 Frost damage to the other. Generates $204304s1 Focus for every target hit.
 
 Name             : Careful Aim (id=53238) [Spell Family (9), Passive] 
@@ -1351,7 +1352,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=47538)    : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Chain Targets: 2 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 0 | Chain Targets: 2 | Target: Enemy(6)
 
 Name             : Heart of the Phoenix (Ferocity Ability) (id=55709) [Spell Family (9)] 
 Class            : Ferocity Hunter Pet
@@ -2460,11 +2461,9 @@ Attributes       : .x...... ........ x....... ........   ........ .x...... .....
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : Ranged Ability (1), Not a proc (105)
 Effects          :
-#1 (id=139841)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Target: Unknown(77)
-#2 (id=139842)   : Normalized Weapon Damage (121)
+#1 (id=139841)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 50 yards | Target: Unknown(24)
-#3 (id=139945)   : Weapon Damage% (31)
+#2 (id=139842)   : Weapon Damage% (31)
                    Base Value: 80 | Scaled Value: 0.8 | Radius: 50 yards | Target: Unknown(24)
 Description      : $@spelldesc120360
 
@@ -2747,7 +2746,7 @@ Effects          :
 #6 (id=342165)   : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #7 (id=351564)   : Apply Aura (6) | Unknown effect sub type (309)
-                   Base Value: -3500 | Scaled Value: -3500 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : $@spelldesc134732
 Tooltip          : Reduces healing received from critical heals by $w1%.$?$w2>0[
 Damage taken increased by $w2.][]
@@ -3747,7 +3746,7 @@ Resource         : 25 Focus
 Spell Level      : 20
 Range            : 40 yards
 GCD              : 1.5 seconds
-Velocity         : 40 yards/sec
+Velocity         : 60 yards/sec
 Affecting spells : Hunter (137014), Mastery: Sniper Training (193468), Trueshot (211327)
 Attributes       : ........ ........ x....... ........   ........ .xx..... ........ ..x.x... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
@@ -4985,7 +4984,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 30 seconds
 Affecting spells : Hunter (137014), Marksmanship Hunter (137016), Vulnerable (187131), Mastery: Sniper Training (193468), Trueshot (211327)
-Attributes       : .x..x... ........ x.x...x. ........   ........ ......x. ........ ........ 
+Attributes       : .x..x... ........ x.x..... ........   ........ ......x. ........ ........ 
                  : ........ ........ .x..x... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ...xx...   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ....x...   ........ ........ ........ ........ 
@@ -5217,7 +5216,7 @@ Duration         : 10 seconds
 Stacks           : 10 maximum
 Proc Chance      : 101%
 Triggered by     : True Aim (199527)
-Attributes       : ....x... x....... ........ ..x.....   ........ ........ ........ ........ 
+Attributes       : ....x... ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   .....x.. ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6021,7 +6020,7 @@ Class            : Hunter
 School           : Physical
 Spell Level      : 1
 Range            : 100 yards
-Velocity         : 60 yards/sec
+Velocity         : 90 yards/sec
 Affecting spells : Marksmanship Hunter (137016), Windrunner's Guidance (190457), Precision (190520), Mastery: Sniper Training (193468), 
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 

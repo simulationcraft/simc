@@ -22,7 +22,18 @@ enum artifact_trait_type
 };
 
 enum spell_mechanic {
-  MECHANIC_BLEED = 124
+  MECHANIC_CHARM = 2,
+  MECHANIC_BLIND = 10,
+  MECHANIC_DISARM = 22,
+  MECHANIC_DISORIENT = 42,
+  MECHANIC_PULL = 50,
+  MECHANIC_ROOT = 58,
+  MECHANIC_SILENCE = 72,
+  MECHANIC_DAZE = 88,
+  MECHANIC_STUN = 95,
+  MECHANIC_BLEED = 124,
+  MECHANIC_INTERRUPT = 227,
+  MECHANIC_INCAPACITATE = 255,
 };
 
 enum rppm_modifier_type_e
@@ -47,7 +58,8 @@ enum item_bonus_type
   ITEM_BONUS_REQ_LEVEL = 8,
   ITEM_BONUS_SCALING   = 11, // Scaling based on ScalingStatDistribution.db2
   ITEM_BONUS_SCALING_2 = 13, // Scaling based on ScalingStatDistribution.db2
-  ITEM_BONUS_SET_ILEVEL= 14
+  ITEM_BONUS_SET_ILEVEL= 14,
+  ITEM_BONUS_ADD_RANK  = 17, // Add artifact power rank to a specific trait
 };
 
 enum proc_types

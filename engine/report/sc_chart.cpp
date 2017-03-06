@@ -268,7 +268,7 @@ std::vector<double> get_data_summary( const player_collected_data_t& container,
                                       double percentile = 0.25 )
 {
   const extended_sample_data_t* c = nullptr;
-  std::vector<double> data( 5, 0 );
+  std::vector<double> data( 6, 0 );
   switch ( metric )
   {
     case METRIC_DPS:
@@ -298,6 +298,7 @@ std::vector<double> get_data_summary( const player_collected_data_t& container,
   data[ 2 ] = c->mean();
   data[ 3 ] = c->percentile( 1 - percentile );
   data[ 4 ] = c->max();
+  data[ 5 ] = c->percentile( .5 );
 
   return data;
 }
@@ -1096,7 +1097,8 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s,
           v.set( "name", p->name_str );
           v.set( "low", boxplot_data[ 0 ] );
           v.set( "q1", boxplot_data[ 1 ] );
-          v.set( "median", boxplot_data[ 2 ] );
+          v.set( "median", boxplot_data[ 5 ] );
+          v.set( "mean", boxplot_data[ 2 ] );
           v.set( "q3", boxplot_data[ 3 ] );
           v.set( "high", boxplot_data[ 4 ] );
           v.set( "color", c.dark( .4 ).str() );
@@ -1188,6 +1190,14 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s,
   bc.set( "plotOptions.boxplot.whiskerWidth", 1 );
   bc.set( "plotOptions.boxplot.medianWidth", 1 );
   bc.set( "plotOptions.boxplot.pointWidth", 18 );
+  bc.set( "plotOptions.boxplot.tooltip.pointFormat",
+    "Maximum: {point.high}<br/>"
+    "Upper quartile: {point.q3}<br/>"
+    "Mean: {point.mean:,.1f}<br/>"
+    "Median: {point.median}<br/>"
+    "Lower quartile: {point.q1}<br/>"
+    "Minimum: {point.low}<br/>"
+  );
 
   // X-axis label formatter, fetches colors from a (chart-local) table, instead
   // of writing out span

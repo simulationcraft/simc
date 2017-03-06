@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 74c9f6b)
+SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 3d249f6)
 
 Name             : Mend Pet (id=136) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
@@ -1159,7 +1159,7 @@ Attributes       : .x...... ........ x....... ........   ........ .x...... .....
                  : Ranged Ability (1)
 Effects          :
 #1 (id=45831)    : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Chain Targets: 2 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 2 | Target: Enemy(6)
 Description      : A two-headed shot that hits your primary target and another nearby target, dealing $171457sw2 Nature damage to one and $171454sw2 Frost damage to the other. Generates $204304s1 Focus for every target hit.
 
 Name             : Careful Aim (id=53238) [Spell Family (9), Passive] 
@@ -1353,7 +1353,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=47538)    : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Chain Targets: 2 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 2 | Target: Enemy(6)
 
 Name             : Heart of the Phoenix (Ferocity Ability) (id=55709) [Spell Family (9)] 
 Class            : Ferocity Hunter Pet

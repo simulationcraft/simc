@@ -7206,7 +7206,7 @@ struct use_item_t : public action_t
   {
     if ( ! item ) return false;
 
-    if ( cooldown_group -> remains() > timespan_t::zero() )
+    if ( cooldown_group && cooldown_group -> remains() > timespan_t::zero() )
     {
       return false;
     }
