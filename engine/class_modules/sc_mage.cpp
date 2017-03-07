@@ -3397,6 +3397,9 @@ struct arcane_missiles_t : public arcane_mage_spell_t
       p() -> cooldowns.evocation
           -> adjust( -1000 * p() -> sets.set( MAGE_ARCANE, T19, B4 ) -> effectN( 1 ).time_value()  );
     }
+
+    p() -> buffs.arcane_missiles -> decrement();
+
   }
 
   void tick ( dot_t* d ) override
