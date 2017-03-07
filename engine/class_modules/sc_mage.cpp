@@ -3223,6 +3223,7 @@ struct arcane_missiles_tick_t : public arcane_mage_spell_t
 
     triggers_arcane_missiles = false;
   }
+
 };
 
 struct am_state_t : public action_state_t
@@ -3279,7 +3280,6 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     temporal_hero_duration = p -> find_spell( 188117 ) -> duration();
 
     base_multiplier *= 1.0 + p -> artifact.aegwynns_fury.percent();
-    base_multiplier *= 1.0 + p -> artifact.aegwynns_intensity.percent();
     // PTR Multiplier
     base_multiplier *= 1.0 + p -> find_spell( 137021 ) -> effectN( 1 ).percent();
 
@@ -3392,8 +3392,6 @@ struct arcane_missiles_t : public arcane_mage_spell_t
       }
     }
 
-    p() -> buffs.arcane_missiles -> decrement();
-
     if ( p() -> sets.has_set_bonus( MAGE_ARCANE, T19, B4 ) )
     {
       p() -> cooldowns.evocation
@@ -3420,6 +3418,18 @@ struct arcane_missiles_t : public arcane_mage_spell_t
       return false;
 
     return arcane_mage_spell_t::ready();
+  }
+
+  virtual double composite_crit_chance() const override
+  {
+    double c = arcane_mage_spell_t::composite_crit_chance();
+
+    if ( p() -> artifact.aegwynns_intensity.rank() )
+    {
+      c+= p() -> artifact.aegwynns_intensity.percent();
+
+    }
+    return c;
   }
 };
 
