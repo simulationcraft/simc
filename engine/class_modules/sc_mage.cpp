@@ -5454,6 +5454,7 @@ void living_bomb_t::init()
 
 struct mark_of_aluneth_explosion_t : public arcane_mage_spell_t
 {
+  double aluneths_avarice_regen = 0;
   mark_of_aluneth_explosion_t( mage_t* p ) :
     arcane_mage_spell_t( "mark_of_aluneth_explosion", p, p -> find_spell( 210726 ) )
   {
@@ -5465,6 +5466,11 @@ struct mark_of_aluneth_explosion_t : public arcane_mage_spell_t
     aoe = -1;
     trigger_gcd = timespan_t::zero();
     triggers_arcane_missiles = false;
+
+    if ( p -> artifact.aluneths_avarice.rank() )
+    {
+      aluneths_avarice_regen = p -> find_spell( 211076 ) -> effectN( 2 ).percent();
+    }
   }
 
   virtual void execute() override
@@ -5476,7 +5482,7 @@ struct mark_of_aluneth_explosion_t : public arcane_mage_spell_t
     if ( p() -> artifact.aluneths_avarice.rank() )
     {
       p() -> resource_gain( RESOURCE_MANA,
-                            p() -> artifact.aluneths_avarice.percent()
+                            aluneths_avarice_regen
                           * p() -> resources.max[ RESOURCE_MANA ], p() -> gains.aluneths_avarice );
     }
   }
