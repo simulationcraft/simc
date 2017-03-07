@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 74c9f6b)
+SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 3249f8a)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -240,7 +240,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=228690)   : Dummy (3)
-                   Base Value: 30 | Scaled Value: 30 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 30 | Scaled Value: 30 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=230219)   : Trigger Spell: Chaos Strike (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 222031 | Target: Enemy(6)
 #3 (id=293650)   : Trigger Spell: Chaos Strike (64)
@@ -448,9 +448,9 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... .....
                  : Cannot dodge/parry/block (21)
 Effects          :
 #1 (id=268504)   : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0 | Chain Targets: 3 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 3 | Target: Enemy(6)
 #2 (id=309171)   : Weapon Damage% (31)
-                   Base Value: 490 | Scaled Value: 4.9 | Chain Targets: 3 | Target: Enemy(6)
+                   Base Value: 490 | Scaled Value: 4.9 | Chain Multiplier: 1 | Chain Targets: 3 | Target: Enemy(6)
 Description      : Throw a demonic glaive at the target, dealing $sw1 Physical damage. The glaive can ricochet to ${$x1-1} additional enemies within 10 yards.
 
 Name             : Mastery: Demonic Presence (id=185164) [Spell Family (107), Passive] 
@@ -1115,7 +1115,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=296756)   : Dummy (3)
-                   Base Value: 30 | Scaled Value: 30 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 30 | Scaled Value: 30 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=296757)   : Trigger Spell: Annihilation (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 227518 | Target: Self(1)
 #3 (id=296758)   : Trigger Spell: Annihilation (64)
@@ -1150,7 +1150,7 @@ GCD              : 1.5 seconds
 Velocity         : 3 yards/sec
 Duration         : 3 seconds
 Cooldown         : 60 seconds
-Artifact Power   : Id: 1010, Max Rank: 1
+Artifact Power   : Id: 1010, Index: 0, Max Rank: 1
 Affecting spells : Metamorphosis (162264), Havoc Demon Hunter (212612), Vengeance Demon Hunter (212613)
 Triggered by     : Push Active Ability to Bar (225863)
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
@@ -1169,7 +1169,7 @@ Name             : Rage of the Illidari (id=201472) [Spell Family (107), Passive
 Class            : Demon Hunter
 School           : Physical
 Proc Chance      : 101%
-Artifact Power   : Id: 1015, Max Rank: 1
+Artifact Power   : Id: 1015, Index: 2, Max Rank: 1
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, AOE Hostile Spell, Hostile Spell
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -1188,7 +1188,7 @@ Name             : Anguish of the Deceiver (id=201473) [Spell Family (107), Pass
 Class            : Demon Hunter
 School           : Chaos
 Proc Chance      : 101%
-Artifact Power   : Id: 1016, Max Rank: 1
+Artifact Power   : Id: 1016, Index: 3, Max Rank: 1
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -1775,9 +1775,9 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... .....
                  : Cannot dodge/parry/block (21)
 Effects          :
 #1 (id=301300)   : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0 | Chain Targets: 3 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 3 | Target: Enemy(6)
 #2 (id=301301)   : Weapon Damage% (31)
-                   Base Value: 135 | Scaled Value: 1.35 | Chain Targets: 3 | Target: Enemy(6)
+                   Base Value: 135 | Scaled Value: 1.35 | Chain Multiplier: 1 | Chain Targets: 3 | Target: Enemy(6)
 Description      : Throw a demonic glaive at the target, dealing $sw2 Physical damage. The glaive can ricochet to ${$x1-1} additional enemies within 10 yards. Generates high threat.
 
 Name             : Shattered Souls (id=204254) [Spell Family (107), Passive] 
@@ -2149,7 +2149,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Cooldown         : 40 seconds
-Artifact Power   : Id: 1096, Max Rank: 1
+Artifact Power   : Id: 1096, Index: 0, Max Rank: 1
 Affecting spells : Metamorphosis (162264), Havoc Demon Hunter (212612), Vengeance Demon Hunter (212613)
 Triggered by     : Push Active Ability to Bar (225864)
 Attributes       : ........ ........ ..x..... .......x   ........ .x...... ........ ........ 

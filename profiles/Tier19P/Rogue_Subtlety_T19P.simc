@@ -28,7 +28,7 @@ actions.precombat+=/variable,name=ssw_refund,value=equipped.shadow_satyrs_walk*(
 actions.precombat+=/variable,name=stealth_threshold,value=(15+talent.vigor.enabled*35+talent.master_of_shadows.enabled*25+variable.ssw_refund)
 actions.precombat+=/variable,name=shd_fractionnal,value=2.45
 actions.precombat+=/enveloping_shadows,if=combo_points>=5
-actions.precombat+=/shadow_dance,if=equipped.mantle_of_the_master_assassin
+actions.precombat+=/shadow_dance,if=talent.subterfuge.enabled&equipped.mantle_of_the_master_assassin
 actions.precombat+=/symbols_of_death
 
 # Executed every time the actor is available.

@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 74c9f6b)
+SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 3249f8a)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -634,7 +634,7 @@ Attributes       : ....x... ........ ........ ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=2456)     : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 0.5 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #2 (id=2457)     : Weapon Damage% (31)
                    Base Value: 100 | Scaled Value: 1 | Target: Enemy(6)
 Description      : Maul the target for $sw2 Physical damage.
@@ -973,7 +973,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=12790)    : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 3.74500 | Chain Multiplier: 0.7 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 3.74500 | Target: Enemy(6)
 #2 (id=12791)    : Energize Power (30)
                    Base Value: -25 | Scaled Value: -25 | Misc Value: energy | Target: Self(1)
 Description      : Finishing move that causes Physical damage per combo point and consumes up to 25 additional Energy to increase damage by up to 100%.
@@ -2400,7 +2400,7 @@ Attributes       : ........ ........ ........ ......x.   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=111098)   : Apply Aura (6) | Unknown effect sub type (455)
-                   Base Value: 0 | Scaled Value: 0 | Chain Targets: 1000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 1000 | Target: Enemy(6)
 Description      : Roots the target in place for $d and spreads to additional nearby enemies. Damage may interrupt the effect. Usable in all shapeshift forms.
 Tooltip          : Rooted.
 
@@ -5368,7 +5368,7 @@ School           : Physical
 Duration         : 10 seconds
 Cooldown         : 90 seconds
 Stance Mask      : 0x00000010
-Artifact Power   : Id: 960, Max Rank: 1
+Artifact Power   : Id: 960, Index: 0, Max Rank: 1
 Triggered by     : Push Active Ability to Bar (225867)
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5830,7 +5830,7 @@ GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Charges          : 3 (15 seconds cooldown)
 Category         : 1584
-Artifact Power   : Id: 1049, Max Rank: 1
+Artifact Power   : Id: 1049, Index: 0, Max Rank: 1
 Affecting spells : Balance Druid (137013), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), 
 Triggered by     : Push Active Ability to Bar (225865)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6310,7 +6310,7 @@ School           : Nature
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 90 seconds
-Artifact Power   : Id: 125, Max Rank: 1
+Artifact Power   : Id: 125, Index: 0, Max Rank: 1
 Triggered by     : Push Active Ability to Bar (225868)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6423,7 +6423,7 @@ Class            : Druid
 School           : Physical
 Range            : 100 yards
 Proc Chance      : 101%
-Artifact Power   : Id: 1167, Max Rank: 6, Values: [ 5, 10, 15, 20, 25, 30 ]
+Artifact Power   : Id: 1167, Index: 10, Max Rank: 6, Values: [ 5, 10, 15, 20, 25, 30 ]
 Proc Flags       : ........ ..x...x. ........ ........ 
                  : AOE Heal, Heal
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -6460,7 +6460,7 @@ Name             : Protection of Ashamane (id=210650) [Spell Family (7), Passive
 Class            : Druid
 School           : Physical
 Range            : 100 yards
-Artifact Power   : Id: 1158, Max Rank: 1
+Artifact Power   : Id: 1158, Index: 0, Max Rank: 1
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6499,7 +6499,7 @@ Class            : Druid
 School           : Physical
 Range            : 100 yards
 Proc Chance      : 10%
-Artifact Power   : Id: 1154, Max Rank: 1
+Artifact Power   : Id: 1154, Index: 1, Max Rank: 1
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, AOE Hostile Spell, Hostile Spell
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -6566,7 +6566,7 @@ GCD              : 1 seconds
 Duration         : 3 seconds
 Cooldown         : 75 seconds
 Stance Mask      : 0x00000001
-Artifact Power   : Id: 1153, Max Rank: 1
+Artifact Power   : Id: 1153, Index: 0, Max Rank: 1
 Affecting spells : Mastery: Razor Claws (77493), Feral Druid (137011), Lucidity (137247), Astral Influence (197524), Ekowraith, Creator of Worlds (210667)
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

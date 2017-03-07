@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build ff6af4d)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build 3d249f6)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -64,7 +64,7 @@ Attributes       : ........ ........ x....... .......x   ........ ........ .....
                  : Cannot cancel aura (31)
 Effects          :
 #1 (id=145)      : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.33200 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.33200 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy(6)
 Description      : Burns the enemy, causing $s1 Fire damage immediately and an additional $157736o1 Fire damage over $157736d.
 
 |cFFFFFFFFPeriodic damage has a $193541s1% chance to generate 1 Soul Shard. Chance doubled on critical strikes.|r
@@ -813,7 +813,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=9474)     : School Damage: shadowflame (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 3.15000 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 3.15000 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=9475)     : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Target: Enemy(6)
 #3 (id=355454)   : Energize Power (30)
@@ -855,7 +855,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .x...
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=9553)     : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.26551 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.26551 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=9554)     : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: soul_shard | Target: Self(1)
 Description      : Triggers an explosion on the target, dealing $s1 Fire damage.$?s196406[
@@ -1179,7 +1179,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ .....x.. 
 Effects          :
 #1 (id=19297)    : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=288276)   : School Damage: fire (2)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.33100 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
 Description      : Draws fire toward the enemy, dealing $s2 Fire damage.
@@ -1804,7 +1804,9 @@ GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 20 seconds
 Stacks           : 1 maximum
-Proc Chance      : 101%
+Proc Chance      : 100%
+Proc Flags       : ........ ........ .x...... ........ 
+                 : Hostile Spell Taken
 Affecting spells : Wreak Havoc (196410), 
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
@@ -2835,7 +2837,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ......x. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=132079)   : School Damage: chromatic (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 4.00000 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 4.00000 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=177448)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Target: Enemy(6)
 #3 (id=283496)   : Energize Power% (137)
@@ -3293,7 +3295,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : x....x.. ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=219942)   : Apply Aura (6) | Periodic Damage: fire every 3 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.72150 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.72150 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy(6)
 Description      : $@spelldesc348
 Tooltip          : Suffering $w1 Fire damage every $t1 sec.
 Variables        : $mastery=$?s77220[${((100+$77220m3)/100)}][${1.00}]
@@ -4616,7 +4618,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=302984)   : School Damage: shadow (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.10000 | Chain Targets: 20 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.10000 | Chain Multiplier: 0 | Chain Targets: 20 | Target: Enemy(6)
 Description      : Fires an Eye Laser that hits all Doomed targets for $s1 Shadow damage.
 
 Name             : Phantom Singularity (id=205246) [Spell Family (5)] 
@@ -4762,7 +4764,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ......x. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=316299)   : School Damage: chromatic (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 3.66300 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 3.66300 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=316300)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Target: Enemy(6)
 #3 (id=316301)   : Energize Power% (137)

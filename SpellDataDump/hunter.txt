@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 74c9f6b)
+SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 3249f8a)
 
 Name             : Mend Pet (id=136) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
@@ -1159,7 +1159,7 @@ Attributes       : .x...... ........ x....... ........   ........ .x...... .....
                  : Ranged Ability (1)
 Effects          :
 #1 (id=45831)    : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Chain Targets: 2 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 2 | Target: Enemy(6)
 Description      : A two-headed shot that hits your primary target and another nearby target, dealing $171457sw2 Nature damage to one and $171454sw2 Frost damage to the other. Generates $204304s1 Focus for every target hit.
 
 Name             : Careful Aim (id=53238) [Spell Family (9), Passive] 
@@ -1353,7 +1353,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=47538)    : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Chain Targets: 2 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 2 | Target: Enemy(6)
 
 Name             : Heart of the Phoenix (Ferocity Ability) (id=55709) [Spell Family (9)] 
 Class            : Ferocity Hunter Pet
@@ -4245,7 +4245,7 @@ Tooltip          : Fel Boar summoned.
 Name             : Marked for Death (id=190529) [Spell Family (9), Passive] 
 Class            : Hunter
 School           : Physical
-Artifact Power   : Id: 319, Max Rank: 6, Values: [ 2, 4, 6, 8, 10, 12 ]
+Artifact Power   : Id: 319, Index: 9, Max Rank: 6, Values: [ 2, 4, 6, 8, 10, 12 ]
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4374,7 +4374,7 @@ Class            : Hunter
 School           : Physical
 Proc Chance      : 101%
 Real PPM         : 1 (Haste multiplier)
-Artifact Power   : Id: 311, Max Rank: 1
+Artifact Power   : Id: 311, Index: 1, Max Rank: 1
 Proc Flags       : ........ x....... ........ ........ 
                  : Yellow Ranged
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -5624,7 +5624,7 @@ GCD              : 1.5 seconds
 Duration         : 4 seconds
 Cooldown         : 45 seconds
 Proc Chance      : 100%
-Artifact Power   : Id: 1068, Max Rank: 1
+Artifact Power   : Id: 1068, Index: 0, Max Rank: 1
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
 Affecting spells : Hunter (137014), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468)
@@ -5649,7 +5649,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 50 yards/sec
 Cooldown         : 20 seconds
-Artifact Power   : Id: 307, Max Rank: 1
+Artifact Power   : Id: 307, Index: 0, Max Rank: 1
 Affecting spells : Hunter (137014), Marksmanship Hunter (137016), Mastery: Sniper Training (193468), Trueshot (211327)
 Attributes       : .x..x... ........ x....... ........   ........ ........ ........ ...x.... 
                  : ........ ........ .x..x... ........   ........ ........ ........ ........ 
@@ -5885,7 +5885,7 @@ School           : Physical
 Range            : 100 yards
 Duration         : 8 seconds
 Cooldown         : 60 seconds
-Artifact Power   : Id: 879, Max Rank: 1
+Artifact Power   : Id: 879, Index: 2, Max Rank: 1
 Attributes       : ........ ........ ..x..... .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

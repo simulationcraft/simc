@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 74c9f6b)
+SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 3249f8a)
 
 Name             : Defensive Stance (id=71) [Spell Family (4), Passive, Hidden] 
 Class            : Protection Warrior
@@ -456,9 +456,9 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=1900)     : Normalized Weapon Damage (121)
-                   Base Value: 1 | Scaled Value: 1 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=229536)   : Weapon Damage% (31)
-                   Base Value: 333 | Scaled Value: 3.33 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 333 | Scaled Value: 3.33 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy(6)
 Description      : Attempt to finish off a wounded foe, causing ${$sw2+$163558sw2} Physical damage. Only usable on enemies that have less than 20% health.
 
 Name             : Thunder Clap (id=6343) [Spell Family (4)] 
@@ -651,11 +651,11 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=5274)     : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=5275)     : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy(6)
 #3 (id=99581)    : Weapon Damage% (31)
-                   Base Value: 327 | Scaled Value: 3.27 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 327 | Scaled Value: 3.27 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy(6)
 #4 (id=156241)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: rage | Target: Self(1)
 Description      : A vicious strike that deals ${$sw3*$<mult>} Physical damage and reduces the effectiveness of healing on the target for $115804d.
@@ -837,9 +837,9 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=14120)    : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=134421)   : Weapon Damage% (31)
-                   Base Value: 262 | Scaled Value: 2.62 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 262 | Scaled Value: 2.62 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy(6)
 #3 (id=156242)   : Energize Power (30)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: rage | Target: Self(1)
 #4 (id=226744)   : Dummy (3)
@@ -1711,9 +1711,9 @@ Attributes       : ....x... ........ x.x..... ........   ....x... ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=86555)    : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=86556)    : Weapon Damage% (31)
-                   Base Value: 165 | Scaled Value: 1.65 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 165 | Scaled Value: 1.65 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy(6)
 Description      : $@spelldesc85288
 Variables        : $mult=${($max(0,$min($pl-13,7))*4+118)/146}
 
@@ -1859,9 +1859,9 @@ Attributes       : ....x... ........ x.x..... ........   ....x... ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=101983)   : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=101984)   : Weapon Damage% (31)
-                   Base Value: 165 | Scaled Value: 1.65 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 165 | Scaled Value: 1.65 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy(6)
 Description      : $@spelldesc85288
 Variables        : $mult=${($max(0,$min($pl-13,7))*4+118)/146}
 
@@ -2961,9 +2961,9 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=229520)   : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=229537)   : Weapon Damage% (31)
-                   Base Value: 162 | Scaled Value: 1.62 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 162 | Scaled Value: 1.62 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy(6)
 #3 (id=344393)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: rage | Target: Self(1)
 #4 (id=349774)   : Dummy (3)
@@ -2985,9 +2985,9 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=230085)   : Normalized Weapon Damage (121)
-                   Base Value: 1 | Scaled Value: 1 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=230086)   : Weapon Damage% (31)
-                   Base Value: 333 | Scaled Value: 3.33 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 333 | Scaled Value: 3.33 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy(6)
 Description      : $@spelldesc5308
 
 Name             : Colossus Smash (id=167105) [Spell Family (4)] 
@@ -3146,9 +3146,9 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=267757)   : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=267758)   : Weapon Damage% (31)
-                   Base Value: 172 | Scaled Value: 1.72 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 172 | Scaled Value: 1.72 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy(6)
 Description      : $@spelldesc184367
 
 Name             : Rampage (id=184709) [Spell Family (4)] 
@@ -3168,9 +3168,9 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=267761)   : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=267762)   : Weapon Damage% (31)
-                   Base Value: 114 | Scaled Value: 1.14 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 114 | Scaled Value: 1.14 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy(6)
 Description      : $@spelldesc184367
 
 Name             : Tactician (id=184783) [Spell Family (4), Passive] 
@@ -3197,7 +3197,7 @@ Description      : You have a ${$m2/100}.2% chance per Rage spent to reset the r
 Name             : Reflective Plating (id=188672) [Spell Family (4), Passive] 
 Class            : Warrior
 School           : Physical
-Artifact Power   : Id: 104, Max Rank: 1
+Artifact Power   : Id: 104, Index: 0, Max Rank: 1
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3527,9 +3527,9 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=296642)   : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=296643)   : Weapon Damage% (31)
-                   Base Value: 201 | Scaled Value: 2.01 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 201 | Scaled Value: 2.01 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy(6)
 Description      : $@spelldesc184367
 
 Name             : Rampage (id=201364) [Spell Family (4)] 
@@ -3548,9 +3548,9 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=296644)   : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=296645)   : Weapon Damage% (31)
-                   Base Value: 345 | Scaled Value: 3.45 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 345 | Scaled Value: 3.45 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy(6)
 Description      : $@spelldesc184367
 
 Name             : Indomitable (id=202095) [Spell Family (4), Passive] 
@@ -4137,7 +4137,7 @@ School           : Physical
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Cooldown         : 45 seconds
-Artifact Power   : Id: 91, Max Rank: 1
+Artifact Power   : Id: 91, Index: 0, Max Rank: 1
 Attributes       : ........ ........ ........ ........   ......x. ........ ........ .....x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4203,7 +4203,7 @@ Spell Level      : 28 (max 80)
 GCD              : 1.5 seconds
 Cooldown         : 45 seconds
 Category         : 891
-Artifact Power   : Id: 984, Max Rank: 1
+Artifact Power   : Id: 984, Index: 0, Max Rank: 1
 Affecting spells : Warrior (137047), Fury Warrior (137050), 
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -4436,7 +4436,7 @@ Class            : Warrior
 School           : Physical
 Range            : 100 yards
 Proc Chance      : 101%
-Artifact Power   : Id: 1149, Max Rank: 6, Values: [ -15, -30, -45, -60, -75, -90 ]
+Artifact Power   : Id: 1149, Index: 9, Max Rank: 6, Values: [ -15, -30, -45, -60, -75, -90 ]
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Attributes       : ......xx ........ ........ .......x   ........ ........ ........ ........ 
@@ -4480,7 +4480,7 @@ Class            : Warrior
 School           : Physical
 Range            : 100 yards
 Proc Chance      : 101%
-Artifact Power   : Id: 1138, Max Rank: 1
+Artifact Power   : Id: 1138, Index: 2, Max Rank: 1
 Proc Flags       : ........ ..x...x. ........ ........ 
                  : AOE Heal, Heal
 Attributes       : ......xx ........ ........ .......x   ........ ........ ........ ........ 
@@ -4501,7 +4501,7 @@ School           : Shadow
 Range            : 100 yards
 GCD              : 1.5 seconds
 Cooldown         : 60 seconds
-Artifact Power   : Id: 1136, Max Rank: 1
+Artifact Power   : Id: 1136, Index: 0, Max Rank: 1
 Affecting spells : Warrior (137047)
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -4867,9 +4867,9 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=325560)   : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=325561)   : Weapon Damage% (31)
-                   Base Value: 57 | Scaled Value: 0.57 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 57 | Scaled Value: 0.57 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy(6)
 Description      : $@spelldesc184367
 
 Name             : Gaze of the Val'kyr (id=218822) [Spell Family (4), Hidden] 
@@ -5000,10 +5000,11 @@ Effects          :
 Description      : $@spelldesc218826
 
 Name             : Inspiring Presence (id=222944) [Spell Family (4)] 
+Hotfixed         : Attributes
 Class            : Warrior
 School           : Physical
 Triggered by     : Inspiring Presence (205484)
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

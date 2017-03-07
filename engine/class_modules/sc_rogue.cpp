@@ -725,10 +725,12 @@ static void break_stealth( rogue_t* p )
   // As of 02/26/2017, if you have the Shadow Dance buff while stealthed, stealth doesn't break
   // until the end of shadow dance. It is commonly "Extended Stealth".
   // The only way to trigger it since recent hotfix is :
-  // - Do Shadow Dance -> Stealth (So only when Out of Combat)
+  // - Do Shadow Dance -> Stealth while out of combat (only possible with Subterfuge)
   // - Not triggering Subterfuge during a Vanish (to proc Stealth at the end of the Vanish)
   //   and using Shadow Dance before Vanish expires.
-  if ( p -> buffs.stealth -> check() && ! p -> buffs.shadow_dance -> check() )
+  if ( p -> buffs.stealth -> check() &&
+      ( (p -> talent.subterfuge -> ok() && ! p -> buffs.shadow_dance -> check() ) ||
+      ! p -> talent.subterfuge -> ok() ) )
     p -> buffs.stealth -> expire();
 
   if ( p -> buffs.vanish -> check() )
@@ -4810,8 +4812,16 @@ struct cancel_autoattack_t : public action_t
     action_t( ACTION_OTHER, "cancel_autoattack", rogue_ ),
     rogue( rogue_ )
   {
+    parse_options( options_str );
+
     trigger_gcd = timespan_t::zero();
   }
+
+  result_e calculate_result( action_state_t* ) const override
+  { return RESULT_HIT; }
+
+  block_result_e calculate_block_result( action_state_t* ) const override
+  { return BLOCK_RESULT_UNBLOCKED; }
 
   void execute() override
   {
@@ -4825,10 +4835,15 @@ struct cancel_autoattack_t : public action_t
       event_t::cancel( rogue -> off_hand_attack -> execute_event );
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
-    return rogue -> main_hand_attack && rogue -> main_hand_attack -> execute_event ||
-           rogue -> off_hand_attack && rogue -> off_hand_attack -> execute_event;
+    if ( ( rogue -> main_hand_attack && rogue -> main_hand_attack -> execute_event ) ||
+         ( rogue -> off_hand_attack && rogue -> off_hand_attack -> execute_event ) )
+    {
+      return action_t::ready();
+    }
+
+    return false;
   }
 };
 
@@ -6877,7 +6892,7 @@ void rogue_t::init_action_list()
     precombat -> add_action( "variable,name=stealth_threshold,value=(15+talent.vigor.enabled*35+talent.master_of_shadows.enabled*25+variable.ssw_refund)" );
     precombat -> add_action( "variable,name=shd_fractionnal,value=2.45" );
     precombat -> add_talent( this, "Enveloping Shadows", "if=combo_points>=5" );
-    precombat -> add_action( this, "Shadow Dance", "if=equipped.mantle_of_the_master_assassin" ); // Before SoD because we do it while not in stealth in-game
+    precombat -> add_action( this, "Shadow Dance", "if=talent.subterfuge.enabled&equipped.mantle_of_the_master_assassin" ); // Before SoD because we do it while not in stealth in-game
     precombat -> add_action( this, "Symbols of Death" );
 
     // Main Rotation

@@ -131,7 +131,6 @@ public:
     buff_t* marking_targets;
     buff_t* hunters_mark_exists;
     buff_t* lock_and_load;
-    buff_t* stampede;
     buff_t* trick_shot;
     buff_t* trueshot;
     buff_t* volley;
@@ -201,7 +200,6 @@ public:
     proc_t* mortal_wounds;
     proc_t* t18_4pc_sv;
     proc_t* zevrims_hunger;
-    proc_t* convergence;
     proc_t* marking_targets;
     proc_t* wasted_marking_targets;
     proc_t* animal_instincts_mongoose;
@@ -964,116 +962,6 @@ public:
   }
 };
 
-// COPY PASTE of blademaster trinket code so we can support mastery for beastmaster
-const std::string BLADEMASTER_PET_NAME = "mirror_image_(trinket)";
-
-struct felstorm_tick_t : public melee_attack_t
-{
-  felstorm_tick_t( pet_t* p ) :
-    melee_attack_t( "felstorm_tick", p, p -> find_spell( 184280 ) )
-  {
-    aoe = -1;
-    background = special = may_crit = true;
-    callbacks = false;
-    range = data().effectN( 1 ).radius();
-    school = SCHOOL_PHYSICAL;
-    weapon = &( p -> main_hand_weapon );
-  }
-
-  bool init_finished() override
-  {
-    // Find first blademaster pet, it'll be the first trinket-created pet
-    pet_t* main_pet = player -> cast_pet() -> owner -> find_pet( BLADEMASTER_PET_NAME );
-
-    if ( player != main_pet )
-      stats = main_pet -> find_action( "felstorm_tick" ) -> stats;
-
-    return melee_attack_t::init_finished();
-  }
-};
-
-struct felstorm_t : public melee_attack_t
-{
-  felstorm_t( pet_t* p, const std::string& opts ) :
-    melee_attack_t( "felstorm", p, p -> find_spell( 184279 ) )
-  {
-    parse_options( opts );
-
-    callbacks = may_miss = may_block = may_parry = false;
-    dynamic_tick_action = hasted_ticks = true;
-    trigger_gcd = timespan_t::from_seconds( 1.0 );
-
-    tick_action = new felstorm_tick_t( p );
-  }
-
-  // Make dot long enough to last for the duration of the summon
-  timespan_t composite_dot_duration( const action_state_t* ) const override
-  { return sim -> expected_iteration_time; }
-
-  bool init_finished() override
-  {
-    pet_t* main_pet = player -> cast_pet() -> owner -> find_pet( BLADEMASTER_PET_NAME );
-
-    if ( player != main_pet )
-      stats = main_pet -> find_action( "felstorm" ) -> stats;
-
-    return melee_attack_t::init_finished();
-  }
-};
-
-struct blademaster_pet_t : public hunter_pet_t
-{
-  action_t* felstorm;
-
-  blademaster_pet_t( player_t* owner ) :
-    hunter_pet_t( *(owner -> sim), *static_cast<hunter_t*>(owner), BLADEMASTER_PET_NAME, PET_NONE, true, true ),
-    felstorm( nullptr )
-  {
-    main_hand_weapon.type = WEAPON_BEAST;
-    // Verified 5/11/15, TODO: Check if this is still the same on live
-    owner_coeff.ap_from_ap = 1.0;
-
-    // Magical constants for base damage
-    double damage_range = 0.4;
-    double base_dps = owner -> dbc.spell_scaling( PLAYER_SPECIAL_SCALE, owner -> level() ) * 4.725;
-    double min_dps = base_dps * ( 1 - damage_range / 2.0 );
-    double max_dps = base_dps * ( 1 + damage_range / 2.0 );
-    main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
-    main_hand_weapon.min_dmg =  min_dps * main_hand_weapon.swing_time.total_seconds();
-    main_hand_weapon.max_dmg =  max_dps * main_hand_weapon.swing_time.total_seconds();
-  }
-
-  timespan_t available() const override
-  { return timespan_t::from_seconds( 20.0 ); }
-
-  void init_action_list() override
-  {
-    action_list_str = "felstorm,if=!ticking";
-
-    pet_t::init_action_list();
-  }
-
-  void dismiss( bool expired = false ) override
-  {
-    hunter_pet_t::dismiss( expired );
-
-    if ( dot_t* d = felstorm -> find_dot( felstorm -> target ) )
-      d -> cancel();
-  }
-
-  action_t* create_action( const std::string& name,
-                           const std::string& options_str ) override
-  {
-    if ( name == "felstorm" )
-    {
-      felstorm = new felstorm_t( this, options_str );
-      return felstorm;
-    }
-
-    return pet_t::create_action( name, options_str );
-  }
-};
-
 // ==========================================================================
 // Hunter Main Pet
 // ==========================================================================
@@ -1640,7 +1528,6 @@ struct dire_critter_t: public hunter_secondary_pet_t
 
   struct actives_t
   {
-    action_t* jaws_of_thunder;
     action_t* stomp;
     action_t* titans_thunder;
   } active;
@@ -5518,9 +5405,6 @@ pet_t* hunter_t::create_pet( const std::string& pet_name,
                              const std::string& pet_type )
 {
   using namespace pets;
-  // Blademaster pets have to always be explicitly created, cannot re-use the same pet as there are
-  // many of them.
-  if (pet_name == BLADEMASTER_PET_NAME) return new blademaster_pet_t(this);
 
   pet_t* p = find_pet( pet_name );
 
@@ -6109,7 +5993,6 @@ void hunter_t::init_procs()
   procs.mortal_wounds                = get_proc( "mortal_wounds" );
   procs.t18_4pc_sv                   = get_proc( "t18_4pc_sv" );
   procs.zevrims_hunger               = get_proc( "zevrims_hunger" );
-  procs.convergence                  = get_proc( "convergence" );
   procs.marking_targets              = get_proc( "marking_targets" );
   procs.wasted_marking_targets       = get_proc( "wasted_marking_targets" );
   procs.animal_instincts_mongoose    = get_proc( "animal_instincts_mongoose" );
@@ -6365,13 +6248,13 @@ void hunter_t::apl_mm()
   // Patient Sniper APL
   patient_sniper -> add_action( "variable,name=vuln_window,op=set,value=debuff.vulnerability.remains" );
   patient_sniper -> add_action( "variable,name=vuln_window,op=set,value=(24-cooldown.sidewinders.charges_fractional*12)*attack_haste,if=talent.sidewinders.enabled&(24-cooldown.sidewinders.charges_fractional*12)*attack_haste<variable.vuln_window" );
-  patient_sniper -> add_action( "variable,name=vuln_aim_casts,op=set,value=floor(variable.vuln_window%(2*attack_haste))" );
-  patient_sniper -> add_action( "variable,name=vuln_aim_casts,op=set,value=floor((focus+20*(variable.vuln_aim_casts-1))%50),if=variable.vuln_aim_casts>0&variable.vuln_aim_casts>floor((focus+20*(variable.vuln_aim_casts-1))%50)" );
-  patient_sniper -> add_action( "variable,name=can_gcd,value=variable.vuln_window>variable.vuln_aim_casts*(2*attack_haste)+gcd.max" );
+  patient_sniper -> add_action( "variable,name=vuln_aim_casts,op=set,value=floor(variable.vuln_window%action.aimed_shot.execute_time)" );
+  patient_sniper -> add_action( "variable,name=vuln_aim_casts,op=set,value=floor((focus+action.aimed_shot.cast_regen*(variable.vuln_aim_casts-1))%action.aimed_shot.cost),if=variable.vuln_aim_casts>0&variable.vuln_aim_casts>floor((focus+action.aimed_shot.cast_regen*(variable.vuln_aim_casts-1))%action.aimed_shot.cost)" );
+  patient_sniper -> add_action( "variable,name=can_gcd,value=variable.vuln_window>variable.vuln_aim_casts*action.aimed_shot.execute_time+gcd.max" );
 
   patient_sniper -> add_talent( this, "Piercing Shot", "if=cooldown.piercing_shot.up&spell_targets=1&lowest_vuln_within.5>0&lowest_vuln_within.5<1" );
   patient_sniper -> add_talent( this, "Piercing Shot", "if=cooldown.piercing_shot.up&spell_targets>1&lowest_vuln_within.5>0&((!buff.trueshot.up&focus>80&(lowest_vuln_within.5<1|debuff.hunters_mark.up))|(buff.trueshot.up&focus>105&lowest_vuln_within.5<6))" );
-  patient_sniper -> add_action( this, "Aimed Shot", "if=spell_targets>1&debuff.vulnerability.remains>cast_time&talent.trick_shot.enabled&buff.sentinels_sight.stack=20" );
+  patient_sniper -> add_action( this, "Aimed Shot", "if=spell_targets>1&debuff.vulnerability.remains>cast_time&talent.trick_shot.enabled&(buff.sentinels_sight.stack=20|(buff.trueshot.up&buff.sentinels_sight.stack>=spell_targets.multishot*5))" );
   patient_sniper -> add_action( this, "Marked Shot", "if=spell_targets>1" );
   patient_sniper -> add_action( this, "Multi-Shot", "if=spell_targets>1&(buff.marking_targets.up|buff.trueshot.up)" );
   patient_sniper -> add_action( this, "Windburst", "if=variable.vuln_aim_casts<1&!variable.pooling_for_piercing" );
@@ -6380,12 +6263,12 @@ void hunter_t::apl_mm()
   patient_sniper -> add_talent( this, "Barrage", "if=spell_targets>2|(target.health.pct<20&buff.bullseye.stack<25)" );
   patient_sniper -> add_action( this, "Aimed Shot", "if=debuff.vulnerability.up&buff.lock_and_load.up&(!variable.pooling_for_piercing|lowest_vuln_within.5>gcd.max)&(spell_targets.multi_shot<4|talent.trick_shot.enabled)" );
   patient_sniper -> add_action( this, "Aimed Shot", "if=spell_targets.multishot>1&debuff.vulnerability.remains>execute_time&(!variable.pooling_for_piercing|(focus>100&lowest_vuln_within.5>(execute_time+gcd.max)))&(spell_targets.multishot<4|buff.sentinels_sight.stack=20|talent.trick_shot.enabled)" );
-  patient_sniper -> add_action( this, "Multi-Shot", "if=spell_targets>1&variable.can_gcd&focus+cast_regen+20<focus.max&(!variable.pooling_for_piercing|lowest_vuln_within.5>gcd.max)" );
-  patient_sniper -> add_action( this, "Arcane Shot", "if=spell_targets.multi_shot=1&variable.vuln_aim_casts>0&debuff.vulnerability.remains>(2*attack_haste)&variable.can_gcd&focus+cast_regen+20<focus.max&(!variable.pooling_for_piercing|lowest_vuln_within.5>gcd.max)" );
-  patient_sniper -> add_action( this, "Aimed Shot", "if=talent.sidewinders.enabled&(debuff.vulnerability.remains>cast_time|(buff.lock_and_load.down&action.windburst.in_flight))&(variable.vuln_window-(2*attack_haste*variable.vuln_aim_casts)<1|focus.deficit<25|buff.trueshot.up)&(spell_targets.multishot=1|focus>100)" );
+  patient_sniper -> add_action( this, "Multi-Shot", "if=spell_targets>1&variable.can_gcd&focus+cast_regen+action.aimed_shot.cast_regen<focus.max&(!variable.pooling_for_piercing|lowest_vuln_within.5>gcd.max)" );
+  patient_sniper -> add_action( this, "Arcane Shot", "if=spell_targets.multi_shot=1&variable.vuln_aim_casts>0&variable.can_gcd&focus+cast_regen+action.aimed_shot.cast_regen<focus.max&(!variable.pooling_for_piercing|lowest_vuln_within.5>gcd.max)" );
+  patient_sniper -> add_action( this, "Aimed Shot", "if=talent.sidewinders.enabled&(debuff.vulnerability.remains>cast_time|(buff.lock_and_load.down&action.windburst.in_flight))&(variable.vuln_window-(execute_time*variable.vuln_aim_casts)<1|focus.deficit<25|buff.trueshot.up)&(spell_targets.multishot=1|focus>100)" );
   patient_sniper -> add_action( this, "Aimed Shot", "if=!talent.sidewinders.enabled&debuff.vulnerability.remains>cast_time&(!variable.pooling_for_piercing|(focus>100&lowest_vuln_within.5>(execute_time+gcd.max)))" );
   patient_sniper -> add_action( this, "Marked Shot", "if=!talent.sidewinders.enabled&!variable.pooling_for_piercing" );
-  patient_sniper -> add_action( this, "Marked Shot", "if=talent.sidewinders.enabled&(variable.vuln_aim_casts<1|buff.trueshot.up|variable.vuln_window<(2*attack_haste))" );
+  patient_sniper -> add_action( this, "Marked Shot", "if=talent.sidewinders.enabled&(variable.vuln_aim_casts<1|buff.trueshot.up|variable.vuln_window<action.aimed_shot.cast_time)" );
   patient_sniper -> add_action( this, "Aimed Shot", "if=spell_targets.multi_shot=1&focus>110" );
   patient_sniper -> add_talent( this, "Sidewinders", "if=(!debuff.hunters_mark.up|(!buff.marking_targets.up&!buff.trueshot.up))&((buff.marking_targets.up&variable.vuln_aim_casts<1)|buff.trueshot.up|charges_fractional>1.9)" );
   patient_sniper -> add_action( this, "Arcane Shot", "if=spell_targets.multi_shot=1&(!variable.pooling_for_piercing|lowest_vuln_within.5>gcd.max)" );

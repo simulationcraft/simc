@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 74c9f6b)
+SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 3249f8a)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
@@ -1172,7 +1172,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
                  : Cannot dodge/parry/block (21), Cannot crit (93), Not a proc (105)
 Effects          :
 #1 (id=12763)    : School Damage: physical (2)
-                   Base Value: 0 | Scaled Value: 0 | Chain Targets: 100 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 100 | Target: Enemy(6)
 Description      : $@spelldesc13877
 
 Name             : Arcane Torrent (Racial) (id=25046) 
@@ -3258,7 +3258,7 @@ Description      : Your Dispatch deals $186182m1% additional damage as Nature da
 Name             : Poison Knives (id=192376) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
-Artifact Power   : Id: 331, Max Rank: 6, Values: [ 4, 8, 12, 16, 20, 24 ]
+Artifact Power   : Id: 331, Index: 10, Max Rank: 6, Values: [ 4, 8, 12, 16, 20, 24 ]
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3301,7 +3301,7 @@ GCD              : 1 seconds
 Duration         : 14 seconds
 Cooldown         : 45 seconds
 Proc Chance      : 101%
-Artifact Power   : Id: 346, Max Rank: 1
+Artifact Power   : Id: 346, Index: 0, Max Rank: 1
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, AOE Hostile Spell, Hostile Spell
 Affecting spells : Mastery: Potent Poisons (76803), Vendetta (79140), Assassination Rogue (137037), Kingsbane (192853), Master Poisoner (196864), 
@@ -4550,7 +4550,7 @@ School           : Shadow
 Duration         : 12 seconds
 Cooldown         : 90 seconds
 Proc Chance      : 101%
-Artifact Power   : Id: 1052, Max Rank: 1
+Artifact Power   : Id: 1052, Index: 0, Max Rank: 1
 Proc Flags       : ....x... ..x..... ........ ........ 
                  : Yellow Melee, AOE Heal
 Triggered by     : Push Active Ability to Bar (225881)
@@ -4653,7 +4653,7 @@ Tooltip          : Movement speed reduced by $s3%.
 Name             : Blunderbuss (id=202897) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
-Artifact Power   : Id: 1053, Max Rank: 1
+Artifact Power   : Id: 1053, Index: 1, Max Rank: 1
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4760,7 +4760,7 @@ School           : Physical
 Range            : 8 yards
 GCD              : 1 seconds
 Cooldown         : 60 seconds
-Artifact Power   : Id: 851, Max Rank: 1
+Artifact Power   : Id: 851, Index: 0, Max Rank: 1
 Triggered by     : Push Active Ability to Bar (225880)
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

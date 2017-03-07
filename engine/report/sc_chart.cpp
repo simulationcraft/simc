@@ -268,7 +268,7 @@ std::vector<double> get_data_summary( const player_collected_data_t& container,
                                       double percentile = 0.25 )
 {
   const extended_sample_data_t* c = nullptr;
-  std::vector<double> data( 5, 0 );
+  std::vector<double> data( 6, 0 );
   switch ( metric )
   {
     case METRIC_DPS:

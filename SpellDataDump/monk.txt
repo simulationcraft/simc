@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 74c9f6b)
+SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 3249f8a)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -538,7 +538,7 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ....x... ........ ........ ........ 
 Effects          :
 #1 (id=108867)   : School Damage: physical (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3.85000 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3.85000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy(6)
 Description      : Kick with a blast of Chi energy, dealing $s1 Physical damage.
 Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
 $dwm=$?a108561|a115697[${1}][${0.857143}]
@@ -1371,23 +1371,6 @@ Effects          :
                    Base Value: -25 | Scaled Value: -25 | Misc Value: 127 | Target: Enemy(6)
 Description      : Grievously wounds the target, reducing the effectiveness of any healing received for $115804d.
 Tooltip          : Healing effects received reduced by $w1%.
-
-Name             : Thunderfist (id=116007) 
-Class            : Monk
-School           : Nature
-Cooldown         : 5 seconds
-Category         : 1152
-Category Cooldown: 5 seconds
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=130572)   : Weapon Damage% (31)
-                   Base Value: 110 | Scaled Value: 1.1 | Radius: 0 - 5 yards | Target: At Caster(22) -> AOE enemy(15)
-Description      : Strikes all nearby enemies with thunder, inflicting Nature damage.
 
 Name             : Afterlife (id=116092) [Scaling Spell (6), Spell Family (53), Passive] 
 Class            : Windwalker Monk
@@ -4135,7 +4118,7 @@ Class            : Monk
 School           : Physical
 Range            : 100 yards
 Proc Chance      : 101%
-Artifact Power   : Id: 832, Max Rank: 1
+Artifact Power   : Id: 832, Index: 2, Max Rank: 1
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, AOE Hostile Spell, Hostile Spell
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -4841,7 +4824,7 @@ GCD              : 1 seconds
 Duration         : 6 seconds
 Cooldown         : 40 seconds
 Proc Chance      : 101%
-Artifact Power   : Id: 831, Max Rank: 1
+Artifact Power   : Id: 831, Index: 0, Max Rank: 1
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, AOE Hostile Spell, Hostile Spell
 Affecting spells : Windwalker Monk (137025), Storm, Earth, and Fire (137639), Serenity (152173), 
@@ -4869,7 +4852,7 @@ School           : Nature
 Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
-Artifact Power   : Id: 931, Max Rank: 1
+Artifact Power   : Id: 931, Index: 0, Max Rank: 1
 Affecting spells : Enveloping Mist (124682)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4923,7 +4906,7 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ....x... ........ ........ ........ 
 Effects          :
 #1 (id=303663)   : School Damage: physical (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3.73500 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3.73500 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy(6)
 Description      : Strike with a blast of Chi energy, dealing $s1 Physical damage.
 Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
 $dwm=$?a108561|a115697[${1}][${0.857143}]
@@ -5113,7 +5096,7 @@ Tooltip          : You may cast Touch of Death again before the cooldown is trig
 Name             : Face Palm (id=213116) [Spell Family (53), Passive] 
 Class            : Monk
 School           : Physical
-Artifact Power   : Id: 1286, Max Rank: 6, Values: [ 10, 20, 30, 40, 50, 60 ]
+Artifact Power   : Id: 1286, Index: 12, Max Rank: 6, Values: [ 10, 20, 30, 40, 50, 60 ]
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5134,7 +5117,7 @@ GCD              : 1 seconds
 Velocity         : 15 yards/sec
 Duration         : 3 seconds
 Cooldown         : 75 seconds
-Artifact Power   : Id: 1277, Max Rank: 1
+Artifact Power   : Id: 1277, Index: 0, Max Rank: 1
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5368,7 +5351,7 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ....x... ........ ........ ........ 
 Effects          :
 #1 (id=344387)   : School Damage: physical (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3.85000 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3.85000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy(6)
 Description      : Kick with a blast of Chi energy, dealing $s1 Physical damage.
 Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
 $dwm=$?a108561|a115697[${1}][${0.857143}]

@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 74c9f6b)
+SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 3249f8a)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -806,7 +806,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=42113)    : Normalized Weapon Damage (121)
-                   Base Value: 1 | Scaled Value: 1 | Chain Multiplier: 5 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
 #2 (id=42114)    : Weapon Damage% (31)
                    Base Value: 258 | Scaled Value: 2.58 | Target: Enemy(6)
 #3 (id=287354)   : Dummy (3)
@@ -1662,7 +1662,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
                  : Cannot dodge/parry/block (21)
 Effects          :
 #1 (id=60359)    : Normalized Weapon Damage (121)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.2) | Chain Multiplier: 5 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 0 (avg=0.2) | Target: Enemy(6)
 #2 (id=60360)    : Weapon Damage% (31)
                    Base Value: 250 | Scaled Value: 2.5 | Target: Enemy(6)
 Description      : $@spelldesc49998
@@ -3502,7 +3502,7 @@ Name             : Crystalline Swords (id=189186) [Spell Family (15), Passive]
 Class            : Death Knight
 School           : Physical
 Proc Chance      : 45%
-Artifact Power   : Id: 122, Max Rank: 1
+Artifact Power   : Id: 122, Index: 1, Max Rank: 1
 Proc Flags       : ..x.x... ........ ........ ........ 
                  : White Melee, Yellow Melee
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -3524,7 +3524,7 @@ GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 300 seconds
 Category         : 1652
-Artifact Power   : Id: 124, Max Rank: 1
+Artifact Power   : Id: 124, Index: 3, Max Rank: 1
 Affecting spells : Consort's Cold Core (235605)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3988,11 +3988,11 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=286507)   : Normalized Weapon Damage (121)
-                   Base Value: 1 | Scaled Value: 1 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=286508)   : Weapon Damage% (31)
-                   Base Value: 315 | Scaled Value: 3.15 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 315 | Scaled Value: 3.15 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy(6)
 #3 (id=286519)   : Dummy (3)
-                   Base Value: 3 | Scaled Value: 3 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 3 | Scaled Value: 3 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy(6)
 Description      : Smash the target, dealing $sw2 Physical damage and generating $s3 charges of Bone Shield.
 
 |Tinterface\icons\ability_deathknight_boneshield.blp:24|t |cFFFFFFFFBone Shield|r
@@ -4468,7 +4468,7 @@ Spell Level      : 56
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 45 seconds
-Artifact Power   : Id: 289, Max Rank: 1
+Artifact Power   : Id: 289, Index: 0, Max Rank: 1
 Affecting spells : Death Knight (137005), Blood Death Knight (137008)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -4578,15 +4578,15 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=306039)   : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0 (avg=0.756) | Chain Targets: 2 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 (avg=0.756) | Chain Multiplier: 1 | Chain Targets: 2 | Target: Enemy(6)
 #2 (id=306040)   : Weapon Damage% (31)
-                   Base Value: 185 | Scaled Value: 1.85 | Chain Targets: 2 | Target: Enemy(6)
+                   Base Value: 185 | Scaled Value: 1.85 | Chain Multiplier: 1 | Chain Targets: 2 | Target: Enemy(6)
 #3 (id=306041)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 #4 (id=312174)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3
 #5 (id=321496)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88) | Chain Targets: 2 | Target: Enemy(6)
+                   Base Value: -50 | Scaled Value: -50 | Chain Multiplier: 1 | Mechanic: Unknown(88) | Chain Targets: 2 | Target: Enemy(6)
 Description      : Instantly strike the target and 1 other nearby enemy, causing $sw2 Physical damage, and reducing enemies' movement speed by $s5% for $d.
 
 |cFFFFFFFFGenerates $?s221536[${$s3+$221536s1}][$s3] bonus Runic Power$?s221536[, plus ${$210738s1/10} Runic Power per additional enemy struck][].|r
@@ -6050,7 +6050,7 @@ GCD              : 1.5 seconds
 Cooldown         : 90 seconds
 Internal Cooldown: 1 seconds
 Proc Chance      : 100%
-Artifact Power   : Id: 149, Max Rank: 1
+Artifact Power   : Id: 149, Index: 0, Max Rank: 1
 Proc Flags       : ....x... ..x..... ........ ........ 
                  : Yellow Melee, AOE Heal
 Affecting spells : Death Knight (137005)

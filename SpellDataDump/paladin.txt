@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 74c9f6b)
+SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 3249f8a)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -620,11 +620,11 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=21607)    : School Damage: holy (2)
-                   Base Value: 0 | Scaled Value: 1 - 3 | Value Range: 3 | AP Coefficient: 3.91500 | Chain Targets: 3 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 1 - 3 | Value Range: 3 | AP Coefficient: 3.91500 | Chain Multiplier: 1 | Chain Targets: 3 | Target: Enemy(6)
 #2 (id=135932)   : Interrupt Cast (68)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.63500 | Mechanic: Unknown(227) | Chain Targets: 65535 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.63500 | Chain Multiplier: 1 | Mechanic: Unknown(227) | Chain Targets: 65535 | Target: Enemy(6)
 #3 (id=135933)   : Apply Aura (6) | Silence (27)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.63500 | Mechanic: Unknown(72) | Chain Targets: 65535 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.63500 | Chain Multiplier: 1 | Mechanic: Unknown(72) | Chain Targets: 65535 | Target: Enemy(6)
 Description      : Hurls your shield at an enemy target, dealing $s1 Holy damage$?a231665[, interrupting and silencing the non-Player target for $d][], and then jumping to ${$x1-1} additional nearby enemies.
 Tooltip          : Silenced.
 
@@ -944,7 +944,7 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=46256)    : School Damage: holy (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 3.60000 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 3.60000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy(6)
 Description      : Slams the target with your shield, causing $s1 Holy damage, and reducing damage you take by ${-1*$clamp($132403m1,-80,-25)}% for $132403d.$?s26573&!s203785[
 
 While you are standing in your Consecration, Shield of the Righteous' effects are increased by $188370s2%.][]
@@ -2739,7 +2739,7 @@ Class            : Paladin
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
 School           : Physical
 Range            : 100 yards
-Artifact Power   : Id: 353, Max Rank: 1
+Artifact Power   : Id: 353, Index: 3, Max Rank: 1
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3398,7 +3398,7 @@ School           : Physical
 Range            : 100 yards
 Proc Chance      : 101%
 Real PPM         : 1
-Artifact Power   : Id: 963, Max Rank: 1
+Artifact Power   : Id: 963, Index: 2, Max Rank: 1
 Proc Flags       : ........ ......x. ........ ........ 
                  : Heal
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -3422,7 +3422,7 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 90 seconds
-Artifact Power   : Id: 965, Max Rank: 1
+Artifact Power   : Id: 965, Index: 0, Max Rank: 1
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -4043,7 +4043,7 @@ School           : Holyfire
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 30 seconds
-Artifact Power   : Id: 40, Max Rank: 1
+Artifact Power   : Id: 40, Index: 0, Max Rank: 1
 Affecting spells : Retribution Paladin (137027), Ashes to Dust (236106)
 Triggered by     : Push Active Ability to Bar (225875)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
@@ -4094,7 +4094,7 @@ School           : Holy
 GCD              : 1.5 seconds
 Duration         : 9 seconds
 Cooldown         : 60 seconds
-Artifact Power   : Id: 1120, Max Rank: 1
+Artifact Power   : Id: 1120, Index: 0, Max Rank: 1
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4417,7 +4417,7 @@ Effects          :
 #1 (id=322914)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 0.6 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=322915)   : Weapon Damage% (31)
-                   Base Value: 320 | Scaled Value: 3.2 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 320 | Scaled Value: 3.2 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy(6)
 #3 (id=322916)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: holy_power | Target: Self(1)
 #4 (id=322917)   : Apply Aura (6) | Add Flat Modifier: Spell Targets (107)

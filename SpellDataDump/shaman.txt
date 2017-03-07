@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 74c9f6b)
+SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 3249f8a)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -74,7 +74,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=155)      : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.20000 | Chain Targets: 3 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.20000 | Chain Multiplier: 1 | Chain Targets: 3 | Target: Enemy(6)
 Description      : Hurls a lightning bolt at the enemy, dealing $s1 Nature damage and then jumping to additional nearby enemies. Affects $x1 total targets.
 
 Name             : Chain Heal (id=1064) [Spell Family (11)] 
@@ -798,7 +798,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=37247)    : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.60000 | Chain Targets: 3 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.60000 | Chain Multiplier: 1 | Chain Targets: 3 | Target: Enemy(6)
 Description      : Hurls a lightning bolt at the enemy, dealing $s1 Nature damage and then jumping to additional nearby enemies.  Affects $x1 total targets.
 
 Name             : Primal-Attuned Goggles (id=46110) 
@@ -1705,7 +1705,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=68093)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.75000 | Chain Multiplier: 0.2 | Target: Chain Friendly(45)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.75000 | Target: Chain Friendly(45)
 Description      : An efficient wave of healing energy that restores $s1 of a friendly target’s health.
 
 Name             : Earthquake (id=77478) [Spell Family (11)] 
@@ -3678,7 +3678,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=275203)   : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.60000 | Chain Targets: 3 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.60000 | Chain Multiplier: 1 | Chain Targets: 3 | Target: Enemy(6)
 #2 (id=325428)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6
 Description      : Hurls a lightning bolt at the enemy, dealing $s1 Nature damage and then jumping to additional nearby enemies. Affects $x1 total targets. 
@@ -3887,7 +3887,7 @@ Effects          :
 Name             : Static Overload (id=191602) [Spell Family (11), Passive] 
 Class            : Shaman
 School           : Physical
-Artifact Power   : Id: 292, Max Rank: 1
+Artifact Power   : Id: 292, Index: 0, Max Rank: 1
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3951,7 +3951,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=281250)   : School Damage: nature (2)
-                   Base Value: -1 | Scaled Value: 0 - 2 | Value Range: 3 | Value Multiplier: 1 | SP Coefficient: 0.50000 | Chain Targets: 6 | Target: Enemy(6)
+                   Base Value: -1 | Scaled Value: 0 - 2 | Value Range: 3 | Value Multiplier: 1 | SP Coefficient: 0.50000 | Chain Multiplier: 1 | Chain Targets: 6 | Target: Enemy(6)
 Description      : Inflicts Nature damage to up to $x enemies.
 
 Name             : Lightning Surge Totem (id=192058) [Spell Family (11)] 
@@ -4878,7 +4878,7 @@ Name             : Gathering Storms (id=198299) [Spell Family (11), Passive]
 Class            : Shaman
 School           : Physical
 Range            : 100 yards
-Artifact Power   : Id: 912, Max Rank: 6, Values: [ 2, 4, 6, 8, 10, 12 ]
+Artifact Power   : Id: 912, Index: 8, Max Rank: 6, Values: [ 2, 4, 6, 8, 10, 12 ]
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5025,7 +5025,7 @@ Class            : Shaman
 School           : Physical
 Range            : 100 yards
 Proc Chance      : 20%
-Artifact Power   : Id: 900, Max Rank: 1
+Artifact Power   : Id: 900, Index: 1, Max Rank: 1
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, AOE Hostile Spell, Hostile Spell
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -5501,7 +5501,7 @@ School           : Physical
 Range            : 100 yards
 Duration         : 6 seconds
 Cooldown         : 60 seconds
-Artifact Power   : Id: 899, Max Rank: 1
+Artifact Power   : Id: 899, Index: 0, Max Rank: 1
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5532,7 +5532,7 @@ Duration         : 15 seconds
 Cooldown         : 60 seconds
 Stacks           : 3 initial, 3 maximum
 Proc Chance      : 100%
-Artifact Power   : Id: 291, Max Rank: 1
+Artifact Power   : Id: 291, Index: 0, Max Rank: 1
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5664,7 +5664,7 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 45 seconds
-Artifact Power   : Id: 1102, Max Rank: 1
+Artifact Power   : Id: 1102, Index: 0, Max Rank: 1
 Affecting spells : Mastery: Deep Healing (77226), Spiritwalker's Grace (79206)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

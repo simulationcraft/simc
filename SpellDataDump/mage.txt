@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 74c9f6b)
+SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 3249f8a)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Arcane Fire Frost Mage
@@ -368,7 +368,7 @@ Attributes       : ........ ........ x....... ........   ..x..... ........ .....
                  : Channeled (34), Not a proc (105)
 Effects          :
 #1 (id=2716)     : School Damage: arcane (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.44300 | Chain Targets: 1 | Target: Unknown(77)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.44300 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Unknown(77)
 Description      : $@spelldesc5143
 
 Name             : Pyroblast (id=11366) [Spell Family (3)] 
@@ -1040,7 +1040,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=36330)    : School Damage: arcane (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.30000 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.30000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=157070)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50
 #3 (id=331544)   : Dummy (3)
@@ -3758,7 +3758,7 @@ Description      : Shoots at an enemy, inflicting Physical damage.
 Name             : Molten Skin (id=194315) [Spell Family (3), Passive] 
 Class            : Mage
 School           : Physical
-Artifact Power   : Id: 757, Max Rank: 6, Values: [ -5, -10, -15, -20, -25, -30 ]
+Artifact Power   : Id: 757, Index: 12, Max Rank: 6, Values: [ -5, -10, -15, -20, -25, -30 ]
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3776,7 +3776,7 @@ Name             : Aftershocks (id=194431) [Spell Family (3), Passive]
 Class            : Mage
 School           : Physical
 Proc Chance      : 100%
-Artifact Power   : Id: 761, Max Rank: 1
+Artifact Power   : Id: 761, Index: 1, Max Rank: 1
 Proc Flags       : ........ ....x... x.x..... ........ 
                  : AOE Hostile Spell, Hostile Spell, Periodic
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -3820,7 +3820,7 @@ Velocity         : 50 yards/sec
 Charges          : 3 (45 seconds cooldown)
 Category         : 1633
 Proc Chance      : 101%
-Artifact Power   : Id: 748, Max Rank: 1
+Artifact Power   : Id: 748, Index: 0, Max Rank: 1
 Affecting spells : Fire Mage (137019), Norgannon's Foresight (236380)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4543,7 +4543,7 @@ Class            : Mage
 School           : Physical
 Internal Cooldown: 6 seconds
 Proc Chance      : 10%
-Artifact Power   : Id: 86, Max Rank: 1
+Artifact Power   : Id: 86, Index: 2, Max Rank: 1
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -4759,7 +4759,7 @@ Cast Time        : 3 seconds
 GCD              : 1.5 seconds
 Velocity         : 30 yards/sec
 Cooldown         : 45 seconds
-Artifact Power   : Id: 783, Max Rank: 1
+Artifact Power   : Id: 783, Index: 0, Max Rank: 1
 Affecting spells : Shatter (12982), Ice Floes (108839), Frost Mage (137020), Norgannon's Foresight (236380)
 Triggered by     : Push Active Ability to Bar (225872)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4829,7 +4829,7 @@ Duration         : 6 seconds
 Cooldown         : 60 seconds
 Stacks           : 4 maximum
 Proc Chance      : 101%
-Artifact Power   : Id: 290, Max Rank: 1
+Artifact Power   : Id: 290, Index: 0, Max Rank: 1
 Affecting spells : Ice Floes (108839), Norgannon's Foresight (236380)
 Triggered by     : Push Active Ability to Bar (225874)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
@@ -4900,6 +4900,24 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.52300 | Target: Enemy(6)
 Description      : $@spelldesc44614
 Tooltip          : Movement slowed by $s1%.
+
+Name             : Winter's Chill (id=228358) [Scaling Spell (5)] 
+Class            : Mage
+School           : Frost
+Spell Level      : 1
+Range            : 100 yards
+Duration         : 1 seconds
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   .x...... ........ ........ ........ 
+Effects          :
+#1 (id=343742)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 100 | Scaled Value: 100 | Target: Enemy(6)
+Description      : $@spelldesc44614
+Tooltip          : Taking damage from the Mage's spells as if frozen.
 
 Name             : Frostbolt (id=228597) [Spell Family (3)] 
 Class            : Mage
@@ -5457,7 +5475,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=357237)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: 50 | Scaled Value: 50 | Target: Enemy(6)
+                   Base Value: 50 | Scaled Value: 50 | Mechanic: Unknown(88) | Target: Enemy(6)
                    Hotfixed: Base Value (30 -> 50)
 Description      : $@spelldesc235711
 Tooltip          : Movement speed slowed by $s1%.

@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build ff6af4d)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build 3d249f6)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -74,7 +74,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=155)      : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.20000 | Chain Targets: 3 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.20000 | Chain Multiplier: 0 | Chain Targets: 3 | Target: Enemy(6)
 Description      : Hurls a lightning bolt at the enemy, dealing $s1 Nature damage and then jumping to additional nearby enemies. Affects $x1 total targets.
 
 Name             : Chain Heal (id=1064) [Spell Family (11)] 
@@ -140,7 +140,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: Unknown(87)
 #2 (id=276084)   : Summon (28)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 2630 | Misc Value 2: 0xd48 | Target: Unknown(87)
-Description      : Summons an Earth Totem with ${$m2*$MHP/100} health at the feet of the caster for $d that slows the movement speed of enemies within $3600A1 yards.
+Description      : Summons an Earth Totem with ${$m2*$MHP/100} health at the target location for $d that slows the movement speed of enemies within $3600A1 yards.
 
 Name             : Ghost Wolf (id=2645) [Spell Family (11)] 
 Class            : Shaman
@@ -797,7 +797,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=37247)    : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.60000 | Chain Targets: 3 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.60000 | Chain Multiplier: 0 | Chain Targets: 3 | Target: Enemy(6)
 Description      : Hurls a lightning bolt at the enemy, dealing $s1 Nature damage and then jumping to additional nearby enemies.  Affects $x1 total targets.
 
 Name             : Primal-Attuned Goggles (id=46110) 
@@ -1705,8 +1705,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=68093)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.75000 | Chain Multiplier: 0.2 | Target: Chain Friendly(45)
-Description      : An efficient wave of healing energy that restores $s1 of a friendly targetâ€™s health.
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.75000 | Target: Chain Friendly(45)
+Description      : An efficient wave of healing energy that restores $s1 of a friendly target’s health.
 
 Name             : Earthquake (id=77478) [Spell Family (11)] 
 Class            : Shaman
@@ -3676,7 +3676,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=275203)   : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.60000 | Chain Targets: 3 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.60000 | Chain Multiplier: 0 | Chain Targets: 3 | Target: Enemy(6)
 #2 (id=325428)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6
 Description      : Hurls a lightning bolt at the enemy, dealing $s1 Nature damage and then jumping to additional nearby enemies. Affects $x1 total targets. 
@@ -3949,7 +3949,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=281250)   : School Damage: nature (2)
-                   Base Value: -1 | Scaled Value: 0 - 2 | Value Range: 3 | Value Multiplier: 1 | SP Coefficient: 0.50000 | Chain Targets: 6 | Target: Enemy(6)
+                   Base Value: -1 | Scaled Value: 0 - 2 | Value Range: 3 | Value Multiplier: 1 | SP Coefficient: 0.50000 | Chain Multiplier: 0 | Chain Targets: 6 | Target: Enemy(6)
 Description      : Inflicts Nature damage to up to $x enemies.
 
 Name             : Lightning Surge Totem (id=192058) [Spell Family (11)] 
@@ -4696,7 +4696,7 @@ Effects          :
 #1 (id=289629)   : School Damage: physical (2)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 13.00000 | Radius: 11 yards | Target: Unknown(129)
 #2 (id=290614)   : Apply Aura (6) | Unknown effect sub type (455)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 11 yards | Mechanic: Unknown(95) | Target: Unknown(129)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 11 yards | Mechanic: Unknown(58) | Target: Unknown(129)
 #3 (id=290630)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 1 yards | Target: Unknown(47) -> Unknown(107)
 Description      : Shatters a line of earth in front of you with your main hand weapon, causing $s1 Physical damage and knocking enemies to the side.

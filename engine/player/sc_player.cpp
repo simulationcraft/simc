@@ -6271,12 +6271,14 @@ struct variable_t : public action_t
 {
   action_var_e operation;
   action_variable_t* var;
-  std::string value_str, var_name_str;
+  std::string value_str, value_else_str, var_name_str, condition_str;;
   expr_t* value_expression;
+  expr_t* condition_expression;
+  expr_t* value_else_expression;
 
   variable_t( player_t* player, const std::string& options_str ) :
     action_t( ACTION_VARIABLE, "variable", player ),
-    operation( OPERATION_SET ), var( nullptr ), value_expression( nullptr )
+    operation( OPERATION_SET ), var( nullptr ), value_expression( nullptr ), condition_expression ( nullptr ), value_else_expression ( nullptr )
   {
     quiet = true;
     harmful = proc = callbacks = may_miss = may_crit = may_block = may_parry = may_dodge = false;
@@ -6291,6 +6293,8 @@ struct variable_t : public action_t
     add_option( opt_string( "op", operation_ ) );
     add_option( opt_float( "default", default_ ) );
     add_option( opt_timespan( "delay", delay_ ) );
+    add_option( opt_string( "condition", condition_str ) );
+    add_option( opt_string( "value_else", value_else_str ) );
     parse_options( options_str );
 
     if ( name_str.empty() )
@@ -6316,6 +6320,7 @@ struct variable_t : public action_t
       else if ( util::str_compare_ci( operation_, "max"   ) ) operation = OPERATION_MAX;
       else if ( util::str_compare_ci( operation_, "floor" ) ) operation = OPERATION_FLOOR;
       else if ( util::str_compare_ci( operation_, "ceil"  ) ) operation = OPERATION_CEIL;
+      else if ( util::str_compare_ci( operation_, "setif" ) ) operation = OPERATION_SETIF;
       else
       {
         sim -> errorf( "Player %s unknown operation '%s' given for variable, valid values are 'set', 'print', and 'reset'.", player -> name(), operation_.c_str() );
@@ -6336,6 +6341,21 @@ struct variable_t : public action_t
         sim -> errorf( "Player %s no value expression given for variable '%s'", player -> name(), name_str.c_str() );
         background = true;
         return;
+      }
+      if ( operation == OPERATION_SETIF )
+      {
+        if ( condition_str.empty() )
+        {
+          sim->errorf( "Player %s no condition expression given for variable '%s'", player->name(), name_str.c_str() );
+          background = true;
+          return;
+        }
+        if ( value_else_str.empty() )
+        {
+          sim->errorf( "Player %s no value_else expression given for variable '%s'", player->name(), name_str.c_str() );
+          background = true;
+          return;
+        }
       }
     }
 
@@ -6382,12 +6402,29 @@ struct variable_t : public action_t
         sim -> errorf( "Player %s unable to parse 'variable' value '%s'", player -> name(), value_str.c_str() );
         background = true;
       }
+      if ( operation == OPERATION_SETIF )
+      {
+        condition_expression = expr_t::parse( this, condition_str );
+        if ( !condition_expression )
+        {
+          sim->errorf( "Player %s unable to parse 'condition' value '%s'", player->name(), condition_str.c_str() );
+          background = true;
+        }
+        value_else_expression = expr_t::parse( this, value_else_str );
+        if ( !value_else_expression )
+        {
+          sim->errorf( "Player %s unable to parse 'value_else' value '%s'", player->name(), value_else_str.c_str() );
+          background = true;
+        }
+      }
     }
   }
 
   ~variable_t()
   {
     delete value_expression;
+    delete condition_expression;
+    delete value_else_expression;
   }
 
   // Note note note, doesn't do anything that a real action does
@@ -6465,6 +6502,12 @@ struct variable_t : public action_t
         break;
       case OPERATION_RESET:
         var -> reset();
+        break;
+      case OPERATION_SETIF:
+        if ( condition_expression->eval() != 0 )
+          var->current_value_ = value_expression->eval();
+        else
+          var->current_value_ = value_else_expression->eval();
         break;
       default:
         assert( 0 );
@@ -7163,7 +7206,7 @@ struct use_item_t : public action_t
   {
     if ( ! item ) return false;
 
-    if ( cooldown_group -> remains() > timespan_t::zero() )
+    if ( cooldown_group && cooldown_group -> remains() > timespan_t::zero() )
     {
       return false;
     }

@@ -17,7 +17,7 @@ spec=havoc
 
 # Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat=flask,type=flask_of_the_seventh_demon
-actions.precombat+=/food,type=nightborne_delicacy_platter
+actions.precombat+=/food,type=the_hungry_magister
 actions.precombat+=/augmentation,type=defiled
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
@@ -26,8 +26,10 @@ actions.precombat+=/metamorphosis,if=!(talent.demon_reborn.enabled&talent.demoni
 
 # Executed every time the actor is available.
 actions=auto_attack
+actions+=/variable,name=waiting_for_nemesis,value=!(!talent.nemesis.enabled|cooldown.nemesis.ready|cooldown.nemesis.remains>target.time_to_die|cooldown.nemesis.remains>60)
+actions+=/variable,name=waiting_for_chaos_blades,value=!(!talent.chaos_blades.enabled|cooldown.chaos_blades.ready|cooldown.chaos_blades.remains>target.time_to_die|cooldown.chaos_blades.remains>60)
 # "Getting ready to use meta" conditions, this is used in a few places.
-actions+=/variable,name=pooling_for_meta,value=cooldown.metamorphosis.remains<6&fury.deficit>30&!talent.demonic.enabled
+actions+=/variable,name=pooling_for_meta,value=cooldown.metamorphosis.remains<6&fury.deficit>30&!talent.demonic.enabled&(!variable.waiting_for_nemesis|cooldown.nemesis.remains<10)&(!variable.waiting_for_chaos_blades|cooldown.chaos_blades.remains<6)
 # Blade Dance conditions. Always if First Blood is talented, otherwise 5+ targets with Chaos Cleave or 3+ targets without.
 actions+=/variable,name=blade_dance,value=talent.first_blood.enabled|spell_targets.blade_dance1>=3+(talent.chaos_cleave.enabled*2)
 # Blade Dance pooling condition, so we don't spend too much fury when we need it soon. No need to pool on
@@ -35,7 +37,7 @@ actions+=/variable,name=blade_dance,value=talent.first_blood.enabled|spell_targe
 actions+=/variable,name=pooling_for_blade_dance,value=variable.blade_dance&fury-40<35-talent.first_blood.enabled*20&(spell_targets.blade_dance1>=3+(talent.chaos_cleave.enabled*2))
 # Chaos Strike pooling condition, so we don't spend too much fury when we need it for Chaos Cleave AoE
 actions+=/variable,name=pooling_for_chaos_strike,value=talent.chaos_cleave.enabled&fury.deficit>40&!raid_event.adds.up&raid_event.adds.in<2*gcd
-actions+=/call_action_list,name=cooldown
+actions+=/call_action_list,name=cooldown,if=gcd.remains=0
 actions+=/pick_up_fragment,if=talent.demonic_appetite.enabled&fury.deficit>=35&(!talent.demonic.enabled|cooldown.eye_beam.remains>5)
 actions+=/consume_magic
 # Vengeful Retreat backwards through the target to minimize downtime.
@@ -73,11 +75,13 @@ actions+=/fel_rush,if=movement.distance>15|(buff.out_of_range.up&!talent.momentu
 actions+=/vengeful_retreat,if=movement.distance>15
 actions+=/throw_glaive,if=!talent.bloodlet.enabled
 
-actions.cooldown=nemesis,target_if=min:target.time_to_die,if=raid_event.adds.exists&debuff.nemesis.down&((active_enemies>desired_targets&active_enemies>1)|raid_event.adds.in>60)
+# Use Metamorphosis when we are done pooling Fury and when we are not waiting for other cooldowns to sync.
+actions.cooldown=metamorphosis,if=!(variable.pooling_for_meta|variable.waiting_for_nemesis|variable.waiting_for_chaos_blades)|target.time_to_die<25
+# If adds are present, use Nemesis on the lowest HP add in order to get the Nemesis buff for AoE
+actions.cooldown+=/nemesis,target_if=min:target.time_to_die,if=raid_event.adds.exists&debuff.nemesis.down&((active_enemies>desired_targets&active_enemies>1)|raid_event.adds.in>60)
 actions.cooldown+=/nemesis,if=!raid_event.adds.exists&(buff.chaos_blades.up|buff.metamorphosis.up|cooldown.metamorphosis.adjusted_remains<20|target.time_to_die<=60)
 actions.cooldown+=/chaos_blades,if=buff.metamorphosis.up|cooldown.metamorphosis.adjusted_remains>60|target.time_to_die<=12
 actions.cooldown+=/use_item,slot=trinket2,if=!buff.metamorphosis.up&(!talent.first_blood.enabled|!cooldown.blade_dance.ready)&(!talent.nemesis.enabled|cooldown.nemesis.remains>30|target.time_to_die<cooldown.nemesis.remains+3)
-actions.cooldown+=/metamorphosis,if=!variable.pooling_for_meta&(!talent.demonic.enabled|!cooldown.eye_beam.ready)
 actions.cooldown+=/potion,name=old_war,if=buff.metamorphosis.remains>25|target.time_to_die<30
 
 head=mask_of_second_sight,id=138378,bonus_id=3517
