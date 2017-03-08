@@ -375,6 +375,7 @@ struct rogue_t : public player_t
     const spell_data_t* fleet_footed;
     const spell_data_t* master_of_shadows;
     const spell_data_t* sprint;
+    const spell_data_t* sprint_2;
     const spell_data_t* relentless_strikes_energize;
     const spell_data_t* ruthlessness_cp_driver;
     const spell_data_t* ruthlessness_driver;
@@ -4411,7 +4412,9 @@ struct sprint_t : public rogue_attack_t
     cooldown = p -> cooldowns.sprint;
     ignore_false_positive = true;
 
-    cooldown -> duration = data().cooldown() + p -> artifact.shadow_walker.time_value();
+    cooldown -> duration = data().cooldown()
+                            + p -> spell.sprint_2 -> effectN( 1 ).time_value()
+                            + p -> artifact.shadow_walker.time_value();
   }
 
   void execute() override
@@ -7319,6 +7322,7 @@ void rogue_t::init_spells()
   spell.fleet_footed                  = find_spell( 31209 );
   spell.master_of_shadows             = find_spell( 196980 );
   spell.sprint                        = find_class_spell( "Sprint" );
+  spell.sprint_2                      = find_spell( 231691 );
   spell.ruthlessness_driver           = find_spell( 14161 );
   spell.ruthlessness_cp               = spec.ruthlessness -> effectN( 1 ).trigger();
   spell.shadow_focus                  = find_spell( 112942 );
