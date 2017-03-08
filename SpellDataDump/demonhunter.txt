@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 3d249f6)
+SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 3249f8a)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -1150,7 +1150,7 @@ GCD              : 1.5 seconds
 Velocity         : 3 yards/sec
 Duration         : 3 seconds
 Cooldown         : 60 seconds
-Artifact Power   : Id: 1010, Max Rank: 1
+Artifact Power   : Id: 1010, Index: 0, Max Rank: 1
 Affecting spells : Metamorphosis (162264), Havoc Demon Hunter (212612), Vengeance Demon Hunter (212613)
 Triggered by     : Push Active Ability to Bar (225863)
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
@@ -1169,7 +1169,7 @@ Name             : Rage of the Illidari (id=201472) [Spell Family (107), Passive
 Class            : Demon Hunter
 School           : Physical
 Proc Chance      : 101%
-Artifact Power   : Id: 1015, Max Rank: 1
+Artifact Power   : Id: 1015, Index: 2, Max Rank: 1
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, AOE Hostile Spell, Hostile Spell
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -1188,7 +1188,7 @@ Name             : Anguish of the Deceiver (id=201473) [Spell Family (107), Pass
 Class            : Demon Hunter
 School           : Chaos
 Proc Chance      : 101%
-Artifact Power   : Id: 1016, Max Rank: 1
+Artifact Power   : Id: 1016, Index: 3, Max Rank: 1
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -2149,7 +2149,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Cooldown         : 40 seconds
-Artifact Power   : Id: 1096, Max Rank: 1
+Artifact Power   : Id: 1096, Index: 0, Max Rank: 1
 Affecting spells : Metamorphosis (162264), Havoc Demon Hunter (212612), Vengeance Demon Hunter (212613)
 Triggered by     : Push Active Ability to Bar (225864)
 Attributes       : ........ ........ ..x..... .......x   ........ .x...... ........ ........ 

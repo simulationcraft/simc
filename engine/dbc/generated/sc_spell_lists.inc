@@ -943,7 +943,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       116670, // Vivify
            0,
     },
-    // Windwalker tree, 17 abilities
+    // Windwalker tree, 16 abilities
     {
       116768, // Blackout Kick!
       211432, // Combo Master
@@ -959,7 +959,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       116705, // Spear Hand Strike
       101546, // Spinning Crane Kick
       137639, // Storm, Earth, and Fire
-      116007, // Thunderfist
       115080, // Touch of Death
       122470, // Touch of Karma
            0,
