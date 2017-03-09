@@ -4883,7 +4883,7 @@ struct hungering_rune_weapon_t : public death_knight_spell_t
     cooldown -> charges = data().charges() +
       p() -> legendary.seal_of_necrofantasia -> effectN( 1 ).base_value();
     cooldown -> duration = data().charge_cooldown() *
-      ( 1.0 - p() -> legendary.seal_of_necrofantasia -> effectN( 2 ).percent() );
+      ( 1.0 + p() -> legendary.seal_of_necrofantasia -> effectN( 2 ).percent() );
   }
 
   void execute() override
