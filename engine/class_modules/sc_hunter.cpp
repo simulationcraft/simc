@@ -52,9 +52,12 @@ struct hunter_td_t: public actor_target_data_t
     dot_t* on_the_trail;
     // dot shared by all of the Cobra Commander artifact trait snakes
     dot_t* deathstrike_venom;
+    dot_t* a_murder_of_crows;
   } dots;
 
   hunter_td_t( player_t* target, hunter_t* p );
+
+  void target_demise();
 };
 
 struct hunter_t: public player_t
@@ -158,6 +161,7 @@ public:
     cooldown_t* harpoon;
     cooldown_t* aspect_of_the_eagle;
     cooldown_t* aspect_of_the_wild;
+    cooldown_t* a_murder_of_crows;
   } cooldowns;
 
   // Custom Parameters
@@ -431,6 +435,7 @@ public:
     cooldowns.harpoon         = get_cooldown( "harpoon" );
     cooldowns.aspect_of_the_eagle = get_cooldown( "aspect_of_the_eagle" );
     cooldowns.aspect_of_the_wild  = get_cooldown( "aspect_of_the_wild" );
+    cooldowns.a_murder_of_crows   = get_cooldown( "a_murder_of_crows" );
 
     summon_pet_str = "";
 
@@ -4361,7 +4366,6 @@ struct interrupt_base_t: public hunter_spell_t
 
 // A Murder of Crows ========================================================
 
-// TODO this should reset CD if the target dies
 struct moc_t : public hunter_spell_t
 {
   struct peck_t : public hunter_ranged_attack_t
@@ -5357,14 +5361,15 @@ struct hunters_mark_exists_buff_t: public buff_t
 } // end namespace buffs
 
 hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ):
-actor_target_data_t( target, p ),
-dots( dots_t() )
+  actor_target_data_t( target, p ),
+  dots( dots_t() )
 {
   dots.serpent_sting = target -> get_dot( "serpent_sting", p );
   dots.piercing_shots = target -> get_dot( "piercing_shots", p );
   dots.lacerate = target -> get_dot( "lacerate", p );
   dots.on_the_trail = target -> get_dot( "on_the_trail", p );
   dots.deathstrike_venom = target -> get_dot( "deathstrike_venom", p );
+  dots.a_murder_of_crows = target -> get_dot( "a_murder_of_crows", p );
 
   debuffs.hunters_mark = 
     buff_creator_t( *this, "hunters_mark", p -> find_spell( 185365 ) );
@@ -5388,8 +5393,25 @@ dots( dots_t() )
         .default_value( p -> find_spell( 213154 ) 
                           -> effectN( 1 )
                             .percent() );
+
+  target -> callbacks_on_demise.push_back( std::bind( &hunter_td_t::target_demise, this ) );
 }
 
+void hunter_td_t::target_demise()
+{
+  // Don't pollute results at the end-of-iteration deaths of everyone
+  if ( source -> sim -> event_mgr.canceled )
+    return;
+
+  hunter_t* p = static_cast<hunter_t*>( source );
+  if ( p -> talents.a_murder_of_crows -> ok() && dots.a_murder_of_crows -> is_ticking() )
+  {
+    if ( p -> sim -> debug )
+      p -> sim -> out_debug.printf( "%s a_murder_of_crows cooldown reset on target death.", p -> name() );
+
+    p -> cooldowns.a_murder_of_crows -> reset( true );
+  }
+}
 
 expr_t* hunter_t::create_expression( action_t* a, const std::string& expression_str )
 {
