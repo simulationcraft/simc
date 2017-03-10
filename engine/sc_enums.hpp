@@ -540,7 +540,10 @@ enum action_var_e
   OPERATION_FLOOR,
 
   /// Raise variable to next integer value
-  OPERATION_CEIL
+  OPERATION_CEIL,
+
+  ///Set variable to value if condition met
+  OPERATION_SETIF
 };
 
 enum school_e

@@ -491,6 +491,7 @@ public:
     cooldown_t* frost_fever;
     cooldown_t* icecap;
     cooldown_t* pillar_of_frost;
+    cooldown_t* sindragosas_fury;
     cooldown_t* vampiric_blood;
   } cooldown;
 
@@ -681,6 +682,11 @@ public:
     artifact_power_t bad_to_the_bone;
     artifact_power_t hypothermia;
     artifact_power_t soulbiter;
+    // 7.2
+    artifact_power_t ferocity_of_the_ebon_blade;
+    artifact_power_t runefrost;
+    artifact_power_t runic_chills;
+    artifact_power_t thronebreaker;
 
     // Unholy
     artifact_power_t apocalypse;
@@ -821,6 +827,7 @@ public:
     cooldown.festering_wound = get_cooldown( "festering_wound" );
     cooldown.icecap          = get_cooldown( "icecap" );
     cooldown.pillar_of_frost = get_cooldown( "pillar_of_frost" );
+    cooldown.sindragosas_fury= get_cooldown( "sindragosas_fury" );
     cooldown.vampiric_blood = get_cooldown( "vampiric_blood" );
 
     regen_type = REGEN_DYNAMIC;
@@ -1579,6 +1586,7 @@ struct dt_pet_auto_attack_t : public auto_attack_melee_t<T>
   {
     auto_attack_melee_t<T>::impact( s );
 
+    /*
     if ( this -> result_is_hit( s -> result ) )
     {
       if ( ! this -> rng().roll( this -> p() -> o() -> legendary.uvanimor_the_unbeautiful ) )
@@ -1597,6 +1605,7 @@ struct dt_pet_auto_attack_t : public auto_attack_melee_t<T>
         log_rune_status( this -> p() -> o() );
       }
     }
+    */
   }
 };
 
@@ -2913,6 +2922,16 @@ struct crystalline_swords_t : public death_knight_spell_t
     death_knight_spell_t( "crystalline_swords", player, player -> find_spell( 205165 ) )
   {
     background = true;
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    death_knight_spell_t::impact( state );
+
+    if ( state -> result_amount > 0 && p() -> artifact.runic_chills.rank() > 0 )
+    {
+      p() -> cooldown.sindragosas_fury -> adjust( p() -> artifact.runic_chills.time_value(), true );
+    }
   }
 };
 
@@ -4373,7 +4392,7 @@ struct empower_rune_weapon_t : public death_knight_spell_t
     cooldown -> charges = data().charges() +
       p() -> legendary.seal_of_necrofantasia -> effectN( 1 ).base_value();
     cooldown -> duration = data().charge_cooldown() *
-      ( 1.0 - p() -> legendary.seal_of_necrofantasia -> effectN( 2 ).percent() );
+      ( 1.0 + p() -> legendary.seal_of_necrofantasia -> effectN( 2 ).percent() );
   }
 
   void execute() override
@@ -4864,7 +4883,7 @@ struct hungering_rune_weapon_t : public death_knight_spell_t
     cooldown -> charges = data().charges() +
       p() -> legendary.seal_of_necrofantasia -> effectN( 1 ).base_value();
     cooldown -> duration = data().charge_cooldown() *
-      ( 1.0 - p() -> legendary.seal_of_necrofantasia -> effectN( 2 ).percent() );
+      ( 1.0 + p() -> legendary.seal_of_necrofantasia -> effectN( 2 ).percent() );
   }
 
   void execute() override
@@ -5115,6 +5134,11 @@ struct obliterate_t : public death_knight_melee_attack_t
           p() -> gains.koltiras_newfound_will );
     }
 
+    if ( rng().roll( p() -> artifact.thronebreaker.data().proc_chance() ) )
+    {
+      p() -> active_spells.crystalline_swords -> target = execute_state -> target;
+      p() -> active_spells.crystalline_swords -> execute();
+    }
 
     consume_killing_machine( execute_state, p() -> procs.oblit_killing_machine );
   }
@@ -6203,6 +6227,41 @@ struct frozen_soul_buff_t : public buff_t
   }
 };
 
+// Hungering Rune Weapon
+
+// Hungering Rune Weapon buff needs two tick periods for the Rune and Runic Power replenishment.
+// Simc does not really support this, so we fake it by ticking faster (every 500ms), and triggering
+// the replenishment every third and second tick, respectively.
+struct hungering_rune_weapon_buff_t : public buff_t
+{
+  int rune_divisor, rp_divisor;
+
+  hungering_rune_weapon_buff_t( death_knight_t* p ) :
+   buff_t( buff_creator_t( p, "hungering_rune_weapon", p -> talent.hungering_rune_weapon )
+    .cd( timespan_t::zero() ) // Handled in the action
+    // 500MS tick time
+    .period( p -> talent.hungering_rune_weapon -> effectN( 1 ).period() / 3.0 )
+    .tick_callback( [ this, p ]( buff_t* b, int, const timespan_t& ) {
+      if ( b -> current_tick % rune_divisor == 0 )
+      {
+        p -> replenish_rune( b -> data().effectN( 1 ).base_value(),
+                             p -> gains.hungering_rune_weapon );
+      }
+
+      if ( b -> current_tick % rp_divisor == 0 )
+      {
+        p -> resource_gain( RESOURCE_RUNIC_POWER,
+                            b -> data().effectN( 2 ).resource( RESOURCE_RUNIC_POWER ),
+                            p -> gains.hungering_rune_weapon );
+      }
+    } ) ),
+    // NOTE: Apparently Hungering Rune Weapon is bugged(?) in game, and is actually ticking every
+    // second for runes, instead of every 1.5 seconds.
+    rune_divisor( p -> talent.hungering_rune_weapon -> effectN( p -> bugs ? 2 : 1 ).period() / buff_period ),
+    rp_divisor( p -> talent.hungering_rune_weapon -> effectN( 2 ).period() / buff_period )
+  { }
+};
+
 } // UNNAMED NAMESPACE
 
 // Runeforges ==============================================================
@@ -6793,6 +6852,11 @@ void death_knight_t::init_spells()
   artifact.bad_to_the_bone     = find_artifact_spell( "Bad to the Bone" );
   artifact.hypothermia         = find_artifact_spell( "Hypothermia" );
   artifact.soulbiter           = find_artifact_spell( "Soulbiter" );
+  // 7.2
+  artifact.ferocity_of_the_ebon_blade = find_artifact_spell( "Ferocity of the Ebon Blade" );
+  artifact.runefrost           = find_artifact_spell( "Runefrost" );
+  artifact.runic_chills        = find_artifact_spell( "Runic Chills" );
+  artifact.thronebreaker       = find_artifact_spell( "Thronebreaker" );
   // Unholy
   artifact.apocalypse          = find_artifact_spell( "Apocalypse" );
   artifact.feast_of_souls      = find_artifact_spell( "Feast of Souls" );
@@ -7437,13 +7501,7 @@ void death_knight_t::create_buffs()
   // Must be created after Gathering Storms buff (above) to get correct linkage
   buffs.remorseless_winter = new remorseless_winter_buff_t( this );
 
-  buffs.hungering_rune_weapon = buff_creator_t( this, "hungering_rune_weapon", talent.hungering_rune_weapon )
-    .cd( timespan_t::zero() ) // Handled in the action
-    .period( talent.hungering_rune_weapon -> effectN( 1 ).period() )
-    .tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
-      replenish_rune( b -> data().effectN( 1 ).base_value(), gains.hungering_rune_weapon );
-      resource_gain( RESOURCE_RUNIC_POWER, b -> data().effectN( 2 ).resource( RESOURCE_RUNIC_POWER ), gains.hungering_rune_weapon );
-    } );
+  buffs.hungering_rune_weapon = new hungering_rune_weapon_buff_t( this );
 }
 
 // death_knight_t::init_gains ===============================================
@@ -7709,6 +7767,8 @@ double death_knight_t::composite_attribute_multiplier( attribute_e attr ) const
     m *= 1.0 + artifact.meat_shield.percent();
     if ( runeforge.rune_of_the_stoneskin_gargoyle -> check() )
       m *= 1.0 + runeforge.rune_of_the_stoneskin_gargoyle -> data().effectN( 2 ).percent();
+
+    m *= 1.0 + artifact.ferocity_of_the_ebon_blade.data().effectN( 2 ).percent();
   }
 
   return m;
@@ -7825,6 +7885,7 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
 
   m *= 1.0 + artifact.soulbiter.percent();
   m *= 1.0 + artifact.fleshsearer.percent();
+  m *= 1.0 + artifact.ferocity_of_the_ebon_blade.percent();
 
   if ( dbc::is_school( school, SCHOOL_PHYSICAL ) )
   {
@@ -8092,6 +8153,8 @@ inline double death_knight_t::rune_regen_coefficient() const
 void death_knight_t::trigger_runic_empowerment( double rpcost )
 {
   double base_chance = spec.runic_empowerment -> effectN( 1 ).percent() / 10.0;
+  base_chance *= 1.0 + artifact.runefrost.percent();
+
   if ( ! rng().roll( base_chance * rpcost ) )
     return;
 

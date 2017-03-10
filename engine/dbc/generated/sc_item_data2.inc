@@ -44397,7 +44397,7 @@ static struct scaling_stat_distribution_t __scaling_stat_distribution_data[SCALI
   {    0,   0,   0,     0 },
 };
 
-#define CURVE_POINT_SIZE (7304)
+#define CURVE_POINT_SIZE (7305)
 
 // Curve points data, wow build 23420
 static struct curve_point_t __curve_point_data[CURVE_POINT_SIZE] = {
@@ -49999,8 +49999,9 @@ static struct curve_point_t __curve_point_data[CURVE_POINT_SIZE] = {
   { 2246,  0,    0.00000,    0.00000 },
   { 2246,  1,    0.01091,    0.59893 },
   { 2246,  2,    1.00000,    1.00000 },
-  { 2247,  0,   98.00000,  740.00000 },
-  { 2247,  1,  109.00000,  810.00000 },
+  { 2247,  0,   97.00000,  650.00000 },
+  { 2247,  1,   98.00000,  740.00000 },
+  { 2247,  2,  109.00000,  810.00000 },
   { 2248,  0,    0.00000,    0.00000 },
   { 2248,  1,  109.00000,    0.00000 },
   { 2248,  2,  110.00000,    1.00000 },

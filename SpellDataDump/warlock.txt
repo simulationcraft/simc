@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 3d249f6)
+SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 3249f8a)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -4282,7 +4282,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 3 (45 seconds cooldown)
 Category         : 1630
-Artifact Power   : Id: 803, Max Rank: 1
+Artifact Power   : Id: 803, Index: 0, Max Rank: 1
 Triggered by     : Push Active Ability to Bar (225886)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4715,7 +4715,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Cooldown         : 45 seconds
-Artifact Power   : Id: 1170, Max Rank: 1
+Artifact Power   : Id: 1170, Index: 0, Max Rank: 1
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ..x..... ........ ......x. .....x..   ........ ........ .x...... ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -4882,7 +4882,7 @@ Name             : Reap Souls (Artifact) (id=216698)
 Class            : Warlock
 School           : Shadow
 Velocity         : 20 yards/sec
-Artifact Power   : Id: 999, Max Rank: 1
+Artifact Power   : Id: 999, Index: 0, Max Rank: 1
 Triggered by     : Tormented Souls (216695), Push Active Ability to Bar (225888)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4963,7 +4963,7 @@ Name             : Lord of Flames (id=224103) [Spell Family (5), Passive]
 Class            : Warlock
 School           : Physical
 Proc Chance      : 100%
-Artifact Power   : Id: 818, Max Rank: 1
+Artifact Power   : Id: 818, Index: 3, Max Rank: 1
 Proc Flags       : ........ ....x.x. ........ ........ 
                  : AOE Hostile Spell, Heal
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 

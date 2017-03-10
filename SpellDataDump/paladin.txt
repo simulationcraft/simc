@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 3d249f6)
+SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 3249f8a)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -2739,7 +2739,7 @@ Class            : Paladin
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
 School           : Physical
 Range            : 100 yards
-Artifact Power   : Id: 353, Max Rank: 1
+Artifact Power   : Id: 353, Index: 3, Max Rank: 1
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3398,7 +3398,7 @@ School           : Physical
 Range            : 100 yards
 Proc Chance      : 101%
 Real PPM         : 1
-Artifact Power   : Id: 963, Max Rank: 1
+Artifact Power   : Id: 963, Index: 2, Max Rank: 1
 Proc Flags       : ........ ......x. ........ ........ 
                  : Heal
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -3422,7 +3422,7 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 90 seconds
-Artifact Power   : Id: 965, Max Rank: 1
+Artifact Power   : Id: 965, Index: 0, Max Rank: 1
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -4043,7 +4043,7 @@ School           : Holyfire
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 30 seconds
-Artifact Power   : Id: 40, Max Rank: 1
+Artifact Power   : Id: 40, Index: 0, Max Rank: 1
 Affecting spells : Retribution Paladin (137027), Ashes to Dust (236106)
 Triggered by     : Push Active Ability to Bar (225875)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
@@ -4094,7 +4094,7 @@ School           : Holy
 GCD              : 1.5 seconds
 Duration         : 9 seconds
 Cooldown         : 60 seconds
-Artifact Power   : Id: 1120, Max Rank: 1
+Artifact Power   : Id: 1120, Index: 0, Max Rank: 1
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

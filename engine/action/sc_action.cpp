@@ -3617,7 +3617,7 @@ void action_t::acquire_target( retarget_event_e /* event */,
 {
   // Don't change targets if they are not of the same generic type (both enemies, or both
   // friendlies)
-  if ( target -> is_enemy() != candidate_target -> is_enemy() )
+  if ( target && target -> is_enemy() != candidate_target -> is_enemy() )
   {
     return;
   }
@@ -3633,7 +3633,7 @@ void action_t::acquire_target( retarget_event_e /* event */,
     if ( sim -> debug )
     {
       sim -> out_debug.printf( "%s %s target change, current=%s candidate=%s", player -> name(),
-        name(), target -> name(), candidate_target -> name() );
+        name(), target ? target -> name() : "(none)", candidate_target -> name() );
     }
     target = candidate_target;
     target_cache.is_valid = false;
