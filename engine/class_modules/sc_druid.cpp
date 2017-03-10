@@ -270,6 +270,8 @@ public:
   double initial_astral_power;
   int    initial_moon_stage;
   bool ahhhhh_the_great_outdoors;
+  bool t20_2pc;
+  bool t20_4pc;
 
   struct active_actions_t
   {
@@ -725,6 +727,8 @@ public:
     starshards( 0.0 ),
     predator_rppm_rate( 0.0 ),
     initial_astral_power( 0 ),
+    t20_2pc(false),
+    t20_4pc(false),
     initial_moon_stage( NEW_MOON ),
     ahhhhh_the_great_outdoors( true ),
     active( active_actions_t() ),
@@ -1595,6 +1599,7 @@ public:
   bool consumes_bloodtalons;
   snapshot_counter_t* bt_counter;
   snapshot_counter_t* tf_counter;
+  snapshot_counter_t* sr_counter;
   bool direct_bleed;
 
   druid_attack_t( const std::string& n, druid_t* player,
@@ -1634,6 +1639,7 @@ public:
     {
       bt_counter = new snapshot_counter_t( ab::p(), ab::p() -> buff.bloodtalons );
       tf_counter = new snapshot_counter_t( ab::p(), ab::p() -> buff.tigers_fury );
+      sr_counter = new snapshot_counter_t( ab::p(), ab::p() -> buff.savage_roar );
     }
   }
 
@@ -1661,6 +1667,7 @@ public:
     {
       bt_counter -> count_execute();
       tf_counter -> count_execute();
+      sr_counter -> count_execute();
 
       ab::p() -> buff.bloodtalons -> decrement();
     }
@@ -1682,6 +1689,7 @@ public:
     {
       bt_counter -> count_tick();
       tf_counter -> count_tick();
+      sr_counter -> count_tick();
     }
   }
 
@@ -2895,6 +2903,9 @@ struct ashamanes_rip_t : public cat_attack_t
       
     base_tick_time *= 1.0 + p -> talent.jagged_wounds -> effectN( 1 ).percent();
     base_multiplier *= 1.0 + p -> artifact.razor_fangs.percent();
+    if (p->t20_4pc)
+       base_multiplier *= 1.15;
+
   }
 
   action_state_t* new_state() override
@@ -3006,7 +3017,7 @@ struct brutal_slash_t : public cat_attack_t
   {
      double tm = cat_attack_t::composite_target_multiplier(t);
 
-     if (p()->sets.has_set_bonus(DRUID_FERAL, T19, B4))
+     if (!t->bugs && p()->sets.has_set_bonus(DRUID_FERAL, T19, B4)) //currently bugged in-game. (2017-03-07)
      {
         tm *= 1.0 + td(t)->feral_tier19_4pc_bleeds() *
            p()->sets.set(DRUID_FERAL, T19, B4)->effectN(1).percent();
@@ -3356,6 +3367,19 @@ struct rip_t : public cat_attack_t
     base_tick_time *= 1.0 + p -> talent.jagged_wounds -> effectN( 1 ).percent();
     dot_duration   *= 1.0 + p -> talent.jagged_wounds -> effectN( 2 ).percent();
     base_multiplier *= 1.0 + p -> artifact.razor_fangs.percent();
+    
+    if (p->t20_4pc /*p->sets.has_set_bonus(DRUID_FERAL, T20, B4)*/)
+    {
+       base_multiplier *= 1.15; //TODO(feral): add spelldata once available
+       dot_duration *= 1.333334; // as above
+    }
+
+    if (p->t20_2pc/*p->sets.has_set_bonus(DRUID_FERAL, T20, B2)*/)
+    {
+       energize_amount = 2; //TODO(feral): Add spelldata once available
+       energize_resource = RESOURCE_ENERGY;
+       energize_type = ENERGIZE_PER_TICK;
+    }
   }
 
   action_state_t* new_state() override
@@ -3679,20 +3703,20 @@ struct thrash_cat_t : public cat_attack_t
   void impact( action_state_t* s ) override
   {
     cat_attack_t::impact( s );
-
-    // Trigger in impact, before consume_resource(), so it can get the damage bonus from Moment of Clarity.
-    trigger_shadow_thrash( s );
   }
 
   void execute() override
   {
+     // Trigger before consume_resource(), so it can get the damage bonus from Moment of Clarity.
+    trigger_shadow_thrash( p() );
+
     cat_attack_t::execute();
 
     p() -> buff.scent_of_blood -> trigger( 1,
       num_targets_hit * p() -> buff.scent_of_blood -> default_value );
   }
 
-  void trigger_shadow_thrash( const action_state_t* ts )
+  void trigger_shadow_thrash( const player_t* ts )
   {
     if ( ! rng().roll( p() -> artifact.shadow_thrash.data().proc_chance() ) )
       return;
@@ -8327,6 +8351,8 @@ void druid_t::create_options()
   player_t::create_options();
 
   add_option( opt_float( "predator_rppm", predator_rppm_rate ) );
+  add_option( opt_bool("feral_t20_2pc", t20_2pc) );
+  add_option( opt_bool("feral_t20_4pc", t20_4pc) );
   add_option( opt_float( "initial_astral_power", initial_astral_power ) );
   add_option( opt_int( "initial_moon_stage", initial_moon_stage ) );
   add_option( opt_bool( "outside", ahhhhh_the_great_outdoors ) );
@@ -8837,6 +8863,8 @@ void druid_t::copy_from( player_t* source )
   predator_rppm_rate = p -> predator_rppm_rate;
   initial_astral_power = p -> initial_astral_power;
   initial_moon_stage = p -> initial_moon_stage;
+  t20_2pc = p -> t20_2pc;
+  t20_4pc = p -> t20_4pc;
   ahhhhh_the_great_outdoors = p -> ahhhhh_the_great_outdoors;
 }
 
@@ -8861,10 +8889,14 @@ public:
   void feral_snapshot_table( report::sc_html_stream& os )
   {
     // Write header
-    os << "<table class=\"sc\">\n"
-       << "<tr>\n"
-       << "<th >Ability</th>\n"
-       << "<th colspan=2>Tiger's Fury</th>\n";
+     os << "<table class=\"sc\">\n"
+        << "<tr>\n"
+        << "<th >Ability</th>\n"
+        << "<th colspan=2>Tiger's Fury</th>\n";
+    if( p.talent.savage_roar -> ok() )
+    {
+      os << "<th colspan=2>Savage Roar</th>\n";
+    }
     if ( p.talent.bloodtalons -> ok() )
     {
       os << "<th colspan=2>Bloodtalons</th>\n";
@@ -8875,6 +8907,12 @@ public:
        << "<th>Name</th>\n"
        << "<th>Execute %</th>\n"
        << "<th>Benefit %</th>\n";
+    if ( p.talent.savage_roar -> ok() )
+    {
+       os << "<th>Execute %</th>\n"
+          << "<th>Benefit %</th>\n";
+    }
+       
     if ( p.talent.bloodtalons -> ok() )
     {
       os << "<th>Execute %</th>\n"
@@ -8888,28 +8926,43 @@ public:
       stats_t* stats = p.stats_list[ i ];
       double tf_exe_up = 0, tf_exe_total = 0;
       double tf_benefit_up = 0, tf_benefit_total = 0;
+      double sr_exe_up = 0, sr_exe_total = 0;
+      double sr_benefit_up = 0, sr_benefit_total = 0;
       double bt_exe_up = 0, bt_exe_total = 0;
       double bt_benefit_up = 0, bt_benefit_total = 0;
       int n = 0;
 
-      for ( size_t j = 0, end2 = stats -> action_list.size(); j < end2; j++ )
+      for (size_t j = 0, end2 = stats->action_list.size(); j < end2; j++)
       {
-        cat_attacks::cat_attack_t* a = dynamic_cast<cat_attacks::cat_attack_t*>( stats -> action_list[ j ] );
-        if ( ! a )
-          continue;
+         cat_attacks::cat_attack_t* a = dynamic_cast<cat_attacks::cat_attack_t*>(stats->action_list[j]);
+         if (!a)
+            continue;
 
-        if ( ! a -> consumes_bloodtalons )
-          continue;
+         if (!a->consumes_bloodtalons)
+            continue;
 
-        tf_exe_up += a -> tf_counter -> mean_exe_up();
-        tf_exe_total += a -> tf_counter -> mean_exe_total();
-        tf_benefit_up += a -> tf_counter -> mean_tick_up();
-        tf_benefit_total += a -> tf_counter -> mean_tick_total();
-        if ( has_amount_results( stats -> direct_results ) )
-        {
-          tf_benefit_up += a -> tf_counter -> mean_exe_up();
-          tf_benefit_total += a -> tf_counter -> mean_exe_total();
-        }
+         tf_exe_up += a->tf_counter->mean_exe_up();
+         tf_exe_total += a->tf_counter->mean_exe_total();
+         tf_benefit_up += a->tf_counter->mean_tick_up();
+         tf_benefit_total += a->tf_counter->mean_tick_total();
+         if (has_amount_results(stats->direct_results))
+         {
+            tf_benefit_up += a->tf_counter->mean_exe_up();
+            tf_benefit_total += a->tf_counter->mean_exe_total();
+         }
+
+         if (p.talent.savage_roar->ok())
+         {
+         sr_exe_up += a->sr_counter->mean_exe_up();
+         sr_exe_total += a->sr_counter->mean_exe_total();
+         sr_benefit_up += a->sr_counter->mean_tick_up();
+         sr_benefit_total += a->sr_counter->mean_tick_total();
+         if (has_amount_results(stats->direct_results))
+         {
+            sr_benefit_up += a->sr_counter->mean_exe_up();
+            sr_benefit_total += a->sr_counter->mean_exe_total();
+         } 
+         }
         if ( p.talent.bloodtalons -> ok() )
         {
           bt_exe_up += a -> bt_counter -> mean_exe_up();
@@ -8924,7 +8977,7 @@ public:
         }
       }
 
-      if ( tf_exe_total > 0 || bt_exe_total > 0 )
+      if ( tf_exe_total > 0 || bt_exe_total > 0 || sr_exe_total > 0 )
       {
         std::string name_str = report::decorated_action_name( stats -> action_list[ 0 ], stats -> name_str );
         std::string row_class_str = "";
@@ -8937,7 +8990,12 @@ public:
                    name_str.c_str(),
                    util::round( tf_exe_up / tf_exe_total * 100, 2 ),
                    util::round( tf_benefit_up / tf_benefit_total * 100, 2 ) );
-
+        if ( p.talent.savage_roar -> ok() )
+        {
+           os.format("<td class=\"right\">%.2f %%</td><td class=\"right\">%.2f %%</td>\n",
+              util::round(sr_exe_up / sr_exe_total * 100, 2),
+              util::round(sr_benefit_up / sr_benefit_total * 100, 2));
+        }
         if ( p.talent.bloodtalons -> ok() )
         {
           // Table Row : Name, TF up, TF total, TF up/total, TF up/sum(TF up)
