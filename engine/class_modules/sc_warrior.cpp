@@ -6003,6 +6003,10 @@ double warrior_t::composite_crit_block() const
   {
     b += cache.mastery() * mastery.critical_block -> effectN( 1 ).mastery_value();
   }
+
+  if ( buff.shield_block -> check() && sets.has_set_bonus( WARRIOR_PROTECTION, T19, B2 ) )
+    b += find_spell( 212236 ) -> effectN( 1 ).percent();
+
   return b;
 }
 
@@ -6278,13 +6282,14 @@ void warrior_t::target_mitigation( school_e school,
   if ( action_t::result_is_block( s -> block_result ) )
   {
     buff.dragon_scales -> trigger();
-    if ( s -> block_result == BLOCK_RESULT_CRIT_BLOCKED && artifact.scales_of_earth.rank() )
+    if ( s -> block_result == BLOCK_RESULT_CRIT_BLOCKED ) 
     {
-      if ( buff.scales_of_earth -> trigger() )
+      if ( artifact.scales_of_earth.rank() && buff.scales_of_earth -> trigger() )
       {
         active.scales_of_earth -> target = s -> action -> player;
         active.scales_of_earth -> execute();
       }
+      resource_gain( RESOURCE_RAGE, sets.set( WARRIOR_PROTECTION, T19, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ), gain.critical_block );
     }
   }
 }
