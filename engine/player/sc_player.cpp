@@ -7057,7 +7057,10 @@ struct use_item_t : public action_t
       item = player -> find_item( item_name );
       if ( ! item )
       {
-        sim -> errorf( "Player %s attempting 'use_item' action with item '%s' which is not currently equipped.\n", player -> name(), item_name.c_str() );
+        if ( sim -> debug )
+        {
+          sim -> errorf( "Player %s attempting 'use_item' action with item '%s' which is not currently equipped.\n", player -> name(), item_name.c_str() );
+        }
         return;
       }
 
