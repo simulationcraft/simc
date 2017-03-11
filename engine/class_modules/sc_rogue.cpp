@@ -6897,7 +6897,7 @@ void rogue_t::init_action_list()
     precombat -> add_action( "variable,name=stealth_threshold,value=(15+talent.vigor.enabled*35+talent.master_of_shadows.enabled*25+variable.ssw_refund)" );
     precombat -> add_action( "variable,name=shd_fractionnal,value=2.45" );
     precombat -> add_talent( this, "Enveloping Shadows", "if=combo_points>=5" );
-    precombat -> add_action( this, "Shadow Dance", "if=talent.subterfuge.enabled&equipped.mantle_of_the_master_assassin" ); // Before SoD because we do it while not in stealth in-game
+    precombat -> add_action( this, "Shadow Dance", "if=talent.subterfuge.enabled&bugs", "In 7.1.5, casting Shadow Dance before going in combat let you extends the stealth buff, so it's worth to use with Subterfuge talent. Will likely be fixed in 7.2!" ); // Before SoD because we do it while not in stealth in-game
     precombat -> add_action( this, "Symbols of Death" );
 
     // Main Rotation
