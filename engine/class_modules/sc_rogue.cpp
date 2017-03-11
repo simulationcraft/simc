@@ -2319,7 +2319,9 @@ void rogue_attack_t::execute()
       break_stealth( p() );
     // Check stealthed again after shadowmeld is popped. If we're still
     // stealthed, trigger subterfuge
-    else if ( stealthed() && ! p() -> buffs.subterfuge -> check() )
+    else if ( stealthed() && ! p() -> buffs.subterfuge -> check() &&
+              // Extended Stealth Bug: Subterfuge procs only when Shadow Dance buff expired if we have Stealth Buff
+              ( ! p() -> bugs || ! ( p() -> buffs.stealth -> check() && p() -> buffs.shadow_dance -> check() ) ) )
       p() -> buffs.subterfuge -> trigger();
   }
 
