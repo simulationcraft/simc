@@ -5802,7 +5802,10 @@ void rogue_t::spend_combo_points( const action_state_t* state )
 
   if ( legendary.denial_of_the_halfgiants && buffs.shadow_blades -> up() )
   {
-    timespan_t adjustment = timespan_t::from_seconds( max_spend / 10.0 * legendary.denial_of_the_halfgiants -> effectN( 1 ).base_value() );
+    // Shadow Blades duration extends is capped at the initial Shadow Blades duration
+    timespan_t adjustment_base = timespan_t::from_seconds( max_spend * legendary.denial_of_the_halfgiants -> effectN( 1 ).base_value() / 10.0 );
+    timespan_t adjustment_max = buffs.shadow_blades -> buff_duration - buffs.shadow_blades -> remains();
+    timespan_t adjustment = std::min( adjustment_base, adjustment_max );
     buffs.shadow_blades -> extend_duration( this, adjustment );
   }
 
