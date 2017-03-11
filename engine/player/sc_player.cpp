@@ -8691,6 +8691,9 @@ expr_t* player_t::create_expression( action_t* a,
 
   if ( expression_str == "ptr" )
     return expr_t::create_constant( "ptr", dbc.ptr );
+  
+  if ( expression_str == "bugs" )
+    return expr_t::create_constant( "bugs", bugs );
 
   if ( expression_str == "position_front" )
     return new position_expr_t( "position_front", *this,
