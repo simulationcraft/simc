@@ -535,7 +535,7 @@ player_t::player_t( sim_t*             s,
                     race_e             r ) :
   actor_t( s, n ),
   type( t ),
-  parent( 0 ),
+  parent( nullptr ),
 
   index( -1 ),
   actor_spawn_index( -1 ),
@@ -833,12 +833,6 @@ std::string player_t::base_initial_current_t::to_string()
 void player_t::init()
 {
   if ( sim -> debug ) sim -> out_debug.printf( "Initializing player %s", name() );
-
-  // Find parent player in main thread
-  if( ! is_pet() && ! is_enemy() && sim -> parent && sim -> thread_index > 0 )
-  {
-    parent = sim -> parent -> find_player( name() );
-  }
 
   // Ensure the precombat and default lists are the first listed
   get_action_priority_list( "precombat", "Executed before combat begins. Accepts non-harmful actions only." ) -> used = true;
@@ -3879,6 +3873,18 @@ void player_t::combat_end()
 
   if ( sim -> debug )
     sim -> out_debug.printf( "Combat ends for player %s at time %.4f fight_length=%.4f", name(), sim -> current_time().total_seconds(), iteration_fight_length.total_seconds() );
+
+  // Defer parent actor find to combat end, and ensure it is only performed if the parent sim is
+  // initialized. This will avoid a data race in case the main thread for some reason is in init
+  // phase, while a child thread is already done (their init). Note that this may mean that with
+  // target_error option, some data to estimate the target error can be missed (in the main thread).
+  // In turn, lazily finding the parent actor here ensures that the performance hit on the init
+  // process is minimal (no need for locks).
+  if( parent == nullptr && ! is_pet() && ! is_enemy() &&
+      sim -> parent != nullptr && sim -> parent -> initialized == true && sim -> thread_index > 0 )
+  {
+    parent = sim -> parent -> find_player( name() );
+  }
 }
 
 // startpoint for statistical data collection
