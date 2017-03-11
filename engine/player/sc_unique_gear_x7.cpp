@@ -1667,7 +1667,6 @@ void item::pharameres_forbidden_grimoire( special_effect_t& effect )
 
   struct orb_of_destruction_t : public spell_t
   {
-    double min_range;
     orb_of_destruction_impact_t* impact;
     orb_of_destruction_t( const special_effect_t& effect ) :
       spell_t( "orb_of_destruction", effect.player, effect.driver() ),
@@ -1679,16 +1678,9 @@ void item::pharameres_forbidden_grimoire( special_effect_t& effect )
       add_child( impact );
     }
 
-    void init() override
-    {
-      spell_t::init();
-      if ( player -> base.distance < 20 )
-        sim ->errorf( "Pharamere's Forbidden Grimoire can only be used when more than 20 yards away from the target. This warning will display when a melee tries to equip the trinket." );
-    }
-
     bool ready() override
     {
-      if ( player -> get_player_distance( *target ) < min_range )
+      if ( player -> get_player_distance( *target ) < 14 )
       {
         return false;
       }
