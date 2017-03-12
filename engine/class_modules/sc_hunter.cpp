@@ -1359,10 +1359,11 @@ public:
       m *= 1.0 + buffs.tier19_2pc_bm -> check_value();
 
     // Pet combat experience
-    m *= 1.0 + specs.combat_experience -> effectN( 2 ).percent();
-
+    double combat_experience_mul = specs.combat_experience -> effectN( 2 ).percent();
     if ( o() -> legendary.bm_ring )
-      m *= 1.05; //TODO: Find corresponding spell, or wait for spell data to be updated
+        combat_experience_mul *= 1.0 + o() -> legendary.bm_ring -> driver() -> effectN( 2 ).percent();
+
+    m *= 1.0 + combat_experience_mul;
 
     return m;
   }
