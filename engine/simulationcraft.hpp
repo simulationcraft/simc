@@ -175,7 +175,7 @@ inline int snprintf( char* buf, size_t size, const char* fmt, ... )
 // Data Access ==============================================================
 const int MAX_LEVEL = 110;
 const int MAX_SCALING_LEVEL = 110;
-const int MAX_ILEVEL = 1000;
+const int MAX_ILEVEL = 1300;
 
 // Include DBC Module
 #include "dbc/dbc.hpp"
@@ -1704,7 +1704,7 @@ struct sim_t : private sc_thread_t
 
     void flush()          { AUTO_LOCK(m); _total_work[ index ] = _projected_work[ index ] = _work[ index ]; }
     void project( int w ) { AUTO_LOCK(m); _projected_work[ index ] = w; assert( w >= _work[ index ] ); }
-    int  size()           { AUTO_LOCK(m); return _total_work[ index ]; }
+    int  size()           { AUTO_LOCK(m); return index < _total_work.size() ? _total_work[ index ] : _total_work.back(); }
 
     // Single-actor batch pop, uses several indices of work (per active actor), each thread has it's
     // own state on what index it is simulating

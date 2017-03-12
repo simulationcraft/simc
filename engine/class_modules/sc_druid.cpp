@@ -5833,7 +5833,6 @@ struct starfall_t : public druid_spell_t
   struct starfall_tick_t : public druid_spell_t
   {
     bool echoing_stars;
-
     starfall_tick_t( const std::string& n, druid_t* p, const spell_data_t* s ) :
       druid_spell_t( n, p, s ),
       echoing_stars( false )
@@ -5971,11 +5970,10 @@ struct starfall_t : public druid_spell_t
         .target( execute_state -> target )
         .x( execute_state -> target -> x_position )
         .y( execute_state -> target -> y_position )
-        .pulse_time( base_tick_time )
-        .duration( data().duration() )
+        .pulse_time( base_tick_time * p() -> cache.spell_haste() )
+        .duration( data().duration() * p() -> cache.spell_haste() )
         .start_time( sim -> current_time() )
-        .action( p() -> active.starfall )
-        .hasted( ground_aoe_params_t::SPELL_HASTE ), true );
+        .action( p() -> active.starfall ) );
 
     // Trigger starfall debuffs
     for ( size_t i = 0, actors = sim -> target_non_sleeping_list.size(); i < actors; i++ )
