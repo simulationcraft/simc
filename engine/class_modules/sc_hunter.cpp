@@ -4170,7 +4170,7 @@ struct lacerate_t: public hunter_melee_attack_t
     tick_zero = false;
 
     if ( p -> artifacts.lacerating_talons.rank() )
-      base_multiplier *= 1.0 + p -> artifacts.lacerating_talons.percent();
+      base_td_multiplier *= 1.0 + p -> artifacts.lacerating_talons.percent();
   }
 
   virtual void tick( dot_t* d ) override
