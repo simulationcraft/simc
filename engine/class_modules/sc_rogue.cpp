@@ -6696,8 +6696,6 @@ void rogue_t::init_action_list()
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
   action_priority_list_t* def       = get_action_priority_list( "default" );
 
-  std::vector<std::string> item_actions = get_item_actions();
-  std::vector<std::string> profession_actions = get_profession_actions();
   std::vector<std::string> racial_actions = get_racial_actions();
 
   clear_action_priority_lists();
@@ -6742,9 +6740,7 @@ void rogue_t::init_action_list()
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
   if ( specialization() == ROGUE_ASSASSINATION )
-  {
     precombat -> add_action( "apply_poison" );
-  }
 
   // Stealth before entering in combat
   precombat -> add_action( this, "Stealth" );
@@ -6793,21 +6789,22 @@ void rogue_t::init_action_list()
     // Cooldowns
     action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );
     cds -> add_action( potion_action );
-    for ( size_t i = 0; i < item_actions.size(); i++ )
-      if ( find_item( "draught_of_souls" ) )
-        cds -> add_action( item_actions[i] + ",if=energy.time_to_max>3.5&(!talent.agonizing_poison.enabled|(debuff.agonizing_poison.stack=5&debuff.surge_of_toxins.remains>3))" );
-      else
-        cds -> add_action( item_actions[i] + ",if=buff.bloodlust.react|target.time_to_die<=20|debuff.vendetta.up" );
+    for ( size_t i = 0; i < items.size(); i++ )
+    {
+      if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+      {
+        if ( items[i].name_str == "draught_of_souls" )
+          cds -> add_action( "use_item,name=" + items[i].name_str + ",if=energy.time_to_max>3.5&(!talent.agonizing_poison.enabled|(debuff.agonizing_poison.stack=5&debuff.surge_of_toxins.remains>3))" );
+        else
+          cds -> add_action( "use_item,name=" + items[i].name_str + ",if=buff.bloodlust.react|target.time_to_die<=20|debuff.vendetta.up" );
+      }
+    }
     for ( size_t i = 0; i < racial_actions.size(); i++ )
     {
       if ( racial_actions[i] == "arcane_torrent" )
-      {
         cds -> add_action( racial_actions[i] + ",if=debuff.vendetta.up&energy.deficit>30" );
-      }
       else
-      {
         cds -> add_action( racial_actions[i] + ",if=debuff.vendetta.up" );
-      }
     }
     cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit*1.5|(raid_event.adds.in>40&combo_points.deficit>=cp_max_spend)" );
     cds -> add_action( this, "Vendetta", "if=talent.exsanguinate.enabled&(!artifact.urge_to_kill.enabled|energy.deficit>=75+talent.vigor.enabled*50)" );
@@ -6870,9 +6867,10 @@ void rogue_t::init_action_list()
     // Cooldowns
     action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );
     cds -> add_action( potion_action );
-    for ( size_t i = 0; i < item_actions.size(); i++ )
+    for ( size_t i = 0; i < items.size(); i++ )
     {
-      cds -> add_action( item_actions[i] + ",if=buff.bloodlust.react|target.time_to_die<=20|combo_points.deficit<=2" );
+      if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+        cds -> add_action( "use_item,name=" + items[i].name_str + ",if=buff.bloodlust.react|target.time_to_die<=20|combo_points.deficit<=2" );
     }
     for ( size_t i = 0; i < racial_actions.size(); i++ )
     {
@@ -6885,8 +6883,7 @@ void rogue_t::init_action_list()
     cds -> add_action( this, "Adrenaline Rush", "if=!buff.adrenaline_rush.up&energy.deficit>0" );
     cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit|((raid_event.adds.in>40|buff.true_bearing.remains>15)&combo_points.deficit>=4+talent.deeper_strategem.enabled+talent.anticipation.enabled)" );
     cds -> add_action( this, "Sprint", "if=equipped.thraxis_tricksy_treads&!variable.ss_useable" );
-    if ( race == RACE_WORGEN )
-      cds -> add_action( "darkflight,if=equipped.thraxis_tricksy_treads&!variable.ss_useable&buff.sprint.down" );
+    cds -> add_action( "darkflight,if=equipped.thraxis_tricksy_treads&!variable.ss_useable&buff.sprint.down" );
     cds -> add_action( this, "Curse of the Dreadblades", "if=combo_points.deficit>=4&(!talent.ghostly_strike.enabled|debuff.ghostly_strike.up)" );
 
     // Finishers
@@ -6935,9 +6932,7 @@ void rogue_t::init_action_list()
       if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
       {
         if ( items[i].name_str != "draught_of_souls" )
-        {
           cds -> add_action( "use_item,name=" + items[i].name_str + ",if=(buff.shadow_blades.up&stealthed.rogue)|target.time_to_die<20" );
-        }
       }
     }
     for ( size_t i = 0; i < racial_actions.size(); i++ )
@@ -6969,9 +6964,7 @@ void rogue_t::init_action_list()
       if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
       {
         if ( items[i].name_str == "draught_of_souls" )
-        {
           sprinted -> add_action( "use_item,name=" + items[i].name_str );
-        }
       }
     }
 
