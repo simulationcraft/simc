@@ -41,7 +41,6 @@ struct hunter_td_t: public actor_target_data_t
     buff_t* hunters_mark;
     buff_t* vulnerable;
     buff_t* true_aim;
-    buff_t* lacerate;
     buff_t* t18_2pc_open_wounds;
     buff_t* mark_of_helbrine;
   } debuffs;
@@ -4189,8 +4188,6 @@ struct lacerate_t: public hunter_melee_attack_t
   {
     hunter_melee_attack_t::impact( s );
 
-    td( s -> target ) -> debuffs.lacerate -> trigger();
-
     if ( p() -> sets.has_set_bonus( HUNTER_SURVIVAL, T18, B2 ) )
       td( s -> target ) -> debuffs.t18_2pc_open_wounds -> trigger();
   }
@@ -5540,11 +5537,6 @@ dots( dots_t() )
         .default_value( p -> find_spell( 199803 ) 
                           -> effectN( 1 )
                             .percent() );
-
-  debuffs.lacerate = 
-    buff_creator_t( *this, "lacerate" )
-        .cd( timespan_t::zero() )
-        .spell( p -> find_specialization_spell( "Lacerate" ) );
 
   debuffs.t18_2pc_open_wounds = 
     buff_creator_t( *this, "open_wounds" )
