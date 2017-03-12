@@ -1537,7 +1537,6 @@ struct poison_bomb_t : public rogue_attack_t
     base_multiplier *= 1.0 + p -> talent.master_poisoner -> effectN( 1 ).percent();
   }
 
-
   double action_multiplier() const override
   {
     double m = rogue_attack_t::action_multiplier();
@@ -1556,6 +1555,15 @@ struct poison_bomb_t : public rogue_attack_t
     double m = rogue_attack_t::composite_target_multiplier( target );
 
     m *= 1.0 + td( target ) -> debuffs.surge_of_toxins -> stack_value();
+
+    // Legendary Bracers works since 7.1.5
+    if ( p() -> legendary.zoldyck_family_training_shackles )
+    {
+      if ( target -> health_percentage() < p() -> legendary.zoldyck_family_training_shackles -> effectN( 2 ).base_value() )
+      {
+        m *= 1.0 + p() -> legendary.zoldyck_family_training_shackles -> effectN( 1 ).percent();
+      }
+    }
 
     return m;
   }
