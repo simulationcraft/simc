@@ -11155,7 +11155,7 @@ void player_collected_data_t::collect_data( const player_t& p )
 
   // Health Change Calculations - only needed for tanks
   double tank_metric = 0;
-  if ( ! p.is_pet() && p.primary_role() == ROLE_TANK )
+  if ( ! p.is_pet() && p.primary_role() == ROLE_TANK && p.level() == MAX_LEVEL )
   {
 
     double tmi = 0; // TMI result
