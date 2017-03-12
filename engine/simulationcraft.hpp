@@ -175,7 +175,7 @@ inline int snprintf( char* buf, size_t size, const char* fmt, ... )
 // Data Access ==============================================================
 const int MAX_LEVEL = 110;
 const int MAX_SCALING_LEVEL = 110;
-const int MAX_ILEVEL = 1000;
+const int MAX_ILEVEL = 1300;
 
 // Include DBC Module
 #include "dbc/dbc.hpp"
