@@ -57,7 +57,7 @@ actions.build+=/saber_slash,if=variable.ss_useable
 
 # Cooldowns
 actions.cds=potion,name=prolonged_power,if=buff.bloodlust.react|target.time_to_die<=25|buff.adrenaline_rush.up
-actions.cds+=/use_item,slot=trinket2,if=buff.bloodlust.react|target.time_to_die<=20|combo_points.deficit<=2
+actions.cds+=/use_item,name=tirathons_betrayal,if=buff.bloodlust.react|target.time_to_die<=20|combo_points.deficit<=2
 actions.cds+=/blood_fury
 actions.cds+=/berserking
 actions.cds+=/arcane_torrent,if=energy.deficit>40
@@ -65,6 +65,7 @@ actions.cds+=/cannonball_barrage,if=spell_targets.cannonball_barrage>=1
 actions.cds+=/adrenaline_rush,if=!buff.adrenaline_rush.up&energy.deficit>0
 actions.cds+=/marked_for_death,target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit|((raid_event.adds.in>40|buff.true_bearing.remains>15)&combo_points.deficit>=4+talent.deeper_strategem.enabled+talent.anticipation.enabled)
 actions.cds+=/sprint,if=equipped.thraxis_tricksy_treads&!variable.ss_useable
+actions.cds+=/darkflight,if=equipped.thraxis_tricksy_treads&!variable.ss_useable&buff.sprint.down
 actions.cds+=/curse_of_the_dreadblades,if=combo_points.deficit>=4&(!talent.ghostly_strike.enabled|debuff.ghostly_strike.up)
 
 # Finishers
