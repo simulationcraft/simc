@@ -2731,6 +2731,8 @@ struct raging_blow_t: public warrior_attack_t
     mh_attack -> weapon = &( p -> main_hand_weapon );
     add_child( mh_attack );
     cooldown -> duration = p -> talents.inner_rage -> effectN( 1 ).time_value();
+    if ( p -> talents.inner_rage -> ok() )
+      track_cd_waste = true;
   }
 
   void execute() override
