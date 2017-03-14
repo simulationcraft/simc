@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build 3d249f6)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build 3eb4aac)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -224,6 +224,40 @@ Description      : $@spelldesc191427
 Tooltip          : Chaos Strike and Blade Dance upgraded to $@spellname201427 and $@spellname210152.
 Haste increased by $s7%.
 Leech increased by $w4%.
+
+Name             : Stat Negation Aura - Agility DPS (id=162697) [Passive, Hidden] 
+Class            : Beast Mastery Marksmanship Survival Assassination Outlaw Subtlety Enhancement Windwalker Feral Havoc Hunter, Rogue, Shaman, Monk, Druid, Demon Hunter
+School           : Physical
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=228478)   : Apply Aura (6) | Unknown effect sub type (467)
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 3 | Target: Self(1)
+#2 (id=228479)   : Apply Aura (6) | Unknown effect sub type (467)
+                   Base Value: -100 | Scaled Value: -100 | Target: Self(1)
+#3 (id=228480)   : Apply Aura (6) | Unknown effect sub type (466)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+
+Name             : Stat Negation Aura - Agility Tank (id=162700) [Passive, Hidden] 
+Class            : Brewmaster Guardian Vengeance Monk, Druid, Demon Hunter
+School           : Physical
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=228491)   : Apply Aura (6) | Unknown effect sub type (467)
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 3 | Target: Self(1)
+#2 (id=228492)   : Apply Aura (6) | Unknown effect sub type (467)
+                   Base Value: -100 | Scaled Value: -100 | Target: Self(1)
 
 Name             : Chaos Strike (id=162794) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -507,7 +541,7 @@ Effects          :
 #1 (id=268789)   : Unknown effect type (114)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Enemy(6)
 #2 (id=268790)   : Apply Aura (6) | Taunt (11)
-                   Base Value: 200 | Scaled Value: 200 | Target: Enemy(6)
+                   Base Value: 400 | Scaled Value: 400 | Target: Enemy(6)
 Description      : Taunts the target to attack you, and increases threat that you generate against the target for $d.
 Tooltip          : Taunted.
 
@@ -730,7 +764,7 @@ School           : Chaos
 Range            : 50000 yards
 Affecting spells : Mastery: Demonic Presence (185164), Fel Mastery (192939), Havoc Demon Hunter (212612)
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ........ 
-                 : ..x..... ........ ........ ........   ........ .x...... ........ ........ 
+                 : ..x..... ........ ........ ........   ........ .x...... ........ ......x. 
                  : .......x ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1147,7 +1181,7 @@ GCD              : 1.5 seconds
 Velocity         : 3 yards/sec
 Duration         : 3 seconds
 Cooldown         : 60 seconds
-Artifact Power   : Id: 1010, Max Rank: 1
+Artifact Power   : Id: 1010, Index: 0, Max Rank: 1
 Affecting spells : Metamorphosis (162264), Havoc Demon Hunter (212612), Vengeance Demon Hunter (212613)
 Triggered by     : Push Active Ability to Bar (225863)
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
@@ -1166,7 +1200,7 @@ Name             : Rage of the Illidari (id=201472) [Spell Family (107), Passive
 Class            : Demon Hunter
 School           : Physical
 Proc Chance      : 101%
-Artifact Power   : Id: 1015, Max Rank: 1
+Artifact Power   : Id: 1015, Index: 2, Max Rank: 1
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, AOE Hostile Spell, Hostile Spell
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -1185,7 +1219,7 @@ Name             : Anguish of the Deceiver (id=201473) [Spell Family (107), Pass
 Class            : Demon Hunter
 School           : Chaos
 Proc Chance      : 101%
-Artifact Power   : Id: 1016, Max Rank: 1
+Artifact Power   : Id: 1016, Index: 3, Max Rank: 1
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -1387,7 +1421,7 @@ Attributes       : ....x.x. ........ ..x..... x..x.x.x   ........ ..x..... .x...
                  : Passive (6), Cannot cancel aura (31)
 Effects          :
 #1 (id=300162)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -10 | Scaled Value: -10 | Misc Value: 0x7f | Target: Self(1)
+                   Base Value: -20 | Scaled Value: -20 | Misc Value: 0x7f | Target: Self(1)
 #2 (id=300191)   : Apply Aura (6) | Modify Attacker Melee Crit Chance (187)
                    Base Value: -6 | Scaled Value: -6 | Target: Self(1)
 #3 (id=300192)   : Apply Aura (6) | Modify Expertise% (240)
@@ -1395,7 +1429,7 @@ Effects          :
 #4 (id=306421)   : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 55 | Scaled Value: 55 | Misc Value 2: 0x4 | Target: Self(1)
 #5 (id=306893)   : Apply Aura (6) | Modify Base Resistance (142)
-                   Base Value: 120 | Scaled Value: 120 | Misc Value: 1 | Target: Self(1)
+                   Base Value: 75 | Scaled Value: 75 | Misc Value: 1 | Target: Self(1)
 #6 (id=306895)   : Apply Aura (6) | Unknown effect sub type (457)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1586 | Target: Self(1)
 Description      : Your tattoos reduce all damage taken by $s1%, and increase your Stamina by $s4% and your Armor by $s5%.
@@ -1457,7 +1491,7 @@ Effects          :
 #1 (id=300260)   : Apply Aura (6) | Proc Trigger Spell: Demon Blades (42)
                    Base Value: 65 | Scaled Value: 65 | Trigger Spell: 203796 | Target: Self(1)
 #2 (id=350250)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
-                   Base Value: -6 | Scaled Value: -6 | Misc Value: 3
+                   Base Value: -8 | Scaled Value: -8 | Misc Value: 3
                    Affected Spells: Anger of the Half-Giants (208827)
 Description      : Your auto attacks have a $h% chance to deal additional Shadow damage and generate Fury.
 
@@ -1618,6 +1652,29 @@ Description      : Shears an enemy for $sw2 Physical damage, and has a small cha
 
 |cFFFFFFFFGenerates ${$m3/10} Pain.|r
 
+Name             : Shear (id=203783) [Spell Family (107), Passive, Hidden] 
+Class            : Vengeance Demon Hunter
+School           : Physical
+Spell Level      : 1
+Proc Chance      : 100%
+Proc Flags       : ....x... ........ ........ ........ 
+                 : Yellow Melee
+Attributes       : ....x.xx ........ ........ x..x....   .....x.. ........ ........ ........ 
+                 : ........ ......x. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ...x.... ........ .xx..... ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : .....x.. ........ ........ ........   ........ ...x.... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Hidden (7), Does not break stealth (37)
+Effects          :
+#1 (id=300628)   : Apply Aura (6) | Proc Trigger Spell (42)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+Description      : Shear has a small chance to shatter the target's soul, leaving a Lesser Soul Fragment behind for $204255d.
+
+The Lesser Soul Fragment will be consumed when you approach it or cast Soul Cleave, healing you for $203794s1% of maximum health.
+
+If the Greater Soul Fragment comes from a Demon, you will deal $208195s1% increased damage for $208195d.
+
 Name             : Consume Soul (id=203794) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Shadow
@@ -1775,6 +1832,28 @@ Description      : Killing a target will sometimes shatter their soul, leaving a
 The Soul Fragment will be consumed when you approach it, healing you for $210042s1 health.
 
 Consuming a Demon's soul will grant you $163073s1% increased damage for $163073d.
+
+Name             : Soul Fragment (id=204255) [Spell Family (107)] 
+Class            : Demon Hunter
+School           : Physical
+Range            : 100 yards
+Duration         : 20 seconds
+Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
+                 : x....... ......x. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ...x.... ........ .xx..... ........ 
+                 : ........ ....x... ........ .x......   ........ ........ ........ .......x 
+                 : .....x.. ........ ........ ........   ........ ...x.... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Does not break stealth (37)
+Effects          :
+#1 (id=301463)   : Unknown effect type (179)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 5977 | Target: Unknown(87)
+#2 (id=301484)   : Trigger Spell: Soul Fragments (64)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 210788 | Target: Self(1)
+#3 (id=339173)   : Trigger Spell: Shattered Souls (64)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 221461 | Target: Self(1)
+Description      : $@spelldesc203794
+Tooltip          : Consume to heal for $203794s2% of your maximum health.
 
 Name             : Sigil of Silence (id=204490) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -2098,7 +2177,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Cooldown         : 40 seconds
-Artifact Power   : Id: 1096, Max Rank: 1
+Artifact Power   : Id: 1096, Index: 0, Max Rank: 1
 Affecting spells : Metamorphosis (162264), Havoc Demon Hunter (212612), Vengeance Demon Hunter (212613)
 Triggered by     : Push Active Ability to Bar (225864)
 Attributes       : ........ ........ ..x..... .......x   ........ .x...... ........ ........ 
@@ -2345,8 +2424,8 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=307322)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
+#1 (id=307322)   : Apply Aura (6) | Unknown effect sub type (269)
+                   Base Value: -40 | Scaled Value: -40 | Misc Value: 127 | Target: Enemy(6)
 Description      : $@spelldesc204021
 Tooltip          : Branded, dealing $204021s1% less damage to the branding Demon Hunter.
 
@@ -2368,8 +2447,28 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=307364)   : Apply Aura (6) | Periodic Damage: fire every 2 seconds (3)
                    Base Value: 0 | Scaled Value: 0 (avg=1, dl=0.1) | AP Coefficient: 0.45000 | Target: Enemy(6)
+#2 (id=370871)   : Apply Aura (6) | Unknown effect sub type (269)
+                   Base Value: -40 | Scaled Value: -40 | Misc Value: 127 | Target: Enemy(6)
 Description      : $@spelldesc204021
 Tooltip          : Branded, taking $w1 Fire damage every $t1 sec, and dealing $204021s1% less damage to the branding Demon Hunter.
+
+Name             : Demon Soul (id=208195) [Spell Family (107)] 
+Class            : Demon Hunter
+School           : Shadow
+Duration         : 20 seconds
+Proc Chance      : 101%
+Attributes       : ........ ........ ..x..... x..x....   .....x.. ..x..... ........ ........ 
+                 : ........ ......x. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ...x.... ........ .xx..... ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : .....x.. ........ ........ ........   ........ ...x.... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Does not break stealth (37)
+Effects          :
+#1 (id=308030)   : Apply Aura (6) | Modify Damage Done% (79)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 0x7f | Target: Self(1)
+Description      : Consuming a Soul Fragment that came from a Demon causes you to deal $s1% increased damage for $d.
+Tooltip          : Dealing $s1% increased damage.
 
 Name             : Nemesis (id=208605) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -2681,7 +2780,7 @@ Name             : Soul Fragments (id=210788) [Spell Family (107), Hidden]
 Class            : Demon Hunter
 School           : Physical
 Duration         : 25 seconds
-Triggered by     : Soul Fragment (203795)
+Triggered by     : Soul Fragment (203795), Soul Fragment (204255)
 Attributes       : .......x ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ...x.... ........ .xx..... ........ 
@@ -3363,7 +3462,7 @@ Name             : Shattered Souls (id=221461) [Spell Family (107), Hidden]
 Class            : Demon Hunter
 School           : Physical
 Duration         : 15 seconds
-Triggered by     : Soul Fragment (203795)
+Triggered by     : Soul Fragment (204255), Soul Fragment (203795)
 Attributes       : .......x ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ...x.... ........ .xx..... ........ 
@@ -3423,7 +3522,7 @@ Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x...x. 
                  : ........ ........ ........ ........   ........ ........ ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3559,7 +3658,7 @@ Range            : 100 yards
 Triggered by     : Frailty (224509)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ .x...... ........ ......x. 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : x....... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3680,7 +3779,7 @@ GCD              : 1.5 seconds
 Cooldown         : 15 seconds
 Affecting spells : Metamorphosis (162264), Item - Demon Hunter T19 Havoc 2P Bonus (211054), Havoc Demon Hunter (212612), Vengeance Demon Hunter (212613), 
 Attributes       : ....x... ........ ..x..... .....x..   ........ .x...... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ....x...   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ .x...... 
                  : ........ ........ .......x ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
