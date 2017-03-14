@@ -4700,11 +4700,12 @@ double priest_t::composite_player_multiplier( school_e school ) const
     {
       m *= 1.0 + artifact.darkening_whispers.percent();
     }
-
-    if ( artifact.darkness_of_the_conclave.rank() )
-    {
-      m *= 1.0 + artifact.darkness_of_the_conclave.percent();
-    }
+    
+  }
+  
+  if ( artifact.darkness_of_the_conclave.rank() )
+  {
+    m *= 1.0 + artifact.darkness_of_the_conclave.percent();
   }
 
   if ( buffs.twist_of_fate->check() )
