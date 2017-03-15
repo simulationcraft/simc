@@ -3550,7 +3550,7 @@ struct player_t : public actor_t
   std::vector<pet_t*> pet_list;
   std::vector<pet_t*> active_pets;
   std::vector<absorb_buff_t*> absorb_buff_list;
-  std::map<unsigned,instant_absorb_t*> instant_absorb_list;
+  std::map<unsigned,instant_absorb_t> instant_absorb_list;
 
   int         invert_scaling;
 

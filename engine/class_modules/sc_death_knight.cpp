@@ -3641,8 +3641,8 @@ struct blood_mirror_t : public death_knight_spell_t
       return;
     }
 
-    p() -> instant_absorb_list[ id ] = new instant_absorb_t( player, &data(), "blood_mirror",
-      std::bind( &blood_mirror_t::mirror_handler, this, std::placeholders::_1 ) );
+    p() -> instant_absorb_list.emplace( id , instant_absorb_t( player, &data(), "blood_mirror",
+      std::bind( &blood_mirror_t::mirror_handler, this, std::placeholders::_1 ) ));
   }
 
   void impact( action_state_t* state ) override
@@ -7602,8 +7602,8 @@ void death_knight_t::init_absorb_priority()
 
   if ( specialization() == DEATH_KNIGHT_BLOOD )
   {
-    instant_absorb_list[ 195181 ] = new instant_absorb_t( this, find_spell( 195181 ), "bone_shield",
-      std::bind( &death_knight_t::bone_shield_handler, this, std::placeholders::_1 ) );
+    instant_absorb_list.emplace( 195181, instant_absorb_t( this, find_spell( 195181 ), "bone_shield",
+      std::bind( &death_knight_t::bone_shield_handler, this, std::placeholders::_1 ) ) );
 
     // TODO: What is the absorb ordering for blood dks?
     absorb_priority.push_back( 206977 ); // Blood Mirror

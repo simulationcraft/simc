@@ -742,12 +742,7 @@ player_t::player_t( sim_t*             s,
 
 player_t::~player_t()
 {
-  for ( std::map<unsigned, instant_absorb_t*>::iterator i = instant_absorb_list.begin();
-        i != instant_absorb_list.end();
-        ++i )
-  {
-    delete i -> second;
-  }
+
 }
 
 player_t::base_initial_current_t::base_initial_current_t() :
@@ -5510,18 +5505,19 @@ void account_absorb_buffs( player_t& p, action_state_t* s, school_e school )
     for ( size_t i = 0; i < p.absorb_priority.size(); i++ )
     {
       // Check for the absorb ID in instantaneous absorbs first, since its low cost.
-      if ( p.instant_absorb_list.find( p.absorb_priority[ i ] ) != p.instant_absorb_list.end() )
+      auto it = p.instant_absorb_list.find( p.absorb_priority[ i ] );
+      if ( it != p.instant_absorb_list.end() )
       {
-        instant_absorb_t* ab = p.instant_absorb_list[ p.absorb_priority[ i ] ];
+        instant_absorb_t& ab = it->second;
 
         // eligibility is handled in the instant absorb's handler
-        double absorbed = ab -> consume( s );
+        double absorbed = ab.consume( s );
 
         s -> result_amount -= absorbed;
         s -> self_absorb_amount += absorbed;
 
         if ( p.sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() && absorbed != 0 )
-          p.sim -> out_debug.printf( "Damage to %s after %s is %f", s -> target -> name(), ab -> name.c_str(), s -> result_amount );
+          p.sim -> out_debug.printf( "Damage to %s after %s is %f", s -> target -> name(), ab.name.c_str(), s -> result_amount );
       }
       else
       {
