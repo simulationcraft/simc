@@ -5160,14 +5160,12 @@ void priest_t::create_buffs()
   base_t::create_buffs();
 
   // Talents
-  buffs.power_infusion = haste_buff_creator_t( this, "power_infusion" )
-                             .spell( talents.power_infusion )
-                             .add_invalidate( CACHE_SPELL_HASTE )
-                             .add_invalidate( CACHE_HASTE );
+  buffs.power_infusion = make_buff<haste_buff_t>( this, "power_infusion", talents.power_infusion )
+                             -> add_invalidate( CACHE_SPELL_HASTE )
+                             -> add_invalidate( CACHE_HASTE );
 
   buffs.twist_of_fate =
-      buff_creator_t( this, "twist_of_fate" )
-          .spell( talents.twist_of_fate )
+      buff_creator_t( this, "twist_of_fate", talents.twist_of_fate )
           .duration( talents.twist_of_fate->effectN( 1 ).trigger()->duration() )
           .default_value( talents.twist_of_fate->effectN( 1 )
                               .trigger()
@@ -5176,23 +5174,17 @@ void priest_t::create_buffs()
           .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
           .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
 
-  buffs.shadowform = buff_creator_t( this, "shadowform" )
-                         .spell( find_class_spell( "Shadowform" ) )
-                         .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buffs.shadowform = make_buff( this, "shadowform", find_class_spell( "Shadowform" ) )
+                         -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.shadowform_state =
       buff_creator_t( this, "shadowform_state" ).chance( 1.0 ).quiet( true );
 
-  buffs.shadowy_insight =
-      buff_creator_t( this, "shadowy_insight" )
-          .spell( talents.shadowy_insight )
-          .max_stack(
-              1 );  // Spell Data says 2, really is 1 -- 2016/04/17 Twintop
+  buffs.shadowy_insight = make_buff(this, "shadowy_insight",
+      talents.shadowy_insight)->set_max_stack(1); // Spell Data says 2, really is 1 -- 2016/04/17 Twintop
 
-  buffs.void_ray = buff_creator_t( this, "void_ray" )
-                       .spell( talents.void_ray->effectN( 1 ).trigger() );
+  buffs.void_ray = make_buff( this, "void_ray", talents.void_ray->effectN( 1 ).trigger() );
 
-  buffs.void_torrent =
-      buff_creator_t( this, "void_torrent" ).spell( artifact.void_torrent );
+  buffs.void_torrent = make_buff( this, "void_torrent", artifact.void_torrent );
 
   buffs.surrender_to_madness = new buffs::surrender_to_madness_t( *this );
 
@@ -5209,10 +5201,9 @@ void priest_t::create_buffs()
           .chance( 1.0 )
           .default_value( find_spell( 194182 )->effectN( 3 ).percent() );
 
-  buffs.mind_quickening = stat_buff_creator_t(this, 
+  buffs.mind_quickening = make_buff<stat_buff_t>(this,
                                               "mind_quickening", 
-                                              find_spell( 240673 ) )
-                            .max_stack(1); 
+                                              find_spell( 240673 ) );
 
   // Discipline
   buffs.archangel = new buffs::archangel_t( *this );
@@ -5224,8 +5215,7 @@ void priest_t::create_buffs()
           .default_value( find_spell( 59889 )->effectN( 1 ).percent() )
           .add_invalidate( CACHE_HASTE );
 
-  buffs.holy_evangelism = buff_creator_t( this, "holy_evangelism" )
-                              .spell( find_spell( 81661 ) )
+  buffs.holy_evangelism = buff_creator_t( this, "holy_evangelism", find_spell( 81661 ) )
                               .chance( specs.evangelism->ok() )
                               .activated( false );
 
@@ -5237,19 +5227,15 @@ void priest_t::create_buffs()
 
   buffs.insanity_drain_stacks = new buffs::insanity_drain_stacks_t( *this );
 
-  buffs.vampiric_embrace =
-      buff_creator_t( this, "vampiric_embrace",
-                      find_class_spell( "Vampiric Embrace" ) )
-          .duration( find_class_spell( "Vampiric Embrace" )->duration() );
+  buffs.vampiric_embrace = make_buff( this, "vampiric_embrace",
+                      find_class_spell( "Vampiric Embrace" ) );
 
   buffs.mind_sear_on_hit_reset =
-      buff_creator_t( this, "mind_sear_on_hit_reset" )
-          .max_stack( 2 )
-          .duration( timespan_t::from_seconds( 5.0 ) );
+      make_buff( this, "mind_sear_on_hit_reset" )
+          -> set_max_stack( 2 )
+          -> set_duration( timespan_t::from_seconds( 5.0 ) );
 
-  buffs.dispersion =
-      buff_creator_t( this, "dispersion", find_class_spell( "Dispersion" ) )
-          .duration( find_class_spell( "Dispersion" )->duration() );
+  buffs.dispersion = make_buff( this, "dispersion", find_class_spell( "Dispersion" ) );
 
   // Set Bonuses
   buffs.mental_instinct =
@@ -5260,45 +5246,37 @@ void priest_t::create_buffs()
           .add_invalidate( CACHE_HASTE );
 
   buffs.reperation =
-      buff_creator_t( this, "reperation" )
-          .spell( find_spell( 186478 ) )
+      buff_creator_t( this, "reperation", find_spell( 186478 ) )
           .chance( sets.has_set_bonus( PRIEST_DISCIPLINE, T18, B2 ) )
           .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
           .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
 
   buffs.premonition =
-      buff_creator_t( this, "premonition" )
-          .spell( find_spell( 188779 ) )
+      buff_creator_t( this, "premonition", find_spell( 188779 ) )
           .chance( sets.has_set_bonus( PRIEST_SHADOW, T18, B4 ) );
 
   buffs.power_overwhelming =
-      stat_buff_creator_t( this, "power_overwhelming" )
-          .spell(
-              sets.set( specialization(), T19OH, B8 )->effectN( 1 ).trigger() )
+      stat_buff_creator_t( this, "power_overwhelming",sets.set( specialization(), T19OH, B8 )->effectN( 1 ).trigger() )
           .trigger_spell( sets.set( specialization(), T19OH, B8 ) );
 
   buffs.shadow_t19_4p =
-      buff_creator_t( this, "shadow_t19_4p" )
-          .spell( find_spell( 211654 ) )
+      buff_creator_t( this, "shadow_t19_4p", find_spell( 211654 ) )
           .chance( 1.0 )
           .duration( timespan_t::from_seconds(
               4.0 ) );  // TODO Update with spelldata once available
 
-  buffs.anunds_last_breath = buff_creator_t( this, "anunds_last_breath" )
-                                 .spell( find_spell( 215210 ) );
+  buffs.anunds_last_breath = make_buff( this, "anunds_last_breath", find_spell( 215210 ) );
   //.chance( 1.0 )
   //.duration(timespan_t::from_seconds(60.0)) // Probably 1 minute like the rest
   // of our temp buffs.
   //.max_stack(100); // Data isn't pulling this in.
 
   buffs.the_twins_painful_touch =
-      buff_creator_t( this, "the_twins_painful_touch" )
-          .spell( find_spell( 207721 ) )
+      buff_creator_t( this, "the_twins_painful_touch", find_spell( 207721 ) )
           .chance( active_items.the_twins_painful_touch ? 1.0 : 0.0 );
   //.duration(timespan_t::from_seconds(10.0));
 
-  buffs.zeks_exterminatus = buff_creator_t( this, "zeks_exterminatus" )
-                                .spell( find_spell( 236545 ) )
+  buffs.zeks_exterminatus = buff_creator_t( this, "zeks_exterminatus", find_spell( 236545 ) )
                                 .rppm_scale( RPPM_HASTE );
 }
 

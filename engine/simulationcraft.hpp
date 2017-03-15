@@ -985,12 +985,12 @@ public:
   virtual void analyze();
   virtual void datacollection_begin();
   virtual void datacollection_end();
+  virtual void init();
   virtual void set_max_stack( unsigned stack );
 
   virtual timespan_t refresh_duration( const timespan_t& new_duration ) const;
   virtual timespan_t tick_time() const;
 
-  void add_invalidate( cache_e );
 #if defined(SC_USE_STAT_CACHE)
   virtual void invalidate_cache();
 #else
@@ -1021,6 +1021,10 @@ public:
 
   virtual buff_t* set_duration( timespan_t duration );
   virtual buff_t* set_max_stack( int max_stack );
+  virtual buff_t* set_cooldown( timespan_t duration );
+  //virtual buff_t* set_chance( double chance );
+  virtual buff_t* set_quiet( bool quiet );
+  virtual buff_t* add_invalidate( cache_e );
 };
 
 struct stat_buff_t : public buff_t
@@ -1043,6 +1047,7 @@ struct stat_buff_t : public buff_t
   virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
   virtual double value() override{ stack(); return stats[ 0 ].current_value; }
 
+  stat_buff_t( actor_pair_t q, const std::string& name, const spell_data_t* = spell_data_t::nil() );
 protected:
   stat_buff_t( const stat_buff_creator_t& params );
   friend struct buff_creation::stat_buff_creator_t;
@@ -1089,6 +1094,7 @@ struct haste_buff_t : public buff_t
 {
   haste_type_e haste_type;
 
+  haste_buff_t( actor_pair_t q, const std::string& name, const spell_data_t* = spell_data_t::nil() );
 protected:
   haste_buff_t( const haste_buff_creator_t& params );
   friend struct buff_creation::haste_buff_creator_t;

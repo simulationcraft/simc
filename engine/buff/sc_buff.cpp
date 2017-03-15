@@ -234,20 +234,7 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   set_duration( buff_duration );
 
   // Set Buff Cooldown
-  if ( params._cooldown == timespan_t::min() )
-  {
-    if ( data().ok() )
-    {
-      assert( ! ( data().cooldown() != timespan_t::zero() && data().internal_cooldown() != timespan_t::zero() ) );
-
-      if ( data().cooldown() != timespan_t::zero() )
-        cooldown -> duration = data().cooldown();
-      else
-        cooldown -> duration = data().internal_cooldown();
-    }
-  }
-  else
-    cooldown -> duration = params._cooldown;
+  set_cooldown( params._cooldown );
 
   set_max_stack( _max_stack );
 
@@ -319,7 +306,7 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
 
   // Set Quiet flag
   if ( params._quiet != -1 )
-    quiet = params._quiet != 0;
+    set_quiet( params._quiet );
 
   // Set Activated flag
   if ( params._activated != -1 )
@@ -494,11 +481,59 @@ buff_t* buff_t::set_max_stack( int max_stack )
   return this;
 }
 
-void buff_t::add_invalidate( cache_e c )
+buff_t* buff_t::set_cooldown( timespan_t duration )
+{
+  // Set Buff duration
+  if ( duration == timespan_t::min() )
+  {
+    if ( data().ok() )
+    {
+      assert( ! ( data().cooldown() != timespan_t::zero() && data().internal_cooldown() != timespan_t::zero() ) );
+
+      if ( data().cooldown() != timespan_t::zero() )
+      {
+        cooldown -> duration = data().cooldown();
+      }
+      else
+      {
+        cooldown -> duration = data().internal_cooldown();
+      }
+    }
+//    else
+//    {
+//      cooldown -> duration = timespan_t();
+//    }
+  }
+  else
+  {
+    cooldown -> duration = duration;
+  }
+
+  if ( cooldown -> duration < timespan_t::zero() )
+  {
+    cooldown -> duration = timespan_t::zero();
+  }
+
+  return this;
+}
+//
+//buff_t* buff_t::set_chance( double chance )
+//{
+//  assert( false && "not yet implemented" );
+//  return this;
+//}
+
+buff_t* buff_t::set_quiet( bool arg_quiet )
+{
+  quiet = arg_quiet;
+  return this;
+}
+
+buff_t* buff_t::add_invalidate( cache_e c )
 {
   if ( c == CACHE_NONE )
   {
-    return;
+    return this;
   }
 
   if ( range::find( invalidate_list, c ) == invalidate_list.end() ) // avoid duplication
@@ -506,6 +541,7 @@ void buff_t::add_invalidate( cache_e c )
     invalidate_list.push_back( c );
     requires_invalidation = true;
   }
+  return this;
 }
 
 // buff_t::datacollection_begin =============================================
@@ -549,6 +585,11 @@ void buff_t::datacollection_end()
   avg_expire.add( expire_count );
   avg_overflow_count.add( overflow_count );
   avg_overflow_total.add( overflow_total );
+}
+
+void buff_t::init()
+{
+
 }
 
 // buff_t::set_max_stack ====================================================
@@ -1776,6 +1817,11 @@ void buff_t::invalidate_cache()
 // STAT_BUFF
 // ==========================================================================
 
+stat_buff_t::stat_buff_t(actor_pair_t q, const std::string& name,
+    const spell_data_t* spell) :
+    stat_buff_t(stat_buff_creator_t(q, name, spell)) {
+
+}
 // stat_buff_t::stat_buff_t =================================================
 
 stat_buff_t::stat_buff_t( const stat_buff_creator_t& params ) :
@@ -2001,6 +2047,12 @@ void cost_reduction_buff_t::expire_override( int expiration_stacks, timespan_t r
 // ==========================================================================
 // HASTE_BUFF
 // ==========================================================================
+
+haste_buff_t::haste_buff_t( actor_pair_t q, const std::string& name, const spell_data_t* spell ) :
+    haste_buff_t( haste_buff_creator_t(q, name, spell ) )
+{
+
+}
 
 haste_buff_t::haste_buff_t( const haste_buff_creator_t& params ) :
   buff_t( params ), haste_type( HASTE_NONE )
