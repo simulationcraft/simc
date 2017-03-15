@@ -957,15 +957,15 @@ struct base_fiend_pet_t : public priest_pet_t
 {
   struct buffs_t
   {
-    buff_t* shadowcrawl;
+    propagate_const<buff_t*> shadowcrawl;
   } buffs;
 
   struct gains_t
   {
-    gain_t* fiend;
+    propagate_const<gain_t*> fiend;
   } gains;
 
-  action_t* shadowcrawl_action;
+  propagate_const<action_t*> shadowcrawl_action;
 
   double direct_power_mod;
 
@@ -1899,7 +1899,7 @@ private:
 public:
   typedef divine_star_base_t base_t;
 
-  divine_star_base_t* return_spell;
+  propagate_const<divine_star_base_t*> return_spell;
 
   divine_star_base_t( const std::string& n, priest_t& p,
                       const spell_data_t* spell_data,
@@ -2039,8 +2039,8 @@ struct halo_t final : public priest_spell_t
   }
 
 private:
-  action_t* _heal_spell;
-  action_t* _dmg_spell;
+  propagate_const<action_t*> _heal_spell;
+  propagate_const<action_t*> _dmg_spell;
 };
 
 /// Holy Fire Base Spell, used for both Holy Fire and its overriding spell Puge
@@ -2228,7 +2228,7 @@ public:
 
 struct mind_sear_tick_t final : public priest_spell_t
 {
-  player_t* source_target;
+  propagate_const<player_t*> source_target;
   double insanity_gain;
 
   mind_sear_tick_t( priest_t& p )
@@ -2916,6 +2916,7 @@ struct shadowy_apparition_spell_t final : public priest_spell_t
 struct blessed_dawnlight_medallion_t : public priest_spell_t
 {
   double insanity;
+
   blessed_dawnlight_medallion_t( priest_t& p, const special_effect_t& )
     : priest_spell_t( "blessing", p, p.find_spell( 227727 ) ),
       insanity( data().effectN( 1 ).percent() )
@@ -3202,7 +3203,7 @@ struct summon_pet_t : public priest_spell_t
 {
   timespan_t summoning_duration;
   std::string pet_name;
-  pet_t* pet;
+  propagate_const<pet_t*> pet;
 
 public:
   summon_pet_t( const std::string& n, priest_t& p,
@@ -3329,7 +3330,7 @@ struct vampiric_embrace_t final : public priest_spell_t
 struct vampiric_touch_t final : public priest_spell_t
 {
   double insanity_gain;
-  shadow_word_pain_t* child_swp;
+  propagate_const<shadow_word_pain_t*> child_swp;
   bool ignore_healing = false;
 
   vampiric_touch_t( priest_t& p, const std::string& options_str )
@@ -3591,7 +3592,7 @@ struct void_bolt_t final : public priest_spell_t
 
 struct void_eruption_t final : public priest_spell_t
 {
-  action_t* void_bolt;
+  propagate_const<action_t*> void_bolt;
 
   void_eruption_t( priest_t& p, const std::string& options_str )
     : priest_spell_t( "void_eruption", p, p.find_spell( 228360 ) ),
@@ -3971,7 +3972,7 @@ struct insanity_drain_stacks_t final : public priest_buff_t<buff_t>
     }
   };
 
-  stack_increase_event_t* stack_increase;
+  propagate_const<stack_increase_event_t*> stack_increase;
 
   insanity_drain_stacks_t( priest_t& p )
     : base_t( p, buff_creator_t( &p, "insanity_drain_stacks" )
@@ -4118,6 +4119,7 @@ struct surrender_to_madness_t final : public priest_buff_t<buff_t>
 struct lingering_insanity_t final : public priest_buff_t<haste_buff_t>
 {
   int hidden_lingering_insanity;
+
   lingering_insanity_t( priest_t& p )
     : base_t(
           p,
