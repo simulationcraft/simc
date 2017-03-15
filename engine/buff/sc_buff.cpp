@@ -156,6 +156,12 @@ struct expiration_delay_t : public buff_event_t
 };
 }
 
+buff_t::buff_t(actor_pair_t q, const std::string& name, const spell_data_t* spell_data) :
+		buff_t( buff_creation::buff_creator_basics_t(q, name, spell_data ) )
+{
+
+}
+
 buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   sim( params._sim ),
   player( params._player.target ),
@@ -168,7 +174,7 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   expiration_delay(),
   cooldown(),
   rppm( nullptr ),
-  _max_stack( 1 ),
+  _max_stack( params._max_stack ),
   default_value( DEFAULT_VALUE() ),
   activated( true ),
   reactable( false ),
@@ -180,7 +186,7 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   requires_invalidation(),
   current_value(),
   current_stack(),
-  buff_duration( timespan_t() ),
+  buff_duration( params._duration ),
   default_chance( 1.0 ),
   current_tick( 0 ),
   buff_period( timespan_t::min() ),
@@ -225,18 +231,7 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   }
 
   // Set Buff duration
-  if ( params._duration == timespan_t::min() )
-  {
-    if ( data().ok() )
-      buff_duration = data().duration();
-  }
-  else
-    buff_duration = params._duration;
-
-  if ( buff_duration < timespan_t::zero() )
-  {
-    buff_duration = timespan_t::zero();
-  }
+  set_duration( buff_duration );
 
   // Set Buff Cooldown
   if ( params._cooldown == timespan_t::min() )
@@ -254,19 +249,7 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   else
     cooldown -> duration = params._cooldown;
 
-  // Set Max stacks
-  if ( params._max_stack == -1 )
-  {
-    if ( data().ok() )
-    {
-      if ( data().max_stacks() != 0 )
-        _max_stack = data().max_stacks();
-      else if ( data().initial_stacks() != 0 )
-        _max_stack = std::abs( data().initial_stacks() );
-    }
-  }
-  else
-    _max_stack = params._max_stack;
+  set_max_stack( _max_stack );
 
   // If the params specifies a trigger spell (even if it's not found), use it instead of the actual
   // spell data of the buff.
@@ -451,6 +434,64 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   {
       stack_uptime.resize(_max_stack+1);
   }
+}
+
+buff_t* buff_t::set_duration( timespan_t duration )
+{
+  // Set Buff duration
+  if ( duration == timespan_t::min() )
+  {
+	if ( data().ok() )
+	{
+	  buff_duration = data().duration();
+	}
+	else
+	{
+	  buff_duration = timespan_t();
+	}
+  }
+  else
+  {
+	  buff_duration = duration;
+  }
+
+  if ( buff_duration < timespan_t::zero() )
+  {
+	buff_duration = timespan_t::zero();
+  }
+  return this;
+}
+
+buff_t* buff_t::set_max_stack( int max_stack )
+{
+  // Set Max stacks
+  if ( max_stack == -1 )
+  {
+	if ( data().ok() )
+	{
+	  if ( data().max_stacks() != 0 )
+	  {
+	    _max_stack = data().max_stacks();
+	  }
+	  else if ( data().initial_stacks() != 0 )
+	  {
+	    _max_stack = std::abs( data().initial_stacks() );
+	  }
+    else
+    {
+      _max_stack = 1;
+    }
+	}
+	else
+	{
+		_max_stack = 1;
+	}
+  }
+  else
+  {
+	_max_stack = max_stack;
+  }
+  return this;
 }
 
 void buff_t::add_invalidate( cache_e c )

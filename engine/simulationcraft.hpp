@@ -878,6 +878,7 @@ public:
 
   virtual ~buff_t() {}
 
+  buff_t( actor_pair_t q, const std::string& name, const spell_data_t* = spell_data_t::nil() );
 protected:
   buff_t( const buff_creator_basics_t& params );
   friend struct buff_creation::buff_creator_t;
@@ -1017,6 +1018,9 @@ public:
   rng::rng_t& rng();
 
   bool change_regen_rate;
+
+  virtual buff_t* set_duration( timespan_t duration );
+  virtual buff_t* set_max_stack( int max_stack );
 };
 
 struct stat_buff_t : public buff_t
@@ -1104,6 +1108,21 @@ protected:
 };
 
 typedef struct buff_t aura_t;
+
+/**
+ * @brief Creates a buff
+ *
+ * Small helper function to write
+ * buff_t* b = make_buff<buff_t>(player, name, spell); instead of
+ * buff_t* b = (new buff_t(player, name, spell));
+ */
+template <typename Buff = buff_t, typename... Args>
+inline Buff* make_buff( Args&&... args )
+{
+  static_assert( std::is_base_of<buff_t, Buff>::value,
+                 "Buff must be derived from buff_t" );
+  return new Buff( args... );
+}
 
 #include "sim/sc_expressions.hpp"
 
