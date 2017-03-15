@@ -6912,6 +6912,7 @@ void rogue_t::init_action_list()
     def -> add_action( "run_action_list,name=sprinted,if=buff.faster_than_light_trigger.up" );
     def -> add_action( "call_action_list,name=cds" );
     def -> add_action( "run_action_list,name=stealthed,if=stealthed.all", "Fully switch to the Stealthed Rotation (by doing so, it forces pooling if nothing is available)" );
+    def -> add_action( this, "Nightblade", "if=target.time_to_die>8&remains<gcd.max&combo_points>=4" );
     def -> add_action( this, "Sprint", "if=!equipped.draught_of_souls&mantle_duration=0&energy.time_to_max>=1.5&cooldown.shadow_dance.charges_fractional<variable.shd_fractionnal&!cooldown.vanish.up&target.time_to_die>=8&(dot.nightblade.remains>=14|target.time_to_die<=45)" );
     def -> add_action( this, "Sprint", "if=equipped.draught_of_souls&trinket.cooldown.up&mantle_duration=0" );
     def -> add_action( "call_action_list,name=stealth_als,if=(combo_points.deficit>=2+talent.premeditation.enabled|cooldown.shadow_dance.charges_fractional>=2.9)" );
@@ -6943,7 +6944,7 @@ void rogue_t::init_action_list()
         cds -> add_action( racial_actions[i] + ",if=stealthed.rogue" );
     }
     cds -> add_action( this, "Shadow Blades", "if=combo_points.deficit>=2+stealthed.all-equipped.mantle_of_the_master_assassin&(cooldown.sprint.remains>buff.shadow_blades.duration*0.5|mantle_duration>0|cooldown.shadow_dance.charges_fractional>variable.shd_fractionnal|cooldown.vanish.up|target.time_to_die<=buff.shadow_blades.duration*1.1)" );
-    cds -> add_action( this, "Goremaw's Bite", "if=!stealthed.all&cooldown.shadow_dance.charges_fractional<=variable.shd_fractionnal&((combo_points.deficit>=4-(time<10)*2&energy.deficit>50+talent.vigor.enabled*25-(time>=10)*15)|(combo_points.deficit>=1&target.time_to_die<8))" );
+    cds -> add_action( this, "Goremaw's Bite", "if=combo_points.deficit>=2+stealthed.all-equipped.mantle_of_the_master_assassin&(cooldown.sprint.remains>buff.shadow_blades.duration*(0.4+equipped.denial_of_the_halfgiants*0.2)|mantle_duration>0|cooldown.shadow_dance.charges_fractional>variable.shd_fractionnal|cooldown.vanish.up|target.time_to_die<=buff.shadow_blades.duration*1.1)" );
     cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit|(raid_event.adds.in>40&combo_points.deficit>=cp_max_spend)" );
 
     // Finishers
@@ -6978,7 +6979,7 @@ void rogue_t::init_action_list()
 
     // Stealth Cooldowns
     action_priority_list_t* stealth_cds = get_action_priority_list( "stealth_cds", "Stealth Cooldowns" );
-    stealth_cds -> add_action( this, "Vanish", "if=mantle_duration=0&(cooldown.shadow_dance.charges_fractional<variable.shd_fractionnal|(equipped.mantle_of_the_master_assassin&time<30))" );
+    stealth_cds -> add_action( this, "Vanish", "if=mantle_duration=0&cooldown.shadow_dance.charges_fractional<variable.shd_fractionnal+(equipped.mantle_of_the_master_assassin&time<30)*0.3" );
     stealth_cds -> add_action( this, "Shadow Dance", "if=charges_fractional>=variable.shd_fractionnal" );
     stealth_cds -> add_action( "pool_resource,for_next=1,extra_amount=40" );
     stealth_cds -> add_action( "shadowmeld,if=energy>=40&energy.deficit>=10+variable.ssw_refund" );
