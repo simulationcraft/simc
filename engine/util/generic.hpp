@@ -585,7 +585,7 @@ public:
 
   propagate_const( const propagate_const& p ) = delete;
 
-  propagate_const( propagate_const&& p ) = default;
+  //propagate_const( propagate_const&& p ) = default;
 
   explicit operator bool() const
   {
