@@ -683,6 +683,11 @@ public:
     artifact_power_t shredder_fangs;
     artifact_power_t tear_the_flesh;
     artifact_power_t fangs_of_the_first;
+    //7.2
+    artifact_power_t ferocity_of_the_cenarion_circle;
+    artifact_power_t thrashing_claws;
+    artifact_power_t fury_of_ashamane;
+    artifact_power_t bloodletters_frailty;
 
     // NYI
     artifact_power_t hardened_roots;
@@ -6724,6 +6729,12 @@ void druid_t::init_spells()
   artifact.hardened_roots               = find_artifact_spell( "Hardened Roots" );
   artifact.fangs_of_the_first           = find_artifact_spell( "Fangs of the First" );
 
+  //7.2
+  artifact.bloodletters_frailty            = find_artifact_spell("Bloodletter's Frailty");
+  artifact.fury_of_ashamane                = find_artifact_spell("Fury of Ashamane");
+  artifact.thrashing_claws                 = find_artifact_spell("Thrashing Claws");
+  artifact.ferocity_of_the_cenarion_circle = find_artifact_spell("Ferocity of the Cenarion Circle");
+
   // Guardian -- Claws of Ursoc
   artifact.rage_of_the_sleeper          = find_artifact_spell( "Rage of the Sleeper" );
   artifact.adaptive_fur                 = find_artifact_spell( "Adaptive Fur" );
@@ -8350,12 +8361,12 @@ void druid_t::create_options()
 {
   player_t::create_options();
 
-  add_option( opt_float( "predator_rppm", predator_rppm_rate ) );
-  add_option( opt_bool("feral_t20_2pc", t20_2pc) );
-  add_option( opt_bool("feral_t20_4pc", t20_4pc) );
-  add_option( opt_float( "initial_astral_power", initial_astral_power ) );
-  add_option( opt_int( "initial_moon_stage", initial_moon_stage ) );
-  add_option( opt_bool( "outside", ahhhhh_the_great_outdoors ) );
+  add_option( opt_float ( "predator_rppm", predator_rppm_rate ) );
+  add_option( opt_bool  ( "feral_t20_2pc", t20_2pc) );
+  add_option( opt_bool  ( "feral_t20_4pc", t20_4pc) );
+  add_option( opt_float ( "initial_astral_power", initial_astral_power ) );
+  add_option( opt_int   ( "initial_moon_stage", initial_moon_stage ) );
+  add_option( opt_bool  ( "outside", ahhhhh_the_great_outdoors ) );
 }
 
 // druid_t::create_profile ==================================================
