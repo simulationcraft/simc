@@ -7488,7 +7488,8 @@ void demon_hunter_t::target_mitigation( school_e school, dmg_e dt,
     }
   }
 
-  if ( get_target_data( s -> action -> player ) -> dots.fiery_brand -> is_ticking() )
+  auto fiery_brand = get_target_data( s -> action -> player ) -> dots.fiery_brand;
+  if ( fiery_brand && fiery_brand -> is_ticking() )
   {
     s -> result_amount *= 1.0 + spec.fiery_brand_dr -> effectN( 2 ).percent();
   }
