@@ -34,6 +34,8 @@ other avenues.
 */
 namespace  // UNNAMED NAMESPACE
 {
+
+
 /* Forward declarations
  */
 struct priest_t;
@@ -65,17 +67,17 @@ struct priest_td_t final : public actor_target_data_t
 public:
   struct dots_t
   {
-    dot_t* shadow_word_pain;
-    dot_t* vampiric_touch;
-    dot_t* holy_fire;
-    dot_t* power_word_solace;
+    propagate_const<dot_t*> shadow_word_pain;
+    propagate_const<dot_t*> vampiric_touch;
+    propagate_const<dot_t*> holy_fire;
+    propagate_const<dot_t*> power_word_solace;
   } dots;
 
   struct buffs_t
   {
-    buff_t* mental_fatigue;
-    buff_t* mind_spike;
-    buff_t* schism;
+    propagate_const<buff_t*> mental_fatigue;
+    propagate_const<buff_t*> mind_spike;
+    propagate_const<buff_t*> schism;
   } buffs;
 
   priest_t& priest;
@@ -98,50 +100,50 @@ public:
   struct
   {
     // Talents
-    buff_t* power_infusion;
-    buff_t* twist_of_fate;
+    propagate_const<buff_t*> power_infusion;
+    propagate_const<buff_t*> twist_of_fate;
 
     // Discipline
-    buff_t* archangel;
-    buff_t* borrowed_time;
-    buff_t* holy_evangelism;
-    buff_t* inner_focus;
+    propagate_const<buff_t*> archangel;
+    propagate_const<buff_t*> borrowed_time;
+    propagate_const<buff_t*> holy_evangelism;
+    propagate_const<buff_t*> inner_focus;
 
     // Holy
 
     // Shadow
-    buff_t* dispersion;
-    buff_t* insanity_drain_stacks;
-    buff_t* lingering_insanity;
-    buff_t* mind_sear_on_hit_reset;
-    buff_t* shadowform;
-    buff_t* shadowform_state;  // Dummy buff to track whether player entered
+    propagate_const<buff_t*> dispersion;
+    propagate_const<buff_t*> insanity_drain_stacks;
+    propagate_const<buff_t*> lingering_insanity;
+    propagate_const<buff_t*> mind_sear_on_hit_reset;
+    propagate_const<buff_t*> shadowform;
+    propagate_const<buff_t*> shadowform_state;  // Dummy buff to track whether player entered
                                // Shadowform initially
-    buff_t* shadowy_insight;
-    buff_t* sphere_of_insanity;
-    buff_t* surrender_to_madness;
-    buff_t* surrender_to_madness_death;
-    buff_t* vampiric_embrace;
-    buff_t* void_ray;
-    buff_t* void_torrent;
-    buff_t* voidform;
+    propagate_const<buff_t*> shadowy_insight;
+    propagate_const<buff_t*> sphere_of_insanity;
+    propagate_const<buff_t*> surrender_to_madness;
+    propagate_const<buff_t*> surrender_to_madness_death;
+    propagate_const<buff_t*> vampiric_embrace;
+    propagate_const<buff_t*> void_ray;
+    propagate_const<buff_t*> void_torrent;
+    propagate_const<buff_t*> voidform;
 
     // Set Bonus
-    buff_t* mental_instinct;          // T17 Shadow 4pc
-    buff_t* reperation;               // T18 Disc 2p
-    buff_t* premonition;              // T18 Shadow 4pc
-    stat_buff_t* power_overwhelming;  // T19OH
-    buff_t* shadow_t19_4p;            // T19 Shadow 4pc
+    propagate_const<buff_t*> mental_instinct;          // T17 Shadow 4pc
+    propagate_const<buff_t*> reperation;               // T18 Disc 2p
+    propagate_const<buff_t*> premonition;              // T18 Shadow 4pc
+    propagate_const<stat_buff_t*> power_overwhelming;  // T19OH
+    propagate_const<buff_t*> shadow_t19_4p;            // T19 Shadow 4pc
 
     // Legion Legendaries
     // Shadow
-    buff_t* anunds_last_breath;       // Anund's Seared Shackles stack counter
-    buff_t* the_twins_painful_touch;  // To track first casting
-    buff_t* zeks_exterminatus;        // Aura for Zeks proc
+    propagate_const<buff_t*> anunds_last_breath;       // Anund's Seared Shackles stack counter
+    propagate_const<buff_t*> the_twins_painful_touch;  // To track first casting
+    propagate_const<buff_t*> zeks_exterminatus;        // Aura for Zeks proc
 
     // Artifact Buffs
     // Shadow 
-    buff_t* mind_quickening;
+    propagate_const<buff_t*> mind_quickening;
   } buffs;
 
   // Talents
@@ -296,47 +298,47 @@ public:
   // Cooldowns
   struct
   {
-    cooldown_t* chakra;
-    cooldown_t* mindbender;
-    cooldown_t* penance;
-    cooldown_t* power_word_shield;
-    cooldown_t* shadowfiend;
-    cooldown_t* silence;
+    propagate_const<cooldown_t*> chakra;
+    propagate_const<cooldown_t*> mindbender;
+    propagate_const<cooldown_t*> penance;
+    propagate_const<cooldown_t*> power_word_shield;
+    propagate_const<cooldown_t*> shadowfiend;
+    propagate_const<cooldown_t*> silence;
 
-    cooldown_t* mind_blast;
-    cooldown_t* shadow_word_death;
-    cooldown_t* shadow_word_void;
-    cooldown_t* void_bolt;
+    propagate_const<cooldown_t*> mind_blast;
+    propagate_const<cooldown_t*> shadow_word_death;
+    propagate_const<cooldown_t*> shadow_word_void;
+    propagate_const<cooldown_t*> void_bolt;
   } cooldowns;
 
   // Gains
   struct
   {
-    gain_t* mindbender;
-    gain_t* power_word_solace;
-    gain_t* insanity_auspicious_spirits;
-    gain_t* insanity_dispersion;
-    gain_t* insanity_void_torrent;
-    gain_t* insanity_drain;
-    gain_t* insanity_mind_blast;
-    gain_t* insanity_mind_flay;
-    gain_t* insanity_mind_sear;
-    gain_t* insanity_mind_spike;
-    gain_t* insanity_mindbender;
-    gain_t* insanity_power_infusion;
-    gain_t* insanity_shadow_crash;
-    gain_t* insanity_shadow_word_death;
-    gain_t* insanity_shadow_word_pain_ondamage;
-    gain_t* insanity_shadow_word_pain_onhit;
-    gain_t* insanity_shadow_word_void;
-    gain_t* insanity_surrender_to_madness;
-    gain_t* insanity_vampiric_touch_ondamage;
-    gain_t* insanity_vampiric_touch_onhit;
-    gain_t* insanity_void_bolt;
-    gain_t* insanity_blessing;
-    gain_t* shadowy_insight;
-    gain_t* vampiric_touch_health;
-    gain_t* insanity_call_to_the_void;
+    propagate_const<gain_t*> mindbender;
+    propagate_const<gain_t*> power_word_solace;
+    propagate_const<gain_t*> insanity_auspicious_spirits;
+    propagate_const<gain_t*> insanity_dispersion;
+    propagate_const<gain_t*> insanity_void_torrent;
+    propagate_const<gain_t*> insanity_drain;
+    propagate_const<gain_t*> insanity_mind_blast;
+    propagate_const<gain_t*> insanity_mind_flay;
+    propagate_const<gain_t*> insanity_mind_sear;
+    propagate_const<gain_t*> insanity_mind_spike;
+    propagate_const<gain_t*> insanity_mindbender;
+    propagate_const<gain_t*> insanity_power_infusion;
+    propagate_const<gain_t*> insanity_shadow_crash;
+    propagate_const<gain_t*> insanity_shadow_word_death;
+    propagate_const<gain_t*> insanity_shadow_word_pain_ondamage;
+    propagate_const<gain_t*> insanity_shadow_word_pain_onhit;
+    propagate_const<gain_t*> insanity_shadow_word_void;
+    propagate_const<gain_t*> insanity_surrender_to_madness;
+    propagate_const<gain_t*> insanity_vampiric_touch_ondamage;
+    propagate_const<gain_t*> insanity_vampiric_touch_onhit;
+    propagate_const<gain_t*> insanity_void_bolt;
+    propagate_const<gain_t*> insanity_blessing;
+    propagate_const<gain_t*> shadowy_insight;
+    propagate_const<gain_t*> vampiric_touch_health;
+    propagate_const<gain_t*> insanity_call_to_the_void;
 
   } gains;
 
@@ -348,42 +350,42 @@ public:
   // Procs
   struct
   {
-    proc_t* legendary_zeks_exterminatus;
-    proc_t* legendary_zeks_exterminatus_overflow;
-    proc_t* legendary_anunds_last_breath;
-    proc_t* legendary_anunds_last_breath_overflow;
-    proc_t* shadowy_insight;
-    proc_t* shadowy_insight_overflow;
-    proc_t* serendipity;
-    proc_t* serendipity_overflow;
-    proc_t* shadowy_apparition;
-    proc_t* shadowy_apparition_overflow;
-    proc_t* surge_of_light;
-    proc_t* surge_of_light_overflow;
-    proc_t* t17_2pc_caster_mind_blast_reset;
-    proc_t* t17_2pc_caster_mind_blast_reset_overflow;
-    proc_t* t17_2pc_caster_mind_blast_reset_overflow_seconds;
-    proc_t* t17_4pc_holy;
-    proc_t* t17_4pc_holy_overflow;
-    proc_t* void_eruption_both_dots;
-    proc_t* void_eruption_no_dots;
-    proc_t* void_eruption_only_shadow_word_pain;
-    proc_t* void_eruption_only_vampiric_touch;
-    proc_t* void_tendril;
+    propagate_const<proc_t*> legendary_zeks_exterminatus;
+    propagate_const<proc_t*> legendary_zeks_exterminatus_overflow;
+    propagate_const<proc_t*> legendary_anunds_last_breath;
+    propagate_const<proc_t*> legendary_anunds_last_breath_overflow;
+    propagate_const<proc_t*> shadowy_insight;
+    propagate_const<proc_t*> shadowy_insight_overflow;
+    propagate_const<proc_t*> serendipity;
+    propagate_const<proc_t*> serendipity_overflow;
+    propagate_const<proc_t*> shadowy_apparition;
+    propagate_const<proc_t*> shadowy_apparition_overflow;
+    propagate_const<proc_t*> surge_of_light;
+    propagate_const<proc_t*> surge_of_light_overflow;
+    propagate_const<proc_t*> t17_2pc_caster_mind_blast_reset;
+    propagate_const<proc_t*> t17_2pc_caster_mind_blast_reset_overflow;
+    propagate_const<proc_t*> t17_2pc_caster_mind_blast_reset_overflow_seconds;
+    propagate_const<proc_t*> t17_4pc_holy;
+    propagate_const<proc_t*> t17_4pc_holy_overflow;
+    propagate_const<proc_t*> void_eruption_both_dots;
+    propagate_const<proc_t*> void_eruption_no_dots;
+    propagate_const<proc_t*> void_eruption_only_shadow_word_pain;
+    propagate_const<proc_t*> void_eruption_only_vampiric_touch;
+    propagate_const<proc_t*> void_tendril;
   } procs;
 
   struct realppm_t
   {
-    real_ppm_t* call_to_the_void;
+    propagate_const<real_ppm_t*> call_to_the_void;
   } rppm;
 
   // Special
   struct
   {
-    actions::spells::mind_sear_tick_t* mind_sear_tick;
-    actions::spells::shadowy_apparition_spell_t* shadowy_apparitions;
-    action_t* sphere_of_insanity;
-    action_t* mental_fortitude;
+    propagate_const<actions::spells::mind_sear_tick_t*> mind_sear_tick;
+    propagate_const<actions::spells::shadowy_apparition_spell_t*> shadowy_apparitions;
+    propagate_const<action_t*> sphere_of_insanity;
+    propagate_const<action_t*> mental_fortitude;
   } active_spells;
 
   struct
@@ -406,9 +408,9 @@ public:
   // Pets
   struct
   {
-    pet_t* shadowfiend;
-    pet_t* mindbender;
-    std::array<pets::void_tendril::void_tendril_pet_t*, 10>
+    propagate_const<pet_t*> shadowfiend;
+    propagate_const<pet_t*> mindbender;
+    std::array<propagate_const<pets::void_tendril::void_tendril_pet_t*>, 10>
         void_tendril;  // Multiple can be
                        // up at one time.
                        // 10 should be
@@ -1458,6 +1460,11 @@ public:
     return *( priest.get_target_data( t ) );
   }
 
+  priest_td_t* find_td( player_t* t )
+  {
+    return priest.find_target_data( t );
+  }
+
   const priest_td_t* find_td( player_t* t ) const
   {
     return priest.find_target_data( t );
@@ -1467,7 +1474,7 @@ public:
   {
     if ( priest.rppm.call_to_the_void->trigger() )
     {
-      for ( auto void_tendril : priest.pets.void_tendril )
+      for ( auto&& void_tendril : priest.pets.void_tendril )
       {
         if ( void_tendril->is_sleeping() )
         {
@@ -2340,7 +2347,7 @@ struct mind_flay_t final : public priest_spell_t
       return;
     }
 
-    std::array<dot_t*, 2> dots = {
+    std::array<const dot_t*, 2> dots = {
         {td->dots.shadow_word_pain, td->dots.vampiric_touch}};
 
     // First check if there is even a dot active, otherwise we can bail out as
@@ -2382,7 +2389,7 @@ struct mind_flay_t final : public priest_spell_t
     }
 
     // spread dots to targets
-    for ( dot_t* dot : dots )
+    for ( const dot_t* dot : dots )
     {
       for ( player_t* target : valid_targets )
       {
@@ -3486,7 +3493,7 @@ struct void_bolt_t final : public priest_spell_t
 
       if ( rank2->ok() )
       {
-        if ( const priest_td_t* td = find_td( s->target ) )
+        if ( priest_td_t* td = find_td( s->target ) )
         {
           if ( td->dots.shadow_word_pain->is_ticking() )
           {

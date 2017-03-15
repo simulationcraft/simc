@@ -3409,7 +3409,7 @@ namespace assessor
   enum command { CONTINUE = 0U, STOP };
 
   // Default assessor priorities
-  enum priority
+  enum priority_e
   {
     TARGET_MITIGATION = 100U,    // Target assessing (mitigation etc)
     TARGET_DAMAGE     = 200U,    // Do damage to target (and related functionality)
@@ -3419,17 +3419,13 @@ namespace assessor
   };
 
   // State assessor callback type
-  typedef std::function<command(dmg_e, action_state_t*)> state_assessor_t;
+  using state_assessor_t = std::function<command(dmg_e, action_state_t*)>;
 
   // A simple entry that defines a state assessor
   struct state_assessor_entry_t
   {
-    uint16_t priority;
+    int priority;
     state_assessor_t assessor;
-
-    state_assessor_entry_t( uint16_t p, const state_assessor_t& a ) :
-      priority( p ), assessor( a )
-    { }
   };
 
   // State assessor functionality creates an ascending priority-based list of manipulators for state
@@ -3452,8 +3448,8 @@ namespace assessor
   {
     std::vector<state_assessor_entry_t> assessors;
 
-    void add( uint16_t p, const state_assessor_t& cb )
-    { assessors.push_back( state_assessor_entry_t( p, cb ) ); }
+    void add( int p, state_assessor_t cb )
+    { assessors.push_back( state_assessor_entry_t{p, std::move(cb)} ); }
 
     void sort()
     {
@@ -3775,7 +3771,8 @@ struct player_t : public actor_t
   bool quiet;
   // Reporting
   std::unique_ptr<player_report_extension_t> report_extension;
-  timespan_t iteration_fight_length, arise_time;
+  timespan_t arise_time;
+  timespan_t iteration_fight_length;
   timespan_t iteration_waiting_time, iteration_pooling_time;
   int iteration_executed_foreground_actions;
   std::array< double, RESOURCE_MAX > iteration_resource_lost, iteration_resource_gained;
@@ -3959,7 +3956,7 @@ struct player_t : public actor_t
   struct spells_t
   {
     action_t* leech;
-  } spell;
+  } spells;
 
   struct procs_t
   {
@@ -6364,8 +6361,8 @@ public:
   void   cancel();
   void   trigger( timespan_t duration );
   void   decrement( int stacks );
-  void   copy( player_t* destination, dot_copy_e = DOT_COPY_START );
-  void   copy( dot_t* dest_dot );
+  void   copy( player_t* destination, dot_copy_e = DOT_COPY_START ) const;
+  void   copy( dot_t* dest_dot ) const;
   // Scale on-going dot remaining time by a coefficient during a tick. Note that this should be
   // accompanied with the correct (time related) scaling information in the action's supporting
   // methods (action_t::tick_time, action_t::composite_dot_ruration), otherwise bad things will
