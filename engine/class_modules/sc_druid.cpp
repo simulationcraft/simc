@@ -2086,7 +2086,7 @@ struct moonfire_t : public druid_spell_t
       }
     }
 
-    size_t available_targets( std::vector< player_t* >& tl ) const
+    size_t available_targets( std::vector< player_t* >& tl ) const override
     {
       /* When Lady and the Child is active, this is an AoE action meaning it will impact onto the
       first 2 targets in the target list. Instead, we want it to impact on the target of the action
@@ -2123,7 +2123,7 @@ struct moonfire_t : public druid_spell_t
         }
 
         // Fill list with random unafflicted targets.
-        while ( tl.size() < aoe && unafflicted.size() > 0 )
+        while ( tl.size() < as<size_t>(aoe) && unafflicted.size() > 0 )
         {
           // Random target
           size_t i = ( size_t ) p() -> rng().range( 0, ( double ) unafflicted.size() );
@@ -2133,7 +2133,7 @@ struct moonfire_t : public druid_spell_t
         }
 
         // Fill list with random afflicted targets.
-        while ( tl.size() < aoe && afflicted.size() > 0 )
+        while ( tl.size() < as<size_t>(aoe) && afflicted.size() > 0 )
         {
           // Random target
           size_t i = ( size_t ) p() -> rng().range( 0, ( double ) afflicted.size() );
@@ -3149,7 +3149,7 @@ struct lunar_inspiration_t : public cat_attack_t
     consumes_bloodtalons = false;
   }
 
-  size_t available_targets( std::vector< player_t* >& tl ) const
+  size_t available_targets( std::vector< player_t* >& tl ) const override
   {
     /* When Lady and the Child is active, this is an AoE action meaning it will impact onto the
     first 2 targets in the target list. Instead, we want it to impact on the target of the action
@@ -3186,7 +3186,7 @@ struct lunar_inspiration_t : public cat_attack_t
       }
 
       // Fill list with random unafflicted targets.
-      while ( tl.size() < aoe && unafflicted.size() > 0 )
+      while ( tl.size() < as<size_t>(aoe) && unafflicted.size() > 0 )
       {
         // Random target
         size_t i = ( size_t ) p() -> rng().range( 0, ( double ) unafflicted.size() );
@@ -3196,7 +3196,7 @@ struct lunar_inspiration_t : public cat_attack_t
       }
 
       // Fill list with random afflicted targets.
-      while ( tl.size() < aoe && afflicted.size() > 0 )
+      while ( tl.size() < as<size_t>(aoe) && afflicted.size() > 0 )
       {
         // Random target
         size_t i = ( size_t ) p() -> rng().range( 0, ( double ) afflicted.size() );

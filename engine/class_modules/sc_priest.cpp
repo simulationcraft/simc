@@ -3988,7 +3988,7 @@ struct insanity_drain_stacks_t final : public priest_buff_t<buff_t>
     base_t::expire_override( expiration_stacks, remaining_duration );
   }
 
-  void bump(int stacks, double value) override
+  void bump(int stacks, double /* value */) override
   {
     buff_t::bump(stacks, current_value + 1);
     //current_value = value + 1;

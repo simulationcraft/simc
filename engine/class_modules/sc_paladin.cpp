@@ -2674,7 +2674,7 @@ struct holy_wrath_t : public paladin_spell_t
       background = true;
   }
 
-  virtual double calculate_direct_amount( action_state_t* state ) const
+  double calculate_direct_amount( action_state_t* state ) const override
   {
     double base_amount = 0;
     if ( p() -> fixed_holy_wrath_health_pct > 0 )
