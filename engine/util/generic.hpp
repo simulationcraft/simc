@@ -581,13 +581,13 @@ public:
   using element_type =
       typename std::remove_reference<decltype( *std::declval<T&>() )>::type;
 
-  constexpr propagate_const() = default;
+  propagate_const() = default;
 
   propagate_const( const propagate_const& p ) = delete;
 
-  constexpr propagate_const( propagate_const&& p ) = default;
+  propagate_const( propagate_const&& p ) = default;
 
-  explicit constexpr operator bool() const
+  explicit operator bool() const
   {
     return static_cast<bool>( _M_t );
   }
