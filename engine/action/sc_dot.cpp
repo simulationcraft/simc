@@ -223,7 +223,7 @@ void dot_t::decrement( int stacks = 1 )
 }
 
 // For copying a DoT to a different target.
-void dot_t::copy( player_t* other_target, dot_copy_e copy_type )
+void dot_t::copy( player_t* other_target, dot_copy_e copy_type ) const
 {
   if ( target == other_target )
     return;
@@ -349,7 +349,7 @@ void dot_t::copy( player_t* other_target, dot_copy_e copy_type )
 }
 
 // For duplicating a DoT (creating a 2nd instance) on one target.
-void dot_t::copy( dot_t* other_dot )
+void dot_t::copy( dot_t* other_dot ) const
 {
   // Shared initialize for the target dot state, independent of the copying
   // method

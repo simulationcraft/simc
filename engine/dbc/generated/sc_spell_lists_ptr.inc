@@ -4,7 +4,7 @@
 #ifndef ptr_MAX_CLASS
 #define ptr_MAX_CLASS (13)
 #endif
-// Class based active abilities, wow build 23721
+// Class based active abilities, wow build 23758
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
@@ -711,7 +711,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
        80353, // Time Warp
            0,
     },
-    // Arcane tree, 12 abilities
+    // Arcane tree, 13 abilities
     {
        44425, // Arcane Barrage
        30451, // Arcane Blast
@@ -719,6 +719,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
         5143, // Arcane Missiles
        12042, // Arcane Power
       195676, // Displacement
+      212801, // Displacement
        12051, // Evocation
       110959, // Greater Invisibility
           66, // Invisibility
@@ -1168,7 +1169,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
 };
 #define PTR_TREE_SPECIALIZATION_SIZE (36)
 
-// Talent tree specialization abilities, wow build 23721
+// Talent tree specialization abilities, wow build 23758
 static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1246,7 +1247,6 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
        23881, // Bloodthirst
        85288, // Raging Blow
        46917, // Titan's Grip
-       81099, // Single-Minded Fury
        86110, // Plate Specialization
        12950, // Whirlwind (Rank 2)
        76856, // Mastery: Unshackled Fury
@@ -1682,6 +1682,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
         2061, // Flash Heal
       232698, // Shadowform
       234702, // Mind Sear
+      162699, // Stat Negation Aura - Intellect DPS
            0,
     },
     {
@@ -1882,6 +1883,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
           66, // Invisibility
       235450, // Prismatic Barrier
       205025, // Presence of Mind
+      212801, // Displacement
            0,
     },
     // Specialization abilities for Fire
@@ -2273,7 +2275,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
 };
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 23721
+// Class mastery abilities, wow build 23758
 static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2512,7 +2514,7 @@ static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS]
 #define ptr_MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 23721
+// Racial abilities, wow build 23758
 static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -3250,7 +3252,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
 };
 #define PTR_SET_BONUS_DATA_SIZE (616)
 
-// Set bonus data, wow build 23721
+// Set bonus data, wow build 23758
 static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,   71, 165636, { 127055, 127081, 127092, 127103, 127114,  0 } },
@@ -3896,7 +3898,7 @@ static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
 };
 #define PTR_RPPMMOD_SIZE (498)
 
-// 498 RPPM Modifiers, wow build level 23721
+// 498 RPPM Modifiers, wow build level 23758
 static struct rppm_modifier_t __ptr_rppmmodifier_data[] = {
   {  45054,    4,  1,  1.0000 },
   {  49530,    1,  1,  1.0000 },
@@ -4400,7 +4402,7 @@ static struct rppm_modifier_t __ptr_rppmmodifier_data[] = {
 };
 #define PTR_ARTIFACT_SIZE (41)
 
-// Artifact base data, wow build 23721
+// Artifact base data, wow build 23758
 static struct artifact_t __ptr_artifact_data[PTR_ARTIFACT_SIZE] = {
   {  2,  70 },
   {  3, 577 },
@@ -4446,7 +4448,7 @@ static struct artifact_t __ptr_artifact_data[PTR_ARTIFACT_SIZE] = {
 };
 #define PTR_ARTIFACT_POWER_SIZE (895)
 
-// Artifact power data, wow build 23721
+// Artifact power data, wow build 23758
 static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER_SIZE] = {
   {   40,   2,  18,  0,   0, 205273, "Wake of Ashes"                      }, // Wake of Ashes (id=205273, n_ranks=1)
   {   41,   2,  32,  4,   3, 186941, "Highlord's Judgment"                }, // Highlord's Judgment (id=186941, n_ranks=8)
@@ -5346,7 +5348,7 @@ static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER
 };
 #define PTR_ARTIFACT_POWER_RANK_SIZE (5907)
 
-// Artifact power rank data, wow build 23721
+// Artifact power rank data, wow build 23758
 static struct artifact_power_rank_t __ptr_artifact_power_rank_data[PTR_ARTIFACT_POWER_RANK_SIZE] = {
   { 2316,    40,  0, 205273,      0.000, 0x00000000, 0 },
   { 2317,    41,  0, 186941,      8.000, 0x00000000, 0 },
@@ -6632,8 +6634,8 @@ static struct artifact_power_rank_t __ptr_artifact_power_rank_data[PTR_ARTIFACT_
   { 4149,   857,  3, 197386,  13000.000, 0x00000000, 0 },
   { 4150,   857,  4, 197386,  16000.000, 0x00000000, 0 },
   { 4151,   857,  5, 197386,  20000.000, 0x00000000, 0 },
-  { 7178,   857,  6, 197386,     23.000, 0x00000000, 0 },
-  { 7179,   857,  7, 197386,     26.000, 0x00000000, 0 },
+  { 7178,   857,  6, 197386,  23000.000, 0x00000000, 0 },
+  { 7179,   857,  7, 197386,  26000.000, 0x00000000, 0 },
   { 4037,   858,  0, 197239,      5.000, 0x00000000, 0 },
   { 4066,   858,  1, 197239,     10.000, 0x00000000, 0 },
   { 4067,   858,  2, 197239,     15.000, 0x00000000, 0 },
@@ -11258,7 +11260,7 @@ static struct artifact_power_rank_t __ptr_artifact_power_rank_data[PTR_ARTIFACT_
 };
 #define PTR_PTR_ARTIFACT_POWER_RANK_HOTFIX_SIZE (0)
 
-// 0 ptr_artifact_power_rank hotfix entries, wow build level 23721
+// 0 ptr_artifact_power_rank hotfix entries, wow build level 23758
 static hotfix::client_hotfix_entry_t __ptr_ptr_artifact_power_rank_hotfix_data[] = {
   {      0,  0, 0, 0 },
 };

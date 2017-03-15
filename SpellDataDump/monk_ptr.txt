@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build 3d249f6)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build 3eb4aac)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -37,7 +37,7 @@ Effects          :
 #2 (id=140019)   : Unknown effect type (114)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Mechanic: Unknown(133) | Target: Enemy(6)
 #3 (id=140020)   : Apply Aura (6) | Taunt (11)
-                   Base Value: 200 | Scaled Value: 200 | Mechanic: Unknown(133) | Target: Enemy(6)
+                   Base Value: 400 | Scaled Value: 400 | Mechanic: Unknown(133) | Target: Enemy(6)
 Description      : Your pet growls at the target, generating threat, taunting the target to attack the pet, and increasing threat that your pet generates against the target for $d.
 Tooltip          : Taunted.
 
@@ -924,7 +924,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 120 seconds
-Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Mistweaver Monk (137024), Scroll of Touch of Death (168797), Hidden Master's Forbidden Touch (213114)
+Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Mistweaver Monk (137024), Scroll of Touch of Death (168797), Hidden Master's Forbidden Touch (213112), Hidden Master's Forbidden Touch (213114)
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ .....x..   ........ ..x..... ........ ........ 
                  : ........ x....... ........ .....x..   ........ ........ .......x .....x.. 
@@ -1318,23 +1318,6 @@ Effects          :
 Description      : Grievously wounds the target, reducing the effectiveness of any healing received for $115804d.
 Tooltip          : Healing effects received reduced by $w1%.
 
-Name             : Thunderfist (id=116007) 
-Class            : Monk
-School           : Nature
-Cooldown         : 5 seconds
-Category         : 1152
-Category Cooldown: 5 seconds
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=130572)   : Weapon Damage% (31)
-                   Base Value: 110 | Scaled Value: 1.1 | Radius: 0 - 5 yards | Target: At Caster(22) -> AOE enemy(15)
-Description      : Strikes all nearby enemies with thunder, inflicting Nature damage.
-
 Name             : Afterlife (id=116092) [Scaling Spell (6), Spell Family (53), Passive] 
 Class            : Windwalker Monk
 School           : Physical
@@ -1406,7 +1389,7 @@ Effects          :
 #1 (id=131037)   : Unknown effect type (114)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Enemy(6)
 #2 (id=131038)   : Apply Aura (6) | Taunt (11)
-                   Base Value: 200 | Scaled Value: 200 | Target: Enemy(6)
+                   Base Value: 400 | Scaled Value: 400 | Target: Enemy(6)
 #3 (id=131039)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 50 | Scaled Value: 50 | Target: Enemy(6)
 Description      : $@spelldesc115546
@@ -1846,7 +1829,7 @@ Effects          :
 #1 (id=135217)   : Unknown effect type (114)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Unknown(63) -> AOE enemy (instant)(16)
 #2 (id=135218)   : Apply Aura (6) | Taunt (11)
-                   Base Value: 200 | Scaled Value: 200 | Radius: 0 - 10 yards | Target: Unknown(63) -> AOE enemy (instant)(16)
+                   Base Value: 400 | Scaled Value: 400 | Radius: 0 - 10 yards | Target: Unknown(63) -> AOE enemy (instant)(16)
 #3 (id=135219)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 50 | Scaled Value: 50 | Radius: 0 - 10 yards | Target: Unknown(63) -> AOE enemy (instant)(16)
 Description      : $@spelldesc115546
@@ -2507,10 +2490,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #3 (id=344130)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#4 (id=357677)   : Apply Aura (6) | Unknown effect sub type (129)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#5 (id=357678)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7e | Target: Self(1)
 Description      : $@spelldesc124255
 Tooltip          : $w1 damage is being staggered every $124255t1 sec.
 
@@ -2535,10 +2514,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #3 (id=344131)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#4 (id=357679)   : Apply Aura (6) | Unknown effect sub type (129)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#5 (id=357680)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7e | Target: Self(1)
 Description      : $@spelldesc124255
 Tooltip          : $w1 damage is being staggered every $124255t1 sec.
 
@@ -2563,10 +2538,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #3 (id=344132)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#4 (id=357681)   : Apply Aura (6) | Unknown effect sub type (129)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#5 (id=357682)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7e | Target: Self(1)
 Description      : $@spelldesc124255
 Tooltip          : $w1 damage is being staggered every $124255t1 sec.
 
@@ -3686,7 +3657,7 @@ Effects          :
 Description      : $@spelldesc196725
 
 Name             : Stat Negation Aura - Agility DPS (id=162697) [Passive, Hidden] 
-Class            : Beast Mastery Marksmanship Survival Assassination Outlaw Subtlety Enhancement Windwalker Feral Hunter, Rogue, Shaman, Monk, Druid
+Class            : Beast Mastery Marksmanship Survival Assassination Outlaw Subtlety Enhancement Windwalker Feral Havoc Hunter, Rogue, Shaman, Monk, Druid, Demon Hunter
 School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3701,10 +3672,10 @@ Effects          :
 #2 (id=228479)   : Apply Aura (6) | Unknown effect sub type (467)
                    Base Value: -100 | Scaled Value: -100 | Target: Self(1)
 #3 (id=228480)   : Apply Aura (6) | Unknown effect sub type (466)
-                   Base Value: -100 | Scaled Value: -100 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Stat Negation Aura - Agility Tank (id=162700) [Passive, Hidden] 
-Class            : Brewmaster Guardian Monk, Druid
+Class            : Brewmaster Guardian Vengeance Monk, Druid, Demon Hunter
 School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3735,7 +3706,7 @@ Effects          :
 #2 (id=228495)   : Apply Aura (6) | Unknown effect sub type (467)
                    Base Value: -100 | Scaled Value: -100 | Target: Self(1)
 #3 (id=228496)   : Apply Aura (6) | Unknown effect sub type (466)
-                   Base Value: -100 | Scaled Value: -100 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Summon Black Ox Statue (id=163178) [Spell Family (53), Hidden] 
 Class            : Monk
@@ -3744,11 +3715,11 @@ Spell Level      : 1
 Range            : 40 yards
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   .......x ........ ........ ........ 
+                 : ........ ........ ........ ........   .......x ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Hidden (7)
+                 : Hidden (7), Requires line of sight (186)
 Effects          :
 #1 (id=229488)   : Threat (63)
                    Base Value: 1 | Scaled Value: 1 | Radius: 0 - 30 yards | Target: Custom(18) -> AOE enemy (instant)(16)
@@ -4039,7 +4010,7 @@ Class            : Monk
 School           : Physical
 Range            : 100 yards
 Proc Chance      : 101%
-Artifact Power   : Id: 832, Max Rank: 1
+Artifact Power   : Id: 832, Index: 2, Max Rank: 1
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, AOE Hostile Spell, Hostile Spell
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -4437,8 +4408,9 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. ........ ........ 
                  : Heal
+Affecting spells : Extend Life (185158), Lunar Glide (217153), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4721,7 +4693,7 @@ GCD              : 1 seconds
 Duration         : 6 seconds
 Cooldown         : 40 seconds
 Proc Chance      : 101%
-Artifact Power   : Id: 831, Max Rank: 1
+Artifact Power   : Id: 831, Index: 0, Max Rank: 1
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, AOE Hostile Spell, Hostile Spell
 Affecting spells : Windwalker Monk (137025), Storm, Earth, and Fire (137639), Serenity (152173), 
@@ -4749,7 +4721,7 @@ School           : Nature
 Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
-Artifact Power   : Id: 931, Max Rank: 1
+Artifact Power   : Id: 931, Index: 0, Max Rank: 1
 Affecting spells : Enveloping Mist (124682)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4966,7 +4938,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=316119)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-Description      : Touch of Death can be used a second time within $213114d before its cooldown is triggered.
+#2 (id=370575)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 40 | Scaled Value: 40 | Target: Self(1)
+                   Affected Spells: Touch of Death (115080)
+Description      : Touch of Death deals $s2% increased damage and can be used a second time within $213114d before its cooldown is triggered.
 
 Name             : Hidden Master's Forbidden Touch (id=213114) [Spell Family (53)] 
 Class            : Monk
@@ -4989,7 +4964,7 @@ Tooltip          : You may cast Touch of Death again before the cooldown is trig
 Name             : Face Palm (id=213116) [Spell Family (53), Passive] 
 Class            : Monk
 School           : Physical
-Artifact Power   : Id: 1286, Max Rank: 8, Values: [ 10, 20, 30, 40, 50, 60, 70, 80 ]
+Artifact Power   : Id: 1286, Index: 12, Max Rank: 8, Values: [ 10, 20, 30, 40, 50, 60, 70, 80 ]
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5010,7 +4985,7 @@ GCD              : 1 seconds
 Velocity         : 15 yards/sec
 Duration         : 3 seconds
 Cooldown         : 75 seconds
-Artifact Power   : Id: 1277, Max Rank: 1
+Artifact Power   : Id: 1277, Index: 0, Max Rank: 1
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5327,7 +5302,7 @@ Description      : Storm, Earth, and Fire has ${$s1+1} charges.
 Name             : Essence Font (Rank 2) (id=231633) [Spell Family (53), Passive] 
 Class            : Mistweaver Monk
 School           : Frost
-Spell Level      : 55
+Spell Level      : 58
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5381,7 +5356,7 @@ Description      : Stagger is $s1% more effective against magical attacks.
 Name             : Master of Combinations (id=238095) [Spell Family (53), Passive] 
 Class            : Monk
 School           : Physical
-Artifact Power   : Id: 1550, Max Rank: 1
+Artifact Power   : Id: 1550, Index: 0, Max Rank: 1
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5412,5 +5387,28 @@ Effects          :
                    Base Value: 600 | Scaled Value: 600 | Misc Value: 33554432 | Radius: 100 yards | Target: Unknown(118)
 Description      : $@spelldesc238095
 Tooltip          : Mastery increased by $w1.
+
+Name             : Fortifying Brew (id=243435) 
+Class            : Mistweaver Monk
+School           : Physical
+Spell Level      : 55
+Duration         : 15 seconds
+Cooldown         : 90 seconds
+Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
+Effects          :
+#1 (id=369881)   : Apply Aura (6) | Unknown effect sub type (133)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self(1)
+#2 (id=369882)   : Apply Aura (6) | Modify Damage Taken% (87)
+                   Base Value: -20 | Scaled Value: -20 | Misc Value: 0x7f | Target: Self(1)
+#3 (id=369883)   : Apply Aura (6) | Scale% (61)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self(1)
+Description      : Turns your skin to stone, increasing your current and maximum health by $s1%, and reducing damage taken by $s2%.
+Tooltip          : Health increased by $w1%.
+Damage taken reduced by $w2%.
 
 

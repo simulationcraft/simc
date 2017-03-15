@@ -71,6 +71,10 @@
 #  error "g++ below version 4.7 not supported"
 #endif
 
+// ==========================================================================
+// Compiler Workarounds
+// ==========================================================================
+
 // Workaround for LLVM/Clang 3.2+ using glibc headers.
 #if defined( SC_CLANG ) && SC_CLANG >= 30200 && SC_CLANG < 30500
 # define __extern_always_inline extern __always_inline __attribute__(( __gnu_inline__ ))
@@ -115,30 +119,14 @@
 #endif
 
 // ==========================================================================
-// Floating Point finite and NaN checks
+// Floating Point
 // ==========================================================================
 
+/* Ensure _USE_MATH_DEFINES is defined before any inclusion of <cmath>, so that
+ * math constants are defined
+ * */
 #define _USE_MATH_DEFINES
 #include <cmath>
-template<class T>
-inline bool sc_isfinite( T x )
-{
-#if defined ( SC_VS ) && SC_VS < 12 // std::isfinite was added in vs2013
-  return _finite( x ) != 0;
-#else
-  return std::isfinite( x );
-#endif
-}
-
-template<class T>
-inline bool sc_isnan( T x )
-{
-#if defined ( SC_VS ) && SC_VS < 12 // std::isnan was added in vs2013
-  return _isnan( x ) != 0;
-#else
-  return std::isnan( x );
-#endif
-}
 
 #ifndef M_PI
 #define M_PI ( 3.14159265358979323846 )

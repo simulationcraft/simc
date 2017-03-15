@@ -7779,8 +7779,11 @@ void mage_t::create_buffs()
 
 
   // 4T18 Temporal Power buff has no duration and stacks multiplicatively
-  buffs.temporal_power        = buff_creator_t( this, "temporal_power", find_spell( 190623 ) )
-                                  .max_stack( 10 );
+//  buffs.temporal_power        = buff_creator_t( this, "temporal_power", find_spell( 190623 ) )
+//                                  .max_stack( 10 );
+//  buffs.temporal_power        = (new buff_t( this, "temporal_power", find_spell( 190623 ) )) -> set_max_stack( 10 );
+
+  buffs.temporal_power        = make_buff( this, "temporal_power", find_spell( 190623 ) ) -> set_max_stack( 10 );
 
   // Fire
   buffs.combustion            = buff_creator_t( this, "combustion", find_spell( 190319 ) )

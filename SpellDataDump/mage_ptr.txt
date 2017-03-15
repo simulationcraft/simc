@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build 3d249f6)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build 3eb4aac)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Arcane Fire Frost Mage
@@ -494,7 +494,7 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | Target: Self(1)
 #2 (id=5359)     : Apply Aura (6) | Add Percent Modifier: Spell Pushback (108)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 9 | Target: Self(1)
-                   Affected Spells: Frostbolt (116), Polymorph (118), Fireball (133), Flamestrike (2120), Scorch (2948), Arcane Missiles (5143), Pyroblast (11366), Arcane Power (12042), Evocation (12051), Polymorph (28271), Polymorph (28272), Arcane Blast (30451), Flurry (44614), Polymorph (61025), Polymorph (61305), Polymorph (61721), Polymorph (61780), Arcane Missiles! (79683), Conjure Familiar (126578), Polymorph (126819), Polymorph (161353), Polymorph (161354), Polymorph (161355), Polymorph (161372), Conjure Refreshment (190336), Blizzard (190356), Blizzard (190357), Aftershocks (194432), Displacement (195676), Displacement Beacon (212799), Frostbolt (228597)
+                   Affected Spells: Frostbolt (116), Polymorph (118), Fireball (133), Flamestrike (2120), Scorch (2948), Arcane Missiles (5143), Pyroblast (11366), Arcane Power (12042), Evocation (12051), Polymorph (28271), Polymorph (28272), Arcane Blast (30451), Flurry (44614), Polymorph (61025), Polymorph (61305), Polymorph (61721), Polymorph (61780), Arcane Missiles! (79683), Conjure Familiar (126578), Polymorph (126819), Polymorph (161353), Polymorph (161354), Polymorph (161355), Polymorph (161372), Conjure Refreshment (190336), Blizzard (190356), Blizzard (190357), Aftershocks (194432), Displacement (195676), Displacement Beacon (212799), Displacement (212801), Frostbolt (228597)
 Description      : Accelerates your spellcasting for $d, granting $m1% haste and preventing damage from delaying your spellcasts.
 Tooltip          : Haste increased by $w1% and immune to pushback.
 
@@ -507,7 +507,7 @@ Duration         : 9 seconds
 Affecting spells : Everburning Consumption (194314), Norgannon's Foresight (236380)
 Attributes       : ........ ........ .......x ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ .....x..   ........ ........ ..x..... ....x.x. 
-                 : .......x .......x ....x... ........   ........ ........ .......x ........ 
+                 : .......x .......x ....x... ........   ........ .......x .......x ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : x....... ......x. ........ ........   ........ ........ ........ ........ 
@@ -1127,7 +1127,7 @@ Triggered by     : Lady Vashj's Grasp (208147)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ .......x 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
@@ -2317,7 +2317,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #3 (id=150698)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 40 | Scaled Value: 40 | Target: Self(1)
-                   Affected Spells: Waterbolt (31707), Freeze (33395), Water Jet (135029)
+                   Affected Spells: Waterbolt (31707), Freeze (33395)
+#4 (id=369742)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
+                   Base Value: 40 | Scaled Value: 40 | Misc Value: 22 | Target: Self(1)
+                   Affected Spells: Water Jet (135029)
 Description      : $@spelldesc116011
 Tooltip          : Spell damage increased by $w1%.$?$w2=0[][
 Health restored by $w2% per second.]
@@ -2341,7 +2344,10 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | Misc Value: 0x7e | Target: Self(1)
 #2 (id=168860)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 4 | Scaled Value: 4 | Target: Self(1)
-                   Affected Spells: Waterbolt (31707), Freeze (33395), Water Jet (135029)
+                   Affected Spells: Waterbolt (31707), Freeze (33395)
+#3 (id=369741)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
+                   Base Value: 4 | Scaled Value: 4 | Misc Value: 22 | Target: Self(1)
+                   Affected Spells: Water Jet (135029)
 Description      : $@spelldesc1463
 Tooltip          : Increases spell damage by $w1%.
 
@@ -3097,7 +3103,7 @@ Duration         : 10 seconds
 Affecting spells : Fire Mage (137019), Norgannon's Foresight (236380)
 Attributes       : ........ ........ .......x x..x....   .....x.. ........ ........ ........ 
                  : ..x..... ......x. ...x.... ....x...   .......x ........ ........ ........ 
-                 : .......x ........ ........ ........   ...x.... ..x..... .xx..... ........ 
+                 : .......x ........ ........ ........   ...x.... ..x....x .xx..... ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : .....x.. .x..x... ........ ........   ........ ...x.... ....x... ........ 
                  : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
@@ -3262,7 +3268,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=220362)   : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom(18) -> AOE enemy (instant)(16)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.18000 | Radius: 0 - 8 yards | Target: Custom(18) -> AOE enemy (instant)(16)
 #2 (id=220363)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -70 | Scaled Value: -70 | Radius: 0 - 8 yards | Mechanic: Unknown(88) | Target: Custom(18) -> AOE enemy (instant)(16)
 Description      : Causes an explosion around yourself, dealing $s1 Fire damage to all enemies within $A1 yards, and reducing movement speed by $s2% for $d.
@@ -3413,7 +3419,7 @@ Only works on Beasts, Humanoids and Critters.$?s56382[ When critters are affecte
 Tooltip          : Incapacitated. Cannot attack or cast spells.  Increased health regeneration.
 
 Name             : Stat Negation Aura - Intellect DPS (id=162699) [Passive, Hidden] 
-Class            : Elemental Arcane Fire Frost Affliction Demonology Destruction Balance Shaman, Mage, Warlock, Druid
+Class            : Shadow Elemental Arcane Fire Frost Affliction Demonology Destruction Balance Priest, Shaman, Mage, Warlock, Druid
 School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3428,7 +3434,7 @@ Effects          :
 #2 (id=228488)   : Apply Aura (6) | Unknown effect sub type (467)
                    Base Value: -100 | Scaled Value: -100 | Target: Self(1)
 #3 (id=228489)   : Apply Aura (6) | Unknown effect sub type (466)
-                   Base Value: -100 | Scaled Value: -100 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Meteor Burn (id=175396) [Hidden] 
 Class            : Mage
@@ -3749,7 +3755,7 @@ Description      : Shoots at an enemy, inflicting Physical damage.
 Name             : Molten Skin (id=194315) [Spell Family (3), Passive] 
 Class            : Mage
 School           : Physical
-Artifact Power   : Id: 757, Max Rank: 8, Values: [ -5, -10, -15, -20, -25, -30, -35, -40 ]
+Artifact Power   : Id: 757, Index: 12, Max Rank: 8, Values: [ -5, -10, -15, -20, -25, -30, -35, -40 ]
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3767,7 +3773,7 @@ Name             : Aftershocks (id=194431) [Spell Family (3), Passive]
 Class            : Mage
 School           : Physical
 Proc Chance      : 100%
-Artifact Power   : Id: 761, Max Rank: 1
+Artifact Power   : Id: 761, Index: 1, Max Rank: 1
 Proc Flags       : ........ ....x... x.x..... ........ 
                  : AOE Hostile Spell, Hostile Spell, Periodic
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -3811,7 +3817,7 @@ Velocity         : 50 yards/sec
 Charges          : 3 (45 seconds cooldown)
 Category         : 1633
 Proc Chance      : 101%
-Artifact Power   : Id: 748, Max Rank: 1
+Artifact Power   : Id: 748, Index: 0, Max Rank: 1
 Affecting spells : Fire Mage (137019), Norgannon's Foresight (236380), Strafing Run (238127)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4534,7 +4540,7 @@ Class            : Mage
 School           : Physical
 Internal Cooldown: 6 seconds
 Proc Chance      : 10%
-Artifact Power   : Id: 86, Max Rank: 1
+Artifact Power   : Id: 86, Index: 2, Max Rank: 1
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -4665,7 +4671,7 @@ Class            : Mage
 School           : Arcane
 Resource         : 2% Base Mana (22000 @Level 110)
 Spell Level      : 1
-Duration         : 0.5 seconds
+Duration         : 0.65 seconds
 Cooldown         : 0.5 seconds
 Charges          : 2 (15 seconds cooldown)
 Category         : 1632
@@ -4724,6 +4730,29 @@ Effects          :
 Description      : $@spelldesc195676
 Tooltip          : Able to Displace back to where last Blinked from.
 
+Name             : Displacement (id=212801) [Spell Family (3)] 
+Replaces         : Displacement (id=195676)
+Class            : Arcane Mage
+School           : Arcane
+Spell Level      : 24
+Duration         : 0.3 seconds
+Cooldown         : 30 seconds
+Affecting spells : Icy Veins (12472), Improved Mana Gems (37447), Everywhere At Once (187301), Ice Form (198144), Norgannon's Foresight (236380)
+Attributes       : ........ ........ x.x..... .x......   ........ ..x..... ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....xx.. ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
+Effects          :
+#1 (id=315637)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#2 (id=315640)   : Apply Aura (6) | Unknown effect sub type (377)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+Description      : Teleports you back to where you last Blinked from. Resets the cooldown of Blink.
+
+Only usable within $212799d of Blinking.
+
 Name             : Icicle (id=214130) [Spell Family (3), Hidden] 
 Class            : Mage
 School           : Physical
@@ -4751,7 +4780,7 @@ Cast Time        : 3 seconds
 GCD              : 1.5 seconds
 Velocity         : 30 yards/sec
 Cooldown         : 45 seconds
-Artifact Power   : Id: 783, Max Rank: 1
+Artifact Power   : Id: 783, Index: 0, Max Rank: 1
 Affecting spells : Shatter (12982), Ice Floes (108839), Frost Mage (137020), Norgannon's Foresight (236380)
 Triggered by     : Push Active Ability to Bar (225872)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4820,7 +4849,7 @@ Duration         : 6 seconds
 Cooldown         : 60 seconds
 Stacks           : 4 maximum
 Proc Chance      : 101%
-Artifact Power   : Id: 290, Max Rank: 1
+Artifact Power   : Id: 290, Index: 0, Max Rank: 1
 Affecting spells : Ice Floes (108839), Norgannon's Foresight (236380)
 Triggered by     : Push Active Ability to Bar (225874)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
@@ -4919,11 +4948,11 @@ Range            : 100 yards
 Affecting spells : Icy Veins (12472), Shatter (12982), Frosty Zap (24392), Improved Counterspell (24429), Ice Floes (108839), Frost Mage (137020), Ice Shard (166869), Icy Caress (195315), Ice Form (198144), Lonely Winter (205024), Shattering Bolts (214629), Norgannon's Foresight (236380)
 Triggered by     : Frostbolt (116)
 Attributes       : ........ ........ x......x x..x....   .....x.. ........ ........ ........ 
-                 : ..x..... ......x. ...x.... ........   .......x .x...... ........ ......x. 
-                 : .......x ........ ........ ........   ...x.... ........ .xx..... ........ 
-                 : ........ ....x... .....x.. ........   ........ ........ ........ ........ 
-                 : .....x.. ....x... ........ ........   ........ ...x.... ....x... ........ 
-                 : ........ ........ ......x. ........   .x...... ........ ........ ..x..... 
+                 : ..x..... ......x. ...x.... ........   ........ .x...... ........ ......x. 
+                 : x......x ........ ........ ........   ...x.... ........ .xx..... ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : .....x.. ........ ........ ........   ........ ...x.... ....x... ........ 
+                 : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
                  : Does not break stealth (37), Not a proc (105)
 Effects          :
 #1 (id=344284)   : School Damage: frost (2)
@@ -4958,7 +4987,7 @@ Range            : 100 yards
 Affecting spells : Shatter (12982), Ice Floes (108839), Frost Mage (137020), Norgannon's Foresight (236380)
 Triggered by     : Ebonbolt (214634)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5527,7 +5556,7 @@ Name             : Time and Space (id=238126) [Spell Family (3), Passive]
 Class            : Mage
 School           : Physical
 Proc Chance      : 100%
-Artifact Power   : Id: 1531, Max Rank: 1
+Artifact Power   : Id: 1531, Index: 0, Max Rank: 1
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 

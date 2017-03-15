@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build 3d249f6)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build 3eb4aac)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -752,7 +752,7 @@ Effects          :
 #1 (id=9346)     : Unknown effect type (114)
                    Base Value: 40 | Scaled Value: 0 (avg=1.943) | Target: Enemy(6)
 #2 (id=9347)     : Apply Aura (6) | Taunt (11)
-                   Base Value: 200 | Scaled Value: 200 | Target: Enemy(6)
+                   Base Value: 400 | Scaled Value: 400 | Target: Enemy(6)
 Description      : The $?s108499[Voidlord][Voidwalker] taunts the target to attack it for $d, and increases its threat against the target.
 
 |cFFFFFFFFAuto-Cast:|r
@@ -1082,6 +1082,7 @@ Duration         : 18 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
+Affecting spells : Sinister Seeds (238108)
 Attributes       : ........ ........ ..x..... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -1090,16 +1091,14 @@ Attributes       : ........ ........ ..x..... ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=16910)    : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
-#2 (id=16911)    : Apply Aura (6) | Periodic Dummy: every 18 seconds (226)
+                   Base Value: 300 | Scaled Value: 300 | Target: Enemy(6)
+#2 (id=16911)    : Apply Aura (6) | Periodic Damage: shadow every 18 seconds (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
 #3 (id=154322)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
-#4 (id=288012)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
 Description      : Embeds a demon seed in the enemy target that will explode after $d, dealing $27285s1 Shadow damage to all enemies within $27285A1 yards and applying Corruption to them.
 
-The seed will detonate early if the target is hit by other detonations, or takes ${$SPS*3.000} damage from your spells.
+The seed will detonate early if the target is hit by other detonations, or takes ${$SPS*$s1/100} damage from your spells.
 Tooltip          : Embeded with a demon seed that will soon explode, dealing Shadow damage to the caster's enemies within $27285A1 yards, and applying Corruption to them.
 
 The seed will detonate early if the target is hit by other detonations, or takes $w3 damage from your spells.
@@ -3315,7 +3314,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Stat Negation Aura - Intellect DPS (id=162699) [Passive, Hidden] 
-Class            : Elemental Arcane Fire Frost Affliction Demonology Destruction Balance Shaman, Mage, Warlock, Druid
+Class            : Shadow Elemental Arcane Fire Frost Affliction Demonology Destruction Balance Priest, Shaman, Mage, Warlock, Druid
 School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3330,7 +3329,7 @@ Effects          :
 #2 (id=228488)   : Apply Aura (6) | Unknown effect sub type (467)
                    Base Value: -100 | Scaled Value: -100 | Target: Self(1)
 #3 (id=228489)   : Apply Aura (6) | Unknown effect sub type (466)
-                   Base Value: -100 | Scaled Value: -100 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Cripple (id=170995) [Spell Family (5)] 
 Class            : Warlock
@@ -3411,7 +3410,7 @@ Effects          :
 #1 (id=242711)   : Unknown effect type (114)
                    Base Value: 40 | Scaled Value: 0 (avg=1.943) | Target: Enemy(6)
 #2 (id=242712)   : Apply Aura (6) | Taunt (11)
-                   Base Value: 200 | Scaled Value: 200 | Target: Enemy(6)
+                   Base Value: 400 | Scaled Value: 400 | Target: Enemy(6)
 Description      : The $?s108499[Abyssal][Infernal] taunts the target to attack it, and increases threat that it generates against the target by for $d.
 
 |cFFFFFFFFAuto-Cast:|r
@@ -4270,7 +4269,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 3 (45 seconds cooldown)
 Category         : 1630
-Artifact Power   : Id: 803, Max Rank: 1
+Artifact Power   : Id: 803, Index: 0, Max Rank: 1
 Triggered by     : Push Active Ability to Bar (225886)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4698,7 +4697,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Cooldown         : 45 seconds
-Artifact Power   : Id: 1170, Max Rank: 1
+Artifact Power   : Id: 1170, Index: 0, Max Rank: 1
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ..x..... ........ ......x. .....x..   ........ ........ .x...... ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -4866,7 +4865,7 @@ Class            : Warlock
 School           : Shadow
 Velocity         : 20 yards/sec
 Cooldown         : 5 seconds
-Artifact Power   : Id: 999, Max Rank: 1
+Artifact Power   : Id: 999, Index: 0, Max Rank: 1
 Triggered by     : Tormented Souls (216695), Push Active Ability to Bar (225888)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4897,10 +4896,13 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 0x7f | Target: Self(1)
 #2 (id=331182)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 100 | Scaled Value: 100 | Target: Self(1)
-                   Affected Spells: Inimitable Agony (199111), Hideous Corruption (199112), Drained to a Husk (199120), Inherently Unstable (199152), Seeds of Doom (199153), Perdition (199158), Shadowy Incantations (199163), Shadows of the Flesh (199212), Long Dark Night of the Soul (199214), Sweet Souls (199220), Fatal Echoes (199257), Compounding Horror (199282), Soul Flame (199471), Wrath of Consumption (199472), Soul Flame (199581), Wrath of Consumption (199646), Harvester of Souls (201424), Souls of the Damned (216463), Souls of the Damned (216721), Souls of the Damned (216722), Souls of the Damned (216724), Crystalline Shadows (221862), Rend Soul (242834)
+                   Affected Spells: Inimitable Agony (199111), Hideous Corruption (199112), Drained to a Husk (199120), Inherently Unstable (199152), Seeds of Doom (199153), Perdition (199158), Shadowy Incantations (199163), Shadows of the Flesh (199212), Long Dark Night of the Soul (199214), Sweet Souls (199220), Fatal Echoes (199257), Compounding Horror (199282), Soul Flame (199471), Wrath of Consumption (199472), Soul Flame (199581), Wrath of Consumption (199646), Harvester of Souls (201424), Souls of the Damned (216463), Souls of the Damned (216721), Souls of the Damned (216722), Souls of the Damned (216724), Crystalline Shadows (221862), Winnowing (238072), Sinister Seeds (238108), Rend Soul (242834)
 #3 (id=345006)   : Apply Aura (6) | Add Percent Modifier: Spell Tick Time (108)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 8 | Target: Self(1)
-                   Affected Spells: Inimitable Agony (199111), Hideous Corruption (199112), Drained to a Husk (199120), Inherently Unstable (199152), Seeds of Doom (199153), Perdition (199158), Shadowy Incantations (199163), Shadows of the Flesh (199212), Long Dark Night of the Soul (199214), Sweet Souls (199220), Fatal Echoes (199257), Compounding Horror (199282), Soul Flame (199471), Wrath of Consumption (199472), Soul Flame (199581), Wrath of Consumption (199646), Harvester of Souls (201424), Souls of the Damned (216463), Souls of the Damned (216721), Souls of the Damned (216722), Souls of the Damned (216724), Crystalline Shadows (221862), Rend Soul (242834)
+                   Affected Spells: Inimitable Agony (199111), Hideous Corruption (199112), Drained to a Husk (199120), Inherently Unstable (199152), Seeds of Doom (199153), Perdition (199158), Shadowy Incantations (199163), Shadows of the Flesh (199212), Long Dark Night of the Soul (199214), Sweet Souls (199220), Fatal Echoes (199257), Compounding Horror (199282), Soul Flame (199471), Wrath of Consumption (199472), Soul Flame (199581), Wrath of Consumption (199646), Harvester of Souls (201424), Souls of the Damned (216463), Souls of the Damned (216721), Souls of the Damned (216722), Souls of the Damned (216724), Crystalline Shadows (221862), Winnowing (238072), Sinister Seeds (238108), Rend Soul (242834)
+#4 (id=370676)   : Apply Aura (6) | Add Percent Modifier: Spell Proc Chance (108)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 18 | Target: Self(1)
+                   Affected Spells: Rend Soul (238144)
 Description      : $@spelldesc216698
 Tooltip          : Increases your damage by $s1%, and doubles the effectiveness of the other traits of the Deadwind Harvester.
 
@@ -4947,7 +4949,7 @@ Name             : Lord of Flames (id=224103) [Spell Family (5), Passive]
 Class            : Warlock
 School           : Physical
 Proc Chance      : 100%
-Artifact Power   : Id: 818, Max Rank: 1
+Artifact Power   : Id: 818, Index: 3, Max Rank: 1
 Proc Flags       : ........ ....x.x. ........ ........ 
                  : AOE Hostile Spell, Heal
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 

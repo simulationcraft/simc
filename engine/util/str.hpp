@@ -6,6 +6,7 @@
 #ifndef STR_HPP
 #define STR_HPP
 
+#include <cstdarg>
 #include <string>
 
 namespace str {

@@ -143,13 +143,13 @@ static void format_double( std::string& buffer, double d, int min_width, int pre
   str.reserve( 32 );
 
 #ifndef __FAST_MATH__
-  if( sc_isnan( d ) )
+  if( std::isnan( d ) )
   {
     str         = "NaN";  // reverse
     precision   = 0;
     format_type = 'f';
   }
-  else if ( !sc_isfinite( d ) )
+  else if ( !std::isfinite( d ) )
   {
     str         = "FNI";  // reverse
     precision   = 0;

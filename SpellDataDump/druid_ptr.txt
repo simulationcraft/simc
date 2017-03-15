@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build 3d249f6)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build 3eb4aac)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -333,7 +333,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Stance Mask      : 0x40000000
-Affecting spells : Incarnation: Chosen of Elune (102560), Balance Druid (137013), Lucidity (137247), Solar Empowerment (164545), Lunar Empowerment (164547), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719), Thrash (192090), Celestial Alignment (194223), Astral Influence (197524), Astral Power (197911), Solar Stabbing (202426), Blessing of Elune (202737), Ekowraith, Creator of Worlds (210667), Solar Empowerment (211089), Skywrath (214514)
+Affecting spells : Incarnation: Chosen of Elune (102560), Balance Druid (137013), Lucidity (137247), Solar Empowerment (164545), Lunar Empowerment (164547), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719), Thrash (192090), Celestial Alignment (194223), Astral Influence (197524), Astral Power (197911), Solar Stabbing (202426), Blessing of Elune (202737), Promise of Elune, the Moon Goddess (208283), Ekowraith, Creator of Worlds (210667), Solar Empowerment (211089), Skywrath (214514)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -615,7 +615,7 @@ Effects          :
 #1 (id=2451)     : Unknown effect type (114)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #2 (id=2452)     : Apply Aura (6) | Taunt (11)
-                   Base Value: 200 | Scaled Value: 200 | Target: Enemy(6)
+                   Base Value: 400 | Scaled Value: 400 | Target: Enemy(6)
 Description      : Taunts the target to attack you, and increases threat that you generate against the target for $d.
 Tooltip          : Taunted.
 
@@ -1000,7 +1000,7 @@ Cooldown         : 10 seconds
 Category         : 33
 Category Cooldown: 10 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Maim Damage (61252), Incarnation: King of the Jungle (102543), Berserk (106951), Feral Druid (137011), Bloodtalons (145152), Thrash (192090), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), Ashamane's Frenzy (210723), Fiery Red Maimers (236757)
+Affecting spells : Maim Damage (61252), Incarnation: King of the Jungle (102543), Berserk (106951), Feral Druid (137011), Bloodtalons (145152), Thrash (192090), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), Ashamane's Frenzy (210723), Fiery Red Maimers (212875), Fiery Red Maimers (236757), 
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ..x..... ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -1112,7 +1112,7 @@ Effects          :
 #6 (id=232246)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #7 (id=281598)   : Apply Aura (6) | Unknown effect sub type (332)
-                   Base Value: 102383 | Scaled Value: 102383 | Misc Value 2: 0x8 | Target: Self(1)
+                   Base Value: 102383 | Scaled Value: 102383 | Target: Self(1)
                    Affected Spells: Wild Charge (102401)
 #8 (id=290490)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 0x48 | Target: Self(1)
@@ -1279,21 +1279,6 @@ Attributes       : ........ x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=28451)    : Unknown effect type (46)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-
-Name             : Swift Flight Form (Passive) (Passive) (id=40121) [Spell Family (7), Passive] 
-Class            : Druid
-School           : Nature
-Spell Level      : 68
-Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=31186)    : Apply Aura (6) | Increase Speed% (31)
-                   Base Value: 100 | Scaled Value: 100 | Target: Self(1)
 
 Name             : Deathblow X11 Goggles (id=41317) 
 Class            : Rogue, Monk, Druid, Demon Hunter
@@ -2332,7 +2317,7 @@ Spell Level      : 54
 Range            : 40 yards
 Duration         : 12 seconds
 Cooldown         : 90 seconds
-Affecting spells : Armor of the Ancients (189754), Stonebark (197061), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), 
+Affecting spells : Armor of the Ancients (189754), Stonebark (197061), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), X'oni's Caress (235039)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ x....... ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4124,7 +4109,7 @@ Description      : You gain an additional $s1% movement speed while in the land 
 This effect is disabled in battlegrounds and arenas.
 
 Name             : Stat Negation Aura - Agility DPS (id=162697) [Passive, Hidden] 
-Class            : Beast Mastery Marksmanship Survival Assassination Outlaw Subtlety Enhancement Windwalker Feral Hunter, Rogue, Shaman, Monk, Druid
+Class            : Beast Mastery Marksmanship Survival Assassination Outlaw Subtlety Enhancement Windwalker Feral Havoc Hunter, Rogue, Shaman, Monk, Druid, Demon Hunter
 School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4139,10 +4124,10 @@ Effects          :
 #2 (id=228479)   : Apply Aura (6) | Unknown effect sub type (467)
                    Base Value: -100 | Scaled Value: -100 | Target: Self(1)
 #3 (id=228480)   : Apply Aura (6) | Unknown effect sub type (466)
-                   Base Value: -100 | Scaled Value: -100 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Stat Negation Aura - Intellect DPS (id=162699) [Passive, Hidden] 
-Class            : Elemental Arcane Fire Frost Affliction Demonology Destruction Balance Shaman, Mage, Warlock, Druid
+Class            : Shadow Elemental Arcane Fire Frost Affliction Demonology Destruction Balance Priest, Shaman, Mage, Warlock, Druid
 School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4157,10 +4142,10 @@ Effects          :
 #2 (id=228488)   : Apply Aura (6) | Unknown effect sub type (467)
                    Base Value: -100 | Scaled Value: -100 | Target: Self(1)
 #3 (id=228489)   : Apply Aura (6) | Unknown effect sub type (466)
-                   Base Value: -100 | Scaled Value: -100 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Stat Negation Aura - Agility Tank (id=162700) [Passive, Hidden] 
-Class            : Brewmaster Guardian Monk, Druid
+Class            : Brewmaster Guardian Vengeance Monk, Druid, Demon Hunter
 School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4191,7 +4176,7 @@ Effects          :
 #2 (id=228495)   : Apply Aura (6) | Unknown effect sub type (467)
                    Base Value: -100 | Scaled Value: -100 | Target: Self(1)
 #3 (id=228496)   : Apply Aura (6) | Unknown effect sub type (466)
-                   Base Value: -100 | Scaled Value: -100 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Rake (id=163505) [Spell Family (7)] 
 Class            : Druid
@@ -4378,7 +4363,7 @@ Cooldown         : 10 seconds
 Category         : 33
 Category Cooldown: 10 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Maim Damage (61252), Incarnation: King of the Jungle (102543), Berserk (106951), Feral Druid (137011), Bloodtalons (145152), Thrash (192090), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), Ashamane's Frenzy (210723), Fiery Red Maimers (236757)
+Affecting spells : Maim Damage (61252), Incarnation: King of the Jungle (102543), Berserk (106951), Feral Druid (137011), Bloodtalons (145152), Thrash (192090), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), Ashamane's Frenzy (210723), Fiery Red Maimers (212875), Fiery Red Maimers (236757), 
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ..x..... ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -4407,7 +4392,7 @@ Cooldown         : 10 seconds
 Category         : 33
 Category Cooldown: 10 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Maim Damage (61252), Incarnation: King of the Jungle (102543), Berserk (106951), Feral Druid (137011), Bloodtalons (145152), Thrash (192090), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), Ashamane's Frenzy (210723), Fiery Red Maimers (236757)
+Affecting spells : Maim Damage (61252), Incarnation: King of the Jungle (102543), Berserk (106951), Feral Druid (137011), Bloodtalons (145152), Thrash (192090), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), Ashamane's Frenzy (210723), Fiery Red Maimers (212875), Fiery Red Maimers (236757), 
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ..x..... ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -4436,7 +4421,7 @@ Cooldown         : 10 seconds
 Category         : 33
 Category Cooldown: 10 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Maim Damage (61252), Incarnation: King of the Jungle (102543), Berserk (106951), Feral Druid (137011), Bloodtalons (145152), Thrash (192090), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), Ashamane's Frenzy (210723), Fiery Red Maimers (236757)
+Affecting spells : Maim Damage (61252), Incarnation: King of the Jungle (102543), Berserk (106951), Feral Druid (137011), Bloodtalons (145152), Thrash (192090), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), Ashamane's Frenzy (210723), Fiery Red Maimers (212875), Fiery Red Maimers (236757), 
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ..x..... ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -4465,7 +4450,7 @@ Cooldown         : 10 seconds
 Category         : 33
 Category Cooldown: 10 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Maim Damage (61252), Incarnation: King of the Jungle (102543), Berserk (106951), Feral Druid (137011), Bloodtalons (145152), Thrash (192090), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), Ashamane's Frenzy (210723), Fiery Red Maimers (236757)
+Affecting spells : Maim Damage (61252), Incarnation: King of the Jungle (102543), Berserk (106951), Feral Druid (137011), Bloodtalons (145152), Thrash (192090), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), Ashamane's Frenzy (210723), Fiery Red Maimers (212875), Fiery Red Maimers (236757), 
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ..x..... ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -4494,7 +4479,7 @@ Cooldown         : 10 seconds
 Category         : 33
 Category Cooldown: 10 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Maim Damage (61252), Incarnation: King of the Jungle (102543), Berserk (106951), Feral Druid (137011), Bloodtalons (145152), Thrash (192090), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), Ashamane's Frenzy (210723), Fiery Red Maimers (236757)
+Affecting spells : Maim Damage (61252), Incarnation: King of the Jungle (102543), Berserk (106951), Feral Druid (137011), Bloodtalons (145152), Thrash (192090), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), Ashamane's Frenzy (210723), Fiery Red Maimers (212875), Fiery Red Maimers (236757), 
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ..x..... ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -4661,7 +4646,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Stance Mask      : 0x40000000
-Affecting spells : Incarnation: Chosen of Elune (102560), Balance Druid (137013), Lucidity (137247), Solar Empowerment (164545), Lunar Empowerment (164547), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719), Thrash (192090), Celestial Alignment (194223), Astral Influence (197524), Astral Power (197911), Solar Stabbing (202426), Blessing of Elune (202737), Ekowraith, Creator of Worlds (210667), Solar Empowerment (211089), Skywrath (214514)
+Affecting spells : Incarnation: Chosen of Elune (102560), Balance Druid (137013), Lucidity (137247), Solar Empowerment (164545), Lunar Empowerment (164547), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719), Thrash (192090), Celestial Alignment (194223), Astral Influence (197524), Astral Power (197911), Solar Stabbing (202426), Blessing of Elune (202737), Promise of Elune, the Moon Goddess (208283), Ekowraith, Creator of Worlds (210667), Solar Empowerment (211089), Skywrath (214514)
 Triggered by     : Solar Empowerment (164545)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -4837,7 +4822,7 @@ Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Stance Mask      : 0x40000002
-Affecting spells : Incarnation: Chosen of Elune (102560), Balance Druid (137013), Lucidity (137247), Lunar Empowerment (164547), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719), Thrash (192090), Celestial Alignment (194223), Astral Influence (197524), Dark Side of the Moon (202384), Warrior of Elune (202425), Blessing of Elune (202737), Ekowraith, Creator of Worlds (210667), Skywrath (214514)
+Affecting spells : Incarnation: Chosen of Elune (102560), Balance Druid (137013), Lucidity (137247), Lunar Empowerment (164547), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719), Thrash (192090), Celestial Alignment (194223), Astral Influence (197524), Dark Side of the Moon (202384), Warrior of Elune (202425), Blessing of Elune (202737), Promise of Elune, the Moon Goddess (208283), Ekowraith, Creator of Worlds (210667), Skywrath (214514)
 Triggered by     : Lunar Empowerment (164547)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -5107,7 +5092,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 8 | Target: Self(1)
                    Affected Spells: Feral Overrides Passive (197692)
 #6 (id=310756)   : Apply Aura (6) | Unknown effect sub type (332)
-                   Base Value: 102383 | Scaled Value: 102383 | Misc Value 2: 0x8 | Target: Self(1)
+                   Base Value: 102383 | Scaled Value: 102383 | Target: Self(1)
                    Affected Spells: Wild Charge (102401)
 Description      : Shapeshift into $?s114301[Astral Form][Moonkin Form], increasing your armor by $m3%, and granting protection from Polymorph effects.
 
@@ -5126,7 +5111,7 @@ GCD              : 1.5 seconds
 Velocity         : 28 yards/sec
 Cooldown         : 10 seconds
 Affecting spells : Mastery: Starlight (77492), Balance Druid (137013), Lucidity (137247), Thrash (192090), Astral Influence (197524), Scythe of the Stars (202433), Oneth's Intuition (209406), Ekowraith, Creator of Worlds (210667), The Emerald Dreamcatcher (224706)
-Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5151,8 +5136,8 @@ Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Incarnation: Chosen of Elune (102560), Balance Druid (137013), Lucidity (137247), Lunar Empowerment (164547), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719), Thrash (192090), Celestial Alignment (194223), Astral Influence (197524), Dark Side of the Moon (202384), Warrior of Elune (202425), Blessing of Elune (202737), Ekowraith, Creator of Worlds (210667), Skywrath (214514)
-Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
+Affecting spells : Incarnation: Chosen of Elune (102560), Balance Druid (137013), Lucidity (137247), Lunar Empowerment (164547), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719), Thrash (192090), Celestial Alignment (194223), Astral Influence (197524), Dark Side of the Moon (202384), Warrior of Elune (202425), Blessing of Elune (202737), Promise of Elune, the Moon Goddess (208283), Ekowraith, Creator of Worlds (210667), Skywrath (214514)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5174,7 +5159,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
-Affecting spells : Incarnation: Chosen of Elune (102560), Balance Druid (137013), Lucidity (137247), Solar Empowerment (164545), Lunar Empowerment (164547), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719), Thrash (192090), Celestial Alignment (194223), Astral Influence (197524), Astral Power (197911), Solar Stabbing (202426), Blessing of Elune (202737), Ekowraith, Creator of Worlds (210667), Solar Empowerment (211089), Skywrath (214514)
+Affecting spells : Incarnation: Chosen of Elune (102560), Balance Druid (137013), Lucidity (137247), Solar Empowerment (164545), Lunar Empowerment (164547), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719), Thrash (192090), Celestial Alignment (194223), Astral Influence (197524), Astral Power (197911), Solar Stabbing (202426), Blessing of Elune (202737), Promise of Elune, the Moon Goddess (208283), Ekowraith, Creator of Worlds (210667), Solar Empowerment (211089), Skywrath (214514)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5194,7 +5179,7 @@ Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
 Affecting spells : Balance Overrides Passive (106732), Restoration Druid (137012), Balance Druid (137013), Lucidity (137247), Persistence (186396), Thrash (192090), Astral Influence (197524), Stellar Empowerment (197637), Astral Power (197911), Sunfire Burns (202466), Ekowraith, Creator of Worlds (210667), Sunblind (213682)
-Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5384,7 +5369,7 @@ School           : Physical
 Duration         : 10 seconds
 Cooldown         : 90 seconds
 Stance Mask      : 0x00000010
-Artifact Power   : Id: 960, Max Rank: 1
+Artifact Power   : Id: 960, Index: 0, Max Rank: 1
 Triggered by     : Push Active Ability to Bar (225867)
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5770,7 +5755,7 @@ Velocity         : 0.8 yards/sec
 Attributes       : ........ ........ ........ ...x....   .......x ..x..... ........ ........ 
                  : ..x..... ........ ......x. ........   x....... .x...... ........ ......x. 
                  : ....x... .......x ........ ........   ........ ........ ........ ..x..... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ....x... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Not a proc (105), Requires line of sight (186)
@@ -5825,7 +5810,7 @@ GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Charges          : 3 (15 seconds cooldown)
 Category         : 1584
-Artifact Power   : Id: 1049, Max Rank: 1
+Artifact Power   : Id: 1049, Index: 0, Max Rank: 1
 Affecting spells : Balance Druid (137013), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), 
 Triggered by     : Push Active Ability to Bar (225865)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5837,8 +5822,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=298964)   : School Damage: arcane (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 4.50000 | Target: Enemy(6)
-#2 (id=299003)   : Trigger Spell: New Moon Override (64)
-                   Base Value: 202787 | Scaled Value: 202787 | Trigger Spell: 202787 | Target: Self(1)
+#2 (id=299003)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #3 (id=321942)   : Energize Power (30)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: astral_power | Target: Self(1)
 Description      : Deals $m1 Astral damage to the target and empowers New Moon to become Half Moon. 
@@ -5864,8 +5849,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=298965)   : School Damage: arcane (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 9.00000 | Target: Enemy(6)
-#2 (id=299004)   : Trigger Spell: Half Moon Override (64)
-                   Base Value: 202788 | Scaled Value: 202788 | Trigger Spell: 202788 | Target: Self(1)
+#2 (id=299004)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #3 (id=321940)   : Energize Power (30)
                    Base Value: 200 | Scaled Value: 200 | Misc Value: astral_power | Target: Self(1)
 Description      : Deals $m1 Astral damage to the target and empowers Half Moon to become Full Moon.
@@ -5916,7 +5901,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ....x... ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=298969)   : School Damage: arcane (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 18.00000 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
@@ -5938,7 +5923,7 @@ School           : Physical
 Duration         : Aura (infinite)
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Triggered by     : New Moon (202767), Full Moon (202771)
+Triggered by     : Full Moon (202771)
 Attributes       : .......x ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5956,7 +5941,7 @@ School           : Physical
 Duration         : Aura (infinite)
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Triggered by     : Half Moon (202768), Full Moon (202771)
+Triggered by     : Full Moon (202771)
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6305,7 +6290,7 @@ School           : Nature
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 90 seconds
-Artifact Power   : Id: 125, Max Rank: 1
+Artifact Power   : Id: 125, Index: 0, Max Rank: 1
 Affecting spells : Astral Influence (197524), Ekowraith, Creator of Worlds (210667), Eternal Restoration (238050)
 Triggered by     : Push Active Ability to Bar (225868)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
@@ -6409,6 +6394,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #5 (id=310992)   : Apply Aura (6) | Unknown effect sub type (191)
                    Base Value: 1000 | Scaled Value: 1000 | Target: Self(1)
+#6 (id=370141)   : Apply Aura (6) | Unknown effect sub type (305)
+                   Base Value: 120 | Scaled Value: 120 | Target: Self(1)
 Description      : Shapeshift into a mountable stag form, increasing movement speed by $5419s1%.  Also protects the caster from Polymorph effects.  Only usable outdoors.
 
 The act of shapeshifting frees the caster of movement impairing effects.
@@ -6419,7 +6406,7 @@ Class            : Druid
 School           : Physical
 Range            : 100 yards
 Proc Chance      : 101%
-Artifact Power   : Id: 1167, Max Rank: 8, Values: [ 5, 10, 15, 20, 25, 30, 35, 40 ]
+Artifact Power   : Id: 1167, Index: 10, Max Rank: 8, Values: [ 5, 10, 15, 20, 25, 30, 35, 40 ]
 Proc Flags       : ........ ..x...x. ........ ........ 
                  : AOE Heal, Heal
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -6456,7 +6443,7 @@ Name             : Protection of Ashamane (id=210650) [Spell Family (7), Passive
 Class            : Druid
 School           : Physical
 Range            : 100 yards
-Artifact Power   : Id: 1158, Max Rank: 1
+Artifact Power   : Id: 1158, Index: 0, Max Rank: 1
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6495,7 +6482,7 @@ Class            : Druid
 School           : Physical
 Range            : 100 yards
 Proc Chance      : 10%
-Artifact Power   : Id: 1154, Max Rank: 1
+Artifact Power   : Id: 1154, Index: 1, Max Rank: 1
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, AOE Hostile Spell, Hostile Spell
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -6562,7 +6549,7 @@ GCD              : 1 seconds
 Duration         : 3 seconds
 Cooldown         : 75 seconds
 Stance Mask      : 0x00000001
-Artifact Power   : Id: 1153, Max Rank: 1
+Artifact Power   : Id: 1153, Index: 0, Max Rank: 1
 Affecting spells : Mastery: Razor Claws (77493), Feral Druid (137011), Lucidity (137247), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), Ashamane's Frenzy (210723), Bloodletter's Frailty (238120)
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7183,31 +7170,20 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 37 | Target: Self(1)
 Description      : Swipe deals $106785s2% increased damage against bleeding targets.
 
-Name             : Archdruid's Lunarwing Form (Shapeshift) (id=231437) 
+Name             : Archdruid's Lunarwing Form (Shapeshift) (id=231437) [Passive] 
 Class            : Druid
 School           : Physical
-Duration         : Aura (infinite)
-Attributes       : ....x... .......x ..x.x... ....x...   ........ ........ x....... ........ 
-                 : .x...... x....... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Stop attacks (20), Cannot be used in combat (28)
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
 Effects          :
-#1 (id=349051)   : Apply Aura (6) | Shapeshift (36)
+#1 (id=349051)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 27 | Misc Value 2: 0xe | Target: Self(1)
-#2 (id=349052)   : Apply Aura (6) | Mechanic Immunity (77)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 17 | Target: Self(1)
-#3 (id=349053)   : Apply Aura (6) | Unknown effect sub type (201)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#4 (id=368440)   : Apply Aura (6) | Unknown effect sub type (296)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 5388 | Misc Value 2: 0x105 | Target: Self(1)
-Description      : Shapeshift into Lunarwing Form, increasing movement speed by $40121s2% and allowing you to fly.  Cannot use in combat.
-
-The act of shapeshifting frees the caster of movement impairing effects.
-Tooltip          : Immune to Polymorph effects.
-Movement speed increased by $j1f% and allows you to fly.
+Description      : Allows your Travel Form to take on the form of a Lunarwing Owl.
 
 Name             : Moment of Clarity (id=236068) [Spell Family (7), Passive] 
 Class            : Druid
@@ -7283,7 +7259,7 @@ Effects          :
 #1 (id=358126)   : Apply Aura (6) | Unknown effect sub type (407)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Mechanic: Unknown(42) | Target: At Caster(22) -> AOE enemy(15)
 #2 (id=358127)   : Apply Aura (6) | Unknown effect sub type (455)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: AOE enemy (instant)(16)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Target: At Caster(22) -> AOE enemy(15)
 Description      : Unleash a terrifying roar, causing all enemies within $A1 yards to cower in fear, disorienting them for $d. Usable in all shapeshift forms.
 Tooltip          : Incapacitated.
 

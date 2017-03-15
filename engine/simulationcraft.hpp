@@ -175,7 +175,7 @@ inline int snprintf( char* buf, size_t size, const char* fmt, ... )
 // Data Access ==============================================================
 const int MAX_LEVEL = 110;
 const int MAX_SCALING_LEVEL = 110;
-const int MAX_ILEVEL = 1000;
+const int MAX_ILEVEL = 1300;
 
 // Include DBC Module
 #include "dbc/dbc.hpp"
@@ -878,6 +878,7 @@ public:
 
   virtual ~buff_t() {}
 
+  buff_t( actor_pair_t q, const std::string& name, const spell_data_t* = spell_data_t::nil() );
 protected:
   buff_t( const buff_creator_basics_t& params );
   friend struct buff_creation::buff_creator_t;
@@ -984,12 +985,12 @@ public:
   virtual void analyze();
   virtual void datacollection_begin();
   virtual void datacollection_end();
+  virtual void init();
   virtual void set_max_stack( unsigned stack );
 
   virtual timespan_t refresh_duration( const timespan_t& new_duration ) const;
   virtual timespan_t tick_time() const;
 
-  void add_invalidate( cache_e );
 #if defined(SC_USE_STAT_CACHE)
   virtual void invalidate_cache();
 #else
@@ -1017,6 +1018,13 @@ public:
   rng::rng_t& rng();
 
   bool change_regen_rate;
+
+  virtual buff_t* set_duration( timespan_t duration );
+  virtual buff_t* set_max_stack( int max_stack );
+  virtual buff_t* set_cooldown( timespan_t duration );
+  //virtual buff_t* set_chance( double chance );
+  virtual buff_t* set_quiet( bool quiet );
+  virtual buff_t* add_invalidate( cache_e );
 };
 
 struct stat_buff_t : public buff_t
@@ -1039,6 +1047,7 @@ struct stat_buff_t : public buff_t
   virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
   virtual double value() override{ stack(); return stats[ 0 ].current_value; }
 
+  stat_buff_t( actor_pair_t q, const std::string& name, const spell_data_t* = spell_data_t::nil() );
 protected:
   stat_buff_t( const stat_buff_creator_t& params );
   friend struct buff_creation::stat_buff_creator_t;
@@ -1085,6 +1094,7 @@ struct haste_buff_t : public buff_t
 {
   haste_type_e haste_type;
 
+  haste_buff_t( actor_pair_t q, const std::string& name, const spell_data_t* = spell_data_t::nil() );
 protected:
   haste_buff_t( const haste_buff_creator_t& params );
   friend struct buff_creation::haste_buff_creator_t;
@@ -1104,6 +1114,21 @@ protected:
 };
 
 typedef struct buff_t aura_t;
+
+/**
+ * @brief Creates a buff
+ *
+ * Small helper function to write
+ * buff_t* b = make_buff<buff_t>(player, name, spell); instead of
+ * buff_t* b = (new buff_t(player, name, spell));
+ */
+template <typename Buff = buff_t, typename... Args>
+inline Buff* make_buff( Args&&... args )
+{
+  static_assert( std::is_base_of<buff_t, Buff>::value,
+                 "Buff must be derived from buff_t" );
+  return new Buff( args... );
+}
 
 #include "sim/sc_expressions.hpp"
 
@@ -1704,7 +1729,7 @@ struct sim_t : private sc_thread_t
 
     void flush()          { AUTO_LOCK(m); _total_work[ index ] = _projected_work[ index ] = _work[ index ]; }
     void project( int w ) { AUTO_LOCK(m); _projected_work[ index ] = w; assert( w >= _work[ index ] ); }
-    int  size()           { AUTO_LOCK(m); return _total_work[ index ]; }
+    int  size()           { AUTO_LOCK(m); return index < _total_work.size() ? _total_work[ index ] : _total_work.back(); }
 
     // Single-actor batch pop, uses several indices of work (per active actor), each thread has it's
     // own state on what index it is simulating
@@ -3409,7 +3434,7 @@ namespace assessor
   enum command { CONTINUE = 0U, STOP };
 
   // Default assessor priorities
-  enum priority
+  enum priority_e
   {
     TARGET_MITIGATION = 100U,    // Target assessing (mitigation etc)
     TARGET_DAMAGE     = 200U,    // Do damage to target (and related functionality)
@@ -3419,17 +3444,13 @@ namespace assessor
   };
 
   // State assessor callback type
-  typedef std::function<command(dmg_e, action_state_t*)> state_assessor_t;
+  using state_assessor_t = std::function<command(dmg_e, action_state_t*)>;
 
   // A simple entry that defines a state assessor
   struct state_assessor_entry_t
   {
-    uint16_t priority;
+    int priority;
     state_assessor_t assessor;
-
-    state_assessor_entry_t( uint16_t p, const state_assessor_t& a ) :
-      priority( p ), assessor( a )
-    { }
   };
 
   // State assessor functionality creates an ascending priority-based list of manipulators for state
@@ -3452,8 +3473,8 @@ namespace assessor
   {
     std::vector<state_assessor_entry_t> assessors;
 
-    void add( uint16_t p, const state_assessor_t& cb )
-    { assessors.push_back( state_assessor_entry_t( p, cb ) ); }
+    void add( int p, state_assessor_t cb )
+    { assessors.push_back( state_assessor_entry_t{p, std::move(cb)} ); }
 
     void sort()
     {
@@ -3550,7 +3571,7 @@ struct player_t : public actor_t
   std::vector<pet_t*> pet_list;
   std::vector<pet_t*> active_pets;
   std::vector<absorb_buff_t*> absorb_buff_list;
-  std::map<unsigned,instant_absorb_t*> instant_absorb_list;
+  std::map<unsigned,instant_absorb_t> instant_absorb_list;
 
   int         invert_scaling;
 
@@ -3775,7 +3796,8 @@ struct player_t : public actor_t
   bool quiet;
   // Reporting
   std::unique_ptr<player_report_extension_t> report_extension;
-  timespan_t iteration_fight_length, arise_time;
+  timespan_t arise_time;
+  timespan_t iteration_fight_length;
   timespan_t iteration_waiting_time, iteration_pooling_time;
   int iteration_executed_foreground_actions;
   std::array< double, RESOURCE_MAX > iteration_resource_lost, iteration_resource_gained;
@@ -3959,7 +3981,7 @@ struct player_t : public actor_t
   struct spells_t
   {
     action_t* leech;
-  } spell;
+  } spells;
 
   struct procs_t
   {
@@ -6364,8 +6386,8 @@ public:
   void   cancel();
   void   trigger( timespan_t duration );
   void   decrement( int stacks );
-  void   copy( player_t* destination, dot_copy_e = DOT_COPY_START );
-  void   copy( dot_t* dest_dot );
+  void   copy( player_t* destination, dot_copy_e = DOT_COPY_START ) const;
+  void   copy( dot_t* dest_dot ) const;
   // Scale on-going dot remaining time by a coefficient during a tick. Note that this should be
   // accompanied with the correct (time related) scaling information in the action's supporting
   // methods (action_t::tick_time, action_t::composite_dot_ruration), otherwise bad things will

@@ -345,12 +345,12 @@ class DataGenerator(object):
 
         #print self._class_map, self._race_map
         if self._options.output:
-            self._out = pathlib.Path(self._options.output).open('w')
+            self._out = pathlib.Path(self._options.output).open('w', encoding="utf-8")
             if not self._out.writable():
                 print('Unable to write to file "%s"' % self._options.output)
                 return False
         elif self._options.append:
-            self._out = pathlib.Path(self._options.append).open('a')
+            self._out = pathlib.Path(self._options.append).open('a', encoding="utf-8")
             if not self._out.writable():
                 print('Unable to write to file "%s"' % self._options.append)
                 return False

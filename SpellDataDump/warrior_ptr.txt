@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build 3d249f6)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build 3eb4aac)
 
 Name             : Defensive Stance (id=71) [Spell Family (4), Passive, Hidden] 
 Class            : Protection Warrior
@@ -93,7 +93,7 @@ Effects          :
 #1 (id=147)      : Unknown effect type (114)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Enemy(6)
 #2 (id=148)      : Apply Aura (6) | Taunt (11)
-                   Base Value: 200 | Scaled Value: 200 | Target: Enemy(6)
+                   Base Value: 400 | Scaled Value: 400 | Target: Enemy(6)
 #3 (id=334400)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : Taunts the target to attack you, and increases threat that you generate against the target for $d.
@@ -450,7 +450,7 @@ Resource         : 25 Rage
 Spell Level      : 8 (max 80)
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Battle Cry (1719), Single-Minded Fury (81099), Protection (131086), Warrior (137047), Arms Warrior (137049), Fury Warrior (137050), Death Sentence (144442), Deathdealer (200846), Sense Death (200979), Juggernaut (201009), Dauntless (202297), Deathblow (209481), Precise Strikes (209493), Shattered Defenses (209706), Stone Heart (225947), Execute (231827), Execute (231830)
+Affecting spells : Battle Cry (1719), Protection (131086), Warrior (137047), Arms Warrior (137049), Fury Warrior (137050), Death Sentence (144442), Deathdealer (200846), Sense Death (200979), Juggernaut (201009), Dauntless (202297), Deathblow (209481), Precise Strikes (209493), Shattered Defenses (209706), Stone Heart (225947), Execute (231827), Execute (231830)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ .x...... ........ ........   ........ ....x... ........ ........ 
@@ -878,7 +878,7 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 9 seconds
-Affecting spells : Demoralizing Shout (1160), Shield Block (132404), Warrior (137047), Protection Warrior (137048), Vicious Strike (165642), Might of the Vrykul (188783), Kakushan's Stormscale Gauntlets (207844), 
+Affecting spells : Demoralizing Shout (1160), Shield Block (132404), Warrior (137047), Protection Warrior (137048), Vicious Strike (165642), Might of the Vrykul (188783), Kakushan's Stormscale Gauntlets (207844), The Walls Fell (215057)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1606,29 +1606,6 @@ Effects          :
 Description      : Increases your chance to block by $s2% and your chance to critically block by $s1%.
 
 Also increases your attack power by $s5%.
-
-Name             : Single-Minded Fury (id=81099) [Spell Family (4), Passive, Hidden] 
-Class            : Fury Warrior
-School           : Physical
-Spell Level      : 38
-Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ x.......   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=68623)    : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: 0x7f | Target: Self(1)
-#2 (id=128449)   : Apply Aura (6) | Unknown effect sub type (122)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self(1)
-#3 (id=229541)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 15 | Scaled Value: 15 | Target: Self(1)
-                   Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558)
-Description      : When you dual-wield one-handed weapons, all damage is increased by $s1%, and your off-hand weapon will deal an additional $s2% damage.
-
-Increases the damage of Execute by $s3%.
 
 Name             : Reinforced Bio-Optic Killshades (id=81714) 
 Class            : Warrior, Paladin, Death Knight
@@ -2953,7 +2930,7 @@ Effects          :
 #2 (id=228483)   : Apply Aura (6) | Unknown effect sub type (467)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 1 | Target: Self(1)
 #3 (id=228484)   : Apply Aura (6) | Unknown effect sub type (466)
-                   Base Value: -100 | Scaled Value: -100 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Stat Negation Aura - Strength Tank (id=162702) [Passive, Hidden] 
 Replaces         : Stat Negation Aura - Strength DPS (id=162698)
@@ -2979,7 +2956,7 @@ Resource         : 10 Rage
 Spell Level      : 8
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Battle Cry (1719), Single-Minded Fury (81099), Protection (131086), Warrior (137047), Arms Warrior (137049), Fury Warrior (137050), Death Sentence (144442), Deathdealer (200846), Sense Death (200979), Juggernaut (201009), Dauntless (202297), Deathblow (209481), Precise Strikes (209493), Shattered Defenses (209706), Stone Heart (225947), Execute (231827), Execute (231830)
+Affecting spells : Battle Cry (1719), Protection (131086), Warrior (137047), Arms Warrior (137049), Fury Warrior (137050), Death Sentence (144442), Deathdealer (200846), Sense Death (200979), Juggernaut (201009), Dauntless (202297), Deathblow (209481), Precise Strikes (209493), Shattered Defenses (209706), Stone Heart (225947), Execute (231827), Execute (231830)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ .x...... ........ ........   ........ ....x... ........ ........ 
@@ -3004,7 +2981,7 @@ School           : Physical
 Spell Level      : 7 (max 80)
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Battle Cry (1719), Single-Minded Fury (81099), Protection (131086), Warrior (137047), Arms Warrior (137049), Fury Warrior (137050), Death Sentence (144442), Deathdealer (200846), Sense Death (200979), Juggernaut (201009), Dauntless (202297), Deathblow (209481), Precise Strikes (209493), Shattered Defenses (209706), Stone Heart (225947), Execute (231827), Execute (231830)
+Affecting spells : Battle Cry (1719), Protection (131086), Warrior (137047), Arms Warrior (137049), Fury Warrior (137050), Death Sentence (144442), Deathdealer (200846), Sense Death (200979), Juggernaut (201009), Dauntless (202297), Deathblow (209481), Precise Strikes (209493), Shattered Defenses (209706), Stone Heart (225947), Execute (231827), Execute (231830)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ..x..... x....... 
                  : ........ .x...... ........ ........   ........ ....x... ........ ........ 
@@ -3225,7 +3202,7 @@ Description      : You have a ${$m2/100}.2% chance per Rage spent to reset the r
 Name             : Reflective Plating (id=188672) [Spell Family (4), Passive] 
 Class            : Warrior
 School           : Physical
-Artifact Power   : Id: 104, Max Rank: 1
+Artifact Power   : Id: 104, Index: 0, Max Rank: 1
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4195,7 +4172,7 @@ School           : Physical
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Cooldown         : 45 seconds
-Artifact Power   : Id: 91, Max Rank: 1
+Artifact Power   : Id: 91, Index: 0, Max Rank: 1
 Attributes       : ........ ........ ........ ........   ......x. ........ ........ .....x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4261,7 +4238,7 @@ Spell Level      : 28 (max 80)
 GCD              : 1.5 seconds
 Cooldown         : 45 seconds
 Category         : 891
-Artifact Power   : Id: 984, Max Rank: 1
+Artifact Power   : Id: 984, Index: 0, Max Rank: 1
 Affecting spells : Warrior (137047), Fury Warrior (137050), 
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -4492,7 +4469,7 @@ Class            : Warrior
 School           : Physical
 Range            : 100 yards
 Proc Chance      : 101%
-Artifact Power   : Id: 1149, Max Rank: 8, Values: [ -15, -30, -45, -60, -75, -90, -105, -120 ]
+Artifact Power   : Id: 1149, Index: 9, Max Rank: 8, Values: [ -15, -30, -45, -60, -75, -90, -105, -120 ]
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Attributes       : ......xx ........ ........ .......x   ........ ........ ........ ........ 
@@ -4536,7 +4513,7 @@ Class            : Warrior
 School           : Physical
 Range            : 100 yards
 Proc Chance      : 101%
-Artifact Power   : Id: 1138, Max Rank: 1
+Artifact Power   : Id: 1138, Index: 2, Max Rank: 1
 Proc Flags       : ........ ..x...x. ........ ........ 
                  : AOE Heal, Heal
 Attributes       : ......xx ........ ........ .......x   ........ ........ ........ ........ 
@@ -4557,7 +4534,7 @@ School           : Shadow
 Range            : 100 yards
 GCD              : 1.5 seconds
 Cooldown         : 60 seconds
-Artifact Power   : Id: 1136, Max Rank: 1
+Artifact Power   : Id: 1136, Index: 0, Max Rank: 1
 Affecting spells : Warrior (137047)
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -5059,8 +5036,8 @@ Name             : Inspiring Presence (id=222944) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Triggered by     : Inspiring Presence (205484)
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
+                 : ..x..... ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
