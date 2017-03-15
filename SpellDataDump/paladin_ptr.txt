@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build 3d249f6)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build 3eb4aac)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -458,8 +458,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 4488 | Target: Unknown(87)
 #3 (id=81786)    : Summon (28)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 43499 | Misc Value 2: 0xbba | Target: Custom(18)
-#4 (id=336287)   : Unknown effect type (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 8455 | Target: Unknown(87)
 Description      : Consecrates the land beneath you, causing ${$81297m1*9} Holy damage over $d to enemies who enter the area.$?s184123[ Shares a cooldown with Divine Wrath.][]
 Tooltip          : Damage every $t1 $lsecond:seconds;.
 
@@ -607,7 +605,7 @@ GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
 Duration         : 3 seconds
 Cooldown         : 15 seconds
-Affecting spells : Grand Crusader (85416), Paladin (137026), Ferren Marcus's Strength (207614)
+Affecting spells : Grand Crusader (85416), Paladin (137026), Ferren Marcus's Strength (207614), 
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ..x..... ........   ........ ........ ........ ........ 
@@ -1189,7 +1187,7 @@ Effects          :
 #1 (id=56098)    : Unknown effect type (114)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Enemy(6)
 #2 (id=56099)    : Apply Aura (6) | Taunt (11)
-                   Base Value: 200 | Scaled Value: 200 | Target: Enemy(6)
+                   Base Value: 400 | Scaled Value: 400 | Target: Enemy(6)
 Description      : Taunts the target to attack you, and increases threat that you generate against the target for $d.
 Tooltip          : Taunted.
 
@@ -1867,7 +1865,7 @@ Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 20 seconds
-Affecting spells : Lucidity (137288), Rule of Law (214202), 
+Affecting spells : Lucidity (137288), Rule of Law (214202), Sacred Dawn (243174)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1892,7 +1890,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 100 yards/sec
 Cooldown         : 20 seconds
-Affecting spells : Lucidity (137288), Rule of Law (214202), 
+Affecting spells : Lucidity (137288), Rule of Law (214202), Sacred Dawn (243174)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ......x.   ........ .x...... ........ ........ 
                  : x....... ........ ........ ........   ........ ........ ........ ..x..... 
@@ -1918,7 +1916,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 100 yards/sec
 Cooldown         : 20 seconds
-Affecting spells : Lucidity (137288), Rule of Law (214202), 
+Affecting spells : Lucidity (137288), Rule of Law (214202), Sacred Dawn (243174)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ....x.x.   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -2692,7 +2690,7 @@ Effects          :
 #2 (id=228483)   : Apply Aura (6) | Unknown effect sub type (467)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 1 | Target: Self(1)
 #3 (id=228484)   : Apply Aura (6) | Unknown effect sub type (466)
-                   Base Value: -100 | Scaled Value: -100 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Stat Negation Aura - Intellect Healer (id=162701) [Passive, Hidden] 
 Class            : Holy Discipline Holy Restoration Mistweaver Restoration Paladin, Priest, Shaman, Monk, Druid
@@ -2710,7 +2708,7 @@ Effects          :
 #2 (id=228495)   : Apply Aura (6) | Unknown effect sub type (467)
                    Base Value: -100 | Scaled Value: -100 | Target: Self(1)
 #3 (id=228496)   : Apply Aura (6) | Unknown effect sub type (466)
-                   Base Value: -100 | Scaled Value: -100 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Stat Negation Aura - Strength Tank (id=162702) [Passive, Hidden] 
 Replaces         : Stat Negation Aura - Strength DPS (id=162698)
@@ -2734,7 +2732,7 @@ Class            : Paladin
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
 School           : Physical
 Range            : 100 yards
-Artifact Power   : Id: 353, Max Rank: 1
+Artifact Power   : Id: 353, Index: 3, Max Rank: 1
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2921,7 +2919,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=266239)   : Apply Aura (6) | Proc Trigger Spell: Judgment of Light (42)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 196941 | Target: Self(1)
-Description      : Judgment now applies Judgment of Light to the target, causing the next $196941N successful attacks against the target to heal the attacker for $183811s1. This effect can only occur once per $s1 sec on each target.
+#2 (id=370254)   : Dummy (3)
+                   Base Value: 1 | Scaled Value: 1 | Target: Self(1)
+Description      : Judgment now applies Judgment of Light to the target, causing the next $196941N successful attacks against the target to heal the attacker for $183811s1. $@switch<$s2>[][This effect can only occur once every $s1 sec on each target.]
 
 Name             : Judgment of Light (id=183811) [Spell Family (10)] 
 Class            : Paladin
@@ -3176,7 +3176,6 @@ School           : Holy
 Spell Level      : 1
 Range            : 30 yards
 Duration         : 30 seconds
-Internal Cooldown: 1 seconds
 Stacks           : 40 initial, 40 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x...... ........ 
@@ -3187,7 +3186,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=289177)   : Apply Aura (6) | Proc Trigger Spell: Judgment of Light (42)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 183811 | Target: Enemy(6)
@@ -3200,11 +3199,11 @@ School           : Holy
 Range            : 100 yards
 Duration         : 8 seconds
 Proc Chance      : 100%
-Proc Flags       : .....x.. .....x.. .x...... ........ 
-                 : Yellow Melee Taken, AOE Hostile Spell Taken, Hostile Spell Taken
+Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Seal of the Crusader Judgment Increase (23300), Item - Icecrown 25 Normal Tank Weapon Proc (71871), Item - Icecrown 25 Heroic Slow Melee Weapon Proc (71878), Item - Icecrown 25 Normal Dagger Proc (71880), Mastery: Divine Judgment (76672), Item - Proc Mastery Rating (95878), Paladin (137026), Retribution Paladin (137027), Protection Paladin (137028), Holy Paladin (137029), Lucidity (137288), Seal of the Crusader Judgment Increase (144307), Seal of the Crusader Judgment Increase (144310), Seal of the Crusader Judgment Increase (144311), Highlord's Judgment (186941), Stern Judgment (209217), Crusade (224668), Judgment (231663)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -3398,7 +3397,7 @@ School           : Physical
 Range            : 100 yards
 Proc Chance      : 101%
 Real PPM         : 1
-Artifact Power   : Id: 963, Max Rank: 1
+Artifact Power   : Id: 963, Index: 2, Max Rank: 1
 Proc Flags       : ........ ......x. ........ ........ 
                  : Heal
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -3422,7 +3421,7 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 90 seconds
-Artifact Power   : Id: 965, Max Rank: 1
+Artifact Power   : Id: 965, Index: 0, Max Rank: 1
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -3646,6 +3645,7 @@ Name             : Consecrated Hammer (id=203785) [Spell Family (10), Passive]
 Class            : Paladin
 School           : Physical
 Proc Chance      : 101%
+Affecting spells : Item - Paladin T19 Protection 2P Bonus (211553), 
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3732,13 +3732,13 @@ Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 2 seconds
 Affecting spells : Lucidity (137323), Muze's Unwavering Will (210632), Invoke the Light (216122), Kam Xi'raff (233997)
-Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ......x.   ........ ........ .x...... ......x. 
-                 : ........ ......x. ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Disable target procs (113)
+Attributes       : ........ ........ x....... x..x....   .....x.. ........ ........ ........ 
+                 : ........ ......x. ...x.... ......x.   ........ ........ .x...... ......x. 
+                 : ........ ......x. ........ ........   ...x.... ........ .xx..... ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : .....x.. ........ ........ ........   ........ ...x.... ........ ........ 
+                 : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
+                 : Does not break stealth (37), Disable target procs (113)
 Effects          :
 #1 (id=301046)   : School Damage: holy (2)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.04500 | Target: Enemy(6)
@@ -3955,7 +3955,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : x....... ........ ........ ........   ........ .......x ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=301536)   : School Damage: holy (2)
@@ -4042,7 +4042,7 @@ School           : Holyfire
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 30 seconds
-Artifact Power   : Id: 40, Max Rank: 1
+Artifact Power   : Id: 40, Index: 0, Max Rank: 1
 Affecting spells : Retribution Paladin (137027), Ashes to Dust (236106)
 Triggered by     : Push Active Ability to Bar (225875)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
@@ -4093,7 +4093,7 @@ School           : Holy
 GCD              : 1.5 seconds
 Duration         : 9 seconds
 Cooldown         : 60 seconds
-Artifact Power   : Id: 1120, Max Rank: 1
+Artifact Power   : Id: 1120, Index: 0, Max Rank: 1
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4877,8 +4877,8 @@ Charges          : 1 (120 seconds cooldown)
 Category         : 1550
 Stacks           : 15 maximum
 Proc Chance      : 100%
-Proc Flags       : ....x... ....x... x.x..... ........ 
-                 : Yellow Melee, AOE Hostile Spell, Hostile Spell, Periodic
+Proc Flags       : ....x... ....x.x. x.x..... ........ 
+                 : Yellow Melee, AOE Hostile Spell, Heal, Hostile Spell, Periodic
 Affecting spells : Wrath of the Ashbringer (186945), 
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

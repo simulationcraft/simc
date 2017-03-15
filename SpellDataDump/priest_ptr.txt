@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build 3d249f6)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build 3eb4aac)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Discipline Shadow Priest
@@ -13,7 +13,7 @@ Category         : 56
 Proc Chance      : 101%
 Stance Mask      : 0x08000000
 Mechanic         : Unknown(162)
-Affecting spells : Improved Power Word: Shield (24191), Rapture (47536), Priest (137030), Shadow Priest (137033), Lucidity (137323), Clear Thoughts (167695), Voidform (194249), Aegis of Wrath (238135)
+Affecting spells : Improved Power Word: Shield (24191), Rapture (47536), Priest (137030), Shadow Priest (137033), Lucidity (137323), Clear Thoughts (167695), Voidform (194249), Skjoldr, Sanctuary of Ivagont (214576)
 Attributes       : ........ ...x.... x.x..... ........   ........ ........ ........ ........ 
                  : ........ x....... ...x.x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
@@ -23,8 +23,6 @@ Attributes       : ........ ...x.... x.x..... ........   ........ ........ .....
 Effects          :
 #1 (id=13)       : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Friend(21)
-#2 (id=369067)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
-                   Base Value: 0 | Scaled Value: 0 | Target: Friend(21)
 Description      : Shields an ally for $d, absorbing $<shield> damage, and preventing damage from delaying spellcasting.
 Tooltip          : Absorbs $w1 damage.
 Variables        : $shield=${(($SP*5.5)+$m1)*(1+$@versadmg)}
@@ -294,7 +292,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Rapid Healing (24546), Healing Trance (37706), Spirit Shell (109964), Surge of Light (114255), Lucidity (137323), Complete Healing (184914), Reverence (196418), Light of T'uure (208065), Rammal's Ulterior Motive (234711)
+Affecting spells : Rapid Healing (24546), Healing Trance (37706), Spirit Shell (109964), Surge of Light (114255), Lucidity (137323), Complete Healing (184914), Reverence (196418), Light of T'uure (208065), Muze's Unwavering Will (210632), Rammal's Ulterior Motive (234711)
 Triggered by     : Surge of Light (114255)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -1093,8 +1091,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=39747)    : Apply Aura (6) | Add Flat Modifier: Spell Cooldown (107)
-                   Base Value: -6000 | Scaled Value: -6000 | Misc Value: 11 | Target: Self(1)
+#1 (id=39747)    : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 11 | Target: Self(1)
                    Affected Spells: Power Word: Shield (17)
 Description      : For the next $d, Power Word: Shield has no cooldown.
 Tooltip          : Your Power Word: Shield has no cooldown.
@@ -2887,6 +2885,24 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 124430 | Target: Self(1)
 Description      : Shadow Word: Pain periodic damage has a $h% chance to reset the remaining cooldown on Mind Blast and cause your next Mind Blast to be instant.
 
+Name             : Stat Negation Aura - Intellect DPS (id=162699) [Passive, Hidden] 
+Class            : Shadow Elemental Arcane Fire Frost Affliction Demonology Destruction Balance Priest, Shaman, Mage, Warlock, Druid
+School           : Physical
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=228487)   : Apply Aura (6) | Unknown effect sub type (467)
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 1 | Target: Self(1)
+#2 (id=228488)   : Apply Aura (6) | Unknown effect sub type (467)
+                   Base Value: -100 | Scaled Value: -100 | Target: Self(1)
+#3 (id=228489)   : Apply Aura (6) | Unknown effect sub type (466)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+
 Name             : Stat Negation Aura - Intellect Healer (id=162701) [Passive, Hidden] 
 Class            : Holy Discipline Holy Restoration Mistweaver Restoration Paladin, Priest, Shaman, Monk, Druid
 School           : Physical
@@ -2903,7 +2919,7 @@ Effects          :
 #2 (id=228495)   : Apply Aura (6) | Unknown effect sub type (467)
                    Base Value: -100 | Scaled Value: -100 | Target: Self(1)
 #3 (id=228496)   : Apply Aura (6) | Unknown effect sub type (466)
-                   Base Value: -100 | Scaled Value: -100 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Voidform (id=185916) [Spell Family (6), Passive, Hidden] 
 Class            : Shadow Priest
@@ -3205,7 +3221,7 @@ Class            : Priest
 School           : Shadow
 Spell Level      : 10
 Range            : 100 yards
-Duration         : 15 seconds
+Duration         : 10 seconds
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ...x.... 
@@ -3228,7 +3244,7 @@ Spell Level      : 10
 Duration         : Aura (infinite)
 Stacks           : 100 maximum
 Proc Chance      : 101%
-Affecting spells : Legacy of the Void (193225), 
+Affecting spells : Legacy of the Void (193225), Iridi's Empowerment (224999)
 Triggered by     : Insanity (194251)
 Attributes       : ........ ........ ..x..... x..x.x.x   .....x.. ..x..... ........ ........ 
                  : ........ ......x. ...x.... ........   ........ ........ ........ ........ 
@@ -3347,7 +3363,7 @@ School           : Physical
 Range            : 100 yards
 Internal Cooldown: 15 seconds
 Proc Chance      : 20%
-Artifact Power   : Id: 834, Max Rank: 1
+Artifact Power   : Id: 834, Index: 0, Max Rank: 1
 Proc Flags       : ........ ..x.x.x. x....x.. ........ 
                  : AOE Heal, AOE Hostile Spell, Heal, Hostile Spell, Trap Triggered
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -3976,7 +3992,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 4 seconds
 Cooldown         : 60 seconds
-Artifact Power   : Id: 764, Max Rank: 1
+Artifact Power   : Id: 764, Index: 0, Max Rank: 1
 Affecting spells : Shadow Priest (137033), Mental Fatigue (185104), Voidform (194249)
 Attributes       : ........ ........ ........ ..x.....   ..x..... ......x. ........ .....x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -4224,7 +4240,7 @@ Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 24 yards/sec
 Cooldown         : 90 seconds
-Artifact Power   : Id: 883, Max Rank: 1
+Artifact Power   : Id: 883, Index: 0, Max Rank: 1
 Triggered by     : Push Active Ability to Bar (225879)
 Attributes       : ........ ........ ..x..... .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4264,7 +4280,7 @@ GCD              : 1.5 seconds
 Duration         : 10 seconds
 Charges          : 2 (45 seconds cooldown)
 Category         : 1604
-Artifact Power   : Id: 836, Max Rank: 1
+Artifact Power   : Id: 836, Index: 2, Max Rank: 1
 Affecting spells : Caress of the Naaru (238064)
 Attributes       : ........ ........ ..x..... .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4276,7 +4292,7 @@ Attributes       : ........ ........ ..x..... .......x   ........ ........ .....
 Effects          :
 #1 (id=307809)   : Apply Aura (6) | Unknown effect sub type (283)
                    Base Value: 25 | Scaled Value: 25 | Trigger Spell: 196685 | Target: Friend(21)
-                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Sunwell Torrent (28516), Binding Heal (32546), Prayer of Mending (33110), Holy Word: Sanctify (34861), Divine Hymn (64844), Divine Star (110744), Divine Star (110745), Halo (120517), Halo (120692), Halo (120696), Divine Star (122128), Holy Mending (196781), Light of T'uure (208065), Body and Mind (214121)
+                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Sunwell Torrent (28516), Binding Heal (32546), Prayer of Mending (33110), Holy Word: Sanctify (34861), Divine Hymn (64844), Divine Star (110744), Divine Star (110745), Halo (120517), Halo (120692), Halo (120696), Divine Star (122128), Holy Mending (196781), Light of T'uure (208065), Body and Mind (214121), Cosmic Ripple (243241)
 #2 (id=308008)   : Direct Heal (10)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 4.00000 | Target: Friend(21)
 Description      : Applies Light of the Naaru to the target, healing for $s2 and increasing your healing done to that target by $208065s1% for $d. Maximum 2 charges.

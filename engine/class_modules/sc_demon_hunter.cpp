@@ -6617,7 +6617,10 @@ void demon_hunter_t::apl_precombat()
     if ( true_level > 100 )
     {
       if (specialization() == DEMON_HUNTER_HAVOC)
-        pre -> add_action( "food,type=the_hungry_magister" );
+      {
+        pre->add_action("food,type=the_hungry_magister,if=!equipped.majordomos_dinner_bell");
+        pre->add_action("food,type=nightborne_delicacy_platter,if=equipped.majordomos_dinner_bell");
+      }
       else
         pre -> add_action( "food,type=nightborne_delicacy_platter" );
     }

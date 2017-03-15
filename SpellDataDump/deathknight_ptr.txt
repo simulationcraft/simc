@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build 3d249f6)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build 3eb4aac)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -468,7 +468,7 @@ Spell Level      : 55
 Range            : 30 yards
 GCD              : 1.5 seconds
 Proc Chance      : 101%
-Affecting spells : Sudden Doom (81340), Unholy Death Knight (137007), Deadliest Coil (191419)
+Affecting spells : Sudden Doom (81340), Unholy Death Knight (137007), Deadliest Coil (191419), Death March (235556)
 Attributes       : ........ ........ ..x..... ........   ........ .xx..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -516,7 +516,7 @@ Spell Level      : 55
 Range            : 40 yards
 Velocity         : 35 yards/sec
 Proc Chance      : 101%
-Affecting spells : Sudden Doom (81340), Unholy Death Knight (137007), Deadliest Coil (191419)
+Affecting spells : Sudden Doom (81340), Unholy Death Knight (137007), Deadliest Coil (191419), Death March (235556)
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ......x.   ........ .x...... ..x..... ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -711,13 +711,13 @@ Attributes       : ........ ........ ..x..... ........   ...x...x .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ..x..... ........ ....x...   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ....x... ........ ........ ........ 
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=41295)    : Dummy (3)
                    Base Value: 80 | Scaled Value: 80 | Target: Enemy(6)
 #2 (id=41296)    : School Damage: frost (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.82500 | Radius: 0 - 10 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.82500 | Target: Enemy(6)
 Description      : Blast the target with a frigid wind, dealing $s2 $?s204088[Frost damage and applying Frost Fever to the target.][Frost damage to that foe, and ${($m1/100)*$m2} Frost damage to all other enemies within 10 yards, infecting all targets with Frost Fever.]
 
 |Tinterface\icons\spell_deathknight_frostfever.blp:24|t |cFFFFFFFFFrost Fever|r
@@ -796,7 +796,7 @@ Resource         : 45 Runic Power
 Spell Level      : 55
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Dark Succor (101568), Death Knight (137005), Unholy Death Knight (137007), Blood Death Knight (137008), Deathbringer (144953), Item - Death Knight T18 Blood 4P Bonus (187873), Unending Thirst (216019), Ossuary (219788), Haemostasis (235559)
+Affecting spells : Dark Succor (101568), Death Knight (137005), Unholy Death Knight (137007), Blood Death Knight (137008), Deathbringer (144953), Item - Death Knight T18 Blood 4P Bonus (187873), Unending Thirst (216019), Ossuary (219788), Death March (235556), Haemostasis (235559)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -978,7 +978,7 @@ Attributes       : ........ ........ ........ ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=43733)    : Apply Aura (6) | Taunt (11)
-                   Base Value: 200 | Scaled Value: 200 | Target: Enemy(6)
+                   Base Value: 400 | Scaled Value: 400 | Target: Enemy(6)
 #2 (id=43734)    : Unknown effect type (114)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : $@spelldesc49560
@@ -1294,7 +1294,7 @@ Effects          :
 #1 (id=49248)    : Unknown effect type (114)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Enemy(6)
 #2 (id=49249)    : Apply Aura (6) | Taunt (11)
-                   Base Value: 200 | Scaled Value: 200 | Target: Enemy(6)
+                   Base Value: 400 | Scaled Value: 400 | Target: Enemy(6)
 Description      : Command the target to attack you, increasing threat you generate against that target for $d.
 Tooltip          : Taunted.
 
@@ -1649,7 +1649,7 @@ Name             : Death Strike Off-Hand (id=66188) [Scaling Spell (1), Spell Fa
 Class            : Death Knight
 School           : Physical
 Range            : 100 yards
-Affecting spells : Dark Succor (101568), Unholy Death Knight (137007), Blood Death Knight (137008), Deathbringer (144953), Item - Death Knight T18 Blood 4P Bonus (187873), Unending Thirst (216019), Ossuary (219788), Haemostasis (235559)
+Affecting spells : Dark Succor (101568), Unholy Death Knight (137007), Blood Death Knight (137008), Deathbringer (144953), Item - Death Knight T18 Blood 4P Bonus (187873), Unending Thirst (216019), Ossuary (219788), Death March (235556), Haemostasis (235559)
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ..x..... x.....x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2562,12 +2562,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=167609)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 100 | Scaled Value: 100 | Target: Self(1)
-                   Affected Spells: Claw (16827), Bite (17253), Smack (49966)
+                   Affected Spells: Claw (16827), Bite (17253), Smack (49966), Talon Slash (242735)
 #2 (id=191547)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | Target: Self(1)
 #3 (id=191721)   : Apply Aura (6) | Add Flat Modifier: Spell Range (107)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 5 | Target: Self(1)
-                   Affected Spells: Claw (16827), Bite (17253), Smack (49966)
+                   Affected Spells: Claw (16827), Bite (17253), Smack (49966), Talon Slash (242735)
 #4 (id=337955)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Target: Self(1)
 Description      : Your pet's Basic Attack deals $s1% increased damage, can now be used from $s2 yards away, and will instantly teleport your pet behind its target. Your pet can teleport only once per $s4 sec.
@@ -3183,7 +3183,7 @@ Effects          :
 #2 (id=228483)   : Apply Aura (6) | Unknown effect sub type (467)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 1 | Target: Self(1)
 #3 (id=228484)   : Apply Aura (6) | Unknown effect sub type (466)
-                   Base Value: -100 | Scaled Value: -100 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Stat Negation Aura - Strength Tank (id=162702) [Passive, Hidden] 
 Replaces         : Stat Negation Aura - Strength DPS (id=162698)
@@ -3497,7 +3497,7 @@ Name             : Crystalline Swords (id=189186) [Spell Family (15), Passive]
 Class            : Death Knight
 School           : Physical
 Proc Chance      : 45%
-Artifact Power   : Id: 122, Max Rank: 1
+Artifact Power   : Id: 122, Index: 1, Max Rank: 1
 Proc Flags       : ..x.x... ........ ........ ........ 
                  : White Melee, Yellow Melee
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -3519,7 +3519,7 @@ GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 300 seconds
 Category         : 1652
-Artifact Power   : Id: 124, Max Rank: 1
+Artifact Power   : Id: 124, Index: 3, Max Rank: 1
 Affecting spells : Consort's Cold Core (235605)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3939,7 +3939,7 @@ Spell Level      : 55
 Duration         : 30 seconds
 Stacks           : 10 maximum
 Proc Chance      : 101%
-Affecting spells : Bone Wall (144948), Foul Bulwark (206974)
+Affecting spells : Bone Wall (144948), Rattlegore Bone Legplates (205816), Foul Bulwark (206974)
 Triggered by     : Rattling Bones (192557)
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -4458,7 +4458,7 @@ Spell Level      : 56
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 45 seconds
-Artifact Power   : Id: 289, Max Rank: 1
+Artifact Power   : Id: 289, Index: 0, Max Rank: 1
 Affecting spells : Death Knight (137005), Blood Death Knight (137008)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -5429,7 +5429,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=306658)   : Summon (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 100876 | Misc Value 2: 0xca6 | Radius: 3 yards | Target: Unknown(44)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 100876 | Misc Value 2: 0xca6 | Radius: 4 yards | Target: Unknown(44)
 #2 (id=313813)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | Target: Enemy(6)
 #3 (id=313814)   : Trigger Spell: Summon Gargoyle (64)
@@ -6041,7 +6041,7 @@ GCD              : 1.5 seconds
 Cooldown         : 90 seconds
 Internal Cooldown: 1 seconds
 Proc Chance      : 100%
-Artifact Power   : Id: 149, Max Rank: 1
+Artifact Power   : Id: 149, Index: 0, Max Rank: 1
 Proc Flags       : ....x... ..x..... ........ ........ 
                  : Yellow Melee, AOE Heal
 Affecting spells : Death Knight (137005)
