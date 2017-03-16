@@ -140,6 +140,7 @@ public:
     propagate_const<buff_t*> anunds_last_breath;       // Anund's Seared Shackles stack counter
     propagate_const<buff_t*> the_twins_painful_touch;  // To track first casting
     propagate_const<buff_t*> zeks_exterminatus;        // Aura for Zeks proc
+    propagate_const<buff_t*> iridis_empowerment;       // Fake aura for Helm
 
     // Artifact Buffs
     // Shadow 
@@ -4036,6 +4037,7 @@ struct voidform_t final : public priest_buff_t<haste_buff_t>
 
     priest.buffs.insanity_drain_stacks->trigger();
     priest.buffs.the_twins_painful_touch->trigger();
+    priest.buffs.iridis_empowerment->trigger();
     priest.buffs.shadowform->expire();
     priest.insanity.begin_tracking();
     if ( priest.artifact.sphere_of_insanity.rank() )
@@ -4065,6 +4067,8 @@ struct voidform_t final : public priest_buff_t<haste_buff_t>
       priest.buffs.lingering_insanity->trigger( expiration_stacks );
 
     priest.buffs.the_twins_painful_touch->expire();
+
+    priest.buffs.iridis_empowerment->expire();
 
     if ( priest.buffs.shadowform_state->check() )
     {
@@ -4703,8 +4707,15 @@ double priest_t::composite_player_multiplier( school_e school ) const
 
     if ( specs.voidform->ok() && buffs.voidform->check() )
     {
-      m *= 1.0 + buffs.voidform->data().effectN( 1 ).percent() +
-           talents.legacy_of_the_void->effectN( 3 ).percent();
+      double voidform_multiplier = 
+                  buffs.voidform->data().effectN(1).percent() +
+                  talents.legacy_of_the_void->effectN(3).percent();
+      if (active_items.zenkaram_iridis_anadem)
+      {
+        voidform_multiplier += 
+            buffs.iridis_empowerment->data().effectN(2).percent();
+      }
+      m *= 1.0 + voidform_multiplier;      
     }
 
     if ( artifact.creeping_shadows.rank() )
@@ -5275,15 +5286,14 @@ void priest_t::create_buffs()
               4.0 ) );  // TODO Update with spelldata once available
 
   buffs.anunds_last_breath = make_buff( this, "anunds_last_breath", find_spell( 215210 ) );
-  //.chance( 1.0 )
-  //.duration(timespan_t::from_seconds(60.0)) // Probably 1 minute like the rest
-  // of our temp buffs.
-  //.max_stack(100); // Data isn't pulling this in.
+
+  buffs.iridis_empowerment = 
+      buff_creator_t( this, "iridis_empowerment", find_spell( 224999 ) )
+          .chance(active_items.zenkaram_iridis_anadem ? 1.0 : 0.0);;
 
   buffs.the_twins_painful_touch =
       buff_creator_t( this, "the_twins_painful_touch", find_spell( 207721 ) )
           .chance( active_items.the_twins_painful_touch ? 1.0 : 0.0 );
-  //.duration(timespan_t::from_seconds(10.0));
 
   buffs.zeks_exterminatus = buff_creator_t( this, "zeks_exterminatus", find_spell( 236545 ) )
                                 .rppm_scale( RPPM_HASTE );
