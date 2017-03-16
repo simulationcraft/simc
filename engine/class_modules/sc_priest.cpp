@@ -3596,8 +3596,15 @@ struct void_eruption_t final : public priest_spell_t
     aoe      = -1;
     range    = 0.0;
     radius   = 100.0;
-    school   = SCHOOL_SHADOW;
+    school   = SCHOOL_SHADOW;    
     cooldown = priest.cooldowns.void_bolt;
+    base_execute_time = p.find_spell(228260)->cast_time(p.true_level);
+    
+  } 
+
+  double spell_direct_power_coefficient(const action_state_t*) const override
+  {
+    return priest.find_spell(228360)->effectN(1).sp_coeff();
   }
 
   void init() override
