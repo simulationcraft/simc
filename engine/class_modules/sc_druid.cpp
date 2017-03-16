@@ -2086,7 +2086,7 @@ struct moonfire_t : public druid_spell_t
       }
     }
 
-    size_t available_targets( std::vector< player_t* >& tl ) const
+    size_t available_targets( std::vector< player_t* >& tl ) const override
     {
       /* When Lady and the Child is active, this is an AoE action meaning it will impact onto the
       first 2 targets in the target list. Instead, we want it to impact on the target of the action
@@ -2123,7 +2123,7 @@ struct moonfire_t : public druid_spell_t
         }
 
         // Fill list with random unafflicted targets.
-        while ( tl.size() < aoe && unafflicted.size() > 0 )
+        while ( tl.size() < as<size_t>(aoe) && unafflicted.size() > 0 )
         {
           // Random target
           size_t i = ( size_t ) p() -> rng().range( 0, ( double ) unafflicted.size() );
@@ -2133,7 +2133,7 @@ struct moonfire_t : public druid_spell_t
         }
 
         // Fill list with random afflicted targets.
-        while ( tl.size() < aoe && afflicted.size() > 0 )
+        while ( tl.size() < as<size_t>(aoe) && afflicted.size() > 0 )
         {
           // Random target
           size_t i = ( size_t ) p() -> rng().range( 0, ( double ) afflicted.size() );
@@ -3149,7 +3149,7 @@ struct lunar_inspiration_t : public cat_attack_t
     consumes_bloodtalons = false;
   }
 
-  size_t available_targets( std::vector< player_t* >& tl ) const
+  size_t available_targets( std::vector< player_t* >& tl ) const override
   {
     /* When Lady and the Child is active, this is an AoE action meaning it will impact onto the
     first 2 targets in the target list. Instead, we want it to impact on the target of the action
@@ -3186,7 +3186,7 @@ struct lunar_inspiration_t : public cat_attack_t
       }
 
       // Fill list with random unafflicted targets.
-      while ( tl.size() < aoe && unafflicted.size() > 0 )
+      while ( tl.size() < as<size_t>(aoe) && unafflicted.size() > 0 )
       {
         // Random target
         size_t i = ( size_t ) p() -> rng().range( 0, ( double ) unafflicted.size() );
@@ -3196,7 +3196,7 @@ struct lunar_inspiration_t : public cat_attack_t
       }
 
       // Fill list with random afflicted targets.
-      while ( tl.size() < aoe && afflicted.size() > 0 )
+      while ( tl.size() < as<size_t>(aoe) && afflicted.size() > 0 )
       {
         // Random target
         size_t i = ( size_t ) p() -> rng().range( 0, ( double ) afflicted.size() );
@@ -5833,7 +5833,6 @@ struct starfall_t : public druid_spell_t
   struct starfall_tick_t : public druid_spell_t
   {
     bool echoing_stars;
-
     starfall_tick_t( const std::string& n, druid_t* p, const spell_data_t* s ) :
       druid_spell_t( n, p, s ),
       echoing_stars( false )
@@ -5971,11 +5970,10 @@ struct starfall_t : public druid_spell_t
         .target( execute_state -> target )
         .x( execute_state -> target -> x_position )
         .y( execute_state -> target -> y_position )
-        .pulse_time( base_tick_time )
-        .duration( data().duration() )
+        .pulse_time( base_tick_time * p() -> cache.spell_haste() )
+        .duration( data().duration() * p() -> cache.spell_haste() )
         .start_time( sim -> current_time() )
-        .action( p() -> active.starfall )
-        .hasted( ground_aoe_params_t::SPELL_HASTE ), true );
+        .action( p() -> active.starfall ) );
 
     // Trigger starfall debuffs
     for ( size_t i = 0, actors = sim -> target_non_sleeping_list.size(); i < actors; i++ )
@@ -6631,8 +6629,7 @@ void druid_t::init_spells()
   talent.flourish                       = find_talent_spell( "Flourish" );
 
   if ( talent.earthwarden -> ok() )
-    instant_absorb_list[ talent.earthwarden -> id() ] =
-      new instant_absorb_t( this, find_spell( 203975 ), "earthwarden", &earthwarden_handler );
+    instant_absorb_list.emplace( talent.earthwarden -> id(), instant_absorb_t( this, find_spell( 203975 ), "earthwarden", &earthwarden_handler ) );
 
   // Affinities =============================================================
 
@@ -6732,8 +6729,7 @@ void druid_t::init_spells()
     active.brambles           = new spells::brambles_t( this );
     active.brambles_pulse     = new spells::brambles_pulse_t( this );
 
-    instant_absorb_list[ talent.brambles -> id() ] =
-      new instant_absorb_t( this, talent.brambles, "brambles", &brambles_handler );
+    instant_absorb_list.emplace( talent.brambles -> id(), instant_absorb_t( this, talent.brambles, "brambles", &brambles_handler ) );
   }
   if ( talent.galactic_guardian -> ok() )
   {
@@ -9024,8 +9020,7 @@ struct stalwart_guardian_callback_t : public scoped_actor_callback_t<druid_t>
   {
     p -> active.stalwart_guardian = new stalwart_guardian_t( p );
 
-    p -> instant_absorb_list[ 184878 ] =
-      new instant_absorb_t( p, p -> find_spell( 184878 ), "stalwart_guardian", &stalwart_guardian_handler );
+    p -> instant_absorb_list.emplace( 184878, instant_absorb_t( p, p -> find_spell( 184878 ), "stalwart_guardian", &stalwart_guardian_handler ) );
   }
 };
 

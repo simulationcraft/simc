@@ -356,12 +356,10 @@ public:
   {
     bool zannesu_journey;
     bool lady_vashjs_grasp;
-    bool sephuzs_secret;
     bool shard_of_the_exodar;
     bool shatterlance;
     bool cord_of_infinity;
     double shatterlance_effect;
-    double zannesu_journey_multiplier;
   } legendary;
   // Pets
   struct pets_t
@@ -636,6 +634,8 @@ public:
   void trigger_icicle( const action_state_t* trigger_state, bool chain = false, player_t* chain_target = nullptr );
 
   void trigger_touch_of_the_magi( buffs::touch_of_the_magi_t* touch_of_the_magi_buff );
+
+  bool apply_crowd_control( const action_state_t* state, spell_mechanic type );
 
   void              apl_precombat();
   void              apl_arcane();
@@ -968,16 +968,11 @@ struct freeze_t : public mage_pet_spell_t
 
   virtual void impact( action_state_t* s ) override
   {
-    spell_t::impact( s );
+    mage_pet_spell_t::impact( s );
 
-    if ( result_is_hit( s -> result ) && s -> target -> is_add() )
+    bool success = o() -> apply_crowd_control( s, MECHANIC_ROOT );
+    if ( success )
     {
-      o() -> get_target_data( s -> target ) -> debuffs.frozen -> trigger();
-      if ( o() -> legendary.sephuzs_secret )
-      {
-        o() -> buffs.sephuzs_secret -> trigger();
-      }
-
       o() -> buffs.fingers_of_frost->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 );
       o() -> benefits.fingers_of_frost->update( fof_source_id );
     }
@@ -1779,27 +1774,6 @@ struct icy_veins_buff_t : public haste_buff_t
   }
 };
 
-struct sephuzs_secret_buff_t : public haste_buff_t
-{
-  cooldown_t* icd;
-  sephuzs_secret_buff_t( mage_t* p ) :
-    haste_buff_t( haste_buff_creator_t( p, "sephuzs_secret", p -> find_spell( 208052 ) )
-                            .default_value( p -> find_spell( 208052 ) -> effectN( 2 ).percent() )
-                            .add_invalidate( CACHE_HASTE ) )
-  {
-    icd = p -> get_cooldown( "sephuzs_secret_cooldown" );
-    icd  -> duration = p -> find_spell( 226262 ) -> duration();
-  }
-
-  void execute( int stacks, double value, timespan_t duration ) override
-  {
-    if ( icd -> down() )
-      return;
-    buff_t::execute( stacks, value, duration );
-    icd -> start();
-  }
-};
-
 struct incanters_flow_t : public buff_t
 {
   incanters_flow_t( mage_t* p ) :
@@ -2013,20 +1987,6 @@ public:
       else
       {
         p() -> benefits.arcane_missiles -> update( source_id, stacks );
-      }
-    }
-  }
-
-  // Apply freeze effect to a target that can be frozen. If the actor has
-  // Sephuz's Secret, also trigger the haste buff.
-  void trigger_frozen( action_state_t* s )
-  {
-    if ( result_is_hit( s -> result ) && s -> target -> is_add() )
-    {
-      td( s -> target ) -> debuffs.frozen -> trigger();
-      if ( p() -> legendary.sephuzs_secret )
-      {
-        p() -> buffs.sephuzs_secret -> trigger();
       }
     }
   }
@@ -3895,11 +3855,7 @@ struct counterspell_t : public mage_spell_t
   virtual void execute() override
   {
     mage_spell_t::execute();
-
-    if ( p() -> legendary.sephuzs_secret )
-    {
-      p() -> buffs.sephuzs_secret -> trigger();
-    }
+    p() -> apply_crowd_control( execute_state, MECHANIC_INTERRUPT );
   }
 
   virtual bool ready() override
@@ -3960,10 +3916,7 @@ struct dragons_breath_t : public fire_mage_spell_t
       handle_hot_streak( s );
     }
 
-    if ( result_is_hit( s -> result ) && s -> target -> is_add() && p() -> legendary.sephuzs_secret )
-    {
-      p() -> buffs.sephuzs_secret -> trigger();
-    }
+    p() -> apply_crowd_control( s, MECHANIC_DISORIENT );
   }
 };
 
@@ -4705,7 +4658,7 @@ struct frost_nova_t : public mage_spell_t
   virtual void impact( action_state_t* s ) override
   {
     mage_spell_t::impact( s );
-    trigger_frozen( s );
+    p() -> apply_crowd_control( s, MECHANIC_ROOT );
   }
 };
 
@@ -4730,7 +4683,7 @@ struct ice_time_nova_t : public frost_mage_spell_t
   virtual void impact( action_state_t* s ) override
   {
     frost_mage_spell_t::impact( s );
-    trigger_frozen( s );
+    p() -> apply_crowd_control( s, MECHANIC_ROOT );
   }
 };
 
@@ -4933,7 +4886,7 @@ struct glacial_spike_t : public frost_mage_spell_t
     base_dd_max = icicle_damage_sum;
 
     frost_mage_spell_t::impact( s );
-    trigger_frozen( s );
+    p() -> apply_crowd_control( s, MECHANIC_ROOT );
 
     p() -> buffs.icicles -> expire();
   }
@@ -5150,7 +5103,7 @@ struct ice_nova_t : public frost_mage_spell_t
   virtual void impact( action_state_t* s ) override
   {
     frost_mage_spell_t::impact( s );
-    trigger_frozen( s );
+    p() -> apply_crowd_control( s, MECHANIC_ROOT );
   }
 };
 
@@ -7427,6 +7380,29 @@ void mage_t::trigger_touch_of_the_magi( buffs::touch_of_the_magi_t* buff )
   touch_of_the_magi_explosion -> execute();
 }
 
+bool mage_t::apply_crowd_control( const action_state_t* state, spell_mechanic type )
+{
+  if ( type == MECHANIC_INTERRUPT )
+  {
+    buffs.sephuzs_secret -> trigger();
+    return true;
+  }
+
+  if ( action_t::result_is_hit( state -> result )
+    && ( state -> target -> is_add() || state -> target -> level() < sim -> max_player_level + 3 ) )
+  {
+    buffs.sephuzs_secret -> trigger();
+    if ( type == MECHANIC_ROOT )
+    {
+      get_target_data( state -> target ) -> debuffs.frozen -> trigger();
+    }
+
+    return true;
+  }
+
+  return false;
+}
+
 // mage_t::create_action ====================================================
 
 action_t* mage_t::create_action( const std::string& name,
@@ -7803,8 +7779,11 @@ void mage_t::create_buffs()
 
 
   // 4T18 Temporal Power buff has no duration and stacks multiplicatively
-  buffs.temporal_power        = buff_creator_t( this, "temporal_power", find_spell( 190623 ) )
-                                  .max_stack( 10 );
+//  buffs.temporal_power        = buff_creator_t( this, "temporal_power", find_spell( 190623 ) )
+//                                  .max_stack( 10 );
+//  buffs.temporal_power        = (new buff_t( this, "temporal_power", find_spell( 190623 ) )) -> set_max_stack( 10 );
+
+  buffs.temporal_power        = make_buff( this, "temporal_power", find_spell( 190623 ) ) -> set_max_stack( 10 );
 
   // Fire
   buffs.combustion            = buff_creator_t( this, "combustion", find_spell( 190319 ) )
@@ -7879,8 +7858,6 @@ void mage_t::create_buffs()
   buffs.zannesu_journey    = buff_creator_t( this, "zannesu_journey", find_spell( 226852 ) );
   buffs.lady_vashjs_grasp  = new buffs::lady_vashjs_grasp_t( this );
   buffs.rhonins_assaulting_armwraps = buff_creator_t( this, "rhonins_assaulting_armwraps", find_spell( 208081 ) );
-
-  buffs.sephuzs_secret     = new buffs::sephuzs_secret_buff_t( this );
 
   buffs.kaelthas_ultimate_ability = buff_creator_t( this, "kaelthas_ultimate_ability", find_spell( 209455 ) );
 
@@ -8922,7 +8899,7 @@ double mage_t::composite_spell_haste() const
 
   if ( buffs.sephuzs_secret -> check() )
   {
-    h *= 1.0 / ( 1.0 + buffs.sephuzs_secret -> default_value );
+    h /= 1.0 + buffs.sephuzs_secret -> stack_value();
   }
 
   if ( buffs.icarus_uprising -> check() )
@@ -9052,11 +9029,14 @@ void mage_t::update_movement( timespan_t duration )
 
 double mage_t::temporary_movement_modifier() const
 {
-  double temporary = player_t::temporary_movement_modifier();
+  double tmm = player_t::temporary_movement_modifier();
 
-  // TODO: New movement buffs?
+  if ( buffs.sephuzs_secret -> up() )
+  {
+    tmm = std::max( buffs.sephuzs_secret -> data().effectN( 1 ).percent(), tmm );
+  }
 
-  return temporary;
+  return tmm;
 }
 
 // mage_t::arise ============================================================
@@ -9598,14 +9578,26 @@ static void sorcerous_shadowruby_pendant( special_effect_t& effect )
 }
 
 // Mage Legendary Items
-struct sephuzs_secret_t : public scoped_actor_callback_t<mage_t>
+struct sephuzs_secret_t : public class_buff_cb_t<mage_t, haste_buff_t, haste_buff_creator_t>
 {
-  sephuzs_secret_t(): super( MAGE )
+  sephuzs_secret_t(): super( MAGE, "sephuzs_secret" )
   { }
 
-  void manipulate( mage_t* actor, const special_effect_t& /* e */ ) override
-  { actor -> legendary.sephuzs_secret = true; }
+  haste_buff_t*& buff_ptr( const special_effect_t& e ) override
+  {
+    return debug_cast<mage_t*>( e.player ) -> buffs.sephuzs_secret;
+  }
+
+  haste_buff_creator_t creator( const special_effect_t& e ) const override
+  {
+    return super::creator( e )
+      .spell( e.trigger() )
+      .cd( e.player -> find_spell( 226262 ) -> duration() )
+      .default_value( e.trigger() -> effectN( 2 ).percent() )
+      .add_invalidate( CACHE_RUN_SPEED );
+  }
 };
+
 struct shard_of_the_exodar_t : public scoped_actor_callback_t<mage_t>
 {
   shard_of_the_exodar_t() : super( MAGE )
@@ -9803,7 +9795,7 @@ public:
     unique_gear::register_special_effect( 208146, lady_vashjs_grasp_t()                  );
     unique_gear::register_special_effect( 208080, rhonins_assaulting_armwraps_t()        );
     unique_gear::register_special_effect( 207547, darcklis_dragonfire_diadem_t()         );
-    unique_gear::register_special_effect( 208051, sephuzs_secret_t()                     );
+    unique_gear::register_special_effect( 208051, sephuzs_secret_t(), true               );
     unique_gear::register_special_effect( 207970, shard_of_the_exodar_t()                );
     unique_gear::register_special_effect( 209450, marquee_bindings_of_the_sun_king_t()   );
     unique_gear::register_special_effect( 209280, mystic_kilt_of_the_rune_master_t()     );

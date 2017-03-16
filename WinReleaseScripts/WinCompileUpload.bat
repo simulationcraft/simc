@@ -12,7 +12,7 @@ set simcversion=715-02
 set SIMCAPPFULLVERSION=7.1.5.02
 :: For bumping the minor version, just change the above line.  Make sure to also change setup32.iss and setup64.iss as well. 
 
-set qt_dir=C:\Qt\Qt5.7.1\5.7\
+set qt_dir=C:\Qt\Qt5.8.0\5.8\
 set visualstudio=%VS140COMNTOOLS:~0,-14%
 cd ..
 git clean -f -x -d

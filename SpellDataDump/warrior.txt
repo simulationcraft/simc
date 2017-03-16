@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 3d249f6)
+SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 3249f8a)
 
 Name             : Defensive Stance (id=71) [Spell Family (4), Passive, Hidden] 
 Class            : Protection Warrior
@@ -3197,7 +3197,7 @@ Description      : You have a ${$m2/100}.2% chance per Rage spent to reset the r
 Name             : Reflective Plating (id=188672) [Spell Family (4), Passive] 
 Class            : Warrior
 School           : Physical
-Artifact Power   : Id: 104, Max Rank: 1
+Artifact Power   : Id: 104, Index: 0, Max Rank: 1
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4137,7 +4137,7 @@ School           : Physical
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Cooldown         : 45 seconds
-Artifact Power   : Id: 91, Max Rank: 1
+Artifact Power   : Id: 91, Index: 0, Max Rank: 1
 Attributes       : ........ ........ ........ ........   ......x. ........ ........ .....x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4203,7 +4203,7 @@ Spell Level      : 28 (max 80)
 GCD              : 1.5 seconds
 Cooldown         : 45 seconds
 Category         : 891
-Artifact Power   : Id: 984, Max Rank: 1
+Artifact Power   : Id: 984, Index: 0, Max Rank: 1
 Affecting spells : Warrior (137047), Fury Warrior (137050), 
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -4436,7 +4436,7 @@ Class            : Warrior
 School           : Physical
 Range            : 100 yards
 Proc Chance      : 101%
-Artifact Power   : Id: 1149, Max Rank: 6, Values: [ -15, -30, -45, -60, -75, -90 ]
+Artifact Power   : Id: 1149, Index: 9, Max Rank: 6, Values: [ -15, -30, -45, -60, -75, -90 ]
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Attributes       : ......xx ........ ........ .......x   ........ ........ ........ ........ 
@@ -4480,7 +4480,7 @@ Class            : Warrior
 School           : Physical
 Range            : 100 yards
 Proc Chance      : 101%
-Artifact Power   : Id: 1138, Max Rank: 1
+Artifact Power   : Id: 1138, Index: 2, Max Rank: 1
 Proc Flags       : ........ ..x...x. ........ ........ 
                  : AOE Heal, Heal
 Attributes       : ......xx ........ ........ .......x   ........ ........ ........ ........ 
@@ -4501,7 +4501,7 @@ School           : Shadow
 Range            : 100 yards
 GCD              : 1.5 seconds
 Cooldown         : 60 seconds
-Artifact Power   : Id: 1136, Max Rank: 1
+Artifact Power   : Id: 1136, Index: 0, Max Rank: 1
 Affecting spells : Warrior (137047)
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -5000,10 +5000,11 @@ Effects          :
 Description      : $@spelldesc218826
 
 Name             : Inspiring Presence (id=222944) [Spell Family (4)] 
+Hotfixed         : Attributes
 Class            : Warrior
 School           : Physical
 Triggered by     : Inspiring Presence (205484)
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

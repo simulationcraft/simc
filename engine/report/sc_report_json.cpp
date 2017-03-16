@@ -1862,6 +1862,8 @@ void print_json( sim_t& sim )
       return;
     }
 
+    sim.errorf( "JSON v1 (json=) report is deprecated. Please use JSON v2 (json2=) report.");
+
     // Print JSON report
     try
     {

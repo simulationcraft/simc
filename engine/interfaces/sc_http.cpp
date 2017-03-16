@@ -11,13 +11,11 @@
 // PLATFORM INDEPENDENT SECTION
 // ==========================================================================
 
-// proxy ====================================================================
-
-http::proxy_t proxy;
-
 cache::cache_control_t cache::cache_control_t::singleton;
 
 namespace { // UNNAMED NAMESPACE ==========================================
+
+http::proxy_t proxy;
 
 const bool HTTP_CACHE_DEBUG = false;
 
@@ -186,6 +184,8 @@ bool download( url_cache_entry_t& entry,
 #include <sys/socket.h>
 #include <netdb.h>
 #include <unistd.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 
 #endif
 

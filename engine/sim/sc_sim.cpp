@@ -2140,8 +2140,6 @@ bool sim_t::init_actors()
 // critical here. Called in sim_t::init()
 bool sim_t::init_actor( player_t* p )
 {
-  bool ret = true;
-
   // initialize class/enemy modules
   for ( player_e i = PLAYER_NONE; i < PLAYER_MAX; ++i )
   {
@@ -2170,7 +2168,7 @@ bool sim_t::init_actor( player_t* p )
   // Initialize each actor's items, construct gear information & stats
   if ( ! p -> init_items() )
   {
-    ret = false;
+    return false;
   }
 
   p -> init_artifact();
@@ -2182,13 +2180,13 @@ bool sim_t::init_actor( player_t* p )
   // actions (APLs, really) based on the presence of special effects on items.
   if ( ! p -> create_special_effects() )
   {
-    ret = false;
+    return false;
   }
 
   // First, create all the action objects and set up action lists properly
   if ( ! p -> create_actions() )
   {
-    ret = false;
+    return false;
   }
 
   // Create all actor pets before special effects get initialized. This ensures that we can use
@@ -2200,13 +2198,13 @@ bool sim_t::init_actor( player_t* p )
   // Second-phase initialize all special effects and register them to actors
   if ( ! p -> init_special_effects() )
   {
-    ret = false;
+    return false;
   }
 
   // Finally, initialize all action objects
   if ( ! p -> init_actions() )
   {
-    ret = false;
+    return false;
   }
 
   // Once all transient properties are initialized (e.g., base stats, spells, special effects,
@@ -2226,7 +2224,7 @@ bool sim_t::init_actor( player_t* p )
   p -> init_absorb_priority();
   p -> init_assessors();
 
-  return ret;
+  return true;
 }
 
 // sim_t::init_actor_pets ===================================================

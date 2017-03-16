@@ -26,32 +26,32 @@ goto usage
 :okay
 
 
-py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR% -t spec_list                  > %OUTPATH%\sc_spec_list%PTREXT%.inc
-py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR%  -t talent                  > %OUTPATH%\sc_talent_data%PTREXT%.inc
-py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR%  -t spell > %OUTPATH%\sc_spell_data%PTREXT%.inc
-py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR%  -t rppm_coeff              >> %OUTPATH%\sc_spell_lists%PTREXT%.inc
-py -3  %RUNFILE% -p %GTINPATH% -b %BUILD% %PTR%  -t scale                   > %OUTPATH%\sc_scale_data%PTREXT%.inc
-py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR%  -t class_list              > %OUTPATH%\sc_spell_lists%PTREXT%.inc
-py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR%  -t spec_spell_list        >> %OUTPATH%\sc_spell_lists%PTREXT%.inc
-py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR%  -t mastery_list           >> %OUTPATH%\sc_spell_lists%PTREXT%.inc
-py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR%  -t racial_list            >> %OUTPATH%\sc_spell_lists%PTREXT%.inc
-py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR%  -t set_list2              >> %OUTPATH%\sc_spell_lists%PTREXT%.inc
-py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR%  -t rppm_coeff             >> %OUTPATH%\sc_spell_lists%PTREXT%.inc
-py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR%  -t artifact               >> %OUTPATH%\sc_spell_lists%PTREXT%.inc
-py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR%  -t item                    > %OUTPATH%/sc_item_data%PTREXT%.inc
-py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR%  -t random_property_points  > %OUTPATH%/sc_item_data%PTREXT%2.inc
-py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR%  -t random_suffix          >> %OUTPATH%/sc_item_data%PTREXT%2.inc
-py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR%  -t item_ench              >> %OUTPATH%/sc_item_data%PTREXT%2.inc
-py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR%  -t item_armor             >> %OUTPATH%/sc_item_data%PTREXT%2.inc
-py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR%  -t weapon_damage          >> %OUTPATH%/sc_item_data%PTREXT%2.inc
-py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR%  -t gem_properties         >> %OUTPATH%/sc_item_data%PTREXT%2.inc
-py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR%  -t item_upgrade           >> %OUTPATH%/sc_item_data%PTREXT%2.inc
-py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR%  -t item_bonus             >> %OUTPATH%/sc_item_data%PTREXT%2.inc
-py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR%  -t item_scaling           >> %OUTPATH%/sc_item_data%PTREXT%2.inc
-py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR%  -t item_name_desc         >> %OUTPATH%/sc_item_data%PTREXT%2.inc
-py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR%  -t item_child             >> %OUTPATH%/sc_item_data%PTREXT%2.inc
+py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR% -t spec_list               -o %OUTPATH%\sc_spec_list%PTREXT%.inc
+py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR%  -t talent                 -o %OUTPATH%\sc_talent_data%PTREXT%.inc
+py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR%  -t spell                  -o %OUTPATH%\sc_spell_data%PTREXT%.inc
+py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR%  -t rppm_coeff             -a %OUTPATH%\sc_spell_lists%PTREXT%.inc
+py -3  %RUNFILE% -p %GTINPATH% -b %BUILD% %PTR%  -t scale                                   -o %OUTPATH%\sc_scale_data%PTREXT%.inc
+py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR%  -t class_list             -o %OUTPATH%\sc_spell_lists%PTREXT%.inc
+py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR%  -t spec_spell_list        -a %OUTPATH%\sc_spell_lists%PTREXT%.inc
+py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR%  -t mastery_list           -a %OUTPATH%\sc_spell_lists%PTREXT%.inc
+py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR%  -t racial_list            -a %OUTPATH%\sc_spell_lists%PTREXT%.inc
+py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR%  -t set_list2              -a %OUTPATH%\sc_spell_lists%PTREXT%.inc
+py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR%  -t rppm_coeff             -a %OUTPATH%\sc_spell_lists%PTREXT%.inc
+py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR%  -t artifact               -a %OUTPATH%\sc_spell_lists%PTREXT%.inc
+py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR%  -t item                   -o %OUTPATH%/sc_item_data%PTREXT%.inc
+py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR%  -t random_property_points -o %OUTPATH%/sc_item_data%PTREXT%2.inc
+py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR%  -t random_suffix          -a %OUTPATH%/sc_item_data%PTREXT%2.inc
+py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR%  -t item_ench              -a %OUTPATH%/sc_item_data%PTREXT%2.inc
+py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR%  -t item_armor             -a %OUTPATH%/sc_item_data%PTREXT%2.inc
+py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR%  -t weapon_damage          -a %OUTPATH%/sc_item_data%PTREXT%2.inc
+py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR%  -t gem_properties         -a %OUTPATH%/sc_item_data%PTREXT%2.inc
+py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR%  -t item_upgrade           -a %OUTPATH%/sc_item_data%PTREXT%2.inc
+py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR%  -t item_bonus             -a %OUTPATH%/sc_item_data%PTREXT%2.inc
+py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR%  -t item_scaling           -a %OUTPATH%/sc_item_data%PTREXT%2.inc
+py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR%  -t item_name_desc         -a %OUTPATH%/sc_item_data%PTREXT%2.inc
+py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR%  -t item_child             -a %OUTPATH%/sc_item_data%PTREXT%2.inc
 
-py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR% -t spec_enum > %OUTPATH%\sc_specialization_data%PTREXT%.inc
+py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR% -t spec_enum               -o %OUTPATH%\sc_specialization_data%PTREXT%.inc
 
 echo Done!
 

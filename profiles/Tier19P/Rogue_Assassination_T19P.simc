@@ -41,8 +41,8 @@ actions.build+=/mutilate,if=cooldown.vendetta.remains<7|debuff.vendetta.up|debuf
 
 # Cooldowns
 actions.cds=potion,name=old_war,if=buff.bloodlust.react|target.time_to_die<=25|debuff.vendetta.up&cooldown.vanish.remains<5
-actions.cds+=/use_item,slot=trinket1,if=buff.bloodlust.react|target.time_to_die<=20|debuff.vendetta.up
-actions.cds+=/use_item,slot=trinket2,if=buff.bloodlust.react|target.time_to_die<=20|debuff.vendetta.up
+actions.cds+=/use_item,name=faulty_countermeasure,if=buff.bloodlust.react|target.time_to_die<=20|debuff.vendetta.up
+actions.cds+=/use_item,name=tirathons_betrayal,if=buff.bloodlust.react|target.time_to_die<=20|debuff.vendetta.up
 actions.cds+=/blood_fury,if=debuff.vendetta.up
 actions.cds+=/berserking,if=debuff.vendetta.up
 actions.cds+=/arcane_torrent,if=debuff.vendetta.up&energy.deficit>30

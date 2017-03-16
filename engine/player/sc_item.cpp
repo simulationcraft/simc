@@ -1409,6 +1409,13 @@ bool item_t::decode_ilevel()
     parsed.item_level = util::to_unsigned( option_ilevel_str );
     if ( parsed.item_level == 0 )
       return false;
+
+    if ( parsed.item_level > MAX_ILEVEL )
+    {
+      player -> sim -> errorf( "%s item '%s', too high ilevel %u, maximum ilevel supported is %u.",
+        player -> name(), name(), parsed.item_level, MAX_ILEVEL );
+      return false;
+    }
   }
 
   return true;

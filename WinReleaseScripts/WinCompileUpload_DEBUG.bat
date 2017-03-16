@@ -20,7 +20,7 @@ set simcversion=715-02
 set SIMCAPPFULLVERSION=7.1.5.02
 :: For bumping the minor version, just change the above line.  Make sure to also change setup32.iss and setup64.iss as well. 
 :: Location of source files
-set qt_dir=C:\Qt\Qt5.6.0\5.6\
+set qt_dir=C:\Qt\Qt5.8.0\5.8\
 :: Location of QT
 set redist=C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\redist\
 :: This is a really standard location for VS2015, but change it if you installed it somewhere else.

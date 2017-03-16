@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build 3d249f6)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build 3eb4aac)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -970,7 +970,7 @@ Attributes       : ........ ........ x....... ........   ........ ..x..... .....
                  : Disable target procs (113)
 Effects          :
 #1 (id=43877)    : Dummy (3)
-                   Base Value: 2 | Scaled Value: 2 | Target: Self(1) -> Self(1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : Summons two Spirit $?s147783[Raptors][Wolves] that aid you in battle for $228562d. They are immune to movement-impairing effects$?a231723[ and grant you $190185s1 Maelstrom each time they attack][].
 Variables        : $percent=$?s63271[${$58877m1*1.4}][${$58877m1}]
 
@@ -3166,7 +3166,7 @@ Effects          :
 Description      : $@spelldesc157153
 
 Name             : Stat Negation Aura - Agility DPS (id=162697) [Passive, Hidden] 
-Class            : Beast Mastery Marksmanship Survival Assassination Outlaw Subtlety Enhancement Windwalker Feral Hunter, Rogue, Shaman, Monk, Druid
+Class            : Beast Mastery Marksmanship Survival Assassination Outlaw Subtlety Enhancement Windwalker Feral Havoc Hunter, Rogue, Shaman, Monk, Druid, Demon Hunter
 School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3181,10 +3181,10 @@ Effects          :
 #2 (id=228479)   : Apply Aura (6) | Unknown effect sub type (467)
                    Base Value: -100 | Scaled Value: -100 | Target: Self(1)
 #3 (id=228480)   : Apply Aura (6) | Unknown effect sub type (466)
-                   Base Value: -100 | Scaled Value: -100 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Stat Negation Aura - Intellect DPS (id=162699) [Passive, Hidden] 
-Class            : Elemental Arcane Fire Frost Affliction Demonology Destruction Balance Shaman, Mage, Warlock, Druid
+Class            : Shadow Elemental Arcane Fire Frost Affliction Demonology Destruction Balance Priest, Shaman, Mage, Warlock, Druid
 School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3199,7 +3199,7 @@ Effects          :
 #2 (id=228488)   : Apply Aura (6) | Unknown effect sub type (467)
                    Base Value: -100 | Scaled Value: -100 | Target: Self(1)
 #3 (id=228489)   : Apply Aura (6) | Unknown effect sub type (466)
-                   Base Value: -100 | Scaled Value: -100 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Stat Negation Aura - Intellect Healer (id=162701) [Passive, Hidden] 
 Class            : Holy Discipline Holy Restoration Mistweaver Restoration Paladin, Priest, Shaman, Monk, Druid
@@ -3217,7 +3217,7 @@ Effects          :
 #2 (id=228495)   : Apply Aura (6) | Unknown effect sub type (467)
                    Base Value: -100 | Scaled Value: -100 | Target: Self(1)
 #3 (id=228496)   : Apply Aura (6) | Unknown effect sub type (466)
-                   Base Value: -100 | Scaled Value: -100 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Item - Shaman T17 Enhancement 4P Bonus (id=165610) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman
@@ -3685,7 +3685,7 @@ Description      : Hurls a lightning bolt at the enemy, dealing $s1 Nature damag
 
 Name             : Fire Elemental (id=188592) [Spell Family (11)] 
 Class            : Shaman
-School           : Nature
+School           : Fire
 Spell Level      : 56
 Range            : 30 yards
 GCD              : 1 seconds
@@ -3885,7 +3885,7 @@ Effects          :
 Name             : Static Overload (id=191602) [Spell Family (11), Passive] 
 Class            : Shaman
 School           : Physical
-Artifact Power   : Id: 292, Max Rank: 1
+Artifact Power   : Id: 292, Index: 0, Max Rank: 1
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4251,12 +4251,13 @@ Name             : Storm Elemental (id=192249) [Spell Family (11)]
 Class            : Shaman
 School           : Nature
 Spell Level      : 1
+Range            : 30 yards
 GCD              : 1.5 seconds
 Cooldown         : 150 seconds
 Category         : 1572
 Category Cooldown: 150 seconds
 Affecting spells : Lucidity (137326)
-Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .......x   .....x.. ........ ........ ........ 
@@ -4264,7 +4265,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=282046)   : Dummy (3)
-                   Base Value: 1 | Scaled Value: 1 (avg=0.164) | Target: Self(1)
+                   Base Value: 1 | Scaled Value: 1 (avg=0.164) | Target: Enemy(6)
 Description      : Calls forth a Greater Storm Elemental to hurl gusts of wind that damage the Shaman's enemies and generate Maelstrom for the Shaman for $157299d.
 
 Name             : Fulmination (id=193777) [Spell Family (11), Hidden] 
@@ -4845,7 +4846,7 @@ Attributes       : ........ ........ x....... ........   ........ ..x..... .....
                  : Disable target procs (113)
 Effects          :
 #1 (id=291096)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : Calls forth a Greater Fire Elemental to rain destruction on your enemies for $188592d.
 
 Name             : Earth Elemental (id=198103) [Spell Family (11)] 
@@ -4854,7 +4855,6 @@ School           : Nature
 Spell Level      : 36
 Range            : 30 yards
 GCD              : 1.5 seconds
-Duration         : 60 seconds
 Cooldown         : 300 seconds
 Affecting spells : Lucidity (137326)
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ....x... 
@@ -4865,15 +4865,15 @@ Attributes       : ........ ........ x....... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Disable target procs (113)
 Effects          :
-#1 (id=291153)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self(1)
+#1 (id=291153)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : Calls forth a Greater Earth Elemental to protect you and your allies for $d.
 
 Name             : Gathering Storms (id=198299) [Spell Family (11), Passive] 
 Class            : Shaman
 School           : Physical
 Range            : 100 yards
-Artifact Power   : Id: 912, Max Rank: 8, Values: [ 2, 4, 6, 8, 10, 12, 14, 16 ]
+Artifact Power   : Id: 912, Index: 8, Max Rank: 8, Values: [ 2, 4, 6, 8, 10, 12, 14, 16 ]
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4991,7 +4991,7 @@ Attributes       : ........ ........ x....... ........   ........ ..x..... .....
                  : Disable target procs (113)
 Effects          :
 #1 (id=291773)   : Summon (28)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 100820 | Misc Value 2: 0x489 | Radius: 3 yards | Target: Unknown(48) -> Self(1)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 100820 | Misc Value 2: 0x489 | Target: Self(1)
 Description      : $@spelldesc51533
 Variables        : $percent=$?s63271[${$58877m1*1.4}][${$58877m1}]
 
@@ -5020,7 +5020,7 @@ Class            : Shaman
 School           : Physical
 Range            : 100 yards
 Proc Chance      : 20%
-Artifact Power   : Id: 900, Max Rank: 1
+Artifact Power   : Id: 900, Index: 1, Max Rank: 1
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, AOE Hostile Spell, Hostile Spell
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -5492,7 +5492,7 @@ School           : Physical
 Range            : 100 yards
 Duration         : 6 seconds
 Cooldown         : 60 seconds
-Artifact Power   : Id: 899, Max Rank: 1
+Artifact Power   : Id: 899, Index: 0, Max Rank: 1
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5523,7 +5523,7 @@ Duration         : 15 seconds
 Cooldown         : 60 seconds
 Stacks           : 3 initial, 3 maximum
 Proc Chance      : 100%
-Artifact Power   : Id: 291, Max Rank: 1
+Artifact Power   : Id: 291, Index: 0, Max Rank: 1
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5655,7 +5655,7 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 45 seconds
-Artifact Power   : Id: 1102, Max Rank: 1
+Artifact Power   : Id: 1102, Index: 0, Max Rank: 1
 Affecting spells : Mastery: Deep Healing (77226), Spiritwalker's Grace (79206)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6637,7 +6637,7 @@ Attributes       : ........ ........ x....... ........   ........ ..x..... .....
                  : Disable target procs (113)
 Effects          :
 #1 (id=344190)   : Summon (28)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 29264 | Misc Value 2: 0x489 | Radius: 3 yards | Target: Unknown(48) -> Self(1)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 29264 | Misc Value 2: 0x489 | Radius: 3 yards | Target: Unknown(65)
 Description      : $@spelldesc51533
 Variables        : $percent=$?s63271[${$58877m1*1.4}][${$58877m1}]
 
