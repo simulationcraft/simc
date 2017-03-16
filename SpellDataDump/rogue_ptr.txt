@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build 3d249f6)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build 3eb4aac)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
@@ -89,7 +89,7 @@ GCD              : 1 seconds
 Duration         : 18 seconds
 Cooldown         : 15 seconds
 Mechanic         : Bleed
-Affecting spells : Stealth (1784), Hemorrhage (16511), Vendetta (79140), Subterfuge (115192), Shadow Blades (121471), Assassination Rogue (137037), Strangler (238066), Item - Rogue T20 Assassination 2P Bonus (242274), Item - Rogue T20 Assassination 4P Bonus (242275), 
+Affecting spells : Stealth (1784), Vanish (11327), Hemorrhage (16511), Vendetta (79140), Subterfuge (115192), Shadow Blades (121471), Assassination Rogue (137037), Strangler (238066), Item - Rogue T20 Assassination 2P Bonus (242274), Item - Rogue T20 Assassination 4P Bonus (242275), 
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -709,7 +709,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Stance Mask      : 0x40000000
-Affecting spells : Incarnation: Chosen of Elune (102560), Balance Druid (137013), Lucidity (137247), Solar Empowerment (164545), Lunar Empowerment (164547), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719), Thrash (192090), Celestial Alignment (194223), Astral Influence (197524), Astral Power (197911), Solar Stabbing (202426), Blessing of Elune (202737), Ekowraith, Creator of Worlds (210667), Solar Empowerment (211089), Skywrath (214514)
+Affecting spells : Incarnation: Chosen of Elune (102560), Balance Druid (137013), Lucidity (137247), Solar Empowerment (164545), Lunar Empowerment (164547), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719), Thrash (192090), Celestial Alignment (194223), Astral Influence (197524), Astral Power (197911), Solar Stabbing (202426), Blessing of Elune (202737), Promise of Elune, the Moon Goddess (208283), Ekowraith, Creator of Worlds (210667), Solar Empowerment (211089), Skywrath (214514)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -870,10 +870,13 @@ Class            : Rogue
 School           : Physical
 Spell Level      : 24
 Duration         : 3 seconds
+Proc Chance      : 100%
 Stance Mask      : 0x20000000
-Affecting spells : Nightstalker (14062), Item - Rogue T18 Subtlety 2P Bonus (186278), Hit and Run (196922), Acrobatic Strikes (196924)
+Proc Flags       : ..x.x.x. x...x... x....... ........ 
+                 : White Melee, Yellow Melee, White Ranged, Yellow Ranged, AOE Hostile Spell, Hostile Spell
+Affecting spells : Nightstalker (14062), Subterfuge (108208), Item - Rogue T18 Subtlety 2P Bonus (186278), Hit and Run (196922), Acrobatic Strikes (196924)
 Attributes       : ....x... x....... x.x.x... .x.x....   .....x.. ..x..... ........ ........ 
-                 : .x...... ........ ........ ........   ........ ........ ........ ........ 
+                 : .x...... ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -888,6 +891,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #4 (id=165805)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Self(1)
+#5 (id=370947)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 11 | Target: Self(1)
+                   Affected Spells: Garrote (703)
 Tooltip          : Improved stealth.$?$w3!=0[
 Movement speed increased by $w3%.][]$?$w4!=0[
 Damage increased by $w4%.][]
@@ -2134,6 +2140,9 @@ Effects          :
 #2 (id=322830)   : Apply Aura (6) | Add Flat Modifier: Spell Duration (107)
                    Base Value: 2000 | Scaled Value: 2000 | Misc Value: 1 | Target: Self(1)
                    Affected Spells: Shadow Dance (185313)
+#3 (id=370946)   : Apply Aura (6) | Add Flat Modifier (107)
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 33 | Target: Self(1)
+                   Affected Spells: Vanish (11327)
 Description      : Your abilities requiring Stealth can still be used for $115192d after Stealth breaks.$?c3[
 
 Also increases the duration of Shadow Dance by ${$m2/1000} sec.][
@@ -2931,7 +2940,7 @@ Effects          :
 Description      : $@spelldesc1784
 
 Name             : Stat Negation Aura - Agility DPS (id=162697) [Passive, Hidden] 
-Class            : Beast Mastery Marksmanship Survival Assassination Outlaw Subtlety Enhancement Windwalker Feral Hunter, Rogue, Shaman, Monk, Druid
+Class            : Beast Mastery Marksmanship Survival Assassination Outlaw Subtlety Enhancement Windwalker Feral Havoc Hunter, Rogue, Shaman, Monk, Druid, Demon Hunter
 School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2946,7 +2955,7 @@ Effects          :
 #2 (id=228479)   : Apply Aura (6) | Unknown effect sub type (467)
                    Base Value: -100 | Scaled Value: -100 | Target: Self(1)
 #3 (id=228480)   : Apply Aura (6) | Unknown effect sub type (466)
-                   Base Value: -100 | Scaled Value: -100 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Death from Above (id=163786) [Spell Family (8), Hidden] 
 Class            : Rogue
@@ -3244,7 +3253,7 @@ Description      : Your Dispatch deals $186182m1% additional damage as Nature da
 Name             : Poison Knives (id=192376) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
-Artifact Power   : Id: 331, Max Rank: 8, Values: [ 4, 8, 12, 16, 20, 24, 28, 32 ]
+Artifact Power   : Id: 331, Index: 10, Max Rank: 8, Values: [ 4, 8, 12, 16, 20, 24, 28, 32 ]
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3287,7 +3296,7 @@ GCD              : 1 seconds
 Duration         : 14 seconds
 Cooldown         : 45 seconds
 Proc Chance      : 101%
-Artifact Power   : Id: 346, Max Rank: 1
+Artifact Power   : Id: 346, Index: 0, Max Rank: 1
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, AOE Hostile Spell, Hostile Spell
 Affecting spells : Mastery: Potent Poisons (76803), Vendetta (79140), Assassination Rogue (137037), Kingsbane (192853), Master Poisoner (196864), Dreadblade's Vigor (238103)
@@ -4536,7 +4545,7 @@ School           : Shadow
 Duration         : 12 seconds
 Cooldown         : 90 seconds
 Proc Chance      : 101%
-Artifact Power   : Id: 1052, Max Rank: 1
+Artifact Power   : Id: 1052, Index: 0, Max Rank: 1
 Proc Flags       : ....x... ..x..... ........ ........ 
                  : Yellow Melee, AOE Heal
 Affecting spells : Mastery: Potent Poisons (76803), Vendetta (79140), Assassination Rogue (137037), Kingsbane (192853), Master Poisoner (196864), Dreadblade's Vigor (238103)
@@ -4642,7 +4651,7 @@ Tooltip          : Movement speed reduced by $s3%.
 Name             : Blunderbuss (id=202897) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
-Artifact Power   : Id: 1053, Max Rank: 1
+Artifact Power   : Id: 1053, Index: 1, Max Rank: 1
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4748,7 +4757,7 @@ School           : Physical
 Range            : 8 yards
 GCD              : 1 seconds
 Cooldown         : 60 seconds
-Artifact Power   : Id: 851, Max Rank: 1
+Artifact Power   : Id: 851, Index: 0, Max Rank: 1
 Triggered by     : Push Active Ability to Bar (225880)
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5118,7 +5127,7 @@ Description      : Critical strikes with Between the Eyes deal four times normal
 Name             : Dreadblade's Vigor (id=238103) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
-Artifact Power   : Id: 1582, Max Rank: 1
+Artifact Power   : Id: 1582, Index: 0, Max Rank: 1
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

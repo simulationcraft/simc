@@ -570,6 +570,81 @@ void erase_unordered( Sequence& s, typename Sequence::iterator pos )
   s.pop_back();
 }
 
+// Experimental propagate_const class, which preserves constness for class
+// member pointers, as if they were value/reference types.
+// Source: http://en.cppreference.com/w/cpp/experimental/propagate_const ,
+// simplified adaption by scamille@2017-03-15
+template <class T>
+class propagate_const
+{
+public:
+  using element_type =
+      typename std::remove_reference<decltype( *std::declval<T&>() )>::type;
+
+  propagate_const() = default;
+
+  propagate_const( const propagate_const& p ) = delete;
+
+  //propagate_const( propagate_const&& p ) = default;
+
+  explicit operator bool() const
+  {
+    return static_cast<bool>( _M_t );
+  }
+
+  const element_type* operator->() const
+  {
+    return this->get();
+  }
+
+  operator const element_type*() const
+  {
+    return this->get();
+  }
+
+  const element_type& operator*() const
+  {
+    return *this->get();
+  }
+
+  const element_type* get() const
+  {
+    return _M_t;
+  }
+
+  // [propagate_const.non_const_observers], non-const observers
+
+  element_type* operator->()
+  {
+    return this->get();
+  }
+
+  operator element_type*()
+  {
+    return this->get();
+  }
+
+  element_type& operator*()
+  {
+    return *this->get();
+  }
+
+  element_type* get()
+  {
+    return _M_t;
+  }
+
+  template <typename U>
+  propagate_const& operator=( U&& u )
+  {
+    this->_M_t = std::forward<U>( u );
+    return *this;
+  }
+
+private:
+  T _M_t;  // exposition only
+};
+
 #if 0
 // Experimental very lightweight callback handler.
 template<class... Args>

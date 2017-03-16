@@ -34,6 +34,8 @@ other avenues.
 */
 namespace  // UNNAMED NAMESPACE
 {
+
+
 /* Forward declarations
  */
 struct priest_t;
@@ -65,17 +67,17 @@ struct priest_td_t final : public actor_target_data_t
 public:
   struct dots_t
   {
-    dot_t* shadow_word_pain;
-    dot_t* vampiric_touch;
-    dot_t* holy_fire;
-    dot_t* power_word_solace;
+    propagate_const<dot_t*> shadow_word_pain;
+    propagate_const<dot_t*> vampiric_touch;
+    propagate_const<dot_t*> holy_fire;
+    propagate_const<dot_t*> power_word_solace;
   } dots;
 
   struct buffs_t
   {
-    buff_t* mental_fatigue;
-    buff_t* mind_spike;
-    buff_t* schism;
+    propagate_const<buff_t*> mental_fatigue;
+    propagate_const<buff_t*> mind_spike;
+    propagate_const<buff_t*> schism;
   } buffs;
 
   priest_t& priest;
@@ -98,50 +100,51 @@ public:
   struct
   {
     // Talents
-    buff_t* power_infusion;
-    buff_t* twist_of_fate;
+    propagate_const<buff_t*> power_infusion;
+    propagate_const<buff_t*> twist_of_fate;
 
     // Discipline
-    buff_t* archangel;
-    buff_t* borrowed_time;
-    buff_t* holy_evangelism;
-    buff_t* inner_focus;
+    propagate_const<buff_t*> archangel;
+    propagate_const<buff_t*> borrowed_time;
+    propagate_const<buff_t*> holy_evangelism;
+    propagate_const<buff_t*> inner_focus;
 
     // Holy
 
     // Shadow
-    buff_t* dispersion;
-    buff_t* insanity_drain_stacks;
-    buff_t* lingering_insanity;
-    buff_t* mind_sear_on_hit_reset;
-    buff_t* shadowform;
-    buff_t* shadowform_state;  // Dummy buff to track whether player entered
+    propagate_const<buff_t*> dispersion;
+    propagate_const<buff_t*> insanity_drain_stacks;
+    propagate_const<buff_t*> lingering_insanity;
+    propagate_const<buff_t*> mind_sear_on_hit_reset;
+    propagate_const<buff_t*> shadowform;
+    propagate_const<buff_t*> shadowform_state;  // Dummy buff to track whether player entered
                                // Shadowform initially
-    buff_t* shadowy_insight;
-    buff_t* sphere_of_insanity;
-    buff_t* surrender_to_madness;
-    buff_t* surrender_to_madness_death;
-    buff_t* vampiric_embrace;
-    buff_t* void_ray;
-    buff_t* void_torrent;
-    buff_t* voidform;
+    propagate_const<buff_t*> shadowy_insight;
+    propagate_const<buff_t*> sphere_of_insanity;
+    propagate_const<buff_t*> surrender_to_madness;
+    propagate_const<buff_t*> surrender_to_madness_death;
+    propagate_const<buff_t*> vampiric_embrace;
+    propagate_const<buff_t*> void_ray;
+    propagate_const<buff_t*> void_torrent;
+    propagate_const<buff_t*> voidform;
 
     // Set Bonus
-    buff_t* mental_instinct;          // T17 Shadow 4pc
-    buff_t* reperation;               // T18 Disc 2p
-    buff_t* premonition;              // T18 Shadow 4pc
-    stat_buff_t* power_overwhelming;  // T19OH
-    buff_t* shadow_t19_4p;            // T19 Shadow 4pc
+    propagate_const<buff_t*> mental_instinct;          // T17 Shadow 4pc
+    propagate_const<buff_t*> reperation;               // T18 Disc 2p
+    propagate_const<buff_t*> premonition;              // T18 Shadow 4pc
+    propagate_const<stat_buff_t*> power_overwhelming;  // T19OH
+    propagate_const<buff_t*> shadow_t19_4p;            // T19 Shadow 4pc
 
     // Legion Legendaries
     // Shadow
-    buff_t* anunds_last_breath;       // Anund's Seared Shackles stack counter
-    buff_t* the_twins_painful_touch;  // To track first casting
-    buff_t* zeks_exterminatus;        // Aura for Zeks proc
+    propagate_const<buff_t*> anunds_last_breath;       // Anund's Seared Shackles stack counter
+    propagate_const<buff_t*> the_twins_painful_touch;  // To track first casting
+    propagate_const<buff_t*> zeks_exterminatus;        // Aura for Zeks proc
+    propagate_const<buff_t*> iridis_empowerment;       // Fake aura for Helm
 
     // Artifact Buffs
     // Shadow 
-    buff_t* mind_quickening;
+    propagate_const<buff_t*> mind_quickening;
   } buffs;
 
   // Talents
@@ -296,47 +299,47 @@ public:
   // Cooldowns
   struct
   {
-    cooldown_t* chakra;
-    cooldown_t* mindbender;
-    cooldown_t* penance;
-    cooldown_t* power_word_shield;
-    cooldown_t* shadowfiend;
-    cooldown_t* silence;
+    propagate_const<cooldown_t*> chakra;
+    propagate_const<cooldown_t*> mindbender;
+    propagate_const<cooldown_t*> penance;
+    propagate_const<cooldown_t*> power_word_shield;
+    propagate_const<cooldown_t*> shadowfiend;
+    propagate_const<cooldown_t*> silence;
 
-    cooldown_t* mind_blast;
-    cooldown_t* shadow_word_death;
-    cooldown_t* shadow_word_void;
-    cooldown_t* void_bolt;
+    propagate_const<cooldown_t*> mind_blast;
+    propagate_const<cooldown_t*> shadow_word_death;
+    propagate_const<cooldown_t*> shadow_word_void;
+    propagate_const<cooldown_t*> void_bolt;
   } cooldowns;
 
   // Gains
   struct
   {
-    gain_t* mindbender;
-    gain_t* power_word_solace;
-    gain_t* insanity_auspicious_spirits;
-    gain_t* insanity_dispersion;
-    gain_t* insanity_void_torrent;
-    gain_t* insanity_drain;
-    gain_t* insanity_mind_blast;
-    gain_t* insanity_mind_flay;
-    gain_t* insanity_mind_sear;
-    gain_t* insanity_mind_spike;
-    gain_t* insanity_mindbender;
-    gain_t* insanity_power_infusion;
-    gain_t* insanity_shadow_crash;
-    gain_t* insanity_shadow_word_death;
-    gain_t* insanity_shadow_word_pain_ondamage;
-    gain_t* insanity_shadow_word_pain_onhit;
-    gain_t* insanity_shadow_word_void;
-    gain_t* insanity_surrender_to_madness;
-    gain_t* insanity_vampiric_touch_ondamage;
-    gain_t* insanity_vampiric_touch_onhit;
-    gain_t* insanity_void_bolt;
-    gain_t* insanity_blessing;
-    gain_t* shadowy_insight;
-    gain_t* vampiric_touch_health;
-    gain_t* insanity_call_to_the_void;
+    propagate_const<gain_t*> mindbender;
+    propagate_const<gain_t*> power_word_solace;
+    propagate_const<gain_t*> insanity_auspicious_spirits;
+    propagate_const<gain_t*> insanity_dispersion;
+    propagate_const<gain_t*> insanity_void_torrent;
+    propagate_const<gain_t*> insanity_drain;
+    propagate_const<gain_t*> insanity_mind_blast;
+    propagate_const<gain_t*> insanity_mind_flay;
+    propagate_const<gain_t*> insanity_mind_sear;
+    propagate_const<gain_t*> insanity_mind_spike;
+    propagate_const<gain_t*> insanity_mindbender;
+    propagate_const<gain_t*> insanity_power_infusion;
+    propagate_const<gain_t*> insanity_shadow_crash;
+    propagate_const<gain_t*> insanity_shadow_word_death;
+    propagate_const<gain_t*> insanity_shadow_word_pain_ondamage;
+    propagate_const<gain_t*> insanity_shadow_word_pain_onhit;
+    propagate_const<gain_t*> insanity_shadow_word_void;
+    propagate_const<gain_t*> insanity_surrender_to_madness;
+    propagate_const<gain_t*> insanity_vampiric_touch_ondamage;
+    propagate_const<gain_t*> insanity_vampiric_touch_onhit;
+    propagate_const<gain_t*> insanity_void_bolt;
+    propagate_const<gain_t*> insanity_blessing;
+    propagate_const<gain_t*> shadowy_insight;
+    propagate_const<gain_t*> vampiric_touch_health;
+    propagate_const<gain_t*> insanity_call_to_the_void;
 
   } gains;
 
@@ -348,42 +351,42 @@ public:
   // Procs
   struct
   {
-    proc_t* legendary_zeks_exterminatus;
-    proc_t* legendary_zeks_exterminatus_overflow;
-    proc_t* legendary_anunds_last_breath;
-    proc_t* legendary_anunds_last_breath_overflow;
-    proc_t* shadowy_insight;
-    proc_t* shadowy_insight_overflow;
-    proc_t* serendipity;
-    proc_t* serendipity_overflow;
-    proc_t* shadowy_apparition;
-    proc_t* shadowy_apparition_overflow;
-    proc_t* surge_of_light;
-    proc_t* surge_of_light_overflow;
-    proc_t* t17_2pc_caster_mind_blast_reset;
-    proc_t* t17_2pc_caster_mind_blast_reset_overflow;
-    proc_t* t17_2pc_caster_mind_blast_reset_overflow_seconds;
-    proc_t* t17_4pc_holy;
-    proc_t* t17_4pc_holy_overflow;
-    proc_t* void_eruption_both_dots;
-    proc_t* void_eruption_no_dots;
-    proc_t* void_eruption_only_shadow_word_pain;
-    proc_t* void_eruption_only_vampiric_touch;
-    proc_t* void_tendril;
+    propagate_const<proc_t*> legendary_zeks_exterminatus;
+    propagate_const<proc_t*> legendary_zeks_exterminatus_overflow;
+    propagate_const<proc_t*> legendary_anunds_last_breath;
+    propagate_const<proc_t*> legendary_anunds_last_breath_overflow;
+    propagate_const<proc_t*> shadowy_insight;
+    propagate_const<proc_t*> shadowy_insight_overflow;
+    propagate_const<proc_t*> serendipity;
+    propagate_const<proc_t*> serendipity_overflow;
+    propagate_const<proc_t*> shadowy_apparition;
+    propagate_const<proc_t*> shadowy_apparition_overflow;
+    propagate_const<proc_t*> surge_of_light;
+    propagate_const<proc_t*> surge_of_light_overflow;
+    propagate_const<proc_t*> t17_2pc_caster_mind_blast_reset;
+    propagate_const<proc_t*> t17_2pc_caster_mind_blast_reset_overflow;
+    propagate_const<proc_t*> t17_2pc_caster_mind_blast_reset_overflow_seconds;
+    propagate_const<proc_t*> t17_4pc_holy;
+    propagate_const<proc_t*> t17_4pc_holy_overflow;
+    propagate_const<proc_t*> void_eruption_both_dots;
+    propagate_const<proc_t*> void_eruption_no_dots;
+    propagate_const<proc_t*> void_eruption_only_shadow_word_pain;
+    propagate_const<proc_t*> void_eruption_only_vampiric_touch;
+    propagate_const<proc_t*> void_tendril;
   } procs;
 
   struct realppm_t
   {
-    real_ppm_t* call_to_the_void;
+    propagate_const<real_ppm_t*> call_to_the_void;
   } rppm;
 
   // Special
   struct
   {
-    actions::spells::mind_sear_tick_t* mind_sear_tick;
-    actions::spells::shadowy_apparition_spell_t* shadowy_apparitions;
-    action_t* sphere_of_insanity;
-    action_t* mental_fortitude;
+    propagate_const<actions::spells::mind_sear_tick_t*> mind_sear_tick;
+    propagate_const<actions::spells::shadowy_apparition_spell_t*> shadowy_apparitions;
+    propagate_const<action_t*> sphere_of_insanity;
+    propagate_const<action_t*> mental_fortitude;
   } active_spells;
 
   struct
@@ -406,9 +409,9 @@ public:
   // Pets
   struct
   {
-    pet_t* shadowfiend;
-    pet_t* mindbender;
-    std::array<pets::void_tendril::void_tendril_pet_t*, 10>
+    propagate_const<pet_t*> shadowfiend;
+    propagate_const<pet_t*> mindbender;
+    std::array<propagate_const<pets::void_tendril::void_tendril_pet_t*>, 10>
         void_tendril;  // Multiple can be
                        // up at one time.
                        // 10 should be
@@ -1458,6 +1461,11 @@ public:
     return *( priest.get_target_data( t ) );
   }
 
+  priest_td_t* find_td( player_t* t )
+  {
+    return priest.find_target_data( t );
+  }
+
   const priest_td_t* find_td( player_t* t ) const
   {
     return priest.find_target_data( t );
@@ -1467,7 +1475,7 @@ public:
   {
     if ( priest.rppm.call_to_the_void->trigger() )
     {
-      for ( auto void_tendril : priest.pets.void_tendril )
+      for ( auto&& void_tendril : priest.pets.void_tendril )
       {
         if ( void_tendril->is_sleeping() )
         {
@@ -2340,7 +2348,7 @@ struct mind_flay_t final : public priest_spell_t
       return;
     }
 
-    std::array<dot_t*, 2> dots = {
+    std::array<const dot_t*, 2> dots = {
         {td->dots.shadow_word_pain, td->dots.vampiric_touch}};
 
     // First check if there is even a dot active, otherwise we can bail out as
@@ -2382,7 +2390,7 @@ struct mind_flay_t final : public priest_spell_t
     }
 
     // spread dots to targets
-    for ( dot_t* dot : dots )
+    for ( const dot_t* dot : dots )
     {
       for ( player_t* target : valid_targets )
       {
@@ -3486,7 +3494,7 @@ struct void_bolt_t final : public priest_spell_t
 
       if ( rank2->ok() )
       {
-        if ( const priest_td_t* td = find_td( s->target ) )
+        if ( priest_td_t* td = find_td( s->target ) )
         {
           if ( td->dots.shadow_word_pain->is_ticking() )
           {
@@ -3596,8 +3604,15 @@ struct void_eruption_t final : public priest_spell_t
     aoe      = -1;
     range    = 0.0;
     radius   = 100.0;
-    school   = SCHOOL_SHADOW;
+    school   = SCHOOL_SHADOW;    
     cooldown = priest.cooldowns.void_bolt;
+    base_execute_time = p.find_spell(228260)->cast_time(p.true_level);
+    
+  } 
+
+  double spell_direct_power_coefficient(const action_state_t*) const override
+  {
+    return priest.find_spell(228360)->effectN(1).sp_coeff();
   }
 
   void init() override
@@ -3988,7 +4003,7 @@ struct insanity_drain_stacks_t final : public priest_buff_t<buff_t>
     base_t::expire_override( expiration_stacks, remaining_duration );
   }
 
-  void bump(int stacks, double value) override
+  void bump(int stacks, double /* value */) override
   {
     buff_t::bump(stacks, current_value + 1);
     //current_value = value + 1;
@@ -4022,6 +4037,7 @@ struct voidform_t final : public priest_buff_t<haste_buff_t>
 
     priest.buffs.insanity_drain_stacks->trigger();
     priest.buffs.the_twins_painful_touch->trigger();
+    priest.buffs.iridis_empowerment->trigger();
     priest.buffs.shadowform->expire();
     priest.insanity.begin_tracking();
     if ( priest.artifact.sphere_of_insanity.rank() )
@@ -4051,6 +4067,8 @@ struct voidform_t final : public priest_buff_t<haste_buff_t>
       priest.buffs.lingering_insanity->trigger( expiration_stacks );
 
     priest.buffs.the_twins_painful_touch->expire();
+
+    priest.buffs.iridis_empowerment->expire();
 
     if ( priest.buffs.shadowform_state->check() )
     {
@@ -4612,6 +4630,7 @@ double priest_t::composite_spell_haste() const
          ( buffs.voidform->check() ) *
              buffs.voidform->data().effectN( 3 ).percent();
   }
+
   return h;
 }
 
@@ -4642,6 +4661,7 @@ double priest_t::composite_melee_haste() const
          ( buffs.voidform->check() - 1 ) *
              buffs.voidform->data().effectN( 3 ).percent();
   }
+
   return h;
 }
 
@@ -4687,8 +4707,15 @@ double priest_t::composite_player_multiplier( school_e school ) const
 
     if ( specs.voidform->ok() && buffs.voidform->check() )
     {
-      m *= 1.0 + buffs.voidform->data().effectN( 1 ).percent() +
-           talents.legacy_of_the_void->effectN( 3 ).percent();
+      double voidform_multiplier = 
+                  buffs.voidform->data().effectN(1).percent() +
+                  talents.legacy_of_the_void->effectN(3).percent();
+      if (active_items.zenkaram_iridis_anadem)
+      {
+        voidform_multiplier += 
+            buffs.iridis_empowerment->data().effectN(2).percent();
+      }
+      m *= 1.0 + voidform_multiplier;      
     }
 
     if ( artifact.creeping_shadows.rank() )
@@ -4700,11 +4727,12 @@ double priest_t::composite_player_multiplier( school_e school ) const
     {
       m *= 1.0 + artifact.darkening_whispers.percent();
     }
-
-    if ( artifact.darkness_of_the_conclave.rank() )
-    {
-      m *= 1.0 + artifact.darkness_of_the_conclave.percent();
-    }
+    
+  }
+  
+  if ( artifact.darkness_of_the_conclave.rank() )
+  {
+    m *= 1.0 + artifact.darkness_of_the_conclave.percent();
   }
 
   if ( buffs.twist_of_fate->check() )
@@ -5152,14 +5180,12 @@ void priest_t::create_buffs()
   base_t::create_buffs();
 
   // Talents
-  buffs.power_infusion = haste_buff_creator_t( this, "power_infusion" )
-                             .spell( talents.power_infusion )
-                             .add_invalidate( CACHE_SPELL_HASTE )
-                             .add_invalidate( CACHE_HASTE );
+  buffs.power_infusion = make_buff<haste_buff_t>( this, "power_infusion", talents.power_infusion )
+                             -> add_invalidate( CACHE_SPELL_HASTE )
+                             -> add_invalidate( CACHE_HASTE );
 
   buffs.twist_of_fate =
-      buff_creator_t( this, "twist_of_fate" )
-          .spell( talents.twist_of_fate )
+      buff_creator_t( this, "twist_of_fate", talents.twist_of_fate )
           .duration( talents.twist_of_fate->effectN( 1 ).trigger()->duration() )
           .default_value( talents.twist_of_fate->effectN( 1 )
                               .trigger()
@@ -5168,23 +5194,17 @@ void priest_t::create_buffs()
           .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
           .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
 
-  buffs.shadowform = buff_creator_t( this, "shadowform" )
-                         .spell( find_class_spell( "Shadowform" ) )
-                         .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buffs.shadowform = make_buff( this, "shadowform", find_class_spell( "Shadowform" ) )
+                         -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.shadowform_state =
       buff_creator_t( this, "shadowform_state" ).chance( 1.0 ).quiet( true );
 
-  buffs.shadowy_insight =
-      buff_creator_t( this, "shadowy_insight" )
-          .spell( talents.shadowy_insight )
-          .max_stack(
-              1 );  // Spell Data says 2, really is 1 -- 2016/04/17 Twintop
+  buffs.shadowy_insight = make_buff(this, "shadowy_insight",
+      talents.shadowy_insight)->set_max_stack(1); // Spell Data says 2, really is 1 -- 2016/04/17 Twintop
 
-  buffs.void_ray = buff_creator_t( this, "void_ray" )
-                       .spell( talents.void_ray->effectN( 1 ).trigger() );
+  buffs.void_ray = make_buff( this, "void_ray", talents.void_ray->effectN( 1 ).trigger() );
 
-  buffs.void_torrent =
-      buff_creator_t( this, "void_torrent" ).spell( artifact.void_torrent );
+  buffs.void_torrent = make_buff( this, "void_torrent", artifact.void_torrent );
 
   buffs.surrender_to_madness = new buffs::surrender_to_madness_t( *this );
 
@@ -5201,10 +5221,9 @@ void priest_t::create_buffs()
           .chance( 1.0 )
           .default_value( find_spell( 194182 )->effectN( 3 ).percent() );
 
-  buffs.mind_quickening = stat_buff_creator_t(this, 
+  buffs.mind_quickening = make_buff<stat_buff_t>(this,
                                               "mind_quickening", 
-                                              find_spell( 240673 ) )
-                            .max_stack(1); 
+                                              find_spell( 240673 ) );
 
   // Discipline
   buffs.archangel = new buffs::archangel_t( *this );
@@ -5216,8 +5235,7 @@ void priest_t::create_buffs()
           .default_value( find_spell( 59889 )->effectN( 1 ).percent() )
           .add_invalidate( CACHE_HASTE );
 
-  buffs.holy_evangelism = buff_creator_t( this, "holy_evangelism" )
-                              .spell( find_spell( 81661 ) )
+  buffs.holy_evangelism = buff_creator_t( this, "holy_evangelism", find_spell( 81661 ) )
                               .chance( specs.evangelism->ok() )
                               .activated( false );
 
@@ -5229,19 +5247,15 @@ void priest_t::create_buffs()
 
   buffs.insanity_drain_stacks = new buffs::insanity_drain_stacks_t( *this );
 
-  buffs.vampiric_embrace =
-      buff_creator_t( this, "vampiric_embrace",
-                      find_class_spell( "Vampiric Embrace" ) )
-          .duration( find_class_spell( "Vampiric Embrace" )->duration() );
+  buffs.vampiric_embrace = make_buff( this, "vampiric_embrace",
+                      find_class_spell( "Vampiric Embrace" ) );
 
   buffs.mind_sear_on_hit_reset =
-      buff_creator_t( this, "mind_sear_on_hit_reset" )
-          .max_stack( 2 )
-          .duration( timespan_t::from_seconds( 5.0 ) );
+      make_buff( this, "mind_sear_on_hit_reset" )
+          -> set_max_stack( 2 )
+          -> set_duration( timespan_t::from_seconds( 5.0 ) );
 
-  buffs.dispersion =
-      buff_creator_t( this, "dispersion", find_class_spell( "Dispersion" ) )
-          .duration( find_class_spell( "Dispersion" )->duration() );
+  buffs.dispersion = make_buff( this, "dispersion", find_class_spell( "Dispersion" ) );
 
   // Set Bonuses
   buffs.mental_instinct =
@@ -5252,45 +5266,36 @@ void priest_t::create_buffs()
           .add_invalidate( CACHE_HASTE );
 
   buffs.reperation =
-      buff_creator_t( this, "reperation" )
-          .spell( find_spell( 186478 ) )
+      buff_creator_t( this, "reperation", find_spell( 186478 ) )
           .chance( sets.has_set_bonus( PRIEST_DISCIPLINE, T18, B2 ) )
           .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
           .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
 
   buffs.premonition =
-      buff_creator_t( this, "premonition" )
-          .spell( find_spell( 188779 ) )
+      buff_creator_t( this, "premonition", find_spell( 188779 ) )
           .chance( sets.has_set_bonus( PRIEST_SHADOW, T18, B4 ) );
 
   buffs.power_overwhelming =
-      stat_buff_creator_t( this, "power_overwhelming" )
-          .spell(
-              sets.set( specialization(), T19OH, B8 )->effectN( 1 ).trigger() )
+      stat_buff_creator_t( this, "power_overwhelming",sets.set( specialization(), T19OH, B8 )->effectN( 1 ).trigger() )
           .trigger_spell( sets.set( specialization(), T19OH, B8 ) );
 
   buffs.shadow_t19_4p =
-      buff_creator_t( this, "shadow_t19_4p" )
-          .spell( find_spell( 211654 ) )
+      buff_creator_t( this, "shadow_t19_4p", find_spell( 211654 ) )
           .chance( 1.0 )
           .duration( timespan_t::from_seconds(
               4.0 ) );  // TODO Update with spelldata once available
 
-  buffs.anunds_last_breath = buff_creator_t( this, "anunds_last_breath" )
-                                 .spell( find_spell( 215210 ) );
-  //.chance( 1.0 )
-  //.duration(timespan_t::from_seconds(60.0)) // Probably 1 minute like the rest
-  // of our temp buffs.
-  //.max_stack(100); // Data isn't pulling this in.
+  buffs.anunds_last_breath = make_buff( this, "anunds_last_breath", find_spell( 215210 ) );
+
+  buffs.iridis_empowerment = 
+      buff_creator_t( this, "iridis_empowerment", find_spell( 224999 ) )
+          .chance(active_items.zenkaram_iridis_anadem ? 1.0 : 0.0);;
 
   buffs.the_twins_painful_touch =
-      buff_creator_t( this, "the_twins_painful_touch" )
-          .spell( find_spell( 207721 ) )
+      buff_creator_t( this, "the_twins_painful_touch", find_spell( 207721 ) )
           .chance( active_items.the_twins_painful_touch ? 1.0 : 0.0 );
-  //.duration(timespan_t::from_seconds(10.0));
 
-  buffs.zeks_exterminatus = buff_creator_t( this, "zeks_exterminatus" )
-                                .spell( find_spell( 236545 ) )
+  buffs.zeks_exterminatus = buff_creator_t( this, "zeks_exterminatus", find_spell( 236545 ) )
                                 .rppm_scale( RPPM_HASTE );
 }
 

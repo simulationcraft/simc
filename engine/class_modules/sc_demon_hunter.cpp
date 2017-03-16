@@ -6617,7 +6617,10 @@ void demon_hunter_t::apl_precombat()
     if ( true_level > 100 )
     {
       if (specialization() == DEMON_HUNTER_HAVOC)
-        pre -> add_action( "food,type=the_hungry_magister" );
+      {
+        pre->add_action("food,type=the_hungry_magister,if=!equipped.majordomos_dinner_bell");
+        pre->add_action("food,type=nightborne_delicacy_platter,if=equipped.majordomos_dinner_bell");
+      }
       else
         pre -> add_action( "food,type=nightborne_delicacy_platter" );
     }
@@ -7485,7 +7488,8 @@ void demon_hunter_t::target_mitigation( school_e school, dmg_e dt,
     }
   }
 
-  if ( get_target_data( s -> action -> player ) -> dots.fiery_brand -> is_ticking() )
+  auto fiery_brand = get_target_data( s -> action -> player ) -> dots.fiery_brand;
+  if ( fiery_brand && fiery_brand -> is_ticking() )
   {
     s -> result_amount *= 1.0 + spec.fiery_brand_dr -> effectN( 2 ).percent();
   }

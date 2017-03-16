@@ -64,6 +64,7 @@ actions.cds+=/cannonball_barrage,if=spell_targets.cannonball_barrage>=1
 actions.cds+=/adrenaline_rush,if=!buff.adrenaline_rush.up&energy.deficit>0
 actions.cds+=/marked_for_death,target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit|((raid_event.adds.in>40|buff.true_bearing.remains>15)&combo_points.deficit>=4+talent.deeper_strategem.enabled+talent.anticipation.enabled)
 actions.cds+=/sprint,if=equipped.thraxis_tricksy_treads&!variable.ss_useable
+actions.cds+=/darkflight,if=equipped.thraxis_tricksy_treads&!variable.ss_useable&buff.sprint.down
 actions.cds+=/curse_of_the_dreadblades,if=combo_points.deficit>=4&(!talent.ghostly_strike.enabled|debuff.ghostly_strike.up)
 
 # Finishers

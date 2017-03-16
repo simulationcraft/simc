@@ -9,6 +9,8 @@ namespace
 { // UNNAMED NAMESPACE
 // ==========================================================================
 // Warrior
+// todo:
+// T20 stuff
 // ==========================================================================
 
 struct warrior_t;
@@ -2729,6 +2731,8 @@ struct raging_blow_t: public warrior_attack_t
     mh_attack -> weapon = &( p -> main_hand_weapon );
     add_child( mh_attack );
     cooldown -> duration = p -> talents.inner_rage -> effectN( 1 ).time_value();
+    if ( p -> talents.inner_rage -> ok() )
+      track_cd_waste = true;
   }
 
   void execute() override
@@ -4872,7 +4876,7 @@ void warrior_t::apl_fury()
         default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=buff.battle_cry.up&buff.enrage.up" );
     }
   }
-  default_list -> add_talent( this, "Dragon Roar", "if=(equipped.convergence_of_fates&cooldown.battle_cry.remains<2)|!equipped.convergence_of_fates&(!cooldown.battle_cry.remains<=10|cooldown.battle_cry.remains<2)");
+  default_list -> add_talent( this, "Dragon Roar", "if=(equipped.convergence_of_fates&cooldown.battle_cry.remains<2)|!equipped.convergence_of_fates&(cooldown.battle_cry.remains>10|cooldown.battle_cry.remains<2)");
 
   default_list -> add_action( this, "Battle Cry", "if=gcd.remains=0&!talent.dragon_roar.enabled&(!equipped.convergence_of_fates|!talent.bloodbath.enabled|!cooldown.bloodbath.remains|cooldown.bloodbath.remains>=10)" );
   default_list -> add_action( this, "Battle Cry", "if=gcd.remains=0&buff.dragon_roar.up&(cooldown.bloodthirst.remains=0|buff.enrage.remains>cooldown.bloodthirst.remains)" );
@@ -6001,6 +6005,10 @@ double warrior_t::composite_crit_block() const
   {
     b += cache.mastery() * mastery.critical_block -> effectN( 1 ).mastery_value();
   }
+
+  if ( buff.shield_block -> check() && sets.has_set_bonus( WARRIOR_PROTECTION, T19, B2 ) )
+    b += find_spell( 212236 ) -> effectN( 1 ).percent();
+
   return b;
 }
 
@@ -6276,13 +6284,14 @@ void warrior_t::target_mitigation( school_e school,
   if ( action_t::result_is_block( s -> block_result ) )
   {
     buff.dragon_scales -> trigger();
-    if ( s -> block_result == BLOCK_RESULT_CRIT_BLOCKED && artifact.scales_of_earth.rank() )
+    if ( s -> block_result == BLOCK_RESULT_CRIT_BLOCKED ) 
     {
-      if ( buff.scales_of_earth -> trigger() )
+      if ( artifact.scales_of_earth.rank() && buff.scales_of_earth -> trigger() )
       {
         active.scales_of_earth -> target = s -> action -> player;
         active.scales_of_earth -> execute();
       }
+      resource_gain( RESOURCE_RAGE, sets.set( WARRIOR_PROTECTION, T19, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ), gain.critical_block );
     }
   }
 }
