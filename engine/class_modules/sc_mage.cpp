@@ -2105,15 +2105,7 @@ struct arcane_mage_spell_t : public mage_spell_t
     timespan_t t = mage_spell_t::gcd();
     return t;
   }
-  virtual void execute() override
-  {
-    mage_spell_t::execute();
-    if( ( p() -> resources.current[ RESOURCE_MANA ] / p() -> resources.max[ RESOURCE_MANA ] ) <= p() -> buffs.cord_of_infinity -> default_value &&
-         p() -> legendary.cord_of_infinity )
-    {
-      p() -> buffs.cord_of_infinity -> trigger();
-    }
-  }
+
   virtual void impact( action_state_t* s ) override
   {
     mage_spell_t::impact( s );
@@ -3436,6 +3428,11 @@ struct arcane_missiles_t : public arcane_mage_spell_t
   void tick ( dot_t* d ) override
   {
     arcane_mage_spell_t::tick( d );
+
+    if ( p() -> legendary.cord_of_infinity )
+    {
+      p() -> buffs.cord_of_infinity -> trigger();
+    }
   }
   void last_tick ( dot_t * d ) override
   {
@@ -5568,8 +5565,10 @@ void living_bomb_t::init()
 struct mark_of_aluneth_explosion_t : public arcane_mage_spell_t
 {
   double aluneths_avarice_regen = 0;
+  double persistent_cord_multiplier;
   mark_of_aluneth_explosion_t( mage_t* p ) :
-    arcane_mage_spell_t( "mark_of_aluneth_explosion", p, p -> find_spell( 210726 ) )
+    arcane_mage_spell_t( "mark_of_aluneth_explosion", p, p -> find_spell( 210726 ) ),
+    persistent_cord_multiplier( 0 )
   {
     background = true;
     school = SCHOOL_ARCANE;
@@ -5599,10 +5598,22 @@ struct mark_of_aluneth_explosion_t : public arcane_mage_spell_t
                           * p() -> resources.max[ RESOURCE_MANA ], p() -> gains.aluneths_avarice );
     }
   }
+  double composite_persistent_multiplier( const action_state_t* state ) const override
+  {
+    double m = arcane_mage_spell_t::composite_persistent_multiplier( state );
+    
+    if ( p() -> legendary.cord_of_infinity )
+    {
+      m *= 1.0 + persistent_cord_multiplier;
+    }
+    return m;
+  }
+
 };
 struct mark_of_aluneth_t : public arcane_mage_spell_t
 {
   mark_of_aluneth_explosion_t* mark_explosion;
+  double persistent_cord_multiplier;
 
   mark_of_aluneth_t( mage_t* p, const std::string& options_str ) :
     arcane_mage_spell_t( "mark_of_aluneth", p, p -> artifact.mark_of_aluneth ),
@@ -5613,6 +5624,29 @@ struct mark_of_aluneth_t : public arcane_mage_spell_t
     triggers_arcane_missiles = false;
     spell_power_mod.tick = p -> find_spell( 211088 ) -> effectN( 1 ).sp_coeff();
     hasted_ticks = false;
+  }
+  virtual void execute() override
+  {
+
+    arcane_mage_spell_t::execute();
+    if ( p() -> legendary.cord_of_infinity )
+    {
+      p() -> buffs.cord_of_infinity -> expire();
+    }
+  }
+
+  double composite_persistent_multiplier( const action_state_t* state ) const override
+  {
+    double m = arcane_mage_spell_t::composite_persistent_multiplier( state );
+
+    if ( p() -> legendary.cord_of_infinity &&
+         p() -> buffs.cord_of_infinity -> check() )
+    {
+      m *= 1.0 + p() -> buffs.cord_of_infinity -> current_stack * p() -> buffs.cord_of_infinity -> data().effectN( 1 ).percent() / 10;
+      mark_explosion -> persistent_cord_multiplier = p() -> buffs.cord_of_infinity -> current_stack * p() -> buffs.cord_of_infinity -> data().effectN( 1 ).percent() / 10;
+    }
+
+    return m;
   }
 
   void tick( dot_t* dot ) override
@@ -5630,6 +5664,7 @@ struct mark_of_aluneth_t : public arcane_mage_spell_t
 
     mark_explosion -> target = d -> target;
     mark_explosion -> execute();
+    persistent_cord_multiplier = 1.0;
   }
 };
 // Meteor Spell ===============================================================
@@ -8112,8 +8147,7 @@ void mage_t::create_buffs()
                                                  .add_stat( STAT_CRIT_RATING, find_spell( 240671 ) -> effectN( 1 ).base_value() );
     
   // Legendary
-  buffs.cord_of_infinity   = buff_creator_t( this, "cord_of_infinity", find_spell( 209316 ) )
-                                             .default_value( find_spell( 209311 ) -> effectN( 1 ).percent() );
+  buffs.cord_of_infinity   = buff_creator_t( this, "cord_of_infinity", find_spell( 209316 ) );
   buffs.magtheridons_might = buff_creator_t( this, "magtheridons_might", find_spell( 214404 ) );
   buffs.zannesu_journey    = buff_creator_t( this, "zannesu_journey", find_spell( 226852 ) );
   buffs.lady_vashjs_grasp  = new buffs::lady_vashjs_grasp_t( this );
@@ -8875,15 +8909,6 @@ double mage_t::mana_regen_per_second() const
   if ( spec.savant -> ok() )
   {
     mps *= 1.0 + composite_mastery() * ( spec.savant -> effectN( 1 ).mastery_value() );
-  }
-
-  // This, technically, is not correct. The buff itself, ticking every 1s, should
-  // be granting mana regen. However, the total regan gained should be
-  // similar doing it here, or doing it in the buff tick.
-  // TODO: Move to buff ticks.
-  if ( buffs.cord_of_infinity -> up() )
-  {
-    mps *= 1.0 + buffs.cord_of_infinity -> data().effectN( 1 ).percent();
   }
 
   return mps;
