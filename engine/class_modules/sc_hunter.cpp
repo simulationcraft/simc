@@ -687,6 +687,19 @@ void trigger_mm_feet( hunter_t* p )
   }
 }
 
+void trigger_sephuzs_secret( hunter_t* p, const action_state_t* state, spell_mechanic type )
+{
+  if ( ! p -> legendary.sephuzs_secret )
+    return;
+
+  // trigger by default on interrupts and on adds/lower level stuff
+  if ( type == MECHANIC_INTERRUPT || state -> target -> is_add() ||
+       ( state -> target -> level() < p -> sim -> max_player_level + 3 ) )
+  {
+    p -> buffs.sephuzs_secret -> trigger();
+  }
+}
+
 struct vulnerability_stats_t
 {
   proc_t* no_vuln;
@@ -4322,6 +4335,30 @@ struct harpoon_t: public hunter_melee_attack_t
 namespace spells
 {
 
+// Base Interrupt ===========================================================
+
+struct interrupt_base_t: public hunter_spell_t
+{
+  interrupt_base_t( const std::string &n, hunter_t* p, const spell_data_t* s ):
+    hunter_spell_t( n, p, s )
+  {
+    may_miss = may_block = may_dodge = may_parry = false;
+  }
+
+  bool ready() override
+  {
+    if ( ! target -> debuffs.casting -> check() ) return false;
+    return hunter_spell_t::ready();
+  }
+
+  void execute() override
+  {
+    hunter_spell_t::execute();
+
+    trigger_sephuzs_secret( p(), execute_state, MECHANIC_INTERRUPT );
+  }
+};
+
 // A Murder of Crows ========================================================
 
 // TODO this should reset CD if the target dies
@@ -4525,6 +4562,17 @@ struct freezing_trap_t : public hunter_spell_t
 
     if ( p() -> legendary.sv_feet )
       p() -> resource_gain( RESOURCE_FOCUS, p() -> find_spell( 212575 ) -> effectN( 1 ).resource( RESOURCE_FOCUS ), p() -> gains.nesingwarys_trapping_treads );
+  }
+};
+
+// Counter Shot ======================================================================
+
+struct counter_shot_t: public interrupt_base_t
+{
+  counter_shot_t( hunter_t* p, const std::string& options_str ):
+    interrupt_base_t( "counter_shot", p, p -> find_specialization_spell( "Counter Shot" ) )
+  {
+    parse_options( options_str );
   }
 };
 
@@ -5260,10 +5308,19 @@ struct rangers_net_t: public hunter_spell_t
   {
     hunter_spell_t::execute();
 
-    if ( p() -> legendary.sephuzs_secret != nullptr && execute_state -> target -> type == ENEMY_ADD )
-    {
-      p() -> buffs.sephuzs_secret -> trigger();
-    }
+    if ( execute_state -> target -> type == ENEMY_ADD )
+      trigger_sephuzs_secret( p(), execute_state, MECHANIC_ROOT );
+  }
+};
+
+// Muzzle =============================================================
+
+struct muzzle_t: public interrupt_base_t
+{
+  muzzle_t( hunter_t* p, const std::string& options_str ):
+    interrupt_base_t( "muzzle", p, p -> find_specialization_spell( "Muzzle" ) )
+  {
+    parse_options( options_str );
   }
 };
 
