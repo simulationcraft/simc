@@ -2872,13 +2872,10 @@ struct holy_power_consumer_t : public paladin_melee_attack_t
       p() -> buffs.crusade -> trigger( num_stacks );
     }
 
-    printf("we should be triggering the buff...\n");
     if ( maybe_ptr( p() -> dbc.ptr ) )
     {
-      printf("rank %d\n",p() -> artifact.righteous_verdict.rank() );
-      if ( p() -> artifact.righteous_verdict.rank() ) // HERE WE GO
+      if ( p() -> artifact.righteous_verdict.rank() )
       {
-        printf("BA BA BOOM\n");
         p() -> buffs.righteous_verdict -> trigger();
       }
     }
