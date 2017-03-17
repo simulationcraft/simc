@@ -5201,8 +5201,8 @@ void priest_t::create_buffs()
   buffs.shadowform_state =
       buff_creator_t( this, "shadowform_state" ).chance( 1.0 ).quiet( true );
 
-  buffs.shadowy_insight = make_buff(this, "shadowy_insight",
-      talents.shadowy_insight)->set_max_stack(1); // Spell Data says 2, really is 1 -- 2016/04/17 Twintop
+  buffs.shadowy_insight = make_buff(this, "shadowy_insight", talents.shadowy_insight);
+  buffs.shadowy_insight->set_max_stack(1U); // Spell Data says 2, really is 1 -- 2016/04/17 Twintop
 
   buffs.void_ray = make_buff( this, "void_ray", talents.void_ray->effectN( 1 ).trigger() );
 
@@ -5254,8 +5254,8 @@ void priest_t::create_buffs()
 
   buffs.mind_sear_on_hit_reset =
       make_buff( this, "mind_sear_on_hit_reset" )
-          -> set_max_stack( 2 )
           -> set_duration( timespan_t::from_seconds( 5.0 ) );
+  buffs.mind_sear_on_hit_reset-> set_max_stack( 2U );
 
   buffs.dispersion = make_buff( this, "dispersion", find_class_spell( "Dispersion" ) );
 

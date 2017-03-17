@@ -7783,7 +7783,8 @@ void mage_t::create_buffs()
 //                                  .max_stack( 10 );
 //  buffs.temporal_power        = (new buff_t( this, "temporal_power", find_spell( 190623 ) )) -> set_max_stack( 10 );
 
-  buffs.temporal_power        = make_buff( this, "temporal_power", find_spell( 190623 ) ) -> set_max_stack( 10 );
+  buffs.temporal_power        = make_buff( this, "temporal_power", find_spell( 190623 ) );
+  buffs.temporal_power-> set_max_stack( 10U );
 
   // Fire
   buffs.combustion            = buff_creator_t( this, "combustion", find_spell( 190319 ) )
