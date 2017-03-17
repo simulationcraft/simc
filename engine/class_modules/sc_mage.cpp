@@ -3122,27 +3122,33 @@ struct arcane_blast_t : public arcane_mage_spell_t
 
 // Arcane Explosion Spell =====================================================
 
+//TODO: Impliment the 250ms delay between AE execute -> TnS execute
+//      Double check Arcane Purification multiplier interaction
 struct time_and_space_t : public arcane_mage_spell_t
 {
   time_and_space_t( mage_t* p ) :
     arcane_mage_spell_t( "arcane_explosion_echo", p, p -> find_artifact_spell( "Time and Space" ) )
   {
     may_miss = may_dodge = may_parry = may_crit = may_block = false;
-    callbacks = false;
     aoe = -1;
     base_costs[ RESOURCE_MANA ] = 0;
     trigger_gcd = timespan_t::zero();
     background = true;
+
+    spell_power_mod.direct = p -> find_spell( 240689 ) -> effectN( 1 ).sp_coeff();
+    base_multiplier *= 1.0 + p -> artifact.arcane_purification.percent();
+
+
   }
 
-  virtual void init() override
+  virtual double action_multiplier() const override
   {
-    mage_spell_t::init();
-    // disable the snapshot_flags for all multipliers
-    snapshot_flags &= STATE_NO_MULTIPLIER;
-    snapshot_flags |= STATE_TGT_MUL_DA;
-  }
+    double am = arcane_mage_spell_t::action_multiplier();
 
+    am *= arcane_charge_damage_bonus( false );
+
+    return am;
+  }
 };
 
 
@@ -3191,8 +3197,6 @@ struct arcane_explosion_t : public arcane_mage_spell_t
       if ( p() -> buffs.time_and_space -> check() )
       {
         arcane_explosion_echo -> target = execute_state -> target;
-        arcane_explosion_echo -> base_dd_min = 
-        arcane_explosion_echo -> base_dd_max = execute_state -> result_amount * p() -> artifact.time_and_space.percent();
         arcane_explosion_echo -> execute();
         p() -> buffs.time_and_space -> trigger();
       }
@@ -5606,7 +5610,7 @@ struct mark_of_aluneth_explosion_t : public arcane_mage_spell_t
   double composite_persistent_multiplier( const action_state_t* state ) const override
   {
     double m = arcane_mage_spell_t::composite_persistent_multiplier( state );
-    
+
     if ( p() -> legendary.cord_of_infinity )
     {
       m *= 1.0 + persistent_cord_multiplier;
@@ -8148,7 +8152,7 @@ void mage_t::create_buffs()
 
   buffs.warmth_of_the_phoenix = stat_buff_creator_t( this, "warmth_of_the_phoenix", find_spell( 240671 ) )
                                                  .add_stat( STAT_CRIT_RATING, find_spell( 240671 ) -> effectN( 1 ).base_value() );
-    
+
   // Legendary
   buffs.cord_of_infinity   = buff_creator_t( this, "cord_of_infinity", find_spell( 209316 ) );
   buffs.magtheridons_might = buff_creator_t( this, "magtheridons_might", find_spell( 214404 ) );
