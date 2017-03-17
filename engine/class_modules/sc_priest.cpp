@@ -4712,7 +4712,7 @@ double priest_t::composite_player_multiplier( school_e school ) const
       double voidform_multiplier = 
                   buffs.voidform->data().effectN(1).percent() +
                   talents.legacy_of_the_void->effectN(3).percent();
-      if (active_items.zenkaram_iridis_anadem)
+      if (active_items.zenkaram_iridis_anadem && dbc.ptr)
       {
         voidform_multiplier += 
             buffs.iridis_empowerment->data().effectN(2).percent();
