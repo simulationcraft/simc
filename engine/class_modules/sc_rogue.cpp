@@ -2873,19 +2873,25 @@ struct eviscerate_t : public rogue_attack_t
     }
     else
     {
-      // As of 01/12/2017 Finality:Eviscerate seems to snapshot on current cp (before the cast) rather than
-      // the ones consumed by the cast, so :
-      // Anticipation: Up to 10 cp for normal and up to 5 cp for weaponmastered.
-      // Others: Up to 5/6 cp for normal and 0 cp for weaponmastered (put at 1 since we do not support buff with 0 stack)
-      if ( ! p() -> bugs || secondary_trigger != TRIGGER_WEAPONMASTER )
+      // FIXME: Bug fixed in 7.2
+      if ( maybe_ptr( p() -> dbc.ptr ) )
+        p() -> buffs.finality_eviscerate -> trigger( cast_state( execute_state ) -> cp );
+      else
       {
-        // We take execute cp + current cp since the ones for the execute are already gone in current cp.
-        p() -> buffs.finality_eviscerate -> trigger( cast_state( execute_state ) -> cp +
-                                                     p() -> resources.current[ RESOURCE_COMBO_POINT ] );
-      } else {
-        // FIXME: We'll trigger at least one stack (4% instead of 0%) since simc doesn't support buff with 0 stack.
-        // Need to do in another way to match in-game behavior in the future.
-        p() -> buffs.finality_eviscerate -> trigger( std::max( static_cast<unsigned>( 1 ), static_cast<unsigned>( p() -> resources.current[ RESOURCE_COMBO_POINT ] ) ) );
+        // As of 01/12/2017 Finality:Eviscerate seems to snapshot on current cp (before the cast) rather than
+        // the ones consumed by the cast, so :
+        // Anticipation: Up to 10 cp for normal and up to 5 cp for weaponmastered.
+        // Others: Up to 5/6 cp for normal and 0 cp for weaponmastered (put at 1 since we do not support buff with 0 stack)
+        if ( ! p() -> bugs || secondary_trigger != TRIGGER_WEAPONMASTER )
+        {
+          // We take execute cp + current cp since the ones for the execute are already gone in current cp.
+          p() -> buffs.finality_eviscerate -> trigger( cast_state( execute_state ) -> cp +
+                                                      p() -> resources.current[ RESOURCE_COMBO_POINT ] );
+        } else {
+          // FIXME: We'll trigger at least one stack (4% instead of 0%) since simc doesn't support buff with 0 stack.
+          // Need to do in another way to match in-game behavior in the future.
+          p() -> buffs.finality_eviscerate -> trigger( std::max( static_cast<unsigned>( 1 ), static_cast<unsigned>( p() -> resources.current[ RESOURCE_COMBO_POINT ] ) ) );
+        }
       }
     }
   }
@@ -6114,6 +6120,7 @@ struct vanish_t : public stealth_like_buff_t
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
+    // FIXME: Behavior changed in 7.2 due to Subterfuge changes
     if ( maybe_ptr( rogue -> dbc.ptr ) )
       // Stealth proc if Vanish fully end (i.e. isn't break before the expiration)
       // We do it before the normal Vanish expiration to avoid on-stealth buff bugs (MoS, MoSh, Mantle).
@@ -7873,6 +7880,7 @@ void rogue_t::create_buffs()
     .trigger_spell( artifact.finality )
     .default_value( find_spell( 197496 ) -> effectN( 1 ).percent() / COMBO_POINT_MAX )
     // Due to Anticipation bug with eviscerate (see eviscerate action), we'll allow it up to 10.
+    // FIXME: In 7.2 changes it back to consume_cp_max();
     .max_stack( 10 );
   buffs.finality_nightblade = buff_creator_t( this, "finality_nightblade", find_spell( 197498 ) )
     .trigger_spell( artifact.finality )
