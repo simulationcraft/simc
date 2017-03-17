@@ -723,15 +723,14 @@ namespace actions { // namespace actions
 
 static void break_stealth( rogue_t* p )
 {
-  // As of 02/26/2017, if you have the Shadow Dance buff while stealthed, stealth doesn't break
-  // until the end of shadow dance. It is commonly "Extended Stealth".
-  // The only way to trigger it since recent hotfix is :
-  // - Do Shadow Dance -> Stealth while out of combat (only possible with Subterfuge)
-  // - Not triggering Subterfuge during a Vanish (to proc Stealth at the end of the Vanish)
-  //   and using Shadow Dance before Vanish expires.
+  
   if ( p -> buffs.stealth -> check() &&
-      ( (p -> talent.subterfuge -> ok() && ! p -> buffs.shadow_dance -> check() ) ||
-      ! p -> talent.subterfuge -> ok() ) )
+    // As of 03/17/2017, if you have the Shadow Dance buff while stealthed, stealth doesn't break
+    // until the end of shadow dance. It is commonly called "Extended Stealth".
+    // The only way to trigger it since recent hotfix is :
+    // - Do Shadow Dance -> Stealth while out of combat (only possible with Subterfuge)
+    // - Proc Stealth at the end of the Vanish and using Shadow Dance before Vanish expires.
+    ( ! p -> bugs || ! p -> buffs.shadow_dance -> check() ) )
     p -> buffs.stealth -> expire();
 
   if ( p -> buffs.vanish -> check() )
@@ -2878,9 +2877,9 @@ struct eviscerate_t : public rogue_attack_t
       // the ones consumed by the cast, so :
       // Anticipation: Up to 10 cp for normal and up to 5 cp for weaponmastered.
       // Others: Up to 5/6 cp for normal and 0 cp for weaponmastered (put at 1 since we do not support buff with 0 stack)
-      if ( secondary_trigger != TRIGGER_WEAPONMASTER || ! p() -> bugs )
+      if ( ! p() -> bugs || secondary_trigger != TRIGGER_WEAPONMASTER )
       {
-        // I'll take execute cp + current cp since the ones for the execute are already gone in current cp.
+        // We take execute cp + current cp since the ones for the execute are already gone in current cp.
         p() -> buffs.finality_eviscerate -> trigger( cast_state( execute_state ) -> cp +
                                                      p() -> resources.current[ RESOURCE_COMBO_POINT ] );
       } else {
@@ -6017,14 +6016,11 @@ struct subterfuge_t : public buff_t
 
     // As of 01/09/2017, Subterfuge makes the vanish to fully lasts
     // 3 seconds (instead of breaking on first ability use).
-    if ( ! rogue -> buffs.vanish -> check() || ! rogue -> bugs )
+    // FIXME: No longer true in 7.2
+    if ( maybe_ptr( rogue -> dbc.ptr ) )
       actions::break_stealth( rogue );
-  }
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    buff_t::expire_override( expiration_stacks, remaining_duration );
-    actions::break_stealth( rogue );
+    else if ( ! rogue -> bugs || ! rogue -> buffs.vanish -> check() )
+      actions::break_stealth( rogue );
   }
 };
 
@@ -6048,7 +6044,7 @@ struct stealth_like_buff_t : public buff_t
     }
 
     if ( procs_mantle_of_the_master_assassin &&
-      rogue -> legendary.mantle_of_the_master_assassin )
+         rogue -> legendary.mantle_of_the_master_assassin )
     {
       rogue -> buffs.mantle_of_the_master_assassin -> expire();
       rogue -> buffs.mantle_of_the_master_assassin_aura -> trigger();
@@ -6063,7 +6059,7 @@ struct stealth_like_buff_t : public buff_t
     buff_t::expire_override( expiration_stacks, remaining_duration );
 
     if ( procs_mantle_of_the_master_assassin &&
-      rogue -> legendary.mantle_of_the_master_assassin )
+         rogue -> legendary.mantle_of_the_master_assassin )
     {
       rogue -> buffs.mantle_of_the_master_assassin_aura -> expire();
       rogue -> buffs.mantle_of_the_master_assassin -> trigger();
@@ -6083,6 +6079,30 @@ struct stealth_t : public stealth_like_buff_t
   {
     buff_duration = sim -> max_time / 2;
   }
+
+  void execute( int stacks, double value, timespan_t duration ) override
+  {
+    buff_t::execute( stacks, value, duration );
+
+    if ( rogue -> in_combat && rogue -> talent.master_of_shadows -> ok() &&
+         // As of 03/17/2017, it does not proc Master of Shadows talent if Stealth is procced from Vanish
+         // (that's why we also proc Stealth before Vanish expires).
+         ( ! rogue -> bugs || ! rogue -> buffs.vanish -> check() ) )
+    {
+      rogue -> resource_gain( RESOURCE_ENERGY, rogue -> spell.master_of_shadows -> effectN( 1 ).base_value(),
+                              rogue -> gains.master_of_shadows );
+    }
+
+    if ( procs_mantle_of_the_master_assassin &&
+         rogue -> legendary.mantle_of_the_master_assassin )
+    {
+      rogue -> buffs.mantle_of_the_master_assassin -> expire();
+      rogue -> buffs.mantle_of_the_master_assassin_aura -> trigger();
+    }
+
+    rogue -> buffs.master_of_subtlety -> expire();
+    rogue -> buffs.master_of_subtlety_aura -> trigger();
+  }
 };
 
 // Vanish now acts like "stealth like abilities".
@@ -6094,17 +6114,22 @@ struct vanish_t : public stealth_like_buff_t
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
-    // As of 02/26/2017, if you have Subterfuge talent and manages to no proc it during Vanish
-    // (For example, if you do not attack or use a trinket like Draught of Souls)
-    // It will wrongly proc Master of Shadows, but considering we have 3s of AFK + the proc from Vanish, we will
-    // likely be full energy already.
-    // Currently, it's used only when Sprint + DoS + ShD, so 6s of AFK and 2 procs of MoSh, so :
-    // 6*10 + 2*25 = 110 energy minimum, i.e. more than our normal cap.
-    // Altough, it's pertubating Energy Stats in report ^^
-    // FIXME: Trigger stealth without triggering Master of Shadows.
-    if ( rogue -> talent.subterfuge -> ok() && ! rogue -> buffs.subterfuge -> check() )
+    if ( maybe_ptr( rogue -> dbc.ptr ) )
+      // Stealth proc if Vanish fully end (i.e. isn't break before the expiration)
+      // We do it before the normal Vanish expiration to avoid on-stealth buff bugs (MoS, MoSh, Mantle).
+      if ( remaining_duration == timespan_t::zero() )
+      {
+        rogue -> buffs.stealth -> trigger();
+      }
+    else
     {
-      rogue -> buffs.stealth -> trigger();
+      // As of 02/26/2017, if you have Subterfuge talent and manages to no proc it during Vanish
+      // (For example, if you do not attack or use a trinket like Draught of Souls)
+      // it will proc Stealth.
+      if ( rogue -> talent.subterfuge -> ok() && ! rogue -> buffs.subterfuge -> check() )
+      {
+        rogue -> buffs.stealth -> trigger();
+      }
     }
 
     stealth_like_buff_t::expire_override( expiration_stacks, remaining_duration );
