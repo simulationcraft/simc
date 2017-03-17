@@ -7108,11 +7108,11 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
       if ( buffs.mantle_of_the_master_assassin_aura -> check() )
       {
         timespan_t nominal_master_assassin_duration = timespan_t::from_seconds( spell.master_assassins_initiative -> effectN( 1 ).base_value() );
+        timespan_t gcd_remains = timespan_t::from_seconds( std::max( ( gcd_ready - sim -> current_time() ).total_seconds(), 0.0 ) );
         if ( buffs.vanish -> check() )
-          return buffs.vanish -> remains() + nominal_master_assassin_duration;
-        // Hardcoded 1.0 since we consider that stealth will break on next gcd.
+          return std::min( buffs.vanish -> remains(), gcd_remains ) + nominal_master_assassin_duration;
         else
-          return timespan_t::from_seconds( 1.0 ) + nominal_master_assassin_duration;
+          return gcd_remains + nominal_master_assassin_duration;
       }
       else if ( buffs.mantle_of_the_master_assassin -> check() )
         return buffs.mantle_of_the_master_assassin -> remains();
