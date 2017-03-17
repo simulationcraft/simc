@@ -3139,6 +3139,8 @@ struct time_and_space_t : public arcane_mage_spell_t
     base_multiplier *= 1.0 + p -> artifact.arcane_purification.percent();
     // PTR Multiplier
     base_multiplier *= 1.0 + p -> find_spell( 137021 ) -> effectN( 1 ).percent();
+    radius += p -> artifact.crackling_energy.data().effectN( 1 ).base_value();
+
 
   }
 
