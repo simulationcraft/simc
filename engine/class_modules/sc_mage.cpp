@@ -3134,7 +3134,7 @@ struct time_and_space_t : public arcane_mage_spell_t
     base_costs[ RESOURCE_MANA ] = 0;
     trigger_gcd = timespan_t::zero();
     background = true;
-
+    school = SCHOOL_ARCANE;
     spell_power_mod.direct = p -> find_spell( 240689 ) -> effectN( 1 ).sp_coeff();
     base_multiplier *= 1.0 + p -> artifact.arcane_purification.percent();
     // PTR Multiplier
@@ -5948,7 +5948,17 @@ struct strafing_run_t : public fire_mage_spell_t
 {
   strafing_run_t( mage_t* p ) :
     fire_mage_spell_t( "phoenixs_flames_chain", p, p -> find_spell( 238127 ) )
-  {}
+  {
+    spell_power_mod.direct = p -> find_spell( 194466 ) -> effectN( 1 ).sp_coeff();
+    chain_multiplier = p -> find_spell( 194466 ) -> effectN( 1 ).chain_multiplier();
+  }
+  virtual void execute() override
+  {
+    execute_state -> chain_target = 1;
+    fire_mage_spell_t::execute();
+  }
+  virtual double composite_crit_chance() const override
+  { return 1.0; }
 };
 
 
@@ -5983,13 +5993,14 @@ struct phoenixs_flames_splash_t : public fire_mage_spell_t
 struct phoenixs_flames_t : public fire_mage_spell_t
 {
   phoenixs_flames_splash_t* phoenixs_flames_splash;
-
+  strafing_run_t*           strafing_run_chain_base;
   bool pyrotex_ignition_cloth;
   timespan_t pyrotex_ignition_cloth_reduction;
 
   phoenixs_flames_t( mage_t* p, const std::string& options_str ) :
     fire_mage_spell_t( "phoenixs_flames", p, p -> artifact.phoenixs_flames ),
     phoenixs_flames_splash( new phoenixs_flames_splash_t( p, options_str ) ),
+    strafing_run_chain_base( new strafing_run_t( p ) ),
     pyrotex_ignition_cloth( false ),
     pyrotex_ignition_cloth_reduction( timespan_t::from_seconds( 0 ) )
   {
@@ -6025,6 +6036,10 @@ struct phoenixs_flames_t : public fire_mage_spell_t
     {
       phoenixs_flames_splash -> target = s -> target;
       phoenixs_flames_splash -> execute();
+      if ( p() -> artifact.strafing_run.rank() )
+      {
+
+      }
     }
   }
 
