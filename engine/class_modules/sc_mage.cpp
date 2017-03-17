@@ -3137,7 +3137,8 @@ struct time_and_space_t : public arcane_mage_spell_t
 
     spell_power_mod.direct = p -> find_spell( 240689 ) -> effectN( 1 ).sp_coeff();
     base_multiplier *= 1.0 + p -> artifact.arcane_purification.percent();
-
+    // PTR Multiplier
+    base_multiplier *= 1.0 + p -> find_spell( 137021 ) -> effectN( 1 ).percent();
 
   }
 
@@ -5940,6 +5941,15 @@ struct nether_tempest_t : public arcane_mage_spell_t
 
 
 // Phoenixs Flames Spell ======================================================
+
+struct strafing_run_t : public fire_mage_spell_t
+{
+  strafing_run_t( mage_t* p ) :
+    fire_mage_spell_t( "phoenixs_flames_chain", p, p -> find_spell( 238127 ) )
+  {}
+};
+
+
 struct phoenixs_flames_splash_t : public fire_mage_spell_t
 {
   phoenixs_flames_splash_t( mage_t* p, const std::string& options_str ) :
