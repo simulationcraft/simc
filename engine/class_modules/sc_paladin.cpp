@@ -164,6 +164,7 @@ public:
     gain_t* hp_liadrins_fury_unleashed;
     gain_t* judgment;
     gain_t* hp_t19_4p;
+    gain_t* hp_t20_2p;
   } gains;
 
   // Spec Passives
@@ -3126,6 +3127,27 @@ struct blade_of_justice_t : public holy_power_generator_t
     return am;
   }
 
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double m = holy_power_generator_t::composite_target_multiplier( t );
+
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+    {
+      if ( p() -> sets.has_set_bonus( PALADIN_RETRIBUTION, T20, B4 ) )
+      {
+        paladin_td_t* td = this -> td( t );
+        if ( td -> buffs.debuffs_judgment -> up() )
+        {
+          double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent() + p() -> get_divine_judgment();
+          judgment_multiplier += p() -> passives.judgment -> effectN( 1 ).percent();
+          m *= judgment_multiplier;
+        }
+      }
+    }
+
+    return m;
+  }
+
   virtual void execute() override
   {
     holy_power_generator_t::execute();
@@ -3133,6 +3155,9 @@ struct blade_of_justice_t : public holy_power_generator_t
     {
       if ( p() -> buffs.righteous_verdict -> up() )
         p() -> buffs.righteous_verdict -> expire();
+
+      if ( p() -> sets.has_set_bonus( PALADIN_RETRIBUTION, T20, B2 ) )
+        p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_t20_2p );
     }
   }
 };
@@ -3151,6 +3176,27 @@ struct divine_hammer_tick_t : public paladin_melee_attack_t
     background  = true;
     may_crit    = true;
     ground_aoe = true;
+  }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double m = paladin_melee_attack_t::composite_target_multiplier( t );
+
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+    {
+      if ( p() -> sets.has_set_bonus( PALADIN_RETRIBUTION, T20, B4 ) )
+      {
+        paladin_td_t* td = this -> td( t );
+        if ( td -> buffs.debuffs_judgment -> up() )
+        {
+          double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent() + p() -> get_divine_judgment();
+          judgment_multiplier += p() -> passives.judgment -> effectN( 1 ).percent();
+          m *= judgment_multiplier;
+        }
+      }
+    }
+
+    return m;
   }
 };
 
@@ -3208,6 +3254,9 @@ struct divine_hammer_t : public paladin_spell_t
     {
       if ( p() -> buffs.righteous_verdict -> up() )
         p() -> buffs.righteous_verdict -> expire();
+
+      if ( p() -> sets.has_set_bonus( PALADIN_RETRIBUTION, T20, B2 ) )
+        p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_t20_2p );
     }
   }
 };
@@ -4404,6 +4453,7 @@ void paladin_t::init_gains()
   gains.hp_liadrins_fury_unleashed  = get_gain( "liadrins_fury_unleashed" );
   gains.judgment                    = get_gain( "judgment" );
   gains.hp_t19_4p                   = get_gain( "t19_4p" );
+  gains.hp_t20_2p                   = get_gain( "t20_2p" );
 
   if ( ! retribution_trinket )
   {
