@@ -206,63 +206,6 @@ metric_e populate_player_list( const std::string& type, const sim_t& sim,
   return pl.size() > 1 ? m : METRIC_NONE;
 }
 
-double compute_median( const std::vector<const player_t*>& pl, metric_e metric,
-                       metric_value_e val )
-{
-  if ( pl.size() < 2 )
-  {
-    return 0;
-  }
-
-  if ( !pl[ 0 ]->sim->chart_show_relative_difference )
-  {
-    return 0;
-  }
-
-  size_t m = pl.size() / 2;
-
-  const extended_sample_data_t *d1 = nullptr, *d2 = nullptr;
-  double median = 0;
-
-  switch ( metric )
-  {
-    case METRIC_DPS:
-      d1 = &pl[ m ]->collected_data.dps;
-      d2 = pl.size() % 2 ? d1 : &pl[ m - 1 ]->collected_data.dps;
-      break;
-    case METRIC_PDPS:
-      d1 = &pl[ m ]->collected_data.prioritydps;
-      d2 = pl.size() % 2 ? d1 : &pl[ m - 1 ]->collected_data.prioritydps;
-      break;
-    case METRIC_HPS:
-      d1 = &pl[ m ]->collected_data.hps;
-      d2 = pl.size() % 2 ? d1 : &pl[ m - 1 ]->collected_data.hps;
-      break;
-    case METRIC_DTPS:
-      d1 = &pl[ m ]->collected_data.dtps;
-      d2 = pl.size() % 2 ? d1 : &pl[ m - 1 ]->collected_data.dtps;
-      break;
-    case METRIC_TMI:
-      d1 = &pl[ m ]->collected_data.theck_meloree_index;
-      d2 =
-          pl.size() % 2 ? d1 : &pl[ m - 1 ]->collected_data.theck_meloree_index;
-      break;
-    default:
-      return 0;
-  }
-
-  switch ( val )
-  {
-    case VALUE_MEAN:
-      median = ( d1->mean() + d2->mean() ) / 2.0;
-      break;
-    default:
-      break;
-  }
-
-  return median;
-}
-
 std::vector<double> get_data_summary( const player_collected_data_t& container,
                                       metric_e metric,
                                       double percentile = 0.25 )

@@ -6122,12 +6122,14 @@ struct vanish_t : public stealth_like_buff_t
   {
     // FIXME: Behavior changed in 7.2 due to Subterfuge changes
     if ( maybe_ptr( rogue -> dbc.ptr ) )
+    {
       // Stealth proc if Vanish fully end (i.e. isn't break before the expiration)
       // We do it before the normal Vanish expiration to avoid on-stealth buff bugs (MoS, MoSh, Mantle).
       if ( remaining_duration == timespan_t::zero() )
       {
         rogue -> buffs.stealth -> trigger();
       }
+    }
     else
     {
       // As of 02/26/2017, if you have Subterfuge talent and manages to no proc it during Vanish
