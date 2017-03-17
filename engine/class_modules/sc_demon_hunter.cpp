@@ -3685,6 +3685,7 @@ struct chaos_strike_t : public chaos_strike_base_t
       && p()->artifact.chaotic_onslaught.rank()
       && p()->rng().roll(p()->artifact.chaotic_onslaught.percent()))
     {
+      p()->active.chaotic_onslaught->target = target;
       p()->active.chaotic_onslaught->schedule_execute();
     }
   }
@@ -3739,6 +3740,7 @@ struct annihilation_t : public chaos_strike_base_t
       && p()->artifact.chaotic_onslaught.rank()
       && p()->rng().roll(p()->artifact.chaotic_onslaught.percent()))
     {
+      p()->active.chaotic_onslaught_annihilation->target = target;
       p()->active.chaotic_onslaught_annihilation->schedule_execute();
     }
   }
@@ -3752,6 +3754,7 @@ struct chaotic_onslaught_t : public chaos_strike_base_t
     : chaos_strike_base_t("chaos_strike_onslaught", p, p -> spec.chaos_strike)
   {
     background = true;
+    trigger_gcd = timespan_t::zero();
 
     attacks.push_back(
       new chaos_strike_damage_t(p, data().effectN(2), this, "chaos_strike_onslaught_dmg_1"));
@@ -3770,6 +3773,8 @@ struct chaotic_onslaught_t : public chaos_strike_base_t
   {
     return true;
   }
+
+  // TODO: Check delay/travel_time in logs
 };
 
 struct chaotic_onslaught_annihilation_t : public chaos_strike_base_t
@@ -3778,6 +3783,7 @@ struct chaotic_onslaught_annihilation_t : public chaos_strike_base_t
     : chaos_strike_base_t("annihilation_onslaught", p, p -> spec.annihilation)
   {
     background = true;
+    trigger_gcd = timespan_t::zero();
 
     attacks.push_back(
       new chaos_strike_damage_t(p, data().effectN(2), this, "annihilation_onslaught_dmg_1"));
@@ -3796,6 +3802,8 @@ struct chaotic_onslaught_annihilation_t : public chaos_strike_base_t
   {
     return true;
   }
+
+  // TODO: Check delay/travel_time in logs
 };
 
 // Chaos Cleave =============================================================
