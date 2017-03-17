@@ -145,6 +145,7 @@ public:
 
     // artifact
     buff_t* painful_truths;
+    buff_t* righteous_verdict;
   } buffs;
 
   // Gains
@@ -340,6 +341,8 @@ public:
     artifact_power_t unbreakable_will;              // NYI
     artifact_power_t righteous_blade;
     artifact_power_t ashbringers_light;
+    artifact_power_t ferocity_of_the_silver_hand;
+    artifact_power_t righteous_verdict;
 
     // Prot
     artifact_power_t eye_of_tyr;
@@ -2868,6 +2871,17 @@ struct holy_power_consumer_t : public paladin_melee_attack_t
       int num_stacks = (int)base_cost();
       p() -> buffs.crusade -> trigger( num_stacks );
     }
+
+    printf("we should be triggering the buff...\n");
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+    {
+      printf("rank %d\n",p() -> artifact.righteous_verdict.rank() );
+      if ( p() -> artifact.righteous_verdict.rank() ) // HERE WE GO
+      {
+        printf("BA BA BOOM\n");
+        p() -> buffs.righteous_verdict -> trigger();
+      }
+    }
   }
 };
 
@@ -3103,6 +3117,27 @@ struct blade_of_justice_t : public holy_power_generator_t
     if ( p -> talents.virtues_blade -> ok() )
       crit_bonus_multiplier += p -> talents.virtues_blade -> effectN( 1 ).percent();
   }
+
+  virtual double action_multiplier() const override
+  {
+    double am = holy_power_generator_t::action_multiplier();
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+    {
+      if ( p() -> buffs.righteous_verdict -> up() )
+        am *= 1.0 + p() -> artifact.righteous_verdict.percent();
+    }
+    return am;
+  }
+
+  virtual void execute() override
+  {
+    holy_power_generator_t::execute();
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+    {
+      if ( p() -> buffs.righteous_verdict -> up() )
+        p() -> buffs.righteous_verdict -> expire();
+    }
+  }
 };
 
 // Divine Hammer =========================================================
@@ -3156,6 +3191,27 @@ struct divine_hammer_t : public paladin_spell_t
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
     return dot_duration * ( tick_time( s ) / base_tick_time );
+  }
+
+  virtual double action_multiplier() const override
+  {
+    double am = paladin_spell_t::action_multiplier();
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+    {
+      if ( p() -> buffs.righteous_verdict -> up() )
+        am *= 1.0 + p() -> artifact.righteous_verdict.percent();
+    }
+    return am;
+  }
+
+  virtual void execute() override
+  {
+    paladin_spell_t::execute();
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+    {
+      if ( p() -> buffs.righteous_verdict -> up() )
+        p() -> buffs.righteous_verdict -> expire();
+    }
   }
 };
 
@@ -4443,6 +4499,7 @@ void paladin_t::create_buffs()
   buffs.whisper_of_the_nathrezim       = buff_creator_t( this, "whisper_of_the_nathrezim" ).spell( find_spell( 207635 ) );
   buffs.liadrins_fury_unleashed        = new buffs::liadrins_fury_unleashed_t( this );
   buffs.shield_of_vengeance            = new buffs::shield_of_vengeance_buff_t( this );
+  buffs.righteous_verdict              = buff_creator_t( this, "righteous_verdict", find_spell( 238996 ) );
 
   // Tier Bonuses
 
@@ -4739,7 +4796,7 @@ void paladin_t::generate_action_prio_list_ret()
         item_str = "use_item,name=" + items[i].name_str + ",if=(buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=15|cooldown.crusade.remains>20&!buff.crusade.up)";
         def -> add_action( item_str );
       }
-      else if ( items[i].name_str == "might_of_krosus" ) 
+      else if ( items[i].name_str == "might_of_krosus" )
       {
         item_str = "use_item,name=" + items[i].name_str + ",if=(buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=15|cooldown.crusade.remains>5&!buff.crusade.up)";
         def -> add_action( item_str );
@@ -5107,7 +5164,9 @@ void paladin_t::init_spells()
   artifact.endless_resolve         = find_artifact_spell( "Endless Resolve" );
   artifact.deflection              = find_artifact_spell( "Deflection" );
   artifact.ashbringers_light       = find_artifact_spell( "Ashbringer's Light" );
+  artifact.ferocity_of_the_silver_hand = find_artifact_spell( "Ferocity of the Silver Hand" );
   artifact.ashes_to_ashes          = find_artifact_spell( "Ashes to Ashes" );
+  artifact.righteous_verdict       = find_artifact_spell( "Righteous Verdict" );
 
   artifact.eye_of_tyr              = find_artifact_spell( "Eye of Tyr" );
   artifact.truthguards_light       = find_artifact_spell( "Truthguard's Light" );
@@ -5486,6 +5545,7 @@ double paladin_t::composite_player_multiplier( school_e school ) const
 
   // artifacts
   m *= 1.0 + artifact.ashbringers_light.percent();
+  m *= 1.0 + artifact.ferocity_of_the_silver_hand.percent();
 
   if ( school == SCHOOL_HOLY )
     m *= 1.0 + artifact.truthguards_light.percent();
