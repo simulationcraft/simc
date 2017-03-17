@@ -5946,16 +5946,23 @@ struct nether_tempest_t : public arcane_mage_spell_t
 
 struct strafing_run_t : public fire_mage_spell_t
 {
+  double chain_number;
   strafing_run_t( mage_t* p ) :
-    fire_mage_spell_t( "phoenixs_flames_chain", p, p -> find_spell( 238127 ) )
+    fire_mage_spell_t( "phoenixs_flames_chain", p, p -> find_spell( 194466 ) ),
+    chain_number( 0.0 )
   {
-    spell_power_mod.direct = p -> find_spell( 194466 ) -> effectN( 1 ).sp_coeff();
-    chain_multiplier = p -> find_spell( 194466 ) -> effectN( 1 ).chain_multiplier();
   }
   virtual void execute() override
   {
-    execute_state -> chain_target = 1;
     fire_mage_spell_t::execute();
+  }
+  virtual double action_multiplier() const override
+  {
+    double am = fire_mage_spell_t::action_multiplier();
+
+    am *= chain_number * 0.75;
+
+    return am;
   }
   virtual double composite_crit_chance() const override
   { return 1.0; }
@@ -6010,6 +6017,8 @@ struct phoenixs_flames_t : public fire_mage_spell_t
     triggers_hot_streak = true;
     triggers_ignite = true;
     triggers_pyretic_incantation = true;
+    if ( p -> artifact.strafing_run.rank() )
+      aoe = 2;
   }
 
   virtual void execute() override
@@ -6030,16 +6039,20 @@ struct phoenixs_flames_t : public fire_mage_spell_t
 
   virtual void impact( action_state_t* s ) override
   {
+    if ( p() -> artifact.strafing_run.rank() && s -> chain_target == 1 )
+    {
+      strafing_run_chain_base -> target = s -> target;
+      strafing_run_chain_base -> chain_number = 1;
+      strafing_run_chain_base -> execute();
+      return;
+    }
     fire_mage_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
     {
       phoenixs_flames_splash -> target = s -> target;
       phoenixs_flames_splash -> execute();
-      if ( p() -> artifact.strafing_run.rank() )
-      {
 
-      }
     }
   }
 
