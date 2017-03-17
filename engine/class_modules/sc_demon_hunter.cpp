@@ -5676,15 +5676,25 @@ void demon_hunter_t::create_buffs()
   // TODO: Buffs for each race?
   buff.nemesis = buff_creator_t( this, "nemesis_buff", find_spell( 208605 ) )
                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  
+
+  auto prepared_duration =
+      talent.prepared->effectN( 1 ).trigger()->duration().total_millis() / 100;
+  double prepared_value =
+      prepared_duration
+          ? talent.prepared->effectN( 1 ).trigger()->effectN( 1 ).resource(
+                RESOURCE_FURY ) *
+                ( 1.0 +
+                  sets.set( DEMON_HUNTER_HAVOC, T19, B2 )
+                      ->effectN( 1 )
+                      .percent() ) /
+                prepared_duration
+          : 0.0;
   buff.prepared =
     buff_creator_t(this, "prepared",
       talent.prepared->effectN(1).trigger())
     .trigger_spell(talent.prepared)
     .period(timespan_t::from_millis(100))
-    .default_value(talent.prepared->effectN(1).trigger()->effectN(1).resource(RESOURCE_FURY) *
-    (1.0 + sets.set(DEMON_HUNTER_HAVOC, T19, B2)->effectN(1).percent()) /
-      (talent.prepared->effectN(1).trigger()->duration().total_millis() / 100))
+    .default_value(prepared_value)
     .tick_callback([this](buff_t* b, int, const timespan_t&) {
     resource_gain(RESOURCE_FURY, b->check_value(), gain.prepared);
   });
