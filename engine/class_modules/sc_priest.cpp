@@ -136,7 +136,6 @@ public:
     propagate_const<buff_t*> shadow_t19_4p;            // T19 Shadow 4pc
 
     // Legion Legendaries
-    propagate_const<buff_t*> sephuzs_secret_passive;
     propagate_const<buff_t*> sephuzs_secret;
     // Shadow
     propagate_const<buff_t*> anunds_last_breath;       // Anund's Seared Shackles stack counter
@@ -482,6 +481,7 @@ public:
   expr_t* create_expression( action_t* a,
                              const std::string& name_str ) override;
   bool has_t18_class_trinket() const override;
+  void trigger_sephuzs_secret(const action_state_t* state, spell_mechanic mechanic, double proc_chance = -1.0);
 
   void do_dynamic_regen() override
   {
@@ -3174,19 +3174,30 @@ struct silence_t final : public priest_spell_t
     priest.buffs.sephuzs_secret->trigger();
   }
 
+  void impact(action_state_t* state) override
+  {
+    if (   target->type != ENEMY_ADD
+        || target->level() < sim->max_player_level + 3 )
+    {
+      priest.trigger_sephuzs_secret( state, MECHANIC_SILENCE );
+    }
+    else
+    {
+      priest.trigger_sephuzs_secret( state, MECHANIC_INTERRUPT );
+    }
+  }
+
   bool ready() override
   {
+    return priest_spell_t::ready();      
     // Only available if the target is casting 
-    if ( !target->debuffs.casting->check() ||
-         cooldown->remains() > timespan_t::zero() )
-    {// Or if the target can get blank silenced
-      if (! ( target->is_add() || target->level() < sim->max_player_level + 3) )
-      { 
-        return false;
-      }
+    // Or if the target can get blank silenced
+    if ( !(    target->type != ENEMY_ADD 
+            && ( target->level() < sim->max_player_level + 3 )
+            && target->debuffs.casting->check() ) )
+    {
+      return false;
     }
-    
-    return priest_spell_t::ready();
   }
 };
 
@@ -3202,23 +3213,22 @@ struct mind_bomb_t final : public priest_spell_t
     cooldown = priest.cooldowns.mind_bomb;
     // Added 2 seconds to emulate the setup time
     // Simplifying the spell
-    cooldown->duration = data().cooldown() + timespan_t::from_seconds(2);
+    cooldown->duration += timespan_t::from_seconds(2);
   }
 
-  void execute() override
+  void impact(action_state_t* state) override
   {
-    priest_spell_t::execute();
-    priest.buffs.sephuzs_secret->trigger();
+      priest.trigger_sephuzs_secret( state, MECHANIC_STUN );
   }
 
   bool ready() override
   {
-    // Only available if the target is an add or low level
-    if (!target->is_add() && !target->level() < sim->max_player_level + 3)
+    // Only available if the target can be stunned
+    if ( !(      target->type != ENEMY_ADD
+            && ( target->level() < sim->max_player_level + 3 ) ) )
     {
       return false;
     }
-
     return priest_spell_t::ready();
   }
 };
@@ -3969,20 +3979,6 @@ protected:
   priest_t& priest;
 };
 
-struct sephuzs_secret_t final : public priest_buff_t<buff_t>
-{
-  sephuzs_secret_t(priest_t& p)
-    : base_t(p, haste_buff_creator_t(&p, "voidform")
-      .spell(p.find_spell(194249))
-      .add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER)
-      .add_invalidate(CACHE_HASTE)
-      .add_invalidate(CACHE_PLAYER_HEAL_MULTIPLIER))
-  {
-    // Cooldown hidden in spell data, yay, ty Blizzard
-    cooldown->duration = p.find_spell( 226262 )->duration();
-  }  
-};
-
 /* Custom insanity_drain_stacks buff
 */
 struct insanity_drain_stacks_t final : public priest_buff_t<buff_t>
@@ -4359,7 +4355,7 @@ void init()
   unique_gear::register_special_effect( 207721, the_twins_painful_touch );
   unique_gear::register_special_effect( 224999, zenkaram_iridis_anadem );
   unique_gear::register_special_effect( 236545, zeks_exterminatus );
-  unique_gear::register_special_effect( 132452, sephuzs_secret );
+  unique_gear::register_special_effect( 208051, sephuzs_secret );
 }
 
 }  // items
@@ -4462,7 +4458,7 @@ void priest_t::create_cooldowns()
   cooldowns.shadow_word_void  = get_cooldown( "shadow_word_void" );
   cooldowns.void_bolt         = get_cooldown( "void_bolt" );
   cooldowns.mind_bomb         = get_cooldown( "mind_bomb" );
-  cooldowns.sephuzs_secret    = get_cooldown( "sephuzs_secret" );
+  cooldowns.sephuzs_secret    = get_cooldown( "sephuzs_secret_cooldown" );
 
   if ( specialization() == PRIEST_DISCIPLINE )
   {
@@ -4709,11 +4705,13 @@ double priest_t::composite_spell_haste() const
     {
       h /= 1.0 +
             buffs.sephuzs_secret->data().effectN( 2 ).percent();
+      printf("\n%.3f", h);
     }
     else
     {
       h /= 1.0 +
             buffs.sephuzs_secret->data().effectN( 3 ).percent();
+      printf("\n%.3f", h);
     }
   }
 
@@ -5389,7 +5387,10 @@ void priest_t::create_buffs()
   buffs.zeks_exterminatus = buff_creator_t( this, "zeks_exterminatus", find_spell( 236545 ) )
                                 .rppm_scale( RPPM_HASTE );
 
-  buffs.sephuzs_secret = new buffs::sephuzs_secret_t(*this);
+  buffs.sephuzs_secret = make_buff(this, "sephuzs_secret", find_spell(208051));
+  buffs.sephuzs_secret->set_cooldown( find_spell(226262)->duration() );
+  buffs.sephuzs_secret->set_duration( find_spell(208052)->duration() );
+  buffs.sephuzs_secret->default_chance = active_items.sephuzs_secret ? 1.0 : 0.0;
 }
 
 // priest_t::init_rng ==================================================
@@ -5538,6 +5539,35 @@ bool priest_t::has_t18_class_trinket() const
   }
 
   return false;
+}
+
+void priest_t::trigger_sephuzs_secret(const action_state_t * state, spell_mechanic mechanic, double proc_chance)
+{
+  switch (mechanic)
+  {
+    printf("\nAdd type: %s", state->target->type);
+    // Interrupts will always trigger sephuz
+  case MECHANIC_INTERRUPT:
+    break;
+  default:
+    // By default, proc sephuz on persistent enemies if they are below the "boss level"
+    // (playerlevel + 3), and on any kind of transient adds.
+    if (state->target->type != ENEMY_ADD &&
+      (state->target->level() >= sim->max_player_level + 3))
+    {
+      return;
+    }
+    break;
+  }
+
+  // Ensure Sephuz's Secret can even be procced. If the ring is not equipped, a fallback buff with
+  // proc chance of 0 (disabled) will be created
+  if (buffs.sephuzs_secret->default_chance == 0)
+  {
+    return;
+  }
+
+  buffs.sephuzs_secret->trigger(1, buff_t::DEFAULT_VALUE(), proc_chance);
 }
 
 // NO Spec Combat Action Priority List
@@ -5787,6 +5817,10 @@ void priest_t::apl_shadow()
       "25&(cooldown.void_bolt.up|cooldown.void_torrent.up|cooldown.shadow_word_"
       "death.up|buff.shadowy_insight.up)&target.time_to_die<=variable.s2mcheck-"
       "(buff.insanity_drain_stacks.value)" );
+  vf->add_action(
+    "silence,if=equipped.sephuz_secret&cooldown.sephuzs_secret.remains<1");
+  vf->add_action(
+    "mind_bomb,if=equipped.sephuz_secret&cooldown.sephuzs_secret.remains<1");
   vf->add_action( "void_bolt" );
   vf->add_action( "shadow_crash,if=talent.shadow_crash.enabled" );
   vf->add_action(
