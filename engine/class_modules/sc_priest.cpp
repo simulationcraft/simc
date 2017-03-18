@@ -136,6 +136,8 @@ public:
     propagate_const<buff_t*> shadow_t19_4p;            // T19 Shadow 4pc
 
     // Legion Legendaries
+    propagate_const<buff_t*> sephuzs_secret_passive;
+    propagate_const<buff_t*> sephuzs_secret;
     // Shadow
     propagate_const<buff_t*> anunds_last_breath;       // Anund's Seared Shackles stack counter
     propagate_const<buff_t*> the_twins_painful_touch;  // To track first casting
@@ -310,6 +312,8 @@ public:
     propagate_const<cooldown_t*> shadow_word_death;
     propagate_const<cooldown_t*> shadow_word_void;
     propagate_const<cooldown_t*> void_bolt;
+    propagate_const<cooldown_t*> mind_bomb;
+    propagate_const<cooldown_t*> sephuzs_secret;
   } cooldowns;
 
   // Gains
@@ -404,6 +408,7 @@ public:
     const special_effect_t* zenkaram_iridis_anadem;     // helm
     const special_effect_t* the_twins_painful_touch;    // ring
     const special_effect_t* zeks_exterminatus;          // cloak
+    const special_effect_t* sephuzs_secret;             // ring
   } active_items;
 
   // Pets
@@ -3165,13 +3170,53 @@ struct silence_t final : public priest_spell_t
     // Only interrupts, does not keep target silenced. This works in most cases
     // since bosses are rarely able to be completely silenced.
     target->debuffs.casting->expire();
+    priest.buffs.sephuzs_secret->trigger();
   }
 
   bool ready() override
   {
+    // Only available if the target is casting 
     if ( !target->debuffs.casting->check() ||
          cooldown->remains() > timespan_t::zero() )
+    {// Or if the target can get blank silenced
+      if (! ( target->is_add() || target->level() < sim->max_player_level + 3) )
+      { 
+        return false;
+      }
+    }
+    
+    return priest_spell_t::ready();
+  }
+};
+
+struct mind_bomb_t final : public priest_spell_t
+{
+  mind_bomb_t(priest_t& player, const std::string& options_str)
+    : priest_spell_t("mind_bomb", player, player.talents.mind_bomb)
+  {
+    parse_options(options_str);
+    may_miss = may_crit = false;
+    ignore_false_positive = true;
+
+    cooldown = priest.cooldowns.mind_bomb;
+    // Added 2 seconds to emulate the setup time
+    // Simplifying the spell
+    cooldown->duration = data().cooldown() + timespan_t::from_seconds(2);
+  }
+
+  void execute() override
+  {
+    priest_spell_t::execute();
+    priest.buffs.sephuzs_secret->trigger();
+  }
+
+  bool ready() override
+  {
+    // Only available if the target is an add or low level
+    if (!target->is_add() && !target->level() < sim->max_player_level + 3)
+    {
       return false;
+    }
 
     return priest_spell_t::ready();
   }
@@ -3923,6 +3968,20 @@ protected:
   priest_t& priest;
 };
 
+struct sephuzs_secret_t final : public priest_buff_t<buff_t>
+{
+  sephuzs_secret_t(priest_t& p)
+    : base_t(p, haste_buff_creator_t(&p, "voidform")
+      .spell(p.find_spell(194249))
+      .add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER)
+      .add_invalidate(CACHE_HASTE)
+      .add_invalidate(CACHE_PLAYER_HEAL_MULTIPLIER))
+  {
+    // Cooldown hidden in spell data, yay, ty Blizzard
+    cooldown->duration = p.find_spell( 226262 )->duration();
+  }  
+};
+
 /* Custom insanity_drain_stacks buff
 */
 struct insanity_drain_stacks_t final : public priest_buff_t<buff_t>
@@ -4276,6 +4335,14 @@ void zeks_exterminatus( special_effect_t& effect )
                    priest->active_items.zeks_exterminatus, effect );
 }
 
+void sephuzs_secret(special_effect_t& effect)
+{
+  priest_t* priest = debug_cast<priest_t*>(effect.player);
+  assert(priest);
+  do_trinket_init(priest, PRIEST_SHADOW,
+                  priest->active_items.sephuzs_secret, effect);
+}
+
 void init()
 {
   // Archimonde Trinkets
@@ -4290,6 +4357,7 @@ void init()
   unique_gear::register_special_effect( 207721, the_twins_painful_touch );
   unique_gear::register_special_effect( 224999, zenkaram_iridis_anadem );
   unique_gear::register_special_effect( 236545, zeks_exterminatus );
+  unique_gear::register_special_effect( 132452, sephuzs_secret );
 }
 
 }  // items
@@ -4391,6 +4459,8 @@ void priest_t::create_cooldowns()
   cooldowns.shadow_word_death = get_cooldown( "shadow_word_death" );
   cooldowns.shadow_word_void  = get_cooldown( "shadow_word_void" );
   cooldowns.void_bolt         = get_cooldown( "void_bolt" );
+  cooldowns.mind_bomb         = get_cooldown( "mind_bomb" );
+  cooldowns.sephuzs_secret    = get_cooldown( "sephuzs_secret" );
 
   if ( specialization() == PRIEST_DISCIPLINE )
   {
@@ -4491,7 +4561,7 @@ void priest_t::create_procs()
       "per)" );
   procs.legendary_zeks_exterminatus_overflow = get_proc(
       "Legendary - Zek's Exterminatus - Shadow Word Death damage increases "
-      "(25% "
+      "(100% "
       "per) lost to overflow" );
 }
 
@@ -4629,6 +4699,20 @@ double priest_t::composite_spell_haste() const
     h /= 1.0 +
          ( buffs.voidform->check() ) *
              buffs.voidform->data().effectN( 3 ).percent();
+  }
+
+  if( active_items.sephuzs_secret )
+  {
+    if ( buffs.sephuzs_secret->check() )
+    {
+      h /= 1.0 +
+            buffs.sephuzs_secret->data().effectN( 2 ).percent();
+    }
+    else
+    {
+      h /= 1.0 +
+            buffs.sephuzs_secret->data().effectN( 3 ).percent();
+    }
   }
 
   return h;
@@ -4847,6 +4931,8 @@ action_t* priest_t::create_action( const std::string& name,
     return new silence_t( *this, options_str );
   if ( name == "vampiric_embrace" )
     return new vampiric_embrace_t( *this, options_str );
+  if (name == "mind_bomb")
+    return new mind_bomb_t(*this, options_str);
 
   // Shadow
   if ( name == "mind_blast" )
@@ -5285,6 +5371,8 @@ void priest_t::create_buffs()
           .duration( timespan_t::from_seconds(
               4.0 ) );  // TODO Update with spelldata once available
 
+  // Legendaries
+
   buffs.anunds_last_breath = make_buff( this, "anunds_last_breath", find_spell( 215210 ) );
 
   buffs.iridis_empowerment = 
@@ -5297,6 +5385,8 @@ void priest_t::create_buffs()
 
   buffs.zeks_exterminatus = buff_creator_t( this, "zeks_exterminatus", find_spell( 236545 ) )
                                 .rppm_scale( RPPM_HASTE );
+
+  buffs.sephuzs_secret = new buffs::sephuzs_secret_t(*this);
 }
 
 // priest_t::init_rng ==================================================
