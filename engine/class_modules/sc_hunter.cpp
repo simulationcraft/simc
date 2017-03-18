@@ -22,7 +22,7 @@ namespace
 // Hunter
 // ==========================================================================
 
-enum { DIRE_BEASTS_MAX = 8 };
+enum { DIRE_BEASTS_MAX = 10 };
 
 struct hunter_t;
 

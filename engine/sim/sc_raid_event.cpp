@@ -343,11 +343,6 @@ struct casting_event_t : public raid_event_t
   virtual void _start() override
   {
     sim -> target -> debuffs.casting -> increment();
-    for ( size_t i = 0; i < sim -> player_non_sleeping_list.size(); ++i )
-    {
-      player_t* p = sim -> player_non_sleeping_list[ i ];
-      p -> interrupt();
-    }
   }
 
   virtual void _finish() override

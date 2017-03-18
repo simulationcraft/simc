@@ -513,6 +513,7 @@ public:
   // Gains
   struct gains_t {
     gain_t* antimagic_shell;
+    gain_t* deaths_harbinger;
     gain_t* festering_wound;
     gain_t* frost_fever;
     gain_t* horn_of_winter;
@@ -704,7 +705,12 @@ public:
     artifact_power_t double_doom;
     artifact_power_t deadliest_coil;
     artifact_power_t fleshsearer;
-    
+    // 7.2
+    artifact_power_t cunning_of_the_ebon_blade;
+    artifact_power_t lash_of_shadows;
+    artifact_power_t deaths_harbinger;
+    artifact_power_t black_claws;
+
     // Blood
     artifact_power_t consumption;
     artifact_power_t sanguinary_affinity;
@@ -889,6 +895,7 @@ public:
   void      trigger_runic_empowerment( double rpcost );
   bool      trigger_runic_corruption( double rpcost, double override_chance = -1.0 );
   void      trigger_festering_wound( const action_state_t* state, unsigned n_stacks = 1, bool bypass_icd = false );
+  void      burst_festering_wound( const action_state_t* state, unsigned n = 1 );
   void      trigger_death_march( const action_state_t* state );
   void      apply_diseases( action_state_t* state, unsigned diseases );
   double    ready_runes_count( bool fractional ) const;
@@ -1722,6 +1729,18 @@ struct ghoul_pet_t : public dt_pet_t
       aoe = -1; // TODO: Nearby enemies == all now?
       triggers_infected_claws = true;
     }
+
+    void impact( action_state_t* state ) override
+    {
+      super::impact( state );
+
+      if ( p() -> o() -> artifact.black_claws.rank() > 0 &&
+           p() -> o() -> buffs.dark_transformation -> up() &&
+           rng().roll( p() -> o() -> artifact.black_claws.data().effectN( 1 ).percent() ) )
+      {
+        p() -> o() -> burst_festering_wound( state, 1 );
+      }
+    }
   };
 
   ghoul_pet_t( death_knight_t* owner ) : dt_pet_t( owner, "ghoul" )
@@ -1792,6 +1811,18 @@ struct sludge_belcher_pet_t : public dt_pet_t
     {
       aoe = -1;
       triggers_infected_claws = true;
+    }
+
+    void impact( action_state_t* state ) override
+    {
+      super::impact( state );
+
+      if ( p() -> o() -> artifact.black_claws.rank() > 0 &&
+           p() -> o() -> buffs.dark_transformation -> up() &&
+           rng().roll( p() -> o() -> artifact.black_claws.data().effectN( 1 ).percent() ) )
+      {
+        p() -> o() -> burst_festering_wound( state, 1 );
+      }
     }
   };
 
@@ -2530,88 +2561,6 @@ struct death_knight_action_t : public Base
     return base_gcd;
   }
 
-  virtual void burst_festering_wound( const action_state_t* state, unsigned n = 1 ) const
-  {
-    struct fs_burst_t : public event_t
-    {
-      unsigned n;
-      player_t* target;
-      death_knight_t* dk;
-
-      fs_burst_t( death_knight_t* dk, player_t* target, unsigned n ) :
-        event_t( *dk, timespan_t::zero() ), n( n ), target( target ), dk( dk )
-      {
-      }
-
-      const char* name() const override
-      { return "festering_wounds_burst"; }
-
-      void execute() override
-      {
-        death_knight_td_t* td = dk -> get_target_data( target );
-
-        unsigned n_executes = std::min( n, as<unsigned>( td -> debuff.festering_wound -> check() ) );
-        for ( unsigned i = 0; i < n_executes; ++i )
-        {
-          dk -> active_spells.festering_wound -> target = target;
-          dk -> active_spells.festering_wound -> execute();
-
-          // Don't unnecessarily call bursting sores in single target scenarios
-          if ( dk -> talent.bursting_sores -> ok() &&
-               dk -> active_spells.bursting_sores -> target_list().size() > 0 )
-          {
-            dk -> active_spells.bursting_sores -> target = target;
-            dk -> active_spells.bursting_sores -> execute();
-          }
-
-          if ( dk -> talent.pestilent_pustules -> ok() &&
-               ++dk -> pestilent_pustules == dk -> talent.pestilent_pustules -> effectN( 1 ).base_value() )
-          {
-            dk -> replenish_rune( 1, dk -> gains.pestilent_pustules );
-            dk -> pestilent_pustules = 0;
-          }
-
-          if ( dk -> talent.unholy_frenzy -> ok() )
-          {
-            dk -> buffs.unholy_frenzy -> trigger();
-          }
-
-          // TODO: Is this per festering wound, or one try?
-          if ( dk -> sets.has_set_bonus( DEATH_KNIGHT_UNHOLY, T19, B2 ) )
-          {
-            if ( dk -> trigger_runic_corruption( 0,
-                  dk -> sets.set( DEATH_KNIGHT_UNHOLY, T19, B2 ) -> effectN( 1 ).percent() ) )
-            {
-              dk -> procs.t19_2pc_unholy -> occur();
-            }
-          }
-        }
-
-        td -> debuff.festering_wound -> decrement( n_executes );
-        if ( td -> debuff.soul_reaper -> up() )
-        {
-          dk -> buffs.soul_reaper -> trigger( n_executes );
-        }
-      }
-    };
-
-    if ( ! p() -> spec.festering_wound -> ok() )
-    {
-      return;
-    }
-
-    if ( this -> result_is_miss( state -> result ) )
-    {
-      return;
-    }
-
-    if ( ! td( state -> target ) -> debuff.festering_wound -> up() )
-    {
-      return;
-    }
-
-    make_event<fs_burst_t>( *this -> sim, p(), state -> target, n );
-  }
 };
 
 // ==========================================================================
@@ -2993,6 +2942,7 @@ struct festering_wound_t : public death_knight_spell_t
     background = true;
 
     base_multiplier *= 1.0 + p -> talent.bursting_sores -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p -> artifact.lash_of_shadows.percent();
   }
 
   void execute() override
@@ -3299,6 +3249,11 @@ struct apocalypse_t : public death_knight_melee_attack_t
     parse_options( options_str );
 
     weapon = &( p -> main_hand_weapon );
+
+    // Note: 7.2 adds the 3 rune energize effect explicitly to the Apocalypse base spell, instead of
+    // having it as a separate mechanism. We disable it here unconditionally, since we implement the
+    // rune replenish through other means (death_knigt_t::replenish_rune).
+    energize_type = ENERGIZE_NONE;
   }
 
   void execute() override
@@ -3309,7 +3264,7 @@ struct apocalypse_t : public death_knight_melee_attack_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      burst_festering_wound( execute_state, n_wounds );
+      p() -> burst_festering_wound( execute_state, n_wounds );
     }
 
     for ( int i = 0; i < n_wounds; ++i )
@@ -3321,6 +3276,12 @@ struct apocalypse_t : public death_knight_melee_attack_t
       }
 
       p() -> pets.apocalypse_ghoul[ i ] -> summon( duration );
+    }
+
+    if ( p() -> artifact.deaths_harbinger.rank() > 0 )
+    {
+      p() -> replenish_rune( p() -> artifact.deaths_harbinger.data().effectN( 1 ).base_value(),
+        p() -> gains.deaths_harbinger );
     }
   }
 };
@@ -5428,7 +5389,7 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
         p() -> replenish_rune( 1, p() -> gains.scourge_the_unbeliever );
       }
 
-      burst_festering_wound( state, n_burst );
+      p() -> burst_festering_wound( state, n_burst );
     }
   }
 };
@@ -5489,7 +5450,7 @@ struct scourge_strike_t : public scourge_strike_base_t
 
       if ( state -> result == RESULT_CRIT && p() -> talent.castigator -> ok() )
       {
-        burst_festering_wound( state, 1 );
+        p() -> burst_festering_wound( state, 1 );
       }
     }
   };
@@ -6464,6 +6425,89 @@ void death_knight_t::trigger_festering_wound( const action_state_t* state, unsig
   cooldown.festering_wound -> start( spec.festering_wound -> internal_cooldown() );
 }
 
+void death_knight_t::burst_festering_wound( const action_state_t* state, unsigned n )
+{
+  struct fs_burst_t : public event_t
+  {
+    unsigned n;
+    player_t* target;
+    death_knight_t* dk;
+
+    fs_burst_t( death_knight_t* dk, player_t* target, unsigned n ) :
+      event_t( *dk, timespan_t::zero() ), n( n ), target( target ), dk( dk )
+    {
+    }
+
+    const char* name() const override
+    { return "festering_wounds_burst"; }
+
+    void execute() override
+    {
+      death_knight_td_t* td = dk -> get_target_data( target );
+
+      unsigned n_executes = std::min( n, as<unsigned>( td -> debuff.festering_wound -> check() ) );
+      for ( unsigned i = 0; i < n_executes; ++i )
+      {
+        dk -> active_spells.festering_wound -> target = target;
+        dk -> active_spells.festering_wound -> execute();
+
+        // Don't unnecessarily call bursting sores in single target scenarios
+        if ( dk -> talent.bursting_sores -> ok() &&
+             dk -> active_spells.bursting_sores -> target_list().size() > 0 )
+        {
+          dk -> active_spells.bursting_sores -> target = target;
+          dk -> active_spells.bursting_sores -> execute();
+        }
+
+        if ( dk -> talent.pestilent_pustules -> ok() &&
+             ++dk -> pestilent_pustules == dk -> talent.pestilent_pustules -> effectN( 1 ).base_value() )
+        {
+          dk -> replenish_rune( 1, dk -> gains.pestilent_pustules );
+          dk -> pestilent_pustules = 0;
+        }
+
+        if ( dk -> talent.unholy_frenzy -> ok() )
+        {
+          dk -> buffs.unholy_frenzy -> trigger();
+        }
+
+        // TODO: Is this per festering wound, or one try?
+        if ( dk -> sets.has_set_bonus( DEATH_KNIGHT_UNHOLY, T19, B2 ) )
+        {
+          if ( dk -> trigger_runic_corruption( 0,
+                dk -> sets.set( DEATH_KNIGHT_UNHOLY, T19, B2 ) -> effectN( 1 ).percent() ) )
+          {
+            dk -> procs.t19_2pc_unholy -> occur();
+          }
+        }
+      }
+
+      td -> debuff.festering_wound -> decrement( n_executes );
+      if ( td -> debuff.soul_reaper -> up() )
+      {
+        dk -> buffs.soul_reaper -> trigger( n_executes );
+      }
+    }
+  };
+
+  if ( ! spec.festering_wound -> ok() )
+  {
+    return;
+  }
+
+  if ( state -> action -> result_is_miss( state -> result ) )
+  {
+    return;
+  }
+
+  if ( ! get_target_data( state -> target ) -> debuff.festering_wound -> up() )
+  {
+    return;
+  }
+
+  make_event<fs_burst_t>( *sim, this, state -> target, n );
+}
+
 void death_knight_t::trigger_death_march( const action_state_t* /* state */ )
 {
   if ( legendary.death_march == timespan_t::zero() )
@@ -6873,6 +6917,11 @@ void death_knight_t::init_spells()
   artifact.double_doom         = find_artifact_spell( "Double Doom" );
   artifact.deadliest_coil      = find_artifact_spell( "Deadliest Coil" );
   artifact.fleshsearer         = find_artifact_spell( "Fleshsearer" );
+  // 7.2
+  artifact.cunning_of_the_ebon_blade = find_artifact_spell( "Cunning of the Ebon Blade" );
+  artifact.lash_of_shadows     = find_artifact_spell( "Lash of Shadows" );
+  artifact.deaths_harbinger    = find_artifact_spell( "Death's Harbinger" );
+  artifact.black_claws         = find_artifact_spell( "Black Claws" );
   // Blood
   artifact.consumption         = find_artifact_spell( "Consumption" );
   artifact.sanguinary_affinity = find_artifact_spell( "Sanguinary Affinity" );
@@ -7510,7 +7559,8 @@ void death_knight_t::init_gains()
 {
   player_t::init_gains();
 
-  gains.antimagic_shell                  = get_gain( "antimagic_shell"            );
+  gains.antimagic_shell                  = get_gain( "Antimagic Shell"            );
+  gains.deaths_harbinger                 = get_gain( "Death's Harbinger"          );
   gains.horn_of_winter                   = get_gain( "Horn of Winter"             );
   gains.hungering_rune_weapon            = get_gain( "Hungering Rune Weapon"      );
   gains.frost_fever                      = get_gain( "Frost Fever"                );
@@ -7769,6 +7819,7 @@ double death_knight_t::composite_attribute_multiplier( attribute_e attr ) const
       m *= 1.0 + runeforge.rune_of_the_stoneskin_gargoyle -> data().effectN( 2 ).percent();
 
     m *= 1.0 + artifact.ferocity_of_the_ebon_blade.data().effectN( 2 ).percent();
+    m *= 1.0 + artifact.cunning_of_the_ebon_blade.data().effectN( 2 ).percent();
   }
 
   return m;
@@ -7886,6 +7937,7 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
   m *= 1.0 + artifact.soulbiter.percent();
   m *= 1.0 + artifact.fleshsearer.percent();
   m *= 1.0 + artifact.ferocity_of_the_ebon_blade.percent();
+  m *= 1.0 + artifact.cunning_of_the_ebon_blade.percent();
 
   if ( dbc::is_school( school, SCHOOL_PHYSICAL ) )
   {
@@ -7912,6 +7964,7 @@ double death_knight_t::composite_player_pet_damage_multiplier( const action_stat
 
   m *= 1.0 + artifact.soulbiter.percent();
   m *= 1.0 + artifact.fleshsearer.percent();
+  m *= 1.0 + artifact.cunning_of_the_ebon_blade.percent();
 
   return m;
 }

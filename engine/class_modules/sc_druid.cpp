@@ -9087,7 +9087,7 @@ struct ailuro_pouncers_t : public scoped_buff_callback_t<buff_t>
 
   void manipulate( buff_t* b, const special_effect_t& e ) override
   {
-    b -> set_max_stack( b -> max_stack() + e.driver() -> effectN( 1 ).base_value() );
+    b -> set_max_stack( as<unsigned>( b -> max_stack() + e.driver() -> effectN( 1 ).base_value() ) );
   
     druid_t* p = debug_cast<druid_t*>( b -> player );
     p -> legendary.ailuro_pouncers = e.driver() -> effectN( 2 ).period();

@@ -986,7 +986,6 @@ public:
   virtual void datacollection_begin();
   virtual void datacollection_end();
   virtual void init();
-  virtual void set_max_stack( unsigned stack );
 
   virtual timespan_t refresh_duration( const timespan_t& new_duration ) const;
   virtual timespan_t tick_time() const;

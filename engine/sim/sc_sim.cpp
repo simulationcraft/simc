@@ -1010,15 +1010,18 @@ struct resource_timeline_collect_event_t : public event_t
       }
       else
       {
-        auto p = sim().player_no_pet_list[ sim().current_index ];
-        if ( p -> primary_resource() != RESOURCE_NONE )
+        if (sim().current_index < sim().player_no_pet_list.size())
         {
-          p -> collect_resource_timeline_information();
-          for ( auto pet : p -> pet_list )
+          auto p = sim().player_no_pet_list[sim().current_index];
+          if (p && p->primary_resource() != RESOURCE_NONE)
           {
-            if ( pet -> primary_resource() != RESOURCE_NONE )
+            p->collect_resource_timeline_information();
+            for (auto pet : p->pet_list)
             {
-              pet -> collect_resource_timeline_information();
+              if (pet->primary_resource() != RESOURCE_NONE)
+              {
+                pet->collect_resource_timeline_information();
+              }
             }
           }
         }
@@ -1066,16 +1069,19 @@ struct regen_event_t : public event_t
     }
     else
     {
-      auto p = sim().player_no_pet_list[ sim().current_index ];
-      if ( p -> primary_resource() != RESOURCE_NONE && p -> regen_type == REGEN_STATIC )
+      if (sim().current_index < sim().player_no_pet_list.size())
       {
-        p -> regen( sim().regen_periodicity );
-        for ( auto pet : p -> pet_list )
+        auto p = sim().player_no_pet_list[sim().current_index];
+        if (p && p->primary_resource() != RESOURCE_NONE && p->regen_type == REGEN_STATIC)
         {
-          if ( ! pet -> is_sleeping() && p -> primary_resource() != RESOURCE_NONE &&
-               p -> regen_type == REGEN_STATIC )
+          p->regen(sim().regen_periodicity);
+          for (auto pet : p->pet_list)
           {
-            pet -> regen( sim().regen_periodicity );
+            if (!pet->is_sleeping() && p->primary_resource() != RESOURCE_NONE &&
+              p->regen_type == REGEN_STATIC)
+            {
+              pet->regen(sim().regen_periodicity);
+            }
           }
         }
       }
@@ -1194,9 +1200,15 @@ struct bloodlust_check_t : public event_t
        }
        else
        {
-         auto p = sim.player_no_pet_list[ sim.current_index ];
-         p -> buffs.bloodlust -> trigger();
-         p -> buffs.exhaustion -> trigger();
+         if (sim.current_index < sim.player_no_pet_list.size())
+         {
+           auto p = sim.player_no_pet_list[ sim.current_index ];
+           if(p)
+           {
+             p -> buffs.bloodlust -> trigger();
+             p -> buffs.exhaustion -> trigger();
+           }
+         }
        }
      }
      else

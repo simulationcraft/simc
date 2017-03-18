@@ -6269,7 +6269,7 @@ struct variable_t : public action_t
 {
   action_var_e operation;
   action_variable_t* var;
-  std::string value_str, value_else_str, var_name_str, condition_str;;
+  std::string value_str, value_else_str, var_name_str, condition_str;
   expr_t* value_expression;
   expr_t* condition_expression;
   expr_t* value_else_expression;

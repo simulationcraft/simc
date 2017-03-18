@@ -484,6 +484,8 @@ public:
     spell_t* inner_demons;
     attack_t* chaos_cleave;
     attack_t* chaos_cleave_annihilation;
+    attack_t* chaotic_onslaught;
+    attack_t* chaotic_onslaught_annihilation;
 
     // Vengeance
     heal_t* charred_warblades;
@@ -1165,16 +1167,13 @@ public:
     return am;
   }
 
-  virtual double composite_energize_amount(
-    const action_state_t* s ) const override
+  virtual double composite_energize_amount( const action_state_t* s ) const override
   {
     double ea = ab::composite_energize_amount( s );
 
     if ( havoc_t19_2pc && ab::energize_resource == RESOURCE_FURY )
     {
-      ea *=
-        1.0 +
-        p() -> sets.set( DEMON_HUNTER_HAVOC, T19, B2 ) -> effectN( 1 ).percent();
+      ea *= 1.0 + p()->sets.set(DEMON_HUNTER_HAVOC, T19, B2)->effectN(1).percent();
     }
 
     return ea;
@@ -3413,8 +3412,8 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
     bool may_refund;
 
     chaos_strike_damage_t( demon_hunter_t* p, const spelleffect_data_t& eff,
-                           chaos_strike_base_t* a )
-      : demon_hunter_attack_t( "chaos_strike_dmg", p, eff.trigger() ),
+                           chaos_strike_base_t* a, const std::string& name )
+      : demon_hunter_attack_t( name, p, eff.trigger() ),
       delay( timespan_t::from_millis( eff.misc_value1() ) ),
       parent( a )
     {
@@ -3520,18 +3519,15 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
   std::vector<demon_hunter_attack_t*> attacks;
 
   chaos_strike_base_t( const std::string& n, demon_hunter_t* p,
-                       const spell_data_t* s, const std::string& options_str )
+                       const spell_data_t* s, const std::string& options_str = std::string())
     : demon_hunter_attack_t( n, p, s, options_str )
   {
-    energize_amount =
-      p -> spec.chaos_strike_refund -> effectN( 1 ).resource( RESOURCE_FURY );
-    aoe = s->effectN( 1 ).chain_target();
+    energize_amount = p->spec.chaos_strike_refund->effectN(1).resource(RESOURCE_FURY);
+    aoe = s->effectN(1).chain_target();
 
-
-      // Don't put damage modifiers here, they should go in chaos_strike_damage_t.
-      // Crit chance modifiers need to be in here, not chaos_strike_damage_t.
-    base_crit +=
-      p -> sets.set( DEMON_HUNTER_HAVOC, T19, B4 ) -> effectN( 1 ).percent();
+    // Don't put damage modifiers here, they should go in chaos_strike_damage_t.
+    // Crit chance modifiers need to be in here, not chaos_strike_damage_t.
+    base_crit += p->sets.set(DEMON_HUNTER_HAVOC, T19, B4)->effectN(1).percent();
   }
 
   virtual bool init_finished() override
@@ -3610,9 +3606,9 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
     and for Chaos Strike it's just the OH (this action is the MH action). */
     for ( size_t i = 0; i < attacks.size(); i++ )
     {
-      make_event<chaos_strike_event_t>( *sim,
-        attacks[ i ], target,
-        debug_cast<chaos_strike_state_t*>( execute_state ) );
+      make_event<chaos_strike_event_t>(*sim,
+        attacks[i], target,
+        debug_cast<chaos_strike_state_t*>(execute_state));
     }
 
     // Metamorphosis benefit
@@ -3644,19 +3640,18 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
 
 struct chaos_strike_t : public chaos_strike_base_t
 {
-  chaos_strike_t( demon_hunter_t* p, const std::string& options_str )
-    : chaos_strike_base_t( "chaos_strike", p, p -> spec.chaos_strike,
-                           options_str )
+  chaos_strike_t( demon_hunter_t* p, const std::string& options_str)
+    : chaos_strike_base_t( "chaos_strike", p, p -> spec.chaos_strike, options_str )
   {
     if ( p -> chaos_strike_attacks.empty() )
     {
-      p -> chaos_strike_attacks.push_back(
-        new chaos_strike_damage_t( p, data().effectN( 2 ), this ) );
-      p -> chaos_strike_attacks.push_back(
-        new chaos_strike_damage_t( p, data().effectN( 3 ), this ) );
+      p->chaos_strike_attacks.push_back(
+        new chaos_strike_damage_t(p, data().effectN(2), this, "chaos_strike_dmg_1"));
+      p->chaos_strike_attacks.push_back(
+        new chaos_strike_damage_t(p, data().effectN(3), this, "chaos_strike_dmg_2"));
 
       // Jul 12 2016: Only first attack procs Fel Barrage.
-      p -> chaos_strike_attacks.front() -> may_proc_fel_barrage = true;
+      p->chaos_strike_attacks.front()->may_proc_fel_barrage = true;
     }
 
     attacks = p -> chaos_strike_attacks;
@@ -3664,6 +3659,11 @@ struct chaos_strike_t : public chaos_strike_base_t
     if (p->talent.chaos_cleave->ok())
     {
       add_child(p->active.chaos_cleave);
+    }
+
+    if (p->artifact.chaotic_onslaught.rank())
+    {
+      add_child(p->active.chaotic_onslaught);
     }
   }
 
@@ -3676,13 +3676,142 @@ struct chaos_strike_t : public chaos_strike_base_t
 
     return chaos_strike_base_t::ready();
   }
+
+  void execute() override
+  {
+    chaos_strike_base_t::execute();
+
+    if (hit_any_target 
+      && p()->artifact.chaotic_onslaught.rank()
+      && p()->rng().roll(p()->artifact.chaotic_onslaught.percent()))
+    {
+      p()->active.chaotic_onslaught->target = target;
+      p()->active.chaotic_onslaught->schedule_execute();
+    }
+  }
+};
+
+// Annihilation =============================================================
+
+struct annihilation_t : public chaos_strike_base_t
+{
+  annihilation_t( demon_hunter_t* p, const std::string& options_str )
+    : chaos_strike_base_t( "annihilation", p, p -> spec.annihilation, options_str )
+  {
+    if (p->annihilation_attacks.empty())
+    {
+      p->annihilation_attacks.push_back(
+        new chaos_strike_damage_t(p, data().effectN(2), this, "annihilation_dmg_1"));
+      p->annihilation_attacks.push_back(
+        new chaos_strike_damage_t(p, data().effectN(3), this, "annihilation_dmg_2"));
+
+      // Jul 12 2016: Only first attack procs Fel Barrage.
+      p->annihilation_attacks.front()->may_proc_fel_barrage = true;
+    }
+
+    attacks = p -> annihilation_attacks;
+
+    if (p->talent.chaos_cleave->ok())
+    {
+      add_child(p->active.chaos_cleave_annihilation);
+    }
+
+    if (p->artifact.chaotic_onslaught.rank())
+    {
+      add_child(p->active.chaotic_onslaught_annihilation);
+    }
+  }
+
+  bool ready() override
+  {
+    if ( !p() -> buff.metamorphosis -> check() )
+    {
+      return false;
+    }
+
+    return chaos_strike_base_t::ready();
+  }
+
+  void execute() override
+  {
+    chaos_strike_base_t::execute();
+
+    if (hit_any_target 
+      && p()->artifact.chaotic_onslaught.rank()
+      && p()->rng().roll(p()->artifact.chaotic_onslaught.percent()))
+    {
+      p()->active.chaotic_onslaught_annihilation->target = target;
+      p()->active.chaotic_onslaught_annihilation->schedule_execute();
+    }
+  }
+};
+
+// Chaotic Onslaught ========================================================
+
+struct chaotic_onslaught_t : public chaos_strike_base_t
+{
+  chaotic_onslaught_t(demon_hunter_t* p)
+    : chaos_strike_base_t("chaos_strike_onslaught", p, p -> spec.chaos_strike)
+  {
+    background = true;
+    trigger_gcd = timespan_t::zero();
+
+    attacks.push_back(
+      new chaos_strike_damage_t(p, data().effectN(2), this, "chaos_strike_onslaught_dmg_1"));
+    attacks.push_back(
+      new chaos_strike_damage_t(p, data().effectN(3), this, "chaos_strike_onslaught_dmg_2"));
+
+    // Jul 12 2016: Only first attack procs Fel Barrage.
+    attacks.front()->may_proc_fel_barrage = true;
+  }
+
+  void consume_resource() override
+  {
+  }
+
+  bool ready() override
+  {
+    return true;
+  }
+
+  // TODO: Check delay/travel_time in logs
+};
+
+struct chaotic_onslaught_annihilation_t : public chaos_strike_base_t
+{
+  chaotic_onslaught_annihilation_t(demon_hunter_t* p)
+    : chaos_strike_base_t("annihilation_onslaught", p, p -> spec.annihilation)
+  {
+    background = true;
+    trigger_gcd = timespan_t::zero();
+
+    attacks.push_back(
+      new chaos_strike_damage_t(p, data().effectN(2), this, "annihilation_onslaught_dmg_1"));
+    attacks.push_back(
+      new chaos_strike_damage_t(p, data().effectN(3), this, "annihilation_onslaught_dmg_2"));
+
+    // Jul 12 2016: Only first attack procs Fel Barrage.
+    attacks.front()->may_proc_fel_barrage = true;
+  }
+
+  void consume_resource() override
+  {
+  }
+
+  bool ready() override
+  {
+    return true;
+  }
+
+  // TODO: Check delay/travel_time in logs
 };
 
 // Chaos Cleave =============================================================
+
 struct chaos_cleave_t : public demon_hunter_attack_t
 {
-  chaos_cleave_t(const std::string& n, demon_hunter_t* p) : demon_hunter_attack_t(
-    n, p, p->find_talent_spell("Chaos Cleave"))
+  chaos_cleave_t(const std::string& n, demon_hunter_t* p)
+    : demon_hunter_attack_t(n, p, p->find_talent_spell("Chaos Cleave"))
   {
     may_miss = may_crit = proc = callbacks = may_dodge = may_parry = may_block = false;
     background = true;
@@ -3710,44 +3839,6 @@ struct chaos_cleave_t : public demon_hunter_attack_t
     }
 
     return RESULT_HIT;
-  }
-};
-
-// Annihilation =============================================================
-
-struct annihilation_t : public chaos_strike_base_t
-{
-  annihilation_t( demon_hunter_t* p, const std::string& options_str )
-    : chaos_strike_base_t( "annihilation", p, p -> spec.annihilation,
-                           options_str )
-  {
-    if ( p -> annihilation_attacks.empty() )
-    {
-      p -> annihilation_attacks.push_back(
-        new chaos_strike_damage_t( p, data().effectN( 2 ), this ) );
-      p -> annihilation_attacks.push_back(
-        new chaos_strike_damage_t( p, data().effectN( 3 ), this ) );
-
-      // Jul 12 2016: Only first attack procs Fel Barrage.
-      p -> annihilation_attacks.front() -> may_proc_fel_barrage = true;
-    }
-
-    attacks = p -> annihilation_attacks;
-
-    if (p->talent.chaos_cleave->ok())
-    {
-      add_child(p->active.chaos_cleave_annihilation);
-    }
-  }
-
-  bool ready() override
-  {
-    if ( !p() -> buff.metamorphosis -> check() )
-    {
-      return false;
-    }
-
-    return chaos_strike_base_t::ready();
   }
 };
 
@@ -4181,11 +4272,9 @@ struct fury_of_the_illidari_t : public demon_hunter_attack_t
     {
       demon_hunter_attack_t::impact( s );
 
-      if ( result_is_hit( s -> result ) &&
-           p() -> artifact.rage_of_the_illidari.rank() )
+      if ( result_is_hit( s -> result ) && p() -> artifact.rage_of_the_illidari.rank() )
       {
-        p() -> buff.rage_of_the_illidari -> trigger(
-          1,
+        p() -> buff.rage_of_the_illidari -> trigger( 1,
           p() -> buff.rage_of_the_illidari -> current_value + s -> result_amount );
       }
     }
@@ -5587,15 +5676,25 @@ void demon_hunter_t::create_buffs()
   // TODO: Buffs for each race?
   buff.nemesis = buff_creator_t( this, "nemesis_buff", find_spell( 208605 ) )
                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  
+
+  auto prepared_duration =
+      talent.prepared->effectN( 1 ).trigger()->duration().total_millis() / 100;
+  double prepared_value =
+      prepared_duration
+          ? talent.prepared->effectN( 1 ).trigger()->effectN( 1 ).resource(
+                RESOURCE_FURY ) *
+                ( 1.0 +
+                  sets.set( DEMON_HUNTER_HAVOC, T19, B2 )
+                      ->effectN( 1 )
+                      .percent() ) /
+                prepared_duration
+          : 0.0;
   buff.prepared =
     buff_creator_t(this, "prepared",
       talent.prepared->effectN(1).trigger())
     .trigger_spell(talent.prepared)
     .period(timespan_t::from_millis(100))
-    .default_value(talent.prepared->effectN(1).trigger()->effectN(1).resource(RESOURCE_FURY) *
-    (1.0 + sets.set(DEMON_HUNTER_HAVOC, T19, B2)->effectN(1).percent()) /
-      (talent.prepared->effectN(1).trigger()->duration().total_millis() / 100))
+    .default_value(prepared_value)
     .tick_callback([this](buff_t* b, int, const timespan_t&) {
     resource_gain(RESOURCE_FURY, b->check_value(), gain.prepared);
   });
@@ -6495,6 +6594,12 @@ void demon_hunter_t::init_spells()
   {
     active.chaos_cleave = new chaos_cleave_t("chaos_cleave", this );
     active.chaos_cleave_annihilation = new chaos_cleave_t("chaos_cleave_annihilation", this);
+  }
+
+  if (artifact.chaotic_onslaught.rank())
+  {
+    active.chaotic_onslaught = new chaotic_onslaught_t(this);
+    active.chaotic_onslaught_annihilation = new chaotic_onslaught_annihilation_t(this);
   }
 
   if ( artifact.charred_warblades.rank() )
