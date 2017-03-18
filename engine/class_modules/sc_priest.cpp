@@ -5920,14 +5920,17 @@ void priest_t::init_action_list()
       apl_shadow();  // SHADOW
       break;
     case PRIEST_DISCIPLINE:
-      apl_disc_dmg();  // DISCIPLINE
+      if ( primary_role() != ROLE_HEAL )
+        apl_disc_heal(); // DISC HEAL
+      else
+        apl_disc_dmg();  // DISC DMG
       break;
-    //    case PRIEST_HOLY:
-    //      if ( primary_role() != ROLE_HEAL )
-    //        apl_holy_dmg();  // HOLY DAMAGE
-    //      else
-    //        apl_holy_heal();  // HOLY HEAL
-    //      break;
+    case PRIEST_HOLY:
+      if ( primary_role() != ROLE_HEAL )
+        apl_holy_dmg();  // HOLY DAMAGE
+      else
+        apl_holy_heal();  // HOLY HEAL
+      break;
     default:
       apl_default();  // DEFAULT
       break;

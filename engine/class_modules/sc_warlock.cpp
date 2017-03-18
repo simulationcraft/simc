@@ -7317,8 +7317,10 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
           }
         }
         if( t == 5000 )
+        {
           t = -1;
-          return t;
+        }
+        return t;
       }
     };
 
