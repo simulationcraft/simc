@@ -5063,8 +5063,8 @@ void paladin_t::init_assessors()
         buff_t* judgment = p -> get_target_data( state -> target ) -> buffs.debuffs_judgment;
         if ( judgment -> check() )
         {
-          //if ( p -> rng().roll(0.5) )
-          //  return assessor::CONTINUE;
+          if ( p -> rng().roll(0.5) )
+            return assessor::CONTINUE;
 
           // Do the spread
           double max_distance  = 10.0;
