@@ -103,7 +103,7 @@ BreakBeforeTernaryOperators: true
 BreakConstructorInitializersBeforeComma: false
 
 # The column limit.
-ColumnLimit:     80
+ColumnLimit:     120
 
 # A regular expression that describes comments with special meaning, which should not be split into lines or otherwise changed.
 CommentPragmas:  '^ IWYU pragma:'
