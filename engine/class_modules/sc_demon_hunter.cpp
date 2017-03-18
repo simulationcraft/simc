@@ -1175,7 +1175,7 @@ public:
 
     if(energize_die_sides > 0)
     {
-      ea += static_cast<int>(rng().range(1, 1 + energize_die_sides));
+      ea += (int)rng().range(1, 1 + energize_die_sides);
     }
 
     if ( havoc_t19_2pc && ab::energize_resource == RESOURCE_FURY )
@@ -2207,7 +2207,7 @@ struct fiery_brand_t : public demon_hunter_spell_t
 
       // Pick a random target.
       player_t* target =
-        candidates[static_cast<int>(p()->rng().range(0, (double)candidates.size()))];
+        candidates[(int)p()->rng().range(0, (double)candidates.size())];
 
       // Execute a dot on that target.
       this -> target = target;
@@ -3926,7 +3926,7 @@ struct demons_bite_t : public demon_hunter_attack_t
     if (p()->legendary.anger_of_the_halfgiants_fury > 0)
     {
       const int range = p()->legendary.anger_of_the_halfgiants_fury;
-      p()->resource_gain(RESOURCE_FURY, static_cast<int>(rng().range(1, 1 + range)), p()->gain.anger_of_the_halfgiants);
+      p()->resource_gain(RESOURCE_FURY, (int)rng().range(1, 1 + range)), p()->gain.anger_of_the_halfgiants;
     }
   }
 
@@ -3987,7 +3987,7 @@ struct demon_blades_t : public demon_hunter_attack_t
     if (p()->legendary.anger_of_the_halfgiants_fury > 0)
     {
       const int range = p()->legendary.anger_of_the_halfgiants_fury + p()->talent.demon_blades->effectN(2).base_value();
-      p()->resource_gain(RESOURCE_FURY, static_cast<int>(rng().range(1, 1 + range)), p()->gain.anger_of_the_halfgiants);
+      p()->resource_gain(RESOURCE_FURY, (int)rng().range(1, 1 + range)), p()->gain.anger_of_the_halfgiants;
     }
   }
 };
@@ -5311,7 +5311,7 @@ private:
   {
     double tm                  = 0;
     std::vector<player_t*>& tl = action -> target_list();
-    int size                   = static_cast<int>(tl.size());
+    int size                   = (int)tl.size();
 
     for ( int i = 0; i < size && ( action -> aoe < 0 || i < action -> aoe ); i++ )
     {
