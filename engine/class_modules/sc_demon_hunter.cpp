@@ -7156,6 +7156,11 @@ double demon_hunter_t::composite_melee_haste() const
     mh /= 1.0 + buff.metamorphosis -> check_value();
   }
 
+  if (maybe_ptr(dbc.ptr) && legendary.sephuzs_secret)
+  {
+    mh /= 1.0 + legendary.sephuzs_secret->effectN(3).percent();
+  }
+
   return mh;
 }
 
@@ -7168,6 +7173,11 @@ double demon_hunter_t::composite_spell_haste() const
   if ( specialization() == DEMON_HUNTER_HAVOC )
   {
     sh /= 1.0 + buff.metamorphosis -> check_value();
+  }
+
+  if (maybe_ptr(dbc.ptr) && legendary.sephuzs_secret)
+  {
+    sh /= 1.0 + legendary.sephuzs_secret->effectN(3).percent();
   }
 
   return sh;
@@ -7339,8 +7349,15 @@ double demon_hunter_t::passive_movement_modifier() const
   double ms = player_t::passive_movement_modifier();
 
   if ( mastery_spell.demonic_presence -> ok() )
+  {
     ms += cache.mastery() *
           mastery_spell.demonic_presence -> effectN( 2 ).mastery_value();
+  }
+
+  if (maybe_ptr(dbc.ptr) && legendary.sephuzs_secret)
+  {
+    ms += legendary.sephuzs_secret->effectN(2).percent();
+  }
 
   return ms;
 }
@@ -7880,7 +7897,12 @@ struct moarg_bionic_stabilizers_t
 
   void manipulate( throw_glaive_t* action, const special_effect_t& e ) override
   {
-    action -> chain_bonus_damage += e.driver() -> effectN( 1 ).percent();
+    double dm = e.driver()->effectN(1).percent();
+
+    if (maybe_ptr(action->p()->dbc.ptr))
+      action->base_multiplier *= 1.0 + dm;
+
+    action->chain_bonus_damage += dm;
   }  // TOCHECK
 };
 
@@ -8005,7 +8027,12 @@ struct loramus_thalipedes_sacrifice_t
   void manipulate( fel_rush_t::fel_rush_damage_t* action,
                    const special_effect_t& e ) override
   {
-    action -> chain_bonus_damage += e.driver() -> effectN( 1 ).percent();
+    double dm = e.driver()->effectN(1).percent();
+    
+    if (maybe_ptr(action->p()->dbc.ptr))
+      action->base_multiplier *= 1.0 + dm;
+    
+    action->chain_bonus_damage += dm;
   }
 };
 
