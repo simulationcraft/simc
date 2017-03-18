@@ -168,6 +168,7 @@ double approx_sqrt( double X );
 void tolower( std::string& str );
 
 void tokenize( std::string& name );
+std::string tokenize_fn( std::string name );
 std::string inverse_tokenize( const std::string& name );
 
 bool is_number( const std::string& s );

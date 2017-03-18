@@ -4047,7 +4047,7 @@ expr_t* priest_t::create_expression( action_t* a, const std::string& name_str )
       if ( !active_spells.shadowy_apparitions )
         return 0.0;
 
-      return static_cast<double>( active_spells.shadowy_apparitions->get_num_travel_events() );
+      return static_cast<double>( active_spells.shadowy_apparitions->num_travel_events() );
     } );
   }
 

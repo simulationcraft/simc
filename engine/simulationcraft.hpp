@@ -4139,8 +4139,7 @@ struct player_t : public actor_t
   // Persistent multipliers that are snapshot at the beginning of the spell application/execution
   virtual double composite_persistent_multiplier( school_e ) const
   { return 1.0; }
-  virtual double composite_player_target_multiplier( player_t* /* target */, school_e /* school */ ) const
-  { return 1.0; }
+  virtual double composite_player_target_multiplier( player_t* target, school_e school ) const;
 
   virtual double composite_player_heal_multiplier( const action_state_t* s ) const;
   virtual double composite_player_dh_multiplier( school_e /* school */ ) const { return 1; }
@@ -5078,13 +5077,13 @@ struct action_t : private noncopyable
 {
 public:
   const spell_data_t* s_data;
-  sim_t* const sim;
+  sim_t* sim;
   const action_e type;
   std::string name_str;
   player_t* const player;
-
   player_t* target;
-  // Item back-pointer for trinket-sourced actions so we can show proper tooltips in reports
+
+  /// Item back-pointer for trinket-sourced actions so we can show proper tooltips in reports
   const item_t* item;
 
   /**
@@ -5094,28 +5093,6 @@ public:
    * iteration ends.
    */
   player_t* default_target;
-
-  /**
-   * Target Cache System
-   * - list: contains the cached target pointers
-   * - callback: unique_Ptr to callback
-   * - is_valid: gets invalidated by the callback from the target list source.
-   *  When the target list is requested in action_t::target_list(), it gets recalculated if
-   *  flag is false, otherwise cached version is used
-   */
-  struct target_cache_t {
-    std::vector< player_t* > list;
-    bool is_valid;
-    target_cache_t() : is_valid( false ) {}
-  } mutable target_cache;
-
-  enum target_if_mode_e
-  {
-    TARGET_IF_NONE,
-    TARGET_IF_FIRST,
-    TARGET_IF_MIN,
-    TARGET_IF_MAX
-  };
 
   /// What type of damage this spell does.
   school_e school;
@@ -5222,6 +5199,32 @@ public:
    */
   bool hasted_ticks;
 
+  /// Need to consume per tick?
+  bool consume_per_tick_;
+
+  /// Split damage evenly between targets
+  bool split_aoe_damage;
+
+  /**
+   * @brief Normalize weapon speed for weapon damage calculations
+   *
+   * \sa weapon_t::get_normalized_speed()
+   */
+  bool normalize_weapon_speed;
+
+  /// This ability leaves a ticking dot on the ground, and doesn't move when the target moves. Used with original_x and original_y
+  bool ground_aoe;
+
+  /// Round spell base damage to integer before using
+  bool round_base_dmg;
+
+  /// Used with tick_action, tells tick_action to update state on every tick.
+  bool dynamic_tick_action;
+
+  /// Did a channel action have an interrupt_immediate used to cancel it on it
+  bool interrupt_immediate_occurred;
+
+  bool hit_any_target;
   /**
    * @brief Behavior of dot.
    *
@@ -5289,9 +5292,6 @@ public:
   /// Cost of using ability per periodic effect tick.
   std::array< double, RESOURCE_MAX > base_costs_per_tick;
 
-  /// Need to consume per tick?
-  bool consume_per_tick_;
-
   /// Minimum base direct damage
   double base_dd_min;
 
@@ -5309,8 +5309,12 @@ public:
 
   /// base damage multiplier (direct and tick damage)
   double base_multiplier;
-  double base_hit, base_crit;
-  double crit_multiplier, crit_bonus_multiplier, crit_bonus;
+
+  double base_hit;
+  double base_crit;
+  double crit_multiplier;
+  double crit_bonus_multiplier;
+  double crit_bonus;
   double base_dd_adder;
   double base_ta_adder;
 
@@ -5328,16 +5332,6 @@ public:
 
   /// Static reduction of damage for AoE
   double base_aoe_multiplier;
-
-  /// Split damage evenly between targets
-  bool split_aoe_damage;
-
-  /**
-   * @brief Normalize weapon speed for weapon damage calculations
-   *
-   * \sa weapon_t::get_normalized_speed()
-   */
-  bool normalize_weapon_speed;
 
   /// Static action cooldown duration multiplier
   double base_recharge_multiplier;
@@ -5360,20 +5354,8 @@ public:
 
   std::vector< action_t* > child_action;
 
-  /// This ability leaves a ticking dot on the ground, and doesn't move when the target moves. Used with original_x and original_y
-  bool ground_aoe;
-
   /// Missile travel speed in yards / second
   double travel_speed;
-
-  /// Round spell base damage to integer before using
-  bool round_base_dmg;
-
-  /// Used with tick_action, tells tick_action to update state on every tick.
-  bool dynamic_tick_action;
-
-  /// Did a channel action have an interrupt_immediate used to cancel it on it
-  bool interrupt_immediate_occurred;
 
   /// This action will execute every tick
   action_t* tick_action;
@@ -5414,7 +5396,6 @@ public:
   timespan_t time_to_execute, time_to_travel;
   double resource_consumed;
   timespan_t last_reaction_time;
-  bool hit_any_target;
   unsigned num_targets_hit;
 
   /// Marker for sample action priority list reporting
@@ -5425,11 +5406,19 @@ public:
   std::string if_expr_str;
   expr_t* if_expr;
   std::string target_if_str;
-  target_if_mode_e target_if_mode;
+
+  enum target_if_mode_e
+  {
+    TARGET_IF_NONE,
+    TARGET_IF_FIRST,
+    TARGET_IF_MIN,
+    TARGET_IF_MAX
+  } target_if_mode;
+
   expr_t* target_if_expr;
   std::string interrupt_if_expr_str;
-  std::string early_chain_if_expr_str;
   expr_t* interrupt_if_expr;
+  std::string early_chain_if_expr_str;
   expr_t* early_chain_if_expr;
   std::string sync_str;
   action_t* sync_action;
@@ -5458,7 +5447,6 @@ public:
   const action_priority_t* signature;
   std::vector<std::unique_ptr<option_t>> options;
 
-  action_state_t* state_cache;
 
   /// State of the last execute()
   action_state_t* execute_state;
@@ -5467,15 +5455,37 @@ public:
   action_state_t* pre_execute_state;
   unsigned snapshot_flags;
   unsigned update_flags;
-private:
-  std::vector<travel_event_t*> travel_events;
 
+  /**
+   * Target Cache System
+   * - list: contains the cached target pointers
+   * - callback: unique_Ptr to callback
+   * - is_valid: gets invalidated by the callback from the target list source.
+   *  When the target list is requested in action_t::target_list(), it gets recalculated if
+   *  flag is false, otherwise cached version is used
+   */
+  struct target_cache_t {
+    std::vector< player_t* > list;
+    bool is_valid;
+    target_cache_t() : is_valid( false ) {}
+  } mutable target_cache;
+
+private:
+  action_state_t* state_cache;
+  std::vector<travel_event_t*> travel_events;
 public:
   action_t( action_e type, const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
   virtual ~action_t();
 
-  player_t* select_target_if_target();
+  void add_child( action_t* child );
+
+  void add_option( std::unique_ptr<option_t> new_option )
+  { options.insert( options.begin(), std::move(new_option) ); }
+
+  void   check_spec( specialization_e );
+
+  void   check_spell( const spell_data_t* );
 
   /**
    * @brief Spell Data associated with the action.
@@ -5489,20 +5499,38 @@ public:
    */
   const spell_data_t& data() const
   { return ( *s_data ); }
-  void parse_spell_data( const spell_data_t& );
-  virtual void parse_effect_data( const spelleffect_data_t& );
-  virtual void parse_options( const std::string& options_str );
-  void parse_target_str();
-  void add_option( std::unique_ptr<option_t> new_option )
-  { options.insert( options.begin(), std::move(new_option) ); }
-  void   check_spec( specialization_e );
-  void   check_spell( const spell_data_t* );
+
   dot_t* find_dot( player_t* target ) const;
-  void add_child( action_t* child );
-  void add_travel_event( travel_event_t* e )
-  { travel_events.push_back( e ); }
+
+  bool is_aoe() const
+  { return n_targets() == -1 || n_targets() > 0; }
+
+  const char* name() const
+  { return name_str.c_str(); }
+
+  size_t num_travel_events() const
+  { return travel_events.size(); }
+
+  bool has_travel_events() const
+  { return ! travel_events.empty(); }
+
+  bool has_travel_events_for( const player_t* target ) const;
+
+  /** Determine if the action can have a resulting damage/heal amount > 0 */
+  bool has_amount_result() const
+  {
+    return attack_power_mod.direct > 0 || attack_power_mod.tick > 0
+        || spell_power_mod.direct > 0 || spell_power_mod.tick > 0
+        || (weapon && weapon_multiplier > 0);
+  }
+
+  void parse_spell_data( const spell_data_t& );
+
+  void parse_target_str();
 
   void remove_travel_event( travel_event_t* e );
+
+  void reschedule_queue_event();
 
   rng::rng_t& rng()
   { return sim -> rng(); }
@@ -5510,14 +5538,18 @@ public:
   rng::rng_t& rng() const
   { return sim -> rng(); }
 
+  player_t* select_target_if_target();
+
   // =======================
   // Const virtual functions
   // =======================
 
   virtual bool verify_actor_level() const;
+
   virtual bool verify_actor_spec() const;
 
   virtual double cost() const;
+
   virtual double base_cost() const;
 
   virtual double cost_per_tick( resource_e ) const;
@@ -5544,6 +5576,7 @@ public:
   }
 
   virtual block_result_e calculate_block_result( action_state_t* s ) const;
+
   virtual double calculate_direct_amount( action_state_t* state ) const;
 
   virtual double calculate_tick_amount( action_state_t* state, double multiplier ) const;
@@ -5558,7 +5591,7 @@ public:
   virtual double recharge_multiplier() const
   { return base_recharge_multiplier; }
 
-  /// Cooldown base duration for action based cooldowns.
+  /** Cooldown base duration for action based cooldowns. */
   virtual timespan_t cooldown_base_duration( const cooldown_t& cd ) const
   { return cd.duration; }
 
@@ -5568,9 +5601,6 @@ public:
   virtual int n_targets() const
   { return aoe; }
 
-  bool is_aoe() const
-  { return n_targets() == -1 || n_targets() > 0; }
-
   virtual double last_tick_factor( const dot_t* d, const timespan_t& time_to_tick, const timespan_t& duration ) const;
 
   virtual dmg_e amount_type( const action_state_t* /* state */, bool /* periodic */ = false ) const
@@ -5578,9 +5608,6 @@ public:
 
   virtual dmg_e report_amount_type( const action_state_t* state ) const
   { return state -> result_type; }
-
-  const char* name() const
-  { return name_str.c_str(); }
 
   /// Use when damage schools change during runtime.
   virtual school_e get_school() const
@@ -5699,20 +5726,8 @@ public:
 
   virtual double composite_target_multiplier( player_t* target ) const
   {
-    double m = target -> composite_player_vulnerability( get_school() );
-
-    m *= player -> composite_player_target_multiplier( target, get_school() );
-
-    if ( target -> race == RACE_DEMON &&
-         player -> buffs.demon_damage_buff &&
-         player -> buffs.demon_damage_buff -> up() )
-    {
-      // Bad idea to hardcode the effect number, but it'll work for now. The buffs themselves are
-      // stat buffs.
-      m *= 1.0 + player -> buffs.demon_damage_buff -> data().effectN( 2 ).percent();
-    }
-
-    return m;
+    return target->composite_player_vulnerability( get_school() ) *
+           player->composite_player_target_multiplier( target, get_school() );
   }
 
   virtual double composite_versatility( const action_state_t* ) const
@@ -5773,24 +5788,6 @@ public:
   virtual proc_types proc_type() const
   { return PROC1_INVALID; }
 
-  bool has_amount_result() const
-  {
-    return attack_power_mod.direct > 0 || attack_power_mod.tick > 0
-        || spell_power_mod.direct > 0 || spell_power_mod.tick > 0
-        || (weapon && weapon_multiplier > 0);
-  }
-
-  bool has_travel_events() const
-  { return ! travel_events.empty(); }
-
-  size_t get_num_travel_events() const
-  { return travel_events.size(); }
-
-  bool has_travel_events_for( const player_t* target ) const;
-
-  const std::vector<travel_event_t*>& current_travel_events() const
-  { return travel_events; }
-
   virtual bool has_movement_directionality() const;
 
   virtual double composite_teleport_distance( const action_state_t* ) const
@@ -5818,6 +5815,10 @@ public:
   // mutating virtual functions
   // ==========================
 
+  virtual void parse_effect_data( const spelleffect_data_t& );
+
+  virtual void parse_options( const std::string& options_str );
+
   virtual void consume_resource();
 
   virtual void execute();
@@ -5831,6 +5832,7 @@ public:
   virtual void record_data(action_state_t* data);
 
   virtual void schedule_execute(action_state_t* execute_state = nullptr);
+
   virtual void queue_execute( bool off_gcd );
 
   virtual void reschedule_execute(timespan_t time);
@@ -5886,7 +5888,7 @@ public:
 
   virtual dot_t* get_dot( player_t* = nullptr );
 
-  void reschedule_queue_event();
+  virtual void acquire_target( retarget_event_e /* event */, player_t* /* context */, player_t* /* candidate_target */ );
 
   // ================
   // Static functions
@@ -5911,10 +5913,6 @@ public:
   {
     return( r == BLOCK_RESULT_BLOCKED || r == BLOCK_RESULT_CRIT_BLOCKED );
   }
-
-  // Acquire a new target, where the context is the actor that sources the retarget event, and the
-  // actor-level candidate is given as a parameter (selected by player_t::acquire_target).
-  virtual void acquire_target( retarget_event_e /* event */, player_t* /* context */, player_t* /* candidate_target */ );
 };
 
 struct call_action_list_t : public action_t

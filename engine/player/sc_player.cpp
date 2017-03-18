@@ -3357,6 +3357,22 @@ double player_t::composite_player_td_multiplier( school_e /* school */,  const a
   return 1.0;
 }
 
+double player_t::composite_player_target_multiplier( player_t* target, school_e /* school */ ) const
+{
+  double m = 1.0;
+
+  if ( target -> race == RACE_DEMON &&
+       buffs.demon_damage_buff &&
+       buffs.demon_damage_buff -> check() )
+  {
+    // Bad idea to hardcode the effect number, but it'll work for now. The buffs themselves are
+    // stat buffs.
+    m *= 1.0 + buffs.demon_damage_buff -> data().effectN( 2 ).percent();
+  }
+
+  return m;
+}
+
 // player_t::composite_player_heal_multiplier ===============================
 
 double player_t::composite_player_heal_multiplier( const action_state_t* ) const

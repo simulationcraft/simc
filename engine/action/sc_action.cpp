@@ -99,10 +99,11 @@ struct player_gcd_event_t : public player_event_t
   }
 };
 
-// Hack to bypass some of the full execution chain to be able to re-use normal actions as "off gcd
-// actions" (usable during gcd). Will directly execute the action (instead of going through
-// schedule_execute processing), and parts of our execution chain where relevant (e.g., line
-// cooldown, stats tracking).
+/**
+ * Hack to bypass some of the full execution chain to be able to re-use normal actions as "off gcd actions" (usable
+ * during gcd). Will directly execute the action (instead of going through schedule_execute processing), and parts of
+ * our execution chain where relevant (e.g., line cooldown, stats tracking).
+ */
 void do_off_gcd_execute( action_t* action )
 {
   action -> execute();
@@ -372,12 +373,11 @@ action_t::action_t( action_e       ty,
   s_data( s ? s : spell_data_t::nil() ),
   sim( p -> sim ),
   type( ty ),
-  name_str( token ),
+  name_str( util::tokenize_fn(token) ),
   player( p ),
   target( p -> target ),
-  item( 0 ),
+  item(),
   default_target( p -> target ),
-  target_cache(),
   school( SCHOOL_NONE ),
   id(),
   internal_id( as<unsigned>( p -> get_action_id( name_str ) ) ),
@@ -392,7 +392,8 @@ action_t::action_t( action_e       ty,
   background(),
   use_off_gcd(),
   interrupt_auto_attack( true ),
-  ignore_false_positive( false ),
+  ignore_false_positive(),
+  action_skill( p -> base.skill ),
   direct_tick(),
   repeating(),
   harmful( true ),
@@ -408,116 +409,114 @@ action_t::action_t( action_e       ty,
   tick_may_crit(),
   tick_zero(),
   hasted_ticks(),
+  consume_per_tick_(),
+  split_aoe_damage(),
+  normalize_weapon_speed(),
+  ground_aoe(),
+  round_base_dmg( true),
+  dynamic_tick_action( true), // WoD updates everything on tick by default. If you need snapshotted values for a periodic effect, use persistent multipliers.
+  interrupt_immediate_occurred(),
+  hit_any_target(),
   dot_behavior( DOT_REFRESH ),
-  ability_lag( timespan_t::zero() ),
-  ability_lag_stddev( timespan_t::zero() ),
+  ability_lag(),
+  ability_lag_stddev(),
   rp_gain(),
-  min_gcd( timespan_t() ),
+  min_gcd(),
   gcd_haste( HASTE_NONE ),
-  trigger_gcd( player -> base_gcd ),
-  range(),
-  radius(),
+  trigger_gcd( p -> base_gcd ),
+  range(-1.0),
+  radius(-1.0),
   weapon_power_mod(),
   attack_power_mod(),
   spell_power_mod(),
-  base_execute_time( timespan_t::zero() ),
-  base_tick_time( timespan_t::zero() ),
-  dot_duration( timespan_t::zero() ),
+  amount_delta(),
+  base_execute_time(),
+  base_tick_time(),
+  dot_duration(),
   dot_max_stack( 1 ),
+  base_costs(),
+  secondary_costs(),
+  base_costs_per_tick(),
+  base_dd_min(),
+  base_dd_max(),
+  base_td(),
+  base_dd_multiplier( 1.0 ),
+  base_td_multiplier( 1.0 ),
+  base_multiplier( 1.0 ),
+  base_hit(),
+  base_crit(),
+  crit_multiplier( 1.0 ),
+  crit_bonus_multiplier( 1.0 ),
+  crit_bonus(),
+  base_dd_adder(),
+  base_ta_adder(),
+  weapon(),
+  weapon_multiplier( 1.0 ),
+  chain_multiplier( 1.0 ),
+  chain_bonus_damage(),
+  base_aoe_multiplier( 1.0 ),
   base_recharge_multiplier( 1.0 ),
   movement_directionality( MOVEMENT_NONE ),
-  base_teleport_distance( 0.0 ),
-  time_to_execute( timespan_t::zero() ),
-  time_to_travel( timespan_t::zero() ),
+  base_teleport_distance(),
+  parent_dot(),
+  child_action(),
+  travel_speed(),
+  tick_action(),
+  execute_action(),
+  impact_action(),
+  gain( p -> get_gain( name_str ) ),
+  energize_type( ENERGIZE_NONE ),
+  energize_amount(),
+  energize_resource( RESOURCE_NONE ),
+  cooldown( p -> get_cooldown( name_str ) ),
+  internal_cooldown( p -> get_cooldown( name_str + "_internal" ) ),
+  stats(p -> get_stats( name_str, this )),
+  execute_event(),
+  queue_event(),
+  time_to_execute(),
+  time_to_travel(),
+  resource_consumed(),
+  last_reaction_time(),
+  num_targets_hit(),
+  marker(),
+  interrupt(),
+  moving( -1),
+  wait_on_ready( -1),
+  chain(),
+  cycle_targets(),
+  cycle_players(),
+  max_cycle_targets(),
+  target_number(),
+  interrupt_immediate(),
+  if_expr_str(),
+  if_expr(),
+  target_if_str(),
+  target_if_mode( TARGET_IF_NONE ),
+  target_if_expr(),
+  interrupt_if_expr_str(),
+  interrupt_if_expr(),
+  early_chain_if_expr_str(),
+  early_chain_if_expr(),
+  sync_str(),
+  sync_action(),
+  signature_str(),
+  target_str(),
   target_specific_dot( false ),
+  action_list(),
+  starved_proc(),
   total_executions(),
-  line_cooldown( cooldown_t( "line_cd", *p ) )
+  line_cooldown( "line_cd", *p ),
+  signature(),
+  options(),
+  execute_state(),
+  pre_execute_state(),
+  snapshot_flags(),
+  update_flags( STATE_TGT_MUL_DA | STATE_TGT_MUL_TA | STATE_TGT_CRIT),
+  target_cache(),
+  state_cache(),
+  travel_events()
 {
-  dot_behavior                   = DOT_REFRESH;
-  trigger_gcd                    = player -> base_gcd;
-  range                          = -1.0;
-  radius                         = -1.0;
-
-  amount_delta                   = 0.0;
-  base_dd_min                    = 0.0;
-  base_dd_max                    = 0.0;
-  base_td                        = 0.0;
-  base_td_multiplier             = 1.0;
-  base_dd_multiplier             = 1.0;
-  base_multiplier                = 1.0;
-  base_hit                       = 0.0;
-  base_crit                      = 0.0;
-  rp_gain                        = 0.0;
-  crit_multiplier                = 1.0;
-  crit_bonus_multiplier          = 1.0;
-  base_dd_adder                  = 0.0;
-  base_ta_adder                  = 0.0;
-  weapon                         = nullptr;
-  weapon_multiplier              = 1.0;
-  chain_multiplier               = 1.0;
-  chain_bonus_damage             = 0.0;
-  base_aoe_multiplier            = 1.0;
-  split_aoe_damage               = false;
-  normalize_weapon_speed         = false;
-  stats                          = nullptr;
-  execute_event                  = nullptr;
-  queue_event                    = nullptr;
-  travel_speed                   = 0.0;
-  resource_consumed              = 0.0;
-  moving                         = -1;
-  wait_on_ready                  = -1;
-  interrupt                      = false;
-  chain                          = 0;
-  cycle_targets                  = 0;
-  cycle_players                  = 0;
-  max_cycle_targets              = 0;
-  target_number                  = 0;
-  interrupt_immediate            = 0;
-  interrupt_immediate_occurred   = false;
-  round_base_dmg                 = true;
-  if_expr_str.clear();
-  if_expr                        = NULL;
-  target_if_str.clear();
-  target_if_expr                 = 0;
-  target_if_mode = TARGET_IF_NONE;
-  interrupt_if_expr_str.clear();
-  interrupt_if_expr              = NULL;
-  early_chain_if_expr_str.clear();
-  early_chain_if_expr            = NULL;
-  sync_str.clear();
-  sync_action                    = NULL;
-  marker                         = 0;
-  last_reaction_time             = timespan_t::zero();
-  tick_action                    = NULL;
-  execute_action                 = NULL;
-  impact_action                  = NULL;
-  dynamic_tick_action            = true; // WoD updates everything on tick by default. If you need snapshotted values for a periodic effect, use persistent multipliers.
-  starved_proc                   = NULL;
-  action_skill                   = player -> base.skill;
-  energize_resource              = RESOURCE_NONE;
-  energize_type                  = ENERGIZE_NONE;
-  energize_amount                = 0;
-  hit_any_target                 = false;
-
-  // New Stuff
-  snapshot_flags = 0;
-  update_flags = STATE_TGT_MUL_DA | STATE_TGT_MUL_TA | STATE_TGT_CRIT;
-  execute_state = 0;
-  pre_execute_state = 0;
-  action_list = 0;
-  parent_dot = 0;
-  child_action.clear();
-  ground_aoe = false;
-  state_cache = 0;
-  consume_per_tick_ = false;
-
-  range::fill( base_costs, 0.0 );
-  range::fill( secondary_costs, 0.0 );
-  range::fill( base_costs_per_tick, 0.0 );
-
   assert( !name_str.empty() && "Abilities must have valid name_str entries!!" );
-
-  util::tokenize( name_str );
 
   if ( sim -> initialized )
   {
@@ -528,7 +527,7 @@ action_t::action_t( action_e       ty,
   if ( sim -> current_iteration > 0 )
   {
     sim -> errorf( "Player %s creating action %s ouside of the first iteration", player -> name(), name() );
-    assert( 0 );
+    assert( false );
   }
 
   if ( sim -> debug )
@@ -541,12 +540,6 @@ action_t::action_t( action_e       ty,
   }
 
   player -> action_list.push_back( this );
-
-  cooldown = player -> get_cooldown( name_str );
-  internal_cooldown = player -> get_cooldown( name_str + "_internal" );
-
-  stats = player -> get_stats( name_str, this );
-  gain  = player -> get_gain( name_str );
 
   if ( data().ok() )
   {
@@ -887,8 +880,9 @@ double action_t::base_cost() const
   return c;
 }
 
-// action_t::cost ===========================================================
-
+/**
+ * Resource cost of the action for current_resource()
+ */
 double action_t::cost() const
 {
   if ( ! harmful && ! player -> in_combat )
@@ -972,7 +966,7 @@ timespan_t action_t::gcd() const
   return gcd_;
 }
 
-// False Positive skill chance, executes command regardless of expression.
+/** False Positive skill chance, executes command regardless of expression. */
 double action_t::false_positive_pct() const
 {
   double failure_rate = 0.0;
@@ -1500,7 +1494,7 @@ void action_t::execute()
     player -> do_dynamic_regen();
   }
 
-  update_ready(); // Based on testing with warrior mechanics, Blizz updates cooldowns before consuming resources. 
+  update_ready(); // Based on testing with warrior mechanics, Blizz updates cooldowns before consuming resources.
                   // This is very rarely relevant.
   consume_resource();
 
@@ -2908,7 +2902,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
             }
           }
         }
-        
+
         double evaluate() override
         {
           if ( spell )
@@ -2920,7 +2914,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
           }
           else if ( !second_attempt )
           { // There are cases where spell_targets may be looking for a spell that hasn't had an action created yet.
-            // This allows it to check one more time during the sims runtime, just in case the action has been created. 
+            // This allows it to check one more time during the sims runtime, just in case the action has been created.
             spell = original_spell.player -> find_action( name_of_spell );
             if ( !spell )
             {
@@ -3276,7 +3270,7 @@ void action_t::do_schedule_travel( action_state_t* state, const timespan_t& time
       sim -> out_log.printf( "%s schedules travel (%.3f) for %s",
           player -> name(), time_.total_seconds(), name() );
 
-    add_travel_event( make_event<travel_event_t>( *sim, this, state, time_ ) );
+    travel_events.push_back( make_event<travel_event_t>( *sim, this, state, time_ ) );
   }
 }
 
@@ -3374,11 +3368,14 @@ void action_t::trigger_dot( action_state_t* s )
   dot -> trigger( duration );
 }
 
+/**
+ * Determine if a travel event for given target currently exists.
+ */
 bool action_t::has_travel_events_for( const player_t* target ) const
 {
-  for ( size_t i = 0; i < travel_events.size(); ++i )
+  for ( const auto& travel_event : travel_events )
   {
-    if ( travel_events[ i ] -> state -> target == target )
+    if ( travel_event -> state -> target == target )
       return true;
   }
 
@@ -3397,24 +3394,30 @@ void action_t::do_teleport( action_state_t* state )
   player -> teleport( composite_teleport_distance( state ) );
 }
 
-/* Calculates the new dot length after a refresh
+/**
+ * Calculates the new dot length after a refresh
  * Necessary because we have both pandemic behaviour ( last 30% of the dot are preserved )
  * and old Cata/MoP behavior ( only time to the next tick is preserved )
  */
 timespan_t action_t::calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const
 {
   if ( ! channeled )
+  {
     // WoD Pandemic
-    return std::min( triggered_duration * 0.3, dot -> remains() ) + triggered_duration; // New WoD Formula: Get no malus during the last 30% of the dot.
+    // New WoD Formula: Get no malus during the last 30% of the dot.
+    return std::min( triggered_duration * 0.3, dot -> remains() ) + triggered_duration;
+  }
   else
+  {
     return dot -> time_to_next_tick() + triggered_duration;
+  }
 }
 
 bool action_t::dot_refreshable( const dot_t* dot, const timespan_t& triggered_duration ) const
 {
   if ( ! channeled )
   {
-    return dot -> remains() <= triggered_duration * .3;
+    return dot -> remains() <= triggered_duration * 0.3;
   }
   else
   {
@@ -3544,9 +3547,12 @@ void action_t::add_child( action_t* child )
   child -> parent_dot = target -> get_dot( name_str, player );
   child_action.push_back( child );
   if ( child -> parent_dot && range > 0 && child -> radius > 0 && child -> is_aoe() )
-   // If the parent spell has a range, the tick_action has a radius and is an aoe spell, then the tick action likely also has a range.
-   // This will allow distance_target_t to correctly determine spells that radiate from the target, instead of the player.
-     child -> range = range;
+  {
+    // If the parent spell has a range, the tick_action has a radius and is an aoe spell, then the tick action likely
+    // also has a range. This will allow distance_target_t to correctly determine spells that radiate from the target,
+    // instead of the player.
+    child->range = range;
+  }
   stats -> add_child( child -> stats );
 }
 
@@ -3608,15 +3614,17 @@ void action_t::reschedule_queue_event()
   }
 }
 
-// Default target acquirement simply assigns the actor-selected candidate target to the current
-// target. Event contains the retarget event type, context contains the (optional) actor that
-// triggered the event.
+/**
+ * Acquire a new target, where the context is the actor that sources the retarget event, and the actor-level candidate
+ * is given as a parameter (selected by player_t::acquire_target). Default target acquirement simply assigns the
+ * actor-selected candidate target to the current target. Event contains the retarget event type, context contains the
+ * (optional) actor that triggered the event.
+ */
 void action_t::acquire_target( retarget_event_e /* event */,
                                player_t*        /* context */,
                                player_t*        candidate_target )
 {
-  // Don't change targets if they are not of the same generic type (both enemies, or both
-  // friendlies)
+  // Don't change targets if they are not of the same generic type (both enemies, or both friendlies)
   if ( target && target -> is_enemy() != candidate_target -> is_enemy() )
   {
     return;

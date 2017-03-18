@@ -245,13 +245,17 @@ travel_event_t::travel_event_t( action_t* a, action_state_t* state,
 void travel_event_t::execute()
 {
   if ( !state->target->is_sleeping() )
+  {
     action->impact( state );
+  }
+
   action_state_t::release( state );
   action->remove_travel_event( this );
 }
 
 void action_state_t::release( action_state_t*& s )
 {
+  assert( s );
   s->action->release_state( s );
   s = nullptr;
 }
