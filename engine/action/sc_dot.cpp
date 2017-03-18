@@ -895,7 +895,7 @@ bool dot_t::channel_interrupt()
   assert( ticking );
   if ( current_action->channeled )
   {
-    bool interrupt = current_action->interrupt;
+    bool interrupt = current_action->option.interrupt;
     if ( !interrupt )
     {
       expr_t* expr = current_action->interrupt_if_expr;
@@ -915,10 +915,10 @@ bool dot_t::channel_interrupt()
         sim.out_debug.printf(
             "Dot interrupt check: gcd_ready=%d action_available=%d.", gcd_ready,
             action_available );
-      if ( ( gcd_ready || current_action->interrupt_immediate ) &&
+      if ( ( gcd_ready || current_action->option.interrupt_immediate ) &&
            action_available )
       {
-        if ( current_action->interrupt_immediate )
+        if ( current_action->option.interrupt_immediate )
         {
           current_action->interrupt_immediate_occurred = true;
         }
@@ -1011,7 +1011,7 @@ void dot_t::schedule_tick()
     // Response: "Have to"?  It might be good to recast early - since the GCD
     // will end sooner. Depends on the situation. -ersimont
     expr_t* expr = current_action->early_chain_if_expr;
-    if ( ( ( current_action->chain && current_tick + 1 == num_ticks ) ||
+    if ( ( ( current_action->option.chain && current_tick + 1 == num_ticks ) ||
            ( current_tick > 0 && expr && expr->success() &&
              current_action->player->gcd_ready <= sim.current_time() ) ) &&
          current_action->ready() && !is_higher_priority_action_available() )

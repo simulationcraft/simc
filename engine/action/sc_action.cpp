@@ -366,6 +366,25 @@ action_priority_t* action_priority_list_t::add_talent( const player_t* p,
   return add_action( p, s, dbc::get_token( s -> id() ), action_options, comment );
 }
 
+action_t::options_t::options_t()
+  : moving( -1 ),
+    wait_on_ready( -1 ),
+    max_cycle_targets(),
+    target_number(),
+    interrupt(),
+    chain(),
+    cycle_targets(),
+    cycle_players(),
+    interrupt_immediate(),
+    if_expr_str(),
+    target_if_str(),
+    interrupt_if_expr_str(),
+    early_chain_if_expr_str(),
+    sync_str(),
+    target_str()
+{
+}
+
 action_t::action_t( action_e       ty,
                     const std::string&  token,
                     player_t*           p,
@@ -377,6 +396,7 @@ action_t::action_t( action_e       ty,
   player( p ),
   target( p -> target ),
   item(),
+  weapon(),
   default_target( p -> target ),
   school( SCHOOL_NONE ),
   id(),
@@ -450,23 +470,22 @@ action_t::action_t( action_e       ty,
   crit_bonus(),
   base_dd_adder(),
   base_ta_adder(),
-  weapon(),
   weapon_multiplier( 1.0 ),
   chain_multiplier( 1.0 ),
   chain_bonus_damage(),
   base_aoe_multiplier( 1.0 ),
   base_recharge_multiplier( 1.0 ),
-  movement_directionality( MOVEMENT_NONE ),
   base_teleport_distance(),
+  travel_speed(),
+  energize_amount(),
+  movement_directionality( MOVEMENT_NONE ),
   parent_dot(),
   child_action(),
-  travel_speed(),
   tick_action(),
   execute_action(),
   impact_action(),
   gain( p -> get_gain( name_str ) ),
   energize_type( ENERGIZE_NONE ),
-  energize_amount(),
   energize_resource( RESOURCE_NONE ),
   cooldown( p -> get_cooldown( name_str ) ),
   internal_cooldown( p -> get_cooldown( name_str + "_internal" ) ),
@@ -475,47 +494,33 @@ action_t::action_t( action_e       ty,
   queue_event(),
   time_to_execute(),
   time_to_travel(),
-  resource_consumed(),
-  last_reaction_time(),
+  last_resource_cost(),
   num_targets_hit(),
   marker(),
-  interrupt(),
-  moving( -1),
-  wait_on_ready( -1),
-  chain(),
-  cycle_targets(),
-  cycle_players(),
-  max_cycle_targets(),
-  target_number(),
-  interrupt_immediate(),
-  if_expr_str(),
+  option(),
   if_expr(),
-  target_if_str(),
   target_if_mode( TARGET_IF_NONE ),
   target_if_expr(),
-  interrupt_if_expr_str(),
   interrupt_if_expr(),
-  early_chain_if_expr_str(),
   early_chain_if_expr(),
-  sync_str(),
   sync_action(),
   signature_str(),
-  target_str(),
   target_specific_dot( false ),
   action_list(),
   starved_proc(),
   total_executions(),
   line_cooldown( "line_cd", *p ),
   signature(),
-  options(),
   execute_state(),
   pre_execute_state(),
   snapshot_flags(),
   update_flags( STATE_TGT_MUL_DA | STATE_TGT_MUL_TA | STATE_TGT_CRIT),
   target_cache(),
+  options(),
   state_cache(),
   travel_events()
 {
+  assert( option.cycle_targets == 0 );
   assert( !name_str.empty() && "Abilities must have valid name_str entries!!" );
 
   if ( sim -> initialized )
@@ -568,24 +573,24 @@ action_t::action_t( action_e       ty,
   add_option( opt_deprecated( "vulnerable", "if=target.debuff.vulnerable.react" ) );
   add_option( opt_deprecated( "label", "N/A" ) );
 
-  add_option( opt_string( "if", if_expr_str ) );
-  add_option( opt_string( "interrupt_if", interrupt_if_expr_str ) );
-  add_option( opt_string( "early_chain_if", early_chain_if_expr_str ) );
-  add_option( opt_bool( "interrupt", interrupt ) );
-  add_option( opt_bool( "chain", chain ) );
-  add_option( opt_bool( "cycle_targets", cycle_targets ) );
-  add_option( opt_bool( "cycle_players", cycle_players ) );
-  add_option( opt_int( "max_cycle_targets", max_cycle_targets ) );
-  add_option( opt_string( "target_if", target_if_str ) );
-  add_option( opt_bool( "moving", moving ) );
-  add_option( opt_string( "sync", sync_str ) );
-  add_option( opt_bool( "wait_on_ready", wait_on_ready ) );
-  add_option( opt_string( "target", target_str ) );
+  add_option( opt_string( "if", option.if_expr_str ) );
+  add_option( opt_string( "interrupt_if", option.interrupt_if_expr_str ) );
+  add_option( opt_string( "early_chain_if", option.early_chain_if_expr_str ) );
+  add_option( opt_bool( "interrupt", option.interrupt ) );
+  add_option( opt_bool( "chain", option.chain ) );
+  add_option( opt_bool( "cycle_targets", option.cycle_targets ) );
+  add_option( opt_bool( "cycle_players", option.cycle_players ) );
+  add_option( opt_int( "max_cycle_targets", option.max_cycle_targets ) );
+  add_option( opt_string( "target_if", option.target_if_str ) );
+  add_option( opt_bool( "moving", option.moving ) );
+  add_option( opt_string( "sync", option.sync_str ) );
+  add_option( opt_bool( "wait_on_ready", option.wait_on_ready ) );
+  add_option( opt_string( "target", option.target_str ) );
   add_option( opt_timespan( "line_cd", line_cooldown.duration ) );
   add_option( opt_float( "action_skill", action_skill ) );
   // Interrupt_immediate forces a channeled action to interrupt on tick (if requested), even if the
   // GCD has not elapsed.
-  add_option( opt_bool( "interrupt_immediate", interrupt_immediate ) );
+  add_option( opt_bool( "interrupt_immediate", option.interrupt_immediate ) );
 }
 
 action_t::~action_t()
@@ -799,20 +804,20 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
 void action_t::parse_target_str()
 {
   // FIXME: Move into constructor when parse_action is called from there.
-  if ( ! target_str.empty() )
+  if ( ! option.target_str.empty() )
   {
-    if ( target_str[ 0 ] >= '0' && target_str[ 0 ] <= '9' )
+    if ( option.target_str[ 0 ] >= '0' && option.target_str[ 0 ] <= '9' )
     {
-      target_number = atoi( target_str.c_str() );
-      player_t* p = find_target_by_number( target_number );
+      option.target_number = atoi( option.target_str.c_str() );
+      player_t* p = find_target_by_number( option.target_number );
       // Numerical targeting is intended to be dynamic, so don't give an error message if we can't find the target yet
       if ( p ) target = p;
     }
-    else if ( util::str_compare_ci( target_str, "self" ) )
+    else if ( util::str_compare_ci( option.target_str, "self" ) )
       target = this -> player;
     else
     {
-      player_t* p = sim -> find_player( target_str );
+      player_t* p = sim -> find_player( option.target_str );
 
       if ( p )
         target = p;
@@ -1260,16 +1265,16 @@ void action_t::consume_resource()
 
   if ( cr == RESOURCE_NONE || base_cost() == 0 || proc ) return;
 
-  resource_consumed = cost();
+  last_resource_cost = cost();
 
-  player -> resource_loss( cr, resource_consumed, 0, this );
+  player -> resource_loss( cr, last_resource_cost, nullptr, this );
 
   if ( sim -> log )
     sim -> out_log.printf( "%s consumes %.1f %s for %s (%.0f)", player -> name(),
-                   resource_consumed, util::resource_type_string( cr ),
+                   last_resource_cost, util::resource_type_string( cr ),
                    name(), player -> resources.current[ cr ] );
 
-  stats -> consume_resource( current_resource(), resource_consumed );
+  stats -> consume_resource( current_resource(), last_resource_cost );
 }
 
 // action_t::num_targets  ==================================================
@@ -1540,7 +1545,7 @@ void action_t::execute()
   // target caches do not get into an inconsistent state, if the target of this
   // action (defined by a number) spawns/despawns dynamically during an
   // iteration.
-  if ( target_number > 0 && target != default_target )
+  if ( option.target_number > 0 && target != default_target )
   {
     target = default_target;
   }
@@ -1890,7 +1895,7 @@ bool action_t::ready()
   if ( player -> is_moving() && ! usable_moving() )
     return false;
 
-  if ( moving != -1 && moving != ( player -> is_moving() ? 1 : 0 ) )
+  if ( option.moving != -1 && option.moving != ( player -> is_moving() ? 1 : 0 ) )
     return false;
 
   if ( ! player -> resource_available( current_resource(), cost() ) )
@@ -1921,10 +1926,10 @@ bool action_t::ready()
       return false;
   }
 
-  if ( cycle_targets )
+  if ( option.cycle_targets )
   {
     player_t* saved_target = target;
-    cycle_targets = 0;
+    option.cycle_targets = false;
     bool found_ready = false;
 
     // Note, need to take a copy of the original target list here, instead of a reference. Otherwise
@@ -1933,8 +1938,8 @@ bool action_t::ready()
     std::vector< player_t* > ctl = target_list();
     size_t num_targets = ctl.size();
 
-    if ( ( max_cycle_targets > 0 ) && ( ( size_t ) max_cycle_targets < num_targets ) )
-      num_targets = max_cycle_targets;
+    if ( ( option.max_cycle_targets > 0 ) && ( ( size_t ) option.max_cycle_targets < num_targets ) )
+      num_targets = option.max_cycle_targets;
 
     for ( size_t i = 0; i < num_targets; i++ )
     {
@@ -1946,7 +1951,7 @@ bool action_t::ready()
       }
     }
 
-    cycle_targets = 1;
+    option.cycle_targets = true;
 
     if ( found_ready )
     {
@@ -1964,18 +1969,18 @@ bool action_t::ready()
     return false;
   }
 
-  if ( cycle_players ) // Used when healing players in the raid.
+  if ( option.cycle_players ) // Used when healing players in the raid.
   {
     player_t* saved_target = target;
-    cycle_players = 0;
+    option.cycle_players = false;
     bool found_ready = false;
 
     std::vector<player_t*>& tl = sim -> player_no_pet_list.data();
 
     size_t num_targets = tl.size();
 
-    if ( ( max_cycle_targets > 0 ) && ( (size_t)max_cycle_targets < num_targets ) )
-      num_targets = max_cycle_targets;
+    if ( ( option.max_cycle_targets > 0 ) && ( (size_t)option.max_cycle_targets < num_targets ) )
+      num_targets = option.max_cycle_targets;
 
     for ( size_t i = 0; i < num_targets; i++ )
     {
@@ -1987,7 +1992,7 @@ bool action_t::ready()
       }
     }
 
-    cycle_players = 1;
+    option.cycle_players = true;
 
     if ( found_ready ) return true;
 
@@ -1996,11 +2001,11 @@ bool action_t::ready()
     return false;
   }
 
-  if ( target_number )
+  if ( option.target_number )
   {
     player_t* saved_target  = target;
-    int saved_target_number = target_number;
-    target_number = 0;
+    int saved_target_number = option.target_number;
+    option.target_number = 0;
 
     target = find_target_by_number( saved_target_number );
 
@@ -2008,7 +2013,7 @@ bool action_t::ready()
 
     if ( target ) is_ready = ready();
 
-    target_number = saved_target_number;
+    option.target_number = saved_target_number;
 
     if ( is_ready ) return true;
 
@@ -2055,20 +2060,20 @@ void action_t::init()
 
   assert( !( n_targets() && channeled ) && "DONT create a channeled aoe spell!" );
 
-  if ( !sync_str.empty() )
+  if ( !option.sync_str.empty() )
   {
-    sync_action = player -> find_action( sync_str );
+    sync_action = player -> find_action( option.sync_str );
 
     if ( !sync_action )
     {
-      sim -> errorf( "Unable to find sync action '%s' for primary action '%s'\n", sync_str.c_str(), name() );
+      sim -> errorf( "Unable to find sync action '%s' for primary action '%s'\n", option.sync_str.c_str(), name() );
       sim -> cancel();
     }
   }
 
-  if ( cycle_targets && target_number )
+  if ( option.cycle_targets && option.target_number )
   {
-    target_number = 0;
+    option.target_number = 0;
     sim -> errorf( "Player %s trying to use both cycle_targets and a numerical target for action %s - defaulting to cycle_targets\n", player -> name(), name() );
   }
 
@@ -2186,13 +2191,13 @@ bool action_t::init_finished()
 {
   bool ret = true;
 
-  if ( !target_if_str.empty() )
+  if ( !option.target_if_str.empty() )
   {
-    std::string::size_type offset = target_if_str.find( ':' );
+    std::string::size_type offset = option.target_if_str.find( ':' );
     if ( offset != std::string::npos )
     {
-      std::string target_if_type_str = target_if_str.substr( 0, offset );
-      target_if_str.erase( 0, offset + 1 );
+      std::string target_if_type_str = option.target_if_str.substr( 0, offset );
+      option.target_if_str.erase( 0, offset + 1 );
       if ( util::str_compare_ci( target_if_type_str, "max" ) )
       {
         target_if_mode = TARGET_IF_MAX;
@@ -2212,30 +2217,30 @@ bool action_t::init_finished()
         background = true;
       }
     }
-    else if ( !target_if_str.empty() )
+    else if ( !option.target_if_str.empty() )
     {
       target_if_mode = TARGET_IF_FIRST;
     }
 
-    if ( !target_if_str.empty() &&
-      ( target_if_expr = expr_t::parse( this, target_if_str, sim -> optimize_expressions ) ) == 0 )
+    if ( !option.target_if_str.empty() &&
+      ( target_if_expr = expr_t::parse( this, option.target_if_str, sim -> optimize_expressions ) ) == 0 )
       ret = false;
   }
 
-  if ( ! if_expr_str.empty() &&
-       ( if_expr = expr_t::parse( this, if_expr_str, sim -> optimize_expressions ) ) == 0 )
+  if ( ! option.if_expr_str.empty() &&
+       ( if_expr = expr_t::parse( this, option.if_expr_str, sim -> optimize_expressions ) ) == 0 )
   {
     ret = false;
   }
 
-  if ( ! interrupt_if_expr_str.empty() &&
-       ( interrupt_if_expr = expr_t::parse( this, interrupt_if_expr_str, sim -> optimize_expressions ) ) == 0 )
+  if ( ! option.interrupt_if_expr_str.empty() &&
+       ( interrupt_if_expr = expr_t::parse( this, option.interrupt_if_expr_str, sim -> optimize_expressions ) ) == 0 )
   {
     ret = false;
   }
 
-  if ( ! early_chain_if_expr_str.empty() &&
-       ( early_chain_if_expr = expr_t::parse( this, early_chain_if_expr_str, sim -> optimize_expressions ) ) == 0 )
+  if ( ! option.early_chain_if_expr_str.empty() &&
+       ( early_chain_if_expr = expr_t::parse( this, option.early_chain_if_expr_str, sim -> optimize_expressions ) ) == 0 )
   {
     ret = false;
   }
@@ -2588,7 +2593,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
       {
         dot_t* dot = action.get_dot();
         if ( dot -> miss_time < timespan_t::zero() ||
-             action.sim -> current_time() >= ( dot -> miss_time + action.last_reaction_time ) )
+             action.sim -> current_time() >= ( dot -> miss_time ) )
           return true;
         else
           return false;
@@ -3495,14 +3500,14 @@ bool action_t::consume_cost_per_tick( const dot_t& /* dot */ )
                                name(), player -> resources.current[ r ] );
     }
 
-    resource_consumed = player -> resource_loss( r, cost, nullptr, this );
-    stats -> consume_resource( r, resource_consumed );
+    last_resource_cost = player -> resource_loss( r, cost, nullptr, this );
+    stats -> consume_resource( r, last_resource_cost );
 
     if ( sim -> log )
       sim -> out_log.printf( "%s: %s consumes ticking cost %.1f (%.1f) %s for %s (%.0f).",
                              player -> name(),
                              name(),
-                             cost, resource_consumed, util::resource_type_string( r ),
+                             cost, last_resource_cost, util::resource_type_string( r ),
                              name(), player -> resources.current[ r ] );
 
     if ( ! enough_resource_available )
@@ -3631,7 +3636,7 @@ void action_t::acquire_target( retarget_event_e /* event */,
   }
 
   // If the user has indicated a target number for the action, don't adjust targets
-  if ( target_number > 0 )
+  if ( option.target_number > 0 )
   {
     return;
   }

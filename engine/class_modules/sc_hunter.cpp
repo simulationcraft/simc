@@ -596,11 +596,11 @@ public:
   {
     ab::consume_resource();
 
-    if ( ab::resource_consumed > 0 && p() -> sets.has_set_bonus( HUNTER_MARKSMANSHIP, T19, B2 ) )
+    if ( ab::last_resource_cost > 0 && p() -> sets.has_set_bonus( HUNTER_MARKSMANSHIP, T19, B2 ) )
     {
       const double set_value = p() -> sets.set( HUNTER_MARKSMANSHIP, T19, B2 ) -> effectN( 1 ).base_value();
       p() -> cooldowns.trueshot
-        -> adjust( timespan_t::from_seconds( -1.0 * ab::resource_consumed / set_value ) );
+        -> adjust( timespan_t::from_seconds( -1.0 * ab::last_resource_cost / set_value ) );
     }
   }
 

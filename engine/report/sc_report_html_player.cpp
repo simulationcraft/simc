@@ -770,7 +770,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask,
           a->cooldown->duration.total_seconds(),
           a->base_execute_time.total_seconds(), a->base_crit,
           a->target ? a->target->name() : "", a->harmful ? "true" : "false",
-          util::encode_html( a->if_expr_str ).c_str() );
+          util::encode_html( a->option.if_expr_str ).c_str() );
 
       // Spelldata
       if ( a->data().ok() )

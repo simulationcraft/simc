@@ -2427,18 +2427,18 @@ public:
           p() -> buff.the_emperors_capacitor -> trigger();
       }
       // Chi Savings on Dodge & Parry & Miss
-      if ( ab::resource_consumed > 0 )
+      if ( ab::last_resource_cost > 0 )
       {
-        double chi_restored = ab::resource_consumed;
+        double chi_restored = ab::last_resource_cost;
         if ( !ab::aoe && ab::result_is_miss( ab::execute_state -> result ) )
           p() -> resource_gain( RESOURCE_CHI, chi_restored, p() -> gain.chi_refund );
       }
     }
 
     // Energy refund, estimated at 80%
-    if ( current_resource() == RESOURCE_ENERGY && ab::resource_consumed > 0 && ! ab::hit_any_target )
+    if ( current_resource() == RESOURCE_ENERGY && ab::last_resource_cost > 0 && ! ab::hit_any_target )
     {
-      double energy_restored = ab::resource_consumed * 0.8;
+      double energy_restored = ab::last_resource_cost * 0.8;
 
       p() -> resource_gain( RESOURCE_ENERGY, energy_restored, p() -> gain.energy_refund );
     }
