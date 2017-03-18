@@ -3236,9 +3236,9 @@ struct divine_hammer_t : public paladin_spell_t
     return dot_duration * ( tick_time( s ) / base_tick_time );
   }
 
-  virtual double action_multiplier() const override
+  virtual double composite_persistent_multiplier( const action_state_t* s ) const override
   {
-    double am = paladin_spell_t::action_multiplier();
+    double am = paladin_spell_t::composite_persistent_multiplier( s );
     if ( maybe_ptr( p() -> dbc.ptr ) )
     {
       if ( p() -> buffs.righteous_verdict -> up() )
