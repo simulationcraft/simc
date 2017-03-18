@@ -1079,6 +1079,7 @@ public:
   bool may_proc_fel_barrage;
   bool havoc_damage_increase;
   bool vengeance_damage_increase;
+  unsigned energize_die_sides;
 
   demon_hunter_action_t(const std::string& n, demon_hunter_t* p,
     const spell_data_t* s = spell_data_t::nil(),
@@ -1089,7 +1090,8 @@ public:
     hasted_gcd(false),
     may_proc_fel_barrage(false),
     havoc_damage_increase(ab::data().affected_by(p->spec.havoc->effectN(6))),
-    vengeance_damage_increase(ab::data().affected_by(p->spec.vengeance->effectN(1)))
+    vengeance_damage_increase(ab::data().affected_by(p->spec.vengeance->effectN(1))),
+    energize_die_sides(0)
   {
     ab::parse_options( o );
     ab::may_crit      = true;
@@ -1170,6 +1172,11 @@ public:
   virtual double composite_energize_amount( const action_state_t* s ) const override
   {
     double ea = ab::composite_energize_amount( s );
+
+    if(energize_die_sides > 0)
+    {
+      ea += static_cast<int>(p()->rng().range(1, 1 + energize_die_sides));
+    }
 
     if ( havoc_t19_2pc && ab::energize_resource == RESOURCE_FURY )
     {
@@ -2200,7 +2207,7 @@ struct fiery_brand_t : public demon_hunter_spell_t
 
       // Pick a random target.
       player_t* target =
-        candidates[ ( int ) p() -> rng().range( 0, (double)candidates.size() ) ];
+        candidates[static_cast<int>(p()->rng().range(0, (double)candidates.size()))];
 
       // Execute a dot on that target.
       this -> target = target;
@@ -3897,27 +3904,19 @@ struct death_sweep_t : public blade_dance_base_t
 
 struct demons_bite_t : public demon_hunter_attack_t
 {
-  unsigned energize_die_sides;
-
   demons_bite_t( demon_hunter_t* p, const std::string& options_str )
-    : demon_hunter_attack_t(
-        "demons_bite", p, p -> find_class_spell( "Demon's Bite" ), options_str )
+    : demon_hunter_attack_t( "demons_bite", p, p -> find_class_spell( "Demon's Bite" ), options_str )
   {
-    energize_die_sides   = data().effectN( 3 ).die_sides();
     may_proc_fel_barrage = true;  // Jul 12 2016
+
+    energize_die_sides = data().effectN(3).die_sides();
 
     base_multiplier *= 1.0 + p -> artifact.demon_rage.percent();
   }
 
   void execute() override
   {
-    // Modify base amount so it properly benefits from multipliers.
-    double old_amount = energize_amount;
-    energize_amount += ( int )rng().range( 1, 1 + energize_die_sides );
-
     demon_hunter_attack_t::execute();
-
-    energize_amount = old_amount;
 
     if ( p() -> buff.metamorphosis -> check() )
     {
@@ -3927,7 +3926,7 @@ struct demons_bite_t : public demon_hunter_attack_t
     if (p()->legendary.anger_of_the_halfgiants_fury > 0)
     {
       const int range = p()->legendary.anger_of_the_halfgiants_fury;
-      p()->resource_gain(RESOURCE_FURY, (int)rng().range(1, 1 + range), p()->gain.anger_of_the_halfgiants);
+      p()->resource_gain(RESOURCE_FURY, static_cast<int>(rng().range(1, 1 + range)), p()->gain.anger_of_the_halfgiants);
     }
   }
 
@@ -3958,26 +3957,15 @@ struct demons_bite_t : public demon_hunter_attack_t
 
 struct demon_blades_t : public demon_hunter_attack_t
 {
-  unsigned energize_die_sides;
-
   demon_blades_t( demon_hunter_t* p )
     : demon_hunter_attack_t( "demon_blades", p, p -> find_spell( 203796 ) )
   {
     background           = true;
-    cooldown -> duration   = p -> talent.demon_blades -> internal_cooldown();
-    energize_die_sides   = data().effectN( 3 ).die_sides();
     may_proc_fel_barrage = true;  // Jul 12 2016
 
+    energize_die_sides = data().effectN(3).die_sides();
+
     base_multiplier *= 1.0 + p -> artifact.demon_rage.percent();
-  }
-
-  double composite_energize_amount( const action_state_t* s ) const override
-  {
-    double ea = demon_hunter_attack_t::composite_energize_amount( s );
-
-    ea += ( int )rng().range( 1, 1 + energize_die_sides );
-
-    return ea;
   }
 
   void impact( action_state_t* s ) override
@@ -3994,12 +3982,13 @@ struct demon_blades_t : public demon_hunter_attack_t
 
   void execute() override
   {
-      demon_hunter_attack_t::execute();
-      if (p()->legendary.anger_of_the_halfgiants_fury > 0)
-      {
-        const int range = p()->legendary.anger_of_the_halfgiants_fury + p()->talent.demon_blades->effectN(2).base_value();
-        p()->resource_gain(RESOURCE_FURY, (int)rng().range(1, 1 + range), p()->gain.anger_of_the_halfgiants);
-      }
+    demon_hunter_attack_t::execute();
+
+    if (p()->legendary.anger_of_the_halfgiants_fury > 0)
+    {
+      const int range = p()->legendary.anger_of_the_halfgiants_fury + p()->talent.demon_blades->effectN(2).base_value();
+      p()->resource_gain(RESOURCE_FURY, static_cast<int>(rng().range(1, 1 + range)), p()->gain.anger_of_the_halfgiants);
+    }
   }
 };
 
@@ -5322,7 +5311,7 @@ private:
   {
     double tm                  = 0;
     std::vector<player_t*>& tl = action -> target_list();
-    int size                   = ( int )tl.size();
+    int size                   = static_cast<int>(tl.size());
 
     for ( int i = 0; i < size && ( action -> aoe < 0 || i < action -> aoe ); i++ )
     {
@@ -7156,6 +7145,11 @@ double demon_hunter_t::composite_melee_haste() const
     mh /= 1.0 + buff.metamorphosis -> check_value();
   }
 
+  if (maybe_ptr(dbc.ptr) && legendary.sephuzs_secret)
+  {
+    mh /= 1.0 + legendary.sephuzs_secret->effectN(3).percent();
+  }
+
   return mh;
 }
 
@@ -7168,6 +7162,11 @@ double demon_hunter_t::composite_spell_haste() const
   if ( specialization() == DEMON_HUNTER_HAVOC )
   {
     sh /= 1.0 + buff.metamorphosis -> check_value();
+  }
+
+  if (maybe_ptr(dbc.ptr) && legendary.sephuzs_secret)
+  {
+    sh /= 1.0 + legendary.sephuzs_secret->effectN(3).percent();
   }
 
   return sh;
@@ -7339,8 +7338,15 @@ double demon_hunter_t::passive_movement_modifier() const
   double ms = player_t::passive_movement_modifier();
 
   if ( mastery_spell.demonic_presence -> ok() )
+  {
     ms += cache.mastery() *
           mastery_spell.demonic_presence -> effectN( 2 ).mastery_value();
+  }
+
+  if (maybe_ptr(dbc.ptr) && legendary.sephuzs_secret)
+  {
+    ms += legendary.sephuzs_secret->effectN(2).percent();
+  }
 
   return ms;
 }
@@ -7880,8 +7886,13 @@ struct moarg_bionic_stabilizers_t
 
   void manipulate( throw_glaive_t* action, const special_effect_t& e ) override
   {
-    action -> chain_bonus_damage += e.driver() -> effectN( 1 ).percent();
-  }  // TOCHECK
+    const spell_data_t* driver = e.driver();
+    
+    action->chain_bonus_damage += driver->effectN(1).percent();
+    
+    if (maybe_ptr(action->p()->dbc.ptr))
+      action->base_multiplier *= 1.0 + driver->effectN(2).percent();
+  }
 };
 
 // Vengeance-specific legendary items
@@ -8005,7 +8016,12 @@ struct loramus_thalipedes_sacrifice_t
   void manipulate( fel_rush_t::fel_rush_damage_t* action,
                    const special_effect_t& e ) override
   {
-    action -> chain_bonus_damage += e.driver() -> effectN( 1 ).percent();
+    double dm = e.driver()->effectN(1).percent();
+    
+    if (maybe_ptr(action->p()->dbc.ptr))
+      action->base_multiplier *= 1.0 + dm;
+    
+    action->chain_bonus_damage += dm;
   }
 };
 

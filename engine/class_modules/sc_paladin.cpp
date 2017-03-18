@@ -344,6 +344,7 @@ public:
     artifact_power_t ashbringers_light;
     artifact_power_t ferocity_of_the_silver_hand;
     artifact_power_t righteous_verdict;
+    artifact_power_t judge_unworthy;
 
     // Prot
     artifact_power_t eye_of_tyr;
@@ -436,6 +437,7 @@ public:
   virtual void      create_buffs() override;
   virtual void      init_rng() override;
   virtual void      init_spells() override;
+  virtual void      init_assessors() override;
   virtual void      init_action_list() override;
   virtual void      reset() override;
   virtual expr_t*   create_expression( action_t*, const std::string& name ) override;
@@ -3236,9 +3238,9 @@ struct divine_hammer_t : public paladin_spell_t
     return dot_duration * ( tick_time( s ) / base_tick_time );
   }
 
-  virtual double action_multiplier() const override
+  virtual double composite_persistent_multiplier( const action_state_t* s ) const override
   {
-    double am = paladin_spell_t::action_multiplier();
+    double am = paladin_spell_t::composite_persistent_multiplier( s );
     if ( maybe_ptr( p() -> dbc.ptr ) )
     {
       if ( p() -> buffs.righteous_verdict -> up() )
@@ -5048,6 +5050,54 @@ void paladin_t::generate_action_prio_list_holy()
 
 }
 
+void paladin_t::init_assessors()
+{
+  player_t::init_assessors();
+  if ( artifact.judge_unworthy.rank() )
+  {
+    paladin_t* p = this;
+    assessor_out_damage.add(
+      assessor::TARGET_DAMAGE - 1,
+      [ p ]( dmg_e, action_state_t* state )
+      {
+        buff_t* judgment = p -> get_target_data( state -> target ) -> buffs.debuffs_judgment;
+        if ( judgment -> check() )
+        {
+          if ( p -> rng().roll(0.5) )
+            return assessor::CONTINUE;
+
+          // Do the spread
+          double max_distance  = 10.0;
+          unsigned max_targets = 1;
+          std::vector<player_t*> valid_targets;
+          range::remove_copy_if(
+              p->sim->target_list.data(), std::back_inserter( valid_targets ),
+              [p, state, max_distance]( player_t* plr ) {
+                paladin_td_t* td = p -> get_target_data( plr );
+                if ( td -> buffs.debuffs_judgment -> check() )
+                  return true;
+                return state -> target -> get_player_distance( *plr ) > max_distance;
+              } );
+          if ( valid_targets.size() > max_targets )
+          {
+            valid_targets.resize( max_targets );
+          }
+          for ( player_t* target : valid_targets )
+          {
+            p -> get_target_data( target ) -> buffs.debuffs_judgment -> trigger(
+                judgment -> check(),
+                judgment -> check_value(),
+                -1.0,
+                judgment -> remains()
+              );
+          }
+        }
+        return assessor::CONTINUE;
+      }
+    );
+  }
+}
+
 // paladin_t::init_actions ==================================================
 
 void paladin_t::init_action_list()
@@ -5214,6 +5264,7 @@ void paladin_t::init_spells()
   artifact.ferocity_of_the_silver_hand = find_artifact_spell( "Ferocity of the Silver Hand" );
   artifact.ashes_to_ashes          = find_artifact_spell( "Ashes to Ashes" );
   artifact.righteous_verdict       = find_artifact_spell( "Righteous Verdict" );
+  artifact.judge_unworthy          = find_artifact_spell( "Judge Unworthy" );
 
   artifact.eye_of_tyr              = find_artifact_spell( "Eye of Tyr" );
   artifact.truthguards_light       = find_artifact_spell( "Truthguard's Light" );

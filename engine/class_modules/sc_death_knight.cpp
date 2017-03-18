@@ -7035,6 +7035,7 @@ void death_knight_t::default_apl_dps_precombat( const std::string& food_name, co
 void death_knight_t::default_apl_blood()
 {
     // TODO: mrdmnd - implement
+  default_apl_frost();
 }
 
 // death_knight_t::default_apl_frost ========================================
@@ -7370,6 +7371,12 @@ void death_knight_t::init_action_list()
   {
     case DEATH_KNIGHT_UNHOLY:
       default_apl_unholy();
+      break;
+    case DEATH_KNIGHT_FROST:
+      default_apl_frost();
+      break;
+    case DEATH_KNIGHT_BLOOD:
+      default_apl_blood();
       break;
     default:
       default_apl_frost();

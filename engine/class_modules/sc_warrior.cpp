@@ -964,7 +964,7 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
 
   virtual bool opportunity_strikes( action_state_t* s )
   {
-    if ( special && s -> action -> s_data -> id() != p() -> active.opportunity_strikes -> s_data -> id() )
+    if ( special && s -> action -> data().id() != p() -> active.opportunity_strikes -> data().id() )
     {
       if ( rng().roll( ( 1 - ( s -> target -> health_percentage() / 100 ) ) * p() -> talents.opportunity_strikes -> proc_chance() ) )
       {

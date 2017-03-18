@@ -2208,7 +2208,7 @@ struct fire_mage_spell_t : public mage_spell_t
         {
           p -> procs.hot_streak -> occur();
           // Check if HS was triggered by IB
-          if ( s -> action -> s_data -> _id == 108853 )
+          if ( s -> action -> data().id() == 108853 )
           {
             p -> procs.heating_up_ib_converted -> occur();
           }
@@ -2345,7 +2345,7 @@ struct frost_spell_state_t : action_state_t
     const mage_t* p = debug_cast<const mage_t*>( action -> player );
     const mage_td_t* td = p -> get_target_data( target );
 
-    return ( action -> s_data -> _id == 30455 && fof )
+    return ( action -> data().id() == 30455 && fof )
         || ( td -> debuffs.winters_chill -> up() )
         || ( td -> debuffs.frozen -> up() );
   }
