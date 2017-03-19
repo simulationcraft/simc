@@ -7865,11 +7865,11 @@ void mage_t::create_buffs()
 
   //Misc
 
-  buffs.greater_blessing_of_widsom = buff_creator_t( this, "greater_blessing_of_wisdom", find_spell( 203539 ) )
-                                                    .tick_callback( [ this ]( buff_t*, int, const timespan_t& )
+  buffs.greater_blessing_of_widsom = make_buff( this, "greater_blessing_of_wisdom", find_spell( 203539 ) )
+                                                    -> set_tick_callback( [ this ]( buff_t*, int, const timespan_t& )
                                                                     { resource_gain( RESOURCE_MANA, resources.max[ RESOURCE_MANA ]*0.002,
                                                                       gains.greater_blessing_of_wisdom ); } )
-                                                    .period( find_spell( 203539 ) -> effectN( 2 ).period() );
+                                                    -> set_period( find_spell( 203539 ) -> effectN( 2 ).period() );
 }
 
 // mage_t::init_gains =======================================================

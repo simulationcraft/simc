@@ -237,7 +237,6 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   // Set Buff Cooldown
   set_cooldown( params._cooldown );
 
-  set_max_stack( _max_stack );
 
   // If the params specifies a trigger spell (even if it's not found), use it instead of the actual
   // spell data of the buff.
@@ -317,21 +316,16 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
 
   set_period( params._period );
 
-  if ( params._behavior != BUFF_TICK_NONE )
-    tick_behavior = params._behavior;
-  // If period is set, buf no buff tick behavior, set the behavior
-  // automatically to clipped ticks
-  else if ( buff_period > timespan_t::zero() && params._behavior == BUFF_TICK_NONE )
-    tick_behavior = BUFF_TICK_CLIP;
+  set_tick_behavior( params._behavior );
 
   if ( params._tick_callback )
-    tick_callback = params._tick_callback;
+    set_tick_callback( std::move(params._tick_callback) );
 
-  tick_zero = params._initial_tick;
-  tick_time_behavior = params._tick_time_behavior;
+  set_tick_zero( params._initial_tick );
+  set_tick_time_behavior( params._tick_time_behavior );
   if ( tick_time_behavior == BUFF_TICK_TIME_CUSTOM )
   {
-    tick_time_callback = params._tick_time_callback;
+    set_tick_time_callback( params._tick_time_callback );
   }
 
   if ( params._affects_regen == -1 && player && player -> regen_type == REGEN_DYNAMIC )
@@ -342,25 +336,16 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
         change_regen_rate = true;
     }
   }
-  else if ( params._affects_regen != -1 )
-    change_regen_rate = params._affects_regen != 0;
-
-  if ( params._refresh_behavior == BUFF_REFRESH_NONE )
-  {
-    // In wod, default behavior for ticking buffs is to pandemic-extend the duration
-    if ( tick_behavior == BUFF_TICK_CLIP || tick_behavior == BUFF_TICK_REFRESH )
-      refresh_behavior = BUFF_REFRESH_PANDEMIC;
-    // Otherwise, just do the full-duration refresh
-    else
-      refresh_behavior = BUFF_REFRESH_DURATION;
-  }
   else
-    refresh_behavior = params._refresh_behavior;
-
-  stack_behavior = params._stack_behavior;
+  {
+    set_affects_regen( params._affects_regen );
+  }
 
   if ( params._refresh_duration_callback )
-    refresh_duration_callback = params._refresh_duration_callback;
+    set_refresh_duration_callback( params._refresh_duration_callback );
+  set_refresh_behavior( params._refresh_behavior );
+
+  stack_behavior = params._stack_behavior;
 
   assert( refresh_behavior != BUFF_REFRESH_CUSTOM || refresh_duration_callback );
 
@@ -371,30 +356,7 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
 
   stack_change_callback = params._stack_change_callback;
 
-  if ( _max_stack < 1 )
-  {
-    sim -> errorf( "buff %s: initialized with max_stack < 1 (%d). Setting max_stack to 1.\n", name_str.c_str(), _max_stack );
-    _max_stack = 1;
-  }
-
-  if ( _max_stack > 999 )
-  {
-    _max_stack = 999;
-    sim -> errorf( "buff %s: initialized with max_stack > 999. Setting max_stack to 999.\n", name_str.c_str() );
-  }
-
-  // Keep non hidden reported numbers clean
-  //start_intervals.mean = 0;
-  // trigger_intervals.mean = 0;
-
-  stack_occurrence.resize( _max_stack + 1 );
-  stack_react_time.resize( _max_stack + 1 );
-  stack_react_ready_triggers.resize( _max_stack + 1 );
-
-  if ( as<int>( stack_uptime.size() ) < _max_stack )
-  {
-      stack_uptime.resize(_max_stack+1);
-  }
+  set_max_stack( _max_stack );
 }
 
 buff_t* buff_t::set_duration( timespan_t duration )
@@ -451,6 +413,12 @@ buff_t* buff_t::set_max_stack( int max_stack )
   else
   {
 	_max_stack = max_stack;
+  }
+
+  if ( _max_stack < 1 )
+  {
+    sim -> errorf( "buff %s: initialized with max_stack < 1 (%d). Setting max_stack to 1.\n", name_str.c_str(), _max_stack );
+    _max_stack = 1;
   }
 
   if ( _max_stack > 999 )
@@ -591,6 +559,73 @@ buff_t* buff_t::set_can_cancel( bool cc )
 {
 
   can_cancel = cc;
+  return this;
+}
+
+buff_t* buff_t::set_tick_behavior( buff_tick_behavior_e behavior )
+{
+  if ( behavior != BUFF_TICK_NONE )
+  {
+    tick_behavior = behavior;
+  }
+  // If period is set, buf no buff tick behavior, set the behavior automatically to clipped ticks
+  else if ( buff_period > timespan_t::zero() && behavior == BUFF_TICK_NONE )
+  {
+    tick_behavior = BUFF_TICK_CLIP;
+  }
+
+  return this;
+}
+
+buff_t* buff_t::set_tick_callback( buff_tick_callback_t fn )
+{
+  tick_callback = std::move(fn);
+  return this;
+}
+
+buff_t* buff_t::set_tick_time_callback( buff_tick_time_callback_t cb )
+{
+  set_tick_time_behavior( BUFF_TICK_TIME_CUSTOM );
+  tick_time_callback = std::move(cb);
+  return this;
+}
+
+buff_t* buff_t::set_affects_regen( bool state )
+{
+  change_regen_rate = state;
+  return this;
+}
+
+buff_t* buff_t::set_refresh_behavior( buff_refresh_behavior_e b)
+{
+  if ( b == BUFF_REFRESH_NONE )
+  {
+    // In wod, default behavior for ticking buffs is to pandemic-extend the duration
+    if ( tick_behavior == BUFF_TICK_CLIP || tick_behavior == BUFF_TICK_REFRESH )
+    {
+      refresh_behavior = BUFF_REFRESH_PANDEMIC;
+    }
+    // Otherwise, just do the full-duration refresh
+    else
+    {
+      refresh_behavior = BUFF_REFRESH_DURATION;
+    }
+  }
+  else
+  {
+    refresh_behavior = b;
+  }
+  assert( refresh_behavior != BUFF_REFRESH_CUSTOM || refresh_duration_callback );
+  return this;
+}
+
+buff_t* buff_t::set_refresh_duration_callback( buff_refresh_duration_callback_t cb)
+{
+  if ( cb )
+  {
+    refresh_behavior = BUFF_REFRESH_CUSTOM;
+    refresh_duration_callback = std::move(cb);
+  }
   return this;
 }
 // buff_t::datacollection_begin =============================================

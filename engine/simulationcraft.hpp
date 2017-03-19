@@ -1014,17 +1014,28 @@ public:
 
   bool change_regen_rate;
 
-  virtual buff_t* set_duration( timespan_t duration );
-  virtual buff_t* set_max_stack( int max_stack );
-  virtual buff_t* set_cooldown( timespan_t duration );
-  virtual buff_t* set_period( timespan_t );
+  buff_t* set_duration( timespan_t duration );
+  buff_t* set_max_stack( int max_stack );
+  buff_t* set_cooldown( timespan_t duration );
+  buff_t* set_period( timespan_t );
   //virtual buff_t* set_chance( double chance );
-  virtual buff_t* set_quiet( bool quiet );
-  virtual buff_t* add_invalidate( cache_e );
-  virtual buff_t* set_default_value( double );
-  virtual buff_t* set_reverse( bool );
-  virtual buff_t* set_activated( bool );
-  virtual buff_t* set_can_cancel( bool cc );
+  buff_t* set_quiet( bool quiet );
+  buff_t* add_invalidate( cache_e );
+  buff_t* set_default_value( double );
+  buff_t* set_reverse( bool );
+  buff_t* set_activated( bool );
+  buff_t* set_can_cancel( bool cc );
+  buff_t* set_tick_behavior( buff_tick_behavior_e );
+  buff_t* set_tick_callback( buff_tick_callback_t );
+  buff_t* set_tick_time_callback( buff_tick_time_callback_t );
+  buff_t* set_affects_regen( bool state );
+  buff_t* set_refresh_behavior( buff_refresh_behavior_e );
+  buff_t* set_refresh_duration_callback( buff_refresh_duration_callback_t );
+  buff_t* set_tick_zero( bool v )
+  { tick_zero = v; return this; }
+  buff_t* set_tick_time_behavior( buff_tick_time_e b )
+  { tick_time_behavior = b; return this; }
+
 };
 
 struct stat_buff_t : public buff_t
@@ -1105,8 +1116,6 @@ public:
 private:
   void haste_adjusted( bool is_changed );
 };
-
-using aura_t = buff_t ;
 
 /**
  * @brief Creates a buff

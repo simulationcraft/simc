@@ -7209,15 +7209,17 @@ struct windwalking_driver_t: public monk_buff_t < buff_t >
 {
   double movement_increase;
   windwalking_driver_t( monk_t& p, const std::string& n, const spell_data_t* s ):
-    base_t( p, buff_creator_t( &p, n, s ).tick_callback( [&p, this]( buff_t* /* buff */, int /* total_ticks */, timespan_t /* tick_time */ )
-  {
-    range::for_each( p.windwalking_aura -> target_list(), [&p, this]( player_t* target )
-    {
-      target -> buffs.windwalking_movement_aura -> trigger( 1, ( movement_increase + ( p.legendary.march_of_the_legion ? p.legendary.march_of_the_legion -> effectN( 1 ).percent() : 0.0 ) ), 1, timespan_t::from_seconds( 10 ) );
-    }
-  ); } ) ),
+    base_t( p, buff_creator_t(&p, n, s ) ),
     movement_increase( 0 )
   {
+    set_tick_callback( [&p, this]( buff_t*, int /* total_ticks */, timespan_t /* tick_time */ ) {
+      range::for_each( p.windwalking_aura->target_list(), [&p, this]( player_t* target ) {
+        target->buffs.windwalking_movement_aura->trigger(
+            1, ( movement_increase +
+                 ( p.legendary.march_of_the_legion ? p.legendary.march_of_the_legion->effectN( 1 ).percent() : 0.0 ) ),
+            1, timespan_t::from_seconds( 10 ) );
+      } );
+    } );
     cooldown -> duration = timespan_t::zero();
     buff_duration = timespan_t::zero();
     buff_period = timespan_t::from_seconds( 1 );

@@ -7504,7 +7504,6 @@ void death_knight_t::create_buffs()
     .add_invalidate( CACHE_ATTACK_SPEED )
     .trigger_spell( talent.unholy_frenzy )
     .default_value( 1.0 / ( 1.0 + find_spell( 207290 ) -> effectN( 1 ).percent() ) )
-    .refresh_behavior( BUFF_REFRESH_CUSTOM )
     // Unholy Frenzy duration is hard capped at 10 seconds
     .refresh_duration_callback( []( const buff_t* b, const timespan_t& duration ) {
       timespan_t total_duration = b -> remains() + duration;
