@@ -955,8 +955,7 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* d
 
   debuff.razorice        = buff_creator_t( *this, "razorice", death_knight -> find_spell( 51714 ) )
                            .period( timespan_t::zero() );
-  debuff.festering_wound = buff_creator_t( *this, "festering_wound" )
-                           .spell( death_knight -> find_spell( 194310 ) )
+  debuff.festering_wound = buff_creator_t( *this, "festering_wound", death_knight -> find_spell( 194310 ) )
                            .trigger_spell( death_knight -> spec.festering_wound )
                            .cd( timespan_t::zero() ); // Handled by trigger_festering_wound
   debuff.mark_of_blood   = buff_creator_t( *this, "mark_of_blood", death_knight -> talent.mark_of_blood )
@@ -965,8 +964,7 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* d
                            .cd( timespan_t::zero() ); // Handled by the action
   debuff.blood_mirror = buff_creator_t( *this, "blood_mirror", death_knight -> talent.blood_mirror )
                         .cd( timespan_t::zero() ); // Handled by the action
-  debuff.scourge_of_worlds = buff_creator_t( *this, "scourge_of_worlds" )
-    .spell( death_knight -> artifact.scourge_of_worlds.data().effectN( 1 ).trigger() )
+  debuff.scourge_of_worlds = buff_creator_t( *this, "scourge_of_worlds", death_knight -> artifact.scourge_of_worlds.data().effectN( 1 ).trigger() )
     .trigger_spell( death_knight -> artifact.scourge_of_worlds )
     .default_value( death_knight -> artifact.scourge_of_worlds.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() );
   debuff.death = buff_creator_t( *this, "death", death_knight -> find_spell( 191730 ) )
@@ -6116,9 +6114,8 @@ struct remorseless_winter_buff_t : public buff_t
   remorseless_winter_damage_t* damage; // (AOE) damage that ticks every second
 
   remorseless_winter_buff_t( death_knight_t* p ) :
-    buff_t( buff_creator_t( p, "remorseless_winter" )
+    buff_t( buff_creator_t( p, "remorseless_winter", p -> spec.remorseless_winter )
       .cd( timespan_t::zero() ) // Controlled by the action
-      .spell( p -> spec.remorseless_winter )
       .refresh_behavior( BUFF_REFRESH_DURATION )
       .tick_callback( [ this ]( buff_t* /* buff */, int /* total_ticks */, timespan_t /* tick_time */ ) {
         damage -> execute();
@@ -6165,8 +6162,7 @@ struct frozen_soul_buff_t : public buff_t
   frozen_soul_t* damage;
 
   frozen_soul_buff_t( death_knight_t* p ) :
-    buff_t( buff_creator_t( p, "frozen_soul" )
-      .spell( p -> find_spell( 189184 ) )
+    buff_t( buff_creator_t( p, "frozen_soul", p -> find_spell( 189184 ) )
       .max_stack( p -> artifact.frozen_soul.rank()
         ? p -> artifact.frozen_soul.data().effectN( 1 ).base_value()
         : 1 )
@@ -7440,8 +7436,7 @@ void death_knight_t::create_buffs()
                                 resources.initial_multiplier[ RESOURCE_HEALTH ] *= 1.0 + new_;
                                 recalculate_resource_max( RESOURCE_HEALTH );
                               } : buff_stack_change_callback_t() );
-  buffs.crimson_scourge     = buff_creator_t( this, "crimson_scourge" )
-                              .spell( find_spell( 81141 ) )
+  buffs.crimson_scourge     = buff_creator_t( this, "crimson_scourge", find_spell( 81141 ) )
                               .trigger_spell( spec.crimson_scourge );
   buffs.dancing_rune_weapon = buff_creator_t( this, "dancing_rune_weapon", find_spell( 81256 ) )
                               .duration( find_spell( 81256 ) -> duration() + artifact.dance_of_darkness.time_value() )
@@ -7482,8 +7477,7 @@ void death_knight_t::create_buffs()
   //buffs.runic_corruption    = buff_creator_t( this, "runic_corruption", find_spell( 51460 ) )
   //                            .chance( talent.runic_corruption -> proc_chance() );
   buffs.runic_corruption    = new runic_corruption_buff_t( this );
-  buffs.sudden_doom         = buff_creator_t( this, "sudden_doom" )
-                              .spell( spec.sudden_doom -> effectN( 1 ).trigger() )
+  buffs.sudden_doom         = buff_creator_t( this, "sudden_doom", spec.sudden_doom -> effectN( 1 ).trigger() )
                               .rppm_mod( 1.0 + artifact.double_doom.data().effectN( 2 ).percent() )
                               .rppm_scale( RPPM_ATTACK_SPEED ) // 2016-08-08: Hotfixed, not in spell data
                               .max_stack( specialization() == DEATH_KNIGHT_UNHOLY
@@ -7546,8 +7540,7 @@ void death_knight_t::create_buffs()
   buffs.antimagic_barrier = new antimagic_barrier_buff_t( this );
   buffs.tombstone = absorb_buff_creator_t( this, "tombstone", talent.tombstone )
     .cd( timespan_t::zero() ); // Handled by the action
-  buffs.t19oh_8pc = stat_buff_creator_t( this, "deathlords_might" )
-    .spell( sets.set( specialization(), T19OH, B8 ) -> effectN( 1 ).trigger() )
+  buffs.t19oh_8pc = stat_buff_creator_t( this, "deathlords_might", sets.set( specialization(), T19OH, B8 ) -> effectN( 1 ).trigger() )
     .trigger_spell( sets.set( specialization(), T19OH, B8 ) );
 
   buffs.frozen_pulse = buff_creator_t( this, "frozen_pulse", talent.frozen_pulse );

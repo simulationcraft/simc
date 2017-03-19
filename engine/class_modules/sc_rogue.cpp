@@ -6306,8 +6306,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   debuffs.wound_poison = new buffs::wound_poison_t( *this );
   debuffs.crippling_poison = new buffs::crippling_poison_t( *this );
   debuffs.leeching_poison = new buffs::leeching_poison_t( *this );
-  debuffs.blood_of_the_assassinated = buff_creator_t( *this, "blood_of_the_assassinated" )
-    .spell( source -> artifact.blood_of_the_assassinated.data().effectN( 1 ).trigger() )
+  debuffs.blood_of_the_assassinated = buff_creator_t( *this, "blood_of_the_assassinated", source -> artifact.blood_of_the_assassinated.data().effectN( 1 ).trigger() )
     .trigger_spell( source -> artifact.blood_of_the_assassinated )
     .default_value( source -> artifact.blood_of_the_assassinated.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() );
   debuffs.garrote = new buffs::proxy_garrote_t( *this );
@@ -7664,12 +7663,10 @@ void rogue_t::create_buffs()
 
   // Tiers
   // T19 Outdoor
-  buffs.t19oh_8pc                          = stat_buff_creator_t( this, "shadowstalkers_avidity" )
-                                             .spell( sets.set( specialization(), T19OH, B8 ) -> effectN( 1 ).trigger() )
+  buffs.t19oh_8pc                          = stat_buff_creator_t( this, "shadowstalkers_avidity", sets.set( specialization(), T19OH, B8 ) -> effectN( 1 ).trigger() )
                                              .trigger_spell( sets.set( specialization(), T19OH, B8 ) );
   // T19 Raid
-  buffs.t19_4pc_outlaw                     = buff_creator_t( this, "swordplay" )
-                                             .spell( sets.set( ROGUE_OUTLAW, T19, B4 ) -> effectN( 1 ).trigger() )
+  buffs.t19_4pc_outlaw                     = buff_creator_t( this, "swordplay", sets.set( ROGUE_OUTLAW, T19, B4 ) -> effectN( 1 ).trigger() )
                                              .trigger_spell( sets.set( ROGUE_OUTLAW, T19, B4 ) );
   // T20
 

@@ -7239,24 +7239,20 @@ monk( *p )
 {
   if ( p -> specialization() == MONK_WINDWALKER )
   {
-    debuff.mark_of_the_crane = buff_creator_t( *this, "mark_of_the_crane" )
-      .spell( p -> passives.mark_of_the_crane )
+    debuff.mark_of_the_crane = buff_creator_t( *this, "mark_of_the_crane", p -> passives.mark_of_the_crane )
       .default_value( p -> passives.mark_of_the_crane -> effectN( 1 ).percent() );
 
-    debuff.gale_burst = buff_creator_t( *this, "gale_burst" )
-      .spell( p -> passives.gale_burst )
+    debuff.gale_burst = buff_creator_t( *this, "gale_burst", p -> passives.gale_burst )
       .default_value( 0 )
       .quiet( true );
-    debuff.touch_of_karma = buff_creator_t( *this, "touch_of_karma" )
-      .spell( p -> spec.touch_of_karma )
+    debuff.touch_of_karma = buff_creator_t( *this, "touch_of_karma", p -> spec.touch_of_karma )
       // set the percent of the max hp as the default value.
       .default_value( p -> spec.touch_of_karma -> effectN( 3 ).percent() );
   }
 
   if ( p -> specialization() == MONK_BREWMASTER )
   {
-    debuff.keg_smash = buff_creator_t( *this, "keg_smash" )
-      .spell( p -> spec.keg_smash )
+    debuff.keg_smash = buff_creator_t( *this, "keg_smash", p -> spec.keg_smash )
       .default_value( p -> spec.keg_smash -> effectN( 2 ).percent() );
   }
 
@@ -7947,8 +7943,7 @@ void monk_t::create_buffs()
   buff.diffuse_magic = buff_creator_t( this, "diffuse_magic", talent.diffuse_magic )
     .default_value( talent.diffuse_magic -> effectN( 1 ).percent() );
 
-  buff.tier19_oh_8pc = stat_buff_creator_t( this, "grandmasters_wisdom" )
-    .spell( sets.set( specialization(), T19OH, B8 ) -> effectN( 1 ).trigger() );
+  buff.tier19_oh_8pc = stat_buff_creator_t( this, "grandmasters_wisdom", sets.set( specialization(), T19OH, B8 ) -> effectN( 1 ).trigger() );
 
   // Brewmaster
   buff.bladed_armor = buff_creator_t( this, "bladed_armor", spec.bladed_armor )

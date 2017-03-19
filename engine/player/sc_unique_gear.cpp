@@ -419,8 +419,8 @@ void enchants::colossus( special_effect_t& effect )
 
   absorb_buff_t* buff =
       absorb_buff_creator_t( effect.item -> player,
-                             tokenized_name( spell ) + suffix( effect.item ) )
-      .spell( spell )
+                             tokenized_name( spell ) + suffix( effect.item ),
+                             spell )
       .source( effect.item -> player -> get_stats( tokenized_name( spell ) + suffix( effect.item ) ) )
       .activated( false );
 

@@ -689,8 +689,6 @@ struct buff_creator_t : public buff_creator_helper_t<buff_creator_t>
 public:
   buff_creator_t( actor_pair_t q, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* item = nullptr ) :
     base_t( q, name, s, item ) {}
-  buff_creator_t( actor_pair_t q, uint32_t id, const std::string& name, const item_t* item = nullptr ) :
-    base_t( q, id, name, item ) {}
   buff_creator_t( sim_t* sim, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* item = nullptr ) :
     base_t( sim, name, s, item ) {}
 
@@ -1026,6 +1024,9 @@ public:
   virtual buff_t* set_quiet( bool quiet );
   virtual buff_t* add_invalidate( cache_e );
   virtual buff_t* set_default_value( double );
+  virtual buff_t* set_reverse( bool );
+  virtual buff_t* set_activated( bool );
+  virtual buff_t* set_can_cancel( bool cc );
 };
 
 struct stat_buff_t : public buff_t

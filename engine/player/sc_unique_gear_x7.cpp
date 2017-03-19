@@ -3850,8 +3850,7 @@ void consumable::potion_of_the_old_war( special_effect_t& effect )
   proc -> initialize();
   proc -> deactivate();
 
-  effect.custom_buff = buff_creator_t( effect.player, effect.name() )
-    .spell( effect.driver() )
+  effect.custom_buff = buff_creator_t( effect.player, effect.name(), effect.driver() )
     .stack_change_callback( [ proc ]( buff_t*, int, int new_ ) {
       if ( new_ == 1 ) proc -> activate();
       else             proc -> deactivate();
@@ -3902,8 +3901,7 @@ void consumable::potion_of_deadly_grace( special_effect_t& effect )
     duration += timespan_t::from_seconds( 5 );
   }
 
-  effect.custom_buff = buff_creator_t( effect.player, effect.name() )
-    .spell( effect.driver() )
+  effect.custom_buff = buff_creator_t( effect.player, effect.name(), effect.driver() )
     .stack_change_callback( [ proc ]( buff_t*, int, int new_ ) {
       if ( new_ == 1 ) proc -> activate();
       else             proc -> deactivate();

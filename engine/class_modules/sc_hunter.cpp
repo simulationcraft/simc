@@ -1166,7 +1166,7 @@ public:
     if ( o() -> find_spell( 118459 ) -> affected_by ( o() -> specs.beast_mastery_hunter -> effectN( 1 ) ) )
       cleave_value *= 1.0 + o() -> specs.beast_mastery_hunter -> effectN( 1 ).percent();
     buffs.beast_cleave = 
-      buff_creator_t( this, 118455, "beast_cleave" )
+      buff_creator_t( this, "beast_cleave", find_spell(118455) )
         .activated( true )
         .default_value( cleave_value );
 
@@ -1192,7 +1192,7 @@ public:
         .duration( timespan_t::from_seconds( 30.0 ) );
 
     buffs.tier17_4pc_bm = 
-      buff_creator_t( this, 178875, "tier17_4pc_bm" )
+      buff_creator_t( this, "tier17_4pc_bm", find_spell(178875) )
         .default_value( owner -> find_spell( 178875 ) -> effectN( 2 ).percent() )
         .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
@@ -1202,7 +1202,7 @@ public:
         .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
     buffs.tier19_2pc_bm =
-      buff_creator_t( this, 211183, "tier19_2pc_bm" )
+      buff_creator_t( this, "tier19_2pc_bm", find_spell(211183) )
         .default_value( owner -> find_spell( 211183 ) -> effectN( 2 ).percent() )
         .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
@@ -1670,7 +1670,7 @@ struct hati_t: public hunter_secondary_pet_t
     if ( o() -> find_spell( 118459 ) -> affected_by ( o() -> specs.beast_mastery_hunter -> effectN( 1 ) ) )
       cleave_value *= 1.0 + o() -> specs.beast_mastery_hunter -> effectN( 1 ).percent();
     buffs.beast_cleave = 
-      buff_creator_t( this, 118455, "beast_cleave" )
+      buff_creator_t( this, "beast_cleave", find_spell(118455) )
         .activated( true )
         .default_value( cleave_value );
   }
@@ -5490,7 +5490,7 @@ struct hunters_mark_exists_buff_t: public buff_t
   proc_t* wasted;
 
   hunters_mark_exists_buff_t( hunter_t* p ):
-    buff_t( buff_creator_t( p, 185365, "hunters_mark_exists" ).quiet( true ) )
+    buff_t( buff_creator_t( p, "hunters_mark_exists", p -> find_spell(185365) ).quiet( true ) )
   {
     wasted = p -> get_proc( "wasted_hunters_mark" );
   }
@@ -5521,33 +5521,29 @@ dots( dots_t() )
   dots.on_the_trail = target -> get_dot( "on_the_trail", p );
 
   debuffs.hunters_mark = 
-    buff_creator_t( *this, "hunters_mark" )
-      .spell( p -> find_spell( 185365 ) );
+    buff_creator_t( *this, "hunters_mark", p -> find_spell( 185365 ) );
 
   debuffs.vulnerable =
-    buff_creator_t( *this, 187131, "vulnerability" )
+    buff_creator_t( *this, "vulnerability", p -> find_spell(187131) )
       .default_value( p -> find_spell( 187131 ) -> effectN( 2 ).percent() )
       .refresh_behavior( BUFF_REFRESH_DURATION );
   if ( p -> artifacts.unerring_arrows.rank() )
     debuffs.vulnerable -> default_value += p -> artifacts.unerring_arrows.percent();
 
   debuffs.true_aim = 
-    buff_creator_t( *this, "true_aim" )
-        .spell( p -> find_spell( 199803 ) )
+    buff_creator_t( *this, "true_aim", p -> find_spell( 199803 ) )
         .default_value( p -> find_spell( 199803 ) 
                           -> effectN( 1 )
                             .percent() );
 
   debuffs.t18_2pc_open_wounds = 
-    buff_creator_t( *this, "open_wounds" )
-        .spell( p -> find_spell( 188400 ) )
+    buff_creator_t( *this, "open_wounds", p -> find_spell( 188400 ) )
         .default_value( p -> find_spell( 188400 ) 
                           -> effectN( 1 )
                             .percent() );
 
   debuffs.mark_of_helbrine = 
-    buff_creator_t( *this, "mark_of_helbrine" )
-        .spell( p -> find_spell( 213156 ) )
+    buff_creator_t( *this, "mark_of_helbrine", p -> find_spell( 213156 ) )
         .default_value( p -> find_spell( 213154 ) 
                           -> effectN( 1 )
                             .percent() );
@@ -5942,7 +5938,7 @@ void hunter_t::create_buffs()
   // Beast Mastery
 
   buffs.aspect_of_the_wild           
-    = buff_creator_t( this, 193530, "aspect_of_the_wild" )
+    = buff_creator_t( this, "aspect_of_the_wild", find_spell(193530) )
       .cd( timespan_t::zero() )
       .add_invalidate( CACHE_CRIT_CHANCE )
       .default_value( find_spell( 193530 ) -> effectN( 1 ).percent() )
@@ -5992,7 +5988,7 @@ void hunter_t::create_buffs()
   for ( size_t i = 0; i < buffs.dire_beast.size(); i++ )
   {
     buffs.dire_beast[ i ] =
-      buff_creator_t( this, 120694, "dire_beast_" + util::to_string( i + 1 ) )
+      buff_creator_t( this, "dire_beast_" + util::to_string( i + 1 ), find_spell(120694) )
         .default_value( dire_beast_value )
         .tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
                           resource_gain( RESOURCE_FOCUS, b -> default_value, gains.dire_beast );
@@ -6000,7 +5996,7 @@ void hunter_t::create_buffs()
   }
 
   buffs.t18_2p_dire_longevity = 
-    buff_creator_t( this, 215911, "dire_longevity" )
+    buff_creator_t( this, "dire_longevity", find_spell(215911) )
       .default_value( find_spell( 215911 ) 
                    -> effectN( 1 )
                      .base_value() )
@@ -6041,7 +6037,7 @@ void hunter_t::create_buffs()
       .max_stack( 2 );
 
   buffs.marking_targets = 
-    buff_creator_t( this, 223138, "marking_targets" );
+    buff_creator_t( this, "marking_targets", find_spell(223138) );
 
   buffs.pre_steady_focus = 
     buff_creator_t( this, "pre_steady_focus" )
@@ -6049,17 +6045,17 @@ void hunter_t::create_buffs()
       .quiet( true );
 
   buffs.rapid_killing = 
-    buff_creator_t( this, 191342, "rapid_killing" )
+    buff_creator_t( this, "rapid_killing", find_spell(191342) )
       .default_value( find_spell( 191342 ) 
                    -> effectN( 1 )
                      .percent() );
 
   buffs.steady_focus 
-    = buff_creator_t( this, 193534, "steady_focus" )
+    = buff_creator_t( this, "steady_focus", find_spell(193534) )
         .chance( talents.steady_focus -> ok() );
 
   buffs.t18_2p_rapid_fire = 
-    buff_creator_t( this, 188202, "rapid_fire" )
+    buff_creator_t( this, "rapid_fire", find_spell(188202) )
       .add_invalidate( CACHE_HASTE )
       .chance( sets.set( HUNTER_MARKSMANSHIP, T18, B2 ) 
             -> proc_chance() )
@@ -6068,7 +6064,7 @@ void hunter_t::create_buffs()
                      .percent() );
 
   buffs.trick_shot = 
-    buff_creator_t( this, 227272, "trick_shot" )
+    buff_creator_t( this, "trick_shot", find_spell(227272) )
       .default_value( find_spell( 227272 ) 
                    -> effectN( 1 )
                      .percent() );
@@ -6094,7 +6090,7 @@ void hunter_t::create_buffs()
   }
 
   buffs.fury_of_the_eagle = 
-    buff_creator_t( this, 203415, "fury_of_the_eagle" )
+    buff_creator_t( this, "fury_of_the_eagle", find_spell(203415) )
       .cd( timespan_t::zero() )
       .max_stack( 6 );
 
@@ -6108,7 +6104,7 @@ void hunter_t::create_buffs()
       .max_stack( 4 );
 
   buffs.mongoose_fury = 
-    buff_creator_t( this, 190931, "mongoose_fury" )
+    buff_creator_t( this, "mongoose_fury", find_spell(190931) )
       .default_value( find_spell( 190931 ) 
                    -> effectN( 1 )
                      .percent() )
@@ -6117,7 +6113,7 @@ void hunter_t::create_buffs()
       .max_stack( 6 );
 
   buffs.sentinels_sight = 
-    buff_creator_t( this, 208913, "sentinels_sight" )
+    buff_creator_t( this, "sentinels_sight", find_spell(208913) )
       .default_value( find_spell( 208913 ) 
                    -> effectN( 1 )
                      .percent() )
@@ -6131,16 +6127,16 @@ void hunter_t::create_buffs()
                       } );
 
   buffs.t19_4p_mongoose_power =
-    buff_creator_t( this, 211362, "mongoose_power" )
+    buff_creator_t( this, "mongoose_power", find_spell( 211362 ) )
       .default_value( find_spell( 211362 ) -> effectN( 1 ).percent() )
       .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buffs.butchers_bone_apron =
-    buff_creator_t( this, 236446, "butchers_bone_apron" )
+    buff_creator_t( this, "butchers_bone_apron", find_spell( 236446 ) )
       .default_value( find_spell( 236446 ) -> effectN( 1 ).percent() );
 
   buffs.gyroscopic_stabilization =
-    buff_creator_t( this, 235712, "gyroscopic_stabilization" )
+    buff_creator_t( this, "gyroscopic_stabilization", find_spell( 235712 ) )
       .default_value( find_spell( 235712 ) -> effectN( 2 ).percent() );
 
   buffs.sephuzs_secret =

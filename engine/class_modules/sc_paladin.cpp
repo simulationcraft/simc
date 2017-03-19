@@ -4523,9 +4523,9 @@ void paladin_t::create_buffs()
   // Prot
   buffs.guardian_of_ancient_kings      = buff_creator_t( this, "guardian_of_ancient_kings", find_specialization_spell( "Guardian of Ancient Kings" ) )
                                           .cd( timespan_t::zero() ); // let the ability handle the CD
-  buffs.grand_crusader                 = buff_creator_t( this, "grand_crusader" ).spell( passives.grand_crusader -> effectN( 1 ).trigger() )
+  buffs.grand_crusader                 = buff_creator_t( this, "grand_crusader", passives.grand_crusader -> effectN( 1 ).trigger() )
                                           .chance( passives.grand_crusader -> proc_chance() + ( 0.0 + talents.first_avenger -> effectN( 2 ).percent() ) );
-  buffs.shield_of_the_righteous        = buff_creator_t( this, "shield_of_the_righteous" ).spell( find_spell( 132403 ) );
+  buffs.shield_of_the_righteous        = buff_creator_t( this, "shield_of_the_righteous", find_spell( 132403 ) );
   buffs.ardent_defender                = new buffs::ardent_defender_buff_t( this );
   buffs.painful_truths                 = buff_creator_t( this, "painful_truths", find_spell( 209332 ) );
   buffs.aegis_of_light                 = buff_creator_t( this, "aegis_of_light", find_talent_spell( "Aegis of Light" ) );
@@ -4541,14 +4541,14 @@ void paladin_t::create_buffs()
                                          .max_stack( 1 ); // not sure why data says 3 stacks
 
   // Ret
-  buffs.zeal                           = buff_creator_t( this, "zeal" ).spell( find_spell( 217020 ) );
-  buffs.seal_of_light                  = buff_creator_t( this, "seal_of_light" ).spell( find_spell( 202273 ) );
-  buffs.the_fires_of_justice           = buff_creator_t( this, "the_fires_of_justice" ).spell( find_spell( 209785 ) );
-  buffs.blade_of_wrath               = buff_creator_t( this, "blade_of_wrath" ).spell( find_spell( 231843 ) );
-  buffs.divine_purpose                 = buff_creator_t( this, "divine_purpose" ).spell( find_spell( 223819 ) );
+  buffs.zeal                           = buff_creator_t( this, "zeal", find_spell( 217020 ) );
+  buffs.seal_of_light                  = buff_creator_t( this, "seal_of_light", find_spell( 202273 ) );
+  buffs.the_fires_of_justice           = buff_creator_t( this, "the_fires_of_justice", find_spell( 209785 ) );
+  buffs.blade_of_wrath               = buff_creator_t( this, "blade_of_wrath", find_spell( 231843 ) );
+  buffs.divine_purpose                 = buff_creator_t( this, "divine_purpose", find_spell( 223819 ) );
   buffs.divine_steed                   = buff_creator_t( this, "divine_steed", find_spell( "Divine Steed" ) )
                                           .duration( timespan_t::from_seconds( 3.0 ) ).chance( 1.0 ).default_value( 1.0 ); // TODO: change this to spellid 221883 & see if that automatically captures details
-  buffs.whisper_of_the_nathrezim       = buff_creator_t( this, "whisper_of_the_nathrezim" ).spell( find_spell( 207635 ) );
+  buffs.whisper_of_the_nathrezim       = buff_creator_t( this, "whisper_of_the_nathrezim", find_spell( 207635 ) );
   buffs.liadrins_fury_unleashed        = new buffs::liadrins_fury_unleashed_t( this );
   buffs.shield_of_vengeance            = new buffs::shield_of_vengeance_buff_t( this );
   buffs.righteous_verdict              = buff_creator_t( this, "righteous_verdict", find_spell( 238996 ) );

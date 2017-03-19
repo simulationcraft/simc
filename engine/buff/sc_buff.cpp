@@ -302,7 +302,7 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
 
   // Set Reverse flag
   if ( params._reverse != -1 )
-    reverse = params._reverse != 0;
+    set_reverse( params._reverse );
 
   // Set Quiet flag
   if ( params._quiet != -1 )
@@ -310,10 +310,10 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
 
   // Set Activated flag
   if ( params._activated != -1 )
-    activated = params._activated != 0;
+    set_activated( params._activated );
 
   if ( params._can_cancel != -1 )
-    can_cancel = params._can_cancel != 0;
+    set_can_cancel( params._can_cancel );
 
   if ( params._period >= timespan_t::zero() )
     buff_period = params._period;
@@ -539,12 +539,6 @@ buff_t* buff_t::set_cooldown( timespan_t duration )
 //  return this;
 //}
 
-buff_t* buff_t::set_quiet( bool arg_quiet )
-{
-  quiet = arg_quiet;
-  return this;
-}
-
 buff_t* buff_t::add_invalidate( cache_e c )
 {
   if ( c == CACHE_NONE )
@@ -566,6 +560,30 @@ buff_t* buff_t::set_default_value( double value )
   return this;
 }
 
+buff_t* buff_t::set_reverse( bool r )
+{
+  reverse = r;
+  return this;
+}
+
+buff_t* buff_t::set_quiet( bool q)
+{
+  quiet = q;
+  return this;
+}
+
+buff_t* buff_t::set_activated( bool a )
+{
+ activated = a;
+ return this;
+}
+
+buff_t* buff_t::set_can_cancel( bool cc )
+{
+
+  can_cancel = cc;
+  return this;
+}
 // buff_t::datacollection_begin =============================================
 
 void buff_t::datacollection_begin()

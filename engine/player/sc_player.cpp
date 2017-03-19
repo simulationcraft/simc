@@ -2694,8 +2694,7 @@ void player_t::create_buffs()
       // Racials
       buffs.berserking                = haste_buff_creator_t( this, "berserking", find_spell( 26297 ) ).add_invalidate( CACHE_HASTE );
       buffs.stoneform                 = buff_creator_t( this, "stoneform", find_spell( 65116 ) );
-      buffs.blood_fury                = stat_buff_creator_t( this, "blood_fury" )
-                                        .spell( find_racial_spell( "Blood Fury" ) )
+      buffs.blood_fury                = stat_buff_creator_t( this, "blood_fury", find_racial_spell( "Blood Fury" ) )
                                         .add_invalidate( CACHE_SPELL_POWER )
                                         .add_invalidate( CACHE_ATTACK_POWER );
       buffs.fortitude                 = buff_creator_t( this, "fortitude", find_spell( 137593 ) ).activated( false );
@@ -2745,16 +2744,13 @@ void player_t::create_buffs()
     }
   }
 
-  buffs.courageous_primal_diamond_lucidity = buff_creator_t( this, "lucidity" )
-                                             .spell( find_spell( 137288 ) );
+  buffs.courageous_primal_diamond_lucidity = buff_creator_t( this, "lucidity", find_spell( 137288 ) );
 
-  buffs.body_and_soul = buff_creator_t( this, "body_and_soul" )
-                        .spell( find_spell( 64129 ) )
+  buffs.body_and_soul = buff_creator_t( this, "body_and_soul", find_spell( 64129 ) )
                         .max_stack( 1 )
                         .duration( timespan_t::from_seconds( 4.0 ) );
 
-  buffs.angelic_feather = buff_creator_t( this, "angelic_feather" )
-                          .spell( find_spell( 121557 ) )
+  buffs.angelic_feather = buff_creator_t( this, "angelic_feather", find_spell( 121557 ) )
                           .max_stack( 1 )
                           .duration( timespan_t::from_seconds( 6.0 ) );
 

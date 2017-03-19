@@ -5744,8 +5744,7 @@ struct flametongue_buff_t : public buff_t
   shaman_t* p;
 
   flametongue_buff_t( shaman_t* p ) :
-    buff_t( buff_creator_t( p, "flametongue" )
-      .spell( p -> find_specialization_spell( "Flametongue" ) -> effectN( 3 ).trigger() )
+    buff_t( buff_creator_t( p, "flametongue", p -> find_specialization_spell( "Flametongue" ) -> effectN( 3 ).trigger() )
       .refresh_behavior( BUFF_REFRESH_PANDEMIC ) ),
     p( p )
   { }
@@ -6834,14 +6833,12 @@ void shaman_t::create_buffs()
   buff.hot_hand = buff_creator_t( this, "hot_hand", talent.hot_hand -> effectN( 1 ).trigger() )
                   .trigger_spell( talent.hot_hand );
 
-  buff.t19_oh_8pc = stat_buff_creator_t( this, "might_of_the_maelstrom" )
-    .spell( sets.set( specialization(), T19OH, B8 ) -> effectN( 1 ).trigger() )
+  buff.t19_oh_8pc = stat_buff_creator_t( this, "might_of_the_maelstrom", sets.set( specialization(), T19OH, B8 ) -> effectN( 1 ).trigger() )
     .trigger_spell( sets.set( specialization(), T19OH, B8 ) );
   buff.elemental_mastery = haste_buff_creator_t( this, "elemental_mastery", talent.elemental_mastery )
                            .default_value( 1.0 / ( 1.0 + talent.elemental_mastery -> effectN( 1 ).percent() ) )
                            .cd( timespan_t::zero() ); // Handled by the action
-  buff.t18_4pc_enhancement = buff_creator_t( this, "natures_reprisal" )
-    .spell( sets.set( SHAMAN_ENHANCEMENT, T18, B4 ) -> effectN( 1 ).trigger() )
+  buff.t18_4pc_enhancement = buff_creator_t( this, "natures_reprisal", sets.set( SHAMAN_ENHANCEMENT, T18, B4 ) -> effectN( 1 ).trigger() )
     .trigger_spell( sets.set( SHAMAN_ENHANCEMENT, T18, B4 ) )
     .default_value( sets.set( SHAMAN_ENHANCEMENT, T18, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
