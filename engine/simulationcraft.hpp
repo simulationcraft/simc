@@ -827,6 +827,7 @@ public:
   // static values
 private: // private because changing max_stacks requires resizing some stack-dependant vectors
   int _max_stack;
+  const spell_data_t* trigger_data;
 public:
   double default_value;
   bool activated, reactable;
@@ -1024,6 +1025,7 @@ public:
   //virtual buff_t* set_chance( double chance );
   virtual buff_t* set_quiet( bool quiet );
   virtual buff_t* add_invalidate( cache_e );
+  virtual buff_t* set_default_value( double );
 };
 
 struct stat_buff_t : public buff_t

@@ -1565,9 +1565,9 @@ struct dire_critter_t: public hunter_secondary_pet_t
     hunter_secondary_pet_t::create_buffs();
 
     buffs.bestial_wrath = 
-      buff_creator_t( this, 211183, "bestial_wrath" )
-        .default_value( find_spell( 211183 ) -> effectN( 1 ).percent() )
-        .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+      make_buff( this, "bestial_wrath", find_spell( 211183 ) )
+        -> set_default_value( find_spell( 211183 ) -> effectN( 1 ).percent() )
+        -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 };
 

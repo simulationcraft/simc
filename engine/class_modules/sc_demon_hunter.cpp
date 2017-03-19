@@ -5376,9 +5376,8 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
     // Vengeance
     dots.fiery_brand = target->get_dot("fiery_brand", &p);
     dots.sigil_of_flame = target->get_dot("sigil_of_flame", &p);
-    debuffs.frailty =
-      buff_creator_t(target, "frailty", p.find_spell(224509))
-      .default_value(p.find_spell(224509)->effectN(1).percent());
+    debuffs.frailty = make_buff(target, "frailty", p.find_spell(224509))
+      -> set_default_value(p.find_spell(224509)->effectN(1).percent());
   }
 }
 

@@ -175,6 +175,7 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   cooldown(),
   rppm( nullptr ),
   _max_stack( params._max_stack ),
+  trigger_data( s_data ),
   default_value( DEFAULT_VALUE() ),
   activated( true ),
   reactable( false ),
@@ -240,7 +241,6 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
 
   // If the params specifies a trigger spell (even if it's not found), use it instead of the actual
   // spell data of the buff.
-  const spell_data_t* trigger_data = s_data;
   if ( params._trigger_data != spell_data_t::nil() )
   {
     trigger_data = params._trigger_data;
@@ -298,7 +298,7 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
     }
   }
 
-  default_value = params._default_value;
+  set_default_value( params._default_value );
 
   // Set Reverse flag
   if ( params._reverse != -1 )
@@ -557,6 +557,12 @@ buff_t* buff_t::add_invalidate( cache_e c )
     invalidate_list.push_back( c );
     requires_invalidation = true;
   }
+  return this;
+}
+
+buff_t* buff_t::set_default_value( double value )
+{
+  default_value = value;
   return this;
 }
 

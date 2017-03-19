@@ -7853,8 +7853,8 @@ void mage_t::create_buffs()
                                    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   // Legendary
-  buffs.cord_of_infinity   = buff_creator_t( this, "cord_of_infinity", find_spell( 209316 ) )
-                                             .default_value( find_spell( 209311 ) -> effectN( 1 ).percent() );
+  buffs.cord_of_infinity   = make_buff( this, "cord_of_infinity", find_spell( 209316 ) )
+                                              -> set_default_value( find_spell( 209311 ) -> effectN( 1 ).percent() );
   buffs.magtheridons_might = buff_creator_t( this, "magtheridons_might", find_spell( 214404 ) );
   buffs.zannesu_journey    = buff_creator_t( this, "zannesu_journey", find_spell( 226852 ) );
   buffs.lady_vashjs_grasp  = new buffs::lady_vashjs_grasp_t( this );
