@@ -315,33 +315,7 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   if ( params._can_cancel != -1 )
     set_can_cancel( params._can_cancel );
 
-  if ( params._period >= timespan_t::zero() )
-    buff_period = params._period;
-  else
-  {
-    for ( size_t i = 1; i <= s_data -> effect_count(); i++ )
-    {
-      const spelleffect_data_t& e = s_data -> effectN( i );
-      if ( ! e.ok() || e.type() != E_APPLY_AURA )
-        continue;
-
-      switch ( e.subtype() )
-      {
-        case A_PERIODIC_ENERGIZE:
-        case A_PERIODIC_TRIGGER_SPELL_WITH_VALUE:
-        case A_PERIODIC_HEALTH_FUNNEL:
-        case A_PERIODIC_MANA_LEECH:
-        case A_PERIODIC_DAMAGE_PERCENT:
-        case A_PERIODIC_DUMMY:
-        case A_PERIODIC_TRIGGER_SPELL:
-        {
-          buff_period = e.period();
-          break;
-        }
-        default: break;
-      }
-    }
-  }
+  set_period( params._period );
 
   if ( params._behavior != BUFF_TICK_NONE )
     tick_behavior = params._behavior;
@@ -532,6 +506,41 @@ buff_t* buff_t::set_cooldown( timespan_t duration )
 
   return this;
 }
+
+buff_t* buff_t::set_period( timespan_t period )
+{
+  if ( period >= timespan_t::zero() )
+  {
+    buff_period = period;
+  }
+  else
+  {
+    for ( size_t i = 1; i <= s_data -> effect_count(); i++ )
+    {
+      const spelleffect_data_t& e = s_data -> effectN( i );
+      if ( ! e.ok() || e.type() != E_APPLY_AURA )
+        continue;
+
+      switch ( e.subtype() )
+      {
+        case A_PERIODIC_ENERGIZE:
+        case A_PERIODIC_TRIGGER_SPELL_WITH_VALUE:
+        case A_PERIODIC_HEALTH_FUNNEL:
+        case A_PERIODIC_MANA_LEECH:
+        case A_PERIODIC_DAMAGE_PERCENT:
+        case A_PERIODIC_DUMMY:
+        case A_PERIODIC_TRIGGER_SPELL:
+        {
+          buff_period = e.period();
+          break;
+        }
+        default: break;
+      }
+    }
+  }
+  return this;
+}
+
 //
 //buff_t* buff_t::set_chance( double chance )
 //{
@@ -2198,15 +2207,6 @@ bool tick_buff_t::trigger( int stacks, double value, double chance, timespan_t d
   return buff_t::trigger( stacks, value, chance, duration );
 }
 */
-// ==========================================================================
-// DEBUFF
-// ==========================================================================
-
-debuff_t::debuff_t( const buff_creator_basics_t& params ) :
-  buff_t( params )
-{}
-
-// Absorb Buff
 
 absorb_buff_t::absorb_buff_t( const absorb_buff_creator_t& params ) :
   buff_t( params ),

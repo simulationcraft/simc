@@ -6083,12 +6083,12 @@ struct agonizing_poison_t : public rogue_poison_buff_t
   }
 };
 
-struct marked_for_death_debuff_t : public debuff_t
+struct marked_for_death_debuff_t : public buff_t
 {
   cooldown_t* mod_cd;
 
   marked_for_death_debuff_t( rogue_td_t& r ) :
-    debuff_t( buff_creator_t( r, "marked_for_death", r.source -> find_talent_spell( "Marked for Death" ) ).cd( timespan_t::zero() ) ),
+    buff_t( buff_creator_t( r, "marked_for_death", r.source -> find_talent_spell( "Marked for Death" ) ).cd( timespan_t::zero() ) ),
     mod_cd( r.source -> get_cooldown( "marked_for_death" ) )
   { }
 
@@ -6104,7 +6104,7 @@ struct marked_for_death_debuff_t : public debuff_t
       mod_cd -> reset( false );
     }
 
-    debuff_t::expire_override( expiration_stacks, remaining_duration );
+    buff_t::expire_override( expiration_stacks, remaining_duration );
   }
 };
 

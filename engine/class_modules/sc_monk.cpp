@@ -136,11 +136,11 @@ public:
 
   struct buffs_t
   {
-    debuff_t* mark_of_the_crane;
-    debuff_t* gale_burst;
-    debuff_t* keg_smash;
-    debuff_t* storm_earth_and_fire;
-    debuff_t* touch_of_karma;
+    buff_t* mark_of_the_crane;
+    buff_t* gale_burst;
+    buff_t* keg_smash;
+    buff_t* storm_earth_and_fire;
+    buff_t* touch_of_karma;
   } debuff;
 
   monk_t& monk;

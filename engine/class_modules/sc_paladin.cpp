@@ -739,21 +739,21 @@ namespace buffs {
     }
   };
 
-  struct forbearance_t : public debuff_t
+  struct forbearance_t : public buff_t
   {
     paladin_t* paladin;
 
     forbearance_t( paladin_t* p, const char *name ) :
-      debuff_t( buff_creator_t( p, name, p -> find_spell( 25771 ) ) ), paladin( p )
+      buff_t( buff_creator_t( p, name, p -> find_spell( 25771 ) ) ), paladin( p )
     { }
 
     forbearance_t( paladin_t* p, paladin_td_t *ap, const char *name ) :
-      debuff_t( buff_creator_t( *ap, name, p -> find_spell( 25771 ) ) ), paladin( p )
+      buff_t( buff_creator_t( *ap, name, p -> find_spell( 25771 ) ) ), paladin( p )
     { }
 
     void execute( int stacks, double value, timespan_t duration ) override
     {
-      debuff_t::execute( stacks, value, duration );
+      buff_t::execute( stacks, value, duration );
 
       paladin -> update_forbearance_recharge_multipliers();
     }
@@ -762,7 +762,7 @@ namespace buffs {
     {
       bool expired = check() != 0;
 
-      debuff_t::expire( delay );
+      buff_t::expire( delay );
 
       if ( expired )
       {

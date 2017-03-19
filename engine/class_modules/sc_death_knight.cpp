@@ -374,14 +374,14 @@ struct death_knight_td_t : public actor_target_data_t {
 
   struct
   {
-    debuff_t* razorice;
-    debuff_t* festering_wound;
-    debuff_t* mark_of_blood;
-    debuff_t* soul_reaper;
-    debuff_t* blood_mirror;
-    debuff_t* scourge_of_worlds;
-    debuff_t* death; // Armies of the Damned ghoul proc
-    debuff_t* perseverance_of_the_ebon_martyr;
+    buff_t* razorice;
+    buff_t* festering_wound;
+    buff_t* mark_of_blood;
+    buff_t* soul_reaper;
+    buff_t* blood_mirror;
+    buff_t* scourge_of_worlds;
+    buff_t* death; // Armies of the Damned ghoul proc
+    buff_t* perseverance_of_the_ebon_martyr;
   } debuff;
 
   // Check if DnD or Defile are up for ScS/CS AOE
@@ -953,8 +953,8 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* d
   dot.soul_reaper        = target -> get_dot( "soul_reaper_dot",    death_knight );
   dot.virulent_plague    = target -> get_dot( "virulent_plague",    death_knight );
 
-  debuff.razorice        = buff_creator_t( *this, "razorice", death_knight -> find_spell( 51714 ) )
-                           .period( timespan_t::zero() );
+  debuff.razorice        = make_buff( *this, "razorice", death_knight -> find_spell( 51714 ) )
+                           -> set_period( timespan_t::zero() );
   debuff.festering_wound = buff_creator_t( *this, "festering_wound", death_knight -> find_spell( 194310 ) )
                            .trigger_spell( death_knight -> spec.festering_wound )
                            .cd( timespan_t::zero() ); // Handled by trigger_festering_wound

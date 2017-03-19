@@ -1777,10 +1777,11 @@ struct icy_veins_buff_t : public haste_buff_t
 struct incanters_flow_t : public buff_t
 {
   incanters_flow_t( mage_t* p ) :
-    buff_t( buff_creator_t( p, "incanters_flow", p -> find_spell( 116267 ) ) // Buff is a separate spell
-            .duration( p -> sim -> max_time * 3 ) // Long enough duration to trip twice_expected_event
-            .period( p -> talents.incanters_flow -> effectN( 1 ).period() ) ) // Period is in the talent
-  { }
+    buff_t( p, "incanters_flow", p -> find_spell( 116267 ) ) // Buff is a separate spell
+  {
+    set_duration( p -> sim -> max_time * 3 ); // Long enough duration to trip twice_expected_event
+    set_period( p -> talents.incanters_flow -> effectN( 1 ).period() ); // Period is in the talent
+  }
 
   void bump( int stacks, double value ) override
   {

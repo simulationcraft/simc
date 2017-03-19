@@ -76,7 +76,6 @@ struct callback_t;
 struct cooldown_t;
 struct cost_reduction_buff_t;
 class dbc_t;
-struct debuff_t;
 struct dot_t;
 struct event_t;
 struct expr_t;
@@ -492,16 +491,16 @@ struct actor_target_data_t : public actor_pair_t, private noncopyable
 {
   struct atd_debuff_t
   {
-    debuff_t* mark_of_doom;
-    debuff_t* poisoned_dreams;
-    debuff_t* fel_burn;
-    debuff_t* flame_wreath;
-    debuff_t* thunder_ritual;
-    debuff_t* brutal_haymaker;
-    debuff_t* taint_of_the_sea;
-    debuff_t* solar_collapse;
-    debuff_t* volatile_magic;
-    debuff_t* maddening_whispers;
+    buff_t* mark_of_doom;
+    buff_t* poisoned_dreams;
+    buff_t* fel_burn;
+    buff_t* flame_wreath;
+    buff_t* thunder_ritual;
+    buff_t* brutal_haymaker;
+    buff_t* taint_of_the_sea;
+    buff_t* solar_collapse;
+    buff_t* volatile_magic;
+    buff_t* maddening_whispers;
   } debuff;
 
   struct atd_dot_t
@@ -603,7 +602,6 @@ protected:
   const spell_data_t* _trigger_data;
   std::vector<cache_e> _invalidate_list;
   friend struct ::buff_t;
-  friend struct ::debuff_t;
 private:
   void init();
 public:
@@ -693,7 +691,6 @@ public:
     base_t( sim, name, s, item ) {}
 
   operator buff_t* () const;
-  operator debuff_t* () const;
 };
 
 struct stat_buff_creator_t : public buff_creator_helper_t<stat_buff_creator_t>
@@ -1020,6 +1017,7 @@ public:
   virtual buff_t* set_duration( timespan_t duration );
   virtual buff_t* set_max_stack( int max_stack );
   virtual buff_t* set_cooldown( timespan_t duration );
+  virtual buff_t* set_period( timespan_t );
   //virtual buff_t* set_chance( double chance );
   virtual buff_t* set_quiet( bool quiet );
   virtual buff_t* add_invalidate( cache_e );
@@ -1108,14 +1106,7 @@ private:
   void haste_adjusted( bool is_changed );
 };
 
-struct debuff_t : public buff_t
-{
-protected:
-  debuff_t( const buff_creator_basics_t& params );
-  friend struct buff_creation::buff_creator_t;
-};
-
-typedef struct buff_t aura_t;
+using aura_t = buff_t ;
 
 /**
  * @brief Creates a buff
@@ -3953,16 +3944,16 @@ struct player_t : public actor_t
 
   struct debuffs_t
   {
-    debuff_t* bleeding;
-    debuff_t* casting;
-    debuff_t* flying;
-    debuff_t* forbearance;
-    debuff_t* invulnerable;
-    debuff_t* vulnerable;
-    debuff_t* damage_taken;
+    buff_t* bleeding;
+    buff_t* casting;
+    buff_t* flying;
+    buff_t* forbearance;
+    buff_t* invulnerable;
+    buff_t* vulnerable;
+    buff_t* damage_taken;
 
     // WoD debuffs
-    debuff_t* mortal_wounds;
+    buff_t* mortal_wounds;
   } debuffs;
 
   struct gains_t
@@ -7727,9 +7718,6 @@ inline cost_reduction_buff_creator_t::operator cost_reduction_buff_t* () const
 inline haste_buff_creator_t::operator haste_buff_t* () const
 { return new haste_buff_t( *this ); }
 
-inline buff_creator_t::operator debuff_t* () const
-{ return new debuff_t( *this ); }
-
 inline bool player_t::is_my_pet( player_t* t ) const
 { return t -> is_pet() && t -> cast_pet() -> owner == this; }
 
@@ -7777,7 +7765,7 @@ inline player_t* target_wrapper_expr_t::target() const
 { return action.target; }
 
 inline actor_target_data_t::actor_target_data_t( player_t* target, player_t* source ) :
-  actor_pair_t( target, source ), debuff( atd_debuff_t() ), dot( atd_dot_t() )
+  actor_pair_t( target, source ), debuff(), dot( atd_dot_t() )
 {
   for (auto & elem : source -> sim -> target_data_initializer)
   {

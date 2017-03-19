@@ -4712,13 +4712,13 @@ void player_t::clear_debuffs()
     dot -> cancel();
   }
 
-  // Clear all buffs of type debuff_t
-  // We have to make sure that we label all
-  for ( size_t i = 0; i < buff_list.size(); ++i )
+  // Clear all debuffs
+  for ( buff_t* buff : buff_list )
   {
-    debuff_t* debuff = dynamic_cast<debuff_t*>( buff_list[ i ] );
-    if ( debuff )
-      debuff -> expire();
+    if ( buff -> source != this )
+    {
+      buff -> expire();
+    }
   }
 }
 

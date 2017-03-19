@@ -4803,12 +4803,12 @@ private:
 
 // Anguish ==================================================================
 
-struct anguish_debuff_t : public demon_hunter_buff_t<debuff_t>
+struct anguish_debuff_t : public demon_hunter_buff_t<buff_t>
 {
   action_t* anguish;
 
   anguish_debuff_t( demon_hunter_t* p, player_t* target )
-    : demon_hunter_buff_t<debuff_t>(
+    : demon_hunter_buff_t<buff_t>(
         *p, buff_creator_t( actor_pair_t( target, p ), "anguish",
                             p -> artifact.anguish_of_the_deceiver.data()
                             .effectN( 1 )
@@ -4820,7 +4820,7 @@ struct anguish_debuff_t : public demon_hunter_buff_t<debuff_t>
   virtual void expire_override( int expiration_stacks,
                                 timespan_t remaining_duration ) override
   {
-    demon_hunter_buff_t<debuff_t>::expire_override( expiration_stacks,
+    demon_hunter_buff_t<buff_t>::expire_override( expiration_stacks,
         remaining_duration );
 
     // Only if the debuff expires naturally; if the target dies it doesn't deal
@@ -4904,10 +4904,10 @@ struct chaos_blades_t : public demon_hunter_buff_t<buff_t>
 
 // Nemesis ==================================================================
 
-struct nemesis_debuff_t : public demon_hunter_buff_t<debuff_t>
+struct nemesis_debuff_t : public demon_hunter_buff_t<buff_t>
 {
   nemesis_debuff_t( demon_hunter_t* p, player_t* target )
-    : demon_hunter_buff_t<debuff_t>(
+    : demon_hunter_buff_t<buff_t>(
         *p, buff_creator_t( actor_pair_t( target, p ), "nemesis",
                             p -> talent.nemesis )
         .default_value( p -> talent.nemesis -> effectN( 1 ).percent() )
@@ -4919,7 +4919,7 @@ struct nemesis_debuff_t : public demon_hunter_buff_t<debuff_t>
   virtual void expire_override( int expiration_stacks,
                                 timespan_t remaining_duration ) override
   {
-    demon_hunter_buff_t<debuff_t>::expire_override( expiration_stacks,
+    demon_hunter_buff_t<buff_t>::expire_override( expiration_stacks,
         remaining_duration );
 
     if ( remaining_duration > timespan_t::zero() )
