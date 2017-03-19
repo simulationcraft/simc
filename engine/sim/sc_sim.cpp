@@ -2532,15 +2532,10 @@ bool sim_t::iterate()
     if ( ! canceled )
     {
       current_index = work_queue -> pop();
+      more_work = work_queue -> more_work();
 
-      if ( ! single_actor_batch )
+      if ( single_actor_batch )
       {
-        more_work = current_index == 0;
-      }
-      else
-      {
-        more_work = work_queue -> more_work();
-
         if ( current_index != old_active && more_work )
         {
           if ( ! parent )
