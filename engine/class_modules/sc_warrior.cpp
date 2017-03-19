@@ -826,7 +826,7 @@ public:
 
     ab::consume_resource();
 
-    double rage = ab::resource_consumed;
+    double rage = ab::last_resource_cost;
 
     if ( rage > 0 )
     {

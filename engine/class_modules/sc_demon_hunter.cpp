@@ -1241,7 +1241,7 @@ public:
   {
     ab::execute();
 
-    if ( !ab::hit_any_target && ab::resource_consumed > 0 )
+    if ( !ab::hit_any_target && ab::last_resource_cost > 0 )
     {
       trigger_refund();
     }
@@ -1253,7 +1253,7 @@ public:
 
     if ( ab::current_resource() == RESOURCE_FURY )
     {
-      delusions_of_grandeur( ab::resource_consumed );
+      delusions_of_grandeur( ab::last_resource_cost );
     }
   }
 
@@ -1292,7 +1292,7 @@ public:
     if ( ab::resource_current == RESOURCE_FURY ||
          ab::resource_current == RESOURCE_PAIN )
     {
-      p() -> resource_gain( ab::resource_current, ab::resource_consumed * 0.80,
+      p() -> resource_gain( ab::resource_current, ab::last_resource_cost * 0.80,
                           p() -> gain.miss_refund );
     }
   }
@@ -4572,7 +4572,7 @@ struct soul_cleave_t : public demon_hunter_attack_t
   {
     demon_hunter_attack_t::execute();
 
-    double pain_multiplier = resource_consumed / base_costs[ current_resource() ];
+    double pain_multiplier = last_resource_cost / base_costs[ current_resource() ];
 
     // Heal happens first.
     action_state_t* heal_state = heal -> get_state();

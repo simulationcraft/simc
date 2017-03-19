@@ -11323,7 +11323,7 @@ action_t* player_t::select_action( const action_priority_list_t& list )
 
     if ( a -> background ) continue;
 
-    if ( a -> wait_on_ready == 1 )
+    if ( a -> option.wait_on_ready == 1 )
       break;
 
     if ( a -> ready() )

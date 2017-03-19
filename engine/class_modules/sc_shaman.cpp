@@ -1428,10 +1428,10 @@ public:
 
     if ( ab::p() -> talent.aftershock -> ok() &&
          ab::current_resource() == RESOURCE_MAELSTROM &&
-         ab::resource_consumed > 0 )
+         ab::last_resource_cost > 0 )
     {
       ab::p() -> resource_gain( RESOURCE_MAELSTROM,
-          ab::resource_consumed * ab::p() -> talent.aftershock -> effectN( 1 ).percent(),
+          ab::last_resource_cost * ab::p() -> talent.aftershock -> effectN( 1 ).percent(),
           ab::p() -> gain.aftershock,
           nullptr );
     }
@@ -4976,18 +4976,18 @@ struct earth_shock_t : public shaman_spell_t
     if ( p() -> sets.has_set_bonus( SHAMAN_ELEMENTAL, T18, B2 ) &&
          rng().roll( p() -> sets.set( SHAMAN_ELEMENTAL, T18, B2 ) -> effectN( 1 ).percent() ) )
     {
-      p() -> resource_gain( RESOURCE_MAELSTROM, resource_consumed, p() -> gain.t18_2pc_elemental, this );
+      p() -> resource_gain( RESOURCE_MAELSTROM, last_resource_cost, p() -> gain.t18_2pc_elemental, this );
     }
 
     if ( eotgs_base_chance > 0 )
     {
       p() -> buff.echoes_of_the_great_sundering -> trigger( 1, buff_t::DEFAULT_VALUE(),
-          eotgs_base_chance * resource_consumed );
+          eotgs_base_chance * last_resource_cost );
     }
 
     if ( rng().roll( tdbp_proc_chance ) )
     {
-      p() -> resource_gain( RESOURCE_MAELSTROM, resource_consumed, p() -> gain.the_deceivers_blood_pact, this );
+      p() -> resource_gain( RESOURCE_MAELSTROM, last_resource_cost, p() -> gain.the_deceivers_blood_pact, this );
     }
   }
 };

@@ -1356,7 +1356,7 @@ struct beacon_of_light_t : public paladin_heal_t
     ignore_false_positive = true;
 
     // Target is required for Beacon
-    if ( target_str.empty() )
+    if ( option.target_str.empty() )
     {
       sim -> errorf( "Warning %s's \"%s\" needs a target", p -> name(), name() );
       sim -> cancel();

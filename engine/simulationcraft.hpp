@@ -5086,6 +5086,9 @@ public:
   /// Item back-pointer for trinket-sourced actions so we can show proper tooltips in reports
   const item_t* item;
 
+  /// Weapon used for this ability. If set extra weapon damage is calculated.
+  weapon_t* weapon;
+
   /**
    * Default target is needed, otherwise there's a chance that cycle_targets
    * option will _MAJORLY_ mess up the action list for the actor, as there's no
@@ -5225,6 +5228,7 @@ public:
   bool interrupt_immediate_occurred;
 
   bool hit_any_target;
+
   /**
    * @brief Behavior of dot.
    *
@@ -5318,9 +5322,6 @@ public:
   double base_dd_adder;
   double base_ta_adder;
 
-  /// Weapon used for this ability. If set extra weapon damage is calculated.
-  weapon_t* weapon;
-
   /// Weapon damage for the ability.
   double weapon_multiplier;
 
@@ -5336,6 +5337,15 @@ public:
   /// Static action cooldown duration multiplier
   double base_recharge_multiplier;
 
+  /// Maximum distance that the ability can travel. Used on abilities that instantly move you, or nearly instantly move you to a location.
+  double base_teleport_distance;
+
+  /// Missile travel speed in yards / second
+  double travel_speed;
+
+  // Amount of resource for the energize to grant.
+  double energize_amount;
+
   /**
    * @brief Movement Direction
    * @code
@@ -5346,16 +5356,10 @@ public:
    */
   movement_direction_e movement_directionality;
 
-  /// Maximum distance that the ability can travel. Used on abilities that instantly move you, or nearly instantly move you to a location.
-  double base_teleport_distance;
-
   /// This is used to cache/track spells that have a parent driver, such as most channeled/ground aoe abilities.
   dot_t* parent_dot;
 
   std::vector< action_t* > child_action;
-
-  /// Missile travel speed in yards / second
-  double travel_speed;
 
   /// This action will execute every tick
   action_t* tick_action;
@@ -5372,9 +5376,6 @@ public:
   // Sets the behavior for when this action's resource energize occur.
   action_energize_e energize_type;
 
-  // Amount of resource for the energize to grant.
-  double energize_amount;
-
   // Resource for the energize to grant.
   resource_e energize_resource;
 
@@ -5388,24 +5389,74 @@ public:
    */
   cooldown_t* cooldown, *internal_cooldown;
 
-  /// action statistics, merged by action-name
+  /** action statistics, merged by action-name */
   stats_t* stats;
-  /// Execute event (e.g., "casting" of the action), queue delay event (for queueing cooldowned
-  //actions shortly before they execute.
-  event_t* execute_event, *queue_event;
-  timespan_t time_to_execute, time_to_travel;
-  double resource_consumed;
-  timespan_t last_reaction_time;
+
+  /** Execute event (e.g., "casting" of the action) */
+  event_t* execute_event;
+
+  /** Queue delay event (for queueing cooldowned actions shortly before they execute. */
+  event_t* queue_event;
+
+  /** Last available, effectively used execute time */
+  timespan_t time_to_execute;
+
+  /** Last available, effectively used travel time */
+  timespan_t time_to_travel;
+
+  /** Last available, effectively used resource cost */
+  double last_resource_cost;
+
+  /** Last available number of targets effectively hit */
   unsigned num_targets_hit;
 
-  /// Marker for sample action priority list reporting
+  /** Marker for sample action priority list reporting */
   char marker;
-  // options
-  bool interrupt;
-  int moving, wait_on_ready, chain, cycle_targets, cycle_players, max_cycle_targets, target_number, interrupt_immediate;
-  std::string if_expr_str;
+
+  // Options
+  struct options_t {
+    /**
+     * moving (default: -1), when different from -1, will flag the action as usable only when the players are moving
+     * (moving=1) or not moving (moving=0). When left to -1, the action will be usable anytime. The players happen to
+     * move either because of a "movement" raid event, or because of "start_moving" actions. Note that actions which are
+     * not usable while moving do not need to be flagged with "move=0", Simulationcraft is already aware of those
+     * restrictions.
+     *
+     */
+    int moving;
+
+    int wait_on_ready;
+
+    int max_cycle_targets;
+
+    int target_number;
+
+    /** Interrupt option. If true, channeled action can get interrupted. */
+    bool interrupt;
+
+    /**
+     * Chain can be used to re-cast a channeled spell at the beginning of its last tick. This has two advantages over
+     * waiting for the channel to complete before re-casting: 1) the gcd finishes sooner, and 2) it avoids the roughly
+     * 1/4 second delay between the end of a channel and the beginning of the next cast.
+     */
+    bool chain;
+
+    int cycle_targets;
+
+    bool cycle_players;
+
+    bool interrupt_immediate;
+
+    std::string if_expr_str;
+    std::string target_if_str;
+    std::string interrupt_if_expr_str;
+    std::string early_chain_if_expr_str;
+    std::string sync_str;
+    std::string target_str;
+    options_t();
+  } option;
+
   expr_t* if_expr;
-  std::string target_if_str;
 
   enum target_if_mode_e
   {
@@ -5416,14 +5467,10 @@ public:
   } target_if_mode;
 
   expr_t* target_if_expr;
-  std::string interrupt_if_expr_str;
   expr_t* interrupt_if_expr;
-  std::string early_chain_if_expr_str;
   expr_t* early_chain_if_expr;
-  std::string sync_str;
   action_t* sync_action;
   std::string signature_str;
-  std::string target_str;
   target_specific_t<dot_t> target_specific_dot;
   action_priority_list_t* action_list;
 
@@ -5445,7 +5492,6 @@ public:
    */
   cooldown_t line_cooldown;
   const action_priority_t* signature;
-  std::vector<std::unique_ptr<option_t>> options;
 
 
   /// State of the last execute()
@@ -5453,7 +5499,9 @@ public:
 
   /// Optional - if defined before execute(), will be copied into execute_state
   action_state_t* pre_execute_state;
+
   unsigned snapshot_flags;
+
   unsigned update_flags;
 
   /**
@@ -5471,6 +5519,7 @@ public:
   } mutable target_cache;
 
 private:
+  std::vector<std::unique_ptr<option_t>> options;
   action_state_t* state_cache;
   std::vector<travel_event_t*> travel_events;
 public:

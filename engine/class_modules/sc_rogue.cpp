@@ -2264,12 +2264,12 @@ void rogue_attack_t::consume_resource()
 
   p() -> spend_combo_points( execute_state );
 
-  if ( result_is_miss( execute_state -> result ) && resource_consumed > 0 )
+  if ( result_is_miss( execute_state -> result ) && last_resource_cost > 0 )
     p() -> trigger_energy_refund( execute_state );
 
-  if ( resource_consumed > 0 && p() -> legendary.duskwalker_footpads )
+  if ( last_resource_cost > 0 && p() -> legendary.duskwalker_footpads )
   {
-    p() -> df_counter += resource_consumed;
+    p() -> df_counter += last_resource_cost;
     while ( p() -> df_counter >= p() -> legendary.duskwalker_footpads -> effectN( 2 ).base_value() )
     {
       timespan_t adjustment = -timespan_t::from_seconds( p() -> legendary.duskwalker_footpads -> effectN( 1 ).base_value() );
@@ -5224,7 +5224,7 @@ void rogue_t::trigger_combat_potency( const action_state_t* state )
 
 void rogue_t::trigger_energy_refund( const action_state_t* state )
 {
-  double energy_restored = state -> action -> resource_consumed * 0.80;
+  double energy_restored = state -> action -> last_resource_cost * 0.80;
 
   resource_gain( RESOURCE_ENERGY, energy_restored, gains.energy_refund );
 }

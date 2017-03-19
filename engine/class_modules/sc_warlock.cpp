@@ -2276,7 +2276,7 @@ public:
       // .. otherwise, parse the target option using the global target option parsing
       else
       {
-        target_str = target_str_override;
+        option.target_str = target_str_override;
         parse_target_str();
         // Setting default target here is necessary, as it has been done earlier on in the action
         // init process (in action_t::init()).
@@ -2421,7 +2421,7 @@ public:
         {
           double soul_conduit_rng = p() -> talents.soul_conduit -> effectN( 1 ).percent();
 
-          for ( int i = 0; i < resource_consumed; i++ )
+          for ( int i = 0; i < last_resource_cost; i++ )
           {
             if ( rng().roll( soul_conduit_rng ) )
             {
@@ -2433,7 +2433,7 @@ public:
         if(p()->legendary.wakeners_loyalty_enabled
                 && p()->specialization() == WARLOCK_DEMONOLOGY )
         {
-            for(int i = 0; i < resource_consumed; i++)
+            for(int i = 0; i < last_resource_cost; i++)
             {
                 p()->legendary.wakeners_shard_counter ++;
             }
@@ -3445,7 +3445,7 @@ struct hand_of_guldan_t: public warlock_spell_t
   {
     double m = warlock_spell_t::action_multiplier();
 
-    m *= resource_consumed;
+    m *= last_resource_cost;
 
     return m;
   }
@@ -3454,15 +3454,15 @@ struct hand_of_guldan_t: public warlock_spell_t
   {
     warlock_spell_t::consume_resource();
 
-    shards_used = resource_consumed;
+    shards_used = last_resource_cost;
 
-    if ( resource_consumed == 1.0 )
+    if ( last_resource_cost == 1.0 )
       p() -> procs.one_shard_hog -> occur();
-    if ( resource_consumed == 2.0 )
+    if ( last_resource_cost == 2.0 )
       p() -> procs.two_shard_hog -> occur();
-    if ( resource_consumed == 3.0 )
+    if ( last_resource_cost == 3.0 )
       p() -> procs.three_shard_hog -> occur();
-    if ( resource_consumed == 4.0 )
+    if ( last_resource_cost == 4.0 )
       p() -> procs.four_shard_hog -> occur();
   }
 

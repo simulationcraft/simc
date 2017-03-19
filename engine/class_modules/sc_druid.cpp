@@ -1916,10 +1916,10 @@ public:
       return;
     if ( resource_current != RESOURCE_ASTRAL_POWER )
       return;
-    if ( resource_consumed <= 0.0 )
+    if ( last_resource_cost <= 0.0 )
       return;
 
-    timespan_t reduction = resource_consumed * p() -> legendary.impeccable_fel_essence;
+    timespan_t reduction = last_resource_cost * p() -> legendary.impeccable_fel_essence;
     p() -> cooldown.celestial_alignment -> adjust( reduction );
     p() -> cooldown.incarnation -> adjust( reduction );
   }
@@ -2655,7 +2655,7 @@ public:
 
   void trigger_energy_refund()
   {
-    player -> resource_gain( RESOURCE_ENERGY, resource_consumed * 0.80,
+    player -> resource_gain( RESOURCE_ENERGY, last_resource_cost * 0.80,
       p() -> gain.energy_refund );
   }
 

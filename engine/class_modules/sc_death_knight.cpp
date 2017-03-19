@@ -2502,17 +2502,17 @@ struct death_knight_action_t : public Base
       }
     }
 
-    if ( this -> base_costs[ RESOURCE_RUNIC_POWER ] > 0 && this -> resource_consumed > 0 )
+    if ( this -> base_costs[ RESOURCE_RUNIC_POWER ] > 0 && this -> last_resource_cost > 0 )
     {
       if ( p() -> talent.dark_arbiter -> ok() && p() -> pets.dark_arbiter )
       {
-        p() -> pets.dark_arbiter -> increase_power( this -> resource_consumed );
+        p() -> pets.dark_arbiter -> increase_power( this -> last_resource_cost );
       }
 
       if ( p() -> talent.red_thirst -> ok() )
       {
         timespan_t sec = timespan_t::from_seconds( p() -> talent.red_thirst -> effectN( 1 ).base_value() ) *
-          this -> resource_consumed / p() -> talent.red_thirst -> effectN( 2 ).base_value();
+          this -> last_resource_cost / p() -> talent.red_thirst -> effectN( 2 ).base_value();
         p() -> cooldown.vampiric_blood -> adjust( -sec );
       }
     }
@@ -2660,8 +2660,8 @@ void death_knight_melee_attack_t::execute()
 {
   base_t::execute();
 
-  if ( ! result_is_hit( execute_state -> result ) && resource_consumed > 0 )
-    p() -> resource_gain( RESOURCE_RUNIC_POWER, resource_consumed * RUNIC_POWER_REFUND, p() -> gains.power_refund );
+  if ( ! result_is_hit( execute_state -> result ) && last_resource_cost > 0 )
+    p() -> resource_gain( RESOURCE_RUNIC_POWER, last_resource_cost * RUNIC_POWER_REFUND, p() -> gains.power_refund );
   trigger_crystalline_swords( execute_state );
 }
 
@@ -3734,7 +3734,7 @@ struct bonestorm_t : public death_knight_spell_t
   }
 
   timespan_t composite_dot_duration( const action_state_t* ) const override
-  { return base_tick_time * resource_consumed / 10; }
+  { return base_tick_time * last_resource_cost / 10; }
 };
 
 // Chains of Ice ============================================================
@@ -4623,7 +4623,7 @@ struct frost_strike_t : public death_knight_melee_attack_t
       oh -> target = execute_state -> target;
       oh -> execute();
 
-      p() -> trigger_runic_empowerment( resource_consumed );
+      p() -> trigger_runic_empowerment( last_resource_cost );
     }
 
     death_knight_td_t* tdata = td( execute_state -> target );
@@ -5718,7 +5718,7 @@ struct breath_of_sindragosa_t : public death_knight_spell_t
   {
     bool ret = death_knight_spell_t::consume_cost_per_tick( dot );
 
-    p() -> trigger_runic_empowerment( resource_consumed );
+    p() -> trigger_runic_empowerment( last_resource_cost );
 
     return ret;
   }

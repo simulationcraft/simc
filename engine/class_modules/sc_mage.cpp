@@ -1938,7 +1938,7 @@ public:
 
       // If cycle_targets or target_if option is used, we need to target the spell to the (found)
       // target of the action, as it was selected during the action_t::ready() call.
-      if ( cycle_targets == 1 || target_if_mode != TARGET_IF_NONE )
+      if ( option.cycle_targets || target_if_mode != TARGET_IF_NONE )
         state -> target = target;
       // Put the actor's current target into the state object always.
       else
@@ -9102,7 +9102,7 @@ action_t* mage_t::select_action( const action_priority_list_t& list )
 
     if ( a -> background ) continue;
 
-    if ( a -> wait_on_ready == 1 )
+    if ( a -> option.wait_on_ready == 1 )
       break;
 
     // Change the target of the action before ready call ...
