@@ -5413,7 +5413,13 @@ void rogue_t::trigger_shadow_techniques( const action_state_t* state )
       cp++;
     }
 
+    if ( artifact.shadows_whisper.rank() )
+    {
+      resource_gain( RESOURCE_ENERGY, artifact.shadows_whisper.percent(), gains.shadow_techniques, state -> action );
+    }
+
     trigger_combo_point_gain( cp, gains.shadow_techniques, state -> action );
+
     shadow_techniques = 0;
   }
 }
@@ -7321,7 +7327,7 @@ void rogue_t::init_spells()
   artifact.precision_strike   = find_artifact_spell( "Precision Strike" );
   artifact.second_shuriken    = find_artifact_spell( "Second Shuriken" );
   artifact.shadow_fangs       = find_artifact_spell( "Shadow Fangs" );
-  //artifact.shadows_whisper    = find_artifact_spell( "" );
+  artifact.shadows_whisper    = find_artifact_spell( "Shadow's Whisper" );
   artifact.soul_shadows       = find_artifact_spell( "Soul Shadows" );
   artifact.the_quiet_knife    = find_artifact_spell( "The Quiet Knife" );
 
