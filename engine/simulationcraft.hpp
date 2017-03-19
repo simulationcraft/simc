@@ -7257,90 +7257,110 @@ const item_data_t* find_item_by_spell( const dbc_t& dbc, unsigned spell_id );
 
 expr_t* create_expression( action_t* a, const std::string& name_str );
 
+// Base template for various "proc actions".
+template <typename T_ACTION>
+struct proc_action_t : public T_ACTION
+{
+  using super = T_ACTION;
+  using base_action_t = proc_action_t<T_ACTION>;
+
+  void __initialize()
+  {
+    this -> background = true;
+    this -> callbacks = this -> hasted_ticks = false;
+
+    if ( ! this -> data().flags( SPELL_ATTR_EX2_CANT_CRIT ) )
+      this -> may_crit = this -> tick_may_crit = true;
+    if ( this -> radius > 0 )
+      this -> aoe = -1;
+
+    // Reparse effect data for any item-dependent variables.
+    for ( size_t i = 1; i <= this -> data().effect_count(); i++ )
+    {
+      this -> parse_effect_data( this -> data().effectN( i ) );
+    }
+  }
+
+  proc_action_t( const special_effect_t& e ) :
+    super( e.name(), e.player, e.trigger() )
+  {
+    this -> item = e.item;
+
+    __initialize();
+
+    override_data( e );
+  }
+
+  proc_action_t( const std::string& token, player_t* p, const spell_data_t* s, const item_t* i = nullptr ) :
+    super( token, p, s )
+  {
+    this -> item = i;
+
+    __initialize();
+  }
+
+  virtual void override_data( const special_effect_t& e );
+};
+
 // Base proc spells used by the generic special effect initialization
-struct proc_spell_t : public spell_t
+struct proc_spell_t : public proc_action_t<spell_t>
 {
-  proc_spell_t( const std::string& token, player_t* p, const spell_data_t* s, const item_t* i ) :
-    spell_t( token, p, s )
-  {
-    background = true;
-    // Periodic procs shouldnt ever haste ticks, probably
-    callbacks = hasted_ticks = false;
-    item = i;
-    if ( ! data().flags( SPELL_ATTR_EX2_CANT_CRIT ) )
-      may_crit = tick_may_crit = true;
-    if ( radius > 0 )
-      aoe = -1;
+  using super = proc_action_t<spell_t>;
 
-    // Reparse effect data for any item-dependent variables.
-    for ( size_t i = 1; i <= data().effect_count(); i++ )
-    {
-      parse_effect_data( data().effectN( i ) );
-    }
-  }
+  proc_spell_t( const special_effect_t& e ) :
+    super( e )
+  { }
+
+  proc_spell_t( const std::string& token, player_t* p, const spell_data_t* s, const item_t* i = nullptr ) :
+    super( token, p, s, i )
+  { }
 };
 
-struct proc_heal_t : public heal_t
+struct proc_heal_t : public proc_action_t<heal_t>
 {
-  proc_heal_t( const std::string& token, player_t* p, const spell_data_t* s, const item_t* i ) :
-    heal_t( token, p, s )
-  {
-    background = true;
-    // Periodic procs shouldnt ever haste ticks, probably
-    callbacks = hasted_ticks = false;
-    item = i;
-    if ( ! data().flags( SPELL_ATTR_EX2_CANT_CRIT ) )
-      may_crit = tick_may_crit = true;
-    if ( radius > 0 )
-      aoe = -1;
+  using super = proc_action_t<heal_t>;
 
-    // Reparse effect data for any item-dependent variables.
-    for ( size_t i = 1; i <= data().effect_count(); i++ )
-    {
-      parse_effect_data( data().effectN( i ) );
-    }
-  }
+  proc_heal_t( const std::string& token, player_t* p, const spell_data_t* s, const item_t* i = nullptr ) :
+    super( token, p, s, i )
+  { }
+
+  proc_heal_t( const special_effect_t& e ) :
+    super( e )
+  { }
 };
 
-struct proc_attack_t : public attack_t
+struct proc_attack_t : public proc_action_t<attack_t>
 {
-  proc_attack_t( const std::string& token, player_t* p, const spell_data_t* s, const item_t* i ) :
-    attack_t( token, p, s )
-  {
-    background = true;
-    // Periodic procs shouldnt ever haste ticks, probably
-    callbacks = hasted_ticks = false;
-    item = i;
-    if ( ! data().flags( SPELL_ATTR_EX2_CANT_CRIT ) )
-      may_crit = tick_may_crit = true;
-    if ( radius > 0 )
-      aoe = -1;
+  using super = proc_action_t<attack_t>;
 
-    // Reparse effect data for any item-dependent variables.
-    for ( size_t i = 1; i <= data().effect_count(); i++ )
-    {
-      parse_effect_data( data().effectN( i ) );
-    }
-  }
+  proc_attack_t( const special_effect_t& e ) :
+    base_action_t( e )
+  { }
+
+  proc_attack_t( const std::string& token, player_t* p, const spell_data_t* s, const item_t* i = nullptr ) :
+    base_action_t( token, p, s, i )
+  { }
+
+  void override_data( const special_effect_t& e );
 };
 
-struct proc_resource_t : public spell_t
+struct proc_resource_t : public proc_action_t<spell_t>
 {
+  using super = proc_action_t<spell_t>;
+
   gain_t* gain;
   double gain_da, gain_ta;
   resource_e gain_resource;
 
-  proc_resource_t( const std::string& token, player_t* p, const spell_data_t* s, const item_t* item_ ) :
-    spell_t( token, p, s ), gain_da( 0 ), gain_ta( 0 ), gain_resource( RESOURCE_NONE )
+  // Note, not called by proc_action_t
+  void __initialize()
   {
-    callbacks = may_crit = may_miss = may_dodge = may_parry = may_block = hasted_ticks = false;
-    background = true;
+    may_miss = may_dodge = may_parry = may_block = harmful = false;
     target = player;
-    item = item_;
 
-    for ( size_t i = 1; i <= s -> effect_count(); i++ )
+    for ( size_t i = 1; i <= data().effect_count(); i++ )
     {
-      const spelleffect_data_t& effect = s -> effectN( i );
+      const spelleffect_data_t& effect = data().effectN( i );
       if ( effect.type() == E_ENERGIZE )
       {
         gain_da = effect.average( item );
@@ -7353,26 +7373,41 @@ struct proc_resource_t : public spell_t
       }
     }
 
-    gain = player -> get_gain( token );
+    gain = player -> get_gain( name() );
   }
+
+  proc_resource_t( const special_effect_t& e ) :
+    super( e ), gain_da( 0 ), gain_ta( 0 ), gain_resource( RESOURCE_NONE )
+  {
+    __initialize();
+  }
+
+  proc_resource_t( const std::string& token, player_t* p, const spell_data_t* s, const item_t* item_ = nullptr ) :
+    super( token, p, s, item_ ), gain_da( 0 ), gain_ta( 0 ), gain_resource( RESOURCE_NONE )
+  {
+    __initialize();
+  }
+
+  result_e calculate_result( action_state_t* /* state */ ) const override
+  { return RESULT_HIT; }
 
   void init() override
   {
-    spell_t::init();
+    super::init();
 
     snapshot_flags = update_flags = 0;
   }
 
   void execute() override
   {
-    spell_t::execute();
+    super::execute();
 
     player -> resource_gain( gain_resource, gain_da, gain );
   }
 
   void tick( dot_t* d ) override
   {
-    spell_t::tick( d );
+    super::tick( d );
 
     player -> resource_gain( gain_resource, gain_ta, gain );
   }
