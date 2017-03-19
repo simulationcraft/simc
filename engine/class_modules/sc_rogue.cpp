@@ -7314,7 +7314,7 @@ void rogue_t::init_spells()
   artifact.catwalk            = find_artifact_spell( "Catwalk" );
   artifact.demons_kiss        = find_artifact_spell( "Demon's Kiss" );
   artifact.energetic_stabbing = find_artifact_spell( "Energetic Stabbing" );
-  //artifact.etched_in_shadow   = find_artifact_spell( "" );
+  artifact.etched_in_shadow   = find_artifact_spell( "Etched in Shadow" );
   artifact.flickering_shadows = find_artifact_spell( "Flickering Shadows" );
   artifact.fortunes_bite      = find_artifact_spell( "Fortune's Bite" );
   artifact.gutripper          = find_artifact_spell( "Gutripper" );
@@ -7588,7 +7588,9 @@ void rogue_t::create_buffs()
                                 .refresh_behavior( BUFF_REFRESH_PANDEMIC )
                                 .period( timespan_t::zero() )
                                 .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-                                .default_value( 1.0 + spec.symbols_of_death -> effectN( 1 ).percent() );
+                                .default_value( 1.0 +
+                                                spec.symbols_of_death -> effectN( 1 ).percent() +
+                                                artifact.etched_in_shadow.percent() );
 
 
   // Talents
