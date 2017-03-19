@@ -653,28 +653,6 @@ public:
     }
   }
 
-  player_t* select_random_target() const
-  {
-    if ( sim -> distance_targeting_enabled )
-    {
-      std::vector<player_t*> targets;
-      range::for_each( sim -> target_non_sleeping_list, [&targets, this]( player_t* t ) {
-        if ( player -> get_player_distance( *t ) <= radius + t -> combat_reach )
-        {
-          targets.push_back( t );
-        }
-      } );
-
-      auto random_idx = static_cast<size_t>( rng().range( 0, targets.size() ) );
-      return targets.size() ? targets[random_idx] : nullptr;
-    }
-    else
-    {
-      auto random_idx = static_cast<size_t>( rng().range( 0, sim -> target_non_sleeping_list.size() ) );
-      return sim -> target_non_sleeping_list[random_idx];
-    }
-  }
-
   void init() override
   {
     ab::init();
@@ -984,6 +962,28 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
     for ( size_t i = 0; i < p() -> odyns_champion_cds.size(); i++ )
     {
       p() -> odyns_champion_cds[i] -> adjust( reduction );
+    }
+  }
+
+  player_t* select_random_target() const
+  {
+    if ( sim -> distance_targeting_enabled )
+    {
+      std::vector<player_t*> targets;
+      range::for_each( sim -> target_non_sleeping_list, [&targets, this]( player_t* t ) {
+        if ( p() -> get_player_distance( *t ) <= radius + t -> combat_reach )
+        {
+          targets.push_back( t );
+        }
+      } );
+
+      auto random_idx = static_cast<size_t>( rng().range( 0, targets.size() ) );
+      return targets.size() ? targets[random_idx] : nullptr;
+    }
+    else
+    {
+      auto random_idx = static_cast<size_t>( rng().range( 0, sim -> target_non_sleeping_list.size() ) );
+      return sim -> target_non_sleeping_list[random_idx];
     }
   }
 
