@@ -1729,6 +1729,7 @@ struct sim_t : private sc_thread_t
     void flush()          { AUTO_LOCK(m); _total_work[ index ] = _projected_work[ index ] = _work[ index ]; }
     void project( int w ) { AUTO_LOCK(m); _projected_work[ index ] = w; assert( w >= _work[ index ] ); }
     int  size()           { AUTO_LOCK(m); return index < _total_work.size() ? _total_work[ index ] : _total_work.back(); }
+    bool more_work()      { AUTO_LOCK(m); return index < _total_work.size() && _work[ index ] < _total_work[ index ]; }
 
     // Single-actor batch pop, uses several indices of work (per active actor), each thread has it's
     // own state on what index it is simulating
@@ -1736,21 +1737,22 @@ struct sim_t : private sc_thread_t
     {
       AUTO_LOCK(m);
 
-      if ( index >= _total_work.size() )
-      {
-        return index;
-      }
-
       if ( _work[ index ] >= _total_work[ index ] )
       {
-        ++index;
+        if ( index < _work.size() - 1 )
+        {
+          ++index;
+        }
         return index;
       }
 
       if ( ++_work[ index ] == _total_work[ index ] )
       {
         _projected_work[ index ] = _work[ index ];
-        ++index;
+        if ( index < _work.size() - 1 )
+        {
+          ++index;
+        }
         return index;
       }
 

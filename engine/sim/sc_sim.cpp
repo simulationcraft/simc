@@ -2539,7 +2539,7 @@ bool sim_t::iterate()
       }
       else
       {
-        more_work = current_index < player_no_pet_list.size();
+        more_work = work_queue -> more_work();
 
         if ( current_index != old_active && more_work )
         {
