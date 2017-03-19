@@ -246,6 +246,7 @@ public:
     const spell_data_t* chain_of_thrayn;
     const spell_data_t* ashes_to_dust;
     const spell_data_t* consecration_bonus;
+    const spell_data_t* blessing_of_the_ashbringer;
   } spells;
 
   // Talents
@@ -345,6 +346,7 @@ public:
     artifact_power_t ferocity_of_the_silver_hand;
     artifact_power_t righteous_verdict;
     artifact_power_t judge_unworthy;
+    artifact_power_t blessing_of_the_ashbringer;
 
     // Prot
     artifact_power_t eye_of_tyr;
@@ -443,6 +445,7 @@ public:
   virtual expr_t*   create_expression( action_t*, const std::string& name ) override;
 
   // player stat functions
+  virtual double    composite_attribute( attribute_e attr ) const override;
   virtual double    composite_attribute_multiplier( attribute_e attr ) const override;
   virtual double    composite_rating_multiplier( rating_e rating ) const override;
   virtual double    composite_attack_power_multiplier() const override;
@@ -5265,6 +5268,7 @@ void paladin_t::init_spells()
   artifact.ashes_to_ashes          = find_artifact_spell( "Ashes to Ashes" );
   artifact.righteous_verdict       = find_artifact_spell( "Righteous Verdict" );
   artifact.judge_unworthy          = find_artifact_spell( "Judge Unworthy" );
+  artifact.blessing_of_the_ashbringer = find_artifact_spell( "Blessing of the Ashbringer" );
 
   artifact.eye_of_tyr              = find_artifact_spell( "Eye of Tyr" );
   artifact.truthguards_light       = find_artifact_spell( "Truthguard's Light" );
@@ -5293,6 +5297,7 @@ void paladin_t::init_spells()
   spells.chain_of_thrayn               = find_spell( 206338 );
   spells.ashes_to_dust                 = find_spell( 236106 );
   spells.consecration_bonus            = find_spell( 188370 );
+  spells.blessing_of_the_ashbringer = find_spell( 242981 );
 
   // Masteries
   passives.divine_bulwark         = find_mastery_spell( PALADIN_PROTECTION );
@@ -5449,6 +5454,23 @@ stat_e paladin_t::convert_hybrid_stat( stat_e s ) const
   }
 
   return converted_stat;
+}
+
+// paladin_t::composite_attribute
+double paladin_t::composite_attribute( attribute_e attr ) const
+{
+  double m = player_t::composite_attribute( attr );
+
+  if ( attr == ATTR_STRENGTH )
+  {
+    if ( artifact.blessing_of_the_ashbringer.rank() )
+    {
+      // TODO(mserrano): fix this once spelldata gets extracted
+      m += 2000; // spells.blessing_of_the_ashbringer -> effectN( 1 ).value();
+    }
+  }
+
+  return m;
 }
 
 // paladin_t::composite_attribute_multiplier ================================

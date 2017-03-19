@@ -1305,6 +1305,7 @@ class SpellDataGenerator(DataGenerator):
             ( 228288, 0, True ),
             ( 205729, 0 ),
             ( 238996, 0 ),          # Righteous Verdict
+            ( 242981, 0 ),          # Blessing of the Ashbringer
         ),
 
         # Hunter:
