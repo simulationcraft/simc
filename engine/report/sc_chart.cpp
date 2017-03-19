@@ -192,9 +192,13 @@ metric_e populate_player_list( const std::string& type, const sim_t& sim,
   }
   else if ( util::str_compare_ci( type, "variance" ) )
   {
-    name        = "DPS Variance Percentage";
-    source_list = &sim.players_by_variance;
-    m           = METRIC_VARIANCE;
+    // Variance implies there is DPS output in the simulator
+    if ( sim.raid_dps.mean() > 0 )
+    {
+      name        = "DPS Variance Percentage";
+      source_list = &sim.players_by_variance;
+      m           = METRIC_VARIANCE;
+    }
   }
 
   if ( source_list != nullptr )
