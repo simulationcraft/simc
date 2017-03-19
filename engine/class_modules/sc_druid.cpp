@@ -6802,7 +6802,9 @@ void druid_t::create_buffs()
                                         : find_spell( 16864 ) -> proc_chance() )
                                .cd( timespan_t::zero() )
                                .max_stack( 1 + talent.moment_of_clarity -> effectN( 1 ).base_value() )
-                               .default_value( talent.moment_of_clarity -> effectN( 4 ).percent() );
+                               .default_value( specialization() != DRUID_RESTORATION
+                                               ? talent.moment_of_clarity -> effectN( 4 ).percent()
+                                               : 0.0 );
 
   buff.dash                  = buff_creator_t( this, "dash", find_class_spell( "Dash" ) )
                                .cd( timespan_t::zero() )
