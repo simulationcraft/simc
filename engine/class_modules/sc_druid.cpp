@@ -6629,7 +6629,11 @@ void druid_t::init_spells()
   talent.flourish                       = find_talent_spell( "Flourish" );
 
   if ( talent.earthwarden -> ok() )
-    instant_absorb_list.emplace( talent.earthwarden -> id(), instant_absorb_t( this, find_spell( 203975 ), "earthwarden", &earthwarden_handler ) );
+  {
+    instant_absorb_list.insert( std::make_pair<unsigned, instant_absorb_t>(
+        talent.earthwarden->id(),
+        instant_absorb_t( this, find_spell( 203975 ), "earthwarden", &earthwarden_handler ) ) );
+  }
 
   // Affinities =============================================================
 
@@ -6729,7 +6733,8 @@ void druid_t::init_spells()
     active.brambles           = new spells::brambles_t( this );
     active.brambles_pulse     = new spells::brambles_pulse_t( this );
 
-    instant_absorb_list.emplace( talent.brambles -> id(), instant_absorb_t( this, talent.brambles, "brambles", &brambles_handler ) );
+    instant_absorb_list.insert( std::make_pair<unsigned, instant_absorb_t>(
+        talent.brambles->id(), instant_absorb_t( this, talent.brambles, "brambles", &brambles_handler ) ) );
   }
   if ( talent.galactic_guardian -> ok() )
   {
@@ -9022,7 +9027,8 @@ struct stalwart_guardian_callback_t : public scoped_actor_callback_t<druid_t>
   {
     p -> active.stalwart_guardian = new stalwart_guardian_t( p );
 
-    p -> instant_absorb_list.emplace( 184878, instant_absorb_t( p, p -> find_spell( 184878 ), "stalwart_guardian", &stalwart_guardian_handler ) );
+    p->instant_absorb_list.insert( std::make_pair<unsigned, instant_absorb_t>(
+        184878, instant_absorb_t( p, p->find_spell( 184878 ), "stalwart_guardian", &stalwart_guardian_handler ) ) );
   }
 };
 
