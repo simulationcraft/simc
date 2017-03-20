@@ -3129,21 +3129,15 @@ struct arcane_blast_t : public arcane_mage_spell_t
 struct time_and_space_t : public arcane_mage_spell_t
 {
   time_and_space_t( mage_t* p ) :
-    arcane_mage_spell_t( "arcane_explosion_echo", p, p -> find_artifact_spell( "Time and Space" ) )
+    arcane_mage_spell_t( "arcane_explosion_echo", p, p -> find_spell( 240689 ) )
   {
-    may_miss = may_dodge = may_parry = may_crit = may_block = false;
     aoe = -1;
-    base_costs[ RESOURCE_MANA ] = 0;
     trigger_gcd = timespan_t::zero();
     background = true;
-    school = SCHOOL_ARCANE;
-    spell_power_mod.direct = p -> find_spell( 240689 ) -> effectN( 1 ).sp_coeff();
     base_multiplier *= 1.0 + p -> artifact.arcane_purification.percent();
     // PTR Multiplier
     base_multiplier *= 1.0 + p -> find_spell( 137021 ) -> effectN( 1 ).percent();
     radius += p -> artifact.crackling_energy.data().effectN( 1 ).base_value();
-
-
   }
 
   virtual double action_multiplier() const override
@@ -3155,9 +3149,6 @@ struct time_and_space_t : public arcane_mage_spell_t
     return am;
   }
 };
-
-
-
 
 struct arcane_explosion_t : public arcane_mage_spell_t
 {
