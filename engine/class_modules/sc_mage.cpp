@@ -1781,6 +1781,7 @@ struct incanters_flow_t : public buff_t
   {
     set_duration( p -> sim -> max_time * 3 ); // Long enough duration to trip twice_expected_event
     set_period( p -> talents.incanters_flow -> effectN( 1 ).period() ); // Period is in the talent
+    set_tick_behavior( BUFF_TICK_CLIP );
   }
 
   void bump( int stacks, double value ) override
