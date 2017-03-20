@@ -188,7 +188,6 @@ public:
     buff_t* demon_soul;
     buff_t* metamorphosis;
     haste_buff_t* sephuzs_secret;
-    stat_buff_t* concordance_of_the_legionfall;
 
     // Havoc
     buff_t* blade_dance;
@@ -329,8 +328,6 @@ public:
   // Artifacts
   struct artifact_spell_data_t
   {
-    artifact_power_t concordance_of_the_legionfall;
-
     // Havoc -- Twinblades of the Deceiver
     artifact_power_t anguish_of_the_deceiver;
     artifact_power_t balanced_blades;
@@ -1247,11 +1244,6 @@ public:
     if ( !ab::hit_any_target && ab::last_resource_cost > 0 )
     {
       trigger_refund();
-    }
-
-    if (p()->artifact.concordance_of_the_legionfall.rank())
-    {
-      p()->buff.concordance_of_the_legionfall->trigger();
     }
   }
 
@@ -5631,32 +5623,6 @@ void demon_hunter_t::create_buffs()
 
   buff.metamorphosis = new buffs::metamorphosis_buff_t( this );
 
-  // FIX: Concordance of the Legionfall
-  // Will need to be converted to a more general-case solution, and the spelldata is a bit wonky right now
-  if(artifact.concordance_of_the_legionfall.rank())
-  {
-    if (specialization() == DEMON_HUNTER_VENGEANCE)
-    {
-      buff.concordance_of_the_legionfall =
-        stat_buff_creator_t(this, "concordance_of_the_legionfall", artifact.concordance_of_the_legionfall)
-        .duration(timespan_t::from_seconds(10))
-        .default_value(artifact.concordance_of_the_legionfall.value())
-        .add_stat(STAT_VERSATILITY_RATING, artifact.concordance_of_the_legionfall.value())
-        .add_invalidate(CACHE_VERSATILITY);
-    }
-    else // DEMON_HUNTER_HAVOC
-    {
-      buff.concordance_of_the_legionfall =
-        stat_buff_creator_t(this, "concordance_of_the_legionfall", artifact.concordance_of_the_legionfall)
-        .duration(timespan_t::from_seconds(10))
-        .default_value(artifact.concordance_of_the_legionfall.value())
-        .add_stat(STAT_AGILITY, artifact.concordance_of_the_legionfall.value())
-        .add_invalidate(CACHE_AGILITY);
-    }
-    buff.concordance_of_the_legionfall->rppm =
-      get_rppm("concordance_of_the_legionfall", artifact.concordance_of_the_legionfall);
-  }
-
   // Havoc
 
   buff.blade_dance =
@@ -6500,8 +6466,6 @@ void demon_hunter_t::init_spells()
   talent.soul_barrier         = find_talent_spell( "Soul Barrier" );
 
   // Artifacts ==============================================================
-
-  artifact.concordance_of_the_legionfall = find_artifact_spell("Concordance of the Legionfall");
 
   // Havoc -- Twinblades of the Deceiver
   artifact.anguish_of_the_deceiver  = find_artifact_spell("Anguish of the Deceiver");

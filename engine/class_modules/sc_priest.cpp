@@ -223,7 +223,6 @@ public:
     artifact_power_t fiending_dark;
     artifact_power_t mind_quickening;
     artifact_power_t lash_of_insanity;
-    artifact_power_t concordance_of_the_legionfall;
   } artifact;
 
   // Specialization Spells
@@ -4542,7 +4541,6 @@ void priest_t::init_spells()
   artifact.fiending_dark                 = find_artifact_spell( "Fiending Dark" );
   artifact.mind_quickening               = find_artifact_spell( "Mind Quickening" );
   artifact.lash_of_insanity              = find_artifact_spell( "Lash of Insanity" );
-  artifact.concordance_of_the_legionfall = find_artifact_spell( "Accordance of the Legionfall" );
 
   // General Spells
 

@@ -1486,6 +1486,9 @@ bool player_t::create_special_effects()
     special_effects.push_back( effect );
   }
 
+  // Initialize the buff and callback for the 7.2 "infinite" artifact power
+  expansion::legion::initialize_concordance( *this );
+
   // Initialize all item-based special effects. This includes any DBC-backed enchants, gems, as well
   // as inherent item effects that use a spell
   for ( auto& item: items )
@@ -11656,3 +11659,80 @@ void player_t::acquire_target( retarget_event_e event, player_t* context )
   }
 }
 
+// Expansion specific helpers
+
+stat_e expansion::legion::concordance_stat_type( const player_t& player )
+{
+  switch ( player.specialization() )
+  {
+    case WARRIOR_ARMS:
+    case WARRIOR_FURY:
+    case PALADIN_RETRIBUTION:
+    case DEATH_KNIGHT_FROST:
+    case DEATH_KNIGHT_UNHOLY:
+      return STAT_STRENGTH;
+
+    case HUNTER_BEAST_MASTERY:
+    case HUNTER_MARKSMANSHIP:
+    case HUNTER_SURVIVAL:
+    case ROGUE_ASSASSINATION:
+    case ROGUE_OUTLAW:
+    case ROGUE_SUBTLETY:
+    case SHAMAN_ENHANCEMENT:
+    case MONK_WINDWALKER:
+    case DRUID_FERAL:
+    case DEMON_HUNTER_HAVOC:
+      return STAT_AGILITY;
+
+    case PRIEST_SHADOW:
+    case SHAMAN_ELEMENTAL:
+    case MAGE_ARCANE:
+    case MAGE_FIRE:
+    case MAGE_FROST:
+    case WARLOCK_AFFLICTION:
+    case WARLOCK_DEMONOLOGY:
+    case WARLOCK_DESTRUCTION:
+    case DRUID_BALANCE:
+      return STAT_INTELLECT;
+
+    case WARRIOR_PROTECTION:
+    case PALADIN_PROTECTION:
+    case DEATH_KNIGHT_BLOOD:
+    case MONK_BREWMASTER:
+    case DRUID_GUARDIAN:
+    case DEMON_HUNTER_VENGEANCE:
+      return STAT_VERSATILITY_RATING;
+
+    case PALADIN_HOLY:
+    case PRIEST_DISCIPLINE:
+    case PRIEST_HOLY:
+    case SHAMAN_RESTORATION:
+    case MONK_MISTWEAVER:
+    case DRUID_RESTORATION:
+      return STAT_INTELLECT;
+
+    default:
+      return STAT_NONE;
+  }
+}
+
+void expansion::legion::initialize_concordance( player_t& player )
+{
+  // Unconditionally initialize 7.2 "infinite" buff
+  artifact_power_t concordance = player.find_artifact_spell( "Concordance of the Legionfall" );
+
+  stat_buff_t* buff = stat_buff_creator_t( &( player ), "concordance_of_the_legionfall" )
+    .spell( player.find_spell( 242583 ) )
+    .add_stat( concordance_stat_type( player ), concordance.value() );
+
+  // Install a callback handler only if the player has the relevant artifact-related attributes
+  auto artifact_id = player.dbc.artifact_by_spec( player.specialization() );
+  if ( artifact_id > 0 && player.artifact.slot != SLOT_INVALID && concordance.rank() > 0 )
+  {
+    special_effect_t* effect = new special_effect_t( &( player ) );
+    effect -> type = SPECIAL_EFFECT_EQUIP;
+    effect -> spell_id = concordance.data().id();
+    effect -> custom_buff = buff;
+    player.special_effects.push_back( effect );
+  }
+}

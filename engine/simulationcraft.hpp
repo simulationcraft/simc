@@ -7691,6 +7691,17 @@ void trigger( action_t* residual_action, player_t* t, double amount );
 
 }  // namespace residual_action
 
+// Expansion specific methods and helpers
+namespace expansion
+{
+// Legion (WoW 7.0)
+namespace legion
+{
+stat_e concordance_stat_type( const player_t& player );
+void initialize_concordance( player_t& );
+} // namespace legion
+} // namespace expansion
+
 // Inlines ==================================================================
 
 // buff_t inlines
