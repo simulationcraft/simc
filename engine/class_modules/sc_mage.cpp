@@ -4035,10 +4035,9 @@ struct dragons_breath_t : public fire_mage_spell_t
 
 struct glacial_eruption_t : public frost_mage_spell_t
 {
-  glacial_eruption_t( mage_t* p, const std::string& options_str ) :
+  glacial_eruption_t( mage_t* p ) :
     frost_mage_spell_t( "glacial_eruption", p, p -> find_spell( 242851 ) )
   {
-    parse_options( options_str );
     background = true;
     aoe = -1;
   }
@@ -4048,10 +4047,11 @@ struct glacial_eruption_t : public frost_mage_spell_t
 struct ebonbolt_t : public frost_mage_spell_t
 {
   glacial_eruption_t* glacial_eruption;
+  timespan_t glacial_eruption_delay;
 
   ebonbolt_t( mage_t* p, const std::string& options_str ) :
     frost_mage_spell_t( "ebonbolt", p, p -> artifact.ebonbolt ),
-    glacial_eruption( new glacial_eruption_t( p, options_str ) )
+    glacial_eruption( new glacial_eruption_t( p ) )
   {
     parse_options( options_str );
     if ( !p -> artifact.ebonbolt.rank() )
@@ -4062,7 +4062,11 @@ struct ebonbolt_t : public frost_mage_spell_t
     // PTR Multiplier
     base_multiplier *= 1.0 + p -> find_spell( 137020 ) -> effectN( 1 ).percent();
     spell_power_mod.direct = p -> find_spell( 228599 ) -> effectN( 1 ).sp_coeff();
-    add_child( glacial_eruption );
+    if ( p -> artifact.glacial_eruption.rank() )
+    {
+      glacial_eruption_delay = 1000 * p -> artifact.glacial_eruption.data().effectN( 1 ).time_value();
+      add_child( glacial_eruption );
+    }
   }
 
   virtual void execute() override
@@ -4076,8 +4080,11 @@ struct ebonbolt_t : public frost_mage_spell_t
     frost_mage_spell_t::impact( s );
     if ( result_is_hit( s -> result ) && p() -> artifact.glacial_eruption.rank() )
     {
-      glacial_eruption -> target = s -> target;
-      glacial_eruption -> execute();
+      make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
+        .pulse_time( glacial_eruption_delay )
+        .target( s -> target )
+        .duration( glacial_eruption_delay )
+        .action( glacial_eruption ) );
     }
   }
 };
