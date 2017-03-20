@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build 3eb4aac)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build 8142444)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -3009,7 +3009,7 @@ Spell Level      : 20
 Range            : 12 yards
 GCD              : 1.5 seconds
 Cooldown         : 10.5 seconds
-Affecting spells : Paladin (137026), Retribution Paladin (137027), Deliver the Justice (186927), Virtue's Blade (202271), 
+Affecting spells : Paladin (137026), Retribution Paladin (137027), Deliver the Justice (186927), Virtue's Blade (202271), Righteous Verdict (238996)
 Attributes       : ........ ........ x.x..x.. ........   ........ .x...... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4916,5 +4916,63 @@ Effects          :
 #1 (id=353965)   : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | Target: Self(1)
 Description      : Each Holy Power spent reduces the remaining cooldown on Hammer of Justice by ${$m1/10}.1 sec.
+
+Name             : Righteous Verdict (id=238062) [Spell Family (10), Passive] 
+Class            : Paladin
+School           : Physical
+Internal Cooldown: 0.1 seconds
+Proc Chance      : 100%
+Artifact Power   : Id: 1561, Index: 13, Max Rank: 8, Values: [ 5, 10, 15, 20, 25, 30, 35, 40 ]
+Proc Flags       : ....x... ..x.x.x. x.x..... ........ 
+                 : Yellow Melee, AOE Heal, AOE Hostile Spell, Heal, Hostile Spell, Periodic
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=360747)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 5 | Scaled Value: 5 | Target: Self(1)
+Description      : Your Holy Power spending abilities increase the damage of your next $?s198034[Divine Hammer][Blade of Justice] by $s1%.
+
+Name             : Righteous Verdict (id=238996) [Spell Family (10)] 
+Class            : Paladin
+School           : Physical
+Duration         : 15 seconds
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
+Proc Flags       : ....x... ........ ........ ........ 
+                 : Yellow Melee
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=362033)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+                   Affected Spells: Blade of Justice (184575)
+Description      : $@spelldesc238062
+Tooltip          : Your next $?s198034[Divine Hammer][Blade of Justice] deals $w1% increased damage.
+
+Name             : Blessing of the Ashbringer (id=242981) [Spell Family (10)] 
+Class            : Paladin
+School           : Holy
+Duration         : Aura (infinite)
+Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Cannot cancel aura (31)
+Effects          :
+#1 (id=368965)   : Apply Aura (6) | Attribute (29)
+                   Base Value: 2000 | Scaled Value: 2000 | Target: Self(1)
+Description      : Increases your Strength by $s1.
+Tooltip          : Increases your Strength by $s1.
 
 

@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build 3eb4aac)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build 8142444)
 
 Name             : Defensive Stance (id=71) [Spell Family (4), Passive, Hidden] 
 Class            : Protection Warrior
@@ -4628,7 +4628,7 @@ Cooldown         : 30 seconds
 Proc Chance      : 100%
 Proc Flags       : .....x.x .x...x.. .x...... ........ 
                  : Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken
-Affecting spells : Manual of Spell Reflection (168801)
+Affecting spells : Manual of Spell Reflection (168801), Gleaming Scales (238113)
 Attributes       : ....x... ........ x.x..... ...x....   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ..x..... 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -4638,6 +4638,8 @@ Attributes       : ....x... ........ x.x..... ...x....   ........ ..x..... .....
 Effects          :
 #1 (id=317491)   : Apply Aura (6) | Spell Reflection (28)
                    Base Value: 100 | Scaled Value: 100 | Value Multiplier: 1 | Misc Value: 4 | Radius: 20 yards | Target: Raid Members(56)
+#2 (id=371150)   : Apply Aura (6) | Modify Damage Taken% (87)
+                   Base Value: -30 | Scaled Value: -30 | Misc Value: 0x7e | Radius: 20 yards | Target: Raid Members(56)
 Description      : Reflects all spells cast on you and on all party and raid members within $a1 yards for $d.
 Tooltip          : Reflects all spells cast on you.
 

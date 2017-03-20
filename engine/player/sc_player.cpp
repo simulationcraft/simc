@@ -79,6 +79,139 @@ struct resource_threshold_event_t : public event_t
   }
 };
 
+struct touch_of_the_grave_spell_t : public spell_t
+{
+  touch_of_the_grave_spell_t( player_t* p, const spell_data_t* spell ) :
+    spell_t( "touch_of_the_grave", p, spell )
+  {
+    background = may_crit = true;
+    base_dd_min = base_dd_max = 0;
+    attack_power_mod.direct = 1.0;
+    spell_power_mod.direct = 1.0;
+  }
+
+  double attack_direct_power_coefficient( const action_state_t* ) const override
+  {
+    if ( composite_attack_power() >= composite_spell_power() )
+    {
+      return attack_power_mod.direct;
+    }
+
+    return 0;
+  }
+
+  double spell_direct_power_coefficient( const action_state_t* ) const override
+  {
+    if ( composite_spell_power() > composite_attack_power() )
+    {
+      return spell_power_mod.direct;
+    }
+
+    return 0;
+  }
+};
+
+// Execute Pet Action =======================================================
+
+struct execute_pet_action_t : public action_t
+{
+  action_t* pet_action;
+  pet_t* pet;
+  std::string action_str;
+
+  std::string pet_name;
+
+  execute_pet_action_t( player_t* player, const std::string& name, const std::string& as, const std::string& options_str ) :
+    action_t( ACTION_OTHER, "execute_" + name + "_" + as, player ),
+    pet_action( nullptr ),
+    pet( nullptr ),
+    action_str( as ),
+    pet_name( name )
+  {
+    parse_options( options_str );
+    trigger_gcd = timespan_t::zero();
+  }
+
+  bool init_finished() override
+  {
+    pet = player -> find_pet( pet_name );
+    // No pet found, finish init early, the action will never be ready() and never executed.
+    if ( ! pet )
+    {
+      return true;
+    }
+
+    for ( size_t i = 0; i < pet -> action_list.size(); ++i )
+    {
+      action_t* a = pet -> action_list[ i ];
+      if ( a -> name_str == action_str )
+      {
+        a -> background = true;
+        pet_action = a;
+      }
+    }
+
+    if ( ! pet_action )
+    {
+      sim -> errorf( "Player %s refers to unknown action %s for pet %s\n",
+                     player -> name(), action_str.c_str(), pet -> name() );
+      return false;
+    }
+
+    return action_t::init_finished();
+  }
+
+  virtual void execute() override
+  {
+    pet_action -> execute();
+  }
+
+  virtual bool ready() override
+  {
+    if ( ! pet )
+    {
+      return false;
+    }
+
+    if ( ! pet_action )
+      return false;
+
+    if ( ! action_t::ready() )
+      return false;
+
+    if ( pet_action -> player -> is_sleeping() )
+      return false;
+
+    return pet_action -> ready();
+  }
+};
+
+struct override_talent_action_t : action_t
+{
+  override_talent_action_t( player_t* player ) : action_t( ACTION_OTHER, "override_talent", player )
+  {
+    background = true;
+  }
+};
+
+struct leech_t : public heal_t
+{
+  leech_t( player_t* player ) :
+    heal_t( "leech", player, player -> find_spell( 143924 ) )
+  {
+    background = proc = true;
+    callbacks = may_crit = may_miss = may_dodge = may_parry = may_block = false;
+  }
+
+  void init() override
+  {
+    heal_t::init();
+
+    snapshot_flags = update_flags = STATE_MUL_DA | STATE_TGT_MUL_DA | STATE_VERSATILITY | STATE_MUL_PERSISTENT;
+  }
+};
+
+
 // sorted_action_priority_lists =============================================
 
 // APLs need to always be initialized in the same order, otherwise copy= profiles may break in some
@@ -606,9 +739,13 @@ player_t::player_t( sim_t*             s,
   // Reporting
   quiet( false ),
   report_extension( new player_report_extension_t() ),
-  iteration_fight_length( timespan_t::zero() ), arise_time( timespan_t::min() ),
-  iteration_waiting_time( timespan_t::zero() ), iteration_pooling_time( timespan_t::zero() ),
+  arise_time( timespan_t::min() ),
+  iteration_fight_length(),
+  iteration_waiting_time(),
+  iteration_pooling_time(),
   iteration_executed_foreground_actions( 0 ),
+  iteration_resource_lost(),
+  iteration_resource_gained(),
   rps_gain( 0 ), rps_loss( 0 ),
 
   tmi_window( 6.0 ),
@@ -635,13 +772,14 @@ player_t::player_t( sim_t*             s,
   base_movement_speed( 7.0 ), passive_modifier( 0 ),
   x_position( 0.0 ), y_position( 0.0 ),
   default_x_position( 0.0 ), default_y_position( 0.0 ),
-  buffs( buffs_t() ),
-  debuffs( debuffs_t() ),
-  gains( gains_t() ),
-  procs( procs_t() ),
-  uptimes( uptimes_t() ),
-  racials( racials_t() ),
-  passive_values( passives_t() ),
+  buffs(),
+  debuffs(),
+  gains(),
+  spells(),
+  procs(),
+  uptimes(),
+  racials(),
+  passive_values(),
   active_during_iteration( false ),
   _mastery( spelleffect_data_t::nil() ),
   cache( this ),
@@ -704,9 +842,6 @@ player_t::player_t( sim_t*             s,
 
   resources.infinite_resource[ RESOURCE_HEALTH ] = true;
 
-  range::fill( iteration_resource_lost, 0 );
-  range::fill( iteration_resource_gained, 0 );
-
   range::fill( profession, 0 );
 
   range::fill( scales_with, false );
@@ -742,12 +877,7 @@ player_t::player_t( sim_t*             s,
 
 player_t::~player_t()
 {
-  for ( std::map<unsigned, instant_absorb_t*>::iterator i = instant_absorb_list.begin();
-        i != instant_absorb_list.end();
-        ++i )
-  {
-    delete i -> second;
-  }
+
 }
 
 player_t::base_initial_current_t::base_initial_current_t() :
@@ -1091,6 +1221,7 @@ void player_t::init_initial_stats()
   if ( sim -> debug )
     sim -> out_debug.printf( "%s: Generic Initial Stats: %s", name(), initial.to_string().c_str() );
 }
+
 // player_t::init_items =====================================================
 
 bool player_t::init_items()
@@ -1100,16 +1231,16 @@ bool player_t::init_items()
 
   // Create items
   std::vector<std::string> splits = util::string_split( items_str, "/" );
-  for ( size_t i = 0; i < splits.size(); i++ )
+  for ( const std::string& split : splits )
   {
-    if ( find_item( splits[ i ] ) )
+    if ( find_item( split ) )
     {
-      sim -> errorf( "Player %s has multiple %s equipped.\n", name(), splits[ i ].c_str() );
+      sim -> errorf( "Player %s has multiple %s equipped.\n", name(), split.c_str() );
     }
-    items.push_back( item_t( this, splits[ i ] ) );
+    items.push_back( item_t( this, split ) );
   }
 
-  bool slots[ SLOT_MAX ]; // true if the given item is equal to the highest armor type the player can wear
+  std::array<bool, SLOT_MAX> slots; // true if the given item is equal to the highest armor type the player can wear
   for ( slot_e i = SLOT_MIN; i < SLOT_MAX; i++ )
     slots[ i ] = ! util::is_match_slot( i );
 
@@ -1171,9 +1302,8 @@ bool player_t::init_items()
     return false;
   } );
 
-  for ( size_t i = 0; i < init_slots.size(); i++ )
+  for ( slot_e slot : init_slots )
   {
-    slot_e slot = init_slots[ i ];
     item_t& item = items[ slot ];
 
     if ( ! item.init() )
@@ -1336,38 +1466,6 @@ void player_t::init_weapon( weapon_t& w )
 
 // player_t::init_special_effects ===============================================
 
-struct touch_of_the_grave_spell_t : public spell_t
-{
-  touch_of_the_grave_spell_t( player_t* p, const spell_data_t* spell ) :
-    spell_t( "touch_of_the_grave", p, spell )
-  {
-    background = may_crit = true;
-    base_dd_min = base_dd_max = 0;
-    attack_power_mod.direct = 1.0;
-    spell_power_mod.direct = 1.0;
-  }
-
-  double attack_direct_power_coefficient( const action_state_t* ) const override
-  {
-    if ( composite_attack_power() >= composite_spell_power() )
-    {
-      return attack_power_mod.direct;
-    }
-
-    return 0;
-  }
-
-  double spell_direct_power_coefficient( const action_state_t* ) const override
-  {
-    if ( composite_spell_power() > composite_attack_power() )
-    {
-      return spell_power_mod.direct;
-    }
-
-    return 0;
-  }
-};
-
 bool player_t::create_special_effects()
 {
   if ( is_pet() || is_enemy() )
@@ -1387,6 +1485,9 @@ bool player_t::create_special_effects()
     effect -> execute_action = new touch_of_the_grave_spell_t( this, totg -> effectN( 1 ).trigger() );
     special_effects.push_back( effect );
   }
+
+  // Initialize the buff and callback for the 7.2 "infinite" artifact power
+  expansion::legion::initialize_concordance( *this );
 
   // Initialize all item-based special effects. This includes any DBC-backed enchants, gems, as well
   // as inherent item effects that use a spell
@@ -1517,81 +1618,6 @@ void player_t::init_professions()
     profession[ prof_type ] = prof_value;
   }
 }
-
-// Execute Pet Action =======================================================
-
-struct execute_pet_action_t : public action_t
-{
-  action_t* pet_action;
-  pet_t* pet;
-  std::string action_str;
-
-  std::string pet_name;
-
-  execute_pet_action_t( player_t* player, const std::string& name, const std::string& as, const std::string& options_str ) :
-    action_t( ACTION_OTHER, "execute_" + name + "_" + as, player ),
-    pet_action( nullptr ),
-    pet( nullptr ),
-    action_str( as ),
-    pet_name( name )
-  {
-    parse_options( options_str );
-    trigger_gcd = timespan_t::zero();
-  }
-
-  bool init_finished() override
-  {
-    pet = player -> find_pet( pet_name );
-    // No pet found, finish init early, the action will never be ready() and never executed.
-    if ( ! pet )
-    {
-      return true;
-    }
-
-    for ( size_t i = 0; i < pet -> action_list.size(); ++i )
-    {
-      action_t* a = pet -> action_list[ i ];
-      if ( a -> name_str == action_str )
-      {
-        a -> background = true;
-        pet_action = a;
-      }
-    }
-
-    if ( ! pet_action )
-    {
-      sim -> errorf( "Player %s refers to unknown action %s for pet %s\n",
-                     player -> name(), action_str.c_str(), pet -> name() );
-      return false;
-    }
-
-    return action_t::init_finished();
-  }
-
-  virtual void execute() override
-  {
-    pet_action -> execute();
-  }
-
-  virtual bool ready() override
-  {
-    if ( ! pet )
-    {
-      return false;
-    }
-
-    if ( ! pet_action )
-      return false;
-
-    if ( ! action_t::ready() )
-      return false;
-
-    if ( pet_action -> player -> is_sleeping() )
-      return false;
-
-    return pet_action -> ready();
-  }
-};
 
 // player_t::init_target ====================================================
 
@@ -1769,21 +1795,13 @@ void player_t::activate_action_list( action_priority_list_t* a, bool off_gcd )
   a -> used = true;
 }
 
-struct override_talent_t : action_t
-{
-  override_talent_t( player_t* player ) : action_t( ACTION_OTHER, "override_talent", player )
-  {
-    background = true;
-  }
-};
-
 void player_t::override_talent( std::string& override_str )
 {
   std::string::size_type cut_pt = override_str.find( ',' );
 
   if ( cut_pt != override_str.npos && override_str.substr( cut_pt + 1, 3 ) == "if=" )
   {
-    override_talent_t* dummy_action = new override_talent_t( this );
+    override_talent_action_t* dummy_action = new override_talent_action_t( this );
     expr_t* expr = expr_t::parse( dummy_action, override_str.substr( cut_pt + 4 ) );
     if ( ! expr )
       return;
@@ -1870,9 +1888,9 @@ void player_t::init_talents()
   if ( ! talent_overrides_str.empty() )
   {
     std::vector<std::string> splits = util::string_split( talent_overrides_str, "/" );
-    for ( size_t i = 0; i < splits.size(); i++ )
+    for ( std::string& split : splits )
     {
-      override_talent( splits[ i ] );
+      override_talent( split );
     }
   }
 }
@@ -1901,9 +1919,9 @@ void player_t::init_artifact()
   if ( ! artifact_overrides_str.empty() )
   {
     std::vector<std::string> splits = util::string_split( artifact_overrides_str, "/" );
-    for ( size_t i = 0; i < splits.size(); i++ )
+    for ( const std::string& split : splits )
     {
-      override_artifact( powers, splits[ i ] );
+      override_artifact( powers, split );
     }
   }
 }
@@ -1936,30 +1954,9 @@ void player_t::init_spells()
       _mastery = &( s -> effectN( 1 ) );
   }
 
-  struct leech_t : public heal_t
-  {
-    leech_t( player_t* player ) :
-      heal_t( "leech", player, player -> find_spell( 143924 ) )
-    {
-      background = proc = true;
-      callbacks = may_crit = may_miss = may_dodge = may_parry = may_block = false;
-    }
-
-    void init() override
-    {
-      heal_t::init();
-
-      snapshot_flags = update_flags = STATE_MUL_DA | STATE_TGT_MUL_DA | STATE_VERSATILITY | STATE_MUL_PERSISTENT;
-    }
-  };
-
   if ( record_healing() )
   {
-    spell.leech = new leech_t( this );
-  }
-  else
-  {
-    spell.leech = 0;
+    spells.leech = new leech_t( this );
   }
 
   if ( artifact.n_purchased_points > 0 )
@@ -2049,9 +2046,6 @@ void player_t::init_stats()
 {
   if ( sim -> debug )
     sim -> out_debug.printf( "Initializing stats for player (%s)", name() );
-
-  range::fill( iteration_resource_lost, 0.0 );
-  range::fill( iteration_resource_gained, 0.0 );
 
   if ( sim -> maximize_reporting )
   {
@@ -2478,7 +2472,7 @@ void player_t::init_assessors()
   }
 
   // Leech, if the player has leeching enabled (disabled by default)
-  if ( spell.leech )
+  if ( spells.leech )
   {
     assessor_out_damage.add( assessor::LEECH, [ this ]( dmg_e, action_state_t* state )
     {
@@ -2490,8 +2484,8 @@ void player_t::init_assessors()
         ( leech_pct = state -> action -> composite_leech( state ) ) > 0 )
       {
         double leech_amount = leech_pct * state -> result_amount;
-        spell.leech -> base_dd_min = spell.leech -> base_dd_max = leech_amount;
-        spell.leech -> schedule_execute();
+        spells.leech -> base_dd_min = spells.leech -> base_dd_max = leech_amount;
+        spells.leech -> schedule_execute();
       }
       return assessor::CONTINUE;
     } );
@@ -2520,9 +2514,9 @@ bool player_t::init_finished()
 {
   bool ret = true;
 
-  for ( size_t i = 0, end = action_list.size(); i < end; ++i )
+  for ( auto action : action_list )
   {
-    if ( ! action_list[ i ] -> init_finished() )
+    if ( ! action -> init_finished() )
     {
       ret = false;
     }
@@ -2530,14 +2524,14 @@ bool player_t::init_finished()
 
   // Naive recording of minimum energy thresholds for the actor.
   // TODO: Energy pooling, and energy-based expressions (energy>=10) are not included yet
-  for ( size_t i = 0; i < action_list.size(); ++i )
+  for ( auto action : action_list )
   {
-    if ( ! action_list[ i ] -> background && action_list[ i ] -> base_costs[ primary_resource() ] > 0 )
+    if ( ! action -> background && action -> base_costs[ primary_resource() ] > 0 )
     {
       if ( std::find( resource_thresholds.begin(), resource_thresholds.end(),
-            action_list[ i ] -> base_costs[ primary_resource() ] ) == resource_thresholds.end() )
+            action -> base_costs[ primary_resource() ] ) == resource_thresholds.end() )
       {
-        resource_thresholds.push_back( action_list[ i ] -> base_costs[ primary_resource() ] );
+        resource_thresholds.push_back( action -> base_costs[ primary_resource() ] );
       }
     }
   }
@@ -2579,7 +2573,7 @@ void player_t::min_threshold_trigger()
     return;
   }
 
-  if ( resource_thresholds.size() == 0 )
+  if ( resource_thresholds.empty() )
   {
     return;
   }
@@ -2703,8 +2697,7 @@ void player_t::create_buffs()
       // Racials
       buffs.berserking                = haste_buff_creator_t( this, "berserking", find_spell( 26297 ) ).add_invalidate( CACHE_HASTE );
       buffs.stoneform                 = buff_creator_t( this, "stoneform", find_spell( 65116 ) );
-      buffs.blood_fury                = stat_buff_creator_t( this, "blood_fury" )
-                                        .spell( find_racial_spell( "Blood Fury" ) )
+      buffs.blood_fury                = stat_buff_creator_t( this, "blood_fury", find_racial_spell( "Blood Fury" ) )
                                         .add_invalidate( CACHE_SPELL_POWER )
                                         .add_invalidate( CACHE_ATTACK_POWER );
       buffs.fortitude                 = buff_creator_t( this, "fortitude", find_spell( 137593 ) ).activated( false );
@@ -2754,16 +2747,13 @@ void player_t::create_buffs()
     }
   }
 
-  buffs.courageous_primal_diamond_lucidity = buff_creator_t( this, "lucidity" )
-                                             .spell( find_spell( 137288 ) );
+  buffs.courageous_primal_diamond_lucidity = buff_creator_t( this, "lucidity", find_spell( 137288 ) );
 
-  buffs.body_and_soul = buff_creator_t( this, "body_and_soul" )
-                        .spell( find_spell( 64129 ) )
+  buffs.body_and_soul = buff_creator_t( this, "body_and_soul", find_spell( 64129 ) )
                         .max_stack( 1 )
                         .duration( timespan_t::from_seconds( 4.0 ) );
 
-  buffs.angelic_feather = buff_creator_t( this, "angelic_feather" )
-                          .spell( find_spell( 121557 ) )
+  buffs.angelic_feather = buff_creator_t( this, "angelic_feather", find_spell( 121557 ) )
                           .max_stack( 1 )
                           .duration( timespan_t::from_seconds( 6.0 ) );
 
@@ -2811,11 +2801,11 @@ void player_t::create_buffs()
 
 item_t* player_t::find_item( const std::string& str )
 {
-  for ( size_t i = 0; i < items.size(); i++ )
-    if ( str == items[ i ].name() )
-      return &items[ i ];
+  for ( auto& item : items )
+    if ( str == item.name() )
+      return &item;
 
-  return 0;
+  return nullptr;
 }
 
 // player_t::has_t18_class_trinket ============================================
@@ -2880,13 +2870,13 @@ double player_t::composite_melee_haste() const
 
   if ( ! is_pet() && ! is_enemy() )
   {
-    if ( buffs.bloodlust -> up() )
+    if ( buffs.bloodlust -> check() )
       h *= 1.0 / ( 1.0 + buffs.bloodlust -> data().effectN( 1 ).percent() );
 
-    if ( buffs.mongoose_mh && buffs.mongoose_mh -> up() )
+    if ( buffs.mongoose_mh && buffs.mongoose_mh -> check() )
       h *= 1.0 / ( 1.0 + 30 / current.rating.attack_haste );
 
-    if ( buffs.mongoose_oh && buffs.mongoose_oh -> up() )
+    if ( buffs.mongoose_oh && buffs.mongoose_oh -> check() )
       h *= 1.0 / ( 1.0 + 30 / current.rating.attack_haste );
 
     if ( buffs.berserking -> up() )
@@ -2910,7 +2900,7 @@ double player_t::composite_melee_speed() const
 
   if ( buffs.fel_winds && buffs.fel_winds -> check() )
   {
-    h *= 1.0 / ( 1.0 + buffs.fel_winds -> value() );
+    h *= 1.0 / ( 1.0 + buffs.fel_winds -> check_value() );
   }
 
   return h;
@@ -3145,10 +3135,10 @@ double player_t::composite_spell_haste() const
 
   if ( ! is_pet() && ! is_enemy() )
   {
-    if ( buffs.bloodlust -> up() )
+    if ( buffs.bloodlust -> check() )
       h *= 1.0 / ( 1.0 + buffs.bloodlust -> data().effectN( 1 ).percent() );
 
-    if ( buffs.berserking -> up() )
+    if ( buffs.berserking -> check() )
       h *= 1.0 / ( 1.0 + buffs.berserking -> data().effectN( 1 ).percent() );
 
     h *= 1.0 / ( 1.0 + racials.nimble_fingers -> effectN( 1 ).percent() );
@@ -3170,19 +3160,19 @@ double player_t::composite_spell_speed() const
 
   if ( ! is_pet() && ! is_enemy() )
   {
-    if ( buffs.tempus_repit -> up() )
+    if ( buffs.tempus_repit -> check() )
     {
       speed *= 1.0 / ( 1.0 + buffs.tempus_repit -> data().effectN( 1 ).percent() );
     }
 
     if ( buffs.nefarious_pact )
     {
-      speed *= 1.0 / ( 1.0 + buffs.nefarious_pact -> stack_value() );
+      speed *= 1.0 / ( 1.0 + buffs.nefarious_pact -> check_stack_value() );
     }
 
     if ( buffs.devils_due )
     {
-      speed *= 1.0 - buffs.devils_due -> stack_value();
+      speed *= 1.0 - buffs.devils_due -> check_stack_value();
     }
   }
 
@@ -3263,7 +3253,7 @@ double player_t::composite_damage_versatility() const
   if ( ! is_pet() && ! is_enemy() )
   {
     if ( buffs.legendary_tank_buff )
-      cdv += buffs.legendary_tank_buff -> value();
+      cdv += buffs.legendary_tank_buff -> check_value();
   }
 
   return cdv;
@@ -3278,7 +3268,7 @@ double player_t::composite_heal_versatility() const
   if ( ! is_pet() && ! is_enemy() )
   {
     if ( buffs.legendary_tank_buff )
-      chv += buffs.legendary_tank_buff -> value();
+      chv += buffs.legendary_tank_buff -> check_value();
   }
 
   return chv;
@@ -3293,7 +3283,7 @@ double player_t::composite_mitigation_versatility() const
   if ( ! is_pet() && ! is_enemy() )
   {
     if ( buffs.legendary_tank_buff )
-      cmv += buffs.legendary_tank_buff -> value() / 2;
+      cmv += buffs.legendary_tank_buff -> check_value() / 2;
   }
 
   return cmv;
@@ -3342,17 +3332,17 @@ double player_t::composite_player_multiplier( school_e  school  ) const
 {
   double m = 1.0;
 
-  if ( buffs.brute_strength && buffs.brute_strength -> up() )
+  if ( buffs.brute_strength && buffs.brute_strength -> check() )
   {
     m *= 1.0 + buffs.brute_strength -> data().effectN( 1 ).percent();
   }
 
-  if ( buffs.legendary_aoe_ring && buffs.legendary_aoe_ring -> up() )
+  if ( buffs.legendary_aoe_ring && buffs.legendary_aoe_ring -> check() )
     m *= 1.0 + buffs.legendary_aoe_ring -> default_value;
                                                                           // Artifacts get a free +6 purchased
   m *= 1.0 + artifact.artificial_damage -> effectN( 2 ).percent() * .01 * ( artifact.n_purchased_points + 6 );
 
-  if ( buffs.taste_of_mana && buffs.taste_of_mana -> up() && school != SCHOOL_PHYSICAL )
+  if ( buffs.taste_of_mana && buffs.taste_of_mana -> check() && school != SCHOOL_PHYSICAL )
   {
     m *= 1.0 + buffs.taste_of_mana -> default_value;
   }
@@ -3364,6 +3354,22 @@ double player_t::composite_player_multiplier( school_e  school  ) const
 double player_t::composite_player_td_multiplier( school_e /* school */,  const action_t* /* a */ ) const
 {
   return 1.0;
+}
+
+double player_t::composite_player_target_multiplier( player_t* target, school_e /* school */ ) const
+{
+  double m = 1.0;
+
+  if ( target -> race == RACE_DEMON &&
+       buffs.demon_damage_buff &&
+       buffs.demon_damage_buff -> check() )
+  {
+    // Bad idea to hardcode the effect number, but it'll work for now. The buffs themselves are
+    // stat buffs.
+    m *= 1.0 + buffs.demon_damage_buff -> data().effectN( 2 ).percent();
+  }
+
+  return m;
 }
 
 // player_t::composite_player_heal_multiplier ===============================
@@ -3423,22 +3429,22 @@ double player_t::temporary_movement_modifier() const
 
   if ( ! is_enemy() )
   {
-    if ( buffs.windwalking_movement_aura -> up() )
+    if ( buffs.windwalking_movement_aura -> check() )
       temporary = std::max( buffs.windwalking_movement_aura -> current_value, temporary );
 
-    if ( buffs.darkflight -> up() )
+    if ( buffs.darkflight -> check() )
       temporary = std::max( buffs.darkflight -> data().effectN( 1 ).percent(), temporary );
 
-    if ( buffs.nitro_boosts -> up() )
+    if ( buffs.nitro_boosts -> check() )
       temporary = std::max( buffs.nitro_boosts -> data().effectN( 1 ).percent(), temporary );
 
-    if ( buffs.stampeding_roar -> up() )
+    if ( buffs.stampeding_roar -> check() )
       temporary = std::max( buffs.stampeding_roar -> data().effectN( 1 ).percent(), temporary );
 
-    if ( buffs.body_and_soul -> up() )
+    if ( buffs.body_and_soul -> check() )
       temporary = std::max( buffs.body_and_soul -> data().effectN( 1 ).percent(), temporary );
 
-    if ( buffs.angelic_feather -> up() )
+    if ( buffs.angelic_feather -> check() )
       temporary = std::max( buffs.angelic_feather -> data().effectN( 1 ).percent(), temporary );
   }
 
@@ -3913,8 +3919,8 @@ void player_t::datacollection_begin()
   iteration_heal_taken = 0;
   active_during_iteration = false;
 
-  range::fill( iteration_resource_lost, 0 );
-  range::fill( iteration_resource_gained, 0 );
+  range::fill( iteration_resource_lost, 0.0 );
+  range::fill( iteration_resource_gained, 0.0 );
 
   if ( collected_data.health_changes.collect )
   {
@@ -4709,13 +4715,13 @@ void player_t::clear_debuffs()
     dot -> cancel();
   }
 
-  // Clear all buffs of type debuff_t
-  // We have to make sure that we label all
-  for ( size_t i = 0; i < buff_list.size(); ++i )
+  // Clear all debuffs
+  for ( buff_t* buff : buff_list )
   {
-    debuff_t* debuff = dynamic_cast<debuff_t*>( buff_list[ i ] );
-    if ( debuff )
-      debuff -> expire();
+    if ( buff -> source != this )
+    {
+      buff -> expire();
+    }
   }
 }
 
@@ -5510,18 +5516,19 @@ void account_absorb_buffs( player_t& p, action_state_t* s, school_e school )
     for ( size_t i = 0; i < p.absorb_priority.size(); i++ )
     {
       // Check for the absorb ID in instantaneous absorbs first, since its low cost.
-      if ( p.instant_absorb_list.find( p.absorb_priority[ i ] ) != p.instant_absorb_list.end() )
+      auto it = p.instant_absorb_list.find( p.absorb_priority[ i ] );
+      if ( it != p.instant_absorb_list.end() )
       {
-        instant_absorb_t* ab = p.instant_absorb_list[ p.absorb_priority[ i ] ];
+        instant_absorb_t& ab = it->second;
 
         // eligibility is handled in the instant absorb's handler
-        double absorbed = ab -> consume( s );
+        double absorbed = ab.consume( s );
 
         s -> result_amount -= absorbed;
         s -> self_absorb_amount += absorbed;
 
         if ( p.sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() && absorbed != 0 )
-          p.sim -> out_debug.printf( "Damage to %s after %s is %f", s -> target -> name(), ab -> name.c_str(), s -> result_amount );
+          p.sim -> out_debug.printf( "Damage to %s after %s is %f", s -> target -> name(), ab.name.c_str(), s -> result_amount );
       }
       else
       {
@@ -6277,7 +6284,7 @@ struct variable_t : public action_t
 {
   action_var_e operation;
   action_variable_t* var;
-  std::string value_str, value_else_str, var_name_str, condition_str;;
+  std::string value_str, value_else_str, var_name_str, condition_str;
   expr_t* value_expression;
   expr_t* condition_expression;
   expr_t* value_else_expression;
@@ -8639,6 +8646,15 @@ expr_t* player_t::create_expression( action_t* a,
   if ( expression_str == "desired_targets" )
     return expr_t::create_constant( expression_str, sim -> desired_targets );
 
+  if ( util::str_compare_ci( expression_str, "is_add" ) )
+  {
+    return make_mem_fn_expr( expression_str, *this, &player_t::is_add );
+  }
+  else if ( util::str_compare_ci( expression_str, "is_enemy" ) )
+  {
+    return make_mem_fn_expr( expression_str, *this, &player_t::is_enemy );
+  }
+
   // time_to_pct expressions
   if ( util::str_in_str_ci( expression_str, "time_to_" ) )
   {
@@ -9232,7 +9248,7 @@ expr_t* player_t::create_expression( action_t* a,
       return 0;
     }
 
-    spell_data_t* s;
+    spell_data_t* s = nullptr;
 
     if ( splits[ 0 ] == "talent" )
     {
@@ -11315,7 +11331,7 @@ action_t* player_t::select_action( const action_priority_list_t& list )
 
     if ( a -> background ) continue;
 
-    if ( a -> wait_on_ready == 1 )
+    if ( a -> option.wait_on_ready == 1 )
       break;
 
     if ( a -> ready() )
@@ -11652,3 +11668,80 @@ void player_t::acquire_target( retarget_event_e event, player_t* context )
   }
 }
 
+// Expansion specific helpers
+
+stat_e expansion::legion::concordance_stat_type( const player_t& player )
+{
+  switch ( player.specialization() )
+  {
+    case WARRIOR_ARMS:
+    case WARRIOR_FURY:
+    case PALADIN_RETRIBUTION:
+    case DEATH_KNIGHT_FROST:
+    case DEATH_KNIGHT_UNHOLY:
+      return STAT_STRENGTH;
+
+    case HUNTER_BEAST_MASTERY:
+    case HUNTER_MARKSMANSHIP:
+    case HUNTER_SURVIVAL:
+    case ROGUE_ASSASSINATION:
+    case ROGUE_OUTLAW:
+    case ROGUE_SUBTLETY:
+    case SHAMAN_ENHANCEMENT:
+    case MONK_WINDWALKER:
+    case DRUID_FERAL:
+    case DEMON_HUNTER_HAVOC:
+      return STAT_AGILITY;
+
+    case PRIEST_SHADOW:
+    case SHAMAN_ELEMENTAL:
+    case MAGE_ARCANE:
+    case MAGE_FIRE:
+    case MAGE_FROST:
+    case WARLOCK_AFFLICTION:
+    case WARLOCK_DEMONOLOGY:
+    case WARLOCK_DESTRUCTION:
+    case DRUID_BALANCE:
+      return STAT_INTELLECT;
+
+    case WARRIOR_PROTECTION:
+    case PALADIN_PROTECTION:
+    case DEATH_KNIGHT_BLOOD:
+    case MONK_BREWMASTER:
+    case DRUID_GUARDIAN:
+    case DEMON_HUNTER_VENGEANCE:
+      return STAT_VERSATILITY_RATING;
+
+    case PALADIN_HOLY:
+    case PRIEST_DISCIPLINE:
+    case PRIEST_HOLY:
+    case SHAMAN_RESTORATION:
+    case MONK_MISTWEAVER:
+    case DRUID_RESTORATION:
+      return STAT_INTELLECT;
+
+    default:
+      return STAT_NONE;
+  }
+}
+
+void expansion::legion::initialize_concordance( player_t& player )
+{
+  // Unconditionally initialize 7.2 "infinite" buff
+  artifact_power_t concordance = player.find_artifact_spell( "Concordance of the Legionfall" );
+
+  stat_buff_t* buff = stat_buff_creator_t( &( player ), "concordance_of_the_legionfall" )
+    .spell( player.find_spell( 242583 ) )
+    .add_stat( concordance_stat_type( player ), concordance.value() );
+
+  // Install a callback handler only if the player has the relevant artifact-related attributes
+  auto artifact_id = player.dbc.artifact_by_spec( player.specialization() );
+  if ( artifact_id > 0 && player.artifact.slot != SLOT_INVALID && concordance.rank() > 0 )
+  {
+    special_effect_t* effect = new special_effect_t( &( player ) );
+    effect -> type = SPECIAL_EFFECT_EQUIP;
+    effect -> spell_id = concordance.data().id();
+    effect -> custom_buff = buff;
+    player.special_effects.push_back( effect );
+  }
+}

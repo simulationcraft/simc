@@ -1428,10 +1428,10 @@ public:
 
     if ( ab::p() -> talent.aftershock -> ok() &&
          ab::current_resource() == RESOURCE_MAELSTROM &&
-         ab::resource_consumed > 0 )
+         ab::last_resource_cost > 0 )
     {
       ab::p() -> resource_gain( RESOURCE_MAELSTROM,
-          ab::resource_consumed * ab::p() -> talent.aftershock -> effectN( 1 ).percent(),
+          ab::last_resource_cost * ab::p() -> talent.aftershock -> effectN( 1 ).percent(),
           ab::p() -> gain.aftershock,
           nullptr );
     }
@@ -4976,18 +4976,18 @@ struct earth_shock_t : public shaman_spell_t
     if ( p() -> sets.has_set_bonus( SHAMAN_ELEMENTAL, T18, B2 ) &&
          rng().roll( p() -> sets.set( SHAMAN_ELEMENTAL, T18, B2 ) -> effectN( 1 ).percent() ) )
     {
-      p() -> resource_gain( RESOURCE_MAELSTROM, resource_consumed, p() -> gain.t18_2pc_elemental, this );
+      p() -> resource_gain( RESOURCE_MAELSTROM, last_resource_cost, p() -> gain.t18_2pc_elemental, this );
     }
 
     if ( eotgs_base_chance > 0 )
     {
       p() -> buff.echoes_of_the_great_sundering -> trigger( 1, buff_t::DEFAULT_VALUE(),
-          eotgs_base_chance * resource_consumed );
+          eotgs_base_chance * last_resource_cost );
     }
 
     if ( rng().roll( tdbp_proc_chance ) )
     {
-      p() -> resource_gain( RESOURCE_MAELSTROM, resource_consumed, p() -> gain.the_deceivers_blood_pact, this );
+      p() -> resource_gain( RESOURCE_MAELSTROM, last_resource_cost, p() -> gain.the_deceivers_blood_pact, this );
     }
   }
 };
@@ -5744,8 +5744,7 @@ struct flametongue_buff_t : public buff_t
   shaman_t* p;
 
   flametongue_buff_t( shaman_t* p ) :
-    buff_t( buff_creator_t( p, "flametongue" )
-      .spell( p -> find_specialization_spell( "Flametongue" ) -> effectN( 3 ).trigger() )
+    buff_t( buff_creator_t( p, "flametongue", p -> find_specialization_spell( "Flametongue" ) -> effectN( 3 ).trigger() )
       .refresh_behavior( BUFF_REFRESH_PANDEMIC ) ),
     p( p )
   { }
@@ -6834,14 +6833,12 @@ void shaman_t::create_buffs()
   buff.hot_hand = buff_creator_t( this, "hot_hand", talent.hot_hand -> effectN( 1 ).trigger() )
                   .trigger_spell( talent.hot_hand );
 
-  buff.t19_oh_8pc = stat_buff_creator_t( this, "might_of_the_maelstrom" )
-    .spell( sets.set( specialization(), T19OH, B8 ) -> effectN( 1 ).trigger() )
+  buff.t19_oh_8pc = stat_buff_creator_t( this, "might_of_the_maelstrom", sets.set( specialization(), T19OH, B8 ) -> effectN( 1 ).trigger() )
     .trigger_spell( sets.set( specialization(), T19OH, B8 ) );
   buff.elemental_mastery = haste_buff_creator_t( this, "elemental_mastery", talent.elemental_mastery )
                            .default_value( 1.0 / ( 1.0 + talent.elemental_mastery -> effectN( 1 ).percent() ) )
                            .cd( timespan_t::zero() ); // Handled by the action
-  buff.t18_4pc_enhancement = buff_creator_t( this, "natures_reprisal" )
-    .spell( sets.set( SHAMAN_ENHANCEMENT, T18, B4 ) -> effectN( 1 ).trigger() )
+  buff.t18_4pc_enhancement = buff_creator_t( this, "natures_reprisal", sets.set( SHAMAN_ENHANCEMENT, T18, B4 ) -> effectN( 1 ).trigger() )
     .trigger_spell( sets.set( SHAMAN_ENHANCEMENT, T18, B4 ) )
     .default_value( sets.set( SHAMAN_ENHANCEMENT, T18, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
