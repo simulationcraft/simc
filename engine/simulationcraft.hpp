@@ -7776,8 +7776,6 @@ inline double target_wrapper_expr_t::evaluate()
     proxy_expr[ actor_index ] = target() -> create_expression( &( action ), suffix_expr_str );
   }
 
-  std::cout << "target_wrapper_expr_t " << name() << " evaluate " << target() -> name() << " " <<  proxy_expr[ actor_index ] -> eval() << std::endl;
-
   return proxy_expr[ actor_index ] -> eval();
 }
 

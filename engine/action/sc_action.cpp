@@ -3076,6 +3076,15 @@ expr_t* action_t::create_expression( const std::string& name_str )
     if ( expr_target )
       return expr_target -> create_expression( this, rest );
 
+    // Ensure that we can create an expression, if not, bail out early
+    auto expr_ptr = target -> create_expression( this, rest );
+    if ( expr_ptr == nullptr )
+    {
+      return nullptr;
+    }
+    // Delete the freshly created expression that tested for expression validity
+    delete expr_ptr;
+
     // Proxy target based expression, allowing "dynamic switching" of targets
     // for the "target.<expression>" expressions. Generates a suitable
     // expression on demand for each target during run-time.
