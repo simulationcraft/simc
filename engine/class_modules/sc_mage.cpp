@@ -3778,15 +3778,8 @@ struct comet_storm_projectile_t : public frost_mage_spell_t
   {
     aoe = -1;
     background = true;
-    school = SCHOOL_FROST;
-    calculate_on_impact = true;
     // PTR Multiplier
     base_multiplier *= 1.0 + p -> find_spell( 137020 ) -> effectN( 1 ).percent();
-  }
-
-  virtual timespan_t travel_time() const override
-  {
-    return timespan_t::from_seconds( 1.0 );
   }
 };
 
@@ -3799,27 +3792,23 @@ struct comet_storm_t : public frost_mage_spell_t
     projectile( new comet_storm_projectile_t( p ) )
   {
     parse_options( options_str );
-
     may_miss = false;
-
-    base_tick_time    = timespan_t::from_seconds( 0.2 );
-    dot_duration      = timespan_t::from_seconds( 1.2 );
-    hasted_ticks      = false;
-
-    dynamic_tick_action = true;
     add_child( projectile );
   }
 
-  virtual void execute() override
+  virtual timespan_t travel_time() const override
   {
-    frost_mage_spell_t::execute();
-    projectile -> execute();
+    return timespan_t::from_seconds( 1.0 );
   }
 
-  void tick( dot_t* d ) override
+  void impact( action_state_t* s ) override
   {
-    frost_mage_spell_t::tick( d );
-    projectile -> execute();
+    frost_mage_spell_t::impact( s );
+    make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
+      .pulse_time( timespan_t::from_seconds( 0.2 ) )
+      .target( s -> target )
+      .duration( timespan_t::from_seconds( 1.2 ) )
+      .action( projectile ), true );
   }
 };
 
@@ -4673,13 +4662,6 @@ struct ice_time_nova_t : public frost_mage_spell_t
   {
     background = may_crit = true;
     aoe = -1;
-    calculate_on_impact = true;
-  }
-
-  //This is a hack-ish way to sync Frozen Orb ending to Ice Time Nova executing
-  timespan_t travel_time() const override
-  {
-    return timespan_t::from_seconds( 10.0 );
   }
 
   virtual void impact( action_state_t* s ) override
@@ -4763,7 +4745,7 @@ struct frozen_orb_t : public frost_mage_spell_t
     frost_mage_spell_t( "frozen_orb", p,
                         p -> find_class_spell( "Frozen Orb" ) ),
     ice_time( false ),
-    ice_time_nova( new ice_time_nova_t( p  ) ),
+    ice_time_nova( new ice_time_nova_t( p ) ),
     frozen_orb_bolt( new frozen_orb_bolt_t( p ) )
   {
     parse_options( options_str );
@@ -4807,9 +4789,11 @@ struct frozen_orb_t : public frost_mage_spell_t
     }
     if ( ice_time )
     {
-      ice_time_nova -> target = s -> target;
-      // Schedule an execute so we get "travel time" on ice_time_nova
-      ice_time_nova -> schedule_execute();
+      make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
+        .pulse_time( timespan_t::from_seconds( 10.0 ) )
+        .target( s -> target )
+        .duration( timespan_t::from_seconds( 10.0 ) )
+        .action( ice_time_nova ) );
     }
   }
 };
