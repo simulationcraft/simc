@@ -4753,7 +4753,6 @@ struct frozen_orb_t : public frost_mage_spell_t
     add_child( ice_time_nova );
     may_miss       = false;
     may_crit       = false;
-    travel_speed = 20;
   }
 
   virtual bool init_finished() override
@@ -9805,6 +9804,12 @@ public:
       .field( "prj_speed" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( 45.0 )
+      .verification_value( 0.0 );
+
+    hotfix::register_spell( "Mage", "2017-03-20", "Manually set Frozen Orb's travel speed.", 84714 )
+      .field( "prj_speed" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 20.0 )
       .verification_value( 0.0 );
   }
 
