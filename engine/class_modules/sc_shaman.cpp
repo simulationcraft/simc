@@ -510,6 +510,14 @@ public:
     const spell_data_t* fury_of_the_storms_driver;
   } spell;
 
+  struct legendary_t
+  {
+    const spell_data_t* sephuzs_secret;
+
+    legendary_t() : sephuzs_secret( spell_data_t::not_found() )
+    { }
+  } legendary;
+
   // Cached pointer for ascendance / normal white melee
   shaman_attack_t* melee_mh;
   shaman_attack_t* melee_oh;
@@ -538,7 +546,8 @@ public:
     spec(),
     mastery(),
     talent(),
-    spell()
+    spell(),
+    legendary()
   {
     range::fill( pet.spirit_wolves, nullptr );
     range::fill( pet.doom_wolves, nullptr );
@@ -614,6 +623,7 @@ public:
   void      moving() override;
   void      invalidate_cache( cache_e c ) override;
   double    temporary_movement_modifier() const override;
+  double    passive_movement_modifier() const override;
   double    composite_melee_crit_chance() const override;
   double    composite_melee_haste() const override;
   double    composite_melee_speed() const override;
@@ -7485,7 +7495,14 @@ double shaman_t::composite_spell_haste() const
 
   if ( buff.sephuzs_secret -> check() )
   {
-    h *= 1.0 / (1.0 + buff.sephuzs_secret->stack_value());
+    h *= 1.0 / (1.0 + buff.sephuzs_secret -> stack_value() );
+  }
+
+  // 7.2 Sephuz's Secret passive haste. If the item is missing, default_chance will be set to 0 (by
+  // the fallback buff creator).
+  if ( maybe_ptr( dbc.ptr ) && legendary.sephuzs_secret -> ok() )
+  {
+    h *= 1.0 / ( 1.0 + legendary.sephuzs_secret -> effectN( 3 ).percent() );
   }
 
   return h;
@@ -7527,6 +7544,22 @@ double shaman_t::temporary_movement_modifier() const
   return ms;
 }
 
+// shaman_t::passive_movement_modifier =======================================
+
+double shaman_t::passive_movement_modifier() const
+{
+  double ms = player_t::passive_movement_modifier();
+
+  // 7.2 Sephuz's Secret passive movement speed. If the item is missing, default_chance will be set
+  // to 0 (by the fallback buff creator).
+  if ( maybe_ptr( dbc.ptr ) && legendary.sephuzs_secret -> ok() )
+  {
+    ms += legendary.sephuzs_secret -> effectN( 2 ).percent();
+  }
+
+  return ms;
+}
+
 // shaman_t::composite_melee_crit_chance ===========================================
 
 double shaman_t::composite_melee_crit_chance() const
@@ -7560,6 +7593,13 @@ double shaman_t::composite_melee_haste() const
   if ( buff.sephuzs_secret -> check() )
   {
     h *= 1.0 / (1.0 + buff.sephuzs_secret->stack_value());
+  }
+
+  // 7.2 Sephuz's Secret passive haste. If the item is missing, default_chance will be set to 0 (by
+  // the fallback buff creator).
+  if ( maybe_ptr( dbc.ptr ) && legendary.sephuzs_secret -> ok() )
+  {
+    h *= 1.0 / ( 1.0 + legendary.sephuzs_secret -> effectN( 2 ).percent() );
   }
 
   return h;
@@ -8401,6 +8441,15 @@ struct uncertain_reminder_t : public scoped_actor_callback_t<shaman_t>
   }
 };
 
+struct sephuzs_secret_enabler_t : public scoped_actor_callback_t<shaman_t>
+{
+  sephuzs_secret_enabler_t() : scoped_actor_callback_t( SHAMAN )
+  { }
+
+  void manipulate( shaman_t* shaman, const special_effect_t& e ) override
+  { shaman -> legendary.sephuzs_secret = e.driver(); }
+};
+
 struct sephuzs_secret_t : public class_buff_cb_t<shaman_t, haste_buff_t, haste_buff_creator_t>
 {
   sephuzs_secret_t() : super( SHAMAN, "sephuzs_secret" )
@@ -8465,6 +8514,7 @@ struct shaman_module_t : public module_t
     register_special_effect( 207994, eotn_buff_shock_t(), true );
     register_special_effect( 207994, eotn_buff_chill_t(), true );
     register_special_effect( 234814, uncertain_reminder_t() );
+    register_special_effect( 208051, sephuzs_secret_enabler_t() );
     register_special_effect( 208051, sephuzs_secret_t(), true );
   }
 
