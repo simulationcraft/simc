@@ -1344,6 +1344,81 @@ struct auto_attack_t: public warrior_attack_t
 
 // Mortal Strike ============================================================
 
+struct mortal_strike_t20_t : public warrior_attack_t
+{
+  mortal_strike_t20_t( warrior_t* p, const std::string& name ) :
+    warrior_attack_t( name, p, p -> spec.mortal_strike )
+  {
+    cooldown -> duration = timespan_t::zero();
+    weapon = &( p -> main_hand_weapon );
+    weapon_multiplier *= 1.0 + p -> artifact.thoradins_might.percent();
+  }
+
+  double composite_crit_chance() const override
+  {
+    double cc = warrior_attack_t::composite_crit_chance();
+
+    if ( p() -> buff.shattered_defenses -> check() )
+    {
+      cc += p() -> buff.shattered_defenses -> data().effectN( 2 ).percent();
+    }
+
+    return cc;
+  }
+
+  double action_multiplier() const override
+  {
+    double am = warrior_attack_t::action_multiplier();
+
+    am *= 1.0 + p() -> buff.shattered_defenses -> stack_value();
+    am *= 1.0 + p() -> buff.focused_rage -> stack_value();
+    am *= 1.0 + p() -> buff.executioners_precision -> stack_value();
+
+    return am;
+  }
+
+  double cost() const override
+  {
+    return 0;
+  }
+
+  void execute() override
+  {
+    warrior_attack_t::execute();
+
+    if ( result_is_hit( execute_state -> result ) )
+    {
+      if ( sim -> overrides.mortal_wounds )
+      {
+        execute_state -> target -> debuffs.mortal_wounds -> trigger();
+      }
+      if ( p() -> talents.in_for_the_kill -> ok() && execute_state -> target -> health_percentage() <= 20 )
+      {
+        p() -> resource_gain( RESOURCE_RAGE, p() -> talents.in_for_the_kill -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ),
+                              p() -> gain.in_for_the_kill );
+      }
+      p() -> buff.focused_rage -> expire();
+    }
+    p() -> buff.shattered_defenses -> expire();
+    p() -> buff.precise_strikes -> expire();
+    p() -> buff.executioners_precision -> expire();
+    if ( p() -> archavons_heavy_hand )
+    {
+      p() -> resource_gain( RESOURCE_RAGE, p() -> archavons_heavy_hand -> driver() -> effectN( 1 ).resource( RESOURCE_RAGE ), p() -> gain.archavons_heavy_hand );
+    }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    warrior_attack_t::impact( s );
+
+    if ( s -> result == RESULT_CRIT )
+    {
+      arms_t19_2p();
+    }
+  }
+};
+
 struct mortal_strike_t : public warrior_attack_t
 {
   mortal_strike_t( warrior_t* p, const std::string& options_str ) :
@@ -1441,10 +1516,8 @@ struct mortal_strike_t : public warrior_attack_t
 
 struct bladestorm_tick_t: public warrior_attack_t
 {
-  mortal_strike_t* mortal_strike;
   bladestorm_tick_t( warrior_t* p, const std::string& name ):
-    warrior_attack_t( name, p, p -> specialization() == WARRIOR_FURY ? p -> talents.bladestorm -> effectN( 1 ).trigger() : p -> spec.bladestorm -> effectN( 1 ).trigger() ),
-    mortal_strike( nullptr )
+    warrior_attack_t( name, p, p -> specialization() == WARRIOR_FURY ? p -> talents.bladestorm -> effectN( 1 ).trigger() : p -> spec.bladestorm -> effectN( 1 ).trigger() )
   {
     dual = true;
     aoe = -1;
@@ -1452,23 +1525,6 @@ struct bladestorm_tick_t: public warrior_attack_t
     {
       weapon_multiplier *= 1.0 + p->spell.arms_warrior->effectN( 5 ).percent();
       weapon_multiplier *= 1.0 + p -> artifact.storm_of_swords.percent();
-    }
-    if ( p -> sets.has_set_bonus( WARRIOR_ARMS, T20, B2 ) )
-      mortal_strike = new mortal_strike_t( p, "" );
-  }
-
-  void execute() override
-  {
-    warrior_attack_t::execute();
-    if ( mortal_strike )
-    {
-      auto t = select_random_target();
-
-      if ( t )
-      {
-        mortal_strike -> target = t;
-        mortal_strike -> execute();
-      }
     }
   }
 
@@ -1487,9 +1543,11 @@ struct bladestorm_tick_t: public warrior_attack_t
 struct bladestorm_t: public warrior_attack_t
 {
   attack_t* bladestorm_mh, *bladestorm_oh;
+  mortal_strike_t20_t* mortal_strike;
   bladestorm_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "bladestorm", p, p -> specialization() == WARRIOR_FURY ? p -> talents.bladestorm : p -> spec.bladestorm ),
-    bladestorm_mh( new bladestorm_tick_t( p, "bladestorm_mh" ) ), bladestorm_oh( nullptr )
+    bladestorm_mh( new bladestorm_tick_t( p, "bladestorm_mh" ) ), bladestorm_oh( nullptr ),
+    mortal_strike( nullptr )
   {
     if ( p -> talents.ravager -> ok() )
     {
@@ -1509,6 +1567,11 @@ struct bladestorm_t: public warrior_attack_t
         bladestorm_oh -> weapon = &( player -> off_hand_weapon );
         add_child( bladestorm_oh );
       }
+      if ( p -> sets.has_set_bonus( WARRIOR_ARMS, T20, B2 ) )
+      {
+        mortal_strike = new mortal_strike_t20_t( p, "bladestorm_mortal_strike" );
+        add_child( mortal_strike );
+      }
     }
   }
 
@@ -1526,6 +1589,16 @@ struct bladestorm_t: public warrior_attack_t
     if ( bladestorm_mh -> result_is_hit( execute_state -> result ) && bladestorm_oh )
     {
       bladestorm_oh -> execute();
+    }
+    if ( mortal_strike )
+    {
+      auto t = select_random_target();
+
+      if ( t )
+      {
+        mortal_strike -> target = t;
+        mortal_strike -> execute();
+      }
     }
   }
 
@@ -3198,48 +3271,36 @@ struct rampage_parent_t: public warrior_attack_t
 
 struct ravager_tick_t: public warrior_attack_t
 {
-  mortal_strike_t* mortal_strike;
-  bool trigger_ms;
   ravager_tick_t( warrior_t* p, const std::string& name ):
-    warrior_attack_t( name, p, p -> find_spell( 156287 ) ),
-    mortal_strike( nullptr ), trigger_ms( false )
+    warrior_attack_t( name, p, p -> find_spell( 156287 ) )
   {
     aoe = -1;
     dual = ground_aoe = true;
-    attack_power_mod.direct *= 1.0 + p -> spell.prot_warrior -> effectN( 3 ).percent();//89% damage decrease for prot.
+    if ( p -> specialization() == WARRIOR_PROTECTION )
+      attack_power_mod.direct *= 1.0 + p -> spell.prot_warrior -> effectN( 3 ).percent();//89% damage decrease for prot.
     weapon_multiplier *= 1.0 + p -> artifact.storm_of_swords.percent();
-    if ( p -> sets.has_set_bonus( WARRIOR_ARMS, T20, B2 ) )
-      mortal_strike = new mortal_strike_t( p, "" );
-  }
-
-  void execute() override
-  {
-    warrior_attack_t::execute();
-    if ( mortal_strike && trigger_ms )
-    {
-      auto t = select_random_target();
-
-      if ( t )
-      {
-        mortal_strike -> target = t;
-        mortal_strike -> execute();
-      }
-    }
   }
 };
 
 struct ravager_t: public warrior_attack_t
 {
   ravager_tick_t* ravager;
+  mortal_strike_t20_t* mortal_strike;
   ravager_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "ravager", p, p -> talents.ravager ),
-    ravager( new ravager_tick_t( p, "ravager_tick" ) )
+    ravager( new ravager_tick_t( p, "ravager_tick" ) ),
+    mortal_strike( nullptr )
   {
     parse_options( options_str );
     ignore_false_positive = true;
     hasted_ticks = callbacks = false;
     attack_power_mod.direct = attack_power_mod.tick = 0;
     add_child( ravager );
+    if ( p -> sets.has_set_bonus( WARRIOR_ARMS, T20, B2 ) )
+    {
+      mortal_strike = new mortal_strike_t20_t( p, "ravager_mortal_strike" );
+      add_child( mortal_strike );
+    }
   }
 
   void execute() override
@@ -3259,11 +3320,17 @@ struct ravager_t: public warrior_attack_t
   void tick( dot_t*d ) override
   {
     warrior_attack_t::tick( d );
-    if ( d -> ticks_left() > 2 )
-      ravager -> trigger_ms = true;
-    else
-      ravager -> trigger_ms = false;
     ravager -> execute();
+    if ( mortal_strike && d -> ticks_left() > 2 )
+    {
+      auto t = select_random_target();
+
+      if ( t )
+      {
+        mortal_strike -> target = t;
+        mortal_strike -> execute();
+      }
+    }
   }
 };
 
