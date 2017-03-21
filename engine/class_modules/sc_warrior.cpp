@@ -1981,7 +1981,7 @@ struct colossus_smash_t: public warrior_attack_t
       if ( p() -> talents.ravager -> ok() )
         p() -> cooldown.ravager -> adjust( t20_4p_reduction );
       else
-        p() -> cooldown.ravager -> adjust( t20_4p_reduction );
+        p() -> cooldown.bladestorm -> adjust( t20_4p_reduction );
     }
   }
 
