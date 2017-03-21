@@ -614,6 +614,7 @@ public:
   void      moving() override;
   void      invalidate_cache( cache_e c ) override;
   double    temporary_movement_modifier() const override;
+  double    passive_movement_modifier() const override;
   double    composite_melee_crit_chance() const override;
   double    composite_melee_haste() const override;
   double    composite_melee_speed() const override;
@@ -7488,6 +7489,13 @@ double shaman_t::composite_spell_haste() const
     h *= 1.0 / (1.0 + buff.sephuzs_secret->stack_value());
   }
 
+  // 7.2 Sephuz's Secret passive haste. If the item is missing, default_chance will be set to 0 (by
+  // the fallback buff creator).
+  if ( maybe_ptr( dbc.ptr ) && buff.sephuzs_secret -> default_chance != 0 )
+  {
+    h *= 1.0 / (1.0 + buff.sephuzs_secret -> data().effectN( 2 ).percent() );
+  }
+
   return h;
 }
 
@@ -7527,6 +7535,22 @@ double shaman_t::temporary_movement_modifier() const
   return ms;
 }
 
+// shaman_t::passive_movement_modifier =======================================
+
+double shaman_t::passive_movement_modifier() const
+{
+  double ms = player_t::passive_movement_modifier();
+
+  // 7.2 Sephuz's Secret passive movement speed. If the item is missing, default_chance will be set
+  // to 0 (by the fallback buff creator).
+  if ( maybe_ptr( dbc.ptr ) && buff.sephuzs_secret -> default_chance != 0 )
+  {
+    ms += buff.sephuzs_secret -> data().effectN( 3 ).percent();
+  }
+
+  return ms;
+}
+
 // shaman_t::composite_melee_crit_chance ===========================================
 
 double shaman_t::composite_melee_crit_chance() const
@@ -7560,6 +7584,13 @@ double shaman_t::composite_melee_haste() const
   if ( buff.sephuzs_secret -> check() )
   {
     h *= 1.0 / (1.0 + buff.sephuzs_secret->stack_value());
+  }
+
+  // 7.2 Sephuz's Secret passive haste. If the item is missing, default_chance will be set to 0 (by
+  // the fallback buff creator).
+  if ( maybe_ptr( dbc.ptr ) && buff.sephuzs_secret -> default_chance != 0 )
+  {
+    h *= 1.0 / (1.0 + buff.sephuzs_secret -> data().effectN( 2 ).percent() );
   }
 
   return h;
