@@ -3278,7 +3278,7 @@ struct ravager_tick_t: public warrior_attack_t
     dual = ground_aoe = true;
     if ( p -> specialization() == WARRIOR_PROTECTION )
       attack_power_mod.direct *= 1.0 + p -> spell.prot_warrior -> effectN( 3 ).percent();//89% damage decrease for prot.
-    weapon_multiplier *= 1.0 + p -> artifact.storm_of_swords.percent();
+    attack_power_mod.direct *= 1.0 + p -> artifact.storm_of_swords.percent();
   }
 };
 
