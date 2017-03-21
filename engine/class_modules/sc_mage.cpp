@@ -626,6 +626,7 @@ public:
   virtual void      update_movement( timespan_t duration ) override;
   virtual void      stun() override;
   virtual double    temporary_movement_modifier() const override;
+  virtual double    passive_movement_modifier() const override;
   virtual void      arise() override;
   virtual action_t* select_action( const action_priority_list_t& ) override;
   virtual void      copy_from( player_t* ) override;
@@ -9303,6 +9304,11 @@ double mage_t::composite_spell_haste() const
     h *= iv_haste;
   }
 
+  if ( buffs.sephuzs_secret -> default_chance != 0 )
+  {
+    h /= 1.0 + buffs.sephuzs_secret -> data().driver() -> effectN( 3 ).percent();
+  }
+
   if ( buffs.sephuzs_secret -> check() )
   {
     h /= 1.0 + buffs.sephuzs_secret -> stack_value();
@@ -9443,6 +9449,20 @@ double mage_t::temporary_movement_modifier() const
   }
 
   return tmm;
+}
+
+// mage_t::passive_movement_modifier ====================================
+
+double mage_t::passive_movement_modifier() const
+{
+  double pmm = player_t::passive_movement_modifier();
+
+  if ( buffs.sephuzs_secret -> default_chance != 0 )
+  {
+    pmm += buffs.sephuzs_secret -> data().driver() -> effectN( 2 ).percent();
+  }
+
+  return pmm;
 }
 
 // mage_t::arise ============================================================
