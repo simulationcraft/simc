@@ -71,6 +71,10 @@
 #  error "g++ below version 4.7 not supported"
 #endif
 
+#if defined( SC_GCC ) && SC_GCC < 40800
+#  warning "g++ below version 4.8 is deprecated. Please update until 2017-05-01."
+#endif
+
 // ==========================================================================
 // Compiler Workarounds
 // ==========================================================================

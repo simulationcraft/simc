@@ -1777,10 +1777,12 @@ struct icy_veins_buff_t : public haste_buff_t
 struct incanters_flow_t : public buff_t
 {
   incanters_flow_t( mage_t* p ) :
-    buff_t( buff_creator_t( p, "incanters_flow", p -> find_spell( 116267 ) ) // Buff is a separate spell
-            .duration( p -> sim -> max_time * 3 ) // Long enough duration to trip twice_expected_event
-            .period( p -> talents.incanters_flow -> effectN( 1 ).period() ) ) // Period is in the talent
-  { }
+    buff_t( p, "incanters_flow", p -> find_spell( 116267 ) ) // Buff is a separate spell
+  {
+    set_duration( p -> sim -> max_time * 3 ); // Long enough duration to trip twice_expected_event
+    set_period( p -> talents.incanters_flow -> effectN( 1 ).period() ); // Period is in the talent
+    set_tick_behavior( BUFF_TICK_CLIP );
+  }
 
   void bump( int stacks, double value ) override
   {
@@ -1938,7 +1940,7 @@ public:
 
       // If cycle_targets or target_if option is used, we need to target the spell to the (found)
       // target of the action, as it was selected during the action_t::ready() call.
-      if ( cycle_targets == 1 || target_if_mode != TARGET_IF_NONE )
+      if ( option.cycle_targets || target_if_mode != TARGET_IF_NONE )
         state -> target = target;
       // Put the actor's current target into the state object always.
       else
@@ -2208,7 +2210,7 @@ struct fire_mage_spell_t : public mage_spell_t
         {
           p -> procs.hot_streak -> occur();
           // Check if HS was triggered by IB
-          if ( s -> action -> s_data -> _id == 108853 )
+          if ( s -> action -> data().id() == 108853 )
           {
             p -> procs.heating_up_ib_converted -> occur();
           }
@@ -2345,7 +2347,7 @@ struct frost_spell_state_t : action_state_t
     const mage_t* p = debug_cast<const mage_t*>( action -> player );
     const mage_td_t* td = p -> get_target_data( target );
 
-    return ( action -> s_data -> _id == 30455 && fof )
+    return ( action -> data().id() == 30455 && fof )
         || ( td -> debuffs.winters_chill -> up() )
         || ( td -> debuffs.frozen -> up() );
   }
@@ -3776,15 +3778,8 @@ struct comet_storm_projectile_t : public frost_mage_spell_t
   {
     aoe = -1;
     background = true;
-    school = SCHOOL_FROST;
-    calculate_on_impact = true;
     // PTR Multiplier
     base_multiplier *= 1.0 + p -> find_spell( 137020 ) -> effectN( 1 ).percent();
-  }
-
-  virtual timespan_t travel_time() const override
-  {
-    return timespan_t::from_seconds( 1.0 );
   }
 };
 
@@ -3797,27 +3792,23 @@ struct comet_storm_t : public frost_mage_spell_t
     projectile( new comet_storm_projectile_t( p ) )
   {
     parse_options( options_str );
-
     may_miss = false;
-
-    base_tick_time    = timespan_t::from_seconds( 0.2 );
-    dot_duration      = timespan_t::from_seconds( 1.2 );
-    hasted_ticks      = false;
-
-    dynamic_tick_action = true;
     add_child( projectile );
   }
 
-  virtual void execute() override
+  virtual timespan_t travel_time() const override
   {
-    frost_mage_spell_t::execute();
-    projectile -> execute();
+    return timespan_t::from_seconds( 1.0 );
   }
 
-  void tick( dot_t* d ) override
+  void impact( action_state_t* s ) override
   {
-    frost_mage_spell_t::tick( d );
-    projectile -> execute();
+    frost_mage_spell_t::impact( s );
+    make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
+      .pulse_time( timespan_t::from_seconds( 0.2 ) )
+      .target( s -> target )
+      .duration( timespan_t::from_seconds( 1.2 ) )
+      .action( projectile ), true );
   }
 };
 
@@ -4671,13 +4662,6 @@ struct ice_time_nova_t : public frost_mage_spell_t
   {
     background = may_crit = true;
     aoe = -1;
-    calculate_on_impact = true;
-  }
-
-  //This is a hack-ish way to sync Frozen Orb ending to Ice Time Nova executing
-  timespan_t travel_time() const override
-  {
-    return timespan_t::from_seconds( 10.0 );
   }
 
   virtual void impact( action_state_t* s ) override
@@ -4761,7 +4745,7 @@ struct frozen_orb_t : public frost_mage_spell_t
     frost_mage_spell_t( "frozen_orb", p,
                         p -> find_class_spell( "Frozen Orb" ) ),
     ice_time( false ),
-    ice_time_nova( new ice_time_nova_t( p  ) ),
+    ice_time_nova( new ice_time_nova_t( p ) ),
     frozen_orb_bolt( new frozen_orb_bolt_t( p ) )
   {
     parse_options( options_str );
@@ -4769,7 +4753,6 @@ struct frozen_orb_t : public frost_mage_spell_t
     add_child( ice_time_nova );
     may_miss       = false;
     may_crit       = false;
-    travel_speed = 20;
   }
 
   virtual bool init_finished() override
@@ -4805,9 +4788,11 @@ struct frozen_orb_t : public frost_mage_spell_t
     }
     if ( ice_time )
     {
-      ice_time_nova -> target = s -> target;
-      // Schedule an execute so we get "travel time" on ice_time_nova
-      ice_time_nova -> schedule_execute();
+      make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
+        .pulse_time( timespan_t::from_seconds( 10.0 ) )
+        .target( s -> target )
+        .duration( timespan_t::from_seconds( 10.0 ) )
+        .action( ice_time_nova ) );
     }
   }
 };
@@ -7783,7 +7768,8 @@ void mage_t::create_buffs()
 //                                  .max_stack( 10 );
 //  buffs.temporal_power        = (new buff_t( this, "temporal_power", find_spell( 190623 ) )) -> set_max_stack( 10 );
 
-  buffs.temporal_power        = make_buff( this, "temporal_power", find_spell( 190623 ) ) -> set_max_stack( 10 );
+  buffs.temporal_power        = make_buff( this, "temporal_power", find_spell( 190623 ) );
+  buffs.temporal_power-> set_max_stack( 10U );
 
   // Fire
   buffs.combustion            = buff_creator_t( this, "combustion", find_spell( 190319 ) )
@@ -7852,8 +7838,8 @@ void mage_t::create_buffs()
                                    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   // Legendary
-  buffs.cord_of_infinity   = buff_creator_t( this, "cord_of_infinity", find_spell( 209316 ) )
-                                             .default_value( find_spell( 209311 ) -> effectN( 1 ).percent() );
+  buffs.cord_of_infinity   = make_buff( this, "cord_of_infinity", find_spell( 209316 ) )
+                                              -> set_default_value( find_spell( 209311 ) -> effectN( 1 ).percent() );
   buffs.magtheridons_might = buff_creator_t( this, "magtheridons_might", find_spell( 214404 ) );
   buffs.zannesu_journey    = buff_creator_t( this, "zannesu_journey", find_spell( 226852 ) );
   buffs.lady_vashjs_grasp  = new buffs::lady_vashjs_grasp_t( this );
@@ -7863,11 +7849,11 @@ void mage_t::create_buffs()
 
   //Misc
 
-  buffs.greater_blessing_of_widsom = buff_creator_t( this, "greater_blessing_of_wisdom", find_spell( 203539 ) )
-                                                    .tick_callback( [ this ]( buff_t*, int, const timespan_t& )
+  buffs.greater_blessing_of_widsom = make_buff( this, "greater_blessing_of_wisdom", find_spell( 203539 ) )
+                                                    -> set_tick_callback( [ this ]( buff_t*, int, const timespan_t& )
                                                                     { resource_gain( RESOURCE_MANA, resources.max[ RESOURCE_MANA ]*0.002,
                                                                       gains.greater_blessing_of_wisdom ); } )
-                                                    .period( find_spell( 203539 ) -> effectN( 2 ).period() );
+                                                    -> set_period( find_spell( 203539 ) -> effectN( 2 ).period() );
 }
 
 // mage_t::init_gains =======================================================
@@ -9101,7 +9087,7 @@ action_t* mage_t::select_action( const action_priority_list_t& list )
 
     if ( a -> background ) continue;
 
-    if ( a -> wait_on_ready == 1 )
+    if ( a -> option.wait_on_ready == 1 )
       break;
 
     // Change the target of the action before ready call ...
@@ -9818,6 +9804,12 @@ public:
       .field( "prj_speed" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( 45.0 )
+      .verification_value( 0.0 );
+
+    hotfix::register_spell( "Mage", "2017-03-20", "Manually set Frozen Orb's travel speed.", 84714 )
+      .field( "prj_speed" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 20.0 )
       .verification_value( 0.0 );
   }
 

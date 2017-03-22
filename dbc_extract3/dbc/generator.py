@@ -1242,7 +1242,7 @@ class SpellDataGenerator(DataGenerator):
          191124, 191146,
          214802, 214803,            # Momento of Angerboda trinket
          215476,                    # Obelisk of the Void trinket
-         215695,                    # Figurehead of the Naglfar trinket 
+         215695,                    # Figurehead of the Naglfar trinket
          215407,                    # Caged Horror trinket
          191545, 191548, 191549, 191550, 191551, 191552, 191553, 191554, # Darkmoon Deck: Dominion
          191603, 191604, 191605, 191606, 191607, 191608, 191609, 191610, # Darkmoon Deck: Hellfire
@@ -1303,7 +1303,9 @@ class SpellDataGenerator(DataGenerator):
             ( 180290, 0 ),          # ashen strike (speculative)
             ( 221883, 0 ),          # Divine Steed
             ( 228288, 0, True ),
-			( 205729, 0 ),
+            ( 205729, 0 ),
+            ( 238996, 0 ),          # Righteous Verdict
+            ( 242981, 0 ),          # Blessing of the Ashbringer
         ),
 
         # Hunter:
@@ -1555,7 +1557,7 @@ class SpellDataGenerator(DataGenerator):
           ( 210649, 2 ),       # Feral Instinct (Fangs of Ashamane artifact trait)
           ( 211140, 2 ),       # Feral tier19_2pc
           ( 211142, 2 ),       # Feral tier19_4pc
-          ( 213557, 2 ),       # Protection of Ashamane ICD (Fangs of Ashamane artifact trait) 
+          ( 213557, 2 ),       # Protection of Ashamane ICD (Fangs of Ashamane artifact trait)
           ( 211547, 1 ),       # Fury of Elune move spell
           ( 213771, 3 ),       # Swipe (Bear)
           ( 209406, 1 ),       # Oneth's Intuition buff

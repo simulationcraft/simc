@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build 3eb4aac)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build 8142444)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Discipline Shadow Priest
@@ -13,7 +13,7 @@ Category         : 56
 Proc Chance      : 101%
 Stance Mask      : 0x08000000
 Mechanic         : Unknown(162)
-Affecting spells : Improved Power Word: Shield (24191), Rapture (47536), Priest (137030), Shadow Priest (137033), Lucidity (137323), Clear Thoughts (167695), Voidform (194249), Skjoldr, Sanctuary of Ivagont (214576)
+Affecting spells : Improved Power Word: Shield (24191), Rapture (47536), Priest (137030), Shadow Priest (137033), Lucidity (137323), Clear Thoughts (167695), Voidform (194249)
 Attributes       : ........ ...x.... x.x..... ........   ........ ........ ........ ........ 
                  : ........ x....... ...x.x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 

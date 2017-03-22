@@ -587,6 +587,11 @@ public:
 
   //propagate_const( propagate_const&& p ) = default;
 
+  template <typename U>
+  propagate_const( U&& u ) : _M_t( std::forward<U>( u ) )
+  {
+  }
+
   explicit operator bool() const
   {
     return static_cast<bool>( _M_t );

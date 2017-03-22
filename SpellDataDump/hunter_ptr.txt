@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build 3eb4aac)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build 8142444)
 
 Name             : Mend Pet (id=136) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
@@ -6630,7 +6630,7 @@ Attributes       : ........ ........ ...x.... ..x.....   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=369283)   : Apply Aura (6) | Periodic Damage: nature every 2 seconds (3)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.00000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.33000 | Target: Enemy(6)
 Description      : Poisons the target, inflicting $o1 Nature damage every $t1 sec for $d, stacking up to $u times.
 Tooltip          : Inflicts $w1 Nature damage every $t sec.
 

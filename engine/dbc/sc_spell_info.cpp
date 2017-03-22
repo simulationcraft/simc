@@ -1173,7 +1173,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
       std::ostringstream value_str;
       std::ostringstream spells_str;
       value_str << ", Values: [ ";
-      bool has_multiple_spells = false;
+      // bool has_multiple_spells = false;
       for ( size_t i = 0, end = powers.size(); i < end; ++i )
       {
         const auto& power = powers[ i ];
@@ -1187,7 +1187,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
           auto rank_spell = dbc.spell( power -> id_spell() );
           value_str << rank_spell -> effectN( 1 ).base_value();
           spells_str << rank_spell -> id();
-          has_multiple_spells = true;
+          // has_multiple_spells = true;
         }
         else
         {

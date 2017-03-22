@@ -1486,6 +1486,9 @@ bool player_t::create_special_effects()
     special_effects.push_back( effect );
   }
 
+  // Initialize the buff and callback for the 7.2 "infinite" artifact power
+  expansion::legion::initialize_concordance( *this );
+
   // Initialize all item-based special effects. This includes any DBC-backed enchants, gems, as well
   // as inherent item effects that use a spell
   for ( auto& item: items )
@@ -2694,8 +2697,7 @@ void player_t::create_buffs()
       // Racials
       buffs.berserking                = haste_buff_creator_t( this, "berserking", find_spell( 26297 ) ).add_invalidate( CACHE_HASTE );
       buffs.stoneform                 = buff_creator_t( this, "stoneform", find_spell( 65116 ) );
-      buffs.blood_fury                = stat_buff_creator_t( this, "blood_fury" )
-                                        .spell( find_racial_spell( "Blood Fury" ) )
+      buffs.blood_fury                = stat_buff_creator_t( this, "blood_fury", find_racial_spell( "Blood Fury" ) )
                                         .add_invalidate( CACHE_SPELL_POWER )
                                         .add_invalidate( CACHE_ATTACK_POWER );
       buffs.fortitude                 = buff_creator_t( this, "fortitude", find_spell( 137593 ) ).activated( false );
@@ -2745,16 +2747,13 @@ void player_t::create_buffs()
     }
   }
 
-  buffs.courageous_primal_diamond_lucidity = buff_creator_t( this, "lucidity" )
-                                             .spell( find_spell( 137288 ) );
+  buffs.courageous_primal_diamond_lucidity = buff_creator_t( this, "lucidity", find_spell( 137288 ) );
 
-  buffs.body_and_soul = buff_creator_t( this, "body_and_soul" )
-                        .spell( find_spell( 64129 ) )
+  buffs.body_and_soul = buff_creator_t( this, "body_and_soul", find_spell( 64129 ) )
                         .max_stack( 1 )
                         .duration( timespan_t::from_seconds( 4.0 ) );
 
-  buffs.angelic_feather = buff_creator_t( this, "angelic_feather" )
-                          .spell( find_spell( 121557 ) )
+  buffs.angelic_feather = buff_creator_t( this, "angelic_feather", find_spell( 121557 ) )
                           .max_stack( 1 )
                           .duration( timespan_t::from_seconds( 6.0 ) );
 
@@ -3355,6 +3354,22 @@ double player_t::composite_player_multiplier( school_e  school  ) const
 double player_t::composite_player_td_multiplier( school_e /* school */,  const action_t* /* a */ ) const
 {
   return 1.0;
+}
+
+double player_t::composite_player_target_multiplier( player_t* target, school_e /* school */ ) const
+{
+  double m = 1.0;
+
+  if ( target -> race == RACE_DEMON &&
+       buffs.demon_damage_buff &&
+       buffs.demon_damage_buff -> check() )
+  {
+    // Bad idea to hardcode the effect number, but it'll work for now. The buffs themselves are
+    // stat buffs.
+    m *= 1.0 + buffs.demon_damage_buff -> data().effectN( 2 ).percent();
+  }
+
+  return m;
 }
 
 // player_t::composite_player_heal_multiplier ===============================
@@ -4700,13 +4715,13 @@ void player_t::clear_debuffs()
     dot -> cancel();
   }
 
-  // Clear all buffs of type debuff_t
-  // We have to make sure that we label all
-  for ( size_t i = 0; i < buff_list.size(); ++i )
+  // Clear all debuffs
+  for ( buff_t* buff : buff_list )
   {
-    debuff_t* debuff = dynamic_cast<debuff_t*>( buff_list[ i ] );
-    if ( debuff )
-      debuff -> expire();
+    if ( buff -> source != this )
+    {
+      buff -> expire();
+    }
   }
 }
 
@@ -6269,7 +6284,7 @@ struct variable_t : public action_t
 {
   action_var_e operation;
   action_variable_t* var;
-  std::string value_str, value_else_str, var_name_str, condition_str;;
+  std::string value_str, value_else_str, var_name_str, condition_str;
   expr_t* value_expression;
   expr_t* condition_expression;
   expr_t* value_else_expression;
@@ -8630,6 +8645,15 @@ expr_t* player_t::create_expression( action_t* a,
 
   if ( expression_str == "desired_targets" )
     return expr_t::create_constant( expression_str, sim -> desired_targets );
+
+  if ( util::str_compare_ci( expression_str, "is_add" ) )
+  {
+    return make_mem_fn_expr( expression_str, *this, &player_t::is_add );
+  }
+  else if ( util::str_compare_ci( expression_str, "is_enemy" ) )
+  {
+    return make_mem_fn_expr( expression_str, *this, &player_t::is_enemy );
+  }
 
   // time_to_pct expressions
   if ( util::str_in_str_ci( expression_str, "time_to_" ) )
@@ -11307,7 +11331,7 @@ action_t* player_t::select_action( const action_priority_list_t& list )
 
     if ( a -> background ) continue;
 
-    if ( a -> wait_on_ready == 1 )
+    if ( a -> option.wait_on_ready == 1 )
       break;
 
     if ( a -> ready() )
@@ -11644,3 +11668,80 @@ void player_t::acquire_target( retarget_event_e event, player_t* context )
   }
 }
 
+// Expansion specific helpers
+
+stat_e expansion::legion::concordance_stat_type( const player_t& player )
+{
+  switch ( player.specialization() )
+  {
+    case WARRIOR_ARMS:
+    case WARRIOR_FURY:
+    case PALADIN_RETRIBUTION:
+    case DEATH_KNIGHT_FROST:
+    case DEATH_KNIGHT_UNHOLY:
+      return STAT_STRENGTH;
+
+    case HUNTER_BEAST_MASTERY:
+    case HUNTER_MARKSMANSHIP:
+    case HUNTER_SURVIVAL:
+    case ROGUE_ASSASSINATION:
+    case ROGUE_OUTLAW:
+    case ROGUE_SUBTLETY:
+    case SHAMAN_ENHANCEMENT:
+    case MONK_WINDWALKER:
+    case DRUID_FERAL:
+    case DEMON_HUNTER_HAVOC:
+      return STAT_AGILITY;
+
+    case PRIEST_SHADOW:
+    case SHAMAN_ELEMENTAL:
+    case MAGE_ARCANE:
+    case MAGE_FIRE:
+    case MAGE_FROST:
+    case WARLOCK_AFFLICTION:
+    case WARLOCK_DEMONOLOGY:
+    case WARLOCK_DESTRUCTION:
+    case DRUID_BALANCE:
+      return STAT_INTELLECT;
+
+    case WARRIOR_PROTECTION:
+    case PALADIN_PROTECTION:
+    case DEATH_KNIGHT_BLOOD:
+    case MONK_BREWMASTER:
+    case DRUID_GUARDIAN:
+    case DEMON_HUNTER_VENGEANCE:
+      return STAT_VERSATILITY_RATING;
+
+    case PALADIN_HOLY:
+    case PRIEST_DISCIPLINE:
+    case PRIEST_HOLY:
+    case SHAMAN_RESTORATION:
+    case MONK_MISTWEAVER:
+    case DRUID_RESTORATION:
+      return STAT_INTELLECT;
+
+    default:
+      return STAT_NONE;
+  }
+}
+
+void expansion::legion::initialize_concordance( player_t& player )
+{
+  // Unconditionally initialize 7.2 "infinite" buff
+  artifact_power_t concordance = player.find_artifact_spell( "Concordance of the Legionfall" );
+
+  stat_buff_t* buff = stat_buff_creator_t( &( player ), "concordance_of_the_legionfall" )
+    .spell( player.find_spell( 242583 ) )
+    .add_stat( concordance_stat_type( player ), concordance.value() );
+
+  // Install a callback handler only if the player has the relevant artifact-related attributes
+  auto artifact_id = player.dbc.artifact_by_spec( player.specialization() );
+  if ( artifact_id > 0 && player.artifact.slot != SLOT_INVALID && concordance.rank() > 0 )
+  {
+    special_effect_t* effect = new special_effect_t( &( player ) );
+    effect -> type = SPECIAL_EFFECT_EQUIP;
+    effect -> spell_id = concordance.data().id();
+    effect -> custom_buff = buff;
+    player.special_effects.push_back( effect );
+  }
+}

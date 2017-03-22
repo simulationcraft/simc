@@ -145,6 +145,7 @@ public:
 
     // artifact
     buff_t* painful_truths;
+    buff_t* righteous_verdict;
   } buffs;
 
   // Gains
@@ -163,6 +164,7 @@ public:
     gain_t* hp_liadrins_fury_unleashed;
     gain_t* judgment;
     gain_t* hp_t19_4p;
+    gain_t* hp_t20_2p;
   } gains;
 
   // Spec Passives
@@ -244,6 +246,7 @@ public:
     const spell_data_t* chain_of_thrayn;
     const spell_data_t* ashes_to_dust;
     const spell_data_t* consecration_bonus;
+    const spell_data_t* blessing_of_the_ashbringer;
   } spells;
 
   // Talents
@@ -340,6 +343,10 @@ public:
     artifact_power_t unbreakable_will;              // NYI
     artifact_power_t righteous_blade;
     artifact_power_t ashbringers_light;
+    artifact_power_t ferocity_of_the_silver_hand;
+    artifact_power_t righteous_verdict;
+    artifact_power_t judge_unworthy;
+    artifact_power_t blessing_of_the_ashbringer;
 
     // Prot
     artifact_power_t eye_of_tyr;
@@ -432,11 +439,13 @@ public:
   virtual void      create_buffs() override;
   virtual void      init_rng() override;
   virtual void      init_spells() override;
+  virtual void      init_assessors() override;
   virtual void      init_action_list() override;
   virtual void      reset() override;
   virtual expr_t*   create_expression( action_t*, const std::string& name ) override;
 
   // player stat functions
+  virtual double    composite_attribute( attribute_e attr ) const override;
   virtual double    composite_attribute_multiplier( attribute_e attr ) const override;
   virtual double    composite_rating_multiplier( rating_e rating ) const override;
   virtual double    composite_attack_power_multiplier() const override;
@@ -730,21 +739,21 @@ namespace buffs {
     }
   };
 
-  struct forbearance_t : public debuff_t
+  struct forbearance_t : public buff_t
   {
     paladin_t* paladin;
 
     forbearance_t( paladin_t* p, const char *name ) :
-      debuff_t( buff_creator_t( p, name, p -> find_spell( 25771 ) ) ), paladin( p )
+      buff_t( buff_creator_t( p, name, p -> find_spell( 25771 ) ) ), paladin( p )
     { }
 
     forbearance_t( paladin_t* p, paladin_td_t *ap, const char *name ) :
-      debuff_t( buff_creator_t( *ap, name, p -> find_spell( 25771 ) ) ), paladin( p )
+      buff_t( buff_creator_t( *ap, name, p -> find_spell( 25771 ) ) ), paladin( p )
     { }
 
     void execute( int stacks, double value, timespan_t duration ) override
     {
-      debuff_t::execute( stacks, value, duration );
+      buff_t::execute( stacks, value, duration );
 
       paladin -> update_forbearance_recharge_multipliers();
     }
@@ -753,7 +762,7 @@ namespace buffs {
     {
       bool expired = check() != 0;
 
-      debuff_t::expire( delay );
+      buff_t::expire( delay );
 
       if ( expired )
       {
@@ -1350,7 +1359,7 @@ struct beacon_of_light_t : public paladin_heal_t
     ignore_false_positive = true;
 
     // Target is required for Beacon
-    if ( target_str.empty() )
+    if ( option.target_str.empty() )
     {
       sim -> errorf( "Warning %s's \"%s\" needs a target", p -> name(), name() );
       sim -> cancel();
@@ -2868,6 +2877,14 @@ struct holy_power_consumer_t : public paladin_melee_attack_t
       int num_stacks = (int)base_cost();
       p() -> buffs.crusade -> trigger( num_stacks );
     }
+
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+    {
+      if ( p() -> artifact.righteous_verdict.rank() )
+      {
+        p() -> buffs.righteous_verdict -> trigger();
+      }
+    }
   }
 };
 
@@ -3103,6 +3120,51 @@ struct blade_of_justice_t : public holy_power_generator_t
     if ( p -> talents.virtues_blade -> ok() )
       crit_bonus_multiplier += p -> talents.virtues_blade -> effectN( 1 ).percent();
   }
+
+  virtual double action_multiplier() const override
+  {
+    double am = holy_power_generator_t::action_multiplier();
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+    {
+      if ( p() -> buffs.righteous_verdict -> up() )
+        am *= 1.0 + p() -> artifact.righteous_verdict.percent();
+    }
+    return am;
+  }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double m = holy_power_generator_t::composite_target_multiplier( t );
+
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+    {
+      if ( p() -> sets.has_set_bonus( PALADIN_RETRIBUTION, T20, B4 ) )
+      {
+        paladin_td_t* td = this -> td( t );
+        if ( td -> buffs.debuffs_judgment -> up() )
+        {
+          double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent() + p() -> get_divine_judgment();
+          judgment_multiplier += p() -> passives.judgment -> effectN( 1 ).percent();
+          m *= judgment_multiplier;
+        }
+      }
+    }
+
+    return m;
+  }
+
+  virtual void execute() override
+  {
+    holy_power_generator_t::execute();
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+    {
+      if ( p() -> buffs.righteous_verdict -> up() )
+        p() -> buffs.righteous_verdict -> expire();
+
+      if ( p() -> sets.has_set_bonus( PALADIN_RETRIBUTION, T20, B2 ) )
+        p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_t20_2p );
+    }
+  }
 };
 
 // Divine Hammer =========================================================
@@ -3119,6 +3181,27 @@ struct divine_hammer_tick_t : public paladin_melee_attack_t
     background  = true;
     may_crit    = true;
     ground_aoe = true;
+  }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double m = paladin_melee_attack_t::composite_target_multiplier( t );
+
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+    {
+      if ( p() -> sets.has_set_bonus( PALADIN_RETRIBUTION, T20, B4 ) )
+      {
+        paladin_td_t* td = this -> td( t );
+        if ( td -> buffs.debuffs_judgment -> up() )
+        {
+          double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent() + p() -> get_divine_judgment();
+          judgment_multiplier += p() -> passives.judgment -> effectN( 1 ).percent();
+          m *= judgment_multiplier;
+        }
+      }
+    }
+
+    return m;
   }
 };
 
@@ -3156,6 +3239,30 @@ struct divine_hammer_t : public paladin_spell_t
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
     return dot_duration * ( tick_time( s ) / base_tick_time );
+  }
+
+  virtual double composite_persistent_multiplier( const action_state_t* s ) const override
+  {
+    double am = paladin_spell_t::composite_persistent_multiplier( s );
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+    {
+      if ( p() -> buffs.righteous_verdict -> up() )
+        am *= 1.0 + p() -> artifact.righteous_verdict.percent();
+    }
+    return am;
+  }
+
+  virtual void execute() override
+  {
+    paladin_spell_t::execute();
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+    {
+      if ( p() -> buffs.righteous_verdict -> up() )
+        p() -> buffs.righteous_verdict -> expire();
+
+      if ( p() -> sets.has_set_bonus( PALADIN_RETRIBUTION, T20, B2 ) )
+        p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_t20_2p );
+    }
   }
 };
 
@@ -4351,6 +4458,7 @@ void paladin_t::init_gains()
   gains.hp_liadrins_fury_unleashed  = get_gain( "liadrins_fury_unleashed" );
   gains.judgment                    = get_gain( "judgment" );
   gains.hp_t19_4p                   = get_gain( "t19_4p" );
+  gains.hp_t20_2p                   = get_gain( "t20_2p" );
 
   if ( ! retribution_trinket )
   {
@@ -4415,9 +4523,9 @@ void paladin_t::create_buffs()
   // Prot
   buffs.guardian_of_ancient_kings      = buff_creator_t( this, "guardian_of_ancient_kings", find_specialization_spell( "Guardian of Ancient Kings" ) )
                                           .cd( timespan_t::zero() ); // let the ability handle the CD
-  buffs.grand_crusader                 = buff_creator_t( this, "grand_crusader" ).spell( passives.grand_crusader -> effectN( 1 ).trigger() )
+  buffs.grand_crusader                 = buff_creator_t( this, "grand_crusader", passives.grand_crusader -> effectN( 1 ).trigger() )
                                           .chance( passives.grand_crusader -> proc_chance() + ( 0.0 + talents.first_avenger -> effectN( 2 ).percent() ) );
-  buffs.shield_of_the_righteous        = buff_creator_t( this, "shield_of_the_righteous" ).spell( find_spell( 132403 ) );
+  buffs.shield_of_the_righteous        = buff_creator_t( this, "shield_of_the_righteous", find_spell( 132403 ) );
   buffs.ardent_defender                = new buffs::ardent_defender_buff_t( this );
   buffs.painful_truths                 = buff_creator_t( this, "painful_truths", find_spell( 209332 ) );
   buffs.aegis_of_light                 = buff_creator_t( this, "aegis_of_light", find_talent_spell( "Aegis of Light" ) );
@@ -4433,16 +4541,17 @@ void paladin_t::create_buffs()
                                          .max_stack( 1 ); // not sure why data says 3 stacks
 
   // Ret
-  buffs.zeal                           = buff_creator_t( this, "zeal" ).spell( find_spell( 217020 ) );
-  buffs.seal_of_light                  = buff_creator_t( this, "seal_of_light" ).spell( find_spell( 202273 ) );
-  buffs.the_fires_of_justice           = buff_creator_t( this, "the_fires_of_justice" ).spell( find_spell( 209785 ) );
-  buffs.blade_of_wrath               = buff_creator_t( this, "blade_of_wrath" ).spell( find_spell( 231843 ) );
-  buffs.divine_purpose                 = buff_creator_t( this, "divine_purpose" ).spell( find_spell( 223819 ) );
+  buffs.zeal                           = buff_creator_t( this, "zeal", find_spell( 217020 ) );
+  buffs.seal_of_light                  = buff_creator_t( this, "seal_of_light", find_spell( 202273 ) );
+  buffs.the_fires_of_justice           = buff_creator_t( this, "the_fires_of_justice", find_spell( 209785 ) );
+  buffs.blade_of_wrath               = buff_creator_t( this, "blade_of_wrath", find_spell( 231843 ) );
+  buffs.divine_purpose                 = buff_creator_t( this, "divine_purpose", find_spell( 223819 ) );
   buffs.divine_steed                   = buff_creator_t( this, "divine_steed", find_spell( "Divine Steed" ) )
                                           .duration( timespan_t::from_seconds( 3.0 ) ).chance( 1.0 ).default_value( 1.0 ); // TODO: change this to spellid 221883 & see if that automatically captures details
-  buffs.whisper_of_the_nathrezim       = buff_creator_t( this, "whisper_of_the_nathrezim" ).spell( find_spell( 207635 ) );
+  buffs.whisper_of_the_nathrezim       = buff_creator_t( this, "whisper_of_the_nathrezim", find_spell( 207635 ) );
   buffs.liadrins_fury_unleashed        = new buffs::liadrins_fury_unleashed_t( this );
   buffs.shield_of_vengeance            = new buffs::shield_of_vengeance_buff_t( this );
+  buffs.righteous_verdict              = buff_creator_t( this, "righteous_verdict", find_spell( 238996 ) );
 
   // Tier Bonuses
 
@@ -4739,7 +4848,7 @@ void paladin_t::generate_action_prio_list_ret()
         item_str = "use_item,name=" + items[i].name_str + ",if=(buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=15|cooldown.crusade.remains>20&!buff.crusade.up)";
         def -> add_action( item_str );
       }
-      else if ( items[i].name_str == "might_of_krosus" ) 
+      else if ( items[i].name_str == "might_of_krosus" )
       {
         item_str = "use_item,name=" + items[i].name_str + ",if=(buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=15|cooldown.crusade.remains>5&!buff.crusade.up)";
         def -> add_action( item_str );
@@ -4944,6 +5053,54 @@ void paladin_t::generate_action_prio_list_holy()
 
 }
 
+void paladin_t::init_assessors()
+{
+  player_t::init_assessors();
+  if ( artifact.judge_unworthy.rank() )
+  {
+    paladin_t* p = this;
+    assessor_out_damage.add(
+      assessor::TARGET_DAMAGE - 1,
+      [ p ]( dmg_e, action_state_t* state )
+      {
+        buff_t* judgment = p -> get_target_data( state -> target ) -> buffs.debuffs_judgment;
+        if ( judgment -> check() )
+        {
+          if ( p -> rng().roll(0.5) )
+            return assessor::CONTINUE;
+
+          // Do the spread
+          double max_distance  = 10.0;
+          unsigned max_targets = 1;
+          std::vector<player_t*> valid_targets;
+          range::remove_copy_if(
+              p->sim->target_list.data(), std::back_inserter( valid_targets ),
+              [p, state, max_distance]( player_t* plr ) {
+                paladin_td_t* td = p -> get_target_data( plr );
+                if ( td -> buffs.debuffs_judgment -> check() )
+                  return true;
+                return state -> target -> get_player_distance( *plr ) > max_distance;
+              } );
+          if ( valid_targets.size() > max_targets )
+          {
+            valid_targets.resize( max_targets );
+          }
+          for ( player_t* target : valid_targets )
+          {
+            p -> get_target_data( target ) -> buffs.debuffs_judgment -> trigger(
+                judgment -> check(),
+                judgment -> check_value(),
+                -1.0,
+                judgment -> remains()
+              );
+          }
+        }
+        return assessor::CONTINUE;
+      }
+    );
+  }
+}
+
 // paladin_t::init_actions ==================================================
 
 void paladin_t::init_action_list()
@@ -5107,7 +5264,11 @@ void paladin_t::init_spells()
   artifact.endless_resolve         = find_artifact_spell( "Endless Resolve" );
   artifact.deflection              = find_artifact_spell( "Deflection" );
   artifact.ashbringers_light       = find_artifact_spell( "Ashbringer's Light" );
+  artifact.ferocity_of_the_silver_hand = find_artifact_spell( "Ferocity of the Silver Hand" );
   artifact.ashes_to_ashes          = find_artifact_spell( "Ashes to Ashes" );
+  artifact.righteous_verdict       = find_artifact_spell( "Righteous Verdict" );
+  artifact.judge_unworthy          = find_artifact_spell( "Judge Unworthy" );
+  artifact.blessing_of_the_ashbringer = find_artifact_spell( "Blessing of the Ashbringer" );
 
   artifact.eye_of_tyr              = find_artifact_spell( "Eye of Tyr" );
   artifact.truthguards_light       = find_artifact_spell( "Truthguard's Light" );
@@ -5136,6 +5297,7 @@ void paladin_t::init_spells()
   spells.chain_of_thrayn               = find_spell( 206338 );
   spells.ashes_to_dust                 = find_spell( 236106 );
   spells.consecration_bonus            = find_spell( 188370 );
+  spells.blessing_of_the_ashbringer = find_spell( 242981 );
 
   // Masteries
   passives.divine_bulwark         = find_mastery_spell( PALADIN_PROTECTION );
@@ -5292,6 +5454,23 @@ stat_e paladin_t::convert_hybrid_stat( stat_e s ) const
   }
 
   return converted_stat;
+}
+
+// paladin_t::composite_attribute
+double paladin_t::composite_attribute( attribute_e attr ) const
+{
+  double m = player_t::composite_attribute( attr );
+
+  if ( attr == ATTR_STRENGTH )
+  {
+    if ( artifact.blessing_of_the_ashbringer.rank() )
+    {
+      // TODO(mserrano): fix this once spelldata gets extracted
+      m += 2000; // spells.blessing_of_the_ashbringer -> effectN( 1 ).value();
+    }
+  }
+
+  return m;
 }
 
 // paladin_t::composite_attribute_multiplier ================================
@@ -5486,6 +5665,7 @@ double paladin_t::composite_player_multiplier( school_e school ) const
 
   // artifacts
   m *= 1.0 + artifact.ashbringers_light.percent();
+  m *= 1.0 + artifact.ferocity_of_the_silver_hand.percent();
 
   if ( school == SCHOOL_HOLY )
     m *= 1.0 + artifact.truthguards_light.percent();

@@ -42,7 +42,7 @@ inline std::vector<std::string> sc_resource_paths::resource_storage()
 
   out.push_back( "/tmp" + "/SimulationCraft" ) ; // back out
 #endif
-  out.emplace_back(); // CWD fallback
+  out.push_back(std::string()); // CWD fallback
 
   return out;
 }
@@ -55,7 +55,7 @@ inline std::vector<std::string> sc_resource_paths::sample_profiles()
   return shared_resource();
 #endif
 
-  out.emplace_back(); // CWD fallback
+  out.push_back(std::string()); // CWD fallback
   return out;
 }
 
@@ -66,6 +66,6 @@ inline std::vector<std::string> sc_resource_paths::shared_resources()
   out.push_back( SC_LINUX_PACKAGING );
 #endif
 
-  out.emplace_back(); // CWD fallback
+  out.push_back(std::string()); // CWD fallback
   return out;
 }

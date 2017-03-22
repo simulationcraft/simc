@@ -136,11 +136,11 @@ public:
 
   struct buffs_t
   {
-    debuff_t* mark_of_the_crane;
-    debuff_t* gale_burst;
-    debuff_t* keg_smash;
-    debuff_t* storm_earth_and_fire;
-    debuff_t* touch_of_karma;
+    buff_t* mark_of_the_crane;
+    buff_t* gale_burst;
+    buff_t* keg_smash;
+    buff_t* storm_earth_and_fire;
+    buff_t* touch_of_karma;
   } debuff;
 
   monk_t& monk;
@@ -2427,18 +2427,18 @@ public:
           p() -> buff.the_emperors_capacitor -> trigger();
       }
       // Chi Savings on Dodge & Parry & Miss
-      if ( ab::resource_consumed > 0 )
+      if ( ab::last_resource_cost > 0 )
       {
-        double chi_restored = ab::resource_consumed;
+        double chi_restored = ab::last_resource_cost;
         if ( !ab::aoe && ab::result_is_miss( ab::execute_state -> result ) )
           p() -> resource_gain( RESOURCE_CHI, chi_restored, p() -> gain.chi_refund );
       }
     }
 
     // Energy refund, estimated at 80%
-    if ( current_resource() == RESOURCE_ENERGY && ab::resource_consumed > 0 && ! ab::hit_any_target )
+    if ( current_resource() == RESOURCE_ENERGY && ab::last_resource_cost > 0 && ! ab::hit_any_target )
     {
-      double energy_restored = ab::resource_consumed * 0.8;
+      double energy_restored = ab::last_resource_cost * 0.8;
 
       p() -> resource_gain( RESOURCE_ENERGY, energy_restored, p() -> gain.energy_refund );
     }
@@ -4821,9 +4821,11 @@ struct storm_earth_and_fire_t: public monk_spell_t
     callbacks = harmful = may_miss = may_crit = may_dodge = may_parry = may_block = false;
 
     if ( p -> artifact.split_personality.rank() )
+    {
       cooldown -> duration += p -> artifact.split_personality.time_value();
+    }
 
-      cooldown -> charges += p -> spec.storm_earth_and_fire_2 -> effectN( 1 ).base_value();
+    cooldown -> charges += p -> spec.storm_earth_and_fire_2 -> effectN( 1 ).base_value();
   }
 
   void update_ready( timespan_t cd_duration = timespan_t::min() ) override
@@ -7207,15 +7209,17 @@ struct windwalking_driver_t: public monk_buff_t < buff_t >
 {
   double movement_increase;
   windwalking_driver_t( monk_t& p, const std::string& n, const spell_data_t* s ):
-    base_t( p, buff_creator_t( &p, n, s ).tick_callback( [&p, this]( buff_t* /* buff */, int /* total_ticks */, timespan_t /* tick_time */ )
-  {
-    range::for_each( p.windwalking_aura -> target_list(), [&p, this]( player_t* target )
-    {
-      target -> buffs.windwalking_movement_aura -> trigger( 1, ( movement_increase + ( p.legendary.march_of_the_legion ? p.legendary.march_of_the_legion -> effectN( 1 ).percent() : 0.0 ) ), 1, timespan_t::from_seconds( 10 ) );
-    }
-  ); } ) ),
+    base_t( p, buff_creator_t(&p, n, s ) ),
     movement_increase( 0 )
   {
+    set_tick_callback( [&p, this]( buff_t*, int /* total_ticks */, timespan_t /* tick_time */ ) {
+      range::for_each( p.windwalking_aura->target_list(), [&p, this]( player_t* target ) {
+        target->buffs.windwalking_movement_aura->trigger(
+            1, ( movement_increase +
+                 ( p.legendary.march_of_the_legion ? p.legendary.march_of_the_legion->effectN( 1 ).percent() : 0.0 ) ),
+            1, timespan_t::from_seconds( 10 ) );
+      } );
+    } );
     cooldown -> duration = timespan_t::zero();
     buff_duration = timespan_t::zero();
     buff_period = timespan_t::from_seconds( 1 );
@@ -7237,24 +7241,20 @@ monk( *p )
 {
   if ( p -> specialization() == MONK_WINDWALKER )
   {
-    debuff.mark_of_the_crane = buff_creator_t( *this, "mark_of_the_crane" )
-      .spell( p -> passives.mark_of_the_crane )
+    debuff.mark_of_the_crane = buff_creator_t( *this, "mark_of_the_crane", p -> passives.mark_of_the_crane )
       .default_value( p -> passives.mark_of_the_crane -> effectN( 1 ).percent() );
 
-    debuff.gale_burst = buff_creator_t( *this, "gale_burst" )
-      .spell( p -> passives.gale_burst )
+    debuff.gale_burst = buff_creator_t( *this, "gale_burst", p -> passives.gale_burst )
       .default_value( 0 )
       .quiet( true );
-    debuff.touch_of_karma = buff_creator_t( *this, "touch_of_karma" )
-      .spell( p -> spec.touch_of_karma )
+    debuff.touch_of_karma = buff_creator_t( *this, "touch_of_karma", p -> spec.touch_of_karma )
       // set the percent of the max hp as the default value.
       .default_value( p -> spec.touch_of_karma -> effectN( 3 ).percent() );
   }
 
   if ( p -> specialization() == MONK_BREWMASTER )
   {
-    debuff.keg_smash = buff_creator_t( *this, "keg_smash" )
-      .spell( p -> spec.keg_smash )
+    debuff.keg_smash = buff_creator_t( *this, "keg_smash", p -> spec.keg_smash )
       .default_value( p -> spec.keg_smash -> effectN( 2 ).percent() );
   }
 
@@ -7945,8 +7945,7 @@ void monk_t::create_buffs()
   buff.diffuse_magic = buff_creator_t( this, "diffuse_magic", talent.diffuse_magic )
     .default_value( talent.diffuse_magic -> effectN( 1 ).percent() );
 
-  buff.tier19_oh_8pc = stat_buff_creator_t( this, "grandmasters_wisdom" )
-    .spell( sets.set( specialization(), T19OH, B8 ) -> effectN( 1 ).trigger() );
+  buff.tier19_oh_8pc = stat_buff_creator_t( this, "grandmasters_wisdom", sets.set( specialization(), T19OH, B8 ) -> effectN( 1 ).trigger() );
 
   // Brewmaster
   buff.bladed_armor = buff_creator_t( this, "bladed_armor", spec.bladed_armor )
