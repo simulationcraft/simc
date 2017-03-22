@@ -8252,8 +8252,11 @@ struct furious_winds_t : public scoped_action_callback_t<windfury_attack_t>
 
   void manipulate( windfury_attack_t* action, const special_effect_t& effect ) override
   {
-    action -> base_multiplier *= 1.0 + effect.driver() -> effectN( 1 ).average( effect.item ) / 100.0;
-    action -> furious_winds_chance = effect.driver() -> effectN( 2 ).average( effect.item ) / 100.0;
+    if ( effect.player -> level < 110 )
+    {
+      action -> base_multiplier *= 1.0 + effect.driver() -> effectN( 1 ).average( effect.item ) / 100.0;
+      action -> furious_winds_chance = effect.driver() -> effectN( 2 ).average( effect.item ) / 100.0;
+    }
   }
 };
 
