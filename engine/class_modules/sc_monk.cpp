@@ -2406,20 +2406,32 @@ public:
       if ( ab::cost() > 0 )
       {
         // Drinking Horn Cover Legendary
-        if ( p() -> legendary.drinking_horn_cover && p() -> buff.storm_earth_and_fire -> up() )
+        if ( p() -> legendary.drinking_horn_cover )
         {
-          // Effect is saved as 6; duration is saved as 600 milliseconds
-          double duration = p() -> legendary.drinking_horn_cover -> effectN( 1 ).base_value() * 100;
-          double extension = duration * ab::cost();
+          if ( p() -> buff.storm_earth_and_fire -> up() )
+          {
+            // Effect is saved as 4; duration is saved as 400 milliseconds
+            double duration = p() -> legendary.drinking_horn_cover -> effectN( 1 ).base_value() * 100;
+            double extension = duration * ab::cost();
 
-          // Extend the duration of the buff
-          p() -> buff.storm_earth_and_fire -> extend_duration( p(), timespan_t::from_millis( extension ) );
+            // Extend the duration of the buff
+            p() -> buff.storm_earth_and_fire -> extend_duration( p(), timespan_t::from_millis( extension ) );
 
-          // Extend the duration of pets
-          if ( !p() -> pet.sef[SEF_EARTH] -> is_sleeping() )
-            p() -> pet.sef[SEF_EARTH] -> expiration -> reschedule( p() -> pet.sef[SEF_EARTH] -> expiration -> remains() + timespan_t::from_millis( extension ) );
-          if ( !p() -> pet.sef[SEF_FIRE] -> is_sleeping() )
-            p() -> pet.sef[SEF_FIRE] -> expiration -> reschedule( p() -> pet.sef[SEF_FIRE] -> expiration -> remains() + timespan_t::from_millis( extension ) );
+            // Extend the duration of pets
+            if ( !p() -> pet.sef[SEF_EARTH] -> is_sleeping() )
+              p() -> pet.sef[SEF_EARTH] -> expiration -> reschedule( p() -> pet.sef[SEF_EARTH] -> expiration -> remains() + timespan_t::from_millis( extension ) );
+            if ( !p() -> pet.sef[SEF_FIRE] -> is_sleeping() )
+              p() -> pet.sef[SEF_FIRE] -> expiration -> reschedule( p() -> pet.sef[SEF_FIRE] -> expiration -> remains() + timespan_t::from_millis( extension ) );
+          }
+          else if ( p() -> buff.serenity -> up() && p() -> dbc.ptr  // FIXME
+          {
+            // Since this is extended based on chi spender instead of chi spent, extention is the duration
+            // Effect is saved as 3; extension is saved as 300 milliseconds
+            double extension = p() -> legendary.drinking_horn_cover -> effectN( 2 ).base_value() * 100;
+
+            // Extend the duration of the buff
+            p() -> buff.serenity -> extend_duration( p(), timespan_t::from_millis( extension ) );
+          }
         }
 
         // The Emperor's Capacitor Legendary
@@ -4456,6 +4468,9 @@ struct touch_of_death_t: public monk_spell_t
  
     if ( p() -> buff.combo_strikes -> up() )
       amount *= 1 + p() -> cache.mastery_value();
+
+    if ( p() -> legendary.hidden_masters_forbidden_touch && p() -> dbc.ptr )
+      amount *= 1 + p() -> legendary.hidden_masters_forbidden_touch -> effectN( 2 ).percent();
 
     return amount;
   }
