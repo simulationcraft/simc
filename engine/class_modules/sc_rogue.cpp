@@ -2984,7 +2984,8 @@ struct garrote_t : public rogue_attack_t
 
   void update_ready( timespan_t cd_duration = timespan_t::min() ) override
   {
-    if ( p() -> buffs.stealth -> check() || p() -> buffs.vanish -> check() || p() -> buffs.subterfuge -> check() )
+    if ( p() -> talent.subterfuge -> ok() &&
+         ( p() -> buffs.stealth -> check() || p() -> buffs.vanish -> check() || p() -> buffs.subterfuge -> check() ) )
     {
       cd_duration = timespan_t::zero();
     }
