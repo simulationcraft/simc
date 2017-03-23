@@ -2743,6 +2743,13 @@ struct thunderfist_t: public monk_spell_t
 
     return monk_spell_t::ready();
   }
+  virtual void execute() override
+  {
+    monk_spell_t::execute();
+
+    if ( p() -> buff.thunderfist -> up() )
+      p() -> buff.thunderfist -> decrement();
+  }
 };
 
 // ==========================================================================
