@@ -3914,18 +3914,15 @@ struct fists_of_fury_t: public monk_melee_attack_t
     return pm;
   }
 
-  virtual double action_multiplier() const override
+  virtual double composite_target_multiplier( player_t* t ) const override
   {
-    double am = monk_melee_attack_t::action_multiplier();
+    double ctm = monk_melee_attack_t::composite_target_multiplier( t );
 
-    // TODO: Make sure it doesn't compound on itself if multiple debuffs are out.
-//    if ( td( action_state -> target) -> debuff.rising_fist -> up() )
-//      am *= 1.0 + td( action_state -> target) -> debuff.rising_fist -> value();
+    if ( td( t ) -> debuff.rising_fist -> up() )
+      ctm *= 1.0 + td( t ) -> debuff.rising_fist -> value();
 
-    return am;
+    return ctm;
   }
-
-
 
   virtual bool ready() override
   {
