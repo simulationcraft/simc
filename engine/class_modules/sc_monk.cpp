@@ -139,6 +139,7 @@ public:
     buff_t* mark_of_the_crane;
     buff_t* gale_burst;
     buff_t* keg_smash;
+    buff_t* rising_fist;
     buff_t* storm_earth_and_fire;
     buff_t* touch_of_karma;
   } debuff;
@@ -253,6 +254,7 @@ public:
     buff_t* touch_of_karma;
     buff_t* transfer_the_power;
     buff_t* windwalking_driver;
+    buff_t* ww_tier_20_4pc;
 
     // Legendaries
     buff_t* hidden_masters_forbidden_touch;
@@ -1339,6 +1341,9 @@ struct storm_earth_and_fire_pet_t : public pet_t
           rsk_tornado_kick -> base_dd_min = raw;
           rsk_tornado_kick -> execute();
         }
+
+        if ( o() -> sets.has_set_bonus( MONK_WINDWALKER, T20, B2 ) )
+          o() -> get_target_data( state -> target ) -> debuff.rising_fist -> trigger();
 
         if ( o() -> artifact.transfer_the_power.rank() && o() -> buff.transfer_the_power -> up() )
           p() -> buff.transfer_the_power_sef -> trigger();
@@ -3036,6 +3041,7 @@ struct rising_sun_kick_proc_t : public monk_melee_attack_t
       // Apply Mortal Wonds
       if ( p() -> spec.combat_conditioning )
         s -> target -> debuffs.mortal_wounds -> trigger();
+
       if ( p() -> spec.spinning_crane_kick )
         p() -> trigger_mark_of_the_crane( s );
     }
@@ -3155,6 +3161,18 @@ struct rising_sun_kick_t: public monk_melee_attack_t
     return am;
   }
 
+  virtual double composite_crit_chance() const override
+  {
+    double c = monk_melee_attack_t::composite_crit_chance();
+
+    if ( p() -> buff.ww_tier_20_4pc -> up() )
+    {
+      c += p() -> buff.ww_tier_20_4pc -> value();
+    }
+
+    return c;
+  }
+
   virtual void consume_resource() override
   {
     monk_melee_attack_t::consume_resource();
@@ -3210,7 +3228,7 @@ struct rising_sun_kick_t: public monk_melee_attack_t
 
   virtual void impact( action_state_t* s ) override
   {
-    monk_melee_attack_t::impact(s);
+    monk_melee_attack_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
     {
@@ -3237,6 +3255,12 @@ struct rising_sun_kick_t: public monk_melee_attack_t
           rsk_tornado_kick -> base_dd_min = raw;
           rsk_tornado_kick -> execute();
         }
+
+        if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T20, B2 ) )
+          td( s -> target ) -> debuff.rising_fist -> trigger();
+
+        if ( p() -> buff.ww_tier_20_4pc -> up() )
+          p() -> buff.ww_tier_20_4pc -> expire();
       }
     }
   }
@@ -3878,7 +3902,6 @@ struct fists_of_fury_t: public monk_melee_attack_t
 
     if ( p() -> artifact.fists_of_the_wind.rank() )
       pm *= 1 + p() -> artifact.fists_of_the_wind.percent();
-    
 
     if ( p() -> buff.storm_earth_and_fire -> up() )
     {
@@ -3890,6 +3913,19 @@ struct fists_of_fury_t: public monk_melee_attack_t
 
     return pm;
   }
+
+  virtual double action_multiplier() const override
+  {
+    double am = monk_melee_attack_t::action_multiplier();
+
+    // TODO: Make sure it doesn't compound on itself if multiple debuffs are out.
+//    if ( td( action_state -> target) -> debuff.rising_fist -> up() )
+//      am *= 1.0 + td( action_state -> target) -> debuff.rising_fist -> value();
+
+    return am;
+  }
+
+
 
   virtual bool ready() override
   {
@@ -3930,6 +3966,9 @@ struct fists_of_fury_t: public monk_melee_attack_t
 
     if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T18, B4 ) )
       p() -> buff.masterful_strikes -> trigger( ( int ) p() -> sets.set( MONK_WINDWALKER,T18, B4 ) -> effect_count() - 1 );
+
+    if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T20, B4 ) )
+      p() -> buff.ww_tier_20_4pc -> trigger();
   }
 
   virtual void last_tick( dot_t* dot ) override
@@ -7262,6 +7301,9 @@ monk( *p )
     debuff.gale_burst = buff_creator_t( *this, "gale_burst", p -> passives.gale_burst )
       .default_value( 0 )
       .quiet( true );
+    debuff.rising_fist = buff_creator_t( *this, "rising_fist", p -> sets.set( MONK_WINDWALKER, T20, B2 ) )
+      .duration( timespan_t::from_seconds( p -> sets.set( MONK_WINDWALKER, T20, B2 ) -> effectN( 1 ).base_value() ) )
+      .default_value( p -> sets.set( MONK_WINDWALKER, T20, B2 ) -> effectN( 2 ).percent() );
     debuff.touch_of_karma = buff_creator_t( *this, "touch_of_karma", p -> spec.touch_of_karma )
       // set the percent of the max hp as the default value.
       .default_value( p -> spec.touch_of_karma -> effectN( 3 ).percent() );
@@ -8103,6 +8145,10 @@ void monk_t::create_buffs()
                               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                               .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER )
                               .cd( timespan_t::zero() );
+
+  buff.ww_tier_20_4pc = buff_creator_t( this, "ww_tier_20_4pc", sets.set( MONK_WINDWALKER,T20, B4 ) )
+                       .duration( timespan_t::from_seconds( 24 ) )
+                       .default_value( sets.set( MONK_WINDWALKER, T20, B4 ) -> effectN( 1 ).percent() );
 
   buff.touch_of_karma = new buffs::touch_of_karma_buff_t( *this, "touch_of_karma", passives.touch_of_karma_buff );
 
