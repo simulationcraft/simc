@@ -324,6 +324,7 @@ public:
     buff_t* prowl;
     buff_t* stampeding_roar;
     buff_t* wild_charge_movement;
+    haste_buff_t* sephuzs_secret;
 
     // Balance
     buff_t* blessing_of_anshe;
@@ -716,6 +717,9 @@ public:
 
   struct legendary_t
   {
+    // General
+    const spell_data_t* sephuzs_secret = spell_data_t::not_found();
+
     // Balance
     timespan_t impeccable_fel_essence;
 
@@ -807,6 +811,7 @@ public:
   virtual double    composite_mitigation_versatility_rating() const override;
   virtual double    composite_leech() const override;
   virtual double    composite_melee_crit_chance() const override;
+  virtual double    composite_melee_haste() const override;
   virtual double    composite_melee_expertise( const weapon_t* ) const override;
   virtual double    composite_parry() const override { return 0; }
   virtual double    composite_player_multiplier( school_e school ) const override;
@@ -1782,6 +1787,46 @@ public:
     else
       return g;
   }
+};
+
+//proc_sephuz gives control over how and when sephuz proc to the 
+//APL creator to allow for more flexible modelling
+struct proc_sephuz_t : public action_t
+{
+   proc_sephuz_t(druid_t* p, const std::string& options_str) 
+      : action_t(ACTION_USE, "proc_sephuz", p)
+   {
+      parse_options(options_str);
+      trigger_gcd = timespan_t::zero();
+      harmful = false;
+      cooldown -> duration = player -> find_spell(226262) -> duration();
+      ignore_false_positive = true;
+      action_skill = 1;
+   }
+
+   virtual void execute() override
+   {
+      druid_t* p = (druid_t*)(player);
+
+      if ( p -> buff.sephuzs_secret -> default_chance == 0 )
+         return;
+      
+      p -> buff.sephuzs_secret -> trigger();
+
+   }
+
+   bool ready() override
+   {
+      druid_t* p = (druid_t*)(player);
+      if ( p -> legendary.sephuzs_secret == spell_data_t::not_found() )
+         return false;
+      
+
+      if ( p -> buff.sephuzs_secret -> cooldown -> up() )
+         return action_t::ready();
+
+      return false;
+   }
 };
 
 namespace spells {
@@ -6436,9 +6481,10 @@ action_t* druid_t::create_action( const std::string& name,
        name == "lunar_inspiration" )      return new      lunar_inspiration_t( this, options_str );
   if ( name == "move_fury_of_elune"     ) return new     fury_of_elune_move_t( this, options_str );
   if ( name == "new_moon"               ) return new               new_moon_t( this, options_str );
+  if ( name == "proc_sephuz"            ) return new            proc_sephuz_t( this, options_str );
   if ( name == "sunfire"                ) return new                sunfire_t( this, options_str );
   if ( name == "moonkin_form"           ) return new   spells::moonkin_form_t( this, options_str );
-  if (name == "moonkin_form_affinity"   ) return new   spells::moonkin_form_affinity_t(this, options_str);
+  if ( name == "moonkin_form_affinity"  ) return new   spells::moonkin_form_affinity_t(this, options_str);
   if ( name == "pulverize"              ) return new              pulverize_t( this, options_str );
   if ( name == "rage_of_the_sleeper"    ) return new    rage_of_the_sleeper_t( this, options_str );
   if ( name == "rake"                   ) return new                   rake_t( this, options_str );
@@ -8121,7 +8167,28 @@ double druid_t::composite_spell_haste() const
 
   sh /= 1.0 + buff.star_power -> check_stack_value();
 
+  if ( buff.sephuzs_secret -> check() )
+     sh *= 1.0 / ( 1.0 + buff.sephuzs_secret -> stack_value() );
+
+  if ( maybe_ptr( dbc.ptr ) && legendary.sephuzs_secret -> ok() )
+     sh *= 1.0 / ( 1.0 + legendary.sephuzs_secret -> effectN(2).percent() );
+
   return sh;
+}
+
+// druid_t::composite_meele_haste ===========================================
+
+double druid_t::composite_melee_haste() const
+{
+   double mh = player_t::composite_melee_haste();
+
+   if ( buff.sephuzs_secret -> check() )
+      mh *= 1.0 / ( 1.0 + buff.sephuzs_secret -> stack_value() );
+
+   if ( maybe_ptr( dbc.ptr ) && legendary.sephuzs_secret -> ok() )
+      mh *= 1.0 / ( 1.0 + legendary.sephuzs_secret -> effectN(2).percent() );
+
+   return mh;
 }
 
 // druid_t::composite_spell_power ===========================================
@@ -9155,6 +9222,38 @@ struct dual_determination_t : public scoped_action_callback_t<survival_instincts
   }
 };
 
+struct sephuzs_t : scoped_actor_callback_t<druid_t>
+{
+   sephuzs_t() : scoped_actor_callback_t(DRUID)
+   { }
+
+   void manipulate(druid_t* p, const special_effect_t& e) override
+   {
+      p->legendary.sephuzs_secret = e.driver();
+   };
+};
+
+struct sephuzs_secret_t : public class_buff_cb_t<druid_t, haste_buff_t, haste_buff_creator_t>
+{
+   sephuzs_secret_t() : super(DRUID, "sephuzs_secret")
+   { }
+
+   haste_buff_t*& buff_ptr(const special_effect_t& e) override
+   {
+      return ((druid_t*)(e.player))->buff.sephuzs_secret;
+   }
+
+   haste_buff_creator_t creator(const special_effect_t& e) const override
+   {
+      return super::creator(e)
+         .spell(e.trigger())
+         .cd(e.player->find_spell(226262)->duration())
+         .default_value(e.trigger()->effectN(2).percent())
+         .add_invalidate(CACHE_RUN_SPEED);
+   }
+};
+
+
 // Feral
 
 struct ailuro_pouncers_t : public scoped_buff_callback_t<buff_t>
@@ -9471,6 +9570,8 @@ struct druid_module_t : public module_t
     register_special_effect( 200818, lady_and_the_child_t<lunar_inspiration_t>( "lunar_inspiration" ) );
     register_special_effect( 212875, fiery_red_maimers_t(), true );
     register_special_effect( 222270, sylvan_walker_t() );
+    register_special_effect( 208051, sephuzs_t() );
+    register_special_effect( 208051, sephuzs_secret_t(), true);
     // register_special_effect( 208220, amanthuls_wisdom );
     // register_special_effect( 207943, edraith_bonds_of_aglaya );
     // register_special_effect( 210667, ekowraith_creator_of_worlds );
