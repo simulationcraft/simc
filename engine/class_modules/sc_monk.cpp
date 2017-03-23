@@ -15,6 +15,10 @@ GENERAL:
 WINDWALKER:
 - Add Cyclone Strike Counter as an expression
 - Redo how Gale Bursts works with Hidden master's Forbidden Touch
+- Thunderfist needs to be adjusted in how it works. It needs to trigger the base amount of damage when SotWL is executed
+    and save that amount in a container of sorts. Then when it needs to proc, it removes an amount based on the total
+    size of the container and the stack size of the buff. Right now it works on what the current buffs are up at the
+    time of the auto attacks that trigger the proc.
 
 MISTWEAVER: 
 - Gusts of Mists - Check calculations
@@ -2674,6 +2678,74 @@ struct monk_melee_attack_t: public monk_action_t < melee_attack_t >
 };
 
 // ==========================================================================
+// Windwalking Aura Toggle
+// ==========================================================================
+
+struct windwalking_aura_t: public monk_spell_t
+{
+  windwalking_aura_t( monk_t* player ):
+    monk_spell_t( "windwalking_aura_toggle", player )
+  {
+    harmful = false;
+    background = true;
+    trigger_gcd = timespan_t::zero();
+  }
+
+  size_t available_targets( std::vector< player_t* >& tl ) const override
+  {
+    tl.clear();
+
+    for ( size_t i = 0, actors = sim -> player_non_sleeping_list.size(); i < actors; i++ )
+    {
+      player_t* t = sim -> player_non_sleeping_list[i];
+      tl.push_back( t );
+    }
+
+    return tl.size();
+  }
+
+  std::vector<player_t*> check_distance_targeting( std::vector< player_t* >& tl ) const override
+  {
+    size_t i = tl.size();
+    while ( i > 0 )
+    {
+      i--;
+      player_t* target_to_buff = tl[i];
+
+      if ( p() -> get_player_distance( *target_to_buff ) > 10.0 )
+        tl.erase( tl.begin() + i );
+    }
+
+    return tl;
+  }
+};
+
+// ==========================================================================
+// Thunderfist
+// ==========================================================================
+
+struct thunderfist_t: public monk_spell_t
+{
+  thunderfist_t( monk_t* player ) :
+    monk_spell_t( "thunderfist", player, player -> passives.thunderfist -> effectN( 1 ).trigger() )
+  {
+    background = true;
+    may_crit = true;
+  }
+
+  virtual bool ready() override
+  {
+    if ( !p() -> artifact.thunderfist.rank() )
+        return false;
+
+    if ( !p() -> buff.thunderfist -> up() )
+      return false;
+
+    return monk_spell_t::ready();
+  }
+};
+
+// ==========================================================================
 // Tiger Palm
 // ==========================================================================
 
@@ -2722,47 +2794,6 @@ struct eye_of_the_tiger_dmg_tick_t: public monk_spell_t
     am *= 1 + p() -> spec.brewmaster_monk -> effectN( 7 ).percent();
 
     return am;
-  }
-};
-
-// Windwalking Aura Toggle ==========================================================
-
-struct windwalking_aura_t: public monk_spell_t
-{
-  windwalking_aura_t( monk_t* player ):
-    monk_spell_t( "windwalking_aura_toggle", player )
-  {
-    harmful = false;
-    background = true;
-    trigger_gcd = timespan_t::zero();
-  }
-
-  size_t available_targets( std::vector< player_t* >& tl ) const override
-  {
-    tl.clear();
-
-    for ( size_t i = 0, actors = sim -> player_non_sleeping_list.size(); i < actors; i++ )
-    {
-      player_t* t = sim -> player_non_sleeping_list[i];
-      tl.push_back( t );
-    }
-
-    return tl.size();
-  }
-
-  std::vector<player_t*> check_distance_targeting( std::vector< player_t* >& tl ) const override
-  {
-    size_t i = tl.size();
-    while ( i > 0 )
-    {
-      i--;
-      player_t* target_to_buff = tl[i];
-
-      if ( p() -> get_player_distance( *target_to_buff ) > 10.0 )
-        tl.erase( tl.begin() + i );
-    }
-
-    return tl;
   }
 };
 
@@ -3338,6 +3369,7 @@ struct blackout_kick_totm_proc : public monk_melee_attack_t
   }
 };
 
+// Blackout Kick Baseline ability =======================================
 struct blackout_kick_t: public monk_melee_attack_t
 {
   rising_sun_kick_proc_t* rsk_proc;
@@ -4124,6 +4156,13 @@ struct strike_of_the_windlord_off_hand_t: public monk_melee_attack_t
     return pm;
   }
 
+    void execute() override
+  {
+    monk_melee_attack_t::execute(); // this is the MH attack
+
+    if ( p() -> artifact.thunderfist.rank() )
+      p() -> buff.thunderfist -> trigger();
+  }
 };
 
 struct strike_of_the_windlord_t: public monk_melee_attack_t
@@ -4294,6 +4333,7 @@ struct melee_t: public monk_melee_attack_t
 struct auto_attack_t: public monk_melee_attack_t
 {
   int sync_weapons;
+  spell_t* thunderfist;
   auto_attack_t( monk_t* player, const std::string& options_str ):
     monk_melee_attack_t( "auto_attack", player, spell_data_t::nil() ),
     sync_weapons( 0 )
@@ -4317,6 +4357,9 @@ struct auto_attack_t: public monk_melee_attack_t
     }
 
     trigger_gcd = timespan_t::zero();
+
+    if ( player -> artifact.thunderfist.rank() )
+      thunderfist = new thunderfist_t( player );
   }
 
   bool ready() override
@@ -4334,6 +4377,9 @@ struct auto_attack_t: public monk_melee_attack_t
 
     if ( player -> off_hand_attack )
       p() -> off_hand_attack -> schedule_execute();
+
+    if ( p() -> specialization() == MONK_WINDWALKER )
+      thunderfist -> execute();
   }
 };
 
