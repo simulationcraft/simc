@@ -2743,6 +2743,7 @@ struct thunderfist_t: public monk_spell_t
 
     return monk_spell_t::ready();
   }
+
   virtual void execute() override
   {
     monk_spell_t::execute();
@@ -4162,14 +4163,6 @@ struct strike_of_the_windlord_off_hand_t: public monk_melee_attack_t
 
     return pm;
   }
-
-    void execute() override
-  {
-    monk_melee_attack_t::execute(); // this is the MH attack
-
-    if ( p() -> artifact.thunderfist.rank() )
-      p() -> buff.thunderfist -> trigger();
-  }
 };
 
 struct strike_of_the_windlord_t: public monk_melee_attack_t
@@ -4244,6 +4237,10 @@ struct strike_of_the_windlord_t: public monk_melee_attack_t
     if ( oh_attack && result_is_hit( execute_state -> result ) &&
          p() -> off_hand_weapon.type != WEAPON_NONE ) // If MH fails to land, OH does not execute.
       oh_attack -> execute();
+
+    if ( p() -> artifact.thunderfist.rank() )
+      p() -> buff.thunderfist -> trigger();
+
   }
 
   virtual void impact( action_state_t* s ) override
@@ -4365,8 +4362,7 @@ struct auto_attack_t: public monk_melee_attack_t
 
     trigger_gcd = timespan_t::zero();
 
-    if ( player -> artifact.thunderfist.rank() )
-      thunderfist = new thunderfist_t( player );
+    thunderfist = new thunderfist_t( player );
   }
 
   bool ready() override
