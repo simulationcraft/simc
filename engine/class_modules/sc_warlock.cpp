@@ -146,6 +146,7 @@ public:
     action_t* demonic_power_proc;
     action_t* thalkiels_discord;
     action_t* harvester_of_souls;
+    action_t* rend_soul;
     spell_t* rain_of_fire;
     spell_t* corruption;
     actions::effigy_damage_override_t* effigy_damage_override;
@@ -240,6 +241,10 @@ public:
     artifact_power_t compounding_horror;
     artifact_power_t soulharvester;
     artifact_power_t soulstealer;
+    artifact_power_t degradation_of_the_black_harvest;
+    artifact_power_t winnowing;
+    artifact_power_t sinister_seeds;
+    artifact_power_t rend_soul;
 
     // Demonology
     artifact_power_t thalkiels_consumption;
@@ -2632,6 +2637,15 @@ struct agony_t: public warlock_spell_t
     return m;
   }
 
+  double composite_crit_chance() const override
+  {
+    double cc = warlock_spell_t::composite_crit_chance();
+
+    cc += p() -> artifact.winnowing.percent() * ( p() -> buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
+
+    return cc;
+  }
+
   double composite_crit_damage_bonus_multiplier() const override
   {
     double cd = warlock_spell_t::composite_crit_damage_bonus_multiplier();
@@ -2747,6 +2761,7 @@ struct unstable_affliction_t: public warlock_spell_t
       double cc = warlock_spell_t::composite_crit_chance();
 
       cc += p() -> artifact.inherently_unstable.percent() * ( p() -> buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
+      cc += p() -> artifact.winnowing.percent() * ( p() -> buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
 
       return cc;
     }
@@ -3027,6 +3042,15 @@ struct corruption_t: public warlock_spell_t
     m *= 1.0 + p() -> artifact.hideous_corruption.percent() * ( p() -> buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
 
     return m;
+  }
+
+  double composite_crit_chance() const override
+  {
+    double cc = warlock_spell_t::composite_crit_chance();
+
+    cc += p() -> artifact.winnowing.percent() * ( p() -> buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
+
+    return cc;
   }
 
   double composite_crit_damage_bonus_multiplier() const override
@@ -4184,7 +4208,7 @@ struct seed_of_corruption_t: public warlock_spell_t
   {
     if ( result_is_hit( s -> result ) )
     {
-      td( s -> target ) -> soc_threshold = s -> composite_spell_power() * threshold_mod;
+      td( s -> target ) -> soc_threshold = s -> composite_spell_power() * ( threshold_mod * ( 1.0 + p() -> artifact.sinister_seeds.percent() * p() -> buffs.deadwind_harvester -> check() ? 2.0 : 1.0 ) );
     }
 
     if ( p() -> active.corruption )
@@ -4950,12 +4974,14 @@ struct shadowflame_t : public warlock_spell_t
 
 struct drain_soul_t: public warlock_spell_t
 {
+  double rend_soul_proc_chance;
   drain_soul_t( warlock_t* p ):
     warlock_spell_t( "drain_soul", p, p -> find_specialization_spell( "Drain Soul" ) )
   {
     channeled = true;
     hasted_ticks = false;
     may_crit = false;
+    rend_soul_proc_chance = p -> artifact.rend_soul.data().proc_chance();
   }
 
   virtual double action_multiplier() const override
@@ -4967,11 +4993,27 @@ struct drain_soul_t: public warlock_spell_t
     return m;
   }
 
+  double composite_crit_chance() const override
+  {
+    double cc = warlock_spell_t::composite_crit_chance();
+
+    cc += p() -> artifact.winnowing.percent() * ( p() -> buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
+
+    return cc;
+  }
+
   virtual void tick( dot_t* d ) override
   {
     if ( p() -> sets.has_set_bonus( WARLOCK_AFFLICTION, T18, B2 ) )
     {
       p() -> buffs.shard_instability -> trigger();
+    }
+
+    if ( p() -> artifact.rend_soul.rank() && rng().roll( rend_soul_proc_chance * ( p() -> buffs.deadwind_harvester -> check() ? 2.0 : 1.0 ) ) )
+    {
+      p() -> active.rend_soul -> target = d -> target;
+      p() -> active.rend_soul -> execute();
+      p() -> buffs.tormented_souls -> trigger();
     }
 
     warlock_spell_t::tick( d );
@@ -5348,6 +5390,17 @@ struct harvester_of_souls_t : public warlock_spell_t
   }
 };
 
+struct rend_soul_t : public warlock_spell_t
+{
+  rend_soul_t( warlock_t* p ) :
+    warlock_spell_t( "rend_soul", p, p -> find_spell( 242834 ) )
+  {
+    background = true;
+    //proc = true; Harvester of Souls can proc trinkets and has no resource cost so no need.
+    callbacks = true;
+  }
+};
+
 struct grimoire_of_service_t: public summon_pet_t
 {
   grimoire_of_service_t( warlock_t* p, const std::string& pet_name ):
@@ -5682,6 +5735,7 @@ double warlock_t::composite_player_multiplier( school_e school ) const
   if ( specialization() == WARLOCK_AFFLICTION )
   {
     m *= 1.0 + artifact.soulstealer.percent() * ( buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
+    m *= 1.0 + artifact.degradation_of_the_black_harvest.percent() * ( buffs.deadwind_harvester->check() ? 2.0 : 1.0 );
   }
 
   if ( specialization() == WARLOCK_DEMONOLOGY )
@@ -6121,6 +6175,10 @@ void warlock_t::init_spells()
   artifact.compounding_horror = find_artifact_spell( "Compounding Horror" );
   artifact.soulharvester = find_artifact_spell( "Soulharvester" );
   artifact.soulstealer = find_artifact_spell( "Soulstealer" );
+  artifact.degradation_of_the_black_harvest = find_artifact_spell( "Degradation of the Black Harvest" );
+  artifact.winnowing = find_artifact_spell( "Winnowing" );
+  artifact.sinister_seeds = find_artifact_spell( "Sinister Seeds" );
+  artifact.rend_soul = find_artifact_spell( "Rend Soul" );
 
   artifact.thalkiels_consumption = find_artifact_spell( "Thal'kiel's Consumption" );
   artifact.breath_of_thalkiel = find_artifact_spell( "Breath of Thal'kiel" );
@@ -6163,6 +6221,7 @@ void warlock_t::init_spells()
   active.demonic_power_proc = new actions::demonic_power_damage_t( this );
   active.thalkiels_discord = new actions::thalkiels_discord_t( this );
   active.harvester_of_souls = new actions::harvester_of_souls_t( this );
+  active.rend_soul = new actions::rend_soul_t( this );
   active.effigy_damage_override = new actions::effigy_damage_override_t(this);
   if ( specialization() == WARLOCK_AFFLICTION )
   {
