@@ -251,6 +251,7 @@ public:
     buff_t* spinning_crane_kick;
     buff_t* storm_earth_and_fire;
     buff_t* serenity;
+    buff_t* thunderfist;
     buff_t* touch_of_karma;
     buff_t* transfer_the_power;
     buff_t* windwalking_driver;
@@ -451,7 +452,6 @@ public:
     artifact_power_t fortification;
     artifact_power_t gifted_student;
     artifact_power_t healthy_appetite;
-    artifact_power_t infinite_brm; // TODO: double check name
     artifact_power_t full_keg;
     artifact_power_t obsidian_fists;
     artifact_power_t obstinate_determination;
@@ -472,7 +472,6 @@ public:
     artifact_power_t effusive_mists;
     artifact_power_t essence_of_the_mists;
     artifact_power_t extended_healing;
-    artifact_power_t infinite_mw;
     artifact_power_t infusion_of_life;
     artifact_power_t light_on_your_feet_mw;
     artifact_power_t mists_of_life;
@@ -489,15 +488,14 @@ public:
     artifact_power_t whispers_of_shaohao;
 
     // Windwalker Artifact
-    artifact_power_t cestus_of_storms;
     artifact_power_t crosswinds;
     artifact_power_t dark_skies;
     artifact_power_t death_art;
+    artifact_power_t ferocity_of_the_broken_temple;
     artifact_power_t fists_of_the_wind;
     artifact_power_t gale_burst;
     artifact_power_t good_karma;
     artifact_power_t healing_winds;
-    artifact_power_t infinite_ww; // TODO: double check name
     artifact_power_t inner_peace;
     artifact_power_t light_on_your_feet_ww;
     artifact_power_t master_of_combinations;
@@ -507,6 +505,7 @@ public:
     artifact_power_t split_personality;
     artifact_power_t strike_of_the_windlord;
     artifact_power_t strength_of_xuen;
+    artifact_power_t thunderfist;
     artifact_power_t tiger_claws;
     artifact_power_t tornado_kicks;
     artifact_power_t transfer_the_power;
@@ -601,6 +600,7 @@ public:
     const spell_data_t* mark_of_the_crane;
     const spell_data_t* master_of_combinations;
     const spell_data_t* whirling_dragon_punch;
+    const spell_data_t* thunderfist;
     const spell_data_t* touch_of_karma_buff;
     const spell_data_t* touch_of_karma_tick;
     const spell_data_t* tier17_4pc_melee;
@@ -4202,6 +4202,14 @@ struct strike_of_the_windlord_t: public monk_melee_attack_t
          p() -> off_hand_weapon.type != WEAPON_NONE ) // If MH fails to land, OH does not execute.
       oh_attack -> execute();
   }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    monk_melee_attack_t::impact( s );
+
+    if ( p() -> artifact.thunderfist.rank() )
+      p() -> buff.thunderfist -> trigger();
+  }
 };
 
 // ==========================================================================
@@ -4771,6 +4779,7 @@ struct serenity_t: public monk_spell_t
     trigger_gcd = timespan_t::zero();
 
     if ( player -> artifact.split_personality.rank() )
+      // Value is saved as -3000
       cooldown -> duration += ( player -> artifact.split_personality.rank() * player -> artifact.split_personality.data().effectN( 2 ).time_value() );
   }
 
@@ -7660,7 +7669,6 @@ void monk_t::init_spells()
   artifact.full_keg                   = find_artifact_spell( "Full Keg" );
   artifact.gifted_student             = find_artifact_spell( "Gifted Student" );
   artifact.healthy_appetite           = find_artifact_spell( "Healthy Appetite" );
-  artifact.infinite_brm               = find_artifact_spell( "Infinite" );
   artifact.obsidian_fists             = find_artifact_spell( "Obsidian Fists" );
   artifact.obstinate_determination    = find_artifact_spell( "Obstinate Determination" );
   artifact.overflow                   = find_artifact_spell( "Overflow" );
@@ -7680,7 +7688,6 @@ void monk_t::init_spells()
   artifact.effusive_mists             = find_artifact_spell( "Effusive Mists" );
   artifact.essence_of_the_mists       = find_artifact_spell( "Essence of the Mists" );
   artifact.extended_healing           = find_artifact_spell( "Extended Healing" );
-  artifact.infinite_mw                = find_artifact_spell( "Infinite" );
   artifact.infusion_of_life           = find_artifact_spell( "Infusion of Life" );
   artifact.light_on_your_feet_mw      = find_artifact_spell( "Light on Your Feet" );
   artifact.mists_of_life              = find_artifact_spell( "Mists of Life" );
@@ -7697,28 +7704,28 @@ void monk_t::init_spells()
   artifact.whispers_of_shaohao        = find_artifact_spell( "Whispers of Shaohao" );
 
   // Windwalker
-  artifact.cestus_of_storms           = find_artifact_spell( "Cestus of Storms" );
-  artifact.crosswinds                 = find_artifact_spell( "Crosswinds" );
-  artifact.dark_skies                 = find_artifact_spell( "Dark Skies" );
-  artifact.death_art                  = find_artifact_spell( "Death Art" );
-  artifact.fists_of_the_wind          = find_artifact_spell( "Fists of the Wind" );
-  artifact.gale_burst                 = find_artifact_spell( "Gale Burst" );
-  artifact.good_karma                 = find_artifact_spell( "Good Karma" );
-  artifact.healing_winds              = find_artifact_spell( "Healing Winds" );
-  artifact.infinite_ww                = find_artifact_spell( "Infinite" );
-  artifact.inner_peace                = find_artifact_spell( "Inner Peace" );
-  artifact.light_on_your_feet_ww      = find_artifact_spell( "Light on Your Feet" );
-  artifact.master_of_combinations     = find_artifact_spell( "Master of Combinations" );
-  artifact.power_of_a_thousand_cranes = find_artifact_spell( "Power of a Thousand Cranes" );
-  artifact.rising_winds               = find_artifact_spell( "Rising Winds" );
-  artifact.spiritual_focus            = find_artifact_spell( "Spiritual Focus" );
-  artifact.split_personality          = find_artifact_spell( "Split Personality" );
-  artifact.strike_of_the_windlord     = find_artifact_spell( "Strike of the Windlord" );
-  artifact.strength_of_xuen           = find_artifact_spell( "Strength of Xuen" );
-  artifact.tiger_claws                = find_artifact_spell( "Tiger Claws" );
-  artifact.tornado_kicks              = find_artifact_spell( "Tornado Kicks" );
-  artifact.transfer_the_power         = find_artifact_spell( "Transfer the Power" );
-  artifact.windborne_blows            = find_artifact_spell( "Windborne Blows" );
+  artifact.crosswinds                    = find_artifact_spell( "Crosswinds" );
+  artifact.dark_skies                    = find_artifact_spell( "Dark Skies" );
+  artifact.death_art                     = find_artifact_spell( "Death Art" );
+  artifact.ferocity_of_the_broken_temple = find_artifact_spell( "Ferocity of the Broken Temple" );
+  artifact.fists_of_the_wind             = find_artifact_spell( "Fists of the Wind" );
+  artifact.gale_burst                    = find_artifact_spell( "Gale Burst" );
+  artifact.good_karma                    = find_artifact_spell( "Good Karma" );
+  artifact.healing_winds                 = find_artifact_spell( "Healing Winds" );
+  artifact.inner_peace                   = find_artifact_spell( "Inner Peace" );
+  artifact.light_on_your_feet_ww         = find_artifact_spell( "Light on Your Feet" );
+  artifact.master_of_combinations        = find_artifact_spell( "Master of Combinations" );
+  artifact.power_of_a_thousand_cranes    = find_artifact_spell( "Power of a Thousand Cranes" );
+  artifact.rising_winds                  = find_artifact_spell( "Rising Winds" );
+  artifact.spiritual_focus               = find_artifact_spell( "Spiritual Focus" );
+  artifact.split_personality             = find_artifact_spell( "Split Personality" );
+  artifact.strike_of_the_windlord        = find_artifact_spell( "Strike of the Windlord" );
+  artifact.strength_of_xuen              = find_artifact_spell( "Strength of Xuen" );
+  artifact.thunderfist                   = find_artifact_spell( "Thunderfist" );
+  artifact.tiger_claws                   = find_artifact_spell( "Tiger Claws" );
+  artifact.tornado_kicks                 = find_artifact_spell( "Tornado Kicks" );
+  artifact.transfer_the_power            = find_artifact_spell( "Transfer the Power" );
+  artifact.windborne_blows               = find_artifact_spell( "Windborne Blows" );
 
   // Specialization spells ====================================
   // Multi-Specialization & Class Spells
@@ -7846,6 +7853,7 @@ void monk_t::init_spells()
   passives.mark_of_the_crane                = find_spell( 228287 );
   passives.master_of_combinations           = find_spell( 240672 );
   passives.whirling_dragon_punch            = find_spell( 158221 );
+  passives.thunderfist                      = find_spell( 242387 );
   passives.touch_of_karma_buff              = find_spell( 125174 );
   passives.touch_of_karma_tick              = find_spell( 124280 );
   passives.tier17_4pc_melee                 = find_spell( 166603 );
@@ -8149,6 +8157,8 @@ void monk_t::create_buffs()
   buff.ww_tier_20_4pc = buff_creator_t( this, "ww_tier_20_4pc", sets.set( MONK_WINDWALKER,T20, B4 ) )
                        .duration( timespan_t::from_seconds( 24 ) )
                        .default_value( sets.set( MONK_WINDWALKER, T20, B4 ) -> effectN( 1 ).percent() );
+
+  buff.thunderfist = buff_creator_t( this, "thunderfist", passives.thunderfist );
 
   buff.touch_of_karma = new buffs::touch_of_karma_buff_t( *this, "touch_of_karma", passives.touch_of_karma_buff );
 
@@ -8546,8 +8556,8 @@ double monk_t::composite_player_multiplier( school_e school ) const
   if ( artifact.windborne_blows.rank() )
     m *= 1.0 + artifact.windborne_blows.percent();
 
-  if ( artifact.infinite_ww.rank() )
-    m *= 1.0 + artifact.infinite_ww.percent();
+  if ( artifact.ferocity_of_the_broken_temple.rank() )
+    m *= 1.0 + artifact.ferocity_of_the_broken_temple.percent();
 
   return m;
 }
@@ -8559,7 +8569,12 @@ double monk_t::composite_attribute_multiplier( attribute_e attr ) const
   double cam = player_t::composite_attribute_multiplier( attr );
 
   if ( attr == ATTR_STAMINA )
+  {
     cam *= 1.0 + spec.stagger -> effectN( 6 ).percent();
+
+    if ( artifact.ferocity_of_the_broken_temple.rank() )
+      cam *= 1.0 + artifact.ferocity_of_the_broken_temple.data().effectN( 2 ).percent();
+  }
 
   return cam;
 }
