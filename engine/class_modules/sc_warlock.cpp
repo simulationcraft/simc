@@ -9,21 +9,18 @@
 // ==========================================================================
 //
 // TODO
-// Legendaries
+//
+// 7.2
+//
+// Demonology Traits - Jaws of Shadow and Thal'kiel's Ascendance
+//
 // Double check all up()/check() usage.
-// Expression to estimate imp vs implosion damage.
 //
 // Affliction -
-// Haunt reset
 // Soul Flame + Wrath of Consumption on-death effects.
 // Peridition needs special crit damage override thing NYI.
-// Compounding Horror
-// Fatal Echoes
 //
-// Destruction/Demonology -
-// 20/20 Trait
-//
-// Better reporting for add buffs.
+// Better reporting for pet buffs.
 //
 // Wild imps have a 14 sec duration on 104317, expire after 12 UNLESS implosion.
 // Check resource generation execute/impact and hit requirement
@@ -264,7 +261,11 @@ public:
     artifact_power_t stolen_power;
     artifact_power_t imperator;
     artifact_power_t summoners_prowess;
-    artifact_power_t thalkiels_lingering_power;//NYI
+    artifact_power_t thalkiels_lingering_power;
+    artifact_power_t swarms_of_the_black_harvest;
+    artifact_power_t left_hand_of_darkness;
+    artifact_power_t jaws_of_shadow;
+    artifact_power_t thalkiels_ascendance;
 
     // Destruction
     artifact_power_t dimensional_rift;
@@ -1408,6 +1409,19 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
   if( o() -> mastery_spells.master_demonologist -> ok() && buffs.demonic_empowerment -> check() )
   {
      m *= 1.0 +  o() -> cache.mastery_value();
+  }
+
+  if ( o() -> specialization() == WARLOCK_AFFLICTION )
+  {
+    m *= 1.0 + o() -> artifact.soulstealer.percent() * ( o() -> buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
+    m *= 1.0 + o() -> artifact.degradation_of_the_black_harvest.percent() * ( o() -> buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
+  }
+
+  if ( o() -> specialization() == WARLOCK_DEMONOLOGY )
+  {
+    m *= 1.0 + o() -> artifact.thalkiels_lingering_power.percent();
+    m *= 1.0 + o() -> artifact.swarms_of_the_black_harvest.percent();
+    m *= 1.0 + o() -> artifact.left_hand_of_darkness.percent();
   }
 
   m *= 1.0 + o() -> buffs.sindorei_spite -> check_stack_value();
@@ -5741,6 +5755,7 @@ double warlock_t::composite_player_multiplier( school_e school ) const
   if ( specialization() == WARLOCK_DEMONOLOGY )
   {
     m *= 1.0 + artifact.thalkiels_lingering_power.percent();
+    m *= 1.0 + artifact.swarms_of_the_black_harvest.percent();
   }
 
   if ( specialization() == WARLOCK_DESTRUCTION )
@@ -6198,6 +6213,10 @@ void warlock_t::init_spells()
   artifact.imperator = find_artifact_spell( "Imp-erator" );
   artifact.summoners_prowess = find_artifact_spell( "Summoner's Prowess" );
   artifact.thalkiels_lingering_power = find_artifact_spell( "Thal'kiel's Lingering Power" );
+  artifact.swarms_of_the_black_harvest = find_artifact_spell( "Swarms of the Black Harvest" );
+  artifact.left_hand_of_darkness = find_artifact_spell( "Left Hand of Darkness" );
+  artifact.jaws_of_shadow = find_artifact_spell( "Jaws of Shadow" );
+  artifact.thalkiels_ascendance = find_artifact_spell( "Thal'kiel's Ascendance" );
 
   artifact.dimensional_rift = find_artifact_spell( "Dimensional Rift" );
   artifact.flames_of_the_pit = find_artifact_spell( "Flames of the Pit" );
