@@ -4340,6 +4340,7 @@ struct auto_attack_t: public monk_melee_attack_t
   spell_t* thunderfist;
   auto_attack_t( monk_t* player, const std::string& options_str ):
     monk_melee_attack_t( "auto_attack", player, spell_data_t::nil() ),
+    thunderfist( new thunderfist_t( player ) ),
     sync_weapons( 0 )
   {
     add_option( opt_bool( "sync_weapons", sync_weapons ) );
@@ -4361,8 +4362,6 @@ struct auto_attack_t: public monk_melee_attack_t
     }
 
     trigger_gcd = timespan_t::zero();
-
-    thunderfist = new thunderfist_t( player );
   }
 
   bool ready() override
@@ -4381,7 +4380,7 @@ struct auto_attack_t: public monk_melee_attack_t
     if ( player -> off_hand_attack )
       p() -> off_hand_attack -> schedule_execute();
 
-    if ( p() -> specialization() == MONK_WINDWALKER )
+    if ( p() -> artifact.thunderfist.rank() )
       thunderfist -> execute();
   }
 };
