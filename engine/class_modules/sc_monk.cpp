@@ -263,6 +263,7 @@ public:
 
     // Legendaries
     buff_t* hidden_masters_forbidden_touch;
+    haste_buff_t* sephuzs_secret;
     buff_t* the_emperors_capacitor;
   } buff;
 
@@ -746,6 +747,8 @@ public:
   virtual double    composite_player_heal_multiplier( const action_state_t* s ) const override;
   virtual double    composite_melee_expertise( const weapon_t* weapon ) const override;
   virtual double    composite_melee_attack_power() const override;
+  virtual double    composite_spell_haste() const override;
+  virtual double    composite_melee_haste() const override;
   virtual double    composite_attack_power_multiplier() const override;
   virtual double    composite_parry() const override;
   virtual double    composite_dodge() const override;
@@ -809,8 +812,8 @@ public:
   double current_stagger_dot_remains();
   double stagger_pct();
   void trigger_celestial_fortune( action_state_t* );
-  void trigger_mark_of_the_crane( action_state_t* );
   void trigger_sephuzs_secret( const action_state_t* state, spell_mechanic mechanic, double proc_chance = -1.0 );
+  void trigger_mark_of_the_crane( action_state_t* );
   void rjw_trigger_mark_of_the_crane();
   player_t* next_mark_of_the_crane_target( action_state_t* );
   int mark_of_the_crane_counter();
@@ -2433,7 +2436,7 @@ public:
             if ( !p() -> pet.sef[SEF_FIRE] -> is_sleeping() )
               p() -> pet.sef[SEF_FIRE] -> expiration -> reschedule( p() -> pet.sef[SEF_FIRE] -> expiration -> remains() + timespan_t::from_millis( extension ) );
           }
-          else if ( p() -> buff.serenity -> up() && maybe_ptr( dbc.ptr ) // FIXME
+          else if ( p() -> buff.serenity -> up() && maybe_ptr( dbc.ptr ) ) // FIXME
           {
             // Since this is extended based on chi spender instead of chi spent, extention is the duration
             // Effect is saved as 3; extension is saved as 300 milliseconds
@@ -7463,6 +7466,36 @@ void monk_t::trigger_celestial_fortune( action_state_t* s )
   }
 }
 
+void monk_t::trigger_sephuzs_secret( const action_state_t* state,
+                                       spell_mechanic        mechanic,
+                                       double                override_proc_chance )
+{
+  switch ( mechanic )
+  {
+    // Interrupts will always trigger sephuz
+    case MECHANIC_INTERRUPT:
+      break;
+    default:
+      // By default, proc sephuz on persistent enemies if they are below the "boss level"
+      // (playerlevel + 3), and on any kind of transient adds.
+      if ( state -> target -> type != ENEMY_ADD &&
+           ( state -> target -> level() >= sim -> max_player_level + 3 ) )
+      {
+        return;
+      }
+      break;
+  }
+
+  // Ensure Sephuz's Secret can even be procced. If the ring is not equipped, a fallback buff with
+  // proc chance of 0 (disabled) will be created
+  if ( buff.sephuzs_secret -> default_chance == 0 )
+  {
+    return;
+  }
+
+  buff.sephuzs_secret -> trigger( 1, buff_t::DEFAULT_VALUE(), override_proc_chance );
+}
+
 void monk_t::trigger_mark_of_the_crane( action_state_t* s )
 {
   get_target_data( s -> target ) -> debuff.mark_of_the_crane -> trigger();
@@ -8525,7 +8558,47 @@ double monk_t::clear_stagger()
   return active_actions.stagger_self_damage -> clear_all_damage();
 }
 
-// monk_t::composite_attack_speed =========================================
+// monk_t::composite_spell_haste =========================================
+
+double monk_t::composite_spell_haste() const
+{
+  double h = player_t::composite_spell_haste();
+
+  if ( buff.sephuzs_secret -> check() )
+  {
+    h *= 1.0 / (1.0 + buff.sephuzs_secret -> stack_value());
+  }
+
+  // 7.2 Sephuz's Secret passive haste. If the item is missing, default_chance will be set to 0 (by
+  // the fallback buff creator).
+  if ( maybe_ptr( dbc.ptr ) && legendary.sephuzs_secret -> ok() )
+  {
+    h *= 1.0 / ( 1.0 + legendary.sephuzs_secret -> effectN( 3 ).percent() );
+  }
+
+  return h;
+}
+
+// monk_t::composite_melee_haste =========================================
+
+double monk_t::composite_melee_haste() const
+{
+  double h = player_t::composite_melee_haste();
+
+  if ( buff.sephuzs_secret -> check() )
+  {
+    h *= 1.0 / (1.0 + buff.sephuzs_secret -> stack_value());
+  }
+
+  // 7.2 Sephuz's Secret passive haste. If the item is missing, default_chance will be set to 0 (by
+  // the fallback buff creator).
+  if ( maybe_ptr( dbc.ptr ) && legendary.sephuzs_secret -> ok() )
+  {
+    h *= 1.0 / ( 1.0 + legendary.sephuzs_secret -> effectN( 3 ).percent() );
+  }
+
+  return h;
+}
 
 // monk_t::composite_melee_crit_chance ============================================
 
@@ -8779,6 +8852,11 @@ double monk_t::composite_armor_multiplier() const
 double monk_t::temporary_movement_modifier() const
 {
   double active = player_t::temporary_movement_modifier();
+
+  if ( buff.sephuzs_secret -> up() )
+  {
+    active = std::max( buff.sephuzs_secret -> data().effectN( 1 ).percent(), active );
+  }
 
   return active;
 }
@@ -10085,14 +10163,32 @@ struct prydaz_xavarics_magnum_opus_t : public unique_gear::scoped_actor_callback
   }
 };
 
-struct sephuzs_secret_t : public unique_gear::scoped_actor_callback_t<monk_t>
+struct sephuzs_secret_enabler_t : public unique_gear::scoped_actor_callback_t<monk_t>
 {
-  sephuzs_secret_t() : super( MONK )
+  sephuzs_secret_enabler_t() : scoped_actor_callback_t( MONK )
   { }
 
   void manipulate( monk_t* monk, const special_effect_t& e ) override
   {
     monk -> legendary.sephuzs_secret = e.driver();
+  }
+};
+
+struct sephuzs_secret_t : public unique_gear::class_buff_cb_t<monk_t, haste_buff_t, haste_buff_creator_t>
+{
+  sephuzs_secret_t() : super( SHAMAN, "sephuzs_secret" )
+  { }
+
+  haste_buff_t*& buff_ptr( const special_effect_t& e ) override
+  { return debug_cast<monk_t*>( e.player ) -> buff.sephuzs_secret; }
+
+  haste_buff_creator_t creator( const special_effect_t& e ) const override
+  {
+    return super::creator( e )
+           .spell( e.trigger() )
+           .cd( e.player -> find_spell( 226262 ) -> duration() )
+           .default_value( e.trigger() -> effectN( 2 ).percent() )
+           .add_invalidate( CACHE_RUN_SPEED );
   }
 };
 
@@ -10304,6 +10400,7 @@ struct monk_module_t: public module_t
     // General
     unique_gear::register_special_effect( 207692, cinidaria_the_symbiote_t() );
     unique_gear::register_special_effect( 207428, prydaz_xavarics_magnum_opus_t() );
+    unique_gear::register_special_effect( 208051, sephuzs_secret_enabler_t() );
     unique_gear::register_special_effect( 208051, sephuzs_secret_t() );
 
     // Brewmaster
