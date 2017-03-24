@@ -4750,7 +4750,7 @@ struct spear_hand_strike_t: public monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
 
-    p() -> trigger_sephuzs_secret( execute_state, MECHANIC_INTERRUPT );
+    //p() -> trigger_sephuzs_secret( execute_state, MECHANIC_INTERRUPT );
   }
 };
 
@@ -4772,7 +4772,7 @@ struct leg_sweep_t: public monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
 
-    p() -> trigger_sephuzs_secret( execute_state, MECHANIC_STUN );
+    //p() -> trigger_sephuzs_secret( execute_state, MECHANIC_STUN );
   }
 };
 
@@ -4794,7 +4794,7 @@ struct paralysis_t: public monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
 
-    p() -> trigger_sephuzs_secret( execute_state, MECHANIC_INCAPACITATE );
+    //p() -> trigger_sephuzs_secret( execute_state, MECHANIC_INCAPACITATE );
   }
 };
 } // END melee_attacks NAMESPACE
