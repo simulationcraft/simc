@@ -382,6 +382,7 @@ public:
     const spell_data_t* effuse;
     const spell_data_t* effuse_2;
     const spell_data_t* leather_specialization;
+    const spell_data_t* paralysis;
     const spell_data_t* provoke;
     const spell_data_t* rising_sun_kick;
     const spell_data_t* roll;
@@ -2436,7 +2437,11 @@ public:
             if ( !p() -> pet.sef[SEF_FIRE] -> is_sleeping() )
               p() -> pet.sef[SEF_FIRE] -> expiration -> reschedule( p() -> pet.sef[SEF_FIRE] -> expiration -> remains() + timespan_t::from_millis( extension ) );
           }
+<<<<<<< Updated upstream
           else if ( p() -> buff.serenity -> up() && maybe_ptr( p() -> dbc.ptr ) ) // FIXME
+=======
+          else if ( p() -> buff.serenity -> up() && maybe_ptr( p() -> dbc.ptr ) )
+>>>>>>> Stashed changes
           {
             // Since this is extended based on chi spender instead of chi spent, extention is the duration
             // Effect is saved as 3; extension is saved as 300 milliseconds
@@ -4731,7 +4736,9 @@ struct provoke_t: public monk_melee_attack_t
   }
 };
 
-// Spear Hand Strike ========================================================
+// ==========================================================================
+// Spear Hand Strike
+// ==========================================================================
 
 struct spear_hand_strike_t: public monk_melee_attack_t
 {
@@ -4741,6 +4748,57 @@ struct spear_hand_strike_t: public monk_melee_attack_t
     parse_options( options_str );
     ignore_false_positive = true;
     may_miss = may_block = may_dodge = may_parry = false;
+  }
+
+  virtual void execute() override
+  {
+    monk_melee_attack_t::execute();
+
+    p() -> trigger_sephuzs_secret( execute_state, MECHANIC_INTERRUPT );
+  }
+};
+
+// ==========================================================================
+// Leg Sweep
+// ==========================================================================
+
+struct leg_sweep_t: public monk_melee_attack_t
+{
+  leg_sweep_t( monk_t* p, const std::string& options_str ):
+    monk_melee_attack_t( "leg_sweep", p, p -> talent.leg_sweep )
+  {
+    parse_options( options_str );
+    ignore_false_positive = true;
+    may_miss = may_block = may_dodge = may_parry = false;
+  }
+
+  virtual void execute() override
+  {
+    monk_melee_attack_t::execute();
+
+    p() -> trigger_sephuzs_secret( execute_state, MECHANIC_STUN );
+  }
+};
+
+// ==========================================================================
+// Paralysis
+// ==========================================================================
+
+struct paralysis_t: public monk_melee_attack_t
+{
+  paralysis_t( monk_t* p, const std::string& options_str ):
+    monk_melee_attack_t( "paralysis", p, p -> spec.paralysis )
+  {
+    parse_options( options_str );
+    ignore_false_positive = true;
+    may_miss = may_block = may_dodge = may_parry = false;
+  }
+
+  virtual void execute() override
+  {
+    monk_melee_attack_t::execute();
+
+    p() -> trigger_sephuzs_secret( execute_state, MECHANIC_INCAPACITATE );
   }
 };
 } // END melee_attacks NAMESPACE
@@ -7394,9 +7452,11 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "crackling_jade_lightning" ) return new  crackling_jade_lightning_t( *this, options_str );
   if ( name == "tiger_palm" ) return new                tiger_palm_t( this, options_str );
   if ( name == "blackout_kick" ) return new             blackout_kick_t( this, options_str );
-  if ( name == "spinning_crane_kick" ) return new       spinning_crane_kick_t( this, options_str );
+  if ( name == "leg_sweep" ) return new                 leg_sweep_t( this, options_str );
+  if ( name == "paralysis" ) return new                 paralysis_t( this, options_str );
   if ( name == "rising_sun_kick" ) return new           rising_sun_kick_t( this, options_str );
   if ( name == "spear_hand_strike" ) return new         spear_hand_strike_t( this, options_str );
+  if ( name == "spinning_crane_kick" ) return new       spinning_crane_kick_t( this, options_str );
   if ( name == "vivify" ) return new                    vivify_t( *this, options_str );
   // Brewmaster
   if ( name == "blackout_strike" ) return new           blackout_strike_t( this, options_str );
@@ -7813,6 +7873,7 @@ void monk_t::init_spells()
   spec.effuse                        = find_specialization_spell( "Effuse" );
   spec.effuse_2                      = find_specialization_spell( 231602 );
   spec.leather_specialization        = find_specialization_spell( "Leather Specialization" );
+  spec.paralysis                     = find_class_spell( "Paralysis" );
   spec.provoke                       = find_class_spell( "Provoke" );
   spec.resuscitate                   = find_class_spell( "Resuscitate" );
   spec.rising_sun_kick               = find_specialization_spell( "Rising Sun Kick" );
@@ -7880,7 +7941,7 @@ void monk_t::init_spells()
   passives.chi_torpedo                      = find_spell( 119085 );
   passives.chi_wave_damage                  = find_spell( 132467 );
   passives.chi_wave_heal                    = find_spell( 132463 );
-  passives.healing_elixirs                  = find_spell( 122281 ); // talent.healing_elixirs -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() 
+  passives.healing_elixirs                  = find_spell( 122281 ); // talent.healing_elixirs -> effectN( 1 ).trigger() -> effectN( 1 ).trigger()
 
   // Brewmaster
   passives.breath_of_fire_dot               = find_spell( 123725 );
@@ -8866,6 +8927,13 @@ double monk_t::temporary_movement_modifier() const
 double monk_t::passive_movement_modifier() const
 {
   double ms = player_t::passive_movement_modifier();
+
+  // 7.2 Sephuz's Secret passive movement speed. If the item is missing, default_chance will be set
+  // to 0 (by the fallback buff creator).
+  if ( maybe_ptr( dbc.ptr ) && legendary.sephuzs_secret -> ok() )
+  {
+    ms += legendary.sephuzs_secret -> effectN( 2 ).percent();
+  }
 
   return ms;
 }
