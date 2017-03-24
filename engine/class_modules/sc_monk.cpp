@@ -10465,7 +10465,7 @@ struct monk_module_t: public module_t
     unique_gear::register_special_effect( 207692, cinidaria_the_symbiote_t() );
     unique_gear::register_special_effect( 207428, prydaz_xavarics_magnum_opus_t() );
     unique_gear::register_special_effect( 208051, sephuzs_secret_enabler_t() );
-    unique_gear::register_special_effect( 208051, sephuzs_secret_t() );
+    unique_gear::register_special_effect( 208051, sephuzs_secret_t(), true );
 
     // Brewmaster
     unique_gear::register_special_effect( 224489, firestone_walkers_t() );
