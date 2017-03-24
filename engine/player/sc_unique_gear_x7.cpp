@@ -829,19 +829,19 @@ struct fury_of_the_burning_sky_driver_t : public dbc_proc_callback_t
   }
 };
 
-struct solar_collapse_t : public debuff_t
+struct solar_collapse_t : public buff_t
 {
   action_t* damage_event;
 
   solar_collapse_t( const actor_pair_t& p, const special_effect_t& source_effect ) :
-    debuff_t( buff_creator_t( p, "solar_collapse", source_effect.driver() -> effectN( 1 ).trigger(), source_effect.item )
+    buff_t( buff_creator_t( p, "solar_collapse", source_effect.driver() -> effectN( 1 ).trigger(), source_effect.item )
                                   .duration( timespan_t::from_seconds( 3.0 ) ) ),
                                   damage_event( source -> find_action( "solar_collapse_damage" ) )
   { }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
-    debuff_t::expire_override( expiration_stacks, remaining_duration );
+    buff_t::expire_override( expiration_stacks, remaining_duration );
     damage_event -> target = player;
     damage_event -> execute();
   }
@@ -936,19 +936,19 @@ struct thunder_ritual_impact_t : public spell_t
   }
 };
 
-struct thunder_ritual_t : public debuff_t
+struct thunder_ritual_t : public buff_t
 {
   action_t* damage_event;
 
   thunder_ritual_t( const actor_pair_t& p, const special_effect_t& source_effect ) :
-    debuff_t( buff_creator_t( p, "thunder_ritual", source_effect.driver() -> effectN( 1 ).trigger(), source_effect.item )
+    buff_t( buff_creator_t( p, "thunder_ritual", source_effect.driver() -> effectN( 1 ).trigger(), source_effect.item )
                                   .duration( timespan_t::from_seconds( 3.0 ) ) ),
                                   damage_event( source -> find_action( "thunder_ritual_damage" ) )
   {}
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
-    debuff_t::expire_override( expiration_stacks, remaining_duration );
+    buff_t::expire_override( expiration_stacks, remaining_duration );
     damage_event -> target = player;
     damage_event -> execute();
   }
@@ -1227,7 +1227,7 @@ struct haymaker_driver_t : public dbc_proc_callback_t
 {
   struct haymaker_event_t;
 
-  debuff_t* debuff;
+  buff_t* debuff;
   const special_effect_t& effect;
   double multiplier;
   haymaker_event_t* accumulator;
@@ -1237,10 +1237,10 @@ struct haymaker_driver_t : public dbc_proc_callback_t
   {
     haymaker_damage_t* action;
     haymaker_driver_t* callback;
-    debuff_t* debuff;
+    buff_t* debuff;
     double damage;
 
-    haymaker_event_t( haymaker_driver_t* cb, haymaker_damage_t* a, debuff_t* d ) :
+    haymaker_event_t( haymaker_driver_t* cb, haymaker_damage_t* a, buff_t* d ) :
       event_t( *a -> player, a -> data().effectN( 1 ).period() ), action( a ), callback( cb ), debuff( d ), damage( 0 )
     {
     }
@@ -1634,6 +1634,9 @@ void item::pharameres_forbidden_grimoire( special_effect_t& effect )
       background = may_crit = true;
       aoe = -1;
       base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item );
+      if ( effect.player -> type == ( WARRIOR || ROGUE || PALADIN || DEMON_HUNTER || DEATH_KNIGHT || MONK ) ||
+           effect.player -> specialization() == ( HUNTER_SURVIVAL || SHAMAN_ENHANCEMENT || DRUID_FERAL || DRUID_GUARDIAN ) ) // Melee users always deal half damage even if they run 20 yards out to use this trinket. 
+        base_multiplier = 0.5;
     }
 
     double composite_target_multiplier( player_t* t ) const override
@@ -1897,14 +1900,14 @@ struct poisoned_dreams_damage_driver_t : public dbc_proc_callback_t
 
 };
 // Poisoned Dreams debuff to control poisoned_dreams_driver_t
-struct poisoned_dreams_t : public debuff_t
+struct poisoned_dreams_t : public buff_t
 {
   poisoned_dreams_damage_driver_t* driver_cb;
   action_t* damage_spell;
   special_effect_t* effect;
 
   poisoned_dreams_t( const actor_pair_t& p, const special_effect_t& source_effect ) :
-    debuff_t( buff_creator_t( p, "poisoned_dreams", source_effect.driver() -> effectN( 1 ).trigger(), source_effect.item )
+    buff_t( buff_creator_t( p, "poisoned_dreams", source_effect.driver() -> effectN( 1 ).trigger(), source_effect.item )
                               .activated( false )
                               .period( timespan_t::from_seconds( 2.0 ) ) ),
                               damage_spell( p.source -> find_action( "poisoned_dreams_damage" ) )
@@ -1924,21 +1927,21 @@ struct poisoned_dreams_t : public debuff_t
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
-    debuff_t::expire_override( expiration_stacks, remaining_duration );
+    buff_t::expire_override( expiration_stacks, remaining_duration );
 
     driver_cb -> deactivate();
   }
 
   void execute( int stacks, double value, timespan_t duration ) override
   {
-    debuff_t::execute( stacks, value, duration );
+    buff_t::execute( stacks, value, duration );
 
     driver_cb -> activate();
   }
 
   void reset() override
   {
-    debuff_t::reset();
+    buff_t::reset();
 
     driver_cb -> deactivate();
   }
@@ -3086,18 +3089,18 @@ void item::unstable_horrorslime( special_effect_t& effect )
 
 // Portable Manacracker =====================================================
 
-struct volatile_magic_debuff_t : public debuff_t
+struct volatile_magic_debuff_t : public buff_t
 {
   action_t* damage;
 
   volatile_magic_debuff_t( const special_effect_t& effect, actor_target_data_t& td ) :
-    debuff_t( buff_creator_t( td, "volatile_magic", effect.trigger() ) ),
+    buff_t( buff_creator_t( td, "volatile_magic", effect.trigger() ) ),
     damage( effect.player -> find_action( "withering_consumption" ) )
   {}
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
-    bool s = debuff_t::trigger( stacks, value, chance, duration );
+    bool s = buff_t::trigger( stacks, value, chance, duration );
 
     if ( current_stack == max_stack() )
     {
@@ -3274,18 +3277,18 @@ void item::spontaneous_appendages( special_effect_t& effect )
 
 struct wriggling_sinew_constructor_t : public item_targetdata_initializer_t
 {
-  struct maddening_whispers_debuff_t : public debuff_t
+  struct maddening_whispers_debuff_t : public buff_t
   {
     action_t* action;
 
     maddening_whispers_debuff_t( const special_effect_t& effect, actor_target_data_t& td ) :
-      debuff_t( buff_creator_t( td, "maddening_whispers", effect.trigger(), effect.item ) ),
+      buff_t( buff_creator_t( td, "maddening_whispers", effect.trigger(), effect.item ) ),
       action( effect.player -> find_action( "maddening_whispers" ) )
     {}
 
     void expire_override( int stacks, timespan_t dur ) override
     {
-      debuff_t::expire_override( stacks, dur );
+      buff_t::expire_override( stacks, dur );
 
       // Schedule an execute, but snapshot state right now so we can apply the stack multiplier.
       action_state_t* s   = action -> get_state();
@@ -3850,8 +3853,7 @@ void consumable::potion_of_the_old_war( special_effect_t& effect )
   proc -> initialize();
   proc -> deactivate();
 
-  effect.custom_buff = buff_creator_t( effect.player, effect.name() )
-    .spell( effect.driver() )
+  effect.custom_buff = buff_creator_t( effect.player, effect.name(), effect.driver() )
     .stack_change_callback( [ proc ]( buff_t*, int, int new_ ) {
       if ( new_ == 1 ) proc -> activate();
       else             proc -> deactivate();
@@ -3902,8 +3904,7 @@ void consumable::potion_of_deadly_grace( special_effect_t& effect )
     duration += timespan_t::from_seconds( 5 );
   }
 
-  effect.custom_buff = buff_creator_t( effect.player, effect.name() )
-    .spell( effect.driver() )
+  effect.custom_buff = buff_creator_t( effect.player, effect.name(), effect.driver() )
     .stack_change_callback( [ proc ]( buff_t*, int, int new_ ) {
       if ( new_ == 1 ) proc -> activate();
       else             proc -> deactivate();

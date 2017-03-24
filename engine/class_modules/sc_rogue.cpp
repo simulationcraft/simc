@@ -2984,7 +2984,8 @@ struct garrote_t : public rogue_attack_t
 
   void update_ready( timespan_t cd_duration = timespan_t::min() ) override
   {
-    if ( p() -> buffs.stealth -> check() || p() -> buffs.vanish -> check() || p() -> buffs.subterfuge -> check() )
+    if ( p() -> talent.subterfuge -> ok() &&
+         ( p() -> buffs.stealth -> check() || p() -> buffs.vanish -> check() || p() -> buffs.subterfuge -> check() ) )
     {
       cd_duration = timespan_t::zero();
     }
@@ -5413,7 +5414,13 @@ void rogue_t::trigger_shadow_techniques( const action_state_t* state )
       cp++;
     }
 
+    if ( artifact.shadows_whisper.rank() )
+    {
+      resource_gain( RESOURCE_ENERGY, artifact.shadows_whisper.percent(), gains.shadow_techniques, state -> action );
+    }
+
     trigger_combo_point_gain( cp, gains.shadow_techniques, state -> action );
+
     shadow_techniques = 0;
   }
 }
@@ -6077,12 +6084,12 @@ struct agonizing_poison_t : public rogue_poison_buff_t
   }
 };
 
-struct marked_for_death_debuff_t : public debuff_t
+struct marked_for_death_debuff_t : public buff_t
 {
   cooldown_t* mod_cd;
 
   marked_for_death_debuff_t( rogue_td_t& r ) :
-    debuff_t( buff_creator_t( r, "marked_for_death", r.source -> find_talent_spell( "Marked for Death" ) ).cd( timespan_t::zero() ) ),
+    buff_t( buff_creator_t( r, "marked_for_death", r.source -> find_talent_spell( "Marked for Death" ) ).cd( timespan_t::zero() ) ),
     mod_cd( r.source -> get_cooldown( "marked_for_death" ) )
   { }
 
@@ -6098,7 +6105,7 @@ struct marked_for_death_debuff_t : public debuff_t
       mod_cd -> reset( false );
     }
 
-    debuff_t::expire_override( expiration_stacks, remaining_duration );
+    buff_t::expire_override( expiration_stacks, remaining_duration );
   }
 };
 
@@ -6300,8 +6307,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   debuffs.wound_poison = new buffs::wound_poison_t( *this );
   debuffs.crippling_poison = new buffs::crippling_poison_t( *this );
   debuffs.leeching_poison = new buffs::leeching_poison_t( *this );
-  debuffs.blood_of_the_assassinated = buff_creator_t( *this, "blood_of_the_assassinated" )
-    .spell( source -> artifact.blood_of_the_assassinated.data().effectN( 1 ).trigger() )
+  debuffs.blood_of_the_assassinated = buff_creator_t( *this, "blood_of_the_assassinated", source -> artifact.blood_of_the_assassinated.data().effectN( 1 ).trigger() )
     .trigger_spell( source -> artifact.blood_of_the_assassinated )
     .default_value( source -> artifact.blood_of_the_assassinated.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() );
   debuffs.garrote = new buffs::proxy_garrote_t( *this );
@@ -6447,33 +6453,37 @@ double rogue_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
-  if ( artifact.shadow_fangs.rank() &&
-       ( dbc::is_school( school, SCHOOL_PHYSICAL ) ||
-         dbc::is_school( school, SCHOOL_SHADOW) ) )
-  {
-    m *= 1.0 + artifact.shadow_fangs.data().effectN( 1 ).percent();
-  }
-
+  // Artifact Damage Boost #1
   m *= 1.0 + artifact.slayers_precision.percent();
-  m *= 1.0 + artifact.legionblade.percent();
   m *= 1.0 + artifact.cursed_steel.percent();
+  m *= 1.0 + artifact.legionblade.percent();
+  // Artifact Damage Boost #2
+  m *= 1.0 + artifact.silence_of_the_uncrowned.percent();
+  m *= 1.0 + artifact.bravado_of_the_uncrowned.percent();
+  m *= 1.0 + artifact.shadows_of_the_uncrowned.percent();
 
-  m *= 1.0 + buffs.master_of_subtlety -> stack_value();
-  m *= 1.0 + buffs.master_of_subtlety_aura -> stack_value();
-
+  // Assassination
   if ( main_hand_weapon.type == WEAPON_DAGGER && off_hand_weapon.type == WEAPON_DAGGER && spec.assassins_resolve -> ok() )
   {
     m *= 1.0 + spec.assassins_resolve -> effectN( 2 ).percent();
   }
-
   if ( buffs.elaborate_planning -> up() )
   {
     m *= buffs.elaborate_planning -> check_value();
   }
 
+  // Subtlety
   if ( buffs.symbols_of_death -> up() )
   {
     m *= buffs.symbols_of_death -> check_value();
+  }
+  m *= 1.0 + buffs.master_of_subtlety -> stack_value();
+  m *= 1.0 + buffs.master_of_subtlety_aura -> stack_value();
+  if ( artifact.shadow_fangs.rank() &&
+       ( dbc::is_school( school, SCHOOL_PHYSICAL ) ||
+         dbc::is_school( school, SCHOOL_SHADOW) ) )
+  {
+    m *= 1.0 + artifact.shadow_fangs.data().effectN( 1 ).percent();
   }
 
   return m;
@@ -7275,55 +7285,76 @@ void rogue_t::init_spells()
 
   talent.hit_and_run        = find_talent_spell( "Hit and Run" );
 
-  artifact.goremaws_bite    = find_artifact_spell( "Goremaw's Bite" );
-  artifact.shadow_fangs     = find_artifact_spell( "Shadow Fangs" );
-  artifact.the_quiet_knife  = find_artifact_spell( "The Quiet Knife" );
-  artifact.demons_kiss      = find_artifact_spell( "Demon's Kiss" );
-  artifact.gutripper        = find_artifact_spell( "Gutripper" );
-  artifact.precision_strike = find_artifact_spell( "Precision Strike" );
-  artifact.fortunes_bite    = find_artifact_spell( "Fortune's Bite" );
-  artifact.soul_shadows     = find_artifact_spell( "Soul Shadows" );
-  artifact.energetic_stabbing = find_artifact_spell( "Energetic Stabbing" );
-  artifact.catwalk          = find_artifact_spell( "Catwalk" );
-  artifact.flickering_shadows = find_artifact_spell( "Flickering Shadows" );
-  artifact.second_shuriken  = find_artifact_spell( "Second Shuriken" );
-  artifact.akaaris_soul     = find_artifact_spell( "Akaari's Soul" );
-  artifact.shadow_nova      = find_artifact_spell( "Shadow Nova" );
-  artifact.finality         = find_artifact_spell( "Finality" );
-  artifact.legionblade      = find_artifact_spell( "Legionblade" );
+  // Artifact
+  artifact.kingsbane                = find_artifact_spell( "Kingsbane" );
+  artifact.curse_of_the_dreadblades = find_artifact_spell( "Curse of the Dreadblades" );
+  artifact.goremaws_bite            = find_artifact_spell( "Goremaw's Bite" );
 
-  artifact.kingsbane        = find_artifact_spell( "Kingsbane" );
   artifact.assassins_blades = find_artifact_spell( "Assassin's Blades" );
-  artifact.toxic_blades     = find_artifact_spell( "Toxic Blades" );
-  artifact.urge_to_kill     = find_artifact_spell( "Urge to Kill" );
-  artifact.shadow_walker    = find_artifact_spell( "Shadow Walker" );
-  artifact.bag_of_tricks    = find_artifact_spell( "Bag of Tricks" );
+  artifact.balanced_blades  = find_artifact_spell( "Balanced Blades" );
+  //artifact.dense_concoction = find_artifact_spell( "" );
+  artifact.gushing_wound    = find_artifact_spell( "Gushing Wound" );
   artifact.master_alchemist = find_artifact_spell( "Master Alchemist" );
   artifact.master_assassin  = find_artifact_spell( "Master Assassin" );
-  artifact.gushing_wound    = find_artifact_spell( "Gushing Wound" );
-  artifact.blood_of_the_assassinated = find_artifact_spell( "Blood of the Assassinated" );
-  artifact.balanced_blades  = find_artifact_spell( "Balanced Blades" );
   artifact.poison_knives    = find_artifact_spell( "Poison Knives" );
-  artifact.surge_of_toxins  = find_artifact_spell( "Surge of Toxins" );
   artifact.serrated_edge    = find_artifact_spell( "Serrated Edge" );
-  artifact.from_the_shadows = find_artifact_spell( "From the Shadows" );
-  artifact.slayers_precision= find_artifact_spell( "Slayer's Precision" );
+  artifact.shadow_walker    = find_artifact_spell( "Shadow Walker" );
+  //artifact.strangler        = find_artifact_spell( "" );
+  artifact.surge_of_toxins  = find_artifact_spell( "Surge of Toxins" );
+  artifact.toxic_blades     = find_artifact_spell( "Toxic Blades" );
+  artifact.urge_to_kill     = find_artifact_spell( "Urge to Kill" );
 
-  artifact.curse_of_the_dreadblades = find_artifact_spell( "Curse of the Dreadblades" );
-  artifact.cursed_edges     = find_artifact_spell( "Cursed Edges" );
-  artifact.black_powder     = find_artifact_spell( "Black Powder" );
-  artifact.fortune_strikes  = find_artifact_spell( "Fortune Strikes" );
-  artifact.gunslinger       = find_artifact_spell( "Gunslinger" );
-  artifact.blunderbuss      = find_artifact_spell( "Blunderbuss" );
-  artifact.fatebringer      = find_artifact_spell( "Fatebringer" );
-  artifact.blade_dancer     = find_artifact_spell( "Blade Dancer" );
-  artifact.blurred_time     = find_artifact_spell( "Blurred Time" );
-  artifact.greed            = find_artifact_spell( "Greed" );
-  artifact.hidden_blade     = find_artifact_spell( "Hidden Blade" );
-  artifact.fortunes_boon    = find_artifact_spell( "Fortune's Boon");
-  artifact.fates_thirst     = find_artifact_spell( "Fate's Thirst" );
-  artifact.fortunes_strike  = find_artifact_spell( "Fortune's Strike" );
-  artifact.cursed_steel     = find_artifact_spell( "Cursed Steel" );
+  artifact.black_powder      = find_artifact_spell( "Black Powder" );
+  artifact.blade_dancer      = find_artifact_spell( "Blade Dancer" );
+  artifact.cursed_edges      = find_artifact_spell( "Cursed Edges" );
+  //artifact.dreadblades_vigor = find_artifact_spell( "" );
+  artifact.fatebringer       = find_artifact_spell( "Fatebringer" );
+  artifact.fates_thirst      = find_artifact_spell( "Fate's Thirst" );
+  artifact.fortune_strikes   = find_artifact_spell( "Fortune Strikes" );
+  artifact.fortunes_boon     = find_artifact_spell( "Fortune's Boon");
+  artifact.fortunes_strike   = find_artifact_spell( "Fortune's Strike" );
+  artifact.gunslinger        = find_artifact_spell( "Gunslinger" );
+  artifact.hidden_blade      = find_artifact_spell( "Hidden Blade" );
+  //artifact.sabermetrics      = find_artifact_spell( "" );
+
+  artifact.catwalk            = find_artifact_spell( "Catwalk" );
+  artifact.demons_kiss        = find_artifact_spell( "Demon's Kiss" );
+  artifact.energetic_stabbing = find_artifact_spell( "Energetic Stabbing" );
+  artifact.etched_in_shadow   = find_artifact_spell( "Etched in Shadow" );
+  artifact.flickering_shadows = find_artifact_spell( "Flickering Shadows" );
+  artifact.fortunes_bite      = find_artifact_spell( "Fortune's Bite" );
+  artifact.gutripper          = find_artifact_spell( "Gutripper" );
+  artifact.precision_strike   = find_artifact_spell( "Precision Strike" );
+  artifact.second_shuriken    = find_artifact_spell( "Second Shuriken" );
+  artifact.shadow_fangs       = find_artifact_spell( "Shadow Fangs" );
+  artifact.shadows_whisper    = find_artifact_spell( "Shadow's Whisper" );
+  artifact.soul_shadows       = find_artifact_spell( "Soul Shadows" );
+  artifact.the_quiet_knife    = find_artifact_spell( "The Quiet Knife" );
+
+  artifact.bag_of_tricks             = find_artifact_spell( "Bag of Tricks" );
+  artifact.blood_of_the_assassinated = find_artifact_spell( "Blood of the Assassinated" );
+  artifact.from_the_shadows          = find_artifact_spell( "From the Shadows" );
+  //artifact.sinister_circulation      = find_artifact_spell( "" );
+
+  artifact.blunderbuss  = find_artifact_spell( "Blunderbuss" );
+  artifact.blurred_time = find_artifact_spell( "Blurred Time" );
+  artifact.greed        = find_artifact_spell( "Greed" );
+  //artifact.loaded_dice  = find_artifact_spell( "" );
+
+  artifact.akaaris_soul   = find_artifact_spell( "Akaari's Soul" );
+  artifact.finality       = find_artifact_spell( "Finality" );
+  artifact.shadow_nova    = find_artifact_spell( "Shadow Nova" );
+  //artifact.feeding_frenzy = find_artifact_spell( "" );
+
+  artifact.slayers_precision = find_artifact_spell( "Slayer's Precision" );
+  artifact.cursed_steel      = find_artifact_spell( "Cursed Steel" );
+  artifact.legionblade       = find_artifact_spell( "Legionblade" );
+
+  artifact.silence_of_the_uncrowned = find_artifact_spell( "Silence of the Uncrowned" );
+  artifact.bravado_of_the_uncrowned = find_artifact_spell( "Bravado of the Uncrowned" );
+  artifact.shadows_of_the_uncrowned = find_artifact_spell( "Shadows of the Uncrowned" );
+
+
 
   auto_attack = new actions::auto_melee_attack_t( this, "" );
 
@@ -7563,7 +7594,9 @@ void rogue_t::create_buffs()
                                 .refresh_behavior( BUFF_REFRESH_PANDEMIC )
                                 .period( timespan_t::zero() )
                                 .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-                                .default_value( 1.0 + spec.symbols_of_death -> effectN( 1 ).percent() );
+                                .default_value( 1.0 +
+                                                spec.symbols_of_death -> effectN( 1 ).percent() +
+                                                artifact.etched_in_shadow.percent() );
 
 
   // Talents
@@ -7631,12 +7664,10 @@ void rogue_t::create_buffs()
 
   // Tiers
   // T19 Outdoor
-  buffs.t19oh_8pc                          = stat_buff_creator_t( this, "shadowstalkers_avidity" )
-                                             .spell( sets.set( specialization(), T19OH, B8 ) -> effectN( 1 ).trigger() )
+  buffs.t19oh_8pc                          = stat_buff_creator_t( this, "shadowstalkers_avidity", sets.set( specialization(), T19OH, B8 ) -> effectN( 1 ).trigger() )
                                              .trigger_spell( sets.set( specialization(), T19OH, B8 ) );
   // T19 Raid
-  buffs.t19_4pc_outlaw                     = buff_creator_t( this, "swordplay" )
-                                             .spell( sets.set( ROGUE_OUTLAW, T19, B4 ) -> effectN( 1 ).trigger() )
+  buffs.t19_4pc_outlaw                     = buff_creator_t( this, "swordplay", sets.set( ROGUE_OUTLAW, T19, B4 ) -> effectN( 1 ).trigger() )
                                              .trigger_spell( sets.set( ROGUE_OUTLAW, T19, B4 ) );
   // T20
 

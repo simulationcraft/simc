@@ -84,8 +84,7 @@ public:
   event_t* heroic_charge, *rampage_driver;
   std::vector<attack_t*> rampage_attacks;
   std::vector<cooldown_t*> odyns_champion_cds;
-  bool non_dps_mechanics, warrior_fixed_time, frothing_may_trigger, opportunity_strikes_once,
-    execute_enrage, double_bloodthirst;
+  bool non_dps_mechanics, warrior_fixed_time, frothing_may_trigger, opportunity_strikes_once;
   double expected_max_health;
 
   std::vector<counter_t*> counters;
@@ -165,6 +164,10 @@ public:
     buff_t* wrecking_ball;
     buff_t* scales_of_earth;
 
+    buff_t* raging_thirst;
+    buff_t* t20_fury_4p;
+    buff_t* executioners_precision;
+    buff_t* neltharions_thunder;
     //Legendary Items
     buff_t* bindings_of_kakushan;
     buff_t* kargaths_sacrificed_hands;
@@ -195,6 +198,7 @@ public:
     cooldown_t* rage_from_crit_block;
     cooldown_t* rage_of_the_valarjar_icd;
     cooldown_t* raging_blow;
+    cooldown_t* ravager;
     cooldown_t* revenge_reset;
     cooldown_t* shield_slam;
     cooldown_t* shield_wall;
@@ -219,6 +223,7 @@ public:
     gain_t* will_of_the_first_king;
     gain_t* booming_voice;
     gain_t* thunder_clap;
+    gain_t* pulse_of_battle;
 
     // Legendarys
     gain_t* ceannar_rage;
@@ -253,6 +258,7 @@ public:
   {
     proc_t* delayed_auto_attack;
     proc_t* tactician;
+    proc_t* oathblood;
 
     //Tier bonuses
     proc_t* t19_2pc_arms;
@@ -393,6 +399,10 @@ public:
     artifact_power_t void_cleave;
     artifact_power_t warbreaker;
     artifact_power_t will_of_the_first_king;
+    artifact_power_t arms_of_the_valarjar;
+    artifact_power_t storm_of_swords;
+    artifact_power_t soul_of_the_slaughter;
+    artifact_power_t executioners_precision;
 
     artifact_power_t battle_scars;
     artifact_power_t bloodcraze;
@@ -413,6 +423,10 @@ public:
     artifact_power_t unstoppable;
     artifact_power_t wild_slashes;
     artifact_power_t wrath_and_fury;
+    artifact_power_t fury_of_the_valarjar;
+    artifact_power_t pulse_of_battle;
+    artifact_power_t oathblood;
+    artifact_power_t death_and_glory;
 
     artifact_power_t neltharions_fury;
     artifact_power_t strength_of_the_earth_aspect;
@@ -431,6 +445,10 @@ public:
     artifact_power_t dragon_skin;
     artifact_power_t reflective_plating;
     artifact_power_t dragon_scales;
+    artifact_power_t protection_of_the_valarjar;
+    artifact_power_t bastion_of_the_aspects;
+    artifact_power_t gleaming_scales;
+    artifact_power_t neltharions_thunder;
 
     // NYI
     artifact_power_t touch_of_zakajz;
@@ -458,7 +476,6 @@ public:
     non_dps_mechanics = false; // When set to false, disables stuff that isn't important, such as second wind, bloodthirst heal, etc.
     warrior_fixed_time = frothing_may_trigger = opportunity_strikes_once = true; //Frothing only triggers on the first ability that pushes you to 100 rage, until rage is consumed and then it may trigger again.
     expected_max_health = 0;
-    execute_enrage = double_bloodthirst = false;
 
     archavons_heavy_hand = bindings_of_kakushan = kargaths_sacrificed_hands = thundergods_vigor =
     ceannar_charger = kazzalax_fujiedas_fury = the_walls_fell = destiny_driver = prydaz_xavarics_magnum_opus = mannoroths_bloodletting_manacles =
@@ -962,6 +979,28 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
     }
   }
 
+  player_t* select_random_target() const
+  {
+    if ( sim -> distance_targeting_enabled )
+    {
+      std::vector<player_t*> targets;
+      range::for_each( sim -> target_non_sleeping_list, [&targets, this]( player_t* t ) {
+        if ( p() -> get_player_distance( *t ) <= radius + t -> combat_reach )
+        {
+          targets.push_back( t );
+        }
+      } );
+
+      auto random_idx = static_cast<size_t>( rng().range( 0, targets.size() ) );
+      return targets.size() ? targets[random_idx] : nullptr;
+    }
+    else
+    {
+      auto random_idx = static_cast<size_t>( rng().range( 0, sim -> target_non_sleeping_list.size() ) );
+      return sim -> target_non_sleeping_list[random_idx];
+    }
+  }
+
   virtual bool opportunity_strikes( action_state_t* s )
   {
     if ( special && s -> action -> data().id() != p() -> active.opportunity_strikes -> data().id() )
@@ -1302,6 +1341,177 @@ struct auto_attack_t: public warrior_attack_t
   }
 };
 
+
+// Mortal Strike ============================================================
+
+struct mortal_strike_t20_t : public warrior_attack_t
+{
+  mortal_strike_t20_t( warrior_t* p, const std::string& name ) :
+    warrior_attack_t( name, p, p -> spec.mortal_strike )
+  {
+    cooldown -> duration = timespan_t::zero();
+    weapon = &( p -> main_hand_weapon );
+    weapon_multiplier *= 1.0 + p -> artifact.thoradins_might.percent();
+  }
+
+  double composite_crit_chance() const override
+  {
+    double cc = warrior_attack_t::composite_crit_chance();
+
+    if ( p() -> buff.shattered_defenses -> check() )
+    {
+      cc += p() -> buff.shattered_defenses -> data().effectN( 2 ).percent();
+    }
+
+    return cc;
+  }
+
+  double action_multiplier() const override
+  {
+    double am = warrior_attack_t::action_multiplier();
+
+    am *= 1.0 + p() -> buff.shattered_defenses -> stack_value();
+    am *= 1.0 + p() -> buff.focused_rage -> stack_value();
+    am *= 1.0 + p() -> buff.executioners_precision -> stack_value();
+
+    return am;
+  }
+
+  double cost() const override
+  {
+    return 0;
+  }
+
+  void execute() override
+  {
+    warrior_attack_t::execute();
+
+    if ( result_is_hit( execute_state -> result ) )
+    {
+      if ( sim -> overrides.mortal_wounds )
+      {
+        execute_state -> target -> debuffs.mortal_wounds -> trigger();
+      }
+      if ( p() -> talents.in_for_the_kill -> ok() && execute_state -> target -> health_percentage() <= 20 )
+      {
+        p() -> resource_gain( RESOURCE_RAGE, p() -> talents.in_for_the_kill -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ),
+                              p() -> gain.in_for_the_kill );
+      }
+      p() -> buff.focused_rage -> expire();
+    }
+    p() -> buff.shattered_defenses -> expire();
+    p() -> buff.precise_strikes -> expire();
+    p() -> buff.executioners_precision -> expire();
+    if ( p() -> archavons_heavy_hand )
+    {
+      p() -> resource_gain( RESOURCE_RAGE, p() -> archavons_heavy_hand -> driver() -> effectN( 1 ).resource( RESOURCE_RAGE ), p() -> gain.archavons_heavy_hand );
+    }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    warrior_attack_t::impact( s );
+
+    if ( s -> result == RESULT_CRIT )
+    {
+      arms_t19_2p();
+    }
+  }
+};
+
+struct mortal_strike_t : public warrior_attack_t
+{
+  mortal_strike_t( warrior_t* p, const std::string& options_str ) :
+    warrior_attack_t( "mortal_strike", p, p -> spec.mortal_strike )
+  {
+    parse_options( options_str );
+
+    cooldown -> duration = data().charge_cooldown();
+    weapon = &( p -> main_hand_weapon );
+    cooldown -> charges += p -> talents.mortal_combo -> effectN( 1 ).base_value();
+    weapon_multiplier *= 1.0 + p -> artifact.thoradins_might.percent();
+    cooldown -> hasted = true; // Doesn't show up in spelldata for some reason.
+  }
+
+  double composite_crit_chance() const override
+  {
+    double cc = warrior_attack_t::composite_crit_chance();
+
+    if ( p() -> buff.shattered_defenses -> check() )
+    {
+      cc += p() -> buff.shattered_defenses -> data().effectN( 2 ).percent();
+    }
+
+    return cc;
+  }
+
+  double action_multiplier() const override
+  {
+    double am = warrior_attack_t::action_multiplier();
+
+    am *= 1.0 + p() -> buff.shattered_defenses -> stack_value();
+    am *= 1.0 + p() -> buff.focused_rage -> stack_value();
+    am *= 1.0 + p() -> buff.executioners_precision -> stack_value();
+
+    return am;
+  }
+
+  double cost() const override
+  {
+    double c = warrior_attack_t::cost();
+
+    c *= 1.0 + p() -> buff.precise_strikes -> check_value();
+
+    return c;
+  }
+
+  void execute() override
+  {
+    warrior_attack_t::execute();
+
+    if ( result_is_hit( execute_state -> result ) )
+    {
+      if ( sim -> overrides.mortal_wounds )
+      {
+        execute_state -> target -> debuffs.mortal_wounds -> trigger();
+      }
+      if ( p() -> talents.in_for_the_kill -> ok() && execute_state -> target -> health_percentage() <= 20 )
+      {
+        p() -> resource_gain( RESOURCE_RAGE, p() -> talents.in_for_the_kill -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ),
+                              p() -> gain.in_for_the_kill );
+      }
+      p() -> buff.focused_rage -> expire();
+    }
+    p() -> buff.shattered_defenses -> expire();
+    p() -> buff.precise_strikes -> expire();
+    p() -> buff.executioners_precision -> expire();
+    if ( p() -> archavons_heavy_hand )
+    {
+      p() -> resource_gain( RESOURCE_RAGE, p() -> archavons_heavy_hand -> driver() -> effectN( 1 ).resource( RESOURCE_RAGE ), p() -> gain.archavons_heavy_hand );
+    }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    warrior_attack_t::impact( s );
+
+    if ( s -> result == RESULT_CRIT )
+    {
+      arms_t19_2p();
+    }
+  }
+
+  bool ready() override
+  {
+    if ( p() -> main_hand_weapon.type == WEAPON_NONE )
+    {
+      return false;
+    }
+    return warrior_attack_t::ready();
+  }
+};
+
+
 // Bladestorm ===============================================================
 
 struct bladestorm_tick_t: public warrior_attack_t
@@ -1314,6 +1524,7 @@ struct bladestorm_tick_t: public warrior_attack_t
     if ( p->specialization() == WARRIOR_ARMS )
     {
       weapon_multiplier *= 1.0 + p->spell.arms_warrior->effectN( 5 ).percent();
+      weapon_multiplier *= 1.0 + p -> artifact.storm_of_swords.percent();
     }
   }
 
@@ -1332,9 +1543,11 @@ struct bladestorm_tick_t: public warrior_attack_t
 struct bladestorm_t: public warrior_attack_t
 {
   attack_t* bladestorm_mh, *bladestorm_oh;
+  mortal_strike_t20_t* mortal_strike;
   bladestorm_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "bladestorm", p, p -> specialization() == WARRIOR_FURY ? p -> talents.bladestorm : p -> spec.bladestorm ),
-    bladestorm_mh( new bladestorm_tick_t( p, "bladestorm_mh" ) ), bladestorm_oh( nullptr )
+    bladestorm_mh( new bladestorm_tick_t( p, "bladestorm_mh" ) ), bladestorm_oh( nullptr ),
+    mortal_strike( nullptr )
   {
     if ( p -> talents.ravager -> ok() )
     {
@@ -1354,6 +1567,11 @@ struct bladestorm_t: public warrior_attack_t
         bladestorm_oh -> weapon = &( player -> off_hand_weapon );
         add_child( bladestorm_oh );
       }
+      if ( p -> sets.has_set_bonus( WARRIOR_ARMS, T20, B2 ) )
+      {
+        mortal_strike = new mortal_strike_t20_t( p, "bladestorm_mortal_strike" );
+        add_child( mortal_strike );
+      }
     }
   }
 
@@ -1371,6 +1589,16 @@ struct bladestorm_t: public warrior_attack_t
     if ( bladestorm_mh -> result_is_hit( execute_state -> result ) && bladestorm_oh )
     {
       bladestorm_oh -> execute();
+    }
+    if ( mortal_strike )
+    {
+      auto t = select_random_target();
+
+      if ( t )
+      {
+        mortal_strike -> target = t;
+        mortal_strike -> execute();
+      }
     }
   }
 
@@ -1397,6 +1625,7 @@ struct bloodthirst_heal_t: public warrior_heal_t
     double am = warrior_heal_t::action_multiplier();
 
     am *= 1.0 + p() -> buff.furious_charge -> value();
+    am *= 1.0 + p() -> buff.t20_fury_4p -> stack_value();
 
     return am;
   }
@@ -1410,12 +1639,14 @@ struct bloodthirst_t: public warrior_attack_t
   bloodthirst_heal_t* bloodthirst_heal;
   double fresh_meat_crit_chance, rage_gain;
   int aoe_targets;
+  double oathblood_chance;
   bloodthirst_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "bloodthirst", p, p -> spec.bloodthirst ),
     bloodthirst_heal( nullptr ),
     fresh_meat_crit_chance( p -> talents.fresh_meat -> effectN( 1 ).percent() ),
     rage_gain( data().effectN( 3 ).resource( RESOURCE_RAGE ) ),
-    aoe_targets( p -> spec.whirlwind -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() )
+    aoe_targets( p -> spec.whirlwind -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() ),
+    oathblood_chance( 0.0 )
   {
     parse_options( options_str );
 
@@ -1427,6 +1658,16 @@ struct bloodthirst_t: public warrior_attack_t
       bloodthirst_heal = new bloodthirst_heal_t( p );
     }
     base_aoe_multiplier = p -> spec.whirlwind -> effectN( 1 ).trigger() -> effectN( 3 ).percent();
+    oathblood_chance = p -> artifact.oathblood.percent();
+  }
+
+  double action_multiplier() const override
+  {
+    double am = warrior_attack_t::action_multiplier();
+
+    am *= 1.0 + p() -> buff.t20_fury_4p -> stack_value();
+
+    return am;
   }
 
   int n_targets() const override
@@ -1446,10 +1687,6 @@ struct bloodthirst_t: public warrior_attack_t
     {
       tc += fresh_meat_crit_chance;
     }
-    if ( p() -> double_bloodthirst && target -> health_percentage() <= 20.0 )
-    {
-      tc *= 2.0;
-    }
     return tc;
   }
 
@@ -1466,6 +1703,12 @@ struct bloodthirst_t: public warrior_attack_t
   {
     warrior_attack_t::execute();
 
+    if ( oathblood_chance > 0 && rng().roll( oathblood_chance ) )
+    {
+      p() -> proc.oathblood -> occur();
+      execute();
+    }
+
     p() -> buff.meat_cleaver -> expire();
 
     if ( result_is_hit( execute_state -> result ) )
@@ -1476,10 +1719,12 @@ struct bloodthirst_t: public warrior_attack_t
         bloodthirst_heal -> execute();
         p() -> buff.furious_charge -> expire();
       }
+      p() -> buff.t20_fury_4p -> expire();
       if ( execute_state -> result == RESULT_CRIT )
       {
         p() -> enrage();
         p() -> buff.taste_for_blood -> expire();
+        p() -> buff.raging_thirst -> trigger();
       }
     }
   }
@@ -1704,12 +1949,23 @@ struct cleave_t: public warrior_attack_t
 
 struct colossus_smash_t: public warrior_attack_t
 {
+  timespan_t t20_4p_reduction;
   colossus_smash_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "colossus_smash", p, p -> spec.colossus_smash )
+    warrior_attack_t( "colossus_smash", p, p -> spec.colossus_smash ),
+    t20_4p_reduction( timespan_t::zero() )
   {
     parse_options( options_str );
     weapon = &( player -> main_hand_weapon );
     weapon_multiplier *= 1.0 + p -> artifact.focus_in_battle.percent();
+    if ( p -> sets.has_set_bonus( WARRIOR_ARMS, T20, B4 ) )
+    {
+      if ( p -> talents.ravager -> ok() )
+        t20_4p_reduction = timespan_t::from_seconds( p -> sets.set( WARRIOR_ARMS, T20, B4 ) -> effectN( 2 ).base_value() / 10 );
+      else
+        t20_4p_reduction = timespan_t::from_seconds( p -> sets.set( WARRIOR_ARMS, T20, B4 ) -> effectN( 1 ).base_value() / 10 );
+
+      t20_4p_reduction *= -1.0;
+    }
   }
 
   void execute() override
@@ -1722,6 +1978,10 @@ struct colossus_smash_t: public warrior_attack_t
 
       p() -> buff.shattered_defenses -> trigger();
       p() -> buff.precise_strikes -> trigger();
+      if ( p() -> talents.ravager -> ok() )
+        p() -> cooldown.ravager -> adjust( t20_4p_reduction );
+      else
+        p() -> cooldown.bladestorm -> adjust( t20_4p_reduction );
     }
   }
 
@@ -2062,6 +2322,7 @@ struct execute_arms_t: public warrior_attack_t
     p() -> buff.shattered_defenses -> expire();
     p() -> buff.precise_strikes -> expire();
     p() -> buff.ayalas_stone_heart -> expire();
+    p() -> buff.executioners_precision -> trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -2132,10 +2393,6 @@ struct execute_off_hand_t: public warrior_attack_t
     if ( s -> result == RESULT_CRIT )
     {
       p() -> buff.massacre -> trigger();
-      if ( p() -> execute_enrage )
-      {
-        p() -> enrage();
-      }
     }
   }
 };
@@ -2210,10 +2467,6 @@ struct execute_t: public warrior_attack_t
     if ( s -> result == RESULT_CRIT )
     {
       p() -> buff.massacre -> trigger();
-      if ( p() -> execute_enrage && p() -> specialization() == WARRIOR_FURY )
-      {
-        p() -> enrage();
-      }
     }
   }
 
@@ -2249,14 +2502,18 @@ struct hamstring_t: public warrior_attack_t
     warrior_attack_t( "hamstring", p, p -> spec.hamstring )
   {
     parse_options( options_str );
-    use_off_gcd = true;
     weapon = &( p -> main_hand_weapon );
   }
+};
 
-  bool opportunity_strikes( action_state_t*) override
+// Piercing Howl ==============================================================
+
+struct piercing_howl_t : public warrior_attack_t 
+{
+  piercing_howl_t( warrior_t* p, const std::string& options_str ) :
+    warrior_attack_t( "piercing_howl", p, p -> spec.piercing_howl )
   {
-    //Hamstring no longer activates Opportunity Strikes. 08-24-2016
-    return false;
+    parse_options( options_str );
   }
 };
 
@@ -2583,98 +2840,6 @@ struct heroic_charge_t: public warrior_attack_t
   }
 };
 
-// Mortal Strike ============================================================
-
-struct mortal_strike_t: public warrior_attack_t
-{
-  mortal_strike_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "mortal_strike", p, p -> spec.mortal_strike )
-  {
-    parse_options( options_str );
-
-    cooldown -> duration = data().charge_cooldown();
-    weapon = &( p -> main_hand_weapon );
-    cooldown -> charges += p -> talents.mortal_combo -> effectN( 1 ).base_value();
-    weapon_multiplier *= 1.0 + p -> artifact.thoradins_might.percent();
-    cooldown -> hasted = true; // Doesn't show up in spelldata for some reason.
-  }
-
-  double composite_crit_chance() const override
-  {
-    double cc = warrior_attack_t::composite_crit_chance();
-
-    if ( p() -> buff.shattered_defenses -> check() )
-    {
-      cc += p() -> buff.shattered_defenses -> data().effectN( 2 ).percent();
-    }
-
-    return cc;
-  }
-
-  double action_multiplier() const override
-  {
-    double am = warrior_attack_t::action_multiplier();
-
-    am *= 1.0 + p() -> buff.shattered_defenses -> stack_value();
-    am *= 1.0 + p() -> buff.focused_rage -> stack_value();
-
-    return am;
-  }
-
-  double cost() const override
-  {
-    double c = warrior_attack_t::cost();
-
-    c *= 1.0 + p() -> buff.precise_strikes -> check_value();
-
-    return c;
-  }
-
-  void execute() override
-  {
-    warrior_attack_t::execute();
-
-    if ( result_is_hit( execute_state -> result ) )
-    {
-      if ( sim -> overrides.mortal_wounds )
-      {
-        execute_state -> target -> debuffs.mortal_wounds -> trigger();
-      }
-      if ( p() -> talents.in_for_the_kill -> ok() && execute_state -> target -> health_percentage() <= 20 )
-      {
-        p() -> resource_gain( RESOURCE_RAGE, p() -> talents.in_for_the_kill -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ),
-                              p() -> gain.in_for_the_kill );
-      }
-      p() -> buff.focused_rage -> expire();
-    }
-    p() -> buff.shattered_defenses -> expire();
-    p() -> buff.precise_strikes -> expire();
-    if ( p() -> archavons_heavy_hand )
-    {
-      p() -> resource_gain( RESOURCE_RAGE, p() -> archavons_heavy_hand -> driver() -> effectN( 1 ).resource( RESOURCE_RAGE ), p() -> gain.archavons_heavy_hand );
-    }
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    warrior_attack_t::impact( s );
-
-    if ( s -> result == RESULT_CRIT )
-    {
-      arms_t19_2p();
-    }
-  }
-
-  bool ready() override
-  {
-    if ( p() -> main_hand_weapon.type == WEAPON_NONE )
-    {
-      return false;
-    }
-    return warrior_attack_t::ready();
-  }
-};
-
 // Pummel ===================================================================
 
 struct pummel_t: public warrior_attack_t
@@ -2711,6 +2876,23 @@ struct raging_blow_attack_t: public warrior_attack_t
     weapon_multiplier *= 1.0 + p -> talents.inner_rage -> effectN( 3 ).percent();
     weapon_multiplier *= 1.0 + p -> artifact.wrath_and_fury.percent();
   }
+
+  void execute() override
+  {
+    warrior_attack_t::execute();
+
+    if ( p() -> artifact.pulse_of_battle.rank() && execute_state -> result == RESULT_CRIT )
+      p() -> resource_gain( RESOURCE_RAGE, p() -> artifact.pulse_of_battle.value() / 10.0, p() -> gain.pulse_of_battle );
+  }
+
+  double action_multiplier() const override
+  {
+    double am = warrior_attack_t::action_multiplier();
+
+    am *= 1.0 + p() -> buff.raging_thirst -> value();
+
+    return am;
+  }
 };
 
 struct raging_blow_t: public warrior_attack_t
@@ -2742,7 +2924,9 @@ struct raging_blow_t: public warrior_attack_t
     {
       mh_attack -> execute();
       oh_attack -> execute();
+      p() -> buff.raging_thirst -> expire();
     }
+    p() -> buff.t20_fury_4p -> trigger( 1 );
   }
 
   bool ready() override
@@ -2800,9 +2984,11 @@ struct overpower_t: public warrior_attack_t
   }
 };
 
+// Odyn's Fury ==========================================================================
+ 
 struct odyns_damage_t: public warrior_attack_t
 {
-  odyns_damage_t( warrior_t* p, spell_data_t* spell, const std::string& name ):
+  odyns_damage_t( warrior_t* p, const spell_data_t* spell, const std::string& name ):
     warrior_attack_t( name, p, spell )
   {
     aoe = -1;
@@ -2812,10 +2998,10 @@ struct odyns_damage_t: public warrior_attack_t
 
 struct odyns_fury_t: public warrior_attack_t
 {
-  odyns_damage_t* mh, *oh;
+  odyns_damage_t* mh, *oh, *odyn, *helya;
   odyns_fury_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "odyns_fury", p, p -> artifact.odyns_fury ),
-    mh( 0 ), oh( 0 )
+    mh( 0 ), oh( 0 ), odyn( 0 ), helya( 0 )
   {
     parse_options( options_str );
     mh = new odyns_damage_t( p, p -> artifact.odyns_fury.data().effectN( 1 ).trigger(), "odyns_fury_mh" );
@@ -2825,16 +3011,37 @@ struct odyns_fury_t: public warrior_attack_t
     oh -> weapon = &( p -> off_hand_weapon );
     add_child( mh );
     add_child( oh );
+    if ( p -> artifact.death_and_glory.rank() )
+    {
+      odyn = new odyns_damage_t( p, p -> find_spell( 243228 ), "odyns_glory" );
+      helya = new odyns_damage_t( p, p -> find_spell( 243223 ), "helyas_scorn" );
+      add_child( odyn );
+      add_child( helya );
+    }
     school = SCHOOL_FIRE; // For reporting purposes.
   }
 
   void execute() override
   {
     warrior_attack_t::execute();
+    mh -> target = execute_state -> target;
+    oh -> target = mh -> target;
     mh -> execute();
     oh -> execute();
+    if ( odyn && rng().roll( 0.5 ) ) // Seems to have a coin flip chance to either get odyn or helya... test more later. 
+    {
+      odyn -> target = mh -> target;
+      odyn -> execute();
+    }
+    else if ( helya )
+    {
+      helya -> target = mh -> target;
+      helya -> execute();
+    }
   }
 };
+
+// Warbreaker ==============================================================================
 
 struct warbreaker_t: public warrior_attack_t
 {
@@ -3069,22 +3276,31 @@ struct ravager_tick_t: public warrior_attack_t
   {
     aoe = -1;
     dual = ground_aoe = true;
-    attack_power_mod.direct *= 1.0 + p -> spell.prot_warrior -> effectN( 3 ).percent();//89% damage decrease for prot.
+    if ( p -> specialization() == WARRIOR_PROTECTION )
+      attack_power_mod.direct *= 1.0 + p -> spell.prot_warrior -> effectN( 3 ).percent();//89% damage decrease for prot.
+    attack_power_mod.direct *= 1.0 + p -> artifact.storm_of_swords.percent();
   }
 };
 
 struct ravager_t: public warrior_attack_t
 {
   ravager_tick_t* ravager;
+  mortal_strike_t20_t* mortal_strike;
   ravager_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "ravager", p, p -> talents.ravager ),
-    ravager( new ravager_tick_t( p, "ravager_tick" ) )
+    ravager( new ravager_tick_t( p, "ravager_tick" ) ),
+    mortal_strike( nullptr )
   {
     parse_options( options_str );
     ignore_false_positive = true;
     hasted_ticks = callbacks = false;
     attack_power_mod.direct = attack_power_mod.tick = 0;
     add_child( ravager );
+    if ( p -> sets.has_set_bonus( WARRIOR_ARMS, T20, B2 ) )
+    {
+      mortal_strike = new mortal_strike_t20_t( p, "ravager_mortal_strike" );
+      add_child( mortal_strike );
+    }
   }
 
   void execute() override
@@ -3103,8 +3319,18 @@ struct ravager_t: public warrior_attack_t
 
   void tick( dot_t*d ) override
   {
-    ravager -> execute();
     warrior_attack_t::tick( d );
+    ravager -> execute();
+    if ( mortal_strike && d -> ticks_left() > 2 )
+    {
+      auto t = select_random_target();
+
+      if ( t )
+      {
+        mortal_strike -> target = t;
+        mortal_strike -> execute();
+      }
+    }
   }
 };
 
@@ -3470,6 +3696,8 @@ struct thunder_clap_t: public warrior_attack_t
     {
       p() -> cooldown.shield_slam -> reset( true );
     }
+
+    p() -> buff.neltharions_thunder -> trigger( 1 );
 
     if ( p() -> buff.bindings_of_kakushan -> check() )
     {
@@ -4353,6 +4581,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "mortal_strike"        ) return new mortal_strike_t        ( this, options_str );
   if ( name == "odyns_fury"           ) return new odyns_fury_t           ( this, options_str );
   if ( name == "overpower"            ) return new overpower_t            ( this, options_str );
+  if ( name == "piercing_howl"        ) return new piercing_howl_t        ( this, options_str );
   if ( name == "pummel"               ) return new pummel_t               ( this, options_str );
   if ( name == "raging_blow"          ) return new raging_blow_t          ( this, options_str );
   if ( name == "rampage"              ) return new rampage_parent_t       ( this, options_str );
@@ -4559,6 +4788,18 @@ void warrior_t::init_spells()
   artifact.will_of_the_first_king    = find_artifact_spell( "Will of the First King" );
   artifact.will_to_survive           = find_artifact_spell( "Will to Survive" );
   artifact.wrath_and_fury            = find_artifact_spell( "Wrath and Fury" );
+  artifact.arms_of_the_valarjar      = find_artifact_spell( "Arms of the Valarjar" );
+  artifact.storm_of_swords           = find_artifact_spell( "Storm of Swords" );
+  artifact.soul_of_the_slaughter     = find_artifact_spell( "Soul of the Slaughter" );
+  artifact.executioners_precision    = find_artifact_spell( "Executioner's Precision" );
+  artifact.fury_of_the_valarjar      = find_artifact_spell( "Fury of the Valarjar" );
+  artifact.pulse_of_battle           = find_artifact_spell( "Pulse of Battle" );
+  artifact.oathblood                 = find_artifact_spell( "Oathblood" );
+  artifact.death_and_glory           = find_artifact_spell( "Death and Glory" );
+  artifact.protection_of_the_valarjar = find_artifact_spell( "Protection of the Valajar" );
+  artifact.bastion_of_the_aspects    = find_artifact_spell( "Bastion of the Aspects" );
+  artifact.gleaming_scales           = find_artifact_spell( "Gleaming Scales" );
+  artifact.neltharions_thunder       = find_artifact_spell( "Neltarion's Thunder" );
 
   // Generic spells
   spell.charge                  = find_class_spell( "Charge" );
@@ -4627,6 +4868,7 @@ void warrior_t::init_spells()
   cooldown.rage_of_the_valarjar_icd = get_cooldown( "rage_of_the_valarjar_icd" );
   cooldown.rage_of_the_valarjar_icd -> duration = artifact.rage_of_the_valarjar.data().internal_cooldown();
   cooldown.raging_blow              = get_cooldown( "raging_blow" );
+  cooldown.ravager                  = get_cooldown( "ravager" );
   cooldown.revenge_reset            = get_cooldown( "revenge_reset" );
   cooldown.revenge_reset -> duration = spec.revenge_trigger -> internal_cooldown();
   cooldown.shield_slam              = get_cooldown( "shield_slam" );
@@ -5513,6 +5755,20 @@ void warrior_t::create_buffs()
       .add_invalidate( CACHE_ATTACK_SPEED )
       .add_invalidate( CACHE_CRIT_CHANCE );
 
+  buff.raging_thirst = buff_creator_t( this, "raging_thirst", sets.set(WARRIOR_FURY, T20, B2 ) -> effectN( 1 ).trigger() )
+    .default_value( sets.set( WARRIOR_FURY, T20, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
+    .chance( sets.set( WARRIOR_FURY, T20, B2 ) -> proc_chance() );
+
+  buff.t20_fury_4p = buff_creator_t( this, "t20_fury_4p", talents.inner_rage -> ok() ? find_spell( 242953 ) : find_spell( 252952 ) )
+    .default_value( talents.inner_rage -> ok() ? find_spell( 242953 ) -> effectN( 1 ).percent() : find_spell( 252952 )  -> effectN( 1 ).percent() )
+    .chance( sets.has_set_bonus( WARRIOR_FURY, T20, B4 ) );
+
+  buff.executioners_precision = buff_creator_t( this, "executioners_precision", artifact.executioners_precision.data().effectN( 1 ).trigger() )
+    .default_value( artifact.executioners_precision.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() );
+
+  buff.neltharions_thunder = buff_creator_t( this, "neltharions_thunder", artifact.neltharions_thunder.data().effectN( 1 ).trigger() )
+    .default_value( artifact.neltharions_thunder.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() );
+
   buff.sephuzs_secret = new buffs::sephuzs_secret_buff_t( this );
 }
 
@@ -5554,6 +5810,7 @@ void warrior_t::init_gains()
   gain.will_of_the_first_king = get_gain( "will_of_the_first_king" );
   gain.booming_voice = get_gain( "booming_voice" );
   gain.thunder_clap = get_gain( "thunder_clap" );
+  gain.pulse_of_battle = get_gain( "pulse_of_battle" );
 
   gain.ceannar_rage = get_gain( "ceannar_rage" );
   gain.rage_from_damage_taken = get_gain( "rage_from_damage_taken" );
@@ -5575,6 +5832,7 @@ void warrior_t::init_procs()
 
   proc.t19_2pc_arms = get_proc( "t19_2pc_arms" );
   proc.tactician    = get_proc( "tactician"    );
+  proc.oathblood    = get_proc( "oathblood" );
 }
 
 // warrior_t::init_resources ================================================
@@ -5804,6 +6062,9 @@ double warrior_t::composite_player_multiplier( school_e school ) const
   m *= 1.0 + buff.fujiedas_fury -> check_stack_value();
   m *= 1.0 + artifact.titanic_power.percent();
   m *= 1.0 + artifact.unbreakable_steel.percent();
+  m *= 1.0 + artifact.arms_of_the_valarjar.percent();
+  m *= 1.0 + artifact.fury_of_the_valarjar.percent();
+  m *= 1.0 + artifact.protection_of_the_valarjar.percent();
 
   return m;
 }
@@ -5836,6 +6097,9 @@ double warrior_t::composite_attribute( attribute_e attr ) const
   a += spec.unwavering_sentinel -> effectN( 1 ).percent() * player_t::composite_attribute( ATTR_STAMINA );
   a += spec.titans_grip -> effectN( 2 ).percent() * player_t::composite_attribute( ATTR_STAMINA );
   a += artifact.toughness.percent() * player_t::composite_attribute( ATTR_STAMINA );
+  a += artifact.arms_of_the_valarjar.data().effectN( 2 ).percent() * player_t::composite_attribute( ATTR_STAMINA );
+  a += artifact.fury_of_the_valarjar.data().effectN( 2 ).percent() * player_t::composite_attribute( ATTR_STAMINA );
+  a += artifact.protection_of_the_valarjar.data().effectN( 3 ).percent() * player_t::composite_attribute( ATTR_STAMINA );
   break;
   default:
   break;
@@ -5867,6 +6131,8 @@ double warrior_t::composite_armor_multiplier() const
   a += artifact.vrykul_shield_training.percent();
 
   a += buff.scales_of_earth -> check_value();
+
+  a += artifact.protection_of_the_valarjar.data().effectN( 2 ).percent();
 
   return a;
 }
@@ -5937,6 +6203,9 @@ double warrior_t::composite_block() const
 double warrior_t::composite_block_reduction() const
 {
   double br = player_t::composite_block_reduction();
+
+  br += artifact.bastion_of_the_aspects.percent();
+
   return br;
 }
 
@@ -6247,6 +6516,8 @@ void warrior_t::target_mitigation( school_e school,
       s -> result_amount *= 1.0 + spec.defensive_stance -> effectN( 1 ).percent();
     }
 
+    s -> result_amount *= 1.0 + buff.neltharions_thunder -> stack_value();
+
     warrior_td_t* td = get_target_data( s -> action -> player );
 
     if ( td -> debuffs_demoralizing_shout -> up() )
@@ -6256,7 +6527,7 @@ void warrior_t::target_mitigation( school_e school,
 
     if ( school != SCHOOL_PHYSICAL && buff.spell_reflection -> up() )
     {
-      s -> result_amount *= 1.0 + buff.spell_reflection -> data().effectN( 2 ).percent();
+      s -> result_amount *= 1.0 + buff.spell_reflection -> data().effectN( 2 ).percent() + artifact.gleaming_scales.percent();
       if ( !artifact.reflective_plating.rank() )
       {
         buff.spell_reflection -> expire();
@@ -6304,8 +6575,6 @@ void warrior_t::create_options()
 
   add_option( opt_bool( "non_dps_mechanics", non_dps_mechanics ) );
   add_option( opt_bool( "warrior_fixed_time", warrior_fixed_time ) );
-  add_option( opt_bool( "execute_enrage", execute_enrage ) );
-  add_option( opt_bool( "double_bloodthirst", double_bloodthirst ) );;
 }
 
 // warrior_t::create_profile ================================================
@@ -6330,8 +6599,6 @@ void warrior_t::copy_from( player_t* source )
 
   non_dps_mechanics = p -> non_dps_mechanics;
   warrior_fixed_time = p -> warrior_fixed_time;
-  execute_enrage = p -> execute_enrage;
-  double_bloodthirst = p -> double_bloodthirst;
 }
 
 /* Report Extension Class

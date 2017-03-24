@@ -1010,18 +1010,15 @@ struct resource_timeline_collect_event_t : public event_t
       }
       else
       {
-        if (sim().current_index < sim().player_no_pet_list.size())
+        auto p = sim().player_no_pet_list[ sim().current_index ];
+        if (p && p -> primary_resource() != RESOURCE_NONE)
         {
-          auto p = sim().player_no_pet_list[sim().current_index];
-          if (p && p->primary_resource() != RESOURCE_NONE)
+          p -> collect_resource_timeline_information();
+          for ( auto pet : p -> pet_list )
           {
-            p->collect_resource_timeline_information();
-            for (auto pet : p->pet_list)
+            if ( pet -> primary_resource() != RESOURCE_NONE )
             {
-              if (pet->primary_resource() != RESOURCE_NONE)
-              {
-                pet->collect_resource_timeline_information();
-              }
+              pet -> collect_resource_timeline_information();
             }
           }
         }
@@ -1069,19 +1066,16 @@ struct regen_event_t : public event_t
     }
     else
     {
-      if (sim().current_index < sim().player_no_pet_list.size())
+      auto p = sim().player_no_pet_list[ sim().current_index ];
+      if ( p && p -> primary_resource() != RESOURCE_NONE && p -> regen_type == REGEN_STATIC )
       {
-        auto p = sim().player_no_pet_list[sim().current_index];
-        if (p && p->primary_resource() != RESOURCE_NONE && p->regen_type == REGEN_STATIC)
+        p -> regen( sim().regen_periodicity );
+        for ( auto pet : p -> pet_list )
         {
-          p->regen(sim().regen_periodicity);
-          for (auto pet : p->pet_list)
+          if ( ! pet -> is_sleeping() && p -> primary_resource() != RESOURCE_NONE &&
+            p -> regen_type == REGEN_STATIC )
           {
-            if (!pet->is_sleeping() && p->primary_resource() != RESOURCE_NONE &&
-              p->regen_type == REGEN_STATIC)
-            {
-              pet->regen(sim().regen_periodicity);
-            }
+            pet -> regen( sim().regen_periodicity );
           }
         }
       }
@@ -1200,14 +1194,11 @@ struct bloodlust_check_t : public event_t
        }
        else
        {
-         if (sim.current_index < sim.player_no_pet_list.size())
+         auto p = sim.player_no_pet_list[ sim.current_index ];
+         if ( p )
          {
-           auto p = sim.player_no_pet_list[ sim.current_index ];
-           if(p)
-           {
-             p -> buffs.bloodlust -> trigger();
-             p -> buffs.exhaustion -> trigger();
-           }
+           p -> buffs.bloodlust -> trigger();
+           p -> buffs.exhaustion -> trigger();
          }
        }
      }
@@ -1530,13 +1521,9 @@ void sim_t::cancel()
   }
 
   work_queue -> flush();
-  if ( single_actor_batch )
-  {
-    current_index = player_no_pet_list.size();
-  }
 
   canceled = 1;
-  
+
   for (auto & relative : relatives)
   {
     relative -> cancel();
@@ -1608,7 +1595,7 @@ void sim_t::reset()
   for ( auto& target : target_list )
     target -> reset();
 
-  if ( single_actor_batch && current_index < player_no_pet_list.size() )
+  if ( single_actor_batch )
   {
     player_no_pet_list[ current_index ] -> reset();
     // make sure to reset pets after owner, or otherwards they may access uninitialized things from the owner
@@ -1693,7 +1680,7 @@ void sim_t::combat_begin()
 
   raid_event_t::combat_begin( this );
 
-  if ( single_actor_batch && current_index < player_no_pet_list.size() )
+  if ( single_actor_batch )
   {
     player_no_pet_list[ current_index ] -> combat_begin();
     for ( auto pet: player_no_pet_list[ current_index ] -> pet_list )
@@ -1751,7 +1738,7 @@ void sim_t::combat_end()
 
   raid_event_t::combat_end( this );
 
-  if ( single_actor_batch && current_index < player_no_pet_list.size() )
+  if ( single_actor_batch )
   {
     player_no_pet_list[ current_index ] -> combat_end();
   }
@@ -1809,7 +1796,7 @@ void sim_t::datacollection_begin()
   for ( size_t i = 0; i < buff_list.size(); ++i )
     buff_list[ i ] -> datacollection_begin();
 
-  if ( single_actor_batch && current_index < player_no_pet_list.size() )
+  if ( single_actor_batch )
   {
     player_no_pet_list[ current_index ] -> datacollection_begin();
   }
@@ -1839,7 +1826,7 @@ void sim_t::datacollection_end()
     t -> datacollection_end();
   }
 
-  if ( single_actor_batch && current_index < player_no_pet_list.size() )
+  if ( single_actor_batch )
   {
     player_no_pet_list[ current_index ] -> datacollection_end();
   }
@@ -1909,7 +1896,7 @@ void sim_t::analyze_error()
 
   current_error = 0;
 
-  if ( single_actor_batch && current_index < player_no_pet_list.size() )
+  if ( single_actor_batch )
   {
     auto p = player_no_pet_list[ current_index ];
     auto& cd = p -> collected_data;
@@ -2542,29 +2529,27 @@ bool sim_t::iterate()
 
     do_pause();
     auto old_active = current_index;
-    current_index = work_queue -> pop();
-
-    if ( ! single_actor_batch )
+    if ( ! canceled )
     {
-      more_work = current_index == 0;
-    }
-    else
-    {
-      more_work = current_index < player_no_pet_list.size();
+      current_index = work_queue -> pop();
+      more_work = work_queue -> more_work();
 
-      if ( current_index != old_active && more_work )
+      if ( single_actor_batch )
       {
-        if ( ! parent )
+        if ( current_index != old_active && more_work )
         {
-          progress_bar.update( true, static_cast<int>( old_active ) );
-          progress_bar.restart();
-          util::fprintf( stdout, "%s %s\n", sim_phase_str.c_str(), progress_bar.status.c_str() );
-          fflush( stdout );
-          sim_phase_str = "Generating " + player_no_pet_list[ current_index ] -> name_str;
-        }
+          if ( ! parent )
+          {
+            progress_bar.update( true, static_cast<int>( old_active ) );
+            progress_bar.restart();
+            util::fprintf( stdout, "%s %s\n", sim_phase_str.c_str(), progress_bar.status.c_str() );
+            fflush( stdout );
+            sim_phase_str = "Generating " + player_no_pet_list[ current_index ] -> name_str;
+          }
 
-        current_iteration = -1;
-        range::for_each( target_list, []( player_t* t ) { t -> actor_changed(); } );
+          current_iteration = -1;
+          range::for_each( target_list, []( player_t* t ) { t -> actor_changed(); } );
+        }
       }
     }
   } while ( more_work && ! canceled );

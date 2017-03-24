@@ -32,7 +32,7 @@ const proc_parse_opt_t __proc_opts[] =
   { "smelee",      PF_MELEE_ABILITY                                            },
   { "wranged",     PF_RANGED                                                   },
   { "sranged",     PF_RANGED_ABILITY                                           },
-  { nullptr,             0                                                           },
+  { nullptr,             0                                                     },
 };
 
 const proc_parse_opt_t __proc2_opts[] =
@@ -47,7 +47,7 @@ const proc_parse_opt_t __proc2_opts[] =
   { "impact",      PF2_LANDED           },
   { "tickheal",    PF2_PERIODIC_HEAL    },
   { "tickdamage",  PF2_PERIODIC_DAMAGE  },
-  { nullptr,             0                    },
+  { nullptr,             0              },
 };
 
 bool has_proc( const std::vector<std::string>& opts, const std::string& proc )
@@ -199,7 +199,7 @@ void special_effect_t::reset()
 
 const spell_data_t* special_effect_t::driver() const
 {
-  if ( !player )
+  if ( !player || spell_id == 0 )
     return spell_data_t::nil();
 
   return player -> find_spell( spell_id );
@@ -536,6 +536,11 @@ spell_t* special_effect_t::initialize_resource_action() const
 
 bool special_effect_t::is_offensive_spell_action() const
 {
+  if ( school != SCHOOL_NONE && ( discharge_amount > 0 || discharge_scaling > 0 ) )
+  {
+    return true;
+  }
+
   for ( size_t i = 1, end = trigger() -> effect_count(); i <= end; i++ )
   {
     const spelleffect_data_t& effect = trigger() -> effectN( i );
@@ -555,17 +560,94 @@ bool special_effect_t::is_offensive_spell_action() const
   return false;
 }
 
+template <typename T_ACTION>
+void proc_action_t<T_ACTION>::override_data( const special_effect_t& e )
+{
+  bool is_periodic = e.duration_ > timespan_t::zero() && e.tick > timespan_t::zero();
+
+  if ( ! ( e.override_result_es_mask & RESULT_CRIT_MASK ) )
+  {
+    this -> may_crit = this -> tick_may_crit = e.result_es_mask & RESULT_CRIT_MASK;
+  }
+
+  if ( ! ( e.override_result_es_mask & RESULT_MISS_MASK ) )
+  {
+    this -> may_miss = e.result_es_mask & RESULT_MISS_MASK;
+  }
+
+  if ( e.aoe != 0 )
+  {
+    this -> aoe = e.aoe;
+  }
+
+  if ( e.school != SCHOOL_NONE )
+  {
+    this -> school = e.school;
+  }
+
+  if ( is_periodic )
+  {
+    this -> base_tick_time = e.tick;
+    this -> dot_duration = e.duration_;
+  }
+
+  if ( e.discharge_amount != 0 )
+  {
+    if ( is_periodic )
+    {
+      this -> base_td = e.discharge_amount;
+    }
+    else
+    {
+      this -> base_dd_min = this -> base_dd_max = e.discharge_amount;
+    }
+  }
+
+  if ( e.discharge_scaling != 0 )
+  {
+    if ( is_periodic )
+    {
+      if ( e.discharge_scaling < 0 )
+      {
+        this -> attack_power_mod.tick = -1.0 * e.discharge_scaling;
+      }
+      else
+      {
+        this -> spell_power_mod.tick = e.discharge_scaling;
+      }
+    }
+    else
+    {
+      if ( e.discharge_scaling < 0 )
+      {
+        this -> attack_power_mod.direct = -1.0 * e.discharge_scaling;
+      }
+      else
+      {
+        this -> spell_power_mod.direct = e.discharge_scaling;
+      }
+    }
+  }
+}
+
+void proc_attack_t::override_data( const special_effect_t& e )
+{
+  super::override_data( e );
+
+  if ( ! ( e.override_result_es_mask & RESULT_DODGE_MASK ) )
+  {
+    this -> may_dodge = e.result_es_mask & RESULT_DODGE_MASK;
+  }
+
+  if ( ! ( e.override_result_es_mask & RESULT_PARRY_MASK ) )
+  {
+    this -> may_parry = e.result_es_mask & RESULT_PARRY_MASK;
+  }
+}
+
 spell_t* special_effect_t::initialize_offensive_spell_action() const
 {
-  const spell_data_t* s = spell_data_t::nil();
-
-  // Setup the spell data
-  if ( trigger() -> id() > 0 )
-    s = trigger();
-  else if ( driver() -> id() > 0 )
-    s = driver();
-
-  proc_spell_t* spell = new proc_spell_t( name(), player, s, source == SPECIAL_EFFECT_SOURCE_ITEM ? item : nullptr );
+  auto spell = new proc_spell_t( *this );
   spell -> init();
   return spell;
 }
@@ -608,6 +690,11 @@ heal_t* special_effect_t::initialize_heal_action() const
 
 bool special_effect_t::is_attack_action() const
 {
+  if ( school != SCHOOL_NONE && ( discharge_amount != 0 || discharge_scaling < 0 ) )
+  {
+    return true;
+  }
+
   for ( size_t i = 1, end = trigger() -> effect_count(); i <= end; i++ )
   {
     const spelleffect_data_t& effect = trigger() -> effectN( i );

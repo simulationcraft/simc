@@ -246,6 +246,7 @@ public:
     const spell_data_t* chain_of_thrayn;
     const spell_data_t* ashes_to_dust;
     const spell_data_t* consecration_bonus;
+    const spell_data_t* blessing_of_the_ashbringer;
   } spells;
 
   // Talents
@@ -345,6 +346,7 @@ public:
     artifact_power_t ferocity_of_the_silver_hand;
     artifact_power_t righteous_verdict;
     artifact_power_t judge_unworthy;
+    artifact_power_t blessing_of_the_ashbringer;
 
     // Prot
     artifact_power_t eye_of_tyr;
@@ -443,6 +445,7 @@ public:
   virtual expr_t*   create_expression( action_t*, const std::string& name ) override;
 
   // player stat functions
+  virtual double    composite_attribute( attribute_e attr ) const override;
   virtual double    composite_attribute_multiplier( attribute_e attr ) const override;
   virtual double    composite_rating_multiplier( rating_e rating ) const override;
   virtual double    composite_attack_power_multiplier() const override;
@@ -736,21 +739,21 @@ namespace buffs {
     }
   };
 
-  struct forbearance_t : public debuff_t
+  struct forbearance_t : public buff_t
   {
     paladin_t* paladin;
 
     forbearance_t( paladin_t* p, const char *name ) :
-      debuff_t( buff_creator_t( p, name, p -> find_spell( 25771 ) ) ), paladin( p )
+      buff_t( buff_creator_t( p, name, p -> find_spell( 25771 ) ) ), paladin( p )
     { }
 
     forbearance_t( paladin_t* p, paladin_td_t *ap, const char *name ) :
-      debuff_t( buff_creator_t( *ap, name, p -> find_spell( 25771 ) ) ), paladin( p )
+      buff_t( buff_creator_t( *ap, name, p -> find_spell( 25771 ) ) ), paladin( p )
     { }
 
     void execute( int stacks, double value, timespan_t duration ) override
     {
-      debuff_t::execute( stacks, value, duration );
+      buff_t::execute( stacks, value, duration );
 
       paladin -> update_forbearance_recharge_multipliers();
     }
@@ -759,7 +762,7 @@ namespace buffs {
     {
       bool expired = check() != 0;
 
-      debuff_t::expire( delay );
+      buff_t::expire( delay );
 
       if ( expired )
       {
@@ -4520,9 +4523,9 @@ void paladin_t::create_buffs()
   // Prot
   buffs.guardian_of_ancient_kings      = buff_creator_t( this, "guardian_of_ancient_kings", find_specialization_spell( "Guardian of Ancient Kings" ) )
                                           .cd( timespan_t::zero() ); // let the ability handle the CD
-  buffs.grand_crusader                 = buff_creator_t( this, "grand_crusader" ).spell( passives.grand_crusader -> effectN( 1 ).trigger() )
+  buffs.grand_crusader                 = buff_creator_t( this, "grand_crusader", passives.grand_crusader -> effectN( 1 ).trigger() )
                                           .chance( passives.grand_crusader -> proc_chance() + ( 0.0 + talents.first_avenger -> effectN( 2 ).percent() ) );
-  buffs.shield_of_the_righteous        = buff_creator_t( this, "shield_of_the_righteous" ).spell( find_spell( 132403 ) );
+  buffs.shield_of_the_righteous        = buff_creator_t( this, "shield_of_the_righteous", find_spell( 132403 ) );
   buffs.ardent_defender                = new buffs::ardent_defender_buff_t( this );
   buffs.painful_truths                 = buff_creator_t( this, "painful_truths", find_spell( 209332 ) );
   buffs.aegis_of_light                 = buff_creator_t( this, "aegis_of_light", find_talent_spell( "Aegis of Light" ) );
@@ -4538,14 +4541,14 @@ void paladin_t::create_buffs()
                                          .max_stack( 1 ); // not sure why data says 3 stacks
 
   // Ret
-  buffs.zeal                           = buff_creator_t( this, "zeal" ).spell( find_spell( 217020 ) );
-  buffs.seal_of_light                  = buff_creator_t( this, "seal_of_light" ).spell( find_spell( 202273 ) );
-  buffs.the_fires_of_justice           = buff_creator_t( this, "the_fires_of_justice" ).spell( find_spell( 209785 ) );
-  buffs.blade_of_wrath               = buff_creator_t( this, "blade_of_wrath" ).spell( find_spell( 231843 ) );
-  buffs.divine_purpose                 = buff_creator_t( this, "divine_purpose" ).spell( find_spell( 223819 ) );
+  buffs.zeal                           = buff_creator_t( this, "zeal", find_spell( 217020 ) );
+  buffs.seal_of_light                  = buff_creator_t( this, "seal_of_light", find_spell( 202273 ) );
+  buffs.the_fires_of_justice           = buff_creator_t( this, "the_fires_of_justice", find_spell( 209785 ) );
+  buffs.blade_of_wrath               = buff_creator_t( this, "blade_of_wrath", find_spell( 231843 ) );
+  buffs.divine_purpose                 = buff_creator_t( this, "divine_purpose", find_spell( 223819 ) );
   buffs.divine_steed                   = buff_creator_t( this, "divine_steed", find_spell( "Divine Steed" ) )
                                           .duration( timespan_t::from_seconds( 3.0 ) ).chance( 1.0 ).default_value( 1.0 ); // TODO: change this to spellid 221883 & see if that automatically captures details
-  buffs.whisper_of_the_nathrezim       = buff_creator_t( this, "whisper_of_the_nathrezim" ).spell( find_spell( 207635 ) );
+  buffs.whisper_of_the_nathrezim       = buff_creator_t( this, "whisper_of_the_nathrezim", find_spell( 207635 ) );
   buffs.liadrins_fury_unleashed        = new buffs::liadrins_fury_unleashed_t( this );
   buffs.shield_of_vengeance            = new buffs::shield_of_vengeance_buff_t( this );
   buffs.righteous_verdict              = buff_creator_t( this, "righteous_verdict", find_spell( 238996 ) );
@@ -5265,6 +5268,7 @@ void paladin_t::init_spells()
   artifact.ashes_to_ashes          = find_artifact_spell( "Ashes to Ashes" );
   artifact.righteous_verdict       = find_artifact_spell( "Righteous Verdict" );
   artifact.judge_unworthy          = find_artifact_spell( "Judge Unworthy" );
+  artifact.blessing_of_the_ashbringer = find_artifact_spell( "Blessing of the Ashbringer" );
 
   artifact.eye_of_tyr              = find_artifact_spell( "Eye of Tyr" );
   artifact.truthguards_light       = find_artifact_spell( "Truthguard's Light" );
@@ -5293,6 +5297,7 @@ void paladin_t::init_spells()
   spells.chain_of_thrayn               = find_spell( 206338 );
   spells.ashes_to_dust                 = find_spell( 236106 );
   spells.consecration_bonus            = find_spell( 188370 );
+  spells.blessing_of_the_ashbringer = find_spell( 242981 );
 
   // Masteries
   passives.divine_bulwark         = find_mastery_spell( PALADIN_PROTECTION );
@@ -5449,6 +5454,23 @@ stat_e paladin_t::convert_hybrid_stat( stat_e s ) const
   }
 
   return converted_stat;
+}
+
+// paladin_t::composite_attribute
+double paladin_t::composite_attribute( attribute_e attr ) const
+{
+  double m = player_t::composite_attribute( attr );
+
+  if ( attr == ATTR_STRENGTH )
+  {
+    if ( artifact.blessing_of_the_ashbringer.rank() )
+    {
+      // TODO(mserrano): fix this once spelldata gets extracted
+      m += 2000; // spells.blessing_of_the_ashbringer -> effectN( 1 ).value();
+    }
+  }
+
+  return m;
 }
 
 // paladin_t::composite_attribute_multiplier ================================

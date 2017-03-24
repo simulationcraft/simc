@@ -25,7 +25,7 @@ actions.precombat+=/potion,name=old_war
 actions=auto_attack
 actions+=/rebuke
 actions+=/potion,name=old_war,if=(buff.bloodlust.react|buff.avenging_wrath.up|buff.crusade.up&buff.crusade.remains<25|target.time_to_die<=40)
-actions+=/use_item,name=draught_of_souls,if=(buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=15|cooldown.crusade.remains>20&!buff.crusade.up)
+actions+=/use_item,name=faulty_countermeasure,if=(buff.avenging_wrath.up|buff.crusade.up)
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent,if=holy_power<5&(buff.crusade.up|buff.avenging_wrath.up|time<2)
@@ -68,30 +68,30 @@ actions+=/crusader_strike,if=holy_power<=4
 actions+=/divine_storm,if=debuff.judgment.up&holy_power>=3&spell_targets.divine_storm>=2&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*5)
 actions+=/templars_verdict,if=debuff.judgment.up&holy_power>=3&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*5)
 
-head=helmet_of_the_highlord,id=138356,bonus_id=3445
-neck=brooch_of_the_astral_scryer,id=140900,bonus_id=3445,enchant_id=5439
-shoulders=pauldrons_of_the_highlord,id=138362,bonus_id=3445,enchant_id=5883
-back=astromancers_greatcloak,id=140909,bonus_id=3445,enchant_id=5434
-chest=breastplate_of_the_highlord,id=138350,bonus_id=3445
-wrists=eternally_recurring_bracers,id=140893,bonus_id=3445
-hands=bridgebreaker_gauntlets,id=140907,bonus_id=3445
-waist=goresmeared_abyssal_waistplate,id=140892,bonus_id=3445
-legs=legplates_of_the_highlord,id=138359,bonus_id=3445
-feet=sabatons_of_unchanging_fate,id=140891,bonus_id=3445
-finger1=ring_of_braided_stems,id=140896,bonus_id=3445,enchant_id=5428
-finger2=ring_of_exclusive_servitude,id=140906,bonus_id=3445,enchant_id=5428
-trinket1=convergence_of_fates,id=140806,bonus_id=3445
-trinket2=draught_of_souls,id=140808,bonus_id=3445
-main_hand=ashbringer,id=120978,bonus_id=737,gem_id=140843/140837/140843,relic_id=3445/3445/3445
+head=helmet_of_the_highlord,id=138356,bonus_id=3519
+neck=brooch_of_the_astral_scryer,id=140900,bonus_id=3519,enchant_id=5439
+shoulders=pauldrons_of_the_highlord,id=138362,bonus_id=3519,enchant_id=5883
+back=astromancers_greatcloak,id=140909,bonus_id=3519,enchant_id=5434
+chest=breastplate_of_the_highlord,id=138350,bonus_id=3519
+wrists=eternally_recurring_bracers,id=140893,bonus_id=3519
+hands=bridgebreaker_gauntlets,id=140907,bonus_id=3519
+waist=goresmeared_abyssal_waistplate,id=140892,bonus_id=3519
+legs=legplates_of_the_highlord,id=138359,bonus_id=3519
+feet=sabatons_of_unchanging_fate,id=140891,bonus_id=3519
+finger1=ring_of_braided_stems,id=140896,bonus_id=3519,enchant_id=5428
+finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=3519,enchant_id=5428
+trinket1=faulty_countermeasure,id=137539,bonus_id=3519
+trinket2=claw_of_the_crystalline_scorpid,id=140790,bonus_id=3519
+main_hand=ashbringer,id=120978,bonus_id=737,gem_id=140843/139266/140843,relic_id=3519/3519/3519
 
 # Gear Summary
-# gear_ilvl=901.60
-# gear_strength=20441
-# gear_stamina=32759
-# gear_crit_rating=4880
-# gear_haste_rating=9659
-# gear_mastery_rating=2266
-# gear_versatility_rating=7147
-# gear_armor=4539
+# gear_ilvl=911.53
+# gear_strength=22385
+# gear_stamina=35916
+# gear_crit_rating=6668
+# gear_haste_rating=10556
+# gear_mastery_rating=2349
+# gear_versatility_rating=5489
+# gear_armor=4642
 # set_bonus=tier19_2pc=1
 # set_bonus=tier19_4pc=1

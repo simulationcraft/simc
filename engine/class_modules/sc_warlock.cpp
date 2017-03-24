@@ -9,21 +9,18 @@
 // ==========================================================================
 //
 // TODO
-// Legendaries
+//
+// 7.2
+//
+// Demonology Traits - Jaws of Shadow and Thal'kiel's Ascendance
+//
 // Double check all up()/check() usage.
-// Expression to estimate imp vs implosion damage.
 //
 // Affliction -
-// Haunt reset
 // Soul Flame + Wrath of Consumption on-death effects.
 // Peridition needs special crit damage override thing NYI.
-// Compounding Horror
-// Fatal Echoes
 //
-// Destruction/Demonology -
-// 20/20 Trait
-//
-// Better reporting for add buffs.
+// Better reporting for pet buffs.
 //
 // Wild imps have a 14 sec duration on 104317, expire after 12 UNLESS implosion.
 // Check resource generation execute/impact and hit requirement
@@ -146,6 +143,8 @@ public:
     action_t* demonic_power_proc;
     action_t* thalkiels_discord;
     action_t* harvester_of_souls;
+    action_t* cry_havoc;
+    action_t* rend_soul;
     spell_t* rain_of_fire;
     spell_t* corruption;
     actions::effigy_damage_override_t* effigy_damage_override;
@@ -240,6 +239,10 @@ public:
     artifact_power_t compounding_horror;
     artifact_power_t soulharvester;
     artifact_power_t soulstealer;
+    artifact_power_t degradation_of_the_black_harvest;
+    artifact_power_t winnowing;
+    artifact_power_t sinister_seeds;
+    artifact_power_t rend_soul;
 
     // Demonology
     artifact_power_t thalkiels_consumption;
@@ -259,7 +262,11 @@ public:
     artifact_power_t stolen_power;
     artifact_power_t imperator;
     artifact_power_t summoners_prowess;
-    artifact_power_t thalkiels_lingering_power;//NYI
+    artifact_power_t thalkiels_lingering_power;
+    artifact_power_t swarms_of_the_black_harvest;
+    artifact_power_t left_hand_of_darkness;
+    artifact_power_t jaws_of_shadow;
+    artifact_power_t thalkiels_ascendance;
 
     // Destruction
     artifact_power_t dimensional_rift;
@@ -279,6 +286,10 @@ public:
     artifact_power_t devourer_of_life;
     artifact_power_t planeswalker;
     artifact_power_t conflagration_of_chaos;
+    artifact_power_t flames_of_the_black_harvest;
+    artifact_power_t flames_of_sargeras;
+    artifact_power_t cry_havoc;
+    artifact_power_t flame_rift;
 
   } artifact;
 
@@ -1403,6 +1414,25 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
   if( o() -> mastery_spells.master_demonologist -> ok() && buffs.demonic_empowerment -> check() )
   {
      m *= 1.0 +  o() -> cache.mastery_value();
+  }
+
+  if ( o() -> specialization() == WARLOCK_AFFLICTION )
+  {
+    m *= 1.0 + o() -> artifact.soulstealer.percent() * ( o() -> buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
+    m *= 1.0 + o() -> artifact.degradation_of_the_black_harvest.percent() * ( o() -> buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
+  }
+
+  if ( o() -> specialization() == WARLOCK_DEMONOLOGY )
+  {
+    m *= 1.0 + o() -> artifact.thalkiels_lingering_power.percent();
+    m *= 1.0 + o() -> artifact.swarms_of_the_black_harvest.percent();
+    m *= 1.0 + o() -> artifact.left_hand_of_darkness.percent();
+  }
+
+  if ( o() -> specialization() == WARLOCK_DESTRUCTION )
+  {
+    m *= 1.0 + o() -> artifact.stolen_power.percent();
+    m *= 1.0 + o() -> artifact.flames_of_the_black_harvest.percent();
   }
 
   m *= 1.0 + o() -> buffs.sindorei_spite -> check_stack_value();
@@ -2632,6 +2662,15 @@ struct agony_t: public warlock_spell_t
     return m;
   }
 
+  double composite_crit_chance() const override
+  {
+    double cc = warlock_spell_t::composite_crit_chance();
+
+    cc += p() -> artifact.winnowing.percent() * ( p() -> buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
+
+    return cc;
+  }
+
   double composite_crit_damage_bonus_multiplier() const override
   {
     double cd = warlock_spell_t::composite_crit_damage_bonus_multiplier();
@@ -2747,6 +2786,7 @@ struct unstable_affliction_t: public warlock_spell_t
       double cc = warlock_spell_t::composite_crit_chance();
 
       cc += p() -> artifact.inherently_unstable.percent() * ( p() -> buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
+      cc += p() -> artifact.winnowing.percent() * ( p() -> buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
 
       return cc;
     }
@@ -3027,6 +3067,15 @@ struct corruption_t: public warlock_spell_t
     m *= 1.0 + p() -> artifact.hideous_corruption.percent() * ( p() -> buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
 
     return m;
+  }
+
+  double composite_crit_chance() const override
+  {
+    double cc = warlock_spell_t::composite_crit_chance();
+
+    cc += p() -> artifact.winnowing.percent() * ( p() -> buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
+
+    return cc;
   }
 
   double composite_crit_damage_bonus_multiplier() const override
@@ -3601,6 +3650,7 @@ struct conflagrate_t: public warlock_spell_t
   {
     energize_type = ENERGIZE_ON_CAST;
     base_duration = p -> find_spell( 117828 ) -> duration();
+    base_multiplier *= 1.0 + p -> artifact.flames_of_sargeras.percent();
 
     can_havoc = true;
 
@@ -3900,6 +3950,11 @@ struct chaos_bolt_t: public warlock_spell_t
     warlock_spell_t::impact( s );
     if ( p() -> talents.eradication -> ok() && result_is_hit( s -> result ) )
       td( s -> target ) -> debuffs_eradication -> trigger();
+    if ( p() -> artifact.cry_havoc.rank() && result_is_hit( s -> result ) && td( s -> target ) -> debuffs_havoc -> check() )
+    {
+      p() -> active.cry_havoc -> target = s -> target;
+      p() -> active.cry_havoc -> execute(); 
+    }
     if ( p() -> legendary.magistrike && rng().roll( duplicate_chance ) )
     {
       duplicate -> original_target = s -> target;
@@ -4184,7 +4239,7 @@ struct seed_of_corruption_t: public warlock_spell_t
   {
     if ( result_is_hit( s -> result ) )
     {
-      td( s -> target ) -> soc_threshold = s -> composite_spell_power() * threshold_mod;
+      td( s -> target ) -> soc_threshold = s -> composite_spell_power() * ( threshold_mod * ( 1.0 + p() -> artifact.sinister_seeds.percent() * p() -> buffs.deadwind_harvester -> check() ? 2.0 : 1.0 ) );
     }
 
     if ( p() -> active.corruption )
@@ -4950,12 +5005,14 @@ struct shadowflame_t : public warlock_spell_t
 
 struct drain_soul_t: public warlock_spell_t
 {
+  double rend_soul_proc_chance;
   drain_soul_t( warlock_t* p ):
     warlock_spell_t( "drain_soul", p, p -> find_specialization_spell( "Drain Soul" ) )
   {
     channeled = true;
     hasted_ticks = false;
     may_crit = false;
+    rend_soul_proc_chance = p -> artifact.rend_soul.data().proc_chance();
   }
 
   virtual double action_multiplier() const override
@@ -4967,11 +5024,27 @@ struct drain_soul_t: public warlock_spell_t
     return m;
   }
 
+  double composite_crit_chance() const override
+  {
+    double cc = warlock_spell_t::composite_crit_chance();
+
+    cc += p() -> artifact.winnowing.percent() * ( p() -> buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
+
+    return cc;
+  }
+
   virtual void tick( dot_t* d ) override
   {
     if ( p() -> sets.has_set_bonus( WARLOCK_AFFLICTION, T18, B2 ) )
     {
       p() -> buffs.shard_instability -> trigger();
+    }
+
+    if ( p() -> artifact.rend_soul.rank() && rng().roll( rend_soul_proc_chance * ( p() -> buffs.deadwind_harvester -> check() ? 2.0 : 1.0 ) ) )
+    {
+      p() -> active.rend_soul -> target = d -> target;
+      p() -> active.rend_soul -> execute();
+      p() -> buffs.tormented_souls -> trigger();
     }
 
     warlock_spell_t::tick( d );
@@ -5348,6 +5421,28 @@ struct harvester_of_souls_t : public warlock_spell_t
   }
 };
 
+struct rend_soul_t : public warlock_spell_t
+{
+  rend_soul_t( warlock_t* p ) :
+    warlock_spell_t( "rend_soul", p, p -> find_spell( 242834 ) )
+  {
+    background = true;
+    //proc = true;
+    callbacks = true;
+  }
+};
+
+struct cry_havoc_t : public warlock_spell_t
+{
+  cry_havoc_t( warlock_t* p ) :
+    warlock_spell_t( "cry_havoc", p, p -> find_spell( 243011 ) )
+  {
+    background = true;
+    //proc = true;
+    callbacks = true;
+  }
+};
+
 struct grimoire_of_service_t: public summon_pet_t
 {
   grimoire_of_service_t( warlock_t* p, const std::string& pet_name ):
@@ -5682,16 +5777,19 @@ double warlock_t::composite_player_multiplier( school_e school ) const
   if ( specialization() == WARLOCK_AFFLICTION )
   {
     m *= 1.0 + artifact.soulstealer.percent() * ( buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
+    m *= 1.0 + artifact.degradation_of_the_black_harvest.percent() * ( buffs.deadwind_harvester->check() ? 2.0 : 1.0 );
   }
 
   if ( specialization() == WARLOCK_DEMONOLOGY )
   {
     m *= 1.0 + artifact.thalkiels_lingering_power.percent();
+    m *= 1.0 + artifact.swarms_of_the_black_harvest.percent();
   }
 
   if ( specialization() == WARLOCK_DESTRUCTION )
   {
     m *= 1.0 + artifact.stolen_power.percent();
+    m *= 1.0 + artifact.flames_of_the_black_harvest.percent();
   }
 
   if ( specialization() == WARLOCK_AFFLICTION && ( dbc::is_school( school, SCHOOL_SHADOW ) ) )
@@ -6121,6 +6219,10 @@ void warlock_t::init_spells()
   artifact.compounding_horror = find_artifact_spell( "Compounding Horror" );
   artifact.soulharvester = find_artifact_spell( "Soulharvester" );
   artifact.soulstealer = find_artifact_spell( "Soulstealer" );
+  artifact.degradation_of_the_black_harvest = find_artifact_spell( "Degradation of the Black Harvest" );
+  artifact.winnowing = find_artifact_spell( "Winnowing" );
+  artifact.sinister_seeds = find_artifact_spell( "Sinister Seeds" );
+  artifact.rend_soul = find_artifact_spell( "Rend Soul" );
 
   artifact.thalkiels_consumption = find_artifact_spell( "Thal'kiel's Consumption" );
   artifact.breath_of_thalkiel = find_artifact_spell( "Breath of Thal'kiel" );
@@ -6140,6 +6242,10 @@ void warlock_t::init_spells()
   artifact.imperator = find_artifact_spell( "Imp-erator" );
   artifact.summoners_prowess = find_artifact_spell( "Summoner's Prowess" );
   artifact.thalkiels_lingering_power = find_artifact_spell( "Thal'kiel's Lingering Power" );
+  artifact.swarms_of_the_black_harvest = find_artifact_spell( "Swarms of the Black Harvest" );
+  artifact.left_hand_of_darkness = find_artifact_spell( "Left Hand of Darkness" );
+  artifact.jaws_of_shadow = find_artifact_spell( "Jaws of Shadow" );
+  artifact.thalkiels_ascendance = find_artifact_spell( "Thal'kiel's Ascendance" );
 
   artifact.dimensional_rift = find_artifact_spell( "Dimensional Rift" );
   artifact.flames_of_the_pit = find_artifact_spell( "Flames of the Pit" );
@@ -6158,11 +6264,17 @@ void warlock_t::init_spells()
   artifact.devourer_of_life = find_artifact_spell( "Devourer of Life" );
   artifact.planeswalker = find_artifact_spell( "Planeswalker" );
   artifact.conflagration_of_chaos = find_artifact_spell( "Conflagration of Chaos" );
+  artifact.flames_of_the_black_harvest = find_artifact_spell( "Flames of the Black Harvest" );
+  artifact.flames_of_sargeras = find_artifact_spell( "Flames of Sargeras" );
+  artifact.cry_havoc = find_artifact_spell( "Cry Havoc" );
+  artifact.flame_rift = find_artifact_spell( "Flame Rift" );
 
   // Active Spells
   active.demonic_power_proc = new actions::demonic_power_damage_t( this );
   active.thalkiels_discord = new actions::thalkiels_discord_t( this );
   active.harvester_of_souls = new actions::harvester_of_souls_t( this );
+  active.cry_havoc = new actions::cry_havoc_t( this );
+  active.rend_soul = new actions::rend_soul_t( this );
   active.effigy_damage_override = new actions::effigy_damage_override_t(this);
   if ( specialization() == WARLOCK_AFFLICTION )
   {

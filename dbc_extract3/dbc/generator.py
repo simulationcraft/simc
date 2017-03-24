@@ -1305,6 +1305,7 @@ class SpellDataGenerator(DataGenerator):
             ( 228288, 0, True ),
             ( 205729, 0 ),
             ( 238996, 0 ),          # Righteous Verdict
+            ( 242981, 0 ),          # Blessing of the Ashbringer
         ),
 
         # Hunter:
@@ -1494,6 +1495,8 @@ class SpellDataGenerator(DataGenerator):
 		  ( 233498, 0 ),
 		  ( 233499, 0 ),
           ( 213229, 0 ),
+          ( 243050, 0 ),        # Fire Rift
+          ( 242922, 0 ),        # Jaws of Shadow
         ),
 
         # Monk:

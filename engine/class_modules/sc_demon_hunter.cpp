@@ -333,7 +333,8 @@ public:
     artifact_power_t balanced_blades;
     artifact_power_t bladedancers_grace;
     artifact_power_t chaos_burn;
-    artifact_power_t chaos_vision;    
+    artifact_power_t chaos_vision;
+    artifact_power_t chaotic_onslaught;
     artifact_power_t contained_fury;
     artifact_power_t critical_chaos;
     artifact_power_t demon_rage;
@@ -350,7 +351,6 @@ public:
     artifact_power_t wide_eyes;
 
     // NYI
-    artifact_power_t chaotic_onslaught;
     artifact_power_t deceivers_fury;    
 
     // Vengeance -- The Aldrachi Warblades
@@ -4795,12 +4795,12 @@ private:
 
 // Anguish ==================================================================
 
-struct anguish_debuff_t : public demon_hunter_buff_t<debuff_t>
+struct anguish_debuff_t : public demon_hunter_buff_t<buff_t>
 {
   action_t* anguish;
 
   anguish_debuff_t( demon_hunter_t* p, player_t* target )
-    : demon_hunter_buff_t<debuff_t>(
+    : demon_hunter_buff_t<buff_t>(
         *p, buff_creator_t( actor_pair_t( target, p ), "anguish",
                             p -> artifact.anguish_of_the_deceiver.data()
                             .effectN( 1 )
@@ -4812,7 +4812,7 @@ struct anguish_debuff_t : public demon_hunter_buff_t<debuff_t>
   virtual void expire_override( int expiration_stacks,
                                 timespan_t remaining_duration ) override
   {
-    demon_hunter_buff_t<debuff_t>::expire_override( expiration_stacks,
+    demon_hunter_buff_t<buff_t>::expire_override( expiration_stacks,
         remaining_duration );
 
     // Only if the debuff expires naturally; if the target dies it doesn't deal
@@ -4896,10 +4896,10 @@ struct chaos_blades_t : public demon_hunter_buff_t<buff_t>
 
 // Nemesis ==================================================================
 
-struct nemesis_debuff_t : public demon_hunter_buff_t<debuff_t>
+struct nemesis_debuff_t : public demon_hunter_buff_t<buff_t>
 {
   nemesis_debuff_t( demon_hunter_t* p, player_t* target )
-    : demon_hunter_buff_t<debuff_t>(
+    : demon_hunter_buff_t<buff_t>(
         *p, buff_creator_t( actor_pair_t( target, p ), "nemesis",
                             p -> talent.nemesis )
         .default_value( p -> talent.nemesis -> effectN( 1 ).percent() )
@@ -4911,7 +4911,7 @@ struct nemesis_debuff_t : public demon_hunter_buff_t<debuff_t>
   virtual void expire_override( int expiration_stacks,
                                 timespan_t remaining_duration ) override
   {
-    demon_hunter_buff_t<debuff_t>::expire_override( expiration_stacks,
+    demon_hunter_buff_t<buff_t>::expire_override( expiration_stacks,
         remaining_duration );
 
     if ( remaining_duration > timespan_t::zero() )
@@ -5368,9 +5368,8 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
     // Vengeance
     dots.fiery_brand = target->get_dot("fiery_brand", &p);
     dots.sigil_of_flame = target->get_dot("sigil_of_flame", &p);
-    debuffs.frailty =
-      buff_creator_t(target, "frailty", p.find_spell(224509))
-      .default_value(p.find_spell(224509)->effectN(1).percent());
+    debuffs.frailty = make_buff(target, "frailty", p.find_spell(224509))
+      -> set_default_value(p.find_spell(224509)->effectN(1).percent());
   }
 }
 
@@ -6326,7 +6325,6 @@ void demon_hunter_t::init_rng()
       rppm.felblade_havoc = get_rppm("felblade", find_spell(203557));
       rppm.felblade_havoc->set_frequency(rppm.felblade_havoc->get_frequency()*1.5);
   }
-  
 
   // Havoc
   rppm.inner_demons = get_rppm( "inner_demons", artifact.inner_demons );

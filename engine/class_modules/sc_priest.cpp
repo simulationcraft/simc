@@ -225,7 +225,6 @@ public:
     artifact_power_t fiending_dark;
     artifact_power_t mind_quickening;
     artifact_power_t lash_of_insanity;
-    artifact_power_t concordance_of_the_legionfall;
   } artifact;
 
   // Specialization Spells
@@ -2924,7 +2923,7 @@ struct summon_shadowfiend_t final : public summon_pet_t
     cooldown->duration += priest.sets.set( PRIEST_SHADOW, T18, B2 )->effectN( 1 ).time_value();
     if ( priest.artifact.fiending_dark.rank() )
     {
-      summoning_duration += timespan_t::from_millis(  4500 *
+      summoning_duration += timespan_t::from_millis(4500 *
       // Actual in-game effect doesn't match the spell data
       // priest.artifact.fiending_dark.data().effectN( 1 ).base_value() *
                                                      priest.artifact.fiending_dark.rank() );
@@ -2945,7 +2944,7 @@ struct summon_mindbender_t final : public summon_pet_t
     cooldown->duration += priest.sets.set( PRIEST_SHADOW, T18, B2 )->effectN( 2 ).time_value();
     if ( priest.artifact.fiending_dark.rank() )
     {
-      summoning_duration += timespan_t::from_millis( 4500 *
+      summoning_duration += timespan_t::from_millis( 1500 *
       // Actual in-game effect doesn't match the spell data
       // priest.artifact.fiending_dark.data().effectN( 2 ).base_value() *
                                                      priest.artifact.fiending_dark.rank() );
@@ -3627,8 +3626,7 @@ struct insanity_drain_stacks_t final : public priest_buff_t<buff_t>
 struct voidform_t final : public priest_buff_t<haste_buff_t>
 {
   voidform_t( priest_t& p )
-    : base_t( p, haste_buff_creator_t( &p, "voidform" )
-                     .spell( p.find_spell( 194249 ) )
+    : base_t( p, haste_buff_creator_t( &p, "voidform", p.find_spell( 194249 ) )
                      .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                      .add_invalidate( CACHE_HASTE )
                      .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER ) )
@@ -3697,7 +3695,7 @@ struct voidform_t final : public priest_buff_t<haste_buff_t>
 struct surrender_to_madness_t final : public priest_buff_t<buff_t>
 {
   surrender_to_madness_t( priest_t& p )
-    : base_t( p, buff_creator_t( &p, "surrender_to_madness" ).spell( p.talents.surrender_to_madness ) )
+    : base_t( p, buff_creator_t( &p, "surrender_to_madness", p.talents.surrender_to_madness ) )
   {
   }
 
@@ -3748,7 +3746,7 @@ struct lingering_insanity_t final : public priest_buff_t<haste_buff_t>
  */
 struct archangel_t final : public priest_buff_t<buff_t>
 {
-  archangel_t( priest_t& p ) : base_t( p, buff_creator_t( &p, "archangel" ).spell( p.specs.archangel ).max_stack( 5 ) )
+  archangel_t( priest_t& p ) : base_t( p, buff_creator_t( &p, "archangel", p.specs.archangel ).max_stack( 5 ) )
   {
     default_value = data().effectN( 1 ).percent();
   }
@@ -3893,17 +3891,17 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p )
   if ( priest.active_items.mental_fatigue )
   {
     buffs.mental_fatigue =
-        buff_creator_t( *this, "mental_fatigue", priest.active_items.mental_fatigue->driver()->effectN( 1 ).trigger() )
-            .default_value( priest.active_items.mental_fatigue->driver()->effectN( 1 ).average(
-                                priest.active_items.mental_fatigue->item ) /
-                            100.0 / 100.0 );
+        make_buff( *this, "mental_fatigue", priest.active_items.mental_fatigue->driver()->effectN( 1 ).trigger() )
+            ->set_default_value( priest.active_items.mental_fatigue->driver()->effectN( 1 ).average(
+                                     priest.active_items.mental_fatigue->item ) /
+                                 100.0 / 100.0 );
   }
   else
   {
     buffs.mental_fatigue = buff_creator_t( *this, "mental_fatigue" ).chance( 0 );
   }
 
-  buffs.schism = buff_creator_t( *this, "schism" ).spell( p.talents.schism );
+  buffs.schism = buff_creator_t( *this, "schism", p.talents.schism );
 
   target->callbacks_on_demise.push_back( [this]( player_t* ) { target_demise(); } );
 }
@@ -4630,7 +4628,6 @@ void priest_t::init_spells()
   artifact.fiending_dark                 = find_artifact_spell( "Fiending Dark" );
   artifact.mind_quickening               = find_artifact_spell( "Mind Quickening" );
   artifact.lash_of_insanity              = find_artifact_spell( "Lash of Insanity" );
-  artifact.concordance_of_the_legionfall = find_artifact_spell( "Accordance of the Legionfall" );
 
   // General Spells
 
@@ -4704,14 +4701,12 @@ void priest_t::create_buffs()
 
   buffs.surrender_to_madness = new buffs::surrender_to_madness_t( *this );
 
-  buffs.surrender_to_madness_death = buff_creator_t( this, "surrender_to_madness_death" )
-                                         .spell( talents.surrender_to_madness )
+  buffs.surrender_to_madness_death = buff_creator_t( this, "surrender_to_madness_death", talents.surrender_to_madness )
                                          .chance( 1.0 )
                                          .duration( timespan_t::zero() )
                                          .default_value( 0.0 );
 
-  buffs.sphere_of_insanity = buff_creator_t( this, "sphere_of_insanity" )
-                                 .spell( find_spell( 194182 ) )
+  buffs.sphere_of_insanity = buff_creator_t( this, "sphere_of_insanity", find_spell( 194182 ) )
                                  .chance( 1.0 )
                                  .default_value( find_spell( 194182 )->effectN( 3 ).percent() );
 
@@ -4720,8 +4715,7 @@ void priest_t::create_buffs()
   // Discipline
   buffs.archangel = new buffs::archangel_t( *this );
 
-  buffs.borrowed_time = buff_creator_t( this, "borrowed_time" )
-                            .spell( find_spell( 59889 ) )
+  buffs.borrowed_time = buff_creator_t( this, "borrowed_time", find_spell( 59889 ) )
                             .chance( specs.borrowed_time->ok() )
                             .default_value( find_spell( 59889 )->effectN( 1 ).percent() )
                             .add_invalidate( CACHE_HASTE );
@@ -4747,11 +4741,11 @@ void priest_t::create_buffs()
   buffs.dispersion = make_buff( this, "dispersion", find_class_spell( "Dispersion" ) );
 
   // Set Bonuses
-  buffs.mental_instinct = buff_creator_t( this, "mental_instinct" )
-                              .spell( sets.set( PRIEST_SHADOW, T17, B4 )->effectN( 1 ).trigger() )
-                              .chance( sets.has_set_bonus( PRIEST_SHADOW, T17, B4 ) )
-                              .add_invalidate( CACHE_SPELL_HASTE )
-                              .add_invalidate( CACHE_HASTE );
+  buffs.mental_instinct =
+      buff_creator_t( this, "mental_instinct", sets.set( PRIEST_SHADOW, T17, B4 )->effectN( 1 ).trigger() )
+          .chance( sets.has_set_bonus( PRIEST_SHADOW, T17, B4 ) )
+          .add_invalidate( CACHE_SPELL_HASTE )
+          .add_invalidate( CACHE_HASTE );
 
   buffs.reperation = buff_creator_t( this, "reperation", find_spell( 186478 ) )
                          .chance( sets.has_set_bonus( PRIEST_DISCIPLINE, T18, B2 ) )

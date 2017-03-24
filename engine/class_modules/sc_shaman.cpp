@@ -510,6 +510,14 @@ public:
     const spell_data_t* fury_of_the_storms_driver;
   } spell;
 
+  struct legendary_t
+  {
+    const spell_data_t* sephuzs_secret;
+
+    legendary_t() : sephuzs_secret( spell_data_t::not_found() )
+    { }
+  } legendary;
+
   // Cached pointer for ascendance / normal white melee
   shaman_attack_t* melee_mh;
   shaman_attack_t* melee_oh;
@@ -538,7 +546,8 @@ public:
     spec(),
     mastery(),
     talent(),
-    spell()
+    spell(),
+    legendary()
   {
     range::fill( pet.spirit_wolves, nullptr );
     range::fill( pet.doom_wolves, nullptr );
@@ -614,6 +623,7 @@ public:
   void      moving() override;
   void      invalidate_cache( cache_e c ) override;
   double    temporary_movement_modifier() const override;
+  double    passive_movement_modifier() const override;
   double    composite_melee_crit_chance() const override;
   double    composite_melee_haste() const override;
   double    composite_melee_speed() const override;
@@ -5744,8 +5754,7 @@ struct flametongue_buff_t : public buff_t
   shaman_t* p;
 
   flametongue_buff_t( shaman_t* p ) :
-    buff_t( buff_creator_t( p, "flametongue" )
-      .spell( p -> find_specialization_spell( "Flametongue" ) -> effectN( 3 ).trigger() )
+    buff_t( buff_creator_t( p, "flametongue", p -> find_specialization_spell( "Flametongue" ) -> effectN( 3 ).trigger() )
       .refresh_behavior( BUFF_REFRESH_PANDEMIC ) ),
     p( p )
   { }
@@ -6834,14 +6843,12 @@ void shaman_t::create_buffs()
   buff.hot_hand = buff_creator_t( this, "hot_hand", talent.hot_hand -> effectN( 1 ).trigger() )
                   .trigger_spell( talent.hot_hand );
 
-  buff.t19_oh_8pc = stat_buff_creator_t( this, "might_of_the_maelstrom" )
-    .spell( sets.set( specialization(), T19OH, B8 ) -> effectN( 1 ).trigger() )
+  buff.t19_oh_8pc = stat_buff_creator_t( this, "might_of_the_maelstrom", sets.set( specialization(), T19OH, B8 ) -> effectN( 1 ).trigger() )
     .trigger_spell( sets.set( specialization(), T19OH, B8 ) );
   buff.elemental_mastery = haste_buff_creator_t( this, "elemental_mastery", talent.elemental_mastery )
                            .default_value( 1.0 / ( 1.0 + talent.elemental_mastery -> effectN( 1 ).percent() ) )
                            .cd( timespan_t::zero() ); // Handled by the action
-  buff.t18_4pc_enhancement = buff_creator_t( this, "natures_reprisal" )
-    .spell( sets.set( SHAMAN_ENHANCEMENT, T18, B4 ) -> effectN( 1 ).trigger() )
+  buff.t18_4pc_enhancement = buff_creator_t( this, "natures_reprisal", sets.set( SHAMAN_ENHANCEMENT, T18, B4 ) -> effectN( 1 ).trigger() )
     .trigger_spell( sets.set( SHAMAN_ENHANCEMENT, T18, B4 ) )
     .default_value( sets.set( SHAMAN_ENHANCEMENT, T18, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
@@ -7488,7 +7495,14 @@ double shaman_t::composite_spell_haste() const
 
   if ( buff.sephuzs_secret -> check() )
   {
-    h *= 1.0 / (1.0 + buff.sephuzs_secret->stack_value());
+    h *= 1.0 / (1.0 + buff.sephuzs_secret -> stack_value() );
+  }
+
+  // 7.2 Sephuz's Secret passive haste. If the item is missing, default_chance will be set to 0 (by
+  // the fallback buff creator).
+  if ( maybe_ptr( dbc.ptr ) && legendary.sephuzs_secret -> ok() )
+  {
+    h *= 1.0 / ( 1.0 + legendary.sephuzs_secret -> effectN( 3 ).percent() );
   }
 
   return h;
@@ -7530,6 +7544,22 @@ double shaman_t::temporary_movement_modifier() const
   return ms;
 }
 
+// shaman_t::passive_movement_modifier =======================================
+
+double shaman_t::passive_movement_modifier() const
+{
+  double ms = player_t::passive_movement_modifier();
+
+  // 7.2 Sephuz's Secret passive movement speed. If the item is missing, default_chance will be set
+  // to 0 (by the fallback buff creator).
+  if ( maybe_ptr( dbc.ptr ) && legendary.sephuzs_secret -> ok() )
+  {
+    ms += legendary.sephuzs_secret -> effectN( 2 ).percent();
+  }
+
+  return ms;
+}
+
 // shaman_t::composite_melee_crit_chance ===========================================
 
 double shaman_t::composite_melee_crit_chance() const
@@ -7563,6 +7593,13 @@ double shaman_t::composite_melee_haste() const
   if ( buff.sephuzs_secret -> check() )
   {
     h *= 1.0 / (1.0 + buff.sephuzs_secret->stack_value());
+  }
+
+  // 7.2 Sephuz's Secret passive haste. If the item is missing, default_chance will be set to 0 (by
+  // the fallback buff creator).
+  if ( maybe_ptr( dbc.ptr ) && legendary.sephuzs_secret -> ok() )
+  {
+    h *= 1.0 / ( 1.0 + legendary.sephuzs_secret -> effectN( 3 ).percent() );
   }
 
   return h;
@@ -8215,8 +8252,11 @@ struct furious_winds_t : public scoped_action_callback_t<windfury_attack_t>
 
   void manipulate( windfury_attack_t* action, const special_effect_t& effect ) override
   {
-    action -> base_multiplier *= 1.0 + effect.driver() -> effectN( 1 ).average( effect.item ) / 100.0;
-    action -> furious_winds_chance = effect.driver() -> effectN( 2 ).average( effect.item ) / 100.0;
+    if ( effect.player -> level() < 110 )
+    {
+      action -> base_multiplier *= 1.0 + effect.driver() -> effectN( 1 ).average( effect.item ) / 100.0;
+      action -> furious_winds_chance = effect.driver() -> effectN( 2 ).average( effect.item ) / 100.0;
+    }
   }
 };
 
@@ -8404,6 +8444,15 @@ struct uncertain_reminder_t : public scoped_actor_callback_t<shaman_t>
   }
 };
 
+struct sephuzs_secret_enabler_t : public scoped_actor_callback_t<shaman_t>
+{
+  sephuzs_secret_enabler_t() : scoped_actor_callback_t( SHAMAN )
+  { }
+
+  void manipulate( shaman_t* shaman, const special_effect_t& e ) override
+  { shaman -> legendary.sephuzs_secret = e.driver(); }
+};
+
 struct sephuzs_secret_t : public class_buff_cb_t<shaman_t, haste_buff_t, haste_buff_creator_t>
 {
   sephuzs_secret_t() : super( SHAMAN, "sephuzs_secret" )
@@ -8468,6 +8517,7 @@ struct shaman_module_t : public module_t
     register_special_effect( 207994, eotn_buff_shock_t(), true );
     register_special_effect( 207994, eotn_buff_chill_t(), true );
     register_special_effect( 234814, uncertain_reminder_t() );
+    register_special_effect( 208051, sephuzs_secret_enabler_t() );
     register_special_effect( 208051, sephuzs_secret_t(), true );
   }
 
