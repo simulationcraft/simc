@@ -810,6 +810,7 @@ public:
   double stagger_pct();
   void trigger_celestial_fortune( action_state_t* );
   void trigger_mark_of_the_crane( action_state_t* );
+  void trigger_sephuzs_secret( const action_state_t* state, spell_mechanic mechanic, double proc_chance = -1.0 );
   void rjw_trigger_mark_of_the_crane();
   player_t* next_mark_of_the_crane_target( action_state_t* );
   int mark_of_the_crane_counter();
@@ -4560,7 +4561,7 @@ struct touch_of_death_t: public monk_spell_t
     if ( p() -> buff.combo_strikes -> up() )
       amount *= 1 + p() -> cache.mastery_value();
 
-    if ( p() -> legendary.hidden_masters_forbidden_touch && maybe_ptr( dbc.ptr ) )
+    if ( p() -> legendary.hidden_masters_forbidden_touch && maybe_ptr( p() -> dbc.ptr ) )
       amount *= 1 + p() -> legendary.hidden_masters_forbidden_touch -> effectN( 2 ).percent();
 
     return amount;
