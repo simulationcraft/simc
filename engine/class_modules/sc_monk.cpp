@@ -2436,7 +2436,7 @@ public:
             if ( !p() -> pet.sef[SEF_FIRE] -> is_sleeping() )
               p() -> pet.sef[SEF_FIRE] -> expiration -> reschedule( p() -> pet.sef[SEF_FIRE] -> expiration -> remains() + timespan_t::from_millis( extension ) );
           }
-          else if ( p() -> buff.serenity -> up() && maybe_ptr( dbc.ptr ) ) // FIXME
+          else if ( p() -> buff.serenity -> up() && maybe_ptr( p() -> dbc.ptr ) ) // FIXME
           {
             // Since this is extended based on chi spender instead of chi spent, extention is the duration
             // Effect is saved as 3; extension is saved as 300 milliseconds
