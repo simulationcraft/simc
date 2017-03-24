@@ -2432,7 +2432,7 @@ public:
             if ( !p() -> pet.sef[SEF_FIRE] -> is_sleeping() )
               p() -> pet.sef[SEF_FIRE] -> expiration -> reschedule( p() -> pet.sef[SEF_FIRE] -> expiration -> remains() + timespan_t::from_millis( extension ) );
           }
-          else if ( p() -> buff.serenity -> up() && p() -> dbc.ptr ) // FIXME
+          else if ( p() -> buff.serenity -> up() && maybe_ptr( dbc.ptr ) // FIXME
           {
             // Since this is extended based on chi spender instead of chi spent, extention is the duration
             // Effect is saved as 3; extension is saved as 300 milliseconds
@@ -2717,39 +2717,6 @@ struct windwalking_aura_t: public monk_spell_t
     }
 
     return tl;
-  }
-};
-
-// ==========================================================================
-// Thunderfist
-// ==========================================================================
-
-struct thunderfist_t: public monk_spell_t
-{
-  thunderfist_t( monk_t* player ) :
-    monk_spell_t( "thunderfist", player, player -> passives.thunderfist -> effectN( 1 ).trigger() )
-  {
-    background = true;
-    may_crit = true;
-  }
-
-  virtual bool ready() override
-  {
-    if ( !p() -> artifact.thunderfist.rank() )
-        return false;
-
-    if ( !p() -> buff.thunderfist -> up() )
-      return false;
-
-    return monk_spell_t::ready();
-  }
-
-  virtual void execute() override
-  {
-    monk_spell_t::execute();
-
-    if ( p() -> buff.thunderfist -> up() )
-      p() -> buff.thunderfist -> decrement();
   }
 };
 
@@ -4114,7 +4081,6 @@ struct whirling_dragon_punch_t: public monk_melee_attack_t
   }
 };
 
-
 // ==========================================================================
 // Strike of the Windlord
 // ==========================================================================
@@ -4249,6 +4215,39 @@ struct strike_of_the_windlord_t: public monk_melee_attack_t
 
     if ( p() -> artifact.thunderfist.rank() )
       p() -> buff.thunderfist -> trigger();
+  }
+};
+
+// ==========================================================================
+// Thunderfist
+// ==========================================================================
+
+struct thunderfist_t: public monk_spell_t
+{
+  thunderfist_t( monk_t* player ) :
+    monk_spell_t( "thunderfist", player, player -> passives.thunderfist -> effectN( 1 ).trigger() )
+  {
+    background = true;
+    may_crit = true;
+  }
+
+  virtual bool ready() override
+  {
+    if ( !p() -> artifact.thunderfist.rank() )
+        return false;
+
+    if ( !p() -> buff.thunderfist -> up() )
+      return false;
+
+    return monk_spell_t::ready();
+  }
+
+  virtual void execute() override
+  {
+    monk_spell_t::execute();
+
+    if ( p() -> buff.thunderfist -> up() )
+      p() -> buff.thunderfist -> decrement();
   }
 };
 
@@ -4561,7 +4560,7 @@ struct touch_of_death_t: public monk_spell_t
     if ( p() -> buff.combo_strikes -> up() )
       amount *= 1 + p() -> cache.mastery_value();
 
-    if ( p() -> legendary.hidden_masters_forbidden_touch && p() -> dbc.ptr )
+    if ( p() -> legendary.hidden_masters_forbidden_touch && maybe_ptr( dbc.ptr ) )
       amount *= 1 + p() -> legendary.hidden_masters_forbidden_touch -> effectN( 2 ).percent();
 
     return amount;
