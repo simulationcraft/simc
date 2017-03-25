@@ -3431,21 +3431,26 @@ struct divine_storm_t: public holy_power_consumer_t
 
 // Hammer of Justice, Fist of Justice =======================================
 
+struct hammer_of_justice_damage_spell_t : public paladin_melee_attack_t
+{
+  hammer_of_justice_damage_spell_t( paladin_t* p, const std::string& options_str )
+    : paladin_melee_attack_t( "hammer_of_justice_damage", p, p -> find_spell( 211561 ), true )
+  {
+    parse_options( options_str );
+    weapon = &( p -> main_hand_weapon );
+    background = true;
+  }
+};
+
 struct hammer_of_justice_t : public paladin_melee_attack_t
 {
+  hammer_of_justice_damage_spell_t* damage_spell;
   hammer_of_justice_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "hammer_of_justice", p, p -> find_class_spell( "Hammer of Justice" ) )
+    : paladin_melee_attack_t( "hammer_of_justice", p, p -> find_class_spell( "Hammer of Justice" ) ),
+      damage_spell( new hammer_of_justice_damage_spell_t( p, options_str ) )
   {
     parse_options( options_str );
     ignore_false_positive = true;
-
-    if ( p -> justice_gaze )
-    {
-      if ( maybe_ptr( p -> dbc.ptr ) )
-        attack_power_mod.direct = 6;
-      else
-        attack_power_mod.direct = 3.5;
-    }
 
     // TODO: this is a hack; figure out what's really going on here.
     if ( ( p -> specialization() == PALADIN_RETRIBUTION ) )
@@ -3466,6 +3471,7 @@ struct hammer_of_justice_t : public paladin_melee_attack_t
 
     if ( p() -> justice_gaze )
     {
+      damage_spell -> schedule_execute();
       if ( target -> health_percentage() > p() -> spells.justice_gaze -> effectN( 1 ).base_value() )
         p() -> cooldowns.hammer_of_justice -> ready -= ( p() -> cooldowns.hammer_of_justice -> duration * p() -> spells.justice_gaze -> effectN( 2 ).percent() );
 
