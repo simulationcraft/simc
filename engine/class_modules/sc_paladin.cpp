@@ -41,6 +41,7 @@ struct paladin_ground_aoe_t;
 namespace buffs {
                   struct avenging_wrath_buff_t;
                   struct crusade_buff_t;
+                  struct sephuzs_secret_buff_t;
                   struct ardent_defender_buff_t;
                   struct wings_of_liberty_driver_t;
                   struct liadrins_fury_unleashed_t;
@@ -98,6 +99,7 @@ public:
   const special_effect_t* justice_gaze;
   const special_effect_t* chain_of_thrayn;
   const special_effect_t* ashes_to_dust;
+  const special_effect_t* sephuz;
 
   struct active_actions_t
   {
@@ -114,6 +116,7 @@ public:
     buffs::ardent_defender_buff_t* ardent_defender;
     buffs::avenging_wrath_buff_t* avenging_wrath;
     buffs::crusade_buff_t* crusade;
+    buffs::sephuzs_secret_buff_t* sephuz;
     buffs::shield_of_vengeance_buff_t* shield_of_vengeance;
     buff_t* divine_protection;
     buff_t* divine_shield;
@@ -653,6 +656,27 @@ namespace buffs {
     double damage_modifier;
     double healing_modifier;
     double crit_bonus;
+  };
+
+  struct sephuzs_secret_buff_t : public haste_buff_t
+  {
+    cooldown_t* icd;
+    sephuzs_secret_buff_t(shaman_t* p) :
+      haste_buff_t(haste_buff_creator_t(p, "sephuzs_secret", p -> find_spell(208052))
+        .default_value(p -> find_spell(208052) -> effectN(2).percent())
+        .add_invalidate(CACHE_HASTE))
+    {
+      icd = p->get_cooldown("sephuzs_secret_cooldown");
+      icd->duration = p->find_spell(226262)->duration();
+    }
+
+    void execute(int stacks, double value, timespan_t duration) override
+    {
+      if (icd->down())
+        return;
+      buff_t::execute(stacks, value, duration);
+      icd->start();
+    }
   };
 
   struct crusade_buff_t : public buff_t
@@ -3773,6 +3797,14 @@ struct rebuke_t : public paladin_melee_attack_t
 
     return paladin_melee_attack_t::ready();
   }
+
+  virtual void execute() override
+  {
+    paladin_melee_attack_t::execute();
+
+    if ( p() -> sephuz )
+      p() -> buffs.sephuz -> trigger();
+  }
 };
 
 // Reckoning ==================================================================
@@ -4512,6 +4544,7 @@ void paladin_t::create_buffs()
   // General
   buffs.avenging_wrath         = new buffs::avenging_wrath_buff_t( this );
   buffs.crusade                = new buffs::crusade_buff_t( this );
+  buffs.sephuz                 = new buffs::sephuzs_secret_buff_t( this );
   buffs.divine_protection      = new buffs::divine_protection_t( this );
   buffs.divine_shield          = buff_creator_t( this, "divine_shield", find_class_spell( "Divine Shield" ) )
                                  .cd( timespan_t::zero() ) // Let the ability handle the CD
@@ -5529,6 +5562,9 @@ double paladin_t::composite_melee_haste() const
   if ( buffs.crusade -> check() )
     h /= 1.0 + buffs.crusade -> get_haste_bonus();
 
+  if ( buffs.sephuz -> check() )
+    h /= 1.0 + buffs.sephuz -> check_value();
+
   // Infusion of Light (Holy) adds 10% haste
   //h /= 1.0 + passives.infusion_of_light -> effectN( 2 ).percent();
 
@@ -5563,6 +5599,9 @@ double paladin_t::composite_spell_haste() const
 
   if ( buffs.crusade -> check() )
     h /= 1.0 + buffs.crusade -> get_haste_bonus();
+
+  if ( buffs.sephuz -> check() )
+    h /= 1.0 + buffs.sephuz -> check_value();
 
   // Infusion of Light (Holy) adds 10% haste
   //h /= 1.0 + passives.infusion_of_light -> effectN( 2 ).percent();
@@ -6354,6 +6393,12 @@ static void ashes_to_dust( special_effect_t& effect )
   do_trinket_init( s, PALADIN_RETRIBUTION, s -> ashes_to_dust, effect );
 }
 
+static void sephuzs_secret( special_effect_t& effect )
+{
+  paladin_t* s = debug_cast<paladin_t*>( effect.player );
+  do_trinket_init( s, p -> specialization(), s -> sephuz, effect );
+}
+
 // PALADIN MODULE INTERFACE =================================================
 
 struct paladin_module_t : public module_t
@@ -6377,6 +6422,7 @@ struct paladin_module_t : public module_t
     unique_gear::register_special_effect( 206338, chain_of_thrayn );
     unique_gear::register_special_effect( 236106, ashes_to_dust );
     unique_gear::register_special_effect( 211557, justice_gaze );
+    unique_gear::register_special_effect( 208051, sephuzs_secret );
   }
 
   virtual void init( player_t* p ) const override
