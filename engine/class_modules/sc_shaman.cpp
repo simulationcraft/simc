@@ -6836,7 +6836,7 @@ namespace { // UNNAMED NAMESPACE
 		flametongue->target = state->target;
 		flametongue->schedule_execute();
 		attack->proc_ft->occur();
-		trigger_enhance_lashing_flames( state );
+		//trigger_enhance_lashing_flames( state );
 	}
 
 	void shaman_t::trigger_hailstorm(const action_state_t* state)
