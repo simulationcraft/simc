@@ -619,12 +619,14 @@ namespace pets {
     action_t* special_action_two;
     melee_attack_t* melee_attack;
     stats_t* summon_stats;
+    spell_t *ascendance;
     const spell_data_t* command;
 
     warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_e pt, bool guardian = false );
     virtual void init_base_stats() override;
     virtual void init_action_list() override;
     virtual void create_buffs() override;
+    virtual bool create_actions() override;
     virtual void schedule_ready( timespan_t delta_time = timespan_t::zero(),
       bool   waiting = false ) override;
     virtual double composite_player_multiplier( school_e school ) const override;
@@ -822,6 +824,26 @@ public:
   {
     _init_warlock_pet_spell_t();
   }
+};
+
+struct thalkiels_ascendance_pet_spell_t : public warlock_pet_spell_t
+{
+    bool is_usebale;
+    thalkiels_ascendance_pet_spell_t( warlock_pet_t * p) :
+        warlock_pet_spell_t("thalkiels_ascendance", p, p->o()->find_spell( 242832 ))
+    {
+        if(p->o()->specialization() == WARLOCK_DEMONOLOGY)
+            is_usebale = true;
+        else
+            is_usebale = false;
+        //?? Think thats all we need?
+    }
+
+    void execute() override
+    {
+        if(is_usebale)
+            warlock_pet_spell_t::execute();
+    }
 };
 
 struct rift_shadow_bolt_t: public warlock_pet_spell_t
@@ -1305,12 +1327,14 @@ struct soul_effigy_spell_t : public warlock_pet_spell_t
 //} // pets::actions
 
 warlock_pet_t::warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_e pt, bool guardian ):
-pet_t( sim, owner, pet_name, pt, guardian ), special_action( nullptr ), special_action_two( nullptr ), melee_attack( nullptr ), summon_stats( nullptr )
+pet_t( sim, owner, pet_name, pt, guardian ), special_action( nullptr ), special_action_two( nullptr ), melee_attack( nullptr ), summon_stats( nullptr ), ascendance( nullptr )
 {
   owner_coeff.ap_from_sp = 1.0;
   owner_coeff.sp_from_sp = 1.0;
   owner_coeff.health = 0.5;
   command = find_spell( 21563 );
+
+//  ascendance = new thalkiels_ascendance_pet_spell_t( this );
 }
 
 void warlock_pet_t::init_base_stats()
@@ -1330,6 +1354,18 @@ void warlock_pet_t::init_base_stats()
   //double dmg = dbc.spell_scaling( owner -> type, owner -> level );
 
   main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
+}
+
+bool warlock_pet_t::create_actions()
+{
+    bool check = pet_t::create_actions();
+    if(check)
+    {
+        ascendance = new thalkiels_ascendance_pet_spell_t( this ); //????
+        return true;
+    }
+    else
+        return false;
 }
 
 void warlock_pet_t::init_action_list()
@@ -3391,6 +3427,8 @@ struct demonic_empowerment_t: public warlock_spell_t
         if( !lock_pet -> is_sleeping() )
         {
           lock_pet -> buffs.demonic_empowerment -> trigger();
+          if(p()->artifact.thalkiels_ascendance.rank())
+            lock_pet -> ascendance->execute();
         }
       }
     }
@@ -6061,6 +6099,7 @@ void warlock_t::create_pets()
       warlock_pet_list.wild_imps[ i ] = new pets::wild_imp_pet_t( sim, this );
       if ( i > 0 )
         warlock_pet_list.wild_imps[ i ] -> quiet = 1;
+      //warlock_pet_list.wild_imps [ i ].ascendance = new thalkiels_ascendance_pet_spell_t( *warlock_pet_list.wild_imps [ i ] );
     }
     for ( size_t i = 0; i < warlock_pet_list.dreadstalkers.size(); i++ )
     {
