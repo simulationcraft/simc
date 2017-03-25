@@ -2866,7 +2866,7 @@ struct summon_shadowfiend_t final : public summon_pet_t
     cooldown->duration += priest.sets.set( PRIEST_SHADOW, T18, B2 )->effectN( 1 ).time_value();
     if ( priest.artifact.fiending_dark.rank() )
     {
-      summoning_duration += timespan_t::from_millis(  4500 *
+      summoning_duration += timespan_t::from_millis(4500 *
       // Actual in-game effect doesn't match the spell data
       // priest.artifact.fiending_dark.data().effectN( 1 ).base_value() *
                                                      priest.artifact.fiending_dark.rank() );
@@ -2887,7 +2887,7 @@ struct summon_mindbender_t final : public summon_pet_t
     cooldown->duration += priest.sets.set( PRIEST_SHADOW, T18, B2 )->effectN( 2 ).time_value();
     if ( priest.artifact.fiending_dark.rank() )
     {
-      summoning_duration += timespan_t::from_millis( 4500 *
+      summoning_duration += timespan_t::from_millis( 1500 *
       // Actual in-game effect doesn't match the spell data
       // priest.artifact.fiending_dark.data().effectN( 2 ).base_value() *
                                                      priest.artifact.fiending_dark.rank() );

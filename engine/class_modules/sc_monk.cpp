@@ -15,6 +15,10 @@ GENERAL:
 WINDWALKER:
 - Add Cyclone Strike Counter as an expression
 - Redo how Gale Bursts works with Hidden master's Forbidden Touch
+- Thunderfist needs to be adjusted in how it works. It needs to trigger the base amount of damage when SotWL is executed
+    and save that amount in a container of sorts. Then when it needs to proc, it removes an amount based on the total
+    size of the container and the stack size of the buff. Right now it works on what the current buffs are up at the
+    time of the auto attacks that trigger the proc.
 
 MISTWEAVER: 
 - Gusts of Mists - Check calculations
@@ -259,6 +263,7 @@ public:
 
     // Legendaries
     buff_t* hidden_masters_forbidden_touch;
+    haste_buff_t* sephuzs_secret;
     buff_t* the_emperors_capacitor;
   } buff;
 
@@ -377,6 +382,7 @@ public:
     const spell_data_t* effuse;
     const spell_data_t* effuse_2;
     const spell_data_t* leather_specialization;
+    const spell_data_t* paralysis;
     const spell_data_t* provoke;
     const spell_data_t* rising_sun_kick;
     const spell_data_t* roll;
@@ -742,6 +748,8 @@ public:
   virtual double    composite_player_heal_multiplier( const action_state_t* s ) const override;
   virtual double    composite_melee_expertise( const weapon_t* weapon ) const override;
   virtual double    composite_melee_attack_power() const override;
+  virtual double    composite_spell_haste() const override;
+  virtual double    composite_melee_haste() const override;
   virtual double    composite_attack_power_multiplier() const override;
   virtual double    composite_parry() const override;
   virtual double    composite_dodge() const override;
@@ -805,6 +813,7 @@ public:
   double current_stagger_dot_remains();
   double stagger_pct();
   void trigger_celestial_fortune( action_state_t* );
+  void trigger_sephuzs_secret( const action_state_t* state, spell_mechanic mechanic, double proc_chance = -1.0 );
   void trigger_mark_of_the_crane( action_state_t* );
   void rjw_trigger_mark_of_the_crane();
   player_t* next_mark_of_the_crane_target( action_state_t* );
@@ -2428,7 +2437,7 @@ public:
             if ( !p() -> pet.sef[SEF_FIRE] -> is_sleeping() )
               p() -> pet.sef[SEF_FIRE] -> expiration -> reschedule( p() -> pet.sef[SEF_FIRE] -> expiration -> remains() + timespan_t::from_millis( extension ) );
           }
-          else if ( p() -> buff.serenity -> up() && p() -> dbc.ptr ) // FIXME
+          else if ( p() -> buff.serenity -> up() && maybe_ptr( p() -> dbc.ptr ) )
           {
             // Since this is extended based on chi spender instead of chi spent, extention is the duration
             // Effect is saved as 3; extension is saved as 300 milliseconds
@@ -2674,6 +2683,49 @@ struct monk_melee_attack_t: public monk_action_t < melee_attack_t >
 };
 
 // ==========================================================================
+// Windwalking Aura Toggle
+// ==========================================================================
+
+struct windwalking_aura_t: public monk_spell_t
+{
+  windwalking_aura_t( monk_t* player ):
+    monk_spell_t( "windwalking_aura_toggle", player )
+  {
+    harmful = false;
+    background = true;
+    trigger_gcd = timespan_t::zero();
+  }
+
+  size_t available_targets( std::vector< player_t* >& tl ) const override
+  {
+    tl.clear();
+
+    for ( size_t i = 0, actors = sim -> player_non_sleeping_list.size(); i < actors; i++ )
+    {
+      player_t* t = sim -> player_non_sleeping_list[i];
+      tl.push_back( t );
+    }
+
+    return tl.size();
+  }
+
+  std::vector<player_t*> check_distance_targeting( std::vector< player_t* >& tl ) const override
+  {
+    size_t i = tl.size();
+    while ( i > 0 )
+    {
+      i--;
+      player_t* target_to_buff = tl[i];
+
+      if ( p() -> get_player_distance( *target_to_buff ) > 10.0 )
+        tl.erase( tl.begin() + i );
+    }
+
+    return tl;
+  }
+};
+
+// ==========================================================================
 // Tiger Palm
 // ==========================================================================
 
@@ -2722,47 +2774,6 @@ struct eye_of_the_tiger_dmg_tick_t: public monk_spell_t
     am *= 1 + p() -> spec.brewmaster_monk -> effectN( 7 ).percent();
 
     return am;
-  }
-};
-
-// Windwalking Aura Toggle ==========================================================
-
-struct windwalking_aura_t: public monk_spell_t
-{
-  windwalking_aura_t( monk_t* player ):
-    monk_spell_t( "windwalking_aura_toggle", player )
-  {
-    harmful = false;
-    background = true;
-    trigger_gcd = timespan_t::zero();
-  }
-
-  size_t available_targets( std::vector< player_t* >& tl ) const override
-  {
-    tl.clear();
-
-    for ( size_t i = 0, actors = sim -> player_non_sleeping_list.size(); i < actors; i++ )
-    {
-      player_t* t = sim -> player_non_sleeping_list[i];
-      tl.push_back( t );
-    }
-
-    return tl.size();
-  }
-
-  std::vector<player_t*> check_distance_targeting( std::vector< player_t* >& tl ) const override
-  {
-    size_t i = tl.size();
-    while ( i > 0 )
-    {
-      i--;
-      player_t* target_to_buff = tl[i];
-
-      if ( p() -> get_player_distance( *target_to_buff ) > 10.0 )
-        tl.erase( tl.begin() + i );
-    }
-
-    return tl;
   }
 };
 
@@ -3338,6 +3349,7 @@ struct blackout_kick_totm_proc : public monk_melee_attack_t
   }
 };
 
+// Blackout Kick Baseline ability =======================================
 struct blackout_kick_t: public monk_melee_attack_t
 {
   rising_sun_kick_proc_t* rsk_proc;
@@ -4074,7 +4086,6 @@ struct whirling_dragon_punch_t: public monk_melee_attack_t
   }
 };
 
-
 // ==========================================================================
 // Strike of the Windlord
 // ==========================================================================
@@ -4123,7 +4134,6 @@ struct strike_of_the_windlord_off_hand_t: public monk_melee_attack_t
 
     return pm;
   }
-
 };
 
 struct strike_of_the_windlord_t: public monk_melee_attack_t
@@ -4198,6 +4208,10 @@ struct strike_of_the_windlord_t: public monk_melee_attack_t
     if ( oh_attack && result_is_hit( execute_state -> result ) &&
          p() -> off_hand_weapon.type != WEAPON_NONE ) // If MH fails to land, OH does not execute.
       oh_attack -> execute();
+
+    if ( p() -> artifact.thunderfist.rank() )
+      p() -> buff.thunderfist -> trigger();
+
   }
 
   virtual void impact( action_state_t* s ) override
@@ -4206,6 +4220,39 @@ struct strike_of_the_windlord_t: public monk_melee_attack_t
 
     if ( p() -> artifact.thunderfist.rank() )
       p() -> buff.thunderfist -> trigger();
+  }
+};
+
+// ==========================================================================
+// Thunderfist
+// ==========================================================================
+
+struct thunderfist_t: public monk_spell_t
+{
+  thunderfist_t( monk_t* player ) :
+    monk_spell_t( "thunderfist", player, player -> passives.thunderfist -> effectN( 1 ).trigger() )
+  {
+    background = true;
+    may_crit = true;
+  }
+
+  virtual bool ready() override
+  {
+    if ( !p() -> artifact.thunderfist.rank() )
+        return false;
+
+    if ( !p() -> buff.thunderfist -> up() )
+      return false;
+
+    return monk_spell_t::ready();
+  }
+
+  virtual void execute() override
+  {
+    monk_spell_t::execute();
+
+    if ( p() -> buff.thunderfist -> up() )
+      p() -> buff.thunderfist -> decrement();
   }
 };
 
@@ -4294,8 +4341,10 @@ struct melee_t: public monk_melee_attack_t
 struct auto_attack_t: public monk_melee_attack_t
 {
   int sync_weapons;
+  spell_t* thunderfist;
   auto_attack_t( monk_t* player, const std::string& options_str ):
     monk_melee_attack_t( "auto_attack", player, spell_data_t::nil() ),
+    thunderfist( new thunderfist_t( player ) ),
     sync_weapons( 0 )
   {
     add_option( opt_bool( "sync_weapons", sync_weapons ) );
@@ -4334,6 +4383,9 @@ struct auto_attack_t: public monk_melee_attack_t
 
     if ( player -> off_hand_attack )
       p() -> off_hand_attack -> schedule_execute();
+
+    if ( p() -> artifact.thunderfist.rank() )
+      thunderfist -> execute();
   }
 };
 
@@ -4513,7 +4565,7 @@ struct touch_of_death_t: public monk_spell_t
     if ( p() -> buff.combo_strikes -> up() )
       amount *= 1 + p() -> cache.mastery_value();
 
-    if ( p() -> legendary.hidden_masters_forbidden_touch && p() -> dbc.ptr )
+    if ( p() -> legendary.hidden_masters_forbidden_touch && maybe_ptr( p() -> dbc.ptr ) )
       amount *= 1 + p() -> legendary.hidden_masters_forbidden_touch -> effectN( 2 ).percent();
 
     return amount;
@@ -4680,7 +4732,9 @@ struct provoke_t: public monk_melee_attack_t
   }
 };
 
-// Spear Hand Strike ========================================================
+// ==========================================================================
+// Spear Hand Strike
+// ==========================================================================
 
 struct spear_hand_strike_t: public monk_melee_attack_t
 {
@@ -4690,6 +4744,57 @@ struct spear_hand_strike_t: public monk_melee_attack_t
     parse_options( options_str );
     ignore_false_positive = true;
     may_miss = may_block = may_dodge = may_parry = false;
+  }
+
+  virtual void execute() override
+  {
+    monk_melee_attack_t::execute();
+
+    //p() -> trigger_sephuzs_secret( execute_state, MECHANIC_INTERRUPT );
+  }
+};
+
+// ==========================================================================
+// Leg Sweep
+// ==========================================================================
+
+struct leg_sweep_t: public monk_melee_attack_t
+{
+  leg_sweep_t( monk_t* p, const std::string& options_str ):
+    monk_melee_attack_t( "leg_sweep", p, p -> talent.leg_sweep )
+  {
+    parse_options( options_str );
+    ignore_false_positive = true;
+    may_miss = may_block = may_dodge = may_parry = false;
+  }
+
+  virtual void execute() override
+  {
+    monk_melee_attack_t::execute();
+
+    //p() -> trigger_sephuzs_secret( execute_state, MECHANIC_STUN );
+  }
+};
+
+// ==========================================================================
+// Paralysis
+// ==========================================================================
+
+struct paralysis_t: public monk_melee_attack_t
+{
+  paralysis_t( monk_t* p, const std::string& options_str ):
+    monk_melee_attack_t( "paralysis", p, p -> spec.paralysis )
+  {
+    parse_options( options_str );
+    ignore_false_positive = true;
+    may_miss = may_block = may_dodge = may_parry = false;
+  }
+
+  virtual void execute() override
+  {
+    monk_melee_attack_t::execute();
+
+    //p() -> trigger_sephuzs_secret( execute_state, MECHANIC_INCAPACITATE );
   }
 };
 } // END melee_attacks NAMESPACE
@@ -7343,9 +7448,11 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "crackling_jade_lightning" ) return new  crackling_jade_lightning_t( *this, options_str );
   if ( name == "tiger_palm" ) return new                tiger_palm_t( this, options_str );
   if ( name == "blackout_kick" ) return new             blackout_kick_t( this, options_str );
-  if ( name == "spinning_crane_kick" ) return new       spinning_crane_kick_t( this, options_str );
+  if ( name == "leg_sweep" ) return new                 leg_sweep_t( this, options_str );
+  if ( name == "paralysis" ) return new                 paralysis_t( this, options_str );
   if ( name == "rising_sun_kick" ) return new           rising_sun_kick_t( this, options_str );
   if ( name == "spear_hand_strike" ) return new         spear_hand_strike_t( this, options_str );
+  if ( name == "spinning_crane_kick" ) return new       spinning_crane_kick_t( this, options_str );
   if ( name == "vivify" ) return new                    vivify_t( *this, options_str );
   // Brewmaster
   if ( name == "blackout_strike" ) return new           blackout_strike_t( this, options_str );
@@ -7413,6 +7520,36 @@ void monk_t::trigger_celestial_fortune( action_state_t* s )
     active_celestial_fortune_proc -> base_dd_max = active_celestial_fortune_proc -> base_dd_min = s -> result_amount;
     active_celestial_fortune_proc -> schedule_execute();
   }
+}
+
+void monk_t::trigger_sephuzs_secret( const action_state_t* state,
+                                       spell_mechanic        mechanic,
+                                       double                override_proc_chance )
+{
+  switch ( mechanic )
+  {
+    // Interrupts will always trigger sephuz
+    case MECHANIC_INTERRUPT:
+      break;
+    default:
+      // By default, proc sephuz on persistent enemies if they are below the "boss level"
+      // (playerlevel + 3), and on any kind of transient adds.
+      if ( state -> target -> type != ENEMY_ADD &&
+           ( state -> target -> level() >= sim -> max_player_level + 3 ) )
+      {
+        return;
+      }
+      break;
+  }
+
+  // Ensure Sephuz's Secret can even be procced. If the ring is not equipped, a fallback buff with
+  // proc chance of 0 (disabled) will be created
+  if ( buff.sephuzs_secret -> default_chance == 0 )
+  {
+    return;
+  }
+
+  buff.sephuzs_secret -> trigger( 1, buff_t::DEFAULT_VALUE(), override_proc_chance );
 }
 
 void monk_t::trigger_mark_of_the_crane( action_state_t* s )
@@ -7732,6 +7869,7 @@ void monk_t::init_spells()
   spec.effuse                        = find_specialization_spell( "Effuse" );
   spec.effuse_2                      = find_specialization_spell( 231602 );
   spec.leather_specialization        = find_specialization_spell( "Leather Specialization" );
+  spec.paralysis                     = find_class_spell( "Paralysis" );
   spec.provoke                       = find_class_spell( "Provoke" );
   spec.resuscitate                   = find_class_spell( "Resuscitate" );
   spec.rising_sun_kick               = find_specialization_spell( "Rising Sun Kick" );
@@ -7799,7 +7937,7 @@ void monk_t::init_spells()
   passives.chi_torpedo                      = find_spell( 119085 );
   passives.chi_wave_damage                  = find_spell( 132467 );
   passives.chi_wave_heal                    = find_spell( 132463 );
-  passives.healing_elixirs                  = find_spell( 122281 ); // talent.healing_elixirs -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() 
+  passives.healing_elixirs                  = find_spell( 122281 ); // talent.healing_elixirs -> effectN( 1 ).trigger() -> effectN( 1 ).trigger()
 
   // Brewmaster
   passives.breath_of_fire_dot               = find_spell( 123725 );
@@ -8477,7 +8615,47 @@ double monk_t::clear_stagger()
   return active_actions.stagger_self_damage -> clear_all_damage();
 }
 
-// monk_t::composite_attack_speed =========================================
+// monk_t::composite_spell_haste =========================================
+
+double monk_t::composite_spell_haste() const
+{
+  double h = player_t::composite_spell_haste();
+
+  if ( buff.sephuzs_secret -> check() )
+  {
+    h *= 1.0 / (1.0 + buff.sephuzs_secret -> stack_value());
+  }
+
+  // 7.2 Sephuz's Secret passive haste. If the item is missing, default_chance will be set to 0 (by
+  // the fallback buff creator).
+  if ( maybe_ptr( dbc.ptr ) && legendary.sephuzs_secret -> ok() )
+  {
+    h *= 1.0 / ( 1.0 + legendary.sephuzs_secret -> effectN( 3 ).percent() );
+  }
+
+  return h;
+}
+
+// monk_t::composite_melee_haste =========================================
+
+double monk_t::composite_melee_haste() const
+{
+  double h = player_t::composite_melee_haste();
+
+  if ( buff.sephuzs_secret -> check() )
+  {
+    h *= 1.0 / (1.0 + buff.sephuzs_secret -> stack_value());
+  }
+
+  // 7.2 Sephuz's Secret passive haste. If the item is missing, default_chance will be set to 0 (by
+  // the fallback buff creator).
+  if ( maybe_ptr( dbc.ptr ) && legendary.sephuzs_secret -> ok() )
+  {
+    h *= 1.0 / ( 1.0 + legendary.sephuzs_secret -> effectN( 3 ).percent() );
+  }
+
+  return h;
+}
 
 // monk_t::composite_melee_crit_chance ============================================
 
@@ -8732,6 +8910,11 @@ double monk_t::temporary_movement_modifier() const
 {
   double active = player_t::temporary_movement_modifier();
 
+  if ( buff.sephuzs_secret -> up() )
+  {
+    active = std::max( buff.sephuzs_secret -> data().effectN( 1 ).percent(), active );
+  }
+
   return active;
 }
 
@@ -8740,6 +8923,13 @@ double monk_t::temporary_movement_modifier() const
 double monk_t::passive_movement_modifier() const
 {
   double ms = player_t::passive_movement_modifier();
+
+  // 7.2 Sephuz's Secret passive movement speed. If the item is missing, default_chance will be set
+  // to 0 (by the fallback buff creator).
+  if ( maybe_ptr( dbc.ptr ) && legendary.sephuzs_secret -> ok() )
+  {
+    ms += legendary.sephuzs_secret -> effectN( 2 ).percent();
+  }
 
   return ms;
 }
@@ -10037,14 +10227,32 @@ struct prydaz_xavarics_magnum_opus_t : public unique_gear::scoped_actor_callback
   }
 };
 
-struct sephuzs_secret_t : public unique_gear::scoped_actor_callback_t<monk_t>
+struct sephuzs_secret_enabler_t : public unique_gear::scoped_actor_callback_t<monk_t>
 {
-  sephuzs_secret_t() : super( MONK )
+  sephuzs_secret_enabler_t() : scoped_actor_callback_t( MONK )
   { }
 
   void manipulate( monk_t* monk, const special_effect_t& e ) override
   {
     monk -> legendary.sephuzs_secret = e.driver();
+  }
+};
+
+struct sephuzs_secret_t : public unique_gear::class_buff_cb_t<monk_t, haste_buff_t, haste_buff_creator_t>
+{
+  sephuzs_secret_t() : super( MONK, "sephuzs_secret" )
+  { }
+
+  haste_buff_t*& buff_ptr( const special_effect_t& e ) override
+  { return debug_cast<monk_t*>( e.player ) -> buff.sephuzs_secret; }
+
+  haste_buff_creator_t creator( const special_effect_t& e ) const override
+  {
+    return super::creator( e )
+           .spell( e.trigger() )
+           .cd( e.player -> find_spell( 226262 ) -> duration() )
+           .default_value( e.trigger() -> effectN( 2 ).percent() )
+           .add_invalidate( CACHE_RUN_SPEED );
   }
 };
 
@@ -10256,7 +10464,8 @@ struct monk_module_t: public module_t
     // General
     unique_gear::register_special_effect( 207692, cinidaria_the_symbiote_t() );
     unique_gear::register_special_effect( 207428, prydaz_xavarics_magnum_opus_t() );
-    unique_gear::register_special_effect( 208051, sephuzs_secret_t() );
+    unique_gear::register_special_effect( 208051, sephuzs_secret_enabler_t() );
+    unique_gear::register_special_effect( 208051, sephuzs_secret_t(), true );
 
     // Brewmaster
     unique_gear::register_special_effect( 224489, firestone_walkers_t() );
