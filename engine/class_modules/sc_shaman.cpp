@@ -955,7 +955,7 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) :
                           } );
   debuff.lashing_flames = buff_creator_t( *this, "lashing_flames" )
     .spell( p -> artifact.lashing_flames.data().effectN( 1 ).trigger() )
-    .max_stack( 1 ); // Model damage increase in value, instead of 99 stacks
+    .max_stack( 99 ); // Model damage increase in value, instead of 99 stacks
 }
 
 // ==========================================================================
@@ -2553,6 +2553,17 @@ struct flametongue_weapon_spell_t : public shaman_spell_t
       attack_power_mod.direct = w -> swing_time.total_seconds() / 2.6 * 0.125;
     }
   }
+
+  void execute() override
+  {
+	  base_t::execute();
+	  if (!td(target)->debuff.lashing_flames->up())
+	  {
+		  td(target)->debuff.lashing_flames->execute();
+	  }
+	  td(target)->debuff.lashing_flames->increment();
+  }
+
 };
 
 struct ancestral_awakening_t : public shaman_heal_t
@@ -3245,6 +3256,11 @@ struct lava_lash_t : public shaman_attack_t
       m *= 1.0 + aaj_multiplier;
     }
 
+	if (p()->artifact.lashing_flames.rank())
+	{
+		m *= 1.0 + (td(target)->debuff.lashing_flames->stack() * .02);
+	}
+
     return m;
   }
 
@@ -3253,6 +3269,7 @@ struct lava_lash_t : public shaman_attack_t
     shaman_attack_t::execute();
 
     p() -> buff.hot_hand -> decrement();
+	td(target)->debuff.lashing_flames->expire();
   }
 
   void impact( action_state_t* state ) override
