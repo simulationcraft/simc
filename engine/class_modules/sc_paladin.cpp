@@ -661,7 +661,7 @@ namespace buffs {
   struct sephuzs_secret_buff_t : public haste_buff_t
   {
     cooldown_t* icd;
-    sephuzs_secret_buff_t(shaman_t* p) :
+    sephuzs_secret_buff_t(paladin_t* p) :
       haste_buff_t(haste_buff_creator_t(p, "sephuzs_secret", p -> find_spell(208052))
         .default_value(p -> find_spell(208052) -> effectN(2).percent())
         .add_invalidate(CACHE_HASTE))
@@ -6396,7 +6396,7 @@ static void ashes_to_dust( special_effect_t& effect )
 static void sephuzs_secret( special_effect_t& effect )
 {
   paladin_t* s = debug_cast<paladin_t*>( effect.player );
-  do_trinket_init( s, p -> specialization(), s -> sephuz, effect );
+  do_trinket_init( s, s -> specialization(), s -> sephuz, effect );
 }
 
 // PALADIN MODULE INTERFACE =================================================
