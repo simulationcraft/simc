@@ -1887,6 +1887,12 @@ struct bestial_ferocity_t: public hunter_main_pet_attack_t
     can_hunting_companion = false;
     tick_may_crit = true;
   }
+
+  // does not pandemic
+  timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
+  {
+    return dot -> time_to_next_tick() + triggered_duration;
+  }
 };
 
 // Kill Command (pet) =======================================================
