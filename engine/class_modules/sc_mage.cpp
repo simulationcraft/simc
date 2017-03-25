@@ -5970,6 +5970,9 @@ struct strafing_run_t : public fire_mage_spell_t
     triggers_ignite = true;
     triggers_pyretic_incantation = true;
 
+    // Cooldown is handled by the main action.
+    cooldown -> duration = timespan_t::zero();
+
     chain_multiplier = data().effectN( 1 ).chain_multiplier();
   }
 
