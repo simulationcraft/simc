@@ -168,6 +168,7 @@ public:
     gain_t* judgment;
     gain_t* hp_t19_4p;
     gain_t* hp_t20_2p;
+    gain_t* hp_justice_gaze;
   } gains;
 
   // Spec Passives
@@ -3438,7 +3439,12 @@ struct hammer_of_justice_t : public paladin_melee_attack_t
     ignore_false_positive = true;
 
     if ( p -> justice_gaze )
-      attack_power_mod.direct = 3.5;
+    {
+      if ( maybe_ptr( p -> dbc.ptr ) )
+        attack_power_mod.direct = 6;
+      else
+        attack_power_mod.direct = 3.5;
+    }
 
     // TODO: this is a hack; figure out what's really going on here.
     if ( ( p -> specialization() == PALADIN_RETRIBUTION ) )
@@ -3461,6 +3467,9 @@ struct hammer_of_justice_t : public paladin_melee_attack_t
     {
       if ( target -> health_percentage() > p() -> spells.justice_gaze -> effectN( 1 ).base_value() )
         p() -> cooldowns.hammer_of_justice -> ready -= ( p() -> cooldowns.hammer_of_justice -> duration * p() -> spells.justice_gaze -> effectN( 2 ).percent() );
+
+      if ( maybe_ptr( p() -> dbc.ptr ) )
+        p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_justice_gaze );
     }
   }
 };
@@ -4491,6 +4500,7 @@ void paladin_t::init_gains()
   gains.judgment                    = get_gain( "judgment" );
   gains.hp_t19_4p                   = get_gain( "t19_4p" );
   gains.hp_t20_2p                   = get_gain( "t20_2p" );
+  gains.hp_justice_gaze             = get_gain( "justice_gaze" );
 
   if ( ! retribution_trinket )
   {
