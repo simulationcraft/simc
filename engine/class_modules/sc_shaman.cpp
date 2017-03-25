@@ -135,6 +135,7 @@ struct shaman_td_t : public actor_target_data_t
     buff_t* earthen_spike;
     buff_t* lightning_rod;
     buff_t* storm_tempests; // 7.0 Legendary
+    buff_t* lashing_flames;
   } debuff;
 
   struct heals
@@ -499,6 +500,12 @@ public:
     artifact_power_t earthshattering_blows;
     artifact_power_t weapons_of_the_elements;
     artifact_power_t wind_surge;
+
+    // 7.2
+    artifact_power_t might_of_the_earthen_ring;
+    artifact_power_t crashing_hammer;
+    artifact_power_t winds_of_change;
+    artifact_power_t lashing_flames;
   } artifact;
 
   // Misc Spells
@@ -946,6 +953,9 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) :
                             p -> action.storm_tempests -> target = b -> player;
                             p -> action.storm_tempests -> execute();
                           } );
+  debuff.lashing_flames = buff_creator_t( *this, "lashing_flames" )
+    .spell( p -> artifact.lashing_flames.data().effectN( 1 ).trigger() )
+    .max_stack( 1 ); // Model damage increase in value, instead of 99 stacks
 }
 
 // ==========================================================================
@@ -1328,6 +1338,9 @@ public:
     return base_t::init_finished();
   }
 
+  virtual double maelstrom_weapon_energize_amount( const action_state_t* /* source */ ) const
+  { return p() -> spell.maelstrom_melee_gain -> effectN( 1 ).resource( RESOURCE_MAELSTROM ); }
+
   void impact( action_state_t* state ) override
   {
     base_t::impact( state );
@@ -1370,7 +1383,7 @@ public:
 
     if ( amount == 0 )
     {
-      amount = p() -> spell.maelstrom_melee_gain -> effectN( 1 ).resource( RESOURCE_MAELSTROM );
+      amount = this -> maelstrom_weapon_energize_amount( source_state );
     }
 
     p() -> resource_gain( RESOURCE_MAELSTROM, amount, gain, this );
@@ -1914,8 +1927,7 @@ struct spirit_wolf_t : public base_wolf_t
   {
     windfury_t( spirit_wolf_t* player ) :
       super( player, "windfury_attack", player -> find_spell( 170512 ) )
-    { 
-    }
+    { }
   };
 
   struct fs_melee_t : public wolf_base_attack_t<spirit_wolf_t>
@@ -2584,6 +2596,12 @@ struct windfury_attack_t : public shaman_attack_t
     may_proc_maelstrom_weapon = true;
   }
 
+  double maelstrom_weapon_energize_amount( const action_state_t* source ) const override
+  {
+    return shaman_attack_t::maelstrom_weapon_energize_amount( source ) +
+           p() -> artifact.winds_of_change.value();
+  }
+
   double action_multiplier() const override
   {
     double m = shaman_attack_t::action_multiplier();
@@ -2616,7 +2634,8 @@ struct crash_lightning_attack_t : public shaman_attack_t
     background = true;
     callbacks = false;
     aoe = -1;
-    cooldown -> duration = timespan_t::zero();
+
+    base_multiplier *= 1.0 + p -> artifact.crashing_hammer.percent();
   }
 
   void init() override
@@ -3543,6 +3562,8 @@ struct crash_lightning_t : public shaman_attack_t
 
     aoe = -1;
     weapon = &( p() -> main_hand_weapon );
+
+    base_multiplier *= 1.0 + player -> artifact.crashing_hammer.percent();
 
     if ( player -> action.crashing_storm )
     {
@@ -6228,6 +6249,12 @@ void shaman_t::init_spells()
   artifact.weapons_of_the_elements   = find_artifact_spell( "Weapons of the Elements" );
   artifact.wind_surge                = find_artifact_spell( "Wind Surge" );
 
+  // 7.2
+  artifact.might_of_the_earthen_ring = find_artifact_spell( "Might of the Earthen Ring" );
+  artifact.crashing_hammer           = find_artifact_spell( "Crashing Hammer"    );
+  artifact.winds_of_change           = find_artifact_spell( "Winds of Change"    );
+  artifact.lashing_flames            = find_artifact_spell( "Lashing Flames"     );
+
   // Misc spells
   spell.resurgence                   = find_spell( 101033 );
   spell.eruption                     = find_spell( 168556 );
@@ -7668,6 +7695,10 @@ double shaman_t::composite_attribute_multiplier( attribute_e attribute ) const
     case ATTR_AGILITY:
       m *= 1.0 + buff.landslide -> stack_value();
       break;
+    case ATTR_STAMINA:
+      m *= 1.0 + artifact.might_of_the_earthen_ring.data().effectN( 2 ).percent();
+      m *= 1.0 + artifact.power_of_the_earthen_ring.data().effectN( 2 ).percent();
+      break;
     default:
       break;
   }
@@ -7684,6 +7715,7 @@ double shaman_t::composite_player_multiplier( school_e school ) const
   m *= 1.0 + artifact.stormkeepers_power.percent();
   m *= 1.0 + artifact.power_of_the_earthen_ring.percent();
   m *= 1.0 + artifact.earthshattering_blows.percent();
+  m *= 1.0 + artifact.might_of_the_earthen_ring.percent();
 
   if ( mastery.enhanced_elements -> ok() &&
        ( dbc::is_school( school, SCHOOL_FIRE   ) ||
