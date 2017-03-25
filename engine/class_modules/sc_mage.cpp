@@ -1585,10 +1585,7 @@ struct arcane_missiles_t : public buff_t
       am_proc_chance += mult * p -> talents.words_of_power -> effectN( 1 ).percent();
     }
 
-    if ( p -> artifact.ethereal_sensitivity.rank() )
-    {
-      am_proc_chance += p -> artifact.ethereal_sensitivity.percent();
-    }
+    am_proc_chance += p -> artifact.ethereal_sensitivity.percent();
 
     if ( p -> sets.has_set_bonus( MAGE_ARCANE, T19, B2 ) )
     {
@@ -3456,11 +3453,8 @@ struct arcane_missiles_t : public arcane_mage_spell_t
   {
     double c = arcane_mage_spell_t::composite_crit_chance();
 
-    if ( p() -> artifact.aegwynns_intensity.rank() )
-    {
-      c+= p() -> artifact.aegwynns_intensity.percent();
+    c += p() -> artifact.aegwynns_intensity.percent();
 
-    }
     return c;
   }
 };
@@ -3664,10 +3658,9 @@ struct blizzard_shard_t : public frost_mage_spell_t
   virtual double composite_crit_chance() const override
   {
     double c = frost_mage_spell_t::composite_crit_chance();
-    if ( p() -> artifact.the_storm_rages.rank() )
-    {
-      c+= p() -> artifact.the_storm_rages.percent();
-    }
+
+    c += p() -> artifact.the_storm_rages.percent();
+
     return c;
   }
 };
@@ -3693,7 +3686,7 @@ struct blizzard_t : public frost_mage_spell_t
   }
   virtual timespan_t execute_time() const override
   {
-    if ( p() -> artifact.freezing_rain.rank() && p() -> buffs.freezing_rain -> check() )
+    if ( p() -> buffs.freezing_rain -> check() )
     {
       return timespan_t::zero();
     }
@@ -4184,10 +4177,7 @@ struct fireball_t : public fire_mage_spell_t
   {
     timespan_t cast_time = fire_mage_spell_t::execute_time();
 
-    if ( p() -> artifact.fire_at_will.rank() )
-    {
-      cast_time *= 1.0 + p() -> artifact.fire_at_will.percent();
-    }
+    cast_time *= 1.0 + p() -> artifact.fire_at_will.percent();
 
     return cast_time;
   }
@@ -4520,10 +4510,7 @@ struct flurry_bolt_t : public frost_mage_spell_t
   {
     double am = frost_mage_spell_t::action_multiplier();
 
-    if ( p() -> artifact.ice_age.rank() )
-    {
-      am *= 1.0 + p() -> artifact.ice_age.percent();
-    }
+    am *= 1.0 + p() -> artifact.ice_age.percent();
 
     if ( brain_freeze_buffed )
     {
@@ -4738,10 +4725,8 @@ struct frostbolt_t : public frost_mage_spell_t
         bf_proc_chance += p() -> sets.set( MAGE_FROST, T19, B2 )
                               -> effectN( 1 ).percent();
       }
-      if ( p() -> artifact.clarity_of_thought.rank() )
-      {
-        bf_proc_chance += p() -> artifact.clarity_of_thought.percent();
-      }
+
+      bf_proc_chance += p() -> artifact.clarity_of_thought.percent();
 
       trigger_brain_freeze( bf_proc_chance );
       trigger_fof( fof_source_id, fof_proc_chance );
@@ -4813,10 +4798,8 @@ struct frostbolt_t : public frost_mage_spell_t
   {
     double c = frost_mage_spell_t::composite_crit_chance();
 
-    if ( p() -> artifact.shattering_bolts.rank() )
-    {
-      c+= p() -> artifact.shattering_bolts.percent();
-    }
+    c += p() -> artifact.shattering_bolts.percent();
+
     return c;
   }
 };
@@ -8130,8 +8113,8 @@ void mage_t::create_buffs()
   buffs.arcane_missiles       = new buffs::arcane_missiles_t( this );
   buffs.arcane_power          = buff_creator_t( this, "arcane_power", find_spell( 12042 ) )
                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  if ( artifact.aegwynns_imperative.rank() )
-    buffs.arcane_power -> buff_duration += artifact.aegwynns_imperative.time_value();
+  buffs.arcane_power -> buff_duration += artifact.aegwynns_imperative.time_value();
+
   buffs.deadly_presence       = buff_creator_t( this, "deadly_presence", find_spell( 242247 ) )
                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.presence_of_mind      = buff_creator_t( this, "presence_of_mind", find_spell( 205025 ) )
@@ -8151,9 +8134,10 @@ void mage_t::create_buffs()
   // Fire
   buffs.combustion            = buff_creator_t( this, "combustion", find_spell( 190319 ) )
                                   .cd( timespan_t::zero() )
-                                  .duration( find_spell( 190319 ) -> duration() + artifact.preignited.time_value() )
                                   .add_invalidate( CACHE_SPELL_CRIT_CHANCE )
                                   .add_invalidate( CACHE_MASTERY );
+  buffs.combustion -> buff_duration += artifact.preignited.time_value();
+
   buffs.critical_massive      = buff_creator_t( this, "critical_massive", find_spell( 242251 ) );
   buffs.enhanced_pyrotechnics = buff_creator_t( this, "enhanced_pyrotechnics", find_spell( 157644 ) );
   // TODO: Find spell data for this; duration is educated guess at this point
@@ -9079,13 +9063,12 @@ double mage_t::composite_player_critical_damage_multiplier( const action_state_t
 {
   double m = player_t::composite_player_critical_damage_multiplier( s );
 
-  if ( artifact.burning_gaze.rank() && dbc::get_school_mask( s -> action -> school ) & SCHOOL_MASK_FIRE )
+  if ( dbc::is_school( s -> action -> school, SCHOOL_FIRE ) )
   {
     m *= 1.0 + artifact.burning_gaze.percent();
   }
 
-  if ( ( !dbc::is_school( s -> action -> get_school(), SCHOOL_PHYSICAL ) ) &&
-       buffs.pyretic_incantation -> check() > 0 )
+  if ( !dbc::is_school( s -> action -> get_school(), SCHOOL_PHYSICAL ) )
   {
     m *= 1.0 + ( buffs.pyretic_incantation -> data().effectN( 1 ).percent() *
                  buffs.pyretic_incantation -> stack() );
@@ -9105,35 +9088,14 @@ double mage_t::composite_player_pet_damage_multiplier( const action_state_t* s )
 {
   double m = player_t::composite_player_pet_damage_multiplier(s);
 
-  if ( artifact.ancient_power )
-  {
-    m *= 1.0 + artifact.ancient_power.percent();
-  }
+  m *= 1.0 + artifact.ancient_power.percent();
+  m *= 1.0 + artifact.intensity_of_the_tirisgarde.percent();
 
-  if ( artifact.intensity_of_the_tirisgarde )
-  {
-    m *= 1.0 + artifact.intensity_of_the_tirisgarde.percent();
-  }
+  m *= 1.0 + artifact.empowered_spellblade.percent();
+  m *= 1.0 + artifact.instability_of_the_tirisgarde.percent();
 
-  if ( artifact.empowered_spellblade )
-  {
-    m *= 1.0 + artifact.empowered_spellblade.percent();
-  }
-
-  if ( artifact.instability_of_the_tirisgarde )
-  {
-    m *= 1.0 + artifact.instability_of_the_tirisgarde.percent();
-  }
-
-  if ( artifact.spellborne )
-  {
-    m *= 1.0 + artifact.spellborne.percent();
-  }
-
-  if ( artifact.frigidity_of_the_tirisgarde )
-  {
-    m *= 1.0 + artifact.frigidity_of_the_tirisgarde.percent();
-  }
+  m *= 1.0 + artifact.spellborne.percent();
+  m *= 1.0 + artifact.frigidity_of_the_tirisgarde.percent();
 
   return m;
 }
@@ -9144,31 +9106,25 @@ double mage_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
-  if ( specialization() == MAGE_ARCANE )
+  // Spell data says magic damage only.
+  if ( buffs.arcane_power -> check() && dbc::get_school_mask( school ) & SCHOOL_MAGIC_MASK )
   {
-    // Spell data says magic damage only.
-    if ( buffs.arcane_power -> check() && dbc::get_school_mask( school ) & SCHOOL_MAGIC_MASK )
+    double v = buffs.arcane_power -> value();
+    if ( talents.overpowered -> ok() )
     {
-      double v = buffs.arcane_power -> value();
-      if ( talents.overpowered -> ok() )
-      {
-        v += talents.overpowered -> effectN( 1 ).percent();
-      }
-      m *= 1.0 + v;
+      v += talents.overpowered -> effectN( 1 ).percent();
     }
+    m *= 1.0 + v;
   }
 
-  if ( talents.rune_of_power -> ok() )
+  if ( buffs.rune_of_power -> check() )
   {
-    if ( buffs.rune_of_power -> check() )
-    {
-      m *= 1.0 + buffs.rune_of_power -> data().effectN( 1 ).percent();
-    }
+    m *= 1.0 + buffs.rune_of_power -> data().effectN( 1 ).percent();
   }
-  else if ( talents.incanters_flow -> ok() )
+
+  if ( talents.incanters_flow -> ok() )
   {
     m *= 1.0 + buffs.incanters_flow -> stack() * incanters_flow_stack_mult;
-
     cache.player_mult_valid[ school ] = false;
   }
 
@@ -9177,60 +9133,51 @@ double mage_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buffs.icarus_uprising -> data().effectN( 2 ).percent();
   }
 
-  if ( buffs.temporal_power -> check() &&
-       sets.has_set_bonus( MAGE_ARCANE, T18, B4 ) )
+  if ( buffs.temporal_power -> check() )
   {
     m *= std::pow( 1.0 + buffs.temporal_power -> data().effectN( 1 ).percent(),
                    buffs.temporal_power -> check() );
   }
 
-  if ( artifact.might_of_the_guardians && dbc::get_school_mask( school ) & SCHOOL_MASK_ARCANE )
+  if ( dbc::is_school( school, SCHOOL_ARCANE ) )
   {
     m *= 1.0 + artifact.might_of_the_guardians.percent();
   }
 
-  if ( artifact.ancient_power && dbc::get_school_mask( school ) & SCHOOL_MASK_ARCANE )
+  if ( dbc::is_school( school, SCHOOL_ARCANE ) )
   {
     m *= 1.0 + artifact.ancient_power.percent();
   }
 
-  if ( artifact.intensity_of_the_tirisgarde )
-  {
-    m *= 1.0 + artifact.intensity_of_the_tirisgarde.percent();
-  }
+  m *= 1.0 + artifact.intensity_of_the_tirisgarde.percent();
 
-  if ( artifact.wings_of_flame && dbc::get_school_mask( school ) & SCHOOL_MASK_FIRE )
+  if ( dbc::is_school( school, SCHOOL_FIRE ) )
   {
     m *= 1.0 + artifact.wings_of_flame.percent();
   }
 
-  if ( artifact.empowered_spellblade && dbc::get_school_mask( school ) & SCHOOL_MASK_FIRE )
+  if ( dbc::is_school( school, SCHOOL_FIRE ) )
   {
     m *= 1.0 + artifact.empowered_spellblade.percent();
   }
 
-  if ( artifact.instability_of_the_tirisgarde )
-  {
-    m *= 1.0 + artifact.instability_of_the_tirisgarde.percent();
-  }
+  m *= 1.0 + artifact.instability_of_the_tirisgarde.percent();
 
-  if ( buffs.bone_chilling -> check() && dbc::get_school_mask( school ) & SCHOOL_MASK_FROST )
+  if ( buffs.bone_chilling -> check() && dbc::is_school( school, SCHOOL_FROST ) )
   {
     // Divide effect percent by 10 to convert 5 into 0.5%, not into 5%.
     m *= 1.0 + buffs.bone_chilling -> current_stack * talents.bone_chilling -> effectN( 1 ).percent() / 10;
   }
 
-  if ( artifact.spellborne && dbc::get_school_mask( school ) & SCHOOL_MASK_FROST )
+  if ( dbc::is_school( school, SCHOOL_FROST ) )
   {
     m *= 1.0 + artifact.spellborne.percent();
   }
 
-  if ( artifact.frigidity_of_the_tirisgarde )
-  {
-    m *= 1.0 + artifact.frigidity_of_the_tirisgarde.percent();
-  }
+  m *= 1.0 + artifact.frigidity_of_the_tirisgarde.percent();
 
-  if ( buffs.chilled_to_the_core -> check() && dbc::get_school_mask( school ) & SCHOOL_MASK_FROST )
+
+  if ( buffs.chilled_to_the_core -> check() && dbc::is_school( school, SCHOOL_FROST ) )
   {
     m *= 1.0 + buffs.chilled_to_the_core -> data().effectN( 1 ).percent();
   }
@@ -9286,10 +9233,8 @@ double mage_t::composite_spell_crit_chance() const
     c += buffs.combustion -> data().effectN( 1 ).percent();
   }
 
-  if ( artifact.aegwynns_wrath.rank() )
-  {
-    c += artifact.aegwynns_wrath.percent();
-  }
+  c += artifact.aegwynns_wrath.percent();
+
   return c;
 }
 
