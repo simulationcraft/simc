@@ -50,6 +50,8 @@ struct hunter_td_t: public actor_target_data_t
     dot_t* piercing_shots;
     dot_t* lacerate;
     dot_t* on_the_trail;
+    // dot shared by all of the Cobra Commander artifact trait snakes
+    dot_t* deathstrike_venom;
   } dots;
 
   hunter_td_t( player_t* target, hunter_t* p );
@@ -1674,10 +1676,6 @@ struct sneaky_snake_t: public hunter_secondary_pet_t
 {
   struct deathstrike_venom_t: public hunter_pet_action_t<hunter_secondary_pet_t, spell_t>
   {
-    /* TODO: model the way it actually works in-game
-     *  As of 2017-03-09 all of the snakes share a single instance of the dot but
-     *  it [the dot] drops as soon as the snake that first applied it despawns.
-     */
     double proc_chance;
 
     deathstrike_venom_t( sneaky_snake_t* p ):
@@ -1686,6 +1684,12 @@ struct sneaky_snake_t: public hunter_secondary_pet_t
     {
       background = true;
       hasted_ticks = tick_may_crit = false;
+      dot_max_stack = data().max_stacks();
+
+      // XXX: nuoHep 2017-03-23
+      // kind of a hack but this is the only thing that makes the numbers
+      // match between snakes aa & venom damage
+      base_multiplier *= 2.0;
 
       internal_cooldown -> duration = p -> find_spell( 243120 ) -> internal_cooldown();
     }
@@ -1696,6 +1700,21 @@ struct sneaky_snake_t: public hunter_secondary_pet_t
         stats = o() -> pets.sneaky_snakes[ 0 ] -> get_stats( name_str );
 
       return base_t::init_finished();
+    }
+
+    // does not pandemic
+    timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
+    {
+      return dot -> time_to_next_tick() + triggered_duration;
+    }
+
+    // all of the snakes share and stack a single instance of the dot
+    dot_t* get_dot( player_t* t ) override
+    {
+      if ( ! t ) t = target;
+      if ( ! t ) return nullptr;
+
+      return o() -> get_target_data( t ) -> dots.deathstrike_venom;
     }
 
     void trigger( action_state_t* s )
@@ -1759,7 +1778,7 @@ struct sneaky_snake_t: public hunter_secondary_pet_t
   sneaky_snake_t( hunter_t* o ):
     hunter_secondary_pet_t( o, "sneaky_snake" )
   {
-    owner_coeff.ap_from_ap = .1;
+    owner_coeff.ap_from_ap = .2;
   }
 
   void init_base_stats() override
@@ -5288,6 +5307,7 @@ dots( dots_t() )
   dots.piercing_shots = target -> get_dot( "piercing_shots", p );
   dots.lacerate = target -> get_dot( "lacerate", p );
   dots.on_the_trail = target -> get_dot( "on_the_trail", p );
+  dots.deathstrike_venom = target -> get_dot( "deathstrike_venom", p );
 
   debuffs.hunters_mark = 
     buff_creator_t( *this, "hunters_mark", p -> find_spell( 185365 ) );
