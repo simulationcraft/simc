@@ -143,6 +143,7 @@ public:
     action_t* demonic_power_proc;
     action_t* thalkiels_discord;
     action_t* harvester_of_souls;
+    action_t* cry_havoc;
     action_t* rend_soul;
     spell_t* rain_of_fire;
     spell_t* corruption;
@@ -285,6 +286,10 @@ public:
     artifact_power_t devourer_of_life;
     artifact_power_t planeswalker;
     artifact_power_t conflagration_of_chaos;
+    artifact_power_t flames_of_the_black_harvest;
+    artifact_power_t flames_of_sargeras;
+    artifact_power_t cry_havoc;
+    artifact_power_t flame_rift;
 
   } artifact;
 
@@ -1422,6 +1427,12 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + o() -> artifact.thalkiels_lingering_power.percent();
     m *= 1.0 + o() -> artifact.swarms_of_the_black_harvest.percent();
     m *= 1.0 + o() -> artifact.left_hand_of_darkness.percent();
+  }
+
+  if ( o() -> specialization() == WARLOCK_DESTRUCTION )
+  {
+    m *= 1.0 + o() -> artifact.stolen_power.percent();
+    m *= 1.0 + o() -> artifact.flames_of_the_black_harvest.percent();
   }
 
   m *= 1.0 + o() -> buffs.sindorei_spite -> check_stack_value();
@@ -3639,6 +3650,7 @@ struct conflagrate_t: public warlock_spell_t
   {
     energize_type = ENERGIZE_ON_CAST;
     base_duration = p -> find_spell( 117828 ) -> duration();
+    base_multiplier *= 1.0 + p -> artifact.flames_of_sargeras.percent();
 
     can_havoc = true;
 
@@ -3938,6 +3950,11 @@ struct chaos_bolt_t: public warlock_spell_t
     warlock_spell_t::impact( s );
     if ( p() -> talents.eradication -> ok() && result_is_hit( s -> result ) )
       td( s -> target ) -> debuffs_eradication -> trigger();
+    if ( p() -> artifact.cry_havoc.rank() && result_is_hit( s -> result ) && td( s -> target ) -> debuffs_havoc -> check() )
+    {
+      p() -> active.cry_havoc -> target = s -> target;
+      p() -> active.cry_havoc -> execute(); 
+    }
     if ( p() -> legendary.magistrike && rng().roll( duplicate_chance ) )
     {
       duplicate -> original_target = s -> target;
@@ -5410,7 +5427,18 @@ struct rend_soul_t : public warlock_spell_t
     warlock_spell_t( "rend_soul", p, p -> find_spell( 242834 ) )
   {
     background = true;
-    //proc = true; Harvester of Souls can proc trinkets and has no resource cost so no need.
+    //proc = true;
+    callbacks = true;
+  }
+};
+
+struct cry_havoc_t : public warlock_spell_t
+{
+  cry_havoc_t( warlock_t* p ) :
+    warlock_spell_t( "cry_havoc", p, p -> find_spell( 243011 ) )
+  {
+    background = true;
+    //proc = true;
     callbacks = true;
   }
 };
@@ -5761,6 +5789,7 @@ double warlock_t::composite_player_multiplier( school_e school ) const
   if ( specialization() == WARLOCK_DESTRUCTION )
   {
     m *= 1.0 + artifact.stolen_power.percent();
+    m *= 1.0 + artifact.flames_of_the_black_harvest.percent();
   }
 
   if ( specialization() == WARLOCK_AFFLICTION && ( dbc::is_school( school, SCHOOL_SHADOW ) ) )
@@ -6235,11 +6264,16 @@ void warlock_t::init_spells()
   artifact.devourer_of_life = find_artifact_spell( "Devourer of Life" );
   artifact.planeswalker = find_artifact_spell( "Planeswalker" );
   artifact.conflagration_of_chaos = find_artifact_spell( "Conflagration of Chaos" );
+  artifact.flames_of_the_black_harvest = find_artifact_spell( "Flames of the Black Harvest" );
+  artifact.flames_of_sargeras = find_artifact_spell( "Flames of Sargeras" );
+  artifact.cry_havoc = find_artifact_spell( "Cry Havoc" );
+  artifact.flame_rift = find_artifact_spell( "Flame Rift" );
 
   // Active Spells
   active.demonic_power_proc = new actions::demonic_power_damage_t( this );
   active.thalkiels_discord = new actions::thalkiels_discord_t( this );
   active.harvester_of_souls = new actions::harvester_of_souls_t( this );
+  active.cry_havoc = new actions::cry_havoc_t( this );
   active.rend_soul = new actions::rend_soul_t( this );
   active.effigy_damage_override = new actions::effigy_damage_override_t(this);
   if ( specialization() == WARLOCK_AFFLICTION )

@@ -1495,6 +1495,8 @@ class SpellDataGenerator(DataGenerator):
 		  ( 233498, 0 ),
 		  ( 233499, 0 ),
           ( 213229, 0 ),
+          ( 243050, 0 ),        # Fire Rift
+          ( 242922, 0 ),        # Jaws of Shadow
         ),
 
         # Monk:
