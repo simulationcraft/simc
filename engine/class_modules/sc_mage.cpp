@@ -8918,6 +8918,7 @@ void mage_t::apl_frost()
   single -> add_action( "water_jet,if=prev_gcd.1.frostbolt&buff.fingers_of_frost.stack<(2+artifact.icy_hand.enabled)&buff.brain_freeze.react=0" );
   single -> add_talent( this, "Ray of Frost", "if=buff.icy_veins.up|(cooldown.icy_veins.remains>action.ray_of_frost.cooldown&buff.rune_of_power.down)" );
   single -> add_action( this, "Flurry", "if=prev_gcd.1.ebonbolt|prev_gcd.1.frostbolt&buff.brain_freeze.react" );
+  single -> add_action( this, "Blizzard", "if=cast_time=0&active_enemies>1&buff.fingers_of_frost.react<3" );
   single -> add_talent( this, "Frost Bomb", "if=debuff.frost_bomb.remains<action.ice_lance.travel_time&buff.fingers_of_frost.react>0" );
   single -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react>0&cooldown.icy_veins.remains>10|buff.fingers_of_frost.react>2" );
   single -> add_action( this, "Frozen Orb" );
@@ -8929,8 +8930,8 @@ void mage_t::apl_frost()
   single -> add_action( this, "Frostbolt" );
 
   aoe -> add_action( this, "Frostbolt", "if=prev_off_gcd.water_jet" );
-  aoe -> add_action( this, "Blizzard" );
   aoe -> add_action( this, "Frozen Orb" );
+  aoe -> add_action( this, "Blizzard" );
   aoe -> add_talent( this, "Comet Storm" );
   aoe -> add_talent( this, "Ice Nova" );
   aoe -> add_action( "water_jet,if=prev_gcd.1.frostbolt&buff.fingers_of_frost.stack<(2+artifact.icy_hand.enabled)&buff.brain_freeze.react=0" );
