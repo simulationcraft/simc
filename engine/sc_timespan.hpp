@@ -77,7 +77,8 @@ namespace timespan_adl_barrier
     }
 
   public:
-    timespan_t() = default;
+    timespan_t() : time( 0 )
+    { }
 
     double total_minutes() const
     {
