@@ -2559,7 +2559,7 @@ struct flametongue_weapon_spell_t : public shaman_spell_t
     shaman_spell_t::impact( state );
     if ( state -> result_amount > 0 )
     {
-      td( target ) -> debuff.lashing_flames -> trigger();
+      td( target -> target ) -> debuff.lashing_flames -> trigger();
     }
   }
 };
@@ -3285,7 +3285,7 @@ struct lava_lash_t : public shaman_attack_t
 
     p() -> trigger_doom_vortex( state );
 
-    td( target ) -> debuff.lashing_flames -> expire();
+    td( state -> target ) -> debuff.lashing_flames -> expire();
   }
 };
 
