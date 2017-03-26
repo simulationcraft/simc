@@ -4672,7 +4672,8 @@ struct feral_spirit_spell_t : public shaman_spell_t
 
     if ( p() -> artifact.doom_wolves.rank() )
     {
-      size_t n = static_cast<size_t>( data().effectN( 1 ).base_value() );
+      //size_t n = static_cast<size_t>( data().effectN( 1 ).base_value() );
+	  size_t n = static_cast<size_t>(2); //# of wolves summoned is missing from spell data, default to 2 for now until its figured out.
       while ( n )
       {
         size_t idx = static_cast<size_t>( rng().range( 0, p() -> pet.doom_wolves.size() ) );
@@ -5965,7 +5966,8 @@ void shaman_t::create_pets()
        ! artifact.doom_wolves.rank() )
   {
     const spell_data_t* fs_data = find_specialization_spell( "Feral Spirit" );
-    size_t n_feral_spirits = static_cast<size_t>( fs_data -> effectN( 1 ).base_value() );
+    //size_t n_feral_spirits = static_cast<size_t>( fs_data -> effectN( 1 ).base_value() );
+	size_t n_feral_spirits = static_cast<size_t>(2); //# of wolves summoned is missing from spell data, default to 2 for now until its figured out.
 
     for ( size_t i = 0; i < n_feral_spirits; i++ )
     {
