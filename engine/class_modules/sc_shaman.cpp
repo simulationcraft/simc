@@ -2559,7 +2559,7 @@ struct flametongue_weapon_spell_t : public shaman_spell_t
     shaman_spell_t::impact( state );
     if ( state -> result_amount > 0 )
     {
-      td( target -> target ) -> debuff.lashing_flames -> trigger();
+      td( state -> target ) -> debuff.lashing_flames -> trigger();
     }
   }
 };
