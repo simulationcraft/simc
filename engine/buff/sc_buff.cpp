@@ -198,6 +198,7 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   last_start( timespan_t() ),
   last_trigger( timespan_t() ),
   iteration_uptime_sum( timespan_t() ),
+  last_benefite_update( timespan_t() ),
   up_count(),
   down_count(),
   start_count(),
