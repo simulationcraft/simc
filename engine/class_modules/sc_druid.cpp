@@ -1471,8 +1471,8 @@ public:
 
     if ( rend_and_tear )
       tm *= 1.0 + p() -> talent.rend_and_tear -> effectN( 2 ).percent() * td( t ) -> dots.thrash_bear -> current_stack();
-
-    if ( maybe_ptr( t->sim->dbc.ptr ) 
+   
+    if ( maybe_ptr( sim->dbc.ptr ) 
        && p() -> artifact.bloodletters_frailty.rank() > 0 
        && td(t) -> dots.ashamanes_frenzy -> is_ticking() )
     {
@@ -3426,13 +3426,13 @@ struct rip_t : public cat_attack_t
     dot_duration   *= 1.0 + p -> talent.jagged_wounds -> effectN( 2 ).percent();
     base_multiplier *= 1.0 + p -> artifact.razor_fangs.percent();
     
-    if ( p->t20_4pc || p->sets.has_set_bonus(DRUID_FERAL, T20, B4) )
+    if (p->t20_4pc || p->sets.has_set_bonus(DRUID_FERAL, T20, B4))
     {
        base_multiplier *= 1.15; //TODO(feral): add spelldata once available
        dot_duration *= 1.333334; // as above
     }
 
-    if ( p->t20_2pc || p->sets.has_set_bonus(DRUID_FERAL, T20, B2) )
+    if (p->t20_2pc || p->sets.has_set_bonus(DRUID_FERAL, T20, B2))
     {
        energize_amount = 2; //TODO(feral): Add spelldata once available
        energize_resource = RESOURCE_ENERGY;
