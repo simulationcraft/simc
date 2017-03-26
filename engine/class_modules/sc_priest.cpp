@@ -4058,10 +4058,10 @@ void priest_t::create_procs()
   procs.void_tendril = get_proc( "Void Tendril spawned from Call to the Void" );
 
   procs.legendary_anunds_last_breath = get_proc(
-      "Legendary - Anund's Seared Shackles - Void Bolt damage increases (2% "
+      "Legendary - Anund's Seared Shackles - Void Bolt damage increases (3% "
       "per)" );
   procs.legendary_anunds_last_breath_overflow = get_proc(
-      "Legendary - Anund's Seared Shackles - Void Bolt damage increases (2% "
+      "Legendary - Anund's Seared Shackles - Void Bolt damage increases (3% "
       "per) lost to overflow" );
 
   procs.legendary_zeks_exterminatus = get_proc(
