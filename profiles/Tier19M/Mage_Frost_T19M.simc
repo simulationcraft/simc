@@ -32,8 +32,8 @@ actions+=/call_action_list,name=aoe,if=active_enemies>=4
 actions+=/call_action_list,name=single
 
 actions.aoe=frostbolt,if=prev_off_gcd.water_jet
-actions.aoe+=/blizzard
 actions.aoe+=/frozen_orb
+actions.aoe+=/blizzard
 actions.aoe+=/comet_storm
 actions.aoe+=/ice_nova
 actions.aoe+=/water_jet,if=prev_gcd.1.frostbolt&buff.fingers_of_frost.stack<(2+artifact.icy_hand.enabled)&buff.brain_freeze.react=0
@@ -58,6 +58,7 @@ actions.single+=/frostbolt,if=prev_off_gcd.water_jet
 actions.single+=/water_jet,if=prev_gcd.1.frostbolt&buff.fingers_of_frost.stack<(2+artifact.icy_hand.enabled)&buff.brain_freeze.react=0
 actions.single+=/ray_of_frost,if=buff.icy_veins.up|(cooldown.icy_veins.remains>action.ray_of_frost.cooldown&buff.rune_of_power.down)
 actions.single+=/flurry,if=prev_gcd.1.ebonbolt|prev_gcd.1.frostbolt&buff.brain_freeze.react
+actions.single+=/blizzard,if=cast_time=0&active_enemies>1&buff.fingers_of_frost.react<3
 actions.single+=/frost_bomb,if=debuff.frost_bomb.remains<action.ice_lance.travel_time&buff.fingers_of_frost.react>0
 actions.single+=/ice_lance,if=buff.fingers_of_frost.react>0&cooldown.icy_veins.remains>10|buff.fingers_of_frost.react>2
 actions.single+=/frozen_orb

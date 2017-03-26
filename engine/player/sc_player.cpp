@@ -6299,7 +6299,7 @@ struct variable_t : public action_t
 
     std::string operation_;
     double default_ = 0;
-    timespan_t delay_;
+    timespan_t delay_ = timespan_t::zero();
 
     add_option( opt_string( "name", name_str ) );
     add_option( opt_string( "value", value_str ) );

@@ -421,6 +421,7 @@ public:
   // Counters
   int pestilent_pustules;
   int crystalline_swords;
+  int t20_4pc_frost; // Collect RP usage
 
   stats_t*  antimagic_shell;
 
@@ -451,6 +452,7 @@ public:
     buff_t* remorseless_winter;
     buff_t* frozen_soul;
     buff_t* hungering_rune_weapon;
+    buff_t* t20_2pc_frost;
 
     absorb_buff_t* blood_shield;
     buff_t* rune_tap;
@@ -487,8 +489,10 @@ public:
     cooldown_t* dark_transformation;
     cooldown_t* death_and_decay;
     cooldown_t* defile;
+    cooldown_t* empower_rune_weapon;
     cooldown_t* festering_wound;
     cooldown_t* frost_fever;
+    cooldown_t* hungering_rune_weapon;
     cooldown_t* icecap;
     cooldown_t* pillar_of_frost;
     cooldown_t* sindragosas_fury;
@@ -807,6 +811,8 @@ public:
     aotd_proc_chance( 0.3 ),
     antimagic_shell_absorbed( 0.0 ),
     pestilent_pustules( 0 ),
+    crystalline_swords( 0 ),
+    t20_4pc_frost( 0 ),
     antimagic_shell( nullptr ),
     buffs( buffs_t() ),
     runeforge( runeforge_t() ),
@@ -830,7 +836,9 @@ public:
     cooldown.dark_transformation = get_cooldown( "dark_transformation" );
     cooldown.death_and_decay = get_cooldown( "death_and_decay" );
     cooldown.defile          = get_cooldown( "defile" );
+    cooldown.empower_rune_weapon = get_cooldown( "empower_rune_weapon" );
     cooldown.festering_wound = get_cooldown( "festering_wound" );
+    cooldown.hungering_rune_weapon = get_cooldown( "hungering_rune_weapon" );
     cooldown.icecap          = get_cooldown( "icecap" );
     cooldown.pillar_of_frost = get_cooldown( "pillar_of_frost" );
     cooldown.sindragosas_fury= get_cooldown( "sindragosas_fury" );
@@ -908,6 +916,8 @@ public:
   void      default_apl_unholy();
   void      copy_from( player_t* ) override;
   double    bone_shield_handler( const action_state_t* ) const;
+
+  void      trigger_t20_4pc_frost( double consumed );
 
   unsigned  replenish_rune( unsigned n, gain_t* gain = nullptr );
 
@@ -2481,6 +2491,18 @@ struct death_knight_action_t : public Base
     return amount;
   }
 
+  bool consume_cost_per_tick( const dot_t& dot ) override
+  {
+    auto ret = action_base_t::consume_cost_per_tick( dot );
+
+    if ( ret && this -> last_resource_cost > 0 )
+    {
+      p() -> trigger_t20_4pc_frost( this -> last_resource_cost );
+    }
+
+    return ret;
+  }
+
   void consume_resource() override
   {
     action_base_t::consume_resource();
@@ -2513,6 +2535,8 @@ struct death_knight_action_t : public Base
           this -> last_resource_cost / p() -> talent.red_thirst -> effectN( 2 ).base_value();
         p() -> cooldown.vampiric_blood -> adjust( -sec );
       }
+
+      p() -> trigger_t20_4pc_frost( this -> last_resource_cost );
     }
   }
 
@@ -4379,6 +4403,8 @@ struct empower_rune_weapon_t : public death_knight_spell_t
 
       rune.fill_rune( p() -> gains.empower_rune_weapon );
     }
+
+    p() -> buffs.t20_2pc_frost -> trigger();
   }
 
   bool ready() override
@@ -4852,8 +4878,11 @@ struct hungering_rune_weapon_t : public death_knight_spell_t
 
     // Emulate immediate gain
     p() -> replenish_rune( data().effectN( 1 ).base_value(), p() -> gains.hungering_rune_weapon );
-    p() -> resource_gain( RESOURCE_RUNIC_POWER, data().effectN( 2 ).resource( RESOURCE_RUNIC_POWER ), p() -> gains.hungering_rune_weapon );
+    p() -> resource_gain( RESOURCE_RUNIC_POWER,
+        data().effectN( 2 ).resource( RESOURCE_RUNIC_POWER ),
+        p() -> gains.hungering_rune_weapon );
     p() -> buffs.hungering_rune_weapon -> trigger();
+    p() -> buffs.t20_2pc_frost -> trigger();
   }
 };
 
@@ -6360,6 +6389,30 @@ void death_knight_t::analyze( sim_t& s )
   _runes.cumulative_waste.analyze();
 }
 
+void death_knight_t::trigger_t20_4pc_frost( double consumed )
+{
+  if ( ! sets.has_set_bonus( DEATH_KNIGHT_FROST, T20, B4 ) )
+  {
+    return;
+  }
+
+  t20_4pc_frost += consumed;
+
+  if ( sim -> debug )
+  {
+    sim -> out_debug.printf( "%s T20 4PC set bonus accumulates %.1f, total %d runic_power",
+      name(), consumed, t20_4pc_frost );
+  }
+
+  if ( t20_4pc_frost >= sets.set( DEATH_KNIGHT_FROST, T20, B4 ) -> effectN( 2 ).base_value() )
+  {
+    auto cd_adjust = timespan_t::from_seconds( sets.set( DEATH_KNIGHT_FROST, T20, B4 ) -> effectN( 1 ).base_value() );
+    cooldown.empower_rune_weapon -> adjust( -cd_adjust );
+    cooldown.hungering_rune_weapon -> adjust( -cd_adjust );
+    t20_4pc_frost -= sets.set( DEATH_KNIGHT_FROST, T20, B4 ) -> effectN( 2 ).base_value();
+  }
+}
+
 unsigned death_knight_t::replenish_rune( unsigned n, gain_t* gain )
 {
   unsigned replenished = 0;
@@ -7551,6 +7604,11 @@ void death_knight_t::create_buffs()
   buffs.remorseless_winter = new remorseless_winter_buff_t( this );
 
   buffs.hungering_rune_weapon = new hungering_rune_weapon_buff_t( this );
+  buffs.t20_2pc_frost = buff_creator_t( this, "rune_empowered" )
+    .spell( sets.set( DEATH_KNIGHT_FROST, T20, B2 ) -> effectN( 1 ).trigger() )
+    .trigger_spell( sets.set( DEATH_KNIGHT_FROST, T20, B2 ) )
+    .default_value( sets.set( DEATH_KNIGHT_FROST, T20, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
+    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 }
 
 // death_knight_t::init_gains ===============================================
@@ -7676,6 +7734,7 @@ void death_knight_t::reset()
   crystalline_swords = 0;
   _runes.reset();
   rw_damage_targets.clear();
+  t20_4pc_frost = 0;
 }
 
 // death_knight_t::assess_heal ==============================================
@@ -7949,6 +8008,8 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
   {
     m *= 1.0 + buffs.t18_4pc_unholy -> data().effectN( 2 ).percent();
   }
+
+  m *= 1.0 + buffs.t20_2pc_frost -> stack_value();
 
   return m;
 }

@@ -99,7 +99,7 @@ public:
   const special_effect_t* justice_gaze;
   const special_effect_t* chain_of_thrayn;
   const special_effect_t* ashes_to_dust;
-  const special_effect_t* sephuz;
+  const spell_data_t* sephuz;
 
   struct active_actions_t
   {
@@ -410,6 +410,7 @@ public:
     chain_of_thrayn = nullptr;
     ashes_to_dust = nullptr;
     justice_gaze = nullptr;
+    sephuz = nullptr;
     active_beacon_of_light             = nullptr;
     active_enlightened_judgments       = nullptr;
     active_shield_of_vengeance_proc    = nullptr;
@@ -3430,21 +3431,26 @@ struct divine_storm_t: public holy_power_consumer_t
 
 // Hammer of Justice, Fist of Justice =======================================
 
+struct hammer_of_justice_damage_spell_t : public paladin_melee_attack_t
+{
+  hammer_of_justice_damage_spell_t( paladin_t* p, const std::string& options_str )
+    : paladin_melee_attack_t( "hammer_of_justice_damage", p, p -> find_spell( 211561 ), true )
+  {
+    parse_options( options_str );
+    weapon = &( p -> main_hand_weapon );
+    background = true;
+  }
+};
+
 struct hammer_of_justice_t : public paladin_melee_attack_t
 {
+  hammer_of_justice_damage_spell_t* damage_spell;
   hammer_of_justice_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "hammer_of_justice", p, p -> find_class_spell( "Hammer of Justice" ) )
+    : paladin_melee_attack_t( "hammer_of_justice", p, p -> find_class_spell( "Hammer of Justice" ) ),
+      damage_spell( new hammer_of_justice_damage_spell_t( p, options_str ) )
   {
     parse_options( options_str );
     ignore_false_positive = true;
-
-    if ( p -> justice_gaze )
-    {
-      if ( maybe_ptr( p -> dbc.ptr ) )
-        attack_power_mod.direct = 6;
-      else
-        attack_power_mod.direct = 3.5;
-    }
 
     // TODO: this is a hack; figure out what's really going on here.
     if ( ( p -> specialization() == PALADIN_RETRIBUTION ) )
@@ -3465,6 +3471,7 @@ struct hammer_of_justice_t : public paladin_melee_attack_t
 
     if ( p() -> justice_gaze )
     {
+      damage_spell -> schedule_execute();
       if ( target -> health_percentage() > p() -> spells.justice_gaze -> effectN( 1 ).base_value() )
         p() -> cooldowns.hammer_of_justice -> ready -= ( p() -> cooldowns.hammer_of_justice -> duration * p() -> spells.justice_gaze -> effectN( 2 ).percent() );
 
@@ -3812,7 +3819,9 @@ struct rebuke_t : public paladin_melee_attack_t
     paladin_melee_attack_t::execute();
 
     if ( p() -> sephuz )
+    {
       p() -> buffs.sephuz -> trigger();
+    }
   }
 };
 
@@ -5575,6 +5584,9 @@ double paladin_t::composite_melee_haste() const
   if ( buffs.sephuz -> check() )
     h /= 1.0 + buffs.sephuz -> check_value();
 
+  if ( maybe_ptr( dbc.ptr ) && sephuz )
+    h /= 1.0 + sephuz -> effectN( 3 ).percent() ;
+
   // Infusion of Light (Holy) adds 10% haste
   //h /= 1.0 + passives.infusion_of_light -> effectN( 2 ).percent();
 
@@ -5612,6 +5624,9 @@ double paladin_t::composite_spell_haste() const
 
   if ( buffs.sephuz -> check() )
     h /= 1.0 + buffs.sephuz -> check_value();
+
+  if ( maybe_ptr( dbc.ptr ) && sephuz )
+    h /= 1.0 + sephuz -> effectN( 3 ).percent() ;
 
   // Infusion of Light (Holy) adds 10% haste
   //h /= 1.0 + passives.infusion_of_light -> effectN( 2 ).percent();
@@ -6403,11 +6418,14 @@ static void ashes_to_dust( special_effect_t& effect )
   do_trinket_init( s, PALADIN_RETRIBUTION, s -> ashes_to_dust, effect );
 }
 
-static void sephuzs_secret( special_effect_t& effect )
+struct sephuzs_secret_enabler_t : public unique_gear::scoped_actor_callback_t<paladin_t>
 {
-  paladin_t* s = debug_cast<paladin_t*>( effect.player );
-  do_trinket_init( s, s -> specialization(), s -> sephuz, effect );
-}
+  sephuzs_secret_enabler_t() : scoped_actor_callback_t( PALADIN )
+  { }
+
+  void manipulate( paladin_t* paladin, const special_effect_t& e ) override
+  { paladin -> sephuz = e.driver(); }
+};
 
 // PALADIN MODULE INTERFACE =================================================
 
@@ -6432,7 +6450,7 @@ struct paladin_module_t : public module_t
     unique_gear::register_special_effect( 206338, chain_of_thrayn );
     unique_gear::register_special_effect( 236106, ashes_to_dust );
     unique_gear::register_special_effect( 211557, justice_gaze );
-    unique_gear::register_special_effect( 208051, sephuzs_secret );
+    unique_gear::register_special_effect( 208051, sephuzs_secret_enabler_t(), true );
   }
 
   virtual void init( player_t* p ) const override
