@@ -1472,8 +1472,8 @@ public:
     if ( rend_and_tear )
       tm *= 1.0 + p() -> talent.rend_and_tear -> effectN( 2 ).percent() * td( t ) -> dots.thrash_bear -> current_stack();
    
-    if ( maybe_ptr( sim->dbc.ptr ) 
-       && p() -> artifact.bloodletters_frailty.rank() > 0 
+    if ( maybe_ptr( ab::player -> dbc.ptr )
+       && p() -> artifact.bloodletters_frailty.rank() > 0
        && td(t) -> dots.ashamanes_frenzy -> is_ticking() )
     {
       tm *= 1.0 + p() -> artifact.bloodletters_frailty.data().effectN(1).percent(); 
