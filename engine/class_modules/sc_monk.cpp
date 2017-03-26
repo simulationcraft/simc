@@ -606,7 +606,7 @@ public:
     const spell_data_t* mark_of_the_crane;
     const spell_data_t* master_of_combinations;
     const spell_data_t* whirling_dragon_punch;
-    const spell_data_t* thunderfist;
+    const spell_data_t* thunderfist_damage;
     const spell_data_t* touch_of_karma_buff;
     const spell_data_t* touch_of_karma_tick;
     const spell_data_t* tier17_4pc_melee;
@@ -4230,7 +4230,7 @@ struct strike_of_the_windlord_t: public monk_melee_attack_t
 struct thunderfist_t: public monk_spell_t
 {
   thunderfist_t( monk_t* player ) :
-    monk_spell_t( "thunderfist", player, player -> passives.thunderfist -> effectN( 1 ).trigger() )
+    monk_spell_t( "thunderfist", player, player -> passives.thunderfist_damage )
   {
     background = true;
     may_crit = true;
@@ -7988,7 +7988,7 @@ void monk_t::init_spells()
   passives.mark_of_the_crane                = find_spell( 228287 );
   passives.master_of_combinations           = find_spell( 240672 );
   passives.whirling_dragon_punch            = find_spell( 158221 );
-  passives.thunderfist                      = find_spell( 242387 );
+  passives.thunderfist_damage               = find_spell( 242390 );
   passives.touch_of_karma_buff              = find_spell( 125174 );
   passives.touch_of_karma_tick              = find_spell( 124280 );
   passives.tier17_4pc_melee                 = find_spell( 166603 );
@@ -8276,7 +8276,8 @@ void monk_t::create_buffs()
     .default_value( passives.hit_combo -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
-  buff.master_of_combinations = stat_buff_creator_t( this, "master_of_combinations", passives.master_of_combinations );
+  buff.master_of_combinations = stat_buff_creator_t( this, "master_of_combinations", passives.master_of_combinations )
+    .rppm_freq( 2 );
 
   buff.masterful_strikes = buff_creator_t( this, "masterful_strikes", passives.tier18_2pc_melee )
     .default_value( passives.tier18_2pc_melee -> effectN( 1 ).base_value() )
@@ -8293,7 +8294,10 @@ void monk_t::create_buffs()
                        .duration( timespan_t::from_seconds( 24 ) )
                        .default_value( sets.set( MONK_WINDWALKER, T20, B4 ) -> effectN( 1 ).percent() );
 
-  buff.thunderfist = buff_creator_t( this, "thunderfist", passives.thunderfist );
+  // TODO: FIX the buff info
+  buff.thunderfist = buff_creator_t( this, "thunderfist", passives.thunderfist_damage )
+                    .duration( timespan_t::from_seconds( 30 ) )
+                    .max_stack( 99 );
 
   buff.touch_of_karma = new buffs::touch_of_karma_buff_t( *this, "touch_of_karma", passives.touch_of_karma_buff );
 
