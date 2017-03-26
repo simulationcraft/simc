@@ -5219,9 +5219,8 @@ void priest_t::apl_shadow()
     "react)&cooldown.sephuzs_secret.remains<1&!buff.sephuzs_secret.up,"
     "cycle_targets=1");
   vf->add_action(
-    "mind_bomb,if=equipped.sephuzs_secret&(target.is_add|target.debuff.casting."
-    "react)&cooldown.sephuzs_secret.remains<1&!buff.sephuzs_secret.up,"
-    "cycle_targets=1");
+    "mind_bomb,if=equipped.sephuzs_secret&target.is_add&cooldown.sephuzs_secret."
+    "remains<1&!buff.sephuzs_secret.up,cycle_targets=1");
   vf->add_action( "void_bolt" );
   vf->add_action( "shadow_crash,if=talent.shadow_crash.enabled" );
   vf->add_action(
