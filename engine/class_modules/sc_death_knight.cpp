@@ -6408,7 +6408,7 @@ void death_knight_t::trigger_t20_4pc_frost( double consumed )
   {
     auto cd_adjust = timespan_t::from_seconds( sets.set( DEATH_KNIGHT_FROST, T20, B4 ) -> effectN( 1 ).base_value() );
     cooldown.empower_rune_weapon -> adjust( -cd_adjust );
-    cooldown.hungering_rune_weapon -> adjust( cd_adjust );
+    cooldown.hungering_rune_weapon -> adjust( -cd_adjust );
     t20_4pc_frost -= sets.set( DEATH_KNIGHT_FROST, T20, B4 ) -> effectN( 2 ).base_value();
   }
 }
