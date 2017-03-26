@@ -3466,7 +3466,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
          we'll replicate that by doing it here instead of in execute(). */
       chaos_strike_state_t* cs = debug_cast<chaos_strike_state_t*>( s );
 
-      if ( weapon == &( p() -> off_hand_weapon ) && parent -> roll_refund( cs ) )
+      if (may_refund && parent->roll_refund(cs))
       {
         p() -> resource_gain( RESOURCE_FURY,
                               parent -> composite_energize_amount( s ),
@@ -3480,10 +3480,24 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
 
       if (p()->talent.chaos_cleave->ok())
       {
-        attack_t* const chaos_cleave = p()->buff.metamorphosis->up() ? p()->active.chaos_cleave_annihilation : p()->active.chaos_cleave;
+        attack_t* const chaos_cleave = p()->buff.metamorphosis->check() 
+          ? p()->active.chaos_cleave_annihilation : p()->active.chaos_cleave;
         chaos_cleave->base_dd_min = state->result_total;
         chaos_cleave->base_dd_max = state->result_total;
         chaos_cleave->schedule_execute();
+      }
+
+      // Chaotic Onslaught
+      // TOCHECK: Moving here since reports are that it can trigger itself
+      // Also is delayed until after the 2nd impact, need to test timing further
+      // Only proc from the OH attack for now, since the timing seems to match the Fury refund
+      if (may_refund && p()->artifact.chaotic_onslaught.rank()
+        && p()->rng().roll(p()->artifact.chaotic_onslaught.percent()))
+      {
+        attack_t* const chaotic_onslaught = p()->buff.metamorphosis->check() ?
+          p()->active.chaotic_onslaught_annihilation : p()->active.chaotic_onslaught;
+        chaotic_onslaught->target = state->target;
+        chaotic_onslaught->schedule_execute();
       }
     }
   };
@@ -3623,6 +3637,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
 
     if ( hit_any_target )
     {
+      // Demonic Appetite
       // TODO: Travel time
       if (p()->talent.demonic_appetite->ok() && !p()->cooldown.demonic_appetite->down())
       {
@@ -3683,19 +3698,6 @@ struct chaos_strike_t : public chaos_strike_base_t
 
     return chaos_strike_base_t::ready();
   }
-
-  void execute() override
-  {
-    chaos_strike_base_t::execute();
-
-    if (hit_any_target 
-      && p()->artifact.chaotic_onslaught.rank()
-      && p()->rng().roll(p()->artifact.chaotic_onslaught.percent()))
-    {
-      p()->active.chaotic_onslaught->target = target;
-      p()->active.chaotic_onslaught->schedule_execute();
-    }
-  }
 };
 
 // Annihilation =============================================================
@@ -3737,19 +3739,6 @@ struct annihilation_t : public chaos_strike_base_t
     }
 
     return chaos_strike_base_t::ready();
-  }
-
-  void execute() override
-  {
-    chaos_strike_base_t::execute();
-
-    if (hit_any_target 
-      && p()->artifact.chaotic_onslaught.rank()
-      && p()->rng().roll(p()->artifact.chaotic_onslaught.percent()))
-    {
-      p()->active.chaotic_onslaught_annihilation->target = target;
-      p()->active.chaotic_onslaught_annihilation->schedule_execute();
-    }
   }
 };
 
@@ -6778,7 +6767,7 @@ void add_havoc_use_items( demon_hunter_t* p, action_priority_list_t* apl )
       }
       else if (util::str_compare_ci(p->items[i].name_str, "gnawed_thumb_ring"))
       {
-        line += ",if=!talent.chaos_blades.enabled|buff.chaos_blades.up|cooldown.chaos_blades.remains>60";
+        line += ",if=!talent.chaos_blades.enabled|buff.chaos_blades.up|target.time_to_die<cooldown.chaos_blades.remains";
       }
       else if (util::str_compare_ci(p->items[i].name_str, "majordomos_dinner_bell") 
             || util::str_compare_ci(p->items[i].name_str, "skardyns_grace"))
@@ -6829,14 +6818,14 @@ void demon_hunter_t::apl_havoc()
   def -> add_action( "variable,name=pooling_for_meta,value=cooldown.metamorphosis.remains<6&fury.deficit>30&!talent.demonic.enabled"
     "&(!variable.waiting_for_nemesis|cooldown.nemesis.remains<10)&(!variable.waiting_for_chaos_blades|cooldown.chaos_blades.remains<6)",
     "\"Getting ready to use meta\" conditions, this is used in a few places." );
-  def -> add_action( "variable,name=blade_dance,value=talent.first_blood.enabled|"
-    "spell_targets.blade_dance1>=3+(talent.chaos_cleave.enabled*2)",
-    "Blade Dance conditions. Always if First Blood is talented, otherwise 5+ targets with Chaos "
-    "Cleave or 3+ targets without." );
+  def -> add_action( "variable,name=blade_dance,value=talent.first_blood.enabled|set_bonus.tier20_2pc"
+    "|spell_targets.blade_dance1>=3+(talent.chaos_cleave.enabled*2)",
+    "Blade Dance conditions. Always if First Blood is talented or the T20 2pc set bonus,"
+    " otherwise at 5+ targets with Chaos Cleave or 3+ targets without." );
   def -> add_action( "variable,name=pooling_for_blade_dance,value=variable.blade_dance&"
     "fury-40<35-talent.first_blood.enabled*20&(spell_targets.blade_dance1>=3+(talent.chaos_cleave.enabled*2))",
-    "Blade Dance pooling condition, so we don't spend too much fury when we need it soon. No need "
-    "to pool on\n# single target since First Blood already makes it cheap enough and delaying it a"
+    "Blade Dance pooling condition, so we don't spend too much fury when we need it soon. No need"
+    " to pool on\n# single target since First Blood already makes it cheap enough and delaying it a"
     " tiny bit isn't a big deal." );
   def -> add_action("variable,name=pooling_for_chaos_strike,value=talent.chaos_cleave.enabled&fury.deficit>40&!raid_event.adds.up&raid_event.adds.in<2*gcd",
     "Chaos Strike pooling condition, so we don't spend too much fury when we need it for Chaos Cleave AoE");
@@ -6856,8 +6845,7 @@ void demon_hunter_t::apl_havoc()
   def -> add_talent( this, "Fel Barrage", "if=charges>=5&(buff.momentum.up|!talent.momentum.enabled)&"
     "((active_enemies>desired_targets&active_enemies>1)|raid_event.adds.in>30)",
     "Use Fel Barrage at max charges, saving it for Momentum and adds if possible." );
-  def -> add_action( this, "Throw Glaive", "if=talent.bloodlet.enabled&(!talent.momentum.enabled|"
-    "buff.momentum.up)&charges=2" );
+  def -> add_action( this, "Throw Glaive", "if=talent.bloodlet.enabled&(!talent.momentum.enabled|buff.momentum.up)&charges=2" );
   def -> add_talent( this, "Felblade", "if=fury<15&(cooldown.death_sweep.remains<2*gcd|cooldown.blade_dance.remains<2*gcd)");
   def -> add_action( this, spec.death_sweep, "death_sweep", "if=variable.blade_dance");
   def -> add_action( this, "Fel Rush", "if=charges=2&!talent.momentum.enabled&!talent.fel_mastery.enabled");
@@ -6896,13 +6884,11 @@ void demon_hunter_t::apl_havoc()
   def -> add_talent( this, "Fel Barrage", "if=charges=4&buff.metamorphosis.down&(buff.momentum.up|"
     "!talent.momentum.enabled)&((active_enemies>desired_targets&active_enemies>1)|raid_event.adds.in>30)",
     "Use Fel Barrage if its nearing max charges, saving it for Momentum and adds if possible." );
-  def -> add_action( this, "Fel Rush", "if=!talent.momentum.enabled&"
-    "raid_event.movement.in>charges*10&(talent.demon_blades.enabled|buff.metamorphosis.down)" );
+  def -> add_action( this, "Fel Rush", "if=!talent.momentum.enabled&raid_event.movement.in>charges*10&(talent.demon_blades.enabled|buff.metamorphosis.down)" );
   def -> add_action( this, "Demon's Bite" );
   def -> add_action( this, "Throw Glaive", "if=buff.out_of_range.up" );
   def -> add_talent( this, "Felblade", "if=movement.distance|buff.out_of_range.up" );
-  def -> add_action( this, "Fel Rush", "if=movement.distance>15|(buff.out_of_range.up&"
-    "!talent.momentum.enabled)" );
+  def -> add_action( this, "Fel Rush", "if=movement.distance>15|(buff.out_of_range.up&!talent.momentum.enabled)" );
   def -> add_action( this, "Vengeful Retreat", "if=movement.distance>15" );
   def -> add_action( this, "Throw Glaive", "if=!talent.bloodlet.enabled" );
 

@@ -32,8 +32,8 @@ actions+=/variable,name=waiting_for_nemesis,value=!(!talent.nemesis.enabled|cool
 actions+=/variable,name=waiting_for_chaos_blades,value=!(!talent.chaos_blades.enabled|cooldown.chaos_blades.ready|cooldown.chaos_blades.remains>target.time_to_die|cooldown.chaos_blades.remains>60)
 # "Getting ready to use meta" conditions, this is used in a few places.
 actions+=/variable,name=pooling_for_meta,value=cooldown.metamorphosis.remains<6&fury.deficit>30&!talent.demonic.enabled&(!variable.waiting_for_nemesis|cooldown.nemesis.remains<10)&(!variable.waiting_for_chaos_blades|cooldown.chaos_blades.remains<6)
-# Blade Dance conditions. Always if First Blood is talented, otherwise 5+ targets with Chaos Cleave or 3+ targets without.
-actions+=/variable,name=blade_dance,value=talent.first_blood.enabled|spell_targets.blade_dance1>=3+(talent.chaos_cleave.enabled*2)
+# Blade Dance conditions. Always if First Blood is talented or the T20 2pc set bonus, otherwise at 5+ targets with Chaos Cleave or 3+ targets without.
+actions+=/variable,name=blade_dance,value=talent.first_blood.enabled|set_bonus.tier20_2pc|spell_targets.blade_dance1>=3+(talent.chaos_cleave.enabled*2)
 # Blade Dance pooling condition, so we don't spend too much fury when we need it soon. No need to pool on
 # single target since First Blood already makes it cheap enough and delaying it a tiny bit isn't a big deal.
 actions+=/variable,name=pooling_for_blade_dance,value=variable.blade_dance&fury-40<35-talent.first_blood.enabled*20&(spell_targets.blade_dance1>=3+(talent.chaos_cleave.enabled*2))
