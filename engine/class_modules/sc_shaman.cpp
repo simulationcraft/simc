@@ -955,7 +955,7 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) :
                           } );
   debuff.lashing_flames = buff_creator_t( *this, "lashing_flames" )
     .spell( p -> artifact.lashing_flames.data().effectN( 1 ).trigger() )
-    .max_stack( 99 ); // Model damage increase in value, instead of 99 stacks
+    .default_value( p -> artifact.lashing_flames.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() );
 }
 
 // ==========================================================================
@@ -2554,16 +2554,14 @@ struct flametongue_weapon_spell_t : public shaman_spell_t
     }
   }
 
-  void execute() override
+  void impact( action_state_t* state ) override
   {
-	  base_t::execute();
-	  if (!td(target)->debuff.lashing_flames->up())
-	  {
-		  td(target)->debuff.lashing_flames->execute();
-	  }
-	  td(target)->debuff.lashing_flames->increment();
+    shaman_spell_t::impact( state );
+    if ( state -> result_amount > 0 )
+    {
+      td( target ) -> debuff.lashing_flames -> trigger();
+    }
   }
-
 };
 
 struct ancestral_awakening_t : public shaman_heal_t
@@ -3242,6 +3240,15 @@ struct lava_lash_t : public shaman_attack_t
     return shaman_attack_t::cost();
   }
 
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    auto m = shaman_attack_t::composite_target_multiplier( target );
+
+    m *= 1.0 + td( target ) -> debuff.lashing_flames -> stack_value();
+
+    return m;
+  }
+
   double action_multiplier() const override
   {
     double m = shaman_attack_t::action_multiplier();
@@ -3256,11 +3263,6 @@ struct lava_lash_t : public shaman_attack_t
       m *= 1.0 + aaj_multiplier;
     }
 
-	if (p()->artifact.lashing_flames.rank())
-	{
-		m *= 1.0 + (td(target)->debuff.lashing_flames->stack() * .02);
-	}
-
     return m;
   }
 
@@ -3269,7 +3271,6 @@ struct lava_lash_t : public shaman_attack_t
     shaman_attack_t::execute();
 
     p() -> buff.hot_hand -> decrement();
-	td(target)->debuff.lashing_flames->expire();
   }
 
   void impact( action_state_t* state ) override
@@ -3284,6 +3285,7 @@ struct lava_lash_t : public shaman_attack_t
 
     p() -> trigger_doom_vortex( state );
 
+    td( target ) -> debuff.lashing_flames -> expire();
   }
 };
 
@@ -4672,8 +4674,9 @@ struct feral_spirit_spell_t : public shaman_spell_t
 
     if ( p() -> artifact.doom_wolves.rank() )
     {
-      //size_t n = static_cast<size_t>( data().effectN( 1 ).base_value() );
-	  size_t n = static_cast<size_t>(2); //# of wolves summoned is missing from spell data, default to 2 for now until its figured out.
+      // Summon 2 pets here too. The doom wolves (3 separate wolf types) are in an array of 6
+      // entries, and we randomly pick two (separate) wolves from it.
+      size_t n = 2;
       while ( n )
       {
         size_t idx = static_cast<size_t>( rng().range( 0, p() -> pet.doom_wolves.size() ) );
@@ -5965,11 +5968,7 @@ void shaman_t::create_pets()
   if ( specialization() == SHAMAN_ENHANCEMENT && find_action( "feral_spirit" ) &&
        ! artifact.doom_wolves.rank() )
   {
-    const spell_data_t* fs_data = find_specialization_spell( "Feral Spirit" );
-    //size_t n_feral_spirits = static_cast<size_t>( fs_data -> effectN( 1 ).base_value() );
-	size_t n_feral_spirits = static_cast<size_t>(2); //# of wolves summoned is missing from spell data, default to 2 for now until its figured out.
-
-    for ( size_t i = 0; i < n_feral_spirits; i++ )
+    for ( size_t i = 0; i < pet.spirit_wolves.size(); i++ )
     {
       pet.spirit_wolves[ i ] = new pet::spirit_wolf_t( this );
     }
