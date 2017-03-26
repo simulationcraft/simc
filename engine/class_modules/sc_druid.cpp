@@ -357,6 +357,7 @@ public:
     buff_t* scent_of_blood;
     buff_t* tigers_fury;
     buff_t* feral_tier17_4pc;
+    buff_t* fury_of_ashamane;
 
     // Guardian
     // adaptive fur for each basic magic school
@@ -1470,6 +1471,13 @@ public:
 
     if ( rend_and_tear )
       tm *= 1.0 + p() -> talent.rend_and_tear -> effectN( 2 ).percent() * td( t ) -> dots.thrash_bear -> current_stack();
+   
+    if ( maybe_ptr( sim->dbc.ptr ) 
+       && p() -> artifact.bloodletters_frailty.rank() > 0 
+       && td(t) -> dots.ashamanes_frenzy -> is_ticking() )
+    {
+      tm *= 1.0 + p() -> artifact.bloodletters_frailty.data().effectN(1).percent(); 
+    }
 
     return tm;
   }
@@ -3418,13 +3426,13 @@ struct rip_t : public cat_attack_t
     dot_duration   *= 1.0 + p -> talent.jagged_wounds -> effectN( 2 ).percent();
     base_multiplier *= 1.0 + p -> artifact.razor_fangs.percent();
     
-    if (p->t20_4pc /*p->sets.has_set_bonus(DRUID_FERAL, T20, B4)*/)
+    if (p->t20_4pc || p->sets.has_set_bonus(DRUID_FERAL, T20, B4))
     {
        base_multiplier *= 1.15; //TODO(feral): add spelldata once available
        dot_duration *= 1.333334; // as above
     }
 
-    if (p->t20_2pc/*p->sets.has_set_bonus(DRUID_FERAL, T20, B2)*/)
+    if (p->t20_2pc || p->sets.has_set_bonus(DRUID_FERAL, T20, B2))
     {
        energize_amount = 2; //TODO(feral): Add spelldata once available
        energize_resource = RESOURCE_ENERGY;
@@ -3659,6 +3667,8 @@ struct tigers_fury_t : public cat_attack_t
        p() -> buff.tigers_fury -> trigger(1, buff_t::DEFAULT_VALUE(), 1.0, duration);
     }
     
+    if ( p() -> artifact.fury_of_ashamane.rank() > 0 )
+       p() -> buff.fury_of_ashamane -> trigger();
 
     p() -> buff.ashamanes_energy -> trigger();
   }
@@ -3696,6 +3706,9 @@ struct thrash_cat_t : public cat_attack_t
       base_tick_time *= 1.0 + p -> talent.jagged_wounds -> effectN( 1 ).percent();
       // dot_duration doesn't matter but set it anyway to be safe.
       dot_duration *= 1.0 + p -> talent.jagged_wounds -> effectN( 2 ).percent();
+
+      base_multiplier *= 1.0 + p -> artifact.thrashing_claws.rank() * p -> artifact.thrashing_claws.data().effectN(1).percent();
+
     }
 
     // Shadow Thrash uses "legacy" refresh, carrying over no more than 1 tick.
@@ -3748,6 +3761,7 @@ struct thrash_cat_t : public cat_attack_t
     base_tick_time *= 1.0 + p -> talent.jagged_wounds -> effectN( 1 ).percent();
     dot_duration *= 1.0 + p -> talent.jagged_wounds -> effectN( 2 ).percent();
     base_multiplier *= 1.0 + p -> artifact.jagged_claws.percent();
+    base_multiplier *= 1.0 + p -> artifact.thrashing_claws.rank() * p -> artifact.thrashing_claws.data().effectN(1).percent();
   }
 
   void impact( action_state_t* s ) override
@@ -7030,13 +7044,18 @@ void druid_t::create_buffs()
                                .cd( timespan_t::zero() )
                                .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ); 
 
+  buff.fury_of_ashamane      = stat_buff_creator_t(this, "fury_of_ashamane", find_spell(240670))
+                               .chance(artifact.fury_of_ashamane.rank() > 0)
+                               .add_stat(STAT_VERSATILITY_RATING, 600) //TODO(feral): fix hardcoded spelldata
+                               .add_invalidate(CACHE_VERSATILITY);
+  
   // Guardian
-  buff.adaptive_fur_holy     = new adaptive_fur_t( *this, "holy" );
-  buff.adaptive_fur_fire     = new adaptive_fur_t(*this, "fire");
-  buff.adaptive_fur_nature   = new adaptive_fur_t(*this, "nature");
-  buff.adaptive_fur_frost    = new adaptive_fur_t(*this, "frost");
-  buff.adaptive_fur_shadow   = new adaptive_fur_t(*this, "shadow");
-  buff.adaptive_fur_arcane   = new adaptive_fur_t(*this, "arcane");
+  buff.adaptive_fur_holy     = new adaptive_fur_t( *this, "holy"   );
+  buff.adaptive_fur_fire     = new adaptive_fur_t( *this, "fire"   );
+  buff.adaptive_fur_nature   = new adaptive_fur_t( *this, "nature" );
+  buff.adaptive_fur_frost    = new adaptive_fur_t( *this, "frost"  );
+  buff.adaptive_fur_shadow   = new adaptive_fur_t( *this, "shadow" );
+  buff.adaptive_fur_arcane   = new adaptive_fur_t( *this, "arcane" );
 
   buff.barkskin              = buff_creator_t( this, "barkskin", find_specialization_spell( "Barkskin" ) )
                                .cd( timespan_t::zero() )
@@ -8068,6 +8087,7 @@ double druid_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buff.rage_of_the_sleeper -> check() * buff.rage_of_the_sleeper -> data().effectN( 5 ).percent();
 
   m *= 1.0 + artifact.fangs_of_the_first.percent();
+  m *= 1.0 + artifact.ferocity_of_the_cenarion_circle.percent();
   m *= 1.0 + artifact.goldrinns_fury.percent();
 
   return m;
