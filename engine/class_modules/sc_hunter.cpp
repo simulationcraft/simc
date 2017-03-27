@@ -636,7 +636,7 @@ public:
     double cast_seconds = std::max( ab::execute_time().total_seconds(), ab::gcd().total_seconds() );
     double sf_seconds = std::min( cast_seconds, p() -> buffs.steady_focus -> remains().total_seconds() );
     double regen = p() -> focus_regen_per_second();
-    return ( regen * cast_seconds ) + ( regen * p() -> buffs.steady_focus -> current_value * sf_seconds );
+    return ( regen * cast_seconds ) + ( regen * p() -> buffs.steady_focus -> check_value() * sf_seconds );
   }
 
 // action list expressions
@@ -1224,7 +1224,7 @@ public:
     player_t::regen( periodicity );
     if ( o() -> buffs.steady_focus -> up() )
     {
-      double base = focus_regen_per_second() * o() -> buffs.steady_focus -> current_value;
+      double base = focus_regen_per_second() * o() -> buffs.steady_focus -> check_value();
       resource_gain( RESOURCE_FOCUS, base * periodicity.total_seconds(), gains.steady_focus );
     }
   }
@@ -1266,7 +1266,7 @@ public:
     double m = base_t::composite_player_multiplier( school );
 
     if ( buffs.bestial_wrath -> up() )
-      m *= 1.0 + buffs.bestial_wrath -> current_value;
+      m *= 1.0 + buffs.bestial_wrath -> check_value();
 
     if ( buffs.tier19_2pc_bm -> up() )
       m *= 1.0 + buffs.tier19_2pc_bm -> check_value();
@@ -1468,7 +1468,7 @@ struct dire_critter_t: public hunter_secondary_pet_t
     cpm *= 1.0 + o() -> artifacts.beast_master.percent();
 
     if ( buffs.bestial_wrath -> up() )
-      cpm *= 1.0 + buffs.bestial_wrath -> default_value;
+      cpm *= 1.0 + buffs.bestial_wrath -> check_value();
 
     return cpm;
   }
@@ -1568,7 +1568,7 @@ struct hati_t: public hunter_secondary_pet_t
     double m = hunter_secondary_pet_t::composite_player_multiplier( school );
 
     if ( buffs.bestial_wrath -> up() )
-      m *= 1.0 + buffs.bestial_wrath -> current_value;
+      m *= 1.0 + buffs.bestial_wrath -> check_value();
 
     return m;
   }
@@ -1999,7 +1999,7 @@ static void trigger_beast_cleave( action_state_t* s )
     p -> active.beast_cleave -> target_cache.is_valid = false;
 
   p -> active.beast_cleave -> target = s -> target;
-  double cleave = s -> result_total * p -> buffs.beast_cleave -> current_value;
+  double cleave = s -> result_total * p -> buffs.beast_cleave -> check_value();
 
   p -> active.beast_cleave -> base_dd_min = cleave;
   p -> active.beast_cleave -> base_dd_max = cleave;
@@ -3031,7 +3031,7 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
     double am = hunter_ranged_attack_t::action_multiplier();
 
     if ( p() -> buffs.trick_shot -> up() )
-      am *= 1.0 + p() -> buffs.trick_shot -> default_value;
+      am *= 1.0 + p() -> buffs.trick_shot -> check_value();
 
     if ( p() -> buffs.sentinels_sight -> up() )
       am *= 1.0 + p() -> buffs.sentinels_sight -> check_stack_value();
@@ -6377,7 +6377,7 @@ void hunter_t::regen( timespan_t periodicity )
   player_t::regen( periodicity );
   if ( buffs.steady_focus -> up() )
   {
-    double base = focus_regen_per_second() * buffs.steady_focus -> current_value;
+    double base = focus_regen_per_second() * buffs.steady_focus -> check_value();
     resource_gain( RESOURCE_FOCUS, base * periodicity.total_seconds(), gains.steady_focus );
   }
 }
@@ -6441,7 +6441,7 @@ double hunter_t::composite_melee_haste() const
   double h = player_t::composite_melee_haste();
 
   if ( buffs.trueshot -> check() )
-    h *= 1.0 / ( 1.0 + buffs.trueshot -> default_value );
+    h *= 1.0 / ( 1.0 + buffs.trueshot -> check_value() );
 
   if ( buffs.sephuzs_secret -> check() )
     h *= 1.0 / ( 1.0 + buffs.sephuzs_secret -> check_value() );
@@ -6459,7 +6459,7 @@ double hunter_t::composite_spell_haste() const
   double h = player_t::composite_spell_haste();
 
   if ( buffs.trueshot -> check() )
-    h *= 1.0 / ( 1.0 + buffs.trueshot -> default_value );
+    h *= 1.0 / ( 1.0 + buffs.trueshot -> check_value() );
 
   if ( buffs.sephuzs_secret -> check() )
     h *= 1.0 / ( 1.0 + buffs.sephuzs_secret -> check_value() );
@@ -6489,7 +6489,7 @@ double hunter_t::composite_player_multiplier( school_e school ) const
   double m = player_t::composite_player_multiplier( school );
 
   if ( buffs.bestial_wrath -> up() )
-    m *= 1.0 + buffs.bestial_wrath -> current_value;
+    m *= 1.0 + buffs.bestial_wrath -> check_value();
 
   if ( school == SCHOOL_PHYSICAL )
     m *= 1.0 + artifacts.iron_talons.data().effectN( 1 ).percent();
