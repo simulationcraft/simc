@@ -178,6 +178,11 @@ public:
     actions::spells::stagger_self_damage_t* stagger_self_damage;
   } active_actions;
 
+  struct passive_actions_t
+  {
+    action_t* thunderfist;
+  } passive_actions;
+
   combo_strikes_e previous_combo_strike;
 
   double gift_of_the_ox_proc_chance;
@@ -676,6 +681,7 @@ public:
   monk_t( sim_t* sim, const std::string& name, race_e r )
     : player_t( sim, MONK, name, r ),
       active_actions( active_actions_t() ),
+      passive_actions( passive_actions_t() ),
       previous_combo_strike( CS_NONE ),
       gift_of_the_ox_proc_chance(),
       internal_id(),
@@ -4236,23 +4242,11 @@ struct thunderfist_t: public monk_spell_t
     may_crit = true;
   }
 
-  virtual bool ready() override
-  {
-    if ( !p() -> artifact.thunderfist.rank() )
-        return false;
-
-    if ( !p() -> buff.thunderfist -> up() )
-      return false;
-
-    return monk_spell_t::ready();
-  }
-
   virtual void execute() override
   {
     monk_spell_t::execute();
 
-    if ( p() -> buff.thunderfist -> up() )
-      p() -> buff.thunderfist -> decrement();
+    p() -> buff.thunderfist -> decrement( 1 );
   }
 };
 
@@ -4332,6 +4326,17 @@ struct melee_t: public monk_melee_attack_t
     else
       monk_melee_attack_t::execute();
   }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    monk_melee_attack_t::impact( s );
+
+    if ( p() -> buff.thunderfist -> up() )
+    {
+      p() -> passive_actions.thunderfist -> target = s -> target;
+      p() -> passive_actions.thunderfist -> schedule_execute();
+    }
+  }
 };
 
 // ==========================================================================
@@ -4341,10 +4346,8 @@ struct melee_t: public monk_melee_attack_t
 struct auto_attack_t: public monk_melee_attack_t
 {
   int sync_weapons;
-  spell_t* thunderfist;
   auto_attack_t( monk_t* player, const std::string& options_str ):
     monk_melee_attack_t( "auto_attack", player, spell_data_t::nil() ),
-    thunderfist( new thunderfist_t( player ) ),
     sync_weapons( 0 )
   {
     add_option( opt_bool( "sync_weapons", sync_weapons ) );
@@ -4383,9 +4386,6 @@ struct auto_attack_t: public monk_melee_attack_t
 
     if ( player -> off_hand_attack )
       p() -> off_hand_attack -> schedule_execute();
-
-    if ( p() -> artifact.thunderfist.rank() )
-      thunderfist -> execute();
   }
 };
 
@@ -8019,6 +8019,9 @@ void monk_t::init_spells()
   if ( talent.chi_orbit -> ok() )
     active_actions.chi_orbit = new actions::chi_orbit_t( this );
 
+  if ( artifact.thunderfist.rank() )
+    passive_actions.thunderfist = new actions::thunderfist_t( this );
+
   if ( specialization() == MONK_BREWMASTER )
     active_actions.stagger_self_damage = new actions::stagger_self_damage_t( this );
   if ( specialization() == MONK_WINDWALKER )
@@ -10498,6 +10501,12 @@ struct monk_module_t: public module_t
 
   virtual void register_hotfixes() const override
   {
+    hotfix::register_effect( "Monk", "2017-03-24", "Windwalker Monks now deal 8% more damage with Tiger Palm, Blackout Kick, and Rising Sun Kick.", 260817 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_MUL)
+      .modifier( 1.08 )
+      .verification_value( 8 )
+      .flags_ = 0x2;
   }
 
   virtual void init( player_t* p ) const override
