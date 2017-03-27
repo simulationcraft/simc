@@ -309,6 +309,7 @@ public:
     timespan_t lessons_of_spacetime2;
     timespan_t lessons_of_spacetime3;
     bool sephuzs_secret;
+    double sephuzs_passive;
     bool magistrike;
 
   } legendary;
@@ -1517,7 +1518,7 @@ double warlock_pet_t::composite_melee_speed() const
   double cmh = pet_t::composite_melee_speed();
 
   if ( buffs.demonic_empowerment->up() )
-    cmh /= 1.0 + buffs.demonic_empowerment->data().effectN( 2 ).percent() + o()->artifact.summoners_prowess.percent();
+    cmh /= 1.0 + buffs.demonic_empowerment->data().effectN( 2 ).percent() + o() -> artifact.summoners_prowess.percent();
 
   return cmh;
 }
@@ -5911,6 +5912,11 @@ double warlock_t::composite_spell_haste() const
     h *= 1.0 / ( 1.0 + buffs.sephuzs_secret -> check_value() );
   }
 
+  if ( legendary.sephuzs_secret )
+  {
+    h *= 1.0 / ( 1.0 + legendary.sephuzs_passive );
+  }
+
   return h;
 }
 
@@ -5923,9 +5929,14 @@ double warlock_t::composite_melee_haste() const
     h *= 1.0 / ( 1.0 + buffs.misery -> stack_value() );
   }
 
-  if ( buffs.sephuzs_secret->check() )
+  if ( buffs.sephuzs_secret -> check() )
   {
-    h *= 1.0 / ( 1.0 + buffs.sephuzs_secret->check_value() );
+    h *= 1.0 / ( 1.0 + buffs.sephuzs_secret -> check_value() );
+  }
+
+  if ( legendary.sephuzs_secret )
+  {
+    h *= 1.0 / ( 1.0 + legendary.sephuzs_passive );
   }
 
   return h;
@@ -7867,9 +7878,10 @@ struct sephuzs_secret_t : public scoped_actor_callback_t<warlock_t>
 {
   sephuzs_secret_t() : super( WARLOCK ){}
 
-  void manipulate( warlock_t* a, const special_effect_t& ) override
+  void manipulate( warlock_t* a, const special_effect_t& e ) override
   {
     a -> legendary.sephuzs_secret = true;
+    a -> legendary.sephuzs_passive = e.driver() -> effectN( 3 ).percent();
   }
 };
 
