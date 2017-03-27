@@ -3455,7 +3455,7 @@ struct demonic_empowerment_t: public warlock_spell_t
 //              if(rng().roll( p() -> find_spell(238145) ->proc_chance() ))
 //              double chance = p()->find_spell(242832)->proc_chance();
 //              if(rng().range(0.0, 1.0) < chance)
-                lock_pet -> ascendance->execute();
+                lock_pet -> ascendance -> execute();
           }
           lock_pet -> buffs.demonic_empowerment -> trigger();
         }
@@ -7752,6 +7752,17 @@ struct hood_of_eternal_disdain_t : public scoped_action_callback_t<agony_t>
   }
 };
 
+struct sacrolashs_dark_strike_t : public scoped_action_callback_t<corruption_t>
+{
+  sacrolashs_dark_strike_t() : super( WARLOCK, "corruption" )
+  {}
+
+  void manipulate( corruption_t* a, const special_effect_t& e ) override
+  {
+    a -> base_multiplier *= 1.0 + e.driver() -> effectN( 1 ).percent();
+  }
+};
+
 struct kazzaks_final_curse_t : public scoped_action_callback_t<doom_t>
 {
   kazzaks_final_curse_t() : super( WARLOCK, "doom" )
@@ -7904,6 +7915,7 @@ struct warlock_module_t: public module_t
     register_special_effect( 236199, wakeners_loyalty_t() );
     register_special_effect( 236174, lessons_of_spacetime_t() );
     register_special_effect( 208051, sephuzs_secret_t() );
+    register_special_effect( 207952, sacrolashs_dark_strike_t() );
     register_special_effect( 213014, magistrike_t() );
   }
 
