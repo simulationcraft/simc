@@ -5088,8 +5088,7 @@ void priest_t::apl_shadow()
       "vampiric_touch,if=!talent.misery.enabled&dot.vampiric_touch.remains<"
       "(4+(4%3))*gcd" );
   main->add_action(
-      "void_eruption,if=insanity>=70|(talent.auspicious_spirits.enabled&"
-      "insanity>=(65-shadowy_apparitions_in_flight*3))|set_bonus.tier19_4pc" );
+      "void_eruption" );
   main->add_action( "shadow_crash,if=talent.shadow_crash.enabled" );
   main->add_action( "mindbender,if=talent.mindbender.enabled&set_bonus.tier18_2pc" );
   main->add_action(

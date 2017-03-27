@@ -2947,7 +2947,8 @@ struct garrote_t : public rogue_attack_t
   {
     double m = rogue_attack_t::composite_persistent_multiplier( state );
 
-    if ( p() -> buffs.stealth -> up() || p() -> buffs.vanish -> up() || p() -> buffs.subterfuge -> up() )
+    if ( p() -> talent.subterfuge -> ok() &&
+         ( p() -> buffs.stealth -> up() || p() -> buffs.vanish -> up() || p() -> buffs.subterfuge -> up() ) )
     {
       m *= 1.0 + p() -> spell.subterfuge -> effectN( 2 ).percent();
     }

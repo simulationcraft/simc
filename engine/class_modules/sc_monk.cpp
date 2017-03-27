@@ -178,6 +178,11 @@ public:
     actions::spells::stagger_self_damage_t* stagger_self_damage;
   } active_actions;
 
+  struct passive_actions_t
+  {
+    action_t* thunderfist;
+  } passive_actions;
+
   combo_strikes_e previous_combo_strike;
 
   double gift_of_the_ox_proc_chance;
@@ -606,7 +611,7 @@ public:
     const spell_data_t* mark_of_the_crane;
     const spell_data_t* master_of_combinations;
     const spell_data_t* whirling_dragon_punch;
-    const spell_data_t* thunderfist;
+    const spell_data_t* thunderfist_damage;
     const spell_data_t* touch_of_karma_buff;
     const spell_data_t* touch_of_karma_tick;
     const spell_data_t* tier17_4pc_melee;
@@ -676,6 +681,7 @@ public:
   monk_t( sim_t* sim, const std::string& name, race_e r )
     : player_t( sim, MONK, name, r ),
       active_actions( active_actions_t() ),
+      passive_actions( passive_actions_t() ),
       previous_combo_strike( CS_NONE ),
       gift_of_the_ox_proc_chance(),
       internal_id(),
@@ -4230,29 +4236,17 @@ struct strike_of_the_windlord_t: public monk_melee_attack_t
 struct thunderfist_t: public monk_spell_t
 {
   thunderfist_t( monk_t* player ) :
-    monk_spell_t( "thunderfist", player, player -> passives.thunderfist -> effectN( 1 ).trigger() )
+    monk_spell_t( "thunderfist", player, player -> passives.thunderfist_damage )
   {
     background = true;
     may_crit = true;
-  }
-
-  virtual bool ready() override
-  {
-    if ( !p() -> artifact.thunderfist.rank() )
-        return false;
-
-    if ( !p() -> buff.thunderfist -> up() )
-      return false;
-
-    return monk_spell_t::ready();
   }
 
   virtual void execute() override
   {
     monk_spell_t::execute();
 
-    if ( p() -> buff.thunderfist -> up() )
-      p() -> buff.thunderfist -> decrement();
+    p() -> buff.thunderfist -> decrement( 1 );
   }
 };
 
@@ -4332,6 +4326,17 @@ struct melee_t: public monk_melee_attack_t
     else
       monk_melee_attack_t::execute();
   }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    monk_melee_attack_t::impact( s );
+
+    if ( p() -> buff.thunderfist -> up() )
+    {
+      p() -> passive_actions.thunderfist -> target = s -> target;
+      p() -> passive_actions.thunderfist -> schedule_execute();
+    }
+  }
 };
 
 // ==========================================================================
@@ -4341,10 +4346,8 @@ struct melee_t: public monk_melee_attack_t
 struct auto_attack_t: public monk_melee_attack_t
 {
   int sync_weapons;
-  spell_t* thunderfist;
   auto_attack_t( monk_t* player, const std::string& options_str ):
     monk_melee_attack_t( "auto_attack", player, spell_data_t::nil() ),
-    thunderfist( new thunderfist_t( player ) ),
     sync_weapons( 0 )
   {
     add_option( opt_bool( "sync_weapons", sync_weapons ) );
@@ -4383,9 +4386,6 @@ struct auto_attack_t: public monk_melee_attack_t
 
     if ( player -> off_hand_attack )
       p() -> off_hand_attack -> schedule_execute();
-
-    if ( p() -> artifact.thunderfist.rank() )
-      thunderfist -> execute();
   }
 };
 
@@ -4750,7 +4750,7 @@ struct spear_hand_strike_t: public monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
 
-    //p() -> trigger_sephuzs_secret( execute_state, MECHANIC_INTERRUPT );
+    p() -> trigger_sephuzs_secret( execute_state, MECHANIC_INTERRUPT );
   }
 };
 
@@ -4772,7 +4772,7 @@ struct leg_sweep_t: public monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
 
-    //p() -> trigger_sephuzs_secret( execute_state, MECHANIC_STUN );
+    p() -> trigger_sephuzs_secret( execute_state, MECHANIC_STUN );
   }
 };
 
@@ -4794,7 +4794,7 @@ struct paralysis_t: public monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
 
-    //p() -> trigger_sephuzs_secret( execute_state, MECHANIC_INCAPACITATE );
+    p() -> trigger_sephuzs_secret( execute_state, MECHANIC_INCAPACITATE );
   }
 };
 } // END melee_attacks NAMESPACE
@@ -7381,7 +7381,7 @@ struct windwalking_driver_t: public monk_buff_t < buff_t >
       range::for_each( p.windwalking_aura->target_list(), [&p, this]( player_t* target ) {
         target->buffs.windwalking_movement_aura->trigger(
             1, ( movement_increase +
-                 ( p.legendary.march_of_the_legion ? p.legendary.march_of_the_legion->effectN( 1 ).percent() : 0.0 ) ),
+                 ( p.legendary.march_of_the_legion ? p.legendary.march_of_the_legion -> effectN( 1 ).percent() : 0.0 ) ),
             1, timespan_t::from_seconds( 10 ) );
       } );
     } );
@@ -7988,7 +7988,7 @@ void monk_t::init_spells()
   passives.mark_of_the_crane                = find_spell( 228287 );
   passives.master_of_combinations           = find_spell( 240672 );
   passives.whirling_dragon_punch            = find_spell( 158221 );
-  passives.thunderfist                      = find_spell( 242387 );
+  passives.thunderfist_damage               = find_spell( 242390 );
   passives.touch_of_karma_buff              = find_spell( 125174 );
   passives.touch_of_karma_tick              = find_spell( 124280 );
   passives.tier17_4pc_melee                 = find_spell( 166603 );
@@ -8018,6 +8018,9 @@ void monk_t::init_spells()
 
   if ( talent.chi_orbit -> ok() )
     active_actions.chi_orbit = new actions::chi_orbit_t( this );
+
+  if ( artifact.thunderfist.rank() )
+    passive_actions.thunderfist = new actions::thunderfist_t( this );
 
   if ( specialization() == MONK_BREWMASTER )
     active_actions.stagger_self_damage = new actions::stagger_self_damage_t( this );
@@ -8276,7 +8279,8 @@ void monk_t::create_buffs()
     .default_value( passives.hit_combo -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
-  buff.master_of_combinations = stat_buff_creator_t( this, "master_of_combinations", passives.master_of_combinations );
+  buff.master_of_combinations = stat_buff_creator_t( this, "master_of_combinations", passives.master_of_combinations )
+    .rppm_freq( 2 );
 
   buff.masterful_strikes = buff_creator_t( this, "masterful_strikes", passives.tier18_2pc_melee )
     .default_value( passives.tier18_2pc_melee -> effectN( 1 ).base_value() )
@@ -8293,7 +8297,10 @@ void monk_t::create_buffs()
                        .duration( timespan_t::from_seconds( 24 ) )
                        .default_value( sets.set( MONK_WINDWALKER, T20, B4 ) -> effectN( 1 ).percent() );
 
-  buff.thunderfist = buff_creator_t( this, "thunderfist", passives.thunderfist );
+  // TODO: FIX the buff info
+  buff.thunderfist = buff_creator_t( this, "thunderfist", passives.thunderfist_damage )
+                    .duration( timespan_t::from_seconds( 30 ) )
+                    .max_stack( 99 );
 
   buff.touch_of_karma = new buffs::touch_of_karma_buff_t( *this, "touch_of_karma", passives.touch_of_karma_buff );
 
@@ -8628,7 +8635,7 @@ double monk_t::composite_spell_haste() const
 
   // 7.2 Sephuz's Secret passive haste. If the item is missing, default_chance will be set to 0 (by
   // the fallback buff creator).
-  if ( maybe_ptr( dbc.ptr ) && legendary.sephuzs_secret -> ok() )
+  if ( maybe_ptr( dbc.ptr ) && legendary.sephuzs_secret )
   {
     h *= 1.0 / ( 1.0 + legendary.sephuzs_secret -> effectN( 3 ).percent() );
   }
@@ -8649,7 +8656,7 @@ double monk_t::composite_melee_haste() const
 
   // 7.2 Sephuz's Secret passive haste. If the item is missing, default_chance will be set to 0 (by
   // the fallback buff creator).
-  if ( maybe_ptr( dbc.ptr ) && legendary.sephuzs_secret -> ok() )
+  if ( maybe_ptr( dbc.ptr ) && legendary.sephuzs_secret )
   {
     h *= 1.0 / ( 1.0 + legendary.sephuzs_secret -> effectN( 3 ).percent() );
   }
@@ -8926,7 +8933,7 @@ double monk_t::passive_movement_modifier() const
 
   // 7.2 Sephuz's Secret passive movement speed. If the item is missing, default_chance will be set
   // to 0 (by the fallback buff creator).
-  if ( maybe_ptr( dbc.ptr ) && legendary.sephuzs_secret -> ok() )
+  if ( maybe_ptr( dbc.ptr ) && legendary.sephuzs_secret )
   {
     ms += legendary.sephuzs_secret -> effectN( 2 ).percent();
   }
@@ -10494,6 +10501,11 @@ struct monk_module_t: public module_t
 
   virtual void register_hotfixes() const override
   {
+    hotfix::register_effect( "Monk", "2017-03-24", "Windwalker Monks now deal 8% more damage with Tiger Palm, Blackout Kick, and Rising Sun Kick.", 260817 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_MUL)
+      .modifier( 1.08 )
+      .verification_value( 8 );
   }
 
   virtual void init( player_t* p ) const override
