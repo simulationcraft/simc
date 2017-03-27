@@ -3450,7 +3450,6 @@ struct demonic_empowerment_t: public warlock_spell_t
       {
         if( !lock_pet -> is_sleeping() )
         {
-          lock_pet -> buffs.demonic_empowerment -> trigger();
           if(p()->artifact.thalkiels_ascendance.rank())
           {
 //              if(rng().roll( p() -> find_spell(238145) ->proc_chance() ))
@@ -3459,6 +3458,7 @@ struct demonic_empowerment_t: public warlock_spell_t
               if(rng().roll(0.5))
                 lock_pet -> ascendance->execute();
           }
+          lock_pet->buffs.demonic_empowerment->trigger();
         }
       }
     }
