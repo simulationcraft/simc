@@ -1462,7 +1462,6 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
   {
     m *= 1.0 + o() -> artifact.thalkiels_lingering_power.percent();
     m *= 1.0 + o() -> artifact.swarms_of_the_black_harvest.percent();
-    m *= 1.0 + o() -> artifact.left_hand_of_darkness.percent();
   }
 
   if ( o() -> specialization() == WARLOCK_DESTRUCTION )
@@ -1568,6 +1567,13 @@ struct felguard_pet_t: public warlock_pet_t
 
     melee_attack = new warlock_pet_melee_t( this );
     special_action = new felstorm_t( this );
+  }
+
+  double composite_player_multiplier( school_e school ) const override
+  {
+    double m = warlock_pet_t::composite_player_multiplier( school );
+    m *= 1.0 + o() -> artifact.left_hand_of_darkness.percent();
+    return m;
   }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
@@ -1933,6 +1939,15 @@ struct infernal_t: public warlock_pet_t
     base_energy_regen_per_second = 0;
   }
 
+  double composite_player_multiplier( school_e school ) const override
+  {
+    double m = warlock_pet_t::composite_player_multiplier( school );
+
+    if ( o() -> talents.grimoire_of_supremacy -> ok() )
+      m *= 1.0 + o() -> artifact.left_hand_of_darkness.percent();
+    return m;
+  }
+
   virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
   {
     if ( name == "immolation" ) return new immolation_t( this, options_str );
@@ -1990,6 +2005,15 @@ struct doomguard_t: public warlock_pet_t
 
     resources.base[RESOURCE_ENERGY] = 100;
     base_energy_regen_per_second = 12;
+  }
+
+  double composite_player_multiplier( school_e school ) const override
+  {
+    double m = warlock_pet_t::composite_player_multiplier( school );
+
+    if ( o() -> talents.grimoire_of_supremacy -> ok() )
+      m *= 1.0 + o() -> artifact.left_hand_of_darkness.percent();
+    return m;
   }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
