@@ -10505,8 +10505,7 @@ struct monk_module_t: public module_t
       .field( "base_value" )
       .operation( hotfix::HOTFIX_MUL)
       .modifier( 1.08 )
-      .verification_value( 8 )
-      .flags_ = 0x2;
+      .verification_value( 8 );
   }
 
   virtual void init( player_t* p ) const override
