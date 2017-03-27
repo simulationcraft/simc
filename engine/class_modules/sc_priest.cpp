@@ -5215,12 +5215,13 @@ void priest_t::apl_shadow()
       "(buff.insanity_drain_stacks.value)" );
   vf->add_action(
     "silence,if=equipped.sephuzs_secret&(target.is_add|target.debuff.casting."
-    "react)&cooldown.buff_sephuzs_secret.remains<1&!buff.sephuzs_secret.up,"
-    "cycle_targets=1");
+    "react)&cooldown.buff_sephuzs_secret.remains<1&!buff.sephuzs_secret.up"
+    "&buff.insanity_drain_stacks.value>10,cycle_targets=1");
+  vf->add_action( "void_bolt" );
   vf->add_action(
     "mind_bomb,if=equipped.sephuzs_secret&target.is_add&cooldown.buff_sephuzs_"
-    "secret.remains<1&!buff.sephuzs_secret.up,cycle_targets=1");
-  vf->add_action( "void_bolt" );
+    "secret.remains<1&!buff.sephuzs_secret.up&buff.insanity_drain_stacks.value>10"
+    ",cycle_targets=1");
   vf->add_action( "shadow_crash,if=talent.shadow_crash.enabled" );
   vf->add_action(
       "void_torrent,if=dot.shadow_word_pain.remains>5.5&dot.vampiric_touch."
