@@ -493,6 +493,9 @@ public:
   void              apl_surv();
   void              apl_bm();
   void              apl_mm();
+  std::string default_potion() const override;
+  std::string default_flask() const override;
+  std::string default_food() const override;
 
   void              add_item_actions( action_priority_list_t* list );
 
@@ -6087,6 +6090,47 @@ void hunter_t::init_scaling()
   scales_with[STAT_STRENGTH] = false;
 }
 
+// hunter_t::default_potion =================================================
+
+std::string hunter_t::default_potion() const
+{
+  std::string lvl110_potion =
+    ( specialization() == HUNTER_MARKSMANSHIP ) ? "deadly_grace" : "prolonged_power";
+
+  return ( true_level >= 100 ) ? lvl110_potion :
+         ( true_level >= 90  ) ? "draenic_agility" :
+         ( true_level >= 85  ) ? "virmens_bite":
+         "disabled";
+}
+
+// hunter_t::default_flask ==================================================
+
+std::string hunter_t::default_flask() const
+{
+  return ( true_level >  100 ) ? "seventh_demon" :
+         ( true_level >= 90  ) ? "greater_draenic_agility_flask" :
+         ( true_level >= 85  ) ? "spring_blossoms" :
+         ( true_level >= 80  ) ? "winds" :
+         "disabled";
+}
+
+// hunter_t::default_food ===================================================
+
+std::string hunter_t::default_food() const
+{
+  std::string lvl110_food =
+    ( specialization() == HUNTER_SURVIVAL ) ? "azshari_salad" : "nightborne_delicacy_platter";
+
+  std::string lvl100_food =
+    ( specialization() == HUNTER_SURVIVAL ) ? "pickled_eel" : "salty_squid_roll";
+
+  return ( true_level >  100 ) ? lvl110_food :
+         ( true_level >  90  ) ? lvl100_food :
+         ( true_level == 90  ) ? "sea_mist_rice_noodles" :
+         ( true_level >= 80  ) ? "seafood_magnifique_feast" :
+         "disabled";
+}
+
 // hunter_t::init_actions ===================================================
 
 void hunter_t::init_action_list()
@@ -6103,68 +6147,19 @@ void hunter_t::init_action_list()
     action_priority_list_t* precombat = get_action_priority_list( "precombat" );
 
     // Flask
-    if ( sim -> allow_flasks && true_level >= 80 )
-    {
-      std::string flask_action = "flask,type=";
-      if ( true_level > 100 )
-        flask_action += "flask_of_the_seventh_demon";
-      else if ( true_level > 90 )
-        flask_action += "greater_draenic_agility_flask";
-      else
-        flask_action += "spring_blossoms";
-      precombat -> add_action( flask_action );
-    }
+    precombat -> add_action( "flask" );
+    // Added Rune if Flask are allowed since there is no "allow_runes" bool.
+    if ( sim -> allow_flasks && true_level >= 110 )
+      precombat -> add_action( "augmentation,type=defiled" );
 
     // Food
-    if ( sim -> allow_food )
-    {
-      std::string food_action = "food,type=";
-      if ( level() <= 90 )
-        food_action += ( level() > 85 ) ? "sea_mist_rice_noodles" : "seafood_magnifique_feast";
-      else if ( level() <= 100 )
-      {
-        if ( specialization() == HUNTER_BEAST_MASTERY || specialization() == HUNTER_MARKSMANSHIP )
-          food_action += "salty_squid_roll";
-        else if ( specialization() == HUNTER_SURVIVAL )
-          food_action += "pickled_eel";
-      }
-      else if ( specialization() == HUNTER_BEAST_MASTERY )
-        food_action += "nightborne_delicacy_platter";
-      else if ( specialization() == HUNTER_MARKSMANSHIP )
-        food_action += "nightborne_delicacy_platter";
-      else
-        food_action += "azshari_salad";
-      precombat -> add_action( food_action );
-    }
+    precombat -> add_action( "food" );
 
     precombat -> add_action( "summon_pet" );
     precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
-    //Pre-pot
-    if ( sim -> allow_potions )
-    {
-      if ( true_level > 100 )
-      {
-        if ( specialization() == HUNTER_SURVIVAL )
-          precombat -> add_action( "potion,name=prolonged_power" );
-        else if ( specialization() == HUNTER_BEAST_MASTERY )
-        {
-          precombat -> add_action( "potion,name=prolonged_power" );
-        }
-        else
-        {
-          precombat -> add_action( "potion,name=prolonged_power,if=spell_targets.multi_shot>2" );
-          precombat -> add_action( "potion,name=deadly_grace" );
-        }
-      }
-      else if ( true_level > 90 )
-        precombat -> add_action( "potion,name=draenic_agility" );
-      else if ( true_level >= 80 )
-        precombat -> add_action( "potion,name=virmens_bite" );
-    }
-
-    if ( true_level > 100 )
-      precombat -> add_action( "augmentation,type=defiled" );
+    // Pre-pot
+    precombat -> add_action( "potion" );
 
     switch ( specialization() )
     {
@@ -6182,10 +6177,8 @@ void hunter_t::init_action_list()
       break;
     }
 
-    if ( summon_pet_str.empty() && specialization() != HUNTER_SURVIVAL )
+    if ( summon_pet_str.empty() )
       summon_pet_str = "cat";
-    if ( summon_pet_str.empty() && specialization() == HUNTER_SURVIVAL )
-      summon_pet_str = "carrion_bird";
 
     // Default
     use_default_action_list = true;
@@ -6224,7 +6217,7 @@ void hunter_t::apl_bm()
   default_list -> add_talent( this, "Volley", "toggle=on" );
 
   // In-combat potion
-  default_list -> add_action( "potion,name=prolonged_power,if=buff.bestial_wrath.remains|!cooldown.beastial_wrath.remains" );
+  default_list -> add_action( "potion,if=buff.bestial_wrath.remains|!cooldown.beastial_wrath.remains" );
 
   // Generic APL
   default_list -> add_talent( this, "A Murder of Crows" );
@@ -6284,8 +6277,8 @@ void hunter_t::apl_mm()
   cooldowns -> add_action( "blood_fury,if=buff.trueshot.up" );
 
   // In-combat potion
-  cooldowns -> add_action( "potion,name=prolonged_power,if=spell_targets.multishot>2&((buff.trueshot.react&buff.bloodlust.react)|buff.bullseye.react>=23|target.time_to_die<62)" );
-  cooldowns -> add_action( "potion,name=deadly_grace,if=(buff.trueshot.react&buff.bloodlust.react)|buff.bullseye.react>=23|target.time_to_die<31" );
+  cooldowns -> add_action( "potion,if=(buff.trueshot.react&buff.bloodlust.react)|buff.bullseye.react>=23|"
+                                     "((consumable.prolonged_power&target.time_to_die<62)|target.time_to_die<31)" );
   // Trueshot
   cooldowns -> add_action( "variable,name=trueshot_cooldown,op=set,value=time*1.1,if=time>15&cooldown.trueshot.up&variable.trueshot_cooldown=0" );
   cooldowns -> add_action( this, "Trueshot", "if=variable.trueshot_cooldown=0|buff.bloodlust.up|(variable.trueshot_cooldown>0&target.time_to_die>(variable.trueshot_cooldown+duration))|buff.bullseye.react>25|target.time_to_die<16" );
@@ -6376,7 +6369,7 @@ void hunter_t::apl_surv()
   default_list -> add_action( "blood_fury,if=(buff.spitting_cobra.up&buff.mongoose_fury.stack>2&buff.aspect_of_the_eagle.up)|(!talent.spitting_cobra.enabled&buff.aspect_of_the_eagle.up)" );
 
   // In-combat potion
-  default_list -> add_action( "potion,name=prolonged_power,if=(talent.spitting_cobra.enabled&buff.spitting_cobra.remains)|(!talent.spitting_cobra.enabled&buff.aspect_of_the_eagle.remains)" );
+  default_list -> add_action( "potion,if=(talent.spitting_cobra.enabled&buff.spitting_cobra.remains)|(!talent.spitting_cobra.enabled&buff.aspect_of_the_eagle.remains)" );
 
   // Choose APL
   default_list -> add_action( "call_action_list,name=moknathal,if=talent.way_of_the_moknathal.enabled" );
