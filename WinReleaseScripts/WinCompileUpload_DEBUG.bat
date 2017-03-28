@@ -16,9 +16,9 @@ call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x64
 cd %currdir%
 qmake -r -tp vc -spec win32-msvc2015 simulationcraft.pro
 
-set simcversion=715-02
-set SIMCAPPFULLVERSION=7.1.5.02
-:: For bumping the minor version, just change the above line.  Make sure to also change setup32.iss and setup64.iss as well. 
+set simcversion=720-01
+set SIMCAPPFULLVERSION=7.2.0.01
+:: For bumping the minor version, just change the above line.
 :: Location of source files
 set qt_dir=C:\Qt\Qt5.8.0\5.8\
 :: Location of QT
