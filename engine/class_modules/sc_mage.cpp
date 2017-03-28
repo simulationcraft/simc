@@ -3240,6 +3240,15 @@ struct arcane_missiles_tick_t : public arcane_mage_spell_t
     triggers_arcane_missiles = false;
   }
 
+  void impact( action_state_t* s ) override
+  {
+    arcane_mage_spell_t::impact( s );
+
+    if ( p() -> legendary.cord_of_infinity )
+    {
+      p() -> buffs.cord_of_infinity -> trigger();
+    }
+  }
 };
 
 struct am_state_t : public action_state_t
@@ -3423,15 +3432,6 @@ struct arcane_missiles_t : public arcane_mage_spell_t
 
   }
 
-  void tick ( dot_t* d ) override
-  {
-    arcane_mage_spell_t::tick( d );
-
-    if ( p() -> legendary.cord_of_infinity )
-    {
-      p() -> buffs.cord_of_infinity -> trigger();
-    }
-  }
   void last_tick ( dot_t * d ) override
   {
     arcane_mage_spell_t::last_tick( d );
