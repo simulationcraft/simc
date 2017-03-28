@@ -7,6 +7,11 @@ talents=2022031
 artifact=4:0:0:0:0:72:3:73:1:74:3:75:3:77:3:78:1:79:3:80:1:81:3:82:3:83:3:84:3:86:1:87:1:290:1:1169:1:1339:1:1371:20
 spec=arcane
 
+# Default consumables
+potion=deadly_grace
+flask=whispered_pact
+food=the_hungry_magister
+
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
 # while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
@@ -14,13 +19,13 @@ spec=arcane
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
-actions.precombat=flask,type=flask_of_the_whispered_pact
-actions.precombat+=/food,type=the_hungry_magister
+actions.precombat=flask
+actions.precombat+=/food
 actions.precombat+=/augmentation,type=defiled
 actions.precombat+=/summon_arcane_familiar
 actions.precombat+=/snapshot_stats
 actions.precombat+=/mirror_image
-actions.precombat+=/potion,name=deadly_grace
+actions.precombat+=/potion
 actions.precombat+=/arcane_blast
 
 # Executed every time the actor is available.
@@ -74,7 +79,7 @@ actions.cooldowns+=/arcane_power
 actions.cooldowns+=/blood_fury
 actions.cooldowns+=/berserking
 actions.cooldowns+=/arcane_torrent
-actions.cooldowns+=/potion,name=deadly_grace,if=buff.arcane_power.up&(buff.berserking.up|buff.blood_fury.up)
+actions.cooldowns+=/potion,if=buff.arcane_power.up&(buff.berserking.up|buff.blood_fury.up)
 
 actions.init_burn=mark_of_aluneth
 actions.init_burn+=/nether_tempest,if=dot.nether_tempest.remains<10&(prev_gcd.1.mark_of_aluneth|(talent.rune_of_power.enabled&cooldown.rune_of_power.remains<gcd.max))

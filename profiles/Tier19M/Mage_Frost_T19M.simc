@@ -7,6 +7,11 @@ talents=3022021
 artifact=53:139259:139269:139259:0:783:1:784:3:785:3:786:5:787:3:788:3:789:4:790:3:791:3:792:3:793:1:794:1:795:1:796:1:797:1:798:1:1296:1
 spec=frost
 
+# Default consumables
+potion=prolonged_power
+flask=whispered_pact
+food=azshari_salad
+
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
 # while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
@@ -14,13 +19,13 @@ spec=frost
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
-actions.precombat=flask,type=flask_of_the_whispered_pact
-actions.precombat+=/food,type=azshari_salad
+actions.precombat=flask
+actions.precombat+=/food
 actions.precombat+=/augmentation,type=defiled
 actions.precombat+=/water_elemental
 actions.precombat+=/snapshot_stats
 actions.precombat+=/mirror_image
-actions.precombat+=/potion,name=prolonged_power
+actions.precombat+=/potion
 actions.precombat+=/frostbolt
 
 # Executed every time the actor is available.
@@ -48,7 +53,7 @@ actions.aoe+=/glacial_spike
 actions.aoe+=/frostbolt
 
 actions.cooldowns=rune_of_power,if=cooldown.icy_veins.remains<cast_time|charges_fractional>1.9&cooldown.icy_veins.remains>10|buff.icy_veins.up|target.time_to_die.remains+5<charges_fractional*10
-actions.cooldowns+=/potion,name=prolonged_power,if=cooldown.icy_veins.remains<1
+actions.cooldowns+=/potion,if=cooldown.icy_veins.remains<1
 actions.cooldowns+=/variable,name=iv_start,value=time,if=cooldown.icy_veins.ready&buff.icy_veins.down
 actions.cooldowns+=/icy_veins,if=buff.icy_veins.down
 actions.cooldowns+=/mirror_image

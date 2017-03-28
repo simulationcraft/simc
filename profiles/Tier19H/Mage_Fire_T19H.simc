@@ -7,6 +7,11 @@ talents=1222122
 artifact=54:137358:137303:137358:0:748:1:749:3:750:3:751:6:752:3:754:3:755:3:756:3:758:1:759:1:762:1:763:1:1340:1
 spec=fire
 
+# Default consumables
+potion=deadly_grace
+flask=whispered_pact
+food=the_hungry_magister
+
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
 # while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
@@ -14,12 +19,12 @@ spec=fire
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
-actions.precombat=flask,type=flask_of_the_whispered_pact
-actions.precombat+=/food,type=the_hungry_magister
+actions.precombat=flask
+actions.precombat+=/food
 actions.precombat+=/augmentation,type=defiled
 actions.precombat+=/snapshot_stats
 actions.precombat+=/mirror_image
-actions.precombat+=/potion,name=deadly_grace
+actions.precombat+=/potion
 actions.precombat+=/pyroblast
 
 # Executed every time the actor is available.
@@ -40,7 +45,7 @@ actions.active_talents+=/living_bomb,if=active_enemies>1&buff.combustion.down
 actions.combustion_phase=rune_of_power,if=buff.combustion.down
 actions.combustion_phase+=/call_action_list,name=active_talents
 actions.combustion_phase+=/combustion
-actions.combustion_phase+=/potion,name=deadly_grace
+actions.combustion_phase+=/potion
 actions.combustion_phase+=/blood_fury
 actions.combustion_phase+=/berserking
 actions.combustion_phase+=/arcane_torrent
