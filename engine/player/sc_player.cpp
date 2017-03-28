@@ -9894,6 +9894,7 @@ void player_t::copy_from( player_t* source )
   gear = source -> gear;
   enchant = source -> enchant;
   bugs = source -> bugs;
+  base.distance = source -> base.distance;
 }
 
 
