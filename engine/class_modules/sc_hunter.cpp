@@ -6493,8 +6493,7 @@ double hunter_t::composite_melee_haste() const
   if ( buffs.sephuzs_secret -> check() )
     h *= 1.0 / ( 1.0 + buffs.sephuzs_secret -> check_value() );
 
-  // 7.2 Sephuz's Secret passive haste
-  if ( maybe_ptr( dbc.ptr ) && legendary.sephuzs_secret )
+  if ( legendary.sephuzs_secret )
     h *= 1.0 / ( 1.0 + legendary.sephuzs_secret -> driver() -> effectN( 3 ).percent() );
 
   return h;
@@ -6512,8 +6511,7 @@ double hunter_t::composite_spell_haste() const
   if ( buffs.sephuzs_secret -> check() )
     h *= 1.0 / ( 1.0 + buffs.sephuzs_secret -> check_value() );
 
-  // 7.2 Sephuz's Secret passive haste
-  if ( maybe_ptr( dbc.ptr ) && legendary.sephuzs_secret )
+  if ( legendary.sephuzs_secret )
     h *= 1.0 / ( 1.0 + legendary.sephuzs_secret -> driver() -> effectN( 3 ).percent() );
 
   return h;
