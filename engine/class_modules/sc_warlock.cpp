@@ -84,6 +84,7 @@ struct warlock_td_t: public actor_target_data_t
   buff_t* debuffs_eradication;
   buff_t* debuffs_roaring_blaze;
   buff_t* debuffs_havoc;
+  buff_t* debuffs_jaws_of_shadow;
 
   int agony_stack;
   double soc_threshold;
@@ -1018,6 +1019,16 @@ struct dreadbite_t : public warlock_pet_melee_attack_t
     dreadstalker_duration = p -> find_spell( 193332 ) -> duration();
     cooldown -> duration = dreadstalker_duration + timespan_t::from_seconds( 1.0 );
   }
+
+  void impact( action_state_t* s ) override
+  {
+    warlock_pet_melee_attack_t::impact( s );
+
+    if ( result_is_hit( s -> result ) && p() -> o() -> artifact.jaws_of_shadow.rank() )
+    {
+      td( s -> target ) -> debuffs_jaws_of_shadow -> trigger();
+    }
+  }
 };
 
 struct legion_strike_t: public warlock_pet_melee_attack_t
@@ -1250,18 +1261,19 @@ struct meteor_strike_t: public warlock_pet_spell_t
 
 struct fel_firebolt_t: public warlock_pet_spell_t
 {
+  double jaws_of_shadow_multiplier;
   fel_firebolt_t( warlock_pet_t* p ):
     warlock_pet_spell_t( "fel_firebolt", p, p -> find_spell( 104318 ) )
   {
       base_multiplier *= 1.0 + p -> o() -> artifact.infernal_furnace.percent();
       this -> base_crit += p -> o() -> artifact.imperator.percent();
+      jaws_of_shadow_multiplier = p -> o() -> find_spell( 242922 ) -> effectN( 1 ).percent();
   }
 
   virtual bool ready() override
   {
     return spell_t::ready();
   }
-
 
   void execute() override
   {
@@ -1273,7 +1285,6 @@ struct fel_firebolt_t: public warlock_pet_spell_t
     }
   }
 
-
   virtual void impact( action_state_t* s ) override
   {
     warlock_pet_spell_t::impact( s );
@@ -1284,6 +1295,20 @@ struct fel_firebolt_t: public warlock_pet_spell_t
         p() -> o() -> buffs.t18_4pc_driver -> trigger();
       }
     }
+  }
+
+  virtual double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = warlock_pet_spell_t::composite_target_multiplier( target );
+
+    warlock_td_t* td = this -> td( target );
+
+    m *= td -> agony_stack;
+
+    if ( td -> debuffs_jaws_of_shadow -> check() )
+      m *= 1.0 + jaws_of_shadow_multiplier;
+
+    return m;
   }
 };
 
@@ -5741,6 +5766,7 @@ warlock( p )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC );
   debuffs_roaring_blaze = buff_creator_t( *this, "roaring_blaze", source -> find_spell( 205690 ) )
     .max_stack( 100 );
+  debuffs_jaws_of_shadow = buff_creator_t( *this, "jaws_of_shadow", source -> find_spell( 242922 ) );
 
   debuffs_havoc = new buffs::debuff_havoc_t( *this );
 
