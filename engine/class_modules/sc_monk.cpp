@@ -9705,6 +9705,8 @@ void monk_t::apl_combat_windwalker()
   // Serenity
   serenity -> add_action( "call_action_list,name=cd" );
   serenity -> add_talent( this, "Serenity" );
+  serenity -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=active_enemies<3" );
+  serenity -> add_action( this, "Fists of Fury" );
   serenity -> add_action( this, "Strike of the Windlord" );
 
   for ( int i = 0; i < num_items; i++ )
@@ -9718,8 +9720,6 @@ void monk_t::apl_combat_windwalker()
     }
   }
 
-  serenity -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=active_enemies<3" );
-  serenity -> add_action( this, "Fists of Fury" );
   serenity -> add_action( this, "Spinning Crane Kick", "if=active_enemies>=3&!prev_gcd.1.spinning_crane_kick" );
   serenity -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=active_enemies>=3" );
   serenity -> add_action( this, "Spinning Crane Kick", "if=!prev_gcd.1.spinning_crane_kick" );
@@ -9734,18 +9734,18 @@ void monk_t::apl_combat_windwalker()
     if ( racial_actions[i] == "arcane_torrent" )
       st -> add_action( racial_actions[i] + ",if=chi.max-chi>=1&energy.time_to_max>=0.5" );
   }
-  st -> add_action( this, "Strike of the Windlord", "if=equipped.convergence_of_fates&talent.serenity.enabled&cooldown.serenity.remains>=10" );
-  st -> add_action( this, "Strike of the Windlord", "if=equipped.convergence_of_fates&!talent.serenity.enabled" );
-  st -> add_action( this, "Strike of the Windlord", "if=!equipped.convergence_of_fates" );
-  st -> add_action( this, "Fists of Fury", "if=equipped.convergence_of_fates&talent.serenity.enabled&cooldown.serenity.remains>=5" );
-  st -> add_action( this, "Fists of Fury", "if=equipped.convergence_of_fates&!talent.serenity.enabled" );
-  st -> add_action( this, "Fists of Fury", "if=!equipped.convergence_of_fates" );
-  st -> add_action( this, "Tiger Palm", "cycle_targets=1,if=!prev_gcd.1.tiger_palm&energy=energy.max&chi<=3&buff.storm_earth_and_fire.up" );
   st -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=equipped.convergence_of_fates&talent.serenity.enabled&cooldown.serenity.remains>=2" );
   st -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=equipped.convergence_of_fates&!talent.serenity.enabled" );
   st -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=!equipped.convergence_of_fates" );
+  st -> add_action( this, "Fists of Fury", "if=equipped.convergence_of_fates&talent.serenity.enabled&cooldown.serenity.remains>=5" );
+  st -> add_action( this, "Fists of Fury", "if=equipped.convergence_of_fates&!talent.serenity.enabled" );
+  st -> add_action( this, "Fists of Fury", "if=!equipped.convergence_of_fates" );
+  st -> add_action( this, "Strike of the Windlord", "if=equipped.convergence_of_fates&talent.serenity.enabled&cooldown.serenity.remains>=10" );
+  st -> add_action( this, "Strike of the Windlord", "if=equipped.convergence_of_fates&!talent.serenity.enabled" );
+  st -> add_action( this, "Strike of the Windlord", "if=!equipped.convergence_of_fates" );
+  st -> add_action( this, "Tiger Palm", "cycle_targets=1,if=!prev_gcd.1.tiger_palm&energy=energy.max&chi<=3&buff.storm_earth_and_fire.up" );
   st -> add_talent( this, "Whirling Dragon Punch" );
-  st -> add_action( this, "Crackling Jade Lightning", "if=equipped.the_emperors_capacitor&buff.the_emperors_capacitor.stack>=19" );
+  st -> add_action( this, "Crackling Jade Lightning", "if=equipped.the_emperors_capacitor&buff.the_emperors_capacitor.stack>=15" );
   st -> add_action( this, "Spinning Crane Kick", "if=(active_enemies>=3|spinning_crane_kick.count>=3)&!prev_gcd.1.spinning_crane_kick" );
   st -> add_talent( this, "Rushing Jade Wind", "if=chi.max-chi>1&!prev_gcd.1.rushing_jade_wind" );
   st -> add_action( this, "Blackout Kick", "cycle_targets=1,if=(chi>1|buff.bok_proc.up)&!prev_gcd.1.blackout_kick" );
