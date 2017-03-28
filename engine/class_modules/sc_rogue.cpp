@@ -273,6 +273,7 @@ struct rogue_t : public player_t
     buff_t* blunderbuss;
     buff_t* blurred_time;
 
+    buff_t* feeding_frenzy;
     buff_t* finality_eviscerate;
     buff_t* finality_nightblade;
   } buffs;
@@ -2766,9 +2767,6 @@ struct envenom_t : public rogue_attack_t
     double c = rogue_attack_t::cost();
 
     if ( p() -> buffs.death_from_above -> check() )
-      c *= 1.0 + p() -> buffs.death_from_above -> data().effectN( 1 ).percent();
-
-    if ( c < 0 )
       c = 0;
 
     return c;
@@ -2821,10 +2819,14 @@ struct eviscerate_t : public rogue_attack_t
     double c = rogue_attack_t::cost();
 
     if ( p() -> buffs.death_from_above -> check() )
-      c *= 1.0 + p() -> buffs.death_from_above -> data().effectN( 1 ).percent();
-
-    if ( c < 0 )
+    {
       c = 0;
+    }
+    else if ( p() -> buffs.feeding_frenzy -> check() )
+    {
+      c = 0;
+      p() -> buffs.feeding_frenzy -> decrement( 1 );
+    }
 
     return c;
   }
@@ -2839,7 +2841,7 @@ struct eviscerate_t : public rogue_attack_t
     }
     else
     {
-	  p() -> buffs.finality_eviscerate -> trigger( cast_state( execute_state ) -> cp );
+      p() -> buffs.finality_eviscerate -> trigger( cast_state( execute_state ) -> cp );
     }
   }
 };
@@ -3117,6 +3119,11 @@ struct goremaws_bite_t:  public rogue_attack_t
     if ( secondary_trigger != TRIGGER_WEAPONMASTER ) // As of 7.0.3.22810 it doesn't trigger the buff on the weaponmaster proc.
     {
       p() -> buffs.goremaws_bite -> trigger();
+
+      if ( p() -> artifact.feeding_frenzy.rank() )
+      {
+        p() -> buffs.feeding_frenzy -> trigger( 3 ); // Note: Hardcoded to 3, nothing in spell data
+      }
     }
   }
 };
@@ -3464,7 +3471,7 @@ struct blunderbuss_t : public shot_base_t
 
     shot_base_t::execute();
 
-    p() -> buffs.blunderbuss -> decrement();
+    p() -> buffs.blunderbuss -> decrement( 1 );
   }
 };
 
@@ -3531,9 +3538,6 @@ struct run_through_t: public rogue_attack_t
     double c = rogue_attack_t::cost();
 
     if ( p() -> buffs.death_from_above -> check() )
-      c *= 1.0 + p() -> buffs.death_from_above -> data().effectN( 1 ).percent();
-
-    if ( c < 0 )
       c = 0;
 
     return c;
@@ -3738,6 +3742,19 @@ struct nightblade_t : public rogue_attack_t
     m *= 1.0 + p() -> buffs.finality_nightblade -> stack_value();
 
     return m;
+  }
+
+  double cost() const override
+  {
+    double c = rogue_attack_t::cost();
+
+    if ( p() -> buffs.feeding_frenzy -> check() )
+    {
+      c = 0;
+      p() -> buffs.feeding_frenzy -> decrement( 1 );
+    }
+
+    return c;
   }
 
   void execute() override
@@ -3986,8 +4003,8 @@ struct saber_slash_t : public rogue_attack_t
       saberslash_proc_event = make_event<saberslash_proc_event_t>( *sim, p(), this, execute_state -> target );
     }
 
-    p() -> buffs.hidden_blade -> decrement();
-    p() -> buffs.t19_4pc_outlaw -> decrement();
+    p() -> buffs.hidden_blade -> decrement( 1 );
+    p() -> buffs.t19_4pc_outlaw -> decrement( 1 );
 
     if ( p() -> buffs.broadsides -> up() )
     {
@@ -4174,7 +4191,7 @@ struct shadowstrike_t : public rogue_attack_t
 
     p() -> trigger_shadow_nova( execute_state );
 
-    p() -> buffs.death -> decrement();
+    p() -> buffs.death -> decrement( 1 );
 
     if ( result_is_hit( execute_state -> result ) && rng().roll( p() -> sets.set( ROGUE_SUBTLETY, T19, B4 ) -> proc_chance() ) )
     {
@@ -4428,7 +4445,7 @@ struct vendetta_t : public rogue_attack_t
       p() -> resource_gain( RESOURCE_ENERGY,
                             p() -> artifact.urge_to_kill.data().effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_ENERGY ),
                             p() -> gains.urge_to_kill, this );
-	  p() -> buffs.urge_to_kill -> trigger();
+    p() -> buffs.urge_to_kill -> trigger();
     }
 
     if ( p() -> from_the_shadows_ )
@@ -4581,6 +4598,19 @@ struct death_from_above_t : public rogue_attack_t
           next_swing.total_seconds(),
           attack -> execute_event -> occurs().total_seconds() );
     }
+  }
+
+  double cost() const override
+  {
+    double c = rogue_attack_t::cost();
+
+    if ( p() -> buffs.feeding_frenzy -> check() )
+    {
+      c = 0;
+      p() -> buffs.feeding_frenzy -> decrement( 1 );
+    }
+
+    return c;
   }
 
   void execute() override
@@ -5238,8 +5268,8 @@ void rogue_t::trigger_poison_bomb( const action_state_t* state )
   {
     make_event<ground_aoe_event_t>( *sim, this, ground_aoe_params_t()
                                     .target( state -> target )
-									.x( state -> target -> x_position)
-									.y( state -> target -> y_position)
+                  .x( state -> target -> x_position)
+                  .y( state -> target -> y_position)
                                     //FIXME Hotfix 09-24: Hardcoded to 500ms, not found in spell data, still the case as of 03/28 (7.2).
                                     .pulse_time( timespan_t::from_seconds( 0.5 ) )
                                     .duration( spell.bag_of_tricks_driver -> duration() )
@@ -6007,7 +6037,7 @@ struct vanish_t : public stealth_like_buff_t
     // We do it before the normal Vanish expiration to avoid on-stealth buff bugs (MoS, MoSh, Mantle).
     if ( remaining_duration == timespan_t::zero() )
     {
-    rogue -> buffs.stealth -> trigger();
+      rogue -> buffs.stealth -> trigger();
     }
 
     stealth_like_buff_t::expire_override( expiration_stacks, remaining_duration );
@@ -7342,7 +7372,7 @@ void rogue_t::init_spells()
   artifact.akaaris_soul   = find_artifact_spell( "Akaari's Soul" );
   artifact.finality       = find_artifact_spell( "Finality" );
   artifact.shadow_nova    = find_artifact_spell( "Shadow Nova" );
-  //artifact.feeding_frenzy = find_artifact_spell( "" );
+  artifact.feeding_frenzy = find_artifact_spell( "Feeding Frenzy" );
 
   artifact.slayers_precision = find_artifact_spell( "Slayer's Precision" );
   artifact.cursed_steel      = find_artifact_spell( "Cursed Steel" );
@@ -7694,12 +7724,12 @@ void rogue_t::create_buffs()
                                     .chance( artifact.blunderbuss.data().effectN( 2 ).percent() );
   buffs.blurred_time              = new buffs::blurred_time_t( this );
 
+  buffs.feeding_frenzy            = buff_creator_t( this, "feeding_frenzy", artifact.feeding_frenzy.data().effectN( 1 ).trigger() )
+                                    .max_stack( 3 ); // Note: Hardcoded to 3 since we modelize it as a 3 stack buff
   buffs.finality_eviscerate       = buff_creator_t( this, "finality_eviscerate", find_spell( 197496 ) )
                                     .trigger_spell( artifact.finality )
                                     .default_value( find_spell( 197496 ) -> effectN( 1 ).percent() / COMBO_POINT_MAX )
-                                    // Due to Anticipation bug with eviscerate (see eviscerate action), we'll allow it up to 10.
-                                    // FIXME: In 7.2 changes it back to consume_cp_max();
-                                    .max_stack( 10 );
+                                    .max_stack( consume_cp_max() );
   buffs.finality_nightblade       = buff_creator_t( this, "finality_nightblade", find_spell( 197498 ) )
                                     .trigger_spell( artifact.finality )
                                     .default_value( find_spell( 197498 ) -> effectN( 1 ).percent() / COMBO_POINT_MAX )
