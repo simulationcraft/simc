@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 3249f8a)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 Live (wow build 23826, git build 9b6da33)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -32,7 +32,7 @@ Attributes       : ....x... ........ ..x..... x..x....   ........ ..x..... .x...
 Effects          :
 #2 (id=1295)     : Apply Aura (6) | Periodic Dummy: every 0.25 seconds (226)
                    Base Value: 60068 | Scaled Value: 60068 | Target: Self(1)
-Description      : Activates a freezing aura for $d that creates ice beneath your feet, allowing party or raid members within $a1 yards to walk on water.  Usable while mounted, but being attacked or damaged will cancel the effect.
+Description      : Activates a freezing aura for $d that creates ice beneath your feet, allowing party or raid members within $a1 yards to walk on water. Usable while mounted, but being attacked or damaged will cancel the effect.
 Tooltip          : Grants the ability to walk across water.
 
 Name             : Bite (Basic Attack) (id=17253) [Scaling Spell (4), Spell Family (9)] 
@@ -265,7 +265,7 @@ Name             : Death Strike (id=45470) [Spell Family (15)]
 Class            : Death Knight
 School           : Physical
 Spell Level      : 1
-Affecting spells : Icebound Fortitude (48792), Dark Succor (101568), Haemostasis (235559)
+Affecting spells : Icebound Fortitude (48792), Dark Succor (101568), Haemostasis (235559), Carrion Feast (238042)
 Attributes       : ........ ........ ........ ...x....   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ....xx..   ........ ........ x....... ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -468,7 +468,7 @@ Spell Level      : 55
 Range            : 30 yards
 GCD              : 1.5 seconds
 Proc Chance      : 101%
-Affecting spells : Sudden Doom (81340), Unholy Death Knight (137007), Deadliest Coil (191419)
+Affecting spells : Sudden Doom (81340), Unholy Death Knight (137007), Deadliest Coil (191419), Death March (235556)
 Attributes       : ........ ........ ..x..... ........   ........ .xx..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -514,9 +514,9 @@ Class            : Death Knight
 School           : Shadow
 Spell Level      : 55
 Range            : 40 yards
-Velocity         : 24 yards/sec
+Velocity         : 35 yards/sec
 Proc Chance      : 101%
-Affecting spells : Sudden Doom (81340), Unholy Death Knight (137007), Deadliest Coil (191419)
+Affecting spells : Sudden Doom (81340), Unholy Death Knight (137007), Deadliest Coil (191419), Death March (235556)
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ......x.   ........ .x...... ..x..... ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -527,7 +527,6 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=39872)    : School Damage: shadow (2)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.50000 | Target: Enemy(6)
-                   Hotfixed: AP Coefficient (1.275 -> 1.5)
 Description      : Fire a blast of unholy energy, causing Shadow damage to an enemy target or healing a friendly Undead target.
 
 Name             : Veteran of the Third War (id=48263) [Spell Family (15), Passive] 
@@ -708,17 +707,17 @@ Spell Level      : 55
 Range            : 30 yards
 GCD              : 1.5 seconds
 Affecting spells : Rime (59052), Biting Cold (166057), Blast Radius (189086), Northrend Winds (204088), Freezing Fog (207060), 
-Attributes       : ........ ........ ........ ........   ...x...x .x...... ........ ...x.... 
+Attributes       : ........ ........ ..x..... ........   ...x...x .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ..x..... ........ ....x...   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ....x... ........ ........ ........ 
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=41295)    : Dummy (3)
                    Base Value: 80 | Scaled Value: 80 | Target: Enemy(6)
 #2 (id=41296)    : School Damage: frost (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.82500 | Radius: 0 - 10 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.82500 | Target: Enemy(6)
 Description      : Blast the target with a frigid wind, dealing $s2 $?s204088[Frost damage and applying Frost Fever to the target.][Frost damage to that foe, and ${($m1/100)*$m2} Frost damage to all other enemies within 10 yards, infecting all targets with Frost Fever.]
 
 |Tinterface\icons\spell_deathknight_frostfever.blp:24|t |cFFFFFFFFFrost Fever|r
@@ -797,7 +796,7 @@ Resource         : 45 Runic Power
 Spell Level      : 55
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Dark Succor (101568), Death Knight (137005), Unholy Death Knight (137007), Blood Death Knight (137008), Deathbringer (144953), Item - Death Knight T18 Blood 4P Bonus (187873), Unending Thirst (216019), Ossuary (219788), Haemostasis (235559)
+Affecting spells : Dark Succor (101568), Death Knight (137005), Unholy Death Knight (137007), Blood Death Knight (137008), Deathbringer (144953), Item - Death Knight T18 Blood 4P Bonus (187873), Unending Thirst (216019), Ossuary (219788), Death March (235556), Haemostasis (235559)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -979,7 +978,7 @@ Attributes       : ........ ........ ........ ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=43733)    : Apply Aura (6) | Taunt (11)
-                   Base Value: 200 | Scaled Value: 200 | Target: Enemy(6)
+                   Base Value: 400 | Scaled Value: 400 | Target: Enemy(6)
 #2 (id=43734)    : Unknown effect type (114)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : $@spelldesc49560
@@ -1020,7 +1019,6 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Target: Self(1)
 #2 (id=247162)   : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Target: Self(1)
-                   Hotfixed: Base Value (125 -> 100)
 Description      : You have a ${$m2/100}.2% chance per Runic Power you spend to increase your Rune regeneration rate by $s1% for $51460d.
 
 Name             : Razorice (id=51714) [Spell Family (15)] 
@@ -1060,8 +1058,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=44400)    : School Damage: shadowstorm (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.5, dl=0.15) | Value Multiplier: 1 | SP Coefficient: 3.00000 | Target: Enemy(6)
-                   Hotfixed: Delta (0.5 -> 0.15), SP Coefficient (2 -> 3)
+                   Base Value: 1 | Scaled Value: 0 (avg=0.5, dl=0.15) | Value Multiplier: 1 | AP Coefficient: 1.40000 | Target: Enemy(6)
 Description      : Inflicts Plague (Nature and Shadow) damage to an enemy.
 
 Name             : On a Pale Horse (id=51986) [Spell Family (15), Passive] 
@@ -1096,7 +1093,7 @@ Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ .....
                  : Does not break stealth (37), Requires line of sight (186)
 Effects          :
 #1 (id=44653)    : School Damage: shadow (2)
-                   Base Value: 0 | Scaled Value: 0 (avg=0.041) | AP Coefficient: 0.27000 | Radius: 0 - 10 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
+                   Base Value: 0 | Scaled Value: 0 (avg=0.041) | AP Coefficient: 0.27000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
 #2 (id=312640)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: runic_power | Target: Self(1)
 Description      : Corrupts the ground targeted by the Death Knight, causing Shadow damage every sec that targets remain in the area for $43265d.
@@ -1213,7 +1210,7 @@ Resource         : -10 Runic Power
 Spell Level      : 55
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Death Knight (137005), Unholy Death Knight (137007), Scourge of Worlds (191748), Necrosis (216974)
+Affecting spells : Death Knight (137005), Unholy Death Knight (137007), Death and Decay (188290), Scourge of Worlds (191748), Necrosis (216974)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1259,7 +1256,7 @@ Spell Level      : 57
 Duration         : 10 seconds
 Cooldown         : 90 seconds
 Category         : 1641
-Affecting spells : Vampiric Fangs (192542), 
+Affecting spells : Vampiric Fangs (192542), Vampiric Fangs (192543), Vampiric Fangs (192544), Vampiric Fangs (208793), Vampiric Fangs (208794), Vampiric Fangs (208795), Vampiric Fangs (238686), Vampiric Fangs (238687), 
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1297,7 +1294,7 @@ Effects          :
 #1 (id=49248)    : Unknown effect type (114)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Enemy(6)
 #2 (id=49249)    : Apply Aura (6) | Taunt (11)
-                   Base Value: 200 | Scaled Value: 200 | Target: Enemy(6)
+                   Base Value: 400 | Scaled Value: 400 | Target: Enemy(6)
 Description      : Command the target to attack you, increasing threat you generate against that target for $d.
 Tooltip          : Taunted.
 
@@ -1652,7 +1649,7 @@ Name             : Death Strike Off-Hand (id=66188) [Scaling Spell (1), Spell Fa
 Class            : Death Knight
 School           : Physical
 Range            : 100 yards
-Affecting spells : Dark Succor (101568), Unholy Death Knight (137007), Blood Death Knight (137008), Deathbringer (144953), Item - Death Knight T18 Blood 4P Bonus (187873), Unending Thirst (216019), Ossuary (219788), Haemostasis (235559)
+Affecting spells : Dark Succor (101568), Unholy Death Knight (137007), Blood Death Knight (137008), Deathbringer (144953), Item - Death Knight T18 Blood 4P Bonus (187873), Unending Thirst (216019), Ossuary (219788), Death March (235556), Haemostasis (235559)
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ..x..... x.....x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1769,7 +1766,7 @@ School           : Shadow
 Spell Level      : 80
 Range            : 100 yards
 Proc Chance      : 101%
-Affecting spells : Unholy Death Knight (137007), Scourge of Worlds (191748), Necrosis (216974)
+Affecting spells : Unholy Death Knight (137007), Death and Decay (188290), Scourge of Worlds (191748), Necrosis (216974)
 Triggered by     : Scourge Strike (55090)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ..x..... ......x. 
@@ -1927,6 +1924,7 @@ Tooltip          : Your next Death and Decay costs no Runes and generates no Run
 Name             : Runic Empowerment (id=81229) [Spell Family (15), Passive] 
 Class            : Frost Death Knight
 School           : Physical
+Affecting spells : Runefrost (238043)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1937,7 +1935,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=68676)    : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Target: Self(1)
-Description      : When you spend Runic Power, you have a ${$m1/10}.1% chance per Runic Power spent to gain a Rune.
+Description      : When you spend Runic Power, you have a ${$m1/10}.2% chance per Runic Power spent to gain a Rune.
 
 Name             : Dancing Rune Weapon (id=81256) [Spell Family (15)] 
 Class            : Death Knight
@@ -2137,10 +2135,8 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .x...
 Effects          :
 #1 (id=95513)    : Dummy (3)
                    Base Value: 80 | Scaled Value: 80 | Target: Enemy(6)
-                   Hotfixed: Base Value (135 -> 80)
 #2 (id=341774)   : Weapon Damage% (31)
                    Base Value: 80 | Scaled Value: 0.8 | Radius: 8 yards | Target: Cone Front(104)
-                   Hotfixed: Base Value (135 -> 80)
 Description      : Rakes an enemy with deformed claws, dealing $91778s1% of normal damage as Shadow to the target and nearby enemies.
 
 Name             : Monstrous Blow (id=91797) [Spell Family (15)] 
@@ -2566,12 +2562,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=167609)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 100 | Scaled Value: 100 | Target: Self(1)
-                   Affected Spells: Claw (16827), Bite (17253), Smack (49966)
+                   Affected Spells: Claw (16827), Bite (17253), Smack (49966), Talon Slash (242735)
 #2 (id=191547)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | Target: Self(1)
 #3 (id=191721)   : Apply Aura (6) | Add Flat Modifier: Spell Range (107)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 5 | Target: Self(1)
-                   Affected Spells: Claw (16827), Bite (17253), Smack (49966)
+                   Affected Spells: Claw (16827), Bite (17253), Smack (49966), Talon Slash (242735)
 #4 (id=337955)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Target: Self(1)
 Description      : Your pet's Basic Attack deals $s1% increased damage, can now be used from $s2 yards away, and will instantly teleport your pet behind its target. Your pet can teleport only once per $s4 sec.
@@ -2707,17 +2703,14 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179690)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 6 | Scaled Value: 6 | Target: Self(1)
-                   Affected Spells: Death Coil (47541), Death Coil (47632), Death Strike (49998), Death and Decay (52212), Scourge Strike (55090), Death Strike Off-Hand (66188), Scourge Strike (70890), Festering Strike (85948), Soul Reaper (130736), Defile (156000), Festering Wound (194311), Clawing Shadows (207311), Epidemic (207317), Epidemic (212739), Epidemic (215969)
-                   Hotfixed: Base Value (3 -> 6)
+                   Affected Spells: Death Coil (47541), Death Coil (47632), Death Strike (49998), Death and Decay (52212), Scourge Strike (55090), Death Strike Off-Hand (66188), Scourge Strike (70890), Festering Strike (85948), Soul Reaper (130736), Defile (156000), Festering Wound (194311), Remorseless Winter (196771), Clawing Shadows (207311), Epidemic (207317), Epidemic (212739), Epidemic (215969)
 #2 (id=191170)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 6 | Scaled Value: 6 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Virulent Plague (191587), Virulent Eruption (191685)
-                   Hotfixed: Base Value (3 -> 6)
 #3 (id=191171)   : Apply Aura (6) | Unknown effect sub type (218)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf7 | Target: Self(1)
 #4 (id=191172)   : Apply Aura (6) | Unknown effect sub type (218)
                    Base Value: -30 | Scaled Value: -30 | Misc Value 2: 0x119 | Target: Self(1)
-                   Hotfixed: Sub Type (4 -> 218), Base Value (0 -> -30), Misc Value 2 (0 -> 281)
 #5 (id=191173)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #6 (id=260787)   : Apply Aura (6) | Dummy (4)
@@ -2774,9 +2767,8 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf8 | Target: Self(1)
 #8 (id=260809)   : Apply Aura (6) | Unknown effect sub type (218)
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 3 | Misc Value 2: 0x114 | Target: Self(1)
-                   Hotfixed: Sub Type (4 -> 218), Base Value (0 -> -40), Misc Value (0 -> 3), Misc Value 2 (0 -> 276)
-#9 (id=260810)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#9 (id=260810)   : Apply Aura (6) | Unknown effect sub type (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0x121 | Target: Self(1)
 #10 (id=260811)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #11 (id=260812)   : Apply Aura (6) | Dummy (4)
@@ -2790,6 +2782,8 @@ Effects          :
 #15 (id=260816)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #16 (id=320921)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#17 (id=368360)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Player Damage Reduction Level 90 (id=142689) [Passive, Hidden] 
@@ -3189,7 +3183,7 @@ Effects          :
 #2 (id=228483)   : Apply Aura (6) | Unknown effect sub type (467)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 1 | Target: Self(1)
 #3 (id=228484)   : Apply Aura (6) | Unknown effect sub type (466)
-                   Base Value: -100 | Scaled Value: -100 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Stat Negation Aura - Strength Tank (id=162702) [Passive, Hidden] 
 Replaces         : Stat Negation Aura - Strength DPS (id=162698)
@@ -3488,8 +3482,9 @@ Attributes       : ........ ........ .......x x..x....   .....x.. ..x..... .....
 Effects          :
 #1 (id=274813)   : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 17 | Target: Self(1)
-#2 (id=287275)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 6 | Target: Self(1)
+#2 (id=287275)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+                   Affected Spells: Scourge Strike (55090), Scourge Strike (70890), Clawing Shadows (207311)
 #3 (id=287300)   : Apply Aura (6) | Periodic Energize Power: every 0.98 seconds (24)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 6 | Target: Self(1)
 #4 (id=330524)   : Apply Aura (6) | Add Flat Modifier: Spell Targets (107)
@@ -3535,7 +3530,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=279726)   : Unknown effect type (179)
                    Base Value: 40 | Scaled Value: 40 | Misc Value: 4714 | Target: Custom(18)
-Description      : Summons Sindragosa, who breathes frost on all enemies within $s1 yd in front of you, dealing $190780s1  Frost damage and slowing movement speed by $190780s2% for $190780d.
+Description      : Summons Sindragosa, who breathes frost on all enemies within $s1 yd in front of you, dealing $190780s1 Frost damage and slowing movement speed by $190780s2% for $190780d.
 
 Name             : Frost Breath (id=190780) [Spell Family (15)] 
 Class            : Death Knight
@@ -3577,7 +3572,6 @@ Attributes       : ....x... ........ ........ ..x.....   ........ ........ .....
 Effects          :
 #1 (id=281049)   : Apply Aura (6) | Periodic Damage: shadow every 3 seconds (3)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.70000 | Misc Value: 127 | Target: Unknown(25)
-                   Hotfixed: AP Coefficient (0.42 -> 0.7)
 #2 (id=288070)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30
 Description      : A disease that deals ${7*$s1} Shadow damage over $d. It erupts when the infected target dies, dealing $191685s1 Shadow damage divided among nearby enemies, and has a $s2% chance to erupt each time it deals damage.
@@ -3647,7 +3641,7 @@ Duration         : 6 seconds
 Stacks           : 3 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   .......x ........ ........ ........ 
+                 : ........ ........ ........ ........   .......x ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .x...... ........ ........   ........ ........ ........ ........ 
@@ -3707,7 +3701,7 @@ School           : Shadow
 Spell Level      : 57
 Range            : 50000 yards
 Proc Chance      : 101%
-Affecting spells : Unholy Death Knight (137007), Bursting Sores (207264)
+Affecting spells : Unholy Death Knight (137007), Bursting Sores (207264), Lash of Shadows (238044)
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : x.x..... ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ........ .......x .......x ........   ........ ........ ........ ........ 
@@ -3735,7 +3729,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=285787)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 23 | Target: Self(1)
-                   Affected Spells: Death and Decay (188290)
+                   Affected Spells: Death and Decay (188290), Lash of Shadows (238044), Cunning of the Ebon Blade (241050)
 #2 (id=287223)   : Apply Aura (6) | Add Percent Modifier: Unknown 2 (108)
                    Base Value: -13 | Scaled Value: -13 | Misc Value: 19 | Target: Self(1)
                    Affected Spells: Death and Decay (43265), Tightening Grasp (143375), Defile (152280)
@@ -3914,11 +3908,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=286108)   : Apply Aura (6) | Dummy (4)
                    Base Value: 8 | Scaled Value: 8 | Target: Self(1)
-                   Hotfixed: Base Value (6 -> 8)
 Description      : Every $s1 Festering Wounds you burst, you gain 1 Rune.
 
 Name             : Blighted Rune Weapon (id=194918) [Spell Family (15)] 
-Hotfixed         : GCD (1500 -> 0)
 Class            : Death Knight
 School           : Shadow
 Duration         : 30 seconds
@@ -3947,7 +3939,7 @@ Spell Level      : 55
 Duration         : 30 seconds
 Stacks           : 10 maximum
 Proc Chance      : 101%
-Affecting spells : Bone Wall (144948), Foul Bulwark (206974)
+Affecting spells : Bone Wall (144948), Rattlegore Bone Legplates (205816), Foul Bulwark (206974)
 Triggered by     : Rattling Bones (192557)
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -3988,11 +3980,11 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=286507)   : Normalized Weapon Damage (121)
-                   Base Value: 1 | Scaled Value: 1 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=286508)   : Weapon Damage% (31)
-                   Base Value: 315 | Scaled Value: 3.15 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 315 | Scaled Value: 3.15 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy(6)
 #3 (id=286519)   : Dummy (3)
-                   Base Value: 3 | Scaled Value: 3 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 3 | Scaled Value: 3 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy(6)
 Description      : Smash the target, dealing $sw2 Physical damage and generating $s3 charges of Bone Shield.
 
 |Tinterface\icons\ability_deathknight_boneshield.blp:24|t |cFFFFFFFFBone Shield|r
@@ -4251,14 +4243,14 @@ Tooltip          : Dealing $196771s1 Frost damage to enemies each second.
 Name             : Remorseless Winter (id=196771) [Spell Family (15)] 
 Class            : Death Knight
 School           : Frost
-Affecting spells : Dead of Winter (189164), Gathering Storm (211805)
+Affecting spells : Unholy Death Knight (137007), Dead of Winter (189164), Gathering Storm (211805)
 Triggered by     : Remorseless Winter (196770)
-Attributes       : ........ ........ ........ x.xx....   ........ ........ ........ ........ 
-                 : ........ ........ ...x.... ....x...   .......x .x...... ........ ........ 
-                 : ........ ........ ........ ........   ...x.... ........ .xx..... ........ 
+Attributes       : ........ ........ ........ ..xx....   ........ ........ ........ ........ 
+                 : ........ ........ ........ ....x...   .......x .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : .....x.. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ......x. ........   ........ ........ ........ ..xx.... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ...x.... 
                  : Not a proc (105)
 Effects          :
 #1 (id=288891)   : School Damage: frost (2)
@@ -4350,8 +4342,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=292108)   : School Damage: shadow (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 8.70000 | Target: Enemy(6)
-                   Hotfixed: AP Coefficient (7 -> 8.7)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.90000 | Target: Enemy(6)
 Description      : Inflicts Shadow damage to an enemy.
 
 Name             : Shadow Infusion (id=198943) [Spell Family (15), Passive] 
@@ -4443,13 +4434,12 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.20000 | Target: Enemy(6)
 Description      : $@spelldesc189186
 
-Name             : Crystalline Swords (id=205165) [Spell Family (3)] 
+Name             : Crystalline Swords (id=205165) [Spell Family (15)] 
 Class            : Death Knight
 School           : Frost
 Spell Level      : 80
 Range            : 100 yards
 Velocity         : 0.3 yards/sec
-Affecting spells : Splitting Ice (56377), Norgannon's Foresight (236380)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4578,22 +4568,21 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=306039)   : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0 (avg=0.756) | Chain Multiplier: 1 | Chain Targets: 2 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 (avg=0.756) | Chain Multiplier: 0 | Chain Targets: 2 | Target: Enemy(6)
 #2 (id=306040)   : Weapon Damage% (31)
-                   Base Value: 185 | Scaled Value: 1.85 | Chain Multiplier: 1 | Chain Targets: 2 | Target: Enemy(6)
+                   Base Value: 185 | Scaled Value: 1.85 | Chain Multiplier: 0 | Chain Targets: 2 | Target: Enemy(6)
 #3 (id=306041)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 #4 (id=312174)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3
 #5 (id=321496)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | Chain Multiplier: 1 | Mechanic: Unknown(88) | Chain Targets: 2 | Target: Enemy(6)
+                   Base Value: -50 | Scaled Value: -50 | Chain Multiplier: 0 | Mechanic: Unknown(88) | Chain Targets: 2 | Target: Enemy(6)
 Description      : Instantly strike the target and 1 other nearby enemy, causing $sw2 Physical damage, and reducing enemies' movement speed by $s5% for $d.
 
 |cFFFFFFFFGenerates $?s221536[${$s3+$221536s1}][$s3] bonus Runic Power$?s221536[, plus ${$210738s1/10} Runic Power per additional enemy struck][].|r
 Tooltip          : Movement speed reduced by $s5%.
 
 Name             : Blooddrinker (id=206931) [Spell Family (15)] 
-Hotfixed         : Attributes
 Class            : Death Knight
 School           : Shadow
 Resource         : 1 Rune
@@ -4605,15 +4594,14 @@ Duration         : 3 seconds
 Cooldown         : 30 seconds
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ .....x.. ........ ...x.... 
+                 : ........ ........ ........ ........   ........ .x...x.. ........ ...x.... 
                  : ........ ........ .......x ........   ........ ........ ........ .....x.. 
                  : ........ .x...... .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : Channeled (34)
 Effects          :
 #1 (id=306042)   : Apply Aura (6) | Periodic Health Leech (53)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | AP Coefficient: 6.00000 | Target: Enemy(6)
-                   Hotfixed: AP Coefficient (10 -> 6)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | AP Coefficient: 4.50000 | Target: Enemy(6)
 Description      : Drains $o1 health from the target over $d.
 
 You can move, parry, dodge, and use defensive abilities while channeling this ability.
@@ -5303,7 +5291,7 @@ Resource         : -10 Runic Power
 Spell Level      : 1
 Range            : 30 yards
 GCD              : 1.5 seconds
-Affecting spells : Death Knight (137005), Unholy Death Knight (137007), Scourge of Worlds (191748), Necrosis (216974)
+Affecting spells : Death Knight (137005), Unholy Death Knight (137007), Death and Decay (188290), Scourge of Worlds (191748), Necrosis (216974)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5441,7 +5429,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=306658)   : Summon (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 100876 | Misc Value 2: 0xca6 | Radius: 3 yards | Target: Unknown(44)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 100876 | Misc Value 2: 0xca6 | Radius: 4 yards | Target: Unknown(44)
 #2 (id=313813)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | Target: Enemy(6)
 #3 (id=313814)   : Trigger Spell: Summon Gargoyle (64)
@@ -5681,7 +5669,6 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .x...
 Effects          :
 #1 (id=314805)   : Weapon Damage% (31)
                    Base Value: 80 | Scaled Value: 0.8 | Radius: 0 - 10 yards | Target: Custom(18) -> AOE enemy (instant)(16)
-                   Hotfixed: Base Value (135 -> 80)
 Description      : $@spelldesc212333
 
 Name             : Dark Arbiter (id=212412) [Spell Family (15), Hidden] 
@@ -5734,7 +5721,7 @@ Cooldown         : 45 seconds
 Affecting spells : Death Knight (137005), Lingering Apparition (212763), White Walker (212765), March of the Damned (219779)
 Attributes       : ....x... ........ x......x ........   ..x...x. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ..x..... ........   ........ ........ ........ ........ 
@@ -5752,8 +5739,12 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #6 (id=334744)   : Apply Aura (6) | Unknown effect sub type (91)
                    Base Value: -5 | Scaled Value: -5
-Description      : Sidestep into the Shadowlands, breaking Root effects and increasing your movement speed by $s1% for $d. During this time all movement-impairing effects are suppressed but any action will cancel the effect.
-Tooltip          : Movement speed increased by $w1%. Cannot be slowed below $s2% of normal run speed. Cannot attack.
+#7 (id=368591)   : None (0)
+                   Base Value: 100 | Scaled Value: 100
+Description      : Sidestep into the Shadowlands, removing all root effects and increasing your movement speed by $s1%. While active, your movement speed cannot be reduced below $m2%. Lasts $d. Any action will cancel the effect.
+Tooltip          : Movement speed increased by $w1%.
+Cannot be slowed below $s2% of normal movement speed.
+Cannot attack.
 
 Name             : Wraith Walk (id=212654) [Spell Family (15), Hidden] 
 Class            : Death Knight
@@ -6069,6 +6060,8 @@ Effects          :
                    Base Value: 900 | Scaled Value: 9 | Target: Enemy(6)
 #3 (id=361459)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6 | Target: Enemy(6)
+#4 (id=363441)   : Energize Power (30)
+                   Base Value: 3 | Scaled Value: 3 | Misc Value: rune | Target: Self(1)
 Description      : Strikes the enemy, dealing $sw1 Physical damage and bursting up to $s3 Festering Wounds on the target, summoning a member of your Army of the Dead for $221180d for each burst Festering Wound.
 
 Name             : Army of the Dead (id=221180) [Spell Family (15)] 

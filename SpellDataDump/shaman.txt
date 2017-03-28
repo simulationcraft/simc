@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 3249f8a)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 Live (wow build 23826, git build 9b6da33)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -74,7 +74,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=155)      : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.20000 | Chain Multiplier: 1 | Chain Targets: 3 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.20000 | Chain Multiplier: 0 | Chain Targets: 3 | Target: Enemy(6)
 Description      : Hurls a lightning bolt at the enemy, dealing $s1 Nature damage and then jumping to additional nearby enemies. Affects $x1 total targets.
 
 Name             : Chain Heal (id=1064) [Spell Family (11)] 
@@ -140,7 +140,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: Unknown(87)
 #2 (id=276084)   : Summon (28)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 2630 | Misc Value 2: 0xd48 | Target: Unknown(87)
-Description      : Summons an Earth Totem with ${$m2*$MHP/100} health at the feet of the caster for $d that slows the movement speed of enemies within $3600A1 yards.
+Description      : Summons an Earth Totem with ${$m2*$MHP/100} health at the target location for $d that slows the movement speed of enemies within $3600A1 yards.
 
 Name             : Ghost Wolf (id=2645) [Spell Family (11)] 
 Class            : Shaman
@@ -312,7 +312,7 @@ Resource         : 10 - 100 Maelstrom
 Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
-Affecting spells : Elemental Focus (16246), Shaman Shock Range Bonus (32973), Elemental Fury (60188), Lucidity (137326), Earthen Attunement (191598)
+Affecting spells : Elemental Focus (16246), Shaman Shock Range Bonus (32973), Elemental Fury (60188), Lucidity (137326), Earthen Attunement (191598), Swelling Maelstrom (238105)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -781,7 +781,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=37246)    : School Damage: nature (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.75000 | Target: Enemy(6)
-                   Hotfixed: SP Coefficient (1.6 -> 1.75)
 Description      : Casts a bolt of lightning at the target for $s1 Nature damage.
 
 Name             : Chain Lightning Overload (id=45297) [Spell Family (11)] 
@@ -798,7 +797,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=37247)    : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.60000 | Chain Multiplier: 1 | Chain Targets: 3 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.60000 | Chain Multiplier: 0 | Chain Targets: 3 | Target: Enemy(6)
 Description      : Hurls a lightning bolt at the enemy, dealing $s1 Nature damage and then jumping to additional nearby enemies.  Affects $x1 total targets.
 
 Name             : Primal-Attuned Goggles (id=46110) 
@@ -971,7 +970,7 @@ Attributes       : ........ ........ x....... ........   ........ ..x..... .....
                  : Disable target procs (113)
 Effects          :
 #1 (id=43877)    : Dummy (3)
-                   Base Value: 2 | Scaled Value: 2 | Target: Self(1) -> Self(1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : Summons two Spirit $?s147783[Raptors][Wolves] that aid you in battle for $228562d. They are immune to movement-impairing effects$?a231723[ and grant you $190185s1 Maelstrom each time they attack][].
 Variables        : $percent=$?s63271[${$58877m1*1.4}][${$58877m1}]
 
@@ -1293,7 +1292,7 @@ Resource         : 30 Maelstrom
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Shaman (137038), Enhancement Shaman (137041), Forged in Lava (198236), Hot Hand (215785), 
+Affecting spells : Shaman (137038), Enhancement Shaman (137041), Forged in Lava (198236), Hot Hand (215785), Lashing Flames (240842)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ .x...... ........ x....... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1312,6 +1311,7 @@ Name             : Elemental Fury (id=60188) [Spell Family (11), Passive]
 Class            : Elemental Shaman
 School           : Physical
 Spell Level      : 34
+Affecting spells : Elemental Destabilization (238069)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1322,7 +1322,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=53887)    : Apply Aura (6) | Add Percent Modifier: Spell Critical Damage (108)
                    Base Value: 50 | Scaled Value: 50 | SP Coefficient: 1.00000 | Misc Value: 15 | Target: Self(1)
-                   Affected Spells: Lightning Bolt (403), Chain Lightning (421), Earth Shock (8042), Fire Nova (8349), Flametongue Attack (10444), Spore Cloud (32642), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Frozen Rune Weapon 2 (51385), Frozen Rune Weapon 3 (51386), Frozen Rune Weapon 4 (51387), Frozen Rune Weapon 5 (51388), Thunderstorm (51490), Lava Burst (51505), Earthquake (61882), Lava Burst Overload (77451), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Item - Shaman T18 Enhancement 4P Bonus (185872), Lightning Bolt (187837), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Flame Shock (188838), Lightning Shield (192106), Lightning Shield (192109), Liquid Magma (192231), Flametongue (194084), Crash Lightning (195592), Frostbrand (196834), Frost Shock (196840), Lightning Rod (197568), Volcanic Inferno (205533), Icefury (210714), Lightning Bolt (214815), Lightning Bolt Overload (214816), Icefury Overload (219271)
+                   Affected Spells: Lightning Bolt (403), Chain Lightning (421), Earth Shock (8042), Fire Nova (8349), Flametongue Attack (10444), Spore Cloud (32642), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Frozen Rune Weapon 2 (51385), Frozen Rune Weapon 3 (51386), Frozen Rune Weapon 4 (51387), Frozen Rune Weapon 5 (51388), Thunderstorm (51490), Lava Burst (51505), Earthquake (61882), Lava Burst Overload (77451), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Item - Shaman T18 Enhancement 4P Bonus (185872), Lightning Bolt (187837), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Flame Shock (188838), Lightning Shield (192106), Lightning Shield (192109), Liquid Magma (192231), Flametongue (194084), Frostbrand (196834), Frost Shock (196840), Lightning Rod (197568), Volcanic Inferno (205533), Icefury (210714), Lightning Bolt (214815), Lightning Bolt Overload (214816), Icefury Overload (219271)
 Description      : Your damaging critical strikes deal ${$m1+200}% damage instead of the usual 200%.
 
 Name             : Riptide (id=61295) [Spell Family (11)] 
@@ -1588,7 +1588,7 @@ Class            : Shaman
 School           : Nature
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Mastery: Deep Healing (77226), Empowered Droplets (207255), 
+Affecting spells : Mastery: Deep Healing (77226), Empowered Droplets (207255), Pitter-Patter (242652)
 Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ ........ ........ 
                  : ........ ......x. ...x.... ......x.   ........ .x...... ........ ......x. 
                  : .......x .......x ...x.... ........   ...x.... ........ .xx..... ..x..... 
@@ -1706,7 +1706,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=68093)    : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.75000 | Target: Chain Friendly(45)
-Description      : An efficient wave of healing energy that restores $s1 of a friendly target’s health.
+Description      : An efficient wave of healing energy that restores $s1 of a friendly targetâ€™s health.
 
 Name             : Earthquake (id=77478) [Spell Family (11)] 
 Class            : Shaman
@@ -1778,7 +1778,7 @@ Resource         : 14.1% Base Mana (31019 @Level 110)
 Spell Level      : 36
 Duration         : 15 seconds
 Cooldown         : 120 seconds
-Affecting spells : Lucidity (137326), Graceful Spirit (192088), 
+Affecting spells : Lucidity (137326), Graceful Spirit (192088), Tidewalker (238071)
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -2818,7 +2818,6 @@ Effects          :
 #1 (id=179725)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 21 | Scaled Value: 21 | Target: Self(1)
                    Affected Spells: Lightning Bolt (403), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Spore Cloud (32642), Windfury Attack (33750), Frozen Rune Weapon 2 (51385), Frozen Rune Weapon 3 (51386), Frozen Rune Weapon 4 (51387), Frozen Rune Weapon 5 (51388), Lava Lash (60103), Windstrike (115357), Windstrike Off-Hand (115360), Item - Shaman T18 Enhancement 4P Bonus (185872), Lightning Bolt (187837), Crash Lightning (187874), Lightning Bolt (188196), Lightning Shield (192106), Lightning Shield (192109), Rockbiter (193786), Flametongue (193796), Flametongue (194084), Crash Lightning (195592), Boulderfist (201897), Windsong (201898), Lightning Bolt (214815), Lightning Bolt Overload (214816)
-                   Hotfixed: Base Value (10 -> 21)
 #2 (id=191038)   : Apply Aura (6) | Override Spell Power per Attack Power% (366)
                    Base Value: 120 | Scaled Value: 120 | Target: Self(1)
 #3 (id=191039)   : Apply Aura (6) | Unknown effect sub type (179)
@@ -3167,7 +3166,7 @@ Effects          :
 Description      : $@spelldesc157153
 
 Name             : Stat Negation Aura - Agility DPS (id=162697) [Passive, Hidden] 
-Class            : Beast Mastery Marksmanship Survival Assassination Outlaw Subtlety Enhancement Windwalker Feral Hunter, Rogue, Shaman, Monk, Druid
+Class            : Beast Mastery Marksmanship Survival Assassination Outlaw Subtlety Enhancement Windwalker Feral Havoc Hunter, Rogue, Shaman, Monk, Druid, Demon Hunter
 School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3182,10 +3181,10 @@ Effects          :
 #2 (id=228479)   : Apply Aura (6) | Unknown effect sub type (467)
                    Base Value: -100 | Scaled Value: -100 | Target: Self(1)
 #3 (id=228480)   : Apply Aura (6) | Unknown effect sub type (466)
-                   Base Value: -100 | Scaled Value: -100 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Stat Negation Aura - Intellect DPS (id=162699) [Passive, Hidden] 
-Class            : Elemental Arcane Fire Frost Affliction Demonology Destruction Balance Shaman, Mage, Warlock, Druid
+Class            : Shadow Elemental Arcane Fire Frost Affliction Demonology Destruction Balance Priest, Shaman, Mage, Warlock, Druid
 School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3200,7 +3199,7 @@ Effects          :
 #2 (id=228488)   : Apply Aura (6) | Unknown effect sub type (467)
                    Base Value: -100 | Scaled Value: -100 | Target: Self(1)
 #3 (id=228489)   : Apply Aura (6) | Unknown effect sub type (466)
-                   Base Value: -100 | Scaled Value: -100 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Stat Negation Aura - Intellect Healer (id=162701) [Passive, Hidden] 
 Class            : Holy Discipline Holy Restoration Mistweaver Restoration Paladin, Priest, Shaman, Monk, Druid
@@ -3218,7 +3217,7 @@ Effects          :
 #2 (id=228495)   : Apply Aura (6) | Unknown effect sub type (467)
                    Base Value: -100 | Scaled Value: -100 | Target: Self(1)
 #3 (id=228496)   : Apply Aura (6) | Unknown effect sub type (466)
-                   Base Value: -100 | Scaled Value: -100 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Item - Shaman T17 Enhancement 4P Bonus (id=165610) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman
@@ -3498,7 +3497,7 @@ Spell Level      : 28
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 6 seconds
-Affecting spells : Elemental Fury (60188), Shaman (137038), Enhancement Shaman (137041)
+Affecting spells : Shaman (137038), Enhancement Shaman (137041), Crashing Hammer (238070), Crashing Lightning (242286)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3630,7 +3629,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=274643)   : School Damage: nature (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.75000 | Target: Enemy(6)
-                   Hotfixed: SP Coefficient (1.6 -> 1.75)
 Description      : Hurls a bolt of lightning at the target, dealing $s1 Nature damage.$?a187828[
 
 |cFFFFFFFFGenerates $214815s1 Maelstrom.|r ][]
@@ -3678,7 +3676,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=275203)   : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.60000 | Chain Multiplier: 1 | Chain Targets: 3 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.60000 | Chain Multiplier: 0 | Chain Targets: 3 | Target: Enemy(6)
 #2 (id=325428)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6
 Description      : Hurls a lightning bolt at the enemy, dealing $s1 Nature damage and then jumping to additional nearby enemies. Affects $x1 total targets. 
@@ -3687,7 +3685,7 @@ Description      : Hurls a lightning bolt at the enemy, dealing $s1 Nature damag
 
 Name             : Fire Elemental (id=188592) [Spell Family (11)] 
 Class            : Shaman
-School           : Nature
+School           : Fire
 Spell Level      : 56
 Range            : 30 yards
 GCD              : 1 seconds
@@ -3951,7 +3949,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=281250)   : School Damage: nature (2)
-                   Base Value: -1 | Scaled Value: 0 - 2 | Value Range: 3 | Value Multiplier: 1 | SP Coefficient: 0.50000 | Chain Multiplier: 1 | Chain Targets: 6 | Target: Enemy(6)
+                   Base Value: -1 | Scaled Value: 0 - 2 | Value Range: 3 | Value Multiplier: 1 | SP Coefficient: 0.50000 | Chain Multiplier: 0 | Chain Targets: 6 | Target: Enemy(6)
 Description      : Inflicts Nature damage to up to $x enemies.
 
 Name             : Lightning Surge Totem (id=192058) [Spell Family (11)] 
@@ -4253,12 +4251,13 @@ Name             : Storm Elemental (id=192249) [Spell Family (11)]
 Class            : Shaman
 School           : Nature
 Spell Level      : 1
+Range            : 30 yards
 GCD              : 1.5 seconds
 Cooldown         : 150 seconds
 Category         : 1572
 Category Cooldown: 150 seconds
 Affecting spells : Lucidity (137326)
-Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .......x   .....x.. ........ ........ ........ 
@@ -4266,7 +4265,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=282046)   : Dummy (3)
-                   Base Value: 1 | Scaled Value: 1 (avg=0.164) | Target: Self(1)
+                   Base Value: 1 | Scaled Value: 1 (avg=0.164) | Target: Enemy(6)
 Description      : Calls forth a Greater Storm Elemental to hurl gusts of wind that damage the Shaman's enemies and generate Maelstrom for the Shaman for $157299d.
 
 Name             : Fulmination (id=193777) [Spell Family (11), Hidden] 
@@ -4445,12 +4444,11 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Crash Lightning (id=195592) [Spell Family (11)] 
-Hotfixed         : Affecting Spells
 Class            : Shaman
 School           : Nature
 Spell Level      : 1
 Range            : 5 yards
-Affecting spells : Elemental Fury (60188), Shaman (137038), Enhancement Shaman (137041)
+Affecting spells : Shaman (137038), Enhancement Shaman (137041), Crashing Hammer (238070), Crashing Lightning (242286)
 Triggered by     : Crash Lightning (187878)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4463,7 +4461,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: Cone Front(104)
 #2 (id=287113)   : Weapon Damage% (31)
                    Base Value: 100 | Scaled Value: 1 | Radius: 8 yards | Target: Cone Front(104)
-                   Hotfixed: Base Value (110 -> 100)
 Description      : $@spelldesc187874
 
 Name             : Maelstrom Power Decrease (id=195769) [Spell Family (11), Hidden] 
@@ -4700,7 +4697,7 @@ Effects          :
 #1 (id=289629)   : School Damage: physical (2)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 13.00000 | Radius: 11 yards | Target: Unknown(129)
 #2 (id=290614)   : Apply Aura (6) | Unknown effect sub type (455)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 11 yards | Mechanic: Unknown(95) | Target: Unknown(129)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 11 yards | Mechanic: Unknown(58) | Target: Unknown(129)
 #3 (id=290630)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 1 yards | Target: Unknown(47) -> Unknown(107)
 Description      : Shatters a line of earth in front of you with your main hand weapon, causing $s1 Physical damage and knocking enemies to the side.
@@ -4720,7 +4717,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=289974)   : School Damage: nature (2)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.35000 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
-                   Hotfixed: AP Coefficient (0.4 -> 0.35)
 #2 (id=289975)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -30 | Scaled Value: -30 | Radius: 0 - 8 yards | Mechanic: Unknown(88) | Target: At Caster(22) -> AOE enemy(15)
 Description      : $@spelldesc197211
@@ -4850,7 +4846,7 @@ Attributes       : ........ ........ x....... ........   ........ ..x..... .....
                  : Disable target procs (113)
 Effects          :
 #1 (id=291096)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : Calls forth a Greater Fire Elemental to rain destruction on your enemies for $188592d.
 
 Name             : Earth Elemental (id=198103) [Spell Family (11)] 
@@ -4859,7 +4855,6 @@ School           : Nature
 Spell Level      : 36
 Range            : 30 yards
 GCD              : 1.5 seconds
-Duration         : 60 seconds
 Cooldown         : 300 seconds
 Affecting spells : Lucidity (137326)
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ....x... 
@@ -4870,15 +4865,15 @@ Attributes       : ........ ........ x....... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Disable target procs (113)
 Effects          :
-#1 (id=291153)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self(1)
+#1 (id=291153)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : Calls forth a Greater Earth Elemental to protect you and your allies for $d.
 
 Name             : Gathering Storms (id=198299) [Spell Family (11), Passive] 
 Class            : Shaman
 School           : Physical
 Range            : 100 yards
-Artifact Power   : Id: 912, Index: 8, Max Rank: 6, Values: [ 2, 4, 6, 8, 10, 12 ]
+Artifact Power   : Id: 912, Index: 8, Max Rank: 8, Values: [ 2, 4, 6, 8, 10, 12, 14, 16 ]
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4996,7 +4991,7 @@ Attributes       : ........ ........ x....... ........   ........ ..x..... .....
                  : Disable target procs (113)
 Effects          :
 #1 (id=291773)   : Summon (28)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 100820 | Misc Value 2: 0x489 | Radius: 3 yards | Target: Unknown(48) -> Self(1)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 100820 | Misc Value 2: 0x489 | Target: Self(1)
 Description      : $@spelldesc51533
 Variables        : $percent=$?s63271[${$58877m1*1.4}][${$58877m1}]
 
@@ -5263,7 +5258,6 @@ Effects          :
 Description      : Each of your main hand attacks has a $h% chance to reset the remaining cooldown on Stormstrike, and cause your next Stormstrike to cost $201846s3% less Maelstrom and trigger no cooldown.
 
 Name             : Stormbringer (id=201846) [Spell Family (11)] 
-Hotfixed         : Attributes
 Class            : Shaman
 School           : Physical
 Range            : 100 yards
@@ -5294,10 +5288,8 @@ Effects          :
 #5 (id=342303)   : Apply Aura (6) | Add Flat Modifier: Spell Critical Chance (107)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7 | Target: Self(1)
                    Affected Spells: Stormstrike (32175), Stormstrike Off-Hand (32176), Windstrike (115357), Windstrike Off-Hand (115360)
-                   Hotfixed: Sub Type (408 -> 107), Base Value (1 -> 0), Misc Value (0 -> 7), Affects Spells, Trigger Spell (115356 -> 0)
 #6 (id=363023)   : Apply Aura (6) | Unknown effect sub type (408)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 115356 | Target: Self(1)
-                   Hotfixed: NEW EFFECT
 Description      : $@spelldesc201845
 Tooltip          : Stormstrike has no cooldown and its cost is reduced by $s3%.
 
@@ -5318,7 +5310,6 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .x...
 Effects          :
 #1 (id=297537)   : School Damage: nature (2)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 2.75000 | Target: Enemy(6)
-                   Hotfixed: AP Coefficient (2.5 -> 2.75)
 #2 (id=297594)   : Energize Power (30)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: maelstrom | Target: Self(1)
 #3 (id=297596)   : Trigger Spell: Boulderfist (64)
@@ -6094,7 +6085,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #2 (id=312327)   : Weapon Damage% (31)
                    Base Value: 27 | Scaled Value: 0.27 | Target: Enemy(6)
-                   Hotfixed: Base Value (28 -> 27)
 Description      : $@spelldesc210853
 
 Name             : Hex (id=210873) [Spell Family (11)] 
@@ -6278,7 +6268,6 @@ Effects          :
 Description      : $@spelldesc210727
 
 Name             : The Deceiver's Blood Pact (id=214131) [Spell Family (11), Passive] 
-Hotfixed         : Proc Chance (15 -> 20)
 Class            : Shaman
 School           : Nature
 Proc Chance      : 20%
@@ -6648,7 +6637,7 @@ Attributes       : ........ ........ x....... ........   ........ ..x..... .....
                  : Disable target procs (113)
 Effects          :
 #1 (id=344190)   : Summon (28)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 29264 | Misc Value 2: 0x489 | Radius: 3 yards | Target: Unknown(48) -> Self(1)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 29264 | Misc Value 2: 0x489 | Radius: 3 yards | Target: Unknown(65)
 Description      : $@spelldesc51533
 Variables        : $percent=$?s63271[${$58877m1*1.4}][${$58877m1}]
 
