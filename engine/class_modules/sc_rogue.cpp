@@ -2818,14 +2818,9 @@ struct eviscerate_t : public rogue_attack_t
   {
     double c = rogue_attack_t::cost();
 
-    if ( p() -> buffs.death_from_above -> check() )
+    if ( p() -> buffs.death_from_above -> check() || p() -> buffs.feeding_frenzy -> check() )
     {
       c = 0;
-    }
-    else if ( p() -> buffs.feeding_frenzy -> check() )
-    {
-      c = 0;
-      p() -> buffs.feeding_frenzy -> decrement( 1 );
     }
 
     return c;
@@ -2842,6 +2837,11 @@ struct eviscerate_t : public rogue_attack_t
     else
     {
       p() -> buffs.finality_eviscerate -> trigger( cast_state( execute_state ) -> cp );
+    }
+
+    if ( p() -> buffs.feeding_frenzy -> check() && ! p() -> buffs.death_from_above -> check() )
+    {
+      p() -> buffs.feeding_frenzy -> decrement();
     }
   }
 };
@@ -3471,7 +3471,7 @@ struct blunderbuss_t : public shot_base_t
 
     shot_base_t::execute();
 
-    p() -> buffs.blunderbuss -> decrement( 1 );
+    p() -> buffs.blunderbuss -> decrement();
   }
 };
 
@@ -3751,7 +3751,6 @@ struct nightblade_t : public rogue_attack_t
     if ( p() -> buffs.feeding_frenzy -> check() )
     {
       c = 0;
-      p() -> buffs.feeding_frenzy -> decrement( 1 );
     }
 
     return c;
@@ -3768,6 +3767,11 @@ struct nightblade_t : public rogue_attack_t
     else
     {
       p() -> buffs.finality_nightblade -> expire();
+    }
+
+    if ( p() -> buffs.feeding_frenzy -> check() )
+    {
+      p() -> buffs.feeding_frenzy -> decrement();
     }
   }
 
@@ -4003,8 +4007,8 @@ struct saber_slash_t : public rogue_attack_t
       saberslash_proc_event = make_event<saberslash_proc_event_t>( *sim, p(), this, execute_state -> target );
     }
 
-    p() -> buffs.hidden_blade -> decrement( 1 );
-    p() -> buffs.t19_4pc_outlaw -> decrement( 1 );
+    p() -> buffs.hidden_blade -> decrement();
+    p() -> buffs.t19_4pc_outlaw -> decrement();
 
     if ( p() -> buffs.broadsides -> up() )
     {
@@ -4191,7 +4195,7 @@ struct shadowstrike_t : public rogue_attack_t
 
     p() -> trigger_shadow_nova( execute_state );
 
-    p() -> buffs.death -> decrement( 1 );
+    p() -> buffs.death -> decrement();
 
     if ( result_is_hit( execute_state -> result ) && rng().roll( p() -> sets.set( ROGUE_SUBTLETY, T19, B4 ) -> proc_chance() ) )
     {
@@ -4607,7 +4611,6 @@ struct death_from_above_t : public rogue_attack_t
     if ( p() -> buffs.feeding_frenzy -> check() )
     {
       c = 0;
-      p() -> buffs.feeding_frenzy -> decrement( 1 );
     }
 
     return c;
@@ -4650,6 +4653,11 @@ struct death_from_above_t : public rogue_attack_t
     action_state_t* driver_state = driver -> get_state( execute_state );
     driver_state -> target = target;
     driver -> schedule_execute( driver_state );
+
+    if ( p() -> buffs.feeding_frenzy -> check() )
+    {
+      p() -> buffs.feeding_frenzy -> decrement();
+    }
   }
 };
 
