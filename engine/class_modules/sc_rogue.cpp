@@ -2839,26 +2839,7 @@ struct eviscerate_t : public rogue_attack_t
     }
     else
     {
-      // FIXME: Bug fixed in 7.2
-      if ( maybe_ptr( p() -> dbc.ptr ) )
-        p() -> buffs.finality_eviscerate -> trigger( cast_state( execute_state ) -> cp );
-      else
-      {
-        // As of 01/12/2017 Finality:Eviscerate seems to snapshot on current cp (before the cast) rather than
-        // the ones consumed by the cast, so :
-        // Anticipation: Up to 10 cp for normal and up to 5 cp for weaponmastered.
-        // Others: Up to 5/6 cp for normal and 0 cp for weaponmastered (put at 1 since we do not support buff with 0 stack)
-        if ( ! p() -> bugs || secondary_trigger != TRIGGER_WEAPONMASTER )
-        {
-          // We take execute cp + current cp since the ones for the execute are already gone in current cp.
-          p() -> buffs.finality_eviscerate -> trigger( cast_state( execute_state ) -> cp +
-                                                      p() -> resources.current[ RESOURCE_COMBO_POINT ] );
-        } else {
-          // FIXME: We'll trigger at least one stack (4% instead of 0%) since simc doesn't support buff with 0 stack.
-          // Need to do in another way to match in-game behavior in the future.
-          p() -> buffs.finality_eviscerate -> trigger( std::max( static_cast<unsigned>( 1 ), static_cast<unsigned>( p() -> resources.current[ RESOURCE_COMBO_POINT ] ) ) );
-        }
-      }
+	  p() -> buffs.finality_eviscerate -> trigger( cast_state( execute_state ) -> cp );
     }
   }
 };
@@ -5928,13 +5909,7 @@ struct subterfuge_t : public buff_t
   {
     buff_t::execute( stacks, value, duration );
 
-    // As of 01/09/2017, Subterfuge makes the vanish to fully lasts
-    // 3 seconds (instead of breaking on first ability use).
-    // FIXME: No longer true in 7.2
-    if ( maybe_ptr( rogue -> dbc.ptr ) )
-      actions::break_stealth( rogue );
-    else if ( ! rogue -> bugs || ! rogue -> buffs.vanish -> check() )
-      actions::break_stealth( rogue );
+    actions::break_stealth( rogue );
   }
 };
 
@@ -6028,25 +6003,11 @@ struct vanish_t : public stealth_like_buff_t
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
-    // FIXME: Behavior changed in 7.2 due to Subterfuge changes
-    if ( maybe_ptr( rogue -> dbc.ptr ) )
+    // Stealth proc if Vanish fully end (i.e. isn't break before the expiration)
+    // We do it before the normal Vanish expiration to avoid on-stealth buff bugs (MoS, MoSh, Mantle).
+    if ( remaining_duration == timespan_t::zero() )
     {
-      // Stealth proc if Vanish fully end (i.e. isn't break before the expiration)
-      // We do it before the normal Vanish expiration to avoid on-stealth buff bugs (MoS, MoSh, Mantle).
-      if ( remaining_duration == timespan_t::zero() )
-      {
-        rogue -> buffs.stealth -> trigger();
-      }
-    }
-    else
-    {
-      // As of 02/26/2017, if you have Subterfuge talent and manages to no proc it during Vanish
-      // (For example, if you do not attack or use a trinket like Draught of Souls)
-      // it will proc Stealth.
-      if ( rogue -> talent.subterfuge -> ok() && ! rogue -> buffs.subterfuge -> check() )
-      {
-        rogue -> buffs.stealth -> trigger();
-      }
+    rogue -> buffs.stealth -> trigger();
     }
 
     stealth_like_buff_t::expire_override( expiration_stacks, remaining_duration );
