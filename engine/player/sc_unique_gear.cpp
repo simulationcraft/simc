@@ -4013,6 +4013,11 @@ const item_data_t* unique_gear::find_consumable( const dbc_t& dbc,
                                                  const std::string& name,
                                                  item_subclass_consumable type )
 {
+  if ( name.empty() )
+  {
+    return nullptr;
+  }
+
   // Poor man's longest matching prefix!
   const item_data_t* item = dbc::find_consumable( type, dbc.ptr, [&name]( const item_data_t* i ) {
     std::string n = i -> name;

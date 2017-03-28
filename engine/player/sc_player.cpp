@@ -9691,6 +9691,20 @@ std::string player_t::create_profile( save_e stype )
   {
     profile_str += "spec=";
     profile_str += dbc::specialization_string( specialization() ) + term;
+
+    std::string potion_option = potion_str.empty() ? default_potion() : potion_str;
+    std::string flask_option = flask_str.empty() ? default_flask() : flask_str;
+    std::string food_option = food_str.empty() ? default_food() : food_str;
+
+    if ( ! potion_option.empty() || ! flask_option.empty() || ! food_option.empty() )
+    {
+      profile_str += term;
+      profile_str += "# Default consumables" + term;
+
+      if ( ! potion_option.empty() ) profile_str += "potion=" + potion_option + term;
+      if ( ! flask_option.empty()  ) profile_str += "flask=" + flask_option + term;
+      if ( ! food_option.empty()  ) profile_str += "food=" + food_option + term;
+    }
   }
 
   if ( stype == SAVE_ALL || stype == SAVE_ACTIONS )
@@ -9894,6 +9908,10 @@ void player_t::copy_from( player_t* source )
   gear = source -> gear;
   enchant = source -> enchant;
   bugs = source -> bugs;
+
+  potion_str = source -> potion_str;
+  flask_str = source -> flask_str;
+  food_str = source -> food_str;
 }
 
 
@@ -9947,6 +9965,11 @@ void player_t::create_options()
     add_option( opt_func( "stat_timelines", parse_stat_timelines ) );
     add_option( opt_bool( "disable_hotfixes", disable_hotfixes ) );
     add_option( opt_func( "min_gcd", parse_min_gcd ) );
+
+    // Cosumables
+    add_option( opt_string( "potion", potion_str ) );
+    add_option( opt_string( "flask", flask_str ) );
+    add_option( opt_string( "food", food_str ) );
 
     // Positioning
     add_option( opt_float( "x_pos", default_x_position ) );

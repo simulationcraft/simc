@@ -623,6 +623,9 @@ public:
   void      init_action_list_enhancement();
   void      init_action_list_elemental();
   std::string generate_bloodlust_options();
+  std::string default_potion() const override;
+  std::string default_flask() const override;
+  std::string default_food() const override;
 
   void      init_rng() override;
   bool      init_special_effects() override;
@@ -6981,6 +6984,63 @@ std::string shaman_t::generate_bloodlust_options()
   return bloodlust_options;
 }
 
+// shaman_t::default_potion =================================================
+
+std::string shaman_t::default_potion() const
+{
+  std::string elemental_pot = ( true_level > 100 ) ? "prolonged_power" :
+                              ( true_level >= 90 ) ? "draenic_intellect" :
+                              ( true_level >= 85 ) ? "jade_serpent" :
+                              ( true_level >= 80 ) ? "volcanic" :
+                              "disabled";
+
+  std::string enhance_pot = ( true_level > 100 ) ? "prolonged_power" :
+                            ( true_level >= 90 ) ? "draenic_agility" :
+                            ( true_level >= 85 ) ? "virmens_bite" :
+                            ( true_level >= 80 ) ? "tolvir" :
+                            "disabled";
+
+  return specialization() == SHAMAN_ENHANCEMENT ? enhance_pot : elemental_pot;
+}
+
+// shaman_t::default_flask ==================================================
+
+std::string shaman_t::default_flask() const
+{
+  std::string elemental_flask = ( true_level > 100 ) ? "whispered_pact" :
+                                ( true_level >= 90 ) ? "greater_draenic_intellect_flask" :
+                                ( true_level >= 85 ) ? "warm_sun" :
+                                ( true_level >= 80 ) ? "draconic_mind" :
+                                "disabled";
+
+  std::string enhance_flask = ( true_level >  100 ) ? "seventh_demon" :
+                              ( true_level >= 90  ) ? "greater_draenic_agility_flask" :
+                              ( true_level >= 85  ) ? "spring_blossoms" :
+                              ( true_level >= 80  ) ? "winds" :
+                              "disabled";
+
+  return specialization() == SHAMAN_ENHANCEMENT ? enhance_flask : elemental_flask;
+}
+
+// shaman_t::default_food ===================================================
+
+std::string shaman_t::default_food() const
+{
+  std::string elemental_food = ( true_level > 100  ) ? "fishbrul_special" :
+                               ( true_level > 90   ) ? "pickled_eel" :
+                               ( true_level >= 90  ) ? "mogu_fish_stew" :
+                               ( true_level >= 80  ) ? "seafood_magnifique_feast" :
+                               "disabled";
+
+  std::string enhance_food = ( true_level >  100 ) ? "nightborne_delicacy_platter" :
+                             ( true_level >  90  ) ? "buttered_sturgeon" :
+                             ( true_level >= 90  ) ? "sea_mist_rice_noodles" :
+                             ( true_level >= 80  ) ? "seafood_magnifique_feast" :
+                             "disabled";
+
+  return specialization() == SHAMAN_ENHANCEMENT ? enhance_food : elemental_food;
+}
+
 // shaman_t::init_action_list_elemental =====================================
 
 void shaman_t::init_action_list_elemental()
@@ -6992,34 +7052,11 @@ void shaman_t::init_action_list_elemental()
   action_priority_list_t* single_asc = get_action_priority_list( "single_asc", "Single Target Action Priority List for Ascendance Spec" );
   action_priority_list_t* aoe       = get_action_priority_list( "aoe", "Multi target action priority list" );
 
-  std::string potion_name = ( true_level > 100 ) ? "prolonged_power" :
-                            ( true_level >= 90 ) ? "draenic_intellect" :
-                            ( true_level >= 85 ) ? "jade_serpent" :
-                            ( true_level >= 80 ) ? "volcanic" :
-                            "";
-  std::string flask_name  = ( true_level > 100 ) ? "whispered_pact" :
-                            ( true_level >= 90 ) ? "greater_draenic_intellect_flask" :
-                            ( true_level >= 85 ) ? "warm_sun" :
-                            ( true_level >= 80 ) ? "draconic_mind" :
-                            "";
-  std::string food_name   = ( true_level > 100  ) ? "fishbrul_special" :
-                            ( true_level > 90   ) ? "pickled_eel" :
-                            ( true_level >= 90  ) ? "mogu_fish_stew" :
-                            ( true_level >= 80  ) ? "seafood_magnifique_feast" :
-                            "";
-
   // Flask
-  if ( sim -> allow_flasks && true_level >= 80 )
-  {
-    precombat -> add_action( "flask,type=" + flask_name );
-  }
+  precombat -> add_action( "flask" );
 
   // Food
-  if ( sim -> allow_food && true_level >= 80 )
-  {
-    precombat -> add_action( "food,name=" + food_name );
-  }
-
+  precombat -> add_action( "food" );
 
   if ( true_level > 100 )
     precombat -> add_action( "augmentation,type=defiled" );
@@ -7027,10 +7064,7 @@ void shaman_t::init_action_list_elemental()
   // Snapshot stats
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
-  if ( sim -> allow_potions && true_level >= 80 )
-  {
-    precombat -> add_action( "potion,name=" + potion_name );
-  }
+  precombat -> add_action( "potion" );
 
   precombat -> add_talent( this, "Totem Mastery" );
   precombat -> add_action( this, "Stormkeeper" );
@@ -7049,11 +7083,8 @@ void shaman_t::init_action_list_elemental()
   }
 
   // In-combat potion
-  if ( sim -> allow_potions && true_level >= 80  )
-  {
-    def -> add_action( "potion,name=" + potion_name + ",if=cooldown.fire_elemental.remains>280|target.time_to_die<=60",
-        "In-combat potion is preferable linked to your Elemental, unless combat will end shortly" );
-  }
+  def -> add_action( "potion,if=cooldown.fire_elemental.remains>280|target.time_to_die<=60",
+      "In-combat potion is preferentially linked to your Elemental, unless combat will end shortly" );
 
   // "Default" APL controlling logic flow to specialized sub-APLs
   def -> add_action( this, "Wind Shear", "" , "Interrupt of casts and is reliable trigger of Sephuz Secret." );
@@ -7169,51 +7200,25 @@ void shaman_t::init_action_list_enhancement()
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
   action_priority_list_t* def       = get_action_priority_list( "default"   );
 
-  std::string flask_name = ( true_level >  100 ) ? "seventh_demon" :
-                           ( true_level >= 90  ) ? "greater_draenic_agility_flask" :
-                           ( true_level >= 85  ) ? "spring_blossoms" :
-                           ( true_level >= 80  ) ? "winds" :
-                           "";
-  std::string food_name = ( true_level >  100 ) ? "nightborne_delicacy_platter" :
-                          ( true_level >  90  ) ? "buttered_sturgeon" :
-                          ( true_level >= 90  ) ? "sea_mist_rice_noodles" :
-                          ( true_level >= 80  ) ? "seafood_magnifique_feast" :
-                          "";
-  std::string potion_name = ( true_level > 100 ) ? "prolonged_power" :
-                            ( true_level >= 90 ) ? "draenic_agility" :
-                            ( true_level >= 85 ) ? "virmens_bite" :
-                            ( true_level >= 80 ) ? "tolvir" :
-                            "";
-
   // Flask
-  if ( sim -> allow_flasks && true_level >= 80 )
+  precombat -> add_action( "flask" );
+  // Added Rune if Flask are allowed since there is no "allow_runes" bool.
+  if ( sim -> allow_flasks && true_level >= 100 )
   {
-    precombat -> add_action( "flask,type=" + flask_name );
+    std::string rune_action = "augmentation,type=";
+    rune_action += ((true_level >= 110) ? "defiled" : (true_level >= 100) ? "hyper" : "");
 
-    // Added Rune if Flask are allowed since there is no "allow_runes" bool.
-    if (true_level >= 100)
-    {
-        std::string rune_action = "augmentation,type=";
-        rune_action += ((true_level >= 110) ? "defiled" : (true_level >= 100) ? "hyper" : "");
-
-        precombat->add_action(rune_action);
-    }
+    precombat->add_action(rune_action);
   }
 
   // Food
-  if ( sim -> allow_food && true_level >= 80 )
-  {
-    precombat -> add_action( "food,name=" + food_name );
-  }
+  precombat -> add_action( "food" );
 
   // Snapshot stats
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
   // Precombat potion
-  if ( sim -> allow_potions && true_level >= 80 )
-  {
-    precombat -> add_action( "potion,name=" + potion_name );
-  }
+  precombat -> add_action( "potion" );
 
   // Lightning shield can be turned on pre-combat
   precombat -> add_talent( this, "Lightning Shield" );
@@ -7246,10 +7251,7 @@ void shaman_t::init_action_list_enhancement()
   def -> add_action( "blood_fury" );
 
   // In-combat potion
-  if (sim->allow_potions && true_level >= 80)
-  {
-      def->add_action("potion,name=" + potion_name + ",if=feral_spirit.remains>5|target.time_to_die<=60");
-  }
+  def -> add_action( "potion,if=feral_spirit.remains>5|target.time_to_die<=60" );
 
   // Core rotation
   def -> add_talent( this, "Boulderfist", "if=buff.boulderfist.remains<gcd|(maelstrom<=50&active_enemies>=3)" );

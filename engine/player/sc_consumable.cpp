@@ -239,10 +239,11 @@ struct dbc_consumable_base_t : public action_t
 
   action_t*                consumable_action;
   buff_t*                  consumable_buff;
+  bool                     opt_disabled; // Disabled through a consumable-specific "disabled" keyword
 
   dbc_consumable_base_t( player_t* p, const std::string& name_str ) :
     action_t( ACTION_USE, name_str, p ), item_data( nullptr ), type( ITEM_SUBCLASS_CONSUMABLE ),
-    consumable_action( nullptr ), consumable_buff( nullptr )
+    consumable_action( nullptr ), consumable_buff( nullptr ), opt_disabled( false )
   {
     add_option( opt_string( "name", consumable_name ) );
     add_option( opt_string( "type", consumable_name ) );
@@ -255,18 +256,16 @@ struct dbc_consumable_base_t : public action_t
     target = player;
   }
 
-  void init() override
+  expr_t* create_expression( const std::string& name_str ) override
   {
-    item_data = unique_gear::find_consumable( player -> dbc, consumable_name, type );
-
-    if ( ! initialize_consumable() )
+    auto split = util::string_split( name_str, "." );
+    if ( split.size() == 2 && util::str_compare_ci( split[ 0 ], "consumable" ) )
     {
-      sim -> errorf( "%s: Unable to initialize consumable %s for %s", player -> name(),
-          consumable_name.c_str(), signature_str.c_str() );
-      background = true;
+      auto match = util::str_compare_ci( consumable_name, split[ 1 ] );
+      return expr_t::create_constant( name_str, match );
     }
 
-    action_t::init();
+    return action_t::create_expression( name_str );
   }
 
   // Needed to satisfy normal execute conditions
@@ -286,6 +285,47 @@ struct dbc_consumable_base_t : public action_t
     {
       consumable_buff -> trigger();
     }
+  }
+
+  // Figure out the default consumable for a given type
+  virtual std::string consumable_default() const
+  { return std::string(); }
+
+  // Consumable type is fully disabled; base class just returns the option state (for the consumable
+  // type). Consumable type specialized classes take into account other options (i.e., the allow_X
+  // sim-wide options)
+  virtual bool disabled_consumable() const
+  { return opt_disabled; }
+
+  void init() override
+  {
+    // Figure out the default consumable name if nothing is given in the name/type parameters
+    if ( consumable_name.empty() )
+    {
+      consumable_name = consumable_default();
+      // Check for disabled string in the consumable player scope option
+      opt_disabled = util::str_compare_ci( consumable_name, "disabled" );
+    }
+    // If a specific name is given, we'll still need to parse the potentially user given "disabled"
+    // option to disable the consumable type entirely.
+    else
+    {
+      opt_disabled = util::str_compare_ci( consumable_default(), "disabled" );
+    }
+
+    if ( ! disabled_consumable() )
+    {
+      item_data = unique_gear::find_consumable( player -> dbc, consumable_name, type );
+
+      if ( ! initialize_consumable() )
+      {
+        sim -> errorf( "%s: Unable to initialize consumable %s for %s", player -> name(),
+            consumable_name.empty() ? "none" : consumable_name.c_str(), signature_str.c_str() );
+        background = true;
+      }
+    }
+
+    action_t::init();
   }
 
   // Find a suitable DBC spell for the consumable. This method is overridable where needed (for
@@ -328,7 +368,7 @@ struct dbc_consumable_base_t : public action_t
     if ( driver() -> id() == 0 )
     {
       sim -> errorf( "%s: Unable to find consumable %s for %s", player -> name(),
-          consumable_name.c_str(), signature_str.c_str() );
+          consumable_name.empty() ? "none" : consumable_name.c_str(), signature_str.c_str() );
       return false;
     }
 
@@ -370,6 +410,16 @@ struct dbc_consumable_base_t : public action_t
 
     return true;
   }
+
+  bool ready() override
+  {
+    if ( disabled_consumable() )
+    {
+      return false;
+    }
+
+    return action_t::ready();
+  }
 };
 
 // ==========================================================================
@@ -385,6 +435,25 @@ struct flask_base_t : public dbc_consumable_base_t
     parse_options( options_str );
 
     type = ITEM_SUBCLASS_FLASK;
+  }
+
+  bool disabled_consumable() const override
+  { return dbc_consumable_base_t::disabled_consumable() || sim -> allow_flasks == false; }
+
+  // Figure out the default consumable for flasks
+  std::string consumable_default() const override
+  {
+    if ( ! player -> flask_str.empty() )
+    {
+      return player -> flask_str;
+    }
+    // Class module default, if defined
+    else if ( ! player -> default_flask().empty() )
+    {
+      return player -> default_flask();
+    }
+
+    return std::string();
   }
 
   // Flasks (starting from legion it seems) have a reverse mapping to the spell that creates them in
@@ -410,9 +479,6 @@ struct flask_base_t : public dbc_consumable_base_t
 
   bool ready() override
   {
-    if ( ! player -> sim -> allow_flasks )
-      return false;
-
     if ( ! player -> consumables.flask )
       return false;
 
@@ -476,6 +542,23 @@ struct potion_t : public dbc_consumable_base_t
 
     // Note, potions pretty much have to be targeted to an enemy so expressions still work.
     target = p -> target;
+  }
+
+  bool disabled_consumable() const override
+  { return dbc_consumable_base_t::disabled_consumable() || sim -> allow_potions == false; }
+
+  std::string consumable_default() const override
+  {
+    if ( ! player -> potion_str.empty() )
+    {
+      return player -> potion_str;
+    }
+    else if ( ! player -> default_potion().empty() )
+    {
+      return player -> default_potion();
+    }
+
+    return std::string();
   }
 
   bool initialize_consumable() override
@@ -544,14 +627,6 @@ struct potion_t : public dbc_consumable_base_t
       consumable_buff -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
     }
   }
-
-  bool ready() override
-  {
-    if ( ! player -> sim -> allow_potions )
-      return false;
-
-    return dbc_consumable_base_t::ready();
-  }
 };
 
 // ==========================================================================
@@ -614,6 +689,23 @@ struct food_t : public dbc_consumable_base_t
     parse_options( options_str );
 
     type = ITEM_SUBCLASS_FOOD;
+  }
+
+  bool disabled_consumable() const override
+  { return dbc_consumable_base_t::disabled_consumable() || sim -> allow_food == false; }
+
+  std::string consumable_default() const override
+  {
+    if ( ! player -> food_str.empty() )
+    {
+      return player -> food_str;
+    }
+    else if ( ! player -> default_food().empty() )
+    {
+      return player -> default_food();
+    }
+
+    return std::string();
   }
 
   void init() override
@@ -712,9 +804,6 @@ struct food_t : public dbc_consumable_base_t
 
   bool ready() override
   {
-    if ( ! player -> sim -> allow_food )
-      return false;
-
     if ( ! player -> consumables.food )
       return false;
 
