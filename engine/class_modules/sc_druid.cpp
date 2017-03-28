@@ -710,6 +710,8 @@ public:
     artifact_power_t wildflesh;
     artifact_power_t gory_fur;
     artifact_power_t iron_claws;
+    //7.2
+    artifact_power_t pawsitive_outlook;
 
     // NYI
     artifact_power_t bloody_paws;
@@ -4039,6 +4041,7 @@ struct swipe_bear_t : public bear_attack_t
 struct thrash_bear_t : public bear_attack_t
 {
   double blood_frenzy_amount;
+  bool   looking_pawsitive;
 
   thrash_bear_t( druid_t* p, const std::string& options_str ) :
     bear_attack_t( "thrash_bear", p, p -> find_spell( 77758 ), options_str ),
@@ -4050,16 +4053,17 @@ struct thrash_bear_t : public bear_attack_t
     dot_duration = p -> spec.thrash_bear_dot -> duration();
     base_tick_time = p -> spec.thrash_bear_dot -> effectN( 1 ).period();
     attack_power_mod.tick = p -> spec.thrash_bear_dot -> effectN( 1 ).ap_coeff();
-    dot_max_stack = 3; 
+    dot_max_stack = 3;
     // Apply hidden passive damage multiplier
     base_dd_multiplier *= 1.0 + p -> spec.guardian_overrides -> effectN( 6 ).percent();
     // Bear Form cost modifier
     base_costs[ RESOURCE_RAGE ] *= 1.0 + p -> buff.bear_form -> data().effectN( 7 ).percent();
-    
+
     if ( p -> talent.blood_frenzy -> ok() )
       blood_frenzy_amount = p -> find_spell( 203961 ) -> effectN( 1 ).resource( RESOURCE_RAGE );
 
     base_multiplier *= 1.0 + p -> artifact.jagged_claws.percent();
+    looking_pawsitive = p -> artifact.pawsitive_outlook.rank() ? true : false;
   }
 
   void update_ready( timespan_t ) override
@@ -4077,6 +4081,16 @@ struct thrash_bear_t : public bear_attack_t
     bear_attack_t::tick( d );
 
     p() -> resource_gain( RESOURCE_RAGE, blood_frenzy_amount, p() -> gain.blood_frenzy );
+  }
+
+  virtual void execute () override
+  {
+    if ( looking_pawsitive && rng().roll( p() -> artifact.pawsitive_outlook.percent(1) ) )
+    {
+      execute();
+    }
+
+    bear_attack_t::execute();
   }
 };
 
@@ -6812,6 +6826,7 @@ void druid_t::init_spells()
   artifact.gory_fur                     = find_artifact_spell( "Gory Fur" );
   artifact.iron_claws                   = find_artifact_spell( "Iron Claws" );
   artifact.roar_of_the_crowd            = find_artifact_spell( "Roar of the Crowd" );
+  artifact.pawsitive_outlook            = find_artifact_spell( "Pawsitive Outlook" );
 
   // Active Actions =========================================================
 
@@ -6836,6 +6851,7 @@ void druid_t::init_spells()
     active.galactic_guardian  = new spells::moonfire_t::galactic_guardian_damage_t( this );
     active.galactic_guardian -> stats = get_stats( "moonfire" );
   }
+
   if ( artifact.ashamanes_bite.rank() )
     active.ashamanes_rip = new cat_attacks::ashamanes_rip_t( this );
   if ( mastery.natures_guardian -> ok() )
