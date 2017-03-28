@@ -7445,7 +7445,7 @@ double shaman_t::composite_spell_haste() const
 
   // 7.2 Sephuz's Secret passive haste. If the item is missing, default_chance will be set to 0 (by
   // the fallback buff creator).
-  if ( maybe_ptr( dbc.ptr ) && legendary.sephuzs_secret -> ok() )
+  if ( legendary.sephuzs_secret -> ok() )
   {
     h *= 1.0 / ( 1.0 + legendary.sephuzs_secret -> effectN( 3 ).percent() );
   }
@@ -7497,7 +7497,7 @@ double shaman_t::passive_movement_modifier() const
 
   // 7.2 Sephuz's Secret passive movement speed. If the item is missing, default_chance will be set
   // to 0 (by the fallback buff creator).
-  if ( maybe_ptr( dbc.ptr ) && legendary.sephuzs_secret -> ok() )
+  if ( legendary.sephuzs_secret -> ok() )
   {
     ms += legendary.sephuzs_secret -> effectN( 2 ).percent();
   }
@@ -7542,7 +7542,7 @@ double shaman_t::composite_melee_haste() const
 
   // 7.2 Sephuz's Secret passive haste. If the item is missing, default_chance will be set to 0 (by
   // the fallback buff creator).
-  if ( maybe_ptr( dbc.ptr ) && legendary.sephuzs_secret -> ok() )
+  if ( legendary.sephuzs_secret -> ok() )
   {
     h *= 1.0 / ( 1.0 + legendary.sephuzs_secret -> effectN( 2 ).percent() );
   }
