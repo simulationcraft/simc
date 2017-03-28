@@ -3256,6 +3256,11 @@ double player_t::composite_damage_versatility() const
       cdv += buffs.legendary_tank_buff -> check_value();
   }
 
+  if ( buffs.dmf_well_fed )
+  {
+    cdv += buffs.dmf_well_fed -> check_value();
+  }
+
   return cdv;
 }
 
@@ -3271,6 +3276,11 @@ double player_t::composite_heal_versatility() const
       chv += buffs.legendary_tank_buff -> check_value();
   }
 
+  if ( buffs.dmf_well_fed )
+  {
+    chv += buffs.dmf_well_fed -> check_value();
+  }
+
   return chv;
 }
 
@@ -3284,6 +3294,11 @@ double player_t::composite_mitigation_versatility() const
   {
     if ( buffs.legendary_tank_buff )
       cmv += buffs.legendary_tank_buff -> check_value() / 2;
+  }
+
+  if ( buffs.dmf_well_fed )
+  {
+    cmv += buffs.dmf_well_fed -> check_value() / 2;
   }
 
   return cmv;
