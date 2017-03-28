@@ -5091,10 +5091,12 @@ struct soul_barrier_t : public demon_hunter_buff_t<absorb_buff_t>
 struct sephuzs_secret_buff_t : public haste_buff_t
 {
     cooldown_t* icd;
+
     sephuzs_secret_buff_t(demon_hunter_t* p) :
-        haste_buff_t(haste_buff_creator_t(p, "sephuzs_secret", p -> find_spell(208052))
-            .default_value(p -> find_spell(208052) -> effectN(2).percent())
-            .add_invalidate(CACHE_HASTE))
+      haste_buff_t(haste_buff_creator_t(p, "sephuzs_secret", p -> find_spell(208052))
+        .default_value(p -> find_spell(208052) -> effectN(2).percent())
+        .add_invalidate(CACHE_HASTE)
+        .add_invalidate(CACHE_RUN_SPEED))
     {
         icd = p->get_cooldown("sephuzs_secret_cooldown");
         icd->duration = p->find_spell(226262)->duration();
@@ -7129,6 +7131,11 @@ double demon_hunter_t::composite_melee_haste() const
     mh /= 1.0 + buff.metamorphosis -> check_value();
   }
 
+  if (buff.sephuzs_secret->check())
+  {
+    mh /= 1.0 + buff.sephuzs_secret->check_value();
+  }
+
   if (maybe_ptr(dbc.ptr) && legendary.sephuzs_secret)
   {
     mh /= 1.0 + legendary.sephuzs_secret->effectN(3).percent();
@@ -7146,6 +7153,11 @@ double demon_hunter_t::composite_spell_haste() const
   if ( specialization() == DEMON_HUNTER_HAVOC )
   {
     sh /= 1.0 + buff.metamorphosis -> check_value();
+  }
+
+  if (buff.sephuzs_secret->check())
+  {
+    sh /= 1.0 + buff.sephuzs_secret->check_value();
   }
 
   if (maybe_ptr(dbc.ptr) && legendary.sephuzs_secret)
@@ -7341,7 +7353,12 @@ double demon_hunter_t::temporary_movement_modifier() const
 {
   double ms = player_t::temporary_movement_modifier();
 
-  ms += std::max( ms, buff.immolation_aura -> value() );
+  ms = std::max(ms, buff.immolation_aura->value());
+
+  if (buff.sephuzs_secret->check())
+  {
+    ms += buff.sephuzs_secret->data().effectN(1).percent();
+  }
 
   return ms;
 }
