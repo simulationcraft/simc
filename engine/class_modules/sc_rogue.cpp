@@ -3959,6 +3959,7 @@ struct saber_slash_t : public rogue_attack_t
   {
     weapon = &( player -> main_hand_weapon );
     base_multiplier *= 1.0 + p -> artifact.cursed_edges.percent();
+    base_crit += p -> artifact.sabermetrics.percent();
   }
 
   double proc_chance_main_gauche() const override
@@ -6508,6 +6509,12 @@ double rogue_t::composite_player_multiplier( school_e school ) const
     m *= buffs.elaborate_planning -> check_value();
   }
 
+  // Outlaw
+  if ( artifact.dreadblades_vigor.rank() && buffs.curse_of_the_dreadblades -> up() )
+  {
+    m *= 1.0 + artifact.dreadblades_vigor.percent();
+  }
+
   // Subtlety
   if ( buffs.symbols_of_death -> up() )
   {
@@ -7343,7 +7350,7 @@ void rogue_t::init_spells()
   artifact.black_powder      = find_artifact_spell( "Black Powder" );
   artifact.blade_dancer      = find_artifact_spell( "Blade Dancer" );
   artifact.cursed_edges      = find_artifact_spell( "Cursed Edges" );
-  //artifact.dreadblades_vigor = find_artifact_spell( "" );
+  artifact.dreadblades_vigor = find_artifact_spell( "Dreadblade's Vigor" );
   artifact.fatebringer       = find_artifact_spell( "Fatebringer" );
   artifact.fates_thirst      = find_artifact_spell( "Fate's Thirst" );
   artifact.fortune_strikes   = find_artifact_spell( "Fortune Strikes" );
@@ -7351,7 +7358,7 @@ void rogue_t::init_spells()
   artifact.fortunes_strike   = find_artifact_spell( "Fortune's Strike" );
   artifact.gunslinger        = find_artifact_spell( "Gunslinger" );
   artifact.hidden_blade      = find_artifact_spell( "Hidden Blade" );
-  //artifact.sabermetrics      = find_artifact_spell( "" );
+  artifact.sabermetrics      = find_artifact_spell( "Sabermetrics" );
 
   artifact.catwalk            = find_artifact_spell( "Catwalk" );
   artifact.demons_kiss        = find_artifact_spell( "Demon's Kiss" );
