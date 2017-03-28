@@ -7,6 +7,11 @@ talents=2002222
 artifact=41:139266:142511:139264:0:899:1:900:1:901:1:902:1:903:1:904:1:905:3:906:3:907:3:908:3:909:3:910:6:911:3:912:3:913:3:930:1:1351:1
 spec=enhancement
 
+# Default consumables
+potion=prolonged_power
+flask=seventh_demon
+food=nightborne_delicacy_platter
+
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
 # while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
@@ -14,12 +19,12 @@ spec=enhancement
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
-actions.precombat=flask,type=seventh_demon
+actions.precombat=flask
 actions.precombat+=/augmentation,type=defiled
-actions.precombat+=/food,name=nightborne_delicacy_platter
+actions.precombat+=/food
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion,name=prolonged_power
+actions.precombat+=/potion
 actions.precombat+=/lightning_shield
 
 # Executed every time the actor is available.
@@ -31,7 +36,7 @@ actions+=/feral_spirit,if=!artifact.alpha_wolf.rank|(maelstrom>=20&cooldown.cras
 actions+=/crash_lightning,if=artifact.alpha_wolf.rank&prev_gcd.1.feral_spirit
 actions+=/berserking,if=buff.ascendance.up|!talent.ascendance.enabled|level<100
 actions+=/blood_fury
-actions+=/potion,name=prolonged_power,if=feral_spirit.remains>5|target.time_to_die<=60
+actions+=/potion,if=feral_spirit.remains>5|target.time_to_die<=60
 actions+=/boulderfist,if=buff.boulderfist.remains<gcd|(maelstrom<=50&active_enemies>=3)
 actions+=/boulderfist,if=buff.boulderfist.remains<gcd|(charges_fractional>1.75&maelstrom<=100&active_enemies<=2)
 actions+=/rockbiter,if=talent.landslide.enabled&buff.landslide.remains<gcd

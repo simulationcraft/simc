@@ -7,6 +7,11 @@ talents=3112332
 artifact=40:143805:140040:140420:0:291:1:292:1:293:1:294:1:295:1:296:1:297:1:298:5:299:3:300:3:301:4:302:3:303:3:304:3:305:3:306:3:1350:1:1387:20
 spec=elemental
 
+# Default consumables
+potion=prolonged_power
+flask=whispered_pact
+food=fishbrul_special
+
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
 # while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
@@ -14,20 +19,20 @@ spec=elemental
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
-actions.precombat=flask,type=whispered_pact
-actions.precombat+=/food,name=fishbrul_special
+actions.precombat=flask
+actions.precombat+=/food
 actions.precombat+=/augmentation,type=defiled
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion,name=prolonged_power
+actions.precombat+=/potion
 actions.precombat+=/totem_mastery
 actions.precombat+=/stormkeeper
 
 # Executed every time the actor is available.
 # Bloodlust casting behavior mirrors the simulator settings for proxy bloodlust. See options 'bloodlust_percent', and 'bloodlust_time'. 
 actions=bloodlust,if=target.health.pct<25|time>0.500
-# In-combat potion is preferable linked to your Elemental, unless combat will end shortly
-actions+=/potion,name=prolonged_power,if=cooldown.fire_elemental.remains>280|target.time_to_die<=60
+# In-combat potion is preferentially linked to your Elemental, unless combat will end shortly
+actions+=/potion,if=cooldown.fire_elemental.remains>280|target.time_to_die<=60
 # Interrupt of casts and is reliable trigger of Sephuz Secret.
 actions+=/wind_shear
 actions+=/totem_mastery,if=buff.resonance_totem.remains<2
