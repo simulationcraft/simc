@@ -9257,7 +9257,7 @@ double mage_t::composite_spell_haste() const
     h *= iv_haste;
   }
 
-  if ( maybe_ptr( dbc.ptr ) && buffs.sephuzs_secret -> default_chance != 0 )
+  if ( buffs.sephuzs_secret -> default_chance != 0 )
   {
     h /= 1.0 + buffs.sephuzs_secret -> data().driver() -> effectN( 3 ).percent();
   }
@@ -9410,7 +9410,7 @@ double mage_t::passive_movement_modifier() const
 {
   double pmm = player_t::passive_movement_modifier();
 
-  if ( maybe_ptr( dbc.ptr ) && buffs.sephuzs_secret -> default_chance != 0 )
+  if ( buffs.sephuzs_secret -> default_chance != 0 )
   {
     pmm += buffs.sephuzs_secret -> data().driver() -> effectN( 2 ).percent();
   }
