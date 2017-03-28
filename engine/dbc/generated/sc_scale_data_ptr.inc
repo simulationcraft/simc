@@ -1,4 +1,4 @@
-// Hit points per stamina for level 1 - 110, wow build 23789
+// Hit points per stamina for level 1 - 110, wow build 23826
 static double _ptr__hp_per_sta[110] = {
     14,	14,	15,	16,	17,	//    5
     18,	18,	18,	18,	18,	//   10
@@ -24,7 +24,7 @@ static double _ptr__hp_per_sta[110] = {
     60,	60,	60,	60,	60,	//  110
 };
 
-// Spell scaling multipliers for levels 1 - 110, wow build 23789
+// Spell scaling multipliers for levels 1 - 110, wow build 23826
 static double _ptr__spell_scaling[][110] = {
   {
     0,	0,	0,	0,	0,	//    5
@@ -502,7 +502,7 @@ static double _ptr__spell_scaling[][110] = {
   },
 };
 
-// Base mana points for levels 1 - 110, wow build 23789
+// Base mana points for levels 1 - 110, wow build 23826
 static double _ptr__base_mp[][110] = {
   {
     0,	0,	0,	0,	0,	//    5
@@ -830,7 +830,7 @@ static double _ptr__base_mp[][110] = {
   },
 };
 
-// Combat rating values for level 1 - 110, wow build 23789
+// Combat rating values for level 1 - 110, wow build 23826
 static double _ptr__combat_ratings[][110] = {
   // Dodge
   {
@@ -1384,7 +1384,7 @@ static double _ptr__combat_ratings[][110] = {
   },
 };
 
-// Combat rating multipliers for item level 1 - 1300, wow build 23789
+// Combat rating multipliers for item level 1 - 1300, wow build 23826
 static double _ptr__combat_ratings_mult_by_ilvl[][1300] = {
   // Armor Multiplier
   {
@@ -2440,7 +2440,7 @@ static double _ptr__combat_ratings_mult_by_ilvl[][1300] = {
   },
 };
 
-// Item socket costs for item levels 1 - 1300, wow build 23789
+// Item socket costs for item levels 1 - 1300, wow build 23826
 static double _ptr__item_socket_cost_per_level[1300] = {
     0,	0,	0,	0,	0,	//    5
     0,	0,	0,	0,	0,	//   10
@@ -2644,7 +2644,7 @@ static double _ptr__item_socket_cost_per_level[1300] = {
     8,	8,	8,	8,	8,	// 1000
     };
 
-// Enemy armor mitigation constants (K-value) for level 1 - 113, wow build 23789
+// Enemy armor mitigation constants (K-value) for level 1 - 113, wow build 23826
 static double _ptr__armor_mitigation_by_lvl[113] = {
     157,	167,	177,	187,	197,	//    5
     207,	217,	227,	237,	247,	//   10

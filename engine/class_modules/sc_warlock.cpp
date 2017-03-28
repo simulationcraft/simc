@@ -309,6 +309,7 @@ public:
     timespan_t lessons_of_spacetime2;
     timespan_t lessons_of_spacetime3;
     bool sephuzs_secret;
+    double sephuzs_passive;
     bool magistrike;
 
   } legendary;
@@ -1462,7 +1463,6 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
   {
     m *= 1.0 + o() -> artifact.thalkiels_lingering_power.percent();
     m *= 1.0 + o() -> artifact.swarms_of_the_black_harvest.percent();
-    m *= 1.0 + o() -> artifact.left_hand_of_darkness.percent();
   }
 
   if ( o() -> specialization() == WARLOCK_DESTRUCTION )
@@ -1518,7 +1518,7 @@ double warlock_pet_t::composite_melee_speed() const
   double cmh = pet_t::composite_melee_speed();
 
   if ( buffs.demonic_empowerment->up() )
-    cmh /= 1.0 + buffs.demonic_empowerment->data().effectN( 2 ).percent() + o()->artifact.summoners_prowess.percent();
+    cmh /= 1.0 + buffs.demonic_empowerment->data().effectN( 2 ).percent() + o() -> artifact.summoners_prowess.percent();
 
   return cmh;
 }
@@ -1568,6 +1568,13 @@ struct felguard_pet_t: public warlock_pet_t
 
     melee_attack = new warlock_pet_melee_t( this );
     special_action = new felstorm_t( this );
+  }
+
+  double composite_player_multiplier( school_e school ) const override
+  {
+    double m = warlock_pet_t::composite_player_multiplier( school );
+    m *= 1.0 + o() -> artifact.left_hand_of_darkness.percent();
+    return m;
   }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
@@ -1933,6 +1940,15 @@ struct infernal_t: public warlock_pet_t
     base_energy_regen_per_second = 0;
   }
 
+  double composite_player_multiplier( school_e school ) const override
+  {
+    double m = warlock_pet_t::composite_player_multiplier( school );
+
+    if ( o() -> talents.grimoire_of_supremacy -> ok() )
+      m *= 1.0 + o() -> artifact.left_hand_of_darkness.percent();
+    return m;
+  }
+
   virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
   {
     if ( name == "immolation" ) return new immolation_t( this, options_str );
@@ -1990,6 +2006,15 @@ struct doomguard_t: public warlock_pet_t
 
     resources.base[RESOURCE_ENERGY] = 100;
     base_energy_regen_per_second = 12;
+  }
+
+  double composite_player_multiplier( school_e school ) const override
+  {
+    double m = warlock_pet_t::composite_player_multiplier( school );
+
+    if ( o() -> talents.grimoire_of_supremacy -> ok() )
+      m *= 1.0 + o() -> artifact.left_hand_of_darkness.percent();
+    return m;
   }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
@@ -3426,15 +3451,14 @@ struct demonic_empowerment_t: public warlock_spell_t
       {
         if( !lock_pet -> is_sleeping() )
         {
-          lock_pet -> buffs.demonic_empowerment -> trigger();
-          if(p()->artifact.thalkiels_ascendance.rank())
+          if( p() -> artifact.thalkiels_ascendance.rank() && rng().roll( 0.5 ) )
           {
 //              if(rng().roll( p() -> find_spell(238145) ->proc_chance() ))
 //              double chance = p()->find_spell(242832)->proc_chance();
 //              if(rng().range(0.0, 1.0) < chance)
-              if(rng().roll(0.5))
-                lock_pet -> ascendance->execute();
+                lock_pet -> ascendance -> execute();
           }
+          lock_pet -> buffs.demonic_empowerment -> trigger();
         }
       }
     }
@@ -5888,6 +5912,11 @@ double warlock_t::composite_spell_haste() const
     h *= 1.0 / ( 1.0 + buffs.sephuzs_secret -> check_value() );
   }
 
+  if ( legendary.sephuzs_secret )
+  {
+    h *= 1.0 / ( 1.0 + legendary.sephuzs_passive );
+  }
+
   return h;
 }
 
@@ -5900,9 +5929,14 @@ double warlock_t::composite_melee_haste() const
     h *= 1.0 / ( 1.0 + buffs.misery -> stack_value() );
   }
 
-  if ( buffs.sephuzs_secret->check() )
+  if ( buffs.sephuzs_secret -> check() )
   {
-    h *= 1.0 / ( 1.0 + buffs.sephuzs_secret->check_value() );
+    h *= 1.0 / ( 1.0 + buffs.sephuzs_secret -> check_value() );
+  }
+
+  if ( legendary.sephuzs_secret )
+  {
+    h *= 1.0 / ( 1.0 + legendary.sephuzs_passive );
   }
 
   return h;
@@ -7729,6 +7763,17 @@ struct hood_of_eternal_disdain_t : public scoped_action_callback_t<agony_t>
   }
 };
 
+struct sacrolashs_dark_strike_t : public scoped_action_callback_t<corruption_t>
+{
+  sacrolashs_dark_strike_t() : super( WARLOCK, "corruption" )
+  {}
+
+  void manipulate( corruption_t* a, const special_effect_t& e ) override
+  {
+    a -> base_multiplier *= 1.0 + e.driver() -> effectN( 1 ).percent();
+  }
+};
+
 struct kazzaks_final_curse_t : public scoped_action_callback_t<doom_t>
 {
   kazzaks_final_curse_t() : super( WARLOCK, "doom" )
@@ -7833,9 +7878,10 @@ struct sephuzs_secret_t : public scoped_actor_callback_t<warlock_t>
 {
   sephuzs_secret_t() : super( WARLOCK ){}
 
-  void manipulate( warlock_t* a, const special_effect_t& ) override
+  void manipulate( warlock_t* a, const special_effect_t& e ) override
   {
     a -> legendary.sephuzs_secret = true;
+    a -> legendary.sephuzs_passive = e.driver() -> effectN( 3 ).percent();
   }
 };
 
@@ -7881,6 +7927,7 @@ struct warlock_module_t: public module_t
     register_special_effect( 236199, wakeners_loyalty_t() );
     register_special_effect( 236174, lessons_of_spacetime_t() );
     register_special_effect( 208051, sephuzs_secret_t() );
+    register_special_effect( 207952, sacrolashs_dark_strike_t() );
     register_special_effect( 213014, magistrike_t() );
   }
 

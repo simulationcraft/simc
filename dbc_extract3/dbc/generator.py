@@ -1265,7 +1265,9 @@ class SpellDataGenerator(DataGenerator):
          # 7.1.5 de-links Mark of the Hidden Satyr damage spell fully from the driver
          191259,
          # 7.1.5 Entwined Elemental Foci buffs
-         225729, 225730
+         225729, 225730,
+         # 7.2.0 Dreadstone of Endless Shadows stat buffs
+         225752, 225753,
         ),
 
         # Warrior:
