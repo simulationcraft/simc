@@ -21,7 +21,7 @@ talents=3320032
 artifact=12:0:0:0:0:108:3:109:3:110:3:111:3:113:3:114:3:115:3:117:3:119:1:120:1:122:1:123:1:124:1:1090:3:1091:1:1092:1:1332:1:1360:20
 
 head=eventide_casque,id=140881,bonus_id=3519
-neck=radiant_string_of_scorpid_eyes,id=140898,bonus_id=3519,enchant=mark_of_the_hidden_satyr
+neck=radiant_string_of_scorpid_eyes,id=140898,bonus_id=3519,enchant=mark_of_the_claw
 shoulders=dreadwyrm_shoulderguards,id=138361,bonus_id=3519
 back=dreadwyrm_greatcloak,id=138364,bonus_id=3519,enchant=binding_of_strength
 chest=dreadwyrm_breastplate,id=138349,bonus_id=3519

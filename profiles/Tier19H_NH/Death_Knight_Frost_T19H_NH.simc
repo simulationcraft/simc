@@ -106,7 +106,7 @@ actions.gs_ticking+=/hungering_rune_weapon,if=!buff.hungering_rune_weapon.up
 actions.gs_ticking+=/empower_rune_weapon
 
 head=eventide_casque,id=140881,bonus_id=3517
-neck=radiant_string_of_scorpid_eyes,id=140898,bonus_id=3517,enchant=mark_of_the_hidden_satyr
+neck=radiant_string_of_scorpid_eyes,id=140898,bonus_id=3517,enchant=mark_of_the_claw
 shoulders=dreadwyrm_shoulderguards,id=138361,bonus_id=3517
 back=dreadwyrm_greatcloak,id=138364,bonus_id=3517,enchant=binding_of_strength
 chest=dreadwyrm_breastplate,id=138349,bonus_id=3517
