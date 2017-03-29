@@ -1474,8 +1474,7 @@ public:
     if ( rend_and_tear )
       tm *= 1.0 + p() -> talent.rend_and_tear -> effectN( 2 ).percent() * td( t ) -> dots.thrash_bear -> current_stack();
    
-    if ( maybe_ptr( ab::player -> dbc.ptr )
-       && p() -> artifact.bloodletters_frailty.rank() > 0
+    if ( p() -> artifact.bloodletters_frailty.rank() > 0
        && td(t) -> dots.ashamanes_frenzy -> is_ticking() )
     {
       tm *= 1.0 + p() -> artifact.bloodletters_frailty.data().effectN(1).percent(); 
@@ -8206,7 +8205,7 @@ double druid_t::composite_spell_haste() const
   if ( buff.sephuzs_secret -> check() )
      sh *= 1.0 / ( 1.0 + buff.sephuzs_secret -> stack_value() );
 
-  if ( maybe_ptr( dbc.ptr ) && legendary.sephuzs_secret -> ok() )
+  if ( legendary.sephuzs_secret -> ok() )
      sh *= 1.0 / ( 1.0 + legendary.sephuzs_secret -> effectN(2).percent() );
 
   return sh;
@@ -8221,7 +8220,7 @@ double druid_t::composite_melee_haste() const
    if ( buff.sephuzs_secret -> check() )
       mh *= 1.0 / ( 1.0 + buff.sephuzs_secret -> stack_value() );
 
-   if ( maybe_ptr( dbc.ptr ) && legendary.sephuzs_secret -> ok() )
+   if ( legendary.sephuzs_secret -> ok() )
       mh *= 1.0 / ( 1.0 + legendary.sephuzs_secret -> effectN(2).percent() );
 
    return mh;
