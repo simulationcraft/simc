@@ -3959,7 +3959,7 @@ struct saber_slash_t : public rogue_attack_t
   {
     weapon = &( player -> main_hand_weapon );
     base_multiplier *= 1.0 + p -> artifact.cursed_edges.percent();
-    base_crit += p -> artifact.sabermetrics.percent();
+    crit_bonus_multiplier *= 1.0 + p -> artifact.sabermetrics.percent();
   }
 
   double proc_chance_main_gauche() const override
@@ -5473,7 +5473,7 @@ void rogue_t::trigger_shadow_techniques( const action_state_t* state )
 
     if ( artifact.shadows_whisper.rank() )
     {
-      resource_gain( RESOURCE_ENERGY, artifact.shadows_whisper.percent(), gains.shadow_techniques, state -> action );
+      resource_gain( RESOURCE_ENERGY, artifact.shadows_whisper.value(), gains.shadow_techniques, state -> action );
     }
 
     trigger_combo_point_gain( cp, gains.shadow_techniques, state -> action );
