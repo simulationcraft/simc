@@ -272,6 +272,7 @@ struct rogue_t : public player_t
     // Majors
     buff_t* blunderbuss;
     buff_t* blurred_time;
+    buff_t* loaded_dice;
 
     buff_t* feeding_frenzy;
     buff_t* finality_eviscerate;
@@ -2507,6 +2508,8 @@ struct adrenaline_rush_t : public rogue_attack_t
 
     p() -> buffs.adrenaline_rush -> trigger();
     p() -> buffs.blurred_time -> trigger();
+    if ( p() -> artifact.loaded_dice.rank() )
+      p() -> buffs.loaded_dice -> trigger();
   }
 };
 
@@ -7382,7 +7385,7 @@ void rogue_t::init_spells()
   artifact.blunderbuss  = find_artifact_spell( "Blunderbuss" );
   artifact.blurred_time = find_artifact_spell( "Blurred Time" );
   artifact.greed        = find_artifact_spell( "Greed" );
-  //artifact.loaded_dice  = find_artifact_spell( "" );
+  artifact.loaded_dice  = find_artifact_spell( "Loaded Dice" );
 
   artifact.akaaris_soul   = find_artifact_spell( "Akaari's Soul" );
   artifact.finality       = find_artifact_spell( "Finality" );
@@ -7738,6 +7741,7 @@ void rogue_t::create_buffs()
   buffs.blunderbuss               = buff_creator_t( this, "blunderbuss", find_spell( 202848 ) )
                                     .chance( artifact.blunderbuss.data().effectN( 2 ).percent() );
   buffs.blurred_time              = new buffs::blurred_time_t( this );
+  buffs.loaded_dice               = buff_creator_t( this, "loaded_dice", artifact.loaded_dice.data().effectN( 1 ).trigger() );
 
   buffs.feeding_frenzy            = buff_creator_t( this, "feeding_frenzy", artifact.feeding_frenzy.data().effectN( 1 ).trigger() )
                                     .max_stack( 3 ); // Note: Hardcoded to 3 since we modelize it as a 3 stack buff
