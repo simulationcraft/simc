@@ -4208,7 +4208,7 @@ double priest_t::composite_spell_haste() const
 
   // 7.2 Sephuz's Secret passive haste. If the item is missing, default_chance will be set to 0 (by
   // the fallback buff creator).
-  if ( maybe_ptr( dbc.ptr ) && legendary.sephuzs_secret -> ok() )
+  if ( legendary.sephuzs_secret -> ok() )
   {
     h /= (1.0 + legendary.sephuzs_secret -> effectN( 3 ).percent() );
   }
@@ -4273,9 +4273,8 @@ double priest_t::composite_player_multiplier( school_e school ) const
     if ( specs.voidform->ok() && buffs.voidform->check() )
     {
       double voidform_multiplier =
-          buffs.voidform->data().effectN( 1 ).percent() + talents.legacy_of_the_void->effectN( 3 ).percent();
-      // TODO remove PTR once 7.2 is live
-      if ( active_items.zenkaram_iridis_anadem && dbc.ptr )
+          buffs.voidform->data().effectN( 1 ).percent() + talents.legacy_of_the_void->effectN( 3 ).percent();      
+      if ( active_items.zenkaram_iridis_anadem )
       {
         voidform_multiplier += buffs.iridis_empowerment->data().effectN( 2 ).percent();
       }
