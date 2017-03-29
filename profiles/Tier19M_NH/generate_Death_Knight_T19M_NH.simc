@@ -32,7 +32,7 @@ legs=dreadwyrm_legplates,id=138358,bonus_id=3519
 feet=leystonetoe_kickers,id=140884,bonus_id=3519
 finger1=ring_of_braided_stems,id=140896,bonus_id=3519,enchant=binding_of_haste
 finger2=spellblades_gemmed_signet,id=140895,bonus_id=3519,enchant=binding_of_haste
-trinket1=draught_of_souls,id=140808,bonus_id=3519
+trinket1=convergence_of_fates,id=140806,bonus_id=3519
 trinket2=entwined_elemental_foci,id=140796,bonus_id=3519
 main_hand=blades_of_the_fallen_prince,id=128292,gem_id=140832/140823/140832,relic_id=3519/3519/3519,enchant=rune_of_razorice
 off_hand=blades_of_the_fallen_prince,id=128293,enchant=rune_of_the_fallen_crusader
