@@ -51,6 +51,9 @@ namespace pets {
   namespace shadowy_tear {
     struct shadowy_tear_t;
   }
+  namespace flame_rift {
+    struct flame_rift_t;
+  }
   namespace chaos_portal {
     struct chaos_portal_t;
   }
@@ -107,6 +110,7 @@ public:
   player_t* havoc_target;
   double agony_accumulator;
   double demonwrath_accumulator;
+  int free_souls;
 
   // Active Pet
   struct pets_t
@@ -116,7 +120,7 @@ public:
     static const int WILD_IMP_LIMIT = 40;
     static const int T18_PET_LIMIT = 0;
     static const int DREADSTALKER_LIMIT = 4;
-    static const int DIMENSIONAL_RIFT_LIMIT = 6;
+    static const int DIMENSIONAL_RIFT_LIMIT = 10;
     static const int INFERNAL_LIMIT = 1;
     static const int DOOMGUARD_LIMIT = 1;
     static const int LORD_OF_FLAMES_INFERNAL_LIMIT = 3;
@@ -126,6 +130,7 @@ public:
     std::array<pets::t18_prince_malchezaar_t*, T18_PET_LIMIT> t18_prince_malchezaar;
     std::array<pets::t18_vicious_hellhound_t*, T18_PET_LIMIT> t18_vicious_hellhound;
     std::array<pets::shadowy_tear::shadowy_tear_t*, DIMENSIONAL_RIFT_LIMIT> shadowy_tear;
+    std::array<pets::flame_rift::flame_rift_t*, DIMENSIONAL_RIFT_LIMIT> flame_rift;
     std::array<pets::chaos_tear_t*, DIMENSIONAL_RIFT_LIMIT> chaos_tear;
     std::array<pets::chaos_portal::chaos_portal_t*, DIMENSIONAL_RIFT_LIMIT> chaos_portal;
     std::array<pets::dreadstalker_t*, DREADSTALKER_LIMIT> dreadstalkers;
@@ -475,6 +480,7 @@ public:
     //destro
     proc_t* t18_4pc_destruction;
     proc_t* shadowy_tear;
+    proc_t* flame_rift;
     proc_t* chaos_tear;
     proc_t* chaos_portal;
     proc_t* dimension_ripper;
@@ -971,6 +977,19 @@ struct rift_chaos_bolt_t : public warlock_pet_spell_t
     state -> result_total *= 1.0 + player -> cache.spell_crit_chance() + state -> target_crit_chance;
 
     return state -> result_total;
+  }
+};
+
+struct searing_bolt_t : public warlock_pet_spell_t
+{
+  searing_bolt_t( warlock_pet_t* p ) :
+    warlock_pet_spell_t( "searing_bolt", p, p -> find_spell( 243050 ) )
+  {
+    may_crit = may_miss = false;
+    tick_may_crit = true;
+    base_execute_time = timespan_t::from_millis( 500 );
+    base_costs[RESOURCE_ENERGY] = 1.0;
+    resource_current = RESOURCE_ENERGY;
   }
 };
 
@@ -1796,6 +1815,51 @@ namespace shadowy_tear {
   }
 }
 
+namespace flame_rift {
+
+  struct flame_rift_t;
+
+  struct flame_rift_t : public warlock_pet_t
+  {
+    stats_t** searing_bolt_stats;
+    stats_t* regular_stats;
+
+    flame_rift_t( sim_t* sim, warlock_t* owner ) :
+      warlock_pet_t( sim, owner, "flame_rift", PET_NONE, true )
+    {
+      action_list_str = "searing_bolt";
+    }
+
+    void init_base_stats() override
+    {
+      warlock_pet_t::init_base_stats();
+      base_energy_regen_per_second = 0;
+      resources.base[RESOURCE_ENERGY] = 10.0;
+    }
+
+    virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
+    {
+      if ( name == "searing_bolt" )
+      {
+        action_t* a = new searing_bolt_t( this );
+        searing_bolt_stats = &( a->stats );
+        if ( this == o()->warlock_pet_list.flame_rift[0] || sim->report_pets_separately )
+        {
+          regular_stats = a->stats;
+        }
+        else
+        {
+          regular_stats = o()->warlock_pet_list.flame_rift[0]->get_stats( "searing_bolt" );
+          *searing_bolt_stats = regular_stats;
+        }
+        return a;
+      }
+
+      return warlock_pet_t::create_action( name, options_str );
+    }
+  };
+}
+
 namespace chaos_portal {
 
   struct chaos_portal_t;
@@ -2574,6 +2638,12 @@ public:
 
     p() -> buffs.demonic_synergy -> up();
 
+    if ( p() -> free_souls > 0 )
+    {
+      p() -> buffs.tormented_souls -> trigger();
+      p() -> free_souls -= 1;
+    }
+
     if ( result_is_hit( d -> state -> result ) && p() -> artifact.reap_souls.rank() )
     {
       bool procced = p() -> tormented_souls_rppm -> trigger(); //check for RPPM
@@ -2585,6 +2655,12 @@ public:
   void impact( action_state_t* s ) override
   {
     spell_t::impact( s );
+
+    if ( p() -> free_souls > 0 )
+    {
+      p() -> buffs.tormented_souls -> trigger();
+      p() -> free_souls -= 1;
+    }
 
     if ( s -> result_amount > 0 && result_is_hit( s -> result ) && td( s -> target ) -> dots_seed_of_corruption -> is_ticking()
          && id != p() -> spells.seed_of_corruption_aoe -> id )
@@ -4139,6 +4215,7 @@ struct thalkiels_discord_t : public warlock_spell_t
 struct dimensional_rift_t : public warlock_spell_t
 {
   timespan_t shadowy_tear_duration;
+  timespan_t flame_rift_duration;
   timespan_t chaos_tear_duration;
   timespan_t chaos_portal_duration;
 
@@ -4146,6 +4223,7 @@ struct dimensional_rift_t : public warlock_spell_t
     warlock_spell_t( "dimensional_rift", p, p -> artifact.dimensional_rift )
   {
     shadowy_tear_duration = timespan_t::from_millis( 14001 );
+    flame_rift_duration = timespan_t::from_millis( 32001 );
     chaos_tear_duration = timespan_t::from_millis( 5001 );
     chaos_portal_duration = timespan_t::from_millis( 5501 );
     school = SCHOOL_NONE;
@@ -4157,9 +4235,9 @@ struct dimensional_rift_t : public warlock_spell_t
 
     double rift = rng().range( 0.0, 1.0 );
 
-    if ( rift <= ( 1.0 / 3.0 ) )
+    if ( rift <= ( 1.0 / 3.0 /*( p() -> artifact.flame_rift.rank() ? 4.0 : 3.0 )*/ ) )
     {
-      for ( size_t i = 0; i < p() ->warlock_pet_list.shadowy_tear.size(); i++ )
+      for ( size_t i = 0; i < p() -> warlock_pet_list.shadowy_tear.size(); i++ )
       {
         if ( p() -> warlock_pet_list.shadowy_tear[i] -> is_sleeping() )
         {
@@ -4172,7 +4250,7 @@ struct dimensional_rift_t : public warlock_spell_t
       if ( p() -> legendary.lessons_of_spacetime )
         p() -> buffs.lessons_of_spacetime -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, p() -> legendary.lessons_of_spacetime3 );
     }
-    else if ( rift >= ( 2.0 / 3.0 ) )
+    else if ( rift > ( 2.0 / 3.0 /*( p() -> artifact.flame_rift.rank() ? 4.0 : 3.0 )*/ ) /*&& rift <= ( 3.0 / ( p() -> artifact.flame_rift.rank() ? 4.0 : 3.0 ) )*/ )
     {
       for ( size_t i = 0; i < p() -> warlock_pet_list.chaos_tear.size(); i++ )
       {
@@ -4187,7 +4265,7 @@ struct dimensional_rift_t : public warlock_spell_t
       if ( p() -> legendary.lessons_of_spacetime )
         p() -> buffs.lessons_of_spacetime -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, p() -> legendary.lessons_of_spacetime1 );
     }
-    else
+    else /*if ( rift > ( 1.0 / ( p() -> artifact.flame_rift.rank() ? 4.0 : 3.0 ) ) && rift <= ( 2.0 / ( p() -> artifact.flame_rift.rank() ? 4.0 : 3.0 ) ) )*/
     {
       for ( size_t i = 0; i < p() -> warlock_pet_list.chaos_portal.size(); i++ )
       {
@@ -4202,6 +4280,22 @@ struct dimensional_rift_t : public warlock_spell_t
       if ( p() -> legendary.lessons_of_spacetime )
         p() -> buffs.lessons_of_spacetime -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, p() -> legendary.lessons_of_spacetime2 );
     }
+
+    //else
+    //{
+    //  for ( size_t i = 0; i < p()->warlock_pet_list.flame_rift.size(); i++ )
+    //  {
+    //    if ( p()->warlock_pet_list.flame_rift[i]->is_sleeping() )
+    //    {
+    //      p()->warlock_pet_list.flame_rift[i]->summon( flame_rift_duration );
+    //      p()->procs.flame_rift->occur();
+    //      break;
+    //    }
+    //  }
+
+    //  if ( p()->legendary.lessons_of_spacetime )
+    //    p()->buffs.lessons_of_spacetime->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, p()->legendary.lessons_of_spacetime2 );
+    //}
   }
 };
 
@@ -5808,6 +5902,7 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
   player_t( sim, WARLOCK, name, r ),
     havoc_target( nullptr ),
     agony_accumulator( 0 ),
+    free_souls( 3 ),
     warlock_pet_list( pets_t() ),
     active( active_t() ),
     talents( talents_t() ),
@@ -6147,6 +6242,10 @@ void warlock_t::create_pets()
     for ( size_t i = 0; i < warlock_pet_list.shadowy_tear.size(); i++ )
     {
       warlock_pet_list.shadowy_tear[i] = new pets::shadowy_tear::shadowy_tear_t( sim, this );
+    }
+    for ( size_t i = 0; i < warlock_pet_list.flame_rift.size(); i++ )
+    {
+      warlock_pet_list.flame_rift[i] = new pets::flame_rift::flame_rift_t( sim, this );
     }
     for ( size_t i = 0; i < warlock_pet_list.chaos_tear.size(); i++ )
     {
@@ -6610,6 +6709,7 @@ void warlock_t::init_procs()
   procs.t18_vicious_hellhound = get_proc( "t18_vicious_hellhound" );
   procs.t18_illidari_satyr = get_proc( "t18_illidari_satyr" );
   procs.shadowy_tear = get_proc( "shadowy_tear" );
+  procs.flame_rift = get_proc( "flame_rift" );
   procs.chaos_tear = get_proc( "chaos_tear" );
   procs.chaos_portal = get_proc( "chaos_portal" );
   procs.dreadstalker_debug = get_proc( "dreadstalker_debug" );
@@ -6983,6 +7083,7 @@ void warlock_t::reset()
   havoc_target = nullptr;
   agony_accumulator = rng().range( 0.0, 0.99 );
   demonwrath_accumulator = 0.0;
+  free_souls = 3;
 }
 
 void warlock_t::create_options()
