@@ -3844,7 +3844,7 @@ struct player_t : public actor_t
   void sequence_add_wait( const timespan_t& amount, const timespan_t& ts );
 
   // Gear
-  std::string items_str, meta_gem_str;
+  std::string items_str, meta_gem_str, potion_str, flask_str, food_str;
   std::vector<item_t> items;
   gear_stats_t gear, enchant; // Option based stats
   gear_stats_t total_gear; // composite of gear, enchant and for non-pets sim -> enchant
@@ -3949,6 +3949,9 @@ struct player_t : public actor_t
 
     haste_buff_t* fel_winds; // T18 LFR Plate Melee Attack Speed buff
     buff_t* demon_damage_buff; // 6.2.3 Heirloom trinket demon damage buff
+
+    // Darkmoon Faire versatility food
+    buff_t* dmf_well_fed;
   } buffs;
 
   struct debuffs_t
@@ -4662,6 +4665,14 @@ public:
   // Poor man's targeting support, acquire_target is triggered by various events (see
   // retarget_event_e) in the core. Context contains the triggering entity (if relevant)
   virtual void acquire_target( retarget_event_e /* event */, player_t* /* context */ = nullptr );
+
+  // Default consumable methods
+  virtual std::string default_potion() const
+  { return ""; }
+  virtual std::string default_flask() const
+  { return ""; }
+  virtual std::string default_food() const
+  { return ""; }
 };
 
 

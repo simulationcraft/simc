@@ -18,6 +18,7 @@ namespace consumable
   void hearty_feast( special_effect_t& );
   void lavish_suramar_feast( special_effect_t& );
   void pepper_breath( special_effect_t& );
+  void lemon_herb_filet( special_effect_t& );
 }
 
 namespace enchants
@@ -98,6 +99,9 @@ namespace item
   void whispers_in_the_dark( special_effect_t&    );
   void nightblooming_frond( special_effect_t&     );
   void might_of_krosus( special_effect_t&         );
+
+  // 7.2.0 Dungeon
+  void dreadstone_of_endless_shadows( special_effect_t& );
 
   // Adding this here to check it off the list.
   // The sim builds it automatically.
@@ -1709,6 +1713,55 @@ void item::pharameres_forbidden_grimoire( special_effect_t& effect )
   }
 
   effect.execute_action = a;
+}
+
+// Dreadstone of Endless Shadows ============================================
+
+struct dreadstone_proc_cb_t : public dbc_proc_callback_t
+{
+  const std::vector<stat_buff_t*> buffs;
+
+  dreadstone_proc_cb_t( const special_effect_t& effect, const std::vector<stat_buff_t*>& buffs_ ) :
+    dbc_proc_callback_t( effect.item, effect ), buffs( buffs_ )
+  { }
+
+  void execute( action_t* /* a */, action_state_t* /* state */ ) override
+  {
+    size_t buff_index = static_cast<size_t>( rng().range( 0, buffs.size() ) );
+    buffs[ buff_index ] -> trigger();
+  }
+};
+
+void item::dreadstone_of_endless_shadows( special_effect_t& effect )
+{
+  auto p = effect.player;
+
+  auto amount = item_database::apply_combat_rating_multiplier( *effect.item,
+      effect.driver() -> effectN( 2 ).average( effect.item ) );
+
+  // Buffs
+  auto crit = debug_cast<stat_buff_t*>( buff_t::find( p, "sign_of_the_hippo" ) );
+  if ( crit == nullptr )
+  {
+    crit = stat_buff_creator_t( p, "sign_of_the_hippo", p -> find_spell( 225749 ), effect.item )
+      .add_stat( STAT_CRIT_RATING, amount );
+  }
+
+  auto mastery = debug_cast<stat_buff_t*>( buff_t::find( p, "sign_of_the_hare" ) );
+  if ( mastery == nullptr )
+  {
+    mastery = stat_buff_creator_t( p, "sign_of_the_hare", p -> find_spell( 225752 ), effect.item )
+      .add_stat( STAT_MASTERY_RATING, amount );
+  }
+
+  auto haste = debug_cast<stat_buff_t*>( buff_t::find( p, "sign_of_the_dragon" ) );
+  if ( haste == nullptr )
+  {
+    haste = stat_buff_creator_t( p, "sign_of_the_dragon", p -> find_spell( 225753 ), effect.item )
+      .add_stat( STAT_HASTE_RATING, amount );
+  }
+
+  new dreadstone_proc_cb_t( effect, { crit, mastery, haste } );
 }
 
 // Tirathon's Betrayal ======================================================
@@ -3973,6 +4026,20 @@ void consumable::lavish_suramar_feast( special_effect_t& effect )
   effect.stat_amount = effect.player -> find_spell( effect.trigger_spell_id ) -> effectN( 1 ).average( effect.player );
 }
 
+// Lemon Herb Filet =========================================================
+
+void consumable::lemon_herb_filet( special_effect_t& effect )
+{
+  double value = effect.driver() -> effectN( 1 ).percent();
+
+  buff_t* dmf_well_fed = buff_creator_t( effect.player, "lemon_herb_filet", effect.driver() )
+    .default_value( effect.player -> race == race_e::RACE_PANDAREN ? 2 * value : value )
+    .add_invalidate( CACHE_VERSATILITY );
+
+  effect.custom_buff = dmf_well_fed;
+  effect.player -> buffs.dmf_well_fed = dmf_well_fed;
+}
+
 // Pepper Breath (generic) ==================================================
 
 struct pepper_breath_damage_t : public spell_t
@@ -4480,6 +4547,9 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 225132, item::might_of_krosus         );
   register_special_effect( 225133, item::pharameres_forbidden_grimoire );
 
+  /* Legion 7.2.0 Dungeon */
+  register_special_effect( 238498, item::dreadstone_of_endless_shadows );
+
   /* Legion 7.0 Misc */
   register_special_effect( 188026, item::infernal_alchemist_stone       );
   register_special_effect( 191563, item::darkmoon_deck                  );
@@ -4525,6 +4595,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 225606, consumable::pepper_breath );
   register_special_effect( 225601, consumable::pepper_breath );
   register_special_effect( 201336, consumable::pepper_breath );
+  register_special_effect( 185736, consumable::lemon_herb_filet );
 }
 
 void unique_gear::register_hotfixes_x7()

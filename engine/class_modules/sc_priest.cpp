@@ -4947,7 +4947,6 @@ void priest_t::trigger_sephuzs_secret(const action_state_t * state, spell_mechan
 {
   switch (mechanic)
   {
-    printf("\nAdd type: %s", state->target->type);
     // Interrupts will always trigger sephuz
   case MECHANIC_INTERRUPT:
     break;

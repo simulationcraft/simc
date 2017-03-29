@@ -8,9 +8,9 @@
 :: QT 5.6.0, or whatever version we are currently using
 :: Inno Setup - http://www.jrsoftware.org/isinfo.php - Used to make the installer, optional if you just want a compressed file.
 
-set simcversion=715-02
-set SIMCAPPFULLVERSION=7.1.5.02
-:: For bumping the minor version, just change the above line.  Make sure to also change setup32.iss and setup64.iss as well. 
+set simcversion=720-01
+set SIMCAPPFULLVERSION=7.2.0.01
+:: For bumping the minor version, just change the above line.
 
 set qt_dir=C:\Qt\Qt5.8.0.32\5.8\
 set visualstudio=%VS140COMNTOOLS:~0,-14%

@@ -245,7 +245,6 @@ public:
          incanters_flow_stack_mult,
          iv_haste;
   bool blessing_of_wisdom;
-  std::string mage_potion_choice;
 
   // Benefits
   struct benefits_t
@@ -665,8 +664,10 @@ public:
   virtual void      init_action_list() override;
 
   virtual bool      has_t18_class_trinket() const override;
-  std::string       get_food_action();
-  std::string       get_potion_action();
+
+  std::string       default_potion() const override;
+  std::string       default_flask() const override;
+  std::string       default_food() const override;
 };
 
 namespace pets
@@ -3240,6 +3241,15 @@ struct arcane_missiles_tick_t : public arcane_mage_spell_t
     triggers_arcane_missiles = false;
   }
 
+  void impact( action_state_t* s ) override
+  {
+    arcane_mage_spell_t::impact( s );
+
+    if ( p() -> legendary.cord_of_infinity )
+    {
+      p() -> buffs.cord_of_infinity -> trigger();
+    }
+  }
 };
 
 struct am_state_t : public action_state_t
@@ -3423,15 +3433,6 @@ struct arcane_missiles_t : public arcane_mage_spell_t
 
   }
 
-  void tick ( dot_t* d ) override
-  {
-    arcane_mage_spell_t::tick( d );
-
-    if ( p() -> legendary.cord_of_infinity )
-    {
-      p() -> buffs.cord_of_infinity -> trigger();
-    }
-  }
   void last_tick ( dot_t * d ) override
   {
     arcane_mage_spell_t::last_tick( d );
@@ -7659,7 +7660,6 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   incanters_flow_stack_mult( find_spell( 116267 ) -> effectN( 1 ).percent() ),
   iv_haste( 1.0 ),
   blessing_of_wisdom( false ),
-  mage_potion_choice( "" ),
   benefits( benefits_t() ),
   buffs( buffs_t() ),
   cooldowns( cooldowns_t() ),
@@ -7849,7 +7849,6 @@ void mage_t::create_options()
 {
   add_option( opt_float( "global_cinder_count", global_cinder_count ) );
   add_option( opt_bool( "blessing_of_wisdom", blessing_of_wisdom ) );
-  add_option(opt_string("mage_potion_choice", mage_potion_choice ) );
   player_t::create_options();
 }
 
@@ -7863,7 +7862,6 @@ void mage_t::copy_from( player_t* source )
 
   global_cinder_count = p -> global_cinder_count;
   blessing_of_wisdom = p -> blessing_of_wisdom;
-  mage_potion_choice = p -> mage_potion_choice;
 }
 
 // mage_t::create_pets ========================================================
@@ -8548,35 +8546,8 @@ void mage_t::apl_precombat()
 {
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
 
-  if( sim -> allow_flasks && true_level >= 80 )
-  {
-    std::string flask_action = "flask,type=";
-
-    if ( true_level <= 85 )
-    {
-      flask_action += "draconic_mind" ;
-    }
-    else if ( true_level <= 90 )
-    {
-      flask_action += "warm_sun" ;
-    }
-    else if ( true_level <= 100 )
-    {
-      flask_action += "greater_draenic_intellect_flask" ;
-    }
-    else
-    {
-      flask_action += "flask_of_the_whispered_pact";
-    }
-
-    precombat -> add_action( flask_action );
-  }
-
-  // Food
-  if ( sim -> allow_food && true_level >= 80 )
-  {
-    precombat -> add_action( get_food_action() );
-  }
+  precombat -> add_action( "flask" );
+  precombat -> add_action( "food" );
 
   if ( true_level > 100 )
     precombat -> add_action( "augmentation,type=defiled" );
@@ -8592,11 +8563,7 @@ void mage_t::apl_precombat()
   // Level 90 talents
   precombat -> add_talent( this, "Mirror Image" );
 
-  //Potions
-  if ( sim -> allow_potions && level() >= 80 )
-  {
-    precombat -> add_action( get_potion_action() );
-  }
+  precombat -> add_action( "potion" );
 
   if ( specialization() == MAGE_ARCANE )
     precombat -> add_action( this, "Arcane Blast" );
@@ -8606,99 +8573,48 @@ void mage_t::apl_precombat()
     precombat -> add_action( this, "Frostbolt" );
 }
 
-std::string mage_t::get_food_action()
+std::string mage_t::default_potion() const
 {
-  std::string food_action = "food,type=";
+  std::string lvl110_potion =
+    ( specialization() == MAGE_ARCANE ) ? "deadly_grace" :
+    ( specialization() == MAGE_FIRE )   ? "deadly_grace" :
+                                          "prolonged_power";
 
-  if ( true_level <= 85 )
-  {
-    food_action += "seafood_magnifique_feast" ;
-  }
-  else if ( true_level <= 90 )
-  {
-    food_action += "mogu_fish_stew" ;
-  }
-  else if ( true_level <= 100 )
-  {
-    if ( specialization() == MAGE_ARCANE )
-    {
-      if ( sets.has_set_bonus( MAGE_ARCANE, T18, B4 ) )
-      {
-        food_action += "buttered_sturgeon" ;
-      }
-      else
-      {
-        food_action += "sleeper_sushi" ;
-      }
-    }
-    else if ( specialization() == MAGE_FIRE )
-    {
-      food_action += "pickled_eel" ;
-    }
-    else
-    {
-      food_action += "salty_squid_roll" ;
-    }
-  }
-  else
-  {
-    if ( specialization() == MAGE_ARCANE )
-    {
-      food_action += "the_hungry_magister" ;
-    }
-    else if ( specialization() == MAGE_FIRE )
-    {
-      food_action += "the_hungry_magister" ;
-    }
-    else
-    {
-      food_action += "azshari_salad" ;
-    }
-  }
-
-  return food_action;
+  return ( true_level >= 100 ) ? lvl110_potion :
+         ( true_level >=  90 ) ? "draenic_intellect" :
+         ( true_level >=  85 ) ? "jade_serpent" :
+         ( true_level >=  80 ) ? "volcanic" :
+                                 "disabled";
 }
 
-
-std::string mage_t::get_potion_action()
+std::string mage_t::default_flask() const
 {
-  std::string potion_action = "potion,name=";
-
-  if ( true_level <= 85 )
-  {
-    potion_action += "volcanic";
-  }
-  else if ( true_level <= 90 )
-  {
-    potion_action += "jade_serpent";
-  }
-  else if ( true_level <= 100 )
-  {
-    potion_action += "draenic_intellect";
-  }
-  else
-  {
-    if ( mage_potion_choice == "prolonged_power" || mage_potion_choice == "pp" )
-    {
-      potion_action += "prolonged_power";
-    }
-    else if ( mage_potion_choice == "deadly_grace" || mage_potion_choice == "dg" )
-    {
-      potion_action += "deadly_grace";
-    }
-    else if ( specialization() == MAGE_FROST )
-    {
-      potion_action += "prolonged_power";
-    }
-    else
-    {
-      potion_action += "deadly_grace";
-    }
-  }
-
-  return potion_action;
+  return ( true_level >= 100 ) ? "whispered_pact" :
+         ( true_level >=  90 ) ? "greater_draenic_intellect_flask" :
+         ( true_level >=  85 ) ? "warm_sun" :
+         ( true_level >=  80 ) ? "draconic_mind" :
+                                 "disabled";
 }
 
+std::string mage_t::default_food() const
+{
+  std::string lvl110_food =
+    ( specialization() == MAGE_ARCANE ) ? "the_hungry_magister" :
+    ( specialization() == MAGE_FIRE )   ? "the_hungry_magister" :
+                                          "azshari_salad";
+
+  std::string lvl100_food =
+    ( specialization() == MAGE_ARCANE ) ?
+      ( sets.has_set_bonus( MAGE_ARCANE, T18, B4 ) ? "buttered_sturgeon" : "sleeper_sushi" ) :
+    ( specialization() == MAGE_FIRE )   ? "pickled_eel" :
+                                          "salty_squid_roll";
+
+  return ( true_level > 100 ) ? lvl110_food :
+         ( true_level >  90 ) ? lvl100_food :
+         ( true_level >= 90 ) ? "mogu_fish_stew" :
+         ( true_level >= 80 ) ? "seafood_magnifique_feast" :
+                                "disabled";
+}
 
 // Arcane Mage Action List====================================================
 
@@ -8771,11 +8687,11 @@ void mage_t::apl_arcane()
   }
   if ( race == RACE_TROLL || race == RACE_ORC )
   {
-    cooldowns -> add_action( get_potion_action() + ",if=buff.arcane_power.up&(buff.berserking.up|buff.blood_fury.up)" );
+    cooldowns -> add_action( "potion,if=buff.arcane_power.up&(buff.berserking.up|buff.blood_fury.up)" );
   }
   else
   {
-    cooldowns -> add_action( get_potion_action() + ",if=buff.arcane_power.up" );
+    cooldowns -> add_action( "potion,if=buff.arcane_power.up" );
   }
 
   init_burn -> add_action( this, "Mark of Aluneth" );
@@ -8833,7 +8749,7 @@ void mage_t::apl_fire()
   combustion_phase -> add_talent( this, "Rune of Power", "if=buff.combustion.down" );
   combustion_phase -> add_action( "call_action_list,name=active_talents" );
   combustion_phase -> add_action( this, "Combustion" );
-  combustion_phase -> add_action( get_potion_action() );
+  combustion_phase -> add_action( "potion" );
 
   for( size_t i = 0; i < racial_actions.size(); i++ )
   {
@@ -8902,7 +8818,10 @@ void mage_t::apl_frost()
   action_priority_list_t* cooldowns    = get_action_priority_list( "cooldowns"         );
 
   default_list -> add_action( this, "Counterspell", "if=target.debuff.casting.react" );
-  default_list -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react=0&prev_gcd.1.flurry" );
+  default_list -> add_action( "variable,name=time_until_fof,value=10-(time-variable.iv_start-floor((time-variable.iv_start)%10)*10)" );
+  default_list -> add_action( "variable,name=fof_react,value=buff.fingers_of_frost.react" );
+  default_list -> add_action( "variable,name=fof_react,value=buff.fingers_of_frost.stack,if=equipped.lady_vashjs_grasp&buff.icy_veins.up&variable.time_until_fof>9|prev_off_gcd.freeze" );
+  default_list -> add_action( this, "Ice Lance", "if=variable.fof_react=0&prev_gcd.1.flurry" );
   default_list -> add_action( this, "Time Warp", "if=(time=0&buff.bloodlust.down)|(buff.bloodlust.down&equipped.132410&(cooldown.icy_veins.remains<1|target.time_to_die<50))" );
   default_list -> add_action( mage_t::get_special_use_items( "horn_of_valor", false ) );
   default_list -> add_action( mage_t::get_special_use_items( "obelisk_of_the_void", false ) );
@@ -8918,9 +8837,9 @@ void mage_t::apl_frost()
   single -> add_action( "water_jet,if=prev_gcd.1.frostbolt&buff.fingers_of_frost.stack<(2+artifact.icy_hand.enabled)&buff.brain_freeze.react=0" );
   single -> add_talent( this, "Ray of Frost", "if=buff.icy_veins.up|(cooldown.icy_veins.remains>action.ray_of_frost.cooldown&buff.rune_of_power.down)" );
   single -> add_action( this, "Flurry", "if=prev_gcd.1.ebonbolt|prev_gcd.1.frostbolt&buff.brain_freeze.react" );
-  single -> add_action( this, "Blizzard", "if=cast_time=0&active_enemies>1&buff.fingers_of_frost.react<3" );
-  single -> add_talent( this, "Frost Bomb", "if=debuff.frost_bomb.remains<action.ice_lance.travel_time&buff.fingers_of_frost.react>0" );
-  single -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react>0&cooldown.icy_veins.remains>10|buff.fingers_of_frost.react>2" );
+  single -> add_action( this, "Blizzard", "if=cast_time=0&active_enemies>1&variable.fof_react<3" );
+  single -> add_talent( this, "Frost Bomb", "if=debuff.frost_bomb.remains<action.ice_lance.travel_time&variable.fof_react>0" );
+  single -> add_action( this, "Ice Lance", "if=variable.fof_react>0&cooldown.icy_veins.remains>10|variable.fof_react>2" );
   single -> add_action( this, "Frozen Orb" );
   single -> add_talent( this, "Ice Nova" );
   single -> add_talent( this, "Comet Storm" );
@@ -8936,14 +8855,15 @@ void mage_t::apl_frost()
   aoe -> add_talent( this, "Ice Nova" );
   aoe -> add_action( "water_jet,if=prev_gcd.1.frostbolt&buff.fingers_of_frost.stack<(2+artifact.icy_hand.enabled)&buff.brain_freeze.react=0" );
   aoe -> add_action( this, "Flurry", "if=prev_gcd.1.ebonbolt|prev_gcd.1.frostbolt&buff.brain_freeze.react" );
-  aoe -> add_talent( this, "Frost Bomb", "if=debuff.frost_bomb.remains<action.ice_lance.travel_time&buff.fingers_of_frost.react>0" );
-  aoe -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react>0" );
+  aoe -> add_talent( this, "Frost Bomb", "if=debuff.frost_bomb.remains<action.ice_lance.travel_time&variable.fof_react>0" );
+  aoe -> add_action( this, "Ice Lance", "if=variable.fof_react>0" );
   aoe -> add_action( this, "Ebonbolt", "if=buff.brain_freeze.react=0" );
   aoe -> add_talent( this, "Glacial Spike" );
   aoe -> add_action( this, "Frostbolt" );
 
   cooldowns    -> add_talent( this, "Rune of Power", "if=cooldown.icy_veins.remains<cast_time|charges_fractional>1.9&cooldown.icy_veins.remains>10|buff.icy_veins.up|target.time_to_die.remains+5<charges_fractional*10" );
-  cooldowns    -> add_action( get_potion_action() + ",if=cooldown.icy_veins.remains<1" );
+  cooldowns    -> add_action( "potion,if=cooldown.icy_veins.remains<1" );
+  cooldowns    -> add_action( "variable,name=iv_start,value=time,if=cooldown.icy_veins.ready&buff.icy_veins.down" );
   cooldowns    -> add_action( this, "Icy Veins", "if=buff.icy_veins.down" );
   cooldowns    -> add_talent( this, "Mirror Image" );
   for( size_t i = 0; i < item_actions.size(); i++ )
@@ -9253,7 +9173,7 @@ double mage_t::composite_spell_haste() const
     h *= iv_haste;
   }
 
-  if ( maybe_ptr( dbc.ptr ) && buffs.sephuzs_secret -> default_chance != 0 )
+  if ( buffs.sephuzs_secret -> default_chance != 0 )
   {
     h /= 1.0 + buffs.sephuzs_secret -> data().driver() -> effectN( 3 ).percent();
   }
@@ -9406,7 +9326,7 @@ double mage_t::passive_movement_modifier() const
 {
   double pmm = player_t::passive_movement_modifier();
 
-  if ( maybe_ptr( dbc.ptr ) && buffs.sephuzs_secret -> default_chance != 0 )
+  if ( buffs.sephuzs_secret -> default_chance != 0 )
   {
     pmm += buffs.sephuzs_secret -> data().driver() -> effectN( 2 ).percent();
   }
