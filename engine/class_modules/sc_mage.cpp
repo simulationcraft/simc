@@ -7750,9 +7750,8 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "arcane_missiles"   ) return new            arcane_missiles_t( this, options_str );
   if ( name == "arcane_orb"        ) return new                 arcane_orb_t( this, options_str );
   if ( name == "arcane_power"      ) return new               arcane_power_t( this, options_str );
-  if ( name == "charged_up"        ) return new                charged_up_t( this, options_str  );
+  if ( name == "charged_up"        ) return new                 charged_up_t( this, options_str );
   if ( name == "evocation"         ) return new                  evocation_t( this, options_str );
-  if ( name == "mark_of_aluneth"   ) return new            mark_of_aluneth_t( this, options_str );
   if ( name == "nether_tempest"    ) return new             nether_tempest_t( this, options_str );
   if ( name == "presence_of_mind"  ) return new           presence_of_mind_t( this, options_str );
   if ( name == "slow"              ) return new                       slow_t( this, options_str );
@@ -7782,7 +7781,6 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "freeze"            ) return new                  freeze_t( this, options_str );
   if ( name == "frost_bomb"        ) return new              frost_bomb_t( this, options_str );
   if ( name == "frostbolt"         ) return new               frostbolt_t( this, options_str );
-  if ( name == "frost_nova"        ) return new              frost_nova_t( this, options_str );
   if ( name == "frozen_orb"        ) return new              frozen_orb_t( this, options_str );
   if ( name == "glacial_spike"     ) return new           glacial_spike_t( this, options_str );
   if ( name == "ice_lance"         ) return new               ice_lance_t( this, options_str );
@@ -7793,8 +7791,10 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "water_jet"         ) return new               water_jet_t( this, options_str );
 
   // Artifact Specific Spells
+  // Arcane
+  if ( name == "mark_of_aluneth"   ) return new          mark_of_aluneth_t( this, options_str );
+
   // Fire
-  if ( name == "phoenix_reborn"    ) return new           phoenix_reborn_t( this );
   if ( name == "phoenixs_flames"   ) return new          phoenixs_flames_t( this, options_str );
 
   // Frost
@@ -7804,6 +7804,7 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "blink"             ) return new                   blink_t( this, options_str );
   if ( name == "cone_of_cold"      ) return new            cone_of_cold_t( this, options_str );
   if ( name == "counterspell"      ) return new            counterspell_t( this, options_str );
+  if ( name == "frost_nova"        ) return new              frost_nova_t( this, options_str );
   if ( name == "time_warp"         ) return new               time_warp_t( this, options_str );
 
   if ( name == "choose_target"     ) return new           choose_target_t( this, options_str );
