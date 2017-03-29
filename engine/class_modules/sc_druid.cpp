@@ -8206,7 +8206,7 @@ double druid_t::composite_spell_haste() const
      sh *= 1.0 / ( 1.0 + buff.sephuzs_secret -> stack_value() );
 
   if ( legendary.sephuzs_secret -> ok() )
-     sh *= 1.0 / ( 1.0 + legendary.sephuzs_secret -> effectN(2).percent() );
+     sh *= 1.0 / ( 1.0 + 0.02 ); //Todo(feral): fix spelldata hook.
 
   return sh;
 }
@@ -8221,7 +8221,7 @@ double druid_t::composite_melee_haste() const
       mh *= 1.0 / ( 1.0 + buff.sephuzs_secret -> stack_value() );
 
    if ( legendary.sephuzs_secret -> ok() )
-      mh *= 1.0 / ( 1.0 + legendary.sephuzs_secret -> effectN(2).percent() );
+      mh *= 1.0 / ( 1.0 + 0.02 ); //Todo(feral): Fix spelldata hook.
 
    return mh;
 }
