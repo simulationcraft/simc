@@ -5979,7 +5979,7 @@ struct starfall_t : public druid_spell_t
         p() -> active.echoing_stars -> target = select_chain_target( s );
 
         if ( p() -> active.echoing_stars -> target )
-          p() -> active.echoing_stars -> schedule_execute();
+          p() -> active.echoing_stars -> execute();
       }
     }
 
