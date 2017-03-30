@@ -1,7 +1,7 @@
 # T19H_NH
 # Tier 19 Heroic Nighthold
 # * Ilvl Cap: 895
-# * Artifact Rank Cap: 40
+# * Artifact Rank Cap: 42
 # * 3 Relics with max ilevel of 895
 # * No Legendaries (see Raid_T19x_Legendary.simc)
 # * No items from World Bosses / World Quests / BoEs
@@ -13,11 +13,11 @@
 
 rogue="Rogue_Assassination_T19H_NH"
 level=110
-race=orc
+race=pandaren
 role=attack
 position=back
 talents=1130111
-artifact=43:0:0:0:0:323:3:324:3:325:3:326:3:327:3:328:3:329:3:330:3:331:3:332:1:333:1:334:1:335:1:337:1:346:1:347:1:1276:1:1384:6
+artifact=43:0:0:0:0:323:3:324:3:325:3:326:3:327:3:328:3:329:3:330:3:331:3:332:1:333:1:334:1:335:1:337:1:346:1:347:1:1276:1:1384:1:1577:4:1578:1:1579:1:1651:1
 spec=assassination
 
 head=doomblade_cowl,id=138332,bonus_id=3517
@@ -40,11 +40,11 @@ save=Rogue_Assassination_T19H_NH.simc
 
 rogue="Rogue_Assassination_Exsg_T19H_NH"
 level=110
-race=orc
+race=pandaren
 role=attack
 position=back
 talents=2130131
-artifact=43:0:0:0:0:323:3:324:3:325:3:326:3:327:3:328:3:329:3:330:3:331:3:332:1:333:1:334:1:335:1:337:1:346:1:347:1:1276:1:1384:6
+artifact=43:0:0:0:0:323:3:324:3:325:3:326:3:327:3:328:3:329:3:330:3:331:3:332:1:333:1:334:1:335:1:337:1:346:1:347:1:1276:1:1384:1:1577:4:1578:1:1579:1:1651:1
 spec=assassination
 
 head=doomblade_cowl,id=138332,bonus_id=3517
@@ -72,7 +72,7 @@ timeofday=day
 role=attack
 position=back
 talents=1310022
-artifact=44:0:0:0:0:1052:1:1053:1:1054:1:1055:1:1056:1:1057:1:1058:1:1059:3:1060:3:1061:3:1062:3:1063:3:1064:3:1065:3:1066:3:1067:3:1348:1:1385:6
+artifact=44:0:0:0:0:1052:1:1053:1:1054:1:1055:1:1056:1:1057:1:1058:1:1059:3:1060:3:1061:3:1062:3:1063:3:1064:3:1065:3:1066:3:1067:3:1348:1:1385:1:1581:4:1582:1:1583:1:1652:1
 spec=outlaw
 
 head=nightborne_battlemagus_hood,id=140866,bonus_id=3517
@@ -100,7 +100,7 @@ timeofday=day
 role=attack
 position=back
 talents=1210011
-artifact=17:0:0:0:0:851:1:852:3:853:3:854:3:855:3:856:3:857:3:858:3:859:3:860:3:861:1:862:1:863:1:864:1:865:1:866:1:1349:1:1386:6
+artifact=17:0:0:0:0:851:1:852:3:853:3:854:3:855:3:856:3:857:3:858:3:859:3:860:3:861:1:862:1:863:1:864:1:865:1:866:1:1349:1:1386:1:1585:4:1586:1:1587:1:1653:1
 spec=subtlety
 
 head=doomblade_cowl,id=138332,bonus_id=3517

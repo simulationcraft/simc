@@ -1,10 +1,10 @@
 rogue="Rogue_Assassination_T19H"
 level=110
-race=orc
+race=pandaren
 role=attack
 position=back
 talents=1130111
-artifact=43:0:0:0:0:323:3:324:3:325:3:327:2:328:3:330:3:331:3:332:1:334:1:335:1:337:1:346:1:347:1:1276:1
+artifact=43:0:0:0:0:323:3:324:3:325:3:326:3:327:3:328:3:329:3:330:3:331:3:332:1:333:1:334:1:335:1:337:1:346:1:347:1:1276:1:1384:1
 spec=assassination
 
 # This default action priority list is automatically created based on your character.
@@ -16,8 +16,7 @@ spec=assassination
 # Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat=flask,name=flask_of_the_seventh_demon
 actions.precombat+=/augmentation,name=defiled
-actions.precombat+=/food,name=seedbattered_fish_plate,if=talent.exsanguinate.enabled
-actions.precombat+=/food,name=nightborne_delicacy_platter,if=!talent.exsanguinate.enabled
+actions.precombat+=/food,name=lavish_suramar_feast
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/apply_poison
