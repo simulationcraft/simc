@@ -9015,13 +9015,13 @@ double mage_t::composite_player_pet_damage_multiplier( const action_state_t* s )
   double m = player_t::composite_player_pet_damage_multiplier(s);
 
   m *= 1.0 + artifact.ancient_power.percent();
-  m *= 1.0 + artifact.intensity_of_the_tirisgarde.percent();
+  m *= 1.0 + artifact.intensity_of_the_tirisgarde.data().effectN( 3 ).percent();
 
   m *= 1.0 + artifact.empowered_spellblade.percent();
-  m *= 1.0 + artifact.instability_of_the_tirisgarde.percent();
+  m *= 1.0 + artifact.instability_of_the_tirisgarde.data().effectN( 3 ).percent();
 
   m *= 1.0 + artifact.spellborne.percent();
-  m *= 1.0 + artifact.frigidity_of_the_tirisgarde.percent();
+  m *= 1.0 + artifact.frigidity_of_the_tirisgarde.data().effectN( 3 ).percent();
 
   return m;
 }
@@ -9075,7 +9075,7 @@ double mage_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + artifact.ancient_power.percent();
   }
 
-  m *= 1.0 + artifact.intensity_of_the_tirisgarde.percent();
+  m *= 1.0 + artifact.intensity_of_the_tirisgarde.data().effectN( 1 ).percent();
 
   if ( dbc::is_school( school, SCHOOL_FIRE ) )
   {
@@ -9087,7 +9087,7 @@ double mage_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + artifact.empowered_spellblade.percent();
   }
 
-  m *= 1.0 + artifact.instability_of_the_tirisgarde.percent();
+  m *= 1.0 + artifact.instability_of_the_tirisgarde.data().effectN( 1 ).percent();
 
   if ( buffs.bone_chilling -> check() && dbc::is_school( school, SCHOOL_FROST ) )
   {
@@ -9100,7 +9100,7 @@ double mage_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + artifact.spellborne.percent();
   }
 
-  m *= 1.0 + artifact.frigidity_of_the_tirisgarde.percent();
+  m *= 1.0 + artifact.frigidity_of_the_tirisgarde.data().effectN( 1 ).percent();
 
 
   if ( buffs.chilled_to_the_core -> check() && dbc::is_school( school, SCHOOL_FROST ) )
