@@ -4,7 +4,7 @@ race=draenei
 role=attack
 position=back
 talents=1210023
-artifact=16:0:0:0:0:149:1:150:1:152:1:153:1:154:1:157:2:265:3:266:6:267:3:1119:3:1333:1
+artifact=16:0:0:0:0:149:1:151:1:152:1:156:3:157:3:158:3:262:3:263:1:264:3:1333:1
 spec=unholy
 
 # This default action priority list is automatically created based on your character.
@@ -115,26 +115,26 @@ actions.valkyr+=/festering_strike,if=debuff.festering_wound.stack<=3
 actions.valkyr+=/scourge_strike,if=debuff.festering_wound.up
 actions.valkyr+=/clawing_shadows,if=debuff.festering_wound.up
 
-head=crown_of_ash,id=137526,bonus_id=1727
-neck=pendant_of_the_watchful_eye,id=137536,bonus_id=1727,enchant=mark_of_the_hidden_satyr
-shoulders=frozen_pendulum_shoulderguards,id=134518,bonus_id=1727
-back=goldscar_pelt,id=133639,bonus_id=1727,enchant=binding_of_strength
-chest=inferno_breastplate,id=134503,bonus_id=1727
-wrists=voidtouched_wristplates,id=133632,bonus_id=1727
-hands=serrated_mandible_grips,id=137429,bonus_id=1727
-waist=slack_tide_girdle,id=133770,bonus_id=1727
-legs=keelhauler_legplates,id=134514,bonus_id=1727
-feet=rook_footmans_warboots,id=139241,bonus_id=1727
-finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1727,enchant=binding_of_haste
-finger2=band_of_fused_coral,id=134532,bonus_id=1727,enchant=binding_of_haste
-trinket1=faulty_countermeasure,id=137539,bonus_id=1727/1492
-trinket2=chaos_talisman,id=137459,bonus_id=1727/1492
-main_hand=apocalypse,id=128403,bonus_id=718,ilevel=870,relic_id=3412/3412/3412,enchant=rune_of_the_fallen_crusader
+head=crown_of_ash,id=137526,bonus_id=1492
+neck=pendant_of_the_watchful_eye,id=137536,bonus_id=1492,enchant=mark_of_the_hidden_satyr
+shoulders=frozen_pendulum_shoulderguards,id=134518,bonus_id=1492
+back=goldscar_pelt,id=133639,bonus_id=1492,enchant=binding_of_strength
+chest=inferno_breastplate,id=134503,bonus_id=1492
+wrists=voidtouched_wristplates,id=133632,bonus_id=1492
+hands=serrated_mandible_grips,id=137429,bonus_id=1492
+waist=slack_tide_girdle,id=133770,bonus_id=1492
+legs=keelhauler_legplates,id=134514,bonus_id=1492
+feet=rook_footmans_warboots,id=139241,bonus_id=1492
+finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1492,enchant=binding_of_haste
+finger2=band_of_fused_coral,id=134532,bonus_id=1492,enchant=binding_of_haste
+trinket1=faulty_countermeasure,id=137539,bonus_id=1492
+trinket2=chaos_talisman,id=137459,bonus_id=1492
+main_hand=apocalypse,id=128403,gem_id=143813/143804/143809,relic_id=3491/3491/3491,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
 # gear_ilvl=842.00
 # gear_strength=10680
-# gear_stamina=18862
+# gear_stamina=18863
 # gear_crit_rating=6843
 # gear_haste_rating=11500
 # gear_mastery_rating=932

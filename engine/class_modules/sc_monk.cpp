@@ -611,6 +611,7 @@ public:
     const spell_data_t* mark_of_the_crane;
     const spell_data_t* master_of_combinations;
     const spell_data_t* whirling_dragon_punch;
+    const spell_data_t* thunderfist_buff;
     const spell_data_t* thunderfist_damage;
     const spell_data_t* touch_of_karma_buff;
     const spell_data_t* touch_of_karma_tick;
@@ -7988,6 +7989,7 @@ void monk_t::init_spells()
   passives.mark_of_the_crane                = find_spell( 228287 );
   passives.master_of_combinations           = find_spell( 240672 );
   passives.whirling_dragon_punch            = find_spell( 158221 );
+  passives.thunderfist_buff                 = find_spell( 242387 );
   passives.thunderfist_damage               = find_spell( 242390 );
   passives.touch_of_karma_buff              = find_spell( 125174 );
   passives.touch_of_karma_tick              = find_spell( 124280 );
@@ -8297,10 +8299,7 @@ void monk_t::create_buffs()
                        .duration( timespan_t::from_seconds( 24 ) )
                        .default_value( sets.set( MONK_WINDWALKER, T20, B4 ) -> effectN( 1 ).percent() );
 
-  // TODO: FIX the buff info
-  buff.thunderfist = buff_creator_t( this, "thunderfist", passives.thunderfist_damage )
-                    .duration( timespan_t::from_seconds( 30 ) )
-                    .max_stack( 99 );
+  buff.thunderfist = buff_creator_t( this, "thunderfist", passives.thunderfist_buff );
 
   buff.touch_of_karma = new buffs::touch_of_karma_buff_t( *this, "touch_of_karma", passives.touch_of_karma_buff );
 

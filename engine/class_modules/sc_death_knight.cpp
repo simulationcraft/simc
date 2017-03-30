@@ -7098,7 +7098,7 @@ void death_knight_t::default_apl_frost()
   action_priority_list_t* bos_ticking = get_action_priority_list( "bos_ticking" );
   action_priority_list_t* gs_ticking  = get_action_priority_list( "gs_ticking" );
 
-  std::string food_name = ( true_level > 100 ) ? "fishbrul_special" :
+  std::string food_name = ( true_level > 100 ) ? "lavish_suramar_feast" :
                           ( true_level >  90 ) ? "pickled_eel" :
                           ( true_level >= 85 ) ? "sea_mist_rice_noodles" :
                           ( true_level >= 80 ) ? "seafood_magnifique_feast" :
@@ -7120,7 +7120,8 @@ void death_knight_t::default_apl_frost()
   def -> add_action( this, "Mind Freeze" );
 
   // Racials
-  def -> add_action( "arcane_torrent,if=runic_power.deficit>20" );
+  def -> add_action( "arcane_torrent,if=runic_power.deficit>20&!talent.breath_of_sindragosa.enabled" );
+  def -> add_action( "arcane_torrent,if=talent.breath_of_sindragosa.enabled&dot.breath_of_sindragosa.ticking&runic_power<30&rune<2" );
   def -> add_action( "blood_fury,if=buff.pillar_of_frost.up" );
   def -> add_action( "berserking,if=buff.pillar_of_frost.up" );
 
@@ -7147,7 +7148,8 @@ void death_knight_t::default_apl_frost()
   }
 
   // Cooldowns
-  def -> add_action( this, "Sindragosa's Fury", "if=buff.pillar_of_frost.up&(buff.unholy_strength.up|(buff.pillar_of_frost.remains<3&target.time_to_die<60))&debuff.razorice.stack=5&!buff.obliteration.up" );
+  def -> add_action( this, "Sindragosa's Fury", "if=!equipped.144293&buff.pillar_of_frost.up&(buff.unholy_strength.up|(buff.pillar_of_frost.remains<3&target.time_to_die<60))&debuff.razorice.stack=5&!buff.obliteration.up" );
+  def -> add_action( this, "Sindragosa's Fury", "if=equipped.144293&buff.unholy_strength.up&cooldown.pillar_of_frost.remains>20" );
   def -> add_talent( this, "Obliteration", "if=(!talent.frozen_pulse.enabled|(rune<2&runic_power<28))&!talent.gathering_storm.enabled" );
 
   // Choose APL
@@ -7188,10 +7190,10 @@ void death_knight_t::default_apl_frost()
   bos -> add_talent( this, "Breath of Sindragosa", "if=runic_power>=50&(!equipped.140806|cooldown.hungering_rune_weapon.remains<10)" );
   bos -> add_action( this, "Frost Strike", "if=runic_power>=90&set_bonus.tier19_4pc" );
   bos -> add_action( this, "Remorseless Winter", "if=buff.rime.react&equipped.132459" );
-  bos -> add_action( this, "Howling Blast", "if=buff.rime.react&(dot.remorseless_winter.ticking|cooldown.remorseless_winter.remains>1.5|!equipped.132459)" );
+  bos -> add_action( this, "Howling Blast", "if=buff.rime.react&(dot.remorseless_winter.ticking|cooldown.remorseless_winter.remains>1.5|(!equipped.132459&!talent.gathering_storm.enabled))" );
   bos -> add_action( this, "Obliterate", "if=!buff.rime.react&!(talent.gathering_storm.enabled&!(cooldown.remorseless_winter.remains>2|rune>4))&rune>3" );
-  bos -> add_action( this, "Frost Strike", "if=runic_power>=70|((talent.gathering_storm.enabled&cooldown.remorseless_winter.remains<3&cooldown.breath_of_sindragosa.remains>10)&rune<5)" );
-  bos -> add_action( this, "Obliterate", "if=!buff.rime.react&!(talent.gathering_storm.enabled&!(cooldown.remorseless_winter.remains>2|rune>4))" );
+  bos -> add_action( this, "Frost Strike", "if=runic_power>=70|((talent.gathering_storm.enabled&cooldown.remorseless_winter.remains<3&cooldown.breath_of_sindragosa.remains>10)&rune<5)|(buff.gathering_storm.stack=10&cooldown.breath_of_sindragosa.remains>15)" );
+  bos -> add_action( this, "Obliterate", "if=!buff.rime.react&(!talent.gathering_storm.enabled|(cooldown.remorseless_winter.remains>2|rune>4))" );
   bos -> add_talent( this, "Horn of Winter", "if=cooldown.breath_of_sindragosa.remains>15&runic_power<=70&rune<4" );
   bos -> add_action( this, "Frost Strike", "if=cooldown.breath_of_sindragosa.remains>15" );
   bos -> add_action( this, "Remorseless Winter", "if=cooldown.breath_of_sindragosa.remains>10" );
@@ -7201,18 +7203,20 @@ void death_knight_t::default_apl_frost()
   bos_ticking -> add_action( this, "Remorseless Winter", "if=runic_power>=30&((buff.rime.react&equipped.132459)|(talent.gathering_storm.enabled&(dot.remorseless_winter.remains<=gcd|!dot.remorseless_winter.ticking)))" );
   bos_ticking -> add_action( this, "Howling Blast", "if=((runic_power>=20&set_bonus.tier19_4pc)|runic_power>=30)&buff.rime.react" );
   bos_ticking -> add_action( this, "Obliterate", "if=runic_power<=75|rune>3" );
+  bos_ticking -> add_action( this, "Remorseless Winter", "if=(buff.rime.react&equipped.132459)|(talent.gathering_storm.enabled&(dot.remorseless_winter.remains<=gcd|!dot.remorseless_winter.ticking))" );
+  bos_ticking -> add_action( this, "Howling Blast", "if=buff.rime.react" );
   bos_ticking -> add_talent( this, "Horn of Winter", "if=runic_power<70&!buff.hungering_rune_weapon.up&rune<5" );
-  bos_ticking -> add_talent( this, "Hungering Rune Weapon", "if=equipped.140806&(runic_power<30|(runic_power<70&talent.gathering_storm.enabled))&!buff.hungering_rune_weapon.up&rune<2" );
+  bos_ticking -> add_talent( this, "Hungering Rune Weapon", "if=equipped.140806&(runic_power<30|(runic_power<70&talent.gathering_storm.enabled)|(talent.horn_of_winter.enabled&talent.gathering_storm.enabled&runic_power<55))&!buff.hungering_rune_weapon.up&rune<2" );
   bos_ticking -> add_talent( this, "Hungering Rune Weapon", "if=talent.runic_attenuation.enabled&runic_power<30&!buff.hungering_rune_weapon.up&rune<2" );
-  bos_ticking -> add_talent( this, "Hungering Rune Weapon", "if=runic_power<35&!buff.hungering_rune_weapon.up&rune<2" );
-  bos_ticking -> add_talent( this, "Hungering Rune Weapon", "if=runic_power<25&!buff.hungering_rune_weapon.up&rune<1" );
+  bos_ticking -> add_talent( this, "Hungering Rune Weapon", "if=runic_power<35&!buff.hungering_rune_weapon.up&rune<1" );
+  bos_ticking -> add_talent( this, "Hungering Rune Weapon", "if=runic_power<25&!buff.hungering_rune_weapon.up&rune<2" );
   bos_ticking -> add_action( this, "Empower Rune Weapon", "if=runic_power<20" );
   bos_ticking -> add_action( this, "Remorseless Winter", "if=talent.gathering_storm.enabled|!set_bonus.tier19_4pc|runic_power<30" );
   
   // Gathering Storm ticking rotation
   gs_ticking -> add_action( this, "Frost Strike", "if=buff.icy_talons.remains<1.5&talent.icy_talons.enabled" );
   gs_ticking -> add_action( this, "Remorseless Winter" );
-  gs_ticking -> add_action( this, "Howling Blast", "target_if=!dot.frost_fever.ticking" );
+  gs_ticking -> add_action( this, "Howling Blast", "if=!dot.frost_fever.ticking" );
   gs_ticking -> add_action( this, "Howling Blast", "if=buff.rime.react&!(buff.obliteration.up&spell_targets.howling_blast<2)" );
   gs_ticking -> add_talent( this, "Obliteration", "if=(!talent.frozen_pulse.enabled|(rune<2&runic_power<28))" );
   gs_ticking -> add_action( this, "Obliterate", "if=rune>3|buff.killing_machine.react|buff.obliteration.up" );

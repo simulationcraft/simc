@@ -2904,12 +2904,9 @@ struct holy_power_consumer_t : public paladin_melee_attack_t
       p() -> buffs.crusade -> trigger( num_stacks );
     }
 
-    if ( maybe_ptr( p() -> dbc.ptr ) )
+    if ( p() -> artifact.righteous_verdict.rank() )
     {
-      if ( p() -> artifact.righteous_verdict.rank() )
-      {
-        p() -> buffs.righteous_verdict -> trigger();
-      }
+      p() -> buffs.righteous_verdict -> trigger();
     }
   }
 };
@@ -3150,11 +3147,8 @@ struct blade_of_justice_t : public holy_power_generator_t
   virtual double action_multiplier() const override
   {
     double am = holy_power_generator_t::action_multiplier();
-    if ( maybe_ptr( p() -> dbc.ptr ) )
-    {
-      if ( p() -> buffs.righteous_verdict -> up() )
-        am *= 1.0 + p() -> artifact.righteous_verdict.percent();
-    }
+    if ( p() -> buffs.righteous_verdict -> up() )
+      am *= 1.0 + p() -> artifact.righteous_verdict.percent();
     return am;
   }
 
@@ -3162,17 +3156,14 @@ struct blade_of_justice_t : public holy_power_generator_t
   {
     double m = holy_power_generator_t::composite_target_multiplier( t );
 
-    if ( maybe_ptr( p() -> dbc.ptr ) )
+    if ( p() -> sets.has_set_bonus( PALADIN_RETRIBUTION, T20, B4 ) )
     {
-      if ( p() -> sets.has_set_bonus( PALADIN_RETRIBUTION, T20, B4 ) )
+      paladin_td_t* td = this -> td( t );
+      if ( td -> buffs.debuffs_judgment -> up() )
       {
-        paladin_td_t* td = this -> td( t );
-        if ( td -> buffs.debuffs_judgment -> up() )
-        {
-          double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent() + p() -> get_divine_judgment();
-          judgment_multiplier += p() -> passives.judgment -> effectN( 1 ).percent();
-          m *= judgment_multiplier;
-        }
+        double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent() + p() -> get_divine_judgment();
+        judgment_multiplier += p() -> passives.judgment -> effectN( 1 ).percent();
+        m *= judgment_multiplier;
       }
     }
 
@@ -3182,14 +3173,11 @@ struct blade_of_justice_t : public holy_power_generator_t
   virtual void execute() override
   {
     holy_power_generator_t::execute();
-    if ( maybe_ptr( p() -> dbc.ptr ) )
-    {
-      if ( p() -> buffs.righteous_verdict -> up() )
-        p() -> buffs.righteous_verdict -> expire();
+    if ( p() -> buffs.righteous_verdict -> up() )
+      p() -> buffs.righteous_verdict -> expire();
 
-      if ( p() -> sets.has_set_bonus( PALADIN_RETRIBUTION, T20, B2 ) )
-        p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_t20_2p );
-    }
+    if ( p() -> sets.has_set_bonus( PALADIN_RETRIBUTION, T20, B2 ) )
+      p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_t20_2p );
   }
 };
 
@@ -3213,17 +3201,14 @@ struct divine_hammer_tick_t : public paladin_melee_attack_t
   {
     double m = paladin_melee_attack_t::composite_target_multiplier( t );
 
-    if ( maybe_ptr( p() -> dbc.ptr ) )
+    if ( p() -> sets.has_set_bonus( PALADIN_RETRIBUTION, T20, B4 ) )
     {
-      if ( p() -> sets.has_set_bonus( PALADIN_RETRIBUTION, T20, B4 ) )
+      paladin_td_t* td = this -> td( t );
+      if ( td -> buffs.debuffs_judgment -> up() )
       {
-        paladin_td_t* td = this -> td( t );
-        if ( td -> buffs.debuffs_judgment -> up() )
-        {
-          double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent() + p() -> get_divine_judgment();
-          judgment_multiplier += p() -> passives.judgment -> effectN( 1 ).percent();
-          m *= judgment_multiplier;
-        }
+        double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent() + p() -> get_divine_judgment();
+        judgment_multiplier += p() -> passives.judgment -> effectN( 1 ).percent();
+        m *= judgment_multiplier;
       }
     }
 
@@ -3270,25 +3255,19 @@ struct divine_hammer_t : public paladin_spell_t
   virtual double composite_persistent_multiplier( const action_state_t* s ) const override
   {
     double am = paladin_spell_t::composite_persistent_multiplier( s );
-    if ( maybe_ptr( p() -> dbc.ptr ) )
-    {
-      if ( p() -> buffs.righteous_verdict -> up() )
-        am *= 1.0 + p() -> artifact.righteous_verdict.percent();
-    }
+    if ( p() -> buffs.righteous_verdict -> up() )
+      am *= 1.0 + p() -> artifact.righteous_verdict.percent();
     return am;
   }
 
   virtual void execute() override
   {
     paladin_spell_t::execute();
-    if ( maybe_ptr( p() -> dbc.ptr ) )
-    {
-      if ( p() -> buffs.righteous_verdict -> up() )
-        p() -> buffs.righteous_verdict -> expire();
+    if ( p() -> buffs.righteous_verdict -> up() )
+      p() -> buffs.righteous_verdict -> expire();
 
-      if ( p() -> sets.has_set_bonus( PALADIN_RETRIBUTION, T20, B2 ) )
-        p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_t20_2p );
-    }
+    if ( p() -> sets.has_set_bonus( PALADIN_RETRIBUTION, T20, B2 ) )
+      p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_t20_2p );
   }
 };
 
@@ -3475,8 +3454,7 @@ struct hammer_of_justice_t : public paladin_melee_attack_t
       if ( target -> health_percentage() > p() -> spells.justice_gaze -> effectN( 1 ).base_value() )
         p() -> cooldowns.hammer_of_justice -> ready -= ( p() -> cooldowns.hammer_of_justice -> duration * p() -> spells.justice_gaze -> effectN( 2 ).percent() );
 
-      if ( maybe_ptr( p() -> dbc.ptr ) )
-        p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_justice_gaze );
+      p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_justice_gaze );
     }
   }
 };
@@ -5584,7 +5562,7 @@ double paladin_t::composite_melee_haste() const
   if ( buffs.sephuz -> check() )
     h /= 1.0 + buffs.sephuz -> check_value();
 
-  if ( maybe_ptr( dbc.ptr ) && sephuz )
+  if ( sephuz )
     h /= 1.0 + sephuz -> effectN( 3 ).percent() ;
 
   // Infusion of Light (Holy) adds 10% haste
@@ -5625,7 +5603,7 @@ double paladin_t::composite_spell_haste() const
   if ( buffs.sephuz -> check() )
     h /= 1.0 + buffs.sephuz -> check_value();
 
-  if ( maybe_ptr( dbc.ptr ) && sephuz )
+  if ( sephuz )
     h /= 1.0 + sephuz -> effectN( 3 ).percent() ;
 
   // Infusion of Light (Holy) adds 10% haste

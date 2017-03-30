@@ -5595,22 +5595,10 @@ void demon_hunter_t::create_buffs()
   using namespace buffs;
 
   // General
-
-  // FIXME: 1/22/2017 -- 7.2.0 PTR Spell Id 208195 was removed, but 163073 still remains
-  if ( maybe_ptr( dbc.ptr ) )
-  {
-    buff.demon_soul =
-      buff_creator_t( this, "demon_soul", find_spell( 163073 ) )
-      .default_value( find_spell( 163073 )->effectN( 1 ).percent() )
-      .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  }
-  else
-  {
-    buff.demon_soul =
-      buff_creator_t( this, "demon_soul", find_spell( 208195 ) )
-      .default_value( find_spell( 208195 )->effectN( 1 ).percent() )
-      .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  }
+  buff.demon_soul =
+    buff_creator_t( this, "demon_soul", find_spell( 163073 ) )
+    .default_value( find_spell( 163073 )->effectN( 1 ).percent() )
+    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.metamorphosis = new buffs::metamorphosis_buff_t( this );
 
@@ -6360,12 +6348,7 @@ void demon_hunter_t::init_spells()
   spec.metamorphosis          = find_class_spell("Metamorphosis");
   spec.metamorphosis_buff     = specialization() == DEMON_HUNTER_HAVOC
                                  ? find_spell( 162264 ) : find_spell( 187827 );
-
-  // FIXME: 1/22/2017 -- 7.2.0 PTR Spell Id 204255 was removed, but 203795 still remains
-  if(maybe_ptr( dbc.ptr ) )
-    spec.soul_fragment = find_spell(203795);
-  else
-    spec.soul_fragment = find_spell(204255);
+  spec.soul_fragment          = find_spell(204255);
 
   // Havoc
   spec.havoc               = find_specialization_spell( "Havoc Demon Hunter" );
@@ -7131,13 +7114,13 @@ double demon_hunter_t::composite_melee_haste() const
     mh /= 1.0 + buff.metamorphosis -> check_value();
   }
 
-  if (buff.sephuzs_secret->check())
+  if (legendary.sephuzs_secret)
   {
-    mh /= 1.0 + buff.sephuzs_secret->check_value();
-  }
+    if (buff.sephuzs_secret->check())
+    {
+      mh /= 1.0 + buff.sephuzs_secret->check_value();
+    }
 
-  if (maybe_ptr(dbc.ptr) && legendary.sephuzs_secret)
-  {
     mh /= 1.0 + legendary.sephuzs_secret->effectN(3).percent();
   }
 
@@ -7155,13 +7138,13 @@ double demon_hunter_t::composite_spell_haste() const
     sh /= 1.0 + buff.metamorphosis -> check_value();
   }
 
-  if (buff.sephuzs_secret->check())
+  if (legendary.sephuzs_secret)
   {
-    sh /= 1.0 + buff.sephuzs_secret->check_value();
-  }
+    if (buff.sephuzs_secret->check())
+    {
+      sh /= 1.0 + buff.sephuzs_secret->check_value();
+    }
 
-  if (maybe_ptr(dbc.ptr) && legendary.sephuzs_secret)
-  {
     sh /= 1.0 + legendary.sephuzs_secret->effectN(3).percent();
   }
 
@@ -7339,7 +7322,7 @@ double demon_hunter_t::passive_movement_modifier() const
           mastery_spell.demonic_presence -> effectN( 2 ).mastery_value();
   }
 
-  if (maybe_ptr(dbc.ptr) && legendary.sephuzs_secret)
+  if (legendary.sephuzs_secret)
   {
     ms += legendary.sephuzs_secret->effectN(2).percent();
   }
@@ -7888,11 +7871,9 @@ struct moarg_bionic_stabilizers_t
   void manipulate( throw_glaive_t* action, const special_effect_t& e ) override
   {
     const spell_data_t* driver = e.driver();
-    
+
+    action->base_multiplier *= 1.0 + driver->effectN(2).percent();
     action->chain_bonus_damage += driver->effectN(1).percent();
-    
-    if (maybe_ptr(action->p()->dbc.ptr))
-      action->base_multiplier *= 1.0 + driver->effectN(2).percent();
   }
 };
 
@@ -8019,9 +8000,7 @@ struct loramus_thalipedes_sacrifice_t
   {
     double dm = e.driver()->effectN(1).percent();
     
-    if (maybe_ptr(action->p()->dbc.ptr))
-      action->base_multiplier *= 1.0 + dm;
-    
+    action->base_multiplier *= 1.0 + dm;
     action->chain_bonus_damage += dm;
   }
 };

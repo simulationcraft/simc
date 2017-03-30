@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.1.5 Live (wow build 23360, git build 3249f8a)
+SimulationCraft 715-02 for World of Warcraft 7.2.0 Live (wow build 23826, git build 9b6da33)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -44,7 +44,7 @@ Range            : 40 yards
 Cooldown         : 600 seconds
 Category         : 56
 Category Cooldown: 600 seconds
-Affecting spells : Sanctuary (105805), Unbreakable Spirit (114154), Focused Healing (200326), Tyr's Hand of Faith (206380), Rule of Law (214202), 
+Affecting spells : Sanctuary (105805), Unbreakable Spirit (114154), Focused Healing (200326), Tyr's Hand of Faith (206380), Rule of Law (214202), Sacred Dawn (243174)
 Attributes       : ........ ........ x.x..... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -238,7 +238,7 @@ Spell Level      : 5
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Increased Flash of Light Crit Chance (38522), Beacon of Light (53563), Infusion of Light (54149), Sanctuary (105805), Retribution Paladin (137027), Protection Paladin (137028), Lucidity (137288), Beacon of Faith (156910), Magnifying Light (185100), Embrace the Light (186934), Deliver the Light (200294), Tyr's Deliverance (200654), Rule of Law (214202), 
+Affecting spells : Increased Flash of Light Crit Chance (38522), Beacon of Light (53563), Infusion of Light (54149), Sanctuary (105805), Retribution Paladin (137027), Protection Paladin (137028), Lucidity (137288), Beacon of Faith (156910), Magnifying Light (185100), Embrace the Light (186934), Deliver the Light (200294), Tyr's Deliverance (200654), Rule of Law (214202), Sacred Dawn (243174)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -415,7 +415,6 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
 Effects          :
 #1 (id=15851)    : School Damage: holy (2)
                    Base Value: 1 | Scaled Value: 0 (avg=1.25, dl=0.08) | SP Coefficient: 2.80000 | Target: Enemy(6)
-                   Hotfixed: SP Coefficient (3.5 -> 2.8)
 Description      : Blasts the target with Holy energy, causing $25912s1 Holy damage to an enemy, or $25914s1 healing to an ally.
 
 Name             : Holy Shock (id=25914) [Scaling Spell (7), Spell Family (10)] 
@@ -423,7 +422,7 @@ Class            : Paladin
 School           : Holy
 Spell Level      : 40
 Range            : 100 yards
-Affecting spells : Beacon of Light (53563), Holy Avenger (105809), Beacon of Faith (156910), Shock Treatment (200315), Item - Paladin T19 Holy 2P Bonus (211436), Rule of Law (214202), 
+Affecting spells : Beacon of Light (53563), Holy Avenger (105809), Beacon of Faith (156910), Shock Treatment (200315), Item - Paladin T19 Holy 2P Bonus (211436), Rule of Law (214202), Sacred Dawn (243174)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ......x. 
                  : x....... .......x ........ ........   ........ ........ ........ ........ 
@@ -459,8 +458,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 4488 | Target: Unknown(87)
 #3 (id=81786)    : Summon (28)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 43499 | Misc Value 2: 0xbba | Target: Custom(18)
-#4 (id=336287)   : Unknown effect type (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 8455 | Target: Unknown(87)
 Description      : Consecrates the land beneath you, causing ${$81297m1*9} Holy damage over $d to enemies who enter the area.$?s184123[ Shares a cooldown with Divine Wrath.][]
 Tooltip          : Damage every $t1 $lsecond:seconds;.
 
@@ -569,10 +566,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 127 | Target: Self(1)
 #2 (id=21514)    : Apply Aura (6) | Dummy (4)
                    Base Value: 12 | Scaled Value: 12 | Target: Self(1)
-Description      : Reduces all damage you take by $s1% for $d. While Ardent Defender is active, the next attack that would otherwise kill you will instead bring you to $s2% of your maximum health.$?s31850|!c2[][
-
-Replaces Divine Protection.]
-
+Description      : Reduces all damage you take by $s1% for $d. While Ardent Defender is active, the next attack that would otherwise kill you will instead bring you to $s2% of your maximum health.
 Tooltip          : Damage taken reduced by $w1%.
 The next attack that would otherwise kill you will instead bring you to $w2% of your maximum health.
 
@@ -611,7 +605,7 @@ GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
 Duration         : 3 seconds
 Cooldown         : 15 seconds
-Affecting spells : Grand Crusader (85416), Paladin (137026), Ferren Marcus's Strength (207614)
+Affecting spells : Grand Crusader (85416), Paladin (137026), Ferren Marcus's Strength (207614), 
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ..x..... ........   ........ ........ ........ ........ 
@@ -620,11 +614,11 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=21607)    : School Damage: holy (2)
-                   Base Value: 0 | Scaled Value: 1 - 3 | Value Range: 3 | AP Coefficient: 3.91500 | Chain Multiplier: 1 | Chain Targets: 3 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 1 - 3 | Value Range: 3 | AP Coefficient: 3.91500 | Chain Multiplier: 0 | Chain Targets: 3 | Target: Enemy(6)
 #2 (id=135932)   : Interrupt Cast (68)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.63500 | Chain Multiplier: 1 | Mechanic: Unknown(227) | Chain Targets: 65535 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.63500 | Chain Multiplier: 0 | Mechanic: Unknown(227) | Target: Enemy(6)
 #3 (id=135933)   : Apply Aura (6) | Silence (27)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.63500 | Chain Multiplier: 1 | Mechanic: Unknown(72) | Chain Targets: 65535 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.63500 | Chain Multiplier: 0 | Mechanic: Unknown(72) | Target: Enemy(6)
 Description      : Hurls your shield at an enemy target, dealing $s1 Holy damage$?a231665[, interrupting and silencing the non-Player target for $d][], and then jumping to ${$x1-1} additional nearby enemies.
 Tooltip          : Silenced.
 
@@ -643,7 +637,7 @@ Attributes       : ......x. x....... x.x..... x..x....   ........ ........ .....
 Effects          :
 #1 (id=21964)    : Apply Aura (6) | Unknown effect sub type (172)
                    Base Value: 20 | Scaled Value: 20 | Target: Self(1)
-Description      : Increases your mounted speed by $s1%.  This does not stack with other movement speed increasing effects.
+Description      : Increases your mounted speed by $s1%. This does not stack with other movement speed increasing effects.
 Tooltip          : Mounted speed increased by $w1%.  This does not stack with other movement speed increasing effects.
 
 Name             : Interrupt (id=32747) 
@@ -935,7 +929,7 @@ Range            : 5 yards
 Cooldown         : 1 seconds
 Charges          : 3 (16 seconds cooldown)
 Category         : 1543
-Affecting spells : Paladin (137026), Consecration (188370), Consecrated Hammer (203785), Righteous Crusader (209226), Righteous Crusader (213570), Righteous Crusader (213571), Righteous Crusader (213572), Righteous Crusader (213573), Righteous Crusader (213574)
+Affecting spells : Paladin (137026), Consecration (188370), Consecrated Hammer (203785), Righteous Crusader (209226), Righteous Crusader (213570), Righteous Crusader (213571), Righteous Crusader (213572), Righteous Crusader (213573), Righteous Crusader (213574), Righteous Crusader (239293), Righteous Crusader (239294), Blessed Stalwart (242869)
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -944,7 +938,7 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=46256)    : School Damage: holy (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 3.60000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 3.60000 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy(6)
 Description      : Slams the target with your shield, causing $s1 Holy damage, and reducing damage you take by ${-1*$clamp($132403m1,-80,-25)}% for $132403d.$?s26573&!s203785[
 
 While you are standing in your Consecration, Shield of the Righteous' effects are increased by $188370s2%.][]
@@ -977,7 +971,7 @@ Class            : Paladin
 School           : Holy
 Spell Level      : 1
 Range            : 60 yards
-Affecting spells : Rule of Law (214202), 
+Affecting spells : Rule of Law (214202), Sacred Dawn (243174)
 Attributes       : ........ ........ x.x..... ...x....   ........ ........ ........ ........ 
                  : ...x.... ........ ........ .....x..   ........ .x...... ........ .....x.. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -1095,6 +1089,10 @@ Effects          :
                    Base Value: 121163 | Scaled Value: 121163 | Misc Value: 31884 | Misc Value 2: 0x1d94b | Target: Self(1)
 #2 (id=254790)   : Apply Aura (6) | Unknown effect sub type (403)
                    Base Value: 121163 | Scaled Value: 121163 | Misc Value: 31842 | Misc Value 2: 0x1d94b | Target: Self(1)
+#3 (id=364395)   : Apply Aura (6) | Unknown effect sub type (403)
+                   Base Value: 121163 | Scaled Value: 121163 | Misc Value: 231895 | Misc Value 2: 0x1d94b | Target: Self(1)
+#4 (id=364396)   : Apply Aura (6) | Unknown effect sub type (403)
+                   Base Value: 121163 | Scaled Value: 121163 | Misc Value: 224668 | Misc Value 2: 0x1d94b | Target: Self(1)
 Description      : Your Avenging Wrath depicts 4 wings.
 
 Name             : Winged Vengeance (id=58244) 
@@ -1189,7 +1187,7 @@ Effects          :
 #1 (id=56098)    : Unknown effect type (114)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Enemy(6)
 #2 (id=56099)    : Apply Aura (6) | Taunt (11)
-                   Base Value: 200 | Scaled Value: 200 | Target: Enemy(6)
+                   Base Value: 400 | Scaled Value: 400 | Target: Enemy(6)
 Description      : Taunts the target to attack you, and increases threat that you generate against the target for $d.
 Tooltip          : Taunted.
 
@@ -1313,7 +1311,6 @@ Replaces         : Judgment (id=231663)
 Class            : Retribution Paladin
 School           : Physical
 Spell Level      : 78
-Proc Chance      : 101%
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1406,7 +1403,7 @@ Spell Level      : 25
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Beacon of Light (53563), Infusion of Light (54149), Lucidity (137288), Beacon of Faith (156910), Magnifying Light (185100), Deliver the Light (200294), Tyr's Deliverance (200654), Rule of Law (214202), 
+Affecting spells : Beacon of Light (53563), Infusion of Light (54149), Lucidity (137288), Beacon of Faith (156910), Magnifying Light (185100), Deliver the Light (200294), Tyr's Deliverance (200654), Rule of Law (214202), Sacred Dawn (243174)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1446,7 +1443,7 @@ Resource         : 14% Base Mana (30800 @Level 110)
 Spell Level      : 40
 GCD              : 1.5 seconds
 Cooldown         : 12 seconds
-Affecting spells : Beacon of Light (53563), Paladin (137026), Beacon of Faith (156910), Beacon of the Lightbringer (197446), Expel the Darkness (200296), Rule of Law (214202), 
+Affecting spells : Beacon of Light (53563), Paladin (137026), Beacon of Faith (156910), Beacon of the Lightbringer (197446), Expel the Darkness (200296), Rule of Law (214202), Sacred Dawn (243174)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1626,7 +1623,7 @@ Effects          :
                    Base Value: 67 | Scaled Value: 0.67 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
 #2 (id=171313)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
-Description      : $@spelldesc35395
+Description      : $@spelldesc53595
 
 Name             : Beacon of Light (id=88852) [Spell Family (10)] 
 Class            : Paladin
@@ -1868,7 +1865,7 @@ Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 20 seconds
-Affecting spells : Lucidity (137288), Rule of Law (214202), 
+Affecting spells : Lucidity (137288), Rule of Law (214202), Sacred Dawn (243174)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1893,7 +1890,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 100 yards/sec
 Cooldown         : 20 seconds
-Affecting spells : Lucidity (137288), Rule of Law (214202), 
+Affecting spells : Lucidity (137288), Rule of Law (214202), Sacred Dawn (243174)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ......x.   ........ .x...... ........ ........ 
                  : x....... ........ ........ ........   ........ ........ ........ ..x..... 
@@ -1919,7 +1916,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 100 yards/sec
 Cooldown         : 20 seconds
-Affecting spells : Lucidity (137288), Rule of Law (214202), 
+Affecting spells : Lucidity (137288), Rule of Law (214202), Sacred Dawn (243174)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ....x.x.   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -2135,7 +2132,7 @@ School           : Holy
 Spell Level      : 1
 Range            : 5 yards
 Duration         : 4.5 seconds
-Affecting spells : Mastery: Divine Bulwark (76671), Consecration (188370), Consecrated Hammer (203785), Righteous Crusader (209226), Righteous Crusader (213570), Righteous Crusader (213571), Righteous Crusader (213572), Righteous Crusader (213573), Righteous Crusader (213574)
+Affecting spells : Mastery: Divine Bulwark (76671), Consecration (188370), Consecrated Hammer (203785), Righteous Crusader (209226), Righteous Crusader (213570), Righteous Crusader (213571), Righteous Crusader (213572), Righteous Crusader (213573), Righteous Crusader (213574), Righteous Crusader (239293), Righteous Crusader (239294), Blessed Stalwart (242869)
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2215,11 +2212,9 @@ Effects          :
 #1 (id=179711)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 12 | Scaled Value: 12 | Target: Self(1)
                    Affected Spells: Judgment (20271), Consecration (26573), Crusader Strike (35395), Consecration (81297), Blade of Justice (184575), Judgment (197277), Eye for an Eye (205191), Eye for an Eye (205202), Consecration (205228), Wake of Ashes (205273), Judgment (214222), Justicar's Vengeance (215661), Zeal (217020), Divine Storm (224239), Templar's Verdict (224266), Judgment (228288)
-                   Hotfixed: Affects Spells
 #2 (id=191092)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 12 | Scaled Value: 12 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Wake of Ashes (205273), Execution Sentence (213757)
-                   Hotfixed: Affects Spells
 #3 (id=191093)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 42 | Scaled Value: 42 | Target: Self(1)
                    Affected Spells: Flash of Light (19750)
@@ -2284,9 +2279,8 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf8 | Target: Self(1)
 #6 (id=260917)   : Apply Aura (6) | Unknown effect sub type (218)
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 3 | Misc Value 2: 0x114 | Target: Self(1)
-                   Hotfixed: Sub Type (4 -> 218), Base Value (0 -> -40), Misc Value (0 -> 3), Misc Value 2 (0 -> 276)
-#7 (id=260918)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#7 (id=260918)   : Apply Aura (6) | Unknown effect sub type (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0x121 | Target: Self(1)
 #8 (id=260919)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #9 (id=260920)   : Apply Aura (6) | Dummy (4)
@@ -2575,7 +2569,6 @@ Description      : $@spelldesc114163
 Tooltip          : Healing $w1 health every $t2 sec.
 
 Name             : Beacon of Faith (id=156910) [Spell Family (10)] 
-Hotfixed         : Max stacks, Proc Chance, Proc Stacks, Proc Flags, Internal Cooldown
 Class            : Paladin
 School           : Holy
 Resource         : 3.125% Base Mana (6875 @Level 110)
@@ -2697,7 +2690,7 @@ Effects          :
 #2 (id=228483)   : Apply Aura (6) | Unknown effect sub type (467)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 1 | Target: Self(1)
 #3 (id=228484)   : Apply Aura (6) | Unknown effect sub type (466)
-                   Base Value: -100 | Scaled Value: -100 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Stat Negation Aura - Intellect Healer (id=162701) [Passive, Hidden] 
 Class            : Holy Discipline Holy Restoration Mistweaver Restoration Paladin, Priest, Shaman, Monk, Druid
@@ -2715,7 +2708,7 @@ Effects          :
 #2 (id=228495)   : Apply Aura (6) | Unknown effect sub type (467)
                    Base Value: -100 | Scaled Value: -100 | Target: Self(1)
 #3 (id=228496)   : Apply Aura (6) | Unknown effect sub type (466)
-                   Base Value: -100 | Scaled Value: -100 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Stat Negation Aura - Strength Tank (id=162702) [Passive, Hidden] 
 Replaces         : Stat Negation Aura - Strength DPS (id=162698)
@@ -2926,13 +2919,16 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=266239)   : Apply Aura (6) | Proc Trigger Spell: Judgment of Light (42)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 196941 | Target: Self(1)
-Description      : Judgment now applies Judgment of Light to the target, causing the next $196941N successful attacks against the target to heal the attacker for $183811s1. This effect can only occur once per $s1 sec on each target.
+#2 (id=370254)   : Dummy (3)
+                   Base Value: 1 | Scaled Value: 1 | Target: Self(1)
+Description      : Judgment now applies Judgment of Light to the target, causing the next $196941N successful attacks against the target to heal the attacker for $183811s1. $@switch<$s2>[][This effect can only occur once every $s1 sec on each target.]
 
 Name             : Judgment of Light (id=183811) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
 Spell Level      : 1
 Range            : 100 yards
+Affecting spells : Sacred Dawn (243174)
 Triggered by     : Judgment of Light (196941)
 Attributes       : ........ ........ ..x..... .....x..   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -2968,7 +2964,7 @@ Resource         : 7.5% Base Mana (16500 @Level 110)
 Spell Level      : 50
 Range            : 40 yards
 GCD              : 1.5 seconds
-Affecting spells : Beacon of Light (53563), Beacon of Faith (156910), Justice through Sacrifice (200316), Rule of Law (214202), Fervent Martyr (223316)
+Affecting spells : Beacon of Light (53563), Beacon of Faith (156910), Justice through Sacrifice (200316), Rule of Law (214202), Fervent Martyr (223316), Sacred Dawn (243174)
 Attributes       : ........ ........ x....... ........   ........ ........ ...x.... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3013,7 +3009,7 @@ Spell Level      : 20
 Range            : 12 yards
 GCD              : 1.5 seconds
 Cooldown         : 10.5 seconds
-Affecting spells : Paladin (137026), Retribution Paladin (137027), Deliver the Justice (186927), Virtue's Blade (202271), 
+Affecting spells : Paladin (137026), Retribution Paladin (137027), Deliver the Justice (186927), Virtue's Blade (202271), Righteous Verdict (238996)
 Attributes       : ........ ........ x.x..x.. ........   ........ .x...... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3026,7 +3022,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #2 (id=267536)   : Weapon Damage% (31)
                    Base Value: 540 | Scaled Value: 5.4 | Target: Enemy(6)
-                   Hotfixed: Base Value (450 -> 540)
 #3 (id=267537)   : Energize Power (30)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: holy_power | Target: Self(1)
 Description      : Strikes an enemy with the Blade of Justice, dealing ${$sw2*$<mult>} Physical damage.
@@ -3181,7 +3176,6 @@ School           : Holy
 Spell Level      : 1
 Range            : 30 yards
 Duration         : 30 seconds
-Internal Cooldown: 1 seconds
 Stacks           : 40 initial, 40 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x...... ........ 
@@ -3192,7 +3186,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=289177)   : Apply Aura (6) | Proc Trigger Spell: Judgment of Light (42)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 183811 | Target: Enemy(6)
@@ -3204,9 +3198,12 @@ Class            : Paladin
 School           : Holy
 Range            : 100 yards
 Duration         : 8 seconds
+Proc Chance      : 100%
+Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Seal of the Crusader Judgment Increase (23300), Item - Icecrown 25 Normal Tank Weapon Proc (71871), Item - Icecrown 25 Heroic Slow Melee Weapon Proc (71878), Item - Icecrown 25 Normal Dagger Proc (71880), Mastery: Divine Judgment (76672), Item - Proc Mastery Rating (95878), Paladin (137026), Retribution Paladin (137027), Protection Paladin (137028), Holy Paladin (137029), Lucidity (137288), Seal of the Crusader Judgment Increase (144307), Seal of the Crusader Judgment Increase (144310), Seal of the Crusader Judgment Increase (144311), Highlord's Judgment (186941), Stern Judgment (209217), Crusade (224668), Judgment (231663)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -3215,6 +3212,8 @@ Effects          :
 #1 (id=289735)   : Apply Aura (6) | Unknown effect sub type (271)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
                    Affected Spells: Execution Sentence (213757), Justicar's Vengeance (215661), Divine Storm (224239), Templar's Verdict (224266)
+#2 (id=368486)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0
 Description      : $@spelldesc20271
 Tooltip          : Taking $w1% increased damage from the Paladin's Holy Power consuming abilities.
 
@@ -3442,7 +3441,7 @@ Class            : Paladin
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
 School           : Physical
 Range            : 100 yards
-Affecting spells : Rule of Law (214202)
+Affecting spells : Rule of Law (214202), Tyr's Munificence (238060), Sacred Dawn (243174)
 Triggered by     : Tyr's Deliverance (200652)
 Attributes       : .......x ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -3462,7 +3461,7 @@ Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, G
 School           : Holy
 Range            : 100 yards
 Duration         : 10 seconds
-Affecting spells : Rule of Law (214202)
+Affecting spells : Rule of Law (214202), Tyr's Munificence (238060), Sacred Dawn (243174)
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -3595,7 +3594,7 @@ Tooltip          : $?$w2>1[Absorbs the next ${$w2-1} damage.][]
 Refreshed to $w1 absorption every $t1 sec.
 Variables        : $shield=${2.7*$SPH}
 
-Name             : Greater Blessing of Wisdom (id=203539) [Scaling Spell (-1), Spell Family (10)] 
+Name             : Greater Blessing of Wisdom (id=203539) [Spell Family (10)] 
 Class            : Retribution Paladin
 School           : Holy
 Spell Level      : 65
@@ -3646,6 +3645,7 @@ Name             : Consecrated Hammer (id=203785) [Spell Family (10), Passive]
 Class            : Paladin
 School           : Physical
 Proc Chance      : 101%
+Affecting spells : Item - Paladin T19 Protection 2P Bonus (211553), 
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3732,13 +3732,13 @@ Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 2 seconds
 Affecting spells : Lucidity (137323), Muze's Unwavering Will (210632), Invoke the Light (216122), Kam Xi'raff (233997)
-Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ......x.   ........ ........ .x...... ......x. 
-                 : ........ ......x. ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Disable target procs (113)
+Attributes       : ........ ........ x....... x..x....   .....x.. ........ ........ ........ 
+                 : ........ ......x. ...x.... ......x.   ........ ........ .x...... ......x. 
+                 : ........ ......x. ........ ........   ...x.... ........ .xx..... ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : .....x.. ........ ........ ........   ........ ...x.... ........ ........ 
+                 : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
+                 : Does not break stealth (37), Disable target procs (113)
 Effects          :
 #1 (id=301046)   : School Damage: holy (2)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.04500 | Target: Enemy(6)
@@ -3955,7 +3955,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : x....... ........ ........ ........   ........ .......x ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=301536)   : School Damage: holy (2)
@@ -3992,7 +3992,6 @@ Description      : Reduces Physical damage you take by $s2%, and instantly count
 Tooltip          : Counterattacking all melee attacks.
 
 Name             : Eye for an Eye (id=205202) [Spell Family (10)] 
-Hotfixed         : Affecting Spells, Spell Family (4 -> 10)
 Class            : Paladin
 School           : Physical
 Spell Level      : 1
@@ -4192,7 +4191,7 @@ Class            : Paladin
 School           : Holy
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Aura Mastery (31821), 
+Affecting spells : Aura Mastery (31821), Sacred Dawn (243174)
 Triggered by     : Aura of Mercy (183415)
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ x....... ......x. 
@@ -4207,6 +4206,47 @@ Effects          :
 #2 (id=311377)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3
 Description      : $@spelldesc183415
+
+Name             : Justice Gaze (id=211557) [Spell Family (10), Passive] 
+Class            : Paladin
+School           : Holy
+Proc Chance      : 101%
+Proc Flags       : ........ ........ x....... ........ 
+                 : Hostile Spell
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=313382)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 75 | Scaled Value: 75 | Target: Self(1)
+#2 (id=313394)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 75 | Scaled Value: 75 | Target: Self(1)
+#3 (id=370191)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 32 | Target: Self(1)
+Description      : Hammer of Justice deals $211561sw2 Holy damage, generates $s3 Holy Power, and has $s2% reduced cooldown when used against an enemy above $s1% health.
+
+Name             : Hammer of Justice (id=211561) [Spell Family (10)] 
+Class            : Paladin
+School           : Holy
+Spell Level      : 5
+Range            : 40 yards
+Attributes       : ........ ........ ..x..x.. ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Cannot dodge/parry/block (21)
+Effects          :
+#1 (id=313386)   : Normalized Weapon Damage (121)
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
+#2 (id=313387)   : Weapon Damage% (31)
+                   Base Value: 600 | Scaled Value: 6 | Target: Enemy(6)
+Description      : $@spelldesc211557
 
 Name             : Absolution (id=212056) [Spell Family (10)] 
 Class            : Holy Paladin
@@ -4319,7 +4359,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=317188)   : Apply Aura (6) | Periodic Damage: holy every 7 seconds (3)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 14.50000 | Target: Enemy(6)
-                   Hotfixed: AP Coefficient (17 -> 14.5)
 Description      : A hammer slowly falls from the sky, dealing $s2 Holy damage after $d.
 Tooltip          : Taking $s2 Holy damage when this expires.
 
@@ -4417,7 +4456,7 @@ Effects          :
 #1 (id=322914)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 0.6 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=322915)   : Weapon Damage% (31)
-                   Base Value: 320 | Scaled Value: 3.2 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 320 | Scaled Value: 3.2 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy(6)
 #3 (id=322916)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: holy_power | Target: Self(1)
 #4 (id=322917)   : Apply Aura (6) | Add Flat Modifier: Spell Targets (107)
@@ -4475,6 +4514,7 @@ Spell Level      : 1
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. ........ ........ 
                  : Heal
+Affecting spells : Stoicism (238096)
 Attributes       : ......xx ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4518,7 +4558,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 12 seconds
-Affecting spells : Rule of Law (214202)
+Affecting spells : Rule of Law (214202), Sacred Dawn (243174)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4635,7 +4675,7 @@ Class            : Paladin
 School           : Holy
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Beacon of Light (53563), Paladin (137026), Beacon of Faith (156910), Beacon of the Lightbringer (197446), Expel the Darkness (200296), Rule of Law (214202), 
+Affecting spells : Beacon of Light (53563), Paladin (137026), Beacon of Faith (156910), Beacon of the Lightbringer (197446), Expel the Darkness (200296), Rule of Law (214202), Sacred Dawn (243174)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4878,8 +4918,8 @@ Charges          : 1 (120 seconds cooldown)
 Category         : 1550
 Stacks           : 15 maximum
 Proc Chance      : 100%
-Proc Flags       : ....x... ....x... x.x..... ........ 
-                 : Yellow Melee, AOE Hostile Spell, Hostile Spell, Periodic
+Proc Flags       : ....x... ....x.x. x.x..... ........ 
+                 : Yellow Melee, AOE Hostile Spell, Heal, Hostile Spell, Periodic
 Affecting spells : Wrath of the Ashbringer (186945), 
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4890,10 +4930,8 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=349842)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 0x7f | Target: Self(1)
-                   Hotfixed: Base Value (35 -> 30)
 #2 (id=349843)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 30 | Scaled Value: 30 | Target: Self(1)
-                   Hotfixed: Base Value (35 -> 30)
 Description      : Increases your damage and haste by ${$s1/10}.1% for $d.
 
 Each Holy Power spent during Crusade increases damage and haste by an additional ${$s1/10}.1%.
@@ -4919,5 +4957,63 @@ Effects          :
 #1 (id=353965)   : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | Target: Self(1)
 Description      : Each Holy Power spent reduces the remaining cooldown on Hammer of Justice by ${$m1/10}.1 sec.
+
+Name             : Righteous Verdict (id=238062) [Spell Family (10), Passive] 
+Class            : Paladin
+School           : Physical
+Internal Cooldown: 0.1 seconds
+Proc Chance      : 100%
+Artifact Power   : Id: 1561, Index: 13, Max Rank: 8, Values: [ 5, 10, 15, 20, 25, 30, 35, 40 ]
+Proc Flags       : ....x... ..x.x.x. x.x..... ........ 
+                 : Yellow Melee, AOE Heal, AOE Hostile Spell, Heal, Hostile Spell, Periodic
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=360747)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 5 | Scaled Value: 5 | Target: Self(1)
+Description      : Your Holy Power spending abilities increase the damage of your next $?s198034[Divine Hammer][Blade of Justice] by $s1%.
+
+Name             : Righteous Verdict (id=238996) [Spell Family (10)] 
+Class            : Paladin
+School           : Physical
+Duration         : 15 seconds
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
+Proc Flags       : ....x... ........ ........ ........ 
+                 : Yellow Melee
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=362033)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+                   Affected Spells: Blade of Justice (184575)
+Description      : $@spelldesc238062
+Tooltip          : Your next $?s198034[Divine Hammer][Blade of Justice] deals $w1% increased damage.
+
+Name             : Blessing of the Ashbringer (id=242981) [Spell Family (10)] 
+Class            : Paladin
+School           : Holy
+Duration         : Aura (infinite)
+Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Cannot cancel aura (31)
+Effects          :
+#1 (id=368965)   : Apply Aura (6) | Attribute (29)
+                   Base Value: 2000 | Scaled Value: 2000 | Target: Self(1)
+Description      : Increases your Strength by $s1.
+Tooltip          : Increases your Strength by $s1.
 
 

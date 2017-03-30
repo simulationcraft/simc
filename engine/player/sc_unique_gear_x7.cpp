@@ -18,6 +18,7 @@ namespace consumable
   void hearty_feast( special_effect_t& );
   void lavish_suramar_feast( special_effect_t& );
   void pepper_breath( special_effect_t& );
+  void lemon_herb_filet( special_effect_t& );
 }
 
 namespace enchants
@@ -4025,6 +4026,20 @@ void consumable::lavish_suramar_feast( special_effect_t& effect )
   effect.stat_amount = effect.player -> find_spell( effect.trigger_spell_id ) -> effectN( 1 ).average( effect.player );
 }
 
+// Lemon Herb Filet =========================================================
+
+void consumable::lemon_herb_filet( special_effect_t& effect )
+{
+  double value = effect.driver() -> effectN( 1 ).percent();
+
+  buff_t* dmf_well_fed = buff_creator_t( effect.player, "lemon_herb_filet", effect.driver() )
+    .default_value( effect.player -> race == race_e::RACE_PANDAREN ? 2 * value : value )
+    .add_invalidate( CACHE_VERSATILITY );
+
+  effect.custom_buff = dmf_well_fed;
+  effect.player -> buffs.dmf_well_fed = dmf_well_fed;
+}
+
 // Pepper Breath (generic) ==================================================
 
 struct pepper_breath_damage_t : public spell_t
@@ -4580,6 +4595,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 225606, consumable::pepper_breath );
   register_special_effect( 225601, consumable::pepper_breath );
   register_special_effect( 201336, consumable::pepper_breath );
+  register_special_effect( 185736, consumable::lemon_herb_filet );
 }
 
 void unique_gear::register_hotfixes_x7()
