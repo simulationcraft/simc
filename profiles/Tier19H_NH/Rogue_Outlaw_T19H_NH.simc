@@ -5,7 +5,7 @@ timeofday=day
 role=attack
 position=back
 talents=1310022
-artifact=44:0:0:0:0:1052:1:1053:1:1054:1:1055:1:1056:1:1057:1:1058:1:1059:3:1060:3:1061:3:1062:3:1063:3:1064:3:1065:3:1066:3:1067:3:1348:1:1385:6
+artifact=44:0:0:0:0:1052:1:1053:1:1054:1:1055:1:1056:1:1057:1:1058:1:1059:3:1060:3:1061:3:1062:3:1063:3:1064:3:1065:3:1066:3:1067:3:1348:1:1385:1:1581:4:1582:1:1583:1:1652:1
 spec=outlaw
 
 # This default action priority list is automatically created based on your character.
@@ -17,7 +17,7 @@ spec=outlaw
 # Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat=flask,name=flask_of_the_seventh_demon
 actions.precombat+=/augmentation,name=defiled
-actions.precombat+=/food,name=seedbattered_fish_plate
+actions.precombat+=/food,name=lavish_suramar_feast
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/stealth
