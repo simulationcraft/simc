@@ -7544,7 +7544,7 @@ double shaman_t::composite_melee_haste() const
   // the fallback buff creator).
   if ( legendary.sephuzs_secret -> ok() )
   {
-    h *= 1.0 / ( 1.0 + legendary.sephuzs_secret -> effectN( 2 ).percent() );
+    h *= 1.0 / ( 1.0 + legendary.sephuzs_secret -> effectN( 3 ).percent() );
   }
 
   return h;
