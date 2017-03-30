@@ -621,6 +621,7 @@ public:
   virtual double    composite_spell_crit_rating() const override;
   virtual double    composite_spell_haste() const override;
   virtual double    composite_mastery_rating() const override;
+  virtual double    composite_attribute_multiplier( attribute_e ) const override;
   virtual double    matching_gear_multiplier( attribute_e attr ) const override;
   virtual void      update_movement( timespan_t duration ) override;
   virtual void      stun() override;
@@ -9195,6 +9196,22 @@ double mage_t::composite_spell_haste() const
   }
 
   return h;
+}
+
+double mage_t::composite_attribute_multiplier( attribute_e attribute ) const
+{
+  double m = player_t::composite_attribute_multiplier( attribute );
+  switch ( attribute )
+  {
+  case ATTR_STAMINA:
+    m *= 1.0 + artifact.frigidity_of_the_tirisgarde.data().effectN( 2 ).percent();
+    m *= 1.0 + artifact.instability_of_the_tirisgarde.data().effectN( 2 ).percent();
+    m *= 1.0 + artifact.intensity_of_the_tirisgarde.data().effectN( 2 ).percent();
+    break;
+  default:
+    break;
+  }
+  return m;
 }
 
 // mage_t::matching_gear_multiplier =========================================
