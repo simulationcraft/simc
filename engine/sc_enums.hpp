@@ -23,7 +23,9 @@ enum retarget_event_e
 // Misc (legion related) constants
 enum
 {
-  MAX_ARTIFACT_POWER = 25, /// Maximum number of artifact perks per weapon. Looks like max is 17 on weapons but setting higher just in case -- 2016/04/04 - Twintop.
+
+  MAX_ARTIFACT_POWER = 25, /// Maximum number of artifact perks per weapon. Looks like max is 17 on weapons but setting higher just in case -- 2016/04/04 - Twintop. Increase to 25 to encompass new traits.
+
   MAX_ARTIFACT_RELIC = 4,
   RELIC_ILEVEL_BONUS_CURVE = 1718, /// Seemingly hard coded CurvePoint identifier for the data that returns the item level increase of a relic, based on the relic's own item level
 
@@ -1114,11 +1116,10 @@ enum snapshot_state_e
   STATE_AP    = 0x000004,
   STATE_SP    = 0x000008,
 
-  STATE_MUL_DA      = 0x000010,
-  STATE_MUL_TA      = 0x000020,
-  STATE_VERSATILITY = 0x000040,
-  STATE_MUL_PERSISTENT =
-      0x000080,  // Persistent modifier for the few abilities that snapshot
+  STATE_MUL_DA         = 0x000010,
+  STATE_MUL_TA         = 0x000020,
+  STATE_VERSATILITY    = 0x000040,
+  STATE_MUL_PERSISTENT = 0x000080,  // Persistent modifier for the few abilities that snapshot
 
   STATE_TGT_CRIT   = 0x000100,
   STATE_TGT_MUL_DA = 0x000200,
@@ -1133,18 +1134,19 @@ enum snapshot_state_e
   STATE_TGT_MITG_TA = 0x020000,
   STATE_TGT_ARMOR   = 0x040000,
 
-  STATE_MUL_PET     = 0x080000, // Multiplier from the owner to pet damage
-  // No multiplier helper, use in action_t::init() (after parent init) by
-  // issuing snapshot_flags &= STATE_NO_MULTIPLIER (and/or update_flags &=
-  // STATE_NO_MULTIPLIER if a dot). This disables all multipliers, including
-  // versatility, and any/all persistent multipliers the action would
-  // use.
-  STATE_NO_MULTIPLIER = ~( STATE_MUL_DA | STATE_MUL_TA | STATE_VERSATILITY |
-                           STATE_MUL_PERSISTENT | STATE_TGT_MUL_DA | STATE_MUL_PET |
-                           STATE_TGT_MUL_TA | STATE_TGT_ARMOR ),
-  // Target-specific state variables
-  STATE_TARGET = ( STATE_TGT_CRIT | STATE_TGT_MUL_DA | STATE_TGT_MUL_TA | STATE_TGT_ARMOR |
-                   STATE_TGT_MITG_DA | STATE_TGT_MITG_TA )
+  /// Multiplier from the owner to pet damage
+  STATE_MUL_PET = 0x080000,
+
+  /**
+   * No multiplier helper, use in action_t::init() (after parent init) by issuing snapshot_flags &= STATE_NO_MULTIPLIER
+   * (and/or update_flags &= STATE_NO_MULTIPLIER if a dot). This disables all multipliers, including versatility, and
+   * any/all persistent multipliers the action would use. */
+  STATE_NO_MULTIPLIER = ~( STATE_MUL_DA | STATE_MUL_TA | STATE_VERSATILITY | STATE_MUL_PERSISTENT | STATE_TGT_MUL_DA |
+                           STATE_MUL_PET | STATE_TGT_MUL_TA | STATE_TGT_ARMOR ),
+
+  /// Target-specific state variables
+  STATE_TARGET =
+      ( STATE_TGT_CRIT | STATE_TGT_MUL_DA | STATE_TGT_MUL_TA | STATE_TGT_ARMOR | STATE_TGT_MITG_DA | STATE_TGT_MITG_TA )
 };
 
 enum ready_e

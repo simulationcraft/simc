@@ -37,8 +37,7 @@ namespace timespan_adl_barrier
   class timespan_t
   {
   private:
-    // CAREFUL: Using int32_t implies that no overflowing happens during calculation.
-    typedef int64_t time_t;
+    using time_t = int_least64_t;
 
     static time_t native_to_milli(time_t t)
     {
@@ -78,7 +77,8 @@ namespace timespan_adl_barrier
     }
 
   public:
-    timespan_t() = default;
+    timespan_t() : time( 0 )
+    { }
 
     double total_minutes() const
     {

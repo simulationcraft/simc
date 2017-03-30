@@ -192,9 +192,13 @@ metric_e populate_player_list( const std::string& type, const sim_t& sim,
   }
   else if ( util::str_compare_ci( type, "variance" ) )
   {
-    name        = "DPS Variance Percentage";
-    source_list = &sim.players_by_variance;
-    m           = METRIC_VARIANCE;
+    // Variance implies there is DPS output in the simulator
+    if ( sim.raid_dps.mean() > 0 )
+    {
+      name        = "DPS Variance Percentage";
+      source_list = &sim.players_by_variance;
+      m           = METRIC_VARIANCE;
+    }
   }
 
   if ( source_list != nullptr )
@@ -204,63 +208,6 @@ metric_e populate_player_list( const std::string& type, const sim_t& sim,
   }
 
   return pl.size() > 1 ? m : METRIC_NONE;
-}
-
-double compute_median( const std::vector<const player_t*>& pl, metric_e metric,
-                       metric_value_e val )
-{
-  if ( pl.size() < 2 )
-  {
-    return 0;
-  }
-
-  if ( !pl[ 0 ]->sim->chart_show_relative_difference )
-  {
-    return 0;
-  }
-
-  size_t m = pl.size() / 2;
-
-  const extended_sample_data_t *d1 = nullptr, *d2 = nullptr;
-  double median = 0;
-
-  switch ( metric )
-  {
-    case METRIC_DPS:
-      d1 = &pl[ m ]->collected_data.dps;
-      d2 = pl.size() % 2 ? d1 : &pl[ m - 1 ]->collected_data.dps;
-      break;
-    case METRIC_PDPS:
-      d1 = &pl[ m ]->collected_data.prioritydps;
-      d2 = pl.size() % 2 ? d1 : &pl[ m - 1 ]->collected_data.prioritydps;
-      break;
-    case METRIC_HPS:
-      d1 = &pl[ m ]->collected_data.hps;
-      d2 = pl.size() % 2 ? d1 : &pl[ m - 1 ]->collected_data.hps;
-      break;
-    case METRIC_DTPS:
-      d1 = &pl[ m ]->collected_data.dtps;
-      d2 = pl.size() % 2 ? d1 : &pl[ m - 1 ]->collected_data.dtps;
-      break;
-    case METRIC_TMI:
-      d1 = &pl[ m ]->collected_data.theck_meloree_index;
-      d2 =
-          pl.size() % 2 ? d1 : &pl[ m - 1 ]->collected_data.theck_meloree_index;
-      break;
-    default:
-      return 0;
-  }
-
-  switch ( val )
-  {
-    case VALUE_MEAN:
-      median = ( d1->mean() + d2->mean() ) / 2.0;
-      break;
-    default:
-      break;
-  }
-
-  return median;
 }
 
 std::vector<double> get_data_summary( const player_collected_data_t& container,
@@ -675,8 +622,8 @@ bool chart::generate_reforge_plot( highchart::chart_t& ac, const player_t& p )
     double v = util::round( pdata[ 2 ].value, p.sim->report_precision );
     double e = util::round( pdata[ 2 ].error / 2, p.sim->report_precision );
 
-    mean.emplace_back( x, v );
-    range.emplace_back( x, v + e, v - e );
+    mean.push_back( std::make_pair(x, v ) );
+    range.push_back( highchart::data_triple_t(x, v + e, v - e ) );
   }
 
   ac.add_simple_series( "line", from_color, "Mean", mean );
@@ -1546,8 +1493,8 @@ bool chart::generate_scale_factors( highchart::bar_chart_t& bc,
     double error_value = util::round(
         p.scaling_error[ metric ].get_stat( stat ), p.sim->report_precision );
     data.push_back( value );
-    error.emplace_back( value - fabs( error_value ),
-                        value + fabs( error_value ) );
+    error.push_back( std::make_pair( value - fabs( error_value ),
+                        value + fabs( error_value ) ) );
 
     std::string category_str = util::stat_type_abbrev( stat );
     category_str +=

@@ -46,8 +46,8 @@ sequence_t::sequence_t( player_t* p, const std::string& sub_action_str ) :
     a -> sequence = true;
     sub_actions.push_back( a );
   }
-  sequence_wait_on_ready = wait_on_ready;
-  wait_on_ready = -1;
+  sequence_wait_on_ready = option.wait_on_ready;
+  option.wait_on_ready = -1;
 }
 
 // sequence_t::schedule_execute =============================================

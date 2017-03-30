@@ -2784,6 +2784,11 @@ void util::tokenize( std::string& name )
   }
 }
 
+std::string util::tokenize_fn( std::string name )
+{
+  tokenize(name);
+  return name;
+}
 // inverse_tokenize =========================================================
 
 std::string util::inverse_tokenize( const std::string& name )

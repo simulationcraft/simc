@@ -419,8 +419,8 @@ void enchants::colossus( special_effect_t& effect )
 
   absorb_buff_t* buff =
       absorb_buff_creator_t( effect.item -> player,
-                             tokenized_name( spell ) + suffix( effect.item ) )
-      .spell( spell )
+                             tokenized_name( spell ) + suffix( effect.item ),
+                             spell )
       .source( effect.item -> player -> get_stats( tokenized_name( spell ) + suffix( effect.item ) ) )
       .activated( false );
 
@@ -2782,10 +2782,10 @@ void item::felmouth_frenzy( special_effect_t& effect )
   cb -> initialize();
 }
 
-struct fel_burn_t : public debuff_t
+struct fel_burn_t : public buff_t
 {
   fel_burn_t( const actor_pair_t& p, const special_effect_t& source_effect ) :
-    debuff_t( buff_creator_t( p, "fel_burn", p.source -> find_spell( 184256 ), source_effect.item )
+    buff_t( buff_creator_t( p, "fel_burn", p.source -> find_spell( 184256 ), source_effect.item )
     .refresh_behavior( BUFF_REFRESH_DISABLED )
     // Add a millisecond of duration to the debuff so we ensure that the last tick (at 15 seconds)
     // will always have the correct number of stacks.
@@ -3072,14 +3072,14 @@ struct mark_of_doom_damage_driver_t : public dbc_proc_callback_t
 
 // Specialized Mark of Doom debuff, enables/disables mark_of_doom_driver_t (above) when the debuff
 // goes up/down.
-struct mark_of_doom_t : public debuff_t
+struct mark_of_doom_t : public buff_t
 {
   mark_of_doom_damage_driver_t* driver_cb;
   action_t* damage_spell;
   special_effect_t* effect;
 
   mark_of_doom_t( const actor_pair_t& p, const special_effect_t& source_effect ) :
-    debuff_t( buff_creator_t( p, "mark_of_doom", source_effect.driver() -> effectN( 1 ).trigger(), source_effect.item ).activated( false ) ),
+    buff_t( buff_creator_t( p, "mark_of_doom", source_effect.driver() -> effectN( 1 ).trigger(), source_effect.item ).activated( false ) ),
     damage_spell( p.source -> find_action( "doom_nova" ) )
   {
     // Special effect to drive the AOE damage callback
@@ -3097,21 +3097,21 @@ struct mark_of_doom_t : public debuff_t
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
-    debuff_t::expire_override( expiration_stacks, remaining_duration );
+    buff_t::expire_override( expiration_stacks, remaining_duration );
 
     driver_cb -> deactivate();
   }
 
   void execute( int stacks, double value, timespan_t duration ) override
   {
-    debuff_t::execute( stacks, value, duration );
+    buff_t::execute( stacks, value, duration );
 
     driver_cb -> activate();
   }
 
   void reset() override
   {
-    debuff_t::reset();
+    buff_t::reset();
 
     driver_cb -> deactivate();
   }
@@ -3576,8 +3576,8 @@ void item::warlords_unseeing_eye( special_effect_t& effect )
   // Store the magic mitigation number in a player-scope variable.
   effect.player -> warlords_unseeing_eye = effect.driver() -> effectN( 2 ).average( effect.item ) / 10000.0;
   // Register our handler function so it can be managed by player_t::account_absorb_buffs()
-  effect.player -> instant_absorb_list.emplace( effect.driver() -> id(),
-      instant_absorb_t( effect.player, effect.driver(), "warlords_unseeing_eye", &warlords_unseeing_eye_handler ) );
+  effect.player -> instant_absorb_list.insert( std::make_pair<unsigned, instant_absorb_t>( effect.driver() -> id(),
+      instant_absorb_t( effect.player, effect.driver(), "warlords_unseeing_eye", &warlords_unseeing_eye_handler ) ));
   // Push the effect into the priority list. 
   effect.player -> absorb_priority.push_back( 184762 );
 }
@@ -4013,6 +4013,11 @@ const item_data_t* unique_gear::find_consumable( const dbc_t& dbc,
                                                  const std::string& name,
                                                  item_subclass_consumable type )
 {
+  if ( name.empty() )
+  {
+    return nullptr;
+  }
+
   // Poor man's longest matching prefix!
   const item_data_t* item = dbc::find_consumable( type, dbc.ptr, [&name]( const item_data_t* i ) {
     std::string n = i -> name;

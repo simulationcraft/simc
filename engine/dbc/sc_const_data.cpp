@@ -89,11 +89,11 @@ std::vector< std::vector< const spell_data_t* > > ptr_class_family_index;
 
 int dbc::build_level( bool ptr )
 {
-  return maybe_ptr( ptr ) ? 23578 : 23360;
+  return maybe_ptr( ptr ) ? 23826 : 23826;
 }
 
 const char* dbc::wow_version( bool ptr )
-{ return maybe_ptr( ptr ) ? "7.2.0" : "7.1.5"; }
+{ return maybe_ptr( ptr ) ? "7.2.0" : "7.2.0"; }
 
 const char* dbc::wow_ptr_status( bool ptr )
 #if SC_BETA
@@ -795,7 +795,8 @@ double dbc_t::combat_rating_multiplier( unsigned item_level, combat_rating_multi
   assert( item_level > 0 && item_level <= MAX_ILEVEL );
   assert( type < CR_MULTIPLIER_MAX );
 #if SC_USE_PTR
-  return _ptr__combat_ratings_mult_by_ilvl[ type ][ item_level - 1 ];
+  return ptr ? _ptr__combat_ratings_mult_by_ilvl[ type ][ item_level - 1 ]
+             : __combat_ratings_mult_by_ilvl[type][ item_level - 1 ];
 #else
   return __combat_ratings_mult_by_ilvl[type][ item_level - 1 ];
 #endif
@@ -1416,15 +1417,10 @@ double spelleffect_data_t::average( const player_t* p, unsigned level ) const
 
 double spelleffect_data_t::average( const item_t* item ) const
 {
-  double m_scale = 0;
-
   if ( ! item )
     return 0;
 
-  if ( _m_avg != 0 && _spell -> scaling_class() != 0 )
-    m_scale = item_database::item_budget( item, _spell -> max_scaling_level() );
-
-  return scaled_average( m_scale, item -> item_level() );
+  return _m_avg * item_database::item_budget( item, _spell -> max_scaling_level() );
 }
 
 double dbc_t::item_socket_cost( unsigned ilevel ) const
@@ -1481,7 +1477,7 @@ double spelleffect_data_t::delta( const item_t* item ) const
   if ( ! item )
     return 0;
 
-  if ( _m_delta != 0 && _spell -> scaling_class() != 0 )
+  if ( _m_delta != 0 )
     m_scale = item_database::item_budget( item, _spell -> max_scaling_level() );
 
   return scaled_delta( m_scale );
@@ -1558,8 +1554,6 @@ double spelleffect_data_t::min( const player_t* p, unsigned level ) const
 
 double spelleffect_data_t::min( const item_t* item ) const
 {
-  assert( _spell -> scaling_class() == 0 || _spell -> scaling_class() == -1 );
-
   return scaled_min( average( item ), delta( item ) );
 }
 
@@ -1572,8 +1566,6 @@ double spelleffect_data_t::max( const player_t* p, unsigned level ) const
 
 double spelleffect_data_t::max( const item_t* item ) const
 {
-  assert( _spell -> scaling_class() == 0 || _spell -> scaling_class() == -1 );
-
   return scaled_max( average( item ), delta( item ) );
 }
 

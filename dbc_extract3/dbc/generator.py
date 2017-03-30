@@ -1242,7 +1242,7 @@ class SpellDataGenerator(DataGenerator):
          191124, 191146,
          214802, 214803,            # Momento of Angerboda trinket
          215476,                    # Obelisk of the Void trinket
-         215695,                    # Figurehead of the Naglfar trinket 
+         215695,                    # Figurehead of the Naglfar trinket
          215407,                    # Caged Horror trinket
          191545, 191548, 191549, 191550, 191551, 191552, 191553, 191554, # Darkmoon Deck: Dominion
          191603, 191604, 191605, 191606, 191607, 191608, 191609, 191610, # Darkmoon Deck: Hellfire
@@ -1265,7 +1265,9 @@ class SpellDataGenerator(DataGenerator):
          # 7.1.5 de-links Mark of the Hidden Satyr damage spell fully from the driver
          191259,
          # 7.1.5 Entwined Elemental Foci buffs
-         225729, 225730
+         225729, 225730,
+         # 7.2.0 Dreadstone of Endless Shadows stat buffs
+         225752, 225753,
         ),
 
         # Warrior:
@@ -1303,7 +1305,10 @@ class SpellDataGenerator(DataGenerator):
             ( 180290, 0 ),          # ashen strike (speculative)
             ( 221883, 0 ),          # Divine Steed
             ( 228288, 0, True ),
-			( 205729, 0 ),
+            ( 205729, 0 ),
+            ( 238996, 0 ),          # Righteous Verdict
+            ( 242981, 0 ),          # Blessing of the Ashbringer
+            ( 211561, 0 ),          # Justice Gaze
         ),
 
         # Hunter:
@@ -1493,6 +1498,8 @@ class SpellDataGenerator(DataGenerator):
 		  ( 233498, 0 ),
 		  ( 233499, 0 ),
           ( 213229, 0 ),
+          ( 243050, 0 ),        # Fire Rift
+          ( 242922, 0 ),        # Jaws of Shadow
         ),
 
         # Monk:
@@ -1520,6 +1527,7 @@ class SpellDataGenerator(DataGenerator):
           ( 195651, 3 ), # Crosswinds Artifact trait trigger spell
           ( 196061, 3 ), # Crosswinds Artifact trait damage spell
           ( 240672, 3 ), # Master of Combinations Artifact trait buff
+          ( 242387, 3 ), # Thunderfist Artifact trait buff
           ( 211432, 3 ), # Tier 19 4-piece DPS Buff
           # Legendary
           ( 213114, 3 ), # Hidden Master's Forbidden Touch buff
@@ -1555,7 +1563,7 @@ class SpellDataGenerator(DataGenerator):
           ( 210649, 2 ),       # Feral Instinct (Fangs of Ashamane artifact trait)
           ( 211140, 2 ),       # Feral tier19_2pc
           ( 211142, 2 ),       # Feral tier19_4pc
-          ( 213557, 2 ),       # Protection of Ashamane ICD (Fangs of Ashamane artifact trait) 
+          ( 213557, 2 ),       # Protection of Ashamane ICD (Fangs of Ashamane artifact trait)
           ( 211547, 1 ),       # Fury of Elune move spell
           ( 213771, 3 ),       # Swipe (Bear)
           ( 209406, 1 ),       # Oneth's Intuition buff
