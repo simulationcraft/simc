@@ -285,6 +285,7 @@ struct rogue_t : public player_t
     cooldown_t* adrenaline_rush;
     cooldown_t* garrote;
     cooldown_t* kingsbane;
+    cooldown_t* sinister_circulation;
     cooldown_t* killing_spree;
     cooldown_t* shadow_dance;
     cooldown_t* sprint;
@@ -629,25 +630,26 @@ struct rogue_t : public player_t
     ssw_refund_offset(0)
   {
     // Cooldowns
-    cooldowns.adrenaline_rush     = get_cooldown( "adrenaline_rush"     );
-    cooldowns.garrote             = get_cooldown( "garrote"             );
-    cooldowns.kingsbane           = get_cooldown( "kingsbane"           );
-    cooldowns.killing_spree       = get_cooldown( "killing_spree"       );
-    cooldowns.shadow_dance        = get_cooldown( "shadow_dance"        );
-    cooldowns.sprint              = get_cooldown( "sprint"              );
-    cooldowns.vanish              = get_cooldown( "vanish"              );
-    cooldowns.between_the_eyes    = get_cooldown( "between_the_eyes"    );
-    cooldowns.blind               = get_cooldown( "blind"               );
-    cooldowns.gouge               = get_cooldown( "gouge"               );
-    cooldowns.cannonball_barrage  = get_cooldown( "cannon_ball_barrage" );
-    cooldowns.cloak_of_shadows    = get_cooldown( "cloak_of_shadows"    );
-    cooldowns.death_from_above    = get_cooldown( "death_from_above"    );
-    cooldowns.grappling_hook      = get_cooldown( "grappling_hook"      );
-    cooldowns.marked_for_death    = get_cooldown( "marked_for_death"    );
-    cooldowns.riposte             = get_cooldown( "riposte"             );
-    cooldowns.weaponmaster        = get_cooldown( "weaponmaster"        );
-    cooldowns.vendetta            = get_cooldown( "vendetta"            );
-    cooldowns.shadow_nova         = get_cooldown( "shadow_nova"         );
+    cooldowns.adrenaline_rush      = get_cooldown( "adrenaline_rush"      );
+    cooldowns.garrote              = get_cooldown( "garrote"              );
+    cooldowns.kingsbane            = get_cooldown( "kingsbane"            );
+    cooldowns.sinister_circulation = get_cooldown( "sinister_circulation" );
+    cooldowns.killing_spree        = get_cooldown( "killing_spree"        );
+    cooldowns.shadow_dance         = get_cooldown( "shadow_dance"         );
+    cooldowns.sprint               = get_cooldown( "sprint"               );
+    cooldowns.vanish               = get_cooldown( "vanish"               );
+    cooldowns.between_the_eyes     = get_cooldown( "between_the_eyes"     );
+    cooldowns.blind                = get_cooldown( "blind"                );
+    cooldowns.gouge                = get_cooldown( "gouge"                );
+    cooldowns.cannonball_barrage   = get_cooldown( "cannon_ball_barrage"  );
+    cooldowns.cloak_of_shadows     = get_cooldown( "cloak_of_shadows"     );
+    cooldowns.death_from_above     = get_cooldown( "death_from_above"     );
+    cooldowns.grappling_hook       = get_cooldown( "grappling_hook"       );
+    cooldowns.marked_for_death     = get_cooldown( "marked_for_death"     );
+    cooldowns.riposte              = get_cooldown( "riposte"              );
+    cooldowns.weaponmaster         = get_cooldown( "weaponmaster"         );
+    cooldowns.vendetta             = get_cooldown( "vendetta"             );
+    cooldowns.shadow_nova          = get_cooldown( "shadow_nova"          );
 
     regen_type = REGEN_DYNAMIC;
     regen_caches[CACHE_HASTE] = true;
@@ -715,6 +717,7 @@ struct rogue_t : public player_t
   void trigger_weaponmaster( const action_state_t* );
   void trigger_energetic_stabbing( const action_state_t* );
   void trigger_second_shuriken( const action_state_t* );
+  void trigger_sinister_circulation( const action_state_t* );
   void trigger_surge_of_toxins( const action_state_t* );
   void trigger_poison_knives( const action_state_t* );
   void trigger_true_bearing( const action_state_t* );
@@ -2226,10 +2229,7 @@ void rogue_attack_t::impact( action_state_t* state )
     {
       p() -> active_lethal_poison -> trigger( state );
 
-      if ( p() -> artifact.sinister_circulation.rank() )
-      {
-        p() -> cooldowns.kingsbane -> adjust( - timespan_t::from_seconds( p() -> artifact.sinister_circulation.percent() ), false );
-      }
+      p() -> trigger_sinister_circulation( state );
     }
 
     if ( procs_poison() && p() -> active_nonlethal_poison )
@@ -5561,6 +5561,23 @@ void rogue_t::trigger_second_shuriken( const action_state_t* state )
   {
     second_shuriken -> execute();
   }
+}
+
+void rogue_t::trigger_sinister_circulation( const action_state_t* s )
+{
+  if ( ! artifact.sinister_circulation.rank() )
+  {
+    return;
+  }
+
+  if ( cooldowns.sinister_circulation -> down() )
+  {
+    return;
+  }
+
+  cooldowns.kingsbane -> adjust( - timespan_t::from_seconds( artifact.sinister_circulation.percent() ), false );
+  // FIXME Hotfix 03-30-2017: Sinister Circulation got a 0.5s ICD
+  cooldowns.sinister_circulation -> start( timespan_t::from_seconds( 0.5 ) );
 }
 
 void rogue_t::trigger_surge_of_toxins( const action_state_t* s )
