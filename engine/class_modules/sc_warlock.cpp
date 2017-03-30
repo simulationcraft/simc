@@ -5627,6 +5627,7 @@ struct cry_havoc_t : public warlock_spell_t
     background = true;
     //proc = true;
     callbacks = true;
+    aoe = -1;
   }
 };
 
