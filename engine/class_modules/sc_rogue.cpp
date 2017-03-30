@@ -6677,15 +6677,11 @@ void rogue_t::init_action_list()
   {
     std::string food_action = "food,name=";
     if ( specialization() == ROGUE_ASSASSINATION )
-    {
-      food_action += ( ( level() >= 110 ) ? "nightborne_delicacy_platter,if=!talent.exsanguinate.enabled" : ( level() >= 100 ) ? "jumbo_sea_dog" : ( level() >= 90 ) ? "sea_mist_rice_noodles" : ( level() >= 85 ) ? "seafood_magnifique_feast" : "" );
-      if ( level() >= 110 )
-        precombat -> add_action( "food,name=seedbattered_fish_plate,if=talent.exsanguinate.enabled" );
-    }
+      food_action += ( ( level() >= 110 ) ? "lavish_suramar_feast" : ( level() >= 100 ) ? "jumbo_sea_dog" : ( level() >= 90 ) ? "sea_mist_rice_noodles" : ( level() >= 85 ) ? "seafood_magnifique_feast" : "" );
     else if ( specialization() == ROGUE_OUTLAW )
-      food_action += ( ( level() >= 110 ) ? "seedbattered_fish_plate" : ( level() >= 100 ) ? "jumbo_sea_dog" : ( level() >= 90 ) ? "sea_mist_rice_noodles" : ( level() >= 85 ) ? "seafood_magnifique_feast" : "" );
+      food_action += ( ( level() >= 110 ) ? "lavish_suramar_feast" : ( level() >= 100 ) ? "jumbo_sea_dog" : ( level() >= 90 ) ? "sea_mist_rice_noodles" : ( level() >= 85 ) ? "seafood_magnifique_feast" : "" );
     else if ( specialization() == ROGUE_SUBTLETY )
-      food_action += ( ( level() >= 110 ) ? "nightborne_delicacy_platter" : ( level() >= 100 ) ? "jumbo_sea_dog" : ( level() >= 90 ) ? "sea_mist_rice_noodles" : ( level() >= 85 ) ? "seafood_magnifique_feast" : "" );
+      food_action += ( ( level() >= 110 ) ? "lavish_suramar_feast" : ( level() >= 100 ) ? "jumbo_sea_dog" : ( level() >= 90 ) ? "sea_mist_rice_noodles" : ( level() >= 85 ) ? "seafood_magnifique_feast" : "" );
 
     precombat -> add_action( food_action );
   }
