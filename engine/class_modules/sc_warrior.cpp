@@ -5114,7 +5114,7 @@ void warrior_t::apl_fury()
     }
     else if ( items[i].name_str != "draught_of_souls" && items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
     {
-      if ( items[i].name_str != "nitro_boosts" )
+      if ( items[i].slot != SLOT_WAIST )
         default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=buff.battle_cry.up&buff.enrage.up" );
     }
   }
@@ -5270,7 +5270,7 @@ void warrior_t::apl_arms()
     }
     else if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
     {
-      if ( items[i].name_str != "nitro_boosts" )
+      if ( items[i].slot != SLOT_WAIST )
         default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=buff.avatar.up&debuff.colossus_smash.up&buff.battle_cry.up" );
     }
   }
@@ -5360,7 +5360,8 @@ void warrior_t::apl_prot()
   {
     if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
     {
-      default_list -> add_action( "use_item,name=" + items[i].name_str );
+      if ( items[i].slot != SLOT_WAIST )
+        default_list -> add_action( "use_item,name=" + items[i].name_str );
     }
   }
 

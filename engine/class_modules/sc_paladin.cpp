@@ -4888,7 +4888,8 @@ void paladin_t::generate_action_prio_list_ret()
         item_str = "use_item,name=" + items[i].name_str + ",if=!raid_event.adds.exists|raid_event.adds.in>75";
         def -> add_action( item_str );
       }
-      else {
+      else if ( items[i].slot != SLOT_WAIST )
+      {
         item_str = "use_item,name=" + items[i].name_str + ",if=(buff.avenging_wrath.up|buff.crusade.up)";
         def -> add_action( item_str );
       }
