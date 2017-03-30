@@ -4978,23 +4978,12 @@ expr_t* actions::rogue_attack_t::create_expression( const std::string& name_str 
   {
     return make_mem_fn_expr( "cp_gain", *this, &rogue_attack_t::generate_cp );
   }
-  // Garrote and Rupture and  APL lines using "exsanguinated"
+  // Garrote and Rupture and APL lines using "exsanguinated"
   // TODO: Add Internal Bleeding (not the same id as Kidney Shot)
   else if ( util::str_compare_ci( name_str, "exsanguinated" ) &&
             ( data().id() == 703 || data().id() == 1943 ) )
   {
     return new exsanguinated_expr_t( this );
-  }
-  else if ( util::str_compare_ci( name_str, "bleeds" ) )
-  {
-    return make_fn_expr( name_str, [ this ]() {
-      rogue_td_t* tdata = td( target );
-      return tdata -> dots.garrote -> is_ticking() +
-             tdata -> dots.internal_bleeding -> is_ticking() +
-             tdata -> dots.rupture -> is_ticking();
-             // As of 01/01/2017 mutilated_flesh bleed isn't really considered as a bleed.
-             //+ tdata -> dots.mutilated_flesh -> is_ticking();
-    } );
   }
   else if ( util::str_compare_ci( name_str, "dot.nightblade.finality" ) )
   {
@@ -7017,8 +7006,6 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
 
   if ( name_str == "combo_points" )
     return make_ref_expr( name_str, resources.current[ RESOURCE_COMBO_POINT ] );
-  else if ( util::str_compare_ci( name_str, "poisoned_enemies" ) )
-    return make_ref_expr( name_str, poisoned_enemies );
   else if ( util::str_compare_ci( name_str, "cp_max_spend" ) )
   {
     if ( ! dynamic_cast<actions::rogue_attack_t*>( a ) )
@@ -7030,6 +7017,37 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
       return make_mem_fn_expr( name_str, *this, &rogue_t::consume_cp_max );
     }
   }
+  else if ( util::str_compare_ci(name_str, "mantle_duration") )
+  {
+    return make_fn_expr( name_str, [ this ]() {
+      if ( buffs.mantle_of_the_master_assassin_aura -> check() )
+      {
+        timespan_t nominal_master_assassin_duration = timespan_t::from_seconds( spell.master_assassins_initiative -> effectN( 1 ).base_value() );
+        timespan_t gcd_remains = timespan_t::from_seconds( std::max( ( gcd_ready - sim -> current_time() ).total_seconds(), 0.0 ) );
+        if ( buffs.vanish -> check() )
+          return std::min( buffs.vanish -> remains(), gcd_remains ) + nominal_master_assassin_duration;
+        else
+          return gcd_remains + nominal_master_assassin_duration;
+      }
+      else if ( buffs.mantle_of_the_master_assassin -> check() )
+        return buffs.mantle_of_the_master_assassin -> remains();
+      else
+        return timespan_t::from_seconds( 0.0 );
+    } );
+  }
+  else if ( util::str_compare_ci( name_str, "bleeds" ) )
+  {
+    return make_fn_expr( name_str, [ this ]() {
+      rogue_td_t* tdata = get_target_data( target );
+      return tdata -> dots.garrote -> is_ticking() +
+             tdata -> dots.internal_bleeding -> is_ticking() +
+             tdata -> dots.rupture -> is_ticking();
+             // As of 01/01/2017 mutilated_flesh bleed isn't really considered as a bleed.
+             //+ tdata -> dots.mutilated_flesh -> is_ticking();
+    } );
+  }
+  else if ( util::str_compare_ci( name_str, "poisoned_enemies" ) )
+    return make_ref_expr( name_str, poisoned_enemies );
   else if ( util::str_compare_ci( name_str, "rtb_buffs" ) )
   {
     if ( specialization() != ROGUE_OUTLAW || talent.slice_and_dice -> ok() )
@@ -7052,24 +7070,7 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
   {
     return make_ref_expr(name_str, ssw_refund_offset);
   }
-  else if ( util::str_compare_ci(name_str, "mantle_duration") )
-  {
-    return make_fn_expr( name_str, [ this ]() {
-      if ( buffs.mantle_of_the_master_assassin_aura -> check() )
-      {
-        timespan_t nominal_master_assassin_duration = timespan_t::from_seconds( spell.master_assassins_initiative -> effectN( 1 ).base_value() );
-        timespan_t gcd_remains = timespan_t::from_seconds( std::max( ( gcd_ready - sim -> current_time() ).total_seconds(), 0.0 ) );
-        if ( buffs.vanish -> check() )
-          return std::min( buffs.vanish -> remains(), gcd_remains ) + nominal_master_assassin_duration;
-        else
-          return gcd_remains + nominal_master_assassin_duration;
-      }
-      else if ( buffs.mantle_of_the_master_assassin -> check() )
-        return buffs.mantle_of_the_master_assassin -> remains();
-      else
-        return timespan_t::from_seconds( 0.0 );
-    } );
-  }
+
 
   // Split expressions
 
