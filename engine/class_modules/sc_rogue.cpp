@@ -6373,7 +6373,13 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
     .refresh_behavior( BUFF_REFRESH_PANDEMIC );
   debuffs.kingsbane = buff_creator_t( *this, "kingsbane", source -> artifact.kingsbane.data().effectN( 5 ).trigger() )
     .default_value( source -> artifact.kingsbane.data().effectN( 5 ).trigger() -> effectN( 1 ).percent() )
-    .refresh_behavior( BUFF_REFRESH_DISABLED );
+    // Note: This one is probably a bug, but it has been highlighted by Sinister Circulation trait
+    // released in 7.2 patch: (quoting myself)
+    // If the effective CD of KB is < 34s (a bit less, see below) and you cast KB on CD, you can infinite stack the dmg increase.
+    // Current guess is that the duration is refreshed on each apply, so if your latest poison application is right before the expiration,
+    // you still get for 20s (20s-time_since_last_poison_application_before_kb_end in fact) the buff. So if you recast KB in the next 20s,
+    // it continues to stack up to at least 99stacks.
+    .refresh_behavior( BUFF_REFRESH_DURATION );
   const spell_data_t* sot_debuff = source -> find_spell( 192425 );
   debuffs.surge_of_toxins = buff_creator_t( *this, "surge_of_toxins", sot_debuff )
     .default_value( sot_debuff -> effectN( 1 ).base_value() * 0.002 )
