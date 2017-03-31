@@ -5259,11 +5259,6 @@ public:
 
   bool hit_any_target;
 
-  /// The ability must invalidate it's target cache on enemy state changes (i.e., arise / demise).
-  /// Must be explicitly set on abilities that dynamically change from single target to aoe, or
-  /// certain custom single target abilities (such as ignite).
-  bool invalidate_target_cache;
-
   /**
    * @brief Behavior of dot.
    *

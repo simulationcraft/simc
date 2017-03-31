@@ -5347,8 +5347,6 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
     //
     // TODO: Changed in 7.1.5, new probability distribution unknown/untested
     instructors_chance = { { .3, .4, .2, .1 } };
-
-    invalidate_target_cache = true; // Dynamically becomes AOE if you stand in Defile/DnD
   }
 
   int n_targets() const override

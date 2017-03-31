@@ -228,12 +228,9 @@ heal_t::heal_t( const std::string&  token,
 
 void heal_t::activate()
 {
-  if ( n_targets() != 0 || invalidate_target_cache )
-  {
-    sim -> player_non_sleeping_list.register_callback( [ this ]( player_t* ) {
-      target_cache.is_valid = false;
-    } );
-  }
+  sim -> player_non_sleeping_list.register_callback( [ this ]( player_t* ) {
+    target_cache.is_valid = false;
+  } );
 }
 
 // heal_t::parse_effect_data ================================================
@@ -624,12 +621,9 @@ absorb_t::absorb_t( const std::string&  token,
 
 void absorb_t::activate()
 {
-  if ( n_targets() != 0 || invalidate_target_cache )
-  {
-    sim -> player_non_sleeping_list.register_callback( [ this ]( player_t* ) {
-      target_cache.is_valid = false;
-    } );
-  }
+  sim -> player_non_sleeping_list.register_callback( [ this ]( player_t* ) {
+    target_cache.is_valid = false;
+  } );
 }
 
 // absorb_t::execute ========================================================

@@ -1659,8 +1659,6 @@ struct bloodthirst_t: public warrior_attack_t
     }
     base_aoe_multiplier = p -> spec.whirlwind -> effectN( 1 ).trigger() -> effectN( 3 ).percent();
     oathblood_chance = p -> artifact.oathblood.percent();
-
-    invalidate_target_cache = true; // Meat Cleaver buff makes Bloodthirst AOE
   }
 
   double action_multiplier() const override
@@ -3124,8 +3122,6 @@ struct rampage_attack_t: public warrior_attack_t
     base_aoe_multiplier = p -> spec.whirlwind -> effectN( 1 ).trigger() -> effectN( 3 ).percent();
     if ( p -> spec.rampage -> effectN( 3 ).trigger() == rampage )
       first_attack = true;
-
-    invalidate_target_cache = true; // Meat Cleaver buff makes Rampage AOE
   }
 
   void execute() override
