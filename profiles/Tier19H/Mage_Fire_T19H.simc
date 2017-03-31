@@ -10,7 +10,7 @@ spec=fire
 # Default consumables
 potion=deadly_grace
 flask=whispered_pact
-food=the_hungry_magister
+food=lavish_suramar_feast
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,

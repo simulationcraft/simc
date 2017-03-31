@@ -10,7 +10,7 @@ spec=frost
 # Default consumables
 potion=prolonged_power
 flask=whispered_pact
-food=azshari_salad
+food=lavish_suramar_feast
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
