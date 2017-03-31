@@ -8600,18 +8600,13 @@ std::string mage_t::default_flask() const
 
 std::string mage_t::default_food() const
 {
-  std::string lvl110_food =
-    ( specialization() == MAGE_ARCANE ) ? "the_hungry_magister" :
-    ( specialization() == MAGE_FIRE )   ? "the_hungry_magister" :
-                                          "azshari_salad";
-
   std::string lvl100_food =
     ( specialization() == MAGE_ARCANE ) ?
       ( sets.has_set_bonus( MAGE_ARCANE, T18, B4 ) ? "buttered_sturgeon" : "sleeper_sushi" ) :
     ( specialization() == MAGE_FIRE )   ? "pickled_eel" :
                                           "salty_squid_roll";
 
-  return ( true_level > 100 ) ? lvl110_food :
+  return ( true_level > 100 ) ? "lavish_suramar_feast" :
          ( true_level >  90 ) ? lvl100_food :
          ( true_level >= 90 ) ? "mogu_fish_stew" :
          ( true_level >= 80 ) ? "seafood_magnifique_feast" :
