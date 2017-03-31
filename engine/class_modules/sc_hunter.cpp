@@ -2296,6 +2296,7 @@ struct talon_slash_t : public hunter_main_pet_attack_t
   {
     background = true;
     attack_power_mod.direct = 1.0 / 3.0; // data hardcoded in a tooltip
+    base_multiplier *= 1.0 + p -> specs.spiked_collar -> effectN( 1 ).percent();
     // XXX: this is going to be hard to test... be on the safe side for now
     can_hunting_companion = false;
   }
