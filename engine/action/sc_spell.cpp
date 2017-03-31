@@ -5,22 +5,6 @@
 
 #include "simulationcraft.hpp"
 
-namespace {
-
-struct aoe_player_list_callback_t
-{
-  action_t* action;
-  aoe_player_list_callback_t( action_t* a ) : action( a ) {}
-
-  void operator()(player_t*)
-  {
-    // Invalidate target cache
-    action -> target_cache.is_valid = false;
-  }
-};
-
-} // unnamed namespace
-
 // ==========================================================================
 // Spell Base
 // ==========================================================================
@@ -242,10 +226,14 @@ heal_t::heal_t( const std::string&  token,
   }
 }
 
-void heal_t::init_target_cache()
+void heal_t::activate()
 {
-  if ( aoe )
-    sim -> player_non_sleeping_list.register_callback( aoe_player_list_callback_t( this ) );
+  if ( n_targets() != 0 || dynamic_aoe )
+  {
+    sim -> player_non_sleeping_list.register_callback( [ this ]( player_t* ) {
+      target_cache.is_valid = false;
+    } );
+  }
 }
 
 // heal_t::parse_effect_data ================================================
@@ -634,10 +622,14 @@ absorb_t::absorb_t( const std::string&  token,
   stats -> type = STATS_ABSORB;
 }
 
-void absorb_t::init_target_cache()
+void absorb_t::activate()
 {
-  if ( aoe )
-    sim -> player_non_sleeping_list.register_callback( aoe_player_list_callback_t( this ) );
+  if ( n_targets() != 0 || dynamic_aoe )
+  {
+    sim -> player_non_sleeping_list.register_callback( [ this ]( player_t* ) {
+      target_cache.is_valid = false;
+    } );
+  }
 }
 
 // absorb_t::execute ========================================================

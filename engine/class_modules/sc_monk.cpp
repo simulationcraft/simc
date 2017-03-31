@@ -794,6 +794,7 @@ public:
   virtual void      assess_heal( school_e, dmg_e, action_state_t* s) override;
   virtual void      invalidate_cache( cache_e ) override;
   virtual void      init_action_list() override;
+  void              activate() override;
   virtual bool      has_t18_class_trinket() const override;
   virtual expr_t*   create_expression( action_t* a, const std::string& name_str ) override;
   virtual monk_td_t* get_target_data( player_t* target ) const override
@@ -7710,12 +7711,22 @@ void monk_t::create_pets()
 
   if ( specialization() == MONK_WINDWALKER && find_action( "storm_earth_and_fire" ) )
   {
-    sim -> target_non_sleeping_list.register_callback( actions::sef_despawn_cb_t( this ) );
-
     pet.sef[ SEF_FIRE ] = new pets::storm_earth_and_fire_pet_t( "fire_spirit", sim, this, true );
     // The player BECOMES the Storm Spirit
     // SEF EARTH was changed from 2-handed user to dual welding in Legion
     pet.sef[ SEF_EARTH ] = new pets::storm_earth_and_fire_pet_t( "earth_spirit", sim, this, true );
+  }
+}
+
+// monk_t::activate =========================================================
+
+void monk_t::activate()
+{
+  player_t::activate();
+
+  if ( specialization() == MONK_WINDWALKER && find_action( "storm_earth_and_fire" ) )
+  {
+    sim -> target_non_sleeping_list.register_callback( actions::sef_despawn_cb_t( this ) );
   }
 }
 

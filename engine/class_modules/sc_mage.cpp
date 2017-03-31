@@ -630,6 +630,7 @@ public:
   virtual void      arise() override;
   virtual action_t* select_action( const action_priority_list_t& ) override;
   virtual void      copy_from( player_t* ) override;
+  void              activate() override;
 
   target_specific_t<mage_td_t> target_data;
 
@@ -8337,6 +8338,35 @@ void mage_t::init_benefits()
   }
 }
 
+// mage_t::activate ===========================================================
+
+void mage_t::activate()
+{
+  player_t::activate();
+
+  // Register target reset callback here (anywhere later on than in
+  // constructor) so older GCCs are happy
+  // Forcibly reset mage's current target, if it dies.
+  sim -> target_non_sleeping_list.register_callback( [ this ]( player_t* ) {
+
+    // If the mage's current target is still alive, bail out early.
+    if ( range::find( sim->target_non_sleeping_list, current_target ) !=
+         sim -> target_non_sleeping_list.end() )
+    {
+      return;
+    }
+
+    if ( sim -> debug )
+    {
+      sim->out_debug.printf(
+          "%s current target %s died. Resetting target to %s.", name(),
+          current_target -> name(), target -> name() );
+    }
+
+    current_target = target;
+  } );
+}
+
 // mage_t::init_stats =========================================================
 
 void mage_t::init_stats()
@@ -8346,28 +8376,6 @@ void mage_t::init_stats()
   // Cache Icy Veins haste multiplier for performance reasons
   double haste = buffs.icy_veins -> data().effectN( 1 ).percent();
   iv_haste = 1.0 / ( 1.0 + haste );
-
-  // Register target reset callback here (anywhere later on than in
-  // constructor) so older GCCs are happy
-  // Forcibly reset mage's current target, if it dies.
-  sim->target_non_sleeping_list.register_callback( [this]( player_t* ) {
-
-    // If the mage's current target is still alive, bail out early.
-    if ( range::find( sim->target_non_sleeping_list, current_target ) !=
-         sim->target_non_sleeping_list.end() )
-    {
-      return;
-    }
-
-    if ( sim->debug )
-    {
-      sim->out_debug.printf(
-          "%s current target %s died. Resetting target to %s.", name(),
-          current_target->name(), target->name() );
-    }
-
-    current_target = target;
-  } );
 }
 
 

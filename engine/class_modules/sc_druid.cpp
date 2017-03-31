@@ -739,10 +739,10 @@ public:
     starshards( 0.0 ),
     predator_rppm_rate( 0.0 ),
     initial_astral_power( 0 ),
-    t20_2pc(false),
-    t20_4pc(false),
     initial_moon_stage( NEW_MOON ),
     ahhhhh_the_great_outdoors( true ),
+    t20_2pc(false),
+    t20_4pc(false),
     active( active_actions_t() ),
     pet_fey_moonwing(),
     force_of_nature(),
@@ -3308,6 +3308,17 @@ struct maim_t : public cat_attack_t
     weapon_multiplier = data().effectN( 3 ).pp_combo_points() / 100.0;
   }
 
+  void init() override
+  {
+    cat_attack_t::init();
+
+    // Fiery Red Maimers legendary allows maim to dynamically change the number of targets. Note,
+    // needs to be done in action_t::init override, since special effects (including the fallback
+    // buff) are initialized after create_actions() (which is the method that calls maim_t
+    // constructor if the user has a Maim action in the APL).
+    dynamic_aoe = p() -> buff.fiery_red_maimers -> default_chance != 0;
+  }
+
   int n_targets() const override
   {
     int n = cat_attack_t::n_targets();
@@ -3900,6 +3911,8 @@ struct mangle_t : public bear_attack_t
     }
 
     base_multiplier *= 1.0 + player -> artifact.vicious_bites.percent();
+
+    dynamic_aoe = true; // Incarnation increases number of targets dynamically
   }
 
   double composite_energize_amount( const action_state_t* s ) const override
@@ -4669,6 +4682,8 @@ struct wild_growth_t : public druid_heal_t
     druid_heal_t( "wild_growth", p, p -> find_class_spell( "Wild Growth" ), options_str )
   {
     ignore_false_positive = true;
+
+    dynamic_aoe = true; // Incarnation increases number of targets dynamically
   }
 
   int n_targets() const override

@@ -551,6 +551,7 @@ public:
   void invalidate_cache( cache_e ) override;
   resource_e primary_resource() const override;
   role_e primary_role() const override;
+  void activate() override;
 
   // custom demon_hunter_t init functions
 private:
@@ -5576,14 +5577,21 @@ bool demon_hunter_t::create_actions()
     annihilation_dmg = new damage_calc_helper_t( annihilation_attacks );
   }
 
+  return ca;
+}
+
+// demon_hunter_t::activate =================================================
+
+void demon_hunter_t::activate()
+{
+  player_t::activate();
+
   if ( blade_dance_dmg || death_sweep_dmg || chaos_strike_dmg ||
        annihilation_dmg )
   {
     sim -> target_non_sleeping_list.register_callback(
       damage_calc_invalidate_callback_t( this ) );
   }
-
-  return ca;
 }
 
 // demon_hunter_t::create_buffs =============================================

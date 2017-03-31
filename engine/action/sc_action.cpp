@@ -267,20 +267,6 @@ struct action_execute_event_t : public player_event_t
   }
 };
 
-struct aoe_target_list_callback_t
-{
-  action_t* action;
-
-  aoe_target_list_callback_t( action_t* a ) :
-    action( a ) {}
-
-  void operator()(player_t*)
-  {
-    // Invalidate target cache
-    action -> target_cache.is_valid = false;
-  }
-};
-
 struct power_entry_without_aura
 {
   bool operator()( const spellpower_data_t* p )
@@ -437,6 +423,7 @@ action_t::action_t( action_e       ty,
   dynamic_tick_action( true), // WoD updates everything on tick by default. If you need snapshotted values for a periodic effect, use persistent multipliers.
   interrupt_immediate_occurred(),
   hit_any_target(),
+  dynamic_aoe( false ),
   dot_behavior( DOT_REFRESH ),
   ability_lag(),
   ability_lag_stddev(),
@@ -2170,8 +2157,6 @@ void action_t::init()
     sim -> out_debug.printf( "%s - radius %.1f - range - %.1f", name(), radius, range );
 #endif
 
-  init_target_cache();
-
   consume_per_tick_ = range::find_if( base_costs_per_tick, []( const double& d ) { return d != 0; } ) != base_costs_per_tick.end();
 
   // Setup default target in init
@@ -2246,11 +2231,6 @@ bool action_t::init_finished()
   }
 
   return ret;
-}
-
-void action_t::init_target_cache()
-{
-  sim -> target_non_sleeping_list.register_callback( aoe_target_list_callback_t( this ) );
 }
 
 // action_t::reset ==========================================================
@@ -3659,5 +3639,18 @@ void action_t::acquire_target( retarget_event_e /* event */,
     }
     target = candidate_target;
     target_cache.is_valid = false;
+  }
+}
+
+void action_t::activate()
+{
+  // On AOE actions, enable target cache regeneration when state of the enemy targets change. Also
+  // explicitly enable the target cache invalidator if the ability is flagged as being dynamic aoe
+  // (changes the number of targets hit dynamically during combat)
+  if ( n_targets() != 0 || dynamic_aoe )
+  {
+    sim -> target_non_sleeping_list.register_callback( [ this ]( player_t* ) {
+      target_cache.is_valid = false;
+    } );
   }
 }
