@@ -41,14 +41,12 @@ actions.build+=/mutilate,if=energy.deficit<=25+variable.energy_targetbleed_regen
 
 # Cooldowns
 actions.cds=potion,name=old_war,if=buff.bloodlust.react|target.time_to_die<=25|debuff.vendetta.up&cooldown.vanish.remains<5
-actions.cds+=/use_item,name=draught_of_souls,if=energy.deficit>=35+variable.energy_targetbleed_regen*2&(!equipped.mantle_of_the_master_assassin|cooldown.vanish.remains>8)&(!talent.agonizing_poison.enabled|debuff.agonizing_poison.stack>=5&debuff.surge_of_toxins.remains>=3)
-actions.cds+=/use_item,name=draught_of_souls,if=mantle_duration>0&mantle_duration<3.5&debuff.kingsbane.up
 actions.cds+=/blood_fury,if=debuff.vendetta.up
 actions.cds+=/berserking,if=debuff.vendetta.up
 actions.cds+=/arcane_torrent,if=debuff.kingsbane.up&!buff.envenom.up&energy.deficit>=15+variable.energy_targetbleed_regen*gcd.remains*1.1
 actions.cds+=/marked_for_death,target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit*1.5|(raid_event.adds.in>40&combo_points.deficit>=cp_max_spend)
 actions.cds+=/vendetta,if=!artifact.urge_to_kill.enabled|energy.deficit>=60+variable.energy_targetbleed_regen
-actions.cds+=/vanish,if=talent.nightstalker.enabled&combo_points>=cp_max_spend&!talent.exsanguinate.enabled&(equipped.mantle_of_the_master_assassin&mantle_duration=0|dot.rupture.refreshable)
+actions.cds+=/vanish,if=talent.nightstalker.enabled&combo_points>=cp_max_spend&!talent.exsanguinate.enabled&(equipped.mantle_of_the_master_assassin&mantle_duration=0|!equipped.mantle_of_the_master_assassin&dot.rupture.refreshable)
 actions.cds+=/vanish,if=talent.nightstalker.enabled&combo_points>=cp_max_spend&talent.exsanguinate.enabled&cooldown.exsanguinate.remains<1&(dot.rupture.ticking|time>10)
 actions.cds+=/vanish,if=talent.subterfuge.enabled&equipped.mantle_of_the_master_assassin&(debuff.vendetta.up|target.time_to_die<10)&mantle_duration=0
 actions.cds+=/vanish,if=talent.subterfuge.enabled&!equipped.mantle_of_the_master_assassin&!stealthed.rogue&dot.garrote.refreshable&((spell_targets.fan_of_knives<=3&combo_points.deficit>=1+spell_targets.fan_of_knives)|(spell_targets.fan_of_knives>=4&combo_points.deficit>=4))
@@ -84,17 +82,17 @@ legs=doomblade_pants,id=138335,bonus_id=3519
 feet=grovetenders_moccasins,id=140861,bonus_id=3519
 finger1=spellblades_gemmed_signet,id=140895,bonus_id=3519,enchant=binding_of_mastery
 finger2=ring_of_exclusive_servitude,id=140906,bonus_id=3519,enchant=binding_of_mastery
-trinket1=draught_of_souls,id=140808,bonus_id=3519
-trinket2=nightblooming_frond,id=140802,bonus_id=3519
+trinket1=nightblooming_frond,id=140802,bonus_id=3519
+trinket2=convergence_of_fates,id=140806,bonus_id=3519
 main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=140822/140815/140819,relic_id=3519/3519/3519
 off_hand=the_kingslayers,id=128869
 
 # Gear Summary
 # gear_ilvl=912.88
-# gear_agility=21964
+# gear_agility=24228
 # gear_stamina=35283
 # gear_crit_rating=8749
-# gear_haste_rating=1935
+# gear_haste_rating=710
 # gear_mastery_rating=9729
 # gear_versatility_rating=4382
 # gear_armor=2471

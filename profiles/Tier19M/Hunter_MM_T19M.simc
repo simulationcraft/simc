@@ -7,6 +7,11 @@ talents=1303013
 artifact=55:0:0:0:0:307:1:308:1:309:1:310:1:311:1:312:3:313:3:314:3:315:3:316:3:317:3:318:3:319:3:320:3:321:1:322:1:1337:1
 spec=marksmanship
 
+# Default consumables
+potion=prolonged_power
+flask=seventh_demon
+food=lavish_suramar_feast
+
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
 # while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
@@ -14,14 +19,13 @@ spec=marksmanship
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
-actions.precombat=flask,type=flask_of_the_seventh_demon
-actions.precombat+=/food,type=nightborne_delicacy_platter
+actions.precombat=flask
+actions.precombat+=/augmentation,type=defiled
+actions.precombat+=/food
 actions.precombat+=/summon_pet
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion,name=prolonged_power,if=spell_targets.multi_shot>2
-actions.precombat+=/potion,name=deadly_grace
-actions.precombat+=/augmentation,type=defiled
+actions.precombat+=/potion
 actions.precombat+=/windburst
 
 # Executed every time the actor is available.
@@ -37,8 +41,7 @@ actions+=/call_action_list,name=non_patient_sniper,if=!talent.patient_sniper.ena
 actions.cooldowns=arcane_torrent,if=focus.deficit>=30&(!talent.sidewinders.enabled|cooldown.sidewinders.charges<2)
 actions.cooldowns+=/berserking,if=buff.trueshot.up
 actions.cooldowns+=/blood_fury,if=buff.trueshot.up
-actions.cooldowns+=/potion,name=prolonged_power,if=spell_targets.multishot>2&((buff.trueshot.react&buff.bloodlust.react)|buff.bullseye.react>=23|target.time_to_die<62)
-actions.cooldowns+=/potion,name=deadly_grace,if=(buff.trueshot.react&buff.bloodlust.react)|buff.bullseye.react>=23|target.time_to_die<31
+actions.cooldowns+=/potion,if=(buff.trueshot.react&buff.bloodlust.react)|buff.bullseye.react>=23|((consumable.prolonged_power&target.time_to_die<62)|target.time_to_die<31)
 actions.cooldowns+=/variable,name=trueshot_cooldown,op=set,value=time*1.1,if=time>15&cooldown.trueshot.up&variable.trueshot_cooldown=0
 actions.cooldowns+=/trueshot,if=variable.trueshot_cooldown=0|buff.bloodlust.up|(variable.trueshot_cooldown>0&target.time_to_die>(variable.trueshot_cooldown+duration))|buff.bullseye.react>25|target.time_to_die<16
 

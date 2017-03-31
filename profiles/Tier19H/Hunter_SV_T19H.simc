@@ -7,6 +7,11 @@ talents=3101031
 artifact=34:0:0:0:0:1068:1:1070:2:1072:3:1073:3:1074:3:1075:3:1076:3:1077:3:1079:1:1080:1:1082:1:1083:1:1084:1:1338:1
 spec=survival
 
+# Default consumables
+potion=prolonged_power
+flask=seventh_demon
+food=lavish_suramar_feast
+
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
 # while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
@@ -14,13 +19,13 @@ spec=survival
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
-actions.precombat=flask,type=flask_of_the_seventh_demon
-actions.precombat+=/food,type=azshari_salad
+actions.precombat=flask
+actions.precombat+=/augmentation,type=defiled
+actions.precombat+=/food
 actions.precombat+=/summon_pet
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion,name=prolonged_power
-actions.precombat+=/augmentation,type=defiled
+actions.precombat+=/potion
 actions.precombat+=/explosive_trap
 actions.precombat+=/steel_trap
 actions.precombat+=/dragonsfire_grenade
@@ -32,7 +37,7 @@ actions+=/use_item,name=tirathons_betrayal
 actions+=/arcane_torrent,if=focus.deficit>=30
 actions+=/berserking,if=(buff.spitting_cobra.up&buff.mongoose_fury.stack>2&buff.aspect_of_the_eagle.up)|(!talent.spitting_cobra.enabled&buff.aspect_of_the_eagle.up)
 actions+=/blood_fury,if=(buff.spitting_cobra.up&buff.mongoose_fury.stack>2&buff.aspect_of_the_eagle.up)|(!talent.spitting_cobra.enabled&buff.aspect_of_the_eagle.up)
-actions+=/potion,name=prolonged_power,if=(talent.spitting_cobra.enabled&buff.spitting_cobra.remains)|(!talent.spitting_cobra.enabled&buff.aspect_of_the_eagle.remains)
+actions+=/potion,if=(talent.spitting_cobra.enabled&buff.spitting_cobra.remains)|(!talent.spitting_cobra.enabled&buff.aspect_of_the_eagle.remains)
 actions+=/call_action_list,name=moknathal,if=talent.way_of_the_moknathal.enabled
 actions+=/call_action_list,name=nomok,if=!talent.way_of_the_moknathal.enabled
 
@@ -138,4 +143,4 @@ main_hand=talonclaw,id=128808,ilevel=894,gem_id=137550/137408/137350
 # gear_versatility_rating=7104
 # gear_armor=2630
 # set_bonus=tier19p_mail_2pc=1
-summon_pet=carrion_bird
+summon_pet=cat
