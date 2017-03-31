@@ -3103,7 +3103,7 @@ struct zeal_t : public holy_power_generator_t
     // TODO: figure out wtf happened to this spell data
     hasted_cd = hasted_gcd = true;
 
-    dynamic_aoe = true; // Zeal buff changes the number of targets dynamically
+    invalidate_target_cache = true; // Zeal buff changes the number of targets dynamically
   }
 
   int n_targets() const override

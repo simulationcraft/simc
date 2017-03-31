@@ -3316,7 +3316,7 @@ struct maim_t : public cat_attack_t
     // needs to be done in action_t::init override, since special effects (including the fallback
     // buff) are initialized after create_actions() (which is the method that calls maim_t
     // constructor if the user has a Maim action in the APL).
-    dynamic_aoe = p() -> buff.fiery_red_maimers -> default_chance != 0;
+    invalidate_target_cache = p() -> buff.fiery_red_maimers -> default_chance != 0;
   }
 
   int n_targets() const override
@@ -3912,7 +3912,7 @@ struct mangle_t : public bear_attack_t
 
     base_multiplier *= 1.0 + player -> artifact.vicious_bites.percent();
 
-    dynamic_aoe = true; // Incarnation increases number of targets dynamically
+    invalidate_target_cache = true; // Incarnation increases number of targets dynamically
   }
 
   double composite_energize_amount( const action_state_t* s ) const override
@@ -4683,7 +4683,7 @@ struct wild_growth_t : public druid_heal_t
   {
     ignore_false_positive = true;
 
-    dynamic_aoe = true; // Incarnation increases number of targets dynamically
+    invalidate_target_cache = true; // Incarnation increases number of targets dynamically
   }
 
   int n_targets() const override

@@ -2785,7 +2785,7 @@ struct ignite_t : public residual_action_t
 
     // Ignite is not an AOE spell, however it needs to pretend to be, because ignite_spread_event_t
     // needs up-to-date target caches.
-    dynamic_aoe = true;
+    invalidate_target_cache = true;
 
     if ( player -> talents.conflagration -> ok() )
     {

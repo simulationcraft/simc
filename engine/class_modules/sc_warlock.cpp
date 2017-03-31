@@ -2468,7 +2468,7 @@ public:
     // Havoc makes single-target spells potentially AOE
     if ( aoe == 0 && p() -> specialization() == WARLOCK_DESTRUCTION )
     {
-      dynamic_aoe = true;
+      invalidate_target_cache = true;
     }
 
     return spell_t::init_finished();

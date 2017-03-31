@@ -423,7 +423,7 @@ action_t::action_t( action_e       ty,
   dynamic_tick_action( true), // WoD updates everything on tick by default. If you need snapshotted values for a periodic effect, use persistent multipliers.
   interrupt_immediate_occurred(),
   hit_any_target(),
-  dynamic_aoe( false ),
+  invalidate_target_cache( false ),
   dot_behavior( DOT_REFRESH ),
   ability_lag(),
   ability_lag_stddev(),
@@ -2064,6 +2064,12 @@ void action_t::init()
     sim -> errorf( "Player %s trying to use both cycle_targets and a numerical target for action %s - defaulting to cycle_targets\n", player -> name(), name() );
   }
 
+  if ( option.cycle_targets || option.cycle_players )
+  {
+    // Cycle targets/players needs proper target caches for all abilities, even single target ones.
+    invalidate_target_cache = true;
+  }
+
   if ( tick_action )
   {
     tick_action -> direct_tick = true;
@@ -2210,6 +2216,10 @@ bool action_t::init_finished()
     if ( !option.target_if_str.empty() &&
       ( target_if_expr = expr_t::parse( this, option.target_if_str, sim -> optimize_expressions ) ) == 0 )
       ret = false;
+
+    // Target-if will need proper target lists, so we need to unconditionally turn target cache
+    // invalidation on.
+    invalidate_target_cache = true;
   }
 
   if ( ! option.if_expr_str.empty() &&
@@ -3647,7 +3657,7 @@ void action_t::activate()
   // On AOE actions, enable target cache regeneration when state of the enemy targets change. Also
   // explicitly enable the target cache invalidator if the ability is flagged as being dynamic aoe
   // (changes the number of targets hit dynamically during combat)
-  if ( n_targets() != 0 || dynamic_aoe )
+  if ( n_targets() != 0 || invalidate_target_cache )
   {
     sim -> target_non_sleeping_list.register_callback( [ this ]( player_t* ) {
       target_cache.is_valid = false;
