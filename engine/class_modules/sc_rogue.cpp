@@ -7484,10 +7484,10 @@ void rogue_t::init_gains()
 {
   player_t::init_gains();
 
-  gains.adrenaline_rush          = get_gain( "adrenaline_rush"          );
-  gains.combat_potency           = get_gain( "combat_potency"           );
-  gains.energy_refund            = get_gain( "energy_refund"            );
-  gains.seal_fate                = get_gain( "seal_fate"                );
+  gains.adrenaline_rush          = get_gain( "Adrenaline Rush"          );
+  gains.combat_potency           = get_gain( "Combat Potency"           );
+  gains.energy_refund            = get_gain( "Energy Refund"            );
+  gains.seal_fate                = get_gain( "Seal Fate"                );
   gains.venomous_wounds          = get_gain( "Venomous Vim"             );
   gains.venomous_wounds_death    = get_gain( "Venomous Vim (death)"     );
   gains.quick_draw               = get_gain( "Quick Draw"               );
