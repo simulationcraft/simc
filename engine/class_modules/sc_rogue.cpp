@@ -6751,7 +6751,7 @@ void rogue_t::init_action_list()
     }
     cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit*1.5|(raid_event.adds.in>40&combo_points.deficit>=cp_max_spend)" );
     cds -> add_action( this, "Vendetta", "if=!artifact.urge_to_kill.enabled|energy.deficit>=60+variable.energy_targetbleed_regen" );
-    cds -> add_action( this, "Vanish", "if=talent.nightstalker.enabled&combo_points>=cp_max_spend&!talent.exsanguinate.enabled&(equipped.mantle_of_the_master_assassin&mantle_duration=0|dot.rupture.refreshable)" );
+    cds -> add_action( this, "Vanish", "if=talent.nightstalker.enabled&combo_points>=cp_max_spend&!talent.exsanguinate.enabled&(equipped.mantle_of_the_master_assassin&mantle_duration=0|!equipped.mantle_of_the_master_assassin&dot.rupture.refreshable)" );
     cds -> add_action( this, "Vanish", "if=talent.nightstalker.enabled&combo_points>=cp_max_spend&talent.exsanguinate.enabled&cooldown.exsanguinate.remains<1&(dot.rupture.ticking|time>10)" );
     cds -> add_action( this, "Vanish", "if=talent.subterfuge.enabled&equipped.mantle_of_the_master_assassin&(debuff.vendetta.up|target.time_to_die<10)&mantle_duration=0" );
     cds -> add_action( this, "Vanish", "if=talent.subterfuge.enabled&!equipped.mantle_of_the_master_assassin&!stealthed.rogue&dot.garrote.refreshable&((spell_targets.fan_of_knives<=3&combo_points.deficit>=1+spell_targets.fan_of_knives)|(spell_targets.fan_of_knives>=4&combo_points.deficit>=4))" );
@@ -7032,10 +7032,7 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
       {
         timespan_t nominal_master_assassin_duration = timespan_t::from_seconds( spell.master_assassins_initiative -> effectN( 1 ).base_value() );
         timespan_t gcd_remains = timespan_t::from_seconds( std::max( ( gcd_ready - sim -> current_time() ).total_seconds(), 0.0 ) );
-        if ( buffs.vanish -> check() )
-          return std::min( buffs.vanish -> remains(), gcd_remains ) + nominal_master_assassin_duration;
-        else
-          return gcd_remains + nominal_master_assassin_duration;
+        return gcd_remains + nominal_master_assassin_duration;
       }
       else if ( buffs.mantle_of_the_master_assassin -> check() )
         return buffs.mantle_of_the_master_assassin -> remains();
