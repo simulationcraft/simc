@@ -4,13 +4,13 @@ race=troll
 role=spell
 position=back
 talents=1012022
-artifact=54:0:0:0:0:748:1:749:3:750:3:751:3:752:3:753:3:754:3:755:3:756:3:757:3:758:1:759:1:760:1:761:1:762:1:763:1:1340:1:1372:20
+artifact=54:0:0:0:0:748:1:749:4:750:4:751:4:752:4:753:4:754:4:755:4:756:4:757:4:758:1:759:1:760:1:761:1:762:1:763:1:1340:1:1372:1:1533:4:1534:1:1535:1:1536:1:1640:1
 spec=fire
 
 # Default consumables
 potion=deadly_grace
 flask=whispered_pact
-food=the_hungry_magister
+food=lavish_suramar_feast
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
