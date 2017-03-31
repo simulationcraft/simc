@@ -590,22 +590,22 @@ bool report::check_artifact_points( const player_t& p, sim_t& sim )
   }
   else if ( p.report_information.save_str.find( "T19H_NH" ) != std::string::npos )
   {
-    max_allowed = 43;
+    max_allowed = 45;
     tier_name   = "T19H_NH";
   }
   else if ( p.report_information.save_str.find( "T19H" ) != std::string::npos )
   {
-    max_allowed = 29;
+    max_allowed = 38;
     tier_name   = "T19H";
   }
   else if ( p.report_information.save_str.find( "T19M_NH" ) != std::string::npos )
   {
-    max_allowed = 57;
+    max_allowed = 55;
     tier_name   = "T19M_NH";
   }
   else if ( p.report_information.save_str.find( "T19M" ) != std::string::npos )
   {
-    max_allowed = 37;
+    max_allowed = 39;
     tier_name   = "T19M";
   }
   else

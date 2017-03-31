@@ -1375,6 +1375,9 @@ public:
   bool empty() const
   { return _data.empty(); }
 
+  void reset_callbacks()
+  { _callbacks.clear(); }
+
 private:
   void erase_unordered( typename std::vector<T>::iterator it )
   {
@@ -1865,6 +1868,9 @@ struct sim_t : private sc_thread_t
   void combat_begin();
   void combat_end();
   void add_chart_data( const highchart::chart_t& chart );
+
+  // Activates the necessary actor/actors before iteration begins.
+  void activate_actors();
 
   timespan_t current_time() const
   { return event_mgr.current_time; }
@@ -4093,6 +4099,14 @@ struct player_t : public actor_t
   // Single actor batch mode calls this every time the active (player) actor changes for all targets
   virtual void actor_changed() { }
 
+  // A method to "activate" an actor in the simulator. Single actor batch mode activates one primary
+  // actor at a time, while normal simulation mode activates all actors at the beginning of the sim.
+  //
+  // NOTE: Currently, the only thing that occurs during activation of an actor is the registering of
+  // various state change callbacks (via the action_t::activate method) to the global actor lists.
+  // Actor pets are also activated by default.
+  virtual void activate();
+
   virtual int level() const;
 
   virtual double energy_regen_per_second() const;
@@ -5245,6 +5259,9 @@ public:
 
   bool hit_any_target;
 
+  /// The ability may dynamically change the number of targets (e.g., due to a buff)
+  bool dynamic_aoe;
+
   /**
    * @brief Behavior of dot.
    *
@@ -5910,13 +5927,15 @@ public:
 
   virtual bool init_finished();
 
-  virtual void init_target_cache();
-
   virtual void reset();
 
   virtual void cancel();
 
   virtual void interrupt_action();
+
+  // Perform activation duties for the action. This is used to "enable" the action when the actor
+  // becomes active.
+  virtual void activate();
 
   virtual expr_t* create_expression(const std::string& name);
 
@@ -6189,7 +6208,7 @@ public:
   virtual dmg_e amount_type( const action_state_t* /* state */, bool /* periodic */ = false ) const override;
   virtual dmg_e report_amount_type( const action_state_t* /* state */ ) const override;
   virtual size_t available_targets( std::vector< player_t* >& ) const override;
-  virtual void init_target_cache() override;
+  void activate() override;
   virtual double calculate_direct_amount( action_state_t* state ) const override;
   virtual double calculate_tick_amount( action_state_t* state, double dmg_multiplier ) const override;
   virtual void execute() override;
@@ -6266,7 +6285,7 @@ struct absorb_t : public spell_base_t
   virtual dmg_e amount_type( const action_state_t* /* state */, bool /* periodic */ = false ) const override
   { return ABSORB; }
   virtual void impact( action_state_t* ) override;
-  virtual void init_target_cache() override;
+  virtual void activate() override;
   virtual size_t available_targets( std::vector< player_t* >& ) const override;
   virtual int num_targets() const override;
 

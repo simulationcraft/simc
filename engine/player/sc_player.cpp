@@ -11783,3 +11783,12 @@ void expansion::legion::initialize_concordance( player_t& player )
     player.special_effects.push_back( effect );
   }
 }
+
+void player_t::activate()
+{
+  // Activate all actions of the actor
+  range::for_each( action_list, []( action_t* a ) { a -> activate(); } );
+
+  // .. and activate all actor pets
+  range::for_each( pet_list, []( player_t* p ) { p -> activate(); } );
+}

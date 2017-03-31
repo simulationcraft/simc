@@ -5347,6 +5347,8 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
     //
     // TODO: Changed in 7.1.5, new probability distribution unknown/untested
     instructors_chance = { { .3, .4, .2, .1 } };
+
+    dynamic_aoe = true; // Dynamically becomes AOE if you stand in Defile/DnD
   }
 
   int n_targets() const override
@@ -5767,8 +5769,8 @@ struct breath_of_sindragosa_t : public death_knight_spell_t
   {
     death_knight_spell_t::init();
 
-    snapshot_flags |= STATE_MUL_TA | STATE_TGT_MUL_TA | STATE_MUL_PERSISTENT;
-    update_flags |= STATE_MUL_TA | STATE_TGT_MUL_TA;
+    snapshot_flags |= STATE_AP | STATE_MUL_TA | STATE_TGT_MUL_TA | STATE_MUL_PERSISTENT;
+    update_flags |= STATE_AP | STATE_MUL_TA | STATE_TGT_MUL_TA;
   }
 };
 

@@ -2511,8 +2511,12 @@ bool sim_t::iterate()
 
   if ( single_actor_batch && ! parent )
   {
-    sim_phase_str = "Generating " + player_no_pet_list[ current_index ] -> name_str;
+    sim_phase_str = "Generating " + util::to_string( current_index + 1 ) + "/" +
+      util::to_string( player_no_pet_list.size() ) + " " +
+      player_no_pet_list[ current_index ] -> name_str;
   }
+
+  activate_actors();
 
   bool more_work = true;
   do
@@ -2544,11 +2548,14 @@ bool sim_t::iterate()
             progress_bar.restart();
             util::fprintf( stdout, "%s %s\n", sim_phase_str.c_str(), progress_bar.status.c_str() );
             fflush( stdout );
-            sim_phase_str = "Generating " + player_no_pet_list[ current_index ] -> name_str;
+            sim_phase_str = "Generating " + util::to_string( current_index + 1 ) + "/" +
+              util::to_string( player_no_pet_list.size() ) + " " +
+              player_no_pet_list[ current_index ] -> name_str;
           }
 
           current_iteration = -1;
           range::for_each( target_list, []( player_t* t ) { t -> actor_changed(); } );
+          activate_actors();
         }
       }
     }
@@ -3625,5 +3632,31 @@ void sim_t::disable_debug_seed()
     debug = false;
     log = 0;
     static_cast<io::ofstream*>(out_std.get_stream()) -> close();
+  }
+}
+
+// Activates the relevant actors in the simulator just before simulating, based on the relevant
+// simulation mode (single vs multi actor).
+void sim_t::activate_actors()
+{
+  // Clear out all callbacks
+  target_list.reset_callbacks();
+  target_non_sleeping_list.reset_callbacks();
+  player_list.reset_callbacks();
+  player_no_pet_list.reset_callbacks();
+  player_non_sleeping_list.reset_callbacks();
+  healing_no_pet_list.reset_callbacks();
+  healing_pet_list.reset_callbacks();
+
+  // Normal sim mode activates all actors .. and this method is only called once at the beginning of
+  // the simulation run.
+  if ( ! single_actor_batch )
+  {
+    range::for_each( player_list, []( player_t* p ) { p -> activate(); } );
+  }
+  // Single-actor batch mode activates the current active actor
+  else
+  {
+    player_no_pet_list[ current_index ] -> activate();
   }
 }

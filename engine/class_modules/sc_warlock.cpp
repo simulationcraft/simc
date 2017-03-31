@@ -985,11 +985,12 @@ struct searing_bolt_t : public warlock_pet_spell_t
   searing_bolt_t( warlock_pet_t* p ) :
     warlock_pet_spell_t( "searing_bolt", p, p -> find_spell( 243050 ) )
   {
-    may_crit = may_miss = false;
+    may_crit = may_miss = hasted_ticks = false;
     tick_may_crit = true;
     base_execute_time = timespan_t::from_millis( 500 );
     base_costs[RESOURCE_ENERGY] = 1.0;
     resource_current = RESOURCE_ENERGY;
+    dot_max_stack = 20;
   }
 };
 
@@ -1834,7 +1835,7 @@ namespace flame_rift {
     {
       warlock_pet_t::init_base_stats();
       base_energy_regen_per_second = 0;
-      resources.base[RESOURCE_ENERGY] = 10.0;
+      resources.base[RESOURCE_ENERGY] = 20.0;
     }
 
     virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
@@ -2462,6 +2463,12 @@ public:
         // init process (in action_t::init()).
         default_target = target;
       }
+    }
+
+    // Havoc makes single-target spells potentially AOE
+    if ( aoe == 0 && p() -> specialization() == WARLOCK_DESTRUCTION )
+    {
+      dynamic_aoe = true;
     }
 
     return spell_t::init_finished();
@@ -4235,7 +4242,7 @@ struct dimensional_rift_t : public warlock_spell_t
 
     double rift = rng().range( 0.0, 1.0 );
 
-    if ( rift <= ( 1.0 / 3.0 /*( p() -> artifact.flame_rift.rank() ? 4.0 : 3.0 )*/ ) )
+    if ( rift <= ( 1.0 / ( p() -> artifact.flame_rift.rank() ? 4.0 : 3.0 ) ) )
     {
       for ( size_t i = 0; i < p() -> warlock_pet_list.shadowy_tear.size(); i++ )
       {
@@ -4250,7 +4257,7 @@ struct dimensional_rift_t : public warlock_spell_t
       if ( p() -> legendary.lessons_of_spacetime )
         p() -> buffs.lessons_of_spacetime -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, p() -> legendary.lessons_of_spacetime3 );
     }
-    else if ( rift > ( 2.0 / 3.0 /*( p() -> artifact.flame_rift.rank() ? 4.0 : 3.0 )*/ ) /*&& rift <= ( 3.0 / ( p() -> artifact.flame_rift.rank() ? 4.0 : 3.0 ) )*/ )
+    else if ( rift > ( 2.0 / ( p() -> artifact.flame_rift.rank() ? 4.0 : 3.0 ) ) && rift <= ( 3.0 / ( p() -> artifact.flame_rift.rank() ? 4.0 : 3.0 ) ) )
     {
       for ( size_t i = 0; i < p() -> warlock_pet_list.chaos_tear.size(); i++ )
       {
@@ -4265,7 +4272,7 @@ struct dimensional_rift_t : public warlock_spell_t
       if ( p() -> legendary.lessons_of_spacetime )
         p() -> buffs.lessons_of_spacetime -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, p() -> legendary.lessons_of_spacetime1 );
     }
-    else /*if ( rift > ( 1.0 / ( p() -> artifact.flame_rift.rank() ? 4.0 : 3.0 ) ) && rift <= ( 2.0 / ( p() -> artifact.flame_rift.rank() ? 4.0 : 3.0 ) ) )*/
+    else if ( rift > ( 1.0 / ( p() -> artifact.flame_rift.rank() ? 4.0 : 3.0 ) ) && rift <= ( 2.0 / ( p() -> artifact.flame_rift.rank() ? 4.0 : 3.0 ) ) )
     {
       for ( size_t i = 0; i < p() -> warlock_pet_list.chaos_portal.size(); i++ )
       {
@@ -4281,21 +4288,21 @@ struct dimensional_rift_t : public warlock_spell_t
         p() -> buffs.lessons_of_spacetime -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, p() -> legendary.lessons_of_spacetime2 );
     }
 
-    //else
-    //{
-    //  for ( size_t i = 0; i < p()->warlock_pet_list.flame_rift.size(); i++ )
-    //  {
-    //    if ( p()->warlock_pet_list.flame_rift[i]->is_sleeping() )
-    //    {
-    //      p()->warlock_pet_list.flame_rift[i]->summon( flame_rift_duration );
-    //      p()->procs.flame_rift->occur();
-    //      break;
-    //    }
-    //  }
+    else
+    {
+      for ( size_t i = 0; i < p() -> warlock_pet_list.flame_rift.size(); i++ )
+      {
+        if ( p() -> warlock_pet_list.flame_rift[i] -> is_sleeping() )
+        {
+          p() -> warlock_pet_list.flame_rift[i] -> summon( flame_rift_duration );
+          p() -> procs.flame_rift -> occur();
+          break;
+        }
+      }
 
-    //  if ( p()->legendary.lessons_of_spacetime )
-    //    p()->buffs.lessons_of_spacetime->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, p()->legendary.lessons_of_spacetime2 );
-    //}
+      if ( p() -> legendary.lessons_of_spacetime )
+        p() -> buffs.lessons_of_spacetime -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, p() -> legendary.lessons_of_spacetime2 );
+    }
   }
 };
 
@@ -5627,6 +5634,7 @@ struct cry_havoc_t : public warlock_spell_t
     background = true;
     //proc = true;
     callbacks = true;
+    aoe = -1;
   }
 };
 

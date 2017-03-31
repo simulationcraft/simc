@@ -5,7 +5,7 @@ timeofday=day
 role=attack
 position=back
 talents=1210011
-artifact=17:0:0:0:0:851:1:852:3:853:3:854:3:855:3:856:3:858:3:860:3:862:1:863:1:864:1:866:1:1349:1
+artifact=17:0:0:0:0:851:1:852:3:853:3:854:3:855:3:856:3:857:3:858:3:859:3:860:3:861:1:862:1:863:1:864:1:865:1:866:1:1349:1:1386:1
 spec=subtlety
 
 # This default action priority list is automatically created based on your character.
@@ -17,7 +17,7 @@ spec=subtlety
 # Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat=flask,name=flask_of_the_seventh_demon
 actions.precombat+=/augmentation,name=defiled
-actions.precombat+=/food,name=nightborne_delicacy_platter
+actions.precombat+=/food,name=lavish_suramar_feast
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/stealth

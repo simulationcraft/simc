@@ -3102,9 +3102,11 @@ struct zeal_t : public holy_power_generator_t
 
     // TODO: figure out wtf happened to this spell data
     hasted_cd = hasted_gcd = true;
+
+    dynamic_aoe = true; // Zeal buff changes the number of targets dynamically
   }
 
-  virtual int n_targets() const override
+  int n_targets() const override
   {
     if ( p() -> buffs.zeal -> stack() )
       return 1 + p() -> buffs.zeal -> stack();
@@ -3148,7 +3150,7 @@ struct blade_of_justice_t : public holy_power_generator_t
   {
     double am = holy_power_generator_t::action_multiplier();
     if ( p() -> buffs.righteous_verdict -> up() )
-      am *= 1.0 + p() -> artifact.righteous_verdict.percent();
+      am *= 1.0 + p() -> artifact.righteous_verdict.rank() * 0.08; // todo: fix
     return am;
   }
 
@@ -3256,7 +3258,7 @@ struct divine_hammer_t : public paladin_spell_t
   {
     double am = paladin_spell_t::composite_persistent_multiplier( s );
     if ( p() -> buffs.righteous_verdict -> up() )
-      am *= 1.0 + p() -> artifact.righteous_verdict.percent();
+      am *= 1.0 + p() -> artifact.righteous_verdict.rank() * 0.08; // todo: fix
     return am;
   }
 
@@ -4888,7 +4890,8 @@ void paladin_t::generate_action_prio_list_ret()
         item_str = "use_item,name=" + items[i].name_str + ",if=!raid_event.adds.exists|raid_event.adds.in>75";
         def -> add_action( item_str );
       }
-      else {
+      else if ( items[i].slot != SLOT_WAIST )
+      {
         item_str = "use_item,name=" + items[i].name_str + ",if=(buff.avenging_wrath.up|buff.crusade.up)";
         def -> add_action( item_str );
       }
@@ -6440,7 +6443,11 @@ struct paladin_module_t : public module_t
 
   virtual void register_hotfixes() const override
   {
-
+    hotfix::register_effect( "Paladin", "2017-03-29", "Righteous Verdict bonus increased to 8% per point (was 5% per point)", 360747 )
+       .field( "base_value" )
+       .operation( hotfix::HOTFIX_SET )
+       .modifier( 8 )
+       .verification_value( 5 );
   }
 
   virtual void combat_begin( sim_t* ) const override {}

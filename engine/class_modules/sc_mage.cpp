@@ -621,6 +621,7 @@ public:
   virtual double    composite_spell_crit_rating() const override;
   virtual double    composite_spell_haste() const override;
   virtual double    composite_mastery_rating() const override;
+  virtual double    composite_attribute_multiplier( attribute_e ) const override;
   virtual double    matching_gear_multiplier( attribute_e attr ) const override;
   virtual void      update_movement( timespan_t duration ) override;
   virtual void      stun() override;
@@ -629,6 +630,7 @@ public:
   virtual void      arise() override;
   virtual action_t* select_action( const action_priority_list_t& ) override;
   virtual void      copy_from( player_t* ) override;
+  void              activate() override;
 
   target_specific_t<mage_td_t> target_data;
 
@@ -2780,6 +2782,10 @@ struct ignite_t : public residual_action_t
     //!! NOTE NOTE NOTE !! This is super dangerous and means we have to be extra careful with correctly
     // flagging thats that proc off events, to not proc off ignite if they shouldn't!
     callbacks = true;
+
+    // Ignite is not an AOE spell, however it needs to pretend to be, because ignite_spread_event_t
+    // needs up-to-date target caches.
+    dynamic_aoe = true;
 
     if ( player -> talents.conflagration -> ok() )
     {
@@ -8336,6 +8342,35 @@ void mage_t::init_benefits()
   }
 }
 
+// mage_t::activate ===========================================================
+
+void mage_t::activate()
+{
+  player_t::activate();
+
+  // Register target reset callback here (anywhere later on than in
+  // constructor) so older GCCs are happy
+  // Forcibly reset mage's current target, if it dies.
+  sim -> target_non_sleeping_list.register_callback( [ this ]( player_t* ) {
+
+    // If the mage's current target is still alive, bail out early.
+    if ( range::find( sim->target_non_sleeping_list, current_target ) !=
+         sim -> target_non_sleeping_list.end() )
+    {
+      return;
+    }
+
+    if ( sim -> debug )
+    {
+      sim->out_debug.printf(
+          "%s current target %s died. Resetting target to %s.", name(),
+          current_target -> name(), target -> name() );
+    }
+
+    current_target = target;
+  } );
+}
+
 // mage_t::init_stats =========================================================
 
 void mage_t::init_stats()
@@ -8345,28 +8380,6 @@ void mage_t::init_stats()
   // Cache Icy Veins haste multiplier for performance reasons
   double haste = buffs.icy_veins -> data().effectN( 1 ).percent();
   iv_haste = 1.0 / ( 1.0 + haste );
-
-  // Register target reset callback here (anywhere later on than in
-  // constructor) so older GCCs are happy
-  // Forcibly reset mage's current target, if it dies.
-  sim->target_non_sleeping_list.register_callback( [this]( player_t* ) {
-
-    // If the mage's current target is still alive, bail out early.
-    if ( range::find( sim->target_non_sleeping_list, current_target ) !=
-         sim->target_non_sleeping_list.end() )
-    {
-      return;
-    }
-
-    if ( sim->debug )
-    {
-      sim->out_debug.printf(
-          "%s current target %s died. Resetting target to %s.", name(),
-          current_target->name(), target->name() );
-    }
-
-    current_target = target;
-  } );
 }
 
 
@@ -8599,18 +8612,13 @@ std::string mage_t::default_flask() const
 
 std::string mage_t::default_food() const
 {
-  std::string lvl110_food =
-    ( specialization() == MAGE_ARCANE ) ? "the_hungry_magister" :
-    ( specialization() == MAGE_FIRE )   ? "the_hungry_magister" :
-                                          "azshari_salad";
-
   std::string lvl100_food =
     ( specialization() == MAGE_ARCANE ) ?
       ( sets.has_set_bonus( MAGE_ARCANE, T18, B4 ) ? "buttered_sturgeon" : "sleeper_sushi" ) :
     ( specialization() == MAGE_FIRE )   ? "pickled_eel" :
                                           "salty_squid_roll";
 
-  return ( true_level > 100 ) ? lvl110_food :
+  return ( true_level > 100 ) ? "lavish_suramar_feast" :
          ( true_level >  90 ) ? lvl100_food :
          ( true_level >= 90 ) ? "mogu_fish_stew" :
          ( true_level >= 80 ) ? "seafood_magnifique_feast" :
@@ -9014,13 +9022,13 @@ double mage_t::composite_player_pet_damage_multiplier( const action_state_t* s )
   double m = player_t::composite_player_pet_damage_multiplier(s);
 
   m *= 1.0 + artifact.ancient_power.percent();
-  m *= 1.0 + artifact.intensity_of_the_tirisgarde.percent();
+  m *= 1.0 + artifact.intensity_of_the_tirisgarde.data().effectN( 3 ).percent();
 
   m *= 1.0 + artifact.empowered_spellblade.percent();
-  m *= 1.0 + artifact.instability_of_the_tirisgarde.percent();
+  m *= 1.0 + artifact.instability_of_the_tirisgarde.data().effectN( 3 ).percent();
 
   m *= 1.0 + artifact.spellborne.percent();
-  m *= 1.0 + artifact.frigidity_of_the_tirisgarde.percent();
+  m *= 1.0 + artifact.frigidity_of_the_tirisgarde.data().effectN( 3 ).percent();
 
   return m;
 }
@@ -9074,7 +9082,7 @@ double mage_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + artifact.ancient_power.percent();
   }
 
-  m *= 1.0 + artifact.intensity_of_the_tirisgarde.percent();
+  m *= 1.0 + artifact.intensity_of_the_tirisgarde.data().effectN( 1 ).percent();
 
   if ( dbc::is_school( school, SCHOOL_FIRE ) )
   {
@@ -9086,7 +9094,7 @@ double mage_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + artifact.empowered_spellblade.percent();
   }
 
-  m *= 1.0 + artifact.instability_of_the_tirisgarde.percent();
+  m *= 1.0 + artifact.instability_of_the_tirisgarde.data().effectN( 1 ).percent();
 
   if ( buffs.bone_chilling -> check() && dbc::is_school( school, SCHOOL_FROST ) )
   {
@@ -9099,7 +9107,7 @@ double mage_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + artifact.spellborne.percent();
   }
 
-  m *= 1.0 + artifact.frigidity_of_the_tirisgarde.percent();
+  m *= 1.0 + artifact.frigidity_of_the_tirisgarde.data().effectN( 1 ).percent();
 
 
   if ( buffs.chilled_to_the_core -> check() && dbc::is_school( school, SCHOOL_FROST ) )
@@ -9195,6 +9203,22 @@ double mage_t::composite_spell_haste() const
   }
 
   return h;
+}
+
+double mage_t::composite_attribute_multiplier( attribute_e attribute ) const
+{
+  double m = player_t::composite_attribute_multiplier( attribute );
+  switch ( attribute )
+  {
+  case ATTR_STAMINA:
+    m *= 1.0 + artifact.frigidity_of_the_tirisgarde.data().effectN( 2 ).percent();
+    m *= 1.0 + artifact.instability_of_the_tirisgarde.data().effectN( 2 ).percent();
+    m *= 1.0 + artifact.intensity_of_the_tirisgarde.data().effectN( 2 ).percent();
+    break;
+  default:
+    break;
+  }
+  return m;
 }
 
 // mage_t::matching_gear_multiplier =========================================

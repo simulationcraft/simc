@@ -52,9 +52,12 @@ struct hunter_td_t: public actor_target_data_t
     dot_t* on_the_trail;
     // dot shared by all of the Cobra Commander artifact trait snakes
     dot_t* deathstrike_venom;
+    dot_t* a_murder_of_crows;
   } dots;
 
   hunter_td_t( player_t* target, hunter_t* p );
+
+  void target_demise();
 };
 
 struct hunter_t: public player_t
@@ -158,6 +161,7 @@ public:
     cooldown_t* harpoon;
     cooldown_t* aspect_of_the_eagle;
     cooldown_t* aspect_of_the_wild;
+    cooldown_t* a_murder_of_crows;
   } cooldowns;
 
   // Custom Parameters
@@ -431,6 +435,7 @@ public:
     cooldowns.harpoon         = get_cooldown( "harpoon" );
     cooldowns.aspect_of_the_eagle = get_cooldown( "aspect_of_the_eagle" );
     cooldowns.aspect_of_the_wild  = get_cooldown( "aspect_of_the_wild" );
+    cooldowns.a_murder_of_crows   = get_cooldown( "a_murder_of_crows" );
 
     summon_pet_str = "";
 
@@ -488,6 +493,9 @@ public:
   void              apl_surv();
   void              apl_bm();
   void              apl_mm();
+  std::string default_potion() const override;
+  std::string default_flask() const override;
+  std::string default_food() const override;
 
   void              add_item_actions( action_priority_list_t* list );
 
@@ -684,6 +692,19 @@ void trigger_mm_feet( hunter_t* p )
   {
     double ms = p -> legendary.mm_feet -> driver() -> effectN( 1 ).base_value();
     p -> cooldowns.trueshot -> adjust( timespan_t::from_millis( ms ) );
+  }
+}
+
+void trigger_sephuzs_secret( hunter_t* p, const action_state_t* state, spell_mechanic type )
+{
+  if ( ! p -> legendary.sephuzs_secret )
+    return;
+
+  // trigger by default on interrupts and on adds/lower level stuff
+  if ( type == MECHANIC_INTERRUPT || state -> target -> is_add() ||
+       ( state -> target -> level() < p -> sim -> max_player_level + 3 ) )
+  {
+    p -> buffs.sephuzs_secret -> trigger();
   }
 }
 
@@ -2275,6 +2296,7 @@ struct talon_slash_t : public hunter_main_pet_attack_t
   {
     background = true;
     attack_power_mod.direct = 1.0 / 3.0; // data hardcoded in a tooltip
+    base_multiplier *= 1.0 + p -> specs.spiked_collar -> effectN( 1 ).percent();
     // XXX: this is going to be hard to test... be on the safe side for now
     can_hunting_companion = false;
   }
@@ -4322,9 +4344,32 @@ struct harpoon_t: public hunter_melee_attack_t
 namespace spells
 {
 
+// Base Interrupt ===========================================================
+
+struct interrupt_base_t: public hunter_spell_t
+{
+  interrupt_base_t( const std::string &n, hunter_t* p, const spell_data_t* s ):
+    hunter_spell_t( n, p, s )
+  {
+    may_miss = may_block = may_dodge = may_parry = false;
+  }
+
+  bool ready() override
+  {
+    if ( ! target -> debuffs.casting -> check() ) return false;
+    return hunter_spell_t::ready();
+  }
+
+  void execute() override
+  {
+    hunter_spell_t::execute();
+
+    trigger_sephuzs_secret( p(), execute_state, MECHANIC_INTERRUPT );
+  }
+};
+
 // A Murder of Crows ========================================================
 
-// TODO this should reset CD if the target dies
 struct moc_t : public hunter_spell_t
 {
   struct peck_t : public hunter_ranged_attack_t
@@ -4525,6 +4570,17 @@ struct freezing_trap_t : public hunter_spell_t
 
     if ( p() -> legendary.sv_feet )
       p() -> resource_gain( RESOURCE_FOCUS, p() -> find_spell( 212575 ) -> effectN( 1 ).resource( RESOURCE_FOCUS ), p() -> gains.nesingwarys_trapping_treads );
+  }
+};
+
+// Counter Shot ======================================================================
+
+struct counter_shot_t: public interrupt_base_t
+{
+  counter_shot_t( hunter_t* p, const std::string& options_str ):
+    interrupt_base_t( "counter_shot", p, p -> find_specialization_spell( "Counter Shot" ) )
+  {
+    parse_options( options_str );
   }
 };
 
@@ -5260,10 +5316,19 @@ struct rangers_net_t: public hunter_spell_t
   {
     hunter_spell_t::execute();
 
-    if ( p() -> legendary.sephuzs_secret != nullptr && execute_state -> target -> type == ENEMY_ADD )
-    {
-      p() -> buffs.sephuzs_secret -> trigger();
-    }
+    if ( execute_state -> target -> type == ENEMY_ADD )
+      trigger_sephuzs_secret( p(), execute_state, MECHANIC_ROOT );
+  }
+};
+
+// Muzzle =============================================================
+
+struct muzzle_t: public interrupt_base_t
+{
+  muzzle_t( hunter_t* p, const std::string& options_str ):
+    interrupt_base_t( "muzzle", p, p -> find_specialization_spell( "Muzzle" ) )
+  {
+    parse_options( options_str );
   }
 };
 
@@ -5300,14 +5365,15 @@ struct hunters_mark_exists_buff_t: public buff_t
 } // end namespace buffs
 
 hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ):
-actor_target_data_t( target, p ),
-dots( dots_t() )
+  actor_target_data_t( target, p ),
+  dots( dots_t() )
 {
   dots.serpent_sting = target -> get_dot( "serpent_sting", p );
   dots.piercing_shots = target -> get_dot( "piercing_shots", p );
   dots.lacerate = target -> get_dot( "lacerate", p );
   dots.on_the_trail = target -> get_dot( "on_the_trail", p );
   dots.deathstrike_venom = target -> get_dot( "deathstrike_venom", p );
+  dots.a_murder_of_crows = target -> get_dot( "a_murder_of_crows", p );
 
   debuffs.hunters_mark = 
     buff_creator_t( *this, "hunters_mark", p -> find_spell( 185365 ) );
@@ -5316,8 +5382,9 @@ dots( dots_t() )
     buff_creator_t( *this, "vulnerability", p -> find_spell(187131) )
       .default_value( p -> find_spell( 187131 ) -> effectN( 2 ).percent() )
       .refresh_behavior( BUFF_REFRESH_DURATION );
+  /* HOTFIX: 2017-03-29 - Unerring Arrows bonus is now 4% per point (was 10% per point). */
   if ( p -> artifacts.unerring_arrows.rank() )
-    debuffs.vulnerable -> default_value += p -> artifacts.unerring_arrows.percent();
+    debuffs.vulnerable -> default_value += p -> artifacts.unerring_arrows.rank() * .04;
 
   debuffs.true_aim = 
     buff_creator_t( *this, "true_aim", p -> find_spell( 199803 ) )
@@ -5330,8 +5397,25 @@ dots( dots_t() )
         .default_value( p -> find_spell( 213154 ) 
                           -> effectN( 1 )
                             .percent() );
+
+  target -> callbacks_on_demise.push_back( std::bind( &hunter_td_t::target_demise, this ) );
 }
 
+void hunter_td_t::target_demise()
+{
+  // Don't pollute results at the end-of-iteration deaths of everyone
+  if ( source -> sim -> event_mgr.canceled )
+    return;
+
+  hunter_t* p = static_cast<hunter_t*>( source );
+  if ( p -> talents.a_murder_of_crows -> ok() && dots.a_murder_of_crows -> is_ticking() )
+  {
+    if ( p -> sim -> debug )
+      p -> sim -> out_debug.printf( "%s a_murder_of_crows cooldown reset on target death.", p -> name() );
+
+    p -> cooldowns.a_murder_of_crows -> reset( true );
+  }
+}
 
 expr_t* hunter_t::create_expression( action_t* a, const std::string& expression_str )
 {
@@ -6007,6 +6091,41 @@ void hunter_t::init_scaling()
   scales_with[STAT_STRENGTH] = false;
 }
 
+// hunter_t::default_potion =================================================
+
+std::string hunter_t::default_potion() const
+{
+  return ( true_level >= 100 ) ? "prolonged_power" :
+         ( true_level >= 90  ) ? "draenic_agility" :
+         ( true_level >= 85  ) ? "virmens_bite":
+         "disabled";
+}
+
+// hunter_t::default_flask ==================================================
+
+std::string hunter_t::default_flask() const
+{
+  return ( true_level >  100 ) ? "seventh_demon" :
+         ( true_level >= 90  ) ? "greater_draenic_agility_flask" :
+         ( true_level >= 85  ) ? "spring_blossoms" :
+         ( true_level >= 80  ) ? "winds" :
+         "disabled";
+}
+
+// hunter_t::default_food ===================================================
+
+std::string hunter_t::default_food() const
+{
+  std::string lvl100_food =
+    ( specialization() == HUNTER_SURVIVAL ) ? "pickled_eel" : "salty_squid_roll";
+
+  return ( true_level >  100 ) ? "lavish_suramar_feast" :
+         ( true_level >  90  ) ? lvl100_food :
+         ( true_level == 90  ) ? "sea_mist_rice_noodles" :
+         ( true_level >= 80  ) ? "seafood_magnifique_feast" :
+         "disabled";
+}
+
 // hunter_t::init_actions ===================================================
 
 void hunter_t::init_action_list()
@@ -6023,68 +6142,19 @@ void hunter_t::init_action_list()
     action_priority_list_t* precombat = get_action_priority_list( "precombat" );
 
     // Flask
-    if ( sim -> allow_flasks && true_level >= 80 )
-    {
-      std::string flask_action = "flask,type=";
-      if ( true_level > 100 )
-        flask_action += "flask_of_the_seventh_demon";
-      else if ( true_level > 90 )
-        flask_action += "greater_draenic_agility_flask";
-      else
-        flask_action += "spring_blossoms";
-      precombat -> add_action( flask_action );
-    }
+    precombat -> add_action( "flask" );
+    // Added Rune if Flask are allowed since there is no "allow_runes" bool.
+    if ( sim -> allow_flasks && true_level >= 110 )
+      precombat -> add_action( "augmentation,type=defiled" );
 
     // Food
-    if ( sim -> allow_food )
-    {
-      std::string food_action = "food,type=";
-      if ( level() <= 90 )
-        food_action += ( level() > 85 ) ? "sea_mist_rice_noodles" : "seafood_magnifique_feast";
-      else if ( level() <= 100 )
-      {
-        if ( specialization() == HUNTER_BEAST_MASTERY || specialization() == HUNTER_MARKSMANSHIP )
-          food_action += "salty_squid_roll";
-        else if ( specialization() == HUNTER_SURVIVAL )
-          food_action += "pickled_eel";
-      }
-      else if ( specialization() == HUNTER_BEAST_MASTERY )
-        food_action += "nightborne_delicacy_platter";
-      else if ( specialization() == HUNTER_MARKSMANSHIP )
-        food_action += "nightborne_delicacy_platter";
-      else
-        food_action += "azshari_salad";
-      precombat -> add_action( food_action );
-    }
+    precombat -> add_action( "food" );
 
     precombat -> add_action( "summon_pet" );
     precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
-    //Pre-pot
-    if ( sim -> allow_potions )
-    {
-      if ( true_level > 100 )
-      {
-        if ( specialization() == HUNTER_SURVIVAL )
-          precombat -> add_action( "potion,name=prolonged_power" );
-        else if ( specialization() == HUNTER_BEAST_MASTERY )
-        {
-          precombat -> add_action( "potion,name=prolonged_power" );
-        }
-        else
-        {
-          precombat -> add_action( "potion,name=prolonged_power,if=spell_targets.multi_shot>2" );
-          precombat -> add_action( "potion,name=deadly_grace" );
-        }
-      }
-      else if ( true_level > 90 )
-        precombat -> add_action( "potion,name=draenic_agility" );
-      else if ( true_level >= 80 )
-        precombat -> add_action( "potion,name=virmens_bite" );
-    }
-
-    if ( true_level > 100 )
-      precombat -> add_action( "augmentation,type=defiled" );
+    // Pre-pot
+    precombat -> add_action( "potion" );
 
     switch ( specialization() )
     {
@@ -6102,10 +6172,8 @@ void hunter_t::init_action_list()
       break;
     }
 
-    if ( summon_pet_str.empty() && specialization() != HUNTER_SURVIVAL )
+    if ( summon_pet_str.empty() )
       summon_pet_str = "cat";
-    if ( summon_pet_str.empty() && specialization() == HUNTER_SURVIVAL )
-      summon_pet_str = "carrion_bird";
 
     // Default
     use_default_action_list = true;
@@ -6144,7 +6212,7 @@ void hunter_t::apl_bm()
   default_list -> add_talent( this, "Volley", "toggle=on" );
 
   // In-combat potion
-  default_list -> add_action( "potion,name=prolonged_power,if=buff.bestial_wrath.remains|!cooldown.beastial_wrath.remains" );
+  default_list -> add_action( "potion,if=buff.bestial_wrath.remains|!cooldown.beastial_wrath.remains" );
 
   // Generic APL
   default_list -> add_talent( this, "A Murder of Crows" );
@@ -6204,8 +6272,8 @@ void hunter_t::apl_mm()
   cooldowns -> add_action( "blood_fury,if=buff.trueshot.up" );
 
   // In-combat potion
-  cooldowns -> add_action( "potion,name=prolonged_power,if=spell_targets.multishot>2&((buff.trueshot.react&buff.bloodlust.react)|buff.bullseye.react>=23|target.time_to_die<62)" );
-  cooldowns -> add_action( "potion,name=deadly_grace,if=(buff.trueshot.react&buff.bloodlust.react)|buff.bullseye.react>=23|target.time_to_die<31" );
+  cooldowns -> add_action( "potion,if=(buff.trueshot.react&buff.bloodlust.react)|buff.bullseye.react>=23|"
+                                     "((consumable.prolonged_power&target.time_to_die<62)|target.time_to_die<31)" );
   // Trueshot
   cooldowns -> add_action( "variable,name=trueshot_cooldown,op=set,value=time*1.1,if=time>15&cooldown.trueshot.up&variable.trueshot_cooldown=0" );
   cooldowns -> add_action( this, "Trueshot", "if=variable.trueshot_cooldown=0|buff.bloodlust.up|(variable.trueshot_cooldown>0&target.time_to_die>(variable.trueshot_cooldown+duration))|buff.bullseye.react>25|target.time_to_die<16" );
@@ -6296,7 +6364,7 @@ void hunter_t::apl_surv()
   default_list -> add_action( "blood_fury,if=(buff.spitting_cobra.up&buff.mongoose_fury.stack>2&buff.aspect_of_the_eagle.up)|(!talent.spitting_cobra.enabled&buff.aspect_of_the_eagle.up)" );
 
   // In-combat potion
-  default_list -> add_action( "potion,name=prolonged_power,if=(talent.spitting_cobra.enabled&buff.spitting_cobra.remains)|(!talent.spitting_cobra.enabled&buff.aspect_of_the_eagle.remains)" );
+  default_list -> add_action( "potion,if=(talent.spitting_cobra.enabled&buff.spitting_cobra.remains)|(!talent.spitting_cobra.enabled&buff.aspect_of_the_eagle.remains)" );
 
   // Choose APL
   default_list -> add_action( "call_action_list,name=moknathal,if=talent.way_of_the_moknathal.enabled" );
@@ -7011,8 +7079,6 @@ struct hunter_module_t: public module_t
       .operation( hotfix::HOTFIX_SET )
       .modifier( 7.2 )
       .verification_value( 6.5 );
-
-    // Hotfixes announced for 24.01.2017
   }
 
   virtual void combat_begin( sim_t* ) const override {}

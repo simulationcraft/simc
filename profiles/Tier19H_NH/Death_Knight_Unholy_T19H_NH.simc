@@ -4,7 +4,7 @@ race=blood_elf
 role=attack
 position=back
 talents=3230021
-artifact=16:0:0:0:0:149:1:150:1:151:1:152:1:153:1:154:1:156:3:157:3:158:3:262:3:263:1:264:3:265:3:266:3:267:3:1119:3:1333:1:1361:6
+artifact=16:0:0:0:0:149:1:150:1:151:1:152:1:153:1:154:1:156:3:157:3:158:3:262:3:263:1:264:3:265:3:266:3:267:3:1119:3:1333:1:1361:1:1489:4:1490:1:1491:1:1629:1
 spec=unholy
 
 # This default action priority list is automatically created based on your character.

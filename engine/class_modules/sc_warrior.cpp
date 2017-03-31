@@ -536,7 +536,7 @@ public:
   void      init_action_list() override;
 
   action_t*  create_action( const std::string& name, const std::string& options ) override;
-  bool       create_actions() override;
+  void       activate() override;
   resource_e primary_resource() const override { return RESOURCE_RAGE; }
   role_e     primary_role() const override;
   stat_e     convert_hybrid_stat( stat_e s ) const override;
@@ -1659,6 +1659,8 @@ struct bloodthirst_t: public warrior_attack_t
     }
     base_aoe_multiplier = p -> spec.whirlwind -> effectN( 1 ).trigger() -> effectN( 3 ).percent();
     oathblood_chance = p -> artifact.oathblood.percent();
+
+    dynamic_aoe = true; // Meat Cleaver buff makes Bloodthirst AOE
   }
 
   double action_multiplier() const override
@@ -1676,7 +1678,7 @@ struct bloodthirst_t: public warrior_attack_t
     {
       return aoe_targets + 1;
     }
-    return 1;
+    return warrior_attack_t::n_targets();
   }
 
   double composite_target_crit_chance( player_t* target ) const override
@@ -3122,6 +3124,8 @@ struct rampage_attack_t: public warrior_attack_t
     base_aoe_multiplier = p -> spec.whirlwind -> effectN( 1 ).trigger() -> effectN( 3 ).percent();
     if ( p -> spec.rampage -> effectN( 3 ).trigger() == rampage )
       first_attack = true;
+
+    dynamic_aoe = true; // Meat Cleaver buff makes Rampage AOE
   }
 
   void execute() override
@@ -3146,7 +3150,7 @@ struct rampage_attack_t: public warrior_attack_t
     {
       return aoe_targets + 1;
     }
-    return 1;
+    return warrior_attack_t::n_targets();
   }
   void odyns_champion( timespan_t ) override
   { // Only procs odyns champion once from the spell being initially cast.
@@ -5114,7 +5118,7 @@ void warrior_t::apl_fury()
     }
     else if ( items[i].name_str != "draught_of_souls" && items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
     {
-      if ( items[i].name_str != "nitro_boosts" )
+      if ( items[i].slot != SLOT_WAIST )
         default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=buff.battle_cry.up&buff.enrage.up" );
     }
   }
@@ -5270,7 +5274,7 @@ void warrior_t::apl_arms()
     }
     else if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
     {
-      if ( items[i].name_str != "nitro_boosts" )
+      if ( items[i].slot != SLOT_WAIST )
         default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=buff.avatar.up&debuff.colossus_smash.up&buff.battle_cry.up" );
     }
   }
@@ -5360,7 +5364,8 @@ void warrior_t::apl_prot()
   {
     if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
     {
-      default_list -> add_action( "use_item,name=" + items[i].name_str );
+      if ( items[i].slot != SLOT_WAIST )
+        default_list -> add_action( "use_item,name=" + items[i].name_str );
     }
   }
 
@@ -5959,15 +5964,14 @@ struct into_the_fray_callback_t
 
 // warrior_t::create_actions ================================================
 
-bool warrior_t::create_actions()
+void warrior_t::activate()
 {
-  bool ca = player_t::create_actions();
+  player_t::activate();
 
   if ( talents.into_the_fray -> ok() )
   {
     sim -> target_non_sleeping_list.register_callback( into_the_fray_callback_t( this ) );
   }
-  return ca;
 }
 
 // warrior_t::reset =========================================================

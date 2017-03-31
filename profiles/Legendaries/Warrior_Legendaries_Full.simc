@@ -1,0 +1,110 @@
+#####
+# This is a global profile used to check the 3 bests 2 legendaries combo for one class. (Published on Website)
+# You have to set "$(Tier)=..." and "$(iLvl)=..." before calling it.
+#
+# Example :
+#
+# $(Tier)=T19H
+# $(iLvl)=910
+# Warrior_Legendaries.simc
+#
+# It will call the Rogue T19H Profiles then sim with every legendaries defined below.
+# You only have to set $(Tier) and $(iLvl) one time.
+#
+# If you want to test 2 (or more) classes, you can do it this way :
+#
+# $(Tier)=T19M_NH
+# $(iLvl)=940
+# Warrior_Legendaries.simc
+#
+# You can even do that to test 2 Tiers at the same time :
+#
+# $(Tier)=T19H_NH
+# $(iLvl)=910
+# Warrior_Legendaries.simc
+# $(Tier)=T19M_NH
+# $(iLvl)=940
+# Warrior_Legendaries.simc
+#####
+
+# Leave this empty, it's for non-specific Tier items backward compatibility
+$(Item_$(Tier))=
+
+### Fury ###
+input=Warrior_Fury_$(Tier).simc
+name=Fury_$(Tier)_Baseline
+
+copy=Fury_$(Tier)_Ceannar_Charger,Fury_$(Tier)_Baseline
+head=ceannar_charger,id=137088,ilevel=$(iLvl)
+legs=legplates_of_the_obsidian_aspect,id=138360,ilevel=$(iLvl)
+
+copy=Fury_$(Tier)_Kazzalax_fujiedas_fury,Fury_$(Tier)_Baseline
+back=kazzalax_fujiedas_fury,id=137053,ilevel=$(iLvl),enchant=binding_of_strength
+legs=legplates_of_the_obsidian_aspect,id=138360,ilevel=$(iLvl)
+
+copy=Fury_$(Tier)_Mannoroths_Bloodletting_Manacles,Fury_$(Tier)_Baseline
+wrist=mannoroths_bloodletting_manacles,id=137107,ilevel=$(iLvl)
+
+copy=Fury_$(Tier)_Aggramars_Stride,Fury_$(Tier)_Baseline
+feet=aggramars_stride,id=132443,ilevel=$(iLvl)
+
+copy=Fury_$(Tier)_Timeless_Stratagem,Fury_$(Tier)_Baseline
+shoulder=timeless_stratagem,id=143728,ilevel=$(iLvl)
+legs=legplates_of_the_obsidian_aspect,id=138360,ilevel=$(iLvl)
+
+copy=Fury_$(Tier)_Rethus_Incessant_Coursage,Fury_$(Tier)_Baseline
+waist=rethus_incessant_courage,id=146667,ilevel=$(iLvl),gems=150haste/150haste/150haste
+
+copy=Fury_$(Tier)_Najentus_Vertebrae,Fury_$(Tier)_Baseline
+waist=najentus_vertebrae,id=137087,ilevel=$(iLvl)
+
+copy=Fury_$(Tier)_Ayalas_Stone_Heart,Fury_$(Tier)_Baseline
+finger2=ayalas_stone_heart,id=137052,ilevel=$(iLvl),gems=150haste,enchant=binding_of_haste
+
+copy=Fury_$(Tier)_Sephuzs_Secret,Fury_$(Tier)_Baseline
+finger2=sephuzs_secret,id=132452,enchant=binding_of_haste,gems=150haste,ilevel=$(iLvl)
+
+copy=Fury_$(Tier)_Prydaz_Xavarics_Magnum_Opus,Fury_$(Tier)_Baseline
+neck=prydaz_xavarics_magnum_opus,id=132444,gems=150haste,enchant=mark_of_the_hidden_satyr,ilevel=$(iLvl)
+
+copy=Fury_$(Tier)_Kiljaedens_Burning_Wish,Fury_$(Tier)_Baseline
+trinket2=kiljaedens_burning_wish,id=144259,ilevel=$(iLvl)
+
+### Arms ###
+input=Warrior_Arms_$(Tier).simc
+name=Arms_$(Tier)_Baseline
+
+copy=Arms_$(Tier)_Archavons_Heavy_Hand,Arms_$(Tier)_Baseline
+hands=archavons_heavy_hand,id=137060,ilevel=$(iLvl)
+legs=legplates_of_the_obsidian_aspect,id=138360,ilevel=$(iLvl)
+
+copy=Arms_$(Tier)_Weight_of_the_Earth,Arms_$(Tier)_Baseline
+legs=weight_of_the_earth,id=137077,ilevel=$(iLvl)
+
+copy=Arms_$(Tier)_Mannoroths_Bloodletting_Manacles,Arms_$(Tier)_Baseline
+wrist=mannoroths_bloodletting_manacles,id=137107,ilevel=$(iLvl)
+
+copy=Arms_$(Tier)_Aggramars_Stride,Arms_$(Tier)_Baseline
+feet=aggramars_stride,id=132443,ilevel=$(iLvl)
+
+copy=Arms_$(Tier)_Timeless_Stratagem,Arms_$(Tier)_Baseline
+shoulder=timeless_stratagem,id=143728,ilevel=$(iLvl)
+legs=legplates_of_the_obsidian_aspect,id=138360,ilevel=$(iLvl)
+
+copy=Arms_$(Tier)_Rethus_Incessant_Coursage,Arms_$(Tier)_Baseline
+waist=rethus_incessant_courage,id=146667,ilevel=$(iLvl),gems=150haste/150haste/150haste
+
+copy=Arms_$(Tier)_Najentus_Vertebrae,Arms_$(Tier)_Baseline
+waist=najentus_vertebrae,id=137087,ilevel=$(iLvl)
+
+copy=Arms_$(Tier)_Ayalas_Stone_Heart,Arms_$(Tier)_Baseline
+finger2=ayalas_stone_heart,id=137052,ilevel=$(iLvl),gems=150haste,enchant=binding_of_haste
+
+copy=Arms_$(Tier)_Sephuzs_Secret,Arms_$(Tier)_Baseline
+finger2=sephuzs_secret,id=132452,enchant=binding_of_haste,gems=150haste,ilevel=$(iLvl)
+
+copy=Arms_$(Tier)_Prydaz_Xavarics_Magnum_Opus,Arms_$(Tier)_Baseline
+neck=prydaz_xavarics_magnum_opus,id=132444,gems=150haste,enchant=mark_of_the_hidden_satyr,ilevel=$(iLvl)
+
+copy=Arms_$(Tier)_Kiljaedens_Burning_Wish,Arms_$(Tier)_Baseline
+trinket2=kiljaedens_burning_wish,id=144259,ilevel=$(iLvl)
