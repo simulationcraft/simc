@@ -6115,13 +6115,10 @@ std::string hunter_t::default_flask() const
 
 std::string hunter_t::default_food() const
 {
-  std::string lvl110_food =
-    ( specialization() == HUNTER_SURVIVAL ) ? "azshari_salad" : "nightborne_delicacy_platter";
-
   std::string lvl100_food =
     ( specialization() == HUNTER_SURVIVAL ) ? "pickled_eel" : "salty_squid_roll";
 
-  return ( true_level >  100 ) ? lvl110_food :
+  return ( true_level >  100 ) ? "lavish_suramar_feast" :
          ( true_level >  90  ) ? lvl100_food :
          ( true_level == 90  ) ? "sea_mist_rice_noodles" :
          ( true_level >= 80  ) ? "seafood_magnifique_feast" :
