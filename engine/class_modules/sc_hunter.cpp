@@ -6094,10 +6094,7 @@ void hunter_t::init_scaling()
 
 std::string hunter_t::default_potion() const
 {
-  std::string lvl110_potion =
-    ( specialization() == HUNTER_MARKSMANSHIP ) ? "deadly_grace" : "prolonged_power";
-
-  return ( true_level >= 100 ) ? lvl110_potion :
+  return ( true_level >= 100 ) ? "prolonged_power" :
          ( true_level >= 90  ) ? "draenic_agility" :
          ( true_level >= 85  ) ? "virmens_bite":
          "disabled";
