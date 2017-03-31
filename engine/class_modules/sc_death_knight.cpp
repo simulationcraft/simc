@@ -5767,8 +5767,8 @@ struct breath_of_sindragosa_t : public death_knight_spell_t
   {
     death_knight_spell_t::init();
 
-    snapshot_flags |= STATE_MUL_TA | STATE_TGT_MUL_TA | STATE_MUL_PERSISTENT;
-    update_flags |= STATE_MUL_TA | STATE_TGT_MUL_TA;
+    snapshot_flags |= STATE_AP | STATE_MUL_TA | STATE_TGT_MUL_TA | STATE_MUL_PERSISTENT;
+    update_flags |= STATE_AP | STATE_MUL_TA | STATE_TGT_MUL_TA;
   }
 };
 
