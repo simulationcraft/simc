@@ -2445,7 +2445,7 @@ public:
             if ( !p() -> pet.sef[SEF_FIRE] -> is_sleeping() )
               p() -> pet.sef[SEF_FIRE] -> expiration -> reschedule( p() -> pet.sef[SEF_FIRE] -> expiration -> remains() + timespan_t::from_millis( extension ) );
           }
-          else if ( p() -> buff.serenity -> up() && maybe_ptr( p() -> dbc.ptr ) )
+          else if ( p() -> buff.serenity -> up() )
           {
             // Since this is extended based on chi spender instead of chi spent, extention is the duration
             // Effect is saved as 3; extension is saved as 300 milliseconds
@@ -4567,7 +4567,7 @@ struct touch_of_death_t: public monk_spell_t
     if ( p() -> buff.combo_strikes -> up() )
       amount *= 1 + p() -> cache.mastery_value();
 
-    if ( p() -> legendary.hidden_masters_forbidden_touch && maybe_ptr( p() -> dbc.ptr ) )
+    if ( p() -> legendary.hidden_masters_forbidden_touch )
       amount *= 1 + p() -> legendary.hidden_masters_forbidden_touch -> effectN( 2 ).percent();
 
     return amount;
@@ -8645,7 +8645,7 @@ double monk_t::composite_spell_haste() const
 
   // 7.2 Sephuz's Secret passive haste. If the item is missing, default_chance will be set to 0 (by
   // the fallback buff creator).
-  if ( maybe_ptr( dbc.ptr ) && legendary.sephuzs_secret )
+  if ( legendary.sephuzs_secret )
   {
     h *= 1.0 / ( 1.0 + legendary.sephuzs_secret -> effectN( 3 ).percent() );
   }
@@ -8666,7 +8666,7 @@ double monk_t::composite_melee_haste() const
 
   // 7.2 Sephuz's Secret passive haste. If the item is missing, default_chance will be set to 0 (by
   // the fallback buff creator).
-  if ( maybe_ptr( dbc.ptr ) && legendary.sephuzs_secret )
+  if ( legendary.sephuzs_secret )
   {
     h *= 1.0 / ( 1.0 + legendary.sephuzs_secret -> effectN( 3 ).percent() );
   }
@@ -8943,7 +8943,7 @@ double monk_t::passive_movement_modifier() const
 
   // 7.2 Sephuz's Secret passive movement speed. If the item is missing, default_chance will be set
   // to 0 (by the fallback buff creator).
-  if ( maybe_ptr( dbc.ptr ) && legendary.sephuzs_secret )
+  if ( legendary.sephuzs_secret )
   {
     ms += legendary.sephuzs_secret -> effectN( 2 ).percent();
   }
@@ -10516,6 +10516,16 @@ struct monk_module_t: public module_t
       .operation( hotfix::HOTFIX_MUL)
       .modifier( 1.08 )
       .verification_value( 8 );
+    hotfix::register_effect( "Monk", "2017-03-29", "Split Personality cooldown reduction increased to 5 seconds per rank (was 3 seconds per rank).", 360744 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( -5000 )
+      .verification_value( -3000 );
+    hotfix::register_effect( "Monk", "2017-03-29", "Split Personality cooldown reduction increased to 5 seconds per rank (was 3 seconds per rank).", 362004 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( -5000 )
+      .verification_value( -3000 );
   }
 
   virtual void init( player_t* p ) const override
