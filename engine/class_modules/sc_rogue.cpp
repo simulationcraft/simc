@@ -6181,7 +6181,7 @@ struct roll_the_bones_t : public buff_t
     rogue -> buffs.buried_treasure -> expire();
   }
 
-  unsigned random_roll( timespan_t duration )
+  std::vector<buff_t*> random_roll()
   {
     std::array<unsigned, 6> rolls = { { 0, 0, 0, 0, 0, 0 } };
     for ( size_t i = 0; i < rolls.size(); ++i )
@@ -6191,7 +6191,7 @@ struct roll_the_bones_t : public buff_t
 
     unsigned largest_group = *std::max_element( rolls.begin(), rolls.end() );
 
-    unsigned n_groups = 0;
+    std::vector<buff_t*> rolled;
     for ( size_t i = 0; i < buffs.size(); ++i )
     {
       if ( rolls[ i ] != largest_group )
@@ -6199,30 +6199,42 @@ struct roll_the_bones_t : public buff_t
         continue;
       }
 
-      buffs[ i ] -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
-      n_groups++;
+      rolled.push_back( buffs[ i ] );
     }
 
-    return n_groups;
+    return rolled;
   }
 
-  unsigned fixed_roll( timespan_t duration )
+  std::vector<buff_t*> fixed_roll()
   {
-    range::for_each( rogue -> fixed_rtb, [this, duration]( size_t idx )
-    { buffs[idx] -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration ); } );
-    return as<unsigned>( rogue -> fixed_rtb.size() );
+    std::vector<buff_t*> rolled;
+    range::for_each( rogue -> fixed_rtb, [this, &rolled]( size_t idx )
+    { rolled.push_back( buffs[ idx ] ); } );
+    return rolled;
   }
 
   unsigned roll_the_bones( timespan_t duration )
   {
+    std::vector<buff_t*> rolled;
     if ( rogue -> fixed_rtb.size() == 0 )
     {
-      return random_roll( duration );
+      do
+      {
+        rolled = random_roll();
+      }
+      while ( rogue -> buffs.loaded_dice -> up() && rolled.size() < 2 );
     }
     else
     {
-      return fixed_roll( duration );
+      rolled = fixed_roll();
     }
+
+    for ( size_t i = 0; i < rolled.size(); ++i )
+    {
+      rolled[ i ] -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
+    }
+
+    return as<unsigned>( rolled.size() );
   }
 
   void execute( int stacks, double value, timespan_t duration ) override
@@ -6248,6 +6260,9 @@ struct roll_the_bones_t : public buff_t
       default:
         assert( 0 );
     }
+
+    if ( rogue -> buffs.loaded_dice -> check() )
+        rogue -> buffs.loaded_dice -> expire();
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
