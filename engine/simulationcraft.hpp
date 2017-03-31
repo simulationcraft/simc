@@ -5259,9 +5259,6 @@ public:
 
   bool hit_any_target;
 
-  /// The ability may dynamically change the number of targets (e.g., due to a buff)
-  bool dynamic_aoe;
-
   /**
    * @brief Behavior of dot.
    *

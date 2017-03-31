@@ -423,7 +423,6 @@ action_t::action_t( action_e       ty,
   dynamic_tick_action( true), // WoD updates everything on tick by default. If you need snapshotted values for a periodic effect, use persistent multipliers.
   interrupt_immediate_occurred(),
   hit_any_target(),
-  dynamic_aoe( false ),
   dot_behavior( DOT_REFRESH ),
   ability_lag(),
   ability_lag_stddev(),
@@ -3644,13 +3643,7 @@ void action_t::acquire_target( retarget_event_e /* event */,
 
 void action_t::activate()
 {
-  // On AOE actions, enable target cache regeneration when state of the enemy targets change. Also
-  // explicitly enable the target cache invalidator if the ability is flagged as being dynamic aoe
-  // (changes the number of targets hit dynamically during combat)
-  if ( n_targets() != 0 || dynamic_aoe )
-  {
-    sim -> target_non_sleeping_list.register_callback( [ this ]( player_t* ) {
-      target_cache.is_valid = false;
-    } );
-  }
+  sim -> target_non_sleeping_list.register_callback( [ this ]( player_t* ) {
+    target_cache.is_valid = false;
+  } );
 }
