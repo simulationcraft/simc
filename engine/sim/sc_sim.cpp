@@ -2511,7 +2511,9 @@ bool sim_t::iterate()
 
   if ( single_actor_batch && ! parent )
   {
-    sim_phase_str = "Generating " + player_no_pet_list[ current_index ] -> name_str;
+    sim_phase_str = "Generating " + util::to_string( current_index + 1 ) + "/" +
+      util::to_string( player_no_pet_list.size() ) + " " +
+      player_no_pet_list[ current_index ] -> name_str;
   }
 
   activate_actors();
@@ -2546,7 +2548,9 @@ bool sim_t::iterate()
             progress_bar.restart();
             util::fprintf( stdout, "%s %s\n", sim_phase_str.c_str(), progress_bar.status.c_str() );
             fflush( stdout );
-            sim_phase_str = "Generating " + player_no_pet_list[ current_index ] -> name_str;
+            sim_phase_str = "Generating " + util::to_string( current_index + 1 ) + "/" +
+              util::to_string( player_no_pet_list.size() ) + " " +
+              player_no_pet_list[ current_index ] -> name_str;
           }
 
           current_iteration = -1;

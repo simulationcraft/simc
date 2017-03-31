@@ -90,6 +90,33 @@ bool progress_bar_t::update( bool finished, int index )
     str::format( status, " %dsec", remaining_sec );
   }
 
+  if ( finished )
+  {
+    int total_min = current_time / 60;
+    int total_sec = fmod( current_time, 60 );
+    int total_msec = 1000 * ( current_time - static_cast<int>( current_time ) );
+    if ( total_min > 0 )
+    {
+      str::format( status, " %dmin", total_min );
+    }
+
+    if ( total_sec > 0 )
+    {
+      str::format( status, " %d", total_sec );
+      if ( total_msec > 0 )
+      {
+        str::format( status, ".%d", total_msec );
+      }
+
+      status += "sec";
+    }
+    else if ( total_msec > 0 )
+    {
+      str::format( status, " %dmsec", total_msec );
+    }
+
+  }
+
   if ( prev_size > status.size() )
     status.insert( status.end(), ( prev_size - status.size() ), ' ' );
 
