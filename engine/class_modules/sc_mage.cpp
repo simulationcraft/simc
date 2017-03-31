@@ -2783,6 +2783,10 @@ struct ignite_t : public residual_action_t
     // flagging thats that proc off events, to not proc off ignite if they shouldn't!
     callbacks = true;
 
+    // Ignite is not an AOE spell, however it needs to pretend to be, because ignite_spread_event_t
+    // needs up-to-date target caches.
+    dynamic_aoe = true;
+
     if ( player -> talents.conflagration -> ok() )
     {
       conflagration = new conflagration_t( player );
