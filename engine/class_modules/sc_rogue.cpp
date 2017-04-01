@@ -1947,6 +1947,20 @@ struct wound_poison_t : public rogue_poison_t
       base_multiplier *= 1.0 + p -> talent.master_poisoner -> effectN( 1 ).percent();
     }
 
+    // We could also have used action_da_multiplier() since WP is a direct damage ability.
+    double action_multiplier() const override
+    {
+      double m = rogue_poison_t::action_multiplier();
+
+      // Note: As of 04/01, Mastery is applied two times on Wound Poison. Bug ?
+      if ( p() -> mastery.potent_poisons -> ok() )
+      {
+        m *= 1.0 + p() -> cache.mastery_value();
+      }
+
+      return m;
+    }
+
     double composite_target_multiplier( player_t* target ) const override
     {
       double m = rogue_poison_t::composite_target_multiplier( target );
