@@ -2183,6 +2183,16 @@ void item::draught_of_souls( special_effect_t& effect )
         damage = new felcrazed_rage_t( effect );
         add_child( damage );
       }
+
+      switch ( effect_.player->specialization() ) { // Half effectiveness for tanks
+        case WARRIOR_PROTECTION:
+        case PALADIN_PROTECTION:
+        case DEATH_KNIGHT_BLOOD:
+        case MONK_BREWMASTER:
+        case DRUID_GUARDIAN:
+        case DEMON_HUNTER_VENGEANCE:
+          damage->base_dd_multiplier *= 0.5;
+      }
     }
 
     double composite_haste() const override
