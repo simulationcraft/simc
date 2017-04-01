@@ -246,7 +246,7 @@ class DBCRecord(RawDBCRecord):
                 continue
 
             if type_ == 'S' and self._d[i] > 0:
-                s.append('%s=\"%s\"' % (field, repr(self._dbcp.get_string(self._d[i]))))
+                s.append('%s=%s' % (field, repr(self._dbcp.get_string(self._d[i]))))
             elif type_ == 'f':
                 s.append('%s=%f' % (field, self._d[i]))
             elif type_ in 'ihb':
