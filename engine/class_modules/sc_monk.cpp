@@ -10516,12 +10516,12 @@ struct monk_module_t: public module_t
       .operation( hotfix::HOTFIX_MUL)
       .modifier( 1.08 )
       .verification_value( 8 );
-    hotfix::register_effect( "Monk", "2017-03-29", "Split Personality cooldown reduction increased to 5 seconds per rank (was 3 seconds per rank).", 360744 )
+    hotfix::register_effect( "Monk", "2017-03-29", "Split Personality cooldown reduction increased to 5 seconds per rank (was 3 seconds per rank). [SEF]", 360744 )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( -5000 )
       .verification_value( -3000 );
-    hotfix::register_effect( "Monk", "2017-03-29", "Split Personality cooldown reduction increased to 5 seconds per rank (was 3 seconds per rank).", 362004 )
+    hotfix::register_effect( "Monk", "2017-03-30", "Split Personality cooldown reduction increased to 5 seconds per rank (was 3 seconds per rank). [Serentiy]", 362004 )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( -5000 )
