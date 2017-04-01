@@ -9467,7 +9467,7 @@ void monk_t::apl_pre_windwalker()
   {
     // Food
     if ( level() > 100 )
-      pre -> add_action( "food,type=the_hungry_magister" );
+      pre -> add_action( "food,type=lavish_suramar" );
     else if ( level() > 90 )
       pre -> add_action( "food,type=salty_squid_roll" );
     else if ( level() >= 85 )
@@ -9646,8 +9646,9 @@ void monk_t::apl_combat_windwalker()
 
   def -> add_action( this, "Touch of Death", "if=target.time_to_die<=9" );
   def -> add_action( "call_action_list,name=serenity,if=(talent.serenity.enabled&cooldown.serenity.remains<=0)|buff.serenity.up" );
-  def -> add_action( "call_action_list,name=sef,if=!talent.serenity.enabled&equipped.drinking_horn_cover&((cooldown.fists_of_fury.remains<=1&chi>=3)|buff.storm_earth_and_fire.up|cooldown.storm_earth_and_fire.charges=2|target.time_to_die<=25|cooldown.touch_of_death.remains>=85)" );
-  def -> add_action( "call_action_list,name=sef,if=!talent.serenity.enabled&!equipped.drinking_horn_cover&((artifact.strike_of_the_windlord.enabled&cooldown.strike_of_the_windlord.remains<=14&cooldown.fists_of_fury.remains<=6&cooldown.rising_sun_kick.remains<=6)|buff.storm_earth_and_fire.up)" );
+  def -> add_action( "call_action_list,name=sef,if=!talent.serenity.enabled&(buff.storm_earth_and_fire.up|cooldown.storm_earth_and_fire.charges=2)" );
+  def -> add_action( "call_action_list,name=sef,if=!talent.serenity.enabled&equipped.drinking_horn_cover&((cooldown.fists_of_fury.remains<=1&chi>=3)|target.time_to_die<=25|cooldown.touch_of_death.remains>=85)" );
+  def -> add_action( "call_action_list,name=sef,if=!talent.serenity.enabled&!equipped.drinking_horn_cover&((!artifact.strike_of_the_windlord.enabled|cooldown.strike_of_the_windlord.remains<=14)&cooldown.fists_of_fury.remains<=6&cooldown.rising_sun_kick.remains<=6)" );
   def -> add_action( "call_action_list,name=st" );
 
   // Cooldowns
@@ -9680,9 +9681,7 @@ void monk_t::apl_combat_windwalker()
   }
   cd -> add_action( this, "Touch of Death", "cycle_targets=1,max_cycle_targets=2,if=!artifact.gale_burst.enabled&equipped.hidden_masters_forbidden_touch&!prev_gcd.1.touch_of_death" );
   cd -> add_action( this, "Touch of Death", "if=!artifact.gale_burst.enabled&!equipped.hidden_masters_forbidden_touch" );
-  cd -> add_action( this, "Touch of Death", "cycle_targets=1,max_cycle_targets=2,if=artifact.gale_burst.enabled&equipped.hidden_masters_forbidden_touch&((talent.serenity.enabled&cooldown.serenity.remains<=1)|chi>=2)&(cooldown.strike_of_the_windlord.remains<8|cooldown.fists_of_fury.remains<=4)&cooldown.rising_sun_kick.remains<7&!prev_gcd.1.touch_of_death" );
-  cd -> add_action( this, "Touch of Death", "if=artifact.gale_burst.enabled&!talent.serenity.enabled&!equipped.hidden_masters_forbidden_touch&cooldown.strike_of_the_windlord.remains<8&cooldown.fists_of_fury.remains<=4&cooldown.rising_sun_kick.remains<7&chi>=2" );
-  cd -> add_action( this, "Touch of Death", "if=artifact.gale_burst.enabled&((talent.serenity.enabled&cooldown.serenity.remains<=1)|chi>=2)&(cooldown.strike_of_the_windlord.remains<8|cooldown.fists_of_fury.remains<=4)&cooldown.rising_sun_kick.remains<7&!prev_gcd.1.touch_of_death" );
+  cd -> add_action( this, "Touch of Death", "cycle_targets=1,max_cycle_targets=2,if=artifact.gale_burst.enabled&((talent.serenity.enabled&cooldown.serenity.remains<=1)|chi>=2)&(cooldown.strike_of_the_windlord.remains<8|cooldown.fists_of_fury.remains<=4)&cooldown.rising_sun_kick.remains<7&!prev_gcd.1.touch_of_death" );
   // Trinket usage for procs to add toward Touch of Death Gale Burst Artifact Trait
   for ( int i = 0; i < num_items; i++ )
   {
@@ -9690,8 +9689,8 @@ void monk_t::apl_combat_windwalker()
     {
       if ( items[i].name_str == "draught_of_souls" )
       {
-        cd -> add_action( "use_item,name=" + items[i].name_str + ",if=talent.serenity.enabled&cooldown.serenity.remains>=20&!buff.serenity.up" );
-        cd -> add_action( "use_item,name=" + items[i].name_str + ",if=!talent.serenity.enabled&!buff.storm_earth_and_fire.up" );
+        cd -> add_action( "use_item,name=" + items[i].name_str + ",if=talent.serenity.enabled&!buff.serenity.up&energy.time_to_max>3" );
+        cd -> add_action( "use_item,name=" + items[i].name_str + ",if=!talent.serenity.enabled&!buff.storm_earth_and_fire.up&energy.time_to_max>3" );
       }
     }
   }
@@ -9704,32 +9703,15 @@ void monk_t::apl_combat_windwalker()
       sef -> add_action( racial_actions[i] + ",if=chi.max-chi>=1&energy.time_to_max>=0.5" );
   }
   sef -> add_action( "call_action_list,name=cd" );
-  sef -> add_action( this, "Storm, Earth, and Fire", "if=!buff.storm_earth_and_fire.up&(cooldown.touch_of_death.remains<=8|cooldown.touch_of_death.remains>85)" );
-  sef -> add_action( this, "Storm, Earth, and Fire", "if=!buff.storm_earth_and_fire.up&cooldown.storm_earth_and_fire.charges=2" );
-  sef -> add_action( this, "Storm, Earth, and Fire", "if=!buff.storm_earth_and_fire.up&target.time_to_die<=25" );
-  sef -> add_action( this, "Storm, Earth, and Fire", "if=!buff.storm_earth_and_fire.up&cooldown.fists_of_fury.remains<=1&chi>=3" );
-  sef -> add_action( this, "Fists of Fury", "if=buff.storm_earth_and_fire.up" );
-  sef -> add_action( this, "Rising Sun Kick", "if=buff.storm_earth_and_fire.up&chi=2&energy<energy.max" );
+  sef -> add_action( this, "Storm, Earth, and Fire", "if=!buff.storm_earth_and_fire.up" );
   sef -> add_action( "call_action_list,name=st" );
 
   // Serenity
   serenity -> add_action( "call_action_list,name=cd" );
   serenity -> add_talent( this, "Serenity" );
   serenity -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=active_enemies<3" );
-  serenity -> add_action( this, "Fists of Fury" );
   serenity -> add_action( this, "Strike of the Windlord" );
-
-  for ( int i = 0; i < num_items; i++ )
-  {
-    if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
-    {
-      if ( items[i].name_str == "draught_of_souls" )
-      {
-        serenity -> add_action( "use_item,name=" + items[i].name_str );
-      }
-    }
-  }
-
+  serenity -> add_action( this, "Fists of Fury", "if=(!equipped.drinking_horn_cover&(cooldown.rising_sun_kick.remains>1|active_enemies>1))|buff.serenity.remains<1" );
   serenity -> add_action( this, "Spinning Crane Kick", "if=active_enemies>=3&!prev_gcd.1.spinning_crane_kick" );
   serenity -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=active_enemies>=3" );
   serenity -> add_action( this, "Spinning Crane Kick", "if=!prev_gcd.1.spinning_crane_kick" );
@@ -9744,18 +9726,17 @@ void monk_t::apl_combat_windwalker()
     if ( racial_actions[i] == "arcane_torrent" )
       st -> add_action( racial_actions[i] + ",if=chi.max-chi>=1&energy.time_to_max>=0.5" );
   }
-  st -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=equipped.convergence_of_fates&talent.serenity.enabled&cooldown.serenity.remains>=2" );
-  st -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=equipped.convergence_of_fates&!talent.serenity.enabled" );
-  st -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=!equipped.convergence_of_fates" );
-  st -> add_action( this, "Fists of Fury", "if=equipped.convergence_of_fates&talent.serenity.enabled&cooldown.serenity.remains>=5" );
-  st -> add_action( this, "Fists of Fury", "if=equipped.convergence_of_fates&!talent.serenity.enabled" );
-  st -> add_action( this, "Fists of Fury", "if=!equipped.convergence_of_fates" );
+  st -> add_action( this, "Tiger Palm", "cycle_targets=1,if=!prev_gcd.1.tiger_palm&energy=energy.max&chi<=3" );
   st -> add_action( this, "Strike of the Windlord", "if=equipped.convergence_of_fates&talent.serenity.enabled&cooldown.serenity.remains>=10" );
-  st -> add_action( this, "Strike of the Windlord", "if=equipped.convergence_of_fates&!talent.serenity.enabled" );
-  st -> add_action( this, "Strike of the Windlord", "if=!equipped.convergence_of_fates" );
-  st -> add_action( this, "Tiger Palm", "cycle_targets=1,if=!prev_gcd.1.tiger_palm&energy=energy.max&chi<=3&buff.storm_earth_and_fire.up" );
+  st -> add_action( this, "Strike of the Windlord", "if=!(equipped.convergence_of_fates&talent.serenity.enabled)" );
+  st -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=(chi>=3&energy>=40)|chi=5" );
+  st -> add_action( this, "Fists of Fury", "if=equipped.convergence_of_fates&talent.serenity.enabled&!equipped.drinking_horn_cover&cooldown.serenity.remains>=5" );
+  st -> add_action( this, "Fists of Fury", "if=!(equipped.convergence_of_fates&talent.serenity.enabled&!equipped.drinking_horn_cover)" );
+  st -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=equipped.convergence_of_fates&talent.serenity.enabled&cooldown.serenity.remains>=2" );
+  st -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=!(equipped.convergence_of_fates&talent.serenity.enabled)" );
   st -> add_talent( this, "Whirling Dragon Punch" );
-  st -> add_action( this, "Crackling Jade Lightning", "if=equipped.the_emperors_capacitor&buff.the_emperors_capacitor.stack>=15" );
+  st -> add_action( this, "Crackling Jade Lightning", "if=equipped.the_emperors_capacitor&buff.the_emperors_capacitor.stack>=19&energy.time_to_max>3" );
+  st -> add_action( this, "Crackling Jade Lightning", "if=equipped.the_emperors_capacitor&buff.the_emperors_capacitor.stack>=14&cooldown.serenity.remains<13&talent.serenity.enabled&energy.time_to_max>3" );
   st -> add_action( this, "Spinning Crane Kick", "if=(active_enemies>=3|spinning_crane_kick.count>=3)&!prev_gcd.1.spinning_crane_kick" );
   st -> add_talent( this, "Rushing Jade Wind", "if=chi.max-chi>1&!prev_gcd.1.rushing_jade_wind" );
   st -> add_action( this, "Blackout Kick", "cycle_targets=1,if=(chi>1|buff.bok_proc.up)&!prev_gcd.1.blackout_kick" );
