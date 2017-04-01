@@ -41,6 +41,8 @@ actions.build+=/mutilate,if=energy.deficit<=25+variable.energy_targetbleed_regen
 
 # Cooldowns
 actions.cds=potion,name=old_war,if=buff.bloodlust.react|target.time_to_die<=25|debuff.vendetta.up&cooldown.vanish.remains<5
+actions.cds+=/use_item,name=draught_of_souls,if=energy.deficit>=35+variable.energy_targetbleed_regen*2&(!equipped.mantle_of_the_master_assassin|cooldown.vanish.remains>8)&(!talent.agonizing_poison.enabled|debuff.agonizing_poison.stack>=5&debuff.surge_of_toxins.remains>=3)
+actions.cds+=/use_item,name=draught_of_souls,if=mantle_duration>0&mantle_duration<3.5&dot.kingsbane.ticking
 actions.cds+=/use_item,name=tirathons_betrayal,if=buff.bloodlust.react|target.time_to_die<=20|debuff.vendetta.up
 actions.cds+=/blood_fury,if=debuff.vendetta.up
 actions.cds+=/berserking,if=debuff.vendetta.up
