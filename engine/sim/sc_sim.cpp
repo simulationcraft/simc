@@ -652,6 +652,11 @@ bool parse_fight_style( sim_t*             sim,
     sim -> raid_events_str += "/movement,first=13,distance=5,cooldown=20,players_only=1,player_chance=0.1";
     sim -> raid_events_str += "/adds,name=Beast,count=1,first=10,duration=" + util::to_string( int( sim -> max_time.total_seconds() * 0.15 ) ) + ",cooldown=" + util::to_string( int( sim -> max_time.total_seconds() * 0.25 ) ) + ",last=" + util::to_string( int( sim -> max_time.total_seconds() * 0.65 ) ) + ",duration_stddev=5,cooldown_stddev=10";
   }
+  else if ( util::str_compare_ci( value, "CastingPatchwerk" ) )
+  {
+    sim->fight_style = "CastingPatchwerk";
+    sim->raid_events_str += "/casting,cooldown=500,duration=500";
+  }
   else
   {
     std::cout << "Custom fight style specified: " << value << std::endl;
