@@ -7131,7 +7131,8 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
   // Split expressions
 
   // stealthed.(rogue|all)
-  // rogue: all rogue abilities are checked (stealth, vanish, shadow_dance)
+  // rogue: all rogue abilities are checked (stealth, vanish, shadow_dance, subterfuge)
+  // mantle: all abilities that maintain Mantle of the Master Assassin aura are checked (stealth, vanish)
   // all: all abilities that allow stealth are checked (rogue + shadowmeld)
   if ( split.size() == 2 && util::str_compare_ci( split[ 0 ], "stealthed" ) )
   {
@@ -7139,6 +7140,12 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
     {
       return make_fn_expr( split[ 0 ], [ this ]() {
         return buffs.stealth -> check() || buffs.vanish -> check() || buffs.shadow_dance -> check() || buffs.subterfuge -> check();
+      } );
+    }
+    else if ( util::str_compare_ci( split[ 1 ], "mantle" ) )
+    {
+      return make_fn_expr( split[ 0 ], [ this ]() {
+        return buffs.stealth -> check() || buffs.vanish -> check();
       } );
     }
     else if ( util::str_compare_ci( split[ 1 ], "all" ) )
