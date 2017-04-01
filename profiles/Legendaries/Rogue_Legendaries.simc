@@ -37,12 +37,12 @@ input=Rogue_Assassination_$(Tier).simc
 name=Asn_$(Tier)_Baseline
 
 copy=Asn_$(Tier)_Bracers_Boots,Asn_$(Tier)_Baseline
-shoulders=mantle_of_the_master_assassin,id=144236,ilevel=$(iLvl)
-wrists=zoldyck_family_training_shackles,id=137098,ilevel=$(iLvl)
-
-copy=Asn_$(Tier)_Bracers_Shoulders,Asn_$(Tier)_Baseline
 wrists=zoldyck_family_training_shackles,id=137098,ilevel=$(iLvl)
 feet=duskwalkers_footpads,id=137030,ilevel=$(iLvl)
+
+copy=Asn_$(Tier)_Bracers_Shoulders,Asn_$(Tier)_Baseline
+shoulders=mantle_of_the_master_assassin,id=144236,ilevel=$(iLvl)
+wrists=zoldyck_family_training_shackles,id=137098,ilevel=$(iLvl)
 
 copy=Asn_$(Tier)_Boots_Shoulders,Asn_$(Tier)_Baseline
 shoulders=mantle_of_the_master_assassin,id=144236,ilevel=$(iLvl)
@@ -54,12 +54,12 @@ input=Rogue_Assassination_Exsg_$(Tier).simc
 name=Asn_Ex_$(Tier)_Baseline
 
 copy=Asn_Ex_$(Tier)_Bracers_Boots,Asn_Ex_$(Tier)_Baseline
-shoulders=mantle_of_the_master_assassin,id=144236,ilevel=$(iLvl)
-wrists=zoldyck_family_training_shackles,id=137098,ilevel=$(iLvl)
-
-copy=Asn_Ex_$(Tier)_Bracers_Shoulders,Asn_Ex_$(Tier)_Baseline
 wrists=zoldyck_family_training_shackles,id=137098,ilevel=$(iLvl)
 feet=duskwalkers_footpads,id=137030,ilevel=$(iLvl)
+
+copy=Asn_Ex_$(Tier)_Bracers_Shoulders,Asn_Ex_$(Tier)_Baseline
+shoulders=mantle_of_the_master_assassin,id=144236,ilevel=$(iLvl)
+wrists=zoldyck_family_training_shackles,id=137098,ilevel=$(iLvl)
 
 copy=Asn_Ex_$(Tier)_Boots_Shoulders,Asn_Ex_$(Tier)_Baseline
 shoulders=mantle_of_the_master_assassin,id=144236,ilevel=$(iLvl)
