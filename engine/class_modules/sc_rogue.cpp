@@ -4426,7 +4426,7 @@ struct symbols_of_death_t : public rogue_attack_t
     p() -> buffs.symbols_of_death -> trigger();
 
     if ( p() -> sets.has_set_bonus( ROGUE_SUBTLETY, T20, B4 ) )
-      p() -> buffs.death -> trigger( 3 );
+      p() -> buffs.death -> trigger( p() -> sets.set( ROGUE_SUBTLETY, T20, B4 ) -> effectN( 1 ).base_value() );
     else
       p() -> buffs.death -> trigger( 1 );
   }
