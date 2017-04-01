@@ -330,6 +330,7 @@ struct rogue_t : public player_t
     gain_t* shadow_blades;
     gain_t* enveloping_shadows;
     gain_t* t19_4pc_subtlety;
+    gain_t* t20_4pc_assassination;
   } gains;
 
   // Spec passives
@@ -2929,6 +2930,22 @@ struct garrote_t : public rogue_attack_t
   {
     base_multiplier *= 1.0 + p -> artifact.strangler.percent();
     may_crit = false;
+
+    if ( p -> sets.has_set_bonus( ROGUE_ASSASSINATION, T20, B2 ) )
+      cooldown -> duration = data().cooldown() + p -> sets.set( ROGUE_ASSASSINATION, T20, B2 ) -> effectN( 1 ).time_value();
+
+    if ( p -> sets.has_set_bonus( ROGUE_ASSASSINATION, T20, B4 ) )
+      base_multiplier *= 1.0 + p -> sets.set( ROGUE_ASSASSINATION, T20, B4 ) -> effectN( 2 ).percent();
+  }
+
+  double cost() const override
+  {
+    double c = rogue_attack_t::cost();
+
+    if ( p() -> sets.has_set_bonus( ROGUE_ASSASSINATION, T20, B2 ) )
+      c += p() -> sets.set( ROGUE_ASSASSINATION, T20, B2 ) -> effectN( 2 ).base_value();
+
+    return c;
   }
 
   double composite_persistent_multiplier( const action_state_t* state ) const override
@@ -2986,6 +3003,12 @@ struct garrote_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
+    if ( result_is_hit( execute_state -> result ) && p() -> sets.has_set_bonus( ROGUE_ASSASSINATION, T20, B4 ) )
+    {
+      p() -> trigger_combo_point_gain( p() -> sets.set( ROGUE_ASSASSINATION, T20, B4 ) -> effectN( 1 ).base_value(),
+          p() -> gains.t20_4pc_assassination, this );
+    }
+
     td( execute_state -> target ) -> debuffs.garrote -> trigger();
   }
 
@@ -3019,6 +3042,7 @@ struct gouge_t : public rogue_attack_t
   void execute() override
   {
     rogue_attack_t::execute();
+
     if ( result_is_hit (execute_state -> result ) && p() -> buffs.broadsides -> up() )
     {
       p() -> trigger_combo_point_gain( p() -> buffs.broadsides -> data().effectN( 1 ).base_value(),
@@ -7503,6 +7527,7 @@ void rogue_t::init_gains()
   gains.curse_of_the_dreadblades = get_gain( "Curse of the Dreadblades" );
   gains.relentless_strikes       = get_gain( "Relentless Strikes"       );
   gains.t19_4pc_subtlety         = get_gain( "Tier 19 4PC Set Bonus"    );
+  gains.t20_4pc_assassination    = get_gain( "Tier 20 4PC Set Bonus"    );
   gains.shadow_satyrs_walk       = get_gain( "Shadow Satyr's Walk"      );
 }
 
