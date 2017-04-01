@@ -4409,12 +4409,26 @@ struct symbols_of_death_t : public rogue_attack_t
     dot_duration = timespan_t::zero(); // TODO: Check ticking in later builds
   }
 
+  double cost() const override
+  {
+    double c = rogue_attack_t::cost();
+
+    if ( p() -> sets.has_set_bonus( ROGUE_SUBTLETY, T20, B2 ) )
+      c += p() -> sets.set( ROGUE_SUBTLETY, T20, B2 ) -> effectN( 1 ).base_value();
+
+    return c;
+  }
+
   void execute() override
   {
     rogue_attack_t::execute();
 
     p() -> buffs.symbols_of_death -> trigger();
-    p() -> buffs.death -> trigger();
+
+    if ( p() -> sets.has_set_bonus( ROGUE_SUBTLETY, T20, B4 ) )
+      p() -> buffs.death -> trigger( 3 );
+    else
+      p() -> buffs.death -> trigger( 1 );
   }
 };
 
@@ -7677,16 +7691,16 @@ void rogue_t::create_buffs()
                                 .refresh_behavior( BUFF_REFRESH_PANDEMIC );
   buffs.roll_the_bones        = new buffs::roll_the_bones_t( this, rtb_creator );
   // Subtlety
-  buffs.death                 = buff_creator_t( this, "death", spec.symbols_of_death -> effectN( 3 ).trigger() );
+  const int death_stacks      = ( sets.has_set_bonus( ROGUE_SUBTLETY, T20, B4 ) ) ? sets.set( ROGUE_SUBTLETY, T20, B4 ) -> effectN( 1 ).base_value(): 1;
+  buffs.death                 = buff_creator_t( this, "death", spec.symbols_of_death -> effectN( 3 ).trigger() )
+                                .max_stack( death_stacks );
   buffs.shadow_blades         = new buffs::shadow_blades_t( this );
   buffs.shadow_dance          = new buffs::shadow_dance_t( this );
   buffs.symbols_of_death      = buff_creator_t( this, "symbols_of_death", spec.symbols_of_death )
                                 .refresh_behavior( BUFF_REFRESH_PANDEMIC )
                                 .period( timespan_t::zero() )
                                 .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-                                .default_value( 1.0 +
-                                                spec.symbols_of_death -> effectN( 1 ).percent() +
-                                                artifact.etched_in_shadow.percent() );
+                                .default_value( 1.0 + spec.symbols_of_death -> effectN( 1 ).percent() + artifact.etched_in_shadow.percent() );
 
 
   // Talents
@@ -7788,7 +7802,7 @@ void rogue_t::create_buffs()
   buffs.loaded_dice               = buff_creator_t( this, "loaded_dice", artifact.loaded_dice.data().effectN( 1 ).trigger() );
 
   buffs.feeding_frenzy            = buff_creator_t( this, "feeding_frenzy", artifact.feeding_frenzy.data().effectN( 1 ).trigger() )
-                                    .max_stack( 3 ); // Note: Hardcoded to 3 since we modelize it as a 3 stack buff
+                                    .max_stack( 3 ); // Note: Hardcoded to 3 since we modelize it as a 3 stack buff, not available in spell datas
   buffs.finality_eviscerate       = buff_creator_t( this, "finality_eviscerate", find_spell( 197496 ) )
                                     .trigger_spell( artifact.finality )
                                     .default_value( find_spell( 197496 ) -> effectN( 1 ).percent() / COMBO_POINT_MAX )
