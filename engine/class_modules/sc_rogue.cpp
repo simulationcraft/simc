@@ -1832,7 +1832,7 @@ struct deadly_poison_t : public rogue_poison_t
 
     double composite_target_multiplier( player_t* target ) const override
     {
-      double m = rogue_attack_t::composite_target_multiplier( target );
+      double m = rogue_poison_t::composite_target_multiplier( target );
 
       if ( p() -> legendary.zoldyck_family_training_shackles )
       {
@@ -1882,7 +1882,7 @@ struct deadly_poison_t : public rogue_poison_t
 
     double composite_target_multiplier( player_t* target ) const override
     {
-      double m = rogue_attack_t::composite_target_multiplier( target );
+      double m = rogue_poison_t::composite_target_multiplier( target );
 
       if ( p() -> legendary.zoldyck_family_training_shackles )
       {
@@ -1949,7 +1949,7 @@ struct wound_poison_t : public rogue_poison_t
 
     double composite_target_multiplier( player_t* target ) const override
     {
-      double m = rogue_attack_t::composite_target_multiplier( target );
+      double m = rogue_poison_t::composite_target_multiplier( target );
 
       if ( p() -> legendary.zoldyck_family_training_shackles )
       {
