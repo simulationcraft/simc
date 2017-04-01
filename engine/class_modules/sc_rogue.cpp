@@ -4336,10 +4336,16 @@ struct slice_and_dice_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
-    double snd = p() -> buffs.slice_and_dice -> data().effectN( 1 ).percent();
     timespan_t snd_duration = ( cast_state( execute_state ) -> cp + 1 ) * p() -> buffs.slice_and_dice -> data().duration();
 
-    p() -> buffs.slice_and_dice -> trigger( 1, snd, -1.0, snd_duration );
+    double snd_mod = 1.0;
+    if ( p() -> buffs.loaded_dice -> up() )
+    {
+      snd_mod *= 1.0 + p() -> buffs.loaded_dice -> data().effectN( 1 ).percent();
+      p() -> buffs.loaded_dice -> expire();
+    }
+
+    p() -> buffs.slice_and_dice -> trigger( 1, snd_mod, -1.0, snd_duration );
   }
 };
 
@@ -6409,7 +6415,7 @@ double rogue_t::composite_melee_speed() const
   double h = player_t::composite_melee_speed();
 
   if ( buffs.slice_and_dice -> check() )
-    h *= 1.0 / ( 1.0 + buffs.slice_and_dice -> value() );
+    h *= 1.0 / ( 1.0 + talent.slice_and_dice -> effectN( 1 ).percent() * buffs.slice_and_dice -> value() );
 
   if ( buffs.adrenaline_rush -> check() )
     h *= 1.0 / ( 1.0 + buffs.adrenaline_rush -> value() );
@@ -8165,7 +8171,7 @@ double rogue_t::energy_regen_per_second() const
 
   if ( buffs.slice_and_dice -> up() )
   {
-    r *= 1.0 + talent.slice_and_dice -> effectN( 3 ).percent();
+    r *= 1.0 + talent.slice_and_dice -> effectN( 3 ).percent() * buffs.slice_and_dice -> value();
   }
 
   return r;
