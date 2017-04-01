@@ -2297,8 +2297,8 @@ struct talon_slash_t : public hunter_main_pet_attack_t
     background = true;
     attack_power_mod.direct = 1.0 / 3.0; // data hardcoded in a tooltip
     base_multiplier *= 1.0 + p -> specs.spiked_collar -> effectN( 1 ).percent();
-    // XXX: this is going to be hard to test... be on the safe side for now
-    can_hunting_companion = false;
+    // 2017-03-31 hotfix: "Talon Bonds can proc Mastery: Hunting Companion."
+    can_hunting_companion = true;
   }
 
   double composite_attack_power() const override
@@ -7079,6 +7079,12 @@ struct hunter_module_t: public module_t
       .operation( hotfix::HOTFIX_SET )
       .modifier( 7.2 )
       .verification_value( 6.5 );
+
+    hotfix::register_spell( "Hunter", "2017-3-31", "Echo of Ohn’ara’s proc chance increased to 20% (was 10%).", 238125 )
+      .field( "proc_chance" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 20 )
+      .verification_value( 10 );
   }
 
   virtual void combat_begin( sim_t* ) const override {}
