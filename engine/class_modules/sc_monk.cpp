@@ -4989,7 +4989,7 @@ struct storm_earth_and_fire_t: public monk_spell_t
 
     if ( p -> artifact.split_personality.rank() )
     {
-      cooldown -> duration += p -> artifact.split_personality.time_value();
+      cooldown -> duration += (p -> artifact.split_personality.rank() * p -> artifact.split_personality.data().effectN( 1 ).time_value() );
     }
 
     cooldown -> charges += p -> spec.storm_earth_and_fire_2 -> effectN( 1 ).base_value();
