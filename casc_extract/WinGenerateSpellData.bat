@@ -10,5 +10,6 @@ cd ..
 cd ..
 set curr=%cd%
 cd dbc_extract3
+robocopy "C:\World of Warcraft\Cache\ADB\enUS" %cd%\cache\live DBCache.bin
 call generate.bat %wowdir% %curr%\casc_extract\wow
 pause

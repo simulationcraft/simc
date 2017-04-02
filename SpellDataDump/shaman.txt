@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 Live (wow build 23826, git build 9b6da33)
+SimulationCraft 720-01 for World of Warcraft 7.2.0 Live (wow build 23826, git build 475fb10)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -784,6 +784,7 @@ Effects          :
 Description      : Casts a bolt of lightning at the target for $s1 Nature damage.
 
 Name             : Chain Lightning Overload (id=45297) [Spell Family (11)] 
+Hotfixed         : Attributes
 Class            : Shaman
 School           : Nature
 Spell Level      : 32 (max 37)
@@ -791,7 +792,7 @@ Range            : 100 yards
 Affecting spells : Elemental Fury (60188), Electric Discharge (191577), Al'Akir's Acrimony (208699), Chain Lightning (231722)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
-                 : .......x .......x ........ ........   ........ ........ ........ ........ 
+                 : .......x .......x ........ ........   ........ .......x ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1031,6 +1032,7 @@ Effects          :
 Description      : Heals an injured nearby raid or party member.
 
 Name             : Tidal Waves (id=53390) [Spell Family (11)] 
+Hotfixed         : Attributes
 Class            : Shaman
 School           : Physical
 Duration         : 15 seconds
@@ -1039,7 +1041,7 @@ Proc Chance      : 100%
 Proc Flags       : ........ ..x...x. ........ ........ 
                  : AOE Heal, Heal
 Affecting spells : Tidal Chains (207088), Tidal Waves (231785), 
-Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
+Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3660,6 +3662,7 @@ Description      : Sears the target with fire, causing $s1 Fire damage and then 
 Tooltip          : Suffering $w2 Fire damage every $t2 sec.
 
 Name             : Chain Lightning (id=188443) [Spell Family (11)] 
+Hotfixed         : Attributes
 Class            : Elemental Shaman
 School           : Nature
 Spell Level      : 28
@@ -3670,7 +3673,7 @@ Category         : 85
 Affecting spells : Elemental Focus (16246), Elemental Fury (60188), Spiritwalker's Grace (79206), Ascendance (114050), Lucidity (137326), Electric Discharge (191577), Stormkeeper (205495), Al'Akir's Acrimony (208699), Chain Lightning (231722)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ .......x ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
@@ -4251,7 +4254,7 @@ Name             : Storm Elemental (id=192249) [Spell Family (11)]
 Class            : Shaman
 School           : Nature
 Spell Level      : 1
-Range            : 30 yards
+Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 150 seconds
 Category         : 1572
@@ -4831,7 +4834,7 @@ Name             : Fire Elemental (id=198067) [Spell Family (11)]
 Class            : Elemental Shaman
 School           : Fire
 Spell Level      : 56
-Range            : 30 yards
+Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 300 seconds
 Category         : 1572
@@ -4850,23 +4853,28 @@ Effects          :
 Description      : Calls forth a Greater Fire Elemental to rain destruction on your enemies for $188592d.
 
 Name             : Earth Elemental (id=198103) [Spell Family (11)] 
+Hotfixed         : Attributes
 Class            : Elemental Shaman
 School           : Nature
 Spell Level      : 36
-Range            : 30 yards
+Range            : 40 yards
 GCD              : 1.5 seconds
+Duration         : 60 seconds
 Cooldown         : 300 seconds
 Affecting spells : Lucidity (137326)
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ....x... 
                  : ........ ........ ...x.... ........   ........ ........ .x...... ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Disable target procs (113)
 Effects          :
 #1 (id=291153)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
+#2 (id=372327)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+                   Hotfixed: NEW EFFECT
 Description      : Calls forth a Greater Earth Elemental to protect you and your allies for $d.
 
 Name             : Gathering Storms (id=198299) [Spell Family (11), Passive] 

@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 Live (wow build 23826, git build 9b6da33)
+SimulationCraft 720-01 for World of Warcraft 7.2.0 Live (wow build 23826, git build 475fb10)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -3365,8 +3365,9 @@ Effects          :
 #5 (id=191103)   : Apply Aura (6) | Unknown effect sub type (218)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf7 | Target: Self(1)
 #6 (id=260817)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 8 | Scaled Value: 8 | Target: Self(1)
+                   Base Value: 18 | Scaled Value: 18 | Target: Self(1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Rising Sun Kick (107428), Rising Sun Kick (185099), Blackout Strike (205523), Blackout Kick (228649)
+                   Hotfixed: Base Value (8 -> 17), Chain Multiplier (0 -> 1)
 #7 (id=260818)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #8 (id=260819)   : Apply Aura (6) | Dummy (4)
@@ -4790,7 +4791,7 @@ $high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
 Name             : Soothing Mist (Honor Talent) (id=209525) [Spell Family (53)] 
 Class            : Monk
 School           : Nature
-Resource         : 0% Base Mana and 0.3% Base Mana (3300 @Level 110) per second or tick
+Resource         : 0% Base Mana and 0.225% Base Mana (2475 @Level 110) per second or tick [Hotfixed: Percent Cost per Tick (0.3 -> 0.225)]
 Spell Level      : 10
 Range            : 40 yards
 GCD              : 0.5 seconds

@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 Live (wow build 23826, git build 9b6da33)
+SimulationCraft 720-01 for World of Warcraft 7.2.0 Live (wow build 23826, git build 475fb10)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -88,6 +88,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=246)      : Apply Aura (6) | Periodic Damage: shadow every 20 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 5.50000 | Target: Enemy(6)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 Description      : Inflicts impending doom upon the target, causing $o1 Shadow damage after $d.
 
 |cFFFFFFFFDoom damage generates 1 Soul Shard.|r
@@ -2862,6 +2863,7 @@ Effects          :
 Description      : Life in the twisting nether has made this demon particularly agile, increasing its chance to dodge and parry by $s1%.
 
 Name             : Backdraft (id=117828) [Spell Family (5)] 
+Hotfixed         : Attributes
 Class            : Warlock
 School           : Physical
 Duration         : 10 seconds
@@ -2869,7 +2871,7 @@ Stacks           : 1 initial, 4 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
-Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
+Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4604,6 +4606,7 @@ Effects          :
 Description      : Bite the target, dealing Shadow damage.
 
 Name             : Eye Laser (id=205231) [Spell Family (5)] 
+Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Range            : 40 yards
@@ -4611,7 +4614,7 @@ Cast Time        : 2 seconds
 Velocity         : 60 yards/sec
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ..x..... ........   ........ ........ ........ ........ 
+                 : ........ ........ ..x..... ........   ........ .......x ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4621,12 +4624,13 @@ Effects          :
 Description      : Fires an Eye Laser that hits all Doomed targets for $s1 Shadow damage.
 
 Name             : Phantom Singularity (id=205246) [Spell Family (5)] 
+Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Range            : 40 yards
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ .x...... 
-                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   ........ .......x ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4807,7 +4811,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=319901)   : School Damage: chromatic (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 5.00000 | Target: Unknown(25)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 8.00000 | Target: Unknown(25)
+                   Hotfixed: SP Coefficient (5 -> 8), Chain Multiplier (0 -> 1)
 Description      : Unleashes a devastating blast of chaos, causing $s1 Chaos damage. Chaos Bolt always critically strikes and your critical strike chance increases its damage.
 
 Name             : Chaos Bolt (id=215409) [Spell Family (107), Hidden] 
@@ -4896,10 +4901,10 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 0x7f | Target: Self(1)
 #2 (id=331182)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 100 | Scaled Value: 100 | Target: Self(1)
-                   Affected Spells: Inimitable Agony (199111), Hideous Corruption (199112), Drained to a Husk (199120), Inherently Unstable (199152), Seeds of Doom (199153), Perdition (199158), Shadowy Incantations (199163), Shadows of the Flesh (199212), Long Dark Night of the Soul (199214), Sweet Souls (199220), Fatal Echoes (199257), Compounding Horror (199282), Soul Flame (199471), Wrath of Consumption (199472), Soul Flame (199581), Wrath of Consumption (199646), Harvester of Souls (201424), Souls of the Damned (216463), Souls of the Damned (216721), Souls of the Damned (216722), Souls of the Damned (216724), Crystalline Shadows (221862), Winnowing (238072), Sinister Seeds (238108), Rend Soul (242834)
+                   Affected Spells: Inimitable Agony (199111), Hideous Corruption (199112), Drained to a Husk (199120), Inherently Unstable (199152), Seeds of Doom (199153), Perdition (199158), Shadowy Incantations (199163), Shadows of the Flesh (199212), Long Dark Night of the Soul (199214), Sweet Souls (199220), Fatal Echoes (199257), Compounding Horror (199282), Soul Flame (199471), Wrath of Consumption (199472), Soul Flame (199581), Wrath of Consumption (199646), Harvester of Souls (201424), Souls of the Damned (216463), Souls of the Damned (216721), Souls of the Damned (216722), Souls of the Damned (216724), Crystalline Shadows (221862), Winnowing (238072), Sinister Seeds (238108)
 #3 (id=345006)   : Apply Aura (6) | Add Percent Modifier: Spell Tick Time (108)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 8 | Target: Self(1)
-                   Affected Spells: Inimitable Agony (199111), Hideous Corruption (199112), Drained to a Husk (199120), Inherently Unstable (199152), Seeds of Doom (199153), Perdition (199158), Shadowy Incantations (199163), Shadows of the Flesh (199212), Long Dark Night of the Soul (199214), Sweet Souls (199220), Fatal Echoes (199257), Compounding Horror (199282), Soul Flame (199471), Wrath of Consumption (199472), Soul Flame (199581), Wrath of Consumption (199646), Harvester of Souls (201424), Souls of the Damned (216463), Souls of the Damned (216721), Souls of the Damned (216722), Souls of the Damned (216724), Crystalline Shadows (221862), Winnowing (238072), Sinister Seeds (238108), Rend Soul (242834)
+                   Affected Spells: Inimitable Agony (199111), Hideous Corruption (199112), Drained to a Husk (199120), Inherently Unstable (199152), Seeds of Doom (199153), Perdition (199158), Shadowy Incantations (199163), Shadows of the Flesh (199212), Long Dark Night of the Soul (199214), Sweet Souls (199220), Fatal Echoes (199257), Compounding Horror (199282), Soul Flame (199471), Wrath of Consumption (199472), Soul Flame (199581), Wrath of Consumption (199646), Harvester of Souls (201424), Souls of the Damned (216463), Souls of the Damned (216721), Souls of the Damned (216722), Souls of the Damned (216724), Crystalline Shadows (221862), Winnowing (238072), Sinister Seeds (238108)
 #4 (id=370676)   : Apply Aura (6) | Add Percent Modifier: Spell Proc Chance (108)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 18 | Target: Self(1)
                    Affected Spells: Rend Soul (238144)
@@ -5335,12 +5340,13 @@ Effects          :
 Description      : Life Tap increases your damage dealt by $235156s1% for $235156d.
 
 Name             : Jaws of Shadow (id=242922) 
+Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Range            : 100 yards
 Duration         : 15 seconds
-Attributes       : ........ ........ ........ ..x.....   ........ ...x.... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5351,16 +5357,17 @@ Effects          :
 Tooltip          : Increases the damage of Fel Firebolt by $s1%.
 
 Name             : Searing Bolt (id=243050) [Spell Family (5)] 
+Hotfixed         : Attributes
 Class            : Warlock
 School           : Fire
 Spell Level      : 1
 Range            : 100 yards
 Velocity         : 20 yards/sec
-Duration         : 30 seconds
+Duration         : 20 seconds
 Stacks           : 20 maximum
 Proc Chance      : 101%
 Affecting spells : Odr, Shawl of the Ymirjar (212173)
-Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ x....... ..x.....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5370,7 +5377,8 @@ Effects          :
 #1 (id=369150)   : School Damage: fire (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000 | Target: Unknown(25)
 #2 (id=369151)   : Apply Aura (6) | Periodic Damage: fire every 1 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.10000 | Target: Unknown(25)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.07000 | Target: Unknown(25)
+                   Hotfixed: SP Coefficient (0.1 -> 0.07), Chain Multiplier (0 -> 1)
 Description      : Sends a searing bolt at the enemy, causing $s1 Fire damage, and an additional $o2 Fire damage over $d, stacking up to $u times.
 Tooltip          : Burning for $w2 Fire damage every $t2 sec.
 
