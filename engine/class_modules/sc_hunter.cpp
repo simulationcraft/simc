@@ -50,8 +50,6 @@ struct hunter_td_t: public actor_target_data_t
     dot_t* piercing_shots;
     dot_t* lacerate;
     dot_t* on_the_trail;
-    // dot shared by all of the Cobra Commander artifact trait snakes
-    dot_t* deathstrike_venom;
     dot_t* a_murder_of_crows;
   } dots;
 
@@ -1721,21 +1719,6 @@ struct sneaky_snake_t: public hunter_secondary_pet_t
         stats = o() -> pets.sneaky_snakes[ 0 ] -> get_stats( name_str );
 
       return base_t::init_finished();
-    }
-
-    // does not pandemic
-    timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
-    {
-      return dot -> time_to_next_tick() + triggered_duration;
-    }
-
-    // all of the snakes share and stack a single instance of the dot
-    dot_t* get_dot( player_t* t ) override
-    {
-      if ( ! t ) t = target;
-      if ( ! t ) return nullptr;
-
-      return o() -> get_target_data( t ) -> dots.deathstrike_venom;
     }
 
     void trigger( action_state_t* s )
@@ -5372,7 +5355,6 @@ hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ):
   dots.piercing_shots = target -> get_dot( "piercing_shots", p );
   dots.lacerate = target -> get_dot( "lacerate", p );
   dots.on_the_trail = target -> get_dot( "on_the_trail", p );
-  dots.deathstrike_venom = target -> get_dot( "deathstrike_venom", p );
   dots.a_murder_of_crows = target -> get_dot( "a_murder_of_crows", p );
 
   debuffs.hunters_mark = 
