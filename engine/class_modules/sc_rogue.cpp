@@ -3371,7 +3371,10 @@ struct kingsbane_t : public rogue_attack_t
 
     mh -> target = state -> target;
     mh -> execute();
+
     oh -> target = state -> target;
+    // Note: As of 04/02/2017, Kingsbane OH Strike can proc Seal Fate (bug ?)
+    p() -> trigger_seal_fate( state );
     oh -> execute();
   }
 };
