@@ -1,11 +1,16 @@
-hunter="Hunter_SV_T19P"
+hunter="Hunter_Survival_T19M"
 level=110
-race=blood_elf
+race=troll
 role=attack
 position=back
 talents=3101031
-artifact=34:0:0:0:0:1068:1:1072:3:1073:3:1074:3:1075:3:1076:3:1077:2:1079:1:1080:1:1082:1:1084:1:1338:1
+artifact=34:0:0:0:0:1068:1:1070:3:1071:3:1072:3:1073:3:1074:3:1075:3:1076:3:1077:3:1078:3:1079:1:1080:1:1081:1:1082:1:1083:1:1084:1:1338:1
 spec=survival
+
+# Default consumables
+potion=prolonged_power
+flask=seventh_demon
+food=lavish_suramar_feast
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -14,13 +19,13 @@ spec=survival
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
-actions.precombat=flask,type=flask_of_the_seventh_demon
-actions.precombat+=/food,type=azshari_salad
+actions.precombat=flask
+actions.precombat+=/augmentation,type=defiled
+actions.precombat+=/food
 actions.precombat+=/summon_pet
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion,name=prolonged_power
-actions.precombat+=/augmentation,type=defiled
+actions.precombat+=/potion
 actions.precombat+=/explosive_trap
 actions.precombat+=/steel_trap
 actions.precombat+=/dragonsfire_grenade
@@ -28,11 +33,10 @@ actions.precombat+=/harpoon
 
 # Executed every time the actor is available.
 actions=auto_attack
-actions+=/use_item,name=tirathons_betrayal
 actions+=/arcane_torrent,if=focus.deficit>=30
 actions+=/berserking,if=(buff.spitting_cobra.up&buff.mongoose_fury.stack>2&buff.aspect_of_the_eagle.up)|(!talent.spitting_cobra.enabled&buff.aspect_of_the_eagle.up)
 actions+=/blood_fury,if=(buff.spitting_cobra.up&buff.mongoose_fury.stack>2&buff.aspect_of_the_eagle.up)|(!talent.spitting_cobra.enabled&buff.aspect_of_the_eagle.up)
-actions+=/potion,name=prolonged_power,if=(talent.spitting_cobra.enabled&buff.spitting_cobra.remains)|(!talent.spitting_cobra.enabled&buff.aspect_of_the_eagle.remains)
+actions+=/potion,if=(talent.spitting_cobra.enabled&buff.spitting_cobra.remains)|(!talent.spitting_cobra.enabled&buff.aspect_of_the_eagle.remains)
 actions+=/call_action_list,name=moknathal,if=talent.way_of_the_moknathal.enabled
 actions+=/call_action_list,name=nomok,if=!talent.way_of_the_moknathal.enabled
 
@@ -112,30 +116,29 @@ actions.nomok+=/butchery
 actions.nomok+=/throwing_axes
 actions.nomok+=/raptor_strike,if=focus>75-cooldown.flanking_strike.remains*focus.regen
 
-head=helm_of_endless_dunes,id=134471,bonus_id=1727
-neck=understone_gorget,id=134491,bonus_id=1727,enchant=mark_of_the_hidden_satyr
-shoulders=epaulets_of_deceitful_intent,id=134480,bonus_id=1727
-back=cape_of_rigid_order,id=134402,bonus_id=1727,enchant=200agi
-chest=decontaminated_chain_tunic,id=134463,bonus_id=1727
-wrists=remorseless_chain_armbands,id=137405,bonus_id=1727
-hands=gloves_of_fleshshaping,id=134468,bonus_id=1727
-waist=cinch_of_frozen_fear,id=134482,bonus_id=1727
-legs=leggings_of_acidic_venom,id=137450,bonus_id=1727
-feet=plasmadrilled_steel_toes,id=137444,bonus_id=1727
-finger1=ring_of_contempt,id=134490,bonus_id=1727,enchant=200vers
-finger2=ring_of_looming_menace,id=134533,bonus_id=1727,enchant=200vers
-trinket1=chaos_talisman,id=137459,bonus_id=1727
-trinket2=tirathons_betrayal,id=137537,bonus_id=1727
-main_hand=talonclaw,id=128808,ilevel=870
+head=greyed_dragonscale_coif,id=139214,bonus_id=1806
+neck=blackened_portalstone_necklace,id=139332,bonus_id=1806,enchant=mark_of_the_hidden_satyr
+shoulders=matted_fur_pauldrons,id=139217,bonus_id=1806
+back=mantle_of_the_victorious_dead,id=142540,bonus_id=3469,enchant=200agi
+chest=corroded_valkyr_chainmail,id=142433,bonus_id=3469/1512
+wrists=biteresistant_wristclamps,id=142423,bonus_id=3469
+hands=kvaldir_exults_grips,id=142434,bonus_id=3469
+waist=anchor_chain_waistguard,id=142420,bonus_id=3469/1512
+legs=leggings_of_the_undaunted,id=142421,bonus_id=3469
+feet=malignant_sabatons,id=138211,bonus_id=1806
+finger1=ring_of_ascended_glory,id=142520,bonus_id=3469,enchant=200vers
+finger2=mindrend_band,id=138220,bonus_id=1806,enchant=200vers
+trinket1=bloodthirsty_instinct,id=139329,bonus_id=1806
+trinket2=eye_of_guarm,id=142506,bonus_id=607/3469
+main_hand=talonclaw,id=128808,gem_id=142518/142511/142510,relic_id=3469/3469/3469:1512
 
 # Gear Summary
-# gear_ilvl=842.00
-# gear_agility=11859
-# gear_stamina=18863
-# gear_crit_rating=5604
-# gear_haste_rating=6218
-# gear_mastery_rating=2054
-# gear_versatility_rating=4451
-# gear_armor=2433
-# set_bonus=tier19p_mail_2pc=1
-summon_pet=carrion_bird
+# gear_ilvl=888.40
+# gear_agility=20121
+# gear_stamina=29203
+# gear_crit_rating=8413
+# gear_haste_rating=6142
+# gear_mastery_rating=5443
+# gear_versatility_rating=2486
+# gear_armor=2824
+summon_pet=cat

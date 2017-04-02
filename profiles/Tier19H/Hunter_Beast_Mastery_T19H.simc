@@ -1,11 +1,16 @@
-hunter="Hunter_BM_T19P"
+hunter="Hunter_Beast_Mastery_T19H"
 level=110
 race=orc
 role=attack
 position=ranged_back
-talents=2102012
-artifact=56:0:0:0:0:869:3:870:3:872:3:874:3:875:3:878:1:880:1:881:1:882:1:1095:3:1336:1
+talents=3102012
+artifact=56:0:0:0:0:868:3:869:3:870:3:872:3:874:3:875:3:878:1:879:1:880:1:881:1:882:1:1095:3:1336:1
 spec=beast_mastery
+
+# Default consumables
+potion=prolonged_power
+flask=seventh_demon
+food=lavish_suramar_feast
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -14,13 +19,13 @@ spec=beast_mastery
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
-actions.precombat=flask,type=flask_of_the_seventh_demon
-actions.precombat+=/food,type=nightborne_delicacy_platter
+actions.precombat=flask
+actions.precombat+=/augmentation,type=defiled
+actions.precombat+=/food
 actions.precombat+=/summon_pet
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion,name=prolonged_power
-actions.precombat+=/augmentation,type=defiled
+actions.precombat+=/potion
 
 # Executed every time the actor is available.
 actions=auto_shot
@@ -28,7 +33,7 @@ actions+=/arcane_torrent,if=focus.deficit>=30
 actions+=/berserking
 actions+=/blood_fury
 actions+=/volley,toggle=on
-actions+=/potion,name=prolonged_power,if=buff.bestial_wrath.remains|!cooldown.beastial_wrath.remains
+actions+=/potion,if=buff.bestial_wrath.remains|!cooldown.beastial_wrath.remains
 actions+=/a_murder_of_crows
 actions+=/stampede,if=buff.bloodlust.up|buff.bestial_wrath.up|cooldown.bestial_wrath.remains<=2|target.time_to_die<=14
 actions+=/dire_beast,if=cooldown.bestial_wrath.remains>3
@@ -43,31 +48,29 @@ actions+=/multishot,if=spell_targets>1&(pet.cat.buff.beast_cleave.remains<gcd.ma
 actions+=/chimaera_shot,if=focus<90
 actions+=/cobra_shot,if=(cooldown.kill_command.remains>focus.time_to_max&cooldown.bestial_wrath.remains>focus.time_to_max)|(buff.bestial_wrath.up&focus.regen*cooldown.kill_command.remains>30)|target.time_to_die<cooldown.kill_command.remains
 
-head=collar_of_honorable_exultation,id=136777,bonus_id=1727
-neck=strand_of_the_stars,id=137487,bonus_id=1727,enchant=mark_of_the_distant_army
-shoulders=epaulets_of_deceitful_intent,id=134480,bonus_id=1727
-back=cape_of_rigid_order,id=134402,bonus_id=1727,enchant=200agi
-chest=thunderfused_valkyr_hauberk,id=133622,bonus_id=1727
-wrists=remorseless_chain_armbands,id=137405,bonus_id=1727
-hands=lavabreaker_gauntlets,id=137519,bonus_id=1727
-waist=belt_of_mighty_links,id=137456,bonus_id=1727
-legs=mute_erasure_legguards,id=134475,bonus_id=1727
-feet=whelp_handlers_lined_boots,id=134464,bonus_id=1727
-finger1=archdruids_tainted_seal,id=134487,bonus_id=1727,enchant=200mastery
-finger2=ring_of_twisted_webbing,id=134540,bonus_id=1727,enchant=200mastery
-trinket1=naraxas_spiked_tongue,id=137349,bonus_id=1727
-trinket2=chrono_shard,id=137419,bonus_id=1727
-main_hand=titanstrike,id=128861,ilevel=870
+head=collar_of_honorable_exultation,id=136777,bonus_id=1517/3418
+neck=intrepid_necklace_of_prophecy,id=130240,bonus_id=669/1769,gems=200agility,enchant=mark_of_the_hidden_satyr
+shoulders=epaulets_of_deceitful_intent,id=134480,bonus_id=1517/3418
+back=drape_of_the_raven_lord,id=136770,bonus_id=1517/3418,enchant=binding_of_agility
+chest=thunderfused_valkyr_hauberk,id=133622,bonus_id=1517/3418
+wrists=remorseless_chain_armbands,id=137405,bonus_id=1517/3418
+hands=lavabreaker_gauntlets,id=137519,bonus_id=1517/3418
+waist=creeping_string_of_larva,id=139212,bonus_id=1487/1805
+legs=singular_chain_leggings,id=139215,bonus_id=1487/1805
+feet=whelp_handlers_lined_boots,id=134464,bonus_id=1517/3418
+finger1=archdruids_tainted_seal,id=134487,bonus_id=1517/3418,enchant=binding_of_mastery
+finger2=shadowruby_band,id=136713,bonus_id=669/1703,gems=150mastery,enchant=binding_of_mastery
+trinket1=chrono_shard,id=137419,bonus_id=1517/3418
+trinket2=bloodthirsty_instinct,id=139329,bonus_id=1487/1805
+main_hand=titanstrike,id=128861,ilevel=894,gem_id=137365/133768/137543
 
 # Gear Summary
-# gear_ilvl=842.00
-# gear_agility=11859
-# gear_stamina=18862
-# gear_crit_rating=1373
-# gear_haste_rating=4310
-# gear_mastery_rating=11541
-# gear_versatility_rating=1107
-# gear_armor=2433
-# set_bonus=journey_through_time_2pc=1
+# gear_ilvl=864.93
+# gear_agility=16584
+# gear_stamina=23433
+# gear_crit_rating=1504
+# gear_haste_rating=4946
+# gear_mastery_rating=12669
+# gear_armor=2630
 # set_bonus=tier19p_mail_2pc=1
 summon_pet=cat

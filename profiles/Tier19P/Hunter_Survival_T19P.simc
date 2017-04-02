@@ -1,10 +1,10 @@
-hunter="Hunter_SV_T19H"
+hunter="Hunter_Survival_T19P"
 level=110
-race=orc
+race=blood_elf
 role=attack
 position=back
 talents=3101031
-artifact=34:0:0:0:0:1068:1:1070:2:1072:3:1073:3:1074:3:1075:3:1076:3:1077:3:1079:1:1080:1:1082:1:1083:1:1084:1:1338:1
+artifact=34:0:0:0:0:1068:1:1072:3:1073:3:1074:3:1075:3:1076:3:1077:2:1079:1:1080:1:1082:1:1084:1:1338:1
 spec=survival
 
 # Default consumables
@@ -117,30 +117,30 @@ actions.nomok+=/butchery
 actions.nomok+=/throwing_axes
 actions.nomok+=/raptor_strike,if=focus>75-cooldown.flanking_strike.remains*focus.regen
 
-head=helm_of_endless_dunes,id=134471,bonus_id=1517/3418
-neck=intrepid_necklace_of_prophecy,id=130240,bonus_id=669/1748,gems=200agility,enchant=mark_of_the_hidden_satyr
-shoulders=epaulets_of_deceitful_intent,id=134480,bonus_id=1517/3418
-back=cloak_of_manaspun_silk,id=134410,bonus_id=1517/3418,enchant=binding_of_agility
-chest=decontaminated_chain_tunic,id=134463,bonus_id=1517/3418
-wrists=remorseless_chain_armbands,id=137405,bonus_id=1517/3418
-hands=gauntlets_of_malevolent_intent,id=139213,bonus_id=1487/1805
-waist=laughing_sisters_pouchchain,id=139211,bonus_id=1487/1805
-legs=disjointed_linkage_leggings,id=139216,bonus_id=1487/1805
-feet=malignant_sabatons,id=138211,bonus_id=1487/1805
-finger1=maelstrom_band,id=130230,bonus_id=669/1682,gems=150vers,enchant=binding_of_versatility
-finger2=grubby_silver_ring,id=139236,bonus_id=1487/1805,enchant=binding_of_versatility
-trinket1=tirathons_betrayal,id=137537,bonus_id=1517/3418
-trinket2=bloodthirsty_instinct,id=139329,bonus_id=1487/1805
-main_hand=talonclaw,id=128808,ilevel=894,gem_id=137550/137408/137350
+head=helm_of_endless_dunes,id=134471,ilevel=840
+neck=understone_gorget,id=134491,ilevel=840,enchant=mark_of_the_hidden_satyr
+shoulders=epaulets_of_deceitful_intent,id=134480,ilevel=840
+back=cape_of_rigid_order,id=134402,ilevel=840,enchant=200agi
+chest=decontaminated_chain_tunic,id=134463,ilevel=840
+wrists=remorseless_chain_armbands,id=137405,ilevel=840
+hands=gloves_of_fleshshaping,id=134468,ilevel=840
+waist=cinch_of_frozen_fear,id=134482,ilevel=840
+legs=leggings_of_acidic_venom,id=137450,ilevel=840
+feet=plasmadrilled_steel_toes,id=137444,ilevel=840
+finger1=ring_of_contempt,id=134490,ilevel=840,enchant=200vers
+finger2=ring_of_looming_menace,id=134533,ilevel=840,enchant=200vers
+trinket1=chaos_talisman,id=137459,ilevel=840
+trinket2=tirathons_betrayal,id=137537,ilevel=840
+main_hand=talonclaw,id=128808,ilevel=870
 
 # Gear Summary
-# gear_ilvl=864.93
-# gear_agility=16584
-# gear_stamina=23433
-# gear_crit_rating=7850
-# gear_haste_rating=2412
-# gear_mastery_rating=1756
-# gear_versatility_rating=7104
-# gear_armor=2630
+# gear_ilvl=842.00
+# gear_agility=11859
+# gear_stamina=18863
+# gear_crit_rating=5604
+# gear_haste_rating=6218
+# gear_mastery_rating=2054
+# gear_versatility_rating=4451
+# gear_armor=2433
 # set_bonus=tier19p_mail_2pc=1
 summon_pet=cat

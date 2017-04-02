@@ -1,10 +1,10 @@
-hunter="Hunter_MM_T19M"
+hunter="Hunter_Marksmanship_T19H"
 level=110
 race=troll
 role=attack
 position=ranged_back
 talents=1303013
-artifact=55:0:0:0:0:307:1:308:1:309:1:310:1:311:1:312:3:313:3:314:3:315:3:316:3:317:3:318:3:319:3:320:3:321:1:322:1:1337:1
+artifact=55:0:0:0:0:307:1:308:1:310:1:311:1:312:3:313:3:314:2:315:3:318:3:319:3:320:3:321:1:322:1:1337:1
 spec=marksmanship
 
 # Default consumables
@@ -31,10 +31,11 @@ actions.precombat+=/windburst
 # Executed every time the actor is available.
 actions=auto_shot
 actions+=/volley,toggle=on
+# Start being conservative with focus if expecting a Piercing Shot at the end of the current window.
 actions+=/variable,name=pooling_for_piercing,value=talent.piercing_shot.enabled&cooldown.piercing_shot.remains<5&lowest_vuln_within.5>0&lowest_vuln_within.5>cooldown.piercing_shot.remains&(buff.trueshot.down|spell_targets=1)
+# Make sure a Marking Targets proc isn't wasted if the Hunter's Mark debuff will be overwritten by an active Sentinel before we can use Marked Shot.
 actions+=/variable,name=waiting_for_sentinel,value=talent.sentinel.enabled&(buff.marking_targets.up|buff.trueshot.up)&!cooldown.sentinel.up&((cooldown.sentinel.remains>54&cooldown.sentinel.remains<(54+gcd.max))|(cooldown.sentinel.remains>48&cooldown.sentinel.remains<(48+gcd.max))|(cooldown.sentinel.remains>42&cooldown.sentinel.remains<(42+gcd.max)))
 actions+=/call_action_list,name=cooldowns
-actions+=/call_action_list,name=targetdie,if=target.time_to_die<6&spell_targets.multishot=1
 actions+=/call_action_list,name=patient_sniper,if=talent.patient_sniper.enabled
 actions+=/call_action_list,name=non_patient_sniper,if=!talent.patient_sniper.enabled
 
@@ -42,6 +43,7 @@ actions.cooldowns=arcane_torrent,if=focus.deficit>=30&(!talent.sidewinders.enabl
 actions.cooldowns+=/berserking,if=buff.trueshot.up
 actions.cooldowns+=/blood_fury,if=buff.trueshot.up
 actions.cooldowns+=/potion,if=(buff.trueshot.react&buff.bloodlust.react)|buff.bullseye.react>=23|((consumable.prolonged_power&target.time_to_die<62)|target.time_to_die<31)
+# Estimate the real Trueshot cooldown based on the first, fudging it a bit to account for Bloodlust.
 actions.cooldowns+=/variable,name=trueshot_cooldown,op=set,value=time*1.1,if=time>15&cooldown.trueshot.up&variable.trueshot_cooldown=0
 actions.cooldowns+=/trueshot,if=variable.trueshot_cooldown=0|buff.bloodlust.up|(variable.trueshot_cooldown>0&target.time_to_die>(variable.trueshot_cooldown+duration))|buff.bullseye.react>25|target.time_to_die<16
 
@@ -64,11 +66,13 @@ actions.non_patient_sniper+=/aimed_shot,if=talent.sidewinders.enabled&spell_targ
 actions.non_patient_sniper+=/multishot,if=spell_targets.multi_shot>1&!variable.waiting_for_sentinel
 actions.non_patient_sniper+=/arcane_shot,if=spell_targets.multi_shot<2&!variable.waiting_for_sentinel
 
-actions.patient_sniper=variable,name=vuln_window,op=set,value=debuff.vulnerability.remains
-actions.patient_sniper+=/variable,name=vuln_window,op=set,value=(24-cooldown.sidewinders.charges_fractional*12)*attack_haste,if=talent.sidewinders.enabled&(24-cooldown.sidewinders.charges_fractional*12)*attack_haste<variable.vuln_window
+# Sidewinders charges could cap sooner than the Vulnerable debuff ends, so clip the current window to the recharge time if it will.
+actions.patient_sniper=variable,name=vuln_window,op=setif,value=cooldown.sidewinders.full_recharge_time,value_else=debuff.vulnerability.remains,condition=talent.sidewinders.enabled&cooldown.sidewinders.full_recharge_time<variable.vuln_window
+# Determine the number of Aimed Shot casts that are possible according to available focus and remaining Vulnerable duration.
 actions.patient_sniper+=/variable,name=vuln_aim_casts,op=set,value=floor(variable.vuln_window%action.aimed_shot.execute_time)
 actions.patient_sniper+=/variable,name=vuln_aim_casts,op=set,value=floor((focus+action.aimed_shot.cast_regen*(variable.vuln_aim_casts-1))%action.aimed_shot.cost),if=variable.vuln_aim_casts>0&variable.vuln_aim_casts>floor((focus+action.aimed_shot.cast_regen*(variable.vuln_aim_casts-1))%action.aimed_shot.cost)
 actions.patient_sniper+=/variable,name=can_gcd,value=variable.vuln_window>variable.vuln_aim_casts*action.aimed_shot.execute_time+gcd.max
+actions.patient_sniper+=/call_action_list,name=targetdie,if=target.time_to_die<variable.vuln_window&spell_targets.multishot=1
 actions.patient_sniper+=/piercing_shot,if=cooldown.piercing_shot.up&spell_targets=1&lowest_vuln_within.5>0&lowest_vuln_within.5<1
 actions.patient_sniper+=/piercing_shot,if=cooldown.piercing_shot.up&spell_targets>1&lowest_vuln_within.5>0&((!buff.trueshot.up&focus>80&(lowest_vuln_within.5<1|debuff.hunters_mark.up))|(buff.trueshot.up&focus>105&lowest_vuln_within.5<6))
 actions.patient_sniper+=/aimed_shot,if=spell_targets>1&debuff.vulnerability.remains>cast_time&talent.trick_shot.enabled&(buff.sentinels_sight.stack=20|(buff.trueshot.up&buff.sentinels_sight.stack>=spell_targets.multishot*5))
@@ -84,7 +88,7 @@ actions.patient_sniper+=/multishot,if=spell_targets>1&variable.can_gcd&focus+cas
 actions.patient_sniper+=/arcane_shot,if=spell_targets.multi_shot=1&variable.vuln_aim_casts>0&variable.can_gcd&focus+cast_regen+action.aimed_shot.cast_regen<focus.max&(!variable.pooling_for_piercing|lowest_vuln_within.5>gcd.max)
 actions.patient_sniper+=/aimed_shot,if=talent.sidewinders.enabled&(debuff.vulnerability.remains>cast_time|(buff.lock_and_load.down&action.windburst.in_flight))&(variable.vuln_window-(execute_time*variable.vuln_aim_casts)<1|focus.deficit<25|buff.trueshot.up)&(spell_targets.multishot=1|focus>100)
 actions.patient_sniper+=/aimed_shot,if=!talent.sidewinders.enabled&debuff.vulnerability.remains>cast_time&(!variable.pooling_for_piercing|(focus>100&lowest_vuln_within.5>(execute_time+gcd.max)))
-actions.patient_sniper+=/marked_shot,if=!talent.sidewinders.enabled&!variable.pooling_for_piercing
+actions.patient_sniper+=/marked_shot,if=!talent.sidewinders.enabled&!variable.pooling_for_piercing&(focus>=70|buff.trueshot.up)&!action.windburst.in_flight
 actions.patient_sniper+=/marked_shot,if=talent.sidewinders.enabled&(variable.vuln_aim_casts<1|buff.trueshot.up|variable.vuln_window<action.aimed_shot.cast_time)
 actions.patient_sniper+=/aimed_shot,if=spell_targets.multi_shot=1&focus>110
 actions.patient_sniper+=/sidewinders,if=(!debuff.hunters_mark.up|(!buff.marking_targets.up&!buff.trueshot.up))&((buff.marking_targets.up&variable.vuln_aim_casts<1)|buff.trueshot.up|charges_fractional>1.9)
@@ -92,39 +96,35 @@ actions.patient_sniper+=/arcane_shot,if=spell_targets.multi_shot=1&(!variable.po
 actions.patient_sniper+=/multishot,if=spell_targets>1&(!variable.pooling_for_piercing|lowest_vuln_within.5>gcd.max)
 
 actions.targetdie=piercing_shot,if=debuff.vulnerability.up
-actions.targetdie+=/explosive_shot
 actions.targetdie+=/windburst
-actions.targetdie+=/aimed_shot,if=debuff.vulnerability.up&buff.lock_and_load.up
+actions.targetdie+=/aimed_shot,if=debuff.vulnerability.remains>cast_time&target.time_to_die>cast_time
 actions.targetdie+=/marked_shot
-actions.targetdie+=/arcane_shot,if=buff.marking_targets.up|buff.trueshot.up
-actions.targetdie+=/aimed_shot,if=debuff.vulnerability.remains>execute_time&target.time_to_die>cast_time
-actions.targetdie+=/sidewinders
 actions.targetdie+=/arcane_shot
+actions.targetdie+=/sidewinders
 
-head=greyed_dragonscale_coif,id=139214,bonus_id=1806
-neck=cursed_beartooth_necklace,id=139239,bonus_id=1806,enchant=mark_of_the_hidden_satyr
-shoulders=epaulets_of_deceitful_intent,id=134480,bonus_id=1727/1522
-back=drape_of_the_unworthy,id=142521,bonus_id=3469/1512,enchant=200agi
-chest=hauberk_of_warped_intuition,id=142301
-wrists=remorseless_chain_armbands,id=137405,bonus_id=1727/1522
-hands=kvaldir_exults_grips,id=142434,bonus_id=3469
-waist=anchor_chain_waistguard,id=142420,bonus_id=3469/1512
-legs=singular_chain_leggings,id=139215,bonus_id=1806
-feet=black_venom_sabatons,id=139219,bonus_id=1806
-finger1=mindrend_band,id=138220,bonus_id=1806,enchant=200mastery
-finger2=shadowruby_band,id=136713,bonus_id=670/1703,gems=150mastery,enchant=binding_of_mastery
-trinket1=bloodthirsty_instinct,id=139329,bonus_id=1806
-trinket2=arans_relaxing_ruby,id=142157
-main_hand=thasdorah_legacy_of_the_windrunners,id=128826,gem_id=142518/142510/142517,relic_id=3469:1512/3469:1512/3469:1512
+head=collar_of_honorable_exultation,id=136777,bonus_id=1517/3418
+neck=intrepid_necklace_of_prophecy,id=130240,bonus_id=669/1769,gems=200agility,enchant=mark_of_the_hidden_satyr
+shoulders=epaulets_of_deceitful_intent,id=134480,bonus_id=1517/3418
+back=drape_of_the_raven_lord,id=136770,bonus_id=1517/3418,enchant=binding_of_agility
+chest=thunderfused_valkyr_hauberk,id=133622,bonus_id=1517/3418
+wrists=remorseless_chain_armbands,id=137405,bonus_id=1517/3418
+hands=lavabreaker_gauntlets,id=137519,bonus_id=1517/3418
+waist=creeping_string_of_larva,id=139212,bonus_id=1487/1805
+legs=singular_chain_leggings,id=139215,bonus_id=1487/1805
+feet=whelp_handlers_lined_boots,id=134464,bonus_id=1517/3418
+finger1=archdruids_tainted_seal,id=134487,bonus_id=1517/3418,enchant=binding_of_mastery
+finger2=shadowruby_band,id=136713,bonus_id=669/1703,gems=150mastery,enchant=binding_of_mastery
+trinket1=naraxas_spiked_tongue,id=137349,bonus_id=1517/3418
+trinket2=bloodthirsty_instinct,id=139329,bonus_id=1487/1805
+main_hand=thasdorah_legacy_of_the_windrunners,id=128826,ilevel=894,gem_id=137313/136718/137381
 
 # Gear Summary
-# gear_ilvl=880.53
-# gear_agility=17505
-# gear_stamina=27633
-# gear_crit_rating=3549
-# gear_haste_rating=5813
-# gear_mastery_rating=11885
-# gear_versatility_rating=425
-# gear_armor=2763
+# gear_ilvl=864.93
+# gear_agility=15095
+# gear_stamina=23433
+# gear_crit_rating=1504
+# gear_haste_rating=4946
+# gear_mastery_rating=13705
+# gear_armor=2630
 # set_bonus=tier19p_mail_2pc=1
 summon_pet=cat
