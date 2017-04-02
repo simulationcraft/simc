@@ -164,22 +164,6 @@ class DBCRecord(RawDBCRecord):
 
         return False
 
-    #def value(self, *args):
-    #    v = [ ]
-    #    for attr in args:
-    #        idx = self._cd[attr]
-    #        v.append(self._d[idx])
-    #
-    #    return v
-
-    def field_names(self, delim):
-        fields = [ None ] * len(self._cd)
-        for i in self._cd.keys():
-            fields[self._cd[i]] = i
-        if self._dbcp.id_block_offset > 0:
-            fields = [ 'id', ] + fields
-        return delim.join(fields)
-
     # Customize data access, this gets only called on fields that do not exist in the object. If the
     # format of the field is 'S', the value is an offset to the stringblock giving the string
     def __getattr__(self, name):
@@ -257,8 +241,7 @@ class DBCRecord(RawDBCRecord):
 
     def csv(self, delim = ',', header = False):
         s = ''
-        if self._dbcp.id_block_offset > 0:
-            s += '%u%c' % (self._id, delim)
+        s += '%u%c' % (self._id, delim)
 
         for i in range(0, len(self._fi)):
             field = self._fi[i]

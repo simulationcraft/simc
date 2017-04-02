@@ -36,6 +36,127 @@ def _do_parse(unpackers, data, record_offset, record_size):
             full_data[-1] &= 0xFFFFFF
     return full_data
 
+class DBCacheParser:
+    __expanded_parsers__ = [ 'SpellEffect' ]
+
+    def is_magic(self): return self.magic == b'XFTH'
+
+    def __init__(self, options):
+        self.options = options
+        self.file_name_ = None
+
+        self.parse_offset = 0
+        self.entries = {}
+        self.parsers = {}
+
+        # See that file exists already
+        normalized_path = os.path.abspath(os.path.join(options.cache_dir, 'DBCache.bin'))
+        if os.access(normalized_path, os.R_OK):
+            self.file_name_ = normalized_path
+            logging.debug('DBCache.bin file found at %s', self.file_name_)
+
+    def get_string(self, offset):
+        if offset == 0:
+            return None
+
+        end_offset = self.data.find(b'\x00', offset)
+
+        if end_offset == -1:
+            return None
+
+        return self.data[offset:end_offset].decode('utf-8')
+
+    # Returns dbc_id (always 0 for base), record offset into file
+    def get_record_info(self, wdb_parser, record_id):
+        sig = wdb_parser.table_hash
+
+        if sig not in self.entries:
+            return -1, 0
+
+        if record_id >= len(self.entries[sig]):
+            return -1, 0
+
+        dbc_id = wdb_parser.has_id_block() and self.entries[sig][record_id]['record_id'] or -1
+        return dbc_id, self.entries[sig][record_id]['offset'], \
+                self.entries[sig][record_id]['length']
+
+    def get_record(self, wdb_parser, offset, size):
+        sig = wdb_parser.table_hash
+
+        if sig not in self.entries:
+            return None
+
+        if sig not in self.parsers:
+            if wdb_parser.class_name() in DBCacheParser.__expanded_parsers__:
+                self.parsers[sig] = wdb_parser.create_expanded_parser(True)
+            else:
+                self.parsers[sig] = wdb_parser.create_formatted_parser(True)
+
+        return self.parsers[sig](self.data, offset, size)
+
+    def n_entries(self, wdb_parser):
+        sig = wdb_parser.table_hash
+
+        if sig not in self.entries:
+            return 0
+
+        return len(self.entries[sig])
+
+    def open(self):
+        if not self.file_name_:
+            return True
+
+        f = io.open(self.file_name_, mode = 'rb')
+        self.data = f.read()
+        f.close()
+
+        if not self.parse_header():
+            return False
+
+        entry_unpacker = struct.Struct('<4sIiIIII')
+
+        n_entries = 0
+        while self.parse_offset < len(self.data):
+            magic, unk_1, unk_2, length, sig, record_id, unk_3 = entry_unpacker.unpack_from(self.data, self.parse_offset)
+            self.parse_offset += entry_unpacker.size
+            if length == 0:
+                continue
+
+            entry = {
+                'record_id': record_id,
+                'unk_1': unk_1,
+                'unk_2': unk_2,
+                'unk_3': unk_3,
+                'length': length,
+                'offset': self.parse_offset
+            }
+
+            if sig not in self.entries:
+                self.entries[sig] = []
+
+            self.entries[sig].append(entry)
+
+            # Skip data
+            self.parse_offset += length
+            n_entries += 1
+
+        logging.debug('Parsed %d hotfix entries', n_entries)
+
+        return True
+
+    def parse_header(self):
+        header_unpack = struct.Struct('4sii')
+
+        self.magic, self.unk_1, self.build = header_unpack.unpack_from(self.data)
+
+        if not self.is_magic():
+            logging.error('DBCache.bin: Invalid data file format %s', self.magic.decode('utf-8'))
+            return False
+
+        self.parse_offset += header_unpack.size
+
+        return True
+
 class DBCParserBase:
     def is_magic(self):
         raise Exception()
@@ -179,6 +300,67 @@ class DBCParserBase:
 
 
         return True
+
+    # Some DB2 record structure alters, and changes into an "expanded mode"
+    # when the data is inserted into the cache. Expanded mode data has all
+    # fields as 4bytes, instead of a dynamic field width (for integers).
+    #
+    # Note, field validation is ignored here, as it is presumed that if the
+    # real DB2 field validation succeeds (create_formatted_parser), the cache
+    # field structure is going to be coherent automatically.
+    def create_expanded_parser(self, inline_strings):
+        field_idx = 0
+        format_str = '<'
+        unpackers = []
+
+        for field_format in self.fmt.objs(self.class_name(), True):
+            # Ensure fields from our json formats and internal field data stay consistent
+            field_count = field_format.elements
+
+            for sub_idx in range(0, field_count):
+                # String format fields get converted to something Struct module
+                # understands. Depending on the DB2 file type, customized
+                # string parsing may be neeedd
+                if field_format.data_type == 'S':
+                    # No offset map, translate 'S' directly to a 4-byte unsigned integer
+                    if not inline_strings:
+                        format_str += 'I'
+                    # Offset map, create an inline string parser (StringUnpacker)
+                    else:
+                        logging.debug('Inline string field (name=%s, pos=%d [%d]), end previous parser',
+                            field_format.base_name(), field_idx, field_data_idx)
+
+                        if len(format_str) > 1:
+                            unpackers.append((False, struct.Struct(format_str)))
+                            format_str = '<'
+                        unpackers.append((False, StringUnpacker(field_size)))
+                # Normal (unsigned) byte/short/int/float field, apply to Struct
+                # parser as an unsigned or signed integer (4bytes), or directly
+                # as float.
+                else:
+                    if field_format.data_type in ['h', 'b']:
+                        format_str += 'i'
+                    elif field_format.data_type in ['H', 'B']:
+                        format_str += 'I'
+                    else:
+                        format_str += field_format.data_type
+
+                field_idx += 1
+
+        if len(format_str) > 1:
+            unpackers.append((False, struct.Struct(format_str)))
+
+        logging.debug('Unpacking plan for %s: %s',
+            self.full_name(),
+            ', '.join(['%s (len=%d, i24=%s)' % (u.format.decode('utf-8'), u.size, i24) for i24, u in unpackers]))
+
+        # One parser unpackers don't need to go through a function, can just do
+        # the parsing in one go through a lambda function. Multi-parsers require state to be kept.
+        if len(unpackers) == 1:
+            return lambda data, ro, rs: unpackers[0][1].unpack_from(data, ro)
+        else:
+            return lambda data, ro, rs: _do_parse(unpackers, data, ro, rs)
+
 
     # Sanitize data, blizzard started using dynamic width ints in WDB5, so
     # 3-byte ints have to be expanded to 4 bytes to parse them properly (with
@@ -450,7 +632,12 @@ class StringUnpacker:
         # Find first \x00 byte
         pos = data.find(b'\x00', offset)
         self.size = (pos - offset) + 1
-        return (offset,)
+
+        # Inline strings with first character 0 denotes disabled field
+        if data[offset] == 0:
+            return (0,)
+        else:
+            return (offset,)
 
     def __getattribute__(self, attr):
         if attr == 'format':
