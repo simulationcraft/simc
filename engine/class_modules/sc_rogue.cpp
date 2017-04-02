@@ -6830,14 +6830,14 @@ void rogue_t::init_action_list()
 
     // Maintain
     action_priority_list_t* maintain = get_action_priority_list( "maintain", "Maintain" );
-    maintain -> add_action( this, "Rupture", "if=talent.nightstalker.enabled&stealthed.rogue&(!equipped.mantle_of_the_master_assassin|!set_bonus.tier19_4pc)" );
+    maintain -> add_action( this, "Rupture", "if=talent.nightstalker.enabled&stealthed.rogue&(!equipped.mantle_of_the_master_assassin|!set_bonus.tier19_4pc)&(talent.exsanguinate.enabled|target.time_to_die-remains>4)" );
     maintain -> add_action( this, "Garrote", "cycle_targets=1,if=talent.subterfuge.enabled&stealthed.rogue&combo_points.deficit>=1&refreshable&(!exsanguinated|remains<=1.5)&target.time_to_die-remains>4" );
-    maintain -> add_action( this, "Rupture", "if=!talent.exsanguinate.enabled&combo_points>=3&!ticking&mantle_duration<=gcd.remains+0.2&target.time_to_die-remains>4" );
+    maintain -> add_action( this, "Rupture", "if=!talent.exsanguinate.enabled&combo_points>=3&!ticking&mantle_duration<=gcd.remains+0.2&target.time_to_die>4" );
     maintain -> add_action( this, "Rupture", "if=talent.exsanguinate.enabled&((combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1)|(!ticking&(time>10|combo_points>=2+artifact.urge_to_kill.enabled)))" );
     maintain -> add_action( this, "Rupture", "cycle_targets=1,if=combo_points>=4&refreshable&(!exsanguinated|remains<=1.5)&target.time_to_die-remains>4" );
-    maintain -> add_action( this, "Kingsbane", "if=artifact.sinister_circulation.enabled&((talent.nightstalker.enabled&(!equipped.mantle_of_the_master_assassin|!stealthed.rogue))|(talent.subterfuge.enabled&!stealthed.mantle))", "Sinister Circulation makes it worth to cast Kingsbane on CD, although you shouldn't cast it if you're [stealthed w/ Subterfuge] or [stealthed and have Mantle w/ Nighstalker]." );
-    maintain -> add_action( this, "Kingsbane", "if=!talent.exsanguinate.enabled&buff.envenom.up&((debuff.vendetta.up&debuff.surge_of_toxins.up)|(combo_points=4&cooldown.vendetta.remains<=5))" );
-    maintain -> add_action( this, "Kingsbane", "if=talent.exsanguinate.enabled&dot.rupture.exsanguinated" );
+    maintain -> add_action( this, "Kingsbane", "if=artifact.sinister_circulation.enabled&combo_points.deficit>=1+(mantle_duration>gcd.remains+0.2)&(talent.subterfuge.enabled|!stealthed.rogue|(talent.nightstalker.enabled&(!equipped.mantle_of_the_master_assassin|!set_bonus.tier19_4pc)))", "Sinister Circulation makes it worth to cast Kingsbane on CD, although you shouldn't cast it if you're [stealthed w/ Nighstalker and have Mantle & T19_4PC to Envenom]." );
+    maintain -> add_action( this, "Kingsbane", "if=!talent.exsanguinate.enabled&combo_points.deficit>=1+(mantle_duration>gcd.remains+0.2)&buff.envenom.up&((debuff.vendetta.up&debuff.surge_of_toxins.up)|cooldown.vendetta.remains<=5.2)" );
+    maintain -> add_action( this, "Kingsbane", "if=talent.exsanguinate.enabled&combo_points.deficit>=1+(mantle_duration>gcd.remains+0.2)&dot.rupture.exsanguinated" );
     maintain -> add_action( "pool_resource,for_next=1" );
     maintain -> add_action( this, "Garrote", "cycle_targets=1,if=combo_points.deficit>=1&refreshable&(!exsanguinated|remains<=1.5)&target.time_to_die-remains>4" );
   }
