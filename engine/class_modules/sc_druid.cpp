@@ -7439,6 +7439,7 @@ void druid_t::apl_feral()
     "Special logic for Ailuro Pouncers legendary." );
   def -> add_action( "call_action_list,name=finisher" );
   def -> add_action( "call_action_list,name=generator" );
+  def -> add_action( "wait,sec=1,if=energy.time_to_max>3", "The Following line massively increases performance of the simulation but can be safely removed." );
 
   // Finishers
   finish -> add_action( "pool_resource,for_next=1",

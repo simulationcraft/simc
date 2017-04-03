@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 Live (wow build 23826, git build 9b6da33)
+SimulationCraft 720-01 for World of Warcraft 7.2.0 Live (wow build 23826, git build 475fb10)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -248,6 +248,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=10981)    : Direct Heal (10)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 4.50000 | Target: Friend(21)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 Description      : A quick spell, healing a friendly target for $s1.
 
 Name             : Repentance (id=20066) [Spell Family (10)] 
@@ -597,6 +598,7 @@ Tooltip          : Damage done increased by $s1%.
 Healing done increased by $s2%.
 
 Name             : Avenger's Shield (id=31935) [Spell Family (10)] 
+Hotfixed         : Attributes
 Class            : Protection Paladin
 School           : Holy
 Spell Level      : 10
@@ -608,7 +610,7 @@ Cooldown         : 15 seconds
 Affecting spells : Grand Crusader (85416), Paladin (137026), Ferren Marcus's Strength (207614), 
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ..x..... ........   ........ ........ ........ ........ 
+                 : ........ ........ ..x..... ........   ........ .......x ........ ........ 
                  : ........ x....... .....x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
@@ -1413,6 +1415,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=81809)    : Direct Heal (10)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 4.25000 | Target: Friend(21)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 Description      : An efficient spell, healing a friendly target for $s1.
 
 Name             : Grand Crusader (id=85043) [Spell Family (10), Passive] 
@@ -4963,7 +4966,8 @@ Class            : Paladin
 School           : Physical
 Internal Cooldown: 0.1 seconds
 Proc Chance      : 100%
-Artifact Power   : Id: 1561, Index: 13, Max Rank: 8, Values: [ 5, 10, 15, 20, 25, 30, 35, 40 ]
+Artifact Power   : Id: 1561, Index: 13, Max Rank: 8, Values: [ 8, 16, 24, 32, 40, 48, 56, 64 ]
+                 : Hotfixes: Rank 1: Value (5 -> 8), Rank 2: Value (10 -> 16), Rank 3: Value (15 -> 24), Rank 4: Value (20 -> 32), Rank 5: Value (25 -> 40), Rank 6: Value (30 -> 48), Rank 7: Value (35 -> 56), Rank 8: Value (40 -> 64)
 Proc Flags       : ....x... ..x.x.x. x.x..... ........ 
                  : Yellow Melee, AOE Heal, AOE Hostile Spell, Heal, Hostile Spell, Periodic
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -4975,7 +4979,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=360747)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | Target: Self(1)
+                   Base Value: 8 | Scaled Value: 8 | Target: Self(1)
+                   Hotfixed: Base Value (5 -> 8), Chain Multiplier (0 -> 1)
 Description      : Your Holy Power spending abilities increase the damage of your next $?s198034[Divine Hammer][Blade of Justice] by $s1%.
 
 Name             : Righteous Verdict (id=238996) [Spell Family (10)] 

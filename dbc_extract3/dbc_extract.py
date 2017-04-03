@@ -67,9 +67,6 @@ if options.type == 'view' and len(options.args) == 0:
 if options.type == 'header' and len(options.args) == 0:
     parser.error('Header parsing requires at least a single DBC file to parse it from')
 
-if options.cache_dir and not os.path.isdir(options.cache_dir):
-    parser.error('Invalid cache directory %s' % options.cache_dir)
-
 if options.debug:
     logging.getLogger().setLevel(logging.DEBUG)
 

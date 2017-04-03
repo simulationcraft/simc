@@ -1,4 +1,17 @@
-hunter="Hunter_BM_T19P"
+# T19P
+# Tier 19 Pre-Raid
+# * Ilvl Cap: 840 (no cap on weapon ilvl, only relics)
+# * Artifact Relics: 3
+# * Artifact Rank Cap: 19
+# * Standard Mythic 5 Man Loot Only
+# * No Legendaries
+# * No Random Gems (ie. Bonus RNG Gem Slots)
+# * No Tertiary Stats
+# * No Ranked Gear (ie. Warforged/Titanforged)
+# * No Hardcoded Stats (generally if an item gives wrong stats: either bonus_id is wrong, either the item no longer exists in-game)
+# * It is recommended to use enchant name (ex : ",enchant=binding_of_mastery") rather than id/hardcoded stats.
+
+hunter="Hunter_Beast_Mastery_T19P"
 level=110
 race=orc
 role=attack
@@ -7,24 +20,24 @@ talents=2102012
 artifact=56:0:0:0:0:869:3:870:3:872:3:874:3:875:3:878:1:880:1:881:1:882:1:1095:3:1336:1
 spec=beast_mastery
 
-head=collar_of_honorable_exultation,id=136777,bonus_id=1727
-neck=strand_of_the_stars,id=137487,bonus_id=1727,enchant=mark_of_the_distant_army
-shoulders=epaulets_of_deceitful_intent,id=134480,bonus_id=1727
-back=cape_of_rigid_order,id=134402,bonus_id=1727,enchant=200agi
-chest=thunderfused_valkyr_hauberk,id=133622,bonus_id=1727
-wrists=remorseless_chain_armbands,id=137405,bonus_id=1727
-hands=lavabreaker_gauntlets,id=137519,bonus_id=1727
-waist=belt_of_mighty_links,id=137456,bonus_id=1727
-legs=mute_erasure_legguards,id=134475,bonus_id=1727
-feet=whelp_handlers_lined_boots,id=134464,bonus_id=1727
-finger1=archdruids_tainted_seal,id=134487,bonus_id=1727,enchant=200mastery
-finger2=ring_of_twisted_webbing,id=134540,bonus_id=1727,enchant=200mastery
-trinket1=naraxas_spiked_tongue,id=137349,bonus_id=1727
-trinket2=chrono_shard,id=137419,bonus_id=1727
+head=collar_of_honorable_exultation,id=136777,ilevel=840
+neck=strand_of_the_stars,id=137487,ilevel=840,enchant=mark_of_the_distant_army
+shoulders=epaulets_of_deceitful_intent,id=134480,ilevel=840
+back=cape_of_rigid_order,id=134402,ilevel=840,enchant=200agi
+chest=thunderfused_valkyr_hauberk,id=133622,ilevel=840
+wrists=remorseless_chain_armbands,id=137405,ilevel=840
+hands=lavabreaker_gauntlets,id=137519,ilevel=840
+waist=belt_of_mighty_links,id=137456,ilevel=840
+legs=mute_erasure_legguards,id=134475,ilevel=840
+feet=whelp_handlers_lined_boots,id=134464,ilevel=840
+finger1=archdruids_tainted_seal,id=134487,ilevel=840,enchant=200mastery
+finger2=ring_of_twisted_webbing,id=134540,ilevel=840,enchant=200mastery
+trinket1=naraxas_spiked_tongue,id=137349,ilevel=840
+trinket2=chrono_shard,id=137419,ilevel=840
 main_hand=titanstrike,id=128861,ilevel=870
-save=Hunter_BM_T19P.simc
+save=Hunter_Beast_Mastery_T19P.simc
 
-hunter="Hunter_MM_T19P"
+hunter="Hunter_Marksmanship_T19P"
 level=110
 race=blood_elf
 role=attack
@@ -33,24 +46,24 @@ talents=1303013
 artifact=55:0:0:0:0:307:1:308:1:310:1:312:3:313:3:315:3:318:2:319:3:320:3:321:1:322:1:1337:1
 spec=marksmanship
 
-head=collar_of_honorable_exultation,id=136777,bonus_id=1727
-neck=wolfstride_pendant,id=133633,bonus_id=1727,enchant=mark_of_the_distant_army
-shoulders=epaulets_of_deceitful_intent,id=134480,bonus_id=1727
-back=cape_of_rigid_order,id=134402,bonus_id=1727,enchant=200agi
-chest=thunderfused_valkyr_hauberk,id=133622,bonus_id=1727
-wrists=remorseless_chain_armbands,id=137405,bonus_id=1727
-hands=lavabreaker_gauntlets,id=137519,bonus_id=1727
-waist=belt_of_mighty_links,id=137456,bonus_id=1727
-legs=mute_erasure_legguards,id=134475,bonus_id=1727
-feet=whelp_handlers_lined_boots,id=134464,bonus_id=1727
-finger1=archdruids_tainted_seal,id=134487,bonus_id=1727,enchant=200mastery
-finger2=ring_of_twisted_webbing,id=134540,bonus_id=1727,enchant=200mastery
-trinket1=naraxas_spiked_tongue,id=137349,bonus_id=1727
-trinket2=oakhearts_gnarled_root,id=137306,bonus_id=1727
+head=collar_of_honorable_exultation,id=136777,ilevel=840
+neck=wolfstride_pendant,id=133633,ilevel=840,enchant=mark_of_the_distant_army
+shoulders=epaulets_of_deceitful_intent,id=134480,ilevel=840
+back=cape_of_rigid_order,id=134402,ilevel=840,enchant=200agi
+chest=thunderfused_valkyr_hauberk,id=133622,ilevel=840
+wrists=remorseless_chain_armbands,id=137405,ilevel=840
+hands=lavabreaker_gauntlets,id=137519,ilevel=840
+waist=belt_of_mighty_links,id=137456,ilevel=840
+legs=mute_erasure_legguards,id=134475,ilevel=840
+feet=whelp_handlers_lined_boots,id=134464,ilevel=840
+finger1=archdruids_tainted_seal,id=134487,ilevel=840,enchant=200mastery
+finger2=ring_of_twisted_webbing,id=134540,ilevel=840,enchant=200mastery
+trinket1=naraxas_spiked_tongue,id=137349,ilevel=840
+trinket2=oakhearts_gnarled_root,id=137306,ilevel=840
 main_hand=thasdorah_legacy_of_the_windrunners,id=128826,ilevel=870
-save=Hunter_MM_T19P.simc
+save=Hunter_Marksmanship_T19P.simc
 
-hunter="Hunter_SV_T19P"
+hunter="Hunter_Survival_T19P"
 level=110
 race=blood_elf
 role=attack
@@ -59,19 +72,19 @@ talents=3101031
 artifact=34:0:0:0:0:1068:1:1072:3:1073:3:1074:3:1075:3:1076:3:1077:2:1079:1:1080:1:1082:1:1084:1:1338:1
 spec=survival
 
-head=helm_of_endless_dunes,id=134471,bonus_id=1727
-neck=understone_gorget,id=134491,bonus_id=1727,enchant=mark_of_the_hidden_satyr
-shoulders=epaulets_of_deceitful_intent,id=134480,bonus_id=1727
-back=cape_of_rigid_order,id=134402,bonus_id=1727,enchant=200agi
-chest=decontaminated_chain_tunic,id=134463,bonus_id=1727
-wrists=remorseless_chain_armbands,id=137405,bonus_id=1727
-hands=gloves_of_fleshshaping,id=134468,bonus_id=1727
-waist=cinch_of_frozen_fear,id=134482,bonus_id=1727
-legs=leggings_of_acidic_venom,id=137450,bonus_id=1727
-feet=plasmadrilled_steel_toes,id=137444,bonus_id=1727
-finger1=ring_of_contempt,id=134490,bonus_id=1727,enchant=200vers
-finger2=ring_of_looming_menace,id=134533,bonus_id=1727,enchant=200vers
-trinket1=chaos_talisman,id=137459,bonus_id=1727
-trinket2=tirathons_betrayal,id=137537,bonus_id=1727
+head=helm_of_endless_dunes,id=134471,ilevel=840
+neck=understone_gorget,id=134491,ilevel=840,enchant=mark_of_the_hidden_satyr
+shoulders=epaulets_of_deceitful_intent,id=134480,ilevel=840
+back=cape_of_rigid_order,id=134402,ilevel=840,enchant=200agi
+chest=decontaminated_chain_tunic,id=134463,ilevel=840
+wrists=remorseless_chain_armbands,id=137405,ilevel=840
+hands=gloves_of_fleshshaping,id=134468,ilevel=840
+waist=cinch_of_frozen_fear,id=134482,ilevel=840
+legs=leggings_of_acidic_venom,id=137450,ilevel=840
+feet=plasmadrilled_steel_toes,id=137444,ilevel=840
+finger1=ring_of_contempt,id=134490,ilevel=840,enchant=200vers
+finger2=ring_of_looming_menace,id=134533,ilevel=840,enchant=200vers
+trinket1=chaos_talisman,id=137459,ilevel=840
+trinket2=tirathons_betrayal,id=137537,ilevel=840
 main_hand=talonclaw,id=128808,ilevel=870
-save=Hunter_SV_T19P.simc
+save=Hunter_Survival_T19P.simc

@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 Live (wow build 23826, git build 9b6da33)
+SimulationCraft 720-01 for World of Warcraft 7.2.0 Live (wow build 23826, git build 475fb10)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Discipline Shadow Priest
@@ -868,6 +868,9 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
 Effects          :
 #1 (id=23040)    : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 0x7f | Target: Friend(21)
+#2 (id=372053)   : Apply Aura (6) | Periodic Dummy: every 0.5 seconds (226)
+                   Base Value: 0 | Scaled Value: 0 | Target: Friend(21)
+                   Hotfixed: NEW EFFECT
 Description      : Reduces all damage taken by a friendly target by $s1% for $d. Castable while stunned.
 Tooltip          : All damage taken reduced by $s1%.
 
@@ -2266,13 +2269,14 @@ Description      : $@spelldesc121536
 Tooltip          : Movement speed increased by $s1%.
 
 Name             : Divine Star (id=122128) [Spell Family (6)] 
+Hotfixed         : Attributes
 Class            : Priest
 School           : Holy
 Range            : 100 yards
 Affecting spells : Atonement (194384), Light of T'uure (208065), Power Word: Shield (211558), Kam Xi'raff (233997)
 Attributes       : ........ ........ ........ x..x....   .....x.. .....x.. ........ ........ 
                  : ........ ......x. ...x.... ........   ........ .x...... ........ ........ 
-                 : x......x .......x ........ ........   ...x.... ........ .xx..... ........ 
+                 : x......x .......x ........ ........   ...x.... .......x .xx..... ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : .....x.. ........ ........ ........   ........ ...x.... ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3214,6 +3218,12 @@ Effects          :
 #4 (id=361455)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Self(1)
                    Affected Spells: Voidform (194249)
+#5 (id=371747)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
+                   Base Value: -35 | Scaled Value: -35 | Misc Value: 12 | Target: Self(1)
+                   Hotfixed: NEW EFFECT
+#6 (id=371748)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
+                   Base Value: -35 | Scaled Value: -35 | Misc Value: 23 | Target: Self(1)
+                   Hotfixed: NEW EFFECT
 Description      : Void Eruption may be cast anytime your Insanity level is ${100+$m1/100} or higher$@switch<$s4>[][, and Voidform increases Shadow damage dealt by an additional $s3%].
 
 Name             : Mind Flay (id=193473) [Spell Family (6)] 

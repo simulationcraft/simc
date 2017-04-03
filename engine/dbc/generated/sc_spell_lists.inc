@@ -4,7 +4,7 @@
 #ifndef MAX_CLASS
 #define MAX_CLASS (13)
 #endif
-// Class based active abilities, wow build 23826
+// Class based active abilities, wow build 23852
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -1170,7 +1170,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
 };
 #define TREE_SPECIALIZATION_SIZE (36)
 
-// Talent tree specialization abilities, wow build 23826
+// Talent tree specialization abilities, wow build 23852
 static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -2276,7 +2276,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
 };
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 23826
+// Class mastery abilities, wow build 23852
 static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2515,7 +2515,7 @@ static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLA
 #define MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 23826
+// Racial abilities, wow build 23852
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -3253,7 +3253,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
 };
 #define SET_BONUS_DATA_SIZE (616)
 
-// Set bonus data, wow build 23826
+// Set bonus data, wow build 23852
 static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,   71, 165636, { 127055, 127081, 127092, 127103, 127114,  0 } },
@@ -3899,7 +3899,7 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
 };
 #define RPPMMOD_SIZE (498)
 
-// 498 RPPM Modifiers, wow build level 23826
+// 498 RPPM Modifiers, wow build level 23852
 static struct rppm_modifier_t __rppmmodifier_data[] = {
   {  45054,    4,  1,  1.0000 },
   {  49530,    1,  1,  1.0000 },
@@ -4403,7 +4403,7 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
 };
 #define ARTIFACT_SIZE (41)
 
-// Artifact base data, wow build 23826
+// Artifact base data, wow build 23852
 static struct artifact_t __artifact_data[ARTIFACT_SIZE] = {
   {  2,  70 },
   {  3, 577 },
@@ -4449,7 +4449,7 @@ static struct artifact_t __artifact_data[ARTIFACT_SIZE] = {
 };
 #define ARTIFACT_POWER_SIZE (895)
 
-// Artifact power data, wow build 23826
+// Artifact power data, wow build 23852
 static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] = {
   {   40,   2,  18,  0,   0, 205273, "Wake of Ashes"                      }, // Wake of Ashes (id=205273, n_ranks=1)
   {   41,   2,  32,  4,   3, 186941, "Highlord's Judgment"                }, // Highlord's Judgment (id=186941, n_ranks=8)
@@ -5349,7 +5349,7 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
 };
 #define ARTIFACT_POWER_RANK_SIZE (5907)
 
-// Artifact power rank data, wow build 23826
+// Artifact power rank data, wow build 23852
 static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RANK_SIZE] = {
   { 2316,    40,  0, 205273,      0.000, 0x00000000, 0 },
   { 2317,    41,  0, 186941,      8.000, 0x00000000, 0 },
@@ -9661,14 +9661,14 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 8265,  1520, 47, 239042,  11400.000, 0x00000000, 0 },
   { 8266,  1520, 48, 239042,  11600.000, 0x00000000, 0 },
   { 8267,  1520, 49, 239042,  11800.000, 0x00000000, 0 },
-  { 6657,  1521,  0, 238052,     10.000, 0x00000000, 0 },
-  { 7429,  1521,  1, 238052,     20.000, 0x00000000, 0 },
-  { 7430,  1521,  2, 238052,     30.000, 0x00000000, 0 },
-  { 7431,  1521,  3, 238052,     40.000, 0x00000000, 0 },
-  { 7432,  1521,  4, 238052,     50.000, 0x00000000, 0 },
-  { 7433,  1521,  5, 238052,     60.000, 0x00000000, 0 },
-  { 7434,  1521,  6, 238052,     70.000, 0x00000000, 0 },
-  { 7435,  1521,  7, 238052,     80.000, 0x00000000, 0 },
+  { 6657,  1521,  0, 238052,      4.000, 0x00000010, 0 },
+  { 7429,  1521,  1, 238052,      8.000, 0x00000010, 0 },
+  { 7430,  1521,  2, 238052,     12.000, 0x00000010, 0 },
+  { 7431,  1521,  3, 238052,     16.000, 0x00000010, 0 },
+  { 7432,  1521,  4, 238052,     20.000, 0x00000010, 0 },
+  { 7433,  1521,  5, 238052,     24.000, 0x00000010, 0 },
+  { 7434,  1521,  6, 238052,     28.000, 0x00000010, 0 },
+  { 7435,  1521,  7, 238052,     32.000, 0x00000010, 0 },
   { 6658,  1522,  0, 238088,      0.000, 0x00000000, 0 },
   { 6659,  1523,  0, 238124,      0.000, 0x00000000, 0 },
   { 6660,  1524,  0, 239042,   2000.000, 0x00000000, 0 },
@@ -10081,14 +10081,14 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 8565,  1548, 47, 239042,  11400.000, 0x00000000, 0 },
   { 8566,  1548, 48, 239042,  11600.000, 0x00000000, 0 },
   { 8567,  1548, 49, 239042,  11800.000, 0x00000000, 0 },
-  { 6685,  1549,  0, 238059,  -3000.000, 0x00000000, 0 },
-  { 7464,  1549,  1, 238059,  -6000.000, 0x00000000, 0 },
-  { 7465,  1549,  2, 238059,  -9000.000, 0x00000000, 0 },
-  { 7466,  1549,  3, 238059, -12000.000, 0x00000000, 0 },
-  { 7467,  1549,  4, 238059, -15000.000, 0x00000000, 0 },
-  { 7468,  1549,  5, 238059, -18000.000, 0x00000000, 0 },
-  { 7469,  1549,  6, 238059, -21000.000, 0x00000000, 0 },
-  { 7470,  1549,  7, 238059, -24000.000, 0x00000000, 0 },
+  { 6685,  1549,  0, 238059,  -5000.000, 0x00000010, 0 },
+  { 7464,  1549,  1, 238059, -10000.000, 0x00000010, 0 },
+  { 7465,  1549,  2, 238059, -15000.000, 0x00000010, 0 },
+  { 7466,  1549,  3, 238059, -20000.000, 0x00000010, 0 },
+  { 7467,  1549,  4, 238059, -24000.000, 0x00000010, 0 },
+  { 7468,  1549,  5, 238059, -28000.000, 0x00000010, 0 },
+  { 7469,  1549,  6, 238059, -31000.000, 0x00000010, 0 },
+  { 7470,  1549,  7, 238059, -34000.000, 0x00000010, 0 },
   { 6686,  1550,  0, 238095,      0.000, 0x00000000, 0 },
   { 6687,  1551,  0, 238131,      0.000, 0x00000000, 0 },
   { 6688,  1552,  0, 239042,   2000.000, 0x00000000, 0 },
@@ -10261,14 +10261,14 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 8715,  1560, 47, 239042,  11400.000, 0x00000000, 0 },
   { 8716,  1560, 48, 239042,  11600.000, 0x00000000, 0 },
   { 8717,  1560, 49, 239042,  11800.000, 0x00000000, 0 },
-  { 6697,  1561,  0, 238062,      5.000, 0x00000000, 0 },
-  { 7485,  1561,  1, 238062,     10.000, 0x00000000, 0 },
-  { 7486,  1561,  2, 238062,     15.000, 0x00000000, 0 },
-  { 7487,  1561,  3, 238062,     20.000, 0x00000000, 0 },
-  { 7488,  1561,  4, 238062,     25.000, 0x00000000, 0 },
-  { 7489,  1561,  5, 238062,     30.000, 0x00000000, 0 },
-  { 7490,  1561,  6, 238062,     35.000, 0x00000000, 0 },
-  { 7491,  1561,  7, 238062,     40.000, 0x00000000, 0 },
+  { 6697,  1561,  0, 238062,      8.000, 0x00000010, 0 },
+  { 7485,  1561,  1, 238062,     16.000, 0x00000010, 0 },
+  { 7486,  1561,  2, 238062,     24.000, 0x00000010, 0 },
+  { 7487,  1561,  3, 238062,     32.000, 0x00000010, 0 },
+  { 7488,  1561,  4, 238062,     40.000, 0x00000010, 0 },
+  { 7489,  1561,  5, 238062,     48.000, 0x00000010, 0 },
+  { 7490,  1561,  6, 238062,     56.000, 0x00000010, 0 },
+  { 7491,  1561,  7, 238062,     64.000, 0x00000010, 0 },
   { 6698,  1562,  0, 238098,      0.000, 0x00000000, 0 },
   { 6699,  1563,  0, 238134,      0.000, 0x00000000, 0 },
   { 6700,  1564,  0, 239042,   2000.000, 0x00000000, 0 },
@@ -11259,10 +11259,34 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 7699,  1716,  0, 241270,      0.000, 0x00000000, 0 },
   {    0,     0,  0,      0,      0.000, 0x00000000, 0 },
 };
-#define ARTIFACT_POWER_RANK_HOTFIX_SIZE (0)
+#define ARTIFACT_POWER_RANK_HOTFIX_SIZE (24)
 
-// 0 artifact_power_rank hotfix entries, wow build level 23826
+// 24 artifact_power_rank hotfix entries, wow build level 23852
 static hotfix::client_hotfix_entry_t __artifact_power_rank_hotfix_data[] = {
+  {   6657,  4, 10.000000, 4.000000 },
+  {   6685,  4, -3000.000000, -5000.000000 },
+  {   6697,  4, 5.000000, 8.000000 },
+  {   7429,  4, 20.000000, 8.000000 },
+  {   7430,  4, 30.000000, 12.000000 },
+  {   7431,  4, 40.000000, 16.000000 },
+  {   7432,  4, 50.000000, 20.000000 },
+  {   7433,  4, 60.000000, 24.000000 },
+  {   7434,  4, 70.000000, 28.000000 },
+  {   7435,  4, 80.000000, 32.000000 },
+  {   7464,  4, -6000.000000, -10000.000000 },
+  {   7465,  4, -9000.000000, -15000.000000 },
+  {   7466,  4, -12000.000000, -20000.000000 },
+  {   7467,  4, -15000.000000, -24000.000000 },
+  {   7468,  4, -18000.000000, -28000.000000 },
+  {   7469,  4, -21000.000000, -31000.000000 },
+  {   7470,  4, -24000.000000, -34000.000000 },
+  {   7485,  4, 10.000000, 16.000000 },
+  {   7486,  4, 15.000000, 24.000000 },
+  {   7487,  4, 20.000000, 32.000000 },
+  {   7488,  4, 25.000000, 40.000000 },
+  {   7489,  4, 30.000000, 48.000000 },
+  {   7490,  4, 35.000000, 56.000000 },
+  {   7491,  4, 40.000000, 64.000000 },
   {      0,  0, 0, 0 },
 };
 

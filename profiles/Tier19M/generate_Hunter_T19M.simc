@@ -14,7 +14,7 @@
 # * No Hardcoded Stats (generally if an item gives wrong stats: either bonus_id is wrong, either the item no longer exists in-game)
 # * It is recommended to use enchant name (ex : ",enchant=binding_of_mastery") rather than id/hardcoded stats.
 
-hunter="Hunter_BM_T19M"
+hunter="Hunter_Beast_Mastery_T19M"
 level=110
 race=orc
 role=attack
@@ -38,9 +38,9 @@ finger2=shadowruby_band,id=136713,bonus_id=670/1703,gems=150mastery,enchant=bind
 trinket1=bloodthirsty_instinct,id=139329,bonus_id=1806
 trinket2=eye_of_guarm,id=142506,bonus_id=605/3469
 main_hand=titanstrike,id=128861,gem_id=139262/139269/137543,relic_id=1806/1806/1522:1727
-save=Hunter_BM_T19M.simc
+save=Hunter_Beast_Mastery_T19M.simc
 
-hunter="Hunter_MM_T19M"
+hunter="Hunter_Marksmanship_T19M"
 level=110
 race=troll
 role=attack
@@ -64,9 +64,9 @@ finger2=shadowruby_band,id=136713,bonus_id=670/1703,gems=150mastery,enchant=bind
 trinket1=bloodthirsty_instinct,id=139329,bonus_id=1806
 trinket2=arans_relaxing_ruby,id=142157
 main_hand=thasdorah_legacy_of_the_windrunners,id=128826,gem_id=142518/142510/142517,relic_id=3469:1512/3469:1512/3469:1512
-save=Hunter_MM_T19M.simc
+save=Hunter_Marksmanship_T19M.simc
 
-hunter="Hunter_SV_T19M"
+hunter="Hunter_Survival_T19M"
 level=110
 race=troll
 role=attack
@@ -90,4 +90,4 @@ finger2=mindrend_band,id=138220,bonus_id=1806,enchant=200vers
 trinket1=bloodthirsty_instinct,id=139329,bonus_id=1806
 trinket2=eye_of_guarm,id=142506,bonus_id=607/3469
 main_hand=talonclaw,id=128808,gem_id=142518/142511/142510,relic_id=3469/3469/3469:1512
-save=Hunter_SV_T19M.simc
+save=Hunter_Survival_T19M.simc

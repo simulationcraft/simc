@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 Live (wow build 23826, git build 9b6da33)
+SimulationCraft 720-01 for World of Warcraft 7.2.0 Live (wow build 23826, git build 475fb10)
 
 Name             : Defensive Stance (id=71) [Spell Family (4), Passive, Hidden] 
 Class            : Protection Warrior
@@ -419,7 +419,8 @@ Effects          :
 #1 (id=1897)     : Apply Aura (6) | Proc Trigger Spell: Revenge! (42)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 5302 | Target: Self(1)
 
-Name             : Revenge! (id=5302) [Spell Family (4), Hidden] 
+Name             : Revenge! (id=5302) [Spell Family (4)] 
+Hotfixed         : Attributes
 Class            : Warrior
 School           : Physical
 Duration         : 6 seconds
@@ -428,13 +429,12 @@ Proc Chance      : 100%
 Proc Flags       : ....x... ....x... ........ ........ 
                  : Yellow Melee, AOE Hostile Spell
 Triggered by     : Revenge Trigger (5301)
-Attributes       : ....x..x x....... ........ .....x..   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ....x... ........ ........ .....x..   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Hidden (7)
 Effects          :
 #1 (id=1898)     : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self(1)

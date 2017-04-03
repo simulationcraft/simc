@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 Live (wow build 23826, git build 9b6da33)
+SimulationCraft 720-01 for World of Warcraft 7.2.0 Live (wow build 23826, git build 475fb10)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Arcane Fire Frost Mage
@@ -494,7 +494,7 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | Target: Self(1)
 #2 (id=5359)     : Apply Aura (6) | Add Percent Modifier: Spell Pushback (108)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 9 | Target: Self(1)
-                   Affected Spells: Frostbolt (116), Polymorph (118), Fireball (133), Flamestrike (2120), Scorch (2948), Arcane Missiles (5143), Pyroblast (11366), Arcane Power (12042), Evocation (12051), Polymorph (28271), Polymorph (28272), Arcane Blast (30451), Flurry (44614), Polymorph (61025), Polymorph (61305), Polymorph (61721), Polymorph (61780), Arcane Missiles! (79683), Conjure Familiar (126578), Polymorph (126819), Polymorph (161353), Polymorph (161354), Polymorph (161355), Polymorph (161372), Conjure Refreshment (190336), Blizzard (190356), Blizzard (190357), Aftershocks (194432), Displacement (195676), Displacement Beacon (212799), Displacement (212801), Frostbolt (228597)
+                   Affected Spells: Frostbolt (116), Polymorph (118), Fireball (133), Flamestrike (2120), Scorch (2948), Arcane Missiles (5143), Pyroblast (11366), Arcane Power (12042), Evocation (12051), Polymorph (28271), Polymorph (28272), Arcane Blast (30451), Flurry (44614), Polymorph (61025), Polymorph (61305), Polymorph (61721), Polymorph (61780), Arcane Missiles! (79683), Conjure Familiar (126578), Polymorph (126819), Polymorph (161353), Polymorph (161354), Polymorph (161355), Polymorph (161372), Conjure Refreshment (190336), Blizzard (190356), Blizzard (190357), Aftershocks (194432), Displacement (195676), Displacement (212801), Frostbolt (228597)
 Description      : Accelerates your spellcasting for $d, granting $m1% haste and preventing damage from delaying your spellcasts.
 Tooltip          : Haste increased by $w1% and immune to pushback.
 
@@ -1021,6 +1021,7 @@ Description      : As a side-effect of exposure to intense cold, the caster cann
 Tooltip          : Cannot be made invulnerable by Ice Block.
 
 Name             : Arcane Barrage (id=44425) [Spell Family (3)] 
+Hotfixed         : Attributes
 Class            : Arcane Mage
 School           : Arcane
 Resource         : 0.5% Base Mana (5500 @Level 110)
@@ -1034,7 +1035,7 @@ Category Cooldown: 4.5 seconds
 Affecting spells : Arcane Charge (36032), Mage (137018), Arcane Mage (137021), Torrential Barrage (187304), Erosion (210134), Norgannon's Foresight (236380)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ .......x ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1977,6 +1978,7 @@ Effects          :
 Description      : Enables Worgens to switch between human and Worgan forms
 
 Name             : Ice Floes (id=108839) [Spell Family (3)] 
+Hotfixed         : Attributes
 Class            : Mage
 School           : Frost
 Spell Level      : 1
@@ -1988,7 +1990,7 @@ Stacks           : 1 initial, 3 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ..x.x.x. x....... ........ 
                  : AOE Heal, AOE Hostile Spell, Heal, Hostile Spell
-Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
+Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3809,6 +3811,7 @@ Description      : $@spelldesc194431
 Tooltip          : Movement speed slowed by $s2%.
 
 Name             : Phoenix's Flames (Artifact) (id=194466) [Spell Family (3)] 
+Hotfixed         : Attributes
 Class            : Mage
 School           : Fire
 Spell Level      : 12
@@ -3822,7 +3825,7 @@ Artifact Power   : Id: 748, Index: 0, Max Rank: 1
 Affecting spells : Fire Mage (137019), Norgannon's Foresight (236380), Strafing Run (238127)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ..x..... ........   ........ ........ ........ ........ 
+                 : ........ ........ ..x..... ........   ........ .......x ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4711,13 +4714,14 @@ Description      : Slowed by $s1% for $d.
 Tooltip          : Slowed by $s1% for $d.
 
 Name             : Displacement Beacon (id=212799) [Spell Family (3)] 
+Hotfixed         : Attributes, Affecting Spells
 Class            : Mage
 School           : Arcane
 Spell Level      : 24
 Duration         : 10 seconds
 Cooldown         : 30 seconds
-Affecting spells : Icy Veins (12472), Improved Mana Gems (37447), Everywhere At Once (187301), Ice Form (198144), Norgannon's Foresight (236380)
-Attributes       : ........ ........ x.x..... .x......   ........ ..x..... ........ ........ 
+Affecting spells : Everywhere At Once (187301), Norgannon's Foresight (236380)
+Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4732,6 +4736,7 @@ Description      : $@spelldesc195676
 Tooltip          : Able to Displace back to where last Blinked from.
 
 Name             : Displacement (id=212801) [Spell Family (3)] 
+Hotfixed         : Attributes
 Replaces         : Displacement (id=195676)
 Class            : Arcane Mage
 School           : Arcane
@@ -4739,7 +4744,7 @@ Spell Level      : 24
 Duration         : 0.3 seconds
 Cooldown         : 30 seconds
 Affecting spells : Icy Veins (12472), Improved Mana Gems (37447), Everywhere At Once (187301), Ice Form (198144), Norgannon's Foresight (236380)
-Attributes       : ........ ........ x.x..... .x......   ........ ..x..... ........ ....x... 
+Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5607,7 +5612,8 @@ Effects          :
 #1 (id=365009)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #2 (id=365030)   : Unknown effect type (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 10228 | Target: Custom(18)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 10228 | Target: Unknown(62)
+                   Hotfixed: Chain Multiplier (0 -> 1), Target 1 (18 -> 62)
 Description      : $@spelldesc238126
 Tooltip          : Aluneth will echo your next Arcane Explosion.
 
