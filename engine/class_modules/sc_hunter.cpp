@@ -5364,9 +5364,8 @@ hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ):
     buff_creator_t( *this, "vulnerability", p -> find_spell(187131) )
       .default_value( p -> find_spell( 187131 ) -> effectN( 2 ).percent() )
       .refresh_behavior( BUFF_REFRESH_DURATION );
-  /* HOTFIX: 2017-03-29 - Unerring Arrows bonus is now 4% per point (was 10% per point). */
   if ( p -> artifacts.unerring_arrows.rank() )
-    debuffs.vulnerable -> default_value += p -> artifacts.unerring_arrows.rank() * .04;
+    debuffs.vulnerable -> default_value += p -> artifacts.unerring_arrows.percent();
 
   debuffs.true_aim = 
     buff_creator_t( *this, "true_aim", p -> find_spell( 199803 ) )
@@ -7078,12 +7077,6 @@ struct hunter_module_t: public module_t
       .operation( hotfix::HOTFIX_SET )
       .modifier( 7.2 )
       .verification_value( 6.5 );
-
-    hotfix::register_spell( "Hunter", "2017-3-31", "Echo of Ohn’ara’s proc chance increased to 20% (was 10%).", 238125 )
-      .field( "proc_chance" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 20 )
-      .verification_value( 10 );
   }
 
   virtual void combat_begin( sim_t* ) const override {}
