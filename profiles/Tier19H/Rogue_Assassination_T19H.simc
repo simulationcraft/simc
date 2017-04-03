@@ -30,7 +30,7 @@ actions+=/call_action_list,name=cds
 actions+=/call_action_list,name=maintain
 # The 'active_dot.rupture>=spell_targets.rupture' means that we don't want to envenom as long as we can multi-rupture (i.e. units that don't have rupture yet).
 actions+=/call_action_list,name=finish,if=(!talent.exsanguinate.enabled|cooldown.exsanguinate.remains>2)&(!dot.rupture.refreshable|(dot.rupture.exsanguinated&dot.rupture.remains>=3.5)|target.time_to_die-dot.rupture.remains<=4)&active_dot.rupture>=spell_targets.rupture
-actions+=/call_action_list,name=build,if=combo_points.deficit>0|energy.deficit<=25+variable.energy_targetbleed_regen
+actions+=/call_action_list,name=build,if=combo_points.deficit>1|energy.deficit<=25+variable.energy_targetbleed_regen
 
 # Builders
 actions.build=hemorrhage,if=refreshable
@@ -71,7 +71,7 @@ actions.maintain+=/rupture,if=talent.exsanguinate.enabled&((combo_points>=cp_max
 actions.maintain+=/rupture,cycle_targets=1,if=combo_points>=4&refreshable&(!exsanguinated|remains<=1.5)&target.time_to_die-remains>4
 # Sinister Circulation makes it worth to cast Kingsbane on CD, although you shouldn't cast it if you're [stealthed w/ Nighstalker and have Mantle & T19_4PC to Envenom].
 actions.maintain+=/kingsbane,if=artifact.sinister_circulation.enabled&combo_points.deficit>=1+(mantle_duration>gcd.remains+0.2)&(talent.subterfuge.enabled|!stealthed.rogue|(talent.nightstalker.enabled&(!equipped.mantle_of_the_master_assassin|!set_bonus.tier19_4pc)))
-actions.maintain+=/kingsbane,if=!talent.exsanguinate.enabled&combo_points.deficit>=1+(mantle_duration>gcd.remains+0.2)&buff.envenom.up&((debuff.vendetta.up&debuff.surge_of_toxins.up)|cooldown.vendetta.remains<=5.2)
+actions.maintain+=/kingsbane,if=!talent.exsanguinate.enabled&combo_points.deficit>=1+(mantle_duration>gcd.remains+0.2)&buff.envenom.up&((debuff.vendetta.up&debuff.surge_of_toxins.up)|cooldown.vendetta.remains<=5.2|cooldown.vendetta.remains>=10)
 actions.maintain+=/kingsbane,if=talent.exsanguinate.enabled&combo_points.deficit>=1+(mantle_duration>gcd.remains+0.2)&dot.rupture.exsanguinated
 actions.maintain+=/pool_resource,for_next=1
 actions.maintain+=/garrote,cycle_targets=1,if=combo_points.deficit>=1&refreshable&(!exsanguinated|remains<=1.5)&target.time_to_die-remains>4
