@@ -4883,8 +4883,8 @@ struct serenity_t: public monk_spell_t
     trigger_gcd = timespan_t::zero();
 
     if ( player -> artifact.split_personality.rank() )
-      // Value is saved as -3000
-      cooldown -> duration += ( player -> artifact.split_personality.rank() * player -> artifact.split_personality.data().effectN( 2 ).time_value() );
+      // Normally this would have taken Effect 2 but due to the fact that Rank 5-8 values are different from 1-4, just using the base info.
+      cooldown -> duration += player -> artifact.split_personality.time_value();
   }
 
   void execute() override
@@ -4988,9 +4988,7 @@ struct storm_earth_and_fire_t: public monk_spell_t
     callbacks = harmful = may_miss = may_crit = may_dodge = may_parry = may_block = false;
 
     if ( p -> artifact.split_personality.rank() )
-    {
       cooldown -> duration += p -> artifact.split_personality.time_value();
-    }
 
     cooldown -> charges += p -> spec.storm_earth_and_fire_2 -> effectN( 1 ).base_value();
   }
@@ -10511,7 +10509,7 @@ struct monk_module_t: public module_t
 
   virtual void register_hotfixes() const override
   {
-    hotfix::register_effect( "Monk", "2017-03-24", "Windwalker Monks now deal 8% more damage with Tiger Palm, Blackout Kick, and Rising Sun Kick.", 260817 )
+/*    hotfix::register_effect( "Monk", "2017-03-24", "Windwalker Monks now deal 8% more damage with Tiger Palm, Blackout Kick, and Rising Sun Kick.", 260817 )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_MUL)
       .modifier( 1.08 )
@@ -10525,7 +10523,7 @@ struct monk_module_t: public module_t
       .field( "base_value" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( -5000 )
-      .verification_value( -3000 );
+      .verification_value( -3000 );*/
   }
 
   virtual void init( player_t* p ) const override
