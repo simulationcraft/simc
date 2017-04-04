@@ -3688,7 +3688,6 @@ struct windburst_t: hunter_ranged_attack_t
     {
       background = true;
       aoe = -1;
-      tick_may_crit = false;
 
       // XXX: looks like it can actually trigger it, but only once "per trail"
       may_proc_bullseye = false;
