@@ -730,11 +730,9 @@ struct vulnerability_stats_t
     }
   }
 
-  void update( hunter_t* p, const action_t* a )
+  void update( hunter_t* p, const action_state_t* state )
   {
-    const action_state_t* s = a -> execute_state;
-
-    if ( ! p -> get_target_data( s -> target ) -> debuffs.vulnerable -> check() )
+    if ( ! p -> get_target_data( state -> target ) -> debuffs.vulnerable -> check() )
     {
       no_vuln -> occur();
     }
@@ -743,15 +741,15 @@ struct vulnerability_stats_t
       if ( has_patient_sniper )
       {
         // it looks like we can get called with current_tick == 6 (last tick) which is oor
-        size_t current_tick = std::min<size_t>( p -> get_target_data( s -> target ) -> debuffs.vulnerable -> current_tick, patient_sniper.size() - 1 );
+        size_t current_tick = std::min<size_t>( p -> get_target_data( state -> target ) -> debuffs.vulnerable -> current_tick, patient_sniper.size() - 1 );
         patient_sniper[ current_tick ] -> occur();
       }
 
       if ( check_secondary )
       {
-        for ( player_t* tar : a -> target_list() )
+        for ( player_t* tar : state -> action -> target_list() )
         {
-          if ( tar != s -> target && !p -> get_target_data( tar ) -> debuffs.vulnerable -> check() )
+          if ( tar != state -> target && !p -> get_target_data( tar ) -> debuffs.vulnerable -> check() )
           {
             no_vuln_secondary -> occur();
             return;
@@ -3265,7 +3263,7 @@ struct aimed_shot_t: public aimed_shot_base_t
     else if ( p() -> legendary.mm_gloves )
       p() -> buffs.gyroscopic_stabilization -> trigger();
 
-    vulnerability_stats.update( p(), execute_state -> action );
+    vulnerability_stats.update( p(), execute_state );
   }
 
   virtual timespan_t execute_time() const override
@@ -3531,10 +3529,21 @@ struct piercing_shot_t: public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::execute();
 
-    if (result_is_hit(execute_state->result))
+    if (result_is_hit( execute_state -> result))
       trigger_bullseye( p(), execute_state -> action );
 
-    vulnerability_stats.update( p(), execute_state -> action );
+    // execute_state's target may not be the player's target
+    player_t* original_target = nullptr;
+    if ( execute_state -> target != p() -> target )
+    {
+      original_target = execute_state -> target;
+      execute_state -> target = p() -> target;
+    }
+
+    vulnerability_stats.update( p(), execute_state );
+
+    if ( original_target )
+      execute_state -> target = original_target;
   }
 
   virtual double composite_target_da_multiplier(player_t* t) const override
