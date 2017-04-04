@@ -6429,7 +6429,7 @@ struct paladin_module_t : public module_t
     unique_gear::register_special_effect( 206338, chain_of_thrayn );
     unique_gear::register_special_effect( 236106, ashes_to_dust );
     unique_gear::register_special_effect( 211557, justice_gaze );
-    unique_gear::register_special_effect( 208051, sephuzs_secret_enabler_t(), true );
+    unique_gear::register_special_effect( 208051, sephuzs_secret_enabler_t() );
   }
 
   virtual void init( player_t* p ) const override
