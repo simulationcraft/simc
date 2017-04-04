@@ -1501,7 +1501,7 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
   if ( o() -> specialization() == WARLOCK_AFFLICTION )
   {
     m *= 1.0 + o() -> artifact.soulstealer.percent() * ( o() -> buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
-    m *= 1.0 + o() -> artifact.degradation_of_the_black_harvest.percent() * ( o() -> buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
+    m *= 1.0 + o() -> artifact.degradation_of_the_black_harvest.percent();
   }
 
   if ( o() -> specialization() == WARLOCK_DEMONOLOGY )
@@ -5629,6 +5629,7 @@ struct cry_havoc_t : public warlock_spell_t
     //proc = true;
     callbacks = true;
     aoe = -1;
+    destro_mastery = false;
   }
 };
 
@@ -5968,7 +5969,7 @@ double warlock_t::composite_player_multiplier( school_e school ) const
   if ( specialization() == WARLOCK_AFFLICTION )
   {
     m *= 1.0 + artifact.soulstealer.percent() * ( buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
-    m *= 1.0 + artifact.degradation_of_the_black_harvest.percent() * ( buffs.deadwind_harvester->check() ? 2.0 : 1.0 );
+    m *= 1.0 + artifact.degradation_of_the_black_harvest.percent();
   }
 
   if ( specialization() == WARLOCK_DEMONOLOGY )
