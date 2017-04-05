@@ -1,4 +1,4 @@
-SimulationCraft 720-01 for World of Warcraft 7.2.0 Live (wow build 23826, git build 475fb10)
+SimulationCraft 720-01 for World of Warcraft 7.2.0 Live (wow build 23826, git build f1644f0)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -2814,7 +2814,8 @@ Attributes       : ....x... ........ x.x..... ........   ....x... ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=129943)   : Weapon Damage% (31)
-                   Base Value: 130 | Scaled Value: 1.3 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
+                   Base Value: 195 | Scaled Value: 1.95 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
+                   Hotfixed: Base Value (130 -> 195), Chain Multiplier (0 -> 1)
 #2 (id=129944)   : None (0)
                    Base Value: 100 | Scaled Value: 100
 Description      : $@spelldesc115831

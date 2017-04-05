@@ -1,4 +1,4 @@
-SimulationCraft 720-01 for World of Warcraft 7.2.0 Live (wow build 23826, git build 475fb10)
+SimulationCraft 720-01 for World of Warcraft 7.2.0 Live (wow build 23826, git build f1644f0)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -5860,6 +5860,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=298965)   : School Damage: arcane (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 9.00000 | Target: Enemy(6)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 #2 (id=299004)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #3 (id=321940)   : Energize Power (30)
@@ -5916,6 +5917,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=298969)   : School Damage: arcane (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 18.00000 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 #2 (id=298970)   : Energize Power (30)
                    Base Value: 400 | Scaled Value: 400 | Misc Value: astral_power | Target: Self(1)
 #3 (id=299005)   : Unknown effect type (164)

@@ -1,4 +1,4 @@
-SimulationCraft 720-01 for World of Warcraft 7.2.0 Live (wow build 23826, git build 475fb10)
+SimulationCraft 720-01 for World of Warcraft 7.2.0 Live (wow build 23826, git build f1644f0)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman

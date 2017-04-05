@@ -1,4 +1,4 @@
-SimulationCraft 720-01 for World of Warcraft 7.2.0 Live (wow build 23826, git build 475fb10)
+SimulationCraft 720-01 for World of Warcraft 7.2.0 Live (wow build 23826, git build f1644f0)
 
 Name             : Mend Pet (id=136) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
@@ -6056,8 +6056,10 @@ Attributes       : .x...... ........ x....... ........   ........ .x...... .....
 Effects          :
 #1 (id=315281)   : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 #2 (id=315282)   : Weapon Damage% (31)
                    Base Value: 550 | Scaled Value: 5.5 | Target: Enemy(6)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 Description      : $@spelldesc185901
 
 Name             : Hunting Party (id=212658) [Spell Family (9), Passive] 
@@ -6183,6 +6185,7 @@ Attributes       : .x...... ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=318698)   : School Damage: nature (2)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 4.00000 | Target: Enemy(6)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 Description      : $@spelldesc214579
 
 Name             : Dire Frenzy (id=217200) [Spell Family (9)] 
