@@ -3688,10 +3688,22 @@ struct windburst_t: hunter_ranged_attack_t
     {
       background = true;
       aoe = -1;
-      tick_may_crit = false;
 
       // XXX: looks like it can actually trigger it, but only once "per trail"
       may_proc_bullseye = false;
+    }
+
+    timespan_t composite_dot_duration( const action_state_t* ) const override
+    {
+      /* XXX 2017-04-03 nuoHep
+       * This is somewhat arbitrary (especially the actual %) but in-game, the chances of
+       * getting the "full" 5 ticks out of it are pretty slim. Analyzing a bunch of logs
+       * (mostly Krosus/Augur) 15% may actually be generous.
+       */
+      timespan_t duration = dot_duration;
+      if ( p() -> bugs && ! rng().roll( .15 ) )
+        duration -= base_tick_time;
+      return duration;
     }
   };
 
