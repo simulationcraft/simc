@@ -10,7 +10,7 @@ spec=elemental
 # Default consumables
 potion=prolonged_power
 flask=whispered_pact
-food=fishbrul_special
+food=lavish_suramar_feast
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -65,11 +65,11 @@ actions.aoe+=/flame_shock,moving=1,target_if=refreshable
 actions.single_asc=ascendance,if=dot.flame_shock.remains>buff.ascendance.duration&(time>=60|buff.bloodlust.up)&cooldown.lava_burst.remains>0&!buff.stormkeeper.up
 actions.single_asc+=/flame_shock,if=!ticking|dot.flame_shock.remains<=gcd
 actions.single_asc+=/flame_shock,if=maelstrom>=20&remains<=buff.ascendance.duration&cooldown.ascendance.remains+buff.ascendance.duration<=duration
+actions.single_asc+=/elemental_blast
 actions.single_asc+=/earthquake,if=buff.echoes_of_the_great_sundering.up&!buff.ascendance.up&maelstrom>=86
 actions.single_asc+=/earth_shock,if=maelstrom>=117|!artifact.swelling_maelstrom.enabled&maelstrom>=92
 # Keep SK for large or soon add waves.
 actions.single_asc+=/stormkeeper,if=raid_event.adds.count<3|raid_event.adds.in>50
-actions.single_asc+=/elemental_blast
 actions.single_asc+=/liquid_magma_totem,if=raid_event.adds.count<3|raid_event.adds.in>50
 actions.single_asc+=/lightning_bolt,if=buff.power_of_the_maelstrom.up&buff.stormkeeper.up&spell_targets.chain_lightning<3
 actions.single_asc+=/lava_burst,if=dot.flame_shock.remains>cast_time&(cooldown_react|buff.ascendance.up)
@@ -89,10 +89,10 @@ actions.single_asc+=/flame_shock,moving=1,if=movement.distance>6
 actions.single_if=flame_shock,if=!ticking|dot.flame_shock.remains<=gcd
 actions.single_if+=/earthquake,if=buff.echoes_of_the_great_sundering.up&maelstrom>=86
 actions.single_if+=/frost_shock,if=buff.icefury.up&maelstrom>=111
+actions.single_if+=/elemental_blast
 actions.single_if+=/earth_shock,if=maelstrom>=117|!artifact.swelling_maelstrom.enabled&maelstrom>=92
 # Keep SK for large or soon spawning add waves.
 actions.single_if+=/stormkeeper,if=raid_event.adds.count<3|raid_event.adds.in>50
-actions.single_if+=/elemental_blast
 actions.single_if+=/icefury,if=raid_event.movement.in<5|maelstrom<=101
 actions.single_if+=/liquid_magma_totem,if=raid_event.adds.count<3|raid_event.adds.in>50
 actions.single_if+=/lightning_bolt,if=buff.power_of_the_maelstrom.up&buff.stormkeeper.up&spell_targets.chain_lightning<3
@@ -113,10 +113,10 @@ actions.single_if+=/flame_shock,moving=1,if=movement.distance>6
 # Single Target Action Priority List for Lightning Rod Spec
 actions.single_lr=flame_shock,if=!ticking|dot.flame_shock.remains<=gcd
 actions.single_lr+=/earthquake,if=buff.echoes_of_the_great_sundering.up&maelstrom>=86
+actions.single_lr+=/elemental_blast
 actions.single_lr+=/earth_shock,if=maelstrom>=117|!artifact.swelling_maelstrom.enabled&maelstrom>=92
 # Keep SK for large or soon add waves.
 actions.single_lr+=/stormkeeper,if=raid_event.adds.count<3|raid_event.adds.in>50
-actions.single_lr+=/elemental_blast
 actions.single_lr+=/liquid_magma_totem,if=raid_event.adds.count<3|raid_event.adds.in>50
 actions.single_lr+=/lava_burst,if=dot.flame_shock.remains>cast_time&cooldown_react
 actions.single_lr+=/flame_shock,if=maelstrom>=20&buff.elemental_focus.up,target_if=refreshable
