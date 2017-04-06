@@ -659,7 +659,7 @@ bool parse_fight_style( sim_t*             sim,
   }
   else
   {
-    std::cout << "Custom fight style specified: " << value << std::endl;
+    sim -> errorf( "Custom fight style specified: %s", value.c_str() );
     sim -> fight_style = value;
   }
 
