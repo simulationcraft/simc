@@ -2915,8 +2915,11 @@ struct chimaera_shot_t: public hunter_ranged_attack_t
 
 struct cobra_shot_t: public hunter_ranged_attack_t
 {
+  const spell_data_t* cobra_commander;
+
   cobra_shot_t( hunter_t* player, const std::string& options_str ):
-    hunter_ranged_attack_t( "cobra_shot", player, player -> find_specialization_spell( "Cobra Shot" ) )
+    hunter_ranged_attack_t( "cobra_shot", player, player -> find_specialization_spell( "Cobra Shot" ) ),
+    cobra_commander( player -> find_spell( 234042 ) )
   {
     parse_options( options_str );
 
@@ -2936,15 +2939,13 @@ struct cobra_shot_t: public hunter_ranged_attack_t
     {
       p() -> procs.cobra_commander -> occur();
 
-      const spell_data_t* driver = p() -> find_spell( 243042 );
-
-      auto count = static_cast<int>( rng().range( driver -> effectN( 2 ).min( p() ),
-                                                  driver -> effectN( 2 ).max( p() ) ) );
+      auto count = static_cast<int>( rng().range( cobra_commander -> effectN( 2 ).min( p() ),
+                                                  cobra_commander -> effectN( 2 ).max( p() ) + 1 ) );
       for ( auto snake : p() -> pets.sneaky_snakes )
       {
         if ( snake -> is_sleeping() )
         {
-          snake -> summon( driver -> duration() );
+          snake -> summon( cobra_commander -> duration() );
           count--;
         }
         if ( count == 0 )
