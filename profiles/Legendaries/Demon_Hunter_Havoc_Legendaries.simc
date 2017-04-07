@@ -20,7 +20,7 @@ Demon_Hunter_Havoc_$(Tier).simc
 copy=Havoc_$(Tier)_Baseline
 
 copy=Havoc_$(Tier)_Anger,Havoc_$(Tier)_Baseline
-finger1=anger_of_the_halfgiants,id=137038,enchant=binding_of_mastery,gems=150crit
+finger1=anger_of_the_halfgiants,id=137038,enchant=binding_of_critical_strike,gems=150crit
 
 copy=Havoc_$(Tier)_Cinidaria,Havoc_$(Tier)_Baseline
 waist=cinidaria_the_symbiote,id=133976
@@ -29,7 +29,7 @@ copy=Havoc_$(Tier)_Loramus,Havoc_$(Tier)_Baseline
 feet=loramus_thalipedes_sacrifice,id=137022
 
 copy=Havoc_$(Tier)_Sephuzs,Havoc_$(Tier)_Baseline
-finger1=sephuzs_secret,id=132452,enchant=binding_of_mastery,gems=150crit
+finger1=sephuzs_secret,id=132452,enchant=binding_of_critical_strike,gems=150crit
 
 copy=Havoc_$(Tier)_Prydaz,Havoc_$(Tier)_Baseline
 neck=prydaz_xavarics_magnum_opus,id=132444,gems=150haste,enchant=mark_of_the_claw
