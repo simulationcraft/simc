@@ -3533,18 +3533,7 @@ struct piercing_shot_t: public hunter_ranged_attack_t
     if (result_is_hit( execute_state -> result))
       trigger_bullseye( p(), execute_state -> action );
 
-    // execute_state's target may not be the player's target
-    player_t* original_target = nullptr;
-    if ( execute_state -> target != p() -> target )
-    {
-      original_target = execute_state -> target;
-      execute_state -> target = p() -> target;
-    }
-
     vulnerability_stats.update( p(), this );
-
-    if ( original_target )
-      execute_state -> target = original_target;
   }
 
   virtual double composite_target_da_multiplier(player_t* t) const override
