@@ -7614,8 +7614,8 @@ double shaman_t::composite_attribute_multiplier( attribute_e attribute ) const
       m *= 1.0 + buff.landslide -> stack_value();
       break;
     case ATTR_STAMINA:
-      m *= 1.0 + artifact.might_of_the_earthen_ring.data().effectN( 2 ).percent();
-      m *= 1.0 + artifact.power_of_the_earthen_ring.data().effectN( 2 ).percent();
+      m *= 1.0 + artifact.might_of_the_earthen_ring.data().effectN( 1 ).percent();
+      m *= 1.0 + artifact.power_of_the_earthen_ring.data().effectN( 1 ).percent();
       break;
     default:
       break;
