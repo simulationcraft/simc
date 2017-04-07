@@ -2917,7 +2917,7 @@ struct cobra_shot_t: public hunter_ranged_attack_t
 
   cobra_shot_t( hunter_t* player, const std::string& options_str ):
     hunter_ranged_attack_t( "cobra_shot", player, player -> find_specialization_spell( "Cobra Shot" ) ),
-    cobra_commander( player -> find_spell( 234042 ) )
+    cobra_commander( player -> find_spell( 243042 ) )
   {
     parse_options( options_str );
 
