@@ -137,14 +137,38 @@ struct rogue_td_t : public actor_target_data_t
   bool lethal_poisoned() const
   {
     return dots.deadly_poison -> is_ticking() ||
-           debuffs.wound_poison -> check() ||
-           debuffs.agonizing_poison -> check();
+           debuffs.agonizing_poison -> check() ||
+           debuffs.wound_poison -> check();
+  }
+
+  timespan_t lethal_poison_remains() const
+  {
+    if ( dots.deadly_poison -> is_ticking() ) {
+      return dots.deadly_poison -> remains();
+    } else if ( debuffs.agonizing_poison -> check() ) {
+      return debuffs.agonizing_poison -> remains();
+    } else if ( debuffs.wound_poison -> check() ) {
+      return debuffs.wound_poison -> remains();
+    } else {
+      return timespan_t::from_seconds( 0.0 );
+    }
   }
 
   bool non_lethal_poisoned() const
   {
     return debuffs.crippling_poison -> check() ||
            debuffs.leeching_poison -> check();
+  }
+
+  timespan_t non_lethal_poison_remains() const
+  {
+    if ( debuffs.crippling_poison -> check() ) {
+      return debuffs.crippling_poison -> remains();
+    } else if ( debuffs.leeching_poison -> check() ) {
+      return debuffs.leeching_poison -> remains();
+    } else {
+      return timespan_t::from_seconds( 0.0 );
+    }
   }
 
   bool poisoned() const
@@ -7107,6 +7131,18 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
         return timespan_t::from_seconds( 0.0 );
     } );
   }
+  else if ( util::str_compare_ci( name_str, "poisoned_enemies" ) )
+    return make_ref_expr( name_str, poisoned_enemies );
+  else if ( util::str_compare_ci( name_str, "poisoned" ) )
+    return make_fn_expr( name_str, [ this ]() {
+      rogue_td_t* tdata = get_target_data( target );
+      return tdata -> lethal_poisoned();
+    } );
+  else if ( util::str_compare_ci( name_str, "poison_remains" ) )
+    return make_fn_expr( name_str, [ this ]() {
+      rogue_td_t* tdata = get_target_data( target );
+      return tdata -> lethal_poison_remains();
+    } );
   else if ( util::str_compare_ci( name_str, "bleeds" ) )
   {
     return make_fn_expr( name_str, [ this ]() {
@@ -7135,8 +7171,6 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
       return poisoned_bleeds;
     } );
   }
-  else if ( util::str_compare_ci( name_str, "poisoned_enemies" ) )
-    return make_ref_expr( name_str, poisoned_enemies );
   else if ( util::str_compare_ci( name_str, "rtb_buffs" ) )
   {
     if ( specialization() != ROGUE_OUTLAW || talent.slice_and_dice -> ok() )
