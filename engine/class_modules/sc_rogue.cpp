@@ -7118,6 +7118,23 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
              //+ tdata -> dots.mutilated_flesh -> is_ticking();
     } );
   }
+  else if ( util::str_compare_ci( name_str, "poisoned_bleeds" ) )
+  {
+    return make_fn_expr( name_str, [ this ]() {
+      int poisoned_bleeds = 0;
+      for ( size_t i = 0, actors = sim -> target_non_sleeping_list.size(); i < actors; i++ )
+      {
+        player_t* t = sim -> target_non_sleeping_list[i];
+        rogue_td_t* tdata = get_target_data( t );
+        if ( tdata -> lethal_poisoned() ) {
+          poisoned_bleeds += tdata -> dots.garrote -> is_ticking() +
+                             tdata -> dots.internal_bleeding -> is_ticking() +
+                             tdata -> dots.rupture -> is_ticking();
+        }
+      }
+      return poisoned_bleeds;
+    } );
+  }
   else if ( util::str_compare_ci( name_str, "poisoned_enemies" ) )
     return make_ref_expr( name_str, poisoned_enemies );
   else if ( util::str_compare_ci( name_str, "rtb_buffs" ) )
