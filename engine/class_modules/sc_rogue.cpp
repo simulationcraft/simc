@@ -132,13 +132,24 @@ struct rogue_td_t : public actor_target_data_t
 
   rogue_td_t( player_t* target, rogue_t* source );
 
-  bool poisoned() const
+  
+
+  bool lethal_poisoned() const
   {
     return dots.deadly_poison -> is_ticking() ||
            debuffs.wound_poison -> check() ||
-           debuffs.crippling_poison -> check() ||
-           debuffs.leeching_poison -> check() ||
            debuffs.agonizing_poison -> check();
+  }
+
+  bool non_lethal_poisoned() const
+  {
+    return debuffs.crippling_poison -> check() ||
+           debuffs.leeching_poison -> check();
+  }
+
+  bool poisoned() const
+  {
+    return lethal_poisoned() || non_lethal_poisoned();
   }
 };
 
