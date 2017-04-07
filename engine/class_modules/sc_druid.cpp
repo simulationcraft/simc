@@ -122,6 +122,8 @@ struct druid_td_t : public actor_target_data_t
     buff_t* bloodletting;
     buff_t* open_wounds;
     buff_t* stellar_empowerment;
+    buff_t* circadian_invocation_arcane;
+    buff_t* circadian_invocation_nature;
   } debuff;
 
   druid_td_t( player_t& target, druid_t& source );
@@ -342,6 +344,7 @@ public:
     buff_t* the_emerald_dreamcatcher; // Legion Legendary
     buff_t* warrior_of_elune;
     buff_t* balance_tier18_4pc; // T18 4P Balance
+    buff_t* wax_and_wane;
 
     // Feral
     buff_t* ashamanes_energy;
@@ -538,6 +541,9 @@ public:
     const spell_data_t* moonkin_2;
     const spell_data_t* starfall_2;
     const spell_data_t* sunfire_2;
+    const spell_data_t* wax_and_wane;
+    const spell_data_t* circadian_invocation_arcane;
+    const spell_data_t* circadian_invocation_nature;
 
     // Guardian
     const spell_data_t* guardian;
@@ -661,6 +667,11 @@ public:
     artifact_power_t echoing_stars;
     artifact_power_t sunblind;
     artifact_power_t goldrinns_fury;
+    // 7.2
+    artifact_power_t radiance_of_the_cenarion_circle;
+    artifact_power_t light_of_the_evening_star;
+    artifact_power_t wax_and_wane;
+    artifact_power_t circadian_invocation;
 
     // NYI
     artifact_power_t light_of_the_sun;
@@ -818,6 +829,7 @@ public:
   virtual double    composite_melee_expertise( const weapon_t* ) const override;
   virtual double    composite_parry() const override { return 0; }
   virtual double    composite_player_multiplier( school_e school ) const override;
+  virtual double    composite_player_target_multiplier( player_t* target, school_e school ) const override;
   virtual double    composite_rating_multiplier( rating_e ) const override;
   virtual double    composite_spell_crit_chance() const override;
   virtual double    composite_spell_haste() const override;
@@ -2003,6 +2015,13 @@ public:
     p() -> buff.star_power -> trigger();
   }
 
+  void trigger_wax_and_wane()
+  {
+    if ( ! p() -> artifact.wax_and_wane.rank() )
+      return;
+    p() -> buff.wax_and_wane -> trigger();
+  };
+
   // Empowerment multiplier functions to prevent putting this mess in several places.
 
   virtual double composite_stellar_empowerment( player_t* t ) const
@@ -2129,6 +2148,8 @@ struct moonfire_t : public druid_spell_t
         adm *= 1.0 + galactic_guardian_dd_multiplier;
       }
 
+      adm *= 1.0 + p() -> buff.wax_and_wane -> stack_value();
+
       return adm;
     }
 
@@ -2139,6 +2160,11 @@ struct moonfire_t : public druid_spell_t
       trigger_shooting_stars( d -> state );
 
       trigger_balance_tier18_2pc();
+
+      if ( p() -> artifact.circadian_invocation.rank() )
+      {
+        td( d -> target) -> debuff.circadian_invocation_arcane -> trigger();
+      }
     }
 
     void impact ( action_state_t* s ) override
@@ -2151,6 +2177,7 @@ struct moonfire_t : public druid_spell_t
         p() -> resource_gain( RESOURCE_RAGE, p() -> buff.galactic_guardian -> value(), p() -> gain.galactic_guardian );
         p() -> buff.galactic_guardian -> expire();
       }
+      trigger_wax_and_wane();
     }
 
     size_t available_targets( std::vector< player_t* >& tl ) const override
@@ -2221,6 +2248,11 @@ struct moonfire_t : public druid_spell_t
       target_cache.is_valid = false;
 
       druid_spell_t::execute();
+
+      if ( p() -> artifact.circadian_invocation.rank() )
+      {
+        td( this -> target ) -> debuff.circadian_invocation_arcane -> trigger();
+      }
     }
   };
 
@@ -5664,6 +5696,11 @@ struct sunfire_t : public druid_spell_t
       trigger_shooting_stars( d -> state );
 
       trigger_balance_tier18_2pc();
+
+      if ( p() -> artifact.circadian_invocation.rank() )
+      {
+        td( d -> target) -> debuff.circadian_invocation_nature -> trigger();
+      }
     }
   };
 
@@ -5695,6 +5732,11 @@ struct sunfire_t : public druid_spell_t
 
     damage -> target = execute_state -> target;
     damage -> schedule_execute();
+
+    if ( p() -> artifact.circadian_invocation.rank() )
+    {
+      td( this -> target ) -> debuff.circadian_invocation_nature -> trigger();
+    }
   }
 };
 
@@ -5945,6 +5987,7 @@ struct starfall_t : public druid_spell_t
       radius *= 1.0 + p -> talent.stellar_drift -> effectN( 1 ).percent();
 
       base_multiplier *= 1.0 + p -> talent.stellar_drift -> effectN( 2 ).percent();
+      base_multiplier *= 1.0 + p -> artifact.light_of_the_evening_star.percent();
     }
     
     timespan_t travel_time() const override
@@ -6605,10 +6648,10 @@ void druid_t::init_spells()
   spec.starfall                   = find_specialization_spell( "Starfall" );
   spec.stellar_empowerment        = spec.starfall -> ok() ? find_spell( 197637 ) : spell_data_t::not_found();
   spec.balance_tier19_2pc         = sets.has_set_bonus( DRUID_BALANCE, T19, B2 ) ? find_spell( 211089 ) : spell_data_t::not_found();
-  spec.starsurge_2 = find_specialization_spell( 231021 );
-  spec.moonkin_2 = find_specialization_spell( 231042 );
-  spec.starfall_2 = find_specialization_spell( 231049 );
-  spec.sunfire_2 = find_specialization_spell( 231050) ;
+  spec.starsurge_2                = find_specialization_spell( 231021 );
+  spec.moonkin_2                  = find_specialization_spell( 231042 );
+  spec.starfall_2                 = find_specialization_spell( 231049 );
+  spec.sunfire_2                  = find_specialization_spell( 231050 );
 
   // Feral
   spec.cat_form                   = find_class_spell( "Cat Form" ) -> ok() ? find_spell( 3025   ) : spell_data_t::not_found();
@@ -6623,13 +6666,13 @@ void druid_t::init_spells()
   spec.rip                        = find_specialization_spell( "Rip" );
   spec.sharpened_claws            = find_specialization_spell( "Sharpened Claws" );
   spec.swipe_cat                  = find_spell( 106785 );
-  spec.rake_2 = find_spell( 231052 );
-  spec.tigers_fury_2 = find_spell( 231055 );
-  spec.ferocious_bite_2 = find_spell( 231056 );
-  spec.shred = find_spell( 5221 );
-  spec.shred_2 = find_spell( 231063 );
-  spec.shred_3 = find_spell( 231057 );
-  spec.swipe_2 = find_spell( 231283 );
+  spec.rake_2                     = find_spell( 231052 );
+  spec.tigers_fury_2              = find_spell( 231055 );
+  spec.ferocious_bite_2           = find_spell( 231056 );
+  spec.shred                      = find_spell( 5221 );
+  spec.shred_2                    = find_spell( 231063 );
+  spec.shred_3                    = find_spell( 231057 );
+  spec.swipe_2                    = find_spell( 231283 );
 
 
   // Guardian
@@ -6639,9 +6682,9 @@ void druid_t::init_spells()
   spec.guardian_overrides         = find_specialization_spell( "Guardian Overrides Passive" );
   spec.ironfur                    = find_specialization_spell( "Ironfur" );
   spec.thrash_bear_dot            = find_specialization_spell( "Thrash" ) -> ok() ? find_spell( 192090 ) : spell_data_t::not_found();
-  spec.mangle_2 = find_specialization_spell( 231064 );
-  spec.lightning_reflexes = find_specialization_spell( 231064 );
-  spec.ironfur_2 = find_specialization_spell( 231070 );
+  spec.mangle_2                   = find_specialization_spell( 231064 );
+  spec.lightning_reflexes         = find_specialization_spell( 231064 );
+  spec.ironfur_2                  = find_specialization_spell( 231070 );
 
   // Restoration
   spec.moonkin_form_affinity = find_spell(197625);
@@ -6782,6 +6825,12 @@ void druid_t::init_spells()
   artifact.empowerment                  = find_artifact_spell( "Empowerment" );
   artifact.goldrinns_fury               = find_artifact_spell( "Goldrinn's Fury" );
 
+  // 7.2 Balance
+  artifact.radiance_of_the_cenarion_circle = find_artifact_spell("Radiance of the Cenarion Circle");
+  artifact.light_of_the_evening_star    = find_artifact_spell("Light of the Evening Star");
+  artifact.wax_and_wane                 = find_artifact_spell("Wax and Wane");
+  artifact.circadian_invocation         = find_artifact_spell("Circadian Invocation");
+
   // Feral -- Fangs of Ashamane
   artifact.ashamanes_frenzy             = find_artifact_spell( "Ashamane's Frenzy" );
   artifact.open_wounds                  = find_artifact_spell( "Open Wounds" );
@@ -6802,7 +6851,7 @@ void druid_t::init_spells()
   artifact.hardened_roots               = find_artifact_spell( "Hardened Roots" );
   artifact.fangs_of_the_first           = find_artifact_spell( "Fangs of the First" );
 
-  //7.2
+  //7.2 Feral
   artifact.bloodletters_frailty            = find_artifact_spell("Bloodletter's Frailty");
   artifact.fury_of_ashamane                = find_artifact_spell("Fury of Ashamane");
   artifact.thrashing_claws                 = find_artifact_spell("Thrashing Claws");
@@ -7023,6 +7072,9 @@ void druid_t::create_buffs()
                                .add_invalidate( CACHE_SPELL_HASTE );
 
   buff.warrior_of_elune      = new warrior_of_elune_buff_t( *this );
+
+  buff.wax_and_wane          = buff_creator_t( this, "wax_and_wane", find_spell( 239952 ) )
+                                .default_value(  find_spell( 239952 ) -> effectN(1).percent() );
 
   // Feral
 
@@ -8105,6 +8157,30 @@ double druid_t::composite_player_multiplier( school_e school ) const
   m *= 1.0 + artifact.fangs_of_the_first.percent();
   m *= 1.0 + artifact.ferocity_of_the_cenarion_circle.percent();
   m *= 1.0 + artifact.goldrinns_fury.percent();
+  m *= 1.0 + artifact.radiance_of_the_cenarion_circle.data().effectN( 1 ).percent();
+
+  return m;
+}
+
+// druid_t::composite_player_target_multiplier =====================================
+
+double druid_t::composite_player_target_multiplier( player_t* target, school_e school ) const
+{
+  druid_td_t* td = get_target_data( target );
+  double m = player_t::composite_player_target_multiplier( target, school );
+
+  if ( dbc::is_school( school, SCHOOL_ARCANE ) && dbc::is_school( school, SCHOOL_NATURE ) || dbc::is_school(school, SCHOOL_ASTRAL))
+  {
+    m *= 1.0 + td -> debuff.circadian_invocation_arcane -> stack_value() + td -> debuff.circadian_invocation_nature -> stack_value();
+  }
+  else if ( dbc::is_school( school, SCHOOL_ARCANE ) )
+  {
+    m *= 1.0 + td -> debuff.circadian_invocation_arcane -> stack_value();
+  }
+  else if ( dbc::is_school( school, SCHOOL_NATURE ) )
+  {
+    m *= 1.0 + td -> debuff.circadian_invocation_nature -> stack_value();
+  }
 
   return m;
 }
@@ -8955,7 +9031,13 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
                                .trigger_spell( source.artifact.open_wounds );
   debuff.stellar_empowerment = buff_creator_t( *this, "stellar_empowerment", source.spec.stellar_empowerment )
                                 .default_value( source.spec.stellar_empowerment -> effectN( 1 ).percent() );
+
+  debuff.circadian_invocation_arcane = buff_creator_t( *this, "circadian_invocation_arcane", source.find_spell( 240606 ) )
+                                        .default_value( source.find_spell( 240606 ) -> effectN( 1 ).percent() );
+  debuff.circadian_invocation_nature = buff_creator_t( *this, "circadian_invocation_nature", source.find_spell( 240607 ) )
+                                        .default_value( source.find_spell( 240607 ) -> effectN( 1 ).percent() );
 }
+
 
 // Copypasta for reporting
 bool has_amount_results( const std::array<stats_t::stats_results_t, RESULT_MAX>& res )
@@ -9619,12 +9701,13 @@ struct druid_module_t : public module_t
   virtual void register_hotfixes() const override 
   {
     
+    /*
     hotfix::register_spell( "Druid", "2016-12-18", "Incorrect spell level for starfall damage component.", 191037 )
       .field( "spell_level" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( 40 )
       .verification_value( 76 );
-
+    */
     /*
     hotfix::register_effect( "Druid", "2016-09-23", "Sunfire damage increased by 10%.-dot", 232417 )
       .field( "sp_coefficient" )
