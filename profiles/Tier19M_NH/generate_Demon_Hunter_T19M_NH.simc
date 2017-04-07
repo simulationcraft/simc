@@ -1,7 +1,7 @@
 # T19M_NH
 # Tier 19 Mythic Nighthold
 # * Ilvl Cap: 910
-# * Artifact Rank Cap: 54
+# * Artifact Rank Cap: 52
 # * 3 Relics with max ilevel of 910
 # * No Legendaries (see Raid_T19x_Legendary.simc)
 # * No items from World Bosses / World Quests / BoEs
@@ -19,7 +19,7 @@ role=attack
 spec=havoc
 position=back
 talents=2220311
-artifact=12:0:0:0:0:108:3:109:3:110:3:111:3:113:3:114:3:115:3:117:3:119:1:120:1:122:1:123:1:124:1:1090:3:1091:1:1092:1:1332:1:1360:20
+artifact=3:0:0:0:0:1000:4:1001:4:1002:4:1003:4:1004:4:1005:4:1006:4:1007:4:1008:4:1010:1:1011:1:1012:1:1013:1:1014:1:1015:1:1016:1:1330:1:1362:1:1493:4:1494:1:1495:1:1496:1:1630:1
 
 head=mask_of_second_sight,id=138378,bonus_id=3519
 neck=belerons_choker_of_misery,id=140899,bonus_id=3519,enchant=mark_of_the_claw
@@ -31,8 +31,8 @@ hands=gloves_of_synchronus_elements,id=140905,bonus_id=3519
 waist=high_shadow_councilors_wrap,id=140919,bonus_id=3519
 legs=legwraps_of_second_sight,id=138379,bonus_id=3519
 feet=grovetenders_moccasins,id=140861,bonus_id=3519
-finger1=ring_of_the_scoured_clan,id=140897,bonus_id=3519,enchant=binding_of_mastery
-finger2=spellblades_gemmed_signet,id=140895,bonus_id=3519,enchant=binding_of_mastery
+finger1=ring_of_the_scoured_clan,id=140897,bonus_id=3519,enchant=binding_of_critical_strike
+finger2=spellblades_gemmed_signet,id=140895,bonus_id=3519,enchant=binding_of_critical_strike
 trinket1=entwined_elemental_foci,id=140796,bonus_id=3519
 trinket2=draught_of_souls,id=140808,bonus_id=3519
 main_hand=twinblades_of_the_deceiver,id=127829,bonus_id=719,gem_id=140824/140823/140824,relic_id=3519/3519/3519

@@ -3174,7 +3174,11 @@ struct blade_dance_attack_t : public demon_hunter_attack_t
   {
     double cd = demon_hunter_attack_t::composite_crit_damage_bonus_multiplier();
 
-    cd *= 1.0 + p()->artifact.bladedancers_grace.percent();
+    // Currently doesn't affect Death Sweep, so use the affected list to determine if we apply it
+    if (data().affected_by(p()->artifact.bladedancers_grace.data().effectN(1)))
+    {
+      cd *= 1.0 + p()->artifact.bladedancers_grace.percent();
+    }
 
     return cd;
   }
@@ -6692,11 +6696,11 @@ void demon_hunter_t::apl_precombat()
     {
       if (specialization() == DEMON_HUNTER_HAVOC)
       {
-        pre->add_action("food,type=the_hungry_magister,if=!equipped.majordomos_dinner_bell");
+        pre->add_action("food,type=lavish_suramar_feast,if=!equipped.majordomos_dinner_bell");
         pre->add_action("food,type=nightborne_delicacy_platter,if=equipped.majordomos_dinner_bell");
       }
       else
-        pre -> add_action( "food,type=nightborne_delicacy_platter" );
+        pre -> add_action( "food,type=lavish_suramar_feast" );
     }
     else
     {

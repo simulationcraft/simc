@@ -6,7 +6,7 @@ position=back
 talents=2220311
 talent_override=fel_barrage,if=active_enemies>1|raid_event.adds.exists
 talent_override=momentum,if=active_enemies>1|raid_event.adds.exists
-artifact=12:0:0:0:0:108:3:109:3:110:3:111:3:113:3:114:3:115:3:117:3:119:1:120:1:122:1:123:1:124:1:1090:3:1091:1:1092:1:1332:1:1360:6
+artifact=3:0:0:0:0:1000:3:1001:3:1002:3:1003:3:1004:3:1005:3:1006:3:1007:3:1008:3:1010:1:1011:1:1012:1:1013:1:1014:1:1015:1:1016:1:1330:1:1362:1:1493:4:1494:1:1495:1:1630:1
 spec=havoc
 
 # This default action priority list is automatically created based on your character.
@@ -17,7 +17,7 @@ spec=havoc
 
 # Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat=flask,type=flask_of_the_seventh_demon
-actions.precombat+=/food,type=the_hungry_magister,if=!equipped.majordomos_dinner_bell
+actions.precombat+=/food,type=lavish_suramar_feast,if=!equipped.majordomos_dinner_bell
 actions.precombat+=/food,type=nightborne_delicacy_platter,if=equipped.majordomos_dinner_bell
 actions.precombat+=/augmentation,type=defiled
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
@@ -95,8 +95,8 @@ hands=gloves_of_synchronus_elements,id=140905,bonus_id=3517
 waist=high_shadow_councilors_wrap,id=140919,bonus_id=3517
 legs=legwraps_of_second_sight,id=138379,bonus_id=3517
 feet=grovetenders_moccasins,id=140861,bonus_id=3517
-finger1=ring_of_the_scoured_clan,id=140897,bonus_id=3517,enchant=binding_of_mastery
-finger2=spellblades_gemmed_signet,id=140895,bonus_id=3517,enchant=binding_of_mastery
+finger1=ring_of_the_scoured_clan,id=140897,bonus_id=3517,enchant=binding_of_critical_strike
+finger2=spellblades_gemmed_signet,id=140895,bonus_id=3517,enchant=binding_of_critical_strike
 trinket1=entwined_elemental_foci,id=140796,bonus_id=3517
 trinket2=draught_of_souls,id=140808,bonus_id=3517
 main_hand=twinblades_of_the_deceiver,id=127829,bonus_id=719,gem_id=140824/139251/140824,relic_id=3517/1806/3517
@@ -106,9 +106,9 @@ off_hand=twinblades_of_the_deceiver,id=127830,gem_id=0/0/0/0,relic_id=0/0
 # gear_ilvl=897.38
 # gear_agility=19041
 # gear_stamina=30554
-# gear_crit_rating=9294
+# gear_crit_rating=9694
 # gear_haste_rating=3025
-# gear_mastery_rating=9608
+# gear_mastery_rating=9208
 # gear_versatility_rating=1204
 # gear_armor=2351
 # set_bonus=tier19_2pc=1

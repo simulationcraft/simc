@@ -17,7 +17,7 @@ spec=havoc
 
 # Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat=flask,type=flask_of_the_seventh_demon
-actions.precombat+=/food,type=the_hungry_magister,if=!equipped.majordomos_dinner_bell
+actions.precombat+=/food,type=lavish_suramar_feast,if=!equipped.majordomos_dinner_bell
 actions.precombat+=/food,type=nightborne_delicacy_platter,if=equipped.majordomos_dinner_bell
 actions.precombat+=/augmentation,type=defiled
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
