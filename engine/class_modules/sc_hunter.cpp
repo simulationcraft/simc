@@ -2622,10 +2622,26 @@ struct auto_shot_t: public hunter_action_t < ranged_attack_t >
       if ( p() -> talents.one_with_the_pack -> ok() )
         wild_call_chance += p() -> talents.one_with_the_pack -> effectN( 1 ).percent();
 
+      if ( maybe_ptr( p() -> dbc.ptr ) )
+        wild_call_chance *= 2;
+
       if ( rng().roll( wild_call_chance ) )
       {
-        p() -> cooldowns.dire_frenzy -> reset( true );
-        p() -> cooldowns.dire_beast -> reset( true );
+        if ( maybe_ptr( p() -> dbc.ptr ) )
+        {
+          // the wording in the bluepost regarding haste is somewhat ambiguous
+          // but looking at Animal Instincts (and using some common sense) this is
+          // the most probable way it's going to work
+          // XXX: pull this from spell data once 7.2.5 is "live"
+          const auto value = - timespan_t::from_seconds( 3 ) * p() -> cache.spell_haste();
+          p() -> cooldowns.dire_frenzy -> adjust( value, true );
+          p() -> cooldowns.dire_beast -> adjust( value, true );
+        }
+        else
+        {
+          p() -> cooldowns.dire_frenzy -> reset( true );
+          p() -> cooldowns.dire_beast -> reset( true );
+        }
         p() -> procs.wild_call -> occur();
       }
     }
