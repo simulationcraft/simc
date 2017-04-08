@@ -1475,7 +1475,7 @@ struct second_shuriken_t : public rogue_attack_t
     // Stealth Buff
     if ( p() -> buffs.stealth -> up() || p() -> buffs.shadow_dance -> up() || p() -> buffs.vanish -> up() )
     {
-      m *= 1.0 + 2.0; //FIXME Hotfix 09-24: Hardcoded to 200% until they add it in Spell Data like Shuriken Storm. Still the case as of 10/22 (7.1 22882).
+      m *= 1.0 + 2.0; //FIXME Hotfix 09-24: Hardcoded to 200% until they add it in Spell Data like Shuriken Storm. Still the case as of 10/22/2016 (7.1 22882).
     }
 
     return m;
@@ -1717,7 +1717,7 @@ struct insignia_of_ravenholdt_attack_t : public rogue_attack_t
 
 };
 
-// As of 01/01/2017 it acts like an Ignite (i.e. remaining damage are added).
+// As of 04/08/2017 it acts like an Ignite (i.e. remaining damage are added).
 // Also it doesn't pandemic and doesn't work with any Assassination modifier (else it would double dip).
 // It doesn't work with Hemorrhage nor with Venomous Wounds nor Zoldyck Family Training Shackles.
 // The only time it is counted "as a bleed" is for T19 4PC (it increases envenom damage).
@@ -1975,7 +1975,7 @@ struct wound_poison_t : public rogue_poison_t
     {
       double m = rogue_poison_t::action_multiplier();
 
-      // Note: As of 04/01, Mastery is applied two times on Wound Poison. Bug ?
+      // Note: As of 04/08/2017, Mastery is applied two times on Wound Poison. Bug ?
       if ( p() -> mastery.potent_poisons -> ok() )
       {
         m *= 1.0 + p() -> cache.mastery_value();
@@ -2774,7 +2774,7 @@ struct envenom_t : public rogue_attack_t
       bleeds += tdata -> dots.garrote -> is_ticking();
       bleeds += tdata -> dots.internal_bleeding -> is_ticking();
       bleeds += tdata -> dots.rupture -> is_ticking();
-      // As of 01/01/2017, Mutilated Flesh works on T19 4PC.
+      // As of 04/08/2017, Mutilated Flesh works on T19 4PC.
       bleeds += tdata -> dots.mutilated_flesh -> is_ticking();
 
       m *= 1.0 + p() -> sets.set( ROGUE_ASSASSINATION, T19, B4 ) -> effectN( 1 ).percent() * bleeds;
@@ -2840,7 +2840,7 @@ struct eviscerate_t : public rogue_attack_t
   {
     weapon = &( player -> main_hand_weapon );
     base_crit += p -> artifact.gutripper.percent();
-    base_multiplier *= 1.0 + p -> spec.eviscerate_2 -> effectN( 1 ).percent(); // As of 10/24 (7.1 22882), it is put as a Generic Modifier.
+    base_multiplier *= 1.0 + p -> spec.eviscerate_2 -> effectN( 1 ).percent();
   }
 
   double action_multiplier() const override
@@ -3180,7 +3180,7 @@ struct goremaws_bite_t:  public rogue_attack_t
     oh -> target = target;
     oh -> schedule_execute();
 
-    if ( secondary_trigger != TRIGGER_WEAPONMASTER ) // As of 7.0.3.22810 it doesn't trigger the buff on the weaponmaster proc.
+    if ( secondary_trigger != TRIGGER_WEAPONMASTER ) // As of 04/08/2017 it doesn't trigger the buff on the weaponmaster proc.
     {
       p() -> buffs.goremaws_bite -> trigger();
 
@@ -3396,7 +3396,7 @@ struct kingsbane_t : public rogue_attack_t
     mh -> execute();
 
     oh -> target = state -> target;
-    // Note: As of 04/02/2017, Kingsbane OH Strike can proc Seal Fate (bug ?)
+    // Note: As of 04/08/2017, Kingsbane OH Strike can proc Seal Fate (like Mutilate)
     p() -> trigger_seal_fate( state );
     oh -> execute();
   }
@@ -5355,7 +5355,7 @@ void rogue_t::trigger_poison_bomb( const action_state_t* state )
                                     .target( state -> target )
                   .x( state -> target -> x_position)
                   .y( state -> target -> y_position)
-                                    //FIXME Hotfix 09-24: Hardcoded to 500ms, not found in spell data, still the case as of 03/28 (7.2).
+                                    //FIXME Hotfix 09-24: Hardcoded to 500ms, not found in spell data, still the case as of 04/08/2017.
                                     .pulse_time( timespan_t::from_seconds( 0.5 ) )
                                     .duration( spell.bag_of_tricks_driver -> duration() )
                                     .start_time( sim -> current_time() )
@@ -6106,7 +6106,7 @@ struct stealth_t : public stealth_like_buff_t
     buff_t::execute( stacks, value, duration );
 
     if ( rogue -> in_combat && rogue -> talent.master_of_shadows -> ok() &&
-         // As of 03/17/2017, it does not proc Master of Shadows talent if Stealth is procced from Vanish
+         // As of 04/08/2017, it does not proc Master of Shadows talent if Stealth is procced from Vanish
          // (that's why we also proc Stealth before Vanish expires).
          ( ! rogue -> bugs || ! rogue -> buffs.vanish -> check() ) )
     {
@@ -7144,8 +7144,6 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
       return tdata -> dots.garrote -> is_ticking() +
              tdata -> dots.internal_bleeding -> is_ticking() +
              tdata -> dots.rupture -> is_ticking();
-             // As of 01/01/2017 mutilated_flesh bleed isn't really considered as a bleed.
-             //+ tdata -> dots.mutilated_flesh -> is_ticking();
     } );
   }
   else if ( util::str_compare_ci( name_str, "poisoned_bleeds" ) )
