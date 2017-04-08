@@ -9465,6 +9465,28 @@ struct promise_of_elune_t : public class_buff_cb_t<druid_t>
   }
 };
 
+struct promise_of_elune_lunar_t : public scoped_action_callback_t<lunar_strike_t>
+{
+  promise_of_elune_lunar_t() : super(DRUID, "lunar_strike")
+  {}
+
+  void manipulate(lunar_strike_t* action, const special_effect_t& e) override
+  {
+    action -> base_multiplier *= 1.0 + e.driver() -> effectN( 2 ).percent();
+  }
+};
+
+struct promise_of_elune_solar_t : public scoped_action_callback_t<solar_wrath_t>
+{
+  promise_of_elune_solar_t() : super(DRUID, "solar_wrath")
+  {}
+
+  void manipulate(solar_wrath_t* action, const special_effect_t& e) override
+  {
+    action -> base_multiplier *= 1.0 + e.driver() -> effectN( 2 ).percent();
+  }
+};
+
 struct oneths_intuition_t : public class_buff_cb_t<druid_t>
 {
   oneths_intuition_t() : super( DRUID, "oneths_intuition" )
@@ -9687,6 +9709,8 @@ struct druid_module_t : public module_t
     register_special_effect( 207523, chatoyant_signet_t() );
     register_special_effect( 208209, ailuro_pouncers_t() );
     register_special_effect( 208283, promise_of_elune_t(), true );
+    register_special_effect( 208283, promise_of_elune_lunar_t() );
+    register_special_effect( 208283, promise_of_elune_solar_t() );
     register_special_effect( 208219, skysecs_hold_t() );
     register_special_effect( 208190, the_emerald_dreamcatcher_t(), true );
     register_special_effect( 208681, luffa_wrappings_t<thrash_cat_t>( "thrash_cat" ) );
