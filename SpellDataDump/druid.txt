@@ -1,4 +1,4 @@
-SimulationCraft 720-01 for World of Warcraft 7.2.0 Live (wow build 23826, git build f1644f0)
+SimulationCraft 720-01 for World of Warcraft 7.2.0 Live (wow build 23826, git build 016768c)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -3249,7 +3249,8 @@ Attributes       : ........ ........ ........ ........   .......x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=171565)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 15 yards | Target: Unknown(89)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+                   Hotfixed: Chain Multiplier (0 -> 1), Target 1 (89 -> 1)
 #2 (id=171566)   : Trigger Spell: Typhoon (64)
                    Base Value: 400 | Scaled Value: 400 | Trigger Spell: 61391
 Description      : Strikes targets within $61391a1 yards in front of you with a violent Typhoon, knocking them back and dazing them for $61391d. Usable in all shapeshift forms.
@@ -4705,7 +4706,7 @@ Name             : Starfall (id=191037) [Scaling Spell (3), Spell Family (7)]
 Hotfixed         : Attributes
 Class            : Druid
 School           : Astral
-Spell Level      : 40
+Spell Level      : 76
 Range            : 50000 yards
 Velocity         : 0.8 yards/sec
 Affecting spells : Mastery: Starlight (77492), Soul of the Forest (114107), Balance Druid (137013), Lucidity (137247), Thrash (192090), Astral Influence (197524), Stellar Drift (202354), Ekowraith, Creator of Worlds (210667), Light of the Evening Star (238047)

@@ -1,4 +1,4 @@
-SimulationCraft 720-01 for World of Warcraft 7.2.0 Live (wow build 23826, git build f1644f0)
+SimulationCraft 720-01 for World of Warcraft 7.2.0 Live (wow build 23826, git build 016768c)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -5004,9 +5004,11 @@ Effects          :
 Description      : $@spelldesc238062
 Tooltip          : Your next $?s198034[Divine Hammer][Blade of Justice] deals $w1% increased damage.
 
-Name             : Blessing of the Ashbringer (id=242981) [Spell Family (10)] 
+Name             : Blessing of the Ashbringer (id=242981) [Scaling Spell (-1), Spell Family (10)] 
+Hotfixed         : Scaling Spell, Max Scaling Level
 Class            : Paladin
 School           : Holy
+Max Scaling Level: -1
 Duration         : Aura (infinite)
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5017,7 +5019,8 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : Cannot cancel aura (31)
 Effects          :
 #1 (id=368965)   : Apply Aura (6) | Attribute (29)
-                   Base Value: 2000 | Scaled Value: 2000 | Target: Self(1)
+                   Base Value: 2000 | Scaled Value: 2000 (avg=1.177163) | Target: Self(1)
+                   Hotfixed: Average, Delta, Bonus
 Description      : Increases your Strength by $s1.
 Tooltip          : Increases your Strength by $s1.
 

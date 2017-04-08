@@ -49,6 +49,8 @@ actions+=/call_action_list,name=sbt_opener,if=talent.sabertooth.enabled&time<20
 actions+=/regrowth,if=equipped.ailuro_pouncers&talent.bloodtalons.enabled&buff.predatory_swiftness.stack>1&buff.bloodtalons.down
 actions+=/call_action_list,name=finisher
 actions+=/call_action_list,name=generator
+# The Following line massively increases performance of the simulation but can be safely removed.
+actions+=/wait,sec=1,if=energy.time_to_max>3
 
 # Use Savage Roar if it's expired and you're at 5 combo points or are about to use Brutal Slash
 actions.finisher=pool_resource,for_next=1
