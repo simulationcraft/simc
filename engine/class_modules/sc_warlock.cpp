@@ -5302,7 +5302,6 @@ struct shadowburn_t: public warlock_spell_t
 
     energize_type = ENERGIZE_ON_CAST;
     base_duration = p -> find_spell( 117828 ) -> duration();
-    base_multiplier *= 1.0 + p -> artifact.flames_of_sargeras.percent();
 
     can_havoc = true;
 
@@ -5311,8 +5310,6 @@ struct shadowburn_t: public warlock_spell_t
     cooldown -> charges += p -> sets.set( WARLOCK_DESTRUCTION, T19, B4 ) -> effectN( 1 ).base_value();
     cooldown -> duration += p -> sets.set( WARLOCK_DESTRUCTION, T19, B4 ) -> effectN( 2 ).time_value();
   }
-
-
 
   virtual void impact( action_state_t* s ) override
   {
