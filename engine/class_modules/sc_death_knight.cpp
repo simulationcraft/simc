@@ -6751,6 +6751,11 @@ double death_knight_t::composite_melee_haste() const
     haste *= buffs.t18_4pc_frost_haste -> check_value();
   }
 
+  if ( legendary.sephuzs_secret )
+  {
+    haste *= 1.0 / ( 1.0 + legendary.sephuzs_secret -> effectN( 3 ).percent() );
+  }
+
   return haste;
 }
 
@@ -6767,6 +6772,11 @@ double death_knight_t::composite_spell_haste() const
   if ( buffs.bone_shield -> up() )
   {
     haste *= buffs.bone_shield -> value();
+  }
+
+  if ( legendary.sephuzs_secret )
+  {
+    haste *= 1.0 / ( 1.0 + legendary.sephuzs_secret -> effectN( 3 ).percent() );
   }
 
   return haste;
@@ -8133,6 +8143,11 @@ double death_knight_t::passive_movement_modifier() const
 
   if ( spec.deaths_advance -> ok() )
     ms += spec.deaths_advance -> effectN( 1 ).percent();
+
+  if ( legendary.sephuzs_secret )
+  {
+    ms += legendary.sephuzs_secret -> effectN( 2 ).percent();
+  }
 
   /*
   if ( buffs.unholy_presence -> up() )
