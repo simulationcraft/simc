@@ -1700,7 +1700,7 @@ struct sneaky_snake_t: public hunter_secondary_pet_t
       proc_chance( p -> find_spell( 243120 ) -> proc_chance() )
     {
       background = true;
-      hasted_ticks = tick_may_crit = false;
+      hasted_ticks = false;
       dot_max_stack = data().max_stacks();
 
       // XXX: nuoHep 2017-03-23
