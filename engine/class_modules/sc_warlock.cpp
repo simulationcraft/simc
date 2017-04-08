@@ -444,6 +444,8 @@ public:
     gain_t* recurrent_ritual;
     gain_t* feretory_of_souls;
     gain_t* power_cord_of_lethtendris;
+    gain_t* incinerate;
+    gain_t* dimensional_rift;
   } gains;
 
   // Procs
@@ -3794,20 +3796,10 @@ struct immolate_t: public warlock_spell_t
   {
     warlock_spell_t::tick( d );
 
-    if ( p() -> sets.has_set_bonus( WARLOCK_DESTRUCTION, T17, B2 ) )
-    {
-      if ( d -> state -> result == RESULT_CRIT && rng().roll( 0.38 ) )
-        p()->resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.immolate );
-      else if ( d -> state -> result == RESULT_HIT && rng().roll( 0.19 ) )
-        p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.immolate );
-    }
-    else
-    {
-      if ( d -> state -> result == RESULT_CRIT && rng().roll( 0.3 ) )
-        p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.immolate );
-      else if ( d -> state -> result == RESULT_HIT && rng().roll( 0.15 ) )
-        p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.immolate );
-    }
+    if ( d -> state -> result == RESULT_CRIT && rng().roll( ( maybe_ptr( p() -> dbc.ptr ) ? 1.0 : 0.3 ) ) )
+      p() -> resource_gain( RESOURCE_SOUL_SHARD, ( maybe_ptr( p() -> dbc.ptr ) ? 0.1 : 1 ), p() -> gains.immolate );
+    else if ( d -> state -> result == RESULT_HIT && rng().roll( ( maybe_ptr( p() -> dbc.ptr ) ? 0.5 : 0.15 ) ) )
+      p() -> resource_gain( RESOURCE_SOUL_SHARD, ( maybe_ptr( p() -> dbc.ptr ) ? 0.1 : 1 ), p() -> gains.immolate );
   }
 };
 
@@ -3818,7 +3810,10 @@ struct conflagrate_t: public warlock_spell_t
   conflagrate_t( warlock_t* p ):
     warlock_spell_t( "Conflagrate", p, p -> find_spell( 17962 ) )
   {
-    energize_type = ENERGIZE_ON_CAST;
+    if ( maybe_ptr( p -> dbc.ptr ) )
+      energize_type = ENERGIZE_NONE;
+    else
+      energize_type = ENERGIZE_ON_CAST;
     base_duration = p -> find_spell( 117828 ) -> duration();
     base_multiplier *= 1.0 + p -> artifact.flames_of_sargeras.percent();
 
@@ -3884,6 +3879,8 @@ struct conflagrate_t: public warlock_spell_t
 
     p() -> buffs.conflagration_of_chaos -> trigger();
 
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+      p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.6, p() -> gains.conflagrate );
   }
 
   void impact( action_state_t* s ) override
@@ -3958,6 +3955,9 @@ struct incinerate_t: public warlock_spell_t
     }
 
     p() -> buffs.backdraft -> decrement();
+
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+      p() -> resource_gain( RESOURCE_SOUL_SHARD, ( execute_state -> result == RESULT_CRIT ? 0.2 : 0.1 ), p() -> gains.incinerate );
   }
 
   virtual double composite_crit_chance() const override
@@ -4233,6 +4233,9 @@ struct dimensional_rift_t : public warlock_spell_t
   void execute() override
   {
     warlock_spell_t::execute();
+
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+      p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.3, p() -> gains.dimensional_rift );
 
     double rift = rng().range( 0.0, 1.0 );
 
@@ -6695,6 +6698,8 @@ void warlock_t::init_gains()
   gains.recurrent_ritual            = get_gain( "recurrent_ritual" );
   gains.feretory_of_souls           = get_gain( "feretory_of_souls" );
   gains.power_cord_of_lethtendris   = get_gain( "power_cord_of_lethtendris" );
+  gains.incinerate                  = get_gain( "incinerate" );
+  gains.dimensional_rift            = get_gain( "dimensional_rift" );
 }
 
 // warlock_t::init_procs ===============================================
