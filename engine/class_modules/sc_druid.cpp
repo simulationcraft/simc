@@ -5470,7 +5470,7 @@ struct lunar_strike_t : public druid_spell_t
     aoe = -1;
     base_aoe_multiplier = data().effectN( 3 ).percent();
 
-    natures_balance    = timespan_t::from_seconds( player -> talent.natures_balance -> effectN( 1 ).base_value() * 2 );
+    natures_balance    = player -> talent.natures_balance -> effectN( 1 ).base_value() * player -> find_spell( 164812 ) -> effectN( 2 ).period();
     
     base_execute_time *= 1.0 + player -> sets.set( DRUID_BALANCE, T17, B2 ) -> effectN( 1 ).percent();
     base_crit         += player -> artifact.dark_side_of_the_moon.percent();
@@ -5479,7 +5479,7 @@ struct lunar_strike_t : public druid_spell_t
 
   timespan_t natures_balance_extension() const
   {
-    return natures_balance / ( 1.0 / p() -> cache.spell_haste() - 1.0 );
+    return natures_balance * p() -> cache.spell_haste();
   }
 
   double composite_crit_chance() const override
@@ -5858,7 +5858,7 @@ struct solar_wrath_t : public druid_spell_t
   solar_wrath_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "solar_wrath", player, player -> find_affinity_spell( "Solar Wrath" ), options_str )
   {
-    natures_balance    = timespan_t::from_seconds( player -> talent.natures_balance -> effectN( 2 ).base_value() * 2);
+    natures_balance    = player -> talent.natures_balance -> effectN( 2 ).base_value() * player -> find_spell( 164812 ) -> effectN( 2 ).period();
 
     base_execute_time *= 1.0 + player -> sets.set( DRUID_BALANCE, T17, B2 ) -> effectN( 1 ).percent();
     base_multiplier   *= 1.0 + player -> artifact.skywrath.percent();
@@ -5908,7 +5908,7 @@ struct solar_wrath_t : public druid_spell_t
 
   timespan_t natures_balance_extension() const
   {
-    return natures_balance / ( 1.0 / p() -> cache.spell_haste() - 1.0 );
+    return natures_balance * p() -> cache.spell_haste();
   }
 
   void execute() override
