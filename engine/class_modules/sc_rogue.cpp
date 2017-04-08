@@ -6819,7 +6819,7 @@ void rogue_t::init_action_list()
       // This would be done with target_if=max:bleeds but it seems to be bugged atm
     build -> add_action( this, "Mutilate", "cycle_targets=1,if=(!talent.agonizing_poison.enabled&dot.deadly_poison_dot.refreshable)|(talent.agonizing_poison.enabled&debuff.agonizing_poison.remains<debuff.agonizing_poison.duration*0.3)" );
     build -> add_action( this, "Mutilate", "if=energy.deficit<=25+variable.energy_regen_combined|debuff.vendetta.up|dot.kingsbane.ticking|cooldown.vendetta.remains<=6|target.time_to_die<=6" );
-    build -> add_action( this, "Poisoned Knife", "cycle_targets=1,if=talent.agonizing_poison.enabled&debuff.agonizing_poison.remains<gcd.max*1.5&debuff.agonizing_poison.stack>=5" );
+    build -> add_action( this, "Poisoned Knife", "cycle_targets=1,if=talent.agonizing_poison.enabled&debuff.agonizing_poison.remains<=gcd.max*2.5&debuff.agonizing_poison.stack>=5" );
 
     // Cooldowns
     action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );
@@ -6855,7 +6855,7 @@ void rogue_t::init_action_list()
 
     // Kingsbane
     action_priority_list_t* kb = get_action_priority_list( "kb", "Kingsbane" );
-    kb -> add_action( this, "Kingsbane", "if=artifact.sinister_circulation.enabled&!(equipped.duskwalkers_footpads&equipped.convergence_of_fates&artifact.master_assassin.rank>=6)&(time>25|!equipped.mantle_of_the_master_assassin|debuff.vendetta.up&debuff.surge_of_toxins.up)&(talent.subterfuge.enabled|!stealthed.rogue|(talent.nightstalker.enabled&(!equipped.mantle_of_the_master_assassin|!set_bonus.tier19_4pc)))", "Sinister Circulation makes it worth to cast Kingsbane on CD exceot if you're [stealthed w/ Nighstalker and have Mantle & T19_4PC to Envenom] or before vendetta if you have mantle during the opener." );
+    kb -> add_action( this, "Kingsbane", "if=artifact.sinister_circulation.enabled&!(equipped.duskwalkers_footpads&equipped.convergence_of_fates&artifact.master_assassin.rank>=6)&(time>25|!equipped.mantle_of_the_master_assassin|(debuff.vendetta.up&debuff.surge_of_toxins.up))&(talent.subterfuge.enabled|!stealthed.rogue|(talent.nightstalker.enabled&(!equipped.mantle_of_the_master_assassin|!set_bonus.tier19_4pc)))", "Sinister Circulation makes it worth to cast Kingsbane on CD exceot if you're [stealthed w/ Nighstalker and have Mantle & T19_4PC to Envenom] or before vendetta if you have mantle during the opener." );
     kb -> add_action( this, "Kingsbane", "if=!talent.exsanguinate.enabled&buff.envenom.up&((debuff.vendetta.up&debuff.surge_of_toxins.up)|cooldown.vendetta.remains<=5.8|cooldown.vendetta.remains>=10)" );
     kb -> add_action( this, "Kingsbane", "if=talent.exsanguinate.enabled&dot.rupture.exsanguinated" ); 
 
