@@ -5702,6 +5702,16 @@ struct sunfire_t : public druid_spell_t
         td( d -> target) -> debuff.circadian_invocation_nature -> trigger();
       }
     }
+
+    virtual double action_da_multiplier() const override
+    {
+      double adm = druid_spell_t::action_da_multiplier();
+
+      adm *= 1.0 + p()->buff.wax_and_wane->stack_value();
+
+      return adm;
+    }
+
   };
 
   sunfire_damage_t* damage;
