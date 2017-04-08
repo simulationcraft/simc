@@ -3483,6 +3483,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
     {
       demon_hunter_attack_t::impact(state);
 
+      // Chaos Cleave
       if (p()->talent.chaos_cleave->ok())
       {
         attack_t* const chaos_cleave = p()->buff.metamorphosis->check() 
@@ -3493,9 +3494,6 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
       }
 
       // Chaotic Onslaught
-      // TOCHECK: Moving here since reports are that it can trigger itself
-      // Also is delayed until after the 2nd impact, need to test timing further
-      // Only proc from the OH attack for now, since the timing seems to match the Fury refund
       if (may_refund && p()->artifact.chaotic_onslaught.rank()
         && p()->rng().roll(p()->artifact.chaotic_onslaught.percent()))
       {
@@ -3640,10 +3638,10 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
     // Metamorphosis benefit
     p() -> buff.metamorphosis -> up();
 
-    if ( hit_any_target )
+    // On-cast procs do not appear to trigger from the Chaotic Onslaught procs
+    if ( hit_any_target && !this->background)
     {
       // Demonic Appetite
-      // TODO: Travel time
       if (p()->talent.demonic_appetite->ok() && !p()->cooldown.demonic_appetite->down())
       {
         if (p()->rng().roll(p()->talent.demonic_appetite->proc_chance()))
@@ -3774,8 +3772,6 @@ struct chaotic_onslaught_t : public chaos_strike_base_t
   {
     return true;
   }
-
-  // TODO: Check delay/travel_time in logs
 };
 
 struct chaotic_onslaught_annihilation_t : public chaos_strike_base_t
@@ -3803,8 +3799,6 @@ struct chaotic_onslaught_annihilation_t : public chaos_strike_base_t
   {
     return true;
   }
-
-  // TODO: Check delay/travel_time in logs
 };
 
 // Chaos Cleave =============================================================
@@ -5681,8 +5675,7 @@ void demon_hunter_t::create_buffs()
   buff.blind_fury =
     buff_creator_t(this, "blind_fury", spec.eye_beam)
     .cd(timespan_t::zero())
-    .default_value(talent.blind_fury->effectN(3).resource(RESOURCE_FURY) *
-    (1.0 + sets.set(DEMON_HUNTER_HAVOC, T19, B2)->effectN(1).percent()) / 50)
+    .default_value(talent.blind_fury->effectN(3).resource(RESOURCE_FURY) / 50)
     .duration(spec.eye_beam->duration() * (1.0 + talent.blind_fury->effectN(1).percent()))
     .period(timespan_t::from_millis(100))
     .tick_zero(true)
@@ -5912,7 +5905,7 @@ struct metamorphosis_buff_demonic_expr_t : public expr_t
   double evaluate() override
   {
     buffs::metamorphosis_buff_t* metamorphosis = debug_cast<buffs::metamorphosis_buff_t*>(dh->buff.metamorphosis);
-    if (metamorphosis && metamorphosis->extended_by_demonic)
+    if (metamorphosis && metamorphosis->check() && metamorphosis->extended_by_demonic)
       return true;
 
     return false;
@@ -6828,73 +6821,97 @@ void demon_hunter_t::apl_havoc()
     "Chaos Strike pooling condition, so we don't spend too much fury when we need it for Chaos Cleave AoE");
   
   // Cooldown List
-  def -> add_action( "call_action_list,name=cooldown,if=gcd.remains=0" );
+  def->add_action(this, "Consume Magic");
+  def->add_action("call_action_list,name=cooldown,if=gcd.remains=0");
+  def->add_action("run_action_list,name=demonic,if=talent.demonic.enabled&talent.demonic_appetite.enabled&talent.blind_fury.enabled");
+  def->add_action("run_action_list,name=normal");
+
+  action_priority_list_t* demonic = get_action_priority_list("demonic", "Specific APL for the Blind Fury+Demonic Appetite+Demonic build");
+  demonic->add_action("pick_up_fragment,if=fury.deficit>=35&cooldown.eye_beam.remains>5");
+  demonic->add_action(this, "Vengeful Retreat", "if=(talent.prepared.enabled|talent.momentum.enabled)&buff.prepared.down&buff.momentum.down",
+    "Vengeful Retreat backwards through the target to minimize downtime.");
+  demonic->add_action(this, "Fel Rush", "if=(talent.momentum.enabled|talent.fel_mastery.enabled)&"
+    "(!talent.momentum.enabled|(charges=2|cooldown.vengeful_retreat.remains>4)&buff.momentum.down)&"
+    "(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))",
+    "Fel Rush for Momentum.");
+  demonic->add_action(this, "Throw Glaive", "if=talent.bloodlet.enabled&(!talent.momentum.enabled|buff.momentum.up)&charges=2");
+  demonic->add_action(this, spec.death_sweep, "death_sweep", "if=variable.blade_dance");
+  demonic->add_talent(this, "Fel Eruption");
+  demonic->add_action(this, artifact.fury_of_the_illidari, "fury_of_the_illidari",
+    "if=(active_enemies>desired_targets|raid_event.adds.in>55)&(!talent.momentum.enabled|buff.momentum.up)");
+  demonic->add_action(this, "Blade Dance", "if=variable.blade_dance&cooldown.eye_beam.remains>5&!cooldown.metamorphosis.ready");
+  demonic->add_action(this, "Throw Glaive", "if=talent.bloodlet.enabled&spell_targets>=2&"
+    "(!talent.master_of_the_glaive.enabled|!talent.momentum.enabled|buff.momentum.up)&"
+    "(spell_targets>=3|raid_event.adds.in>recharge_time+cooldown)");
+  demonic->add_action(this, "Eye Beam", "if=spell_targets.eye_beam_tick>desired_targets|!buff.metamorphosis.extended_by_demonic");
+  demonic->add_action(this, spec.annihilation, "annihilation", 
+    "if=(!talent.momentum.enabled|buff.momentum.up|fury.deficit<30+buff.prepared.up*8|buff.metamorphosis.remains<5)&"
+    "!variable.pooling_for_blade_dance");
+  demonic->add_action(this, "Throw Glaive", "if=talent.bloodlet.enabled&"
+    "(!talent.master_of_the_glaive.enabled|!talent.momentum.enabled|buff.momentum.up)&raid_event.adds.in>recharge_time+cooldown");
+  demonic->add_action(this, "Chaos Strike", "if=(!talent.momentum.enabled|buff.momentum.up|fury.deficit<30+buff.prepared.up*8)&"
+    "!variable.pooling_for_chaos_strike&!variable.pooling_for_meta&!variable.pooling_for_blade_dance");
+  demonic->add_action(this, "Fel Rush", "if=!talent.momentum.enabled&buff.metamorphosis.down&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))");
+  demonic->add_action(this, "Demon's Bite");
+  demonic->add_action(this, "Throw Glaive", "if=buff.out_of_range.up");
+  demonic->add_action(this, "Fel Rush", "if=movement.distance>15|(buff.out_of_range.up&!talent.momentum.enabled)");
+  demonic->add_action(this, "Vengeful Retreat", "if=movement.distance>15");
 
   // Start Main Actions
-  def -> add_action( "pick_up_fragment,if=talent.demonic_appetite.enabled&fury.deficit>=35&(!talent.demonic.enabled|cooldown.eye_beam.remains>5)" );
-  def -> add_action( this, "Consume Magic" );
-  def -> add_action( this, "Vengeful Retreat", "if=(talent.prepared.enabled|talent.momentum.enabled)&buff.prepared.down&buff.momentum.down",
-    "Vengeful Retreat backwards through the target to minimize downtime." );
-  def -> add_action( this, "Fel Rush", "if=(talent.momentum.enabled|talent.fel_mastery.enabled)&"
+  action_priority_list_t* normal = get_action_priority_list("normal", "General APL for Non-Demonic Builds");
+  normal->add_action("pick_up_fragment,if=talent.demonic_appetite.enabled&fury.deficit>=35");
+  normal->add_action(this, "Vengeful Retreat", "if=(talent.prepared.enabled|talent.momentum.enabled)&buff.prepared.down&buff.momentum.down",
+    "Vengeful Retreat backwards through the target to minimize downtime.");
+  normal->add_action(this, "Fel Rush", "if=(talent.momentum.enabled|talent.fel_mastery.enabled)&"
     "(!talent.momentum.enabled|(charges=2|cooldown.vengeful_retreat.remains>4)&buff.momentum.down)&"
     "(!talent.fel_mastery.enabled|fury.deficit>=25)&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))",
-    "Fel Rush for Momentum and for fury from Fel Mastery." );
-  def -> add_talent( this, "Fel Barrage", "if=charges>=5&(buff.momentum.up|!talent.momentum.enabled)&"
-    "((active_enemies>desired_targets&active_enemies>1)|raid_event.adds.in>30)",
-    "Use Fel Barrage at max charges, saving it for Momentum and adds if possible." );
-  def -> add_action( this, "Throw Glaive", "if=talent.bloodlet.enabled&(!talent.momentum.enabled|buff.momentum.up)&charges=2" );
-  def -> add_talent( this, "Felblade", "if=fury<15&(cooldown.death_sweep.remains<2*gcd|cooldown.blade_dance.remains<2*gcd)");
-  def -> add_action( this, spec.death_sweep, "death_sweep", "if=variable.blade_dance");
-  def -> add_action( this, "Fel Rush", "if=charges=2&!talent.momentum.enabled&!talent.fel_mastery.enabled");
-  def -> add_talent( this, "Fel Eruption");
-  def -> add_action( this, artifact.fury_of_the_illidari, "fury_of_the_illidari",
-    "if=(active_enemies>desired_targets&active_enemies>1)|raid_event.adds.in>55&(!talent.momentum.enabled|buff.momentum.up)&"
+    "Fel Rush for Momentum and for fury from Fel Mastery.");
+  normal->add_talent(this, "Fel Barrage", "if=charges>=5&(buff.momentum.up|!talent.momentum.enabled)&"
+    "(active_enemies>desired_targets|raid_event.adds.in>30)",
+    "Use Fel Barrage at max charges, saving it for Momentum and adds if possible.");
+  normal->add_action(this, "Throw Glaive", "if=talent.bloodlet.enabled&(!talent.momentum.enabled|buff.momentum.up)&charges=2");
+  normal->add_talent(this, "Felblade", "if=fury<15&(cooldown.death_sweep.remains<2*gcd|cooldown.blade_dance.remains<2*gcd)");
+  normal->add_action(this, spec.death_sweep, "death_sweep", "if=variable.blade_dance");
+  normal->add_action(this, "Fel Rush", "if=charges=2&!talent.momentum.enabled&!talent.fel_mastery.enabled");
+  normal->add_talent(this, "Fel Eruption");
+  normal->add_action(this, artifact.fury_of_the_illidari, "fury_of_the_illidari",
+    "if=(active_enemies>desired_targets|raid_event.adds.in>55)&(!talent.momentum.enabled|buff.momentum.up)&"
     "(!talent.chaos_blades.enabled|buff.chaos_blades.up|cooldown.chaos_blades.remains>30|target.time_to_die<cooldown.chaos_blades.remains)");
-  def -> add_action( this, "Eye Beam", "if=talent.demonic.enabled&"
-    "(talent.demon_blades.enabled|(talent.blind_fury.enabled&fury.deficit>=35)|(!talent.blind_fury.enabled&fury.deficit<30))&"
-    "((active_enemies>desired_targets&active_enemies>1)|raid_event.adds.in>30)" );
-  def -> add_action( this, "Blade Dance", "if=variable.blade_dance&(!talent.demonic.enabled|cooldown.eye_beam.remains>5)&(!cooldown.metamorphosis.ready)" );
-  def -> add_action( this, "Throw Glaive", "if=talent.bloodlet.enabled&spell_targets>=2&"
+  normal->add_action(this, "Blade Dance", "if=variable.blade_dance&(!cooldown.metamorphosis.ready)");
+  normal->add_action(this, "Throw Glaive", "if=talent.bloodlet.enabled&spell_targets>=2&"
     "(!talent.master_of_the_glaive.enabled|!talent.momentum.enabled|buff.momentum.up)&"
-    "(spell_targets>=3|raid_event.adds.in>recharge_time+cooldown)" );
-  def -> add_talent( this, "Felblade", "if=fury.deficit>=30+buff.prepared.up*8" );
-  def -> add_action( this, "Eye Beam", "if=talent.blind_fury.enabled&(spell_targets.eye_beam_tick>desired_targets|fury.deficit>=35)");
-  def -> add_action( this, spec.annihilation, "annihilation", "if=(talent.demon_blades.enabled|"
+    "(spell_targets>=3|raid_event.adds.in>recharge_time+cooldown)");
+  normal->add_talent(this, "Felblade", "if=fury.deficit>=30+buff.prepared.up*8");
+  normal->add_action(this, "Eye Beam", "if=talent.blind_fury.enabled&(spell_targets.eye_beam_tick>desired_targets|fury.deficit>=35)");
+  normal->add_action(this, spec.annihilation, "annihilation", "if=(talent.demon_blades.enabled|"
     "!talent.momentum.enabled|buff.momentum.up|fury.deficit<30+buff.prepared.up*8|"
-    "buff.metamorphosis.remains<5)&!variable.pooling_for_blade_dance" );
-  def -> add_action( this, "Throw Glaive", "if=talent.bloodlet.enabled&"
-    "(!talent.master_of_the_glaive.enabled|!talent.momentum.enabled|buff.momentum.up)&raid_event.adds.in>recharge_time+cooldown" );
-  def -> add_action( this, "Eye Beam", "if=!talent.demonic.enabled&!talent.blind_fury.enabled&"
-    "((spell_targets.eye_beam_tick>desired_targets&active_enemies>1)|"
-    "(!set_bonus.tier19_4pc&raid_event.adds.in>45&!variable.pooling_for_meta&buff.metamorphosis.down&"
-    "(artifact.anguish_of_the_deceiver.enabled|active_enemies>1)&!talent.chaos_cleave.enabled))" );
-  def -> add_action( this, "Demon's Bite", "if=talent.demonic.enabled&!talent.blind_fury.enabled&buff.metamorphosis.down&"
-    "cooldown.eye_beam.remains<gcd&fury.deficit>=20",
-    "If Demonic is talented, pool fury as Eye Beam is coming off cooldown." );
-  def -> add_action( this, "Demon's Bite", "if=talent.demonic.enabled&!talent.blind_fury.enabled&buff.metamorphosis.down&"
-    "cooldown.eye_beam.remains<2*gcd&fury.deficit>=45" );
-  def -> add_action( this, "Throw Glaive", "if=buff.metamorphosis.down&spell_targets>=2" );
-  def -> add_action( this, "Chaos Strike", "if=(talent.demon_blades.enabled|"
+    "buff.metamorphosis.remains<5)&!variable.pooling_for_blade_dance");
+  normal->add_action(this, "Throw Glaive", "if=talent.bloodlet.enabled&"
+    "(!talent.master_of_the_glaive.enabled|!talent.momentum.enabled|buff.momentum.up)&raid_event.adds.in>recharge_time+cooldown");
+  normal->add_action(this, "Eye Beam", "if=!talent.blind_fury.enabled&(spell_targets.eye_beam_tick>desired_targets|("
+    "!set_bonus.tier19_4pc&raid_event.adds.in>45&!variable.pooling_for_meta&buff.metamorphosis.down&"
+    "(artifact.anguish_of_the_deceiver.enabled|active_enemies>1)&!talent.chaos_cleave.enabled))");
+  normal->add_action(this, "Throw Glaive", "if=buff.metamorphosis.down&spell_targets>=2");
+  normal->add_action(this, "Chaos Strike", "if=(talent.demon_blades.enabled|"
     "!talent.momentum.enabled|buff.momentum.up|fury.deficit<30+buff.prepared.up*8)&"
-    "!variable.pooling_for_chaos_strike&!variable.pooling_for_meta&!variable.pooling_for_blade_dance&(!talent.demonic.enabled|"
-    "!cooldown.eye_beam.ready|(talent.blind_fury.enabled&fury.deficit<35))" );
-  def -> add_talent( this, "Fel Barrage", "if=charges=4&buff.metamorphosis.down&(buff.momentum.up|"
-    "!talent.momentum.enabled)&((active_enemies>desired_targets&active_enemies>1)|raid_event.adds.in>30)",
-    "Use Fel Barrage if its nearing max charges, saving it for Momentum and adds if possible." );
-  def -> add_action( this, "Fel Rush", "if=!talent.momentum.enabled&raid_event.movement.in>charges*10&(talent.demon_blades.enabled|buff.metamorphosis.down)" );
-  def -> add_action( this, "Demon's Bite" );
-  def -> add_action( this, "Throw Glaive", "if=buff.out_of_range.up" );
-  def -> add_talent( this, "Felblade", "if=movement.distance|buff.out_of_range.up" );
-  def -> add_action( this, "Fel Rush", "if=movement.distance>15|(buff.out_of_range.up&!talent.momentum.enabled)" );
-  def -> add_action( this, "Vengeful Retreat", "if=movement.distance>15" );
-  def -> add_action( this, "Throw Glaive", "if=!talent.bloodlet.enabled" );
+    "!variable.pooling_for_chaos_strike&!variable.pooling_for_meta&!variable.pooling_for_blade_dance");
+  normal->add_talent(this, "Fel Barrage", "if=charges=4&buff.metamorphosis.down&(buff.momentum.up|"
+    "!talent.momentum.enabled)&(active_enemies>desired_targets|raid_event.adds.in>30)",
+    "Use Fel Barrage if its nearing max charges, saving it for Momentum and adds if possible.");
+  normal->add_action(this, "Fel Rush", "if=!talent.momentum.enabled&raid_event.movement.in>charges*10&(talent.demon_blades.enabled|buff.metamorphosis.down)");
+  normal->add_action(this, "Demon's Bite");
+  normal->add_action(this, "Throw Glaive", "if=buff.out_of_range.up");
+  normal->add_talent(this, "Felblade", "if=movement.distance|buff.out_of_range.up");
+  normal->add_action(this, "Fel Rush", "if=movement.distance>15|(buff.out_of_range.up&!talent.momentum.enabled)");
+  normal->add_action(this, "Vengeful Retreat", "if=movement.distance>15");
+  normal->add_action(this, "Throw Glaive", "if=!talent.bloodlet.enabled");
 
   // Cooldown List
   action_priority_list_t* cd = get_action_priority_list( "cooldown" );
   cd -> add_action( this, "Metamorphosis", "if=!(variable.pooling_for_meta|variable.waiting_for_nemesis|variable.waiting_for_chaos_blades)|target.time_to_die<25",
     "Use Metamorphosis when we are done pooling Fury and when we are not waiting for other cooldowns to sync.");
   cd -> add_talent( this, "Nemesis", "target_if=min:target.time_to_die,if=raid_event.adds.exists&"
-    "debuff.nemesis.down&((active_enemies>desired_targets&active_enemies>1)|raid_event.adds.in>60)",
+    "debuff.nemesis.down&(active_enemies>desired_targets|raid_event.adds.in>60)",
     "If adds are present, use Nemesis on the lowest HP add in order to get the Nemesis buff for AoE");
   cd -> add_talent( this, "Nemesis", "if=!raid_event.adds.exists&"
     "(buff.chaos_blades.up|buff.metamorphosis.up|cooldown.metamorphosis.adjusted_remains<20|target.time_to_die<=60)");
