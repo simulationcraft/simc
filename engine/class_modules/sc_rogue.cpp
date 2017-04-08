@@ -1583,18 +1583,6 @@ struct from_the_shadows_driver_t : public rogue_attack_t
     callbacks = may_miss = may_crit = false;
   }
 
-  double composite_target_multiplier( player_t* target ) const override
-  {
-    double m = rogue_attack_t::composite_target_multiplier( target );
-
-    rogue_td_t* tdata = p() -> get_target_data( target );
-
-    // As of 01/01/2017, From the Shadows ignores Agonizing poison
-    m /= 1.0 + p() -> agonizing_poison_stack_multiplier( tdata );
-
-    return m;
-  }
-
   void tick( dot_t* d ) override
   {
     rogue_attack_t::tick( d );
