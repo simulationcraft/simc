@@ -9705,6 +9705,7 @@ void monk_t::apl_combat_windwalker()
   sef -> add_action( "call_action_list,name=st" );
 
   // Serenity
+  serenity -> add_action(this, "Tiger Palm", "cycle_targets=1,if=!prev_gcd.1.tiger_palm&energy=energy.max&chi<1&!buff.serenity.up");
   serenity -> add_action( "call_action_list,name=cd" );
   serenity -> add_talent( this, "Serenity" );
   serenity -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=active_enemies<3" );
