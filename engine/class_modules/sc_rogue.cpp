@@ -6818,7 +6818,7 @@ void rogue_t::init_action_list()
       // We want to apply poison on the unit that have the most bleeds on and that meet the condition for Venomous Wound (and also for T19 dmg bonus).
       // This would be done with target_if=max:bleeds but it seems to be bugged atm
     build -> add_action( this, "Mutilate", "cycle_targets=1,if=(!talent.agonizing_poison.enabled&dot.deadly_poison_dot.refreshable)|(talent.agonizing_poison.enabled&debuff.agonizing_poison.remains<debuff.agonizing_poison.duration*0.3)" );
-    build -> add_action( this, "Mutilate", "if=energy.deficit<=25+variable.energy_regen_combined|debuff.vendetta.up|dot.kingsbane.ticking|cooldown.vendetta.remains<=6|target.time_to_die<=6" );
+    build -> add_action( this, "Mutilate", "if=energy.deficit<=25+variable.energy_regen_combined|debuff.vendetta.up|dot.kingsbane.ticking|cooldown.exsanguinate.up|cooldown.vendetta.remains<=6|target.time_to_die<=6" );
     build -> add_action( this, "Poisoned Knife", "cycle_targets=1,if=talent.agonizing_poison.enabled&debuff.agonizing_poison.remains<=gcd.max*2.5&debuff.agonizing_poison.stack>=5" );
 
     // Cooldowns
@@ -6850,7 +6850,7 @@ void rogue_t::init_action_list()
     // Finishers
     action_priority_list_t* finish = get_action_priority_list( "finish", "Finishers" );
     finish -> add_talent( this, "Death from Above", "if=combo_points>=5" );
-    finish -> add_action( this, "Envenom", "if=combo_points>=4&(debuff.vendetta.up|mantle_duration>=gcd.remains+0.2|debuff.surge_of_toxins.remains<gcd.remains+0.2|variable.energy_time_to_max_combined<3)" );
+    finish -> add_action( this, "Envenom", "if=combo_points>=4&(debuff.vendetta.up|mantle_duration>=gcd.remains+0.2|debuff.surge_of_toxins.remains<gcd.remains+0.2|energy.deficit<=25+variable.energy_regen_combined)" );
     finish -> add_action( this, "Envenom", "if=talent.elaborate_planning.enabled&combo_points>=3+!talent.exsanguinate.enabled&buff.elaborate_planning.remains<gcd.remains+0.2" );
 
     // Kingsbane
