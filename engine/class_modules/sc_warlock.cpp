@@ -2641,7 +2641,7 @@ public:
 
     p() -> buffs.demonic_synergy -> up();
 
-    if ( p() -> free_souls > 0 )
+    if ( p() -> free_souls > 0 && p() -> artifact.reap_souls.rank() )
     {
       p() -> buffs.tormented_souls -> trigger();
       p() -> free_souls -= 1;
@@ -2659,7 +2659,7 @@ public:
   {
     spell_t::impact( s );
 
-    if ( p() -> free_souls > 0 )
+    if ( p() -> free_souls > 0 && p() -> artifact.reap_souls.rank() )
     {
       p() -> buffs.tormented_souls -> trigger();
       p() -> free_souls -= 1;
