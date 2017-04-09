@@ -6794,7 +6794,7 @@ void add_havoc_use_items( demon_hunter_t* p, action_priority_list_t* apl )
 
 void demon_hunter_t::apl_havoc()
 {
-  talent_overrides_str += "/fel_barrage,if=active_enemies>1|raid_event.adds.exists";
+  talent_overrides_str += "/fel_barrage,if=(active_enemies>1|raid_event.adds.exists)&!talent.demonic.enabled";
   talent_overrides_str += "/momentum,if=active_enemies>1|raid_event.adds.exists";
 
   action_priority_list_t* def = get_action_priority_list( "default" );
@@ -6805,7 +6805,7 @@ void demon_hunter_t::apl_havoc()
     "!(!talent.nemesis.enabled|cooldown.nemesis.ready|cooldown.nemesis.remains>target.time_to_die|cooldown.nemesis.remains>60)");
   def->add_action("variable,name=waiting_for_chaos_blades,value="
     "!(!talent.chaos_blades.enabled|cooldown.chaos_blades.ready|cooldown.chaos_blades.remains>target.time_to_die|cooldown.chaos_blades.remains>60)");
-  def -> add_action( "variable,name=pooling_for_meta,value=cooldown.metamorphosis.remains<6&fury.deficit>30&!talent.demonic.enabled"
+  def -> add_action( "variable,name=pooling_for_meta,value=!talent.demonic.enabled&cooldown.metamorphosis.remains<6&fury.deficit>30"
     "&(!variable.waiting_for_nemesis|cooldown.nemesis.remains<10)&(!variable.waiting_for_chaos_blades|cooldown.chaos_blades.remains<6)",
     "\"Getting ready to use meta\" conditions, this is used in a few places." );
   def -> add_action( "variable,name=blade_dance,value=talent.first_blood.enabled|set_bonus.tier20_2pc"
@@ -6907,15 +6907,17 @@ void demon_hunter_t::apl_havoc()
   normal->add_action(this, "Throw Glaive", "if=!talent.bloodlet.enabled");
 
   // Cooldown List
-  action_priority_list_t* cd = get_action_priority_list( "cooldown" );
-  cd -> add_action( this, "Metamorphosis", "if=!(variable.pooling_for_meta|variable.waiting_for_nemesis|variable.waiting_for_chaos_blades)|target.time_to_die<25",
+  action_priority_list_t* cd = get_action_priority_list("cooldown");
+  cd->add_action(this, "Metamorphosis", "if=!(talent.demonic.enabled|"
+    "variable.pooling_for_meta|variable.waiting_for_nemesis|variable.waiting_for_chaos_blades)|target.time_to_die<25",
     "Use Metamorphosis when we are done pooling Fury and when we are not waiting for other cooldowns to sync.");
-  cd -> add_talent( this, "Nemesis", "target_if=min:target.time_to_die,if=raid_event.adds.exists&"
+  cd->add_action(this, "Metamorphosis", "if=talent.demonic.enabled&buff.metamorphosis.up&fury<40");
+  cd->add_talent(this, "Nemesis", "target_if=min:target.time_to_die,if=raid_event.adds.exists&"
     "debuff.nemesis.down&(active_enemies>desired_targets|raid_event.adds.in>60)",
     "If adds are present, use Nemesis on the lowest HP add in order to get the Nemesis buff for AoE");
-  cd -> add_talent( this, "Nemesis", "if=!raid_event.adds.exists&"
+  cd->add_talent(this, "Nemesis", "if=!raid_event.adds.exists&"
     "(buff.chaos_blades.up|buff.metamorphosis.up|cooldown.metamorphosis.adjusted_remains<20|target.time_to_die<=60)");
-  cd -> add_talent( this, "Chaos Blades", "if=buff.metamorphosis.up|cooldown.metamorphosis.adjusted_remains>60|target.time_to_die<=12" );
+  cd->add_talent(this, "Chaos Blades", "if=buff.metamorphosis.up|cooldown.metamorphosis.adjusted_remains>60|target.time_to_die<=12");
   
   add_havoc_use_items(this, cd);
 

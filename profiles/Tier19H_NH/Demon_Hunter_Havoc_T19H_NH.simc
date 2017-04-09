@@ -4,7 +4,7 @@ race=blood_elf
 role=attack
 position=back
 talents=2220311
-talent_override=fel_barrage,if=active_enemies>1|raid_event.adds.exists
+talent_override=fel_barrage,if=(active_enemies>1|raid_event.adds.exists)&!talent.demonic.enabled
 talent_override=momentum,if=active_enemies>1|raid_event.adds.exists
 artifact=3:0:0:0:0:1000:3:1001:3:1002:3:1003:3:1004:3:1005:3:1006:3:1007:3:1008:3:1010:1:1011:1:1012:1:1013:1:1014:1:1015:1:1016:1:1330:1:1362:1:1493:4:1494:1:1495:1:1630:1
 spec=havoc
@@ -30,7 +30,7 @@ actions=auto_attack
 actions+=/variable,name=waiting_for_nemesis,value=!(!talent.nemesis.enabled|cooldown.nemesis.ready|cooldown.nemesis.remains>target.time_to_die|cooldown.nemesis.remains>60)
 actions+=/variable,name=waiting_for_chaos_blades,value=!(!talent.chaos_blades.enabled|cooldown.chaos_blades.ready|cooldown.chaos_blades.remains>target.time_to_die|cooldown.chaos_blades.remains>60)
 # "Getting ready to use meta" conditions, this is used in a few places.
-actions+=/variable,name=pooling_for_meta,value=cooldown.metamorphosis.remains<6&fury.deficit>30&!talent.demonic.enabled&(!variable.waiting_for_nemesis|cooldown.nemesis.remains<10)&(!variable.waiting_for_chaos_blades|cooldown.chaos_blades.remains<6)
+actions+=/variable,name=pooling_for_meta,value=!talent.demonic.enabled&cooldown.metamorphosis.remains<6&fury.deficit>30&(!variable.waiting_for_nemesis|cooldown.nemesis.remains<10)&(!variable.waiting_for_chaos_blades|cooldown.chaos_blades.remains<6)
 # Blade Dance conditions. Always if First Blood is talented or the T20 2pc set bonus, otherwise at 5+ targets with Chaos Cleave or 3+ targets without.
 actions+=/variable,name=blade_dance,value=talent.first_blood.enabled|set_bonus.tier20_2pc|spell_targets.blade_dance1>=3+(talent.chaos_cleave.enabled*2)
 # Blade Dance pooling condition, so we don't spend too much fury when we need it soon. No need to pool on
@@ -44,7 +44,8 @@ actions+=/run_action_list,name=demonic,if=talent.demonic.enabled&talent.demonic_
 actions+=/run_action_list,name=normal
 
 # Use Metamorphosis when we are done pooling Fury and when we are not waiting for other cooldowns to sync.
-actions.cooldown=metamorphosis,if=!(variable.pooling_for_meta|variable.waiting_for_nemesis|variable.waiting_for_chaos_blades)|target.time_to_die<25
+actions.cooldown=metamorphosis,if=!(talent.demonic.enabled|variable.pooling_for_meta|variable.waiting_for_nemesis|variable.waiting_for_chaos_blades)|target.time_to_die<25
+actions.cooldown+=/metamorphosis,if=talent.demonic.enabled&buff.metamorphosis.up&fury<40
 # If adds are present, use Nemesis on the lowest HP add in order to get the Nemesis buff for AoE
 actions.cooldown+=/nemesis,target_if=min:target.time_to_die,if=raid_event.adds.exists&debuff.nemesis.down&(active_enemies>desired_targets|raid_event.adds.in>60)
 actions.cooldown+=/nemesis,if=!raid_event.adds.exists&(buff.chaos_blades.up|buff.metamorphosis.up|cooldown.metamorphosis.adjusted_remains<20|target.time_to_die<=60)
