@@ -3878,6 +3878,16 @@ struct fists_of_fury_tick_t: public monk_melee_attack_t
     dot_duration = timespan_t::zero();
     trigger_gcd = timespan_t::zero();
   }
+
+  virtual double composite_target_multiplier( player_t* t ) const override
+  {
+    double ctm = monk_melee_attack_t::composite_target_multiplier( t );
+
+    if ( td( t ) -> debuff.rising_fist -> up() )
+      ctm *= 1.0 + td( t ) -> debuff.rising_fist -> value();
+
+    return ctm;
+  }
 };
 
 struct fists_of_fury_t: public monk_melee_attack_t
@@ -3932,16 +3942,6 @@ struct fists_of_fury_t: public monk_melee_attack_t
     }
 
     return pm;
-  }
-
-  virtual double composite_target_multiplier( player_t* t ) const override
-  {
-    double ctm = monk_melee_attack_t::composite_target_multiplier( t );
-
-    if ( td( t ) -> debuff.rising_fist -> up() )
-      ctm *= 1.0 + td( t ) -> debuff.rising_fist -> value();
-
-    return ctm;
   }
 
   virtual bool ready() override
