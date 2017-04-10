@@ -1550,6 +1550,14 @@ struct poison_knives_t : public rogue_attack_t
 
     m *= 1.0 + td( target ) -> debuffs.surge_of_toxins -> stack_value();
 
+    if ( p() -> legendary.zoldyck_family_training_shackles )
+    {
+      if ( target -> health_percentage() < p() -> legendary.zoldyck_family_training_shackles -> effectN( 2 ).base_value() )
+      {
+        m *= 1.0 + p() -> legendary.zoldyck_family_training_shackles -> effectN( 1 ).percent();
+      }
+    }
+
     return m;
   }
 
