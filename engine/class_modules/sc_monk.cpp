@@ -1404,6 +1404,16 @@ struct storm_earth_and_fire_pet_t : public pet_t
     sef_fists_of_fury_tick_t( storm_earth_and_fire_pet_t* p ):
       sef_tick_action_t( "fists_of_fury_tick", p, p -> o() -> spec.fists_of_fury -> effectN( 3 ).trigger())
     { }
+
+    virtual double composite_target_multiplier( player_t* t ) const override
+    {
+      double ctm = sef_melee_attack_t::composite_target_multiplier( t );
+
+      if ( o() -> get_target_data( t ) -> debuff.rising_fist -> up() )
+        ctm *= 1.0 + o() -> get_target_data( t ) -> debuff.rising_fist -> value();
+
+      return ctm;
+    }
   };
 
   struct sef_fists_of_fury_t : public sef_melee_attack_t
