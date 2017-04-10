@@ -14,6 +14,42 @@ _PARSERS = {
     b'WCH8': dbc.parser.WCH7Parser
 }
 
+class DBCacheIterator:
+    def __init__(self, f, wdb_parser):
+        self._data_class = getattr(dbc.data, wdb_parser.class_name().replace('-', '_'))
+        self._parser = f.parser
+        self._wdb_parser = wdb_parser
+        self._records = f.parser.n_entries(wdb_parser)
+
+        self._record = 0
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        if self._record == self._records:
+            raise StopIteration
+
+        dbc_id, offset, size = self._parser.get_record_info(self._wdb_parser, self._record)
+        data = self._parser.get_record(self._wdb_parser, offset, size)
+        self._record += 1
+
+        return self._data_class(self._parser, dbc_id, data)
+
+class DBCache:
+    def __init__(self, options):
+        self.options = options
+        self.parser = dbc.parser.DBCacheParser(options)
+
+    def open(self):
+        if not self.parser.open():
+            return False
+
+        return True
+
+    def entries(self, wdb_parser):
+        return DBCacheIterator(self, wdb_parser)
+
 class DBCFileIterator:
     def __init__(self, f):
         self._file = f

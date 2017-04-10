@@ -1,7 +1,7 @@
 # T19M
 # Tier 19 Mythic
 # * Ilvl Cap: 885
-# * Artifact Rank Cap: 34
+# * Artifact Rank Cap: 36
 # * 3 Relics with max ilevel of 885
 # * No Legendaries (see Raid_T19x_Legendary.simc)
 # * No items from Nighthold (including set bonuses) except in T19M_NH
@@ -20,7 +20,7 @@ race=troll
 role=spell
 position=back
 talents=2022031
-artifact=4:139269:139259:142514:0:72:3:73:1:74:3:75:4:77:3:78:1:79:3:80:1:81:4:82:4:83:3:84:3:86:1:87:1:290:1:1169:1:1339:1
+artifact=4:0:0:0:0:72:3:73:1:74:3:75:3:77:3:78:1:79:3:80:1:81:3:82:3:83:3:84:3:86:1:87:1:290:1:1169:1:1339:1:1371:1:1639:1
 spec=arcane
 
 head=hood_of_darkened_visions,id=139189,bonus_id=1806
@@ -46,7 +46,7 @@ race=troll
 role=spell
 position=back
 talents=2022022
-artifact=54:142516:139269:142516:0:748:1:749:3:750:3:751:3:752:3:753:3:754:3:755:6:756:3:757:3:758:1:759:1:760:1:761:1:762:1:763:1:1340:1
+artifact=54:0:0:0:0:748:1:749:3:750:3:751:3:752:3:753:3:754:3:755:3:756:3:757:3:758:1:759:1:760:1:761:1:762:1:763:1:1340:1:1372:1:1640:1
 spec=fire
 
 head=collar_of_enclosure,id=134424,bonus_id=1727/1522
@@ -73,7 +73,7 @@ race=troll
 role=spell
 position=back
 talents=3022021
-artifact=53:139259:139269:139259:0:783:1:784:3:785:3:786:5:787:3:788:3:789:4:790:3:791:3:792:3:793:1:794:1:795:1:796:1:797:1:798:1:1296:1
+artifact=53:0:0:0:0:783:1:784:3:785:3:786:3:787:3:788:3:789:3:790:3:791:3:792:3:793:1:794:1:795:1:796:1:797:1:798:1:1296:1:1373:1:1641:1
 spec=frost
 
 head=collar_of_enclosure,id=134424,bonus_id=1727/1522

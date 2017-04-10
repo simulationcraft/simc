@@ -35,82 +35,40 @@ def hotfix_fields(orig, hotfix):
         name = orig._fi[idx]
         if 'S' in fmt and orig._dbcp.get_string(orig._d[idx]) != hotfix._dbcp.get_string(hotfix._d[idx]):
             # Blacklist check
-            if name not in HOTFIX_FIELD_BLACKLIST.get(orig._dbcp.class_name(), []):
+            if name not in HOTFIX_FIELD_BLACKLIST.get(orig.dbc_name(), []):
                 hotfix_fields |= (1 << idx)
                 hotfix.add_hotfix(orig._fi[idx], orig)
         elif 'S' not in fmt and orig._d[idx] != hotfix._d[idx]:
             # Blacklist check
-            if name not in HOTFIX_FIELD_BLACKLIST.get(orig._dbcp.class_name(), []):
+            if name not in HOTFIX_FIELD_BLACKLIST.get(orig.dbc_name(), []):
                 hotfix_fields |= (1 << idx)
                 hotfix.add_hotfix(orig._fi[idx], orig)
 
     return hotfix_fields
 
-def apply_hotfixes(opts, file_name, dbc_file, database):
-    if not opts.cache_dir:
-        return
+def apply_hotfixes(opts, cache, dbc_parser, database):
+    for record in cache.entries(dbc_parser):
+        try:
+            hotfix_data = hotfix_fields(database[record.id], record)
+            # Add some additional information for debugging purposes
+            if opts.debug and hotfix_data:
+                if database[record.id].id == record.id:
+                    logging.debug('%s REPLACE OLD: %s',
+                        dbc_parser.file_name(), database[record.id])
+                    logging.debug('%s REPLACE NEW: %s',
+                        dbc_parser.file_name(), record)
+                else:
+                    logging.debug('%s ADD: %s',
+                        dbc_parser.file_name(), record)
 
-    pattern = '%s.*' % dbc_file.class_name()
-    potential_files = []
-    # Get all cache files
-    for dirpath, dirnames, filenames in os.walk(opts.cache_dir):
-        for filename in filenames:
-            if fnmatch.fnmatch(filename, pattern):
-                potential_files.append(os.path.join(dirpath, filename))
-
-    cache_dbc_files = []
-    for potential_file in potential_files:
-        cache_dbc_file = dbc.file.DBCFile(opts, potential_file, dbc_file.parser)
-        if not cache_dbc_file.open():
-            logging.warn('Unable to open cache file %s', potential_file)
-            continue
-
-        # Sanity check table hash and layout hash against the actual client
-        # data file. They must match for the cache to be used
-        if cache_dbc_file.parser.table_hash != dbc_file.parser.table_hash or \
-            cache_dbc_file.parser.layout_hash != dbc_file.parser.layout_hash:
-            logging.debug('Table or Layout hashes do not match, table_hash: cache=%#.8x client_data=%#.8x, layout_hash: cache=%#.8x, client_data=%#.8x',
-                cache_dbc_file.parser.table_hash, dbc_file.parser.table_hash,
-                cache_dbc_file.parser.layout_hash, dbc_file.parser.layout_hash)
-            continue
-
-        # Empty cache files are kinda pointless
-        if cache_dbc_file.parser.n_records() == 0:
-            continue
-
-        cache_dbc_files.append(cache_dbc_file)
-
-    # We have a set of cache files parsed, sort them into ascending timestamp
-    # order. The timestamp in the cache file header defines the last time the
-    # cache file is written .. higher timestamps = more fresh caches.
-    cache_dbc_files.sort(key = lambda v: v.parser.timestamp)
-
-    # Then, overwrite any existing data in the parameter 'database' with the
-    # cached data. This may also include adding new data.
-    for cache_file in cache_dbc_files:
-        logging.debug('Applying hotfixes from %s', cache_file.file_name)
-        for record in cache_file:
-            try:
-                hotfix_data = hotfix_fields(database[record.id], record)
-                # Add some additional information for debugging purposes
-                if opts.debug and hotfix_data:
-                    if database[record.id].id == record.id:
-                        logging.debug('%s (%d) REPLACE OLD: %s',
-                            cache_file.file_name, cache_file.parser.timestamp, database[record.id])
-                        logging.debug('%s (%d) REPLACE NEW: %s',
-                            cache_file.file_name, cache_file.parser.timestamp, record)
-                    else:
-                        logging.debug('%s (%d) ADD: %s',
-                            cache_file.file_name, cache_file.parser.timestamp, record)
-
-                if hotfix_data:
-                    record._flags = hotfix_data
-                    database[record.id] = record
-            except Exception as e:
-                logging.error('Error while parsing %s: record=%s, error=%s',
-                    cache_file.class_name(), record, e)
-                traceback.print_exc()
-                sys.exit(1)
+            if hotfix_data:
+                record._flags = hotfix_data
+                database[record.id] = record
+        except Exception as e:
+            logging.error('Error while parsing %s: record=%s, error=%s',
+                dbc_parser.class_name(), record, e)
+            traceback.print_exc()
+            sys.exit(1)
 
 def output_hotfixes(generator, data_str, hotfix_data):
     generator._out.write('#define %s%s_HOTFIX%s_SIZE (%d)\n\n' % (
@@ -391,6 +349,10 @@ class DataGenerator(object):
             self._out.close()
 
     def initialize(self):
+        cache = dbc.file.DBCache(self._options)
+        if not cache.open():
+            return False
+
         for i in self._dbc:
             dbcf = None
             if self._data_store:
@@ -415,7 +377,8 @@ class DataGenerator(object):
                         print(dbcf, record, type(record), record._fi)
                         sys.exit(1)
 
-                apply_hotfixes(self._options, self.file_path(i), dbcf, dbase)
+                logging.debug('Hotfixing %s ...', dbcf.file_name)
+                apply_hotfixes(self._options, cache, dbcf.parser, dbase)
 
         return True
 

@@ -1313,6 +1313,16 @@ struct storm_earth_and_fire_pet_t : public pet_t
       return 0;
     }
 
+    virtual double composite_crit_chance() const override
+    {
+      double c = sef_melee_attack_t::composite_crit_chance();
+
+      if ( p() -> buff.ww_tier_20_4pc_sef -> up() )
+        c += p() -> buff.ww_tier_20_4pc_sef -> value();
+
+      return c;
+    }
+
     void impact( action_state_t* state ) override
     {
       sef_melee_attack_t::impact( state );
@@ -1321,6 +1331,9 @@ struct storm_earth_and_fire_pet_t : public pet_t
       {
         state -> target -> debuffs.mortal_wounds -> trigger();
         o() -> trigger_mark_of_the_crane( state );
+
+        if ( p() -> buff.ww_tier_20_4pc_sef -> up() )
+          p() -> buff.ww_tier_20_4pc_sef -> expire();
       }
     }
   };
@@ -1336,6 +1349,16 @@ struct storm_earth_and_fire_pet_t : public pet_t
     {
       if ( player -> o() -> artifact.tornado_kicks.rank() )
         add_child( rsk_tornado_kick );
+    }
+
+    virtual double composite_crit_chance() const override
+    {
+      double c = sef_melee_attack_t::composite_crit_chance();
+
+      if ( p() -> buff.ww_tier_20_4pc_sef -> up() )
+        c += p() -> buff.ww_tier_20_4pc_sef -> value();
+
+      return c;
     }
 
     void impact( action_state_t* state ) override
@@ -1358,6 +1381,9 @@ struct storm_earth_and_fire_pet_t : public pet_t
           rsk_tornado_kick -> base_dd_min = raw;
           rsk_tornado_kick -> execute();
         }
+        // Do no remove the T20 4-piece if Tornado Kick artifact trait is enabled.
+        else if ( p() -> buff.ww_tier_20_4pc_sef -> up() )
+          p() -> buff.ww_tier_20_4pc_sef -> expire() ;
 
         if ( o() -> sets.has_set_bonus( MONK_WINDWALKER, T20, B2 ) )
           o() -> get_target_data( state -> target ) -> debuff.rising_fist -> trigger();
@@ -1404,6 +1430,16 @@ struct storm_earth_and_fire_pet_t : public pet_t
     sef_fists_of_fury_tick_t( storm_earth_and_fire_pet_t* p ):
       sef_tick_action_t( "fists_of_fury_tick", p, p -> o() -> spec.fists_of_fury -> effectN( 3 ).trigger())
     { }
+
+    virtual double composite_target_multiplier( player_t* t ) const override
+    {
+      double ctm = sef_melee_attack_t::composite_target_multiplier( t );
+
+      if ( o() -> get_target_data( t ) -> debuff.rising_fist -> up() )
+        ctm *= 1.0 + o() -> get_target_data( t ) -> debuff.rising_fist -> value();
+
+      return ctm;
+    }
   };
 
   struct sef_fists_of_fury_t : public sef_melee_attack_t
@@ -1459,6 +1495,14 @@ struct storm_earth_and_fire_pet_t : public pet_t
         return dot_duration * ( tick_time( s ) / base_tick_time );
 
       return dot_duration;
+    }
+
+    virtual void execute() override
+    {
+      sef_melee_attack_t::execute();
+
+      if ( o() -> sets.has_set_bonus( MONK_WINDWALKER, T20, B4 ) )
+        p() -> buff.ww_tier_20_4pc_sef -> trigger();
     }
 
     virtual void last_tick( dot_t* dot ) override
@@ -1673,6 +1717,7 @@ public:
   {
     buff_t* hit_combo_sef;
     buff_t* transfer_the_power_sef;
+    buff_t* ww_tier_20_4pc_sef;
   } buff;
 
   storm_earth_and_fire_pet_t( const std::string& name, sim_t* sim, monk_t* owner, bool dual_wield ):
@@ -1800,6 +1845,10 @@ public:
 
     buff.transfer_the_power_sef = buff_creator_t( this, "transfer_the_power_sef", o() -> artifact.transfer_the_power.data().effectN( 1 ).trigger() )
                             .default_value( o() -> artifact.transfer_the_power.rank() ? o() -> artifact.transfer_the_power.percent() : 0 ); 
+
+    buff.ww_tier_20_4pc_sef = buff_creator_t( this, "ww_tier_20_4pc_sef", o() -> sets.set( MONK_WINDWALKER, T20, B4 ) )
+      .duration( timespan_t::from_seconds( 24 ) )
+      .default_value( o() -> sets.set( MONK_WINDWALKER, T20, B4 ) -> effectN( 1 ).percent() );
   }
 
   void trigger_attack( sef_ability_e ability, const action_t* source_action )
@@ -2445,7 +2494,7 @@ public:
             if ( !p() -> pet.sef[SEF_FIRE] -> is_sleeping() )
               p() -> pet.sef[SEF_FIRE] -> expiration -> reschedule( p() -> pet.sef[SEF_FIRE] -> expiration -> remains() + timespan_t::from_millis( extension ) );
           }
-          else if ( p() -> buff.serenity -> up() && maybe_ptr( p() -> dbc.ptr ) )
+          else if ( p() -> buff.serenity -> up() )
           {
             // Since this is extended based on chi spender instead of chi spent, extention is the duration
             // Effect is saved as 3; extension is saved as 300 milliseconds
@@ -3107,6 +3156,16 @@ struct rising_sun_kick_tornado_kick_t : public monk_melee_attack_t
     return 0;
   }
 
+  virtual double composite_crit_chance() const override
+  {
+    double c = monk_melee_attack_t::composite_crit_chance();
+
+    if ( p() -> buff.ww_tier_20_4pc -> up() )
+      c += p() -> buff.ww_tier_20_4pc -> value();
+
+    return c;
+  }
+
   virtual void impact( action_state_t* s ) override
   {
     monk_melee_attack_t::impact( s );
@@ -3116,6 +3175,9 @@ struct rising_sun_kick_tornado_kick_t : public monk_melee_attack_t
       // Apply Mortal Wonds
       s -> target -> debuffs.mortal_wounds -> trigger();
       p() -> trigger_mark_of_the_crane( s );
+
+      if ( p() -> buff.ww_tier_20_4pc -> up() )
+        p() -> buff.ww_tier_20_4pc -> expire();
     }
   }
 };
@@ -3185,9 +3247,7 @@ struct rising_sun_kick_t: public monk_melee_attack_t
     double c = monk_melee_attack_t::composite_crit_chance();
 
     if ( p() -> buff.ww_tier_20_4pc -> up() )
-    {
       c += p() -> buff.ww_tier_20_4pc -> value();
-    }
 
     return c;
   }
@@ -3274,12 +3334,14 @@ struct rising_sun_kick_t: public monk_melee_attack_t
           rsk_tornado_kick -> base_dd_min = raw;
           rsk_tornado_kick -> execute();
         }
+        // Don't remove the T20 4-piece buff if Tornado Kick artifact trait is enabled.
+        else if ( p() -> buff.ww_tier_20_4pc -> up() )
+          p() -> buff.ww_tier_20_4pc -> expire();
+
 
         if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T20, B2 ) )
           td( s -> target ) -> debuff.rising_fist -> trigger();
 
-        if ( p() -> buff.ww_tier_20_4pc -> up() )
-          p() -> buff.ww_tier_20_4pc -> expire();
       }
     }
   }
@@ -3878,6 +3940,16 @@ struct fists_of_fury_tick_t: public monk_melee_attack_t
     dot_duration = timespan_t::zero();
     trigger_gcd = timespan_t::zero();
   }
+
+  virtual double composite_target_multiplier( player_t* t ) const override
+  {
+    double ctm = monk_melee_attack_t::composite_target_multiplier( t );
+
+    if ( td( t ) -> debuff.rising_fist -> up() )
+      ctm *= 1.0 + td( t ) -> debuff.rising_fist -> value();
+
+    return ctm;
+  }
 };
 
 struct fists_of_fury_t: public monk_melee_attack_t
@@ -3932,16 +4004,6 @@ struct fists_of_fury_t: public monk_melee_attack_t
     }
 
     return pm;
-  }
-
-  virtual double composite_target_multiplier( player_t* t ) const override
-  {
-    double ctm = monk_melee_attack_t::composite_target_multiplier( t );
-
-    if ( td( t ) -> debuff.rising_fist -> up() )
-      ctm *= 1.0 + td( t ) -> debuff.rising_fist -> value();
-
-    return ctm;
   }
 
   virtual bool ready() override
@@ -4567,7 +4629,7 @@ struct touch_of_death_t: public monk_spell_t
     if ( p() -> buff.combo_strikes -> up() )
       amount *= 1 + p() -> cache.mastery_value();
 
-    if ( p() -> legendary.hidden_masters_forbidden_touch && maybe_ptr( p() -> dbc.ptr ) )
+    if ( p() -> legendary.hidden_masters_forbidden_touch )
       amount *= 1 + p() -> legendary.hidden_masters_forbidden_touch -> effectN( 2 ).percent();
 
     return amount;
@@ -4883,8 +4945,8 @@ struct serenity_t: public monk_spell_t
     trigger_gcd = timespan_t::zero();
 
     if ( player -> artifact.split_personality.rank() )
-      // Value is saved as -3000
-      cooldown -> duration += ( player -> artifact.split_personality.rank() * player -> artifact.split_personality.data().effectN( 2 ).time_value() );
+      // Normally this would have taken Effect 2 but due to the fact that Rank 5-8 values are different from 1-4, just using the base info.
+      cooldown -> duration += player -> artifact.split_personality.time_value();
   }
 
   void execute() override
@@ -4988,9 +5050,7 @@ struct storm_earth_and_fire_t: public monk_spell_t
     callbacks = harmful = may_miss = may_crit = may_dodge = may_parry = may_block = false;
 
     if ( p -> artifact.split_personality.rank() )
-    {
       cooldown -> duration += p -> artifact.split_personality.time_value();
-    }
 
     cooldown -> charges += p -> spec.storm_earth_and_fire_2 -> effectN( 1 ).base_value();
   }
@@ -8645,7 +8705,7 @@ double monk_t::composite_spell_haste() const
 
   // 7.2 Sephuz's Secret passive haste. If the item is missing, default_chance will be set to 0 (by
   // the fallback buff creator).
-  if ( maybe_ptr( dbc.ptr ) && legendary.sephuzs_secret )
+  if ( legendary.sephuzs_secret )
   {
     h *= 1.0 / ( 1.0 + legendary.sephuzs_secret -> effectN( 3 ).percent() );
   }
@@ -8666,7 +8726,7 @@ double monk_t::composite_melee_haste() const
 
   // 7.2 Sephuz's Secret passive haste. If the item is missing, default_chance will be set to 0 (by
   // the fallback buff creator).
-  if ( maybe_ptr( dbc.ptr ) && legendary.sephuzs_secret )
+  if ( legendary.sephuzs_secret )
   {
     h *= 1.0 / ( 1.0 + legendary.sephuzs_secret -> effectN( 3 ).percent() );
   }
@@ -8943,7 +9003,7 @@ double monk_t::passive_movement_modifier() const
 
   // 7.2 Sephuz's Secret passive movement speed. If the item is missing, default_chance will be set
   // to 0 (by the fallback buff creator).
-  if ( maybe_ptr( dbc.ptr ) && legendary.sephuzs_secret )
+  if ( legendary.sephuzs_secret )
   {
     ms += legendary.sephuzs_secret -> effectN( 2 ).percent();
   }
@@ -9467,7 +9527,7 @@ void monk_t::apl_pre_windwalker()
   {
     // Food
     if ( level() > 100 )
-      pre -> add_action( "food,type=the_hungry_magister" );
+      pre -> add_action( "food,type=lavish_suramar" );
     else if ( level() > 90 )
       pre -> add_action( "food,type=salty_squid_roll" );
     else if ( level() >= 85 )
@@ -9646,8 +9706,9 @@ void monk_t::apl_combat_windwalker()
 
   def -> add_action( this, "Touch of Death", "if=target.time_to_die<=9" );
   def -> add_action( "call_action_list,name=serenity,if=(talent.serenity.enabled&cooldown.serenity.remains<=0)|buff.serenity.up" );
-  def -> add_action( "call_action_list,name=sef,if=!talent.serenity.enabled&equipped.drinking_horn_cover&((cooldown.fists_of_fury.remains<=1&chi>=3)|buff.storm_earth_and_fire.up|cooldown.storm_earth_and_fire.charges=2|target.time_to_die<=25|cooldown.touch_of_death.remains>=85)" );
-  def -> add_action( "call_action_list,name=sef,if=!talent.serenity.enabled&!equipped.drinking_horn_cover&((artifact.strike_of_the_windlord.enabled&cooldown.strike_of_the_windlord.remains<=14&cooldown.fists_of_fury.remains<=6&cooldown.rising_sun_kick.remains<=6)|buff.storm_earth_and_fire.up)" );
+  def -> add_action( "call_action_list,name=sef,if=!talent.serenity.enabled&(buff.storm_earth_and_fire.up|cooldown.storm_earth_and_fire.charges=2)" );
+  def -> add_action( "call_action_list,name=sef,if=!talent.serenity.enabled&equipped.drinking_horn_cover&(cooldown.strike_of_the_windlord.remains<=18&cooldown.fists_of_fury.remains<=12&chi>=3&cooldown.rising_sun_kick.remains<=1|target.time_to_die<=25|cooldown.touch_of_death.remains>112)&cooldown.storm_earth_and_fire.charges=1" );
+  def -> add_action( "call_action_list,name=sef,if=!talent.serenity.enabled&!equipped.drinking_horn_cover&(cooldown.strike_of_the_windlord.remains<=14&cooldown.fists_of_fury.remains<=6&chi>=3&cooldown.rising_sun_kick.remains<=1|target.time_to_die<=15|cooldown.touch_of_death.remains>112)&cooldown.storm_earth_and_fire.charges=1" );
   def -> add_action( "call_action_list,name=st" );
 
   // Cooldowns
@@ -9680,9 +9741,7 @@ void monk_t::apl_combat_windwalker()
   }
   cd -> add_action( this, "Touch of Death", "cycle_targets=1,max_cycle_targets=2,if=!artifact.gale_burst.enabled&equipped.hidden_masters_forbidden_touch&!prev_gcd.1.touch_of_death" );
   cd -> add_action( this, "Touch of Death", "if=!artifact.gale_burst.enabled&!equipped.hidden_masters_forbidden_touch" );
-  cd -> add_action( this, "Touch of Death", "cycle_targets=1,max_cycle_targets=2,if=artifact.gale_burst.enabled&equipped.hidden_masters_forbidden_touch&((talent.serenity.enabled&cooldown.serenity.remains<=1)|chi>=2)&(cooldown.strike_of_the_windlord.remains<8|cooldown.fists_of_fury.remains<=4)&cooldown.rising_sun_kick.remains<7&!prev_gcd.1.touch_of_death" );
-  cd -> add_action( this, "Touch of Death", "if=artifact.gale_burst.enabled&!talent.serenity.enabled&!equipped.hidden_masters_forbidden_touch&cooldown.strike_of_the_windlord.remains<8&cooldown.fists_of_fury.remains<=4&cooldown.rising_sun_kick.remains<7&chi>=2" );
-  cd -> add_action( this, "Touch of Death", "if=artifact.gale_burst.enabled&((talent.serenity.enabled&cooldown.serenity.remains<=1)|chi>=2)&(cooldown.strike_of_the_windlord.remains<8|cooldown.fists_of_fury.remains<=4)&cooldown.rising_sun_kick.remains<7&!prev_gcd.1.touch_of_death" );
+  cd -> add_action( this, "Touch of Death", "cycle_targets=1,max_cycle_targets=2,if=artifact.gale_burst.enabled&((talent.serenity.enabled&cooldown.serenity.remains<=1)|chi>=2)&(cooldown.strike_of_the_windlord.remains<8|cooldown.fists_of_fury.remains<=4)&cooldown.rising_sun_kick.remains<7&!prev_gcd.1.touch_of_death" );
   // Trinket usage for procs to add toward Touch of Death Gale Burst Artifact Trait
   for ( int i = 0; i < num_items; i++ )
   {
@@ -9690,46 +9749,30 @@ void monk_t::apl_combat_windwalker()
     {
       if ( items[i].name_str == "draught_of_souls" )
       {
-        cd -> add_action( "use_item,name=" + items[i].name_str + ",if=talent.serenity.enabled&cooldown.serenity.remains>=20&!buff.serenity.up" );
-        cd -> add_action( "use_item,name=" + items[i].name_str + ",if=!talent.serenity.enabled&!buff.storm_earth_and_fire.up" );
+        cd -> add_action( "use_item,name=" + items[i].name_str + ",if=talent.serenity.enabled&!buff.serenity.up&energy.time_to_max>3" );
+        cd -> add_action( "use_item,name=" + items[i].name_str + ",if=!talent.serenity.enabled&!buff.storm_earth_and_fire.up&energy.time_to_max>3" );
       }
     }
   }
 
   // Storm, Earth, and Fire
-  sef -> add_action( this, "Tiger Palm", "if=energy=energy.max&chi<1" );
+  sef -> add_action( this, "Tiger Palm", "cycle_targets=1,if=!prev_gcd.1.tiger_palm&energy=energy.max&chi<1" );
   for ( size_t i = 0; i < racial_actions.size(); i++ )
   {
     if ( racial_actions[i] == "arcane_torrent" )
       sef -> add_action( racial_actions[i] + ",if=chi.max-chi>=1&energy.time_to_max>=0.5" );
   }
   sef -> add_action( "call_action_list,name=cd" );
-  sef -> add_action( this, "Storm, Earth, and Fire", "if=!buff.storm_earth_and_fire.up&(cooldown.touch_of_death.remains<=8|cooldown.touch_of_death.remains>85)" );
-  sef -> add_action( this, "Storm, Earth, and Fire", "if=!buff.storm_earth_and_fire.up&cooldown.storm_earth_and_fire.charges=2" );
-  sef -> add_action( this, "Storm, Earth, and Fire", "if=!buff.storm_earth_and_fire.up&target.time_to_die<=25" );
-  sef -> add_action( this, "Storm, Earth, and Fire", "if=!buff.storm_earth_and_fire.up&cooldown.fists_of_fury.remains<=1&chi>=3" );
-  sef -> add_action( this, "Fists of Fury", "if=buff.storm_earth_and_fire.up" );
-  sef -> add_action( this, "Rising Sun Kick", "if=buff.storm_earth_and_fire.up&chi=2&energy<energy.max" );
+  sef -> add_action( this, "Storm, Earth, and Fire", "if=!buff.storm_earth_and_fire.up" );
   sef -> add_action( "call_action_list,name=st" );
 
   // Serenity
+  serenity -> add_action(this, "Tiger Palm", "cycle_targets=1,if=!prev_gcd.1.tiger_palm&energy=energy.max&chi<1&!buff.serenity.up");
   serenity -> add_action( "call_action_list,name=cd" );
   serenity -> add_talent( this, "Serenity" );
   serenity -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=active_enemies<3" );
-  serenity -> add_action( this, "Fists of Fury" );
   serenity -> add_action( this, "Strike of the Windlord" );
-
-  for ( int i = 0; i < num_items; i++ )
-  {
-    if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
-    {
-      if ( items[i].name_str == "draught_of_souls" )
-      {
-        serenity -> add_action( "use_item,name=" + items[i].name_str );
-      }
-    }
-  }
-
+  serenity -> add_action( this, "Fists of Fury", "if=((!equipped.drinking_horn_cover|buff.bloodlust.up)&(cooldown.rising_sun_kick.remains>1|active_enemies>1))|buff.serenity.remains<1" );
   serenity -> add_action( this, "Spinning Crane Kick", "if=active_enemies>=3&!prev_gcd.1.spinning_crane_kick" );
   serenity -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=active_enemies>=3" );
   serenity -> add_action( this, "Spinning Crane Kick", "if=!prev_gcd.1.spinning_crane_kick" );
@@ -9738,27 +9781,24 @@ void monk_t::apl_combat_windwalker()
 
   // Single Target
   st -> add_action( "call_action_list,name=cd" );
-  st -> add_talent( this, "Energizing Elixir", "if=energy<energy.max&chi<=1" );
+  st -> add_talent( this, "Energizing Elixir", "if=chi<=1&(cooldown.rising_sun_kick.remains=0|(artifact.strike_of_the_windlord.enabled&cooldown.strike_of_the_windlord.remains=0)|energy<50)" );
   for ( size_t i = 0; i < racial_actions.size(); i++ )
   {
     if ( racial_actions[i] == "arcane_torrent" )
       st -> add_action( racial_actions[i] + ",if=chi.max-chi>=1&energy.time_to_max>=0.5" );
   }
-  st -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=equipped.convergence_of_fates&talent.serenity.enabled&cooldown.serenity.remains>=2" );
-  st -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=equipped.convergence_of_fates&!talent.serenity.enabled" );
-  st -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=!equipped.convergence_of_fates" );
-  st -> add_action( this, "Fists of Fury", "if=equipped.convergence_of_fates&talent.serenity.enabled&cooldown.serenity.remains>=5" );
-  st -> add_action( this, "Fists of Fury", "if=equipped.convergence_of_fates&!talent.serenity.enabled" );
-  st -> add_action( this, "Fists of Fury", "if=!equipped.convergence_of_fates" );
-  st -> add_action( this, "Strike of the Windlord", "if=equipped.convergence_of_fates&talent.serenity.enabled&cooldown.serenity.remains>=10" );
-  st -> add_action( this, "Strike of the Windlord", "if=equipped.convergence_of_fates&!talent.serenity.enabled" );
-  st -> add_action( this, "Strike of the Windlord", "if=!equipped.convergence_of_fates" );
-  st -> add_action( this, "Tiger Palm", "cycle_targets=1,if=!prev_gcd.1.tiger_palm&energy=energy.max&chi<=3&buff.storm_earth_and_fire.up" );
+  st -> add_action( this, "Tiger Palm", "cycle_targets=1,if=!prev_gcd.1.tiger_palm&energy.time_to_max<=0.5&chi.max-chi>=2" );
+  st -> add_action( this, "Strike of the Windlord", "if=!talent.serenity.enabled|cooldown.serenity.remains>=10" );
+  st -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=(chi>=3&energy>=40)|chi>=5" );
+  st -> add_action( this, "Fists of Fury", "if=talent.serenity.enabled&!equipped.drinking_horn_cover&cooldown.serenity.remains>=5" );
+  st -> add_action( this, "Fists of Fury", "if=!(talent.serenity.enabled&!equipped.drinking_horn_cover)" );
+  st -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=!talent.serenity.enabled|cooldown.serenity.remains>=5" );
   st -> add_talent( this, "Whirling Dragon Punch" );
-  st -> add_action( this, "Crackling Jade Lightning", "if=equipped.the_emperors_capacitor&buff.the_emperors_capacitor.stack>=15" );
+  st -> add_action( this, "Crackling Jade Lightning", "if=equipped.the_emperors_capacitor&buff.the_emperors_capacitor.stack>=19&energy.time_to_max>3" );
+  st -> add_action( this, "Crackling Jade Lightning", "if=equipped.the_emperors_capacitor&buff.the_emperors_capacitor.stack>=14&cooldown.serenity.remains<13&talent.serenity.enabled&energy.time_to_max>3" );
   st -> add_action( this, "Spinning Crane Kick", "if=(active_enemies>=3|spinning_crane_kick.count>=3)&!prev_gcd.1.spinning_crane_kick" );
   st -> add_talent( this, "Rushing Jade Wind", "if=chi.max-chi>1&!prev_gcd.1.rushing_jade_wind" );
-  st -> add_action( this, "Blackout Kick", "cycle_targets=1,if=(chi>1|buff.bok_proc.up)&!prev_gcd.1.blackout_kick" );
+  st -> add_action( this, "Blackout Kick", "cycle_targets=1,if=(chi>1|buff.bok_proc.up|(talent.energizing_elixir.enabled&cooldown.energizing_elixir.remains<=1))&!prev_gcd.1.blackout_kick" );
   st -> add_talent( this, "Chi Wave", "if=energy.time_to_max>=2.25" );
   st -> add_talent( this, "Chi Burst", "if=energy.time_to_max>=2.25" );
   st -> add_action( this, "Tiger Palm", "cycle_targets=1,if=!prev_gcd.1.tiger_palm" );
@@ -10511,11 +10551,21 @@ struct monk_module_t: public module_t
 
   virtual void register_hotfixes() const override
   {
-    hotfix::register_effect( "Monk", "2017-03-24", "Windwalker Monks now deal 8% more damage with Tiger Palm, Blackout Kick, and Rising Sun Kick.", 260817 )
+/*    hotfix::register_effect( "Monk", "2017-03-24", "Windwalker Monks now deal 8% more damage with Tiger Palm, Blackout Kick, and Rising Sun Kick.", 260817 )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_MUL)
       .modifier( 1.08 )
       .verification_value( 8 );
+    hotfix::register_effect( "Monk", "2017-03-29", "Split Personality cooldown reduction increased to 5 seconds per rank (was 3 seconds per rank). [SEF]", 360744 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( -5000 )
+      .verification_value( -3000 );
+    hotfix::register_effect( "Monk", "2017-03-30", "Split Personality cooldown reduction increased to 5 seconds per rank (was 3 seconds per rank). [Serentiy]", 362004 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( -5000 )
+      .verification_value( -3000 );*/
   }
 
   virtual void init( player_t* p ) const override

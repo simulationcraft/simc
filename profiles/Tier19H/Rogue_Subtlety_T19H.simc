@@ -68,6 +68,7 @@ actions.finish+=/eviscerate
 
 # Sprinted
 actions.sprinted=cancel_autoattack
+actions.sprinted+=/use_item,name=draught_of_souls
 
 # Stealth Action List Starter
 actions.stealth_als=call_action_list,name=stealth_cds,if=energy.deficit<=variable.stealth_threshold&(!equipped.shadow_satyrs_walk|cooldown.shadow_dance.charges_fractional>=variable.shd_fractionnal|energy.deficit>=10)

@@ -510,6 +510,7 @@ public:
     action_t* bursting_sores;
     action_t* mark_of_blood;
     action_t* crystalline_swords;
+    action_t* thronebreaker; // Thronebreaker crystalline swords
     action_t* necrobomb;
     action_t* pestilence; // Armies of the Damned
   } active_spells;
@@ -2889,8 +2890,8 @@ void death_knight_spell_t::impact( action_state_t* state )
 
 struct crystalline_swords_t : public death_knight_spell_t
 {
-  crystalline_swords_t( death_knight_t* player ) :
-    death_knight_spell_t( "crystalline_swords", player, player -> find_spell( 205165 ) )
+  crystalline_swords_t( const std::string& n, death_knight_t* player, const spell_data_t* spell ) :
+    death_knight_spell_t( n, player, spell )
   {
     background = true;
   }
@@ -5125,8 +5126,8 @@ struct obliterate_t : public death_knight_melee_attack_t
 
     if ( rng().roll( p() -> artifact.thronebreaker.data().proc_chance() ) )
     {
-      p() -> active_spells.crystalline_swords -> target = execute_state -> target;
-      p() -> active_spells.crystalline_swords -> execute();
+      p() -> active_spells.thronebreaker -> target = execute_state -> target;
+      p() -> active_spells.thronebreaker -> execute();
     }
 
     consume_killing_machine( execute_state, p() -> procs.oblit_killing_machine );
@@ -6750,6 +6751,11 @@ double death_knight_t::composite_melee_haste() const
     haste *= buffs.t18_4pc_frost_haste -> check_value();
   }
 
+  if ( legendary.sephuzs_secret )
+  {
+    haste *= 1.0 / ( 1.0 + legendary.sephuzs_secret -> effectN( 3 ).percent() );
+  }
+
   return haste;
 }
 
@@ -6766,6 +6772,11 @@ double death_knight_t::composite_spell_haste() const
   if ( buffs.bone_shield -> up() )
   {
     haste *= buffs.bone_shield -> value();
+  }
+
+  if ( legendary.sephuzs_secret )
+  {
+    haste *= 1.0 / ( 1.0 + legendary.sephuzs_secret -> effectN( 3 ).percent() );
   }
 
   return haste;
@@ -7027,7 +7038,8 @@ void death_knight_t::init_spells()
 
   if ( artifact.crystalline_swords.rank() )
   {
-    active_spells.crystalline_swords = new crystalline_swords_t( this );
+    active_spells.crystalline_swords = new crystalline_swords_t( "crystalline_swords",
+        this, find_spell( 205165 ) );
   }
 
   if ( artifact.the_shambler.rank() )
@@ -7038,6 +7050,12 @@ void death_knight_t::init_spells()
   if ( artifact.armies_of_the_damned.rank() )
   {
     active_spells.pestilence = new pestilence_t( this );
+  }
+
+  if ( artifact.thronebreaker.rank() )
+  {
+    active_spells.thronebreaker = new crystalline_swords_t( "crystalline_swords_thronebreaker",
+        this, find_spell( 243122 ) );
   }
 }
 
@@ -8125,6 +8143,11 @@ double death_knight_t::passive_movement_modifier() const
 
   if ( spec.deaths_advance -> ok() )
     ms += spec.deaths_advance -> effectN( 1 ).percent();
+
+  if ( legendary.sephuzs_secret )
+  {
+    ms += legendary.sephuzs_secret -> effectN( 2 ).percent();
+  }
 
   /*
   if ( buffs.unholy_presence -> up() )

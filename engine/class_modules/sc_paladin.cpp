@@ -6429,7 +6429,7 @@ struct paladin_module_t : public module_t
     unique_gear::register_special_effect( 206338, chain_of_thrayn );
     unique_gear::register_special_effect( 236106, ashes_to_dust );
     unique_gear::register_special_effect( 211557, justice_gaze );
-    unique_gear::register_special_effect( 208051, sephuzs_secret_enabler_t(), true );
+    unique_gear::register_special_effect( 208051, sephuzs_secret_enabler_t() );
   }
 
   virtual void init( player_t* p ) const override
@@ -6441,11 +6441,7 @@ struct paladin_module_t : public module_t
 
   virtual void register_hotfixes() const override
   {
-    hotfix::register_effect( "Paladin", "2017-03-29", "Righteous Verdict bonus increased to 8% per point (was 5% per point)", 360747 )
-       .field( "base_value" )
-       .operation( hotfix::HOTFIX_SET )
-       .modifier( 8 )
-       .verification_value( 5 );
+
   }
 
   virtual void combat_begin( sim_t* ) const override {}

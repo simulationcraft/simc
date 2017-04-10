@@ -1,7 +1,7 @@
 # T19H
 # Tier 19 Heroic
 # * Ilvl Cap: 865
-# * Artifact Rank Cap: 26
+# * Artifact Rank Cap: 35
 # * 3 Relics with max ilevel of 865
 # * Mythic+ gear is permitted up to the item level cap.
 # * No items from Violet Hold (unless 840 ilevel)
@@ -20,7 +20,7 @@ race=troll
 role=spell
 position=back
 talents=1021012
-artifact=4:139269:139259:139269:0:72:3:73:1:74:3:75:4:80:1:81:5:82:3:83:3:84:3:86:1:87:1:290:1:1339:1
+artifact=4:0:0:0:0:72:3:73:1:74:3:75:3:77:3:78:1:79:3:80:1:81:3:82:3:83:3:84:3:86:1:87:1:290:1:1169:1:1339:1:1371:1
 spec=arcane
 
 head=collar_of_enclosure,id=134424,bonus_id=1727/1517
@@ -46,7 +46,7 @@ race=troll
 role=spell
 position=back
 talents=1222122
-artifact=54:137358:137303:137358:0:748:1:749:3:750:3:751:6:752:3:754:3:755:3:756:3:758:1:759:1:762:1:763:1:1340:1
+artifact=54:0:0:0:0:748:1:749:3:750:3:751:3:752:3:753:3:754:3:755:3:756:3:757:3:758:1:759:1:760:1:761:1:762:1:763:1:1340:1:1372:1
 spec=fire
 
 head=collar_of_enclosure,id=134424,bonus_id=1727/1517
@@ -73,7 +73,7 @@ race=troll
 role=spell
 position=back
 talents=3122111
-artifact=53:139250:139269:139250:0:783:1:784:1:785:3:786:3:788:5:789:4:791:3:792:3:793:1:794:1:795:1:796:1:797:1:798:1:1296:1
+artifact=53:0:0:0:0:783:1:784:3:785:3:786:3:787:3:788:3:789:3:790:3:791:3:792:3:793:1:794:1:795:1:796:1:797:1:798:1:1296:1:1373:1
 spec=frost
 
 head=collar_of_enclosure,id=134424,bonus_id=1727/1517

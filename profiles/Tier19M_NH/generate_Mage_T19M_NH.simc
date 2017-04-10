@@ -1,7 +1,7 @@
 # T19M_NH
 # Tier 19 Mythic Nighthold
 # * Ilvl Cap: 910
-# * Artifact Rank Cap: 54
+# * Artifact Rank Cap: 52
 # * 3 Relics with max ilevel of 910
 # * No Legendaries (see Raid_T19x_Legendary.simc)
 # * No items from World Bosses / World Quests / BoEs
@@ -17,7 +17,7 @@ race=troll
 role=spell
 position=back
 talents=2022031
-artifact=4:0:0:0:0:72:3:73:1:74:3:75:3:77:3:78:1:79:3:80:1:81:3:82:3:83:3:84:3:86:1:87:1:290:1:1169:1:1339:1:1371:20
+artifact=4:0:0:0:0:72:4:73:1:74:4:75:4:77:4:78:1:79:4:80:1:81:4:82:4:83:4:84:4:86:1:87:1:290:1:1169:1:1339:1:1371:1:1529:4:1530:1:1531:1:1532:1:1639:1
 spec=Arcane
 head=,id=138312,bonus_id=3518
 neck=belerons_choker_of_misery,id=140899,bonus_id=3518,enchant=mark_of_the_hidden_satyr
@@ -42,7 +42,7 @@ race=troll
 role=spell
 position=back
 talents=1012022
-artifact=54:0:0:0:0:748:1:749:3:750:3:751:3:752:3:753:3:754:3:755:3:756:3:757:3:758:1:759:1:760:1:761:1:762:1:763:1:1340:1:1372:20
+artifact=54:0:0:0:0:748:1:749:4:750:4:751:4:752:4:753:4:754:4:755:4:756:4:757:4:758:1:759:1:760:1:761:1:762:1:763:1:1340:1:1372:1:1533:4:1534:1:1535:1:1536:1:1640:1
 spec=fire
 head=,id=140851,bonus_id=3445
 neck=,id=140899,bonus_id=3518,enchant_id=5439
@@ -68,7 +68,7 @@ race=dwarf
 role=spell
 position=back
 talents=2032021
-artifact=53:0:0:0:0:783:1:784:3:785:3:786:3:787:3:788:3:789:3:790:3:791:3:792:3:793:1:794:1:795:1:796:1:797:1:798:1:1296:1:1373:20
+artifact=53:0:0:0:0:783:1:784:4:785:4:786:4:787:4:788:4:789:4:790:4:791:4:792:4:793:1:794:1:795:1:796:1:797:1:798:1:1296:1:1373:1:1537:4:1538:1:1539:1:1540:1:1641:1
 spec=frost
 head=,id=140851,bonus_id=3445
 neck=,id=140898,bonus_id=3445,enchant=mark_of_the_hidden_satyr,enchant_id=5439

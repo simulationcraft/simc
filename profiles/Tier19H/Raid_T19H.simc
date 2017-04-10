@@ -28,9 +28,9 @@ Druid_Balance_T19H.simc
 Druid_Feral_T19H.simc
 
 # Hunter
-Hunter_BM_T19H.simc
-Hunter_MM_T19H.simc
-Hunter_SV_T19H.simc
+Hunter_Beast_Mastery_T19M_NH.simc
+Hunter_Marksmanship_T19M_NH.simc
+Hunter_Survival_T19M_NH.simc
 
 # Mage
 Mage_Arcane_T19H.simc
