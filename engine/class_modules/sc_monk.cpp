@@ -1313,6 +1313,16 @@ struct storm_earth_and_fire_pet_t : public pet_t
       return 0;
     }
 
+    virtual double composite_crit_chance() const override
+    {
+      double c = sef_melee_attack_t::composite_crit_chance();
+
+      if ( p() -> buff.ww_tier_20_4pc_sef -> up() )
+        c += p() -> buff.ww_tier_20_4pc_sef -> value();
+
+      return c;
+    }
+
     void impact( action_state_t* state ) override
     {
       sef_melee_attack_t::impact( state );
@@ -1321,6 +1331,9 @@ struct storm_earth_and_fire_pet_t : public pet_t
       {
         state -> target -> debuffs.mortal_wounds -> trigger();
         o() -> trigger_mark_of_the_crane( state );
+
+        if ( p() -> buff.ww_tier_20_4pc_sef -> up() )
+          p() -> buff.ww_tier_20_4pc_sef -> expire();
       }
     }
   };
@@ -1336,6 +1349,16 @@ struct storm_earth_and_fire_pet_t : public pet_t
     {
       if ( player -> o() -> artifact.tornado_kicks.rank() )
         add_child( rsk_tornado_kick );
+    }
+
+    virtual double composite_crit_chance() const override
+    {
+      double c = sef_melee_attack_t::composite_crit_chance();
+
+      if ( p() -> buff.ww_tier_20_4pc_sef -> up() )
+        c += p() -> buff.ww_tier_20_4pc_sef -> value();
+
+      return c;
     }
 
     void impact( action_state_t* state ) override
@@ -1358,6 +1381,9 @@ struct storm_earth_and_fire_pet_t : public pet_t
           rsk_tornado_kick -> base_dd_min = raw;
           rsk_tornado_kick -> execute();
         }
+        // Do no remove the T20 4-piece if Tornado Kick artifact trait is enabled.
+        else if ( p() -> buff.ww_tier_20_4pc_sef -> up() )
+          p() -> buff.ww_tier_20_4pc_sef -> expire() ;
 
         if ( o() -> sets.has_set_bonus( MONK_WINDWALKER, T20, B2 ) )
           o() -> get_target_data( state -> target ) -> debuff.rising_fist -> trigger();
@@ -1469,6 +1495,14 @@ struct storm_earth_and_fire_pet_t : public pet_t
         return dot_duration * ( tick_time( s ) / base_tick_time );
 
       return dot_duration;
+    }
+
+    virtual void execute() override
+    {
+      sef_melee_attack_t::execute();
+
+      if ( o() -> sets.has_set_bonus( MONK_WINDWALKER, T20, B4 ) )
+        p() -> buff.ww_tier_20_4pc_sef -> trigger();
     }
 
     virtual void last_tick( dot_t* dot ) override
@@ -1683,6 +1717,7 @@ public:
   {
     buff_t* hit_combo_sef;
     buff_t* transfer_the_power_sef;
+    buff_t* ww_tier_20_4pc_sef;
   } buff;
 
   storm_earth_and_fire_pet_t( const std::string& name, sim_t* sim, monk_t* owner, bool dual_wield ):
@@ -1810,6 +1845,10 @@ public:
 
     buff.transfer_the_power_sef = buff_creator_t( this, "transfer_the_power_sef", o() -> artifact.transfer_the_power.data().effectN( 1 ).trigger() )
                             .default_value( o() -> artifact.transfer_the_power.rank() ? o() -> artifact.transfer_the_power.percent() : 0 ); 
+
+    buff.ww_tier_20_4pc_sef = buff_creator_t( this, "ww_tier_20_4pc_sef", o() -> sets.set( MONK_WINDWALKER, T20, B4 ) )
+      .duration( timespan_t::from_seconds( 24 ) )
+      .default_value( o() -> sets.set( MONK_WINDWALKER, T20, B4 ) -> effectN( 1 ).percent() );
   }
 
   void trigger_attack( sef_ability_e ability, const action_t* source_action )
@@ -3117,6 +3156,16 @@ struct rising_sun_kick_tornado_kick_t : public monk_melee_attack_t
     return 0;
   }
 
+  virtual double composite_crit_chance() const override
+  {
+    double c = monk_melee_attack_t::composite_crit_chance();
+
+    if ( p() -> buff.ww_tier_20_4pc -> up() )
+      c += p() -> buff.ww_tier_20_4pc -> value();
+
+    return c;
+  }
+
   virtual void impact( action_state_t* s ) override
   {
     monk_melee_attack_t::impact( s );
@@ -3126,6 +3175,9 @@ struct rising_sun_kick_tornado_kick_t : public monk_melee_attack_t
       // Apply Mortal Wonds
       s -> target -> debuffs.mortal_wounds -> trigger();
       p() -> trigger_mark_of_the_crane( s );
+
+      if ( p() -> buff.ww_tier_20_4pc -> up() )
+        p() -> buff.ww_tier_20_4pc -> expire();
     }
   }
 };
@@ -3195,9 +3247,7 @@ struct rising_sun_kick_t: public monk_melee_attack_t
     double c = monk_melee_attack_t::composite_crit_chance();
 
     if ( p() -> buff.ww_tier_20_4pc -> up() )
-    {
       c += p() -> buff.ww_tier_20_4pc -> value();
-    }
 
     return c;
   }
@@ -3284,12 +3334,14 @@ struct rising_sun_kick_t: public monk_melee_attack_t
           rsk_tornado_kick -> base_dd_min = raw;
           rsk_tornado_kick -> execute();
         }
+        // Don't remove the T20 4-piece buff if Tornado Kick artifact trait is enabled.
+        else if ( p() -> buff.ww_tier_20_4pc -> up() )
+          p() -> buff.ww_tier_20_4pc -> expire();
+
 
         if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T20, B2 ) )
           td( s -> target ) -> debuff.rising_fist -> trigger();
 
-        if ( p() -> buff.ww_tier_20_4pc -> up() )
-          p() -> buff.ww_tier_20_4pc -> expire();
       }
     }
   }
