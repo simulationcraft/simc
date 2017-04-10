@@ -2064,9 +2064,9 @@ struct gargoyle_pet_t : public death_knight_pet_t
     death_knight_pet_t::init_base_stats();
 
     // As per Blizzard
-    owner_coeff.sp_from_ap = 0.46625;
+    owner_coeff.ap_from_ap = 0.46625;
     // 2017-01-10: Gargoyle damage increased by 50%.
-    owner_coeff.sp_from_ap *= 1.5;
+    owner_coeff.ap_from_ap *= 1.5;
   }
 
   void init_action_list() override
