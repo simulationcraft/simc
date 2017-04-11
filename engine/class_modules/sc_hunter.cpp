@@ -2265,6 +2265,11 @@ struct thunderslash_t : public hunter_pet_action_t< hunter_pet_t, spell_t >
     aoe = -1; // it's actually a frontal cone
     may_crit = true;
     proc = true;
+
+    // HOTFIX: 2017-4-10 "Thunderslash (Artifact trait) deals 30% less damage with the Dire Frenzy talent."
+    // XXX: check if it's main pet only
+    if ( o() -> talents.dire_frenzy -> ok() )
+      base_multiplier *= .7;
   }
 };
 
@@ -7082,6 +7087,12 @@ struct hunter_module_t: public module_t
       .operation( hotfix::HOTFIX_SET )
       .modifier( 7.2 )
       .verification_value( 6.5 );
+
+    hotfix::register_effect( "Hunter", "2017-4-10", "Thunderslash (Artifact trait) damage reduced by 50%.", 369474 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( .5 )
+      .verification_value( 1.0 );
   }
 
   virtual void combat_begin( sim_t* ) const override {}
