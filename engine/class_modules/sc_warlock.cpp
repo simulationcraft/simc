@@ -6969,6 +6969,7 @@ void warlock_t::apl_demonology()
   add_action( "Demonwrath", "chain=1,interrupt=1,if=spell_targets.demonwrath>=3" );
   add_action( "Demonwrath", "moving=1,chain=1,interrupt=1" );
   action_list_str += "/demonbolt";
+  add_action( "Demonic Empowerment", "if=artifact.thalkiels_ascendance.rank&!talent.demonbolt.enabled&talent.power_trip.enabled&wild_imp_count>=11" );
   add_action( "Shadow Bolt" );
 }
 
