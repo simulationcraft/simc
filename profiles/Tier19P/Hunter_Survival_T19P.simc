@@ -19,12 +19,13 @@ food=lavish_suramar_feast
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
-actions.precombat=flask,type=flask_of_the_seventh_demon
-actions.precombat+=/food,type=azshari_salad
-actions.precombat+=/summon_pet
-actions.precombat+=/snapshot_stats
-actions.precombat+=/potion,name=prolonged_power
+actions.precombat=flask
 actions.precombat+=/augmentation,type=defiled
+actions.precombat+=/food
+actions.precombat+=/summon_pet
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion
 actions.precombat+=/explosive_trap
 actions.precombat+=/steel_trap
 actions.precombat+=/dragonsfire_grenade
@@ -32,6 +33,7 @@ actions.precombat+=/harpoon
 
 # Executed every time the actor is available.
 actions=auto_attack
+actions+=/use_item,name=tirathons_betrayal
 actions+=/call_action_list,name=mokMaintain,if=talent.way_of_the_moknathal.enabled
 actions+=/call_action_list,name=CDs,if=buff.moknathal_tactics.stack>=2|!talent.way_of_the_moknathal.enabled
 actions+=/call_action_list,name=preBitePhase,if=!buff.mongoose_fury.up
@@ -40,24 +42,48 @@ actions+=/call_action_list,name=bitePhase
 actions+=/call_action_list,name=biteFill
 actions+=/call_action_list,name=fillers
 
-actions.mokMaintain=raptor_strike,if=buff.moknathal_tactics.remains<gcd
-actions.mokMaintain+=/raptor_strike,if=buff.moknathal_tactics.stack<2
-
 actions.CDs=arcane_torrent,if=focus<=30
 actions.CDs+=/berserking,if=buff.aspect_of_the_eagle.up
 actions.CDs+=/blood_fury,if=buff.aspect_of_the_eagle.up
-actions.CDs+=/potion,name=prolonged_power,if=buff.aspect_of_the_eagle.up
+actions.CDs+=/potion,if=buff.aspect_of_the_eagle.up
+actions.CDs+=/berserking,if=buff.aspect_of_the_eagle.up
 actions.CDs+=/snake_hunter,if=cooldown.mongoose_bite.charges=0&buff.mongoose_fury.remains>3*gcd
 actions.CDs+=/aspect_of_the_eagle,if=(buff.mongoose_fury.remains<=11&buff.mongoose_fury.up)&(cooldown.fury_of_the_eagle.remains>buff.mongoose_fury.remains)
 actions.CDs+=/aspect_of_the_eagle,if=(buff.mongoose_fury.remains<=7&buff.mongoose_fury.up)
 
-actions.aoe=/butchery
+actions.aoe=butchery
 actions.aoe+=/caltrops,if=!dot.caltrops.ticking
 actions.aoe+=/explosive_trap
 actions.aoe+=/carve,if=talent.serpent_sting.enabled&!dot.serpent_sting.ticking
 actions.aoe+=/carve,if=active_enemies>5
 
-actions.preBitePhase+=/flanking_strike
+actions.biteFill=spitting_cobra
+actions.biteFill+=/butchery,if=equipped.frizzos_fingertrap&dot.lacerate.remains<3.6
+actions.biteFill+=/carve,if=equipped.frizzos_fingertrap&dot.lacerate.remains<3.6
+actions.biteFill+=/lacerate,if=dot.lacerate.remains<3.6
+actions.biteFill+=/raptor_strike,if=active_enemies=1&talent.serpent_sting.enabled&!dot.serpent_sting.ticking
+actions.biteFill+=/steel_trap
+actions.biteFill+=/a_murder_of_crows
+actions.biteFill+=/dragonsfire_grenade
+actions.biteFill+=/explosive_trap
+actions.biteFill+=/caltrops,if=!dot.caltrops.ticking
+
+actions.bitePhase=fury_of_the_eagle,if=(!talent.way_of_the_moknathal.enabled|buff.moknathal_tactics.remains>(gcd*(8%3)))&buff.mongoose_fury.stack=6,interrupt_if=(talent.way_of_the_moknathal.enabled&buff.moknathal_tactics.remains<=tick_time)
+actions.bitePhase+=/mongoose_bite,if=charges>=2&cooldown.mongoose_bite.remains<gcd*2
+actions.bitePhase+=/flanking_strike,if=((buff.mongoose_fury.remains>(gcd*(cooldown.mongoose_bite.charges+2)))&cooldown.mongoose_bite.charges<=1)&!buff.aspect_of_the_eagle.up
+actions.bitePhase+=/mongoose_bite,if=buff.mongoose_fury.up
+actions.bitePhase+=/flanking_strike
+
+actions.fillers=carve,if=active_enemies>1&talent.serpent_sting.enabled&!dot.serpent_sting.ticking
+actions.fillers+=/throwing_axes
+actions.fillers+=/carve,if=active_enemies>2
+actions.fillers+=/raptor_strike,if=(talent.way_of_the_moknathal.enabled&buff.moknathal_tactics.remains<gcd*4)
+actions.fillers+=/raptor_strike,if=focus>((25-focus.regen*gcd)+55)
+
+actions.mokMaintain=raptor_strike,if=buff.moknathal_tactics.remains<gcd
+actions.mokMaintain+=/raptor_strike,if=buff.moknathal_tactics.stack<2
+
+actions.preBitePhase=flanking_strike
 actions.preBitePhase+=/spitting_cobra
 actions.preBitePhase+=/lacerate,if=!dot.lacerate.ticking
 actions.preBitePhase+=/raptor_strike,if=active_enemies=1&talent.serpent_sting.enabled&!dot.serpent_sting.ticking
@@ -69,29 +95,6 @@ actions.preBitePhase+=/caltrops,if=!dot.caltrops.ticking
 actions.preBitePhase+=/butchery,if=equipped.frizzos_fingertrap&dot.lacerate.remains<3.6
 actions.preBitePhase+=/carve,if=equipped.frizzos_fingertrap&dot.lacerate.remains<3.6
 actions.preBitePhase+=/lacerate,if=dot.lacerate.remains<3.6
-
-actions.biteFill+=/spitting_cobra
-actions.biteFill+=/butchery,if=equipped.frizzos_fingertrap&dot.lacerate.remains<3.6
-actions.biteFill+=/carve,if=equipped.frizzos_fingertrap&dot.lacerate.remains<3.6
-actions.biteFill+=/lacerate,if=dot.lacerate.remains<3.6
-actions.biteFill+=/raptor_strike,if=active_enemies=1&talent.serpent_sting.enabled&!dot.serpent_sting.ticking
-actions.biteFill+=/steel_trap
-actions.biteFill+=/a_murder_of_crows
-actions.biteFill+=/dragonsfire_grenade
-actions.biteFill+=/explosive_trap
-actions.biteFill+=/caltrops,if=!dot.caltrops.ticking
-
-actions.bitePhase+=/fury_of_the_eagle,if=(!talent.way_of_the_moknathal.enabled|buff.moknathal_tactics.remains>(gcd*(8%3)))&buff.mongoose_fury.stack=6,interrupt_if=(talent.way_of_the_moknathal.enabled&buff.moknathal_tactics.remains<=tick_time)
-actions.bitePhase+=/mongoose_bite,if=charges>=2&cooldown.mongoose_bite.remains<gcd*2
-actions.bitePhase+=/flanking_strike,if=((buff.mongoose_fury.remains>(gcd*(cooldown.mongoose_bite.charges+2)))&cooldown.mongoose_bite.charges<=1)&!buff.aspect_of_the_eagle.up
-actions.bitePhase+=/mongoose_bite,if=buff.mongoose_fury.up
-actions.bitePhase+=/flanking_strike
-
-actions.fillers+=/carve,if=active_enemies>1&talent.serpent_sting.enabled&!dot.serpent_sting.ticking
-actions.fillers+=/throwing_axes
-actions.fillers+=/carve,if=active_enemies>2
-actions.fillers+=/raptor_strike,if=(talent.way_of_the_moknathal.enabled&buff.moknathal_tactics.remains<gcd*4)
-actions.fillers+=/raptor_strike,if=focus>((25-focus.regen*gcd)+55)
 
 head=helm_of_endless_dunes,id=134471,ilevel=840
 neck=understone_gorget,id=134491,ilevel=840,enchant=mark_of_the_hidden_satyr
