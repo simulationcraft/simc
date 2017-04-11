@@ -1704,7 +1704,7 @@ struct sneaky_snake_t: public hunter_secondary_pet_t
       tick_may_crit = true;
       dot_max_stack = data().max_stacks();
 
-      internal_cooldown -> duration = p -> find_spell( 243120 ) -> internal_cooldown();
+      cooldown -> duration = p -> find_spell( 243120 ) -> internal_cooldown();
     }
 
     bool init_finished() override
@@ -1717,7 +1717,7 @@ struct sneaky_snake_t: public hunter_secondary_pet_t
 
     void trigger( action_state_t* s )
     {
-      if ( internal_cooldown -> down() )
+      if ( cooldown -> down() )
         return;
 
       if ( rng().roll( proc_chance ) )
