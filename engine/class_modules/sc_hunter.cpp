@@ -1777,6 +1777,8 @@ struct sneaky_snake_t: public hunter_secondary_pet_t
     hunter_secondary_pet_t( o, "sneaky_snake" )
   {
     owner_coeff.ap_from_ap = .4;
+    // HOTFIX 2017-4-10: "Cobra Commander’s Sneaky Snakes (Artifact trait) damage increased by 25%."
+    owner_coeff.ap_from_ap *= 1.25;
   }
 
   void init_base_stats() override
