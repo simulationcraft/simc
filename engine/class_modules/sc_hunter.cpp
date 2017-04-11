@@ -6376,8 +6376,6 @@ void hunter_t::apl_surv()
   action_priority_list_t* biteFill = get_action_priority_list("biteFill");
   action_priority_list_t* fillers = get_action_priority_list("fillers");
 
-  
-
   // Precombat actions
   precombat -> add_action( this, "Explosive Trap" );
   precombat -> add_talent( this, "Steel Trap" );
@@ -6405,7 +6403,7 @@ void hunter_t::apl_surv()
   CDs -> add_action( "arcane_torrent,if=focus<=30" );
   CDs -> add_action( "berserking,if=buff.aspect_of_the_eagle.up" );
   CDs -> add_action( "blood_fury,if=buff.aspect_of_the_eagle.up" );
-  CDs -> add_action( "potion,name=prolonged_power,if=buff.aspect_of_the_eagle.up" );
+  CDs -> add_action( "potion,if=buff.aspect_of_the_eagle.up" );
   CDs -> add_action( "berserking,if=buff.aspect_of_the_eagle.up" );
   CDs -> add_talent( this, "Snake Hunter", "if=cooldown.mongoose_bite.charges=0&buff.mongoose_fury.remains>3*gcd" );
   CDs -> add_action( this, "Aspect of the Eagle", "if=(buff.mongoose_fury.remains<=11&buff.mongoose_fury.up)&(cooldown.fury_of_the_eagle.remains>buff.mongoose_fury.remains)" );
@@ -6442,7 +6440,7 @@ void hunter_t::apl_surv()
   biteFill -> add_talent( this, "Caltrops", "if=!dot.caltrops.ticking" );
 
   bitePhase -> add_action( this, "Fury of the Eagle", "if=(!talent.way_of_the_moknathal.enabled|buff.moknathal_tactics.remains>(gcd*(8%3)))&buff.mongoose_fury.stack=6,interrupt_if=(talent.way_of_the_moknathal.enabled&buff.moknathal_tactics.remains<=tick_time)");
-  bitePhase -> add_action( this, "Mongoose Bite", "if=charges>=2&cooldown.mongoose_bite.remains<gcd*2 ");
+  bitePhase -> add_action( this, "Mongoose Bite", "if=charges>=2&cooldown.mongoose_bite.remains<gcd*2" );
   bitePhase -> add_action( this, "Flanking Strike", "if=((buff.mongoose_fury.remains>(gcd*(cooldown.mongoose_bite.charges+2)))&cooldown.mongoose_bite.charges<=1)&!buff.aspect_of_the_eagle.up" );
   bitePhase -> add_action( this, "Mongoose Bite", "if=buff.mongoose_fury.up" );
   bitePhase -> add_action( this, "Flanking Strike" );
