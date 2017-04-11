@@ -7087,12 +7087,6 @@ struct hunter_module_t: public module_t
       .operation( hotfix::HOTFIX_SET )
       .modifier( 7.2 )
       .verification_value( 6.5 );
-
-    hotfix::register_effect( "Hunter", "2017-4-10", "Thunderslash (Artifact trait) damage reduced by 50%.", 369474 )
-      .field( "ap_coefficient" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( .5 )
-      .verification_value( 1.0 );
   }
 
   virtual void combat_begin( sim_t* ) const override {}
