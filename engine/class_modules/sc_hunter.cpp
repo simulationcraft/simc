@@ -1704,11 +1704,6 @@ struct sneaky_snake_t: public hunter_secondary_pet_t
       tick_may_crit = true;
       dot_max_stack = data().max_stacks();
 
-      // XXX: nuoHep 2017-03-23
-      // kind of a hack but this is the only thing that makes the numbers
-      // match between snakes aa & venom damage
-      base_multiplier *= 2.0;
-
       internal_cooldown -> duration = p -> find_spell( 243120 ) -> internal_cooldown();
     }
 
@@ -1781,13 +1776,15 @@ struct sneaky_snake_t: public hunter_secondary_pet_t
   sneaky_snake_t( hunter_t* o ):
     hunter_secondary_pet_t( o, "sneaky_snake" )
   {
-    owner_coeff.ap_from_ap = .2;
+    owner_coeff.ap_from_ap = .4;
   }
 
   void init_base_stats() override
   {
     hunter_secondary_pet_t::init_base_stats();
 
+    // the snakes have 1s baseline swing time
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 1 );
     main_hand_attack = new sneaky_snake_melee_t( this );
   }
 };
