@@ -1701,6 +1701,7 @@ struct sneaky_snake_t: public hunter_secondary_pet_t
     {
       background = true;
       hasted_ticks = false;
+      tick_may_crit = true;
       dot_max_stack = data().max_stacks();
 
       // XXX: nuoHep 2017-03-23
