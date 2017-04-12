@@ -9726,6 +9726,8 @@ void monk_t::apl_combat_windwalker()
       }
       else if ( items[i].name_str == "tiny_oozeling_in_a_jar" )
         cd -> add_action( "use_item,name=" + items[i].name_str + ",if=buff.congealing_goo.stack>=6" );
+      else if ( items[i].name_str == "horn_of_valor" )
+        cd -> add_action( "use_item,name=" + items[i].name_str + ",if=!talent.serenity.enabled|cooldown.serenity.remains<18|cooldown.serenity.remains>50|target.time_to_die<=30" );
       else if ( items[i].name_str == "draught_of_souls" )
       {
         // Keeping blank to make sure this is placed AFTER Touch of Death
