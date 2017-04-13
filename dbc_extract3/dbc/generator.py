@@ -1230,7 +1230,7 @@ class SpellDataGenerator(DataGenerator):
          # 7.1.5 Entwined Elemental Foci buffs
          225729, 225730,
          # 7.2.0 Dreadstone of Endless Shadows stat buffs
-         225752, 225753,
+         238499, 238500, 238501
         ),
 
         # Warrior:
