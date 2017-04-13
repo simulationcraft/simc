@@ -1780,7 +1780,12 @@ struct icy_veins_buff_t : public haste_buff_t
   icy_veins_buff_t( mage_t* p ) :
     haste_buff_t( haste_buff_creator_t( p, "icy_veins", p -> find_spell( 12472 ) ) ), p( p )
 
-  {}
+  {
+    if ( p -> talents.thermal_void -> ok() )
+    {
+      buff_duration += timespan_t::from_seconds( 10.0 );
+    }
+  }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
@@ -5118,7 +5123,7 @@ struct ice_lance_t : public frost_mage_spell_t
          s -> chain_target == 0 )
     {
       timespan_t tv_extension = p() -> talents.thermal_void
-                                    -> effectN( 1 ).time_value() * 1000;
+                                    -> effectN( 1 ).time_value() * 1000 / 2;
       // Can we get the 30 sec from spell data?
       timespan_t max_extension = timespan_t::from_seconds( 30 ) - p() -> buffs.icy_veins -> remains();
 
