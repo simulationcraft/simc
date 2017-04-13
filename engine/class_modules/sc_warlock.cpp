@@ -3880,7 +3880,7 @@ struct conflagrate_t: public warlock_spell_t
     p() -> buffs.conflagration_of_chaos -> trigger();
 
     if ( maybe_ptr( p() -> dbc.ptr ) )
-      p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.6, p() -> gains.conflagrate );
+      p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.6 * warlock_spell_t::n_targets(), p() -> gains.conflagrate );
   }
 
   void impact( action_state_t* s ) override
@@ -4067,6 +4067,7 @@ struct chaos_bolt_t: public warlock_spell_t
     base_execute_time += p -> sets.set( WARLOCK_DESTRUCTION, T18, B2 ) -> effectN( 1 ).time_value();
     base_multiplier *= 1.0 + ( p -> sets.set( WARLOCK_DESTRUCTION, T18, B2 ) -> effectN( 2 ).percent() );
     base_multiplier *= 1.0 + ( p -> sets.set( WARLOCK_DESTRUCTION, T17, B4 ) -> effectN( 1 ).percent() );
+    base_costs[RESOURCE_SOUL_SHARD] *= 0.1;
 
     backdraft_cast_time = 1.0 + p -> buffs.backdraft -> data().effectN( 1 ).percent();
     backdraft_gcd = 1.0 + p -> buffs.backdraft -> data().effectN( 2 ).percent();
@@ -4471,9 +4472,9 @@ struct rain_of_fire_t : public warlock_spell_t
     parse_options( options_str );
     dot_duration = timespan_t::zero();
     may_miss = may_crit = false;
-    base_tick_time = data().duration() / 8.0; // ticks 8 times (missing from spell data
+    base_tick_time = data().duration() / 8.0; // ticks 8 times (missing from spell data)
     base_execute_time = timespan_t::zero(); // HOTFIX
-
+    base_costs[RESOURCE_SOUL_SHARD] *= 0.1;
 
     if ( !p -> active.rain_of_fire )
     {
@@ -5358,6 +5359,9 @@ struct shadowburn_t: public warlock_spell_t
       p()->buffs.conflagration_of_chaos -> expire();
 
     p() -> buffs.conflagration_of_chaos -> trigger();
+
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+      p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.6 * warlock_spell_t::n_targets(), p() -> gains.conflagrate );
   }
 };
 
