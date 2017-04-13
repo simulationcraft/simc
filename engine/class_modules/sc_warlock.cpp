@@ -5288,7 +5288,7 @@ struct shadowburn_t: public warlock_spell_t
     {
       if ( target -> is_sleeping() )
       {
-        p() -> resource_gain( RESOURCE_SOUL_SHARD, 2, shard_gain );
+        p() -> resource_gain( RESOURCE_SOUL_SHARD, ( maybe_ptr( p() -> dbc.ptr ) ? 0.6 : 1.0 ), shard_gain );
       }
     }
   };
