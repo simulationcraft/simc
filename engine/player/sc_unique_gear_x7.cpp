@@ -1740,24 +1740,24 @@ void item::dreadstone_of_endless_shadows( special_effect_t& effect )
       effect.driver() -> effectN( 2 ).average( effect.item ) );
 
   // Buffs
-  auto crit = debug_cast<stat_buff_t*>( buff_t::find( p, "sign_of_the_hippo" ) );
+  auto crit = debug_cast<stat_buff_t*>( buff_t::find( p, "shadows_strike" ) );
   if ( crit == nullptr )
   {
-    crit = stat_buff_creator_t( p, "sign_of_the_hippo", p -> find_spell( 225749 ), effect.item )
+    crit = stat_buff_creator_t( p, "shadows_strike", p -> find_spell( 238499 ), effect.item )
       .add_stat( STAT_CRIT_RATING, amount );
   }
 
-  auto mastery = debug_cast<stat_buff_t*>( buff_t::find( p, "sign_of_the_hare" ) );
+  auto mastery = debug_cast<stat_buff_t*>( buff_t::find( p, "shadow_master" ) );
   if ( mastery == nullptr )
   {
-    mastery = stat_buff_creator_t( p, "sign_of_the_hare", p -> find_spell( 225752 ), effect.item )
+    mastery = stat_buff_creator_t( p, "shadow_master", p -> find_spell( 238500 ), effect.item )
       .add_stat( STAT_MASTERY_RATING, amount );
   }
 
-  auto haste = debug_cast<stat_buff_t*>( buff_t::find( p, "sign_of_the_dragon" ) );
+  auto haste = debug_cast<stat_buff_t*>( buff_t::find( p, "swarming_shadows" ) );
   if ( haste == nullptr )
   {
-    haste = stat_buff_creator_t( p, "sign_of_the_dragon", p -> find_spell( 225753 ), effect.item )
+    haste = stat_buff_creator_t( p, "swarming_shadows", p -> find_spell( 238501 ), effect.item )
       .add_stat( STAT_HASTE_RATING, amount );
   }
 
