@@ -2602,7 +2602,8 @@ public:
     {
         if (  p() -> talents.soul_conduit -> ok() )
         {
-          if ( maybe_ptr( p() -> dbc.ptr() ) && p() -> specialization == WARLOCK_DESTRUCTION )
+          double soul_conduit_rng;
+          if ( maybe_ptr( p() -> dbc.ptr ) && p() -> specialization() == WARLOCK_DESTRUCTION )
             double soul_conduit_rng = 0.12;
           else
             double soul_conduit_rng = p() -> talents.soul_conduit -> effectN( 1 ).percent();
