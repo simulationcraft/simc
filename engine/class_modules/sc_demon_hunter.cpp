@@ -5650,24 +5650,14 @@ void demon_hunter_t::create_buffs()
   buff.nemesis = buff_creator_t( this, "nemesis_buff", find_spell( 208605 ) )
                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
-  auto prepared_duration =
-      talent.prepared->effectN( 1 ).trigger()->duration().total_millis() / 100;
-  double prepared_value =
-      prepared_duration
-          ? talent.prepared->effectN( 1 ).trigger()->effectN( 1 ).resource(
-                RESOURCE_FURY ) *
-                ( 1.0 +
-                  sets.set( DEMON_HUNTER_HAVOC, T19, B2 )
-                      ->effectN( 1 )
-                      .percent() ) /
-                prepared_duration
-          : 0.0;
+  const double prepared_value = 
+    (talent.prepared->effectN(1).trigger()->effectN(1).resource(RESOURCE_FURY) / 50)
+    * (1.0 + sets.set(DEMON_HUNTER_HAVOC, T19, B2)->effectN(1).percent());
   buff.prepared =
-    buff_creator_t(this, "prepared",
-      talent.prepared->effectN(1).trigger())
+    buff_creator_t(this, "prepared", talent.prepared->effectN(1).trigger())
+    .default_value(prepared_value)
     .trigger_spell(talent.prepared)
     .period(timespan_t::from_millis(100))
-    .default_value(prepared_value)
     .tick_callback([this](buff_t* b, int, const timespan_t&) {
     resource_gain(RESOURCE_FURY, b->check_value(), gain.prepared);
   });
@@ -5686,8 +5676,7 @@ void demon_hunter_t::create_buffs()
   buff.rage_of_the_illidari =
     buff_creator_t( this, "rage_of_the_illidari", find_spell( 217060 ) );
 
-  buff.vengeful_retreat_move = new movement_buff_t(
-    this,
+  buff.vengeful_retreat_move = new movement_buff_t(this,
     buff_creator_t( this, "vengeful_retreat_movement", spell_data_t::nil() )
     .chance( 1.0 )
     .duration( spec.vengeful_retreat -> duration() ) );
