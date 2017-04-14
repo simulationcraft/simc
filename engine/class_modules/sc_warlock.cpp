@@ -2602,7 +2602,7 @@ public:
     {
         if (  p() -> talents.soul_conduit -> ok() )
         {
-          double soul_conduit_rng;
+          double soul_conduit_rng = 0;
           if ( maybe_ptr( p() -> dbc.ptr ) && p() -> specialization() == WARLOCK_DESTRUCTION )
             double soul_conduit_rng = 0.12;
           else
@@ -3103,6 +3103,7 @@ struct unstable_affliction_t: public warlock_spell_t
     spell_power_mod.direct = ptr_spell -> effectN( 1 ).sp_coeff();
     dot_duration = timespan_t::zero(); // DoT managed by ignite action.
     affected_by_contagion = false;
+    base_costs[RESOURCE_SOUL_SHARD] *= 0.1;
   }
 
   double cost() const override
@@ -3649,6 +3650,7 @@ struct hand_of_guldan_t: public warlock_spell_t
     doom -> dual = true;
     doom -> base_costs[RESOURCE_MANA] = 0;
     base_multiplier *= 1.0 + p -> artifact.dirty_hands.percent();
+    base_costs[RESOURCE_SOUL_SHARD] *= 0.1;
   }
 
   virtual timespan_t travel_time() const override
@@ -3724,7 +3726,7 @@ struct havoc_t: public warlock_spell_t
   {
     may_crit = false;
 
-    if ( p -> talents.wreak_havoc -> ok() )
+    if ( p -> talents.wreak_havoc -> ok() && !maybe_ptr( p -> dbc.ptr ) )
       cooldown -> duration = timespan_t::from_seconds( 0 );
     havoc_duration = p -> find_spell( 80240 ) -> duration();
     if ( p -> talents.wreak_havoc -> ok() )
@@ -4410,6 +4412,7 @@ struct seed_of_corruption_t: public warlock_spell_t
     threshold_mod = 3.0;
     base_tick_time = dot_duration;
     hasted_ticks = false;
+    base_costs[RESOURCE_SOUL_SHARD] *= 0.1;
 
     sow_the_seeds_targets = p -> talents.sow_the_seeds -> effectN( 1 ).base_value();
 
@@ -4707,6 +4710,7 @@ struct summon_doomguard_t: public warlock_spell_t
     warlock_spell_t( "summon_doomguard", p, p -> find_spell( 18540 ) )
   {
     harmful = may_crit = false;
+    base_costs[RESOURCE_SOUL_SHARD] *= 0.1;
 
     cooldown = p -> cooldowns.doomguard;
     if ( !p -> talents.grimoire_of_supremacy -> ok() )
@@ -4781,6 +4785,7 @@ struct summon_infernal_t : public warlock_spell_t
     infernal_awakening( nullptr )
   {
     harmful = may_crit = false;
+    base_costs[RESOURCE_SOUL_SHARD] *= 0.1;
 
     cooldown = p -> cooldowns.infernal;
     if ( !p -> talents.grimoire_of_supremacy -> ok() )
