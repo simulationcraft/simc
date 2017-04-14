@@ -957,12 +957,12 @@ struct waterbolt_t : public water_elemental_spell_t
     fof_source_id = o() -> benefits.fingers_of_frost
                         -> get_source_id( data().name_cstr() );
 
-    return mage_pet_spell_t::init_finished();
+    return water_elemental_spell_t::init_finished();
   }
 
   virtual timespan_t execute_time() const override
   {
-    timespan_t cast_time = mage_pet_spell_t::execute_time();
+    timespan_t cast_time = water_elemental_spell_t::execute_time();
 
     // For some reason welly seems to have a cap'd rate of cast of
     // 1.5/second. Instead of modeling this as a cooldown/GCD (like it is in game)
@@ -993,12 +993,12 @@ struct freeze_t : public water_elemental_spell_t
     fof_source_id = p -> o() -> benefits.fingers_of_frost
                              -> get_source_id( data().name_cstr() );
 
-    return mage_pet_spell_t::init_finished();
+    return water_elemental_spell_t::init_finished();
   }
 
   virtual void impact( action_state_t* s ) override
   {
-    mage_pet_spell_t::impact( s );
+    water_elemental_spell_t::impact( s );
 
     bool success = o() -> apply_crowd_control( s, MECHANIC_ROOT );
     if ( success )
@@ -1045,13 +1045,13 @@ struct water_jet_t : public water_elemental_spell_t
     // during the cast
     if ( cooldown -> up() )
     {
-      mage_pet_spell_t::execute();
+      water_elemental_spell_t::execute();
     }
   }
 
   virtual void impact( action_state_t* s ) override
   {
-    mage_pet_spell_t::impact( s );
+    water_elemental_spell_t::impact( s );
 
     td( s->target )
         ->water_jet->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0,
@@ -1067,7 +1067,7 @@ struct water_jet_t : public water_elemental_spell_t
 
   virtual void last_tick( dot_t* d ) override
   {
-    mage_pet_spell_t::last_tick( d );
+    water_elemental_spell_t::last_tick( d );
     td( d->target )->water_jet->expire();
   }
 
@@ -1077,12 +1077,12 @@ struct water_jet_t : public water_elemental_spell_t
     if ( !autocast && !queued )
       return false;
 
-    return mage_pet_spell_t::ready();
+    return water_elemental_spell_t::ready();
   }
 
   void reset() override
   {
-    mage_pet_spell_t::reset();
+    water_elemental_spell_t::reset();
 
     queued = false;
   }
