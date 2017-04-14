@@ -597,7 +597,6 @@ public:
   virtual void      init_gains() override;
   virtual void      init_procs() override;
   virtual void      init_benefits() override;
-  virtual void      init_stats() override;
   virtual void      init_assessors() override;
   virtual void      invalidate_cache( cache_e c ) override;
   void init_resources( bool force ) override;
@@ -800,7 +799,7 @@ struct arcane_assault_t : public mage_pet_spell_t
 
     if ( o() -> buffs.rune_of_power -> check() )
     {
-      am *= 1.0 + o() -> buffs.rune_of_power -> data().effectN( 3 ).percent();
+      am *= 1.0 + o() -> buffs.rune_of_power -> check_value();
     }
 
     if ( o() -> talents.incanters_flow -> ok() )
@@ -925,7 +924,7 @@ struct water_elemental_spell_t : public mage_pet_spell_t
 
     if ( o() -> buffs.rune_of_power -> check() )
     {
-      am *= 1.0 + o() -> buffs.rune_of_power -> data().effectN( 3 ).percent();
+      am *= 1.0 + o() -> buffs.rune_of_power -> check_value();
     }
 
     if ( o() -> talents.incanters_flow -> ok() )
@@ -1814,6 +1813,7 @@ struct icy_veins_buff_t : public haste_buff_t
 
   {
     buff_duration += p -> talents.thermal_void -> effectN( 2 ).time_value();
+    set_default_value( data().effectN( 1 ).percent() );
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -2098,7 +2098,7 @@ public:
 
     if ( p() -> buffs.rune_of_power -> check() )
     {
-      am *= 1.0 + p() -> buffs.rune_of_power -> data().effectN( 3 ).percent();
+      am *= 1.0 + p() -> buffs.rune_of_power -> check_value();
     }
 
     if ( p() -> talents.incanters_flow -> ok() )
@@ -7559,7 +7559,6 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   last_summoned( temporal_hero_e::INVALID ),
   distance_from_rune( 0.0 ),
   global_cinder_count( 0 ),
-  iv_haste( 1.0 ),
   blessing_of_wisdom( false ),
   benefits( benefits_t() ),
   buffs( buffs_t() ),
@@ -8098,7 +8097,7 @@ void mage_t::create_buffs()
   buffs.incanters_flow        = new buffs::incanters_flow_t( this );
   buffs.rune_of_power         = buff_creator_t( this, "rune_of_power", find_spell( 116014 ) )
                                   .duration( find_spell( 116011 ) -> duration() )
-                                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+                                  .default_value( find_spell( 116014 ) -> effectN( 1 ).percent() );
 
   // Artifact
   buffs.chain_reaction   = buff_creator_t( this, "chain_reaction", find_spell( 195418 ) )
@@ -8260,18 +8259,6 @@ void mage_t::activate()
     current_target = target;
   } );
 }
-
-// mage_t::init_stats =========================================================
-
-void mage_t::init_stats()
-{
-  player_t::init_stats();
-
-  // Cache Icy Veins haste multiplier for performance reasons
-  double haste = buffs.icy_veins -> data().effectN( 1 ).percent();
-  iv_haste = 1.0 / ( 1.0 + haste );
-}
-
 
 // mage_t::init_assessors =====================================================
 
@@ -9036,7 +9023,7 @@ double mage_t::composite_spell_haste() const
 
   if ( buffs.icy_veins -> check() )
   {
-    h *= iv_haste;
+    h /= 1.0 + buffs.icy_veins -> check_value();
   }
 
   if ( buffs.sephuzs_secret -> default_chance != 0 )
@@ -10012,7 +9999,7 @@ public:
     unique_gear::register_special_effect( 184903, wild_arcanist                              );
     unique_gear::register_special_effect( 184904, pyrosurge_t()                              );
     unique_gear::register_special_effect( 184905, shatterlance_t()                           );
-    unique_gear::register_special_effect( 209311, cord_of_infinity_t() ,                true );
+    unique_gear::register_special_effect( 209311, cord_of_infinity_t(),                 true );
     unique_gear::register_special_effect( 208099, koralons_burning_touch_t()                 );
     unique_gear::register_special_effect( 214403, magtheridons_banished_bracers_t(),    true );
     unique_gear::register_special_effect( 206397, zannesu_journey_t(),                  true );
