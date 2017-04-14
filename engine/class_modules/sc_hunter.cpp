@@ -2631,8 +2631,9 @@ struct auto_shot_t: public hunter_action_t < ranged_attack_t >
       {
         if ( maybe_ptr( p() -> dbc.ptr ) )
         {
-          // XXX: as of 2017-04-14 PTR it's not affected by haste (as far as I can tell)
-          const auto value = - timespan_t::from_seconds( p() -> specs.wild_call -> effectN( 2 ).base_value() / 10 );
+          // the reduction scales with haste (with haste reducing it just as it does for Animal Instincts)
+          const auto value = - timespan_t::from_seconds( p() -> specs.wild_call -> effectN( 2 ).base_value() / 10 )
+                               * p() -> cache.spell_haste();
           p() -> cooldowns.dire_frenzy -> adjust( value, true );
           p() -> cooldowns.dire_beast -> adjust( value, true );
         }
