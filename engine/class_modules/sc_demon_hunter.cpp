@@ -304,7 +304,6 @@ public:
     const spell_data_t* death_sweep;
     const spell_data_t* demonic_appetite_fury;
     const spell_data_t* eye_beam;
-    const spell_data_t* fel_barrage_proc;
     const spell_data_t* fel_rush_damage;
     const spell_data_t* vengeful_retreat;
 
@@ -392,7 +391,6 @@ public:
     cooldown_t* demonic_appetite;
     cooldown_t* eye_beam;
     cooldown_t* fel_barrage;
-    cooldown_t* fel_barrage_proc;
     cooldown_t* fel_rush;
     cooldown_t* fel_rush_secondary;
     cooldown_t* fury_of_the_illidari;
@@ -465,6 +463,7 @@ public:
     // Havoc
     real_ppm_t* felblade_havoc;
     real_ppm_t* inner_demons;
+    real_ppm_t* fel_barrage;
 
     // Vengeance
     real_ppm_t* felblade;
@@ -1350,26 +1349,14 @@ public:
     if ( s -> result_amount <= 0 )
       return;
 
-    if ( p() -> cooldown.fel_barrage_proc -> down() )
-      return;
-
-    /* Sep 23 2016: Via hotfix, this ability was changed in some mysterious
-    unknown manner. Proc mechanic is now totally serverside.
-    http://blue.mmo-champion.com/topic/767333-hotfixes-september-16/
-
-    Assuming proc chance and ICD are unchanged and that ICD starts on-attempt
-    instead of on-success now.
-
-    As a result, chance and ICD are now hardcoded (they are no longer in the
-    spell data).*/
-
-    if ( p() -> rng().roll( 0.10 ) )
+    if (p()->rppm.fel_barrage->trigger())
     {
-      p() -> proc.fel_barrage -> occur();
-      p() -> cooldown.fel_barrage -> reset( true );
+      p()->proc.fel_barrage->occur();
+      if (maybe_ptr(p()->dbc.ptr))
+        p()->cooldown.fel_barrage->adjust(timespan_t::from_seconds(-5), true);
+      else
+        p()->cooldown.fel_barrage->reset(true);
     }
-
-    p() -> cooldown.fel_barrage_proc -> start();
   }
 
 protected:
@@ -5650,24 +5637,14 @@ void demon_hunter_t::create_buffs()
   buff.nemesis = buff_creator_t( this, "nemesis_buff", find_spell( 208605 ) )
                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
-  auto prepared_duration =
-      talent.prepared->effectN( 1 ).trigger()->duration().total_millis() / 100;
-  double prepared_value =
-      prepared_duration
-          ? talent.prepared->effectN( 1 ).trigger()->effectN( 1 ).resource(
-                RESOURCE_FURY ) *
-                ( 1.0 +
-                  sets.set( DEMON_HUNTER_HAVOC, T19, B2 )
-                      ->effectN( 1 )
-                      .percent() ) /
-                prepared_duration
-          : 0.0;
+  const double prepared_value = 
+    (talent.prepared->effectN(1).trigger()->effectN(1).resource(RESOURCE_FURY) / 50)
+    * (1.0 + sets.set(DEMON_HUNTER_HAVOC, T19, B2)->effectN(1).percent());
   buff.prepared =
-    buff_creator_t(this, "prepared",
-      talent.prepared->effectN(1).trigger())
+    buff_creator_t(this, "prepared", talent.prepared->effectN(1).trigger())
+    .default_value(prepared_value)
     .trigger_spell(talent.prepared)
     .period(timespan_t::from_millis(100))
-    .default_value(prepared_value)
     .tick_callback([this](buff_t* b, int, const timespan_t&) {
     resource_gain(RESOURCE_FURY, b->check_value(), gain.prepared);
   });
@@ -5686,8 +5663,7 @@ void demon_hunter_t::create_buffs()
   buff.rage_of_the_illidari =
     buff_creator_t( this, "rage_of_the_illidari", find_spell( 217060 ) );
 
-  buff.vengeful_retreat_move = new movement_buff_t(
-    this,
+  buff.vengeful_retreat_move = new movement_buff_t(this,
     buff_creator_t( this, "vengeful_retreat_movement", spell_data_t::nil() )
     .chance( 1.0 )
     .duration( spec.vengeful_retreat -> duration() ) );
@@ -6312,6 +6288,7 @@ void demon_hunter_t::init_rng()
 
   // Havoc
   rppm.inner_demons = get_rppm( "inner_demons", artifact.inner_demons );
+  rppm.fel_barrage = get_rppm("fel_barrage", find_spell(222703));
 
   // Vengeance
   rppm.fueled_by_pain = get_rppm( "fueled_by_pain", artifact.fueled_by_pain );
@@ -6495,25 +6472,6 @@ void demon_hunter_t::init_spells()
     spec.demonic_appetite_fury = find_spell( 210041 );
     cooldown.demonic_appetite -> duration =
       talent.demonic_appetite -> internal_cooldown();
-  }
-
-  if ( talent.fel_barrage -> ok() )
-  {
-    spec.fel_barrage_proc = find_spell( 222703 );
-
-    /* Sep 23 2016: Via hotfix, this ability was changed in some mysterious
-    unknown manner. Proc mechanic is now totally serverside.
-    http://blue.mmo-champion.com/topic/767333-hotfixes-september-16/
-
-    Assuming proc chance and ICD are unchanged and that ICD starts on-attempt
-    instead of on-success now.
-
-    As a result, chance and ICD are now hardcoded (they are no longer in the
-    spell data).*/
-
-    /* Subsequent Fury of the Illidari ticks (500ms interval) cannot proc,
-    so use 501ms instead of 500. */
-    cooldown.fel_barrage_proc -> duration = timespan_t::from_millis( 501 );
   }
 
   using namespace actions::attacks;
@@ -6866,7 +6824,7 @@ void demon_hunter_t::apl_havoc()
     "(!talent.momentum.enabled|(charges=2|cooldown.vengeful_retreat.remains>4)&buff.momentum.down)&"
     "(!talent.fel_mastery.enabled|fury.deficit>=25)&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))",
     "Fel Rush for Momentum and for fury from Fel Mastery.");
-  normal->add_talent(this, "Fel Barrage", "if=charges>=5&(buff.momentum.up|!talent.momentum.enabled)&"
+  normal->add_talent(this, "Fel Barrage", "if=(charges=max_charges)&(buff.momentum.up|!talent.momentum.enabled)&"
     "(active_enemies>desired_targets|raid_event.adds.in>30)",
     "Use Fel Barrage at max charges, saving it for Momentum and adds if possible.");
   normal->add_action(this, "Throw Glaive", "if=talent.bloodlet.enabled&(!talent.momentum.enabled|buff.momentum.up)&charges=2");
@@ -6895,7 +6853,7 @@ void demon_hunter_t::apl_havoc()
   normal->add_action(this, "Chaos Strike", "if=(talent.demon_blades.enabled|"
     "!talent.momentum.enabled|buff.momentum.up|fury.deficit<30+buff.prepared.up*8)&"
     "!variable.pooling_for_chaos_strike&!variable.pooling_for_meta&!variable.pooling_for_blade_dance");
-  normal->add_talent(this, "Fel Barrage", "if=charges=4&buff.metamorphosis.down&(buff.momentum.up|"
+  normal->add_talent(this, "Fel Barrage", "if=(charges=max_charges-1)&buff.metamorphosis.down&(buff.momentum.up|"
     "!talent.momentum.enabled)&(active_enemies>desired_targets|raid_event.adds.in>30)",
     "Use Fel Barrage if its nearing max charges, saving it for Momentum and adds if possible.");
   normal->add_action(this, "Fel Rush", "if=!talent.momentum.enabled&raid_event.movement.in>charges*10&(talent.demon_blades.enabled|buff.metamorphosis.down)");
@@ -7003,7 +6961,6 @@ void demon_hunter_t::create_cooldowns()
   cooldown.demonic_appetite     = get_cooldown( "demonic_appetite" );
   cooldown.eye_beam             = get_cooldown( "eye_beam" );
   cooldown.fel_barrage          = get_cooldown( "fel_barrage" );
-  cooldown.fel_barrage_proc     = get_cooldown( "fel_barrage_proc" );
   cooldown.fel_rush             = get_cooldown( "fel_rush" );
   cooldown.fel_rush_secondary   = get_cooldown( "fel_rush_secondary" );
   cooldown.fury_of_the_illidari = get_cooldown( "fury_of_the_illidari" );

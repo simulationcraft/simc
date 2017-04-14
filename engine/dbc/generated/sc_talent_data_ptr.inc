@@ -1,6 +1,6 @@
-#define PTR_TALENT_SIZE (617)
+#define PTR_TALENT_SIZE (619)
 
-// 617 talents, wow build 23826
+// 619 talents, wow build 23910
 static struct talent_data_t __ptr_talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplcID, S1 },
   { "Second Wind"                       , 15757, 0x00, 0x0001,   0,   0,   3,   29838,       0,  0 },
@@ -298,7 +298,7 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Soothing Darkness"                 , 22128, 0x00, 0x0008, 261,   0,   3,  200759,       0,  0 },
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplcID, S1 },
   { "Tangled Shadow"                    , 22131, 0x00, 0x0008, 261,   2,   4,  200778,       0,  0 },
-  { "Master of Shadows"                 , 22132, 0x00, 0x0008, 261,   0,   6,  196976,       0,  0 },
+  { "Premeditation"                     , 22132, 0x00, 0x0008, 261,   0,   6,  196979,       0,  0 },
   { "Marked for Death"                  , 22133, 0x00, 0x0008,   0,   1,   6,  137619,       0,  0 },
   { "Blood Tap"                         , 22134, 0x00, 0x0020, 250,   1,   2,  221699,       0,  0 },
   { "Anti-Magic Barrier"                , 22135, 0x00, 0x0020, 250,   2,   2,  205727,       0,  0 },
@@ -409,8 +409,8 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Subterfuge"                        , 22332, 0x00, 0x0008,   0,   1,   1,  108208,       0,  0 },
   { "Shadow Focus"                      , 22333, 0x00, 0x0008,   0,   2,   1,  108209,       0,  0 },
   { "Strike from the Shadows"           , 22334, 0x00, 0x0008, 261,   0,   4,  196951,       0,  0 },
-  { "Premeditation"                     , 22335, 0x00, 0x0008, 261,   0,   5,  196979,       0,  0 },
-  { "Enveloping Shadows"                , 22336, 0x00, 0x0008, 261,   2,   5,  206237,       0,  0 },
+  { "Enveloping Shadows"                , 22335, 0x00, 0x0008, 261,   0,   5,  238104,       0,  0 },
+  { "Master of Shadows"                 , 22336, 0x00, 0x0008, 261,   2,   5,  196976,       0,  0 },
   { "Master Poisoner"                   , 22337, 0x00, 0x0008, 259,   0,   0,  196864,       0,  0 },
   { "Elaborate Planning"                , 22338, 0x00, 0x0008,   0,   1,   0,  193640,       0,  0 },
   { "Hemorrhage"                        , 22339, 0x00, 0x0008, 259,   2,   0,   16511,       0,  0 },
@@ -650,5 +650,7 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Intimidating Roar"                 , 22916, 0x00, 0x0400, 104,   1,   1,  236748,      99,  0 },
   { "Mystic Vitality"                   , 22917, 0x00, 0x0200, 268,   1,   4,  237076,       0,  0 },
   { "Disengage"                         , 22918, 0x00, 0x0004, 255,   1,   2,     781,       0,  0 },
+  { "Spitfire"                          , 22943, 0x00, 0x0200, 268,   0,   0,  242580,       0,  0 },
+  { "Deep Shadows"                      , 22968, 0x00, 0x0008, 261,   1,   5,  245687,       0,  0 },
   { 0                                   ,     0, 0x00, 0x0000,   0,   0,   0,       0,       0,  0 },
 };
