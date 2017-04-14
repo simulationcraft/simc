@@ -311,7 +311,8 @@ public:
   struct talents_t
   {
     // Tier 15 Talents
-    const spell_data_t* chi_burst;
+    const spell_data_t* chi_burst; // Mistweaver & Windwalker
+    const spell_data_t* spitfire; // Brewmaster
     const spell_data_t* eye_of_the_tiger; // Brewmaster & Windwalker
     const spell_data_t* chi_wave;
     // Mistweaver
@@ -7797,7 +7798,8 @@ void monk_t::init_spells()
   base_t::init_spells();
   // Talents spells =====================================
   // Tier 15 Talents
-  talent.chi_burst                   = find_talent_spell( "Chi Burst" );
+  talent.chi_burst                   = find_talent_spell( "Chi Burst" ); // Mistweaver & Windwalker
+  talent.spitfire                    = find_talent_spell( "Spitfire" ); // Brewmaster
   talent.eye_of_the_tiger            = find_talent_spell( "Eye of the Tiger" ); // Brewmaster & Windwalker
   talent.chi_wave                    = find_talent_spell( "Chi Wave" );
   // Mistweaver
