@@ -3803,7 +3803,7 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
     if ( p() -> buff.combo_strikes -> up() )
       pm *= 1 + p() -> cache.mastery_value();
 
-    pm *= 1 + ( mark_of_the_crane_counter() * p() -> spec.spinning_crane_kick -> effectN( 2 ).percent() );
+    pm *= 1 + ( mark_of_the_crane_counter() * ( maybe_ptr( p() -> dbc.ptr ) ? p() -> passives.cyclone_strikes -> effectN( 1 ).percent() : p() -> passives.mark_of_the_crane -> effectN( 1 ).percent() ) );
 
     return pm;
   }
@@ -7443,7 +7443,7 @@ struct windwalking_driver_t: public monk_buff_t < buff_t >
   {
     set_tick_callback( [&p, this]( buff_t*, int /* total_ticks */, timespan_t /* tick_time */ ) {
       range::for_each( p.windwalking_aura->target_list(), [&p, this]( player_t* target ) {
-        target->buffs.windwalking_movement_aura->trigger(
+        target -> buffs.windwalking_movement_aura -> trigger(
             1, ( movement_increase +
                  ( p.legendary.march_of_the_legion ? p.legendary.march_of_the_legion -> effectN( 1 ).percent() : 0.0 ) ),
             1, timespan_t::from_seconds( 10 ) );
