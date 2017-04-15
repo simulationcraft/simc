@@ -2786,10 +2786,9 @@ struct presence_of_mind_t : public arcane_mage_spell_t
 // Conflagration Spell =====================================================
 struct conflagration_dot_t : public fire_mage_spell_t
 {
-  conflagration_dot_t( mage_t* p, const std::string& options_str ) :
+  conflagration_dot_t( mage_t* p ) :
     fire_mage_spell_t( "conflagration_dot", p, p -> find_spell( 226757 ) )
   {
-    parse_options( options_str );
     //TODO: Check callbacks
     hasted_ticks = false;
     tick_may_crit = may_crit = false;
@@ -2925,10 +2924,9 @@ struct aegwynns_ascendance_t : public arcane_mage_spell_t
 //TODO: Improve timing of impact of this vs Arcane Barrage if alpha timings go live
 struct arcane_rebound_t : public arcane_mage_spell_t
 {
-  arcane_rebound_t( mage_t* p, const std::string& options_str ) :
+  arcane_rebound_t( mage_t* p ) :
     arcane_mage_spell_t( "arcane_rebound", p, p -> find_spell( 210817 ) )
   {
-    parse_options( options_str );
     background = true;
     callbacks = false; // TODO: Is this true?
     aoe = -1;
@@ -2948,7 +2946,7 @@ struct arcane_barrage_t : public arcane_mage_spell_t
   double mystic_kilt_of_the_rune_master_regen;
   arcane_barrage_t( mage_t* p, const std::string& options_str ) :
     arcane_mage_spell_t( "arcane_barrage", p, p -> find_class_spell( "Arcane Barrage" ) ),
-    arcane_rebound( new arcane_rebound_t( p, options_str ) ),
+    arcane_rebound( new arcane_rebound_t( p ) ),
     mystic_kilt_of_the_rune_master_regen( 0.0 )
   {
     parse_options( options_str );
@@ -3615,10 +3613,9 @@ struct arcane_power_t : public arcane_mage_spell_t
 // Blast Furance Spell =======================================================
 struct blast_furance_t : public fire_mage_spell_t
 {
-  blast_furance_t( mage_t* p, const std::string& options_str ) :
+  blast_furance_t( mage_t* p ) :
     fire_mage_spell_t( "blast_furance", p, p -> find_spell( 194522 ) )
   {
-    parse_options( options_str );
     background = true;
     callbacks = false;
     hasted_ticks = false;
@@ -4174,7 +4171,7 @@ struct fireball_t : public fire_mage_spell_t
 
   fireball_t( mage_t* p, const std::string& options_str ) :
     fire_mage_spell_t( "fireball", p, p -> find_class_spell( "Fireball" ) ),
-    conflagration_dot( new conflagration_dot_t( p, options_str ) )
+    conflagration_dot( new conflagration_dot_t( p ) )
   {
     parse_options( options_str );
     triggers_pyretic_incantation = true;
@@ -4304,6 +4301,8 @@ struct aftershocks_t : public fire_mage_spell_t
     background = true;
     aoe = -1;
     triggers_ignite = true;
+
+    base_multiplier *= 1.0 + p -> artifact.blue_flame_special.percent();
   }
 };
 
@@ -4429,12 +4428,11 @@ struct pyrosurge_flamestrike_t : public fire_mage_spell_t
   aftershocks_t* aftershocks;
   flame_patch_t* flame_patch;
 
-  pyrosurge_flamestrike_t( mage_t* p, const std::string& options_str ) :
+  pyrosurge_flamestrike_t( mage_t* p ) :
     fire_mage_spell_t( "pyrosurge_flamestrike", p,
                        p -> find_specialization_spell( "Flamestrike" ) ),
                        flame_patch( new flame_patch_t( p ) )
   {
-    parse_options( options_str );
     base_costs[ RESOURCE_MANA ] = 0;
     base_multiplier *= 1.0 + p -> artifact.blue_flame_special.percent();
     background = true;
@@ -5276,7 +5274,7 @@ struct fire_blast_t : public fire_mage_spell_t
     fire_mage_spell_t( "fire_blast", p,
                        p -> find_class_spell( "Fire Blast" ) ),
     pyrosurge_chance( 0.0 ),
-    pyrosurge_flamestrike( new pyrosurge_flamestrike_t( p, options_str ) ),
+    pyrosurge_flamestrike( new pyrosurge_flamestrike_t( p ) ),
     blast_furnace( nullptr )
   {
     parse_options( options_str );
@@ -5314,7 +5312,7 @@ struct fire_blast_t : public fire_mage_spell_t
 
     if ( p -> artifact.blast_furnace.rank() )
     {
-      blast_furnace = new blast_furance_t( p, options_str );
+      blast_furnace = new blast_furance_t( p );
     }
 
     base_crit += p -> spec.fire_blast_2 -> effectN( 1 ).percent();
@@ -5479,11 +5477,13 @@ void living_bomb_t::init()
 
 struct mark_of_aluneth_explosion_t : public arcane_mage_spell_t
 {
-  double aluneths_avarice_regen = 0;
+  double aluneths_avarice_regen;
   double persistent_cord_multiplier;
+
   mark_of_aluneth_explosion_t( mage_t* p ) :
     arcane_mage_spell_t( "mark_of_aluneth_explosion", p, p -> artifact.mark_of_aluneth ),
-    persistent_cord_multiplier( 0 )
+    aluneths_avarice_regen( 0.0 ),
+    persistent_cord_multiplier( 0.0 )
   {
     background = true;
     school = SCHOOL_ARCANE;
