@@ -4439,7 +4439,8 @@ struct flurry_bolt_t : public frost_mage_spell_t
     chills = true;
     if ( p -> talents.lonely_winter -> ok() )
     {
-      base_multiplier *= 1.0 + p -> talents.lonely_winter -> effectN( 1 ).percent();
+      base_multiplier *= 1.0 + p -> talents.lonely_winter -> effectN( 1 ).percent()
+                             + p -> artifact.its_cold_outside.data().effectN( 2 ).percent();
     }
     // PTR Multiplier
     base_multiplier *= 1.0 + p -> find_spell( 137020 ) -> effectN( 1 ).percent();
