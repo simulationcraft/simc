@@ -814,8 +814,7 @@ struct arcane_assault_t : public mage_pet_spell_t
     double tm = spell_t::composite_target_multiplier( target );
     mage_td_t* tdata = o() -> get_target_data( target );
 
-    tm *= 1.0 + tdata -> debuffs.erosion -> check() *
-                tdata -> debuffs.erosion -> data().effectN( 1 ).percent();
+    tm *= 1.0 + tdata -> debuffs.erosion -> check_stack_value();
 
     return tm;
   }
@@ -1209,8 +1208,7 @@ struct arcane_blast_t : public mirror_image_spell_t
     double tm = mirror_image_spell_t::composite_target_multiplier( target );
     mage_td_t* tdata = o() -> get_target_data( target );
 
-    tm *= 1.0 + tdata -> debuffs.erosion -> check() *
-                tdata -> debuffs.erosion -> data().effectN( 1 ).percent();
+    tm *= 1.0 + tdata -> debuffs.erosion -> check_stack_value();
 
     return tm;
   }
@@ -1230,7 +1228,7 @@ struct fireball_t : public mirror_image_spell_t
 
     if ( o() -> buffs.combustion -> check() )
     {
-      c += o() -> buffs.combustion -> data().effectN( 1 ).percent();
+      c += o() -> buffs.combustion -> check_value();
     }
 
     return c;
@@ -1720,9 +1718,11 @@ struct erosion_t : public buff_t
   erosion_t( mage_td_t* td ) :
     buff_t( buff_creator_t( *td, "erosion",
                             td -> source -> find_spell( 210134 ) ) ),
-    erosion_event_data( td -> source -> find_spell( 210154) ),
+    erosion_event_data( td -> source -> find_spell( 210154 ) ),
     decay_event( nullptr )
-  {}
+  {
+    set_default_value( data().effectN( 1 ).percent() );
+  }
 
   bool trigger( int stacks, double value,
                 double chance, timespan_t duration ) override
@@ -1886,6 +1886,7 @@ struct ray_of_frost_buff_t : public buff_t
   ray_of_frost_buff_t( mage_t* p ) :
     buff_t( buff_creator_t( p, "ray_of_frost", p -> find_spell( 208141 ) ) )
   {
+    set_default_value( data().effectN( 1 ).percent() );
     const spell_data_t* rof_data = p -> find_spell( 205021 );
     rof_cd = rof_data -> cooldown() - rof_data -> duration();
   }
@@ -1965,11 +1966,9 @@ public:
     if ( p() -> buffs.arcane_power -> check() )
     {
       double arcane_power_reduction;
-      arcane_power_reduction = p() -> buffs.arcane_power -> data().effectN( 2 ).percent();
-      if ( p() -> talents.overpowered -> ok() )
-      {
-        arcane_power_reduction += p() -> talents.overpowered -> effectN( 2 ).percent();
-      }
+      arcane_power_reduction = p() -> buffs.arcane_power -> data().effectN( 2 ).percent()
+                             + p() -> talents.overpowered -> effectN( 2 ).percent();
+
       c *= 1.0 + arcane_power_reduction;
     }
 
@@ -2162,8 +2161,7 @@ struct arcane_mage_spell_t : public mage_spell_t
     double tm = spell_t::composite_target_multiplier( target );
     mage_td_t* tdata = td( target );
 
-    tm *= 1.0 + tdata -> debuffs.erosion -> check() *
-                tdata -> debuffs.erosion -> data().effectN( 1 ).percent();
+    tm *= 1.0 + tdata -> debuffs.erosion -> check_stack_value();
 
     return tm;
   }
@@ -2172,7 +2170,7 @@ struct arcane_mage_spell_t : public mage_spell_t
   {
     mage_spell_t::impact( s );
 
-    if ( p() -> talents.erosion -> ok() &&  result_is_hit( s -> result ) && harmful
+    if ( p() -> talents.erosion -> ok() && result_is_hit( s -> result ) && harmful
       && s -> action -> id != 224968 )
     {
       td( s -> target ) -> debuffs.erosion -> trigger();
@@ -2378,7 +2376,7 @@ struct fire_mage_spell_t : public mage_spell_t
 
     if ( p() -> buffs.combustion -> check() )
     {
-      c += p() -> buffs.combustion -> data().effectN( 1 ).percent();
+      c += p() -> buffs.combustion -> check_value();
     }
 
     return c;
@@ -4256,14 +4254,8 @@ struct fireball_t : public fire_mage_spell_t
   {
     double c = fire_mage_spell_t::composite_crit_chance();
 
-    c += p() -> buffs.enhanced_pyrotechnics -> stack() *
-         p() -> buffs.enhanced_pyrotechnics -> data().effectN( 1 ).percent();
+    c += p() -> buffs.enhanced_pyrotechnics -> check_stack_value();
 
-    if ( p() -> sets.has_set_bonus( MAGE_FIRE, T19, B2 ) )
-    {
-      c += p() -> buffs.enhanced_pyrotechnics -> stack() *
-           p() -> sets.set( MAGE_FIRE, T19, B2 ) -> effectN( 1 ).percent();
-    }
     return c;
   }
 };
@@ -4402,7 +4394,7 @@ struct flamestrike_t : public fire_mage_spell_t
 
     if ( p() -> buffs.critical_massive -> up() )
     {
-      am *= 1.0 + p() -> buffs.critical_massive -> data().effectN( 1 ).percent();
+      am *= 1.0 + p() -> buffs.critical_massive -> check_value();
     }
 
     return am;
@@ -4655,8 +4647,8 @@ struct frostbolt_t : public frost_mage_spell_t
     }
     if ( p -> talents.lonely_winter -> ok() )
     {
-      base_multiplier *= 1.0 + ( p -> talents.lonely_winter -> effectN( 1 ).percent() +
-                               p -> artifact.its_cold_outside.data().effectN( 2 ).percent() );
+      base_multiplier *= 1.0 + p -> talents.lonely_winter -> effectN( 1 ).percent() +
+                               p -> artifact.its_cold_outside.data().effectN( 2 ).percent();
     }
     base_multiplier *= 1.0 + p -> artifact.icy_caress.percent();
     base_crit += p -> artifact.shattering_bolts.percent();
@@ -4838,8 +4830,8 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
     //TODO: Is this actually how these modifiers work?
     if ( p -> talents.lonely_winter -> ok() )
     {
-      base_multiplier *= 1.0 + ( p -> talents.lonely_winter -> effectN( 1 ).percent() +
-                               p -> artifact.its_cold_outside.data().effectN( 2 ).percent() );
+      base_multiplier *= 1.0 + p -> talents.lonely_winter -> effectN( 1 ).percent() +
+                               p -> artifact.its_cold_outside.data().effectN( 2 ).percent();
     }
     crit_bonus_multiplier *= 1.0 + p -> artifact.orbital_strike.percent();
     chills = true;
@@ -4870,7 +4862,7 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
       }
       if ( p() -> talents.frozen_touch -> ok() )
       {
-        fof_proc_chance *= 1.0 + ( p() -> talents.frozen_touch -> effectN( 1 ).percent() );
+        fof_proc_chance *= 1.0 + p() -> talents.frozen_touch -> effectN( 1 ).percent();
       }
       trigger_fof( fof_source_id, fof_proc_chance );
 
@@ -5082,8 +5074,8 @@ struct ice_lance_t : public frost_mage_spell_t
 
     if ( p -> talents.lonely_winter -> ok() )
     {
-      base_multiplier *= 1.0 + ( p -> talents.lonely_winter -> effectN( 1 ).percent() +
-                               p -> artifact.its_cold_outside.data().effectN( 2 ).percent() );
+      base_multiplier *= 1.0 + p -> talents.lonely_winter -> effectN( 1 ).percent() +
+                               p -> artifact.its_cold_outside.data().effectN( 2 ).percent();
     }
 
     if ( p -> talents.splitting_ice -> ok() )
@@ -6058,7 +6050,7 @@ struct pyroblast_t : public fire_mage_spell_t
 
     if ( p() -> buffs.critical_massive -> up() )
     {
-      am *= 1.0 + p() -> buffs.critical_massive -> data().effectN( 1 ).percent();
+      am *= 1.0 + p() -> buffs.critical_massive -> check_value();
     }
 
     return am;
@@ -6251,8 +6243,7 @@ struct ray_of_frost_t : public frost_mage_spell_t
   {
     double am = frost_mage_spell_t::action_multiplier();
 
-    am *= 1.0 + p() -> buffs.ray_of_frost -> check() *
-                p() -> buffs.ray_of_frost -> data().effectN( 1 ).percent();
+    am *= 1.0 + p() -> buffs.ray_of_frost -> check_stack_value();
 
     return am;
   }
@@ -8020,7 +8011,8 @@ void mage_t::create_buffs()
   buffs.arcane_power -> buff_duration += artifact.aegwynns_imperative.time_value();
 
   buffs.deadly_presence       = buff_creator_t( this, "deadly_presence", find_spell( 242247 ) )
-                                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+                                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+                                  .default_value( find_spell( 242247 ) -> effectN( 1 ).percent() );
   buffs.presence_of_mind      = buff_creator_t( this, "presence_of_mind", find_spell( 205025 ) )
                                   .activated( true )
                                   .cd( timespan_t::zero() )
@@ -8038,11 +8030,17 @@ void mage_t::create_buffs()
   // Fire
   buffs.combustion            = buff_creator_t( this, "combustion", find_spell( 190319 ) )
                                   .cd( timespan_t::zero() )
-                                  .add_invalidate( CACHE_MASTERY );
+                                  .add_invalidate( CACHE_MASTERY )
+                                  .default_value( find_spell( 190319 ) -> effectN( 1 ).percent() );
   buffs.combustion -> buff_duration += artifact.preignited.time_value();
 
-  buffs.critical_massive      = buff_creator_t( this, "critical_massive", find_spell( 242251 ) );
-  buffs.enhanced_pyrotechnics = buff_creator_t( this, "enhanced_pyrotechnics", find_spell( 157644 ) );
+  buffs.critical_massive      = buff_creator_t( this, "critical_massive", find_spell( 242251 ) )
+                                  .default_value( find_spell( 242251 ) -> effectN( 1 ).percent() );
+  buffs.enhanced_pyrotechnics = buff_creator_t( this, "enhanced_pyrotechnics", find_spell( 157644 ) )
+                                  .default_value( find_spell( 157644 ) -> effectN( 1 ).percent()
+                                    + ( sets.has_set_bonus( MAGE_FIRE, T19, B2 )
+                                        ? sets.set( MAGE_FIRE, T19, B2 ) -> effectN( 1 ).percent()
+                                        : 0.0 ) );
   // TODO: Find spell data for this; duration is educated guess at this point
   buffs.fire_t20_2pc          = buff_creator_t( this, "fire_t20_2pc" )
                                   .duration( timespan_t::from_seconds( 10.0 ) );
@@ -8051,11 +8049,13 @@ void mage_t::create_buffs()
   buffs.icarus_uprising       = buff_creator_t( this, "icarus_uprising", find_spell( 186170 ) )
                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                                   .add_invalidate( CACHE_SPELL_HASTE );
-  buffs.pyretic_incantation   = buff_creator_t( this, "pyretic_incantation", find_spell( 194329 ) );
+  buffs.pyretic_incantation   = buff_creator_t( this, "pyretic_incantation", find_spell( 194329 ) )
+                                  .default_value( find_spell( 194329 ) -> effectN( 1 ).percent() );
   buffs.pyromaniac            = buff_creator_t( this, "pyromaniac", sets.set( MAGE_FIRE, T17, B4 ) -> effectN( 1 ).trigger() )
                                   .trigger_spell( sets.set( MAGE_FIRE, T17, B4 ) );
   buffs.streaking             = buff_creator_t( this, "streaking", find_spell( 211399 ) )
-                                  .add_invalidate( CACHE_SPELL_HASTE );
+                                  .add_invalidate( CACHE_SPELL_HASTE )
+                                  .default_value( find_spell( 211399 ) -> effectN( 1 ).percent() );
 
   // Frost
   buffs.brain_freeze          = buff_creator_t( this, "brain_freeze", find_spell( 190446 ) );
@@ -8066,7 +8066,8 @@ void mage_t::create_buffs()
                                               sets.set( MAGE_FROST, T18, B4 ) -> effectN( 2 ).base_value() +
                                               artifact.icy_hand.rank()
                                               + talents.frozen_touch -> effectN( 2 ).base_value() );
-  buffs.frozen_mass           = buff_creator_t( this, "frozen_mass", find_spell( 242253 ) );
+  buffs.frozen_mass           = buff_creator_t( this, "frozen_mass", find_spell( 242253 ) )
+                                  .default_value( find_spell( 242253 ) -> effectN( 1 ).percent() );
 
   // Buff to track icicles. This does not, however, track the true amount of icicles present.
   // Instead, as it does in game, it tracks icicle buff stack count based on the number of *casts*
@@ -8105,7 +8106,8 @@ void mage_t::create_buffs()
                                 .default_value( find_spell( 195418 ) -> effectN( 1 ).percent() );
 
   buffs.chilled_to_the_core = buff_creator_t( this, "chilled_to_the_core", find_spell( 195446 ) )
-                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+                                   .default_value( find_spell( 195446 ) -> effectN( 1 ).percent() );
 
   buffs.freezing_rain    = buff_creator_t( this, "freezing_rain", find_spell( 240555 ) );
 
@@ -8881,13 +8883,12 @@ double mage_t::composite_player_critical_damage_multiplier( const action_state_t
 
   if ( !dbc::is_school( s -> action -> get_school(), SCHOOL_PHYSICAL ) )
   {
-    m *= 1.0 + ( buffs.pyretic_incantation -> data().effectN( 1 ).percent() *
-                 buffs.pyretic_incantation -> stack() );
+    m *= 1.0 + buffs.pyretic_incantation -> check_stack_value();
   }
 
   if ( buffs.frozen_mass -> check() )
   {
-    m *= 1.0 + buffs.frozen_mass -> data().effectN( 1 ).percent();
+    m *= 1.0 + buffs.frozen_mass -> check_value();
   }
 
   return m;
@@ -8962,12 +8963,12 @@ double mage_t::composite_player_multiplier( school_e school ) const
 
   if ( buffs.chilled_to_the_core -> check() && dbc::is_school( school, SCHOOL_FROST ) )
   {
-    m *= 1.0 + buffs.chilled_to_the_core -> data().effectN( 1 ).percent();
+    m *= 1.0 + buffs.chilled_to_the_core -> check_value();
   }
 
   if ( buffs.deadly_presence -> check() )
   {
-    m *= 1.0 + buffs.deadly_presence -> data().effectN( 1 ).percent();
+    m *= 1.0 + buffs.deadly_presence -> check_value();
   }
 
   return m;
@@ -8981,7 +8982,7 @@ double mage_t::composite_mastery_rating() const
 
   if ( buffs.combustion -> up() )
   {
-    m += ( mage_t::composite_spell_crit_rating() * buffs.combustion -> data().effectN( 3 ).percent() );
+    m += mage_t::composite_spell_crit_rating() * buffs.combustion -> data().effectN( 3 ).percent();
   }
  return m;
 }
@@ -9044,7 +9045,7 @@ double mage_t::composite_spell_haste() const
 
   if ( buffs.streaking -> check() )
   {
-    h /= 1.0 + buffs.streaking -> data().effectN( 1 ).percent();
+    h /= 1.0 + buffs.streaking -> check_value();
   }
 
   return h;
