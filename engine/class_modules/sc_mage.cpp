@@ -5452,7 +5452,7 @@ struct mark_of_aluneth_explosion_t : public arcane_mage_spell_t
   double aluneths_avarice_regen = 0;
   double persistent_cord_multiplier;
   mark_of_aluneth_explosion_t( mage_t* p ) :
-    arcane_mage_spell_t( "mark_of_aluneth_explosion", p, p -> find_spell( 210726 ) ),
+    arcane_mage_spell_t( "mark_of_aluneth_explosion", p, p -> artifact.mark_of_aluneth ),
     persistent_cord_multiplier( 0 )
   {
     background = true;
@@ -5488,13 +5488,13 @@ struct mark_of_aluneth_explosion_t : public arcane_mage_spell_t
                           * p() -> resources.max[ RESOURCE_MANA ], p() -> gains.aluneths_avarice );
     }
   }
-  double composite_persistent_multiplier( const action_state_t* state ) const override
+  double action_multiplier() const override
   {
-    double m = arcane_mage_spell_t::composite_persistent_multiplier( state );
+    double am = arcane_mage_spell_t::action_multiplier();
 
-    m *= 1.0 + persistent_cord_multiplier;
+    am *= 1.0 + persistent_cord_multiplier;
 
-    return m;
+    return am;
   }
 };
 
