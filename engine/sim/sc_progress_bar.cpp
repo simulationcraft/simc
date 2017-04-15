@@ -214,6 +214,10 @@ void progress_bar_t::output( bool finished )
   char delim = sim.progressbar_type == 1 ? '\t' : ' ';
   char terminator = ( sim.progressbar_type == 1 || finished ) ? '\n' : '\r';
   std::stringstream s;
+  if ( sim.progressbar_type == 0 )
+  {
+    s << "Generating ";
+  }
 
   s << sim.sim_progress_base_str;
   // Separate base and phase by a colon for easier parsing
