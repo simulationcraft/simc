@@ -710,6 +710,14 @@ bool parse_override_spell_data( sim_t*             sim,
     }
     return true;
   }
+  else if ( util::str_compare_ci( splits[ 0 ], "power" ) )
+  {
+    if ( ! dbc_override::register_power( sim -> dbc, id, splits[ 2 ], v ) )
+    {
+      return false;
+    }
+    return true;
+  }
   else
     return false;
 }

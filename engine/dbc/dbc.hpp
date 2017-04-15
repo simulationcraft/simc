@@ -229,6 +229,7 @@ namespace hotfix
   {
     auto_dispose< std::vector<spell_data_t*> > spells_[ 2 ];
     auto_dispose< std::vector<spelleffect_data_t*> > effects_[ 2 ];
+    auto_dispose< std::vector<spellpower_data_t*> > powers_[ 2 ];
 
     ~custom_dbc_data_t();
 
@@ -239,6 +240,10 @@ namespace hotfix
     bool add_effect( spelleffect_data_t* spell, bool ptr = false );
     spelleffect_data_t* get_mutable_effect( unsigned effect_id, bool ptr = false );
     const spelleffect_data_t* find_effect( unsigned effect_id, bool ptr = false ) const;
+
+    bool add_power( spellpower_data_t* power, bool ptr = false );
+    spellpower_data_t* get_mutable_power( unsigned power_id, bool ptr = false );
+    const spellpower_data_t* find_power( unsigned power_id, bool ptr = false ) const;
 
     // Creates a tree of cloned spells and effects given a spell id, starting from the potential
     // root spell. If there is no need to clone the tree, return the custom spell instead.
@@ -345,9 +350,22 @@ namespace hotfix
     void apply_hotfix( bool ptr ) override;
   };
 
+  struct power_hotfix_entry_t : public dbc_hotfix_entry_t
+  {
+    power_hotfix_entry_t( const std::string& g, const std::string& t, unsigned id, const std::string& n, unsigned f ) :
+      dbc_hotfix_entry_t( g, t, id, n, f )
+    { }
+
+    std::string to_str() const override;
+
+    private:
+    void apply_hotfix( bool ptr ) override;
+  };
+
   bool register_hotfix( const std::string&, const std::string&, const std::string&, unsigned = HOTFIX_FLAG_DEFAULT );
   spell_hotfix_entry_t& register_spell( const std::string&, const std::string&, const std::string&, unsigned, unsigned = hotfix::HOTFIX_FLAG_DEFAULT );
   effect_hotfix_entry_t& register_effect( const std::string&, const std::string&, const std::string&, unsigned, unsigned = hotfix::HOTFIX_FLAG_DEFAULT );
+  power_hotfix_entry_t& register_power( const std::string&, const std::string&, const std::string&, unsigned, unsigned = hotfix::HOTFIX_FLAG_DEFAULT );
 
   void apply();
   std::string to_str( bool ptr );
@@ -355,6 +373,7 @@ namespace hotfix
   void add_hotfix_spell( spell_data_t* spell, bool ptr = false );
   const spell_data_t* find_spell( const spell_data_t* dbc_spell, bool ptr = false );
   const spelleffect_data_t* find_effect( const spelleffect_data_t* dbc_effect, bool ptr = false );
+  const spellpower_data_t* find_power( const spellpower_data_t* dbc_power, bool ptr = false );
 
   std::vector<const hotfix_entry_t*> hotfix_entries();
 }
@@ -364,7 +383,8 @@ namespace dbc_override
   enum dbc_override_e
   {
     DBC_OVERRIDE_SPELL = 0,
-    DBC_OVERRIDE_EFFECT
+    DBC_OVERRIDE_EFFECT,
+    DBC_OVERRIDE_POWER
   };
 
   struct dbc_override_entry_t
@@ -381,9 +401,11 @@ namespace dbc_override
 
   bool register_effect( dbc_t&, unsigned, const std::string&, double );
   bool register_spell( dbc_t&, unsigned, const std::string&, double );
+  bool register_power( dbc_t&, unsigned, const std::string&, double );
 
   const spell_data_t* find_spell( unsigned, bool ptr = false );
   const spelleffect_data_t* find_effect( unsigned, bool ptr = false );
+  const spelleffect_data_t* find_power( unsigned, bool ptr = false );
 
   const std::vector<dbc_override_entry_t>& override_entries();
 }
@@ -507,6 +529,9 @@ public:
   static spellpower_data_t* find( unsigned, bool ptr = false );
   static spellpower_data_t* list( bool ptr = false );
   static void               link( bool ptr = false );
+
+  bool override_field( const std::string& field, double value );
+  double get_field( const std::string& field ) const;
 };
 
 class spellpower_data_nil_t : public spellpower_data_t
@@ -1415,6 +1440,9 @@ public:
   // Always returns non-NULL.
   const spelleffect_data_t*      effect( unsigned effect_id ) const
   { return find_by_id<spelleffect_data_t>( effect_id ); }
+
+  const spellpower_data_t*       power( unsigned power_id ) const
+  { return find_by_id<spellpower_data_t>( power_id ); }
 
   // Always returns non-NULL.
   const talent_data_t*           talent( unsigned talent_id ) const
