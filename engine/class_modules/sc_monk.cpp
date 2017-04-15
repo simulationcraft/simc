@@ -606,6 +606,7 @@ public:
     const spell_data_t* crackling_tiger_lightning_driver;
     const spell_data_t* crosswinds_dmg;
     const spell_data_t* crosswinds_trigger;
+    const spell_data_t* cyclone_strikes;
     const spell_data_t* dizzying_kicks;
     const spell_data_t* gale_burst;
     const spell_data_t* hit_combo;
@@ -7470,7 +7471,8 @@ monk( *p )
   if ( p -> specialization() == MONK_WINDWALKER )
   {
     debuff.mark_of_the_crane = buff_creator_t( *this, "mark_of_the_crane", p -> passives.mark_of_the_crane )
-      .default_value( p -> passives.mark_of_the_crane -> effectN( 1 ).percent() );
+      .default_value( maybe_ptr( p -> dbc.ptr ) ? p -> passives.cyclone_strikes -> effectN( 1 ).percent() 
+                                                : p -> passives.mark_of_the_crane -> effectN( 1 ).percent() );
 
     debuff.gale_burst = buff_creator_t( *this, "gale_burst", p -> passives.gale_burst )
       .default_value( 0 )
@@ -8056,6 +8058,7 @@ void monk_t::init_spells()
   passives.crackling_tiger_lightning_driver = find_spell( 123999 );
   passives.crosswinds_dmg                   = find_spell( 196061 );
   passives.crosswinds_trigger               = find_spell( 195651 );
+  passives.cyclone_strikes                  = find_spell( 220358 );
   passives.dizzying_kicks                   = find_spell( 196723 );
   passives.gale_burst                       = find_spell( 195403 );
   passives.hit_combo                        = find_spell( 196741 );
