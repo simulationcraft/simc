@@ -58,6 +58,7 @@ public:
   JsonOutput& operator=( T v )
   { v_ = v; return *this; }
 
+  // Assign a string to the current value (v_), and have RapidJSON do the copy.
   JsonOutput& operator=( const char* v )
   { v_.SetString( v, d_.GetAllocator() ); return *this; }
 
@@ -299,7 +300,7 @@ js::sc_js_t to_json( const ::extended_sample_data_t& sd )
     node.set( "mean_std_dev", sd.mean_std_dev );
   }
   // node.set( "data", sd.data() );
-  // node.set( "distribution", sd.distribution )
+  // node.set( "distribution", sd.distribution );
   return node;
 }
 
