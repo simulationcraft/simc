@@ -1616,11 +1616,8 @@ struct arcane_missiles_t : public buff_t
     }
 
     am_proc_chance += p -> artifact.ethereal_sensitivity.percent();
+    am_proc_chance += p -> sets.set( MAGE_ARCANE, T19, B2 ) -> effectN( 1 ).percent();
 
-    if ( p -> sets.has_set_bonus( MAGE_ARCANE, T19, B2 ) )
-    {
-      am_proc_chance += p -> sets.set( MAGE_ARCANE, T19, B2 ) -> effectN( 1 ).percent();
-    }
     return am_proc_chance;
   }
 
@@ -1814,6 +1811,7 @@ struct icy_veins_buff_t : public haste_buff_t
   {
     buff_duration += p -> talents.thermal_void -> effectN( 2 ).time_value();
     set_default_value( data().effectN( 1 ).percent() );
+    set_cooldown( timespan_t::zero() );
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -2291,9 +2289,9 @@ struct fire_mage_spell_t : public mage_spell_t
           if ( p -> sets.has_set_bonus( MAGE_FIRE, T19, B4 ) &&
                rng().roll( p -> sets.set( MAGE_FIRE, T19, B4) -> effectN( 1 ).percent() ) )
           {
-          p -> buffs.streaking -> trigger();
+            p -> buffs.streaking -> trigger();
           }
-          }
+        }
         // Crit without HU => generate HU
         else
         {
@@ -4086,14 +4084,11 @@ struct evocation_t : public arcane_mage_spell_t
 {
   aegwynns_ascendance_t* aegwynns_ascendance;
   double mana_gained;
-  bool gravity_spiral;
-  double gravity_spiral_bonus;
+
   evocation_t( mage_t* p, const std::string& options_str ) :
     arcane_mage_spell_t( "evocation", p,
                          p -> find_class_spell( "Evocation" ) ),
-    mana_gained( 0.0 ),
-    gravity_spiral( false ),
-    gravity_spiral_bonus( 0 )
+    mana_gained( 0.0 )
   {
     parse_options( options_str );
 
@@ -4106,20 +4101,11 @@ struct evocation_t : public arcane_mage_spell_t
     ignore_false_positive = true;
     triggers_arcane_missiles = false;
 
-    cooldown = p -> cooldowns.evocation;
     cooldown -> duration *= -p -> spec.evocation_2 -> effectN( 1 ).percent();
+
     if ( p -> artifact.aegwynns_ascendance.rank() )
     {
       aegwynns_ascendance = new aegwynns_ascendance_t( p );
-    }
-  }
-
-  virtual void init() override
-  {
-    arcane_mage_spell_t::init();
-    if ( gravity_spiral )
-    {
-      cooldown -> charges = 1.0 + gravity_spiral_bonus;
     }
   }
 
@@ -4691,26 +4677,14 @@ struct frostbolt_t : public frost_mage_spell_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      double fof_proc_chance = p() -> spec.fingers_of_frost
-                                   -> effectN( 1 ).percent();
-
-      if ( p() -> talents.frozen_touch -> ok() )
-      {
-        fof_proc_chance *= 1.0 + ( p() -> talents.frozen_touch -> effectN( 1 ).percent() );
-      }
-      double bf_proc_chance = p() -> spec.brain_freeze
-                                  -> effectN( 1 ).percent();
-
-      if ( p() -> sets.has_set_bonus( MAGE_FROST, T19, B2 ) )
-      {
-        bf_proc_chance += p() -> sets.set( MAGE_FROST, T19, B2 )
-                              -> effectN( 1 ).percent();
-      }
-
-      bf_proc_chance += p() -> artifact.clarity_of_thought.percent();
-
-      trigger_brain_freeze( bf_proc_chance );
+      double fof_proc_chance = p() -> spec.fingers_of_frost -> effectN( 1 ).percent();
+      fof_proc_chance *= 1.0 + p() -> talents.frozen_touch -> effectN( 1 ).percent();
       trigger_fof( fof_source_id, fof_proc_chance );
+
+      double bf_proc_chance = p() -> spec.brain_freeze -> effectN( 1 ).percent();
+      bf_proc_chance += p() -> sets.set( MAGE_FROST, T19, B2 ) -> effectN( 1 ).percent();
+      bf_proc_chance += p() -> artifact.clarity_of_thought.percent();
+      trigger_brain_freeze( bf_proc_chance );
 
       if ( p() -> legendary.shatterlance )
       {
@@ -4754,7 +4728,6 @@ struct frostbolt_t : public frost_mage_spell_t
       if ( s -> result == RESULT_CRIT && p() -> artifact.frozen_veins.rank() )
       {
         p() -> cooldowns.icy_veins -> adjust( p() -> artifact.frozen_veins.time_value() );
-        p() -> buffs.icy_veins -> cooldown -> adjust( p() -> artifact.frozen_veins.time_value() );
       }
 
       if ( s -> result == RESULT_CRIT && p() -> artifact.chain_reaction.rank() )
@@ -4852,20 +4825,10 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
     frost_mage_spell_t::execute();
     if ( result_is_hit( execute_state -> result ) )
     {
-      double fof_proc_chance = p() -> spec.fingers_of_frost
-                                   -> effectN( 1 ).percent();
-
-
-      if ( p() -> sets.has_set_bonus( MAGE_FROST, T19, B4 ) )
-      {
-        fof_proc_chance += p() -> sets.set( MAGE_FROST, T19, B4 ) -> effectN( 1 ).percent();
-      }
-      if ( p() -> talents.frozen_touch -> ok() )
-      {
-        fof_proc_chance *= 1.0 + p() -> talents.frozen_touch -> effectN( 1 ).percent();
-      }
+      double fof_proc_chance = p() -> spec.fingers_of_frost -> effectN( 1 ).percent();
+      fof_proc_chance += p() -> sets.set( MAGE_FROST, T19, B4 ) -> effectN( 1 ).percent();
+      fof_proc_chance *= 1.0 + p() -> talents.frozen_touch -> effectN( 1 ).percent();
       trigger_fof( fof_source_id, fof_proc_chance );
-
     }
   }
 
@@ -5273,21 +5236,15 @@ struct fire_blast_t : public fire_mage_spell_t
     parse_options( options_str );
     base_multiplier *= 1.0 + p -> artifact.reignition_overdrive.percent();
     trigger_gcd = timespan_t::zero();
+
     cooldown -> charges = data().charges();
     cooldown -> charges += p -> spec.fire_blast_3 -> effectN( 1 ).base_value();
-
-    if ( p -> talents.flame_on -> ok() )
-    {
-      cooldown -> charges += p -> talents.flame_on -> effectN( 1 ).base_value();
-    }
+    cooldown -> charges += p -> talents.flame_on -> effectN( 1 ).base_value();
 
     cooldown -> duration = data().charge_cooldown();
     cooldown -> duration += p -> sets.set( MAGE_FIRE, T17, B2 ) -> effectN( 1 ).time_value();
+    cooldown -> duration -= 1000 * p -> talents.flame_on -> effectN( 3 ).time_value();
 
-    if ( p -> talents.flame_on -> ok() )
-    {
-      cooldown -> duration -= 1000* p -> talents.flame_on -> effectN( 3 ).time_value();
-    }
     cooldown -> hasted = true;
     // Fire Blast has a small ICD to prevent it from being double casted
     icd = p -> get_cooldown( "fire_blast_icd" );
@@ -8038,9 +7995,7 @@ void mage_t::create_buffs()
                                   .default_value( find_spell( 242251 ) -> effectN( 1 ).percent() );
   buffs.enhanced_pyrotechnics = buff_creator_t( this, "enhanced_pyrotechnics", find_spell( 157644 ) )
                                   .default_value( find_spell( 157644 ) -> effectN( 1 ).percent()
-                                    + ( sets.has_set_bonus( MAGE_FIRE, T19, B2 )
-                                        ? sets.set( MAGE_FIRE, T19, B2 ) -> effectN( 1 ).percent()
-                                        : 0.0 ) );
+                                      + sets.set( MAGE_FIRE, T19, B2 ) -> effectN( 1 ).percent() );
   // TODO: Find spell data for this; duration is educated guess at this point
   buffs.fire_t20_2pc          = buff_creator_t( this, "fire_t20_2pc" )
                                   .duration( timespan_t::from_seconds( 10.0 ) );
@@ -9820,15 +9775,14 @@ struct cord_of_infinity_t : public class_buff_cb_t<mage_t, buff_t, buff_creator_
   }
 };
 
-struct gravity_spiral_t : public scoped_action_callback_t<evocation_t>
+struct gravity_spiral_t : public scoped_actor_callback_t<mage_t>
 {
-  gravity_spiral_t() : super( MAGE_ARCANE, "evocation" )
+  gravity_spiral_t() : super( MAGE_ARCANE )
   { }
 
-  void manipulate( evocation_t* action, const special_effect_t& e ) override
+  void manipulate( mage_t* actor, const special_effect_t& e ) override
   {
-    action -> gravity_spiral = true;
-    action -> gravity_spiral_bonus = e.driver() -> effectN( 1 ).base_value();
+    actor -> cooldowns.evocation -> charges += e.driver() -> effectN( 1 ).base_value();
   }
 };
 
