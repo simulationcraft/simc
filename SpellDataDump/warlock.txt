@@ -1,4 +1,4 @@
-SimulationCraft 720-01 for World of Warcraft 7.2.0 Live (wow build 23826, git build 016768c)
+SimulationCraft 720-02 for World of Warcraft 7.2.0 Live (wow build 23826, git build f6e16cb)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -805,7 +805,7 @@ GCD              : 1.5 seconds
 Duration         : 5 seconds
 Charges          : 1 (12 seconds cooldown)
 Category         : 672
-Affecting spells : Destruction Warlock (137046), Flamelicked (185229), Conflagration of Chaos (196546), Odr, Shawl of the Ymirjar (212173)
+Affecting spells : Destruction Warlock (137046), Flamelicked (185229), Conflagration of Chaos (196546), Odr, Shawl of the Ymirjar (212173), Flames of Sargeras (238074)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2753,6 +2753,7 @@ Effects          :
 Description      : Deals $s1 Shadow damage and instantly knocks back all enemies within $115770A1 yards.
 
 Name             : Optical Blast (Special Ability) (id=115781) [Scaling Spell (11), Spell Family (57)] 
+Hotfixed         : Category (0 -> 88)
 Class            : Warlock
 School           : Shadow
 Resource         : 20 Energy
@@ -2760,6 +2761,7 @@ Spell Level      : 50
 Range            : 40 yards
 Duration         : 6 seconds
 Cooldown         : 24 seconds
+Category         : 88
 Category Cooldown: 24 seconds
 Attributes       : ........ ........ ..x..... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
@@ -4621,7 +4623,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=302984)   : School Damage: shadow (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.10000 | Chain Multiplier: 0 | Chain Targets: 20 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.10000 | Chain Multiplier: 1 | Chain Targets: 20 | Target: Enemy(6)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 Description      : Fires an Eye Laser that hits all Doomed targets for $s1 Shadow damage.
 
 Name             : Phantom Singularity (id=205246) [Spell Family (5)] 

@@ -311,7 +311,8 @@ public:
   struct talents_t
   {
     // Tier 15 Talents
-    const spell_data_t* chi_burst;
+    const spell_data_t* chi_burst; // Mistweaver & Windwalker
+    const spell_data_t* spitfire; // Brewmaster
     const spell_data_t* eye_of_the_tiger; // Brewmaster & Windwalker
     const spell_data_t* chi_wave;
     // Mistweaver
@@ -605,6 +606,7 @@ public:
     const spell_data_t* crackling_tiger_lightning_driver;
     const spell_data_t* crosswinds_dmg;
     const spell_data_t* crosswinds_trigger;
+    const spell_data_t* cyclone_strikes;
     const spell_data_t* dizzying_kicks;
     const spell_data_t* gale_burst;
     const spell_data_t* hit_combo;
@@ -3801,7 +3803,7 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
     if ( p() -> buff.combo_strikes -> up() )
       pm *= 1 + p() -> cache.mastery_value();
 
-    pm *= 1 + ( mark_of_the_crane_counter() * p() -> spec.spinning_crane_kick -> effectN( 2 ).percent() );
+    pm *= 1 + ( mark_of_the_crane_counter() * ( maybe_ptr( p() -> dbc.ptr ) ? p() -> passives.cyclone_strikes -> effectN( 1 ).percent() : p() -> passives.mark_of_the_crane -> effectN( 1 ).percent() ) );
 
     return pm;
   }
@@ -7441,7 +7443,7 @@ struct windwalking_driver_t: public monk_buff_t < buff_t >
   {
     set_tick_callback( [&p, this]( buff_t*, int /* total_ticks */, timespan_t /* tick_time */ ) {
       range::for_each( p.windwalking_aura->target_list(), [&p, this]( player_t* target ) {
-        target->buffs.windwalking_movement_aura->trigger(
+        target -> buffs.windwalking_movement_aura -> trigger(
             1, ( movement_increase +
                  ( p.legendary.march_of_the_legion ? p.legendary.march_of_the_legion -> effectN( 1 ).percent() : 0.0 ) ),
             1, timespan_t::from_seconds( 10 ) );
@@ -7469,7 +7471,8 @@ monk( *p )
   if ( p -> specialization() == MONK_WINDWALKER )
   {
     debuff.mark_of_the_crane = buff_creator_t( *this, "mark_of_the_crane", p -> passives.mark_of_the_crane )
-      .default_value( p -> passives.mark_of_the_crane -> effectN( 1 ).percent() );
+      .default_value( maybe_ptr( p -> dbc.ptr ) ? p -> passives.cyclone_strikes -> effectN( 1 ).percent() 
+                                                : p -> passives.mark_of_the_crane -> effectN( 1 ).percent() );
 
     debuff.gale_burst = buff_creator_t( *this, "gale_burst", p -> passives.gale_burst )
       .default_value( 0 )
@@ -7797,7 +7800,8 @@ void monk_t::init_spells()
   base_t::init_spells();
   // Talents spells =====================================
   // Tier 15 Talents
-  talent.chi_burst                   = find_talent_spell( "Chi Burst" );
+  talent.chi_burst                   = find_talent_spell( "Chi Burst" ); // Mistweaver & Windwalker
+  talent.spitfire                    = find_talent_spell( "Spitfire" ); // Brewmaster
   talent.eye_of_the_tiger            = find_talent_spell( "Eye of the Tiger" ); // Brewmaster & Windwalker
   talent.chi_wave                    = find_talent_spell( "Chi Wave" );
   // Mistweaver
@@ -8054,6 +8058,7 @@ void monk_t::init_spells()
   passives.crackling_tiger_lightning_driver = find_spell( 123999 );
   passives.crosswinds_dmg                   = find_spell( 196061 );
   passives.crosswinds_trigger               = find_spell( 195651 );
+  passives.cyclone_strikes                  = find_spell( 220358 );
   passives.dizzying_kicks                   = find_spell( 196723 );
   passives.gale_burst                       = find_spell( 195403 );
   passives.hit_combo                        = find_spell( 196741 );
@@ -9726,6 +9731,8 @@ void monk_t::apl_combat_windwalker()
       }
       else if ( items[i].name_str == "tiny_oozeling_in_a_jar" )
         cd -> add_action( "use_item,name=" + items[i].name_str + ",if=buff.congealing_goo.stack>=6" );
+      else if ( items[i].name_str == "horn_of_valor" )
+        cd -> add_action( "use_item,name=" + items[i].name_str + ",if=!talent.serenity.enabled|cooldown.serenity.remains<18|cooldown.serenity.remains>50|target.time_to_die<=30" );
       else if ( items[i].name_str == "draught_of_souls" )
       {
         // Keeping blank to make sure this is placed AFTER Touch of Death
@@ -9772,7 +9779,7 @@ void monk_t::apl_combat_windwalker()
   serenity -> add_talent( this, "Serenity" );
   serenity -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=active_enemies<3" );
   serenity -> add_action( this, "Strike of the Windlord" );
-  serenity -> add_action( this, "Fists of Fury", "if=((!equipped.drinking_horn_cover|buff.bloodlust.up)&(cooldown.rising_sun_kick.remains>1|active_enemies>1))|buff.serenity.remains<1" );
+  serenity -> add_action( this, "Fists of Fury", "if=((!equipped.drinking_horn_cover|buff.bloodlust.up|buff.serenity.remains<1)&(cooldown.rising_sun_kick.remains>1|active_enemies>1))" );
   serenity -> add_action( this, "Spinning Crane Kick", "if=active_enemies>=3&!prev_gcd.1.spinning_crane_kick" );
   serenity -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=active_enemies>=3" );
   serenity -> add_action( this, "Spinning Crane Kick", "if=!prev_gcd.1.spinning_crane_kick" );
@@ -9789,19 +9796,21 @@ void monk_t::apl_combat_windwalker()
   }
   st -> add_action( this, "Tiger Palm", "cycle_targets=1,if=!prev_gcd.1.tiger_palm&energy.time_to_max<=0.5&chi.max-chi>=2" );
   st -> add_action( this, "Strike of the Windlord", "if=!talent.serenity.enabled|cooldown.serenity.remains>=10" );
-  st -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=(chi>=3&energy>=40)|chi>=5" );
-  st -> add_action( this, "Fists of Fury", "if=talent.serenity.enabled&!equipped.drinking_horn_cover&cooldown.serenity.remains>=5" );
-  st -> add_action( this, "Fists of Fury", "if=!(talent.serenity.enabled&!equipped.drinking_horn_cover)" );
+  st -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=((chi>=3&energy>=40)|chi>=5)&(!talent.serenity.enabled|cooldown.serenity.remains>=5)" );
+  st -> add_action( this, "Fists of Fury", "if=talent.serenity.enabled&!equipped.drinking_horn_cover&cooldown.serenity.remains>=5&(debuff.rising_fist.remains>1|set_bonus.tier20_2pc=0)&energy.time_to_max>2" );
+  st -> add_action( this, "Fists of Fury", "if=!(talent.serenity.enabled&!equipped.drinking_horn_cover)&(debuff.rising_fist.remains>1|set_bonus.tier20_2pc=0)&energy.time_to_max>2" );
   st -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=!talent.serenity.enabled|cooldown.serenity.remains>=5" );
   st -> add_talent( this, "Whirling Dragon Punch" );
   st -> add_action( this, "Crackling Jade Lightning", "if=equipped.the_emperors_capacitor&buff.the_emperors_capacitor.stack>=19&energy.time_to_max>3" );
   st -> add_action( this, "Crackling Jade Lightning", "if=equipped.the_emperors_capacitor&buff.the_emperors_capacitor.stack>=14&cooldown.serenity.remains<13&talent.serenity.enabled&energy.time_to_max>3" );
   st -> add_action( this, "Spinning Crane Kick", "if=(active_enemies>=3|spinning_crane_kick.count>=3)&!prev_gcd.1.spinning_crane_kick" );
   st -> add_talent( this, "Rushing Jade Wind", "if=chi.max-chi>1&!prev_gcd.1.rushing_jade_wind" );
-  st -> add_action( this, "Blackout Kick", "cycle_targets=1,if=(chi>1|buff.bok_proc.up|(talent.energizing_elixir.enabled&cooldown.energizing_elixir.remains<=1))&!prev_gcd.1.blackout_kick" );
-  st -> add_talent( this, "Chi Wave", "if=energy.time_to_max>=2.25" );
-  st -> add_talent( this, "Chi Burst", "if=energy.time_to_max>=2.25" );
-  st -> add_action( this, "Tiger Palm", "cycle_targets=1,if=!prev_gcd.1.tiger_palm" );
+  st -> add_action( this, "Blackout Kick", "cycle_targets=1,if=(chi>1|buff.bok_proc.up|(talent.energizing_elixir.enabled&cooldown.energizing_elixir.remains<cooldown.fists_of_fury.remains))&((cooldown.rising_sun_kick.remains>1&(!artifact.strike_of_the_windlord.enabled|cooldown.strike_of_the_windlord.remains>1)|chi>2)&(cooldown.fists_of_fury.remains>1|chi>3)|prev_gcd.1.tiger_palm)&!prev_gcd.1.blackout_kick" );
+  st -> add_talent( this, "Chi Wave", "if=energy.time_to_max>1" );
+  st -> add_talent( this, "Chi Burst", "if=energy.time_to_max>1" );
+  st -> add_action( this, "Tiger Palm", "cycle_targets=1,if=!prev_gcd.1.tiger_palm&(chi.max-chi>=2|energy.time_to_max<1)" );
+  st -> add_talent( this, "Chi Wave" );
+  st -> add_talent( this, "Chi Burst" );
 }
 
 // Mistweaver Combat Action Priority List ==================================

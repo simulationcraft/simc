@@ -175,33 +175,26 @@ void reforge_plot_t::analyze_stats()
       current_reforge_sim->work_queue->init( reforge_plot_iterations );
     }
 
-    std::string& tmp = current_reforge_sim->sim_phase_str;
+    std::stringstream s;
     for ( size_t j = 0; j < stat_mods[ i ].size(); j++ )
     {
       stat_e stat = reforge_plot_stat_indices[ j ];
       int mod     = stat_mods[ i ][ j ];
-      current_reforge_sim->enchant.add_stat( stat, mod );
+
+      current_reforge_sim -> enchant.add_stat( stat, mod );
       delta_result[ j ].value = mod;
       delta_result[ j ].error = 0;
 
-      if ( sim->report_progress )
+      s << util::to_string( mod ) << " " << util::stat_type_abbrev( stat );
+      if ( j < stat_mods[ i ].size() - 1 )
       {
-        tmp += util::to_string( mod ) + " " + util::stat_type_abbrev( stat );
-
-        if ( j < stat_mods[ i ].size() - 1 )
-          tmp += ",";
+        s << ", ";
       }
     }
 
-    if ( sim->report_progress )
-    {
-      tmp += ":";
-      if ( tmp.length() < 23 )
-        tmp.append( 23 - tmp.length(), ' ' );
-    }
-
     current_stat_combo = as<int>( i );
-    current_reforge_sim->execute();
+    current_reforge_sim -> set_sim_base_str( s.str() );
+    current_reforge_sim -> execute();
 
     for ( player_t* player : sim->players_by_name )
     {

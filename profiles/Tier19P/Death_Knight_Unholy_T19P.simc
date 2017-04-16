@@ -7,6 +7,11 @@ talents=1210023
 artifact=16:0:0:0:0:149:1:151:1:152:1:156:3:157:3:158:3:262:3:263:1:264:3:1333:1
 spec=unholy
 
+# Default consumables
+potion=prolonged_power
+flask=countless_armies
+food=nightborne_delicacy_platter
+
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
 # while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
@@ -14,12 +19,12 @@ spec=unholy
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
-actions.precombat=flask,name=countless_armies
-actions.precombat+=/food,name=nightborne_delicacy_platter
+actions.precombat=flask
+actions.precombat+=/food
 actions.precombat+=/augmentation,name=defiled
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion,name=prolonged_power
+actions.precombat+=/potion
 actions.precombat+=/raise_dead
 actions.precombat+=/army_of_the_dead
 
@@ -30,7 +35,7 @@ actions+=/arcane_torrent,if=runic_power.deficit>20
 actions+=/blood_fury
 actions+=/berserking
 actions+=/use_item,slot=trinket1
-actions+=/potion,name=prolonged_power,if=buff.unholy_strength.react
+actions+=/potion,if=buff.unholy_strength.react
 actions+=/outbreak,target_if=!dot.virulent_plague.ticking
 actions+=/dark_transformation,if=equipped.137075&cooldown.dark_arbiter.remains>165
 actions+=/dark_transformation,if=equipped.137075&!talent.shadow_infusion.enabled&cooldown.dark_arbiter.remains>55

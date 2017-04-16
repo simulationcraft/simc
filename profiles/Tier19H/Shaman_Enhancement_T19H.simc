@@ -4,7 +4,7 @@ race=troll
 role=attack
 position=back
 talents=2002222
-artifact=41:137316:137408:133682:0:899:1:900:1:901:1:902:1:903:1:904:1:905:2:906:3:907:3:909:3:910:5:911:3:912:3:930:1:1351:1
+artifact=41:0:0:0:0:899:1:900:1:901:1:902:1:903:1:904:1:905:3:906:3:907:3:908:3:909:3:910:3:911:3:912:3:913:3:930:1:1351:1:1388:1
 spec=enhancement
 
 # Default consumables
@@ -34,14 +34,14 @@ actions+=/bloodlust,if=target.health.pct<25|time>0.500
 actions+=/auto_attack
 actions+=/feral_spirit,if=!artifact.alpha_wolf.rank|(maelstrom>=20&cooldown.crash_lightning.remains<=gcd)
 actions+=/crash_lightning,if=artifact.alpha_wolf.rank&prev_gcd.1.feral_spirit
-actions+=/berserking,if=buff.ascendance.up|!talent.ascendance.enabled|level<100
-actions+=/blood_fury
+actions+=/berserking,if=buff.ascendance.up|(feral_spirit.remains>5)|level<100
+actions+=/blood_fury,if=buff.ascendance.up|(feral_spirit.remains>5)|level<100
 actions+=/potion,if=feral_spirit.remains>5|target.time_to_die<=60
 actions+=/boulderfist,if=buff.boulderfist.remains<gcd|(maelstrom<=50&active_enemies>=3)
 actions+=/boulderfist,if=buff.boulderfist.remains<gcd|(charges_fractional>1.75&maelstrom<=100&active_enemies<=2)
 actions+=/rockbiter,if=talent.landslide.enabled&buff.landslide.remains<gcd
 actions+=/fury_of_air,if=!ticking&maelstrom>22
-actions+=/frostbrand,if=talent.hailstorm.enabled&buff.frostbrand.remains<gcd
+actions+=/frostbrand,if=talent.hailstorm.enabled&buff.frostbrand.remains<gcd&((!talent.fury_of_air.enabled)|(talent.fury_of_air.enabled&maelstrom>25))
 actions+=/flametongue,if=buff.flametongue.remains<gcd|(cooldown.doom_winds.remains<6&buff.flametongue.remains<4)
 actions+=/doom_winds
 actions+=/crash_lightning,if=talent.crashing_storm.enabled&active_enemies>=3&(!talent.hailstorm.enabled|buff.frostbrand.remains>gcd)
@@ -52,19 +52,24 @@ actions+=/windsong
 actions+=/ascendance,if=buff.stormbringer.react
 actions+=/windstrike,if=buff.stormbringer.react&((talent.fury_of_air.enabled&maelstrom>=26)|(!talent.fury_of_air.enabled))
 actions+=/stormstrike,if=buff.stormbringer.react&((talent.fury_of_air.enabled&maelstrom>=26)|(!talent.fury_of_air.enabled))
+actions+=/frostbrand,if=equipped.137084&talent.hot_hand.enabled&buff.hot_hand.react&!buff.frostbrand.up&((!talent.fury_of_air.enabled)|(talent.fury_of_air.enabled&maelstrom>25))
 actions+=/lava_lash,if=talent.hot_hand.enabled&buff.hot_hand.react
+actions+=/sundering,if=active_enemies>=3
 actions+=/crash_lightning,if=active_enemies>=4
-actions+=/windstrike
+actions+=/windstrike,if=talent.overcharge.enabled&cooldown.lightning_bolt.remains<gcd&maelstrom>80
+actions+=/windstrike,if=talent.fury_of_air.enabled&maelstrom>46&(cooldown.lightning_bolt.remains>gcd|!talent.overcharge.enabled)
+actions+=/windstrike,if=!talent.overcharge.enabled&!talent.fury_of_air.enabled
 actions+=/stormstrike,if=talent.overcharge.enabled&cooldown.lightning_bolt.remains<gcd&maelstrom>80
 actions+=/stormstrike,if=talent.fury_of_air.enabled&maelstrom>46&(cooldown.lightning_bolt.remains>gcd|!talent.overcharge.enabled)
 actions+=/stormstrike,if=!talent.overcharge.enabled&!talent.fury_of_air.enabled
 actions+=/crash_lightning,if=((active_enemies>1|talent.crashing_storm.enabled|talent.boulderfist.enabled)&!set_bonus.tier19_4pc)|feral_spirit.remains>5
-actions+=/frostbrand,if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8
+actions+=/crash_lightning,if=active_enemies>=3
+actions+=/frostbrand,if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8&((!talent.fury_of_air.enabled)|(talent.fury_of_air.enabled&maelstrom>25))
+actions+=/frostbrand,if=equipped.137084&!buff.frostbrand.up&((!talent.fury_of_air.enabled)|(talent.fury_of_air.enabled&maelstrom>25))
 actions+=/lava_lash,if=talent.fury_of_air.enabled&talent.overcharge.enabled&(set_bonus.tier19_4pc&maelstrom>=80)
 actions+=/lava_lash,if=talent.fury_of_air.enabled&!talent.overcharge.enabled&(set_bonus.tier19_4pc&maelstrom>=53)
 actions+=/lava_lash,if=(!set_bonus.tier19_4pc&maelstrom>=120)|(!talent.fury_of_air.enabled&set_bonus.tier19_4pc&maelstrom>=40)
 actions+=/flametongue,if=buff.flametongue.remains<4.8
-actions+=/sundering
 actions+=/rockbiter
 actions+=/flametongue
 actions+=/boulderfist

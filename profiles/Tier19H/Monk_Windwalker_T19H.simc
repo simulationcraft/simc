@@ -50,7 +50,7 @@ actions.serenity+=/call_action_list,name=cd
 actions.serenity+=/serenity
 actions.serenity+=/rising_sun_kick,cycle_targets=1,if=active_enemies<3
 actions.serenity+=/strike_of_the_windlord
-actions.serenity+=/fists_of_fury,if=((!equipped.drinking_horn_cover|buff.bloodlust.up)&(cooldown.rising_sun_kick.remains>1|active_enemies>1))|buff.serenity.remains<1
+actions.serenity+=/fists_of_fury,if=((!equipped.drinking_horn_cover|buff.bloodlust.up|buff.serenity.remains<1)&(cooldown.rising_sun_kick.remains>1|active_enemies>1))
 actions.serenity+=/spinning_crane_kick,if=active_enemies>=3&!prev_gcd.1.spinning_crane_kick
 actions.serenity+=/rising_sun_kick,cycle_targets=1,if=active_enemies>=3
 actions.serenity+=/spinning_crane_kick,if=!prev_gcd.1.spinning_crane_kick
@@ -62,19 +62,21 @@ actions.st+=/energizing_elixir,if=chi<=1&(cooldown.rising_sun_kick.remains=0|(ar
 actions.st+=/arcane_torrent,if=chi.max-chi>=1&energy.time_to_max>=0.5
 actions.st+=/tiger_palm,cycle_targets=1,if=!prev_gcd.1.tiger_palm&energy.time_to_max<=0.5&chi.max-chi>=2
 actions.st+=/strike_of_the_windlord,if=!talent.serenity.enabled|cooldown.serenity.remains>=10
-actions.st+=/rising_sun_kick,cycle_targets=1,if=(chi>=3&energy>=40)|chi>=5
-actions.st+=/fists_of_fury,if=talent.serenity.enabled&!equipped.drinking_horn_cover&cooldown.serenity.remains>=5
-actions.st+=/fists_of_fury,if=!(talent.serenity.enabled&!equipped.drinking_horn_cover)
+actions.st+=/rising_sun_kick,cycle_targets=1,if=((chi>=3&energy>=40)|chi>=5)&(!talent.serenity.enabled|cooldown.serenity.remains>=5)
+actions.st+=/fists_of_fury,if=talent.serenity.enabled&!equipped.drinking_horn_cover&cooldown.serenity.remains>=5&(debuff.rising_fist.remains>1|set_bonus.tier20_2pc=0)&energy.time_to_max>2
+actions.st+=/fists_of_fury,if=!(talent.serenity.enabled&!equipped.drinking_horn_cover)&(debuff.rising_fist.remains>1|set_bonus.tier20_2pc=0)&energy.time_to_max>2
 actions.st+=/rising_sun_kick,cycle_targets=1,if=!talent.serenity.enabled|cooldown.serenity.remains>=5
 actions.st+=/whirling_dragon_punch
 actions.st+=/crackling_jade_lightning,if=equipped.the_emperors_capacitor&buff.the_emperors_capacitor.stack>=19&energy.time_to_max>3
 actions.st+=/crackling_jade_lightning,if=equipped.the_emperors_capacitor&buff.the_emperors_capacitor.stack>=14&cooldown.serenity.remains<13&talent.serenity.enabled&energy.time_to_max>3
 actions.st+=/spinning_crane_kick,if=(active_enemies>=3|spinning_crane_kick.count>=3)&!prev_gcd.1.spinning_crane_kick
 actions.st+=/rushing_jade_wind,if=chi.max-chi>1&!prev_gcd.1.rushing_jade_wind
-actions.st+=/blackout_kick,cycle_targets=1,if=(chi>1|buff.bok_proc.up|(talent.energizing_elixir.enabled&cooldown.energizing_elixir.remains<=1))&!prev_gcd.1.blackout_kick
-actions.st+=/chi_wave,if=energy.time_to_max>=2.25
-actions.st+=/chi_burst,if=energy.time_to_max>=2.25
-actions.st+=/tiger_palm,cycle_targets=1,if=!prev_gcd.1.tiger_palm
+actions.st+=/blackout_kick,cycle_targets=1,if=(chi>1|buff.bok_proc.up|(talent.energizing_elixir.enabled&cooldown.energizing_elixir.remains<cooldown.fists_of_fury.remains))&((cooldown.rising_sun_kick.remains>1&(!artifact.strike_of_the_windlord.enabled|cooldown.strike_of_the_windlord.remains>1)|chi>2)&(cooldown.fists_of_fury.remains>1|chi>3)|prev_gcd.1.tiger_palm)&!prev_gcd.1.blackout_kick
+actions.st+=/chi_wave,if=energy.time_to_max>1
+actions.st+=/chi_burst,if=energy.time_to_max>1
+actions.st+=/tiger_palm,cycle_targets=1,if=!prev_gcd.1.tiger_palm&(chi.max-chi>=2|energy.time_to_max<1)
+actions.st+=/chi_wave
+actions.st+=/chi_burst
 
 head=veil_of_unseen_strikes,id=134447,bonus_id=1727/1517
 neck=strand_of_the_stars,id=137487,bonus_id=1727/1517,enchant=mark_of_the_trained_soldier

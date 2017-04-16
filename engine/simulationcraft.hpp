@@ -1303,7 +1303,11 @@ struct progress_bar_t
   progress_bar_t( sim_t& s );
   void init();
   bool update( bool finished = false, int index = -1 );
+  void output( bool finished = false );
   void restart();
+private:
+  bool update_simple( bool finished, int index );
+  bool update_normal( bool finished, int index );
 };
 
 /* Encapsulated Vector
@@ -1566,13 +1570,14 @@ struct sim_t : private sc_thread_t
   double      tmi_bin_size;
   bool        requires_regen_event;
   bool        single_actor_batch;
+  int         progressbar_type;
 
   // Target options
   double      enemy_death_pct;
   int         rel_target_level, target_level;
   std::string target_race;
   int         target_adds;
-  std::string sim_phase_str;
+  std::string sim_progress_base_str, sim_progress_phase_str;
   int         desired_targets; // desired number of targets
   bool        enable_taunts;
 
@@ -1847,6 +1852,8 @@ struct sim_t : private sc_thread_t
   void      merge( sim_t& other_sim );
   void      merge();
   bool      iterate();
+  void      set_sim_base_str( const std::string& base );
+  void      update_sim_phase_str();
   void      partition();
   bool      execute();
   void      analyze_error();
