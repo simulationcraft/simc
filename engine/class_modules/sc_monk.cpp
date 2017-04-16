@@ -400,6 +400,7 @@ public:
     const spell_data_t* blackout_strike;
     const spell_data_t* bladed_armor;
     const spell_data_t* breath_of_fire;
+    const spell_data_t* brewmasters_balance;
     const spell_data_t* brewmaster_monk;
     const spell_data_t* celestial_fortune;
     const spell_data_t* expel_harm;
@@ -2957,6 +2958,12 @@ struct tiger_palm_t: public monk_melee_attack_t
       }
       case MONK_BREWMASTER:
       {
+        if ( p() -> talent.spitfire -> ok() )
+        {
+          if ( rng().roll( p() -> talent.spitfire -> proc_chance() ) )
+            p() -> cooldown.breath_of_fire -> reset( true );
+        }
+
         // Reduces the remaining cooldown on your Brews by 1 sec
         double time_reduction = p() -> spec.tiger_palm -> effectN( 3 ).base_value();
 
@@ -3637,6 +3644,13 @@ struct blackout_strike_t: public monk_melee_attack_t
 
     if ( p() -> talent.blackout_combo -> ok() )
       p() -> buff.blackout_combo -> trigger();
+
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+    {
+      // if player level >= 78
+      if ( p() -> mastery.elusive_brawler )
+        p() -> buff.elusive_brawler -> trigger();
+    }
   }
 };
 
@@ -5437,6 +5451,13 @@ struct breath_of_fire_t: public monk_spell_t
       dot_action -> target = s -> target;
       dot_action -> execute();
     }
+
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+    {
+      // if player level >= 78
+      if ( p() -> mastery.elusive_brawler )
+        p() -> buff.elusive_brawler -> trigger();
+    }
   }
 };
 
@@ -5694,6 +5715,9 @@ struct purifying_brew_t: public monk_spell_t
     double purifying_brew_percent = p() -> spec.purifying_brew -> effectN( 1 ).percent();
     if ( p() -> talent.elusive_dance -> ok() )
       purifying_brew_percent += p() -> talent.elusive_dance -> effectN( 2 ).percent();
+
+    if ( maybe_ptr(p() -> dbc.ptr ) && p() -> artifact.staggering_around.rank() )
+      purifying_brew_percent += p() -> artifact.staggering_around.percent();
 
     //double stagger_dmg = p() -> partial_clear_stagger( purifying_brew_percent );
 
@@ -7958,6 +7982,7 @@ void monk_t::init_spells()
   spec.blackout_strike               = find_specialization_spell( "Blackout Strike" );
   spec.bladed_armor                  = find_specialization_spell( "Bladed Armor" );
   spec.breath_of_fire                = find_specialization_spell( "Breath of Fire" );
+  spec.brewmasters_balance           = find_specialization_spell( "Brewmaster's Balance" );
   spec.brewmaster_monk               = find_specialization_spell( 137023 );
   spec.celestial_fortune             = find_specialization_spell( "Celestial Fortune" );
   spec.expel_harm                    = find_specialization_spell( "Expel Harm" );
@@ -8980,6 +9005,8 @@ double monk_t::composite_armor_multiplier() const
 
   a *= 1 + spec.brewmaster_monk -> effectN( 6 ).percent();
 
+  a *= 1 + spec.brewmasters_balance -> effectN( 1 ).percent();
+
   if ( artifact.wanderers_hardiness.rank() )
     a *= 1 + artifact.wanderers_hardiness.percent();
 
@@ -9958,7 +9985,7 @@ double monk_t::stagger_pct()
     {
       stagger += spec.fortifying_brew -> effectN( 1 ).percent();
 
-      if ( artifact.staggering_around.rank() )
+      if ( artifact.staggering_around.rank() && !maybe_ptr( dbc.ptr ) )
         stagger += artifact.staggering_around.percent();
     }
 
