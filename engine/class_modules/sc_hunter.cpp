@@ -6196,7 +6196,7 @@ void hunter_t::add_item_actions( action_priority_list_t* list )
 {
   for ( const item_t& item : items )
   {
-    if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+    if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
       list -> add_action( "use_item,name=" + item.name_str );
   }
 }
