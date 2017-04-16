@@ -2604,9 +2604,9 @@ public:
         {
           double soul_conduit_rng = 0;
           if ( maybe_ptr( p() -> dbc.ptr ) && p() -> specialization() == WARLOCK_DESTRUCTION )
-            double soul_conduit_rng = 0.12;
+            soul_conduit_rng = 0.12;
           else
-            double soul_conduit_rng = p() -> talents.soul_conduit -> effectN( 1 ).percent();
+            soul_conduit_rng = p() -> talents.soul_conduit -> effectN( 1 ).percent();
 
           for ( int i = 0; i < last_resource_cost; i++ )
           {
