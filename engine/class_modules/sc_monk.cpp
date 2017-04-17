@@ -460,6 +460,7 @@ public:
     artifact_power_t dark_side_of_the_moon;
     artifact_power_t dragonfire_brew;
     artifact_power_t draught_of_darkness;
+    artifact_power_t endurance_of_the_broken_temple;
     artifact_power_t face_palm;
     artifact_power_t exploding_keg;
     artifact_power_t fortification;
@@ -4472,12 +4473,88 @@ struct auto_attack_t: public monk_melee_attack_t
 // ==========================================================================
 // Keg Smash
 // ==========================================================================
+struct  keg_smash_stave_off_t: public monk_melee_attack_t
+{
+  keg_smash_stave_off_t( monk_t& p ):
+    monk_melee_attack_t( "keg_smash_stave_off", &p, p.spec.keg_smash )
+  {
+    aoe = -1;
+    background = true;
+    radius = p.spec.keg_smash -> effectN( 1 ).radius();
+
+    if ( p.artifact.smashed.rank() )
+      radius += p.artifact.smashed.value();
+
+    mh = &( player -> main_hand_weapon );
+    oh = &( player -> off_hand_weapon );
+    cooldown -> duration = timespan_t::zero();
+    // Keg Smash does not appear to be picking up the baseline Trigger GCD reduction
+    // Forcing the trigger GCD to 1 second.
+    trigger_gcd = timespan_t::from_seconds( 1 );
+  }
+
+  virtual bool ready() override
+  {
+    if ( p() -> artifact.stave_off.rank() )
+      return monk_melee_attack_t::ready();
+  }
+
+  virtual double action_multiplier() const override
+  {
+    double am = monk_melee_attack_t::action_multiplier();
+
+    am *= 1 + p() -> spec.brewmaster_monk -> effectN( 1 ).percent();
+
+    if ( p() -> artifact.full_keg.rank() )
+      am *= 1 + p() -> artifact.full_keg.percent();
+
+    return am;
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    monk_melee_attack_t::impact( s );
+
+    td( s -> target ) -> debuff.keg_smash -> trigger();
+  }
+
+  virtual void execute() override
+  {
+    monk_melee_attack_t::execute();
+
+    // Reduces the remaining cooldown on your Brews by 4 sec.
+    double time_reduction = p() -> spec.keg_smash -> effectN( 3 ).base_value();
+
+    // Blackout Combo talent reduces Brew's cooldown by 2 sec.
+    if ( p() -> buff.blackout_combo -> up() )
+    {
+      time_reduction += p() -> buff.blackout_combo -> data().effectN( 3 ).base_value();
+      p() -> buff.blackout_combo -> expire();
+    }
+
+    // we need to adjust the cooldown time DOWNWARD instead of UPWARD so multiply the time_reduction by -1
+    time_reduction *= -1;
+
+    if ( p() -> cooldown.brewmaster_active_mitigation -> down() )
+    {
+      p() -> cooldown.brewmaster_active_mitigation -> adjust( timespan_t::from_seconds( time_reduction ), true );
+    }
+
+    if ( p() -> cooldown.fortifying_brew -> down() )
+      p() -> cooldown.fortifying_brew -> adjust( timespan_t::from_seconds( time_reduction ), true );
+
+    if ( p() -> cooldown.black_ox_brew -> down() )
+      p() -> cooldown.black_ox_brew -> adjust( timespan_t::from_seconds( time_reduction ), true );
+  }
+};
+
 
 struct keg_smash_t: public monk_melee_attack_t
 {
-
+  keg_smash_stave_off_t* stave_off;
   keg_smash_t( monk_t& p, const std::string& options_str ):
-    monk_melee_attack_t( "keg_smash", &p, p.spec.keg_smash )
+    monk_melee_attack_t( "keg_smash", &p, p.spec.keg_smash ),
+    stave_off( new keg_smash_stave_off_t( p ) )
   {
     parse_options( options_str );
 
@@ -4556,6 +4633,12 @@ struct keg_smash_t: public monk_melee_attack_t
 
     if ( p() -> cooldown.black_ox_brew -> down() )
       p() -> cooldown.black_ox_brew -> adjust( timespan_t::from_seconds( time_reduction ), true );
+
+    if ( p() -> artifact.stave_off.rank() )
+    {
+      if ( rng().roll( p() -> artifact.stave_off.percent() ) )
+        stave_off -> execute();
+    }
   }
 };
 
@@ -5666,6 +5749,9 @@ struct ironskin_brew_t : public monk_spell_t
 
     if ( p() -> artifact.brew_stache.rank() )
       p() -> buff.brew_stache -> trigger();
+
+    if ( p() -> artifact.quick_sip.rank() )
+      p() -> partial_clear_stagger( p()-> artifact.quick_sip.data().effectN( 2 ).percent() );
   }
 };
 
@@ -5789,6 +5875,9 @@ struct purifying_brew_t: public monk_spell_t
       p() -> buff.elusive_brawler -> trigger(1);
       p() -> buff.blackout_combo -> expire();
     }
+
+    if ( p() -> artifact.quick_sip.rank() )
+      p() -> buff.ironskin_brew -> trigger( 1, p() -> buff.ironskin_brew -> value(), -1.0, timespan_t::from_seconds( p() -> artifact.quick_sip.data().effectN( 3 ).base_value() ) );
   }
 };
 
@@ -7892,27 +7981,28 @@ void monk_t::init_spells()
   
   // Artifact spells ========================================
   // Brewmater
-  artifact.hot_blooded                = find_artifact_spell( "Hot Blooded" );
-  artifact.brew_stache                = find_artifact_spell( "Brew-Stache" );
-  artifact.dark_side_of_the_moon      = find_artifact_spell( "Dark Side of the Moon" );
-  artifact.dragonfire_brew            = find_artifact_spell( "Dragonfire Brew" );
-  artifact.draught_of_darkness        = find_artifact_spell( "Draught of Darkness" );
-  artifact.face_palm                  = find_artifact_spell( "Face Palm" );
-  artifact.exploding_keg              = find_artifact_spell( "Exploding Keg" );
-  artifact.fortification              = find_artifact_spell( "Fortification" );
-  artifact.full_keg                   = find_artifact_spell( "Full Keg" );
-  artifact.gifted_student             = find_artifact_spell( "Gifted Student" );
-  artifact.healthy_appetite           = find_artifact_spell( "Healthy Appetite" );
-  artifact.obsidian_fists             = find_artifact_spell( "Obsidian Fists" );
-  artifact.obstinate_determination    = find_artifact_spell( "Obstinate Determination" );
-  artifact.overflow                   = find_artifact_spell( "Overflow" );
-  artifact.potent_kick                = find_artifact_spell( "Potent Kick" );
-  artifact.quick_sip                  = find_artifact_spell( "Quick Sip" );
-  artifact.smashed                    = find_artifact_spell( "Smashed" );
-  artifact.staggering_around          = find_artifact_spell( "Staggering Around" );
-  artifact.stave_off                  = find_artifact_spell( "Stave Off" );
-  artifact.swift_as_a_coursing_river  = find_artifact_spell( "Swift as a Coursing River" );
-  artifact.wanderers_hardiness        = find_artifact_spell( "Wanderer's Hardiness" );
+  artifact.hot_blooded                    = find_artifact_spell( "Hot Blooded" );
+  artifact.brew_stache                    = find_artifact_spell( "Brew-Stache" );
+  artifact.dark_side_of_the_moon          = find_artifact_spell( "Dark Side of the Moon" );
+  artifact.dragonfire_brew                = find_artifact_spell( "Dragonfire Brew" );
+  artifact.draught_of_darkness            = find_artifact_spell( "Draught of Darkness" );
+  artifact.endurance_of_the_broken_temple = find_artifact_spell( "Endurance of the Broken Temple" );
+  artifact.face_palm                      = find_artifact_spell( "Face Palm" );
+  artifact.exploding_keg                  = find_artifact_spell( "Exploding Keg" );
+  artifact.fortification                  = find_artifact_spell( "Fortification" );
+  artifact.full_keg                       = find_artifact_spell( "Full Keg" );
+  artifact.gifted_student                 = find_artifact_spell( "Gifted Student" );
+  artifact.healthy_appetite               = find_artifact_spell( "Healthy Appetite" );
+  artifact.obsidian_fists                 = find_artifact_spell( "Obsidian Fists" );
+  artifact.obstinate_determination        = find_artifact_spell( "Obstinate Determination" );
+  artifact.overflow                       = find_artifact_spell( "Overflow" );
+  artifact.potent_kick                    = find_artifact_spell( "Potent Kick" );
+  artifact.quick_sip                      = find_artifact_spell( "Quick Sip" );
+  artifact.smashed                        = find_artifact_spell( "Smashed" );
+  artifact.staggering_around              = find_artifact_spell( "Staggering Around" );
+  artifact.stave_off                      = find_artifact_spell( "Stave Off" );
+  artifact.swift_as_a_coursing_river      = find_artifact_spell( "Swift as a Coursing River" );
+  artifact.wanderers_hardiness            = find_artifact_spell( "Wanderer's Hardiness" );
 
   // Mistweaver
   artifact.blessings_of_yulon         = find_artifact_spell( "Blessings of Yu'lon" );
@@ -8730,7 +8820,7 @@ double monk_t::composite_spell_haste() const
 
   if ( buff.sephuzs_secret -> check() )
   {
-    h *= 1.0 / (1.0 + buff.sephuzs_secret -> stack_value());
+    h *= 1.0 / ( 1.0 + buff.sephuzs_secret -> stack_value() );
   }
 
   // 7.2 Sephuz's Secret passive haste. If the item is missing, default_chance will be set to 0 (by
@@ -8841,6 +8931,9 @@ double monk_t::composite_player_multiplier( school_e school ) const
   if ( artifact.ferocity_of_the_broken_temple.rank() )
     m *= 1.0 + artifact.ferocity_of_the_broken_temple.percent();
 
+  if ( artifact.endurance_of_the_broken_temple.rank() )
+    m *= 1.0 + artifact.endurance_of_the_broken_temple.data().effectN( 1 ).percent();
+
   return m;
 }
 
@@ -8856,6 +8949,9 @@ double monk_t::composite_attribute_multiplier( attribute_e attr ) const
 
     if ( artifact.ferocity_of_the_broken_temple.rank() )
       cam *= 1.0 + artifact.ferocity_of_the_broken_temple.data().effectN( 2 ).percent();
+
+    if ( artifact.endurance_of_the_broken_temple.rank() )
+      cam *= 1.0 + artifact.endurance_of_the_broken_temple.data().effectN( 3 ).percent();
   }
 
   return cam;
@@ -9009,6 +9105,9 @@ double monk_t::composite_armor_multiplier() const
 
   if ( artifact.wanderers_hardiness.rank() )
     a *= 1 + artifact.wanderers_hardiness.percent();
+
+  if ( artifact.endurance_of_the_broken_temple.rank() )
+    a *= 1 + artifact.endurance_of_the_broken_temple.data().effectN( 2 ).percent();
 
   return a;
 }
