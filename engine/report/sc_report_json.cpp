@@ -669,7 +669,7 @@ void gear_to_json( JsonOutput root, const player_t& p )
     auto slotnode = root[ item.slot_name() ];
 
     slotnode[ "name" ] = item.name_str;
-    slotnode[ "thing" ] = item.encoded_item();
+    slotnode[ "encoded_item" ] = item.encoded_item();
     slotnode[ "ilevel" ] = item.item_level();
 
     for ( size_t i = 0; i < sizeof_array( item.parsed.data.stat_val ); i++ )
