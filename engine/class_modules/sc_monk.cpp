@@ -2423,6 +2423,22 @@ public:
     }
   }
 
+  // Reduces Brewmaster Brew cooldowns by the time given
+  void brew_cooldown_reduction( double time_reduction )
+  {
+    // we need to adjust the cooldown time DOWNWARD instead of UPWARD so multiply the time_reduction by -1
+    time_reduction *= -1;
+
+    if ( p() -> cooldown.brewmaster_active_mitigation -> down() )
+      p() -> cooldown.brewmaster_active_mitigation -> adjust( timespan_t::from_seconds( time_reduction ), true );
+
+    if ( p() -> cooldown.fortifying_brew -> down() )
+      p() -> cooldown.fortifying_brew -> adjust( timespan_t::from_seconds( time_reduction ), true );
+
+    if ( p() -> cooldown.black_ox_brew -> down() )
+      p() -> cooldown.black_ox_brew -> adjust( timespan_t::from_seconds( time_reduction ), true );
+  }
+
   double cost() const override
   {
     double c = ab::cost();
@@ -2978,23 +2994,10 @@ struct tiger_palm_t: public monk_melee_attack_t
         if ( p() -> sets.has_set_bonus( MONK_BREWMASTER, T19, B4 ) )
           time_reduction += p() -> sets.set( MONK_BREWMASTER, T19, B4 ) -> effectN( 1 ).base_value();
 
-        // we need to adjust the cooldown time DOWNWARD instead of UPWARD so multiply the time_reduction by -1
-        time_reduction *= -1;
-
-        if ( p() -> cooldown.brewmaster_active_mitigation -> down() )
-        {
-          p() -> cooldown.brewmaster_active_mitigation -> adjust( timespan_t::from_seconds( time_reduction ), true );
-        }
-
-        if ( p() -> cooldown.fortifying_brew -> down() )
-          p() -> cooldown.fortifying_brew -> adjust( timespan_t::from_seconds( time_reduction ), true );
-
-        if ( p() -> cooldown.black_ox_brew -> down() )
-          p() -> cooldown.black_ox_brew -> adjust( timespan_t::from_seconds( time_reduction ), true );
+        brew_cooldown_reduction( time_reduction );
 
         if ( p() -> buff.blackout_combo -> up() )
           p() -> buff.blackout_combo -> expire();
-
         break;
       }
       default: break;
@@ -4479,7 +4482,7 @@ struct  keg_smash_stave_off_t: public monk_melee_attack_t
     monk_melee_attack_t( "keg_smash_stave_off", &p, p.spec.keg_smash )
   {
     aoe = -1;
-    background = true;
+    background = dual = true;
     radius = p.spec.keg_smash -> effectN( 1 ).radius();
 
     if ( p.artifact.smashed.rank() )
@@ -4493,10 +4496,18 @@ struct  keg_smash_stave_off_t: public monk_melee_attack_t
     trigger_gcd = timespan_t::from_seconds( 1 );
   }
 
+  // Force 250 milliseconds for the animation, but not delay the overall GCD
+  timespan_t execute_time() const override
+  {
+    return timespan_t::from_millis( 250 );
+  }
+
   virtual bool ready() override
   {
     if ( p() -> artifact.stave_off.rank() )
       return monk_melee_attack_t::ready();
+
+    return false;
   }
 
   virtual double action_multiplier() const override
@@ -4523,28 +4534,7 @@ struct  keg_smash_stave_off_t: public monk_melee_attack_t
     monk_melee_attack_t::execute();
 
     // Reduces the remaining cooldown on your Brews by 4 sec.
-    double time_reduction = p() -> spec.keg_smash -> effectN( 3 ).base_value();
-
-    // Blackout Combo talent reduces Brew's cooldown by 2 sec.
-    if ( p() -> buff.blackout_combo -> up() )
-    {
-      time_reduction += p() -> buff.blackout_combo -> data().effectN( 3 ).base_value();
-      p() -> buff.blackout_combo -> expire();
-    }
-
-    // we need to adjust the cooldown time DOWNWARD instead of UPWARD so multiply the time_reduction by -1
-    time_reduction *= -1;
-
-    if ( p() -> cooldown.brewmaster_active_mitigation -> down() )
-    {
-      p() -> cooldown.brewmaster_active_mitigation -> adjust( timespan_t::from_seconds( time_reduction ), true );
-    }
-
-    if ( p() -> cooldown.fortifying_brew -> down() )
-      p() -> cooldown.fortifying_brew -> adjust( timespan_t::from_seconds( time_reduction ), true );
-
-    if ( p() -> cooldown.black_ox_brew -> down() )
-      p() -> cooldown.black_ox_brew -> adjust( timespan_t::from_seconds( time_reduction ), true );
+    brew_cooldown_reduction( p() -> spec.keg_smash -> effectN( 3 ).base_value() );
   }
 };
 
@@ -4570,6 +4560,9 @@ struct keg_smash_t: public monk_melee_attack_t
     // Keg Smash does not appear to be picking up the baseline Trigger GCD reduction
     // Forcing the trigger GCD to 1 second.
     trigger_gcd = timespan_t::from_seconds( 1 );
+
+    if ( p.artifact.stave_off.rank() )
+      add_child( stave_off );
   }
 
   virtual bool ready() override
@@ -4620,19 +4613,7 @@ struct keg_smash_t: public monk_melee_attack_t
       p() -> buff.blackout_combo -> expire();
     }
 
-    // we need to adjust the cooldown time DOWNWARD instead of UPWARD so multiply the time_reduction by -1
-    time_reduction *= -1;
-
-    if ( p() -> cooldown.brewmaster_active_mitigation -> down() )
-    {
-      p() -> cooldown.brewmaster_active_mitigation -> adjust( timespan_t::from_seconds( time_reduction ), true );
-    }
-
-    if ( p() -> cooldown.fortifying_brew -> down() )
-      p() -> cooldown.fortifying_brew -> adjust( timespan_t::from_seconds( time_reduction ), true );
-
-    if ( p() -> cooldown.black_ox_brew -> down() )
-      p() -> cooldown.black_ox_brew -> adjust( timespan_t::from_seconds( time_reduction ), true );
+    brew_cooldown_reduction( time_reduction );
 
     if ( p() -> artifact.stave_off.rank() )
     {
