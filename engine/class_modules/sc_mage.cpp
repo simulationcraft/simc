@@ -18,9 +18,9 @@ namespace buffs {
   struct arcane_missiles_t;
 }
 namespace pets {
-namespace water_elemental {
-struct water_elemental_pet_t;
-}
+  namespace water_elemental {
+    struct water_elemental_pet_t;
+  }
 }
 
 
@@ -241,8 +241,7 @@ public:
 
   // Miscellaneous
   double distance_from_rune,
-         global_cinder_count,
-         iv_haste;
+         global_cinder_count;
   bool blessing_of_wisdom;
 
   // Benefits
@@ -417,14 +416,8 @@ public:
     // Arcane
     const spell_data_t* arcane_barrage_2,
                       * arcane_charge,
-    // NOTE: arcane_charge_passive is the Arcane passive added in patch 5.2,
-    //       called "Arcane Charge" (Spell ID: 114664).
-    //       It contains Spellsteal's mana cost reduction, Evocation's mana
-    //       gain reduction, and a deprecated Scorch damage reduction.
-                      * arcane_charge_passive,
                       * arcane_familiar,
                       * evocation_2,
-                      * presence_of_mind,
                       * savant;
 
     // Fire
@@ -450,17 +443,19 @@ public:
   {
     // Tier 15
     const spell_data_t* arcane_familiar,
+                      * amplification,
+                      * words_of_power,
                       * pyromaniac,
                       * conflagration,
                       * fire_starter,
                       * ray_of_frost,
                       * lonely_winter,
-                      * bone_chilling,
-                      * amplification;
+                      * bone_chilling;
 
     // Tier 30
     const spell_data_t* shimmer, // NYI
-                      * ice_block; // NYI
+                      * blast_wave,
+                      * ice_floes;
 
     // Tier 45
     const spell_data_t* mirror_image,
@@ -469,11 +464,9 @@ public:
 
     // Tier 60
     const spell_data_t* supernova,
-                      * alexstraszas_fury,
                       * charged_up,
-                      * words_of_power, // TODO: Move this to 15
                       * resonance,
-                      * blast_wave,
+                      * alexstraszas_fury,
                       * flame_on,
                       * controlled_burn,
                       * ice_nova,
@@ -481,9 +474,8 @@ public:
                       * splitting_ice;
 
     // Tier 75
-    const spell_data_t* ice_floes,
-                      * ring_of_frost, // NYI
-                      * ice_ward; // NYI
+    const spell_data_t* ring_of_frost, // NYI
+                      * ice_ward;
 
     // Tier 90
     const spell_data_t* nether_tempest,
@@ -782,7 +774,6 @@ struct arcane_assault_t : public mage_pet_spell_t
     : mage_pet_spell_t( "arcane_assault", p,  p -> find_spell( 225119 ) )
   {
     parse_options( options_str );
-    spell_power_mod.direct = p->find_spell( 225119 )->effectN( 1 ).sp_coeff();
     cooldown -> duration = timespan_t::from_seconds( 3.0 );
     cooldown -> hasted = true;
     may_crit = true;
@@ -965,7 +956,7 @@ struct waterbolt_t : public water_elemental_spell_t
     // For some reason welly seems to have a cap'd rate of cast of
     // 1.5/second. Instead of modeling this as a cooldown/GCD (like it is in game)
     // we model it as a capped cast time, with 1.5 being the lowest it can go.
-    return std::max(cast_time, timespan_t::from_seconds( 1.5 ) );
+    return std::max( cast_time, timespan_t::from_seconds( 1.5 ) );
   }
 };
 
@@ -1001,8 +992,8 @@ struct freeze_t : public water_elemental_spell_t
     bool success = o() -> apply_crowd_control( s, MECHANIC_ROOT );
     if ( success )
     {
-      o() -> buffs.fingers_of_frost->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 );
-      o() -> benefits.fingers_of_frost->update( fof_source_id );
+      o() -> buffs.fingers_of_frost -> trigger();
+      o() -> benefits.fingers_of_frost -> update( fof_source_id );
     }
   }
 };
@@ -1013,16 +1004,16 @@ struct water_jet_t : public water_elemental_spell_t
   bool queued, autocast;
 
   water_jet_t( water_elemental_pet_t* p, const std::string& options_str )
-    : water_elemental_spell_t( "water_jet", p, p->find_spell( 135029 ) ),
+    : water_elemental_spell_t( "water_jet", p, p -> find_pet_spell( "Water Jet" ) ),
       queued( false ),
       autocast( true )
   {
     parse_options( options_str );
     channeled = tick_may_crit = true;
     tick_zero         = true;
-    if ( p->o()->sets.has_set_bonus( MAGE_FROST, T18, B4 ) )
+    if ( p -> o() -> sets.has_set_bonus( MAGE_FROST, T18, B4 ) )
     {
-      dot_duration += p->find_spell( 185971 )->effectN( 1 ).time_value();
+      dot_duration += p -> find_spell( 185971 ) -> effectN( 1 ).time_value();
     }
 
     cooldown = p -> cooldown.wj_freeze;
@@ -1176,7 +1167,7 @@ struct arcane_blast_t : public mirror_image_spell_t
 {
   arcane_blast_t( mirror_image_pet_t* p, const std::string& options_str )
     : mirror_image_spell_t( "arcane_blast", p,
-                            p->find_pet_spell( "Arcane Blast" ) )
+                            p -> find_pet_spell( "Arcane Blast" ) )
   {
     parse_options( options_str );
   }
@@ -1217,7 +1208,7 @@ struct arcane_blast_t : public mirror_image_spell_t
 struct fireball_t : public mirror_image_spell_t
 {
   fireball_t( mirror_image_pet_t* p, const std::string& options_str )
-    : mirror_image_spell_t( "fireball", p, p->find_pet_spell( "Fireball" ) )
+    : mirror_image_spell_t( "fireball", p, p -> find_pet_spell( "Fireball" ) )
   {
     parse_options( options_str );
   }
@@ -1238,7 +1229,7 @@ struct fireball_t : public mirror_image_spell_t
 struct frostbolt_t : public mirror_image_spell_t
 {
   frostbolt_t( mirror_image_pet_t* p, const std::string& options_str )
-    : mirror_image_spell_t( "frostbolt", p, p->find_pet_spell( "Frostbolt" ) )
+    : mirror_image_spell_t( "frostbolt", p, p -> find_pet_spell( "Frostbolt" ) )
   {
     parse_options( options_str );
   }
@@ -1817,10 +1808,7 @@ struct icy_veins_buff_t : public haste_buff_t
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     buff_t::expire_override( expiration_stacks, remaining_duration );
-    if ( p -> legendary.lady_vashjs_grasp )
-    {
-      p -> buffs.lady_vashjs_grasp -> expire();
-    }
+    p -> buffs.lady_vashjs_grasp -> expire();
   }
 };
 
@@ -2134,12 +2122,6 @@ struct arcane_mage_spell_t : public mage_spell_t
 
     return 1.0 + p() -> buffs.arcane_charge -> check() * per_ac_bonus;
 
-  }
-
-  virtual timespan_t gcd() const override
-  {
-    timespan_t t = mage_spell_t::gcd();
-    return t;
   }
 
   virtual double action_multiplier() const override
@@ -2823,7 +2805,7 @@ struct phoenix_reborn_t : public fire_mage_spell_t
   phoenix_reborn_t( mage_t* p ) :
     fire_mage_spell_t( "phoenix_reborn", p, p -> artifact.phoenix_reborn )
   {
-    spell_power_mod.direct  = p -> find_spell( 215775 ) -> effectN( 1 ).sp_coeff();
+    parse_effect_data( p -> find_spell( 215775 ) -> effectN( 1 ) );
     trigger_gcd =  timespan_t::zero();
     base_costs[ RESOURCE_MANA ] = 0;
     callbacks = false;
@@ -3664,14 +3646,6 @@ struct blizzard_shard_t : public frost_mage_spell_t
     chills = true;
   }
 
-  virtual bool init_finished() override
-  {
-    fof_source_id = p() -> benefits.fingers_of_frost
-                        -> get_source_id( data().name_cstr() );
-
-    return frost_mage_spell_t::init_finished();
-  }
-
   // Override damage type because Blizzard is considered a DOT
   dmg_e amount_type( const action_state_t* /* state */, bool /* periodic */ ) const override
   {
@@ -3703,8 +3677,9 @@ struct blizzard_shard_t : public frost_mage_spell_t
 struct blizzard_t : public frost_mage_spell_t
 {
   blizzard_shard_t* blizzard_shard;
+
   blizzard_t( mage_t* p, const std::string& options_str ) :
-    frost_mage_spell_t( "blizzard", p, p -> find_spell( 190356 ) ),
+    frost_mage_spell_t( "blizzard", p, p -> find_specialization_spell( "Blizzard" ) ),
     blizzard_shard( new blizzard_shard_t( p ) )
   {
     parse_options( options_str );
@@ -3956,7 +3931,7 @@ struct cone_of_cold_t : public frost_mage_spell_t
 {
   cone_of_cold_t( mage_t* p, const std::string& options_str ) :
     frost_mage_spell_t( "cone_of_cold", p,
-                        p -> find_class_spell( "Cone of Cold" ) )
+                        p -> find_specialization_spell( "Cone of Cold" ) )
   {
     parse_options( options_str );
     aoe = -1;
@@ -4025,6 +4000,7 @@ struct dragons_breath_t : public fire_mage_spell_t
   }
 };
 
+// Ebonbolt Spell ===========================================================
 struct glacial_eruption_t : public frost_mage_spell_t
 {
   glacial_eruption_t( mage_t* p ) :
@@ -4035,7 +4011,6 @@ struct glacial_eruption_t : public frost_mage_spell_t
   }
 };
 
-// Ebonbolt Spell ===========================================================
 struct ebonbolt_t : public frost_mage_spell_t
 {
   glacial_eruption_t* glacial_eruption;
@@ -4046,12 +4021,12 @@ struct ebonbolt_t : public frost_mage_spell_t
     glacial_eruption( new glacial_eruption_t( p ) )
   {
     parse_options( options_str );
+    parse_effect_data( p -> find_spell( 228599 ) -> effectN( 1 ) );
     if ( !p -> artifact.ebonbolt.rank() )
     {
       background = true;
     }
     calculate_on_impact = true;
-    spell_power_mod.direct = p -> find_spell( 228599 ) -> effectN( 1 ).sp_coeff();
     if ( p -> artifact.glacial_eruption.rank() )
     {
       glacial_eruption_delay = 1000 * p -> artifact.glacial_eruption.data().effectN( 1 ).time_value();
@@ -4253,8 +4228,8 @@ struct flame_patch_t : public fire_mage_spell_t
   flame_patch_t( mage_t* p ) :
     fire_mage_spell_t( "flame_patch", p, p -> talents.flame_patch )
   {
-    hasted_ticks=true;
-    spell_power_mod.direct = p -> find_spell( 205472 ) -> effectN( 1 ).sp_coeff();
+    hasted_ticks = true;
+    parse_effect_data( p -> find_spell( 205472 ) -> effectN( 1 ) );
     aoe = -1;
     background = true;
     ground_aoe = background = true;
@@ -4456,7 +4431,8 @@ struct pyrosurge_flamestrike_t : public fire_mage_spell_t
 
 struct flurry_bolt_t : public frost_mage_spell_t
 {
-  bool brain_freeze_buffed = false;
+  bool brain_freeze_buffed;
+
   flurry_bolt_t( mage_t* p ) :
     frost_mage_spell_t( "flurry_bolt", p, p -> find_spell( 228354 ) ),
     brain_freeze_buffed( false )
@@ -4493,13 +4469,14 @@ struct flurry_bolt_t : public frost_mage_spell_t
   }
 
 };
+
 struct flurry_t : public frost_mage_spell_t
 {
   timespan_t initial_delay;
-
   flurry_bolt_t* flurry_bolt;
+
   flurry_t( mage_t* p, const std::string& options_str ) :
-    frost_mage_spell_t( "flurry", p, p -> find_spell( 44614 ) ),
+    frost_mage_spell_t( "flurry", p, p -> find_specialization_spell( "Flurry" ) ),
     flurry_bolt( new flurry_bolt_t( p ) )
   {
     parse_options( options_str );
@@ -4622,8 +4599,7 @@ struct frostbolt_t : public frost_mage_spell_t
     icicle( p -> get_stats( "icicle" ) )
   {
     parse_options( options_str );
-
-    spell_power_mod.direct = p -> find_spell( 228597 ) -> effectN( 1 ).sp_coeff();
+    parse_effect_data( p -> find_spell( 228597 ) -> effectN( 1 ) );
     if ( p -> spec.icicles -> ok() )
     {
       stats -> add_child( icicle );
@@ -4758,6 +4734,8 @@ struct frost_nova_t : public mage_spell_t
   {
     parse_options( options_str );
     triggers_arcane_missiles = true;
+
+    cooldown -> charges += p -> talents.ice_ward -> effectN( 1 ).base_value();
   }
 
   virtual void impact( action_state_t* s ) override
@@ -4774,7 +4752,7 @@ struct ice_time_nova_t : public frost_mage_spell_t
   ice_time_nova_t( mage_t* p ) :
     frost_mage_spell_t( "ice_time_nova", p, p -> find_spell( 235235 ) )
   {
-    background = may_crit = true;
+    background = true;
     aoe = -1;
   }
 
@@ -4790,17 +4768,13 @@ struct ice_time_nova_t : public frost_mage_spell_t
 struct frozen_orb_bolt_t : public frost_mage_spell_t
 {
   frozen_orb_bolt_t( mage_t* p ) :
-    frost_mage_spell_t( "frozen_orb_bolt", p,
-                        p -> find_class_spell( "Frozen Orb" ) -> ok() ?
-                        dbc::find_spell( p, 84721 ) :
-                          spell_data_t::not_found() )
+    frost_mage_spell_t( "frozen_orb_bolt", p, p -> find_spell( 84721 ) )
   {
     aoe = -1;
     background = true;
     dual = true;
     cooldown -> duration = timespan_t::zero(); // dbc has CD of 6 seconds
 
-    //TODO: Is this actually how these modifiers work?
     if ( p -> talents.lonely_winter -> ok() )
     {
       base_multiplier *= 1.0 + p -> talents.lonely_winter -> effectN( 1 ).percent() +
@@ -4808,8 +4782,6 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
     }
     crit_bonus_multiplier *= 1.0 + p -> artifact.orbital_strike.percent();
     chills = true;
-
-
   }
 
   virtual bool init_finished() override
@@ -4843,14 +4815,13 @@ struct frozen_orb_t : public frost_mage_spell_t
 {
   bool ice_time;
   timespan_t freezing_rain_base_duration;
-  timespan_t freezing_rain_scaled_duration;
   ice_time_nova_t* ice_time_nova;
 
   //TODO: Redo how frozen_orb_bolt is set up to take base_multipler from parent.
   frozen_orb_bolt_t* frozen_orb_bolt;
   frozen_orb_t( mage_t* p, const std::string& options_str ) :
     frost_mage_spell_t( "frozen_orb", p,
-                        p -> find_class_spell( "Frozen Orb" ) ),
+                        p -> find_specialization_spell( "Frozen Orb" ) ),
     ice_time( false ),
     ice_time_nova( new ice_time_nova_t( p ) ),
     frozen_orb_bolt( new frozen_orb_bolt_t( p ) )
@@ -4888,8 +4859,8 @@ struct frozen_orb_t : public frost_mage_spell_t
     }
     if ( p() -> artifact.freezing_rain.rank() )
     {
-      freezing_rain_scaled_duration = freezing_rain_base_duration * p() -> cache.spell_speed();
-      p() -> buffs.freezing_rain -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, freezing_rain_scaled_duration  );
+      timespan_t freezing_rain_duration = freezing_rain_base_duration * p() -> cache.spell_speed();
+      p() -> buffs.freezing_rain -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, freezing_rain_duration  );
     }
   }
 
@@ -4922,12 +4893,13 @@ struct frozen_orb_t : public frost_mage_spell_t
 struct glacial_spike_t : public frost_mage_spell_t
 {
   double stored_icicle_value;
+
   glacial_spike_t( mage_t* p, const std::string& options_str ) :
     frost_mage_spell_t( "glacial_spike", p, p -> talents.glacial_spike ),
     stored_icicle_value( 0 )
   {
     parse_options( options_str );
-    spell_power_mod.direct = p -> find_spell( 228600 ) -> effectN( 1 ).sp_coeff();
+    parse_effect_data( p -> find_spell( 228600 ) -> effectN( 1 ) );
     //FIXME: Figure out a better way to do this than a fake cooldown
     cooldown -> duration = timespan_t::from_seconds( 1.5 );
     if ( p -> talents.splitting_ice -> ok() )
@@ -4945,8 +4917,8 @@ struct glacial_spike_t : public frost_mage_spell_t
     {
       return false;
     }
-    return frost_mage_spell_t::ready();
 
+    return frost_mage_spell_t::ready();
   }
 
   virtual void impact( action_state_t* s ) override
@@ -5024,11 +4996,11 @@ struct ice_lance_t : public frost_mage_spell_t
   frost_bomb_explosion_t* frost_bomb_explosion;
 
   ice_lance_t( mage_t* p, const std::string& options_str ) :
-    frost_mage_spell_t( "ice_lance", p, p -> find_class_spell( "Ice Lance" ) ),
+    frost_mage_spell_t( "ice_lance", p, p -> find_specialization_spell( "Ice Lance" ) ),
     frozen_orb_action_id( 0 )
   {
     parse_options( options_str );
-    spell_power_mod.direct = p -> find_spell( 228598 ) -> effectN( 1 ).sp_coeff();
+    parse_effect_data( p -> find_spell( 228598 ) -> effectN( 1 ) );
 
     if ( p -> talents.frost_bomb -> ok() )
     {
@@ -5129,7 +5101,6 @@ struct ice_lance_t : public frost_mage_spell_t
     frost_mage_spell_t::init();
 
     frozen_orb_action_id = p() -> find_action_id( "frozen_orb" );
-
   }
 
   virtual double action_multiplier() const override
@@ -5192,7 +5163,7 @@ struct ice_nova_t : public frost_mage_spell_t
 struct icy_veins_t : public frost_mage_spell_t
 {
   icy_veins_t( mage_t* p, const std::string& options_str ) :
-    frost_mage_spell_t( "icy_veins", p, p -> find_class_spell( "Icy Veins" ) )
+    frost_mage_spell_t( "icy_veins", p, p -> find_specialization_spell( "Icy Veins" ) )
   {
     parse_options( options_str );
     harmful = false;
@@ -5794,7 +5765,7 @@ struct phoenixs_flames_splash_t : public fire_mage_spell_t
   phoenixs_flames_splash_t( mage_t* p ) :
     fire_mage_spell_t( "phoenixs_flames_splash", p, p -> find_spell( 224637 ) ),
     chain_number( 0 ),
-    strafing_run_multiplier( p -> find_spell( 194466 ) -> effectN( 1 ).chain_multiplier() )
+    strafing_run_multiplier( p -> artifact.phoenixs_flames.data().effectN( 1 ).chain_multiplier() )
   {
     aoe = -1;
     background = true;
@@ -5834,7 +5805,7 @@ struct strafing_run_t : public fire_mage_spell_t
   phoenixs_flames_splash_t* phoenixs_flames_splash;
 
   strafing_run_t( mage_t* p, phoenixs_flames_splash_t* pfs ) :
-    fire_mage_spell_t( "phoenixs_flames_chain", p, p -> find_spell( 194466 ) ),
+    fire_mage_spell_t( "phoenixs_flames_chain", p, p -> artifact.phoenixs_flames ),
     chain_number( 0 ),
     phoenixs_flames_splash( pfs )
   {
@@ -5881,6 +5852,7 @@ struct phoenixs_flames_t : public fire_mage_spell_t
 {
   phoenixs_flames_splash_t* phoenixs_flames_splash;
   strafing_run_t*           strafing_run_chain;
+
   bool pyrotex_ignition_cloth;
   timespan_t pyrotex_ignition_cloth_reduction;
 
@@ -5901,7 +5873,7 @@ struct phoenixs_flames_t : public fire_mage_spell_t
 
     if ( p -> artifact.strafing_run.rank() )
     {
-      aoe = 3;
+      aoe = 1 + p -> artifact.strafing_run.data().effectN( 1 ).base_value();
       add_child( strafing_run_chain );
     }
   }
@@ -6348,7 +6320,7 @@ struct supernova_t : public arcane_mage_spell_t
 struct summon_water_elemental_t : public frost_mage_spell_t
 {
   summon_water_elemental_t( mage_t* p, const std::string& options_str ) :
-    frost_mage_spell_t( "water_elemental", p, p -> find_class_spell( "Summon Water Elemental" ) )
+    frost_mage_spell_t( "water_elemental", p, p -> find_specialization_spell( "Summon Water Elemental" ) )
   {
     parse_options( options_str );
     harmful = false;
@@ -7016,8 +6988,7 @@ void mage_spell_t::trigger_unstable_magic( action_state_t* s )
                        -> data().effectN( 3 ).percent();
       break;
     default:
-      um_proc_rate = p() -> unstable_magic_explosion
-                       -> data().effectN( 3 ).percent();
+      um_proc_rate = 0.0;
       break;
   }
 
@@ -7527,7 +7498,7 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   cooldowns.evocation        = get_cooldown( "evocation"        );
   cooldowns.frozen_orb       = get_cooldown( "frozen_orb"       );
   cooldowns.icy_veins        = get_cooldown( "icy_veins"        );
-  cooldowns.fire_blast       = get_cooldown( "fire_blast"    );
+  cooldowns.fire_blast       = get_cooldown( "fire_blast"       );
   cooldowns.phoenixs_flames  = get_cooldown( "phoenixs_flames"  );
   cooldowns.presence_of_mind = get_cooldown( "presence_of_mind" );
   cooldowns.ray_of_frost     = get_cooldown( "ray_of_frost"     );
@@ -7626,12 +7597,14 @@ action_t* mage_t::create_action( const std::string& name,
   // Frost
   if ( name == "blizzard"          ) return new                blizzard_t( this, options_str );
   if ( name == "comet_storm"       ) return new             comet_storm_t( this, options_str );
+  if ( name == "cone_of_cold"      ) return new            cone_of_cold_t( this, options_str );
   if ( name == "flurry"            ) return new                  flurry_t( this, options_str );
   if ( name == "freeze"            ) return new                  freeze_t( this, options_str );
   if ( name == "frost_bomb"        ) return new              frost_bomb_t( this, options_str );
   if ( name == "frostbolt"         ) return new               frostbolt_t( this, options_str );
   if ( name == "frozen_orb"        ) return new              frozen_orb_t( this, options_str );
   if ( name == "glacial_spike"     ) return new           glacial_spike_t( this, options_str );
+  if ( name == "ice_floes"         ) return new               ice_floes_t( this, options_str );
   if ( name == "ice_lance"         ) return new               ice_lance_t( this, options_str );
   if ( name == "ice_nova"          ) return new                ice_nova_t( this, options_str );
   if ( name == "icy_veins"         ) return new               icy_veins_t( this, options_str );
@@ -7651,7 +7624,6 @@ action_t* mage_t::create_action( const std::string& name,
 
   // Shared spells
   if ( name == "blink"             ) return new                   blink_t( this, options_str );
-  if ( name == "cone_of_cold"      ) return new            cone_of_cold_t( this, options_str );
   if ( name == "counterspell"      ) return new            counterspell_t( this, options_str );
   if ( name == "frost_nova"        ) return new              frost_nova_t( this, options_str );
   if ( name == "time_warp"         ) return new               time_warp_t( this, options_str );
@@ -7659,9 +7631,6 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "choose_target"     ) return new           choose_target_t( this, options_str );
 
   // Shared talents
-  if ( name == "ice_floes"         ) return new               ice_floes_t( this, options_str );
-  // TODO: Implement all T45 talents and enable freezing_grasp
-  // if ( name == "freezing_grasp"    )
   if ( name == "mage_bomb"         )
   {
     if ( talents.frost_bomb -> ok() )
@@ -7764,7 +7733,7 @@ void mage_t::init_spells()
   // Tier 15
   talents.arcane_familiar = find_talent_spell( "Arcane Familiar" );
   talents.amplification   = find_talent_spell( "Amplification"   );
-  talents.resonance       = find_talent_spell( "Resonance"       );
+  talents.words_of_power  = find_talent_spell( "Words of Power"  );
   talents.pyromaniac      = find_talent_spell( "Pyromaniac"      );
   talents.conflagration   = find_talent_spell( "Conflagration"   );
   talents.fire_starter    = find_talent_spell( "Firestarter"     );
@@ -7773,7 +7742,8 @@ void mage_t::init_spells()
   talents.bone_chilling   = find_talent_spell( "Bone Chilling"   );
   // Tier 30
   talents.shimmer         = find_talent_spell( "Shimmer"         );
-  talents.ice_block       = find_talent_spell( "Ice Block"       );
+  talents.blast_wave      = find_talent_spell( "Blast Wave"      );
+  talents.ice_floes       = find_talent_spell( "Ice Floes"       );
   // Tier 45
   talents.mirror_image    = find_talent_spell( "Mirror Image"    );
   talents.rune_of_power   = find_talent_spell( "Rune of Power"   );
@@ -7781,16 +7751,15 @@ void mage_t::init_spells()
   // Tier 60
   talents.supernova       = find_talent_spell( "Supernova"       );
   talents.charged_up      = find_talent_spell( "Charged Up"      );
-  talents.words_of_power  = find_talent_spell( "Words of Power"  );
-  talents.blast_wave      = find_talent_spell( "Blast Wave"      );
+  talents.resonance       = find_talent_spell( "Resonance"       );
+  talents.alexstraszas_fury = find_talent_spell( "Alexstrasza's Fury" );
   talents.flame_on        = find_talent_spell( "Flame On"        );
   talents.controlled_burn = find_talent_spell( "Controlled Burn" );
   talents.ice_nova        = find_talent_spell( "Ice Nova"        );
   talents.frozen_touch    = find_talent_spell( "Frozen Touch"    );
   talents.splitting_ice   = find_talent_spell( "Splitting Ice"   );
-  talents.alexstraszas_fury = find_talent_spell( "Alexstrasza's Fury" );
+
   // Tier 75
-  talents.ice_floes       = find_talent_spell( "Ice Floes"       );
   talents.ring_of_frost   = find_talent_spell( "Ring of Frost"   );
   talents.ice_ward        = find_talent_spell( "Ice Ward"        );
   // Tier 90
@@ -7881,12 +7850,9 @@ void mage_t::init_spells()
   artifact.spellborne                    = find_artifact_spell( "Spellborne"                    );
   artifact.the_storm_rages               = find_artifact_spell( "The Storm Rages"               );
 
-
-
   // Spec Spells
   spec.arcane_barrage_2      = find_specialization_spell( 231564 );
   spec.arcane_charge         = find_spell( 36032 );
-  spec.arcane_charge_passive = find_spell( 114664 );
   if ( talents.arcane_familiar -> ok() )
   {
     spec.arcane_familiar    = find_spell( 210126 );
@@ -7894,16 +7860,17 @@ void mage_t::init_spells()
   spec.evocation_2           = find_specialization_spell( 231565 );
 
   spec.critical_mass         = find_specialization_spell( "Critical Mass"    );
-  spec.critical_mass_2       = find_spell( 231630 );
+  spec.critical_mass_2       = find_specialization_spell( 231630 );
+  spec.fire_blast_2          = find_specialization_spell( 231568 );
+  spec.fire_blast_3          = find_specialization_spell( 231567 );
+
   spec.brain_freeze          = find_specialization_spell( "Brain Freeze"     );
   spec.brain_freeze_2        = find_specialization_spell( 231584 );
-  spec.blizzard_2            = find_spell( 236662 );
-  spec.fingers_of_frost      = find_spell( 112965 );
+  spec.blizzard_2            = find_specialization_spell( 236662 );
+  spec.fingers_of_frost      = find_specialization_spell( "Fingers of Frost" );
   spec.shatter               = find_specialization_spell( "Shatter"          );
   spec.shatter_2             = find_specialization_spell( 231582 );
 
-  spec.fire_blast_2          = find_specialization_spell( 231568 );
-  spec.fire_blast_3          = find_specialization_spell( 231567 );
 
   // Mastery
   spec.savant                = find_mastery_spell( MAGE_ARCANE );
@@ -7918,8 +7885,6 @@ void mage_t::init_spells()
     icicle = new actions::icicle_t( this );
   if ( talents.unstable_magic -> ok() )
     unstable_magic_explosion = new actions::unstable_magic_explosion_t( this );
-
-  spec.presence_of_mind      = find_specialization_spell( "Presence of Mind" );
 
   if ( artifact.touch_of_the_magi.rank() )
   {
@@ -8019,8 +7984,7 @@ void mage_t::create_buffs()
   buffs.fingers_of_frost      = buff_creator_t( this, "fingers_of_frost", find_spell( 44544 ) )
                                   .max_stack( find_spell( 44544 ) -> max_stacks() +
                                               sets.set( MAGE_FROST, T18, B4 ) -> effectN( 2 ).base_value() +
-                                              artifact.icy_hand.rank()
-                                              + talents.frozen_touch -> effectN( 2 ).base_value() );
+                                              artifact.icy_hand.rank() );
   buffs.frozen_mass           = buff_creator_t( this, "frozen_mass", find_spell( 242253 ) )
                                   .default_value( find_spell( 242253 ) -> effectN( 1 ).percent() );
 
