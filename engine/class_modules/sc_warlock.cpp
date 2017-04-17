@@ -2876,9 +2876,7 @@ struct agony_t: public warlock_spell_t
 
   virtual void tick( dot_t* d ) override
   {
-    if ( p() -> talents.writhe_in_agony -> ok() && td( d -> state -> target ) -> agony_stack < ( 20 ) )
-      td( d -> state -> target ) -> agony_stack++;
-    else if ( td( d -> state -> target ) -> agony_stack < ( 10 ) )
+    if ( td( d -> state -> target ) -> agony_stack < ( 10 * ( 1 + ( p() -> talents.writhe_in_agony -> ok() ? p() -> talents.writhe_in_agony -> effectN( 1 ).percent() : 0 ) ) ) )
       td( d -> state -> target ) -> agony_stack++;
 
     td( d -> target ) -> debuffs_agony -> trigger();
