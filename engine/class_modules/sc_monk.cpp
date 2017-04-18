@@ -3821,7 +3821,7 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
     if ( p() -> buff.combo_strikes -> up() )
       pm *= 1 + p() -> cache.mastery_value();
 
-    pm *= 1 + ( mark_of_the_crane_counter() * ( maybe_ptr( p() -> dbc.ptr ) ? p() -> passives.cyclone_strikes -> effectN( 1 ).percent() : p() -> passives.mark_of_the_crane -> effectN( 1 ).percent() ) );
+    pm *= 1 + ( mark_of_the_crane_counter() * p() -> passives.cyclone_strikes -> effectN( 1 ).percent() );
 
     return pm;
   }
@@ -7565,8 +7565,7 @@ monk( *p )
   if ( p -> specialization() == MONK_WINDWALKER )
   {
     debuff.mark_of_the_crane = buff_creator_t( *this, "mark_of_the_crane", p -> passives.mark_of_the_crane )
-      .default_value( maybe_ptr( p -> dbc.ptr ) ? p -> passives.cyclone_strikes -> effectN( 1 ).percent() 
-                                                : p -> passives.mark_of_the_crane -> effectN( 1 ).percent() );
+      .default_value( p -> passives.cyclone_strikes -> effectN( 1 ).percent() );
 
     debuff.gale_burst = buff_creator_t( *this, "gale_burst", p -> passives.gale_burst )
       .default_value( 0 )
