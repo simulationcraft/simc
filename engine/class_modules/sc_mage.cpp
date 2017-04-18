@@ -1212,6 +1212,8 @@ struct fireball_t : public mirror_image_spell_t
     : mirror_image_spell_t( "fireball", p, p->find_pet_spell( "Fireball" ) )
   {
     parse_options( options_str );
+    // PTR Multiplier
+    base_multiplier *= 1.0 + p -> find_spell( 137019 ) -> effectN( 1 ).percent();
   }
 };
 
@@ -2714,6 +2716,8 @@ struct conflagration_dot_t : public fire_mage_spell_t
     background = true;
     base_costs[ RESOURCE_MANA ] = 0;
     trigger_gcd = timespan_t::zero();
+    // PTR Multiplier
+    base_multiplier *= 1.0 + p -> find_spell( 137019 ) -> effectN( 1 ).percent();
   }
   void init() override
   {
@@ -2734,6 +2738,8 @@ struct conflagration_t : public fire_mage_spell_t
     aoe = -1;
     base_costs[ RESOURCE_MANA ] = 0;
     trigger_gcd = timespan_t::zero();
+    // PTR Multiplier
+    base_multiplier *= 1.0 + p -> find_spell( 137019 ) -> effectN( 1 ).percent();
   }
 };
 
@@ -2753,6 +2759,8 @@ struct phoenix_reborn_t : public fire_mage_spell_t
     background = true;
     icd = p -> get_cooldown( "phoenix_reborn_icd" );
     icd -> duration = p -> find_spell( 215773 ) -> internal_cooldown();
+    // PTR Multiplier
+    base_multiplier *= 1.0 + p -> find_spell( 137019 ) -> effectN( 1 ).percent();
   }
   virtual void execute() override
   {
@@ -3552,6 +3560,8 @@ struct blast_furance_t : public fire_mage_spell_t
     background = true;
     callbacks = false;
     hasted_ticks = false;
+    // PTR Multiplier
+    base_multiplier *= 1.0 + p -> find_spell( 137019 ) -> effectN( 1 ).percent();
   }
 };
 // Blast Wave Spell ==========================================================
@@ -4253,6 +4263,8 @@ struct aftershocks_t : public fire_mage_spell_t
     background = true;
     aoe = -1;
     triggers_ignite = true;
+    // PTR Multiplier
+    base_multiplier *= 1.0 + p -> find_spell( 137019 ) -> effectN( 1 ).percent();
   }
 };
 
