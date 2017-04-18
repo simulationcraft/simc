@@ -1,9 +1,9 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build 8142444)
+SimulationCraft 720-02 for World of Warcraft 7.2.0 PTR (wow build 23826)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
 School           : Physical
-Resource         : 35 Energy
+Resource         : 35 Energy (id=13)
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
@@ -18,11 +18,11 @@ Effects          :
 #1 (id=30)       : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000 | Target: Enemy(6)
 #2 (id=31)       : Weapon Damage% (31)
-                   Base Value: 370 | Scaled Value: 3.7 | SP Coefficient: 1.00000 | Target: Enemy(6)
+                   Base Value: 500 | Scaled Value: 5 | SP Coefficient: 1.00000 | Target: Enemy(6)
 #3 (id=32)       : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points | Target: Self(1)
 #4 (id=297239)   : Dummy (3)
-                   Base Value: 30 | Scaled Value: 30 | Target: Enemy(6)
+                   Base Value: 20 | Scaled Value: 20 | Target: Enemy(6)
 Description      : Stab the target, causing ${$sw2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target.
 
 |cFFFFFFFFAwards $s3 combo $lpoint:points;.|r
@@ -31,8 +31,8 @@ Variables        : $mult=${($max(0,$min($pl-10,10))*11+260)/370}
 Name             : Kidney Shot (id=408) [Spell Family (8)] 
 Class            : Assassination Subtlety Rogue
 School           : Physical
-Resource         : 25 Energy
-Resource         : 1 - 5 Combo Points
+Resource         : 25 Energy (id=46)
+Resource         : 1 - 5 Combo Points (id=10591)
 Spell Level      : 34
 Range            : 5 yards
 GCD              : 1 seconds
@@ -82,7 +82,7 @@ Description      : Allows one-hand and off-hand weapons to be equipped in the of
 Name             : Garrote (id=703) [Spell Family (8)] 
 Class            : Assassination Rogue
 School           : Physical
-Resource         : 45 Energy
+Resource         : 45 Energy (id=86)
 Spell Level      : 12
 Range            : 5 yards
 GCD              : 1 seconds
@@ -133,7 +133,7 @@ Name             : Mutilate (id=1329) [Spell Family (8)]
 Replaces         : Sinister Strike (id=1752)
 Class            : Assassination Rogue
 School           : Physical
-Resource         : 55 Energy
+Resource         : 55 Energy (id=122)
 Spell Level      : 40
 Range            : 5 yards
 GCD              : 1 seconds
@@ -180,7 +180,7 @@ Tooltip          : Silenced.
 Name             : Distract (id=1725) [Spell Family (8)] 
 Class            : Assassination Outlaw Subtlety Rogue
 School           : Physical
-Resource         : 30 Energy
+Resource         : 30 Energy (id=139)
 Spell Level      : 38
 Range            : 30 yards
 GCD              : 1 seconds
@@ -203,7 +203,7 @@ Description      : Throws a distraction, attracting the attention of all nearby 
 Name             : Sinister Strike (id=1752) [Spell Family (8)] 
 Class            : Assassination Rogue
 School           : Physical
-Resource         : 40 Energy
+Resource         : 40 Energy (id=140)
 Spell Level      : 1 (max 20)
 Range            : 5 yards
 GCD              : 1 seconds
@@ -247,7 +247,7 @@ Description      : A quick kick that interrupts spellcasting and prevents any sp
 Name             : Gouge (id=1776) [Spell Family (8)] 
 Class            : Outlaw Rogue
 School           : Physical
-Resource         : 25 Energy
+Resource         : 25 Energy (id=142)
 Spell Level      : 34
 Range            : 5 yards
 GCD              : 1 seconds
@@ -337,7 +337,7 @@ Description      : Allows opening of locked chests and doors that require a skil
 Name             : Cheap Shot (id=1833) [Spell Family (8)] 
 Class            : Assassination Outlaw Subtlety Rogue
 School           : Physical
-Resource         : 40 Energy
+Resource         : 40 Energy (id=144)
 Spell Level      : 8
 Range            : 5 yards
 GCD              : 1 seconds
@@ -412,8 +412,8 @@ Description      : Reduces damage from falling.
 Name             : Rupture (id=1943) [Spell Family (8)] 
 Class            : Assassination Rogue
 School           : Physical
-Resource         : 25 Energy
-Resource         : 1 - 5 Combo Points
+Resource         : 25 Energy (id=145)
+Resource         : 1 - 5 Combo Points (id=10589)
 Spell Level      : 20
 Range            : 5 yards
 GCD              : 1 seconds
@@ -450,7 +450,7 @@ Tooltip          : Bleeding for $w1 damage every $t1 sec.
 Name             : Feint (id=1966) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
-Resource         : 35 Energy
+Resource         : 35 Energy (id=148)
 Spell Level      : 44
 GCD              : 1 seconds
 Duration         : 5 seconds
@@ -504,8 +504,8 @@ Damage taken increased by $w3%.][]
 Name             : Run Through (id=2098) [Spell Family (8)] 
 Class            : Outlaw Rogue
 School           : Physical
-Resource         : 35 Energy
-Resource         : 1 - 5 Combo Points
+Resource         : 35 Energy (id=158)
+Resource         : 1 - 5 Combo Points (id=10581)
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
@@ -612,8 +612,12 @@ Effects          :
                    Base Value: 70 | Scaled Value: 70 | Target: Self(1)
 #2 (id=328458)   : Apply Aura (6) | Periodic Dummy: every 0.25 seconds (226)
                    Base Value: 1 | Scaled Value: 1
-Description      : Increases your movement speed by $s1% for $d. Usable while stealthed.
-Tooltip          : Movement speed increased by $w1%.
+Description      : Increases your movement speed by $s1% for $d. Usable while stealthed.$?s245751[
+
+Allows you to run over water.][]
+Tooltip          : Movement speed increased by $w1%.$?s245751[
+
+Allows you to run over water.][]
 
 Name             : Crippling Poison (id=3408) [Spell Family (8)] 
 Class            : Assassination Rogue
@@ -666,8 +670,8 @@ Tooltip          : Movement slowed by $s1%.
 Name             : Slice and Dice (id=5171) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
-Resource         : 25 Energy
-Resource         : 1 - 5 Combo Points
+Resource         : 25 Energy (id=226)
+Resource         : 1 - 5 Combo Points (id=11434)
 Spell Level      : 14
 Range            : 100 yards
 GCD              : 1 seconds
@@ -682,11 +686,11 @@ Attributes       : ....x... ........ x.x..... .....x..   .....x.. ..x..... .....
                  : Does not break stealth (37)
 Effects          :
 #1 (id=1833)     : Apply Aura (6) | Modify Ranged and Melee Attack Speed% (342)
-                   Base Value: 100 | Scaled Value: 100 | Target: Self(1)
+                   Base Value: 80 | Scaled Value: 80 | Target: Self(1)
 #2 (id=127877)   : Apply Aura (6) | Periodic Energize Power: every 2 seconds (24)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Target: Self(1)
 #3 (id=356567)   : Apply Aura (6) | Mod Power Regen (110)
-                   Base Value: 15 | Scaled Value: 15 | SP Coefficient: 1.00000 | Misc Value: 3 | Target: Self(1)
+                   Base Value: 20 | Scaled Value: 20 | SP Coefficient: 1.00000 | Misc Value: 3 | Target: Self(1)
 Description      : Finishing move that consumes combo points to increase attack speed by $s1% and Energy regeneration rate by $s3%. Lasts longer per combo point.
    1 point  : 12 seconds
    2 points: 18 seconds
@@ -702,14 +706,14 @@ Name             : Solar Wrath (Solar) (id=5176) [Scaling Spell (3), Spell Famil
 Class            : Restoration Rogue, Druid
 Race             : Night Elf
 School           : Nature
-Resource         : 3.5% Base Mana (0 @Level 110)
+Resource         : 3.5% Base Mana (id=227)
 Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Stance Mask      : 0x40000000
-Affecting spells : Incarnation: Chosen of Elune (102560), Balance Druid (137013), Lucidity (137247), Solar Empowerment (164545), Lunar Empowerment (164547), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719), Thrash (192090), Celestial Alignment (194223), Astral Influence (197524), Astral Power (197911), Solar Stabbing (202426), Blessing of Elune (202737), Promise of Elune, the Moon Goddess (208283), Ekowraith, Creator of Worlds (210667), Solar Empowerment (211089), Skywrath (214514)
+Affecting spells : Incarnation: Chosen of Elune (102560), Lucidity (137247), Solar Empowerment (164545), Lunar Empowerment (164547), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719), Thrash (192090), Celestial Alignment (194223), Astral Influence (197524), Astral Power (197911), Solar Stabbing (202426), Blessing of Elune (202737), Promise of Elune, the Moon Goddess (208283), Ekowraith, Creator of Worlds (210667), Solar Empowerment (211089), Skywrath (214514)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -766,7 +770,7 @@ Description      : Instantly attacks for $sw2 Physical damage.  Awards 2 combo p
 Name             : Sap (id=6770) [Spell Family (8)] 
 Class            : Assassination Outlaw Subtlety Rogue
 School           : Physical
-Resource         : 35 Energy
+Resource         : 35 Energy (id=277)
 Spell Level      : 14
 Range            : 10 yards
 GCD              : 1 seconds
@@ -794,7 +798,7 @@ Damage taken increased by $w2%.][]
 Name             : Ambush (id=8676) [Spell Family (8)] 
 Class            : Outlaw Rogue
 School           : Physical
-Resource         : 60 Energy
+Resource         : 60 Energy (id=359)
 Spell Level      : 22
 Range            : 5 yards
 GCD              : 1 seconds
@@ -902,7 +906,7 @@ Name             : Adrenaline Rush (id=13750) [Spell Family (8)]
 Class            : Outlaw Rogue
 School           : Physical
 Spell Level      : 56
-Duration         : 15 seconds
+Duration         : 20 seconds
 Cooldown         : 180 seconds
 Affecting spells : Item - Rogue T18 Combat 4P Bonus (186288), Fortune's Boon (202907)
 Attributes       : ....x... ........ x....... ........   ........ ..x..... ........ ........ 
@@ -913,7 +917,7 @@ Attributes       : ....x... ........ x....... ........   ........ ..x..... .....
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=6149)     : Apply Aura (6) | Mod Power Regen (110)
-                   Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Misc Value: 3 | Target: Self(1)
+                   Base Value: 50 | Scaled Value: 50 | SP Coefficient: 1.00000 | Misc Value: 3 | Target: Self(1)
 #2 (id=85451)    : Apply Aura (6) | Modify Ranged and Melee Attack Speed% (342)
                    Base Value: 20 | Scaled Value: 20 | Target: Self(1)
 #3 (id=165715)   : Apply Aura (6) | Add Flat Modifier: Spell Global Cooldown (107)
@@ -1075,7 +1079,7 @@ Description      : Increases your maximum Energy by $s1 and your Energy regenera
 Name             : Hemorrhage (id=16511) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
-Resource         : 30 Energy
+Resource         : 30 Energy (id=666)
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1 seconds
@@ -1300,7 +1304,7 @@ Attributes       : ........ ........ ........ ...x....   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ...x.... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=21282)    : Apply Aura (6) | Modify Damage Done% (79)
@@ -1312,8 +1316,8 @@ Name             : Envenom (id=32645) [Spell Family (8)]
 Replaces         : Eviscerate (id=196819)
 Class            : Assassination Rogue
 School           : Nature
-Resource         : 35 Energy
-Resource         : 1 - 5 Combo Points
+Resource         : 35 Energy (id=1350)
+Resource         : 1 - 5 Combo Points (id=10585)
 Spell Level      : 36
 Range            : 5 yards
 GCD              : 1 seconds
@@ -1377,7 +1381,6 @@ Name             : Combat Potency (id=35546) [Spell Family (8)]
 Class            : Rogue
 School           : Physical
 Mechanic         : Unknown(88)
-Affecting spells : Fortune Strikes (202530)
 Triggered by     : Combat Potency (35551)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1387,7 +1390,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=25761)    : Energize Power (30)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: energy | Target: Self(1)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: energy | Target: Self(1)
 Description      : $@spelldesc35551
 
 Name             : Combat Potency (id=35551) [Spell Family (8), Passive] 
@@ -1397,17 +1400,18 @@ Spell Level      : 50
 Proc Chance      : 100%
 Proc Flags       : ..x.x... ........ ........ ........ 
                  : White Melee, Yellow Melee
+Affecting spells : Fortune Strikes (202530)
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
 #1 (id=25764)    : Apply Aura (6) | Proc Trigger Spell: Combat Potency (42)
-                   Base Value: 20 | Scaled Value: 20 | SP Coefficient: 1.00000 | Trigger Spell: 35546 | Target: Self(1)
-Description      : Your off-hand attacks have a chance to generate $35546s1 Energy.
+                   Base Value: 30 | Scaled Value: 30 | SP Coefficient: 1.00000 | Trigger Spell: 35546 | Target: Self(1)
+Description      : Your off-hand attacks have a $s1% chance to generate $35546s1 Energy.
 
 Name             : Shadowstep (id=36554) [Spell Family (8)] 
 Class            : Assassination Subtlety Rogue
@@ -1554,7 +1558,7 @@ Damage dealt increased by $61851s3%.
 Name             : Fan of Knives (id=51723) [Spell Family (8)] 
 Class            : Assassination Rogue
 School           : Physical
-Resource         : 35 Energy
+Resource         : 35 Energy (id=2351)
 Spell Level      : 63
 GCD              : 1 seconds
 Velocity         : 18 yards/sec
@@ -1940,6 +1944,27 @@ Effects          :
                    Affected Spells: Feint (1966)
 Description      : Feint also reduces all damage you take from non-area-of-effect attacks by $s1% for $1966d.
 
+Name             : Restless Blades (id=79096) [Spell Family (8), Passive] 
+Class            : Outlaw Rogue
+School           : Physical
+Spell Level      : 50
+Internal Cooldown: 0.1 seconds
+Proc Chance      : 100%
+Proc Flags       : ....x... x.x.x.x. x....... ........ 
+                 : Yellow Melee, Yellow Ranged, AOE Heal, AOE Hostile Spell, Heal, Hostile Spell
+Attributes       : ....x.x. ........ ..x..... .....x.x   .....x.. ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ..x..... ..x...x. 
+                 : ....x... ........ ........ ........   ........ ........ ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Cannot cancel aura (31), Does not break stealth (37)
+Effects          :
+#1 (id=68363)    : Apply Aura (6) | Dummy (4)
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 127 | Target: Self(1)
+Description      : Finishing moves reduce the remaining cooldown of Adrenaline Rush, Between the Eyes, Sprint, $?s195457[Grappling Hook, ][]$?s185767[Cannonball Barrage, ][]$?s51690[Killing Spree, ][]$?s137619[Marked for Death, ][]$?s152150[Death from Above ,][]and Vanish by ${$s1/10}.1 sec per combo point spent.
+Tooltip          : Finishing moves reduce the remaining cooldown of many of your abilities by ${$s1/10}.1 sec per combo point.
+
 Name             : Venomous Wounds (id=79134) [Spell Family (8), Passive] 
 Class            : Assassination Rogue
 School           : Physical
@@ -2138,7 +2163,7 @@ Effects          :
                    Base Value: 115191 | Scaled Value: 115191 | Misc Value: 1784 | Trigger Spell: 1784 | Target: Self(1)
                    Affected Spells: Stealth (1784)
 #2 (id=322830)   : Apply Aura (6) | Add Flat Modifier: Spell Duration (107)
-                   Base Value: 2000 | Scaled Value: 2000 | Misc Value: 1 | Target: Self(1)
+                   Base Value: 1000 | Scaled Value: 1000 | Misc Value: 1 | Target: Self(1)
                    Affected Spells: Shadow Dance (185313)
 #3 (id=370946)   : Apply Aura (6) | Add Flat Modifier (107)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 33 | Target: Self(1)
@@ -2274,7 +2299,7 @@ Description      : Poisoned weapons have a chance to deal $s1 Nature damage to a
 Name             : Shuriken Toss (id=114014) [Scaling Spell (9), Spell Family (8)] 
 Class            : Subtlety Rogue
 School           : Physical
-Resource         : 40 Energy
+Resource         : 40 Energy (id=5625)
 Spell Level      : 10
 Range            : 30 yards
 GCD              : 1 seconds
@@ -2556,10 +2581,10 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179719)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 9 | Scaled Value: 9 | Target: Self(1)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self(1)
                    Affected Spells: Backstab (53), Shuriken Toss (114014), Death from Above (152150), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Eviscerate (196819), Finality: Eviscerate (197393), Shuriken Storm (197835), Gloomblade (200758)
 #2 (id=191060)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 9 | Scaled Value: 9 | Misc Value: 22 | Target: Self(1)
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Weaponmaster (193536), Nightblade (195452), Finality: Nightblade (197395)
 #3 (id=191061)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
                    Base Value: -38 | Scaled Value: -38 | Misc Value: 12 | Target: Self(1)
@@ -2569,10 +2594,11 @@ Effects          :
 #5 (id=191063)   : Apply Aura (6) | Add Flat Modifier: Spell Tick Time (107)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 8 | Target: Self(1)
                    Affected Spells: Shadow Focus (112942)
-#6 (id=260977)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#7 (id=260978)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#6 (id=260977)   : Apply Aura (6) | Modify Cooldown Charge (411)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1206 | Target: Self(1)
+#7 (id=260978)   : Apply Aura (6) | Add Flat Modifier: Spell Cooldown (107)
+                   Base Value: -20000 | Scaled Value: -20000 | Misc Value: 11 | Target: Self(1)
+                   Affected Spells: Marked for Death (137619)
 #8 (id=260979)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #9 (id=260980)   : Apply Aura (6) | Dummy (4)
@@ -2699,7 +2725,7 @@ Spell Level      : 1
 Range            : 30 yards
 Duration         : 60 seconds
 Cooldown         : 60 seconds
-Affecting spells : Deeper Stratagem (193531), 
+Affecting spells : Subtlety Rogue (137035), Deeper Stratagem (193531), 
 Attributes       : ....x... ........ ..x..... .....x..   .....x.. ..x..... ........ ..x..... 
                  : ........ ........ ........ ....x...   ........ ........ x...x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ...x.... 
@@ -2807,8 +2833,8 @@ Tooltip          : Mastery increased by $s1.
 Name             : Death from Above (id=152150) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
-Resource         : 25 Energy
-Resource         : 1 - 5 Combo Points
+Resource         : 25 Energy (id=9050)
+Resource         : 1 - 5 Combo Points (id=10584)
 Range            : 15 yards
 GCD              : 2 seconds
 Duration         : 1 seconds
@@ -2986,7 +3012,7 @@ Effects          :
 Name             : Backstab (id=173458) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
-Resource         : 35 Energy
+Resource         : 35 Energy (id=9758)
 Spell Level      : 40
 Range            : 5 yards
 GCD              : 1 seconds
@@ -3009,7 +3035,7 @@ Description      : Stab the target, causing $sw2 Physical damage. Awards $s3 com
 Name             : Crimson Vial (id=185311) [Scaling Spell (8), Spell Family (8)] 
 Class            : Rogue
 School           : Nature
-Resource         : 30 Energy
+Resource         : 30 Energy (id=10135)
 Spell Level      : 16
 Duration         : 6 seconds
 Cooldown         : 30 seconds
@@ -3031,11 +3057,11 @@ Name             : Shadow Dance (id=185313) [Spell Family (8)]
 Class            : Subtlety Rogue
 School           : Physical
 Spell Level      : 40
-Duration         : 3 seconds
+Duration         : 4 seconds
 Cooldown         : 1 seconds
-Charges          : 3 (60 seconds cooldown)
+Charges          : 2 (60 seconds cooldown)
 Category         : 1615
-Affecting spells : Subterfuge (108208), Soothing Darkness (200759)
+Affecting spells : Subterfuge (108208), Soothing Darkness (200759), Deep Shadows (245687)
 Attributes       : ........ ........ ..x..... ...x...x   ....x... ..x..... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ xx...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3048,9 +3074,11 @@ Effects          :
                    Base Value: -10000000 | Scaled Value: -1e+07 | SP Coefficient: 1.00000 | Target: Self(1)
 #2 (id=317950)   : Apply Aura (6) | Unknown effect sub type (275)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Self(1)
-                   Affected Spells: Pick Pocket (921), Cheap Shot (1833), Sap (6770), Shadowstrike (185438), Pick Pocket (192986), Symbols of Death (212283), Death (227151)
+                   Affected Spells: Pick Pocket (921), Cheap Shot (1833), Sap (6770), Shadowstrike (185438), Pick Pocket (192986), Symbols of Death (212283), Shadowstrike (227151), Nightblade (245689), Eviscerate (245691)
 #3 (id=334762)   : Apply Aura (6) | Periodic Heal%: every 1 seconds (20)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#4 (id=373905)   : Apply Aura (6) | Modify Damage Done% (79)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self(1)
 Description      : Allows use of all Stealth abilities and grants all the combat benefits of Stealth for $d. Effect not broken from taking damage or attacking. $?s14062[Movement speed while active is increased by $1784s3% and damage dealt is increased by $1784s4%. ]?s108209[Abilities cost $112942s1% less while active. ][]$?s31223[Attacks from Shadow Dance and for $31223s1 sec after deal $31665s1% more damage.  ][]
 
 Name             : Deepening Shadows (id=185314) [Spell Family (8), Passive] 
@@ -3060,6 +3088,7 @@ Spell Level      : 54
 Proc Chance      : 100%
 Proc Flags       : ....x... x.x.x.x. x....... ........ 
                  : Yellow Melee, Yellow Ranged, AOE Heal, AOE Hostile Spell, Heal, Hostile Spell
+Affecting spells : Enveloping Shadows (238104), 
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3069,20 +3098,18 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=269038)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Points Per Combo Point: 5 | Target: Self(1)
-#2 (id=288611)   : Dummy (3)
-                   Base Value: 3 | Scaled Value: 3 | Target: Self(1)
-Description      : Your finishing moves reduce the remaining cooldown on Shadow Dance by $s2 sec per combo point spent.
+                   Base Value: 15 | Scaled Value: 15 | Target: Self(1)
+Description      : Your finishing moves reduce the remaining cooldown on Shadow Dance by ${$sw1/10}.1 sec per combo point spent.
 
 Name             : Shadowstrike (id=185438) [Spell Family (8)] 
 Class            : Subtlety Rogue
 School           : Physical
-Resource         : 40 Energy
+Resource         : 40 Energy (id=10144)
 Spell Level      : 12
 Range            : 5 yards
 GCD              : 1 seconds
 Stance Mask      : 0x20000000
-Affecting spells : Shadow Blades (121471), Subtlety Rogue (137035), From the Shadows (184918), Shadow Dance (185313), Premeditation (196979), Precision Strike (197235), Death (227151), Shadowstrike (231718)
+Affecting spells : Shadow Blades (121471), Subtlety Rogue (137035), From the Shadows (184918), Shadow Dance (185313), Premeditation (196979), Precision Strike (197235), Shadowstrike (227151), Shadowstrike (245623), 
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3097,14 +3124,16 @@ Effects          :
                    Base Value: 850 | Scaled Value: 8.5 | SP Coefficient: 1.00000 | Target: Enemy(6)
 #3 (id=269261)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points | Target: Self(1)
-Description      : Strike through the shadows, $?a231718[appearing behind your target and ][]dealing $sw2 Physical damage.
+Description      : Strike through the shadows, dealing $sw2 Physical damage to your target. $?a231718[
+
+Shadowstrike's range is increased to ${5+$245623s1} yds and damage is increased by $245623s2% when you are out of combat.][]
 
 |cFFFFFFFFAwards $s3 combo $lpoint:points;.|r
 
 Name             : Poisoned Knife (id=185565) [Scaling Spell (9), Spell Family (8)] 
 Class            : Assassination Rogue
 School           : Physical
-Resource         : 40 Energy
+Resource         : 40 Energy (id=10147)
 Spell Level      : 10
 Range            : 30 yards
 GCD              : 1 seconds
@@ -3128,7 +3157,7 @@ Description      : Throws a poison-coated knife, dealing $s1 damage and applying
 Name             : Pistol Shot (id=185763) [Scaling Spell (9), Spell Family (8)] 
 Class            : Outlaw Rogue
 School           : Physical
-Resource         : 40 Energy
+Resource         : 40 Energy (id=10158)
 Spell Level      : 12
 Range            : 20 yards
 GCD              : 1 seconds
@@ -3290,7 +3319,7 @@ Description      : $@spelldesc192376
 Name             : Kingsbane (Artifact) (id=192759) [Spell Family (8)] 
 Class            : Rogue
 School           : Nature
-Resource         : 35 Energy
+Resource         : 35 Energy (id=11496)
 Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 14 seconds
@@ -3371,7 +3400,7 @@ Tooltip          : Kingsbane Damage increased by $s1%.
 Name             : Saber Slash (id=193315) [Spell Family (8)] 
 Class            : Outlaw Rogue
 School           : Physical
-Resource         : 50 Energy
+Resource         : 50 Energy (id=10438)
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
@@ -3406,8 +3435,8 @@ Variables        : $mult=${($max(0,$min($pl-10,10))*8+195)/275}
 Name             : Roll the Bones (id=193316) [Spell Family (8)] 
 Class            : Outlaw Rogue
 School           : Physical
-Resource         : 25 Energy
-Resource         : 1 - 5 Combo Points
+Resource         : 25 Energy (id=10439)
+Resource         : 1 - 5 Combo Points (id=11404)
 Spell Level      : 40
 Range            : 100 yards
 GCD              : 1 seconds
@@ -3456,8 +3485,11 @@ Effects          :
 #3 (id=318640)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 12 | Target: Self(1)
                    Affected Spells: Cheap Shot (1833), Pistol Shot (185763), Saber Slash (193315), Blunderbuss (202895)
-Description      : Your combo-generating abilities  generate $s1 additional combo point for the duration of Roll the Bones.
-Tooltip          : Your attacks generate $s1 additional combo point.
+#4 (id=370530)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self(1)
+                   Affected Spells: Ambush (8676), Pistol Shot (185763), Saber Slash (193315), Blunderbuss (202895)
+Description      : Your combo-point generating abilities generate $s1 additional combo point and deal $s4% increased damage for the duration of Roll the Bones.
+Tooltip          : Your combo-point generating abilities generate $s1 additional combo point and deal $s4% increased damage.
 
 Name             : Shark Infested Waters (id=193357) [Spell Family (8)] 
 Class            : Rogue
@@ -3473,7 +3505,7 @@ Attributes       : ....x... ........ ..x..... .....x.x   .....x.. ..x..... .....
                  : Cannot cancel aura (31), Does not break stealth (37)
 Effects          :
 #1 (id=283681)   : Apply Aura (6) | Modify Critical Strike% (290)
-                   Base Value: 25 | Scaled Value: 25 | Target: Self(1)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self(1)
 Description      : Increases Critical Strike chance by $s1% for the duration of Roll the Bones.
 Tooltip          : Critical Strike chance increased by $s1%.
 
@@ -3516,9 +3548,9 @@ Attributes       : ....x... ........ ..x..... .....x.x   .....x.. ..x..... .....
                  : Cannot cancel aura (31), Does not break stealth (37)
 Effects          :
 #1 (id=283683)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 127 | Target: Self(1)
-Description      : For the duration of Roll the Bones, each time you use a finishing move, you reduce the remaining cooldown on Adrenaline Rush, Sprint, Between the Eyes, Vanish, Grappling Hook, Cannonball Barrage, Killing Spree, Marked for Death, and Death from Above by $s1 sec per combo point spent.
-Tooltip          : Finishers reduce the remaining cooldown on many of your abilities by $s1 sec per combo point.
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 127 | Target: Self(1)
+Description      : Finishing moves reduce the remaining cooldown of Adrenaline Rush, Between the Eyes, Sprint, $?s195457[Grappling Hook, ][]$?s185767[Cannonball Barrage, ][]$?s51690[Killing Spree, ][]$?s137619[Marked for Death, ][]$?s152150[Death from Above ,][]and Vanish by an additional ${$s1/10}.1 sec per combo point spent.
+Tooltip          : Finishing moves reduce the remaining cooldown of many of your abilities by an additional ${$s1/10}.1 sec per combo point.
 
 Name             : Deeper Stratagem (id=193531) [Spell Family (8), Passive] 
 Class            : Rogue
@@ -3533,7 +3565,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=283924)   : Apply Aura (6) | Unknown effect sub type (63)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 4 | Target: Self(1)
-                   Affected Spells: Kidney Shot (408), Rupture (1943), Run Through (2098), Slice and Dice (5171), Envenom (32645), Death from Above (152150), Roll the Bones (193316), Weaponmaster (193536), Nightblade (195452), Eviscerate (196819), Finality: Eviscerate (197393), Finality: Nightblade (197395), Between the Eyes (199804), Enveloping Shadows (206237)
+                   Affected Spells: Kidney Shot (408), Rupture (1943), Run Through (2098), Slice and Dice (5171), Envenom (32645), Death from Above (152150), Roll the Bones (193316), Weaponmaster (193536), Nightblade (195452), Eviscerate (196819), Finality: Eviscerate (197393), Finality: Nightblade (197395), Between the Eyes (199804)
 #2 (id=283925)   : Apply Aura (6) | Unknown effect sub type (418)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 4 | Target: Self(1)
 #3 (id=297518)   : Apply Aura (6) | Dummy (4)
@@ -3689,8 +3721,8 @@ Tooltip          : Increases damage done by $s1%.
 Name             : Nightblade (id=195452) [Spell Family (8)] 
 Class            : Subtlety Rogue
 School           : Shadow
-Resource         : 25 Energy
-Resource         : 1 - 5 Combo Points
+Resource         : 25 Energy (id=10522)
+Resource         : 1 - 5 Combo Points (id=10590)
 Spell Level      : 20
 Range            : 5 yards
 GCD              : 1 seconds
@@ -3778,12 +3810,12 @@ Tooltip          : Your next Pistol Shot is free.
 Name             : Eviscerate (id=196819) [Spell Family (8)] 
 Class            : Assassination Subtlety Rogue
 School           : Physical
-Resource         : 35 Energy
-Resource         : 1 - 5 Combo Points
+Resource         : 35 Energy (id=10594)
+Resource         : 1 - 5 Combo Points (id=10595)
 Spell Level      : 3
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Rogue Tier 6 Trinket (40460), Mastery: Executioner (76808), Vendetta (79140), Subtlety Rogue (137035), Death from Above (163786), Cold Blood (182304), Eviscerating Blade (184917), Adrenaline Rush (186286), Deeper Stratagem (193531), Acrobatic Strikes (196924), Gutripper (197234), Finality: Eviscerate (197496), Eviscerate (231716), Feeding Frenzy (242705)
+Affecting spells : Rogue Tier 6 Trinket (40460), Mastery: Executioner (76808), Vendetta (79140), Subtlety Rogue (137035), Death from Above (163786), Cold Blood (182304), Eviscerating Blade (184917), Adrenaline Rush (186286), Deeper Stratagem (193531), Acrobatic Strikes (196924), Gutripper (197234), Finality: Eviscerate (197496), Eviscerate (231716), Feeding Frenzy (242705), Focused Shurikens (245640), Eviscerate (245691)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
@@ -3913,7 +3945,7 @@ Description      : Increases the range on all your melee attacks by $s1 yards.
 Name             : Ghostly Strike (id=196937) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
-Resource         : 30 Energy
+Resource         : 30 Energy (id=10605)
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1 seconds
@@ -4012,7 +4044,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=289229)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-Description      : You immediately gain $196980s1 Energy when you enter Stealth or activate Shadow Dance.
+Description      : Gain ${$196980s1*$196980d/$196980t1} Energy over $196980d when you enter Stealth or activate Shadow Dance.
 
 Name             : Premeditation (Passive) (id=196979) [Spell Family (8), Passive] 
 Class            : Rogue
@@ -4040,6 +4072,7 @@ Description      : Cheap Shot and Shadowstrike generate $s1 additional combo poi
 Name             : Master of Shadows (id=196980) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Duration         : 4 seconds
 Attributes       : ........ ........ ........ ........   .....x.. ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4048,19 +4081,20 @@ Attributes       : ........ ........ ........ ........   .....x.. ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Does not break stealth (37)
 Effects          :
-#1 (id=289234)   : Energize Power (30)
-                   Base Value: 25 | Scaled Value: 25 | Misc Value: energy | Target: Self(1)
+#1 (id=289234)   : Apply Aura (6) | Periodic Energize Power: every 0.5 seconds (24)
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 3 | Target: Self(1)
 Description      : $@spelldesc196976
+Tooltip          : Regenerating ${$s1*$d/$t1} Energy over $d.
 
 Name             : Finality: Eviscerate (id=197393) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
-Resource         : 35 Energy
-Resource         : 1 - 5 Combo Points
+Resource         : 35 Energy (id=10683)
+Resource         : 1 - 5 Combo Points (id=10684)
 Spell Level      : 3
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Rogue Tier 6 Trinket (40460), Mastery: Executioner (76808), Vendetta (79140), Subtlety Rogue (137035), Death from Above (163786), Cold Blood (182304), Eviscerating Blade (184917), Adrenaline Rush (186286), Deeper Stratagem (193531), Acrobatic Strikes (196924), Gutripper (197234), Finality: Eviscerate (197496), Eviscerate (231716), Feeding Frenzy (242705)
+Affecting spells : Rogue Tier 6 Trinket (40460), Mastery: Executioner (76808), Vendetta (79140), Subtlety Rogue (137035), Death from Above (163786), Cold Blood (182304), Eviscerating Blade (184917), Adrenaline Rush (186286), Deeper Stratagem (193531), Acrobatic Strikes (196924), Gutripper (197234), Finality: Eviscerate (197496), Eviscerate (231716), Feeding Frenzy (242705), Focused Shurikens (245640), Eviscerate (245691)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
@@ -4083,8 +4117,8 @@ Variables        : $mult=${(1+$@versadmg)}
 Name             : Finality: Nightblade (id=197395) [Spell Family (8)] 
 Class            : Rogue
 School           : Shadow
-Resource         : 25 Energy
-Resource         : 1 - 5 Combo Points
+Resource         : 25 Energy (id=10685)
+Resource         : 1 - 5 Combo Points (id=10686)
 Spell Level      : 46
 Range            : 5 yards
 GCD              : 1 seconds
@@ -4150,7 +4184,7 @@ Tooltip          : Your next Nightblade will do $w1% increased damage.
 Name             : Shuriken Storm (id=197835) [Spell Family (8)] 
 Class            : Subtlety Rogue
 School           : Physical
-Resource         : 35 Energy
+Resource         : 35 Energy (id=10714)
 Spell Level      : 63
 GCD              : 1 seconds
 Velocity         : 18 yards/sec
@@ -4188,7 +4222,7 @@ Attributes       : ....x... ........ ..x..... .....x.x   .....x.. ..x..... .....
                  : Cannot cancel aura (31), Does not break stealth (37)
 Effects          :
 #1 (id=293719)   : Apply Aura (6) | Mod Power Regen (110)
-                   Base Value: 25 | Scaled Value: 25 | Misc Value: 3 | Target: Self(1)
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 3 | Target: Self(1)
 Description      : Your base Energy regeneration is increased by $s1% for the duration of Roll the Bones.
 Tooltip          : Increases Energy regeneration by $s1%.
 
@@ -4350,8 +4384,8 @@ Tooltip          : Parry chance increased by $s1% and riposting attacks.
 Name             : Between the Eyes (id=199804) [Spell Family (8)] 
 Class            : Outlaw Rogue
 School           : Physical
-Resource         : 35 Energy
-Resource         : 1 - 5 Combo Points
+Resource         : 35 Energy (id=10767)
+Resource         : 1 - 5 Combo Points (id=10768)
 Spell Level      : 20
 Range            : 20 yards
 GCD              : 1 seconds
@@ -4417,7 +4451,7 @@ Tooltip          : Switch to your Primary Talent Specialization.
 Name             : Gloomblade (id=200758) [Spell Family (8)] 
 Class            : Rogue
 School           : Shadow
-Resource         : 35 Energy
+Resource         : 35 Energy (id=10797)
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1 seconds
@@ -4525,6 +4559,7 @@ Tooltip          : Taking $w1% increased damage from the poisoning Rogue's abili
 Name             : Exsanguinate (id=200806) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
+Resource         : 20 Energy (id=12036)
 Range            : 5 yards
 GCD              : 1 seconds
 Cooldown         : 45 seconds
@@ -4536,7 +4571,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=295690)   : Dummy (3)
-                   Base Value: 100 | Scaled Value: 100 | Target: Enemy(6)
+                   Base Value: 125 | Scaled Value: 125 | Target: Enemy(6)
 Description      : Twist your blades into the target's wounds, causing your Bleed effects on them to bleed out $s1% faster.
 
 Name             : Curse of the Dreadblades (Artifact) (id=202665) [Spell Family (8)] 
@@ -4617,7 +4652,7 @@ Description      : $@spelldesc202897
 Name             : Blunderbuss (id=202895) [Scaling Spell (9), Spell Family (8)] 
 Class            : Rogue
 School           : Physical
-Resource         : 40 Energy
+Resource         : 40 Energy (id=10875)
 Spell Level      : 11
 Range            : 20 yards
 GCD              : 1 seconds
@@ -4628,7 +4663,7 @@ Attributes       : ........ ........ ........ ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ x....... 
-                 : x....... ........ ........ ........   ........ ........ ........ ........ 
+                 : x....... ........ ........ ........   ........ ........ ......x. ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=299182)   : School Damage: physical (2)
@@ -4669,36 +4704,6 @@ Description      : When Saber Slash strikes an additional time, there is a $s2% 
 |Tinterface\icons\inv_weapon_rifle_07.blp:24|t |cFFFFFFFFBlunderbuss|r
 $@spelldesc202895
 
-Name             : Enveloping Shadows (id=206237) [Spell Family (8)] 
-Class            : Rogue
-School           : Physical
-Resource         : 30 Energy
-Resource         : 1 - 5 Combo Points
-Spell Level      : 1
-Range            : 100 yards
-GCD              : 1 seconds
-Affecting spells : Deeper Stratagem (193531), Feeding Frenzy (242705)
-Attributes       : ....x... ........ x.x..... .....x..   .....x.. ..x..... ........ ........ 
-                 : ..x..... ........ ........ ........   ........ ........ ..x..... ......x. 
-                 : ....x... ........ ........ ........   ........ ........ ........ ........ 
-                 : ..x..... ........ .......x ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Does not break stealth (37)
-Effects          :
-#1 (id=304933)   : Apply Aura (6) | Periodic Energize Power: every 3 seconds (24)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 4 | Target: Self(1)
-#2 (id=304934)   : Apply Aura (6) | Periodic Energize Power: every 3 seconds (24)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Target: Self(1)
-Description      : Finishing move that generates 1 combo point every $t1 sec. Lasts longer per combo point spent.
-   1 point  : 6 seconds
-   2 points: 12 seconds
-   3 points: 18 seconds
-   4 points: 24 seconds
-   5 points: 30 seconds$?s193531[
-   6 points: 36 seconds][]
-Tooltip          : Generating $w1 Combo Point every $t1 sec.
-
 Name             : Night Terrors (id=206760) [Spell Family (8)] 
 Class            : Rogue
 School           : Shadow
@@ -4712,19 +4717,19 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .x...
                  : ........ ........ ........ x.......   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
                  : Disable target procs (113)
 Effects          :
 #1 (id=305751)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88) | Target: Enemy(6)
 Description      : $@spelldesc195452
-Tooltip          : Movement speed slowed by $s1%.
+Tooltip          : Movement speed slowed by $w1%.
 
 Name             : Dismantle (Honor Talent) (id=207777) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
-Resource         : 25 Energy
+Resource         : 25 Energy (id=11024)
 Spell Level      : 52
 Range            : 5 yards
 GCD              : 1 seconds
@@ -4898,12 +4903,10 @@ $@spelldesc212198
 Name             : Symbols of Death (id=212283) [Spell Family (8)] 
 Class            : Subtlety Rogue
 School           : Physical
-Resource         : 35 Energy
+Resource         : 25 Energy (id=11146)
 Spell Level      : 36
-Duration         : 35 seconds
-Cooldown         : 10 seconds
-Stance Mask      : 0x20000000
-Affecting spells : Shadow Dance (185313), Etched in Shadow (238068), Item - Rogue T20 Subtlety 2P Bonus (242279)
+Cooldown         : 30 seconds
+Affecting spells : Shadow Dance (185313), Etched in Shadow (238068), Item - Rogue T20 Subtlety 2P Bonus (242279), 
 Attributes       : ....x... ........ x.x..... ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4912,14 +4915,17 @@ Attributes       : ....x... ........ x.x..... ........   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Does not break stealth (37)
 Effects          :
-#1 (id=314702)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 0x7f | Target: Self(1)
-#2 (id=314703)   : Apply Aura (6) | Periodic Energize Power: every 2 seconds (24)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Target: Self(1)
-#3 (id=341221)   : Trigger Spell: Death (64)
+#1 (id=314702)   : Trigger Spell: Shadowstrike (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 227151 | Target: Self(1)
-Description      : Invoke ancient symbols of power, increasing all damage you deal by $s1% for $d, and causing your next Shadowstrike to critically strike. Unaffected by the global cooldown.
-Tooltip          : All damage done increased by $s1%.
+#2 (id=314703)   : Trigger Spell: Nightblade (64)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 245689 | Target: Self(1)
+#3 (id=373912)   : Trigger Spell: Eviscerate (64)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 245691 | Target: Self(1)
+Description      : Invoke ancient symbols of power, empowering the next use of several of your abilities:
+
+Shadowstrike: Generates $227151s1 additional combo points.
+Nightblade: Deals $245689s1% increased damage.
+Eviscerate: Critical strike chance increased by $245691s1%.
 
 Name             : Goremaw's Bite (id=220901) [Spell Family (8)] 
 Class            : Rogue
@@ -5013,16 +5019,16 @@ Effects          :
 Description      : $@spelldesc196951
 Tooltip          : Dazed. Movement speed reduced by $s1.
 
-Name             : Death (id=227151) [Spell Family (8)] 
+Name             : Shadowstrike (id=227151) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
 Spell Level      : 34
-Duration         : 10 seconds
+Duration         : 30 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
-Affecting spells : Shadow Dance (185313), Etched in Shadow (238068), Item - Rogue T20 Subtlety 2P Bonus (242279)
+Affecting spells : Shadow Dance (185313), Etched in Shadow (238068), Item - Rogue T20 Subtlety 2P Bonus (242279), 
 Triggered by     : Symbols of Death (212283)
 Attributes       : ....x... ........ x.x..... ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5032,11 +5038,11 @@ Attributes       : ....x... ........ x.x..... ........   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Does not break stealth (37)
 Effects          :
-#1 (id=341220)   : Apply Aura (6) | Add Flat Modifier: Spell Critical Chance (107)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 7 | Target: Self(1)
+#1 (id=341220)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 23 | Target: Self(1)
                    Affected Spells: Shadowstrike (185438)
 Description      : $@spelldesc212283
-Tooltip          : Your next Shadowstrike will critically strike.
+Tooltip          : Your next Shadowstrike generates $s2 additional combo points.
 
 Name             : Sprint (Rank 2) (id=231691) [Spell Family (8), Passive] 
 Class            : Assassination Outlaw Subtlety Rogue
@@ -5074,7 +5080,7 @@ Description      : Eviscerate's damage is increased by $s1%.
 
 Name             : Shadowstrike (Rank 2) (id=231718) [Spell Family (8), Passive] 
 Class            : Subtlety Rogue
-School           : Holy
+School           : Physical
 Spell Level      : 42
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5084,10 +5090,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=349577)   : Apply Aura (6) | Add Flat Modifier: Spell Range (107)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 5 | Target: Self(1)
-                   Affected Spells: Shadowstrike (185438)
-Description      : Shadowstrike will now teleport you to a target up to ${$s1+5} yards away.
+#1 (id=349577)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 5 | Target: Self(1)
+Description      : Shadowstrike deals $245623s2% increased damage and will now teleport you to a target up to ${$245623s1+5} yards away when used from out of combat.
 
 Name             : Garrote (Rank 2) (id=231719) [Spell Family (8), Passive] 
 Class            : Assassination Rogue
@@ -5140,5 +5145,181 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 12 | Target: Self(1)
                    Affected Spells: Kingsbane (192759), Kingsbane (192760), Curse of the Dreadblades (202665), Kingsbane (222062)
 Description      : Curse of the Dreadblades increases your damage by $s1% while it is active.
+
+Name             : Enveloping Shadows (id=238104) [Spell Family (8), Passive] 
+Class            : Rogue
+School           : Physical
+Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Cannot cancel aura (31)
+Effects          :
+#1 (id=360789)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 3 | Target: Self(1)
+                   Affected Spells: Deepening Shadows (185314)
+#2 (id=373849)   : Apply Aura (6) | Modify Cooldown Charge (411)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1615 | Target: Self(1)
+                   Affected Spells: Deepening Shadows (185314)
+Description      : Deepening Shadows reduces the remaining cooldown of Shadow Dance by an additional ${$s1/10}.1 sec per combo point spent.
+
+Shadow Dance gains $s2 additional charge.
+
+Name             : Shadowstrike (Rank 2) (id=245623) [Spell Family (8), Hidden] 
+Class            : Rogue
+School           : Physical
+Duration         : Aura (infinite)
+Attributes       : .......x ........ ........ x..x....   .....x.. ........ ........ ........ 
+                 : ........ ......x. ...x.... ........   ........ ........ ....x... ........ 
+                 : ........ ........ .....x.. ........   ...x.... ........ .xx..... ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : .....x.. ........ ........ ........   ........ ...x.... ........ ........ 
+                 : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
+                 : Hidden (7), Does not break stealth (37)
+Effects          :
+#1 (id=373801)   : Apply Aura (6) | Add Flat Modifier: Spell Range (107)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 5 | Target: Self(1)
+                   Affected Spells: Shadowstrike (185438)
+#2 (id=373802)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self(1)
+                   Affected Spells: Shadowstrike (185438)
+Description      : $@spelldesc231718
+Tooltip          : Shadowstrike deals $s2% increased damage and has $245623s1 yds increased range.
+
+Name             : Focused Shurikens (id=245639) [Spell Family (8), Passive] 
+Class            : Subtlety Rogue
+School           : Physical
+Spell Level      : 70
+Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=373836)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+Description      : Shuriken Storm increases the damage of your next Eviscerate by $245640s1% for each enemy hit beyond beyond the first. Stacks up to $245640u times.
+
+Name             : Focused Shurikens (id=245640) [Spell Family (8)] 
+Class            : Rogue
+School           : Physical
+Duration         : 15 seconds
+Stacks           : 5 maximum
+Proc Chance      : 101%
+Proc Flags       : ....x... ........ ........ ........ 
+                 : Yellow Melee
+Attributes       : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=373837)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self(1)
+                   Affected Spells: Eviscerate (196819), Finality: Eviscerate (197393)
+Description      : $@spelldesc245639
+Tooltip          : Your next Eviscerate deals $w1% increased damage.
+
+Name             : Deep Shadows (id=245687) [Spell Family (8), Passive] 
+Class            : Rogue
+School           : Physical
+Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Cannot cancel aura (31)
+Effects          :
+#1 (id=373906)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 4 (107)
+                   Base Value: 35 | Scaled Value: 35 | Misc Value: 32 | Target: Self(1)
+                   Affected Spells: Shadow Dance (185313)
+Description      : While Shadow Dance is active, all damage you deal is increased by $s1%.
+
+Name             : Nightblade (id=245689) [Spell Family (8)] 
+Class            : Rogue
+School           : Physical
+Spell Level      : 34
+Duration         : 30 seconds
+Affecting spells : Shadow Dance (185313), Etched in Shadow (238068), Item - Rogue T20 Subtlety 2P Bonus (242279), 
+Triggered by     : Symbols of Death (212283)
+Attributes       : ....x... ........ x.x..... ........   .....x.. ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Does not break stealth (37)
+Effects          :
+#1 (id=373909)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 22 | Target: Self(1)
+Description      : $@spelldesc212283
+Tooltip          : Your next Nightblade deals $s1% increased damage.
+
+Name             : Eviscerate (id=245691) [Spell Family (8)] 
+Class            : Rogue
+School           : Physical
+Spell Level      : 34
+Duration         : 30 seconds
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
+Proc Flags       : ....x... ........ ........ ........ 
+                 : Yellow Melee
+Affecting spells : Shadow Dance (185313), Etched in Shadow (238068), Item - Rogue T20 Subtlety 2P Bonus (242279), 
+Triggered by     : Symbols of Death (212283)
+Attributes       : ....x... ........ x.x..... ........   .....x.. ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Does not break stealth (37)
+Effects          :
+#1 (id=373911)   : Apply Aura (6) | Add Flat Modifier: Spell Critical Chance (107)
+                   Base Value: 35 | Scaled Value: 35 | Misc Value: 7 | Target: Self(1)
+                   Affected Spells: Eviscerate (196819), Finality: Eviscerate (197393)
+Description      : $@spelldesc212283
+Tooltip          : Your next Eviscerate has $s1% increased critical strike chance.
+
+Name             : Sprint (Rank 2) (id=245751) [Spell Family (8), Passive] 
+Class            : Subtlety Rogue
+School           : Physical
+Spell Level      : 61
+Proc Chance      : 101%
+Proc Flags       : ..x.x... ..x...x. .....x.. .....x.. 
+                 : White Melee, Yellow Melee, AOE Heal, Heal, Trap Triggered
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=374033)   : Apply Aura (6) | Proc Trigger Spell: Sprint (42)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 245752 | Target: Self(1)
+Description      : Sprint now allows you to run over water.
+
+Name             : Sprint (Rank 2) (id=245752) [Spell Family (8), Hidden] 
+Class            : Rogue
+School           : Physical
+Duration         : Aura (infinite)
+Triggered by     : Sprint (245751)
+Attributes       : .......x ........ ........ x..x....   .....x.. ........ ........ ........ 
+                 : ........ ......x. ...x.... ........   ........ ........ ........ ........ 
+                 : ........ ........ .....x.. ........   ...x.... .x...... .xx..... ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : .....x.. ........ ........ ........   ........ ...x.... ........ ........ 
+                 : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
+                 : Hidden (7), Does not break stealth (37)
+Effects          :
+#1 (id=374034)   : Apply Aura (6) | Periodic Dummy: every 0.25 seconds (226)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+Description      : $@spelldesc245751
 
 

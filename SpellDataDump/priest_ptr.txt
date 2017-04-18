@@ -1,9 +1,9 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build 8142444)
+SimulationCraft 720-02 for World of Warcraft 7.2.0 PTR (wow build 23826)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Discipline Shadow Priest
 School           : Holy
-Resource         : 2% Base Mana (22000 @Level 110)
+Resource         : 2% Base Mana (id=7)
 Spell Level      : 8
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -30,7 +30,7 @@ Variables        : $shield=${(($SP*5.5)+$m1)*(1+$@versadmg)}
 Name             : Renew (id=139) [Spell Family (6)] 
 Class            : Holy Priest
 School           : Holy
-Resource         : 2% Base Mana (22000 @Level 110)
+Resource         : 2% Base Mana (id=35)
 Spell Level      : 12
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -56,7 +56,7 @@ Tooltip          : Healing $w1 health every $t1 sec.$?$w3<0[  Damage taken reduc
 Name             : Purify (id=527) [Spell Family (6)] 
 Class            : Discipline Holy Priest
 School           : Holy
-Resource         : 2.6% Base Mana (28600 @Level 110)
+Resource         : 2.6% Base Mana (id=56)
 Spell Level      : 22
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -82,7 +82,7 @@ Description      : Dispels harmful effects on the target, removing all Magic and
 Name             : Dispel Magic (id=528) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
-Resource         : 4% Base Mana (44000 @Level 110)
+Resource         : 4% Base Mana (id=57)
 Spell Level      : 56
 Range            : 30 yards
 GCD              : 1.5 seconds
@@ -101,7 +101,7 @@ Description      : Dispels Magic on the enemy target, removing $m1 beneficial Ma
 Name             : Smite (id=585) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
-Resource         : 1% Base Mana (11000 @Level 110) w/ Discipline Priest (id=137032)
+Resource         : 1% Base Mana (id=62) w/ Discipline Priest (id=137032)
 Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 1.5 seconds
@@ -141,7 +141,7 @@ Tooltip          : Reduced threat level.
 Name             : Shadow Word: Pain (id=589) [Spell Family (6)] 
 Class            : Discipline Shadow Priest
 School           : Shadow
-Resource         : 2.2% Base Mana (24200 @Level 110) w/ Discipline Priest (id=137032)
+Resource         : 2.2% Base Mana (id=10512) w/ Discipline Priest (id=137032)
 Spell Level      : 3
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -170,7 +170,7 @@ Tooltip          : Suffering $w2 Shadow damage every $t2 sec.
 Name             : Prayer of Healing (id=596) [Spell Family (6)] 
 Class            : Holy Priest
 School           : Holy
-Resource         : 4.5% Base Mana (49500 @Level 110)
+Resource         : 4.5% Base Mana (id=67)
 Spell Level      : 28
 Range            : 40 yards
 Cast Time        : 2 seconds
@@ -195,7 +195,7 @@ Description      : A powerful prayer that heals the target and the ${$s3-1} near
 Name             : Mind Control (id=605) [Spell Family (6)] 
 Class            : Priest
 School           : Shadow
-Resource         : 0.5% Base Mana (5500 @Level 110) w/ Discipline Priest (id=137032)
+Resource         : 0.5% Base Mana (id=69) w/ Discipline Priest (id=137032)
 Spell Level      : 42
 Range            : 30 yards
 Cast Time        : 1.8 seconds
@@ -221,8 +221,8 @@ Tooltip          : Under the command of the Priest.
 Name             : Levitate (id=1706) [Spell Family (6)] 
 Class            : Discipline Holy Shadow Priest
 School           : Holy
-Resource         : 0.9% Base Mana (9900 @Level 110) w/ Discipline Priest (id=137032)
-Resource         : 0.9% Base Mana (9900 @Level 110) w/ Holy Priest (id=137031)
+Resource         : 0.9% Base Mana (id=136) w/ Discipline Priest (id=137032)
+Resource         : 0.9% Base Mana (id=11171) w/ Holy Priest (id=137031)
 Spell Level      : 32
 Range            : 30 yards
 GCD              : 1.5 seconds
@@ -243,7 +243,7 @@ Tooltip          : Levitating.
 Name             : Holy Word: Serenity (id=2050) [Spell Family (6)] 
 Class            : Holy Priest
 School           : Holy
-Resource         : 4% Base Mana (44000 @Level 110)
+Resource         : 4% Base Mana (id=152)
 Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -265,7 +265,7 @@ Description      : Perform a miracle, healing an ally for $s1.
 Name             : Heal (id=2060) [Spell Family (6)] 
 Class            : Holy Priest
 School           : Holy
-Resource         : 1.7% Base Mana (18700 @Level 110)
+Resource         : 1.7% Base Mana (id=153)
 Spell Level      : 24
 Range            : 40 yards
 Cast Time        : 2.5 seconds
@@ -286,7 +286,7 @@ Description      : An efficient spell that heals an ally for $s1.
 Name             : Flash Heal (id=2061) [Spell Family (6)] 
 Class            : Discipline Holy Shadow Priest
 School           : Holy
-Resource         : 2.8% Base Mana (30799 @Level 110)
+Resource         : 2.8% Base Mana (id=154)
 Spell Level      : 5
 Range            : 40 yards
 Cast Time        : 1.5 seconds
@@ -308,7 +308,7 @@ Description      : A fast spell that heals an ally for $s1.
 Name             : Mind Vision (id=2096) [Spell Family (6)] 
 Class            : Discipline Shadow Priest
 School           : Shadow
-Resource         : 1% Base Mana (11000 @Level 110)
+Resource         : 1% Base Mana (id=157)
 Spell Level      : 13
 Range            : 50000 yards
 GCD              : 1.5 seconds
@@ -381,7 +381,7 @@ Description      : Blasts the target's mind for $s1 Shadow damage.$?a185916[
 Name             : Psychic Scream (id=8122) [Spell Family (6)] 
 Class            : Discipline Shadow Priest
 School           : Shadow
-Resource         : 3% Base Mana (33000 @Level 110)
+Resource         : 3% Base Mana (id=328)
 Spell Level      : 18
 GCD              : 1.5 seconds
 Duration         : 8 seconds
@@ -411,7 +411,7 @@ Tooltip          : Disoriented.
 Name             : Shackle Undead (id=9484) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
-Resource         : 2% Base Mana (22000 @Level 110)
+Resource         : 2% Base Mana (id=380)
 Spell Level      : 34
 Range            : 30 yards
 Cast Time        : 1.5 seconds
@@ -459,7 +459,7 @@ Tooltip          : Haste increased by $s1% and mana cost of spells reduced by $s
 Name             : Holy Fire (id=14914) [Spell Family (6)] 
 Class            : Holy Priest
 School           : Holy
-Resource         : 1% Base Mana (11000 @Level 110)
+Resource         : 1% Base Mana (id=559)
 Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -683,7 +683,7 @@ Tooltip          : Healing $/5;s2% every $t1 seconds.
 Name             : Mass Dispel (id=32375) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
-Resource         : 8% Base Mana (88000 @Level 110)
+Resource         : 8% Base Mana (id=1342)
 Spell Level      : 80
 Range            : 30 yards
 Cast Time        : 1.5 seconds
@@ -736,7 +736,7 @@ Description      : A word of dark binding that inflicts $s1 Shadow damage to the
 Name             : Binding Heal (id=32546) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
-Resource         : 2.5% Base Mana (27500 @Level 110)
+Resource         : 2.5% Base Mana (id=1347)
 Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 1.5 seconds
@@ -804,7 +804,7 @@ Tooltip          : Interrupted.
 Name             : Prayer of Mending (id=33076) [Spell Family (6)] 
 Class            : Holy Priest
 School           : Holy
-Resource         : 2% Base Mana (22000 @Level 110)
+Resource         : 2% Base Mana (id=1395)
 Spell Level      : 50
 Range            : 40 yards
 Cast Time        : 1.5 seconds
@@ -850,7 +850,7 @@ Description      : $@spelldesc33076
 Name             : Pain Suppression (id=33206) [Spell Family (6)] 
 Class            : Discipline Priest
 School           : Holy
-Resource         : 1.6% Base Mana (17600 @Level 110)
+Resource         : 1.6% Base Mana (id=1403)
 Spell Level      : 48
 Range            : 40 yards
 Duration         : 8 seconds
@@ -868,6 +868,8 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
 Effects          :
 #1 (id=23040)    : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 0x7f | Target: Friend(21)
+#2 (id=372053)   : Apply Aura (6) | Periodic Dummy: every 0.5 seconds (226)
+                   Base Value: 0 | Scaled Value: 0 | Target: Friend(21)
 Description      : Reduces all damage taken by a friendly target by $s1% for $d. Castable while stunned.
 Tooltip          : All damage taken reduced by $s1%.
 
@@ -901,7 +903,7 @@ Description      : Summons a shadowy fiend to attack the target for $d.
 Name             : Holy Word: Sanctify (id=34861) [Spell Family (6)] 
 Class            : Holy Priest
 School           : Holy
-Resource         : 5% Base Mana (55000 @Level 110)
+Resource         : 5% Base Mana (id=1546)
 Spell Level      : 40
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -1100,7 +1102,7 @@ Tooltip          : Your Power Word: Shield has no cooldown.
 Name             : Penance (id=47540) [Spell Family (6)] 
 Class            : Discipline Priest
 School           : Holy
-Resource         : 2.8% Base Mana (30799 @Level 110)
+Resource         : 2.8% Base Mana (id=2193)
 Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -1253,7 +1255,7 @@ Effects          :
 Name             : Guardian Spirit (id=47788) [Spell Family (6)] 
 Class            : Holy Priest
 School           : Holy
-Resource         : 0.9% Base Mana (9900 @Level 110)
+Resource         : 0.9% Base Mana (id=2205)
 Spell Level      : 48
 Range            : 40 yards
 Duration         : 10 seconds
@@ -1366,7 +1368,7 @@ Tooltip          : Healing $/5;s2% every $t1 seconds.
 Name             : Power Word: Barrier (id=62618) [Scaling Spell (8), Spell Family (6)] 
 Class            : Discipline Priest
 School           : Holy
-Resource         : 6.3% Base Mana (69300 @Level 110)
+Resource         : 4% Base Mana (id=2830)
 Spell Level      : 70
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -1457,7 +1459,7 @@ Description      : Power Word: Shield $?s137033[increases][and Leap of Faith inc
 Name             : Divine Hymn (id=64843) [Spell Family (6)] 
 Class            : Holy Priest
 School           : Holy
-Resource         : 4.4% Base Mana (48400 @Level 110)
+Resource         : 4.4% Base Mana (id=2876)
 Spell Level      : 70
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -1622,7 +1624,7 @@ Description      : Dispels magic in a $32375a1 yard radius, removing all harmful
 Name             : Leap of Faith (id=73325) [Spell Family (6)] 
 Class            : Discipline Holy Priest
 School           : Holy
-Resource         : 2.6% Base Mana (28600 @Level 110)
+Resource         : 2.6% Base Mana (id=3325)
 Spell Level      : 63
 Range            : 40 yards
 Duration         : 1.5 seconds
@@ -1686,7 +1688,7 @@ Effects          :
 #1 (id=68099)    : Apply Aura (6) | Add Percent Modifier: Spell Effect 1 (108)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000 | Misc Value: 3 | Target: Self(1)
                    Affected Spells: Atonement (81749)
-Description      : Increases the healing transferred through Atonement by $s1.1%.
+Description      : Increases the healing transferred through Atonement by ${$s1}.1%.
 
 Name             : Mastery: Echo of Light (id=77485) [Spell Family (6), Passive] 
 Class            : Holy Priest
@@ -1804,7 +1806,7 @@ Effects          :
                    Base Value: 60 | Scaled Value: 60
 Description      : Plea, Power Word: Shield, Shadow Mend, and Power Word: Radiance also apply Atonement to your target for $194384s3 sec.
 
-When you deal spell damage, you instantly heal all targets affected by Atonement for $s1.1% of the damage done.
+When you deal spell damage, you instantly heal all targets affected by Atonement for ${$s1}.1% of the damage done.
 
 Name             : Power Word: Barrier (id=81782) [Spell Family (6)] 
 Class            : Priest
@@ -1852,7 +1854,7 @@ Tooltip          : Fleeing in terror.
 Name             : Holy Word: Chastise (id=88625) [Spell Family (6)] 
 Class            : Holy Priest
 School           : Holy
-Resource         : 2% Base Mana (22000 @Level 110)
+Resource         : 2% Base Mana (id=4095)
 Spell Level      : 18
 Range            : 30 yards
 GCD              : 1.5 seconds
@@ -2029,7 +2031,7 @@ Tooltip          : Your Heal, Flash Heal, and Prayer of Healing spells cause abs
 Name             : Divine Star (id=110744) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
-Resource         : 2.5% Base Mana (27500 @Level 110)
+Resource         : 2.5% Base Mana (id=6507)
 Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
@@ -2154,7 +2156,7 @@ Tooltip          : Absorbing $w1 damage.
 Name             : Halo (id=120517) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
-Resource         : 3.6% Base Mana (39600 @Level 110)
+Resource         : 3.6% Base Mana (id=6487)
 Spell Level      : 1
 Range            : 30 yards
 Cast Time        : 1.5 seconds
@@ -2272,7 +2274,7 @@ Range            : 100 yards
 Affecting spells : Atonement (194384), Light of T'uure (208065), Power Word: Shield (211558), Kam Xi'raff (233997)
 Attributes       : ........ ........ ........ x..x....   .....x.. .....x.. ........ ........ 
                  : ........ ......x. ...x.... ........   ........ .x...... ........ ........ 
-                 : x......x .......x ........ ........   ...x.... ........ .xx..... ........ 
+                 : x......x .......x ........ ........   ...x.... .......x .xx..... ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : .....x.. ........ ........ ........   ........ ...x.... ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2481,7 +2483,7 @@ Description      : When your Vampiric Touch is dispelled, the dispeller is insta
 Name             : Holy Nova (id=132157) [Spell Family (6)] 
 Class            : Holy Priest
 School           : Holy
-Resource         : 1.6% Base Mana (17600 @Level 110)
+Resource         : 1.6% Base Mana (id=7897)
 Spell Level      : 26
 GCD              : 1.5 seconds
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
@@ -2788,7 +2790,7 @@ Description      : $@spelldesc78203
 Name             : Clarity of Will (id=152118) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
-Resource         : 2.8% Base Mana (30799 @Level 110)
+Resource         : 2.8% Base Mana (id=9170)
 Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
@@ -2947,7 +2949,7 @@ Name             : Shadow Mend (id=186263) [Spell Family (6)]
 Replaces         : Flash Heal (id=2061)
 Class            : Discipline Shadow Priest
 School           : Shadow
-Resource         : 2.8% Base Mana (30799 @Level 110)
+Resource         : 2.8% Base Mana (id=10191)
 Spell Level      : 28
 Range            : 40 yards
 Cast Time        : 1.5 seconds
@@ -3214,6 +3216,10 @@ Effects          :
 #4 (id=361455)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Self(1)
                    Affected Spells: Voidform (194249)
+#5 (id=371747)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
+                   Base Value: -35 | Scaled Value: -35 | Misc Value: 12 | Target: Self(1)
+#6 (id=371748)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
+                   Base Value: -35 | Scaled Value: -35 | Misc Value: 23 | Target: Self(1)
 Description      : Void Eruption may be cast anytime your Insanity level is ${100+$m1/100} or higher$@switch<$s4>[][, and Voidform increases Shadow damage dealt by an additional $s3%].
 
 Name             : Mind Flay (id=193473) [Spell Family (6)] 
@@ -3333,7 +3339,7 @@ Tooltip          : Healed whenever the Priest damages an enemy.
 Name             : Power Word: Radiance (id=194509) [Spell Family (6)] 
 Class            : Discipline Priest
 School           : Holy
-Resource         : 6.5% Base Mana (71500 @Level 110)
+Resource         : 6.5% Base Mana (id=10498)
 Spell Level      : 52
 Range            : 40 yards
 Cast Time        : 2.5 seconds
@@ -3718,7 +3724,7 @@ Tooltip          : Effects of Serendipity increased by $s1%.
 Name             : Holy Word: Chastise (id=200196) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
-Resource         : 3% Base Mana (33000 @Level 110)
+Resource         : 3% Base Mana (id=10781)
 Spell Level      : 1
 Range            : 30 yards
 GCD              : 1.5 seconds
@@ -3760,7 +3766,7 @@ Description      : Holy Word: Chastise stuns the target for $200200d and is not 
 Name             : Holy Word: Chastise (id=200200) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
-Resource         : 3% Base Mana (33000 @Level 110)
+Resource         : 3% Base Mana (id=10782)
 Spell Level      : 10
 Range            : 30 yards
 GCD              : 1.5 seconds
@@ -3855,7 +3861,7 @@ Tooltip          : Switch to your Primary Talent Specialization.
 Name             : Plea (id=200829) [Spell Family (6)] 
 Class            : Discipline Priest
 School           : Holy
-Resource         : 0.36% Base Mana (3960 @Level 110)
+Resource         : 0.36% Base Mana (id=10800)
 Spell Level      : 24
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -3876,7 +3882,7 @@ Description      : A quick, efficient plea to heal an ally for $s1.$?s81749[ Man
 Name             : Shadow Covenant (id=204065) [Spell Family (6)] 
 Class            : Priest
 School           : Shadow
-Resource         : 5% Base Mana (55000 @Level 110)
+Resource         : 5% Base Mana (id=10912)
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -3899,7 +3905,7 @@ Description      : Draws on the power of shadow to heal up to $s2 injured allies
 Name             : Purge the Wicked (id=204197) [Spell Family (6)] 
 Class            : Priest
 School           : Fire
-Resource         : 2% Base Mana (22000 @Level 110)
+Resource         : 2% Base Mana (id=10913)
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -3942,7 +3948,7 @@ Tooltip          : $w1 Fire damage every $t1 seconds.
 Name             : Shining Force (id=204263) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
-Resource         : 2.5% Base Mana (27500 @Level 110)
+Resource         : 2.5% Base Mana (id=10916)
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -3965,7 +3971,7 @@ Tooltip          : Movement speed reduced by $s1%.
 Name             : Circle of Healing (id=204883) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
-Resource         : 5% Base Mana (55000 @Level 110)
+Resource         : 5% Base Mana (id=10934)
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -4042,7 +4048,7 @@ Description      : Blasts the target's mind for $s1 Shadow damage.$?a185916[
 Name             : Mind Control (id=205364) [Spell Family (6)] 
 Class            : Priest
 School           : Shadow
-Resource         : 0.5% Base Mana (5500 @Level 110)
+Resource         : 0.5% Base Mana (id=10958)
 Spell Level      : 1
 Range            : 30 yards
 Cast Time        : 1.8 seconds
@@ -4316,7 +4322,7 @@ Description      : $@spelldesc234702
 Name             : Mass Resurrection (id=212036) [Spell Family (6)] 
 Class            : Discipline Holy Priest
 School           : Holy
-Resource         : 0.8% Base Mana (8800 @Level 110)
+Resource         : 0.8% Base Mana (id=11135)
 Spell Level      : 66
 Range            : 100 yards
 Cast Time        : 10 seconds
@@ -4380,7 +4386,7 @@ Tooltip          : Cannot be revived by in-combat resurrections.
 Name             : Purify Disease (id=213634) [Spell Family (6)] 
 Class            : Shadow Priest
 School           : Holy
-Resource         : 2.6% Base Mana (28600 @Level 110)
+Resource         : 2.6% Base Mana (id=11320)
 Spell Level      : 22
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -4427,7 +4433,7 @@ Tooltip          : Healing for $w1 every $t sec and movement speed increased by 
 Name             : Schism (id=214621) [Spell Family (6)] 
 Class            : Priest
 School           : Shadow
-Resource         : 2.5% Base Mana (27500 @Level 110)
+Resource         : 2.5% Base Mana (id=11237)
 Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 1.5 seconds
@@ -4586,7 +4592,7 @@ Tooltip          : Stunned.
 Name             : Void Eruption (id=228260) [Spell Family (6)] 
 Class            : Shadow Priest
 School           : Shadow
-Resource         : 10000 Insanity
+Resource         : 10000 Insanity (id=11537)
 Spell Level      : 20
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds

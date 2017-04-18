@@ -1,4 +1,4 @@
-SimulationCraft 720-02 for World of Warcraft 7.2.0 Live (wow build 23826, git build f6e16cb)
+SimulationCraft 720-02 for World of Warcraft 7.2.0 Live (wow build 23826)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -262,7 +262,7 @@ Effects          :
 Name             : Chaos Strike (id=162794) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Chaos
-Resource         : 40 Fury
+Resource         : 40 Fury (id=10198)
 Range            : 5 yards
 GCD              : 1.5 seconds
 Affecting spells : Metamorphosis (162264), Mastery: Demonic Presence (185164), Havoc Demon Hunter (212612), Vengeance Demon Hunter (212613)
@@ -405,7 +405,7 @@ Description      : Increases your Agility by $s1% while wearing only leather arm
 Name             : Chaos Nova (id=179057) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Chromatic
-Resource         : 30 Fury
+Resource         : 30 Fury (id=10418)
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 60 seconds
@@ -621,7 +621,7 @@ Generating ${$s4/10} Pain every $t4 sec.
 Name             : Blade Dance (id=188499) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
-Resource         : 35 Fury
+Resource         : 35 Fury (id=10434)
 GCD              : 1.5 seconds
 Duration         : 1 seconds
 Cooldown         : 10 seconds
@@ -927,7 +927,7 @@ Effects          :
 Name             : Eye Beam (id=198013) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Chromatic
-Resource         : 50 Fury
+Resource         : 50 Fury (id=10720)
 Range            : 20 yards
 GCD              : 1.5 seconds
 Duration         : 2 seconds
@@ -1135,7 +1135,7 @@ Tooltip          : Switch to your Primary Talent Specialization.
 Name             : Annihilation (id=201427) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Chaos
-Resource         : 40 Fury
+Resource         : 40 Fury (id=10809)
 Range            : 5 yards
 GCD              : 1.5 seconds
 Affecting spells : Metamorphosis (162264), Mastery: Demonic Presence (185164), Havoc Demon Hunter (212612), Vengeance Demon Hunter (212613)
@@ -1557,7 +1557,7 @@ Name             : Demon Spikes (id=203720) [Spell Family (107)]
 Replaces         : Vengeful Retreat (id=198793)
 Class            : Vengeance Demon Hunter
 School           : Physical
-Resource         : 20 Unknown (18)
+Resource         : 20 Unknown (18) (id=10943)
 Spell Level      : 1
 Cooldown         : 1.5 seconds
 Charges          : 2 (15 seconds cooldown)
@@ -2640,7 +2640,7 @@ Tooltip          : Attacks against you have a $s1% chance to inflict no damage.
 Name             : Fracture (id=209795) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
-Resource         : 20 Unknown (18)
+Resource         : 20 Unknown (18) (id=11169)
 Range            : 5 yards
 GCD              : 1.5 seconds
 Affecting spells : Metamorphosis (162264), Havoc Demon Hunter (212612), Vengeance Demon Hunter (212613)
@@ -2712,7 +2712,7 @@ Description      : Consume a Soul Fragment, healing you for $s1 health.
 Name             : Death Sweep (id=210152) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
-Resource         : 35 Fury
+Resource         : 35 Fury (id=11104)
 GCD              : 1.5 seconds
 Duration         : 1 seconds
 Cooldown         : 8 seconds
@@ -2901,8 +2901,8 @@ Description      : Attack with pure Fel power, dealing Chaos damage equal to $s1
 Name             : Fel Eruption (id=211881) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
-Resource         : 10 Fury w/ Havoc Demon Hunter (id=212612)
-Resource         : 10 Unknown (18) w/ Vengeance Demon Hunter (id=212613)
+Resource         : 10 Fury (id=11144) w/ Havoc Demon Hunter (id=212612)
+Resource         : 10 Unknown (18) (id=11161) w/ Vengeance Demon Hunter (id=212613)
 Range            : 20 yards
 GCD              : 1.5 seconds
 Duration         : 2 seconds
@@ -2927,7 +2927,7 @@ Tooltip          : Stunned.
 Name             : Fel Devastation (id=212084) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Fire
-Resource         : 30 Unknown (18)
+Resource         : 30 Unknown (18) (id=11141)
 Range            : 20 yards
 GCD              : 1.5 seconds
 Duration         : 2 seconds
@@ -3628,7 +3628,7 @@ Description      : Immolation Aura's initial burst has a chance to shatter Lesse
 Name             : Soul Barrier (id=227225) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Shadow
-Resource         : 10 Unknown (18)
+Resource         : 10 Unknown (18) (id=11507)
 GCD              : 1.5 seconds
 Duration         : 12 seconds
 Cooldown         : 30 seconds
@@ -3711,7 +3711,7 @@ Name             : Soul Cleave (id=228477) [Spell Family (107)]
 Replaces         : Chaos Strike (id=162794)
 Class            : Vengeance Demon Hunter
 School           : Physical
-Resource         : 30 - 60 Unknown (18)
+Resource         : 30 - 60 Unknown (18) (id=11545)
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
