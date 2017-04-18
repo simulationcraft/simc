@@ -5793,7 +5793,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #3 (id=321942)   : Energize Power (30)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: astral_power | Target: Self(1)
-Description      : Deals $m1 Astral damage to the target and empowers New Moon to become Half Moon. 
+Description      : Deals $m1 Arcane damage to the target and empowers New Moon to become Half Moon. 
 
 |cFFFFFFFFGenerates ${$m3/10} Astral Power.|r
 
@@ -5820,7 +5820,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #3 (id=321940)   : Energize Power (30)
                    Base Value: 200 | Scaled Value: 200 | Misc Value: astral_power | Target: Self(1)
-Description      : Deals $m1 Astral damage to the target and empowers Half Moon to become Full Moon.
+Description      : Deals $m1 Arcane damage to the target and empowers Half Moon to become Full Moon.
 
 |cFFFFFFFFGenerates ${$m3/10} Astral Power.|r
 
@@ -5880,7 +5880,7 @@ Effects          :
                    Base Value: 202787 | Scaled Value: 202787 | Trigger Spell: 202787
 #5 (id=302252)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: At Enemy(53)
-Description      : Deals $m1 Astral damage to the target and reduced damage to all other nearby enemies, and resets Full Moon to become New Moon.
+Description      : Deals $m1 Arcane damage to the target and reduced damage to all other nearby enemies, and resets Full Moon to become New Moon.
 
 |cFFFFFFFFGenerates ${$m2/10} Astral Power.|r
 

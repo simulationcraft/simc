@@ -650,8 +650,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 700 | Trigger Spell: 200685 | Target: Self(1)
 #8 (id=341247)   : Apply Aura (6) | Unknown effect sub type (483)
                    Base Value: 0 | Scaled Value: 0 | Misc Value 2: 0x8 | Target: Self(1)
-Description      : Strike all nearby enemies for ${3*$199552sw2+$200685sw2} Physical damage, and increase your chance to dodge by $s2% for $d.
+Description      : Strike $?a206416[your primary target for $<firstbloodDmg> Physical damage, ][]all nearby enemies for $<baseDmg> Physical damage, and increase your chance to dodge by $s2% for $d.
 Tooltip          : Dodge chance increased by $s2%.
+Variables        : $baseDmg=${3*$199552sw2+$200685sw2} 
+$firstbloodDmg=${(3*$199552sw2+$200685sw2)*(100+$206416s1)/100}
 
 Name             : Spectral Sight (id=188501) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -689,10 +691,10 @@ Replaces         : Fel Rush (id=195072)
 Class            : Vengeance Demon Hunter
 School           : Physical
 Range            : 30 yards
-Cooldown         : 1 seconds
+Cooldown         : 0.8 seconds
 Charges          : 2 (20 seconds cooldown)
 Category         : 1553
-Category Cooldown: 1 seconds
+Category Cooldown: 0.8 seconds
 Affecting spells : Infernal Force (207375), Abyssal Strike (207550), Vengeance Demon Hunter (212613)
 Attributes       : ....x... x....... ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -878,16 +880,18 @@ School           : Physical
 Spell Level      : 100
 Duration         : 8 seconds
 Cooldown         : 180 seconds
-Attributes       : ....x... ........ ........ ........   .....x.. ..x..... ........ ....x... 
+Attributes       : ....x... ........ ........ .......x   .....x.. ..x..... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ...x....   ........ ........ ........ ........ 
-                 : Does not break stealth (37)
+                 : Cannot cancel aura (31), Does not break stealth (37)
 Effects          :
 #1 (id=288808)   : Unknown effect type (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 6615 | Target: Unknown(125)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 6615 | Target: Unknown(62)
+#2 (id=374312)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Summons darkness around you in an 8 yd radius, granting friendly targets a $209426s1% chance to avoid all damage from an attack.  Lasts $d.
 
 Name             : Chaos Strike (Passive) (id=197125) [Spell Family (107), Passive, Hidden] 
@@ -2035,8 +2039,9 @@ Effects          :
 #2 (id=323061)   : Apply Aura (6) | Add Flat Modifier: Spell Resource Cost (107)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 14 | Target: Self(1)
                    Affected Spells: Blade Dance (188499), Blade Dance (199552), Blade Dance (200685), Death Sweep (210152), Death Sweep (210153), Death Sweep (210155)
-Description      : Reduces the Fury cost of Blade Dance by $s2 and increases its damage to ${(3*$199552sw2+$200685sw2)*(100+$m1)/100} against the first target struck.
-Variables        : $dmg=${($m1*$188499m1+$m1*$199552m2*2+$m1*$200685m2)/100}
+Description      : Reduces the Fury cost of Blade Dance by $s2 and increases its damage to $<firstbloodDmg> against the first target struck.
+Variables        : $baseDmg=${3*$199552sw2+$200685sw2} 
+$firstbloodDmg=${(3*$199552sw2+$200685sw2)*(100+$206416s1)/100}
 
 Name             : Bloodlet (id=206473) [Spell Family (107), Passive] 
 Class            : Demon Hunter
@@ -2623,7 +2628,7 @@ Range            : 100 yards
 Duration         : 8 seconds
 Attributes       : ........ x....... ........ .......x   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ xx...... ......x. 
-                 : ........ ........ ........ ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
@@ -2904,12 +2909,13 @@ GCD              : 1.5 seconds
 Duration         : 2 seconds
 Cooldown         : 30 seconds
 Affecting spells : Metamorphosis (162264), Mastery: Demonic Presence (185164), Havoc Demon Hunter (212612), Vengeance Demon Hunter (212613)
-Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
+Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Cannot dodge/parry/block (21)
 Effects          :
 #1 (id=313950)   : Apply Aura (6) | Stun (12)
                    Base Value: 100 | Scaled Value: 100 | Mechanic: Unknown(95) | Target: Enemy(6)

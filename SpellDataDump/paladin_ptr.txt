@@ -1790,7 +1790,7 @@ Name             : Light's Hammer (id=114158) [Spell Family (10)]
 Class            : Paladin
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
 School           : Holy
-Resource         : 35% Base Mana (id=11150)
+Resource         : 28% Base Mana (id=11150)
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec

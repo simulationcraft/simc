@@ -1322,7 +1322,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=53887)    : Apply Aura (6) | Add Percent Modifier: Spell Critical Damage (108)
                    Base Value: 50 | Scaled Value: 50 | SP Coefficient: 1.00000 | Misc Value: 15 | Target: Self(1)
-                   Affected Spells: Lightning Bolt (403), Chain Lightning (421), Earth Shock (8042), Fire Nova (8349), Flametongue Attack (10444), Spore Cloud (32642), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Frozen Rune Weapon 2 (51385), Frozen Rune Weapon 3 (51386), Frozen Rune Weapon 4 (51387), Frozen Rune Weapon 5 (51388), Thunderstorm (51490), Lava Burst (51505), Earthquake (61882), Lava Burst Overload (77451), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Item - Shaman T18 Enhancement 4P Bonus (185872), Lightning Bolt (187837), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Flame Shock (188838), Lightning Shield (192106), Lightning Shield (192109), Liquid Magma (192231), Flametongue (194084), Frostbrand (196834), Frost Shock (196840), Lightning Rod (197568), Volcanic Inferno (205533), Icefury (210714), Lightning Bolt (214815), Lightning Bolt Overload (214816), Icefury Overload (219271)
+                   Affected Spells: Lightning Bolt (403), Chain Lightning (421), Earth Shock (8042), Fire Nova (8349), Flametongue Attack (10444), Spore Cloud (32642), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Frozen Rune Weapon 2 (51385), Frozen Rune Weapon 3 (51386), Frozen Rune Weapon 4 (51387), Frozen Rune Weapon 5 (51388), Thunderstorm (51490), Lava Burst (51505), Earthquake (61882), Lava Burst Overload (77451), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Item - Shaman T18 Enhancement 4P Bonus (185872), Lightning Bolt (187837), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Flame Shock (188838), Lightning Shield (192106), Lightning Shield (192109), Liquid Magma (192231), Flametongue (194084), Frostbrand (196834), Frost Shock (196840), Lightning Rod (197568), Volcanic Inferno (205533), Icefury (210714), Lightning Bolt (214815), Lightning Bolt Overload (214816), Icefury Overload (219271), Seismic Lightning (243073)
 Description      : Your damaging critical strikes deal ${$m1+200}% damage instead of the usual 200%.
 
 Name             : Riptide (id=61295) [Spell Family (11)] 
@@ -1828,23 +1828,6 @@ Effects          :
 #1 (id=81207)    : Create Item (24)
                    Base Value: 1 | Scaled Value: 1 | Target: Self(1)
 
-Name             : Hand of Gul'dan (id=86040) [Spell Family (5)] 
-Class            : Shaman, Warlock
-School           : Shadowflame
-Range            : 50000 yards
-Affecting spells : Dirty Hands (211105)
-Attributes       : ........ ........ .......x ........   ...x...x ........ ........ ........ 
-                 : ..x..... ........ ........ ....x...   x....... ........ ........ ......x. 
-                 : ........ ........ ........ .x......   ........ ..x..... ........ ..x..... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Requires line of sight (186)
-Effects          :
-#1 (id=87492)    : School Damage: shadowflame (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.43200 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
-Description      : $@spelldesc105174
-
 Name             : Mail Specialization (Passive) (id=86099) [Passive, Hidden] 
 Class            : Enhancement Shaman
 School           : Physical
@@ -1998,44 +1981,6 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=104845)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 10 yards | Target: Raid Members(56)
-
-Name             : Hand of Gul'dan (id=104317) [Spell Family (5)] 
-Class            : Shaman, Warlock
-School           : Shadow
-Range            : 100 yards
-Duration         : 14 seconds
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=113739)   : Summon (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 55659 | Misc Value 2: 0xc8a | Target: Unknown(63)
-Description      : $@spelldesc105174
-
-Name             : Hand of Gul'dan (id=105174) [Spell Family (5)] 
-Class            : Demonology Shaman, Warlock
-School           : Shadowflame
-Resource         : 10 - 40 Soul Shard (id=4987)
-Spell Level      : 10
-Range            : 40 yards
-Cast Time        : 1.5 seconds
-GCD              : 1.5 seconds
-Velocity         : 0.7 yards/sec
-Attributes       : ........ ........ x....... ........   .......x .x...... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ..x..... ........ 
-                 : ........ ...x.... ........ ........   ........ ..x..... ........ ...x.... 
-                 : ........ ........ ........ ....x...   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ....x... ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=114885)   : Dummy (3)
-                   Base Value: 4 | Scaled Value: 4 | Radius: 8 yards | Target: Enemy(6)
-Description      : Calls down a demonic meteor full of Wild Imps which burst forth to attack the target for $225481d.
-
-Deals up to ${$m1*$86040m1} Shadowflame damage on impact to all enemies within $86040A1 yds of the target$?s196283[, applies Doom to each target,][] and summons up to ${$m1*$104317m2} Wild Imps, based on Soul Shards consumed.
 
 Name             : Astral Shift (id=108271) [Spell Family (11)] 
 Class            : Shaman
@@ -2819,7 +2764,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179725)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 21 | Scaled Value: 21 | Target: Self(1)
-                   Affected Spells: Lightning Bolt (403), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Spore Cloud (32642), Windfury Attack (33750), Frozen Rune Weapon 2 (51385), Frozen Rune Weapon 3 (51386), Frozen Rune Weapon 4 (51387), Frozen Rune Weapon 5 (51388), Lava Lash (60103), Windstrike (115357), Windstrike Off-Hand (115360), Item - Shaman T18 Enhancement 4P Bonus (185872), Lightning Bolt (187837), Crash Lightning (187874), Lightning Bolt (188196), Lightning Shield (192106), Lightning Shield (192109), Rockbiter (193786), Flametongue (193796), Flametongue (194084), Crash Lightning (195592), Boulderfist (201897), Windsong (201898), Lightning Bolt (214815), Lightning Bolt Overload (214816)
+                   Affected Spells: Lightning Bolt (403), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Spore Cloud (32642), Windfury Attack (33750), Frozen Rune Weapon 2 (51385), Frozen Rune Weapon 3 (51386), Frozen Rune Weapon 4 (51387), Frozen Rune Weapon 5 (51388), Lava Lash (60103), Windstrike (115357), Windstrike Off-Hand (115360), Item - Shaman T18 Enhancement 4P Bonus (185872), Lightning Bolt (187837), Crash Lightning (187874), Lightning Bolt (188196), Lightning Shield (192106), Lightning Shield (192109), Rockbiter (193786), Flametongue (193796), Flametongue (194084), Crash Lightning (195592), Windsong (201898), Lightning Bolt (214815), Lightning Bolt Overload (214816)
 #2 (id=191038)   : Apply Aura (6) | Override Spell Power per Attack Power% (366)
                    Base Value: 120 | Scaled Value: 120 | Target: Self(1)
 #3 (id=191039)   : Apply Aura (6) | Unknown effect sub type (179)
@@ -3644,7 +3589,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 6 seconds
-Affecting spells : Shaman Shock Range Bonus (32973), Elemental Fury (60188), Lucidity (137326), Elemental Bellows (184919), Maelstrom (187828), Firestorm (191740), Ember Totem (210658)
+Affecting spells : Shaman Shock Range Bonus (32973), Elemental Fury (60188), Lucidity (137326), Elemental Bellows (184919), Maelstrom (187828), Firestorm (191740), 
 Attributes       : ........ ........ x.x..... ..x.....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -3737,7 +3682,7 @@ Duration         : 21 seconds
 Cooldown         : 6 seconds
 Category         : 19
 Category Cooldown: 6 seconds
-Affecting spells : Shaman Shock Range Bonus (32973), Elemental Fury (60188), Lucidity (137326), Elemental Bellows (184919), Maelstrom (187828), Firestorm (191740), Ember Totem (210658)
+Affecting spells : Shaman Shock Range Bonus (32973), Elemental Fury (60188), Lucidity (137326), Elemental Bellows (184919), Maelstrom (187828), Firestorm (191740), 
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -4309,6 +4254,8 @@ School           : Nature
 Spell Level      : 10
 Range            : 10 yards
 GCD              : 1.5 seconds
+Charges          : 2 (6 seconds cooldown)
+Category         : 1634
 Affecting spells : Mastery: Deep Healing (77226), Ascendance (114051), Enhancement Shaman (137041), Gathering of the Maelstrom (198349), Weapons of the Elements (215381)
 Attributes       : ........ ........ x.x..... ........   ........ .x...... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4318,9 +4265,9 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=284355)   : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.55000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.75000 | Target: Enemy(6)
 #2 (id=284413)   : Energize Power (30)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: maelstrom | Target: Self(1)
+                   Base Value: 25 | Scaled Value: 25 | Misc Value: maelstrom | Target: Self(1)
 Description      : Assaults your target with earthen power, dealing $s1 Nature damage.
 
 |cFFFFFFFFGenerates $s2 Maelstrom.|r
@@ -4498,21 +4445,6 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=287367)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-
-Name             : Hand of Doom (id=196283) [Spell Family (5), Passive] 
-Class            : Shaman, Warlock
-School           : Physical
-Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=288091)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 3 | Scaled Value: 3 | Target: Self(1)
-Description      : Hand of Gul'dan now also applies Doom to all enemies it hits.
 
 Name             : Frostbrand (id=196834) [Spell Family (11)] 
 Class            : Enhancement Shaman
@@ -4811,7 +4743,7 @@ Description      : $?s201897[Boulderfist][Rockbiter] now also enhances your weap
 Name             : Wellspring (id=197995) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
-Resource         : 35% Base Mana (id=10729)
+Resource         : 20% Base Mana (id=10729)
 Range            : 30 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
@@ -5311,33 +5243,6 @@ Effects          :
 Description      : $@spelldesc201845
 Tooltip          : Stormstrike has no cooldown and its cost is reduced by $s3%.
 
-Name             : Boulderfist (id=201897) [Spell Family (11)] 
-Class            : Shaman
-School           : Nature
-Range            : 10 yards
-GCD              : 1.5 seconds
-Charges          : 2 (6 seconds cooldown)
-Category         : 1634
-Affecting spells : Enhancement Shaman (137041), Gathering of the Maelstrom (198349), Weapons of the Elements (215381)
-Attributes       : ........ ........ x.x..... ........   ........ .x...... .x...... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=297537)   : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 2.75000 | Target: Enemy(6)
-#2 (id=297594)   : Energize Power (30)
-                   Base Value: 25 | Scaled Value: 25 | Misc Value: maelstrom | Target: Self(1)
-#3 (id=297596)   : Trigger Spell: Boulderfist (64)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 218825 | Target: Self(1)
-#4 (id=359957)   : Dummy (3)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 2.50000 | Target: Enemy(6)
-Description      : Slams your target with the power of stone, dealing $s1 Nature damage and enhancing your weapons for $218825d, increasing$@switch<$s4>[][ your critical strike chance by $218825s1% and] all damage you deal by $218825s2%.
-
-|cFFFFFFFFGenerates $s2 Maelstrom.|r
-
 Name             : Windsong (id=201898) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
@@ -5461,48 +5366,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.62000 | Target: Enemy(6)
 Description      : Swipe at the target, causing $s1 Physical damage, and an additional $o2 Bleed damage over $d.
 Tooltip          : Bleeding for $o2 damage.
-
-Name             : Resonance Totem (id=202188) [Spell Family (11)] 
-Class            : Shaman
-School           : Nature
-Spell Level      : 1
-Range            : 40 yards
-GCD              : 1 seconds
-Duration         : 120 seconds
-Cooldown         : 30 seconds
-Triggered by     : Totem Mastery (210643)
-Attributes       : ........ ........ x....... ........   ........ ........ ........ ....x... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=297993)   : Summon (28)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 102392 | Misc Value 2: 0xeab | Target: Unknown(41)
-#2 (id=297994)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-Description      : Summons a Resonance Totem near the caster for $d that generates $202192s1 Maelstrom every $202192t1 sec.
-
-Name             : Resonance Totem (id=202192) [Scaling Spell (10), Spell Family (11), Passive] 
-Class            : Shaman
-School           : Nature
-Spell Level      : 1
-Range            : 30 yards
-Cast Time        : 1 seconds
-Velocity         : 35 yards/sec
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=297999)   : Apply Owner Area Aura (143) | Periodic Energize Power: every 1 seconds (24)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 11 | Radius: 40 yards | Target: Self(1)
-Description      : $@spelldesc202188
-Tooltip          : Generates $s1 Maelstrom every $t1 sec.
 
 Name             : Doom Winds (Artifact) (id=204945) [Spell Family (11)] 
 Class            : Shaman
@@ -5782,148 +5645,6 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 0x200007f | Target: Self(1)
 Description      : $@spelldesc207994
 Tooltip          : All damage done increased by ${$s1/10}.1%.
-
-Name             : Totem Mastery (id=210643) [Spell Family (11)] 
-Class            : Shaman
-School           : Nature
-Spell Level      : 1
-Range            : 40 yards
-GCD              : 1 seconds
-Attributes       : ....x... ........ x....... ........   ........ ........ ........ ....x... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=312039)   : Trigger Spell: Resonance Totem (64)
-                   Base Value: 5 | Scaled Value: 5 | Trigger Spell: 202188 | Target: Unknown(41)
-#2 (id=312093)   : Trigger Spell: Storm Totem (64)
-                   Base Value: 5 | Scaled Value: 5 | Trigger Spell: 210651 | Target: Unknown(41)
-#3 (id=312094)   : Trigger Spell: Ember Totem (64)
-                   Base Value: 5 | Scaled Value: 5 | Trigger Spell: 210657 | Target: Unknown(41)
-#4 (id=312095)   : Trigger Spell: Tailwind Totem (64)
-                   Base Value: 5 | Scaled Value: 5 | Trigger Spell: 210660 | Target: Unknown(41)
-#5 (id=340438)   : Trigger Spell: Totem Mastery (64)
-                   Base Value: 5 | Scaled Value: 5 | Trigger Spell: 226772 | Target: Unknown(41)
-Description      : Summons four totems that increase your combat capabilities for $202188d.
-
-|cFFFFFFFFResonance Totem|r
-Generates $202192s1 Maelstrom every $202192t1 sec.
-
-|cFFFFFFFFStorm Totem|r
-Increases the chance for Lightning Bolt and Chain Lightning to trigger Elemental Overload by $210651s2%.
-
-|cFFFFFFFFEmber Totem|r
-Increases Flame Shock damage over time by $210658s1%.
-
-|cFFFFFFFFTailwind Totem|r
-Increases your haste by $210659s1%.
-
-Name             : Storm Totem (id=210651) [Spell Family (11)] 
-Class            : Shaman
-School           : Nature
-Spell Level      : 1
-Range            : 40 yards
-GCD              : 1 seconds
-Duration         : 120 seconds
-Cooldown         : 30 seconds
-Triggered by     : Totem Mastery (210643)
-Attributes       : ........ ........ x....... ........   ........ ........ ........ ....x... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=312050)   : Summon (28)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 106317 | Misc Value 2: 0xeab | Target: Unknown(44)
-#2 (id=312051)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self(1)
-Description      : Summons a Storm Totem near the caster for $d that increases the chance for Lightning Bolt and Chain Lightning to trigger Elemental Overload by $s2%.
-
-Name             : Ember Totem (id=210657) [Spell Family (11)] 
-Class            : Shaman
-School           : Fire
-Spell Level      : 1
-Range            : 40 yards
-GCD              : 1 seconds
-Duration         : 120 seconds
-Cooldown         : 30 seconds
-Triggered by     : Totem Mastery (210643)
-Attributes       : ........ ........ x....... ........   ........ ........ ........ ....x... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=312058)   : Summon (28)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 106319 | Misc Value 2: 0xeab | Target: Water Totem(42)
-#2 (id=312059)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self(1)
-Description      : Summons an Ember Totem near the caster for $d that increases damage over time from your Flame Shock by $s2%.
-
-Name             : Ember Totem (id=210658) [Scaling Spell (10), Spell Family (11), Passive] 
-Class            : Shaman
-School           : Fire
-Spell Level      : 1
-Range            : 30 yards
-Velocity         : 35 yards/sec
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=312060)   : Apply Owner Area Aura (143) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Radius: 40 yards | Target: Self(1)
-                   Affected Spells: Flame Shock (188389), Flame Shock (188838)
-Description      : $@spelldesc210657
-Tooltip          : Increases Flame Shock damage over time by $s1%.
-
-Name             : Tailwind Totem (id=210659) [Scaling Spell (10), Spell Family (11), Passive] 
-Class            : Shaman
-School           : Nature
-Spell Level      : 1
-Range            : 30 yards
-Velocity         : 35 yards/sec
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=312062)   : Apply Owner Area Aura (143) | Modify All Haste% (193)
-                   Base Value: 2 | Scaled Value: 2 | Radius: 40 yards | Target: Self(1)
-Description      : $@spelldesc210660
-Tooltip          : Increases haste by $s1%.
-
-Name             : Tailwind Totem (id=210660) [Spell Family (11)] 
-Class            : Shaman
-School           : Fire
-Spell Level      : 1
-Range            : 40 yards
-GCD              : 1 seconds
-Duration         : 120 seconds
-Cooldown         : 30 seconds
-Triggered by     : Totem Mastery (210643)
-Attributes       : ........ ........ x....... ........   ........ ........ ........ ....x... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=312063)   : Summon (28)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 106321 | Misc Value 2: 0xeab | Target: Unknown(43)
-#2 (id=312064)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self(1)
-Description      : Summons a Tailwind Totem near the caster for $d that increases the Shaman's haste by $s2%.
 
 Name             : Lightning Rod (id=210689) [Spell Family (11), Passive] 
 Class            : Shaman
@@ -6494,7 +6215,7 @@ Class            : Shaman
 School           : Nature
 Range            : 10 yards
 Duration         : 10 seconds
-Triggered by     : Boulderfist (201897)
+Triggered by     : Boulderfist (246035)
 Attributes       : ........ ........ x.x..... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6507,7 +6228,7 @@ Effects          :
 #2 (id=325883)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 0x7f | Target: Self(1)
 Description      : $@spelldesc201897
-Tooltip          : $@switch<$201897s4>[][Critical strike chance increased by $s1%. ]Damage dealt increased by $s2%.
+Tooltip          : Damage dealt increased by $s2%.
 
 Name             : Icefury Overload (id=219271) [Spell Family (11)] 
 Class            : Shaman
@@ -6589,21 +6310,6 @@ Effects          :
 Description      : The Doom Wolf surges with electric energy, increasing all damage dealt by $s1%.
 Tooltip          : Damage dealt  increased by $s1%.
 
-Name             : Hand of Gul'dan (id=225481) [Spell Family (5), Hidden] 
-Class            : Shaman, Warlock
-School           : Physical
-Duration         : 12 seconds
-Attributes       : .......x ........ .......x x..x.x.x   .....x.. ..x..... ........ ........ 
-                 : x.x..... ......x. ...x.... ....x...   ........ ........ xx..x... ........ 
-                 : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
-                 : ..x..... ....xx.. ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Hidden (7), Cannot cancel aura (31), Does not break stealth (37), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
-Effects          :
-#1 (id=338035)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-
 Name             : Wind Gust (id=226180) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
@@ -6619,25 +6325,6 @@ Effects          :
 #1 (id=339432)   : Energize Power (30)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: maelstrom | Target: Friend(21)
 Description      : $@spelldesc157331
-
-Name             : Totem Mastery (id=226772) [Spell Family (5)] 
-Class            : Shaman
-School           : Nature
-Range            : 50000 yards
-Duration         : 120 seconds
-Affecting spells : Dirty Hands (211105)
-Triggered by     : Totem Mastery (210643)
-Attributes       : ........ x....... .......x ........   ........ ........ ........ ........ 
-                 : ..x..... ........ ........ ....x...   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Requires line of sight (186)
-Effects          :
-#1 (id=340437)   : Summon (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 113845 | Misc Value 2: 0xf5e | Target: Custom(18)
-Description      : $@spelldesc105174
 
 Name             : Feral Spirit (id=228562) [Spell Family (11)] 
 Class            : Shaman
@@ -6777,5 +6464,23 @@ Effects          :
 #1 (id=351111)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 17 | Target: Self(1)
 Description      : Flame Shock will spend up to $s1 Maelstrom to extend its duration by up to $188389s3%.
+
+Name             : Boulderfist (id=246035) [Spell Family (11), Passive] 
+Class            : Shaman
+School           : Nature
+Proc Chance      : 100%
+Proc Flags       : ........ ........ x....... ........ 
+                 : Hostile Spell
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=374522)   : Apply Aura (6) | Proc Trigger Spell: Boulderfist (42)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 218825 | Target: Self(1)
+Description      : Rockbiter enhances your weapons for $218825d, increasing all damage you deal by $218825s2%.
 
 

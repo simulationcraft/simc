@@ -13,7 +13,7 @@ Category         : 56
 Proc Chance      : 101%
 Stance Mask      : 0x08000000
 Mechanic         : Unknown(162)
-Affecting spells : Improved Power Word: Shield (24191), Rapture (47536), Priest (137030), Shadow Priest (137033), Lucidity (137323), Clear Thoughts (167695), Voidform (194249)
+Affecting spells : Improved Power Word: Shield (24191), Rapture (47536), Priest (137030), Shadow Priest (137033), Lucidity (137323), Clear Thoughts (167695), Voidform (194249), Aegis of Wrath (238135)
 Attributes       : ........ ...x.... x.x..... ........   ........ ........ ........ ........ 
                  : ........ x....... ...x.x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
@@ -23,6 +23,8 @@ Attributes       : ........ ...x.... x.x..... ........   ........ ........ .....
 Effects          :
 #1 (id=13)       : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Friend(21)
+#2 (id=374547)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
+                   Base Value: 0 | Scaled Value: 0 | Target: Friend(21)
 Description      : Shields an ally for $d, absorbing $<shield> damage, and preventing damage from delaying spellcasting.
 Tooltip          : Absorbs $w1 damage.
 Variables        : $shield=${(($SP*5.5)+$m1)*(1+$@versadmg)}
@@ -101,7 +103,7 @@ Description      : Dispels Magic on the enemy target, removing $m1 beneficial Ma
 Name             : Smite (id=585) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
-Resource         : 1% Base Mana (id=62) w/ Discipline Priest (id=137032)
+Resource         : 0.5% Base Mana (id=62) w/ Discipline Priest (id=137032)
 Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 1.5 seconds
@@ -115,9 +117,9 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=236)      : School Damage: holy (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.25000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.50000 | Target: Enemy(6)
 Description      : Smites an enemy for $s1 Holy damage$?s231682[ and absorbs the next $<shield> damage dealt by the enemy]?s231687[ and has a $231687s1% chance to reset the cooldown of Holy Fire][].
-Variables        : $shield=${($SPS*2.25)*(1+$@versadmg)}
+Variables        : $shield=${($SPS*3)*(1+$@versadmg)}
 
 Name             : Fade (id=586) [Spell Family (6)] 
 Class            : Priest
@@ -2031,7 +2033,7 @@ Tooltip          : Your Heal, Flash Heal, and Prayer of Healing spells cause abs
 Name             : Divine Star (id=110744) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
-Resource         : 2.5% Base Mana (id=6507)
+Resource         : 2% Base Mana (id=6507)
 Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
@@ -2156,7 +2158,7 @@ Tooltip          : Absorbing $w1 damage.
 Name             : Halo (id=120517) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
-Resource         : 3.6% Base Mana (id=6487)
+Resource         : 2.7% Base Mana (id=6487)
 Spell Level      : 1
 Range            : 30 yards
 Cast Time        : 1.5 seconds
@@ -3344,6 +3346,8 @@ Spell Level      : 52
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
+Charges          : 2 (15 seconds cooldown)
+Category         : 1690
 Stance Mask      : 0x80000000
 Affecting spells : Rapid Healing (24546), Lucidity (137323), Atonement (194384), Burst of Light (197716), Power Word: Shield (211558)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -3358,10 +3362,10 @@ Effects          :
 #2 (id=298593)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.50000 | Radius: 0 - 30 yards | Target: Unknown(132) -> AOE friendly(31)
 #3 (id=298594)   : Dummy (3)
-                   Base Value: 2 | Scaled Value: 2
+                   Base Value: 4 | Scaled Value: 4
 #4 (id=298595)   : Dummy (3)
-                   Base Value: 100 | Scaled Value: 100
-Description      : A burst of light heals a friendly target and their $s3 nearest allies for $s2, and applies Atonement. 
+                   Base Value: 50 | Scaled Value: 50
+Description      : A burst of light heals a friendly target and their $s3 nearest allies for $s2, and applies Atonement for $s4% of its normal duration.
 
 Name             : Invoke the Naaru (id=196684) [Spell Family (6), Passive] 
 Class            : Priest
@@ -3484,7 +3488,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=289317)   : Apply Aura (6) | Modify Healing% Done (136)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 126 | Target: Self(1)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 126 | Target: Self(1)
 Description      : $@spelldesc197031
 Tooltip          : Healing increased by $s1%.
 
@@ -3821,7 +3825,7 @@ Effects          :
 Description      : Increases your non-Atonement healing and absorption by $s1% on targets with Atonement.
 
 Name             : The Penitent (id=200347) [Spell Family (6), Passive] 
-Class            : Priest
+Class            : Discipline Priest
 School           : Physical
 Spell Level      : 1
 Proc Chance      : 100%
@@ -3861,13 +3865,12 @@ Tooltip          : Switch to your Primary Talent Specialization.
 Name             : Plea (id=200829) [Spell Family (6)] 
 Class            : Discipline Priest
 School           : Holy
-Resource         : 0.36% Base Mana (id=10800)
+Resource         : 2% Base Mana (id=10800)
 Spell Level      : 24
 Range            : 40 yards
 GCD              : 1.5 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Atonement (194384), Power Word: Shield (211558), Plea (212100), 
-Triggered by     : Plea (212100)
+Affecting spells : Atonement (194384), Power Word: Shield (211558)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3877,7 +3880,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=295730)   : Direct Heal (10)
                    Base Value: 1 | Scaled Value: 1 | Value Multiplier: 1 | SP Coefficient: 2.25000 | Target: Friend(21)
-Description      : A quick, efficient plea to heal an ally for $s1.$?s81749[ Mana cost increased by $212100s1% for each Atonement you have active.][]
+Description      : A quick, efficient plea to heal an ally for $s1.
 
 Name             : Shadow Covenant (id=204065) [Spell Family (6)] 
 Class            : Priest
@@ -3971,7 +3974,7 @@ Tooltip          : Movement speed reduced by $s1%.
 Name             : Circle of Healing (id=204883) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
-Resource         : 5% Base Mana (id=10934)
+Resource         : 4% Base Mana (id=10934)
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -3986,7 +3989,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=302436)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.60000 | Radius: 0 - 30 yards | Target: Unknown(63) -> AOE friendly(31)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.00000 | Radius: 0 - 30 yards | Target: Unknown(63) -> AOE friendly(31)
 #2 (id=302437)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 Description      : Heals up to $s2 injured allies within $A1 yards of the target for $s1.
@@ -4339,32 +4342,6 @@ Effects          :
                    Base Value: 35 | Scaled Value: 35 | Radius: 100 yards | Target: Unknown(119)
 Description      : Brings all dead party members back to life with $s1% health and mana. Cannot be cast when in combat.
 
-Name             : Plea (id=212100) [Spell Family (6), Hidden] 
-Class            : Priest
-School           : Physical
-Spell Level      : 38
-Duration         : Aura (infinite)
-Stacks           : 100 maximum
-Proc Chance      : 101%
-Attributes       : .......x ........ ........ .......x   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Hidden (7), Cannot cancel aura (31)
-Effects          :
-#1 (id=314420)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 14 | Target: Self(1)
-                   Affected Spells: Plea (200829)
-#2 (id=314443)   : Apply Aura (6) | Unknown effect sub type (408)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 200829 | Target: Self(1)
-#3 (id=345183)   : Apply Aura (6) | Add Flat Modifier: Spell Resource Cost (107)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14 | Target: Self(1)
-                   Affected Spells: Plea (200829)
-Description      : Mana cost of Plea increased by $s1% for each target affected by your Atonement.
-Tooltip          : Plea cost increased $s1%.
-
 Name             : Surrendered Soul (id=212570) [Spell Family (6)] 
 Class            : Priest
 School           : Physical
@@ -4671,22 +4648,22 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.50000 | Target: Enemy(6)
 Description      : $@spelldesc228260
 
-Name             : Smite (Rank 2) (id=231682) [Spell Family (6), Passive] 
-Class            : Discipline Priest
+Name             : Sanctuary (id=231682) [Spell Family (6), Passive, Hidden] 
+Class            : Priest
 School           : Holy
 Spell Level      : 36
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6)
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Hidden (7)
 Effects          :
 #1 (id=349526)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 12 | Target: Self(1)
 Description      : Smite absorbs the next $<shield> damage dealt by the enemy.
-Variables        : $shield=${($SPS*2.25)*(1+$@versadmg)}
+Variables        : $shield=${($SPS*3)*(1+$@versadmg)}
 
 Name             : Holy Fire (Rank 2) (id=231687) [Spell Family (6), Passive] 
 Class            : Holy Priest

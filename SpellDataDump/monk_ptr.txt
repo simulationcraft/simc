@@ -1064,7 +1064,7 @@ Spell Level      : 40
 GCD              : 1 seconds
 Cooldown         : 20 seconds
 Proc Chance      : 101%
-Affecting spells : Stagger (115069), Brewmaster Monk (137023), Item - Monk WoD PvP Brewmaster 4P Bonus (171445), Blackout Combo (228563), Pure Mix (245694)
+Affecting spells : Stagger (115069), Brewmaster Monk (137023), Item - Monk WoD PvP Brewmaster 4P Bonus (171445), Blackout Combo (228563)
 Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1897,9 +1897,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=137916)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | Target: Self(1)
-Description      : Clears $s1% of your damage delayed with Stagger.$?a245693[
-
-Increases the direct damage of your next Breath of Fire by $245694s1%][]
+Description      : Clears $s1% of your damage delayed with Stagger.
 
 Shares charges with Ironskin Brew.
 
@@ -3254,10 +3252,12 @@ Effects          :
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 3 | Misc Value 2: 0x114 | Target: Self(1)
 #10 (id=260841)   : Apply Aura (6) | Unknown effect sub type (218)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0x121 | Target: Self(1)
-#11 (id=260842)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#11 (id=260842)   : Apply Aura (6) | Add Percent Modifier: Spell Duration (108)
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: 1 | Target: Self(1)
+                   Affected Spells: Rushing Jade Wind (116847)
 #12 (id=260843)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 11 | Target: Self(1)
+                   Affected Spells: Rushing Jade Wind (116847)
 #13 (id=260844)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #14 (id=260845)   : Apply Aura (6) | Dummy (4)
@@ -4181,7 +4181,7 @@ Tooltip          : Dealing healing to nearby allies every $116847t1 sec.
 Name             : Special Delivery (id=196730) [Spell Family (53), Passive] 
 Class            : Monk
 School           : Physical
-Proc Chance      : 30%
+Proc Chance      : 100%
 Proc Flags       : ........ ..x...x. ........ ........ 
                  : AOE Heal, Heal
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -4219,7 +4219,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=288833)   : School Damage: physical (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 8.10000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.43000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
 #2 (id=288837)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Radius: 0 - 8 yards | Mechanic: Unknown(88) | Target: Unknown(87) -> AOE enemy (instant)(16)
 #3 (id=335941)   : Apply Aura (6) | Dummy (4)
@@ -4395,7 +4395,7 @@ Class            : Monk
 School           : Nature
 Range            : 100 yards
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4769,7 +4769,7 @@ School           : Physical
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
-Cooldown         : 14 seconds
+Cooldown         : 12 seconds
 Proc Chance      : 101%
 Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Blackout Kick! (116768), Brewmaster Monk (137023), Mistweaver Monk (137024), Windwalker Monk (137025), Storm, Earth, and Fire (137639), Serenity (152173), Dark Skies (195265), Obsidian Fists (213051), Draught of Darkness (238057)
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ...x.... 
@@ -5475,7 +5475,7 @@ Description      : $@spelldesc238131
 Name             : Spitfire (id=242580) [Spell Family (53), Passive] 
 Class            : Monk
 School           : Physical
-Proc Chance      : 30%
+Proc Chance      : 20%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -5549,49 +5549,5 @@ Effects          :
 #1 (id=372570)   : Apply Aura (6) | Modify Base Resistance (142)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 1 | Target: Self(1)
 Description      : Your Armor is increased by 25%.
-
-Name             : Purifying Brew (Rank 2) (id=245693) [Spell Family (53), Passive] 
-Class            : Monk
-School           : Nature
-Spell Level      : 58
-Proc Chance      : 100%
-Proc Flags       : ........ ......x. ........ ........ 
-                 : Heal
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=373914)   : Apply Aura (6) | Proc Trigger Spell: Pure Mix (42)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 245694 | Target: Self(1)
-Description      : Purifying Brew increases the direct damage of your next Breath of Fire by $245694s1%.
-
-
-Name             : Pure Mix (id=245694) [Spell Family (53)] 
-Class            : Monk
-School           : Nature
-Spell Level      : 1
-Duration         : 15 seconds
-Stacks           : 1 initial, 1 maximum
-Proc Chance      : 100%
-Proc Flags       : ........ ....x... ........ ........ 
-                 : AOE Hostile Spell
-Triggered by     : Purifying Brew (245693)
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=373915)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 50 | Scaled Value: 50 | Target: Self(1)
-                   Affected Spells: Breath of Fire (115181), Dragonfire Brew (227681)
-Description      : $@spelldesc245693
-
-Tooltip          : Damage of Breath of Fire increased by $w1%.
 
 

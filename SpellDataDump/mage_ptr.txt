@@ -92,7 +92,7 @@ Attributes       : ........ ........ x....... ........   ...x...x ........ .....
                  : ........ x....... ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=80)       : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.381) | SP Coefficient: 0.66690 | Radius: 12 yards | Target: Cone Front(104)
+                   Base Value: 1 | Scaled Value: 0 (avg=0.381) | SP Coefficient: 1.80000 | Radius: 12 yards | Target: Cone Front(104)
 Description      : Targets in a cone in front of you take $s1 Frost damage and have movement slowed by $212792m1% for $212792d.
 Tooltip          : Movement slowed by $s1%.
 Variables        : $arctic1=$?s31674[${1.01}][${1}]

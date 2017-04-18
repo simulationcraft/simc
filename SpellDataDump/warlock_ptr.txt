@@ -129,7 +129,6 @@ Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Category         : 1363
-Affecting spells : Demon Skin (219272)
 Attributes       : ........ ........ ........ ........   x....... ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -139,10 +138,7 @@ Attributes       : ........ ........ ........ ........   x....... ........ .x...
 Effects          :
 #1 (id=270)      : Summon Pet (56)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 416 | Target: Unknown(32)
-Description      : Summons an Imp under your command that casts ranged Firebolts.$?s74434[
-
-|cFFFFFFFFSoulburn:|r
-|cFF8282FFInstant cast.|r][]
+Description      : Summons an Imp under your command that casts ranged Firebolts.
 
 Name             : Summon Felhunter (Summon) (id=691) [Spell Family (5)] 
 Class            : Warlock
@@ -153,7 +149,7 @@ Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Category         : 1363
-Affecting spells : Demon Skin (219272), Glyph of the Observer (219450)
+Affecting spells : Glyph of the Observer (219450)
 Attributes       : ........ ........ ........ ........   x....... ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
@@ -174,7 +170,6 @@ Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Category         : 1363
-Affecting spells : Demon Skin (219272)
 Attributes       : ........ ........ ........ ........   x....... ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
@@ -184,10 +179,7 @@ Attributes       : ........ ........ ........ ........   x....... ........ .x...
 Effects          :
 #1 (id=275)      : Summon Pet (56)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1860 | Target: Unknown(32)
-Description      : Summons a Voidwalker under your command, able to withstand heavy punishment$?s124539[, disarm melee attackers][]$?s103130[, deal Shadow damage to enemies who harm them][]$?s103142[, increase their health when near death][]$?s103128[ and taunt enemies attacking their master.][.] $?s74434[
-
-|cFFFFFFFFSoulburn:|r
-|cFF8282FFInstant cast.|r][]
+Description      : Summons a Voidwalker under your command, able to withstand heavy punishment.
 
 Name             : Ritual of Summoning (id=698) [Spell Family (5)] 
 Class            : Warlock
@@ -246,7 +238,7 @@ Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Category         : 1363
-Affecting spells : Demon Skin (219272), Orb of the Fel Temptress (240264)
+Affecting spells : Orb of the Fel Temptress (240264)
 Attributes       : ........ ........ ........ ........   x....... ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
@@ -256,10 +248,7 @@ Attributes       : ........ ........ ........ ........   x....... ........ .x...
 Effects          :
 #1 (id=286)      : Summon Pet (56)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1863 | Target: Unknown(32)
-Description      : Summons a Succubus under your command to seduce enemy Humanoids, preventing them from attacking. $?s74434[
-
-|cFFFFFFFFSoulburn:|r
-|cFF8282FFInstant cast.|r][]
+Description      : Summons a Succubus under your command to seduce enemy Humanoids, preventing them from attacking.
 
 Name             : Health Funnel (id=755) [Spell Family (5)] 
 Class            : Warlock
@@ -808,7 +797,7 @@ GCD              : 1.5 seconds
 Duration         : 5 seconds
 Charges          : 1 (12 seconds cooldown)
 Category         : 672
-Affecting spells : Destruction Warlock (137046), Flamelicked (185229), Conflagration of Chaos (196546), Odr, Shawl of the Ymirjar (212173)
+Affecting spells : Destruction Warlock (137046), Flamelicked (185229), Conflagration of Chaos (196546), Odr, Shawl of the Ymirjar (212173), Flames of Sargeras (238074)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1474,14 +1463,14 @@ Tooltip          : You have a Demonic Circle active. Cancel to destroy your Demo
 Name             : Haunt (id=48181) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
-Resource         : 5% Base Mana (id=10555)
+Resource         : 10 Soul Shard (id=10555)
 Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 30 yards/sec
 Duration         : 15 seconds
-Cooldown         : 30 seconds
+Cooldown         : 20 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1490,7 +1479,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=40331)    : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 8.05000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 10.00000 | Target: Enemy(6)
 #2 (id=40332)    : Apply Aura (6) | Unknown effect sub type (270)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 127 | Target: Enemy(6)
 Description      : A ghostly soul haunts the target, dealing $s1 Shadow damage and increasing your damage dealt to the target by $s2% for $d. If the target dies, Haunt's cooldown is reset.
@@ -1862,7 +1851,7 @@ Effects          :
 Description      : Sends a shadowy bolt at the enemy, causing $s1 Shadow damage. Deals $s2% additional damage to targets below 20% health.
 
 Name             : Hand of Gul'dan (id=86040) [Spell Family (5)] 
-Class            : Shaman, Warlock
+Class            : Warlock
 School           : Shadowflame
 Range            : 50000 yards
 Affecting spells : Dirty Hands (211105)
@@ -1875,7 +1864,7 @@ Attributes       : ........ ........ .......x ........   ...x...x ........ .....
                  : Requires line of sight (186)
 Effects          :
 #1 (id=87492)    : School Damage: shadowflame (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.43200 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.20000 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
 Description      : $@spelldesc105174
 
 Name             : Nethermancy (Passive) (id=86091) [Passive, Hidden] 
@@ -2130,7 +2119,7 @@ Effects          :
 Description      : Summons $s1 ferocious Dreadstalkers to attack the target for $193332d.
 
 Name             : Hand of Gul'dan (id=104317) [Spell Family (5)] 
-Class            : Shaman, Warlock
+Class            : Warlock
 School           : Shadow
 Range            : 100 yards
 Duration         : 14 seconds
@@ -2195,7 +2184,7 @@ Tooltip          : Damage taken reduced by $w3%.
 Immune to interrupt and silence effects.
 
 Name             : Hand of Gul'dan (id=105174) [Spell Family (5)] 
-Class            : Demonology Shaman, Warlock
+Class            : Demonology Warlock
 School           : Shadowflame
 Resource         : 10 - 40 Soul Shard (id=4987)
 Spell Level      : 10
@@ -2735,7 +2724,7 @@ Name             : Fellash (Special Ability) (id=115770) [Scaling Spell (11), Sp
 Class            : Warlock
 School           : Shadow
 Resource         : 40 Energy (id=5751)
-Spell Level      : 56
+Spell Level      : 31
 Range            : 30 yards
 Duration         : 10 seconds
 Cooldown         : 25 seconds
@@ -2753,16 +2742,17 @@ Effects          :
                    Base Value: 40 | Scaled Value: 40 | Misc Value: 200 | Radius: 5 yards | Target: AOE enemy (instant)(16) -> AOE enemy (instant)(16)
 #3 (id=204722)   : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | Radius: 5 yards | Target: AOE enemy (instant)(16) -> AOE enemy (instant)(16)
-Description      : Deals $s1 Shadow damage and instantly knocks back all enemies within $115770A1 yards.
+Description      : Deals $s1 Shadow damage and knocks back all enemies within $115770A1 yards.
 
 Name             : Optical Blast (Special Ability) (id=115781) [Scaling Spell (11), Spell Family (57)] 
 Class            : Warlock
 School           : Shadow
 Resource         : 20 Energy (id=5753)
-Spell Level      : 50
+Spell Level      : 35
 Range            : 40 yards
 Duration         : 6 seconds
 Cooldown         : 24 seconds
+Category         : 88
 Category Cooldown: 24 seconds
 Attributes       : ........ ........ ..x..... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
@@ -2797,11 +2787,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #4 (id=169580)   : Apply Aura (6) | Unknown effect sub type (371)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-Description      : The Wrathguard recklessly swings its weapon, striking all nearby targets within $89753A1 yards for its weapon damage every $89751t1 sec for $89751d. 
-
-The Wrathguard cannot perform any other abilities during Wrathstorm.
-Tooltip          : Striking for weapon damage every $t1 sec. 
-Unable to use abilities during Wrathstorm.
+Description      : The Wrathguard recklessly swings its weapon, striking all nearby targets within $89753A1 yards for $89753m1% weapon damage every $89751t1 sec for $89751d. The Wrathguard cannot perform any other abilities during Wrathstorm.
+Tooltip          : Striking for $89753m1% weapon damage every $t1 sec. Unable to use other abilities.
 
 Name             : Wrathstorm (id=115832) [Spell Family (5)] 
 Class            : Warlock
@@ -3150,10 +3137,10 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179730)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 4 | Scaled Value: 4 | Target: Self(1)
+                   Base Value: 21 | Scaled Value: 21 | Target: Self(1)
                    Affected Spells: Immolate (348), Doom (603), Firebolt (3110), Shadowburn (17877), Conflagrate (17962), Incinerate (29722), Rain of Fire (42223), Doom Bolt (85692), Chaos Bolt (116858), Cataclysm (152108), Channel Demonfire (196448), Chaos Bolt (213229)
 #2 (id=191023)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 4 | Scaled Value: 4 | Misc Value: 22 | Target: Self(1)
+                   Base Value: 21 | Scaled Value: 21 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Immolate (157736), Immolate (193540)
 #3 (id=191024)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
                    Base Value: -8 | Scaled Value: -8 | Misc Value: 3 | Target: Self(1)
@@ -4073,7 +4060,7 @@ Effects          :
 Description      : $@spelldesc196277
 
 Name             : Hand of Doom (id=196283) [Spell Family (5), Passive] 
-Class            : Shaman, Warlock
+Class            : Warlock
 School           : Physical
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4164,10 +4151,10 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=288278)   : Apply Aura (6) | Add Flat Modifier: Spell Duration (107)
-                   Base Value: 10000 | Scaled Value: 10000 | Misc Value: 1 | Target: Self(1)
+#1 (id=288278)   : Apply Aura (6) | Add Flat Modifier: Spell Cooldown (107)
+                   Base Value: -20000 | Scaled Value: -20000 | Misc Value: 11 | Target: Self(1)
                    Affected Spells: Havoc (80240)
-Description      : Havoc lasts ${$m1/1000} sec longer.
+Description      : Reduce the cooldown of Havoc by ${$s1/-1000} sec.
 
 Name             : Eradication (id=196412) [Spell Family (5), Passive] 
 Class            : Warlock
@@ -4190,7 +4177,7 @@ Description      : Chaos Bolt increases the damage you deal to the target by $19
 Name             : Eradication (id=196414) [Spell Family (5)] 
 Class            : Warlock
 School           : Physical
-Duration         : 6 seconds
+Duration         : 7 seconds
 Triggered by     : Eradication (196412)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4200,7 +4187,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=288282)   : Apply Aura (6) | Unknown effect sub type (270)
-                   Base Value: 12 | Scaled Value: 12 | Misc Value: 127 | Target: Enemy(6)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 127 | Target: Enemy(6)
 Description      : $@spelldesc196412
 Tooltip          : Damage taken from the Warlock increased by $s1%.
 
@@ -4767,7 +4754,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ......x. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=316299)   : School Damage: chromatic (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 3.66300 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 5.60000 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=316300)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Target: Enemy(6)
 #3 (id=316301)   : Energize Power% (137)
@@ -4931,7 +4918,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Target: Self(1)
 #3 (id=326678)   : Apply Aura (6) | Add Flat Modifier: Spell Duration (107)
                    Base Value: -15001 | Scaled Value: -15001 | Misc Value: 1 | Target: Self(1)
-                   Affected Spells: Summon Imp (688), Summon Felhunter (691), Summon Voidwalker (697), Summon Succubus (712), Soul Leech (108366)
+                   Affected Spells: Soul Leech (108366)
 Description      : Your Soul Leech absorption now passively recharges at a rate of $s1% of maximum health every $t1 sec, and may now absorb up to $s2% of maximum health.
 
 Name             : Glyph of the Observer (id=219450) [Spell Family (5), Passive, Hidden] 
@@ -4974,7 +4961,7 @@ Effects          :
 Description      : Once every $s2 minutes, $?s152107[your Infernal's Meteor Strike][Summon Infernal] will summon $s3 additional Infernals to serve you for $226804d.
 
 Name             : Hand of Gul'dan (id=225481) [Spell Family (5), Hidden] 
-Class            : Shaman, Warlock
+Class            : Warlock
 School           : Physical
 Duration         : 12 seconds
 Attributes       : .......x ........ .......x x..x.x.x   .....x.. ..x..... ........ ........ 
@@ -5297,7 +5284,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=355427)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
-                   Base Value: 70 | Scaled Value: 70 | Misc Value: 12 | Target: Self(1)
+                   Base Value: 40 | Scaled Value: 40 | Misc Value: 12 | Target: Self(1)
                    Affected Spells: Drain Soul (198590)
 Description      : While channeling Drain Soul, your damage over time effects deal $s1% increased damage to the target.
 
