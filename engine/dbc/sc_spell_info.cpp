@@ -343,6 +343,7 @@ const char * _resource_strings[] =
   "Demonic Fury",
   nullptr,
   "Fury",
+  "Pain",
   nullptr
 };
 
