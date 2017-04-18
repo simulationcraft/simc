@@ -1557,7 +1557,7 @@ Name             : Demon Spikes (id=203720) [Spell Family (107)]
 Replaces         : Vengeful Retreat (id=198793)
 Class            : Vengeance Demon Hunter
 School           : Physical
-Resource         : 20 Unknown (18) (id=10943)
+Resource         : 20 Pain (id=10943)
 Spell Level      : 1
 Cooldown         : 1.5 seconds
 Charges          : 2 (15 seconds cooldown)
@@ -2640,7 +2640,7 @@ Tooltip          : Attacks against you have a $s1% chance to inflict no damage.
 Name             : Fracture (id=209795) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
-Resource         : 20 Unknown (18) (id=11169)
+Resource         : 20 Pain (id=11169)
 Range            : 5 yards
 GCD              : 1.5 seconds
 Affecting spells : Metamorphosis (162264), Havoc Demon Hunter (212612), Vengeance Demon Hunter (212613)
@@ -2902,7 +2902,7 @@ Name             : Fel Eruption (id=211881) [Spell Family (107)]
 Class            : Demon Hunter
 School           : Physical
 Resource         : 10 Fury (id=11144) w/ Havoc Demon Hunter (id=212612)
-Resource         : 10 Unknown (18) (id=11161) w/ Vengeance Demon Hunter (id=212613)
+Resource         : 10 Pain (id=11161) w/ Vengeance Demon Hunter (id=212613)
 Range            : 20 yards
 GCD              : 1.5 seconds
 Duration         : 2 seconds
@@ -2927,7 +2927,7 @@ Tooltip          : Stunned.
 Name             : Fel Devastation (id=212084) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Fire
-Resource         : 30 Unknown (18) (id=11141)
+Resource         : 30 Pain (id=11141)
 Range            : 20 yards
 GCD              : 1.5 seconds
 Duration         : 2 seconds
@@ -3628,7 +3628,7 @@ Description      : Immolation Aura's initial burst has a chance to shatter Lesse
 Name             : Soul Barrier (id=227225) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Shadow
-Resource         : 10 Unknown (18) (id=11507)
+Resource         : 10 Pain (id=11507)
 GCD              : 1.5 seconds
 Duration         : 12 seconds
 Cooldown         : 30 seconds
@@ -3711,7 +3711,7 @@ Name             : Soul Cleave (id=228477) [Spell Family (107)]
 Replaces         : Chaos Strike (id=162794)
 Class            : Vengeance Demon Hunter
 School           : Physical
-Resource         : 30 - 60 Unknown (18) (id=11545)
+Resource         : 30 - 60 Pain (id=11545)
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
