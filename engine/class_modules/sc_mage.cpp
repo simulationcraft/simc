@@ -4263,6 +4263,7 @@ struct aftershocks_t : public fire_mage_spell_t
     background = true;
     aoe = -1;
     triggers_ignite = true;
+    base_multiplier *= 1.0 + p -> artifact.blue_flame_special.percent();
     // PTR Multiplier
     base_multiplier *= 1.0 + p -> find_spell( 137019 ) -> effectN( 1 ).percent();
   }
