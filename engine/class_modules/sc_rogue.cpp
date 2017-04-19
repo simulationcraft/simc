@@ -488,6 +488,7 @@ struct rogue_t : public player_t
 
     const spell_data_t* premeditation;
     const spell_data_t* enveloping_shadows;
+    const spell_data_t* dark_shadow;
 
     // Tier 7 - Level 100
     const spell_data_t* venom_rush;
@@ -6163,6 +6164,11 @@ struct shadow_dance_t : public stealth_like_buff_t
   {
     buff_duration += p -> talent.subterfuge -> effectN( 2 ).time_value();
     procs_mantle_of_the_master_assassin = false;
+
+    if ( p -> talent.dark_shadow -> ok() )
+    {
+      add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    }
   }
 };
 
@@ -6635,6 +6641,10 @@ double rogue_t::composite_player_multiplier( school_e school ) const
   if ( buffs.symbols_of_death -> up() )
   {
     m *= buffs.symbols_of_death -> check_value();
+  }
+  if ( talent.dark_shadow -> ok() && buffs.shadow_dance -> up() )
+  {
+    m *= 1.0 + talent.dark_shadow -> effectN( 1 ).percent();
   }
   m *= 1.0 + buffs.master_of_subtlety -> stack_value();
   m *= 1.0 + buffs.master_of_subtlety_aura -> stack_value();
@@ -7476,6 +7486,7 @@ void rogue_t::init_spells()
 
   talent.premeditation      = find_talent_spell( "Premeditation" );
   talent.enveloping_shadows = find_talent_spell( "Enveloping Shadows" );
+  talent.dark_shadow        = find_talent_spell( "Dark Shadow" );
 
   talent.master_of_shadows  = find_talent_spell( "Master of Shadows" );
 
