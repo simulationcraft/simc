@@ -2602,7 +2602,7 @@ public:
     {
         if (  p() -> talents.soul_conduit -> ok() )
         {
-          double soul_conduit_rng = p() -> talents.soul_conduit -> effectN( 1 ).percent() - ( maybe_ptr( p() -> dbc.ptr ) ? p() -> spec.destruction -> effectN( 3 ).percent() : 0 );
+          double soul_conduit_rng = p() -> talents.soul_conduit -> effectN( 1 ).percent() + ( maybe_ptr( p() -> dbc.ptr ) ? p() -> spec.destruction -> effectN( 3 ).percent() : 0 );
 
           for ( int i = 0; i < last_resource_cost; i++ )
           {
