@@ -2120,7 +2120,7 @@ struct leeching_poison_t : public rogue_poison_t
   }
 };
 
-// Numbing poison =========================================================
+// Agonizing Poison =========================================================
 
 struct agonizing_poison_t : public rogue_poison_t
 {
@@ -2159,6 +2159,11 @@ struct agonizing_poison_t : public rogue_poison_t
 
     proc -> target = state -> target;
     proc -> execute();
+
+    if ( td( state -> target ) -> dots.kingsbane -> is_ticking() )
+    {
+      td( state -> target ) -> debuffs.kingsbane -> trigger();
+    }
   }
 };
 
