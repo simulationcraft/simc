@@ -5481,6 +5481,7 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "carve"                 ) return new                  carve_t( this, options_str );
   if ( name == "chimaera_shot"         ) return new          chimaera_shot_t( this, options_str );
   if ( name == "cobra_shot"            ) return new             cobra_shot_t( this, options_str );
+  if ( name == "counter_shot"          ) return new           counter_shot_t( this, options_str );
   if ( name == "dire_beast"            ) return new             dire_beast_t( this, options_str );
   if ( name == "dire_frenzy"           ) return new            dire_frenzy_t( this, options_str );
   if ( name == "dragonsfire_grenade"   ) return new    dragonsfire_grenade_t( this, options_str );
@@ -5496,6 +5497,7 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "mongoose_bite"         ) return new          mongoose_bite_t( this, options_str );
   if ( name == "multishot"             ) return new             multi_shot_t( this, options_str );
   if ( name == "multi_shot"            ) return new             multi_shot_t( this, options_str );
+  if ( name == "muzzle"                ) return new                 muzzle_t( this, options_str );
   if ( name == "piercing_shot"         ) return new          piercing_shot_t( this, options_str );
   if ( name == "rangers_net"           ) return new            rangers_net_t( this, options_str );
   if ( name == "raptor_strike"         ) return new          raptor_strike_t( this, options_str );
