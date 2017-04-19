@@ -4181,6 +4181,10 @@ struct shadow_dance_t : public rogue_attack_t
     harmful = may_miss = may_crit = false;
     dot_duration = timespan_t::zero(); // No need to have a tick here
     icd -> duration = data().cooldown();
+    if ( maybe_ptr( p -> dbc.ptr ) && p -> talent.enveloping_shadows -> ok() )
+    {
+      cooldown -> charges += p -> talent.enveloping_shadows -> effectN( 2 ).base_value();
+    }
   }
 
   void execute() override
@@ -5537,7 +5541,21 @@ void rogue_t::trigger_deepening_shadows( const action_state_t* state )
     return;
   }
 
-  timespan_t adjustment = timespan_t::from_seconds( -1 * spec.deepening_shadows -> effectN( 2 ).base_value() * s -> cp );
+  timespan_t adjustment;
+  if ( maybe_ptr( dbc.ptr ) )
+  {
+    // Note: this changed to be 10 * seconds as of 2017-04-19
+    int cdr = spec.deepening_shadows -> effectN( 1 ).base_value();
+    if ( talent.enveloping_shadows -> ok() )
+    {
+      cdr += talent.enveloping_shadows -> effectN( 1 ).base_value();
+    }
+    adjustment = timespan_t::from_seconds( -0.1 * cdr * s -> cp );
+  }
+  else
+  {
+    adjustment = timespan_t::from_seconds( -1 * spec.deepening_shadows -> effectN( 2 ).base_value() * s -> cp );
+  }
   cooldowns.shadow_dance -> adjust( adjustment, s -> cp >= 5 );
 }
 
