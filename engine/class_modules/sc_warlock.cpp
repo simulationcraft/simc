@@ -2602,11 +2602,7 @@ public:
     {
         if (  p() -> talents.soul_conduit -> ok() )
         {
-          double soul_conduit_rng = 0;
-          if ( maybe_ptr( p() -> dbc.ptr ) && p() -> specialization() == WARLOCK_DESTRUCTION )
-            soul_conduit_rng = 0.12;
-          else
-            soul_conduit_rng = p() -> talents.soul_conduit -> effectN( 1 ).percent();
+          double soul_conduit_rng = p() -> talents.soul_conduit -> effectN( 1 ).percent() - ( maybe_ptr( p() -> dbc.ptr ) ? p() -> spec.destruction -> effectN( 3 ).percent() : 0 );
 
           for ( int i = 0; i < last_resource_cost; i++ )
           {
@@ -3998,6 +3994,8 @@ struct duplicate_chaos_bolt_t : public warlock_spell_t
     crit_bonus_multiplier *= 1.0 + p -> artifact.chaotic_instability.percent();
     base_multiplier *= 1.0 + ( p -> sets.set( WARLOCK_DESTRUCTION, T18, B2 ) -> effectN( 2 ).percent() );
     base_multiplier *= 1.0 + ( p -> sets.set( WARLOCK_DESTRUCTION, T17, B4 ) -> effectN( 1 ).percent() );
+    if ( maybe_ptr( p -> dbc.ptr ) )
+      base_multiplier *= 1.0 + ( p -> talents.reverse_entropy -> effectN( 2 ).percent() );
   }
 
   timespan_t travel_time() const override
@@ -4073,6 +4071,8 @@ struct chaos_bolt_t: public warlock_spell_t
     base_execute_time += p -> sets.set( WARLOCK_DESTRUCTION, T18, B2 ) -> effectN( 1 ).time_value();
     base_multiplier *= 1.0 + ( p -> sets.set( WARLOCK_DESTRUCTION, T18, B2 ) -> effectN( 2 ).percent() );
     base_multiplier *= 1.0 + ( p -> sets.set( WARLOCK_DESTRUCTION, T17, B4 ) -> effectN( 1 ).percent() );
+    if ( maybe_ptr( p -> dbc.ptr ) )
+      base_multiplier *= 1.0 + ( p -> talents.reverse_entropy -> effectN( 2 ).percent() );
     if ( maybe_ptr( p -> dbc.ptr ) )
       base_costs[RESOURCE_SOUL_SHARD] *= 0.1;
 
@@ -4473,6 +4473,9 @@ struct rain_of_fire_t : public warlock_spell_t
       background = dual = direct_tick = true; // Legion TOCHECK
       callbacks = false;
       radius = p -> find_spell( 5740 ) -> effectN( 1 ).radius();
+
+      if ( maybe_ptr( p -> dbc.ptr ) )
+        base_multiplier *= 1.0 + ( p -> talents.reverse_entropy -> effectN( 2 ).percent() );
     }
   };
 
@@ -5387,6 +5390,8 @@ struct haunt_t: public warlock_spell_t
   haunt_t( warlock_t* p ):
     warlock_spell_t( "haunt", p, p -> talents.haunt )
   {
+    base_costs[RESOURCE_SOUL_SHARD] = 1.0;
+    resource_current = RESOURCE_SOUL_SHARD;
   }
 
   void impact( action_state_t* s ) override
