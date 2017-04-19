@@ -2981,6 +2981,12 @@ struct tiger_palm_t: public monk_melee_attack_t
             p() -> cooldown.breath_of_fire -> reset( true );
         }
 
+        if ( maybe_ptr( p() -> dbc.ptr ) )
+        {
+          if ( p() -> cooldown.blackout_strike -> down() )
+            p() -> cooldown.blackout_strike -> adjust( timespan_t::from_seconds( -1 * p() -> spec.tiger_palm -> effectN( 3 ).base_value() ) );
+        }
+
         // Reduces the remaining cooldown on your Brews by 1 sec
         double time_reduction = p() -> spec.tiger_palm -> effectN( 3 ).base_value();
 
@@ -3699,7 +3705,10 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
 
     spell_power_mod.direct = 0.0;
     cooldown -> hasted = true;
-    dot_behavior = DOT_REFRESH; // Spell uses Pandemic Mechanics.
+    dot_behavior = DOT_EXTEND;
+
+    if ( maybe_ptr( p -> dbc.ptr ) )
+      dot_duration *= 1 + p -> spec.brewmaster_monk -> effectN( 11 ).percent();
 
     tick_action = new tick_action_t( "rushing_jade_wind_tick", p, p -> talent.rushing_jade_wind -> effectN( 1 ).trigger() );
   }
@@ -4483,7 +4492,16 @@ struct  keg_smash_stave_off_t: public monk_melee_attack_t
   {
     aoe = -1;
     background = dual = true;
-    radius = p.spec.keg_smash -> effectN( 1 ).radius();
+    
+    if ( p.dbc.ptr )
+    {
+      attack_power_mod.direct = p.spec.keg_smash -> effectN( 2 ).ap_coeff();
+      radius = p.spec.keg_smash -> effectN( 2 ).radius();
+    }
+    else
+    {
+      radius = p.spec.keg_smash -> effectN( 1 ).radius();
+    }
 
     if ( p.artifact.smashed.rank() )
       radius += p.artifact.smashed.value();
@@ -4549,7 +4567,17 @@ struct keg_smash_t: public monk_melee_attack_t
     parse_options( options_str );
 
     aoe = -1;
-    radius = p.spec.keg_smash -> effectN( 1 ).radius();
+    background = dual = true;
+    
+    if ( p.dbc.ptr )
+    {
+      attack_power_mod.direct = p.spec.keg_smash -> effectN( 2 ).ap_coeff();
+      radius = p.spec.keg_smash -> effectN( 2 ).radius();
+    }
+    else
+    {
+      radius = p.spec.keg_smash -> effectN( 1 ).radius();
+    }
 
     if ( p.artifact.smashed.rank() )
       radius += p.artifact.smashed.value();
@@ -4604,7 +4632,7 @@ struct keg_smash_t: public monk_melee_attack_t
       p() -> buff.keg_smash_talent -> expire();
     
     // Reduces the remaining cooldown on your Brews by 4 sec.
-    double time_reduction = p() -> spec.keg_smash -> effectN( 3 ).base_value();
+    double time_reduction = ( maybe_ptr( p() -> dbc.ptr ) ? p() -> spec.keg_smash -> effectN( 4 ).base_value() : p() -> spec.keg_smash -> effectN( 3 ).base_value() );
 
     // Blackout Combo talent reduces Brew's cooldown by 2 sec.
     if ( p() -> buff.blackout_combo -> up() )
@@ -5688,7 +5716,8 @@ struct ironskin_brew_t : public monk_spell_t
   special_delivery_t* delivery;
 
   ironskin_brew_t( monk_t& p, const std::string& options_str ):
-    monk_spell_t( "ironskin_brew", &p, p.spec.ironskin_brew )
+    monk_spell_t( "ironskin_brew", &p, p.spec.ironskin_brew ),
+    delivery( new special_delivery_t( p ) )
   {
     parse_options( options_str );
 
@@ -5702,9 +5731,6 @@ struct ironskin_brew_t : public monk_spell_t
     p.cooldown.brewmaster_active_mitigation -> hasted   = true;
 
     cooldown             = p.cooldown.brewmaster_active_mitigation;
-
-    if ( p.talent.special_delivery -> ok() )
-      delivery = new special_delivery_t( p );
   }
 
   void execute() override
@@ -5716,7 +5742,10 @@ struct ironskin_brew_t : public monk_spell_t
     if ( p() -> talent.special_delivery -> ok() )
     {
       if ( rng().roll( p() -> talent.special_delivery -> proc_chance() ) )
+      {
+        delivery -> target = target;
         delivery -> execute();
+      }
     }
 
     if ( p() -> buff.blackout_combo -> up() )
@@ -5858,7 +5887,7 @@ struct purifying_brew_t: public monk_spell_t
     }
 
     if ( p() -> artifact.quick_sip.rank() )
-      p() -> buff.ironskin_brew -> trigger( 1, p() -> buff.ironskin_brew -> value(), -1.0, timespan_t::from_seconds( p() -> artifact.quick_sip.data().effectN( 3 ).base_value() ) );
+      p() -> buff.ironskin_brew -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, timespan_t::from_seconds( p() -> artifact.quick_sip.data().effectN( 3 ).base_value() ) );
   }
 };
 
@@ -7581,7 +7610,8 @@ monk( *p )
   if ( p -> specialization() == MONK_BREWMASTER )
   {
     debuff.keg_smash = buff_creator_t( *this, "keg_smash", p -> spec.keg_smash )
-      .default_value( p -> spec.keg_smash -> effectN( 2 ).percent() );
+      .default_value( maybe_ptr( p -> dbc.ptr ) ? p -> spec.keg_smash -> effectN( 3 ).percent()
+                                                : p -> spec.keg_smash -> effectN( 2 ).percent() );
   }
 
   debuff.storm_earth_and_fire = buff_creator_t( *this, "storm_earth_and_fire_target" )
@@ -9079,7 +9109,8 @@ double monk_t::composite_armor_multiplier() const
 
   a *= 1 + spec.stagger -> effectN( 14 ).percent();
 
-  a *= 1 + spec.brewmaster_monk -> effectN( 6 ).percent();
+  if ( !maybe_ptr( dbc.ptr ) )
+    a *= 1 + spec.brewmaster_monk -> effectN( 8 ).percent();
 
   a *= 1 + spec.brewmasters_balance -> effectN( 1 ).percent();
 
