@@ -4337,7 +4337,7 @@ struct flamestrike_t : public fire_mage_spell_t
         .target( execute_state -> target )
         .duration( timespan_t::from_seconds( 8.0 ) )
         .action( flame_patch )
-        .hasted( ground_aoe_params_t::SPELL_SPEED ), true );
+        .hasted( ground_aoe_params_t::SPELL_SPEED ) );
     }
   }
 
