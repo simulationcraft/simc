@@ -5130,9 +5130,6 @@ void priest_t::apl_shadow()
 
   // Surrender to Madness APL
   s2m->add_action( "void_bolt,if=buff.insanity_drain_stacks.value<6&set_bonus.tier19_4pc" );
-  if ( race == RACE_BLOOD_ELF )
-  s2m->add_action( "arcane_torrent,if=buff.insanity_drain_stacks.value>=65"
-                  "&(insanity-(current_insanity_drain*gcd.max)+30)<100" );
   s2m->add_action( "shadow_crash,if=talent.shadow_crash.enabled" );
   s2m->add_action( "mindbender,if=talent.mindbender.enabled" );
   s2m->add_action(
@@ -5143,6 +5140,9 @@ void priest_t::apl_shadow()
       "shadow_word_death,if=current_insanity_drain*gcd.max>insanity&!buff."
       "power_infusion.up&(insanity-(current_insanity_drain*gcd.max)+(30+30*"
       "talent.reaper_of_souls.enabled)<100)" );
+  if ( race == RACE_BLOOD_ELF )
+      s2m->add_action( "arcane_torrent,if=buff.insanity_drain_stacks.value>=65"
+                       "&(insanity-(current_insanity_drain*gcd.max)+30)<100" );
   s2m->add_action(
       "power_infusion,if=cooldown.shadow_word_death.charges=0&cooldown.shadow_"
       "word_death.remains>3*gcd.max&buff.voidform.stack>50" );
