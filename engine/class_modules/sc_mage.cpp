@@ -800,6 +800,17 @@ struct arcane_assault_t : public mage_pet_spell_t
     return am;
   }
 
+  virtual void impact( action_state_t* s ) override
+  {
+    mage_pet_spell_t::impact( s );
+
+    if ( o() -> talents.erosion -> ok() && result_is_hit( s -> result ) )
+    {
+      mage_td_t* tdata = o() -> get_target_data( s -> target );
+      tdata -> debuffs.erosion -> trigger();
+    }
+  }
+
   virtual double composite_target_multiplier( player_t* target ) const override
   {
     double tm = spell_t::composite_target_multiplier( target );
@@ -1197,9 +1208,14 @@ struct arcane_blast_t : public mirror_image_spell_t
   virtual double composite_target_multiplier( player_t* target ) const override
   {
     double tm = mirror_image_spell_t::composite_target_multiplier( target );
+
+    // TODO: Possible bug. Spell data says this spell works with Erosion, but it
+    // currently does not.
+    /*
     mage_td_t* tdata = o() -> get_target_data( target );
 
     tm *= 1.0 + tdata -> debuffs.erosion -> check_stack_value();
+    */
 
     return tm;
   }
