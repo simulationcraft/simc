@@ -2984,10 +2984,13 @@ struct cobra_shot_t: public hunter_ranged_attack_t
       if ( p() -> pets.hati )
         active_pets++;
 
-      for ( auto beast : p() -> pets.dire_beasts )
+      if ( ! p() -> talents.dire_frenzy -> ok() )
       {
-        if ( !beast -> is_sleeping() )
-          active_pets++;
+        for ( auto beast : p() -> pets.dire_beasts )
+        {
+          if ( !beast -> is_sleeping() )
+            active_pets++;
+        }
       }
 
       am *= 1.0 + active_pets * p() -> talents.way_of_the_cobra -> effectN( 1 ).percent();
@@ -5547,7 +5550,7 @@ void hunter_t::create_pets()
 {
   create_pet( summon_pet_str, summon_pet_str );
 
-  if ( specs.dire_beast -> ok() )
+  if ( specs.dire_beast -> ok() && ! talents.dire_frenzy -> ok() )
   {
     for ( size_t i = 0; i < pets.dire_beasts.size(); ++i )
       pets.dire_beasts[ i ] = new pets::dire_critter_t( this  );
