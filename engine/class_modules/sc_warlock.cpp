@@ -3960,7 +3960,7 @@ struct incinerate_t: public warlock_spell_t
     p() -> buffs.backdraft -> decrement();
 
     if ( maybe_ptr( p() -> dbc.ptr ) )
-      p() -> resource_gain( RESOURCE_SOUL_SHARD, ( execute_state -> result == RESULT_CRIT ? 0.2 : 0.1 ) * ( p() -> talents.fire_and_brimstone -> ok() ? warlock_spell_t::n_targets() : 1 ), p() -> gains.incinerate );
+      p() -> resource_gain( RESOURCE_SOUL_SHARD, ( execute_state -> result == RESULT_CRIT ? 0.2 : 0.1 ) * ( p() -> talents.fire_and_brimstone -> ok() ? execute_state -> n_targets : 1 ), p() -> gains.incinerate );
   }
 
   virtual double composite_crit_chance() const override
