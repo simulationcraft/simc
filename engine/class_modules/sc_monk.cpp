@@ -3705,10 +3705,12 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
 
     spell_power_mod.direct = 0.0;
     cooldown -> hasted = true;
-    dot_behavior = DOT_EXTEND;
 
     if ( maybe_ptr( p -> dbc.ptr ) )
+    {
       dot_duration *= 1 + p -> spec.brewmaster_monk -> effectN( 11 ).percent();
+      base_tick_time *= 1 + p -> spec.brewmaster_monk -> effectN( 11 ).percent();
+    }
 
     tick_action = new tick_action_t( "rushing_jade_wind_tick", p, p -> talent.rushing_jade_wind -> effectN( 1 ).trigger() );
   }
@@ -8344,7 +8346,8 @@ void monk_t::create_buffs()
     .default_value( talent.power_strikes -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() );
 
   buff.rushing_jade_wind = buff_creator_t( this, "rushing_jade_wind", talent.rushing_jade_wind )
-    .cd( timespan_t::zero() );
+    .cd( timespan_t::zero() )
+    .refresh_behavior( BUFF_REFRESH_PANDEMIC );
 
   buff.dampen_harm = buff_creator_t( this, "dampen_harm", talent.dampen_harm );
 
