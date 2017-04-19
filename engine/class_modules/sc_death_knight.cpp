@@ -2448,7 +2448,7 @@ struct death_knight_action_t : public Base
     {
       this -> energize_type = ENERGIZE_ON_CAST;
       this -> energize_resource = RESOURCE_RUNIC_POWER;
-      this -> energize_amount += std::fabs( this -> base_costs[ RESOURCE_RUNIC_POWER ] );
+      this -> energize_amount = std::fabs( this -> base_costs[ RESOURCE_RUNIC_POWER ] );
       this -> base_costs[ RESOURCE_RUNIC_POWER ] = 0;
     }
 
