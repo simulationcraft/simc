@@ -8344,7 +8344,7 @@ void monk_t::create_buffs()
 
   buff.rushing_jade_wind = buff_creator_t( this, "rushing_jade_wind", talent.rushing_jade_wind )
     .cd( timespan_t::zero() )
-    .duration( talent.rushing_jade_wind -> duration() * ( maybe_ptr( dbc.ptr ) ? 1 + spec.brewmaster_monk -> effectN( 11 ).percent() : 1 ) * ( 1 / ( 1 + composite_spell_haste() ) ) )
+    .duration( talent.rushing_jade_wind -> duration() * ( maybe_ptr( dbc.ptr ) ? 1 + spec.brewmaster_monk -> effectN( 11 ).percent() : 1 ) )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC );
 
   buff.dampen_harm = buff_creator_t( this, "dampen_harm", talent.dampen_harm );
