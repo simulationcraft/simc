@@ -6206,6 +6206,7 @@ void hunter_t::apl_bm()
   action_priority_list_t* default_list = get_action_priority_list( "default" );
 
   default_list -> add_action( "auto_shot" );
+  default_list -> add_action( this, "Counter Shot", "if=target.debuff.casting.react" );
 
   add_item_actions( default_list );
 
@@ -6257,6 +6258,7 @@ void hunter_t::apl_mm()
     precombat -> add_action( this, "Windburst" );
 
   default_list -> add_action( "auto_shot" );
+  default_list -> add_action( this, "Counter Shot", "if=target.debuff.casting.react" );
 
   add_item_actions( default_list );
 
@@ -6381,6 +6383,7 @@ void hunter_t::apl_surv()
   precombat -> add_action( this, "Harpoon" );
 
   default_list -> add_action( "auto_attack" );
+  default_list -> add_action( this, "Muzzle", "if=target.debuff.casting.react" );
 
   add_item_actions( default_list );
 
