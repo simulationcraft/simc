@@ -7089,6 +7089,7 @@ struct use_item_t : public action_t
         {
           sim -> errorf( "Player %s attempting 'use_item' action with item '%s' which is not currently equipped.\n", player -> name(), item_name.c_str() );
         }
+        background = true;
         return;
       }
 
@@ -7108,7 +7109,10 @@ struct use_item_t : public action_t
 
       if ( ! item || ! item -> active() )
       {
-        sim -> errorf( "Player %s attempting 'use_item' action with invalid item '%s' in slot '%s'.", player -> name(), item -> name(), item_slot.c_str() );
+        if ( sim -> debug )
+        {
+          sim -> errorf( "Player %s attempting 'use_item' action with invalid item '%s' in slot '%s'.", player -> name(), item -> name(), item_slot.c_str() );
+        }
         item = 0;
         background = true;
       }
@@ -7190,9 +7194,11 @@ struct use_item_t : public action_t
 
     if ( ! buff && ! action )
     {
-      sim -> errorf( "Player %s has 'use_item' action with no custom buff or action setup.\n", player -> name() );
+      if ( sim -> debug )
+      {
+        sim -> errorf( "Player %s has 'use_item' action with no custom buff or action setup.\n", player -> name() );
+      }
       background = true;
-      return;
     }
   }
 

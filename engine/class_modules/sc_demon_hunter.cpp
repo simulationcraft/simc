@@ -3426,7 +3426,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
 
       // Do not put crit chance modifiers here!
       base_multiplier *= 1.0 + p -> artifact.warglaives_of_chaos.percent();
-      crit_bonus_multiplier *= 1.0 + p -> artifact.critical_chaos.percent();
+      crit_bonus_multiplier *= 1.0 + (2 * p -> artifact.critical_chaos.percent());
     }
 
     action_state_t* new_state() override

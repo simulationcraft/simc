@@ -898,6 +898,9 @@ public:
   double resource_loss( resource_e resource_type, double amount, gain_t* g = nullptr, action_t* a = nullptr ) override;
   void      merge( player_t& other ) override;
   void      analyze( sim_t& sim ) override;
+  std::string default_potion() const override;
+  std::string default_flask() const override;
+  std::string default_food() const override;
 
   double    runes_per_second() const;
   double    rune_regen_coefficient() const;
@@ -911,7 +914,7 @@ public:
   double    runes_cooldown_min( ) const;
   double    runes_cooldown_max( ) const;
   double    runes_cooldown_time( const rune_t& r ) const;
-  void      default_apl_dps_precombat( const std::string& food, const std::string& potion );
+  void      default_apl_dps_precombat();
   void      default_apl_blood();
   void      default_apl_frost();
   void      default_apl_unholy();
@@ -7061,27 +7064,15 @@ void death_knight_t::init_spells()
 
 // death_knight_t::default_apl_dps_precombat ================================
 
-void death_knight_t::default_apl_dps_precombat( const std::string& food_name, const std::string& potion_name )
+void death_knight_t::default_apl_dps_precombat()
 {
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
 
-  std::string flask_name = ( true_level >  100 ) ? "countless_armies" :
-                           ( true_level >= 90  ) ? "greater_draenic_strength_flask" :
-                           ( true_level >= 85  ) ? "winters_bite" :
-                           ( true_level >= 80  ) ? "titanic_strength" :
-                           "";
-
   // Flask
-  if ( sim -> allow_flasks && true_level >= 80 )
-  {
-    precombat -> add_action( "flask,name=" + flask_name );
-  }
+  precombat -> add_action( "flask" );
 
   // Food
-  if ( sim -> allow_food && true_level >= 80 )
-  {
-    precombat -> add_action( "food,name=" + food_name );
-  }
+  precombat -> add_action( "food" );
 
   if ( true_level >= 110 )
   {
@@ -7092,10 +7083,7 @@ void death_knight_t::default_apl_dps_precombat( const std::string& food_name, co
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
   // Precombat potion
-  if ( sim -> allow_potions && true_level >= 80 )
-  {
-    precombat -> add_action( "potion,name=" + potion_name );
-  }
+  precombat -> add_action( "potion" );
 }
 
 // death_knight_t::default_apl_blood ========================================
@@ -7104,6 +7092,69 @@ void death_knight_t::default_apl_blood()
 {
     // TODO: mrdmnd - implement
   default_apl_frost();
+}
+
+// death_knight_t::default_potion ===========================================
+
+std::string death_knight_t::default_potion() const
+{
+  std::string frost_potion = ( true_level > 100 ) ? "prolonged_power" :
+                             ( true_level >= 90 ) ? "draenic_strength" :
+                             ( true_level >= 85 ) ? "mogu_power" :
+                             ( true_level >= 80 ) ? "golemblood_potion" :
+                             "disabled";
+
+  std::string unholy_potion = ( true_level > 100 ) ? "prolonged_power" :
+                              ( true_level >= 90 ) ? "draenic_strength" :
+                              ( true_level >= 85 ) ? "mogu_power" :
+                              ( true_level >= 80 ) ? "golemblood_potion" :
+                              "disabled";
+
+  switch ( specialization() )
+  {
+    case DEATH_KNIGHT_FROST: return frost_potion;
+    default:                 return unholy_potion;
+  }
+}
+
+// death_knight_t::default_food ========================================
+
+std::string death_knight_t::default_food() const
+{
+  std::string frost_food = ( true_level > 100 ) ? "lavish_suramar_feast" :
+                           ( true_level >  90 ) ? "pickled_eel" :
+                           ( true_level >= 85 ) ? "sea_mist_rice_noodles" :
+                           ( true_level >= 80 ) ? "seafood_magnifique_feast" :
+                           "disabled";
+
+  std::string unholy_food = ( true_level > 100 ) ? "nightborne_delicacy_platter" :
+                            ( true_level >  90 ) ? "buttered_sturgeon" :
+                            ( true_level >= 85 ) ? "sea_mist_rice_noodles" :
+                            ( true_level >= 80 ) ? "seafood_magnifique_feast" :
+                            "disabled";
+
+  switch ( specialization() )
+  {
+    case DEATH_KNIGHT_FROST: return frost_food;
+    default:                 return unholy_food;
+  }
+}
+
+// death_knight_t::default_flask ============================================
+
+std::string death_knight_t::default_flask() const
+{
+  std::string flask_name = ( true_level >  100 ) ? "countless_armies" :
+                           ( true_level >= 90  ) ? "greater_draenic_strength_flask" :
+                           ( true_level >= 85  ) ? "winters_bite" :
+                           ( true_level >= 80  ) ? "titanic_strength" :
+                           "disabled";
+
+  // TODO: Blood
+  switch ( specialization() )
+  {
+    default: return flask_name;
+  }
 }
 
 // death_knight_t::default_apl_frost ========================================
@@ -7116,19 +7167,8 @@ void death_knight_t::default_apl_frost()
   action_priority_list_t* bos_ticking = get_action_priority_list( "bos_ticking" );
   action_priority_list_t* gs_ticking  = get_action_priority_list( "gs_ticking" );
 
-  std::string food_name = ( true_level > 100 ) ? "lavish_suramar_feast" :
-                          ( true_level >  90 ) ? "pickled_eel" :
-                          ( true_level >= 85 ) ? "sea_mist_rice_noodles" :
-                          ( true_level >= 80 ) ? "seafood_magnifique_feast" :
-                          "";
-  std::string potion_name = ( true_level > 100 ) ? "prolonged_power" :
-                            ( true_level >= 90 ) ? "draenic_strength" :
-                            ( true_level >= 85 ) ? "mogu_power" :
-                            ( true_level >= 80 ) ? "golemblood_potion" :
-                            "";
-
   // Setup precombat APL for DPS spec
-  default_apl_dps_precombat( food_name, potion_name );
+  default_apl_dps_precombat();
 
   def -> add_action( "auto_attack" );
   def -> add_action( this, "Pillar of Frost", "if=!equipped.140806|!talent.breath_of_sindragosa.enabled" );
@@ -7146,7 +7186,7 @@ void death_knight_t::default_apl_frost()
   // On-use items
   for ( const auto& item : items )
   {
-    if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+    if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
     {
       if ( item.name_str == "ring_of_collapsing_futures" )
       {
@@ -7160,10 +7200,7 @@ void death_knight_t::default_apl_frost()
   }
 
   // In-combat potion
-  if ( sim -> allow_potions && true_level >= 80 )
-  {
-    def -> add_action( "potion,name=" + potion_name + ",if=buff.pillar_of_frost.up&(!talent.breath_of_sindragosa.enabled|!cooldown.breath_of_sindragosa.remains)" );
-  }
+  def -> add_action( "potion,if=buff.pillar_of_frost.up&(!talent.breath_of_sindragosa.enabled|!cooldown.breath_of_sindragosa.remains)" );
 
   // Cooldowns
   def -> add_action( this, "Sindragosa's Fury", "if=!equipped.144293&buff.pillar_of_frost.up&(buff.unholy_strength.up|(buff.pillar_of_frost.remains<3&target.time_to_die<60))&debuff.razorice.stack=5&!buff.obliteration.up" );
@@ -7258,19 +7295,8 @@ void death_knight_t::default_apl_unholy()
   action_priority_list_t* castigator = get_action_priority_list("castigator");
   action_priority_list_t* instructors = get_action_priority_list("instructors");
 
-  std::string food_name = (true_level > 100) ? "nightborne_delicacy_platter" :
-    (true_level >  90) ? "buttered_sturgeon" :
-    (true_level >= 85) ? "sea_mist_rice_noodles" :
-    (true_level >= 80) ? "seafood_magnifique_feast" :
-    "";
-  std::string potion_name = (true_level > 100) ? "prolonged_power" :
-    (true_level >= 90) ? "draenic_strength" :
-    (true_level >= 85) ? "mogu_power" :
-    (true_level >= 80) ? "golemblood_potion" :
-    "";
-
   // Setup precombat APL for DPS spec
-  default_apl_dps_precombat(food_name, potion_name);
+  default_apl_dps_precombat();
 
   precombat->add_action(this, "Raise Dead");
   precombat->add_action(this, "Army of the Dead");
@@ -7286,7 +7312,7 @@ void death_knight_t::default_apl_unholy()
   // On-use items
   for (const auto& item : items)
   {
-    if (item.has_special_effect(SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE))
+    if (item.has_special_effect(SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE))
     {
       if ( item.name_str == "ring_of_collapsing_futures" )
       {
@@ -7300,10 +7326,7 @@ void death_knight_t::default_apl_unholy()
   }
 
   // In-combat potion
-  if (sim->allow_potions && true_level >= 80)
-  {
-    def->add_action("potion,name=" + potion_name + ",if=buff.unholy_strength.react");
-  }
+  def->add_action("potion,if=buff.unholy_strength.react");
 
   // Generic things that should be always done
   def->add_action(this, "Outbreak", "target_if=!dot.virulent_plague.ticking");

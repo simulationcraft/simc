@@ -133,13 +133,6 @@ void plot_t::analyze_stats()
 
     current_plot_stat = i;
 
-    if ( sim->report_progress )
-    {
-      util::fprintf( stdout, "\nGenerating DPS Plot for %s...\n",
-                     util::stat_type_string( i ) );
-      fflush( stdout );
-    }
-
     remaining_plot_points = dps_plot_points;
 
     int start, end;
@@ -179,15 +172,7 @@ void plot_t::analyze_stats()
         //delta_sim->enchant.add_stat( i, j * dps_plot_step );
         delta_sim->scaling->scale_stat = i;
         delta_sim->scaling->scale_value = j * dps_plot_step;
-        if ( sim->report_progress )
-        {
-          std::stringstream stat_name;
-          stat_name.width( 12 );
-          stat_name << std::left
-                    << std::string( util::stat_type_abbrev( i ) ) + ":";
-          delta_sim->sim_phase_str =
-              util::to_string( j * dps_plot_step ) + " " + stat_name.str();
-        }
+        delta_sim->set_sim_base_str( util::to_string( j * dps_plot_step ) + " " + util::stat_type_abbrev( i ) );
         delta_sim->execute();
         if ( dps_plot_debug )
         {

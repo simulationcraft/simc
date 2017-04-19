@@ -232,14 +232,7 @@ void scaling_t::analyze_stats()
     delta_sim = new sim_t( sim );
     mutex.unlock();
 
-    if ( sim -> report_progress )
-    {
-      std::stringstream  stat_name; stat_name.width( 12 );
-      stat_name << std::left << std::string( util::stat_type_abbrev( stat ) ) + ":";
-      delta_sim -> sim_phase_str = "Generating " + stat_name.str();
-      //util::fprintf( stdout, "\nGenerating scale factors for %s...\n", util::stat_type_string( stat ) );
-      //fflush( stdout );
-    }
+    delta_sim -> set_sim_base_str( util::stat_type_abbrev( stat ) );
 
     delta_sim -> scaling -> scale_stat = stat;
     delta_sim -> scaling -> scale_value = +scale_delta / ( center ? 2 : 1 );
@@ -251,12 +244,7 @@ void scaling_t::analyze_stats()
       ref_sim = new sim_t( sim );
       mutex.unlock();
 
-      if ( sim -> report_progress )
-      {
-        std::stringstream  stat_name; stat_name.width( 8 );
-        stat_name << std::left << std::string( util::stat_type_abbrev( stat ) ) + ":";
-        ref_sim -> sim_phase_str = "Generating ref " + stat_name.str();
-      }
+      ref_sim -> set_sim_base_str( std::string( "Ref " ) + util::stat_type_abbrev( stat ) );
 
       ref_sim -> scaling -> scale_stat = stat;
       ref_sim -> scaling -> scale_value = center ? -( scale_delta / 2 ) : 0;

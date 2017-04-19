@@ -1211,6 +1211,8 @@ struct fireball_t : public mirror_image_spell_t
     : mirror_image_spell_t( "fireball", p, p -> find_pet_spell( "Fireball" ) )
   {
     parse_options( options_str );
+    // PTR Multiplier
+    base_multiplier *= 1.0 + p -> find_spell( 137019 ) -> effectN( 1 ).percent();
   }
 
   virtual double composite_crit_chance() const override
@@ -2773,6 +2775,8 @@ struct conflagration_dot_t : public fire_mage_spell_t
     background = true;
     base_costs[ RESOURCE_MANA ] = 0;
     trigger_gcd = timespan_t::zero();
+    // PTR Multiplier
+    base_multiplier *= 1.0 + p -> find_spell( 137019 ) -> effectN( 1 ).percent();
   }
   void init() override
   {
@@ -2793,6 +2797,8 @@ struct conflagration_t : public fire_mage_spell_t
     aoe = -1;
     base_costs[ RESOURCE_MANA ] = 0;
     trigger_gcd = timespan_t::zero();
+    // PTR Multiplier
+    base_multiplier *= 1.0 + p -> find_spell( 137019 ) -> effectN( 1 ).percent();
   }
 };
 
@@ -2812,6 +2818,8 @@ struct phoenix_reborn_t : public fire_mage_spell_t
     background = true;
     icd = p -> get_cooldown( "phoenix_reborn_icd" );
     icd -> duration = p -> find_spell( 215773 ) -> internal_cooldown();
+    // PTR Multiplier
+    base_multiplier *= 1.0 + p -> find_spell( 137019 ) -> effectN( 1 ).percent();
   }
   virtual void execute() override
   {
@@ -3589,14 +3597,16 @@ struct arcane_power_t : public arcane_mage_spell_t
 };
 
 // Blast Furance Spell =======================================================
-struct blast_furance_t : public fire_mage_spell_t
+struct blast_furnace_t : public fire_mage_spell_t
 {
-  blast_furance_t( mage_t* p ) :
-    fire_mage_spell_t( "blast_furance", p, p -> find_spell( 194522 ) )
+  blast_furnace_t( mage_t* p ) :
+    fire_mage_spell_t( "blast_furnace", p, p -> find_spell( 194522 ) )
   {
     background = true;
     callbacks = false;
     hasted_ticks = false;
+    // PTR Multiplier
+    base_multiplier *= 1.0 + p -> find_spell( 137019 ) -> effectN( 1 ).percent();
   }
 };
 // Blast Wave Spell ==========================================================
@@ -5195,7 +5205,7 @@ struct fire_blast_t : public fire_mage_spell_t
   double pyrosurge_chance;
   pyrosurge_flamestrike_t* pyrosurge_flamestrike;
   cooldown_t* icd;
-  blast_furance_t* blast_furnace;
+  blast_furnace_t* blast_furnace;
 
   fire_blast_t( mage_t* p, const std::string& options_str ) :
     fire_mage_spell_t( "fire_blast", p,
@@ -5233,7 +5243,7 @@ struct fire_blast_t : public fire_mage_spell_t
 
     if ( p -> artifact.blast_furnace.rank() )
     {
-      blast_furnace = new blast_furance_t( p );
+      blast_furnace = new blast_furnace_t( p );
     }
 
     base_crit += p -> spec.fire_blast_2 -> effectN( 1 ).percent();

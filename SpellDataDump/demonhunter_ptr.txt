@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build 8142444)
+SimulationCraft 720-02 for World of Warcraft 7.2.0 PTR (wow build 23826)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -262,7 +262,7 @@ Effects          :
 Name             : Chaos Strike (id=162794) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Chaos
-Resource         : 40 Fury
+Resource         : 40 Fury (id=10198)
 Range            : 5 yards
 GCD              : 1.5 seconds
 Affecting spells : Metamorphosis (162264), Mastery: Demonic Presence (185164), Havoc Demon Hunter (212612), Vengeance Demon Hunter (212613)
@@ -405,7 +405,7 @@ Description      : Increases your Agility by $s1% while wearing only leather arm
 Name             : Chaos Nova (id=179057) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Chromatic
-Resource         : 30 Fury
+Resource         : 30 Fury (id=10418)
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 60 seconds
@@ -475,7 +475,7 @@ Category         : 1612
 Affecting spells : Metamorphosis (162264), Sharpened Glaives (201457), Mo'arg Bionic Stabilizers (208826), Havoc Demon Hunter (212612), Vengeance Demon Hunter (212613), 
 Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ..x..... ........   ........ ........ ........ ........ 
+                 : ........ ........ ..x..... ........   ........ .......x ........ ........ 
                  : ........ x....... .....x.. ....x...   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
@@ -620,7 +620,7 @@ Generating ${$s4/10} Pain every $t4 sec.
 Name             : Blade Dance (id=188499) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
-Resource         : 35 Fury
+Resource         : 35 Fury (id=10434)
 GCD              : 1.5 seconds
 Duration         : 1 seconds
 Cooldown         : 10 seconds
@@ -647,11 +647,13 @@ Effects          :
 #6 (id=293660)   : Trigger Spell: Blade Dance (64)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 450 | Trigger Spell: 199552 | Target: Self(1)
 #7 (id=331831)   : Trigger Spell: Blade Dance (64)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 950 | Trigger Spell: 200685 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 700 | Trigger Spell: 200685 | Target: Self(1)
 #8 (id=341247)   : Apply Aura (6) | Unknown effect sub type (483)
                    Base Value: 0 | Scaled Value: 0 | Misc Value 2: 0x8 | Target: Self(1)
-Description      : Strike all nearby enemies for ${3*$199552sw2+$200685sw2} Physical damage, and increase your chance to dodge by $s2% for $d.
+Description      : Strike $?a206416[your primary target for $<firstbloodDmg> Physical damage, ][]all nearby enemies for $<baseDmg> Physical damage, and increase your chance to dodge by $s2% for $d.
 Tooltip          : Dodge chance increased by $s2%.
+Variables        : $baseDmg=${3*$199552sw2+$200685sw2} 
+$firstbloodDmg=${(3*$199552sw2+$200685sw2)*(100+$206416s1)/100}
 
 Name             : Spectral Sight (id=188501) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -689,10 +691,10 @@ Replaces         : Fel Rush (id=195072)
 Class            : Vengeance Demon Hunter
 School           : Physical
 Range            : 30 yards
-Cooldown         : 1 seconds
+Cooldown         : 0.8 seconds
 Charges          : 2 (20 seconds cooldown)
 Category         : 1553
-Category Cooldown: 1 seconds
+Category Cooldown: 0.8 seconds
 Affecting spells : Infernal Force (207375), Abyssal Strike (207550), Vengeance Demon Hunter (212613)
 Attributes       : ....x... x....... ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -878,16 +880,18 @@ School           : Physical
 Spell Level      : 100
 Duration         : 8 seconds
 Cooldown         : 180 seconds
-Attributes       : ....x... ........ ........ ........   .....x.. ..x..... ........ ....x... 
+Attributes       : ....x... ........ ........ .......x   .....x.. ..x..... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ...x....   ........ ........ ........ ........ 
-                 : Does not break stealth (37)
+                 : Cannot cancel aura (31), Does not break stealth (37)
 Effects          :
 #1 (id=288808)   : Unknown effect type (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 6615 | Target: Unknown(125)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 6615 | Target: Unknown(62)
+#2 (id=374312)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Summons darkness around you in an 8 yd radius, granting friendly targets a $209426s1% chance to avoid all damage from an attack.  Lasts $d.
 
 Name             : Chaos Strike (Passive) (id=197125) [Spell Family (107), Passive, Hidden] 
@@ -926,7 +930,7 @@ Effects          :
 Name             : Eye Beam (id=198013) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Chromatic
-Resource         : 50 Fury
+Resource         : 50 Fury (id=10720)
 Range            : 20 yards
 GCD              : 1.5 seconds
 Duration         : 2 seconds
@@ -1134,7 +1138,7 @@ Tooltip          : Switch to your Primary Talent Specialization.
 Name             : Annihilation (id=201427) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Chaos
-Resource         : 40 Fury
+Resource         : 40 Fury (id=10809)
 Range            : 5 yards
 GCD              : 1.5 seconds
 Affecting spells : Metamorphosis (162264), Mastery: Demonic Presence (185164), Havoc Demon Hunter (212612), Vengeance Demon Hunter (212613)
@@ -1354,7 +1358,7 @@ Proc Chance      : 101%
 Affecting spells : Mastery: Demonic Presence (185164)
 Attributes       : ........ ........ ........ ..x....x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ..x....x ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1472,12 +1476,12 @@ Effects          :
 #2 (id=308561)   : Apply Aura (6) | Add Flat Modifier: Spell Cooldown (107)
                    Base Value: -10000 | Scaled Value: -10000 | Misc Value: 11 | Target: Self(1)
                    Affected Spells: Vengeful Retreat (198793), Vengeful Retreat (198813)
-Description      : Reduces the cooldown of Vengeful Retreat by 10 sec, and generates $203650s1 Fury over $203650d if you damage at least one enemy with Vengeful Retreat.
+Description      : Reduces the cooldown of Vengeful Retreat by 10 sec, and generates ${($203650s1/5)*$203650d} Fury over $203650d if you damage at least one enemy with Vengeful Retreat.
 
 Name             : Demon Blades (id=203555) [Spell Family (107), Passive] 
 Class            : Demon Hunter
 School           : Physical
-Proc Chance      : 60%
+Proc Chance      : 100%
 Proc Flags       : ..x..... ........ ........ ........ 
                  : White Melee
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
@@ -1489,9 +1493,9 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=300260)   : Apply Aura (6) | Proc Trigger Spell: Demon Blades (42)
-                   Base Value: 65 | Scaled Value: 65 | Trigger Spell: 203796 | Target: Self(1)
+                   Base Value: 100 | Scaled Value: 100 | Trigger Spell: 203796 | Target: Self(1)
 #2 (id=350250)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
-                   Base Value: -8 | Scaled Value: -8 | Misc Value: 3
+                   Base Value: -11 | Scaled Value: -11 | Misc Value: 3
                    Affected Spells: Anger of the Half-Giants (208827)
 Description      : Your auto attacks have a $h% chance to deal additional Shadow damage and generate Fury.
 
@@ -1536,7 +1540,7 @@ Effects          :
 Name             : Prepared (id=203650) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
-Duration         : 5 seconds
+Duration         : 10 seconds
 Affecting spells : Item - Demon Hunter T19 Havoc 2P Bonus (211054)
 Triggered by     : Prepared (203551)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1547,7 +1551,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=300413)   : Apply Aura (6) | Modify Power Regeneration (85)
-                   Base Value: 40 | Scaled Value: 40 | Misc Value: 17 | Target: Self(1)
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: 17 | Target: Self(1)
 Description      : $@spelldesc203551
 Tooltip          : Generating ${$m1/5} Fury every sec.
 
@@ -1555,7 +1559,7 @@ Name             : Demon Spikes (id=203720) [Spell Family (107)]
 Replaces         : Vengeful Retreat (id=198793)
 Class            : Vengeance Demon Hunter
 School           : Physical
-Resource         : 20 Unknown (18)
+Resource         : 20 Pain (id=10943)
 Spell Level      : 1
 Cooldown         : 1.5 seconds
 Charges          : 2 (15 seconds cooldown)
@@ -1733,9 +1737,9 @@ Effects          :
 #1 (id=300651)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #2 (id=300652)   : Weapon Damage% (31)
-                   Base Value: 85 | Scaled Value: 0.85 | Target: Enemy(6)
+                   Base Value: 50 | Scaled Value: 0.5 | Target: Enemy(6)
 #3 (id=300653)   : Energize Power (30)
-                   Base Value: 11 | Scaled Value: 12 - 20 | Value Range: 9 | Misc Value: fury | Target: Self(1)
+                   Base Value: 5 | Scaled Value: 6 - 12 | Value Range: 7 | Misc Value: fury | Target: Self(1)
 Description      : Inflicts $sw1 Shadow damage and generates $m3 to $M3 Fury.
 
 Name             : Demon Spikes (id=203819) [Spell Family (107)] 
@@ -1798,7 +1802,7 @@ Cooldown         : 3 seconds
 Affecting spells : Metamorphosis (162264), Sharpened Glaives (201457), Mo'arg Bionic Stabilizers (208826), Havoc Demon Hunter (212612), Vengeance Demon Hunter (212613), 
 Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ..x..... ........   ........ ........ ........ ........ 
+                 : ........ ........ ..x..... ........   ........ .......x ........ ........ 
                  : ........ x....... .....x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
@@ -2035,8 +2039,9 @@ Effects          :
 #2 (id=323061)   : Apply Aura (6) | Add Flat Modifier: Spell Resource Cost (107)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 14 | Target: Self(1)
                    Affected Spells: Blade Dance (188499), Blade Dance (199552), Blade Dance (200685), Death Sweep (210152), Death Sweep (210153), Death Sweep (210155)
-Description      : Reduces the Fury cost of Blade Dance by $s2 and increases its damage to ${(3*$199552sw2+$200685sw2)*(100+$m1)/100} against the first target struck.
-Variables        : $dmg=${($m1*$188499m1+$m1*$199552m2*2+$m1*$200685m2)/100}
+Description      : Reduces the Fury cost of Blade Dance by $s2 and increases its damage to $<firstbloodDmg> against the first target struck.
+Variables        : $baseDmg=${3*$199552sw2+$200685sw2} 
+$firstbloodDmg=${(3*$199552sw2+$200685sw2)*(100+$206416s1)/100}
 
 Name             : Bloodlet (id=206473) [Spell Family (107), Passive] 
 Class            : Demon Hunter
@@ -2128,8 +2133,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=305363)   : Apply Aura (6) | Proc Trigger Spell (42)
-                   Base Value: 25 | Scaled Value: 25 | Target: Self(1)
-Description      : Chaos Strike has a $s1% chance to spawn a Lesser Soul Fragment, and consuming any Soul Fragment grants $210041s1 Fury.
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+Description      : Chaos Strike has a $h% chance to spawn a Lesser Soul Fragment, and consuming any Soul Fragment grants $210041s1 Fury.
 
 Name             : Nemesis (id=206491) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -2623,7 +2628,7 @@ Range            : 100 yards
 Duration         : 8 seconds
 Attributes       : ........ x....... ........ .......x   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ xx...... ......x. 
-                 : ........ ........ ........ ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
@@ -2637,7 +2642,7 @@ Tooltip          : Attacks against you have a $s1% chance to inflict no damage.
 Name             : Fracture (id=209795) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
-Resource         : 20 Unknown (18)
+Resource         : 20 Pain (id=11169)
 Range            : 5 yards
 GCD              : 1.5 seconds
 Affecting spells : Metamorphosis (162264), Havoc Demon Hunter (212612), Vengeance Demon Hunter (212613)
@@ -2709,7 +2714,7 @@ Description      : Consume a Soul Fragment, healing you for $s1 health.
 Name             : Death Sweep (id=210152) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
-Resource         : 35 Fury
+Resource         : 35 Fury (id=11104)
 GCD              : 1.5 seconds
 Duration         : 1 seconds
 Cooldown         : 8 seconds
@@ -2821,7 +2826,7 @@ Name             : Fel Barrage (id=211052) [Spell Family (107)]
 Class            : Demon Hunter
 School           : Chromatic
 Range            : 100 yards
-Velocity         : 22 yards/sec
+Velocity         : 24 yards/sec
 Affecting spells : Mastery: Demonic Presence (185164), Havoc Demon Hunter (212612)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -2831,7 +2836,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=312614)   : School Damage: chromatic (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3.00000 | Radius: 4 - 8 yards | Target: Unknown(86) -> AOE enemy (instant)(16)
+                   Base Value: 0 | Scaled Value: 0 (avg=0, dl=0.1) | AP Coefficient: 3.00000 | Radius: 4 - 8 yards | Target: Unknown(86) -> AOE enemy (instant)(16)
 Description      : $@spelldesc211053
 
 Name             : Fel Barrage (id=211053) [Spell Family (107)] 
@@ -2839,9 +2844,8 @@ Class            : Demon Hunter
 School           : Chromatic
 Range            : 30 yards
 GCD              : 1.5 seconds
-Duration         : 1 seconds
-Charges          : 5 (30 seconds cooldown)
-Category         : 1619
+Duration         : 2 seconds
+Cooldown         : 60 seconds
 Affecting spells : Havoc Demon Hunter (212612)
 Attributes       : ........ ........ ........ ........   ..x..... ........ ........ ........ 
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
@@ -2852,12 +2856,12 @@ Attributes       : ........ ........ ........ ........   ..x..... ........ .....
                  : Channeled (34)
 Effects          :
 #1 (id=312615)   : Apply Aura (6) | Periodic Dummy: every 0.25 seconds (226)
-                   Base Value: 345914 | Scaled Value: 345914 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #2 (id=332627)   : Apply Aura (6) | Unknown effect sub type (106)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-Description      : At your command, unleash Fel, inflicting ${$211052s1} Chaos damage to your target and nearby enemies for each charge.  Max 5 charges.
+                   Base Value: 50 | Scaled Value: 50 | Target: Self(1)
+Description      : At your command, unleash Fel, inflicting ${(($d/$t1)+1)*$211052s1} Chaos damage to your target and nearby enemies over $d.
 
-Your damaging abilities have a chance to generate a charge.
+Your damaging abilities have a chance to reduce the cooldown of Fel Barrage by ${$s2/10} sec.
 Tooltip          : Unleashing Fel.
 
 Name             : Chaos Blades (id=211796) [Spell Family (107)] 
@@ -2898,19 +2902,20 @@ Description      : Attack with pure Fel power, dealing Chaos damage equal to $s1
 Name             : Fel Eruption (id=211881) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
-Resource         : 10 Fury w/ Havoc Demon Hunter (id=212612)
-Resource         : 10 Unknown (18) w/ Vengeance Demon Hunter (id=212613)
+Resource         : 10 Fury (id=11144) w/ Havoc Demon Hunter (id=212612)
+Resource         : 10 Pain (id=11161) w/ Vengeance Demon Hunter (id=212613)
 Range            : 20 yards
 GCD              : 1.5 seconds
 Duration         : 2 seconds
 Cooldown         : 30 seconds
 Affecting spells : Metamorphosis (162264), Mastery: Demonic Presence (185164), Havoc Demon Hunter (212612), Vengeance Demon Hunter (212613)
-Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
+Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Cannot dodge/parry/block (21)
 Effects          :
 #1 (id=313950)   : Apply Aura (6) | Stun (12)
                    Base Value: 100 | Scaled Value: 100 | Mechanic: Unknown(95) | Target: Enemy(6)
@@ -2924,7 +2929,7 @@ Tooltip          : Stunned.
 Name             : Fel Devastation (id=212084) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Fire
-Resource         : 30 Unknown (18)
+Resource         : 30 Pain (id=11141)
 Range            : 20 yards
 GCD              : 1.5 seconds
 Duration         : 2 seconds
@@ -3497,8 +3502,8 @@ Description      : $@spelldesc162794
 Name             : Fel Barrage (Passive) (id=222703) [Spell Family (107), Passive, Hidden] 
 Class            : Demon Hunter
 School           : Magic
-Proc Chance      : 100%
-Real PPM         : 6 (Haste multiplier)
+Proc Chance      : 101%
+Real PPM         : 4 (Haste multiplier)
 Proc Flags       : ....x... ....x... x.x..... ........ 
                  : Yellow Melee, AOE Hostile Spell, Hostile Spell, Periodic
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -3509,8 +3514,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=332566)   : Apply Aura (6) | Proc Trigger Spell (42)
-                   Base Value: 40 | Scaled Value: 40 | Target: Self(1)
+#1 (id=332566)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : You shouldn't see this.
 
 Name             : Frailty (id=224509) [Spell Family (107)] 
@@ -3625,7 +3630,7 @@ Description      : Immolation Aura's initial burst has a chance to shatter Lesse
 Name             : Soul Barrier (id=227225) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Shadow
-Resource         : 10 Unknown (18)
+Resource         : 10 Pain (id=11507)
 GCD              : 1.5 seconds
 Duration         : 12 seconds
 Cooldown         : 30 seconds
@@ -3708,7 +3713,7 @@ Name             : Soul Cleave (id=228477) [Spell Family (107)]
 Replaces         : Chaos Strike (id=162794)
 Class            : Vengeance Demon Hunter
 School           : Physical
-Resource         : 30 - 60 Unknown (18)
+Resource         : 30 - 60 Pain (id=11545)
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds

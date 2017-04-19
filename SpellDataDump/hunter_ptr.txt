@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build 8142444)
+SimulationCraft 720-02 for World of Warcraft 7.2.0 PTR (wow build 23826)
 
 Name             : Mend Pet (id=136) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
@@ -79,7 +79,7 @@ Description      : Summons your first pet to you.
 Name             : Revive Pet (id=982) [Spell Family (9)] 
 Class            : Hunter
 School           : Nature
-Resource         : 35 Focus
+Resource         : 35 Focus (id=106)
 Spell Level      : 1
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
@@ -159,7 +159,7 @@ Description      : $?a166615[|CFFFF2020You must dismiss your current pet before 
 
 ][]Tames a beast to be your companion.  If you lose the beast's attention for any reason, the taming process will fail.
 
-You must dismiss any active beast companions and have an empty Call Pet slot before you can begin taming a new beast.  Only Beast Mastery specialized Hunters can tame Exotic Beasts.
+You must dismiss any active beast companions and have an empty Call Pet slot before you can begin taming a new beast. Only Beast Mastery specialized Hunters can tame Exotic Beasts.
 Tooltip          : Taming a pet.
 
 Name             : Feed Pet (id=1539) 
@@ -217,12 +217,12 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Active Pet(5)
 #3 (id=799)      : Trigger Spell: (47531) (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 47531
-Description      : Temporarily sends this pet away.  You can call it back later.
+Description      : Temporarily sends this pet away. You can call it back later.
 
 Name             : Multi-Shot (id=2643) [Spell Family (9)] 
 Class            : Beast Mastery Marksmanship Hunter
 School           : Physical
-Resource         : 40 Focus
+Resource         : 40 Focus (id=11195)
 Spell Level      : 16
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -423,7 +423,7 @@ Duration         : 10 seconds
 Affecting spells : Freezing Trap (3355), Survival Hunter (137017), Explosive Force (203670), Guerrilla Tactics (236698), 
 Attributes       : ........ ........ .....x.. x..x....   ...x.x.x ........ ........ ........ 
                  : ..x..... ......x. ...x.... ........   ......xx .x...... ..x..... ........ 
-                 : .......x .......x ........ ........   ...x.... ........ .xx..... ..x..... 
+                 : .......x .......x ........ ........   ...x.... .......x .xx..... ..x..... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : .....x.. .x..x... ........ ........   ........ ...x.... ....x... ........ 
                  : ........ ........ ......x. ...x....   ........ ........ ........ ..x..... 
@@ -458,7 +458,7 @@ Description      : $@spelldesc191433
 Name             : Claw (Basic Attack) (id=16827) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
 School           : Physical
-Resource         : 25 Focus
+Resource         : 25 Focus (id=676)
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
@@ -482,7 +482,7 @@ $damage=${$<ce>*$<spiked>*$<blink>*($RAP*0.333)*(1+$@versadmg)}
 Name             : Bite (Basic Attack) (id=17253) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter, Death Knight
 School           : Physical
-Resource         : 25 Focus
+Resource         : 25 Focus (id=706)
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
@@ -539,7 +539,7 @@ Name             : Aimed Shot (id=19434) [Scaling Spell (4), Spell Family (9)]
 Replaces         : Cobra Shot (id=193455)
 Class            : Marksmanship Hunter
 School           : Physical
-Resource         : 50 Focus
+Resource         : 50 Focus (id=795)
 Spell Level      : 12
 Range            : 40 yards
 Cast Time        : 2 seconds
@@ -923,7 +923,7 @@ Tooltip          : Interrupted.
 Name             : Kill Command (id=34026) [Scaling Spell (4), Spell Family (9)] 
 Class            : Beast Mastery Hunter
 School           : Physical
-Resource         : 30 Focus
+Resource         : 30 Focus (id=1470)
 Spell Level      : 10
 Range            : 100 yards
 GCD              : 1.5 seconds
@@ -1040,7 +1040,7 @@ Effects          :
 Name             : Smack (Basic Attack) (id=49966) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
 School           : Physical
-Resource         : 25 Focus
+Resource         : 25 Focus (id=2269)
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
@@ -1655,7 +1655,7 @@ Tooltip          : All damage taken reduced by $s1%.
 Name             : Thunderstomp (Tenacity Ability) (id=63900) [Spell Family (9)] 
 Class            : Tenacity Hunter Pet
 School           : Nature
-Resource         : 20 Focus
+Resource         : 20 Focus (id=2860)
 Spell Level      : 20
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -2006,7 +2006,7 @@ Tooltip          : Haste increased by $s1%.
 Name             : Spirit Mend (Exotic Ability) (id=90361) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
 School           : Nature
-Resource         : 5 Focus
+Resource         : 5 Focus (id=4344)
 Spell Level      : 20
 Range            : 25 yards
 Duration         : 10 seconds
@@ -2029,7 +2029,7 @@ Tooltip          : Heals $w2 every $t2 sec for $d.
 Name             : Froststorm Breath (Exotic Ability) (id=92380) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
 School           : Froststorm
-Resource         : 10 Focus and 5 Focus per second or tick
+Resource         : 10 Focus and 5 Focus per second or tick (id=4257)
 Spell Level      : 20
 Duration         : 8 seconds
 Attributes       : ........ ........ x....... ........   ..x...xx ..x..... .x...... ........ 
@@ -2096,7 +2096,7 @@ Description      : Allows you to give commands to control your pet.
 Name             : Burrow Attack (Exotic Ability) (id=93433) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
 School           : Nature
-Resource         : 10 Focus and 5 Focus per second or tick
+Resource         : 10 Focus and 5 Focus per second or tick (id=4304)
 Spell Level      : 20
 Duration         : 8 seconds
 Cooldown         : 14 seconds
@@ -2424,7 +2424,7 @@ Tooltip          : Increased movement speed by $s1%.
 Name             : Barrage (id=120360) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
-Resource         : 60 Focus
+Resource         : 60 Focus (id=6464)
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -2497,7 +2497,7 @@ Range            : 100 yards
 Duration         : 8 seconds
 Affecting spells : Dire Stable (193532), Dire Longevity (215911)
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2647,7 +2647,7 @@ Description      : Your pet's Basic Attack deals $s1% increased damage, can now 
 Name             : A Murder of Crows (id=131894) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
-Resource         : 30 Focus
+Resource         : 30 Focus (id=7818)
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -2985,7 +2985,7 @@ Effects          :
 Name             : Lightning Blast (id=138374) [Scaling Spell (-1)] 
 Class            : Hunter
 School           : Nature
-Resource         : 1000% Base Mana (0 @Level 110)
+Resource         : 1000% Base Mana (id=8452)
 Spell Level      : 30
 Max Scaling Level: 90
 Range            : 40 yards
@@ -3581,7 +3581,7 @@ Velocity         : 40 yards/sec
 Affecting spells : Freezing Trap (3355), Hunter (137014), Beast Mastery Hunter (137015), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468)
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ .......x ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3604,7 +3604,7 @@ Velocity         : 40 yards/sec
 Affecting spells : Freezing Trap (3355), Hunter (137014), Beast Mastery Hunter (137015), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468)
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ .......x ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3698,7 +3698,7 @@ Name             : Wild Call (id=185789) [Spell Family (9), Passive]
 Class            : Beast Mastery Hunter
 School           : Physical
 Spell Level      : 20
-Proc Chance      : 20%
+Proc Chance      : 40%
 Proc Flags       : ......x. ........ ........ ........ 
                  : White Ranged
 Affecting spells : One with the Pack (199528)
@@ -3712,7 +3712,9 @@ Attributes       : ....x.x. x....... ..x..... ........   ........ ........ .....
 Effects          :
 #1 (id=270014)   : Apply Aura (6) | Proc Trigger Spell: Wild Call (42)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 185791 | Target: Self(1)
-Description      : Your auto shot critical strikes have a $H% chance to reset the cooldown on Dire $?s217200[Frenzy][Beast].
+#2 (id=372443)   : Dummy (3)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self(1)
+Description      : Your auto shot critical strikes have a $H% chance to reduce the remaining cooldown of Dire $?s217200[Frenzy][Beast] by ${$s2/10}.1 sec.
 
 Name             : Wild Call (id=185791) [Spell Family (9), Hidden] 
 Class            : Hunter
@@ -3722,7 +3724,7 @@ Duration         : 6 seconds
 Affecting spells : One with the Pack (199528)
 Triggered by     : Wild Call (185789)
 Attributes       : .......x ........ ........ .......x   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -3737,7 +3739,7 @@ Tooltip          : The cooldown of Dire Beast and Dire Frenzy is reset.
 Name             : Lacerate (id=185855) [Spell Family (9)] 
 Class            : Survival Hunter
 School           : Physical
-Resource         : 35 Focus
+Resource         : 35 Focus (id=10161)
 Spell Level      : 26
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -3761,7 +3763,7 @@ Tooltip          : Bleeding for $s1 damage every $t1 sec.
 Name             : Marked Shot (id=185901) [Spell Family (9)] 
 Class            : Marksmanship Hunter
 School           : Physical
-Resource         : 25 Focus
+Resource         : 25 Focus (id=10222)
 Spell Level      : 20
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -3923,7 +3925,7 @@ Damage taken reduced by $w4%.
 Name             : Raptor Strike (id=186270) [Spell Family (9)] 
 Class            : Survival Hunter
 School           : Physical
-Resource         : 25 Focus
+Resource         : 25 Focus (id=10353)
 Spell Level      : 10 (max 20)
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -3967,7 +3969,7 @@ Tooltip          : Critical Strike chance on abilities increased by $s1%.
 Name             : Bursting Shot (id=186387) [Spell Family (9)] 
 Class            : Marksmanship Hunter
 School           : Physical
-Resource         : 10 Focus
+Resource         : 10 Focus (id=10176)
 Spell Level      : 26
 GCD              : 1.5 seconds
 Cooldown         : 30 seconds
@@ -4148,7 +4150,7 @@ Description      : Interrupts spellcasting, preventing any spell in that school 
 Name             : Carve (id=187708) [Spell Family (9)] 
 Class            : Survival Hunter
 School           : Physical
-Resource         : 40 Focus
+Resource         : 40 Focus (id=10219)
 Spell Level      : 42
 Range            : 8 yards
 GCD              : 1.5 seconds
@@ -4554,7 +4556,7 @@ Description      : Tosses a hatchet at an enemy, dealing $s1 Physical damage.
 Name             : Cobra Shot (id=193455) [Spell Family (9)] 
 Class            : Beast Mastery Marksmanship Hunter
 School           : Physical
-Resource         : 40 Focus
+Resource         : 40 Focus (id=10443)
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -4745,7 +4747,7 @@ Duration         : 6 seconds
 Affecting spells : Hunter (137014), Expert Trapper (199543), Hunter's Guile (203752)
 Attributes       : ........ ........ .....x.. x..x....   ...x.x.x ........ ........ ........ 
                  : ..x..... ......x. ...x.... ........   ......xx .x...... ..x..... ........ 
-                 : .......x .......x ........ ........   ...x.... ........ .xx..... ..x..... 
+                 : .......x .......x ........ ........   ...x.... .......x .xx..... ..x..... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : .....x.. .x..x... ........ ........   ........ ...x.... ....x... ........ 
                  : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
@@ -4801,7 +4803,7 @@ Tooltip          : Auto attacks also spend $s1 Focus to launch a volley of shots
 Name             : Volley (id=194392) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
-Resource         : 3 Focus
+Resource         : 3 Focus (id=11511)
 Range            : 100 yards
 Velocity         : 0.3 yards/sec
 Affecting spells : Hunter (137014), Beast Mastery Hunter (137015), Marksmanship Hunter (137016), Mastery: Sniper Training (193468), Roar of the Seven Lions (207318), Trueshot (211327)
@@ -4904,7 +4906,7 @@ Description      : Your ranged auto attacks have a $194595h% chance to trigger L
 Name             : Black Arrow (id=194599) [Spell Family (9)] 
 Class            : Hunter
 School           : Shadow
-Resource         : 10 Focus
+Resource         : 10 Focus (id=10502)
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -4977,7 +4979,7 @@ Slowed by $s2%.
 Name             : Wing Clip (id=195645) [Spell Family (9)] 
 Class            : Survival Hunter
 School           : Physical
-Resource         : 30 Focus
+Resource         : 30 Focus (id=10531)
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -4998,7 +5000,7 @@ Tooltip          : Movement speed reduced by $s1%.
 Name             : Piercing Shot (id=198670) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
-Resource         : 20 - 100 Focus
+Resource         : 20 - 100 Focus (id=10749)
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 30 seconds
@@ -5121,9 +5123,9 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=293624)   : Apply Aura (6) | Add Flat Modifier: Spell Proc Chance (107)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: 18 | Target: Self(1)
+                   Base Value: 60 | Scaled Value: 60 | Misc Value: 18 | Target: Self(1)
                    Affected Spells: Wild Call (185789), Wild Call (185791)
-Description      : Grants Wild Call $s1% increased chance to reset the cooldown on Dire $?s217200[Frenzy][Beast].
+Description      : Grants Wild Call $s1% increased chance to reduce the cooldown of Dire $?s217200[Frenzy][Beast].
 
 Name             : Stomp (id=199530) [Spell Family (9), Passive] 
 Class            : Hunter
@@ -5269,7 +5271,7 @@ Description      : Your movement speed is increased by $231390s1% anytime you ha
 Name             : Ranger's Net (id=200108) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
-Resource         : 30 Focus
+Resource         : 30 Focus (id=10777)
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -5298,7 +5300,7 @@ Tooltip          : Rooted.
 Name             : Throwing Axes (id=200163) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
-Resource         : 15 Focus
+Resource         : 15 Focus (id=10778)
 Spell Level      : 1
 Range            : 30 yards
 GCD              : 1.5 seconds
@@ -5528,7 +5530,7 @@ Range            : 150 yards
 Affecting spells : Mastery: Master of Beasts (76657), Hunter (137014), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468)
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ........ ........   ........ ........ ........ ......x. 
-                 : .......x ........ ........ ........   ...x.... ........ .xx..... ........ 
+                 : .......x ........ ........ ........   ...x.... .......x .xx..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : .....x.. ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5555,7 +5557,7 @@ Description      : $@spelldesc199530
 Name             : Flanking Strike (id=202800) [Spell Family (9)] 
 Class            : Survival Hunter
 School           : Physical
-Resource         : 50 Focus
+Resource         : 50 Focus (id=10961)
 Spell Level      : 12
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -5630,7 +5632,7 @@ Description      : Furiously strikes all enemies in front of you, dealing ${$203
 Name             : Windburst (Artifact) (id=204147) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
-Resource         : 20 Focus
+Resource         : 20 Focus (id=11233)
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
@@ -5783,7 +5785,7 @@ Description      : Allows you to tame pets in the Mechanical family.
 Name             : A Murder of Crows (id=206505) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
-Resource         : 30 Focus
+Resource         : 30 Focus (id=10988)
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -5987,7 +5989,7 @@ Description      : Tell your pet to wake up.
 Name             : Explosive Shot (id=212431) [Spell Family (9)] 
 Class            : Hunter
 School           : Fire
-Resource         : 20 Focus
+Resource         : 20 Focus (id=11773)
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -6014,7 +6016,7 @@ Description      : Fires a slow-moving munition directly forward. Activating thi
 Name             : Butchery (id=212436) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
-Resource         : 40 Focus
+Resource         : 40 Focus (id=11154)
 Spell Level      : 1
 Range            : 8 yards
 GCD              : 1.5 seconds
@@ -6109,7 +6111,7 @@ Description      : $@spelldesc2643
 Name             : Piercing Shot (id=213678) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
 School           : Physical
-Resource         : 20 - 100 Focus
+Resource         : 20 - 100 Focus (id=11207)
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 100 yards/sec
@@ -6169,7 +6171,7 @@ Velocity         : 18 yards/sec
 Affecting spells : Freezing Trap (3355), Hunter (137014), Marksmanship Hunter (137016), Guide: Sharpshooting (178549), Called Shot (190467), Critical Focus (191328), Mastery: Sniper Training (193468), 
 Attributes       : .x...... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ......x.   ........ ........ ........ ......x. 
-                 : ........ ........ ........ ....x...   ........ ........ ........ ........ 
+                 : ........ ........ ........ ....x...   ........ .......x ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6593,7 +6595,7 @@ $spiked=$?s53184[${1.1}][${1.0}]
 $blink=$?s130392[${1.5}][${1.0}]
 $damage=${$<ce>*$<spiked>*$<blink>*($RAP*0.333)*(1+$@versadmg)}
 
-Name             : Deathstrike Venom (id=243120) 
+Name             : Deathstrike Venom (id=243120) [Spell Family (9)] 
 Class            : Hunter
 School           : Nature
 Duration         : Aura (infinite)
@@ -6618,19 +6620,19 @@ Class            : Hunter
 School           : Nature
 Spell Level      : 20
 Range            : 5 yards
-Duration         : 8 seconds
+Duration         : 1 seconds
 Stacks           : 10 maximum
 Proc Chance      : 101%
 Triggered by     : Deathstrike Venom (243120)
 Attributes       : ........ ........ ...x.... ..x.....   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=369283)   : Apply Aura (6) | Periodic Damage: nature every 2 seconds (3)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.33000 | Target: Enemy(6)
+#1 (id=369283)   : Apply Aura (6) | Periodic Damage: nature every 1 seconds (3)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 5.32000 | Target: Enemy(6)
 Description      : Poisons the target, inflicting $o1 Nature damage every $t1 sec for $d, stacking up to $u times.
 Tooltip          : Inflicts $w1 Nature damage every $t sec.
 

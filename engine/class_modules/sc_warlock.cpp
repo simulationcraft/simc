@@ -2604,9 +2604,9 @@ public:
         {
           double soul_conduit_rng = 0;
           if ( maybe_ptr( p() -> dbc.ptr ) && p() -> specialization() == WARLOCK_DESTRUCTION )
-            double soul_conduit_rng = 0.12;
+            soul_conduit_rng = 0.12;
           else
-            double soul_conduit_rng = p() -> talents.soul_conduit -> effectN( 1 ).percent();
+            soul_conduit_rng = p() -> talents.soul_conduit -> effectN( 1 ).percent();
 
           for ( int i = 0; i < last_resource_cost; i++ )
           {
@@ -2876,9 +2876,7 @@ struct agony_t: public warlock_spell_t
 
   virtual void tick( dot_t* d ) override
   {
-    if ( p() -> talents.writhe_in_agony -> ok() && td( d -> state -> target ) -> agony_stack < ( 20 ) )
-      td( d -> state -> target ) -> agony_stack++;
-    else if ( td( d -> state -> target ) -> agony_stack < ( 10 ) )
+    if ( td( d -> state -> target ) -> agony_stack < ( 10 * ( 1 + ( p() -> talents.writhe_in_agony -> ok() ? p() -> talents.writhe_in_agony -> effectN( 1 ).percent() : 0 ) ) ) )
       td( d -> state -> target ) -> agony_stack++;
 
     td( d -> target ) -> debuffs_agony -> trigger();

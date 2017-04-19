@@ -1,9 +1,9 @@
-SimulationCraft 720-02 for World of Warcraft 7.2.0 Live (wow build 23826, git build f6e16cb)
+SimulationCraft 720-02 for World of Warcraft 7.2.0 Live (wow build 23826)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
-Resource         : 4% Base Mana (44000 @Level 110)
+Resource         : 4% Base Mana (id=29)
 Spell Level      : 24
 Range            : 50000 yards
 Cast Time        : 2 seconds
@@ -28,7 +28,7 @@ Detecting Invisibility.
 Name             : Corruption (id=172) [Spell Family (5)] 
 Class            : Affliction Warlock
 School           : Shadow
-Resource         : 3% Base Mana (33000 @Level 110)
+Resource         : 3% Base Mana (id=7817)
 Spell Level      : 3
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -49,7 +49,7 @@ Description      : Corrupts the target, causing $146739o1 Shadow damage over $14
 Name             : Immolate (id=348) [Spell Family (5)] 
 Class            : Destruction Warlock
 School           : Fire
-Resource         : 6% Base Mana (66000 @Level 110)
+Resource         : 6% Base Mana (id=43)
 Spell Level      : 10
 Range            : 40 yards
 Cast Time        : 1.5 seconds
@@ -73,7 +73,7 @@ Variables        : $mastery=$?s77220[${((100+$77220m3)/100)}][${1.00}]
 Name             : Doom (id=603) [Spell Family (5)] 
 Class            : Demonology Warlock
 School           : Shadow
-Resource         : 2% Base Mana (22000 @Level 110)
+Resource         : 2% Base Mana (id=68)
 Spell Level      : 26
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -97,7 +97,7 @@ Tooltip          : Doomed to take $w1 Shadow damage.
 Name             : Shadow Bolt (id=686) [Spell Family (5)] 
 Class            : Demonology Destruction Warlock
 School           : Shadow
-Resource         : 6% Base Mana (66000 @Level 110)
+Resource         : 6% Base Mana (id=74)
 Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 2 seconds
@@ -120,7 +120,7 @@ Description      : Sends a shadowy bolt at the enemy, causing $s1 Shadow damage.
 Name             : Summon Imp (Summon) (id=688) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
-Resource         : 1 Soul Shard
+Resource         : 1 Soul Shard (id=76)
 Spell Level      : 5
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
@@ -144,7 +144,7 @@ Description      : Summons an Imp under your command that casts ranged Firebolts
 Name             : Summon Felhunter (Summon) (id=691) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
-Resource         : 1 Soul Shard
+Resource         : 1 Soul Shard (id=78)
 Spell Level      : 36
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
@@ -165,7 +165,7 @@ Description      : Summons a Felhunter under your command, able to disrupt the s
 Name             : Summon Voidwalker (Summon) (id=697) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
-Resource         : 1 Soul Shard
+Resource         : 1 Soul Shard (id=81)
 Spell Level      : 20
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
@@ -189,7 +189,7 @@ Description      : Summons a Voidwalker under your command, able to withstand he
 Name             : Ritual of Summoning (id=698) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
-Resource         : 4% Base Mana (44000 @Level 110)
+Resource         : 4% Base Mana (id=82)
 Spell Level      : 42
 Range            : 30 yards
 GCD              : 1.5 seconds
@@ -210,7 +210,7 @@ Description      : Begins a ritual to create a summoning portal, requiring the c
 Name             : Banish (id=710) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
-Resource         : 2.5% Base Mana (27500 @Level 110)
+Resource         : 2.5% Base Mana (id=87)
 Spell Level      : 32
 Range            : 30 yards
 Cast Time        : 1.5 seconds
@@ -237,7 +237,7 @@ Tooltip          : Invulnerable, but unable to act.
 Name             : Summon Succubus (Summon) (id=712) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
-Resource         : 1 Soul Shard
+Resource         : 1 Soul Shard (id=88)
 Spell Level      : 28
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
@@ -281,7 +281,7 @@ Tooltip          : Transferring Life.
 Name             : Agony (id=980) [Spell Family (5)] 
 Class            : Affliction Warlock
 School           : Shadow
-Resource         : 3% Base Mana (33000 @Level 110)
+Resource         : 3% Base Mana (id=105)
 Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -308,7 +308,7 @@ Tooltip          : Suffering $w1 Shadow damage every $t1 sec. Damage increases o
 Name             : Enslave Demon (id=1098) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
-Resource         : 5% Base Mana (55000 @Level 110)
+Resource         : 5% Base Mana (id=116)
 Spell Level      : 56
 Range            : 30 yards
 Cast Time        : 3 seconds
@@ -332,7 +332,7 @@ Tooltip          : Enslaved.
 Name             : Summon Infernal (Guardian) (id=1122) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
-Resource         : 1 Soul Shard
+Resource         : 1 Soul Shard (id=118)
 Spell Level      : 58
 Range            : 30 yards
 GCD              : 1.5 seconds
@@ -393,7 +393,7 @@ Description      : $@spelldesc6203
 Name             : Firebolt (Basic Attack) (id=3110) [Spell Family (5)] 
 Class            : Warlock
 School           : Fire
-Resource         : 40 Energy
+Resource         : 40 Energy (id=197)
 Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 1.75 seconds
@@ -420,7 +420,7 @@ $damage=${(($SP*0.50)*0.657)+$M1}
 Name             : Consuming Shadows (Basic Attack) (id=3716) [Spell Family (57)] 
 Class            : Warlock
 School           : Shadow
-Resource         : 20 Energy
+Resource         : 20 Energy (id=217)
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
@@ -485,7 +485,7 @@ Tooltip          : Disoriented.
 Name             : Rain of Fire (id=5740) [Spell Family (5)] 
 Class            : Destruction Warlock
 School           : Fire
-Resource         : 3 Soul Shard
+Resource         : 3 Soul Shard (id=247)
 Spell Level      : 26
 Range            : 35 yards
 GCD              : 1.5 seconds
@@ -512,7 +512,7 @@ Tooltip          : $42223s1 Fire damage every $5740t2 sec.
 Name             : Fear (id=5782) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
-Resource         : 10% Base Mana (110000 @Level 110)
+Resource         : 10% Base Mana (id=249)
 Spell Level      : 16
 Range            : 30 yards
 Cast Time        : 1.7 seconds
@@ -534,7 +534,7 @@ Tooltip          : Disoriented.
 Name             : Create Healthstone (id=6201) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
-Resource         : 5% Base Mana (55000 @Level 110)
+Resource         : 5% Base Mana (id=257)
 Spell Level      : 18
 Cast Time        : 3 seconds
 GCD              : 1.5 seconds
@@ -593,7 +593,7 @@ Variables        : $healthstone=$?s193546[${$s1*1.3}][$s1]
 Name             : Seduction (Special Ability) (id=6358) [Spell Family (57)] 
 Class            : Warlock
 School           : Shadow
-Resource         : 20 Energy
+Resource         : 20 Energy (id=264)
 Spell Level      : 20
 Range            : 30 yards
 Cast Time        : 1.7 seconds
@@ -624,7 +624,7 @@ Tooltip          : Disoriented.
 Name             : Whiplash (Special Ability) (id=6360) [Scaling Spell (11), Spell Family (57)] 
 Class            : Warlock
 School           : Shadow
-Resource         : 40 Energy
+Resource         : 40 Energy (id=265)
 Spell Level      : 31
 Range            : 30 yards
 Duration         : 10 seconds
@@ -648,7 +648,7 @@ Description      : Deals $s1 Shadow damage and knocks back all enemies within $6
 Name             : Mortal Coil (id=6789) [Scaling Spell (11), Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
-Resource         : 6% Base Mana (66000 @Level 110)
+Resource         : 6% Base Mana (id=10554)
 Spell Level      : 1
 Range            : 20 yards
 GCD              : 1.5 seconds
@@ -680,7 +680,7 @@ Tooltip          : Incapacitated.
 Name             : Lash of Pain (Basic Attack) (id=7814) [Scaling Spell (11), Spell Family (57)] 
 Class            : Warlock
 School           : Shadow
-Resource         : 60 Energy
+Resource         : 60 Energy (id=309)
 Spell Level      : 20
 Range            : 20 yards
 GCD              : 1 seconds
@@ -703,7 +703,7 @@ Description      : Lashes the target for $s1 Shadow damage.
 Name             : Lesser Invisibility (Special Ability) (id=7870) [Scaling Spell (11), Spell Family (57)] 
 Class            : Warlock
 School           : Shadow
-Resource         : 20 Energy
+Resource         : 20 Energy (id=312)
 Spell Level      : 32
 GCD              : 1.5 seconds
 Duration         : 300 seconds
@@ -735,7 +735,7 @@ Tooltip          : Invisible.
 Name             : Suffering (Special Ability) (id=17735) [Scaling Spell (11), Spell Family (57)] 
 Class            : Warlock
 School           : Shadow
-Resource         : 40 Energy
+Resource         : 40 Energy (id=734)
 Spell Level      : 15
 Range            : 30 yards
 Duration         : 5 seconds
@@ -765,7 +765,7 @@ Tooltip          : Taunted.
 Name             : Shadow Bulwark (Special Ability) (id=17767) [Scaling Spell (11), Spell Family (57)] 
 Class            : Warlock
 School           : Shadow
-Resource         : 10 Energy
+Resource         : 10 Energy (id=738)
 Spell Level      : 55
 Range            : 50000 yards
 GCD              : 1 seconds
@@ -798,7 +798,7 @@ Tooltip          : Maximum health increased by $s1%.
 Name             : Shadowburn (id=17877) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadowflame
-Resource         : 2% Base Mana (22000 @Level 110)
+Resource         : 2% Base Mana (id=741)
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -841,7 +841,7 @@ Description      : $@spelldesc980
 Name             : Conflagrate (id=17962) [Spell Family (5)] 
 Class            : Destruction Warlock
 School           : Fire
-Resource         : 2 Chi
+Resource         : 2 Chi (id=7367)
 Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -868,7 +868,7 @@ Reduces the cast time of Incinerate and Chaos Bolt by $117828s1% for $117828d.][
 Name             : Summon Doomguard (Guardian) (id=18540) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
-Resource         : 1 Soul Shard
+Resource         : 1 Soul Shard (id=778)
 Spell Level      : 50
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -908,7 +908,7 @@ Tooltip          : Burns nearby enemies for $20153s1 fire damage every $t1 secon
 Name             : Devour Magic (Special Ability) (id=19505) [Scaling Spell (11), Spell Family (57)] 
 Class            : Warlock
 School           : Shadow
-Resource         : 20 Energy
+Resource         : 20 Energy (id=802)
 Spell Level      : 35
 Range            : 30 yards
 Cooldown         : 15 seconds
@@ -935,7 +935,7 @@ Use on the $?s219450[Observer][Felhunter]'s current target.
 Name             : Spell Lock (Special Ability) (id=19647) [Spell Family (57)] 
 Class            : Warlock
 School           : Shadow
-Resource         : 20 Energy
+Resource         : 20 Energy (id=805)
 Spell Level      : 35
 Range            : 40 yards
 Duration         : 6 seconds
@@ -1008,7 +1008,7 @@ Description      : Maximum mana increased by $s1%.
 Name             : Soulstone (id=20707) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
-Resource         : 5% Base Mana (55000 @Level 110)
+Resource         : 5% Base Mana (id=5599)
 Spell Level      : 44
 Range            : 40 yards
 Cast Time        : 3 seconds
@@ -1073,7 +1073,7 @@ Tooltip          : Stunned.
 Name             : Seed of Corruption (id=27243) [Spell Family (5)] 
 Class            : Affliction Warlock
 School           : Shadow
-Resource         : 1 Soul Shard
+Resource         : 1 Soul Shard (id=1066)
 Spell Level      : 38
 Range            : 40 yards
 Cast Time        : 2.5 seconds
@@ -1162,7 +1162,7 @@ Name             : Incinerate (id=29722) [Spell Family (5)]
 Replaces         : Shadow Bolt (id=686)
 Class            : Destruction Warlock
 School           : Fire
-Resource         : 6% Base Mana (66000 @Level 110)
+Resource         : 6% Base Mana (id=1154)
 Spell Level      : 14
 Range            : 40 yards
 Cast Time        : 2 seconds
@@ -1187,7 +1187,7 @@ Description      : Draws fire toward the enemy, dealing $s2 Fire damage.
 Name             : Unstable Affliction (id=30108) [Spell Family (5)] 
 Class            : Affliction Warlock
 School           : Shadow
-Resource         : 1 Soul Shard
+Resource         : 1 Soul Shard (id=1187)
 Spell Level      : 14
 Range            : 40 yards
 Cast Time        : 1.5 seconds
@@ -1216,7 +1216,7 @@ Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 Name             : Summon Felguard (Summon) (id=30146) [Spell Family (5)] 
 Class            : Demonology Warlock
 School           : Shadow
-Resource         : 1 Soul Shard
+Resource         : 1 Soul Shard (id=1188)
 Spell Level      : 40
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
@@ -1236,7 +1236,7 @@ Description      : Summons a Felguard under your command as a powerful melee com
 Name             : Pursuit (Special Ability) (id=30151) [Spell Family (57)] 
 Class            : Warlock
 School           : Physical
-Resource         : 20 Energy
+Resource         : 20 Energy (id=1189)
 Spell Level      : 21
 Range            : 8 - 25 yards
 GCD              : 1.5 seconds
@@ -1289,7 +1289,7 @@ Use anytime the $?s108499[Wrathguard][Felguard]'s target is further than 8 yards
 Name             : Legion Strike (Basic Attack) (id=30213) [Spell Family (57)] 
 Class            : Warlock
 School           : Physical
-Resource         : 60 Energy
+Resource         : 60 Energy (id=1192)
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1 seconds
@@ -1447,7 +1447,7 @@ Effects          :
 Name             : Demonic Circle (Summon) (id=48018) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
-Resource         : 5% Base Mana (55000 @Level 110)
+Resource         : 5% Base Mana (id=2211)
 Spell Level      : 1
 Cast Time        : 0.5 seconds
 GCD              : 1.5 seconds
@@ -1471,7 +1471,7 @@ Tooltip          : You have a Demonic Circle active. Cancel to destroy your Demo
 Name             : Haunt (id=48181) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
-Resource         : 5% Base Mana (55000 @Level 110)
+Resource         : 5% Base Mana (id=10555)
 Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 1.5 seconds
@@ -1496,7 +1496,7 @@ Tooltip          : Taking $s2% increased damage from the Warlock. Haunt's cooldo
 Name             : Shadow Bite (Basic Attack) (id=54049) [Spell Family (57)] 
 Class            : Warlock
 School           : Shadow
-Resource         : 60 Energy
+Resource         : 60 Energy (id=2462)
 Spell Level      : 30
 Range            : 5 yards
 GCD              : 1 seconds
@@ -1797,7 +1797,7 @@ Description      : Your spells deal a random amount of additional damage, up to 
 Name             : Havoc (id=80240) [Spell Family (5)] 
 Class            : Destruction Warlock
 School           : Shadow
-Resource         : 8% Base Mana (88000 @Level 110)
+Resource         : 8% Base Mana (id=3377)
 Spell Level      : 40
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -1839,7 +1839,7 @@ Effects          :
 Name             : Doom Bolt (id=85692) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
-Resource         : 35 Energy
+Resource         : 35 Energy (id=4947)
 Spell Level      : 1
 Range            : 30 yards
 Cast Time        : 3 seconds
@@ -1894,7 +1894,7 @@ Description      : Increases your Intellect by $s1%.
 Name             : Felstorm (Special Ability) (id=89751) [Spell Family (57)] 
 Class            : Warlock
 School           : Physical
-Resource         : 60 Energy
+Resource         : 60 Energy (id=4145)
 Spell Level      : 38
 Duration         : 6 seconds
 Cooldown         : 45 seconds
@@ -1958,7 +1958,7 @@ Tooltip          : Stunned for $d.
 Name             : Flee (Special Ability) (id=89792) [Scaling Spell (11), Spell Family (57)] 
 Class            : Warlock
 School           : Fire
-Resource         : 20 Energy
+Resource         : 20 Energy (id=4146)
 Spell Level      : 33
 Range            : 40 yards
 Duration         : 0.2 seconds
@@ -1981,7 +1981,7 @@ Description      : Escapes to the Master. Flee removes all stuns and roots.
 Name             : Singe Magic (Special Ability) (id=89808) [Spell Family (57)] 
 Class            : Warlock
 School           : Fire
-Resource         : 40 Energy
+Resource         : 40 Energy (id=4148)
 Spell Level      : 68
 Range            : 30 yards
 Cooldown         : 10 seconds
@@ -2005,7 +2005,7 @@ Cast only upon master when $ghe:she; is unable to cast spells due to a Magic eff
 Name             : Flee (Special Ability) (id=93282) [Scaling Spell (11), Spell Family (5)] 
 Class            : Warlock
 School           : Fire
-Resource         : 2% Base Mana (22000 @Level 110)
+Resource         : 2% Base Mana (id=4299)
 Spell Level      : 1
 Range            : 40 yards
 Cooldown         : 20 seconds
@@ -2108,7 +2108,7 @@ Description      : Corrupts all of your Warlock fire spells, infusing them with 
 Name             : Call Dreadstalkers (id=104316) [Spell Family (5)] 
 Class            : Demonology Warlock
 School           : Shadow
-Resource         : 2 Soul Shard
+Resource         : 2 Soul Shard (id=10440)
 Spell Level      : 14
 Range            : 40 yards
 Cast Time        : 2 seconds
@@ -2166,7 +2166,7 @@ Description      : Deals $s1 Fire damage to a target.
 Name             : Unending Resolve (id=104773) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
-Resource         : 10% Base Mana (110000 @Level 110)
+Resource         : 10% Base Mana (id=4978)
 Spell Level      : 54
 Duration         : 8 seconds
 Cooldown         : 180 seconds
@@ -2194,7 +2194,7 @@ Immune to interrupt and silence effects.
 Name             : Hand of Gul'dan (id=105174) [Spell Family (5)] 
 Class            : Demonology Shaman, Warlock
 School           : Shadowflame
-Resource         : 1 - 4 Soul Shard
+Resource         : 1 - 4 Soul Shard (id=4987)
 Spell Level      : 10
 Range            : 40 yards
 Cast Time        : 1.5 seconds
@@ -2432,7 +2432,7 @@ The Infernal deals strong area of effect damage, and will be drawn to attack tar
 Name             : Demonic Gateway (id=111771) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
-Resource         : 10% Base Mana (110000 @Level 110)
+Resource         : 10% Base Mana (id=5421)
 Spell Level      : 80
 Range            : 10 - 40 yards
 Cast Time        : 3 seconds
@@ -2458,7 +2458,7 @@ Description      : Creates a demonic gateway between two locations. Activating t
 Name             : Grimoire: Imp (Summon) (id=111859) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
-Resource         : 1 Soul Shard
+Resource         : 1 Soul Shard (id=10426)
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -2484,7 +2484,7 @@ Imps cast ranged Firebolts and cleanse a hostile magic effect from their master.
 Name             : Grimoire: Voidwalker (Summon) (id=111895) 
 Class            : Warlock
 School           : Shadow
-Resource         : 1 Soul Shard
+Resource         : 1 Soul Shard (id=10424)
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 27 seconds
@@ -2509,7 +2509,7 @@ Voidwalkers will taunt their target when summoned.
 Name             : Grimoire: Succubus (Summon) (id=111896) 
 Class            : Warlock
 School           : Shadow
-Resource         : 1 Soul Shard
+Resource         : 1 Soul Shard (id=10425)
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 27 seconds
@@ -2534,7 +2534,7 @@ Succubi will seduce their target if it is Humanoid.
 Name             : Grimoire: Felhunter (Summon) (id=111897) 
 Class            : Warlock
 School           : Shadow
-Resource         : 1 Soul Shard
+Resource         : 1 Soul Shard (id=10427)
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 27 seconds
@@ -2559,7 +2559,7 @@ Felhunters will Spell Lock their target when summoned.
 Name             : Grimoire: Felguard (Summon) (id=111898) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
-Resource         : 1 Soul Shard
+Resource         : 1 Soul Shard (id=10428)
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -2661,7 +2661,7 @@ Description      : Reduces all damage taken from players or their pets by ${$m1/
 Name             : Shadow Shield (Special Ability) (id=115232) 
 Class            : Warlock
 School           : Shadow
-Resource         : 60 Energy
+Resource         : 60 Energy (id=5708)
 Spell Level      : 28
 GCD              : 1.5 seconds
 Duration         : 30 seconds
@@ -2731,7 +2731,7 @@ Tooltip          : Maximum health increased by $s1%.
 Name             : Fellash (Special Ability) (id=115770) [Scaling Spell (11), Spell Family (57)] 
 Class            : Warlock
 School           : Shadow
-Resource         : 40 Energy
+Resource         : 40 Energy (id=5751)
 Spell Level      : 56
 Range            : 30 yards
 Duration         : 10 seconds
@@ -2756,7 +2756,7 @@ Name             : Optical Blast (Special Ability) (id=115781) [Scaling Spell (1
 Hotfixed         : Category (0 -> 88)
 Class            : Warlock
 School           : Shadow
-Resource         : 20 Energy
+Resource         : 20 Energy (id=5753)
 Spell Level      : 50
 Range            : 40 yards
 Duration         : 6 seconds
@@ -2777,7 +2777,7 @@ Description      : Counter the enemy's spellcast, preventing any spell from that
 Name             : Wrathstorm (Special Ability) (id=115831) [Spell Family (57)] 
 Class            : Warlock
 School           : Physical
-Resource         : 60 Energy
+Resource         : 60 Energy (id=5756)
 Spell Level      : 38
 Duration         : 6 seconds
 Cooldown         : 45 seconds
@@ -2825,7 +2825,7 @@ Description      : $@spelldesc115831
 Name             : Chaos Bolt (id=116858) [Spell Family (5)] 
 Class            : Destruction Warlock
 School           : Chromatic
-Resource         : 2 Soul Shard
+Resource         : 2 Soul Shard (id=6087)
 Spell Level      : 12
 Range            : 40 yards
 Cast Time        : 3 seconds
@@ -2950,7 +2950,7 @@ Infernal: $@spellname171017][]
 Name             : Cauterize Master (Special Ability) (id=119899) [Scaling Spell (11), Spell Family (57)] 
 Class            : Warlock
 School           : Fire
-Resource         : 40 Energy
+Resource         : 40 Energy (id=6436)
 Spell Level      : 31
 Range            : 40 yards
 Duration         : 12 seconds
@@ -3261,7 +3261,7 @@ Description      : Conjures a cataclysm at the target location, dealing $s1 Shad
 Name             : Demonbolt (id=157695) [Spell Family (5)] 
 Class            : Warlock
 School           : Chaos
-Resource         : 4.8% Base Mana (52800 @Level 110)
+Resource         : 4.8% Base Mana (id=9714)
 Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
@@ -3491,7 +3491,7 @@ Use on the Infernal's current target.
 Name             : Shadow Lock (Special Ability) (id=171138) [Spell Family (57)] 
 Class            : Warlock
 School           : Shadow
-Resource         : 20 Energy
+Resource         : 20 Energy (id=9675)
 Spell Level      : 50
 Range            : 40 yards
 Duration         : 6 seconds
@@ -3717,7 +3717,7 @@ Description      : $@spelldesc104316
 Name             : Demonic Empowerment (id=193396) [Spell Family (5)] 
 Class            : Demonology Warlock
 School           : Shadow
-Resource         : 6% Base Mana (66000 @Level 110)
+Resource         : 6% Base Mana (id=10441)
 Spell Level      : 12
 Range            : 100 yards
 Cast Time        : 1.5 seconds
@@ -3773,7 +3773,7 @@ Description      : $@spelldesc193440
 Name             : Demonwrath (id=193440) [Spell Family (5)] 
 Class            : Demonology Warlock
 School           : Shadow
-Resource         : 0% Base Mana and 2.5% Base Mana (27500 @Level 110) per second or tick
+Resource         : 0% Base Mana and 2.5% Base Mana per second or tick (id=10442)
 Spell Level      : 48
 Range            : 100 yards
 GCD              : 1.5 seconds
@@ -4038,7 +4038,7 @@ Description      : Call Dreadstalkers now also summons $s1 Wild $LImp:Imps;.
 Name             : Implosion (id=196277) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadowflame
-Resource         : 6% Base Mana (66000 @Level 110)
+Resource         : 6% Base Mana (id=10562)
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -4212,7 +4212,7 @@ Tooltip          : Damage taken from the Warlock increased by $s1%.
 Name             : Channel Demonfire (id=196447) [Spell Family (5)] 
 Class            : Warlock
 School           : Fire
-Resource         : 4.8% Base Mana (52800 @Level 110)
+Resource         : 4.8% Base Mana (id=10566)
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 3 seconds
@@ -4383,7 +4383,7 @@ Name             : Drain Soul (id=198590) [Spell Family (5)]
 Replaces         : Shadow Bolt (id=232670)
 Class            : Affliction Warlock
 School           : Shadow
-Resource         : 0% Base Mana and 3% Base Mana (33000 @Level 110) per second or tick
+Resource         : 0% Base Mana and 3% Base Mana per second or tick (id=10748)
 Spell Level      : 13
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -4531,7 +4531,7 @@ Tooltip          : Dealing damage to all nearby targets every $t1 sec and healin
 Name             : Summon Darkglare (id=205180) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
-Resource         : 1 Soul Shard
+Resource         : 1 Soul Shard (id=10949)
 GCD              : 1.5 seconds
 Duration         : 12 seconds
 Cooldown         : 24 seconds
@@ -5142,7 +5142,7 @@ Description      : Soulstone may be used to instantly resurrect a dead target.
 Name             : Shadow Bolt (id=232670) [Spell Family (5)] 
 Class            : Affliction Warlock
 School           : Shadow
-Resource         : 6% Base Mana (66000 @Level 110)
+Resource         : 6% Base Mana (id=11678)
 Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 2 seconds
@@ -5268,7 +5268,7 @@ Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 Name             : Drain Life (id=234153) [Spell Family (5)] 
 Class            : Demonology Destruction Warlock
 School           : Shadow
-Resource         : 0% Base Mana and 3% Base Mana (33000 @Level 110) per second or tick
+Resource         : 0% Base Mana and 3% Base Mana per second or tick (id=11721)
 Spell Level      : 13
 Range            : 40 yards
 GCD              : 1.5 seconds

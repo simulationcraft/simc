@@ -1486,6 +1486,7 @@ class SpellDataGenerator(DataGenerator):
           ( 116768, 3 ), # Combo Breaker: Blackout Kick
           ( 121283, 0 ), # Chi Sphere from Power Strikes
           ( 228287, 3 ), # Spinning Crane Kick's Mark of the Crane debuff
+          ( 220358, 3 ), # Cyclone Strikes info; TODO: remove this line once 7.2.5 releases
           ( 125174, 3 ), # Touch of Karma redirect buff
           ( 195651, 3 ), # Crosswinds Artifact trait trigger spell
           ( 196061, 3 ), # Crosswinds Artifact trait damage spell

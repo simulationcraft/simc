@@ -710,6 +710,14 @@ bool parse_override_spell_data( sim_t*             sim,
     }
     return true;
   }
+  else if ( util::str_compare_ci( splits[ 0 ], "power" ) )
+  {
+    if ( ! dbc_override::register_power( sim -> dbc, id, splits[ 2 ], v ) )
+    {
+      return false;
+    }
+    return true;
+  }
   else
     return false;
 }
@@ -1363,6 +1371,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   talent_format( TALENT_FORMAT_UNCHANGED ),
   auto_ready_trigger( 0 ), stat_cache( 1 ), max_aoe_enemies( 20 ), show_etmi( 0 ), tmi_window_global( 0 ), tmi_bin_size( 0.5 ),
   requires_regen_event( false ), single_actor_batch( false ),
+  progressbar_type( 0 ),
   enemy_death_pct( 0 ), rel_target_level( -1 ), target_level( -1 ),
   target_adds( 0 ), desired_targets( 1 ), enable_taunts( false ),
   use_item_verification( true ),
@@ -2504,6 +2513,37 @@ void sim_t::analyze_iteration_data()
 }
 
 
+// sim_t::set_sim_phase ===================================================
+
+void sim_t::set_sim_base_str( const std::string& str )
+{
+  sim_progress_base_str = str;
+}
+
+void sim_t::update_sim_phase_str()
+{
+  // The two-split base / phase string for progressbar is only used in single actor batch for now.
+  if ( ! single_actor_batch )
+  {
+    return;
+  }
+
+  std::stringstream phase_str;
+
+  if ( progressbar_type == 0 )
+  {
+    phase_str << player_no_pet_list[ current_index ] -> name_str << " ";
+    phase_str << ( current_index + 1 ) << "/" << player_no_pet_list.size();
+  }
+  else
+  {
+    phase_str << player_no_pet_list[ current_index ] -> name_str << '\t';
+    phase_str << ( current_index + 1 ) << '\t' << player_no_pet_list.size();
+  }
+
+  sim_progress_phase_str = phase_str.str();
+}
+
 // sim_t::iterate ===========================================================
 
 bool sim_t::iterate()
@@ -2513,12 +2553,7 @@ bool sim_t::iterate()
 
   progress_bar.init();
 
-  if ( single_actor_batch && ! parent )
-  {
-    sim_phase_str = "Generating " + util::to_string( current_index + 1 ) + "/" +
-      util::to_string( player_no_pet_list.size() ) + " " +
-      player_no_pet_list[ current_index ] -> name_str;
-  }
+  update_sim_phase_str();
 
   activate_actors();
 
@@ -2531,8 +2566,7 @@ bool sim_t::iterate()
 
     if ( progress_bar.update() )
     {
-      util::fprintf( stdout, "%s %s\r", sim_phase_str.c_str(), progress_bar.status.c_str() );
-      fflush( stdout );
+      progress_bar.output( false );
     }
 
     do_pause();
@@ -2542,33 +2576,23 @@ bool sim_t::iterate()
       current_index = work_queue -> pop();
       more_work = work_queue -> more_work();
 
-      if ( single_actor_batch )
+      if ( more_work && current_index != old_active )
       {
-        if ( current_index != old_active && more_work )
+        if ( ! parent || scaling -> scale_stat != STAT_NONE )
         {
-          if ( ! parent )
-          {
-            progress_bar.update( true, static_cast<int>( old_active ) );
-            progress_bar.restart();
-            util::fprintf( stdout, "%s %s\n", sim_phase_str.c_str(), progress_bar.status.c_str() );
-            fflush( stdout );
-            sim_phase_str = "Generating " + util::to_string( current_index + 1 ) + "/" +
-              util::to_string( player_no_pet_list.size() ) + " " +
-              player_no_pet_list[ current_index ] -> name_str;
-          }
-
-          current_iteration = -1;
-          range::for_each( target_list, []( player_t* t ) { t -> actor_changed(); } );
-          activate_actors();
+          progress_bar.update( true, static_cast<int>( old_active ) );
+          progress_bar.output( true );
+          progress_bar.restart();
         }
+
+        activate_actors();
       }
     }
   } while ( more_work && ! canceled );
 
   if ( ! canceled && progress_bar.update( true ) )
   {
-    util::fprintf( stdout, "%s %s\n", sim_phase_str.c_str(), progress_bar.status.c_str() );
-    fflush( stdout );
+    progress_bar.output( true );
   }
 
   reset();
@@ -3003,6 +3027,7 @@ void sim_t::create_options()
   add_option( opt_int( "max_aoe_enemies", max_aoe_enemies ) );
   add_option( opt_bool( "optimize_expressions", optimize_expressions ) );
   add_option( opt_bool( "single_actor_batch", single_actor_batch ) );
+  add_option( opt_bool( "progressbar_type", progressbar_type ) );
   // Raid buff overrides
   add_option( opt_func( "optimal_raid", parse_optimal_raid ) );
   add_option( opt_int( "override.mortal_wounds", overrides.mortal_wounds ) );
@@ -3655,6 +3680,8 @@ void sim_t::activate_actors()
   healing_no_pet_list.reset_callbacks();
   healing_pet_list.reset_callbacks();
 
+  current_iteration = -1;
+
   // Normal sim mode activates all actors .. and this method is only called once at the beginning of
   // the simulation run.
   if ( ! single_actor_batch )
@@ -3664,6 +3691,9 @@ void sim_t::activate_actors()
   // Single-actor batch mode activates the current active actor
   else
   {
+    range::for_each( target_list, []( player_t* t ) { t -> actor_changed(); } );
+
     player_no_pet_list[ current_index ] -> activate();
+    update_sim_phase_str();
   }
 }

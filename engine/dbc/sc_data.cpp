@@ -202,6 +202,73 @@ double spelleffect_data_t::get_field( const std::string& field ) const
 
 spellpower_data_nil_t spellpower_data_nil_t::singleton;
 
+bool spellpower_data_t::override_field( const std::string& field, double value )
+{
+  if ( util::str_compare_ci( field, "cost" ) )
+  {
+    _cost = static_cast<int>( value );
+    return true;
+  }
+  else if ( util::str_compare_ci( field, "max_cost" ) )
+  {
+    _cost_max = static_cast<int>( value );
+    return true;
+  }
+  else if ( util::str_compare_ci( field, "cost_per_tick" ) )
+  {
+    _cost_per_tick = static_cast<int>( value );
+    return true;
+  }
+  else if ( util::str_compare_ci( field, "pct_cost" ) )
+  {
+    _pct_cost = value;
+    return true;
+  }
+  else if ( util::str_compare_ci( field, "pct_cost_max" ) )
+  {
+    _pct_cost_max = value;
+    return true;
+  }
+  else if ( util::str_compare_ci( field, "pct_cost_per_tick" ) )
+  {
+    _pct_cost_per_tick = value;
+    return true;
+  }
+
+  return false;
+}
+
+double spellpower_data_t::get_field( const std::string& field ) const
+{
+  if ( util::str_compare_ci( field, "cost" ) )
+  {
+    return static_cast<double>( _cost );
+  }
+  else if ( util::str_compare_ci( field, "max_cost" ) )
+  {
+    return static_cast<double>( _cost_max );
+  }
+  else if ( util::str_compare_ci( field, "cost_per_tick" ) )
+  {
+    return static_cast<double>( _cost_per_tick );
+  }
+  else if ( util::str_compare_ci( field, "pct_cost" ) )
+  {
+    return _pct_cost;
+  }
+  else if ( util::str_compare_ci( field, "pct_cost_max" ) )
+  {
+    return _pct_cost_max;
+  }
+  else if ( util::str_compare_ci( field, "pct_cost_per_tick" ) )
+  {
+    return _pct_cost_per_tick;
+  }
+
+  return -std::numeric_limits<double>::max();
+}
+
+
 // ==========================================================================
 // Talent Data
 // ==========================================================================
@@ -321,6 +388,27 @@ effect_hotfix_entry_t& hotfix::register_effect( const std::string& group,
   }
 
   auto  entry = new effect_hotfix_entry_t( group, tag, effect_id, note, flags );
+  hotfixes_.push_back( entry );
+
+  std::sort( hotfixes_.begin(), hotfixes_.end(), hotfix_sorter_t() );
+
+  return *entry;
+}
+
+power_hotfix_entry_t& hotfix::register_power( const std::string& group,
+                                              const std::string& tag,
+                                              const std::string& note,
+                                              unsigned           power_id,
+                                              unsigned           flags )
+{
+  auto i = std::find_if( hotfixes_.begin(),
+      hotfixes_.end(), hotfix_comparator_t( tag, note ) );
+  if ( i !=  hotfixes_.end() )
+  {
+    return *static_cast<power_hotfix_entry_t*>( *i );
+  }
+
+  auto  entry = new power_hotfix_entry_t( group, tag, power_id, note, flags );
   hotfixes_.push_back( entry );
 
   std::sort( hotfixes_.begin(), hotfixes_.end(), hotfix_sorter_t() );
@@ -458,6 +546,27 @@ std::string effect_hotfix_entry_t::to_str() const
   return s.str();
 }
 
+std::string power_hotfix_entry_t::to_str() const
+{
+  std::stringstream s;
+  s << hotfix_entry_t::to_str();
+  s << std::endl;
+
+  const spellpower_data_t* p = hotfix_db_.find_power( id_, false );
+  s << "             ";
+  s << "Power: " << p -> id();
+  s << " | Field: " << field_name_;
+  s << " | Hotfix Value: " << hotfix_value_;
+  s << " | DBC Value: " << dbc_value_;
+  if ( orig_value_ != -std::numeric_limits<double>::max() &&
+       util::round( orig_value_, 6 ) != util::round( dbc_value_, 6 ) )
+  {
+    s << " [verification fail]";
+  }
+
+  return s.str();
+}
+
 void spell_hotfix_entry_t::apply_hotfix( bool ptr )
 {
   spell_data_t* s = hotfix_db_.clone_spell( id_, ptr );
@@ -505,6 +614,32 @@ void effect_hotfix_entry_t::apply_hotfix( bool ptr )
   }
 
   do_hotfix( this, e );
+}
+
+void power_hotfix_entry_t::apply_hotfix( bool ptr )
+{
+  const spellpower_data_t* source_power = spellpower_data_t::find( id_, ptr );
+
+  // Cloning the spell chain will guarantee that the effect is also always cloned
+  const spell_data_t* s = hotfix_db_.clone_spell( source_power -> spell_id(), ptr );
+  assert( s && "Could not clone spell to apply hotfix" );
+
+  spellpower_data_t* p = hotfix_db_.get_mutable_power( id_, ptr );
+  if ( !p ) { return; }
+
+  dbc_value_ = p -> get_field( field_name_ );
+  if ( orig_value_ != -std::numeric_limits<double>::max() &&
+       util::round( orig_value_, 5 ) != util::round( dbc_value_, 5 ) )
+  {
+    std::cerr << "[" << tag_ << "]: " << ( ptr ? "PTR-" : "" ) << "Hotfix \"" << note_
+      << "\" for spell power " << p -> id() << " (spell " << s -> name_cstr() << ") does not match verification value.";
+    std::cerr << " Field: " << field_name_;
+    std::cerr << ", DBC: " << std::setprecision( 5 ) << util::round( dbc_value_, 5 );
+    std::cerr << ", Verify: " << std::setprecision( 5 ) << util::round( orig_value_, 5 );
+    std::cerr << std::endl;
+  }
+
+  do_hotfix( this, p );
 }
 
 spell_data_t* custom_dbc_data_t::get_mutable_spell( unsigned spell_id, bool ptr )
@@ -579,6 +714,45 @@ bool custom_dbc_data_t::add_effect( spelleffect_data_t* effect, bool ptr )
   }
 
   effects_[ ptr ].push_back( effect );
+
+  return true;
+}
+
+spellpower_data_t* custom_dbc_data_t::get_mutable_power( unsigned power_id, bool ptr )
+{
+  for ( size_t i = 0, end = powers_[ ptr ].size(); i < end; ++i )
+  {
+    if ( powers_[ ptr ][ i ] -> id() == power_id )
+    {
+      return powers_[ ptr ][ i ];
+    }
+  }
+
+  return nullptr;
+}
+
+const spellpower_data_t* custom_dbc_data_t::find_power( unsigned power_id, bool ptr ) const
+{
+  auto it = range::find_if( powers_[ ptr ], [ power_id ]( spellpower_data_t* power ) {
+      return power -> id() == power_id;
+  } );
+
+  if ( it != powers_[ ptr ].end() )
+  {
+    return *it;
+  }
+
+  return nullptr;
+}
+
+bool custom_dbc_data_t::add_power( spellpower_data_t* power, bool ptr )
+{
+  if ( find_power( power -> id(), ptr ) )
+  {
+    return false;
+  }
+
+  powers_[ ptr ].push_back( power );
 
   return true;
 }
@@ -666,6 +840,25 @@ spell_data_t* custom_dbc_data_t::create_clone( const spell_data_t* source, bool 
         break;
       }
     }
+  }
+
+  // Clone powers
+  for ( size_t i = 0; source -> _power && i < source -> _power -> size(); ++i )
+  {
+    if ( source -> _power -> at( i ) -> id() == 0 )
+    {
+      continue;
+    }
+
+    auto p_source = source -> _power -> at( i );
+    auto p_clone = get_mutable_power( p_source -> id(), ptr );
+    if ( p_clone == nullptr )
+    {
+      p_clone = new spellpower_data_t( *spellpower_data_t::find( p_source -> id(), ptr ) );
+      add_power( p_clone, ptr );
+    }
+
+    clone -> _power -> at( i ) = p_clone;
   }
 
   return clone;
@@ -765,6 +958,25 @@ bool dbc_override::register_effect( dbc_t& dbc, unsigned effect_id, const std::s
   effect -> override_field( field, v );
 
   override_entries_.push_back( dbc_override_entry_t( DBC_OVERRIDE_EFFECT, field, effect_id, v ) );
+
+  return true;
+}
+
+bool dbc_override::register_power( dbc_t& dbc, unsigned power_id, const std::string& field, double v )
+{
+  auto power = override_db_.get_mutable_power( power_id, dbc.ptr );
+  if ( power == nullptr )
+  {
+    auto dbc_power = dbc.power( power_id );
+    override_db_.clone_spell( dbc_power -> spell_id(), dbc.ptr );
+    power = override_db_.get_mutable_power( power_id, dbc.ptr );
+  }
+
+  assert( power );
+
+  power -> override_field( field, v );
+
+  override_entries_.push_back( dbc_override_entry_t( DBC_OVERRIDE_POWER, field, power_id, v ) );
 
   return true;
 }

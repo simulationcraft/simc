@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build 8142444)
+SimulationCraft 720-02 for World of Warcraft 7.2.0 PTR (wow build 23826)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -383,6 +383,8 @@ Effects          :
                    Base Value: -80 | Scaled Value: -80 | Misc Value: 127 | Target: Self(1)
 #2 (id=192584)   : Apply Aura (6) | Unknown effect sub type (229)
                    Base Value: -75 | Scaled Value: -75 | Misc Value: 127 | Target: Self(1)
+#3 (id=372340)   : Apply Aura (6) | Modify Attacker Melee Crit Chance (187)
+                   Base Value: -6 | Scaled Value: -6 | Target: Self(1)
 Description      : Reduces the damage your pet takes from creature area of effect attacks by an additional $s1%.
 
 Name             : Agile Bio-Optic Killshades (id=81722) 
@@ -435,8 +437,8 @@ Effects          :
 Name             : Tiger Palm (id=100780) [Spell Family (53)] 
 Class            : Monk
 School           : Physical
-Resource         : 50 Energy w/ Brewmaster Monk (id=137023)
-Resource         : 50 Energy w/ Windwalker Monk (id=137025)
+Resource         : 50 Energy (id=5167) w/ Brewmaster Monk (id=137023)
+Resource         : 50 Energy (id=10716) w/ Windwalker Monk (id=137025)
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -454,11 +456,13 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: chi | Target: Self(1)
 #3 (id=281299)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
+#4 (id=368223)   : Dummy (3)
+                   Base Value: 5 | Scaled Value: 5 | Target: Enemy(6)
 Description      : Attack with the palm of your hand, dealing $s1 damage.$?a137025[
 
 Tiger Palm has an $137384m1% chance to make your next Blackout Kick cost no Chi.][]$?a137023[
 
-Reduces the remaining cooldown on your Brews by $s3 sec.][]$?a137025[
+Reduces the remaining cooldown on your Brews by $s3 sec, and Blackout Strike by $s4 sec.][]$?a137025[
 
 |cFFFFFFFFGenerates $s2 Chi.][]
 Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
@@ -475,7 +479,7 @@ $high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
 Name             : Blackout Kick (id=100784) [Spell Family (53)] 
 Class            : Monk
 School           : Physical
-Resource         : 1 Chi w/ Windwalker Monk (id=137025)
+Resource         : 1 Chi (id=6139) w/ Windwalker Monk (id=137025)
 Spell Level      : 3
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -547,13 +551,14 @@ If used again while active, you will land, dealing $123586m1 damage to all enemi
 Name             : Spinning Crane Kick (id=101546) [Spell Family (53)] 
 Class            : Mistweaver Windwalker Monk
 School           : Physical
-Resource         : 3 Chi w/ Windwalker Monk (id=137025)
-Resource         : 1% Base Mana (11000 @Level 110) w/ Mistweaver Monk (id=137024)
-Resource         : 3 Chi w/ Brewmaster Monk (id=137023)
+Resource         : 3 Chi (id=6140) w/ Windwalker Monk (id=137025)
+Resource         : 1% Base Mana (id=10833) w/ Mistweaver Monk (id=137024)
+Resource         : 3 Chi (id=10834) w/ Brewmaster Monk (id=137023)
 Spell Level      : 40
 GCD              : 1.5 seconds
 Duration         : 1.5 seconds
 Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Mistweaver Monk (137024), Lucidity (137331), Serenity (152173), Mana Tea (197908), 
+Triggered by     : Cyclone Strikes (220358)
 Attributes       : ....x... ........ x.x..... ........   ..x...x. ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
                  : ........ ........ ........ ........   ........ .x...x.. ........ ........ 
@@ -565,14 +570,14 @@ Effects          :
 #1 (id=110004)   : Apply Aura (6) | Periodic Trigger Spell: Spinning Crane Kick every 0.5 seconds (23)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 107270 | Target: Self(1)
 #2 (id=328540)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | Trigger Spell: 107270 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #3 (id=328541)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15 | Trigger Spell: 107270 | Target: Self(1)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self(1)
 Description      : Spin while kicking in the air, dealing ${4*$107270s1} damage over $d to enemies within $107270A1 yds.$?c3&s116847[
 
-Spinning Crane Kick's damage is increased by $s2% for each unique target you've struck in the last $s3 sec with Tiger Palm, Blackout Kick, Rising Sun Kick, or Rushing Jade Wind.]?c3[
+Spinning Crane Kick's damage is increased by $220358s1% for each unique target you've struck in the last $220358d with Tiger Palm, Blackout Kick, Rising Sun Kick, or Rushing Jade Wind.]?c3[
 
-Spinning Crane Kick's damage is increased by $s2% for each unique target you've struck in the last $s3 sec with Tiger Palm, Blackout Kick, or Rising Sun Kick.][]
+Spinning Crane Kick's damage is increased by $220358s1% for each unique target you've struck in the last $220358d with Tiger Palm, Blackout Kick, or Rising Sun Kick.][]
 Tooltip          : Attacking all nearby enemies for Physical damage every $101546t1 sec.
 Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
 $dwm=$?a108561|a115697[${1}][${0.857143}]
@@ -637,7 +642,7 @@ Description      : Increases all damage dealt by $s3%.
 Name             : Spinning Crane Kick (id=107270) [Spell Family (53)] 
 Class            : Monk
 School           : Physical
-Affecting spells : Mistweaver Monk (137024), Windwalker Monk (137025), Storm, Earth, and Fire (137639), Power of a Thousand Cranes (195269)
+Affecting spells : Mistweaver Monk (137024), Windwalker Monk (137025), Storm, Earth, and Fire (137639), Power of a Thousand Cranes (195269), Cyclone Strikes (220358), 
 Triggered by     : Spinning Crane Kick (101546)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -657,8 +662,8 @@ Movement speed reduced by $s2%.
 Name             : Rising Sun Kick (id=107428) [Spell Family (53)] 
 Class            : Mistweaver Windwalker Monk
 School           : Physical
-Resource         : 2 Chi w/ Windwalker Monk (id=137025)
-Resource         : 2% Base Mana (22000 @Level 110) w/ Mistweaver Monk (id=137024)
+Resource         : 2 Chi (id=6143) w/ Windwalker Monk (id=137025)
+Resource         : 2% Base Mana (id=10832) w/ Mistweaver Monk (id=137024)
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -725,9 +730,9 @@ Description      : Roll a short distance.
 Name             : Fists of Fury (id=113656) [Spell Family (53)] 
 Class            : Windwalker Monk
 School           : Physical
-Resource         : 3 Chi
+Resource         : 3 Chi (id=6141)
 Spell Level      : 20
-Range            : 5 yards
+Range            : 8 yards
 GCD              : 1 seconds
 Duration         : 4 seconds
 Cooldown         : 24 seconds
@@ -750,7 +755,7 @@ Effects          :
 #4 (id=219526)   : Apply Aura (6) | Modify Parry% (47)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #5 (id=303680)   : School Damage: physical (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 5.25000
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 4.20000
 Description      : Pummels all targets in front of you, dealing ${5*$s5} damage over $113656d. Can be channeled while moving.
 Tooltip          : $w3 damage every $t3 sec. $?s125671[Parrying all attacks.][]
 Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
@@ -850,13 +855,11 @@ Effects          :
 #12 (id=235531)   : Apply Aura (6) | Modify Expertise% (240)
                    Base Value: 3 | Scaled Value: 3 | Target: Self(1)
 #13 (id=255479)   : Dummy (3)
-                   Base Value: 10 | Scaled Value: 10
-#14 (id=281261)   : Apply Aura (6) | Modify Base Resistance (142)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Self(1)
-#15 (id=281298)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
+                   Base Value: 1000 | Scaled Value: 1000
+#14 (id=281261)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self(1)
                    Affected Spells: Blackout Kick (100784), Breath of Fire (115181), Rushing Jade Wind (116847), Rushing Jade Wind (148187), Refreshing Jade Wind (196725), Blackout Strike (205523), Dragonfire Brew (227681), Blackout Kick (228649)
-#16 (id=287166)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
+#15 (id=281298)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 14 | Target: Self(1)
                    Affected Spells: Tiger Palm (100780)
 Description      : You shrug off attacks, delaying $?s196737[${$115069m9+$196737m1}][$115069s9]% of Physical damage, instead taking it over $124273d. Affects magical attacks at $s1% effectiveness.
@@ -864,7 +867,7 @@ Description      : You shrug off attacks, delaying $?s196737[${$115069m9+$196737
 Name             : Expel Harm (id=115072) [Spell Family (53)] 
 Class            : Brewmaster Monk
 School           : Nature
-Resource         : 15 Energy
+Resource         : 15 Energy (id=5686)
 Spell Level      : 50
 GCD              : 1 seconds
 Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Lucidity (137331), Extend Life (185158)
@@ -884,10 +887,10 @@ Description      : Draw in the positive chi of all your Healing Spheres, and exp
 Name             : Paralysis (id=115078) [Scaling Spell (6), Spell Family (53)] 
 Class            : Monk
 School           : Physical
-Resource         : 3% Base Mana (33000 @Level 110)
-Resource         : 20 Energy w/ Stagger (id=115069)
-Resource         : 20 Energy w/ Stance of the Fierce Tiger (id=103985)
-Resource         : 3% Base Mana (33000 @Level 110)
+Resource         : 3% Base Mana (id=6420)
+Resource         : 20 Energy (id=6421) w/ Stagger (id=115069)
+Resource         : 20 Energy (id=7588) w/ Stance of the Fierce Tiger (id=103985)
+Resource         : 3% Base Mana (id=9366)
 Spell Level      : 25
 Range            : 20 yards
 GCD              : 1.5 seconds
@@ -963,7 +966,7 @@ Description      : A wave of Chi energy flows through friends and foes, dealing 
 Name             : Renewing Mist (id=115151) [Scaling Spell (6), Spell Family (53)] 
 Class            : Mistweaver Monk
 School           : Nature
-Resource         : 3% Base Mana (33000 @Level 110)
+Resource         : 3% Base Mana (id=5696)
 Spell Level      : 20
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -1059,7 +1062,7 @@ Class            : Brewmaster Monk
 School           : Fire
 Spell Level      : 40
 GCD              : 1 seconds
-Cooldown         : 15 seconds
+Cooldown         : 20 seconds
 Proc Chance      : 101%
 Affecting spells : Stagger (115069), Brewmaster Monk (137023), Item - Monk WoD PvP Brewmaster 4P Bonus (171445), Blackout Combo (228563)
 Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ........ 
@@ -1071,15 +1074,15 @@ Attributes       : ....x... ........ x....... ........   ........ .x...... .....
 Effects          :
 #1 (id=128879)   : School Damage: fire (2)
                    Base Value: 0 | Scaled Value: 1 - 3 | Value Range: 3 | AP Coefficient: 1.80000 | Radius: 12 yards | Target: Cone Front(104)
-Description      : Breathe fire on targets in front of you, causing $s1 Fire damage. Targets affected by Keg Smash will also burn for $123725o1 Fire damage over $123725d$?s123394[ and become Incapacitated for $123393d][].
-Tooltip          : If Dizzying Haze is on the target, they will burn for an additional $123725o1 damage over $123725d$?s123394[ and become Disoriented for $123393d.][.]
+Description      : Breathe fire on targets in front of you, causing $s1 Fire damage$?s117906[ and generating a stack of Elusive Brawler for each target][].
+
+Targets affected by Keg Smash will also burn for $123725o1 Fire damage over $123725d.
 
 Name             : Fortifying Brew (id=115203) [Scaling Spell (6), Spell Family (53)] 
 Class            : Brewmaster Monk
 School           : Physical
 Spell Level      : 55
 Cooldown         : 420 seconds
-Affecting spells : Staggering Around (213055)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1088,7 +1091,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ .....x.. ........ ........   ....x... ........ ........ ........ 
 Effects          :
 #1 (id=128913)   : Dummy (3)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self(1)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self(1)
 Description      : Turns your skin to stone for $120954d, increasing your current and maximum health by $<health>%, increasing the damage you delay with Stagger by an additional $s1%, and reducing all damage you take by $<damage>%.
 Variables        : $health=$?s124997[${10}][${20}]
 $damage=$?s124997[${25}][${20}]
@@ -1129,7 +1132,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=129069)   : Dummy (3)
-                   Base Value: 40 | Scaled Value: 40 | Target: Self(1)
+                   Base Value: 35 | Scaled Value: 35 | Target: Self(1)
 Description      : Increases the damage you delay with Stagger by an additional $215479s1% for $215479d. 
 
 Shares charges with Purifying Brew.
@@ -1137,7 +1140,7 @@ Shares charges with Purifying Brew.
 Name             : Revival (id=115310) [Scaling Spell (6), Spell Family (53)] 
 Class            : Mistweaver Monk
 School           : Nature
-Resource         : 4.374% Base Mana (48113 @Level 110)
+Resource         : 4.374% Base Mana (id=5718)
 Spell Level      : 70
 GCD              : 1.5 seconds
 Cooldown         : 180 seconds
@@ -1240,7 +1243,7 @@ Description      : Chug some Black Ox Brew, which instantly refills your Energy,
 Name             : Detox (id=115450) [Spell Family (53)] 
 Class            : Mistweaver Monk
 School           : Nature
-Resource         : 2.6% Base Mana (28600 @Level 110)
+Resource         : 2.6% Base Mana (id=5734)
 Spell Level      : 22
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -1345,9 +1348,9 @@ When you kill an enemy with $?s152174[Chi Explosion][Blackout Kick], you have a 
 Name             : Disable (id=116095) [Spell Family (53)] 
 Class            : Windwalker Monk
 School           : Physical
-Resource         : 15 Energy w/ Stagger (id=115069)
-Resource         : 0.7% Base Mana (7699 @Level 110)
-Resource         : 15 Energy
+Resource         : 15 Energy (id=6079) w/ Stagger (id=115069)
+Resource         : 0.7% Base Mana (id=6422)
+Resource         : 15 Energy (id=7579)
 Spell Level      : 16
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -1419,7 +1422,7 @@ Blackout Kick has a $s1% chance to reset the remaining cooldown on Rising Sun Ki
 Name             : Vivify (id=116670) [Spell Family (53)] 
 Class            : Mistweaver Monk
 School           : Nature
-Resource         : 4.5% Base Mana (49500 @Level 110)
+Resource         : 4.5% Base Mana (id=10386)
 Spell Level      : 28
 Range            : 40 yards
 Cast Time        : 1.5 seconds
@@ -1435,7 +1438,7 @@ Effects          :
 #1 (id=131794)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Friend(21)
 #2 (id=284314)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.75000 | Radius: 0 - 40 yards | Target: Unknown(132) -> AOE friendly(31)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.00000 | Radius: 0 - 40 yards | Target: Unknown(132) -> AOE friendly(31)
 Description      : Causes a surge of invigorating mists around the target, healing them and their $s1 nearest injured allies for $s2.
 
 Name             : Thunder Focus Tea (id=116680) [Scaling Spell (6), Spell Family (53)] 
@@ -1489,9 +1492,9 @@ Tooltip          : Your next spell cast is empowered:
 Name             : Effuse (id=116694) [Spell Family (53)] 
 Class            : Brewmaster Mistweaver Windwalker Monk
 School           : Nature
-Resource         : 2% Base Mana (22000 @Level 110) w/ Mistweaver Monk (id=137024)
-Resource         : 30 Energy w/ Windwalker Monk (id=137025)
-Resource         : 30 Energy w/ Brewmaster Monk (id=137023)
+Resource         : 2% Base Mana (id=6078) w/ Mistweaver Monk (id=137024)
+Resource         : 30 Energy (id=9204) w/ Windwalker Monk (id=137025)
+Resource         : 30 Energy (id=9205) w/ Brewmaster Monk (id=137023)
 Spell Level      : 8
 Range            : 40 yards
 Cast Time        : 1.5 seconds
@@ -1639,7 +1642,7 @@ Tooltip          : Nearby enemies will be knocked out of the Ring of Peace.
 Name             : Rushing Jade Wind (id=116847) [Spell Family (53)] 
 Class            : Monk
 School           : Nature
-Resource         : 1 Chi
+Resource         : 1 Chi (id=10579)
 Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : 6 seconds
@@ -1655,7 +1658,7 @@ Effects          :
 #1 (id=132057)   : Apply Aura (6) | Periodic Trigger Spell: Rushing Jade Wind every 0.75 seconds (23)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 148187 | Target: Self(1)
 #2 (id=359689)   : Dummy (3)
-                   Base Value: 4 | Scaled Value: 4
+                   Base Value: 2 | Scaled Value: 2
 Description      : Summons a whirling tornado around you, causing ${$148187s1*9} damage over $d to enemies within $107270A1 yards.$?s220357[ Applies Mark of the Crane to up to $s2 nearby targets.][]
 Tooltip          : Dealing physical damage to nearby enemies every $116847t1 sec.
 Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
@@ -1672,7 +1675,7 @@ $high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
 Name             : Life Cocoon (id=116849) [Scaling Spell (6), Spell Family (53)] 
 Class            : Mistweaver Monk
 School           : Nature
-Resource         : 2.4% Base Mana (26400 @Level 110)
+Resource         : 2.4% Base Mana (id=6877)
 Spell Level      : 35
 Range            : 40 yards
 Duration         : 12 seconds
@@ -1709,9 +1712,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=133162)   : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 | Radius: 0 - 5 yards | Target: At Caster(22) -> Unknown(24)
+                   Base Value: 1 | Scaled Value: 1 | Radius: 0 - 8 yards | Target: At Caster(22) -> Unknown(24)
 #2 (id=155264)   : Trigger Spell: Fists of Fury Visual Target (64)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 123154 | Radius: 0 - 5 yards | Target: At Caster(22) -> Unknown(24)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 123154 | Radius: 0 - 8 yards | Target: At Caster(22) -> Unknown(24)
 Description      : $@spelldesc113656
 
 Name             : Mastery: Elusive Brawler (id=117906) [Spell Family (53), Passive] 
@@ -1736,7 +1739,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Self(1)
 #3 (id=287196)   : Apply Aura (6) | Proc Trigger Spell: Elusive Brawler (42)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 195630 | Target: Self(1)
-Description      : Each time you are hit by a melee attack, you gain stacking $s1% increased Dodge chance until your next successful Dodge.
+Description      : Each time you are hit by a melee attack, or hit with Blackout Strike or Breath of Fire, you gain stacking $s1% increased Dodge chance until your next successful Dodge.
 
 Also increases your attack power by $s2%.
 
@@ -1767,8 +1770,8 @@ Description      : Effuse, Renewing Mist, Enveloping Mist, and Vivify also cause
 Name             : Crackling Jade Lightning (id=117952) [Spell Family (53)] 
 Class            : Monk
 School           : Nature
-Resource         : 20 Energy and 20 Energy per second or tick w/ Windwalker Monk (id=137025)
-Resource         : 20 Energy and 20 Energy per second or tick w/ Brewmaster Monk (id=137023)
+Resource         : 20 Energy and 20 Energy per second or tick (id=11676) w/ Windwalker Monk (id=137025)
+Resource         : 20 Energy and 20 Energy per second or tick (id=11677) w/ Brewmaster Monk (id=137023)
 Spell Level      : 18
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -1884,7 +1887,7 @@ Spell Level      : 28
 Cooldown         : 1 seconds
 Charges          : 3 (21 seconds cooldown)
 Category         : 1562
-Affecting spells : Elusive Dance (196738)
+Affecting spells : Elusive Dance (196738), Staggering Around (213055)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1975,7 +1978,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=139326)   : Apply Aura (6) | Stun (12)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.533) | Radius: 0 - 5 yards | Target: At Caster(22) -> Unknown(24)
+                   Base Value: 1 | Scaled Value: 0 (avg=0.533) | Radius: 0 - 8 yards | Target: At Caster(22) -> Unknown(24)
 Description      : $@spelldesc113656
 Tooltip          : Stunned.
 
@@ -2080,7 +2083,7 @@ Tooltip          : Healing $/5;s2% every $t1 seconds.
 Name             : Keg Smash (id=121253) [Spell Family (53)] 
 Class            : Brewmaster Monk
 School           : Physical
-Resource         : 40 Energy
+Resource         : 40 Energy (id=6739)
 Spell Level      : 10
 Range            : 15 yards
 GCD              : 1 seconds
@@ -2098,18 +2101,20 @@ Attributes       : ........ ........ ........ ........   ...x...x .x...... .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=150037)   : School Damage: physical (2)
+#1 (id=150037)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
+#2 (id=229522)   : School Damage: physical (2)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 6.70000 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
-#2 (id=229522)   : Apply Aura (6) | Decrease Movement Speed% (33)
+#3 (id=283420)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Radius: 0 - 8 yards | Mechanic: Unknown(88) | Target: At Enemy(53) -> AOE enemy (instant)(16)
-#3 (id=283420)   : Dummy (3)
+#4 (id=335940)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | Target: Self(1)
-#4 (id=335940)   : Apply Aura (6) | Dummy (4)
+#5 (id=371335)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
-Description      : Smash a keg of brew on the target, dealing $s1 damage to all enemies within $A1 yds and reducing their movement speed by $m2% for $d.
+Description      : Smash a keg of brew on the target, dealing $s2 damage to all enemies within $A2 yds and reducing their movement speed by $m3% for $d.
 
-Reduces the remaining cooldown on your Brews by $s3 sec.
-Tooltip          : $?$w2!=0[Movement speed reduced by $w2%.
+Reduces the remaining cooldown on your Brews by $s4 sec.
+Tooltip          : $?$w3!=0[Movement speed reduced by $w3%.
 ][]Drenched in brew, vulnerable to Breath of Fire.
 Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
 $dwm=$?a108561|a115697[${1}][${0.857143}]
@@ -2636,7 +2641,7 @@ Description      : $@spelldesc124502
 Name             : Enveloping Mist (id=124682) [Scaling Spell (6), Spell Family (53)] 
 Class            : Mistweaver Monk
 School           : Nature
-Resource         : 6% Base Mana (66000 @Level 110)
+Resource         : 6% Base Mana (id=7504)
 Spell Level      : 12
 Range            : 40 yards
 Cast Time        : 2 seconds
@@ -3229,7 +3234,7 @@ Effects          :
                    Affected Spells: Crackling Jade Lightning (117952), Breath of Fire (123725), Eye of the Tiger (196608)
 #3 (id=191109)   : Apply Aura (6) | Unknown effect sub type (416)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-                   Affected Spells: Blackout Kick (100784), Keg Smash (121253), Blackout Strike (205523), Blackout Kick (228649)
+                   Affected Spells: Keg Smash (121253)
 #4 (id=191110)   : Apply Aura (6) | Unknown effect sub type (457)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1562 | Target: Self(1)
 #5 (id=191111)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
@@ -3241,16 +3246,18 @@ Effects          :
 #7 (id=260838)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Eye of the Tiger (196608)
-#8 (id=260839)   : Apply Aura (6) | Modify Base Resistance (142)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 1 | Target: Self(1)
-#9 (id=260840)   : Apply Aura (6) | Unknown effect sub type (218)
+#8 (id=260839)   : Apply Aura (6) | Unknown effect sub type (218)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf8 | Target: Self(1)
-#10 (id=260841)   : Apply Aura (6) | Unknown effect sub type (218)
+#9 (id=260840)   : Apply Aura (6) | Unknown effect sub type (218)
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 3 | Misc Value 2: 0x114 | Target: Self(1)
-#11 (id=260842)   : Apply Aura (6) | Unknown effect sub type (218)
+#10 (id=260841)   : Apply Aura (6) | Unknown effect sub type (218)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0x121 | Target: Self(1)
+#11 (id=260842)   : Apply Aura (6) | Add Percent Modifier: Spell Duration (108)
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: 1 | Target: Self(1)
+                   Affected Spells: Rushing Jade Wind (116847)
 #12 (id=260843)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 11 | Target: Self(1)
+                   Affected Spells: Rushing Jade Wind (116847)
 #13 (id=260844)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #14 (id=260845)   : Apply Aura (6) | Dummy (4)
@@ -3258,8 +3265,6 @@ Effects          :
 #15 (id=260846)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #16 (id=362030)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#17 (id=368362)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Mistweaver Monk (id=137024) [Spell Family (53), Passive, Hidden] 
@@ -3351,10 +3356,10 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179709)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 8 | Scaled Value: 8 | Target: Self(1)
+                   Base Value: 14 | Scaled Value: 14 | Target: Self(1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Rising Sun Kick (107428), Rushing Jade Wind (116847), Fists of Fury (117418), Chi Burst (123986), Chi Burst (130654), Chi Wave (132466), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (152175), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Refreshing Jade Wind (196725), Song of Chi-Ji (198898), Strike of the Windlord (205320), Strike of the Windlord (205414), Blackout Strike (205523), Strike of the Windlord (222029), Blackout Kick (228649)
 #2 (id=191100)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 8 | Scaled Value: 8 | Misc Value: 22 | Target: Self(1)
+                   Base Value: 14 | Scaled Value: 14 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Crackling Jade Lightning (117952), Eye of the Tiger (196608)
 #3 (id=191101)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 11 | Target: Self(1)
@@ -3365,7 +3370,7 @@ Effects          :
 #5 (id=191103)   : Apply Aura (6) | Unknown effect sub type (218)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf7 | Target: Self(1)
 #6 (id=260817)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 8 | Scaled Value: 8 | Target: Self(1)
+                   Base Value: 17 | Scaled Value: 17 | Target: Self(1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Rising Sun Kick (107428), Rising Sun Kick (185099), Blackout Strike (205523), Blackout Kick (228649)
 #7 (id=260818)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
@@ -3900,10 +3905,11 @@ Tooltip          : Chance to gain stack of Mongoose Bite.
 Name             : Essence Font (id=191837) [Spell Family (53)] 
 Class            : Mistweaver Monk
 School           : Nature
-Resource         : 8% Base Mana (88000 @Level 110)
+Resource         : 7.2% Base Mana (id=10383)
 Spell Level      : 40
 GCD              : 1.5 seconds
 Duration         : 3 seconds
+Cooldown         : 12 seconds
 Affecting spells : Thunder Focus Tea (116680), Thunder Focus Tea (197218), Mana Tea (197908)
 Attributes       : ........ ........ x....... ........   ..x...x. ..x..... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3924,7 +3930,7 @@ Class            : Monk
 School           : Nature
 Spell Level      : 1
 Velocity         : 40 yards/sec
-Duration         : 6 seconds
+Duration         : 8 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Affecting spells : Enveloping Mist (124682), Refreshing Jade Wind (196725), Essence of the Mists (199485), The Mists of Sheilun (199888), Item - Monk T19 Mistweaver 4P Bonus (211423)
@@ -3937,7 +3943,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=281444)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.10000 | Radius: 0 - 25 yards | Target: Custom(18) -> AOE friendly(31)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.35000 | Radius: 0 - 25 yards | Target: Custom(18) -> AOE friendly(31)
 #2 (id=289619)   : Apply Aura (6) | Periodic Heal: every 2 seconds (8)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.12000 | Radius: 0 - 25 yards | Target: Custom(18) -> AOE friendly(31)
 Description      : $@spelldesc191837
@@ -4148,7 +4154,7 @@ Description      : Reduces the cooldown of Ironskin Brew and Purifying Brew by $
 Name             : Refreshing Jade Wind (id=196725) [Spell Family (53)] 
 Class            : Monk
 School           : Nature
-Resource         : 5% Base Mana (55000 @Level 110)
+Resource         : 5% Base Mana (id=10578)
 Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : 6 seconds
@@ -4175,7 +4181,7 @@ Tooltip          : Dealing healing to nearby allies every $116847t1 sec.
 Name             : Special Delivery (id=196730) [Spell Family (53), Passive] 
 Class            : Monk
 School           : Physical
-Proc Chance      : 30%
+Proc Chance      : 100%
 Proc Flags       : ........ ..x...x. ........ ........ 
                  : AOE Heal, Heal
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -4213,7 +4219,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=288833)   : School Damage: physical (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 8.10000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.43000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
 #2 (id=288837)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Radius: 0 - 8 yards | Mechanic: Unknown(88) | Target: Unknown(87) -> AOE enemy (instant)(16)
 #3 (id=335941)   : Apply Aura (6) | Dummy (4)
@@ -4389,7 +4395,7 @@ Class            : Monk
 School           : Nature
 Range            : 100 yards
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4687,7 +4693,7 @@ Tooltip          : Your next Blackout Kick strikes an additional $m1 $Ltime:time
 Name             : Strike of the Windlord (Artifact) (id=205320) [Spell Family (53)] 
 Class            : Monk
 School           : Physical
-Resource         : 2 Chi
+Resource         : 2 Chi (id=10960)
 Range            : 9 yards
 GCD              : 1 seconds
 Duration         : 6 seconds
@@ -4763,7 +4769,7 @@ School           : Physical
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
-Cooldown         : 3 seconds
+Cooldown         : 12 seconds
 Proc Chance      : 101%
 Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Blackout Kick! (116768), Brewmaster Monk (137023), Mistweaver Monk (137024), Windwalker Monk (137025), Storm, Earth, and Fire (137639), Serenity (152173), Dark Skies (195265), Obsidian Fists (213051), Draught of Darkness (238057)
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ...x.... 
@@ -4775,7 +4781,7 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=303663)   : School Damage: physical (2)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3.73500 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy(6)
-Description      : Strike with a blast of Chi energy, dealing $s1 Physical damage.
+Description      : Strike with a blast of Chi energy, dealing $s1 Physical damage$?s117906[ and generating a stack of Elusive Brawler][].
 Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
 $dwm=$?a108561|a115697[${1}][${0.857143}]
 $offm=$?a108561|a115697[${0}][${1}]
@@ -4790,7 +4796,7 @@ $high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
 Name             : Soothing Mist (Honor Talent) (id=209525) [Spell Family (53)] 
 Class            : Monk
 School           : Nature
-Resource         : 0% Base Mana and 0.3% Base Mana (3300 @Level 110) per second or tick
+Resource         : 0% Base Mana and 0.225% Base Mana per second or tick (id=11091)
 Spell Level      : 10
 Range            : 40 yards
 GCD              : 0.5 seconds
@@ -4904,7 +4910,7 @@ Tooltip          : Mastery increased by $s1.
 Name             : Reawaken (id=212051) [Spell Family (53)] 
 Class            : Mistweaver Monk
 School           : Nature
-Resource         : 0.8% Base Mana (8800 @Level 110)
+Resource         : 0.8% Base Mana (id=11139)
 Spell Level      : 66
 Range            : 100 yards
 Cast Time        : 10 seconds
@@ -5014,7 +5020,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=320348)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 40 | Scaled Value: 40 | Target: Self(1)
+                   Base Value: 35 | Scaled Value: 35 | Target: Self(1)
 #2 (id=320349)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Misc Value: 4 | Target: Self(1)
 #3 (id=320350)   : Apply Aura (6) | Modify Damage Done% (79)
@@ -5061,7 +5067,7 @@ Description      : $@spelldesc216519
 Name             : Detox (id=218164) [Spell Family (53)] 
 Class            : Brewmaster Windwalker Monk
 School           : Nature
-Resource         : 20 Energy
+Resource         : 20 Energy (id=11277)
 Spell Level      : 22
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -5099,6 +5105,29 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=328546)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 2763 | Target: Self(1)
+Description      : $@spelldesc101546
+
+Name             : Cyclone Strikes (id=220358) [Spell Family (53), Hidden] 
+Class            : Monk
+School           : Physical
+Spell Level      : 1
+Duration         : 15 seconds
+Stacks           : 45 maximum
+Proc Chance      : 101%
+Attributes       : .......x ........ .......x ........   ........ ........ ........ ........ 
+                 : x....... ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Hidden (7)
+Effects          :
+#1 (id=328547)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 40 | Scaled Value: 40 | Target: Self(1)
+                   Affected Spells: Spinning Crane Kick (107270)
+#2 (id=328548)   : Apply Aura (6) | Unknown effect sub type (408)
+                   Base Value: 1 | Scaled Value: 1 | Trigger Spell: 101546 | Target: Self(1)
+                   Affected Spells: Spinning Crane Kick (107270)
 Description      : $@spelldesc101546
 
 Name             : Strike of the Windlord (id=222029) [Spell Family (53)] 
@@ -5164,16 +5193,16 @@ Spell Level      : 1
 Range            : 100 yards
 Duration         : 15 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=343601)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : $@spelldesc101546
-Tooltip          : Increasing the damage of the Monk's Spinning Crane Kick by $s1%.
+Tooltip          : Increasing the damage of the Monk's Spinning Crane Kick by $228287s1%.
 
 Name             : Blackout Combo (id=228563) [Spell Family (53)] 
 Class            : Monk
@@ -5371,6 +5400,25 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | Target: Self(1)
 Description      : Triggering Combo Strikes has a chance to grant $240672s1 Mastery to you and $s2 allies for $240672d.
 
+Name             : Thunderfist (id=238131) [Spell Family (53), Passive] 
+Class            : Monk
+School           : Physical
+Proc Chance      : 100%
+Artifact Power   : Id: 1551, Index: 0, Max Rank: 1
+Proc Flags       : ....x... ........ ........ ........ 
+                 : Yellow Melee
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=360816)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+Description      : Strike of the Windlord grants you a stack of Thunderfist for each enemy struck. Thunderfist discharges upon melee strikes, dealing $242390s1 Nature damage.
+
 Name             : Master of Combinations (id=240672) 
 Class            : Monk
 School           : Physical
@@ -5387,6 +5435,81 @@ Effects          :
                    Base Value: 600 | Scaled Value: 600 | Misc Value: 33554432 | Radius: 100 yards | Target: Unknown(118)
 Description      : $@spelldesc238095
 Tooltip          : Mastery increased by $w1.
+
+Name             : Thunderfist (id=242387) 
+Class            : Monk
+School           : Physical
+Duration         : 30 seconds
+Stacks           : 10 maximum
+Proc Chance      : 100%
+Proc Flags       : ..x.x... ........ ........ ........ 
+                 : White Melee, Yellow Melee
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=368045)   : Apply Aura (6) | Proc Trigger Spell: Thunderfist (42)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 242390 | Target: Self(1)
+Description      : $@spelldesc238131
+Tooltip          : Melee attacks deal an additional $242390s1 Nature damage.
+
+Name             : Thunderfist (id=242390) 
+Class            : Monk
+School           : Nature
+Range            : 8 yards
+Triggered by     : Thunderfist (242387)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=368049)   : School Damage: nature (2)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 5.00000 | Target: Enemy(6)
+Description      : $@spelldesc238131
+
+Name             : Spitfire (id=242580) [Spell Family (53), Passive] 
+Class            : Monk
+School           : Physical
+Proc Chance      : 20%
+Proc Flags       : ....x... ........ ........ ........ 
+                 : Yellow Melee
+Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=368335)   : Apply Aura (6) | Proc Trigger Spell: Spitfire (42)
+                   Base Value: 1 | Scaled Value: 1 | Trigger Spell: 242581 | Target: Self(1)
+Description      : Tiger Palm has a $h% chance to reset the cooldown of Breath of Fire.
+
+Name             : Spitfire (id=242581) [Spell Family (53)] 
+Class            : Monk
+School           : Fire
+Duration         : 10 seconds
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
+Proc Flags       : ....x... ....x... x....... ........ 
+                 : Yellow Melee, AOE Hostile Spell, Hostile Spell
+Triggered by     : Spitfire (242580)
+Attributes       : ....x... ........ ........ ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=368336)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 32 | Target: Self(1)
+Description      : $@spelldesc242580
+Tooltip          : Breath of Fire's cooldown has been reset.
 
 Name             : Fortifying Brew (id=243435) 
 Class            : Mistweaver Monk
@@ -5410,5 +5533,21 @@ Effects          :
 Description      : Turns your skin to stone, increasing your current and maximum health by $s1%, and reducing damage taken by $s2%.
 Tooltip          : Health increased by $w1%.
 Damage taken reduced by $w2%.
+
+Name             : Brewmaster's Balance (id=245013) [Spell Family (53), Passive] 
+Class            : Brewmaster Monk
+School           : Physical
+Spell Level      : 10
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=372570)   : Apply Aura (6) | Modify Base Resistance (142)
+                   Base Value: 25 | Scaled Value: 25 | Misc Value: 1 | Target: Self(1)
+Description      : Your Armor is increased by 25%.
 
 

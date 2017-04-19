@@ -1,4 +1,4 @@
-SimulationCraft 715-02 for World of Warcraft 7.2.0 PTR (wow build 23578, git build 8142444)
+SimulationCraft 720-02 for World of Warcraft 7.2.0 PTR (wow build 23826)
 
 Name             : Defensive Stance (id=71) [Spell Family (4), Passive, Hidden] 
 Class            : Protection Warrior
@@ -117,7 +117,7 @@ Description      : Allows one-hand and off-hand weapons to be equipped in the of
 Name             : Rend (id=772) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
-Resource         : 10 Rage
+Resource         : 20 Rage (id=94)
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -131,17 +131,19 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .x...
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=310)      : Apply Aura (6) | Periodic Damage: physical every 3 seconds (3)
+#1 (id=310)      : Normalized Weapon Damage (121)
+                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy(6)
+#2 (id=357783)   : Weapon Damage% (31)
+                   Base Value: 280 | Scaled Value: 2.8 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy(6)
+#3 (id=374148)   : Apply Aura (6) | Periodic Damage: physical every 3 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.11800 | Mechanic: Bleed | Target: Enemy(6)
-#2 (id=357783)   : School Damage: physical (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.08000 | Mechanic: Bleed | Target: Enemy(6)
-Description      : Wounds the target, causing $s2 Bleed damage instantly and an additional $o1 over $d.
-Tooltip          : Bleeding for $w1 damage every $t1 sec.
+Description      : Wounds the target, causing $sw2 Physical damage instantly and an additional $o3 Bleed damage over $d.
+Tooltip          : Bleeding for $w3 damage every $t3 sec.
 
 Name             : Cleave (id=845) [Spell Family (4)] 
 Class            : Arms Warrior
 School           : Physical
-Resource         : 10 Rage
+Resource         : 10 Rage (id=99)
 Spell Level      : 22
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -155,7 +157,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=357)      : Weapon Damage% (31)
-                   Base Value: 90 | Scaled Value: 0.9 | Radius: 8 yards | Target: Cone Front(104)
+                   Base Value: 110 | Scaled Value: 1.1 | Radius: 8 yards | Target: Cone Front(104)
 #2 (id=129888)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: Cone Front(104)
 Description      : Strikes all enemies in front of you with a sweeping attack for $sw1 Physical damage.$?a231833[ For each target up to $188923u hit, your next Whirlwind deals $188923s1% more damage.][]
@@ -214,7 +216,7 @@ Tooltip          : $?s199023[Demoralized, dealing $s1% less damage.][Demoralized
 Name             : Slam (id=1464) [Spell Family (4)] 
 Class            : Arms Warrior
 School           : Physical
-Resource         : 20 Rage
+Resource         : 20 Rage (id=127)
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -231,13 +233,13 @@ Effects          :
 #1 (id=462)      : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
 #2 (id=119511)   : Weapon Damage% (31)
-                   Base Value: 226 | Scaled Value: 2.26 | Target: Enemy(6)
+                   Base Value: 305 | Scaled Value: 3.05 | Target: Enemy(6)
 Description      : Slams an opponent, causing $sw2 Physical damage.
 
 Name             : Whirlwind (id=1680) [Spell Family (4)] 
 Class            : Arms Warrior
 School           : Physical
-Resource         : 25 Rage
+Resource         : 25 Rage (id=135)
 Spell Level      : 40 (max 80)
 GCD              : 1.5 seconds
 Category         : 891
@@ -260,7 +262,7 @@ Description      : Unleashes a whirlwind of steel, striking all enemies within $
 Name             : Hamstring (id=1715) [Spell Family (4)] 
 Class            : Arms Warrior
 School           : Physical
-Resource         : 10 Rage
+Resource         : 10 Rage (id=9606)
 Spell Level      : 32
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -313,7 +315,7 @@ Tooltip          : Critical strike chance increased by $w1%.
 Name             : Shield Block (id=2565) [Spell Family (4)] 
 Class            : Protection Warrior
 School           : Physical
-Resource         : 15 Rage
+Resource         : 15 Rage (id=10739)
 Spell Level      : 20
 Cooldown         : 1 seconds
 Charges          : 1 (13 seconds cooldown)
@@ -419,7 +421,7 @@ Effects          :
 #1 (id=1897)     : Apply Aura (6) | Proc Trigger Spell: Revenge! (42)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 5302 | Target: Self(1)
 
-Name             : Revenge! (id=5302) [Spell Family (4), Hidden] 
+Name             : Revenge! (id=5302) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
 Duration         : 6 seconds
@@ -428,13 +430,12 @@ Proc Chance      : 100%
 Proc Flags       : ....x... ....x... ........ ........ 
                  : Yellow Melee, AOE Hostile Spell
 Triggered by     : Revenge Trigger (5301)
-Attributes       : ....x..x x....... ........ .....x..   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ....x... ........ ........ .....x..   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Hidden (7)
 Effects          :
 #1 (id=1898)     : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self(1)
@@ -442,11 +443,12 @@ Effects          :
 #2 (id=363876)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
                    Affected Spells: Revenge (6572)
+Tooltip          : Your next Revenge is free.
 
 Name             : Execute (id=5308) [Spell Family (4)] 
 Class            : Fury Warrior
 School           : Physical
-Resource         : 25 Rage
+Resource         : 25 Rage (id=236)
 Spell Level      : 8 (max 80)
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -541,7 +543,7 @@ Description      : Pummels the target, interrupting spellcasting and preventing 
 Name             : Revenge (id=6572) [Spell Family (4)] 
 Class            : Protection Warrior
 School           : Physical
-Resource         : 30 Rage
+Resource         : 30 Rage (id=11771)
 Spell Level      : 22
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -555,7 +557,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=2316)     : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 4.00000 | Radius: 8 yards | Target: Cone Front(104)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 3.50000 | Radius: 8 yards | Target: Cone Front(104)
 Description      : Swing in a wide arc, dealing $s1 damage to all enemies in front of you.
 
 Your successful dodges and parries cause your next Revenge to become free.
@@ -563,7 +565,6 @@ Your successful dodges and parries cause your next Revenge to become free.
 Name             : Overpower (id=7384) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
-Resource         : 10 Rage
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -584,7 +585,7 @@ Effects          :
                    Base Value: 60 | Scaled Value: 60
 Description      : Overpowers the enemy, causing $sw1 Physical damage. Cannot be blocked, dodged or parried, and has a $s3% increased chance to critically strike.
 
-All your melee attacks have a chance to activate Overpower.
+Your other melee abilities have a chance to activate Overpower.
 
 Name             : Warbringer (id=7922) [Spell Family (4)] 
 Class            : Warrior
@@ -631,7 +632,7 @@ Tooltip          : Melee attacks and abilities cause an additional $12292s1% ble
 Name             : Mortal Strike (id=12294) [Spell Family (4)] 
 Class            : Arms Warrior
 School           : Physical
-Resource         : 20 Rage
+Resource         : 20 Rage (id=9599)
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -651,7 +652,7 @@ Effects          :
 #2 (id=5275)     : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy(6)
 #3 (id=99581)    : Weapon Damage% (31)
-                   Base Value: 327 | Scaled Value: 3.27 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 392 | Scaled Value: 3.92 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy(6)
 #4 (id=156241)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: rage | Target: Self(1)
 Description      : A vicious strike that deals ${$sw3*$<mult>} Physical damage and reduces the effectiveness of healing on the target for $115804d.
@@ -660,7 +661,7 @@ Variables        : $mult=${($max(0,$min($pl-5,15))*8+207)/327}
 Name             : Piercing Howl (id=12323) [Spell Family (4)] 
 Class            : Fury Warrior
 School           : Physical
-Resource         : 10 Rage
+Resource         : 10 Rage (id=456)
 Spell Level      : 32
 GCD              : 1.5 seconds
 Duration         : 15 seconds
@@ -1552,13 +1553,13 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=68041)    : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.60000 | Target: Self(1)
                    Affected Spells: Colossus Smash (167105), Colossus Smash (208086)
 #2 (id=89760)    : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000 | Misc Value: 23 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.60000 | Misc Value: 23 | Target: Self(1)
                    Affected Spells: Colossus Smash (167105), Colossus Smash (208086)
 #3 (id=291395)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 4 (107)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000 | Misc Value: 32 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.60000 | Misc Value: 32 | Target: Self(1)
                    Affected Spells: Colossus Smash (167105), Colossus Smash (208086)
 Description      : Increases the damage of your Colossus Smash by $s1%, and causes it to increase damage you deal to the target by an additional $s2%.
 
@@ -2285,13 +2286,13 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : $@spelldesc34428
 
-Name             : Overpower (id=119938) [Passive, Hidden] 
+Name             : Overpower (id=119938) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
-Proc Chance      : 100%
+Proc Chance      : 101%
 Real PPM         : 5 (Haste multiplier)
-Proc Flags       : ..x.x... ........ ........ ........ 
-                 : White Melee, Yellow Melee
+Proc Flags       : ....x... ........ ........ ........ 
+                 : Yellow Melee
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2615,10 +2616,10 @@ Effects          :
 #1 (id=179733)   : Apply Aura (6) | Unknown effect sub type (213)
                    Base Value: 297 | Scaled Value: 297 | Target: Self(1)
 #2 (id=186754)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 5 | Scaled Value: 5 | Target: Self(1)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self(1)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Whirlwind (1680), Hamstring (1715), Execute (5308), Heroic Leap (6544), Overpower (7384), Mortal Strike (12294), Improved Hamstring (24428), Victory Rush (34428), Whirlwind Off-Hand (44949), Bladestorm (46924), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Bladestorm Off-Hand (95738), Storm Bolt (107570), Deep Wounds (115767), Shockwave (132168), Storm Bolt (132169), Ravager (152277), Ravager (156287), Execute (163201), Execute Off-Hand (163558), Colossus Smash (167105), Bladestorm (168969), Whirlwind (190411), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Impending Victory (202168), Opportunity Strikes (203178), Colossus Smash (208086), Bladestorm (222634), Ravager (227744), Bladestorm (227847), Ravager (228920)
 #3 (id=191014)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 22 | Target: Self(1)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Rend (772), Deep Wounds (115767), Ravager (152277), Ravager (156287), Ravager (227744), Ravager (228920)
 #4 (id=191015)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 0x7f | Target: Self(1)
@@ -2862,8 +2863,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=210836)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self(1)
-Description      : Every $s1 Rage you spend reduces the remaining cooldown on Battle Cry$?c1[][, Last Stand, Shield Wall, and Demoralizing Shout] by 1 sec.
+                   Base Value: 20 | Scaled Value: 20 | Target: Self(1)
+Description      : Every $s1 Rage you spend reduces the remaining cooldown on Battle Cry$?c1[ and Bladestorm][, Last Stand, Shield Wall, and Demoralizing Shout] by 1 sec.
 
 Name             : Expansive Mind (Racial Passive) (id=154746) [Passive] 
 Class            : Warrior
@@ -2952,7 +2953,7 @@ Effects          :
 Name             : Execute (id=163201) [Spell Family (4)] 
 Class            : Arms Warrior
 School           : Physical
-Resource         : 10 Rage
+Resource         : 10 Rage (id=9491)
 Spell Level      : 8
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -2967,7 +2968,7 @@ Effects          :
 #1 (id=229520)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=229537)   : Weapon Damage% (31)
-                   Base Value: 162 | Scaled Value: 1.62 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 202 | Scaled Value: 2.02 | Chain Multiplier: 0 | Chain Targets: 1 | Target: Enemy(6)
 #3 (id=344393)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: rage | Target: Self(1)
 #4 (id=349774)   : Dummy (3)
@@ -3001,7 +3002,7 @@ School           : Physical
 Spell Level      : 20
 Range            : 5 yards
 GCD              : 1.5 seconds
-Cooldown         : 30 seconds
+Cooldown         : 20 seconds
 Proc Chance      : 101%
 Affecting spells : Battle Cry (1719), Mastery: Colossal Might (76838), Warrior (137047), Arms Warrior (137049), Titanic Might (202612), Focus in Battle (209554)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -3014,7 +3015,7 @@ Effects          :
 #1 (id=236210)   : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
 #2 (id=236211)   : Weapon Damage% (31)
-                   Base Value: 202 | Scaled Value: 2.02 | Target: Enemy(6)
+                   Base Value: 222 | Scaled Value: 2.22 | Target: Enemy(6)
 Description      : Smashes the enemy's armor, dealing $sw1 Physical damage, and increasing damage you deal to them by $208086s3% for $208086d.
 
 Name             : Bladestorm (id=168969) [Spell Family (4)] 
@@ -3106,7 +3107,7 @@ Tooltip          : Damage taken reduced by $s1%. Bloodthirst restores an additio
 Name             : Rampage (id=184367) [Spell Family (4)] 
 Class            : Fury Warrior
 School           : Physical
-Resource         : 85 Rage
+Resource         : 85 Rage (id=10117)
 Spell Level      : 12
 Range            : 5 yards
 GCD              : 2 seconds
@@ -3268,7 +3269,7 @@ Causes your next Bloodthirst or Rampage to strike up to $85739s1 additional targ
 Name             : Ignore Pain (id=190456) [Spell Family (4)] 
 Class            : Protection Warrior
 School           : Physical
-Resource         : 20 - 60 Rage
+Resource         : 20 - 60 Rage (id=10534)
 Spell Level      : 40
 Range            : 5 yards
 Duration         : 15 seconds
@@ -3463,7 +3464,7 @@ Effects          :
 #1 (id=293808)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom(18) -> AOE enemy (instant)(16)
 #2 (id=293809)   : Weapon Damage% (31)
-                   Base Value: 61 | Scaled Value: 0.61 | Radius: 0 - 8 yards | Target: Custom(18) -> AOE enemy (instant)(16)
+                   Base Value: 75 | Scaled Value: 0.75 | Radius: 0 - 8 yards | Target: Custom(18) -> AOE enemy (instant)(16)
 Description      : $@spelldesc1680
 
 Name             : Whirlwind (id=199667) [Spell Family (4)] 
@@ -3502,7 +3503,7 @@ Effects          :
 #1 (id=294125)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom(18) -> AOE enemy (instant)(16)
 #2 (id=294126)   : Weapon Damage% (31)
-                   Base Value: 61 | Scaled Value: 0.61 | Radius: 0 - 8 yards | Target: Custom(18) -> AOE enemy (instant)(16)
+                   Base Value: 75 | Scaled Value: 0.75 | Radius: 0 - 8 yards | Target: Custom(18) -> AOE enemy (instant)(16)
 Description      : $@spelldesc1680
 
 Name             : Tactician (id=199854) [Spell Family (4)] 
@@ -3703,7 +3704,7 @@ Description      : $@spelldesc202168
 Name             : Impending Victory (id=202168) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
-Resource         : 10 Rage
+Resource         : 10 Rage (id=10852)
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 30 seconds
@@ -3821,10 +3822,10 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=298223)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
-                   Base Value: -20 | Scaled Value: -20 | Misc Value: 14 | Target: Self(1)
+                   Base Value: -10 | Scaled Value: -10 | Misc Value: 14 | Target: Self(1)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Whirlwind (1680), Hamstring (1715), Execute (5308), Overpower (7384), Mortal Strike (12294), Improved Hamstring (24428), Whirlwind Off-Hand (44949), Deep Wounds (115767), Execute (163201), Execute Off-Hand (163558), Whirlwind (190411), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Focused Rage (207982)
 #2 (id=325812)   : Apply Aura (6) | Add Percent Modifier: Spell Effect 3 (108)
-                   Base Value: -20 | Scaled Value: -20 | Misc Value: 23 | Target: Self(1)
+                   Base Value: -10 | Scaled Value: -10 | Misc Value: 23 | Target: Self(1)
                    Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558)
 Description      : Your abilities cost $s1% less Rage.
 
@@ -3840,7 +3841,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=298254)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 45 | Scaled Value: 45 | Misc Value: 11 | Target: Self(1)
+                   Base Value: 80 | Scaled Value: 80 | Misc Value: 11 | Target: Self(1)
 Description      : Whirlwind deals $s1% increased damage to your primary target. 
 
 Name             : Frenzy (id=202539) [Spell Family (4)] 
@@ -4019,9 +4020,12 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=298712)   : Apply Aura (6) | Add Percent Modifier: Spell Duration (108)
-                   Base Value: 200 | Scaled Value: 200 | Misc Value: 1 | Target: Self(1)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 1 | Target: Self(1)
                    Affected Spells: Colossus Smash (167105), Colossus Smash (208086)
-Description      : Increases the duration of Colossus Smash by ${($s1/100)*8} sec.
+#2 (id=374184)   : Apply Aura (6) | Add Flat Modifier: Spell Cooldown (107)
+                   Base Value: -8000 | Scaled Value: -8000 | Misc Value: 11 | Target: Self(1)
+                   Affected Spells: Colossus Smash (167105), Colossus Smash (208086)
+Description      : Increases the duration of Colossus Smash by ${($s1/100)*8} sec, and reduces its cooldown by ${$s2/-1000} sec.
 
 Name             : Booming Voice (id=202743) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
@@ -4396,7 +4400,7 @@ Tooltip          : Critical strike chance of Bloodthirst increased by $s1%.
 Name             : Focused Rage (id=207982) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
-Resource         : 15 Rage
+Resource         : 20 Rage (id=11032)
 Spell Level      : 1
 Range            : 5 yards
 Duration         : 30 seconds
@@ -4469,7 +4473,7 @@ Class            : Warrior
 School           : Physical
 Range            : 100 yards
 Proc Chance      : 101%
-Artifact Power   : Id: 1149, Index: 9, Max Rank: 8, Values: [ -15, -30, -45, -60, -75, -90, -105, -120 ]
+Artifact Power   : Id: 1149, Index: 9, Max Rank: 8, Values: [ -10, -20, -30, -40, -50, -60, -70, -80 ]
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Attributes       : ......xx ........ ........ .......x   ........ ........ ........ ........ 
@@ -4481,7 +4485,7 @@ Attributes       : ......xx ........ ........ .......x   ........ ........ .....
                  : Passive (6), Hidden (7), Cannot cancel aura (31)
 Effects          :
 #1 (id=310051)   : Apply Aura (6) | Dummy (4)
-                   Base Value: -15 | Scaled Value: -15 | Target: Self(1)
+                   Base Value: -10 | Scaled Value: -10 | Target: Self(1)
 Description      : Colossus Smash reduces the Rage cost of your next Mortal Strike or Execute by $s1%.
 
 Name             : Precise Strikes (id=209493) [Spell Family (4), Hidden] 
@@ -4602,7 +4606,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Requires line of sight (186)
 Effects          :
 #1 (id=310355)   : School Damage: shadow (2)
-                   Base Value: 3 | Scaled Value: 3 | AP Coefficient: 0.75000 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
+                   Base Value: 3 | Scaled Value: 3 | AP Coefficient: 1.50000 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
 Description      : $@spelldesc209573
 
 Name             : Rampage! (id=210972) [Spell Family (4), Hidden] 
@@ -4633,15 +4637,16 @@ Attributes       : ....x... ........ x.x..... ...x....   ........ ..x..... .....
                  : ........ ........ ........ ........   .x...... ........ ........ ..x..... 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ......x. ........ 
+                 : ........ ....x... ........ ........   ........ ........ ......x. ........ 
                  : ........ ........ ........ ........   ...x.... ........ ........ ........ 
 Effects          :
 #1 (id=317491)   : Apply Aura (6) | Spell Reflection (28)
                    Base Value: 100 | Scaled Value: 100 | Value Multiplier: 1 | Misc Value: 4 | Radius: 20 yards | Target: Raid Members(56)
 #2 (id=371150)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 0x7e | Radius: 20 yards | Target: Raid Members(56)
-Description      : Reflects all spells cast on you and on all party and raid members within $a1 yards for $d.
-Tooltip          : Reflects all spells cast on you.
+Description      : Reflects all spells cast on you and on all party and raid members within $a1 yards, and reduces magical damage taken by $s2% for $d.
+Tooltip          : Reflects all spells cast on you.
+Magical damage taken reduced by $w2%.
 
 Name             : Trauma (id=215537) [Spell Family (4)] 
 Class            : Warrior
@@ -4712,7 +4717,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=320494)   : Energize Power (30)
-                   Base Value: 300 | Scaled Value: 300 | Misc Value: rage | Target: Self(1)
+                   Base Value: 400 | Scaled Value: 400 | Misc Value: rage | Target: Self(1)
 Description      : $@spelldesc215550
 
 Name             : War Machine (id=215556) [Spell Family (4), Passive] 
