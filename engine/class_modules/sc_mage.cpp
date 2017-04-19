@@ -3551,10 +3551,10 @@ struct arcane_power_t : public arcane_mage_spell_t
 };
 
 // Blast Furance Spell =======================================================
-struct blast_furance_t : public fire_mage_spell_t
+struct blast_furnace_t : public fire_mage_spell_t
 {
-  blast_furance_t( mage_t* p, const std::string& options_str ) :
-    fire_mage_spell_t( "blast_furance", p, p -> find_spell( 194522 ) )
+  blast_furnace_t( mage_t* p, const std::string& options_str ) :
+    fire_mage_spell_t( "blast_furnace", p, p -> find_spell( 194522 ) )
   {
     parse_options( options_str );
     background = true;
@@ -5247,7 +5247,7 @@ struct fire_blast_t : public fire_mage_spell_t
   double pyrosurge_chance;
   pyrosurge_flamestrike_t* pyrosurge_flamestrike;
   cooldown_t* icd;
-  blast_furance_t* blast_furnace;
+  blast_furnace_t* blast_furnace;
 
   fire_blast_t( mage_t* p, const std::string& options_str ) :
     fire_mage_spell_t( "fire_blast", p,
@@ -5293,7 +5293,7 @@ struct fire_blast_t : public fire_mage_spell_t
 
     if ( p -> artifact.blast_furnace.rank() )
     {
-      blast_furnace = new blast_furance_t( p, options_str );
+      blast_furnace = new blast_furnace_t( p, options_str );
     }
 
     base_crit += p -> spec.fire_blast_2 -> effectN( 1 ).percent();
