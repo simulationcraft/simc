@@ -427,6 +427,7 @@ public:
     gain_t* life_tap;
     gain_t* agony;
     gain_t* conflagrate;
+    gain_t* shadowburn;
     gain_t* immolate;
     gain_t* shadowburn_shard;
     gain_t* miss_refund;
@@ -3880,9 +3881,6 @@ struct conflagrate_t: public warlock_spell_t
       p() -> buffs.conflagration_of_chaos -> expire();
 
     p() -> buffs.conflagration_of_chaos -> trigger();
-
-    if ( maybe_ptr( p() -> dbc.ptr ) )
-      p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.6 * warlock_spell_t::n_targets(), p() -> gains.conflagrate );
   }
 
   void impact( action_state_t* s ) override
@@ -3895,6 +3893,9 @@ struct conflagrate_t: public warlock_spell_t
       {
         td( s -> target ) -> debuffs_roaring_blaze -> trigger( 1 );
       }
+
+      if ( maybe_ptr( p() -> dbc.ptr ) )
+        p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.6, p() -> gains.conflagrate );
     }
   }
 };
@@ -5338,6 +5339,9 @@ struct shadowburn_t: public warlock_spell_t
     warlock_spell_t::impact( s );
 
     resource_event = make_event<resource_event_t>( *sim, p(), this, s -> target );
+
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+      p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.6, p() -> gains.shadowburn );
   }
 
   void init() override
@@ -5379,9 +5383,6 @@ struct shadowburn_t: public warlock_spell_t
       p()->buffs.conflagration_of_chaos -> expire();
 
     p() -> buffs.conflagration_of_chaos -> trigger();
-
-    if ( maybe_ptr( p() -> dbc.ptr ) )
-      p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.6 * warlock_spell_t::n_targets(), p() -> gains.conflagrate );
   }
 };
 
@@ -6709,6 +6710,7 @@ void warlock_t::init_gains()
   gains.life_tap                    = get_gain( "life_tap" );
   gains.agony                       = get_gain( "agony" );
   gains.conflagrate                 = get_gain( "conflagrate" );
+  gains.shadowburn                  = get_gain( "shadowburn" );
   gains.immolate                    = get_gain( "immolate" );
   gains.shadowburn_shard            = get_gain( "shadowburn_shard" );
   gains.miss_refund                 = get_gain( "miss_refund" );
