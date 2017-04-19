@@ -2629,6 +2629,16 @@ struct backstab_t : public rogue_attack_t
 
     return rogue_attack_t::ready();
   }
+
+  void execute() override
+  {
+    rogue_attack_t::execute();
+
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+    {
+      p() -> trigger_energetic_stabbing( execute_state );
+    }
+  }
 };
 
 // Between the Eyes =========================================================
