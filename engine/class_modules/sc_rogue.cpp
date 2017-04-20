@@ -5880,17 +5880,25 @@ void rogue_t::trigger_relentless_strikes( const action_state_t* state )
     return;
   }
 
-  double proc_chance = rogue_attack_t::cast_state( state ) -> cp * spec.relentless_strikes -> effectN( 2 ).percent();
   double grant_energy = 0;
-  if ( proc_chance > 1 )
-  {
-    grant_energy += spell.relentless_strikes_energize -> effectN( 1 ).resource( RESOURCE_ENERGY );
-    proc_chance -= 1;
-  }
 
-  if ( rng().roll( proc_chance ) )
+  if ( maybe_ptr( dbc.ptr ) )
   {
-    grant_energy += spell.relentless_strikes_energize -> effectN( 1 ).resource( RESOURCE_ENERGY );
+    grant_energy += rogue_attack_t::cast_state( state ) -> cp * spell.relentless_strikes_energize -> effectN( 1 ).resource( RESOURCE_ENERGY );
+  }
+  else
+  {
+    double proc_chance = rogue_attack_t::cast_state( state ) -> cp * spec.relentless_strikes -> effectN( 2 ).percent();
+    if ( proc_chance > 1 )
+    {
+      grant_energy += spell.relentless_strikes_energize -> effectN( 1 ).resource( RESOURCE_ENERGY );
+      proc_chance -= 1;
+    }
+
+    if ( rng().roll( proc_chance ) )
+    {
+      grant_energy += spell.relentless_strikes_energize -> effectN( 1 ).resource( RESOURCE_ENERGY );
+    }
   }
 
   if ( grant_energy > 0 )
