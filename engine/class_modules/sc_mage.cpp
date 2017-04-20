@@ -4018,12 +4018,6 @@ struct frost_bomb_explosion_t : public frost_mage_spell_t
     parse_effect_data( data().effectN( 1 ) );
     base_aoe_multiplier *= data().effectN( 2 ).sp_coeff() / data().effectN( 1 ).sp_coeff();
   }
-
-  virtual resource_e current_resource() const override
-  { return RESOURCE_NONE; }
-
-  virtual timespan_t travel_time() const override
-  { return timespan_t::zero(); }
 };
 
 struct frost_bomb_t : public frost_mage_spell_t
@@ -4278,7 +4272,7 @@ struct frozen_orb_t : public frost_mage_spell_t
     may_crit       = false;
     if ( p -> artifact.freezing_rain.rank() )
     {
-      freezing_rain_base_duration = p -> find_spell( 240555 ) -> duration();
+      freezing_rain_base_duration = p -> buffs.freezing_rain -> data().duration();
     }
   }
 
