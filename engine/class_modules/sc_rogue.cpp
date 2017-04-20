@@ -3666,6 +3666,9 @@ struct marked_for_death_t : public rogue_attack_t
     may_miss = may_crit = harmful = callbacks = false;
     energize_type = ENERGIZE_ON_CAST;
     energize_amount += p -> talent.deeper_stratagem -> effectN( 6 ).base_value();
+
+    if ( maybe_ptr( p -> dbc.ptr ) )
+      cooldown -> duration += timespan_t::from_millis( p -> spec.subtlety_rogue -> effectN( 7 ).base_value() );
   }
 
   // Defined after marked_for_death_debuff_t. Sigh.
