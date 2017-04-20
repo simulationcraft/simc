@@ -427,6 +427,7 @@ public:
     gain_t* life_tap;
     gain_t* agony;
     gain_t* conflagrate;
+    gain_t* shadowburn;
     gain_t* immolate;
     gain_t* shadowburn_shard;
     gain_t* miss_refund;
@@ -2602,11 +2603,7 @@ public:
     {
         if (  p() -> talents.soul_conduit -> ok() )
         {
-          double soul_conduit_rng = 0;
-          if ( maybe_ptr( p() -> dbc.ptr ) && p() -> specialization() == WARLOCK_DESTRUCTION )
-            double soul_conduit_rng = 0.12;
-          else
-            double soul_conduit_rng = p() -> talents.soul_conduit -> effectN( 1 ).percent();
+          double soul_conduit_rng = p() -> talents.soul_conduit -> effectN( 1 ).percent() + ( maybe_ptr( p() -> dbc.ptr ) ? p() -> spec.destruction -> effectN( 3 ).percent() : 0 );
 
           for ( int i = 0; i < last_resource_cost; i++ )
           {
@@ -2876,9 +2873,7 @@ struct agony_t: public warlock_spell_t
 
   virtual void tick( dot_t* d ) override
   {
-    if ( p() -> talents.writhe_in_agony -> ok() && td( d -> state -> target ) -> agony_stack < ( 20 ) )
-      td( d -> state -> target ) -> agony_stack++;
-    else if ( td( d -> state -> target ) -> agony_stack < ( 10 ) )
+    if ( td( d -> state -> target ) -> agony_stack < ( 10 * ( 1 + ( p() -> talents.writhe_in_agony -> ok() ? p() -> talents.writhe_in_agony -> effectN( 1 ).percent() : 0 ) ) ) )
       td( d -> state -> target ) -> agony_stack++;
 
     td( d -> target ) -> debuffs_agony -> trigger();
@@ -3886,9 +3881,6 @@ struct conflagrate_t: public warlock_spell_t
       p() -> buffs.conflagration_of_chaos -> expire();
 
     p() -> buffs.conflagration_of_chaos -> trigger();
-
-    if ( maybe_ptr( p() -> dbc.ptr ) )
-      p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.6 * warlock_spell_t::n_targets(), p() -> gains.conflagrate );
   }
 
   void impact( action_state_t* s ) override
@@ -3901,6 +3893,9 @@ struct conflagrate_t: public warlock_spell_t
       {
         td( s -> target ) -> debuffs_roaring_blaze -> trigger( 1 );
       }
+
+      if ( maybe_ptr( p() -> dbc.ptr ) )
+        p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.6, p() -> gains.conflagrate );
     }
   }
 };
@@ -3965,7 +3960,7 @@ struct incinerate_t: public warlock_spell_t
     p() -> buffs.backdraft -> decrement();
 
     if ( maybe_ptr( p() -> dbc.ptr ) )
-      p() -> resource_gain( RESOURCE_SOUL_SHARD, ( execute_state -> result == RESULT_CRIT ? 0.2 : 0.1 ) * ( p() -> talents.fire_and_brimstone -> ok() ? warlock_spell_t::n_targets() : 1 ), p() -> gains.incinerate );
+      p() -> resource_gain( RESOURCE_SOUL_SHARD, ( execute_state -> result == RESULT_CRIT ? 0.2 : 0.1 ) * ( p() -> talents.fire_and_brimstone -> ok() ? execute_state -> n_targets : 1 ), p() -> gains.incinerate );
   }
 
   virtual double composite_crit_chance() const override
@@ -4000,6 +3995,8 @@ struct duplicate_chaos_bolt_t : public warlock_spell_t
     crit_bonus_multiplier *= 1.0 + p -> artifact.chaotic_instability.percent();
     base_multiplier *= 1.0 + ( p -> sets.set( WARLOCK_DESTRUCTION, T18, B2 ) -> effectN( 2 ).percent() );
     base_multiplier *= 1.0 + ( p -> sets.set( WARLOCK_DESTRUCTION, T17, B4 ) -> effectN( 1 ).percent() );
+    if ( maybe_ptr( p -> dbc.ptr ) )
+      base_multiplier *= 1.0 + ( p -> talents.reverse_entropy -> effectN( 2 ).percent() );
   }
 
   timespan_t travel_time() const override
@@ -4075,6 +4072,8 @@ struct chaos_bolt_t: public warlock_spell_t
     base_execute_time += p -> sets.set( WARLOCK_DESTRUCTION, T18, B2 ) -> effectN( 1 ).time_value();
     base_multiplier *= 1.0 + ( p -> sets.set( WARLOCK_DESTRUCTION, T18, B2 ) -> effectN( 2 ).percent() );
     base_multiplier *= 1.0 + ( p -> sets.set( WARLOCK_DESTRUCTION, T17, B4 ) -> effectN( 1 ).percent() );
+    if ( maybe_ptr( p -> dbc.ptr ) )
+      base_multiplier *= 1.0 + ( p -> talents.reverse_entropy -> effectN( 2 ).percent() );
     if ( maybe_ptr( p -> dbc.ptr ) )
       base_costs[RESOURCE_SOUL_SHARD] *= 0.1;
 
@@ -4475,6 +4474,9 @@ struct rain_of_fire_t : public warlock_spell_t
       background = dual = direct_tick = true; // Legion TOCHECK
       callbacks = false;
       radius = p -> find_spell( 5740 ) -> effectN( 1 ).radius();
+
+      if ( maybe_ptr( p -> dbc.ptr ) )
+        base_multiplier *= 1.0 + ( p -> talents.reverse_entropy -> effectN( 2 ).percent() );
     }
   };
 
@@ -5337,6 +5339,9 @@ struct shadowburn_t: public warlock_spell_t
     warlock_spell_t::impact( s );
 
     resource_event = make_event<resource_event_t>( *sim, p(), this, s -> target );
+
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+      p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.6, p() -> gains.shadowburn );
   }
 
   void init() override
@@ -5378,9 +5383,6 @@ struct shadowburn_t: public warlock_spell_t
       p()->buffs.conflagration_of_chaos -> expire();
 
     p() -> buffs.conflagration_of_chaos -> trigger();
-
-    if ( maybe_ptr( p() -> dbc.ptr ) )
-      p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.6 * warlock_spell_t::n_targets(), p() -> gains.conflagrate );
   }
 };
 
@@ -5389,6 +5391,11 @@ struct haunt_t: public warlock_spell_t
   haunt_t( warlock_t* p ):
     warlock_spell_t( "haunt", p, p -> talents.haunt )
   {
+    if ( maybe_ptr( p -> dbc.ptr ) )
+    {
+      base_costs[RESOURCE_SOUL_SHARD] = 1.0;
+      resource_current = RESOURCE_SOUL_SHARD;
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -6706,6 +6713,7 @@ void warlock_t::init_gains()
   gains.life_tap                    = get_gain( "life_tap" );
   gains.agony                       = get_gain( "agony" );
   gains.conflagrate                 = get_gain( "conflagrate" );
+  gains.shadowburn                  = get_gain( "shadowburn" );
   gains.immolate                    = get_gain( "immolate" );
   gains.shadowburn_shard            = get_gain( "shadowburn_shard" );
   gains.miss_refund                 = get_gain( "miss_refund" );

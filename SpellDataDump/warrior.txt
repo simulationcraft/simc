@@ -1,4 +1,4 @@
-SimulationCraft 720-02 for World of Warcraft 7.2.0 Live (wow build 23826, git build f6e16cb)
+SimulationCraft 720-02 for World of Warcraft 7.2.0 Live (wow build 23826)
 
 Name             : Defensive Stance (id=71) [Spell Family (4), Passive, Hidden] 
 Class            : Protection Warrior
@@ -117,7 +117,7 @@ Description      : Allows one-hand and off-hand weapons to be equipped in the of
 Name             : Rend (id=772) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
-Resource         : 10 Rage
+Resource         : 10 Rage (id=94)
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -141,7 +141,7 @@ Tooltip          : Bleeding for $w1 damage every $t1 sec.
 Name             : Cleave (id=845) [Spell Family (4)] 
 Class            : Arms Warrior
 School           : Physical
-Resource         : 10 Rage
+Resource         : 10 Rage (id=99)
 Spell Level      : 22
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -214,7 +214,7 @@ Tooltip          : $?s199023[Demoralized, dealing $s1% less damage.][Demoralized
 Name             : Slam (id=1464) [Spell Family (4)] 
 Class            : Arms Warrior
 School           : Physical
-Resource         : 20 Rage
+Resource         : 20 Rage (id=127)
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -237,7 +237,7 @@ Description      : Slams an opponent, causing $sw2 Physical damage.
 Name             : Whirlwind (id=1680) [Spell Family (4)] 
 Class            : Arms Warrior
 School           : Physical
-Resource         : 25 Rage
+Resource         : 25 Rage (id=135)
 Spell Level      : 40 (max 80)
 GCD              : 1.5 seconds
 Category         : 891
@@ -260,7 +260,7 @@ Description      : Unleashes a whirlwind of steel, striking all enemies within $
 Name             : Hamstring (id=1715) [Spell Family (4)] 
 Class            : Arms Warrior
 School           : Physical
-Resource         : 10 Rage
+Resource         : 10 Rage (id=9606)
 Spell Level      : 32
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -313,7 +313,7 @@ Tooltip          : Critical strike chance increased by $w1%.
 Name             : Shield Block (id=2565) [Spell Family (4)] 
 Class            : Protection Warrior
 School           : Physical
-Resource         : 15 Rage
+Resource         : 15 Rage (id=10739)
 Spell Level      : 20
 Cooldown         : 1 seconds
 Charges          : 1 (13 seconds cooldown)
@@ -446,7 +446,7 @@ Effects          :
 Name             : Execute (id=5308) [Spell Family (4)] 
 Class            : Fury Warrior
 School           : Physical
-Resource         : 25 Rage
+Resource         : 25 Rage (id=236)
 Spell Level      : 8 (max 80)
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -541,7 +541,7 @@ Description      : Pummels the target, interrupting spellcasting and preventing 
 Name             : Revenge (id=6572) [Spell Family (4)] 
 Class            : Protection Warrior
 School           : Physical
-Resource         : 30 Rage
+Resource         : 30 Rage (id=11771)
 Spell Level      : 22
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -563,7 +563,7 @@ Your successful dodges and parries cause your next Revenge to become free.
 Name             : Overpower (id=7384) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
-Resource         : 10 Rage
+Resource         : 10 Rage (id=8463)
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -631,7 +631,7 @@ Tooltip          : Melee attacks and abilities cause an additional $12292s1% ble
 Name             : Mortal Strike (id=12294) [Spell Family (4)] 
 Class            : Arms Warrior
 School           : Physical
-Resource         : 20 Rage
+Resource         : 20 Rage (id=9599)
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -660,7 +660,7 @@ Variables        : $mult=${($max(0,$min($pl-5,15))*8+207)/327}
 Name             : Piercing Howl (id=12323) [Spell Family (4)] 
 Class            : Fury Warrior
 School           : Physical
-Resource         : 10 Rage
+Resource         : 10 Rage (id=456)
 Spell Level      : 32
 GCD              : 1.5 seconds
 Duration         : 15 seconds
@@ -2952,7 +2952,7 @@ Effects          :
 Name             : Execute (id=163201) [Spell Family (4)] 
 Class            : Arms Warrior
 School           : Physical
-Resource         : 10 Rage
+Resource         : 10 Rage (id=9491)
 Spell Level      : 8
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -3106,7 +3106,7 @@ Tooltip          : Damage taken reduced by $s1%. Bloodthirst restores an additio
 Name             : Rampage (id=184367) [Spell Family (4)] 
 Class            : Fury Warrior
 School           : Physical
-Resource         : 85 Rage
+Resource         : 85 Rage (id=10117)
 Spell Level      : 12
 Range            : 5 yards
 GCD              : 2 seconds
@@ -3268,7 +3268,7 @@ Causes your next Bloodthirst or Rampage to strike up to $85739s1 additional targ
 Name             : Ignore Pain (id=190456) [Spell Family (4)] 
 Class            : Protection Warrior
 School           : Physical
-Resource         : 20 - 60 Rage
+Resource         : 20 - 60 Rage (id=10534)
 Spell Level      : 40
 Range            : 5 yards
 Duration         : 15 seconds
@@ -3703,7 +3703,7 @@ Description      : $@spelldesc202168
 Name             : Impending Victory (id=202168) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
-Resource         : 10 Rage
+Resource         : 10 Rage (id=10852)
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 30 seconds
@@ -4396,7 +4396,7 @@ Tooltip          : Critical strike chance of Bloodthirst increased by $s1%.
 Name             : Focused Rage (id=207982) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
-Resource         : 15 Rage
+Resource         : 15 Rage (id=11032)
 Spell Level      : 1
 Range            : 5 yards
 Duration         : 30 seconds

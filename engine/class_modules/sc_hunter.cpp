@@ -2106,21 +2106,15 @@ struct pet_auto_attack_t: public hunter_main_pet_attack_t
 
 // Pet Claw/Bite/Smack ======================================================
 
-struct basic_attack_t: public hunter_main_pet_attack_t
+struct basic_attack_base_t: public hunter_main_pet_attack_t
 {
-  double chance_invigoration;
-  double gain_invigoration;
-
-  basic_attack_t( hunter_main_pet_t* p, const std::string& name, const std::string& options_str ):
-    hunter_main_pet_attack_t( name, p, p -> find_pet_spell( name ) )
+  basic_attack_base_t( const std::string& n, hunter_main_pet_t* p, const spell_data_t* s ):
+    hunter_main_pet_attack_t( n, p, s )
   {
-    parse_options( options_str );
     school = SCHOOL_PHYSICAL;
 
     attack_power_mod.direct = 1.0 / 3.0;
     base_multiplier *= 1.0 + p -> specs.spiked_collar -> effectN( 1 ).percent();
-    chance_invigoration = p -> find_spell( 53397 ) -> proc_chance();
-    gain_invigoration = p -> find_spell( 53398 ) -> effectN( 1 ).resource( RESOURCE_FOCUS );
   }
 
   // Override behavior so that Basic Attacks use hunter's attack power rather than the pet's
@@ -2168,6 +2162,15 @@ struct basic_attack_t: public hunter_main_pet_attack_t
       c *= 1.0 + p() -> specs.wild_hunt -> effectN( 2 ).percent();
 
     return c;
+  }
+};
+
+struct basic_attack_t : public basic_attack_base_t
+{
+  basic_attack_t( hunter_main_pet_t* p, const std::string& n, const std::string& options_str ):
+    basic_attack_base_t( n, p, p -> find_pet_spell( n ) )
+  {
+    parse_options( options_str );
   }
 };
 
@@ -2275,20 +2278,13 @@ struct thunderslash_t : public hunter_pet_action_t< hunter_pet_t, spell_t >
 
 // Talon Slash ==============================================================
 
-struct talon_slash_t : public hunter_main_pet_attack_t
+struct talon_slash_t : public basic_attack_base_t
 {
-  talon_slash_t( hunter_main_pet_t* p ):
-    hunter_main_pet_attack_t( "talon_slash", p, p -> find_spell( 242735 ) )
+  talon_slash_t( hunter_main_pet_t* p ) :
+    basic_attack_base_t( "talon_slash", p, p -> find_spell( 242735 ) )
   {
     background = true;
-    attack_power_mod.direct = 1.0 / 3.0; // data hardcoded in a tooltip
-    base_multiplier *= 1.0 + p -> specs.spiked_collar -> effectN( 1 ).percent();
-    // 2017-03-31 hotfix: "Talon Bonds can proc Mastery: Hunting Companion."
-    can_hunting_companion = true;
   }
-
-  double composite_attack_power() const override
-  { return o() -> cache.attack_power() * o() -> composite_attack_power_multiplier(); }
 };
 
 // ==========================================================================
@@ -6196,7 +6192,7 @@ void hunter_t::add_item_actions( action_priority_list_t* list )
 {
   for ( const item_t& item : items )
   {
-    if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+    if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
       list -> add_action( "use_item,name=" + item.name_str );
   }
 }

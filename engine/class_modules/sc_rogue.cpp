@@ -6826,8 +6826,8 @@ void rogue_t::init_action_list()
       // We want to apply poison on the unit that have the most bleeds on and that meet the condition for Venomous Wound (and also for T19 dmg bonus).
       // This would be done with target_if=max:bleeds but it seems to be bugged atm
     build -> add_action( this, "Mutilate", "cycle_targets=1,if=(!talent.agonizing_poison.enabled&dot.deadly_poison_dot.refreshable)|(talent.agonizing_poison.enabled&debuff.agonizing_poison.remains<debuff.agonizing_poison.duration*0.3)" );
-    build -> add_action( this, "Mutilate", "if=energy.deficit<=25+variable.energy_regen_combined|debuff.vendetta.up|dot.kingsbane.ticking|cooldown.exsanguinate.up|cooldown.vendetta.remains<=6|target.time_to_die<=6" );
-    build -> add_action( this, "Poisoned Knife", "cycle_targets=1,if=talent.agonizing_poison.enabled&debuff.agonizing_poison.remains<=gcd.max*2.5&debuff.agonizing_poison.stack>=5" );
+    build -> add_action( this, "Mutilate" );
+    build -> add_action( this, "Poisoned Knife", "cycle_targets=1,if=talent.agonizing_poison.enabled&debuff.agonizing_poison.remains<debuff.agonizing_poison.duration*0.3&debuff.agonizing_poison.stack>=5" );
 
     // Cooldowns
     action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );
@@ -6836,7 +6836,7 @@ void rogue_t::init_action_list()
     cds -> add_action( "use_item,name=draught_of_souls,if=mantle_duration>0&mantle_duration<3.5&dot.kingsbane.ticking" );
     for ( size_t i = 0; i < items.size(); i++ )
     {
-      if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) && items[i].name_str != "draught_of_souls" )
+      if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) && items[i].name_str != "draught_of_souls" )
         cds -> add_action( "use_item,name=" + items[i].name_str + ",if=buff.bloodlust.react|target.time_to_die<=20|debuff.vendetta.up" );
     }
     for ( size_t i = 0; i < racial_actions.size(); i++ )
@@ -6919,7 +6919,7 @@ void rogue_t::init_action_list()
     cds -> add_action( potion_action );
     for ( size_t i = 0; i < items.size(); i++ )
     {
-      if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+      if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
         cds -> add_action( "use_item,name=" + items[i].name_str + ",if=buff.bloodlust.react|target.time_to_die<=20|combo_points.deficit<=2" );
     }
     for ( size_t i = 0; i < racial_actions.size(); i++ )
@@ -6931,7 +6931,7 @@ void rogue_t::init_action_list()
     }
     cds -> add_talent( this, "Cannonball Barrage", "if=spell_targets.cannonball_barrage>=1" );
     cds -> add_action( this, "Adrenaline Rush", "if=!buff.adrenaline_rush.up&energy.deficit>0" );
-    cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit|((raid_event.adds.in>40|buff.true_bearing.remains>15)&combo_points.deficit>=4+talent.deeper_strategem.enabled+talent.anticipation.enabled)" );
+    cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit|((raid_event.adds.in>40|buff.true_bearing.remains>15)&combo_points.deficit>=cp_max_spend-1)" );
     cds -> add_action( this, "Sprint", "if=equipped.thraxis_tricksy_treads&!variable.ss_useable" );
     cds -> add_action( "darkflight,if=equipped.thraxis_tricksy_treads&!variable.ss_useable&buff.sprint.down" );
     cds -> add_action( this, "Curse of the Dreadblades", "if=combo_points.deficit>=4&(!talent.ghostly_strike.enabled|debuff.ghostly_strike.up)" );
@@ -6980,7 +6980,7 @@ void rogue_t::init_action_list()
     cds -> add_action( "potion,name=old_war,if=buff.bloodlust.react|target.time_to_die<=25|buff.shadow_blades.up" );
     for ( size_t i = 0; i < items.size(); i++ )
     {
-      if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) && items[i].name_str != "draught_of_souls" )
+      if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) && items[i].name_str != "draught_of_souls" )
         cds -> add_action( "use_item,name=" + items[i].name_str + ",if=(buff.shadow_blades.up&stealthed.rogue)|target.time_to_die<20" );
     }
     for ( size_t i = 0; i < racial_actions.size(); i++ )

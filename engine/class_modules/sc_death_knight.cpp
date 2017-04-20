@@ -7186,7 +7186,7 @@ void death_knight_t::default_apl_frost()
   // On-use items
   for ( const auto& item : items )
   {
-    if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+    if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
     {
       if ( item.name_str == "ring_of_collapsing_futures" )
       {
@@ -7312,7 +7312,7 @@ void death_knight_t::default_apl_unholy()
   // On-use items
   for (const auto& item : items)
   {
-    if (item.has_special_effect(SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE))
+    if (item.has_special_effect(SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE))
     {
       if ( item.name_str == "ring_of_collapsing_futures" )
       {
