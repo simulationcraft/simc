@@ -248,6 +248,7 @@ public:
   {
     // Arcane
     buff_t* arcane_charge,
+          * arcane_familiar,
           * arcane_power,
           * presence_of_mind,
           * quickening,
@@ -339,8 +340,6 @@ public:
     pets::water_elemental::water_elemental_pet_t* water_elemental;
 
     std::vector<pet_t*> mirror_images;
-
-    pet_t* arcane_familiar;
   } pets;
 
   // Procs
@@ -383,7 +382,6 @@ public:
     // Arcane
     const spell_data_t* arcane_barrage_2,
                       * arcane_charge,
-                      * arcane_familiar,
                       * evocation_2,
                       * savant;
 
@@ -668,109 +666,6 @@ struct mage_pet_spell_t : public spell_t
     spell_t::schedule_execute( execute_state );
   }
 };
-
-namespace arcane_familiar
-{
-//================================================================================
-// Pet Arcane Familiar
-//================================================================================
-struct arcane_familiar_pet_t : public mage_pet_t
-{
-  arcane_familiar_pet_t( sim_t* sim, mage_t* owner )
-    : mage_pet_t( sim, owner, "arcane_familiar", true )
-  {
-    owner_coeff.sp_from_sp = 1.00;
-  }
-
-  void arise() override
-  {
-    mage_pet_t::arise();
-
-    owner->recalculate_resource_max( RESOURCE_MANA );
-  }
-
-  void demise() override
-  {
-    mage_pet_t::demise();
-
-    owner->recalculate_resource_max( RESOURCE_MANA );
-  }
-
-  virtual action_t* create_action( const std::string& name,
-                                   const std::string& options_str ) override;
-
-  virtual void init_action_list() override
-  {
-    action_list_str = "arcane_assault";
-
-    mage_pet_t::init_action_list();
-  }
-};
-
-struct arcane_assault_t : public mage_pet_spell_t
-{
-  arcane_assault_t( arcane_familiar_pet_t* p, const std::string& options_str )
-    : mage_pet_spell_t( "arcane_assault", p,  p -> find_spell( 225119 ) )
-  {
-    parse_options( options_str );
-    cooldown -> duration = timespan_t::from_seconds( 3.0 );
-    cooldown -> hasted = true;
-    may_crit = true;
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double am = mage_pet_spell_t::action_multiplier();
-
-    if ( o() -> buffs.arcane_power -> check() )
-    {
-      am *= 1.0 + o() -> buffs.arcane_power -> check_value();
-    }
-
-    if ( o() -> buffs.rune_of_power -> check() )
-    {
-      am *= 1.0 + o() -> buffs.rune_of_power -> check_value();
-    }
-
-    if ( o() -> talents.incanters_flow -> ok() )
-    {
-      am *= 1.0 + o() -> buffs.incanters_flow -> check_stack_value();
-    }
-    return am;
-  }
-
-  virtual void impact( action_state_t* s ) override
-  {
-    mage_pet_spell_t::impact( s );
-
-    if ( o() -> talents.erosion -> ok() && result_is_hit( s -> result ) )
-    {
-      mage_td_t* tdata = o() -> get_target_data( s -> target );
-      tdata -> debuffs.erosion -> trigger();
-    }
-  }
-
-  virtual double composite_target_multiplier( player_t* target ) const override
-  {
-    double tm = spell_t::composite_target_multiplier( target );
-    mage_td_t* tdata = o() -> get_target_data( target );
-
-    tm *= 1.0 + tdata -> debuffs.erosion -> check_stack_value();
-
-    return tm;
-  }
-};
-
-action_t* arcane_familiar_pet_t::create_action( const std::string& name,
-                                                const std::string& options_str )
-{
-  if ( name == "arcane_assault" )
-    return new arcane_assault_t( this, options_str );
-
-  return mage_pet_t::create_action( name, options_str );
-}
-
-}  // arcane familiar
 
 namespace water_elemental
 {
@@ -1274,6 +1169,48 @@ struct arcane_missiles_t : public buff_t
       chance = proc_chance();
     }
     return buff_t::trigger( stacks, value, chance, duration );
+  }
+};
+
+// Arcane Familiar buff =======================================================
+
+struct arcane_familiar_buff_t : public buff_t
+{
+  action_t* arcane_assault;
+
+  arcane_familiar_buff_t( mage_t* p, action_t* assault ) :
+    buff_t( buff_creator_t( p, "arcane_familiar", p -> find_spell( 210126 ) ) ),
+    arcane_assault( assault )
+  {
+    set_default_value( data().effectN( 1 ).percent() );
+
+    set_period( timespan_t::from_seconds( 3.0 ) );
+    set_tick_behavior( BUFF_TICK_CLIP );
+    set_tick_time_behavior( BUFF_TICK_TIME_HASTED );
+
+    set_tick_callback( [ this ] ( buff_t* /* buff */, int /* total_ticks */, const timespan_t& /* tick_time */ )
+    {
+      assert( arcane_assault );
+      arcane_assault -> target = player -> target;
+      arcane_assault -> execute();
+    } );
+  }
+
+  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
+  {
+    bool success = buff_t::trigger( stacks, value, chance, duration );
+    if ( success )
+    {
+      player -> recalculate_resource_max( RESOURCE_MANA );
+    }
+
+    return success;
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+    player -> recalculate_resource_max( RESOURCE_MANA );
   }
 };
 
@@ -5708,6 +5645,15 @@ struct summon_water_elemental_t : public frost_mage_spell_t
 
 // Summon Arcane Familiar Spell ===============================================
 
+struct arcane_assault_t : public arcane_mage_spell_t
+{
+  arcane_assault_t( mage_t* p )
+    : arcane_mage_spell_t( "arcane_assault", p,  p -> find_spell( 225119 ) )
+  {
+    background = true;
+  }
+};
+
 struct summon_arcane_familiar_t : public arcane_mage_spell_t
 {
   summon_arcane_familiar_t( mage_t* p, const std::string& options_str ) :
@@ -5725,18 +5671,17 @@ struct summon_arcane_familiar_t : public arcane_mage_spell_t
   {
     arcane_mage_spell_t::execute();
 
-    p() -> pets.arcane_familiar -> summon();
+    p() -> buffs.arcane_familiar -> trigger();
   }
 
   virtual bool ready() override
   {
-    if ( !arcane_mage_spell_t::ready() )
+    if ( p() -> buffs.arcane_familiar -> check() )
     {
       return false;
     }
 
-    return !p() -> pets.arcane_familiar ||
-           p() -> pets.arcane_familiar -> is_sleeping();
+    return arcane_mage_spell_t::ready();
   }
 };
 
@@ -6966,13 +6911,6 @@ void mage_t::create_pets()
       }
     }
   }
-
-  if ( talents.arcane_familiar -> ok() &&
-       find_action( "summon_arcane_familiar" ) )
-  {
-    pets.arcane_familiar = new pets::arcane_familiar::arcane_familiar_pet_t( sim, this );
-
-  }
 }
 
 // mage_t::init_spells ========================================================
@@ -7105,10 +7043,6 @@ void mage_t::init_spells()
   // Spec Spells
   spec.arcane_barrage_2      = find_specialization_spell( 231564 );
   spec.arcane_charge         = find_spell( 36032 );
-  if ( talents.arcane_familiar -> ok() )
-  {
-    spec.arcane_familiar    = find_spell( 210126 );
-  }
   spec.evocation_2           = find_specialization_spell( 231565 );
 
   spec.critical_mass         = find_specialization_spell( "Critical Mass"    );
@@ -7174,6 +7108,7 @@ void mage_t::create_buffs()
 
   // Arcane
   buffs.arcane_charge         = buff_creator_t( this, "arcane_charge", spec.arcane_charge );
+  buffs.arcane_familiar       = new buffs::arcane_familiar_buff_t( this, new actions::arcane_assault_t( this ) );
   buffs.arcane_missiles       = new buffs::arcane_missiles_t( this );
   buffs.arcane_power          = buff_creator_t( this, "arcane_power", find_spell( 12042 ) )
                                   .default_value( find_spell( 12042 ) -> effectN( 1 ).percent()
@@ -7967,10 +7902,10 @@ void mage_t::recalculate_resource_max( resource_e rt )
     current_mana_max = resources.max[ rt ];
   }
 
-  if ( talents.arcane_familiar -> ok() && pets.arcane_familiar && !pets.arcane_familiar -> is_sleeping() )
+  if ( talents.arcane_familiar -> ok() && buffs.arcane_familiar -> check() )
   {
     resources.max[ rt ] *= 1.0 +
-      spec.arcane_familiar -> effectN( 1 ).percent();
+      buffs.arcane_familiar -> check_value();
     resources.current[ rt ] = resources.max[ rt ] * mana_percent;
     if ( sim -> debug )
     {
