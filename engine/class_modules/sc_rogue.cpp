@@ -4283,7 +4283,7 @@ struct shadowstrike_t : public rogue_attack_t
     requires_stealth = true;
     energize_amount += p -> talent.premeditation -> effectN( 2 ).base_value();
     base_multiplier *= 1.0 + p -> artifact.precision_strike.percent();
-    range += p -> spec.shadowstrike_2 -> effectN( 1 ).base_value();
+    range += maybe_ptr( p -> dbc.ptr ) ? 0 : p -> spec.shadowstrike_2 -> effectN( 1 ).base_value();
 
     if ( maybe_ptr( p -> dbc.ptr ) )
       crit_bonus += p -> artifact.weak_point.percent();
@@ -4337,6 +4337,18 @@ struct shadowstrike_t : public rogue_attack_t
     }
   }
 
+  double action_multiplier() const override
+  {
+    double m = rogue_attack_t::action_multiplier();
+
+    if ( maybe_ptr ( p() -> dbc.ptr ) && ! p() -> in_combat )
+    {
+      m *= 1.0 + p() -> spec.shadowstrike_2 -> effectN( 2 ).percent();
+    }
+
+    return m;
+  }
+
   double composite_crit_chance() const override
   {
     if ( p() -> buffs.death -> up() )
@@ -4356,7 +4368,12 @@ struct shadowstrike_t : public rogue_attack_t
       return 0;
     }
 
-    return data().max_range();
+    if ( maybe_ptr( p() -> dbc.ptr ) && ! p() -> in_combat )
+    {
+      return range + p() -> spec.shadowstrike_2 -> effectN( 1 ).base_value();
+    }
+
+    return maybe_ptr( p() -> dbc.ptr ) ? 0 : data().max_range();
   }
 };
 
@@ -7475,7 +7492,7 @@ void rogue_t::init_spells()
   spec.eviscerate           = find_specialization_spell( "Eviscerate" );
   spec.eviscerate_2         = find_specialization_spell( 231716 );
   spec.shadowstrike         = find_specialization_spell( "Shadowstrike" );
-  spec.shadowstrike_2       = find_specialization_spell( 231718 );
+  spec.shadowstrike_2       = maybe_ptr( dbc.ptr ) ? find_specialization_spell( 245623 ) : find_specialization_spell( 231718 );
 
   // Masteries
   mastery.potent_poisons    = find_mastery_spell( ROGUE_ASSASSINATION );
