@@ -1202,6 +1202,14 @@ struct rogue_attack_t : public melee_attack_t
       m *= 1.0 + tdata -> debuffs.vendetta -> value();
     }
 
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+    {
+      if ( tdata -> dots.nightblade -> is_ticking() && data().affected_by( tdata -> dots.nightblade -> current_action -> data().effectN( 6 ) ) )
+      {
+        m *= 1.0 + tdata -> dots.nightblade -> current_action -> data().effectN( 6 ).percent();
+      }
+    }
+
     return m;
   }
 
