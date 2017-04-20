@@ -268,6 +268,7 @@ struct rogue_t : public player_t
     buff_t* slice_and_dice;
     // Subtlety
     buff_t* enveloping_shadows;
+    buff_t* master_of_shadows;
     buff_t* master_of_subtlety_aura;
     buff_t* master_of_subtlety;
 
@@ -6143,8 +6144,15 @@ struct stealth_like_buff_t : public buff_t
 
     if ( rogue -> in_combat && rogue -> talent.master_of_shadows -> ok() )
     {
-      rogue -> resource_gain( RESOURCE_ENERGY, rogue -> spell.master_of_shadows -> effectN( 1 ).base_value(),
-                              rogue -> gains.master_of_shadows );
+      if ( maybe_ptr( rogue -> dbc.ptr ) )
+      {
+        rogue -> buffs.master_of_shadows -> trigger();
+      }
+      else
+      {
+        rogue -> resource_gain( RESOURCE_ENERGY, rogue -> spell.master_of_shadows -> effectN( 1 ).base_value(),
+                                rogue -> gains.master_of_shadows );
+      }
     }
 
     if ( procs_mantle_of_the_master_assassin &&
@@ -6191,10 +6199,18 @@ struct stealth_t : public stealth_like_buff_t
     if ( rogue -> in_combat && rogue -> talent.master_of_shadows -> ok() &&
          // As of 04/08/2017, it does not proc Master of Shadows talent if Stealth is procced from Vanish
          // (that's why we also proc Stealth before Vanish expires).
+         // As of 04/20/2017 on 7.2.5 PTR, this hold also true for the new Master of Shadows talent.
          ( ! rogue -> bugs || ! rogue -> buffs.vanish -> check() ) )
     {
-      rogue -> resource_gain( RESOURCE_ENERGY, rogue -> spell.master_of_shadows -> effectN( 1 ).base_value(),
-                              rogue -> gains.master_of_shadows );
+      if ( maybe_ptr( rogue -> dbc.ptr ) )
+      {
+        rogue -> buffs.master_of_shadows -> trigger();
+      }
+      else
+      {
+        rogue -> resource_gain( RESOURCE_ENERGY, rogue -> spell.master_of_shadows -> effectN( 1 ).base_value(),
+                                rogue -> gains.master_of_shadows );
+      }
     }
 
     if ( procs_mantle_of_the_master_assassin &&
@@ -7907,6 +7923,11 @@ void rogue_t::create_buffs()
                                   .tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
                                     resource_gain( RESOURCE_COMBO_POINT, 1, gains.enveloping_shadows );
                                   } );
+  buffs.master_of_shadows       = buff_creator_t( this, "master_of_shadows", find_spell( 196980 ) )
+                                  .tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
+                                    resource_gain( RESOURCE_ENERGY, find_spell( 196980 ) -> effectN( 1 ).base_value(), gains.master_of_shadows );
+                                  } )
+                                  .refresh_behavior( BUFF_REFRESH_DURATION );
   buffs.master_of_subtlety_aura = buff_creator_t( this, "master_of_subtlety_aura", talent.master_of_subtlety )
                                   .duration( sim -> max_time / 2 )
                                   .default_value( 0.1 ) // No longer shown in spell data, so we'll hardcode it, 10% dmg
