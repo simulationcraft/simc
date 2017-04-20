@@ -5090,12 +5090,6 @@ void priest_t::apl_shadow()
   main->add_action( "shadow_crash,if=talent.shadow_crash.enabled" );
   main->add_action( "mindbender,if=talent.mindbender.enabled&set_bonus.tier18_2pc" );
   main->add_action(
-      "shadow_word_pain,if=!talent.misery.enabled&!ticking&talent.legacy_"
-      "of_the_void.enabled&insanity>=70,cycle_targets=1" );
-  main->add_action(
-      "vampiric_touch,if=!talent.misery.enabled&!ticking&talent.legacy_of_"
-      "the_void.enabled&insanity>=70,cycle_targets=1" );
-  main->add_action(
       "shadow_word_death,if=(active_enemies<=4|(talent.reaper_of_souls.enabled"
       "&active_enemies<=2))&cooldown.shadow_word_death.charges=2&insanity<="
       "(85-15*talent.reaper_of_souls.enabled)" );
@@ -5112,14 +5106,13 @@ void priest_t::apl_shadow()
       ">10&(active_enemies<5&(talent.auspicious_spirits.enabled|talent.shadowy_"
       "insight.enabled)),cycle_targets=1" );
   main->add_action(
-      "vampiric_touch,if=!talent.misery.enabled&!ticking&target.time_to_die>10&"
-      "(active_enemies<4|talent.sanlayn.enabled|(talent.auspicious_spirits."
-      "enabled"
-      "&artifact.unleash_the_shadows.rank)),cycle_targets=1" );
+      "vampiric_touch,if=active_enemies>1&!talent.misery.enabled&!ticking&(85.2"
+      "*(1+0.2+stat.mastery_rating%16000)*(1.2*talent.sanlayn.enabled)*0.5*target."
+      "time_to_die%(gcd.max*(138+80*(active_enemies-1))))>1,cycle_targets=1" );
   main->add_action(
-      "shadow_word_pain,if=!talent.misery.enabled&!ticking&target.time_to_die>"
-      "10&"
-      "(active_enemies<5&artifact.sphere_of_insanity.rank),cycle_targets=1" );
+      "shadow_word_pain,if=active_enemies>1&!talent.misery.enabled&!ticking&(47.12"
+      "*(1+0.2+stat.mastery_rating%16000)*0.75*target.time_to_die%(gcd.max*(138+80*"
+      "(active_enemies-1))))>1,cycle_targets=1" );
   main->add_action(
       "shadow_word_void,if=talent.shadow_word_void.enabled&(insanity<=70&"
       "talent."
@@ -5140,6 +5133,9 @@ void priest_t::apl_shadow()
       "shadow_word_death,if=current_insanity_drain*gcd.max>insanity&!buff."
       "power_infusion.up&(insanity-(current_insanity_drain*gcd.max)+(30+30*"
       "talent.reaper_of_souls.enabled)<100)" );
+  if ( race == RACE_BLOOD_ELF )
+    s2m->add_action( "arcane_torrent,if=buff.insanity_drain_stacks.value>=65"
+                     "&(insanity-(current_insanity_drain*gcd.max)+30)<100" );  
   s2m->add_action(
       "power_infusion,if=cooldown.shadow_word_death.charges=0&cooldown.shadow_"
       "word_death.remains>3*gcd.max&buff.voidform.stack>50" );
@@ -5216,6 +5212,9 @@ void priest_t::apl_shadow()
     "react)&cooldown.buff_sephuzs_secret.remains<1&!buff.sephuzs_secret.up"
     "&buff.insanity_drain_stacks.value>10,cycle_targets=1");
   vf->add_action( "void_bolt" );
+if ( race == RACE_BLOOD_ELF )
+   vf->add_action( "arcane_torrent,if=buff.insanity_drain_stacks.value>=20"
+                   "&(insanity-(current_insanity_drain*gcd.max)+15)<100" );
   vf->add_action(
     "mind_bomb,if=equipped.sephuzs_secret&target.is_add&cooldown.buff_sephuzs_"
     "secret.remains<1&!buff.sephuzs_secret.up&buff.insanity_drain_stacks.value>10"
@@ -5275,7 +5274,8 @@ void priest_t::apl_shadow()
       "<gcd,moving=1,cycle_targets=1" );
   vf->add_action(
       "vampiric_touch,if=talent.misery.enabled&(dot.vampiric_touch.remains<3*"
-      "gcd.max|dot.shadow_word_pain.remains<3*gcd.max),cycle_targets=1" );
+      "gcd.max|dot.shadow_word_pain.remains<3*gcd.max)&target.time_to_die>5*gcd."
+      "max,cycle_targets=1" );
   vf->add_action(
       "shadow_word_pain,if=!talent.misery.enabled&!ticking&(active_enemies<5|"
       "talent.auspicious_spirits.enabled|talent.shadowy_insight.enabled|"
@@ -5287,20 +5287,14 @@ void priest_t::apl_shadow()
       "sanlayn.enabled|(talent.auspicious_spirits.enabled&artifact.unleash_the_"
       "shadows.rank))" );
   vf->add_action(
-      "shadow_word_pain,if=!talent.misery.enabled&!ticking&target.time_to_die>"
-      "10&"
-      "(active_enemies<5&(talent.auspicious_spirits.enabled|talent.shadowy_"
-      "insight"
-      ".enabled)),cycle_targets=1" );
+      "vampiric_touch,if=active_enemies>1&!talent.misery.enabled&!ticking&(85.2*"
+      "(1+0.02*buff.voidform.stack)*(1+0.2+stat.mastery_rating%16000)*(1.2*talent."
+      "sanlayn.enabled)*0.5*target.time_to_die%(gcd.max*(138+80*(active_enemies-1)"
+      ")))>1,cycle_targets=1" );
   vf->add_action(
-      "vampiric_touch,if=!talent.misery.enabled&!ticking&target.time_to_die>10&"
-      "(active_enemies<4|talent.sanlayn.enabled|(talent.auspicious_spirits."
-      "enabled&"
-      "artifact.unleash_the_shadows.rank)),cycle_targets=1" );
-  vf->add_action(
-      "shadow_word_pain,if=!talent.misery.enabled&!ticking&target.time_to_die>"
-      "10&"
-      "(active_enemies<5&artifact.sphere_of_insanity.rank),cycle_targets=1" );
+      "shadow_word_pain,if=active_enemies>1&!talent.misery.enabled&!ticking&(47.12"
+      "*(1+0.02*buff.voidform.stack)*(1+0.2+stat.mastery_rating%16000)*0.75*target."
+      "time_to_die%(gcd.max*(138+80*(active_enemies-1))))>1,cycle_targets=1" );
   vf->add_action(
       "mind_flay,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&(action."
       "void_"
