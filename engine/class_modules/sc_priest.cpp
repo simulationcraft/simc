@@ -5140,6 +5140,9 @@ void priest_t::apl_shadow()
       "shadow_word_death,if=current_insanity_drain*gcd.max>insanity&!buff."
       "power_infusion.up&(insanity-(current_insanity_drain*gcd.max)+(30+30*"
       "talent.reaper_of_souls.enabled)<100)" );
+  if ( race == RACE_BLOOD_ELF )
+      s2m->add_action( "arcane_torrent,if=buff.insanity_drain_stacks.value>=65"
+                       "&(insanity-(current_insanity_drain*gcd.max)+30)<100" );
   s2m->add_action(
       "power_infusion,if=cooldown.shadow_word_death.charges=0&cooldown.shadow_"
       "word_death.remains>3*gcd.max&buff.voidform.stack>50" );
@@ -5211,6 +5214,9 @@ void priest_t::apl_shadow()
       "25&(cooldown.void_bolt.up|cooldown.void_torrent.up|cooldown.shadow_word_"
       "death.up|buff.shadowy_insight.up)&target.time_to_die<=variable.s2mcheck-"
       "(buff.insanity_drain_stacks.value)" );
+  if ( race == RACE_BLOOD_ELF )
+    vf->add_action( "arcane_torrent,if=buff.insanity_drain_stacks.value>=20"
+                    "&(insanity-(current_insanity_drain*gcd.max)+15)<100" );
   vf->add_action(
     "silence,if=equipped.sephuzs_secret&(target.is_add|target.debuff.casting."
     "react)&cooldown.buff_sephuzs_secret.remains<1&!buff.sephuzs_secret.up"
