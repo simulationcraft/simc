@@ -561,6 +561,7 @@ struct rogue_t : public player_t
     artifact_power_t shadows_whisper;
     artifact_power_t soul_shadows;
     artifact_power_t the_quiet_knife;
+    artifact_power_t weak_point;
 
 
     // Majors
@@ -2606,6 +2607,9 @@ struct backstab_t : public rogue_attack_t
     requires_weapon = WEAPON_DAGGER;
 
     base_multiplier *= 1.0 + p -> artifact.the_quiet_knife.percent();
+
+    if ( maybe_ptr( p -> dbc.ptr ) )
+      crit_bonus += p -> artifact.weak_point.percent();
   }
 
   double composite_da_multiplier( const action_state_t* state ) const override
@@ -3153,6 +3157,9 @@ struct gloomblade_t : public rogue_attack_t
     requires_weapon = WEAPON_DAGGER;
     weapon = &( p -> main_hand_weapon );
     base_multiplier *= 1.0 + p -> artifact.the_quiet_knife.percent();
+
+    if ( maybe_ptr( p -> dbc.ptr ) )
+      crit_bonus += p -> artifact.weak_point.percent();
   }
 };
 
@@ -4266,6 +4273,9 @@ struct shadowstrike_t : public rogue_attack_t
     energize_amount += p -> talent.premeditation -> effectN( 2 ).base_value();
     base_multiplier *= 1.0 + p -> artifact.precision_strike.percent();
     range += p -> spec.shadowstrike_2 -> effectN( 1 ).base_value();
+
+    if ( maybe_ptr( p -> dbc.ptr ) )
+      crit_bonus += p -> artifact.weak_point.percent();
 
     if ( p -> soul_rip )
     {
@@ -7565,6 +7575,7 @@ void rogue_t::init_spells()
   artifact.shadows_whisper    = find_artifact_spell( "Shadow's Whisper" );
   artifact.soul_shadows       = find_artifact_spell( "Soul Shadows" );
   artifact.the_quiet_knife    = find_artifact_spell( "The Quiet Knife" );
+  artifact.weak_point         = find_artifact_spell( "Weak Point" );
 
   artifact.bag_of_tricks             = find_artifact_spell( "Bag of Tricks" );
   artifact.blood_of_the_assassinated = find_artifact_spell( "Blood of the Assassinated" );
