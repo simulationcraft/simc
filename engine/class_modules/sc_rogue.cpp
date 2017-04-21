@@ -251,6 +251,7 @@ struct rogue_t : public player_t
     buff_t* true_bearing;
     // Subtlety
     buff_t* death;
+    buff_t* focused_shurikens;
     buff_t* shadow_blades;
     buff_t* shadow_dance;
     buff_t* sod_eviscerate;
@@ -412,6 +413,7 @@ struct rogue_t : public player_t
     const spell_data_t* eviscerate_2;
     const spell_data_t* shadowstrike;
     const spell_data_t* shadowstrike_2;
+    const spell_data_t* shuriken_combo;
   } spec;
 
   // Spell Data
@@ -2901,6 +2903,11 @@ struct eviscerate_t : public rogue_attack_t
 
     m *= 1.0 + p() -> buffs.finality_eviscerate -> stack_value();
 
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+    {
+      m *= 1.0 + p() -> buffs.focused_shurikens -> check_stack_value();
+    }
+
     return m;
   }
 
@@ -2934,9 +2941,17 @@ struct eviscerate_t : public rogue_attack_t
       p() -> buffs.feeding_frenzy -> decrement();
     }
 
-    if ( maybe_ptr( p() -> dbc.ptr ) && p() -> buffs.sod_eviscerate -> up() )
+    if ( maybe_ptr( p() -> dbc.ptr ) )
     {
-      p() -> buffs.sod_eviscerate -> expire();
+      if ( p() -> buffs.sod_eviscerate -> up() )
+      {
+        p() -> buffs.sod_eviscerate -> expire();
+      }
+
+      if ( p() -> buffs.focused_shurikens -> up() )
+      {
+        p() -> buffs.focused_shurikens -> expire();
+      }
     }
   }
 };
@@ -4484,6 +4499,11 @@ struct shuriken_storm_t: public rogue_attack_t
     rogue_attack_t::impact( state );
 
     p() -> trigger_second_shuriken( state );
+
+    if ( maybe_ptr( p() -> dbc.ptr ) && p() -> spec.shuriken_combo -> ok() )
+    {
+      p() -> buffs.focused_shurikens -> trigger();
+    }
   }
 
 };
@@ -7593,6 +7613,7 @@ void rogue_t::init_spells()
   spec.eviscerate_2         = find_specialization_spell( 231716 );
   spec.shadowstrike         = find_specialization_spell( "Shadowstrike" );
   spec.shadowstrike_2       = maybe_ptr( dbc.ptr ) ? find_specialization_spell( 245623 ) : find_specialization_spell( 231718 );
+  spec.shuriken_combo       = find_specialization_spell( "Shuriken Combo" );
 
   // Masteries
   mastery.potent_poisons    = find_mastery_spell( ROGUE_ASSASSINATION );
@@ -7974,6 +7995,8 @@ void rogue_t::create_buffs()
   const int death_stacks      = ( sets.has_set_bonus( ROGUE_SUBTLETY, T20, B4 ) ) ? sets.set( ROGUE_SUBTLETY, T20, B4 ) -> effectN( 1 ).base_value(): 1;
   buffs.death                 = buff_creator_t( this, "death", maybe_ptr( dbc.ptr ) ? spell_data_t::not_found() : spec.symbols_of_death -> effectN( 3 ).trigger() )
                                 .max_stack( death_stacks );
+  buffs.focused_shurikens     = buff_creator_t( this, "focused_shurikens", find_spell( 245640 ) )
+                                .default_value( find_spell( 245640 ) -> effectN( 1 ).percent() );
   buffs.shadow_blades         = new buffs::shadow_blades_t( this );
   buffs.shadow_dance          = new buffs::shadow_dance_t( this );
   const double sod_t20_4pc_mult = sets.has_set_bonus( ROGUE_SUBTLETY, T20, B4 ) ? 1.0 + sets.set( ROGUE_SUBTLETY, T20, B4 ) -> effectN( 1 ).percent() : 1.0;
