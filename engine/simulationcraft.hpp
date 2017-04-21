@@ -7373,11 +7373,11 @@ struct proc_attack_t : public proc_action_t<attack_t>
   using super = proc_action_t<attack_t>;
 
   proc_attack_t( const special_effect_t& e ) :
-    base_action_t( e )
+    super( e )
   { }
 
   proc_attack_t( const std::string& token, player_t* p, const spell_data_t* s, const item_t* i = nullptr ) :
-    base_action_t( token, p, s, i )
+    super( token, p, s, i )
   { }
 
   void override_data( const special_effect_t& e );
