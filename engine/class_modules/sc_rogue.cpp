@@ -1285,7 +1285,8 @@ struct rogue_attack_t : public melee_attack_t
   virtual double composite_poison_flat_modifier( const action_state_t* ) const
   { return 0.0; }
 
-  expr_t* create_nightblade_expression();
+  expr_t* create_nightblade_finality_expression();
+  expr_t* create_nightblade_sod_expression();
   expr_t* create_expression( const std::string& name_str ) override;
 };
 
@@ -3802,17 +3803,18 @@ struct mutilate_t : public rogue_attack_t
 struct nightblade_state_t : public rogue_attack_state_t
 {
   bool finality;
+  bool sod;
 
   nightblade_state_t( action_t* action, player_t* target ) :
-    rogue_attack_state_t( action, target ), finality( false )
+    rogue_attack_state_t( action, target ), finality( false ), sod ( false )
   { }
 
   void initialize() override
-  { rogue_attack_state_t::initialize(); finality = false; }
+  { rogue_attack_state_t::initialize(); finality = false; sod = false; }
 
   std::ostringstream& debug_str( std::ostringstream& s ) override
   {
-    rogue_attack_state_t::debug_str( s ) << " finality=" << finality;
+    rogue_attack_state_t::debug_str( s ) << " finality=" << finality << " sod=" << sod;
     return s;
   }
 
@@ -3821,6 +3823,7 @@ struct nightblade_state_t : public rogue_attack_state_t
     rogue_attack_state_t::copy_state( o );
     const nightblade_state_t* st = debug_cast<const nightblade_state_t*>( o );
     finality = st -> finality;
+    sod = st -> sod;
   }
 };
 
@@ -3847,6 +3850,11 @@ struct nightblade_t : public rogue_attack_t
     if ( p() -> buffs.finality_nightblade -> check() )
     {
       debug_cast<nightblade_state_t*>( state ) -> finality = true;
+    }
+
+    if ( maybe_ptr( p() -> dbc.ptr ) && p() -> buffs.sod_nightblade -> check() )
+    {
+      debug_cast<nightblade_state_t*>( state ) -> sod = true;
     }
   }
 
@@ -3923,7 +3931,11 @@ struct nightblade_t : public rogue_attack_t
   {
     if ( util::str_compare_ci( name_str, "finality" ) )
     {
-      return create_nightblade_expression();
+      return create_nightblade_finality_expression();
+    }
+    else if ( util::str_compare_ci( name_str, "sod" ) )
+    {
+      return create_nightblade_sod_expression();
     }
 
     return rogue_attack_t::create_expression( name_str );
@@ -5150,9 +5162,9 @@ struct exsanguinated_expr_t : public expr_t
   }
 };
 
-// rogue_attack_t::create_nightblade_expression ==============================
+// rogue_attack_t::create_nightblade_finality_expression ==============================
 
-expr_t* actions::rogue_attack_t::create_nightblade_expression()
+expr_t* actions::rogue_attack_t::create_nightblade_finality_expression()
 {
   return make_fn_expr( "finality", [ this ]() {
     rogue_td_t* td_ = td( target );
@@ -5162,6 +5174,23 @@ expr_t* actions::rogue_attack_t::create_nightblade_expression()
     }
 
     return debug_cast<const nightblade_state_t*>( td_ -> dots.nightblade -> state ) -> finality
+      ? 1.0
+      : 0.0;
+  } );
+}
+
+// rogue_attack_t::create_nightblade_sod_expression ==============================
+
+expr_t* actions::rogue_attack_t::create_nightblade_sod_expression()
+{
+  return make_fn_expr( "sod", [ this ]() {
+    rogue_td_t* td_ = td( target );
+    if ( ! td_ -> dots.nightblade -> is_ticking() )
+    {
+      return 0.0;
+    }
+
+    return debug_cast<const nightblade_state_t*>( td_ -> dots.nightblade -> state ) -> sod
       ? 1.0
       : 0.0;
   } );
@@ -5184,7 +5213,11 @@ expr_t* actions::rogue_attack_t::create_expression( const std::string& name_str 
   }
   else if ( util::str_compare_ci( name_str, "dot.nightblade.finality" ) )
   {
-    return create_nightblade_expression();
+    return create_nightblade_finality_expression();
+  }
+  else if ( util::str_compare_ci( name_str, "dot.nightblade.sod" ) )
+  {
+    return create_nightblade_sod_expression();
   }
 
   return melee_attack_t::create_expression( name_str );
