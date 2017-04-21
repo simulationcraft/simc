@@ -5,11 +5,11 @@
 ::  - "open downloads" is the command that selects the downloads alias in winscp, which for me is the simulationcraft server. Change downloads to whatever suits you.
 :: MSVC 2015 - Fully updated
 :: Git
-:: QT 5.6.0, or whatever version we are currently using
+:: QT 5.8.0, or whatever version we are currently using
 :: Inno Setup - http://www.jrsoftware.org/isinfo.php - Used to make the installer, optional if you just want a compressed file.
 
-set simcversion=720-02
-set SIMCAPPFULLVERSION=7.2.0.02
+set simcversion=720-03
+set SIMCAPPFULLVERSION=7.2.0.03
 :: For bumping the minor version, just change the above lines.
 
 set qt_dir=C:\Qt\Qt5.8.0.32\5.8\
