@@ -5120,7 +5120,7 @@ struct phoenixs_flames_splash_t : public fire_mage_spell_t
   {
     // PF cleave does not impact main target
     // TODO: Target with chain_target == 0 will always be the same enemy,
-    // no matter what the original PF/PF_chain target was.
+    // no matter what the original PF target was.
     if ( s -> chain_target == 0 )
     {
       return;
@@ -5143,59 +5143,9 @@ struct phoenixs_flames_splash_t : public fire_mage_spell_t
   { return 1.0; }
 };
 
-struct strafing_run_t : public fire_mage_spell_t
-{
-  int chain_number;
-  phoenixs_flames_splash_t* phoenixs_flames_splash;
-
-  strafing_run_t( mage_t* p, phoenixs_flames_splash_t* pfs ) :
-    fire_mage_spell_t( "phoenixs_flames_chain", p, p -> artifact.phoenixs_flames ),
-    chain_number( 0 ),
-    phoenixs_flames_splash( pfs )
-  {
-    triggers_ignite = true;
-    triggers_pyretic_incantation = true;
-
-    // Cooldown is handled by the main action.
-    cooldown -> duration = timespan_t::zero();
-
-    chain_multiplier = data().effectN( 1 ).chain_multiplier();
-  }
-
-  // Strafing Run copies don't travel all the way from the mage.
-  virtual timespan_t travel_time() const override
-  {
-    return timespan_t::zero();
-  }
-
-  virtual void impact( action_state_t* s ) override
-  {
-    fire_mage_spell_t::impact( s );
-
-    if ( result_is_hit( s -> result ) )
-    {
-      phoenixs_flames_splash -> chain_number = chain_number;
-      phoenixs_flames_splash -> target = s -> target;
-      phoenixs_flames_splash -> execute();
-    }
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double am = fire_mage_spell_t::action_multiplier();
-
-    am *= std::pow( chain_multiplier, chain_number );
-
-    return am;
-  }
-  virtual double composite_crit_chance() const override
-  { return 1.0; }
-};
-
 struct phoenixs_flames_t : public fire_mage_spell_t
 {
   phoenixs_flames_splash_t* phoenixs_flames_splash;
-  strafing_run_t*           strafing_run_chain;
 
   bool pyrotex_ignition_cloth;
   timespan_t pyrotex_ignition_cloth_reduction;
@@ -5203,14 +5153,16 @@ struct phoenixs_flames_t : public fire_mage_spell_t
   phoenixs_flames_t( mage_t* p, const std::string& options_str ) :
     fire_mage_spell_t( "phoenixs_flames", p, p -> artifact.phoenixs_flames ),
     phoenixs_flames_splash( new phoenixs_flames_splash_t( p ) ),
-    strafing_run_chain( new strafing_run_t( p, phoenixs_flames_splash ) ),
     pyrotex_ignition_cloth( false ),
     pyrotex_ignition_cloth_reduction( timespan_t::from_seconds( 0 ) )
   {
     parse_options( options_str );
     // Phoenix's Flames always crits
     base_crit = 1.0;
-    triggers_hot_streak = true;
+    chain_multiplier = data().effectN( 1 ).chain_multiplier();
+
+    // Strafing Run requires custom handling of Hot Streak
+    triggers_hot_streak = false;
     triggers_ignite = true;
     triggers_pyretic_incantation = true;
     add_child( phoenixs_flames_splash );
@@ -5218,7 +5170,6 @@ struct phoenixs_flames_t : public fire_mage_spell_t
     if ( p -> artifact.strafing_run.rank() )
     {
       aoe = 1 + p -> artifact.strafing_run.data().effectN( 1 ).base_value();
-      add_child( strafing_run_chain );
     }
   }
 
@@ -5240,18 +5191,15 @@ struct phoenixs_flames_t : public fire_mage_spell_t
 
   virtual void impact( action_state_t* s ) override
   {
-    if ( p() -> artifact.strafing_run.rank() && s -> chain_target > 0 )
-    {
-      strafing_run_chain -> chain_number = s -> chain_target;
-      strafing_run_chain -> target = s -> target;
-      strafing_run_chain -> execute();
-      return;
-    }
-
     fire_mage_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
     {
+      if ( s -> chain_target == 0 )
+      {
+        handle_hot_streak( s );
+      }
+
       phoenixs_flames_splash -> chain_number = s -> chain_target;
       phoenixs_flames_splash -> target = s -> target;
       phoenixs_flames_splash -> execute();
