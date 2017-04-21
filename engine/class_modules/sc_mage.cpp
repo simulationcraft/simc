@@ -5229,6 +5229,9 @@ struct icy_veins_t : public frost_mage_spell_t
     p() -> buffs.icy_veins -> trigger();
     if ( p() -> legendary.lady_vashjs_grasp )
     {
+      // Refreshing infinite ticking buff doesn't quite work, remove
+      // LVG manually and then trigger it again.
+      p() -> buffs.lady_vashjs_grasp -> expire();
       p() -> buffs.lady_vashjs_grasp -> trigger();
       // Trigger 1 stack of FoF when IV is triggered with LVG legendary,
       // This is independant of the tick action gains.
