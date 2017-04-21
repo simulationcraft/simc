@@ -316,7 +316,8 @@ public:
               * fire_blast,
               * phoenixs_flames,
               * presence_of_mind,
-              * ray_of_frost;
+              * ray_of_frost,
+              * time_warp;
   } cooldowns;
 
   // Gains
@@ -332,7 +333,6 @@ public:
   struct legendary_t
   {
     bool lady_vashjs_grasp;
-    bool shard_of_the_exodar;
   } legendary;
   // Pets
   struct pets_t
@@ -5645,56 +5645,25 @@ struct time_warp_t : public mage_spell_t
     harmful = false;
     triggers_arcane_missiles = false;
   }
-  virtual void init() override
-  {
-    mage_spell_t::init();
-    // To let us model the legendary ring, it effectivly gives us a 2 charge lust system.
 
-    if ( p() -> legendary.shard_of_the_exodar )
-    {
-      cooldown -> charges = 2;
-      p() -> player_t::buffs.bloodlust -> cooldown -> duration = timespan_t::zero();
-    }
-
-    // Let us use this to bloodlust ourselves if we have the legendary - disable the standard sim lust.
-    if ( p() -> legendary.shard_of_the_exodar )
-    {
-      p() -> player_t::buffs.bloodlust -> default_chance = 0.0;
-    }
-
-  }
   virtual void execute() override
   {
     mage_spell_t::execute();
 
-    // Let us lust again.
-    if ( p() -> legendary.shard_of_the_exodar )
+    for ( size_t i = 0; i < sim -> player_non_sleeping_list.size(); ++i )
     {
-      p() -> player_t::buffs.bloodlust -> default_chance = 1.0;
-    }
-    // If we have no exhaustion, we're lusting for the raid and everyone gets it.
-    if ( !player -> buffs.exhaustion -> check() )
-    {
-      for ( size_t i = 0; i < sim -> player_non_sleeping_list.size(); ++i )
-      {
-        player_t* p = sim -> player_non_sleeping_list[ i ];
-        if ( p -> buffs.exhaustion -> check() || p -> is_pet() )
-          continue;
+      player_t* p = sim -> player_non_sleeping_list[ i ];
+      if ( p -> buffs.exhaustion -> check() || p -> is_pet() )
+        continue;
 
-        p -> buffs.bloodlust -> trigger(); // Bloodlust and Timewarp are the same
-        p -> buffs.exhaustion -> trigger();
-      }
+      p -> buffs.bloodlust -> trigger();
+      p -> buffs.exhaustion -> trigger();
     }
 
-    // If we have the legendary and exhaustion is up, we're lusting for ourselves.
-    if ( p() -> legendary.shard_of_the_exodar && player -> buffs.exhaustion -> check() )
+    // If Shard of the Exodar is equipped, trigger bloodlust regardless.
+    if ( p() -> player_t::buffs.bloodlust -> default_chance == 0.0 )
     {
-      p() -> player_t::buffs.bloodlust -> trigger();
-    }
-    // Safeguard against the default lust coming back
-    if ( p() -> legendary.shard_of_the_exodar )
-    {
-      p() -> player_t::buffs.bloodlust -> default_chance = 0.0;
+      p() -> player_t::buffs.bloodlust -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 );
     }
   }
 
@@ -5702,10 +5671,12 @@ struct time_warp_t : public mage_spell_t
   {
     // If we have shard of the exodar, we're controlling our own destiny. Overrides don't
     // apply to us.
-    if ( sim -> overrides.bloodlust && !p() -> legendary.shard_of_the_exodar )
+    bool shard = p() -> player_t::buffs.bloodlust -> default_chance == 0.0;
+
+    if ( !shard && sim -> overrides.bloodlust )
       return false;
 
-    if ( player -> buffs.exhaustion -> check() && !p() -> legendary.shard_of_the_exodar )
+    if ( !shard && player -> buffs.exhaustion -> check() )
       return false;
 
     return mage_spell_t::ready();
@@ -6668,6 +6639,7 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   cooldowns.phoenixs_flames  = get_cooldown( "phoenixs_flames"  );
   cooldowns.presence_of_mind = get_cooldown( "presence_of_mind" );
   cooldowns.ray_of_frost     = get_cooldown( "ray_of_frost"     );
+  cooldowns.time_warp        = get_cooldown( "time_warp"        );
 
   // Options
   regen_type = REGEN_DYNAMIC;
@@ -8742,8 +8714,12 @@ struct shard_of_the_exodar_t : public scoped_actor_callback_t<mage_t>
   { }
 
   void manipulate( mage_t* actor, const special_effect_t& /* e */ ) override
-  { actor -> legendary.shard_of_the_exodar = true;
-    actor -> player_t::buffs.bloodlust -> default_chance = 0; }
+  {
+    // Disable default Bloodlust and let us handle it in a custom way.
+    actor -> cooldowns.time_warp -> charges = 2;
+    actor -> player_t::buffs.bloodlust -> default_chance = 0.0;
+    actor -> player_t::buffs.bloodlust -> cooldown -> duration = timespan_t::zero();
+  }
 };
 
 // Arcane Legendary Items
