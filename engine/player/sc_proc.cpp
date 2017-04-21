@@ -565,12 +565,12 @@ void proc_action_t<T_ACTION>::override_data( const special_effect_t& e )
 {
   bool is_periodic = e.duration_ > timespan_t::zero() && e.tick > timespan_t::zero();
 
-  if ( ! ( e.override_result_es_mask & RESULT_CRIT_MASK ) )
+  if ( ( e.override_result_es_mask & RESULT_CRIT_MASK ) )
   {
     this -> may_crit = this -> tick_may_crit = e.result_es_mask & RESULT_CRIT_MASK;
   }
 
-  if ( ! ( e.override_result_es_mask & RESULT_MISS_MASK ) )
+  if ( ( e.override_result_es_mask & RESULT_MISS_MASK ) )
   {
     this -> may_miss = e.result_es_mask & RESULT_MISS_MASK;
   }
@@ -634,12 +634,12 @@ void proc_attack_t::override_data( const special_effect_t& e )
 {
   super::override_data( e );
 
-  if ( ! ( e.override_result_es_mask & RESULT_DODGE_MASK ) )
+  if ( ( e.override_result_es_mask & RESULT_DODGE_MASK ) )
   {
     this -> may_dodge = e.result_es_mask & RESULT_DODGE_MASK;
   }
 
-  if ( ! ( e.override_result_es_mask & RESULT_PARRY_MASK ) )
+  if ( ( e.override_result_es_mask & RESULT_PARRY_MASK ) )
   {
     this -> may_parry = e.result_es_mask & RESULT_PARRY_MASK;
   }

@@ -4527,6 +4527,9 @@ struct icy_veins_t : public frost_mage_spell_t
     p() -> buffs.icy_veins -> trigger();
     if ( p() -> legendary.lady_vashjs_grasp )
     {
+      // Refreshing infinite ticking buff doesn't quite work, remove
+      // LVG manually and then trigger it again.
+      p() -> buffs.lady_vashjs_grasp -> expire();
       p() -> buffs.lady_vashjs_grasp -> trigger();
       // Trigger 1 stack of FoF when IV is triggered with LVG legendary,
       // This is independant of the tick action gains.
@@ -7597,7 +7600,7 @@ void mage_t::apl_fire()
   default_list -> add_action( mage_t::get_special_use_items( "pharameres_forbidden_grimoire", false ) );
   default_list -> add_action( mage_t::get_special_use_items( "kiljaedens_burning_wish", false ) );
 
-  default_list -> add_action( "call_action_list,name=combustion_phase,if=cooldown.combustion.remains<=action.rune_of_power.cast_time+(!talent.kindling.enabled*gcd)|buff.combustion.up" );
+  default_list -> add_action( "call_action_list,name=combustion_phase,if=cooldown.combustion.remains<=action.rune_of_power.cast_time+(!talent.kindling.enabled*gcd)&(!talent.firestarter.enabled|target.health.pct<90|active_enemies>=4|active_enemies>=2&talent.flame_patch.enabled)|buff.combustion.up" );
   default_list -> add_action( "call_action_list,name=rop_phase,if=buff.rune_of_power.up&buff.combustion.down" );
   default_list -> add_action( "call_action_list,name=standard_rotation" );
 

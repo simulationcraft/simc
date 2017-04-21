@@ -95,6 +95,12 @@ actions.generator+=/brutal_slash,if=combo_points<5&((raid_event.adds.exists&raid
 actions.generator+=/swipe_cat,if=combo_points<5&spell_targets.swipe_cat>=3
 actions.generator+=/shred,if=combo_points<5&(spell_targets.swipe_cat<3|talent.brutal_slash.enabled)
 
+actions.opener=rake,if=buff.prowl.up
+actions.opener+=/berserk,if=buff.savage_roar.up
+actions.opener+=/regrowth,if=combo_points=5&buff.bloodtalons.down
+actions.opener+=/rip,if=combo_points=5&buff.bloodtalons.up
+actions.opener+=/shred,if=combo_points<5&buff.savage_roar.up
+
 # Hard-cast a Healing Touch for Bloodtalons buff. Use Dash to re-enter Cat Form.
 actions.sbt_opener=regrowth,if=talent.bloodtalons.enabled&combo_points=5&!buff.bloodtalons.up&!dot.rip.ticking
 # Force use of Tiger's Fury before applying Rip.
