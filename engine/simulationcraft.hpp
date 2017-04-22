@@ -5978,6 +5978,8 @@ public:
 
   virtual void acquire_target( retarget_event_e /* event */, player_t* /* context */, player_t* /* candidate_target */ );
 
+  virtual void set_target( player_t* target );
+
   // ================
   // Static functions
   // ================
