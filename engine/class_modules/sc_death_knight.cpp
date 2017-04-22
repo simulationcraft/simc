@@ -484,6 +484,7 @@ public:
   // Cooldowns
   struct cooldowns_t {
     cooldown_t* antimagic_shell;
+    cooldown_t* army_of_the_dead;
     cooldown_t* avalanche;
     cooldown_t* bone_shield_icd;
     cooldown_t* dark_transformation;
@@ -513,6 +514,7 @@ public:
     action_t* thronebreaker; // Thronebreaker crystalline swords
     action_t* necrobomb;
     action_t* pestilence; // Armies of the Damned
+    action_t* t20_2pc_unholy;
   } active_spells;
 
   // Gains
@@ -831,6 +833,7 @@ public:
     range::fill( pets.army_ghoul, nullptr );
 
     cooldown.antimagic_shell = get_cooldown( "antimagic_shell" );
+    cooldown.army_of_the_dead = get_cooldown( "army_of_the_dead" );
     cooldown.avalanche       = get_cooldown( "avalanche" );
     cooldown.bone_shield_icd = get_cooldown( "bone_shield_icd" );
     cooldown.bone_shield_icd -> duration = timespan_t::from_seconds( 2.0 );
@@ -887,6 +890,7 @@ public:
   void      assess_damage_imminent( school_e, dmg_e, action_state_t* ) override;
   void      target_mitigation( school_e, dmg_e, action_state_t* ) override;
   void      do_damage( action_state_t* ) override;
+  bool      create_actions() override;
   action_t* create_action( const std::string& name, const std::string& options ) override;
   expr_t*   create_expression( action_t*, const std::string& name ) override;
   void      create_pets() override;
@@ -895,7 +899,7 @@ public:
   role_e    primary_role() const override;
   stat_e    convert_hybrid_stat( stat_e s ) const override;
   void      invalidate_cache( cache_e ) override;
-  double resource_loss( resource_e resource_type, double amount, gain_t* g = nullptr, action_t* a = nullptr ) override;
+  double    resource_loss( resource_e resource_type, double amount, gain_t* g = nullptr, action_t* a = nullptr ) override;
   void      merge( player_t& other ) override;
   void      analyze( sim_t& sim ) override;
   std::string default_potion() const override;
@@ -922,6 +926,8 @@ public:
   double    bone_shield_handler( const action_state_t* ) const;
 
   void      trigger_t20_4pc_frost( double consumed );
+  void      trigger_t20_2pc_unholy( const action_state_t* state );
+  void      trigger_t20_4pc_unholy( double consumed );
 
   unsigned  replenish_rune( unsigned n, gain_t* gain = nullptr );
 
@@ -2859,13 +2865,8 @@ void death_knight_melee_attack_t::trigger_necrobomb( const action_state_t* state
     return;
   }
 
-  if ( p() -> active_spells.necrobomb -> target != state -> target )
-  {
-    p() -> active_spells.necrobomb -> target_cache.is_valid = false;
-  }
-
-  p() -> active_spells.necrobomb -> target = state -> target;
-  p() -> active_spells.necrobomb -> schedule_execute();
+  p() -> active_spells.necrobomb -> set_target( state -> target );
+  p() -> active_spells.necrobomb -> execute();
 }
 
 // ==========================================================================
@@ -3119,6 +3120,19 @@ struct frozen_soul_t : public death_knight_spell_t
     m *= 1.0 + per_target_multiplier * p() -> rw_damage_targets.size();
 
     return m;
+  }
+};
+
+// Tier 20 Unholy 2 piece set bonus aoe explosion
+
+struct explosive_army_t : public death_knight_spell_t
+{
+  explosive_army_t( death_knight_t* p ) :
+    death_knight_spell_t( "explosive_army", p, p -> find_spell( 242224 ) )
+  {
+    background = true;
+    callbacks = false;
+    aoe = -1;
   }
 };
 
@@ -3501,12 +3515,7 @@ struct virulent_plague_t : public disease_t
 
     if ( rng().roll( data().effectN( 2 ).percent() ) )
     {
-      if ( explosion -> target != dot -> target )
-      {
-        explosion -> target_cache.is_valid = false;
-      }
-
-      explosion -> target = dot -> target;
+      explosion -> set_target( dot -> target );
       explosion -> schedule_execute();
     }
 
@@ -4150,6 +4159,8 @@ struct death_coil_t : public death_knight_spell_t
     {
       p() -> trigger_festering_wound( state, 1, true ); // TODO: Does this ignore ICD?
     }
+
+    p() -> trigger_t20_2pc_unholy( state );
   }
 };
 
@@ -4497,8 +4508,7 @@ struct epidemic_t : public death_knight_spell_t
 
         if ( sim -> target_non_sleeping_list.size() > 1 )
         {
-          aoe -> target_cache.is_valid = false;
-          aoe -> target = target;
+          aoe -> set_target( target );
           aoe -> execute();
         }
       }
@@ -5217,12 +5227,7 @@ struct outbreak_driver_t : public death_knight_spell_t
 
   void tick( dot_t* dot ) override
   {
-    if ( spread -> target != dot -> target )
-    {
-      spread -> target_cache.is_valid = false;
-    }
-
-    spread -> target = dot -> target;
+    spread -> set_target( dot -> target );
     spread -> schedule_execute();
   }
 };
@@ -6379,6 +6384,8 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
     _runes.consume( amount );
     // Ensure rune state is consistent with the actor resource state for runes
     assert( _runes.runes_full() == resources.current[ RESOURCE_RUNE ] );
+
+    trigger_t20_4pc_unholy( amount );
   }
 
   return actual_amount;
@@ -6423,6 +6430,64 @@ void death_knight_t::trigger_t20_4pc_frost( double consumed )
     cooldown.empower_rune_weapon -> adjust( -cd_adjust );
     cooldown.hungering_rune_weapon -> adjust( -cd_adjust );
     t20_4pc_frost -= sets.set( DEATH_KNIGHT_FROST, T20, B4 ) -> effectN( 2 ).base_value();
+  }
+}
+
+void death_knight_t::trigger_t20_4pc_unholy( double consumed )
+{
+  if ( ! sets.has_set_bonus( DEATH_KNIGHT_UNHOLY, T20, B4 ) )
+  {
+    return;
+  }
+
+  timespan_t cd_adjust = -timespan_t::from_seconds(
+      sets.set( DEATH_KNIGHT_UNHOLY, T20, B4 ) -> effectN( 1 ).base_value() / 10 );
+
+  while ( consumed > 0 )
+  {
+    cooldown.army_of_the_dead -> adjust( cd_adjust );
+    consumed--;
+  }
+}
+
+void death_knight_t::trigger_t20_2pc_unholy( const action_state_t* state )
+{
+  if ( ! sets.has_set_bonus( DEATH_KNIGHT_UNHOLY, T20, B2 ) )
+  {
+    return;
+  }
+
+  // Prefer Apocalypse ghouls over Army of the Dead ghouls. Note that we check that the pets
+  // are there (check non-null pointer for the first array entry). This is because if the user for
+  // some reason has no Apocalypse power (unlikely), or has not specified apocalypse to be used on
+  // the APL, the pets will not be created.
+  if ( artifact.apocalypse.rank() && pets.apocalypse_ghoul[ 0 ] )
+  {
+    for ( auto pet : pets.apocalypse_ghoul )
+    {
+      if ( ! pet -> is_sleeping() )
+      {
+        active_spells.t20_2pc_unholy -> set_target( state -> target );
+        active_spells.t20_2pc_unholy -> execute();
+        pet -> cast_pet() -> dismiss();
+        return; // Explosion done, bail out
+      }
+    }
+  }
+
+  // Look for an Army ghoul to explode
+  if ( pets.army_ghoul[ 0 ] )
+  {
+    for ( auto pet : pets.army_ghoul )
+    {
+      if ( ! pet -> is_sleeping() )
+      {
+        active_spells.t20_2pc_unholy -> set_target( state -> target );
+        active_spells.t20_2pc_unholy -> execute();
+        pet -> cast_pet() -> dismiss();
+        return; // Explosion done, bail out
+      }
+    }
   }
 }
 
@@ -6585,6 +6650,65 @@ void death_knight_t::trigger_death_march( const action_state_t* /* state */ )
 // ==========================================================================
 // Death Knight Character Definition
 // ==========================================================================
+
+// death_knight_t::create_actions ===========================================
+
+bool death_knight_t::create_actions()
+{
+  if ( talent.avalanche -> ok() )
+  {
+    active_spells.avalanche = new avalanche_t( this );
+  }
+
+  if ( spec.festering_wound -> ok() )
+  {
+    active_spells.festering_wound = new festering_wound_t( this );
+  }
+
+  if ( spec.outbreak -> ok() )
+  {
+    active_spells.virulent_plague = new virulent_plague_t( this );
+  }
+
+  if ( talent.bursting_sores -> ok() )
+  {
+    active_spells.bursting_sores = new bursting_sores_t( this );
+  }
+
+  if ( talent.mark_of_blood -> ok() )
+  {
+    active_spells.mark_of_blood = new mark_of_blood_heal_t( this );
+  }
+
+  if ( artifact.crystalline_swords.rank() )
+  {
+    active_spells.crystalline_swords = new crystalline_swords_t( "crystalline_swords",
+        this, find_spell( 205165 ) );
+  }
+
+  if ( artifact.the_shambler.rank() )
+  {
+    active_spells.necrobomb = new necrobomb_t( this );
+  }
+
+  if ( artifact.armies_of_the_damned.rank() )
+  {
+    active_spells.pestilence = new pestilence_t( this );
+  }
+
+  if ( artifact.thronebreaker.rank() )
+  {
+    active_spells.thronebreaker = new crystalline_swords_t( "crystalline_swords_thronebreaker",
+        this, find_spell( 243122 ) );
+  }
+
+  if ( sets.has_set_bonus( DEATH_KNIGHT_UNHOLY, T20, B2 ) )
+  {
+    active_spells.t20_2pc_unholy = new explosive_army_t( this );
+  }
+
+  return player_t::create_actions();
+}
 
 // death_knight_t::create_action  ===========================================
 
@@ -7023,52 +7147,6 @@ void death_knight_t::init_spells()
   fallen_crusader += find_spell( 53365 ) -> effectN( 1 ).percent();
   fallen_crusader *= 1.0 + artifact.the_darkest_crusade.percent();
 
-  if ( talent.avalanche -> ok() )
-  {
-    active_spells.avalanche = new avalanche_t( this );
-  }
-
-  if ( spec.festering_wound -> ok() )
-  {
-    active_spells.festering_wound = new festering_wound_t( this );
-  }
-
-  if ( spec.outbreak -> ok() )
-  {
-    active_spells.virulent_plague = new virulent_plague_t( this );
-  }
-
-  if ( talent.bursting_sores -> ok() )
-  {
-    active_spells.bursting_sores = new bursting_sores_t( this );
-  }
-
-  if ( talent.mark_of_blood -> ok() )
-  {
-    active_spells.mark_of_blood = new mark_of_blood_heal_t( this );
-  }
-
-  if ( artifact.crystalline_swords.rank() )
-  {
-    active_spells.crystalline_swords = new crystalline_swords_t( "crystalline_swords",
-        this, find_spell( 205165 ) );
-  }
-
-  if ( artifact.the_shambler.rank() )
-  {
-    active_spells.necrobomb = new necrobomb_t( this );
-  }
-
-  if ( artifact.armies_of_the_damned.rank() )
-  {
-    active_spells.pestilence = new pestilence_t( this );
-  }
-
-  if ( artifact.thronebreaker.rank() )
-  {
-    active_spells.thronebreaker = new crystalline_swords_t( "crystalline_swords_thronebreaker",
-        this, find_spell( 243122 ) );
-  }
 }
 
 // death_knight_t::default_apl_dps_precombat ================================
