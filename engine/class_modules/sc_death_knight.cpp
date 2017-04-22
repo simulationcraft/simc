@@ -1935,7 +1935,7 @@ struct army_pet_t : public base_ghoul_pet_t
           p() -> o() -> get_target_data( state -> target ) -> debuff.death -> trigger();
           break;
         case 1:
-          p() -> o() -> active_spells.pestilence -> target = state -> target;
+          p() -> o() -> active_spells.pestilence -> set_target( state -> target );
           p() -> o() -> active_spells.pestilence -> execute();
           break;
         default:
@@ -2338,7 +2338,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
 
       if ( result_is_hit( s -> result ) )
       {
-        p() -> ability.blood_plague -> target = s -> target;
+        p() -> ability.blood_plague -> set_target( s -> target );
         p() -> ability.blood_plague -> execute();
       }
     }
@@ -2356,7 +2356,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
 
       if ( result_is_hit( s -> result ) )
       {
-        p() -> ability.blood_plague -> target = s -> target;
+        p() -> ability.blood_plague -> set_target( s -> target );
         p() -> ability.blood_plague -> execute();
       }
     }
@@ -2803,7 +2803,7 @@ void death_knight_melee_attack_t::trigger_avalanche( const action_state_t* state
     return;
   }
 
-  p() -> active_spells.avalanche -> target = state -> target;
+  p() -> active_spells.avalanche -> set_target( state -> target );
   p() -> active_spells.avalanche -> schedule_execute();
 
   p() -> cooldown.avalanche -> start( p() -> talent.avalanche -> internal_cooldown() );
@@ -2838,7 +2838,7 @@ void death_knight_melee_attack_t::trigger_crystalline_swords( const action_state
     return;
   }
 
-  p() -> active_spells.crystalline_swords -> target = state -> target;
+  p() -> active_spells.crystalline_swords -> set_target( state -> target );
   // Two executes
   p() -> active_spells.crystalline_swords -> execute();
   p() -> active_spells.crystalline_swords -> execute();
@@ -3211,7 +3211,7 @@ struct melee_t : public death_knight_melee_attack_t
 
       if ( weapon && p() -> buffs.frozen_pulse -> up() )
       {
-        frozen_pulse -> target = s -> target;
+        frozen_pulse -> set_target( s -> target );
         frozen_pulse -> schedule_execute();
       }
 
@@ -3471,7 +3471,7 @@ struct frost_fever_t : public disease_t
     if ( p() -> artifact.hypothermia.rank() &&
          rng().roll( p() -> artifact.hypothermia.data().proc_chance() ) )
     {
-      hypothermia -> target = d -> target;
+      hypothermia -> set_target( d -> target );
       hypothermia -> execute();
     }
   }
@@ -3524,7 +3524,7 @@ struct virulent_plague_t : public disease_t
     {
       wandering_plague -> base_dd_min = dot -> state -> result_amount;
       wandering_plague -> base_dd_max = dot -> state -> result_amount;
-      wandering_plague -> target = dot -> target;
+      wandering_plague -> set_target( dot -> target );
       wandering_plague -> execute();
     }
   }
@@ -3569,7 +3569,7 @@ struct blood_boil_t : public death_knight_spell_t
 
     if ( p() -> buffs.dancing_rune_weapon -> check() )
     {
-      p() -> pets.dancing_rune_weapon -> ability.blood_boil -> target = execute_state -> target;
+      p() -> pets.dancing_rune_weapon -> ability.blood_boil -> set_target( execute_state -> target );
       p() -> pets.dancing_rune_weapon -> ability.blood_boil -> execute();
     }
 
@@ -3631,7 +3631,7 @@ struct blood_mirror_t : public death_knight_spell_t
     absorbed = state -> result_amount * data().effectN( 2 ).percent();
 
     damage -> base_dd_min = damage -> base_dd_max = absorbed;
-    damage -> target = state -> action -> player;
+    damage -> set_target( state -> action -> player );
     damage -> execute();
 
     return absorbed;
@@ -4028,7 +4028,7 @@ struct deaths_caress_t : public death_knight_spell_t
 
     if ( p() -> buffs.dancing_rune_weapon -> check() )
     {
-      p() -> pets.dancing_rune_weapon -> ability.deaths_caress -> target = execute_state -> target;
+      p() -> pets.dancing_rune_weapon -> ability.deaths_caress -> set_target( execute_state -> target );
       p() -> pets.dancing_rune_weapon -> ability.deaths_caress -> execute();
     }
   }
@@ -4355,7 +4355,7 @@ struct death_strike_t : public death_knight_melee_attack_t
 
     if ( p() -> buffs.dancing_rune_weapon -> check() )
     {
-      p() -> pets.dancing_rune_weapon -> ability.death_strike -> target = execute_state -> target;
+      p() -> pets.dancing_rune_weapon -> ability.death_strike -> set_target( execute_state -> target );
       p() -> pets.dancing_rune_weapon -> ability.death_strike -> execute();
     }
 
@@ -4503,7 +4503,7 @@ struct epidemic_t : public death_knight_spell_t
     {
       if ( td( target ) -> dot.virulent_plague -> is_ticking() )
       {
-        main -> target = target;
+        main -> set_target( target );
         main -> execute();
 
         if ( sim -> target_non_sleeping_list.size() > 1 )
@@ -4666,9 +4666,9 @@ struct frost_strike_t : public death_knight_melee_attack_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      mh -> target = execute_state -> target;
+      mh -> set_target( execute_state -> target );
       mh -> execute();
-      oh -> target = execute_state -> target;
+      oh -> set_target( execute_state -> target );
       oh -> execute();
 
       p() -> trigger_runic_empowerment( last_resource_cost );
@@ -4745,7 +4745,7 @@ struct heart_strike_t : public death_knight_melee_attack_t
 
     if ( p() -> buffs.dancing_rune_weapon -> check() )
     {
-      p() -> pets.dancing_rune_weapon -> ability.heart_strike -> target = execute_state -> target;
+      p() -> pets.dancing_rune_weapon -> ability.heart_strike -> set_target( execute_state -> target );
       p() -> pets.dancing_rune_weapon -> ability.heart_strike -> execute();
     }
 
@@ -4982,7 +4982,7 @@ struct marrowrend_t : public death_knight_melee_attack_t
 
     if ( p() -> buffs.dancing_rune_weapon -> check() )
     {
-      p() -> pets.dancing_rune_weapon -> ability.marrowrend -> target = execute_state -> target;
+      p() -> pets.dancing_rune_weapon -> ability.marrowrend -> set_target( execute_state -> target );
       p() -> pets.dancing_rune_weapon -> ability.marrowrend -> execute();
     }
 
@@ -5052,7 +5052,7 @@ struct frozen_obliteration_t : public death_knight_melee_attack_t
   void proxy_execute( const action_state_t* source_state )
   {
     double m = coeff;
-    target = source_state -> target;
+    set_target( source_state -> target );
 
     // Mastery has to be special cased here, since no other multipliers seem to work
     if ( p() -> mastery.frozen_heart -> ok() )
@@ -5125,10 +5125,10 @@ struct obliterate_t : public death_knight_melee_attack_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      mh -> target = execute_state -> target;
+      mh -> set_target( execute_state -> target );
       mh -> execute();
 
-      oh -> target = execute_state -> target;
+      oh -> set_target( execute_state -> target );
       oh -> execute();
 
       p() -> buffs.rime -> trigger();
@@ -5148,7 +5148,7 @@ struct obliterate_t : public death_knight_melee_attack_t
 
     if ( rng().roll( p() -> artifact.thronebreaker.data().proc_chance() ) )
     {
-      p() -> active_spells.thronebreaker -> target = execute_state -> target;
+      p() -> active_spells.thronebreaker -> set_target( execute_state -> target );
       p() -> active_spells.thronebreaker -> execute();
     }
 
@@ -5249,7 +5249,7 @@ struct outbreak_t : public death_knight_spell_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      spread -> target = execute_state -> target;
+      spread -> set_target( execute_state -> target );
       spread -> schedule_execute();
     }
   }
@@ -5518,7 +5518,7 @@ struct scourge_strike_t : public scourge_strike_base_t
 
     if ( result_is_hit( state -> result ) )
     {
-      scourge_strike_shadow -> target = state -> target;
+      scourge_strike_shadow -> set_target( state -> target );
       scourge_strike_shadow -> execute();
     }
   }
@@ -6576,14 +6576,14 @@ void death_knight_t::burst_festering_wound( const action_state_t* state, unsigne
       unsigned n_executes = std::min( n, as<unsigned>( td -> debuff.festering_wound -> check() ) );
       for ( unsigned i = 0; i < n_executes; ++i )
       {
-        dk -> active_spells.festering_wound -> target = target;
+        dk -> active_spells.festering_wound -> set_target( target );
         dk -> active_spells.festering_wound -> execute();
 
         // Don't unnecessarily call bursting sores in single target scenarios
         if ( dk -> talent.bursting_sores -> ok() &&
              dk -> active_spells.bursting_sores -> target_list().size() > 0 )
         {
-          dk -> active_spells.bursting_sores -> target = target;
+          dk -> active_spells.bursting_sores -> set_target( target );
           dk -> active_spells.bursting_sores -> execute();
         }
 
@@ -8426,19 +8426,19 @@ void death_knight_t::apply_diseases( action_state_t* state, unsigned diseases )
 {
   if ( diseases & DISEASE_BLOOD_PLAGUE )
   {
-    active_spells.blood_plague -> target = state -> target;
+    active_spells.blood_plague -> set_target( state -> target );
     active_spells.blood_plague -> execute();
   }
 
   if ( diseases & DISEASE_FROST_FEVER )
   {
-    active_spells.frost_fever -> target = state -> target;
+    active_spells.frost_fever -> set_target( state -> target );
     active_spells.frost_fever -> execute();
   }
 
   if ( diseases & DISEASE_VIRULENT_PLAGUE )
   {
-    active_spells.virulent_plague -> target = state -> target;
+    active_spells.virulent_plague -> set_target( state -> target );
     active_spells.virulent_plague -> execute();
   }
 }
