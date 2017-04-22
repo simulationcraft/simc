@@ -5441,6 +5441,7 @@ living_bomb_t::living_bomb_t( mage_t* p, const std::string& options_str,
 
   cooldown -> hasted = true;
   hasted_ticks       = true;
+  add_child( explosion );
 }
 
 timespan_t living_bomb_t::composite_dot_duration( const action_state_t* s ) const
