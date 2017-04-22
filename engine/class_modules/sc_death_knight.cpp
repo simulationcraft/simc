@@ -5349,7 +5349,7 @@ struct remorseless_winter_t : public death_knight_spell_t
 
 struct scourge_strike_base_t : public death_knight_melee_attack_t
 {
-  std::array<double, 6> instructors_chance;
+  std::array<double, 4> instructors_chance;
 
   scourge_strike_base_t( const std::string& name, death_knight_t* p, const spell_data_t* spell ) :
     death_knight_melee_attack_t( name, p, spell )
