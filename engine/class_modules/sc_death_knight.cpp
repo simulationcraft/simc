@@ -8736,7 +8736,7 @@ struct perseverance_of_the_ebon_martyr_t : public scoped_actor_callback_t<death_
   { }
 
   void manipulate( death_knight_t* p, const special_effect_t& e ) override
-  { p -> legendary.perseverance_of_the_ebon_martyr = e.driver(); std::cerr << "super" << std::endl; }
+  { p -> legendary.perseverance_of_the_ebon_martyr = e.driver(); }
 };
 
 struct death_knight_module_t : public module_t {
