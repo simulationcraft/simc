@@ -2610,6 +2610,15 @@ struct ambush_t : public rogue_attack_t
     }
 
     p() -> buffs.hidden_blade -> trigger();
+
+    if ( maybe_ptr( p() -> dbc.ptr ) && p() -> buffs.curse_of_the_dreadblades -> up() )
+    {
+      double n_cp = p() -> resources.max[ RESOURCE_COMBO_POINT ] - p() -> resources.current[ RESOURCE_COMBO_POINT ];
+      if ( n_cp > 0 )
+      {
+        p() -> resource_gain( RESOURCE_COMBO_POINT, n_cp, p() -> gains.curse_of_the_dreadblades, this );
+      }
+    }
   }
 };
 
@@ -3178,6 +3187,15 @@ struct ghostly_strike_t : public rogue_attack_t
     {
       p() -> trigger_combo_point_gain( p() -> buffs.broadsides -> data().effectN( 2 ).base_value(),
           p() -> gains.broadsides, this );
+    }
+
+    if ( p() -> buffs.curse_of_the_dreadblades -> up() )
+    {
+      double n_cp = p() -> resources.max[ RESOURCE_COMBO_POINT ] - p() -> resources.current[ RESOURCE_COMBO_POINT ];
+      if ( n_cp > 0 )
+      {
+        p() -> resource_gain( RESOURCE_COMBO_POINT, n_cp, p() -> gains.curse_of_the_dreadblades, this );
+      }
     }
   }
 
