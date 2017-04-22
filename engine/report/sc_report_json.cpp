@@ -6,8 +6,8 @@
 #include "sc_report.hpp"
 #include "interfaces/sc_js.hpp"
 #include "simulationcraft.hpp"
-#include "util/rapidjson/filewritestream.h"
 
+#include "util/rapidjson/filewritestream.h"
 #include "util/rapidjson/document.h"
 #include "util/rapidjson/stringbuffer.h"
 #include "util/rapidjson/prettywriter.h"
@@ -58,12 +58,12 @@ public:
   JsonOutput& operator=( T v )
   { v_ = v; return *this; }
 
-  // Assign a string to the current value (v_)
+  // Assign a string to the current value (v_), and have RapidJSON do the copy.
   JsonOutput& operator=( const char* v )
-  { v_ = StringRef( v ); return *this; }
+  { v_.SetString( v, d_.GetAllocator() ); return *this; }
 
   JsonOutput operator=( const std::string& v )
-  { v_ = StringRef( v.c_str() ); return *this; }
+  { v_.SetString( v.c_str(), d_.GetAllocator() ); return *this; }
 
   // Assign an external RapidJSON Value to the current value (v_)
   JsonOutput operator=( Value& v )
@@ -655,6 +655,33 @@ void stats_to_json( JsonOutput root, const player_t& p )
       }
     }
   } );
+}
+
+void gear_to_json( JsonOutput root, const player_t& p )
+{
+  for ( slot_e slot = SLOT_MIN; slot < SLOT_MAX; slot++ )
+  {
+    const item_t& item = p.items[ slot ];
+    if ( !item.active() || !item.has_stats() )
+    {
+      continue;
+    }
+    auto slotnode = root[ item.slot_name() ];
+
+    slotnode[ "name" ] = item.name_str;
+    slotnode[ "encoded_item" ] = item.encoded_item();
+    slotnode[ "ilevel" ] = item.item_level();
+
+    for ( size_t i = 0; i < sizeof_array( item.parsed.data.stat_val ); i++ )
+    {
+      auto val = item.stat_value( i );
+      if ( val <= 0)
+      {
+        continue;
+      }
+      slotnode[ util::stat_type_string( item.stat( i ) ) ] = val;
+    }
+  }
 }
 
 js::sc_js_t to_json( const stats_t& s )
@@ -1327,6 +1354,8 @@ void to_json( JsonOutput& arr, const player_t& p )
 
     stats_to_json( root[ "stats" ], p );
   }
+
+  gear_to_json( root[ "gear" ], p );
 }
 
 js::sc_js_t to_json( const player_t& p )
