@@ -500,6 +500,7 @@ public:
   void    trigger_holy_shield( action_state_t* s );
   void    trigger_painful_truths( action_state_t* s );
   void    trigger_tyrs_enforcer( action_state_t* s );
+  void    trigger_forbearance( player_t* target, bool update_multiplier = true );
   int     get_local_enemies( double distance ) const;
   double  get_forbearant_faithful_recharge_multiplier() const;
   bool    standing_in_consecration() const;
@@ -769,12 +770,14 @@ namespace buffs {
   {
     paladin_t* paladin;
 
-    forbearance_t( paladin_t* p, const char *name ) :
-      buff_t( buff_creator_t( p, name, p -> find_spell( 25771 ) ) ), paladin( p )
+    forbearance_t( player_t* p, const char *name ) :
+      buff_t( buff_creator_t( p, name, p -> find_spell( 25771 ) ) ),
+      paladin( nullptr )
     { }
 
-    forbearance_t( paladin_t* p, paladin_td_t *ap, const char *name ) :
-      buff_t( buff_creator_t( *ap, name, p -> find_spell( 25771 ) ) ), paladin( p )
+    forbearance_t( paladin_td_t* ap, const char *name ) :
+      buff_t( buff_creator_t( *ap, name, ap -> source -> find_spell( 25771 ) ) ),
+      paladin( debug_cast<paladin_t*>( ap -> source ) )
     { }
 
     void execute( int stacks, double value, timespan_t duration ) override
@@ -1194,9 +1197,7 @@ struct blessing_of_protection_t : public paladin_spell_t
       return;
 
     // apply forbearance, track locally for forbearant faithful & force recharge recalculation
-    target -> debuffs.forbearance -> trigger();
-    td( target ) -> buffs.forbearant_faithful -> trigger();
-    p() -> update_forbearance_recharge_multipliers();
+    p() -> trigger_forbearance( execute_state -> target );
   }
 
   virtual bool ready() override
@@ -1245,9 +1246,7 @@ struct blessing_of_spellwarding_t : public paladin_spell_t
       return;
 
     // apply forbearance, track locally for forbearant faithful & force recharge recalculation
-    target->debuffs.forbearance->trigger();
-    td(target)->buffs.forbearant_faithful->trigger();
-    p()->update_forbearance_recharge_multipliers();
+    p() -> trigger_forbearance( execute_state -> target );
   }
 
   virtual bool ready() override
@@ -1692,10 +1691,8 @@ struct divine_shield_t : public paladin_spell_t
     if ( p() -> artifact.endless_resolve.rank() )
       // But not if we have endless resolve!
       return;
-    timespan_t duration = p() -> debuffs.forbearance -> data().duration();
-    p() -> debuffs.forbearance -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration  );
-    // add ourselves to the target_data list for tracking of forbearant faithful
-    td( p() ) -> buffs.forbearant_faithful -> trigger();
+
+    p() -> trigger_forbearance( player, false );
   }
 
   double recharge_multiplier() const override
@@ -2332,9 +2329,7 @@ struct lay_on_hands_t : public paladin_heal_t
       return;
 
     // apply forbearance, track locally for forbearant faithful & force recharge recalculation
-    target -> debuffs.forbearance -> trigger();
-    td( target ) -> buffs.forbearant_faithful -> trigger();
-    p() -> update_forbearance_recharge_multipliers();
+    p() -> trigger_forbearance( execute_state -> target );
   }
 
   virtual bool ready() override
@@ -4224,7 +4219,7 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) :
   buffs.debuffs_judgment = buff_creator_t( *this, "judgment", paladin -> find_spell( 197277 ));
   buffs.judgment_of_light = buff_creator_t( *this, "judgment_of_light", paladin -> find_spell( 196941 ) );
   buffs.eye_of_tyr_debuff = buff_creator_t( *this, "eye_of_tyr", paladin -> find_class_spell( "Eye of Tyr" ) ).cd( timespan_t::zero() );
-  buffs.forbearant_faithful = new buffs::forbearance_t( paladin, this, "forbearant_faithful" );
+  buffs.forbearant_faithful = new buffs::forbearance_t( this, "forbearant_faithful" );
   buffs.blessed_hammer_debuff = buff_creator_t( *this, "blessed_hammer", paladin -> find_spell( 204301 ) );
 }
 
@@ -4351,6 +4346,21 @@ void paladin_t::trigger_tyrs_enforcer( action_state_t* s )
 
   active_tyrs_enforcer_proc -> target = s -> target;
   active_tyrs_enforcer_proc -> schedule_execute();
+}
+
+void paladin_t::trigger_forbearance( player_t* target, bool update_recharge_multipliers )
+{
+  auto buff = debug_cast<buffs::forbearance_t*>( target -> debuffs.forbearance );
+
+  buff -> paladin = this;
+  buff -> trigger();
+
+  get_target_data( target ) -> buffs.forbearant_faithful -> trigger();
+
+  if ( update_recharge_multipliers )
+  {
+    update_forbearance_recharge_multipliers();
+  }
 }
 
 int paladin_t::get_local_enemies( double distance ) const
@@ -6436,7 +6446,7 @@ struct paladin_module_t : public module_t
   {
     p -> buffs.beacon_of_light          = buff_creator_t( p, "beacon_of_light", p -> find_spell( 53563 ) );
     p -> buffs.blessing_of_sacrifice    = new buffs::blessing_of_sacrifice_t( p );
-    p -> debuffs.forbearance            = new buffs::forbearance_t( static_cast<paladin_t*>( p ), "forbearance" );
+    p -> debuffs.forbearance            = new buffs::forbearance_t( p, "forbearance" );
   }
 
   virtual void register_hotfixes() const override

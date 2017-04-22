@@ -165,8 +165,17 @@ include(source_files/QT_gui.pri)
 
 CONFIG(openssl) {
   DEFINES += SC_USE_OPENSSL
-  INCLUDEPATH += $$OPENSSL_INCLUDES
-  LIBS += -L$$OPENSSL_LIBS -lssleay32
+  !isEmpty(OPENSSL_INCLUDES) {
+    INCLUDEPATH += $$OPENSSL_INCLUDES
+  }
+
+  !isEmpty(OPENSSL_LIBS) {
+    LIBS += -L$$OPENSSL_LIBS
+  }
+
+  win32 {
+    LIBS += -lssleay32
+  }
 }
 
 CONFIG(to_install) {

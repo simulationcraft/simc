@@ -3647,3 +3647,14 @@ void action_t::activate()
     target_cache.is_valid = false;
   } );
 }
+
+// Change the target of the action, may require invalidation of target cache
+void action_t::set_target( player_t* new_target )
+{
+  if ( n_targets() != 0 && target != new_target )
+  {
+    target_cache.is_valid = false;
+  }
+
+  target = new_target;
+}

@@ -887,7 +887,7 @@ struct stormlash_callback_t : public dbc_proc_callback_t
 
       pool -> last_proc = listener -> sim -> current_time();
       spell -> base_dd_min = spell -> base_dd_max = pool -> damage * multiplier;
-      spell -> target = state -> target;
+      spell -> set_target( state -> target );
       spell -> execute();
     } );
   }
@@ -953,7 +953,7 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) :
                           } );
   debuff.storm_tempests = buff_creator_t( *this, "storm_tempests", p -> find_spell( 214265 ) )
                           .tick_callback( [ p ]( buff_t* b, int, timespan_t ) {
-                            p -> action.storm_tempests -> target = b -> player;
+                            p -> action.storm_tempests -> set_target( b -> player );
                             p -> action.storm_tempests -> execute();
                           } );
   debuff.lashing_flames = buff_creator_t( *this, "lashing_flames" )
@@ -1228,7 +1228,7 @@ public:
     }
 
     size_t spell_idx = ab::rng().range( 0, p() -> action.unleash_doom.size() );
-    p() -> action.unleash_doom[ spell_idx ] -> target = state -> target;
+    p() -> action.unleash_doom[ spell_idx ] -> set_target( state -> target );
     p() -> action.unleash_doom[ spell_idx ] -> schedule_execute();
     proc_ud -> occur();
   }
@@ -1395,7 +1395,7 @@ public:
     if ( p() -> action.electrocute &&
          rng().roll( p() -> sets.set( SHAMAN_ENHANCEMENT, T18, B2 ) -> effectN( 1 ).percent() ) )
     {
-      p() -> action.electrocute -> target = source_state -> target;
+      p() -> action.electrocute -> set_target( source_state -> target );
       p() -> action.electrocute -> schedule_execute();
     }
   }
@@ -1962,7 +1962,7 @@ struct spirit_wolf_t : public base_wolf_t
       if ( result_is_hit( state -> result ) && o -> buff.feral_spirit -> up() &&
            rng().roll( wf_driver -> proc_chance() ) )
       {
-        wf -> target = state -> target;
+        wf -> set_target( state -> target );
         wf -> schedule_execute();
         wf -> schedule_execute();
         wf -> schedule_execute();
@@ -2928,7 +2928,7 @@ struct earthen_rage_driver_t : public spell_t
     // Last tick will not cast a nuke like our normal dot system does
     if ( d -> remains() > timespan_t::zero() )
     {
-      nuke -> target = d -> target;
+      nuke -> set_target( d -> target );
       nuke -> schedule_execute();
     }
   }
@@ -3282,7 +3282,7 @@ struct lava_lash_t : public shaman_attack_t
 
     if ( result_is_hit( state -> result ) && p() -> buff.crash_lightning -> up() )
     {
-      cl -> target = state -> target;
+      cl -> set_target( state -> target );
       cl -> schedule_execute();
     }
 
@@ -3368,16 +3368,12 @@ struct stormstrike_base_t : public shaman_attack_t
 
       if ( p() -> action.storm_tempests )
       {
-        if ( execute_state -> target != p() -> action.storm_tempests -> target )
-        {
-          p() -> action.storm_tempests -> target_cache.is_valid = false;
-        }
         td( execute_state -> target ) -> debuff.storm_tempests -> trigger();
       }
 
       if ( ! stormflurry && p() -> buff.crash_lightning -> up() )
       {
-        cl -> target = execute_state -> target;
+        cl -> set_target( execute_state -> target );
         cl -> execute();
       }
 
@@ -4349,7 +4345,7 @@ struct lava_burst_t : public shaman_spell_t
     {
       if ( spreader && sim -> target_non_sleeping_list.size() > 1 )
       {
-        spreader -> target = state -> target;
+        spreader -> set_target( state -> target );
         spreader -> execute();
       }
 
@@ -4364,7 +4360,7 @@ struct lava_burst_t : public shaman_spell_t
       // Pristine Proto-Scale Girdle legendary
       if ( p() -> action.ppsg )
       {
-        p() -> action.ppsg -> target = state -> target;
+        p() -> action.ppsg -> set_target( state -> target );
         p() -> action.ppsg -> schedule_execute();
       }
     }
@@ -4926,7 +4922,7 @@ struct earthquake_damage_t : public shaman_spell_t
 
     if ( rng().roll( p() -> artifact.seismic_storm.data().proc_chance() ) )
     {
-      p() -> action.seismic_storm -> target = state -> target;
+      p() -> action.seismic_storm -> set_target( state -> target );
       p() -> action.seismic_storm -> execute();
     }
 
@@ -5647,7 +5643,7 @@ struct liquid_magma_totem_pulse_t : public totem_pulse_action_t
   {
     totem_pulse_action_t::impact( state );
 
-    globule -> target = state -> target;
+    globule -> set_target( state -> target );
     globule -> schedule_execute();
   }
 };
@@ -6476,7 +6472,7 @@ void shaman_t::trigger_lightning_shield( const action_state_t* state )
     return;
   }
 
-  action.lightning_shield -> target = state -> target;
+  action.lightning_shield -> set_target( state -> target );
   action.lightning_shield -> execute();
   attack -> proc_ls -> occur();
 }
@@ -6563,7 +6559,7 @@ void shaman_t::trigger_lightning_rod_damage( const action_state_t* state )
   // Lightning Rod targets, overriding base_dd_min/max with a different value (that would be used
   // for allt he scheduled damage execute events of Lightning Rod).
   range::for_each( lightning_rods, [ this, amount ]( player_t* t ) {
-    action.lightning_rod -> target = t;
+    action.lightning_rod -> set_target( t );
     action.lightning_rod -> execute();
   } );
 }
@@ -6661,7 +6657,7 @@ void shaman_t::trigger_windfury_weapon( const action_state_t* state )
       a = windfury_oh;
     }
 
-    a -> target = state -> target;
+    a -> set_target( state -> target );
     a -> schedule_execute();
     a -> schedule_execute();
     if ( sets.has_set_bonus( SHAMAN_ENHANCEMENT, PVP, B4 ) )
@@ -6741,7 +6737,7 @@ void shaman_t::trigger_flametongue_weapon( const action_state_t* state )
     return;
   }
 
-  flametongue -> target = state -> target;
+  flametongue -> set_target( state -> target );
   flametongue -> schedule_execute();
   attack -> proc_ft -> occur();
 }
@@ -6770,7 +6766,7 @@ void shaman_t::trigger_hailstorm( const action_state_t* state )
     return;
   }
 
-  hailstorm -> target = state -> target;
+  hailstorm -> set_target( state -> target );
   hailstorm -> schedule_execute();
   attack -> proc_fb -> occur();
 }

@@ -406,9 +406,10 @@ bool parse_items( player_t*  p,
     // which in many cases is very incorrect.
     if ( item_database::has_item_bonus_type( item, ITEM_BONUS_SCALING_2 ) )
     {
+      auto item_data = p -> dbc.item( item.parsed.data.id );
       item.parsed.drop_level = p -> true_level;
-      p -> sim -> errorf( "Player %s item '%s' uses drop-level based scaling, setting drop level to %u.",
-        p -> name(), item.name(), item.parsed.drop_level );
+      p -> sim -> errorf( "Player %s item '%s' in slot '%s' uses drop-level based scaling, setting drop level to %u.",
+        p -> name(), item_data ? item_data -> name : "unknown", item.slot_name(), item.parsed.drop_level );
     }
   }
 

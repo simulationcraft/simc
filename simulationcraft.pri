@@ -27,9 +27,19 @@ CONFIG(release, debug|release) {
 }
 
 CONFIG(openssl) {
-  DEFINES     += SC_USE_OPENSSL
-  INCLUDEPATH += $$OPENSSL_INCLUDES
-  LIBS        += -L$$OPENSSL_LIBS -lssleay32
+  DEFINES       += SC_USE_OPENSSL
+
+  !isEmpty(OPENSSL_INCLUDES) {
+    INCLUDEPATH += $$OPENSSL_INCLUDES
+  }
+
+  !isEmpty(OPENSSL_LIBS) {
+    LIBS        += -L$$OPENSSL_LIBS
+  }
+
+  win32 {
+    LIBS        += -lssleay32
+  }
 }
 
 contains(QMAKE_CXX, clang++)|contains(QMAKE_CXX, g++) {
@@ -43,7 +53,7 @@ contains(QMAKE_CXX, clang++)|contains(QMAKE_CXX, g++) {
 }
 
 unix|macx {
-  system(which -s git) {
+  exists(.git):system(which -s git) {
     DEFINES += SC_GIT_REV="\\\"$$system(git rev-parse --short HEAD)\\\""
   }
 }
@@ -64,10 +74,11 @@ win32 {
   LIBS += -lwininet -lshell32
   win32-msvc2013|win32-msvc2015 {
     QMAKE_CXXFLAGS_RELEASE += /Ot /MP
+    QMAKE_CXXFLAGS_WARN_ON += /w44800 /w44100 /w44065
   }
 
   # TODO: Mingw might want something more unixy here?
-  system(where /q git) {
+  exists(.git):system(where /q git) {
     DEFINES += SC_GIT_REV="\\\"$$system(git rev-parse --short HEAD)\\\""
   }
 

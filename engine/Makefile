@@ -57,7 +57,7 @@ MKDIR      = mkdir
 CXX        = g++
 CPP_FLAGS  = -Wall -Wextra -Woverloaded-virtual -W -I. -DSC_SHARED_DATA=\"$(SHARED_DATA)\" --std=c++0x -O3 -MMD -MP
 OPTS       =
-GIT        = $(shell which git)
+GIT        = $(shell [ -d ../.git ] && which git)
 
 LINK_LIBS  =
 
@@ -185,7 +185,8 @@ DEP_EXT = d
 SRC_OBJ := $(SRC_CPP:%.cpp=$(OBJ_DIR)$(PATHSEP)%.$(OBJ_EXT))
 SRC_DEPS := $(SRC_CPP:%.cpp=$(OBJ_DIR)$(PATHSEP)%.$(DEP_EXT))
 
-.PHONY:	all mostlyclean clean
+.PHONY: .FORCE all mostlyclean clean
+.FORCE:
 
 all: $(MODULE)
 
@@ -222,6 +223,12 @@ $(OBJ_DIR)$(PATHSEP)%.$(OBJ_EXT): %.cpp $(SRC_H)
 %.s: %.cpp $(SRC_H)
 	-@echo [$(MODULE)] Compiling $(notdir $<)
 	$(CXX) $(CPP_FLAGS) $(OPTS) -S $< -o $@
+
+# Force regeneration of sc_main.o on every recompilation to potntially get the
+# changed GIT shorthash into the binary
+sc_main.o: .FORCE
+
+report/sc_report_html_sim.o: .FORCE
 
 # cleanup targets
 mostlyclean:

@@ -20,7 +20,7 @@ win32 {
 }
 
 unix {
-LIBS += -lpthread
+  LIBS += -lpthread
 }
 
 # Deployment for Linux
