@@ -6,7 +6,7 @@
 #define SIMULATIONCRAFT_H
 
 #define SC_MAJOR_VERSION "720"
-#define SC_MINOR_VERSION "02"
+#define SC_MINOR_VERSION "03"
 #define SC_VERSION ( SC_MAJOR_VERSION "-" SC_MINOR_VERSION )
 #define SC_BETA 0
 #if SC_BETA
@@ -8375,5 +8375,46 @@ struct item_targetdata_initializer_t
   // Override to initialize the targetdata object.
   virtual void operator()( actor_target_data_t* ) const = 0;
 };
+
+namespace report
+{
+class buff_decorator_t : public spell_decorator_t<buff_t>
+{
+  using super = spell_decorator_t<buff_t>;
+
+protected:
+  std::vector<std::string> parms() const override;
+
+public:
+  buff_decorator_t( const buff_t* obj ) :
+    super( obj )
+  { }
+
+  buff_decorator_t( const buff_t& obj ) :
+    buff_decorator_t( &obj )
+  { }
+
+  // Buffs have pet names included in them
+  std::string url_name_prefix() const override;
+};
+
+class action_decorator_t : public spell_decorator_t<action_t>
+{
+  using super = spell_decorator_t<action_t>;
+
+protected:
+  std::vector<std::string> parms() const override;
+
+public:
+  action_decorator_t( const action_t* obj ) :
+    super( obj )
+  { }
+
+  action_decorator_t( const action_t& obj ) :
+    action_decorator_t( &obj )
+  { }
+};
+
+}
 
 #endif // SIMULATIONCRAFT_H

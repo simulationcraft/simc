@@ -367,33 +367,6 @@ const color::rgb& item_quality_color( const item_t& item )
       return color::POOR;
   }
 }
-
-bool find_affix( const std::string& name, const std::string& data_name,
-                 std::string& prefix, std::string& suffix )
-{
-  std::string tokenized_name = data_name;
-  util::tokenize( tokenized_name );
-
-  std::string::size_type affix_offset = name.find( tokenized_name );
-
-  // Add an affix to the name, if the name does not match the
-  // spell name. Affix is either the prefix- or suffix portion of the
-  // non matching parts of the stats name.
-  if ( affix_offset != std::string::npos && tokenized_name != name )
-  {
-    // Suffix
-    if ( affix_offset == 0 )
-      suffix = "&#160;(" + name.substr( tokenized_name.size() ) + ")";
-    // Prefix
-    else if ( affix_offset > 0 )
-      prefix = "(" + name.substr( 0, affix_offset ) + ")&#160;";
-  }
-  else if ( affix_offset == std::string::npos )
-    suffix = "&#160;(" + name + ")";
-
-  return !prefix.empty() || !suffix.empty();
-}
-
 }  // UNNAMED NAMESPACE ======================================================
 
 std::string report::pretty_spell_text( const spell_data_t& default_spell,
@@ -1304,44 +1277,6 @@ std::string report::decoration_domain( const sim_t& sim )
 #endif
 }
 
-std::string report::decorated_buff_name( const buff_t* buff )
-{
-  std::stringstream s;
-
-  std::string buff_name;
-  if ( buff->player->is_pet() )
-  {
-    buff_name += buff->player->name_str + ": ";
-  }
-  buff_name += buff->name_str;
-
-  if ( buff->sim->decorated_tooltips == false || buff->data().id() == 0 )
-  {
-    s << "<a href=\"#\">" << buff_name << "</a>";
-  }
-  else
-  {
-    std::string prefix, suffix;
-    find_affix( buff->name_str, buff->data().name_cstr(), prefix, suffix );
-
-    s << prefix << "<a href=\"http://" << decoration_domain( *buff->sim )
-      << ".wowdb.com/spells/" << buff->data().id();
-
-    if ( buff->item )
-    {
-      s << "?itemLevel=" << buff->item->item_level();
-    }
-    s << "\">";
-    if ( buff->player->is_pet() )
-    {
-      s << buff->player->name_str << ": ";
-    }
-    s << buff->data().name_cstr() << "</a>" << suffix;
-  }
-
-  return s.str();
-}
-
 std::string report::decorated_spell_name( const sim_t& sim,
                                           const spell_data_t& spell,
                                           const std::string& parms_str )
@@ -1446,32 +1381,6 @@ std::string report::decorated_item_name( const item_t* item )
   return s.str();
 }
 
-std::string report::decorated_action_name( const action_t* action,
-                                           const std::string& stats_name_str )
-{
-  std::stringstream s;
-
-  if ( action->sim->decorated_tooltips == false || action->data().id() == 0 )
-  {
-    s << "<a href=\"#\">" << stats_name_str << "</a>";
-  }
-  else
-  {
-    std::string prefix, suffix;
-    find_affix( stats_name_str, action->data().name_cstr(), prefix, suffix );
-
-    s << prefix << "<a href=\"http://" << decoration_domain( *action->sim )
-      << ".wowdb.com/spells/" << action->data().id();
-    if ( action->item )
-    {
-      s << "?itemLevel=" << action->item->item_level();
-    }
-    s << "\">" << action->data().name_cstr() << "</a>" << suffix;
-  }
-
-  return s.str();
-}
-
 std::vector<std::string> report::beta_warnings()
 {
   std::vector<std::string> s = {
@@ -1485,4 +1394,185 @@ std::vector<std::string> report::beta_warnings()
       "dramatically.",
       "Beta! Beta! Beta! Beta! Beta! Beta!"};
   return s;
+}
+
+std::string report::buff_decorator_t::url_name_prefix() const
+{
+  if ( m_obj -> source && m_obj -> source -> is_pet() )
+  {
+    return m_obj -> source -> name_str + ":&#160;";
+  }
+
+  return std::string();
+}
+
+std::vector<std::string> report::buff_decorator_t::parms() const
+{
+  std::vector<std::string> parms = super::parms();
+
+  if ( m_obj -> source && m_obj -> source -> specialization() != SPEC_NONE )
+  {
+    parms.push_back( "spec=" + util::to_string( m_obj -> source -> specialization() ) );
+  }
+
+  return parms;
+}
+
+std::vector<std::string> report::action_decorator_t::parms() const
+{
+  std::vector<std::string> parms = super::parms();
+
+  if ( m_obj -> player && m_obj -> player -> specialization() != SPEC_NONE )
+  {
+    parms.push_back( "spec=" + util::to_string( m_obj -> player -> specialization() ) );
+  }
+
+  return parms;
+}
+
+report::spell_data_decorator_t::spell_data_decorator_t( const player_t* obj, const spell_data_t* spell ) :
+  html_decorator_t(), m_sim( obj -> sim ), m_player( obj ), m_spell( spell ),
+  m_item( nullptr ), m_power( nullptr )
+{ }
+
+report::spell_data_decorator_t::spell_data_decorator_t( const player_t* obj, const artifact_power_t& power ) :
+  spell_data_decorator_t( obj, power.data() )
+{
+  artifact_power( power );
+}
+
+bool report::spell_data_decorator_t::can_decorate() const
+{
+  return m_sim -> decorated_tooltips && m_spell -> id() > 0;
+}
+
+std::string report::spell_data_decorator_t::url_name() const
+{ return m_spell -> name_cstr(); }
+
+std::string report::spell_data_decorator_t::token() const
+{
+  std::string token = m_spell -> name_cstr();
+  util::tokenize( token );
+  return token;
+}
+
+std::vector<std::string> report::spell_data_decorator_t::parms() const
+{
+  auto params = html_decorator_t::parms();
+
+  if ( m_player && m_player -> specialization() != SPEC_NONE )
+  {
+    params.push_back( "spec=" + util::to_string( m_player -> specialization() ) );
+  }
+
+  if ( m_item )
+  {
+    params.push_back( "itemLevel=" + util::to_string( m_item -> item_level() ) );
+  }
+
+  if ( m_power )
+  {
+    params.push_back( "artifactRank=" + util::to_string( m_power -> rank() ) );
+  }
+
+  return params;
+}
+
+std::string report::spell_data_decorator_t::base_url() const
+{
+  std::stringstream s;
+
+  s << "<a href=\"http://" << decoration_domain( *m_sim )
+    << ".wowdb.com/spells/" << m_spell -> id();
+
+  return s.str();
+}
+
+bool report::item_decorator_t::can_decorate() const
+{
+  return m_item -> sim -> decorated_tooltips && m_item -> parsed.data.id > 0;
+}
+
+std::string report::item_decorator_t::base_url() const
+{
+  std::stringstream s;
+
+  s << "<a "
+    << "style=\"color:" << item_quality_color( *m_item ) << ";\" "
+    << "href=\"http://" << decoration_domain( *m_item -> sim )
+    << ".wowdb.com/items/" << m_item -> parsed.data.id;
+
+  return s.str();
+}
+
+std::string report::item_decorator_t::token() const
+{
+  return m_item -> name();
+}
+
+std::string report::item_decorator_t::url_name() const
+{
+  return m_item -> full_name();
+}
+
+std::vector<std::string> report::item_decorator_t::parms() const
+{
+  auto params = html_decorator_t::parms();
+
+  if ( m_item -> parsed.enchant_id > 0 )
+  {
+    params.push_back( "enchantment=" + util::to_string( m_item -> parsed.enchant_id ) );
+  }
+
+  if ( m_item -> parsed.upgrade_level > 0 )
+  {
+    params.push_back( "upgradeNum=" + util::to_string( m_item -> parsed.upgrade_level ) );
+  }
+
+  std::stringstream gem_str;
+  for ( size_t i = 0, end =  m_item -> parsed.gem_id.size(); i < end; ++i )
+  {
+    if ( m_item -> parsed.gem_id[ i ] == 0 )
+    {
+      continue;
+    }
+
+    if ( gem_str.tellp() > 0 )
+    {
+      gem_str << ",";
+    }
+
+    gem_str << util::to_string( m_item -> parsed.gem_id[ i ] );
+
+    // Include relic bonus ids
+    if ( i < m_item -> parsed.relic_data.size() )
+    {
+      range::for_each( m_item -> parsed.relic_data[ i ], [ &gem_str ]( unsigned bonus_id ) {
+          gem_str << ":" << bonus_id;
+      } );
+    }
+  }
+
+  if ( gem_str.tellp() > 0 )
+  {
+    params.push_back( "gems=" + gem_str.str() );
+  }
+
+  std::stringstream bonus_str;
+  for ( size_t i = 0, end = m_item -> parsed.bonus_id.size(); i < end; ++i )
+  {
+    bonus_str << util::to_string( m_item -> parsed.bonus_id[ i ] );
+
+    if ( i < end - 1 )
+    {
+      bonus_str << ",";
+    }
+  }
+
+  if ( bonus_str.tellp() > 0 )
+  {
+    params.push_back( "bonusIDs=" + bonus_str.str() );
+  }
+
+  return params;
 }

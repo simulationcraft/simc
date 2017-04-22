@@ -2521,6 +2521,7 @@ struct arcane_barrage_t : public arcane_mage_spell_t
     base_aoe_multiplier *= data().effectN( 2 ).percent();
     base_multiplier *= 1.0 + p -> artifact.torrential_barrage.percent();
     cooldown -> hasted = true;
+    add_child( arcane_rebound );
   }
 
   virtual void execute() override
@@ -3614,6 +3615,7 @@ struct fireball_t : public fire_mage_spell_t
     triggers_ignite = true;
     base_multiplier *= 1.0 + p -> artifact.great_balls_of_fire.percent();
     base_execute_time *= 1.0 + p -> artifact.fire_at_will.percent();
+    add_child( conflagration_dot );
   }
 
   virtual timespan_t travel_time() const override
@@ -3743,6 +3745,7 @@ struct flamestrike_t : public fire_mage_spell_t
     triggers_ignite = true;
     triggers_pyretic_incantation = true;
     aoe = -1;
+    add_child( flame_patch );
 
     if ( p -> artifact.aftershocks.rank() )
     {
@@ -3963,6 +3966,7 @@ struct frost_bomb_t : public frost_mage_spell_t
     frost_mage_spell_t( "frost_bomb", p, p -> talents.frost_bomb )
   {
     parse_options( options_str );
+    stats -> add_child( p -> get_stats( "frost_bomb_explosion" ) );
   }
 
   virtual void execute() override
@@ -4590,6 +4594,7 @@ struct fire_blast_t : public fire_mage_spell_t
     if ( p -> artifact.blast_furnace.rank() )
     {
       blast_furnace = new blast_furnace_t( p );
+      add_child( blast_furnace );
     }
 
     base_crit += p -> spec.fire_blast_2 -> effectN( 1 ).percent();
@@ -4716,6 +4721,7 @@ living_bomb_t::living_bomb_t( mage_t* p, const std::string& options_str,
 
   cooldown -> hasted = true;
   hasted_ticks       = true;
+  add_child( explosion );
 }
 
 timespan_t living_bomb_t::composite_dot_duration( const action_state_t* s ) const
@@ -4810,6 +4816,7 @@ struct mark_of_aluneth_t : public arcane_mage_spell_t
     triggers_arcane_missiles = false;
     spell_power_mod.tick = p -> find_spell( 211088 ) -> effectN( 1 ).sp_coeff();
     hasted_ticks = false;
+    add_child( mark_explosion );
   }
   virtual void execute() override
   {
