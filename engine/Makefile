@@ -228,6 +228,8 @@ $(OBJ_DIR)$(PATHSEP)%.$(OBJ_EXT): %.cpp $(SRC_H)
 # changed GIT shorthash into the binary
 sc_main.o: .FORCE
 
+report/sc_report_html_sim.o: .FORCE
+
 # cleanup targets
 mostlyclean:
 	-@echo [$(MODULE)] Cleaning intermediate files
