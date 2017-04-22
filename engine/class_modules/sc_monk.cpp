@@ -4854,6 +4854,7 @@ struct touch_of_karma_t: public monk_melee_attack_t
     else
       interval_stddev = interval_stddev_opt;
 
+    trigger_gcd = timespan_t::zero();
     may_crit = may_miss = may_dodge = may_parry = false;
   }
 
