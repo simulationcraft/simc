@@ -1258,6 +1258,12 @@ struct rogue_attack_t : public melee_attack_t
       m *= 1.0 + p() -> talent.deeper_stratagem -> effectN( 4 ).percent();
     }
 
+    if ( maybe_ptr( p() -> dbc.ptr ) && p() -> buffs.broadsides -> up() &&
+         data().affected_by( p() -> buffs.broadsides -> data().effectN( 4 ) ))
+    {
+      m *= 1.0 + p() -> buffs.broadsides -> data().effectN( 4 ).percent();
+    }
+
     return m;
   }
 
