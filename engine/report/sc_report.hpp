@@ -423,43 +423,6 @@ public:
   }
 };
 
-class buff_decorator_t : public spell_decorator_t<buff_t>
-{
-  using super = spell_decorator_t<buff_t>;
-
-protected:
-  std::vector<std::string> parms() const override;
-
-public:
-  buff_decorator_t( const buff_t* obj ) :
-    super( obj )
-  { }
-
-  buff_decorator_t( const buff_t& obj ) :
-    buff_decorator_t( &obj )
-  { }
-
-  // Buffs have pet names included in them
-  std::string url_name_prefix() const override;
-};
-
-class action_decorator_t : public spell_decorator_t<action_t>
-{
-  using super = spell_decorator_t<action_t>;
-
-protected:
-  std::vector<std::string> parms() const override;
-
-public:
-  action_decorator_t( const action_t* obj ) :
-    super( obj )
-  { }
-
-  action_decorator_t( const action_t& obj ) :
-    action_decorator_t( &obj )
-  { }
-};
-
 // Generic spell data decorator, supports player, item, and artifact-power driven spell data
 class spell_data_decorator_t : public html_decorator_t<spell_data_decorator_t>
 {
