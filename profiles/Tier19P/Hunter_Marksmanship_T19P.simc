@@ -30,6 +30,7 @@ actions.precombat+=/windburst
 
 # Executed every time the actor is available.
 actions=auto_shot
+actions+=/counter_shot,if=target.debuff.casting.react
 actions+=/volley,toggle=on
 # Start being conservative with focus if expecting a Piercing Shot at the end of the current window.
 actions+=/variable,name=pooling_for_piercing,value=talent.piercing_shot.enabled&cooldown.piercing_shot.remains<5&lowest_vuln_within.5>0&lowest_vuln_within.5>cooldown.piercing_shot.remains&(buff.trueshot.down|spell_targets=1)
