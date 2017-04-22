@@ -6652,7 +6652,7 @@ public:
       std::string name_str = entry -> first;
       if ( a )
       {
-        name_str = report::decorated_action_name( a, a -> stats -> name_str );
+        name_str = report::action_decorator_t( a ).decorate();
       }
 
       std::string row_class_str = "";

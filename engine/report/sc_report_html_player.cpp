@@ -140,7 +140,7 @@ std::string output_action_name( const stats_t& s, const player_t* actor )
   std::string name;
   if ( a )
   {
-    name = report::decorated_action_name( a, s.name_str );
+    name = report::action_decorator_t( a ).decorate();
   }
   else
   {
@@ -940,7 +940,7 @@ void print_html_gear( report::sc_html_stream& os, const player_t& p )
         "</tr>\n",
         item.source_str.c_str(),
         util::inverse_tokenize( item.slot_name() ).c_str(),
-        report::decorated_item_name( &item ).c_str() );
+        report::item_decorator_t( item ).decorate().c_str() );
 
     std::string item_sim_desc =
         "ilevel: " + util::to_string( item.item_level() );
@@ -2748,7 +2748,7 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b,
   os << ">\n";
   if ( report_details )
   {
-    buff_name = report::decorated_buff_name( &b );
+    buff_name = report::buff_decorator_t( b ).decorate();
     os.format(
         "<td class=\"left\"><span class=\"toggle-details\">%s</span></td>\n",
         buff_name.c_str() );
@@ -3502,6 +3502,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os,
         unsigned spell_id = p.dbc.artifact_power_spell_id(
             p.specialization(), (unsigned)idx, total_rank );
         const spell_data_t* spell = p.dbc.spell( spell_id );
+        auto data = p.find_artifact_spell( spell -> name_cstr() );
 
         std::string rank_str;
         if ( p.artifact.points[ idx ].second > 0 )
@@ -3514,8 +3515,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os,
         {
           rank_str = util::to_string( +p.artifact.points[ idx ].first );
         }
-        os << "<li>" << ( spell ? report::decorated_spell_name(
-                                      sim, *spell, "artifactRank=" + rank_str )
+        os << "<li>" << ( spell ? report::spell_data_decorator_t( &p, data ).decorate()
                                 : artifact_powers[ idx ]->name );
         if ( artifact_powers[ idx ]->max_rank > 1 )
         {

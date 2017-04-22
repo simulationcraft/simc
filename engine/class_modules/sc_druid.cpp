@@ -9199,7 +9199,7 @@ public:
 
       if ( tf_exe_total > 0 || bt_exe_total > 0 || sr_exe_total > 0 )
       {
-        std::string name_str = report::decorated_action_name( stats -> action_list[ 0 ], stats -> name_str );
+        std::string name_str = report::action_decorator_t( stats -> action_list[ 0 ] ).decorate();
         std::string row_class_str = "";
         if ( ++n & 1 )
           row_class_str = " class=\"odd\"";
