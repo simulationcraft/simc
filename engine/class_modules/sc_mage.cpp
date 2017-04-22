@@ -5858,8 +5858,6 @@ struct phoenixs_flames_splash_t : public fire_mage_spell_t
   virtual void impact( action_state_t* s ) override
   {
     // PF cleave does not impact main target
-    // TODO: Target with chain_target == 0 will always be the same enemy,
-    // no matter what the original PF/PF_chain target was.
     if ( s -> chain_target == 0 )
     {
       return;
