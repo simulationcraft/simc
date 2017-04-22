@@ -1430,49 +1430,6 @@ std::vector<std::string> report::action_decorator_t::parms() const
   return parms;
 }
 
-template <typename T>
-bool report::spell_decorator_t<T>::can_decorate() const
-{
-  return this -> m_obj -> sim -> decorated_tooltips &&
-         this -> m_obj -> data().id() > 0;
-}
-
-template <typename T>
-std::string report::spell_decorator_t<T>::url_name() const
-{
-  return m_obj -> data().id() ? m_obj -> data().name_cstr() : m_obj -> name();
-}
-
-template <typename T>
-std::string report::spell_decorator_t<T>::token() const
-{
-  return m_obj -> name();
-}
-
-template <typename T>
-std::string report::spell_decorator_t<T>::base_url() const
-{
-  std::stringstream s;
-
-  s << "<a href=\"http://" << decoration_domain( *this -> m_obj -> sim )
-    << ".wowdb.com/spells/" << this -> m_obj -> data().id();
-
-  return s.str();
-}
-
-template <typename T>
-std::vector<std::string> report::spell_decorator_t<T>::parms() const
-{
-  auto parameters = super::parms();
-
-  if ( m_obj -> item )
-  {
-    parameters.push_back( "itemLevel=" + util::to_string( m_obj -> item -> item_level() ) );
-  }
-
-  return parameters;
-}
-
 report::spell_data_decorator_t::spell_data_decorator_t( const player_t* obj, const spell_data_t* spell ) :
   html_decorator_t(), m_sim( obj -> sim ), m_player( obj ), m_spell( spell ),
   m_item( nullptr ), m_power( nullptr )

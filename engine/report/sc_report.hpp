@@ -388,11 +388,39 @@ public:
     super(), m_obj( obj )
   { }
 
-  std::string base_url() const override;
-  bool can_decorate() const override;
-  std::string url_name() const override;
-  std::string token() const override;
-  std::vector<std::string> parms() const override;
+  std::string base_url() const override
+  {
+    std::stringstream s;
+
+    s << "<a href=\"http://" << decoration_domain( *this -> m_obj -> sim )
+      << ".wowdb.com/spells/" << this -> m_obj -> data().id();
+
+    return s.str();
+  }
+
+  bool can_decorate() const override
+  {
+    return this -> m_obj -> sim -> decorated_tooltips &&
+           this -> m_obj -> data().id() > 0;
+  }
+
+  std::string url_name() const override
+  { return m_obj -> data().id() ? m_obj -> data().name_cstr() : m_obj -> name(); }
+
+  std::string token() const override
+  { return m_obj -> name(); }
+
+  std::vector<std::string> parms() const override
+  {
+    auto parameters = super::parms();
+
+    if ( m_obj -> item )
+    {
+      parameters.push_back( "itemLevel=" + util::to_string( m_obj -> item -> item_level() ) );
+    }
+
+    return parameters;
+  }
 };
 
 class buff_decorator_t : public spell_decorator_t<buff_t>
