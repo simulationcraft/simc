@@ -53,7 +53,7 @@ contains(QMAKE_CXX, clang++)|contains(QMAKE_CXX, g++) {
 }
 
 unix|macx {
-  system(which -s git) {
+  exists(.git):system(which -s git) {
     DEFINES += SC_GIT_REV="\\\"$$system(git rev-parse --short HEAD)\\\""
   }
 }
@@ -78,7 +78,7 @@ win32 {
   }
 
   # TODO: Mingw might want something more unixy here?
-  system(where /q git) {
+  exists(.git):system(where /q git) {
     DEFINES += SC_GIT_REV="\\\"$$system(git rev-parse --short HEAD)\\\""
   }
 

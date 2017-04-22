@@ -57,7 +57,7 @@ MKDIR      = mkdir
 CXX        = g++
 CPP_FLAGS  = -Wall -Wextra -Woverloaded-virtual -W -I. -DSC_SHARED_DATA=\"$(SHARED_DATA)\" --std=c++0x -O3 -MMD -MP
 OPTS       =
-GIT        = $(shell which git)
+GIT        = $(shell [ -d ../.git ] && which git)
 
 LINK_LIBS  =
 
