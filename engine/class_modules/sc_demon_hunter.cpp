@@ -6767,11 +6767,11 @@ void demon_hunter_t::apl_havoc()
     "&(!variable.waiting_for_nemesis|cooldown.nemesis.remains<10)&(!variable.waiting_for_chaos_blades|cooldown.chaos_blades.remains<6)",
     "\"Getting ready to use meta\" conditions, this is used in a few places." );
   def -> add_action( "variable,name=blade_dance,value=talent.first_blood.enabled|set_bonus.tier20_2pc"
-    "|spell_targets.blade_dance1>=3+(talent.chaos_cleave.enabled*2)",
+    "|spell_targets.blade_dance1>=3+(talent.chaos_cleave.enabled*3)",
     "Blade Dance conditions. Always if First Blood is talented or the T20 2pc set bonus,"
     " otherwise at 5+ targets with Chaos Cleave or 3+ targets without." );
   def -> add_action( "variable,name=pooling_for_blade_dance,value=variable.blade_dance&"
-    "fury-40<35-talent.first_blood.enabled*20&(spell_targets.blade_dance1>=3+(talent.chaos_cleave.enabled*2))",
+    "fury-40<35-talent.first_blood.enabled*20&(spell_targets.blade_dance1>=3+(talent.chaos_cleave.enabled*3))",
     "Blade Dance pooling condition, so we don't spend too much fury when we need it soon. No need"
     " to pool on\n# single target since First Blood already makes it cheap enough and delaying it a"
     " tiny bit isn't a big deal." );
