@@ -1638,9 +1638,31 @@ void item::pharameres_forbidden_grimoire( special_effect_t& effect )
       background = may_crit = true;
       aoe = -1;
       base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item );
-      if ( effect.player -> type == ( WARRIOR || ROGUE || PALADIN || DEMON_HUNTER || DEATH_KNIGHT || MONK ) ||
-           effect.player -> specialization() == ( HUNTER_SURVIVAL || SHAMAN_ENHANCEMENT || DRUID_FERAL || DRUID_GUARDIAN ) ) // Melee users always deal half damage even if they run 20 yards out to use this trinket. 
-        base_multiplier = 0.5;
+      // Melee users always deal half damage even if they run 20 yards out to use this trinket. 
+      switch ( effect.player->type )
+      {
+        case WARRIOR:
+        case ROGUE:
+        case PALADIN:
+        case DEMON_HUNTER:
+        case DEATH_KNIGHT:
+        case MONK:
+          base_multiplier *= 0.5;
+          break;
+        default:
+          switch ( effect.player->specialization() )
+          {
+            case HUNTER_SURVIVAL:
+            case SHAMAN_ENHANCEMENT:
+            case DRUID_FERAL:
+            case DRUID_GUARDIAN:
+              base_multiplier *= 0.5;
+              break;
+            default:
+              break;
+          }
+          break;
+      }
     }
 
     double composite_target_multiplier( player_t* t ) const override
