@@ -1127,9 +1127,9 @@ timespan_t runes_t::time_to_regen( unsigned n_runes ) const
     return regenerating_runes[ n_unsatisfied - 1 ] -> event -> remains();
   }
 
-  // Otherwise, it's going to be the remaining regen time of the N - 1th rune, plus the regen time
-  // of a depleted rune.
-  return regenerating_runes[ n_unsatisfied - 1 ] -> event -> remains() +
+  // Otherwise, the time is going to be the highest rune regen time plus the time it takes to regen
+  // a depleted rune
+  return regenerating_runes.back() -> event -> remains() +
          timespan_t::from_seconds( 1 / dk -> runes_per_second() );
 }
 
