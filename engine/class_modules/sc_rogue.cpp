@@ -397,6 +397,7 @@ struct rogue_t : public player_t
     // Outlaw
     const spell_data_t* blade_flurry;
     const spell_data_t* combat_potency;
+    const spell_data_t* restless_blades;
     const spell_data_t* roll_the_bones;
     const spell_data_t* ruthlessness;
     const spell_data_t* saber_slash;
@@ -766,6 +767,7 @@ struct rogue_t : public player_t
   void trigger_surge_of_toxins( const action_state_t* );
   void trigger_poison_knives( const action_state_t* );
   void trigger_true_bearing( const action_state_t* );
+  void trigger_restless_blades( const action_state_t* );
   void trigger_exsanguinate( const action_state_t* );
   void trigger_relentless_strikes( const action_state_t* );
   void trigger_insignia_of_ravenholdt( action_state_t* );
@@ -2694,6 +2696,8 @@ struct between_the_eyes_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
+    p() -> trigger_restless_blades( execute_state );
+
     if ( p() -> buffs.true_bearing -> up() )
     {
       p() -> trigger_true_bearing( execute_state );
@@ -3716,6 +3720,8 @@ struct run_through_t: public rogue_attack_t
       p() -> greed -> schedule_execute();
     }
 
+    p() -> trigger_restless_blades( execute_state );
+
     if ( p() -> buffs.true_bearing -> up() )
     {
       p() -> trigger_true_bearing( execute_state );
@@ -3999,6 +4005,8 @@ struct roll_the_bones_t : public rogue_attack_t
     timespan_t d = ( cast_state( execute_state ) -> cp + 1 ) * p() -> buffs.roll_the_bones -> data().duration();
 
     p() -> buffs.roll_the_bones -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, d );
+
+    p() -> trigger_restless_blades( execute_state );
 
     if ( p() -> buffs.true_bearing -> up() )
     {
@@ -5992,6 +6000,27 @@ void rogue_t::trigger_true_bearing( const action_state_t* state )
   cooldowns.death_from_above -> adjust( v, false );
 }
 
+void rogue_t::trigger_restless_blades( const action_state_t* state )
+{
+  if ( ! maybe_ptr( dbc.ptr ) )
+    return;
+
+  timespan_t v = timespan_t::from_seconds( spec.restless_blades -> effectN( 1 ).base_value() / 10.0 );
+  v *= - actions::rogue_attack_t::cast_state( state ) -> cp;
+
+  // Abilities
+  cooldowns.adrenaline_rush -> adjust( v, false );
+  cooldowns.between_the_eyes -> adjust( v, false );
+  cooldowns.sprint -> adjust( v, false );
+  cooldowns.vanish -> adjust( v, false );
+  // Talents
+  cooldowns.grappling_hook -> adjust( v, false );
+  cooldowns.cannonball_barrage -> adjust( v, false );
+  cooldowns.killing_spree -> adjust( v, false );
+  cooldowns.marked_for_death -> adjust( v, false );
+  cooldowns.death_from_above -> adjust( v, false );
+}
+
 void do_exsanguinate( dot_t* dot, double coeff )
 {
   if ( ! dot -> is_ticking() )
@@ -7692,6 +7721,7 @@ void rogue_t::init_spells()
   // Outlaw
   spec.blade_flurry         = find_specialization_spell( "Blade Flurry" );
   spec.combat_potency       = find_specialization_spell( "Combat Potency" );
+  spec.restless_blades      = find_specialization_spell( "Restless Blades" );
   spec.roll_the_bones       = find_specialization_spell( "Roll the Bones" );
   spec.ruthlessness         = find_specialization_spell( "Ruthlessness" );
   spec.saber_slash          = find_specialization_spell( "Saber Slash" );
