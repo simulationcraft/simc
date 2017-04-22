@@ -338,7 +338,21 @@ void stats_t::analyze()
   ttpt = num_ticks.mean() ? total_tick_time.mean() / num_ticks.mean() : 0.0;
   etpe = num_executes.mean() ? ( total_execute_time.mean() + ( channeled ? total_tick_time.mean() : 0.0 ) ) / num_executes.mean() : 0.0;
 
-  timeline_amount.adjust( sim );
+  if ( ! sim.single_actor_batch )
+  {
+    timeline_amount.adjust( sim );
+  }
+  else
+  {
+    if ( player -> is_pet() )
+    {
+      timeline_amount.adjust( player -> cast_pet() -> owner -> collected_data.fight_length );
+    }
+    else
+    {
+      timeline_amount.adjust( player -> collected_data.fight_length );
+    }
+  }
 }
 
 // stats_results_t::merge ===================================================
