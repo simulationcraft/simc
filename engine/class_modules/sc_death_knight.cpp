@@ -1706,6 +1706,7 @@ struct ghoul_pet_t : public dt_pet_t
     gnaw_t( ghoul_pet_t* player, const std::string& options_str ) :
       super( player, "gnaw", player -> find_spell( 91800 ), options_str, false )
     { }
+    /*
     void execute() override
     {
       dt_melee_ability_t::execute();
@@ -1714,6 +1715,7 @@ struct ghoul_pet_t : public dt_pet_t
         p() -> o() -> buffs.sephuzs_secret -> trigger();
       }
     }
+    */
   };
 
   struct monstrous_blow_t : public dt_melee_ability_t<ghoul_pet_t>
@@ -1723,6 +1725,7 @@ struct ghoul_pet_t : public dt_pet_t
     {
       cooldown = player -> get_cooldown( "gnaw" ); // Shares CD with Gnaw
     }
+    /*
     void execute() override
     {
       dt_melee_ability_t::execute();
@@ -1731,6 +1734,7 @@ struct ghoul_pet_t : public dt_pet_t
         p() -> o() -> buffs.sephuzs_secret -> trigger();
       }
     }
+    */
   };
 
   struct sweeping_claws_t : public dt_melee_ability_t<ghoul_pet_t>
@@ -1806,6 +1810,7 @@ struct sludge_belcher_pet_t : public dt_pet_t
       super( player, "smash", player -> find_spell( 212332 ), options_str, false )
     { }
 
+    /*
     void execute() override
     {
       dt_melee_ability_t::execute();
@@ -1814,6 +1819,7 @@ struct sludge_belcher_pet_t : public dt_pet_t
         p() -> o() -> buffs.sephuzs_secret -> trigger();
       }
     }
+    */
   };
 
   struct vile_gas_t : public dt_melee_ability_t<sludge_belcher_pet_t>
@@ -1845,6 +1851,8 @@ struct sludge_belcher_pet_t : public dt_pet_t
     {
       cooldown = player -> get_cooldown( "smash" ); // Shares CD with Smash
     }
+
+    /*
     void execute() override
     {
       dt_melee_ability_t::execute();
@@ -1853,6 +1861,7 @@ struct sludge_belcher_pet_t : public dt_pet_t
         p() -> o() -> buffs.sephuzs_secret -> trigger();
       }
     }
+    */
   };
 
   sludge_belcher_pet_t( death_knight_t* owner ) : dt_pet_t( owner, "sludge_belcher" )
