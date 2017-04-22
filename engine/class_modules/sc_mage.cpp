@@ -709,7 +709,7 @@ struct mage_pet_spell_t : public spell_t
 
   virtual void schedule_execute( action_state_t* execute_state ) override
   {
-    target = o()->current_target;
+    set_target( o() -> current_target );
 
     spell_t::schedule_execute( execute_state );
   }
@@ -734,7 +734,7 @@ struct mage_pet_melee_attack_t : public melee_attack_t
 
   virtual void schedule_execute( action_state_t* execute_state ) override
   {
-    target = o()->current_target;
+    set_target( o() -> current_target );
 
     melee_attack_t::schedule_execute( execute_state );
   }
@@ -1557,7 +1557,7 @@ struct cinder_impact_event_t : public event_t
 
   void execute() override
   {
-    cinder -> target = target;
+    cinder -> set_target( target );
     cinder -> execute();
   }
 };
@@ -2807,7 +2807,7 @@ struct ignite_t : public residual_action_t
     if ( p() -> talents.conflagration -> ok() &&
          rng().roll( p() -> talents.conflagration -> effectN( 1 ).percent() ) )
     {
-      conflagration -> target = dot -> target;
+      conflagration -> set_target( dot -> target );
       conflagration -> execute();
     }
 
@@ -2815,7 +2815,7 @@ struct ignite_t : public residual_action_t
          rng().roll( p() -> artifact.phoenix_reborn.data().proc_chance() )
          && phoenix_reborn -> icd -> up() )
     {
-      phoenix_reborn -> target = dot -> target;
+      phoenix_reborn -> set_target( dot -> target );
       phoenix_reborn -> execute();
     }
   }
@@ -2911,7 +2911,7 @@ struct arcane_barrage_t : public arcane_mage_spell_t
 
     if ( p() -> artifact.arcane_rebound.rank() && ( s -> n_targets > 2 ) && ( s -> chain_target == 0 ) )
     {
-      arcane_rebound -> target = s -> target;
+      arcane_rebound -> set_target( s -> target );
       arcane_rebound -> execute();
     }
   }
@@ -3198,7 +3198,7 @@ struct arcane_explosion_t : public arcane_mage_spell_t
     {
       if ( p() -> buffs.time_and_space -> check() )
       {
-        arcane_explosion_echo -> target = execute_state -> target;
+        arcane_explosion_echo -> set_target( execute_state -> target );
         arcane_explosion_echo -> execute();
         p() -> buffs.time_and_space -> trigger();
       }
@@ -4114,7 +4114,7 @@ struct evocation_t : public arcane_mage_spell_t
     {
       double explosion_amount = mana_gained *
                                 p() -> artifact.aegwynns_ascendance.percent();
-      aegwynns_ascendance -> target = d -> target;
+      aegwynns_ascendance -> set_target( d -> target );
       aegwynns_ascendance -> base_dd_max = explosion_amount;
       aegwynns_ascendance -> base_dd_min = explosion_amount;
       aegwynns_ascendance -> execute();
@@ -4182,7 +4182,7 @@ struct fireball_t : public fire_mage_spell_t
       }
       if ( p() -> talents.conflagration -> ok() )
       {
-        conflagration_dot -> target = s -> target;
+        conflagration_dot -> set_target ( s -> target );
         conflagration_dot -> execute();
       }
     }
@@ -4537,7 +4537,7 @@ struct flurry_t : public frost_mage_spell_t
   void tick( dot_t* d ) override
   {
     frost_mage_spell_t::tick( d );
-    flurry_bolt -> target = d -> target;
+    flurry_bolt -> set_target( d -> target );
     flurry_bolt -> execute();
   }
 };
@@ -5145,7 +5145,7 @@ struct ice_lance_t : public frost_mage_spell_t
     if ( result_is_hit( s -> result ) && fss -> frozen() &&
          td( s -> target ) -> debuffs.frost_bomb -> check() )
     {
-      frost_bomb_explosion -> target = s -> target;
+      frost_bomb_explosion -> set_target( s -> target );
       frost_bomb_explosion -> execute();
     }
   }
@@ -5335,7 +5335,7 @@ struct fire_blast_t : public fire_mage_spell_t
       if ( p() -> rng().roll( pyrosurge_chance ) )
       {
 
-        pyrosurge_flamestrike -> target = s -> target;
+        pyrosurge_flamestrike -> set_target( s -> target );
         pyrosurge_flamestrike -> execute();
       }
 
@@ -5348,7 +5348,7 @@ struct fire_blast_t : public fire_mage_spell_t
 
       if ( p() -> artifact.blast_furnace.rank() )
       {
-        blast_furnace -> target = s -> target;
+        blast_furnace -> set_target( s -> target );
         blast_furnace -> execute();
       }
     }
@@ -5416,7 +5416,7 @@ void living_bomb_explosion_t::impact( action_state_t* s )
         child_lb -> name(), s -> target -> name() );
     }
 
-    child_lb -> target = s -> target;
+    child_lb -> set_target( s -> target );
     child_lb -> base_costs[ RESOURCE_MANA ] = 0;
     child_lb -> execute();
   }
@@ -5454,7 +5454,7 @@ void living_bomb_t::last_tick( dot_t* d )
 {
   fire_mage_spell_t::last_tick( d );
 
-  explosion -> target = d -> target;
+  explosion -> set_target( d -> target );
   explosion -> execute();
 }
 
@@ -5567,7 +5567,7 @@ struct mark_of_aluneth_t : public arcane_mage_spell_t
   {
     arcane_mage_spell_t::last_tick( d );
 
-    mark_explosion -> target = d -> target;
+    mark_explosion -> set_target( d -> target );
     mark_explosion -> execute();
   }
 };
@@ -5674,7 +5674,7 @@ struct meteor_t : public fire_mage_spell_t
     base_tick_time = timespan_t::from_seconds( 2 );
 
     fire_mage_spell_t::impact( s );
-    meteor_impact -> target = s -> target;
+    meteor_impact -> set_target( s -> target );
     meteor_impact -> execute();
     base_tick_time = actual_tick_time;
   }
@@ -5682,7 +5682,7 @@ struct meteor_t : public fire_mage_spell_t
   void tick( dot_t* d ) override
   {
     fire_mage_spell_t::tick( d );
-    meteor_burn -> target = d -> target;
+    meteor_burn -> set_target( d -> target );
     meteor_burn -> execute();
   }
 };
@@ -5916,7 +5916,7 @@ struct strafing_run_t : public fire_mage_spell_t
     if ( result_is_hit( s -> result ) )
     {
       phoenixs_flames_splash -> chain_number = chain_number;
-      phoenixs_flames_splash -> target = s -> target;
+      phoenixs_flames_splash -> set_target( s -> target );
       phoenixs_flames_splash -> execute();
     }
   }
@@ -5985,7 +5985,7 @@ struct phoenixs_flames_t : public fire_mage_spell_t
     if ( p() -> artifact.strafing_run.rank() && s -> chain_target > 0 )
     {
       strafing_run_chain -> chain_number = s -> chain_target;
-      strafing_run_chain -> target = s -> target;
+      strafing_run_chain -> set_target( s -> target );
       strafing_run_chain -> execute();
       return;
     }
@@ -5995,7 +5995,7 @@ struct phoenixs_flames_t : public fire_mage_spell_t
     if ( result_is_hit( s -> result ) )
     {
       phoenixs_flames_splash -> chain_number = s -> chain_target;
-      phoenixs_flames_splash -> target = s -> target;
+      phoenixs_flames_splash -> set_target( s -> target );
       phoenixs_flames_splash -> execute();
     }
   }
@@ -7091,7 +7091,7 @@ void mage_spell_t::trigger_unstable_magic( action_state_t* s )
 
   if ( p() -> rng().roll( um_proc_rate ) )
   {
-    p() -> unstable_magic_explosion -> target = s -> target;
+    p() -> unstable_magic_explosion -> set_target( s -> target );
     p() -> unstable_magic_explosion -> base_dd_max = s -> result_amount;
     p() -> unstable_magic_explosion -> base_dd_min = s -> result_amount;
     p() -> unstable_magic_explosion -> execute();
@@ -7141,7 +7141,7 @@ struct freeze_t : public action_t
   {
     assert( action );
 
-    action -> target = target;
+    action -> set_target( target );
     action -> execute();
   }
 
@@ -7626,7 +7626,7 @@ mage_t::~mage_t()
 void mage_t::trigger_touch_of_the_magi( buffs::touch_of_the_magi_t* buff )
 {
 
-  touch_of_the_magi_explosion -> target = buff -> player;
+  touch_of_the_magi_explosion -> set_target( buff -> player );
   touch_of_the_magi_explosion -> base_dd_max = buff -> accumulated_damage;
   touch_of_the_magi_explosion -> base_dd_min = buff -> accumulated_damage;
   touch_of_the_magi_explosion -> execute();
