@@ -6796,7 +6796,7 @@ void demon_hunter_t::apl_havoc()
   demonic->add_action(this, spec.death_sweep, "death_sweep", "if=variable.blade_dance");
   demonic->add_talent(this, "Fel Eruption");
   demonic->add_action(this, artifact.fury_of_the_illidari, "fury_of_the_illidari",
-    "if=(active_enemies>desired_targets|raid_event.adds.in>55)&(!talent.momentum.enabled|buff.momentum.up)");
+    "if=(active_enemies>desired_targets)|(raid_event.adds.in>55&(!talent.momentum.enabled|buff.momentum.up))");
   demonic->add_action(this, "Blade Dance", "if=variable.blade_dance&cooldown.eye_beam.remains>5&!cooldown.metamorphosis.ready");
   demonic->add_action(this, "Throw Glaive", "if=talent.bloodlet.enabled&spell_targets>=2&"
     "(!talent.master_of_the_glaive.enabled|!talent.momentum.enabled|buff.momentum.up)&"
@@ -6833,8 +6833,8 @@ void demon_hunter_t::apl_havoc()
   normal->add_action(this, "Fel Rush", "if=charges=2&!talent.momentum.enabled&!talent.fel_mastery.enabled");
   normal->add_talent(this, "Fel Eruption");
   normal->add_action(this, artifact.fury_of_the_illidari, "fury_of_the_illidari",
-    "if=(active_enemies>desired_targets|raid_event.adds.in>55)&(!talent.momentum.enabled|buff.momentum.up)&"
-    "(!talent.chaos_blades.enabled|buff.chaos_blades.up|cooldown.chaos_blades.remains>30|target.time_to_die<cooldown.chaos_blades.remains)");
+    "if=(active_enemies>desired_targets)|(raid_event.adds.in>55&(!talent.momentum.enabled|buff.momentum.up)&"
+    "(!talent.chaos_blades.enabled|buff.chaos_blades.up|cooldown.chaos_blades.remains>30|target.time_to_die<cooldown.chaos_blades.remains))");
   normal->add_action(this, "Blade Dance", "if=variable.blade_dance&(!cooldown.metamorphosis.ready)");
   normal->add_action(this, "Throw Glaive", "if=talent.bloodlet.enabled&spell_targets>=2&"
     "(!talent.master_of_the_glaive.enabled|!talent.momentum.enabled|buff.momentum.up)&"
