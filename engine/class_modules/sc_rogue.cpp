@@ -8080,7 +8080,7 @@ void rogue_t::create_buffs()
                                 .default_value( find_spell( 193357 ) -> effectN( 1 ).percent() )
                                 .add_invalidate( CACHE_CRIT_CHANCE );
   buffs.true_bearing          = buff_creator_t( this, "true_bearing", find_spell( 193359 ) )
-                                .default_value( find_spell( 193359 ) -> effectN( 1 ).base_value() );
+                                .default_value( find_spell( 193359 ) -> effectN( 1 ).base_value() * ( maybe_ptr( dbc.ptr ) ? 0.1 : 1.0 ) );
   // Note, since I (navv) am a slacker, this needs to be constructed after the secondary buffs.
   buff_creator_t rtb_creator  = buff_creator_t( this, "roll_the_bones", spec.roll_the_bones )
                                 .period( timespan_t::zero() ) // Disable ticking
