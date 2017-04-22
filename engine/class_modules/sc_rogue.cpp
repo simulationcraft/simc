@@ -5494,18 +5494,13 @@ void rogue_t::trigger_combat_potency( const action_state_t* state )
   if ( ! attack -> procs_combat_potency() )
     return;
 
-  //double chance = spec.combat_potency -> effectN( 1 ).percent();
-  // http://us.battle.net/wow/en/forum/topic/20743504316?page=21#416
-  double chance = 0.3;
-  if ( state -> action != active_main_gauche )
-    chance *= state -> action -> weapon -> swing_time.total_seconds() / 1.4;
-
+  double chance = spec.combat_potency -> effectN( 1 ).percent() + ( maybe_ptr ( dbc.ptr ) ? artifact.fortune_strikes.percent() : 0.0 );
   if ( ! rng().roll( chance ) )
     return;
 
   // energy gain value is in the proc trigger spell
   double gain = spec.combat_potency -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_ENERGY ) +
-                artifact.fortune_strikes.value();
+           ( maybe_ptr ( dbc.ptr ) ? 0.0 : artifact.fortune_strikes.value() );
 
   resource_gain( RESOURCE_ENERGY, gain, gains.combat_potency, state -> action );
 }
