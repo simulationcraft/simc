@@ -4699,6 +4699,11 @@ public:
   { return ""; }
   virtual std::string default_food() const
   { return ""; }
+
+  // JSON Report extension. Overridable in class methods. Root element is an object assigned for
+  // each JSON player object under "custom" property.
+  virtual void output_json_report( js::JsonOutput& /* root */ ) const
+  { }
 };
 
 

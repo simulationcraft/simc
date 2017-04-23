@@ -213,3 +213,16 @@ std::string sc_js_t::to_json() const
   return b.GetString();
 }
 
+JsonOutput& js::JsonOutput::operator=( const cooldown_t& v )
+{
+  assert( v_.IsObject() );
+
+  v_.AddMember( rapidjson::StringRef( "name" ), rapidjson::StringRef( v.name() ), d_.GetAllocator() );
+  v_.AddMember( rapidjson::StringRef( "duration" ), v.duration.total_seconds(), d_.GetAllocator() );
+  if ( v.charges > 1 )
+  {
+    v_.AddMember( rapidjson::StringRef( "charges" ), v.charges, d_.GetAllocator() );
+  }
+  return *this;
+}
+
