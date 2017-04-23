@@ -1080,9 +1080,11 @@ void buff_t::start( int        stacks,
   }
 #endif
 
+  timespan_t d = ( duration >= timespan_t::zero() ) ? duration : buff_duration;
+
   if ( sim -> current_time() <= timespan_t::from_seconds( 0.01 ) )
   {
-    if ( buff_duration == timespan_t::zero() || ( buff_duration > timespan_t::from_seconds( sim -> expected_max_time() ) ) )
+    if ( d == timespan_t::zero() || ( d > timespan_t::from_seconds( sim -> expected_max_time() ) ) )
       constant = true;
   }
 
@@ -1122,8 +1124,6 @@ void buff_t::start( int        stacks,
   {
     last_start = sim -> current_time();
   }
-
-  timespan_t d = ( duration >= timespan_t::zero() ) ? duration : buff_duration;
 
   if ( d > timespan_t::zero() )
   {
