@@ -2214,6 +2214,9 @@ void item::draught_of_souls( special_effect_t& effect )
         case DRUID_GUARDIAN:
         case DEMON_HUNTER_VENGEANCE:
           damage->base_dd_multiplier *= 0.5;
+          break;
+        default:
+          break;
       }
     }
 
