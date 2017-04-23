@@ -7270,21 +7270,10 @@ void death_knight_t::default_apl_frost()
   def -> add_action( "blood_fury,if=buff.pillar_of_frost.up" );
   def -> add_action( "berserking,if=buff.pillar_of_frost.up" );
 
-  // On-use items
-  for ( const auto& item : items )
-  {
-    if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
-    {
-      if ( item.name_str == "ring_of_collapsing_futures" )
-      {
-        def -> add_action( "use_item,name=" + item.name_str + ",if=buff.temptation.stack=0" );
-      }
-      else
-      {
-        def -> add_action( "use_item,slot=" + std::string( item.slot_name() ) );
-      }
-    }
-  }
+  // On-use itemos
+  def -> add_action( "use_items" );
+  def -> add_action( "use_item,name=ring_of_collapsing_futures,"
+                     "if=(buff.temptation.stack=0&target.time_to_die>60)|target.time_to_die<60");
 
   // In-combat potion
   def -> add_action( "potion,if=buff.pillar_of_frost.up&(!talent.breath_of_sindragosa.enabled|!cooldown.breath_of_sindragosa.remains)" );
@@ -7397,20 +7386,9 @@ void death_knight_t::default_apl_unholy()
   def->add_action("berserking");
 
   // On-use items
-  for (const auto& item : items)
-  {
-    if (item.has_special_effect(SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE))
-    {
-      if ( item.name_str == "ring_of_collapsing_futures" )
-      {
-        def -> add_action( "use_item,name=" + item.name_str + ",if=(buff.temptation.stack<1&target.time_to_die>60)|target.time_to_die<60" );
-      }
-      else
-      {
-        def->add_action( "use_item,slot=" + std::string( item.slot_name() ) );
-      }
-    }
-  }
+  def->add_action("use_items");
+  def->add_action("use_item,name=ring_of_collapsing_futures,"
+                  "if=(buff.temptation.stack=0&target.time_to_die>60)|target.time_to_die<60");
 
   // In-combat potion
   def->add_action("potion,if=buff.unholy_strength.react");

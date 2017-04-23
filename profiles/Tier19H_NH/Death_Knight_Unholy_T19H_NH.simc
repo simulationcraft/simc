@@ -34,7 +34,8 @@ actions+=/mind_freeze
 actions+=/arcane_torrent,if=runic_power.deficit>20
 actions+=/blood_fury
 actions+=/berserking
-actions+=/use_item,slot=trinket1
+actions+=/use_items
+actions+=/use_item,name=ring_of_collapsing_futures,if=(buff.temptation.stack=0&target.time_to_die>60)|target.time_to_die<60
 actions+=/potion,if=buff.unholy_strength.react
 actions+=/outbreak,target_if=!dot.virulent_plague.ticking
 actions+=/dark_transformation,if=equipped.137075&cooldown.dark_arbiter.remains>165
