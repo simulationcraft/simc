@@ -329,11 +329,6 @@ public:
           * mystic_kilt_of_the_rune_master;
   } gains;
 
-  // Legendary
-  struct legendary_t
-  {
-    bool lady_vashjs_grasp;
-  } legendary;
   // Pets
   struct pets_t
   {
@@ -737,7 +732,7 @@ water_elemental_pet_td_t::water_elemental_pet_td_t(
     player_t* target, water_elemental_pet_t* welly )
   : actor_target_data_t( target, welly )
 {
-  water_jet = buff_creator_t( *this, "water_jet", welly->find_spell( 135029 ) )
+  water_jet = buff_creator_t( *this, "water_jet", welly -> find_spell( 135029 ) )
                   .cd( timespan_t::zero() );
 }
 
@@ -775,23 +770,13 @@ struct water_elemental_spell_t : public mage_pet_spell_t
 
 struct waterbolt_t : public water_elemental_spell_t
 {
-  int fof_source_id;
-
   waterbolt_t( water_elemental_pet_t* p, const std::string& options_str )
-    : water_elemental_spell_t( "waterbolt", p, p->find_pet_spell( "Waterbolt" ) )
+    : water_elemental_spell_t( "waterbolt", p, p -> find_pet_spell( "Waterbolt" ) )
   {
     trigger_gcd = timespan_t::zero();
     parse_options( options_str );
     may_crit = true;
     base_multiplier *= 1.0 + o() -> artifact.its_cold_outside.data().effectN( 3 ).percent();
-  }
-
-  virtual bool init_finished() override
-  {
-    fof_source_id = o() -> benefits.fingers_of_frost
-                        -> get_source_id( data().name_cstr() );
-
-    return water_elemental_spell_t::init_finished();
   }
 
   virtual timespan_t execute_time() const override
@@ -810,7 +795,7 @@ struct freeze_t : public water_elemental_spell_t
   int fof_source_id;
 
   freeze_t( water_elemental_pet_t* p, const std::string& options_str )
-    : water_elemental_spell_t( "freeze", p, p->find_pet_spell( "Freeze" ) )
+    : water_elemental_spell_t( "freeze", p, p -> find_pet_spell( "Freeze" ) )
   {
     parse_options( options_str );
     aoe                   = -1;
@@ -882,22 +867,22 @@ struct water_jet_t : public water_elemental_spell_t
   {
     water_elemental_spell_t::impact( s );
 
-    td( s->target )
-        ->water_jet->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0,
-                              dot_duration * player->composite_spell_speed() );
+    td( s -> target )
+        -> water_jet -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0,
+                              dot_duration * player -> composite_spell_speed() );
 
     // Trigger hidden proxy water jet for the mage, so
     // debuff.water_jet.<expression> works
-    o()->get_target_data( s->target )
-        ->debuffs.water_jet->trigger(
+    o() -> get_target_data( s->target )
+        -> debuffs.water_jet -> trigger(
             1, buff_t::DEFAULT_VALUE(), 1.0,
-            dot_duration * player->composite_spell_speed() );
+            dot_duration * player -> composite_spell_speed() );
   }
 
   virtual void last_tick( dot_t* d ) override
   {
     water_elemental_spell_t::last_tick( d );
-    td( d->target )->water_jet->expire();
+    td( d->target ) -> water_jet -> expire();
   }
 
   bool ready() override
@@ -1437,21 +1422,35 @@ struct incanters_flow_t : public buff_t
 struct lady_vashjs_grasp_t: public buff_t
 {
   int fof_source_id;
+  mage_t* mage;
 
   lady_vashjs_grasp_t( mage_t* p ) :
-    buff_t( buff_creator_t( p, "lady_vashjs_grasp",
-                            p -> find_spell( 208147 ) )
-              .tick_callback( [ p ]( buff_t* buff, int, const timespan_t& )
-                {
-                  p -> buffs.fingers_of_frost -> trigger();
-                  lady_vashjs_grasp_t * lvg =
-                    debug_cast<lady_vashjs_grasp_t *>( buff );
-                  p -> benefits.fingers_of_frost
-                    -> update( lvg -> fof_source_id );
-                }
-              )
-          )
-  {}
+    buff_t( buff_creator_t( p, "lady_vashjs_grasp", p -> find_spell( 208147 ) ) ),
+    fof_source_id( -1 ),
+    mage( p )
+  {
+    set_tick_callback( [ this ] ( buff_t* /* buff */, int /* ticks */, const timespan_t& /* tick_time */ )
+    {
+      assert( fof_source_id != -1 );
+      mage -> buffs.fingers_of_frost -> trigger();
+      mage -> benefits.fingers_of_frost -> update( fof_source_id );
+    } );
+  }
+
+  bool trigger( int stacks = 1, double value = DEFAULT_VALUE(),
+                double chance = -1.0, timespan_t duration = timespan_t::min() ) override
+  {
+    bool success = buff_t::trigger( stacks, value, chance, duration );
+    if ( success )
+    {
+      // Triggering LVG gives one stack of Fingers of Frost, regardless of the tick action.
+      assert( fof_source_id != -1 );
+      mage -> buffs.fingers_of_frost -> trigger();
+      mage -> benefits.fingers_of_frost -> update( fof_source_id );
+    }
+
+    return success;
+  }
 };
 
 
@@ -1699,13 +1698,13 @@ struct arcane_mage_spell_t : public mage_spell_t
     mage_spell_t( n, p, s )
   {}
 
-  double arcane_charge_damage_bonus( bool missile_call ) const
+  double arcane_charge_damage_bonus( bool amplification = false ) const
   {
     double per_ac_bonus =  p() -> spec.arcane_charge -> effectN( 1 ).percent() +
                           ( p() -> composite_mastery() *
                            p() -> spec.savant -> effectN( 2 ).mastery_value() );
 
-    if ( p() -> talents.amplification -> ok() && missile_call )
+    if ( p() -> talents.amplification -> ok() && amplification )
     {
       per_ac_bonus += p() -> talents.amplification -> effectN( 1 ).percent();
     }
@@ -2558,7 +2557,7 @@ struct arcane_barrage_t : public arcane_mage_spell_t
   {
     double am = arcane_mage_spell_t::action_multiplier();
 
-    am *= arcane_charge_damage_bonus( false );
+    am *= arcane_charge_damage_bonus();
 
     if ( p() -> talents.resonance -> ok() )
     {
@@ -2676,7 +2675,7 @@ struct arcane_blast_t : public arcane_mage_spell_t
   {
     double am = arcane_mage_spell_t::action_multiplier();
 
-    am *= arcane_charge_damage_bonus( false );
+    am *= arcane_charge_damage_bonus();
 
     return am;
   }
@@ -2741,7 +2740,7 @@ struct time_and_space_t : public arcane_mage_spell_t
   {
     double am = arcane_mage_spell_t::action_multiplier();
 
-    am *= arcane_charge_damage_bonus( false );
+    am *= arcane_charge_damage_bonus();
 
     return am;
   }
@@ -2810,7 +2809,7 @@ struct arcane_explosion_t : public arcane_mage_spell_t
   {
     double am = arcane_mage_spell_t::action_multiplier();
 
-    am *= arcane_charge_damage_bonus( false );
+    am *= arcane_charge_damage_bonus();
 
     return am;
   }
@@ -4517,11 +4516,25 @@ struct ice_nova_t : public frost_mage_spell_t
 
 struct icy_veins_t : public frost_mage_spell_t
 {
+  bool lady_vashjs_grasp;
+
   icy_veins_t( mage_t* p, const std::string& options_str ) :
-    frost_mage_spell_t( "icy_veins", p, p -> find_specialization_spell( "Icy Veins" ) )
+    frost_mage_spell_t( "icy_veins", p, p -> find_specialization_spell( "Icy Veins" ) ),
+    lady_vashjs_grasp( false )
   {
     parse_options( options_str );
     harmful = false;
+  }
+
+  bool init_finished() override
+  {
+    if ( lady_vashjs_grasp )
+    {
+      debug_cast<buffs::lady_vashjs_grasp_t*>( p() -> buffs.lady_vashjs_grasp ) -> fof_source_id =
+        p() -> benefits.fingers_of_frost -> get_source_id( "Lady Vashj's Grasp" );
+    }
+
+    return frost_mage_spell_t::init_finished();
   }
 
   virtual void execute() override
@@ -4529,15 +4542,13 @@ struct icy_veins_t : public frost_mage_spell_t
     frost_mage_spell_t::execute();
 
     p() -> buffs.icy_veins -> trigger();
-    if ( p() -> legendary.lady_vashjs_grasp )
+
+    if ( lady_vashjs_grasp )
     {
       // Refreshing infinite ticking buff doesn't quite work, remove
       // LVG manually and then trigger it again.
       p() -> buffs.lady_vashjs_grasp -> expire();
       p() -> buffs.lady_vashjs_grasp -> trigger();
-      // Trigger 1 stack of FoF when IV is triggered with LVG legendary,
-      // This is independant of the tick action gains.
-      p() -> buffs.fingers_of_frost -> trigger();
     }
     if ( p() -> artifact.chilled_to_the_core.rank() )
     {
@@ -5102,7 +5113,7 @@ struct nether_tempest_t : public arcane_mage_spell_t
   {
     double m = arcane_mage_spell_t::composite_persistent_multiplier( state );
 
-    m *= arcane_charge_damage_bonus( false );
+    m *= arcane_charge_damage_bonus();
 
     return m;
   }
@@ -6629,7 +6640,6 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   buffs( buffs_t() ),
   cooldowns( cooldowns_t() ),
   gains( gains_t() ),
-  legendary( legendary_t() ),
   pets( pets_t() ),
   procs( procs_t() ),
   rotation( rotation_t() ),
@@ -7778,10 +7788,6 @@ void mage_t::invalidate_cache( cache_e c )
       {
         recalculate_resource_max( RESOURCE_MANA );
       }
-      else if ( spec.icicles -> ok() )
-      {
-        pets.water_elemental -> invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-      }
       break;
     case CACHE_SPELL_CRIT_CHANCE:
       // Combustion makes mastery dependent on spell crit chance rating. Thus
@@ -8177,14 +8183,6 @@ void mage_t::arise()
     default:
       apl_default(); // DEFAULT
       break;
-  }
-
-  if ( legendary.lady_vashjs_grasp )
-  {
-    buffs::lady_vashjs_grasp_t* lvg =
-      debug_cast<buffs::lady_vashjs_grasp_t*>( buffs.lady_vashjs_grasp );
-    lvg -> fof_source_id =
-      benefits.fingers_of_frost -> get_source_id( "Lady Vashj's Grasp" );
   }
 
   if ( blessing_of_wisdom )
@@ -8876,13 +8874,15 @@ struct zannesu_journey_t : public class_buff_cb_t<mage_t, buff_t, buff_creator_t
   }
 };
 
-struct lady_vashjs_grasp_t : public scoped_actor_callback_t<mage_t>
+struct lady_vashjs_grasp_t : public scoped_action_callback_t<icy_veins_t>
 {
-  lady_vashjs_grasp_t() : super( MAGE_FROST )
+  lady_vashjs_grasp_t() : super( MAGE_FROST, "icy_veins" )
   { }
 
-  void manipulate( mage_t* actor, const special_effect_t& /* e */ ) override
-  { actor -> legendary.lady_vashjs_grasp = true; }
+  void manipulate( icy_veins_t* action, const special_effect_t& /* e */ ) override
+  {
+    action -> lady_vashjs_grasp = true;
+  }
 };
 
 struct ice_time_t : public scoped_action_callback_t<frozen_orb_t>
