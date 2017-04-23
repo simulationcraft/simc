@@ -1569,9 +1569,17 @@ void buff_t::merge( const buff_t& other )
 
 void buff_t::analyze()
 {
-
   if ( sim -> buff_uptime_timeline )
-    uptime_array.adjust( *sim );
+  {
+    if ( ! sim -> single_actor_batch )
+    {
+      uptime_array.adjust( *sim );
+    }
+    else
+    {
+      uptime_array.adjust( source -> collected_data.fight_length );
+    }
+  }
 }
 
 // buff_t::find =============================================================

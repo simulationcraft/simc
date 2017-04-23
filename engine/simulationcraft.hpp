@@ -3311,6 +3311,10 @@ struct player_collected_data_t
   health_changes_timeline_t health_changes;     //records all health changes
   health_changes_timeline_t health_changes_tmi; //records only health changes due to damage and self-healng/self-absorb
 
+  // Total number of iterations for the actor. Needed for single_actor_batch if target_error is
+  // used.
+  int total_iterations;
+
   struct action_sequence_data_t
   {
     const action_t* action;
@@ -4113,6 +4117,7 @@ struct player_t : public actor_t
   // various state change callbacks (via the action_t::activate method) to the global actor lists.
   // Actor pets are also activated by default.
   virtual void activate();
+  virtual void deactivate();
 
   virtual int level() const;
 
@@ -4898,10 +4903,10 @@ public:
     for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
     { actual[ i ] += other.actual[ i ]; overflow[ i ] += other.overflow[ i ]; count[ i ] += other.count[ i ]; }
   }
-  void analyze( const sim_t& sim )
+  void analyze( size_t iterations )
   {
     for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
-    { actual[ i ] /= sim.iterations; overflow[ i ] /= sim.iterations; count[ i ] /= sim.iterations; }
+    { actual[ i ] /= iterations; overflow[ i ] /= iterations; count[ i ] /= iterations; }
   }
   const char* name() const { return name_str.c_str(); }
 };

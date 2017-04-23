@@ -10185,18 +10185,17 @@ void player_t::analyze( sim_t& s )
 
   collected_data.analyze( *this );
 
-  for ( size_t i = 0; i < buff_list.size(); i++ )
-    buff_list[ i ] -> analyze();
+  range::for_each( buff_list, []( buff_t* b ) { b -> analyze(); } );
 
   range::sort( stats_list, []( const stats_t* l, const stats_t* r ) { return l -> name_str < r -> name_str; } );
 
-  if (  quiet ) return;
-  if (  collected_data.fight_length.mean() == 0 ) return;
+  if ( quiet ) return;
+  if ( collected_data.fight_length.mean() == 0 ) return;
 
-  range::for_each( sample_data_list, std::mem_fn(&luxurious_sample_data_t::analyze ) );
+  range::for_each( sample_data_list, []( luxurious_sample_data_t* sd ) { sd -> analyze(); } );
 
   // Pet Chart Adjustment ===================================================
-  size_t max_buckets = static_cast<size_t>(  collected_data.fight_length.max() );
+  size_t max_buckets = static_cast<size_t>( collected_data.fight_length.max() );
 
   // Make the pet graphs the same length as owner's
   if (  is_pet() )
@@ -10215,31 +10214,39 @@ void player_t::analyze( sim_t& s )
     tmp_stats_list.insert( tmp_stats_list.end(), pet -> stats_list.begin(), pet -> stats_list.end() );
   }
 
-  size_t num_stats = tmp_stats_list.size();
-
-  if ( !  is_pet() )
+  if ( ! is_pet() )
   {
-    for ( size_t i = 0; i < num_stats; i++ )
-    {
-      stats_t* stats = tmp_stats_list[ i ];
+    range::for_each( tmp_stats_list, [ this ]( stats_t* stats ) {
       stats -> analyze();
 
       if ( stats -> type == STATS_DMG )
-        stats -> portion_amount =  collected_data.compound_dmg.mean() ? stats -> actual_amount.mean() / collected_data.compound_dmg.mean() : 0.0 ;
+      {
+        stats -> portion_amount = collected_data.compound_dmg.mean()
+                                  ? stats -> actual_amount.mean() / collected_data.compound_dmg.mean()
+                                  : 0.0;
+      }
       else if ( stats -> type == STATS_HEAL || stats -> type == STATS_ABSORB )
       {
-        stats -> portion_amount =  collected_data.compound_heal.mean() ? stats -> actual_amount.mean() : collected_data.compound_absorb.mean() ? stats -> actual_amount.mean() : 0.0;
-        double total_heal_and_absorb = collected_data.compound_heal.mean() + collected_data.compound_absorb.mean();
+        stats -> portion_amount = collected_data.compound_heal.mean()
+                                  ? stats -> actual_amount.mean()
+                                  : collected_data.compound_absorb.mean()
+                                    ? stats -> actual_amount.mean()
+                                    : 0.0;
+
+        double total_heal_and_absorb = collected_data.compound_heal.mean() +
+                                       collected_data.compound_absorb.mean();
+
         if ( total_heal_and_absorb )
         {
           stats -> portion_amount /= total_heal_and_absorb;
         }
       }
-    }
+    } );
   }
 
   // Actor Lists ============================================================
-  if (  !  quiet && !  is_enemy() && !  is_add() && ! (  is_pet() && s.report_pets_separately ) )
+
+  if ( ! quiet && ! is_enemy() && ! is_add() && ! ( is_pet() && s.report_pets_separately ) )
   {
     s.players_by_dps.push_back( this );
     s.players_by_priority_dps.push_back( this );
@@ -10251,42 +10258,49 @@ void player_t::analyze( sim_t& s )
     s.players_by_apm.push_back( this );
     s.players_by_variance.push_back( this );
   }
-  if ( !  quiet && (  is_enemy() ||  is_add() ) && ! (  is_pet() && s.report_pets_separately ) )
+
+  if ( ! quiet && ( is_enemy() || is_add() ) && ! ( is_pet() && s.report_pets_separately ) )
+  {
     s.targets_by_name.push_back( this );
+  }
 
   // Resources & Gains ======================================================
 
-  double rl = collected_data.resource_lost[  primary_resource() ].mean();
+  double rl = collected_data.resource_lost[ primary_resource() ].mean();
 
-  dpr = ( rl > 0 ) ? (  collected_data.dmg.mean() / rl ) : -1.0;
-  hpr = ( rl > 0 ) ? (  collected_data.heal.mean() / rl ) : -1.0;
+  dpr = ( rl > 0 ) ? ( collected_data.dmg.mean() / rl ) : -1.0;
+  hpr = ( rl > 0 ) ? ( collected_data.heal.mean() / rl ) : -1.0;
 
-  rps_loss = rl /  collected_data.fight_length.mean();
-  rps_gain = rl /  collected_data.fight_length.mean();
+  rps_loss = rl / collected_data.fight_length.mean();
+  rps_gain = rl / collected_data.fight_length.mean();
 
-  for ( size_t i = 0; i < gain_list.size(); ++i )
-    gain_list[ i ] -> analyze( s );
+  // When single_actor_batch=1 is used in conjunction with target_error, each actor has run varying
+  // number of iterations to finish. The total number of iterations ran for each actor (when
+  // single_actor_batch=1) is stored in the actor-collected data structure.
+  int iterations = collected_data.total_iterations > 0
+                   ? collected_data.total_iterations
+                   : sim -> iterations;
 
-  for ( size_t i = 0; i < pet_list.size(); ++i )
-  {
-    pet_t* pet =  pet_list[ i ];
-    for ( size_t j = 0; j < pet -> gain_list.size(); ++j )
-      pet -> gain_list[ j ] -> analyze( s );
-  }
+  range::for_each( gain_list, [ iterations ]( gain_t* g ) { g -> analyze( iterations ); } );
+
+  range::for_each( pet_list, [ iterations ]( pet_t* p ) {
+    range::for_each( p -> gain_list, [ iterations ]( gain_t* g ) { g -> analyze( iterations ); } );
+  } );
 
   // Damage Timelines =======================================================
 
   collected_data.timeline_dmg.init( max_buckets );
-  for ( size_t i = 0, is_hps = ( primary_role() == ROLE_HEAL ); i < num_stats; i++ )
-  {
-    stats_t* stats = tmp_stats_list[ i ];
+  bool is_hps = primary_role() == ROLE_HEAL;
+  range::for_each( tmp_stats_list, [ this, is_hps, max_buckets ]( stats_t* stats ) {
     if ( ( stats -> type != STATS_DMG ) == is_hps )
     {
       size_t j_max = std::min( max_buckets, stats -> timeline_amount.data().size() );
       for ( size_t j = 0; j < j_max; j++ )
+      {
         collected_data.timeline_dmg.add( j, stats -> timeline_amount.data()[ j ] );
+      }
     }
-  }
+  } );
 
   recreate_talent_str( s.talent_format );
 
@@ -10904,6 +10918,7 @@ player_collected_data_t::player_collected_data_t( const std::string& player_name
   stat_timelines(),
   health_changes(),
   health_changes_tmi(),
+  total_iterations( 0 ),
   buffed_stats_snapshot()
 { }
 
@@ -11797,4 +11812,11 @@ void player_t::activate()
 
   // .. and activate all actor pets
   range::for_each( pet_list, []( player_t* p ) { p -> activate(); } );
+}
+
+void player_t::deactivate()
+{
+  // Record total number of iterations ran for this actor. Relevant in target_error cases for data
+  // analysis at the end of simulation
+  collected_data.total_iterations = sim -> current_iteration;
 }
