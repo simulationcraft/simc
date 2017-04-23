@@ -7445,22 +7445,22 @@ void druid_t::apl_feral()
     potion_action += "tolvir";
 
   // Opener =================================================================
-  opener ->add_action( this, "rake", "if=buff.prowl.up" );
-  opener ->add_action( this, "savage_roar", "if=buff.savage_roar.down" );
-  opener ->add_action( this, "berserk", "if=buff.savage_roar.up" );
-  opener ->add_action( this, "tigers_fury", "if=buff.berserk.up" );
-  opener ->add_action( this, "frenzy", "if=buff.bloodtalons.up" );
-  opener ->add_action( this, "regrowth", "if=combo_points=5&buff.bloodtalons.down" );
-  opener ->add_action( this, "rip", "if=combo_points=5&buff.bloodtalons.up" );
+  opener ->add_action( this, "Rake", "if=buff.prowl.up" );
+  opener ->add_talent( this, "Savage Roar", "if=buff.savage_roar.down" );
+  opener ->add_action( this, "Berserk", "if=buff.savage_roar.up" );
+  opener ->add_action( this, "Tiger's Fury", "if=buff.berserk.up" );
+  opener ->add_action( this, artifact.ashamanes_frenzy, "frenzy", "if=buff.bloodtalons.up" );
+  opener ->add_action( this, "Regrowth", "if=combo_points=5&buff.bloodtalons.down" );
+  opener ->add_action( this, "Rip", "if=combo_points=5&buff.bloodtalons.up" );
   if ( sets.has_set_bonus( DRUID_FERAL, T19, B4 ))
-   opener ->add_action( this, "thrash_cat", "if=combo_points<5&!ticking", "Only worth to thrash with T19 equipped" );
-  opener ->add_action( this, "shred", "if=combo_points<5&buff.savage_roar.up" );
+   opener -> add_action( "thrash_cat,if=combo_points<5&!ticking" );
+  opener ->add_action( this, "Shred", "if=combo_points<5&buff.savage_roar.up" );
 
   // Main List ==============================================================
   
   def -> add_action( this, "Dash", "if=!buff.cat_form.up" );
   def -> add_action( this, "Cat Form" );
-  def -> add_action( this, "call_action_list,name=opener", "if=!dot.rip.ticking&time<15&talent.savage_roar.enabled&talent.jagged_wounds.enabled&talent.bloodtalons.enabled&desired_targets<=1", "Normal case opener optimization" );
+  def -> add_action( "call_action_list,name=opener", "if=!dot.rip.ticking&time<15&talent.savage_roar.enabled&talent.jagged_wounds.enabled&talent.bloodtalons.enabled&desired_targets<=1" );
   def -> add_talent( this, "Wild Charge" );
   def -> add_talent( this, "Displacer Beast", "if=movement.distance>10" );
   def -> add_action( this, "Dash", "if=movement.distance&buff.displacer_beast.down&buff.wild_charge_movement.down" );
