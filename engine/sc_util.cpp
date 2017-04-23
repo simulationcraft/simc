@@ -1405,7 +1405,7 @@ const char* util::spec_string_no_class( const player_t& p )
     case ROGUE_ASSASSINATION:
     return "Assassination";
     case ROGUE_OUTLAW:
-    return "Combat";
+    return "Outlaw";
     case ROGUE_SUBTLETY:
     return "Subtlety";
     case SHAMAN_ELEMENTAL:
