@@ -6524,7 +6524,7 @@ struct roll_the_bones_t : public buff_t
 
   std::vector<buff_t*> random_roll()
   {
-    std::vector<unsigned> rolls = { { 0, 0, 0, 0, 0, 0 } };
+    std::array<unsigned, 6> rolls = { { 0, 0, 0, 0, 0, 0 } };
     size_t n_rolls = rogue -> dbc.ptr ? 5 : 6;
 
     for ( size_t i = 0; i < n_rolls; ++i )
