@@ -7068,13 +7068,13 @@ struct use_item_t : public action_t
   buff_t* buff;
   cooldown_t* cooldown_group;
   timespan_t cooldown_group_duration;
+  std::string item_name, item_slot;
 
   use_item_t( player_t* player, const std::string& options_str ) :
     action_t( ACTION_OTHER, "use_item", player ),
     item( nullptr ), action( nullptr ), buff( nullptr ),
     cooldown_group( nullptr ), cooldown_group_duration( timespan_t::zero() )
   {
-    std::string item_name, item_slot;
 
     add_option( opt_string( "name", item_name ) );
     add_option( opt_string( "slot", item_slot ) );
@@ -7147,6 +7147,10 @@ struct use_item_t : public action_t
         {
           buff = e -> create_buff();
         }
+
+        // On-use buff cooldowns are unconditionally handled by the action, so as a precaution,
+        // reset any cooldown associated with the buff itself
+        buff -> set_cooldown( timespan_t::zero() );
       }
 
       // Create an action
@@ -7303,6 +7307,200 @@ struct use_item_t : public action_t
     }
 
     return action_t::create_expression( name_str );
+  }
+};
+
+// Use Items Action =========================================================
+
+struct use_items_t : public action_t
+{
+  std::vector<use_item_t*> use_actions; // List of proxy use_item_t actions to execute
+  std::vector<slot_e>      priority_slots; // Slot priority, or custom slots to check
+  bool                     custom_slots; // Custom slots= parameter passed. Only check priority_slots.
+
+  use_items_t( player_t* player, const std::string& options_str ) :
+    action_t( ACTION_USE, "use_items", player ),
+    // Ensure trinkets are checked before all other items by default
+    priority_slots( { SLOT_TRINKET_1, SLOT_TRINKET_2 } ), custom_slots( false )
+  {
+    callbacks = may_miss = may_crit = may_block = may_parry = false;
+
+    trigger_gcd = timespan_t::zero();
+
+    add_option( opt_func( "slots", std::bind( &use_items_t::parse_slots, this,
+            std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 ) ) );
+
+    parse_options( options_str );
+  }
+
+  result_e calculate_result( action_state_t* ) const override
+  { return RESULT_HIT; }
+
+  void execute() override
+  {
+    // Execute first ready sub-action. Note that technically an on-use action can go "unavailable"
+    // between the ready check and the execution, meaning this action actually executes no
+    // sub-action
+    for ( auto action : use_actions )
+    {
+      if ( action -> ready() )
+      {
+        action -> execute();
+        break;
+      }
+    }
+
+    update_ready();
+  }
+
+  // Init creates the sub-actions (use_item_t). The sub-action creation is deferred to here (instead
+  // of the constructor) to be able to skip actor slots that already have an use_item action defiend
+  // in the action list.
+  void init() override
+  {
+    create_use_subactions();
+
+    // No use_item sub-actions created here, so this action does not need to execute ever. The
+    // parent init() call below will filter it out from the "foreground action list".
+    if ( use_actions.size() == 0 )
+    {
+      background = true;
+    }
+
+    action_t::init();
+  }
+
+  bool ready() override
+  {
+    // use_items action itself is not ready
+    if ( ! action_t::ready() )
+    {
+      return false;
+    }
+
+    // Check all use_item actions, if at least one of them is ready, this use_items action is ready
+    for ( const auto action : use_actions )
+    {
+      if ( action -> ready() )
+      {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  bool parse_slots( sim_t* /* sim */, const std::string& /* opt_name */, const std::string& opt_value )
+  {
+    // Empty out default priority slots. slots= option will change the use_items action logic so
+    // that only the designated slots will be checked/executed for a special effect
+    priority_slots.clear();
+
+    auto split = util::string_split( ":|", opt_value );
+    range::for_each( split, [ this ]( const std::string& slot_str ) {
+      auto slot = util::parse_slot_type( slot_str );
+      if ( slot != SLOT_INVALID )
+      {
+        priority_slots.push_back( slot );
+      }
+    } );
+
+    custom_slots = true;
+
+    // If slots= option is given, presume that at aleast one of those slots is a valid slot name
+    return priority_slots.size() > 0;
+  }
+
+  // Creates "use_item" actions for all usable special effects on the actor. Note that the creation
+  // is done in a specified slot order (by default trinkets before other slots).
+  void create_use_subactions()
+  {
+    std::vector<const use_item_t*> use_item_actions;
+    // Collect a list of existing use_item actions in the APL.
+    range::for_each( player -> action_list, [ &use_item_actions ]( const action_t* action ) {
+      if ( const use_item_t* use_item = dynamic_cast<const use_item_t*>( action ) )
+      {
+        use_item_actions.push_back( use_item );
+      }
+    } );
+
+    std::vector<slot_e> slot_order = priority_slots;
+    // Add in the rest of the slots, if no slots= parameter is given. If a slots= parameter is
+    // given, only the slots in that parameter value will be checked.
+    for ( auto slot = SLOT_MIN; ! custom_slots && slot < SLOT_MAX; ++slot )
+    {
+      if ( range::find( slot_order, slot ) == slot_order.end() )
+      {
+        slot_order.push_back( slot );
+      }
+    }
+
+    // Remove any slots from the slot list that have custom use item actions. Note that this search
+    // looks for use_item,slot=X.
+    range::for_each( use_item_actions, [ &slot_order ]( const use_item_t* action ) {
+      slot_e slot = util::parse_slot_type( action -> item_slot );
+      if ( slot == SLOT_INVALID )
+      {
+        return;
+      }
+
+      auto it = range::find( slot_order, slot );
+      if ( it != slot_order.end() )
+      {
+        slot_order.erase( it );
+      }
+    } );
+
+    // Remove any slots from the list, where the actor has an item equipped, and corresponding a
+    // use_item,name=X action for the item.
+    range::for_each( use_item_actions, [ this, &slot_order ]( const use_item_t* action ) {
+      if ( action -> item_name.empty() )
+      {
+        return;
+      }
+
+      // Find out if the item is worn
+      auto it = range::find_if( player -> items, [ action ]( const item_t& item ) {
+        return util::str_compare_ci( item.name(), action -> item_name );
+      } );
+
+      // Worn item, remove slot if necessary
+      if ( it != player -> items.end() )
+      {
+        auto slot_it = range::find( slot_order, it -> slot );
+        if ( slot_it != slot_order.end() )
+        {
+          slot_order.erase( slot_it );
+        }
+      }
+    } );
+
+    // Create use_item actions for each remaining slot, if the user has an on-use item in that slot.
+    // Note that this only looks at item-sourced on-use actions (e.g., no engineering addons).
+    range::for_each( slot_order, [ this ]( slot_e slot ) {
+      const auto& item = player -> items[ slot ];
+      const auto effect_it = range::find_if( item.parsed.special_effects, []( const special_effect_t* e ) {
+        return e -> source == SPECIAL_EFFECT_SOURCE_ITEM && e -> type == SPECIAL_EFFECT_USE;
+      } );
+
+      // No item-based on-use effect in the slot, skip
+      if ( effect_it == item.parsed.special_effects.end() )
+      {
+        return;
+      }
+
+      if ( sim -> debug )
+      {
+        sim -> out_debug.printf( "%s use_items creating proxy action for %s (slot=%s)",
+          player -> name(), item.full_name().c_str(), item.slot_name() );
+      }
+
+      use_actions.push_back( new use_item_t( player, std::string( "slot=" ) + item.slot_name() ) );
+
+      auto action = use_actions.back();
+      // The use_item action is not triggered by the actor (through the APL), so background it
+      action -> background = true;
+    } );
   }
 };
 
@@ -7584,6 +7782,7 @@ action_t* player_t::create_action( const std::string& name,
   if ( name == "stoneform"          ) return new          stoneform_t( this, options_str );
   if ( name == "stop_moving"        ) return new        stop_moving_t( this, options_str );
   if ( name == "use_item"           ) return new           use_item_t( this, options_str );
+  if ( name == "use_items"          ) return new          use_items_t( this, options_str );
   if ( name == "wait"               ) return new         wait_fixed_t( this, options_str );
   if ( name == "wait_until_ready"   ) return new   wait_until_ready_t( this, options_str );
   if ( name == "pool_resource"      ) return new      pool_resource_t( this, options_str );
