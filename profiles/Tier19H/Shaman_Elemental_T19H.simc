@@ -39,6 +39,7 @@ actions+=/totem_mastery,if=buff.resonance_totem.remains<2
 actions+=/fire_elemental
 actions+=/storm_elemental
 actions+=/elemental_mastery
+actions+=/use_items
 actions+=/use_item,name=gnawed_thumb_ring,if=equipped.gnawed_thumb_ring&(talent.ascendance.enabled&!buff.ascendance.up|!talent.ascendance.enabled)
 actions+=/blood_fury,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50
 actions+=/berserking,if=!talent.ascendance.enabled|buff.ascendance.up

@@ -7069,15 +7069,6 @@ void shaman_t::init_action_list_elemental()
   def -> add_action( this, "Bloodlust", generate_bloodlust_options(),
     "Bloodlust casting behavior mirrors the simulator settings for proxy bloodlust. See options 'bloodlust_percent', and 'bloodlust_time'. " );
 
-  // On-use items
-  for ( const auto& item : items )
-  {
-    if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
-    {
-      def -> add_action( "use_item,slot=" + std::string( item.slot_name() ) );
-    }
-  }
-
   // In-combat potion
   def -> add_action( "potion,if=cooldown.fire_elemental.remains>280|target.time_to_die<=60",
       "In-combat potion is preferentially linked to your Elemental, unless combat will end shortly" );
@@ -7088,9 +7079,14 @@ void shaman_t::init_action_list_elemental()
   def -> add_action( this, "Fire Elemental" );
   def -> add_talent( this, "Storm Elemental" );
   def -> add_talent( this, "Elemental Mastery" );
+  // On-use items
+  def -> add_action( "use_items" );
   def -> add_action( "use_item,name=gnawed_thumb_ring,if=equipped.gnawed_thumb_ring&(talent.ascendance.enabled&!buff.ascendance.up|!talent.ascendance.enabled)" );
+  // Racials
   def -> add_action( "blood_fury,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50" );
   def -> add_action( "berserking,if=!talent.ascendance.enabled|buff.ascendance.up" );
+
+  // Pick APL to run
   def -> add_action( "run_action_list,name=aoe,if=active_enemies>2&(spell_targets.chain_lightning>2|spell_targets.lava_beam>2)" );
   def -> add_action( "run_action_list,name=single_asc,if=talent.ascendance.enabled" );
   def -> add_action( "run_action_list,name=single_if,if=talent.icefury.enabled" );
@@ -7233,14 +7229,8 @@ void shaman_t::init_action_list_enhancement()
   // Ensure Feral Spirits start using alpha wolf abilities immediately
   def -> add_action( this, "Crash Lightning", "if=artifact.alpha_wolf.rank&prev_gcd.1.feral_spirit" );
 
-  // On-use items
-  for ( const auto& item : items )
-  {
-    if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
-    {
-      def -> add_action( "use_item,slot=" + std::string( item.slot_name() ) );
-    }
-  }
+  // On-use actions
+  def -> add_action( "use_items" );
 
   // Racials
   def -> add_action( "berserking,if=buff.ascendance.up|(feral_spirit.remains>5)|level<100" );

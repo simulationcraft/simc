@@ -34,6 +34,7 @@ actions+=/bloodlust,if=target.health.pct<25|time>0.500
 actions+=/auto_attack
 actions+=/feral_spirit,if=!artifact.alpha_wolf.rank|(maelstrom>=20&cooldown.crash_lightning.remains<=gcd)
 actions+=/crash_lightning,if=artifact.alpha_wolf.rank&prev_gcd.1.feral_spirit
+actions+=/use_items
 actions+=/berserking,if=buff.ascendance.up|(feral_spirit.remains>5)|level<100
 actions+=/blood_fury,if=buff.ascendance.up|(feral_spirit.remains>5)|level<100
 actions+=/potion,if=feral_spirit.remains>5|target.time_to_die<=60
