@@ -615,6 +615,7 @@ struct rogue_t : public player_t
     proc_t* roll_the_bones_1;
     proc_t* roll_the_bones_2;
     proc_t* roll_the_bones_3;
+    proc_t* roll_the_bones_5;
     proc_t* roll_the_bones_6;
 
     // Subtlety
@@ -6523,8 +6524,10 @@ struct roll_the_bones_t : public buff_t
 
   std::vector<buff_t*> random_roll()
   {
-    std::array<unsigned, 6> rolls = { { 0, 0, 0, 0, 0, 0 } };
-    for ( size_t i = 0; i < rolls.size(); ++i )
+    std::vector<unsigned> rolls = { { 0, 0, 0, 0, 0, 0 } };
+    size_t n_rolls = rogue -> dbc.ptr ? 5 : 6;
+
+    for ( size_t i = 0; i < n_rolls; ++i )
     {
       rolls[ rng().range( 0, buffs.size() ) ]++;
     }
@@ -6593,6 +6596,9 @@ struct roll_the_bones_t : public buff_t
         break;
       case 3:
         rogue -> procs.roll_the_bones_3 -> occur();
+        break;
+      case 5:
+        rogue -> procs.roll_the_bones_5 -> occur();
         break;
       case 6:
         rogue -> procs.roll_the_bones_6 -> occur();
@@ -7983,6 +7989,7 @@ void rogue_t::init_procs()
   procs.roll_the_bones_1         = get_proc( "Roll the Bones: 1 buff"  );
   procs.roll_the_bones_2         = get_proc( "Roll the Bones: 2 buffs" );
   procs.roll_the_bones_3         = get_proc( "Roll the Bones: 3 buffs" );
+  procs.roll_the_bones_5         = get_proc( "Roll the Bones: 5 buffs" );
   procs.roll_the_bones_6         = get_proc( "Roll the Bones: 6 buffs" );
 
   procs.deepening_shadows        = get_proc( "Deepening Shadows"       );
