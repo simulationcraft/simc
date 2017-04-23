@@ -148,7 +148,7 @@ finger1=band_of_callous_dominance,id=134528,bonus_id=1492/1727,enchant_id=5427
 finger2=seal_of_the_nazjatar_empire,id=134525,bonus_id=1492/1727,enchant_id=5427
 trinket1=oakhearts_gnarled_root,id=137306,bonus_id=1492/1727
 trinket2=naraxas_spiked_tongue,id=137349,bonus_id=1492/1727
-main_hand=the_fist_of_raden,id=128935,bonus_id=744,gem_id=137308/137272/137365,relic_id=1492:3412/1492:3412/1492:3412
+main_hand=the_fist_of_raden,id=128935,bonus_id=744,gem_id=137365/137272/137365,relic_id=1492:3412/1492:3412/1492:3412
 off_hand=the_highkeepers_ward,id=128936,ilevel=870
 
 # Gear Summary
