@@ -28,8 +28,7 @@ actions.precombat+=/potion,name=old_war
 # Executed every time the actor is available.
 actions=dash,if=!buff.cat_form.up
 actions+=/cat_form
-# if=!dot.rip.ticking&time<15&talent.savage_roar.enabled&talent.jagged_wounds.enabled&talent.bloodtalons.enabled&desired_targets<=1
-actions+=/call_action_list,name=opener
+actions+=/call_action_list,name=opener,if=!dot.rip.ticking&time<15&talent.savage_roar.enabled&talent.jagged_wounds.enabled&talent.bloodtalons.enabled&desired_targets<=1
 actions+=/wild_charge
 actions+=/displacer_beast,if=movement.distance>10
 actions+=/dash,if=movement.distance&buff.displacer_beast.down&buff.wild_charge_movement.down

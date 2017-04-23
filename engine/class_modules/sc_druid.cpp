@@ -7460,7 +7460,7 @@ void druid_t::apl_feral()
   
   def -> add_action( this, "Dash", "if=!buff.cat_form.up" );
   def -> add_action( this, "Cat Form" );
-  def -> add_action( "call_action_list,name=opener", "if=!dot.rip.ticking&time<15&talent.savage_roar.enabled&talent.jagged_wounds.enabled&talent.bloodtalons.enabled&desired_targets<=1" );
+  def -> add_action( "call_action_list,name=opener,if=!dot.rip.ticking&time<15&talent.savage_roar.enabled&talent.jagged_wounds.enabled&talent.bloodtalons.enabled&desired_targets<=1" );
   def -> add_talent( this, "Wild Charge" );
   def -> add_talent( this, "Displacer Beast", "if=movement.distance>10" );
   def -> add_action( this, "Dash", "if=movement.distance&buff.displacer_beast.down&buff.wild_charge_movement.down" );
