@@ -1,4 +1,4 @@
-import sys, os, re, types, html.parser, urllib, datetime, signal, json, pdb, pathlib, csv, logging, io, fnmatch, traceback
+import sys, os, re, types, html.parser, urllib, datetime, signal, json, pathlib, csv, logging, io, fnmatch, traceback
 
 import dbc.db, dbc.data, dbc.constants, dbc.parser, dbc.file
 
@@ -1714,6 +1714,11 @@ class SpellDataGenerator(DataGenerator):
         21,     # MECHANIC_MOUNT
     ]
 
+    # Effect subtype, field name
+    _label_whitelist = [
+        ( 218, 'misc_value_2' ),
+    ]
+
     _spell_blacklist = [
         3561,   # Teleports --
         3562,
@@ -1768,7 +1773,7 @@ class SpellDataGenerator(DataGenerator):
                 'SpellEquippedItems', 'SpecializationSpells', 'ChrSpecialization',
                 'SpellEffectScaling', 'SpellMisc', 'SpellProcsPerMinute', 'ItemSetSpell',
                 'ItemEffect', 'MinorTalent', 'ArtifactPowerRank', 'ArtifactPower', 'Artifact',
-                'SpellShapeshift', 'SpellMechanic' ]
+                'SpellShapeshift', 'SpellMechanic', 'SpellLabel' ]
 
         if self._options.build < 23436:
             self._dbc.append('Item-sparse')
@@ -1809,6 +1814,7 @@ class SpellDataGenerator(DataGenerator):
             link(self._spellclassoptions_db, 'id_spell', self._spell_db, 'class_option')
             link(self._spellshapeshift_db, 'id_spell', self._spell_db, 'shapeshift')
             link(self._artifactpowerrank_db, 'id_spell', self._spell_db, 'artifact_power')
+            link(self._spelllabel_db, 'id_spell', self._spell_db, 'label');
 
             # Effect data model linkage
             link(self._spelleffectscaling_db, 'id_effect', self._spelleffect_db, 'scaling')
@@ -1863,8 +1869,6 @@ class SpellDataGenerator(DataGenerator):
     def spell_state(self, spell, enabled_effects = None):
         spell_name = spell.name
 
-        if spell.id == 1:
-            pdb.set_trace()
         # Check for blacklisted spells
         if spell.id in SpellDataGenerator._spell_blacklist:
             logging.debug("Spell id %u (%s) is blacklisted", spell.id, spell.name)
@@ -2287,7 +2291,6 @@ class SpellDataGenerator(DataGenerator):
                 if pattern.match(spell_data.name):
                     self.process_spell(spell_id, ids, 0, 0)
 
-
         # After normal spells have been fetched, go through all spell ids,
         # and get all the relevant aura_ids for selected spells
         more_ids = { }
@@ -2316,6 +2319,8 @@ class SpellDataGenerator(DataGenerator):
         id_keys = sorted(ids.keys())
         effects = set()
         powers = set()
+        # Whitelist labels separately, based on effect types, otherwise we get far too many
+        included_labels = set()
 
         # Hotfix data for spells, effects, powers
         spell_hotfix_data = {}
@@ -2482,6 +2487,11 @@ class SpellDataGenerator(DataGenerator):
                     if effect.is_hotfixed():
                         hotfix_flags |= SPELL_EFFECT_HOTFIX_PRESENT
 
+                    # Check if we need to grab a specific label number for the effect
+                    for sub_type, field in SpellDataGenerator._label_whitelist:
+                        if effect.sub_type == sub_type:
+                            included_labels.add(getattr(effect, field))
+
             # Add spell flags
             # 36
             fields += [ '{ %s }' % ', '.join(misc.field('flags_1', 'flags_2', 'flags_3', 'flags_4',
@@ -2548,9 +2558,10 @@ class SpellDataGenerator(DataGenerator):
             f, hfd = spell.get_hotfix_info(('rank', 44))
             hotfix_flags |= f
             hotfix_data += hfd
+
             # Pad struct with empty pointers for direct access to spell effect data
-            # 44, 45, 46, 47
-            fields += [ u'0', u'0', u'0', u'0' ]
+            # 45, 46, 47, 48, 49
+            fields += [ u'0', u'0', u'0', u'0', u'0', ]
 
             # Finally, update hotfix flags, they are located in the array of fields at position 2
             if spell._flags == -1:
@@ -2752,6 +2763,27 @@ class SpellDataGenerator(DataGenerator):
             except:
                 sys.stderr.write('%s\n' % fields)
                 sys.exit(1)
+
+        self._out.write('};\n\n')
+
+        labels = []
+        for label_id, label_data in self._spelllabel_db.items():
+            if label_data.label not in included_labels:
+                continue
+
+            if label_data.id_spell not in id_keys:
+                continue
+
+            labels.append(label_data)
+
+        labels.sort(key = lambda k: k.id)
+
+        self._out.write('#define __%s_SIZE (%d)\n\n' % ( self.format_str( "spelllabel" ).upper(), len(labels) ))
+        self._out.write('// %d labels, wow build level %d\n' % ( len(labels), self._options.build ))
+        self._out.write('static struct spelllabel_data_t __%s_data[] = {\n' % ( self.format_str( "spelllabel" ) ))
+
+        for label in labels + [ self._spelllabel_db[0] ]:
+            self._out.write('  { %s },\n' % (', '.join(label.field('id', 'id_spell', 'label'))))
 
         self._out.write('};\n\n')
 

@@ -19,6 +19,13 @@ struct spelleffect_data_t;
 struct spellpower_data_t;
 struct talent_data_t;
 
+struct spelllabel_data_t
+{
+  unsigned id;
+  unsigned id_spell;
+  short    label;
+};
+
 struct item_child_equipment_t
 {
   unsigned id;
