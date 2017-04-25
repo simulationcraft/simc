@@ -417,6 +417,7 @@ def initialize_data_model(options, obj):
         dbc.data.Spell.link('shapeshift', dbc.data.SpellShapeshift)
         dbc.data.Spell.link('scaling', dbc.data.SpellScaling)
         dbc.data.Spell.link('artifact_power', dbc.data.ArtifactPowerRank)
+        dbc.data.Spell.link('label', dbc.data.SpellLabel)
 
     if 'SpellEffect' in dir(obj):
         dbc.data.SpellEffect.link('scaling', dbc.data.SpellEffectScaling)
