@@ -31,7 +31,8 @@ role=attack
 position=ranged_back
 talents=2112333
 spec=elemental
-artifact=40:137365:137272:137365:0:291:1:294:1:295:1:296:1:298:3:300:6:301:3:302:3:303:3:1350:1
+artifact=40:0:0:0:0:291:1:292:1:293:1:294:1:296:1:300:2:301:3:302:3:303:3:304:3:1350:1
+
 head=shadow_archers_helm,id=139244,bonus_id=1492/1727
 neck=breathless_choker,id=137461,bonus_id=1492/1727,enchant=mark_of_the_hidden_satyr
 shoulders=epaulets_of_deceitful_intent,id=134480,bonus_id=1492/1727
