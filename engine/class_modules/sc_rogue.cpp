@@ -7358,7 +7358,7 @@ void rogue_t::init_action_list()
     ptr_stealth_cds -> add_action( this, "Shadow Dance", "if=charges_fractional>=variable.shd_fractionnal" );
     ptr_stealth_cds -> add_action( "pool_resource,for_next=1,extra_amount=40" );
     ptr_stealth_cds -> add_action( "shadowmeld,if=energy>=40&energy.deficit>=10+variable.ssw_refund" );
-    ptr_stealth_cds -> add_action( this, "Shadow Dance", "if=combo_points.deficit>=5-talent.vigor.enabled" );
+    ptr_stealth_cds -> add_action( this, "Shadow Dance", "if=combo_points.deficit>=2+(buff.shadowstrike.up|talent.subterfuge.enabled)*2" );
 
     // Stealthed Rotation
     action_priority_list_t* ptr_stealthed = get_action_priority_list( "ptr_stealthed", "Stealthed Rotation" );
