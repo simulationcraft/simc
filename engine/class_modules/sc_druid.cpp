@@ -6887,6 +6887,9 @@ void druid_t::init_spells()
   artifact.iron_claws                   = find_artifact_spell( "Iron Claws" );
   artifact.roar_of_the_crowd            = find_artifact_spell( "Roar of the Crowd" );
   artifact.pawsitive_outlook            = find_artifact_spell( "Pawsitive Outlook" );
+  artifact.fortitude_of_the_cenarion_circle = find_artifact_spell("Fortitude of the Cenarion Circle");
+
+
 
   // Active Actions =========================================================
 
@@ -8146,8 +8149,6 @@ double druid_t::composite_armor_multiplier() const
   a *= 1.0 + buff.protection_of_ashamane -> check() * buff.protection_of_ashamane -> data().effectN( 2 ).percent();
 
   a *= 1.0 + artifact.iron_claws.percent();
-
-  a *= 1.0 + artifact.ursoncs
 
   return a;
 }
