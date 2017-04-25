@@ -3137,6 +3137,7 @@ struct time_and_space_t : public arcane_mage_spell_t
   time_and_space_t( mage_t* p ) :
     arcane_mage_spell_t( "arcane_explosion_echo", p, p -> find_spell( 240689 ) )
   {
+    triggers_arcane_missiles = true;
     aoe = -1;
     trigger_gcd = timespan_t::zero();
     background = true;
@@ -3153,6 +3154,17 @@ struct time_and_space_t : public arcane_mage_spell_t
     am *= arcane_charge_damage_bonus( false );
 
     return am;
+  }
+
+  virtual void execute() override
+  {
+    arcane_mage_spell_t::execute();
+
+    if ( p() -> bugs )
+    {
+      // AM needs to be triggered manually because TnS is background.
+      trigger_am( am_trigger_source_id );
+    }
   }
 };
 
@@ -4792,6 +4804,12 @@ struct ice_time_nova_t : public frost_mage_spell_t
   virtual void impact( action_state_t* s ) override
   {
     frost_mage_spell_t::impact( s );
+
+    if ( p() -> bugs )
+    {
+      p() -> buffs.sephuzs_secret -> trigger();
+    }
+
     p() -> apply_crowd_control( s, MECHANIC_ROOT );
   }
 };
@@ -5870,7 +5888,7 @@ struct phoenixs_flames_splash_t : public fire_mage_spell_t
   {
     double am = fire_mage_spell_t::action_multiplier();
 
-    am *= std::pow( strafing_run_multiplier, chain_number );
+    am *= std::pow( strafing_run_multiplier, p() -> bugs ? chain_number + 1 : chain_number );
 
     return am;
   }
