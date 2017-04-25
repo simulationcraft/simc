@@ -723,6 +723,7 @@ public:
     artifact_power_t iron_claws;
     //7.2
     artifact_power_t pawsitive_outlook;
+    artifact_power_t fortitude_of_the_cenarion_circle;
 
     // NYI
     artifact_power_t bloody_paws;
@@ -8146,6 +8147,8 @@ double druid_t::composite_armor_multiplier() const
 
   a *= 1.0 + artifact.iron_claws.percent();
 
+  a *= 1.0 + artifact.ursoncs
+
   return a;
 }
 
@@ -8181,6 +8184,7 @@ double druid_t::composite_player_multiplier( school_e school ) const
 
   m *= 1.0 + artifact.fangs_of_the_first.percent();
   m *= 1.0 + artifact.ferocity_of_the_cenarion_circle.percent();
+  m *= 1.0 + artifact.fortitude_of_the_cenarion_circle.data().effectN( 1 ).percent();
   m *= 1.0 + artifact.goldrinns_fury.percent();
   m *= 1.0 + artifact.radiance_of_the_cenarion_circle.data().effectN( 1 ).percent();
 
