@@ -116,7 +116,7 @@ actions.ptr_stealth_cds=vanish,if=mantle_duration=0&cooldown.shadow_dance.charge
 actions.ptr_stealth_cds+=/shadow_dance,if=charges_fractional>=variable.shd_fractionnal
 actions.ptr_stealth_cds+=/pool_resource,for_next=1,extra_amount=40
 actions.ptr_stealth_cds+=/shadowmeld,if=energy>=40&energy.deficit>=10+variable.ssw_refund
-actions.ptr_stealth_cds+=/shadow_dance,if=combo_points.deficit>=5-talent.vigor.enabled
+actions.ptr_stealth_cds+=/shadow_dance,if=combo_points.deficit>=2+(buff.shadowstrike.up|talent.subterfuge.enabled)*2
 
 # Stealthed Rotation
 actions.ptr_stealthed=call_action_list,name=ptr_finish,if=combo_points>=5&(spell_targets.shuriken_storm>=2+talent.premeditation.enabled+equipped.shadow_satyrs_walk|(mantle_duration<=1.3&mantle_duration-gcd.remains>=0.3))
