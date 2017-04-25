@@ -260,7 +260,7 @@ class DBCParserBase:
             self.full_name(),
             ', '.join(['%s (len=%d, i24=%s)' % (u.format.decode('utf-8'), u.size, i24) for i24, u in unpackers]))
 
-        if len(self.unpackers) == 1:
+        if len(unpackers) == 1:
             return lambda data, ro, rs: unpackers[0][1].unpack_from(data, ro)
         else:
             return lambda data, ro, rs: _do_parse(unpackers, data, ro, rs)
@@ -611,7 +611,7 @@ class DBCParserBase:
         dbc_id, record_offset, record_size = self.find_record_offset(id_)
 
         if record_offset > 0:
-            return dbc_id, self.record_parser(record_offset, record_size)
+            return dbc_id, self.record_parser(self.data, record_offset, record_size)
         else:
             return 0, tuple()
 
