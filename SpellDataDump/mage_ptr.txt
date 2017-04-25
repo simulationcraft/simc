@@ -1,4 +1,4 @@
-SimulationCraft 720-02 for World of Warcraft 7.2.0 PTR (wow build 23826)
+SimulationCraft 720-03 for World of Warcraft 7.2.5 PTR (wow build 23927)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Arcane Fire Frost Mage
@@ -2541,10 +2541,10 @@ Effects          :
 #2 (id=172453)   : Apply Aura (6) | Unknown effect sub type (457)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1500 | Target: Self(1)
                    Affected Spells: Fireball (133), Scorch (2948), Pyroblast (11366), Flurry (44614)
-#3 (id=188984)   : Apply Aura (6) | Unknown effect sub type (218)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf7 | Target: Self(1)
-#4 (id=188985)   : Apply Aura (6) | Unknown effect sub type (218)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf8 | Target: Self(1)
+#3 (id=188984)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 247 (Label) | Target: Self(1)
+#4 (id=188985)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self(1)
 #5 (id=191129)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #6 (id=257393)   : Apply Aura (6) | Dummy (4)

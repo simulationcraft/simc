@@ -1,4 +1,4 @@
-SimulationCraft 720-02 for World of Warcraft 7.2.0 PTR (wow build 23826)
+SimulationCraft 720-03 for World of Warcraft 7.2.5 PTR (wow build 23927)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -3013,10 +3013,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 672 | Target: Self(1)
 #3 (id=191035)   : Apply Aura (6) | Unknown effect sub type (232)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 26 | Target: Self(1)
-#4 (id=191036)   : Apply Aura (6) | Unknown effect sub type (218)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf7 | Target: Self(1)
-#5 (id=191037)   : Apply Aura (6) | Unknown effect sub type (218)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf8 | Target: Self(1)
+#4 (id=191036)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 247 (Label) | Target: Self(1)
+#5 (id=191037)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self(1)
 #6 (id=260719)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #7 (id=260720)   : Apply Aura (6) | Dummy (4)
