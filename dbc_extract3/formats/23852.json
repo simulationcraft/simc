@@ -456,6 +456,10 @@
     { "data_type": "b", "field": "unk_6" },
     { "data_type": "H", "field": "unk_5" }
   ],
+  "SpellLabel": [
+    { "data_type": "I", "field": "id_spell", "formats": { "cpp": "%6u" } },
+    { "data_type": "h", "field": "label", "formats": { "cpp": "%4d" } }
+  ],
   "SpellLevels": [
     { "data_type": "I", "field": "id_spell" },
     { "data_type": "H", "field": "base_level" },
