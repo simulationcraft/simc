@@ -212,6 +212,7 @@ public:
     const spell_data_t* grimoire_of_synergy;
 
     const spell_data_t* soul_effigy;
+    const spell_data_t* deaths_embrace;
     const spell_data_t* phantom_singularity;
 
     const spell_data_t* wreak_havoc;
@@ -2150,8 +2151,7 @@ struct wild_imp_pet_t: public warlock_pet_t
               pets::warlock_pet_t *lock_pet = static_cast<pets::warlock_pet_t*> ( pet );
               if( lock_pet && !lock_pet -> is_sleeping() && lock_pet != this )
               {
-                  lock_pet -> buffs.the_expendables -> bump( 1,
-                              buffs.the_expendables -> data().effectN( 1 ).percent() );
+                  lock_pet -> buffs.the_expendables -> trigger();
                   o() -> procs.the_expendables -> occur();
               }
           }
@@ -2378,6 +2378,7 @@ private:
     can_havoc = false;
 
     affected_by_contagion = true;
+    affected_by_deaths_embrace = false;
     destro_mastery = true;
     can_feretory = true;
 
@@ -2393,7 +2394,10 @@ public:
   bool affected_by_contagion;
   bool affected_by_flamelicked;
   bool affected_by_odr_shawl_of_the_ymirjar;
-  bool destruction_damage_increase;
+  bool affected_by_deaths_embrace;
+  bool affliction_direct_increase;
+  bool affliction_dot_increase;
+  bool destruction_direct_increase;
   bool destruction_dot_increase;
   bool destro_mastery;
   bool can_feretory;
@@ -2490,12 +2494,19 @@ public:
     }
 
     affected_by_odr_shawl_of_the_ymirjar = data().affected_by( p() -> find_spell( 212173 ) -> effectN( 1 ) );
-    destruction_damage_increase = data().affected_by( p() -> spec.destruction -> effectN( 1 ) );
+    destruction_direct_increase = data().affected_by( p() -> spec.destruction -> effectN( 1 ) );
     destruction_dot_increase = data().affected_by( p() -> spec.destruction -> effectN( 2 ) );
-    if ( destruction_damage_increase )
+    if ( destruction_direct_increase )
       base_dd_multiplier *= 1.0 + p() -> spec.destruction -> effectN( 1 ).percent();
     if ( destruction_dot_increase ) 
       base_td_multiplier *= 1.0 + p() -> spec.destruction -> effectN( 2 ).percent();
+
+    affliction_direct_increase = data().affected_by( p() -> spec.affliction -> effectN( 2 ) );
+    affliction_dot_increase = data().affected_by( p() -> spec.affliction -> effectN( 3 ) );
+    if ( affliction_direct_increase )
+      base_dd_multiplier *= 1.0 + p() -> spec.affliction -> effectN( 2 ).percent();
+    if ( affliction_dot_increase )
+      base_td_multiplier *= 1.0 + p() -> spec.affliction -> effectN( 3 ).percent();
   }
 
   int n_targets() const override
@@ -2707,6 +2718,13 @@ public:
       }
     }
 
+    double deaths_embrace_health = p() -> talents.deaths_embrace -> effectN( 2 ).base_value();
+
+    if ( p() -> talents.deaths_embrace -> ok() && target -> health_percentage() <= deaths_embrace_health && affected_by_deaths_embrace )
+    {
+      m *= 1.0 + p() -> talents.deaths_embrace -> effectN( 1 ).percent() * ( 1 - target -> health_percentage() / deaths_embrace_health );
+    }
+
     return spell_t::composite_target_multiplier( t ) * m;
   }
 
@@ -2797,6 +2815,7 @@ struct agony_t: public warlock_spell_t
     warlock_spell_t( p, "Agony" ), agony_action_id(0)
   {
     may_crit = false;
+    affected_by_deaths_embrace = true;
 
     chance = p -> find_spell( 199282 ) -> proc_chance();
   }
@@ -2935,6 +2954,7 @@ struct unstable_affliction_t: public warlock_spell_t
       dual = true;
       tick_may_crit = hasted_ticks = true;
       affected_by_contagion = false;
+      affected_by_deaths_embrace = true;
 
       if ( p -> sets.has_set_bonus( WARLOCK_AFFLICTION, T19, B2 ) )
         base_multiplier *= 1.0 + p -> sets.set( WARLOCK_AFFLICTION, T19, B2 ) -> effectN( 1 ).percent();
@@ -3193,6 +3213,7 @@ struct corruption_t: public warlock_spell_t
     warlock_spell_t( "Corruption", p, p -> find_spell( 172 ) ) //Use original corruption until DBC acts more friendly.
   {
     may_crit = false;
+    affected_by_deaths_embrace = true;
     dot_duration = data().effectN( 1 ).trigger() -> duration();
     spell_power_mod.tick = data().effectN( 1 ).trigger() -> effectN( 1 ).sp_coeff();
     base_tick_time = data().effectN( 1 ).trigger() -> effectN( 1 ).period();
@@ -5225,6 +5246,7 @@ struct drain_soul_t: public warlock_spell_t
     channeled = true;
     hasted_ticks = false;
     may_crit = false;
+    affected_by_deaths_embrace = true;
     rend_soul_proc_chance = p -> artifact.rend_soul.data().proc_chance();
   }
 
@@ -5417,6 +5439,7 @@ struct phantom_singularity_tick_t : public warlock_spell_t
     background = true;
     may_miss = false;
     dual = true;
+    affected_by_deaths_embrace = true;
     aoe = -1;
   }
 };
@@ -6430,6 +6453,7 @@ void warlock_t::init_spells()
   talents.grimoire_of_synergy    = find_talent_spell( "Grimoire of Synergy" );
 
   talents.soul_effigy            = find_talent_spell( "Soul Effigy" );
+  talents.deaths_embrace         = find_talent_spell( "Death's Embrace" );
   talents.phantom_singularity    = find_talent_spell( "Phantom Singularity" );
 
   talents.wreak_havoc            = find_talent_spell( "Wreak Havoc" );
