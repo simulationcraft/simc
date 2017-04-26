@@ -2979,6 +2979,8 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     }
     if ( p() -> sets.has_set_bonus( MAGE_ARCANE, T20, B4 ) )
     {
+      // TODO: Spell data for this is really weird, both 2pc and 4pc are named "2P Bonus" and have
+      // similar wording. Double check after they fix it.
       p() -> cooldowns.presence_of_mind
           -> adjust( -1000 * p() -> sets.set( MAGE_ARCANE, T20, B4 ) -> effectN( 1 ).time_value() );
     }
@@ -7071,6 +7073,8 @@ void mage_t::create_buffs()
                                                 + talents.overpowered -> effectN( 1 ).percent() );
   buffs.arcane_power -> buff_duration += artifact.aegwynns_imperative.time_value();
 
+  // TODO: Looks like T20 2pc might be triggering different buff, spell ID 246224. Spell data is
+  // wonky, double check after they fix it.
   buffs.deadly_presence       = buff_creator_t( this, "deadly_presence", find_spell( 242247 ) )
                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                                   .default_value( find_spell( 242247 ) -> effectN( 1 ).percent() );
