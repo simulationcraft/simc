@@ -655,7 +655,7 @@ void SC_OptionsTab::decodeOptions()
   QSettings settings;
   settings.beginGroup( "options" );
   load_setting( settings, "version", choice.version );
-  load_setting( settings, "target_error", choice.target_error, "N/A" );
+  load_setting( settings, "target_error", choice.target_error, "Auto" );
   load_setting( settings, "iterations", choice.iterations, "10000" );
   load_setting( settings, "fight_length", choice.fight_length, "300" ); //More representative of raid fights nowadays. - Collision 9/3/2016
   load_setting( settings, "fight_variance", choice.fight_variance, "20" );

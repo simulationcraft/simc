@@ -86,6 +86,7 @@ const item_set_bonus_t* set_bonus( bool ptr );
 std::size_t             n_set_bonus( bool ptr );
 const item_enchantment_data_t* item_enchantments( bool ptr );
 const item_child_equipment_t* child_equipments( bool ptr );
+const spelllabel_data_t* spell_labels( bool ptr );
 std::size_t        n_item_enchantments( bool ptr );
 const gem_property_data_t* gem_properties( bool ptr );
 specialization_e translate_spec_str   ( player_e ptype, const std::string& spec_str );
@@ -840,6 +841,7 @@ public:
   std::vector<const spelleffect_data_t*>* _effects;
   std::vector<const spellpower_data_t*>*  _power;
   std::vector<spell_data_t*>* _driver; // The triggered spell's driver(s)
+  std::vector<const spelllabel_data_t*>* _labels; // Applied (known) labels to the spell
   const hotfix::client_hotfix_entry_t* _hotfix_entry; // First hotfix entry in the hotfix table, if available
 
   // Direct member access functions
@@ -952,6 +954,9 @@ public:
   size_t power_count() const
   { return _power ? _power -> size() : 0; }
 
+  size_t label_count() const
+  { return _labels ? _labels -> size() : 0; }
+
   bool found() const
   { return ( this != not_found() ); }
 
@@ -997,6 +1002,16 @@ public:
     }
 
     return *spellpower_data_t::nil();
+  }
+
+  short labelN( size_t idx ) const
+  {
+    if ( _labels )
+    {
+      return _labels -> at( idx - 1 ) -> label;
+    }
+
+    return 0;
   }
 
   const spellpower_data_t& powerN( power_e pt ) const

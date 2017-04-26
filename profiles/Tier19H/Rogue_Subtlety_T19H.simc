@@ -25,7 +25,7 @@ actions.precombat+=/potion,name=prolonged_power
 actions.precombat+=/marked_for_death,if=raid_event.adds.in>40
 # Defined variables that doesn't change during the fight
 actions.precombat+=/variable,name=ssw_refund,value=equipped.shadow_satyrs_walk*(6+ssw_refund_offset)
-actions.precombat+=/variable,name=stealth_threshold,value=(15+talent.vigor.enabled*35+talent.master_of_shadows.enabled*25+variable.ssw_refund)
+actions.precombat+=/variable,name=stealth_threshold,value=(15+talent.vigor.enabled*35+talent.master_of_shadows.enabled*(25+ptr*15)+variable.ssw_refund)
 actions.precombat+=/variable,name=shd_fractionnal,value=ptr*(1.725+0.6*talent.enveloping_shadows.enabled)+(1-ptr)*2.45
 actions.precombat+=/enveloping_shadows,if=combo_points>=5&ptr=0
 # Since 7.1.5, casting Shadow Dance before going in combat let you extends the stealth buff, so it's worth to use with Subterfuge talent. Has not been fixed in 7.2.5!
@@ -116,7 +116,7 @@ actions.ptr_stealth_cds=vanish,if=mantle_duration=0&cooldown.shadow_dance.charge
 actions.ptr_stealth_cds+=/shadow_dance,if=charges_fractional>=variable.shd_fractionnal
 actions.ptr_stealth_cds+=/pool_resource,for_next=1,extra_amount=40
 actions.ptr_stealth_cds+=/shadowmeld,if=energy>=40&energy.deficit>=10+variable.ssw_refund
-actions.ptr_stealth_cds+=/shadow_dance,if=combo_points.deficit>=5-talent.vigor.enabled
+actions.ptr_stealth_cds+=/shadow_dance,if=combo_points.deficit>=2+(buff.shadowstrike.up|talent.subterfuge.enabled)*2
 
 # Stealthed Rotation
 actions.ptr_stealthed=call_action_list,name=ptr_finish,if=combo_points>=5&(spell_targets.shuriken_storm>=2+talent.premeditation.enabled+equipped.shadow_satyrs_walk|(mantle_duration<=1.3&mantle_duration-gcd.remains>=0.3))

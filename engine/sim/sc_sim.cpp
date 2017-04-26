@@ -2595,6 +2595,12 @@ bool sim_t::iterate()
     progress_bar.output( true );
   }
 
+  // Deactivate the final actor after simulation is done in single_actor_batch
+  if ( single_actor_batch )
+  {
+    player_no_pet_list[ player_no_pet_list.size() - 1 ] -> deactivate();
+  }
+
   reset();
 
   iterations = current_iteration + 1;
@@ -3680,8 +3686,6 @@ void sim_t::activate_actors()
   healing_no_pet_list.reset_callbacks();
   healing_pet_list.reset_callbacks();
 
-  current_iteration = -1;
-
   // Normal sim mode activates all actors .. and this method is only called once at the beginning of
   // the simulation run.
   if ( ! single_actor_batch )
@@ -3693,7 +3697,16 @@ void sim_t::activate_actors()
   {
     range::for_each( target_list, []( player_t* t ) { t -> actor_changed(); } );
 
+    // Deactivate old actor
+    if ( current_index > 0 )
+    {
+      player_no_pet_list[ current_index - 1 ] -> deactivate();
+    }
+
+    // Activate new actor
     player_no_pet_list[ current_index ] -> activate();
     update_sim_phase_str();
   }
+
+  current_iteration = -1;
 }

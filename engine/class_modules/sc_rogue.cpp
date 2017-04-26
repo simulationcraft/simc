@@ -397,6 +397,7 @@ struct rogue_t : public player_t
     // Outlaw
     const spell_data_t* blade_flurry;
     const spell_data_t* combat_potency;
+    const spell_data_t* restless_blades;
     const spell_data_t* roll_the_bones;
     const spell_data_t* ruthlessness;
     const spell_data_t* saber_slash;
@@ -614,6 +615,7 @@ struct rogue_t : public player_t
     proc_t* roll_the_bones_1;
     proc_t* roll_the_bones_2;
     proc_t* roll_the_bones_3;
+    proc_t* roll_the_bones_5;
     proc_t* roll_the_bones_6;
 
     // Subtlety
@@ -766,6 +768,7 @@ struct rogue_t : public player_t
   void trigger_surge_of_toxins( const action_state_t* );
   void trigger_poison_knives( const action_state_t* );
   void trigger_true_bearing( const action_state_t* );
+  void trigger_restless_blades( const action_state_t* );
   void trigger_exsanguinate( const action_state_t* );
   void trigger_relentless_strikes( const action_state_t* );
   void trigger_insignia_of_ravenholdt( action_state_t* );
@@ -2694,6 +2697,8 @@ struct between_the_eyes_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
+    p() -> trigger_restless_blades( execute_state );
+
     if ( p() -> buffs.true_bearing -> up() )
     {
       p() -> trigger_true_bearing( execute_state );
@@ -3716,6 +3721,8 @@ struct run_through_t: public rogue_attack_t
       p() -> greed -> schedule_execute();
     }
 
+    p() -> trigger_restless_blades( execute_state );
+
     if ( p() -> buffs.true_bearing -> up() )
     {
       p() -> trigger_true_bearing( execute_state );
@@ -3999,6 +4006,8 @@ struct roll_the_bones_t : public rogue_attack_t
     timespan_t d = ( cast_state( execute_state ) -> cp + 1 ) * p() -> buffs.roll_the_bones -> data().duration();
 
     p() -> buffs.roll_the_bones -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, d );
+
+    p() -> trigger_restless_blades( execute_state );
 
     if ( p() -> buffs.true_bearing -> up() )
     {
@@ -5992,6 +6001,27 @@ void rogue_t::trigger_true_bearing( const action_state_t* state )
   cooldowns.death_from_above -> adjust( v, false );
 }
 
+void rogue_t::trigger_restless_blades( const action_state_t* state )
+{
+  if ( ! maybe_ptr( dbc.ptr ) )
+    return;
+
+  timespan_t v = timespan_t::from_seconds( spec.restless_blades -> effectN( 1 ).base_value() / 10.0 );
+  v *= - actions::rogue_attack_t::cast_state( state ) -> cp;
+
+  // Abilities
+  cooldowns.adrenaline_rush -> adjust( v, false );
+  cooldowns.between_the_eyes -> adjust( v, false );
+  cooldowns.sprint -> adjust( v, false );
+  cooldowns.vanish -> adjust( v, false );
+  // Talents
+  cooldowns.grappling_hook -> adjust( v, false );
+  cooldowns.cannonball_barrage -> adjust( v, false );
+  cooldowns.killing_spree -> adjust( v, false );
+  cooldowns.marked_for_death -> adjust( v, false );
+  cooldowns.death_from_above -> adjust( v, false );
+}
+
 void do_exsanguinate( dot_t* dot, double coeff )
 {
   if ( ! dot -> is_ticking() )
@@ -6495,7 +6525,9 @@ struct roll_the_bones_t : public buff_t
   std::vector<buff_t*> random_roll()
   {
     std::array<unsigned, 6> rolls = { { 0, 0, 0, 0, 0, 0 } };
-    for ( size_t i = 0; i < rolls.size(); ++i )
+    size_t n_rolls = rogue -> dbc.ptr ? 5 : 6;
+
+    for ( size_t i = 0; i < n_rolls; ++i )
     {
       rolls[ rng().range( 0, buffs.size() ) ]++;
     }
@@ -6564,6 +6596,9 @@ struct roll_the_bones_t : public buff_t
         break;
       case 3:
         rogue -> procs.roll_the_bones_3 -> occur();
+        break;
+      case 5:
+        rogue -> procs.roll_the_bones_5 -> occur();
         break;
       case 6:
         rogue -> procs.roll_the_bones_6 -> occur();
@@ -7175,7 +7210,7 @@ void rogue_t::init_action_list()
   {
     // Pre-Combat
     precombat -> add_action( "variable,name=ssw_refund,value=equipped.shadow_satyrs_walk*(6+ssw_refund_offset)", "Defined variables that doesn't change during the fight" );
-    precombat -> add_action( "variable,name=stealth_threshold,value=(15+talent.vigor.enabled*35+talent.master_of_shadows.enabled*25+variable.ssw_refund)" );
+    precombat -> add_action( "variable,name=stealth_threshold,value=(15+talent.vigor.enabled*35+talent.master_of_shadows.enabled*(25+ptr*15)+variable.ssw_refund)" );
     precombat -> add_action( "variable,name=shd_fractionnal,value=ptr*(1.725+0.6*talent.enveloping_shadows.enabled)+(1-ptr)*2.45" );
     precombat -> add_talent( this, "Enveloping Shadows", "if=combo_points>=5&ptr=0" );
     precombat -> add_action( this, "Shadow Dance", "if=talent.subterfuge.enabled&bugs", "Since 7.1.5, casting Shadow Dance before going in combat let you extends the stealth buff, so it's worth to use with Subterfuge talent. Has not been fixed in 7.2.5!" ); // Before SoD because we do it while not in stealth in-game
@@ -7323,7 +7358,7 @@ void rogue_t::init_action_list()
     ptr_stealth_cds -> add_action( this, "Shadow Dance", "if=charges_fractional>=variable.shd_fractionnal" );
     ptr_stealth_cds -> add_action( "pool_resource,for_next=1,extra_amount=40" );
     ptr_stealth_cds -> add_action( "shadowmeld,if=energy>=40&energy.deficit>=10+variable.ssw_refund" );
-    ptr_stealth_cds -> add_action( this, "Shadow Dance", "if=combo_points.deficit>=5-talent.vigor.enabled" );
+    ptr_stealth_cds -> add_action( this, "Shadow Dance", "if=combo_points.deficit>=2+(buff.shadowstrike.up|talent.subterfuge.enabled)*2" );
 
     // Stealthed Rotation
     action_priority_list_t* ptr_stealthed = get_action_priority_list( "ptr_stealthed", "Stealthed Rotation" );
@@ -7692,6 +7727,7 @@ void rogue_t::init_spells()
   // Outlaw
   spec.blade_flurry         = find_specialization_spell( "Blade Flurry" );
   spec.combat_potency       = find_specialization_spell( "Combat Potency" );
+  spec.restless_blades      = find_specialization_spell( "Restless Blades" );
   spec.roll_the_bones       = find_specialization_spell( "Roll the Bones" );
   spec.ruthlessness         = find_specialization_spell( "Ruthlessness" );
   spec.saber_slash          = find_specialization_spell( "Saber Slash" );
@@ -7953,6 +7989,7 @@ void rogue_t::init_procs()
   procs.roll_the_bones_1         = get_proc( "Roll the Bones: 1 buff"  );
   procs.roll_the_bones_2         = get_proc( "Roll the Bones: 2 buffs" );
   procs.roll_the_bones_3         = get_proc( "Roll the Bones: 3 buffs" );
+  procs.roll_the_bones_5         = get_proc( "Roll the Bones: 5 buffs" );
   procs.roll_the_bones_6         = get_proc( "Roll the Bones: 6 buffs" );
 
   procs.deepening_shadows        = get_proc( "Deepening Shadows"       );
@@ -8080,7 +8117,7 @@ void rogue_t::create_buffs()
                                 .default_value( find_spell( 193357 ) -> effectN( 1 ).percent() )
                                 .add_invalidate( CACHE_CRIT_CHANCE );
   buffs.true_bearing          = buff_creator_t( this, "true_bearing", find_spell( 193359 ) )
-                                .default_value( find_spell( 193359 ) -> effectN( 1 ).base_value() );
+                                .default_value( find_spell( 193359 ) -> effectN( 1 ).base_value() * ( maybe_ptr( dbc.ptr ) ? 0.1 : 1.0 ) );
   // Note, since I (navv) am a slacker, this needs to be constructed after the secondary buffs.
   buff_creator_t rtb_creator  = buff_creator_t( this, "roll_the_bones", spec.roll_the_bones )
                                 .period( timespan_t::zero() ) // Disable ticking

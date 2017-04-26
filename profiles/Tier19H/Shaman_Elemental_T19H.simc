@@ -4,7 +4,7 @@ race=orc
 role=spell
 position=ranged_back
 talents=2112333
-artifact=40:139262:139259:139262:0:291:1:294:1:295:1:296:1:297:1:298:3:299:3:300:6:301:3:302:3:303:3:306:3:1350:1
+artifact=40:0:0:0:0:291:1:292:1:293:1:294:1:295:1:296:1:297:1:298:3:299:3:300:3:301:3:302:3:303:3:304:3:305:3:306:3:1350:1:1387:1
 spec=elemental
 
 # Default consumables
@@ -39,6 +39,7 @@ actions+=/totem_mastery,if=buff.resonance_totem.remains<2
 actions+=/fire_elemental
 actions+=/storm_elemental
 actions+=/elemental_mastery
+actions+=/use_items
 actions+=/use_item,name=gnawed_thumb_ring,if=equipped.gnawed_thumb_ring&(talent.ascendance.enabled&!buff.ascendance.up|!talent.ascendance.enabled)
 actions+=/blood_fury,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50
 actions+=/berserking,if=!talent.ascendance.enabled|buff.ascendance.up

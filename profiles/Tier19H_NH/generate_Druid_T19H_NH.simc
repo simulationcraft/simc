@@ -1,0 +1,41 @@
+# T19H_NH
+# Tier 19 Heroic Nighthold
+# * Ilvl Cap: 895
+# * Artifact Rank Cap: 40
+# * 3 Relics with max ilevel of 895
+# * No Legendaries (see Raid_T19x_Legendary.simc)
+# * No items from World Bosses / World Quests / BoEs
+# * Mythic+ gear is permitted up to the Mythic+ item level cap
+# * No Random Gems (ie. Bonus RNG Gem Slots)
+# * No Tertiary Stats
+# * No Hardcoded Stats (generally if an item gives wrong stats: either bonus_id is wrong, either the item no longer exists in-game)
+# * It is recommended to use enchant name (ex : ",enchant=binding_of_mastery") rather than id/hardcoded stats.
+
+druid="Druid_Feral_T19H_NH"
+level=110
+race=night_elf
+timeofday=day
+region=eu
+role=attack
+talents=2331322
+artifact=58:0:0:0:0:1153:1:1154:1:1155:1:1156:1:1157:1:1158:1:1159:1:1160:3:1161:4:1162:4:1163:3:1164:4:1165:3:1166:4:1167:4:1168:3:1327:1:1365:1:1505:1:1633:1
+spec=feral
+
+head=hood_of_the_astral_warden,id=138330,bonus_id=3517
+neck=talisman_of_the_shaldorei,id=141326,bonus_id=3517,enchant=mark_of_the_hidden_satyr
+shoulders=mantle_of_the_torn_sky,id=140864,bonus_id=3517
+back=dreadlords_tattered_wingcover,id=140855,bonus_id=3517,enchant=binding_of_agility
+chest=robe_of_the_astral_warden,id=138324,bonus_id=3517
+wrists=bracers_of_impossible_choices,id=140889,bonus_id=3517
+hands=gloves_of_the_astral_warden,id=138327,bonus_id=3517
+waist=waistclasp_of_unethical_power,id=144405,bonus_id=3517
+legs=leggings_of_the_astral_warden,id=138333,bonus_id=3517
+feet=grovetenders_moccasins,id=140861,bonus_id=3517
+finger1=spellblades_gemmed_signet,id=140895,bonus_id=3517,enchant=binding_of_mastery
+finger2=ring_of_exclusive_servitude,id=140906,bonus_id=3517,enchant=binding_of_mastery
+trinket1=nightblooming_frond,id=140802,bonus_id=3517
+trinket2=eye_of_command,id=142167,bonus_id=1507:1727
+main_hand=fangs_of_ashamane,id=128860,bonus_id=723,gem_id=140819/140833/142517/0,relic_id=3517/3517/3517
+off_hand=fangs_of_ashamane,id=128859,gem_id=0/0/0/0,relic_id=0/0
+
+save=Druid_Feral_T19H_NH.simc

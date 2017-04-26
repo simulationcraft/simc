@@ -268,6 +268,13 @@ void stats_t::analyze()
   if ( analyzed ) return;
   analyzed = true;
 
+  // When single_actor_batch=1 is used in conjunction with target_error, each actor has run varying
+  // number of iterations to finish. The total number of iterations ran for each actor (when
+  // single_actor_batch=1) is stored in the actor-collected data structure.
+  int iterations = player -> collected_data.total_iterations > 0
+                   ? player -> collected_data.total_iterations
+                   : sim.iterations;
+
   bool channeled = false;
   for ( size_t i = 0; i < action_list.size(); i++ )
   {
@@ -290,14 +297,14 @@ void stats_t::analyze()
   portion_aps.analyze();
   portion_apse.analyze();
 
-  resource_gain.analyze( sim );
+  resource_gain.analyze( iterations );
 
   for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
   {
     rpe[ i ] = num_executes.mean() ? resource_gain.actual[ i ] / num_executes.mean() : -1;
     rpe_sum += rpe[ i ];
 
-    double resource_total = player -> iteration_resource_lost [ i ] / sim.iterations;
+    double resource_total = player -> iteration_resource_lost [ i ] / iterations;
 
     resource_portion[ i ] = ( resource_total > 0 ) ? ( resource_gain.actual[ i ] / resource_total ) : 0;
   }
@@ -338,7 +345,21 @@ void stats_t::analyze()
   ttpt = num_ticks.mean() ? total_tick_time.mean() / num_ticks.mean() : 0.0;
   etpe = num_executes.mean() ? ( total_execute_time.mean() + ( channeled ? total_tick_time.mean() : 0.0 ) ) / num_executes.mean() : 0.0;
 
-  timeline_amount.adjust( sim );
+  if ( ! sim.single_actor_batch )
+  {
+    timeline_amount.adjust( sim );
+  }
+  else
+  {
+    if ( player -> is_pet() )
+    {
+      timeline_amount.adjust( player -> cast_pet() -> owner -> collected_data.fight_length );
+    }
+    else
+    {
+      timeline_amount.adjust( player -> collected_data.fight_length );
+    }
+  }
 }
 
 // stats_results_t::merge ===================================================

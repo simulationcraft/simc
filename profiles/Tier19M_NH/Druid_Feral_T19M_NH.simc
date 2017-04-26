@@ -5,7 +5,7 @@ timeofday=day
 role=attack
 position=back
 talents=2331322
-artifact=58:0:0:0:0:1153:1:1154:1:1155:1:1156:1:1157:1:1158:1:1159:1:1160:3:1161:3:1162:3:1163:3:1164:3:1165:3:1166:3:1167:3:1168:3:1327:1:1365:20
+artifact=58:0:0:0:0:1153:1:1154:1:1155:1:1156:1:1157:1:1158:1:1159:1:1160:4:1161:4:1162:4:1163:4:1164:4:1165:4:1166:4:1167:4:1168:4:1327:1:1365:1:1505:4:1506:1:1507:1:1508:1:1633:1
 spec=feral
 
 # This default action priority list is automatically created based on your character.
@@ -28,6 +28,7 @@ actions.precombat+=/potion,name=old_war
 # Executed every time the actor is available.
 actions=dash,if=!buff.cat_form.up
 actions+=/cat_form
+actions+=/call_action_list,name=opener,if=!dot.rip.ticking&time<15&talent.savage_roar.enabled&talent.jagged_wounds.enabled&talent.bloodtalons.enabled&desired_targets<=1
 actions+=/wild_charge
 actions+=/displacer_beast,if=movement.distance>10
 actions+=/dash,if=movement.distance&buff.displacer_beast.down&buff.wild_charge_movement.down
@@ -49,6 +50,8 @@ actions+=/call_action_list,name=sbt_opener,if=talent.sabertooth.enabled&time<20
 actions+=/regrowth,if=equipped.ailuro_pouncers&talent.bloodtalons.enabled&buff.predatory_swiftness.stack>1&buff.bloodtalons.down
 actions+=/call_action_list,name=finisher
 actions+=/call_action_list,name=generator
+# The Following line massively increases performance of the simulation but can be safely removed.
+actions+=/wait,sec=1,if=energy.time_to_max>3
 
 # Use Savage Roar if it's expired and you're at 5 combo points or are about to use Brutal Slash
 actions.finisher=pool_resource,for_next=1
@@ -93,6 +96,16 @@ actions.generator+=/thrash_cat,cycle_targets=1,if=remains<=duration*0.3&(spell_t
 actions.generator+=/brutal_slash,if=combo_points<5&((raid_event.adds.exists&raid_event.adds.in>(1+max_charges-charges_fractional)*15)|(!raid_event.adds.exists&(charges_fractional>2.66&time>10)))
 actions.generator+=/swipe_cat,if=combo_points<5&spell_targets.swipe_cat>=3
 actions.generator+=/shred,if=combo_points<5&(spell_targets.swipe_cat<3|talent.brutal_slash.enabled)
+
+actions.opener=rake,if=buff.prowl.up
+actions.opener+=/savage_roar,if=buff.savage_roar.down
+actions.opener+=/berserk,if=buff.savage_roar.up
+actions.opener+=/tigers_fury,if=buff.berserk.up
+actions.opener+=/frenzy,if=buff.bloodtalons.up
+actions.opener+=/regrowth,if=combo_points=5&buff.bloodtalons.down
+actions.opener+=/rip,if=combo_points=5&buff.bloodtalons.up
+actions.opener+=/thrash_cat,if=combo_points<5&!ticking
+actions.opener+=/shred,if=combo_points<5&buff.savage_roar.up
 
 # Hard-cast a Healing Touch for Bloodtalons buff. Use Dash to re-enter Cat Form.
 actions.sbt_opener=regrowth,if=talent.bloodtalons.enabled&combo_points=5&!buff.bloodtalons.up&!dot.rip.ticking

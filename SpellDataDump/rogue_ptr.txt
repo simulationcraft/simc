@@ -1,4 +1,4 @@
-SimulationCraft 720-02 for World of Warcraft 7.2.0 PTR (wow build 23826)
+SimulationCraft 720-03 for World of Warcraft 7.2.5 PTR (wow build 23927)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
@@ -7,7 +7,7 @@ Resource         : 35 Energy (id=13)
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Vendetta (79140), Shadow Blades (121471), Subtlety Rogue (137035), Sleight of Hand (145211), Nightblade (195452), The Quiet Knife (197231), Weak Point (238068)
+Affecting spells : Vendetta (79140), Shadow Blades (121471), Subtlety Rogue (137035), Sleight of Hand (145211), Nightblade (195452), The Quiet Knife (197231), Weak Point (238068), Backstab (245689)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -373,7 +373,7 @@ Spell Level      : 48
 Cooldown         : 120 seconds
 Category         : 39
 Category Cooldown: 120 seconds
-Affecting spells : Item - Rogue T18 Subtlety 2P Bonus (186278)
+Affecting spells : Item - Rogue T18 Subtlety 2P Bonus (186278), Flickering Shadows (197256)
 Attributes       : ....x... ........ x.x.x... ...x.x..   .....x.. ..x..... ........ ........ 
                  : .xx..... ........ ........ ........   ........ ........ xxx..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -599,7 +599,7 @@ Duration         : 8 seconds
 Cooldown         : 120 seconds
 Category         : 44
 Category Cooldown: 120 seconds
-Affecting spells : Vendetta (79140), Shadow Walker (192345), Sprint (231691)
+Affecting spells : Vendetta (79140), Shadow Walker (192345), Flickering Shadows (197256), Sprint (231691)
 Attributes       : ....x... ........ x....... ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -878,7 +878,7 @@ Proc Chance      : 100%
 Stance Mask      : 0x20000000
 Proc Flags       : ..x.x.x. x...x... x....... ........ 
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged, AOE Hostile Spell, Hostile Spell
-Affecting spells : Nightstalker (14062), Subterfuge (108208), Item - Rogue T18 Subtlety 2P Bonus (186278), Hit and Run (196922), Acrobatic Strikes (196924)
+Affecting spells : Nightstalker (14062), Subterfuge (108208), Item - Rogue T18 Subtlety 2P Bonus (186278), Hit and Run (196922), Acrobatic Strikes (196924), Flickering Shadows (197256)
 Attributes       : ....x... x....... x.x.x... .x.x....   .....x.. ..x..... ........ ........ 
                  : .x...... ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1697,7 +1697,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=51794)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Points Per Combo Point: 20 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Self(1)
 Description      : Your finishing moves generate $98440s2 Energy per combo point spent.
 
 Name             : Tricks of the Trade (id=59628) [Spell Family (8)] 
@@ -2124,7 +2124,7 @@ Attributes       : ........ ........ ........ ........   .....x.. ........ .....
                  : Does not break stealth (37)
 Effects          :
 #1 (id=105435)   : Energize Power (30)
-                   Base Value: 5 | Scaled Value: 5 | SP Coefficient: 1.00000 | Misc Value: energy | Target: Self(1)
+                   Base Value: 6 | Scaled Value: 6 | SP Coefficient: 1.00000 | Misc Value: energy | Target: Self(1)
 Description      : $@spelldesc58423
 
 Name             : Subterfuge (id=108208) [Spell Family (8), Passive] 
@@ -2517,12 +2517,12 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179718)   : Apply Aura (6) | Unknown effect sub type (218)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf7 | Target: Self(1)
-#2 (id=191064)   : Apply Aura (6) | Unknown effect sub type (218)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf9 | Target: Self(1)
-#3 (id=191065)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#1 (id=179718)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 247 (Label) | Target: Self(1)
+#2 (id=191064)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 249 (Label) | Target: Self(1)
+#3 (id=191065)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 298 (Label) | Target: Self(1)
 #4 (id=191066)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #5 (id=191067)   : Apply Aura (6) | Dummy (4)
@@ -2995,7 +2995,7 @@ Resource         : 35 Energy (id=9758)
 Spell Level      : 40
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Vendetta (79140), Shadow Blades (121471), Subtlety Rogue (137035), Sleight of Hand (145211), Nightblade (195452), The Quiet Knife (197231), Weak Point (238068)
+Affecting spells : Vendetta (79140), Shadow Blades (121471), Subtlety Rogue (137035), Sleight of Hand (145211), Nightblade (195452), The Quiet Knife (197231), Weak Point (238068), Backstab (245689)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3053,7 +3053,7 @@ Effects          :
                    Base Value: -10000000 | Scaled Value: -1e+07 | SP Coefficient: 1.00000 | Target: Self(1)
 #2 (id=317950)   : Apply Aura (6) | Unknown effect sub type (275)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Self(1)
-                   Affected Spells: Pick Pocket (921), Cheap Shot (1833), Sap (6770), Shadowstrike (185438), Pick Pocket (192986), Symbols of Death (212283), Shadowstrike (227151), Nightblade (245689), Eviscerate (245691)
+                   Affected Spells: Pick Pocket (921), Cheap Shot (1833), Sap (6770), Shadowstrike (185438), Pick Pocket (192986), Symbols of Death (212283), Shadowstrike (227151), Backstab (245689), Eviscerate (245691)
 #3 (id=334762)   : Apply Aura (6) | Periodic Heal%: every 1 seconds (20)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #4 (id=373905)   : Apply Aura (6) | Modify Damage Done% (79)
@@ -3088,7 +3088,7 @@ Spell Level      : 12
 Range            : 5 yards
 GCD              : 1 seconds
 Stance Mask      : 0x20000000
-Affecting spells : Shadow Blades (121471), Subtlety Rogue (137035), From the Shadows (184918), Shadow Dance (185313), Nightblade (195452), Premeditation (196979), Precision Strike (197235), Shadowstrike (227151), Weak Point (238068), Shadowstrike (245623), 
+Affecting spells : Shadow Blades (121471), Subtlety Rogue (137035), From the Shadows (184918), Shadow Dance (185313), Nightblade (195452), Premeditation (196979), Precision Strike (197235), Shadowstrike (227151), Weak Point (238068), Shadowstrike (245623), Shadow Sight (246566)
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3730,7 +3730,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 500 | Trigger Spell: 222018 | Target: Enemy(6)
 #6 (id=374178)   : Apply Aura (6) | Unknown effect sub type (271)
                    Base Value: 15 | Scaled Value: 15 | Target: Enemy(6)
-                   Affected Spells: Backstab (53), Shuriken Toss (114014), Death from Above (152150), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Eviscerate (196819), Finality: Eviscerate (197393), Shuriken Storm (197835), Gloomblade (200758)
+                   Affected Spells: Backstab (53), Shuriken Toss (114014), Death from Above (152150), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Eviscerate (196819), Finality: Eviscerate (197393), Shuriken Storm (197835), Gloomblade (200758), Goremaw's Bite (209782), Goremaw's Bite (209783), Goremaw's Bite (209784)
 Description      : Finishing move that infects the target with shadowy energy, dealing Shadow damage over time and causing attacks against the target to reduce movement speed by $206760s1% for $206760d. Lasts longer per combo point.
    1 point  : ${$m1*8/2} over 8 sec
    2 points: ${$m1*10/2} over 10 sec
@@ -4149,7 +4149,7 @@ Effects          :
 #1 (id=290157)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 20 | Scaled Value: 20 | Target: Self(1)
                    Affected Spells: Eviscerate (196819), Finality: Eviscerate (197393)
-Tooltip          : Your next Eviscerate will do $w1% increased damage.
+Tooltip          : Your next Eviscerate deals $w1% increased damage.
 
 Name             : Finality: Nightblade (id=197498) 
 Class            : Rogue
@@ -4164,7 +4164,7 @@ Attributes       : ........ x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=290159)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 195452 | Target: Self(1)
-Tooltip          : Your next Nightblade will do $w1% increased damage.
+Tooltip          : Your next Nightblade deals $w1% increased damage.
 
 Name             : Shuriken Storm (id=197835) [Spell Family (8)] 
 Class            : Subtlety Rogue
@@ -4451,7 +4451,7 @@ Effects          :
 #1 (id=295616)   : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
 #2 (id=295617)   : Weapon Damage% (31)
-                   Base Value: 700 | Scaled Value: 7 | Target: Enemy(6)
+                   Base Value: 575 | Scaled Value: 5.75 | Target: Enemy(6)
 #3 (id=295618)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points | Target: Self(1)
 Description      : Punctures your target with your shadow-infused blade for $sw2 Shadow damage, bypassing armor.
@@ -4582,8 +4582,8 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Trigger Spell: 202668 | Target: Self(1)
 #2 (id=364290)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self(1)
-Description      : Invoke the Curse of the Dreadblades, causing each Saber Slash$?s196937[, Ghostly Strike,][] Ambush, or Pistol Shot to fill your combo points. However, |cFFFFCC99The Dreadblades|r will consume $202669s1% of your current health when you use a finishing move for the next $d. $?a238103[Increases damage done by $238103s1%.][]
-Tooltip          : Saber Slash$?s196937[, Ghostly Strike,][] Ambush, and Pistol Shot will refill all of your combo points when used. $?a238103[Increases damage done by $238103s1%.][]
+Description      : Invoke the Curse of the Dreadblades, causing each Saber Slash, $?s196937[Ghostly Strike, ][]Ambush, or Pistol Shot to fill your combo points. However, |cFFFFCC99The Dreadblades|r will consume $202669s1% of your current health when you use a finishing move for the next $d. $?a238103[Increases damage done by $238103s1%.][]
+Tooltip          : Saber Slash, $?s196937[Ghostly Strike, ][]Ambush, and Pistol will refill all of your combo points when used. $?a238103[Increases damage done by $238103s1%.][]
 
 Name             : Curse of the Dreadblades (id=202668) [Spell Family (8)] 
 Class            : Rogue
@@ -4750,6 +4750,7 @@ Range            : 8 yards
 GCD              : 1 seconds
 Cooldown         : 60 seconds
 Artifact Power   : Id: 851, Index: 0, Max Rank: 1
+Affecting spells : Nightblade (195452)
 Triggered by     : Push Active Ability to Bar (225880)
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4774,6 +4775,7 @@ Name             : Goremaw's Bite (id=209783) [Spell Family (8)]
 Class            : Rogue
 School           : Shadow
 Range            : 8 yards
+Affecting spells : Nightblade (195452)
 Triggered by     : Goremaw's Bite (209782)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -4792,6 +4794,7 @@ Name             : Goremaw's Bite (id=209784) [Spell Family (8)]
 Class            : Rogue
 School           : Shadow
 Range            : 8 yards
+Affecting spells : Nightblade (195452)
 Triggered by     : Goremaw's Bite (209782)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ x....... 
@@ -4902,16 +4905,12 @@ Attributes       : ....x... ........ x.x..... ........   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Does not break stealth (37)
 Effects          :
-#1 (id=314702)   : Trigger Spell: Shadowstrike (64)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 227151 | Target: Self(1)
-#2 (id=314703)   : Trigger Spell: Nightblade (64)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 245689 | Target: Self(1)
-#3 (id=373912)   : Trigger Spell: Eviscerate (64)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 245691 | Target: Self(1)
+#1 (id=314702)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Invoke ancient symbols of power, empowering the next use of several of your abilities:
 
+$?s200758[Gloomblade][Backstab]: Generates $245689s1 additional combo points.
 Shadowstrike: Generates $227151s1 additional combo points.
-Nightblade: Deals $245689s1% increased damage.
 Eviscerate: Critical strike chance increased by $245691s1%.
 
 Name             : Goremaw's Bite (id=220901) [Spell Family (8)] 
@@ -5009,14 +5008,12 @@ Tooltip          : Dazed. Movement speed reduced by $s1.
 Name             : Shadowstrike (id=227151) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
-Spell Level      : 34
 Duration         : 30 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Affecting spells : Shadow Dance (185313), Item - Rogue T20 Subtlety 2P Bonus (242279), 
-Triggered by     : Symbols of Death (212283)
 Attributes       : ....x... ........ x.x..... ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5029,7 +5026,7 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 23 | Target: Self(1)
                    Affected Spells: Shadowstrike (185438)
 Description      : $@spelldesc212283
-Tooltip          : Your next Shadowstrike generates $s2 additional combo points.
+Tooltip          : Your next Shadowstrike generates $s1 additional combo points.
 
 Name             : Sprint (Rank 2) (id=231691) [Spell Family (8), Passive] 
 Class            : Assassination Outlaw Subtlety Rogue
@@ -5145,7 +5142,7 @@ Attributes       : ......x. ........ ........ .......x   ........ ........ .....
                  : Passive (6), Cannot cancel aura (31)
 Effects          :
 #1 (id=360789)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 3 | Target: Self(1)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 3 | Target: Self(1)
                    Affected Spells: Deepening Shadows (185314)
 #2 (id=373849)   : Apply Aura (6) | Modify Cooldown Charge (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1615 | Target: Self(1)
@@ -5189,7 +5186,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=373836)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-Description      : Shuriken Storm increases the damage of your next Eviscerate by $245640s1% for each enemy hit beyond beyond the first. Stacks up to $245640u times.
+Description      : Shuriken Storm increases the damage of your next Eviscerate by $245640s1% for each enemy hit beyond the first. Stacks up to $245640u times.
 
 Name             : Focused Shurikens (id=245640) [Spell Family (8)] 
 Class            : Rogue
@@ -5228,13 +5225,15 @@ Effects          :
                    Affected Spells: Shadow Dance (185313)
 Description      : While Shadow Dance is active, all damage you deal is increased by $s1%.
 
-Name             : Nightblade (id=245689) [Spell Family (8)] 
+Name             : Backstab (id=245689) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
-Spell Level      : 34
 Duration         : 30 seconds
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 101%
+Proc Flags       : ....x... ........ ........ ........ 
+                 : Yellow Melee
 Affecting spells : Shadow Dance (185313), Item - Rogue T20 Subtlety 2P Bonus (242279), 
-Triggered by     : Symbols of Death (212283)
 Attributes       : ....x... ........ x.x..... ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5243,22 +5242,21 @@ Attributes       : ....x... ........ x.x..... ........   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Does not break stealth (37)
 Effects          :
-#1 (id=373909)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: 22 | Target: Self(1)
+#1 (id=373909)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 23 | Target: Self(1)
+                   Affected Spells: Backstab (53), Backstab (173458)
 Description      : $@spelldesc212283
-Tooltip          : Your next Nightblade deals $s1% increased damage.
+Tooltip          : Your next Backstab generates $s1 additional combo points.
 
 Name             : Eviscerate (id=245691) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
-Spell Level      : 34
 Duration         : 30 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Affecting spells : Shadow Dance (185313), Item - Rogue T20 Subtlety 2P Bonus (242279), 
-Triggered by     : Symbols of Death (212283)
 Attributes       : ....x... ........ x.x..... ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

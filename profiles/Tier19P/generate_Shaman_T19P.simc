@@ -20,7 +20,7 @@ finger1=grasping_tentacle_loop,id=133634,bonus_id=1492/1727,enchant=binding_of_m
 finger2=archdruids_tainted_seal,id=134487,bonus_id=1492/1727,enchant=binding_of_mastery
 trinket1=devilsaur_shockbaton,id=140030,bonus_id=1492/1727
 trinket2=sixfeather_fan,id=141585,bonus_id=1492/1727
-main_hand=doomhammer,id=128819,bonus_id=741,gem_id=137316/137543/133682,relic_id=3412/3412/3412
+main_hand=doomhammer,id=128819,bonus_id=741,gem_id=137316/137543/133682,relic_id=1492:3412/1492:3412/1492:3412
 off_hand=fury_of_the_stonemother,id=128873
 save=Shaman_Enhancement_T19P.simc
 
@@ -31,7 +31,8 @@ role=attack
 position=ranged_back
 talents=2112333
 spec=elemental
-artifact=40:137365:137272:137365:0:291:1:294:1:295:1:296:1:298:3:300:6:301:3:302:3:303:3:1350:1
+artifact=40:0:0:0:0:291:1:292:1:293:1:294:1:296:1:300:2:301:3:302:3:303:3:304:3:1350:1
+
 head=shadow_archers_helm,id=139244,bonus_id=1492/1727
 neck=breathless_choker,id=137461,bonus_id=1492/1727,enchant=mark_of_the_hidden_satyr
 shoulders=epaulets_of_deceitful_intent,id=134480,bonus_id=1492/1727
@@ -46,6 +47,6 @@ finger1=band_of_callous_dominance,id=134528,bonus_id=1492/1727,enchant_id=5427
 finger2=seal_of_the_nazjatar_empire,id=134525,bonus_id=1492/1727,enchant_id=5427
 trinket1=oakheart's_gnarled_root,id=137306,bonus_id=1492/1727
 trinket2=naraxas_spiked_tongue,id=137349,bonus_id=1492/1727
-main_hand=the_fist_of_raden,id=128935,bonus_id=744,gem_id=137365/137272/137365,relic_id=3412/3412/3412
+main_hand=the_fist_of_raden,id=128935,bonus_id=744,gem_id=137365/137272/137365,relic_id=1492:3412/1492:3412/1492:3412
 off_hand=the_highkeepers_ward,id=128936,ilevel=870
 save=Shaman_Elemental_T19P.simc

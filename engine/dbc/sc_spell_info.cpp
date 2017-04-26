@@ -464,7 +464,7 @@ const char * _effect_subtype_strings[] =
   nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 200
   nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 205
   nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 210
-  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 215
+  nullptr,                            nullptr,                          nullptr,                      "Apply Percent Modifier w/ Label",                          nullptr,                       // 215
   nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 220
   nullptr,            "Periodic Dummy",                           nullptr,                      nullptr,                          nullptr,                       // 225
   nullptr,                            "Trigger Spell with Value", nullptr,                      nullptr,                          nullptr,                       // 230
@@ -751,7 +751,15 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
 
   if ( e -> misc_value2() != 0 )
   {
-    snprintf( tmp_buffer, sizeof( tmp_buffer ), "%#.x", e -> misc_value2() );
+    // Not really .. old enum
+    if ( e -> subtype() == A_HASTE_RANGED )
+    {
+      snprintf( tmp_buffer, sizeof( tmp_buffer ), "%d (Label)", e -> misc_value2() );
+    }
+    else
+    {
+      snprintf( tmp_buffer, sizeof( tmp_buffer ), "%#.x", e -> misc_value2() );
+    }
     s << " | Misc Value 2: " << tmp_buffer;
   }
 
@@ -1045,6 +1053,21 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
 
   if ( spell -> category() > 0 )
     s << "Category         : " << spell -> category() << std::endl;
+
+  if ( spell -> label_count() > 0 )
+  {
+    s << "Labels           : ";
+    for ( size_t i = 1, end = spell -> label_count(); i <= end; ++i )
+    {
+      s << spell -> labelN( i );
+
+      if ( i < end )
+      {
+        s << ", ";
+      }
+    }
+    s << std::endl;
+  }
 
   if ( spell -> category_cooldown() > timespan_t::zero() )
     s << "Category Cooldown: " << spell -> category_cooldown().total_seconds() << " seconds" << std::endl;

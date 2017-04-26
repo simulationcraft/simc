@@ -28,6 +28,7 @@ actions.precombat+=/potion,name=old_war
 # Executed every time the actor is available.
 actions=dash,if=!buff.cat_form.up
 actions+=/cat_form
+actions+=/call_action_list,name=opener,if=!dot.rip.ticking&time<15&talent.savage_roar.enabled&talent.jagged_wounds.enabled&talent.bloodtalons.enabled&desired_targets<=1
 actions+=/wild_charge
 actions+=/displacer_beast,if=movement.distance>10
 actions+=/dash,if=movement.distance&buff.displacer_beast.down&buff.wild_charge_movement.down
@@ -96,7 +97,10 @@ actions.generator+=/swipe_cat,if=combo_points<5&spell_targets.swipe_cat>=3
 actions.generator+=/shred,if=combo_points<5&(spell_targets.swipe_cat<3|talent.brutal_slash.enabled)
 
 actions.opener=rake,if=buff.prowl.up
+actions.opener+=/savage_roar,if=buff.savage_roar.down
 actions.opener+=/berserk,if=buff.savage_roar.up
+actions.opener+=/tigers_fury,if=buff.berserk.up
+actions.opener+=/frenzy,if=buff.bloodtalons.up
 actions.opener+=/regrowth,if=combo_points=5&buff.bloodtalons.down
 actions.opener+=/rip,if=combo_points=5&buff.bloodtalons.up
 actions.opener+=/shred,if=combo_points<5&buff.savage_roar.up
