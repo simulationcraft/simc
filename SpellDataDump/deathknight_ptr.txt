@@ -526,7 +526,7 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=39872)    : School Damage: shadow (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.93000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.10000 | Target: Enemy(6)
 Description      : Fire a blast of unholy energy, causing Shadow damage to an enemy target or healing a friendly Undead target.
 
 Name             : Veteran of the Third War (id=48263) [Spell Family (15), Passive] 
@@ -596,10 +596,12 @@ Immune to harmful magic effects.
 Name             : Icebound Fortitude (id=48792) [Spell Family (15)] 
 Class            : Blood Frost Unholy Death Knight
 School           : Physical
-Spell Level      : 65
+Spell Level      : 57
 Duration         : 8 seconds
 Cooldown         : 180 seconds
 Proc Chance      : 100%
+Proc Flags       : ....x... ........ ........ ........ 
+                 : Yellow Melee
 Affecting spells : Blood Death Knight (137008), Ice in Your Veins (189154), Deadly Durability (191565)
 Attributes       : ....x... ........ ..x..... ........   ........ ..x....x ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1256,7 +1258,7 @@ Tooltip          : Suffering $w1 Frost damage every $t1 sec.
 Name             : Vampiric Blood (id=55233) [Spell Family (15)] 
 Class            : Blood Death Knight
 School           : Physical
-Spell Level      : 57
+Spell Level      : 60
 Duration         : 10 seconds
 Cooldown         : 90 seconds
 Category         : 1641
@@ -2633,8 +2635,8 @@ Effects          :
                    Affected Spells: Frostscythe (207230)
 #6 (id=257279)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 249 (Label) | Target: Self(1)
-#7 (id=260629)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#7 (id=260629)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 298 (Label) | Target: Self(1)
 #8 (id=260630)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #9 (id=260631)   : Apply Aura (6) | Dummy (4)
@@ -3721,7 +3723,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : x.x..... ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ........ .......x .......x ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
                  : Disable weapon procs (151)
 Effects          :
@@ -6250,5 +6252,24 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=336378)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: Cone Front(104)
+
+Name             : Heart of Ice (id=246426) [Scaling Spell (1), Passive] 
+Class            : Death Knight
+School           : Frost
+Spell Level      : 55
+Proc Chance      : 101%
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=375274)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self(1)
+#2 (id=375296)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | Target: Self(1)
+Description      : Death Strike extends the duration of Icebound Fortitude by $@switch<$s2>[${$s1/10}][${$s1/10}.1] sec.
 
 

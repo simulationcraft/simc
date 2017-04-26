@@ -241,7 +241,7 @@ Range            : 40 yards
 Cast Time        : 4 seconds
 GCD              : 1.5 seconds
 Duration         : 8 seconds
-Affecting spells : Icy Veins (12472), Hot Streak! (48108), Ice Floes (108839), Rune of Power (116014), Incanter's Flow (116267), Fire Mage (137019), Combustion (190319), Ice Form (198144), Blue Flame Special (210182), Norgannon's Foresight (236380)
+Affecting spells : Icy Veins (12472), Hot Streak! (48108), Ice Floes (108839), Rune of Power (116014), Incanter's Flow (116267), Fire Mage (137019), Combustion (190319), Ice Form (198144), Blue Flame Special (210182), Norgannon's Foresight (236380), Critical Massive (242251), Ignition (246261)
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ......x. 
@@ -381,7 +381,7 @@ Cast Time        : 4.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 24 yards/sec
 Proc Chance      : 101%
-Affecting spells : Icy Veins (12472), Hot Streak! (48108), Ice Floes (108839), Rune of Power (116014), Incanter's Flow (116267), Mage (137018), Fire Mage (137019), Pyromaniac (166868), Combustion (190319), Pyroclasmic Paranoia (194239), Ice Form (198144), Norgannon's Foresight (236380)
+Affecting spells : Icy Veins (12472), Hot Streak! (48108), Ice Floes (108839), Rune of Power (116014), Incanter's Flow (116267), Mage (137018), Fire Mage (137019), Pyromaniac (166868), Combustion (190319), Pyroclasmic Paranoia (194239), Ice Form (198144), Norgannon's Foresight (236380), Critical Massive (242251), Ignition (246261)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -1165,9 +1165,9 @@ Attributes       : ........ ........ x....... ........   ........ ..x..... .....
 Effects          :
 #1 (id=36562)    : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Mechanic: Unknown(88) | Target: Enemy(6)
-Description      : Unleash a flurry of ice shards, striking the target $s1 times for a total of ${$228354s2*$m1} Frost damage.
+Description      : Unleash a flurry of ice, striking the target $s1 times for a total of ${$228354s2*$m1} Frost damage. Each hit reduces the target's movement speed by $228354s1% for $228354d.
 
-Each shard reduces the target's movement speed by $228354s1% for $228354d.
+While Brain Freeze is active, Flurry applies Winter's Chill to the target.
 
 Name             : Ice Block (id=45438) [Spell Family (3)] 
 Class            : Mage
@@ -2545,8 +2545,8 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 247 (Label) | Target: Self(1)
 #4 (id=188985)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self(1)
-#5 (id=191129)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#5 (id=191129)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 298 (Label) | Target: Self(1)
 #6 (id=257393)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #7 (id=260648)   : Apply Aura (6) | Dummy (4)
@@ -2584,10 +2584,10 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179702)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+                   Base Value: 6 | Scaled Value: 6 | Target: Self(1)
                    Affected Spells: Frost Nova (122), Fireball (133), Flamestrike (2120), Scorch (2948), Pyroblast (11366), Dragon's Breath (31661), Living Bomb (44461), Fireball (88082), Fire Blast (108853), Meteor (153564), Meteor Burn (155158), Blast Wave (157981), Aftershocks (194432), Phoenix's Flames (194466), Blast Furnace (194522), Cinderstorm (198928), Conflagration Flare Up (205345), Flame Patch (205472), Phoenix Reborn (215775), Living Bomb (217694), Phoenix's Flames (224637), Conflagration (226757), Blazing Barrier (235314)
 #2 (id=191125)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self(1)
+                   Base Value: 6 | Scaled Value: 6 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Frost Nova (122), Fireball (133), Flamestrike (2120), Scorch (2948), Pyroblast (11366), Dragon's Breath (31661), Living Bomb (44461), Fireball (88082), Fire Blast (108853), Meteor (153564), Meteor Burn (155158), Blast Wave (157981), Aftershocks (194432), Phoenix's Flames (194466), Blast Furnace (194522), Cinderstorm (198928), Conflagration Flare Up (205345), Flame Patch (205472), Phoenix Reborn (215775), Living Bomb (217694), Phoenix's Flames (224637), Conflagration (226757), Blazing Barrier (235314)
 #3 (id=191126)   : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self(1)
@@ -3680,7 +3680,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Target: Self(1)
                    Affected Spells: Flurry (44614)
 Description      : $@spelldesc190447
-Tooltip          : Your next Flurry is instant cast$?a231584[,][ and] deals $s2% increased damage$?a231584[, and will cause Winter's Chill on the target][].
+Tooltip          : Your next Flurry is instant cast$?a231584[,][ and] deals $s2% increased damage$?a231584[, and will apply Winter's Chill on the target][].
 
 Name             : Brain Freeze (id=190447) [Spell Family (3), Passive] 
 Class            : Frost Mage
@@ -3810,7 +3810,7 @@ School           : Fire
 Spell Level      : 44
 Range            : 40 yards
 Cast Time        : 2 seconds
-Affecting spells : Icy Veins (12472), Hot Streak! (48108), Ice Floes (108839), Rune of Power (116014), Incanter's Flow (116267), Fire Mage (137019), Combustion (190319), Ice Form (198144), Blue Flame Special (210182), Norgannon's Foresight (236380)
+Affecting spells : Icy Veins (12472), Hot Streak! (48108), Ice Floes (108839), Rune of Power (116014), Incanter's Flow (116267), Fire Mage (137019), Combustion (190319), Ice Form (198144), Blue Flame Special (210182), Norgannon's Foresight (236380), Critical Massive (242251), Ignition (246261)
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ .....x.. ........ ......x. 
@@ -4127,6 +4127,7 @@ Stacks           : 2 initial, 2 maximum
 Proc Chance      : 100%
 Proc Flags       : ......x. x...x... x....... ........ 
                  : White Ranged, Yellow Ranged, AOE Hostile Spell, Hostile Spell
+Affecting spells : Norgannon's Foresight (236380)
 Attributes       : ........ ........ x.x..... .x......   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5635,6 +5636,9 @@ Tooltip          : Aluneth will echo your next Arcane Explosion.
 Name             : Item - Mage T20 Frost 2P Bonus (id=242252) [Spell Family (3), Passive, Hidden] 
 Class            : Mage
 School           : Physical
+Proc Chance      : 101%
+Proc Flags       : ........ ......x. ........ ........ 
+                 : Heal
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -5643,14 +5647,15 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=367838)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-Description      : Frozen Orb increases your critical strike damage by 30% for 10 seconds.
+#1 (id=367838)   : Apply Aura (6) | Proc Trigger Spell: Frozen Mass (42)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 242253 | Target: Self(1)
+Description      : Frozen Orb increases your critical strike damage by $242253s1% for $242253d.
 
 Name             : Frozen Mass (id=242253) [Spell Family (3)] 
 Class            : Mage
 School           : Frost
 Duration         : 10 seconds
+Triggered by     : Item - Mage T20 Frost 2P Bonus (242252)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ .x......   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

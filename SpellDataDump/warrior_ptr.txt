@@ -2520,8 +2520,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 971 | Target: Self(1)
 #6 (id=260729)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 249 (Label) | Target: Self(1)
-#7 (id=260730)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#7 (id=260730)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 298 (Label) | Target: Self(1)
 #8 (id=260731)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #9 (id=260732)   : Apply Aura (6) | Dummy (4)
@@ -2864,7 +2864,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=210836)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self(1)
-Description      : Every $s1 Rage you spend reduces the remaining cooldown on Battle Cry$?c1[ and Bladestorm][, Last Stand, Shield Wall, and Demoralizing Shout] by 1 sec.
+#2 (id=375285)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self(1)
+Description      : Every $?c1[$s1][$s2] Rage you spend reduces the remaining cooldown on Battle Cry$?c1[ and Bladestorm][, Last Stand, Shield Wall, and Demoralizing Shout] by 1 sec.
 
 Name             : Expansive Mind (Racial Passive) (id=154746) [Passive] 
 Class            : Warrior

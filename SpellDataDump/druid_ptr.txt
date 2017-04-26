@@ -116,7 +116,7 @@ Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 12 seconds
-Affecting spells : Incarnation: Tree of Life (5420), Bear Form (5487), Nimble Healing Touch (24542), Blessing of Lower City (37878), Ironbark (102342), Lucidity (137247), Germination (155675), Grovewalker (186320), Persistence (186396), Restoration Affinity (197492), Astral Influence (197524), Essence of G'Hanir (208253), Ekowraith, Creator of Worlds (210667), Nature's Vigor (222644), Rejuvenation (231040)
+Affecting spells : Incarnation: Tree of Life (5420), Bear Form (5487), Nimble Healing Touch (24542), Blessing of Lower City (37878), Ironbark (102342), Restoration Druid (137012), Lucidity (137247), Germination (155675), Grovewalker (186320), Persistence (186396), Thrash (192090), Restoration Affinity (197492), Astral Influence (197524), Essence of G'Hanir (208253), Ekowraith, Creator of Worlds (210667), Nature's Vigor (222644), Rejuvenation (231040)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .x...x.. ........ ........ 
@@ -353,7 +353,7 @@ Spell Level      : 24
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Incarnation: Tree of Life (5420), Bear Form (5487), Nimble Healing Touch (24542), Blessing of Lower City (37878), Soul of the Forest (114108), Lucidity (137247), Blessing of the World Tree (189744), Restoration Affinity (197492), Astral Influence (197524), Abundance (207640), Ekowraith, Creator of Worlds (210667), 
+Affecting spells : Incarnation: Tree of Life (5420), Bear Form (5487), Nimble Healing Touch (24542), Blessing of Lower City (37878), Soul of the Forest (114108), Restoration Druid (137012), Lucidity (137247), Blessing of the World Tree (189744), Thrash (192090), Restoration Affinity (197492), Astral Influence (197524), Abundance (207640), Ekowraith, Creator of Worlds (210667), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -676,7 +676,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 12 seconds
-Affecting spells : Cat Form (3025), Incarnation: Tree of Life (5420), Clearcasting (16870), Nimble Healing Touch (24542), Blessing of Lower City (37878), Predatory Swiftness (69369), Incarnation: Tree of Life (81097), Ironbark (102342), Guardian Druid (137010), Feral Druid (137011), Balance Druid (137013), Lucidity (137247), Grovewalker (186320), Blessing of the World Tree (189744), Astral Influence (197524), Abundance (207640), Essence of G'Hanir (208253), Power of Elune, the Moon Goddess (208284), Attuned to Nature (210590), Ekowraith, Creator of Worlds (210667), 
+Affecting spells : Cat Form (3025), Incarnation: Tree of Life (5420), Clearcasting (16870), Nimble Healing Touch (24542), Blessing of Lower City (37878), Predatory Swiftness (69369), Incarnation: Tree of Life (81097), Ironbark (102342), Guardian Druid (137010), Feral Druid (137011), Restoration Druid (137012), Balance Druid (137013), Lucidity (137247), Grovewalker (186320), Blessing of the World Tree (189744), Thrash (192090), Astral Influence (197524), Abundance (207640), Essence of G'Hanir (208253), Power of Elune, the Moon Goddess (208284), Attuned to Nature (210590), Ekowraith, Creator of Worlds (210667), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ x....... ...x.... ........   .......x ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -856,7 +856,7 @@ GCD              : 1.5 seconds
 Charges          : 1 (30 seconds cooldown)
 Category         : 1576
 Stance Mask      : 0x00000002
-Affecting spells : Incarnation: Tree of Life (5420), Blessing of Lower City (37878), Lucidity (137247), Natural Mending (189749), Restoration Affinity (197492), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), 
+Affecting spells : Incarnation: Tree of Life (5420), Blessing of Lower City (37878), Restoration Druid (137012), Lucidity (137247), Natural Mending (189749), Thrash (192090), Restoration Affinity (197492), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1159,7 +1159,7 @@ Duration         : 15 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Stance Mask      : 0x00000002
-Affecting spells : Incarnation: Tree of Life (5420), Blessing of Lower City (37878), Incarnation: Tree of Life (81098), Ironbark (102342), Lucidity (137247), Item - Druid WoD PvP Restoration 4P Bonus (165707), Item - Druid T18 Restoration 4P Bonus (185397), Grovewalker (186320), Blooms of G'Hanir (186393), Astral Influence (197524), The Dark Titan's Advice (207271), Essence of G'Hanir (208253), Ekowraith, Creator of Worlds (210667), 
+Affecting spells : Incarnation: Tree of Life (5420), Blessing of Lower City (37878), Incarnation: Tree of Life (81098), Ironbark (102342), Restoration Druid (137012), Lucidity (137247), Item - Druid WoD PvP Restoration 4P Bonus (165707), Item - Druid T18 Restoration 4P Bonus (185397), Grovewalker (186320), Blooms of G'Hanir (186393), Thrash (192090), Astral Influence (197524), The Dark Titan's Advice (207271), Essence of G'Hanir (208253), Ekowraith, Creator of Worlds (210667), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ x....... ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   .....x.. .....x.. ........ ........ 
@@ -1178,7 +1178,7 @@ Class            : Druid
 School           : Nature
 Spell Level      : 64
 Range            : 40 yards
-Affecting spells : Incarnation: Tree of Life (5420), Blessing of Lower City (37878), Incarnation: Tree of Life (81098), Ironbark (102342), Lucidity (137247), Blooms of G'Hanir (186393), Astral Influence (197524), The Dark Titan's Advice (207271), Ekowraith, Creator of Worlds (210667), 
+Affecting spells : Incarnation: Tree of Life (5420), Blessing of Lower City (37878), Incarnation: Tree of Life (81098), Ironbark (102342), Restoration Druid (137012), Lucidity (137247), Blooms of G'Hanir (186393), Thrash (192090), Astral Influence (197524), The Dark Titan's Advice (207271), Ekowraith, Creator of Worlds (210667), 
 Attributes       : ........ ........ ........ x..x....   .....x.. ..x..... ........ ........ 
                  : ........ ......x. ........ ....x...   ........ ........ x....... ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -1382,7 +1382,7 @@ Duration         : 7 seconds
 Cooldown         : 10 seconds
 Category         : 1237
 Category Cooldown: 10 seconds
-Affecting spells : Incarnation: Tree of Life (5420), Ironbark (102342), Lucidity (137247), Nature's Wisdom (167715), Grovewalker (186320), Infusion of Nature (189757), Astral Influence (197524), Essence of G'Hanir (208253), Ekowraith, Creator of Worlds (210667), 
+Affecting spells : Incarnation: Tree of Life (5420), Ironbark (102342), Restoration Druid (137012), Lucidity (137247), Nature's Wisdom (167715), Grovewalker (186320), Infusion of Nature (189757), Thrash (192090), Astral Influence (197524), Essence of G'Hanir (208253), Ekowraith, Creator of Worlds (210667), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ......x. ........ 
@@ -2038,7 +2038,7 @@ Class            : Druid
 School           : Nature
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Incarnation: Tree of Life (5420), Ironbark (102342), Grovewalker (186320), Essence of Nordrassil (189760), Joy of Spring (240484), Blossoming Efflorescence (242315)
+Affecting spells : Incarnation: Tree of Life (5420), Ironbark (102342), Restoration Druid (137012), Grovewalker (186320), Essence of Nordrassil (189760), Thrash (192090), Joy of Spring (240484), Blossoming Efflorescence (242315)
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : .......x .......x ........ ........   ...x.... ........ .xx..... ........ 
@@ -2370,7 +2370,7 @@ School           : Nature
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 8 seconds
-Affecting spells : Bear Form (5487), Ironbark (102342), Druid (137009), Lucidity (137247), Grovewalker (186320), Astral Influence (197524), Essence of G'Hanir (208253), Ekowraith, Creator of Worlds (210667), 
+Affecting spells : Bear Form (5487), Ironbark (102342), Druid (137009), Restoration Druid (137012), Lucidity (137247), Grovewalker (186320), Thrash (192090), Astral Influence (197524), Essence of G'Hanir (208253), Ekowraith, Creator of Worlds (210667), 
 Triggered by     : Cenarion Ward (102351)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... x....... ........ ........   .......x ........ ........ ........ 
@@ -3349,8 +3349,8 @@ Effects          :
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 3 | Misc Value 2: 276 (Label) | Target: Self(1)
 #14 (id=260765)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 289 (Label) | Target: Self(1)
-#15 (id=260766)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#15 (id=260766)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 298 (Label) | Target: Self(1)
 #16 (id=351087)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #17 (id=351088)   : Apply Aura (6) | Dummy (4)
@@ -3396,8 +3396,8 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 247 (Label) | Target: Self(1)
 #10 (id=260771)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 249 (Label) | Target: Self(1)
-#11 (id=260772)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#11 (id=260772)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 298 (Label) | Target: Self(1)
 #12 (id=260773)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #13 (id=260774)   : Apply Aura (6) | Dummy (4)
@@ -3416,34 +3416,36 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179695)   : Apply Aura (6) | Modify Healing% Done (136)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Self(1)
-#2 (id=191150)   : Apply Aura (6) | Unknown effect sub type (379)
+#1 (id=179695)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+                   Affected Spells: Rejuvenation (774), Healing Touch (5185), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102352), Germination (155675), Tranquility (157982), Nature's Essence (189800), Dreamwalker (189853), Cultivation (200389), Spring Blossoms (207386), Mark of Shifting (224392)
+#2 (id=191150)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self(1)
+                   Affected Spells: Rejuvenation (774), Healing Touch (5185), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102352), Germination (155675), Tranquility (157982), Nature's Essence (189800), Dreamwalker (189853), Cultivation (200389), Spring Blossoms (207386), Mark of Shifting (224392)
+#3 (id=191151)   : Apply Aura (6) | Unknown effect sub type (379)
                    Base Value: 25 | Scaled Value: 25 | Target: Self(1)
-#3 (id=191151)   : Apply Aura (6) | Unknown effect sub type (178)
+#4 (id=191152)   : Apply Aura (6) | Unknown effect sub type (178)
                    Base Value: 400 | Scaled Value: 400 | Target: Self(1)
-#4 (id=191152)   : Apply Aura (6) | Unknown effect sub type (332)
-                   Base Value: 102693 | Scaled Value: 102693 | Target: Self(1)
 #5 (id=191153)   : Apply Aura (6) | Unknown effect sub type (332)
+                   Base Value: 102693 | Scaled Value: 102693 | Target: Self(1)
+#6 (id=260747)   : Apply Aura (6) | Unknown effect sub type (332)
                    Base Value: 33891 | Scaled Value: 33891 | Target: Self(1)
-#6 (id=260747)   : Apply Aura (6) | Dummy (4)
+#7 (id=260748)   : Apply Aura (6) | Dummy (4)
                    Base Value: 108294 | Scaled Value: 108294 | Target: Self(1)
                    Affected Spells: Incapacitating Roar (99), Intimidating Roar (236748)
-#7 (id=260748)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+#8 (id=260749)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
                    Affected Spells: Moonfire (8921), Sunfire (93402), Moonfire (164812), Sunfire (164815), Sunfire (197630)
-#8 (id=260749)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
+#9 (id=260750)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Moonfire (8921), Sunfire (93402), Moonfire (164812), Sunfire (164815), Sunfire (197630)
-#9 (id=260750)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218)
+#10 (id=260751)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 247 (Label) | Target: Self(1)
                    Affected Spells: Gore (93622)
-#10 (id=260751)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self(1)
 #11 (id=260752)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self(1)
+#12 (id=260753)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 249 (Label) | Target: Self(1)
-#12 (id=260753)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #13 (id=260754)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #14 (id=260755)   : Apply Aura (6) | Dummy (4)
@@ -3451,20 +3453,6 @@ Effects          :
 #15 (id=260756)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #16 (id=290658)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#17 (id=290660)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#18 (id=290661)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#19 (id=290667)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#20 (id=290668)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#21 (id=290669)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#22 (id=290670)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#23 (id=341748)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Restoration Druid core passive
 
@@ -3503,8 +3491,8 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 247 (Label) | Target: Self(1)
 #9 (id=260780)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self(1)
-#10 (id=260781)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#10 (id=260781)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 298 (Label) | Target: Self(1)
 #11 (id=260782)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #12 (id=260783)   : Apply Aura (6) | Dummy (4)
@@ -3856,6 +3844,7 @@ Description      : Casting Regrowth causes your next two melee abilities to deal
 Name             : Germination (id=155675) [Spell Family (7), Passive] 
 Class            : Druid
 School           : Physical
+Affecting spells : Restoration Druid (137012), Thrash (192090), 
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3958,7 +3947,7 @@ Spell Level      : 1
 Range            : 40 yards
 Stacks           : 3 maximum
 Proc Chance      : 101%
-Affecting spells : Incarnation: Tree of Life (5420), Nimble Healing Touch (24542), Blessing of Lower City (37878), Ironbark (102342), Grovewalker (186320), Tranquil Mind (189857), Astral Influence (197524), Ekowraith, Creator of Worlds (210667)
+Affecting spells : Incarnation: Tree of Life (5420), Nimble Healing Touch (24542), Blessing of Lower City (37878), Ironbark (102342), Restoration Druid (137012), Grovewalker (186320), Tranquil Mind (189857), Thrash (192090), Astral Influence (197524), Ekowraith, Creator of Worlds (210667)
 Triggered by     : Tranquility (740)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ......x.   ........ .x...... ........ ......x. 
@@ -4750,10 +4739,10 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.12100 | Mechanic: Bleed | Target: Enemy(6)
 #2 (id=301092)   : Apply Aura (6) | Unknown effect sub type (271)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
-                   Affected Spells: Rip (1079), Rake (1822), Solar Wrath (5176), Shred (5221), Maul (6807), Moonfire (8921), Ferocious Bite (22568), Maim (22570), Mangle (33917), Thrash (77758), Starsurge (78674), Pulverize (80313), Sunfire (93402), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Brutal Slash (202028), Enraged Mangle (202085), Ashamane's Rip (210705), Swipe (213771), Echoing Stars (226104), Enraged Maul (236716)
+                   Affected Spells: Rejuvenation (774), Rip (1079), Rake (1822), Solar Wrath (5176), Healing Touch (5185), Shred (5221), Maul (6807), Moonfire (8921), Regrowth (8936), Swiftmend (18562), Ferocious Bite (22568), Maim (22570), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Thrash (77758), Starsurge (78674), Pulverize (80313), Efflorescence (81269), Sunfire (93402), Cenarion Ward (102352), Germination (155675), Rake (155722), Tranquility (157982), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Nature's Essence (189800), Dreamwalker (189853), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Cultivation (200389), Brutal Slash (202028), Enraged Mangle (202085), Spring Blossoms (207386), Ashamane's Rip (210705), Swipe (213771), Mark of Shifting (224392), Echoing Stars (226104), Enraged Maul (236716)
 #3 (id=301093)   : Apply Aura (6) | Unknown effect sub type (343)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
-                   Affected Spells: Rip (1079), Rake (1822), Solar Wrath (5176), Shred (5221), Maul (6807), Moonfire (8921), Ferocious Bite (22568), Maim (22570), Mangle (33917), Thrash (77758), Starsurge (78674), Pulverize (80313), Sunfire (93402), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Brutal Slash (202028), Enraged Mangle (202085), Ashamane's Rip (210705), Swipe (213771), Echoing Stars (226104), Enraged Maul (236716)
+                   Affected Spells: Rejuvenation (774), Rip (1079), Rake (1822), Solar Wrath (5176), Healing Touch (5185), Shred (5221), Maul (6807), Moonfire (8921), Regrowth (8936), Swiftmend (18562), Ferocious Bite (22568), Maim (22570), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Thrash (77758), Starsurge (78674), Pulverize (80313), Efflorescence (81269), Sunfire (93402), Cenarion Ward (102352), Germination (155675), Rake (155722), Tranquility (157982), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Nature's Essence (189800), Dreamwalker (189853), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Cultivation (200389), Brutal Slash (202028), Enraged Mangle (202085), Spring Blossoms (207386), Ashamane's Rip (210705), Swipe (213771), Mark of Shifting (224392), Echoing Stars (226104), Enraged Maul (236716)
 Description      : $@spelldesc77758
 Tooltip          : Suffering $w1 damage every $t1 sec.
 
@@ -5281,7 +5270,7 @@ Class            : Druid
 School           : Nature
 Range            : 100 yards
 Duration         : 6 seconds
-Affecting spells : Grovewalker (186320), 
+Affecting spells : Restoration Druid (137012), Grovewalker (186320), Thrash (192090), 
 Attributes       : ........ ........ ..x..... x..x....   ........ ..x..... ........ ........ 
                  : ........ x....... ........ ........   .......x ........ ........ ........ 
                  : .......x .......x ....x... ........   ........ .....x.. ........ ........ 
@@ -6216,7 +6205,7 @@ Class            : Druid
 School           : Nature
 Range            : 100 yards
 Duration         : 6 seconds
-Affecting spells : Grovewalker (186320), 
+Affecting spells : Restoration Druid (137012), Grovewalker (186320), Thrash (192090), 
 Attributes       : ........ ........ ..x..... x..x....   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ......x. 
                  : .......x .......x ........ ........   ........ ........ ........ ........ 

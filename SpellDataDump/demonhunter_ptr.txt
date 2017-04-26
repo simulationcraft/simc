@@ -626,7 +626,7 @@ Duration         : 1 seconds
 Cooldown         : 10 seconds
 Category         : 1640
 Category Cooldown: 10 seconds
-Affecting spells : Metamorphosis (162264), First Blood (206416), Havoc Demon Hunter (212612), Vengeance Demon Hunter (212613), Bladedancer's Grace (243188)
+Affecting spells : Metamorphosis (162264), First Blood (206416), Havoc Demon Hunter (212612), Vengeance Demon Hunter (212613), Item - Demon Hunter T20 Havoc 4P Bonus (242227), Bladedancer's Grace (243188)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1064,7 +1064,7 @@ Description      : $@spelldesc162794
 Name             : Blade Dance (id=199552) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
-Affecting spells : Metamorphosis (162264), First Blood (206416), Havoc Demon Hunter (212612), Bladedancer's Grace (243188)
+Affecting spells : Metamorphosis (162264), First Blood (206416), Havoc Demon Hunter (212612), Item - Demon Hunter T20 Havoc 4P Bonus (242227), Bladedancer's Grace (243188)
 Triggered by     : Blade Dance (188499)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -1101,7 +1101,7 @@ Tooltip          : Stunned.
 Name             : Blade Dance (id=200685) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
-Affecting spells : Metamorphosis (162264), First Blood (206416), Havoc Demon Hunter (212612), Bladedancer's Grace (243188)
+Affecting spells : Metamorphosis (162264), First Blood (206416), Havoc Demon Hunter (212612), Item - Demon Hunter T20 Havoc 4P Bonus (242227), Bladedancer's Grace (243188)
 Triggered by     : Blade Dance (188499)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -2995,8 +2995,8 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=315220)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 249 (Label) | Target: Self(1)
-#2 (id=315221)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#2 (id=315221)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 298 (Label) | Target: Self(1)
 #3 (id=315222)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #4 (id=315223)   : Apply Aura (6) | Dummy (4)
