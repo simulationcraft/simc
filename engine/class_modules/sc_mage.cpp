@@ -381,6 +381,11 @@ public:
   // Procs
   struct procs_t
   {
+    proc_t* arcane_missiles_generated, // AM proc
+          * arcane_missiles_removed, // AM cast
+          * arcane_missiles_expired, // AM buff expires
+          * arcane_missiles_wasted; // Additional AM generated at max stacks
+
     proc_t* heating_up_generated, // Crits without HU/HS
           * heating_up_removed, // Non-crits with HU >200ms after application
           * heating_up_ib_converted, // IBs used on HU
@@ -1606,6 +1611,17 @@ struct arcane_missiles_t : public buff_t
     }
     return buff_t::trigger( stacks, value, chance, duration );
   }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+
+    mage_t* p = static_cast<mage_t*>( player );
+
+    if ( remaining_duration == timespan_t::zero() )
+        for ( auto i = 0; i < expiration_stacks; i++ )
+            p -> procs.arcane_missiles_expired -> occur();
+  }
 };
 
 
@@ -1997,9 +2013,20 @@ public:
   void trigger_am( int source_id, double chance = -1.0,
                    int stacks = 1 )
   {
+    const auto am_stacks = p() -> buffs.arcane_missiles -> stack();
+
     if ( static_cast<buff_t*>(p() -> buffs.arcane_missiles)
              -> trigger( stacks, buff_t::DEFAULT_VALUE(), chance ) )
     {
+      if (am_stacks == p() -> buffs.arcane_missiles -> max_stack() )
+      {
+        p() -> procs.arcane_missiles_wasted -> occur();
+      }
+      else
+      {
+        p() -> procs.arcane_missiles_generated -> occur();
+      }
+
       if ( source_id < 0 )
       {
         p() -> sim -> out_debug.printf( "Action %s does not have valid AM source_id",
@@ -3443,6 +3470,8 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     }
 
     p() -> buffs.arcane_missiles -> decrement();
+
+    p() -> procs.arcane_missiles_removed -> occur();
 
   }
 
@@ -8181,6 +8210,10 @@ void mage_t::init_procs()
   switch ( specialization() )
   {
     case MAGE_ARCANE:
+      procs.arcane_missiles_expired = get_proc( "Arcane Missiles expired" );
+      procs.arcane_missiles_generated = get_proc( "Arcane Missiles generated" );
+      procs.arcane_missiles_removed = get_proc( "Arcane Missiles removed" );
+      procs.arcane_missiles_wasted = get_proc( "Arcane Missiles wasted" );
       break;
     case MAGE_FROST:
       break;
