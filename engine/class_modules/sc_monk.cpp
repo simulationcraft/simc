@@ -1851,9 +1851,8 @@ public:
     buff.transfer_the_power_sef = buff_creator_t( this, "transfer_the_power_sef", o() -> artifact.transfer_the_power.data().effectN( 1 ).trigger() )
                             .default_value( o() -> artifact.transfer_the_power.rank() ? o() -> artifact.transfer_the_power.percent() : 0 ); 
 
-    buff.pressure_point_sef = buff_creator_t( this, "pressure_point_sef", o() -> sets.set( MONK_WINDWALKER, T20, B4 ) )
-      .duration( timespan_t::from_seconds( 24 ) )
-      .default_value( o() -> sets.set( MONK_WINDWALKER, T20, B4 ) -> effectN( 1 ).percent() );
+    buff.pressure_point_sef = buff_creator_t( this, "pressure_point_sef", o() -> passives.pressure_point )
+      .default_value( o() -> passives.pressure_point -> effectN( 1 ).percent() );
   }
 
   void trigger_attack( sef_ability_e ability, const action_t* source_action )
@@ -8499,7 +8498,6 @@ void monk_t::create_buffs()
                               .cd( timespan_t::zero() );
 
   buff.pressure_point = buff_creator_t( this, "pressure_point", passives.pressure_point )
-                       .duration( timespan_t::from_seconds( 24 ) )
                        .default_value( passives.pressure_point -> effectN( 1 ).percent() );
 
   buff.thunderfist = buff_creator_t( this, "thunderfist", passives.thunderfist_buff );
