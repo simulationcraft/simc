@@ -263,7 +263,7 @@ public:
           * hot_streak,
           * pyretic_incantation,
           * streaking,             // T19 4pc Fire
-          * fire_t20_2pc,          // T20 2pc Fire
+          * ignition,              // T20 2pc Fire
           * critical_massive;      // T20 4pc Fire
 
     // Frost
@@ -3644,7 +3644,7 @@ struct fireball_t : public fire_mage_spell_t
     if ( p() -> sets.has_set_bonus( MAGE_FIRE, T20, B2 )
       && rng().roll( p() -> sets.set( MAGE_FIRE, T20, B2 ) -> effectN( 1 ).percent() ) )
     {
-      p() -> buffs.fire_t20_2pc -> trigger();
+      p() -> buffs.ignition -> trigger();
     }
   }
 
@@ -3739,6 +3739,8 @@ struct aftershocks_t : public fire_mage_spell_t
     triggers_ignite = true;
 
     base_multiplier *= 1.0 + p -> artifact.blue_flame_special.percent();
+    // TODO: Fire T20 2pc and 4pc mention this spell. Check this if/when set bonuses
+    // are available for testing.
   }
 };
 
@@ -3786,16 +3788,20 @@ struct flamestrike_t : public fire_mage_spell_t
   {
     fire_mage_spell_t::execute();
     p() -> buffs.hot_streak -> expire();
-    p() -> buffs.fire_t20_2pc -> expire();
-    if ( p() -> sets.has_set_bonus( MAGE_FIRE, T20, B4 ) )
-    {
-      p() -> buffs.critical_massive -> trigger();
-    }
+    p() -> buffs.ignition -> expire();
+    p() -> buffs.critical_massive -> expire();
   }
 
   virtual void impact( action_state_t* state ) override
   {
     fire_mage_spell_t::impact( state );
+
+    if ( p() -> sets.has_set_bonus( MAGE_FIRE, T20, B4 ) && state -> result == RESULT_CRIT )
+    {
+      // TODO: The wording seems to imply any crit will do. Double check if/when set
+      // bonuses are available for testing.
+      p() -> buffs.critical_massive -> trigger();
+    }
 
     if ( state -> chain_target == 0 && p() -> artifact.aftershocks.rank() )
     {
@@ -3849,7 +3855,7 @@ struct flamestrike_t : public fire_mage_spell_t
   {
     double c = fire_mage_spell_t::composite_crit_chance();
 
-    if ( p() -> buffs.fire_t20_2pc -> up() )
+    if ( p() -> buffs.ignition -> up() )
     {
       c += 1.0;
     }
@@ -5317,12 +5323,8 @@ struct pyroblast_t : public fire_mage_spell_t
       p() -> buffs.kaelthas_ultimate_ability -> trigger();
     }
 
-    p() -> buffs.fire_t20_2pc -> expire();
-
-    if ( p() -> sets.has_set_bonus( MAGE_FIRE, T20, B4 ) )
-    {
-      p() -> buffs.critical_massive -> trigger();
-    }
+    p() -> buffs.ignition -> expire();
+    p() -> buffs.critical_massive -> expire();
 
     //TODO: Does this interact with T19 4pc?
     if ( p() -> talents.pyromaniac -> ok() &&
@@ -5362,6 +5364,11 @@ struct pyroblast_t : public fire_mage_spell_t
             -> adjust( -1000 * p() -> talents.kindling
                                    -> effectN( 1 ).time_value()  );
       }
+
+      if ( p() -> sets.has_set_bonus( MAGE_FIRE, T20, B4 ) && s -> result == RESULT_CRIT )
+      {
+        p() -> buffs.critical_massive -> trigger();
+      }
     }
   }
 
@@ -5369,7 +5376,7 @@ struct pyroblast_t : public fire_mage_spell_t
   {
     double c = fire_mage_spell_t::composite_crit_chance();
 
-    if ( p() -> buffs.fire_t20_2pc -> up() )
+    if ( p() -> buffs.ignition -> up() )
     {
       c += 1.0;
     }
@@ -7095,9 +7102,7 @@ void mage_t::create_buffs()
   buffs.enhanced_pyrotechnics = buff_creator_t( this, "enhanced_pyrotechnics", find_spell( 157644 ) )
                                   .default_value( find_spell( 157644 ) -> effectN( 1 ).percent()
                                       + sets.set( MAGE_FIRE, T19, B2 ) -> effectN( 1 ).percent() );
-  // TODO: Find spell data for this; duration is educated guess at this point
-  buffs.fire_t20_2pc          = buff_creator_t( this, "fire_t20_2pc" )
-                                  .duration( timespan_t::from_seconds( 10.0 ) );
+  buffs.ignition              = buff_creator_t( this, "ignition", find_spell( 246261 ) );
   buffs.heating_up            = buff_creator_t( this, "heating_up",  find_spell( 48107 ) );
   buffs.hot_streak            = buff_creator_t( this, "hot_streak",  find_spell( 48108 ) );
   buffs.pyretic_incantation   = buff_creator_t( this, "pyretic_incantation", find_spell( 194329 ) )
