@@ -375,20 +375,23 @@ public:
   struct specializations_t
   {
     // Arcane
-    const spell_data_t* arcane_barrage_2,
+    const spell_data_t* arcane_mage,
+                      * arcane_barrage_2,
                       * arcane_charge,
                       * evocation_2,
                       * savant;
 
     // Fire
-    const spell_data_t* critical_mass,
+    const spell_data_t* fire_mage,
+                      * critical_mass,
                       * critical_mass_2,
                       * fire_blast_2,
                       * fire_blast_3,
                       * ignite;
 
     // Frost
-    const spell_data_t* brain_freeze,
+    const spell_data_t* frost_mage,
+                      * brain_freeze,
                       * brain_freeze_2,
                       * blizzard_2,
                       * fingers_of_frost,
@@ -741,6 +744,7 @@ struct water_elemental_spell_t : public mage_pet_spell_t
   water_elemental_spell_t( const std::string& n, mage_pet_t* p, const spell_data_t* s )
     : mage_pet_spell_t( n, p, s )
   {
+    base_multiplier *= 1.0 + o() -> spec.frost_mage -> effectN( 1 ).percent();
   }
 
   virtual double action_multiplier() const override
@@ -995,6 +999,7 @@ struct arcane_blast_t : public mirror_image_spell_t
                             p -> find_pet_spell( "Arcane Blast" ) )
   {
     parse_options( options_str );
+    base_multiplier *= 1.0 + o() -> spec.arcane_mage -> effectN( 1 ).percent();
   }
 
   virtual void execute() override
@@ -1041,6 +1046,7 @@ struct fireball_t : public mirror_image_spell_t
     : mirror_image_spell_t( "fireball", p, p -> find_pet_spell( "Fireball" ) )
   {
     parse_options( options_str );
+    base_multiplier *= 1.0 + o() -> spec.fire_mage -> effectN( 1 ).percent();
   }
 
   virtual double composite_crit_chance() const override
@@ -1062,6 +1068,7 @@ struct frostbolt_t : public mirror_image_spell_t
     : mirror_image_spell_t( "frostbolt", p, p -> find_pet_spell( "Frostbolt" ) )
   {
     parse_options( options_str );
+    base_multiplier *= 1.0 + o() -> spec.frost_mage -> effectN( 1 ).percent();
   }
 
   virtual double action_multiplier() const override
@@ -1491,6 +1498,22 @@ namespace actions {
 
 struct mage_spell_t : public spell_t
 {
+  // TODO: Shatter
+  struct affected_by_t
+  {
+    bool arcane_mage;
+    bool fire_mage;
+    bool frost_mage;
+
+    bool rune_of_power;
+    bool incanters_flow;
+
+    bool arcane_power;
+    bool erosion;
+    bool combustion;
+    bool bone_chilling;
+  } affected_by;
+
   bool consumes_ice_floes,
        triggers_arcane_missiles;
 
@@ -1502,6 +1525,7 @@ public:
   mage_spell_t( const std::string& n, mage_t* p,
                 const spell_data_t* s = spell_data_t::nil() ) :
     spell_t( n, p, s ),
+    affected_by( affected_by_t() ),
     consumes_ice_floes( true ),
     am_trigger_source_id( -1 ),
     dps_rotation( 0 ),
@@ -1510,6 +1534,27 @@ public:
     triggers_arcane_missiles = harmful && !background;
     may_crit      = true;
     tick_may_crit = true;
+
+    affected_by.rune_of_power = true;
+    affected_by.incanters_flow = true;
+  }
+
+  virtual void init() override
+  {
+    spell_t::init();
+
+    if ( affected_by.arcane_mage )
+    {
+      base_multiplier *= 1.0 + p() -> spec.arcane_mage -> effectN( 1 ).percent();
+    }
+    if ( affected_by.fire_mage )
+    {
+      base_multiplier *= 1.0 + p() -> spec.fire_mage -> effectN( 1 ).percent();
+    }
+    if ( affected_by.frost_mage )
+    {
+      base_multiplier *= 1.0 + p() -> spec.frost_mage -> effectN( 1 ).percent();
+    }
   }
 
   virtual bool init_finished() override
@@ -1670,17 +1715,51 @@ public:
   {
     double am = spell_t::action_multiplier();
 
-    if ( p() -> buffs.rune_of_power -> check() )
+    if ( affected_by.rune_of_power && p() -> buffs.rune_of_power -> check() )
     {
       am *= 1.0 + p() -> buffs.rune_of_power -> check_value();
     }
 
-    if ( p() -> talents.incanters_flow -> ok() )
+    if ( affected_by.incanters_flow && p() -> talents.incanters_flow -> ok() )
     {
       am *= 1.0 + p() -> buffs.incanters_flow -> check_stack_value();
     }
 
+    if ( affected_by.arcane_power && p() -> buffs.arcane_power -> up() )
+    {
+      am *= 1.0 + p() -> buffs.arcane_power -> check_value();
+    }
+
+    if ( affected_by.bone_chilling )
+    {
+      am *= 1.0 + p() -> buffs.bone_chilling -> check_stack_value();
+    }
+
     return am;
+  }
+
+  virtual double composite_target_multiplier( player_t* target ) const override
+  {
+    double tm = spell_t::composite_target_multiplier( target );
+
+    if ( affected_by.erosion )
+    {
+      tm *= 1.0 + td( target ) -> debuffs.erosion -> check_stack_value();
+    }
+
+    return tm;
+  }
+
+  virtual double composite_crit_chance() const override
+  {
+    double c = spell_t::composite_crit_chance();
+
+    if ( affected_by.combustion && p() -> buffs.combustion -> check() )
+    {
+      c += p() -> buffs.combustion -> check_value();
+    }
+
+    return c;
   }
 };
 
@@ -1696,7 +1775,11 @@ struct arcane_mage_spell_t : public mage_spell_t
   arcane_mage_spell_t( const std::string& n, mage_t* p,
                        const spell_data_t* s = spell_data_t::nil() ) :
     mage_spell_t( n, p, s )
-  {}
+  {
+    affected_by.arcane_mage = true;
+    affected_by.arcane_power = true;
+    affected_by.erosion = true;
+  }
 
   double arcane_charge_damage_bonus( bool amplification = false ) const
   {
@@ -1711,28 +1794,6 @@ struct arcane_mage_spell_t : public mage_spell_t
 
     return 1.0 + p() -> buffs.arcane_charge -> check() * per_ac_bonus;
 
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double am = mage_spell_t::action_multiplier();
-
-    if ( p() -> buffs.arcane_power -> up() )
-    {
-      am *= 1.0 + p() -> buffs.arcane_power -> check_value();
-    }
-
-    return am;
-  }
-
-  virtual double composite_target_multiplier( player_t* target ) const override
-  {
-    double tm = spell_t::composite_target_multiplier( target );
-    mage_td_t* tdata = td( target );
-
-    tm *= 1.0 + tdata -> debuffs.erosion -> check_stack_value();
-
-    return tm;
   }
 
   virtual void impact( action_state_t* s ) override
@@ -1795,6 +1856,8 @@ struct fire_mage_spell_t : public mage_spell_t
     triggers_hot_streak( false ),
     triggers_ignite( false )
   {
+    affected_by.fire_mage = true;
+    affected_by.combustion = true;
   }
 
   virtual void impact( action_state_t* s ) override
@@ -1937,18 +2000,6 @@ struct fire_mage_spell_t : public mage_spell_t
       p -> procs.ignite_applied -> occur();
     }
   }
-
-  virtual double composite_crit_chance() const override
-  {
-    double c = mage_spell_t::composite_crit_chance();
-
-    if ( p() -> buffs.combustion -> check() )
-    {
-      c += p() -> buffs.combustion -> check_value();
-    }
-
-    return c;
-  }
 };
 
 
@@ -2030,6 +2081,8 @@ struct frost_mage_spell_t : public mage_spell_t
       calculate_on_impact( false ),
       fof_source_id( -1 )
   {
+    affected_by.frost_mage = true;
+    affected_by.bone_chilling = true;
   }
 
   struct brain_freeze_delay_event_t : public event_t
@@ -2208,15 +2261,6 @@ struct frost_mage_spell_t : public mage_spell_t
     {
       td( s -> target ) -> debuffs.chilled -> trigger();
     }
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double am = mage_spell_t::action_multiplier();
-
-    am *= 1.0 + p() -> buffs.bone_chilling -> check_stack_value();
-
-    return am;
   }
 };
 
@@ -4134,6 +4178,11 @@ struct frost_nova_t : public mage_spell_t
     parse_options( options_str );
     triggers_arcane_missiles = true;
 
+    affected_by.fire_mage = true;
+    affected_by.frost_mage = true;
+    affected_by.combustion = true;
+    affected_by.bone_chilling = true;
+
     cooldown -> charges += p -> talents.ice_ward -> effectN( 1 ).base_value();
   }
 
@@ -4805,6 +4854,16 @@ struct mark_of_aluneth_explosion_t : public arcane_mage_spell_t
     aoe = -1;
     trigger_gcd = timespan_t::zero();
     triggers_arcane_missiles = false;
+
+    if ( p -> bugs )
+    {
+      affected_by.rune_of_power = false;
+      affected_by.incanters_flow = false;
+
+      affected_by.arcane_mage = false;
+      affected_by.arcane_power = false;
+      affected_by.erosion = false;
+    }
 
     if ( p -> artifact.aluneths_avarice.rank() )
     {
@@ -7006,15 +7065,18 @@ void mage_t::init_spells()
   artifact.the_storm_rages               = find_artifact_spell( "The Storm Rages"               );
 
   // Spec Spells
+  spec.arcane_mage           = find_specialization_spell( 137021 );
   spec.arcane_barrage_2      = find_specialization_spell( 231564 );
   spec.arcane_charge         = find_spell( 36032 );
   spec.evocation_2           = find_specialization_spell( 231565 );
 
+  spec.fire_mage             = find_specialization_spell( 137019 );
   spec.critical_mass         = find_specialization_spell( "Critical Mass"    );
   spec.critical_mass_2       = find_specialization_spell( 231630 );
   spec.fire_blast_2          = find_specialization_spell( 231568 );
   spec.fire_blast_3          = find_specialization_spell( 231567 );
 
+  spec.frost_mage            = find_specialization_spell( 137020 );
   spec.brain_freeze          = find_specialization_spell( "Brain Freeze"     );
   spec.brain_freeze_2        = find_specialization_spell( 231584 );
   spec.blizzard_2            = find_specialization_spell( 236662 );
