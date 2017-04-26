@@ -2341,7 +2341,7 @@ struct presence_of_mind_t : public arcane_mage_spell_t
     p() -> buffs.presence_of_mind
         -> trigger( p() -> buffs.presence_of_mind -> max_stack() );
 
-    if ( p() -> sets.has_set_bonus( MAGE_ARCANE, T20, B4 ) )
+    if ( p() -> sets.has_set_bonus( MAGE_ARCANE, T20, B2 ) )
     {
       p() -> buffs.arcane_charge -> trigger( 4 );
       p() -> buffs.deadly_presence -> trigger();
@@ -2977,10 +2977,10 @@ struct arcane_missiles_t : public arcane_mage_spell_t
       p() -> cooldowns.evocation
           -> adjust( -1000 * p() -> sets.set( MAGE_ARCANE, T19, B4 ) -> effectN( 1 ).time_value()  );
     }
-    if ( p() -> sets.has_set_bonus( MAGE_ARCANE, T20, B2 ) )
+    if ( p() -> sets.has_set_bonus( MAGE_ARCANE, T20, B4 ) )
     {
       p() -> cooldowns.presence_of_mind
-          -> adjust( -1000 * p() -> sets.set( MAGE_ARCANE, T20, B2 ) -> effectN( 1 ).time_value() );
+          -> adjust( -1000 * p() -> sets.set( MAGE_ARCANE, T20, B4 ) -> effectN( 1 ).time_value() );
     }
 
     p() -> buffs.arcane_missiles -> decrement();
