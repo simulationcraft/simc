@@ -5413,11 +5413,6 @@ struct haunt_t: public warlock_spell_t
   haunt_t( warlock_t* p ):
     warlock_spell_t( "haunt", p, p -> talents.haunt )
   {
-    if ( maybe_ptr( p -> dbc.ptr ) )
-    {
-      base_costs[RESOURCE_SOUL_SHARD] = 1.0;
-      resource_current = RESOURCE_SOUL_SHARD;
-    }
   }
 
   void impact( action_state_t* s ) override
