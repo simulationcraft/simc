@@ -3825,9 +3825,9 @@ struct immolate_t: public warlock_spell_t
     if ( maybe_ptr( p() -> dbc.ptr ) )
     {
       if ( d -> state -> result == RESULT_CRIT && rng().roll( 0.5 ) )
-        p() -> resource_gain( RESOURCE_SOUL_SHARD, ( 0.1 ), p() -> gains.immolate_crits );
-      if ( d -> state -> result == RESULT_HIT )
-        p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.1, p() -> gains.immolate );
+        p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.1, p() -> gains.immolate_crits );
+
+      p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.1, p() -> gains.immolate );
     }
     else
     {
@@ -5706,6 +5706,9 @@ struct grimoire_of_service_t: public summon_pet_t
   grimoire_of_service_t( warlock_t* p, const std::string& pet_name ):
     summon_pet_t( "service_" + pet_name, p, p -> talents.grimoire_of_service -> ok() ? p -> find_class_spell( "Grimoire: " + pet_name ) : spell_data_t::not_found() )
   {
+    if ( maybe_ptr( p -> dbc.ptr ) )
+      base_costs[RESOURCE_SOUL_SHARD] *= 0.1;
+
     cooldown = p -> get_cooldown( "grimoire_of_service" );
     cooldown -> duration = data().cooldown();
     summoning_duration = data().duration() + timespan_t::from_millis( 1 );
