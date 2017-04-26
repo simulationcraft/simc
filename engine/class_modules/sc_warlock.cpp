@@ -430,6 +430,7 @@ public:
     gain_t* conflagrate;
     gain_t* shadowburn;
     gain_t* immolate;
+    gain_t* immolate_crits;
     gain_t* shadowburn_shard;
     gain_t* miss_refund;
     gain_t* seed_of_corruption;
@@ -447,6 +448,7 @@ public:
     gain_t* feretory_of_souls;
     gain_t* power_cord_of_lethtendris;
     gain_t* incinerate;
+    gain_t* incinerate_crits;
     gain_t* dimensional_rift;
   } gains;
 
@@ -3820,10 +3822,20 @@ struct immolate_t: public warlock_spell_t
   {
     warlock_spell_t::tick( d );
 
-    if ( d -> state -> result == RESULT_CRIT && rng().roll( ( maybe_ptr( p() -> dbc.ptr ) ? 1.0 : 0.3 ) ) )
-      p() -> resource_gain( RESOURCE_SOUL_SHARD, ( maybe_ptr( p() -> dbc.ptr ) ? 0.1 : 1 ), p() -> gains.immolate );
-    else if ( d -> state -> result == RESULT_HIT && rng().roll( ( maybe_ptr( p() -> dbc.ptr ) ? 0.5 : 0.15 ) ) )
-      p() -> resource_gain( RESOURCE_SOUL_SHARD, ( maybe_ptr( p() -> dbc.ptr ) ? 0.1 : 1 ), p() -> gains.immolate );
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+    {
+      if ( d -> state -> result == RESULT_CRIT && rng().roll( 0.5 ) )
+        p() -> resource_gain( RESOURCE_SOUL_SHARD, ( 0.1 ), p() -> gains.immolate_crits );
+      if ( d -> state -> result == RESULT_HIT )
+        p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.1, p() -> gains.immolate );
+    }
+    else
+    {
+      if ( d -> state -> result == RESULT_CRIT && rng().roll( 0.3 ) )
+        p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.immolate );
+      else if ( d -> state -> result == RESULT_HIT && rng().roll( 0.15 ) )
+        p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.immolate );
+    }
   }
 };
 
@@ -3916,7 +3928,7 @@ struct conflagrate_t: public warlock_spell_t
       }
 
       if ( maybe_ptr( p() -> dbc.ptr ) )
-        p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.6, p() -> gains.conflagrate );
+        p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.4, p() -> gains.conflagrate );
     }
   }
 };
@@ -3980,9 +3992,13 @@ struct incinerate_t: public warlock_spell_t
 
     p() -> buffs.backdraft -> decrement();
 
-    if ( maybe_ptr( p() -> dbc.ptr ) )
-      p() -> resource_gain( RESOURCE_SOUL_SHARD, ( execute_state -> result == RESULT_CRIT ? 0.2 : 0.1 ) * ( p() -> talents.fire_and_brimstone -> ok() ? execute_state -> n_targets : 1 ), p() -> gains.incinerate );
-  }
+    if ( maybe_ptr( p()->dbc.ptr ) )
+    {
+      p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.2 * ( p() -> talents.fire_and_brimstone -> ok() ? execute_state -> n_targets : 1 ), p() -> gains.incinerate );
+      if ( execute_state -> result == RESULT_CRIT )
+        p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.1 * ( p() -> talents.fire_and_brimstone -> ok() ? execute_state -> n_targets : 1 ), p() -> gains.incinerate_crits );
+    }
+        }
 
   virtual double composite_crit_chance() const override
   {
@@ -5363,7 +5379,7 @@ struct shadowburn_t: public warlock_spell_t
     resource_event = make_event<resource_event_t>( *sim, p(), this, s -> target );
 
     if ( maybe_ptr( p() -> dbc.ptr ) )
-      p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.6, p() -> gains.shadowburn );
+      p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.4, p() -> gains.shadowburn );
   }
 
   void init() override
@@ -6734,6 +6750,7 @@ void warlock_t::init_gains()
   gains.conflagrate                 = get_gain( "conflagrate" );
   gains.shadowburn                  = get_gain( "shadowburn" );
   gains.immolate                    = get_gain( "immolate" );
+  gains.immolate_crits              = get_gain( "immolate_crits" );
   gains.shadowburn_shard            = get_gain( "shadowburn_shard" );
   gains.miss_refund                 = get_gain( "miss_refund" );
   gains.seed_of_corruption          = get_gain( "seed_of_corruption" );
@@ -6750,6 +6767,7 @@ void warlock_t::init_gains()
   gains.feretory_of_souls           = get_gain( "feretory_of_souls" );
   gains.power_cord_of_lethtendris   = get_gain( "power_cord_of_lethtendris" );
   gains.incinerate                  = get_gain( "incinerate" );
+  gains.incinerate_crits            = get_gain( "incinerate_crits" );
   gains.dimensional_rift            = get_gain( "dimensional_rift" );
 }
 
