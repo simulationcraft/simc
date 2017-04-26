@@ -375,26 +375,26 @@ public:
   struct specializations_t
   {
     // Arcane
-    const spell_data_t* arcane_mage,
-                      * arcane_barrage_2,
+    const spell_data_t* arcane_barrage_2,
                       * arcane_charge,
+                      * arcane_mage,
                       * evocation_2,
                       * savant;
 
     // Fire
-    const spell_data_t* fire_mage,
-                      * critical_mass,
+    const spell_data_t* critical_mass,
                       * critical_mass_2,
                       * fire_blast_2,
                       * fire_blast_3,
+                      * fire_mage,
                       * ignite;
 
     // Frost
-    const spell_data_t* frost_mage,
-                      * brain_freeze,
+    const spell_data_t* brain_freeze,
                       * brain_freeze_2,
                       * blizzard_2,
                       * fingers_of_frost,
+                      * frost_mage,
                       * icicles,
                       * icicles_driver,
                       * shatter,
@@ -7065,22 +7065,22 @@ void mage_t::init_spells()
   artifact.the_storm_rages               = find_artifact_spell( "The Storm Rages"               );
 
   // Spec Spells
-  spec.arcane_mage           = find_specialization_spell( 137021 );
   spec.arcane_barrage_2      = find_specialization_spell( 231564 );
   spec.arcane_charge         = find_spell( 36032 );
+  spec.arcane_mage           = find_specialization_spell( 137021 );
   spec.evocation_2           = find_specialization_spell( 231565 );
 
-  spec.fire_mage             = find_specialization_spell( 137019 );
   spec.critical_mass         = find_specialization_spell( "Critical Mass"    );
   spec.critical_mass_2       = find_specialization_spell( 231630 );
   spec.fire_blast_2          = find_specialization_spell( 231568 );
   spec.fire_blast_3          = find_specialization_spell( 231567 );
+  spec.fire_mage             = find_specialization_spell( 137019 );
 
-  spec.frost_mage            = find_specialization_spell( 137020 );
   spec.brain_freeze          = find_specialization_spell( "Brain Freeze"     );
   spec.brain_freeze_2        = find_specialization_spell( 231584 );
   spec.blizzard_2            = find_specialization_spell( 236662 );
   spec.fingers_of_frost      = find_specialization_spell( "Fingers of Frost" );
+  spec.frost_mage            = find_specialization_spell( 137020 );
   spec.shatter               = find_specialization_spell( "Shatter"          );
   spec.shatter_2             = find_specialization_spell( 231582 );
 
