@@ -1039,7 +1039,7 @@ struct dreadbite_t : public warlock_pet_melee_attack_t
     warlock_pet_melee_attack_t( "Dreadbite", p, p -> find_spell( 205196 ) )
   {
     weapon = &( p -> main_hand_weapon );
-    dreadstalker_duration = p -> find_spell( 193332 ) -> duration();
+    dreadstalker_duration = p -> find_spell( 193332 ) -> duration() + ( p -> sets.has_set_bonus( WARLOCK_DEMONOLOGY, T19, B4 ) ? p -> sets.set( WARLOCK_DEMONOLOGY, T19, B4 ) -> effectN( 1 ).time_value() : timespan_t::zero() );
     cooldown -> duration = dreadstalker_duration + timespan_t::from_seconds( 1.0 );
   }
 
