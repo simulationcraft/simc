@@ -2982,7 +2982,7 @@ struct arcane_missiles_t : public arcane_mage_spell_t
       // TODO: Spell data for this is really weird, both 2pc and 4pc are named "2P Bonus" and have
       // similar wording. Double check after they fix it.
       p() -> cooldowns.presence_of_mind
-          -> adjust( -1000 * p() -> sets.set( MAGE_ARCANE, T20, B4 ) -> effectN( 1 ).time_value() );
+          -> adjust( -100 * p() -> sets.set( MAGE_ARCANE, T20, B4 ) -> effectN( 1 ).time_value() );
     }
 
     p() -> buffs.arcane_missiles -> decrement();
