@@ -3161,11 +3161,7 @@ struct blade_dance_attack_t : public demon_hunter_attack_t
   {
     double cd = demon_hunter_attack_t::composite_crit_damage_bonus_multiplier();
 
-    // Currently doesn't affect Death Sweep, so use the affected list to determine if we apply it
-    if (data().affected_by(p()->artifact.bladedancers_grace.data().effectN(1)))
-    {
-      cd *= 1.0 + p()->artifact.bladedancers_grace.percent();
-    }
+    cd *= 1.0 + p()->artifact.bladedancers_grace.percent();
 
     return cd;
   }
