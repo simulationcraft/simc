@@ -7285,12 +7285,9 @@ void rogue_t::init_action_list()
     // PTR APL for 7.2.5
     // Main Rotation
     action_priority_list_t* ptr_def = get_action_priority_list( "ptr_default" );
-    ptr_def -> add_action( "run_action_list,name=ptr_sprinted,if=buff.faster_than_light_trigger.up" );
     ptr_def -> add_action( "call_action_list,name=ptr_cds" );
     ptr_def -> add_action( "run_action_list,name=ptr_stealthed,if=stealthed.all", "Fully switch to the Stealthed Rotation (by doing so, it forces pooling if nothing is available)" );
     ptr_def -> add_action( this, "Nightblade", "if=target.time_to_die>8&remains<gcd.max&combo_points>=4" );
-    ptr_def -> add_action( this, "Sprint", "if=!equipped.draught_of_souls&mantle_duration=0&energy.time_to_max>=1.5&cooldown.shadow_dance.charges_fractional<variable.shd_fractionnal&!cooldown.vanish.up&target.time_to_die>=8&(dot.nightblade.remains>=14|target.time_to_die<=45)" );
-    ptr_def -> add_action( this, "Sprint", "if=equipped.draught_of_souls&trinket.cooldown.up&mantle_duration=0" );
     ptr_def -> add_action( "call_action_list,name=ptr_stealth_als,if=(combo_points.deficit>=2+talent.premeditation.enabled|cooldown.shadow_dance.charges_fractional>=2.9)" );
     ptr_def -> add_action( "call_action_list,name=ptr_finish,if=combo_points>=5|(combo_points>=4&combo_points.deficit<=2&spell_targets.shuriken_storm>=3&spell_targets.shuriken_storm<=4)" );
     ptr_def -> add_action( "call_action_list,name=ptr_build,if=energy.deficit<=variable.stealth_threshold" );
@@ -7304,6 +7301,7 @@ void rogue_t::init_action_list()
     // Cooldowns
     action_priority_list_t* ptr_cds = get_action_priority_list( "ptr_cds", "Cooldowns" );
     ptr_cds -> add_action( "potion,name=old_war,if=buff.bloodlust.react|target.time_to_die<=25|buff.shadow_blades.up" );
+    ptr_cds -> add_action( "use_item,name=draught_of_souls,if=!stealthed.rogue&energy.deficit>30+talent.vigor.enabled*10" );
     for ( size_t i = 0; i < items.size(); i++ )
     {
       if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) && items[i].name_str != "draught_of_souls" )
@@ -7317,7 +7315,7 @@ void rogue_t::init_action_list()
         ptr_cds -> add_action( racial_actions[i] + ",if=stealthed.rogue" );
     }
     ptr_cds -> add_action( this, "Symbols of Death", "if=!stealthed.all" );
-    ptr_cds -> add_action( this, "Shadow Blades", "if=combo_points.deficit>=2+stealthed.all-equipped.mantle_of_the_master_assassin&(cooldown.sprint.remains>buff.shadow_blades.duration*0.5|mantle_duration>0|cooldown.shadow_dance.charges_fractional>variable.shd_fractionnal|cooldown.vanish.up|target.time_to_die<=buff.shadow_blades.duration*1.1)" );
+    ptr_cds -> add_action( this, "Shadow Blades", "if=combo_points.deficit>=2+stealthed.all-equipped.mantle_of_the_master_assassin" );
     ptr_cds -> add_action( this, "Goremaw's Bite", "if=!stealthed.all&cooldown.shadow_dance.charges_fractional<=variable.shd_fractionnal&((combo_points.deficit>=4-(time<10)*2&energy.deficit>50+talent.vigor.enabled*25-(time>=10)*15)|(combo_points.deficit>=1&target.time_to_die<8))" );
     ptr_cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit|(raid_event.adds.in>40&combo_points.deficit>=cp_max_spend)" );
 
@@ -7329,10 +7327,6 @@ void rogue_t::init_action_list()
     ptr_finish -> add_action( this, "Nightblade", "cycle_targets=1,if=target.time_to_die-remains>8&mantle_duration=0&((refreshable&(!finality|buff.finality_nightblade.up))|remains<tick_time*2)" );
     ptr_finish -> add_talent( this, "Death from Above" );
     ptr_finish -> add_action( this, "Eviscerate" );
-
-    action_priority_list_t* ptr_sprinted = get_action_priority_list( "ptr_sprinted", "Sprinted" );
-    ptr_sprinted -> add_action( "cancel_autoattack" );
-    ptr_sprinted -> add_action( "use_item,name=draught_of_souls" );
 
     // Stealth Action List Starter
     action_priority_list_t* ptr_stealth_als = get_action_priority_list( "ptr_stealth_als", "Stealth Action List Starter" );
