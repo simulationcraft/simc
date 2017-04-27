@@ -4596,6 +4596,11 @@ struct sprint_t : public rogue_attack_t
     cooldown -> duration = data().cooldown()
                             + p -> spell.sprint_2 -> effectN( 1 ).time_value()
                             + p -> artifact.shadow_walker.time_value();
+
+    if ( maybe_ptr( p -> dbc.ptr ) && p -> artifact.flickering_shadows.rank() )
+    {
+      cooldown -> duration += p -> artifact.flickering_shadows.data().effectN( 1 ).time_value();
+    }
   }
 
   void execute() override
@@ -4604,7 +4609,7 @@ struct sprint_t : public rogue_attack_t
 
     p() -> buffs.sprint -> trigger();
 
-    if ( p() -> artifact.flickering_shadows.rank() )
+    if ( ! maybe_ptr( p() -> dbc.ptr ) && p() -> artifact.flickering_shadows.rank() )
     {
       p() -> buffs.faster_than_light_trigger -> trigger();
     }
@@ -4666,6 +4671,11 @@ struct vanish_t : public rogue_attack_t
   {
     may_miss = may_crit = harmful = false;
     ignore_false_positive = true;
+
+    if ( maybe_ptr( p -> dbc.ptr ) && p -> artifact.flickering_shadows.rank() )
+    {
+      cooldown -> duration += p -> artifact.flickering_shadows.data().effectN( 2 ).time_value();
+    }
   }
 
   void execute() override
