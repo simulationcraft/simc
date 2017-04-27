@@ -1713,12 +1713,10 @@ struct sneaky_snake_t: public hunter_secondary_pet_t
 
   struct sneaky_snake_melee_t: public secondary_pet_melee_t<sneaky_snake_t>
   {
-    bool first;
     deathstrike_venom_t* deathstrike_venom;
 
     sneaky_snake_melee_t( sneaky_snake_t* p ):
       base_t( "sneaky_snake_melee", p ),
-      first( true ),
       deathstrike_venom( new deathstrike_venom_t( p ) )
     {
     }
@@ -1731,27 +1729,11 @@ struct sneaky_snake_t: public hunter_secondary_pet_t
       return base_t::init_finished();
     }
 
-    void cancel() override
-    {
-      base_t::cancel();
-      first = true;
-    }
-
-    void execute() override
-    {
-      base_t::execute();
-
-      if ( first )
-        first = false;
-    }
-
     void impact( action_state_t* s ) override
     {
       base_t::impact( s );
 
-      // the snakes buff themselves with deathstrike venom aura ~200ms after summon
-      // that means their first hit can't really apply the debuff
-      if ( !first && result_is_hit( s -> result ) )
+      if ( result_is_hit( s -> result ) )
         deathstrike_venom -> trigger( s );
     }
   };
@@ -1771,6 +1753,15 @@ struct sneaky_snake_t: public hunter_secondary_pet_t
     // the snakes have 1s baseline swing time
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1 );
     main_hand_attack = new sneaky_snake_melee_t( this );
+  }
+
+  void arise() override
+  {
+    hunter_secondary_pet_t::arise();
+
+    // the snakes buff themselves with deathstrike venom aura ~200ms after summon
+    static_cast<sneaky_snake_melee_t*>( main_hand_attack ) ->
+      deathstrike_venom -> cooldown -> start( timespan_t::from_millis( 200 ) );
   }
 };
 
