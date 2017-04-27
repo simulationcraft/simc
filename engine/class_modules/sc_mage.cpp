@@ -1,4 +1,4 @@
-insane gamer // ==========================================================================
+// ==========================================================================
 // Dedmonwakeen's DPS-DPM Simulator.
 // Send questions to natehieter@gmail.com
 // ==========================================================================
@@ -8515,8 +8515,7 @@ std::string mage_t::default_potion() const
 {
   std::string lvl110_potion =
     ( specialization() == MAGE_ARCANE ) ? "deadly_grace" :
-    ( specialization() == MAGE_FIRE )   ? "deadly_grace" :
-                                          "prolonged_power";
+    ( specialization() == MAGE_FIRE )   ? "prolonged_power" ;
 
   return ( true_level >= 100 ) ? lvl110_potion :
          ( true_level >=  90 ) ? "draenic_intellect" :
