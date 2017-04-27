@@ -139,7 +139,7 @@ public:
     buff_t* big_game_hunter;
     buff_t* bombardment;
     buff_t* careful_aim;
-    std::array<buff_t*, DIRE_BEASTS_MAX > dire_beast;
+    std::array<buff_t*, DIRE_BEASTS_MAX > dire_regen;
     buff_t* steady_focus;
     buff_t* pre_steady_focus;
     buff_t* marking_targets;
@@ -196,7 +196,7 @@ public:
     gain_t* steady_focus;
     gain_t* cobra_shot;
     gain_t* aimed_shot;
-    gain_t* dire_beast;
+    gain_t* dire_regen;
     gain_t* multi_shot;
     gain_t* chimaera_shot;
     gain_t* aspect_of_the_wild;
@@ -4582,12 +4582,11 @@ struct dire_beast_t: public hunter_spell_t
     hunter_spell_t::execute();
 
     // Trigger buffs
-    timespan_t duration = p() -> buffs.dire_beast[ 0 ] -> buff_duration;
-    for ( buff_t* buff : p() -> buffs.dire_beast )
+    for ( buff_t* buff : p() -> buffs.dire_regen )
     {
       if ( ! buff -> check() )
       {
-        buff -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
+        buff -> trigger();
         break;
       }
     }
@@ -4627,7 +4626,7 @@ struct dire_beast_t: public hunter_spell_t
     // isn't important and combat log testing shows some variation in
     // attack speeds.  This is not quite perfect but more accurate
     // than plateaus.
-    const timespan_t base_duration = duration;
+    const timespan_t base_duration = data().duration();
     const timespan_t swing_time = beast -> main_hand_weapon.swing_time * beast -> composite_melee_speed();
     double partial_attacks_per_summon = base_duration / swing_time;
     int base_attacks_per_summon = static_cast<int>(partial_attacks_per_summon);
@@ -4754,8 +4753,9 @@ struct dire_frenzy_t: public hunter_spell_t
     parse_options( options_str );
 
     harmful = may_hit = false;
+    dot_duration = timespan_t::zero();
 
-    if ( p -> talents.dire_stable -> ok() )
+    if ( !maybe_ptr( p -> dbc.ptr ) && p -> talents.dire_stable -> ok() )
       energize_amount += p -> talents.dire_stable -> effectN( 2 ).base_value();
   }
 
@@ -4773,6 +4773,18 @@ struct dire_frenzy_t: public hunter_spell_t
   virtual void execute() override
   {
     hunter_spell_t::execute();
+
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+    {
+      for ( buff_t* buff : p() -> buffs.dire_regen )
+      {
+        if ( ! buff -> check() )
+        {
+          buff -> trigger();
+          break;
+        }
+      }
+    }
 
     // Adjust BW cd
     timespan_t t = timespan_t::from_seconds( p() -> specs.dire_beast -> effectN( 1 ).base_value() );
@@ -5762,15 +5774,17 @@ void hunter_t::create_buffs()
       .activated( true )
       .default_value( talents.big_game_hunter -> effectN( 1 ).percent() );
 
-  double dire_beast_value = find_spell( 120694 ) -> effectN( 1 ).resource( RESOURCE_FOCUS ) +
-                            talents.dire_stable -> effectN( 1 ).base_value();
-  for ( size_t i = 0; i < buffs.dire_beast.size(); i++ )
+  // initialize dire beast/frenzy buffs
+  const spell_data_t* dire_spell =
+    find_spell( maybe_ptr( dbc.ptr ) && talents.dire_frenzy -> ok() ? 246152 : 120694 );
+  for ( size_t i = 0; i < buffs.dire_regen.size(); i++ )
   {
-    buffs.dire_beast[ i ] =
-      buff_creator_t( this, "dire_beast_" + util::to_string( i + 1 ), find_spell(120694) )
-        .default_value( dire_beast_value )
+    buffs.dire_regen[ i ] =
+      buff_creator_t( this, util::tokenize_fn( dire_spell -> name_cstr() ) + "_" + util::to_string( i + 1 ), dire_spell )
+        .default_value( dire_spell -> effectN( 1 ).resource( RESOURCE_FOCUS ) +
+                        talents.dire_stable -> effectN( 1 ).base_value() )
         .tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
-                          resource_gain( RESOURCE_FOCUS, b -> default_value, gains.dire_beast );
+                          resource_gain( RESOURCE_FOCUS, b -> default_value, gains.dire_regen );
                         } );
   }
 
@@ -5952,7 +5966,7 @@ void hunter_t::init_gains()
   gains.steady_focus         = get_gain( "steady_focus" );
   gains.cobra_shot           = get_gain( "cobra_shot" );
   gains.aimed_shot           = get_gain( "aimed_shot" );
-  gains.dire_beast           = get_gain( "dire_beast" );
+  gains.dire_regen           = get_gain( talents.dire_frenzy -> ok() ? "dire_frenzy" : "dire_beast" );
   gains.multi_shot           = get_gain( "multi_shot" );
   gains.chimaera_shot        = get_gain( "chimaera_shot" );
   gains.aspect_of_the_wild   = get_gain( "aspect_of_the_wild" );
