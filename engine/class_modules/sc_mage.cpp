@@ -386,6 +386,16 @@ public:
           * arcane_missiles_expired, // AM buff expires
           * arcane_missiles_wasted; // Additional AM generated at max stacks
 
+    proc_t* brain_freeze_generated, // BF proc
+          * brain_freeze_removed, // Flurry cast
+          * brain_freeze_expired, // BF buff expires
+          * brain_freeze_wasted, // Additional BF generated with existing buff
+
+          * fingers_of_frost_generated, // FoF proc
+          * fingers_of_frost_removed, // Ice Lance cast
+          * fingers_of_frost_expired, // FoF buff expires
+          * fingers_of_frost_wasted; // Additional FoF generated at max stacks
+
     proc_t* heating_up_generated, // Crits without HU/HS
           * heating_up_removed, // Non-crits with HU >200ms after application
           * heating_up_ib_converted, // IBs used on HU
@@ -8216,6 +8226,15 @@ void mage_t::init_procs()
       procs.arcane_missiles_wasted = get_proc( "Arcane Missiles wasted" );
       break;
     case MAGE_FROST:
+      procs.brain_freeze_expired = get_proc( "Brain Freeze expired" );
+      procs.brain_freeze_generated = get_proc( "Brain Freeze generated" );
+      procs.brain_freeze_removed = get_proc( "Brain Freeze removed" );
+      procs.brain_freeze_wasted = get_proc( "Brain Freeze wasted" );
+
+      procs.fingers_of_frost_expired = get_proc( "Fingers of Frost expired" );
+      procs.fingers_of_frost_generated = get_proc( "Fingers of Frost generated" );
+      procs.fingers_of_frost_removed = get_proc( "Fingers of Frost removed" );
+      procs.fingers_of_frost_wasted = get_proc( "Fingers of Frost wasted" );
       break;
     case MAGE_FIRE:
       procs.heating_up_generated    = get_proc( "Heating Up generated" );
