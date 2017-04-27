@@ -1435,16 +1435,6 @@ struct storm_earth_and_fire_pet_t : public pet_t
     sef_fists_of_fury_tick_t( storm_earth_and_fire_pet_t* p ):
       sef_tick_action_t( "fists_of_fury_tick", p, p -> o() -> spec.fists_of_fury -> effectN( 3 ).trigger())
     { }
-
-    virtual double composite_crit_chance() const override
-    {
-      double c = sef_melee_attack_t::composite_crit_chance();
-
-      if ( o() -> get_target_data( target ) -> debuff.rising_fist -> up() )
-        c *= 1.0 + o() -> get_target_data( target ) -> debuff.rising_fist -> value();
-
-      return c;
-    }
   };
 
   struct sef_fists_of_fury_t : public sef_melee_attack_t
@@ -1500,6 +1490,16 @@ struct storm_earth_and_fire_pet_t : public pet_t
         return dot_duration * ( tick_time( s ) / base_tick_time );
 
       return dot_duration;
+    }
+
+    virtual double composite_crit_chance() const override
+    {
+      double c = sef_melee_attack_t::composite_crit_chance();
+
+      if ( o() -> get_target_data( target ) -> debuff.rising_fist -> up() )
+        c += o() -> get_target_data( target ) -> debuff.rising_fist -> value();
+
+      return c;
     }
 
     virtual void execute() override
@@ -3966,16 +3966,6 @@ struct fists_of_fury_tick_t: public monk_melee_attack_t
     dot_duration = timespan_t::zero();
     trigger_gcd = timespan_t::zero();
   }
-
-    virtual double composite_crit_chance() const override
-    {
-      double c = monk_melee_attack_t::composite_crit_chance();
-
-      if ( p() -> get_target_data( target ) -> debuff.rising_fist -> up() )
-        c *= 1.0 + p() -> get_target_data( target ) -> debuff.rising_fist -> value();
-
-      return c;
-    }
 };
 
 struct fists_of_fury_t: public monk_melee_attack_t
@@ -4046,7 +4036,17 @@ struct fists_of_fury_t: public monk_melee_attack_t
     double c = monk_melee_attack_t::cost();
 
     if ( p() -> legendary.katsuos_eclipse )
-      c += p() -> legendary.katsuos_eclipse -> effectN( 1 ).base_value(); // saved as -2
+      c += p() -> legendary.katsuos_eclipse -> effectN( 1 ).base_value(); // saved as -1
+
+    return c;
+  }
+
+  virtual double composite_crit_chance() const override
+  {
+    double c = monk_melee_attack_t::composite_crit_chance();
+
+    if ( p() -> get_target_data( target ) -> debuff.rising_fist -> up() )
+      c += p() -> get_target_data( target ) -> debuff.rising_fist -> value();
 
     return c;
   }
