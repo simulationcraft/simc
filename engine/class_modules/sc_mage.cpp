@@ -1496,9 +1496,26 @@ namespace actions {
 // Mage Spell
 // ==========================================================================
 
+struct mage_spell_state_t : public action_state_t
+{
+  mage_spell_state_t( action_t* action, player_t* target ) :
+    action_state_t( action, target )
+  { }
+
+  virtual bool frozen() const
+  {
+    const mage_t* p = debug_cast<const mage_t*>( action -> player );
+    const mage_td_t* td = p -> get_target_data( target );
+
+    return ( td -> debuffs.winters_chill -> up() )
+        || ( td -> debuffs.frozen -> up() );
+  }
+
+  virtual double composite_crit_chance() const override;
+};
+
 struct mage_spell_t : public spell_t
 {
-  // TODO: Shatter
   struct affected_by_t
   {
     bool arcane_mage;
@@ -1512,6 +1529,7 @@ struct mage_spell_t : public spell_t
     bool erosion;
     bool combustion;
     bool bone_chilling;
+    bool shatter;
   } affected_by;
 
   bool consumes_ice_floes,
@@ -1578,6 +1596,11 @@ public:
 
   mage_td_t* td( player_t* t ) const
   { return p() -> get_target_data( t ); }
+
+  virtual action_state_t* new_state() override
+  {
+    return new mage_spell_state_t( this, target );
+  }
 
   virtual double cost() const override
   {
@@ -1763,6 +1786,23 @@ public:
   }
 };
 
+double mage_spell_state_t::composite_crit_chance() const
+{
+  double c = action_state_t::composite_crit_chance();
+  const mage_spell_t* spell = debug_cast<const mage_spell_t*>( action );
+  const mage_t* p = spell -> p();
+
+  if ( spell -> affected_by.shatter && p -> spec.shatter -> ok() && frozen() )
+  {
+    // Multiplier is not in spell data, apparently.
+    c *= 1.5;
+
+    c += p -> spec.shatter -> effectN( 2 ).percent() + p -> spec.shatter_2 -> effectN( 1 ).percent();
+  }
+
+  return c;
+}
+
 typedef residual_action::residual_periodic_action_t< mage_spell_t > residual_action_t;
 
 
@@ -1813,30 +1853,30 @@ struct arcane_mage_spell_t : public mage_spell_t
 // Fire Mage Spell
 // ============================================================================
 
-struct ignite_spell_state_t : action_state_t
+struct ignite_spell_state_t : public mage_spell_state_t
 {
   bool hot_streak;
 
   ignite_spell_state_t( action_t* action, player_t* target ) :
-    action_state_t( action, target ),
+    mage_spell_state_t( action, target ),
     hot_streak( false )
   { }
 
   virtual void initialize() override
   {
-    action_state_t:: initialize();
+    mage_spell_state_t::initialize();
     hot_streak = false;
   }
 
   virtual std::ostringstream& debug_str( std::ostringstream& s ) override
   {
-    action_state_t::debug_str( s ) << " hot_streak=" << hot_streak;
+    mage_spell_state_t::debug_str( s ) << " hot_streak=" << hot_streak;
     return s;
   }
 
   virtual void copy_state( const action_state_t* s ) override
   {
-    action_state_t::copy_state( s );
+    mage_spell_state_t::copy_state( s );
     const ignite_spell_state_t* is =
       debug_cast<const ignite_spell_state_t*>( s );
     hot_streak = is -> hot_streak;
@@ -2010,14 +2050,14 @@ struct fire_mage_spell_t : public mage_spell_t
 
 // Custom Frost Mage spell state to help with Impact damage calc and
 // Fingers of Frost snapshots.
-struct frost_spell_state_t : action_state_t
+struct frost_spell_state_t : public mage_spell_state_t
 {
   bool impact_override;
   bool fof;
   bool fof_snapshot;
 
   frost_spell_state_t( action_t* action, player_t* target ) :
-    action_state_t( action, target ),
+    mage_spell_state_t( action, target ),
     impact_override( false ),
     fof( false ),
     fof_snapshot( false )
@@ -2025,7 +2065,7 @@ struct frost_spell_state_t : action_state_t
 
   virtual void initialize() override
   {
-    action_state_t::initialize();
+    mage_spell_state_t::initialize();
     impact_override = false;
     fof = false;
     fof_snapshot = false;
@@ -2033,7 +2073,7 @@ struct frost_spell_state_t : action_state_t
 
   virtual void copy_state( const action_state_t* s ) override
   {
-    action_state_t::copy_state( s );
+    mage_spell_state_t::copy_state( s );
     const frost_spell_state_t* fss =
       debug_cast<const frost_spell_state_t*>( s );
     impact_override = fss -> impact_override;
@@ -2041,30 +2081,9 @@ struct frost_spell_state_t : action_state_t
     fof_snapshot = fss -> fof_snapshot;
   }
 
-  bool frozen() const
+  virtual bool frozen() const override
   {
-    const mage_t* p = debug_cast<const mage_t*>( action -> player );
-    const mage_td_t* td = p -> get_target_data( target );
-
-    return ( action -> data().id() == 30455 && fof )
-        || ( td -> debuffs.winters_chill -> up() )
-        || ( td -> debuffs.frozen -> up() );
-  }
-
-  virtual double composite_crit_chance() const override
-  {
-    double c = action_state_t::composite_crit_chance();
-    const mage_t* p = debug_cast<const mage_t*>( action -> player );
-
-    if ( p -> spec.shatter -> ok() && frozen() )
-    {
-      // Multiplier is not in spell data, apparently.
-      c *= 1.5;
-
-      c += p -> spec.shatter -> effectN( 2 ).percent() + p -> spec.shatter_2 -> effectN( 1 ).percent();
-    }
-
-    return c;
+    return ( action -> data().id() == 30455 && fof ) || mage_spell_state_t::frozen();
   }
 };
 
@@ -2083,6 +2102,7 @@ struct frost_mage_spell_t : public mage_spell_t
   {
     affected_by.frost_mage = true;
     affected_by.bone_chilling = true;
+    affected_by.shatter = true;
   }
 
   struct brain_freeze_delay_event_t : public event_t
@@ -2266,23 +2286,23 @@ struct frost_mage_spell_t : public mage_spell_t
 
 // Icicles ==================================================================
 
-struct icicle_state_t : public action_state_t
+struct icicle_state_t : public mage_spell_state_t
 {
   stats_t* source;
 
   icicle_state_t( action_t* action, player_t* target ) :
-    action_state_t( action, target ), source( nullptr )
+    mage_spell_state_t( action, target ), source( nullptr )
   { }
 
   void initialize() override
-  { action_state_t::initialize(); source = nullptr; }
+  { mage_spell_state_t::initialize(); source = nullptr; }
 
   std::ostringstream& debug_str( std::ostringstream& s ) override
-  { action_state_t::debug_str( s ) << " source=" << ( source ? source -> name_str : "unknown" ); return s; }
+  { mage_spell_state_t::debug_str( s ) << " source=" << ( source ? source -> name_str : "unknown" ); return s; }
 
   void copy_state( const action_state_t* other ) override
   {
-    action_state_t::copy_state( other );
+    mage_spell_state_t::copy_state( other );
 
     source = debug_cast<const icicle_state_t*>( other ) -> source;
   }
@@ -2895,27 +2915,27 @@ struct arcane_missiles_tick_t : public arcane_mage_spell_t
   }
 };
 
-struct am_state_t : public action_state_t
+struct am_state_t : public mage_spell_state_t
 {
   bool rule_of_threes;
 
   am_state_t( action_t* action, player_t* target ) :
-    action_state_t( action, target ), rule_of_threes( false )
+    mage_spell_state_t( action, target ), rule_of_threes( false )
   { }
 
   void initialize() override
-  { action_state_t::initialize(); rule_of_threes = false; }
+  { mage_spell_state_t::initialize(); rule_of_threes = false; }
 
   std::ostringstream& debug_str( std::ostringstream& s ) override
   {
-    action_state_t::debug_str( s )
+    mage_spell_state_t::debug_str( s )
       << " rule_of_threes=" << rule_of_threes;
     return s;
   }
 
   void copy_state( const action_state_t* other ) override
   {
-    action_state_t::copy_state( other );
+    mage_spell_state_t::copy_state( other );
 
     rule_of_threes = debug_cast<const am_state_t*>( other ) -> rule_of_threes;
   }
@@ -4182,6 +4202,7 @@ struct frost_nova_t : public mage_spell_t
     affected_by.frost_mage = true;
     affected_by.combustion = true;
     affected_by.bone_chilling = true;
+    affected_by.shatter = true;
 
     cooldown -> charges += p -> talents.ice_ward -> effectN( 1 ).base_value();
   }
@@ -4236,6 +4257,11 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
     }
     crit_bonus_multiplier *= 1.0 + p -> artifact.orbital_strike.percent();
     chills = true;
+
+    if ( p -> bugs )
+    {
+      affected_by.shatter = false;
+    }
   }
 
   virtual bool init_finished() override
