@@ -2884,6 +2884,7 @@ struct agony_t: public warlock_spell_t
   virtual void last_tick( dot_t* d ) override
   {
     td( d -> state -> target ) -> agony_stack = 1;
+    td( d -> state -> target ) -> debuffs_agony -> expire();
 
     if ( p() -> get_active_dots( internal_id ) == 1 )
       p() -> agony_accumulator = rng().range( 0.0, 0.99 );
@@ -2892,9 +2893,22 @@ struct agony_t: public warlock_spell_t
     warlock_spell_t::last_tick( d );
   }
 
+  virtual void execute() override
+  {
+    warlock_spell_t::execute();
+    
+    td( execute_state -> target ) -> debuffs_agony -> trigger();
+  }
+
   virtual void tick( dot_t* d ) override
   {
-    if ( td( d -> state -> target ) -> agony_stack < ( 10 * ( 1 + ( p() -> talents.writhe_in_agony -> ok() ? p() -> talents.writhe_in_agony -> effectN( 1 ).percent() : 0 ) ) ) )
+    int agony_max_stacks;
+
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+      agony_max_stacks = ( p() -> talents.writhe_in_agony -> ok() ? p() -> talents.writhe_in_agony -> effectN( 2 ).base_value() : 10 );
+    else
+      agony_max_stacks = 10 * ( 1 + ( p() -> talents.writhe_in_agony -> ok() ? p() -> talents.writhe_in_agony -> effectN( 1 ).percent() : 0 ) );
+    if ( td( d -> state -> target ) -> agony_stack < agony_max_stacks )
       td( d -> state -> target ) -> agony_stack++;
 
     td( d -> target ) -> debuffs_agony -> trigger();
@@ -5902,6 +5916,20 @@ struct debuff_havoc_t: public warlock_buff_t < buff_t >
   }
 };
 
+struct debuff_agony_t : public warlock_buff_t < buff_t >
+{
+  debuff_agony_t( warlock_td_t& p ) :
+    base_t( p, buff_creator_t( static_cast<actor_pair_t>( p ), "agony", p.source -> find_spell( 980 ) ) )
+  {
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    base_t::expire_override( expiration_stacks, remaining_duration );
+    warlock.havoc_target = nullptr;
+  }
+};
+
 }
 
 warlock_td_t::warlock_td_t( player_t* target, warlock_t& p ):
@@ -5929,7 +5957,8 @@ warlock( p )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC );
   debuffs_shadowflame = buff_creator_t( *this, "shadowflame", source -> find_spell( 205181 ) );
   debuffs_agony = buff_creator_t( *this, "agony", source -> find_spell( 980 ) )
-    .refresh_behavior( BUFF_REFRESH_PANDEMIC );
+    .refresh_behavior( BUFF_REFRESH_PANDEMIC )
+    .max_stack( ( warlock.talents.writhe_in_agony -> ok() ? ( maybe_ptr( warlock.dbc.ptr ) ? warlock.talents.writhe_in_agony -> effectN( 2 ).base_value() : 20 ) : 10 ) );
   debuffs_eradication = buff_creator_t( *this, "eradication", source -> find_spell( 196414 ) )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC );
   debuffs_roaring_blaze = buff_creator_t( *this, "roaring_blaze", source -> find_spell( 205690 ) )
