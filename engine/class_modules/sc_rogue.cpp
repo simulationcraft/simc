@@ -254,8 +254,8 @@ struct rogue_t : public player_t
     buff_t* focused_shurikens;
     buff_t* shadow_blades;
     buff_t* shadow_dance;
+    buff_t* sod_backstab;
     buff_t* sod_eviscerate;
-    buff_t* sod_nightblade;
     buff_t* sod_shadowstrike;
     buff_t* symbols_of_death;
 
@@ -368,6 +368,7 @@ struct rogue_t : public player_t
     gain_t* ruthlessness;
     gain_t* shadow_techniques;
     gain_t* shadow_blades;
+    gain_t* sod_backstab;
     gain_t* sod_shadowstrike;
     gain_t* enveloping_shadows;
     gain_t* t19_4pc_subtlety;
@@ -1297,7 +1298,6 @@ struct rogue_attack_t : public melee_attack_t
   { return 0.0; }
 
   expr_t* create_nightblade_finality_expression();
-  expr_t* create_nightblade_sod_expression();
   expr_t* create_expression( const std::string& name_str ) override;
 };
 
@@ -2675,6 +2675,12 @@ struct backstab_t : public rogue_attack_t
     if ( maybe_ptr( p() -> dbc.ptr ) )
     {
       p() -> trigger_energetic_stabbing( execute_state );
+
+      if ( p() -> buffs.sod_backstab -> up() )
+      {
+        p() -> trigger_combo_point_gain( p() -> buffs.sod_backstab -> value(), p() -> gains.sod_backstab, this );
+        p() -> buffs.sod_backstab -> expire();
+      }
     }
   }
 };
@@ -3235,6 +3241,22 @@ struct gloomblade_t : public rogue_attack_t
 
     if ( maybe_ptr( p -> dbc.ptr ) )
       crit_bonus_multiplier *= 1.0 + p -> artifact.weak_point.percent();
+  }
+
+  void execute() override
+  {
+    rogue_attack_t::execute();
+
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+    {
+      p() -> trigger_energetic_stabbing( execute_state );
+
+      if ( p() -> buffs.sod_backstab -> up() )
+      {
+        p() -> trigger_combo_point_gain( p() -> buffs.sod_backstab -> value(), p() -> gains.sod_backstab, this );
+        p() -> buffs.sod_backstab -> expire();
+      }
+    }
   }
 };
 
@@ -3849,18 +3871,17 @@ struct mutilate_t : public rogue_attack_t
 struct nightblade_state_t : public rogue_attack_state_t
 {
   bool finality;
-  bool sod;
 
   nightblade_state_t( action_t* action, player_t* target ) :
-    rogue_attack_state_t( action, target ), finality( false ), sod ( false )
+    rogue_attack_state_t( action, target ), finality( false )
   { }
 
   void initialize() override
-  { rogue_attack_state_t::initialize(); finality = false; sod = false; }
+  { rogue_attack_state_t::initialize(); finality = false; }
 
   std::ostringstream& debug_str( std::ostringstream& s ) override
   {
-    rogue_attack_state_t::debug_str( s ) << " finality=" << finality << " sod=" << sod;
+    rogue_attack_state_t::debug_str( s ) << " finality=" << finality;
     return s;
   }
 
@@ -3869,7 +3890,6 @@ struct nightblade_state_t : public rogue_attack_state_t
     rogue_attack_state_t::copy_state( o );
     const nightblade_state_t* st = debug_cast<const nightblade_state_t*>( o );
     finality = st -> finality;
-    sod = st -> sod;
   }
 };
 
@@ -3897,11 +3917,6 @@ struct nightblade_t : public rogue_attack_t
     {
       debug_cast<nightblade_state_t*>( state ) -> finality = true;
     }
-
-    if ( maybe_ptr( p() -> dbc.ptr ) && p() -> buffs.sod_nightblade -> check() )
-    {
-      debug_cast<nightblade_state_t*>( state ) -> sod = true;
-    }
   }
 
   void init() override
@@ -3920,11 +3935,6 @@ struct nightblade_t : public rogue_attack_t
     double m = rogue_attack_t::composite_persistent_multiplier( state );
 
     m *= 1.0 + p() -> buffs.finality_nightblade -> stack_value();
-
-    if ( maybe_ptr( p() -> dbc.ptr ) )
-    {
-      m *= 1.0 + p() -> buffs.sod_nightblade -> value();
-    }
 
     return m;
   }
@@ -3958,11 +3968,6 @@ struct nightblade_t : public rogue_attack_t
     {
       p() -> buffs.feeding_frenzy -> decrement();
     }
-
-    if ( maybe_ptr( p() -> dbc.ptr ) && p() -> buffs.sod_nightblade -> up() )
-    {
-      p() -> buffs.sod_nightblade -> expire();
-    }
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -3978,10 +3983,6 @@ struct nightblade_t : public rogue_attack_t
     if ( util::str_compare_ci( name_str, "finality" ) )
     {
       return create_nightblade_finality_expression();
-    }
-    else if ( util::str_compare_ci( name_str, "sod" ) )
-    {
-      return create_nightblade_sod_expression();
     }
 
     return rogue_attack_t::create_expression( name_str );
@@ -4645,8 +4646,8 @@ struct symbols_of_death_t : public rogue_attack_t
 
     if ( maybe_ptr( p() -> dbc.ptr ) )
     {
+      p() -> buffs.sod_backstab -> trigger();
       p() -> buffs.sod_eviscerate -> trigger();
-      p() -> buffs.sod_nightblade -> trigger();
       p() -> buffs.sod_shadowstrike -> trigger();
     }
     else
@@ -5242,23 +5243,6 @@ expr_t* actions::rogue_attack_t::create_nightblade_finality_expression()
   } );
 }
 
-// rogue_attack_t::create_nightblade_sod_expression ==============================
-
-expr_t* actions::rogue_attack_t::create_nightblade_sod_expression()
-{
-  return make_fn_expr( "sod", [ this ]() {
-    rogue_td_t* td_ = td( target );
-    if ( ! td_ -> dots.nightblade -> is_ticking() )
-    {
-      return 0.0;
-    }
-
-    return debug_cast<const nightblade_state_t*>( td_ -> dots.nightblade -> state ) -> sod
-      ? 1.0
-      : 0.0;
-  } );
-}
-
 // rogue_attack_t::create_expression =========================================
 
 expr_t* actions::rogue_attack_t::create_expression( const std::string& name_str )
@@ -5277,10 +5261,6 @@ expr_t* actions::rogue_attack_t::create_expression( const std::string& name_str 
   else if ( util::str_compare_ci( name_str, "dot.nightblade.finality" ) )
   {
     return create_nightblade_finality_expression();
-  }
-  else if ( util::str_compare_ci( name_str, "dot.nightblade.sod" ) )
-  {
-    return create_nightblade_sod_expression();
   }
 
   return melee_attack_t::create_expression( name_str );
@@ -7981,6 +7961,7 @@ void rogue_t::init_gains()
   gains.goremaws_bite            = get_gain( "Goremaw's Bite"           );
   gains.curse_of_the_dreadblades = get_gain( "Curse of the Dreadblades" );
   gains.relentless_strikes       = get_gain( "Relentless Strikes"       );
+  gains.sod_backstab             = get_gain( "Backstab (SoD)"           );
   gains.sod_shadowstrike         = get_gain( "Shadowstrike (SoD)"       );
   gains.t19_4pc_subtlety         = get_gain( "Tier 19 4PC Set Bonus"    );
   gains.t20_4pc_assassination    = get_gain( "Tier 20 4PC Set Bonus"    );
@@ -8141,13 +8122,12 @@ void rogue_t::create_buffs()
                                 .default_value( find_spell( 245640 ) -> effectN( 1 ).percent() );
   buffs.shadow_blades         = new buffs::shadow_blades_t( this );
   buffs.shadow_dance          = new buffs::shadow_dance_t( this );
-  const double sod_t20_4pc_mult = sets.has_set_bonus( ROGUE_SUBTLETY, T20, B4 ) ? 1.0 + sets.set( ROGUE_SUBTLETY, T20, B4 ) -> effectN( 1 ).percent() : 1.0;
-  buffs.sod_eviscerate        = buff_creator_t( this, "eviscerate", maybe_ptr( dbc.ptr ) ? spec.symbols_of_death -> effectN( 3 ).trigger() : spell_data_t::not_found() )
-                                .default_value( spec.symbols_of_death -> effectN( 3 ).trigger() -> effectN( 1 ).percent() * sod_t20_4pc_mult );
-  buffs.sod_nightblade        = buff_creator_t( this, "nightblade", maybe_ptr( dbc.ptr ) ? spec.symbols_of_death -> effectN( 2 ).trigger() : spell_data_t::not_found() )
-                                .default_value( spec.symbols_of_death -> effectN( 2 ).trigger() -> effectN( 1 ).percent() * sod_t20_4pc_mult );
-  buffs.sod_shadowstrike      = buff_creator_t( this, "shadowstrike", maybe_ptr( dbc.ptr ) ? spec.symbols_of_death -> effectN( 1 ).trigger() : spell_data_t::not_found() )
-                                .default_value( spec.symbols_of_death -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() * sod_t20_4pc_mult );
+  buffs.sod_backstab          = buff_creator_t( this, "backstab", maybe_ptr( dbc.ptr ) ? find_spell( 245689 ) : spell_data_t::not_found() )
+                                .default_value( find_spell( 245689 ) -> effectN( 1 ).base_value() );
+  buffs.sod_eviscerate        = buff_creator_t( this, "eviscerate", maybe_ptr( dbc.ptr ) ? find_spell( 245691 ) : spell_data_t::not_found() )
+                                .default_value( find_spell( 245691 ) -> effectN( 1 ).percent() );
+  buffs.sod_shadowstrike      = buff_creator_t( this, "shadowstrike", maybe_ptr( dbc.ptr ) ? find_spell( 227151 ) : spell_data_t::not_found() )
+                                .default_value( find_spell( 227151 ) -> effectN( 1 ).base_value() );
   buffs.symbols_of_death      = buff_creator_t( this, "symbols_of_death", maybe_ptr( dbc.ptr ) ? spell_data_t::not_found() : spec.symbols_of_death )
                                 .refresh_behavior( BUFF_REFRESH_PANDEMIC )
                                 .period( timespan_t::zero() )
