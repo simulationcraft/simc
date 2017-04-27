@@ -296,6 +296,7 @@ struct rogue_t : public player_t
     // T19 Raid
     buff_t* t19_4pc_outlaw;
     // T20
+    buff_t* t20_4pc_subtlety;
 
 
     // Artifact
@@ -4407,6 +4408,8 @@ struct shadowstrike_t : public rogue_attack_t
         p() -> trigger_combo_point_gain( p() -> buffs.sod_shadowstrike -> value(), p() -> gains.sod_shadowstrike, this );
         p() -> buffs.sod_shadowstrike -> expire();
       }
+
+      p() -> buffs.t20_4pc_subtlety -> decrement();
     }
     else
     {
@@ -4455,7 +4458,7 @@ struct shadowstrike_t : public rogue_attack_t
 
   double composite_crit_chance() const override
   {
-    if ( p() -> buffs.death -> up() )
+    if ( p() -> buffs.death -> up() || p() -> buffs.t20_4pc_subtlety -> up() )
     {
       return 1.0;
     }
@@ -4628,6 +4631,9 @@ struct symbols_of_death_t : public rogue_attack_t
     requires_stealth = maybe_ptr( p -> dbc.ptr ) ? false : true;
 
     dot_duration = timespan_t::zero(); // TODO: Check ticking in later builds
+
+    if ( p -> sets.has_set_bonus( ROGUE_SUBTLETY, T20, B2 ) )
+      cooldown -> duration += p -> sets.set( ROGUE_SUBTLETY, T20, B2 ) -> effectN( 2 ).time_value();
   }
 
   double cost() const override
@@ -4649,6 +4655,11 @@ struct symbols_of_death_t : public rogue_attack_t
       p() -> buffs.sod_backstab -> trigger();
       p() -> buffs.sod_eviscerate -> trigger();
       p() -> buffs.sod_shadowstrike -> trigger();
+
+      if ( p() -> sets.has_set_bonus( ROGUE_SUBTLETY, T20, B4 ) )
+      {
+        p() -> buffs.t20_4pc_subtlety -> trigger( p() -> buffs.t20_4pc_subtlety -> max_stack() );
+      }
     }
     else
     {
@@ -8109,9 +8120,7 @@ void rogue_t::create_buffs()
                                 .refresh_behavior( BUFF_REFRESH_PANDEMIC );
   buffs.roll_the_bones        = new buffs::roll_the_bones_t( this, rtb_creator );
   // Subtlety
-  const int death_stacks      = ( sets.has_set_bonus( ROGUE_SUBTLETY, T20, B4 ) ) ? sets.set( ROGUE_SUBTLETY, T20, B4 ) -> effectN( 1 ).base_value(): 1;
-  buffs.death                 = buff_creator_t( this, "death", maybe_ptr( dbc.ptr ) ? spell_data_t::not_found() : spec.symbols_of_death -> effectN( 3 ).trigger() )
-                                .max_stack( death_stacks );
+  buffs.death                 = buff_creator_t( this, "death", maybe_ptr( dbc.ptr ) ? spell_data_t::not_found() : spec.symbols_of_death -> effectN( 3 ).trigger() );
   buffs.focused_shurikens     = buff_creator_t( this, "focused_shurikens", find_spell( 245640 ) )
                                 .default_value( find_spell( 245640 ) -> effectN( 1 ).percent() );
   buffs.shadow_blades         = new buffs::shadow_blades_t( this );
@@ -8205,6 +8214,7 @@ void rogue_t::create_buffs()
   buffs.t19_4pc_outlaw                     = buff_creator_t( this, "swordplay", sets.set( ROGUE_OUTLAW, T19, B4 ) -> effectN( 1 ).trigger() )
                                              .trigger_spell( sets.set( ROGUE_OUTLAW, T19, B4 ) );
   // T20
+  buffs.t20_4pc_subtlety                   = buff_creator_t( this, "shadow_sight", sets.set( ROGUE_SUBTLETY, T20, B4 ) -> effectN( 1 ).trigger() );
 
 
   // Artifact
