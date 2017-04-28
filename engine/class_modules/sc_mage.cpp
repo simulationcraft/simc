@@ -3134,8 +3134,6 @@ struct arcane_blast_t : public arcane_mage_spell_t
 
 // Arcane Explosion Spell =====================================================
 
-//TODO: Impliment the 250ms delay between AE execute -> TnS execute
-//      Double check Arcane Purification multiplier interaction
 struct time_and_space_t : public arcane_mage_spell_t
 {
   time_and_space_t( mage_t* p ) :
@@ -3214,8 +3212,12 @@ struct arcane_explosion_t : public arcane_mage_spell_t
     {
       if ( p() -> buffs.time_and_space -> check() )
       {
-        arcane_explosion_echo -> set_target( execute_state -> target );
-        arcane_explosion_echo -> execute();
+        make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
+          .pulse_time( timespan_t::from_seconds( 0.25 ) )
+          .target( execute_state -> target )
+          .duration( timespan_t::from_seconds( 0.25 ) )
+          .action( arcane_explosion_echo ) );
+
         p() -> buffs.time_and_space -> trigger();
       }
       else
@@ -3223,9 +3225,6 @@ struct arcane_explosion_t : public arcane_mage_spell_t
         p() -> buffs.time_and_space -> trigger();
       }
     }
-
-
-
   }
 
   virtual double cost() const override
@@ -4276,7 +4275,6 @@ struct flame_patch_t : public fire_mage_spell_t
 };
 // Flamestrike Spell ==========================================================
 
-//TODO: This needs to have an execute time of 0.75s, not 2s as spelldata suggests.
 struct aftershocks_t : public fire_mage_spell_t
 {
   aftershocks_t( mage_t* p ) :
@@ -4286,6 +4284,8 @@ struct aftershocks_t : public fire_mage_spell_t
     aoe = -1;
     triggers_ignite = true;
     base_multiplier *= 1.0 + p -> artifact.blue_flame_special.percent();
+    // 2s according to the spell data.
+    base_execute_time = timespan_t::zero();
     // PTR Multiplier
     base_multiplier *= 1.0 + p -> find_spell( 137019 ) -> effectN( 1 ).percent();
   }
@@ -4350,14 +4350,18 @@ struct flamestrike_t : public fire_mage_spell_t
 
     if ( state -> chain_target == 0 && p() -> artifact.aftershocks.rank() )
     {
-      aftershocks -> schedule_execute();
+      make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
+        .pulse_time( timespan_t::from_seconds( 0.75 ) )
+        .target( state -> target )
+        .duration( timespan_t::from_seconds( 0.75 ) )
+        .action( aftershocks ) );
     }
     if ( state -> chain_target == 0 && p() -> talents.flame_patch -> ok() )
     {
       // DurationID: 205470. 8s
       make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
         .pulse_time( timespan_t::from_seconds( 1.0 ) )
-        .target( execute_state -> target )
+        .target( state -> target )
         .duration( timespan_t::from_seconds( 8.0 ) )
         .action( flame_patch )
         .hasted( ground_aoe_params_t::SPELL_SPEED ) );
