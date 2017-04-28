@@ -2991,6 +2991,10 @@ struct arcane_blast_t : public arcane_mage_spell_t
     {
       touch_of_the_magi = new touch_of_the_magi_t( p );
     }
+    if ( p -> talents.unstable_magic -> ok() )
+    {
+      stats -> add_child( p -> get_stats( "unstable_magic_explosion" ) );
+    }
   }
 
   virtual bool init_finished() override
@@ -4153,6 +4157,10 @@ struct fireball_t : public fire_mage_spell_t
     base_multiplier *= 1.0 + p -> find_spell( 137019 ) -> effectN( 1 ).percent();
     base_execute_time *= 1.0 + p -> artifact.fire_at_will.percent();
     add_child( conflagration_dot );
+    if ( p -> talents.unstable_magic -> ok() )
+    {
+      stats -> add_child( p -> get_stats( "unstable_magic_explosion" ) );
+    }
   }
 
   virtual timespan_t travel_time() const override
@@ -4640,6 +4648,10 @@ struct frostbolt_t : public frost_mage_spell_t
       icicle -> school = school;
       assert( p -> icicle );
       icicle -> action_list.push_back( p -> icicle );
+    }
+    if ( p -> talents.unstable_magic -> ok() )
+    {
+      stats -> add_child( p -> get_stats( "unstable_magic_explosion" ) );
     }
     if ( p -> talents.lonely_winter -> ok() )
     {
