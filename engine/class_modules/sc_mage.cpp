@@ -4605,6 +4605,8 @@ struct flurry_t : public frost_mage_spell_t
     flurry_bolt -> brain_freeze_buffed = p() -> buffs.brain_freeze -> up();
 
     p() -> buffs.brain_freeze -> expire();
+
+    p() -> procs.brain_freeze_removed -> occur();
   }
 
   void tick( dot_t* d ) override
@@ -5202,6 +5204,8 @@ struct ice_lance_t : public frost_mage_spell_t
     }
 
     p() -> buffs.fingers_of_frost -> decrement();
+
+    p() -> procs.fingers_of_frost_removed -> occur();
   }
 
   virtual void impact( action_state_t* s ) override
