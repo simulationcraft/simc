@@ -4884,17 +4884,21 @@ void living_bomb_t::init()
 
 struct mark_of_aluneth_explosion_t : public arcane_mage_spell_t
 {
+  double mana_to_damage_pct;
   double aluneths_avarice_regen;
   double persistent_cord_multiplier;
 
   mark_of_aluneth_explosion_t( mage_t* p ) :
     arcane_mage_spell_t( "mark_of_aluneth_explosion", p, p -> find_spell( 211076 ) ),
+    mana_to_damage_pct( 0.0 ),
     aluneths_avarice_regen( 0.0 ),
     persistent_cord_multiplier( 0.0 )
   {
     background = true;
     aoe = -1;
     triggers_arcane_missiles = false;
+
+    mana_to_damage_pct = p -> artifact.mark_of_aluneth.data().effectN( 1 ).percent();
 
     if ( p -> bugs )
     {
@@ -4914,8 +4918,6 @@ struct mark_of_aluneth_explosion_t : public arcane_mage_spell_t
 
   virtual void execute() override
   {
-    double mana_to_damage_pct = p() -> artifact.mark_of_aluneth.data().effectN( 1 ).percent();
-
     base_dd_max = p() -> resources.max[ RESOURCE_MANA ] * mana_to_damage_pct;
     base_dd_min = p() -> resources.max[ RESOURCE_MANA ] * mana_to_damage_pct;
 
