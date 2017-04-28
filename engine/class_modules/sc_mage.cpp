@@ -2466,6 +2466,8 @@ struct frost_mage_spell_t : public mage_spell_t
       }
 
       mage -> buffs.brain_freeze -> trigger();
+
+      mage -> procs.brain_freeze_regenerated -> occur();
     }
   };
 
@@ -2513,6 +2515,8 @@ struct frost_mage_spell_t : public mage_spell_t
         }
 
         p() -> buffs.brain_freeze -> trigger();
+
+        p() -> procs.brain_freeze_generated -> occur();
       }
     }
   }
