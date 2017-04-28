@@ -4888,17 +4888,12 @@ struct mark_of_aluneth_explosion_t : public arcane_mage_spell_t
   double persistent_cord_multiplier;
 
   mark_of_aluneth_explosion_t( mage_t* p ) :
-    arcane_mage_spell_t( "mark_of_aluneth_explosion", p, p -> artifact.mark_of_aluneth ),
+    arcane_mage_spell_t( "mark_of_aluneth_explosion", p, p -> find_spell( 211076 ) ),
     aluneths_avarice_regen( 0.0 ),
     persistent_cord_multiplier( 0.0 )
   {
     background = true;
-    school = SCHOOL_ARCANE;
-    // Override the nonsense data from their duplicated MoA spelldata.
-    dot_duration = timespan_t::zero();
-    base_costs[ RESOURCE_MANA ] = 0;
     aoe = -1;
-    trigger_gcd = timespan_t::zero();
     triggers_arcane_missiles = false;
 
     if ( p -> bugs )
@@ -4913,21 +4908,18 @@ struct mark_of_aluneth_explosion_t : public arcane_mage_spell_t
 
     if ( p -> artifact.aluneths_avarice.rank() )
     {
-      aluneths_avarice_regen = p -> find_spell( 211076 ) -> effectN( 2 ).percent();
+      aluneths_avarice_regen = data().effectN( 2 ).percent();
     }
   }
-  void impact( action_state_t* s ) override
-  {
-    arcane_mage_spell_t::impact( s );
-    persistent_cord_multiplier = 0;
 
-  }
   virtual void execute() override
   {
     base_dd_max = p() -> resources.max[ RESOURCE_MANA ] * data().effectN( 1 ).percent();
     base_dd_min = p() -> resources.max[ RESOURCE_MANA ] * data().effectN( 1 ).percent();
 
     arcane_mage_spell_t::execute();
+
+    persistent_cord_multiplier = 0;
     if ( p() -> artifact.aluneths_avarice.rank() )
     {
       p() -> resource_gain( RESOURCE_MANA,
@@ -4935,6 +4927,7 @@ struct mark_of_aluneth_explosion_t : public arcane_mage_spell_t
                           * p() -> resources.max[ RESOURCE_MANA ], p() -> gains.aluneths_avarice );
     }
   }
+
   double action_multiplier() const override
   {
     double am = arcane_mage_spell_t::action_multiplier();
