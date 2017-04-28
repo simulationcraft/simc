@@ -1668,6 +1668,23 @@ struct fingers_of_frost_t : public buff_t
   }
 };
 
+struct brain_freeze_t : public buff_t
+{
+  brain_freeze_t( mage_t* p ) :
+    buff_t( buff_creator_t( p, "brain_freeze", p -> find_spell( 190446 ) ) )
+  {};
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+
+    mage_t* p = static_cast<mage_t*>( player );
+
+    if ( remaining_duration == timespan_t::zero() )
+      p -> procs.brain_freeze_expired -> occur();
+  }
+};
+
 // Chilled debuff =============================================================
 
 struct chilled_t : public buff_t
@@ -2484,15 +2501,18 @@ struct frost_mage_spell_t : public mage_spell_t
     void execute() override
     {
       // TODO: Check if Brain Freeze refresh triggers Frost T20 4pc
-      if ( mage -> buffs.brain_freeze -> check() == 0 && mage -> sets.has_set_bonus( MAGE_FROST, T20, B4 ) )
+      if ( mage -> buffs.brain_freeze -> check() == 0 )
       {
-        mage -> cooldowns.frozen_orb
-             -> adjust( -100 * mage -> sets.set( MAGE_FROST, T20, B4 ) -> effectN( 1 ).time_value() );
+        mage -> procs.brain_freeze_regenerated -> occur();
+
+        if ( mage -> sets.has_set_bonus( MAGE_FROST, T20, B4 ) )
+          mage -> cooldowns.frozen_orb
+               -> adjust( -100 * mage -> sets.set( MAGE_FROST, T20, B4 ) -> effectN( 1 ).time_value() );
       }
+      else
+        mage -> procs.brain_freeze_wasted -> occur();
 
       mage -> buffs.brain_freeze -> trigger();
-
-      mage -> procs.brain_freeze_regenerated -> occur();
     }
   };
 
@@ -8190,7 +8210,7 @@ void mage_t::create_buffs()
                                   .add_invalidate( CACHE_SPELL_HASTE );
 
   // Frost
-  buffs.brain_freeze          = buff_creator_t( this, "brain_freeze", find_spell( 190446 ) );
+  buffs.brain_freeze          = new buffs::brain_freeze_t( this );
   buffs.bone_chilling         = buff_creator_t( this, "bone_chilling", find_spell( 205766 ) )
                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.fingers_of_frost      = new buffs::fingers_of_frost_t( this );
