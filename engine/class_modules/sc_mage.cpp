@@ -2682,6 +2682,10 @@ struct arcane_blast_t : public arcane_mage_spell_t
     {
       touch_of_the_magi = new touch_of_the_magi_t( p );
     }
+    if ( p -> talents.unstable_magic -> ok() )
+    {
+      stats -> add_child( p -> get_stats( "unstable_magic_explosion" ) );
+    }
   }
 
   virtual bool init_finished() override
@@ -2786,8 +2790,6 @@ struct arcane_blast_t : public arcane_mage_spell_t
 
 // Arcane Explosion Spell =====================================================
 
-//TODO: Impliment the 250ms delay between AE execute -> TnS execute
-//      Double check Arcane Purification multiplier interaction
 struct time_and_space_t : public arcane_mage_spell_t
 {
   time_and_space_t( mage_t* p ) :
@@ -2860,8 +2862,12 @@ struct arcane_explosion_t : public arcane_mage_spell_t
     {
       if ( p() -> buffs.time_and_space -> check() )
       {
-        arcane_explosion_echo -> set_target( execute_state -> target );
-        arcane_explosion_echo -> execute();
+        make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
+          .pulse_time( timespan_t::from_seconds( 0.25 ) )
+          .target( execute_state -> target )
+          .duration( timespan_t::from_seconds( 0.25 ) )
+          .action( arcane_explosion_echo ) );
+
         p() -> buffs.time_and_space -> trigger();
       }
       else
@@ -3693,6 +3699,10 @@ struct fireball_t : public fire_mage_spell_t
     base_multiplier *= 1.0 + p -> artifact.great_balls_of_fire.percent();
     base_execute_time *= 1.0 + p -> artifact.fire_at_will.percent();
     add_child( conflagration_dot );
+    if ( p -> talents.unstable_magic -> ok() )
+    {
+      stats -> add_child( p -> get_stats( "unstable_magic_explosion" ) );
+    }
   }
 
   virtual timespan_t travel_time() const override
@@ -3792,7 +3802,6 @@ struct flame_patch_t : public fire_mage_spell_t
 };
 // Flamestrike Spell ==========================================================
 
-//TODO: This needs to have an execute time of 0.75s, not 2s as spelldata suggests.
 struct aftershocks_t : public fire_mage_spell_t
 {
   aftershocks_t( mage_t* p ) :
@@ -3803,6 +3812,9 @@ struct aftershocks_t : public fire_mage_spell_t
     triggers_ignite = true;
 
     base_multiplier *= 1.0 + p -> artifact.blue_flame_special.percent();
+    // 2s according to the spell data.
+    base_execute_time = timespan_t::zero();
+
     // TODO: Fire T20 2pc and 4pc mention this spell. Check this if/when set bonuses
     // are available for testing.
   }
@@ -3869,14 +3881,18 @@ struct flamestrike_t : public fire_mage_spell_t
 
     if ( state -> chain_target == 0 && p() -> artifact.aftershocks.rank() )
     {
-      aftershocks -> schedule_execute();
+      make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
+        .pulse_time( timespan_t::from_seconds( 0.75 ) )
+        .target( state -> target )
+        .duration( timespan_t::from_seconds( 0.75 ) )
+        .action( aftershocks ) );
     }
     if ( state -> chain_target == 0 && p() -> talents.flame_patch -> ok() )
     {
       // DurationID: 205470. 8s
       make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
         .pulse_time( timespan_t::from_seconds( 1.0 ) )
-        .target( execute_state -> target )
+        .target( state -> target )
         .duration( timespan_t::from_seconds( 8.0 ) )
         .action( flame_patch )
         .hasted( ground_aoe_params_t::SPELL_SPEED ) );
@@ -4102,6 +4118,10 @@ struct frostbolt_t : public frost_mage_spell_t
       icicle -> school = school;
       assert( p -> icicle );
       icicle -> action_list.push_back( p -> icicle );
+    }
+    if ( p -> talents.unstable_magic -> ok() )
+    {
+      stats -> add_child( p -> get_stats( "unstable_magic_explosion" ) );
     }
     if ( p -> talents.lonely_winter -> ok() )
     {

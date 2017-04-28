@@ -5265,7 +5265,9 @@ if ( race == RACE_BLOOD_ELF )
   vf->add_action(
       "shadow_word_death,if=(active_enemies<=4|(talent.reaper_of_souls"
       ".enabled&active_enemies<=2))&cooldown.shadow_word_death.charges=2" );
-  vf->add_action( "shadowfiend,if=!talent.mindbender.enabled,if=buff.voidform.stack>15" );
+  vf->add_action( 
+      "shadowfiend,if=!talent.mindbender.enabled,if=buff.voidform.stack>15"
+      "|set_bonus.tier20_4pc");
   vf->add_action(
       "shadow_word_void,if=talent.shadow_word_void.enabled&(insanity-(current_"
       "insanity_drain*gcd.max)+25)<100" );

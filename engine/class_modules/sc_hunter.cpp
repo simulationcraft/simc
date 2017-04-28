@@ -156,7 +156,7 @@ public:
     buff_t* moknathal_tactics;
     buff_t* spitting_cobra;
     buff_t* t19_4p_mongoose_power;
-    buff_t* t20_2p_aimed_shot;
+    buff_t* t20_2p_precision;
     buff_t* t20_4p_critical_aimed_damage;
     buff_t* pre_t20_4p_critical_aimed_damage;
     buff_t* sentinels_sight;
@@ -3198,8 +3198,8 @@ struct aimed_shot_t: public aimed_shot_base_t
     if ( p() -> buffs.lock_and_load -> check() )
       return 0;
 
-    if ( p() -> buffs.t20_2p_aimed_shot -> check() )
-      cost *= 1.0 - p() -> buffs.t20_2p_aimed_shot -> check_value();
+    if ( p() -> buffs.t20_2p_precision -> check() )
+      cost *= 1.0 + p() -> buffs.t20_2p_precision -> check_value();
 
     return cost;
   }
@@ -3239,10 +3239,10 @@ struct aimed_shot_t: public aimed_shot_base_t
     else if ( p() -> legendary.mm_gloves -> ok() )
       p() -> buffs.gyroscopic_stabilization -> trigger();
 
-    if ( p() -> buffs.t20_2p_aimed_shot -> up() )
-      p() -> buffs.t20_2p_aimed_shot -> expire();
+    if ( p() -> buffs.t20_2p_precision -> up() )
+      p() -> buffs.t20_2p_precision -> expire();
     else if ( p() -> sets.has_set_bonus( HUNTER_MARKSMANSHIP, T20, B2 ) )
-      p() -> buffs.t20_2p_aimed_shot -> trigger();
+      p() -> buffs.t20_2p_precision -> trigger();
 
     if ( p() -> sets.has_set_bonus( HUNTER_MARKSMANSHIP, T20, B4 ) )
     {
@@ -3264,8 +3264,9 @@ struct aimed_shot_t: public aimed_shot_base_t
     if ( p() -> buffs.lock_and_load -> up() )
       t = timespan_t::zero();
 
-    if ( p() -> buffs.t20_2p_aimed_shot -> check() )
-      t *= 1.0 - p() -> sets.set( HUNTER_MARKSMANSHIP, T20, B2 ) -> effectN( 1 ).percent();
+    // may have to be moved to the base class as it affects lotw arrows
+    if ( p() -> buffs.t20_2p_precision -> check() )
+      t *= 1.0 + p() -> buffs.t20_2p_precision -> data().effectN( 1 ).percent();
 
     return t;
   }
@@ -5893,9 +5894,9 @@ void hunter_t::create_buffs()
     buff_creator_t( this, "gyroscopic_stabilization", find_spell( 235712 ) )
       .default_value( find_spell( 235712 ) -> effectN( 2 ).percent() );
 
-  buffs.t20_2p_aimed_shot =
-    buff_creator_t( this, "t20_2p_aimed_shot" )
-      .default_value( sets.set( HUNTER_MARKSMANSHIP, T20, B2 ) -> effectN( 2 ).percent() );
+  buffs.t20_2p_precision =
+    buff_creator_t( this, "t20_2p_precision", find_spell( 246153 ) )
+      .default_value( find_spell( 246153 ) -> effectN( 2 ).percent() );
 
   buffs.pre_t20_4p_critical_aimed_damage =
     buff_creator_t( this, "pre_t20_4p_critical_aimed_damage" )

@@ -212,6 +212,7 @@ public:
     const spell_data_t* grimoire_of_synergy;
 
     const spell_data_t* soul_effigy;
+    const spell_data_t* deaths_embrace;
     const spell_data_t* phantom_singularity;
 
     const spell_data_t* wreak_havoc;
@@ -429,6 +430,7 @@ public:
     gain_t* conflagrate;
     gain_t* shadowburn;
     gain_t* immolate;
+    gain_t* immolate_crits;
     gain_t* shadowburn_shard;
     gain_t* miss_refund;
     gain_t* seed_of_corruption;
@@ -446,6 +448,7 @@ public:
     gain_t* feretory_of_souls;
     gain_t* power_cord_of_lethtendris;
     gain_t* incinerate;
+    gain_t* incinerate_crits;
     gain_t* dimensional_rift;
   } gains;
 
@@ -2150,8 +2153,7 @@ struct wild_imp_pet_t: public warlock_pet_t
               pets::warlock_pet_t *lock_pet = static_cast<pets::warlock_pet_t*> ( pet );
               if( lock_pet && !lock_pet -> is_sleeping() && lock_pet != this )
               {
-                  lock_pet -> buffs.the_expendables -> bump( 1,
-                              buffs.the_expendables -> data().effectN( 1 ).percent() );
+                  lock_pet -> buffs.the_expendables -> trigger();
                   o() -> procs.the_expendables -> occur();
               }
           }
@@ -2378,6 +2380,7 @@ private:
     can_havoc = false;
 
     affected_by_contagion = true;
+    affected_by_deaths_embrace = false;
     destro_mastery = true;
     can_feretory = true;
 
@@ -2393,7 +2396,10 @@ public:
   bool affected_by_contagion;
   bool affected_by_flamelicked;
   bool affected_by_odr_shawl_of_the_ymirjar;
-  bool destruction_damage_increase;
+  bool affected_by_deaths_embrace;
+  bool affliction_direct_increase;
+  bool affliction_dot_increase;
+  bool destruction_direct_increase;
   bool destruction_dot_increase;
   bool destro_mastery;
   bool can_feretory;
@@ -2490,12 +2496,19 @@ public:
     }
 
     affected_by_odr_shawl_of_the_ymirjar = data().affected_by( p() -> find_spell( 212173 ) -> effectN( 1 ) );
-    destruction_damage_increase = data().affected_by( p() -> spec.destruction -> effectN( 1 ) );
+    destruction_direct_increase = data().affected_by( p() -> spec.destruction -> effectN( 1 ) );
     destruction_dot_increase = data().affected_by( p() -> spec.destruction -> effectN( 2 ) );
-    if ( destruction_damage_increase )
+    if ( destruction_direct_increase )
       base_dd_multiplier *= 1.0 + p() -> spec.destruction -> effectN( 1 ).percent();
     if ( destruction_dot_increase ) 
       base_td_multiplier *= 1.0 + p() -> spec.destruction -> effectN( 2 ).percent();
+
+    affliction_direct_increase = data().affected_by( p() -> spec.affliction -> effectN( 2 ) );
+    affliction_dot_increase = data().affected_by( p() -> spec.affliction -> effectN( 3 ) );
+    if ( affliction_direct_increase )
+      base_dd_multiplier *= 1.0 + p() -> spec.affliction -> effectN( 2 ).percent();
+    if ( affliction_dot_increase )
+      base_td_multiplier *= 1.0 + p() -> spec.affliction -> effectN( 3 ).percent();
   }
 
   int n_targets() const override
@@ -2707,6 +2720,13 @@ public:
       }
     }
 
+    double deaths_embrace_health = p() -> talents.deaths_embrace -> effectN( 2 ).base_value();
+
+    if ( p() -> talents.deaths_embrace -> ok() && target -> health_percentage() <= deaths_embrace_health && affected_by_deaths_embrace )
+    {
+      m *= 1.0 + p() -> talents.deaths_embrace -> effectN( 1 ).percent() * ( 1 - target -> health_percentage() / deaths_embrace_health );
+    }
+
     return spell_t::composite_target_multiplier( t ) * m;
   }
 
@@ -2797,6 +2817,7 @@ struct agony_t: public warlock_spell_t
     warlock_spell_t( p, "Agony" ), agony_action_id(0)
   {
     may_crit = false;
+    affected_by_deaths_embrace = true;
 
     chance = p -> find_spell( 199282 ) -> proc_chance();
   }
@@ -2863,6 +2884,7 @@ struct agony_t: public warlock_spell_t
   virtual void last_tick( dot_t* d ) override
   {
     td( d -> state -> target ) -> agony_stack = 1;
+    td( d -> state -> target ) -> debuffs_agony -> expire();
 
     if ( p() -> get_active_dots( internal_id ) == 1 )
       p() -> agony_accumulator = rng().range( 0.0, 0.99 );
@@ -2871,9 +2893,22 @@ struct agony_t: public warlock_spell_t
     warlock_spell_t::last_tick( d );
   }
 
+  virtual void execute() override
+  {
+    warlock_spell_t::execute();
+    
+    td( execute_state -> target ) -> debuffs_agony -> trigger();
+  }
+
   virtual void tick( dot_t* d ) override
   {
-    if ( td( d -> state -> target ) -> agony_stack < ( 10 * ( 1 + ( p() -> talents.writhe_in_agony -> ok() ? p() -> talents.writhe_in_agony -> effectN( 1 ).percent() : 0 ) ) ) )
+    int agony_max_stacks;
+
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+      agony_max_stacks = ( p() -> talents.writhe_in_agony -> ok() ? p() -> talents.writhe_in_agony -> effectN( 2 ).base_value() : 10 );
+    else
+      agony_max_stacks = 10 * ( 1 + ( p() -> talents.writhe_in_agony -> ok() ? p() -> talents.writhe_in_agony -> effectN( 1 ).percent() : 0 ) );
+    if ( td( d -> state -> target ) -> agony_stack < agony_max_stacks )
       td( d -> state -> target ) -> agony_stack++;
 
     td( d -> target ) -> debuffs_agony -> trigger();
@@ -2935,6 +2970,7 @@ struct unstable_affliction_t: public warlock_spell_t
       dual = true;
       tick_may_crit = hasted_ticks = true;
       affected_by_contagion = false;
+      affected_by_deaths_embrace = true;
 
       if ( p -> sets.has_set_bonus( WARLOCK_AFFLICTION, T19, B2 ) )
         base_multiplier *= 1.0 + p -> sets.set( WARLOCK_AFFLICTION, T19, B2 ) -> effectN( 1 ).percent();
@@ -3193,6 +3229,7 @@ struct corruption_t: public warlock_spell_t
     warlock_spell_t( "Corruption", p, p -> find_spell( 172 ) ) //Use original corruption until DBC acts more friendly.
   {
     may_crit = false;
+    affected_by_deaths_embrace = true;
     dot_duration = data().effectN( 1 ).trigger() -> duration();
     spell_power_mod.tick = data().effectN( 1 ).trigger() -> effectN( 1 ).sp_coeff();
     base_tick_time = data().effectN( 1 ).trigger() -> effectN( 1 ).period();
@@ -3799,10 +3836,20 @@ struct immolate_t: public warlock_spell_t
   {
     warlock_spell_t::tick( d );
 
-    if ( d -> state -> result == RESULT_CRIT && rng().roll( ( maybe_ptr( p() -> dbc.ptr ) ? 1.0 : 0.3 ) ) )
-      p() -> resource_gain( RESOURCE_SOUL_SHARD, ( maybe_ptr( p() -> dbc.ptr ) ? 0.1 : 1 ), p() -> gains.immolate );
-    else if ( d -> state -> result == RESULT_HIT && rng().roll( ( maybe_ptr( p() -> dbc.ptr ) ? 0.5 : 0.15 ) ) )
-      p() -> resource_gain( RESOURCE_SOUL_SHARD, ( maybe_ptr( p() -> dbc.ptr ) ? 0.1 : 1 ), p() -> gains.immolate );
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+    {
+      if ( d -> state -> result == RESULT_CRIT && rng().roll( 0.5 ) )
+        p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.1, p() -> gains.immolate_crits );
+
+      p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.1, p() -> gains.immolate );
+    }
+    else
+    {
+      if ( d -> state -> result == RESULT_CRIT && rng().roll( 0.3 ) )
+        p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.immolate );
+      else if ( d -> state -> result == RESULT_HIT && rng().roll( 0.15 ) )
+        p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.immolate );
+    }
   }
 };
 
@@ -3895,7 +3942,7 @@ struct conflagrate_t: public warlock_spell_t
       }
 
       if ( maybe_ptr( p() -> dbc.ptr ) )
-        p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.6, p() -> gains.conflagrate );
+        p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.4, p() -> gains.conflagrate );
     }
   }
 };
@@ -3959,9 +4006,13 @@ struct incinerate_t: public warlock_spell_t
 
     p() -> buffs.backdraft -> decrement();
 
-    if ( maybe_ptr( p() -> dbc.ptr ) )
-      p() -> resource_gain( RESOURCE_SOUL_SHARD, ( execute_state -> result == RESULT_CRIT ? 0.2 : 0.1 ) * ( p() -> talents.fire_and_brimstone -> ok() ? execute_state -> n_targets : 1 ), p() -> gains.incinerate );
-  }
+    if ( maybe_ptr( p()->dbc.ptr ) )
+    {
+      p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.2 * ( p() -> talents.fire_and_brimstone -> ok() ? execute_state -> n_targets : 1 ), p() -> gains.incinerate );
+      if ( execute_state -> result == RESULT_CRIT )
+        p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.1 * ( p() -> talents.fire_and_brimstone -> ok() ? execute_state -> n_targets : 1 ), p() -> gains.incinerate_crits );
+    }
+        }
 
   virtual double composite_crit_chance() const override
   {
@@ -5225,6 +5276,7 @@ struct drain_soul_t: public warlock_spell_t
     channeled = true;
     hasted_ticks = false;
     may_crit = false;
+    affected_by_deaths_embrace = true;
     rend_soul_proc_chance = p -> artifact.rend_soul.data().proc_chance();
   }
 
@@ -5341,7 +5393,7 @@ struct shadowburn_t: public warlock_spell_t
     resource_event = make_event<resource_event_t>( *sim, p(), this, s -> target );
 
     if ( maybe_ptr( p() -> dbc.ptr ) )
-      p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.6, p() -> gains.shadowburn );
+      p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.4, p() -> gains.shadowburn );
   }
 
   void init() override
@@ -5391,11 +5443,6 @@ struct haunt_t: public warlock_spell_t
   haunt_t( warlock_t* p ):
     warlock_spell_t( "haunt", p, p -> talents.haunt )
   {
-    if ( maybe_ptr( p -> dbc.ptr ) )
-    {
-      base_costs[RESOURCE_SOUL_SHARD] = 1.0;
-      resource_current = RESOURCE_SOUL_SHARD;
-    }
   }
 
   void impact( action_state_t* s ) override
@@ -5417,6 +5464,7 @@ struct phantom_singularity_tick_t : public warlock_spell_t
     background = true;
     may_miss = false;
     dual = true;
+    affected_by_deaths_embrace = true;
     aoe = -1;
   }
 };
@@ -5672,6 +5720,9 @@ struct grimoire_of_service_t: public summon_pet_t
   grimoire_of_service_t( warlock_t* p, const std::string& pet_name ):
     summon_pet_t( "service_" + pet_name, p, p -> talents.grimoire_of_service -> ok() ? p -> find_class_spell( "Grimoire: " + pet_name ) : spell_data_t::not_found() )
   {
+    if ( maybe_ptr( p -> dbc.ptr ) )
+      base_costs[RESOURCE_SOUL_SHARD] *= 0.1;
+
     cooldown = p -> get_cooldown( "grimoire_of_service" );
     cooldown -> duration = data().cooldown();
     summoning_duration = data().duration() + timespan_t::from_millis( 1 );
@@ -5865,6 +5916,20 @@ struct debuff_havoc_t: public warlock_buff_t < buff_t >
   }
 };
 
+struct debuff_agony_t : public warlock_buff_t < buff_t >
+{
+  debuff_agony_t( warlock_td_t& p ) :
+    base_t( p, buff_creator_t( static_cast<actor_pair_t>( p ), "agony", p.source -> find_spell( 980 ) ) )
+  {
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    base_t::expire_override( expiration_stacks, remaining_duration );
+    warlock.havoc_target = nullptr;
+  }
+};
+
 }
 
 warlock_td_t::warlock_td_t( player_t* target, warlock_t& p ):
@@ -5892,7 +5957,8 @@ warlock( p )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC );
   debuffs_shadowflame = buff_creator_t( *this, "shadowflame", source -> find_spell( 205181 ) );
   debuffs_agony = buff_creator_t( *this, "agony", source -> find_spell( 980 ) )
-    .refresh_behavior( BUFF_REFRESH_PANDEMIC );
+    .refresh_behavior( BUFF_REFRESH_PANDEMIC )
+    .max_stack( ( warlock.talents.writhe_in_agony -> ok() ? ( maybe_ptr( warlock.dbc.ptr ) ? warlock.talents.writhe_in_agony -> effectN( 2 ).base_value() : 20 ) : 10 ) );
   debuffs_eradication = buff_creator_t( *this, "eradication", source -> find_spell( 196414 ) )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC );
   debuffs_roaring_blaze = buff_creator_t( *this, "roaring_blaze", source -> find_spell( 205690 ) )
@@ -6430,6 +6496,7 @@ void warlock_t::init_spells()
   talents.grimoire_of_synergy    = find_talent_spell( "Grimoire of Synergy" );
 
   talents.soul_effigy            = find_talent_spell( "Soul Effigy" );
+  talents.deaths_embrace         = find_talent_spell( "Death's Embrace" );
   talents.phantom_singularity    = find_talent_spell( "Phantom Singularity" );
 
   talents.wreak_havoc            = find_talent_spell( "Wreak Havoc" );
@@ -6715,6 +6782,7 @@ void warlock_t::init_gains()
   gains.conflagrate                 = get_gain( "conflagrate" );
   gains.shadowburn                  = get_gain( "shadowburn" );
   gains.immolate                    = get_gain( "immolate" );
+  gains.immolate_crits              = get_gain( "immolate_crits" );
   gains.shadowburn_shard            = get_gain( "shadowburn_shard" );
   gains.miss_refund                 = get_gain( "miss_refund" );
   gains.seed_of_corruption          = get_gain( "seed_of_corruption" );
@@ -6731,6 +6799,7 @@ void warlock_t::init_gains()
   gains.feretory_of_souls           = get_gain( "feretory_of_souls" );
   gains.power_cord_of_lethtendris   = get_gain( "power_cord_of_lethtendris" );
   gains.incinerate                  = get_gain( "incinerate" );
+  gains.incinerate_crits            = get_gain( "incinerate_crits" );
   gains.dimensional_rift            = get_gain( "dimensional_rift" );
 }
 
