@@ -387,6 +387,7 @@ public:
           * arcane_missiles_wasted; // Additional AM generated at max stacks
 
     proc_t* brain_freeze_generated, // BF proc
+          * brain_freeze_regenerated, // BF proc during delay window
           * brain_freeze_removed, // Flurry cast
           * brain_freeze_expired, // BF buff expires
           * brain_freeze_wasted, // Additional BF generated with existing buff
@@ -1009,6 +1010,13 @@ struct freeze_t : public mage_pet_spell_t
     bool success = o() -> apply_crowd_control( s, MECHANIC_ROOT );
     if ( success )
     {
+      const auto fof_stacks = o() -> buffs.fingers_of_frost -> stack();
+
+      if ( fof_stacks == o() -> buffs.fingers_of_frost -> max_stack() )
+        o() -> procs.fingers_of_frost_wasted -> occur();
+      else
+        o() -> procs.fingers_of_frost_generated -> occur();
+
       o() -> buffs.fingers_of_frost->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 );
       o() -> benefits.fingers_of_frost->update( fof_source_id );
     }
@@ -1860,6 +1868,13 @@ struct lady_vashjs_grasp_t: public buff_t
                             p -> find_spell( 208147 ) )
               .tick_callback( [ p ]( buff_t* buff, int, const timespan_t& )
                 {
+                  const auto fof_stacks = p -> buffs.fingers_of_frost -> stack();
+
+                  if ( fof_stacks == p -> buffs.fingers_of_frost -> max_stack() )
+                    p -> procs.fingers_of_frost_wasted -> occur();
+                  else
+                    p -> procs.fingers_of_frost_generated -> occur();
+
                   p -> buffs.fingers_of_frost -> trigger();
                   lady_vashjs_grasp_t * lvg =
                     debug_cast<lady_vashjs_grasp_t *>( buff );
@@ -2028,14 +2043,10 @@ public:
     if ( static_cast<buff_t*>(p() -> buffs.arcane_missiles)
              -> trigger( stacks, buff_t::DEFAULT_VALUE(), chance ) )
     {
-      if (am_stacks == p() -> buffs.arcane_missiles -> max_stack() )
-      {
+      if ( am_stacks == p() -> buffs.arcane_missiles -> max_stack() )
         p() -> procs.arcane_missiles_wasted -> occur();
-      }
       else
-      {
         p() -> procs.arcane_missiles_generated -> occur();
-      }
 
       if ( source_id < 0 )
       {
@@ -2460,11 +2471,18 @@ struct frost_mage_spell_t : public mage_spell_t
 
   void trigger_fof( int source_id, double chance, int stacks = 1 )
   {
+    const auto fof_stacks = p() -> buffs.fingers_of_frost -> stack();
+
     bool success = p() -> buffs.fingers_of_frost
                        -> trigger( stacks, buff_t::DEFAULT_VALUE(), chance );
 
     if ( success )
     {
+      if ( fof_stacks == p() -> buffs.fingers_of_frost -> max_stack() )
+        p() -> procs.fingers_of_frost_wasted -> occur();
+      else
+        p() -> procs.fingers_of_frost_generated -> occur();
+
       if ( source_id < 0 )
       {
         p() -> sim -> out_debug.printf( "Action %s does not have valid fof source_id",
@@ -5294,6 +5312,14 @@ struct icy_veins_t : public frost_mage_spell_t
       // LVG manually and then trigger it again.
       p() -> buffs.lady_vashjs_grasp -> expire();
       p() -> buffs.lady_vashjs_grasp -> trigger();
+
+      const auto fof_stacks = p() -> buffs.fingers_of_frost -> stack();
+
+      if ( fof_stacks == p() -> buffs.fingers_of_frost -> max_stack() )
+        p() -> procs.fingers_of_frost_wasted -> occur();
+      else
+        p() -> procs.fingers_of_frost_generated -> occur();
+
       // Trigger 1 stack of FoF when IV is triggered with LVG legendary,
       // This is independant of the tick action gains.
       p() -> buffs.fingers_of_frost -> trigger();
@@ -8228,6 +8254,7 @@ void mage_t::init_procs()
     case MAGE_FROST:
       procs.brain_freeze_expired = get_proc( "Brain Freeze expired" );
       procs.brain_freeze_generated = get_proc( "Brain Freeze generated" );
+      procs.brain_freeze_regenerated = get_proc( "Brain Freeze regenerated" );
       procs.brain_freeze_removed = get_proc( "Brain Freeze removed" );
       procs.brain_freeze_wasted = get_proc( "Brain Freeze wasted" );
 
