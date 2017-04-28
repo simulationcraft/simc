@@ -4914,8 +4914,10 @@ struct mark_of_aluneth_explosion_t : public arcane_mage_spell_t
 
   virtual void execute() override
   {
-    base_dd_max = p() -> resources.max[ RESOURCE_MANA ] * data().effectN( 1 ).percent();
-    base_dd_min = p() -> resources.max[ RESOURCE_MANA ] * data().effectN( 1 ).percent();
+    double mana_to_damage_pct = p() -> artifact.mark_of_aluneth.data().effectN( 1 ).percent();
+
+    base_dd_max = p() -> resources.max[ RESOURCE_MANA ] * mana_to_damage_pct;
+    base_dd_min = p() -> resources.max[ RESOURCE_MANA ] * mana_to_damage_pct;
 
     arcane_mage_spell_t::execute();
 
