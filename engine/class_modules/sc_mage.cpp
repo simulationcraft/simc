@@ -3549,7 +3549,6 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     p() -> buffs.arcane_missiles -> decrement();
 
     p() -> procs.arcane_missiles_removed -> occur();
-
   }
 
   void last_tick ( dot_t * d ) override
