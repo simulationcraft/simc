@@ -1642,6 +1642,31 @@ struct arcane_missiles_t : public buff_t
   }
 };
 
+struct fingers_of_frost_t : public buff_t
+{
+  fingers_of_frost_t( mage_t* p ) :
+    buff_t(
+      buff_creator_t( p, "fingers_of_frost", p -> find_spell( 44544 ) )
+        .max_stack(
+          p -> find_spell( 44544 ) -> max_stacks()
+            + p -> sets.set( MAGE_FROST, T18, B4 ) -> effectN( 2 ).base_value()
+            + p -> artifact.icy_hand.rank()
+            + p -> talents.frozen_touch -> effectN( 2 ).base_value()
+        )
+    )
+  {};
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+
+    mage_t* p = static_cast<mage_t*>( player );
+
+    if ( remaining_duration == timespan_t::zero() )
+      for ( auto i = 0; i < expiration_stacks; i++ )
+        p -> procs.fingers_of_frost_expired -> occur();
+  }
+};
 
 // Chilled debuff =============================================================
 
@@ -8168,11 +8193,7 @@ void mage_t::create_buffs()
   buffs.brain_freeze          = buff_creator_t( this, "brain_freeze", find_spell( 190446 ) );
   buffs.bone_chilling         = buff_creator_t( this, "bone_chilling", find_spell( 205766 ) )
                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  buffs.fingers_of_frost      = buff_creator_t( this, "fingers_of_frost", find_spell( 44544 ) )
-                                  .max_stack( find_spell( 44544 ) -> max_stacks() +
-                                              sets.set( MAGE_FROST, T18, B4 ) -> effectN( 2 ).base_value() +
-                                              artifact.icy_hand.rank()
-                                              + talents.frozen_touch -> effectN( 2 ).base_value() );
+  buffs.fingers_of_frost      = new buffs::fingers_of_frost_t( this );
   buffs.frozen_mass           = buff_creator_t( this, "frozen_mass", find_spell( 242253 ) );
 
   // Buff to track icicles. This does not, however, track the true amount of icicles present.
