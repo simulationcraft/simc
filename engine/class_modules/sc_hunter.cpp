@@ -1774,6 +1774,25 @@ struct sneaky_snake_t: public hunter_secondary_pet_t
   }
 };
 
+// ==========================================================================
+// Black Arrow Dark Minion
+// ==========================================================================
+
+struct dark_minion_t: hunter_secondary_pet_t
+{
+  dark_minion_t( hunter_t* o ):
+    hunter_secondary_pet_t( o, "dark_minion" )
+  {}
+
+  void init_base_stats() override
+  {
+    hunter_secondary_pet_t::init_base_stats();
+
+    if ( o() -> pets.dark_minions[ 0 ] )
+      main_hand_attack -> stats = o() -> pets.dark_minions[ 0 ] -> main_hand_attack -> stats;
+  }
+};
+
 namespace actions
 {
 
@@ -2985,24 +3004,27 @@ struct surge_of_the_stormgod_t: public hunter_ranged_attack_t
 
 struct black_arrow_t: public hunter_ranged_attack_t
 {
-  timespan_t duration;
   black_arrow_t( hunter_t* player, const std::string& options_str ):
     hunter_ranged_attack_t( "black_arrow", player, player -> talents.black_arrow )
   {
     parse_options( options_str );
     tick_may_crit = true;
     hasted_ticks = false;
-    duration = this -> dot_duration;
   }
 
-  virtual void execute() override
+  bool init_finished() override
+  {
+    if ( p() -> pets.dark_minions[ 0 ] )
+      stats -> add_child( p() -> pets.dark_minions[ 0 ] -> main_hand_attack -> stats );
+
+    return hunter_ranged_attack_t::init_finished();
+  }
+
+  void execute() override
   {
     hunter_ranged_attack_t::execute();
 
-    if ( p() -> pets.dark_minions[ 0 ] -> is_sleeping() )
-      p() -> pets.dark_minions[ 0 ] -> summon( duration );
-    else
-      p() -> pets.dark_minions[ 1 ] -> summon( duration );
+    p() -> pets.dark_minions[ p() -> pets.dark_minions[ 0 ] -> is_sleeping() ? 0 : 1 ] -> summon( dot_duration );
   }
 };
 
@@ -5499,8 +5521,8 @@ void hunter_t::create_pets()
 
   if ( talents.black_arrow -> ok() )
   {
-    pets.dark_minions[ 0 ] = new pets::hunter_secondary_pet_t( this, "dark_minion" );
-    pets.dark_minions[ 1 ] = new pets::hunter_secondary_pet_t( this, "dark_minion_2" );
+    pets.dark_minions[ 0 ] = new pets::dark_minion_t( this );
+    pets.dark_minions[ 1 ] = new pets::dark_minion_t( this );
   }
 
   if ( talents.spitting_cobra -> ok() )
