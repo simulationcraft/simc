@@ -23,6 +23,7 @@ actions.precombat+=/potion,name=prolonged_power
 # Executed every time the actor is available.
 actions=auto_attack
 actions+=/spear_hand_strike,if=target.debuff.casting.react
+actions+=/touch_of_karma,interval=90,pct_health=0.5
 actions+=/potion,name=prolonged_power,if=buff.serenity.up|buff.storm_earth_and_fire.up|(!talent.serenity.enabled&trinket.proc.agility.react)|buff.bloodlust.react|target.time_to_die<=60
 actions+=/touch_of_death,if=target.time_to_die<=9
 actions+=/call_action_list,name=serenity,if=(talent.serenity.enabled&cooldown.serenity.remains<=0)|buff.serenity.up

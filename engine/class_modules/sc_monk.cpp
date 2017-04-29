@@ -9835,6 +9835,7 @@ void monk_t::apl_combat_windwalker()
 
   def -> add_action( "auto_attack" );
   def -> add_action( this, "Spear Hand Strike", "if=target.debuff.casting.react" );
+  def -> add_action( this, "Touch of Karma", "interval=90,pct_health=0.5" );
 
   if ( sim -> allow_potions )
   {
