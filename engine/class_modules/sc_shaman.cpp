@@ -7117,7 +7117,7 @@ void shaman_t::init_action_list_elemental()
   single_lr -> add_action( this, "Flame Shock", "if=maelstrom>=20&buff.elemental_focus.up,target_if=refreshable" );
   single_lr -> add_action( this, "Earth Shock", "if=maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=86" );
   single_lr -> add_talent( this, "Totem Mastery", "if=buff.resonance_totem.remains<10|(buff.resonance_totem.remains<(buff.ascendance.duration+cooldown.ascendance.remains)&cooldown.ascendance.remains<15)" );
-  single_lr -> add_action( this, "Earthquake", "if=buff.echoes_of_the_great_sundering.up" );
+  single_lr -> add_action( this, "Earthquake", "if=buff.echoes_of_the_great_sundering.up|artifact.seismic_storm.enabled&((active_enemies>1&spell_targets.chain_lightning>1)|spell_haste<=0.66&!(buff.nefarious_pact.up&buff.nefarious_pact.remains<5|buff.bloodlust.up&buff.bloodlust.remains<5))", "Use EQ on single target if you have a huge haste buff that increases haste above 50% OR two enemies." );
   single_lr -> add_action( this, "Lightning Bolt", "if=buff.power_of_the_maelstrom.up&spell_targets.chain_lightning<3,target_if=debuff.lightning_rod.down" );
   single_lr -> add_action( this, "Lightning Bolt", "if=buff.power_of_the_maelstrom.up&spell_targets.chain_lightning<3" );
   single_lr -> add_action( this, "Chain Lightning", "if=active_enemies>1&spell_targets.chain_lightning>1,target_if=debuff.lightning_rod.down" );
@@ -7144,7 +7144,7 @@ void shaman_t::init_action_list_elemental()
   single_if -> add_action( this, "Frost Shock", "moving=1,if=buff.icefury.up" );
   single_if -> add_action( this, "Earth Shock", "if=maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=86" );
   single_if -> add_talent( this, "Totem Mastery", "if=buff.resonance_totem.remains<10" );
-  single_if -> add_action( this, "Earthquake", "if=buff.echoes_of_the_great_sundering.up" );
+  single_if -> add_action( this, "Earthquake", "if=buff.echoes_of_the_great_sundering.up|artifact.seismic_storm.enabled&((active_enemies>1&spell_targets.chain_lightning>1)|spell_haste<=0.66&!(buff.nefarious_pact.up&buff.nefarious_pact.remains<5|buff.bloodlust.up&buff.bloodlust.remains<5))", "Use EQ on single target if you have a huge haste buff that increases haste above 50% OR two enemies." );
   single_if -> add_action( this, "Lightning Bolt", "if=buff.power_of_the_maelstrom.up&spell_targets.chain_lightning<3" );
   single_if -> add_action( this, "Chain Lightning", "if=active_enemies>1&spell_targets.chain_lightning>1" );
   single_if -> add_action( this, "Lightning Bolt" );
@@ -7166,7 +7166,7 @@ void shaman_t::init_action_list_elemental()
   single_asc -> add_action( this, "Flame Shock", "if=maelstrom>=20&buff.elemental_focus.up,target_if=refreshable" );
   single_asc -> add_action( this, "Earth Shock", "if=maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=86" );
   single_asc -> add_talent( this, "Totem Mastery", "if=buff.resonance_totem.remains<10|(buff.resonance_totem.remains<(buff.ascendance.duration+cooldown.ascendance.remains)&cooldown.ascendance.remains<15)" );
-  single_asc -> add_action( this, "Earthquake", "if=buff.echoes_of_the_great_sundering.up" );
+  single_asc -> add_action( this, "Earthquake", "if=buff.echoes_of_the_great_sundering.up|artifact.seismic_storm.enabled&((active_enemies>1&spell_targets.chain_lightning>1)|spell_haste<=0.66&!(buff.nefarious_pact.up&buff.nefarious_pact.remains<5|buff.bloodlust.up&buff.bloodlust.remains<5))", "Use EQ on single target if you have a huge haste buff that increases haste above 50% OR two enemies." );
   single_asc -> add_action( this, "Lava Beam", "if=active_enemies>1&spell_targets.lava_beam>1" );
   single_asc -> add_action( this, "Lightning Bolt", "if=buff.power_of_the_maelstrom.up&spell_targets.chain_lightning<3" );
   single_asc -> add_action( this, "Chain Lightning", "if=active_enemies>1&spell_targets.chain_lightning>1" );
