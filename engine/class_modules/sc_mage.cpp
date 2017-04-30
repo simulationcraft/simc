@@ -2814,6 +2814,12 @@ struct time_and_space_t : public arcane_mage_spell_t
     aoe = -1;
     trigger_gcd = timespan_t::zero();
     background = true;
+
+    if ( p -> bugs )
+    {
+      triggers_erosion = false;
+    }
+
     base_multiplier *= 1.0 + p -> artifact.arcane_purification.percent();
     radius += p -> artifact.crackling_energy.data().effectN( 1 ).base_value();
   }
