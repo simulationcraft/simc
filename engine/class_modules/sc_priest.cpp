@@ -4916,9 +4916,6 @@ void priest_t::apl_precombat()
     case PRIEST_SHADOW:
     default:
       precombat->add_action( this, "Shadowform", "if=!buff.shadowform.up" );
-      precombat->add_action(
-          "variable,op=set,name=s2mbeltcheck,value=cooldown.mind_blast."
-          "charges>=2" );
       precombat->add_action( "mind_blast" );
       break;
   }
@@ -5058,8 +5055,8 @@ void priest_t::apl_shadow()
       "time_to_die))%5),if=time+target.time_to_die<=450" );
   check->add_action(
       "variable,op=set,name=s2mcheck,value=(0.8*(83-(5*talent.sanlayn.enabled)"
-      "+(33*talent.reaper_of_souls.enabled)+set_bonus.tier19_2pc*4+8*variable"
-      ".s2mbeltcheck+((raw_haste_pct*10))*"
+      "+(33*talent.reaper_of_souls.enabled)+set_bonus.tier19_2pc*4+8*equipped"
+      ".mangazas_madness+((raw_haste_pct*10))*"
       "(2+(0.8*set_bonus.tier19_2pc)+(1*talent.reaper_of_souls.enabled)+"
       "(2*artifact.mass_hysteria.rank)-(1*talent.sanlayn.enabled))))-("
       "variable.actors_fight_time_mod*nonexecute_actors_pct)" );
@@ -5114,10 +5111,8 @@ void priest_t::apl_shadow()
       "*(1+0.2+stat.mastery_rating%16000)*0.75*target.time_to_die%(gcd.max*(138+80*"
       "(active_enemies-1))))>1,cycle_targets=1" );
   main->add_action(
-      "shadow_word_void,if=talent.shadow_word_void.enabled&(insanity<=70&"
-      "talent."
-      "legacy_of_the_void.enabled)|(insanity<=85&!talent.legacy_of_the_void."
-      "enabled)" );
+      "shadow_word_void,if=talent.shadow_word_void.enabled&(insanity<=75-10*"
+      "talent.legacy_of_the_void.enabled)" );
   main->add_action( "mind_flay,interrupt=1,chain=1" );
   main->add_action( "shadow_word_pain" );
 
@@ -5236,7 +5231,7 @@ if ( race == RACE_BLOOD_ELF )
   vf->add_action(
       "power_infusion,if=buff.insanity_drain_stacks.value>=(10+2*set_bonus."
       "tier19_2pc+"
-      "5*buff.bloodlust.up+5*variable.s2mbeltcheck)&(!talent.surrender_to_"
+      "5*buff.bloodlust.up+5*equipped.mangazas_madness)&(!talent.surrender_to_"
       "madness.enabled"
       "|(talent.surrender_to_madness.enabled&target.time_to_die>variable."
       "s2mcheck-(buff."
