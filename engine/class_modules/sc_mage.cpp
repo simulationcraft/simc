@@ -1545,11 +1545,11 @@ public:
     spell_t( n, p, s ),
     affected_by( affected_by_t() ),
     consumes_ice_floes( true ),
+    triggers_arcane_missiles( true ),
     am_trigger_source_id( -1 ),
     dps_rotation( 0 ),
     dpm_rotation( 0 )
   {
-    triggers_arcane_missiles = harmful && !background;
     may_crit      = true;
     tick_may_crit = true;
 
@@ -1572,6 +1572,11 @@ public:
     if ( affected_by.frost_mage )
     {
       base_multiplier *= 1.0 + p() -> spec.frost_mage -> effectN( 1 ).percent();
+    }
+
+    if ( !harmful || background )
+    {
+      triggers_arcane_missiles = false;
     }
   }
 
@@ -1812,13 +1817,26 @@ typedef residual_action::residual_periodic_action_t< mage_spell_t > residual_act
 
 struct arcane_mage_spell_t : public mage_spell_t
 {
+  bool triggers_erosion;
+
   arcane_mage_spell_t( const std::string& n, mage_t* p,
                        const spell_data_t* s = spell_data_t::nil() ) :
-    mage_spell_t( n, p, s )
+    mage_spell_t( n, p, s ),
+    triggers_erosion( true )
   {
     affected_by.arcane_mage = true;
     affected_by.arcane_power = true;
     affected_by.erosion = true;
+  }
+
+  void init() override
+  {
+    mage_spell_t::init();
+
+    if ( !harmful )
+    {
+      triggers_erosion = false;
+    }
   }
 
   double arcane_charge_damage_bonus( bool amplification = false ) const
@@ -1840,8 +1858,7 @@ struct arcane_mage_spell_t : public mage_spell_t
   {
     mage_spell_t::impact( s );
 
-    if ( p() -> talents.erosion -> ok() && result_is_hit( s -> result ) && harmful
-      && s -> action -> id != 224968 )
+    if ( p() -> talents.erosion -> ok() && result_is_hit( s -> result ) && triggers_erosion )
     {
       td( s -> target ) -> debuffs.erosion -> trigger();
     }
@@ -2385,7 +2402,6 @@ struct presence_of_mind_t : public arcane_mage_spell_t
   {
     parse_options( options_str );
     harmful = false;
-    triggers_arcane_missiles = false;
   }
 
   virtual bool ready() override
@@ -2539,6 +2555,7 @@ struct aegwynns_ascendance_t : public arcane_mage_spell_t
     background = true;
     may_crit = false;
   }
+
   virtual void init() override
   {
     arcane_mage_spell_t::init();
@@ -2560,7 +2577,6 @@ struct arcane_rebound_t : public arcane_mage_spell_t
     background = true;
     callbacks = false; // TODO: Is this true?
     aoe = -1;
-    triggers_arcane_missiles = false;
   }
 
   virtual timespan_t travel_time() const override
@@ -2795,12 +2811,22 @@ struct time_and_space_t : public arcane_mage_spell_t
   time_and_space_t( mage_t* p ) :
     arcane_mage_spell_t( "arcane_explosion_echo", p, p -> find_spell( 240689 ) )
   {
-    triggers_arcane_missiles = true;
     aoe = -1;
     trigger_gcd = timespan_t::zero();
     background = true;
     base_multiplier *= 1.0 + p -> artifact.arcane_purification.percent();
     radius += p -> artifact.crackling_energy.data().effectN( 1 ).base_value();
+  }
+
+  bool init_finished() override
+  {
+    if ( p() -> bugs )
+    {
+      am_trigger_source_id = p() -> benefits.arcane_missiles
+                                 -> get_source_id( data().name_cstr() );
+    }
+
+    return arcane_mage_spell_t::init_finished();
   }
 
   virtual double action_multiplier() const override
@@ -2818,7 +2844,6 @@ struct time_and_space_t : public arcane_mage_spell_t
 
     if ( p() -> bugs )
     {
-      // AM needs to be triggered manually because TnS is background.
       trigger_am( am_trigger_source_id );
     }
   }
@@ -2909,8 +2934,6 @@ struct arcane_missiles_tick_t : public arcane_mage_spell_t
   {
     background  = true;
     dot_duration = timespan_t::zero();
-
-    triggers_arcane_missiles = false;
   }
 
   void impact( action_state_t* s ) override
@@ -2958,6 +2981,7 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     parse_options( options_str );
     may_miss = false;
     triggers_arcane_missiles = false;
+    triggers_erosion = false;
     dot_duration      = data().duration();
     base_tick_time    = data().effectN( 2 ).period();
     channeled         = true;
@@ -3121,8 +3145,10 @@ struct arcane_orb_t : public arcane_mage_spell_t
   {
     parse_options( options_str );
 
-    may_miss       = false;
-    may_crit       = false;
+    may_miss = false;
+    may_crit = false;
+    triggers_erosion = false;
+
     add_child( orb_bolt );
   }
 
@@ -3157,7 +3183,6 @@ struct arcane_power_t : public arcane_mage_spell_t
   {
     parse_options( options_str );
     harmful = false;
-    triggers_arcane_missiles = false;
   }
 
   virtual void execute() override
@@ -3293,7 +3318,7 @@ struct charged_up_t : public arcane_mage_spell_t
     arcane_mage_spell_t( "charged_up", p, p -> find_spell ( "Charged Up" ) )
   {
     parse_options( options_str );
-    triggers_arcane_missiles = harmful = false;
+    harmful = false;
   }
 
   virtual void execute() override
@@ -3639,7 +3664,6 @@ struct evocation_t : public arcane_mage_spell_t
     hasted_ticks      = false;
     tick_zero         = true;
     ignore_false_positive = true;
-    triggers_arcane_missiles = false;
 
     cooldown -> duration *= -p -> spec.evocation_2 -> effectN( 1 ).percent();
 
@@ -4216,7 +4240,6 @@ struct frost_nova_t : public mage_spell_t
     mage_spell_t( "frost_nova", p, p -> find_class_spell( "Frost Nova" ) )
   {
     parse_options( options_str );
-    triggers_arcane_missiles = true;
 
     affected_by.fire_mage = true;
     affected_by.frost_mage = true;
@@ -4879,8 +4902,6 @@ void living_bomb_t::init()
 
 
 // Mark of Aluneth Spell =============================================================
-// TODO: Tick times are inconsistent in game. Until fixed, remove hasted ticks
-//       and cap the DoT at 5 ticks, then an explosion.
 
 struct mark_of_aluneth_explosion_t : public arcane_mage_spell_t
 {
@@ -4890,15 +4911,12 @@ struct mark_of_aluneth_explosion_t : public arcane_mage_spell_t
 
   mark_of_aluneth_explosion_t( mage_t* p ) :
     arcane_mage_spell_t( "mark_of_aluneth_explosion", p, p -> find_spell( 211076 ) ),
-    mana_to_damage_pct( 0.0 ),
+    mana_to_damage_pct( p -> artifact.mark_of_aluneth.data().effectN( 1 ).percent() ),
     aluneths_avarice_regen( 0.0 ),
     persistent_cord_multiplier( 0.0 )
   {
     background = true;
     aoe = -1;
-    triggers_arcane_missiles = false;
-
-    mana_to_damage_pct = p -> artifact.mark_of_aluneth.data().effectN( 1 ).percent();
 
     if ( p -> bugs )
     {
@@ -4952,17 +4970,18 @@ struct mark_of_aluneth_t : public arcane_mage_spell_t
   {
     parse_options( options_str );
     school = SCHOOL_ARCANE;
-    triggers_arcane_missiles = false;
+    // Erosion needs to be triggered on tick, not on impact.
+    triggers_erosion = false;
     spell_power_mod.tick = p -> find_spell( 211088 ) -> effectN( 1 ).sp_coeff();
     hasted_ticks = false;
     add_child( mark_explosion );
   }
+
   virtual void execute() override
   {
     arcane_mage_spell_t::execute();
 
     p() -> buffs.cord_of_infinity -> expire();
-
   }
 
   double composite_persistent_multiplier( const action_state_t* state ) const override
@@ -5579,7 +5598,6 @@ struct rune_of_power_t : public mage_spell_t
   {
     parse_options( options_str );
     harmful = false;
-    triggers_arcane_missiles = false;
   }
 
   virtual void execute() override
@@ -5654,6 +5672,7 @@ struct slow_t : public arcane_mage_spell_t
     parse_options( options_str );
     ignore_false_positive = true;
     triggers_arcane_missiles = false;
+    triggers_erosion = false;
   }
 
   virtual void impact( action_state_t* s ) override
@@ -5759,7 +5778,6 @@ struct summon_arcane_familiar_t : public arcane_mage_spell_t
     parse_options( options_str );
     harmful = false;
     ignore_false_positive = true;
-    triggers_arcane_missiles = false;
     trigger_gcd = timespan_t::zero();
   }
 
@@ -5791,7 +5809,6 @@ struct time_warp_t : public mage_spell_t
   {
     parse_options( options_str );
     harmful = false;
-    triggers_arcane_missiles = false;
   }
 
   virtual void execute() override
@@ -5842,9 +5859,6 @@ struct touch_of_the_magi_explosion_t : public arcane_mage_spell_t
     ignore_false_positive = true;
     trigger_gcd = timespan_t::zero();
     may_miss = may_crit = callbacks = false;
-
-    triggers_arcane_missiles = false;
-
     aoe = -1;
   }
 
