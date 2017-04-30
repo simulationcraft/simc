@@ -2928,11 +2928,12 @@ void item::natures_call( special_effect_t& effect )
 
   // Set trigger spell so we can automatically create the breath action.
   effect.trigger_spell_id = 222520;
-  procs.push_back( new natures_call_proc_t( effect.create_action() ) );
+  action_t* a = effect.create_action();
+  a->base_dd_min = a->base_dd_max = effect.driver()->effectN(1).average(effect.item);
+  procs.push_back(new natures_call_proc_t(a));
 
   // Disable trigger spell again
   effect.trigger_spell_id = 0;
-
   new natures_call_callback_t( effect, procs );
 }
 
