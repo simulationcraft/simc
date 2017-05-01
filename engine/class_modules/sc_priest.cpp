@@ -5125,9 +5125,8 @@ void priest_t::apl_shadow()
       "touch.remains>5.5&!buff.power_infusion.up" );
   s2m->add_action( "berserking,if=buff.voidform.stack>=65" );
   s2m->add_action(
-      "shadow_word_death,if=current_insanity_drain*gcd.max>insanity-30&!buff."
-      "power_infusion.up&(insanity-(current_insanity_drain*gcd.max)+(30+30*"
-      "talent.reaper_of_souls.enabled)<100)" );
+      "shadow_word_death,if=current_insanity_drain*gcd.max>insanity-30&(insanity-"
+      "(current_insanity_drain*gcd.max)+(30+30*talent.reaper_of_souls.enabled)<100)" );
   if ( race == RACE_BLOOD_ELF )
     s2m->add_action( "arcane_torrent,if=buff.insanity_drain_stacks.value>=65"
                      "&(insanity-(current_insanity_drain*gcd.max)+30)<100" );  
