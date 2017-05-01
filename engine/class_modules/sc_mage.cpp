@@ -2465,22 +2465,22 @@ struct conflagration_t : public fire_mage_spell_t
 //Phoenix Reborn Spell
 struct phoenix_reborn_t : public fire_mage_spell_t
 {
-  cooldown_t* icd;
   phoenix_reborn_t( mage_t* p ) :
     fire_mage_spell_t( "phoenix_reborn", p, p -> artifact.phoenix_reborn )
   {
     parse_effect_data( p -> find_spell( 215775 ) -> effectN( 1 ) );
     callbacks = false;
     background = true;
-    icd = p -> get_cooldown( "phoenix_reborn_icd" );
-    icd -> duration = p -> find_spell( 215773 ) -> internal_cooldown();
+    internal_cooldown -> duration = p -> find_spell( 215773 ) -> internal_cooldown();
   }
   virtual void execute() override
   {
+    if ( internal_cooldown -> down() )
+      return;
+
     fire_mage_spell_t::execute();
-    icd -> start();
-    p() -> cooldowns.phoenixs_flames -> adjust( -1000 * p() -> artifact.phoenix_reborn.data()
-                                                 .effectN( 1 ).time_value() );
+    internal_cooldown -> start();
+    p() -> cooldowns.phoenixs_flames -> adjust( -1000 * data().effectN( 1 ).time_value() );
   }
 
 };
@@ -2525,8 +2525,7 @@ struct ignite_t : public residual_action_t
     }
 
     if ( p() -> artifact.phoenix_reborn.rank() &&
-         rng().roll( p() -> artifact.phoenix_reborn.data().proc_chance() )
-         && phoenix_reborn -> icd -> up() )
+         rng().roll( p() -> artifact.phoenix_reborn.data().proc_chance() ) )
     {
       phoenix_reborn -> set_target( dot -> target );
       phoenix_reborn -> execute();
@@ -4712,7 +4711,6 @@ struct blast_furnace_t : public fire_mage_spell_t
 
 struct fire_blast_t : public fire_mage_spell_t
 {
-  cooldown_t* icd;
   blast_furnace_t* blast_furnace;
 
   fire_blast_t( mage_t* p, const std::string& options_str ) :
@@ -4732,8 +4730,6 @@ struct fire_blast_t : public fire_mage_spell_t
     cooldown -> duration -= 1000 * p -> talents.flame_on -> effectN( 3 ).time_value();
 
     cooldown -> hasted = true;
-    // Fire Blast has a small ICD to prevent it from being double casted
-    icd = p -> get_cooldown( "fire_blast_icd" );
 
     triggers_hot_streak = true;
     triggers_ignite = true;
@@ -4748,21 +4744,12 @@ struct fire_blast_t : public fire_mage_spell_t
     base_crit += p -> spec.fire_blast_2 -> effectN( 1 ).percent();
   }
 
-  virtual bool ready() override
-  {
-    if ( icd -> down() )
-    {
-      return false;
-    }
-
-    return fire_mage_spell_t::ready();
-  }
-
   virtual void execute() override
   {
     fire_mage_spell_t::execute();
 
-    icd -> start( data().cooldown() );
+    // update_ready() assumes the ICD is affected by haste
+    internal_cooldown -> start( data().cooldown() );
   }
 
   virtual void impact( action_state_t* s ) override
