@@ -23,9 +23,6 @@ namespace pets {
   }
 }
 
-
-enum mage_rotation_e { ROTATION_NONE = 0, ROTATION_DPS, ROTATION_DPM, ROTATION_MAX };
-
 struct state_switch_t
 {
 private:
@@ -199,9 +196,6 @@ struct buff_source_benefit_t
 struct mage_t : public player_t
 {
 public:
-  // Current target
-  player_t* current_target;
-
   // Icicles
   std::vector<icicle_tuple_t> icicles;
   action_t* icicle;
@@ -355,21 +349,6 @@ public:
 
     proc_t* controlled_burn; // Tracking Controlled Burn talent
   } procs;
-
-  // Rotation ( DPS vs DPM )
-  struct rotation_t
-  {
-    mage_rotation_e current;
-    double mana_gain,
-           dps_mana_loss,
-           dpm_mana_loss;
-    timespan_t dps_time,
-               dpm_time,
-               last_time;
-
-    void reset() { memset( this, 0, sizeof( *this ) ); current = ROTATION_DPS; }
-    rotation_t() { reset(); }
-  } rotation;
 
   // Specializations
   struct specializations_t
@@ -578,9 +557,7 @@ public:
   virtual double    temporary_movement_modifier() const override;
   virtual double    passive_movement_modifier() const override;
   virtual void      arise() override;
-  virtual action_t* select_action( const action_priority_list_t& ) override;
   virtual void      copy_from( player_t* ) override;
-  void              activate() override;
 
   target_specific_t<mage_td_t> target_data;
 
@@ -593,12 +570,6 @@ public:
     }
     return td;
   }
-
-  // Resource gain tracking
-  virtual double resource_gain( resource_e, double amount,
-                                gain_t* = 0, action_t* = 0 ) override;
-  virtual double resource_loss( resource_e, double amount,
-                                gain_t* = 0, action_t* = 0 ) override;
 
   // Public mage functions:
   icicle_data_t get_icicle_object();
@@ -655,13 +626,6 @@ struct mage_pet_spell_t : public spell_t
   const mage_t* o() const
   {
     return static_cast<mage_pet_t*>( player )->o();
-  }
-
-  virtual void schedule_execute( action_state_t* execute_state ) override
-  {
-    set_target( o() -> current_target );
-
-    spell_t::schedule_execute( execute_state );
   }
 };
 
@@ -1537,8 +1501,6 @@ struct mage_spell_t : public spell_t
 
   int am_trigger_source_id;
 public:
-  int dps_rotation,
-      dpm_rotation;
 
   mage_spell_t( const std::string& n, mage_t* p,
                 const spell_data_t* s = spell_data_t::nil() ) :
@@ -1546,9 +1508,7 @@ public:
     affected_by( affected_by_t() ),
     consumes_ice_floes( true ),
     triggers_arcane_missiles( true ),
-    am_trigger_source_id( -1 ),
-    dps_rotation( 0 ),
-    dpm_rotation( 0 )
+    am_trigger_source_id( -1 )
   {
     may_crit      = true;
     tick_may_crit = true;
@@ -1623,32 +1583,6 @@ public:
     return c;
   }
 
-  virtual void schedule_execute( action_state_t* state = nullptr ) override
-  {
-    // If there is no state to schedule, make one and put the actor's current
-    // target into it. This guarantees that:
-    // 1) action_execute_event_t::execute() does not execute on dead targets, if the target died during cast
-    // 2) We do not modify action's variables this early in the game
-    //
-    // If this is a tick action, there's going to be a state object passed to
-    // it, that will have the correct target anyhow, since the parent will have
-    // had it's target adjusted during its execution.
-    if ( state == nullptr )
-    {
-      state = get_state();
-
-      // If cycle_targets or target_if option is used, we need to target the spell to the (found)
-      // target of the action, as it was selected during the action_t::ready() call.
-      if ( option.cycle_targets || target_if_mode != TARGET_IF_NONE )
-        state -> target = target;
-      // Put the actor's current target into the state object always.
-      else
-        state -> target = p() -> current_target;
-    }
-
-    spell_t::schedule_execute( state );
-  }
-
   virtual bool usable_moving() const override
   {
     if ( p() -> buffs.ice_floes -> check() )
@@ -1680,41 +1614,7 @@ public:
 
   virtual void execute() override
   {
-    player_t* original_target = nullptr;
-    // Mage spells will always have a pre_execute_state defined, because of
-    // schedule_execute() trickery.
-    //
-    // Adjust the target of this action to always match what the
-    // pre_execute_state targets. Note that execute() will never be called if
-    // the actor's current target (at the time of cast beginning) has demised
-    // before the cast finishes.
-    if ( pre_execute_state )
-    {
-      // Adjust target if necessary
-      if ( target != pre_execute_state -> target )
-      {
-        original_target = target;
-        target = pre_execute_state -> target;
-      }
-
-      // Massive hack to describe a situation where schedule_execute()
-      // forcefully made a pre-execute state to pass the current target to
-      // execute. In this case we release the pre_execute_state, because we
-      // want the action to snapshot it's own stats on "cast finish". We have,
-      // however changed the target of the action to the one specified whe nthe
-      // casting begun (in schedule_execute()).
-      if ( pre_execute_state -> result_type == RESULT_TYPE_NONE )
-      {
-        action_state_t::release( pre_execute_state );
-        pre_execute_state = nullptr;
-      }
-    }
-
     spell_t::execute();
-
-    // Restore original target if necessary
-    if ( original_target )
-      target = original_target;
 
     if ( background )
       return;
@@ -2868,7 +2768,7 @@ struct arcane_explosion_t : public arcane_mage_spell_t
 
   virtual void execute() override
   {
-    p() -> benefits.arcane_charge.arcane_blast -> update();
+    p() -> benefits.arcane_charge.arcane_explosion -> update();
 
     arcane_mage_spell_t::execute();
 
@@ -4333,10 +4233,10 @@ struct frozen_orb_t : public frost_mage_spell_t
 {
   bool ice_time;
   timespan_t freezing_rain_base_duration;
-  ice_time_nova_t* ice_time_nova;
 
-  //TODO: Redo how frozen_orb_bolt is set up to take base_multipler from parent.
+  ice_time_nova_t* ice_time_nova;
   frozen_orb_bolt_t* frozen_orb_bolt;
+
   frozen_orb_t( mage_t* p, const std::string& options_str ) :
     frost_mage_spell_t( "frozen_orb", p,
                         p -> find_specialization_spell( "Frozen Orb" ) ),
@@ -5159,16 +5059,6 @@ struct nether_tempest_aoe_t: public arcane_mage_spell_t
     background = true;
   }
 
-  virtual resource_e current_resource() const override
-  { return RESOURCE_NONE; }
-
-  virtual void execute() override
-  {
-    p() -> benefits.arcane_charge.nether_tempest -> update();
-
-    arcane_mage_spell_t::execute();
-  }
-
   virtual timespan_t travel_time() const override
   {
     return timespan_t::from_seconds( 1.3 );
@@ -5202,6 +5092,8 @@ struct nether_tempest_t : public arcane_mage_spell_t
 
   virtual void execute() override
   {
+    p() -> benefits.arcane_charge.nether_tempest -> update();
+
     double am_proc_chance =  p() -> buffs.arcane_missiles -> proc_chance();
     timespan_t nt_remains = td( target ) -> dots.nether_tempest -> remains();
 
@@ -5862,346 +5754,6 @@ struct touch_of_the_magi_explosion_t : public arcane_mage_spell_t
 // Mage Custom Actions
 // ============================================================================
 
-// Choose Rotation ============================================================
-/*
-struct choose_rotation_t : public action_t
-{
-  double evocation_target_mana_percentage;
-  double ab_cost;
-  int force_dps;
-  int force_dpm;
-  timespan_t final_burn_offset;
-  double oom_offset;
-
-  choose_rotation_t( mage_t* p, const std::string& options_str ) :
-    action_t( ACTION_USE, "choose_rotation", p )
-  {
-    cooldown -> duration = timespan_t::from_seconds( 10 );
-    evocation_target_mana_percentage = 35;
-    force_dps = 0;
-    force_dpm = 0;
-
-    final_burn_offset = timespan_t::from_seconds( 20 );
-    oom_offset = 0;
-    //TODO: Double check this. Scale with AC state.
-    double ab_cost = p -> find_class_spell( "Arcane Blast" ) -> cost( POWER_MANA ) * p -> resources.base[ RESOURCE_MANA ];
-    add_option( opt_timespan( "cooldown", ( cooldown -> duration ) ) );
-    add_option( opt_float( "evocation_pct", evocation_target_mana_percentage ) );
-    add_option( opt_int( "force_dps", force_dps ) );
-    add_option( opt_int( "force_dpm", force_dpm ) );
-    add_option( opt_timespan( "final_burn_offset", ( final_burn_offset ) ) );
-    add_option( opt_float( "oom_offset", oom_offset ) );
-
-    parse_options( options_str );
-
-    if ( cooldown -> duration < timespan_t::from_seconds( 1.0 ) )
-    {
-      sim -> errorf( "Player %s: choose_rotation cannot have cooldown -> duration less than 1.0sec", p -> name() );
-      cooldown -> duration = timespan_t::from_seconds( 1.0 );
-    }
-
-    trigger_gcd = timespan_t::zero();
-    harmful = false;
-  }
-
-  virtual void execute()
-  {
-    mage_t* p = debug_cast<mage_t*>( player );
-
-    if ( force_dps || force_dpm )
-    {
-      if ( p -> rotation.current == ROTATION_DPS )
-      {
-        p -> rotation.dps_time += ( sim -> current_time - p -> rotation.last_time );
-      }
-      else if ( p -> rotation.current == ROTATION_DPM )
-      {
-        p -> rotation.dpm_time += ( sim -> current_time - p -> rotation.last_time );
-      }
-      p -> rotation.last_time = sim -> current_time;
-
-      if ( sim -> log )
-      {
-        sim -> out_log.printf( "%f burn mps, %f time to die", ( p -> rotation.dps_mana_loss / p -> rotation.dps_time.total_seconds() ) - ( p -> rotation.mana_gain / sim -> current_time.total_seconds() ), sim -> target -> time_to_percent( 0.0 ).total_seconds() );
-      }
-
-      if ( force_dps )
-      {
-        if ( sim -> log ) sim -> out_log.printf( "%s switches to DPS spell rotation", p -> name() );
-        p -> rotation.current = ROTATION_DPS;
-      }
-      if ( force_dpm )
-      {
-        if ( sim -> log ) sim -> out_log.printf( "%s switches to DPM spell rotation", p -> name() );
-        p -> rotation.current = ROTATION_DPM;
-      }
-
-      update_ready();
-
-      return;
-    }
-
-    if ( sim -> log ) sim -> out_log.printf( "%s Considers Spell Rotation", p -> name() );
-
-    // The purpose of this action is to automatically determine when to start dps rotation.
-    // We aim to either reach 0 mana at end of fight or evocation_target_mana_percentage at next evocation.
-    // If mana gem has charges we assume it will be used during the next dps rotation burn.
-    // The dps rotation should correspond only to the actual burn, not any corrections due to overshooting.
-
-    // It is important to smooth out the regen rate by averaging out the returns from Evocation and Mana Gems.
-    // In order for this to work, the resource_gain() method must filter out these sources when
-    // tracking "rotation.mana_gain".
-
-    double regen_rate = p -> rotation.mana_gain / sim -> current_time.total_seconds();
-
-    timespan_t ttd = sim -> target -> time_to_percent( 0.0 );
-    timespan_t tte = p -> cooldowns.evocation -> remains();
-
-    if ( p -> rotation.current == ROTATION_DPS )
-    {
-      p -> rotation.dps_time += ( sim -> current_time - p -> rotation.last_time );
-
-      // We should only drop out of dps rotation if we break target mana treshold.
-      // In that situation we enter a mps rotation waiting for evocation to come off cooldown or for fight to end.
-      // The action list should take into account that it might actually need to do some burn in such a case.
-
-      if ( tte < ttd )
-      {
-        // We're going until target percentage
-        if ( p -> resources.current[ RESOURCE_MANA ] / p -> resources.max[ RESOURCE_MANA ] <= evocation_target_mana_percentage / 100.0 )
-        {
-          if ( sim -> log ) sim -> out_log.printf( "%s switches to DPM spell rotation", p -> name() );
-
-          p -> rotation.current = ROTATION_DPM;
-        }
-      }
-      else
-      {
-        // We're going until OOM, stop when we can no longer cast full stack AB (approximately, 4 stack with AP can be 6177)
-        if ( p -> resources.current[ RESOURCE_MANA ] < ab_cost*4 )
-        {
-          if ( sim -> log ) sim -> out_log.printf( "%s switches to DPM spell rotation", p -> name() );
-
-          p -> rotation.current = ROTATION_DPM;
-        }
-      }
-    }
-    else if ( p -> rotation.current == ROTATION_DPM )
-    {
-      p -> rotation.dpm_time += ( sim -> current_time - p -> rotation.last_time );
-
-      // Calculate consumption rate of dps rotation and determine if we should start burning.
-
-      double consumption_rate = ( p -> rotation.dps_mana_loss / p -> rotation.dps_time.total_seconds() ) - regen_rate;
-      double available_mana = p -> resources.current[ RESOURCE_MANA ];
-
-      // If this will be the last evocation then figure out how much of it we can actually burn before end and adjust appropriately.
-
-      timespan_t evo_cooldown = timespan_t::from_seconds( 240.0 );
-
-      timespan_t target_time;
-      double target_pct;
-
-      if ( ttd < tte + evo_cooldown )
-      {
-        if ( ttd < tte + final_burn_offset )
-        {
-          // No more evocations, aim for OOM
-          target_time = ttd;
-          target_pct = oom_offset;
-        }
-        else
-        {
-          // If we aim for normal evo percentage we'll get the most out of burn/mana adept synergy.
-          target_time = tte;
-          target_pct = evocation_target_mana_percentage / 100.0;
-        }
-      }
-      else
-      {
-        // We'll cast more then one evocation, we're aiming for a normal evo target burn.
-        target_time = tte;
-        target_pct = evocation_target_mana_percentage / 100.0;
-      }
-
-      if ( consumption_rate > 0 )
-      {
-        // Compute time to get to desired percentage.
-        timespan_t expected_time = timespan_t::from_seconds( ( available_mana - target_pct * p -> resources.max[ RESOURCE_MANA ] ) / consumption_rate );
-
-        if ( expected_time >= target_time )
-        {
-          if ( sim -> log ) sim -> out_log.printf( "%s switches to DPS spell rotation", p -> name() );
-
-          p -> rotation.current = ROTATION_DPS;
-        }
-      }
-      else
-      {
-        // If dps rotation is regen, then obviously use it all the time.
-
-        if ( sim -> log ) sim -> out_log.printf( "%s switches to DPS spell rotation", p -> name() );
-
-        p -> rotation.current = ROTATION_DPS;
-      }
-    }
-    p -> rotation.last_time = sim -> current_time;
-
-    update_ready();
-  }
-
-  virtual bool ready()
-  {
-    // This delierately avoids calling the supreclass ready method;
-    // not all the checks there are relevnt since this isn't a spell
-    if ( cooldown -> down() )
-      return false;
-
-    if ( sim -> current_time < cooldown -> duration )
-      return false;
-
-    if ( if_expr && ! if_expr -> success() )
-      return false;
-
-    return true;
-  }
-};
-
-*/
-// Choose Target Action =======================================================
-
-struct choose_target_t : public action_t
-{
-  bool check_selected;
-  player_t* selected_target;
-
-  // Infinite loop protection
-  timespan_t last_execute;
-
-  std::string target_name;
-
-  choose_target_t( mage_t* p, const std::string& options_str ) :
-    action_t( ACTION_OTHER, "choose_target", p ),
-    check_selected( false ), selected_target( nullptr ),
-    last_execute( timespan_t::min() )
-  {
-    add_option( opt_string( "name", target_name ) );
-    add_option( opt_bool( "check_selected", check_selected ) );
-    parse_options( options_str );
-
-    radius = range = -1.0;
-    trigger_gcd = timespan_t::zero();
-
-    harmful = may_miss = may_crit = callbacks = false;
-    ignore_false_positive = true;
-    action_skill = 1;
-  }
-
-  bool init_finished() override
-  {
-    if ( ! target_name.empty() && ! util::str_compare_ci( target_name, "default" ) )
-    {
-      selected_target = player -> actor_by_name_str( target_name );
-    }
-    else
-      selected_target = player -> target;
-
-    return action_t::init_finished();
-  }
-
-  result_e calculate_result( action_state_t* ) const override
-  { return RESULT_HIT; }
-
-  block_result_e calculate_block_result( action_state_t* ) const override
-  { return BLOCK_RESULT_UNBLOCKED; }
-
-  void execute() override
-  {
-    action_t::execute();
-
-    // Don't do anything if selected target is sleeping
-    if ( ! selected_target || selected_target -> is_sleeping() )
-    {
-      return;
-    }
-
-    mage_t* p = debug_cast<mage_t*>( player );
-    assert( ! target_if_expr || ( selected_target == select_target_if_target() ) );
-
-    if ( sim -> current_time() == last_execute )
-    {
-      sim -> errorf( "%s choose_target infinite loop detected (due to no time passing between executes) at '%s'",
-        p -> name(), signature_str.c_str() );
-      sim -> cancel_iteration();
-      sim -> cancel();
-      return;
-    }
-
-    last_execute = sim -> current_time();
-
-    if ( sim -> debug )
-      sim -> out_debug.printf( "%s swapping target from %s to %s", player -> name(), p -> current_target -> name(), selected_target -> name() );
-
-    p -> current_target = selected_target;
-
-    // Invalidate target caches
-    for ( size_t i = 0, end = p -> action_list.size(); i < end; i++ )
-      p -> action_list[i] -> target_cache.is_valid = false;
-    }
-
-  bool ready() override
-  {
-    mage_t* p = debug_cast<mage_t*>( player );
-
-    if ( target_if_mode != TARGET_IF_NONE )
-    {
-      selected_target = select_target_if_target();
-      if ( selected_target == nullptr )
-      {
-        return false;
-      }
-    }
-
-    // Safeguard stupidly against breaking the sim.
-    if ( selected_target -> is_sleeping() )
-    {
-      // Reset target to default actor target if we're still targeting a dead selected target
-      if ( p -> current_target == selected_target )
-        p -> current_target = p -> target;
-
-      return false;
-    }
-
-    if ( p -> current_target == selected_target )
-      return false;
-
-    player_t* original_target = nullptr;
-    if ( check_selected )
-    {
-      if ( target != selected_target )
-        original_target = target;
-
-      target = selected_target;
-    }
-    else
-      target = p -> current_target;
-
-    bool rd = action_t::ready();
-
-    if ( original_target )
-      target = original_target;
-
-    return rd;
-  }
-
-  void reset() override
-  {
-    action_t::reset();
-    last_execute = timespan_t::min();
-  }
-};
-
-
 // Arcane Mage "Burn" State Switch Action =====================================
 
 struct start_burn_phase_t : public action_t
@@ -6744,7 +6296,6 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
 
 mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   player_t( sim, MAGE, name, r ),
-  current_target( target ),
   icicle( nullptr ),
   icicle_event( nullptr ),
   ignite( nullptr ),
@@ -6761,7 +6312,6 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   gains( gains_t() ),
   pets( pets_t() ),
   procs( procs_t() ),
-  rotation( rotation_t() ),
   spec( specializations_t() ),
   talents( talents_list_t() )
 {
@@ -6902,8 +6452,6 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "counterspell"      ) return new            counterspell_t( this, options_str );
   if ( name == "frost_nova"        ) return new              frost_nova_t( this, options_str );
   if ( name == "time_warp"         ) return new               time_warp_t( this, options_str );
-
-  if ( name == "choose_target"     ) return new           choose_target_t( this, options_str );
 
   // Shared talents
   if ( name == "mage_bomb"         )
@@ -7361,35 +6909,6 @@ void mage_t::init_benefits()
         new buff_stack_benefit_t( buffs.ray_of_frost, "Ray of Frost" );
     }
   }
-}
-
-// mage_t::activate ===========================================================
-
-void mage_t::activate()
-{
-  player_t::activate();
-
-  // Register target reset callback here (anywhere later on than in
-  // constructor) so older GCCs are happy
-  // Forcibly reset mage's current target, if it dies.
-  sim -> target_non_sleeping_list.register_callback( [ this ]( player_t* ) {
-
-    // If the mage's current target is still alive, bail out early.
-    if ( range::find( sim->target_non_sleeping_list, current_target ) !=
-         sim -> target_non_sleeping_list.end() )
-    {
-      return;
-    }
-
-    if ( sim -> debug )
-    {
-      sim->out_debug.printf(
-          "%s current target %s died. Resetting target to %s.", name(),
-          current_target -> name(), target -> name() );
-    }
-
-    current_target = target;
-  } );
 }
 
 // mage_t::init_assessors =====================================================
@@ -8169,8 +7688,6 @@ void mage_t::reset()
 {
   player_t::reset();
 
-  current_target = target;
-
   icicles.clear();
   event_t::cancel( icicle_event );
   event_t::cancel( ignite_spread_event );
@@ -8182,52 +7699,6 @@ void mage_t::reset()
 
   last_bomb_target = nullptr;
   burn_phase.reset();
-}
-
-
-
-// mage_t::resource_gain ====================================================
-
-double mage_t::resource_gain( resource_e resource,
-                              double    amount,
-                              gain_t*   source,
-                              action_t* action )
-{
-  double actual_amount = player_t::resource_gain( resource, amount, source, action );
-
-  if ( resource == RESOURCE_MANA )
-  {
-    if ( source != gains.evocation )
-    {
-      rotation.mana_gain += actual_amount;
-    }
-  }
-
-  return actual_amount;
-}
-
-// mage_t::resource_loss ====================================================
-
-double mage_t::resource_loss( resource_e resource,
-                              double    amount,
-                              gain_t*   source,
-                              action_t* action )
-{
-  double actual_amount = player_t::resource_loss( resource, amount, source, action );
-
-  if ( resource == RESOURCE_MANA )
-  {
-    if ( rotation.current == ROTATION_DPS )
-    {
-      rotation.dps_mana_loss += actual_amount;
-    }
-    else if ( rotation.current == ROTATION_DPM )
-    {
-      rotation.dpm_mana_loss += actual_amount;
-    }
-  }
-
-  return actual_amount;
 }
 
 // mage_t::stun =============================================================
@@ -8322,86 +7793,6 @@ void mage_t::arise()
 // Copypasta, execept for target selection. This is a massive kludge. Buyer
 // beware!
 
-action_t* mage_t::select_action( const action_priority_list_t& list )
-{
-  player_t* action_target = nullptr;
-
-  // Mark this action list as visited with the APL internal id
-  visited_apls_ |= list.internal_id_mask;
-
-  // Cached copy for recursion, we'll need it if we come back from a
-  // call_action_list tree, with nothing to show for it.
-  uint64_t _visited = visited_apls_;
-
-  for (auto a : list.foreground_action_list)
-  {
-    visited_apls_ = _visited;
-
-    if ( a -> background ) continue;
-
-    if ( a -> option.wait_on_ready == 1 )
-      break;
-
-    // Change the target of the action before ready call ...
-    if ( a -> target != current_target )
-    {
-      action_target = a -> target;
-      a -> target = current_target;
-    }
-
-    if ( a -> ready() )
-    {
-      // Ready variables execute, and processing conitnues
-      if ( a -> type == ACTION_VARIABLE )
-      {
-        a -> execute();
-        continue;
-      }
-      // Call_action_list action, don't execute anything, but rather recurse
-      // into the called action list.
-      else if ( a -> type == ACTION_CALL )
-      {
-        call_action_list_t* call = static_cast<call_action_list_t*>( a );
-        // Restore original target before recursing into the called action list
-        if ( action_target )
-        {
-          a -> target = action_target;
-          action_target = nullptr;
-        }
-
-        // If the called APLs bitflag (based on internal id) is up, we're in an
-        // infinite loop, and need to cancel the sim
-        if ( visited_apls_ & call -> alist -> internal_id_mask )
-        {
-          sim -> errorf( "%s action list in infinite loop", name() );
-          sim -> cancel_iteration();
-          sim -> cancel();
-          return nullptr;
-        }
-
-        // We get an action from the call, return it
-        if ( action_t* real_a = select_action( *call -> alist ) )
-        {
-          if ( real_a -> action_list )
-            real_a -> action_list -> used = true;
-          return real_a;
-        }
-      }
-      else
-      {
-        return a;
-      }
-    }
-    // Action not ready, restore target for extra safety
-    else if ( action_target )
-    {
-      a -> target = action_target;
-      action_target = nullptr;
-    }
-  }
-
-  return nullptr;
-}
 // mage_t::create_expression ================================================
 
 expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
@@ -8412,67 +7803,6 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
     mage_expr_t( const std::string& n, mage_t& m ) :
       expr_t( n ), mage( m ) {}
   };
-
-  // Current target expression support
-  // "current_target" returns the actor id of the mage's current target
-  // "current_target.<some other expression>" evaluates <some other expression> on the current
-  // target of the mage
-  if ( util::str_in_str_ci( name_str, "current_target" ) )
-  {
-    std::string::size_type offset = name_str.find( '.' );
-    if ( offset != std::string::npos )
-    {
-      struct current_target_wrapper_expr_t : public target_wrapper_expr_t
-      {
-        mage_t& mage;
-
-        current_target_wrapper_expr_t( action_t& action, const std::string& suffix_expr_str ) :
-          target_wrapper_expr_t( action, "current_target_wrapper_expr_t", suffix_expr_str ),
-          mage( static_cast<mage_t&>( *action.player ) )
-        { }
-
-        player_t* target() const override
-        { assert( mage.current_target ); return mage.current_target; }
-      };
-
-      return new current_target_wrapper_expr_t( *a, name_str.substr( offset + 1 ) );
-    }
-    else
-    {
-      struct current_target_expr_t : public mage_expr_t
-      {
-        current_target_expr_t( const std::string& n, mage_t& m ) :
-          mage_expr_t( n, m )
-        { }
-
-        double evaluate() override
-        {
-          assert( mage.current_target );
-          return static_cast<double>( mage.current_target -> actor_index );
-        }
-      };
-
-      return new current_target_expr_t( name_str, *this );
-    }
-  }
-
-  // Default target expression support
-  // "default_target" returns the actor id of the mage's default target (typically the first enemy
-  // in the sim, e.g. fluffy_pillow)
-  // "default_target.<some other expression>" evaluates <some other expression> on the default
-  // target of the mage
-  if ( util::str_compare_ci( name_str, "default_target" ) )
-  {
-    std::string::size_type offset = name_str.find( '.' );
-    if ( offset != std::string::npos )
-    {
-      return target -> create_expression( a, name_str.substr( offset + 1 ) );
-    }
-    else
-    {
-      return make_ref_expr( name_str, target -> actor_index );
-    }
-  }
 
   // Incanters flow direction
   // Evaluates to:  0.0 if IF talent not chosen or IF stack unchanged
