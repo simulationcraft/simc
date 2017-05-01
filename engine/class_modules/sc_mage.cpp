@@ -2439,8 +2439,6 @@ struct conflagration_dot_t : public fire_mage_spell_t
     hasted_ticks = false;
     tick_may_crit = may_crit = false;
     background = true;
-    base_costs[ RESOURCE_MANA ] = 0;
-    trigger_gcd = timespan_t::zero();
   }
   void init() override
   {
@@ -2459,8 +2457,6 @@ struct conflagration_t : public fire_mage_spell_t
     callbacks = false;
     background = true;
     aoe = -1;
-    base_costs[ RESOURCE_MANA ] = 0;
-    trigger_gcd = timespan_t::zero();
   }
 };
 
@@ -2474,8 +2470,6 @@ struct phoenix_reborn_t : public fire_mage_spell_t
     fire_mage_spell_t( "phoenix_reborn", p, p -> artifact.phoenix_reborn )
   {
     parse_effect_data( p -> find_spell( 215775 ) -> effectN( 1 ) );
-    trigger_gcd =  timespan_t::zero();
-    base_costs[ RESOURCE_MANA ] = 0;
     callbacks = false;
     background = true;
     icd = p -> get_cooldown( "phoenix_reborn_icd" );
@@ -2549,9 +2543,7 @@ struct aegwynns_ascendance_t : public arcane_mage_spell_t
                          p -> find_spell( 187677 ) )
   {
     callbacks = false;
-    school = SCHOOL_ARCANE;
     aoe = -1;
-    trigger_gcd = timespan_t::zero();
     background = true;
     may_crit = false;
   }
@@ -2809,10 +2801,9 @@ struct arcane_blast_t : public arcane_mage_spell_t
 struct time_and_space_t : public arcane_mage_spell_t
 {
   time_and_space_t( mage_t* p ) :
-    arcane_mage_spell_t( "arcane_explosion_echo", p, p -> find_spell( 240689 ) )
+    arcane_mage_spell_t( "time_and_space", p, p -> find_spell( 240689 ) )
   {
     aoe = -1;
-    trigger_gcd = timespan_t::zero();
     background = true;
 
     if ( p -> bugs )
@@ -2857,12 +2848,12 @@ struct time_and_space_t : public arcane_mage_spell_t
 
 struct arcane_explosion_t : public arcane_mage_spell_t
 {
-  time_and_space_t* arcane_explosion_echo;
+  time_and_space_t* time_and_space;
 
   arcane_explosion_t( mage_t* p, const std::string& options_str ) :
     arcane_mage_spell_t( "arcane_explosion", p,
                          p -> find_class_spell( "Arcane Explosion" ) ),
-    arcane_explosion_echo( nullptr )
+    time_and_space( nullptr )
   {
     parse_options( options_str );
     aoe = -1;
@@ -2871,8 +2862,8 @@ struct arcane_explosion_t : public arcane_mage_spell_t
 
     if ( p -> artifact.time_and_space.rank() )
     {
-      arcane_explosion_echo = new time_and_space_t( p );
-      add_child( arcane_explosion_echo );
+      time_and_space = new time_and_space_t( p );
+      add_child( time_and_space );
     }
   }
 
@@ -2897,7 +2888,7 @@ struct arcane_explosion_t : public arcane_mage_spell_t
           .pulse_time( timespan_t::from_seconds( 0.25 ) )
           .target( execute_state -> target )
           .duration( timespan_t::from_seconds( 0.25 ) )
-          .action( arcane_explosion_echo ) );
+          .action( time_and_space ) );
 
         p() -> buffs.time_and_space -> trigger();
       }
@@ -2939,7 +2930,6 @@ struct arcane_missiles_tick_t : public arcane_mage_spell_t
                            -> effectN( 2 ).trigger() )
   {
     background  = true;
-    dot_duration = timespan_t::zero();
   }
 
   void impact( action_state_t* s ) override
@@ -4749,9 +4739,6 @@ struct fire_blast_t : public fire_mage_spell_t
     triggers_ignite = true;
     triggers_pyretic_incantation = true;
 
-    // TODO: Is the spread range still 10 yards?
-    radius = 10;
-
     if ( p -> artifact.blast_furnace.rank() )
     {
       blast_furnace = new blast_furnace_t( p );
@@ -5862,8 +5849,6 @@ struct touch_of_the_magi_explosion_t : public arcane_mage_spell_t
     arcane_mage_spell_t( "touch_of_the_magi", p, p -> find_spell( 210833 ) )
   {
     background = true;
-    ignore_false_positive = true;
-    trigger_gcd = timespan_t::zero();
     may_miss = may_crit = callbacks = false;
     aoe = -1;
   }
@@ -6320,11 +6305,9 @@ struct unstable_magic_explosion_t : public mage_spell_t
   unstable_magic_explosion_t( mage_t* p ) :
     mage_spell_t( "unstable_magic_explosion", p, p -> talents.unstable_magic )
   {
-    may_miss = may_dodge = may_parry = may_crit = may_block = false;
+    may_miss = may_crit = false;
     callbacks = false;
     aoe = -1;
-    base_costs[ RESOURCE_MANA ] = 0;
-    trigger_gcd = timespan_t::zero();
     background = true;
 
     switch ( p -> specialization() )
