@@ -405,6 +405,7 @@ public:
     cooldown_t* growl;
     cooldown_t* incarnation;
     cooldown_t* mangle;
+    cooldown_t* thrash_bear;
     cooldown_t* maul;
     cooldown_t* moon_cd; // New / Half / Full Moon
     cooldown_t* wod_pvp_4pc_melee;
@@ -776,6 +777,7 @@ public:
     cooldown.growl               = get_cooldown( "growl"               );
     cooldown.incarnation         = get_cooldown( "incarnation"         );
     cooldown.mangle              = get_cooldown( "mangle"              );
+    cooldown.thrash_bear         = get_cooldown( "thrash_bear"         );
     cooldown.maul                = get_cooldown( "maul"                );
     cooldown.moon_cd             = get_cooldown( "moon_cd"             );
     cooldown.wod_pvp_4pc_melee   = get_cooldown( "wod_pvp_4pc_melee"   );
@@ -5319,15 +5321,17 @@ struct incarnation_t : public druid_spell_t
       if ( p() -> buff.incarnation_cat -> check() )
         p() -> regen( time );
     }
-    
+
     // Proxy buff for APL laziness.
     p() -> buff.incarnation_proxy -> trigger( 1, 0, -1.0, spec_buff -> remains() );
 
     if ( p() -> buff.incarnation_bear -> check() )
     {
-      p() -> cooldown.mangle -> reset( false );
-      p() -> cooldown.growl  -> reset( false );
-      p() -> cooldown.maul   -> reset( false );
+      p() -> cooldown.mangle      -> reset( false );
+      p() -> cooldown.thrash_bear -> reset( false );
+      p() -> cooldown.growl       -> reset( false );
+      p() -> cooldown.maul        -> reset( false );
+      
     }
   }
 };
