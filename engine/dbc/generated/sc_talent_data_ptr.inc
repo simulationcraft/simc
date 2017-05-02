@@ -1,6 +1,6 @@
 #define PTR_TALENT_SIZE (618)
 
-// 618 talents, wow build 23993
+// 618 talents, wow build 24026
 static struct talent_data_t __ptr_talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplcID, S1 },
   { "Second Wind"                       , 15757, 0x00, 0x0001,   0,   0,   3,   29838,       0,  0 },
@@ -272,7 +272,7 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Light Brewing"                     , 22098, 0x00, 0x0200, 268,   0,   2,  196721,       0,  0 },
   { "Energizing Elixir"                 , 22099, 0x00, 0x0200, 269,   0,   2,  115288,       0,  0 },
   { "Summon Black Ox Statue"            , 22100, 0x00, 0x0200, 269,   1,   3,  115315,  175697,  0 },
-  { "Spitfire"                          , 22101, 0x00, 0x0200, 268,   1,   5,  242580,       0,  0 },
+  { "Invoke Niuzao, the Black Ox"       , 22101, 0x00, 0x0200, 268,   1,   5,  132578,       0,  0 },
   { "Special Delivery"                  , 22102, 0x00, 0x0200, 268,   2,   5,  196730,       0,  0 },
   { "Hit Combo"                         , 22103, 0x00, 0x0200, 269,   2,   5,  196740,       0,  0 },
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplcID, S1 },

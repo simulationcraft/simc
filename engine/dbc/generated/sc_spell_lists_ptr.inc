@@ -4,7 +4,7 @@
 #ifndef ptr_MAX_CLASS
 #define ptr_MAX_CLASS (13)
 #endif
-// Class based active abilities, wow build 23993
+// Class based active abilities, wow build 24026
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
@@ -1168,7 +1168,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
 };
 #define PTR_TREE_SPECIALIZATION_SIZE (36)
 
-// Talent tree specialization abilities, wow build 23993
+// Talent tree specialization abilities, wow build 24026
 static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1623,7 +1623,6 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
       212036, // Mass Resurrection
         2061, // Flash Heal
       200347, // The Penitent
-      197419, // Contrition
       231682, // Smite (Rank 2)
            0,
     },
@@ -2278,7 +2277,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
 };
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 23993
+// Class mastery abilities, wow build 24026
 static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2517,7 +2516,7 @@ static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS]
 #define ptr_MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 23993
+// Racial abilities, wow build 24026
 static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -3255,7 +3254,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
 };
 #define PTR_SET_BONUS_DATA_SIZE (616)
 
-// Set bonus data, wow build 23993
+// Set bonus data, wow build 24026
 static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,   71, 165636, { 127055, 127081, 127092, 127103, 127114,  0 } },
@@ -3899,9 +3898,9 @@ static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   { "Demonbane Armor"                            ,     "tier20",     13,  1302,   20,   4,  12,  577, 242227, { 147127, 147128, 147129, 147130, 147131, 147132,  0 } },
   { "Demonbane Armor"                            ,     "tier20",     13,  1302,   20,   4,  12,  581, 242229, { 147127, 147128, 147129, 147130, 147131, 147132,  0 } },
 };
-#define PTR_RPPMMOD_SIZE (514)
+#define PTR_RPPMMOD_SIZE (524)
 
-// 514 RPPM Modifiers, wow build level 23993
+// 524 RPPM Modifiers, wow build level 24026
 static struct rppm_modifier_t __ptr_rppmmodifier_data[] = {
   {  45054,    4,  1,  1.0000 },
   {  49530,    1,  1,  1.0000 },
@@ -4315,7 +4314,7 @@ static struct rppm_modifier_t __ptr_rppmmodifier_data[] = {
   { 242217,  264,  4, -0.5000 },
   { 242217,   73,  4, -0.5000 },
   { 242287,    4,  1,  1.0000 },
-  { 242290,    4,  1,  1.0000 },
+  { 242290,    3,  1,  1.0000 },
   { 242325, 2477,  3, -0.5000 },
   { 242325,  102,  4, -0.5000 },
   { 242325,  103,  4, -0.5000 },
@@ -4361,6 +4360,15 @@ static struct rppm_modifier_t __ptr_rppmmodifier_data[] = {
   { 242541,  258,  4, -0.5000 },
   { 242541,  262,  4, -0.5000 },
   { 242541,  263,  4, -0.5000 },
+  { 242570, 2603,  3, -0.5000 },
+  { 242570,  103,  4, -0.5000 },
+  { 242570,  104,  4, -0.5000 },
+  { 242570,  105,  4, -0.5000 },
+  { 242570,  255,  4, -0.5000 },
+  { 242570,  257,  4, -0.5000 },
+  { 242570,  263,  4, -0.5000 },
+  { 242570,  264,  4, -0.5000 },
+  { 242570,    4,  1,  1.0000 },
   { 242605, 2603,  3, -0.5000 },
   { 242605,  103,  4, -0.5000 },
   { 242605,  104,  4, -0.5000 },
@@ -4396,6 +4404,7 @@ static struct rppm_modifier_t __ptr_rppmmodifier_data[] = {
   { 242616,   70,  4, -0.5000 },
   { 242616,   71,  4, -0.5000 },
   { 242616,   72,  4, -0.5000 },
+  { 242616,    4,  1,  1.0000 },
   { 242628,  476,  3, -0.5000 },
   { 242628,  251,  4, -0.5000 },
   { 242628,  252,  4, -0.5000 },
@@ -4421,7 +4430,7 @@ static struct rppm_modifier_t __ptr_rppmmodifier_data[] = {
 };
 #define PTR_ARTIFACT_SIZE (41)
 
-// Artifact base data, wow build 23993
+// Artifact base data, wow build 24026
 static struct artifact_t __ptr_artifact_data[PTR_ARTIFACT_SIZE] = {
   {  2,  70 },
   {  3, 577 },
@@ -4467,7 +4476,7 @@ static struct artifact_t __ptr_artifact_data[PTR_ARTIFACT_SIZE] = {
 };
 #define PTR_ARTIFACT_POWER_SIZE (895)
 
-// Artifact power data, wow build 23993
+// Artifact power data, wow build 24026
 static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER_SIZE] = {
   {   40,   2,  18,  0,   0, 205273, "Wake of Ashes"                      }, // Wake of Ashes (id=205273, n_ranks=1)
   {   41,   2,  32,  4,   3, 186941, "Highlord's Judgment"                }, // Highlord's Judgment (id=186941, n_ranks=8)
@@ -5367,7 +5376,7 @@ static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER
 };
 #define PTR_ARTIFACT_POWER_RANK_SIZE (5907)
 
-// Artifact power rank data, wow build 23993
+// Artifact power rank data, wow build 24026
 static struct artifact_power_rank_t __ptr_artifact_power_rank_data[PTR_ARTIFACT_POWER_RANK_SIZE] = {
   { 2316,    40,  0, 205273,      0.000, 0x00000000, 0 },
   { 2317,    41,  0, 186941,      8.000, 0x00000000, 0 },
@@ -6701,14 +6710,14 @@ static struct artifact_power_rank_t __ptr_artifact_power_rank_data[PTR_ARTIFACT_
   { 4098,   869,  5, 197047,     60.000, 0x00000000, 0 },
   { 6896,   869,  6, 197047,     70.000, 0x00000000, 0 },
   { 6897,   869,  7, 197047,     80.000, 0x00000000, 0 },
-  { 4099,   870,  0, 197080,      5.000, 0x00000000, 0 },
-  { 4100,   870,  1, 197080,     10.000, 0x00000000, 0 },
-  { 4101,   870,  2, 197080,     15.000, 0x00000000, 0 },
-  { 4102,   870,  3, 197080,     20.000, 0x00000000, 0 },
-  { 4103,   870,  4, 197080,     25.000, 0x00000000, 0 },
-  { 4104,   870,  5, 197080,     30.000, 0x00000000, 0 },
-  { 6898,   870,  6, 197080,     35.000, 0x00000000, 0 },
-  { 6899,   870,  7, 197080,     40.000, 0x00000000, 0 },
+  { 4099,   870,  0, 197080,      3.000, 0x00000000, 0 },
+  { 4100,   870,  1, 197080,      6.000, 0x00000000, 0 },
+  { 4101,   870,  2, 197080,      9.000, 0x00000000, 0 },
+  { 4102,   870,  3, 197080,     12.000, 0x00000000, 0 },
+  { 4103,   870,  4, 197080,     15.000, 0x00000000, 0 },
+  { 4104,   870,  5, 197080,     18.000, 0x00000000, 0 },
+  { 6898,   870,  6, 197080,     21.000, 0x00000000, 0 },
+  { 6899,   870,  7, 197080,     24.000, 0x00000000, 0 },
   { 4105,   871,  0, 197138,      2.000, 0x00000000, 0 },
   { 4106,   871,  1, 197138,      4.000, 0x00000000, 0 },
   { 4107,   871,  2, 197138,      6.000, 0x00000000, 0 },
@@ -6741,14 +6750,14 @@ static struct artifact_power_rank_t __ptr_artifact_power_rank_data[PTR_ARTIFACT_
   { 4128,   874,  5, 197160,     60.000, 0x00000000, 0 },
   { 6906,   874,  6, 197160,     70.000, 0x00000000, 0 },
   { 6907,   874,  7, 197160,     80.000, 0x00000000, 0 },
-  { 4129,   875,  0, 197162,     10.000, 0x00000000, 0 },
-  { 4130,   875,  1, 197162,     20.000, 0x00000000, 0 },
-  { 4131,   875,  2, 197162,     30.000, 0x00000000, 0 },
-  { 4132,   875,  3, 197162,     40.000, 0x00000000, 0 },
-  { 4133,   875,  4, 197162,     50.000, 0x00000000, 0 },
-  { 4134,   875,  5, 197162,     60.000, 0x00000000, 0 },
-  { 6908,   875,  6, 197162,     70.000, 0x00000000, 0 },
-  { 6909,   875,  7, 197162,     80.000, 0x00000000, 0 },
+  { 4129,   875,  0, 197162,      8.000, 0x00000000, 0 },
+  { 4130,   875,  1, 197162,     16.000, 0x00000000, 0 },
+  { 4131,   875,  2, 197162,     24.000, 0x00000000, 0 },
+  { 4132,   875,  3, 197162,     32.000, 0x00000000, 0 },
+  { 4133,   875,  4, 197162,     40.000, 0x00000000, 0 },
+  { 4134,   875,  5, 197162,     48.000, 0x00000000, 0 },
+  { 6908,   875,  6, 197162,     56.000, 0x00000000, 0 },
+  { 6909,   875,  7, 197162,     64.000, 0x00000000, 0 },
   { 4135,   876,  0, 197178,      0.000, 0x00000000, 0 },
   { 4136,   877,  0, 197199,      0.000, 0x00000000, 0 },
   { 4137,   878,  0, 197248,      0.000, 0x00000000, 0 },
@@ -11279,7 +11288,7 @@ static struct artifact_power_rank_t __ptr_artifact_power_rank_data[PTR_ARTIFACT_
 };
 #define PTR_PTR_ARTIFACT_POWER_RANK_HOTFIX_SIZE (0)
 
-// 0 ptr_artifact_power_rank hotfix entries, wow build level 23993
+// 0 ptr_artifact_power_rank hotfix entries, wow build level 24026
 static hotfix::client_hotfix_entry_t __ptr_ptr_artifact_power_rank_hotfix_data[] = {
   {      0,  0, 0, 0 },
 };
