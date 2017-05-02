@@ -1335,7 +1335,7 @@ GCD              : 1.5 seconds
 Duration         : 15 seconds
 Charges          : 1 (6 seconds cooldown)
 Category         : 1228
-Affecting spells : Healing Trance (60515), Unleash Life (73685), Mastery: Deep Healing (77226), Lucidity (137326), Item - Shaman T18 Restoration 2P Bonus (185873), Torrent (200072), Pull of the Sea (207118), Pull of the Sea (210029), Pull of the Sea (210030), Pull of the Sea (210031), Pull of the Sea (210032), Pull of the Sea (210033), Riptide (231725)
+Affecting spells : Healing Trance (60515), Unleash Life (73685), Mastery: Deep Healing (77226), Lucidity (137326), Item - Shaman T18 Restoration 2P Bonus (185873), Torrent (200072), Pull of the Sea (207118), Pull of the Sea (210029), Pull of the Sea (210030), Pull of the Sea (210031), Pull of the Sea (210032), Pull of the Sea (210033), Riptide (231725), Tidal Force (246729)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -2676,10 +2676,10 @@ Effects          :
                    Base Value: 220 | Scaled Value: 220 | Target: Self(1)
 #2 (id=190240)   : Apply Aura (6) | Unknown effect sub type (416)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-                   Affected Spells: Lightning Bolt (403), Stormstrike (17364), Windstrike (115356), Lightning Bolt (187837), Lightning Bolt (188196), Flametongue (193796), Crash Lightning (195592), Lightning Bolt (214815), Lightning Bolt Overload (214816)
+                   Affected Spells: Lightning Bolt (403), Stormstrike (17364), Windstrike (115356), Lightning Bolt (187837), Crash Lightning (187874), Lightning Bolt (188196), Flametongue (193796), Crash Lightning (195592), Lightning Bolt (214815), Lightning Bolt Overload (214816)
 #3 (id=190241)   : Apply Aura (6) | Unknown effect sub type (417)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 11 | Target: Self(1)
-                   Affected Spells: Stormstrike (17364), Feral Spirit (51533), Lava Lash (60103), Windstrike (115356), Crash Lightning (195592), Feral Lunge (196884), Sundering (197214), Feral Spirit (198506), Feral Spirit (228562)
+                   Affected Spells: Stormstrike (17364), Feral Spirit (51533), Lava Lash (60103), Windstrike (115356), Crash Lightning (187874), Crash Lightning (195592), Feral Lunge (196884), Sundering (197214), Feral Spirit (198506), Feral Spirit (228562)
 #4 (id=191050)   : Apply Aura (6) | Unknown effect sub type (457)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1634 | Target: Self(1)
 #5 (id=191051)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218)
@@ -2736,8 +2736,8 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self(1)
 #7 (id=260998)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 249 (Label) | Target: Self(1)
-#8 (id=260999)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#8 (id=260999)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 300 (Label) | Target: Self(1)
 #9 (id=261000)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #10 (id=261001)   : Apply Aura (6) | Dummy (4)
@@ -2843,8 +2843,8 @@ Effects          :
                    Base Value: -30 | Scaled Value: -30 | Misc Value 2: 265 (Label) | Target: Self(1)
 #10 (id=261011)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 298 (Label) | Target: Self(1)
-#11 (id=261012)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#11 (id=261012)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 300 (Label) | Target: Self(1)
 #12 (id=261013)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #13 (id=261014)   : Apply Aura (6) | Dummy (4)
@@ -3508,7 +3508,7 @@ Spell Level      : 28
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 6 seconds
-Affecting spells : Enhancement Shaman (137041), 
+Affecting spells : Shaman (137038), Enhancement Shaman (137041), Crashing Hammer (238070), Crashing Lightning (242286)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3517,7 +3517,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=274038)   : Weapon Damage% (31)
-                   Base Value: 125 | Scaled Value: 1.25 | Radius: 8 yards | Target: Cone Front(104)
+                   Base Value: 150 | Scaled Value: 1.5 | Radius: 8 yards | Target: Cone Front(104)
 #2 (id=274039)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: Cone Front(104)
 Description      : Electrocutes all enemies in front of you, dealing $sw1 Nature damage. Hitting 2 or more targets enhances your weapons for $187878d, causing Stormstrike and Lava Lash to also deal $195592sw1 Nature damage to all targets in front of you.  
@@ -3604,6 +3604,7 @@ Description      : Heals a friendly target for $s1.$?a190899[ Consumes $s3 Maels
 Name             : Earthen Spike (id=188089) [Spell Family (11)] 
 Class            : Shaman
 School           : Physical
+Resource         : 20 Maelstrom (id=12130)
 Spell Level      : 1
 Range            : 10 yards
 GCD              : 1.5 seconds
@@ -3618,9 +3619,9 @@ Attributes       : ........ ........ x....... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=274380)   : School Damage: physical (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 11.00000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 13.75000 | Target: Enemy(6)
 #2 (id=274448)   : Apply Aura (6) | Unknown effect sub type (270)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 9 | Target: Enemy(6)
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 9 | Target: Enemy(6)
 Description      : Summons an Earthen Spike under an enemy, dealing $s1 Physical damage and increasing Physical and Nature damage you deal to the target by $s2% for $d.
 Tooltip          : Suffering $s2% increased Nature and Physical damage from the Shaman.
 
@@ -4240,7 +4241,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=282019)   : Apply Aura (6) | Add Flat Modifier: Spell Proc Chance (107)
-                   Base Value: 3 | Scaled Value: 3 | Misc Value: 18 | Target: Self(1)
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 18 | Target: Self(1)
                    Affected Spells: Stormbringer (201845)
 Description      : Your main hand attacks have an additional $s1% chance to trigger Stormbringer.
 
@@ -4321,7 +4322,7 @@ Range            : 10 yards
 GCD              : 1.5 seconds
 Charges          : 2 (6 seconds cooldown)
 Category         : 1634
-Affecting spells : Mastery: Deep Healing (77226), Enhancement Shaman (137041), Gathering of the Maelstrom (198349), Weapons of the Elements (215381)
+Affecting spells : Mastery: Deep Healing (77226), Enhancement Shaman (137041), Gathering of the Maelstrom (198349), Weapons of the Elements (215381), Boulderfist (246035)
 Attributes       : ........ ........ x.x..... ........   ........ .x...... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4490,7 +4491,7 @@ Effects          :
 #1 (id=287112)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: Cone Front(104)
 #2 (id=287113)   : Weapon Damage% (31)
-                   Base Value: 125 | Scaled Value: 1.25 | Radius: 8 yards | Target: Cone Front(104)
+                   Base Value: 150 | Scaled Value: 1.5 | Radius: 8 yards | Target: Cone Front(104)
 Description      : $@spelldesc187874
 
 Name             : Maelstrom Power Decrease (id=195769) [Spell Family (11), Hidden] 
@@ -6765,6 +6766,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=374522)   : Apply Aura (6) | Unknown effect sub type (454)
                    Base Value: -15 | Scaled Value: -15 | Misc Value: 1634 | Target: Self(1)
-Description      : Rockbiter's recharge time is reduced by $s1%.
+#2 (id=376272)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self(1)
+                   Affected Spells: Rockbiter (193786)
+Description      : Rockbiter's recharge time is reduced by $s1% and it deals $s2% increased damage.
 
 

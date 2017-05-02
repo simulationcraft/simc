@@ -2565,8 +2565,8 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | Target: Self(1)
 #2 (id=191076)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 249 (Label) | Target: Self(1)
-#3 (id=191077)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#3 (id=191077)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 300 (Label) | Target: Self(1)
 #4 (id=191078)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #5 (id=191079)   : Apply Aura (6) | Dummy (4)
@@ -3319,7 +3319,7 @@ School           : Holy
 Spell Level      : 1
 Range            : 60 yards
 Duration         : 15 seconds
-Affecting spells : Contrition (197419), Grace (200309), Lenience's Reward (238063)
+Affecting spells : Grace (200309), Lenience's Reward (238063)
 Attributes       : ........ ........ x.x..... ........   ........ ........ .x...... ........ 
                  : ...x.... x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3365,7 +3365,7 @@ Effects          :
 #3 (id=298594)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4
 #4 (id=298595)   : Dummy (3)
-                   Base Value: 50 | Scaled Value: 50
+                   Base Value: 60 | Scaled Value: 60
 Description      : A burst of light heals the target and $s3 injured allies within $A2 yards for $s2, and applies Atonement for $s4% of its normal duration.
 
 Name             : Invoke the Naaru (id=196684) [Spell Family (6), Passive] 
@@ -3489,7 +3489,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=289317)   : Apply Aura (6) | Modify Healing% Done (136)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 126 | Target: Self(1)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 126 | Target: Self(1)
 Description      : $@spelldesc197031
 Tooltip          : Healing increased by $s1%.
 
@@ -3546,26 +3546,6 @@ Effects          :
 #1 (id=289338)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 11 | Target: Self(1)
 Description      : When your Power Word: Shield is completely absorbed you instantly regenerate $47755s1% of your maximum mana.
-
-Name             : Contrition (id=197419) [Spell Family (6), Passive] 
-Class            : Discipline Priest
-School           : Physical
-Spell Level      : 1
-Proc Chance      : 101%
-Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=290033)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 3 | Scaled Value: 3 | SP Coefficient: 1.00000 | Misc Value: 1 | Target: Self(1)
-#2 (id=325535)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
-                   Base Value: 3 | Scaled Value: 3 | SP Coefficient: 1.00000 | Misc Value: 23 | Target: Self(1)
-                   Affected Spells: Atonement (194384)
-Description      : Increases Atonement duration by $s1 sec.
 
 Name             : Lingering Insanity (id=199849) [Spell Family (6), Passive, Hidden] 
 Class            : Priest

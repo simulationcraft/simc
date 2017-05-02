@@ -1167,7 +1167,7 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Mechanic: Unknown(88) | Target: Enemy(6)
 Description      : Unleash a flurry of ice, striking the target $s1 times for a total of ${$228354s2*$m1} Frost damage. Each hit reduces the target's movement speed by $228354s1% for $228354d.
 
-While Brain Freeze is active, Flurry applies Winter's Chill to the target.
+While Brain Freeze is active, Flurry also applies Winter's Chill to the target.
 
 Name             : Ice Block (id=45438) [Spell Family (3)] 
 Class            : Mage

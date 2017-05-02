@@ -487,7 +487,7 @@ Cooldown         : 3 seconds
 Category         : 1561
 Category Cooldown: 3 seconds
 Proc Chance      : 101%
-Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Blackout Kick! (116768), Brewmaster Monk (137023), Mistweaver Monk (137024), Windwalker Monk (137025), Storm, Earth, and Fire (137639), Serenity (152173), Dark Skies (195265), Blackout Combo (196736), Obsidian Fists (213051), Draught of Darkness (238057)
+Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Blackout Kick! (116768), Brewmaster Monk (137023), Mistweaver Monk (137024), Windwalker Monk (137025), Storm, Earth, and Fire (137639), Serenity (152173), Dark Skies (195265), Obsidian Fists (213051), Draught of Darkness (238057)
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -663,7 +663,7 @@ Name             : Rising Sun Kick (id=107428) [Spell Family (53)]
 Class            : Mistweaver Windwalker Monk
 School           : Physical
 Resource         : 2 Chi (id=6143) w/ Windwalker Monk (id=137025)
-Resource         : 2% Base Mana (id=10832) w/ Mistweaver Monk (id=137024)
+Resource         : 1.5% Base Mana (id=10832) w/ Mistweaver Monk (id=137024)
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -2318,7 +2318,7 @@ Range            : 50000 yards
 GCD              : 1 seconds
 Duration         : 8 seconds
 Proc Chance      : 101%
-Affecting spells : Brewmaster Monk (137023), Item - Monk WoD PvP Brewmaster 4P Bonus (171445), Hot Blooded (213049), Hot Blooded (227683), Hot Blooded (227684), Hot Blooded (227685), Hot Blooded (227686), Hot Blooded (227687), Hot Blooded (239304), Hot Blooded (239305), 
+Affecting spells : Brewmaster Monk (137023), Item - Monk WoD PvP Brewmaster 4P Bonus (171445), Hot Blooded (213049), Dragonfire Brew (213183), Hot Blooded (227683), Hot Blooded (227684), Hot Blooded (227685), Hot Blooded (227686), Hot Blooded (227687), Hot Blooded (239304), Hot Blooded (239305), 
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2329,7 +2329,7 @@ Effects          :
 #1 (id=156180)   : Apply Aura (6) | Periodic Damage: fire every 2 seconds (3)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.24300 | Target: Enemy(6)
 #2 (id=342380)   : Apply Aura (6) | Unknown effect sub type (269)
-                   Base Value: 7 | Scaled Value: 7 | Misc Value: 127 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Enemy(6)
 Description      : $@spelldesc115181
 Tooltip          : Burning for $123725o1 Fire damage.$?$W2<0[ Reduces damage to the caster by $w2%.][]
 
@@ -3147,6 +3147,26 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Unknown(25)
 Description      : $@spelldesc115098
 
+Name             : Invoke Niuzao, the Black Ox (id=132578) [Spell Family (53)] 
+Class            : Monk
+School           : Nature
+Spell Level      : 1
+Range            : 40 yards
+Duration         : 45 seconds
+Cooldown         : 180 seconds
+Category         : 1418
+Category Cooldown: 180 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ .x...... ....x... 
+                 : ........ ........ .x...... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=171856)   : Summon (28)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 73967 | Misc Value 2: 0xd19 | Target: At Enemy(53)
+Description      : Summons an effigy of Niuzao, the Black Ox for $d. Niuzao attacks your primary target and taunts it. He also frequently Stomps, damaging all nearby enemies.
+
 Name             : Monk (id=137022) [Spell Family (53), Passive, Hidden] 
 Class            : Monk
 School           : Physical
@@ -3160,13 +3180,13 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179705)   : Apply Aura (6) | Unknown effect sub type (416)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-                   Affected Spells: Rising Sun Kick (107428), Fists of Fury (113656), Rushing Jade Wind (116847), Fists of Fury (120086), Rushing Jade Wind (148187), Whirling Dragon Punch (152175), Whirling Dragon Punch (158221), Item - Monk T17 Windwalker2P Bonus (165403), Rising Sun Kick (185099)
+                   Affected Spells: Rising Sun Kick (107428), Fists of Fury (113656), Rushing Jade Wind (116847), Fists of Fury (120086), Whirling Dragon Punch (152175), Whirling Dragon Punch (158221), Item - Monk T17 Windwalker2P Bonus (165403), Rising Sun Kick (185099), Refreshing Jade Wind (196725)
 #2 (id=191112)   : Apply Aura (6) | Unknown effect sub type (457)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1518 | Target: Self(1)
 #3 (id=191113)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 249 (Label) | Target: Self(1)
-#4 (id=191114)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#4 (id=191114)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 300 (Label) | Target: Self(1)
 #5 (id=191115)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #6 (id=260660)   : Apply Aura (6) | Dummy (4)
@@ -3466,7 +3486,7 @@ Description      : $@spelldesc123986
 Name             : Rushing Jade Wind (id=148187) [Spell Family (53)] 
 Class            : Monk
 School           : Physical
-Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Monk (137022), Brewmaster Monk (137023), Mistweaver Monk (137024), Windwalker Monk (137025), Lucidity (137331), Storm, Earth, and Fire (137639), Serenity (152173), Mana Tea (197908)
+Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Brewmaster Monk (137023), Mistweaver Monk (137024), Windwalker Monk (137025), Lucidity (137331), Storm, Earth, and Fire (137639), Serenity (152173), Mana Tea (197908)
 Triggered by     : Rushing Jade Wind (116847)
 Attributes       : ....x... ........ ..x..... ...x....   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ .x...... ........ ........ 
@@ -3913,7 +3933,7 @@ Velocity         : 40 yards/sec
 Duration         : 8 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Enveloping Mist (124682), Refreshing Jade Wind (196725), Essence of the Mists (199485), The Mists of Sheilun (199888), Item - Monk T19 Mistweaver 4P Bonus (211423)
+Affecting spells : Enveloping Mist (124682), Essence of the Mists (199485), The Mists of Sheilun (199888), Item - Monk T19 Mistweaver 4P Bonus (211423)
 Triggered by     : Essence Font (191837)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4134,12 +4154,12 @@ Description      : Reduces the cooldown of Ironskin Brew and Purifying Brew by $
 Name             : Refreshing Jade Wind (id=196725) [Spell Family (53)] 
 Class            : Monk
 School           : Nature
-Resource         : 5% Base Mana (id=10578)
+Resource         : 3.5% Base Mana (id=10578)
 Spell Level      : 1
 GCD              : 1.5 seconds
-Duration         : 6 seconds
-Cooldown         : 6 seconds
-Affecting spells : Brewmaster Monk (137023), 
+Duration         : 9 seconds
+Cooldown         : 9 seconds
+Affecting spells : Monk (137022), Brewmaster Monk (137023), 
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -4149,13 +4169,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ ........ .....
 Effects          :
 #1 (id=288818)   : Apply Aura (6) | Periodic Trigger Spell: Refreshing Jade Wind every 0.75 seconds (23)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 162530 | Target: Self(1)
-#2 (id=324020)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 200 | Scaled Value: 200 | Misc Value: 22 | Target: Self(1)
-                   Affected Spells: Essence Font (191840)
-#3 (id=324021)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-                   Affected Spells: Essence Font (191840)
-Description      : Summon a whirling tornado around you, causing ${$162530m1*9} healing over $d to up to 6 allies within $107270A1 yards, and increasing the heal over time of Essence Font by $s2% while active.
+Description      : Summon a whirling tornado around you, causing ${$162530m1*13} healing over $d to up to 6 allies within $107270A1 yards.
 Tooltip          : Dealing healing to nearby allies every $116847t1 sec.
 
 Name             : Special Delivery (id=196730) [Spell Family (53), Passive] 
@@ -4242,19 +4256,14 @@ Effects          :
 #1 (id=288838)   : Apply Aura (6) | Dummy (4)
                    Base Value: 200 | Scaled Value: 200 | Target: Self(1)
 #2 (id=344166)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 6 | Scaled Value: 6 | Target: Self(1)
+                   Base Value: 3 | Scaled Value: 3 | Target: Self(1)
 #3 (id=344167)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Self(1)
 #4 (id=344168)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Target: Self(1)
 #5 (id=344195)   : Apply Aura (6) | Proc Trigger Spell: Blackout Combo (42)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 228563 | Target: Self(1)
-#6 (id=374580)   : Apply Aura (6) | Add Flat Modifier: Spell Cooldown (107)
-                   Base Value: -1000 | Scaled Value: -1000 | Misc Value: 11 | Target: Self(1)
-                   Affected Spells: Blackout Kick (100784), Blackout Strike (205523), Blackout Kick (228649)
-Description      : Reduces the cooldown of Blackout Strike by ${$m6/-1000} sec.
-
-Blackout Strike also empowers your next ability:
+Description      : Blackout Strike also empowers your next ability:
 
 Tiger Palm: Damage increased by $s1%.
 Breath of Fire: Cooldown reduced by $s2 sec.
@@ -4276,13 +4285,13 @@ Effects          :
 #1 (id=288839)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self(1)
 #2 (id=344133)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 23 | Target: Self(1)
+                   Base Value: 8 | Scaled Value: 8 | Misc Value: 23 | Target: Self(1)
                    Affected Spells: Light Stagger (124275)
 #3 (id=344134)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 23 | Target: Self(1)
+                   Base Value: 12 | Scaled Value: 12 | Misc Value: 23 | Target: Self(1)
                    Affected Spells: Moderate Stagger (124274)
 #4 (id=344135)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 23 | Target: Self(1)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 23 | Target: Self(1)
                    Affected Spells: Heavy Stagger (124273)
 Description      : Stagger delays an additional $s1% of incoming damage.
 
@@ -4756,7 +4765,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 3 seconds
 Proc Chance      : 101%
-Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Blackout Kick! (116768), Brewmaster Monk (137023), Mistweaver Monk (137024), Windwalker Monk (137025), Storm, Earth, and Fire (137639), Serenity (152173), Dark Skies (195265), Blackout Combo (196736), Obsidian Fists (213051), Draught of Darkness (238057)
+Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Blackout Kick! (116768), Brewmaster Monk (137023), Mistweaver Monk (137024), Windwalker Monk (137025), Storm, Earth, and Fire (137639), Serenity (152173), Dark Skies (195265), Obsidian Fists (213051), Draught of Darkness (238057)
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5223,7 +5232,7 @@ Class            : Monk
 School           : Physical
 Spell Level      : 3
 Range            : 5 yards
-Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Blackout Kick! (116768), Brewmaster Monk (137023), Mistweaver Monk (137024), Windwalker Monk (137025), Storm, Earth, and Fire (137639), Serenity (152173), Dark Skies (195265), Blackout Combo (196736), Obsidian Fists (213051), Draught of Darkness (238057)
+Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Blackout Kick! (116768), Brewmaster Monk (137023), Mistweaver Monk (137024), Windwalker Monk (137025), Storm, Earth, and Fire (137639), Serenity (152173), Dark Skies (195265), Obsidian Fists (213051), Draught of Darkness (238057)
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5457,45 +5466,6 @@ Effects          :
 #1 (id=368049)   : School Damage: nature (2)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 5.00000 | Target: Enemy(6)
 Description      : $@spelldesc238131
-
-Name             : Spitfire (id=242580) [Spell Family (53), Passive] 
-Class            : Monk
-School           : Physical
-Proc Chance      : 25%
-Proc Flags       : ....x... ........ ........ ........ 
-                 : Yellow Melee
-Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=368335)   : Apply Aura (6) | Proc Trigger Spell: Spitfire (42)
-                   Base Value: 1 | Scaled Value: 1 | Trigger Spell: 242581 | Target: Self(1)
-Description      : Tiger Palm has a $h% chance to reset the cooldown of Breath of Fire.
-
-Name             : Spitfire (id=242581) [Spell Family (53)] 
-Class            : Monk
-School           : Fire
-Duration         : 10 seconds
-Stacks           : 1 initial, 1 maximum
-Proc Chance      : 100%
-Proc Flags       : ....x... ....x... x....... ........ 
-                 : Yellow Melee, AOE Hostile Spell, Hostile Spell
-Triggered by     : Spitfire (242580)
-Attributes       : ....x... ........ ........ ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=368336)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 32 | Target: Self(1)
-Description      : $@spelldesc242580
-Tooltip          : Breath of Fire's cooldown has been reset.
 
 Name             : Fortifying Brew (id=243435) 
 Class            : Mistweaver Monk

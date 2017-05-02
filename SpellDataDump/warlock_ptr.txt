@@ -1469,7 +1469,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 30 yards/sec
 Duration         : 15 seconds
-Cooldown         : 30 seconds
+Cooldown         : 25 seconds
 Affecting spells : Affliction Warlock (137043), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ..x..... 
@@ -1481,7 +1481,7 @@ Effects          :
 #1 (id=40331)    : School Damage: shadow (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 8.00000 | Target: Enemy(6)
 #2 (id=40332)    : Apply Aura (6) | Unknown effect sub type (270)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: 127 | Target: Enemy(6)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 127 | Target: Enemy(6)
 Description      : A ghostly soul haunts the target, dealing $s1 Shadow damage and increasing your damage dealt to the target by $s2% for $d. If the target dies, Haunt's cooldown is reset.
 Tooltip          : Taking $s2% increased damage from the Warlock. Haunt's cooldown will be reset on death.
 
@@ -1634,7 +1634,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=57197)    : Apply Aura (6) | Periodic Health Leech (53)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.6 | SP Coefficient: 0.90000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.6 | SP Coefficient: 0.75000 | Target: Enemy(6)
 Description      : Siphons the target's life essence, dealing $o1 damage over $d and healing you for ${$e1*100}% of the damage done.
 Tooltip          : Suffering $w1 damage every $t1 sec and siphoning life to the casting Warlock.
 
@@ -2835,6 +2835,35 @@ Effects          :
 Description      : Unleashes a devastating blast of chaos, dealing a critical strike for ${2*$s1} Chaos damage. Damage is further increased by your critical strike chance.
 Variables        : $masteryMod=${$cond($gt($pl,79),1,0)}
 
+Name             : Soul Shards (id=117198) [Passive, Hidden] 
+Class            : Warlock
+School           : Physical
+Spell Level      : 19
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ......x. ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=132712)   : Apply Aura (6) | Unknown effect sub type (396)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 7 | Trigger Spell: 117197 | Target: Self(1)
+#2 (id=132713)   : Apply Aura (6) | Unknown effect sub type (396)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 7 | Trigger Spell: 117197 | Target: Self(1)
+#3 (id=132714)   : Apply Aura (6) | Unknown effect sub type (396)
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 7 | Trigger Spell: 117197 | Target: Self(1)
+#4 (id=154197)   : Apply Aura (6) | Unknown effect sub type (396)
+                   Base Value: 40 | Scaled Value: 40 | Misc Value: 7 | Trigger Spell: 117197 | Target: Self(1)
+#5 (id=154198)   : Apply Aura (6) | Unknown effect sub type (396)
+                   Base Value: 9 | Scaled Value: 9 | Misc Value: 7 | Misc Value 2: 0x1 | Trigger Spell: 117197 | Target: Self(1)
+#6 (id=154199)   : Apply Aura (6) | Unknown effect sub type (396)
+                   Base Value: 19 | Scaled Value: 19 | Misc Value: 7 | Misc Value 2: 0x1 | Trigger Spell: 117197 | Target: Self(1)
+#7 (id=155293)   : Apply Aura (6) | Unknown effect sub type (396)
+                   Base Value: 29 | Scaled Value: 29 | Misc Value: 7 | Misc Value 2: 0x1 | Trigger Spell: 117197 | Target: Self(1)
+#8 (id=155294)   : Apply Aura (6) | Unknown effect sub type (396)
+                   Base Value: 39 | Scaled Value: 39 | Misc Value: 7 | Misc Value 2: 0x1 | Trigger Spell: 117197 | Target: Self(1)
+
 Name             : Void Reflexes (id=117225) [Passive] 
 Class            : Warlock
 School           : Physical
@@ -3059,13 +3088,13 @@ Effects          :
                    Base Value: -33 | Scaled Value: -33 | Target: Self(1)
                    Affected Spells: Demonic Power (196100)
 #2 (id=191031)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 15 | Scaled Value: 15 | Target: Self(1)
-                   Affected Spells: Seed of Corruption (27243), Seed of Corruption (27285), Haunt (48181), Siphon Life (63106), Corruption (146739), Drain Soul (198590), Soul Flame (199581), Phantom Singularity (205179), Compounding Horror (231489), Unstable Affliction (233490)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self(1)
+                   Affected Spells: Seed of Corruption (27243), Seed of Corruption (27285), Haunt (48181), Siphon Life (63106), Corruption (146739), Drain Soul (198590), Soul Flame (199581), Phantom Singularity (205179), Compounding Horror (231489), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499)
 #3 (id=191032)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self(1)
-                   Affected Spells: Seed of Corruption (27243), Seed of Corruption (27285), Haunt (48181), Siphon Life (63106), Corruption (146739), Drain Soul (198590), Soul Flame (199581), Phantom Singularity (205179), Compounding Horror (231489), Unstable Affliction (233490)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 22 | Target: Self(1)
+                   Affected Spells: Seed of Corruption (27243), Seed of Corruption (27285), Haunt (48181), Siphon Life (63106), Corruption (146739), Drain Soul (198590), Soul Flame (199581), Phantom Singularity (205179), Compounding Horror (231489), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499)
 #4 (id=191033)   : Apply Aura (6) | Unknown effect sub type (429)
-                   Base Value: 15 | Scaled Value: 15 | Target: Self(1)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self(1)
 #5 (id=191034)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #6 (id=261077)   : Apply Aura (6) | Dummy (4)
@@ -3842,7 +3871,7 @@ Name             : Soul Harvest (id=196098) [Spell Family (5)]
 Class            : Warlock
 School           : Shadow
 Spell Level      : 1
-Duration         : 15 seconds
+Duration         : 12 seconds
 Cooldown         : 120 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3854,9 +3883,9 @@ Effects          :
 #1 (id=287829)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 0x7f | Target: Self(1)
 #2 (id=341300)   : Dummy (3)
-                   Base Value: 2 | Scaled Value: 2 | Target: Self(1)
+                   Base Value: 4 | Scaled Value: 4 | Target: Self(1)
 #3 (id=341301)   : Dummy (3)
-                   Base Value: 35 | Scaled Value: 35 | Target: Self(1)
+                   Base Value: 36 | Scaled Value: 36 | Target: Self(1)
 #4 (id=341671)   : Apply Aura (6) | Unknown effect sub type (429)
                    Base Value: 20 | Scaled Value: 20 | Target: Self(1)
 Description      : Increases your damage and your pets' damage by $s1%. Lasts $d, increased by $s2 sec for each target afflicted by your $?s137043[Agony][]$?s137044[Doom][]$?s137046[Immolate][], up to a maximum of $s3 sec.
@@ -3953,7 +3982,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=287839)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 18 | Scaled Value: 18 | Misc Value: 12 | Target: Self(1)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 12 | Target: Self(1)
 Description      : You deal $s1% increased damage to targets affected by your Unstable Affliction.
 
 Name             : Sow the Seeds (id=196226) [Spell Family (5), Passive] 
@@ -4511,7 +4540,7 @@ Affecting spells : Affliction Warlock (137043),
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
@@ -4632,7 +4661,7 @@ Effects          :
 #1 (id=303014)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Unknown(25)
 #2 (id=303063)   : Health Leech (9)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.2 | SP Coefficient: 2.20000 | Radius: 0 - 20 yards | Target: Unknown(63) -> AOE enemy (instant)(16)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.2 | SP Coefficient: 1.80000 | Radius: 0 - 15 yards | Target: Unknown(63) -> AOE enemy (instant)(16)
 Description      : $@spelldesc205179
 
 Name             : Soul Effigy (id=205247) [Spell Family (5), Passive] 
@@ -5178,7 +5207,7 @@ Range            : 40 yards
 Duration         : 8 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Mastery: Potent Afflictions (77215), Epidemic (184922), Drain Soul (198590), Inherently Unstable (199152), Perdition (199158), Wrath of Consumption (199646), Item - Warlock T19 Affliction 2P Bonus (212002), Winnowing (238072)
+Affecting spells : Mastery: Potent Afflictions (77215), Affliction Warlock (137043), Epidemic (184922), Drain Soul (198590), Inherently Unstable (199152), Perdition (199158), Wrath of Consumption (199646), Item - Warlock T19 Affliction 2P Bonus (212002), Winnowing (238072)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -5199,7 +5228,7 @@ Range            : 40 yards
 Duration         : 8 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Mastery: Potent Afflictions (77215), Epidemic (184922), Drain Soul (198590), Inherently Unstable (199152), Perdition (199158), Wrath of Consumption (199646), Item - Warlock T19 Affliction 2P Bonus (212002), Winnowing (238072)
+Affecting spells : Mastery: Potent Afflictions (77215), Affliction Warlock (137043), Epidemic (184922), Drain Soul (198590), Inherently Unstable (199152), Perdition (199158), Wrath of Consumption (199646), Item - Warlock T19 Affliction 2P Bonus (212002), Winnowing (238072)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -5220,7 +5249,7 @@ Range            : 40 yards
 Duration         : 8 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Mastery: Potent Afflictions (77215), Epidemic (184922), Drain Soul (198590), Inherently Unstable (199152), Perdition (199158), Wrath of Consumption (199646), Item - Warlock T19 Affliction 2P Bonus (212002), Winnowing (238072)
+Affecting spells : Mastery: Potent Afflictions (77215), Affliction Warlock (137043), Epidemic (184922), Drain Soul (198590), Inherently Unstable (199152), Perdition (199158), Wrath of Consumption (199646), Item - Warlock T19 Affliction 2P Bonus (212002), Winnowing (238072)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -5241,7 +5270,7 @@ Range            : 40 yards
 Duration         : 8 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Mastery: Potent Afflictions (77215), Epidemic (184922), Drain Soul (198590), Inherently Unstable (199152), Perdition (199158), Wrath of Consumption (199646), Item - Warlock T19 Affliction 2P Bonus (212002), Winnowing (238072)
+Affecting spells : Mastery: Potent Afflictions (77215), Affliction Warlock (137043), Epidemic (184922), Drain Soul (198590), Inherently Unstable (199152), Perdition (199158), Wrath of Consumption (199646), Item - Warlock T19 Affliction 2P Bonus (212002), Winnowing (238072)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -5418,5 +5447,21 @@ Effects          :
 #1 (id=373996)   : Energize Power (30)
                    Base Value: 4 | Scaled Value: 4 | Misc Value: soul_shard | Target: Self(1)
 Description      : $@spelldesc17877
+
+Name             : Soul Shards (id=246985) [Passive] 
+Class            : Warlock
+School           : Physical
+Spell Level      : 1
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=376201)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 7 | Target: Self(1)
+Description      : Soul Shards are generated by draining the souls of targets with specific spells and are used to fuel your most powerful spells and summon demons. Out of combat you will gather lingering souls to empower up to 3 of your Soul Shards. Having more than 3 Soul Shards out of combat will decay at a rate of x Soul Shards every y sec.  
 
 

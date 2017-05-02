@@ -825,7 +825,7 @@ GCD              : 1.5 seconds
 Cooldown         : 4.5 seconds
 Category         : 971
 Category Cooldown: 4.5 seconds
-Affecting spells : Meat Cleaver (85739), Warrior (137047), Fury Warrior (137050), Vicious Strike (165640), Thirst for Battle (200847), Taste for Blood (206333), Item - Warrior T20 Fury 4P Bonus (242952), Item - Warrior T20 Fury 4P Bonus (242953)
+Affecting spells : Meat Cleaver (85739), Warrior (137047), Fury Warrior (137050), Vicious Strike (165640), Thirst for Battle (200847), Taste for Blood (206333), Bloody Rage (242952), Bloody Rage (242953)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2203,7 +2203,7 @@ Name             : Bloodthirst Heal (id=117313) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Spell Level      : 1
-Affecting spells : Enraged Regeneration (184364), Furious Charge (202225), Item - Warrior T20 Fury 4P Bonus (242952), Item - Warrior T20 Fury 4P Bonus (242953)
+Affecting spells : Enraged Regeneration (184364), Furious Charge (202225), Bloody Rage (242952), Bloody Rage (242953)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2522,8 +2522,8 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 249 (Label) | Target: Self(1)
 #7 (id=260730)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 298 (Label) | Target: Self(1)
-#8 (id=260731)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#8 (id=260731)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 300 (Label) | Target: Self(1)
 #9 (id=260732)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #10 (id=260733)   : Apply Aura (6) | Dummy (4)

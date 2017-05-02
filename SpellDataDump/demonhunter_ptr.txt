@@ -215,7 +215,7 @@ Effects          :
                    Affected Spells: Blade Dance (188499), Blade Dance (199552), Blade Dance (200685)
 #7 (id=297855)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 25 | Scaled Value: 25 | Target: Self(1)
-                   Affected Spells: Demon's Bite (162243), Chaos Strike (162794), Immolation Aura (178740), Throw Glaive (185123), Blade Dance (188499), Metamorphosis (191427), Annihilation (201427), Fury of the Illidari (201467), Sigil of Silence (202137), Sigil of Chains (202138), Shear (203782), Demon Blades (203796), Throw Glaive (204157), Sigil of Flame (204596), Soul Carver (207407), Sigil of Misery (207684), Fracture (209795), Death Sweep (210152), Fel Eruption (211881), Felblade (213241), Soul Carver (214743), Spirit Bomb (218679), Soul Cleave (228477), Felblade (232893), Sever (235964)
+                   Affected Spells: Demon's Bite (162243), Chaos Strike (162794), Immolation Aura (178740), Chaos Nova (179057), Throw Glaive (185123), Blade Dance (188499), Metamorphosis (191427), Annihilation (201427), Fury of the Illidari (201467), Sigil of Silence (202137), Sigil of Chains (202138), Shear (203782), Demon Blades (203796), Throw Glaive (204157), Sigil of Flame (204596), Soul Carver (207407), Sigil of Misery (207684), Fracture (209795), Death Sweep (210152), Fel Eruption (211881), Felblade (213241), Soul Carver (214743), Spirit Bomb (218679), Soul Cleave (228477), Felblade (232893), Sever (235964)
 #8 (id=329388)   : Apply Aura (6) | Periodic Dummy: every 0.25 seconds (226)
                    Base Value: 0 | Scaled Value: 0
 #9 (id=341804)   : Apply Aura (6) | Unknown effect sub type (312)
@@ -409,7 +409,7 @@ Resource         : 30 Fury (id=10418)
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 60 seconds
-Affecting spells : Mastery: Demonic Presence (185164), Unleashed Power (206477), Havoc Demon Hunter (212612)
+Affecting spells : Metamorphosis (162264), Mastery: Demonic Presence (185164), Unleashed Power (206477), Havoc Demon Hunter (212612), Vengeance Demon Hunter (212613)
 Attributes       : ....x... ........ ........ ........   ...x...x .x...... ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2720,7 +2720,7 @@ Duration         : 1 seconds
 Cooldown         : 8 seconds
 Category         : 1640
 Category Cooldown: 8 seconds
-Affecting spells : Metamorphosis (162264), First Blood (206416), Havoc Demon Hunter (212612), Vengeance Demon Hunter (212613), 
+Affecting spells : Metamorphosis (162264), First Blood (206416), Havoc Demon Hunter (212612), Vengeance Demon Hunter (212613), Bladedancer's Grace (243188)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2748,7 +2748,7 @@ Tooltip          : Dodge chance increased by $s3%.
 Name             : Death Sweep (id=210153) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
-Affecting spells : First Blood (206416), Havoc Demon Hunter (212612)
+Affecting spells : First Blood (206416), Havoc Demon Hunter (212612), Bladedancer's Grace (243188)
 Triggered by     : Death Sweep (210152)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -2766,7 +2766,7 @@ Description      : $@spelldesc210152
 Name             : Death Sweep (id=210155) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
-Affecting spells : First Blood (206416), Havoc Demon Hunter (212612)
+Affecting spells : First Blood (206416), Havoc Demon Hunter (212612), Bladedancer's Grace (243188)
 Triggered by     : Death Sweep (210152)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -2997,8 +2997,8 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 249 (Label) | Target: Self(1)
 #2 (id=315221)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 298 (Label) | Target: Self(1)
-#3 (id=315222)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#3 (id=315222)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 300 (Label) | Target: Self(1)
 #4 (id=315223)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #5 (id=315224)   : Apply Aura (6) | Dummy (4)
@@ -3037,7 +3037,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=315235)   : Apply Aura (6) | Unknown effect sub type (417)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Target: Self(1)
-                   Affected Spells: Demon's Bite (162243), Chaos Strike (162794), Immolation Aura (178740), Throw Glaive (185123), Blade Dance (188499), Metamorphosis (191427), Annihilation (201427), Fury of the Illidari (201467), Sigil of Silence (202137), Sigil of Chains (202138), Shear (203782), Demon Blades (203796), Throw Glaive (204157), Sigil of Flame (204596), Soul Carver (207407), Sigil of Misery (207684), Fracture (209795), Death Sweep (210152), Fel Eruption (211881), Felblade (213241), Soul Carver (214743), Spirit Bomb (218679), Soul Cleave (228477), Felblade (232893), Sever (235964)
+                   Affected Spells: Demon's Bite (162243), Chaos Strike (162794), Immolation Aura (178740), Chaos Nova (179057), Throw Glaive (185123), Blade Dance (188499), Metamorphosis (191427), Annihilation (201427), Fury of the Illidari (201467), Sigil of Silence (202137), Sigil of Chains (202138), Shear (203782), Demon Blades (203796), Throw Glaive (204157), Sigil of Flame (204596), Soul Carver (207407), Sigil of Misery (207684), Fracture (209795), Death Sweep (210152), Fel Eruption (211881), Felblade (213241), Soul Carver (214743), Spirit Bomb (218679), Soul Cleave (228477), Felblade (232893), Sever (235964)
 #2 (id=315236)   : Apply Aura (6) | Unknown effect sub type (416)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Target: Self(1)
                    Affected Spells: Immolation Aura (178740), Throw Glaive (185123), Blade Dance (188499), Shear (203782), Throw Glaive (204157), Death Sweep (210152), Felblade (213241), Felblade (232893), Sever (235964)
@@ -3090,7 +3090,7 @@ Effects          :
                    Base Value: 9 | Scaled Value: 9 | Misc Value: 22 | Target: Self(1)
 #3 (id=315252)   : Apply Aura (6) | Unknown effect sub type (417)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Target: Self(1)
-                   Affected Spells: Demon's Bite (162243), Chaos Strike (162794), Immolation Aura (178740), Throw Glaive (185123), Blade Dance (188499), Metamorphosis (191427), Annihilation (201427), Fury of the Illidari (201467), Sigil of Silence (202137), Sigil of Chains (202138), Shear (203782), Demon Blades (203796), Throw Glaive (204157), Sigil of Flame (204596), Soul Carver (207407), Sigil of Misery (207684), Fracture (209795), Death Sweep (210152), Fel Eruption (211881), Felblade (213241), Soul Carver (214743), Spirit Bomb (218679), Soul Cleave (228477), Felblade (232893), Sever (235964)
+                   Affected Spells: Demon's Bite (162243), Chaos Strike (162794), Immolation Aura (178740), Chaos Nova (179057), Throw Glaive (185123), Blade Dance (188499), Metamorphosis (191427), Annihilation (201427), Fury of the Illidari (201467), Sigil of Silence (202137), Sigil of Chains (202138), Shear (203782), Demon Blades (203796), Throw Glaive (204157), Sigil of Flame (204596), Soul Carver (207407), Sigil of Misery (207684), Fracture (209795), Death Sweep (210152), Fel Eruption (211881), Felblade (213241), Soul Carver (214743), Spirit Bomb (218679), Soul Cleave (228477), Felblade (232893), Sever (235964)
 #4 (id=315253)   : Apply Aura (6) | Unknown effect sub type (416)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Target: Self(1)
                    Affected Spells: Immolation Aura (178740), Throw Glaive (185123), Blade Dance (188499), Shear (203782), Throw Glaive (204157), Death Sweep (210152), Felblade (213241), Felblade (232893), Sever (235964)

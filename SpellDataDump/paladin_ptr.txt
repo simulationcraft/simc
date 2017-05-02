@@ -2162,8 +2162,8 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 1668 | Target: Self(1)
 #13 (id=260677)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 249 (Label) | Target: Self(1)
-#14 (id=260678)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#14 (id=260678)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 300 (Label) | Target: Self(1)
 #15 (id=260679)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #16 (id=320030)   : Apply Aura (6) | Dummy (4)
@@ -2987,7 +2987,7 @@ Spell Level      : 20
 Range            : 12 yards
 GCD              : 1.5 seconds
 Cooldown         : 10.5 seconds
-Affecting spells : Paladin (137026), Retribution Paladin (137027), Deliver the Justice (186927), Virtue's Blade (202271), Righteous Verdict (238996), Item - Paladin T20 Retribution 2P Bonus (242266)
+Affecting spells : Paladin (137026), Retribution Paladin (137027), Deliver the Justice (186927), Virtue's Blade (202271), Righteous Verdict (238996), Item - Paladin T20 Retribution 2P Bonus (242266), Sacred Judgment (246973), 
 Attributes       : ........ ........ x.x..x.. ........   ........ .x...... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3131,7 +3131,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=289147)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-Description      : Casting Holy Light or Flash of Light on your Beacon of Light reduces the mana cost of your next Light of the Martyr by $223316s1%, stacking.
+Description      :  Holy Light and Flash of Light reduces the mana cost and damage taken from your next Light of the Martyr by $223316s1%, stacking.
 
 Name             : Crusader's Might (id=196926) [Spell Family (10), Passive] 
 Class            : Paladin
@@ -3308,7 +3308,7 @@ Class            : Paladin
 School           : Holy
 Spell Level      : 1
 Range            : 50000 yards
-Affecting spells : Deliver the Justice (186927)
+Affecting spells : Deliver the Justice (186927), Sacred Judgment (246973), 
 Triggered by     : Divine Hammer (198034)
 Attributes       : ........ ........ x.x..... x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ .x...... ..x..... ......x. 
