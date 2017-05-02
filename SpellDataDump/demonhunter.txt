@@ -1,4 +1,4 @@
-SimulationCraft 720-03 for World of Warcraft 7.2.0 Live (wow build 23826)
+SimulationCraft 720-03 for World of Warcraft 7.2.0 Live (wow build 23826, git build fe7ce0e)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -2718,7 +2718,7 @@ Duration         : 1 seconds
 Cooldown         : 8 seconds
 Category         : 1640
 Category Cooldown: 8 seconds
-Affecting spells : Metamorphosis (162264), First Blood (206416), Havoc Demon Hunter (212612), Vengeance Demon Hunter (212613), 
+Affecting spells : Metamorphosis (162264), First Blood (206416), Havoc Demon Hunter (212612), Vengeance Demon Hunter (212613), Bladedancer's Grace (243188)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2746,7 +2746,7 @@ Tooltip          : Dodge chance increased by $s3%.
 Name             : Death Sweep (id=210153) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
-Affecting spells : First Blood (206416), Havoc Demon Hunter (212612)
+Affecting spells : First Blood (206416), Havoc Demon Hunter (212612), Bladedancer's Grace (243188)
 Triggered by     : Death Sweep (210152)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -2764,7 +2764,7 @@ Description      : $@spelldesc210152
 Name             : Death Sweep (id=210155) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
-Affecting spells : First Blood (206416), Havoc Demon Hunter (212612)
+Affecting spells : First Blood (206416), Havoc Demon Hunter (212612), Bladedancer's Grace (243188)
 Triggered by     : Death Sweep (210152)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 

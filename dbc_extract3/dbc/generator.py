@@ -1247,6 +1247,8 @@ class SpellDataGenerator(DataGenerator):
             ( 218834, 0 ),
             ( 218822, 0 ),
 			( 209493, 0 ),
+            ( 242952, 0 ),
+            ( 242953, 0 ),
         ),
 
         # Paladin:
