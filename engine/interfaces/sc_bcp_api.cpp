@@ -946,7 +946,7 @@ player_t* parse_player( sim_t*             sim,
     p -> origin_str = player.origin;
 
   if ( profile.HasMember( "thumbnail" ) )
-    p -> report_information.thumbnail_url = "http://" + p -> region_str + ".battle.net/static-render/" +
+    p -> report_information.thumbnail_url = "https://render-api-" + p -> region_str + ".worldofwarcraft.com/static-render/" +
                                             p -> region_str + '/' + profile[ "thumbnail" ].GetString();
 
   if ( profile.HasMember( "professions" ) )
