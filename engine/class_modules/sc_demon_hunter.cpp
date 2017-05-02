@@ -3161,11 +3161,7 @@ struct blade_dance_attack_t : public demon_hunter_attack_t
   {
     double cd = demon_hunter_attack_t::composite_crit_damage_bonus_multiplier();
 
-    // Currently doesn't affect Death Sweep, so use the affected list to determine if we apply it
-    if (data().affected_by(p()->artifact.bladedancers_grace.data().effectN(1)))
-    {
-      cd *= 1.0 + p()->artifact.bladedancers_grace.percent();
-    }
+    cd *= 1.0 + p()->artifact.bladedancers_grace.percent();
 
     return cd;
   }
@@ -6767,11 +6763,11 @@ void demon_hunter_t::apl_havoc()
     "&(!variable.waiting_for_nemesis|cooldown.nemesis.remains<10)&(!variable.waiting_for_chaos_blades|cooldown.chaos_blades.remains<6)",
     "\"Getting ready to use meta\" conditions, this is used in a few places." );
   def -> add_action( "variable,name=blade_dance,value=talent.first_blood.enabled|set_bonus.tier20_2pc"
-    "|spell_targets.blade_dance1>=3+(talent.chaos_cleave.enabled*2)",
+    "|spell_targets.blade_dance1>=3+(talent.chaos_cleave.enabled*3)",
     "Blade Dance conditions. Always if First Blood is talented or the T20 2pc set bonus,"
     " otherwise at 5+ targets with Chaos Cleave or 3+ targets without." );
   def -> add_action( "variable,name=pooling_for_blade_dance,value=variable.blade_dance&"
-    "fury-40<35-talent.first_blood.enabled*20&(spell_targets.blade_dance1>=3+(talent.chaos_cleave.enabled*2))",
+    "fury-40<35-talent.first_blood.enabled*20&(spell_targets.blade_dance1>=3+(talent.chaos_cleave.enabled*3))",
     "Blade Dance pooling condition, so we don't spend too much fury when we need it soon. No need"
     " to pool on\n# single target since First Blood already makes it cheap enough and delaying it a"
     " tiny bit isn't a big deal." );
@@ -6796,7 +6792,7 @@ void demon_hunter_t::apl_havoc()
   demonic->add_action(this, spec.death_sweep, "death_sweep", "if=variable.blade_dance");
   demonic->add_talent(this, "Fel Eruption");
   demonic->add_action(this, artifact.fury_of_the_illidari, "fury_of_the_illidari",
-    "if=(active_enemies>desired_targets|raid_event.adds.in>55)&(!talent.momentum.enabled|buff.momentum.up)");
+    "if=(active_enemies>desired_targets)|(raid_event.adds.in>55&(!talent.momentum.enabled|buff.momentum.up))");
   demonic->add_action(this, "Blade Dance", "if=variable.blade_dance&cooldown.eye_beam.remains>5&!cooldown.metamorphosis.ready");
   demonic->add_action(this, "Throw Glaive", "if=talent.bloodlet.enabled&spell_targets>=2&"
     "(!talent.master_of_the_glaive.enabled|!talent.momentum.enabled|buff.momentum.up)&"
@@ -6833,8 +6829,8 @@ void demon_hunter_t::apl_havoc()
   normal->add_action(this, "Fel Rush", "if=charges=2&!talent.momentum.enabled&!talent.fel_mastery.enabled");
   normal->add_talent(this, "Fel Eruption");
   normal->add_action(this, artifact.fury_of_the_illidari, "fury_of_the_illidari",
-    "if=(active_enemies>desired_targets|raid_event.adds.in>55)&(!talent.momentum.enabled|buff.momentum.up)&"
-    "(!talent.chaos_blades.enabled|buff.chaos_blades.up|cooldown.chaos_blades.remains>30|target.time_to_die<cooldown.chaos_blades.remains)");
+    "if=(active_enemies>desired_targets)|(raid_event.adds.in>55&(!talent.momentum.enabled|buff.momentum.up)&"
+    "(!talent.chaos_blades.enabled|buff.chaos_blades.up|cooldown.chaos_blades.remains>30|target.time_to_die<cooldown.chaos_blades.remains))");
   normal->add_action(this, "Blade Dance", "if=variable.blade_dance&(!cooldown.metamorphosis.ready)");
   normal->add_action(this, "Throw Glaive", "if=talent.bloodlet.enabled&spell_targets>=2&"
     "(!talent.master_of_the_glaive.enabled|!talent.momentum.enabled|buff.momentum.up)&"

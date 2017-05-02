@@ -6,202 +6,17 @@
 #include "sc_report.hpp"
 #include "interfaces/sc_js.hpp"
 #include "simulationcraft.hpp"
-#include "util/rapidjson/filewritestream.h"
 
+#include "util/rapidjson/filewritestream.h"
 #include "util/rapidjson/document.h"
 #include "util/rapidjson/stringbuffer.h"
 #include "util/rapidjson/prettywriter.h"
 
 using namespace rapidjson;
+using namespace js;
 
 namespace
 {
-struct JsonOutput
-{
-private:
-  Document& d_;
-  Value& v_;
-
-public:
-  JsonOutput( Document& d, Value& v ) : d_( d ), v_( v )
-  { }
-
-  // Create a new object member (n) to the current object (v_), and return a reference to it
-  JsonOutput operator[]( const char* n )
-  {
-    if ( ! v_.HasMember( n ) )
-    {
-      auto obj = Value();
-      obj.SetObject();
-
-      v_.AddMember( StringRef( n ), obj, d_.GetAllocator() );
-    }
-
-    return JsonOutput( d_, v_[ n ] );
-  }
-
-  JsonOutput operator[]( const std::string& n )
-  { return operator[]( n.c_str() ); }
-
-  Value& val()
-  { return v_; }
-
-  Document& doc()
-  { return d_; }
-
-  // Makes v_ an array (instead of an Object which it is by default)
-  JsonOutput& make_array()
-  { v_.SetArray(); return *this; }
-
-  // Assign any primitive (supported value by RapidJSON) to the current value (v_)
-  template <typename T>
-  JsonOutput& operator=( T v )
-  { v_ = v; return *this; }
-
-  // Assign a string to the current value (v_)
-  JsonOutput& operator=( const char* v )
-  { v_ = StringRef( v ); return *this; }
-
-  JsonOutput operator=( const std::string& v )
-  { v_ = StringRef( v.c_str() ); return *this; }
-
-  // Assign an external RapidJSON Value to the current value (v_)
-  JsonOutput operator=( Value& v )
-  { v_ = v; return *this; }
-
-  // Assign a simc-internal timespan object to the current value (v_). Timespan object is converted
-  // to a double.
-  JsonOutput& operator=( const timespan_t& v )
-  { v_ = v.total_seconds(); return *this; }
-
-  // Assign a simc-internal sample data container to the current value (v_). The container is
-  // converted to an object with fixed fields.
-  JsonOutput& operator=( const extended_sample_data_t& v )
-  {
-    assert( v_.IsObject() );
-
-    v_.AddMember( StringRef( "sum" ), v.sum(), d_.GetAllocator() );
-    v_.AddMember( StringRef( "count" ), as<unsigned>( v.count() ), d_.GetAllocator() );
-    v_.AddMember( StringRef( "mean" ), v.mean(), d_.GetAllocator() );
-    v_.AddMember( StringRef( "min" ), v.min(), d_.GetAllocator() );
-    v_.AddMember( StringRef( "max" ), v.max(), d_.GetAllocator() );
-    if ( ! v.simple )
-    {
-      v_.AddMember( StringRef( "variance" ), v.variance, d_.GetAllocator() );
-      v_.AddMember( StringRef( "std_dev" ), v.std_dev, d_.GetAllocator() );
-      v_.AddMember( StringRef( "mean_variance" ), v.mean_variance, d_.GetAllocator() );
-      v_.AddMember( StringRef( "mean_std_dev" ), v.mean_std_dev, d_.GetAllocator() );
-    }
-
-    return *this;
-  }
-
-  // Assign a simc-internal sample data container to the current value (v_). The container is
-  // converted to an object with fixed fields.
-  JsonOutput& operator=( const simple_sample_data_t& v )
-  {
-    assert( v_.IsObject() );
-
-    v_.AddMember( StringRef( "sum" ), v.sum(), d_.GetAllocator() );
-    v_.AddMember( StringRef( "count" ), as<unsigned>( v.count() ), d_.GetAllocator() );
-    v_.AddMember( StringRef( "mean" ), v.mean(), d_.GetAllocator() );
-
-    return *this;
-  }
-
-  // Assign a simc-internal sample data container to the current value (v_). The container is
-  // converted to an object with fixed fields.
-  JsonOutput& operator=( const simple_sample_data_with_min_max_t& v )
-  {
-    assert( v_.IsObject() );
-
-    v_.AddMember( StringRef( "sum" ), v.sum(), d_.GetAllocator() );
-    v_.AddMember( StringRef( "count" ), as<unsigned>( v.count() ), d_.GetAllocator() );
-    v_.AddMember( StringRef( "mean" ), v.mean(), d_.GetAllocator() );
-    v_.AddMember( StringRef( "min" ), v.min(), d_.GetAllocator() );
-    v_.AddMember( StringRef( "max" ), v.max(), d_.GetAllocator() );
-
-    return *this;
-  }
-
-  JsonOutput& operator=( const std::vector<std::string>& v )
-  {
-    v_.SetArray();
-
-    range::for_each( v, [ this ]( const std::string& value ) {
-      v_.PushBack( StringRef( value.c_str() ), d_.GetAllocator() );
-    } );
-
-    return *this;
-  }
-
-  template <typename T>
-  JsonOutput& operator=( const std::vector<T>& v )
-  {
-    v_.SetArray();
-
-    range::for_each( v, [ this ]( const T& value ) {
-      v_.PushBack( value, d_.GetAllocator() );
-    } );
-
-    return *this;
-  }
-
-  // Assign a simc-internal timeline data container to the current value (v_). The container is
-  // converted to an object with fixed fields.
-  JsonOutput& operator=( const sc_timeline_t& v )
-  {
-    assert( v_.IsObject() );
-
-    v_.AddMember( StringRef( "mean" ), v.mean(), d_.GetAllocator() );
-    v_.AddMember( StringRef( "mean_std_dev" ), v.mean_stddev(), d_.GetAllocator() );
-    v_.AddMember( StringRef( "min" ), v.min(), d_.GetAllocator() );
-    v_.AddMember( StringRef( "max" ), v.max(), d_.GetAllocator() );
-
-    Value data_arr( kArrayType );
-    range::for_each( v.data(), [ &data_arr, this ]( double dp ) {
-      data_arr.PushBack( dp, d_.GetAllocator() );
-    } );
-
-    v_.AddMember( StringRef( "data" ), data_arr, d_.GetAllocator() );
-    return *this;
-  }
-
-  JsonOutput& operator=( const cooldown_t& v )
-  {
-    assert( v_.IsObject() );
-
-    v_.AddMember( StringRef( "name" ), StringRef( v.name() ), d_.GetAllocator() );
-    v_.AddMember( StringRef( "duration" ), v.duration.total_seconds(), d_.GetAllocator() );
-    if ( v.charges > 1 )
-    {
-      v_.AddMember( StringRef( "charges" ), v.charges, d_.GetAllocator() );
-    }
-    return *this;
-  }
-
-  JsonOutput& operator=( const rng::rng_t& v )
-  {
-    assert( v_.IsObject() );
-    v_.AddMember( StringRef( "name" ), StringRef( v.name() ), d_.GetAllocator() );
-
-    return *this;
-  }
-
-  template <typename T>
-  JsonOutput& add( T v )
-  { assert( v_.IsArray() ); v_.PushBack( v, d_.GetAllocator() ); return *this; }
-
-  JsonOutput& add( const char* v )
-  { assert( v_.IsArray() ); v_.PushBack( StringRef( v ), d_.GetAllocator() ); return *this; }
-
-  JsonOutput add( Value& v )
-  { assert( v_.IsArray() ); v_.PushBack( v, d_.GetAllocator() ); return JsonOutput( d_, v_[ v_.Size() - 1 ] ); }
-
-  JsonOutput add()
-  { auto v = Value(); v.SetObject(); return add( v ); }
-};
-
 double to_json( const timespan_t& t )
 {
   return t.total_seconds();
@@ -655,6 +470,33 @@ void stats_to_json( JsonOutput root, const player_t& p )
       }
     }
   } );
+}
+
+void gear_to_json( JsonOutput root, const player_t& p )
+{
+  for ( slot_e slot = SLOT_MIN; slot < SLOT_MAX; slot++ )
+  {
+    const item_t& item = p.items[ slot ];
+    if ( !item.active() || !item.has_stats() )
+    {
+      continue;
+    }
+    auto slotnode = root[ item.slot_name() ];
+
+    slotnode[ "name" ] = item.name_str;
+    slotnode[ "encoded_item" ] = item.encoded_item();
+    slotnode[ "ilevel" ] = item.item_level();
+
+    for ( size_t i = 0; i < sizeof_array( item.parsed.data.stat_val ); i++ )
+    {
+      auto val = item.stat_value( i );
+      if ( val <= 0)
+      {
+        continue;
+      }
+      slotnode[ util::stat_type_string( item.stat( i ) ) ] = val;
+    }
+  }
 }
 
 js::sc_js_t to_json( const stats_t& s )
@@ -1327,6 +1169,11 @@ void to_json( JsonOutput& arr, const player_t& p )
 
     stats_to_json( root[ "stats" ], p );
   }
+
+  gear_to_json( root[ "gear" ], p );
+
+  JsonOutput custom = root[ "custom" ];
+  p.output_json_report( custom );
 }
 
 js::sc_js_t to_json( const player_t& p )

@@ -29,6 +29,7 @@ actions.precombat+=/potion
 
 # Executed every time the actor is available.
 actions=auto_shot
+actions+=/counter_shot,if=target.debuff.casting.react
 actions+=/arcane_torrent,if=focus.deficit>=30
 actions+=/berserking
 actions+=/blood_fury

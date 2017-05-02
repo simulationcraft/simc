@@ -6,7 +6,7 @@
 #define SIMULATIONCRAFT_H
 
 #define SC_MAJOR_VERSION "720"
-#define SC_MINOR_VERSION "02"
+#define SC_MINOR_VERSION "03"
 #define SC_VERSION ( SC_MAJOR_VERSION "-" SC_MINOR_VERSION )
 #define SC_BETA 0
 #if SC_BETA
@@ -3311,6 +3311,10 @@ struct player_collected_data_t
   health_changes_timeline_t health_changes;     //records all health changes
   health_changes_timeline_t health_changes_tmi; //records only health changes due to damage and self-healng/self-absorb
 
+  // Total number of iterations for the actor. Needed for single_actor_batch if target_error is
+  // used.
+  int total_iterations;
+
   struct action_sequence_data_t
   {
     const action_t* action;
@@ -4113,6 +4117,7 @@ struct player_t : public actor_t
   // various state change callbacks (via the action_t::activate method) to the global actor lists.
   // Actor pets are also activated by default.
   virtual void activate();
+  virtual void deactivate();
 
   virtual int level() const;
 
@@ -4694,6 +4699,11 @@ public:
   { return ""; }
   virtual std::string default_food() const
   { return ""; }
+
+  // JSON Report extension. Overridable in class methods. Root element is an object assigned for
+  // each JSON player object under "custom" property.
+  virtual void output_json_report( js::JsonOutput& /* root */ ) const
+  { }
 };
 
 
@@ -4898,10 +4908,10 @@ public:
     for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
     { actual[ i ] += other.actual[ i ]; overflow[ i ] += other.overflow[ i ]; count[ i ] += other.count[ i ]; }
   }
-  void analyze( const sim_t& sim )
+  void analyze( size_t iterations )
   {
     for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
-    { actual[ i ] /= sim.iterations; overflow[ i ] /= sim.iterations; count[ i ] /= sim.iterations; }
+    { actual[ i ] /= iterations; overflow[ i ] /= iterations; count[ i ] /= iterations; }
   }
   const char* name() const { return name_str.c_str(); }
 };
@@ -5977,6 +5987,8 @@ public:
   virtual dot_t* get_dot( player_t* = nullptr );
 
   virtual void acquire_target( retarget_event_e /* event */, player_t* /* context */, player_t* /* candidate_target */ );
+
+  virtual void set_target( player_t* target );
 
   // ================
   // Static functions
@@ -7373,11 +7385,11 @@ struct proc_attack_t : public proc_action_t<attack_t>
   using super = proc_action_t<attack_t>;
 
   proc_attack_t( const special_effect_t& e ) :
-    base_action_t( e )
+    super( e )
   { }
 
   proc_attack_t( const std::string& token, player_t* p, const spell_data_t* s, const item_t* i = nullptr ) :
-    base_action_t( token, p, s, i )
+    super( token, p, s, i )
   { }
 
   void override_data( const special_effect_t& e );
@@ -8375,5 +8387,46 @@ struct item_targetdata_initializer_t
   // Override to initialize the targetdata object.
   virtual void operator()( actor_target_data_t* ) const = 0;
 };
+
+namespace report
+{
+class buff_decorator_t : public spell_decorator_t<buff_t>
+{
+  using super = spell_decorator_t<buff_t>;
+
+protected:
+  std::vector<std::string> parms() const override;
+
+public:
+  buff_decorator_t( const buff_t* obj ) :
+    super( obj )
+  { }
+
+  buff_decorator_t( const buff_t& obj ) :
+    buff_decorator_t( &obj )
+  { }
+
+  // Buffs have pet names included in them
+  std::string url_name_prefix() const override;
+};
+
+class action_decorator_t : public spell_decorator_t<action_t>
+{
+  using super = spell_decorator_t<action_t>;
+
+protected:
+  std::vector<std::string> parms() const override;
+
+public:
+  action_decorator_t( const action_t* obj ) :
+    super( obj )
+  { }
+
+  action_decorator_t( const action_t& obj ) :
+    action_decorator_t( &obj )
+  { }
+};
+
+}
 
 #endif // SIMULATIONCRAFT_H

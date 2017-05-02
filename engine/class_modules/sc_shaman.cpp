@@ -887,7 +887,7 @@ struct stormlash_callback_t : public dbc_proc_callback_t
 
       pool -> last_proc = listener -> sim -> current_time();
       spell -> base_dd_min = spell -> base_dd_max = pool -> damage * multiplier;
-      spell -> target = state -> target;
+      spell -> set_target( state -> target );
       spell -> execute();
     } );
   }
@@ -953,7 +953,7 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) :
                           } );
   debuff.storm_tempests = buff_creator_t( *this, "storm_tempests", p -> find_spell( 214265 ) )
                           .tick_callback( [ p ]( buff_t* b, int, timespan_t ) {
-                            p -> action.storm_tempests -> target = b -> player;
+                            p -> action.storm_tempests -> set_target( b -> player );
                             p -> action.storm_tempests -> execute();
                           } );
   debuff.lashing_flames = buff_creator_t( *this, "lashing_flames" )
@@ -1228,7 +1228,7 @@ public:
     }
 
     size_t spell_idx = ab::rng().range( 0, p() -> action.unleash_doom.size() );
-    p() -> action.unleash_doom[ spell_idx ] -> target = state -> target;
+    p() -> action.unleash_doom[ spell_idx ] -> set_target( state -> target );
     p() -> action.unleash_doom[ spell_idx ] -> schedule_execute();
     proc_ud -> occur();
   }
@@ -1395,7 +1395,7 @@ public:
     if ( p() -> action.electrocute &&
          rng().roll( p() -> sets.set( SHAMAN_ENHANCEMENT, T18, B2 ) -> effectN( 1 ).percent() ) )
     {
-      p() -> action.electrocute -> target = source_state -> target;
+      p() -> action.electrocute -> set_target( source_state -> target );
       p() -> action.electrocute -> schedule_execute();
     }
   }
@@ -1962,7 +1962,7 @@ struct spirit_wolf_t : public base_wolf_t
       if ( result_is_hit( state -> result ) && o -> buff.feral_spirit -> up() &&
            rng().roll( wf_driver -> proc_chance() ) )
       {
-        wf -> target = state -> target;
+        wf -> set_target( state -> target );
         wf -> schedule_execute();
         wf -> schedule_execute();
         wf -> schedule_execute();
@@ -2928,7 +2928,7 @@ struct earthen_rage_driver_t : public spell_t
     // Last tick will not cast a nuke like our normal dot system does
     if ( d -> remains() > timespan_t::zero() )
     {
-      nuke -> target = d -> target;
+      nuke -> set_target( d -> target );
       nuke -> schedule_execute();
     }
   }
@@ -3282,7 +3282,7 @@ struct lava_lash_t : public shaman_attack_t
 
     if ( result_is_hit( state -> result ) && p() -> buff.crash_lightning -> up() )
     {
-      cl -> target = state -> target;
+      cl -> set_target( state -> target );
       cl -> schedule_execute();
     }
 
@@ -3368,16 +3368,12 @@ struct stormstrike_base_t : public shaman_attack_t
 
       if ( p() -> action.storm_tempests )
       {
-        if ( execute_state -> target != p() -> action.storm_tempests -> target )
-        {
-          p() -> action.storm_tempests -> target_cache.is_valid = false;
-        }
         td( execute_state -> target ) -> debuff.storm_tempests -> trigger();
       }
 
       if ( ! stormflurry && p() -> buff.crash_lightning -> up() )
       {
-        cl -> target = execute_state -> target;
+        cl -> set_target( execute_state -> target );
         cl -> execute();
       }
 
@@ -4349,7 +4345,7 @@ struct lava_burst_t : public shaman_spell_t
     {
       if ( spreader && sim -> target_non_sleeping_list.size() > 1 )
       {
-        spreader -> target = state -> target;
+        spreader -> set_target( state -> target );
         spreader -> execute();
       }
 
@@ -4364,7 +4360,7 @@ struct lava_burst_t : public shaman_spell_t
       // Pristine Proto-Scale Girdle legendary
       if ( p() -> action.ppsg )
       {
-        p() -> action.ppsg -> target = state -> target;
+        p() -> action.ppsg -> set_target( state -> target );
         p() -> action.ppsg -> schedule_execute();
       }
     }
@@ -4926,7 +4922,7 @@ struct earthquake_damage_t : public shaman_spell_t
 
     if ( rng().roll( p() -> artifact.seismic_storm.data().proc_chance() ) )
     {
-      p() -> action.seismic_storm -> target = state -> target;
+      p() -> action.seismic_storm -> set_target( state -> target );
       p() -> action.seismic_storm -> execute();
     }
 
@@ -5647,7 +5643,7 @@ struct liquid_magma_totem_pulse_t : public totem_pulse_action_t
   {
     totem_pulse_action_t::impact( state );
 
-    globule -> target = state -> target;
+    globule -> set_target( state -> target );
     globule -> schedule_execute();
   }
 };
@@ -6476,7 +6472,7 @@ void shaman_t::trigger_lightning_shield( const action_state_t* state )
     return;
   }
 
-  action.lightning_shield -> target = state -> target;
+  action.lightning_shield -> set_target( state -> target );
   action.lightning_shield -> execute();
   attack -> proc_ls -> occur();
 }
@@ -6563,7 +6559,7 @@ void shaman_t::trigger_lightning_rod_damage( const action_state_t* state )
   // Lightning Rod targets, overriding base_dd_min/max with a different value (that would be used
   // for allt he scheduled damage execute events of Lightning Rod).
   range::for_each( lightning_rods, [ this, amount ]( player_t* t ) {
-    action.lightning_rod -> target = t;
+    action.lightning_rod -> set_target( t );
     action.lightning_rod -> execute();
   } );
 }
@@ -6661,7 +6657,7 @@ void shaman_t::trigger_windfury_weapon( const action_state_t* state )
       a = windfury_oh;
     }
 
-    a -> target = state -> target;
+    a -> set_target( state -> target );
     a -> schedule_execute();
     a -> schedule_execute();
     if ( sets.has_set_bonus( SHAMAN_ENHANCEMENT, PVP, B4 ) )
@@ -6741,7 +6737,7 @@ void shaman_t::trigger_flametongue_weapon( const action_state_t* state )
     return;
   }
 
-  flametongue -> target = state -> target;
+  flametongue -> set_target( state -> target );
   flametongue -> schedule_execute();
   attack -> proc_ft -> occur();
 }
@@ -6770,7 +6766,7 @@ void shaman_t::trigger_hailstorm( const action_state_t* state )
     return;
   }
 
-  hailstorm -> target = state -> target;
+  hailstorm -> set_target( state -> target );
   hailstorm -> schedule_execute();
   attack -> proc_fb -> occur();
 }
@@ -7073,15 +7069,6 @@ void shaman_t::init_action_list_elemental()
   def -> add_action( this, "Bloodlust", generate_bloodlust_options(),
     "Bloodlust casting behavior mirrors the simulator settings for proxy bloodlust. See options 'bloodlust_percent', and 'bloodlust_time'. " );
 
-  // On-use items
-  for ( const auto& item : items )
-  {
-    if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
-    {
-      def -> add_action( "use_item,slot=" + std::string( item.slot_name() ) );
-    }
-  }
-
   // In-combat potion
   def -> add_action( "potion,if=cooldown.fire_elemental.remains>280|target.time_to_die<=60",
       "In-combat potion is preferentially linked to your Elemental, unless combat will end shortly" );
@@ -7092,9 +7079,14 @@ void shaman_t::init_action_list_elemental()
   def -> add_action( this, "Fire Elemental" );
   def -> add_talent( this, "Storm Elemental" );
   def -> add_talent( this, "Elemental Mastery" );
+  // On-use items
+  def -> add_action( "use_items" );
   def -> add_action( "use_item,name=gnawed_thumb_ring,if=equipped.gnawed_thumb_ring&(talent.ascendance.enabled&!buff.ascendance.up|!talent.ascendance.enabled)" );
+  // Racials
   def -> add_action( "blood_fury,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50" );
   def -> add_action( "berserking,if=!talent.ascendance.enabled|buff.ascendance.up" );
+
+  // Pick APL to run
   def -> add_action( "run_action_list,name=aoe,if=active_enemies>2&(spell_targets.chain_lightning>2|spell_targets.lava_beam>2)" );
   def -> add_action( "run_action_list,name=single_asc,if=talent.ascendance.enabled" );
   def -> add_action( "run_action_list,name=single_if,if=talent.icefury.enabled" );
@@ -7125,7 +7117,7 @@ void shaman_t::init_action_list_elemental()
   single_lr -> add_action( this, "Flame Shock", "if=maelstrom>=20&buff.elemental_focus.up,target_if=refreshable" );
   single_lr -> add_action( this, "Earth Shock", "if=maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=86" );
   single_lr -> add_talent( this, "Totem Mastery", "if=buff.resonance_totem.remains<10|(buff.resonance_totem.remains<(buff.ascendance.duration+cooldown.ascendance.remains)&cooldown.ascendance.remains<15)" );
-  single_lr -> add_action( this, "Earthquake", "if=buff.echoes_of_the_great_sundering.up" );
+  single_lr -> add_action( this, "Earthquake", "if=buff.echoes_of_the_great_sundering.up|artifact.seismic_storm.enabled&((active_enemies>1&spell_targets.chain_lightning>1)|spell_haste<=0.66&!(buff.bloodlust.up&buff.bloodlust.remains<5))", "Use EQ on single target if you have a huge haste buff that increases haste above 50% and said buffs still last longer than 5 seconds OR two enemies." );
   single_lr -> add_action( this, "Lightning Bolt", "if=buff.power_of_the_maelstrom.up&spell_targets.chain_lightning<3,target_if=debuff.lightning_rod.down" );
   single_lr -> add_action( this, "Lightning Bolt", "if=buff.power_of_the_maelstrom.up&spell_targets.chain_lightning<3" );
   single_lr -> add_action( this, "Chain Lightning", "if=active_enemies>1&spell_targets.chain_lightning>1,target_if=debuff.lightning_rod.down" );
@@ -7152,7 +7144,7 @@ void shaman_t::init_action_list_elemental()
   single_if -> add_action( this, "Frost Shock", "moving=1,if=buff.icefury.up" );
   single_if -> add_action( this, "Earth Shock", "if=maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=86" );
   single_if -> add_talent( this, "Totem Mastery", "if=buff.resonance_totem.remains<10" );
-  single_if -> add_action( this, "Earthquake", "if=buff.echoes_of_the_great_sundering.up" );
+  single_if -> add_action( this, "Earthquake", "if=buff.echoes_of_the_great_sundering.up|artifact.seismic_storm.enabled&((active_enemies>1&spell_targets.chain_lightning>1)|spell_haste<=0.66&!(buff.bloodlust.up&buff.bloodlust.remains<5))", "Use EQ on single target if you have a huge haste buff that increases haste above 50% and said buffs still last longer than 5 seconds OR two enemies." );
   single_if -> add_action( this, "Lightning Bolt", "if=buff.power_of_the_maelstrom.up&spell_targets.chain_lightning<3" );
   single_if -> add_action( this, "Chain Lightning", "if=active_enemies>1&spell_targets.chain_lightning>1" );
   single_if -> add_action( this, "Lightning Bolt" );
@@ -7174,7 +7166,7 @@ void shaman_t::init_action_list_elemental()
   single_asc -> add_action( this, "Flame Shock", "if=maelstrom>=20&buff.elemental_focus.up,target_if=refreshable" );
   single_asc -> add_action( this, "Earth Shock", "if=maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=86" );
   single_asc -> add_talent( this, "Totem Mastery", "if=buff.resonance_totem.remains<10|(buff.resonance_totem.remains<(buff.ascendance.duration+cooldown.ascendance.remains)&cooldown.ascendance.remains<15)" );
-  single_asc -> add_action( this, "Earthquake", "if=buff.echoes_of_the_great_sundering.up" );
+  single_asc -> add_action( this, "Earthquake", "if=buff.echoes_of_the_great_sundering.up|artifact.seismic_storm.enabled&((active_enemies>1&spell_targets.chain_lightning>1)|spell_haste<=0.66&!(buff.bloodlust.up&buff.bloodlust.remains<5))", "Use EQ on single target if you have a huge haste buff that increases haste above 50% and said buffs still last longer than 5 seconds OR two enemies." );
   single_asc -> add_action( this, "Lava Beam", "if=active_enemies>1&spell_targets.lava_beam>1" );
   single_asc -> add_action( this, "Lightning Bolt", "if=buff.power_of_the_maelstrom.up&spell_targets.chain_lightning<3" );
   single_asc -> add_action( this, "Chain Lightning", "if=active_enemies>1&spell_targets.chain_lightning>1" );
@@ -7237,14 +7229,8 @@ void shaman_t::init_action_list_enhancement()
   // Ensure Feral Spirits start using alpha wolf abilities immediately
   def -> add_action( this, "Crash Lightning", "if=artifact.alpha_wolf.rank&prev_gcd.1.feral_spirit" );
 
-  // On-use items
-  for ( const auto& item : items )
-  {
-    if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
-    {
-      def -> add_action( "use_item,slot=" + std::string( item.slot_name() ) );
-    }
-  }
+  // On-use actions
+  def -> add_action( "use_items" );
 
   // Racials
   def -> add_action( "berserking,if=buff.ascendance.up|(feral_spirit.remains>5)|level<100" );
@@ -8124,7 +8110,7 @@ public:
       std::string name_str = entry -> first;
       if ( a )
       {
-        name_str = report::decorated_action_name( a, a -> stats -> name_str );
+        name_str = report::action_decorator_t( a ).decorate();
       }
 
       std::string row_class_str = "";

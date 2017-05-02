@@ -1,4 +1,4 @@
-SimulationCraft 720-02 for World of Warcraft 7.2.0 PTR (wow build 23826)
+SimulationCraft 720-03 for World of Warcraft 7.2.5 PTR (wow build 23927)
 
 Name             : Mend Pet (id=136) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
@@ -227,7 +227,7 @@ Spell Level      : 16
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 50 yards/sec
-Affecting spells : Freezing Trap (3355), Refocus (24531), Multi-Shot Damage Increase (28539), Mortal Shots (36413), Shot Power (37508), Bombardment (82921), Hunter (137014), Marksmanship Hunter (137016), Guide: Sharpshooting (178549), Called Shot (190467), Mastery: Sniper Training (193468), Focus of the Titans (197139), Roar of the Seven Lions (207318), Trueshot (211327)
+Affecting spells : Freezing Trap (3355), Refocus (24531), Multi-Shot Damage Increase (28539), Mortal Shots (36413), Shot Power (37508), Bombardment (82921), Hunter (137014), Marksmanship Hunter (137016), Guide: Sharpshooting (178549), Called Shot (190467), Mastery: Sniper Training (193468), Focus of the Titans (197139), Roar of the Seven Lions (207318), Trueshot (211327), Bestial Rage (246116)
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .......x ........ ........ 
@@ -240,7 +240,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
 #2 (id=101372)   : Weapon Damage% (31)
                    Base Value: 100 | Scaled Value: 1 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
-Description      : Fires several missiles, hitting your current target and all enemies within $A2 yards for $sw2 Physical damage$?s115939[ and triggering Beast Cleave][]$?s19434[
+Description      : Fires several missiles, hitting your current target and all enemies within $A2 yards for $sw2 Physical damage$?s115939[ and triggering Beast Cleave][].$?s19434[
 
 |cFFFFFFFFGenerates $213363s1 Focus per target hit.|r][]
 
@@ -545,7 +545,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 100 yards/sec
-Affecting spells : Freezing Trap (3355), Refocus (24531), Mortal Shots (36413), Shot Power (37508), Hunter (137014), Marksmanship Hunter (137016), Guide: Sharpshooting (178549), Vulnerable (187131), Item - Hunter T18 Marksmanship 4P Bonus (188191), Deadly Aim (190449), Mastery: Sniper Training (193468), Lock and Load (194594), True Aim (199803), Sentinel's Sight (208913), Trueshot (211327), Wind Arrows (214826), Trick Shot (227272), Gyroscopic Stabilization (235712), 
+Affecting spells : Freezing Trap (3355), Refocus (24531), Mortal Shots (36413), Shot Power (37508), Hunter (137014), Marksmanship Hunter (137016), Guide: Sharpshooting (178549), Vulnerable (187131), Item - Hunter T18 Marksmanship 4P Bonus (188191), Deadly Aim (190449), Mastery: Sniper Training (193468), Lock and Load (194594), True Aim (199803), Sentinel's Sight (208913), Trueshot (211327), Wind Arrows (214826), Trick Shot (227272), Gyroscopic Stabilization (235712), Precision (246153), 
 Triggered by     : Lock and Load (194594)
 Attributes       : .x..x... ........ x....... ........   ........ ........ ........ ...x.... 
                  : ........ ........ .x..x... ........   ........ ........ ........ ........ 
@@ -578,7 +578,7 @@ Attributes       : ........ ........ x....... .....x..   ........ ..x....x .....
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ...x.... ........ .xx..... ........ 
                  : ........ ........ ......x. ........   ........ ........ ........ ........ 
-                 : .....x.. ........ ........ ........   ........ ........ ........ ........ 
+                 : .....x.. ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
 Effects          :
 #1 (id=10779)    : Apply Aura (6) | Modify Damage Done% (79)
@@ -592,7 +592,7 @@ Description      : Sends you and your pet into a rage, increasing all damage you
 Bestial Wrath's remaining cooldown is reduced by $s3 sec each time you use Dire Frenzy.][]$?s231548&!s217200[
 
 Bestial Wrath's remaining cooldown is reduced by $s3 sec each time you use Dire Beast.][]
-Tooltip          : Damage dealt increased by $s1%.
+Tooltip          : Damage dealt increased by $w1%.
 
 Name             : Intimidation (id=19577) [Spell Family (9)] 
 Class            : Hunter, Monk
@@ -928,7 +928,7 @@ Spell Level      : 10
 Range            : 100 yards
 GCD              : 1.5 seconds
 Cooldown         : 7.5 seconds
-Affecting spells : Hunter (137014), Beast Mastery Hunter (137015), Pack Leader (197080), Roar of the Seven Lions (207318)
+Affecting spells : Hunter (137014), Beast Mastery Hunter (137015), Pack Leader (197080), Roar of the Seven Lions (207318), Bestial Rage (246116)
 Attributes       : ........ ........ x.x..x.. ........   ........ .xx..... ........ ..xxx... 
                  : ..x..... ........ ........ ........   ........ .....x.. ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -941,7 +941,9 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
 #2 (id=83780)    : Server Side Script (77)
                    Base Value: 83381 | Scaled Value: 83381 | Target: Active Pet(5)
-Description      : Give the command to kill, causing your pet to savagely deal $<damage> Physical damage to its target. 25 yard range.
+#3 (id=374658)   : Dummy (3)
+                   Base Value: 40 | Scaled Value: 40 | Target: Self(1)
+Description      : Give the command to kill, causing your pet to savagely deal $<damage> Physical damage to its target. $s3 yd range.
 Variables        : $bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]
 $lowNerf=${0.5+$min($pl,20)*0.025}
 $damage=${1.5*($83381m1+($RAP*3))*$<bmMastery>*$<lowNerf>*(1+$@versadmg)}
@@ -1889,7 +1891,7 @@ Class            : Hunter
 School           : Physical
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Hunter (137014), Beast Mastery Hunter (137015), Pack Leader (197080), Roar of the Seven Lions (207318)
+Affecting spells : Hunter (137014), Beast Mastery Hunter (137015), Pack Leader (197080), Roar of the Seven Lions (207318), Bestial Rage (246116)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2488,11 +2490,11 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Target: Enemy(6)
 Description      : Summons a powerful wild beast to attack your target for $d.
 
-|cFFFFFFFFGenerates ${$120694m1*4} Focus over its duration.|r
+|cFFFFFFFFGenerates ${$120694m1*4} Focus over $d.|r
 
 Name             : Dire Beast (id=120694) [Spell Family (9)] 
 Class            : Hunter
-School           : Nature
+School           : Physical
 Range            : 100 yards
 Duration         : 8 seconds
 Affecting spells : Dire Stable (193532), Dire Longevity (215911)
@@ -2826,12 +2828,12 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1674 | Target: Self(1)
 #9 (id=260640)   : Apply Aura (6) | Unknown effect sub type (457)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1675 | Target: Self(1)
-#10 (id=260641)   : Apply Aura (6) | Unknown effect sub type (218)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf7 | Target: Self(1)
-#11 (id=260642)   : Apply Aura (6) | Unknown effect sub type (218)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf9 | Target: Self(1)
-#12 (id=260643)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#10 (id=260641)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 247 (Label) | Target: Self(1)
+#11 (id=260642)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 249 (Label) | Target: Self(1)
+#12 (id=260643)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 298 (Label) | Target: Self(1)
 #13 (id=260644)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #14 (id=260645)   : Apply Aura (6) | Dummy (4)
@@ -2881,8 +2883,8 @@ Effects          :
 #6 (id=260897)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 50 | Scaled Value: 50 | Target: Self(1)
                    Affected Spells: Volley (194386), Volley (194392)
-#7 (id=260898)   : Apply Aura (6) | Unknown effect sub type (218)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf8 | Target: Self(1)
+#7 (id=260898)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self(1)
 #8 (id=260899)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #9 (id=260900)   : Apply Aura (6) | Dummy (4)
@@ -2907,13 +2909,13 @@ Effects          :
 #1 (id=179699)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self(1)
                    Affected Spells: Multi-Shot (2643)
-#2 (id=191134)   : Apply Aura (6) | Unknown effect sub type (218)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf8 | Target: Self(1)
+#2 (id=191134)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self(1)
 #3 (id=191135)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 8 | Scaled Value: 8 | Target: Self(1)
+                   Base Value: 12 | Scaled Value: 12 | Target: Self(1)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Barrage (120361), A Murder of Crows (131894), A Murder of Crows (131900), Arcane Shot (185358), Bursting Shot (186387), Aimed Shot (191043), Volley (194386), Volley (194392), Black Arrow (194599), Piercing Shot (198670), Windburst (204147), A Murder of Crows (206505), Marked Shot (212621), Piercing Shot (213678), Sidewinders (214579), Sidewinders (214581)
 #4 (id=191136)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 8 | Scaled Value: 8 | Misc Value: 22 | Target: Self(1)
+                   Base Value: 12 | Scaled Value: 12 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Black Arrow (194599)
 #5 (id=191137)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
@@ -3835,7 +3837,7 @@ Attributes       : ........ ........ x....... .....x..   ........ ..x....x .....
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ...x.... ........ .xx..... ........ 
                  : ........ ........ ......x. ........   ........ ........ ........ ........ 
-                 : .....x.. ........ ........ ........   ........ ........ ........ ........ 
+                 : .....x.. ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
 Effects          :
 #1 (id=271164)   : Apply Aura (6) | Modify Damage Done% (79)
@@ -3847,7 +3849,7 @@ Effects          :
 #4 (id=271167)   : Apply Aura (6) | Unknown effect sub type (103)
                    Base Value: 0 | Scaled Value: 0 | Target: Active Pet(5)
 Description      : $@spelldesc19574
-Tooltip          : Damage dealt increased by $s2%.
+Tooltip          : Damage dealt increased by $w1%.
 
 Name             : Aspect of the Cheetah (id=186257) [Spell Family (9)] 
 Class            : Hunter
@@ -4347,7 +4349,7 @@ School           : Physical
 Spell Level      : 10
 Range            : 100 yards
 Velocity         : 20 yards/sec
-Affecting spells : Freezing Trap (3355), Refocus (24531), Mortal Shots (36413), Shot Power (37508), Hunter (137014), Marksmanship Hunter (137016), Guide: Sharpshooting (178549), Vulnerable (187131), Item - Hunter T18 Marksmanship 4P Bonus (188191), Deadly Aim (190449), Mastery: Sniper Training (193468), Lock and Load (194594), True Aim (199803), Sentinel's Sight (208913), Trueshot (211327), Wind Arrows (214826), Trick Shot (227272), Gyroscopic Stabilization (235712), 
+Affecting spells : Freezing Trap (3355), Refocus (24531), Mortal Shots (36413), Shot Power (37508), Hunter (137014), Marksmanship Hunter (137016), Guide: Sharpshooting (178549), Vulnerable (187131), Item - Hunter T18 Marksmanship 4P Bonus (188191), Deadly Aim (190449), Mastery: Sniper Training (193468), Lock and Load (194594), True Aim (199803), Sentinel's Sight (208913), Trueshot (211327), Wind Arrows (214826), Trick Shot (227272), Gyroscopic Stabilization (235712), Precision (246153), 
 Attributes       : .x...... ........ x....... ........   ........ ........ ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
@@ -4561,7 +4563,7 @@ Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 45 yards/sec
-Affecting spells : Freezing Trap (3355), Hunter (137014), Beast Mastery Hunter (137015), Guide: Sharpshooting (178549), Spitting Cobras (197140), Roar of the Seven Lions (207318), Slithering Serpents (238051)
+Affecting spells : Freezing Trap (3355), Hunter (137014), Beast Mastery Hunter (137015), Guide: Sharpshooting (178549), Spitting Cobras (197140), Roar of the Seven Lions (207318), Slithering Serpents (238051), Bestial Rage (246116)
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -4662,11 +4664,11 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=283926)   : Apply Aura (6) | Add Flat Modifier: Spell Tick Time (107)
                    Base Value: 3 | Scaled Value: 3 | Misc Value: 8 | Target: Self(1)
-                   Affected Spells: Dire Beast (120694)
-#2 (id=323518)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
-                   Base Value: 12 | Scaled Value: 12 | Misc Value: 23 | Target: Self(1)
-                   Affected Spells: Dire Frenzy (217200)
-Description      : $?s217200[Dire Frenzy][Dire Beast] generates $s2 additional Focus$?s217200[][ over its duration].
+                   Affected Spells: Dire Beast (120694), Dire Frenzy (246152)
+#2 (id=374727)   : Dummy (3)
+                   Base Value: 12 | Scaled Value: 12 | Target: Self(1)
+                   Affected Spells: Dire Beast (120694), Dire Frenzy (246152)
+Description      : $?s217200[Dire Frenzy][Dire Beast] generates $s2 additional Focus over its duration.
 
 Name             : Steady Focus (id=193533) [Spell Family (9), Passive] 
 Class            : Hunter
@@ -5125,7 +5127,7 @@ Effects          :
 #1 (id=293624)   : Apply Aura (6) | Add Flat Modifier: Spell Proc Chance (107)
                    Base Value: 60 | Scaled Value: 60 | Misc Value: 18 | Target: Self(1)
                    Affected Spells: Wild Call (185789), Wild Call (185791)
-Description      : Grants Wild Call $s1% increased chance to reduce the cooldown of Dire $?s217200[Frenzy][Beast].
+Description      : Grants Wild Call a $s1% increased chance to reduce the cooldown of Dire $?s217200[Frenzy][Beast].
 
 Name             : Stomp (id=199530) [Spell Family (9), Passive] 
 Class            : Hunter
@@ -5972,14 +5974,14 @@ Name             : Wake Up (id=210000) [Spell Family (9)]
 Class            : Hunter
 School           : Physical
 Spell Level      : 32
-Range            : 100 yards
+Range            : 1000 yards
 Cooldown         : 30 seconds
 Attributes       : ........ x....... x.x.x... ........   ........ ..x..... .xx..... ........ 
-                 : ........ ........ ........ ....x...   ........ ........ ..x..... ........ 
+                 : ..x..... ........ ........ ....x...   ........ ........ ..x..... ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ....x... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : Stop attacks (20)
 Effects          :
 #1 (id=310886)   : Unknown effect type (203)
@@ -6192,7 +6194,7 @@ Charges          : 1 (12 seconds cooldown)
 Category         : 1675
 Stacks           : 3 maximum
 Proc Chance      : 101%
-Affecting spells : Freezing Trap (3355), Hunter (137014), Dire Stable (193532), Beast Master (215779)
+Affecting spells : Freezing Trap (3355), Hunter (137014), Beast Master (215779)
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6204,11 +6206,11 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Target: Enemy(6)
 #2 (id=323303)   : Apply Aura (6) | Modify Ranged and Melee Attack Speed% (342)
                    Base Value: 30 | Scaled Value: 30 | Target: Active Pet(5)
-#3 (id=323315)   : Energize Power (30)
-                   Base Value: 25 | Scaled Value: 25 | Misc Value: focus | Target: Self(1)
+#3 (id=323315)   : Trigger Spell: Dire Frenzy (64)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 246152 | Target: Self(1)
 Description      : Causes your pet to enter a frenzy, performing a flurry of $s1 attacks on the target, and gaining $s2% increased attack speed for $d, stacking up to $u times.
 
-|cFFFFFFFFGenerates $s3 Focus.|r
+|cFFFFFFFFGenerates ${$246152s1*$246152d/$246152t} Focus over $246152d.|r
 Tooltip          : Attack speed increased by $s2%.
 
 Name             : Dire Frenzy (id=217207) [Spell Family (9)] 
@@ -6216,7 +6218,7 @@ Class            : Hunter
 School           : Physical
 Spell Level      : 1
 Range            : 25 yards
-Affecting spells : Hunter (137014), Beast Mastery Hunter (137015), Pack Leader (197080), Roar of the Seven Lions (207318)
+Affecting spells : Hunter (137014), Beast Mastery Hunter (137015), Pack Leader (197080), Roar of the Seven Lions (207318), Bestial Rage (246116)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6635,5 +6637,24 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 5.32000 | Target: Enemy(6)
 Description      : Poisons the target, inflicting $o1 Nature damage every $t1 sec for $d, stacking up to $u times.
 Tooltip          : Inflicts $w1 Nature damage every $t sec.
+
+Name             : Dire Frenzy (id=246152) [Spell Family (9)] 
+Class            : Hunter
+School           : Physical
+Range            : 100 yards
+Duration         : 8 seconds
+Affecting spells : Dire Stable (193532), Dire Longevity (215911)
+Triggered by     : Dire Frenzy (217200)
+Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=374725)   : Apply Aura (6) | Periodic Energize Power: every 2 seconds (24)
+                   Base Value: 3 | Scaled Value: 3 | Misc Value: 2 | Target: Self(1)
+Description      : $@spelldesc217200
+Tooltip          : Generating $s1 Focus every $t1 sec.
 
 

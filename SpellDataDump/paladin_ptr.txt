@@ -1,4 +1,4 @@
-SimulationCraft 720-02 for World of Warcraft 7.2.0 PTR (wow build 23826)
+SimulationCraft 720-03 for World of Warcraft 7.2.5 PTR (wow build 23927)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -2160,8 +2160,8 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 1667 | Target: Self(1)
 #12 (id=260676)   : Apply Aura (6) | Unknown effect sub type (457)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 1668 | Target: Self(1)
-#13 (id=260677)   : Apply Aura (6) | Unknown effect sub type (218)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf9 | Target: Self(1)
+#13 (id=260677)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 249 (Label) | Target: Self(1)
 #14 (id=260678)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #15 (id=260679)   : Apply Aura (6) | Dummy (4)
@@ -2209,10 +2209,10 @@ Effects          :
 #8 (id=260909)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 100 | Scaled Value: 100 | Target: Self(1)
                    Affected Spells: Consecration (26573), Consecration (81297), Consecration (205228)
-#9 (id=260910)   : Apply Aura (6) | Unknown effect sub type (218)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf7 | Target: Self(1)
-#10 (id=260911)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#9 (id=260910)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 247 (Label) | Target: Self(1)
+#10 (id=260911)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 298 (Label) | Target: Self(1)
 #11 (id=260912)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #12 (id=260913)   : Apply Aura (6) | Dummy (4)
@@ -2253,14 +2253,14 @@ Effects          :
 #4 (id=191090)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: -10 | Scaled Value: -10 | Target: Self(1)
                    Affected Spells: Consecration (26573), Consecration (81297), Consecration (205228)
-#5 (id=191091)   : Apply Aura (6) | Unknown effect sub type (218)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf8 | Target: Self(1)
-#6 (id=260917)   : Apply Aura (6) | Unknown effect sub type (218)
-                   Base Value: -40 | Scaled Value: -40 | Misc Value: 3 | Misc Value 2: 0x114 | Target: Self(1)
-#7 (id=260918)   : Apply Aura (6) | Unknown effect sub type (218)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0x121 | Target: Self(1)
-#8 (id=260919)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#5 (id=191091)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self(1)
+#6 (id=260917)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218)
+                   Base Value: -40 | Scaled Value: -40 | Misc Value: 3 | Misc Value 2: 276 (Label) | Target: Self(1)
+#7 (id=260918)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 289 (Label) | Target: Self(1)
+#8 (id=260919)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 298 (Label) | Target: Self(1)
 #9 (id=260920)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #10 (id=260921)   : Apply Aura (6) | Dummy (4)
@@ -2306,10 +2306,10 @@ Effects          :
 #6 (id=260927)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 50 | Scaled Value: 50
                    Affected Spells: Judgment (20271), Judgment (197277), Judgment (214222), Judgment (228288)
-#7 (id=260928)   : Apply Aura (6) | Unknown effect sub type (218)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf7 | Target: Self(1)
-#8 (id=260929)   : Apply Aura (6) | Unknown effect sub type (218)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf8 | Target: Self(1)
+#7 (id=260928)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 247 (Label) | Target: Self(1)
+#8 (id=260929)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self(1)
 #9 (id=260930)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #10 (id=260931)   : Apply Aura (6) | Dummy (4)
@@ -2987,7 +2987,7 @@ Spell Level      : 20
 Range            : 12 yards
 GCD              : 1.5 seconds
 Cooldown         : 10.5 seconds
-Affecting spells : Paladin (137026), Retribution Paladin (137027), Deliver the Justice (186927), Virtue's Blade (202271), Righteous Verdict (238996)
+Affecting spells : Paladin (137026), Retribution Paladin (137027), Deliver the Justice (186927), Virtue's Blade (202271), Righteous Verdict (238996), Item - Paladin T20 Retribution 2P Bonus (242266)
 Attributes       : ........ ........ x.x..x.. ........   ........ .x...... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3118,6 +3118,9 @@ Description      : Strikes an enemy with a Blade of Light, dealing $sw2 Holy dam
 Name             : Fervent Martyr (id=196923) [Spell Family (10), Passive] 
 Class            : Paladin
 School           : Physical
+Proc Chance      : 100%
+Proc Flags       : ........ ......x. ........ ........ 
+                 : Heal
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3127,7 +3130,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=289147)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Casting Holy Light or Flash of Light on your Beacon of Light reduces the mana cost of your next Light of the Martyr by $223316s1%, stacking.
 
 Name             : Crusader's Might (id=196926) [Spell Family (10), Passive] 
@@ -3244,7 +3247,7 @@ School           : Holy
 GCD              : 1.5 seconds
 Duration         : 12 seconds
 Cooldown         : 12 seconds
-Affecting spells : Paladin (137026), 
+Affecting spells : Paladin (137026), Item - Paladin T20 Retribution 2P Bonus (242266)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...x.. ........ ........ 
@@ -4492,7 +4495,7 @@ Spell Level      : 1
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. ........ ........ 
                  : Heal
-Affecting spells : Stoicism (238096)
+Affecting spells : Fervent Martyr (223316), Stoicism (238096)
 Attributes       : ......xx ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4553,7 +4556,7 @@ Name             : Fervent Martyr (Passive Talent) (id=223316) [Spell Family (10
 Class            : Paladin
 School           : Physical
 Duration         : 30 seconds
-Stacks           : 2 maximum
+Stacks           : 4 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4563,8 +4566,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=333758)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value: 14 | Target: Self(1)
+                   Base Value: -25 | Scaled Value: -25 | Misc Value: 14 | Target: Self(1)
                    Affected Spells: Light of the Martyr (183998)
+#2 (id=375284)   : Apply Aura (6) | Add Percent Modifier: Spell Effect 1 (108)
+                   Base Value: -25 | Scaled Value: -25 | Misc Value: 3 | Target: Self(1)
+                   Affected Spells: Light of the Martyr (219562)
 Description      : $@spelldesc196923
 Tooltip          : Mana cost of your next Light of the Martyr reduced by ${$min($w1,100)}%.
 

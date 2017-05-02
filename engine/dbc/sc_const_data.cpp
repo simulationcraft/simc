@@ -89,11 +89,11 @@ std::vector< std::vector< const spell_data_t* > > ptr_class_family_index;
 
 int dbc::build_level( bool ptr )
 {
-  return maybe_ptr( ptr ) ? 23826 : 23826;
+  return maybe_ptr( ptr ) ? 23927 : 23826;
 }
 
 const char* dbc::wow_version( bool ptr )
-{ return maybe_ptr( ptr ) ? "7.2.0" : "7.2.0"; }
+{ return maybe_ptr( ptr ) ? "7.2.5" : "7.2.0"; }
 
 const char* dbc::wow_ptr_status( bool ptr )
 #if SC_BETA
@@ -1716,6 +1716,20 @@ void spell_data_t::link( bool ptr )
     spell_data_t& sd = spell_data[ i ];
     sd._effects = new std::vector<const spelleffect_data_t*>;
   }
+
+  auto label = dbc::spell_labels( ptr );
+  while ( label -> id )
+  {
+    auto spell = spell_data_t::find( label -> id_spell, ptr );
+    if ( spell -> _labels == nullptr )
+    {
+      spell -> _labels = new std::vector<const spelllabel_data_t*>();
+    }
+
+    spell -> _labels -> push_back( label );
+
+    ++label;
+  }
 }
 
 void spelleffect_data_t::link( bool ptr )
@@ -1755,17 +1769,10 @@ void spell_data_t::de_link( bool ptr )
   {
     spell_data_t& sd = spell_data[ i ];
 
-    if ( sd._effects )
-    {
-      // delete dynamically allocated vector with spelleffect_data_t pointers
-      delete sd._effects;
-    }
-    if ( sd._power )
-    {
-      // delete dynamically allocated vector with spellpower_data_t pointers
-      delete sd._power;
-    }
+    delete sd._effects;
+    delete sd._power;
     delete sd._driver;
+    delete sd._labels;
   }
 }
 
@@ -2813,5 +2820,16 @@ void hotfix::link_hotfix_data( bool ptr )
 
   // Next, link artifact hotfix data
   link_hotfix_entry_ptr<artifact_power_rank_t>( ptr, artifact_hotfix_entry );
+}
+
+const spelllabel_data_t* dbc::spell_labels( bool ptr )
+{
+#if SC_USE_PTR
+  return ptr ? __ptr_spelllabel_data
+             : __spelllabel_data;
+#else
+  (void ) ptr;
+  return __spelllabel_data;
+#endif
 }
 

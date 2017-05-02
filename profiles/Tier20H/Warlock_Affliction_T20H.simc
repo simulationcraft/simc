@@ -1,0 +1,103 @@
+warlock="Warlock_Affliction_T20H"
+level=110
+race=human
+role=spell
+position=back
+talents=3101011
+artifact=39:0:0:0:0:915:4:916:4:917:4:918:4:919:3:920:4:921:4:922:3:923:3:924:1:925:1:926:1:927:1:928:1:929:1:999:1:1353:1:1390:1:1601:4:1602:1:1603:1:1711:1
+spec=affliction
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask,type=whispered_pact
+actions.precombat+=/food,type=nightborne_delicacy_platter
+actions.precombat+=/summon_pet,if=!talent.grimoire_of_supremacy.enabled&(!talent.grimoire_of_sacrifice.enabled|buff.demonic_power.down)
+actions.precombat+=/summon_infernal,if=talent.grimoire_of_supremacy.enabled&artifact.lord_of_flames.rank>0
+actions.precombat+=/summon_infernal,if=talent.grimoire_of_supremacy.enabled&active_enemies>1
+actions.precombat+=/summon_doomguard,if=talent.grimoire_of_supremacy.enabled&active_enemies=1&artifact.lord_of_flames.rank=0
+actions.precombat+=/augmentation,type=defiled
+actions.precombat+=/snapshot_stats
+actions.precombat+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
+actions.precombat+=/life_tap,if=talent.empowered_life_tap.enabled&!buff.empowered_life_tap.remains
+actions.precombat+=/potion,name=prolonged_power
+
+# Executed every time the actor is available.
+actions=reap_souls,if=!buff.deadwind_harvester.remains&(buff.soul_harvest.remains>5+equipped.144364*1.5&!talent.malefic_grasp.enabled&buff.active_uas.stack>1|buff.tormented_souls.react>=8|target.time_to_die<=buff.tormented_souls.react*5+equipped.144364*1.5|!talent.malefic_grasp.enabled&(trinket.proc.any.react|trinket.stacking_proc.any.react))
+actions+=/soul_effigy,if=!pet.soul_effigy.active
+actions+=/agony,cycle_targets=1,if=remains<=tick_time+gcd
+actions+=/service_pet,if=dot.corruption.remains&dot.agony.remains
+actions+=/summon_doomguard,if=!talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal<=2&(target.time_to_die>180|target.health.pct<=20|target.time_to_die<30)
+actions+=/summon_infernal,if=!talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>2
+actions+=/summon_doomguard,if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal=1&equipped.132379&!cooldown.sindorei_spite_icd.remains
+actions+=/summon_infernal,if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>1&equipped.132379&!cooldown.sindorei_spite_icd.remains
+actions+=/berserking,if=prev_gcd.1.unstable_affliction|buff.soul_harvest.remains>=10
+actions+=/blood_fury
+actions+=/arcane_torrent
+actions+=/soul_harvest,if=buff.active_uas.stack>=3|!equipped.132394&!equipped.132457&(debuff.haunt.remains|talent.writhe_in_agony.enabled)
+actions+=/potion,name=prolonged_power,if=!talent.soul_harvest.enabled&(trinket.proc.any.react|trinket.stack_proc.any.react|target.time_to_die<=70|!cooldown.haunt.remains|buff.active_uas.stack>2|buff.nefarious_pact.react)
+actions+=/potion,name=prolonged_power,if=talent.soul_harvest.enabled&buff.soul_harvest.remains&(trinket.proc.any.react|trinket.stack_proc.any.react|target.time_to_die<=70|!cooldown.haunt.remains|buff.active_uas.stack>2|buff.nefarious_pact.react)
+actions+=/corruption,if=remains<=tick_time+gcd&(spell_targets.seed_of_corruption<3&talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<4)&(buff.active_uas.stack<2&soul_shard=0|!talent.malefic_grasp.enabled)
+actions+=/corruption,cycle_targets=1,if=(talent.absolute_corruption.enabled|!talent.malefic_grasp.enabled|!talent.soul_effigy.enabled)&active_enemies>1&remains<=tick_time+gcd&(spell_targets.seed_of_corruption<3&talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<4)
+actions+=/siphon_life,if=remains<=tick_time+gcd&(buff.active_uas.stack<2&soul_shard=0|!talent.malefic_grasp.enabled)
+actions+=/siphon_life,cycle_targets=1,if=(!talent.malefic_grasp.enabled|!talent.soul_effigy.enabled)&active_enemies>1&remains<=tick_time+gcd
+actions+=/life_tap,if=talent.empowered_life_tap.enabled&buff.empowered_life_tap.remains<=gcd
+actions+=/phantom_singularity
+actions+=/haunt
+actions+=/agony,cycle_targets=1,if=!talent.malefic_grasp.enabled&remains<=duration*0.3&target.time_to_die>=remains
+actions+=/agony,cycle_targets=1,if=remains<=duration*0.3&target.time_to_die>=remains&buff.active_uas.stack=0
+actions+=/life_tap,if=talent.empowered_life_tap.enabled&buff.empowered_life_tap.remains<duration*0.3|talent.malefic_grasp.enabled&target.time_to_die>15&mana.pct<10
+actions+=/seed_of_corruption,if=talent.sow_the_seeds.enabled&spell_targets.seed_of_corruption>=3|spell_targets.seed_of_corruption>=4|spell_targets.seed_of_corruption=3&dot.corruption.remains<=cast_time+travel_time
+actions+=/corruption,if=!talent.malefic_grasp.enabled&remains<=duration*0.3&target.time_to_die>=remains
+actions+=/corruption,if=remains<=duration*0.3&target.time_to_die>=remains&buff.active_uas.stack=0
+actions+=/corruption,cycle_targets=1,if=(talent.absolute_corruption.enabled|!talent.malefic_grasp.enabled|!talent.soul_effigy.enabled)&remains<=duration*0.3&target.time_to_die>=remains
+actions+=/siphon_life,if=!talent.malefic_grasp.enabled&remains<=duration*0.3&target.time_to_die>=remains
+actions+=/siphon_life,if=remains<=duration*0.3&target.time_to_die>=remains&buff.active_uas.stack=0
+actions+=/siphon_life,cycle_targets=1,if=(!talent.malefic_grasp.enabled|!talent.soul_effigy.enabled)&remains<=duration*0.3&target.time_to_die>=remains
+actions+=/unstable_affliction,if=(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&talent.haunt.enabled&(soul_shard>=4|debuff.haunt.remains>6.5|target.time_to_die<30)
+actions+=/unstable_affliction,if=(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&spell_targets.seed_of_corruption<4&talent.writhe_in_agony.enabled&talent.contagion.enabled&dot.unstable_affliction_1.remains<cast_time&dot.unstable_affliction_2.remains<cast_time&dot.unstable_affliction_3.remains<cast_time&dot.unstable_affliction_4.remains<cast_time&dot.unstable_affliction_5.remains<cast_time
+actions+=/unstable_affliction,if=(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&spell_targets.seed_of_corruption<4&talent.writhe_in_agony.enabled&(soul_shard>=4|trinket.proc.intellect.react|trinket.stacking_proc.mastery.react|trinket.proc.mastery.react|trinket.proc.crit.react|trinket.proc.versatility.react|buff.soul_harvest.remains|buff.deadwind_harvester.remains|buff.compounding_horror.react=5|target.time_to_die<=20)
+actions+=/unstable_affliction,if=(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&spell_targets.seed_of_corruption<4&talent.malefic_grasp.enabled&(target.time_to_die<30|prev_gcd.1.unstable_affliction&soul_shard>=4)
+actions+=/unstable_affliction,if=(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&spell_targets.seed_of_corruption<4&talent.malefic_grasp.enabled&(soul_shard=5|talent.contagion.enabled&soul_shard>=4)
+actions+=/unstable_affliction,if=(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&spell_targets.seed_of_corruption<4&talent.malefic_grasp.enabled&(talent.soul_effigy.enabled|equipped.132457)&!prev_gcd.3.unstable_affliction&prev_gcd.1.unstable_affliction
+actions+=/unstable_affliction,if=(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&spell_targets.seed_of_corruption<4&talent.malefic_grasp.enabled&equipped.132457&buff.active_uas.stack=0
+actions+=/unstable_affliction,if=(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&spell_targets.seed_of_corruption<4&talent.malefic_grasp.enabled&talent.soul_effigy.enabled&!equipped.132457&buff.active_uas.stack=0&dot.agony.remains>cast_time*3+6.5&(!talent.soul_effigy.enabled|pet.soul_effigy.dot.agony.remains>cast_time*3+6.5)
+actions+=/unstable_affliction,if=(!talent.sow_the_seeds.enabled|spell_targets.seed_of_corruption<3)&spell_targets.seed_of_corruption<4&talent.malefic_grasp.enabled&!talent.soul_effigy.enabled&!equipped.132457&!prev_gcd.3.unstable_affliction&dot.agony.remains>cast_time*3+6.5&(dot.corruption.remains>cast_time+6.5|talent.absolute_corruption.enabled)
+actions+=/reap_souls,if=!buff.deadwind_harvester.remains&buff.active_uas.stack>1&((!trinket.has_stacking_stat.any&!trinket.has_stat.any)|talent.malefic_grasp.enabled)
+actions+=/reap_souls,if=!buff.deadwind_harvester.remains&prev_gcd.1.unstable_affliction&((!trinket.has_stacking_stat.any&!trinket.has_stat.any)|talent.malefic_grasp.enabled)&buff.tormented_souls.react>1
+actions+=/life_tap,if=mana.pct<=10
+actions+=/drain_soul,chain=1,interrupt=1
+actions+=/life_tap
+
+head=eyes_of_azjaqir,id=138314,bonus_id=3518
+neck=belerons_choker_of_misery,id=140899,bonus_id=3518,enchant=mark_of_the_trained_soldier
+shoulders=pauldrons_of_azjaqir,id=138323,bonus_id=3518
+back=cloak_of_temporal_recalibration,id=140910,bonus_id=3518,enchant_id=5436
+chest=finery_of_azjaqir,id=138320,bonus_id=3518
+wrists=bracers_of_harnessed_flame,id=140850,bonus_id=3518
+hands=clutch_of_azjaqir,id=138311,bonus_id=3518
+waist=manari_skullbuckled_cinch,id=140887,bonus_id=3518
+legs=master_warmages_leggings,id=140852,bonus_id=3518
+feet=outcast_wanderers_footrags,id=140914,bonus_id=3519
+finger1=spellblades_gemmed_signet,id=140895,bonus_id=3518,enchant_id=5429
+finger2=ring_of_the_scoured_clan,id=140897,bonus_id=3519,enchant_id=5429
+trinket1=whispers_in_the_dark,id=140809,bonus_id=3519
+trinket2=erratic_metronome,id=140792,bonus_id=3445
+main_hand=ulthalesh_the_deadwind_harvester,id=128942,gem_id=140822/140820/140822,relic_id=3518/3519/3518
+
+# Gear Summary
+# gear_ilvl=907.27
+# gear_stamina=34531
+# gear_intellect=39155
+# gear_crit_rating=6515
+# gear_haste_rating=4699
+# gear_mastery_rating=11722
+# gear_versatility_rating=1085
+# gear_armor=1983
+# set_bonus=tier19_2pc=1
+# set_bonus=tier19_4pc=1
+default_pet=felhunter

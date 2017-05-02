@@ -16,6 +16,8 @@
 #include "sample_data.hpp"
 #include "sc_timespan.hpp"
 
+struct sim_t;
+
 template <typename Fwd, typename Out>
 void sliding_window_average( Fwd first, Fwd last, unsigned window, Out out )
 {

@@ -34,7 +34,8 @@ actions+=/mind_freeze
 actions+=/arcane_torrent,if=runic_power.deficit>20
 actions+=/blood_fury
 actions+=/berserking
-actions+=/use_item,slot=trinket1
+actions+=/use_items
+actions+=/use_item,name=ring_of_collapsing_futures,if=(buff.temptation.stack=0&target.time_to_die>60)|target.time_to_die<60
 actions+=/potion,if=buff.unholy_strength.react
 actions+=/outbreak,target_if=!dot.virulent_plague.ticking
 actions+=/dark_transformation,if=equipped.137075&cooldown.dark_arbiter.remains>165
@@ -134,7 +135,7 @@ finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1492,enchant=binding_of_h
 finger2=band_of_fused_coral,id=134532,bonus_id=1492,enchant=binding_of_haste
 trinket1=faulty_countermeasure,id=137539,bonus_id=1492
 trinket2=chaos_talisman,id=137459,bonus_id=1492
-main_hand=apocalypse,id=128403,gem_id=143813/143804/143809,relic_id=3491/3491/3491,enchant=rune_of_the_fallen_crusader
+main_hand=apocalypse,id=128403,gem_id=137492/137549/136718,relic_id=1492:1727/1492:1727/1492:1727,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
 # gear_ilvl=842.00

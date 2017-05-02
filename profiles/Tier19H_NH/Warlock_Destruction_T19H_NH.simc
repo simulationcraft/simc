@@ -4,7 +4,7 @@ race=troll
 role=spell
 position=back
 talents=2203022
-artifact=38:140826:140837:140826:0:803:1:804:3:805:3:806:3:807:3:808:3:809:6:810:3:811:3:812:3:813:1:814:1:815:1:816:1:817:1:818:1:1355:1:1392:6
+artifact=38:140826:140837:140826:0:803:1:804:3:805:3:806:3:807:3:808:3:809:6:810:3:811:3:812:3:813:1:814:1:815:1:816:1:817:1:818:1:1355:1:1392:8
 spec=destruction
 
 # This default action priority list is automatically created based on your character.

@@ -20,7 +20,7 @@ finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1492:1826,enchant=binding
 finger2=gnawed_thumb_ring,id=134526,bonus_id=1492:1826,enchant=binding_of_critical_strike
 trinket1=faulty_countermeasure,id=137539,bonus_id=1492:1826
 trinket2=chaos_talisman,id=137459,bonus_id=1492:1826
-main_hand=blades_of_the_fallen_prince,id=128292,gem_id=143801/137399/143801,relic_id=3491/1492:1826/3491,enchant=rune_of_razorice
+main_hand=blades_of_the_fallen_prince,id=128292,gem_id=137308/137399/137340,relic_id=1492:1727/1492:1727/1492:1727,enchant=rune_of_razorice
 off_hand=blades_of_the_fallen_prince,id=128293,enchant=rune_of_the_fallen_crusader
 save=Death_Knight_Frost_T19P.simc
 
@@ -46,5 +46,5 @@ finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1492:1826,enchant=binding
 finger2=band_of_fused_coral,id=134532,bonus_id=1492:1826,enchant=binding_of_haste
 trinket1=faulty_countermeasure,id=137539,bonus_id=1492:1826
 trinket2=chaos_talisman,id=137459,bonus_id=1492:1826
-main_hand=apocalypse,id=128403,gem_id=143813/143804/143809,relic_id=3491/3491/3491,enchant=rune_of_the_fallen_crusader
+main_hand=apocalypse,id=128403,gem_id=137492/137549/136718,relic_id=1492:1727/1492:1727/1492:1727,enchant=rune_of_the_fallen_crusader
 save=Death_Knight_Unholy_T19P.simc

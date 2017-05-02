@@ -264,7 +264,7 @@ public:
     buff_t* touch_of_karma;
     buff_t* transfer_the_power;
     buff_t* windwalking_driver;
-    buff_t* ww_tier_20_4pc;
+    buff_t* pressure_point;
 
     // Legendaries
     buff_t* hidden_masters_forbidden_touch;
@@ -614,11 +614,12 @@ public:
     const spell_data_t* hit_combo;
     const spell_data_t* mark_of_the_crane;
     const spell_data_t* master_of_combinations;
-    const spell_data_t* whirling_dragon_punch;
+    const spell_data_t* pressure_point;
     const spell_data_t* thunderfist_buff;
     const spell_data_t* thunderfist_damage;
     const spell_data_t* touch_of_karma_buff;
     const spell_data_t* touch_of_karma_tick;
+    const spell_data_t* whirling_dragon_punch;
     const spell_data_t* tier17_4pc_melee;
     const spell_data_t* tier18_2pc_melee;
     const spell_data_t* tier19_4pc_melee;
@@ -1321,8 +1322,8 @@ struct storm_earth_and_fire_pet_t : public pet_t
     {
       double c = sef_melee_attack_t::composite_crit_chance();
 
-      if ( p() -> buff.ww_tier_20_4pc_sef -> up() )
-        c += p() -> buff.ww_tier_20_4pc_sef -> value();
+      if ( p() -> buff.pressure_point_sef -> up() )
+        c += p() -> buff.pressure_point_sef -> value();
 
       return c;
     }
@@ -1336,8 +1337,8 @@ struct storm_earth_and_fire_pet_t : public pet_t
         state -> target -> debuffs.mortal_wounds -> trigger();
         o() -> trigger_mark_of_the_crane( state );
 
-        if ( p() -> buff.ww_tier_20_4pc_sef -> up() )
-          p() -> buff.ww_tier_20_4pc_sef -> expire();
+        if ( p() -> buff.pressure_point_sef -> up() )
+          p() -> buff.pressure_point_sef -> expire();
       }
     }
   };
@@ -1359,8 +1360,8 @@ struct storm_earth_and_fire_pet_t : public pet_t
     {
       double c = sef_melee_attack_t::composite_crit_chance();
 
-      if ( p() -> buff.ww_tier_20_4pc_sef -> up() )
-        c += p() -> buff.ww_tier_20_4pc_sef -> value();
+      if ( p() -> buff.pressure_point_sef -> up() )
+        c += p() -> buff.pressure_point_sef -> value();
 
       return c;
     }
@@ -1386,8 +1387,8 @@ struct storm_earth_and_fire_pet_t : public pet_t
           rsk_tornado_kick -> execute();
         }
         // Do no remove the T20 4-piece if Tornado Kick artifact trait is enabled.
-        else if ( p() -> buff.ww_tier_20_4pc_sef -> up() )
-          p() -> buff.ww_tier_20_4pc_sef -> expire() ;
+        else if ( p() -> buff.pressure_point_sef -> up() )
+          p() -> buff.pressure_point_sef -> expire() ;
 
         if ( o() -> sets.has_set_bonus( MONK_WINDWALKER, T20, B2 ) )
           o() -> get_target_data( state -> target ) -> debuff.rising_fist -> trigger();
@@ -1434,16 +1435,6 @@ struct storm_earth_and_fire_pet_t : public pet_t
     sef_fists_of_fury_tick_t( storm_earth_and_fire_pet_t* p ):
       sef_tick_action_t( "fists_of_fury_tick", p, p -> o() -> spec.fists_of_fury -> effectN( 3 ).trigger())
     { }
-
-    virtual double composite_target_multiplier( player_t* t ) const override
-    {
-      double ctm = sef_melee_attack_t::composite_target_multiplier( t );
-
-      if ( o() -> get_target_data( t ) -> debuff.rising_fist -> up() )
-        ctm *= 1.0 + o() -> get_target_data( t ) -> debuff.rising_fist -> value();
-
-      return ctm;
-    }
   };
 
   struct sef_fists_of_fury_t : public sef_melee_attack_t
@@ -1501,12 +1492,22 @@ struct storm_earth_and_fire_pet_t : public pet_t
       return dot_duration;
     }
 
+    virtual double composite_crit_chance() const override
+    {
+      double c = sef_melee_attack_t::composite_crit_chance();
+
+      if ( o() -> get_target_data( target ) -> debuff.rising_fist -> up() )
+        c += o() -> get_target_data( target ) -> debuff.rising_fist -> value();
+
+      return c;
+    }
+
     virtual void execute() override
     {
       sef_melee_attack_t::execute();
 
       if ( o() -> sets.has_set_bonus( MONK_WINDWALKER, T20, B4 ) )
-        p() -> buff.ww_tier_20_4pc_sef -> trigger();
+        p() -> buff.pressure_point_sef -> trigger();
     }
 
     virtual void last_tick( dot_t* dot ) override
@@ -1721,7 +1722,7 @@ public:
   {
     buff_t* hit_combo_sef;
     buff_t* transfer_the_power_sef;
-    buff_t* ww_tier_20_4pc_sef;
+    buff_t* pressure_point_sef;
   } buff;
 
   storm_earth_and_fire_pet_t( const std::string& name, sim_t* sim, monk_t* owner, bool dual_wield ):
@@ -1850,9 +1851,8 @@ public:
     buff.transfer_the_power_sef = buff_creator_t( this, "transfer_the_power_sef", o() -> artifact.transfer_the_power.data().effectN( 1 ).trigger() )
                             .default_value( o() -> artifact.transfer_the_power.rank() ? o() -> artifact.transfer_the_power.percent() : 0 ); 
 
-    buff.ww_tier_20_4pc_sef = buff_creator_t( this, "ww_tier_20_4pc_sef", o() -> sets.set( MONK_WINDWALKER, T20, B4 ) )
-      .duration( timespan_t::from_seconds( 24 ) )
-      .default_value( o() -> sets.set( MONK_WINDWALKER, T20, B4 ) -> effectN( 1 ).percent() );
+    buff.pressure_point_sef = buff_creator_t( this, "pressure_point_sef", o() -> passives.pressure_point )
+      .default_value( o() -> passives.pressure_point -> effectN( 1 ).percent() );
   }
 
   void trigger_attack( sef_ability_e ability, const action_t* source_action )
@@ -1965,7 +1965,7 @@ private:
     {
       if ( player -> is_moving() ) return false;
 
-      return ( player->main_hand_attack -> execute_event == nullptr ); // not swinging
+      return ( player -> main_hand_attack -> execute_event == nullptr ); // not swinging
     }
 
     virtual void execute() override
@@ -1986,7 +1986,7 @@ public:
     main_hand_weapon.max_dmg = dbc.spell_scaling( o() -> type, level() );
     main_hand_weapon.damage = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.0 );
-    owner_coeff.ap_from_ap = 6;
+    owner_coeff.ap_from_ap = ( maybe_ptr( o() -> dbc.ptr ) ? 4.5 : 6 );
   }
 
   monk_t* o()
@@ -3179,8 +3179,8 @@ struct rising_sun_kick_tornado_kick_t : public monk_melee_attack_t
   {
     double c = monk_melee_attack_t::composite_crit_chance();
 
-    if ( p() -> buff.ww_tier_20_4pc -> up() )
-      c += p() -> buff.ww_tier_20_4pc -> value();
+    if ( p() -> buff.pressure_point -> up() )
+      c += p() -> buff.pressure_point -> value();
 
     return c;
   }
@@ -3195,8 +3195,8 @@ struct rising_sun_kick_tornado_kick_t : public monk_melee_attack_t
       s -> target -> debuffs.mortal_wounds -> trigger();
       p() -> trigger_mark_of_the_crane( s );
 
-      if ( p() -> buff.ww_tier_20_4pc -> up() )
-        p() -> buff.ww_tier_20_4pc -> expire();
+      if ( p() -> buff.pressure_point -> up() )
+        p() -> buff.pressure_point -> expire();
     }
   }
 };
@@ -3265,8 +3265,8 @@ struct rising_sun_kick_t: public monk_melee_attack_t
   {
     double c = monk_melee_attack_t::composite_crit_chance();
 
-    if ( p() -> buff.ww_tier_20_4pc -> up() )
-      c += p() -> buff.ww_tier_20_4pc -> value();
+    if ( p() -> buff.pressure_point -> up() )
+      c += p() -> buff.pressure_point -> value();
 
     return c;
   }
@@ -3354,13 +3354,11 @@ struct rising_sun_kick_t: public monk_melee_attack_t
           rsk_tornado_kick -> execute();
         }
         // Don't remove the T20 4-piece buff if Tornado Kick artifact trait is enabled.
-        else if ( p() -> buff.ww_tier_20_4pc -> up() )
-          p() -> buff.ww_tier_20_4pc -> expire();
-
+        else if ( p() -> buff.pressure_point -> up() )
+          p() -> buff.pressure_point -> expire();
 
         if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T20, B2 ) )
           td( s -> target ) -> debuff.rising_fist -> trigger();
-
       }
     }
   }
@@ -3968,16 +3966,6 @@ struct fists_of_fury_tick_t: public monk_melee_attack_t
     dot_duration = timespan_t::zero();
     trigger_gcd = timespan_t::zero();
   }
-
-  virtual double composite_target_multiplier( player_t* t ) const override
-  {
-    double ctm = monk_melee_attack_t::composite_target_multiplier( t );
-
-    if ( td( t ) -> debuff.rising_fist -> up() )
-      ctm *= 1.0 + td( t ) -> debuff.rising_fist -> value();
-
-    return ctm;
-  }
 };
 
 struct fists_of_fury_t: public monk_melee_attack_t
@@ -4048,7 +4036,17 @@ struct fists_of_fury_t: public monk_melee_attack_t
     double c = monk_melee_attack_t::cost();
 
     if ( p() -> legendary.katsuos_eclipse )
-      c += p() -> legendary.katsuos_eclipse -> effectN( 1 ).base_value(); // saved as -2
+      c += p() -> legendary.katsuos_eclipse -> effectN( 1 ).base_value(); // saved as -1
+
+    return c;
+  }
+
+  virtual double composite_crit_chance() const override
+  {
+    double c = monk_melee_attack_t::composite_crit_chance();
+
+    if ( p() -> get_target_data( target ) -> debuff.rising_fist -> up() )
+      c += p() -> get_target_data( target ) -> debuff.rising_fist -> value();
 
     return c;
   }
@@ -4075,7 +4073,7 @@ struct fists_of_fury_t: public monk_melee_attack_t
       p() -> buff.masterful_strikes -> trigger( ( int ) p() -> sets.set( MONK_WINDWALKER,T18, B4 ) -> effect_count() - 1 );
 
     if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T20, B4 ) )
-      p() -> buff.ww_tier_20_4pc -> trigger();
+      p() -> buff.pressure_point -> trigger();
   }
 
   virtual void last_tick( dot_t* dot ) override
@@ -4854,6 +4852,7 @@ struct touch_of_karma_t: public monk_melee_attack_t
     else
       interval_stddev = interval_stddev_opt;
 
+    trigger_gcd = timespan_t::zero();
     may_crit = may_miss = may_dodge = may_parry = false;
   }
 
@@ -8188,11 +8187,12 @@ void monk_t::init_spells()
   passives.hit_combo                        = find_spell( 196741 );
   passives.mark_of_the_crane                = find_spell( 228287 );
   passives.master_of_combinations           = find_spell( 240672 );
-  passives.whirling_dragon_punch            = find_spell( 158221 );
+  passives.pressure_point                   = find_spell( 246331 );
   passives.thunderfist_buff                 = find_spell( 242387 );
   passives.thunderfist_damage               = find_spell( 242390 );
   passives.touch_of_karma_buff              = find_spell( 125174 );
   passives.touch_of_karma_tick              = find_spell( 124280 );
+  passives.whirling_dragon_punch            = find_spell( 158221 );
   passives.tier17_4pc_melee                 = find_spell( 166603 );
   passives.tier18_2pc_melee                 = find_spell( 216172 );
   passives.tier19_4pc_melee                 = find_spell( 211432 );
@@ -8497,9 +8497,8 @@ void monk_t::create_buffs()
                               .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER )
                               .cd( timespan_t::zero() );
 
-  buff.ww_tier_20_4pc = buff_creator_t( this, "ww_tier_20_4pc", sets.set( MONK_WINDWALKER,T20, B4 ) )
-                       .duration( timespan_t::from_seconds( 24 ) )
-                       .default_value( sets.set( MONK_WINDWALKER, T20, B4 ) -> effectN( 1 ).percent() );
+  buff.pressure_point = buff_creator_t( this, "pressure_point", passives.pressure_point )
+                       .default_value( passives.pressure_point -> effectN( 1 ).percent() );
 
   buff.thunderfist = buff_creator_t( this, "thunderfist", passives.thunderfist_buff );
 
@@ -9836,6 +9835,7 @@ void monk_t::apl_combat_windwalker()
 
   def -> add_action( "auto_attack" );
   def -> add_action( this, "Spear Hand Strike", "if=target.debuff.casting.react" );
+  def -> add_action( this, "Touch of Karma", "interval=90,pct_health=0.5" );
 
   if ( sim -> allow_potions )
   {

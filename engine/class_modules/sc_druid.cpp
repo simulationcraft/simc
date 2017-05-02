@@ -405,6 +405,7 @@ public:
     cooldown_t* growl;
     cooldown_t* incarnation;
     cooldown_t* mangle;
+    cooldown_t* thrash_bear;
     cooldown_t* maul;
     cooldown_t* moon_cd; // New / Half / Full Moon
     cooldown_t* wod_pvp_4pc_melee;
@@ -723,6 +724,7 @@ public:
     artifact_power_t iron_claws;
     //7.2
     artifact_power_t pawsitive_outlook;
+    artifact_power_t fortitude_of_the_cenarion_circle;
 
     // NYI
     artifact_power_t bloody_paws;
@@ -775,6 +777,7 @@ public:
     cooldown.growl               = get_cooldown( "growl"               );
     cooldown.incarnation         = get_cooldown( "incarnation"         );
     cooldown.mangle              = get_cooldown( "mangle"              );
+    cooldown.thrash_bear         = get_cooldown( "thrash_bear"         );
     cooldown.maul                = get_cooldown( "maul"                );
     cooldown.moon_cd             = get_cooldown( "moon_cd"             );
     cooldown.wod_pvp_4pc_melee   = get_cooldown( "wod_pvp_4pc_melee"   );
@@ -855,6 +858,7 @@ public:
   virtual std::string      create_profile( save_e type = SAVE_ALL ) override;
   virtual druid_td_t* get_target_data( player_t* target ) const override;
   virtual void      copy_from( player_t* ) override;
+  virtual void output_json_report(js::JsonOutput& /* root */) const override;
 
   form_e get_form() const { return form; }
   void shapeshift( form_e );
@@ -2950,7 +2954,7 @@ struct ashamanes_frenzy_driver_t : public cat_attack_t
   // Don't record data for this action.
   void record_data( action_state_t* s ) override
   { ( void ) s; assert( s -> result_amount == 0.0 ); }
-
+   
   // Assure the only persistent multiplier here is Bloodtalons.
   double composite_persistent_multiplier( const action_state_t* ) const override
   { return 1.0 + p() -> buff.bloodtalons -> check_value(); }
@@ -5317,15 +5321,17 @@ struct incarnation_t : public druid_spell_t
       if ( p() -> buff.incarnation_cat -> check() )
         p() -> regen( time );
     }
-    
+
     // Proxy buff for APL laziness.
     p() -> buff.incarnation_proxy -> trigger( 1, 0, -1.0, spec_buff -> remains() );
 
     if ( p() -> buff.incarnation_bear -> check() )
     {
-      p() -> cooldown.mangle -> reset( false );
-      p() -> cooldown.growl  -> reset( false );
-      p() -> cooldown.maul   -> reset( false );
+      p() -> cooldown.mangle      -> reset( false );
+      p() -> cooldown.thrash_bear -> reset( false );
+      p() -> cooldown.growl       -> reset( false );
+      p() -> cooldown.maul        -> reset( false );
+      
     }
   }
 };
@@ -6885,6 +6891,9 @@ void druid_t::init_spells()
   artifact.iron_claws                   = find_artifact_spell( "Iron Claws" );
   artifact.roar_of_the_crowd            = find_artifact_spell( "Roar of the Crowd" );
   artifact.pawsitive_outlook            = find_artifact_spell( "Pawsitive Outlook" );
+  artifact.fortitude_of_the_cenarion_circle = find_artifact_spell("Fortitude of the Cenarion Circle");
+
+
 
   // Active Actions =========================================================
 
@@ -7431,6 +7440,7 @@ void druid_t::apl_default()
 void druid_t::apl_feral()
 {
   action_priority_list_t* def      = get_action_priority_list( "default"    );
+  action_priority_list_t* opener   = get_action_priority_list( "opener"     );
   action_priority_list_t* finish   = get_action_priority_list( "finisher"   );
   action_priority_list_t* generate = get_action_priority_list( "generator"  );
   action_priority_list_t* sbt      = get_action_priority_list( "sbt_opener" );
@@ -7443,10 +7453,23 @@ void druid_t::apl_feral()
   else
     potion_action += "tolvir";
 
+  // Opener =================================================================
+  opener ->add_action( this, "Rake", "if=buff.prowl.up" );
+  opener ->add_talent( this, "Savage Roar", "if=buff.savage_roar.down" );
+  opener ->add_action( this, "Berserk", "if=buff.savage_roar.up" );
+  opener ->add_action( this, "Tiger's Fury", "if=buff.berserk.up" );
+  opener ->add_action( this, artifact.ashamanes_frenzy, "frenzy", "if=buff.bloodtalons.up" );
+  opener ->add_action( this, "Regrowth", "if=combo_points=5&buff.bloodtalons.down" );
+  opener ->add_action( this, "Rip", "if=combo_points=5&buff.bloodtalons.up" );
+  if ( sets.has_set_bonus( DRUID_FERAL, T19, B4 ))
+   opener -> add_action( "thrash_cat,if=combo_points<5&!ticking" );
+  opener ->add_action( this, "Shred", "if=combo_points<5&buff.savage_roar.up" );
+
   // Main List ==============================================================
   
   def -> add_action( this, "Dash", "if=!buff.cat_form.up" );
   def -> add_action( this, "Cat Form" );
+  def -> add_action( "call_action_list,name=opener,if=!dot.rip.ticking&time<15&talent.savage_roar.enabled&talent.jagged_wounds.enabled&talent.bloodtalons.enabled&desired_targets<=1" );
   def -> add_talent( this, "Wild Charge" );
   def -> add_talent( this, "Displacer Beast", "if=movement.distance>10" );
   def -> add_action( this, "Dash", "if=movement.distance&buff.displacer_beast.down&buff.wild_charge_movement.down" );
@@ -8166,6 +8189,7 @@ double druid_t::composite_player_multiplier( school_e school ) const
 
   m *= 1.0 + artifact.fangs_of_the_first.percent();
   m *= 1.0 + artifact.ferocity_of_the_cenarion_circle.percent();
+  m *= 1.0 + artifact.fortitude_of_the_cenarion_circle.data().effectN( 1 ).percent();
   m *= 1.0 + artifact.goldrinns_fury.percent();
   m *= 1.0 + artifact.radiance_of_the_cenarion_circle.data().effectN( 1 ).percent();
 
@@ -8179,9 +8203,11 @@ double druid_t::composite_player_target_multiplier( player_t* target, school_e s
   druid_td_t* td = get_target_data( target );
   double m = player_t::composite_player_target_multiplier( target, school );
 
-  if ( dbc::is_school( school, SCHOOL_ARCANE ) && dbc::is_school( school, SCHOOL_NATURE ) || dbc::is_school(school, SCHOOL_ASTRAL))
+  if ( dbc::is_school( school, SCHOOL_ARCANE ) &&
+       ( dbc::is_school( school, SCHOOL_NATURE ) || dbc::is_school( school, SCHOOL_ASTRAL ) ) )
   {
-    m *= 1.0 + td -> debuff.circadian_invocation_arcane -> stack_value() + td -> debuff.circadian_invocation_nature -> stack_value();
+    m *= 1.0 + td -> debuff.circadian_invocation_arcane -> stack_value()
+             + td -> debuff.circadian_invocation_nature -> stack_value();
   }
   else if ( dbc::is_school( school, SCHOOL_ARCANE ) )
   {
@@ -9013,7 +9039,7 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
     buff( buffs_t() ),
     debuff( debuffs_t() )
 {
-  dots.ashamanes_frenzy = target.get_dot( "ashamanes_frenzy", &source );
+  dots.ashamanes_frenzy = target.get_dot( "ashamanes_frenzy_ignite", &source );
   dots.fury_of_elune    = target.get_dot( "fury_of_elune",    &source );
   dots.gushing_wound    = target.get_dot( "gushing_wound",    &source );
   dots.lifebloom        = target.get_dot( "lifebloom",        &source );
@@ -9073,6 +9099,117 @@ void druid_t::copy_from( player_t* source )
   t20_4pc = p -> t20_4pc;
   ahhhhh_the_great_outdoors = p -> ahhhhh_the_great_outdoors;
 }
+void druid_t::output_json_report(js::JsonOutput& root) const
+{
+   return; //NYI.
+   if ( specialization() != DRUID_FERAL ) return;
+
+   /* snapshot_stats:
+   *    savage_roar:
+   *        [ name: Shred Exec: 15% Benefit: 98% ]
+   *        [ name: Rip Exec: 88% Benefit: 35% ]
+   *    bloodtalons:
+   *        [ name: Rip Exec: 99% Benefit: 99% ]
+   *    tigers_fury:
+   */
+   for (size_t i = 0, end = stats_list.size(); i < end; i++)
+   {
+      stats_t* stats = stats_list[i];
+      double tf_exe_up = 0, tf_exe_total = 0;
+      double tf_benefit_up = 0, tf_benefit_total = 0;
+      double sr_exe_up = 0, sr_exe_total = 0;
+      double sr_benefit_up = 0, sr_benefit_total = 0;
+      double bt_exe_up = 0, bt_exe_total = 0;
+      double bt_benefit_up = 0, bt_benefit_total = 0;
+      int n = 0;
+
+      for (size_t j = 0, end2 = stats->action_list.size(); j < end2; j++)
+      {
+         cat_attacks::cat_attack_t* a = dynamic_cast<cat_attacks::cat_attack_t*>(stats->action_list[j]);
+         if (!a)
+            continue;
+
+         if (!a->consumes_bloodtalons)
+            continue;
+
+         tf_exe_up += a->tf_counter->mean_exe_up();
+         tf_exe_total += a->tf_counter->mean_exe_total();
+         tf_benefit_up += a->tf_counter->mean_tick_up();
+         tf_benefit_total += a->tf_counter->mean_tick_total();
+         if (has_amount_results(stats->direct_results))
+         {
+            tf_benefit_up += a->tf_counter->mean_exe_up();
+            tf_benefit_total += a->tf_counter->mean_exe_total();
+         }
+
+         if (talent.savage_roar->ok())
+         {
+            sr_exe_up += a->sr_counter->mean_exe_up();
+            sr_exe_total += a->sr_counter->mean_exe_total();
+            sr_benefit_up += a->sr_counter->mean_tick_up();
+            sr_benefit_total += a->sr_counter->mean_tick_total();
+            if (has_amount_results(stats->direct_results))
+            {
+               sr_benefit_up += a->sr_counter->mean_exe_up();
+               sr_benefit_total += a->sr_counter->mean_exe_total();
+            }
+         }
+         if (talent.bloodtalons->ok())
+         {
+            bt_exe_up += a->bt_counter->mean_exe_up();
+            bt_exe_total += a->bt_counter->mean_exe_total();
+            bt_benefit_up += a->bt_counter->mean_tick_up();
+            bt_benefit_total += a->bt_counter->mean_tick_total();
+            if (has_amount_results(stats->direct_results))
+            {
+               bt_benefit_up += a->bt_counter->mean_exe_up();
+               bt_benefit_total += a->bt_counter->mean_exe_total();
+            }
+         }
+
+         if (tf_exe_total > 0 || bt_exe_total > 0 || sr_exe_total > 0)
+         {
+            auto snapshot = root["snapshot_stats"].add();
+            if (talent.savage_roar->ok())
+            {
+               auto sr = snapshot["savage_roar"].make_array();
+
+
+
+
+
+            }
+            if (talent.bloodtalons->ok())
+            {
+
+            }
+
+
+
+         }
+
+      }
+
+   }
+   
+
+   
+}
+
+//void druid_t::output_json_report(js::JsonOutput& root) const
+//{
+//   if (specialization() == DRUID_FERAL)
+//   {
+//      auto snapshot = root["snapshot_stats"].add();
+//
+//      if ( talent.savage_roar -> ok() )
+//      {
+//         snapshot["savage_roar"].make_array();
+//         *(void*)0 == 0;
+//      }
+//
+//   }
+//}
 
 /* Report Extension Class
  * Here you can define class specific report extensions/overrides
@@ -9185,7 +9322,7 @@ public:
 
       if ( tf_exe_total > 0 || bt_exe_total > 0 || sr_exe_total > 0 )
       {
-        std::string name_str = report::decorated_action_name( stats -> action_list[ 0 ], stats -> name_str );
+        std::string name_str = report::action_decorator_t( stats -> action_list[ 0 ] ).decorate();
         std::string row_class_str = "";
         if ( ++n & 1 )
           row_class_str = " class=\"odd\"";
