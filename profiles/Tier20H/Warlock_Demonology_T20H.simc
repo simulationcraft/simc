@@ -1,10 +1,10 @@
-warlock="Warlock_Demonology_T19H"
+warlock="Warlock_Demonology_T20H"
 level=110
 race=troll
 role=spell
 position=back
-talents=3201022
-artifact=37:137549:137492:133764:0:1170:1:1171:3:1173:3:1174:3:1176:6:1177:3:1178:3:1179:2:1180:1:1181:1:1182:1:1183:1:1185:1:1354:1
+talents=3202023
+artifact=37:0:0:0:0:1170:1:1171:4:1172:3:1173:4:1174:4:1175:4:1176:4:1177:4:1178:3:1179:3:1180:1:1181:1:1182:1:1183:1:1184:1:1185:1:1354:1:1391:1:1605:4:1606:1:1607:1:1712:1
 spec=demonology
 
 # This default action priority list is automatically created based on your character.
@@ -63,32 +63,33 @@ actions+=/demonic_empowerment,if=artifact.thalkiels_ascendance.rank&talent.power
 actions+=/shadow_bolt
 actions+=/life_tap
 
-head=collar_of_enclosure,id=134424,bonus_id=1727/1517
-neck=pendant_of_the_watchful_eye,id=137536,bonus_id=1727/1517,enchant=mark_of_the_claw
-shoulders=amice_of_the_unfurling_tempest,id=134432,bonus_id=1727/1517
-back=goldscar_pelt,id=133639,bonus_id=1727/1517,enchant_id=5436
-chest=fluxflow_robes,id=134413,bonus_id=1727/1517
-wrists=clasp_of_cosmic_insignificance,id=139187,bonus_id=1805
-hands=handwraps_of_delusional_power,id=138212,bonus_id=1805
-waist=waistband_of_spiritual_doom,id=137507,bonus_id=1727/1517
-legs=leggings_of_swirling_runes,id=133610,bonus_id=1727/1517
-feet=cozy_dryad_hoofsocks,id=139194,bonus_id=1805
-finger1=band_of_fused_coral,id=134532,bonus_id=1727/1517,enchant_id=5428
-finger2=ring_of_contempt,id=134490,bonus_id=1727/1517,enchant_id=5428
-trinket1=swarming_plaguehive,id=139321,bonus_id=1805
-trinket2=chrono_shard,id=137419,bonus_id=1727/1517
-main_hand=spine_of_thalkiel,id=137246,ilevel=894
-off_hand=skull_of_the_manari,id=128943,gem_id=137549/137492/133764,relic_id=1517:1727/1517:1727/1517:1727
+head=eyes_of_azjaqir,id=138314,bonus_id=3518
+neck=radiant_string_of_scorpid_eyes,id=140898,bonus_id=3445,enchant=mark_of_the_claw
+shoulders=pauldrons_of_azjaqir,id=138323,bonus_id=3518
+back=astromancers_greatcloak,id=140909,bonus_id=3518,enchant_id=5436
+chest=robes_of_fluctuating_energy,id=140848,bonus_id=3445
+wrists=woven_lasher_tendril_bracers,id=140886,bonus_id=3518
+hands=clutch_of_azjaqir,id=138311,bonus_id=3518
+waist=manari_skullbuckled_cinch,id=140887,bonus_id=3518
+legs=leggings_of_azjaqir,id=138317,bonus_id=3518
+feet=perpetually_muddy_sandals,id=140854,bonus_id=3445
+finger1=ring_of_the_scoured_clan,id=140897,bonus_id=3519,enchant_id=5428
+finger2=ring_of_braided_stems,id=140896,bonus_id=3518,enchant_id=5428
+trinket1=whispers_in_the_dark,id=140809,bonus_id=3519
+trinket2=erratic_metronome,id=140792,bonus_id=3445
+main_hand=spine_of_thalkiel,id=137246
+off_hand=skull_of_the_manari,id=128943,gem_id=140826/140837/140822,relic_id=3519/3518/3518
 
 # Gear Summary
-# gear_ilvl=868.63
-# gear_stamina=23750
-# gear_intellect=14877
-# gear_spell_power=11750
-# gear_crit_rating=5353
-# gear_haste_rating=13054
-# gear_mastery_rating=1320
-# gear_versatility_rating=745
-# gear_armor=1715
-# set_bonus=tier19p_cloth_2pc=1
+# gear_ilvl=907.38
+# gear_stamina=34013
+# gear_intellect=23359
+# gear_spell_power=16280
+# gear_crit_rating=3142
+# gear_haste_rating=11417
+# gear_mastery_rating=5822
+# gear_versatility_rating=2855
+# gear_armor=1969
+# set_bonus=tier19_2pc=1
+# set_bonus=tier19_4pc=1
 default_pet=felguard

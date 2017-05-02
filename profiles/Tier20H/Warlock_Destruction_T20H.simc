@@ -1,10 +1,10 @@
-warlock="Warlock_Destruction_T19H_NH"
+warlock="Warlock_Destruction_T20H"
 level=110
 race=troll
 role=spell
 position=back
 talents=2203022
-artifact=38:140826:140837:140826:0:803:1:804:3:805:3:806:3:807:3:808:3:809:6:810:3:811:3:812:3:813:1:814:1:815:1:816:1:817:1:818:1:1355:1:1392:8
+artifact=38:0:0:0:0:803:1:804:4:805:4:806:4:807:4:808:4:809:4:810:3:811:3:812:3:813:1:814:1:815:1:816:1:817:1:818:1:1355:1:1392:1:1609:4:1610:1:1611:1:1713:1
 spec=destruction
 
 # This default action priority list is automatically created based on your character.
@@ -67,31 +67,31 @@ actions+=/immolate,if=!talent.roaring_blaze.enabled&remains<=duration*0.3
 actions+=/incinerate
 actions+=/life_tap
 
-head=eyes_of_azjaqir,id=138314,bonus_id=3516
-neck=radiant_string_of_scorpid_eyes,id=140898,bonus_id=3444,enchant=mark_of_the_claw
-shoulders=pauldrons_of_azjaqir,id=138323,bonus_id=3516
-back=drape_of_the_unworthy,id=142521,bonus_id=3469/1512,enchant_id=5436
-chest=robes_of_fluctuating_energy,id=140848,bonus_id=3444
-wrists=woven_lasher_tendril_bracers,id=140886,bonus_id=3516
-hands=clutch_of_azjaqir,id=138311,bonus_id=3516
-waist=cinch_of_light,id=142411,bonus_id=3469
-legs=leggings_of_azjaqir,id=138317,bonus_id=3516
-feet=treads_of_the_drowned,id=142414,bonus_id=3469/1512
-finger1=ring_of_the_scoured_clan,id=140897,bonus_id=3517,enchant_id=5428
-finger2=ring_of_ascended_glory,id=142520,bonus_id=3469,enchant_id=5428
-trinket1=brinewater_slime_in_a_bottle,id=142507,bonus_id=604/3469/1512
-trinket2=whispers_in_the_dark,id=140809,bonus_id=3517
-main_hand=scepter_of_sargeras,id=128941,gem_id=140826/140837/140826,relic_id=3517/3516/3517
+head=eyes_of_azjaqir,id=138314,bonus_id=3518
+neck=radiant_string_of_scorpid_eyes,id=140898,bonus_id=3445,enchant=mark_of_the_claw
+shoulders=pauldrons_of_azjaqir,id=138323,bonus_id=3518
+back=astromancers_greatcloak,id=140909,bonus_id=3518,enchant_id=5436
+chest=robes_of_fluctuating_energy,id=140848,bonus_id=3445
+wrists=woven_lasher_tendril_bracers,id=140886,bonus_id=3518
+hands=clutch_of_azjaqir,id=138311,bonus_id=3518
+waist=manari_skullbuckled_cinch,id=140887,bonus_id=3518
+legs=leggings_of_azjaqir,id=138317,bonus_id=3518
+feet=outcast_wanderers_footrags,id=140914,bonus_id=3519
+finger1=ring_of_the_scoured_clan,id=140897,bonus_id=3519,enchant_id=5428
+finger2=ring_of_braided_stems,id=140896,bonus_id=3518,enchant_id=5428
+trinket1=whispers_in_the_dark,id=140809,bonus_id=3519
+trinket2=erratic_metronome,id=140792,bonus_id=3445
+main_hand=scepter_of_sargeras,id=128941,gem_id=140826/140837/140826,relic_id=3519/3518/3519
 
 # Gear Summary
-# gear_ilvl=892.80
-# gear_stamina=29998
-# gear_intellect=34669
-# gear_crit_rating=3828
-# gear_haste_rating=11793
-# gear_mastery_rating=6030
-# gear_versatility_rating=1301
-# gear_armor=1878
+# gear_ilvl=906.73
+# gear_stamina=34369
+# gear_intellect=39399
+# gear_crit_rating=3611
+# gear_haste_rating=11062
+# gear_mastery_rating=5788
+# gear_versatility_rating=2855
+# gear_armor=1977
 # set_bonus=tier19_2pc=1
 # set_bonus=tier19_4pc=1
 default_pet=imp
