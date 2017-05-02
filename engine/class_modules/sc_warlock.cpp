@@ -3764,7 +3764,12 @@ struct havoc_t: public warlock_spell_t
       cooldown -> duration = timespan_t::from_seconds( 0 );
     havoc_duration = p -> find_spell( 80240 ) -> duration();
     if ( p -> talents.wreak_havoc -> ok() )
-      havoc_duration += p -> find_spell( 196410 ) -> effectN( 1 ).time_value();
+    {
+      if ( maybe_ptr( p -> dbc.ptr ) )
+        havoc_duration = -p -> find_spell( 196410 ) -> effectN( 1 ).time_value();
+      else
+        havoc_duration += p -> find_spell( 196410 ) -> effectN( 1 ).time_value();
+    }
   }
 
   void execute() override
@@ -5953,7 +5958,6 @@ warlock( p )
   dots_channel_demonfire = target -> get_dot( "channel_demonfire", &p );
 
   debuffs_haunt = buff_creator_t( *this, "haunt", source -> find_spell( 48181 ) )
-    .duration( timespan_t::from_seconds( 15 ) )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC );
   debuffs_shadowflame = buff_creator_t( *this, "shadowflame", source -> find_spell( 205181 ) );
   debuffs_agony = buff_creator_t( *this, "agony", source -> find_spell( 980 ) )
