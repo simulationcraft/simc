@@ -345,6 +345,7 @@ public:
     buff_t* warrior_of_elune;
     buff_t* balance_tier18_4pc; // T18 4P Balance
     buff_t* wax_and_wane;
+    haste_buff_t* astral_acceleration;
 
     // Feral
     buff_t* ashamanes_energy;
@@ -794,6 +795,7 @@ public:
     regen_type = REGEN_DYNAMIC;
     regen_caches[ CACHE_HASTE ] = true;
     regen_caches[ CACHE_ATTACK_HASTE ] = true;
+
   }
 
   virtual           ~druid_t();
@@ -1898,6 +1900,10 @@ public:
 
       if ( incarnation && p() -> buff.incarnation_moonkin -> check() )
         e *= 1.0 + p() -> talent.incarnation_moonkin -> effectN( 4 ).percent();
+
+      if ( p() -> sets.has_set_bonus( DRUID_BALANCE, T20 , B2 ) )
+         e *= 1.0 + p() -> sets.set( DRUID_BALANCE, T20, B2 ) -> effectN(1).percent();
+
     }
 
     return e;
@@ -1928,18 +1934,6 @@ public:
 
      return tm;
   }
-
-  /*double composite_target_multiplier( player_t* t ) const override
-  {
-    double tm = ab::composite_target_multiplier( t );
-
-    if ( stellar_empowerment && td( t ) -> debuff.stellar_empowerment -> up() )
-    {
-      tm *= 1.0 + composite_stellar_empowerment( t );
-    }
-
-    return tm;
-  }*/
 
   virtual void execute() override
   {
@@ -6060,6 +6054,9 @@ struct starfall_t : public druid_spell_t
     {
       druid_spell_t::execute();
 
+      if ( p() -> sets.has_set_bonus( DRUID_BALANCE, T20, B4 ))
+         p() -> buff.astral_acceleration -> trigger();
+
       // Non-distance targeting: If we hit more than 1 target, simply trigger the echo as an AoE.
       if ( p() -> artifact.echoing_stars.rank() && ! echoing_stars &&
         ! sim -> distance_targeting_enabled && execute_state -> n_targets > 1 )
@@ -6249,6 +6246,9 @@ struct starsurge_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
+    if ( p() -> sets.has_set_bonus( DRUID_BALANCE, T20, B4 ))
+       p() -> buff.astral_acceleration -> trigger();
+    
     if ( hit_any_target )
     {
       // Dec 3 2015: Starsurge must hit to grant empowerments, but grants them on cast not impact.
@@ -6957,7 +6957,8 @@ void druid_t::init_base_stats()
   // Resources
   resources.base[ RESOURCE_RAGE         ] = 100;
   resources.base[ RESOURCE_COMBO_POINT  ] = 5;
-  resources.base[ RESOURCE_ASTRAL_POWER ] = 100;
+  resources.base[RESOURCE_ASTRAL_POWER] = 100
+      + sets.set( DRUID_BALANCE, T20, B2 ) -> effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
   resources.base[ RESOURCE_ENERGY       ] = 100
       + sets.set( DRUID_FERAL, T18, B2 ) -> effectN( 2 ).resource( RESOURCE_ENERGY )
       + talent.moment_of_clarity -> effectN( 3 ).percent();
@@ -7108,6 +7109,14 @@ void druid_t::create_buffs()
 
   buff.wax_and_wane          = buff_creator_t( this, "wax_and_wane", find_spell( 239952 ) )
                                 .default_value(  find_spell( 239952 ) -> effectN(1).percent() );
+
+  buff.astral_acceleration   = haste_buff_creator_t( this, "astral_acceleration", sets.set(DRUID_BALANCE, T20, B4) )
+                                .cd( timespan_t::zero() )
+                                .default_value( sets.set( DRUID_BALANCE, T20, B4 ) -> effectN(1).percent() )
+                                .max_stack( 5 )
+                                .refresh_behavior( BUFF_REFRESH_DISABLED )
+                                .duration( timespan_t::from_seconds( 15.0 ) );
+     
 
   // Feral
 
@@ -8328,6 +8337,8 @@ double druid_t::composite_spell_haste() const
   double sh = player_t::composite_spell_haste();
 
   sh /= 1.0 + buff.star_power -> check_stack_value();
+
+  sh *= 1.0 + buff.astral_acceleration -> check_stack_value();
 
   if ( buff.sephuzs_secret -> check() )
      sh *= 1.0 / ( 1.0 + buff.sephuzs_secret -> stack_value() );
