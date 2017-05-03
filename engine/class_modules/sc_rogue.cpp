@@ -295,6 +295,9 @@ struct rogue_t : public player_t
     buff_t* t19oh_8pc;
     // T19 Raid
     buff_t* t19_4pc_outlaw;
+    // T20 Raid
+    buff_t* t20_2pc_outlaw;
+
 
 
     // Artifact
@@ -3606,6 +3609,11 @@ struct shot_base_t : public rogue_attack_t
           p() -> resource_gain( RESOURCE_COMBO_POINT, n_cp, p() -> gains.curse_of_the_dreadblades, this );
         }
       }
+
+      if ( p() -> sets.has_set_bonus( ROGUE_OUTLAW, T20, B2 ) && p() -> buffs.opportunity -> up() )
+      {
+        p() -> buffs.t20_2pc_outlaw -> trigger();
+      }
     }
 
     // Expire buffs.
@@ -6210,6 +6218,40 @@ struct proxy_garrote_t : public buff_t
   }
 };
 
+struct adrenaline_rush_t : public haste_buff_t
+{
+  rogue_t* r;
+  bool t20_4pc_extension_running;
+
+  adrenaline_rush_t( rogue_t* p ) :
+    haste_buff_t( haste_buff_creator_t( p, "adrenaline_rush", p -> find_class_spell( "Adrenaline Rush" ) )
+                  .cd( timespan_t::zero() )
+                  .default_value( p -> find_class_spell( "Adrenaline Rush" ) -> effectN( 2 ).percent() )
+                  .affects_regen( true )
+                  .add_invalidate( CACHE_ATTACK_SPEED ) ),
+    r( p ),
+    t20_4pc_extension_running( false )
+  { }
+
+  void execute( int stacks, double value, timespan_t duration ) override
+  {
+    buff_t::execute( stacks, value, duration );
+
+    t20_4pc_extension_running = false;
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+
+    if ( r -> sets.has_set_bonus( ROGUE_OUTLAW, T20, B4) && ! t20_4pc_extension_running )
+    {
+      trigger( 1, value() / 2.0, -1.0, timespan_t::from_seconds( r -> sets.set( ROGUE_OUTLAW, T20, B4 ) -> effectN( 1 ).base_value() ) );
+      t20_4pc_extension_running = true;
+    }
+  }
+};
+
 struct blurred_time_t : public buff_t
 {
   rogue_t* r;
@@ -6788,6 +6830,8 @@ double rogue_t::composite_melee_crit_chance() const
 
   crit += buffs.mantle_of_the_master_assassin_aura -> stack_value(); // 7.1.5 Legendary
 
+  crit += buffs.t20_2pc_outlaw -> stack_value();
+
   return crit;
 }
 
@@ -6818,6 +6862,8 @@ double rogue_t::composite_spell_crit_chance() const
   crit += buffs.mantle_of_the_master_assassin -> stack_value(); // 7.1.5 Legendary
 
   crit += buffs.mantle_of_the_master_assassin_aura -> stack_value(); // 7.1.5 Legendary
+
+  crit += buffs.t20_2pc_outlaw -> stack_value();
 
   return crit;
 }
@@ -8083,11 +8129,7 @@ void rogue_t::create_buffs()
                                 .period( timespan_t::zero() )
                                 .refresh_behavior( BUFF_REFRESH_PANDEMIC );
   // Outlaw
-  buffs.adrenaline_rush       = haste_buff_creator_t( this, "adrenaline_rush", find_class_spell( "Adrenaline Rush" ) )
-                                .cd( timespan_t::zero() )
-                                .default_value( find_class_spell( "Adrenaline Rush" ) -> effectN( 2 ).percent() )
-                                .affects_regen( true )
-                                .add_invalidate( CACHE_ATTACK_SPEED );
+  buffs.adrenaline_rush       = new buffs::adrenaline_rush_t( this );
   buffs.blade_flurry          = buff_creator_t( this, "blade_flurry", spec.blade_flurry )
                                 .cd( timespan_t::zero() );
   buffs.opportunity           = buff_creator_t( this, "opportunity", find_spell( 195627 ) );
@@ -8206,6 +8248,10 @@ void rogue_t::create_buffs()
   // T19 Raid
   buffs.t19_4pc_outlaw                     = buff_creator_t( this, "swordplay", sets.set( ROGUE_OUTLAW, T19, B4 ) -> effectN( 1 ).trigger() )
                                              .trigger_spell( sets.set( ROGUE_OUTLAW, T19, B4 ) );
+  // T20 Raid
+  buffs.t20_2pc_outlaw                     = buff_creator_t( this, "headshot", find_spell( 242277 ) )
+                                             .default_value( find_spell( 242277 ) -> effectN( 1 ).percent() )
+                                             .add_invalidate( CACHE_CRIT_CHANCE );
 
 
   // Artifact
