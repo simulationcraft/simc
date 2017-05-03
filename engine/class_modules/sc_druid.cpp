@@ -6957,7 +6957,7 @@ void druid_t::init_base_stats()
   // Resources
   resources.base[ RESOURCE_RAGE         ] = 100;
   resources.base[ RESOURCE_COMBO_POINT  ] = 5;
-  resources.base[RESOURCE_ASTRAL_POWER] = 100
+  resources.base[ RESOURCE_ASTRAL_POWER ] = 100
       + sets.set( DRUID_BALANCE, T20, B2 ) -> effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
   resources.base[ RESOURCE_ENERGY       ] = 100
       + sets.set( DRUID_FERAL, T18, B2 ) -> effectN( 2 ).resource( RESOURCE_ENERGY )
@@ -9091,7 +9091,8 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
                                .default_value( source.find_spell( 210670 ) -> effectN( 1 ).percent() )
                                .trigger_spell( source.artifact.open_wounds );
   debuff.stellar_empowerment = buff_creator_t( *this, "stellar_empowerment", source.spec.stellar_empowerment )
-                                .default_value( source.spec.stellar_empowerment -> effectN( 1 ).percent() );
+                               .default_value(source.spec.stellar_empowerment->effectN(1).percent())
+                               .duration( timespan_t::from_seconds( 8 )); //seems blizzard removed any useful spelldata, so hardcore this for now.
 
   debuff.circadian_invocation_arcane = buff_creator_t( *this, "circadian_invocation_arcane", source.find_spell( 240606 ) )
                                         .default_value( source.find_spell( 240606 ) -> effectN( 1 ).percent() );
