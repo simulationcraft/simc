@@ -3478,7 +3478,7 @@ struct windstrike_t : public stormstrike_base_t
 
   double recharge_multiplier() const override
   {
-    auto m = shaman_attack_t::recharge_multiplier();
+    auto m = stormstrike_base_t::recharge_multiplier();
 
     if ( maybe_ptr( p() -> dbc.ptr ) && p() -> buff.ascendance -> up() )
     {
