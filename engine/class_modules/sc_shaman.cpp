@@ -1040,7 +1040,10 @@ public:
     }
 
     // Setup Hasted CD for Enhancement
-    ab::cooldown -> hasted = ab::data().affected_by( p() -> spec.shaman -> effectN( 2 ) );
+    if ( ab::data().affected_by( p() -> spec.shaman -> effectN( 2 ) ) )
+    {
+      ab::cooldown -> hasted = true;
+    }
 
     // Setup Hasted GCD for Enhancement
     if ( ab::data().affected_by( p() -> spec.shaman -> effectN( 3 ) ) )
@@ -1402,8 +1405,15 @@ public:
 
   virtual double stormbringer_proc_chance() const
   {
-    return p() -> spec.stormbringer -> proc_chance() +
+    double base_chance = p() -> spec.stormbringer -> proc_chance() +
            p() -> cache.mastery() * p() -> mastery.enhanced_elements -> effectN( 3 ).mastery_value();
+
+    if ( maybe_ptr( p() -> dbc.ptr ) && weapon && weapon -> slot == SLOT_MAIN_HAND )
+    {
+      base_chance += p() -> talent.tempest -> effectN( 1 ).percent();
+    }
+
+    return base_chance;
   }
 };
 
@@ -3466,6 +3476,30 @@ struct windstrike_t : public stormstrike_base_t
     }
   }
 
+  double recharge_multiplier() const override
+  {
+    auto m = shaman_attack_t::recharge_multiplier();
+
+    if ( maybe_ptr( p() -> dbc.ptr ) && p() -> buff.ascendance -> up() )
+    {
+      m *= 1.0 + p() -> buff.ascendance -> data().effectN( 4 ).percent();
+    }
+
+    return m;
+  }
+
+  double cost() const override
+  {
+    double c = stormstrike_base_t::cost();
+
+    if ( maybe_ptr( p() -> dbc.ptr ) && p() -> buff.ascendance -> check() )
+    {
+      c *= 1.0 + p() -> buff.ascendance -> data().effectN( 5 ).percent();
+    }
+
+    return c;
+  }
+
   bool ready() override
   {
     if ( p() -> buff.ascendance -> remains() <= cooldown -> queue_delay() )
@@ -3505,6 +3539,25 @@ struct rockbiter_t : public shaman_spell_t
   {
     maelstrom_gain += player -> artifact.gathering_of_the_maelstrom.value();
     base_multiplier *= 1.0 + player -> artifact.weapons_of_the_elements.percent();
+
+    if ( maybe_ptr( player -> dbc.ptr ) )
+    {
+      base_multiplier *= 1.0 + player -> talent.boulderfist -> effectN( 2 ).percent();
+      // TODO: SpellCategory + SpellEffect based detection
+      cooldown -> hasted = true;
+    }
+  }
+
+  double recharge_multiplier() const override
+  {
+    double m = shaman_spell_t::recharge_multiplier();
+
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+    {
+      m *= 1.0 + p() -> talent.boulderfist -> effectN( 1 ).percent();
+    }
+
+    return m;
   }
 
   void execute() override
@@ -3516,7 +3569,7 @@ struct rockbiter_t : public shaman_spell_t
 
   bool ready() override
   {
-    if ( p() -> talent.boulderfist -> ok() )
+    if ( ! maybe_ptr( p() -> dbc.ptr ) && p() -> talent.boulderfist -> ok() )
     {
       return false;
     }
@@ -3752,6 +3805,16 @@ struct boulderfist_t : public shaman_spell_t
     shaman_spell_t::execute();
 
     p() -> buff.boulderfist -> trigger();
+  }
+
+  bool ready() override
+  {
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+    {
+      return false;
+    }
+
+    return shaman_spell_t::ready();
   }
 };
 
@@ -6817,12 +6880,18 @@ void shaman_t::create_buffs()
     .refresh_behavior( BUFF_REFRESH_PANDEMIC );
   buff.stormbringer = buff_creator_t( this, "stormbringer", find_spell( 201846 ) )
                    .activated( false ) // TODO: Need a delay on this
-                   .max_stack( find_spell( 201846 ) -> initial_stacks() + talent.tempest -> effectN( 1 ).base_value() );
+                   .max_stack( find_spell( 201846 ) -> initial_stacks() +
+                               ( ! maybe_ptr( dbc.ptr )
+                                 ? talent.tempest -> effectN( 1 ).base_value()
+                                 : 0 ) );
   buff.crash_lightning = buff_creator_t( this, "crash_lightning", find_spell( 187878 ) );
   buff.windsong = haste_buff_creator_t( this, "windsong", talent.windsong )
                   .add_invalidate( CACHE_ATTACK_SPEED )
                   .default_value( 1.0 / ( 1.0 + talent.windsong -> effectN( 2 ).percent() ) );
-  buff.boulderfist = buff_creator_t( this, "boulderfist", talent.boulderfist -> effectN( 3 ).trigger() )
+  buff.boulderfist = buff_creator_t( this, "boulderfist" )
+                        .spell( maybe_ptr( dbc.ptr )
+                                ? spell_data_t::not_found()
+                                : talent.boulderfist -> effectN( 3 ).trigger() )
                         .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buff.landslide = buff_creator_t( this, "landslide", find_spell( 202004 ) )
                    .add_invalidate( CACHE_AGILITY )
