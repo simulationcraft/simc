@@ -1879,7 +1879,7 @@ public:
       incarnation( data().affected_by( p -> talent.incarnation_moonkin -> effectN( 4 ) ) ),
       celestial_alignment( data().affected_by( p -> spec.celestial_alignment -> effectN( 3 ) ) ),
       blessing_of_elune( data().affected_by( p -> spec.blessing_of_elune -> effectN( 1 ) ) ),
-      stellar_empowerment( data().affected_by( p -> spec.stellar_empowerment -> effectN( 1 ) ) )
+      stellar_empowerment( false )
   {
     parse_options( options );
   }
@@ -1917,7 +1917,19 @@ public:
     return ab;
   }
 
-  double composite_target_multiplier( player_t* t ) const override
+  virtual double composite_ta_multiplier(const action_state_t* s) const override
+  {
+     double tm = base_t::composite_ta_multiplier(s);
+
+     if ( stellar_empowerment && td (s->target ) -> debuff.stellar_empowerment -> up() )
+     {
+        tm *= 1.0 + composite_stellar_empowerment( s -> target );
+     }
+
+     return tm;
+  }
+
+  /*double composite_target_multiplier( player_t* t ) const override
   {
     double tm = ab::composite_target_multiplier( t );
 
@@ -1927,7 +1939,7 @@ public:
     }
 
     return tm;
-  }
+  }*/
 
   virtual void execute() override
   {
@@ -2110,6 +2122,7 @@ struct moonfire_t : public druid_spell_t
         galactic_guardian_dd_multiplier = p->find_spell(213708)->effectN(3).percent();
       }
 
+      stellar_empowerment = true;
       may_miss = false;
       triggers_galactic_guardian = false;
       benefits_from_galactic_guardian = true;
@@ -5682,6 +5695,7 @@ struct sunfire_t : public druid_spell_t
       dual = background = true;
       aoe = -1;
       dot_duration += p -> spec.balance_overrides -> effectN( 4 ).time_value();
+      stellar_empowerment = true;
 
       base_multiplier *= 1.0 + p -> artifact.sunfire_burns.percent();
       radius += p -> artifact.sunblind.value();
