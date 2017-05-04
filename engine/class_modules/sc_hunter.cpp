@@ -540,12 +540,14 @@ public:
   typedef hunter_action_t base_t;
 
   bool hasted_gcd;
+  bool affected_by_aotw_gcd_reduce;
   bool benefits_from_sniper_training;
 
   hunter_action_t( const std::string& n, hunter_t* player,
                    const spell_data_t* s = spell_data_t::nil() ):
                    ab( n, player, s ),
                    hasted_gcd( false ),
+                   affected_by_aotw_gcd_reduce( false ),
                    benefits_from_sniper_training( false )
   {
     ab::special = true;
@@ -558,6 +560,9 @@ public:
 
     if ( ab::data().affected_by( p() -> mastery.sniper_training -> effectN( 2 ) ) )
       benefits_from_sniper_training = true;
+
+    if ( maybe_ptr( ab::player -> dbc.ptr ) && ab::data().affected_by( p() -> specs.aspect_of_the_wild -> effectN( 3 ) ) )
+      affected_by_aotw_gcd_reduce = true;
   }
 
   hunter_t* p()
@@ -578,7 +583,8 @@ public:
   {
     ab::init();
 
-    ab::gcd_haste = hasted_gcd ? HASTE_ATTACK : HASTE_NONE;
+    // disable default gcd scaling from haste as we are rolling our own because of AotW
+    ab::gcd_haste = HASTE_NONE;
 
     if ( ab::data().affected_by( p() -> specs.beast_mastery_hunter -> effectN( 1 ) ) )
       ab::base_dd_multiplier *= 1.0 + p() -> specs.beast_mastery_hunter -> effectN( 1 ).percent();
@@ -597,6 +603,25 @@ public:
 
     if ( ab::data().affected_by( p() -> specs.survival_hunter -> effectN( 2 ) ) )
       ab::base_td_multiplier *= 1.0 + p() -> specs.survival_hunter -> effectN( 2 ).percent();
+  }
+
+  timespan_t gcd() const override
+  {
+    timespan_t g = ab::gcd();
+
+    if ( g == timespan_t::zero() )
+      return g;
+
+    if ( maybe_ptr( ab::player -> dbc.ptr ) && affected_by_aotw_gcd_reduce && p() -> buffs.aspect_of_the_wild -> check() )
+      g += p() -> specs.aspect_of_the_wild -> effectN( 3 ).time_value();
+
+    if ( hasted_gcd )
+      g *= ab::player -> cache.attack_haste();
+
+    if ( g < ab::min_gcd )
+      g = ab::min_gcd;
+
+    return g;
   }
 
   void consume_resource() override
