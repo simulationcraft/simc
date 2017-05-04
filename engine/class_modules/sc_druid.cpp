@@ -1901,9 +1901,6 @@ public:
       if ( incarnation && p() -> buff.incarnation_moonkin -> check() )
         e *= 1.0 + p() -> talent.incarnation_moonkin -> effectN( 4 ).percent();
 
-      if ( p() -> sets.has_set_bonus( DRUID_BALANCE, T20 , B2 ) )
-         e *= 1.0 + p() -> sets.set( DRUID_BALANCE, T20, B2 ) -> effectN(1).percent();
-
     }
 
     return e;
@@ -6230,6 +6227,20 @@ struct starsurge_t : public druid_spell_t
     return am;
   }
 
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+     double cdbm = druid_spell_t::composite_crit_damage_bonus_multiplier();
+
+     if ( p() -> sets.has_set_bonus( DRUID_BALANCE, T20, B2 ))
+     {
+        cdbm += p() -> sets.set( DRUID_BALANCE, T20, B2 ) -> effectN(2).percent();
+
+     }
+     
+
+     return cdbm;
+  }
+
   double composite_target_multiplier( player_t* target ) const override
   {
     double tm = druid_spell_t::composite_target_multiplier( target );
@@ -6958,7 +6969,7 @@ void druid_t::init_base_stats()
   resources.base[ RESOURCE_RAGE         ] = 100;
   resources.base[ RESOURCE_COMBO_POINT  ] = 5;
   resources.base[ RESOURCE_ASTRAL_POWER ] = 100
-      + sets.set( DRUID_BALANCE, T20, B2 ) -> effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
+      + sets.set( DRUID_BALANCE, T20, B2 ) -> effectN( 1 ).resource( RESOURCE_ASTRAL_POWER );
   resources.base[ RESOURCE_ENERGY       ] = 100
       + sets.set( DRUID_FERAL, T18, B2 ) -> effectN( 2 ).resource( RESOURCE_ENERGY )
       + talent.moment_of_clarity -> effectN( 3 ).percent();
