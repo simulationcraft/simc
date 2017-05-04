@@ -8159,7 +8159,7 @@ void rogue_t::create_buffs()
   buffs.shadow_blades         = new buffs::shadow_blades_t( this );
   buffs.shadow_dance          = new buffs::shadow_dance_t( this );
   const int t20_4pc_cp        = sets.has_set_bonus( ROGUE_SUBTLETY, T20, B4 ) ? sets.set( ROGUE_SUBTLETY, T20, B4 ) -> effectN( 1 ).base_value() : 0;
-  const double t20_4pc_mod    = 1.0 + sets.has_set_bonus( ROGUE_SUBTLETY, T20, B4 ) ? sets.set( ROGUE_SUBTLETY, T20, B4 ) -> effectN( 2 ).percent() : 0.0;
+  const double t20_4pc_mod    = 1.0 + ( sets.has_set_bonus( ROGUE_SUBTLETY, T20, B4 ) ? sets.set( ROGUE_SUBTLETY, T20, B4 ) -> effectN( 2 ).percent() : 0.0 );
   buffs.sod_backstab          = buff_creator_t( this, "backstab", maybe_ptr( dbc.ptr ) ? find_spell( 245689 ) : spell_data_t::not_found() )
                                 .default_value( find_spell( 245689 ) -> effectN( 1 ).base_value() + t20_4pc_cp );
   buffs.sod_eviscerate        = buff_creator_t( this, "eviscerate", maybe_ptr( dbc.ptr ) ? find_spell( 245691 ) : spell_data_t::not_found() )
