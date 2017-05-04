@@ -82,8 +82,106 @@ dbc_index_t<talent_data_t> talent_data_index;
 dbc_index_t<spellpower_data_t> power_data_index;
 ordered_dbc_index_t<artifact_power_rank_t> artifact_power_rank_data_index;
 
+// Wrapper class to map other data to specific spells, and also to map effects that manipulate that
+// data
+template <typename T, typename V>
+class spell_mapping_reference_t
+{
+  // Map struct T (based on id) to a set of spells
+  std::unordered_map<V, std::vector<const spell_data_t*>> m_db[2];
+  // Map struct T (based on id) to a set of effects affecting the group T
+  std::unordered_map<V, std::vector<const spelleffect_data_t*>> m_effects_db[2];
+
+  // Return the pertinent value being mapped from struct T
+  using value_fn_t = std::function<V(const T*)>;
+  // Return the spell the struct T is mapped to
+  using spell_fn_t = std::function<unsigned(const T*)>;
+  // Analyze effect data to determine whether it affects labels.
+  using effect_fn_t = std::function<V(const spelleffect_data_t*)>;
+
+  spell_fn_t spell_fn;
+  value_fn_t value_fn;
+  effect_fn_t effect_fn;
+
+public:
+  spell_mapping_reference_t( value_fn_t vfn, spell_fn_t sfn, effect_fn_t efn ) :
+    spell_fn( sfn ), value_fn( vfn ), effect_fn( efn )
+  { }
+
+  void init_db( bool ptr = false )
+  {
+    const T* data = T::list( ptr );
+    while ( data -> id() != 0 )
+    {
+      V value = value_fn( data );
+      const auto spell = spell_data_t::find( spell_fn( data ), ptr );
+      if ( spell -> id() != spell_fn( data ) )
+      {
+        ++data;
+        continue;
+      }
+
+      m_db[ ptr ][ value ].push_back( spell );
+
+      ++data;
+    }
+  }
+
+  void init_effect_db( const spelleffect_data_t* effect, bool ptr = false )
+  {
+    auto label = effect_fn( effect );
+    if ( label != 0 )
+    {
+      m_effects_db[ ptr ][ label ].push_back( effect );
+    }
+  }
+
+  std::vector<const spell_data_t*> affects_spells( V value, bool ptr )
+  {
+    auto it = m_db[ ptr ].find( value );
+
+    if ( it != m_db[ ptr ].end() )
+    {
+      return it -> second;
+    }
+
+    return std::vector<const spell_data_t*>();
+  }
+
+  std::vector<const spelleffect_data_t*> affected_by( V value, bool ptr )
+  {
+    std::vector<const spelleffect_data_t*> effects;
+    auto it = m_effects_db[ ptr ].find( value );
+
+    if ( it == m_effects_db[ ptr ].end() )
+    {
+      return effects;
+    }
+
+    range::for_each( m_effects_db[ ptr ][ value ], [ &effects ]( const spelleffect_data_t* e ) {
+      effects.push_back( e );
+    } );
+
+    return effects;
+  }
+};
+
 std::vector< std::vector< const spell_data_t* > > class_family_index;
 std::vector< std::vector< const spell_data_t* > > ptr_class_family_index;
+
+// Label -> spell mappings
+spell_mapping_reference_t<spelllabel_data_t, short> spell_label_index(
+  []( const spelllabel_data_t* data ) { return data -> label(); },
+  []( const spelllabel_data_t* data ) { return data -> id_spell(); },
+  []( const spelleffect_data_t* data ) {
+    if ( data -> subtype() == A_MOD_LABEL )
+    {
+      return as<short>( data -> misc_value2() );
+    }
+
+    return as<short>( 0 );
+  }
+);
 
 } // ANONYMOUS namespace ====================================================
 
@@ -186,8 +284,12 @@ void dbc::init()
 #endif
 
   generate_class_flags_index();
+  spell_label_index.init_db();
   if ( SC_USE_PTR )
+  {
     generate_class_flags_index( true );
+    spell_label_index.init_db( true );
+  }
 }
 
 /* De-Initialize database
@@ -265,6 +367,31 @@ std::vector< const spell_data_t* > dbc_t::effect_affects_spells( unsigned family
   }
 
   return affected_spells;
+}
+
+std::vector<const spelleffect_data_t*> dbc_t::effect_labels_affecting_spell( const spell_data_t* spell ) const
+{
+  auto labels = spell -> labels();
+  std::vector<const spelleffect_data_t*> effects;
+
+  range::for_each( labels, [ &effects, this ]( short label ) {
+    auto label_effects = spell_label_index.affected_by( label, ptr );
+
+    // Add all effects affecting a specific label to the vector containing all the effects, if the
+    // effect is not yet in the vector.
+    range::for_each( label_effects, [ &effects ]( const spelleffect_data_t* data ) {
+      auto it = range::find_if( effects, [ data ]( const spelleffect_data_t* effect ) {
+        return effect -> id() == data -> id();
+      } );
+
+      if ( it == effects.end() )
+      {
+        effects.push_back( data );
+      }
+    } );
+  } );
+
+  return effects;
 }
 
 std::vector< const spelleffect_data_t* > dbc_t::effects_affecting_spell( const spell_data_t* spell ) const
@@ -1717,10 +1844,10 @@ void spell_data_t::link( bool ptr )
     sd._effects = new std::vector<const spelleffect_data_t*>;
   }
 
-  auto label = dbc::spell_labels( ptr );
-  while ( label -> id )
+  auto label = spelllabel_data_t::list( ptr );
+  while ( label -> id() )
   {
-    auto spell = spell_data_t::find( label -> id_spell, ptr );
+    auto spell = spell_data_t::find( label -> id_spell(), ptr );
     if ( spell -> _labels == nullptr )
     {
       spell -> _labels = new std::vector<const spelllabel_data_t*>();
@@ -1758,6 +1885,9 @@ void spelleffect_data_t::link( bool ptr )
       ed._spell -> _effects -> resize( ed.index() + 1, spelleffect_data_t::nil() );
 
     ed._spell -> _effects -> at( ed.index() ) = &ed;
+
+    // Some effects are going to be affecting labels, so map spells here
+    spell_label_index.init_effect_db( &( ed ), ptr );
   }
 }
 
@@ -2691,6 +2821,11 @@ std::pair<unsigned, unsigned> dbc_t::artifact_relic_rank_index( unsigned artifac
   return { ( *power_it ) -> id, amount };
 }
 
+std::vector<const spell_data_t*> dbc_t::spells_by_label( size_t label ) const
+{
+  return spell_label_index.affects_spells( as<unsigned>( label ), ptr );
+}
+
 // Hotfix data handling
 
 
@@ -2822,7 +2957,7 @@ void hotfix::link_hotfix_data( bool ptr )
   link_hotfix_entry_ptr<artifact_power_rank_t>( ptr, artifact_hotfix_entry );
 }
 
-const spelllabel_data_t* dbc::spell_labels( bool ptr )
+const spelllabel_data_t* spelllabel_data_t::list( bool ptr )
 {
 #if SC_USE_PTR
   return ptr ? __ptr_spelllabel_data
