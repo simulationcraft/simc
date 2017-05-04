@@ -6198,9 +6198,16 @@ void hunter_t::apl_bm()
   default_list -> add_talent( this, "A Murder of Crows" );
   default_list -> add_talent( this, "Stampede", "if=buff.bloodlust.up|buff.bestial_wrath.up|cooldown.bestial_wrath.remains<=2|target.time_to_die<=14" );
   default_list -> add_action( this, "Dire Beast", "if=cooldown.bestial_wrath.remains>3" );
-  default_list -> add_talent( this, "Dire Frenzy", "if=(cooldown.bestial_wrath.remains>6&(!equipped.the_mantle_of_command|pet.cat.buff.dire_frenzy.remains<=gcd.max*1.2))|"
-                                                   "(charges>=2&focus.deficit>=25+talent.dire_stable.enabled*12)|"
-                                                   "target.time_to_die<9" );
+  if ( maybe_ptr( dbc.ptr ) )
+  {
+    default_list -> add_talent( this, "Dire Frenzy", "if=(pet.cat.buff.dire_frenzy.remains<=gcd.max*1.2)|(charges_fractional>=1.8)|target.time_to_die<9" );
+  }
+  else
+  {
+    default_list -> add_talent( this, "Dire Frenzy", "if=(cooldown.bestial_wrath.remains>6&(!equipped.the_mantle_of_command|pet.cat.buff.dire_frenzy.remains<=gcd.max*1.2))|"
+                                                     "(charges>=2&focus.deficit>=25+talent.dire_stable.enabled*12)|"
+                                                     "target.time_to_die<9" );
+  }
   default_list -> add_action( this, "Aspect of the Wild", "if=buff.bestial_wrath.up|target.time_to_die<12" );
   default_list -> add_talent( this, "Barrage", "if=spell_targets.barrage>1" );
   default_list -> add_action( this, "Titan's Thunder", "if=talent.dire_frenzy.enabled|cooldown.dire_beast.remains>=3|(buff.bestial_wrath.up&pet.dire_beast.active)" );
