@@ -108,6 +108,8 @@ public:
     spell_fn( sfn ), value_fn( vfn ), effect_fn( efn )
   { }
 
+  // Initialize database based on an external data entity, value function will give the key for the
+  // spell, spell function will give the identifier of the spell
   void init_db( bool ptr = false )
   {
     const T* data = T::list( ptr );
@@ -121,18 +123,33 @@ public:
         continue;
       }
 
-      m_db[ ptr ][ value ].push_back( spell );
+      add_spell( value, spell, ptr );
 
       ++data;
     }
   }
 
+  // Init database based on spell data itself, value function will give the key for the spell
+  void init_db( const spell_data_t* data, bool ptr = false )
+  {
+    V value = value_fn( data );
+    if ( value != 0 )
+    {
+      add_spell( value, data, ptr );
+    }
+  }
+
+  void add_spell( V value, const spell_data_t* data, bool ptr = false )
+  {
+    m_db[ ptr ][ value ].push_back( data );
+  }
+
   void init_effect_db( const spelleffect_data_t* effect, bool ptr = false )
   {
-    auto label = effect_fn( effect );
-    if ( label != 0 )
+    auto value = effect_fn( effect );
+    if ( value != 0 )
     {
-      m_effects_db[ ptr ][ label ].push_back( effect );
+      m_effects_db[ ptr ][ value ].push_back( effect );
     }
   }
 
@@ -183,6 +200,19 @@ spell_mapping_reference_t<spelllabel_data_t, short> spell_label_index(
   }
 );
 
+// Categories -> spell mappings
+spell_mapping_reference_t<spell_data_t, unsigned> spell_categories_index(
+  []( const spell_data_t* spell ) { return spell -> category(); },
+  []( const spell_data_t* spell ) { return spell -> id(); },
+  []( const spelleffect_data_t* data ) {
+    if ( data -> subtype() == A_HASTED_CATEGORY )
+    {
+      return as<unsigned>( data -> misc_value1() );
+    }
+
+    return 0U;
+  }
+);
 } // ANONYMOUS namespace ====================================================
 
 int dbc::build_level( bool ptr )
@@ -389,6 +419,50 @@ std::vector<const spelleffect_data_t*> dbc_t::effect_labels_affecting_spell( con
         effects.push_back( data );
       }
     } );
+  } );
+
+  return effects;
+}
+
+std::vector<const spelleffect_data_t*> dbc_t::effect_labels_affecting_label( short label ) const
+{
+  std::vector<const spelleffect_data_t*> effects;
+
+  auto label_effects = spell_label_index.affected_by( label, ptr );
+
+  // Add all effects affecting a specific label to the vector containing all the effects, if the
+  // effect is not yet in the vector.
+  range::for_each( label_effects, [ &effects ]( const spelleffect_data_t* data ) {
+    auto it = range::find_if( effects, [ data ]( const spelleffect_data_t* effect ) {
+      return effect -> id() == data -> id();
+    } );
+
+    if ( it == effects.end() )
+    {
+      effects.push_back( data );
+    }
+  } );
+
+  return effects;
+}
+
+std::vector<const spelleffect_data_t*> dbc_t::effect_categories_affecting_spell( const spell_data_t* spell ) const
+{
+  std::vector<const spelleffect_data_t*> effects;
+
+  auto category_effects = spell_categories_index.affected_by( spell -> category(), ptr );
+
+  // Add all effects affecting a specific label to the vector containing all the effects, if the
+  // effect is not yet in the vector.
+  range::for_each( category_effects, [ &effects ]( const spelleffect_data_t* data ) {
+    auto it = range::find_if( effects, [ data ]( const spelleffect_data_t* effect ) {
+      return effect -> id() == data -> id();
+    } );
+
+    if ( it == effects.end() )
+    {
+      effects.push_back( data );
+    }
   } );
 
   return effects;
@@ -1842,6 +1916,8 @@ void spell_data_t::link( bool ptr )
   {
     spell_data_t& sd = spell_data[ i ];
     sd._effects = new std::vector<const spelleffect_data_t*>;
+
+    spell_categories_index.init_db( &( sd ), ptr );
   }
 
   auto label = spelllabel_data_t::list( ptr );
@@ -1888,6 +1964,9 @@ void spelleffect_data_t::link( bool ptr )
 
     // Some effects are going to be affecting labels, so map spells here
     spell_label_index.init_effect_db( &( ed ), ptr );
+
+    // Some effects are going to be affecting categories, so map spells here
+    spell_categories_index.init_effect_db( &( ed ), ptr );
   }
 }
 
@@ -2824,6 +2903,11 @@ std::pair<unsigned, unsigned> dbc_t::artifact_relic_rank_index( unsigned artifac
 std::vector<const spell_data_t*> dbc_t::spells_by_label( size_t label ) const
 {
   return spell_label_index.affects_spells( as<unsigned>( label ), ptr );
+}
+
+std::vector<const spell_data_t*> dbc_t::spells_by_category( unsigned category ) const
+{
+  return spell_categories_index.affects_spells( category, ptr );
 }
 
 // Hotfix data handling

@@ -182,6 +182,31 @@ std::ostringstream& hotfix_map_str( const DATA_TYPE* data, std::ostringstream& s
   return s;
 }
 
+template <typename T>
+std::string concatenate( const std::vector<const T*>& data,
+                         const std::function<void(std::stringstream&, const T*)> fn,
+                         const std::string& delim = ", " )
+{
+  if ( data.size() == 0 )
+  {
+    return "";
+  }
+
+  std::stringstream s;
+
+  for ( size_t i = 0, end = data.size(); i < end; ++i )
+  {
+    fn( s, data[ i ] );
+
+    if ( i < end - 1 )
+    {
+      s << delim;
+    }
+  }
+
+  return s.str();
+}
+
 std::string spell_hotfix_map_str( const spell_data_t* spell )
 {
   std::ostringstream s;
@@ -594,13 +619,13 @@ static const std::unordered_map<unsigned, const std::string> _effect_subtype_str
   { 366, "Override Spell Power per Attack Power%" },
   { 405, "Modify Combat Rating Multiplier"        },
   { 411, "Modify Cooldown Charge"                 },
-  { 416, "Modify Cooldown Duration"               },
-  { 417, "Modify Global Cooldown"                 },
+  { 416, "Hasted Cooldown Duration"               },
+  { 417, "Hasted Global Cooldown"                 },
   { 421, "Modify Absorb% Done"                    },
   { 422, "Modify Absorb% Done"                    },
   { 429, "Modify Pet Damage Done%"                },
   { 441, "Modify Multistrike%"                    },
-  { 457, "Modify Cooldown Duration (Category)"    },
+  { 457, "Hasted Cooldown Duration (Category)"    },
 };
 
 std::string mechanic_str( unsigned mechanic ) {
@@ -906,6 +931,17 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
     s << std::endl;
   }
 
+  if ( e -> type() == E_APPLY_AURA && e -> subtype() == A_HASTED_CATEGORY )
+  {
+    auto affected_spells = dbc.spells_by_category( e -> misc_value1() );
+    s << "                   Affected Spells (Category): ";
+    s << concatenate<spell_data_t>( affected_spells,
+        []( std::stringstream& s, const spell_data_t* spell ) {
+          s << spell -> name_cstr() << " (" << spell -> id() << ")";
+        } );
+    s << std::endl;
+  }
+
   if ( e -> _hotfix != 0 )
   {
     s << "                   Hotfixed: ";
@@ -1127,18 +1163,53 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
   }
 
   if ( spell -> category() > 0 )
-    s << "Category         : " << spell -> category() << std::endl;
+  {
+    s << "Category         : " << spell -> category();
+    auto affecting_effects = dbc.effect_categories_affecting_spell( spell );
+    if ( affecting_effects.size() > 0 )
+    {
+      s << ": ";
+      s << concatenate<spelleffect_data_t>( affecting_effects,
+        []( std::stringstream& s, const spelleffect_data_t* e ) {
+          s << e -> spell() -> name_cstr() << " (" << e -> spell() -> id() << " effect#" << ( e -> index() + 1 ) << ")";
+        } );
+    }
+    s << std::endl;
+  }
 
   if ( spell -> label_count() > 0 )
   {
     s << "Labels           : ";
     for ( size_t i = 1, end = spell -> label_count(); i <= end; ++i )
     {
-      s << spell -> labelN( i );
+      auto label = spell -> labelN( i );
+      auto affecting_effects = dbc.effect_labels_affecting_label( label );
 
-      if ( i < end )
+      if ( i > 1 )
       {
-        s << ", ";
+        if ( affecting_effects.size() == 0 )
+        {
+          if ( i < end )
+          {
+            s << ", ";
+          }
+        }
+        else
+        {
+          s << std::endl;
+          s << "                 : ";
+        }
+      }
+
+      s << label;
+
+      if ( affecting_effects.size() > 0 )
+      {
+        s << ": " << concatenate<spelleffect_data_t>( affecting_effects,
+          []( std::stringstream& s, const spelleffect_data_t* e ) {
+            s << e -> spell() -> name_cstr() << " (" << e -> spell() -> id()
+              << " effect#" << ( e -> index() + 1 ) << ")";
+          } );
       }
     }
     s << std::endl;
@@ -1372,31 +1443,12 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
         if ( std::find( spell_ids.begin(), spell_ids.end(), effect -> spell() -> id() ) != spell_ids.end() )
           continue;
 
-        s << effect -> spell() -> name_cstr() << " (" << effect -> spell() -> id() << ")";
+        s << effect -> spell() -> name_cstr() << " (" << effect -> spell() -> id() << " effect#"
+          << ( effect -> index() + 1 ) << ")";
         if ( i < end - 1 )
           s << ", ";
 
         spell_ids.push_back( effect -> spell() -> id() );
-      }
-
-      s << std::endl;
-    }
-  }
-
-  if ( spell -> labels().size() > 0 )
-  {
-    auto affecting_labels = dbc.effect_labels_affecting_spell( spell );
-    if ( affecting_labels.size() > 0 )
-    {
-      s << "Affecting labels : ";
-      for ( size_t i = 0, end = affecting_labels.size(); i < end; ++i )
-      {
-        auto effect = affecting_labels[ i ];
-        s << effect -> spell() -> name_cstr() << " (" << effect -> spell() -> id() << ")";
-        if ( i < end - 1 )
-        {
-          s << ", ";
-        }
       }
 
       s << std::endl;
