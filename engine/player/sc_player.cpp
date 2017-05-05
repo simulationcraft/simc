@@ -11151,6 +11151,13 @@ void player_collected_data_t::reserve_memory( const player_t& p )
 
 void player_collected_data_t::merge( const player_collected_data_t& other )
 {
+  // No data got collected for this player in this thread, so skip merging player collected data
+  // entirely
+  if ( other.fight_length.count() == 0 )
+  {
+    return;
+  }
+
   fight_length.merge( other.fight_length );
   waiting_time.merge( other.waiting_time );
   executed_foreground_actions.merge( other.executed_foreground_actions );
