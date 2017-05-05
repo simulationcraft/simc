@@ -756,6 +756,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
         break;
       case A_ADD_FLAT_MODIFIER:
       case A_ADD_PCT_MODIFIER:
+      case A_ADD_PCT_LABEL_MODIFIER:
         s << ": " << map_string( _property_type_strings, e -> misc_value1() );
         break;
       default:
@@ -849,8 +850,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
 
   if ( e -> misc_value2() != 0 )
   {
-    // Not really .. old enum
-    if ( e -> subtype() == A_MOD_LABEL )
+    if ( e -> subtype() == A_ADD_PCT_LABEL_MODIFIER )
     {
       snprintf( tmp_buffer, sizeof( tmp_buffer ), "%d (Label)", e -> misc_value2() );
     }
@@ -918,7 +918,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
     s << std::endl;
   }
 
-  if ( e -> type() == E_APPLY_AURA && e -> subtype() == A_MOD_LABEL )
+  if ( e -> type() == E_APPLY_AURA && e -> subtype() == A_ADD_PCT_LABEL_MODIFIER )
   {
     auto affected_spells = dbc.spells_by_label( e -> misc_value2() );
     s << "                   Affected Spells (Label): ";

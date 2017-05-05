@@ -191,7 +191,7 @@ spell_mapping_reference_t<spelllabel_data_t, short> spell_label_index(
   []( const spelllabel_data_t* data ) { return data -> label(); },
   []( const spelllabel_data_t* data ) { return data -> id_spell(); },
   []( const spelleffect_data_t* data ) {
-    if ( data -> subtype() == A_MOD_LABEL )
+    if ( data -> subtype() == A_ADD_PCT_LABEL_MODIFIER )
     {
       return as<short>( data -> misc_value2() );
     }
