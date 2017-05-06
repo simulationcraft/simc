@@ -1408,11 +1408,6 @@ public:
     double base_chance = p() -> spec.stormbringer -> proc_chance() +
            p() -> cache.mastery() * p() -> mastery.enhanced_elements -> effectN( 3 ).mastery_value();
 
-    if ( maybe_ptr( p() -> dbc.ptr ) && weapon && weapon -> slot == SLOT_MAIN_HAND )
-    {
-      base_chance += p() -> talent.tempest -> effectN( 1 ).percent();
-    }
-
     return base_chance;
   }
 };
@@ -2728,18 +2723,29 @@ struct stormstrike_attack_t : public shaman_attack_t
       m *= p() -> artifact.stormflurry.percent( 2 );
     }
 
+	if ( maybe_ptr( p() -> dbc.ptr ) && p() -> sets -> has_set_bonus( SHAMAN_ENHANCEMENT, T19, B2 ))
+	{
+		//TODO: t19_2pc ptr data doesn't seem to be working properly.
+	  //m *= 1.0 + t19_2pc -> effectN( 1 ).percent();
+	  m *= 1.1;
+	}
+
     return m;
   }
 
   double composite_crit_chance() const override
   {
-    double c = shaman_attack_t::composite_crit_chance();
+    double c = shaman_attack_t::composite_crit_chance();	
 
-    if ( p() -> sets -> has_set_bonus( SHAMAN_ENHANCEMENT, T19, B2 ) &&
-         p() -> buff.stormbringer -> up() )
+	if ( maybe_ptr( p() -> dbc.ptr ) && p() -> talent.tempest && p() -> buff.stormbringer -> up() )
     {
-      c += t19_2pc -> effectN( 1 ).percent();
+      c += p() -> talent.tempest -> effectN( 1 ).percent();
     }
+	
+	if ( !maybe_ptr( p() -> dbc.ptr ) && p() -> sets -> has_set_bonus( SHAMAN_ENHANCEMENT, T19, B2 ) && p() -> buff.stormbringer -> up())
+	{
+	  c+= t19_2pc -> effectN( 1 ).percent();
+	}
 
     return c;
   }
