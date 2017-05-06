@@ -9506,9 +9506,9 @@ struct luffa_wrappings_t : public scoped_action_callback_t<T>
 
     // Feral Druid passive modifies the strength of the effect.
     a -> radius *= 1.0 + e.driver() -> effectN( 1 ).percent()
-      + p -> spec.feral -> effectN( 4 ).percent();
+      + p -> spec.feral -> effectN( 8 ).percent();
     a -> base_multiplier *= 1.0 + e.driver() -> effectN( 2 ).percent()
-      + p -> spec.feral -> effectN( 5 ).percent();
+      + p -> spec.feral -> effectN( 8 ).percent();
   }
 };
 
