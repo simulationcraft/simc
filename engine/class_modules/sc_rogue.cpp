@@ -7191,8 +7191,8 @@ void rogue_t::init_action_list()
     def -> add_talent( this, "Death from Above", "if=energy.time_to_max>2&!variable.ss_useable_noreroll" );
       // Pandemic is (6 + 6 * CP) * 0.3, ie (1 + CP) * 1.8
     def -> add_talent( this, "Slice and Dice", "if=!variable.ss_useable&buff.slice_and_dice.remains<target.time_to_die&buff.slice_and_dice.remains<(1+combo_points)*1.8" );
-      // Reroll unless 2+ buffs or legendary boot & true bearing
-    def -> add_action( this, "Roll the Bones", "if=!variable.ss_useable&buff.roll_the_bones.remains<target.time_to_die&(buff.roll_the_bones.remains<=3|variable.rtb_reroll)" );
+      // Reroll unless 3+ buffs or true bearing
+    def -> add_action( this, "Roll the Bones", "if=!variable.ss_useable&(target.time_to_die>20|buff.roll_the_bones.remains<target.time_to_die)&(buff.roll_the_bones.remains<=3|variable.rtb_reroll)" );
     def -> add_talent( this, "Killing Spree", "if=energy.time_to_max>5|energy<15" );
     def -> add_action( "call_action_list,name=build" );
     def -> add_action( "call_action_list,name=finish,if=!variable.ss_useable" );
@@ -7207,7 +7207,8 @@ void rogue_t::init_action_list()
     // Blade Flurry
     action_priority_list_t* bf = get_action_priority_list( "bf", "Blade Flurry" );
       // Cancels Blade Flurry buff on CD to maximize Shiarran Symmetry effect
-    bf -> add_action( "cancel_buff,name=blade_flurry,if=equipped.shivarran_symmetry&cooldown.blade_flurry.up&buff.blade_flurry.up&spell_targets.blade_flurry>=2|spell_targets.blade_flurry<2&buff.blade_flurry.up" );
+    bf -> add_action( "cancel_buff,name=blade_flurry,if=spell_targets.blade_flurry<2&buff.blade_flurry.up" );
+    bf -> add_action( "cancel_buff,name=blade_flurry,if=equipped.shivarran_symmetry&cooldown.blade_flurry.up&buff.blade_flurry.up&spell_targets.blade_flurry>=2" );
     bf -> add_action( this, "Blade Flurry", "if=spell_targets.blade_flurry>=2&!buff.blade_flurry.up" );
 
     // Cooldowns
@@ -7227,22 +7228,22 @@ void rogue_t::init_action_list()
     }
     cds -> add_talent( this, "Cannonball Barrage", "if=spell_targets.cannonball_barrage>=1" );
     cds -> add_action( this, "Adrenaline Rush", "if=!buff.adrenaline_rush.up&energy.deficit>0" );
-    cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit|((raid_event.adds.in>40|buff.true_bearing.remains>15)&combo_points.deficit>=cp_max_spend-1)" );
+    cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit|((raid_event.adds.in>40|buff.true_bearing.remains>15-buff.adrenaline_rush.up*5)&!stealthed.rogue&combo_points.deficit>=cp_max_spend-1)" );
     cds -> add_action( this, "Sprint", "if=equipped.thraxis_tricksy_treads&!variable.ss_useable" );
     cds -> add_action( "darkflight,if=equipped.thraxis_tricksy_treads&!variable.ss_useable&buff.sprint.down" );
     cds -> add_action( this, "Curse of the Dreadblades", "if=combo_points.deficit>=4&(!talent.ghostly_strike.enabled|debuff.ghostly_strike.up)" );
 
     // Finishers
     action_priority_list_t* finish = get_action_priority_list( "finish", "Finishers" );
-    finish -> add_action( this, "Between the Eyes", "if=equipped.greenskins_waterlogged_wristcuffs&!buff.greenskins_waterlogged_wristcuffs.up" );
+    finish -> add_action( this, "Between the Eyes", "if=(mantle_duration>=gcd.remains+0.2&!equipped.thraxis_tricksy_treads)|(equipped.greenskins_waterlogged_wristcuffs&!buff.greenskins_waterlogged_wristcuffs.up)" );
     finish -> add_action( this, "Run Through", "if=!talent.death_from_above.enabled|energy.time_to_max<cooldown.death_from_above.remains+3.5" );
 
     // Stealth
     action_priority_list_t* stealth = get_action_priority_list( "stealth", "Stealth" );
-    stealth -> add_action( "variable,name=stealth_condition,value=combo_points.deficit>=2+2*(talent.ghostly_strike.enabled&!debuff.ghostly_strike.up)+buff.broadsides.up&energy>60&!buff.jolly_roger.up&!buff.hidden_blade.up&!buff.curse_of_the_dreadblades.up", "Condition to use stealth abilities" );
-    stealth -> add_action( this, "Ambush" );
-    stealth -> add_action( this, "Vanish", "if=(equipped.mantle_of_the_master_assassin&buff.true_bearing.up)|variable.stealth_condition" );
-    stealth -> add_action( "shadowmeld,if=variable.stealth_condition" );
+    stealth -> add_action( "variable,name=ambush_condition,value=combo_points.deficit>=2+2*(talent.ghostly_strike.enabled&!debuff.ghostly_strike.up)+buff.broadsides.up&energy>60&!buff.jolly_roger.up&!buff.hidden_blade.up&!buff.curse_of_the_dreadblades.up" );
+    stealth -> add_action( this, "Ambush", "if=variable.ambush_condition" );
+    stealth -> add_action( this, "Vanish", "if=variable.ambush_condition|(equipped.mantle_of_the_master_assassin&mantle_duration=0&!variable.rtb_reroll&!variable.ss_useable)" );
+    stealth -> add_action( "shadowmeld,if=variable.ambush_condition" );
   }
   else if ( specialization() == ROGUE_SUBTLETY )
   {
