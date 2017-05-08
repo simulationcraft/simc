@@ -2341,9 +2341,12 @@ bool player_t::create_actions()
     }
   }
 
-  int capacity = std::max( 1200, static_cast<int>( sim -> max_time.total_seconds() / 2.0 ) );
-  collected_data.action_sequence.reserve( capacity );
-  collected_data.action_sequence.clear();
+  if ( ! is_add() && ( ! is_pet() || sim -> report_pets_separately ) )
+  {
+    int capacity = std::max( 1200, static_cast<int>( sim -> max_time.total_seconds() / 2.0 ) );
+    collected_data.action_sequence.reserve( capacity );
+    collected_data.action_sequence.clear();
+  }
 
   return true;
 }
