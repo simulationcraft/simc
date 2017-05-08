@@ -3990,7 +3990,7 @@ struct death_and_decay_t : public death_knight_spell_t
 
   void impact( action_state_t* s ) override
   {
-    if ( s -> target -> debuffs.flying -> check() )
+    if ( s -> target -> debuffs.flying && s -> target -> debuffs.flying -> check() )
     {
       if ( sim -> debug ) sim -> out_debug.printf( "Ground effect %s can not hit flying target %s", name(), s -> target -> name() );
     }
@@ -4076,7 +4076,7 @@ struct defile_t : public death_knight_spell_t
 
   void impact( action_state_t* s ) override
   {
-    if ( s -> target -> debuffs.flying -> check() )
+    if ( s -> target -> debuffs.flying && s -> target -> debuffs.flying -> check() )
     {
       if ( sim -> debug ) sim -> out_debug.printf( "Ground effect %s can not hit flying target %s", name(), s -> target -> name() );
     }
@@ -5020,7 +5020,7 @@ struct mind_freeze_t : public death_knight_spell_t
 
   bool ready() override
   {
-    if ( ! target -> debuffs.casting -> check() )
+    if ( target -> debuffs.casting || ! target -> debuffs.casting -> check() )
       return false;
 
     return death_knight_spell_t::ready();

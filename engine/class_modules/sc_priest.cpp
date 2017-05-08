@@ -1615,7 +1615,20 @@ struct angelic_feather_t final : public priest_spell_t
   {
     priest_spell_t::impact( s );
 
-    s->target->buffs.angelic_feather->trigger();
+    if ( s->target->buffs.angelic_feather )
+    {
+      s->target->buffs.angelic_feather->trigger();
+    }
+  }
+
+  bool ready() override
+  {
+    if ( ! target->buffs.angelic_feather )
+    {
+      return false;
+    }
+
+    return priest_spell_t::ready();
   }
 };
 
@@ -2797,7 +2810,10 @@ struct silence_t final : public priest_spell_t
 
     // Only interrupts, does not keep target silenced. This works in most cases since bosses are rarely able to be
     // completely silenced.
-    target->debuffs.casting->expire();
+    if ( target->debuffs.casting )
+    {
+      target->debuffs.casting->expire();
+    }
   }
 
   void impact(action_state_t* state) override
@@ -2820,6 +2836,7 @@ struct silence_t final : public priest_spell_t
     // Or if the target can get blank silenced
     if ( !(    target->type != ENEMY_ADD 
             && ( target->level() < sim->max_player_level + 3 )
+            && target->debuffs.casting
             && target->debuffs.casting->check() ) )
     {
       return false;
@@ -3442,7 +3459,7 @@ struct power_word_shield_t final : public priest_absorb_t
 
     priest.buffs.borrowed_time->trigger();
 
-    if ( priest.talents.body_and_soul->ok() )
+    if ( priest.talents.body_and_soul->ok() && s->target->buffs.body_and_soul )
     {
       s->target->buffs.body_and_soul->trigger();
     }

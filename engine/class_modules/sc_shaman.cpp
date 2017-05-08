@@ -5243,7 +5243,7 @@ struct wind_shear_t : public shaman_spell_t
 
   virtual bool ready() override
   {
-    if ( ! target -> debuffs.casting -> check() ) return false;
+    if ( target -> debuffs.casting && ! target -> debuffs.casting -> check() ) return false;
     return shaman_spell_t::ready();
   }
 

@@ -3960,7 +3960,7 @@ struct counterspell_t : public mage_spell_t
 
   virtual bool ready() override
   {
-    if ( ! target -> debuffs.casting -> check() )
+    if ( ! target -> debuffs.casting || ! target -> debuffs.casting -> check() )
     {
       return false;
     }

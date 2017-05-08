@@ -1388,7 +1388,7 @@ struct mortal_strike_t20_t : public warrior_attack_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      if ( sim -> overrides.mortal_wounds )
+      if ( ! sim -> overrides.mortal_wounds && execute_state -> target -> debuffs.mortal_wounds )
       {
         execute_state -> target -> debuffs.mortal_wounds -> trigger();
       }
@@ -1471,7 +1471,7 @@ struct mortal_strike_t : public warrior_attack_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      if ( sim -> overrides.mortal_wounds )
+      if ( ! sim -> overrides.mortal_wounds && execute_state -> target -> debuffs.mortal_wounds )
       {
         execute_state -> target -> debuffs.mortal_wounds -> trigger();
       }

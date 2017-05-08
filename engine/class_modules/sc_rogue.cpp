@@ -2044,7 +2044,7 @@ struct wound_poison_t : public rogue_poison_t
       {
         td( state -> target ) -> debuffs.wound_poison -> trigger();
 
-        if ( ! sim -> overrides.mortal_wounds )
+        if ( ! sim -> overrides.mortal_wounds && state -> target -> debuffs.mortal_wounds )
           state -> target -> debuffs.mortal_wounds -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, data().duration() );
 
         if ( td( state -> target ) -> dots.kingsbane -> is_ticking() )
@@ -3351,7 +3351,7 @@ struct kick_t : public rogue_attack_t
 
   virtual bool ready() override
   {
-    if ( ! target -> debuffs.casting -> check() )
+    if ( target -> debuffs.casting && ! target -> debuffs.casting -> check() )
       return false;
 
     return rogue_attack_t::ready();

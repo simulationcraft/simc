@@ -1334,7 +1334,10 @@ struct storm_earth_and_fire_pet_t : public pet_t
 
       if ( result_is_hit( state -> result ) )
       {
-        state -> target -> debuffs.mortal_wounds -> trigger();
+        if ( state -> target -> debuffs.mortal_wounds )
+        {
+          state -> target -> debuffs.mortal_wounds -> trigger();
+        }
         o() -> trigger_mark_of_the_crane( state );
 
         if ( p() -> buff.pressure_point_sef -> up() )
@@ -1372,7 +1375,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
 
       if ( result_is_hit( state -> result ) )
       {
-        if ( o() -> spec.combat_conditioning )
+        if ( o() -> spec.combat_conditioning && state -> target -> debuffs.mortal_wounds )
           state -> target -> debuffs.mortal_wounds -> trigger();
 
         if ( o() -> spec.spinning_crane_kick )
@@ -1412,7 +1415,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
     {
       sef_melee_attack_t::impact( state );
 
-      if ( result_is_hit( state -> result ) )
+      if ( result_is_hit( state -> result ) && state -> target -> debuffs.mortal_wounds )
         state -> target -> debuffs.mortal_wounds -> trigger();
     }
   };
@@ -3126,7 +3129,7 @@ struct rising_sun_kick_proc_t : public monk_melee_attack_t
     if ( result_is_hit( s -> result ) )
     {
       // Apply Mortal Wonds
-      if ( p() -> spec.combat_conditioning )
+      if ( p() -> spec.combat_conditioning && s -> target -> debuffs.mortal_wounds )
         s -> target -> debuffs.mortal_wounds -> trigger();
 
       if ( p() -> spec.spinning_crane_kick )
@@ -3192,7 +3195,10 @@ struct rising_sun_kick_tornado_kick_t : public monk_melee_attack_t
     if ( result_is_hit( s -> result ) )
     {
       // Apply Mortal Wonds
-      s -> target -> debuffs.mortal_wounds -> trigger();
+      if ( s -> target -> debuffs.mortal_wounds )
+      {
+        s -> target -> debuffs.mortal_wounds -> trigger();
+      }
       p() -> trigger_mark_of_the_crane( s );
 
       if ( p() -> buff.pressure_point -> up() )
@@ -3343,7 +3349,10 @@ struct rising_sun_kick_t: public monk_melee_attack_t
       // Apply Mortal Wonds
       if ( p() -> specialization() == MONK_WINDWALKER )
       {
-        s -> target -> debuffs.mortal_wounds -> trigger();
+        if ( s -> target -> debuffs.mortal_wounds )
+        {
+          s -> target -> debuffs.mortal_wounds -> trigger();
+        }
 
         if ( p() -> artifact.tornado_kicks.rank() )
         {

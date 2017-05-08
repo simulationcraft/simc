@@ -2633,7 +2633,7 @@ public:
   {
     double tc = base_t::composite_target_crit_chance( t );
 
-    if ( special && t -> debuffs.bleeding -> check() )
+    if ( special && t -> debuffs.bleeding && t -> debuffs.bleeding -> check() )
       tc += p() -> talent.blood_scent -> effectN( 1 ).percent();
 
     return tc;
@@ -3583,7 +3583,7 @@ struct shred_t : public cat_attack_t
   {
     double tm = cat_attack_t::composite_target_multiplier( t );
 
-    if ( t -> debuffs.bleeding -> up() )
+    if ( t -> debuffs.bleeding && t -> debuffs.bleeding -> up() )
       tm *= 1.0 + p() -> spec.shred -> effectN( 5 ).percent();
 
     if ( p() -> sets.has_set_bonus( DRUID_FERAL, T19, B4 ) )
@@ -3657,7 +3657,7 @@ public:
   {
     double tm = cat_attack_t::composite_target_multiplier( t );
 
-    if ( t -> debuffs.bleeding -> up() )
+    if ( t -> debuffs.bleeding && t -> debuffs.bleeding -> up() )
       tm *= 1.0 + data().effectN( 2 ).percent();
 
     if ( p() -> sets.has_set_bonus( DRUID_FERAL, T19, B4 ) )
@@ -3965,7 +3965,7 @@ struct mangle_t : public bear_attack_t
   {
     double tm = bear_attack_t::composite_target_multiplier( t );
 
-    if ( t -> debuffs.bleeding -> check() )
+    if ( t -> debuffs.bleeding && t -> debuffs.bleeding -> check() )
       tm *= 1.0 + bleeding_multiplier;
 
     return tm;
@@ -5863,7 +5863,7 @@ struct skull_bash_t : public druid_spell_t
 
   bool ready() override
   {
-    if ( ! target -> debuffs.casting -> check() )
+    if ( ! target -> debuffs.casting || ! target -> debuffs.casting -> check() )
       return false;
 
     return druid_spell_t::ready();
@@ -9148,7 +9148,7 @@ void druid_t::copy_from( player_t* source )
   t20_4pc = p -> t20_4pc;
   ahhhhh_the_great_outdoors = p -> ahhhhh_the_great_outdoors;
 }
-void druid_t::output_json_report(js::JsonOutput& root) const
+void druid_t::output_json_report(js::JsonOutput& /*root*/) const
 {
    return; //NYI.
    if ( specialization() != DRUID_FERAL ) return;
@@ -9170,7 +9170,7 @@ void druid_t::output_json_report(js::JsonOutput& root) const
       double sr_benefit_up = 0, sr_benefit_total = 0;
       double bt_exe_up = 0, bt_exe_total = 0;
       double bt_benefit_up = 0, bt_benefit_total = 0;
-      int n = 0;
+      //int n = 0;
 
       for (size_t j = 0, end2 = stats->action_list.size(); j < end2; j++)
       {
@@ -9218,10 +9218,10 @@ void druid_t::output_json_report(js::JsonOutput& root) const
 
          if (tf_exe_total > 0 || bt_exe_total > 0 || sr_exe_total > 0)
          {
-            auto snapshot = root["snapshot_stats"].add();
+            //auto snapshot = root["snapshot_stats"].add();
             if (talent.savage_roar->ok())
             {
-               auto sr = snapshot["savage_roar"].make_array();
+               //auto sr = snapshot["savage_roar"].make_array();
 
 
 

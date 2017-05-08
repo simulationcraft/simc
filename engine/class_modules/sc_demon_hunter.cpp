@@ -1685,7 +1685,7 @@ struct consume_magic_t : public demon_hunter_spell_t
 
   bool ready() override
   {
-    if ( !target -> debuffs.casting -> check() )
+    if ( ! target -> debuffs.casting || !target -> debuffs.casting -> check() )
       return false;
 
     return demon_hunter_spell_t::ready();

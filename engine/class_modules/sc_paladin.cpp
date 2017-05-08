@@ -3781,7 +3781,7 @@ struct rebuke_t : public paladin_melee_attack_t
 
   virtual bool ready() override
   {
-    if ( ! target -> debuffs.casting -> check() )
+    if ( ! target -> debuffs.casting || ! target -> debuffs.casting -> check() )
       return false;
 
     return paladin_melee_attack_t::ready();

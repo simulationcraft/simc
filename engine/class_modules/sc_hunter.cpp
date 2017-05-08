@@ -4345,7 +4345,7 @@ struct interrupt_base_t: public hunter_spell_t
 
   bool ready() override
   {
-    if ( ! target -> debuffs.casting -> check() ) return false;
+    if ( ! target -> debuffs.casting || ! target -> debuffs.casting -> check() ) return false;
     return hunter_spell_t::ready();
   }
 

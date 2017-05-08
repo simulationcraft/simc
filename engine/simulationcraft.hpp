@@ -1875,6 +1875,7 @@ struct sim_t : private sc_thread_t
   void combat_begin();
   void combat_end();
   void add_chart_data( const highchart::chart_t& chart );
+  bool      has_raid_event( const std::string& name ) const;
 
   // Activates the necessary actor/actors before iteration begins.
   void activate_actors();
@@ -4354,7 +4355,7 @@ struct player_t : public actor_t
   virtual void  summon_pet( const std::string& name, timespan_t duration = timespan_t::zero() );
   virtual void dismiss_pet( const std::string& name );
 
-  bool is_moving() const { return buffs.movement -> check(); }
+  bool is_moving() const { return buffs.movement && buffs.movement -> check(); }
 
   bool parse_talents_numbers( const std::string& talent_string );
   bool parse_talents_armory( const std::string& talent_string );
@@ -4516,7 +4517,10 @@ struct player_t : public actor_t
       else
         current.distance_to_move = distance;
       current.movement_direction = direction;
-      buffs.movement -> trigger();
+      if ( buffs.movement )
+      {
+        buffs.movement -> trigger();
+      }
     }
   }
 
@@ -4641,7 +4645,10 @@ private:
       //x_position += current.distance_to_move;
       current.distance_to_move = 0;
       current.movement_direction = MOVEMENT_NONE;
-      buffs.movement -> expire();
+      if ( buffs.movement )
+      {
+        buffs.movement -> expire();
+      }
     }
     else
     {
@@ -4829,6 +4836,7 @@ public:
   pet_t( sim_t* sim, player_t* owner, const std::string& name, pet_e pt, bool guardian = false, bool dynamic = false );
 
   virtual void create_options() override;
+  virtual void create_buffs() override;
   virtual void init() override;
   virtual void init_base_stats() override;
   virtual void init_target() override;

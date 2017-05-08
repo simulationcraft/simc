@@ -2104,14 +2104,7 @@ void player_t::init_scaling()
     scaling -> enable( STAT_MASTERY_RATING );
     scaling -> enable( STAT_VERSATILITY_RATING );
 
-    bool has_movement = false;
-    for ( const auto& raid_event : sim -> raid_events )
-    {
-      if ( util::str_in_str_ci( raid_event -> name(), "movement" ) )
-        has_movement = true;
-    }
-
-    scaling -> set( STAT_SPEED_RATING, has_movement );
+    scaling -> set( STAT_SPEED_RATING, sim -> has_raid_event( "movement" ) );
     // scaling -> set( STAT_AVOIDANCE_RATING          ] = tank; // Waste of sim time vast majority of the time. Can be enabled manually.
     scaling -> set( STAT_LEECH_RATING, tank );
 
@@ -2659,6 +2652,7 @@ void player_t::min_threshold_trigger()
 
 // player_t::create_buffs ===================================================
 
+// Note, these are player and enemy buffs/debuffs. Pet buffs and debuffs are in pet_t::create_buffs
 void player_t::create_buffs()
 {
   if ( sim -> debug )
@@ -2677,73 +2671,6 @@ void player_t::create_buffs()
       player -> buffs.norgannons_foresight_ready -> trigger();
     }
   };
-
-  if ( ! is_enemy() && type != PLAYER_GUARDIAN )
-  {
-    if ( type != PLAYER_PET )
-    {
-      // Racials
-      buffs.berserking                = haste_buff_creator_t( this, "berserking", find_spell( 26297 ) ).add_invalidate( CACHE_HASTE );
-      buffs.stoneform                 = buff_creator_t( this, "stoneform", find_spell( 65116 ) );
-      buffs.blood_fury                = stat_buff_creator_t( this, "blood_fury", find_racial_spell( "Blood Fury" ) )
-                                        .add_invalidate( CACHE_SPELL_POWER )
-                                        .add_invalidate( CACHE_ATTACK_POWER );
-      buffs.fortitude                 = buff_creator_t( this, "fortitude", find_spell( 137593 ) ).activated( false );
-      buffs.shadowmeld                = buff_creator_t( this, "shadowmeld", find_spell( 58984 ) ).cd( timespan_t::zero() );
-
-      buffs.archmages_greater_incandescence_agi = buff_creator_t( this, "archmages_greater_incandescence_agi", find_spell( 177172 ) )
-        .add_invalidate( CACHE_AGILITY );
-      buffs.archmages_greater_incandescence_str = buff_creator_t( this, "archmages_greater_incandescence_str", find_spell( 177175 ) )
-        .add_invalidate( CACHE_STRENGTH );
-      buffs.archmages_greater_incandescence_int = buff_creator_t( this, "archmages_greater_incandescence_int", find_spell( 177176 ) )
-        .add_invalidate( CACHE_INTELLECT );
-
-      buffs.archmages_incandescence_agi = buff_creator_t( this, "archmages_incandescence_agi", find_spell( 177161 ) )
-        .add_invalidate( CACHE_AGILITY );
-      buffs.archmages_incandescence_str = buff_creator_t( this, "archmages_incandescence_str", find_spell( 177160 ) )
-        .add_invalidate( CACHE_STRENGTH );
-      buffs.archmages_incandescence_int = buff_creator_t( this, "archmages_incandescence_int", find_spell( 177159 ) )
-        .add_invalidate( CACHE_INTELLECT );
-
-      // Legendary meta haste buff
-      buffs.tempus_repit              = haste_buff_creator_t( this, "tempus_repit", find_spell( 137590 ) ).add_invalidate( CACHE_SPELL_SPEED ).activated( false );
-
-      buffs.darkflight         = buff_creator_t( this, "darkflight", find_racial_spell( "darkflight" ) );
-
-      buffs.nitro_boosts       = buff_creator_t( this, "nitro_boosts", find_spell( 54861 ) );
-
-      buffs.amplification = buff_creator_t( this, "amplification", find_spell( 146051 ) )
-                            .add_invalidate( CACHE_MASTERY )
-                            .add_invalidate( CACHE_HASTE )
-                            .add_invalidate( CACHE_SPIRIT )
-                            .chance( 0 );
-      buffs.amplification_2 = buff_creator_t( this, "amplification_2", find_spell( 146051 ) )
-                              .add_invalidate( CACHE_MASTERY )
-                              .add_invalidate( CACHE_HASTE )
-                              .add_invalidate( CACHE_SPIRIT )
-                              .chance( 0 );
-
-      buffs.temptation = buff_creator_t( this, "temptation", find_spell( 234143 ) )
-        .cd( timespan_t::zero() )
-        .chance( 1 )
-        .default_value( 0.1 ); //Not in spelldata
-
-      buffs.norgannons_foresight_ready = buff_creator_t( this, "norgannons_foresight_ready", find_spell( 236380 ) )
-        .chance( 0 );
-
-      buffs.norgannons_foresight = new norgannons_foresight_buff_t( this );     
-    }
-  }
-
-  buffs.courageous_primal_diamond_lucidity = buff_creator_t( this, "lucidity", find_spell( 137288 ) );
-
-  buffs.body_and_soul = buff_creator_t( this, "body_and_soul", find_spell( 64129 ) )
-                        .max_stack( 1 )
-                        .duration( timespan_t::from_seconds( 4.0 ) );
-
-  buffs.angelic_feather = buff_creator_t( this, "angelic_feather", find_spell( 121557 ) )
-                          .max_stack( 1 )
-                          .duration( timespan_t::from_seconds( 6.0 ) );
 
   struct movement_buff_t : public buff_t
   {
@@ -2768,21 +2695,94 @@ void player_t::create_buffs()
     }
   };
 
-  buffs.movement = new movement_buff_t( this );
-
-  // Infinite-Stacking Buffs and De-Buffs
+  // Infinite-Stacking Buffs and De-Buffs for everyone
   buffs.stunned        = buff_creator_t( this, "stunned" ).max_stack( 1 );
-  debuffs.bleeding     = buff_creator_t( this, "bleeding" ).max_stack( 1 );
   debuffs.casting      = buff_creator_t( this, "casting" ).max_stack( 1 ).quiet( 1 );
-  debuffs.invulnerable = buff_creator_t( this, "invulnerable" ).max_stack( 1 );
-  debuffs.vulnerable   = buff_creator_t( this, "vulnerable" ).max_stack( 1 );
-  debuffs.flying       = buff_creator_t( this, "flying" ).max_stack( 1 );
-  debuffs.damage_taken = buff_creator_t( this, "damage_taken" ).duration( timespan_t::from_seconds( 20.0 ) ).max_stack( 999 );
 
-  // stuff moved from old init_debuffs method
+  // .. for players
+  if ( ! is_enemy() )
+  {
+    // Racials
+    buffs.berserking                = haste_buff_creator_t( this, "berserking", find_spell( 26297 ) ).add_invalidate( CACHE_HASTE );
+    buffs.stoneform                 = buff_creator_t( this, "stoneform", find_spell( 65116 ) );
+    buffs.blood_fury                = stat_buff_creator_t( this, "blood_fury", find_racial_spell( "Blood Fury" ) )
+                                      .add_invalidate( CACHE_SPELL_POWER )
+                                      .add_invalidate( CACHE_ATTACK_POWER );
+    buffs.fortitude                 = buff_creator_t( this, "fortitude", find_spell( 137593 ) ).activated( false );
+    buffs.shadowmeld                = buff_creator_t( this, "shadowmeld", find_spell( 58984 ) ).cd( timespan_t::zero() );
 
-  debuffs.mortal_wounds           = buff_creator_t( this, "mortal_wounds", find_spell( 115804 ) )
-                                    .default_value( std::fabs( find_spell( 115804 ) -> effectN( 1 ).percent() ) );
+    buffs.archmages_greater_incandescence_agi = buff_creator_t( this, "archmages_greater_incandescence_agi", find_spell( 177172 ) )
+      .add_invalidate( CACHE_AGILITY );
+    buffs.archmages_greater_incandescence_str = buff_creator_t( this, "archmages_greater_incandescence_str", find_spell( 177175 ) )
+      .add_invalidate( CACHE_STRENGTH );
+    buffs.archmages_greater_incandescence_int = buff_creator_t( this, "archmages_greater_incandescence_int", find_spell( 177176 ) )
+      .add_invalidate( CACHE_INTELLECT );
+
+    buffs.archmages_incandescence_agi = buff_creator_t( this, "archmages_incandescence_agi", find_spell( 177161 ) )
+      .add_invalidate( CACHE_AGILITY );
+    buffs.archmages_incandescence_str = buff_creator_t( this, "archmages_incandescence_str", find_spell( 177160 ) )
+      .add_invalidate( CACHE_STRENGTH );
+    buffs.archmages_incandescence_int = buff_creator_t( this, "archmages_incandescence_int", find_spell( 177159 ) )
+      .add_invalidate( CACHE_INTELLECT );
+
+    // Legendary meta haste buff
+    buffs.tempus_repit              = haste_buff_creator_t( this, "tempus_repit", find_spell( 137590 ) ).add_invalidate( CACHE_SPELL_SPEED ).activated( false );
+
+    buffs.darkflight         = buff_creator_t( this, "darkflight", find_racial_spell( "darkflight" ) );
+
+    buffs.nitro_boosts       = buff_creator_t( this, "nitro_boosts", find_spell( 54861 ) );
+
+    buffs.amplification = buff_creator_t( this, "amplification", find_spell( 146051 ) )
+                          .add_invalidate( CACHE_MASTERY )
+                          .add_invalidate( CACHE_HASTE )
+                          .add_invalidate( CACHE_SPIRIT )
+                          .chance( 0 );
+    buffs.amplification_2 = buff_creator_t( this, "amplification_2", find_spell( 146051 ) )
+                            .add_invalidate( CACHE_MASTERY )
+                            .add_invalidate( CACHE_HASTE )
+                            .add_invalidate( CACHE_SPIRIT )
+                            .chance( 0 );
+
+    buffs.temptation = buff_creator_t( this, "temptation", find_spell( 234143 ) )
+      .cd( timespan_t::zero() )
+      .chance( 1 )
+      .default_value( 0.1 ); //Not in spelldata
+
+    buffs.norgannons_foresight_ready = buff_creator_t( this, "norgannons_foresight_ready", find_spell( 236380 ) )
+      .chance( 0 );
+
+    buffs.norgannons_foresight = new norgannons_foresight_buff_t( this );     
+
+    buffs.courageous_primal_diamond_lucidity = buff_creator_t( this, "lucidity", find_spell( 137288 ) );
+
+    buffs.body_and_soul = buff_creator_t( this, "body_and_soul", find_spell( 64129 ) )
+                          .max_stack( 1 )
+                          .duration( timespan_t::from_seconds( 4.0 ) );
+
+    buffs.angelic_feather = buff_creator_t( this, "angelic_feather", find_spell( 121557 ) )
+                            .max_stack( 1 )
+                            .duration( timespan_t::from_seconds( 6.0 ) );
+
+    buffs.movement = new movement_buff_t( this );
+  }
+  // .. for enemies
+  else
+  {
+    debuffs.bleeding     = buff_creator_t( this, "bleeding" ).max_stack( 1 );
+    debuffs.invulnerable = buff_creator_t( this, "invulnerable" ).max_stack( 1 );
+    debuffs.vulnerable   = buff_creator_t( this, "vulnerable" ).max_stack( 1 );
+    debuffs.flying       = buff_creator_t( this, "flying" ).max_stack( 1 );
+    debuffs.mortal_wounds= buff_creator_t( this, "mortal_wounds", find_spell( 115804 ) )
+                           .default_value( std::fabs( find_spell( 115804 ) -> effectN( 1 ).percent() ) );
+  }
+
+  // .. for players, but only if there's a "damage taken" raid event
+  if ( sim -> has_raid_event( "damage_taken" ) )
+  {
+    debuffs.damage_taken = buff_creator_t( this, "damage_taken" )
+                           .duration( timespan_t::from_seconds( 20.0 ) )
+                           .max_stack( 999 );
+  }
 }
 
 // player_t::find_item ======================================================
@@ -3435,14 +3435,17 @@ double player_t::temporary_movement_modifier() const
     if ( buffs.windwalking_movement_aura -> check() )
       temporary = std::max( buffs.windwalking_movement_aura -> current_value, temporary );
 
+    if ( buffs.stampeding_roar -> check() )
+      temporary = std::max( buffs.stampeding_roar -> data().effectN( 1 ).percent(), temporary );
+  }
+
+  if ( ! is_enemy() && ! is_pet() )
+  {
     if ( buffs.darkflight -> check() )
       temporary = std::max( buffs.darkflight -> data().effectN( 1 ).percent(), temporary );
 
     if ( buffs.nitro_boosts -> check() )
       temporary = std::max( buffs.nitro_boosts -> data().effectN( 1 ).percent(), temporary );
-
-    if ( buffs.stampeding_roar -> check() )
-      temporary = std::max( buffs.stampeding_roar -> data().effectN( 1 ).percent(), temporary );
 
     if ( buffs.body_and_soul -> check() )
       temporary = std::max( buffs.body_and_soul -> data().effectN( 1 ).percent(), temporary );
@@ -3636,13 +3639,13 @@ double player_t::composite_rating( rating_e rating ) const
 
 double player_t::composite_player_vulnerability( school_e /* school */ ) const
 {
-  double m = debuffs.invulnerable -> check() ? 0.0 : 1.0;
+  double m = debuffs.invulnerable && debuffs.invulnerable -> check() ? 0.0 : 1.0;
 
-  if ( debuffs.vulnerable -> check() )
+  if ( debuffs.vulnerable && debuffs.vulnerable -> check() )
     m *= 1.0 + debuffs.vulnerable -> value();
 
   // 1% damage taken per stack, arbitrary because this buff is completely fabricated!
-  if ( debuffs.damage_taken -> check() )
+  if ( debuffs.damage_taken && debuffs.damage_taken -> check() )
     m *= 1.0 + debuffs.damage_taken -> current_stack * 0.01;
 
   return m;
@@ -5820,7 +5823,7 @@ void player_t::target_mitigation( school_e school,
   // TODO-WOD: Where should this be? Or does it matter?
   s -> result_amount *= 1.0 - cache.mitigation_versatility();
 
-  if ( debuffs.invulnerable -> check() )
+  if ( debuffs.invulnerable && debuffs.invulnerable -> check() )
   {
     s -> result_amount = 0;
   }
