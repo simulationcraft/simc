@@ -6847,7 +6847,7 @@ struct snapshot_stats_t : public action_t
   bool init_finished() override
   {
     player_t* p = player;
-    for ( size_t i = 0; i < p -> pet_list.size(); ++i )
+    for ( size_t i = 0; sim -> report_pets_separately && i < p -> pet_list.size(); ++i )
     {
       pet_t* pet = p -> pet_list[ i ];
       action_t* pet_snapshot = pet -> find_action( "snapshot_stats" );
