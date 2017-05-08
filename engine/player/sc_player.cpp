@@ -749,7 +749,7 @@ player_t::player_t( sim_t*             s,
   rps_gain( 0 ), rps_loss( 0 ),
 
   tmi_window( 6.0 ),
-  collected_data( name_str, *sim ),
+  collected_data( this ),
   // Damage
   iteration_dmg( 0 ), priority_iteration_dmg( 0 ), iteration_dmg_taken( 0 ),
   dpr( 0 ),
@@ -768,7 +768,7 @@ player_t::player_t( sim_t*             s,
   legendary_tank_cloak_cd( nullptr ),
   warlords_unseeing_eye( 0.0 ),
   auto_attack_multiplier( 1.0 ),
-  scaling( ! is_pet() ? new player_scaling_t() : nullptr ),
+  scaling( ( ! is_pet() || sim -> report_pets_separately ) ? new player_scaling_t() : nullptr ),
   // Movement & Position
   base_movement_speed( 7.0 ), passive_modifier( 0 ),
   x_position( 0.0 ), y_position( 0.0 ),
@@ -11073,43 +11073,84 @@ player_collected_data_t::action_sequence_data_t::action_sequence_data_t( const t
   }
 }
 
-player_collected_data_t::player_collected_data_t( const std::string& player_name, sim_t& s ) :
-  fight_length( player_name + " Fight Length", s.statistics_level < 2),
-  waiting_time(player_name + " Waiting Time", s.statistics_level < 4),
-  pooling_time(player_name + " Pooling Time", s.statistics_level < 4),
-  executed_foreground_actions(player_name + " Executed Foreground Actions", s.statistics_level < 4),
-  dmg( player_name + " Damage", s.statistics_level < 2 ),
-  compound_dmg( player_name + " Total Damage", s.statistics_level < 2 ),
-  prioritydps( player_name + " Priority Target Damage Per Second", s.statistics_level < 1 ),
-  dps( player_name + " Damage Per Second", s.statistics_level < 1 ),
-  dpse( player_name + " Damage Per Second (Effective)", s.statistics_level < 2 ),
-  dtps( player_name + " Damage Taken Per Second", s.statistics_level < 2 ),
-  dmg_taken( player_name + " Damage Taken", s.statistics_level < 2 ),
+bool player_collected_data_t::tank_container_type( const player_t* for_actor,
+                                                   int             target_statistics_level )
+{
+  if ( for_actor -> primary_role() == ROLE_TANK && for_actor -> level() == MAX_LEVEL )
+  {
+    return for_actor -> sim -> statistics_level < target_statistics_level;
+  }
+
+  return true;
+}
+
+bool player_collected_data_t::generic_container_type( const player_t* for_actor,
+                                                      int             target_statistics_level )
+{
+  if ( ! for_actor -> is_enemy() && ( ! for_actor -> is_pet() || for_actor -> sim -> report_pets_separately ) )
+  {
+    return for_actor -> sim -> statistics_level < target_statistics_level;
+  }
+
+  return true;
+}
+
+player_collected_data_t::player_collected_data_t( const player_t* player ) :
+  fight_length( player -> name_str + " Fight Length", generic_container_type( player, 2 ) ),
+  waiting_time( player -> name_str + " Waiting Time", generic_container_type( player, 2 ) ),
+  pooling_time( player -> name_str + " Pooling Time", generic_container_type( player, 4 ) ),
+  executed_foreground_actions( player -> name_str + " Executed Foreground Actions", generic_container_type( player, 4 ) ),
+  dmg( player -> name_str + " Damage", generic_container_type( player, 2 ) ),
+  compound_dmg( player -> name_str + " Total Damage", generic_container_type( player, 2 ) ),
+  prioritydps( player -> name_str + " Priority Target Damage Per Second", generic_container_type( player, 1 ) ),
+  dps( player -> name_str + " Damage Per Second", generic_container_type( player, 1 ) ),
+  dpse( player -> name_str + " Damage Per Second (Effective)", generic_container_type( player, 2 ) ),
+  dtps( player -> name_str + " Damage Taken Per Second", tank_container_type( player, 2 ) ),
+  dmg_taken( player -> name_str + " Damage Taken", tank_container_type( player, 2 ) ),
   timeline_dmg(),
-  heal( player_name + " Heal", s.statistics_level < 2 ),
-  compound_heal( player_name + " Total Heal", s.statistics_level < 2 ),
-  hps( player_name + " Healing Per Second", s.statistics_level < 1 ),
-  hpse( player_name + " Healing Per Second (Effective)", s.statistics_level < 2 ),
-  htps( player_name + " Healing Taken Per Second", s.statistics_level < 2 ),
-  heal_taken( player_name + " Healing Taken", s.statistics_level < 2 ),
-  absorb( player_name + " Absorb", s.statistics_level < 2 ),
-  compound_absorb( player_name + " Total Absorb", s.statistics_level < 2 ),
-  aps( player_name + " Absorb Per Second", s.statistics_level < 1 ),
-  atps( player_name + " Absorb Taken Per Second", s.statistics_level < 2 ),
-  absorb_taken( player_name + " Absorb Taken", s.statistics_level < 2 ),
-  deaths( player_name + " Deaths", s.statistics_level < 2 ),
-  theck_meloree_index( player_name + " Theck-Meloree Index", s.statistics_level < 1 ),
-  effective_theck_meloree_index( player_name + "Theck-Meloree Index (Effective)", s.statistics_level < 1 ),
-  max_spike_amount( player_name + " Max Spike Value", s.statistics_level < 1 ),
-  target_metric( player_name + " Target Metric", false ),
+  heal( player -> name_str + " Heal", generic_container_type( player, 2 ) ),
+  compound_heal( player -> name_str + " Total Heal", generic_container_type( player, 2 ) ),
+  hps( player -> name_str + " Healing Per Second", generic_container_type( player, 1 ) ),
+  hpse( player -> name_str + " Healing Per Second (Effective)", generic_container_type( player, 2 ) ),
+  htps( player -> name_str + " Healing Taken Per Second", tank_container_type( player, 2 ) ),
+  heal_taken( player -> name_str + " Healing Taken", tank_container_type( player, 2 ) ),
+  absorb( player -> name_str + " Absorb", generic_container_type( player, 2 ) ),
+  compound_absorb( player -> name_str + " Total Absorb", generic_container_type( player, 2 ) ),
+  aps( player -> name_str + " Absorb Per Second", generic_container_type( player, 1 ) ),
+  atps( player -> name_str + " Absorb Taken Per Second", tank_container_type( player, 2 ) ),
+  absorb_taken( player -> name_str + " Absorb Taken", tank_container_type( player, 2 ) ),
+  deaths( player -> name_str + " Deaths", tank_container_type( player, 2 ) ),
+  theck_meloree_index( player -> name_str + " Theck-Meloree Index", tank_container_type( player, 1 ) ),
+  effective_theck_meloree_index( player -> name_str + "Theck-Meloree Index (Effective)", tank_container_type( player, 2 ) ),
+  max_spike_amount( player -> name_str + " Max Spike Value", tank_container_type( player, 2 ) ),
+  target_metric( player -> name_str + " Target Metric",
+                 player -> sim -> target_error && ( ! player -> is_enemy() && ( ! player -> is_pet() || player -> sim -> report_pets_separately ) )
+                 ? false
+                 : true ),
   resource_timelines(),
-  combat_end_resource( RESOURCE_MAX ),
+  combat_end_resource(
+      ( ! player -> is_enemy() && ( ! player -> is_pet() || player -> sim -> report_pets_separately ) )
+      ? RESOURCE_MAX
+      : 0 ),
   stat_timelines(),
   health_changes(),
   health_changes_tmi(),
   total_iterations( 0 ),
   buffed_stats_snapshot()
-{ }
+{
+  if ( ! player -> is_enemy() && ( ! player -> is_pet() || player -> sim -> report_pets_separately ) )
+  {
+    resource_lost.resize( RESOURCE_MAX );
+    resource_gained.resize( RESOURCE_MAX );
+  }
+
+  // Enemies only have health
+  if ( player -> is_enemy() )
+  {
+    resource_lost.resize( RESOURCE_HEALTH + 1 );
+    resource_gained.resize( RESOURCE_HEALTH + 1 );
+  }
+}
 
 void player_collected_data_t::reserve_memory( const player_t& p )
 {
@@ -11173,7 +11214,7 @@ void player_collected_data_t::merge( const player_collected_data_t& other )
   theck_meloree_index.merge( other.theck_meloree_index );
   effective_theck_meloree_index.merge( other.effective_theck_meloree_index );
 
-  for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; ++i )
+  for ( size_t i = 0, end = resource_lost.size(); i < end; ++i )
   {
     resource_lost  [ i ].merge( other.resource_lost[ i ] );
     resource_gained[ i ].merge( other.resource_gained[ i ] );
@@ -11415,14 +11456,16 @@ void player_collected_data_t::collect_data( const player_t& p )
   dmg_taken.add( p.iteration_dmg_taken );
   dtps.add( f_length ? p.iteration_dmg_taken / f_length : 0 );
 
-  for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; ++i )
+  for ( size_t i = 0, end = resource_lost.size(); i < end; ++i )
   {
     resource_lost  [ i ].add( p.iteration_resource_lost[i] );
     resource_gained[ i ].add( p.iteration_resource_gained[i] );
   }
 
-  for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; ++i )
+  for ( size_t i = 0, end = combat_end_resource.size(); i < end; ++i )
+  {
     combat_end_resource[ i ].add( p.resources.current[ i ] );
+  }
 
   // Health Change Calculations - only needed for tanks
   double tank_metric = 0;
@@ -12016,3 +12059,4 @@ void player_t::deactivate()
   // analysis at the end of simulation
   collected_data.total_iterations = sim -> current_iteration;
 }
+

@@ -2397,8 +2397,9 @@ void print_html_player_resources( report::sc_html_stream& os, const player_t& p,
   os << "<th>RPS-Loss</th>\n";
   os << "</tr>\n";
   int j = 0;
-  for ( resource_e rt = RESOURCE_NONE; rt < RESOURCE_MAX; ++rt )
+  for ( size_t i = 0, end = p.collected_data.resource_gained.size(); i < end; ++i )
   {
+    auto rt = static_cast<resource_e>( i );
     double rps_gain = p.collected_data.resource_gained[ rt ].mean() /
                       p.collected_data.fight_length.mean();
     double rps_loss = p.collected_data.resource_lost[ rt ].mean() /
@@ -2431,8 +2432,10 @@ void print_html_player_resources( report::sc_html_stream& os, const player_t& p,
   os << "<th> Max </th>\n";
   os << "</tr>\n";
   j = 0;
-  for ( resource_e rt = RESOURCE_NONE; rt < RESOURCE_MAX; ++rt )
+  for ( size_t i = 0, end = p.collected_data.combat_end_resource.size(); i < end; ++i )
   {
+    auto rt = static_cast<resource_e>( i );
+
     if ( p.resources.base[ rt ] <= 0 )
       continue;
 

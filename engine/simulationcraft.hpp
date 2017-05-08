@@ -3256,7 +3256,7 @@ struct player_collected_data_t
   extended_sample_data_t target_metric;
   mutex_t target_metric_mutex;
 
-  std::array<simple_sample_data_t,RESOURCE_MAX> resource_lost, resource_gained;
+  std::vector<simple_sample_data_t> resource_lost, resource_gained;
   struct resource_timeline_t
   {
     resource_e type;
@@ -3346,7 +3346,7 @@ struct player_collected_data_t
     double leech, run_speed, avoidance;
   } buffed_stats_snapshot;
 
-  player_collected_data_t( const std::string& player_name, sim_t& );
+  player_collected_data_t( const player_t* player );
   void reserve_memory( const player_t& );
   void merge( const player_collected_data_t& );
   void analyze( const player_t& );
@@ -3355,6 +3355,9 @@ struct player_collected_data_t
   double calculate_tmi( const health_changes_timeline_t& tl, int window, double f_length, const player_t& p );
   double calculate_max_spike_damage( const health_changes_timeline_t& tl, int window );
   std::ostream& data_str( std::ostream& s ) const;
+
+  static bool tank_container_type( const player_t* for_actor, int target_statistics_level );
+  static bool generic_container_type( const player_t* for_actor, int target_statistics_level );
 };
 
 struct player_talent_points_t

@@ -58,7 +58,7 @@ struct enemy_t : public player_t
   { return ROLE_TANK; }
 
   virtual resource_e primary_resource() const override
-  { return RESOURCE_MANA; }
+  { return RESOURCE_HEALTH; }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str ) override;
   virtual void init_base_stats() override;
