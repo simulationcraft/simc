@@ -894,6 +894,9 @@ void print_text_scale_factors( FILE* file, player_t* p,
   if ( !p->sim->scaling->has_scale_factors() )
     return;
 
+  if ( p->scaling == nullptr )
+    return;
+
   if ( p->sim->report_precision < 0 )
     p->sim->report_precision = 2;
 
