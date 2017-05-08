@@ -1455,6 +1455,11 @@ bool chart::generate_scaling_plot( highchart::chart_t& ac, const player_t& p,
 bool chart::generate_scale_factors( highchart::bar_chart_t& bc,
                                     const player_t& p, scale_metric_e metric )
 {
+  if ( p.scaling == nullptr )
+  {
+    return false;
+  }
+
   std::vector<stat_e> scaling_stats;
   range::copy_if( p.scaling->scaling_stats[ metric ],
                   std::back_inserter( scaling_stats ),
