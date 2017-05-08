@@ -3546,6 +3546,36 @@ struct scaling_metric_data_t {
     name( name ), value( tl.mean() ), stddev( tl.mean_stddev() ), metric( m ) {}
 };
 
+struct player_scaling_t
+{
+  std::array<gear_stats_t, SCALE_METRIC_MAX> scaling;
+  std::array<gear_stats_t, SCALE_METRIC_MAX> scaling_normalized;
+  std::array<gear_stats_t, SCALE_METRIC_MAX> scaling_error;
+  std::array<gear_stats_t, SCALE_METRIC_MAX> scaling_delta_dps;
+  std::array<gear_stats_t, SCALE_METRIC_MAX> scaling_compare_error;
+  std::array<double, SCALE_METRIC_MAX> scaling_lag, scaling_lag_error;
+  std::array<bool, STAT_MAX> scales_with;
+  std::array<double, STAT_MAX> over_cap;
+  std::array<std::vector<stat_e>, SCALE_METRIC_MAX> scaling_stats; // sorting vector
+
+  player_scaling_t()
+  {
+    range::fill( scaling_lag, 0 );
+    range::fill( scaling_lag_error, 0 );
+    range::fill( scales_with, false );
+    range::fill( over_cap, 0 );
+  }
+
+  void enable( stat_e stat )
+  { scales_with[ stat ] = true; }
+
+  void disable( stat_e stat )
+  { scales_with[ stat ] = false; }
+
+  void set( stat_e stat, bool state )
+  { scales_with[ stat ] = state; }
+};
+
 struct player_t : public actor_t
 {
   static const int default_level = 110;
@@ -3883,15 +3913,7 @@ struct player_t : public actor_t
   double auto_attack_multiplier;
 
   // Scale Factors
-  std::array<gear_stats_t, SCALE_METRIC_MAX> scaling;
-  std::array<gear_stats_t, SCALE_METRIC_MAX> scaling_normalized;
-  std::array<gear_stats_t, SCALE_METRIC_MAX> scaling_error;
-  std::array<gear_stats_t, SCALE_METRIC_MAX> scaling_delta_dps;
-  std::array<gear_stats_t, SCALE_METRIC_MAX> scaling_compare_error;
-  std::array<double, SCALE_METRIC_MAX> scaling_lag, scaling_lag_error;
-  std::array<bool, STAT_MAX> scales_with;
-  std::array<double, STAT_MAX> over_cap;
-  std::array<std::vector<stat_e>, SCALE_METRIC_MAX> scaling_stats; // sorting vector
+  std::unique_ptr<player_scaling_t> scaling;
 
   // Movement & Position
   double base_movement_speed;

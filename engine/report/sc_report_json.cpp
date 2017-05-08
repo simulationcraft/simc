@@ -1038,12 +1038,12 @@ js::sc_js_t to_json( const player_t& p,
 
     scale_metric_e sm      = p.sim->scaling->scaling_metric;
     const gear_stats_t& sf = ( p.sim->scaling->normalize_scale_factors )
-                                 ? p.scaling_normalized[ sm ]
-                                 : p.scaling[ sm ];
+                                 ? p.scaling->scaling_normalized[ sm ]
+                                 : p.scaling->scaling[ sm ];
 
     for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
     {
-      if ( p.scales_with[ i ] )
+      if ( p.scaling->scales_with[ i ] )
       {
         node.set( util::stat_type_abbrev( i ), sf.get_stat( i ) );
       }
@@ -1060,12 +1060,12 @@ void scale_factors_to_json( JsonOutput root, const player_t& p )
 
   auto sm = p.sim -> scaling -> scaling_metric;
   const auto& sf = ( p.sim -> scaling -> normalize_scale_factors )
-                   ? p.scaling_normalized[ sm ]
-                   : p.scaling[ sm ];
+                   ? p.scaling->scaling_normalized[ sm ]
+                   : p.scaling->scaling[ sm ];
 
   for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
-    if ( p.scales_with[ i ] )
+    if ( p.scaling->scales_with[ i ] )
     {
       root[ util::stat_type_abbrev( i ) ] = sf.get_stat( i );
     }

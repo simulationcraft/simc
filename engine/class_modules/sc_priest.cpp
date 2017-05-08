@@ -4540,7 +4540,7 @@ void priest_t::init_scaling()
 
   // Atonement heals are capped at a percentage of the Priest's health, so there may be scaling with stamina.
   if ( specs.atonement->ok() && primary_role() == ROLE_HEAL )
-    scales_with[ STAT_STAMINA ] = true;
+    scaling -> enable( STAT_STAMINA );
 }
 
 void priest_t::init_spells()

@@ -8297,32 +8297,32 @@ void monk_t::init_scaling()
 
   if ( specialization() != MONK_MISTWEAVER )
   {
-    scales_with[STAT_INTELLECT] = false;
-    scales_with[STAT_SPELL_POWER] = false;
-    scales_with[STAT_AGILITY] = true;
-    scales_with[STAT_WEAPON_DPS] = true;
+    scaling -> disable( STAT_INTELLECT );
+    scaling -> disable( STAT_SPELL_POWER );
+    scaling -> enable( STAT_AGILITY );
+    scaling -> enable( STAT_WEAPON_DPS );
   }
   else
   {
-    scales_with[STAT_AGILITY] = false;
-    scales_with[STAT_MASTERY_RATING] = false;
-    scales_with[STAT_ATTACK_POWER] = false;
-    scales_with[STAT_SPIRIT] = true;
+    scaling -> disable( STAT_AGILITY );
+    scaling -> disable( STAT_MASTERY_RATING );
+    scaling -> disable( STAT_ATTACK_POWER );
+    scaling -> enable( STAT_SPIRIT );
   }
-  scales_with[STAT_STRENGTH] = false;
+  scaling -> disable( STAT_STRENGTH );
 
   if ( specialization() == MONK_WINDWALKER )
   {
     // Touch of Death
-    scales_with[ STAT_STAMINA ] = true;
+    scaling -> enable( STAT_STAMINA );
   }
   if ( specialization() == MONK_BREWMASTER )
   {
-    scales_with[ STAT_BONUS_ARMOR ] = true;
+    scaling -> enable( STAT_BONUS_ARMOR );
   }
 
   if ( off_hand_weapon.type != WEAPON_NONE )
-    scales_with[STAT_WEAPON_OFFHAND_DPS] = true;
+    scaling -> enable( STAT_WEAPON_OFFHAND_DPS );
 }
 
 // monk_t::init_buffs =======================================================

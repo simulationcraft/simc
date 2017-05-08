@@ -5781,15 +5781,15 @@ void warrior_t::init_scaling()
 
   if ( specialization() == WARRIOR_FURY )
   {
-    scales_with[STAT_WEAPON_OFFHAND_DPS] = true;
+    scaling -> enable( STAT_WEAPON_OFFHAND_DPS );
   }
 
   if ( specialization() == WARRIOR_PROTECTION )
   {
-    scales_with[STAT_BONUS_ARMOR] = true;
+    scaling -> enable( STAT_BONUS_ARMOR );
   }
 
-  scales_with[STAT_AGILITY] = false;
+  scaling -> disable( STAT_AGILITY );
 }
 
 // warrior_t::init_gains ====================================================

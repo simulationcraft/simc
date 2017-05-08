@@ -6392,13 +6392,13 @@ void shaman_t::init_scaling()
   switch ( specialization() )
   {
     case SHAMAN_ENHANCEMENT:
-      scales_with[ STAT_STRENGTH              ] = false;
-      scales_with[ STAT_WEAPON_OFFHAND_DPS    ] = true;
-      scales_with[ STAT_SPELL_POWER           ] = false;
-      scales_with[ STAT_INTELLECT             ] = false;
+      scaling -> enable( STAT_WEAPON_OFFHAND_DPS );
+      scaling -> disable( STAT_STRENGTH );
+      scaling -> disable( STAT_SPELL_POWER );
+      scaling -> disable( STAT_INTELLECT );
       break;
     case SHAMAN_RESTORATION:
-      scales_with[ STAT_MASTERY_RATING ] = false;
+      scaling -> disable( STAT_MASTERY_RATING );
       break;
     default:
       break;

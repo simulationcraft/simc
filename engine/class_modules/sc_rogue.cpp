@@ -8041,12 +8041,12 @@ void rogue_t::init_scaling()
 {
   player_t::init_scaling();
 
-  scales_with[ STAT_WEAPON_OFFHAND_DPS    ] = items[ SLOT_OFF_HAND ].active();
-  scales_with[ STAT_STRENGTH              ] = false;
+  scaling -> enable( STAT_WEAPON_OFFHAND_DPS );
+  scaling -> disable( STAT_STRENGTH );
 
   if ( find_item( "thraxis_tricksy_treads" ) )
   {
-    scales_with[ STAT_SPEED_RATING ] = true;
+    scaling -> enable( STAT_SPEED_RATING );
   }
 
   // Break out early if scaling is disabled on this player, or there's no

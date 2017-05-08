@@ -6298,12 +6298,12 @@ void demon_hunter_t::init_scaling()
 {
   base_t::init_scaling();
 
-  scales_with[ STAT_WEAPON_OFFHAND_DPS ] = true;
+  scaling -> enable( STAT_WEAPON_OFFHAND_DPS );
 
   if ( specialization() == DEMON_HUNTER_VENGEANCE )
-    scales_with[ STAT_BONUS_ARMOR ] = true;
+    scaling -> enable( STAT_BONUS_ARMOR );
 
-  scales_with[ STAT_STRENGTH ] = false;
+  scaling -> disable( STAT_STRENGTH );
 }
 
 // demon_hunter_t::init_spells ==============================================

@@ -7834,7 +7834,7 @@ void druid_t::init_scaling()
 
   equipped_weapon_dps = main_hand_weapon.damage / main_hand_weapon.swing_time.total_seconds();
 
-  scales_with[ STAT_STRENGTH ] = false;
+  scaling -> disable( STAT_STRENGTH );
 
   // Save a copy of the weapon
   caster_form_weapon = main_hand_weapon;

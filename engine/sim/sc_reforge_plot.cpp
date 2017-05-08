@@ -31,7 +31,7 @@ bool is_plot_stat( sim_t* sim, stat_e stat )
   // also check if any player scales_with that stat
   auto it =
       range::find_if( sim->player_no_pet_list, [stat]( const player_t* p ) {
-        return !p->quiet && p->scales_with[ stat ];
+        return !p->quiet && p->scaling->scales_with[ stat ];
       } );
 
   return it != sim->player_no_pet_list.end();

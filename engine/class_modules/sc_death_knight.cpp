@@ -7563,12 +7563,12 @@ void death_knight_t::init_scaling()
   player_t::init_scaling();
 
   if ( off_hand_weapon.type != WEAPON_NONE )
-    scales_with[ STAT_WEAPON_OFFHAND_DPS   ] = true;
+    scaling -> enable( STAT_WEAPON_OFFHAND_DPS );
 
   if ( specialization() == DEATH_KNIGHT_BLOOD )
-    scales_with[ STAT_BONUS_ARMOR ] = true;
+    scaling -> enable( STAT_BONUS_ARMOR );
 
-  scales_with[ STAT_AGILITY ] = false;
+  scaling -> disable( STAT_AGILITY );
 }
 
 // death_knight_t::init_buffs ===============================================

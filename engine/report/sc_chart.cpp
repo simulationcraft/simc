@@ -1456,9 +1456,9 @@ bool chart::generate_scale_factors( highchart::bar_chart_t& bc,
                                     const player_t& p, scale_metric_e metric )
 {
   std::vector<stat_e> scaling_stats;
-  range::copy_if( p.scaling_stats[ metric ],
+  range::copy_if( p.scaling->scaling_stats[ metric ],
                   std::back_inserter( scaling_stats ),
-                  [&]( const stat_e& stat ) { return p.scales_with[ stat ]; } );
+                  [&]( const stat_e& stat ) { return p.scaling->scales_with[ stat ]; } );
 
   if ( scaling_stats.empty() )
   {
@@ -1488,10 +1488,10 @@ bool chart::generate_scale_factors( highchart::bar_chart_t& bc,
   std::vector<std::pair<double, double> > error;
   for ( auto stat : scaling_stats )
   {
-    double value = util::round( p.scaling[ metric ].get_stat( stat ),
+    double value = util::round( p.scaling->scaling[ metric ].get_stat( stat ),
                                 p.sim->report_precision );
     double error_value = util::round(
-        p.scaling_error[ metric ].get_stat( stat ), p.sim->report_precision );
+        p.scaling->scaling_error[ metric ].get_stat( stat ), p.sim->report_precision );
     data.push_back( value );
     error.push_back( std::make_pair( value - fabs( error_value ),
                         value + fabs( error_value ) ) );

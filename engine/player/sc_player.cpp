@@ -768,6 +768,7 @@ player_t::player_t( sim_t*             s,
   legendary_tank_cloak_cd( nullptr ),
   warlords_unseeing_eye( 0.0 ),
   auto_attack_multiplier( 1.0 ),
+  scaling( ! is_pet() ? new player_scaling_t() : nullptr ),
   // Movement & Position
   base_movement_speed( 7.0 ), passive_modifier( 0 ),
   x_position( 0.0 ), y_position( 0.0 ),
@@ -843,11 +844,6 @@ player_t::player_t( sim_t*             s,
   resources.infinite_resource[ RESOURCE_HEALTH ] = true;
 
   range::fill( profession, 0 );
-
-  range::fill( scales_with, false );
-  range::fill( over_cap, 0 );
-  range::fill( scaling_lag, 0 );
-  range::fill( scaling_lag_error, 0 );
 
   if ( ! is_pet() )
   {
@@ -2095,25 +2091,18 @@ void player_t::init_scaling()
     bool tank   = ( role == ROLE_TANK );
     bool heal   = ( role == ROLE_HEAL );
 
-    scales_with[ STAT_STRENGTH  ] = attack;
-    scales_with[ STAT_AGILITY   ] = attack;
-    scales_with[ STAT_STAMINA   ] = tank;
-    scales_with[ STAT_INTELLECT ] = spell;
-    scales_with[ STAT_SPIRIT    ] = heal;
+    scaling -> set( STAT_STRENGTH, attack );
+    scaling -> set( STAT_AGILITY, attack );
+    scaling -> set( STAT_STAMINA, tank );
+    scaling -> set( STAT_INTELLECT, spell );
+    scaling -> set( STAT_SPIRIT, heal );
 
-    scales_with[ STAT_HEALTH ] = false;
-    scales_with[ STAT_MANA   ] = false;
-    scales_with[ STAT_RAGE   ] = false;
-    scales_with[ STAT_ENERGY ] = false;
-    scales_with[ STAT_FOCUS  ] = false;
-    scales_with[ STAT_RUNIC  ] = false;
-
-    scales_with[ STAT_SPELL_POWER               ] = spell;
-    scales_with[ STAT_ATTACK_POWER              ] = attack;
-    scales_with[ STAT_CRIT_RATING               ] = true;
-    scales_with[ STAT_HASTE_RATING              ] = true;
-    scales_with[ STAT_MASTERY_RATING            ] = true;
-    scales_with[ STAT_VERSATILITY_RATING        ] = true;
+    scaling -> set( STAT_SPELL_POWER, spell );
+    scaling -> set( STAT_ATTACK_POWER, attack );
+    scaling -> enable( STAT_CRIT_RATING );
+    scaling -> enable( STAT_HASTE_RATING );
+    scaling -> enable( STAT_MASTERY_RATING );
+    scaling -> enable( STAT_VERSATILITY_RATING );
 
     bool has_movement = false;
     for ( const auto& raid_event : sim -> raid_events )
@@ -2122,14 +2111,13 @@ void player_t::init_scaling()
         has_movement = true;
     }
 
-    scales_with[ STAT_SPEED_RATING              ] = has_movement;
-    // scales_with[ STAT_AVOIDANCE_RATING          ] = tank; // Waste of sim time vast majority of the time. Can be enabled manually.
-    scales_with[ STAT_LEECH_RATING              ] = tank;
+    scaling -> set( STAT_SPEED_RATING, has_movement );
+    // scaling -> set( STAT_AVOIDANCE_RATING          ] = tank; // Waste of sim time vast majority of the time. Can be enabled manually.
+    scaling -> set( STAT_LEECH_RATING, tank );
 
-    scales_with[ STAT_WEAPON_DPS   ] = attack;
-    scales_with[ STAT_WEAPON_OFFHAND_DPS   ] = false;
+    scaling -> set( STAT_WEAPON_DPS, attack );
 
-    scales_with[ STAT_ARMOR          ] = tank;
+    scaling -> set( STAT_ARMOR, tank );
 
     if ( sim -> scaling -> scale_stat != STAT_NONE && scale_player )
     {
@@ -5037,7 +5025,7 @@ stat_e player_t::normalize_by() const
   role_e role = primary_role();
   if ( role == ROLE_SPELL || role == ROLE_HEAL )
     return STAT_INTELLECT;
-  else if ( role == ROLE_TANK && ( sm == SCALE_METRIC_TMI || sm == SCALE_METRIC_DEATHS ) && scaling[ sm ].get_stat( STAT_STAMINA) != 0.0 )
+  else if ( role == ROLE_TANK && ( sm == SCALE_METRIC_TMI || sm == SCALE_METRIC_DEATHS ) && scaling -> scaling[ sm ].get_stat( STAT_STAMINA ) != 0.0 )
     return STAT_STAMINA;
   else if ( type == DRUID || type == HUNTER || type == SHAMAN || type == ROGUE || type == MONK || type == DEMON_HUNTER )
     return STAT_AGILITY;
@@ -6956,8 +6944,11 @@ struct snapshot_stats_t : public action_t
       }
     }
 
-    p -> over_cap[ STAT_HIT_RATING ] = std::max( spell_hit_extra, attack_hit_extra );
-    p -> over_cap[ STAT_EXPERTISE_RATING ] = expertise_extra;
+    if ( p -> scaling )
+    {
+      p -> scaling -> over_cap[ STAT_HIT_RATING ] = std::max( spell_hit_extra, attack_hit_extra );
+      p -> scaling -> over_cap[ STAT_EXPERTISE_RATING ] = expertise_extra;
+    }
 
     for ( size_t i = 0; i < p -> pet_list.size(); ++i )
     {

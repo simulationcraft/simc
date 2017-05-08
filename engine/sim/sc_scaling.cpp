@@ -29,7 +29,7 @@ bool is_scaling_stat( sim_t* sim,
     if ( p -> quiet ) continue;
     if ( ! p -> scale_player ) continue;
 
-    if ( p -> scales_with[ stat ] ) return true;
+    if ( p -> scaling -> scales_with[ stat ] ) return true;
   }
 
   return false;
@@ -80,11 +80,13 @@ struct compare_scale_factors
     player( p ), scale_metric( sm ), normalized( use_normalized ) {}
 
   bool operator()( const stat_e& l, const stat_e& r ) const
-  {  
+  {
     if ( normalized )
-      return player -> scaling_normalized[ scale_metric ].get_stat( l ) >  player -> scaling_normalized[ scale_metric ].get_stat( r );
+      return player -> scaling -> scaling_normalized[ scale_metric ].get_stat( l ) >
+             player -> scaling -> scaling_normalized[ scale_metric ].get_stat( r );
     else
-      return player -> scaling[ scale_metric ].get_stat( l ) >  player -> scaling[ scale_metric ].get_stat( r );
+      return player -> scaling -> scaling[ scale_metric ].get_stat( l ) >
+             player -> scaling -> scaling[ scale_metric ].get_stat( r );
   }
 };
 
@@ -255,7 +257,7 @@ void scaling_t::analyze_stats()
     {
       player_t* p = sim -> players_by_name[ j ];
 
-      if ( ! p -> scales_with[ stat ] ) continue;
+      if ( ! p -> scaling -> scales_with[ stat ] ) continue;
 
       player_t*   ref_p =   ref_sim -> find_player( p -> name() );
       player_t* delta_p = delta_sim -> find_player( p -> name() );
@@ -267,7 +269,7 @@ void scaling_t::analyze_stats()
       if ( delta_p -> invert_scaling )
         divisor = -divisor;
 
-      if ( divisor < 0.0 ) divisor += ref_p -> over_cap[ stat ];
+      if ( divisor < 0.0 ) divisor += ref_p -> scaling -> over_cap[ stat ];
 
       for ( scale_metric_e sm = SCALE_METRIC_NONE; sm < SCALE_METRIC_MAX; sm++ )
       {
@@ -280,7 +282,7 @@ void scaling_t::analyze_stats()
 
         // TODO: this is the only place in the entire code base where scaling_delta_dps shows up, 
         // apart from declaration in simulationcraft.hpp line 4535. Possible to remove?
-        p -> scaling_delta_dps[ sm ].set_stat( stat, delta_score );
+        p -> scaling -> scaling_delta_dps[ sm ].set_stat( stat, delta_score );
 
         double score = ( delta_score - ref_score ) / divisor;
         double error = delta_error * delta_error + ref_error * ref_error;
@@ -300,12 +302,12 @@ void scaling_t::analyze_stats()
         analyze_ability_stats( stat, divisor, p, ref_p, delta_p );
 
         if ( center )
-          p -> scaling_compare_error[ sm ].set_stat( stat, error );
+          p -> scaling -> scaling_compare_error[ sm ].set_stat( stat, error );
         else
-          p -> scaling_compare_error[ sm ].set_stat( stat, delta_error / divisor );
+          p -> scaling -> scaling_compare_error[ sm ].set_stat( stat, delta_error / divisor );
 
-        p -> scaling[ sm ].set_stat( stat, score );
-        p -> scaling_error[ sm ].set_stat( stat, error );
+        p -> scaling -> scaling[ sm ].set_stat( stat, score );
+        p -> scaling -> scaling_error[ sm ].set_stat( stat, error );
       }
     }
 
@@ -412,8 +414,8 @@ void scaling_t::analyze_lag()
       double score = ( delta_score - ref_score ) / divisor;
 
       error = fabs( error / divisor );
-      p -> scaling_lag[ sm ]       = score;
-      p -> scaling_lag_error[ sm ] = error;
+      p -> scaling -> scaling_lag[ sm ]       = score;
+      p -> scaling -> scaling_lag_error[ sm ] = error;
     }
   }
 
@@ -435,7 +437,7 @@ void scaling_t::normalize()
     
     for ( scale_metric_e sm = SCALE_METRIC_NONE; sm < SCALE_METRIC_MAX; sm++ )
     {
-      double divisor = p -> scaling[ sm ].get_stat( p -> normalize_by() );
+      double divisor = p -> scaling -> scaling[ sm ].get_stat( p -> normalize_by() );
 
       divisor *= ( 1 / sim -> scaling_normalized );
 
@@ -447,9 +449,10 @@ void scaling_t::normalize()
 
       for ( stat_e j = STAT_NONE; j < STAT_MAX; j++ )
       {
-        if ( !p -> scales_with[ j ] ) continue;
+        if ( !p -> scaling -> scales_with[ j ] ) continue;
 
-        p -> scaling_normalized[ sm ].set_stat( j, p -> scaling[ sm ].get_stat( j ) / divisor );
+        p -> scaling -> scaling_normalized[ sm ].set_stat( j,
+            p -> scaling -> scaling[ sm ].get_stat( j ) / divisor );
       }
     }
   }
@@ -475,16 +478,16 @@ void scaling_t::analyze()
       // Sort scaling results
       for ( stat_e j = STAT_NONE; j < STAT_MAX; j++ )
       {
-        if ( p -> scales_with[ j ] )
+        if ( p -> scaling -> scales_with[ j ] )
         {
-          double s = p -> scaling[ sm ].get_stat( j );
+          double s = p -> scaling -> scaling[ sm ].get_stat( j );
 
-          if ( s ) p -> scaling_stats[ sm ].push_back( j );
+          if ( s ) p -> scaling -> scaling_stats[ sm ].push_back( j );
         }
       }
       // more hack to deal with TMI weirdness, this just determines sorting order, not what gets displayed on the chart
-      bool use_normalized = p -> scaling_normalized[ sm ].get_stat( p -> normalize_by() ) > 0 || sm == SCALE_METRIC_TMI || sm == SCALE_METRIC_ETMI;
-      range::sort( p -> scaling_stats[ sm ], compare_scale_factors( p, sm, use_normalized ) );
+      bool use_normalized = p -> scaling -> scaling_normalized[ sm ].get_stat( p -> normalize_by() ) > 0 || sm == SCALE_METRIC_TMI || sm == SCALE_METRIC_ETMI;
+      range::sort( p -> scaling -> scaling_stats[ sm ], compare_scale_factors( p, sm, use_normalized ) );
     }
   }
 }

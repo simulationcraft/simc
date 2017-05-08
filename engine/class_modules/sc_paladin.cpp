@@ -4529,11 +4529,18 @@ void paladin_t::init_scaling()
   specialization_e tree = specialization();
 
   // Only Holy cares about INT/SPI/SP.
-  scales_with[ STAT_INTELLECT   ] = ( tree == PALADIN_HOLY );
-  scales_with[ STAT_SPELL_POWER ] = ( tree == PALADIN_HOLY );
-  scales_with[ STAT_BONUS_ARMOR    ] = ( tree == PALADIN_PROTECTION );
+  if ( tree == PALADIN_HOLY )
+  {
+    scaling -> enable( STAT_INTELLECT );
+    scaling -> enable( STAT_SPELL_POWER );
+  }
 
-  scales_with[STAT_AGILITY] = false;
+  if ( tree == PALADIN_PROTECTION )
+  {
+    scaling -> enable( STAT_BONUS_ARMOR );
+  }
+
+  scaling -> disable( STAT_AGILITY );
 }
 
 // paladin_t::init_buffs ====================================================

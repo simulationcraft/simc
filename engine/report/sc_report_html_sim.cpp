@@ -765,7 +765,7 @@ void print_html_scale_factors( report::sc_html_stream& os, const sim_t& sim )
     // add the absolute value of their stat weights to accumulator element
     for ( stat_e j = STAT_NONE; j < STAT_MAX; j++ )
     {
-      stat_effect_is_nonzero[ j ] += std::abs( p->scaling[ sm ].get_stat( j ) );
+      stat_effect_is_nonzero[ j ] += std::abs( p->scaling->scaling[ sm ].get_stat( j ) );
     }
   }
   // end column suppression section
@@ -815,14 +815,14 @@ void print_html_scale_factors( report::sc_html_stream& os, const sim_t& sim )
       if ( sim.scaling->stats.get_stat( j ) != 0 &&
            stat_effect_is_nonzero[ j ] > 0 )
       {
-        if ( p->scaling[ sm ].get_stat( j ) == 0 )
+        if ( p->scaling->scaling[ sm ].get_stat( j ) == 0 )
         {
           os << "<td class=\"small\">-</td>\n";
         }
         else
         {
           os.format( "<td class=\"small\">%.*f</td>\n", sim.report_precision,
-                     p->scaling[ sm ].get_stat( j ) );
+                     p->scaling->scaling[ sm ].get_stat( j ) );
         }
       }
     }
