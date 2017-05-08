@@ -4581,6 +4581,8 @@ void player_t::arise()
   }
 
   current_attack_speed = cache.attack_speed();
+
+  range::for_each( callbacks_on_arise, [ this ]( const std::function<void(void)>& fn ) { fn(); } );
 }
 
 // player_t::demise =========================================================
@@ -4612,10 +4614,7 @@ void player_t::demise()
 
   event_t::cancel( off_gcd );
 
-  for ( size_t i = 0; i < callbacks_on_demise.size(); ++i )
-  {
-    callbacks_on_demise[i]( this );
-  }
+  range::for_each( callbacks_on_demise, [ this ]( const std::function<void(player_t*)>& fn ) { fn( this ); } );
 
   for ( size_t i = 0; i < buff_list.size(); ++i )
   {

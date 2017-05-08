@@ -3795,6 +3795,7 @@ struct player_t : public actor_t
   effect_callbacks_t<action_callback_t> callbacks;
   auto_dispose< std::vector<special_effect_t*> > special_effects;
   std::vector<std::function<void(player_t*)> > callbacks_on_demise;
+  std::vector<std::function<void(void)>> callbacks_on_arise;
 
   // Action Priority List
   auto_dispose< std::vector<action_t*> > action_list;
