@@ -381,6 +381,22 @@ public:
   // Procs
   struct procs_t
   {
+    proc_t* arcane_missiles_generated, // AM proc
+          * arcane_missiles_removed, // AM cast
+          * arcane_missiles_expired, // AM buff expires
+          * arcane_missiles_wasted; // Additional AM generated at max stacks
+
+    proc_t* brain_freeze_generated, // BF proc
+          * brain_freeze_regenerated, // BF proc during delay window
+          * brain_freeze_removed, // Flurry cast
+          * brain_freeze_expired, // BF buff expires
+          * brain_freeze_wasted, // Additional BF generated with existing buff
+
+          * fingers_of_frost_generated, // FoF proc
+          * fingers_of_frost_removed, // Ice Lance cast
+          * fingers_of_frost_expired, // FoF buff expires
+          * fingers_of_frost_wasted; // Additional FoF generated at max stacks
+
     proc_t* heating_up_generated, // Crits without HU/HS
           * heating_up_removed, // Non-crits with HU >200ms after application
           * heating_up_ib_converted, // IBs used on HU
@@ -994,6 +1010,13 @@ struct freeze_t : public mage_pet_spell_t
     bool success = o() -> apply_crowd_control( s, MECHANIC_ROOT );
     if ( success )
     {
+      const auto fof_stacks = o() -> buffs.fingers_of_frost -> stack();
+
+      if ( fof_stacks == o() -> buffs.fingers_of_frost -> max_stack() )
+        o() -> procs.fingers_of_frost_wasted -> occur();
+      else
+        o() -> procs.fingers_of_frost_generated -> occur();
+
       o() -> buffs.fingers_of_frost->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 );
       o() -> benefits.fingers_of_frost->update( fof_source_id );
     }
@@ -1606,8 +1629,61 @@ struct arcane_missiles_t : public buff_t
     }
     return buff_t::trigger( stacks, value, chance, duration );
   }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+
+    mage_t* p = static_cast<mage_t*>( player );
+
+    if ( remaining_duration == timespan_t::zero() )
+        for ( auto i = 0; i < expiration_stacks; i++ )
+            p -> procs.arcane_missiles_expired -> occur();
+  }
 };
 
+struct fingers_of_frost_t : public buff_t
+{
+  fingers_of_frost_t( mage_t* p ) :
+    buff_t(
+      buff_creator_t( p, "fingers_of_frost", p -> find_spell( 44544 ) )
+        .max_stack(
+          p -> find_spell( 44544 ) -> max_stacks()
+            + p -> sets.set( MAGE_FROST, T18, B4 ) -> effectN( 2 ).base_value()
+            + p -> artifact.icy_hand.rank()
+            + p -> talents.frozen_touch -> effectN( 2 ).base_value()
+        )
+    )
+  {};
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+
+    mage_t* p = static_cast<mage_t*>( player );
+
+    if ( remaining_duration == timespan_t::zero() )
+      for ( auto i = 0; i < expiration_stacks; i++ )
+        p -> procs.fingers_of_frost_expired -> occur();
+  }
+};
+
+struct brain_freeze_t : public buff_t
+{
+  brain_freeze_t( mage_t* p ) :
+    buff_t( buff_creator_t( p, "brain_freeze", p -> find_spell( 190446 ) ) )
+  {};
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+
+    mage_t* p = static_cast<mage_t*>( player );
+
+    if ( remaining_duration == timespan_t::zero() )
+      p -> procs.brain_freeze_expired -> occur();
+  }
+};
 
 // Chilled debuff =============================================================
 
@@ -1834,6 +1910,13 @@ struct lady_vashjs_grasp_t: public buff_t
                             p -> find_spell( 208147 ) )
               .tick_callback( [ p ]( buff_t* buff, int, const timespan_t& )
                 {
+                  const auto fof_stacks = p -> buffs.fingers_of_frost -> stack();
+
+                  if ( fof_stacks == p -> buffs.fingers_of_frost -> max_stack() )
+                    p -> procs.fingers_of_frost_wasted -> occur();
+                  else
+                    p -> procs.fingers_of_frost_generated -> occur();
+
                   p -> buffs.fingers_of_frost -> trigger();
                   lady_vashjs_grasp_t * lvg =
                     debug_cast<lady_vashjs_grasp_t *>( buff );
@@ -1997,9 +2080,16 @@ public:
   void trigger_am( int source_id, double chance = -1.0,
                    int stacks = 1 )
   {
+    const auto am_stacks = p() -> buffs.arcane_missiles -> stack();
+
     if ( static_cast<buff_t*>(p() -> buffs.arcane_missiles)
              -> trigger( stacks, buff_t::DEFAULT_VALUE(), chance ) )
     {
+      if ( am_stacks == p() -> buffs.arcane_missiles -> max_stack() )
+        p() -> procs.arcane_missiles_wasted -> occur();
+      else
+        p() -> procs.arcane_missiles_generated -> occur();
+
       if ( source_id < 0 )
       {
         p() -> sim -> out_debug.printf( "Action %s does not have valid AM source_id",
@@ -2411,11 +2501,16 @@ struct frost_mage_spell_t : public mage_spell_t
     void execute() override
     {
       // TODO: Check if Brain Freeze refresh triggers Frost T20 4pc
-      if ( mage -> buffs.brain_freeze -> check() == 0 && mage -> sets.has_set_bonus( MAGE_FROST, T20, B4 ) )
+      if ( mage -> buffs.brain_freeze -> check() == 0 )
       {
-        mage -> cooldowns.frozen_orb
-             -> adjust( -100 * mage -> sets.set( MAGE_FROST, T20, B4 ) -> effectN( 1 ).time_value() );
+        mage -> procs.brain_freeze_regenerated -> occur();
+
+        if ( mage -> sets.has_set_bonus( MAGE_FROST, T20, B4 ) )
+          mage -> cooldowns.frozen_orb
+               -> adjust( -100 * mage -> sets.set( MAGE_FROST, T20, B4 ) -> effectN( 1 ).time_value() );
       }
+      else
+        mage -> procs.brain_freeze_wasted -> occur();
 
       mage -> buffs.brain_freeze -> trigger();
     }
@@ -2423,11 +2518,18 @@ struct frost_mage_spell_t : public mage_spell_t
 
   void trigger_fof( int source_id, double chance, int stacks = 1 )
   {
+    const auto fof_stacks = p() -> buffs.fingers_of_frost -> stack();
+
     bool success = p() -> buffs.fingers_of_frost
                        -> trigger( stacks, buff_t::DEFAULT_VALUE(), chance );
 
     if ( success )
     {
+      if ( fof_stacks == p() -> buffs.fingers_of_frost -> max_stack() )
+        p() -> procs.fingers_of_frost_wasted -> occur();
+      else
+        p() -> procs.fingers_of_frost_generated -> occur();
+
       if ( source_id < 0 )
       {
         p() -> sim -> out_debug.printf( "Action %s does not have valid fof source_id",
@@ -2458,6 +2560,8 @@ struct frost_mage_spell_t : public mage_spell_t
         }
 
         p() -> buffs.brain_freeze -> trigger();
+
+        p() -> procs.brain_freeze_generated -> occur();
       }
     }
   }
@@ -3447,6 +3551,7 @@ struct arcane_missiles_t : public arcane_mage_spell_t
 
     p() -> buffs.arcane_missiles -> decrement();
 
+    p() -> procs.arcane_missiles_removed -> occur();
   }
 
   void last_tick ( dot_t * d ) override
@@ -4556,6 +4661,8 @@ struct flurry_t : public frost_mage_spell_t
     flurry_bolt -> brain_freeze_buffed = p() -> buffs.brain_freeze -> up();
 
     p() -> buffs.brain_freeze -> expire();
+
+    p() -> procs.brain_freeze_removed -> occur();
   }
 
   void tick( dot_t* d ) override
@@ -5157,6 +5264,8 @@ struct ice_lance_t : public frost_mage_spell_t
     }
 
     p() -> buffs.fingers_of_frost -> decrement();
+
+    p() -> procs.fingers_of_frost_removed -> occur();
   }
 
   virtual void impact( action_state_t* s ) override
@@ -5271,6 +5380,14 @@ struct icy_veins_t : public frost_mage_spell_t
       // LVG manually and then trigger it again.
       p() -> buffs.lady_vashjs_grasp -> expire();
       p() -> buffs.lady_vashjs_grasp -> trigger();
+
+      const auto fof_stacks = p() -> buffs.fingers_of_frost -> stack();
+
+      if ( fof_stacks == p() -> buffs.fingers_of_frost -> max_stack() )
+        p() -> procs.fingers_of_frost_wasted -> occur();
+      else
+        p() -> procs.fingers_of_frost_generated -> occur();
+
       // Trigger 1 stack of FoF when IV is triggered with LVG legendary,
       // This is independant of the tick action gains.
       p() -> buffs.fingers_of_frost -> trigger();
@@ -8108,14 +8225,10 @@ void mage_t::create_buffs()
                                   .add_invalidate( CACHE_SPELL_HASTE );
 
   // Frost
-  buffs.brain_freeze          = buff_creator_t( this, "brain_freeze", find_spell( 190446 ) );
+  buffs.brain_freeze          = new buffs::brain_freeze_t( this );
   buffs.bone_chilling         = buff_creator_t( this, "bone_chilling", find_spell( 205766 ) )
                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  buffs.fingers_of_frost      = buff_creator_t( this, "fingers_of_frost", find_spell( 44544 ) )
-                                  .max_stack( find_spell( 44544 ) -> max_stacks() +
-                                              sets.set( MAGE_FROST, T18, B4 ) -> effectN( 2 ).base_value() +
-                                              artifact.icy_hand.rank()
-                                              + talents.frozen_touch -> effectN( 2 ).base_value() );
+  buffs.fingers_of_frost      = new buffs::fingers_of_frost_t( this );
   buffs.frozen_mass           = buff_creator_t( this, "frozen_mass", find_spell( 242253 ) );
 
   // Buff to track icicles. This does not, however, track the true amount of icicles present.
@@ -8197,8 +8310,22 @@ void mage_t::init_procs()
   switch ( specialization() )
   {
     case MAGE_ARCANE:
+      procs.arcane_missiles_expired = get_proc( "Arcane Missiles expired" );
+      procs.arcane_missiles_generated = get_proc( "Arcane Missiles generated" );
+      procs.arcane_missiles_removed = get_proc( "Arcane Missiles removed" );
+      procs.arcane_missiles_wasted = get_proc( "Arcane Missiles wasted" );
       break;
     case MAGE_FROST:
+      procs.brain_freeze_expired = get_proc( "Brain Freeze expired" );
+      procs.brain_freeze_generated = get_proc( "Brain Freeze generated" );
+      procs.brain_freeze_regenerated = get_proc( "Brain Freeze regenerated" );
+      procs.brain_freeze_removed = get_proc( "Brain Freeze removed" );
+      procs.brain_freeze_wasted = get_proc( "Brain Freeze wasted" );
+
+      procs.fingers_of_frost_expired = get_proc( "Fingers of Frost expired" );
+      procs.fingers_of_frost_generated = get_proc( "Fingers of Frost generated" );
+      procs.fingers_of_frost_removed = get_proc( "Fingers of Frost removed" );
+      procs.fingers_of_frost_wasted = get_proc( "Fingers of Frost wasted" );
       break;
     case MAGE_FIRE:
       procs.heating_up_generated    = get_proc( "Heating Up generated" );
