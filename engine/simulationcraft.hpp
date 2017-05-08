@@ -4828,6 +4828,7 @@ public:
   pet_t( sim_t* sim, player_t* owner, const std::string& name, bool guardian = false, bool dynamic = false );
   pet_t( sim_t* sim, player_t* owner, const std::string& name, pet_e pt, bool guardian = false, bool dynamic = false );
 
+  virtual void create_options() override;
   virtual void init() override;
   virtual void init_base_stats() override;
   virtual void init_target() override;
