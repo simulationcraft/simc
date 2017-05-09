@@ -4193,7 +4193,7 @@ struct fury_of_the_eagle_t: public hunter_melee_attack_t
 
     if ( p() -> buffs.mongoose_fury -> up() )
     {
-      p() -> buffs.mongoose_fury -> extend_duration( p(), timespan_t::from_seconds( 5.0 ) );
+      p() -> buffs.mongoose_fury -> extend_duration( p(), composite_dot_duration( execute_state ) );
 
       // Tracking purposes
       p() -> buffs.fury_of_the_eagle -> trigger( p() -> buffs.mongoose_fury -> stack(), p() -> buffs.fury_of_the_eagle -> DEFAULT_VALUE(), -1.0,
@@ -4209,6 +4209,15 @@ struct fury_of_the_eagle_t: public hunter_melee_attack_t
       am *= 1.0 + p() -> buffs.mongoose_fury -> check_stack_value();
 
     return am;
+  }
+
+  virtual void last_tick( dot_t* dot ) override
+  {
+    hunter_melee_attack_t::last_tick( dot );
+
+    // FotE giveth, FotE taketh away.
+    p() -> buffs.mongoose_fury -> extend_duration( p(), - dot -> remains() );
+    p() -> buffs.fury_of_the_eagle -> expire();
   }
 };
 
