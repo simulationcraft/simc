@@ -952,6 +952,7 @@ Range            : 60 yards
 Proc Chance      : 100%
 Proc Flags       : ....x... x.x...x. ..x..x.. ........ 
                  : Yellow Melee, Yellow Ranged, AOE Heal, Heal, Periodic, Trap Triggered
+Affecting spells : Light's Embrace (247237 effect#1)
 Triggered by     : Beacon of Light (53563), Beacon of Faith (156910)
 Attributes       : ......xx x....... x.x..... ...x....   ........ ..x..... ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ..x..... 
@@ -1443,7 +1444,7 @@ Resource         : 14% Base Mana (0) (id=3994)
 Spell Level      : 40
 GCD              : 1.5 seconds
 Cooldown         : 12 seconds
-Affecting spells : Beacon of Light (53563 effect#3), Paladin (137026 effect#2), Beacon of Faith (156910 effect#3), Beacon of the Lightbringer (197446 effect#1), Expel the Darkness (200296 effect#1), Rule of Law (214202 effect#2), Sacred Dawn (243174 effect#1)
+Affecting spells : Beacon of Light (53563 effect#3), Paladin (137026 effect#2), Beacon of Faith (156910 effect#3), Beacon of the Lightbringer (197446 effect#1), Expel the Darkness (200296 effect#1), Rule of Law (214202 effect#2), Item - Paladin T20 Holy 2P Bonus (242261 effect#1), Sacred Dawn (243174 effect#1)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2199,10 +2200,10 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179711)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
-                   Base Value: 12 | Scaled Value: 12 | Target: Self (1)
+                   Base Value: 16 | Scaled Value: 16 | Target: Self (1)
                    Affected Spells: Judgment (20271), Consecration (26573), Crusader Strike (35395), Consecration (81297), Blade of Justice (184575), Judgment (197277), Eye for an Eye (205191), Eye for an Eye (205202), Consecration (205228), Wake of Ashes (205273), Judgment (214222), Justicar's Vengeance (215661), Zeal (217020), Divine Storm (224239), Templar's Verdict (224266), Judgment (228288)
 #2 (id=191092)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
-                   Base Value: 12 | Scaled Value: 12 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 16 | Scaled Value: 16 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Wake of Ashes (205273), Execution Sentence (213757)
 #3 (id=191093)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 42 | Scaled Value: 42 | Target: Self (1)
@@ -2268,7 +2269,7 @@ Effects          :
                    Affected Spells: Consecration (26573), Consecration (81297), Consecration (205228)
 #5 (id=191091)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self (1)
-                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497)
+                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Dread Reflections (246466), Infernal Cinders (242218)
 #6 (id=260917)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 3 | Misc Value 2: 276 (Label) | Target: Self (1)
                    Affected Spells (Label): Xavaric's Magnum Opus (207472)
@@ -2328,7 +2329,7 @@ Effects          :
                    Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536)
 #8 (id=260929)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self (1)
-                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497)
+                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Dread Reflections (246466), Infernal Cinders (242218)
 #9 (id=260930)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #10 (id=260931)   : Apply Aura (6) | Dummy (4)
@@ -3338,7 +3339,7 @@ Attributes       : ........ ........ x.x..... x..x....   .....x.. ........ .....
                  : Does not break stealth (37), Not a proc (105)
 Effects          :
 #1 (id=291193)   : Weapon Damage% (31)
-                   Base Value: 90 | Scaled Value: 0.9 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 68 | Scaled Value: 0.68 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=291194)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : $@spelldesc198034
@@ -4678,7 +4679,7 @@ Class            : Paladin
 School           : Holy
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Beacon of Light (53563 effect#3), Paladin (137026 effect#2), Beacon of Faith (156910 effect#3), Beacon of the Lightbringer (197446 effect#1), Expel the Darkness (200296 effect#1), Rule of Law (214202 effect#2), Sacred Dawn (243174 effect#1)
+Affecting spells : Beacon of Light (53563 effect#3), Paladin (137026 effect#2), Beacon of Faith (156910 effect#3), Beacon of the Lightbringer (197446 effect#1), Expel the Darkness (200296 effect#1), Rule of Law (214202 effect#2), Item - Paladin T20 Holy 2P Bonus (242261 effect#1), Sacred Dawn (243174 effect#1)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

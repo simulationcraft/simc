@@ -578,7 +578,7 @@ Stacks           : 2 initial, 2 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x...... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken
-Affecting spells : Enhancement Shaman (137041 effect#1), Hammer of Storms (198228 effect#1), Gathering Storms (198300 effect#1), Stormbringer (201846 effect#4), Stormfury (211986 effect#1)
+Affecting spells : Enhancement Shaman (137041 effect#1), Hammer of Storms (198228 effect#1), Gathering Storms (198300 effect#1), Stormbringer (201846 effect#4), Item - Shaman T19 Enhancement 2P Bonus (211987 effect#1)
 Triggered by     : Stormstrike (17364)
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
@@ -599,7 +599,7 @@ Class            : Shaman
 School           : Physical
 Spell Level      : 40
 Range            : 5 yards
-Affecting spells : Enhancement Shaman (137041 effect#1), Hammer of Storms (198228 effect#1), Gathering Storms (198300 effect#1), Stormbringer (201846 effect#4), Stormfury (211986 effect#1)
+Affecting spells : Enhancement Shaman (137041 effect#1), Hammer of Storms (198228 effect#1), Gathering Storms (198300 effect#1), Stormbringer (201846 effect#4), Item - Shaman T19 Enhancement 2P Bonus (211987 effect#1)
 Triggered by     : Stormstrike (17364)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ x.....x. 
@@ -1335,7 +1335,7 @@ GCD              : 1.5 seconds
 Duration         : 15 seconds
 Charges          : 1 (6 seconds cooldown)
 Category         : 1228
-Affecting spells : Healing Trance (60515 effect#1), Unleash Life (73685 effect#3), Mastery: Deep Healing (77226 effect#1), Lucidity (137326 effect#1), Item - Shaman T18 Restoration 2P Bonus (185873 effect#1), Torrent (200072 effect#1), Pull of the Sea (207118 effect#1), Pull of the Sea (210029 effect#1), Pull of the Sea (210030 effect#1), Pull of the Sea (210031 effect#1), Pull of the Sea (210032 effect#1), Pull of the Sea (210033 effect#1), Riptide (231725 effect#1), Tidal Force (246729 effect#1)
+Affecting spells : Healing Trance (60515 effect#1), Unleash Life (73685 effect#3), Mastery: Deep Healing (77226 effect#1), Lucidity (137326 effect#1), Item - Shaman T18 Restoration 2P Bonus (185873 effect#1), Torrent (200072 effect#1), Pull of the Sea (207118 effect#1), Pull of the Sea (210029 effect#1), Pull of the Sea (210030 effect#1), Pull of the Sea (210031 effect#1), Pull of the Sea (210032 effect#1), Pull of the Sea (210033 effect#1), Riptide (231725 effect#1), Tidal Force (246729 effect#2), Item - Shaman T20 Restoration 2P Bonus Dummy Crit Marker (246733 effect#1)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -2358,7 +2358,7 @@ Spell Level      : 40
 Range            : 100 yards
 Velocity         : 30 yards/sec
 Proc Chance      : 101%
-Affecting spells : Enhancement Shaman (137041 effect#1), Hammer of Storms (198228 effect#1), Gathering Storms (198300 effect#1), Stormbringer (201846 effect#4), Stormfury (211986 effect#1)
+Affecting spells : Enhancement Shaman (137041 effect#1), Hammer of Storms (198228 effect#1), Gathering Storms (198300 effect#1), Stormbringer (201846 effect#4), Item - Shaman T19 Enhancement 2P Bonus (211987 effect#1)
 Triggered by     : Windstrike (115356)
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ .xx..... ........ ......x. 
@@ -2380,7 +2380,7 @@ School           : Physical
 Spell Level      : 40
 Range            : 100 yards
 Velocity         : 30 yards/sec
-Affecting spells : Enhancement Shaman (137041 effect#1), Hammer of Storms (198228 effect#1), Gathering Storms (198300 effect#1), Stormbringer (201846 effect#4), Stormfury (211986 effect#1)
+Affecting spells : Enhancement Shaman (137041 effect#1), Hammer of Storms (198228 effect#1), Gathering Storms (198300 effect#1), Stormbringer (201846 effect#4), Item - Shaman T19 Enhancement 2P Bonus (211987 effect#1)
 Triggered by     : Windstrike (115356)
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ x.....x. 
@@ -2736,15 +2736,15 @@ Effects          :
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 26 | Target: Self (1)
 #6 (id=260997)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self (1)
-                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497)
+                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Dread Reflections (246466), Infernal Cinders (242218)
 #7 (id=260998)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 249 (Label) | Target: Self (1)
                    Affected Spells (Label): Orb of Destruction (229700)
 #8 (id=260999)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 300 (Label) | Target: Self (1)
                    Affected Spells (Label): Insidious Corruption (243941), Spectral Bolt (242571), Spectral Blast (246442)
-#9 (id=261000)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#9 (id=261000)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
+                   Base Value: -20 | Scaled Value: -20 | Misc Value: 14 | Target: Self (1)
 #10 (id=261001)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #11 (id=261002)   : Apply Aura (6) | Dummy (4)
@@ -2788,7 +2788,7 @@ Effects          :
                    Affected Spells: Echo of the Elements (108283)
 #3 (id=191043)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self (1)
-                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497)
+                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Dread Reflections (246466), Infernal Cinders (242218)
 #4 (id=191044)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 298 (Label) | Target: Self (1)
                    Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621)
@@ -2828,13 +2828,13 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179725)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
-                   Base Value: 4 | Scaled Value: 4 | Target: Self (1)
+                   Base Value: 7 | Scaled Value: 7 | Target: Self (1)
                    Affected Spells: Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lava Lash (60103), Windstrike (115357), Windstrike Off-Hand (115360), Lightning Bolt (187837), Crash Lightning (187874), Earthen Spike (188089), Lightning Shield (192109), Rockbiter (193786), Flametongue (193796), Crash Lightning (195592), Frostbrand (196834), Sundering (197214), Fury of Air (197385), Unleash Lava (199053), Unleash Lightning (199054), Doom Vortex (199116), Windsong (201898), Crashing Storm (210801), Hailstorm (210854), Stormlash (213307), Storm Tempests (214452), Feral Lunge (215802)
 #2 (id=191038)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
-                   Base Value: 4 | Scaled Value: 4 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 7 | Scaled Value: 7 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lava Lash (60103), Windstrike (115357), Windstrike Off-Hand (115360), Lightning Bolt (187837), Crash Lightning (187874), Earthen Spike (188089), Lightning Shield (192109), Rockbiter (193786), Flametongue (193796), Crash Lightning (195592), Frostbrand (196834), Sundering (197214), Fury of Air (197385), Unleash Lava (199053), Unleash Lightning (199054), Doom Vortex (199116), Windsong (201898), Crashing Storm (210801), Hailstorm (210854), Stormlash (213307), Storm Tempests (214452), Feral Lunge (215802)
 #3 (id=191039)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 4 | Scaled Value: 4 | Target: Self (1)
+                   Base Value: 7 | Scaled Value: 7 | Target: Self (1)
                    Affected Spells: Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lava Lash (60103), Windstrike (115357), Windstrike Off-Hand (115360), Lightning Bolt (187837), Crash Lightning (187874), Earthen Spike (188089), Lightning Shield (192109), Rockbiter (193786), Flametongue (193796), Crash Lightning (195592), Frostbrand (196834), Sundering (197214), Fury of Air (197385), Unleash Lava (199053), Unleash Lightning (199054), Doom Vortex (199116), Windsong (201898), Crashing Storm (210801), Hailstorm (210854), Stormlash (213307), Storm Tempests (214452), Feral Lunge (215802)
 #4 (id=191040)   : Apply Aura (6) | Override Spell Power per Attack Power% (366)
                    Base Value: 120 | Scaled Value: 120 | Target: Self (1)
@@ -3508,7 +3508,7 @@ Attributes       : ........ ........ x....... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=273980)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.56250 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.48000 | Target: Enemy (6)
 Description      : Fires a bolt of lightning at the target, dealing $?s210727[up to ${(1+$210727m2/100)*$s1}][$s1] Nature damage.
 
 Name             : Crash Lightning (id=187874) [Spell Family (11)] 
@@ -4251,10 +4251,10 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=282019)   : Apply Aura (6) | Add Flat Modifier (107): Spell Proc Chance (18)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 18 | Target: Self (1)
-                   Affected Spells: Stormbringer (201845)
-Description      : Your main hand attacks have an additional $s1% chance to trigger Stormbringer.
+#1 (id=282019)   : Apply Aura (6) | Add Flat Modifier (107): Unknown(33)
+                   Base Value: 40 | Scaled Value: 40 | Misc Value: 33 | Target: Self (1)
+                   Affected Spells: Stormbringer (201846)
+Description      : Stormbringer increases the critical strike chance of your next Stormstrike by $s1%.
 
 Name             : Elemental Fusion (id=192235) [Spell Family (11), Passive] 
 Class            : Shaman
@@ -4371,7 +4371,7 @@ Effects          :
 #3 (id=360417)   : Trigger Spell (64): Flametongue
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 194084 | Target: Self (1)
 Description      : Scorches your target, dealing $s2 Fire damage, and enhances your weapons with fire for $194084d, causing each weapon attack to deal up to ${$<coeff>*$AP} Fire damage, based on weapon speed.
-Variables        : $coeff=${0.156}
+Variables        : $coeff=${0.20}
 
 Name             : Flametongue (id=194084) [Spell Family (11)] 
 Class            : Shaman
@@ -4398,7 +4398,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc193796
 Tooltip          : Each of your weapon attacks causes up to ${$<coeff>*$AP} additional Fire damage.
-Variables        : $coeff=${0.156}
+Variables        : $coeff=${0.20}
 
 Name             : Stormlash (id=195222) [Spell Family (11)] 
 Class            : Shaman
@@ -5286,10 +5286,10 @@ Name             : Stormbringer (id=201845) [Spell Family (11), Passive]
 Class            : Enhancement Shaman
 School           : Nature
 Spell Level      : 48
-Proc Chance      : 5%
+Proc Chance      : 8%
 Proc Flags       : ..x.x... ........ ........ ........ 
                  : White Melee, Yellow Melee
-Affecting spells : Mastery: Enhanced Elements (77223 effect#3), Tempest (192234 effect#1)
+Affecting spells : Mastery: Enhanced Elements (77223 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5311,7 +5311,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
-Affecting spells : Raging Storms (198361 effect#1), Item - Shaman T19 Enhancement 2P Bonus (211987 effect#1)
+Affecting spells : Tempest (192234 effect#1), Raging Storms (198361 effect#1)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -6033,7 +6033,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Stormlash (195222), Stormlash (195255), Stormlash (195256), Stormlash (213307)
 #2 (id=312160)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
-                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
                    Affected Spells: Stormlash (195222), Stormlash (195255), Stormlash (195256), Stormlash (213307)
 Description      : Stormlash now spreads to $s1 additional target and deals $s2% additional damage.
 
@@ -6769,7 +6769,7 @@ Proc Flags       : ........ ........ x....... ........
                  : Hostile Spell
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
