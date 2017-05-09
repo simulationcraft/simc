@@ -127,8 +127,9 @@ double apm_player_mean( const player_t* p )
 
 double variance( const player_t* p )
 {
-  return ( p->collected_data.dps.std_dev / p->collected_data.dps.pretty_mean() *
-           100 );
+  return p->collected_data.dps.mean() > 0
+    ? ( p->collected_data.dps.std_dev / p->collected_data.dps.pretty_mean() * 100 )
+    : 0;
 }
 
 double compute_player_burst_max( const sc_timeline_t& container )
@@ -290,8 +291,16 @@ double get_data_value( const player_collected_data_t& container,
     case METRIC_VARIANCE:
     {
       if ( val != VALUE_MEAN )
+      {
         return 0;
-      return ( container.dps.std_dev / container.dps.pretty_mean() * 100 );
+      }
+
+      if ( container.dps.mean() > 0 )
+      {
+        return ( container.dps.std_dev / container.dps.pretty_mean() * 100 );
+      }
+
+      return 0;
     }
     default:
       return 0;
@@ -1277,8 +1286,12 @@ bool chart::generate_raid_dpet( highchart::bar_chart_t& bc, const sim_t& s )
     stats_list.erase( stats_list.begin() + 30, stats_list.end() );
   }
 
-  if ( stats_list.size() > 0 &&
-       ( stats_list.front()->apet / stats_list.back()->apet >= 100 ) )
+  auto log = stats_list.size() > 0 &&
+             stats_list.back() -> apet > 0
+             ? stats_list.front()->apet / stats_list.back()->apet >= 100
+             : false;
+
+  if ( log )
   {
     bc.set( "yAxis.type", "logarithmic" );
     bc.set_yaxis_title( "Damage per Execute Time (log)" );
@@ -1362,7 +1375,11 @@ bool chart::generate_action_dpet( highchart::bar_chart_t& bc,
   if ( stats_list.empty() )
     return false;
 
-  if ( stats_list.front()->apet / stats_list.back()->apet >= 100 )
+  auto log = stats_list.back() -> apet > 0
+             ? stats_list.front()->apet / stats_list.back()->apet >= 100
+             : false;
+
+  if ( log )
   {
     bc.set( "yAxis.type", "logarithmic" );
     bc.set_yaxis_title( "Damage per Execute Time (log)" );
