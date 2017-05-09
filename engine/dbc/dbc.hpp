@@ -86,7 +86,6 @@ const item_set_bonus_t* set_bonus( bool ptr );
 std::size_t             n_set_bonus( bool ptr );
 const item_enchantment_data_t* item_enchantments( bool ptr );
 const item_child_equipment_t* child_equipments( bool ptr );
-const spelllabel_data_t* spell_labels( bool ptr );
 std::size_t        n_item_enchantments( bool ptr );
 const gem_property_data_t* gem_properties( bool ptr );
 specialization_e translate_spec_str   ( player_e ptype, const std::string& spec_str );
@@ -451,6 +450,28 @@ struct artifact_power_rank_t
 };
 
 // ==========================================================================
+// Spell Label Data - SpellLabel.db2
+// ==========================================================================
+
+struct spelllabel_data_t
+{
+  unsigned _id;
+  unsigned _id_spell;
+  short    _label;
+
+  unsigned id() const
+  { return _id; }
+
+  unsigned id_spell() const
+  { return _id_spell; }
+
+  short label() const
+  { return _label; }
+
+  static const spelllabel_data_t* list( bool ptr );
+};
+
+// ==========================================================================
 // Spell Power Data - SpellPower.dbc
 // ==========================================================================
 
@@ -461,7 +482,7 @@ public:
   unsigned _spell_id;
   unsigned _aura_id; // Spell id for the aura during which this power type is active
   unsigned _hotfix;
-  int      _power_e;
+  int      _power_type;
   int      _cost;
   int      _cost_max;
   int      _cost_per_tick;
@@ -484,7 +505,10 @@ public:
   { return _aura_id; }
 
   power_e type() const
-  { return static_cast< power_e >( _power_e ); }
+  { return static_cast< power_e >( _power_type ); }
+
+  int raw_type() const
+  { return _power_type; }
 
   double cost_divisor( bool percentage ) const
   {
@@ -560,8 +584,8 @@ public:
                                      //   the first field
   unsigned         _spell_id;        // 3 Spell this effect belongs to
   unsigned         _index;           // 4 Effect index for the spell
-  effect_type_t    _type;            // 5 Effect type
-  effect_subtype_t _subtype;         // 6 Effect sub-type
+  unsigned         _type;            // 5 Effect type
+  unsigned         _subtype;         // 6 Effect sub-type
   // SpellScaling.dbc
   double           _m_avg;           // 7 Effect average spell scaling multiplier
   double           _m_delta;         // 8 Effect delta spell scaling multiplier
@@ -610,9 +634,15 @@ public:
   { return _index; }
 
   effect_type_t type() const
+  { return static_cast<effect_type_t>( _type ); }
+
+  unsigned raw_type() const
   { return _type; }
 
   effect_subtype_t subtype() const
+  { return static_cast<effect_subtype_t>( _subtype ); }
+
+  unsigned raw_subtype() const
   { return _subtype; }
 
   int base_value() const
@@ -1006,9 +1036,9 @@ public:
 
   short labelN( size_t idx ) const
   {
-    if ( _labels )
+    if ( _labels && idx > 0 && idx <= _labels -> size() )
     {
-      return _labels -> at( idx - 1 ) -> label;
+      return _labels -> at( idx - 1 ) -> label();
     }
 
     return 0;
@@ -1021,12 +1051,41 @@ public:
     {
       for ( size_t i = 0; i < _power -> size(); i++ )
       {
-        if ( _power -> at( i ) -> _power_e == pt )
+        if ( _power -> at( i ) -> _power_type == pt )
           return *_power -> at( i );
       }
     }
 
     return *spellpower_data_t::nil();
+  }
+
+  std::vector<short> labels() const
+  {
+    std::vector<short> l;
+    if ( ! _labels )
+    {
+      return l;
+    }
+
+    range::for_each( *_labels, [ &l ]( const spelllabel_data_t* data ) {
+      l.push_back( data -> label() );
+    } );
+
+    return l;
+  }
+
+  bool affected_by_label( int label ) const
+  {
+    if ( _labels == nullptr )
+    {
+      return false;
+    }
+
+    auto it = range::find_if( *_labels, [ label ]( const spelllabel_data_t* l ) {
+      return l -> label() == label;
+    } );
+
+    return it != _labels -> end();
   }
 
   bool is_class( player_e c ) const
@@ -1085,7 +1144,7 @@ public:
     {
       for ( size_t i = 0; i < _power -> size(); i++ )
       {
-        if ( ( *_power )[ i ] -> _power_e == pt )
+        if ( ( *_power )[ i ] -> _power_type == pt )
           return ( *_power )[ i ] -> cost();
       }
     }
@@ -1537,6 +1596,9 @@ public:
 
   std::vector< const spell_data_t* > effect_affects_spells( unsigned, const spelleffect_data_t* ) const;
   std::vector< const spelleffect_data_t* > effects_affecting_spell( const spell_data_t* ) const;
+  std::vector<const spelleffect_data_t*> effect_labels_affecting_spell( const spell_data_t* ) const;
+  std::vector<const spelleffect_data_t*> effect_labels_affecting_label( short label ) const;
+  std::vector<const spelleffect_data_t*> effect_categories_affecting_spell( const spell_data_t* ) const;
 
   // Heirloomage and misc scaling hijinxery
   const scaling_stat_distribution_t* scaling_stat_distribution( unsigned id );
@@ -1553,6 +1615,11 @@ public:
   // Child items
   unsigned child_item( unsigned ) const;
   unsigned parent_item( unsigned ) const;
+
+  // Labeled spells
+  std::vector<const spell_data_t*> spells_by_label( size_t label ) const;
+  // Categorized spells
+  std::vector<const spell_data_t*> spells_by_category( unsigned category ) const;
 };
 
 namespace dbc

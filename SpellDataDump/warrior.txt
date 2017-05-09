@@ -1,4 +1,4 @@
-SimulationCraft 720-03 for World of Warcraft 7.2.0 Live (wow build 23826)
+SimulationCraft 720-03 for World of Warcraft 7.2.0 Live (wow build 23826, git build fe7ce0e)
 
 Name             : Defensive Stance (id=71) [Spell Family (4), Passive, Hidden] 
 Class            : Protection Warrior
@@ -5400,5 +5400,61 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 5 yards | Target: Unknown(63) -> AOE enemy (instant)(16)
 Description      : $@spelldesc198758
 Tooltip          : Knocked down.
+
+Name             : Item - Warrior T20 Fury 4P Bonus (id=242301) [Spell Family (4), Passive, Hidden] 
+Class            : Warrior
+School           : Physical
+Proc Chance      : 101%
+Proc Flags       : ....x... ....x... ........ ........ 
+                 : Yellow Melee, AOE Hostile Spell
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ x....... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=367895)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+Description      : Raging Blow increases the damage and healing of your next Bloodthirst by $?s215573[$242953s1%, stacking up to $242953u times.][$242952s1%, stacking up to $242952u times].
+
+Name             : Item - Warrior T20 Fury 4P Bonus (id=242952) [Spell Family (4)] 
+Class            : Warrior
+School           : Physical
+Duration         : 10 seconds
+Stacks           : 10 maximum
+Proc Chance      : 101%
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ x....... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=368917)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self(1)
+                   Affected Spells: Bloodthirst (23881), Bloodthirst Heal (117313)
+Description      : $@spelldesc242301
+Tooltip          : Damage and healing done by your next Bloodthirst increased by $s1%.
+
+Name             : Item - Warrior T20 Fury 4P Bonus (id=242953) [Spell Family (4)] 
+Class            : Warrior
+School           : Physical
+Duration         : 10 seconds
+Stacks           : 10 maximum
+Proc Chance      : 101%
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ x....... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=368919)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self(1)
+                   Affected Spells: Bloodthirst (23881), Bloodthirst Heal (117313)
+Description      : $@spelldesc242301
+Tooltip          : Damage and healing done by your next Bloodthirst increased by $s1%.
 
 

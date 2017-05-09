@@ -139,7 +139,7 @@ public:
     buff_t* big_game_hunter;
     buff_t* bombardment;
     buff_t* careful_aim;
-    std::array<buff_t*, DIRE_BEASTS_MAX > dire_beast;
+    std::array<buff_t*, DIRE_BEASTS_MAX > dire_regen;
     buff_t* steady_focus;
     buff_t* pre_steady_focus;
     buff_t* marking_targets;
@@ -196,7 +196,7 @@ public:
     gain_t* steady_focus;
     gain_t* cobra_shot;
     gain_t* aimed_shot;
-    gain_t* dire_beast;
+    gain_t* dire_regen;
     gain_t* multi_shot;
     gain_t* chimaera_shot;
     gain_t* aspect_of_the_wild;
@@ -540,12 +540,14 @@ public:
   typedef hunter_action_t base_t;
 
   bool hasted_gcd;
+  bool affected_by_aotw_gcd_reduce;
   bool benefits_from_sniper_training;
 
   hunter_action_t( const std::string& n, hunter_t* player,
                    const spell_data_t* s = spell_data_t::nil() ):
                    ab( n, player, s ),
                    hasted_gcd( false ),
+                   affected_by_aotw_gcd_reduce( false ),
                    benefits_from_sniper_training( false )
   {
     ab::special = true;
@@ -558,6 +560,9 @@ public:
 
     if ( ab::data().affected_by( p() -> mastery.sniper_training -> effectN( 2 ) ) )
       benefits_from_sniper_training = true;
+
+    if ( maybe_ptr( ab::player -> dbc.ptr ) && ab::data().affected_by( p() -> specs.aspect_of_the_wild -> effectN( 3 ) ) )
+      affected_by_aotw_gcd_reduce = true;
   }
 
   hunter_t* p()
@@ -578,7 +583,8 @@ public:
   {
     ab::init();
 
-    ab::gcd_haste = hasted_gcd ? HASTE_ATTACK : HASTE_NONE;
+    // disable default gcd scaling from haste as we are rolling our own because of AotW
+    ab::gcd_haste = HASTE_NONE;
 
     if ( ab::data().affected_by( p() -> specs.beast_mastery_hunter -> effectN( 1 ) ) )
       ab::base_dd_multiplier *= 1.0 + p() -> specs.beast_mastery_hunter -> effectN( 1 ).percent();
@@ -599,13 +605,32 @@ public:
       ab::base_td_multiplier *= 1.0 + p() -> specs.survival_hunter -> effectN( 2 ).percent();
   }
 
+  timespan_t gcd() const override
+  {
+    timespan_t g = ab::gcd();
+
+    if ( g == timespan_t::zero() )
+      return g;
+
+    if ( maybe_ptr( ab::player -> dbc.ptr ) && affected_by_aotw_gcd_reduce && p() -> buffs.aspect_of_the_wild -> check() )
+      g += p() -> specs.aspect_of_the_wild -> effectN( 3 ).time_value();
+
+    if ( hasted_gcd )
+      g *= ab::player -> cache.attack_haste();
+
+    if ( g < ab::min_gcd )
+      g = ab::min_gcd;
+
+    return g;
+  }
+
   void consume_resource() override
   {
     ab::consume_resource();
 
-    if ( ab::last_resource_cost > 0 && p() -> sets.has_set_bonus( HUNTER_MARKSMANSHIP, T19, B2 ) )
+    if ( ab::last_resource_cost > 0 && p() -> sets -> has_set_bonus( HUNTER_MARKSMANSHIP, T19, B2 ) )
     {
-      const double set_value = p() -> sets.set( HUNTER_MARKSMANSHIP, T19, B2 ) -> effectN( 1 ).base_value();
+      const double set_value = p() -> sets -> set( HUNTER_MARKSMANSHIP, T19, B2 ) -> effectN( 1 ).base_value();
       p() -> cooldowns.trueshot
         -> adjust( timespan_t::from_seconds( -1.0 * ab::last_resource_cost / set_value ) );
     }
@@ -625,7 +650,7 @@ public:
   {
     double cost = ab::cost();
 
-    if ( p() -> sets.has_set_bonus( HUNTER_MARKSMANSHIP, T19, B4 ) && p() -> buffs.trueshot -> check() )
+    if ( p() -> sets -> has_set_bonus( HUNTER_MARKSMANSHIP, T19, B4 ) && p() -> buffs.trueshot -> check() )
       cost += cost * p() -> find_spell( 211327 ) -> effectN( 1 ).percent();
 
     if ( p() -> legendary.bm_waist -> ok() && p() -> buffs.bestial_wrath -> check() )
@@ -665,7 +690,7 @@ public:
 
   virtual void try_t20_4p_mm()
   {
-    if ( !ab::background && p() -> sets.has_set_bonus( HUNTER_MARKSMANSHIP, T20, B4 ) )
+    if ( !ab::background && p() -> sets -> has_set_bonus( HUNTER_MARKSMANSHIP, T20, B4 ) )
       p() -> buffs.pre_t20_4p_critical_aimed_damage -> expire();
   }
 };
@@ -1457,7 +1482,7 @@ struct dire_critter_t: public hunter_secondary_pet_t
   {
     hunter_secondary_pet_t::arise();
 
-    if ( o() -> sets.has_set_bonus( HUNTER_BEAST_MASTERY, T19, B2 ) && o() -> buffs.bestial_wrath -> check() )
+    if ( o() -> sets -> has_set_bonus( HUNTER_BEAST_MASTERY, T19, B2 ) && o() -> buffs.bestial_wrath -> check() )
     {
       const timespan_t bw_duration = o() -> buffs.bestial_wrath -> remains();
       buffs.bestial_wrath -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, bw_duration );
@@ -1713,12 +1738,10 @@ struct sneaky_snake_t: public hunter_secondary_pet_t
 
   struct sneaky_snake_melee_t: public secondary_pet_melee_t<sneaky_snake_t>
   {
-    bool first;
     deathstrike_venom_t* deathstrike_venom;
 
     sneaky_snake_melee_t( sneaky_snake_t* p ):
       base_t( "sneaky_snake_melee", p ),
-      first( true ),
       deathstrike_venom( new deathstrike_venom_t( p ) )
     {
     }
@@ -1731,27 +1754,11 @@ struct sneaky_snake_t: public hunter_secondary_pet_t
       return base_t::init_finished();
     }
 
-    void cancel() override
-    {
-      base_t::cancel();
-      first = true;
-    }
-
-    void execute() override
-    {
-      base_t::execute();
-
-      if ( first )
-        first = false;
-    }
-
     void impact( action_state_t* s ) override
     {
       base_t::impact( s );
 
-      // the snakes buff themselves with deathstrike venom aura ~200ms after summon
-      // that means their first hit can't really apply the debuff
-      if ( !first && result_is_hit( s -> result ) )
+      if ( result_is_hit( s -> result ) )
         deathstrike_venom -> trigger( s );
     }
   };
@@ -1771,6 +1778,34 @@ struct sneaky_snake_t: public hunter_secondary_pet_t
     // the snakes have 1s baseline swing time
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1 );
     main_hand_attack = new sneaky_snake_melee_t( this );
+  }
+
+  void arise() override
+  {
+    hunter_secondary_pet_t::arise();
+
+    // the snakes buff themselves with deathstrike venom aura ~200ms after summon
+    static_cast<sneaky_snake_melee_t*>( main_hand_attack ) ->
+      deathstrike_venom -> cooldown -> start( timespan_t::from_millis( 200 ) );
+  }
+};
+
+// ==========================================================================
+// Black Arrow Dark Minion
+// ==========================================================================
+
+struct dark_minion_t: hunter_secondary_pet_t
+{
+  dark_minion_t( hunter_t* o ):
+    hunter_secondary_pet_t( o, "dark_minion" )
+  {}
+
+  void init_base_stats() override
+  {
+    hunter_secondary_pet_t::init_base_stats();
+
+    if ( o() -> pets.dark_minions[ 0 ] )
+      main_hand_attack -> stats = o() -> pets.dark_minions[ 0 ] -> main_hand_attack -> stats;
   }
 };
 
@@ -2163,8 +2198,8 @@ struct flanking_strike_t: public hunter_main_pet_attack_t
 
     base_crit += o() -> artifacts.my_beloved_monster.percent();
 
-    if ( p -> o() -> sets.has_set_bonus( HUNTER_SURVIVAL, T19, B2 ) )
-      hunting_companion_multiplier *= p -> o() -> sets.set( HUNTER_SURVIVAL, T19, B2 ) -> effectN( 1 ).base_value();
+    if ( p -> o() -> sets -> has_set_bonus( HUNTER_SURVIVAL, T19, B2 ) )
+      hunting_companion_multiplier *= p -> o() -> sets -> set( HUNTER_SURVIVAL, T19, B2 ) -> effectN( 1 ).base_value();
 
     if ( p -> o() -> talents.aspect_of_the_beast -> ok() )
       impact_action = new bestial_ferocity_t( p );
@@ -2587,21 +2622,13 @@ struct auto_shot_t: public hunter_action_t < ranged_attack_t >
       double wild_call_chance = p() -> specs.wild_call -> proc_chance() +
                                 p() -> talents.one_with_the_pack -> effectN( 1 ).percent();
 
+      if ( maybe_ptr( p() -> dbc.ptr ) )
+        wild_call_chance += p() -> legendary.bm_shoulders -> effectN( 1 ).percent();
+
       if ( rng().roll( wild_call_chance ) )
       {
-        if ( maybe_ptr( p() -> dbc.ptr ) )
-        {
-          // the reduction scales with haste (with haste reducing it just as it does for Animal Instincts)
-          const auto value = - timespan_t::from_seconds( p() -> specs.wild_call -> effectN( 2 ).base_value() / 10 )
-                               * p() -> cache.spell_haste();
-          p() -> cooldowns.dire_frenzy -> adjust( value, true );
-          p() -> cooldowns.dire_beast -> adjust( value, true );
-        }
-        else
-        {
-          p() -> cooldowns.dire_frenzy -> reset( true );
-          p() -> cooldowns.dire_beast -> reset( true );
-        }
+        p() -> cooldowns.dire_frenzy -> reset( true );
+        p() -> cooldowns.dire_beast -> reset( true );
         p() -> procs.wild_call -> occur();
       }
     }
@@ -2985,24 +3012,27 @@ struct surge_of_the_stormgod_t: public hunter_ranged_attack_t
 
 struct black_arrow_t: public hunter_ranged_attack_t
 {
-  timespan_t duration;
   black_arrow_t( hunter_t* player, const std::string& options_str ):
     hunter_ranged_attack_t( "black_arrow", player, player -> talents.black_arrow )
   {
     parse_options( options_str );
     tick_may_crit = true;
     hasted_ticks = false;
-    duration = this -> dot_duration;
   }
 
-  virtual void execute() override
+  bool init_finished() override
+  {
+    if ( p() -> pets.dark_minions[ 0 ] )
+      stats -> add_child( p() -> pets.dark_minions[ 0 ] -> main_hand_attack -> stats );
+
+    return hunter_ranged_attack_t::init_finished();
+  }
+
+  void execute() override
   {
     hunter_ranged_attack_t::execute();
 
-    if ( p() -> pets.dark_minions[ 0 ] -> is_sleeping() )
-      p() -> pets.dark_minions[ 0 ] -> summon( duration );
-    else
-      p() -> pets.dark_minions[ 1 ] -> summon( duration );
+    p() -> pets.dark_minions[ p() -> pets.dark_minions[ 0 ] -> is_sleeping() ? 0 : 1 ] -> summon( dot_duration );
   }
 };
 
@@ -3241,10 +3271,10 @@ struct aimed_shot_t: public aimed_shot_base_t
 
     if ( p() -> buffs.t20_2p_precision -> up() )
       p() -> buffs.t20_2p_precision -> expire();
-    else if ( p() -> sets.has_set_bonus( HUNTER_MARKSMANSHIP, T20, B2 ) )
+    else if ( p() -> sets -> has_set_bonus( HUNTER_MARKSMANSHIP, T20, B2 ) )
       p() -> buffs.t20_2p_precision -> trigger();
 
-    if ( p() -> sets.has_set_bonus( HUNTER_MARKSMANSHIP, T20, B4 ) )
+    if ( p() -> sets -> has_set_bonus( HUNTER_MARKSMANSHIP, T20, B4 ) )
     {
       p() -> buffs.pre_t20_4p_critical_aimed_damage -> trigger();
       if ( p() -> buffs.pre_t20_4p_critical_aimed_damage-> stack() == 2 )
@@ -3873,7 +3903,7 @@ struct mongoose_bite_t: hunter_melee_attack_t
   {
     hunter_melee_attack_t::execute();
 
-    if ( p() -> sets.has_set_bonus( HUNTER_SURVIVAL, T19, B4 ) && p() -> buffs.mongoose_fury -> stack() == 5 )
+    if ( p() -> sets -> has_set_bonus( HUNTER_SURVIVAL, T19, B4 ) && p() -> buffs.mongoose_fury -> stack() == 5 )
       p() -> buffs.t19_4p_mongoose_power -> trigger();
 
     p() -> buffs.mongoose_fury -> trigger();
@@ -4315,7 +4345,7 @@ struct interrupt_base_t: public hunter_spell_t
 
   bool ready() override
   {
-    if ( ! target -> debuffs.casting -> check() ) return false;
+    if ( ! target -> debuffs.casting || ! target -> debuffs.casting -> check() ) return false;
     return hunter_spell_t::ready();
   }
 
@@ -4577,12 +4607,11 @@ struct dire_beast_t: public hunter_spell_t
     hunter_spell_t::execute();
 
     // Trigger buffs
-    timespan_t duration = p() -> buffs.dire_beast[ 0 ] -> buff_duration;
-    for ( buff_t* buff : p() -> buffs.dire_beast )
+    for ( buff_t* buff : p() -> buffs.dire_regen )
     {
       if ( ! buff -> check() )
       {
-        buff -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
+        buff -> trigger();
         break;
       }
     }
@@ -4590,9 +4619,9 @@ struct dire_beast_t: public hunter_spell_t
     // Adjust BW cd
     timespan_t t = timespan_t::from_seconds( p() -> specs.dire_beast -> effectN( 1 ).base_value() );
     // FIXME: spell data still shows the new 4 set as the 2 set, it may be swapped out from under us sometime. For now check for 4 set and use 2 set values.
-    if ( p() -> sets.has_set_bonus( HUNTER_BEAST_MASTERY, T19, B4 ) )
+    if ( p() -> sets -> has_set_bonus( HUNTER_BEAST_MASTERY, T19, B4 ) )
     {
-      // t += timespan_t::from_seconds( p() -> sets.set( HUNTER_BEAST_MASTERY, T19, B2 ) -> effectN( 1 ).base_value() );
+      // t += timespan_t::from_seconds( p() -> sets -> set( HUNTER_BEAST_MASTERY, T19, B2 ) -> effectN( 1 ).base_value() );
       // Not getting the right number from that for some reason.
       t += timespan_t::from_seconds( p() -> dbc.effect( 312803 ) -> base_value() );
     }
@@ -4622,7 +4651,7 @@ struct dire_beast_t: public hunter_spell_t
     // isn't important and combat log testing shows some variation in
     // attack speeds.  This is not quite perfect but more accurate
     // than plateaus.
-    const timespan_t base_duration = duration;
+    const timespan_t base_duration = data().duration();
     const timespan_t swing_time = beast -> main_hand_weapon.swing_time * beast -> composite_melee_speed();
     double partial_attacks_per_summon = base_duration / swing_time;
     int base_attacks_per_summon = static_cast<int>(partial_attacks_per_summon);
@@ -4664,7 +4693,7 @@ struct bestial_wrath_t: public hunter_spell_t
   {
     p() -> buffs.bestial_wrath  -> trigger();
     p() -> active.pet -> buffs.bestial_wrath -> trigger();
-    if ( p() -> sets.has_set_bonus( HUNTER_BEAST_MASTERY, T19, B2 ) )
+    if ( p() -> sets -> has_set_bonus( HUNTER_BEAST_MASTERY, T19, B2 ) )
     {
       // 2017-02-06 hotfix: "With the Dire Frenzy talent, the Eagletalon Battlegear Beast Mastery 2-piece bonus should now grant your pet 10% increased damage for 15 seconds."
       if ( p() -> talents.dire_frenzy -> ok() )
@@ -4749,8 +4778,9 @@ struct dire_frenzy_t: public hunter_spell_t
     parse_options( options_str );
 
     harmful = may_hit = false;
+    dot_duration = timespan_t::zero();
 
-    if ( p -> talents.dire_stable -> ok() )
+    if ( !maybe_ptr( p -> dbc.ptr ) && p -> talents.dire_stable -> ok() )
       energize_amount += p -> talents.dire_stable -> effectN( 2 ).base_value();
   }
 
@@ -4769,11 +4799,23 @@ struct dire_frenzy_t: public hunter_spell_t
   {
     hunter_spell_t::execute();
 
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+    {
+      for ( buff_t* buff : p() -> buffs.dire_regen )
+      {
+        if ( ! buff -> check() )
+        {
+          buff -> trigger();
+          break;
+        }
+      }
+    }
+
     // Adjust BW cd
     timespan_t t = timespan_t::from_seconds( p() -> specs.dire_beast -> effectN( 1 ).base_value() );
     // FIXME: spell data still shows the new 4 set as the 2 set, it may be swapped out from under us sometime. For now check for 4 set and use 2 set values.
-    if ( p() -> sets.has_set_bonus( HUNTER_BEAST_MASTERY, T19, B4 ) )
-      // t += timespan_t::from_seconds( p() -> sets.set( HUNTER_BEAST_MASTERY, T19, B2 ) -> effectN( 1 ).base_value() );
+    if ( p() -> sets -> has_set_bonus( HUNTER_BEAST_MASTERY, T19, B4 ) )
+      // t += timespan_t::from_seconds( p() -> sets -> set( HUNTER_BEAST_MASTERY, T19, B2 ) -> effectN( 1 ).base_value() );
       // Not getting the right number from that for some reason.
       t += timespan_t::from_seconds( p() -> dbc.effect( 312803 ) -> base_value() );
     p() -> cooldowns.bestial_wrath -> adjust( -t );
@@ -5499,8 +5541,8 @@ void hunter_t::create_pets()
 
   if ( talents.black_arrow -> ok() )
   {
-    pets.dark_minions[ 0 ] = new pets::hunter_secondary_pet_t( this, "dark_minion" );
-    pets.dark_minions[ 1 ] = new pets::hunter_secondary_pet_t( this, "dark_minion_2" );
+    pets.dark_minions[ 0 ] = new pets::dark_minion_t( this );
+    pets.dark_minions[ 1 ] = new pets::dark_minion_t( this );
   }
 
   if ( talents.spitting_cobra -> ok() )
@@ -5757,15 +5799,17 @@ void hunter_t::create_buffs()
       .activated( true )
       .default_value( talents.big_game_hunter -> effectN( 1 ).percent() );
 
-  double dire_beast_value = find_spell( 120694 ) -> effectN( 1 ).resource( RESOURCE_FOCUS ) +
-                            talents.dire_stable -> effectN( 1 ).base_value();
-  for ( size_t i = 0; i < buffs.dire_beast.size(); i++ )
+  // initialize dire beast/frenzy buffs
+  const spell_data_t* dire_spell =
+    find_spell( maybe_ptr( dbc.ptr ) && talents.dire_frenzy -> ok() ? 246152 : 120694 );
+  for ( size_t i = 0; i < buffs.dire_regen.size(); i++ )
   {
-    buffs.dire_beast[ i ] =
-      buff_creator_t( this, "dire_beast_" + util::to_string( i + 1 ), find_spell(120694) )
-        .default_value( dire_beast_value )
+    buffs.dire_regen[ i ] =
+      buff_creator_t( this, util::tokenize_fn( dire_spell -> name_cstr() ) + "_" + util::to_string( i + 1 ), dire_spell )
+        .default_value( dire_spell -> effectN( 1 ).resource( RESOURCE_FOCUS ) +
+                        talents.dire_stable -> effectN( 1 ).base_value() )
         .tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
-                          resource_gain( RESOURCE_FOCUS, b -> default_value, gains.dire_beast );
+                          resource_gain( RESOURCE_FOCUS, b -> default_value, gains.dire_regen );
                         } );
   }
 
@@ -5921,7 +5965,7 @@ bool hunter_t::init_special_effects()
 
   // Cooldown adjustments
 
-  if ( legendary.bm_shoulders -> ok() )
+  if ( legendary.bm_shoulders -> ok() && ! maybe_ptr( dbc.ptr ) )
   {
     cooldowns.dire_beast -> charges += legendary.bm_shoulders -> effectN( 1 ).base_value();
     cooldowns.dire_frenzy -> charges += legendary.bm_shoulders -> effectN( 1 ).base_value();
@@ -5947,7 +5991,7 @@ void hunter_t::init_gains()
   gains.steady_focus         = get_gain( "steady_focus" );
   gains.cobra_shot           = get_gain( "cobra_shot" );
   gains.aimed_shot           = get_gain( "aimed_shot" );
-  gains.dire_beast           = get_gain( "dire_beast" );
+  gains.dire_regen           = get_gain( talents.dire_frenzy -> ok() ? "dire_frenzy" : "dire_beast" );
   gains.multi_shot           = get_gain( "multi_shot" );
   gains.chimaera_shot        = get_gain( "chimaera_shot" );
   gains.aspect_of_the_wild   = get_gain( "aspect_of_the_wild" );
@@ -6023,7 +6067,7 @@ void hunter_t::init_scaling()
 {
   player_t::init_scaling();
 
-  scales_with[STAT_STRENGTH] = false;
+  scaling -> disable( STAT_STRENGTH );
 }
 
 // hunter_t::default_potion =================================================
@@ -6154,9 +6198,16 @@ void hunter_t::apl_bm()
   default_list -> add_talent( this, "A Murder of Crows" );
   default_list -> add_talent( this, "Stampede", "if=buff.bloodlust.up|buff.bestial_wrath.up|cooldown.bestial_wrath.remains<=2|target.time_to_die<=14" );
   default_list -> add_action( this, "Dire Beast", "if=cooldown.bestial_wrath.remains>3" );
-  default_list -> add_talent( this, "Dire Frenzy", "if=(cooldown.bestial_wrath.remains>6&(!equipped.the_mantle_of_command|pet.cat.buff.dire_frenzy.remains<=gcd.max*1.2))|"
-                                                   "(charges>=2&focus.deficit>=25+talent.dire_stable.enabled*12)|"
-                                                   "target.time_to_die<9" );
+  if ( maybe_ptr( dbc.ptr ) )
+  {
+    default_list -> add_talent( this, "Dire Frenzy", "if=(pet.cat.buff.dire_frenzy.remains<=gcd.max*1.2)|(charges_fractional>=1.8)|target.time_to_die<9" );
+  }
+  else
+  {
+    default_list -> add_talent( this, "Dire Frenzy", "if=(cooldown.bestial_wrath.remains>6&(!equipped.the_mantle_of_command|pet.cat.buff.dire_frenzy.remains<=gcd.max*1.2))|"
+                                                     "(charges>=2&focus.deficit>=25+talent.dire_stable.enabled*12)|"
+                                                     "target.time_to_die<9" );
+  }
   default_list -> add_action( this, "Aspect of the Wild", "if=buff.bestial_wrath.up|target.time_to_die<12" );
   default_list -> add_talent( this, "Barrage", "if=spell_targets.barrage>1" );
   default_list -> add_action( this, "Titan's Thunder", "if=talent.dire_frenzy.enabled|cooldown.dire_beast.remains>=3|(buff.bestial_wrath.up&pet.dire_beast.active)" );

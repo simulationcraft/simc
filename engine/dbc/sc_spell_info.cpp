@@ -12,27 +12,6 @@ struct proc_map_t
   const char* proc;
 };
 
-const std::map<unsigned, const std::string> _targeting_map = {
-  {  1,  "Self"                },
-  {  5,  "Active Pet"          },
-  {  6,  "Enemy"               },
-  {  7,  "AOE enemy (instant)" },
-  {  8,  "AOE Custom"          },
-  { 15,  "AOE enemy"           },
-  { 18,  "Custom"              },
-  { 16,  "AOE enemy (instant)" },
-  { 21,  "Friend"              },
-  { 22,  "At Caster"           },
-  { 28,  "AOE enemy"           },
-  { 30,  "AOE friendly"        },
-  { 31,  "AOE friendly"        },
-  { 42,  "Water Totem"         },
-  { 45,  "Chain Friendly"      },
-  { 104, "Cone Front"          },
-  { 53,  "At Enemy"            },
-  { 56,  "Raid Members"        },
-};
-
 std::vector<std::string> _hotfix_effect_map = {
   "Id",
   "", // Hotfix field
@@ -130,6 +109,25 @@ std::vector<std::string> _hotfix_artifact_power_map = {
   "Value"
 };
 
+template <typename T>
+bool map_has_string( const std::unordered_map<T, const std::string>& map, T key )
+{
+  return map.find( key ) != map.end();
+}
+
+template <typename T>
+std::string map_string( const std::unordered_map<T, const std::string>& map, T key )
+{
+  auto it = map.find( key );
+
+  if ( it != map.end() )
+  {
+    return it -> second + " (" + util::to_string( key ) + ")";
+  }
+
+  return "Unknown(" + util::to_string( key ) + ")";
+}
+
 template <typename DATA_TYPE, typename MAP_TYPE>
 std::ostringstream& hotfix_map_str( const DATA_TYPE* data, std::ostringstream& s, const std::vector<std::string>& map )
 {
@@ -182,6 +180,31 @@ std::ostringstream& hotfix_map_str( const DATA_TYPE* data, std::ostringstream& s
   }
 
   return s;
+}
+
+template <typename T>
+std::string concatenate( const std::vector<const T*>& data,
+                         const std::function<void(std::stringstream&, const T*)> fn,
+                         const std::string& delim = ", " )
+{
+  if ( data.size() == 0 )
+  {
+    return "";
+  }
+
+  std::stringstream s;
+
+  for ( size_t i = 0, end = data.size(); i < end; ++i )
+  {
+    fn( s, data[ i ] );
+
+    if ( i < end - 1 )
+    {
+      s << delim;
+    }
+  }
+
+  return s.str();
 }
 
 std::string spell_hotfix_map_str( const spell_data_t* spell )
@@ -239,17 +262,6 @@ std::string artifact_power_hotfix_map_str( const artifact_power_rank_t* rank )
   hotfix_map_str<artifact_power_rank_t, unsigned>( rank, s, _hotfix_artifact_power_map );
 
   return s.str();
-}
-
-std::string targeting_str( unsigned v )
-{
-  auto i = _targeting_map.find( v );
-  if ( i != _targeting_map.end() )
-  {
-    return i -> second + "(" + util::to_string( v ) + ")";
-  }
-
-  return "Unknown(" + util::to_string( v ) + ")";
 }
 
 const struct proc_map_t _proc_flag_map[] =
@@ -321,30 +333,47 @@ const char * _race_strings[] =
   nullptr
 };
 
-const char * _resource_strings[] =
+static const std::unordered_map<unsigned, const std::string> _targeting_strings = {
+  {  1,  "Self"                },
+  {  5,  "Active Pet"          },
+  {  6,  "Enemy"               },
+  {  7,  "AOE enemy (instant)" },
+  {  8,  "AOE Custom"          },
+  { 15,  "AOE enemy"           },
+  { 18,  "Custom"              },
+  { 16,  "AOE enemy (instant)" },
+  { 21,  "Friend"              },
+  { 22,  "At Caster"           },
+  { 28,  "AOE enemy"           },
+  { 30,  "AOE friendly"        },
+  { 31,  "AOE friendly"        },
+  { 42,  "Water Totem"         },
+  { 45,  "Chain Friendly"      },
+  { 104, "Cone Front"          },
+  { 53,  "At Enemy"            },
+  { 56,  "Raid Members"        },
+};
+
+static const std::unordered_map<int, const std::string> _resource_strings =
 {
-  "Health", // -2
-  nullptr,
-  "Base Mana",
-  "Rage",
-  "Focus",
-  "Energy",
-  "Combo Points",
-  "Rune",
-  "Runic Power",
-  "Soul Shard",
-  "Eclipse",
-  "Holy Power",
-  nullptr,
-  "Maelstrom",
-  "Chi",
-  "Insanity",
-  "Burning Ember",
-  "Demonic Fury",
-  nullptr,
-  "Fury",
-  "Pain",
-  nullptr
+  { -2, "Health",        },
+  {  0, "Base Mana",     },
+  {  1, "Rage",          },
+  {  2, "Focus",         },
+  {  3, "Energy",        },
+  {  4, "Combo Points",  },
+  {  5, "Rune",          },
+  {  6, "Runic Power",   },
+  {  7, "Soul Shard",    },
+  {  8, "Eclipse",       },
+  {  9, "Holy Power",    },
+  { 11, "Maelstrom",     },
+  { 12, "Chi",           },
+  { 13, "Insanity",      },
+  { 14, "Burning Ember", },
+  { 15, "Demonic Fury",  },
+  { 16, "Fury",          },
+  { 17, "Pain",          },
 };
 
 const std::map<unsigned, std::string> _attribute_strings = {
@@ -369,148 +398,234 @@ const std::map<unsigned, std::string> _attribute_strings = {
   { 186, "Requires line of sight"   },
 };
 
-const char * _property_type_strings[] =
+static const std::unordered_map<int, const std::string> _property_type_strings =
 {
-  "Generic Modifier",      "Spell Duration",        "Spell Generated Threat", "Spell Effect 1",      "Stack Amount",          // 0
-  "Spell Range",           "Spell Radius",          "Spell Critical Chance",  "Spell Tick Time",     "Spell Pushback",        // 5
-  "Spell Cast Time",       "Spell Cooldown",        "Spell Effect 2",         nullptr,                     "Spell Resource Cost",   // 10
-  "Spell Critical Damage", "Spell Penetration",     "Spell Targets",          "Spell Proc Chance",   "Unknown 2",             // 15
-  "Spell Target Bonus",    "Spell Global Cooldown", "Spell Periodic Damage",  "Spell Effect 3",      "Spell Power",           // 20
-  nullptr,                       "Spell Proc Frequency",  "Spell Damage Taken",     "Spell Dispel Chance", nullptr,                       // 25
-  nullptr,                       nullptr,                       "Spell Effect 4",         nullptr,                     "Runic Power Generation",                       // 30
-  nullptr,                       nullptr,                       nullptr,                        nullptr,                     nullptr                        // 35
+  {  0, "Generic Modifier"         },
+  {  1, "Spell Duration"           },
+  {  2, "Spell Generated Threat"   },
+  {  3, "Spell Effect 1"           },
+  {  4, "Stack Amount"             },
+  {  5, "Spell Range"              },
+  {  6, "Spell Radius"             },
+  {  7, "Spell Critical Chance"    },
+  {  8, "Spell Tick Time"          },
+  {  9, "Spell Pushback"           },
+  { 10, "Spell Cast Time"          },
+  { 11, "Spell Cooldown"           },
+  { 12, "Spell Effect 2"           },
+  { 14, "Spell Resource Cost"      },
+  { 15, "Spell Critical Damage"    },
+  { 16, "Spell Penetration"        },
+  { 17, "Spell Targets"            },
+  { 18, "Spell Proc Chance"        },
+  { 19, "Unknown 2"                },
+  { 20, "Spell Target Bonus"       },
+  { 21, "Spell Global Cooldown"    },
+  { 22, "Spell Periodic Damage"    },
+  { 23, "Spell Effect 3"           },
+  { 24, "Spell Power"              },
+  { 26, "Spell Proc Frequency"     },
+  { 27, "Spell Damage Taken"       },
+  { 28, "Spell Dispel Chance"      },
+  { 32, "Spell Effect 4"           },
+  { 34, "Runic Power Generation"   }
 };
 
-const char * _effect_type_strings[] =
+static const std::unordered_map<unsigned, const std::string> _effect_type_strings =
 {
-  "None",               "Instant Kill",             "School Damage",        "Dummy",                    "Portal Teleport",       // 0
-  "Teleport Units",     "Apply Aura",               "Environmental Damage", "Power Drain",              "Health Leech",          // 5
-  "Direct Heal",        "Bind",                     "Portal",               "Ritual Base",              "Ritual Specialize",     // 10
-  "Ritual Activate",    "Quest Complete",           "Weapon Damage",        "Resurrect",                "Extra Attacks",         // 15
-  "Dodge",              "Evade",                    "Parry",                "Block",                    "Create Item",           // 20
-  "Weapon Type",        "Defense",                  "Persistent Area Aura", "Summon",                   "Leap",                  // 25
-  "Energize Power",     "Weapon Damage%",           "Trigger Missiles",     "Open Lock",                "Summon Item",           // 30
-  "Apply Party Aura",   "Learn Spell",              "Spell Defense",        "Dispel",                   "Language",              // 35
-  "Dual Wield",         nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 40
-  nullptr,                    nullptr,                          nullptr,                      "Stealth",                  "Detect",                // 45
-  nullptr,                    nullptr,                          "Guaranteed Hit",       "Enchant Item",                          nullptr,                       // 50
-  nullptr,                    "Summon Pet",               nullptr,                      "Weapon Damage",            nullptr,                       // 55
-  nullptr,                    nullptr,                          "Power Burn",           "Threat",                   "Trigger Spell",         // 60
-  "Apply Raid Aura",    nullptr,                          nullptr,                      "Interrupt Cast",           "Distract",              // 65
-  "Pull",               "Pick Pocket",              nullptr,                      nullptr,                          nullptr,                       // 70
-  nullptr,                    nullptr,                          "Server Side Script",   "Attack",                   nullptr,                       // 75
-  "Add Combo Points",   nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 80
-  "Summon Player",      nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 85
-  nullptr,                    "Threat All",               nullptr,                      nullptr,                          "Self Resurrect",        // 90
-  nullptr,                    "Charge",                   "Summon All Totems",    "Knock Back",               nullptr,                       // 95
-  nullptr,                    "Feed Pet",                 "Dismiss Pet",          nullptr,                          nullptr,                       // 100
-  nullptr,                    nullptr,                          nullptr,                      nullptr,                          "Summon Dead Pet",       // 105
-  "Destroy All Totems", nullptr,                          nullptr,                      "Resurrect",                nullptr,                       // 110
-  nullptr,                    nullptr,                          nullptr,                      nullptr,                          "Apply Pet Area Aura",   // 115
-  nullptr,                    "Normalized Weapon Damage", nullptr,                      nullptr,                          "Pull Player",           // 120
-  "Modify Threat",      "Steal Beneficial Aura",    nullptr,                      "Apply Friendly Area Aura", "Apply Enemy Area Aura", // 125
-  "Redirect Threat",    nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 130
-  "Call Pet",           "Direct Heal%",             "Energize Power%",      "Leap Back",                nullptr,                       // 135
-  nullptr,                    nullptr,                          "Trigger Spell w/ Value", "Apply Owner Area Aura",    nullptr,                       // 140
-  nullptr,                    "Activate Rune",            nullptr,                      nullptr,                          nullptr,                       // 145
-  nullptr,                    "Trigger Spell",            nullptr,                      nullptr,                          nullptr,                       // 150
-  "Titan Grip",         "Add Socket",               "Create Item",          nullptr,                          nullptr,                       // 155
-  nullptr,                    nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 160
-  nullptr,                    nullptr,                          nullptr,                                                                           // 165
+  {   0, "None"                     },
+  {   1, "Instant Kill"             },
+  {   2, "School Damage"            },
+  {   3, "Dummy"                    },
+  {   4, "Portal Teleport"          },
+  {   5, "Teleport Units"           },
+  {   6, "Apply Aura"               },
+  {   7, "Environmental Damage"     },
+  {   8, "Power Drain"              },
+  {   9, "Health Leech"             },
+  {  10, "Direct Heal"              },
+  {  11, "Bind"                     },
+  {  12, "Portal"                   },
+  {  13, "Ritual Base"              },
+  {  14, "Ritual Specialize"        },
+  {  15, "Ritual Activate"          },
+  {  16, "Quest Complete"           },
+  {  17, "Weapon Damage"            },
+  {  18, "Resurrect"                },
+  {  19, "Extra Attacks"            },
+  {  20, "Dodge"                    },
+  {  21, "Evade"                    },
+  {  22, "Parry"                    },
+  {  23, "Block"                    },
+  {  24, "Create Item"              },
+  {  25, "Weapon Type"              },
+  {  26, "Defense"                  },
+  {  27, "Persistent Area Aura"     },
+  {  28, "Summon"                   },
+  {  29, "Leap"                     },
+  {  30, "Energize Power"           },
+  {  31, "Weapon Damage%"           },
+  {  32, "Trigger Missiles"         },
+  {  33, "Open Lock"                },
+  {  34, "Summon Item"              },
+  {  35, "Apply Party Aura"         },
+  {  36, "Learn Spell"              },
+  {  37, "Spell Defense"            },
+  {  38, "Dispel"                   },
+  {  39, "Language"                 },
+  {  40, "Dual Wield"               },
+  {  48, "Stealth"                  },
+  {  49, "Detect"                   },
+  {  52, "Guaranteed Hit"           },
+  {  53, "Enchant Item"             },
+  {  56, "Summon Pet"               },
+  {  58, "Weapon Damage"            },
+  {  62, "Power Burn"               },
+  {  63, "Threat"                   },
+  {  64, "Trigger Spell"            },
+  {  65, "Apply Raid Aura"          },
+  {  68, "Interrupt Cast"           },
+  {  69, "Distract"                 },
+  {  70, "Pull"                     },
+  {  71, "Pick Pocket"              },
+  {  77, "Server Side Script"       },
+  {  78, "Attack"                   },
+  {  80, "Add Combo Points"         },
+  {  85, "Summon Player"            },
+  {  91, "Threat All"               },
+  {  94, "Self Resurrect"           },
+  {  96, "Charge"                   },
+  {  97, "Summon All Totems"        },
+  {  98, "Knock Back"               },
+  { 101, "Feed Pet"                 },
+  { 102, "Dismiss Pet"              },
+  { 109, "Summon Dead Pet"          },
+  { 110, "Destroy All Totems"       },
+  { 113, "Resurrect"                },
+  { 119, "Apply Pet Area Aura"      },
+  { 121, "Normalized Weapon Damage" },
+  { 124, "Pull Player"              },
+  { 125, "Modify Threat"            },
+  { 126, "Steal Beneficial Aura"    },
+  { 128, "Apply Friendly Area Aura" },
+  { 129, "Apply Enemy Area Aura"    },
+  { 130, "Redirect Threat"          },
+  { 135, "Call Pet"                 },
+  { 136, "Direct Heal%"             },
+  { 137, "Energize Power%"          },
+  { 138, "Leap Back"                },
+  { 142, "Trigger Spell w/ Value"   },
+  { 143, "Apply Owner Area Aura"    },
+  { 146, "Activate Rune"            },
+  { 151, "Trigger Spell"            },
+  { 155, "Titan Grip"               },
+  { 156, "Add Socket"               },
+  { 157, "Create Item"              },
 };
 
-const char * _effect_subtype_strings[] =
+static const std::unordered_map<unsigned, const std::string> _effect_subtype_strings =
 {
-  "None",                       nullptr,                          "Possess",              "Periodic Damage",          "Dummy",                              // 0
-  "Confuse",                    "Charm",                    "Fear",                 "Periodic Heal",            "Attack Speed",                       // 5
-  "Threat",                     "Taunt",                    "Stun",                 "Damage Done",              "Damage Taken",                       // 10
-  "Damage Shield",              "Stealth",                  "Stealth Detection",    "Invisibility",             "Invisibility Detection",             // 15
-  "Periodic Heal%",             nullptr,                          "Resistance",           "Periodic Trigger Spell",   "Periodic Energize Power",            // 20
-  "Pacify",                     "Root",                     "Silence",              "Spell Reflection",         "Attribute",                          // 25
-  "Skill",                      "Increase Speed%",          "Increase Mounted Speed%", "Decrease Movement Speed%", "Increase Health",                 // 30
-  "Increase Energy",            "Shapeshift",               "Immunity Against External Movement", nullptr,            "School Immunity",                    // 35
-  nullptr,                            nullptr,                          "Proc Trigger Spell",   "Proc Trigger Damage",      "Track Creatures",                    // 40
-  nullptr,                            nullptr,                          "Modify Parry%",        nullptr,                          "Modify Dodge%",                      // 45
-  "Modify Critical Heal Bonus", "Modify Block%",            "Modify Crit%",         "Periodic Health Leech",    "Modify Hit%",                        // 50
-  "Modify Spell Hit%",          nullptr,                          "Modify Spell Crit%",   nullptr,                          nullptr,                                    // 55
-  "Pacify Silence",             "Scale%",                   nullptr,                      nullptr,                          "Periodic Mana Leech",                // 60
-  "Modify Spell Speed%",        "Feign Death",              "Disarm",               "Stalked",                  "Absorb Damage",                      // 65
-  nullptr,                            nullptr,                          "Modify Power Cost%",   "Modify Power Cost",        "Reflect Spells",                     // 70
-  nullptr,                            nullptr,                          "Mechanic Immunity",    nullptr,                          "Modify Damage Done%",   // 75
-  "Modify Attribute%",          nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 80
-  "Modify Power Regeneration",  nullptr,                          "Modify Damage Taken%", nullptr,                          nullptr,                       // 85
-  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 90
-  nullptr,                            nullptr,                          nullptr,                      nullptr,                          "Modify Attack Power",   // 95
-  nullptr,                            "Modify Armor%",            nullptr,                      nullptr,                          "Modify Attack Power",   // 100
-  nullptr,                            nullptr,                          "Add Flat Modifier",    "Add Percent Modifier",     nullptr,                       // 105
-  "Mod Power Regen",                            nullptr,                          nullptr,                      nullptr,                          nullptr,       // 110
-  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 115
-  nullptr,                            nullptr,                          nullptr,                      nullptr,                          "Modify Ranged Attack Power", // 120
-  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 125
-  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 130
-  "Modify Healing Power",       "Modify Healing% Done",     "Modify Total Stat%",   "Modify Melee Haste%",      nullptr,                       // 135
-  "Modify Ranged Haste%",       nullptr,                          "Modify Base Resistance",nullptr,                         nullptr,                       // 140
-  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 145
-  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 150
-  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 155
-  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 160
-  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 165
-  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 170
-  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 175
-  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 180
-  nullptr,                            nullptr,                          "Modify Attacker Melee Crit Chance",nullptr,              "Modify Rating",         // 185
-  nullptr,                            nullptr,                          "Modify Ranged and Melee Haste%",                   "Modify All Haste%", nullptr,  // 190
-  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 195
-  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 200
-  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 205
-  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 210
-  nullptr,                            nullptr,                          nullptr,                      "Apply Percent Modifier w/ Label",                          nullptr,                       // 215
-  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 220
-  nullptr,            "Periodic Dummy",                           nullptr,                      nullptr,                          nullptr,                       // 225
-  nullptr,                            "Trigger Spell with Value", nullptr,                      nullptr,                          nullptr,                       // 230
-  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 235
-  "Modify Expertise%",          nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 240
-  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 245
-  "Increase Max Health (Stacking)",nullptr,                       nullptr,                      nullptr,                          nullptr,                       // 250
-  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 255
-  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 260
-  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 265
-  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 270
-  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 275
-  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 280
-  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 285
-  "Modify Critical Strike%",    nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 290
-  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 295
-  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 300
-  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 305
-  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 310
-  nullptr,                            nullptr,                          nullptr,                      nullptr,                          "Modify Melee Attack Speed%",                       // 315
-  "Modify Ranged Attack Speed%",nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 320
-  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 325
-  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 330
-  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 335
-  nullptr,                            nullptr,                          "Modify Ranged and Melee Attack Speed%", nullptr,         nullptr,                       // 340
-  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 345
-  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 350
-  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 355
-  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 360
-  nullptr,                            "Override Spell Power per Attack Power%",                          nullptr,                      nullptr,                          nullptr,                       // 365
-  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 370
-  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 375
-  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 380
-  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 385
-  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 390
-  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 395
-  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 400
-  "Modify Combat Rating Multiplier",  nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 405
-  nullptr,                            "Modify Cooldown Charge",         nullptr,                      nullptr,                          nullptr,                       // 410
-  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 415
-  nullptr,                            "Modify Absorb% Done",      "Modify Absorb% Done",  nullptr,                          nullptr,                       // 420
-  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 425
-  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 430
-  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 435
-  nullptr,                            "Modify Multistrike%",      nullptr,                      nullptr,                          nullptr,                       // 440
-  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 445
+  {   0, "None"                                   },
+  {   2, "Possess"                                },
+  {   3, "Periodic Damage"                        },
+  {   4, "Dummy"                                  },
+  {   5, "Confuse"                                },
+  {   6, "Charm"                                  },
+  {   7, "Fear"                                   },
+  {   8, "Periodic Heal"                          },
+  {   9, "Attack Speed"                           },
+  {  10, "Threat"                                 },
+  {  11, "Taunt"                                  },
+  {  12, "Stun"                                   },
+  {  13, "Damage Done"                            },
+  {  14, "Damage Taken"                           },
+  {  15, "Damage Shield"                          },
+  {  16, "Stealth"                                },
+  {  17, "Stealth Detection"                      },
+  {  18, "Invisibility"                           },
+  {  19, "Invisibility Detection"                 },
+  {  20, "Periodic Heal%"                         },
+  {  22, "Resistance"                             },
+  {  23, "Periodic Trigger Spell"                 },
+  {  24, "Periodic Energize Power"                },
+  {  25, "Pacify"                                 },
+  {  26, "Root"                                   },
+  {  27, "Silence"                                },
+  {  28, "Spell Reflection"                       },
+  {  29, "Attribute"                              },
+  {  30, "Skill"                                  },
+  {  31, "Increase Speed%"                        },
+  {  32, "Increase Mounted Speed%"                },
+  {  33, "Decrease Movement Speed%"               },
+  {  34, "Increase Health"                        },
+  {  35, "Increase Energy"                        },
+  {  36, "Shapeshift"                             },
+  {  37, "Immunity Against External Movement"     },
+  {  39, "School Immunity"                        },
+  {  42, "Proc Trigger Spell"                     },
+  {  43, "Proc Trigger Damage"                    },
+  {  44, "Track Creatures"                        },
+  {  47, "Modify Parry%"                          },
+  {  49, "Modify Dodge%"                          },
+  {  50, "Modify Critical Heal Bonus"             },
+  {  51, "Modify Block%"                          },
+  {  52, "Modify Crit%"                           },
+  {  53, "Periodic Health Leech"                  },
+  {  54, "Modify Hit%"                            },
+  {  55, "Modify Spell Hit%"                      },
+  {  57, "Modify Spell Crit%"                     },
+  {  60, "Pacify Silence"                         },
+  {  61, "Scale%"                                 },
+  {  64, "Periodic Mana Leech"                    },
+  {  65, "Modify Spell Speed%"                    },
+  {  66, "Feign Death"                            },
+  {  67, "Disarm"                                 },
+  {  68, "Stalked"                                },
+  {  69, "Absorb Damage"                          },
+  {  72, "Modify Power Cost%"                     },
+  {  73, "Modify Power Cost"                      },
+  {  74, "Reflect Spells"                         },
+  {  77, "Mechanic Immunity"                      },
+  {  79, "Modify Damage Done%"                    },
+  {  80, "Modify Attribute%"                      },
+  {  85, "Modify Power Regeneration"              },
+  {  86, "Modify Damage Taken%"                   },
+  {  99, "Modify Attack Power"                    },
+  { 101, "Modify Armor%"                          },
+  { 104, "Modify Attack Power"                    },
+  { 107, "Add Flat Modifier"                      },
+  { 108, "Add Percent Modifier"                   },
+  { 110, "Mod Power Regen"                        },
+  { 124, "Modify Ranged Attack Power"             },
+  { 135, "Modify Healing Power"                   },
+  { 136, "Modify Healing% Done"                   },
+  { 137, "Modify Total Stat%"                     },
+  { 138, "Modify Melee Haste%"                    },
+  { 140, "Modify Ranged Haste%"                   },
+  { 142, "Modify Base Resistance"                 },
+  { 187, "Modify Attacker Melee Crit Chance"      },
+  { 189, "Modify Rating"                          },
+  { 192, "Modify Ranged and Melee Haste%"         },
+  { 193, "Modify All Haste%"                      },
+  { 218, "Apply Percent Modifier w/ Label"        },
+  { 226, "Periodic Dummy"                         },
+  { 231, "Trigger Spell with Value"               },
+  { 240, "Modify Expertise%"                      },
+  { 250, "Increase Max Health (Stacking)"         },
+  { 290, "Modify Critical Strike%"                },
+  { 319, "Modify Melee Attack Speed%"             },
+  { 320, "Modify Ranged Attack Speed%"            },
+  { 342, "Modify Ranged and Melee Attack Speed%"  },
+  { 366, "Override Spell Power per Attack Power%" },
+  { 405, "Modify Combat Rating Multiplier"        },
+  { 411, "Modify Cooldown Charge"                 },
+  { 416, "Hasted Cooldown Duration"               },
+  { 417, "Hasted Global Cooldown"                 },
+  { 421, "Modify Absorb% Done"                    },
+  { 422, "Modify Absorb% Done"                    },
+  { 429, "Modify Pet Damage Done%"                },
+  { 441, "Modify Multistrike%"                    },
+  { 457, "Hasted Cooldown Duration (Category)"    },
 };
 
 std::string mechanic_str( unsigned mechanic ) {
@@ -575,94 +690,78 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
   snprintf( tmp_buffer, sizeof( tmp_buffer ), "#%d %-*s: ", (int16_t)e -> index() + 1, 14, tmp_buffer2 );
   s << tmp_buffer;
 
-  if ( e -> type() < static_cast< int >( sizeof( _effect_type_strings ) / sizeof( const char* ) ) &&
-       _effect_type_strings[ e -> type() ] != nullptr )
+  s << map_string( _effect_type_strings, e -> raw_type() );
+  // Put some nice handling on some effect types
+  switch ( e -> type() )
   {
-    s << _effect_type_strings[ e -> type() ];
-    // Put some nice handling on some effect types
-    switch ( e -> type() )
+    case E_SCHOOL_DAMAGE:
+      s << ": " << util::school_type_string( spell -> get_school_type() );
+      break;
+    case E_TRIGGER_SPELL:
+    case E_TRIGGER_SPELL_WITH_VALUE:
+      if ( e -> trigger_spell_id() )
+      {
+        if ( dbc.spell( e -> trigger_spell_id() ) != spell_data_t::nil() )
+          s << ": " << dbc.spell( e -> trigger_spell_id() ) -> name_cstr();
+        else
+          s << ": (" << e -> trigger_spell_id() << ")";
+      }
+      break;
+    default:
+      break;
+  }
+
+  if ( e -> subtype() > 0 )
+  {
+    s << " | " << map_string( _effect_subtype_strings, e -> raw_subtype() );
+    switch ( e -> subtype() )
     {
-      case E_SCHOOL_DAMAGE:
+      case A_PERIODIC_DAMAGE:
         s << ": " << util::school_type_string( spell -> get_school_type() );
+        if ( e -> period() != timespan_t::zero() )
+          s << " every " << e -> period().total_seconds() << " seconds";
         break;
-      case E_TRIGGER_SPELL:
-      case E_TRIGGER_SPELL_WITH_VALUE:
+      case A_PERIODIC_HEAL:
+      case A_PERIODIC_ENERGIZE:
+      case A_PERIODIC_DUMMY:
+      case A_OBS_MOD_HEALTH:
+        if ( e -> period() != timespan_t::zero() )
+          s << ": every " << e -> period().total_seconds() << " seconds";
+        break;
+      case A_PROC_TRIGGER_SPELL:
         if ( e -> trigger_spell_id() )
         {
           if ( dbc.spell( e -> trigger_spell_id() ) != spell_data_t::nil() )
+          {
             s << ": " << dbc.spell( e -> trigger_spell_id() ) -> name_cstr();
+          }
+          else
+          {
+            s << ": (" << e -> trigger_spell_id() << ")";
+          }
+        }
+        break;
+      case A_PERIODIC_TRIGGER_SPELL:
+        if ( e -> trigger_spell_id() )
+        {
+          if ( dbc.spell( e -> trigger_spell_id() ) != spell_data_t::nil() )
+          {
+            s << ": " << dbc.spell( e -> trigger_spell_id() ) -> name_cstr();
+            if ( e -> period() != timespan_t::zero() )
+              s << " every " << e -> period().total_seconds() << " seconds";
+          }
           else
             s << ": (" << e -> trigger_spell_id() << ")";
         }
         break;
+      case A_ADD_FLAT_MODIFIER:
+      case A_ADD_PCT_MODIFIER:
+      case A_ADD_PCT_LABEL_MODIFIER:
+        s << ": " << map_string( _property_type_strings, e -> misc_value1() );
+        break;
       default:
         break;
     }
-  }
-  else
-    s << "Unknown effect type";
-  s << " (" << e -> type() << ")";
-
-  if ( e -> subtype() > 0 )
-  {
-    if (  e -> subtype() < static_cast< int >( sizeof( _effect_subtype_strings ) / sizeof( const char* ) ) &&
-          _effect_subtype_strings[ e -> subtype() ] != nullptr )
-    {
-      s << " | " << _effect_subtype_strings[ e -> subtype() ];
-      switch ( e -> subtype() )
-      {
-        case A_PERIODIC_DAMAGE:
-          s << ": " << util::school_type_string( spell -> get_school_type() );
-          if ( e -> period() != timespan_t::zero() )
-            s << " every " << e -> period().total_seconds() << " seconds";
-          break;
-        case A_PERIODIC_HEAL:
-        case A_PERIODIC_ENERGIZE:
-        case A_PERIODIC_DUMMY:
-        case A_OBS_MOD_HEALTH:
-          if ( e -> period() != timespan_t::zero() )
-            s << ": every " << e -> period().total_seconds() << " seconds";
-          break;
-        case A_PROC_TRIGGER_SPELL:
-          if ( e -> trigger_spell_id() )
-          {
-            if ( dbc.spell( e -> trigger_spell_id() ) != spell_data_t::nil() )
-            {
-              s << ": " << dbc.spell( e -> trigger_spell_id() ) -> name_cstr();
-            }
-            else
-            {
-              s << ": (" << e -> trigger_spell_id() << ")";
-            }
-          }
-          break;
-        case A_PERIODIC_TRIGGER_SPELL:
-          if ( e -> trigger_spell_id() )
-          {
-            if ( dbc.spell( e -> trigger_spell_id() ) != spell_data_t::nil() )
-            {
-              s << ": " << dbc.spell( e -> trigger_spell_id() ) -> name_cstr();
-              if ( e -> period() != timespan_t::zero() )
-                s << " every " << e -> period().total_seconds() << " seconds";
-            }
-            else
-              s << ": (" << e -> trigger_spell_id() << ")";
-          }
-          break;
-        case A_ADD_FLAT_MODIFIER:
-        case A_ADD_PCT_MODIFIER:
-          if ( e -> misc_value1() < static_cast< int >( sizeof( _property_type_strings ) / sizeof( const char* ) ) &&
-               _property_type_strings[ e -> misc_value1() ] != nullptr )
-            s << ": " << _property_type_strings[ e -> misc_value1() ];
-          break;
-        default:
-          break;
-      }
-    }
-    else
-      s << " | Unknown effect sub type";
-
-    s << " (" << e -> subtype() << ")";
   }
 
   s << std::endl;
@@ -751,8 +850,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
 
   if ( e -> misc_value2() != 0 )
   {
-    // Not really .. old enum
-    if ( e -> subtype() == A_HASTE_RANGED )
+    if ( e -> subtype() == A_ADD_PCT_LABEL_MODIFIER )
     {
       snprintf( tmp_buffer, sizeof( tmp_buffer ), "%d (Label)", e -> misc_value2() );
     }
@@ -792,15 +890,16 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
     s << " | Target: ";
     if ( e -> target_1() && ! e -> target_2() )
     {
-      s << targeting_str( e -> target_1() );
+      s << map_string( _targeting_strings, e -> target_1() );
     }
     else if ( ! e -> target_1() && e -> target_2() )
     {
-      s << "[" << targeting_str( e -> target_2() ) << "]";
+      s << "[" << map_string( _targeting_strings, e -> target_2() ) << "]";
     }
     else
     {
-      s << targeting_str( e -> target_1() ) << " -> " << targeting_str( e -> target_2() );
+      s << map_string( _targeting_strings, e -> target_1() ) << " -> "
+        << map_string( _targeting_strings, e -> target_2() );
     }
   }
 
@@ -816,6 +915,30 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
       if ( i < end - 1 )
         s << ", ";
     }
+    s << std::endl;
+  }
+
+  if ( e -> type() == E_APPLY_AURA && e -> subtype() == A_ADD_PCT_LABEL_MODIFIER )
+  {
+    auto affected_spells = dbc.spells_by_label( e -> misc_value2() );
+    s << "                   Affected Spells (Label): ";
+    for ( size_t i = 0, end = affected_spells.size(); i < end; i++ )
+    {
+      s << affected_spells[ i ] -> name_cstr() << " (" << affected_spells[ i ] -> id() << ")";
+      if ( i < end - 1 )
+        s << ", ";
+    }
+    s << std::endl;
+  }
+
+  if ( e -> type() == E_APPLY_AURA && e -> subtype() == A_HASTED_CATEGORY )
+  {
+    auto affected_spells = dbc.spells_by_category( e -> misc_value1() );
+    s << "                   Affected Spells (Category): ";
+    s << concatenate<spell_data_t>( affected_spells,
+        []( std::stringstream& s, const spell_data_t* spell ) {
+          s << spell -> name_cstr() << " (" << spell -> id() << ")";
+        } );
     s << std::endl;
   }
 
@@ -940,11 +1063,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
       s << " ";
     }
 
-    if ( ( pd -> type() + POWER_OFFSET ) < static_cast< int >( sizeof( _resource_strings ) / sizeof( const char* ) ) &&
-        _resource_strings[ pd -> type() + POWER_OFFSET ] != nullptr )
-      s << _resource_strings[ pd -> type() + POWER_OFFSET ];
-    else
-      s << "Unknown (" << pd -> type() << ")";
+    s << map_string( _resource_strings, pd -> raw_type() );
 
     if ( pd -> cost_per_tick() != 0 )
     {
@@ -955,15 +1074,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
       else
         s << pd -> cost_per_tick();
 
-      s << " ";
-
-      if ( ( pd -> type() + POWER_OFFSET ) < static_cast< int >( sizeof( _resource_strings ) / sizeof( const char* ) ) &&
-          _resource_strings[ pd -> type() + POWER_OFFSET ] != nullptr )
-        s << _resource_strings[ pd -> type() + POWER_OFFSET ];
-      else
-        s << "Unknown (" << pd -> type() << ")";
-
-      s << " per second or tick";
+      s << " " << map_string( _resource_strings, pd -> raw_type() ) << " per tick";
     }
 
     s << " (id=" << pd -> id() << ")";
@@ -1052,18 +1163,53 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
   }
 
   if ( spell -> category() > 0 )
-    s << "Category         : " << spell -> category() << std::endl;
+  {
+    s << "Category         : " << spell -> category();
+    auto affecting_effects = dbc.effect_categories_affecting_spell( spell );
+    if ( affecting_effects.size() > 0 )
+    {
+      s << ": ";
+      s << concatenate<spelleffect_data_t>( affecting_effects,
+        []( std::stringstream& s, const spelleffect_data_t* e ) {
+          s << e -> spell() -> name_cstr() << " (" << e -> spell() -> id() << " effect#" << ( e -> index() + 1 ) << ")";
+        } );
+    }
+    s << std::endl;
+  }
 
   if ( spell -> label_count() > 0 )
   {
     s << "Labels           : ";
     for ( size_t i = 1, end = spell -> label_count(); i <= end; ++i )
     {
-      s << spell -> labelN( i );
+      auto label = spell -> labelN( i );
+      auto affecting_effects = dbc.effect_labels_affecting_label( label );
 
-      if ( i < end )
+      if ( i > 1 )
       {
-        s << ", ";
+        if ( affecting_effects.size() == 0 )
+        {
+          if ( i < end )
+          {
+            s << ", ";
+          }
+        }
+        else
+        {
+          s << std::endl;
+          s << "                 : ";
+        }
+      }
+
+      s << label;
+
+      if ( affecting_effects.size() > 0 )
+      {
+        s << ": " << concatenate<spelleffect_data_t>( affecting_effects,
+          []( std::stringstream& s, const spelleffect_data_t* e ) {
+            s << e -> spell() -> name_cstr() << " (" << e -> spell() -> id()
+              << " effect#" << ( e -> index() + 1 ) << ")";
+          } );
       }
     }
     s << std::endl;
@@ -1285,8 +1431,8 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
 
   if ( spell -> class_family() > 0 )
   {
-    std::vector< const spelleffect_data_t* > affecting_effects = dbc.effects_affecting_spell( spell );
-    std::vector< unsigned > spell_ids;
+    auto affecting_effects = dbc.effects_affecting_spell( spell );
+    std::vector<unsigned> spell_ids;
     if ( affecting_effects.size() > 0 )
     {
       s << "Affecting spells : ";
@@ -1297,7 +1443,8 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
         if ( std::find( spell_ids.begin(), spell_ids.end(), effect -> spell() -> id() ) != spell_ids.end() )
           continue;
 
-        s << effect -> spell() -> name_cstr() << " (" << effect -> spell() -> id() << ")";
+        s << effect -> spell() -> name_cstr() << " (" << effect -> spell() -> id() << " effect#"
+          << ( effect -> index() + 1 ) << ")";
         if ( i < end - 1 )
           s << ", ";
 
@@ -1450,86 +1597,78 @@ void spell_info::effect_to_xml( const dbc_t& dbc,
   node -> add_parm( "id", e -> id() );
   node -> add_parm( "type", e -> type() );
 
-  if ( e -> type() < static_cast< int >( sizeof( _effect_type_strings ) / sizeof( const char* ) ) &&
-       _effect_type_strings[ e -> type() ] != nullptr )
+  if ( map_has_string( _effect_type_strings, e -> raw_type() ) )
   {
-    node -> add_parm( "type_text", _effect_type_strings[ e -> type() ] );
-    // Put some nice handling on some effect types
-    switch ( e -> type() )
+    node -> add_parm( "type_text", map_string( _effect_type_strings, e -> raw_type() ) );
+  }
+
+  // Put some nice handling on some effect types
+  switch ( e -> type() )
+  {
+    case E_SCHOOL_DAMAGE:
+      node -> add_parm( "school", spell -> get_school_type() );
+      node -> add_parm( "school_text", util::school_type_string( spell -> get_school_type() ) );
+      break;
+    case E_TRIGGER_SPELL:
+    case E_TRIGGER_SPELL_WITH_VALUE:
+      if ( e -> trigger_spell_id() )
+      {
+        if ( dbc.spell( e -> trigger_spell_id() ) != spell_data_t::nil() )
+          node -> add_parm( "trigger_spell_name", dbc.spell( e -> trigger_spell_id() ) -> name_cstr() );
+      }
+      break;
+    default:
+      break;
+  }
+
+  node -> add_parm( "sub_type", e -> subtype() );
+
+  if ( e -> subtype() > 0 )
+  {
+    node -> add_parm( "sub_type_text", map_string( _effect_subtype_strings, e -> raw_subtype() ) );
+
+    switch ( e -> subtype() )
     {
-      case E_SCHOOL_DAMAGE:
+      case A_PERIODIC_DAMAGE:
         node -> add_parm( "school", spell -> get_school_type() );
         node -> add_parm( "school_text", util::school_type_string( spell -> get_school_type() ) );
+        if ( e -> period() != timespan_t::zero() )
+          node -> add_parm( "period", e -> period().total_seconds() );
         break;
-      case E_TRIGGER_SPELL:
-      case E_TRIGGER_SPELL_WITH_VALUE:
+      case A_PERIODIC_ENERGIZE:
+      case A_PERIODIC_DUMMY:
+        if ( e -> period() != timespan_t::zero() )
+          node -> add_parm( "period", e -> period().total_seconds() );
+        break;
+      case A_PROC_TRIGGER_SPELL:
         if ( e -> trigger_spell_id() )
         {
           if ( dbc.spell( e -> trigger_spell_id() ) != spell_data_t::nil() )
             node -> add_parm( "trigger_spell_name", dbc.spell( e -> trigger_spell_id() ) -> name_cstr() );
         }
         break;
+      case A_PERIODIC_TRIGGER_SPELL:
+        if ( e -> trigger_spell_id() )
+        {
+          if ( dbc.spell( e -> trigger_spell_id() ) != spell_data_t::nil() )
+          {
+            node -> add_parm( "trigger_spell_name", dbc.spell( e -> trigger_spell_id() ) -> name_cstr() );
+            if ( e -> period() != timespan_t::zero() )
+              node -> add_parm( "period", e -> period().total_seconds() );
+          }
+        }
+        break;
+      case A_ADD_FLAT_MODIFIER:
+      case A_ADD_PCT_MODIFIER:
+        node -> add_parm( "modifier", e -> misc_value1() );
+        if ( map_has_string( _property_type_strings, e -> misc_value1() ) )
+        {
+          node -> add_parm( "modifier_text", map_string( _property_type_strings, e -> misc_value1() ) );
+        }
+        break;
       default:
         break;
     }
-  }
-  else
-    node -> add_parm( "type_text", "Unknown" );
-
-  node -> add_parm( "sub_type", e -> subtype() );
-
-  if ( e -> subtype() > 0 )
-  {
-    if (  e -> subtype() < static_cast< int >( sizeof( _effect_subtype_strings ) / sizeof( const char* ) ) &&
-          _effect_subtype_strings[ e -> subtype() ] != nullptr )
-    {
-      node -> add_parm( "sub_type_text", _effect_subtype_strings[ e -> subtype() ] );
-      switch ( e -> subtype() )
-      {
-        case A_PERIODIC_DAMAGE:
-          node -> add_parm( "school", spell -> get_school_type() );
-          node -> add_parm( "school_text", util::school_type_string( spell -> get_school_type() ) );
-          if ( e -> period() != timespan_t::zero() )
-            node -> add_parm( "period", e -> period().total_seconds() );
-          break;
-        case A_PERIODIC_ENERGIZE:
-        case A_PERIODIC_DUMMY:
-          if ( e -> period() != timespan_t::zero() )
-            node -> add_parm( "period", e -> period().total_seconds() );
-          break;
-        case A_PROC_TRIGGER_SPELL:
-          if ( e -> trigger_spell_id() )
-          {
-            if ( dbc.spell( e -> trigger_spell_id() ) != spell_data_t::nil() )
-              node -> add_parm( "trigger_spell_name", dbc.spell( e -> trigger_spell_id() ) -> name_cstr() );
-          }
-          break;
-        case A_PERIODIC_TRIGGER_SPELL:
-          if ( e -> trigger_spell_id() )
-          {
-            if ( dbc.spell( e -> trigger_spell_id() ) != spell_data_t::nil() )
-            {
-              node -> add_parm( "trigger_spell_name", dbc.spell( e -> trigger_spell_id() ) -> name_cstr() );
-              if ( e -> period() != timespan_t::zero() )
-                node -> add_parm( "period", e -> period().total_seconds() );
-            }
-          }
-          break;
-        case A_ADD_FLAT_MODIFIER:
-        case A_ADD_PCT_MODIFIER:
-          if ( e -> misc_value1() < static_cast< int >( sizeof( _property_type_strings ) / sizeof( const char* ) ) &&
-               _property_type_strings[ e -> misc_value1() ] != nullptr )
-          {
-            node -> add_parm( "modifier", e -> misc_value1() );
-            node -> add_parm( "modifier_text", _property_type_strings[ e -> misc_value1() ] );
-          }
-          break;
-        default:
-          break;
-      }
-    }
-    else
-      node -> add_parm( "sub_type_text", "Unknown" );
   }
   node -> add_parm( "base_value", e -> base_value() );
 
@@ -1707,9 +1846,10 @@ void spell_info::to_xml( const dbc_t& dbc, const spell_data_t* spell, xml_node_t
     else
       resource_node -> add_parm( "cost", spell -> cost( pd -> type() ) );
 
-    if ( ( pd -> type() + POWER_OFFSET ) < static_cast< int >( sizeof( _resource_strings ) / sizeof( const char* ) ) &&
-         _resource_strings[ pd -> type() + POWER_OFFSET ] != nullptr )
-      resource_node -> add_parm( "type_name", _resource_strings[ pd -> type() + POWER_OFFSET ] );
+    if ( map_has_string( _resource_strings, pd -> raw_type() ) )
+    {
+      resource_node -> add_parm( "type_name", map_string( _resource_strings, pd -> raw_type() ) );
+    }
 
     if ( pd -> type() == POWER_MANA )
     {

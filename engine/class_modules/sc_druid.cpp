@@ -345,6 +345,7 @@ public:
     buff_t* warrior_of_elune;
     buff_t* balance_tier18_4pc; // T18 4P Balance
     buff_t* wax_and_wane;
+    haste_buff_t* astral_acceleration;
 
     // Feral
     buff_t* ashamanes_energy;
@@ -405,6 +406,7 @@ public:
     cooldown_t* growl;
     cooldown_t* incarnation;
     cooldown_t* mangle;
+    cooldown_t* thrash_bear;
     cooldown_t* maul;
     cooldown_t* moon_cd; // New / Half / Full Moon
     cooldown_t* wod_pvp_4pc_melee;
@@ -776,6 +778,7 @@ public:
     cooldown.growl               = get_cooldown( "growl"               );
     cooldown.incarnation         = get_cooldown( "incarnation"         );
     cooldown.mangle              = get_cooldown( "mangle"              );
+    cooldown.thrash_bear         = get_cooldown( "thrash_bear"         );
     cooldown.maul                = get_cooldown( "maul"                );
     cooldown.moon_cd             = get_cooldown( "moon_cd"             );
     cooldown.wod_pvp_4pc_melee   = get_cooldown( "wod_pvp_4pc_melee"   );
@@ -792,6 +795,7 @@ public:
     regen_type = REGEN_DYNAMIC;
     regen_caches[ CACHE_HASTE ] = true;
     regen_caches[ CACHE_ATTACK_HASTE ] = true;
+
   }
 
   virtual           ~druid_t();
@@ -1456,7 +1460,7 @@ public:
     ab::cooldown -> hasted = ab::data().affected_by( player -> spec.druid -> effectN( 3 ) );
 
     gore_chance += p() -> artifact.bear_hug.percent();
-    gore_chance += p() -> sets.set( DRUID_GUARDIAN, T19, B2 ) -> effectN( 1 ).percent();
+    gore_chance += p() -> sets -> set( DRUID_GUARDIAN, T19, B2 ) -> effectN( 1 ).percent();
 
     if ( balance_damage )
       ab::spell_power_mod.direct *= 1.0 + player -> spec.balance -> effectN( 1 ).percent();
@@ -1757,8 +1761,8 @@ public:
     // 5.25 PPM via http://us.battle.net/wow/en/forum/topic/20747154889#1
     double chance = ab::weapon -> proc_chance_on_swing( 5.25 );
 
-    if ( ab::p() -> sets.has_set_bonus( DRUID_FERAL, T18, B2 ) )
-      chance *= 1.0 + ab::p() -> sets.set( DRUID_FERAL, T18, B2 ) -> effectN( 1 ).percent();
+    if ( ab::p() -> sets -> has_set_bonus( DRUID_FERAL, T18, B2 ) )
+      chance *= 1.0 + ab::p() -> sets -> set( DRUID_FERAL, T18, B2 ) -> effectN( 1 ).percent();
 
     int active = ab::p() -> buff.clearcasting -> check();
 
@@ -1877,7 +1881,7 @@ public:
       incarnation( data().affected_by( p -> talent.incarnation_moonkin -> effectN( 4 ) ) ),
       celestial_alignment( data().affected_by( p -> spec.celestial_alignment -> effectN( 3 ) ) ),
       blessing_of_elune( data().affected_by( p -> spec.blessing_of_elune -> effectN( 1 ) ) ),
-      stellar_empowerment( data().affected_by( p -> spec.stellar_empowerment -> effectN( 1 ) ) )
+      stellar_empowerment( false )
   {
     parse_options( options );
   }
@@ -1896,6 +1900,7 @@ public:
 
       if ( incarnation && p() -> buff.incarnation_moonkin -> check() )
         e *= 1.0 + p() -> talent.incarnation_moonkin -> effectN( 4 ).percent();
+
     }
 
     return e;
@@ -1915,16 +1920,16 @@ public:
     return ab;
   }
 
-  double composite_target_multiplier( player_t* t ) const override
+  virtual double composite_ta_multiplier(const action_state_t* s) const override
   {
-    double tm = ab::composite_target_multiplier( t );
+     double tm = base_t::composite_ta_multiplier(s);
 
-    if ( stellar_empowerment && td( t ) -> debuff.stellar_empowerment -> up() )
-    {
-      tm *= 1.0 + composite_stellar_empowerment( t );
-    }
+     if ( stellar_empowerment && td (s->target ) -> debuff.stellar_empowerment -> up() )
+     {
+        tm *= 1.0 + composite_stellar_empowerment( s -> target );
+     }
 
-    return tm;
+     return tm;
   }
 
   virtual void execute() override
@@ -1963,7 +1968,7 @@ public:
 
   virtual void trigger_balance_tier18_2pc()
   {
-    if ( ! p() -> sets.has_set_bonus( DRUID_BALANCE, T18, B2 ) )
+    if ( ! p() -> sets -> has_set_bonus( DRUID_BALANCE, T18, B2 ) )
       return;
 
     if ( ! p() -> rppm.balance_tier18_2pc -> trigger() )
@@ -2108,6 +2113,7 @@ struct moonfire_t : public druid_spell_t
         galactic_guardian_dd_multiplier = p->find_spell(213708)->effectN(3).percent();
       }
 
+      stellar_empowerment = true;
       may_miss = false;
       triggers_galactic_guardian = false;
       benefits_from_galactic_guardian = true;
@@ -2581,10 +2587,10 @@ public:
       p() -> gain.clearcasting -> add( RESOURCE_ENERGY, eff_cost );
 
       // Feral tier18 4pc occurs before the base cost is consumed.
-      if ( p() -> sets.has_set_bonus( DRUID_FERAL, T18, B4 ) )
+      if ( p() -> sets -> has_set_bonus( DRUID_FERAL, T18, B4 ) )
       {
         p() -> resource_gain( RESOURCE_ENERGY,
-          base_t::cost() * p() -> sets.set( DRUID_FERAL, T18, B4 ) -> effectN( 1 ).percent(),
+          base_t::cost() * p() -> sets -> set( DRUID_FERAL, T18, B4 ) -> effectN( 1 ).percent(),
           p() -> gain.feral_tier18_4pc );
       }
     }
@@ -2627,7 +2633,7 @@ public:
   {
     double tc = base_t::composite_target_crit_chance( t );
 
-    if ( special && t -> debuffs.bleeding -> check() )
+    if ( special && t -> debuffs.bleeding && t -> debuffs.bleeding -> check() )
       tc += p() -> talent.blood_scent -> effectN( 1 ).percent();
 
     return tc;
@@ -2705,7 +2711,7 @@ public:
     if ( trigger_tier17_2pc )
     {
       p() -> resource_gain( RESOURCE_ENERGY,
-        p() -> sets.set( DRUID_FERAL, T17, B2 ) -> effectN( 1 ).base_value(),
+        p() -> sets -> set( DRUID_FERAL, T17, B2 ) -> effectN( 1 ).base_value(),
         p() -> gain.feral_tier17_2pc );
     }
   }
@@ -3064,7 +3070,7 @@ struct berserk_t : public cat_attack_t
     p() -> buff.berserk -> trigger();
     p() -> buff.feral_instinct -> trigger();
 
-    if ( p() -> sets.has_set_bonus( DRUID_FERAL, T17, B4 ) )
+    if ( p() -> sets -> has_set_bonus( DRUID_FERAL, T17, B4 ) )
       p() -> buff.feral_tier17_4pc -> trigger();
   }
 
@@ -3110,10 +3116,10 @@ struct brutal_slash_t : public cat_attack_t
   {
      double tm = cat_attack_t::composite_target_multiplier(t);
 
-     if (!t->bugs && p()->sets.has_set_bonus(DRUID_FERAL, T19, B4)) //currently bugged in-game. (2017-03-07)
+     if (!t->bugs && p()->sets -> has_set_bonus(DRUID_FERAL, T19, B4)) //currently bugged in-game. (2017-03-07)
      {
         tm *= 1.0 + td(t)->feral_tier19_4pc_bleeds() *
-           p()->sets.set(DRUID_FERAL, T19, B4)->effectN(1).percent();
+           p()->sets -> set(DRUID_FERAL, T19, B4)->effectN(1).percent();
      }
 
      return tm;
@@ -3229,7 +3235,7 @@ struct gushing_wound_t : public residual_action::residual_periodic_action_t<cat_
   {
     background = dual = proc = true;
     may_miss = may_dodge = may_parry = false;
-    trigger_tier17_2pc = p -> sets.has_set_bonus( DRUID_FERAL, T17, B2 );
+    trigger_tier17_2pc = p -> sets -> has_set_bonus( DRUID_FERAL, T17, B2 );
   }
 };
 
@@ -3389,7 +3395,7 @@ struct rake_t : public cat_attack_t
       dot_duration   *= 1.0 + p -> talent.jagged_wounds -> effectN( 2 ).percent();
       
       // Direct damage modifiers go in rake_t!
-      trigger_tier17_2pc = p -> sets.has_set_bonus( DRUID_FERAL, T17, B2 );
+      trigger_tier17_2pc = p -> sets -> has_set_bonus( DRUID_FERAL, T17, B2 );
       base_multiplier *= 1.0 + p -> artifact.tear_the_flesh.percent();
     }
 
@@ -3418,7 +3424,7 @@ struct rake_t : public cat_attack_t
     }
 
     // Periodic damage modifiers go in rake_bleed_t!
-    trigger_tier17_2pc = p -> sets.has_set_bonus( DRUID_FERAL, T17, B2 );
+    trigger_tier17_2pc = p -> sets -> has_set_bonus( DRUID_FERAL, T17, B2 );
     base_multiplier *= 1.0 + p -> artifact.tear_the_flesh.percent();
   }
 
@@ -3455,19 +3461,19 @@ struct rip_t : public cat_attack_t
     special      = true;
     may_crit     = false;
 
-    trigger_tier17_2pc = p -> sets.has_set_bonus( DRUID_FERAL, T17, B2 );
+    trigger_tier17_2pc = p -> sets -> has_set_bonus( DRUID_FERAL, T17, B2 );
 
     base_tick_time *= 1.0 + p -> talent.jagged_wounds -> effectN( 1 ).percent();
     dot_duration   *= 1.0 + p -> talent.jagged_wounds -> effectN( 2 ).percent();
     base_multiplier *= 1.0 + p -> artifact.razor_fangs.percent();
     
-    if (p->t20_4pc || p->sets.has_set_bonus(DRUID_FERAL, T20, B4))
+    if (p->t20_4pc || p->sets -> has_set_bonus(DRUID_FERAL, T20, B4))
     {
        base_multiplier *= 1.15; //TODO(feral): add spelldata once available
        dot_duration *= 1.333334; // as above
     }
 
-    if (p->t20_2pc || p->sets.has_set_bonus(DRUID_FERAL, T20, B2))
+    if (p->t20_2pc || p->sets -> has_set_bonus(DRUID_FERAL, T20, B2))
     {
        energize_amount = 2; //TODO(feral): Add spelldata once available
        energize_resource = RESOURCE_ENERGY;
@@ -3569,7 +3575,7 @@ struct shred_t : public cat_attack_t
   {
     cat_attack_t::impact( s );
 
-    if ( s -> result == RESULT_CRIT && p() -> sets.has_set_bonus( DRUID_FERAL, PVP, B4 ) )
+    if ( s -> result == RESULT_CRIT && p() -> sets -> has_set_bonus( DRUID_FERAL, PVP, B4 ) )
       td( s -> target ) -> debuff.bloodletting -> trigger(); // Druid module debuff
   }
 
@@ -3577,13 +3583,13 @@ struct shred_t : public cat_attack_t
   {
     double tm = cat_attack_t::composite_target_multiplier( t );
 
-    if ( t -> debuffs.bleeding -> up() )
+    if ( t -> debuffs.bleeding && t -> debuffs.bleeding -> up() )
       tm *= 1.0 + p() -> spec.shred -> effectN( 5 ).percent();
 
-    if ( p() -> sets.has_set_bonus( DRUID_FERAL, T19, B4 ) )
+    if ( p() -> sets -> has_set_bonus( DRUID_FERAL, T19, B4 ) )
     {
       tm *= 1.0 + td( t ) -> feral_tier19_4pc_bleeds() *
-        p() -> sets.set( DRUID_FERAL, T19, B4 ) -> effectN( 1 ).percent();
+        p() -> sets -> set( DRUID_FERAL, T19, B4 ) -> effectN( 1 ).percent();
     }
 
     return tm;
@@ -3651,13 +3657,13 @@ public:
   {
     double tm = cat_attack_t::composite_target_multiplier( t );
 
-    if ( t -> debuffs.bleeding -> up() )
+    if ( t -> debuffs.bleeding && t -> debuffs.bleeding -> up() )
       tm *= 1.0 + data().effectN( 2 ).percent();
 
-    if ( p() -> sets.has_set_bonus( DRUID_FERAL, T19, B4 ) )
+    if ( p() -> sets -> has_set_bonus( DRUID_FERAL, T19, B4 ) )
     {
       tm *= 1.0 + td( t ) -> feral_tier19_4pc_bleeds() *
-        p() -> sets.set( DRUID_FERAL, T19, B4 ) -> effectN( 1 ).percent();
+        p() -> sets -> set( DRUID_FERAL, T19, B4 ) -> effectN( 1 ).percent();
     }
 
     return tm;
@@ -3773,9 +3779,9 @@ struct thrash_cat_t : public cat_attack_t
     aoe = -1;
     spell_power_mod.direct = 0;
 
-    trigger_tier17_2pc = p -> sets.has_set_bonus( DRUID_FERAL, T17, B2 );
+    trigger_tier17_2pc = p -> sets -> has_set_bonus( DRUID_FERAL, T17, B2 );
 
-    if ( p -> sets.has_set_bonus( DRUID_FERAL, T19, B2 ) )
+    if ( p -> sets -> has_set_bonus( DRUID_FERAL, T19, B2 ) )
     {
       // No value in spell data.
       energize_amount = 1;
@@ -3959,7 +3965,7 @@ struct mangle_t : public bear_attack_t
   {
     double tm = bear_attack_t::composite_target_multiplier( t );
 
-    if ( t -> debuffs.bleeding -> check() )
+    if ( t -> debuffs.bleeding && t -> debuffs.bleeding -> check() )
       tm *= 1.0 + bleeding_multiplier;
 
     return tm;
@@ -5319,15 +5325,17 @@ struct incarnation_t : public druid_spell_t
       if ( p() -> buff.incarnation_cat -> check() )
         p() -> regen( time );
     }
-    
+
     // Proxy buff for APL laziness.
     p() -> buff.incarnation_proxy -> trigger( 1, 0, -1.0, spec_buff -> remains() );
 
     if ( p() -> buff.incarnation_bear -> check() )
     {
-      p() -> cooldown.mangle -> reset( false );
-      p() -> cooldown.growl  -> reset( false );
-      p() -> cooldown.maul   -> reset( false );
+      p() -> cooldown.mangle      -> reset( false );
+      p() -> cooldown.thrash_bear -> reset( false );
+      p() -> cooldown.growl       -> reset( false );
+      p() -> cooldown.maul        -> reset( false );
+      
     }
   }
 };
@@ -5474,7 +5482,7 @@ struct lunar_strike_t : public druid_spell_t
 
     natures_balance    = player -> talent.natures_balance -> effectN( 1 ).base_value() * player -> find_spell( 164812 ) -> effectN( 2 ).period();
     
-    base_execute_time *= 1.0 + player -> sets.set( DRUID_BALANCE, T17, B2 ) -> effectN( 1 ).percent();
+    base_execute_time *= 1.0 + player -> sets -> set( DRUID_BALANCE, T17, B2 ) -> effectN( 1 ).percent();
     base_crit         += player -> artifact.dark_side_of_the_moon.percent();
     base_multiplier   *= 1.0 + player -> artifact.skywrath.percent();
   }
@@ -5678,6 +5686,7 @@ struct sunfire_t : public druid_spell_t
       dual = background = true;
       aoe = -1;
       dot_duration += p -> spec.balance_overrides -> effectN( 4 ).time_value();
+      stellar_empowerment = true;
 
       base_multiplier *= 1.0 + p -> artifact.sunfire_burns.percent();
       radius += p -> artifact.sunblind.value();
@@ -5848,13 +5857,13 @@ struct skull_bash_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    if ( p() -> sets.has_set_bonus( DRUID_FERAL, PVP, B2 ) )
+    if ( p() -> sets -> has_set_bonus( DRUID_FERAL, PVP, B2 ) )
       p() -> cooldown.tigers_fury -> reset( false );
   }
 
   bool ready() override
   {
-    if ( ! target -> debuffs.casting -> check() )
+    if ( ! target -> debuffs.casting || ! target -> debuffs.casting -> check() )
       return false;
 
     return druid_spell_t::ready();
@@ -5872,7 +5881,7 @@ struct solar_wrath_t : public druid_spell_t
   {
     natures_balance    = player -> talent.natures_balance -> effectN( 2 ).base_value() * player -> find_spell( 164815 ) -> effectN( 2 ).period();
 
-    base_execute_time *= 1.0 + player -> sets.set( DRUID_BALANCE, T17, B2 ) -> effectN( 1 ).percent();
+    base_execute_time *= 1.0 + player -> sets -> set( DRUID_BALANCE, T17, B2 ) -> effectN( 1 ).percent();
     base_multiplier   *= 1.0 + player -> artifact.skywrath.percent();
     base_multiplier   *= 1.0 + player -> artifact.solar_stabbing.percent();
     energize_amount = player -> spec.astral_power -> effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
@@ -5939,10 +5948,10 @@ struct solar_wrath_t : public druid_spell_t
       }
     }
 
-    if ( p() -> sets.has_set_bonus( DRUID_BALANCE, T17, B4 ) )
+    if ( p() -> sets -> has_set_bonus( DRUID_BALANCE, T17, B4 ) )
     {
       p() -> cooldown.celestial_alignment ->
-        adjust( -p() -> sets.set( DRUID_BALANCE, T17, B4 ) -> effectN( 1 ).time_value() );
+        adjust( -p() -> sets -> set( DRUID_BALANCE, T17, B4 ) -> effectN( 1 ).time_value() );
     }
 
     p() -> buff.solar_empowerment -> decrement();
@@ -6041,6 +6050,9 @@ struct starfall_t : public druid_spell_t
     void execute() override
     {
       druid_spell_t::execute();
+
+      if ( p() -> sets -> has_set_bonus( DRUID_BALANCE, T20, B4 ))
+         p() -> buff.astral_acceleration -> trigger();
 
       // Non-distance targeting: If we hit more than 1 target, simply trigger the echo as an AoE.
       if ( p() -> artifact.echoing_stars.rank() && ! echoing_stars &&
@@ -6215,14 +6227,28 @@ struct starsurge_t : public druid_spell_t
     return am;
   }
 
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+     double cdbm = druid_spell_t::composite_crit_damage_bonus_multiplier();
+
+     if ( p() -> sets -> has_set_bonus( DRUID_BALANCE, T20, B2 ))
+     {
+        cdbm += p() -> sets -> set( DRUID_BALANCE, T20, B2 ) -> effectN(2).percent();
+
+     }
+     
+
+     return cdbm;
+  }
+
   double composite_target_multiplier( player_t* target ) const override
   {
     double tm = druid_spell_t::composite_target_multiplier( target );
-    if ( p()->sets.has_set_bonus( DRUID_BALANCE, T19, B4 ) )
+    if ( p()->sets -> has_set_bonus( DRUID_BALANCE, T19, B4 ) )
     {
       bool apply = td( target )->dots.moonfire->is_ticking() & td(target)->dots.sunfire->is_ticking();
       if ( apply )
-        tm *= 1.0 + p()->sets.set( DRUID_BALANCE, T19, B4 )->effectN( 1 ).percent();
+        tm *= 1.0 + p()->sets -> set( DRUID_BALANCE, T19, B4 )->effectN( 1 ).percent();
     }
     return tm;
   }
@@ -6231,6 +6257,9 @@ struct starsurge_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
+    if ( p() -> sets -> has_set_bonus( DRUID_BALANCE, T20, B4 ))
+       p() -> buff.astral_acceleration -> trigger();
+    
     if ( hit_any_target )
     {
       // Dec 3 2015: Starsurge must hit to grant empowerments, but grants them on cast not impact.
@@ -6620,7 +6649,7 @@ void druid_t::create_pets()
 {
   player_t::create_pets();
 
-  if ( sets.has_set_bonus( DRUID_BALANCE, T18, B2 ) )
+  if ( sets -> has_set_bonus( DRUID_BALANCE, T18, B2 ) )
   {
     for ( pet_t*& pet : pet_fey_moonwing )
       pet = new pets::fey_moonwing_t( sim, this );
@@ -6659,7 +6688,7 @@ void druid_t::init_spells()
   spec.moonkin_form               = find_specialization_spell( "Moonkin Form" );
   spec.starfall                   = find_specialization_spell( "Starfall" );
   spec.stellar_empowerment        = spec.starfall -> ok() ? find_spell( 197637 ) : spell_data_t::not_found();
-  spec.balance_tier19_2pc         = sets.has_set_bonus( DRUID_BALANCE, T19, B2 ) ? find_spell( 211089 ) : spell_data_t::not_found();
+  spec.balance_tier19_2pc         = sets -> has_set_bonus( DRUID_BALANCE, T19, B2 ) ? find_spell( 211089 ) : spell_data_t::not_found();
   spec.starsurge_2                = find_specialization_spell( 231021 );
   spec.moonkin_2                  = find_specialization_spell( 231042 );
   spec.starfall_2                 = find_specialization_spell( 231049 );
@@ -6671,7 +6700,7 @@ void druid_t::init_spells()
   spec.feral                      = find_specialization_spell( "Feral Druid" );
   spec.feral_overrides            = specialization() == DRUID_FERAL ? find_spell( 197692 ) : spell_data_t::not_found();
   spec.feral_overrides2           = specialization() == DRUID_FERAL ? find_spell( 106733 ) : spell_data_t::not_found();
-  spec.gushing_wound              = sets.has_set_bonus( DRUID_FERAL, T17, B4 ) ? find_spell( 165432 ) : spell_data_t::not_found();
+  spec.gushing_wound              = sets -> has_set_bonus( DRUID_FERAL, T17, B4 ) ? find_spell( 165432 ) : spell_data_t::not_found();
   spec.nurturing_instinct         = find_specialization_spell( "Nurturing Instinct" );
   spec.predatory_swiftness        = find_specialization_spell( "Predatory Swiftness" );
   spec.primal_fury                = find_spell( 16953 );
@@ -6899,7 +6928,7 @@ void druid_t::init_spells()
     active.cenarion_ward_hot  = new heals::cenarion_ward_hot_t( this );
   if ( spec.yseras_gift )
     active.yseras_gift        = new heals::yseras_gift_t( this );
-  if ( sets.has_set_bonus( DRUID_FERAL, T17, B4 ) )
+  if ( sets -> has_set_bonus( DRUID_FERAL, T17, B4 ) )
     active.gushing_wound      = new cat_attacks::gushing_wound_t( this );
   if ( talent.brambles -> ok() )
   {
@@ -6939,9 +6968,10 @@ void druid_t::init_base_stats()
   // Resources
   resources.base[ RESOURCE_RAGE         ] = 100;
   resources.base[ RESOURCE_COMBO_POINT  ] = 5;
-  resources.base[ RESOURCE_ASTRAL_POWER ] = 100;
+  resources.base[ RESOURCE_ASTRAL_POWER ] = 100
+      + sets -> set( DRUID_BALANCE, T20, B2 ) -> effectN( 1 ).resource( RESOURCE_ASTRAL_POWER );
   resources.base[ RESOURCE_ENERGY       ] = 100
-      + sets.set( DRUID_FERAL, T18, B2 ) -> effectN( 2 ).resource( RESOURCE_ENERGY )
+      + sets -> set( DRUID_FERAL, T18, B2 ) -> effectN( 2 ).resource( RESOURCE_ENERGY )
       + talent.moment_of_clarity -> effectN( 3 ).percent();
 
   resources.active_resource[ RESOURCE_ASTRAL_POWER ] = specialization() == DRUID_BALANCE;
@@ -7091,6 +7121,14 @@ void druid_t::create_buffs()
   buff.wax_and_wane          = buff_creator_t( this, "wax_and_wane", find_spell( 239952 ) )
                                 .default_value(  find_spell( 239952 ) -> effectN(1).percent() );
 
+  buff.astral_acceleration   = haste_buff_creator_t( this, "astral_acceleration", sets -> set(DRUID_BALANCE, T20, B4) )
+                                .cd( timespan_t::zero() )
+                                .default_value( sets -> set( DRUID_BALANCE, T20, B4 ) -> effectN(1).percent() )
+                                .max_stack( 5 )
+                                .refresh_behavior( BUFF_REFRESH_DISABLED )
+                                .duration( timespan_t::from_seconds( 15.0 ) );
+     
+
   // Feral
 
   buff.ashamanes_energy      = buff_creator_t( this, "ashamanes_energy", find_spell( 210583 ) )
@@ -7208,7 +7246,7 @@ void druid_t::create_buffs()
 
   buff.balance_tier18_4pc    = buff_creator_t( this, "faerie_blessing", find_spell( 188086 ) )
                                .default_value( find_spell( 188086 ) -> effectN( 1 ).percent() )
-                               .chance( sets.has_set_bonus( DRUID_BALANCE, T18, B4 ) )
+                               .chance( sets -> has_set_bonus( DRUID_BALANCE, T18, B4 ) )
                                .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.feral_tier17_4pc      = buff_creator_t( this, "feral_tier17_4pc", find_spell( 166639 ) )
@@ -7218,9 +7256,9 @@ void druid_t::create_buffs()
                                .default_value( find_spell( 177969 ) -> effectN( 1 ).percent() );
 
   buff.guardian_tier19_4pc   = buff_creator_t( this, "natural_defenses",
-                                 sets.set( DRUID_GUARDIAN, T19, B4 ) -> effectN( 1 ).trigger() )
-                               .trigger_spell( sets.set( DRUID_GUARDIAN, T19, B4 ) )
-                               .default_value( sets.set( DRUID_GUARDIAN, T19, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() / 1000.0 );
+                                 sets -> set( DRUID_GUARDIAN, T19, B4 ) -> effectN( 1 ).trigger() )
+                               .trigger_spell( sets -> set( DRUID_GUARDIAN, T19, B4 ) )
+                               .default_value( sets -> set( DRUID_GUARDIAN, T19, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() / 1000.0 );
 }
 
 // ALL Spec Pre-Combat Action Priority List =================================
@@ -7327,6 +7365,16 @@ void druid_t::apl_precombat()
   // Feral: Bloodtalons
   if ( specialization() == DRUID_FERAL && true_level >= 100 )
     precombat -> add_action( this, "Regrowth", "if=talent.bloodtalons.enabled" );
+
+  // Feral: Rotational control variables
+  if ( specialization() == DRUID_FERAL )
+  {
+     precombat -> add_action( "variable,name=rake_refresh,op=set,value=7", "Rake_refresh controls how aggresively to refresh rake. Lower means less aggresively." );
+     precombat -> add_action( "variable,name=rake_refresh,op=set,value=3,if=equipped.ailuro_pouncers|talent.soul_of_the_forest.enabled" );
+     precombat -> add_action( "variable,name=pooling,op=set,value=3", "Pooling controlls how aggresively to pool. Lower means more aggresively" );
+     precombat -> add_action( "variable,name=pooling,op=set,value=10,if=equipped.chatoyant_signet" );
+     precombat -> add_action( "variable,name=pooling,op=set,value=3,if=equipped.the_wildshapers_clutch&!equipped.chatoyant_signet" );
+  }
 
   // Forms
   if ( ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
@@ -7452,14 +7500,14 @@ void druid_t::apl_feral()
   // Opener =================================================================
   opener ->add_action( this, "Rake", "if=buff.prowl.up" );
   opener ->add_talent( this, "Savage Roar", "if=buff.savage_roar.down" );
-  opener ->add_action( this, "Berserk", "if=buff.savage_roar.up" );
-  opener ->add_action( this, "Tiger's Fury", "if=buff.berserk.up" );
-  opener ->add_action( this, artifact.ashamanes_frenzy, "frenzy", "if=buff.bloodtalons.up" );
-  opener ->add_action( this, "Regrowth", "if=combo_points=5&buff.bloodtalons.down" );
-  opener ->add_action( this, "Rip", "if=combo_points=5&buff.bloodtalons.up" );
-  if ( sets.has_set_bonus( DRUID_FERAL, T19, B4 ))
-   opener -> add_action( "thrash_cat,if=combo_points<5&!ticking" );
-  opener ->add_action( this, "Shred", "if=combo_points<5&buff.savage_roar.up" );
+  opener ->add_action( this, "Berserk", "if=buff.savage_roar.up&!equipped.draught_of_souls" );
+  opener ->add_action( this, "Tiger's Fury", "if=buff.berserk.up&!equipped.draught_of_souls" );
+  opener ->add_action( this, artifact.ashamanes_frenzy, "frenzy", "if=buff.bloodtalons.up&!equipped.draught_of_souls" );
+  opener ->add_action( this, "Regrowth", "if=combo_points=5&buff.bloodtalons.down&buff.predatory_swiftness.up&!equipped.draught_of_souls" );
+  opener ->add_action( this, "Rip", "if=combo_points=5&buff.bloodtalons.up&!equipped.draught_of_souls" );
+  if ( sets -> has_set_bonus( DRUID_FERAL, T19, B4 ))
+   opener -> add_action( "thrash_cat,if=combo_points<5&!ticking&!equipped.draught_of_souls" );
+  opener ->add_action( this, "Shred", "if=combo_points<5&buff.savage_roar.up&!equipped.draught_of_souls" );
 
   // Main List ==============================================================
   
@@ -7490,6 +7538,7 @@ void druid_t::apl_feral()
          line += ",if=(buff.tigers_fury.up|target.time_to_die<45)";
       else if (items[i].name_str == "draught_of_souls")
          line += ",if=buff.tigers_fury.up&energy.time_to_max>3&(!talent.savage_roar.enabled|buff.savage_roar.up)";
+      else if (items[i].slot == SLOT_WAIST) continue;
       else if (items[i].name_str != "maalus_the_blood_drinker") //NOTE: must be on the bottom of the if chain.
          line += ",if=(buff.tigers_fury.up&(target.time_to_die>trinket.stat.any.cooldown|target.time_to_die<45))|buff.incarnation.remains>20";
       def -> add_action( line );
@@ -7516,7 +7565,7 @@ void druid_t::apl_feral()
                      "Use Healing Touch at 5 Combo Points, if Predatory Swiftness is about to fall off, at 2 Combo Points before Ashamane's Frenzy, "
                      "before Elune's Guidance is cast or before the Elune's Guidance buff gives you a 5th Combo Point." );
   def -> add_action( "call_action_list,name=sbt_opener,if=talent.sabertooth.enabled&time<20" );
-  def -> add_action( this, "Regrowth", "if=equipped.ailuro_pouncers&talent.bloodtalons.enabled&buff.predatory_swiftness.stack>1&buff.bloodtalons.down",
+  def -> add_action( this, "Regrowth", "if=equipped.ailuro_pouncers&talent.bloodtalons.enabled&(buff.predatory_swiftness.stack>2|(buff.predatory_swiftness.stack>1&dot.rake.remains<3))&buff.bloodtalons.down",
     "Special logic for Ailuro Pouncers legendary." );
   def -> add_action( "call_action_list,name=finisher" );
   def -> add_action( "call_action_list,name=generator" );
@@ -7535,21 +7584,21 @@ void druid_t::apl_feral()
   finish -> add_action( "swipe_cat,if=spell_targets.swipe_cat>=8" );
   finish -> add_action( this, "Rip", "cycle_targets=1,if=(!ticking|(remains<8&target.health.pct>25&!talent.sabertooth.enabled)|"
     "persistent_multiplier>dot.rip.pmultiplier)&target.time_to_die-remains>tick_time*4&combo_points=5&"
-    "(energy.time_to_max<1|buff.berserk.up|buff.incarnation.up|buff.elunes_guidance.up|cooldown.tigers_fury.remains<3|"
+    "(energy.time_to_max<variable.pooling|buff.berserk.up|buff.incarnation.up|buff.elunes_guidance.up|cooldown.tigers_fury.remains<3|"
     "set_bonus.tier18_4pc|(buff.clearcasting.react&energy>65)|talent.soul_of_the_forest.enabled|!dot.rip.ticking|(dot.rake.remains<1.5&spell_targets.swipe_cat<6))",
     "Refresh Rip at 8 seconds or for a stronger Rip" );
   finish -> add_talent( this, "Savage Roar", "if=((buff.savage_roar.remains<=10.5&talent.jagged_wounds.enabled)|(buff.savage_roar.remains<=7.2))&"
-    "combo_points=5&(energy.time_to_max<1|buff.berserk.up|buff.incarnation.up|buff.elunes_guidance.up|cooldown.tigers_fury.remains<3|"
+    "combo_points=5&(energy.time_to_max<variable.pooling|buff.berserk.up|buff.incarnation.up|buff.elunes_guidance.up|cooldown.tigers_fury.remains<3|"
     "set_bonus.tier18_4pc|(buff.clearcasting.react&energy>65)|talent.soul_of_the_forest.enabled|!dot.rip.ticking|(dot.rake.remains<1.5&spell_targets.swipe_cat<6))",
     "Refresh Savage Roar early with Jagged Wounds" );
   finish -> add_action( "swipe_cat,if=combo_points=5&(spell_targets.swipe_cat>=6|(spell_targets.swipe_cat>=3&!talent.bloodtalons.enabled))&"
-    "combo_points=5&(energy.time_to_max<1|buff.berserk.up|buff.incarnation.up|buff.elunes_guidance.up|cooldown.tigers_fury.remains<3|"
+    "combo_points=5&(energy.time_to_max<variable.pooling|buff.berserk.up|buff.incarnation.up|buff.elunes_guidance.up|cooldown.tigers_fury.remains<3|"
     "set_bonus.tier18_4pc|(talent.moment_of_clarity.enabled&buff.clearcasting.react))",
     "Replace FB with Swipe at 6 targets for Bloodtalons or 3 targets otherwise." );
   finish->add_action(this, "Maim", ",if=combo_points=5&buff.fiery_red_maimers.up&"
-        "(energy.time_to_max<1|buff.berserk.up|buff.incarnation.up|buff.elunes_guidance.up|cooldown.tigers_fury.remains<3)");
+        "(energy.time_to_max<variable.pooling|buff.berserk.up|buff.incarnation.up|buff.elunes_guidance.up|cooldown.tigers_fury.remains<3)");
   finish -> add_action( this, "Ferocious Bite", "max_energy=1,cycle_targets=1,if=combo_points=5&"
-    "(energy.time_to_max<1|buff.berserk.up|buff.incarnation.up|buff.elunes_guidance.up|cooldown.tigers_fury.remains<3)" );
+    "(energy.time_to_max<variable.pooling|buff.berserk.up|buff.incarnation.up|buff.elunes_guidance.up|cooldown.tigers_fury.remains<3)" );
 
   // Generators
   generate -> add_talent( this, "Brutal Slash", "if=spell_targets.brutal_slash>desired_targets&combo_points<5",
@@ -7571,14 +7620,16 @@ void druid_t::apl_feral()
     "Shadowmeld to buff Rake" );
   generate -> add_action( "pool_resource,for_next=1", "Refresh Rake early with Bloodtalons" );
   generate -> add_action( this, "Rake", "cycle_targets=1,if=combo_points<5&(!ticking|(!talent.bloodtalons.enabled&remains<duration*0.3)|"
-    "(talent.bloodtalons.enabled&buff.bloodtalons.up&(!talent.soul_of_the_forest.enabled&remains<=7|remains<=5)&"
+    "(talent.bloodtalons.enabled&buff.bloodtalons.up&(remains<=variable.rake_refresh)&"
     "persistent_multiplier>dot.rake.pmultiplier*0.80))&target.time_to_die-remains>tick_time" );
   generate -> add_action( "moonfire_cat,cycle_targets=1,if=combo_points<5&remains<=4.2&target.time_to_die-remains>tick_time*2" );
   generate -> add_action( "pool_resource,for_next=1" );
-  if ( sets.has_set_bonus( DRUID_FERAL, T19, B4 ) )
+ /* if ( sets -> has_set_bonus( DRUID_FERAL, T19, B4 ) )
      generate->add_action( "thrash_cat,cycle_targets=1,if=remains<=duration*0.3&(spell_targets.swipe_cat>=2|(buff.clearcasting.up&buff.bloodtalons.down))", "Use Thrash on Clearcasting, or during Berserk/Incarnation if you have T19 4set" );
   else
-     generate -> add_action( "thrash_cat,cycle_targets=1,if=remains<=duration*0.3&spell_targets.swipe_cat>=2" );
+     generate -> add_action( "thrash_cat,cycle_targets=1,if=remains<=duration*0.3&spell_targets.swipe_cat>=2" );*/
+  generate -> add_action( "thrash_cat,cycle_targets=1,if=set_bonus.tier19_4pc&remains<=duration*0.3&combo_points<5&(spell_targets.swipe_cat>=2|((equipped.luffa_wrappings|buff.clearcasting.up)&(equipped.ailuro_pouncers|buff.bloodtalons.down)))", "Use Thrash on single-target if you have T19 4set" );
+  generate -> add_action( "thrash_cat,cycle_targets=1,if=!set_bonus.tier19_4pc&remains<=duration*0.3&(spell_targets.swipe_cat>=2|(buff.clearcasting.up&equipped.luffa_wrappings&(equipped.ailuro_pouncers|buff.bloodtalons.down)))" );
   generate -> add_talent( this, "Brutal Slash",
     "if=combo_points<5&((raid_event.adds.exists&raid_event.adds.in>(1+max_charges-charges_fractional)*15)|(!raid_event.adds.exists&(charges_fractional>2.66&time>10)))",
     "Brutal Slash if you would cap out charges before the next adds spawn" );
@@ -7784,7 +7835,7 @@ void druid_t::init_scaling()
 
   equipped_weapon_dps = main_hand_weapon.damage / main_hand_weapon.swing_time.total_seconds();
 
-  scales_with[ STAT_STRENGTH ] = false;
+  scaling -> disable( STAT_STRENGTH );
 
   // Save a copy of the weapon
   caster_form_weapon = main_hand_weapon;
@@ -7910,7 +7961,7 @@ void druid_t::init_resources( bool force )
 void druid_t::init_rng()
 {
   // RPPM objects
-  rppm.balance_tier18_2pc = get_rppm( "balance_tier18_2pc", sets.set( DRUID_BALANCE, T18, B2 ) );
+  rppm.balance_tier18_2pc = get_rppm( "balance_tier18_2pc", sets -> set( DRUID_BALANCE, T18, B2 ) );
   rppm.predator           = get_rppm( "predator", predator_rppm_rate ); // Predator: optional RPPM approximation.
   rppm.shadow_thrash      = get_rppm( "shadow_thrash", artifact.shadow_thrash );
 
@@ -8310,6 +8361,8 @@ double druid_t::composite_spell_haste() const
   double sh = player_t::composite_spell_haste();
 
   sh /= 1.0 + buff.star_power -> check_stack_value();
+
+  sh *= 1.0 + buff.astral_acceleration -> check_stack_value();
 
   if ( buff.sephuzs_secret -> check() )
      sh *= 1.0 / ( 1.0 + buff.sephuzs_secret -> stack_value() );
@@ -8838,9 +8891,9 @@ void druid_t::assess_heal( school_e school,
                            dmg_e    dmg_type,
                            action_state_t* s )
 {
-  if ( sets.has_set_bonus( DRUID_GUARDIAN, T18, B2 ) && buff.ironfur -> check() )
+  if ( sets -> has_set_bonus( DRUID_GUARDIAN, T18, B2 ) && buff.ironfur -> check() )
   {
-    double pct = sets.set( DRUID_GUARDIAN, T18, B2 ) -> effectN( 1 ).percent();
+    double pct = sets -> set( DRUID_GUARDIAN, T18, B2 ) -> effectN( 1 ).percent();
 
     // Trigger a gain so we can track how much the set bonus helped.
     // The gain is 100% overflow so it doesn't distort charts.
@@ -9062,7 +9115,8 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
                                .default_value( source.find_spell( 210670 ) -> effectN( 1 ).percent() )
                                .trigger_spell( source.artifact.open_wounds );
   debuff.stellar_empowerment = buff_creator_t( *this, "stellar_empowerment", source.spec.stellar_empowerment )
-                                .default_value( source.spec.stellar_empowerment -> effectN( 1 ).percent() );
+                               .default_value(source.spec.stellar_empowerment->effectN(1).percent())
+                               .duration( timespan_t::from_seconds( 8 )); //seems blizzard removed any useful spelldata, so hardcore this for now.
 
   debuff.circadian_invocation_arcane = buff_creator_t( *this, "circadian_invocation_arcane", source.find_spell( 240606 ) )
                                         .default_value( source.find_spell( 240606 ) -> effectN( 1 ).percent() );
@@ -9095,7 +9149,7 @@ void druid_t::copy_from( player_t* source )
   t20_4pc = p -> t20_4pc;
   ahhhhh_the_great_outdoors = p -> ahhhhh_the_great_outdoors;
 }
-void druid_t::output_json_report(js::JsonOutput& root) const
+void druid_t::output_json_report(js::JsonOutput& /*root*/) const
 {
    return; //NYI.
    if ( specialization() != DRUID_FERAL ) return;
@@ -9117,7 +9171,7 @@ void druid_t::output_json_report(js::JsonOutput& root) const
       double sr_benefit_up = 0, sr_benefit_total = 0;
       double bt_exe_up = 0, bt_exe_total = 0;
       double bt_benefit_up = 0, bt_benefit_total = 0;
-      int n = 0;
+      //int n = 0;
 
       for (size_t j = 0, end2 = stats->action_list.size(); j < end2; j++)
       {
@@ -9165,10 +9219,10 @@ void druid_t::output_json_report(js::JsonOutput& root) const
 
          if (tf_exe_total > 0 || bt_exe_total > 0 || sr_exe_total > 0)
          {
-            auto snapshot = root["snapshot_stats"].add();
+            //auto snapshot = root["snapshot_stats"].add();
             if (talent.savage_roar->ok())
             {
-               auto sr = snapshot["savage_roar"].make_array();
+               //auto sr = snapshot["savage_roar"].make_array();
 
 
 
@@ -9465,9 +9519,9 @@ struct luffa_wrappings_t : public scoped_action_callback_t<T>
 
     // Feral Druid passive modifies the strength of the effect.
     a -> radius *= 1.0 + e.driver() -> effectN( 1 ).percent()
-      + p -> spec.feral -> effectN( 4 ).percent();
+      + p -> spec.feral -> effectN( 8 ).percent();
     a -> base_multiplier *= 1.0 + e.driver() -> effectN( 2 ).percent()
-      + p -> spec.feral -> effectN( 5 ).percent();
+      + p -> spec.feral -> effectN( 8 ).percent();
   }
 };
 

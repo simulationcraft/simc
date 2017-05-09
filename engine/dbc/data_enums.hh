@@ -573,7 +573,7 @@ enum property_type_t {
   P_MAX               = 29,
 };
 
-enum effect_type_t {
+enum effect_type_t : unsigned {
     E_NONE = 0,
     E_INSTAKILL = 1,
     E_SCHOOL_DAMAGE = 2,
@@ -761,6 +761,7 @@ enum effect_type_t {
     E_199 = 199,
     E_202 = 202,
     E_203 = 203,
+    E_205 = 205,
     E_206 = 206,
     E_213 = 213,
     E_223 = 223,
@@ -787,7 +788,7 @@ enum effect_type_t {
 };
 
 
-enum effect_subtype_t {
+enum effect_subtype_t : unsigned {
     A_NONE = 0,
     A_BIND_SIGHT = 1,
     A_MOD_POSSESS = 2,
@@ -1006,7 +1007,7 @@ enum effect_subtype_t {
     A_ARENA_PREPARATION = 215,
     A_HASTE_SPELLS = 216,
     A_217 = 217,
-    A_HASTE_RANGED = 218,
+    A_ADD_PCT_LABEL_MODIFIER = 218,
     A_MOD_MANA_REGEN_FROM_STAT = 219,
     A_MOD_RATING_FROM_STAT = 220,
     A_221 = 221,
@@ -1185,8 +1186,8 @@ enum effect_subtype_t {
     A_410 = 410,
     A_411 = 411,
     A_412 = 412,
-    A_416 = 416,
-    A_417 = 417,
+    A_HASTED_COOLDOWN = 416,
+    A_HASTED_GCD = 417,
     A_418 = 418,
     A_419 = 419,
     A_420 = 420,
@@ -1196,7 +1197,7 @@ enum effect_subtype_t {
     A_424 = 424,
     A_426 = 426,
     A_428 = 428,
-    A_429 = 429,
+    A_MOD_PET_DAMAGE_DONE = 429,
     A_430 = 430,
     A_440 = 440,
     A_441 = 441,
@@ -1208,7 +1209,7 @@ enum effect_subtype_t {
     A_453 = 453,
     A_454 = 454,
     A_455 = 455,
-    A_457 = 457,
+    A_HASTED_CATEGORY = 457,
     A_458 = 458,
     A_463 = 463,
     A_464 = 464,

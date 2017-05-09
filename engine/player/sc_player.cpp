@@ -520,27 +520,27 @@ bool parse_set_bonus( sim_t* sim, const std::string&, const std::string& value )
 
   if ( set_bonus_split.size() != 2 )
   {
-    sim -> errorf( error_str, p -> name(), value.c_str(), p -> sets.generate_set_bonus_options().c_str() );
+    sim -> errorf( error_str, p -> name(), value.c_str(), p -> sets -> generate_set_bonus_options().c_str() );
     return false;
   }
 
   int opt_val = util::to_int( set_bonus_split[ 1 ] );
   if ( errno != 0 || ( opt_val != 0 && opt_val != 1 ) )
   {
-    sim -> errorf( error_str, p -> name(), value.c_str(), p -> sets.generate_set_bonus_options().c_str() );
+    sim -> errorf( error_str, p -> name(), value.c_str(), p -> sets -> generate_set_bonus_options().c_str() );
     return false;
   }
 
   set_bonus_type_e set_bonus = SET_BONUS_NONE;
   set_bonus_e bonus = B_NONE;
 
-  if ( ! p -> sets.parse_set_bonus_option( set_bonus_split[ 0 ], set_bonus, bonus ) )
+  if ( ! p -> sets -> parse_set_bonus_option( set_bonus_split[ 0 ], set_bonus, bonus ) )
   {
-    sim -> errorf( error_str, p -> name(), value.c_str(), p -> sets.generate_set_bonus_options().c_str() );
+    sim -> errorf( error_str, p -> name(), value.c_str(), p -> sets -> generate_set_bonus_options().c_str() );
     return false;
   }
 
-  p -> sets.set_bonus_spec_data[ set_bonus ][ specdata::spec_idx( p -> specialization() ) ][ bonus ].overridden = opt_val;
+  p -> sets -> set_bonus_spec_data[ set_bonus ][ specdata::spec_idx( p -> specialization() ) ][ bonus ].overridden = opt_val;
 
   return true;
 }
@@ -749,7 +749,7 @@ player_t::player_t( sim_t*             s,
   rps_gain( 0 ), rps_loss( 0 ),
 
   tmi_window( 6.0 ),
-  collected_data( name_str, *sim ),
+  collected_data( this ),
   // Damage
   iteration_dmg( 0 ), priority_iteration_dmg( 0 ), iteration_dmg_taken( 0 ),
   dpr( 0 ),
@@ -761,13 +761,14 @@ player_t::player_t( sim_t*             s,
 
   report_information( player_processed_report_information_t() ),
   // Gear
-  sets( this ),
+  sets( ( ! is_pet() && ! is_enemy() ) ? new set_bonus_t( this ) : nullptr ),
   meta_gem( META_GEM_NONE ), matching_gear( false ),
   karazhan_trinkets_paired( false ),
   item_cooldown( cooldown_t( "item_cd", *this ) ),
   legendary_tank_cloak_cd( nullptr ),
   warlords_unseeing_eye( 0.0 ),
   auto_attack_multiplier( 1.0 ),
+  scaling( ( ! is_pet() || sim -> report_pets_separately ) ? new player_scaling_t() : nullptr ),
   // Movement & Position
   base_movement_speed( 7.0 ), passive_modifier( 0 ),
   x_position( 0.0 ), y_position( 0.0 ),
@@ -843,11 +844,6 @@ player_t::player_t( sim_t*             s,
   resources.infinite_resource[ RESOURCE_HEALTH ] = true;
 
   range::fill( profession, 0 );
-
-  range::fill( scales_with, false );
-  range::fill( over_cap, 0 );
-  range::fill( scaling_lag, 0 );
-  range::fill( scaling_lag_error, 0 );
 
   if ( ! is_pet() )
   {
@@ -1336,7 +1332,10 @@ bool player_t::init_items()
   init_meta_gem();
 
   // Needs to be initialized after old set bonus system
-  sets.initialize();
+  if ( sets != nullptr )
+  {
+    sets -> initialize();
+  }
 
   // these initialize the weapons, but don't have a return value (yet?)
   init_weapon( main_hand_weapon );
@@ -1504,7 +1503,7 @@ bool player_t::create_special_effects()
   // master list of custom special effect in unique gear). This is to avoid
   // false positives with class-specific set bonuses that have to always be
   // implemented inside the class module anyhow.
-  std::vector<const item_set_bonus_t*> bonuses = sets.enabled_set_bonus_data();
+  std::vector<const item_set_bonus_t*> bonuses = sets -> enabled_set_bonus_data();
   for ( size_t i = 0; i < bonuses.size(); i++ )
   {
     special_effect_t effect( this );
@@ -2095,41 +2094,26 @@ void player_t::init_scaling()
     bool tank   = ( role == ROLE_TANK );
     bool heal   = ( role == ROLE_HEAL );
 
-    scales_with[ STAT_STRENGTH  ] = attack;
-    scales_with[ STAT_AGILITY   ] = attack;
-    scales_with[ STAT_STAMINA   ] = tank;
-    scales_with[ STAT_INTELLECT ] = spell;
-    scales_with[ STAT_SPIRIT    ] = heal;
+    scaling -> set( STAT_STRENGTH, attack );
+    scaling -> set( STAT_AGILITY, attack );
+    scaling -> set( STAT_STAMINA, tank );
+    scaling -> set( STAT_INTELLECT, spell );
+    scaling -> set( STAT_SPIRIT, heal );
 
-    scales_with[ STAT_HEALTH ] = false;
-    scales_with[ STAT_MANA   ] = false;
-    scales_with[ STAT_RAGE   ] = false;
-    scales_with[ STAT_ENERGY ] = false;
-    scales_with[ STAT_FOCUS  ] = false;
-    scales_with[ STAT_RUNIC  ] = false;
+    scaling -> set( STAT_SPELL_POWER, spell );
+    scaling -> set( STAT_ATTACK_POWER, attack );
+    scaling -> enable( STAT_CRIT_RATING );
+    scaling -> enable( STAT_HASTE_RATING );
+    scaling -> enable( STAT_MASTERY_RATING );
+    scaling -> enable( STAT_VERSATILITY_RATING );
 
-    scales_with[ STAT_SPELL_POWER               ] = spell;
-    scales_with[ STAT_ATTACK_POWER              ] = attack;
-    scales_with[ STAT_CRIT_RATING               ] = true;
-    scales_with[ STAT_HASTE_RATING              ] = true;
-    scales_with[ STAT_MASTERY_RATING            ] = true;
-    scales_with[ STAT_VERSATILITY_RATING        ] = true;
+    scaling -> set( STAT_SPEED_RATING, sim -> has_raid_event( "movement" ) );
+    // scaling -> set( STAT_AVOIDANCE_RATING          ] = tank; // Waste of sim time vast majority of the time. Can be enabled manually.
+    scaling -> set( STAT_LEECH_RATING, tank );
 
-    bool has_movement = false;
-    for ( const auto& raid_event : sim -> raid_events )
-    {
-      if ( util::str_in_str_ci( raid_event -> name(), "movement" ) )
-        has_movement = true;
-    }
+    scaling -> set( STAT_WEAPON_DPS, attack );
 
-    scales_with[ STAT_SPEED_RATING              ] = has_movement;
-    // scales_with[ STAT_AVOIDANCE_RATING          ] = tank; // Waste of sim time vast majority of the time. Can be enabled manually.
-    scales_with[ STAT_LEECH_RATING              ] = tank;
-
-    scales_with[ STAT_WEAPON_DPS   ] = attack;
-    scales_with[ STAT_WEAPON_OFFHAND_DPS   ] = false;
-
-    scales_with[ STAT_ARMOR          ] = tank;
+    scaling -> set( STAT_ARMOR, tank );
 
     if ( sim -> scaling -> scale_stat != STAT_NONE && scale_player )
     {
@@ -2360,9 +2344,12 @@ bool player_t::create_actions()
     }
   }
 
-  int capacity = std::max( 1200, static_cast<int>( sim -> max_time.total_seconds() / 2.0 ) );
-  collected_data.action_sequence.reserve( capacity );
-  collected_data.action_sequence.clear();
+  if ( ! is_add() && ( ! is_pet() || sim -> report_pets_separately ) )
+  {
+    int capacity = std::max( 1200, static_cast<int>( sim -> max_time.total_seconds() / 2.0 ) );
+    collected_data.action_sequence.reserve( capacity );
+    collected_data.action_sequence.clear();
+  }
 
   return true;
 }
@@ -2671,6 +2658,7 @@ void player_t::min_threshold_trigger()
 
 // player_t::create_buffs ===================================================
 
+// Note, these are player and enemy buffs/debuffs. Pet buffs and debuffs are in pet_t::create_buffs
 void player_t::create_buffs()
 {
   if ( sim -> debug )
@@ -2689,73 +2677,6 @@ void player_t::create_buffs()
       player -> buffs.norgannons_foresight_ready -> trigger();
     }
   };
-
-  if ( ! is_enemy() && type != PLAYER_GUARDIAN )
-  {
-    if ( type != PLAYER_PET )
-    {
-      // Racials
-      buffs.berserking                = haste_buff_creator_t( this, "berserking", find_spell( 26297 ) ).add_invalidate( CACHE_HASTE );
-      buffs.stoneform                 = buff_creator_t( this, "stoneform", find_spell( 65116 ) );
-      buffs.blood_fury                = stat_buff_creator_t( this, "blood_fury", find_racial_spell( "Blood Fury" ) )
-                                        .add_invalidate( CACHE_SPELL_POWER )
-                                        .add_invalidate( CACHE_ATTACK_POWER );
-      buffs.fortitude                 = buff_creator_t( this, "fortitude", find_spell( 137593 ) ).activated( false );
-      buffs.shadowmeld                = buff_creator_t( this, "shadowmeld", find_spell( 58984 ) ).cd( timespan_t::zero() );
-
-      buffs.archmages_greater_incandescence_agi = buff_creator_t( this, "archmages_greater_incandescence_agi", find_spell( 177172 ) )
-        .add_invalidate( CACHE_AGILITY );
-      buffs.archmages_greater_incandescence_str = buff_creator_t( this, "archmages_greater_incandescence_str", find_spell( 177175 ) )
-        .add_invalidate( CACHE_STRENGTH );
-      buffs.archmages_greater_incandescence_int = buff_creator_t( this, "archmages_greater_incandescence_int", find_spell( 177176 ) )
-        .add_invalidate( CACHE_INTELLECT );
-
-      buffs.archmages_incandescence_agi = buff_creator_t( this, "archmages_incandescence_agi", find_spell( 177161 ) )
-        .add_invalidate( CACHE_AGILITY );
-      buffs.archmages_incandescence_str = buff_creator_t( this, "archmages_incandescence_str", find_spell( 177160 ) )
-        .add_invalidate( CACHE_STRENGTH );
-      buffs.archmages_incandescence_int = buff_creator_t( this, "archmages_incandescence_int", find_spell( 177159 ) )
-        .add_invalidate( CACHE_INTELLECT );
-
-      // Legendary meta haste buff
-      buffs.tempus_repit              = haste_buff_creator_t( this, "tempus_repit", find_spell( 137590 ) ).add_invalidate( CACHE_SPELL_SPEED ).activated( false );
-
-      buffs.darkflight         = buff_creator_t( this, "darkflight", find_racial_spell( "darkflight" ) );
-
-      buffs.nitro_boosts       = buff_creator_t( this, "nitro_boosts", find_spell( 54861 ) );
-
-      buffs.amplification = buff_creator_t( this, "amplification", find_spell( 146051 ) )
-                            .add_invalidate( CACHE_MASTERY )
-                            .add_invalidate( CACHE_HASTE )
-                            .add_invalidate( CACHE_SPIRIT )
-                            .chance( 0 );
-      buffs.amplification_2 = buff_creator_t( this, "amplification_2", find_spell( 146051 ) )
-                              .add_invalidate( CACHE_MASTERY )
-                              .add_invalidate( CACHE_HASTE )
-                              .add_invalidate( CACHE_SPIRIT )
-                              .chance( 0 );
-
-      buffs.temptation = buff_creator_t( this, "temptation", find_spell( 234143 ) )
-        .cd( timespan_t::zero() )
-        .chance( 1 )
-        .default_value( 0.1 ); //Not in spelldata
-
-      buffs.norgannons_foresight_ready = buff_creator_t( this, "norgannons_foresight_ready", find_spell( 236380 ) )
-        .chance( 0 );
-
-      buffs.norgannons_foresight = new norgannons_foresight_buff_t( this );     
-    }
-  }
-
-  buffs.courageous_primal_diamond_lucidity = buff_creator_t( this, "lucidity", find_spell( 137288 ) );
-
-  buffs.body_and_soul = buff_creator_t( this, "body_and_soul", find_spell( 64129 ) )
-                        .max_stack( 1 )
-                        .duration( timespan_t::from_seconds( 4.0 ) );
-
-  buffs.angelic_feather = buff_creator_t( this, "angelic_feather", find_spell( 121557 ) )
-                          .max_stack( 1 )
-                          .duration( timespan_t::from_seconds( 6.0 ) );
 
   struct movement_buff_t : public buff_t
   {
@@ -2780,21 +2701,94 @@ void player_t::create_buffs()
     }
   };
 
-  buffs.movement = new movement_buff_t( this );
-
-  // Infinite-Stacking Buffs and De-Buffs
+  // Infinite-Stacking Buffs and De-Buffs for everyone
   buffs.stunned        = buff_creator_t( this, "stunned" ).max_stack( 1 );
-  debuffs.bleeding     = buff_creator_t( this, "bleeding" ).max_stack( 1 );
   debuffs.casting      = buff_creator_t( this, "casting" ).max_stack( 1 ).quiet( 1 );
-  debuffs.invulnerable = buff_creator_t( this, "invulnerable" ).max_stack( 1 );
-  debuffs.vulnerable   = buff_creator_t( this, "vulnerable" ).max_stack( 1 );
-  debuffs.flying       = buff_creator_t( this, "flying" ).max_stack( 1 );
-  debuffs.damage_taken = buff_creator_t( this, "damage_taken" ).duration( timespan_t::from_seconds( 20.0 ) ).max_stack( 999 );
 
-  // stuff moved from old init_debuffs method
+  // .. for players
+  if ( ! is_enemy() )
+  {
+    // Racials
+    buffs.berserking                = haste_buff_creator_t( this, "berserking", find_spell( 26297 ) ).add_invalidate( CACHE_HASTE );
+    buffs.stoneform                 = buff_creator_t( this, "stoneform", find_spell( 65116 ) );
+    buffs.blood_fury                = stat_buff_creator_t( this, "blood_fury", find_racial_spell( "Blood Fury" ) )
+                                      .add_invalidate( CACHE_SPELL_POWER )
+                                      .add_invalidate( CACHE_ATTACK_POWER );
+    buffs.fortitude                 = buff_creator_t( this, "fortitude", find_spell( 137593 ) ).activated( false );
+    buffs.shadowmeld                = buff_creator_t( this, "shadowmeld", find_spell( 58984 ) ).cd( timespan_t::zero() );
 
-  debuffs.mortal_wounds           = buff_creator_t( this, "mortal_wounds", find_spell( 115804 ) )
-                                    .default_value( std::fabs( find_spell( 115804 ) -> effectN( 1 ).percent() ) );
+    buffs.archmages_greater_incandescence_agi = buff_creator_t( this, "archmages_greater_incandescence_agi", find_spell( 177172 ) )
+      .add_invalidate( CACHE_AGILITY );
+    buffs.archmages_greater_incandescence_str = buff_creator_t( this, "archmages_greater_incandescence_str", find_spell( 177175 ) )
+      .add_invalidate( CACHE_STRENGTH );
+    buffs.archmages_greater_incandescence_int = buff_creator_t( this, "archmages_greater_incandescence_int", find_spell( 177176 ) )
+      .add_invalidate( CACHE_INTELLECT );
+
+    buffs.archmages_incandescence_agi = buff_creator_t( this, "archmages_incandescence_agi", find_spell( 177161 ) )
+      .add_invalidate( CACHE_AGILITY );
+    buffs.archmages_incandescence_str = buff_creator_t( this, "archmages_incandescence_str", find_spell( 177160 ) )
+      .add_invalidate( CACHE_STRENGTH );
+    buffs.archmages_incandescence_int = buff_creator_t( this, "archmages_incandescence_int", find_spell( 177159 ) )
+      .add_invalidate( CACHE_INTELLECT );
+
+    // Legendary meta haste buff
+    buffs.tempus_repit              = haste_buff_creator_t( this, "tempus_repit", find_spell( 137590 ) ).add_invalidate( CACHE_SPELL_SPEED ).activated( false );
+
+    buffs.darkflight         = buff_creator_t( this, "darkflight", find_racial_spell( "darkflight" ) );
+
+    buffs.nitro_boosts       = buff_creator_t( this, "nitro_boosts", find_spell( 54861 ) );
+
+    buffs.amplification = buff_creator_t( this, "amplification", find_spell( 146051 ) )
+                          .add_invalidate( CACHE_MASTERY )
+                          .add_invalidate( CACHE_HASTE )
+                          .add_invalidate( CACHE_SPIRIT )
+                          .chance( 0 );
+    buffs.amplification_2 = buff_creator_t( this, "amplification_2", find_spell( 146051 ) )
+                            .add_invalidate( CACHE_MASTERY )
+                            .add_invalidate( CACHE_HASTE )
+                            .add_invalidate( CACHE_SPIRIT )
+                            .chance( 0 );
+
+    buffs.temptation = buff_creator_t( this, "temptation", find_spell( 234143 ) )
+      .cd( timespan_t::zero() )
+      .chance( 1 )
+      .default_value( 0.1 ); //Not in spelldata
+
+    buffs.norgannons_foresight_ready = buff_creator_t( this, "norgannons_foresight_ready", find_spell( 236380 ) )
+      .chance( 0 );
+
+    buffs.norgannons_foresight = new norgannons_foresight_buff_t( this );     
+
+    buffs.courageous_primal_diamond_lucidity = buff_creator_t( this, "lucidity", find_spell( 137288 ) );
+
+    buffs.body_and_soul = buff_creator_t( this, "body_and_soul", find_spell( 64129 ) )
+                          .max_stack( 1 )
+                          .duration( timespan_t::from_seconds( 4.0 ) );
+
+    buffs.angelic_feather = buff_creator_t( this, "angelic_feather", find_spell( 121557 ) )
+                            .max_stack( 1 )
+                            .duration( timespan_t::from_seconds( 6.0 ) );
+
+    buffs.movement = new movement_buff_t( this );
+  }
+  // .. for enemies
+  else
+  {
+    debuffs.bleeding     = buff_creator_t( this, "bleeding" ).max_stack( 1 );
+    debuffs.invulnerable = buff_creator_t( this, "invulnerable" ).max_stack( 1 );
+    debuffs.vulnerable   = buff_creator_t( this, "vulnerable" ).max_stack( 1 );
+    debuffs.flying       = buff_creator_t( this, "flying" ).max_stack( 1 );
+    debuffs.mortal_wounds= buff_creator_t( this, "mortal_wounds", find_spell( 115804 ) )
+                           .default_value( std::fabs( find_spell( 115804 ) -> effectN( 1 ).percent() ) );
+  }
+
+  // .. for players, but only if there's a "damage taken" raid event
+  if ( sim -> has_raid_event( "damage_taken" ) )
+  {
+    debuffs.damage_taken = buff_creator_t( this, "damage_taken" )
+                           .duration( timespan_t::from_seconds( 20.0 ) )
+                           .max_stack( 999 );
+  }
 }
 
 // player_t::find_item ======================================================
@@ -3447,14 +3441,17 @@ double player_t::temporary_movement_modifier() const
     if ( buffs.windwalking_movement_aura -> check() )
       temporary = std::max( buffs.windwalking_movement_aura -> current_value, temporary );
 
+    if ( buffs.stampeding_roar -> check() )
+      temporary = std::max( buffs.stampeding_roar -> data().effectN( 1 ).percent(), temporary );
+  }
+
+  if ( ! is_enemy() && ! is_pet() )
+  {
     if ( buffs.darkflight -> check() )
       temporary = std::max( buffs.darkflight -> data().effectN( 1 ).percent(), temporary );
 
     if ( buffs.nitro_boosts -> check() )
       temporary = std::max( buffs.nitro_boosts -> data().effectN( 1 ).percent(), temporary );
-
-    if ( buffs.stampeding_roar -> check() )
-      temporary = std::max( buffs.stampeding_roar -> data().effectN( 1 ).percent(), temporary );
 
     if ( buffs.body_and_soul -> check() )
       temporary = std::max( buffs.body_and_soul -> data().effectN( 1 ).percent(), temporary );
@@ -3648,13 +3645,13 @@ double player_t::composite_rating( rating_e rating ) const
 
 double player_t::composite_player_vulnerability( school_e /* school */ ) const
 {
-  double m = debuffs.invulnerable -> check() ? 0.0 : 1.0;
+  double m = debuffs.invulnerable && debuffs.invulnerable -> check() ? 0.0 : 1.0;
 
-  if ( debuffs.vulnerable -> check() )
+  if ( debuffs.vulnerable && debuffs.vulnerable -> check() )
     m *= 1.0 + debuffs.vulnerable -> value();
 
   // 1% damage taken per stack, arbitrary because this buff is completely fabricated!
-  if ( debuffs.damage_taken -> check() )
+  if ( debuffs.damage_taken && debuffs.damage_taken -> check() )
     m *= 1.0 + debuffs.damage_taken -> current_stack * 0.01;
 
   return m;
@@ -4581,6 +4578,8 @@ void player_t::arise()
   }
 
   current_attack_speed = cache.attack_speed();
+
+  range::for_each( callbacks_on_arise, [ this ]( const std::function<void(void)>& fn ) { fn(); } );
 }
 
 // player_t::demise =========================================================
@@ -4612,10 +4611,7 @@ void player_t::demise()
 
   event_t::cancel( off_gcd );
 
-  for ( size_t i = 0; i < callbacks_on_demise.size(); ++i )
-  {
-    callbacks_on_demise[i]( this );
-  }
+  range::for_each( callbacks_on_demise, [ this ]( const std::function<void(player_t*)>& fn ) { fn( this ); } );
 
   for ( size_t i = 0; i < buff_list.size(); ++i )
   {
@@ -5038,7 +5034,7 @@ stat_e player_t::normalize_by() const
   role_e role = primary_role();
   if ( role == ROLE_SPELL || role == ROLE_HEAL )
     return STAT_INTELLECT;
-  else if ( role == ROLE_TANK && ( sm == SCALE_METRIC_TMI || sm == SCALE_METRIC_DEATHS ) && scaling[ sm ].get_stat( STAT_STAMINA) != 0.0 )
+  else if ( role == ROLE_TANK && ( sm == SCALE_METRIC_TMI || sm == SCALE_METRIC_DEATHS ) && scaling -> scaling[ sm ].get_stat( STAT_STAMINA ) != 0.0 )
     return STAT_STAMINA;
   else if ( type == DRUID || type == HUNTER || type == SHAMAN || type == ROGUE || type == MONK || type == DEMON_HUNTER )
     return STAT_AGILITY;
@@ -5833,7 +5829,7 @@ void player_t::target_mitigation( school_e school,
   // TODO-WOD: Where should this be? Or does it matter?
   s -> result_amount *= 1.0 - cache.mitigation_versatility();
 
-  if ( debuffs.invulnerable -> check() )
+  if ( debuffs.invulnerable && debuffs.invulnerable -> check() )
   {
     s -> result_amount = 0;
   }
@@ -6854,7 +6850,7 @@ struct snapshot_stats_t : public action_t
   bool init_finished() override
   {
     player_t* p = player;
-    for ( size_t i = 0; i < p -> pet_list.size(); ++i )
+    for ( size_t i = 0; sim -> report_pets_separately && i < p -> pet_list.size(); ++i )
     {
       pet_t* pet = p -> pet_list[ i ];
       action_t* pet_snapshot = pet -> find_action( "snapshot_stats" );
@@ -6957,8 +6953,11 @@ struct snapshot_stats_t : public action_t
       }
     }
 
-    p -> over_cap[ STAT_HIT_RATING ] = std::max( spell_hit_extra, attack_hit_extra );
-    p -> over_cap[ STAT_EXPERTISE_RATING ] = expertise_extra;
+    if ( p -> scaling )
+    {
+      p -> scaling -> over_cap[ STAT_HIT_RATING ] = std::max( spell_hit_extra, attack_hit_extra );
+      p -> scaling -> over_cap[ STAT_EXPERTISE_RATING ] = expertise_extra;
+    }
 
     for ( size_t i = 0; i < p -> pet_list.size(); ++i )
     {
@@ -9380,7 +9379,7 @@ expr_t* player_t::create_expression( action_t* a,
   else if ( splits.size() == 2 )
   {
     if ( splits[ 0 ] == "set_bonus" )
-      return sets.create_expression( this, splits[ 1 ] );
+      return sets -> create_expression( this, splits[ 1 ] );
 
     if ( splits[ 0 ] == "active_dot" )
     {
@@ -10021,7 +10020,10 @@ std::string player_t::create_profile( save_e stype )
     }
 
     // Set Bonus
-    profile_str += sets.to_profile_string( term );
+    if ( sets != nullptr )
+    {
+      profile_str += sets -> to_profile_string( term );
+    }
 
     if ( enchant.attribute[ ATTR_STRENGTH  ] != 0 )  profile_str += "enchant_strength="
          + util::to_string( enchant.attribute[ ATTR_STRENGTH  ] ) + term;
@@ -10123,8 +10125,12 @@ void player_t::copy_from( player_t* source )
     items[ i ].player = this;
   }
 
-  sets = source -> sets;
-  sets.actor = this;
+  if ( sets != nullptr )
+  {
+    sets = std::unique_ptr<set_bonus_t>( new set_bonus_t( *source -> sets ) );
+    sets -> actor = this;
+  }
+
   gear = source -> gear;
   enchant = source -> enchant;
   bugs = source -> bugs;
@@ -11083,43 +11089,84 @@ player_collected_data_t::action_sequence_data_t::action_sequence_data_t( const t
   }
 }
 
-player_collected_data_t::player_collected_data_t( const std::string& player_name, sim_t& s ) :
-  fight_length( player_name + " Fight Length", s.statistics_level < 2),
-  waiting_time(player_name + " Waiting Time", s.statistics_level < 4),
-  pooling_time(player_name + " Pooling Time", s.statistics_level < 4),
-  executed_foreground_actions(player_name + " Executed Foreground Actions", s.statistics_level < 4),
-  dmg( player_name + " Damage", s.statistics_level < 2 ),
-  compound_dmg( player_name + " Total Damage", s.statistics_level < 2 ),
-  prioritydps( player_name + " Priority Target Damage Per Second", s.statistics_level < 1 ),
-  dps( player_name + " Damage Per Second", s.statistics_level < 1 ),
-  dpse( player_name + " Damage Per Second (Effective)", s.statistics_level < 2 ),
-  dtps( player_name + " Damage Taken Per Second", s.statistics_level < 2 ),
-  dmg_taken( player_name + " Damage Taken", s.statistics_level < 2 ),
+bool player_collected_data_t::tank_container_type( const player_t* for_actor,
+                                                   int             target_statistics_level )
+{
+  if ( for_actor -> primary_role() == ROLE_TANK && for_actor -> level() == MAX_LEVEL )
+  {
+    return for_actor -> sim -> statistics_level < target_statistics_level;
+  }
+
+  return true;
+}
+
+bool player_collected_data_t::generic_container_type( const player_t* for_actor,
+                                                      int             target_statistics_level )
+{
+  if ( ! for_actor -> is_enemy() && ( ! for_actor -> is_pet() || for_actor -> sim -> report_pets_separately ) )
+  {
+    return for_actor -> sim -> statistics_level < target_statistics_level;
+  }
+
+  return true;
+}
+
+player_collected_data_t::player_collected_data_t( const player_t* player ) :
+  fight_length( player -> name_str + " Fight Length", generic_container_type( player, 2 ) ),
+  waiting_time( player -> name_str + " Waiting Time", generic_container_type( player, 2 ) ),
+  pooling_time( player -> name_str + " Pooling Time", generic_container_type( player, 4 ) ),
+  executed_foreground_actions( player -> name_str + " Executed Foreground Actions", generic_container_type( player, 4 ) ),
+  dmg( player -> name_str + " Damage", generic_container_type( player, 2 ) ),
+  compound_dmg( player -> name_str + " Total Damage", generic_container_type( player, 2 ) ),
+  prioritydps( player -> name_str + " Priority Target Damage Per Second", generic_container_type( player, 1 ) ),
+  dps( player -> name_str + " Damage Per Second", generic_container_type( player, 1 ) ),
+  dpse( player -> name_str + " Damage Per Second (Effective)", generic_container_type( player, 2 ) ),
+  dtps( player -> name_str + " Damage Taken Per Second", tank_container_type( player, 2 ) ),
+  dmg_taken( player -> name_str + " Damage Taken", tank_container_type( player, 2 ) ),
   timeline_dmg(),
-  heal( player_name + " Heal", s.statistics_level < 2 ),
-  compound_heal( player_name + " Total Heal", s.statistics_level < 2 ),
-  hps( player_name + " Healing Per Second", s.statistics_level < 1 ),
-  hpse( player_name + " Healing Per Second (Effective)", s.statistics_level < 2 ),
-  htps( player_name + " Healing Taken Per Second", s.statistics_level < 2 ),
-  heal_taken( player_name + " Healing Taken", s.statistics_level < 2 ),
-  absorb( player_name + " Absorb", s.statistics_level < 2 ),
-  compound_absorb( player_name + " Total Absorb", s.statistics_level < 2 ),
-  aps( player_name + " Absorb Per Second", s.statistics_level < 1 ),
-  atps( player_name + " Absorb Taken Per Second", s.statistics_level < 2 ),
-  absorb_taken( player_name + " Absorb Taken", s.statistics_level < 2 ),
-  deaths( player_name + " Deaths", s.statistics_level < 2 ),
-  theck_meloree_index( player_name + " Theck-Meloree Index", s.statistics_level < 1 ),
-  effective_theck_meloree_index( player_name + "Theck-Meloree Index (Effective)", s.statistics_level < 1 ),
-  max_spike_amount( player_name + " Max Spike Value", s.statistics_level < 1 ),
-  target_metric( player_name + " Target Metric", false ),
+  heal( player -> name_str + " Heal", generic_container_type( player, 2 ) ),
+  compound_heal( player -> name_str + " Total Heal", generic_container_type( player, 2 ) ),
+  hps( player -> name_str + " Healing Per Second", generic_container_type( player, 1 ) ),
+  hpse( player -> name_str + " Healing Per Second (Effective)", generic_container_type( player, 2 ) ),
+  htps( player -> name_str + " Healing Taken Per Second", tank_container_type( player, 2 ) ),
+  heal_taken( player -> name_str + " Healing Taken", tank_container_type( player, 2 ) ),
+  absorb( player -> name_str + " Absorb", generic_container_type( player, 2 ) ),
+  compound_absorb( player -> name_str + " Total Absorb", generic_container_type( player, 2 ) ),
+  aps( player -> name_str + " Absorb Per Second", generic_container_type( player, 1 ) ),
+  atps( player -> name_str + " Absorb Taken Per Second", tank_container_type( player, 2 ) ),
+  absorb_taken( player -> name_str + " Absorb Taken", tank_container_type( player, 2 ) ),
+  deaths( player -> name_str + " Deaths", tank_container_type( player, 2 ) ),
+  theck_meloree_index( player -> name_str + " Theck-Meloree Index", tank_container_type( player, 1 ) ),
+  effective_theck_meloree_index( player -> name_str + "Theck-Meloree Index (Effective)", tank_container_type( player, 2 ) ),
+  max_spike_amount( player -> name_str + " Max Spike Value", tank_container_type( player, 2 ) ),
+  target_metric( player -> name_str + " Target Metric",
+                 player -> sim -> target_error && ( ! player -> is_enemy() && ( ! player -> is_pet() || player -> sim -> report_pets_separately ) )
+                 ? false
+                 : true ),
   resource_timelines(),
-  combat_end_resource( RESOURCE_MAX ),
+  combat_end_resource(
+      ( ! player -> is_enemy() && ( ! player -> is_pet() || player -> sim -> report_pets_separately ) )
+      ? RESOURCE_MAX
+      : 0 ),
   stat_timelines(),
   health_changes(),
   health_changes_tmi(),
   total_iterations( 0 ),
   buffed_stats_snapshot()
-{ }
+{
+  if ( ! player -> is_enemy() && ( ! player -> is_pet() || player -> sim -> report_pets_separately ) )
+  {
+    resource_lost.resize( RESOURCE_MAX );
+    resource_gained.resize( RESOURCE_MAX );
+  }
+
+  // Enemies only have health
+  if ( player -> is_enemy() )
+  {
+    resource_lost.resize( RESOURCE_HEALTH + 1 );
+    resource_gained.resize( RESOURCE_HEALTH + 1 );
+  }
+}
 
 void player_collected_data_t::reserve_memory( const player_t& p )
 {
@@ -11151,6 +11198,13 @@ void player_collected_data_t::reserve_memory( const player_t& p )
 
 void player_collected_data_t::merge( const player_collected_data_t& other )
 {
+  // No data got collected for this player in this thread, so skip merging player collected data
+  // entirely
+  if ( other.fight_length.count() == 0 )
+  {
+    return;
+  }
+
   fight_length.merge( other.fight_length );
   waiting_time.merge( other.waiting_time );
   executed_foreground_actions.merge( other.executed_foreground_actions );
@@ -11176,7 +11230,7 @@ void player_collected_data_t::merge( const player_collected_data_t& other )
   theck_meloree_index.merge( other.theck_meloree_index );
   effective_theck_meloree_index.merge( other.effective_theck_meloree_index );
 
-  for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; ++i )
+  for ( size_t i = 0, end = resource_lost.size(); i < end; ++i )
   {
     resource_lost  [ i ].merge( other.resource_lost[ i ] );
     resource_gained[ i ].merge( other.resource_gained[ i ] );
@@ -11418,14 +11472,16 @@ void player_collected_data_t::collect_data( const player_t& p )
   dmg_taken.add( p.iteration_dmg_taken );
   dtps.add( f_length ? p.iteration_dmg_taken / f_length : 0 );
 
-  for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; ++i )
+  for ( size_t i = 0, end = resource_lost.size(); i < end; ++i )
   {
     resource_lost  [ i ].add( p.iteration_resource_lost[i] );
     resource_gained[ i ].add( p.iteration_resource_gained[i] );
   }
 
-  for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; ++i )
+  for ( size_t i = 0, end = combat_end_resource.size(); i < end; ++i )
+  {
     combat_end_resource[ i ].add( p.resources.current[ i ] );
+  }
 
   // Health Change Calculations - only needed for tanks
   double tank_metric = 0;
@@ -12019,3 +12075,4 @@ void player_t::deactivate()
   // analysis at the end of simulation
   collected_data.total_iterations = sim -> current_iteration;
 }
+

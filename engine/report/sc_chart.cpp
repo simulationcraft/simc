@@ -127,8 +127,9 @@ double apm_player_mean( const player_t* p )
 
 double variance( const player_t* p )
 {
-  return ( p->collected_data.dps.std_dev / p->collected_data.dps.pretty_mean() *
-           100 );
+  return p->collected_data.dps.mean() > 0
+    ? ( p->collected_data.dps.std_dev / p->collected_data.dps.pretty_mean() * 100 )
+    : 0;
 }
 
 double compute_player_burst_max( const sc_timeline_t& container )
@@ -290,8 +291,16 @@ double get_data_value( const player_collected_data_t& container,
     case METRIC_VARIANCE:
     {
       if ( val != VALUE_MEAN )
+      {
         return 0;
-      return ( container.dps.std_dev / container.dps.pretty_mean() * 100 );
+      }
+
+      if ( container.dps.mean() > 0 )
+      {
+        return ( container.dps.std_dev / container.dps.pretty_mean() * 100 );
+      }
+
+      return 0;
     }
     default:
       return 0;
@@ -1277,8 +1286,12 @@ bool chart::generate_raid_dpet( highchart::bar_chart_t& bc, const sim_t& s )
     stats_list.erase( stats_list.begin() + 30, stats_list.end() );
   }
 
-  if ( stats_list.size() > 0 &&
-       ( stats_list.front()->apet / stats_list.back()->apet >= 100 ) )
+  auto log = stats_list.size() > 0 &&
+             stats_list.back() -> apet > 0
+             ? stats_list.front()->apet / stats_list.back()->apet >= 100
+             : false;
+
+  if ( log )
   {
     bc.set( "yAxis.type", "logarithmic" );
     bc.set_yaxis_title( "Damage per Execute Time (log)" );
@@ -1362,7 +1375,11 @@ bool chart::generate_action_dpet( highchart::bar_chart_t& bc,
   if ( stats_list.empty() )
     return false;
 
-  if ( stats_list.front()->apet / stats_list.back()->apet >= 100 )
+  auto log = stats_list.back() -> apet > 0
+             ? stats_list.front()->apet / stats_list.back()->apet >= 100
+             : false;
+
+  if ( log )
   {
     bc.set( "yAxis.type", "logarithmic" );
     bc.set_yaxis_title( "Damage per Execute Time (log)" );
@@ -1455,10 +1472,15 @@ bool chart::generate_scaling_plot( highchart::chart_t& ac, const player_t& p,
 bool chart::generate_scale_factors( highchart::bar_chart_t& bc,
                                     const player_t& p, scale_metric_e metric )
 {
+  if ( p.scaling == nullptr )
+  {
+    return false;
+  }
+
   std::vector<stat_e> scaling_stats;
-  range::copy_if( p.scaling_stats[ metric ],
+  range::copy_if( p.scaling->scaling_stats[ metric ],
                   std::back_inserter( scaling_stats ),
-                  [&]( const stat_e& stat ) { return p.scales_with[ stat ]; } );
+                  [&]( const stat_e& stat ) { return p.scaling->scales_with[ stat ]; } );
 
   if ( scaling_stats.empty() )
   {
@@ -1488,10 +1510,10 @@ bool chart::generate_scale_factors( highchart::bar_chart_t& bc,
   std::vector<std::pair<double, double> > error;
   for ( auto stat : scaling_stats )
   {
-    double value = util::round( p.scaling[ metric ].get_stat( stat ),
+    double value = util::round( p.scaling->scaling[ metric ].get_stat( stat ),
                                 p.sim->report_precision );
     double error_value = util::round(
-        p.scaling_error[ metric ].get_stat( stat ), p.sim->report_precision );
+        p.scaling->scaling_error[ metric ].get_stat( stat ), p.sim->report_precision );
     data.push_back( value );
     error.push_back( std::make_pair( value - fabs( error_value ),
                         value + fabs( error_value ) ) );

@@ -636,7 +636,7 @@ public:
     ab::may_crit = true;
     tactician_per_rage += ( player -> spec.tactician -> effectN( 2 ).percent() / 100 );
     tactician_per_rage *= 1.0 + player -> artifact.exploit_the_weakness.percent();
-    arms_t19_2p_chance = p() -> sets.set( WARRIOR_ARMS, T19, B2 ) -> proc_chance();
+    arms_t19_2p_chance = p() -> sets -> set( WARRIOR_ARMS, T19, B2 ) -> proc_chance();
 
     if ( arms_damage_increase )
     {
@@ -1388,7 +1388,7 @@ struct mortal_strike_t20_t : public warrior_attack_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      if ( sim -> overrides.mortal_wounds )
+      if ( ! sim -> overrides.mortal_wounds && execute_state -> target -> debuffs.mortal_wounds )
       {
         execute_state -> target -> debuffs.mortal_wounds -> trigger();
       }
@@ -1471,7 +1471,7 @@ struct mortal_strike_t : public warrior_attack_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      if ( sim -> overrides.mortal_wounds )
+      if ( ! sim -> overrides.mortal_wounds && execute_state -> target -> debuffs.mortal_wounds )
       {
         execute_state -> target -> debuffs.mortal_wounds -> trigger();
       }
@@ -1567,7 +1567,7 @@ struct bladestorm_t: public warrior_attack_t
         bladestorm_oh -> weapon = &( player -> off_hand_weapon );
         add_child( bladestorm_oh );
       }
-      if ( p -> sets.has_set_bonus( WARRIOR_ARMS, T20, B2 ) )
+      if ( p -> sets -> has_set_bonus( WARRIOR_ARMS, T20, B2 ) )
       {
         mortal_strike = new mortal_strike_t20_t( p, "bladestorm_mortal_strike" );
         add_child( mortal_strike );
@@ -1740,15 +1740,15 @@ struct furious_slash_t: public warrior_attack_t
     parse_options( options_str );
     weapon = &( p -> off_hand_weapon );
     weapon_multiplier *= 1.0 + p -> artifact.wild_slashes.percent();
-    base_crit += p -> sets.set( WARRIOR_FURY, T18, B2 ) -> effectN( 1 ).percent();
+    base_crit += p -> sets -> set( WARRIOR_FURY, T18, B2 ) -> effectN( 1 ).percent();
   }
 
   void execute() override
   {
     warrior_attack_t::execute();
-    if ( execute_state -> result == RESULT_CRIT && p() -> sets.has_set_bonus( WARRIOR_FURY, T18, B4 ) )
+    if ( execute_state -> result == RESULT_CRIT && p() -> sets -> has_set_bonus( WARRIOR_FURY, T18, B4 ) )
     {
-      p() -> cooldown.battle_cry -> adjust( timespan_t::from_millis( p() -> sets.set( WARRIOR_FURY, T18, B4 ) -> effectN( 1 ).base_value() ) );
+      p() -> cooldown.battle_cry -> adjust( timespan_t::from_millis( p() -> sets -> set( WARRIOR_FURY, T18, B4 ) -> effectN( 1 ).base_value() ) );
     }
     p() -> buff.taste_for_blood -> trigger( 1 );
     p() -> buff.frenzy -> trigger( 1 );
@@ -1758,7 +1758,7 @@ struct furious_slash_t: public warrior_attack_t
   {
     double bonus = warrior_attack_t::total_crit_bonus( state );
 
-    bonus *= 1.0 + p() -> sets.set( WARRIOR_FURY, T18, B2 ) -> effectN( 2 ).percent();
+    bonus *= 1.0 + p() -> sets -> set( WARRIOR_FURY, T18, B2 ) -> effectN( 2 ).percent();
 
     return bonus;
   }
@@ -1957,12 +1957,12 @@ struct colossus_smash_t: public warrior_attack_t
     parse_options( options_str );
     weapon = &( player -> main_hand_weapon );
     weapon_multiplier *= 1.0 + p -> artifact.focus_in_battle.percent();
-    if ( p -> sets.has_set_bonus( WARRIOR_ARMS, T20, B4 ) )
+    if ( p -> sets -> has_set_bonus( WARRIOR_ARMS, T20, B4 ) )
     {
       if ( p -> talents.ravager -> ok() )
-        t20_4p_reduction = timespan_t::from_seconds( p -> sets.set( WARRIOR_ARMS, T20, B4 ) -> effectN( 2 ).base_value() / 10 );
+        t20_4p_reduction = timespan_t::from_seconds( p -> sets -> set( WARRIOR_ARMS, T20, B4 ) -> effectN( 2 ).base_value() / 10 );
       else
-        t20_4p_reduction = timespan_t::from_seconds( p -> sets.set( WARRIOR_ARMS, T20, B4 ) -> effectN( 1 ).base_value() / 10 );
+        t20_4p_reduction = timespan_t::from_seconds( p -> sets -> set( WARRIOR_ARMS, T20, B4 ) -> effectN( 1 ).base_value() / 10 );
 
       t20_4p_reduction *= -1.0;
     }
@@ -3296,7 +3296,7 @@ struct ravager_t: public warrior_attack_t
     hasted_ticks = callbacks = false;
     attack_power_mod.direct = attack_power_mod.tick = 0;
     add_child( ravager );
-    if ( p -> sets.has_set_bonus( WARRIOR_ARMS, T20, B2 ) )
+    if ( p -> sets -> has_set_bonus( WARRIOR_ARMS, T20, B2 ) )
     {
       mortal_strike = new mortal_strike_t20_t( p, "ravager_mortal_strike" );
       add_child( mortal_strike );
@@ -3526,10 +3526,10 @@ struct slam_t: public warrior_attack_t
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier *= 1.0 + p -> artifact.crushing_blows.percent();
 
-    base_costs[RESOURCE_RAGE] += p-> sets.set( WARRIOR_ARMS, T18, B4 ) -> effectN( 1 ).resource( RESOURCE_RAGE );
-    if ( p -> sets.has_set_bonus( WARRIOR_ARMS, T18, B2 ) )
+    base_costs[RESOURCE_RAGE] += p-> sets -> set( WARRIOR_ARMS, T18, B4 ) -> effectN( 1 ).resource( RESOURCE_RAGE );
+    if ( p -> sets -> has_set_bonus( WARRIOR_ARMS, T18, B2 ) )
     {
-      t18_2pc_chance = p -> sets.set( WARRIOR_ARMS, T18, B2 ) -> proc_chance();
+      t18_2pc_chance = p -> sets -> set( WARRIOR_ARMS, T18, B2 ) -> proc_chance();
     }
   }
 
@@ -4235,7 +4235,7 @@ struct last_stand_t: public warrior_spell_t
     parse_options( options_str );
     range = -1;
     cooldown -> duration = data().cooldown();
-    cooldown -> duration *= 1.0 + p -> sets.set( WARRIOR_PROTECTION, T18, B2 ) -> effectN( 1 ).percent();
+    cooldown -> duration *= 1.0 + p -> sets -> set( WARRIOR_PROTECTION, T18, B2 ) -> effectN( 1 ).percent();
   }
 
   void execute() override
@@ -5486,7 +5486,7 @@ struct enrage_t: public warrior_buff_t < buff_t >
   int health_gain;
   enrage_t( warrior_t& p, const std::string&n, const spell_data_t*s ):
     base_t( p, buff_creator_t( &p, n, s )
-            .duration( p.spec.enrage -> effectN( 1 ).trigger() -> duration()+ p.sets.set(WARRIOR_FURY, T19, B4 ) -> effectN( 1 ).time_value() )
+            .duration( p.spec.enrage -> effectN( 1 ).trigger() -> duration()+ p.sets -> set(WARRIOR_FURY, T19, B4 ) -> effectN( 1 ).time_value() )
             .can_cancel( false )
             .add_invalidate( CACHE_ATTACK_SPEED )
             .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ) ), health_gain( 0 )
@@ -5674,7 +5674,7 @@ void warrior_t::create_buffs()
   buff.meat_cleaver = buff_creator_t( this, "meat_cleaver", spec.whirlwind -> effectN( 1 ).trigger() );
 
   buff.taste_for_blood = buff_creator_t( this, "taste_for_blood", find_spell( 206333) )
-    .default_value( find_spell( 206333) -> effectN( 1 ).percent() + sets.set( WARRIOR_FURY, T19, B2 ) -> effectN( 1 ).percent() )
+    .default_value( find_spell( 206333) -> effectN( 1 ).percent() + sets -> set( WARRIOR_FURY, T19, B2 ) -> effectN( 1 ).percent() )
     .chance( spec.furious_slash -> ok() );
 
   buff.commanding_shout = new buffs::commanding_shout_t( *this, "commanding_shout", find_spell( 97463 ) );
@@ -5717,12 +5717,12 @@ void warrior_t::create_buffs()
     .trigger_spell( artifact.odyns_champion );
 
   buff.battle_cry = buff_creator_t( this, "battle_cry", spec.battle_cry )
-    .duration( spec.battle_cry -> duration() + sets.set( WARRIOR_ARMS, T19, B4 ) -> effectN( 1 ).time_value() + talents.reckless_abandon -> effectN( 1 ).time_value() )
+    .duration( spec.battle_cry -> duration() + sets -> set( WARRIOR_ARMS, T19, B4 ) -> effectN( 1 ).time_value() + talents.reckless_abandon -> effectN( 1 ).time_value() )
     .add_invalidate( CACHE_CRIT_CHANCE )
     .cd( timespan_t::zero() );
 
   buff.battle_cry_deadly_calm = buff_creator_t( this, "battle_cry_deadly_calm", spec.battle_cry )
-    .duration( spec.battle_cry -> duration() + sets.set( WARRIOR_ARMS, T19, B4 ) -> effectN( 1 ).time_value() )
+    .duration( spec.battle_cry -> duration() + sets -> set( WARRIOR_ARMS, T19, B4 ) -> effectN( 1 ).time_value() )
     .chance( talents.deadly_calm -> ok() )
     .cd( timespan_t::zero() )
     .quiet( true );
@@ -5756,13 +5756,13 @@ void warrior_t::create_buffs()
       .add_invalidate( CACHE_ATTACK_SPEED )
       .add_invalidate( CACHE_CRIT_CHANCE );
 
-  buff.raging_thirst = buff_creator_t( this, "raging_thirst", sets.set(WARRIOR_FURY, T20, B2 ) -> effectN( 1 ).trigger() )
-    .default_value( sets.set( WARRIOR_FURY, T20, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
-    .chance( sets.set( WARRIOR_FURY, T20, B2 ) -> proc_chance() );
+  buff.raging_thirst = buff_creator_t( this, "raging_thirst", sets -> set(WARRIOR_FURY, T20, B2 ) -> effectN( 1 ).trigger() )
+    .default_value( sets -> set( WARRIOR_FURY, T20, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
+    .chance( sets -> set( WARRIOR_FURY, T20, B2 ) -> proc_chance() );
 
   buff.t20_fury_4p = buff_creator_t( this, "t20_fury_4p", talents.inner_rage -> ok() ? find_spell( 242953 ) : find_spell( 252952 ) )
     .default_value( talents.inner_rage -> ok() ? find_spell( 242953 ) -> effectN( 1 ).percent() : find_spell( 252952 )  -> effectN( 1 ).percent() )
-    .chance( sets.has_set_bonus( WARRIOR_FURY, T20, B4 ) );
+    .chance( sets -> has_set_bonus( WARRIOR_FURY, T20, B4 ) );
 
   buff.executioners_precision = buff_creator_t( this, "executioners_precision", artifact.executioners_precision.data().effectN( 1 ).trigger() )
     .default_value( artifact.executioners_precision.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() );
@@ -5781,15 +5781,15 @@ void warrior_t::init_scaling()
 
   if ( specialization() == WARRIOR_FURY )
   {
-    scales_with[STAT_WEAPON_OFFHAND_DPS] = true;
+    scaling -> enable( STAT_WEAPON_OFFHAND_DPS );
   }
 
   if ( specialization() == WARRIOR_PROTECTION )
   {
-    scales_with[STAT_BONUS_ARMOR] = true;
+    scaling -> enable( STAT_BONUS_ARMOR );
   }
 
-  scales_with[STAT_AGILITY] = false;
+  scaling -> disable( STAT_AGILITY );
 }
 
 // warrior_t::init_gains ====================================================
@@ -6275,7 +6275,7 @@ double warrior_t::composite_crit_block() const
     b += cache.mastery() * mastery.critical_block -> effectN( 1 ).mastery_value();
   }
 
-  if ( buff.shield_block -> check() && sets.has_set_bonus( WARRIOR_PROTECTION, T19, B2 ) )
+  if ( buff.shield_block -> check() && sets -> has_set_bonus( WARRIOR_PROTECTION, T19, B2 ) )
     b += find_spell( 212236 ) -> effectN( 1 ).percent();
 
   return b;
@@ -6562,7 +6562,7 @@ void warrior_t::target_mitigation( school_e school,
         active.scales_of_earth -> target = s -> action -> player;
         active.scales_of_earth -> execute();
       }
-      resource_gain( RESOURCE_RAGE, sets.set( WARRIOR_PROTECTION, T19, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ), gain.critical_block );
+      resource_gain( RESOURCE_RAGE, sets -> set( WARRIOR_PROTECTION, T19, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ), gain.critical_block );
     }
   }
 }

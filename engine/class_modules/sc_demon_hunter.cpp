@@ -1086,7 +1086,7 @@ public:
     const std::string& o = std::string())
     : ab(n, p, s),
     demonic_presence(ab::data().affected_by(p->mastery_spell.demonic_presence->effectN(1))),
-    havoc_t19_2pc(ab::data().affected_by(p -> sets.set(DEMON_HUNTER_HAVOC, T19, B2))),
+    havoc_t19_2pc(ab::data().affected_by(p -> sets->set(DEMON_HUNTER_HAVOC, T19, B2))),
     hasted_gcd(false),
     may_proc_fel_barrage(false),
     havoc_damage_increase(ab::data().affected_by(p->spec.havoc->effectN(6))),
@@ -1180,7 +1180,7 @@ public:
 
     if ( havoc_t19_2pc && ab::energize_resource == RESOURCE_FURY )
     {
-      ea *= 1.0 + p()->sets.set(DEMON_HUNTER_HAVOC, T19, B2)->effectN(1).percent();
+      ea *= 1.0 + p()->sets->set(DEMON_HUNTER_HAVOC, T19, B2)->effectN(1).percent();
     }
 
     return ea;
@@ -1685,7 +1685,7 @@ struct consume_magic_t : public demon_hunter_spell_t
 
   bool ready() override
   {
-    if ( !target -> debuffs.casting -> check() )
+    if ( ! target -> debuffs.casting || !target -> debuffs.casting -> check() )
       return false;
 
     return demon_hunter_spell_t::ready();
@@ -3170,7 +3170,7 @@ struct blade_dance_attack_t : public demon_hunter_attack_t
   {
     double cc = demon_hunter_attack_t::composite_crit_chance();
 
-    cc += p()->sets.set(DEMON_HUNTER_HAVOC, T20, B4)->effectN(1).percent();
+    cc += p()->sets->set(DEMON_HUNTER_HAVOC, T20, B4)->effectN(1).percent();
 
     return cc;
   }
@@ -3305,7 +3305,7 @@ struct blade_dance_base_t : public demon_hunter_attack_t
 
     if (target_list().size() > 0)
     {
-      const double refund = p()->sets.set(DEMON_HUNTER_HAVOC, T20, B2)->effectN(1).resource(RESOURCE_FURY);
+      const double refund = p()->sets->set(DEMON_HUNTER_HAVOC, T20, B2)->effectN(1).resource(RESOURCE_FURY);
       p()->resource_gain(RESOURCE_FURY, refund, p()->gain.havoc_t20_2pc);
     }
   }
@@ -3534,7 +3534,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
 
     // Don't put damage modifiers here, they should go in chaos_strike_damage_t.
     // Crit chance modifiers need to be in here, not chaos_strike_damage_t.
-    base_crit += p->sets.set(DEMON_HUNTER_HAVOC, T19, B4)->effectN(1).percent();
+    base_crit += p->sets->set(DEMON_HUNTER_HAVOC, T19, B4)->effectN(1).percent();
   }
 
   virtual bool init_finished() override
@@ -4571,12 +4571,12 @@ struct soul_cleave_t : public demon_hunter_attack_t
 
     // 2pc bonus is a distinct gain proc after using the ability
     p()->resource_gain(RESOURCE_PAIN,
-      p()->sets.set(DEMON_HUNTER_VENGEANCE, T19, B2)->effectN(1).trigger()
+      p()->sets->set(DEMON_HUNTER_VENGEANCE, T19, B2)->effectN(1).trigger()
         ->effectN(1).resource(RESOURCE_PAIN), p()->gain.vengeance_t19_2pc);
 
     // 4pc bonus reduction scales from 1.5-3s, based on the multiplier
     p()->cooldown.demon_spikes->adjust(
-      -p()->sets.set(DEMON_HUNTER_VENGEANCE, T19, B4)->effectN(1).time_value() * pain_multiplier * 0.5);
+      -p()->sets->set(DEMON_HUNTER_VENGEANCE, T19, B4)->effectN(1).time_value() * pain_multiplier * 0.5);
   }
 };
 
@@ -5635,7 +5635,7 @@ void demon_hunter_t::create_buffs()
 
   const double prepared_value = 
     (talent.prepared->effectN(1).trigger()->effectN(1).resource(RESOURCE_FURY) / 50)
-    * (1.0 + sets.set(DEMON_HUNTER_HAVOC, T19, B2)->effectN(1).percent());
+    * (1.0 + sets->set(DEMON_HUNTER_HAVOC, T19, B2)->effectN(1).percent());
   buff.prepared =
     buff_creator_t(this, "prepared", talent.prepared->effectN(1).trigger())
     .default_value(prepared_value)
@@ -5929,7 +5929,7 @@ struct metamorphosis_adjusted_cooldown_expr_t : public expr_t
       if (dh->legendary.anger_of_the_halfgiants_fury > 0)
         approx_fury_per_second += 1.8;
 
-      if (dh->sets.set(DEMON_HUNTER_HAVOC, T19, B2))
+      if (dh->sets->set(DEMON_HUNTER_HAVOC, T19, B2))
         approx_fury_per_second *= 1.1;
 
       // Use base haste only for approximation, don't want to calculate with temp buffs
@@ -6298,12 +6298,12 @@ void demon_hunter_t::init_scaling()
 {
   base_t::init_scaling();
 
-  scales_with[ STAT_WEAPON_OFFHAND_DPS ] = true;
+  scaling -> enable( STAT_WEAPON_OFFHAND_DPS );
 
   if ( specialization() == DEMON_HUNTER_VENGEANCE )
-    scales_with[ STAT_BONUS_ARMOR ] = true;
+    scaling -> enable( STAT_BONUS_ARMOR );
 
-  scales_with[ STAT_STRENGTH ] = false;
+  scaling -> disable( STAT_STRENGTH );
 }
 
 // demon_hunter_t::init_spells ==============================================

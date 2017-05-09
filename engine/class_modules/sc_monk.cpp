@@ -1334,7 +1334,10 @@ struct storm_earth_and_fire_pet_t : public pet_t
 
       if ( result_is_hit( state -> result ) )
       {
-        state -> target -> debuffs.mortal_wounds -> trigger();
+        if ( state -> target -> debuffs.mortal_wounds )
+        {
+          state -> target -> debuffs.mortal_wounds -> trigger();
+        }
         o() -> trigger_mark_of_the_crane( state );
 
         if ( p() -> buff.pressure_point_sef -> up() )
@@ -1372,7 +1375,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
 
       if ( result_is_hit( state -> result ) )
       {
-        if ( o() -> spec.combat_conditioning )
+        if ( o() -> spec.combat_conditioning && state -> target -> debuffs.mortal_wounds )
           state -> target -> debuffs.mortal_wounds -> trigger();
 
         if ( o() -> spec.spinning_crane_kick )
@@ -1390,7 +1393,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
         else if ( p() -> buff.pressure_point_sef -> up() )
           p() -> buff.pressure_point_sef -> expire() ;
 
-        if ( o() -> sets.has_set_bonus( MONK_WINDWALKER, T20, B2 ) )
+        if ( o() -> sets -> has_set_bonus( MONK_WINDWALKER, T20, B2 ) )
           o() -> get_target_data( state -> target ) -> debuff.rising_fist -> trigger();
 
         if ( o() -> artifact.transfer_the_power.rank() && o() -> buff.transfer_the_power -> up() )
@@ -1412,7 +1415,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
     {
       sef_melee_attack_t::impact( state );
 
-      if ( result_is_hit( state -> result ) )
+      if ( result_is_hit( state -> result ) && state -> target -> debuffs.mortal_wounds )
         state -> target -> debuffs.mortal_wounds -> trigger();
     }
   };
@@ -1506,7 +1509,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
     {
       sef_melee_attack_t::execute();
 
-      if ( o() -> sets.has_set_bonus( MONK_WINDWALKER, T20, B4 ) )
+      if ( o() -> sets -> has_set_bonus( MONK_WINDWALKER, T20, B4 ) )
         p() -> buff.pressure_point_sef -> trigger();
     }
 
@@ -2357,7 +2360,7 @@ public:
       // IE: Energizing Elixir -> Strike of the Windlord -> Fists of Fury -> Tiger Palm (trigger) -> Blackout Kick (trigger) -> Tiger Palm -> Rising Sun Kick (trigger)
       // The triggering CAN reset if the player casts the same ability two times in a row.
       // IE: Energizing Elixir -> Blackout Kick -> Blackout Kick -> Rising Sun Kick -> Blackout Kick -> Tiger Palm (trigger)
-      if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T19, B4 ) )
+      if ( p() -> sets -> has_set_bonus( MONK_WINDWALKER, T19, B4 ) )
       {
         if ( p() -> t19_melee_4_piece_container_3 != CS_NONE )
         {
@@ -2997,8 +3000,8 @@ struct tiger_palm_t: public monk_melee_attack_t
         }
 
         // 4 pieces (Brewmaster) : Tiger Palm reduces the remaining cooldown on your brews by an additional 1 sec.
-        if ( p() -> sets.has_set_bonus( MONK_BREWMASTER, T19, B4 ) )
-          time_reduction += p() -> sets.set( MONK_BREWMASTER, T19, B4 ) -> effectN( 1 ).base_value();
+        if ( p() -> sets -> has_set_bonus( MONK_BREWMASTER, T19, B4 ) )
+          time_reduction += p() -> sets -> set( MONK_BREWMASTER, T19, B4 ) -> effectN( 1 ).base_value();
 
         brew_cooldown_reduction( time_reduction );
 
@@ -3009,7 +3012,7 @@ struct tiger_palm_t: public monk_melee_attack_t
       default: break;
     }
 
-    if ( p() -> sets.has_set_bonus( p() -> specialization(), T19OH, B8 ) )
+    if ( p() -> sets -> has_set_bonus( p() -> specialization(), T19OH, B8 ) )
       p() -> buff.tier19_oh_8pc -> trigger();
   }
 
@@ -3115,8 +3118,8 @@ struct rising_sun_kick_proc_t : public monk_melee_attack_t
     if ( p() -> buff.masterful_strikes -> up() )
       p() -> buff.masterful_strikes -> decrement();
 
-    if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T18, B2 ) )
-      p() -> buff.masterful_strikes -> trigger( ( int ) p() -> sets.set( MONK_WINDWALKER,T18, B2 ) -> effect_count() );
+    if ( p() -> sets -> has_set_bonus( MONK_WINDWALKER, T18, B2 ) )
+      p() -> buff.masterful_strikes -> trigger( ( int ) p() -> sets -> set( MONK_WINDWALKER,T18, B2 ) -> effect_count() );
   }
 
   virtual void impact( action_state_t* s ) override
@@ -3126,7 +3129,7 @@ struct rising_sun_kick_proc_t : public monk_melee_attack_t
     if ( result_is_hit( s -> result ) )
     {
       // Apply Mortal Wonds
-      if ( p() -> spec.combat_conditioning )
+      if ( p() -> spec.combat_conditioning && s -> target -> debuffs.mortal_wounds )
         s -> target -> debuffs.mortal_wounds -> trigger();
 
       if ( p() -> spec.spinning_crane_kick )
@@ -3192,7 +3195,10 @@ struct rising_sun_kick_tornado_kick_t : public monk_melee_attack_t
     if ( result_is_hit( s -> result ) )
     {
       // Apply Mortal Wonds
-      s -> target -> debuffs.mortal_wounds -> trigger();
+      if ( s -> target -> debuffs.mortal_wounds )
+      {
+        s -> target -> debuffs.mortal_wounds -> trigger();
+      }
       p() -> trigger_mark_of_the_crane( s );
 
       if ( p() -> buff.pressure_point -> up() )
@@ -3216,8 +3222,8 @@ struct rising_sun_kick_t: public monk_melee_attack_t
 
     cooldown -> duration += p -> spec.mistweaver_monk -> effectN( 8 ).time_value();
 
-    if ( p -> sets.has_set_bonus( MONK_WINDWALKER, T19, B2) )
-      cooldown -> duration += p -> sets.set( MONK_WINDWALKER, T19, B2 ) -> effectN( 1 ).time_value();
+    if ( p -> sets -> has_set_bonus( MONK_WINDWALKER, T19, B2) )
+      cooldown -> duration += p -> sets -> set( MONK_WINDWALKER, T19, B2 ) -> effectN( 1 ).time_value();
 
     sef_ability = SEF_RISING_SUN_KICK;
 
@@ -3316,8 +3322,8 @@ struct rising_sun_kick_t: public monk_melee_attack_t
         if ( p() -> buff.masterful_strikes -> up() )
           p() -> buff.masterful_strikes -> decrement();
 
-        if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T18, B2 ) )
-          p() -> buff.masterful_strikes -> trigger( ( int ) p() -> sets.set( MONK_WINDWALKER,T18, B2 ) -> effect_count() );
+        if ( p() -> sets -> has_set_bonus( MONK_WINDWALKER, T18, B2 ) )
+          p() -> buff.masterful_strikes -> trigger( ( int ) p() -> sets -> set( MONK_WINDWALKER,T18, B2 ) -> effect_count() );
         break;
       }
       default: break;
@@ -3343,7 +3349,10 @@ struct rising_sun_kick_t: public monk_melee_attack_t
       // Apply Mortal Wonds
       if ( p() -> specialization() == MONK_WINDWALKER )
       {
-        s -> target -> debuffs.mortal_wounds -> trigger();
+        if ( s -> target -> debuffs.mortal_wounds )
+        {
+          s -> target -> debuffs.mortal_wounds -> trigger();
+        }
 
         if ( p() -> artifact.tornado_kicks.rank() )
         {
@@ -3357,7 +3366,7 @@ struct rising_sun_kick_t: public monk_melee_attack_t
         else if ( p() -> buff.pressure_point -> up() )
           p() -> buff.pressure_point -> expire();
 
-        if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T20, B2 ) )
+        if ( p() -> sets -> has_set_bonus( MONK_WINDWALKER, T20, B2 ) )
           td( s -> target ) -> debuff.rising_fist -> trigger();
       }
     }
@@ -4062,17 +4071,17 @@ struct fists_of_fury_t: public monk_melee_attack_t
     if ( p() -> artifact.crosswinds.rank() )
       crosswinds -> execute();
 
-    if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T17, B2 ) )
+    if ( p() -> sets -> has_set_bonus( MONK_WINDWALKER, T17, B2 ) )
     {
       // Since Serenity replaces Tigereye Brew, adjust Serenity's cooldown first.
       if ( p() -> talent.serenity )
-        p() -> cooldown.serenity -> adjust( timespan_t::from_seconds( p() -> sets.set( MONK_WINDWALKER, T17, B2 ) -> effectN( 1 ).base_value() ) );
+        p() -> cooldown.serenity -> adjust( timespan_t::from_seconds( p() -> sets -> set( MONK_WINDWALKER, T17, B2 ) -> effectN( 1 ).base_value() ) );
     }
 
-    if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T18, B4 ) )
-      p() -> buff.masterful_strikes -> trigger( ( int ) p() -> sets.set( MONK_WINDWALKER,T18, B4 ) -> effect_count() - 1 );
+    if ( p() -> sets -> has_set_bonus( MONK_WINDWALKER, T18, B4 ) )
+      p() -> buff.masterful_strikes -> trigger( ( int ) p() -> sets -> set( MONK_WINDWALKER,T18, B4 ) -> effect_count() - 1 );
 
-    if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T20, B4 ) )
+    if ( p() -> sets -> has_set_bonus( MONK_WINDWALKER, T20, B4 ) )
       p() -> buff.pressure_point -> trigger();
   }
 
@@ -5828,8 +5837,8 @@ struct purifying_brew_t: public monk_spell_t
 //      p() -> sample_datas.heavy_stagger_total_damage -> add( stagger_dmg );
 
       // When clearing Moderate Stagger with Purifying Brew, you generate 1 stack of Elusive Brawler.
-      if ( p() -> sets.has_set_bonus( MONK_BREWMASTER, T17, B4 ) )
-        p() -> buff.elusive_brawler -> trigger( p() -> sets.set( MONK_BREWMASTER, T17, B4) -> effectN( 1 ).base_value() );
+      if ( p() -> sets -> has_set_bonus( MONK_BREWMASTER, T17, B4 ) )
+        p() -> buff.elusive_brawler -> trigger( p() -> sets -> set( MONK_BREWMASTER, T17, B4) -> effectN( 1 ).base_value() );
     }
     else if ( stagger_pct > p() -> moderate_stagger_threshold )
     {
@@ -5843,8 +5852,8 @@ struct purifying_brew_t: public monk_spell_t
 //      p() -> sample_datas.moderate_stagger_total_damage -> add( stagger_dmg );
 
       // When clearing Moderate Stagger with Purifying Brew, you generate 1 stack of Elusive Brawler.
-      if ( p() -> sets.has_set_bonus( MONK_BREWMASTER, T17, B4 ) )
-        p() -> buff.elusive_brawler -> trigger( p() -> sets.set( MONK_BREWMASTER, T17, B4) -> effectN( 1 ).base_value() );
+      if ( p() -> sets -> has_set_bonus( MONK_BREWMASTER, T17, B4 ) )
+        p() -> buff.elusive_brawler -> trigger( p() -> sets -> set( MONK_BREWMASTER, T17, B4) -> effectN( 1 ).base_value() );
     }
     else
     {
@@ -6090,7 +6099,7 @@ struct soothing_mist_t: public monk_heal_t
   {
     monk_heal_t::tick( d );
 
-    if ( p() -> sets.has_set_bonus ( MONK_MISTWEAVER, T17, B2 ) )
+    if ( p() -> sets -> has_set_bonus ( MONK_MISTWEAVER, T17, B2 ) )
       p() -> buff.mistweaving -> trigger();
   }
 
@@ -6220,7 +6229,7 @@ struct effuse_t: public monk_heal_t
     if ( p() -> sheilun_staff_of_the_mists )
       artifact -> trigger();
 
-    if ( p() -> sets.has_set_bonus( p() -> specialization(), T19OH, B8 ) )
+    if ( p() -> sets -> has_set_bonus( p() -> specialization(), T19OH, B8 ) )
       p() -> buff.tier19_oh_8pc -> trigger();
     
     mastery -> execute();
@@ -6228,7 +6237,7 @@ struct effuse_t: public monk_heal_t
 
   virtual void impact( action_state_t* s ) override
   {
-    if ( p() -> sets.has_set_bonus( MONK_MISTWEAVER, T17, B4 ) && s -> result == RESULT_CRIT )
+    if ( p() -> sets -> has_set_bonus( MONK_MISTWEAVER, T17, B4 ) && s -> result == RESULT_CRIT )
       p() -> buff.chi_jis_guidance -> trigger();
   }
 };
@@ -6363,7 +6372,7 @@ struct renewing_mist_dancing_mist_t: public monk_heal_t
     if ( p.artifact.extended_healing.rank() )
       dot_duration += p.artifact.extended_healing.time_value();
 
-    if ( p.sets.has_set_bonus( MONK_MISTWEAVER, T18, B2 ) )
+    if ( p.sets -> has_set_bonus( MONK_MISTWEAVER, T18, B2 ) )
       tier18_2pc = new extend_life_t( p ); 
 
     mastery = new gust_of_mists_t( p );
@@ -6378,7 +6387,7 @@ struct renewing_mist_dancing_mist_t: public monk_heal_t
   {
     monk_heal_t::execute();
 
-    if ( p() -> sets.has_set_bonus( MONK_MISTWEAVER, T18, B4 ) )
+    if ( p() -> sets -> has_set_bonus( MONK_MISTWEAVER, T18, B4 ) )
       tier18_2pc -> execute();
 
     mastery -> execute();
@@ -6409,7 +6418,7 @@ struct renewing_mist_t: public monk_heal_t
     if ( p.artifact.dancing_mists.rank() )
       rem = new renewing_mist_dancing_mist_t( p );
 
-    if ( p.sets.has_set_bonus( MONK_MISTWEAVER, T18, B4 ) )
+    if ( p.sets -> has_set_bonus( MONK_MISTWEAVER, T18, B4 ) )
       tier18_2pc = new extend_life_t( p );
 
     mastery = new gust_of_mists_t( p );
@@ -6439,7 +6448,7 @@ struct renewing_mist_t: public monk_heal_t
   {
     monk_heal_t::execute();
 
-    if ( p() -> sets.has_set_bonus( MONK_MISTWEAVER, T18, B2 ) )
+    if ( p() -> sets -> has_set_bonus( MONK_MISTWEAVER, T18, B2 ) )
       tier18_2pc -> execute();
 
     mastery -> execute();
@@ -7597,9 +7606,9 @@ monk( *p )
     debuff.gale_burst = buff_creator_t( *this, "gale_burst", p -> passives.gale_burst )
       .default_value( 0 )
       .quiet( true );
-    debuff.rising_fist = buff_creator_t( *this, "rising_fist", p -> sets.set( MONK_WINDWALKER, T20, B2 ) )
-      .duration( timespan_t::from_seconds( p -> sets.set( MONK_WINDWALKER, T20, B2 ) -> effectN( 1 ).base_value() ) )
-      .default_value( p -> sets.set( MONK_WINDWALKER, T20, B2 ) -> effectN( 2 ).percent() );
+    debuff.rising_fist = buff_creator_t( *this, "rising_fist", p -> sets -> set( MONK_WINDWALKER, T20, B2 ) )
+      .duration( timespan_t::from_seconds( p -> sets -> set( MONK_WINDWALKER, T20, B2 ) -> effectN( 1 ).base_value() ) )
+      .default_value( p -> sets -> set( MONK_WINDWALKER, T20, B2 ) -> effectN( 2 ).percent() );
     debuff.touch_of_karma = buff_creator_t( *this, "touch_of_karma", p -> spec.touch_of_karma )
       // set the percent of the max hp as the default value.
       .default_value( p -> spec.touch_of_karma -> effectN( 3 ).percent() );
@@ -8272,7 +8281,7 @@ void monk_t::init_base_stats()
       base_gcd += spec.stance_of_the_fierce_tiger -> effectN( 5 ).time_value(); // Saved as -500 milliseconds
       base.attack_power_per_agility = 1.0;
       resources.base[RESOURCE_ENERGY] = 100;
-      resources.base[RESOURCE_ENERGY] += sets.set(MONK_WINDWALKER, T18, B4) -> effectN( 2 ).base_value();
+      resources.base[RESOURCE_ENERGY] += sets -> set(MONK_WINDWALKER, T18, B4) -> effectN( 2 ).base_value();
       resources.base[RESOURCE_MANA] = 0;
       resources.base[RESOURCE_CHI] = 4;
       resources.base[RESOURCE_CHI] += spec.stance_of_the_fierce_tiger -> effectN( 6 ).base_value();
@@ -8297,32 +8306,32 @@ void monk_t::init_scaling()
 
   if ( specialization() != MONK_MISTWEAVER )
   {
-    scales_with[STAT_INTELLECT] = false;
-    scales_with[STAT_SPELL_POWER] = false;
-    scales_with[STAT_AGILITY] = true;
-    scales_with[STAT_WEAPON_DPS] = true;
+    scaling -> disable( STAT_INTELLECT );
+    scaling -> disable( STAT_SPELL_POWER );
+    scaling -> enable( STAT_AGILITY );
+    scaling -> enable( STAT_WEAPON_DPS );
   }
   else
   {
-    scales_with[STAT_AGILITY] = false;
-    scales_with[STAT_MASTERY_RATING] = false;
-    scales_with[STAT_ATTACK_POWER] = false;
-    scales_with[STAT_SPIRIT] = true;
+    scaling -> disable( STAT_AGILITY );
+    scaling -> disable( STAT_MASTERY_RATING );
+    scaling -> disable( STAT_ATTACK_POWER );
+    scaling -> enable( STAT_SPIRIT );
   }
-  scales_with[STAT_STRENGTH] = false;
+  scaling -> disable( STAT_STRENGTH );
 
   if ( specialization() == MONK_WINDWALKER )
   {
     // Touch of Death
-    scales_with[ STAT_STAMINA ] = true;
+    scaling -> enable( STAT_STAMINA );
   }
   if ( specialization() == MONK_BREWMASTER )
   {
-    scales_with[ STAT_BONUS_ARMOR ] = true;
+    scaling -> enable( STAT_BONUS_ARMOR );
   }
 
   if ( off_hand_weapon.type != WEAPON_NONE )
-    scales_with[STAT_WEAPON_OFFHAND_DPS] = true;
+    scaling -> enable( STAT_WEAPON_OFFHAND_DPS );
 }
 
 // monk_t::init_buffs =======================================================
@@ -8352,7 +8361,7 @@ void monk_t::create_buffs()
   buff.diffuse_magic = buff_creator_t( this, "diffuse_magic", talent.diffuse_magic )
     .default_value( talent.diffuse_magic -> effectN( 1 ).percent() );
 
-  buff.tier19_oh_8pc = stat_buff_creator_t( this, "grandmasters_wisdom", sets.set( specialization(), T19OH, B8 ) -> effectN( 1 ).trigger() );
+  buff.tier19_oh_8pc = stat_buff_creator_t( this, "grandmasters_wisdom", sets -> set( specialization(), T19OH, B8 ) -> effectN( 1 ).trigger() );
 
   // Brewmaster
   buff.bladed_armor = buff_creator_t( this, "bladed_armor", spec.bladed_armor )
@@ -8382,7 +8391,7 @@ void monk_t::create_buffs()
 
   buff.ironskin_brew = buff_creator_t(this, "ironskin_brew", passives.ironskin_brew )
     .default_value( passives.ironskin_brew -> effectN( 1 ).percent() 
-      + ( sets.has_set_bonus( MONK_BREWMASTER, T19, B2 ) ? sets.set( MONK_BREWMASTER, T19, B2 ) -> effectN( 1 ).percent() : 0 ) )
+      + ( sets -> has_set_bonus( MONK_BREWMASTER, T19, B2 ) ? sets -> set( MONK_BREWMASTER, T19, B2 ) -> effectN( 1 ).percent() : 0 ) )
     .duration( passives.ironskin_brew -> duration() + ( artifact.potent_kick.rank() ? timespan_t::from_seconds( artifact.potent_kick.value() ) : timespan_t::zero() ) )
     .refresh_behavior( BUFF_REFRESH_EXTEND );
 
@@ -8441,7 +8450,7 @@ void monk_t::create_buffs()
 
   buff.uplifting_trance = buff_creator_t( this, "uplifting_trance", passives.uplifting_trance )
     .chance( spec.renewing_mist -> effectN( 2 ).percent() 
-      + ( sets.has_set_bonus( MONK_MISTWEAVER, T19, B2 ) ? sets.set( MONK_MISTWEAVER, T19, B2 ) -> effectN( 1 ).percent() : 0 ) )
+      + ( sets -> has_set_bonus( MONK_MISTWEAVER, T19, B2 ) ? sets -> set( MONK_MISTWEAVER, T19, B2 ) -> effectN( 1 ).percent() : 0 ) )
     .default_value( passives.uplifting_trance -> effectN( 1 ).percent() );
 
   buff.mistweaving = buff_creator_t(this, "mistweaving", passives.tier17_2pc_heal )
@@ -9357,7 +9366,7 @@ void monk_t::assess_damage(school_e school,
       if ( buff.elusive_brawler -> up() )
         buff.elusive_brawler -> expire();
 
-      if ( sets.has_set_bonus( MONK_BREWMASTER, T17, B2 ) )
+      if ( sets -> has_set_bonus( MONK_BREWMASTER, T17, B2 ) )
         resource_gain( RESOURCE_ENERGY, passives.tier17_2pc_tank -> effectN( 1 ).base_value(), gain.energy_refund );
 
       if ( artifact.gifted_student.rank() )
@@ -9835,6 +9844,7 @@ void monk_t::apl_combat_windwalker()
 
   def -> add_action( "auto_attack" );
   def -> add_action( this, "Spear Hand Strike", "if=target.debuff.casting.react" );
+  def -> add_action( this, "Touch of Karma", "interval=90,pct_health=0.5" );
 
   if ( sim -> allow_potions )
   {

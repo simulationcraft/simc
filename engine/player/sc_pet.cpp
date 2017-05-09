@@ -222,6 +222,35 @@ void pet_t::dismiss( bool expired )
   demise();
 }
 
+// pet_t::create_options ====================================================
+
+// Specialize pet "player-scope" options. Realistically speaking, anything else than adjusting the
+// pet APL seems somewhat pointless. Class modules are still free to override the pet's
+// create_options() to add to the list.
+void pet_t::create_options()
+{
+  add_option( opt_string( "actions", action_list_str ) );
+  add_option( opt_append( "actions+", action_list_str ) );
+  add_option( opt_map( "actions.", alist_map ) );
+  add_option( opt_string( "action_list", choose_action_list ) );
+}
+
+// pet_t::create_buffs ======================================================
+
+// Create the bare necessity of buffs for pets, skipping anything that's done in
+// player_t::create_buffs.
+
+void pet_t::create_buffs()
+{
+  if ( sim -> debug )
+    sim -> out_debug.printf( "Creating Auras, Buffs, and Debuffs for player (%s)", name() );
+
+  buffs.stunned = buff_creator_t( this, "stunned" ).max_stack( 1 );
+  buffs.movement = buff_creator_t( this, "movement" );
+
+  debuffs.casting = buff_creator_t( this, "casting" ).max_stack( 1 ).quiet( 1 );
+}
+
 // pet_t::assess_damage =====================================================
 
 void pet_t::assess_damage( school_e       school,

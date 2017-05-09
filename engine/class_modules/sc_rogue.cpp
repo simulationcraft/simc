@@ -295,8 +295,9 @@ struct rogue_t : public player_t
     buff_t* t19oh_8pc;
     // T19 Raid
     buff_t* t19_4pc_outlaw;
-    // T20
-    buff_t* t20_4pc_subtlety;
+    // T20 Raid
+    buff_t* t20_2pc_outlaw;
+
 
 
     // Artifact
@@ -2043,7 +2044,7 @@ struct wound_poison_t : public rogue_poison_t
       {
         td( state -> target ) -> debuffs.wound_poison -> trigger();
 
-        if ( ! sim -> overrides.mortal_wounds )
+        if ( ! sim -> overrides.mortal_wounds && state -> target -> debuffs.mortal_wounds )
           state -> target -> debuffs.mortal_wounds -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, data().duration() );
 
         if ( td( state -> target ) -> dots.kingsbane -> is_ticking() )
@@ -2833,7 +2834,7 @@ struct envenom_t : public rogue_attack_t
   {
     double m = rogue_attack_t::composite_target_multiplier( target );
 
-    if ( p() -> sets.has_set_bonus( ROGUE_ASSASSINATION, T19, B4 ) )
+    if ( p() -> sets -> has_set_bonus( ROGUE_ASSASSINATION, T19, B4 ) )
     {
       size_t bleeds = 0;
       rogue_td_t* tdata = td( target );
@@ -2843,7 +2844,7 @@ struct envenom_t : public rogue_attack_t
       // As of 04/08/2017, Mutilated Flesh works on T19 4PC.
       bleeds += tdata -> dots.mutilated_flesh -> is_ticking();
 
-      m *= 1.0 + p() -> sets.set( ROGUE_ASSASSINATION, T19, B4 ) -> effectN( 1 ).percent() * bleeds;
+      m *= 1.0 + p() -> sets -> set( ROGUE_ASSASSINATION, T19, B4 ) -> effectN( 1 ).percent() * bleeds;
     }
 
     return m;
@@ -3064,19 +3065,19 @@ struct garrote_t : public rogue_attack_t
     base_multiplier *= 1.0 + p -> artifact.strangler.percent();
     may_crit = false;
 
-    if ( p -> sets.has_set_bonus( ROGUE_ASSASSINATION, T20, B2 ) )
-      cooldown -> duration = data().cooldown() + p -> sets.set( ROGUE_ASSASSINATION, T20, B2 ) -> effectN( 1 ).time_value();
+    if ( p -> sets -> has_set_bonus( ROGUE_ASSASSINATION, T20, B2 ) )
+      cooldown -> duration = data().cooldown() + p -> sets -> set( ROGUE_ASSASSINATION, T20, B2 ) -> effectN( 1 ).time_value();
 
-    if ( p -> sets.has_set_bonus( ROGUE_ASSASSINATION, T20, B4 ) )
-      base_multiplier *= 1.0 + p -> sets.set( ROGUE_ASSASSINATION, T20, B4 ) -> effectN( 2 ).percent();
+    if ( p -> sets -> has_set_bonus( ROGUE_ASSASSINATION, T20, B4 ) )
+      base_multiplier *= 1.0 + p -> sets -> set( ROGUE_ASSASSINATION, T20, B4 ) -> effectN( 2 ).percent();
   }
 
   double cost() const override
   {
     double c = rogue_attack_t::cost();
 
-    if ( p() -> sets.has_set_bonus( ROGUE_ASSASSINATION, T20, B2 ) )
-      c += p() -> sets.set( ROGUE_ASSASSINATION, T20, B2 ) -> effectN( 2 ).base_value();
+    if ( p() -> sets -> has_set_bonus( ROGUE_ASSASSINATION, T20, B2 ) )
+      c += p() -> sets -> set( ROGUE_ASSASSINATION, T20, B2 ) -> effectN( 2 ).base_value();
 
     return c;
   }
@@ -3136,9 +3137,9 @@ struct garrote_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
-    if ( result_is_hit( execute_state -> result ) && p() -> sets.has_set_bonus( ROGUE_ASSASSINATION, T20, B4 ) )
+    if ( result_is_hit( execute_state -> result ) && p() -> sets -> has_set_bonus( ROGUE_ASSASSINATION, T20, B4 ) )
     {
-      p() -> trigger_combo_point_gain( p() -> sets.set( ROGUE_ASSASSINATION, T20, B4 ) -> effectN( 1 ).base_value(),
+      p() -> trigger_combo_point_gain( p() -> sets -> set( ROGUE_ASSASSINATION, T20, B4 ) -> effectN( 1 ).base_value(),
           p() -> gains.t20_4pc_assassination, this );
     }
 
@@ -3350,7 +3351,7 @@ struct kick_t : public rogue_attack_t
 
   virtual bool ready() override
   {
-    if ( ! target -> debuffs.casting -> check() )
+    if ( target -> debuffs.casting && ! target -> debuffs.casting -> check() )
       return false;
 
     return rogue_attack_t::ready();
@@ -3608,6 +3609,11 @@ struct shot_base_t : public rogue_attack_t
           p() -> resource_gain( RESOURCE_COMBO_POINT, n_cp, p() -> gains.curse_of_the_dreadblades, this );
         }
       }
+
+      if ( p() -> sets -> has_set_bonus( ROGUE_OUTLAW, T20, B2 ) && p() -> buffs.opportunity -> up() )
+      {
+        p() -> buffs.t20_2pc_outlaw -> trigger();
+      }
     }
 
     // Expire buffs.
@@ -3815,9 +3821,9 @@ struct mutilate_strike_t : public rogue_attack_t
 
     p() -> trigger_seal_fate( state );
 
-    if ( result_is_hit( state -> result ) && p() -> sets.has_set_bonus( ROGUE_ASSASSINATION, T19, B2 ) )
+    if ( result_is_hit( state -> result ) && p() -> sets -> has_set_bonus( ROGUE_ASSASSINATION, T19, B2 ) )
     {
-      double amount = state -> result_amount * p() -> sets.set( ROGUE_ASSASSINATION, T19, B2 ) -> effectN( 1 ).percent();
+      double amount = state -> result_amount * p() -> sets -> set( ROGUE_ASSASSINATION, T19, B2 ) -> effectN( 1 ).percent();
 
       residual_action::trigger( p() -> t19_2pc_assassination, state -> target, amount );
     }
@@ -3974,7 +3980,7 @@ struct nightblade_t : public rogue_attack_t
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
     timespan_t base_per_tick = data().effectN( 1 ).period();
-    base_per_tick += timespan_t::from_seconds( p() -> sets.set( ROGUE_SUBTLETY, T19, B2 ) -> effectN( 1 ).base_value() );
+    base_per_tick += timespan_t::from_seconds( p() -> sets -> set( ROGUE_SUBTLETY, T19, B2 ) -> effectN( 1 ).base_value() );
 
     return data().duration() + base_per_tick * cast_state( s ) -> cp;
   }
@@ -4163,7 +4169,7 @@ struct saber_slash_t : public rogue_attack_t
   double proc_chance_main_gauche() const override
   {
     return rogue_attack_t::proc_chance_main_gauche() +
-           p() -> sets.set( ROGUE_OUTLAW, T19, B2 ) -> effectN( 1 ).percent();
+           p() -> sets -> set( ROGUE_OUTLAW, T19, B2 ) -> effectN( 1 ).percent();
   }
 
   void reset() override
@@ -4408,17 +4414,15 @@ struct shadowstrike_t : public rogue_attack_t
         p() -> trigger_combo_point_gain( p() -> buffs.sod_shadowstrike -> value(), p() -> gains.sod_shadowstrike, this );
         p() -> buffs.sod_shadowstrike -> expire();
       }
-
-      p() -> buffs.t20_4pc_subtlety -> decrement();
     }
     else
     {
       p() -> buffs.death -> decrement();
     }
 
-    if ( result_is_hit( execute_state -> result ) && rng().roll( p() -> sets.set( ROGUE_SUBTLETY, T19, B4 ) -> proc_chance() ) )
+    if ( result_is_hit( execute_state -> result ) && rng().roll( p() -> sets -> set( ROGUE_SUBTLETY, T19, B4 ) -> proc_chance() ) )
     {
-      p() -> trigger_combo_point_gain( p() -> sets.set( ROGUE_SUBTLETY, T19, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).base_value(),
+      p() -> trigger_combo_point_gain( p() -> sets -> set( ROGUE_SUBTLETY, T19, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).base_value(),
           p() -> gains.t19_4pc_subtlety, this );
     }
 
@@ -4458,7 +4462,7 @@ struct shadowstrike_t : public rogue_attack_t
 
   double composite_crit_chance() const override
   {
-    if ( p() -> buffs.death -> up() || p() -> buffs.t20_4pc_subtlety -> up() )
+    if ( p() -> buffs.death -> up() )
     {
       return 1.0;
     }
@@ -4632,16 +4636,16 @@ struct symbols_of_death_t : public rogue_attack_t
 
     dot_duration = timespan_t::zero(); // TODO: Check ticking in later builds
 
-    if ( p -> sets.has_set_bonus( ROGUE_SUBTLETY, T20, B2 ) )
-      cooldown -> duration += p -> sets.set( ROGUE_SUBTLETY, T20, B2 ) -> effectN( 2 ).time_value();
+    if ( p -> sets -> has_set_bonus( ROGUE_SUBTLETY, T20, B2 ) )
+      cooldown -> duration += p -> sets -> set( ROGUE_SUBTLETY, T20, B2 ) -> effectN( 2 ).time_value();
   }
 
   double cost() const override
   {
     double c = rogue_attack_t::cost();
 
-    if ( p() -> sets.has_set_bonus( ROGUE_SUBTLETY, T20, B2 ) )
-      c += p() -> sets.set( ROGUE_SUBTLETY, T20, B2 ) -> effectN( 1 ).base_value();
+    if ( p() -> sets -> has_set_bonus( ROGUE_SUBTLETY, T20, B2 ) )
+      c += p() -> sets -> set( ROGUE_SUBTLETY, T20, B2 ) -> effectN( 1 ).base_value();
 
     return c;
   }
@@ -4655,18 +4659,13 @@ struct symbols_of_death_t : public rogue_attack_t
       p() -> buffs.sod_backstab -> trigger();
       p() -> buffs.sod_eviscerate -> trigger();
       p() -> buffs.sod_shadowstrike -> trigger();
-
-      if ( p() -> sets.has_set_bonus( ROGUE_SUBTLETY, T20, B4 ) )
-      {
-        p() -> buffs.t20_4pc_subtlety -> trigger( p() -> buffs.t20_4pc_subtlety -> max_stack() );
-      }
     }
     else
     {
       p() -> buffs.symbols_of_death -> trigger();
 
-      if ( p() -> sets.has_set_bonus( ROGUE_SUBTLETY, T20, B4 ) )
-        p() -> buffs.death -> trigger( p() -> sets.set( ROGUE_SUBTLETY, T20, B4 ) -> effectN( 1 ).base_value() );
+      if ( p() -> sets -> has_set_bonus( ROGUE_SUBTLETY, T20, B4 ) )
+        p() -> buffs.death -> trigger( p() -> sets -> set( ROGUE_SUBTLETY, T20, B4 ) -> effectN( 1 ).base_value() );
       else
         p() -> buffs.death -> trigger( 1 );
     }
@@ -6089,7 +6088,7 @@ void rogue_t::trigger_relentless_strikes( const action_state_t* state )
 
 void rogue_t::trigger_t19oh_8pc( const action_state_t* state )
 {
-  if ( ! sets.has_set_bonus( specialization(), T19OH, B8 ) )
+  if ( ! sets -> has_set_bonus( specialization(), T19OH, B8 ) )
   {
     return;
   }
@@ -6215,6 +6214,40 @@ struct proxy_garrote_t : public buff_t
       {
         rogue -> cooldowns.garrote -> reset( false );
       }
+    }
+  }
+};
+
+struct adrenaline_rush_t : public haste_buff_t
+{
+  rogue_t* r;
+  bool t20_4pc_extension_running;
+
+  adrenaline_rush_t( rogue_t* p ) :
+    haste_buff_t( haste_buff_creator_t( p, "adrenaline_rush", p -> find_class_spell( "Adrenaline Rush" ) )
+                  .cd( timespan_t::zero() )
+                  .default_value( p -> find_class_spell( "Adrenaline Rush" ) -> effectN( 2 ).percent() )
+                  .affects_regen( true )
+                  .add_invalidate( CACHE_ATTACK_SPEED ) ),
+    r( p ),
+    t20_4pc_extension_running( false )
+  { }
+
+  void execute( int stacks, double value, timespan_t duration ) override
+  {
+    buff_t::execute( stacks, value, duration );
+
+    t20_4pc_extension_running = false;
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+
+    if ( r -> sets -> has_set_bonus( ROGUE_OUTLAW, T20, B4) && ! t20_4pc_extension_running )
+    {
+      trigger( 1, value() / 2.0, -1.0, timespan_t::from_seconds( r -> sets -> set( ROGUE_OUTLAW, T20, B4 ) -> effectN( 1 ).base_value() ) );
+      t20_4pc_extension_running = true;
     }
   }
 };
@@ -6797,6 +6830,8 @@ double rogue_t::composite_melee_crit_chance() const
 
   crit += buffs.mantle_of_the_master_assassin_aura -> stack_value(); // 7.1.5 Legendary
 
+  crit += buffs.t20_2pc_outlaw -> stack_value();
+
   return crit;
 }
 
@@ -6827,6 +6862,8 @@ double rogue_t::composite_spell_crit_chance() const
   crit += buffs.mantle_of_the_master_assassin -> stack_value(); // 7.1.5 Legendary
 
   crit += buffs.mantle_of_the_master_assassin_aura -> stack_value(); // 7.1.5 Legendary
+
+  crit += buffs.t20_2pc_outlaw -> stack_value();
 
   return crit;
 }
@@ -7154,8 +7191,8 @@ void rogue_t::init_action_list()
     def -> add_talent( this, "Death from Above", "if=energy.time_to_max>2&!variable.ss_useable_noreroll" );
       // Pandemic is (6 + 6 * CP) * 0.3, ie (1 + CP) * 1.8
     def -> add_talent( this, "Slice and Dice", "if=!variable.ss_useable&buff.slice_and_dice.remains<target.time_to_die&buff.slice_and_dice.remains<(1+combo_points)*1.8" );
-      // Reroll unless 2+ buffs or legendary boot & true bearing
-    def -> add_action( this, "Roll the Bones", "if=!variable.ss_useable&buff.roll_the_bones.remains<target.time_to_die&(buff.roll_the_bones.remains<=3|variable.rtb_reroll)" );
+      // Reroll unless 3+ buffs or true bearing
+    def -> add_action( this, "Roll the Bones", "if=!variable.ss_useable&(target.time_to_die>20|buff.roll_the_bones.remains<target.time_to_die)&(buff.roll_the_bones.remains<=3|variable.rtb_reroll)" );
     def -> add_talent( this, "Killing Spree", "if=energy.time_to_max>5|energy<15" );
     def -> add_action( "call_action_list,name=build" );
     def -> add_action( "call_action_list,name=finish,if=!variable.ss_useable" );
@@ -7170,7 +7207,8 @@ void rogue_t::init_action_list()
     // Blade Flurry
     action_priority_list_t* bf = get_action_priority_list( "bf", "Blade Flurry" );
       // Cancels Blade Flurry buff on CD to maximize Shiarran Symmetry effect
-    bf -> add_action( "cancel_buff,name=blade_flurry,if=equipped.shivarran_symmetry&cooldown.blade_flurry.up&buff.blade_flurry.up&spell_targets.blade_flurry>=2|spell_targets.blade_flurry<2&buff.blade_flurry.up" );
+    bf -> add_action( "cancel_buff,name=blade_flurry,if=spell_targets.blade_flurry<2&buff.blade_flurry.up" );
+    bf -> add_action( "cancel_buff,name=blade_flurry,if=equipped.shivarran_symmetry&cooldown.blade_flurry.up&buff.blade_flurry.up&spell_targets.blade_flurry>=2" );
     bf -> add_action( this, "Blade Flurry", "if=spell_targets.blade_flurry>=2&!buff.blade_flurry.up" );
 
     // Cooldowns
@@ -7190,22 +7228,22 @@ void rogue_t::init_action_list()
     }
     cds -> add_talent( this, "Cannonball Barrage", "if=spell_targets.cannonball_barrage>=1" );
     cds -> add_action( this, "Adrenaline Rush", "if=!buff.adrenaline_rush.up&energy.deficit>0" );
-    cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit|((raid_event.adds.in>40|buff.true_bearing.remains>15)&combo_points.deficit>=cp_max_spend-1)" );
+    cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit|((raid_event.adds.in>40|buff.true_bearing.remains>15-buff.adrenaline_rush.up*5)&!stealthed.rogue&combo_points.deficit>=cp_max_spend-1)" );
     cds -> add_action( this, "Sprint", "if=equipped.thraxis_tricksy_treads&!variable.ss_useable" );
     cds -> add_action( "darkflight,if=equipped.thraxis_tricksy_treads&!variable.ss_useable&buff.sprint.down" );
     cds -> add_action( this, "Curse of the Dreadblades", "if=combo_points.deficit>=4&(!talent.ghostly_strike.enabled|debuff.ghostly_strike.up)" );
 
     // Finishers
     action_priority_list_t* finish = get_action_priority_list( "finish", "Finishers" );
-    finish -> add_action( this, "Between the Eyes", "if=equipped.greenskins_waterlogged_wristcuffs&!buff.greenskins_waterlogged_wristcuffs.up" );
+    finish -> add_action( this, "Between the Eyes", "if=(mantle_duration>=gcd.remains+0.2&!equipped.thraxis_tricksy_treads)|(equipped.greenskins_waterlogged_wristcuffs&!buff.greenskins_waterlogged_wristcuffs.up)" );
     finish -> add_action( this, "Run Through", "if=!talent.death_from_above.enabled|energy.time_to_max<cooldown.death_from_above.remains+3.5" );
 
     // Stealth
     action_priority_list_t* stealth = get_action_priority_list( "stealth", "Stealth" );
-    stealth -> add_action( "variable,name=stealth_condition,value=combo_points.deficit>=2+2*(talent.ghostly_strike.enabled&!debuff.ghostly_strike.up)+buff.broadsides.up&energy>60&!buff.jolly_roger.up&!buff.hidden_blade.up&!buff.curse_of_the_dreadblades.up", "Condition to use stealth abilities" );
-    stealth -> add_action( this, "Ambush" );
-    stealth -> add_action( this, "Vanish", "if=(equipped.mantle_of_the_master_assassin&buff.true_bearing.up)|variable.stealth_condition" );
-    stealth -> add_action( "shadowmeld,if=variable.stealth_condition" );
+    stealth -> add_action( "variable,name=ambush_condition,value=combo_points.deficit>=2+2*(talent.ghostly_strike.enabled&!debuff.ghostly_strike.up)+buff.broadsides.up&energy>60&!buff.jolly_roger.up&!buff.hidden_blade.up&!buff.curse_of_the_dreadblades.up" );
+    stealth -> add_action( this, "Ambush", "if=variable.ambush_condition" );
+    stealth -> add_action( this, "Vanish", "if=variable.ambush_condition|(equipped.mantle_of_the_master_assassin&mantle_duration=0&!variable.rtb_reroll&!variable.ss_useable)" );
+    stealth -> add_action( "shadowmeld,if=variable.ambush_condition" );
   }
   else if ( specialization() == ROGUE_SUBTLETY )
   {
@@ -7686,7 +7724,7 @@ void rogue_t::init_base_stats()
 
   if ( main_hand_weapon.type == WEAPON_DAGGER && off_hand_weapon.type == WEAPON_DAGGER )
     resources.base[ RESOURCE_ENERGY ] += spec.assassins_resolve -> effectN( 1 ).base_value();
-  //if ( sets.has_set_bonus( SET_MELEE, PVP, B2 ) )
+  //if ( sets -> has_set_bonus( SET_MELEE, PVP, B2 ) )
   //  resources.base[ RESOURCE_ENERGY ] += 10;
 
   base_energy_regen_per_second = 10 * ( 1.0 + spec.vitality -> effectN( 1 ).percent() );
@@ -7936,7 +7974,7 @@ void rogue_t::init_spells()
     soul_rip = new actions::soul_rip_t( this );
   }
 
-  if ( sets.has_set_bonus( ROGUE_ASSASSINATION, T19, B2 ) )
+  if ( sets -> has_set_bonus( ROGUE_ASSASSINATION, T19, B2 ) )
   {
     t19_2pc_assassination = new actions::mutilated_flesh_t( this );
   }
@@ -8003,12 +8041,12 @@ void rogue_t::init_scaling()
 {
   player_t::init_scaling();
 
-  scales_with[ STAT_WEAPON_OFFHAND_DPS    ] = items[ SLOT_OFF_HAND ].active();
-  scales_with[ STAT_STRENGTH              ] = false;
+  scaling -> enable( STAT_WEAPON_OFFHAND_DPS );
+  scaling -> disable( STAT_STRENGTH );
 
   if ( find_item( "thraxis_tricksy_treads" ) )
   {
-    scales_with[ STAT_SPEED_RATING ] = true;
+    scaling -> enable( STAT_SPEED_RATING );
   }
 
   // Break out early if scaling is disabled on this player, or there's no
@@ -8092,11 +8130,7 @@ void rogue_t::create_buffs()
                                 .period( timespan_t::zero() )
                                 .refresh_behavior( BUFF_REFRESH_PANDEMIC );
   // Outlaw
-  buffs.adrenaline_rush       = haste_buff_creator_t( this, "adrenaline_rush", find_class_spell( "Adrenaline Rush" ) )
-                                .cd( timespan_t::zero() )
-                                .default_value( find_class_spell( "Adrenaline Rush" ) -> effectN( 2 ).percent() )
-                                .affects_regen( true )
-                                .add_invalidate( CACHE_ATTACK_SPEED );
+  buffs.adrenaline_rush       = new buffs::adrenaline_rush_t( this );
   buffs.blade_flurry          = buff_creator_t( this, "blade_flurry", spec.blade_flurry )
                                 .cd( timespan_t::zero() );
   buffs.opportunity           = buff_creator_t( this, "opportunity", find_spell( 195627 ) );
@@ -8125,12 +8159,14 @@ void rogue_t::create_buffs()
                                 .default_value( find_spell( 245640 ) -> effectN( 1 ).percent() );
   buffs.shadow_blades         = new buffs::shadow_blades_t( this );
   buffs.shadow_dance          = new buffs::shadow_dance_t( this );
+  const int t20_4pc_cp        = sets -> has_set_bonus( ROGUE_SUBTLETY, T20, B4 ) ? sets -> set( ROGUE_SUBTLETY, T20, B4 ) -> effectN( 1 ).base_value() : 0;
+  const double t20_4pc_mod    = 1.0 + ( sets -> has_set_bonus( ROGUE_SUBTLETY, T20, B4 ) ? sets -> set( ROGUE_SUBTLETY, T20, B4 ) -> effectN( 2 ).percent() : 0.0 );
   buffs.sod_backstab          = buff_creator_t( this, "backstab", maybe_ptr( dbc.ptr ) ? find_spell( 245689 ) : spell_data_t::not_found() )
-                                .default_value( find_spell( 245689 ) -> effectN( 1 ).base_value() );
+                                .default_value( find_spell( 245689 ) -> effectN( 1 ).base_value() + t20_4pc_cp );
   buffs.sod_eviscerate        = buff_creator_t( this, "eviscerate", maybe_ptr( dbc.ptr ) ? find_spell( 245691 ) : spell_data_t::not_found() )
-                                .default_value( find_spell( 245691 ) -> effectN( 1 ).percent() );
+                                .default_value( find_spell( 245691 ) -> effectN( 1 ).percent() * t20_4pc_mod );
   buffs.sod_shadowstrike      = buff_creator_t( this, "shadowstrike", maybe_ptr( dbc.ptr ) ? find_spell( 227151 ) : spell_data_t::not_found() )
-                                .default_value( find_spell( 227151 ) -> effectN( 1 ).base_value() );
+                                .default_value( find_spell( 227151 ) -> effectN( 1 ).base_value() + t20_4pc_cp );
   buffs.symbols_of_death      = buff_creator_t( this, "symbols_of_death", maybe_ptr( dbc.ptr ) ? spell_data_t::not_found() : spec.symbols_of_death )
                                 .refresh_behavior( BUFF_REFRESH_PANDEMIC )
                                 .period( timespan_t::zero() )
@@ -8208,13 +8244,15 @@ void rogue_t::create_buffs()
 
   // Tiers
   // T19 Outdoor
-  buffs.t19oh_8pc                          = stat_buff_creator_t( this, "shadowstalkers_avidity", sets.set( specialization(), T19OH, B8 ) -> effectN( 1 ).trigger() )
-                                             .trigger_spell( sets.set( specialization(), T19OH, B8 ) );
+  buffs.t19oh_8pc                          = stat_buff_creator_t( this, "shadowstalkers_avidity", sets -> set( specialization(), T19OH, B8 ) -> effectN( 1 ).trigger() )
+                                             .trigger_spell( sets -> set( specialization(), T19OH, B8 ) );
   // T19 Raid
-  buffs.t19_4pc_outlaw                     = buff_creator_t( this, "swordplay", sets.set( ROGUE_OUTLAW, T19, B4 ) -> effectN( 1 ).trigger() )
-                                             .trigger_spell( sets.set( ROGUE_OUTLAW, T19, B4 ) );
-  // T20
-  buffs.t20_4pc_subtlety                   = buff_creator_t( this, "shadow_sight", sets.set( ROGUE_SUBTLETY, T20, B4 ) -> effectN( 1 ).trigger() );
+  buffs.t19_4pc_outlaw                     = buff_creator_t( this, "swordplay", sets -> set( ROGUE_OUTLAW, T19, B4 ) -> effectN( 1 ).trigger() )
+                                             .trigger_spell( sets -> set( ROGUE_OUTLAW, T19, B4 ) );
+  // T20 Raid
+  buffs.t20_2pc_outlaw                     = buff_creator_t( this, "headshot", find_spell( 242277 ) )
+                                             .default_value( find_spell( 242277 ) -> effectN( 1 ).percent() )
+                                             .add_invalidate( CACHE_CRIT_CHANCE );
 
 
   // Artifact

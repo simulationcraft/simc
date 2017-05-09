@@ -2665,15 +2665,15 @@ void item::corrupted_starlight( special_effect_t& effect )
 struct darkmoon_deck_t
 {
   player_t* player;
-  std::array<stat_buff_t*, 8> cards;
+  std::vector<stat_buff_t*> cards;
   buff_t* top_card;
   timespan_t shuffle_period;
 
-  darkmoon_deck_t( special_effect_t& effect, std::array<unsigned, 8> c ) :
+  darkmoon_deck_t( const special_effect_t& effect, const std::vector<unsigned>& c ) :
     player( effect.player ), top_card( nullptr ),
     shuffle_period( effect.driver() -> effectN( 1 ).period() )
   {
-    for ( unsigned i = 0; i < 8; i++ )
+    for ( size_t i = 0; i < c.size(); i++ )
     {
       const spell_data_t* s = player -> find_spell( c[ i ] );
       assert( s -> found() );
@@ -2681,7 +2681,7 @@ struct darkmoon_deck_t
       std::string n = s -> name_cstr();
       util::tokenize( n );
 
-      cards[ i ] = stat_buff_creator_t( player, n, s, effect.item );
+      cards.push_back( stat_buff_creator_t( player, n, s, effect.item ) );
     }
   }
 
@@ -2690,7 +2690,7 @@ struct darkmoon_deck_t
     if ( top_card )
       top_card -> expire();
 
-    top_card = cards[ ( int ) player -> rng().range( 0, 8 ) ];
+    top_card = cards[ static_cast<size_t>( player -> rng().range( 0, cards.size() ) ) ];
 
     top_card -> trigger();
   }
@@ -2729,41 +2729,48 @@ struct shuffle_event_t : public event_t
   }
 };
 
+struct shuffle_activator_t
+{
+  darkmoon_deck_t* data;
+
+  shuffle_activator_t( darkmoon_deck_t* d ) : data( d )
+  { }
+
+  void operator()(void)
+  {
+    make_event<shuffle_event_t>( *data -> player -> sim, data, true );
+  }
+};
+
 // TODO: The sim could use an "arise" and "demise" callback, it's kinda wasteful to call these
 // things per every player actor shifting in the non-sleeping list. Another option would be to make
 // (yet another list) that holds active, non-pet players.
 // TODO: Also, the darkmoon_deck_t objects are not cleaned up at the end
 void item::darkmoon_deck( special_effect_t& effect )
 {
-  std::array<unsigned, 8> cards;
+  std::vector<unsigned> cards;
+
   switch( effect.spell_id )
   {
-  case 191632: // Immortality
-    cards = { { 191624, 191625, 191626, 191627, 191628, 191629, 191630, 191631 } };
-    break;
-  case 191611: // Hellfire
-    cards = { { 191603, 191604, 191605, 191606, 191607, 191608, 191609, 191610 } };
-    break;
-  case 191563: // Dominion
-    cards = { { 191545, 191548, 191549, 191550, 191551, 191552, 191553, 191554 } };
-    break;
-  default:
-    assert( false );
+    case 191632: // Immortality
+      cards = { 191624, 191625, 191626, 191627, 191628, 191629, 191630, 191631 };
+      break;
+    case 191611: // Hellfire
+      cards = { 191603, 191604, 191605, 191606, 191607, 191608, 191609, 191610 };
+      break;
+    case 191563: // Dominion
+      cards = { 191545, 191548, 191549, 191550, 191551, 191552, 191553, 191554 };
+      break;
+    default:
+      effect.player -> sim -> errorf( "%s unknown darkmoon faire deck '%s'",
+          effect.player -> name(), effect.driver() -> name_cstr() );
+      effect.type = SPECIAL_EFFECT_NONE;
+      return;
   }
 
-  darkmoon_deck_t* d = new darkmoon_deck_t( effect, cards );
+  auto d = new darkmoon_deck_t( effect, cards );
 
-  effect.player -> sim -> player_non_sleeping_list.register_callback([ d, &effect ]( player_t* player ) {
-    // Arise time gets set to timespan_t::min() in demise, before the actor is removed from the
-    // non-sleeping list. In arise, the arise_time is set to current time before the actor is added
-    // to the non-sleeping list.
-    if ( player != effect.player || player -> arise_time < timespan_t::zero() )
-    {
-      return;
-    }
-
-    make_event<shuffle_event_t>( *effect.player -> sim, d, true );
-  });
+  effect.player -> callbacks_on_arise.emplace_back( shuffle_activator_t( d ) );
 }
 
 // Elementium Bomb Squirrel =================================================
@@ -2928,11 +2935,12 @@ void item::natures_call( special_effect_t& effect )
 
   // Set trigger spell so we can automatically create the breath action.
   effect.trigger_spell_id = 222520;
-  procs.push_back( new natures_call_proc_t( effect.create_action() ) );
+  action_t* a = effect.create_action();
+  a->base_dd_min = a->base_dd_max = effect.driver()->effectN(1).average(effect.item);
+  procs.push_back(new natures_call_proc_t(a));
 
   // Disable trigger spell again
   effect.trigger_spell_id = 0;
-
   new natures_call_callback_t( effect, procs );
 }
 

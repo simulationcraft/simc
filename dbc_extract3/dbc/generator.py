@@ -1,6 +1,6 @@
 import sys, os, re, types, html.parser, urllib, datetime, signal, json, pathlib, csv, logging, io, fnmatch, traceback
 
-import dbc.db, dbc.data, dbc.constants, dbc.parser, dbc.file
+import dbc.db, dbc.data, dbc.parser, dbc.file
 
 # Special hotfix flags for spells to mark that the spell has hotfixed effects or powers
 SPELL_EFFECT_HOTFIX_PRESENT = 0x8000000000000000
@@ -1247,6 +1247,8 @@ class SpellDataGenerator(DataGenerator):
             ( 218834, 0 ),
             ( 218822, 0 ),
 			( 209493, 0 ),
+            ( 242952, 0 ),
+            ( 242953, 0 ),
         ),
 
         # Paladin:
@@ -2614,24 +2616,12 @@ class SpellDataGenerator(DataGenerator):
             hotfix_flags |= f
             hotfix_data += hfd
 
-            tmp_fields = []
-            if dbc.constants.effect_type.get(effect.type):
-                tmp_fields += [ '%-*s' % ( dbc.constants.effect_type_maxlen, dbc.constants.effect_type.get(effect.type) ) ]
-            else:
-                #print "Type %d missing" % effect.type
-                tmp_fields += [ '%-*s' % ( dbc.constants.effect_type_maxlen, 'E_%d' % effect.type ) ]
-
-            if dbc.constants.effect_subtype.get(effect.sub_type):
-                tmp_fields += [ '%-*s' % ( dbc.constants.effect_subtype_maxlen, dbc.constants.effect_subtype.get(effect.sub_type) ) ]
-            else:
-                #stm.add(effect.sub_type)
-                tmp_fields += [ '%-*s' % ( dbc.constants.effect_subtype_maxlen, 'A_%d' % effect.sub_type ) ]
-
             # 5, 6
-            fields += tmp_fields
+            fields += effect.field('type', 'sub_type')
             f, hfd = effect.get_hotfix_info(('type', 4), ('sub_type', 5))
             hotfix_flags |= f
             hotfix_data += hfd
+
             # 7, 8, 9
             fields += effect.get_link('scaling').field('average', 'delta', 'bonus')
             f, hfd = effect.get_link('scaling').get_hotfix_info(('average', 6), ('delta', 7), ('bonus', 8))

@@ -1875,6 +1875,7 @@ struct sim_t : private sc_thread_t
   void combat_begin();
   void combat_end();
   void add_chart_data( const highchart::chart_t& chart );
+  bool      has_raid_event( const std::string& name ) const;
 
   // Activates the necessary actor/actors before iteration begins.
   void activate_actors();
@@ -2875,6 +2876,7 @@ struct set_bonus_t
       case T17:
       case T18:
       case T19:
+      case T20:
         break;
       default:
         assert( 0 && "Attempt to access role-based set bonus through specialization." );
@@ -3256,7 +3258,7 @@ struct player_collected_data_t
   extended_sample_data_t target_metric;
   mutex_t target_metric_mutex;
 
-  std::array<simple_sample_data_t,RESOURCE_MAX> resource_lost, resource_gained;
+  std::vector<simple_sample_data_t> resource_lost, resource_gained;
   struct resource_timeline_t
   {
     resource_e type;
@@ -3346,7 +3348,7 @@ struct player_collected_data_t
     double leech, run_speed, avoidance;
   } buffed_stats_snapshot;
 
-  player_collected_data_t( const std::string& player_name, sim_t& );
+  player_collected_data_t( const player_t* player );
   void reserve_memory( const player_t& );
   void merge( const player_collected_data_t& );
   void analyze( const player_t& );
@@ -3355,6 +3357,9 @@ struct player_collected_data_t
   double calculate_tmi( const health_changes_timeline_t& tl, int window, double f_length, const player_t& p );
   double calculate_max_spike_damage( const health_changes_timeline_t& tl, int window );
   std::ostream& data_str( std::ostream& s ) const;
+
+  static bool tank_container_type( const player_t* for_actor, int target_statistics_level );
+  static bool generic_container_type( const player_t* for_actor, int target_statistics_level );
 };
 
 struct player_talent_points_t
@@ -3544,6 +3549,36 @@ struct scaling_metric_data_t {
     name( sd.name_str ), value( sd.mean() ), stddev( sd.mean_std_dev ), metric( m ) {}
   scaling_metric_data_t( scale_metric_e m, const sc_timeline_t& tl, const std::string& name ) :
     name( name ), value( tl.mean() ), stddev( tl.mean_stddev() ), metric( m ) {}
+};
+
+struct player_scaling_t
+{
+  std::array<gear_stats_t, SCALE_METRIC_MAX> scaling;
+  std::array<gear_stats_t, SCALE_METRIC_MAX> scaling_normalized;
+  std::array<gear_stats_t, SCALE_METRIC_MAX> scaling_error;
+  std::array<gear_stats_t, SCALE_METRIC_MAX> scaling_delta_dps;
+  std::array<gear_stats_t, SCALE_METRIC_MAX> scaling_compare_error;
+  std::array<double, SCALE_METRIC_MAX> scaling_lag, scaling_lag_error;
+  std::array<bool, STAT_MAX> scales_with;
+  std::array<double, STAT_MAX> over_cap;
+  std::array<std::vector<stat_e>, SCALE_METRIC_MAX> scaling_stats; // sorting vector
+
+  player_scaling_t()
+  {
+    range::fill( scaling_lag, 0 );
+    range::fill( scaling_lag_error, 0 );
+    range::fill( scales_with, false );
+    range::fill( over_cap, 0 );
+  }
+
+  void enable( stat_e stat )
+  { scales_with[ stat ] = true; }
+
+  void disable( stat_e stat )
+  { scales_with[ stat ] = false; }
+
+  void set( stat_e stat, bool state )
+  { scales_with[ stat ] = state; }
 };
 
 struct player_t : public actor_t
@@ -3795,6 +3830,7 @@ struct player_t : public actor_t
   effect_callbacks_t<action_callback_t> callbacks;
   auto_dispose< std::vector<special_effect_t*> > special_effects;
   std::vector<std::function<void(player_t*)> > callbacks_on_demise;
+  std::vector<std::function<void(void)>> callbacks_on_arise;
 
   // Action Priority List
   auto_dispose< std::vector<action_t*> > action_list;
@@ -3865,7 +3901,7 @@ struct player_t : public actor_t
   std::vector<item_t> items;
   gear_stats_t gear, enchant; // Option based stats
   gear_stats_t total_gear; // composite of gear, enchant and for non-pets sim -> enchant
-  set_bonus_t sets;
+  std::unique_ptr<set_bonus_t> sets;
   meta_gem_e meta_gem;
   bool matching_gear;
   bool karazhan_trinkets_paired;
@@ -3882,15 +3918,7 @@ struct player_t : public actor_t
   double auto_attack_multiplier;
 
   // Scale Factors
-  std::array<gear_stats_t, SCALE_METRIC_MAX> scaling;
-  std::array<gear_stats_t, SCALE_METRIC_MAX> scaling_normalized;
-  std::array<gear_stats_t, SCALE_METRIC_MAX> scaling_error;
-  std::array<gear_stats_t, SCALE_METRIC_MAX> scaling_delta_dps;
-  std::array<gear_stats_t, SCALE_METRIC_MAX> scaling_compare_error;
-  std::array<double, SCALE_METRIC_MAX> scaling_lag, scaling_lag_error;
-  std::array<bool, STAT_MAX> scales_with;
-  std::array<double, STAT_MAX> over_cap;
-  std::array<std::vector<stat_e>, SCALE_METRIC_MAX> scaling_stats; // sorting vector
+  std::unique_ptr<player_scaling_t> scaling;
 
   // Movement & Position
   double base_movement_speed;
@@ -4328,7 +4356,7 @@ struct player_t : public actor_t
   virtual void  summon_pet( const std::string& name, timespan_t duration = timespan_t::zero() );
   virtual void dismiss_pet( const std::string& name );
 
-  bool is_moving() const { return buffs.movement -> check(); }
+  bool is_moving() const { return buffs.movement && buffs.movement -> check(); }
 
   bool parse_talents_numbers( const std::string& talent_string );
   bool parse_talents_armory( const std::string& talent_string );
@@ -4490,7 +4518,10 @@ struct player_t : public actor_t
       else
         current.distance_to_move = distance;
       current.movement_direction = direction;
-      buffs.movement -> trigger();
+      if ( buffs.movement )
+      {
+        buffs.movement -> trigger();
+      }
     }
   }
 
@@ -4615,7 +4646,10 @@ private:
       //x_position += current.distance_to_move;
       current.distance_to_move = 0;
       current.movement_direction = MOVEMENT_NONE;
-      buffs.movement -> expire();
+      if ( buffs.movement )
+      {
+        buffs.movement -> expire();
+      }
     }
     else
     {
@@ -4802,6 +4836,8 @@ public:
   pet_t( sim_t* sim, player_t* owner, const std::string& name, bool guardian = false, bool dynamic = false );
   pet_t( sim_t* sim, player_t* owner, const std::string& name, pet_e pt, bool guardian = false, bool dynamic = false );
 
+  virtual void create_options() override;
+  virtual void create_buffs() override;
   virtual void init() override;
   virtual void init_base_stats() override;
   virtual void init_target() override;

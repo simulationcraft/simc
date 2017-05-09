@@ -4,7 +4,7 @@ race=human
 role=spell
 position=back
 talents=3101011
-artifact=39:140822:142510:140822:0:915:3:916:3:917:3:918:3:919:3:920:6:921:3:922:3:923:3:924:1:925:1:926:1:927:1:928:1:929:1:999:1:1353:1:1390:6
+artifact=39:140822:142510:140822:0:915:3:916:3:917:3:918:3:919:3:920:6:921:3:922:3:923:3:924:1:925:1:926:1:927:1:928:1:929:1:999:1:1353:1:1390:8
 spec=affliction
 
 # This default action priority list is automatically created based on your character.

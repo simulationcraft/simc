@@ -1112,7 +1112,7 @@ struct arcane_missiles_t : public buff_t
     }
 
     am_proc_chance += p -> artifact.ethereal_sensitivity.percent();
-    am_proc_chance += p -> sets.set( MAGE_ARCANE, T19, B2 ) -> effectN( 1 ).percent();
+    am_proc_chance += p -> sets -> set( MAGE_ARCANE, T19, B2 ) -> effectN( 1 ).percent();
 
     return am_proc_chance;
   }
@@ -1876,8 +1876,8 @@ struct fire_mage_spell_t : public mage_spell_t
           p -> buffs.hot_streak -> trigger();
 
           //TODO: Add proc tracking to this to track from talent or non-talent sources.
-          if ( p -> sets.has_set_bonus( MAGE_FIRE, T19, B4 ) &&
-               rng().roll( p -> sets.set( MAGE_FIRE, T19, B4) -> effectN( 1 ).percent() ) )
+          if ( p -> sets -> has_set_bonus( MAGE_FIRE, T19, B4 ) &&
+               rng().roll( p -> sets -> set( MAGE_FIRE, T19, B4) -> effectN( 1 ).percent() ) )
           {
             p -> buffs.streaking -> trigger();
           }
@@ -1896,8 +1896,8 @@ struct fire_mage_spell_t : public mage_spell_t
             p -> procs.controlled_burn -> occur();
             p -> buffs.heating_up -> expire();
             p -> buffs.hot_streak -> trigger();
-            if ( p -> sets.has_set_bonus( MAGE_FIRE, T19, B4 ) &&
-                  rng().roll( p -> sets.set( MAGE_FIRE, T19, B4 ) -> effectN( 1 ).percent() ) )
+            if ( p -> sets -> has_set_bonus( MAGE_FIRE, T19, B4 ) &&
+                  rng().roll( p -> sets -> set( MAGE_FIRE, T19, B4 ) -> effectN( 1 ).percent() ) )
             {
               p -> buffs.streaking -> trigger();
             }
@@ -2038,10 +2038,10 @@ struct frost_mage_spell_t : public mage_spell_t
     void execute() override
     {
       // TODO: Check if Brain Freeze refresh triggers Frost T20 4pc
-      if ( mage -> buffs.brain_freeze -> check() == 0 && mage -> sets.has_set_bonus( MAGE_FROST, T20, B4 ) )
+      if ( mage -> buffs.brain_freeze -> check() == 0 && mage -> sets -> has_set_bonus( MAGE_FROST, T20, B4 ) )
       {
         mage -> cooldowns.frozen_orb
-             -> adjust( -100 * mage -> sets.set( MAGE_FROST, T20, B4 ) -> effectN( 1 ).time_value() );
+             -> adjust( -100 * mage -> sets -> set( MAGE_FROST, T20, B4 ) -> effectN( 1 ).time_value() );
       }
 
       mage -> buffs.brain_freeze -> trigger();
@@ -2078,10 +2078,10 @@ struct frost_mage_spell_t : public mage_spell_t
       }
       else
       {
-        if ( p() -> sets.has_set_bonus( MAGE_FROST, T20, B4 ) )
+        if ( p() -> sets -> has_set_bonus( MAGE_FROST, T20, B4 ) )
         {
           p() -> cooldowns.frozen_orb
-              -> adjust( -100 * p() -> sets.set( MAGE_FROST, T20, B4 ) -> effectN( 1 ).time_value() );
+              -> adjust( -100 * p() -> sets -> set( MAGE_FROST, T20, B4 ) -> effectN( 1 ).time_value() );
         }
 
         p() -> buffs.brain_freeze -> trigger();
@@ -2321,7 +2321,7 @@ struct presence_of_mind_t : public arcane_mage_spell_t
     p() -> buffs.presence_of_mind
         -> trigger( p() -> buffs.presence_of_mind -> max_stack() );
 
-    if ( p() -> sets.has_set_bonus( MAGE_ARCANE, T20, B2 ) )
+    if ( p() -> sets -> has_set_bonus( MAGE_ARCANE, T20, B2 ) )
     {
       p() -> buffs.arcane_charge -> trigger( 4 );
       p() -> buffs.deadly_presence -> trigger();
@@ -2961,17 +2961,17 @@ struct arcane_missiles_t : public arcane_mage_spell_t
 
     p() -> buffs.rhonins_assaulting_armwraps -> trigger();
 
-    if ( p() -> sets.has_set_bonus( MAGE_ARCANE, T19, B4 ) )
+    if ( p() -> sets -> has_set_bonus( MAGE_ARCANE, T19, B4 ) )
     {
       p() -> cooldowns.evocation
-          -> adjust( -1000 * p() -> sets.set( MAGE_ARCANE, T19, B4 ) -> effectN( 1 ).time_value()  );
+          -> adjust( -1000 * p() -> sets -> set( MAGE_ARCANE, T19, B4 ) -> effectN( 1 ).time_value()  );
     }
-    if ( p() -> sets.has_set_bonus( MAGE_ARCANE, T20, B4 ) )
+    if ( p() -> sets -> has_set_bonus( MAGE_ARCANE, T20, B4 ) )
     {
       // TODO: Spell data for this is really weird, both 2pc and 4pc are named "2P Bonus" and have
       // similar wording. Double check after they fix it.
       p() -> cooldowns.presence_of_mind
-          -> adjust( -100 * p() -> sets.set( MAGE_ARCANE, T20, B4 ) -> effectN( 1 ).time_value() );
+          -> adjust( -100 * p() -> sets -> set( MAGE_ARCANE, T20, B4 ) -> effectN( 1 ).time_value() );
     }
 
     p() -> buffs.arcane_missiles -> decrement();
@@ -3446,7 +3446,7 @@ struct counterspell_t : public mage_spell_t
 
   virtual bool ready() override
   {
-    if ( ! target -> debuffs.casting -> check() )
+    if ( ! target -> debuffs.casting || ! target -> debuffs.casting -> check() )
     {
       return false;
     }
@@ -3634,8 +3634,8 @@ struct fireball_t : public fire_mage_spell_t
   {
     fire_mage_spell_t::execute();
 
-    if ( p() -> sets.has_set_bonus( MAGE_FIRE, T20, B2 )
-      && rng().roll( p() -> sets.set( MAGE_FIRE, T20, B2 ) -> effectN( 1 ).percent() ) )
+    if ( p() -> sets -> has_set_bonus( MAGE_FIRE, T20, B2 )
+      && rng().roll( p() -> sets -> set( MAGE_FIRE, T20, B2 ) -> effectN( 1 ).percent() ) )
     {
       p() -> buffs.ignition -> trigger();
     }
@@ -3791,7 +3791,7 @@ struct flamestrike_t : public fire_mage_spell_t
   {
     fire_mage_spell_t::impact( state );
 
-    if ( p() -> sets.has_set_bonus( MAGE_FIRE, T20, B4 ) && state -> result == RESULT_CRIT )
+    if ( p() -> sets -> has_set_bonus( MAGE_FIRE, T20, B4 ) && state -> result == RESULT_CRIT )
     {
       // TODO: The wording seems to imply any crit will do. Double check if/when set
       // bonuses are available for testing.
@@ -4076,7 +4076,7 @@ struct frostbolt_t : public frost_mage_spell_t
       trigger_fof( fof_source_id, fof_proc_chance );
 
       double bf_proc_chance = p() -> spec.brain_freeze -> effectN( 1 ).percent();
-      bf_proc_chance += p() -> sets.set( MAGE_FROST, T19, B2 ) -> effectN( 1 ).percent();
+      bf_proc_chance += p() -> sets -> set( MAGE_FROST, T19, B2 ) -> effectN( 1 ).percent();
       bf_proc_chance += p() -> artifact.clarity_of_thought.percent();
       trigger_brain_freeze( bf_proc_chance );
     }
@@ -4216,7 +4216,7 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
     if ( result_is_hit( execute_state -> result ) )
     {
       double fof_proc_chance = p() -> spec.fingers_of_frost -> effectN( 1 ).percent();
-      fof_proc_chance += p() -> sets.set( MAGE_FROST, T19, B4 ) -> effectN( 1 ).percent();
+      fof_proc_chance += p() -> sets -> set( MAGE_FROST, T19, B4 ) -> effectN( 1 ).percent();
       fof_proc_chance *= 1.0 + p() -> talents.frozen_touch -> effectN( 1 ).percent();
       trigger_fof( fof_source_id, fof_proc_chance );
     }
@@ -4267,7 +4267,7 @@ struct frozen_orb_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::execute();
 
-    if ( p() -> sets.has_set_bonus( MAGE_FROST, T20, B2) )
+    if ( p() -> sets -> has_set_bonus( MAGE_FROST, T20, B2) )
     {
       p() -> buffs.frozen_mass -> trigger();
     }
@@ -5358,7 +5358,7 @@ struct pyroblast_t : public fire_mage_spell_t
                                    -> effectN( 1 ).time_value()  );
       }
 
-      if ( p() -> sets.has_set_bonus( MAGE_FIRE, T20, B4 ) && s -> result == RESULT_CRIT )
+      if ( p() -> sets -> has_set_bonus( MAGE_FIRE, T20, B4 ) && s -> result == RESULT_CRIT )
       {
         p() -> buffs.critical_massive -> trigger();
       }
@@ -6744,7 +6744,7 @@ void mage_t::create_buffs()
                                   .default_value( find_spell( 242251 ) -> effectN( 1 ).percent() );
   buffs.enhanced_pyrotechnics = buff_creator_t( this, "enhanced_pyrotechnics", find_spell( 157644 ) )
                                   .default_value( find_spell( 157644 ) -> effectN( 1 ).percent()
-                                      + sets.set( MAGE_FIRE, T19, B2 ) -> effectN( 1 ).percent() );
+                                      + sets -> set( MAGE_FIRE, T19, B2 ) -> effectN( 1 ).percent() );
   buffs.ignition              = buff_creator_t( this, "ignition", find_spell( 246261 ) );
   buffs.heating_up            = buff_creator_t( this, "heating_up",  find_spell( 48107 ) );
   buffs.hot_streak            = buff_creator_t( this, "hot_streak",  find_spell( 48108 ) );

@@ -819,7 +819,7 @@ void print_xml_player_scale_factor( xml_writer_t& writer, sim_t*, player_t* p,
 
   writer.begin_tag( "weights" );
 
-  std::vector<stat_e> scaling_stats = p->scaling_stats[ sm ];
+  std::vector<stat_e> scaling_stats = p->scaling->scaling_stats[ sm ];
 
   if ( p->sim->report_precision < 0 )
   {
@@ -833,15 +833,15 @@ void print_xml_player_scale_factor( xml_writer_t& writer, sim_t*, player_t* p,
                             util::stat_type_abbrev( scaling_stats[ i ] ) );
     writer.print_attribute(
         "value",
-        util::to_string( p->scaling[ sm ].get_stat( scaling_stats[ i ] ),
+        util::to_string( p->scaling->scaling[ sm ].get_stat( scaling_stats[ i ] ),
                          p->sim->report_precision ) );
     writer.print_attribute(
-        "normalized", util::to_string( p->scaling_normalized[ sm ].get_stat(
+        "normalized", util::to_string( p->scaling->scaling_normalized[ sm ].get_stat(
                                            scaling_stats[ i ] ),
                                        p->sim->report_precision ) );
     writer.print_attribute(
         "scaling_error",
-        util::to_string( p->scaling_error[ sm ].get_stat( scaling_stats[ i ] ),
+        util::to_string( p->scaling->scaling_error[ sm ].get_stat( scaling_stats[ i ] ),
                          p->sim->report_precision ) );
     writer.print_attribute(
         "delta",
@@ -859,15 +859,15 @@ void print_xml_player_scale_factor( xml_writer_t& writer, sim_t*, player_t* p,
     if ( i > 0 )
     {
       double separation =
-          fabs( p->scaling[ sm ].get_stat( scaling_stats[ i - 1 ] ) -
-                p->scaling[ sm ].get_stat( scaling_stats[ i ] ) );
+          fabs( p->scaling->scaling[ sm ].get_stat( scaling_stats[ i - 1 ] ) -
+                p->scaling->scaling[ sm ].get_stat( scaling_stats[ i ] ) );
       double error_est = sqrt(
-          p->scaling_compare_error[ sm ].get_stat( scaling_stats[ i - 1 ] ) *
-              p->scaling_compare_error[ sm ].get_stat(
+          p->scaling->scaling_compare_error[ sm ].get_stat( scaling_stats[ i - 1 ] ) *
+              p->scaling->scaling_compare_error[ sm ].get_stat(
                   scaling_stats[ i - 1 ] ) /
               4 +
-          p->scaling_compare_error[ sm ].get_stat( scaling_stats[ i ] ) *
-              p->scaling_compare_error[ sm ].get_stat( scaling_stats[ i ] ) /
+          p->scaling->scaling_compare_error[ sm ].get_stat( scaling_stats[ i ] ) *
+              p->scaling->scaling_compare_error[ sm ].get_stat( scaling_stats[ i ] ) /
               4 );
       if ( separation > ( error_est * 2 ) )
         writer.print_attribute( "relative_to_previous", ">" );
@@ -887,7 +887,7 @@ void print_xml_player_scale_factor( xml_writer_t& writer, sim_t*, player_t* p,
                             util::stat_type_abbrev( p->normalize_by() ) );
     writer.print_attribute(
         "value",
-        util::to_string( p->scaling[ sm ].get_stat( p->normalize_by() ),
+        util::to_string( p->scaling->scaling[ sm ].get_stat( p->normalize_by() ),
                          p->sim->report_precision ) );
     writer.end_tag( "dps_per_point" );
   }
@@ -896,9 +896,9 @@ void print_xml_player_scale_factor( xml_writer_t& writer, sim_t*, player_t* p,
     writer.begin_tag( "scale_lag_ms" );
     writer.print_attribute(
         "value",
-        util::to_string( p->scaling_lag[ sm ], p->sim->report_precision ) );
+        util::to_string( p->scaling->scaling_lag[ sm ], p->sim->report_precision ) );
     writer.print_attribute( "error",
-                            util::to_string( p->scaling_lag_error[ sm ],
+                            util::to_string( p->scaling->scaling_lag_error[ sm ],
                                              p->sim->report_precision ) );
     writer.end_tag( "scale_lag_ms" );
   }

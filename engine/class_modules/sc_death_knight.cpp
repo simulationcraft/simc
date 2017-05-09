@@ -1185,9 +1185,9 @@ inline rune_t* rune_t::consume()
   assert( runes -> runes_regenerating() <= MAX_REGENERATING_RUNES );
   assert( runes -> runes_depleted() == MAX_RUNES - runes -> runes_full() - runes -> runes_regenerating() );
 
-  if ( runes -> dk -> sets.has_set_bonus( DEATH_KNIGHT_UNHOLY, T19OH, B8 ) ||
-       runes -> dk -> sets.has_set_bonus( DEATH_KNIGHT_FROST, T19OH, B8 ) ||
-       runes -> dk -> sets.has_set_bonus( DEATH_KNIGHT_BLOOD, T19OH, B8 ) )
+  if ( runes -> dk -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T19OH, B8 ) ||
+       runes -> dk -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T19OH, B8 ) ||
+       runes -> dk -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T19OH, B8 ) )
   {
     runes -> dk -> buffs.t19oh_8pc -> trigger();
   }
@@ -1652,7 +1652,7 @@ struct dt_pet_t : public base_ghoul_pet_t
 
     crazed_monstrosity = buff_creator_t( this, "crazed_monstrosity", find_spell( 187970 ) )
                          .duration( find_spell( 187981 ) -> duration() ) // Grab duration from the player's spell
-                         .chance( owner -> sets.has_set_bonus( DEATH_KNIGHT_UNHOLY, T18, B4 ) );
+                         .chance( owner -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T18, B4 ) );
   }
 
   double composite_melee_speed() const override
@@ -1676,16 +1676,16 @@ struct dt_pet_t : public base_ghoul_pet_t
       m *= 1.0 + crazed_monstrosity -> data().effectN( 2 ).percent();
     }
 
-    if ( owner -> sets.has_set_bonus( DEATH_KNIGHT_UNHOLY, T18, B2 ) )
+    if ( owner -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T18, B2 ) )
     {
-      m *= 1.0 + owner -> sets.set( DEATH_KNIGHT_UNHOLY, T18, B2 ) -> effectN( 1 ).percent();
+      m *= 1.0 + owner -> sets -> set( DEATH_KNIGHT_UNHOLY, T18, B2 ) -> effectN( 1 ).percent();
     }
 
     if ( o() -> buffs.dark_transformation -> up() )
     {
       double dtb = o() -> buffs.dark_transformation -> data().effectN( 1 ).percent();
 
-      dtb += o() -> sets.set( DEATH_KNIGHT_UNHOLY, T17, B2 ) -> effectN( 2 ).percent();
+      dtb += o() -> sets -> set( DEATH_KNIGHT_UNHOLY, T17, B2 ) -> effectN( 2 ).percent();
 
       m *= 1.0 + dtb;
     }
@@ -2738,9 +2738,9 @@ void death_knight_melee_attack_t::consume_killing_machine( const action_state_t*
     proc -> occur();
   }
 
-  if ( ! p() -> sets.has_set_bonus( DEATH_KNIGHT_FROST, T18, B4 ) ||
-       ( p() -> sets.has_set_bonus( DEATH_KNIGHT_FROST, T18, B4 ) &&
-         ! p() -> rng().roll( player -> sets.set( DEATH_KNIGHT_FROST, T18, B4 ) -> effectN( 1 ).percent() ) ) )
+  if ( ! p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T18, B4 ) ||
+       ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T18, B4 ) &&
+         ! p() -> rng().roll( player -> sets -> set( DEATH_KNIGHT_FROST, T18, B4 ) -> effectN( 1 ).percent() ) ) )
   {
     killing_machine_consumed = p() -> buffs.killing_machine -> check() > 0;
     p() -> buffs.killing_machine -> decrement();
@@ -3990,7 +3990,7 @@ struct death_and_decay_t : public death_knight_spell_t
 
   void impact( action_state_t* s ) override
   {
-    if ( s -> target -> debuffs.flying -> check() )
+    if ( s -> target -> debuffs.flying && s -> target -> debuffs.flying -> check() )
     {
       if ( sim -> debug ) sim -> out_debug.printf( "Ground effect %s can not hit flying target %s", name(), s -> target -> name() );
     }
@@ -4076,7 +4076,7 @@ struct defile_t : public death_knight_spell_t
 
   void impact( action_state_t* s ) override
   {
-    if ( s -> target -> debuffs.flying -> check() )
+    if ( s -> target -> debuffs.flying && s -> target -> debuffs.flying -> check() )
     {
       if ( sim -> debug ) sim -> out_debug.printf( "Ground effect %s can not hit flying target %s", name(), s -> target -> name() );
     }
@@ -4155,7 +4155,7 @@ struct death_coil_t : public death_knight_spell_t
   {
     death_knight_spell_t::impact( state );
 
-    if ( rng().roll( player -> sets.set( DEATH_KNIGHT_UNHOLY, T19, B4 ) -> effectN( 1 ).percent() ) )
+    if ( rng().roll( player -> sets -> set( DEATH_KNIGHT_UNHOLY, T19, B4 ) -> effectN( 1 ).percent() ) )
     {
       p() -> trigger_festering_wound( state, 1, true ); // TODO: Does this ignore ICD?
     }
@@ -4179,10 +4179,10 @@ struct blood_shield_buff_t : public absorb_buff_t
   void absorb_used( double ) override
   {
     death_knight_t* p = debug_cast<death_knight_t*>( player );
-    if ( p -> sets.has_set_bonus( DEATH_KNIGHT_BLOOD, T17, B4 ) && p -> buffs.vampiric_blood -> up() )
+    if ( p -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T17, B4 ) && p -> buffs.vampiric_blood -> up() )
     {
       double min_absorb = p -> resources.max[ RESOURCE_HEALTH ] *
-                          p -> sets.set( DEATH_KNIGHT_BLOOD, T17, B4 ) -> effectN( 1 ).percent();
+                          p -> sets -> set( DEATH_KNIGHT_BLOOD, T17, B4 ) -> effectN( 1 ).percent();
 
       if ( sim -> debug )
         sim -> out_debug.printf( "%s blood_shield absorb clamped to %f", player -> name(), min_absorb );
@@ -4319,7 +4319,7 @@ struct death_strike_t : public death_knight_melee_attack_t
     may_parry = false;
     base_multiplier *= 1.0 + p -> spec.blood_death_knight -> effectN( 1 ).percent();
 
-    base_costs[ RESOURCE_RUNIC_POWER ] += p -> sets.set( DEATH_KNIGHT_BLOOD, T18, B4 ) -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
+    base_costs[ RESOURCE_RUNIC_POWER ] += p -> sets -> set( DEATH_KNIGHT_BLOOD, T18, B4 ) -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
 
     weapon = &( p -> main_hand_weapon );
   }
@@ -4749,10 +4749,10 @@ struct heart_strike_t : public death_knight_melee_attack_t
       p() -> pets.dancing_rune_weapon -> ability.heart_strike -> execute();
     }
 
-    if ( rng().roll( p() -> sets.set( DEATH_KNIGHT_BLOOD, T18, B2 ) -> effectN( 1 ).percent() ) )
+    if ( rng().roll( p() -> sets -> set( DEATH_KNIGHT_BLOOD, T18, B2 ) -> effectN( 1 ).percent() ) )
     {
       p() -> resource_gain( RESOURCE_RUNIC_POWER,
-          p() -> sets.set( DEATH_KNIGHT_BLOOD, T18, B2 ) -> effectN( 2 ).base_value() / 10,
+          p() -> sets -> set( DEATH_KNIGHT_BLOOD, T18, B2 ) -> effectN( 2 ).base_value() / 10,
           p() -> gains.t18_2pc_blood, this );
     }
   }
@@ -4805,7 +4805,7 @@ struct howling_blast_t : public death_knight_spell_t
     if ( p() -> buffs.rime -> check() )
     {
       m *= 1.0 + ( p() -> buffs.rime -> data().effectN( 3 ).percent() +
-                   p() -> sets.set( DEATH_KNIGHT_FROST, T19, B4 ) -> effectN( 1 ).percent() );
+                   p() -> sets -> set( DEATH_KNIGHT_FROST, T19, B4 ) -> effectN( 1 ).percent() );
     }
 
     return m;
@@ -4813,7 +4813,7 @@ struct howling_blast_t : public death_knight_spell_t
 
   gain_t* energize_gain( const action_state_t* /* state */ ) const override
   {
-    if ( p() -> buffs.rime -> check() && p() -> sets.has_set_bonus( DEATH_KNIGHT_FROST, T19, B4 ) )
+    if ( p() -> buffs.rime -> check() && p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T19, B4 ) )
     {
       return p() -> gains.t19_4pc_frost;
     }
@@ -5020,7 +5020,7 @@ struct mind_freeze_t : public death_knight_spell_t
 
   bool ready() override
   {
-    if ( ! target -> debuffs.casting -> check() )
+    if ( target -> debuffs.casting || ! target -> debuffs.casting -> check() )
       return false;
 
     return death_knight_spell_t::ready();
@@ -5266,10 +5266,10 @@ struct pillar_of_frost_t : public death_knight_spell_t
 
     harmful = false;
 
-    if ( p -> sets.has_set_bonus( DEATH_KNIGHT_FROST, T17, B2 ) )
+    if ( p -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T17, B2 ) )
     {
       energize_type = ENERGIZE_ON_CAST;
-      energize_amount = p -> sets.set( DEATH_KNIGHT_FROST, T17, B2 ) -> effectN( 1 ).trigger() -> effectN( 2 ).resource( RESOURCE_RUNIC_POWER );
+      energize_amount = p -> sets -> set( DEATH_KNIGHT_FROST, T17, B2 ) -> effectN( 1 ).trigger() -> effectN( 2 ).resource( RESOURCE_RUNIC_POWER );
       energize_resource = RESOURCE_RUNIC_POWER;
     }
   }
@@ -6411,7 +6411,7 @@ void death_knight_t::analyze( sim_t& s )
 
 void death_knight_t::trigger_t20_4pc_frost( double consumed )
 {
-  if ( ! sets.has_set_bonus( DEATH_KNIGHT_FROST, T20, B4 ) )
+  if ( ! sets -> has_set_bonus( DEATH_KNIGHT_FROST, T20, B4 ) )
   {
     return;
   }
@@ -6424,24 +6424,24 @@ void death_knight_t::trigger_t20_4pc_frost( double consumed )
       name(), consumed, t20_4pc_frost );
   }
 
-  if ( t20_4pc_frost >= sets.set( DEATH_KNIGHT_FROST, T20, B4 ) -> effectN( 2 ).base_value() )
+  if ( t20_4pc_frost >= sets -> set( DEATH_KNIGHT_FROST, T20, B4 ) -> effectN( 2 ).base_value() )
   {
-    auto cd_adjust = timespan_t::from_seconds( sets.set( DEATH_KNIGHT_FROST, T20, B4 ) -> effectN( 1 ).base_value() );
+    auto cd_adjust = timespan_t::from_seconds( sets -> set( DEATH_KNIGHT_FROST, T20, B4 ) -> effectN( 1 ).base_value() );
     cooldown.empower_rune_weapon -> adjust( -cd_adjust );
     cooldown.hungering_rune_weapon -> adjust( -cd_adjust );
-    t20_4pc_frost -= sets.set( DEATH_KNIGHT_FROST, T20, B4 ) -> effectN( 2 ).base_value();
+    t20_4pc_frost -= sets -> set( DEATH_KNIGHT_FROST, T20, B4 ) -> effectN( 2 ).base_value();
   }
 }
 
 void death_knight_t::trigger_t20_4pc_unholy( double consumed )
 {
-  if ( ! sets.has_set_bonus( DEATH_KNIGHT_UNHOLY, T20, B4 ) )
+  if ( ! sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T20, B4 ) )
   {
     return;
   }
 
   timespan_t cd_adjust = -timespan_t::from_seconds(
-      sets.set( DEATH_KNIGHT_UNHOLY, T20, B4 ) -> effectN( 1 ).base_value() / 10 );
+      sets -> set( DEATH_KNIGHT_UNHOLY, T20, B4 ) -> effectN( 1 ).base_value() / 10 );
 
   while ( consumed > 0 )
   {
@@ -6452,7 +6452,7 @@ void death_knight_t::trigger_t20_4pc_unholy( double consumed )
 
 void death_knight_t::trigger_t20_2pc_unholy( const action_state_t* state )
 {
-  if ( ! sets.has_set_bonus( DEATH_KNIGHT_UNHOLY, T20, B2 ) )
+  if ( ! sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T20, B2 ) )
   {
     return;
   }
@@ -6600,10 +6600,10 @@ void death_knight_t::burst_festering_wound( const action_state_t* state, unsigne
         }
 
         // TODO: Is this per festering wound, or one try?
-        if ( dk -> sets.has_set_bonus( DEATH_KNIGHT_UNHOLY, T19, B2 ) )
+        if ( dk -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T19, B2 ) )
         {
           if ( dk -> trigger_runic_corruption( 0,
-                dk -> sets.set( DEATH_KNIGHT_UNHOLY, T19, B2 ) -> effectN( 1 ).percent() ) )
+                dk -> sets -> set( DEATH_KNIGHT_UNHOLY, T19, B2 ) -> effectN( 1 ).percent() ) )
           {
             dk -> procs.t19_2pc_unholy -> occur();
           }
@@ -6702,7 +6702,7 @@ bool death_knight_t::create_actions()
         this, find_spell( 243122 ) );
   }
 
-  if ( sets.has_set_bonus( DEATH_KNIGHT_UNHOLY, T20, B2 ) )
+  if ( sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T20, B2 ) )
   {
     active_spells.t20_2pc_unholy = new explosive_army_t( this );
   }
@@ -7563,12 +7563,12 @@ void death_knight_t::init_scaling()
   player_t::init_scaling();
 
   if ( off_hand_weapon.type != WEAPON_NONE )
-    scales_with[ STAT_WEAPON_OFFHAND_DPS   ] = true;
+    scaling -> enable( STAT_WEAPON_OFFHAND_DPS );
 
   if ( specialization() == DEATH_KNIGHT_BLOOD )
-    scales_with[ STAT_BONUS_ARMOR ] = true;
+    scaling -> enable( STAT_BONUS_ARMOR );
 
-  scales_with[ STAT_AGILITY ] = false;
+  scaling -> disable( STAT_AGILITY );
 }
 
 // death_knight_t::init_buffs ===============================================
@@ -7633,7 +7633,7 @@ void death_knight_t::create_buffs()
                               .add_invalidate(legendary.toravons ? CACHE_PLAYER_DAMAGE_MULTIPLIER : CACHE_NONE);
   buffs.rime                = buff_creator_t( this, "rime", spec.rime -> effectN( 1 ).trigger() )
                               .trigger_spell( spec.rime )
-                              .chance( spec.rime -> proc_chance() + sets.set( DEATH_KNIGHT_FROST, T19, B2 ) -> effectN( 1 ).percent() );
+                              .chance( spec.rime -> proc_chance() + sets -> set( DEATH_KNIGHT_FROST, T19, B2 ) -> effectN( 1 ).percent() );
   buffs.riposte             = stat_buff_creator_t( this, "riposte", spec.riposte -> effectN( 1 ).trigger() )
                               .cd( spec.riposte -> internal_cooldown() )
                               .chance( spec.riposte -> proc_chance() )
@@ -7690,12 +7690,12 @@ void death_knight_t::create_buffs()
   buffs.t18_4pc_frost_haste = haste_buff_creator_t( this, "obliteration_t18", find_spell( 187893 ) )
     .add_invalidate( CACHE_ATTACK_HASTE )
     .default_value( 1.0 / ( 1.0 + find_spell( 187893 ) -> effectN( 1 ).percent() ) )
-    .trigger_spell( sets.set( DEATH_KNIGHT_FROST, T18, B2 ) );
+    .trigger_spell( sets -> set( DEATH_KNIGHT_FROST, T18, B2 ) );
   buffs.t18_4pc_frost_crit = buff_creator_t( this, "frozen_wake", find_spell( 187894 ) )
     .default_value( find_spell( 187894 ) -> effectN( 1 ).percent() )
-    .trigger_spell( sets.set( DEATH_KNIGHT_FROST, T18, B2 ) );
+    .trigger_spell( sets -> set( DEATH_KNIGHT_FROST, T18, B2 ) );
   buffs.t18_4pc_unholy = haste_buff_creator_t( this, "crazed_monstrosity", find_spell( 187981 ) )
-    .chance( sets.has_set_bonus( DEATH_KNIGHT_UNHOLY, T18, B4 ) )
+    .chance( sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T18, B4 ) )
     .add_invalidate( CACHE_ATTACK_SPEED )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.soulgorge = buff_creator_t( this, "soulgorge", find_spell( 213003 ) )
@@ -7703,8 +7703,8 @@ void death_knight_t::create_buffs()
   buffs.antimagic_barrier = new antimagic_barrier_buff_t( this );
   buffs.tombstone = absorb_buff_creator_t( this, "tombstone", talent.tombstone )
     .cd( timespan_t::zero() ); // Handled by the action
-  buffs.t19oh_8pc = stat_buff_creator_t( this, "deathlords_might", sets.set( specialization(), T19OH, B8 ) -> effectN( 1 ).trigger() )
-    .trigger_spell( sets.set( specialization(), T19OH, B8 ) );
+  buffs.t19oh_8pc = stat_buff_creator_t( this, "deathlords_might", sets -> set( specialization(), T19OH, B8 ) -> effectN( 1 ).trigger() )
+    .trigger_spell( sets -> set( specialization(), T19OH, B8 ) );
 
   buffs.frozen_pulse = buff_creator_t( this, "frozen_pulse", talent.frozen_pulse );
 
@@ -7715,9 +7715,9 @@ void death_knight_t::create_buffs()
 
   buffs.hungering_rune_weapon = new hungering_rune_weapon_buff_t( this );
   buffs.t20_2pc_frost = buff_creator_t( this, "rune_empowered" )
-    .spell( sets.set( DEATH_KNIGHT_FROST, T20, B2 ) -> effectN( 1 ).trigger() )
-    .trigger_spell( sets.set( DEATH_KNIGHT_FROST, T20, B2 ) )
-    .default_value( sets.set( DEATH_KNIGHT_FROST, T20, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
+    .spell( sets -> set( DEATH_KNIGHT_FROST, T20, B2 ) -> effectN( 1 ).trigger() )
+    .trigger_spell( sets -> set( DEATH_KNIGHT_FROST, T20, B2 ) )
+    .default_value( sets -> set( DEATH_KNIGHT_FROST, T20, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 }
 
