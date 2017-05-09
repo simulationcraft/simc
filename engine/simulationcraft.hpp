@@ -2876,6 +2876,7 @@ struct set_bonus_t
       case T17:
       case T18:
       case T19:
+      case T20:
         break;
       default:
         assert( 0 && "Attempt to access role-based set bonus through specialization." );
@@ -3900,7 +3901,7 @@ struct player_t : public actor_t
   std::vector<item_t> items;
   gear_stats_t gear, enchant; // Option based stats
   gear_stats_t total_gear; // composite of gear, enchant and for non-pets sim -> enchant
-  set_bonus_t sets;
+  std::unique_ptr<set_bonus_t> sets;
   meta_gem_e meta_gem;
   bool matching_gear;
   bool karazhan_trinkets_paired;

@@ -628,9 +628,9 @@ public:
   {
     ab::consume_resource();
 
-    if ( ab::last_resource_cost > 0 && p() -> sets.has_set_bonus( HUNTER_MARKSMANSHIP, T19, B2 ) )
+    if ( ab::last_resource_cost > 0 && p() -> sets -> has_set_bonus( HUNTER_MARKSMANSHIP, T19, B2 ) )
     {
-      const double set_value = p() -> sets.set( HUNTER_MARKSMANSHIP, T19, B2 ) -> effectN( 1 ).base_value();
+      const double set_value = p() -> sets -> set( HUNTER_MARKSMANSHIP, T19, B2 ) -> effectN( 1 ).base_value();
       p() -> cooldowns.trueshot
         -> adjust( timespan_t::from_seconds( -1.0 * ab::last_resource_cost / set_value ) );
     }
@@ -650,7 +650,7 @@ public:
   {
     double cost = ab::cost();
 
-    if ( p() -> sets.has_set_bonus( HUNTER_MARKSMANSHIP, T19, B4 ) && p() -> buffs.trueshot -> check() )
+    if ( p() -> sets -> has_set_bonus( HUNTER_MARKSMANSHIP, T19, B4 ) && p() -> buffs.trueshot -> check() )
       cost += cost * p() -> find_spell( 211327 ) -> effectN( 1 ).percent();
 
     if ( p() -> legendary.bm_waist -> ok() && p() -> buffs.bestial_wrath -> check() )
@@ -690,7 +690,7 @@ public:
 
   virtual void try_t20_4p_mm()
   {
-    if ( !ab::background && p() -> sets.has_set_bonus( HUNTER_MARKSMANSHIP, T20, B4 ) )
+    if ( !ab::background && p() -> sets -> has_set_bonus( HUNTER_MARKSMANSHIP, T20, B4 ) )
       p() -> buffs.pre_t20_4p_critical_aimed_damage -> expire();
   }
 };
@@ -1482,7 +1482,7 @@ struct dire_critter_t: public hunter_secondary_pet_t
   {
     hunter_secondary_pet_t::arise();
 
-    if ( o() -> sets.has_set_bonus( HUNTER_BEAST_MASTERY, T19, B2 ) && o() -> buffs.bestial_wrath -> check() )
+    if ( o() -> sets -> has_set_bonus( HUNTER_BEAST_MASTERY, T19, B2 ) && o() -> buffs.bestial_wrath -> check() )
     {
       const timespan_t bw_duration = o() -> buffs.bestial_wrath -> remains();
       buffs.bestial_wrath -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, bw_duration );
@@ -2198,8 +2198,8 @@ struct flanking_strike_t: public hunter_main_pet_attack_t
 
     base_crit += o() -> artifacts.my_beloved_monster.percent();
 
-    if ( p -> o() -> sets.has_set_bonus( HUNTER_SURVIVAL, T19, B2 ) )
-      hunting_companion_multiplier *= p -> o() -> sets.set( HUNTER_SURVIVAL, T19, B2 ) -> effectN( 1 ).base_value();
+    if ( p -> o() -> sets -> has_set_bonus( HUNTER_SURVIVAL, T19, B2 ) )
+      hunting_companion_multiplier *= p -> o() -> sets -> set( HUNTER_SURVIVAL, T19, B2 ) -> effectN( 1 ).base_value();
 
     if ( p -> o() -> talents.aspect_of_the_beast -> ok() )
       impact_action = new bestial_ferocity_t( p );
@@ -3271,10 +3271,10 @@ struct aimed_shot_t: public aimed_shot_base_t
 
     if ( p() -> buffs.t20_2p_precision -> up() )
       p() -> buffs.t20_2p_precision -> expire();
-    else if ( p() -> sets.has_set_bonus( HUNTER_MARKSMANSHIP, T20, B2 ) )
+    else if ( p() -> sets -> has_set_bonus( HUNTER_MARKSMANSHIP, T20, B2 ) )
       p() -> buffs.t20_2p_precision -> trigger();
 
-    if ( p() -> sets.has_set_bonus( HUNTER_MARKSMANSHIP, T20, B4 ) )
+    if ( p() -> sets -> has_set_bonus( HUNTER_MARKSMANSHIP, T20, B4 ) )
     {
       p() -> buffs.pre_t20_4p_critical_aimed_damage -> trigger();
       if ( p() -> buffs.pre_t20_4p_critical_aimed_damage-> stack() == 2 )
@@ -3903,7 +3903,7 @@ struct mongoose_bite_t: hunter_melee_attack_t
   {
     hunter_melee_attack_t::execute();
 
-    if ( p() -> sets.has_set_bonus( HUNTER_SURVIVAL, T19, B4 ) && p() -> buffs.mongoose_fury -> stack() == 5 )
+    if ( p() -> sets -> has_set_bonus( HUNTER_SURVIVAL, T19, B4 ) && p() -> buffs.mongoose_fury -> stack() == 5 )
       p() -> buffs.t19_4p_mongoose_power -> trigger();
 
     p() -> buffs.mongoose_fury -> trigger();
@@ -4619,9 +4619,9 @@ struct dire_beast_t: public hunter_spell_t
     // Adjust BW cd
     timespan_t t = timespan_t::from_seconds( p() -> specs.dire_beast -> effectN( 1 ).base_value() );
     // FIXME: spell data still shows the new 4 set as the 2 set, it may be swapped out from under us sometime. For now check for 4 set and use 2 set values.
-    if ( p() -> sets.has_set_bonus( HUNTER_BEAST_MASTERY, T19, B4 ) )
+    if ( p() -> sets -> has_set_bonus( HUNTER_BEAST_MASTERY, T19, B4 ) )
     {
-      // t += timespan_t::from_seconds( p() -> sets.set( HUNTER_BEAST_MASTERY, T19, B2 ) -> effectN( 1 ).base_value() );
+      // t += timespan_t::from_seconds( p() -> sets -> set( HUNTER_BEAST_MASTERY, T19, B2 ) -> effectN( 1 ).base_value() );
       // Not getting the right number from that for some reason.
       t += timespan_t::from_seconds( p() -> dbc.effect( 312803 ) -> base_value() );
     }
@@ -4693,7 +4693,7 @@ struct bestial_wrath_t: public hunter_spell_t
   {
     p() -> buffs.bestial_wrath  -> trigger();
     p() -> active.pet -> buffs.bestial_wrath -> trigger();
-    if ( p() -> sets.has_set_bonus( HUNTER_BEAST_MASTERY, T19, B2 ) )
+    if ( p() -> sets -> has_set_bonus( HUNTER_BEAST_MASTERY, T19, B2 ) )
     {
       // 2017-02-06 hotfix: "With the Dire Frenzy talent, the Eagletalon Battlegear Beast Mastery 2-piece bonus should now grant your pet 10% increased damage for 15 seconds."
       if ( p() -> talents.dire_frenzy -> ok() )
@@ -4814,8 +4814,8 @@ struct dire_frenzy_t: public hunter_spell_t
     // Adjust BW cd
     timespan_t t = timespan_t::from_seconds( p() -> specs.dire_beast -> effectN( 1 ).base_value() );
     // FIXME: spell data still shows the new 4 set as the 2 set, it may be swapped out from under us sometime. For now check for 4 set and use 2 set values.
-    if ( p() -> sets.has_set_bonus( HUNTER_BEAST_MASTERY, T19, B4 ) )
-      // t += timespan_t::from_seconds( p() -> sets.set( HUNTER_BEAST_MASTERY, T19, B2 ) -> effectN( 1 ).base_value() );
+    if ( p() -> sets -> has_set_bonus( HUNTER_BEAST_MASTERY, T19, B4 ) )
+      // t += timespan_t::from_seconds( p() -> sets -> set( HUNTER_BEAST_MASTERY, T19, B2 ) -> effectN( 1 ).base_value() );
       // Not getting the right number from that for some reason.
       t += timespan_t::from_seconds( p() -> dbc.effect( 312803 ) -> base_value() );
     p() -> cooldowns.bestial_wrath -> adjust( -t );

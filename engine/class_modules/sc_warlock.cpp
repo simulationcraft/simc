@@ -1042,7 +1042,10 @@ struct dreadbite_t : public warlock_pet_melee_attack_t
     warlock_pet_melee_attack_t( "Dreadbite", p, p -> find_spell( 205196 ) )
   {
     weapon = &( p -> main_hand_weapon );
-    dreadstalker_duration = p -> find_spell( 193332 ) -> duration() + ( p -> sets.has_set_bonus( WARLOCK_DEMONOLOGY, T19, B4 ) ? p -> sets.set( WARLOCK_DEMONOLOGY, T19, B4 ) -> effectN( 1 ).time_value() : timespan_t::zero() );
+    dreadstalker_duration = p -> find_spell( 193332 ) -> duration() +
+                            ( p -> o() -> sets->has_set_bonus( WARLOCK_DEMONOLOGY, T19, B4 )
+                              ? p -> o() -> sets->set( WARLOCK_DEMONOLOGY, T19, B4 ) -> effectN( 1 ).time_value()
+                              : timespan_t::zero() );
     cooldown -> duration = dreadstalker_duration + timespan_t::from_seconds( 1.0 );
   }
 
@@ -1316,7 +1319,7 @@ struct fel_firebolt_t: public warlock_pet_spell_t
     warlock_pet_spell_t::impact( s );
     if ( result_is_hit( s -> result ) )
     {
-      if ( rng().roll( p() -> o() -> sets.set( WARLOCK_DEMONOLOGY, T18, B4 ) -> effectN( 1 ).percent() ) )
+      if ( rng().roll( p() -> o() -> sets->set( WARLOCK_DEMONOLOGY, T18, B4 ) -> effectN( 1 ).percent() ) )
       {
         p() -> o() -> buffs.t18_4pc_driver -> trigger();
       }
@@ -2942,10 +2945,10 @@ struct agony_t: public warlock_spell_t
 
     td( d -> target ) -> debuffs_agony -> trigger();
 
-    double tier_bonus = 1.0 + p() -> sets.set( WARLOCK_AFFLICTION, T19, B4 ) -> effectN( 1 ).percent();
+    double tier_bonus = 1.0 + p() -> sets->set( WARLOCK_AFFLICTION, T19, B4 ) -> effectN( 1 ).percent();
 
     double active_agonies = p() -> get_active_dots( internal_id );
-    double accumulator_increment = rng().range( 0.0, p() -> sets.has_set_bonus( WARLOCK_AFFLICTION, T19, B4 ) ? 0.32 * tier_bonus : 0.32 ) / sqrt( active_agonies );
+    double accumulator_increment = rng().range( 0.0, p() -> sets->has_set_bonus( WARLOCK_AFFLICTION, T19, B4 ) ? 0.32 * tier_bonus : 0.32 ) / sqrt( active_agonies );
 
     p() -> agony_accumulator += accumulator_increment;
 
@@ -2963,7 +2966,7 @@ struct agony_t: public warlock_spell_t
         p() -> shard_react = timespan_t::max();
     }
 
-    if ( p() -> sets.has_set_bonus( WARLOCK_AFFLICTION, T18, B4 ) )
+    if ( p() -> sets->has_set_bonus( WARLOCK_AFFLICTION, T18, B4 ) )
     {
       bool procced = p() -> misery_rppm -> trigger(); //check for RPPM
       if ( procced )
@@ -3001,8 +3004,8 @@ struct unstable_affliction_t: public warlock_spell_t
       affected_by_contagion = false;
       affected_by_deaths_embrace = true;
 
-      if ( p -> sets.has_set_bonus( WARLOCK_AFFLICTION, T19, B2 ) )
-        base_multiplier *= 1.0 + p -> sets.set( WARLOCK_AFFLICTION, T19, B2 ) -> effectN( 1 ).percent();
+      if ( p -> sets->has_set_bonus( WARLOCK_AFFLICTION, T19, B2 ) )
+        base_multiplier *= 1.0 + p -> sets->set( WARLOCK_AFFLICTION, T19, B2 ) -> effectN( 1 ).percent();
     }
 
     timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -3056,7 +3059,7 @@ struct unstable_affliction_t: public warlock_spell_t
 
     void tick( dot_t* d ) override
     {
-      if ( p() -> sets.has_set_bonus( WARLOCK_AFFLICTION, T18, B4 ) )
+      if ( p() -> sets->has_set_bonus( WARLOCK_AFFLICTION, T18, B4 ) )
       {
         p() -> buffs.instability -> trigger();
       }
@@ -3388,7 +3391,7 @@ struct drain_life_t: public warlock_spell_t
   virtual void tick( dot_t* d ) override
   {
 
-    if ( p() -> sets.has_set_bonus( WARLOCK_AFFLICTION, T18, B2 ) )
+    if ( p() -> sets->has_set_bonus( WARLOCK_AFFLICTION, T18, B2 ) )
     {
       p() -> buffs.shard_instability -> trigger();
     }
@@ -3437,9 +3440,9 @@ struct shadow_bolt_t: public warlock_spell_t
 
     icd = p -> get_cooldown( "discord_icd" );
 
-    if ( p -> sets.set( WARLOCK_DEMONOLOGY, T17, B4 ) )
+    if ( p -> sets->set( WARLOCK_DEMONOLOGY, T17, B4 ) )
     {
-      if ( rng().roll( p->sets.set( WARLOCK_DEMONOLOGY, T17, B4 )->effectN( 1 ).percent() ) )
+      if ( rng().roll( p->sets->set( WARLOCK_DEMONOLOGY, T17, B4 )->effectN( 1 ).percent() ) )
       {
         energize_amount++;
       }
@@ -3505,7 +3508,7 @@ struct shadow_bolt_t: public warlock_spell_t
       }
     }
 
-    if( p() -> sets.set( WARLOCK_DEMONOLOGY, T18, B2 ) )
+    if( p() -> sets->set( WARLOCK_DEMONOLOGY, T18, B2 ) )
     {
         p() -> buffs.tier18_2pc_demonology -> trigger( 1 );
     }
@@ -3591,7 +3594,7 @@ struct doom_t: public warlock_spell_t
         p() -> procs.impending_doom -> occur();
       }
 
-      if ( p()->sets.has_set_bonus( WARLOCK_DEMONOLOGY, T19, B2 ) && rng().roll( p() -> sets.set( WARLOCK_DEMONOLOGY, T19, B2 ) -> effectN( 1 ).percent() ) )
+      if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T19, B2 ) && rng().roll( p() -> sets->set( WARLOCK_DEMONOLOGY, T19, B2 ) -> effectN( 1 ).percent() ) )
         p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.t19_2pc_demonology );
     }
   }
@@ -3767,9 +3770,9 @@ struct hand_of_guldan_t: public warlock_spell_t
         doom -> target = s -> target;
         doom -> execute();
       }
-      if ( p() -> sets.set( WARLOCK_DEMONOLOGY, T17, B2 ) )
+      if ( p() -> sets->set( WARLOCK_DEMONOLOGY, T17, B2 ) )
       {
-        if ( rng().roll( p() -> sets.set( WARLOCK_DEMONOLOGY, T17, B2 ) -> proc_chance() ) )
+        if ( rng().roll( p() -> sets->set( WARLOCK_DEMONOLOGY, T17, B2 ) -> proc_chance() ) )
         {
           shards_used *= 1.5;
         }
@@ -3905,8 +3908,8 @@ struct conflagrate_t: public warlock_spell_t
 
     cooldown -> charges += p -> spec.conflagrate_2 -> effectN( 1 ).base_value();
 
-    cooldown -> charges += p -> sets.set( WARLOCK_DESTRUCTION, T19, B4 ) -> effectN( 1 ).base_value();
-    cooldown -> duration += p -> sets.set( WARLOCK_DESTRUCTION, T19, B4 ) -> effectN( 2 ).time_value();
+    cooldown -> charges += p -> sets->set( WARLOCK_DESTRUCTION, T19, B4 ) -> effectN( 1 ).base_value();
+    cooldown -> duration += p -> sets->set( WARLOCK_DESTRUCTION, T19, B4 ) -> effectN( 2 ).time_value();
   }
 
   bool ready() override
@@ -4078,8 +4081,8 @@ struct duplicate_chaos_bolt_t : public warlock_spell_t
   {
     background = dual = true;
     crit_bonus_multiplier *= 1.0 + p -> artifact.chaotic_instability.percent();
-    base_multiplier *= 1.0 + ( p -> sets.set( WARLOCK_DESTRUCTION, T18, B2 ) -> effectN( 2 ).percent() );
-    base_multiplier *= 1.0 + ( p -> sets.set( WARLOCK_DESTRUCTION, T17, B4 ) -> effectN( 1 ).percent() );
+    base_multiplier *= 1.0 + ( p -> sets->set( WARLOCK_DESTRUCTION, T18, B2 ) -> effectN( 2 ).percent() );
+    base_multiplier *= 1.0 + ( p -> sets->set( WARLOCK_DESTRUCTION, T17, B4 ) -> effectN( 1 ).percent() );
     if ( maybe_ptr( p -> dbc.ptr ) )
       base_multiplier *= 1.0 + ( p -> talents.reverse_entropy -> effectN( 2 ).percent() );
   }
@@ -4154,9 +4157,9 @@ struct chaos_bolt_t: public warlock_spell_t
 
     crit_bonus_multiplier *= 1.0 + p -> artifact.chaotic_instability.percent();
 
-    base_execute_time += p -> sets.set( WARLOCK_DESTRUCTION, T18, B2 ) -> effectN( 1 ).time_value();
-    base_multiplier *= 1.0 + ( p -> sets.set( WARLOCK_DESTRUCTION, T18, B2 ) -> effectN( 2 ).percent() );
-    base_multiplier *= 1.0 + ( p -> sets.set( WARLOCK_DESTRUCTION, T17, B4 ) -> effectN( 1 ).percent() );
+    base_execute_time += p -> sets->set( WARLOCK_DESTRUCTION, T18, B2 ) -> effectN( 1 ).time_value();
+    base_multiplier *= 1.0 + ( p -> sets->set( WARLOCK_DESTRUCTION, T18, B2 ) -> effectN( 2 ).percent() );
+    base_multiplier *= 1.0 + ( p -> sets->set( WARLOCK_DESTRUCTION, T17, B4 ) -> effectN( 1 ).percent() );
     if ( maybe_ptr( p -> dbc.ptr ) )
       base_multiplier *= 1.0 + ( p -> talents.reverse_entropy -> effectN( 2 ).percent() );
     if ( maybe_ptr( p -> dbc.ptr ) )
@@ -4274,7 +4277,7 @@ struct chaos_bolt_t: public warlock_spell_t
   {
     double c = warlock_spell_t::cost();
 
-    double t18_4pc_rng = p() -> sets.set( WARLOCK_DESTRUCTION, T18, B4 ) -> effectN( 1 ).percent();
+    double t18_4pc_rng = p() -> sets->set( WARLOCK_DESTRUCTION, T18, B4 ) -> effectN( 1 ).percent();
 
     if ( rng().roll( t18_4pc_rng ) )
     {
@@ -4994,7 +4997,7 @@ struct call_dreadstalkers_t : public warlock_spell_t
     recurrent_ritual( 0.0 )
   {
     harmful = may_crit = false;
-    dreadstalker_duration = p -> find_spell( 193332 ) -> duration() + ( p -> sets.has_set_bonus( WARLOCK_DEMONOLOGY, T19, B4 ) ? p -> sets.set( WARLOCK_DEMONOLOGY, T19, B4 ) -> effectN( 1 ).time_value() : timespan_t::zero() );
+    dreadstalker_duration = p -> find_spell( 193332 ) -> duration() + ( p -> sets->has_set_bonus( WARLOCK_DEMONOLOGY, T19, B4 ) ? p -> sets->set( WARLOCK_DEMONOLOGY, T19, B4 ) -> effectN( 1 ).time_value() : timespan_t::zero() );
     dreadstalker_count = data().effectN( 1 ).base_value();
     improved_dreadstalkers = p -> talents.improved_dreadstalkers -> effectN( 1 ).base_value();
   }
@@ -5117,9 +5120,9 @@ struct demonbolt_t : public warlock_spell_t
 
     icd = p -> get_cooldown( "discord_icd" );
 
-    if ( p -> sets.set( WARLOCK_DEMONOLOGY, T17, B4 ) )
+    if ( p -> sets->set( WARLOCK_DEMONOLOGY, T17, B4 ) )
     {
-      if ( rng().roll( p -> sets.set( WARLOCK_DEMONOLOGY, T17, B4 ) -> effectN( 1 ).percent() ) )
+      if ( rng().roll( p -> sets->set( WARLOCK_DEMONOLOGY, T17, B4 ) -> effectN( 1 ).percent() ) )
       {
         energize_amount++;
       }
@@ -5194,7 +5197,7 @@ struct demonbolt_t : public warlock_spell_t
       }
     }
 
-    if ( p() -> sets.set( WARLOCK_DEMONOLOGY, T18, B2 ) )
+    if ( p() -> sets->set( WARLOCK_DEMONOLOGY, T18, B2 ) )
     {
       p() -> buffs.tier18_2pc_demonology -> trigger( 1 );
     }
@@ -5334,7 +5337,7 @@ struct drain_soul_t: public warlock_spell_t
 
   virtual void tick( dot_t* d ) override
   {
-    if ( p() -> sets.has_set_bonus( WARLOCK_AFFLICTION, T18, B2 ) )
+    if ( p() -> sets->has_set_bonus( WARLOCK_AFFLICTION, T18, B2 ) )
     {
       p() -> buffs.shard_instability -> trigger();
     }
@@ -5416,8 +5419,8 @@ struct shadowburn_t: public warlock_spell_t
 
     cooldown -> charges += p -> spec.conflagrate_2 -> effectN( 1 ).base_value();
 
-    cooldown -> charges += p -> sets.set( WARLOCK_DESTRUCTION, T19, B4 ) -> effectN( 1 ).base_value();
-    cooldown -> duration += p -> sets.set( WARLOCK_DESTRUCTION, T19, B4 ) -> effectN( 2 ).time_value();
+    cooldown -> charges += p -> sets->set( WARLOCK_DESTRUCTION, T19, B4 ) -> effectN( 1 ).base_value();
+    cooldown -> duration += p -> sets->set( WARLOCK_DESTRUCTION, T19, B4 ) -> effectN( 2 ).time_value();
   }
 
   virtual void impact( action_state_t* s ) override
@@ -6410,7 +6413,7 @@ void warlock_t::create_pets()
     {
       warlock_pet_list.darkglare[i] = new pets::darkglare_t( sim, this );
     }
-    if ( sets.has_set_bonus( WARLOCK_DEMONOLOGY, T18, B4 ) )
+    if ( sets->has_set_bonus( WARLOCK_DEMONOLOGY, T18, B4 ) )
     {
       for ( size_t i = 0; i < warlock_pet_list.t18_illidari_satyr.size(); i++ )
       {
@@ -6755,9 +6758,9 @@ void warlock_t::create_buffs()
 
   //affliction buffs
   buffs.shard_instability = buff_creator_t( this, "shard_instability", find_spell( 216457 ) )
-    .chance( sets.set( WARLOCK_AFFLICTION, T18, B2 ) -> proc_chance() );
-  buffs.instability = buff_creator_t( this, "instability", sets.set( WARLOCK_AFFLICTION, T18, B4 ) -> effectN( 1 ).trigger() )
-    .chance( sets.set( WARLOCK_AFFLICTION, T18, B4 ) -> proc_chance() )
+    .chance( sets->set( WARLOCK_AFFLICTION, T18, B2 ) -> proc_chance() );
+  buffs.instability = buff_creator_t( this, "instability", sets->set( WARLOCK_AFFLICTION, T18, B4 ) -> effectN( 1 ).trigger() )
+    .chance( sets->set( WARLOCK_AFFLICTION, T18, B4 ) -> proc_chance() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.misery = haste_buff_creator_t( this, "misery", find_spell( 216412 ) )
     .default_value( find_spell( 216412 ) -> effectN( 1 ).percent() );
@@ -6775,8 +6778,8 @@ void warlock_t::create_buffs()
   buffs.demonic_synergy = buff_creator_t( this, "demonic_synergy", find_spell( 171982 ) )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
     .chance( 1 );
-  buffs.tier18_2pc_demonology = buff_creator_t( this, "demon_rush", sets.set( WARLOCK_DEMONOLOGY, T18, B2 ) -> effectN( 1 ).trigger() )
-    .default_value( sets.set( WARLOCK_DEMONOLOGY, T18, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
+  buffs.tier18_2pc_demonology = buff_creator_t( this, "demon_rush", sets->set( WARLOCK_DEMONOLOGY, T18, B2 ) -> effectN( 1 ).trigger() )
+    .default_value( sets->set( WARLOCK_DEMONOLOGY, T18, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
   buffs.shadowy_inspiration = buff_creator_t( this, "shadowy_inspiration", find_spell( 196606 ) );
   buffs.demonic_calling = buff_creator_t( this, "demonic_calling", talents.demonic_calling -> effectN( 1 ).trigger() );
   buffs.t18_4pc_driver = new t18_4pc_driver_t( this );
@@ -6791,15 +6794,15 @@ void warlock_t::create_buffs()
     .tick_behavior( BUFF_TICK_NONE );
   buffs.conflagration_of_chaos = buff_creator_t( this, "conflagration_of_chaos", artifact.conflagration_of_chaos.data().effectN( 1 ).trigger() )
     .chance( artifact.conflagration_of_chaos.rank() ? artifact.conflagration_of_chaos.data().proc_chance() : 0.0 );
-  buffs.embrace_chaos = buff_creator_t( this, "embrace_chaos", sets.set( WARLOCK_DESTRUCTION,T19, B2 ) -> effectN( 1 ).trigger() )
-    .chance( sets.set( WARLOCK_DESTRUCTION, T19, B2 ) -> proc_chance() );
+  buffs.embrace_chaos = buff_creator_t( this, "embrace_chaos", sets->set( WARLOCK_DESTRUCTION,T19, B2 ) -> effectN( 1 ).trigger() )
+    .chance( sets->set( WARLOCK_DESTRUCTION, T19, B2 ) -> proc_chance() );
 }
 
 void warlock_t::init_rng()
 {
   player_t::init_rng();
 
-  misery_rppm = get_rppm( "misery", sets.set( WARLOCK_AFFLICTION, T17, B4 ) );
+  misery_rppm = get_rppm( "misery", sets->set( WARLOCK_AFFLICTION, T17, B4 ) );
   demonic_power_rppm = get_rppm( "demonic_power", find_spell( 196099 ) );
   grimoire_of_synergy = get_rppm( "grimoire_of_synergy", talents.grimoire_of_synergy );
   grimoire_of_synergy_pet = get_rppm( "grimoire_of_synergy_pet", talents.grimoire_of_synergy );

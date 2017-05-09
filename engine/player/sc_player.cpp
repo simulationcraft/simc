@@ -520,27 +520,27 @@ bool parse_set_bonus( sim_t* sim, const std::string&, const std::string& value )
 
   if ( set_bonus_split.size() != 2 )
   {
-    sim -> errorf( error_str, p -> name(), value.c_str(), p -> sets.generate_set_bonus_options().c_str() );
+    sim -> errorf( error_str, p -> name(), value.c_str(), p -> sets -> generate_set_bonus_options().c_str() );
     return false;
   }
 
   int opt_val = util::to_int( set_bonus_split[ 1 ] );
   if ( errno != 0 || ( opt_val != 0 && opt_val != 1 ) )
   {
-    sim -> errorf( error_str, p -> name(), value.c_str(), p -> sets.generate_set_bonus_options().c_str() );
+    sim -> errorf( error_str, p -> name(), value.c_str(), p -> sets -> generate_set_bonus_options().c_str() );
     return false;
   }
 
   set_bonus_type_e set_bonus = SET_BONUS_NONE;
   set_bonus_e bonus = B_NONE;
 
-  if ( ! p -> sets.parse_set_bonus_option( set_bonus_split[ 0 ], set_bonus, bonus ) )
+  if ( ! p -> sets -> parse_set_bonus_option( set_bonus_split[ 0 ], set_bonus, bonus ) )
   {
-    sim -> errorf( error_str, p -> name(), value.c_str(), p -> sets.generate_set_bonus_options().c_str() );
+    sim -> errorf( error_str, p -> name(), value.c_str(), p -> sets -> generate_set_bonus_options().c_str() );
     return false;
   }
 
-  p -> sets.set_bonus_spec_data[ set_bonus ][ specdata::spec_idx( p -> specialization() ) ][ bonus ].overridden = opt_val;
+  p -> sets -> set_bonus_spec_data[ set_bonus ][ specdata::spec_idx( p -> specialization() ) ][ bonus ].overridden = opt_val;
 
   return true;
 }
@@ -761,7 +761,7 @@ player_t::player_t( sim_t*             s,
 
   report_information( player_processed_report_information_t() ),
   // Gear
-  sets( this ),
+  sets( ( ! is_pet() && ! is_enemy() ) ? new set_bonus_t( this ) : nullptr ),
   meta_gem( META_GEM_NONE ), matching_gear( false ),
   karazhan_trinkets_paired( false ),
   item_cooldown( cooldown_t( "item_cd", *this ) ),
@@ -1332,7 +1332,10 @@ bool player_t::init_items()
   init_meta_gem();
 
   // Needs to be initialized after old set bonus system
-  sets.initialize();
+  if ( sets != nullptr )
+  {
+    sets -> initialize();
+  }
 
   // these initialize the weapons, but don't have a return value (yet?)
   init_weapon( main_hand_weapon );
@@ -1500,7 +1503,7 @@ bool player_t::create_special_effects()
   // master list of custom special effect in unique gear). This is to avoid
   // false positives with class-specific set bonuses that have to always be
   // implemented inside the class module anyhow.
-  std::vector<const item_set_bonus_t*> bonuses = sets.enabled_set_bonus_data();
+  std::vector<const item_set_bonus_t*> bonuses = sets -> enabled_set_bonus_data();
   for ( size_t i = 0; i < bonuses.size(); i++ )
   {
     special_effect_t effect( this );
@@ -9376,7 +9379,7 @@ expr_t* player_t::create_expression( action_t* a,
   else if ( splits.size() == 2 )
   {
     if ( splits[ 0 ] == "set_bonus" )
-      return sets.create_expression( this, splits[ 1 ] );
+      return sets -> create_expression( this, splits[ 1 ] );
 
     if ( splits[ 0 ] == "active_dot" )
     {
@@ -10017,7 +10020,10 @@ std::string player_t::create_profile( save_e stype )
     }
 
     // Set Bonus
-    profile_str += sets.to_profile_string( term );
+    if ( sets != nullptr )
+    {
+      profile_str += sets -> to_profile_string( term );
+    }
 
     if ( enchant.attribute[ ATTR_STRENGTH  ] != 0 )  profile_str += "enchant_strength="
          + util::to_string( enchant.attribute[ ATTR_STRENGTH  ] ) + term;
@@ -10119,8 +10125,12 @@ void player_t::copy_from( player_t* source )
     items[ i ].player = this;
   }
 
-  sets = source -> sets;
-  sets.actor = this;
+  if ( sets != nullptr )
+  {
+    sets = std::unique_ptr<set_bonus_t>( new set_bonus_t( *source -> sets ) );
+    sets -> actor = this;
+  }
+
   gear = source -> gear;
   enchant = source -> enchant;
   bugs = source -> bugs;

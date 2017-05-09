@@ -2834,7 +2834,7 @@ struct envenom_t : public rogue_attack_t
   {
     double m = rogue_attack_t::composite_target_multiplier( target );
 
-    if ( p() -> sets.has_set_bonus( ROGUE_ASSASSINATION, T19, B4 ) )
+    if ( p() -> sets -> has_set_bonus( ROGUE_ASSASSINATION, T19, B4 ) )
     {
       size_t bleeds = 0;
       rogue_td_t* tdata = td( target );
@@ -2844,7 +2844,7 @@ struct envenom_t : public rogue_attack_t
       // As of 04/08/2017, Mutilated Flesh works on T19 4PC.
       bleeds += tdata -> dots.mutilated_flesh -> is_ticking();
 
-      m *= 1.0 + p() -> sets.set( ROGUE_ASSASSINATION, T19, B4 ) -> effectN( 1 ).percent() * bleeds;
+      m *= 1.0 + p() -> sets -> set( ROGUE_ASSASSINATION, T19, B4 ) -> effectN( 1 ).percent() * bleeds;
     }
 
     return m;
@@ -3065,19 +3065,19 @@ struct garrote_t : public rogue_attack_t
     base_multiplier *= 1.0 + p -> artifact.strangler.percent();
     may_crit = false;
 
-    if ( p -> sets.has_set_bonus( ROGUE_ASSASSINATION, T20, B2 ) )
-      cooldown -> duration = data().cooldown() + p -> sets.set( ROGUE_ASSASSINATION, T20, B2 ) -> effectN( 1 ).time_value();
+    if ( p -> sets -> has_set_bonus( ROGUE_ASSASSINATION, T20, B2 ) )
+      cooldown -> duration = data().cooldown() + p -> sets -> set( ROGUE_ASSASSINATION, T20, B2 ) -> effectN( 1 ).time_value();
 
-    if ( p -> sets.has_set_bonus( ROGUE_ASSASSINATION, T20, B4 ) )
-      base_multiplier *= 1.0 + p -> sets.set( ROGUE_ASSASSINATION, T20, B4 ) -> effectN( 2 ).percent();
+    if ( p -> sets -> has_set_bonus( ROGUE_ASSASSINATION, T20, B4 ) )
+      base_multiplier *= 1.0 + p -> sets -> set( ROGUE_ASSASSINATION, T20, B4 ) -> effectN( 2 ).percent();
   }
 
   double cost() const override
   {
     double c = rogue_attack_t::cost();
 
-    if ( p() -> sets.has_set_bonus( ROGUE_ASSASSINATION, T20, B2 ) )
-      c += p() -> sets.set( ROGUE_ASSASSINATION, T20, B2 ) -> effectN( 2 ).base_value();
+    if ( p() -> sets -> has_set_bonus( ROGUE_ASSASSINATION, T20, B2 ) )
+      c += p() -> sets -> set( ROGUE_ASSASSINATION, T20, B2 ) -> effectN( 2 ).base_value();
 
     return c;
   }
@@ -3137,9 +3137,9 @@ struct garrote_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
-    if ( result_is_hit( execute_state -> result ) && p() -> sets.has_set_bonus( ROGUE_ASSASSINATION, T20, B4 ) )
+    if ( result_is_hit( execute_state -> result ) && p() -> sets -> has_set_bonus( ROGUE_ASSASSINATION, T20, B4 ) )
     {
-      p() -> trigger_combo_point_gain( p() -> sets.set( ROGUE_ASSASSINATION, T20, B4 ) -> effectN( 1 ).base_value(),
+      p() -> trigger_combo_point_gain( p() -> sets -> set( ROGUE_ASSASSINATION, T20, B4 ) -> effectN( 1 ).base_value(),
           p() -> gains.t20_4pc_assassination, this );
     }
 
@@ -3610,7 +3610,7 @@ struct shot_base_t : public rogue_attack_t
         }
       }
 
-      if ( p() -> sets.has_set_bonus( ROGUE_OUTLAW, T20, B2 ) && p() -> buffs.opportunity -> up() )
+      if ( p() -> sets -> has_set_bonus( ROGUE_OUTLAW, T20, B2 ) && p() -> buffs.opportunity -> up() )
       {
         p() -> buffs.t20_2pc_outlaw -> trigger();
       }
@@ -3821,9 +3821,9 @@ struct mutilate_strike_t : public rogue_attack_t
 
     p() -> trigger_seal_fate( state );
 
-    if ( result_is_hit( state -> result ) && p() -> sets.has_set_bonus( ROGUE_ASSASSINATION, T19, B2 ) )
+    if ( result_is_hit( state -> result ) && p() -> sets -> has_set_bonus( ROGUE_ASSASSINATION, T19, B2 ) )
     {
-      double amount = state -> result_amount * p() -> sets.set( ROGUE_ASSASSINATION, T19, B2 ) -> effectN( 1 ).percent();
+      double amount = state -> result_amount * p() -> sets -> set( ROGUE_ASSASSINATION, T19, B2 ) -> effectN( 1 ).percent();
 
       residual_action::trigger( p() -> t19_2pc_assassination, state -> target, amount );
     }
@@ -3980,7 +3980,7 @@ struct nightblade_t : public rogue_attack_t
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
     timespan_t base_per_tick = data().effectN( 1 ).period();
-    base_per_tick += timespan_t::from_seconds( p() -> sets.set( ROGUE_SUBTLETY, T19, B2 ) -> effectN( 1 ).base_value() );
+    base_per_tick += timespan_t::from_seconds( p() -> sets -> set( ROGUE_SUBTLETY, T19, B2 ) -> effectN( 1 ).base_value() );
 
     return data().duration() + base_per_tick * cast_state( s ) -> cp;
   }
@@ -4169,7 +4169,7 @@ struct saber_slash_t : public rogue_attack_t
   double proc_chance_main_gauche() const override
   {
     return rogue_attack_t::proc_chance_main_gauche() +
-           p() -> sets.set( ROGUE_OUTLAW, T19, B2 ) -> effectN( 1 ).percent();
+           p() -> sets -> set( ROGUE_OUTLAW, T19, B2 ) -> effectN( 1 ).percent();
   }
 
   void reset() override
@@ -4420,9 +4420,9 @@ struct shadowstrike_t : public rogue_attack_t
       p() -> buffs.death -> decrement();
     }
 
-    if ( result_is_hit( execute_state -> result ) && rng().roll( p() -> sets.set( ROGUE_SUBTLETY, T19, B4 ) -> proc_chance() ) )
+    if ( result_is_hit( execute_state -> result ) && rng().roll( p() -> sets -> set( ROGUE_SUBTLETY, T19, B4 ) -> proc_chance() ) )
     {
-      p() -> trigger_combo_point_gain( p() -> sets.set( ROGUE_SUBTLETY, T19, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).base_value(),
+      p() -> trigger_combo_point_gain( p() -> sets -> set( ROGUE_SUBTLETY, T19, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).base_value(),
           p() -> gains.t19_4pc_subtlety, this );
     }
 
@@ -4636,16 +4636,16 @@ struct symbols_of_death_t : public rogue_attack_t
 
     dot_duration = timespan_t::zero(); // TODO: Check ticking in later builds
 
-    if ( p -> sets.has_set_bonus( ROGUE_SUBTLETY, T20, B2 ) )
-      cooldown -> duration += p -> sets.set( ROGUE_SUBTLETY, T20, B2 ) -> effectN( 2 ).time_value();
+    if ( p -> sets -> has_set_bonus( ROGUE_SUBTLETY, T20, B2 ) )
+      cooldown -> duration += p -> sets -> set( ROGUE_SUBTLETY, T20, B2 ) -> effectN( 2 ).time_value();
   }
 
   double cost() const override
   {
     double c = rogue_attack_t::cost();
 
-    if ( p() -> sets.has_set_bonus( ROGUE_SUBTLETY, T20, B2 ) )
-      c += p() -> sets.set( ROGUE_SUBTLETY, T20, B2 ) -> effectN( 1 ).base_value();
+    if ( p() -> sets -> has_set_bonus( ROGUE_SUBTLETY, T20, B2 ) )
+      c += p() -> sets -> set( ROGUE_SUBTLETY, T20, B2 ) -> effectN( 1 ).base_value();
 
     return c;
   }
@@ -4664,8 +4664,8 @@ struct symbols_of_death_t : public rogue_attack_t
     {
       p() -> buffs.symbols_of_death -> trigger();
 
-      if ( p() -> sets.has_set_bonus( ROGUE_SUBTLETY, T20, B4 ) )
-        p() -> buffs.death -> trigger( p() -> sets.set( ROGUE_SUBTLETY, T20, B4 ) -> effectN( 1 ).base_value() );
+      if ( p() -> sets -> has_set_bonus( ROGUE_SUBTLETY, T20, B4 ) )
+        p() -> buffs.death -> trigger( p() -> sets -> set( ROGUE_SUBTLETY, T20, B4 ) -> effectN( 1 ).base_value() );
       else
         p() -> buffs.death -> trigger( 1 );
     }
@@ -6088,7 +6088,7 @@ void rogue_t::trigger_relentless_strikes( const action_state_t* state )
 
 void rogue_t::trigger_t19oh_8pc( const action_state_t* state )
 {
-  if ( ! sets.has_set_bonus( specialization(), T19OH, B8 ) )
+  if ( ! sets -> has_set_bonus( specialization(), T19OH, B8 ) )
   {
     return;
   }
@@ -6244,9 +6244,9 @@ struct adrenaline_rush_t : public haste_buff_t
   {
     buff_t::expire_override( expiration_stacks, remaining_duration );
 
-    if ( r -> sets.has_set_bonus( ROGUE_OUTLAW, T20, B4) && ! t20_4pc_extension_running )
+    if ( r -> sets -> has_set_bonus( ROGUE_OUTLAW, T20, B4) && ! t20_4pc_extension_running )
     {
-      trigger( 1, value() / 2.0, -1.0, timespan_t::from_seconds( r -> sets.set( ROGUE_OUTLAW, T20, B4 ) -> effectN( 1 ).base_value() ) );
+      trigger( 1, value() / 2.0, -1.0, timespan_t::from_seconds( r -> sets -> set( ROGUE_OUTLAW, T20, B4 ) -> effectN( 1 ).base_value() ) );
       t20_4pc_extension_running = true;
     }
   }
@@ -7724,7 +7724,7 @@ void rogue_t::init_base_stats()
 
   if ( main_hand_weapon.type == WEAPON_DAGGER && off_hand_weapon.type == WEAPON_DAGGER )
     resources.base[ RESOURCE_ENERGY ] += spec.assassins_resolve -> effectN( 1 ).base_value();
-  //if ( sets.has_set_bonus( SET_MELEE, PVP, B2 ) )
+  //if ( sets -> has_set_bonus( SET_MELEE, PVP, B2 ) )
   //  resources.base[ RESOURCE_ENERGY ] += 10;
 
   base_energy_regen_per_second = 10 * ( 1.0 + spec.vitality -> effectN( 1 ).percent() );
@@ -7974,7 +7974,7 @@ void rogue_t::init_spells()
     soul_rip = new actions::soul_rip_t( this );
   }
 
-  if ( sets.has_set_bonus( ROGUE_ASSASSINATION, T19, B2 ) )
+  if ( sets -> has_set_bonus( ROGUE_ASSASSINATION, T19, B2 ) )
   {
     t19_2pc_assassination = new actions::mutilated_flesh_t( this );
   }
@@ -8159,8 +8159,8 @@ void rogue_t::create_buffs()
                                 .default_value( find_spell( 245640 ) -> effectN( 1 ).percent() );
   buffs.shadow_blades         = new buffs::shadow_blades_t( this );
   buffs.shadow_dance          = new buffs::shadow_dance_t( this );
-  const int t20_4pc_cp        = sets.has_set_bonus( ROGUE_SUBTLETY, T20, B4 ) ? sets.set( ROGUE_SUBTLETY, T20, B4 ) -> effectN( 1 ).base_value() : 0;
-  const double t20_4pc_mod    = 1.0 + ( sets.has_set_bonus( ROGUE_SUBTLETY, T20, B4 ) ? sets.set( ROGUE_SUBTLETY, T20, B4 ) -> effectN( 2 ).percent() : 0.0 );
+  const int t20_4pc_cp        = sets -> has_set_bonus( ROGUE_SUBTLETY, T20, B4 ) ? sets -> set( ROGUE_SUBTLETY, T20, B4 ) -> effectN( 1 ).base_value() : 0;
+  const double t20_4pc_mod    = 1.0 + ( sets -> has_set_bonus( ROGUE_SUBTLETY, T20, B4 ) ? sets -> set( ROGUE_SUBTLETY, T20, B4 ) -> effectN( 2 ).percent() : 0.0 );
   buffs.sod_backstab          = buff_creator_t( this, "backstab", maybe_ptr( dbc.ptr ) ? find_spell( 245689 ) : spell_data_t::not_found() )
                                 .default_value( find_spell( 245689 ) -> effectN( 1 ).base_value() + t20_4pc_cp );
   buffs.sod_eviscerate        = buff_creator_t( this, "eviscerate", maybe_ptr( dbc.ptr ) ? find_spell( 245691 ) : spell_data_t::not_found() )
@@ -8244,11 +8244,11 @@ void rogue_t::create_buffs()
 
   // Tiers
   // T19 Outdoor
-  buffs.t19oh_8pc                          = stat_buff_creator_t( this, "shadowstalkers_avidity", sets.set( specialization(), T19OH, B8 ) -> effectN( 1 ).trigger() )
-                                             .trigger_spell( sets.set( specialization(), T19OH, B8 ) );
+  buffs.t19oh_8pc                          = stat_buff_creator_t( this, "shadowstalkers_avidity", sets -> set( specialization(), T19OH, B8 ) -> effectN( 1 ).trigger() )
+                                             .trigger_spell( sets -> set( specialization(), T19OH, B8 ) );
   // T19 Raid
-  buffs.t19_4pc_outlaw                     = buff_creator_t( this, "swordplay", sets.set( ROGUE_OUTLAW, T19, B4 ) -> effectN( 1 ).trigger() )
-                                             .trigger_spell( sets.set( ROGUE_OUTLAW, T19, B4 ) );
+  buffs.t19_4pc_outlaw                     = buff_creator_t( this, "swordplay", sets -> set( ROGUE_OUTLAW, T19, B4 ) -> effectN( 1 ).trigger() )
+                                             .trigger_spell( sets -> set( ROGUE_OUTLAW, T19, B4 ) );
   // T20 Raid
   buffs.t20_2pc_outlaw                     = buff_creator_t( this, "headshot", find_spell( 242277 ) )
                                              .default_value( find_spell( 242277 ) -> effectN( 1 ).percent() )
