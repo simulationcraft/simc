@@ -4056,7 +4056,7 @@ struct fists_of_fury_t: public monk_melee_attack_t
     if ( p() -> buff.transfer_the_power -> up() )
       p() -> buff.transfer_the_power -> expire();
 
-    if ( p() -> sets -> has_set_bonus( MONK_WINDWALKER, T20, B2 ) )
+    if ( maybe_ptr( p() -> dbc.ptr ) && p() -> sets -> has_set_bonus( MONK_WINDWALKER, T20, B2 ) )
       p() -> buff.pressure_point -> trigger();
 
     // Windwalker Tier 18 (WoD 6.2) trinket effect is in use, adjust Rising Sun Kick proc chance based on spell data
