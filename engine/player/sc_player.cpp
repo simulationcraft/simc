@@ -11139,10 +11139,7 @@ player_collected_data_t::player_collected_data_t( const player_t* player ) :
   theck_meloree_index( player -> name_str + " Theck-Meloree Index", tank_container_type( player, 1 ) ),
   effective_theck_meloree_index( player -> name_str + "Theck-Meloree Index (Effective)", tank_container_type( player, 2 ) ),
   max_spike_amount( player -> name_str + " Max Spike Value", tank_container_type( player, 2 ) ),
-  target_metric( player -> name_str + " Target Metric",
-                 player -> sim -> target_error && ( ! player -> is_enemy() && ( ! player -> is_pet() || player -> sim -> report_pets_separately ) )
-                 ? false
-                 : true ),
+  target_metric( player -> name_str + " Target Metric", player -> sim -> statistics_level < 1 ),
   resource_timelines(),
   combat_end_resource(
       ( ! player -> is_enemy() && ( ! player -> is_pet() || player -> sim -> report_pets_separately ) )
