@@ -20,9 +20,45 @@ struct player_spec_t
   std::string region, server, name, url, cleanurl, local_json, origin, talent_spec;
 };
 
+// download
+
+bool download( sim_t*               sim,
+               rapidjson::Document& d,
+               std::string&         result,
+               const std::string&   url,
+               const std::string&   cleanurl,
+               cache::behavior_e    caching )
+{
+  int attempt = 0;
+  do
+  {
+    if ( http::get( result, url, cleanurl, caching ) )
+    {
+      d.Parse< 0 >( result.c_str() );
+
+      if ( ! d.HasParseError() && d.HasMember( "status" ) )
+      {
+        std::string status = d[ "status" ].GetString();
+        // Would be nicer to use status codes, but this will do for now ...
+        if ( status == "nok" && util::str_in_str_ci( d[ "reason" ].GetString(), "not found" ) )
+        {
+          break;
+        }
+      }
+      else
+      {
+        break;
+      }
+    }
+  } while ( ++attempt < sim -> armory_retries );
+
+  return attempt < sim -> armory_retries;
+}
+
 // download_id ==============================================================
 
-bool download_id( rapidjson::Document& d, 
+bool download_id( sim_t* sim,
+                  rapidjson::Document& d,
                   const std::string& region,
                   unsigned item_id,
                   std::string apikey,
@@ -46,10 +82,9 @@ bool download_id( rapidjson::Document& d,
   }
 
   std::string result;
-  if ( ! http::get( result, url, cleanurl, caching ) )
+  if ( ! download( sim, d, result, url, cleanurl, caching ) )
     return false;
 
-  d.Parse< 0 >( result.c_str() );
   return true;
 }
 
@@ -393,6 +428,7 @@ player_t* parse_player( sim_t*             sim,
   sim -> current_slot = 0;
 
   std::string result;
+  rapidjson::Document profile;
 
   // China does not have mashery endpoints, so no point in even trying to get anything here
   if ( util::str_compare_ci( player.region, "cn" ) )
@@ -401,8 +437,10 @@ player_t* parse_player( sim_t*             sim,
   }
   else if ( player.local_json.empty() )
   {
-    if ( ! http::get( result, player.url, player.cleanurl, caching ) )
+    if ( ! download( sim, profile, result, player.url, player.cleanurl, caching ) )
+    {
       return nullptr;
+    }
   }
   else
   {
@@ -411,9 +449,6 @@ player_t* parse_player( sim_t*             sim,
     result.assign( ( std::istreambuf_iterator<char>( ifs ) ),
                    ( std::istreambuf_iterator<char>()    ) );
   }
-
-  rapidjson::Document profile;
-  profile.Parse< 0 >( result.c_str() );
 
   if ( profile.HasParseError() )
   {
@@ -534,7 +569,7 @@ player_t* parse_player( sim_t*             sim,
 bool download_item_data( item_t& item, cache::behavior_e caching )
 {
   rapidjson::Document js;
-  if ( ! download_id( js, item.player -> region_str, item.parsed.data.id, item.sim -> apikey, caching ) || 
+  if ( ! download_id( item.sim, js, item.player -> region_str, item.parsed.data.id, item.sim -> apikey, caching ) ||
        js.HasParseError() )
   {
     if ( caching != cache::ONLY )
@@ -754,10 +789,11 @@ bool download_roster( rapidjson::Document& d,
   }
 
   std::string result;
-  if ( ! http::get( result, url, cleanurl, caching ) )
+  if ( ! download( sim, d, result, url, cleanurl, caching ) )
+  {
     return false;
+  }
 
-  d.Parse< 0 >( result.c_str() );
   if ( d.HasParseError() )
   {
     sim -> errorf( "BCP API: Unable to parse guild from '%s': Parse error '%s' @ %lu\n",

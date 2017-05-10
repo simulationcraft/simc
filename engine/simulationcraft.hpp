@@ -1571,6 +1571,7 @@ struct sim_t : private sc_thread_t
   bool        requires_regen_event;
   bool        single_actor_batch;
   int         progressbar_type;
+  int         armory_retries;
 
   // Target options
   double      enemy_death_pct;
