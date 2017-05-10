@@ -639,6 +639,27 @@ struct augmentation_t : public dbc_consumable_base_t
     dbc_consumable_base_t( p, "augmentation" )
   {
     parse_options( options_str );
+
+    type = ITEM_SUBCLASS_CONSUMABLE_OTHER;
+  }
+
+  bool disabled_consumable() const override
+  {
+    return dbc_consumable_base_t::disabled_consumable();
+  }
+
+  std::string consumable_default() const override
+  {
+    if ( ! player -> rune_str.empty() )
+    {
+      return player -> rune_str;
+    }
+    else if ( ! player -> default_rune().empty() )
+    {
+      return player -> default_rune();
+    }
+
+    return std::string();
   }
 
   // Custom driver for now, we don't really want to include the item data for now
