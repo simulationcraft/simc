@@ -798,8 +798,10 @@ void collected_data_to_json( JsonOutput root, const player_t& p )
   {
     // Key off of resource loss to figure out what resources are even relevant
     std::vector<resource_e> relevant_resources;
-    for ( resource_e r = RESOURCE_NONE; r < RESOURCE_MAX; ++r )
+    for ( size_t i = 0, end = cd.resource_lost.size(); i < end; ++i )
     {
+      auto r = static_cast<resource_e>( i );
+
       if ( cd.resource_lost[ r ].mean() > 0 )
       {
         root[ "resource_lost" ][ util::resource_type_string( r ) ] = cd.resource_lost[ r ];
@@ -809,8 +811,11 @@ void collected_data_to_json( JsonOutput root, const player_t& p )
 
     // Rest of the resource summaries are printed only based on relevant resources
     range::for_each( relevant_resources, [ &root, &cd ]( resource_e r ) {
-      // Combat ending resources
-      add_non_zero( root[ "combat_end_resource" ], util::resource_type_string( r ), cd.combat_end_resource[ r ] );
+      if ( r < cd.combat_end_resource.size() )
+      {
+        // Combat ending resources
+        add_non_zero( root[ "combat_end_resource" ], util::resource_type_string( r ), cd.combat_end_resource[ r ] );
+      }
 
       // Resource timeline for a given resource with loss
       auto it = range::find_if( cd.resource_timelines, [ r ]( const player_collected_data_t::resource_timeline_t& rtl ) {
@@ -1038,12 +1043,12 @@ js::sc_js_t to_json( const player_t& p,
 
     scale_metric_e sm      = p.sim->scaling->scaling_metric;
     const gear_stats_t& sf = ( p.sim->scaling->normalize_scale_factors )
-                                 ? p.scaling_normalized[ sm ]
-                                 : p.scaling[ sm ];
+                                 ? p.scaling->scaling_normalized[ sm ]
+                                 : p.scaling->scaling[ sm ];
 
     for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
     {
-      if ( p.scales_with[ i ] )
+      if ( p.scaling->scales_with[ i ] )
       {
         node.set( util::stat_type_abbrev( i ), sf.get_stat( i ) );
       }
@@ -1060,12 +1065,12 @@ void scale_factors_to_json( JsonOutput root, const player_t& p )
 
   auto sm = p.sim -> scaling -> scaling_metric;
   const auto& sf = ( p.sim -> scaling -> normalize_scale_factors )
-                   ? p.scaling_normalized[ sm ]
-                   : p.scaling[ sm ];
+                   ? p.scaling->scaling_normalized[ sm ]
+                   : p.scaling->scaling[ sm ];
 
   for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
-    if ( p.scales_with[ i ] )
+    if ( p.scaling->scales_with[ i ] )
     {
       root[ util::stat_type_abbrev( i ) ] = sf.get_stat( i );
     }

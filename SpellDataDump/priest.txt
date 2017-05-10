@@ -1,4 +1,4 @@
-SimulationCraft 720-03 for World of Warcraft 7.2.0 Live (wow build 23826)
+SimulationCraft 720-03 for World of Warcraft 7.2.0 Live (wow build 23826, git build fe7ce0e)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Discipline Shadow Priest
@@ -306,6 +306,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=613)      : Direct Heal (10)
                    Base Value: 1 | Scaled Value: 1 | Value Multiplier: 1 | SP Coefficient: 4.75000 | Target: Friend(21)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 Description      : A fast spell that heals an ally for $s1.
 
 Name             : Mind Vision (id=2096) [Spell Family (6)] 
@@ -1257,6 +1258,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 47666 | Target: Self(1)
 
 Name             : Guardian Spirit (id=47788) [Spell Family (6)] 
+Hotfixed         : Attributes
 Class            : Holy Priest
 School           : Holy
 Resource         : 0.9% Base Mana (id=2205)
@@ -1271,7 +1273,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .x...
                  : ........ ........ ........ ........   ...x.... ........ ........ ........ 
                  : ........ ........ ......x. ..x.....   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ .....x.. ........ ....x...   ........ ........ ..xx.... ....x... 
+                 : ........ .....x.. ........ ........   ........ ........ ..xx.... ....x... 
 Effects          :
 #1 (id=40042)    : Apply Aura (6) | Unknown effect sub type (118)
                    Base Value: 40 | Scaled Value: 40 | Misc Value: 127 | Target: Friend(21)

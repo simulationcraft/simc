@@ -1,4 +1,4 @@
-SimulationCraft 720-03 for World of Warcraft 7.2.0 Live (wow build 23826)
+SimulationCraft 720-03 for World of Warcraft 7.2.0 Live (wow build 23826, git build fe7ce0e)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -23,7 +23,7 @@ Resource         : 20% Base Mana (id=10997)
 Spell Level      : 63
 Range            : 30 yards
 GCD              : 1.5 seconds
-Affecting spells : Lucidity (137326)
+Affecting spells : Restoration Shaman (137039), Lucidity (137326)
 Attributes       : ........ ........ x....... ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2734,9 +2734,12 @@ Effects          :
 #7 (id=260998)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 249 (Label) | Target: Self(1)
 #8 (id=260999)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#9 (id=261000)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14 | Target: Self(1)
+                   Hotfixed: Misc Value (0 -> 14), Chain Multiplier (0 -> 1)
+#9 (id=261000)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
+                   Base Value: -20 | Scaled Value: -20 | Misc Value: 14 | Target: Self(1)
+                   Affected Spells: Purge (370)
+                   Hotfixed: Sub Type (4 -> 108), Base Value (0 -> -20), Misc Value (0 -> 14), Affects Spells, Chain Multiplier (0 -> 1)
 #10 (id=261001)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #11 (id=261002)   : Apply Aura (6) | Dummy (4)

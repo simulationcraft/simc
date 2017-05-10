@@ -903,8 +903,12 @@ double action_t::cost() const
 
   c -= player -> current.resource_reduction[ get_school() ];
 
-  if ( cr == RESOURCE_MANA && player -> buffs.courageous_primal_diamond_lucidity -> check() )
+  if ( cr == RESOURCE_MANA &&
+       player -> buffs.courageous_primal_diamond_lucidity &&
+       player -> buffs.courageous_primal_diamond_lucidity -> check() )
+  {
     c = 0;
+  }
 
   if ( c < 0 ) c = 0;
 
@@ -1612,8 +1616,11 @@ void action_t::last_tick( dot_t* d )
   if ( get_school() == SCHOOL_PHYSICAL )
   {
     buff_t* b = d -> state -> target -> debuffs.bleeding;
-    if ( b -> current_value > 0 ) b -> current_value -= 1.0;
-    if ( b -> current_value == 0 ) b -> expire();
+    if ( b )
+    {
+      if ( b -> current_value > 0 ) b -> current_value -= 1.0;
+      if ( b -> current_value == 0 ) b -> expire();
+    }
   }
 
   if ( channeled && player -> channeling == this )
@@ -2012,7 +2019,7 @@ bool action_t::ready()
     player -> get_player_distance( *target ) > range + target -> combat_reach )
     return false;
 
-  if ( target -> debuffs.invulnerable -> check() && harmful )
+  if ( target -> debuffs.invulnerable && target -> debuffs.invulnerable -> check() && harmful )
     return false;
 
   if ( target -> is_sleeping() )
@@ -3349,12 +3356,17 @@ void action_t::trigger_dot( action_state_t* s )
   {
     if ( get_school() == SCHOOL_PHYSICAL && harmful )
     {
-      buff_t* b = s -> target -> debuffs.bleeding;
-      if ( b -> current_value > 0 )
+      if ( buff_t* b = s -> target -> debuffs.bleeding )
       {
-        b -> current_value += 1.0;
+        if ( b -> current_value > 0 )
+        {
+          b -> current_value += 1.0;
+        }
+        else
+        {
+          b -> start( 1, 1.0 );
+        }
       }
-      else b -> start( 1, 1.0 );
     }
   }
 

@@ -1049,18 +1049,18 @@ struct fiend_melee_t : public priest_pet_melee_t
 
     am *= 1.0 + p().buffs.shadowcrawl->check() * p().buffs.shadowcrawl->data().effectN( 2 ).percent();
 
-    if ( p().o().specialization() == PRIEST_SHADOW && p().o().sets.has_set_bonus( PRIEST_SHADOW, T20, B2 ) )
+    if ( p().o().specialization() == PRIEST_SHADOW && p().o().sets->has_set_bonus( PRIEST_SHADOW, T20, B2 ) )
     {
       if ( p().o().talents.mindbender->ok() )
       {
         am *= 1.0 +
-              p().o().sets.set( PRIEST_SHADOW, T20, B2 )->effectN( 2 ).percent() *
+              p().o().sets->set( PRIEST_SHADOW, T20, B2 )->effectN( 2 ).percent() *
                   ( p().o().resources.current[ RESOURCE_INSANITY ] / p().o().resources.max[ RESOURCE_INSANITY ] );
       }
       else  // Regular Shadowfied
       {
         am *= 1.0 +
-              p().o().sets.set( PRIEST_SHADOW, T20, B2 )->effectN( 1 ).percent() *
+              p().o().sets->set( PRIEST_SHADOW, T20, B2 )->effectN( 1 ).percent() *
                   ( p().o().resources.current[ RESOURCE_INSANITY ] / p().o().resources.max[ RESOURCE_INSANITY ] );
       }
     }
@@ -1615,7 +1615,20 @@ struct angelic_feather_t final : public priest_spell_t
   {
     priest_spell_t::impact( s );
 
-    s->target->buffs.angelic_feather->trigger();
+    if ( s->target->buffs.angelic_feather )
+    {
+      s->target->buffs.angelic_feather->trigger();
+    }
+  }
+
+  bool ready() override
+  {
+    if ( ! target->buffs.angelic_feather )
+    {
+      return false;
+    }
+
+    return priest_spell_t::ready();
   }
 };
 
@@ -1933,7 +1946,7 @@ public:
     priest_spell_t::impact( s );
     priest.generate_insanity( insanity_gain, priest.gains.insanity_mind_blast, s->action );
 
-    if ( priest.sets.has_set_bonus( PRIEST_SHADOW, T20, B4 ) )
+    if ( priest.sets->has_set_bonus( PRIEST_SHADOW, T20, B4 ) )
     {
       if ( sim->debug )
       {
@@ -1942,12 +1955,12 @@ public:
       if ( priest.talents.mindbender->ok() )
       {
         priest.cooldowns.mindbender->adjust(
-            timespan_t::from_seconds( -priest.sets.set( PRIEST_SHADOW, T20, B4 )->effectN( 2 ).base_value() / 10 ) );
+            timespan_t::from_seconds( -priest.sets->set( PRIEST_SHADOW, T20, B4 )->effectN( 2 ).base_value() / 10 ) );
       }
       else
       {
         priest.cooldowns.shadowfiend->adjust(
-            timespan_t::from_seconds( -priest.sets.set( PRIEST_SHADOW, T20, B4 )->effectN( 1 ).base_value() / 10 ) );
+            timespan_t::from_seconds( -priest.sets->set( PRIEST_SHADOW, T20, B4 )->effectN( 1 ).base_value() / 10 ) );
       }
     }
   }
@@ -2271,7 +2284,7 @@ struct penance_t final : public priest_spell_t
       // Add 1 extra millisecond, so we only get 4 ticks instead of an extra tiny 5th tick.
       base_tick_time = timespan_t::from_seconds( 2.0 / 3 ) + timespan_t::from_millis( 1 );
     }
-    dot_duration += priest.sets.set( PRIEST_DISCIPLINE, T17, B2 )->effectN( 1 ).time_value();
+    dot_duration += priest.sets->set( PRIEST_DISCIPLINE, T17, B2 )->effectN( 1 ).time_value();
 
     dynamic_tick_action = true;
     tick_action         = new penance_tick_t( p, stats );
@@ -2292,7 +2305,7 @@ struct penance_t final : public priest_spell_t
 
     // Set bonus says "...and generates 2 stacks of Evangelism." Need to check if this happens up front or after a
     // particular tick. -Twintop 2014-07-11
-    if ( priest.sets.has_set_bonus( PRIEST_DISCIPLINE, T17, B2 ) )
+    if ( priest.sets->has_set_bonus( PRIEST_DISCIPLINE, T17, B2 ) )
     {
       priest.buffs.holy_evangelism->trigger();
     }
@@ -2797,7 +2810,10 @@ struct silence_t final : public priest_spell_t
 
     // Only interrupts, does not keep target silenced. This works in most cases since bosses are rarely able to be
     // completely silenced.
-    target->debuffs.casting->expire();
+    if ( target->debuffs.casting )
+    {
+      target->debuffs.casting->expire();
+    }
   }
 
   void impact(action_state_t* state) override
@@ -2820,6 +2836,7 @@ struct silence_t final : public priest_spell_t
     // Or if the target can get blank silenced
     if ( !(    target->type != ENEMY_ADD 
             && ( target->level() < sim->max_player_level + 3 )
+            && target->debuffs.casting
             && target->debuffs.casting->check() ) )
     {
       return false;
@@ -2921,7 +2938,7 @@ struct summon_shadowfiend_t final : public summon_pet_t
     summoning_duration = data().duration();
     cooldown           = p.cooldowns.shadowfiend;
     cooldown->duration = data().cooldown();
-    cooldown->duration += priest.sets.set( PRIEST_SHADOW, T18, B2 )->effectN( 1 ).time_value();
+    cooldown->duration += priest.sets->set( PRIEST_SHADOW, T18, B2 )->effectN( 1 ).time_value();
     if ( priest.artifact.fiending_dark.rank() )
     {
       summoning_duration += timespan_t::from_millis(4500 *
@@ -2942,7 +2959,7 @@ struct summon_mindbender_t final : public summon_pet_t
     summoning_duration = data().duration();
     cooldown           = p.cooldowns.mindbender;
     cooldown->duration = data().cooldown();
-    cooldown->duration += priest.sets.set( PRIEST_SHADOW, T18, B2 )->effectN( 2 ).time_value();
+    cooldown->duration += priest.sets->set( PRIEST_SHADOW, T18, B2 )->effectN( 2 ).time_value();
     if ( priest.artifact.fiending_dark.rank() )
     {
       summoning_duration += timespan_t::from_millis( 1500 *
@@ -3088,9 +3105,9 @@ struct vampiric_touch_t final : public priest_spell_t
       }
     }
 
-    if ( priest.sets.has_set_bonus( PRIEST_SHADOW, T19, B2 ) )
+    if ( priest.sets->has_set_bonus( PRIEST_SHADOW, T19, B2 ) )
     {
-      priest.generate_insanity( priest.sets.set( PRIEST_SHADOW, T19, B2 )->effectN( 1 ).base_value(),
+      priest.generate_insanity( priest.sets->set( PRIEST_SHADOW, T19, B2 )->effectN( 1 ).base_value(),
                                 priest.gains.insanity_vampiric_touch_ondamage, d->state->action );
     }
 
@@ -3313,7 +3330,7 @@ struct void_eruption_t final : public priest_spell_t
     priest.buffs.voidform->trigger();
     priest.cooldowns.void_bolt->reset( true );
 
-    if ( priest.sets.has_set_bonus( PRIEST_SHADOW, T19, B4 ) )
+    if ( priest.sets->has_set_bonus( PRIEST_SHADOW, T19, B4 ) )
     {
       priest.buffs.shadow_t19_4p->trigger();
     }
@@ -3442,7 +3459,7 @@ struct power_word_shield_t final : public priest_absorb_t
 
     priest.buffs.borrowed_time->trigger();
 
-    if ( priest.talents.body_and_soul->ok() )
+    if ( priest.talents.body_and_soul->ok() && s->target->buffs.body_and_soul )
     {
       s->target->buffs.body_and_soul->trigger();
     }
@@ -4540,7 +4557,7 @@ void priest_t::init_scaling()
 
   // Atonement heals are capped at a percentage of the Priest's health, so there may be scaling with stamina.
   if ( specs.atonement->ok() && primary_role() == ROLE_HEAL )
-    scales_with[ STAT_STAMINA ] = true;
+    scaling -> enable( STAT_STAMINA );
 }
 
 void priest_t::init_spells()
@@ -4765,22 +4782,22 @@ void priest_t::create_buffs()
 
   // Set Bonuses
   buffs.mental_instinct =
-      buff_creator_t( this, "mental_instinct", sets.set( PRIEST_SHADOW, T17, B4 )->effectN( 1 ).trigger() )
-          .chance( sets.has_set_bonus( PRIEST_SHADOW, T17, B4 ) )
+      buff_creator_t( this, "mental_instinct", sets->set( PRIEST_SHADOW, T17, B4 )->effectN( 1 ).trigger() )
+          .chance( sets->has_set_bonus( PRIEST_SHADOW, T17, B4 ) )
           .add_invalidate( CACHE_SPELL_HASTE )
           .add_invalidate( CACHE_HASTE );
 
   buffs.reperation = buff_creator_t( this, "reperation", find_spell( 186478 ) )
-                         .chance( sets.has_set_bonus( PRIEST_DISCIPLINE, T18, B2 ) )
+                         .chance( sets->has_set_bonus( PRIEST_DISCIPLINE, T18, B2 ) )
                          .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                          .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
 
   buffs.premonition = buff_creator_t( this, "premonition", find_spell( 188779 ) )
-                          .chance( sets.has_set_bonus( PRIEST_SHADOW, T18, B4 ) );
+                          .chance( sets->has_set_bonus( PRIEST_SHADOW, T18, B4 ) );
 
   buffs.power_overwhelming =
-      stat_buff_creator_t( this, "power_overwhelming", sets.set( specialization(), T19OH, B8 )->effectN( 1 ).trigger() )
-          .trigger_spell( sets.set( specialization(), T19OH, B8 ) );
+      stat_buff_creator_t( this, "power_overwhelming", sets->set( specialization(), T19OH, B8 )->effectN( 1 ).trigger() )
+          .trigger_spell( sets->set( specialization(), T19OH, B8 ) );
 
   buffs.shadow_t19_4p = buff_creator_t( this, "shadow_t19_4p",
                                         find_spell( 211654 ) )

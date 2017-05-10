@@ -58,7 +58,7 @@ struct enemy_t : public player_t
   { return ROLE_TANK; }
 
   virtual resource_e primary_resource() const override
-  { return RESOURCE_MANA; }
+  { return RESOURCE_HEALTH; }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str ) override;
   virtual void init_base_stats() override;
@@ -1641,10 +1641,10 @@ expr_t* enemy_t::create_expression( action_t* action,
         {
           if ( debuff_str == "damage_taken" )
             return boss -> sim -> actor_list[ boss -> current_target ] -> debuffs.damage_taken -> current_stack;
-          else if ( debuff_str == "vulnerable" )
-            return boss -> sim -> actor_list[ boss -> current_target ] -> debuffs.vulnerable -> current_stack;
-          else if ( debuff_str == "mortal_wounds" )
-            return boss -> sim -> actor_list[ boss -> current_target ] -> debuffs.mortal_wounds -> current_stack;
+          //else if ( debuff_str == "vulnerable" )
+          //  return boss -> sim -> actor_list[ boss -> current_target ] -> debuffs.vulnerable -> current_stack;
+          //else if ( debuff_str == "mortal_wounds" )
+          //  return boss -> sim -> actor_list[ boss -> current_target ] -> debuffs.mortal_wounds -> current_stack;
           // may add others here as desired
           else
             return 0;

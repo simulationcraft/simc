@@ -544,7 +544,7 @@ namespace buffs {
   {
     wings_of_liberty_driver_t( player_t* p ):
       buff_t( buff_creator_t( p, "wings_of_liberty_driver", p -> find_spell( 185655 ) )
-      .chance( p -> sets.has_set_bonus( PALADIN_RETRIBUTION, T18, B4 ) )
+      .chance( p -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T18, B4 ) )
       .quiet( true )
       .tick_callback( [ p ]( buff_t*, int, const timespan_t& ) {
         paladin_t* paladin = debug_cast<paladin_t*>( p );
@@ -1280,7 +1280,7 @@ struct crusade_t : public paladin_heal_t
     if ( ! ( p -> talents.crusade_talent -> ok() ) )
       background = true;
 
-    cooldown -> charges += p -> sets.set( PALADIN_RETRIBUTION, T18, B2 ) -> effectN( 1 ).base_value();
+    cooldown -> charges += p -> sets -> set( PALADIN_RETRIBUTION, T18, B2 ) -> effectN( 1 ).base_value();
   }
 
   void tick( dot_t* d ) override
@@ -1299,7 +1299,7 @@ struct crusade_t : public paladin_heal_t
     paladin_heal_t::execute();
 
     p() -> buffs.crusade -> trigger();
-    if ( p() -> sets.has_set_bonus( PALADIN_RETRIBUTION, T18, B4 ) )
+    if ( p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T18, B4 ) )
     {
       p() -> buffs.wings_of_liberty -> trigger( 1 ); // We have to trigger a stack here.
       p() -> buffs.wings_of_liberty_driver -> trigger();
@@ -1336,7 +1336,7 @@ struct avenging_wrath_t : public paladin_spell_t
     {
       if ( p -> talents.crusade_talent -> ok() )
         background = true;
-      cooldown -> charges += p -> sets.set( PALADIN_RETRIBUTION, T18, B2 ) -> effectN( 1 ).base_value();
+      cooldown -> charges += p -> sets -> set( PALADIN_RETRIBUTION, T18, B2 ) -> effectN( 1 ).base_value();
     }
 
     harmful = false;
@@ -1351,7 +1351,7 @@ struct avenging_wrath_t : public paladin_spell_t
     paladin_spell_t::execute();
 
     p() -> buffs.avenging_wrath -> trigger();
-    if ( p() -> sets.has_set_bonus( PALADIN_RETRIBUTION, T18, B4 ) )
+    if ( p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T18, B4 ) )
     {
       p() -> buffs.wings_of_liberty -> trigger( 1 ); // We have to trigger a stack here.
       p() -> buffs.wings_of_liberty_driver -> trigger();
@@ -1774,9 +1774,9 @@ struct execution_sentence_t : public paladin_spell_t
     if ( ! ( p -> talents.execution_sentence -> ok() ) )
       background = true;
 
-    if ( p -> sets.has_set_bonus( PALADIN_RETRIBUTION, T19, B2 ) )
+    if ( p -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T19, B2 ) )
     {
-      base_multiplier *= 1.0 + p -> sets.set( PALADIN_RETRIBUTION, T19, B2 ) -> effectN( 2 ).percent();
+      base_multiplier *= 1.0 + p -> sets -> set( PALADIN_RETRIBUTION, T19, B2 ) -> effectN( 2 ).percent();
     }
   }
 
@@ -2830,11 +2830,11 @@ struct holy_power_generator_t : public paladin_melee_attack_t
   {
     paladin_melee_attack_t::execute();
 
-    if ( p() -> sets.has_set_bonus( PALADIN_RETRIBUTION, T19, B4 ) )
+    if ( p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T19, B4 ) )
     {
       // for some reason this is the same spell as the talent
       // leftover nonsense from when this was Conviction?
-      if ( p() -> rng().roll( p() -> sets.set( PALADIN_RETRIBUTION, T19, B4 ) -> proc_chance() ) )
+      if ( p() -> rng().roll( p() -> sets -> set( PALADIN_RETRIBUTION, T19, B4 ) -> proc_chance() ) )
       {
         p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_t19_4p );
         p() -> procs.tfoj_set_bonus -> occur();
@@ -2850,9 +2850,9 @@ struct holy_power_consumer_t : public paladin_melee_attack_t
                           bool u2h = true):
                           paladin_melee_attack_t( n, p, s, u2h )
   {
-    if ( p -> sets.has_set_bonus( PALADIN_RETRIBUTION, T19, B2 ) )
+    if ( p -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T19, B2 ) )
     {
-      base_multiplier *= 1.0 + p -> sets.set( PALADIN_RETRIBUTION, T19, B2 ) -> effectN( 1 ).percent();
+      base_multiplier *= 1.0 + p -> sets -> set( PALADIN_RETRIBUTION, T19, B2 ) -> effectN( 1 ).percent();
     }
   }
 
@@ -3151,7 +3151,7 @@ struct blade_of_justice_t : public holy_power_generator_t
   {
     double m = holy_power_generator_t::composite_target_multiplier( t );
 
-    if ( p() -> sets.has_set_bonus( PALADIN_RETRIBUTION, T20, B4 ) )
+    if ( p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T20, B4 ) )
     {
       paladin_td_t* td = this -> td( t );
       if ( td -> buffs.debuffs_judgment -> up() )
@@ -3171,7 +3171,7 @@ struct blade_of_justice_t : public holy_power_generator_t
     if ( p() -> buffs.righteous_verdict -> up() )
       p() -> buffs.righteous_verdict -> expire();
 
-    if ( p() -> sets.has_set_bonus( PALADIN_RETRIBUTION, T20, B2 ) )
+    if ( p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T20, B2 ) )
       p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_t20_2p );
   }
 };
@@ -3196,7 +3196,7 @@ struct divine_hammer_tick_t : public paladin_melee_attack_t
   {
     double m = paladin_melee_attack_t::composite_target_multiplier( t );
 
-    if ( p() -> sets.has_set_bonus( PALADIN_RETRIBUTION, T20, B4 ) )
+    if ( p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T20, B4 ) )
     {
       paladin_td_t* td = this -> td( t );
       if ( td -> buffs.debuffs_judgment -> up() )
@@ -3261,7 +3261,7 @@ struct divine_hammer_t : public paladin_spell_t
     if ( p() -> buffs.righteous_verdict -> up() )
       p() -> buffs.righteous_verdict -> expire();
 
-    if ( p() -> sets.has_set_bonus( PALADIN_RETRIBUTION, T20, B2 ) )
+    if ( p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T20, B2 ) )
       p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_t20_2p );
   }
 };
@@ -3781,7 +3781,7 @@ struct rebuke_t : public paladin_melee_attack_t
 
   virtual bool ready() override
   {
-    if ( ! target -> debuffs.casting -> check() )
+    if ( ! target -> debuffs.casting || ! target -> debuffs.casting -> check() )
       return false;
 
     return paladin_melee_attack_t::ready();
@@ -4529,11 +4529,18 @@ void paladin_t::init_scaling()
   specialization_e tree = specialization();
 
   // Only Holy cares about INT/SPI/SP.
-  scales_with[ STAT_INTELLECT   ] = ( tree == PALADIN_HOLY );
-  scales_with[ STAT_SPELL_POWER ] = ( tree == PALADIN_HOLY );
-  scales_with[ STAT_BONUS_ARMOR    ] = ( tree == PALADIN_PROTECTION );
+  if ( tree == PALADIN_HOLY )
+  {
+    scaling -> enable( STAT_INTELLECT );
+    scaling -> enable( STAT_SPELL_POWER );
+  }
 
-  scales_with[STAT_AGILITY] = false;
+  if ( tree == PALADIN_PROTECTION )
+  {
+    scaling -> enable( STAT_BONUS_ARMOR );
+  }
+
+  scaling -> disable( STAT_AGILITY );
 }
 
 // paladin_t::init_buffs ====================================================
@@ -4598,12 +4605,12 @@ void paladin_t::create_buffs()
   buffs.vindicators_fury       = buff_creator_t( this, "vindicators_fury", find_spell( 165903 ) )
                                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                                  .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER )
-                                 .chance( sets.has_set_bonus( PALADIN_RETRIBUTION, PVP, B4 ) )
+                                 .chance( sets -> has_set_bonus( PALADIN_RETRIBUTION, PVP, B4 ) )
                                  .duration( timespan_t::from_seconds( 4 ) );
   buffs.wings_of_liberty       = buff_creator_t( this, "wings_of_liberty", find_spell( 185655 ) -> effectN( 1 ).trigger() )
                                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                                  .default_value( find_spell( 185655 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
-                                 .chance( sets.has_set_bonus( PALADIN_RETRIBUTION, T18, B4 ) );
+                                 .chance( sets -> has_set_bonus( PALADIN_RETRIBUTION, T18, B4 ) );
   buffs.wings_of_liberty_driver = new buffs::wings_of_liberty_driver_t( this );
 }
 

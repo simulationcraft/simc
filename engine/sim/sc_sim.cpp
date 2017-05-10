@@ -1681,8 +1681,8 @@ void sim_t::combat_begin()
   for ( size_t i = 0; i < target_list.size(); ++i )
   {
     player_t* t = target_list[ i ];
-    if ( overrides.mortal_wounds          ) t -> debuffs.mortal_wounds          -> override_buff();
-    if ( overrides.bleeding               ) t -> debuffs.bleeding               -> override_buff( 1, 1.0 );
+    if ( overrides.mortal_wounds && t -> debuffs.mortal_wounds ) t -> debuffs.mortal_wounds -> override_buff();
+    if ( overrides.bleeding && t -> debuffs.bleeding           ) t -> debuffs.bleeding      -> override_buff( 1, 1.0 );
   }
 
   for ( player_e i = PLAYER_NONE; i < PLAYER_MAX; ++i )
@@ -3709,4 +3709,13 @@ void sim_t::activate_actors()
   }
 
   current_iteration = -1;
+}
+
+bool sim_t::has_raid_event( const std::string& name ) const
+{
+  auto it = range::find_if( raid_events, [ &name ]( const std::unique_ptr<raid_event_t>& event ) {
+      return util::str_compare_ci( name, event -> name() );
+  } );
+
+  return it != raid_events.end();
 }

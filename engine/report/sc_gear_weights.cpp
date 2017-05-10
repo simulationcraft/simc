@@ -110,13 +110,13 @@ std::array<std::string, SCALE_METRIC_MAX> gear_weights::wowhead(
     std::string value_string = "";
 
     bool positive_normalizing_value =
-        p.scaling[ sm ].get_stat( p.normalize_by() ) >= 0;
+        p.scaling->scaling[ sm ].get_stat( p.normalize_by() ) >= 0;
 
     for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
     {
       double value = positive_normalizing_value
-                         ? p.scaling[ sm ].get_stat( i )
-                         : -p.scaling[ sm ].get_stat( i );
+                         ? p.scaling->scaling[ sm ].get_stat( i )
+                         : -p.scaling->scaling[ sm ].get_stat( i );
       if ( value == 0 )
         continue;
 
@@ -205,12 +205,12 @@ std::array<std::string, SCALE_METRIC_MAX> gear_weights::pawn(
     s += ", ";
 
     bool positive_normalizing_value =
-        p.scaling[ sm ].get_stat( p.normalize_by() ) >= 0;
+        p.scaling->scaling[ sm ].get_stat( p.normalize_by() ) >= 0;
     for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
     {
       double value = positive_normalizing_value
-                         ? p.scaling[ sm ].get_stat( i )
-                         : -p.scaling[ sm ].get_stat( i );
+                         ? p.scaling->scaling[ sm ].get_stat( i )
+                         : -p.scaling->scaling[ sm ].get_stat( i );
       if ( value == 0 )
         continue;
 
@@ -391,7 +391,7 @@ std::array<std::string, SCALE_METRIC_MAX> gear_weights::askmrrobot(
 
     // check for negative normalizer
     bool positive_normalizing_value =
-        p.scaling_normalized[ sm ].get_stat( p.normalize_by() ) >= 0;
+        p.scaling->scaling_normalized[ sm ].get_stat( p.normalize_by() ) >= 0;
 
     // AMR accepts a max precision of 2 decimal places
     ss.precision( std::min( p.sim->report_precision + 1, 2 ) );
@@ -404,8 +404,8 @@ std::array<std::string, SCALE_METRIC_MAX> gear_weights::askmrrobot(
     {
       // get stat weight value
       double value = positive_normalizing_value
-                         ? p.scaling_normalized[ sm ].get_stat( i )
-                         : -p.scaling_normalized[ sm ].get_stat( i );
+                         ? p.scaling->scaling_normalized[ sm ].get_stat( i )
+                         : -p.scaling->scaling_normalized[ sm ].get_stat( i );
 
       // if the weight is negative or AMR won't recognize the stat type string,
       // skip this stat

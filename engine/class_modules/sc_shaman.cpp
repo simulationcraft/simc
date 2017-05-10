@@ -1040,7 +1040,10 @@ public:
     }
 
     // Setup Hasted CD for Enhancement
-    ab::cooldown -> hasted = ab::data().affected_by( p() -> spec.shaman -> effectN( 2 ) );
+    if ( ab::data().affected_by( p() -> spec.shaman -> effectN( 2 ) ) )
+    {
+      ab::cooldown -> hasted = true;
+    }
 
     // Setup Hasted GCD for Enhancement
     if ( ab::data().affected_by( p() -> spec.shaman -> effectN( 3 ) ) )
@@ -1393,7 +1396,7 @@ public:
     proc_mw -> occur();
 
     if ( p() -> action.electrocute &&
-         rng().roll( p() -> sets.set( SHAMAN_ENHANCEMENT, T18, B2 ) -> effectN( 1 ).percent() ) )
+         rng().roll( p() -> sets -> set( SHAMAN_ENHANCEMENT, T18, B2 ) -> effectN( 1 ).percent() ) )
     {
       p() -> action.electrocute -> set_target( source_state -> target );
       p() -> action.electrocute -> schedule_execute();
@@ -1402,8 +1405,15 @@ public:
 
   virtual double stormbringer_proc_chance() const
   {
-    return p() -> spec.stormbringer -> proc_chance() +
+    double base_chance = p() -> spec.stormbringer -> proc_chance() +
            p() -> cache.mastery() * p() -> mastery.enhanced_elements -> effectN( 3 ).mastery_value();
+
+    if ( maybe_ptr( p() -> dbc.ptr ) && weapon && weapon -> slot == SLOT_MAIN_HAND )
+    {
+      base_chance += p() -> talent.tempest -> effectN( 1 ).percent();
+    }
+
+    return base_chance;
   }
 };
 
@@ -1491,9 +1501,9 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
       crit_bonus_multiplier *= 1.0 + p -> spec.elemental_fury -> effectN( 1 ).percent() + p -> artifact.elemental_destabilization.percent();
     }
 
-    if ( data().affected_by( player -> sets.set( SHAMAN_ELEMENTAL, T19, B2 ) ) )
+    if ( data().affected_by( player -> sets -> set( SHAMAN_ELEMENTAL, T19, B2 ) ) )
     {
-      base_crit += player -> sets.set( SHAMAN_ELEMENTAL, T19, B2 ) -> effectN( 1 ).percent();
+      base_crit += player -> sets -> set( SHAMAN_ELEMENTAL, T19, B2 ) -> effectN( 1 ).percent();
     }
   }
 
@@ -1939,7 +1949,7 @@ struct spirit_wolf_t : public base_wolf_t
     const spell_data_t* maelstrom, * wf_driver;
 
     fs_melee_t( spirit_wolf_t* player ) : super( player, "melee" ),
-      wf( p() -> owner -> sets.has_set_bonus( SHAMAN_ENHANCEMENT, T17, B4 ) ? new windfury_t( player ) : nullptr ),
+      wf( p() -> owner -> sets -> has_set_bonus( SHAMAN_ENHANCEMENT, T17, B4 ) ? new windfury_t( player ) : nullptr ),
       maelstrom( player -> find_spell( 190185 ) ), wf_driver( player -> find_spell( 170523 ) )
     {
       background = repeating = true;
@@ -2725,7 +2735,7 @@ struct stormstrike_attack_t : public shaman_attack_t
   {
     double c = shaman_attack_t::composite_crit_chance();
 
-    if ( p() -> sets.has_set_bonus( SHAMAN_ENHANCEMENT, T19, B2 ) &&
+    if ( p() -> sets -> has_set_bonus( SHAMAN_ENHANCEMENT, T19, B2 ) &&
          p() -> buff.stormbringer -> up() )
     {
       c += t19_2pc -> effectN( 1 ).percent();
@@ -3224,13 +3234,13 @@ struct lava_lash_t : public shaman_attack_t
   }
 
   double stormbringer_proc_chance() const override
-  { return p() -> sets.set( SHAMAN_ENHANCEMENT, T19, B4 ) -> proc_chance(); }
+  { return p() -> sets -> set( SHAMAN_ENHANCEMENT, T19, B4 ) -> proc_chance(); }
 
   void init() override
   {
     shaman_attack_t::init();
 
-    may_proc_stormbringer = p() -> sets.has_set_bonus( SHAMAN_ENHANCEMENT, T19, B4 );
+    may_proc_stormbringer = p() -> sets -> has_set_bonus( SHAMAN_ENHANCEMENT, T19, B4 );
   }
 
   double cost() const override
@@ -3377,9 +3387,9 @@ struct stormstrike_base_t : public shaman_attack_t
         cl -> execute();
       }
 
-      if ( p() -> sets.has_set_bonus( SHAMAN_ENHANCEMENT, T17, B2 ) )
+      if ( p() -> sets -> has_set_bonus( SHAMAN_ENHANCEMENT, T17, B2 ) )
       {
-        p() -> cooldown.feral_spirits -> adjust( - p() -> sets.set( SHAMAN_ENHANCEMENT, T17, B2 ) -> effectN( 1 ).time_value() );
+        p() -> cooldown.feral_spirits -> adjust( - p() -> sets -> set( SHAMAN_ENHANCEMENT, T17, B2 ) -> effectN( 1 ).time_value() );
       }
     }
 
@@ -3466,6 +3476,30 @@ struct windstrike_t : public stormstrike_base_t
     }
   }
 
+  double recharge_multiplier() const override
+  {
+    auto m = stormstrike_base_t::recharge_multiplier();
+
+    if ( maybe_ptr( p() -> dbc.ptr ) && p() -> buff.ascendance -> up() )
+    {
+      m *= 1.0 + p() -> buff.ascendance -> data().effectN( 4 ).percent();
+    }
+
+    return m;
+  }
+
+  double cost() const override
+  {
+    double c = stormstrike_base_t::cost();
+
+    if ( maybe_ptr( p() -> dbc.ptr ) && p() -> buff.ascendance -> check() )
+    {
+      c *= 1.0 + p() -> buff.ascendance -> data().effectN( 5 ).percent();
+    }
+
+    return c;
+  }
+
   bool ready() override
   {
     if ( p() -> buff.ascendance -> remains() <= cooldown -> queue_delay() )
@@ -3505,6 +3539,25 @@ struct rockbiter_t : public shaman_spell_t
   {
     maelstrom_gain += player -> artifact.gathering_of_the_maelstrom.value();
     base_multiplier *= 1.0 + player -> artifact.weapons_of_the_elements.percent();
+
+    if ( maybe_ptr( player -> dbc.ptr ) )
+    {
+      base_multiplier *= 1.0 + player -> talent.boulderfist -> effectN( 2 ).percent();
+      // TODO: SpellCategory + SpellEffect based detection
+      cooldown -> hasted = true;
+    }
+  }
+
+  double recharge_multiplier() const override
+  {
+    double m = shaman_spell_t::recharge_multiplier();
+
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+    {
+      m *= 1.0 + p() -> talent.boulderfist -> effectN( 1 ).percent();
+    }
+
+    return m;
   }
 
   void execute() override
@@ -3516,7 +3569,7 @@ struct rockbiter_t : public shaman_spell_t
 
   bool ready() override
   {
-    if ( p() -> talent.boulderfist -> ok() )
+    if ( ! maybe_ptr( p() -> dbc.ptr ) && p() -> talent.boulderfist -> ok() )
     {
       return false;
     }
@@ -3752,6 +3805,16 @@ struct boulderfist_t : public shaman_spell_t
     shaman_spell_t::execute();
 
     p() -> buff.boulderfist -> trigger();
+  }
+
+  bool ready() override
+  {
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+    {
+      return false;
+    }
+
+    return shaman_spell_t::ready();
   }
 };
 
@@ -5024,8 +5087,8 @@ struct earth_shock_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    if ( p() -> sets.has_set_bonus( SHAMAN_ELEMENTAL, T18, B2 ) &&
-         rng().roll( p() -> sets.set( SHAMAN_ELEMENTAL, T18, B2 ) -> effectN( 1 ).percent() ) )
+    if ( p() -> sets -> has_set_bonus( SHAMAN_ELEMENTAL, T18, B2 ) &&
+         rng().roll( p() -> sets -> set( SHAMAN_ELEMENTAL, T18, B2 ) -> effectN( 1 ).percent() ) )
     {
       p() -> resource_gain( RESOURCE_MAELSTROM, last_resource_cost, p() -> gain.t18_2pc_elemental, this );
     }
@@ -5072,7 +5135,7 @@ struct flame_shock_t : public shaman_spell_t
   {
     double m = shaman_spell_t::composite_crit_chance();
 
-    if ( player -> sets.has_set_bonus( SHAMAN_ELEMENTAL, T20, B2 ) &&
+    if ( player -> sets -> has_set_bonus( SHAMAN_ELEMENTAL, T20, B2 ) &&
          p() -> active_elemental_pet() )
     {
       m += 1.0;
@@ -5093,10 +5156,10 @@ struct flame_shock_t : public shaman_spell_t
       m *= p () -> buff.ember_totem -> check_value();
     }
 
-    if ( player -> sets.has_set_bonus( SHAMAN_ELEMENTAL, T20, B2 ) &&
+    if ( player -> sets -> has_set_bonus( SHAMAN_ELEMENTAL, T20, B2 ) &&
          p() -> active_elemental_pet() )
     {
-      m *= 1.0 + p() -> sets.set( SHAMAN_ELEMENTAL, T20, B2 ) -> effectN( 1 ).percent();
+      m *= 1.0 + p() -> sets -> set( SHAMAN_ELEMENTAL, T20, B2 ) -> effectN( 1 ).percent();
     }
 
     return m;
@@ -5127,10 +5190,10 @@ struct flame_shock_t : public shaman_spell_t
     }
 
     if ( d -> state -> result == RESULT_CRIT &&
-         player -> sets.has_set_bonus( SHAMAN_ELEMENTAL, T20, B4 ) )
+         player -> sets -> has_set_bonus( SHAMAN_ELEMENTAL, T20, B4 ) )
     {
-      p() -> cooldown.fire_elemental  -> adjust( timespan_t::from_seconds( -1.0 * p() -> sets.set( SHAMAN_ELEMENTAL, T20, B4 ) -> effectN(1).base_value() / 10.0 ) );
-      p() -> cooldown.storm_elemental -> adjust( timespan_t::from_seconds( -1.0 * p() -> sets.set( SHAMAN_ELEMENTAL, T20, B4 ) -> effectN(2).base_value() / 10.0 ) );
+      p() -> cooldown.fire_elemental  -> adjust( timespan_t::from_seconds( -1.0 * p() -> sets -> set( SHAMAN_ELEMENTAL, T20, B4 ) -> effectN(1).base_value() / 10.0 ) );
+      p() -> cooldown.storm_elemental -> adjust( timespan_t::from_seconds( -1.0 * p() -> sets -> set( SHAMAN_ELEMENTAL, T20, B4 ) -> effectN(2).base_value() / 10.0 ) );
     }
   }
 };
@@ -5180,7 +5243,7 @@ struct wind_shear_t : public shaman_spell_t
 
   virtual bool ready() override
   {
-    if ( ! target -> debuffs.casting -> check() ) return false;
+    if ( target -> debuffs.casting && ! target -> debuffs.casting -> check() ) return false;
     return shaman_spell_t::ready();
   }
 
@@ -6103,7 +6166,7 @@ bool shaman_t::create_actions()
     action.seismic_storm = new seismic_lightning_t( this );
   }
 
-  if ( sets.has_set_bonus( SHAMAN_ENHANCEMENT, T18, B2 ) )
+  if ( sets -> has_set_bonus( SHAMAN_ENHANCEMENT, T18, B2 ) )
   {
     action.electrocute = new electrocute_t( this );
   }
@@ -6305,7 +6368,7 @@ void shaman_t::init_base_stats()
     resources.base[ RESOURCE_MAELSTROM ] += artifact.swelling_maelstrom.value();
 
   if ( spec.enhancement_shaman -> ok() )
-    resources.base[ RESOURCE_MAELSTROM ] += spec.enhancement_shaman -> effectN( 5 ).base_value();
+    resources.base[ RESOURCE_MAELSTROM ] += spec.enhancement_shaman -> effectN( maybe_ptr( dbc.ptr ) ? 7 : 5 ).base_value();
 
   base.mana_regen_from_spirit_multiplier = spec.meditation -> effectN( 1 ).percent();
 
@@ -6329,13 +6392,13 @@ void shaman_t::init_scaling()
   switch ( specialization() )
   {
     case SHAMAN_ENHANCEMENT:
-      scales_with[ STAT_STRENGTH              ] = false;
-      scales_with[ STAT_WEAPON_OFFHAND_DPS    ] = true;
-      scales_with[ STAT_SPELL_POWER           ] = false;
-      scales_with[ STAT_INTELLECT             ] = false;
+      scaling -> enable( STAT_WEAPON_OFFHAND_DPS );
+      scaling -> disable( STAT_STRENGTH );
+      scaling -> disable( STAT_SPELL_POWER );
+      scaling -> disable( STAT_INTELLECT );
       break;
     case SHAMAN_RESTORATION:
-      scales_with[ STAT_MASTERY_RATING ] = false;
+      scaling -> disable( STAT_MASTERY_RATING );
       break;
     default:
       break;
@@ -6660,7 +6723,7 @@ void shaman_t::trigger_windfury_weapon( const action_state_t* state )
     a -> set_target( state -> target );
     a -> schedule_execute();
     a -> schedule_execute();
-    if ( sets.has_set_bonus( SHAMAN_ENHANCEMENT, PVP, B4 ) )
+    if ( sets -> has_set_bonus( SHAMAN_ENHANCEMENT, PVP, B4 ) )
     {
       a -> schedule_execute();
       a -> schedule_execute();
@@ -6672,18 +6735,18 @@ void shaman_t::trigger_windfury_weapon( const action_state_t* state )
 
 void shaman_t::trigger_t17_2pc_elemental( int stacks )
 {
-  if ( ! sets.has_set_bonus( SHAMAN_ELEMENTAL, T17, B2 ) )
+  if ( ! sets -> has_set_bonus( SHAMAN_ELEMENTAL, T17, B2 ) )
     return;
 
-  buff.focus_of_the_elements -> trigger( 1, sets.set( SHAMAN_ELEMENTAL, T17, B2 ) -> effectN( 1 ).percent() * stacks );
+  buff.focus_of_the_elements -> trigger( 1, sets -> set( SHAMAN_ELEMENTAL, T17, B2 ) -> effectN( 1 ).percent() * stacks );
 }
 
 void shaman_t::trigger_t17_4pc_elemental( int stacks )
 {
-  if ( ! sets.has_set_bonus( SHAMAN_ELEMENTAL, T17, B4 ) )
+  if ( ! sets -> has_set_bonus( SHAMAN_ELEMENTAL, T17, B4 ) )
     return;
 
-  if ( stacks < sets.set( SHAMAN_ELEMENTAL, T17, B4 ) -> effectN( 1 ).base_value() )
+  if ( stacks < sets -> set( SHAMAN_ELEMENTAL, T17, B4 ) -> effectN( 1 ).base_value() )
     return;
 
   if ( buff.lava_surge -> check() )
@@ -6697,12 +6760,12 @@ void shaman_t::trigger_t17_4pc_elemental( int stacks )
 
 void shaman_t::trigger_t18_4pc_elemental()
 {
-  if ( ! sets.has_set_bonus( SHAMAN_ELEMENTAL, T18, B4 ) )
+  if ( ! sets -> has_set_bonus( SHAMAN_ELEMENTAL, T18, B4 ) )
   {
     return;
   }
 
-  if ( ++t18_4pc_elemental_counter < sets.set( SHAMAN_ELEMENTAL, T18, B4 ) -> effectN( 1 ).base_value() )
+  if ( ++t18_4pc_elemental_counter < sets -> set( SHAMAN_ELEMENTAL, T18, B4 ) -> effectN( 1 ).base_value() )
   {
     return;
   }
@@ -6713,8 +6776,8 @@ void shaman_t::trigger_t18_4pc_elemental()
 
 void shaman_t::trigger_t19_oh_8pc( const action_state_t* )
 {
-  if ( ! sets.has_set_bonus( SHAMAN_ELEMENTAL, T19OH, B8 ) &&
-       ! sets.has_set_bonus( SHAMAN_ENHANCEMENT, T19OH, B8 ) )
+  if ( ! sets -> has_set_bonus( SHAMAN_ELEMENTAL, T19OH, B8 ) &&
+       ! sets -> has_set_bonus( SHAMAN_ENHANCEMENT, T19OH, B8 ) )
   {
     return;
   }
@@ -6801,15 +6864,15 @@ void shaman_t::create_buffs()
   buff.t18_4pc_elemental        = haste_buff_creator_t( this, "lightning_vortex", find_spell( 189063 ) )
     .period( find_spell( 189063 ) -> effectN( 2 ).period() )
     .refresh_behavior( BUFF_REFRESH_DURATION )
-    .chance( sets.has_set_bonus( SHAMAN_ELEMENTAL, T18, B4 ) )
+    .chance( sets -> has_set_bonus( SHAMAN_ELEMENTAL, T18, B4 ) )
     .default_value( find_spell( 189063 ) -> effectN( 1 ).percent() )
     .tick_callback( []( buff_t* b, int t, const timespan_t& ) {
       b -> current_value = ( t - b -> current_tick ) * b -> data().effectN( 2 ).percent();
     } );
 
   buff.focus_of_the_elements = buff_creator_t( this, "focus_of_the_elements", find_spell( 167205 ) )
-                               .chance( static_cast< double >( sets.has_set_bonus( SHAMAN_ELEMENTAL, T17, B2 ) ) );
-  buff.feral_spirit          = buff_creator_t( this, "t17_4pc_melee", sets.set( SHAMAN_ENHANCEMENT, T17, B4 ) -> effectN( 1 ).trigger() )
+                               .chance( static_cast< double >( sets -> has_set_bonus( SHAMAN_ELEMENTAL, T17, B2 ) ) );
+  buff.feral_spirit          = buff_creator_t( this, "t17_4pc_melee", sets -> set( SHAMAN_ENHANCEMENT, T17, B4 ) -> effectN( 1 ).trigger() )
                                .cd( timespan_t::zero() );
 
   buff.flametongue = new flametongue_buff_t( this );
@@ -6817,12 +6880,18 @@ void shaman_t::create_buffs()
     .refresh_behavior( BUFF_REFRESH_PANDEMIC );
   buff.stormbringer = buff_creator_t( this, "stormbringer", find_spell( 201846 ) )
                    .activated( false ) // TODO: Need a delay on this
-                   .max_stack( find_spell( 201846 ) -> initial_stacks() + talent.tempest -> effectN( 1 ).base_value() );
+                   .max_stack( find_spell( 201846 ) -> initial_stacks() +
+                               ( ! maybe_ptr( dbc.ptr )
+                                 ? talent.tempest -> effectN( 1 ).base_value()
+                                 : 0 ) );
   buff.crash_lightning = buff_creator_t( this, "crash_lightning", find_spell( 187878 ) );
   buff.windsong = haste_buff_creator_t( this, "windsong", talent.windsong )
                   .add_invalidate( CACHE_ATTACK_SPEED )
                   .default_value( 1.0 / ( 1.0 + talent.windsong -> effectN( 2 ).percent() ) );
-  buff.boulderfist = buff_creator_t( this, "boulderfist", talent.boulderfist -> effectN( 3 ).trigger() )
+  buff.boulderfist = buff_creator_t( this, "boulderfist" )
+                        .spell( maybe_ptr( dbc.ptr )
+                                ? spell_data_t::not_found()
+                                : talent.boulderfist -> effectN( 3 ).trigger() )
                         .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buff.landslide = buff_creator_t( this, "landslide", find_spell( 202004 ) )
                    .add_invalidate( CACHE_AGILITY )
@@ -6849,7 +6918,7 @@ void shaman_t::create_buffs()
                     } );
   buff.elemental_focus = buff_creator_t( this, "elemental_focus", spec.elemental_focus -> effectN( 1 ).trigger() )
     .default_value( 1.0 + spec.elemental_focus -> effectN( 1 ).trigger() -> effectN( 1 ).percent() +
-                          sets.set( SHAMAN_ELEMENTAL, T19, B4 ) -> effectN( 1 ).percent() )
+                          sets -> set( SHAMAN_ELEMENTAL, T19, B4 ) -> effectN( 1 ).percent() )
     .activated( false );
   buff.stormkeeper = buff_creator_t( this, "stormkeeper", artifact.stormkeeper )
     .cd( timespan_t::zero() ); // Handled by the action
@@ -6887,14 +6956,14 @@ void shaman_t::create_buffs()
   buff.hot_hand = buff_creator_t( this, "hot_hand", talent.hot_hand -> effectN( 1 ).trigger() )
                   .trigger_spell( talent.hot_hand );
 
-  buff.t19_oh_8pc = stat_buff_creator_t( this, "might_of_the_maelstrom", sets.set( specialization(), T19OH, B8 ) -> effectN( 1 ).trigger() )
-    .trigger_spell( sets.set( specialization(), T19OH, B8 ) );
+  buff.t19_oh_8pc = stat_buff_creator_t( this, "might_of_the_maelstrom", sets -> set( specialization(), T19OH, B8 ) -> effectN( 1 ).trigger() )
+    .trigger_spell( sets -> set( specialization(), T19OH, B8 ) );
   buff.elemental_mastery = haste_buff_creator_t( this, "elemental_mastery", talent.elemental_mastery )
                            .default_value( 1.0 / ( 1.0 + talent.elemental_mastery -> effectN( 1 ).percent() ) )
                            .cd( timespan_t::zero() ); // Handled by the action
-  buff.t18_4pc_enhancement = buff_creator_t( this, "natures_reprisal", sets.set( SHAMAN_ENHANCEMENT, T18, B4 ) -> effectN( 1 ).trigger() )
-    .trigger_spell( sets.set( SHAMAN_ENHANCEMENT, T18, B4 ) )
-    .default_value( sets.set( SHAMAN_ENHANCEMENT, T18, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
+  buff.t18_4pc_enhancement = buff_creator_t( this, "natures_reprisal", sets -> set( SHAMAN_ENHANCEMENT, T18, B4 ) -> effectN( 1 ).trigger() )
+    .trigger_spell( sets -> set( SHAMAN_ENHANCEMENT, T18, B4 ) )
+    .default_value( sets -> set( SHAMAN_ENHANCEMENT, T18, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 }
 
@@ -7567,7 +7636,8 @@ double shaman_t::composite_spell_power( school_e school ) const
   double sp = 0;
 
   if ( specialization() == SHAMAN_ENHANCEMENT )
-    sp = composite_attack_power_multiplier() * cache.attack_power() * spec.enhancement_shaman -> effectN( 2 ).percent();
+    sp = composite_attack_power_multiplier() * cache.attack_power() *
+         spec.enhancement_shaman -> effectN( maybe_ptr( dbc.ptr ) ? 4 : 2 ).percent();
   else
     sp = player_t::composite_spell_power( school );
 

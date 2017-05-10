@@ -19,6 +19,13 @@ actions.precombat=flask,type=flask_of_the_seventh_demon
 actions.precombat+=/food,type=nightborne_delicacy_platter
 actions.precombat+=/augmentation,type=defiled
 actions.precombat+=/regrowth,if=talent.bloodtalons.enabled
+# Rake_refresh controls how aggresively to refresh rake. Lower means less aggresively.
+actions.precombat+=/variable,name=rake_refresh,op=set,value=7
+actions.precombat+=/variable,name=rake_refresh,op=set,value=3,if=equipped.ailuro_pouncers|talent.soul_of_the_forest.enabled
+# Pooling controlls how aggresively to pool. Lower means more aggresively
+actions.precombat+=/variable,name=pooling,op=set,value=3
+actions.precombat+=/variable,name=pooling,op=set,value=10,if=equipped.chatoyant_signet
+actions.precombat+=/variable,name=pooling,op=set,value=3,if=equipped.the_wildshapers_clutch&!equipped.chatoyant_signet
 actions.precombat+=/cat_form
 actions.precombat+=/prowl
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
@@ -46,7 +53,7 @@ actions+=/ferocious_bite,cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<3&ta
 actions+=/regrowth,if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&buff.bloodtalons.down&(combo_points>=5|buff.predatory_swiftness.remains<1.5|(talent.bloodtalons.enabled&combo_points=2&cooldown.ashamanes_frenzy.remains<gcd)|(talent.elunes_guidance.enabled&((cooldown.elunes_guidance.remains<gcd&combo_points=0)|(buff.elunes_guidance.up&combo_points>=4))))
 actions+=/call_action_list,name=sbt_opener,if=talent.sabertooth.enabled&time<20
 # Special logic for Ailuro Pouncers legendary.
-actions+=/regrowth,if=equipped.ailuro_pouncers&talent.bloodtalons.enabled&buff.predatory_swiftness.stack>1&buff.bloodtalons.down
+actions+=/regrowth,if=equipped.ailuro_pouncers&talent.bloodtalons.enabled&(buff.predatory_swiftness.stack>2|(buff.predatory_swiftness.stack>1&dot.rake.remains<3))&buff.bloodtalons.down
 actions+=/call_action_list,name=finisher
 actions+=/call_action_list,name=generator
 # The Following line massively increases performance of the simulation but can be safely removed.
@@ -62,13 +69,13 @@ actions.finisher+=/thrash_cat,cycle_targets=1,if=remains<=duration*0.3&spell_tar
 actions.finisher+=/pool_resource,for_next=1
 actions.finisher+=/swipe_cat,if=spell_targets.swipe_cat>=8
 # Refresh Rip at 8 seconds or for a stronger Rip
-actions.finisher+=/rip,cycle_targets=1,if=(!ticking|(remains<8&target.health.pct>25&!talent.sabertooth.enabled)|persistent_multiplier>dot.rip.pmultiplier)&target.time_to_die-remains>tick_time*4&combo_points=5&(energy.time_to_max<1|buff.berserk.up|buff.incarnation.up|buff.elunes_guidance.up|cooldown.tigers_fury.remains<3|set_bonus.tier18_4pc|(buff.clearcasting.react&energy>65)|talent.soul_of_the_forest.enabled|!dot.rip.ticking|(dot.rake.remains<1.5&spell_targets.swipe_cat<6))
+actions.finisher+=/rip,cycle_targets=1,if=(!ticking|(remains<8&target.health.pct>25&!talent.sabertooth.enabled)|persistent_multiplier>dot.rip.pmultiplier)&target.time_to_die-remains>tick_time*4&combo_points=5&(energy.time_to_max<variable.pooling|buff.berserk.up|buff.incarnation.up|buff.elunes_guidance.up|cooldown.tigers_fury.remains<3|set_bonus.tier18_4pc|(buff.clearcasting.react&energy>65)|talent.soul_of_the_forest.enabled|!dot.rip.ticking|(dot.rake.remains<1.5&spell_targets.swipe_cat<6))
 # Refresh Savage Roar early with Jagged Wounds
-actions.finisher+=/savage_roar,if=((buff.savage_roar.remains<=10.5&talent.jagged_wounds.enabled)|(buff.savage_roar.remains<=7.2))&combo_points=5&(energy.time_to_max<1|buff.berserk.up|buff.incarnation.up|buff.elunes_guidance.up|cooldown.tigers_fury.remains<3|set_bonus.tier18_4pc|(buff.clearcasting.react&energy>65)|talent.soul_of_the_forest.enabled|!dot.rip.ticking|(dot.rake.remains<1.5&spell_targets.swipe_cat<6))
+actions.finisher+=/savage_roar,if=((buff.savage_roar.remains<=10.5&talent.jagged_wounds.enabled)|(buff.savage_roar.remains<=7.2))&combo_points=5&(energy.time_to_max<variable.pooling|buff.berserk.up|buff.incarnation.up|buff.elunes_guidance.up|cooldown.tigers_fury.remains<3|set_bonus.tier18_4pc|(buff.clearcasting.react&energy>65)|talent.soul_of_the_forest.enabled|!dot.rip.ticking|(dot.rake.remains<1.5&spell_targets.swipe_cat<6))
 # Replace FB with Swipe at 6 targets for Bloodtalons or 3 targets otherwise.
-actions.finisher+=/swipe_cat,if=combo_points=5&(spell_targets.swipe_cat>=6|(spell_targets.swipe_cat>=3&!talent.bloodtalons.enabled))&combo_points=5&(energy.time_to_max<1|buff.berserk.up|buff.incarnation.up|buff.elunes_guidance.up|cooldown.tigers_fury.remains<3|set_bonus.tier18_4pc|(talent.moment_of_clarity.enabled&buff.clearcasting.react))
-actions.finisher+=/maim,,if=combo_points=5&buff.fiery_red_maimers.up&(energy.time_to_max<1|buff.berserk.up|buff.incarnation.up|buff.elunes_guidance.up|cooldown.tigers_fury.remains<3)
-actions.finisher+=/ferocious_bite,max_energy=1,cycle_targets=1,if=combo_points=5&(energy.time_to_max<1|buff.berserk.up|buff.incarnation.up|buff.elunes_guidance.up|cooldown.tigers_fury.remains<3)
+actions.finisher+=/swipe_cat,if=combo_points=5&(spell_targets.swipe_cat>=6|(spell_targets.swipe_cat>=3&!talent.bloodtalons.enabled))&combo_points=5&(energy.time_to_max<variable.pooling|buff.berserk.up|buff.incarnation.up|buff.elunes_guidance.up|cooldown.tigers_fury.remains<3|set_bonus.tier18_4pc|(talent.moment_of_clarity.enabled&buff.clearcasting.react))
+actions.finisher+=/maim,,if=combo_points=5&buff.fiery_red_maimers.up&(energy.time_to_max<variable.pooling|buff.berserk.up|buff.incarnation.up|buff.elunes_guidance.up|cooldown.tigers_fury.remains<3)
+actions.finisher+=/ferocious_bite,max_energy=1,cycle_targets=1,if=combo_points=5&(energy.time_to_max<variable.pooling|buff.berserk.up|buff.incarnation.up|buff.elunes_guidance.up|cooldown.tigers_fury.remains<3)
 
 # Brutal Slash if there's adds up
 actions.generator=brutal_slash,if=spell_targets.brutal_slash>desired_targets&combo_points<5
@@ -86,11 +93,12 @@ actions.generator+=/swipe_cat,if=spell_targets.swipe_cat>=6
 actions.generator+=/shadowmeld,if=combo_points<5&energy>=action.rake.cost&dot.rake.pmultiplier<2.1&buff.tigers_fury.up&(buff.bloodtalons.up|!talent.bloodtalons.enabled)&(!talent.incarnation.enabled|cooldown.incarnation.remains>18)&!buff.incarnation.up
 # Refresh Rake early with Bloodtalons
 actions.generator+=/pool_resource,for_next=1
-actions.generator+=/rake,cycle_targets=1,if=combo_points<5&(!ticking|(!talent.bloodtalons.enabled&remains<duration*0.3)|(talent.bloodtalons.enabled&buff.bloodtalons.up&(!talent.soul_of_the_forest.enabled&remains<=7|remains<=5)&persistent_multiplier>dot.rake.pmultiplier*0.80))&target.time_to_die-remains>tick_time
+actions.generator+=/rake,cycle_targets=1,if=combo_points<5&(!ticking|(!talent.bloodtalons.enabled&remains<duration*0.3)|(talent.bloodtalons.enabled&buff.bloodtalons.up&(remains<=variable.rake_refresh)&persistent_multiplier>dot.rake.pmultiplier*0.80))&target.time_to_die-remains>tick_time
 actions.generator+=/moonfire_cat,cycle_targets=1,if=combo_points<5&remains<=4.2&target.time_to_die-remains>tick_time*2
 actions.generator+=/pool_resource,for_next=1
-# Use Thrash on Clearcasting, or during Berserk/Incarnation if you have T19 4set
-actions.generator+=/thrash_cat,cycle_targets=1,if=remains<=duration*0.3&(spell_targets.swipe_cat>=2|(buff.clearcasting.up&buff.bloodtalons.down))
+# Use Thrash on single-target if you have T19 4set
+actions.generator+=/thrash_cat,cycle_targets=1,if=set_bonus.tier19_4pc&remains<=duration*0.3&combo_points<5&(spell_targets.swipe_cat>=2|((equipped.luffa_wrappings|buff.clearcasting.up)&(equipped.ailuro_pouncers|buff.bloodtalons.down)))
+actions.generator+=/thrash_cat,cycle_targets=1,if=!set_bonus.tier19_4pc&remains<=duration*0.3&(spell_targets.swipe_cat>=2|(buff.clearcasting.up&equipped.luffa_wrappings&(equipped.ailuro_pouncers|buff.bloodtalons.down)))
 # Brutal Slash if you would cap out charges before the next adds spawn
 actions.generator+=/brutal_slash,if=combo_points<5&((raid_event.adds.exists&raid_event.adds.in>(1+max_charges-charges_fractional)*15)|(!raid_event.adds.exists&(charges_fractional>2.66&time>10)))
 actions.generator+=/swipe_cat,if=combo_points<5&spell_targets.swipe_cat>=3
@@ -98,13 +106,13 @@ actions.generator+=/shred,if=combo_points<5&(spell_targets.swipe_cat<3|talent.br
 
 actions.opener=rake,if=buff.prowl.up
 actions.opener+=/savage_roar,if=buff.savage_roar.down
-actions.opener+=/berserk,if=buff.savage_roar.up
-actions.opener+=/tigers_fury,if=buff.berserk.up
-actions.opener+=/frenzy,if=buff.bloodtalons.up
-actions.opener+=/regrowth,if=combo_points=5&buff.bloodtalons.down
-actions.opener+=/rip,if=combo_points=5&buff.bloodtalons.up
-actions.opener+=/thrash_cat,if=combo_points<5&!ticking
-actions.opener+=/shred,if=combo_points<5&buff.savage_roar.up
+actions.opener+=/berserk,if=buff.savage_roar.up&!equipped.draught_of_souls
+actions.opener+=/tigers_fury,if=buff.berserk.up&!equipped.draught_of_souls
+actions.opener+=/frenzy,if=buff.bloodtalons.up&!equipped.draught_of_souls
+actions.opener+=/regrowth,if=combo_points=5&buff.bloodtalons.down&buff.predatory_swiftness.up&!equipped.draught_of_souls
+actions.opener+=/rip,if=combo_points=5&buff.bloodtalons.up&!equipped.draught_of_souls
+actions.opener+=/thrash_cat,if=combo_points<5&!ticking&!equipped.draught_of_souls
+actions.opener+=/shred,if=combo_points<5&buff.savage_roar.up&!equipped.draught_of_souls
 
 # Hard-cast a Healing Touch for Bloodtalons buff. Use Dash to re-enter Cat Form.
 actions.sbt_opener=regrowth,if=talent.bloodtalons.enabled&combo_points=5&!buff.bloodtalons.up&!dot.rip.ticking

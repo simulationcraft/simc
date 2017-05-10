@@ -74,21 +74,19 @@ actions.ptr_build+=/backstab
 
 # Cooldowns
 actions.ptr_cds=potion,name=old_war,if=buff.bloodlust.react|target.time_to_die<=25|buff.shadow_blades.up
+actions.ptr_cds+=/use_item,name=draught_of_souls,if=!stealthed.rogue&energy.deficit>30+talent.vigor.enabled*10
 actions.ptr_cds+=/blood_fury,if=stealthed.rogue
 actions.ptr_cds+=/berserking,if=stealthed.rogue
 actions.ptr_cds+=/arcane_torrent,if=stealthed.rogue&energy.deficit>70
 actions.ptr_cds+=/symbols_of_death,if=!stealthed.all
-actions.ptr_cds+=/shadow_blades,if=combo_points.deficit>=2+stealthed.all-equipped.mantle_of_the_master_assassin&(cooldown.sprint.remains>buff.shadow_blades.duration*0.5|mantle_duration>0|cooldown.shadow_dance.charges_fractional>variable.shd_fractionnal|cooldown.vanish.up|target.time_to_die<=buff.shadow_blades.duration*1.1)
+actions.ptr_cds+=/shadow_blades,if=combo_points.deficit>=2+stealthed.all-equipped.mantle_of_the_master_assassin
 actions.ptr_cds+=/goremaws_bite,if=!stealthed.all&cooldown.shadow_dance.charges_fractional<=variable.shd_fractionnal&((combo_points.deficit>=4-(time<10)*2&energy.deficit>50+talent.vigor.enabled*25-(time>=10)*15)|(combo_points.deficit>=1&target.time_to_die<8))
 actions.ptr_cds+=/marked_for_death,target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit|(raid_event.adds.in>40&combo_points.deficit>=cp_max_spend)
 
-actions.ptr_default=run_action_list,name=ptr_sprinted,if=buff.faster_than_light_trigger.up
-actions.ptr_default+=/call_action_list,name=ptr_cds
+actions.ptr_default=call_action_list,name=ptr_cds
 # Fully switch to the Stealthed Rotation (by doing so, it forces pooling if nothing is available)
 actions.ptr_default+=/run_action_list,name=ptr_stealthed,if=stealthed.all
 actions.ptr_default+=/nightblade,if=target.time_to_die>8&remains<gcd.max&combo_points>=4
-actions.ptr_default+=/sprint,if=!equipped.draught_of_souls&mantle_duration=0&energy.time_to_max>=1.5&cooldown.shadow_dance.charges_fractional<variable.shd_fractionnal&!cooldown.vanish.up&target.time_to_die>=8&(dot.nightblade.remains>=14|target.time_to_die<=45)
-actions.ptr_default+=/sprint,if=equipped.draught_of_souls&trinket.cooldown.up&mantle_duration=0
 actions.ptr_default+=/call_action_list,name=ptr_stealth_als,if=(combo_points.deficit>=2+talent.premeditation.enabled|cooldown.shadow_dance.charges_fractional>=2.9)
 actions.ptr_default+=/call_action_list,name=ptr_finish,if=combo_points>=5|(combo_points>=4&combo_points.deficit<=2&spell_targets.shuriken_storm>=3&spell_targets.shuriken_storm<=4)
 actions.ptr_default+=/call_action_list,name=ptr_build,if=energy.deficit<=variable.stealth_threshold
@@ -99,10 +97,6 @@ actions.ptr_finish+=/nightblade,if=target.time_to_die-remains>8&(mantle_duration
 actions.ptr_finish+=/nightblade,cycle_targets=1,if=target.time_to_die-remains>8&mantle_duration=0&((refreshable&(!finality|buff.finality_nightblade.up))|remains<tick_time*2)
 actions.ptr_finish+=/death_from_above
 actions.ptr_finish+=/eviscerate
-
-# Sprinted
-actions.ptr_sprinted=cancel_autoattack
-actions.ptr_sprinted+=/use_item,name=draught_of_souls
 
 # Stealth Action List Starter
 actions.ptr_stealth_als=call_action_list,name=ptr_stealth_cds,if=energy.deficit<=variable.stealth_threshold&(!equipped.shadow_satyrs_walk|cooldown.shadow_dance.charges_fractional>=variable.shd_fractionnal|energy.deficit>=10)

@@ -1015,7 +1015,7 @@ struct water_jet_t : public mage_pet_spell_t
     tick_zero         = true;
     // PTR Multiplier
     base_multiplier *= 1.0 + p -> find_spell( 137020 ) -> effectN( 1 ).percent();
-    if ( p->o()->sets.has_set_bonus( MAGE_FROST, T18, B4 ) )
+    if ( p->o()->sets -> has_set_bonus( MAGE_FROST, T18, B4 ) )
     {
       dot_duration += p->find_spell( 185971 )->effectN( 1 ).time_value();
     }
@@ -1294,7 +1294,7 @@ struct temporal_hero_t : public mage_pet_t
     // Temporal Hero benefits from Temporal Power applied by itself (1 stack).
     // Using owner's buff object, in order to avoid creating a separate buff_t
     // for each pet instance, and merging the buff statistics.
-    if ( owner->sets.has_set_bonus( MAGE_ARCANE, T18, B4 ) )
+    if ( owner->sets -> has_set_bonus( MAGE_ARCANE, T18, B4 ) )
     {
       m *= 1.0 + o()->buffs.temporal_power->data().effectN( 1 ).percent();
     }
@@ -1359,7 +1359,7 @@ struct temporal_hero_t : public mage_pet_t
       }
     }
 
-    if ( owner->sets.has_set_bonus( MAGE_ARCANE, T18, B4 ) )
+    if ( owner->sets -> has_set_bonus( MAGE_ARCANE, T18, B4 ) )
     {
       o()->buffs.temporal_power->trigger();
     }
@@ -1590,9 +1590,9 @@ struct arcane_missiles_t : public buff_t
 
     am_proc_chance += p -> artifact.ethereal_sensitivity.percent();
 
-    if ( p -> sets.has_set_bonus( MAGE_ARCANE, T19, B2 ) )
+    if ( p -> sets -> has_set_bonus( MAGE_ARCANE, T19, B2 ) )
     {
-      am_proc_chance += p -> sets.set( MAGE_ARCANE, T19, B2 ) -> effectN( 1 ).percent();
+      am_proc_chance += p -> sets -> set( MAGE_ARCANE, T19, B2 ) -> effectN( 1 ).percent();
     }
     return am_proc_chance;
   }
@@ -2231,8 +2231,8 @@ struct fire_mage_spell_t : public mage_spell_t
           p -> buffs.pyromaniac -> trigger();
 
           //TODO: Add proc tracking to this to track from talent or non-talent sources.
-          if ( p -> sets.has_set_bonus( MAGE_FIRE, T19, B4 ) &&
-               rng().roll( p -> sets.set( MAGE_FIRE, T19, B4) -> effectN( 1 ).percent() ) )
+          if ( p -> sets -> has_set_bonus( MAGE_FIRE, T19, B4 ) &&
+               rng().roll( p -> sets -> set( MAGE_FIRE, T19, B4) -> effectN( 1 ).percent() ) )
           {
           p -> buffs.streaking -> trigger();
           }
@@ -2251,8 +2251,8 @@ struct fire_mage_spell_t : public mage_spell_t
             p -> procs.controlled_burn -> occur();
             p -> buffs.heating_up -> expire();
             p -> buffs.hot_streak -> trigger();
-            if ( p -> sets.has_set_bonus( MAGE_FIRE, T19, B4 ) &&
-                  rng().roll( p -> sets.set( MAGE_FIRE, T19, B4 ) -> effectN( 1 ).percent() ) )
+            if ( p -> sets -> has_set_bonus( MAGE_FIRE, T19, B4 ) &&
+                  rng().roll( p -> sets -> set( MAGE_FIRE, T19, B4 ) -> effectN( 1 ).percent() ) )
             {
               p -> buffs.streaking -> trigger();
             }
@@ -2411,10 +2411,10 @@ struct frost_mage_spell_t : public mage_spell_t
     void execute() override
     {
       // TODO: Check if Brain Freeze refresh triggers Frost T20 4pc
-      if ( mage -> buffs.brain_freeze -> check() == 0 && mage -> sets.has_set_bonus( MAGE_FROST, T20, B4 ) )
+      if ( mage -> buffs.brain_freeze -> check() == 0 && mage -> sets -> has_set_bonus( MAGE_FROST, T20, B4 ) )
       {
         mage -> cooldowns.frozen_orb
-             -> adjust( -100 * mage -> sets.set( MAGE_FROST, T20, B4 ) -> effectN( 1 ).time_value() );
+             -> adjust( -100 * mage -> sets -> set( MAGE_FROST, T20, B4 ) -> effectN( 1 ).time_value() );
       }
 
       mage -> buffs.brain_freeze -> trigger();
@@ -2451,10 +2451,10 @@ struct frost_mage_spell_t : public mage_spell_t
       }
       else
       {
-        if ( p() -> sets.has_set_bonus( MAGE_FROST, T20, B4 ) )
+        if ( p() -> sets -> has_set_bonus( MAGE_FROST, T20, B4 ) )
         {
           p() -> cooldowns.frozen_orb
-              -> adjust( -100 * p() -> sets.set( MAGE_FROST, T20, B4 ) -> effectN( 1 ).time_value() );
+              -> adjust( -100 * p() -> sets -> set( MAGE_FROST, T20, B4 ) -> effectN( 1 ).time_value() );
         }
 
         p() -> buffs.brain_freeze -> trigger();
@@ -2695,7 +2695,7 @@ struct presence_of_mind_t : public arcane_mage_spell_t
     p() -> buffs.presence_of_mind
         -> trigger( p() -> buffs.presence_of_mind -> max_stack() );
 
-    if ( p() -> sets.has_set_bonus( MAGE_ARCANE, T20, B4 ) )
+    if ( p() -> sets -> has_set_bonus( MAGE_ARCANE, T20, B4 ) )
     {
       p() -> buffs.arcane_charge -> trigger( 4 );
       p() -> buffs.deadly_presence -> trigger();
@@ -3420,8 +3420,8 @@ struct arcane_missiles_t : public arcane_mage_spell_t
 
     p() -> buffs.arcane_instability -> expire();
 
-    if ( p() -> sets.has_set_bonus( MAGE_ARCANE, T18, B2 ) &&
-         rng().roll( p() -> sets.set( MAGE_ARCANE, T18, B2 )
+    if ( p() -> sets -> has_set_bonus( MAGE_ARCANE, T18, B2 ) &&
+         rng().roll( p() -> sets -> set( MAGE_ARCANE, T18, B2 )
                          -> proc_chance() ) )
     {
       for ( pet_t* temporal_hero : p() -> pets.temporal_heroes )
@@ -3434,15 +3434,15 @@ struct arcane_missiles_t : public arcane_mage_spell_t
       }
     }
 
-    if ( p() -> sets.has_set_bonus( MAGE_ARCANE, T19, B4 ) )
+    if ( p() -> sets -> has_set_bonus( MAGE_ARCANE, T19, B4 ) )
     {
       p() -> cooldowns.evocation
-          -> adjust( -1000 * p() -> sets.set( MAGE_ARCANE, T19, B4 ) -> effectN( 1 ).time_value()  );
+          -> adjust( -1000 * p() -> sets -> set( MAGE_ARCANE, T19, B4 ) -> effectN( 1 ).time_value()  );
     }
-    if ( p() -> sets.has_set_bonus( MAGE_ARCANE, T20, B2 ) )
+    if ( p() -> sets -> has_set_bonus( MAGE_ARCANE, T20, B2 ) )
     {
       p() -> cooldowns.presence_of_mind
-          -> adjust( -1000 * p() -> sets.set( MAGE_ARCANE, T20, B2 ) -> effectN( 1 ).time_value() );
+          -> adjust( -1000 * p() -> sets -> set( MAGE_ARCANE, T20, B2 ) -> effectN( 1 ).time_value() );
     }
 
     p() -> buffs.arcane_missiles -> decrement();
@@ -3960,7 +3960,7 @@ struct counterspell_t : public mage_spell_t
 
   virtual bool ready() override
   {
-    if ( ! target -> debuffs.casting -> check() )
+    if ( ! target -> debuffs.casting || ! target -> debuffs.casting -> check() )
     {
       return false;
     }
@@ -4120,7 +4120,7 @@ struct evocation_t : public arcane_mage_spell_t
   {
     arcane_mage_spell_t::last_tick( d );
 
-    if ( p() -> sets.has_set_bonus( MAGE_ARCANE, T17, B2 ) )
+    if ( p() -> sets -> has_set_bonus( MAGE_ARCANE, T17, B2 ) )
     {
       p() -> buffs.arcane_affinity -> trigger();
     }
@@ -4172,8 +4172,8 @@ struct fireball_t : public fire_mage_spell_t
   {
     fire_mage_spell_t::execute();
 
-    if ( p() -> sets.has_set_bonus( MAGE_FIRE, T20, B2 )
-      && rng().roll( p() -> sets.set( MAGE_FIRE, T20, B2 ) -> effectN( 1 ).percent() ) )
+    if ( p() -> sets -> has_set_bonus( MAGE_FIRE, T20, B2 )
+      && rng().roll( p() -> sets -> set( MAGE_FIRE, T20, B2 ) -> effectN( 1 ).percent() ) )
     {
       p() -> buffs.fire_t20_2pc -> trigger();
     }
@@ -4240,10 +4240,10 @@ struct fireball_t : public fire_mage_spell_t
     c += p() -> buffs.enhanced_pyrotechnics -> stack() *
          p() -> buffs.enhanced_pyrotechnics -> data().effectN( 1 ).percent();
 
-    if ( p() -> sets.has_set_bonus( MAGE_FIRE, T19, B2 ) )
+    if ( p() -> sets -> has_set_bonus( MAGE_FIRE, T19, B2 ) )
     {
       c += p() -> buffs.enhanced_pyrotechnics -> stack() *
-           p() -> sets.set( MAGE_FIRE, T19, B2 ) -> effectN( 1 ).percent();
+           p() -> sets -> set( MAGE_FIRE, T19, B2 ) -> effectN( 1 ).percent();
     }
     return c;
   }
@@ -4338,7 +4338,7 @@ struct flamestrike_t : public fire_mage_spell_t
     fire_mage_spell_t::execute();
     p() -> buffs.hot_streak -> expire();
     p() -> buffs.fire_t20_2pc -> expire();
-    if ( p() -> sets.has_set_bonus( MAGE_FIRE, T20, B4 ) )
+    if ( p() -> sets -> has_set_bonus( MAGE_FIRE, T20, B4 ) )
     {
       p() -> buffs.critical_massive -> trigger();
     }
@@ -4713,9 +4713,9 @@ struct frostbolt_t : public frost_mage_spell_t
       double bf_proc_chance = p() -> spec.brain_freeze
                                   -> effectN( 1 ).percent();
 
-      if ( p() -> sets.has_set_bonus( MAGE_FROST, T19, B2 ) )
+      if ( p() -> sets -> has_set_bonus( MAGE_FROST, T19, B2 ) )
       {
-        bf_proc_chance += p() -> sets.set( MAGE_FROST, T19, B2 )
+        bf_proc_chance += p() -> sets -> set( MAGE_FROST, T19, B2 )
                               -> effectN( 1 ).percent();
       }
 
@@ -4876,9 +4876,9 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
                                    -> effectN( 1 ).percent();
 
 
-      if ( p() -> sets.has_set_bonus( MAGE_FROST, T19, B4 ) )
+      if ( p() -> sets -> has_set_bonus( MAGE_FROST, T19, B4 ) )
       {
-        fof_proc_chance += p() -> sets.set( MAGE_FROST, T19, B4 ) -> effectN( 1 ).percent();
+        fof_proc_chance += p() -> sets -> set( MAGE_FROST, T19, B4 ) -> effectN( 1 ).percent();
       }
       if ( p() -> talents.frozen_touch -> ok() )
       {
@@ -4935,11 +4935,11 @@ struct frozen_orb_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::execute();
 
-    if ( p() -> sets.has_set_bonus( MAGE_FROST, T17, B4 ) )
+    if ( p() -> sets -> has_set_bonus( MAGE_FROST, T17, B4 ) )
     {
       p() -> buffs.frost_t17_4pc -> trigger();
     }
-    if ( p() -> sets.has_set_bonus( MAGE_FROST, T20, B2) )
+    if ( p() -> sets -> has_set_bonus( MAGE_FROST, T20, B2) )
     {
       p() -> buffs.frozen_mass -> trigger();
     }
@@ -5138,7 +5138,7 @@ struct ice_lance_t : public frost_mage_spell_t
 
     p() -> buffs.magtheridons_might -> trigger();
 
-    if ( p() -> sets.has_set_bonus( MAGE_FROST, T17, B2 ) &&
+    if ( p() -> sets -> has_set_bonus( MAGE_FROST, T17, B2 ) &&
          frozen_orb_action_id >= 0 &&
          p() -> get_active_dots( frozen_orb_action_id ) >= 1)
     {
@@ -5312,7 +5312,7 @@ struct fire_blast_t : public fire_mage_spell_t
     }
 
     cooldown -> duration = data().charge_cooldown();
-    cooldown -> duration += p -> sets.set( MAGE_FIRE, T17, B2 ) -> effectN( 1 ).time_value();
+    cooldown -> duration += p -> sets -> set( MAGE_FIRE, T17, B2 ) -> effectN( 1 ).time_value();
 
     if ( p -> talents.flame_on -> ok() )
     {
@@ -6056,7 +6056,7 @@ struct conjure_phoenix_t : public fire_mage_spell_t
   {
     fire_mage_spell_t::execute();
 
-    if ( p() -> sets.has_set_bonus( MAGE_FIRE, T18, B4 ) )
+    if ( p() -> sets -> has_set_bonus( MAGE_FIRE, T18, B4 ) )
     {
       p() -> buffs.icarus_uprising -> trigger();
     }
@@ -6078,7 +6078,7 @@ struct pyroblast_t : public fire_mage_spell_t
     triggers_pyretic_incantation = true;
     // PTR Multiplier
     base_multiplier *= 1.0 + p -> find_spell( 137019 ) -> effectN( 1 ).percent();
-    if ( p -> sets.has_set_bonus( MAGE_FIRE, T18, B2 ) )
+    if ( p -> sets -> has_set_bonus( MAGE_FIRE, T18, B2 ) )
     {
       conjure_phoenix = new conjure_phoenix_t( p );
       add_child( conjure_phoenix );
@@ -6138,7 +6138,7 @@ struct pyroblast_t : public fire_mage_spell_t
     }
 
     p() -> buffs.fire_t20_2pc -> expire();
-    if ( p() -> sets.has_set_bonus( MAGE_FIRE, T20, B4 ) )
+    if ( p() -> sets -> has_set_bonus( MAGE_FIRE, T20, B4 ) )
     {
       p() -> buffs.critical_massive -> trigger();
     }
@@ -6183,14 +6183,14 @@ struct pyroblast_t : public fire_mage_spell_t
       }
 
       ignite_spell_state_t* is = debug_cast<ignite_spell_state_t*>( s );
-      if ( p() -> sets.has_set_bonus( MAGE_FIRE, PVP, B4 ) &&
+      if ( p() -> sets -> has_set_bonus( MAGE_FIRE, PVP, B4 ) &&
            is -> hot_streak )
       {
         td( s -> target ) -> debuffs.firestarter -> trigger();
       }
 
-      if ( p() -> sets.has_set_bonus( MAGE_FIRE, T18, B2 ) &&
-           rng().roll( p() -> sets.set( MAGE_FIRE, T18, B2 )
+      if ( p() -> sets -> has_set_bonus( MAGE_FIRE, T18, B2 ) &&
+           rng().roll( p() -> sets -> set( MAGE_FIRE, T18, B2 )
                            -> proc_chance() ) )
       {
          conjure_phoenix -> schedule_execute();
@@ -7838,7 +7838,7 @@ void mage_t::create_pets()
     }
   }
 
-  if ( sets.has_set_bonus( MAGE_ARCANE, T18, B2 ) )
+  if ( sets -> has_set_bonus( MAGE_ARCANE, T18, B2 ) )
   {
     // There isn't really a cap on temporal heroes, but 10 sounds safe-ish
     for ( unsigned i = 0; i < pets.temporal_hero_count; i++ )
@@ -8059,10 +8059,10 @@ void mage_t::create_buffs()
 
   // Arcane
   buffs.arcane_affinity       = buff_creator_t( this, "arcane_affinity", find_spell( 166871 ) )
-                                  .trigger_spell( sets.set( MAGE_ARCANE, T17, B2 ) );
+                                  .trigger_spell( sets -> set( MAGE_ARCANE, T17, B2 ) );
   buffs.arcane_charge         = buff_creator_t( this, "arcane_charge", spec.arcane_charge );
   buffs.arcane_instability    = buff_creator_t( this, "arcane_instability", find_spell( 166872 ) )
-                                  .trigger_spell( sets.set( MAGE_ARCANE, T17, B4 ) );
+                                  .trigger_spell( sets -> set( MAGE_ARCANE, T17, B4 ) );
   buffs.arcane_missiles       = new buffs::arcane_missiles_t( this );
   buffs.arcane_power          = buff_creator_t( this, "arcane_power", find_spell( 12042 ) )
                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
@@ -8102,8 +8102,8 @@ void mage_t::create_buffs()
                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                                   .add_invalidate( CACHE_SPELL_HASTE );
   buffs.pyretic_incantation   = buff_creator_t( this, "pyretic_incantation", find_spell( 194329 ) );
-  buffs.pyromaniac            = buff_creator_t( this, "pyromaniac", sets.set( MAGE_FIRE, T17, B4 ) -> effectN( 1 ).trigger() )
-                                  .trigger_spell( sets.set( MAGE_FIRE, T17, B4 ) );
+  buffs.pyromaniac            = buff_creator_t( this, "pyromaniac", sets -> set( MAGE_FIRE, T17, B4 ) -> effectN( 1 ).trigger() )
+                                  .trigger_spell( sets -> set( MAGE_FIRE, T17, B4 ) );
   buffs.streaking             = buff_creator_t( this, "streaking", find_spell( 211399 ) )
                                   .add_invalidate( CACHE_SPELL_HASTE );
 
@@ -8113,7 +8113,7 @@ void mage_t::create_buffs()
                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.fingers_of_frost      = buff_creator_t( this, "fingers_of_frost", find_spell( 44544 ) )
                                   .max_stack( find_spell( 44544 ) -> max_stacks() +
-                                              sets.set( MAGE_FROST, T18, B4 ) -> effectN( 2 ).base_value() +
+                                              sets -> set( MAGE_FROST, T18, B4 ) -> effectN( 2 ).base_value() +
                                               artifact.icy_hand.rank()
                                               + talents.frozen_touch -> effectN( 2 ).base_value() );
   buffs.frozen_mass           = buff_creator_t( this, "frozen_mass", find_spell( 242253 ) );
@@ -8554,7 +8554,7 @@ std::string mage_t::default_food() const
 {
   std::string lvl100_food =
     ( specialization() == MAGE_ARCANE ) ?
-      ( sets.has_set_bonus( MAGE_ARCANE, T18, B4 ) ? "buttered_sturgeon" : "sleeper_sushi" ) :
+      ( sets -> has_set_bonus( MAGE_ARCANE, T18, B4 ) ? "buttered_sturgeon" : "sleeper_sushi" ) :
     ( specialization() == MAGE_FIRE )   ? "pickled_eel" :
                                           "salty_squid_roll";
 
@@ -9192,7 +9192,7 @@ void mage_t::reset()
   last_bomb_target = nullptr;
   burn_phase.reset();
 
-  if ( sets.has_set_bonus( MAGE_ARCANE, T18, B2 ) )
+  if ( sets -> has_set_bonus( MAGE_ARCANE, T18, B2 ) )
   {
     pets::temporal_hero::randomize_last_summoned( this );
   }

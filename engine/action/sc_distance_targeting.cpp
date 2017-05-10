@@ -55,7 +55,7 @@ std::vector<player_t*> action_t::targets_in_range_list(
     {
       tl.erase( tl.begin() + i );
     }
-    else if ( !ground_aoe && target_->debuffs.invulnerable->check() )
+    else if ( !ground_aoe && target_->debuffs.invulnerable && target_->debuffs.invulnerable->check() )
     {
       // Cannot target invulnerable mobs, unless it's a ground aoe. It just
       // won't do damage.
@@ -87,7 +87,7 @@ std::vector<player_t*> action_t::check_distance_targeting(
             player->y_position, target->name(), target->x_position,
             target->y_position, t->name(), t->x_position, t->y_position );
         }
-        if ( ( ground_aoe && t->debuffs.flying->check() ) )
+        if ( ( ground_aoe && t->debuffs.flying && t->debuffs.flying->check() ) )
         {
           tl.erase( tl.begin() + i );
         }
