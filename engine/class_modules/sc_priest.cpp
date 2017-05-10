@@ -5074,11 +5074,11 @@ void priest_t::apl_shadow()
       "variable,op=set,name=actors_fight_time_mod,value=((450-(time+target."
       "time_to_die))%5),if=time+target.time_to_die<=450" );
   check->add_action(
-      "variable,op=set,name=s2mcheck,value=(0.8*(83-(5*talent.sanlayn.enabled)"
-      "+(33*talent.reaper_of_souls.enabled)+set_bonus.tier19_2pc*4+8*equipped"
-      ".mangazas_madness+((raw_haste_pct*10))*"
-      "(2+(0.8*set_bonus.tier19_2pc)+(1*talent.reaper_of_souls.enabled)+"
-      "(2*artifact.mass_hysteria.rank)-(1*talent.sanlayn.enabled))))-("
+      "variable,op=set,name=s2mcheck,value=(0.8*(83+40*set_bonus.tier20_4pc-"
+      "(5*talent.sanlayn.enabled)+(33*talent.reaper_of_souls.enabled)+set_bonus"
+      ".tier19_2pc*4+8*equipped.mangazas_madness+(raw_haste_pct*10*(1+0.7*set_"
+      "bonus.tier20_4pc))*(2+(0.8*set_bonus.tier19_2pc)+(1*talent.reaper_of_souls"
+      ".enabled)+(2*artifact.mass_hysteria.rank)-(1*talent.sanlayn.enabled))))-("
       "variable.actors_fight_time_mod*nonexecute_actors_pct)" );
   check->add_action( "variable,op=min,name=s2mcheck,value=180" );
 
@@ -5151,7 +5151,8 @@ void priest_t::apl_shadow()
     s2m->add_action( "arcane_torrent,if=buff.insanity_drain_stacks.value>=65"
                      "&(insanity-(current_insanity_drain*gcd.max)+30)<100" );  
   s2m->add_action(
-      "power_infusion,if=cooldown.shadow_word_death.charges=0&buff.voidform.stack>45" );
+      "power_infusion,if=cooldown.shadow_word_death.charges=0&buff.voidform.stack"
+       ">(45+35*set_bonus.tier20_4pc)" );
   s2m->add_action( "void_bolt" );
   s2m->add_action(
       "shadow_word_death,if=(active_enemies<=4|(talent.reaper_of_souls.enabled&"
@@ -5173,7 +5174,7 @@ void priest_t::apl_shadow()
   s2m->add_action(
       "shadow_word_death,if=(active_enemies<=4|(talent.reaper_of_souls.enabled&"
       "active_enemies<=2))&cooldown.shadow_word_death.charges=2" );
-  s2m->add_action( "shadowfiend,if=!talent.mindbender.enabled,if=buff.voidform.stack>15" );
+  s2m->add_action( "shadowfiend,if=!talent.mindbender.enabled&buff.voidform.stack>15" );
   s2m->add_action(
       "shadow_word_void,if=talent.shadow_word_void.enabled&(insanity-(current_"
       "insanity_drain*gcd.max)+50)<100" );
@@ -5243,7 +5244,7 @@ if ( race == RACE_BLOOD_ELF )
       ">5.5&(!talent.surrender_to_madness.enabled|(talent.surrender_to_madness."
       "enabled&target.time_to_die>variable.s2mcheck-(buff.insanity_drain_"
       "stacks."
-      "stack)+60))" );
+      "value)+60))" );
   vf->add_action(
       "mindbender,if=talent.mindbender.enabled&(!talent.surrender_to_madness."
       "enabled"
@@ -5252,12 +5253,10 @@ if ( race == RACE_BLOOD_ELF )
       "(buff.insanity_drain_stacks.value)+30))" );
   vf->add_action(
       "power_infusion,if=buff.insanity_drain_stacks.value>=(10+2*set_bonus."
-      "tier19_2pc+"
-      "5*buff.bloodlust.up+5*equipped.mangazas_madness)&(!talent.surrender_to_"
-      "madness.enabled"
-      "|(talent.surrender_to_madness.enabled&target.time_to_die>variable."
-      "s2mcheck-(buff."
-      "insanity_drain_stacks.value)+61))" );
+      "tier19_2pc+5*buff.bloodlust.up*(1+0.5*set_bonus.tier20_4pc)+3*equipped"
+      ".mangazas_madness+3*set_bonus.tier20_4pc)&(!talent.surrender_to_madness."
+      "enabled|(talent.surrender_to_madness.enabled&target.time_to_die>variable."
+      "s2mcheck-(buff.insanity_drain_stacks.value)+61))" );
   vf->add_action(
       "berserking,if=buff.voidform.stack>=10&buff.insanity_drain_stacks.value<="
       "20&"
@@ -5283,8 +5282,7 @@ if ( race == RACE_BLOOD_ELF )
       "shadow_word_death,if=(active_enemies<=4|(talent.reaper_of_souls"
       ".enabled&active_enemies<=2))&cooldown.shadow_word_death.charges=2" );
   vf->add_action( 
-      "shadowfiend,if=!talent.mindbender.enabled,if=buff.voidform.stack>15"
-      "|set_bonus.tier20_4pc");
+      "shadowfiend,if=!talent.mindbender.enabled,if=buff.voidform.stack>15" );
   vf->add_action(
       "shadow_word_void,if=talent.shadow_word_void.enabled&(insanity-(current_"
       "insanity_drain*gcd.max)+25)<100" );
