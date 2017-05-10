@@ -2187,9 +2187,9 @@ struct mind_flay_t final : public priest_spell_t
       priest.buffs.void_ray->trigger();
     }
 
-    if( priest.sets->has_set_bonus( PRIEST_SHADOW, T19, B2 ) )
+    if( priest.sets->has_set_bonus( PRIEST_SHADOW, T20, B2 ) )
     {
-      priest.buffs.mental_instinct->trigger();
+      priest.buffs.empty_mind->trigger();
     }
 
     trigger_void_tendril();
