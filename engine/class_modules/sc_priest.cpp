@@ -1049,22 +1049,6 @@ struct fiend_melee_t : public priest_pet_melee_t
 
     am *= 1.0 + p().buffs.shadowcrawl->check() * p().buffs.shadowcrawl->data().effectN( 2 ).percent();
 
-    if ( p().o().specialization() == PRIEST_SHADOW && p().o().sets->has_set_bonus( PRIEST_SHADOW, T20, B2 ) )
-    {
-      if ( p().o().talents.mindbender->ok() )
-      {
-        am *= 1.0 +
-              p().o().sets->set( PRIEST_SHADOW, T20, B2 )->effectN( 2 ).percent() *
-                  ( p().o().resources.current[ RESOURCE_INSANITY ] / p().o().resources.max[ RESOURCE_INSANITY ] );
-      }
-      else  // Regular Shadowfied
-      {
-        am *= 1.0 +
-              p().o().sets->set( PRIEST_SHADOW, T20, B2 )->effectN( 1 ).percent() *
-                  ( p().o().resources.current[ RESOURCE_INSANITY ] / p().o().resources.max[ RESOURCE_INSANITY ] );
-      }
-    }
-
     return am;
   }
 
@@ -1945,24 +1929,6 @@ public:
   {
     priest_spell_t::impact( s );
     priest.generate_insanity( insanity_gain, priest.gains.insanity_mind_blast, s->action );
-
-    if ( priest.sets->has_set_bonus( PRIEST_SHADOW, T20, B4 ) )
-    {
-      if ( sim->debug )
-      {
-        sim->out_debug << priest.name() << " Mind Blast reduced pet cooldown.";
-      }
-      if ( priest.talents.mindbender->ok() )
-      {
-        priest.cooldowns.mindbender->adjust(
-            timespan_t::from_seconds( -priest.sets->set( PRIEST_SHADOW, T20, B4 )->effectN( 2 ).base_value() / 10 ) );
-      }
-      else
-      {
-        priest.cooldowns.shadowfiend->adjust(
-            timespan_t::from_seconds( -priest.sets->set( PRIEST_SHADOW, T20, B4 )->effectN( 1 ).base_value() / 10 ) );
-      }
-    }
   }
 
   timespan_t execute_time() const override
