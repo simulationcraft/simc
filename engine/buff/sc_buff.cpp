@@ -1020,6 +1020,11 @@ void buff_t::decrement( int    stacks,
 
 void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
 {
+  if ( ! check() )
+  {
+    return;
+  }
+
   if ( stack_behavior == BUFF_STACK_ASYNCHRONOUS )
   {
     sim -> errorf( "%s attempts to extend asynchronous buff %s.", p -> name(), name() );
