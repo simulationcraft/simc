@@ -517,6 +517,7 @@ public:
   std::string default_potion() const override;
   std::string default_flask() const override;
   std::string default_food() const override;
+  std::string default_rune() const override;
 
   void              add_item_actions( action_priority_list_t* list );
 
@@ -6114,6 +6115,15 @@ std::string hunter_t::default_food() const
          "disabled";
 }
 
+// hunter_t::default_rune ===================================================
+
+std::string hunter_t::default_rune() const
+{
+  return ( true_level >=  100 ) ? "defiled" :
+         ( true_level >=  90  ) ? "focus" :
+         "disabled";
+}
+
 // hunter_t::init_actions ===================================================
 
 void hunter_t::init_action_list()
@@ -6129,13 +6139,9 @@ void hunter_t::init_action_list()
 
     action_priority_list_t* precombat = get_action_priority_list( "precombat" );
 
-    // Flask
+    // Flask, Rune, Food
     precombat -> add_action( "flask" );
-    // Added Rune if Flask are allowed since there is no "allow_runes" bool.
-    if ( sim -> allow_flasks && true_level >= 110 )
-      precombat -> add_action( "augmentation,type=defiled" );
-
-    // Food
+    precombat -> add_action( "augmentation" );
     precombat -> add_action( "food" );
 
     precombat -> add_action( "summon_pet" );
