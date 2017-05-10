@@ -104,6 +104,7 @@ public:
     propagate_const<buff_t*> premonition;              // T18 Shadow 4pc
     propagate_const<stat_buff_t*> power_overwhelming;  // T19OH
     propagate_const<buff_t*> shadow_t19_4p;            // T19 Shadow 4pc
+    propagate_const<buff_t*> empty_mind;            // T20 Shadow 2pc
 
     // Legion Legendaries
     haste_buff_t* sephuzs_secret;
@@ -608,7 +609,13 @@ public:
         return 0;
       }
 
-      return base_drain_per_sec + ( actor.buffs.insanity_drain_stacks->current_value - 1 ) * stack_drain_multiplier;
+      double drain_multiplier = actor.sets->has_set_bonus(PRIEST_SHADOW, T20, B4)
+                              ? 0.75
+                              : 1.0;
+
+      return drain_multiplier * (     base_drain_per_sec 
+                                  + ( actor.buffs.insanity_drain_stacks->current_value - 1 ) 
+                                      * stack_drain_multiplier );
     }
 
     /// Gain some insanity
@@ -1925,10 +1932,30 @@ public:
     priest.buffs.power_overwhelming->trigger();
   }
 
+  double composite_da_multiplier(const action_state_t* state) const override
+  {
+    double d = priest_spell_t::composite_da_multiplier(state);
+
+    if ( priest.buffs.empty_mind->up() )
+    {
+      d *= 1.0 + 
+            (   priest.buffs.empty_mind->stack_value() 
+              * priest.buffs.empty_mind->data().effectN( 1 ).base_value() );      
+    }
+
+    return d;
+  }
+
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
-    priest.generate_insanity( insanity_gain, priest.gains.insanity_mind_blast, s->action );
+    double temp_gain = insanity_gain * 
+                      ( 1.0 + 
+                      (   priest.buffs.empty_mind->stack_value() 
+                        * priest.buffs.empty_mind->data().effectN( 2 ).base_value() ) );
+
+    priest.generate_insanity( temp_gain, priest.gains.insanity_mind_blast, s->action );
+    priest.buffs.empty_mind->expire();
   }
 
   timespan_t execute_time() const override
@@ -2158,6 +2185,11 @@ struct mind_flay_t final : public priest_spell_t
     if ( priest.talents.void_ray->ok() )
     {
       priest.buffs.void_ray->trigger();
+    }
+
+    if( priest.sets->has_set_bonus( PRIEST_SHADOW, T19, B2 ) )
+    {
+      priest.buffs.mental_instinct->trigger();
     }
 
     trigger_void_tendril();
@@ -4768,7 +4800,10 @@ void priest_t::create_buffs()
   buffs.shadow_t19_4p = buff_creator_t( this, "shadow_t19_4p",
                                         find_spell( 211654 ) )
                             .chance( 1.0 )
-                            .duration( timespan_t::from_seconds( 4.0 ) );  // TODO Update with spelldata once available
+                            .duration( dbc.ptr ? timespan_t::from_seconds( 2.5 ) : timespan_t::from_seconds(4));  // TODO Update with spelldata once available
+
+  buffs.empty_mind = buff_creator_t( this, "empty_mind", find_spell( 247226 ) );
+                            
 
   // Legendaries
 
