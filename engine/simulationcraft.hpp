@@ -3897,7 +3897,7 @@ struct player_t : public actor_t
   void sequence_add_wait( const timespan_t& amount, const timespan_t& ts );
 
   // Gear
-  std::string items_str, meta_gem_str, potion_str, flask_str, food_str;
+  std::string items_str, meta_gem_str, potion_str, flask_str, food_str, rune_str;
   std::vector<item_t> items;
   gear_stats_t gear, enchant; // Option based stats
   gear_stats_t total_gear; // composite of gear, enchant and for non-pets sim -> enchant
@@ -4732,6 +4732,8 @@ public:
   virtual std::string default_flask() const
   { return ""; }
   virtual std::string default_food() const
+  { return ""; }
+  virtual std::string default_rune() const
   { return ""; }
 
   // JSON Report extension. Overridable in class methods. Root element is an object assigned for

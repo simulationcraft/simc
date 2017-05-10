@@ -9914,8 +9914,9 @@ std::string player_t::create_profile( save_e stype )
     std::string potion_option = potion_str.empty() ? default_potion() : potion_str;
     std::string flask_option = flask_str.empty() ? default_flask() : flask_str;
     std::string food_option = food_str.empty() ? default_food() : food_str;
+    std::string rune_option = rune_str.empty() ? default_rune() : rune_str;
 
-    if ( ! potion_option.empty() || ! flask_option.empty() || ! food_option.empty() )
+    if ( ! potion_option.empty() || ! flask_option.empty() || ! food_option.empty() || !rune_option.empty() )
     {
       profile_str += term;
       profile_str += "# Default consumables" + term;
@@ -9923,6 +9924,7 @@ std::string player_t::create_profile( save_e stype )
       if ( ! potion_option.empty() ) profile_str += "potion=" + potion_option + term;
       if ( ! flask_option.empty()  ) profile_str += "flask=" + flask_option + term;
       if ( ! food_option.empty()  ) profile_str += "food=" + food_option + term;
+      if ( ! rune_option.empty() ) profile_str += "augmentation=" + rune_option + term;
     }
   }
 
@@ -10138,6 +10140,7 @@ void player_t::copy_from( player_t* source )
   potion_str = source -> potion_str;
   flask_str = source -> flask_str;
   food_str = source -> food_str;
+  rune_str = source->rune_str;
 }
 
 
@@ -10196,6 +10199,7 @@ void player_t::create_options()
     add_option( opt_string( "potion", potion_str ) );
     add_option( opt_string( "flask", flask_str ) );
     add_option( opt_string( "food", food_str ) );
+    add_option( opt_string( "augmentation", rune_str ) );
 
     // Positioning
     add_option( opt_float( "x_pos", default_x_position ) );
@@ -11139,10 +11143,7 @@ player_collected_data_t::player_collected_data_t( const player_t* player ) :
   theck_meloree_index( player -> name_str + " Theck-Meloree Index", tank_container_type( player, 1 ) ),
   effective_theck_meloree_index( player -> name_str + "Theck-Meloree Index (Effective)", tank_container_type( player, 2 ) ),
   max_spike_amount( player -> name_str + " Max Spike Value", tank_container_type( player, 2 ) ),
-  target_metric( player -> name_str + " Target Metric",
-                 player -> sim -> target_error && ( ! player -> is_enemy() && ( ! player -> is_pet() || player -> sim -> report_pets_separately ) )
-                 ? false
-                 : true ),
+  target_metric( player -> name_str + " Target Metric", player -> sim -> statistics_level < 1 ),
   resource_timelines(),
   combat_end_resource(
       ( ! player -> is_enemy() && ( ! player -> is_pet() || player -> sim -> report_pets_separately ) )

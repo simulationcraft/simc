@@ -1338,9 +1338,6 @@ struct storm_earth_and_fire_pet_t : public pet_t
           state -> target -> debuffs.mortal_wounds -> trigger();
         }
         o() -> trigger_mark_of_the_crane( state );
-
-        if ( p() -> buff.pressure_point_sef -> up() )
-          p() -> buff.pressure_point_sef -> expire();
       }
     }
   };
@@ -1388,9 +1385,6 @@ struct storm_earth_and_fire_pet_t : public pet_t
           rsk_tornado_kick -> base_dd_min = raw;
           rsk_tornado_kick -> execute();
         }
-        // Do no remove the T20 2-piece if Tornado Kick artifact trait is enabled.
-        else if ( p() -> buff.pressure_point_sef -> up() )
-          p() -> buff.pressure_point_sef -> expire() ;
 
         if ( o() -> artifact.transfer_the_power.rank() && o() -> buff.transfer_the_power -> up() )
           p() -> buff.transfer_the_power_sef -> trigger();
@@ -3181,9 +3175,6 @@ struct rising_sun_kick_tornado_kick_t : public monk_melee_attack_t
         s -> target -> debuffs.mortal_wounds -> trigger();
       }
       p() -> trigger_mark_of_the_crane( s );
-
-      if ( p() -> buff.pressure_point -> up() )
-        p() -> buff.pressure_point -> expire();
     }
   }
 };
@@ -3343,9 +3334,6 @@ struct rising_sun_kick_t: public monk_melee_attack_t
           rsk_tornado_kick -> base_dd_min = raw;
           rsk_tornado_kick -> execute();
         }
-        // Don't remove the T20 2-piece buff if Tornado Kick artifact trait is enabled.
-        else if ( p() -> buff.pressure_point -> up() )
-          p() -> buff.pressure_point -> expire();
 
         if ( maybe_ptr( p() -> dbc.ptr ) && p() -> sets -> has_set_bonus( MONK_WINDWALKER, T20, B4 ) && ( s -> result == RESULT_CRIT ) )
           // -1 to reduce the spell cooldown instead of increasing
