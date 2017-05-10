@@ -1951,7 +1951,7 @@ struct kill_command_t: public hunter_pet_action_t < hunter_pet_t, attack_t >
 
     // The hardcoded parameter is taken from the $damage value in teh tooltip. e.g., 1.36 below
     // $damage = ${ 1.5*($83381m1 + ($RAP*  1.632   ))*$<bmMastery> }
-    attack_power_mod.direct  = 3.0; // Hard-coded in tooltip.
+    attack_power_mod.direct  = maybe_ptr( p -> dbc.ptr ) ? 3.6 : 3.0; // Hard-coded in tooltip.
 
     base_multiplier *= 1.0 + o() -> artifacts.pack_leader.percent();
 
