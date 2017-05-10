@@ -2914,8 +2914,6 @@ struct arcane_orb_bolt_t : public arcane_mage_spell_t
   {
     aoe = -1;
     background = true;
-    dual = true;
-    cooldown -> duration = timespan_t::zero(); // dbc has CD of 15 seconds
   }
 
   virtual bool init_finished() override
@@ -4137,8 +4135,6 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
   {
     aoe = -1;
     background = true;
-    dual = true;
-    cooldown -> duration = timespan_t::zero(); // dbc has CD of 6 seconds
 
     if ( p -> talents.lonely_winter -> ok() )
     {
