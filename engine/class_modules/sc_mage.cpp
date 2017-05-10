@@ -3632,8 +3632,11 @@ struct flame_patch_t : public fire_mage_spell_t
 
 struct aftershocks_t : public fire_mage_spell_t
 {
+  bool ignition;
+
   aftershocks_t( mage_t* p ) :
-    fire_mage_spell_t( "aftershocks", p, p -> find_spell( 194432 ) )
+    fire_mage_spell_t( "aftershocks", p, p -> find_spell( 194432 ) ),
+    ignition( false )
   {
     background = true;
     aoe = -1;
@@ -3656,6 +3659,18 @@ struct aftershocks_t : public fire_mage_spell_t
 
     return am;
   }
+
+  virtual double composite_crit_chance() const override
+  {
+    double c = fire_mage_spell_t::composite_crit_chance();
+
+    if ( ignition )
+    {
+      c += 1.0;
+    }
+
+    return c;
+   }
 };
 
 struct flamestrike_t : public fire_mage_spell_t
@@ -3717,7 +3732,18 @@ struct flamestrike_t : public fire_mage_spell_t
 
     if ( state -> chain_target == 0 && p() -> artifact.aftershocks.rank() )
     {
-      // TODO: Fire T20 2pc seems to guarantee crit on this one as well
+      // Ignition has a really weird interaction with Aftershocks. It looks like Flamestrike
+      // sets some sort of global flag specifying whether Aftershocks benefits from Ignition or not.
+      //
+      // So, as an example, you cast Flamestrike with Ignition up (the flag is set to true) and then
+      // follow up with another Flamestrike before first Aftershocks hit (the flag is set back to false).
+      // None of the following Aftershocks get Ignition crit bonus.
+      //
+      // This should model that behavior correctly. Otherwise we might need custom snapshotting.
+      //
+      // TODO: Check if this is still true.
+      aftershocks -> ignition = p() -> buffs.ignition -> up();
+
       make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
         .pulse_time( timespan_t::from_seconds( 0.75 ) )
         .target( state -> target )
