@@ -3852,7 +3852,6 @@ struct flurry_bolt_t : public frost_mage_spell_t
 
 struct flurry_t : public frost_mage_spell_t
 {
-  timespan_t initial_delay;
   flurry_bolt_t* flurry_bolt;
 
   flurry_t( mage_t* p, const std::string& options_str ) :
@@ -3865,7 +3864,6 @@ struct flurry_t : public frost_mage_spell_t
     add_child( flurry_bolt );
 
     //TODO: Remove hardcoded values once it exists in spell data for bolt impact timing.
-    initial_delay = timespan_t::from_seconds( 0.11 );
     dot_duration = timespan_t::from_seconds( 0.8 );
     base_tick_time = timespan_t::from_seconds( 0.4 );
   }
@@ -3882,13 +3880,6 @@ struct flurry_t : public frost_mage_spell_t
     timespan_t d = frost_mage_spell_t::composite_dot_duration( s );
 
     return d * ( tick_time( s ) / base_tick_time );
-  }
-
-  virtual timespan_t travel_time() const override
-  {
-    // Approximate travel time from in game data.
-    // TODO: Improve approximation
-    return initial_delay + frost_mage_spell_t::travel_time();
   }
 
   virtual timespan_t execute_time() const override
