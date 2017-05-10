@@ -3979,7 +3979,7 @@ struct conflagrate_t: public warlock_spell_t
       }
 
       if ( maybe_ptr( p() -> dbc.ptr ) )
-        p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.4, p() -> gains.conflagrate );
+        p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.5, p() -> gains.conflagrate );
     }
   }
 };
@@ -5430,7 +5430,7 @@ struct shadowburn_t: public warlock_spell_t
     resource_event = make_event<resource_event_t>( *sim, p(), this, s -> target );
 
     if ( maybe_ptr( p() -> dbc.ptr ) )
-      p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.4, p() -> gains.shadowburn );
+      p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.5, p() -> gains.shadowburn );
   }
 
   void init() override

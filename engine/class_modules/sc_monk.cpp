@@ -1389,12 +1389,9 @@ struct storm_earth_and_fire_pet_t : public pet_t
           rsk_tornado_kick -> base_dd_min = raw;
           rsk_tornado_kick -> execute();
         }
-        // Do no remove the T20 4-piece if Tornado Kick artifact trait is enabled.
+        // Do no remove the T20 2-piece if Tornado Kick artifact trait is enabled.
         else if ( p() -> buff.pressure_point_sef -> up() )
           p() -> buff.pressure_point_sef -> expire() ;
-
-        if ( o() -> sets -> has_set_bonus( MONK_WINDWALKER, T20, B2 ) )
-          o() -> get_target_data( state -> target ) -> debuff.rising_fist -> trigger();
 
         if ( o() -> artifact.transfer_the_power.rank() && o() -> buff.transfer_the_power -> up() )
           p() -> buff.transfer_the_power_sef -> trigger();
@@ -1509,7 +1506,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
     {
       sef_melee_attack_t::execute();
 
-      if ( o() -> sets -> has_set_bonus( MONK_WINDWALKER, T20, B4 ) )
+      if ( o() -> sets -> has_set_bonus( MONK_WINDWALKER, T20, B2 ) )
         p() -> buff.pressure_point_sef -> trigger();
     }
 
@@ -3362,12 +3359,14 @@ struct rising_sun_kick_t: public monk_melee_attack_t
           rsk_tornado_kick -> base_dd_min = raw;
           rsk_tornado_kick -> execute();
         }
-        // Don't remove the T20 4-piece buff if Tornado Kick artifact trait is enabled.
+        // Don't remove the T20 2-piece buff if Tornado Kick artifact trait is enabled.
         else if ( p() -> buff.pressure_point -> up() )
           p() -> buff.pressure_point -> expire();
 
-        if ( p() -> sets -> has_set_bonus( MONK_WINDWALKER, T20, B2 ) )
-          td( s -> target ) -> debuff.rising_fist -> trigger();
+        if ( maybe_ptr( p() -> dbc.ptr ) && p() -> sets -> has_set_bonus( MONK_WINDWALKER, T20, B4 ) )
+          // -1 to reduce the spell cooldown instead of increasing
+          // saved as 2000
+          p() -> cooldown.fists_of_fury -> adjust( timespan_t::from_millis( -1 * p() -> sets -> set( MONK_WINDWALKER, T20, B4 ) -> effectN( 1 ).base_value() ) );
       }
     }
   }
@@ -4071,17 +4070,10 @@ struct fists_of_fury_t: public monk_melee_attack_t
     if ( p() -> artifact.crosswinds.rank() )
       crosswinds -> execute();
 
-    if ( p() -> sets -> has_set_bonus( MONK_WINDWALKER, T17, B2 ) )
-    {
-      // Since Serenity replaces Tigereye Brew, adjust Serenity's cooldown first.
-      if ( p() -> talent.serenity )
-        p() -> cooldown.serenity -> adjust( timespan_t::from_seconds( p() -> sets -> set( MONK_WINDWALKER, T17, B2 ) -> effectN( 1 ).base_value() ) );
-    }
-
     if ( p() -> sets -> has_set_bonus( MONK_WINDWALKER, T18, B4 ) )
       p() -> buff.masterful_strikes -> trigger( ( int ) p() -> sets -> set( MONK_WINDWALKER,T18, B4 ) -> effect_count() - 1 );
 
-    if ( p() -> sets -> has_set_bonus( MONK_WINDWALKER, T20, B4 ) )
+    if ( p() -> sets -> has_set_bonus( MONK_WINDWALKER, T20, B2 ) )
       p() -> buff.pressure_point -> trigger();
   }
 
@@ -7606,9 +7598,6 @@ monk( *p )
     debuff.gale_burst = buff_creator_t( *this, "gale_burst", p -> passives.gale_burst )
       .default_value( 0 )
       .quiet( true );
-    debuff.rising_fist = buff_creator_t( *this, "rising_fist", p -> sets -> set( MONK_WINDWALKER, T20, B2 ) )
-      .duration( timespan_t::from_seconds( p -> sets -> set( MONK_WINDWALKER, T20, B2 ) -> effectN( 1 ).base_value() ) )
-      .default_value( p -> sets -> set( MONK_WINDWALKER, T20, B2 ) -> effectN( 2 ).percent() );
     debuff.touch_of_karma = buff_creator_t( *this, "touch_of_karma", p -> spec.touch_of_karma )
       // set the percent of the max hp as the default value.
       .default_value( p -> spec.touch_of_karma -> effectN( 3 ).percent() );
