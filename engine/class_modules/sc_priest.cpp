@@ -4166,8 +4166,7 @@ expr_t* priest_t::create_expression( action_t* a, const std::string& name_str )
   else if ( name_str == "current_insanity_drain" )
   {
     // Current Insanity Drain for the next 1.0 sec.
-    // Does not account for a new stack occurring in the middle and can be anywhere from 0.0 - 0.5 off the real value.
-    // Does not account for Dispersion or Void Torrent
+    // Does not account for a new stack occurring in the middle and can be anywhere from 0.0 - 0.5 off the real value.    
     return make_fn_expr( name_str, [this]() {
       return ( insanity.insanity_drain_per_second() );
     } );
