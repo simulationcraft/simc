@@ -3642,9 +3642,19 @@ struct aftershocks_t : public fire_mage_spell_t
     base_multiplier *= 1.0 + p -> artifact.blue_flame_special.percent();
     // 2s according to the spell data.
     base_execute_time = timespan_t::zero();
+  }
 
-    // TODO: Fire T20 2pc and 4pc mention this spell. Check this if/when set bonuses
-    // are available for testing.
+  virtual double action_multiplier() const override
+  {
+    double am = fire_mage_spell_t::action_multiplier();
+
+    // Not snapshot on Flamestrike execute, it seems.
+    if ( p() -> buffs.critical_massive -> up() )
+    {
+      am *= 1.0 + p() -> buffs.critical_massive -> check_value();
+    }
+
+    return am;
   }
 };
 
@@ -3702,13 +3712,12 @@ struct flamestrike_t : public fire_mage_spell_t
 
     if ( p() -> sets -> has_set_bonus( MAGE_FIRE, T20, B4 ) && state -> result == RESULT_CRIT )
     {
-      // TODO: The wording seems to imply any crit will do. Double check if/when set
-      // bonuses are available for testing.
       p() -> buffs.critical_massive -> trigger();
     }
 
     if ( state -> chain_target == 0 && p() -> artifact.aftershocks.rank() )
     {
+      // TODO: Fire T20 2pc seems to guarantee crit on this one as well
       make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
         .pulse_time( timespan_t::from_seconds( 0.75 ) )
         .target( state -> target )
