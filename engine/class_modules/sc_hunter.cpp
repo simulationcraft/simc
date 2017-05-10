@@ -1091,51 +1091,6 @@ public:
     return PET_FEROCITY;
   }
 
-  //TODO: Reimplement Legion special abilities
-  std::string unique_special()
-  {
-    switch ( pet_type )
-    {
-    case PET_CARRION_BIRD: return "";
-    case PET_CAT:          return "";
-    case PET_CORE_HOUND:   return "";
-    case PET_DEVILSAUR:    return "";
-    case PET_HYENA:        return "";
-    case PET_MOTH:         return "";
-    case PET_RAPTOR:       return "";
-    case PET_SPIRIT_BEAST: return "";
-    case PET_TALLSTRIDER:  return "";
-    case PET_WASP:         return "";
-    case PET_WOLF:         return "";
-    case PET_BEAR:         return "";
-    case PET_BOAR:         return "";
-    case PET_CRAB:         return "";
-    case PET_CROCOLISK:    return "";
-    case PET_GORILLA:      return "";
-    case PET_RHINO:        return "";
-    case PET_SCORPID:      return "";
-    case PET_SHALE_SPIDER: return "";
-    case PET_TURTLE:       return "";
-    case PET_WARP_STALKER: return "";
-    case PET_WORM:         return "";
-    case PET_BAT:          return "";
-    case PET_BIRD_OF_PREY: return "";
-    case PET_CHIMAERA:     return "";
-    case PET_DRAGONHAWK:   return "";
-    case PET_NETHER_RAY:   return "";
-    case PET_RAVAGER:      return "";
-    case PET_SERPENT:      return "";
-    case PET_SILITHID:     return "";
-    case PET_SPIDER:       return "";
-    case PET_SPOREBAT:     return "";
-    case PET_WIND_SERPENT: return "";
-    case PET_FOX:          return "";
-    //case PET_RIVERBEAST:   return "gruesome_bite";
-    default: break;
-    }
-    return nullptr;
-  }
-
   void init_base_stats() override
   {
     base_t::init_base_stats();
@@ -1227,13 +1182,6 @@ public:
     {
       action_list_str += "/auto_attack";
       action_list_str += "/snapshot_stats";
-
-      std::string special = unique_special();
-      if ( !special.empty() )
-      {
-        action_list_str += "/";
-        action_list_str += special;
-      }
       action_list_str += "/claw";
       action_list_str += "/wait_until_ready";
       use_default_action_list = true;
