@@ -1939,8 +1939,8 @@ public:
     if ( priest.buffs.empty_mind->up() )
     {
       d *= 1.0 + 
-            (   priest.buffs.empty_mind->stack_value() 
-              * priest.buffs.empty_mind->data().effectN( 1 ).base_value() );      
+            (   priest.buffs.empty_mind->stack() 
+              * priest.buffs.empty_mind->data().effectN( 1 ).percent() );      
     }
 
     return d;
@@ -1951,7 +1951,7 @@ public:
     priest_spell_t::impact( s );
     double temp_gain = insanity_gain * 
                       ( 1.0 + 
-                      (   priest.buffs.empty_mind->stack_value() 
+                      (   priest.buffs.empty_mind->stack()
                         * priest.buffs.empty_mind->data().effectN( 2 ).base_value() ) );
 
     priest.generate_insanity( temp_gain, priest.gains.insanity_mind_blast, s->action );
@@ -2189,6 +2189,10 @@ struct mind_flay_t final : public priest_spell_t
 
     if( priest.sets->has_set_bonus( PRIEST_SHADOW, T20, B2 ) )
     {
+      if (sim->debug)
+      {
+        sim->out_debug << "\nEmpty mind trigger\n";
+      }
       priest.buffs.empty_mind->trigger();
     }
 
@@ -4802,7 +4806,9 @@ void priest_t::create_buffs()
                             .chance( 1.0 )
                             .duration( dbc.ptr ? timespan_t::from_seconds( 2.5 ) : timespan_t::from_seconds(4));  // TODO Update with spelldata once available
 
-  buffs.empty_mind = buff_creator_t( this, "empty_mind", find_spell( 247226 ) );
+  buffs.empty_mind = buff_creator_t( this, "empty_mind", find_spell( 247226 ) )
+                          .chance( sets->has_set_bonus( PRIEST_SHADOW, T20, B2 ) )
+                          .max_stack( 10 );   // TODO Update from spelldata
                             
 
   // Legendaries
