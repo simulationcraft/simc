@@ -5138,7 +5138,7 @@ void priest_t::apl_shadow()
       "touch.remains>5.5&!buff.power_infusion.up" );
   s2m->add_action( "berserking,if=buff.voidform.stack>=65" );
   s2m->add_action(
-      "shadow_word_death,if=current_insanity_drain*gcd.max>insanity-30&(insanity-"
+      "shadow_word_death,if=current_insanity_drain*gcd.max>insanity&(insanity-"
       "(current_insanity_drain*gcd.max)+(30+30*talent.reaper_of_souls.enabled)<100)" );
   if ( race == RACE_BLOOD_ELF )
     s2m->add_action( "arcane_torrent,if=buff.insanity_drain_stacks.value>=65"
@@ -5157,9 +5157,9 @@ void priest_t::apl_shadow()
       "wait,sec=action.void_bolt.usable_in,if=action.void_bolt.usable_in<gcd."
       "max*0.28" );
   s2m->add_action(
-      "dispersion,if=current_insanity_drain*gcd.max>insanity-30&!buff.power_"
+      "dispersion,if=current_insanity_drain*gcd.max>insanity&!buff.power_"
       "infusion.up|(buff.voidform.stack>76&cooldown.shadow_word_death.charges=0"
-      "&current_insanity_drain*gcd.max>insanity-15)" );
+      "&current_insanity_drain*gcd.max>insanity)" );
   s2m->add_action( "mind_blast,if=active_enemies<=5" );
   s2m->add_action(
       "wait,sec=action.mind_blast.usable_in,if=action.mind_blast.usable_in<gcd."
