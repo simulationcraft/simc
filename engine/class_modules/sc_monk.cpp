@@ -143,7 +143,6 @@ public:
     buff_t* mark_of_the_crane;
     buff_t* gale_burst;
     buff_t* keg_smash;
-    buff_t* rising_fist;
     buff_t* storm_earth_and_fire;
     buff_t* touch_of_karma;
   } debuff;
@@ -1322,7 +1321,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
     {
       double c = sef_melee_attack_t::composite_crit_chance();
 
-      if ( p() -> buff.pressure_point_sef -> up() )
+      if ( maybe_ptr( o() -> dbc.ptr ) && p() -> buff.pressure_point_sef -> up() )
         c += p() -> buff.pressure_point_sef -> value();
 
       return c;
@@ -1363,7 +1362,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
     {
       double c = sef_melee_attack_t::composite_crit_chance();
 
-      if ( p() -> buff.pressure_point_sef -> up() )
+      if ( maybe_ptr( o() -> dbc.ptr ) && p() -> buff.pressure_point_sef -> up() )
         c += p() -> buff.pressure_point_sef -> value();
 
       return c;
@@ -1492,30 +1491,15 @@ struct storm_earth_and_fire_pet_t : public pet_t
       return dot_duration;
     }
 
-    virtual double composite_crit_chance() const override
-    {
-      double c = sef_melee_attack_t::composite_crit_chance();
-
-      if ( o() -> get_target_data( target ) -> debuff.rising_fist -> up() )
-        c += o() -> get_target_data( target ) -> debuff.rising_fist -> value();
-
-      return c;
-    }
-
-    virtual void execute() override
-    {
-      sef_melee_attack_t::execute();
-
-      if ( o() -> sets -> has_set_bonus( MONK_WINDWALKER, T20, B2 ) )
-        p() -> buff.pressure_point_sef -> trigger();
-    }
-
     virtual void last_tick( dot_t* dot ) override
     {
       sef_melee_attack_t::last_tick( dot );
 
       if ( p() -> buff.transfer_the_power_sef -> up() )
         p() -> buff.transfer_the_power_sef -> expire();
+
+      if ( maybe_ptr( o() -> dbc.ptr ) && o() -> sets -> has_set_bonus( MONK_WINDWALKER, T20, B2 ) )
+        p() -> buff.pressure_point_sef -> trigger();
     }
   };
 
@@ -3179,7 +3163,7 @@ struct rising_sun_kick_tornado_kick_t : public monk_melee_attack_t
   {
     double c = monk_melee_attack_t::composite_crit_chance();
 
-    if ( p() -> buff.pressure_point -> up() )
+    if ( maybe_ptr( p() -> dbc.ptr ) && p() -> buff.pressure_point -> up() )
       c += p() -> buff.pressure_point -> value();
 
     return c;
@@ -3268,7 +3252,7 @@ struct rising_sun_kick_t: public monk_melee_attack_t
   {
     double c = monk_melee_attack_t::composite_crit_chance();
 
-    if ( p() -> buff.pressure_point -> up() )
+    if ( maybe_ptr( p() -> dbc.ptr ) && p() -> buff.pressure_point -> up() )
       c += p() -> buff.pressure_point -> value();
 
     return c;
@@ -3363,7 +3347,7 @@ struct rising_sun_kick_t: public monk_melee_attack_t
         else if ( p() -> buff.pressure_point -> up() )
           p() -> buff.pressure_point -> expire();
 
-        if ( maybe_ptr( p() -> dbc.ptr ) && p() -> sets -> has_set_bonus( MONK_WINDWALKER, T20, B4 ) )
+        if ( maybe_ptr( p() -> dbc.ptr ) && p() -> sets -> has_set_bonus( MONK_WINDWALKER, T20, B4 ) && ( s -> result == RESULT_CRIT ) )
           // -1 to reduce the spell cooldown instead of increasing
           // saved as 2000
           p() -> cooldown.fists_of_fury -> adjust( timespan_t::from_millis( -1 * p() -> sets -> set( MONK_WINDWALKER, T20, B4 ) -> effectN( 1 ).base_value() ) );
@@ -4049,16 +4033,6 @@ struct fists_of_fury_t: public monk_melee_attack_t
     return c;
   }
 
-  virtual double composite_crit_chance() const override
-  {
-    double c = monk_melee_attack_t::composite_crit_chance();
-
-    if ( p() -> get_target_data( target ) -> debuff.rising_fist -> up() )
-      c += p() -> get_target_data( target ) -> debuff.rising_fist -> value();
-
-    return c;
-  }
-
   void execute() override
   {
     // Trigger Combo Strikes
@@ -4072,9 +4046,6 @@ struct fists_of_fury_t: public monk_melee_attack_t
 
     if ( p() -> sets -> has_set_bonus( MONK_WINDWALKER, T18, B4 ) )
       p() -> buff.masterful_strikes -> trigger( ( int ) p() -> sets -> set( MONK_WINDWALKER,T18, B4 ) -> effect_count() - 1 );
-
-    if ( p() -> sets -> has_set_bonus( MONK_WINDWALKER, T20, B2 ) )
-      p() -> buff.pressure_point -> trigger();
   }
 
   virtual void last_tick( dot_t* dot ) override
@@ -4084,6 +4055,9 @@ struct fists_of_fury_t: public monk_melee_attack_t
     // This is not when this happens but putting this here so that it's able to be checked by SEF
     if ( p() -> buff.transfer_the_power -> up() )
       p() -> buff.transfer_the_power -> expire();
+
+    if ( maybe_ptr( p() -> dbc.ptr ) && p() -> sets -> has_set_bonus( MONK_WINDWALKER, T20, B2 ) )
+      p() -> buff.pressure_point -> trigger();
 
     // Windwalker Tier 18 (WoD 6.2) trinket effect is in use, adjust Rising Sun Kick proc chance based on spell data
     // of the special effect.
@@ -9933,8 +9907,8 @@ void monk_t::apl_combat_windwalker()
   st -> add_action( this, "Tiger Palm", "cycle_targets=1,if=!prev_gcd.1.tiger_palm&energy.time_to_max<=0.5&chi.max-chi>=2" );
   st -> add_action( this, "Strike of the Windlord", "if=!talent.serenity.enabled|cooldown.serenity.remains>=10" );
   st -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=((chi>=3&energy>=40)|chi>=5)&(!talent.serenity.enabled|cooldown.serenity.remains>=5)" );
-  st -> add_action( this, "Fists of Fury", "if=talent.serenity.enabled&!equipped.drinking_horn_cover&cooldown.serenity.remains>=5&(debuff.rising_fist.remains>1|set_bonus.tier20_2pc=0)&energy.time_to_max>2" );
-  st -> add_action( this, "Fists of Fury", "if=!(talent.serenity.enabled&!equipped.drinking_horn_cover)&(debuff.rising_fist.remains>1|set_bonus.tier20_2pc=0)&energy.time_to_max>2" );
+  st -> add_action( this, "Fists of Fury", "if=talent.serenity.enabled&!equipped.drinking_horn_cover&cooldown.serenity.remains>=5&energy.time_to_max>2" );
+  st -> add_action( this, "Fists of Fury", "if=!(talent.serenity.enabled&!equipped.drinking_horn_cover)&energy.time_to_max>2" );
   st -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=!talent.serenity.enabled|cooldown.serenity.remains>=5" );
   st -> add_talent( this, "Whirling Dragon Punch" );
   st -> add_action( this, "Crackling Jade Lightning", "if=equipped.the_emperors_capacitor&buff.the_emperors_capacitor.stack>=19&energy.time_to_max>3" );

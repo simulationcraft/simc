@@ -1949,6 +1949,7 @@ public:
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
+
     double temp_gain = insanity_gain + 
                       (   priest.buffs.empty_mind->stack()
                         * priest.buffs.empty_mind->data().effectN( 2 ).percent() );
