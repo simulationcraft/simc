@@ -6660,6 +6660,9 @@ double hunter_t::composite_player_pet_damage_multiplier( const action_state_t* s
   m *= 1.0 + artifacts.acuity_of_the_unseen_path.percent( 3 );
   m *= 1.0 + artifacts.ferocity_of_the_unseen_path.percent( 3 );
 
+  if ( maybe_ptr( dbc.ptr ) && specs.beast_mastery_hunter -> ok() )
+    m *= 1.0 + specs.beast_mastery_hunter -> effectN( 3 ).percent();
+
   return m;
 }
 
