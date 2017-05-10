@@ -7551,13 +7551,6 @@ bool download_guild( sim_t* sim,
                      int max_rank = 0,
                      cache::behavior_e b = cache::players() );
 
-player_t* download_player_html( sim_t*,
-                           const std::string& region,
-                           const std::string& server,
-                           const std::string& name,
-                           const std::string& talents = std::string( "active" ),
-                           cache::behavior_e b = cache::players() );
-
 player_t* download_player( sim_t*,
                            const std::string& region,
                            const std::string& server,
