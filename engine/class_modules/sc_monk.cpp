@@ -1498,7 +1498,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
       if ( p() -> buff.transfer_the_power_sef -> up() )
         p() -> buff.transfer_the_power_sef -> expire();
 
-      if ( o() -> sets -> has_set_bonus( MONK_WINDWALKER, T20, B2 ) )
+      if ( maybe_ptr( o() -> dbc.ptr ) && o() -> sets -> has_set_bonus( MONK_WINDWALKER, T20, B2 ) )
         p() -> buff.pressure_point_sef -> trigger();
     }
   };
