@@ -1949,10 +1949,10 @@ public:
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
-    double temp_gain = insanity_gain * 
-                      ( 1.0 + 
+
+    double temp_gain = insanity_gain + 
                       (   priest.buffs.empty_mind->stack()
-                        * priest.buffs.empty_mind->data().effectN( 2 ).base_value() ) );
+                        * priest.buffs.empty_mind->data().effectN( 2 ).percent() );
 
     priest.generate_insanity( temp_gain, priest.gains.insanity_mind_blast, s->action );
     priest.buffs.empty_mind->expire();
@@ -2189,10 +2189,6 @@ struct mind_flay_t final : public priest_spell_t
 
     if( priest.sets->has_set_bonus( PRIEST_SHADOW, T20, B2 ) )
     {
-      if (sim->debug)
-      {
-        sim->out_debug << "\nEmpty mind trigger\n";
-      }
       priest.buffs.empty_mind->trigger();
     }
 
