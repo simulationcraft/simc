@@ -4169,12 +4169,7 @@ expr_t* priest_t::create_expression( action_t* a, const std::string& name_str )
     // Does not account for a new stack occurring in the middle and can be anywhere from 0.0 - 0.5 off the real value.
     // Does not account for Dispersion or Void Torrent
     return make_fn_expr( name_str, [this]() {
-      if ( !buffs.voidform->check() )
-        return 0.0;
-
-      return ( ( buffs.voidform->data().effectN( 2 ).base_value() / -500.0 ) +
-               ( ( buffs.insanity_drain_stacks->check() - 1 ) * 2.0 / 3.0 ) );
-      // hardcoded patch 7.1.5 2016-12-17
+      return ( insanity.insanity_drain_per_second() );
     } );
   }
 
