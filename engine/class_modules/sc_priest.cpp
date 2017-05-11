@@ -23,10 +23,7 @@ struct blessed_dawnlight_medallion_t;
 
 namespace pets
 {
-namespace void_tendril
-{
-struct void_tendril_pet_t;
-}
+
 }
 
 /**
@@ -391,8 +388,7 @@ public:
   struct
   {
     propagate_const<pet_t*> shadowfiend;
-    propagate_const<pet_t*> mindbender;
-    std::array<propagate_const<pets::void_tendril::void_tendril_pet_t*>, 10> void_tendril;
+    propagate_const<pet_t*> mindbender;    
   } pets;
 
   // Options
@@ -1147,127 +1143,6 @@ action_t* base_fiend_pet_t::create_action( const std::string& name, const std::s
   return priest_pet_t::create_action( name, options_str );
 }
 }
-
-namespace void_tendril
-{
-struct void_tendril_pet_t final : public priest_pet_t
-{
-public:
-  void_tendril_pet_t( sim_t* sim, priest_t& p, void_tendril_pet_t* front_pet )
-    : priest_pet_t( sim, p, "void_tendril", PET_VOID_TENDRIL, true ), front_pet( front_pet )
-  {
-    owner_coeff.sp_from_sp = 1.0;
-  }
-
-  action_t* create_action( const std::string& name, const std::string& options_str ) override;
-
-  void init_action_list() override;
-
-  void summon( timespan_t duration ) override
-  {
-    priest_pet_t::summon( duration );
-  }
-
-  void trigger()
-  {
-    summon( timespan_t::from_seconds( 10 ) );
-  }
-
-  bool init_actions() override
-  {
-    auto r = priest_pet_t::init_actions();
-
-    // Add all stats as child_stats to front_pet
-    if ( front_pet )
-    {
-      quiet = true;
-      for ( auto& stat : stats_list )
-      {
-        if ( auto front_stat = front_pet->find_stats( stat->name_str ) )
-        {
-          front_stat->add_child( stat );
-        }
-      }
-    }
-
-    return r;
-  }
-
-private:
-  void_tendril_pet_t* front_pet;
-};
-
-struct void_tendril_mind_flay_t final : public priest_pet_spell_t
-{
-  void_tendril_mind_flay_t( void_tendril_pet_t& p )
-    : priest_pet_spell_t( "mind_flay_void_tendril)", &p, p.o().find_spell( 193473 ) )
-  {
-    may_crit      = false;
-    may_miss      = false;
-    channeled     = true;
-    hasted_ticks  = false;
-    tick_may_crit = true;
-
-    dot_duration = timespan_t::from_seconds( 10.0 );
-  }
-
-  timespan_t composite_dot_duration( const action_state_t* ) const override
-  {
-    return timespan_t::from_seconds( 10.0 );
-  }
-
-  timespan_t tick_time( const action_state_t* ) const override
-  {
-    return timespan_t::from_seconds( 1.0 );
-  }
-
-  void tick( dot_t* d ) override
-  {
-    priest_pet_spell_t::tick( d );
-
-    if ( p().o().artifact.lash_of_insanity.rank() )
-    {
-      p().o().generate_insanity( p().o().find_spell( 240843 )->effectN( 1 ).percent(),
-                                 p().o().gains.insanity_call_to_the_void, d->state->action );
-    }
-  }
-
-  void_tendril_pet_t& p()
-  {
-    return static_cast<void_tendril_pet_t&>( *player );
-  }
-  const void_tendril_pet_t& p() const
-  {
-    return static_cast<void_tendril_pet_t&>( *player );
-  }
-};
-
-void void_tendril_pet_t::init_action_list()
-{
-  if ( action_list_str.empty() )
-  {
-    action_priority_list_t* precombat = get_action_priority_list( "precombat" );
-    precombat->add_action( "snapshot_stats",
-                           "Snapshot raid buffed stats before combat begins and "
-                           "pre-potting is done." );
-
-    action_priority_list_t* def = get_action_priority_list( "default" );
-    def->add_action( "mind_flay" );
-  }
-
-  priest_pet_t::init_action_list();
-}
-
-action_t* void_tendril_pet_t::create_action( const std::string& name, const std::string& options_str )
-{
-  if ( name == "mind_flay" )
-    return new void_tendril_mind_flay_t( *this );
-
-  return priest_pet_t::create_action( name, options_str );
-}
-
-}  // pets/void_tendril
-
 }  // END pets NAMESPACE
 
 namespace actions
@@ -1315,24 +1190,6 @@ public:
   const priest_td_t* find_td( player_t* t ) const
   {
     return priest.find_target_data( t );
-  }
-
-  void trigger_void_tendril()
-  {
-    if ( priest.rppm.call_to_the_void->trigger() )
-    {
-      for ( auto&& void_tendril : priest.pets.void_tendril )
-      {
-        if ( void_tendril->is_sleeping() )
-        {
-          void_tendril->trigger();
-          priest.procs.void_tendril->occur();
-          return;
-        }
-      }
-      priest.sim->errorf( "Player %s ran out of void tendrils.\n", priest.name() );
-      assert( false );  // Will only get here if there are no available void tendrils
-    }
   }
 
   bool trigger_shadowy_insight()
@@ -4529,9 +4386,6 @@ pet_t* priest_t::create_pet( const std::string& pet_name, const std::string& /* 
 {
   pet_t* p = find_pet( pet_name );
 
-  if ( p && pet_name != "void_tendril" )
-    return p;
-
   if ( pet_name == "shadowfiend" )
     return new pets::fiend::shadowfiend_pet_t( sim, *this );
   if ( pet_name == "mindbender" )
@@ -4554,19 +4408,6 @@ void priest_t::create_pets()
   if ( ( find_action( "mindbender" ) || find_action( "shadowfiend" ) ) && talents.mindbender->ok() )
   {
     pets.mindbender = create_pet( "mindbender" );
-  }
-
-  if ( artifact.call_to_the_void.rank() )
-  {
-    for ( size_t i = 0; i < pets.void_tendril.size(); i++ )
-    {
-      pets.void_tendril[ i ] = new pets::void_tendril::void_tendril_pet_t( sim, *this, pets.void_tendril.front() );
-
-      if ( i > 0 )
-      {
-        pets.void_tendril[ i ]->quiet = 1;
-      }
-    }
   }
 }
 
@@ -5006,6 +4847,7 @@ void priest_t::trigger_call_to_the_void(const dot_t* d)
 {
     if ( rppm.call_to_the_void->trigger() )
     {
+      procs.void_tendril->occur();
       make_event<ground_aoe_event_t>(*sim, this, ground_aoe_params_t()
         .target(    d->target )
         .duration( find_spell(193473)->duration() )
