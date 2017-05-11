@@ -46,6 +46,9 @@ enum { DIRE_BEASTS_MAX = 10 };
 
 struct hunter_t;
 
+static void try_execute_t20_2p_bm(const hunter_t& p);
+static void try_apply_t20_2p_and_4p_bm(const hunter_t& p, double* multipler);
+
 namespace pets
 {
 struct hunter_main_pet_t;
@@ -77,6 +80,16 @@ struct hunter_td_t: public actor_target_data_t
 
   void target_demise();
 };
+
+namespace buffs {
+  struct t20_2p_bm_buff_t: public buff_t
+  {
+    t20_2p_bm_buff_t( player_t* p );
+    double get_damage_mod();
+  private:
+    double damage_modifier;
+  };
+}
 
 struct hunter_t: public player_t
 {
@@ -158,6 +171,8 @@ public:
     buff_t* t19_4p_mongoose_power;
     buff_t* t20_2p_precision;
     buff_t* t20_4p_critical_aimed_damage;
+    buffs::t20_2p_bm_buff_t* t20_2p_bm;
+    buff_t* t20_4p_bm;
     buff_t* pre_t20_4p_critical_aimed_damage;
     buff_t* sentinels_sight;
     buff_t* butchers_bone_apron;
@@ -1938,6 +1953,8 @@ struct bestial_ferocity_t: public hunter_main_pet_attack_t
 
 struct kill_command_t: public hunter_pet_action_t < hunter_pet_t, attack_t >
 {
+  typedef attack_t ab;
+
   jaws_of_thunder_t* jaws_of_thunder;
   kill_command_t( hunter_pet_t* p ):
     base_t( "kill_command", p, p -> find_spell( 83381 ) ), jaws_of_thunder( nullptr )
@@ -1950,7 +1967,8 @@ struct kill_command_t: public hunter_pet_action_t < hunter_pet_t, attack_t >
 
     // The hardcoded parameter is taken from the $damage value in teh tooltip. e.g., 1.36 below
     // $damage = ${ 1.5*($83381m1 + ($RAP*  1.632   ))*$<bmMastery> }
-    attack_power_mod.direct  = 3.0; // Hard-coded in tooltip.
+    attack_power_mod.direct  =
+      maybe_ptr( p -> dbc.ptr ) ? 3.6 : 3.0;
 
     base_multiplier *= 1.0 + o() -> artifacts.pack_leader.percent();
 
@@ -1977,6 +1995,14 @@ struct kill_command_t: public hunter_pet_action_t < hunter_pet_t, attack_t >
   // Override behavior so that Kill Command uses hunter's attack power rather than the pet's
   double composite_attack_power() const override
   { return o() -> cache.attack_power() * o()->composite_attack_power_multiplier(); }
+
+
+  virtual double action_multiplier() const override
+  {
+    double am = ab::action_multiplier();
+    try_apply_t20_2p_and_4p_bm(*o(), &am);
+    return am;
+  }
 
   bool usable_moving() const override
   { return true; }
@@ -2778,6 +2804,8 @@ struct multi_shot_t: public hunter_ranged_attack_t
     if ( p() -> buffs.bombardment -> up() )
       am *= 1.0 + p() -> buffs.bombardment -> data().effectN( 2 ).percent();
 
+    try_apply_t20_2p_and_4p_bm(*p(), &am);
+
     return am;
   }
 
@@ -2820,6 +2848,8 @@ struct multi_shot_t: public hunter_ranged_attack_t
       if ( p() -> pets.hati )
         p() -> active.surge_of_the_stormgod -> execute();
     }
+
+    try_execute_t20_2p_bm(*p());
   }
 
   virtual void impact( action_state_t* s ) override
@@ -2952,6 +2982,8 @@ struct cobra_shot_t: public hunter_ranged_attack_t
           break;
       }
     }
+
+    try_execute_t20_2p_bm(*p());
   }
 
   virtual double composite_target_crit_chance( player_t* t ) const override
@@ -2985,6 +3017,8 @@ struct cobra_shot_t: public hunter_ranged_attack_t
 
       am *= 1.0 + active_pets * p() -> talents.way_of_the_cobra -> effectN( 1 ).percent();
     }
+
+    try_apply_t20_2p_and_4p_bm(*p(), &am);
 
     return am;
   }
@@ -4718,6 +4752,14 @@ struct bestial_wrath_t: public hunter_spell_t
         }
       }
     }
+    if ( p() -> sets -> has_set_bonus( HUNTER_BEAST_MASTERY, T20, B2 ) )
+    {
+      p() -> buffs.t20_2p_bm -> trigger();
+    }
+    if ( p() -> sets -> has_set_bonus( HUNTER_BEAST_MASTERY, T20, B4 ) )
+    {
+      p() -> buffs.t20_4p_bm -> trigger();
+    }
     if ( p() -> artifacts.master_of_beasts.rank() )
       p() -> pets.hati -> buffs.bestial_wrath -> trigger();
 
@@ -4737,6 +4779,8 @@ struct bestial_wrath_t: public hunter_spell_t
 
 struct kill_command_t: public hunter_spell_t
 {
+  typedef hunter_spell_t ab;
+
   kill_command_t( hunter_t* player, const std::string& options_str ):
     hunter_spell_t( "kill_command", player, player -> specs.kill_command )
   {
@@ -4766,6 +4810,8 @@ struct kill_command_t: public hunter_spell_t
 
     if ( p() -> artifacts.master_of_beasts.rank() )
       p() -> pets.hati -> active.kill_command -> execute();
+
+    try_execute_t20_2p_bm(*p());
   }
 
   virtual bool ready() override
@@ -5360,6 +5406,20 @@ struct hunters_mark_exists_buff_t: public buff_t
       wasted -> occur();
   }
 };
+
+t20_2p_bm_buff_t::t20_2p_bm_buff_t( player_t* p ):
+  buff_t( buff_creator_t( p, "t20_2p_bm_driver", p -> find_spell( 246126 ) )
+    .refresh_behavior( BUFF_REFRESH_DISABLED )
+    .max_stack( 999 /* Pull this from spelldata? */ ))
+{
+  // Not sure why it's 15% rather than 1.5%.
+  damage_modifier = data().effectN( 1 ).percent() / 10.0;
+}
+
+double t20_2p_bm_buff_t::get_damage_mod()
+{
+  return damage_modifier * ( this -> stack() );
+}
 
 } // end namespace buffs
 
@@ -5959,6 +6019,12 @@ void hunter_t::create_buffs()
   buffs.t20_4p_critical_aimed_damage =
     buff_creator_t( this, "t20_4p_critical_aimed_damage", find_spell( 242243 ) )
       .default_value( find_spell( 242243 ) -> effectN( 1 ).percent() );
+
+  buffs.t20_4p_bm =
+    buff_creator_t( this, "t20_4p_bm ", find_spell( 246116 ) )
+      .default_value( find_spell( 246116 ) -> effectN( 1 ).percent() );
+
+  buffs.t20_2p_bm = new buffs::t20_2p_bm_buff_t( this );
 
   buffs.sephuzs_secret =
     haste_buff_creator_t( this, "sephuzs_secret", find_spell( 208052 ) )
@@ -7059,6 +7125,26 @@ struct hunter_module_t: public module_t
   virtual void combat_begin( sim_t* ) const override {}
   virtual void combat_end( sim_t* ) const override {}
 };
+
+void try_execute_t20_2p_bm(const hunter_t& p)
+{
+  if ( p.buffs.t20_2p_bm -> check() )
+  {
+    p.buffs.t20_2p_bm -> trigger( 1 );
+  }
+}
+
+void try_apply_t20_2p_and_4p_bm(const hunter_t& p, double* multipler)
+{
+  if ( p.buffs.t20_2p_bm -> up() )
+  {
+    *multipler *= 1.0 + p.buffs.t20_2p_bm -> get_damage_mod();
+  }
+  if ( p.buffs.t20_4p_bm -> up() )
+  {
+    *multipler *= 1.0 + p.buffs.t20_4p_bm -> value();
+  }
+}
 
 } // UNNAMED NAMESPACE
 
