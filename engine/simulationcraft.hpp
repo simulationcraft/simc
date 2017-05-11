@@ -1571,6 +1571,7 @@ struct sim_t : private sc_thread_t
   bool        requires_regen_event;
   bool        single_actor_batch;
   int         progressbar_type;
+  int         armory_retries;
 
   // Target options
   double      enemy_death_pct;
@@ -7550,13 +7551,6 @@ bool download_guild( sim_t* sim,
                      int player_e = PLAYER_NONE,
                      int max_rank = 0,
                      cache::behavior_e b = cache::players() );
-
-player_t* download_player_html( sim_t*,
-                           const std::string& region,
-                           const std::string& server,
-                           const std::string& name,
-                           const std::string& talents = std::string( "active" ),
-                           cache::behavior_e b = cache::players() );
 
 player_t* download_player( sim_t*,
                            const std::string& region,

@@ -463,9 +463,6 @@ bool parse_armory( sim_t*             sim,
       }
       else if ( name == "local_json" )
         p = bcp_api::from_local_json( sim, player_name, stuff.server, description );
-      else if ( name == "armory_html" )
-        p = bcp_api::download_player_html( sim, stuff.region, stuff.server,
-                                           player_name, description, stuff.cache );
       else
         p = bcp_api::download_player( sim, stuff.region, stuff.server,
                                       player_name, description, stuff.cache );
@@ -1372,6 +1369,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   auto_ready_trigger( 0 ), stat_cache( 1 ), max_aoe_enemies( 20 ), show_etmi( 0 ), tmi_window_global( 0 ), tmi_bin_size( 0.5 ),
   requires_regen_event( false ), single_actor_batch( false ),
   progressbar_type( 0 ),
+  armory_retries( 3 ),
   enemy_death_pct( 0 ), rel_target_level( -1 ), target_level( -1 ),
   target_adds( 0 ), desired_targets( 1 ), enable_taunts( false ),
   use_item_verification( true ),
@@ -3163,6 +3161,7 @@ void sim_t::create_options()
   add_option( opt_string( "save_suffix", save_suffix_str ) );
   add_option( opt_bool( "save_talent_str", save_talent_str ) );
   add_option( opt_func( "talent_format", parse_talent_format ) );
+  add_option( opt_int( "armory_retries", armory_retries ) );
   // Stat Enchants
   add_option( opt_float( "default_enchant_strength", enchant.attribute[ATTR_STRENGTH] ) );
   add_option( opt_float( "default_enchant_agility", enchant.attribute[ATTR_AGILITY] ) );

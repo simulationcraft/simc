@@ -8147,7 +8147,7 @@ void monk_t::init_spells()
   passives.hit_combo                        = find_spell( 196741 );
   passives.mark_of_the_crane                = find_spell( 228287 );
   passives.master_of_combinations           = find_spell( 240672 );
-  passives.pressure_point                   = find_spell( 246331 );
+  passives.pressure_point                   = find_spell( 247255 );
   passives.thunderfist_buff                 = find_spell( 242387 );
   passives.thunderfist_damage               = find_spell( 242390 );
   passives.touch_of_karma_buff              = find_spell( 125174 );
