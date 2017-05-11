@@ -367,6 +367,7 @@ public:
     propagate_const<actions::spells::shadowy_apparition_spell_t*> shadowy_apparitions;
     propagate_const<action_t*> sphere_of_insanity;
     propagate_const<action_t*> mental_fortitude;
+    propagate_const<action_t*> void_tendril;
   } active_spells;
 
   struct
@@ -2071,7 +2072,7 @@ struct new_void_tendril_mind_flay_t final : public priest_spell_t
   bool* active_flag;
 
   new_void_tendril_mind_flay_t(priest_t& p)
-    : priest_spell_t("mind_flay_void_tendril)", p, p.find_spell(193473))
+    : priest_spell_t("mind_flay_void_tendril", p, p.find_spell(193473))
 
   {
     aoe = 1;
@@ -2107,7 +2108,7 @@ struct new_void_tendril_mind_flay_t final : public priest_spell_t
 struct mind_flay_t final : public priest_spell_t
 {
   double insanity_gain;
-
+  
   mind_flay_t( priest_t& p, const std::string& options_str )
     : priest_spell_t( "mind_flay", p, p.find_specialization_spell( "Mind Flay" ) ),
       insanity_gain( data().effectN( 3 ).resource( RESOURCE_INSANITY ) *
@@ -2124,7 +2125,9 @@ struct mind_flay_t final : public priest_spell_t
     energize_type               = ENERGIZE_NONE;  // disable resource generation from spell data
 
     priest.active_spells.mind_sear_tick = new mind_sear_tick_t( p );
+    priest.active_spells.void_tendril = new new_void_tendril_mind_flay_t( p );
     add_child( priest.active_spells.mind_sear_tick );
+    add_child( priest.active_spells.void_tendril );
 
     if ( p.artifact.void_siphon.rank() )
     {
@@ -2249,8 +2252,8 @@ struct mind_flay_t final : public priest_spell_t
   void spawn_tendril( dot_t* d )
   {
     if (priest.rppm.call_to_the_void->trigger())
-    {
-      auto tendril = new new_void_tendril_mind_flay_t(priest);
+    {     
+      auto tendril = priest.active_spells.void_tendril;
       tendril->target = d->target;
       tendril->execute();
     }
