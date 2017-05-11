@@ -2066,6 +2066,44 @@ struct mind_sear_tick_t final : public priest_spell_t
   }
 };
 
+struct new_void_tendril_mind_flay_t final : public priest_spell_t
+{
+  bool* active_flag;
+
+  new_void_tendril_mind_flay_t(priest_t& p)
+    : priest_spell_t("mind_flay_void_tendril)", p, p.find_spell(193473))
+
+  {
+    aoe = 1;
+    radius = 100;
+    background = true;
+    ground_aoe = true;
+    school = SCHOOL_SHADOW;
+    may_miss = false;
+    hasted_ticks = false;
+    tick_may_crit = true;
+
+    //  dot_duration = timespan_t::from_seconds(10.0);
+  }
+
+  timespan_t tick_time(const action_state_t*) const override
+  {
+    return timespan_t::from_seconds(data().effectN(1).base_value());
+  }
+
+  void tick(dot_t* d) override
+  {
+    priest_spell_t::tick(d);
+
+    if (priest.artifact.lash_of_insanity.rank())
+    {
+      priest.generate_insanity(priest.find_spell(240843)->effectN(1).percent(),
+        priest.gains.insanity_call_to_the_void, d->state->action);
+    }
+  }
+};
+
+
 struct mind_flay_t final : public priest_spell_t
 {
   double insanity_gain;
@@ -2212,57 +2250,12 @@ struct mind_flay_t final : public priest_spell_t
   {
     if (priest.rppm.call_to_the_void->trigger())
     {
-      new_void_tendril_mind_flay_t* tendril = new new_void_tendril_mind_flay_t(priest);
+      auto tendril = new new_void_tendril_mind_flay_t(priest);
       tendril->target = d->target;
       tendril->execute();
     }
   }
 
-};
-
-struct new_void_tendril_mind_flay_t final : public priest_spell_t
-{
-  bool* active_flag;
-
-  new_void_tendril_mind_flay_t( priest_t& p )
-    : priest_spell_t( "mind_flay_void_tendril)", p, p.find_spell( 193473 ) )
-    
-  {
-    aoe = 1;
-    radius = 100;
-    background = true;
-    ground_aoe = true;    
-    school = SCHOOL_SHADOW;
-    may_miss = false;
-    hasted_ticks = false;
-    tick_may_crit = true;
-
-  //  dot_duration = timespan_t::from_seconds(10.0);
-  }
-
-  timespan_t tick_time(const action_state_t*) const override
-  {
-    return timespan_t::from_seconds( data().effectN( 1 ).base_value() );
-  }
-
-  void tick(dot_t* d) override
-  {
-    priest_spell_t::tick(d);
-
-    if (priest.artifact.lash_of_insanity.rank())
-    {
-       priest.generate_insanity(priest.find_spell(240843)->effectN(1).percent(),
-       priest.gains.insanity_call_to_the_void, d->state->action);
-    }
-  }
-
-  void last_tick(dot_t* d) override
-  {
-    priest_spell_t::last_tick(d);
-
-    // When Void Tendril dies, it alerts the controller
-    *active_flag = false;
-  }  
 };
 
 struct pain_suppression_t final : public priest_spell_t
