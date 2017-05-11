@@ -17,6 +17,10 @@
 // - Verification
 // - Path of Flame spread mechanism (would be good to generalize this "nearby" spreading)
 // - At what point does Greater Lightning Elemental start aoeing?
+// Enhancement
+// T20
+// 2p - Does the triggering crash hit benefit from the buff?
+
 
 namespace { // UNNAMED NAMESPACE
 
@@ -296,6 +300,8 @@ public:
     stat_buff_t* t19_oh_8pc;
     haste_buff_t* t18_4pc_elemental;
     buff_t* t18_4pc_enhancement;
+    buff_t* t20_2pc_enhancement;
+    buff_t* t20_4pc_enhancement;
 
     // Legendary buffs
     buff_t* echoes_of_the_great_sundering;
@@ -3667,6 +3673,8 @@ struct crash_lightning_t : public shaman_attack_t
         p() -> buff.crash_lightning -> trigger();
       }
 
+      p() -> buff.t20_2pc_enhancement -> trigger(); //TODO: Does the triggering crash benefit from the 5% crit?
+
       if ( p() -> artifact.gathering_storms.rank() )
       {
         double v = 1.0 + p() -> artifact.gathering_storms.percent() * execute_state -> n_targets;
@@ -6971,6 +6979,10 @@ void shaman_t::create_buffs()
     .trigger_spell( sets -> set( SHAMAN_ENHANCEMENT, T18, B4 ) )
     .default_value( sets -> set( SHAMAN_ENHANCEMENT, T18, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buff.t20_2pc_enhancement = buff_creator_t( this, "lightning_crash", sets -> set( SHAMAN_ENHANCEMENT, T20, B2 ) -> effectN( 1 ).trigger() )
+    .trigger_spell( ! maybe_ptr( dbc.ptr ) ? spell_data_t::not_found() : sets -> set( SHAMAN_ENHANCEMENT, T20, B2 ) )
+    .default_value( sets -> set( SHAMAN_ENHANCEMENT, T20, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
+    .add_invalidate( CACHE_CRIT_CHANCE );
 }
 
 // shaman_t::init_gains =====================================================
@@ -7527,6 +7539,8 @@ double shaman_t::composite_spell_crit_chance() const
 
   m += spec.critical_strikes -> effectN( 1 ).percent();
 
+  m += buff.t20_2pc_enhancement -> stack_value();
+
   return m;
 }
 
@@ -7578,6 +7592,8 @@ double shaman_t::composite_melee_crit_chance() const
   double m = player_t::composite_melee_crit_chance();
 
   m += spec.critical_strikes -> effectN( 1 ).percent();
+
+  m += buff.t20_2pc_enhancement -> stack_value();
 
   return m;
 }
