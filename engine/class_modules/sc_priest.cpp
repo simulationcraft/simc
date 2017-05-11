@@ -747,6 +747,56 @@ public:
       }
     }
   } insanity;
+
+  /**
+   * Void Tentrils Controller
+   *
+   * Handles the usage of Void Tendril spells.
+   */
+   struct void_tendril_controller final {
+     
+     #define MAX_TENDRILS 10
+
+     priest_t& priest;
+     actions::spells::void_tendril_mind_flay_t* tendrils[MAX_TENDRILS];
+     bool active_tendrils[MAX_TENDRILS];
+
+
+     void_tendril_controller(priest_t& p)
+       : priest(p)
+     {
+         for ( int i = 0; i < MAX_TENDRILS; i++ )
+         {
+           tendrils[i] = new actions::spells::void_tendril_mind_flay_t( p );
+           tendrils[i]->active_flag = &active_tendrils[i];
+         }
+     }
+
+     void spawn_tendril( dot_t* d )
+     {
+       if ( priest.rppm.call_to_the_void->trigger() )
+       {
+         int tendril_used = -1;
+
+         for (int i = 0; i < MAX_TENDRILS; i++)
+         {
+           actions::spells::void_tendril_mind_flay_t* tendril = tendrils[i];
+           if ( !active_tendrils[i] )
+           {
+             tendril->target = d->target;
+             tendril->execute();
+             tendril_used = i;
+             active_tendrils[i] = true;
+             break;
+           }
+         }
+         if( tendril_used == -1 )
+         {
+           priest.sim->out_log << "Unable to create Void Tendril. Maximum amount reached.";
+         }
+       }
+       }
+   }void_tendril;
 };
 
 namespace pets
@@ -2192,7 +2242,7 @@ struct mind_flay_t final : public priest_spell_t
       priest.buffs.empty_mind->trigger();
     }
 
-    trigger_void_tendril();
+    priest.void_tendril.spawn_tendril( d );
 
     priest.generate_insanity( insanity_gain, priest.gains.insanity_mind_flay, d->state->action );
   }
@@ -2205,6 +2255,51 @@ struct mind_flay_t final : public priest_spell_t
       spread_twins_painsful_dots( s );
       priest.buffs.the_twins_painful_touch->expire();
     }
+  }
+};
+
+struct void_tendril_mind_flay_t : public priest_spell_t
+{
+  bool* active_flag;
+
+  void_tendril_mind_flay_t( priest_t& p )
+    : priest_spell_t( "mind_flay_void_tendril)", p, p.find_spell( 193473 ) )
+    
+  {
+    aoe = 1;
+    radius = 100;
+    background = true;
+    ground_aoe = true;    
+    school = SCHOOL_SHADOW;
+    may_miss = false;
+    hasted_ticks = false;
+    tick_may_crit = true;
+
+  //  dot_duration = timespan_t::from_seconds(10.0);
+  }
+
+  timespan_t tick_time(const action_state_t*) const override
+  {
+    return timespan_t::from_seconds( data().effectN( 1 ).base_value() );
+  }
+
+  void tick(dot_t* d) override
+  {
+    priest_spell_t::tick(d);
+
+    if (priest.artifact.lash_of_insanity.rank())
+    {
+       priest.generate_insanity(priest.find_spell(240843)->effectN(1).percent(),
+       priest.gains.insanity_call_to_the_void, d->state->action);
+    }
+  }
+
+  void last_tick(dot_t* d) override
+  {
+    priest_spell_t::last_tick(d);
+
+    // When Void Tendril dies, it alerts the controller
+    *active_flag = false;
   }
 };
 
@@ -2445,7 +2540,7 @@ struct shadow_word_death_t final : public priest_spell_t
       // SWD always grants at least 10 Insanity.
       // TODO: Add in a custom buff that checks after 1 second to see if the target SWD was cast on is now dead.
       // TODO: Check in beta if the target is dead vs. SWD is the killing blow.
-      total_insanity_gain = 10.0;
+      total_insanity_gain = data().effectN( 3 ).base_value() * 100.0;
 
       if ( priest.talents.reaper_of_souls->ok() ||
            ( ( save_health_percentage > 0.0 ) && ( s->target->health_percentage() <= 0.0 ) ) )
@@ -3982,7 +4077,8 @@ priest_t::priest_t( sim_t* sim, const std::string& name, race_e r )
     active_items(),
     pets(),
     options(),
-    insanity( *this )
+    insanity( *this ),
+    void_tendril( *this )
 {
   create_cooldowns();
   create_gains();
