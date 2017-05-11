@@ -178,6 +178,8 @@ const char* pawn_stat_name( stat_e stat )
       return "Versatility";
     case STAT_WEAPON_DPS:
       return "Dps";
+    case STAT_LEECH_RATING:
+      return "Leech";
     default:
       break;
   }
