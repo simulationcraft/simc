@@ -5247,8 +5247,9 @@ if ( race == RACE_BLOOD_ELF )
       "(buff.insanity_drain_stacks.value)+30))" );
   vf->add_action(
       "power_infusion,if=buff.insanity_drain_stacks.value>=(10+2*set_bonus."
-      "tier19_2pc+5*buff.bloodlust.up*(1+0.5*set_bonus.tier20_4pc)+3*equipped"
-      ".mangazas_madness+3*set_bonus.tier20_4pc)&(!talent.surrender_to_madness."
+      "tier19_2pc+5*buff.bloodlust.up*(1+1*set_bonus.tier20_4pc)+3*equipped"
+      ".mangazas_madness+6*set_bonus.tier20_4pc+2*artifact.lash_of_insanity.rank)"
+      "&(!talent.surrender_to_madness."
       "enabled|(talent.surrender_to_madness.enabled&target.time_to_die>variable."
       "s2mcheck-(buff.insanity_drain_stacks.value)+61))" );
   vf->add_action(
