@@ -10475,13 +10475,16 @@ void player_t::analyze( sim_t& s )
 
   // Resources & Gains ======================================================
 
-  double rl = collected_data.resource_lost[ primary_resource() ].mean();
+  if ( static_cast<size_t>( primary_resource() ) < collected_data.resource_lost.size() )
+  {
+    double rl = collected_data.resource_lost[ primary_resource() ].mean();
 
-  dpr = ( rl > 0 ) ? ( collected_data.dmg.mean() / rl ) : -1.0;
-  hpr = ( rl > 0 ) ? ( collected_data.heal.mean() / rl ) : -1.0;
+    dpr = ( rl > 0 ) ? ( collected_data.dmg.mean() / rl ) : -1.0;
+    hpr = ( rl > 0 ) ? ( collected_data.heal.mean() / rl ) : -1.0;
 
-  rps_loss = rl / collected_data.fight_length.mean();
-  rps_gain = rl / collected_data.fight_length.mean();
+    rps_loss = rl / collected_data.fight_length.mean();
+    rps_gain = rl / collected_data.fight_length.mean();
+  }
 
   // When single_actor_batch=1 is used in conjunction with target_error, each actor has run varying
   // number of iterations to finish. The total number of iterations ran for each actor (when
