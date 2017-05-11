@@ -433,6 +433,7 @@ public:
   double composite_spell_haste() const override;
   double composite_spell_speed() const override;
   double composite_player_multiplier( school_e school ) const override;
+  double composite_player_pet_damage_multiplier(const action_state_t*) const;
   double composite_player_absorb_multiplier( const action_state_t* s ) const override;
   double composite_player_heal_multiplier( const action_state_t* s ) const override;
   double composite_player_target_multiplier( player_t* t, school_e school ) const override;
@@ -446,6 +447,7 @@ public:
   expr_t* create_expression( action_t* a, const std::string& name_str ) override;
   bool has_t18_class_trinket() const override;
   void trigger_sephuzs_secret( const action_state_t* state, spell_mechanic mechanic, double proc_chance = -1.0 );
+  void trigger_call_to_the_void(const dot_t* d);
   
   void do_dynamic_regen() override
   {
@@ -2072,18 +2074,22 @@ struct new_void_tendril_mind_flay_t final : public priest_spell_t
   bool* active_flag;
 
   new_void_tendril_mind_flay_t(priest_t& p)
-    : priest_spell_t("mind_flay_void_tendril", p, p.find_spell(193473))
+    : priest_spell_t("mind_flay_void_tendril", p, p.find_spell( 193473 ) )
 
   {
     aoe = 1;
     radius = 100;
+    dot_duration = timespan_t::zero();
+    base_tick_time = timespan_t::zero();
     background = true;
     ground_aoe = true;
     school = SCHOOL_SHADOW;
     may_miss = false;
-    hasted_ticks = false;
-    tick_may_crit = true;
-
+    may_crit = true;
+    spell_power_mod.direct = spell_power_mod.tick;
+    spell_power_mod.tick = 0.0;
+    snapshot_flags &= ~(STATE_MUL_PERSISTENT | STATE_TGT_MUL_DA);
+    update_flags &= ~(STATE_MUL_PERSISTENT | STATE_TGT_MUL_DA);
     //  dot_duration = timespan_t::from_seconds(10.0);
   }
 
@@ -2092,16 +2098,22 @@ struct new_void_tendril_mind_flay_t final : public priest_spell_t
     return timespan_t::from_seconds(data().effectN(1).base_value());
   }
 
-  void tick(dot_t* d) override
+  double composite_da_multiplier(const action_state_t* state) const override
   {
-    priest_spell_t::tick(d);
+    return priest.composite_player_pet_damage_multiplier( state );
+  }
+
+  void impact(action_state_t* s) override
+  {
+    priest_spell_t::impact(s);
 
     if (priest.artifact.lash_of_insanity.rank())
     {
       priest.generate_insanity(priest.find_spell(240843)->effectN(1).percent(),
-        priest.gains.insanity_call_to_the_void, d->state->action);
+        priest.gains.insanity_call_to_the_void, s->action);
     }
   }
+
 };
 
 
@@ -2234,7 +2246,7 @@ struct mind_flay_t final : public priest_spell_t
       priest.buffs.empty_mind->trigger();
     }
 
-    spawn_tendril( d );
+    priest.trigger_call_to_the_void( d );
 
     priest.generate_insanity( insanity_gain, priest.gains.insanity_mind_flay, d->state->action );
   }
@@ -2248,17 +2260,7 @@ struct mind_flay_t final : public priest_spell_t
       priest.buffs.the_twins_painful_touch->expire();
     }
   }
-
-  void spawn_tendril( dot_t* d )
-  {
-    if (priest.rppm.call_to_the_void->trigger())
-    {     
-      auto tendril = priest.active_spells.void_tendril;
-      tendril->target = d->target;
-      tendril->execute();
-    }
-  }
-
+  
 };
 
 struct pain_suppression_t final : public priest_spell_t
@@ -4321,6 +4323,16 @@ double priest_t::composite_melee_speed() const
   return h;
 }
 
+double priest_t::composite_player_pet_damage_multiplier(const action_state_t* state) const
+{
+  double m = player_t::composite_player_pet_damage_multiplier(state);
+
+  m *= 1.0 + artifact.darkening_whispers.percent(2);
+  m *= 1.0 + artifact.darkness_of_the_conclave.percent(3);
+
+  return m;
+}
+
 double priest_t::composite_player_multiplier( school_e school ) const
 {
   double m = base_t::composite_player_multiplier( school );
@@ -4343,26 +4355,11 @@ double priest_t::composite_player_multiplier( school_e school ) const
       m *= 1.0 + voidform_multiplier;
     }
 
-    if ( artifact.creeping_shadows.rank() )
-    {
       m *= 1.0 + artifact.creeping_shadows.percent();
-    }
-
-    if ( artifact.darkening_whispers.rank() )
-    {
       m *= 1.0 + artifact.darkening_whispers.percent();
-    }
   }
-
-  if ( artifact.darkness_of_the_conclave.rank() )
-  {
     m *= 1.0 + artifact.darkness_of_the_conclave.percent();
-  }
-
-  if ( buffs.twist_of_fate->check() )
-  {
     m *= 1.0 + buffs.twist_of_fate->current_value;
-  }
 
   if ( buffs.reperation->check() )
   {
@@ -5003,6 +5000,17 @@ bool priest_t::has_t18_class_trinket() const
   }
 
   return false;
+}
+
+void priest_t::trigger_call_to_the_void(const dot_t* d)
+{
+    if ( rppm.call_to_the_void->trigger() )
+    {
+      make_event<ground_aoe_event_t>(*sim, this, ground_aoe_params_t()
+        .target(    d->target )
+        .duration( find_spell(193473)->duration() )
+        .action(   active_spells.void_tendril ) );      
+    }
 }
 
 void priest_t::trigger_sephuzs_secret(const action_state_t * state, spell_mechanic mechanic, double proc_chance)
