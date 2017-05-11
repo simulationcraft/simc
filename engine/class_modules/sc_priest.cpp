@@ -23,10 +23,7 @@ struct blessed_dawnlight_medallion_t;
 
 namespace pets
 {
-namespace void_tendril
-{
-struct void_tendril_pet_t;
-}
+
 }
 
 /**
@@ -367,6 +364,7 @@ public:
     propagate_const<actions::spells::shadowy_apparition_spell_t*> shadowy_apparitions;
     propagate_const<action_t*> sphere_of_insanity;
     propagate_const<action_t*> mental_fortitude;
+    propagate_const<action_t*> void_tendril;
   } active_spells;
 
   struct
@@ -390,8 +388,7 @@ public:
   struct
   {
     propagate_const<pet_t*> shadowfiend;
-    propagate_const<pet_t*> mindbender;
-    std::array<propagate_const<pets::void_tendril::void_tendril_pet_t*>, 10> void_tendril;
+    propagate_const<pet_t*> mindbender;    
   } pets;
 
   // Options
@@ -432,6 +429,7 @@ public:
   double composite_spell_haste() const override;
   double composite_spell_speed() const override;
   double composite_player_multiplier( school_e school ) const override;
+  double composite_player_pet_damage_multiplier(const action_state_t*) const;
   double composite_player_absorb_multiplier( const action_state_t* s ) const override;
   double composite_player_heal_multiplier( const action_state_t* s ) const override;
   double composite_player_target_multiplier( player_t* t, school_e school ) const override;
@@ -444,8 +442,9 @@ public:
   priest_td_t* get_target_data( player_t* target ) const override;
   expr_t* create_expression( action_t* a, const std::string& name_str ) override;
   bool has_t18_class_trinket() const override;
-  void trigger_sephuzs_secret(const action_state_t* state, spell_mechanic mechanic, double proc_chance = -1.0);
-
+  void trigger_sephuzs_secret( const action_state_t* state, spell_mechanic mechanic, double proc_chance = -1.0 );
+  void trigger_call_to_the_void(const dot_t* d);
+  
   void do_dynamic_regen() override
   {
     player_t::do_dynamic_regen();
@@ -747,6 +746,7 @@ public:
       }
     }
   } insanity;
+   
 };
 
 namespace pets
@@ -1143,127 +1143,6 @@ action_t* base_fiend_pet_t::create_action( const std::string& name, const std::s
   return priest_pet_t::create_action( name, options_str );
 }
 }
-
-namespace void_tendril
-{
-struct void_tendril_pet_t final : public priest_pet_t
-{
-public:
-  void_tendril_pet_t( sim_t* sim, priest_t& p, void_tendril_pet_t* front_pet )
-    : priest_pet_t( sim, p, "void_tendril", PET_VOID_TENDRIL, true ), front_pet( front_pet )
-  {
-    owner_coeff.sp_from_sp = 1.0;
-  }
-
-  action_t* create_action( const std::string& name, const std::string& options_str ) override;
-
-  void init_action_list() override;
-
-  void summon( timespan_t duration ) override
-  {
-    priest_pet_t::summon( duration );
-  }
-
-  void trigger()
-  {
-    summon( timespan_t::from_seconds( 10 ) );
-  }
-
-  bool init_actions() override
-  {
-    auto r = priest_pet_t::init_actions();
-
-    // Add all stats as child_stats to front_pet
-    if ( front_pet )
-    {
-      quiet = true;
-      for ( auto& stat : stats_list )
-      {
-        if ( auto front_stat = front_pet->find_stats( stat->name_str ) )
-        {
-          front_stat->add_child( stat );
-        }
-      }
-    }
-
-    return r;
-  }
-
-private:
-  void_tendril_pet_t* front_pet;
-};
-
-struct void_tendril_mind_flay_t final : public priest_pet_spell_t
-{
-  void_tendril_mind_flay_t( void_tendril_pet_t& p )
-    : priest_pet_spell_t( "mind_flay_void_tendril)", &p, p.o().find_spell( 193473 ) )
-  {
-    may_crit      = false;
-    may_miss      = false;
-    channeled     = true;
-    hasted_ticks  = false;
-    tick_may_crit = true;
-
-    dot_duration = timespan_t::from_seconds( 10.0 );
-  }
-
-  timespan_t composite_dot_duration( const action_state_t* ) const override
-  {
-    return timespan_t::from_seconds( 10.0 );
-  }
-
-  timespan_t tick_time( const action_state_t* ) const override
-  {
-    return timespan_t::from_seconds( 1.0 );
-  }
-
-  void tick( dot_t* d ) override
-  {
-    priest_pet_spell_t::tick( d );
-
-    if ( p().o().artifact.lash_of_insanity.rank() )
-    {
-      p().o().generate_insanity( p().o().find_spell( 240843 )->effectN( 1 ).percent(),
-                                 p().o().gains.insanity_call_to_the_void, d->state->action );
-    }
-  }
-
-  void_tendril_pet_t& p()
-  {
-    return static_cast<void_tendril_pet_t&>( *player );
-  }
-  const void_tendril_pet_t& p() const
-  {
-    return static_cast<void_tendril_pet_t&>( *player );
-  }
-};
-
-void void_tendril_pet_t::init_action_list()
-{
-  if ( action_list_str.empty() )
-  {
-    action_priority_list_t* precombat = get_action_priority_list( "precombat" );
-    precombat->add_action( "snapshot_stats",
-                           "Snapshot raid buffed stats before combat begins and "
-                           "pre-potting is done." );
-
-    action_priority_list_t* def = get_action_priority_list( "default" );
-    def->add_action( "mind_flay" );
-  }
-
-  priest_pet_t::init_action_list();
-}
-
-action_t* void_tendril_pet_t::create_action( const std::string& name, const std::string& options_str )
-{
-  if ( name == "mind_flay" )
-    return new void_tendril_mind_flay_t( *this );
-
-  return priest_pet_t::create_action( name, options_str );
-}
-
-}  // pets/void_tendril
-
 }  // END pets NAMESPACE
 
 namespace actions
@@ -1311,24 +1190,6 @@ public:
   const priest_td_t* find_td( player_t* t ) const
   {
     return priest.find_target_data( t );
-  }
-
-  void trigger_void_tendril()
-  {
-    if ( priest.rppm.call_to_the_void->trigger() )
-    {
-      for ( auto&& void_tendril : priest.pets.void_tendril )
-      {
-        if ( void_tendril->is_sleeping() )
-        {
-          void_tendril->trigger();
-          priest.procs.void_tendril->occur();
-          return;
-        }
-      }
-      priest.sim->errorf( "Player %s ran out of void tendrils.\n", priest.name() );
-      assert( false );  // Will only get here if there are no available void tendrils
-    }
   }
 
   bool trigger_shadowy_insight()
@@ -2065,10 +1926,58 @@ struct mind_sear_tick_t final : public priest_spell_t
   }
 };
 
+struct new_void_tendril_mind_flay_t final : public priest_spell_t
+{
+  bool* active_flag;
+
+  new_void_tendril_mind_flay_t(priest_t& p)
+    : priest_spell_t("mind_flay_void_tendril", p, p.find_spell( 193473 ) )
+
+  {
+    aoe = 1;
+    radius = 100;
+    dot_duration = timespan_t::zero();
+    base_tick_time = timespan_t::zero();
+    background = true;
+    ground_aoe = true;
+    school = SCHOOL_SHADOW;
+    may_miss = false;
+    may_crit = true;
+    spell_power_mod.direct = spell_power_mod.tick;
+    spell_power_mod.tick = 0.0;
+    snapshot_flags &= ~(STATE_MUL_PERSISTENT | STATE_TGT_MUL_DA);
+    update_flags &= ~(STATE_MUL_PERSISTENT | STATE_TGT_MUL_DA);
+    //  dot_duration = timespan_t::from_seconds(10.0);
+  }
+
+  timespan_t tick_time(const action_state_t*) const override
+  {
+    return timespan_t::from_seconds(data().effectN(1).base_value());
+  }
+
+  double composite_da_multiplier(const action_state_t* state) const override
+  {
+    return priest.composite_player_pet_damage_multiplier( state );
+  }
+
+  void impact(action_state_t* s) override
+  {
+    priest_spell_t::impact(s);
+
+    if (priest.artifact.lash_of_insanity.rank())
+    {
+      priest.generate_insanity(priest.find_spell(240843)->effectN(1).percent(),
+        priest.gains.insanity_call_to_the_void, s->action);
+    }
+  }
+
+};
+
+
 struct mind_flay_t final : public priest_spell_t
 {
   double insanity_gain;
-
+  
   mind_flay_t( priest_t& p, const std::string& options_str )
     : priest_spell_t( "mind_flay", p, p.find_specialization_spell( "Mind Flay" ) ),
       insanity_gain( data().effectN( 3 ).resource( RESOURCE_INSANITY ) *
@@ -2085,7 +1994,9 @@ struct mind_flay_t final : public priest_spell_t
     energize_type               = ENERGIZE_NONE;  // disable resource generation from spell data
 
     priest.active_spells.mind_sear_tick = new mind_sear_tick_t( p );
+    priest.active_spells.void_tendril = new new_void_tendril_mind_flay_t( p );
     add_child( priest.active_spells.mind_sear_tick );
+    add_child( priest.active_spells.void_tendril );
 
     if ( p.artifact.void_siphon.rank() )
     {
@@ -2192,7 +2103,7 @@ struct mind_flay_t final : public priest_spell_t
       priest.buffs.empty_mind->trigger();
     }
 
-    trigger_void_tendril();
+    priest.trigger_call_to_the_void( d );
 
     priest.generate_insanity( insanity_gain, priest.gains.insanity_mind_flay, d->state->action );
   }
@@ -2206,6 +2117,7 @@ struct mind_flay_t final : public priest_spell_t
       priest.buffs.the_twins_painful_touch->expire();
     }
   }
+  
 };
 
 struct pain_suppression_t final : public priest_spell_t
@@ -2445,7 +2357,7 @@ struct shadow_word_death_t final : public priest_spell_t
       // SWD always grants at least 10 Insanity.
       // TODO: Add in a custom buff that checks after 1 second to see if the target SWD was cast on is now dead.
       // TODO: Check in beta if the target is dead vs. SWD is the killing blow.
-      total_insanity_gain = 10.0;
+      total_insanity_gain = data().effectN( 3 ).base_value() * 100.0;
 
       if ( priest.talents.reaper_of_souls->ok() ||
            ( ( save_health_percentage > 0.0 ) && ( s->target->health_percentage() <= 0.0 ) ) )
@@ -4166,8 +4078,7 @@ expr_t* priest_t::create_expression( action_t* a, const std::string& name_str )
   else if ( name_str == "current_insanity_drain" )
   {
     // Current Insanity Drain for the next 1.0 sec.
-    // Does not account for a new stack occurring in the middle and can be anywhere from 0.0 - 0.5 off the real value.
-    // Does not account for Dispersion or Void Torrent
+    // Does not account for a new stack occurring in the middle and can be anywhere from 0.0 - 0.5 off the real value.    
     return make_fn_expr( name_str, [this]() {
       return ( insanity.insanity_drain_per_second() );
     } );
@@ -4269,6 +4180,16 @@ double priest_t::composite_melee_speed() const
   return h;
 }
 
+double priest_t::composite_player_pet_damage_multiplier(const action_state_t* state) const
+{
+  double m = player_t::composite_player_pet_damage_multiplier(state);
+
+  m *= 1.0 + artifact.darkening_whispers.percent(2);
+  m *= 1.0 + artifact.darkness_of_the_conclave.percent(3);
+
+  return m;
+}
+
 double priest_t::composite_player_multiplier( school_e school ) const
 {
   double m = base_t::composite_player_multiplier( school );
@@ -4291,26 +4212,11 @@ double priest_t::composite_player_multiplier( school_e school ) const
       m *= 1.0 + voidform_multiplier;
     }
 
-    if ( artifact.creeping_shadows.rank() )
-    {
       m *= 1.0 + artifact.creeping_shadows.percent();
-    }
-
-    if ( artifact.darkening_whispers.rank() )
-    {
       m *= 1.0 + artifact.darkening_whispers.percent();
-    }
   }
-
-  if ( artifact.darkness_of_the_conclave.rank() )
-  {
     m *= 1.0 + artifact.darkness_of_the_conclave.percent();
-  }
-
-  if ( buffs.twist_of_fate->check() )
-  {
     m *= 1.0 + buffs.twist_of_fate->current_value;
-  }
 
   if ( buffs.reperation->check() )
   {
@@ -4480,9 +4386,6 @@ pet_t* priest_t::create_pet( const std::string& pet_name, const std::string& /* 
 {
   pet_t* p = find_pet( pet_name );
 
-  if ( p && pet_name != "void_tendril" )
-    return p;
-
   if ( pet_name == "shadowfiend" )
     return new pets::fiend::shadowfiend_pet_t( sim, *this );
   if ( pet_name == "mindbender" )
@@ -4505,19 +4408,6 @@ void priest_t::create_pets()
   if ( ( find_action( "mindbender" ) || find_action( "shadowfiend" ) ) && talents.mindbender->ok() )
   {
     pets.mindbender = create_pet( "mindbender" );
-  }
-
-  if ( artifact.call_to_the_void.rank() )
-  {
-    for ( size_t i = 0; i < pets.void_tendril.size(); i++ )
-    {
-      pets.void_tendril[ i ] = new pets::void_tendril::void_tendril_pet_t( sim, *this, pets.void_tendril.front() );
-
-      if ( i > 0 )
-      {
-        pets.void_tendril[ i ]->quiet = 1;
-      }
-    }
   }
 }
 
@@ -4951,6 +4841,18 @@ bool priest_t::has_t18_class_trinket() const
   }
 
   return false;
+}
+
+void priest_t::trigger_call_to_the_void(const dot_t* d)
+{
+    if ( rppm.call_to_the_void->trigger() )
+    {
+      procs.void_tendril->occur();
+      make_event<ground_aoe_event_t>(*sim, this, ground_aoe_params_t()
+        .target(    d->target )
+        .duration( find_spell(193473)->duration() )
+        .action(   active_spells.void_tendril ) );      
+    }
 }
 
 void priest_t::trigger_sephuzs_secret(const action_state_t * state, spell_mechanic mechanic, double proc_chance)
