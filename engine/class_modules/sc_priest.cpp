@@ -444,8 +444,8 @@ public:
   priest_td_t* get_target_data( player_t* target ) const override;
   expr_t* create_expression( action_t* a, const std::string& name_str ) override;
   bool has_t18_class_trinket() const override;
-  void trigger_sephuzs_secret(const action_state_t* state, spell_mechanic mechanic, double proc_chance = -1.0);
-
+  void trigger_sephuzs_secret( const action_state_t* state, spell_mechanic mechanic, double proc_chance = -1.0 );
+  
   void do_dynamic_regen() override
   {
     player_t::do_dynamic_regen();
@@ -747,56 +747,7 @@ public:
       }
     }
   } insanity;
-
-  /**
-   * Void Tentrils Controller
-   *
-   * Handles the usage of Void Tendril spells.
-   */
-   struct void_tendril_controller final {
-     
-     #define MAX_TENDRILS 10
-
-     priest_t& priest;
-     actions::spells::void_tendril_mind_flay_t* tendrils[MAX_TENDRILS];
-     bool active_tendrils[MAX_TENDRILS];
-
-
-     void_tendril_controller(priest_t& p)
-       : priest(p)
-     {
-         for ( int i = 0; i < MAX_TENDRILS; i++ )
-         {
-           tendrils[i] = new actions::spells::void_tendril_mind_flay_t( p );
-           tendrils[i]->active_flag = &active_tendrils[i];
-         }
-     }
-
-     void spawn_tendril( dot_t* d )
-     {
-       if ( priest.rppm.call_to_the_void->trigger() )
-       {
-         int tendril_used = -1;
-
-         for (int i = 0; i < MAX_TENDRILS; i++)
-         {
-           actions::spells::void_tendril_mind_flay_t* tendril = tendrils[i];
-           if ( !active_tendrils[i] )
-           {
-             tendril->target = d->target;
-             tendril->execute();
-             tendril_used = i;
-             active_tendrils[i] = true;
-             break;
-           }
-         }
-         if( tendril_used == -1 )
-         {
-           priest.sim->out_log << "Unable to create Void Tendril. Maximum amount reached.";
-         }
-       }
-       }
-   }void_tendril;
+   
 };
 
 namespace pets
@@ -2242,7 +2193,7 @@ struct mind_flay_t final : public priest_spell_t
       priest.buffs.empty_mind->trigger();
     }
 
-    priest.void_tendril.spawn_tendril( d );
+    spawn_tendril( d );
 
     priest.generate_insanity( insanity_gain, priest.gains.insanity_mind_flay, d->state->action );
   }
@@ -2256,13 +2207,24 @@ struct mind_flay_t final : public priest_spell_t
       priest.buffs.the_twins_painful_touch->expire();
     }
   }
+
+  void spawn_tendril( dot_t* d )
+  {
+    if (priest.rppm.call_to_the_void->trigger())
+    {
+      new_void_tendril_mind_flay_t* tendril = new new_void_tendril_mind_flay_t(priest);
+      tendril->target = d->target;
+      tendril->execute();
+    }
+  }
+
 };
 
-struct void_tendril_mind_flay_t : public priest_spell_t
+struct new_void_tendril_mind_flay_t final : public priest_spell_t
 {
   bool* active_flag;
 
-  void_tendril_mind_flay_t( priest_t& p )
+  new_void_tendril_mind_flay_t( priest_t& p )
     : priest_spell_t( "mind_flay_void_tendril)", p, p.find_spell( 193473 ) )
     
   {
@@ -2300,7 +2262,7 @@ struct void_tendril_mind_flay_t : public priest_spell_t
 
     // When Void Tendril dies, it alerts the controller
     *active_flag = false;
-  }
+  }  
 };
 
 struct pain_suppression_t final : public priest_spell_t
@@ -4077,8 +4039,7 @@ priest_t::priest_t( sim_t* sim, const std::string& name, race_e r )
     active_items(),
     pets(),
     options(),
-    insanity( *this ),
-    void_tendril( *this )
+    insanity( *this )
 {
   create_cooldowns();
   create_gains();
