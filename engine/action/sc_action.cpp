@@ -759,14 +759,15 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
           break;
         case A_ADD_FLAT_MODIFIER:
           switch ( spelleffect_data.misc_value1() )
-          case E_APPLY_AURA:
-          switch ( spelleffect_data.subtype() )
           {
             case P_CRIT:
               base_crit += 0.01 * spelleffect_data.base_value();
               break;
             case P_COOLDOWN:
               cooldown -> duration += spelleffect_data.time_value();
+              break;
+            case P_GCD:
+              // XXX: Can we modify the GCD for all the player attacks here?
               break;
             default: break;
           }

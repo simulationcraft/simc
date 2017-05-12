@@ -818,6 +818,11 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
 {
   bool may_proc_mm_feet;
   bool may_proc_bullseye;
+
+  struct {
+    bool aspect_of_the_wild_gcd;
+  } affected_by;
+
   hunter_ranged_attack_t( const std::string& n, hunter_t* player,
                           const spell_data_t* s = spell_data_t::nil() ):
                           base_t( n, player, s ),
@@ -832,11 +837,27 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
     if ( player -> main_hand_weapon.group() != WEAPON_RANGED )
       background = true;
 
+    if ( maybe_ptr( p() -> dbc.ptr ) ) {
+      affected_by.aspect_of_the_wild_gcd =
+        data().affected_by( p() -> buffs.aspect_of_the_wild -> data().effectN( 3 ) );
+    }
+
     base_t::init();
   }
 
   virtual bool usable_moving() const override
   { return true; }
+
+  virtual timespan_t gcd() const override {
+    auto t = base_t::gcd();
+    if ( maybe_ptr( p() -> dbc.ptr ) ) {
+      if ( affected_by.aspect_of_the_wild_gcd &&
+           t != timespan_t::zero() && p() -> buffs.aspect_of_the_wild -> check() ) {
+        t += p() -> buffs.aspect_of_the_wild -> data().effectN( 3 ).time_value();
+      }
+    }
+    return t;
+  }
 
   virtual void execute() override
   {
