@@ -1077,6 +1077,24 @@ struct legion_strike_t: public warlock_pet_melee_attack_t
   }
 };
 
+struct axe_toss_t : public warlock_pet_spell_t
+{
+  axe_toss_t( warlock_pet_t* p ) :
+    warlock_pet_spell_t( "Axe Toss", p, p -> find_spell( 89766 ) )
+  {
+  }
+
+  void execute() override
+  {
+    warlock_pet_spell_t::execute();
+
+    if ( p() -> o() -> legendary.sephuzs_secret )
+    {
+      p() -> o() -> buffs.sephuzs_secret -> trigger();
+    }
+  }
+};
+
 struct felstorm_tick_t: public warlock_pet_melee_attack_t
 {
   felstorm_tick_t( warlock_pet_t* p, const spell_data_t& s ):
@@ -1262,6 +1280,24 @@ struct doom_bolt_t: public warlock_pet_spell_t
       m *= 1.0 + data().effectN( 2 ).percent();
     }
     return m;
+  }
+};
+
+struct shadow_lock_t : public warlock_pet_spell_t
+{
+  shadow_lock_t( warlock_pet_t* p ) :
+    warlock_pet_spell_t( "Shadow Lock", p, p -> find_spell( 171138 ) )
+  {
+  }
+
+  void execute() override
+  {
+    warlock_pet_spell_t::execute();
+
+    if ( p() -> o() -> legendary.sephuzs_secret  )
+    {
+      p() -> o() -> buffs.sephuzs_secret -> trigger();
+    }
   }
 };
 
@@ -1622,6 +1658,7 @@ struct felguard_pet_t: public warlock_pet_t
 
     melee_attack = new warlock_pet_melee_t( this );
     special_action = new felstorm_t( this );
+    special_action_two = new axe_toss_t( this );
   }
 
   double composite_player_multiplier( school_e school ) const override
@@ -1638,6 +1675,7 @@ struct felguard_pet_t: public warlock_pet_t
   {
     if ( name == "legion_strike" ) return new legion_strike_t( this );
     if ( name == "felstorm" ) return new felstorm_t( this );
+    if ( name == "axe_toss" ) return new axe_toss_t( this );
 
     return warlock_pet_t::create_action( name, options_str );
   }
@@ -2137,6 +2175,8 @@ struct doomguard_t: public warlock_pet_t
 
     resources.base[RESOURCE_ENERGY] = 100;
     base_energy_regen_per_second = 12;
+
+    special_action = new shadow_lock_t( this );
   }
 
   double composite_player_multiplier( school_e school ) const override
@@ -2151,6 +2191,7 @@ struct doomguard_t: public warlock_pet_t
   virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
   {
     if ( name == "doom_bolt" ) return new doom_bolt_t( this );
+    if ( name == "shadow_lock" ) return new shadow_lock_t( this );
 
     return warlock_pet_t::create_action( name, options_str );
   }
