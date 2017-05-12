@@ -3366,7 +3366,7 @@ void sim_t::setup( sim_control_t* c )
     work_queue -> batches( player_no_pet_list.size() );
   }
   work_queue -> init( iterations );
-  if ( ! parent )
+  if ( thread_index == 0 )
   {
     work_per_thread.resize( threads );
   }
