@@ -5485,8 +5485,11 @@ double paladin_t::composite_attribute( attribute_e attr ) const
   {
     if ( artifact.blessing_of_the_ashbringer.rank() )
     {
-      // TODO(mserrano): fix this once spelldata gets extracted
-      m += 2000; // spells.blessing_of_the_ashbringer -> effectN( 1 ).value();
+      // TODO(mserrano): fix this to grab from spelldata
+      if ( maybe_ptr( dbc.ptr ) )
+        m *= 1.04;
+      else
+        m += 2000; // spells.blessing_of_the_ashbringer -> effectN( 1 ).value();
     }
   }
 
