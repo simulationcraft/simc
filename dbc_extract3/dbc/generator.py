@@ -1274,6 +1274,7 @@ class SpellDataGenerator(DataGenerator):
             ( 238996, 0 ),          # Righteous Verdict
             ( 242981, 0 ),          # Blessing of the Ashbringer
             ( 211561, 0 ),          # Justice Gaze
+            ( 246973, 0 ),          # Sacred Judgment (Ret T20 4p)
         ),
 
         # Hunter:

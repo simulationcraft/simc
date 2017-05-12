@@ -145,6 +145,7 @@ public:
     buff_t* wings_of_liberty;     // Most roleplay name. T18 4P Ret bonus
     buffs::wings_of_liberty_driver_t* wings_of_liberty_driver;
     buff_t* retribution_trinket; // 6.2 Spec-Specific Trinket
+    buff_t* sacred_judgment;
 
     // artifact
     buff_t* painful_truths;
@@ -3144,25 +3145,10 @@ struct blade_of_justice_t : public holy_power_generator_t
     double am = holy_power_generator_t::action_multiplier();
     if ( p() -> buffs.righteous_verdict -> up() )
       am *= 1.0 + p() -> artifact.righteous_verdict.rank() * 0.08; // todo: fix
-    return am;
-  }
-
-  double composite_target_multiplier( player_t* t ) const override
-  {
-    double m = holy_power_generator_t::composite_target_multiplier( t );
-
     if ( p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T20, B4 ) )
-    {
-      paladin_td_t* td = this -> td( t );
-      if ( td -> buffs.debuffs_judgment -> up() )
-      {
-        double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent() + p() -> get_divine_judgment();
-        judgment_multiplier += p() -> passives.judgment -> effectN( 1 ).percent();
-        m *= judgment_multiplier;
-      }
-    }
-
-    return m;
+      if ( p() -> buffs.sacred_judgment -> up() )
+        am *= 1.0 + p() -> buffs.sacred_judgment -> data().effectN( 1 ).percent();
+    return am;
   }
 
   virtual void execute() override
@@ -3190,24 +3176,6 @@ struct divine_hammer_tick_t : public paladin_melee_attack_t
     background  = true;
     may_crit    = true;
     ground_aoe = true;
-  }
-
-  double composite_target_multiplier( player_t* t ) const override
-  {
-    double m = paladin_melee_attack_t::composite_target_multiplier( t );
-
-    if ( p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T20, B4 ) )
-    {
-      paladin_td_t* td = this -> td( t );
-      if ( td -> buffs.debuffs_judgment -> up() )
-      {
-        double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent() + p() -> get_divine_judgment();
-        judgment_multiplier += p() -> passives.judgment -> effectN( 1 ).percent();
-        m *= judgment_multiplier;
-      }
-    }
-
-    return m;
   }
 };
 
@@ -3252,6 +3220,9 @@ struct divine_hammer_t : public paladin_spell_t
     double am = paladin_spell_t::composite_persistent_multiplier( s );
     if ( p() -> buffs.righteous_verdict -> up() )
       am *= 1.0 + p() -> artifact.righteous_verdict.rank() * 0.08; // todo: fix
+    if ( p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T20, B4 ) )
+      if ( p() -> buffs.sacred_judgment -> up() )
+        am *= 1.0 + p() -> buffs.sacred_judgment -> data().effectN( 1 ).percent();
     return am;
   }
 
@@ -4599,6 +4570,7 @@ void paladin_t::create_buffs()
   buffs.liadrins_fury_unleashed        = new buffs::liadrins_fury_unleashed_t( this );
   buffs.shield_of_vengeance            = new buffs::shield_of_vengeance_buff_t( this );
   buffs.righteous_verdict              = buff_creator_t( this, "righteous_verdict", find_spell( 238996 ) );
+  buffs.sacred_judgment                = buff_creator_t( this, "sacred_judgment", find_spell( 246973 ) );
 
   // Tier Bonuses
 
@@ -5513,8 +5485,11 @@ double paladin_t::composite_attribute( attribute_e attr ) const
   {
     if ( artifact.blessing_of_the_ashbringer.rank() )
     {
-      // TODO(mserrano): fix this once spelldata gets extracted
-      m += 2000; // spells.blessing_of_the_ashbringer -> effectN( 1 ).value();
+      // TODO(mserrano): fix this to grab from spelldata
+      if ( maybe_ptr( dbc.ptr ) )
+        m *= 1.04;
+      else
+        m += 2000; // spells.blessing_of_the_ashbringer -> effectN( 1 ).value();
     }
   }
 
