@@ -2357,7 +2357,7 @@ struct shadow_word_death_t final : public priest_spell_t
       // SWD always grants at least 10 Insanity.
       // TODO: Add in a custom buff that checks after 1 second to see if the target SWD was cast on is now dead.
       // TODO: Check in beta if the target is dead vs. SWD is the killing blow.
-      total_insanity_gain = data().effectN( 3 ).base_value() * 100.0;
+      total_insanity_gain = data().effectN( 3 ).base_value();
 
       if ( priest.talents.reaper_of_souls->ok() ||
            ( ( save_health_percentage > 0.0 ) && ( s->target->health_percentage() <= 0.0 ) ) )
