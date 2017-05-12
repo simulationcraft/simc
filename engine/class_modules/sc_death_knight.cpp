@@ -453,6 +453,7 @@ public:
     buff_t* frozen_soul;
     buff_t* hungering_rune_weapon;
     buff_t* t20_2pc_frost;
+    buff_t* t20_2pc_unholy;
 
     absorb_buff_t* blood_shield;
     buff_t* rune_tap;
@@ -3366,7 +3367,12 @@ struct army_of_the_dead_t : public death_knight_spell_t
       // you get for ghouls is 4-6 seconds less.
       // TODO: DBC
       for ( int i = 0; i < 8; i++ )
+      {
         p() -> pets.army_ghoul[ i ] -> summon( timespan_t::from_seconds( 35 ) );
+        p() -> buffs.t20_2pc_unholy -> trigger();
+      }
+
+      p() -> buffs.t20_2pc_unholy -> extend_duration( p(), timespan_t::from_seconds( -5 ) );
 
       // Simulate rune regen for 5 seconds for the consumed runes. Ugly but works
       // Note that this presumes no other rune-using abilities are used
@@ -3381,7 +3387,10 @@ struct army_of_the_dead_t : public death_knight_spell_t
     {
       // TODO: DBC
       for ( int i = 0; i < 8; i++ )
+      {
         p() -> pets.army_ghoul[ i ] -> summon( timespan_t::from_seconds( 40 ) );
+        p() -> buffs.t20_2pc_unholy -> trigger();
+      }
     }
   }
 
@@ -6457,35 +6466,42 @@ void death_knight_t::trigger_t20_2pc_unholy( const action_state_t* state )
     return;
   }
 
-  // Prefer Apocalypse ghouls over Army of the Dead ghouls. Note that we check that the pets
-  // are there (check non-null pointer for the first array entry). This is because if the user for
-  // some reason has no Apocalypse power (unlikely), or has not specified apocalypse to be used on
-  // the APL, the pets will not be created.
-  if ( artifact.apocalypse.rank() && pets.apocalypse_ghoul[ 0 ] )
+  // PTR has a completely different T20 set bonus
+  if ( maybe_ptr( dbc.ptr ) )
   {
-    for ( auto pet : pets.apocalypse_ghoul )
+  }
+  else
+  {
+    // Prefer Apocalypse ghouls over Army of the Dead ghouls. Note that we check that the pets
+    // are there (check non-null pointer for the first array entry). This is because if the user for
+    // some reason has no Apocalypse power (unlikely), or has not specified apocalypse to be used on
+    // the APL, the pets will not be created.
+    if ( artifact.apocalypse.rank() && pets.apocalypse_ghoul[ 0 ] )
     {
-      if ( ! pet -> is_sleeping() )
+      for ( auto pet : pets.apocalypse_ghoul )
       {
-        active_spells.t20_2pc_unholy -> set_target( state -> target );
-        active_spells.t20_2pc_unholy -> execute();
-        pet -> cast_pet() -> dismiss();
-        return; // Explosion done, bail out
+        if ( ! pet -> is_sleeping() )
+        {
+          active_spells.t20_2pc_unholy -> set_target( state -> target );
+          active_spells.t20_2pc_unholy -> execute();
+          pet -> cast_pet() -> dismiss();
+          return; // Explosion done, bail out
+        }
       }
     }
-  }
 
-  // Look for an Army ghoul to explode
-  if ( pets.army_ghoul[ 0 ] )
-  {
-    for ( auto pet : pets.army_ghoul )
+    // Look for an Army ghoul to explode
+    if ( pets.army_ghoul[ 0 ] )
     {
-      if ( ! pet -> is_sleeping() )
+      for ( auto pet : pets.army_ghoul )
       {
-        active_spells.t20_2pc_unholy -> set_target( state -> target );
-        active_spells.t20_2pc_unholy -> execute();
-        pet -> cast_pet() -> dismiss();
-        return; // Explosion done, bail out
+        if ( ! pet -> is_sleeping() )
+        {
+          active_spells.t20_2pc_unholy -> set_target( state -> target );
+          active_spells.t20_2pc_unholy -> execute();
+          pet -> cast_pet() -> dismiss();
+          return; // Explosion done, bail out
+        }
       }
     }
   }
@@ -7719,6 +7735,12 @@ void death_knight_t::create_buffs()
     .trigger_spell( sets -> set( DEATH_KNIGHT_FROST, T20, B2 ) )
     .default_value( sets -> set( DEATH_KNIGHT_FROST, T20, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buffs.t20_2pc_unholy = buff_creator_t( this, "master_of_ghouls" )
+    .spell( find_spell( 246995 ) )
+    .trigger_spell( sets -> set( DEATH_KNIGHT_UNHOLY, T20, B2 ) )
+    .default_value( find_spell( 246995 ) -> effectN( 1 ).percent() )
+    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+    .refresh_behavior( BUFF_REFRESH_EXTEND );
 }
 
 // death_knight_t::init_gains ===============================================
@@ -8120,6 +8142,8 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
   }
 
   m *= 1.0 + buffs.t20_2pc_frost -> stack_value();
+
+  m *= 1.0 + buffs.t20_2pc_unholy -> stack_value();
 
   return m;
 }
