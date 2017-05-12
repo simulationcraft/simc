@@ -1653,11 +1653,36 @@ struct arcane_mage_spell_t : public mage_spell_t
     }
   }
 
+  double savant_damage_bonus() const
+  {
+    return p() -> spec.arcane_charge -> effectN( 1 ).percent() +
+      p() -> composite_mastery() * p() -> spec.savant -> effectN( 2 ).mastery_value();
+  }
+
+  void trigger_arcane_charge( int stacks = 1 )
+  {
+    buff_t* ac = p() -> buffs.arcane_charge;
+
+    if ( p() -> bugs )
+    {
+      // The damage bonus given by mastery seems to be snapshot at the moment
+      // Arcane Charge is gained. As long as the stack number remains the same,
+      // any future changes to mastery will have no effect.
+      if ( ac -> check() < ac -> max_stack() )
+      {
+        ac -> trigger( stacks, savant_damage_bonus() );
+      }
+    }
+    else
+    {
+      ac -> trigger( stacks );
+    }
+  }
+
   double arcane_charge_damage_bonus( bool amplification = false ) const
   {
-    double per_ac_bonus =  p() -> spec.arcane_charge -> effectN( 1 ).percent() +
-                          ( p() -> composite_mastery() *
-                           p() -> spec.savant -> effectN( 2 ).mastery_value() );
+    double per_ac_bonus =
+      p() -> bugs ? p() -> buffs.arcane_charge -> check_value() : savant_damage_bonus();
 
     if ( p() -> talents.amplification -> ok() && amplification )
     {
@@ -2234,7 +2259,7 @@ struct presence_of_mind_t : public arcane_mage_spell_t
 
     if ( p() -> sets -> has_set_bonus( MAGE_ARCANE, T20, B2 ) )
     {
-      p() -> buffs.arcane_charge -> trigger( 4 );
+      trigger_arcane_charge( 4 );
       p() -> buffs.crackling_energy -> trigger();
     }
   }
@@ -2543,7 +2568,7 @@ struct arcane_blast_t : public arcane_mage_spell_t
       trigger_am( am_trigger_source_id,
                   p() -> buffs.arcane_missiles -> proc_chance() * 2.0 );
 
-      p() -> buffs.arcane_charge -> trigger();
+      trigger_arcane_charge();
     }
 
     if ( p() -> buffs.presence_of_mind -> up() )
@@ -2687,7 +2712,7 @@ struct arcane_explosion_t : public arcane_mage_spell_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      p() -> buffs.arcane_charge -> trigger();
+      trigger_arcane_charge();
     }
 
     if ( p() -> artifact.time_and_space.rank() )
@@ -2890,7 +2915,7 @@ struct arcane_missiles_t : public arcane_mage_spell_t
   {
     arcane_mage_spell_t::last_tick( d );
 
-    p() -> buffs.arcane_charge -> trigger();
+    trigger_arcane_charge();
   }
 
   bool ready() override
@@ -2930,7 +2955,7 @@ struct arcane_orb_bolt_t : public arcane_mage_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      p() -> buffs.arcane_charge -> trigger();
+      trigger_arcane_charge();
       trigger_am( ao_impact_am_source_id );
     }
   }
@@ -2957,7 +2982,7 @@ struct arcane_orb_t : public arcane_mage_spell_t
   virtual void execute() override
   {
     arcane_mage_spell_t::execute();
-    p() -> buffs.arcane_charge -> trigger();
+    trigger_arcane_charge();
   }
 
 
@@ -3127,7 +3152,7 @@ struct charged_up_t : public arcane_mage_spell_t
   {
     arcane_mage_spell_t::execute();
 
-    p() -> buffs.arcane_charge -> trigger( 4 );
+    trigger_arcane_charge( 4 );
   }
 };
 
