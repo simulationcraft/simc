@@ -3147,7 +3147,7 @@ struct blade_of_justice_t : public holy_power_generator_t
       am *= 1.0 + p() -> artifact.righteous_verdict.rank() * 0.08; // todo: fix
     if ( p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T20, B4 ) )
       if ( p() -> buffs.sacred_judgment -> up() )
-        am *= 1.0 + p() -> buffs.sacred_judgment -> effectN( 1 ).percent();
+        am *= 1.0 + p() -> buffs.sacred_judgment -> data().effectN( 1 ).percent();
     return am;
   }
 
@@ -3222,7 +3222,7 @@ struct divine_hammer_t : public paladin_spell_t
       am *= 1.0 + p() -> artifact.righteous_verdict.rank() * 0.08; // todo: fix
     if ( p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T20, B4 ) )
       if ( p() -> buffs.sacred_judgment -> up() )
-        am *= 1.0 + p() -> buffs.sacred_judgment -> effectN( 1 ).percent();
+        am *= 1.0 + p() -> buffs.sacred_judgment -> data().effectN( 1 ).percent();
     return am;
   }
 
