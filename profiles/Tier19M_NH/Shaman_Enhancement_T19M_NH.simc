@@ -11,6 +11,7 @@ spec=enhancement
 potion=prolonged_power
 flask=seventh_demon
 food=nightborne_delicacy_platter
+augmentation=defiled
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -20,8 +21,8 @@ food=nightborne_delicacy_platter
 
 # Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat=flask
-actions.precombat+=/augmentation,type=defiled
 actions.precombat+=/food
+actions.precombat+=/augmentation
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion

@@ -632,6 +632,7 @@ public:
   std::string default_potion() const override;
   std::string default_flask() const override;
   std::string default_food() const override;
+  std::string default_rune() const override;
 
   void      init_rng() override;
   bool      init_special_effects() override;
@@ -7124,6 +7125,21 @@ std::string shaman_t::default_food() const
   return specialization() == SHAMAN_ENHANCEMENT ? enhance_food : elemental_food;
 }
 
+// shaman_t::default_rune ===================================================
+
+std::string shaman_t::default_rune() const
+{
+  std::string elemental_rune = ( true_level >= 110 ) ? "defiled" :
+                               ( true_level >= 100 ) ? "focus" :
+                               "disabled";
+
+  std::string enhance_rune = ( true_level >= 110 ) ? "defiled" :
+                             ( true_level >= 100 ) ? "hyper" :
+                             "disabled";
+
+  return specialization() == SHAMAN_ENHANCEMENT ? enhance_rune : elemental_rune;
+}
+
 // shaman_t::init_action_list_elemental =====================================
 
 void shaman_t::init_action_list_elemental()
@@ -7141,8 +7157,8 @@ void shaman_t::init_action_list_elemental()
   // Food
   precombat -> add_action( "food" );
 
-  if ( true_level > 100 )
-    precombat -> add_action( "augmentation,type=defiled" );
+  // Rune
+  precombat -> add_action( "augmentation" );
 
   // Snapshot stats
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
@@ -7281,17 +7297,12 @@ void shaman_t::init_action_list_enhancement()
 
   // Flask
   precombat -> add_action( "flask" );
-  // Added Rune if Flask are allowed since there is no "allow_runes" bool.
-  if ( sim -> allow_flasks && true_level >= 100 )
-  {
-    std::string rune_action = "augmentation,type=";
-    rune_action += ((true_level >= 110) ? "defiled" : (true_level >= 100) ? "hyper" : "");
-
-    precombat->add_action(rune_action);
-  }
 
   // Food
   precombat -> add_action( "food" );
+
+  // Rune
+  precombat -> add_action( "augmentation" );
 
   // Snapshot stats
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
