@@ -99,6 +99,7 @@ public:
   const special_effect_t* justice_gaze;
   const special_effect_t* chain_of_thrayn;
   const special_effect_t* ashes_to_dust;
+  const special_effect_t* ferren_marcuss_strength;
   const spell_data_t* sephuz;
 
   struct active_actions_t
@@ -250,6 +251,7 @@ public:
     const spell_data_t* justice_gaze;
     const spell_data_t* chain_of_thrayn;
     const spell_data_t* ashes_to_dust;
+	const spell_data_t* ferren_marcuss_strength;
     const spell_data_t* consecration_bonus;
     const spell_data_t* blessing_of_the_ashbringer;
   } spells;
@@ -411,6 +413,7 @@ public:
     chain_of_thrayn = nullptr;
     ashes_to_dust = nullptr;
     justice_gaze = nullptr;
+	ferren_marcuss_strength = nullptr;
     sephuz = nullptr;
     active_beacon_of_light             = nullptr;
     active_enlightened_judgments       = nullptr;
@@ -1131,7 +1134,11 @@ struct avengers_shield_t : public paladin_spell_t
   if ( p ->talents.first_avenger->ok() )
     base_aoe_multiplier *= 2.0 / 3.0;
   aoe = 3;
-    aoe = std::max( aoe, 0 );
+  if (p->spells.ferren_marcuss_strength){
+	  aoe = 5;
+	  base_multiplier *= 1.0 + p->spells.ferren_marcuss_strength->effectN(2).percent();
+  }
+  aoe = std::max( aoe, 0 );
 
 
     // link needed for trigger_grand_crusader
@@ -5316,6 +5323,7 @@ void paladin_t::init_spells()
   spells.justice_gaze                  = find_spell( 211557 );
   spells.chain_of_thrayn               = find_spell( 206338 );
   spells.ashes_to_dust                 = find_spell( 236106 );
+  spells.ferren_marcuss_strength		   = find_spell( 207614 );
   spells.consecration_bonus            = find_spell( 188370 );
   spells.blessing_of_the_ashbringer = find_spell( 242981 );
 
@@ -6375,12 +6383,20 @@ static void justice_gaze( special_effect_t& effect )
 {
   paladin_t* s = debug_cast<paladin_t*>( effect.player );
   do_trinket_init( s, PALADIN_RETRIBUTION, s -> justice_gaze, effect );
+  do_trinket_init( s, PALADIN_PROTECTION, s -> justice_gaze, effect);
 }
 
 static void chain_of_thrayn( special_effect_t& effect )
 {
   paladin_t* s = debug_cast<paladin_t*>( effect.player );
   do_trinket_init( s, PALADIN_RETRIBUTION, s -> chain_of_thrayn, effect );
+  do_trinket_init( s, PALADIN_PROTECTION, s -> chain_of_thrayn, effect);
+}
+
+static void ferren_marcuss_strength(special_effect_t& effect)
+{
+	paladin_t* s = debug_cast<paladin_t*>(effect.player);
+	do_trinket_init(s, PALADIN_PROTECTION, s->ferren_marcuss_strength, effect);
 }
 
 static void ashes_to_dust( special_effect_t& effect )
@@ -6419,6 +6435,7 @@ struct paladin_module_t : public module_t
     unique_gear::register_special_effect( 207633, whisper_of_the_nathrezim );
     unique_gear::register_special_effect( 208408, liadrins_fury_unleashed );
     unique_gear::register_special_effect( 206338, chain_of_thrayn );
+	unique_gear::register_special_effect( 207614, ferren_marcuss_strength);
     unique_gear::register_special_effect( 236106, ashes_to_dust );
     unique_gear::register_special_effect( 211557, justice_gaze );
     unique_gear::register_special_effect( 208051, sephuzs_secret_enabler_t() );
