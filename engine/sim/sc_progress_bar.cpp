@@ -19,7 +19,14 @@ void progress_bar_t::init()
   }
   else
   {
-    interval = sim.work_queue -> size() / updates;
+    if ( sim.deterministic || sim.strict_work_queue )
+    {
+      interval = sim.work_queue -> size() * sim.threads / updates;
+    }
+    else
+    {
+      interval = sim.work_queue -> size() / updates;
+    }
   }
   if ( interval == 0 )
   {
