@@ -1077,6 +1077,24 @@ struct legion_strike_t: public warlock_pet_melee_attack_t
   }
 };
 
+struct axe_toss_t : public warlock_pet_spell_t
+{
+  axe_toss_t( warlock_pet_t* p ) :
+    warlock_pet_spell_t( "Axe Toss", p, p -> find_spell( 89766 ) )
+  {
+  }
+
+  void execute() override
+  {
+    warlock_pet_spell_t::execute();
+
+    if ( p() -> o() -> legendary.sephuzs_secret )
+    {
+      p() -> o() -> buffs.sephuzs_secret -> trigger();
+    }
+  }
+};
+
 struct felstorm_tick_t: public warlock_pet_melee_attack_t
 {
   felstorm_tick_t( warlock_pet_t* p, const spell_data_t& s ):
@@ -1262,6 +1280,24 @@ struct doom_bolt_t: public warlock_pet_spell_t
       m *= 1.0 + data().effectN( 2 ).percent();
     }
     return m;
+  }
+};
+
+struct shadow_lock_t : public warlock_pet_spell_t
+{
+  shadow_lock_t( warlock_pet_t* p ) :
+    warlock_pet_spell_t( "Shadow Lock", p, p -> find_spell( 171138 ) )
+  {
+  }
+
+  void execute() override
+  {
+    warlock_pet_spell_t::execute();
+
+    if ( p() -> o() -> legendary.sephuzs_secret  )
+    {
+      p() -> o() -> buffs.sephuzs_secret -> trigger();
+    }
   }
 };
 
@@ -1622,12 +1658,16 @@ struct felguard_pet_t: public warlock_pet_t
 
     melee_attack = new warlock_pet_melee_t( this );
     special_action = new felstorm_t( this );
+    special_action_two = new axe_toss_t( this );
   }
 
   double composite_player_multiplier( school_e school ) const override
   {
     double m = warlock_pet_t::composite_player_multiplier( school );
-    m *= 1.0 + o() -> artifact.left_hand_of_darkness.percent();
+
+    if ( !is_grimoire_of_service )
+      m *= 1.0 + o() -> artifact.left_hand_of_darkness.percent();
+
     return m;
   }
 
@@ -1635,6 +1675,7 @@ struct felguard_pet_t: public warlock_pet_t
   {
     if ( name == "legion_strike" ) return new legion_strike_t( this );
     if ( name == "felstorm" ) return new felstorm_t( this );
+    if ( name == "axe_toss" ) return new axe_toss_t( this );
 
     return warlock_pet_t::create_action( name, options_str );
   }
@@ -2134,6 +2175,8 @@ struct doomguard_t: public warlock_pet_t
 
     resources.base[RESOURCE_ENERGY] = 100;
     base_energy_regen_per_second = 12;
+
+    special_action = new shadow_lock_t( this );
   }
 
   double composite_player_multiplier( school_e school ) const override
@@ -2148,6 +2191,7 @@ struct doomguard_t: public warlock_pet_t
   virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
   {
     if ( name == "doom_bolt" ) return new doom_bolt_t( this );
+    if ( name == "shadow_lock" ) return new shadow_lock_t( this );
 
     return warlock_pet_t::create_action( name, options_str );
   }
@@ -3979,7 +4023,7 @@ struct conflagrate_t: public warlock_spell_t
       }
 
       if ( maybe_ptr( p() -> dbc.ptr ) )
-        p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.4, p() -> gains.conflagrate );
+        p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.5, p() -> gains.conflagrate );
     }
   }
 };
@@ -5000,6 +5044,8 @@ struct call_dreadstalkers_t : public warlock_spell_t
     dreadstalker_duration = p -> find_spell( 193332 ) -> duration() + ( p -> sets->has_set_bonus( WARLOCK_DEMONOLOGY, T19, B4 ) ? p -> sets->set( WARLOCK_DEMONOLOGY, T19, B4 ) -> effectN( 1 ).time_value() : timespan_t::zero() );
     dreadstalker_count = data().effectN( 1 ).base_value();
     improved_dreadstalkers = p -> talents.improved_dreadstalkers -> effectN( 1 ).base_value();
+    if ( maybe_ptr( p->dbc.ptr ) )
+      base_costs[RESOURCE_SOUL_SHARD] *= 0.1;
   }
 
   double cost() const override
@@ -5270,6 +5316,8 @@ struct shadowflame_t : public warlock_spell_t
     dot_duration = timespan_t::from_seconds( 8.0 );
     spell_power_mod.tick = data().effectN( 2 ).sp_coeff();
     base_tick_time = data().effectN( 2 ).period();
+    if ( maybe_ptr( p -> dbc.ptr ) )
+      energize_amount = 1;
   }
 
   timespan_t calculate_dot_refresh_duration( const dot_t* dot,
@@ -5430,7 +5478,7 @@ struct shadowburn_t: public warlock_spell_t
     resource_event = make_event<resource_event_t>( *sim, p(), this, s -> target );
 
     if ( maybe_ptr( p() -> dbc.ptr ) )
-      p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.4, p() -> gains.shadowburn );
+      p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.5, p() -> gains.shadowburn );
   }
 
   void init() override
@@ -7107,7 +7155,7 @@ void warlock_t::apl_demonology()
   add_action( "Demonwrath", "chain=1,interrupt=1,if=spell_targets.demonwrath>=3" );
   add_action( "Demonwrath", "moving=1,chain=1,interrupt=1" );
   action_list_str += "/demonbolt";
-  add_action( "Shadow Bolt", "if=buff.shadowy_inspiration.react" );
+  add_action( "Shadow Bolt", "if=buff.shadowy_inspiration.remains" );
   add_action( "Demonic Empowerment", "if=artifact.thalkiels_ascendance.rank&talent.power_trip.enabled&!talent.demonbolt.enabled&(pet_count>=13|talent.shadowy_inspiration.enabled&pet_count>=6)" );
   add_action( "Shadow Bolt" );
 }

@@ -64,8 +64,8 @@ actions.st+=/arcane_torrent,if=chi.max-chi>=1&energy.time_to_max>=0.5
 actions.st+=/tiger_palm,cycle_targets=1,if=!prev_gcd.1.tiger_palm&energy.time_to_max<=0.5&chi.max-chi>=2
 actions.st+=/strike_of_the_windlord,if=!talent.serenity.enabled|cooldown.serenity.remains>=10
 actions.st+=/rising_sun_kick,cycle_targets=1,if=((chi>=3&energy>=40)|chi>=5)&(!talent.serenity.enabled|cooldown.serenity.remains>=5)
-actions.st+=/fists_of_fury,if=talent.serenity.enabled&!equipped.drinking_horn_cover&cooldown.serenity.remains>=5&(debuff.rising_fist.remains>1|set_bonus.tier20_2pc=0)&energy.time_to_max>2
-actions.st+=/fists_of_fury,if=!(talent.serenity.enabled&!equipped.drinking_horn_cover)&(debuff.rising_fist.remains>1|set_bonus.tier20_2pc=0)&energy.time_to_max>2
+actions.st+=/fists_of_fury,if=talent.serenity.enabled&!equipped.drinking_horn_cover&cooldown.serenity.remains>=5&energy.time_to_max>2
+actions.st+=/fists_of_fury,if=!(talent.serenity.enabled&!equipped.drinking_horn_cover)&energy.time_to_max>2
 actions.st+=/rising_sun_kick,cycle_targets=1,if=!talent.serenity.enabled|cooldown.serenity.remains>=5
 actions.st+=/whirling_dragon_punch
 actions.st+=/crackling_jade_lightning,if=equipped.the_emperors_capacitor&buff.the_emperors_capacitor.stack>=19&energy.time_to_max>3

@@ -1571,6 +1571,7 @@ struct sim_t : private sc_thread_t
   bool        requires_regen_event;
   bool        single_actor_batch;
   int         progressbar_type;
+  int         armory_retries;
 
   // Target options
   double      enemy_death_pct;
@@ -1616,6 +1617,7 @@ struct sim_t : private sc_thread_t
   std::string rng_str;
   uint64_t seed;
   int deterministic;
+  int strict_work_queue;
   int average_range, average_gauss;
   int convergence_scale;
 
@@ -1653,6 +1655,8 @@ struct sim_t : private sc_thread_t
   std::unique_ptr<reforge_plot_t> reforge_plot;
   double elapsed_cpu;
   double elapsed_time;
+  std::vector<size_t> work_per_thread;
+  size_t work_done;
   double     iteration_dmg, priority_iteration_dmg,  iteration_heal, iteration_absorb;
   simple_sample_data_t raid_dps, total_dmg, raid_hps, total_heal, total_absorb, raid_aps;
   extended_sample_data_t simulation_length;
@@ -3897,7 +3901,7 @@ struct player_t : public actor_t
   void sequence_add_wait( const timespan_t& amount, const timespan_t& ts );
 
   // Gear
-  std::string items_str, meta_gem_str, potion_str, flask_str, food_str;
+  std::string items_str, meta_gem_str, potion_str, flask_str, food_str, rune_str;
   std::vector<item_t> items;
   gear_stats_t gear, enchant; // Option based stats
   gear_stats_t total_gear; // composite of gear, enchant and for non-pets sim -> enchant
@@ -4732,6 +4736,8 @@ public:
   virtual std::string default_flask() const
   { return ""; }
   virtual std::string default_food() const
+  { return ""; }
+  virtual std::string default_rune() const
   { return ""; }
 
   // JSON Report extension. Overridable in class methods. Root element is an object assigned for
@@ -7548,13 +7554,6 @@ bool download_guild( sim_t* sim,
                      int player_e = PLAYER_NONE,
                      int max_rank = 0,
                      cache::behavior_e b = cache::players() );
-
-player_t* download_player_html( sim_t*,
-                           const std::string& region,
-                           const std::string& server,
-                           const std::string& name,
-                           const std::string& talents = std::string( "active" ),
-                           cache::behavior_e b = cache::players() );
 
 player_t* download_player( sim_t*,
                            const std::string& region,

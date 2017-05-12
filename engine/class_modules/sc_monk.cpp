@@ -143,7 +143,6 @@ public:
     buff_t* mark_of_the_crane;
     buff_t* gale_burst;
     buff_t* keg_smash;
-    buff_t* rising_fist;
     buff_t* storm_earth_and_fire;
     buff_t* touch_of_karma;
   } debuff;
@@ -1322,7 +1321,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
     {
       double c = sef_melee_attack_t::composite_crit_chance();
 
-      if ( p() -> buff.pressure_point_sef -> up() )
+      if ( maybe_ptr( o() -> dbc.ptr ) && p() -> buff.pressure_point_sef -> up() )
         c += p() -> buff.pressure_point_sef -> value();
 
       return c;
@@ -1339,9 +1338,6 @@ struct storm_earth_and_fire_pet_t : public pet_t
           state -> target -> debuffs.mortal_wounds -> trigger();
         }
         o() -> trigger_mark_of_the_crane( state );
-
-        if ( p() -> buff.pressure_point_sef -> up() )
-          p() -> buff.pressure_point_sef -> expire();
       }
     }
   };
@@ -1363,7 +1359,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
     {
       double c = sef_melee_attack_t::composite_crit_chance();
 
-      if ( p() -> buff.pressure_point_sef -> up() )
+      if ( maybe_ptr( o() -> dbc.ptr ) && p() -> buff.pressure_point_sef -> up() )
         c += p() -> buff.pressure_point_sef -> value();
 
       return c;
@@ -1389,12 +1385,6 @@ struct storm_earth_and_fire_pet_t : public pet_t
           rsk_tornado_kick -> base_dd_min = raw;
           rsk_tornado_kick -> execute();
         }
-        // Do no remove the T20 4-piece if Tornado Kick artifact trait is enabled.
-        else if ( p() -> buff.pressure_point_sef -> up() )
-          p() -> buff.pressure_point_sef -> expire() ;
-
-        if ( o() -> sets -> has_set_bonus( MONK_WINDWALKER, T20, B2 ) )
-          o() -> get_target_data( state -> target ) -> debuff.rising_fist -> trigger();
 
         if ( o() -> artifact.transfer_the_power.rank() && o() -> buff.transfer_the_power -> up() )
           p() -> buff.transfer_the_power_sef -> trigger();
@@ -1495,30 +1485,15 @@ struct storm_earth_and_fire_pet_t : public pet_t
       return dot_duration;
     }
 
-    virtual double composite_crit_chance() const override
-    {
-      double c = sef_melee_attack_t::composite_crit_chance();
-
-      if ( o() -> get_target_data( target ) -> debuff.rising_fist -> up() )
-        c += o() -> get_target_data( target ) -> debuff.rising_fist -> value();
-
-      return c;
-    }
-
-    virtual void execute() override
-    {
-      sef_melee_attack_t::execute();
-
-      if ( o() -> sets -> has_set_bonus( MONK_WINDWALKER, T20, B4 ) )
-        p() -> buff.pressure_point_sef -> trigger();
-    }
-
     virtual void last_tick( dot_t* dot ) override
     {
       sef_melee_attack_t::last_tick( dot );
 
       if ( p() -> buff.transfer_the_power_sef -> up() )
         p() -> buff.transfer_the_power_sef -> expire();
+
+      //if ( maybe_ptr( o() -> dbc.ptr ) && o() -> sets -> has_set_bonus( MONK_WINDWALKER, T20, B2 ) )
+      //  p() -> buff.pressure_point_sef -> trigger();
     }
   };
 
@@ -3182,7 +3157,7 @@ struct rising_sun_kick_tornado_kick_t : public monk_melee_attack_t
   {
     double c = monk_melee_attack_t::composite_crit_chance();
 
-    if ( p() -> buff.pressure_point -> up() )
+    if ( maybe_ptr( p() -> dbc.ptr ) && p() -> buff.pressure_point -> up() )
       c += p() -> buff.pressure_point -> value();
 
     return c;
@@ -3200,9 +3175,6 @@ struct rising_sun_kick_tornado_kick_t : public monk_melee_attack_t
         s -> target -> debuffs.mortal_wounds -> trigger();
       }
       p() -> trigger_mark_of_the_crane( s );
-
-      if ( p() -> buff.pressure_point -> up() )
-        p() -> buff.pressure_point -> expire();
     }
   }
 };
@@ -3271,7 +3243,7 @@ struct rising_sun_kick_t: public monk_melee_attack_t
   {
     double c = monk_melee_attack_t::composite_crit_chance();
 
-    if ( p() -> buff.pressure_point -> up() )
+    if ( maybe_ptr( p() -> dbc.ptr ) && p() -> buff.pressure_point -> up() )
       c += p() -> buff.pressure_point -> value();
 
     return c;
@@ -3362,12 +3334,11 @@ struct rising_sun_kick_t: public monk_melee_attack_t
           rsk_tornado_kick -> base_dd_min = raw;
           rsk_tornado_kick -> execute();
         }
-        // Don't remove the T20 4-piece buff if Tornado Kick artifact trait is enabled.
-        else if ( p() -> buff.pressure_point -> up() )
-          p() -> buff.pressure_point -> expire();
 
-        if ( p() -> sets -> has_set_bonus( MONK_WINDWALKER, T20, B2 ) )
-          td( s -> target ) -> debuff.rising_fist -> trigger();
+        if ( maybe_ptr( p() -> dbc.ptr ) && p() -> sets -> has_set_bonus( MONK_WINDWALKER, T20, B4 ) && ( s -> result == RESULT_CRIT ) )
+          // -1 to reduce the spell cooldown instead of increasing
+          // saved as 2000
+          p() -> cooldown.fists_of_fury -> adjust( timespan_t::from_millis( -1 * p() -> sets -> set( MONK_WINDWALKER, T20, B4 ) -> effectN( 1 ).base_value() ) );
       }
     }
   }
@@ -4050,16 +4021,6 @@ struct fists_of_fury_t: public monk_melee_attack_t
     return c;
   }
 
-  virtual double composite_crit_chance() const override
-  {
-    double c = monk_melee_attack_t::composite_crit_chance();
-
-    if ( p() -> get_target_data( target ) -> debuff.rising_fist -> up() )
-      c += p() -> get_target_data( target ) -> debuff.rising_fist -> value();
-
-    return c;
-  }
-
   void execute() override
   {
     // Trigger Combo Strikes
@@ -4071,18 +4032,8 @@ struct fists_of_fury_t: public monk_melee_attack_t
     if ( p() -> artifact.crosswinds.rank() )
       crosswinds -> execute();
 
-    if ( p() -> sets -> has_set_bonus( MONK_WINDWALKER, T17, B2 ) )
-    {
-      // Since Serenity replaces Tigereye Brew, adjust Serenity's cooldown first.
-      if ( p() -> talent.serenity )
-        p() -> cooldown.serenity -> adjust( timespan_t::from_seconds( p() -> sets -> set( MONK_WINDWALKER, T17, B2 ) -> effectN( 1 ).base_value() ) );
-    }
-
     if ( p() -> sets -> has_set_bonus( MONK_WINDWALKER, T18, B4 ) )
       p() -> buff.masterful_strikes -> trigger( ( int ) p() -> sets -> set( MONK_WINDWALKER,T18, B4 ) -> effect_count() - 1 );
-
-    if ( p() -> sets -> has_set_bonus( MONK_WINDWALKER, T20, B4 ) )
-      p() -> buff.pressure_point -> trigger();
   }
 
   virtual void last_tick( dot_t* dot ) override
@@ -4092,6 +4043,9 @@ struct fists_of_fury_t: public monk_melee_attack_t
     // This is not when this happens but putting this here so that it's able to be checked by SEF
     if ( p() -> buff.transfer_the_power -> up() )
       p() -> buff.transfer_the_power -> expire();
+
+    if ( maybe_ptr( p() -> dbc.ptr ) && p() -> sets -> has_set_bonus( MONK_WINDWALKER, T20, B2 ) )
+      p() -> buff.pressure_point -> trigger();
 
     // Windwalker Tier 18 (WoD 6.2) trinket effect is in use, adjust Rising Sun Kick proc chance based on spell data
     // of the special effect.
@@ -7606,9 +7560,6 @@ monk( *p )
     debuff.gale_burst = buff_creator_t( *this, "gale_burst", p -> passives.gale_burst )
       .default_value( 0 )
       .quiet( true );
-    debuff.rising_fist = buff_creator_t( *this, "rising_fist", p -> sets -> set( MONK_WINDWALKER, T20, B2 ) )
-      .duration( timespan_t::from_seconds( p -> sets -> set( MONK_WINDWALKER, T20, B2 ) -> effectN( 1 ).base_value() ) )
-      .default_value( p -> sets -> set( MONK_WINDWALKER, T20, B2 ) -> effectN( 2 ).percent() );
     debuff.touch_of_karma = buff_creator_t( *this, "touch_of_karma", p -> spec.touch_of_karma )
       // set the percent of the max hp as the default value.
       .default_value( p -> spec.touch_of_karma -> effectN( 3 ).percent() );
@@ -8196,7 +8147,7 @@ void monk_t::init_spells()
   passives.hit_combo                        = find_spell( 196741 );
   passives.mark_of_the_crane                = find_spell( 228287 );
   passives.master_of_combinations           = find_spell( 240672 );
-  passives.pressure_point                   = find_spell( 246331 );
+  passives.pressure_point                   = find_spell( 247255 );
   passives.thunderfist_buff                 = find_spell( 242387 );
   passives.thunderfist_damage               = find_spell( 242390 );
   passives.touch_of_karma_buff              = find_spell( 125174 );
@@ -9944,8 +9895,8 @@ void monk_t::apl_combat_windwalker()
   st -> add_action( this, "Tiger Palm", "cycle_targets=1,if=!prev_gcd.1.tiger_palm&energy.time_to_max<=0.5&chi.max-chi>=2" );
   st -> add_action( this, "Strike of the Windlord", "if=!talent.serenity.enabled|cooldown.serenity.remains>=10" );
   st -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=((chi>=3&energy>=40)|chi>=5)&(!talent.serenity.enabled|cooldown.serenity.remains>=5)" );
-  st -> add_action( this, "Fists of Fury", "if=talent.serenity.enabled&!equipped.drinking_horn_cover&cooldown.serenity.remains>=5&(debuff.rising_fist.remains>1|set_bonus.tier20_2pc=0)&energy.time_to_max>2" );
-  st -> add_action( this, "Fists of Fury", "if=!(talent.serenity.enabled&!equipped.drinking_horn_cover)&(debuff.rising_fist.remains>1|set_bonus.tier20_2pc=0)&energy.time_to_max>2" );
+  st -> add_action( this, "Fists of Fury", "if=talent.serenity.enabled&!equipped.drinking_horn_cover&cooldown.serenity.remains>=5&energy.time_to_max>2" );
+  st -> add_action( this, "Fists of Fury", "if=!(talent.serenity.enabled&!equipped.drinking_horn_cover)&energy.time_to_max>2" );
   st -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=!talent.serenity.enabled|cooldown.serenity.remains>=5" );
   st -> add_talent( this, "Whirling Dragon Punch" );
   st -> add_action( this, "Crackling Jade Lightning", "if=equipped.the_emperors_capacitor&buff.the_emperors_capacitor.stack>=19&energy.time_to_max>3" );

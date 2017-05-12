@@ -9568,6 +9568,36 @@ struct sephuzs_secret_t : public class_buff_cb_t<druid_t, haste_buff_t, haste_bu
    }
 };
 
+//Soul of the Archdruid. As of PTR 7.2.5 (10-May-2017)
+struct soul_of_the_archdruid_t : public scoped_actor_callback_t<druid_t>
+{
+   soul_of_the_archdruid_t() : super(DRUID)
+   {}
+
+   void manipulate(druid_t* p, const special_effect_t& e) override
+   {
+      if ( !p -> talent.soul_of_the_forest -> ok() ) //Assuming that two instances of the talent doesn't stack.
+      {
+         switch ( p->specialization() )
+         {
+         case DRUID_FERAL: {
+            p -> talent.soul_of_the_forest = dbc::find_spell(p, 158476 );
+         } break;
+
+         case DRUID_BALANCE: {
+            p -> talent.soul_of_the_forest = dbc::find_spell(p, 114107 );
+         } break;
+
+         case DRUID_GUARDIAN: {
+            p -> talent.soul_of_the_forest = dbc::find_spell(p, 158477 );
+         } break;
+
+         default:
+            break;
+         }
+      }
+   }
+};
 
 // Feral
 
@@ -9895,6 +9925,7 @@ struct druid_module_t : public module_t
     register_special_effect( 209405, oneths_overconfidence_t(), true );
     register_special_effect( 207523, chatoyant_signet_t() );
     register_special_effect( 208209, ailuro_pouncers_t() );
+    register_special_effect( 247508, soul_of_the_archdruid_t() );
     register_special_effect( 208283, promise_of_elune_t(), true );
     register_special_effect( 208283, promise_of_elune_lunar_t() );
     register_special_effect( 208283, promise_of_elune_solar_t() );

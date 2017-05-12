@@ -17,6 +17,10 @@
 // - Verification
 // - Path of Flame spread mechanism (would be good to generalize this "nearby" spreading)
 // - At what point does Greater Lightning Elemental start aoeing?
+// Enhancement
+// T20
+// 2p - Does the triggering crash hit benefit from the buff?
+
 
 namespace { // UNNAMED NAMESPACE
 
@@ -296,6 +300,8 @@ public:
     stat_buff_t* t19_oh_8pc;
     haste_buff_t* t18_4pc_elemental;
     buff_t* t18_4pc_enhancement;
+    buff_t* t20_2pc_enhancement;
+    buff_t* t20_4pc_enhancement;
 
     // Legendary buffs
     buff_t* echoes_of_the_great_sundering;
@@ -626,6 +632,7 @@ public:
   std::string default_potion() const override;
   std::string default_flask() const override;
   std::string default_food() const override;
+  std::string default_rune() const override;
 
   void      init_rng() override;
   bool      init_special_effects() override;
@@ -1407,11 +1414,6 @@ public:
   {
     double base_chance = p() -> spec.stormbringer -> proc_chance() +
            p() -> cache.mastery() * p() -> mastery.enhanced_elements -> effectN( 3 ).mastery_value();
-
-    if ( maybe_ptr( p() -> dbc.ptr ) && weapon && weapon -> slot == SLOT_MAIN_HAND )
-    {
-      base_chance += p() -> talent.tempest -> effectN( 1 ).percent();
-    }
 
     return base_chance;
   }
@@ -2728,18 +2730,29 @@ struct stormstrike_attack_t : public shaman_attack_t
       m *= p() -> artifact.stormflurry.percent( 2 );
     }
 
+	if ( maybe_ptr( p() -> dbc.ptr ) && p() -> sets -> has_set_bonus( SHAMAN_ENHANCEMENT, T19, B2 ))
+	{
+		//TODO: t19_2pc ptr data doesn't seem to be working properly.
+	  //m *= 1.0 + t19_2pc -> effectN( 1 ).percent();
+	  m *= 1.1;
+	}
+
     return m;
   }
 
   double composite_crit_chance() const override
   {
-    double c = shaman_attack_t::composite_crit_chance();
+    double c = shaman_attack_t::composite_crit_chance();	
 
-    if ( p() -> sets -> has_set_bonus( SHAMAN_ENHANCEMENT, T19, B2 ) &&
-         p() -> buff.stormbringer -> up() )
+	if ( maybe_ptr( p() -> dbc.ptr ) && p() -> talent.tempest && p() -> buff.stormbringer -> up() )
     {
-      c += t19_2pc -> effectN( 1 ).percent();
+      c += p() -> talent.tempest -> effectN( 1 ).percent();
     }
+	
+	if ( !maybe_ptr( p() -> dbc.ptr ) && p() -> sets -> has_set_bonus( SHAMAN_ENHANCEMENT, T19, B2 ) && p() -> buff.stormbringer -> up())
+	{
+	  c+= t19_2pc -> effectN( 1 ).percent();
+	}
 
     return c;
   }
@@ -3660,6 +3673,8 @@ struct crash_lightning_t : public shaman_attack_t
       {
         p() -> buff.crash_lightning -> trigger();
       }
+
+      p() -> buff.t20_2pc_enhancement -> trigger(); //TODO: Does the triggering crash benefit from the 5% crit?
 
       if ( p() -> artifact.gathering_storms.rank() )
       {
@@ -6965,6 +6980,10 @@ void shaman_t::create_buffs()
     .trigger_spell( sets -> set( SHAMAN_ENHANCEMENT, T18, B4 ) )
     .default_value( sets -> set( SHAMAN_ENHANCEMENT, T18, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buff.t20_2pc_enhancement = buff_creator_t( this, "lightning_crash", sets -> set( SHAMAN_ENHANCEMENT, T20, B2 ) -> effectN( 1 ).trigger() )
+    .trigger_spell( ! maybe_ptr( dbc.ptr ) ? spell_data_t::not_found() : sets -> set( SHAMAN_ENHANCEMENT, T20, B2 ) )
+    .default_value( sets -> set( SHAMAN_ENHANCEMENT, T20, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
+    .add_invalidate( CACHE_CRIT_CHANCE );
 }
 
 // shaman_t::init_gains =====================================================
@@ -7106,6 +7125,21 @@ std::string shaman_t::default_food() const
   return specialization() == SHAMAN_ENHANCEMENT ? enhance_food : elemental_food;
 }
 
+// shaman_t::default_rune ===================================================
+
+std::string shaman_t::default_rune() const
+{
+  std::string elemental_rune = ( true_level >= 110 ) ? "defiled" :
+                               ( true_level >= 100 ) ? "focus" :
+                               "disabled";
+
+  std::string enhance_rune = ( true_level >= 110 ) ? "defiled" :
+                             ( true_level >= 100 ) ? "hyper" :
+                             "disabled";
+
+  return specialization() == SHAMAN_ENHANCEMENT ? enhance_rune : elemental_rune;
+}
+
 // shaman_t::init_action_list_elemental =====================================
 
 void shaman_t::init_action_list_elemental()
@@ -7123,8 +7157,8 @@ void shaman_t::init_action_list_elemental()
   // Food
   precombat -> add_action( "food" );
 
-  if ( true_level > 100 )
-    precombat -> add_action( "augmentation,type=defiled" );
+  // Rune
+  precombat -> add_action( "augmentation" );
 
   // Snapshot stats
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
@@ -7263,17 +7297,12 @@ void shaman_t::init_action_list_enhancement()
 
   // Flask
   precombat -> add_action( "flask" );
-  // Added Rune if Flask are allowed since there is no "allow_runes" bool.
-  if ( sim -> allow_flasks && true_level >= 100 )
-  {
-    std::string rune_action = "augmentation,type=";
-    rune_action += ((true_level >= 110) ? "defiled" : (true_level >= 100) ? "hyper" : "");
-
-    precombat->add_action(rune_action);
-  }
 
   // Food
   precombat -> add_action( "food" );
+
+  // Rune
+  precombat -> add_action( "augmentation" );
 
   // Snapshot stats
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
@@ -7521,6 +7550,8 @@ double shaman_t::composite_spell_crit_chance() const
 
   m += spec.critical_strikes -> effectN( 1 ).percent();
 
+  m += buff.t20_2pc_enhancement -> stack_value();
+
   return m;
 }
 
@@ -7572,6 +7603,8 @@ double shaman_t::composite_melee_crit_chance() const
   double m = player_t::composite_melee_crit_chance();
 
   m += spec.critical_strikes -> effectN( 1 ).percent();
+
+  m += buff.t20_2pc_enhancement -> stack_value();
 
   return m;
 }

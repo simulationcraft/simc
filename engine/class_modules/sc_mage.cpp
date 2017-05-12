@@ -589,6 +589,7 @@ public:
   std::string       default_potion() const override;
   std::string       default_flask() const override;
   std::string       default_food() const override;
+  std::string       default_rune() const override;
 };
 
 namespace pets
@@ -7041,9 +7042,7 @@ void mage_t::apl_precombat()
 
   precombat -> add_action( "flask" );
   precombat -> add_action( "food" );
-
-  if ( true_level > 100 )
-    precombat -> add_action( "augmentation,type=defiled" );
+  precombat -> add_action( "augmentation" );
 
   // Water Elemental
   if ( specialization() == MAGE_FROST )
@@ -7101,6 +7100,13 @@ std::string mage_t::default_food() const
          ( true_level >= 90 ) ? "mogu_fish_stew" :
          ( true_level >= 80 ) ? "seafood_magnifique_feast" :
                                 "disabled";
+}
+
+std::string mage_t::default_rune() const
+{
+  return ( true_level >= 110 ) ? "defiled" :
+         ( true_level >= 100 ) ? "focus" :
+                                 "disabled";
 }
 
 // Arcane Mage Action List====================================================
