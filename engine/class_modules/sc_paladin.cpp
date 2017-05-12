@@ -1135,7 +1135,7 @@ struct avengers_shield_t : public paladin_spell_t
     base_aoe_multiplier *= 2.0 / 3.0;
   aoe = 3;
   if (p->spells.ferren_marcuss_strength){
-	  aoe = 5;
+	  aoe += (p->spells.ferren_marcuss_strength->effectN(1).misc_value1());
 	  base_multiplier *= 1.0 + p->spells.ferren_marcuss_strength->effectN(2).percent();
   }
   aoe = std::max( aoe, 0 );
