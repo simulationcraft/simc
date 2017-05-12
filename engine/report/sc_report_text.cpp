@@ -743,11 +743,27 @@ void print_text_performance( FILE* file, sim_t* sim )
   char date_str[ sizeof "2011-10-08 07:07:09+0000" ];
   std::strftime( date_str, sizeof date_str, "%Y-%m-%d %H:%M:%S%z",
                  std::localtime( &cur_time ) );
+  std::stringstream iterations_str;
+  if ( sim -> threads > 1 )
+  {
+    iterations_str << " (";
+    for ( size_t i = 0; i < sim -> work_per_thread.size(); ++i )
+    {
+      iterations_str << sim -> work_per_thread[ i ];
+
+      if ( i < sim -> work_per_thread.size() - 1 )
+      {
+        iterations_str << ", ";
+      }
+    }
+    iterations_str << ")";
+  }
+
   util::fprintf(
       file,
       "\nBaseline Performance:\n"
       "  RNG Engine    = %s%s\n"
-      "  Iterations    = %d\n"
+      "  Iterations    = %d%s\n"
       "  TotalEvents   = %lu\n"
       "  MaxEventQueue = %lu\n"
 #ifdef EVENT_QUEUE_DEBUG
@@ -763,7 +779,9 @@ void print_text_performance( FILE* file, sim_t* sim )
       "  SpeedUp       = %.0f\n"
       "  EndTime       = %s (%.0f)\n\n",
       sim->rng().name(), sim->deterministic ? " (deterministic)" : "",
-      sim->iterations, sim->event_mgr.total_events_processed,
+      sim->iterations,
+      sim -> threads > 1 ? iterations_str.str().c_str() : "",
+      sim->event_mgr.total_events_processed,
       sim->event_mgr.max_events_remaining,
 #ifdef EVENT_QUEUE_DEBUG
       sim->event_mgr.n_allocated_events, sim->event_mgr.n_end_insert,

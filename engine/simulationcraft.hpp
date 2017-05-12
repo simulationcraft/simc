@@ -1617,6 +1617,7 @@ struct sim_t : private sc_thread_t
   std::string rng_str;
   uint64_t seed;
   int deterministic;
+  int strict_work_queue;
   int average_range, average_gauss;
   int convergence_scale;
 
@@ -1654,6 +1655,8 @@ struct sim_t : private sc_thread_t
   std::unique_ptr<reforge_plot_t> reforge_plot;
   double elapsed_cpu;
   double elapsed_time;
+  std::vector<size_t> work_per_thread;
+  size_t work_done;
   double     iteration_dmg, priority_iteration_dmg,  iteration_heal, iteration_absorb;
   simple_sample_data_t raid_dps, total_dmg, raid_hps, total_heal, total_absorb, raid_aps;
   extended_sample_data_t simulation_length;
