@@ -1627,7 +1627,10 @@ struct felguard_pet_t: public warlock_pet_t
   double composite_player_multiplier( school_e school ) const override
   {
     double m = warlock_pet_t::composite_player_multiplier( school );
-    m *= 1.0 + o() -> artifact.left_hand_of_darkness.percent();
+
+    if ( !is_grimoire_of_service )
+      m *= 1.0 + o() -> artifact.left_hand_of_darkness.percent();
+
     return m;
   }
 
@@ -7109,7 +7112,7 @@ void warlock_t::apl_demonology()
   add_action( "Demonwrath", "chain=1,interrupt=1,if=spell_targets.demonwrath>=3" );
   add_action( "Demonwrath", "moving=1,chain=1,interrupt=1" );
   action_list_str += "/demonbolt";
-  add_action( "Shadow Bolt", "if=buff.shadowy_inspiration.react" );
+  add_action( "Shadow Bolt", "if=buff.shadowy_inspiration.remains" );
   add_action( "Demonic Empowerment", "if=artifact.thalkiels_ascendance.rank&talent.power_trip.enabled&!talent.demonbolt.enabled&(pet_count>=13|talent.shadowy_inspiration.enabled&pet_count>=6)" );
   add_action( "Shadow Bolt" );
 }
