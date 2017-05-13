@@ -2407,6 +2407,7 @@ struct light_of_the_protector_t : public paladin_heal_t
 
 	if (p->spells.saruans_resolve){
 		cooldown->charges = 2;
+		cooldown->duration *= (1 + p->spells.saruans_resolve->effectN(3).percent());
 	}
     // prevent spamming
     internal_cooldown -> duration = timespan_t::from_seconds( 1.0 );
@@ -2445,9 +2446,6 @@ struct light_of_the_protector_t : public paladin_heal_t
       titans_proc -> schedule_execute();
     }
 
-	//if (p()->saruans_resolve){
-	//	p()->cooldowns.light_of_the_protector->ready *= (1 + p()->spells.saruans_resolve->effectN(3).percent());
-	//}
   }
 
 };
@@ -2475,6 +2473,7 @@ struct hand_of_the_protector_t : public paladin_heal_t
 
 	if (p->spells.saruans_resolve){
 		cooldown->charges = 2;
+		cooldown->duration *= (1 + p->spells.saruans_resolve->effectN(3).percent());
 	}
 
     // prevent spamming
@@ -2515,11 +2514,6 @@ struct hand_of_the_protector_t : public paladin_heal_t
     if ( titans_proc && target == p() )
       titans_proc -> schedule_execute();
 
-	//if (p()->saruans_resolve){
-	//timespan_t reduction = timespan_t::from_seconds(-0.1 * p()->cooldowns.light_of_the_protector->ready);
-	//p()->cooldowns.hand_of_the_protector->adjust(reduction);
-	//p()->cooldowns.hand_of_the_protector->ready += (p()->cooldowns.light_of_the_protector->duration * 0.2);
-	//}
   }
 
 };
