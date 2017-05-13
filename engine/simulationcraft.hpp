@@ -4461,6 +4461,7 @@ struct player_t : public actor_t
 
   pet_t*    find_pet( const std::string& name ) const;
   item_t*     find_item( const std::string& );
+  item_t*     find_item( unsigned );
   action_t*   find_action( const std::string& ) const;
   cooldown_t* find_cooldown( const std::string& name ) const;
   dot_t*      find_dot     ( const std::string& name, player_t* source ) const;

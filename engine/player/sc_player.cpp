@@ -1138,7 +1138,6 @@ void player_t::init_base_stats()
   resources.base_multiplier[ RESOURCE_RUNIC_POWER ] *= 1 + racials.expansive_mind -> effectN( 1 ).percent();
   resources.base_multiplier[ RESOURCE_FOCUS ] *= 1 + racials.expansive_mind -> effectN( 1 ).percent();
 
-
   if ( true_level >= 50 && matching_gear )
   {
     for ( attribute_e a = ATTR_STRENGTH; a <= ATTR_SPIRIT; a++ )
@@ -1565,6 +1564,8 @@ void player_t::init_resources( bool force )
         resources.initial[ i ] += floor( stamina() ) * current.health_per_stamina;
 
       resources.initial[ i ] *= resources.initial_multiplier[ i ];
+
+      resources.initial[ i ] = floor( resources.initial[ i ] );
     }
   }
 
@@ -2798,6 +2799,19 @@ item_t* player_t::find_item( const std::string& str )
   for ( auto& item : items )
     if ( str == item.name() )
       return &item;
+
+  return nullptr;
+}
+
+item_t* player_t::find_item( unsigned item_id )
+{
+  for ( auto& item : items )
+  {
+    if ( item.parsed.data.id == item_id )
+    {
+      return &( item );
+    }
+  }
 
   return nullptr;
 }
