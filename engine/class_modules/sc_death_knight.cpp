@@ -2177,11 +2177,7 @@ struct valkyr_pet_t : public death_knight_pet_t
   {
     death_knight_pet_t::init_base_stats();
 
-    owner_coeff.ap_from_ap = 1 / 3.0;
-    // 2017-01-10: Dark Arbiter damage increased by 36%. NOTE: Valkyr Strike AP coefficient was
-    // increased 7 -> 7.5 in a hotfix, so apply the remaining increase here as a wonky number.
-    // Reality is probably something entirely different, but needs testing.
-    owner_coeff.ap_from_ap *= 1.27;
+    owner_coeff.ap_from_ap = 1;
   }
 
   void init_action_list() override
