@@ -6,7 +6,8 @@
 #include "simulationcraft.hpp"
 
 progress_bar_t::progress_bar_t( sim_t& s ) :
-    sim( s ), steps( 20 ), updates( 100 ), interval( 0 ), start_time( 0 )
+    sim( s ), steps( 20 ), updates( 100 ), interval( 0 ), update_number( 0 ),
+    start_time( 0 ), last_update( 0 ), max_interval_time( 1.0 )
 {
 }
 
@@ -19,14 +20,13 @@ void progress_bar_t::init()
   }
   else
   {
+    auto n_iterations = sim.work_queue -> size();
     if ( sim.deterministic || sim.strict_work_queue )
     {
-      interval = sim.work_queue -> size() * sim.threads / updates;
+      n_iterations *= sim.threads;
     }
-    else
-    {
-      interval = sim.work_queue -> size() / updates;
-    }
+
+    interval = n_iterations / updates;
   }
   if ( interval == 0 )
   {
@@ -35,7 +35,11 @@ void progress_bar_t::init()
 }
 
 void progress_bar_t::restart()
-{ start_time = util::wall_time(); }
+{
+  start_time = util::wall_time();
+  last_update = util::wall_time();
+  update_number = 0;
+}
 
 bool progress_bar_t::update( bool finished, int index )
 {
@@ -54,27 +58,31 @@ bool progress_bar_t::update( bool finished, int index )
     return false;
   }
 
+  auto progress = sim.progress( nullptr, index );
   if ( ! finished )
   {
-    if ( sim.current_iteration % interval )
+    double update_interval = last_update - util::wall_time();
+    if ( progress.current_iterations < interval * update_number &&
+         update_interval < max_interval_time )
     {
       return false;
     }
+    update_number++;
+    last_update = util::wall_time();
   }
 
   if ( sim.progressbar_type == 1 )
   {
-    return update_simple( finished, index );
+    return update_simple( progress, finished, index );
   }
   else
   {
-    return update_normal( finished, index );
+    return update_normal( progress, finished, index );
   }
 }
 
-bool progress_bar_t::update_simple( bool finished, int index )
+bool progress_bar_t::update_simple( const sim_progress_t& progress, bool finished, int /* index */ )
 {
-  auto progress = sim.progress( nullptr, index );
   auto pct = progress.pct();
   if ( pct <= 0 )
   {
@@ -121,9 +129,8 @@ bool progress_bar_t::update_simple( bool finished, int index )
   return true;
 }
 
-bool progress_bar_t::update_normal( bool finished, int index )
+bool progress_bar_t::update_normal( const sim_progress_t& progress, bool finished, int /* index */ )
 {
-  auto progress = sim.progress( nullptr, index );
   auto pct = progress.pct();
   if ( pct <= 0 )
   {

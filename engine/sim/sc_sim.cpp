@@ -3379,7 +3379,7 @@ void sim_t::setup( sim_control_t* c )
 
 // sim_t::progress ==========================================================
 
-sim_t::sim_progress_t sim_t::progress( std::string* detailed, int index )
+sim_progress_t sim_t::progress( std::string* detailed, int index )
 {
   auto total_progress = work_queue -> progress( index );
 

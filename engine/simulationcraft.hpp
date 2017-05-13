@@ -1291,13 +1291,21 @@ struct sim_control_t
   option_db_t options;
 };
 
+struct sim_progress_t
+{
+  int current_iterations;
+  int total_iterations;
+  double pct() const
+  { return current_iterations / static_cast<double>(total_iterations); }
+};
+
 // Progress Bar =============================================================
 
 struct progress_bar_t
 {
   sim_t& sim;
-  int steps, updates, interval;
-  double start_time;
+  int steps, updates, interval, update_number;
+  double start_time, last_update, max_interval_time;
   std::string status;
 
   progress_bar_t( sim_t& s );
@@ -1306,8 +1314,8 @@ struct progress_bar_t
   void output( bool finished = false );
   void restart();
 private:
-  bool update_simple( bool finished, int index );
-  bool update_normal( bool finished, int index );
+  bool update_simple( const sim_progress_t&, bool finished, int index );
+  bool update_normal( const sim_progress_t&, bool finished, int index );
 };
 
 /* Encapsulated Vector
@@ -1719,13 +1727,6 @@ struct sim_t : private sc_thread_t
   std::vector<sim_t*> children; // Manual delete!
   int thread_index;
   computer_process::priority_e process_priority;
-  struct sim_progress_t
-  {
-    int current_iterations;
-    int total_iterations;
-    double pct() const
-    { return current_iterations / static_cast<double>(total_iterations); }
-  };
   struct work_queue_t
   {
     private:
