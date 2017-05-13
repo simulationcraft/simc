@@ -102,6 +102,7 @@ public:
   const special_effect_t* ferren_marcuss_strength;
   const special_effect_t* saruans_resolve;
   const special_effect_t* gift_of_the_golden_valkyr;
+  const special_effect_t* heathcliffs_immortality;
   const spell_data_t* sephuz;
 
   struct active_actions_t
@@ -257,6 +258,7 @@ public:
 	const spell_data_t* ferren_marcuss_strength;
 	const spell_data_t* saruans_resolve;
 	const spell_data_t* gift_of_the_golden_valkyr;
+	const spell_data_t* heathcliffs_immortality;
     const spell_data_t* consecration_bonus;
     const spell_data_t* blessing_of_the_ashbringer;
   } spells;
@@ -421,6 +423,7 @@ public:
 	ferren_marcuss_strength = nullptr;
 	saruans_resolve = nullptr;
 	gift_of_the_golden_valkyr = nullptr;
+	heathcliffs_immortality = nullptr;
     sephuz = nullptr;
     active_beacon_of_light             = nullptr;
     active_enlightened_judgments       = nullptr;
@@ -5350,6 +5353,7 @@ void paladin_t::init_spells()
   spells.ferren_marcuss_strength	= find_spell( 207614 );
   spells.saruans_resolve = find_spell(234653);
   spells.gift_of_the_golden_valkyr = find_spell(207628);
+  spells.heathcliffs_immortality = find_spell(207599);
   spells.consecration_bonus            = find_spell( 188370 );
   spells.blessing_of_the_ashbringer = find_spell( 242981 );
 
@@ -5943,6 +5947,12 @@ void paladin_t::target_mitigation( school_e school,
     s -> result_amount *= std::pow( 1.0 - talents.last_defender -> effectN( 2 ).percent(), get_local_enemies( talents.last_defender -> effectN( 1 ).base_value() ) );
   }
 
+  // heathcliffs
+  if (standing_in_consecration() && spells.heathcliffs_immortality)
+  {
+	  s->result_amount *= 1.0 - spells.heathcliffs_immortality->effectN(1).percent();
+  }
+
 
   if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
     sim -> out_debug.printf( "Damage to %s after passive mitigation is %f", s -> target -> name(), s -> result_amount );
@@ -6437,6 +6447,12 @@ static void gift_of_the_golden_valkyr(special_effect_t& effect)
 	do_trinket_init(s, PALADIN_PROTECTION, s->gift_of_the_golden_valkyr, effect);
 }
 
+static void heathcliffs_immortality(special_effect_t& effect)
+{
+	paladin_t* s = debug_cast<paladin_t*>(effect.player);
+	do_trinket_init(s, PALADIN_PROTECTION, s->heathcliffs_immortality, effect);
+}
+
 static void ashes_to_dust( special_effect_t& effect )
 {
   paladin_t* s = debug_cast<paladin_t*>( effect.player );
@@ -6474,6 +6490,9 @@ struct paladin_module_t : public module_t
     unique_gear::register_special_effect( 208408, liadrins_fury_unleashed );
     unique_gear::register_special_effect( 206338, chain_of_thrayn );
 	unique_gear::register_special_effect( 207614, ferren_marcuss_strength);
+	unique_gear::register_special_effect(234653, saruans_resolve);
+	unique_gear::register_special_effect(207628, gift_of_the_golden_valkyr);
+	unique_gear::register_special_effect(207599, heathcliffs_immortality);
     unique_gear::register_special_effect( 236106, ashes_to_dust );
     unique_gear::register_special_effect( 211557, justice_gaze );
     unique_gear::register_special_effect( 208051, sephuzs_secret_enabler_t() );
