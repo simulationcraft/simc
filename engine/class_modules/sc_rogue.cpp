@@ -704,6 +704,12 @@ struct rogue_t : public player_t
     regen_type = REGEN_DYNAMIC;
     regen_caches[CACHE_HASTE] = true;
     regen_caches[CACHE_ATTACK_HASTE] = true;
+
+    // Register a custom talent validity function that allows Vigor to be used when the user has
+    // Soul of the Shadowblade.
+    talent_points.register_validity_fn( [ this ]( const spell_data_t* spell ) {
+      return spell -> id() == 14983 && find_item( 150936 ) != nullptr;
+    } );
   }
 
   // Character Definition
@@ -8949,24 +8955,6 @@ struct mantle_of_the_master_assassin_t : public unique_gear::scoped_actor_callba
   { rogue -> legendary.mantle_of_the_master_assassin = e.driver(); }
 };
 
-struct soul_of_the_shadowblade_t : public unique_gear::scoped_actor_callback_t<rogue_t>
-{
-  soul_of_the_shadowblade_t() : super( ROGUE )
-  { }
-
-  void manipulate( rogue_t* rogue, const special_effect_t& e ) override
-  {
-    if ( ! rogue -> talent.vigor -> ok() )
-    {
-      rogue -> talent.vigor = rogue -> find_talent_spell( "Vigor", "", rogue -> specialization(), false, false );
-
-      // Apply Vigor here because init_base_stats was already called earlier
-      rogue -> resources.base[ RESOURCE_ENERGY ] += rogue -> talent.vigor -> effectN( 1 ).base_value();
-      rogue -> base_energy_regen_per_second *= 1.0 + rogue -> talent.vigor -> effectN( 2 ).percent();
-    }
-  }
-};
-
 struct rogue_module_t : public module_t
 {
   rogue_module_t() : module_t( ROGUE ) {}
@@ -8996,7 +8984,6 @@ struct rogue_module_t : public module_t
     unique_gear::register_special_effect( 208692, the_dreadlords_deceit_t()             );
     unique_gear::register_special_effect( 209041, insignia_of_ravenholdt_t()            );
     unique_gear::register_special_effect( 235022, mantle_of_the_master_assassin_t()     );
-    unique_gear::register_special_effect( 247509, soul_of_the_shadowblade_t()           );
   }
 
   void register_hotfixes() const override
