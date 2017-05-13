@@ -3370,6 +3370,8 @@ struct player_collected_data_t
 struct player_talent_points_t
 {
 public:
+  using validity_fn_t = std::function<bool(const spell_data_t*)>;
+
   player_talent_points_t() { clear(); }
 
   int choice( int row ) const
@@ -3396,10 +3398,22 @@ public:
   void clear();
   std::string to_string() const;
 
+  bool validate( const spell_data_t* spell, int row, int col ) const
+  {
+    return has_row_col( row, col ) ||
+      range::find_if( validity_fns, [ spell ]( const validity_fn_t& fn ) { return fn( spell ); } ) !=
+      validity_fns.end();
+  }
+
   friend std::ostream& operator << ( std::ostream& os, const player_talent_points_t& tp )
   { os << tp.to_string(); return os; }
+
+  void register_validity_fn( const validity_fn_t& fn )
+  { validity_fns.push_back( fn ); }
+
 private:
   std::array<int, MAX_TALENT_ROWS> choices;
+  std::vector<validity_fn_t> validity_fns;
 
   static void row_check( int row )
   { assert( row >= 0 && row < MAX_TALENT_ROWS ); ( void )row; }
