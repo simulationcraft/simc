@@ -100,6 +100,8 @@ public:
   const special_effect_t* chain_of_thrayn;
   const special_effect_t* ashes_to_dust;
   const special_effect_t* ferren_marcuss_strength;
+  const special_effect_t* saruans_resolve;
+  const special_effect_t* gift_of_the_golden_valkyr;
   const spell_data_t* sephuz;
 
   struct active_actions_t
@@ -189,9 +191,10 @@ public:
     cooldown_t* avengers_shield;         // Grand Crusader (prot)
     cooldown_t* shield_of_the_righteous; // Judgment (prot)
     cooldown_t* avenging_wrath;          // Righteous Protector (prot)
-    cooldown_t* light_of_the_protector;  // Righteous Protector (prot)
-    cooldown_t* hand_of_the_protector;   // Righteous Protector (prot)
-  cooldown_t* judgment;				 // Grand Crusader + Crusader's Judgment
+    cooldown_t* light_of_the_protector;  // Righteous Protector (prot) / Saruin
+    cooldown_t* hand_of_the_protector;   // Righteous Protector (prot) / Saruin
+	cooldown_t* judgment;				 // Grand Crusader + Crusader's Judgment
+	cooldown_t* guardian_of_ancient_kings; // legen chest
 
     // whoo fist of justice
     cooldown_t* hammer_of_justice;
@@ -252,6 +255,8 @@ public:
     const spell_data_t* chain_of_thrayn;
     const spell_data_t* ashes_to_dust;
 	const spell_data_t* ferren_marcuss_strength;
+	const spell_data_t* saruans_resolve;
+	const spell_data_t* gift_of_the_golden_valkyr;
     const spell_data_t* consecration_bonus;
     const spell_data_t* blessing_of_the_ashbringer;
   } spells;
@@ -414,6 +419,8 @@ public:
     ashes_to_dust = nullptr;
     justice_gaze = nullptr;
 	ferren_marcuss_strength = nullptr;
+	saruans_resolve = nullptr;
+	gift_of_the_golden_valkyr = nullptr;
     sephuz = nullptr;
     active_beacon_of_light             = nullptr;
     active_enlightened_judgments       = nullptr;
@@ -428,6 +435,7 @@ public:
     cooldowns.avengers_shield         = get_cooldown( "avengers_shield" );
     cooldowns.judgment                = get_cooldown("judgment");
     cooldowns.shield_of_the_righteous = get_cooldown( "shield_of_the_righteous" );
+	cooldowns.guardian_of_ancient_kings = get_cooldown("guardian_of_ancient_kings");
     cooldowns.avenging_wrath          = get_cooldown( "avenging_wrath" );
     cooldowns.light_of_the_protector  = get_cooldown( "light_of_the_protector" );
     cooldowns.hand_of_the_protector   = get_cooldown( "hand_of_the_protector" );
@@ -1153,7 +1161,10 @@ struct avengers_shield_t : public paladin_spell_t
     // Bulwark of Order absorb shield. Amount is additive per hit.
     if ( p() -> artifact.bulwark_of_order.rank() )
       p() -> buffs.bulwark_of_order -> trigger( 1, p() -> buffs.bulwark_of_order -> value() + s -> result_amount * p() -> artifact.bulwark_of_order.percent() );
-
+	if (p()->spells.gift_of_the_golden_valkyr){
+		timespan_t reduction = timespan_t::from_seconds(-1.0 * p()->spells.gift_of_the_golden_valkyr->effectN(1).misc_value1());
+		p()->cooldowns.avenging_wrath->adjust(reduction);
+	}
     p() -> trigger_tyrs_enforcer( s );
   }
 };
@@ -1881,6 +1892,8 @@ struct guardian_of_ancient_kings_t : public paladin_spell_t
     parse_options( options_str );
     use_off_gcd = true;
     trigger_gcd = timespan_t::zero();
+
+	cooldown = p->cooldowns.guardian_of_ancient_kings;
   }
 
   virtual void execute() override
@@ -2392,6 +2405,9 @@ struct light_of_the_protector_t : public paladin_heal_t
     // link needed for Righteous Protector / SotR cooldown reduction
     cooldown = p -> cooldowns.light_of_the_protector;
 
+	if (p->spells.saruans_resolve){
+		cooldown->charges = 2;
+	}
     // prevent spamming
     internal_cooldown -> duration = timespan_t::from_seconds( 1.0 );
 
@@ -2428,6 +2444,10 @@ struct light_of_the_protector_t : public paladin_heal_t
     if ( titans_proc ){
       titans_proc -> schedule_execute();
     }
+
+	//if (p()->saruans_resolve){
+	//	p()->cooldowns.light_of_the_protector->ready *= (1 + p()->spells.saruans_resolve->effectN(3).percent());
+	//}
   }
 
 };
@@ -2453,8 +2473,12 @@ struct hand_of_the_protector_t : public paladin_heal_t
     // link needed for Righteous Protector / SotR cooldown reduction
     cooldown = p -> cooldowns.hand_of_the_protector;
 
+	if (p->spells.saruans_resolve){
+		cooldown->charges = 2;
+	}
+
     // prevent spamming
-    internal_cooldown -> duration = timespan_t::from_seconds( 1.0 );
+    internal_cooldown -> duration = timespan_t::from_seconds( .75 );
 
     // disable if Hand of the Protector is not talented
     if ( ! p -> talents.hand_of_the_protector -> ok() )
@@ -2490,6 +2514,12 @@ struct hand_of_the_protector_t : public paladin_heal_t
     // Light of the Titans only works if self-cast
     if ( titans_proc && target == p() )
       titans_proc -> schedule_execute();
+
+	//if (p()->saruans_resolve){
+	//timespan_t reduction = timespan_t::from_seconds(-0.1 * p()->cooldowns.light_of_the_protector->ready);
+	//p()->cooldowns.hand_of_the_protector->adjust(reduction);
+	//p()->cooldowns.hand_of_the_protector->ready += (p()->cooldowns.light_of_the_protector->duration * 0.2);
+	//}
   }
 
 };
@@ -5323,7 +5353,9 @@ void paladin_t::init_spells()
   spells.justice_gaze                  = find_spell( 211557 );
   spells.chain_of_thrayn               = find_spell( 206338 );
   spells.ashes_to_dust                 = find_spell( 236106 );
-  spells.ferren_marcuss_strength		   = find_spell( 207614 );
+  spells.ferren_marcuss_strength	= find_spell( 207614 );
+  spells.saruans_resolve = find_spell(234653);
+  spells.gift_of_the_golden_valkyr = find_spell(207628);
   spells.consecration_bonus            = find_spell( 188370 );
   spells.blessing_of_the_ashbringer = find_spell( 242981 );
 
@@ -6397,6 +6429,18 @@ static void ferren_marcuss_strength(special_effect_t& effect)
 {
 	paladin_t* s = debug_cast<paladin_t*>(effect.player);
 	do_trinket_init(s, PALADIN_PROTECTION, s->ferren_marcuss_strength, effect);
+}
+
+static void saruans_resolve(special_effect_t& effect)
+{
+	paladin_t* s = debug_cast<paladin_t*>(effect.player);
+	do_trinket_init(s, PALADIN_PROTECTION, s->saruans_resolve, effect);
+}
+
+static void gift_of_the_golden_valkyr(special_effect_t& effect)
+{
+	paladin_t* s = debug_cast<paladin_t*>(effect.player);
+	do_trinket_init(s, PALADIN_PROTECTION, s->gift_of_the_golden_valkyr, effect);
 }
 
 static void ashes_to_dust( special_effect_t& effect )
