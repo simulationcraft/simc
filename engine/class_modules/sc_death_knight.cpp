@@ -454,6 +454,7 @@ public:
     buff_t* hungering_rune_weapon;
     buff_t* t20_2pc_frost;
     buff_t* t20_2pc_unholy;
+    buff_t* t20_4pc_frost;
 
     absorb_buff_t* blood_shield;
     buff_t* rune_tap;
@@ -2515,7 +2516,7 @@ struct death_knight_action_t : public Base
   {
     auto ret = action_base_t::consume_cost_per_tick( dot );
 
-    if ( ret && this -> last_resource_cost > 0 )
+    if ( ! maybe_ptr( p() -> dbc.ptr ) && ret && this -> last_resource_cost > 0 )
     {
       p() -> trigger_t20_4pc_frost( this -> last_resource_cost );
     }
@@ -2556,7 +2557,10 @@ struct death_knight_action_t : public Base
         p() -> cooldown.vampiric_blood -> adjust( -sec );
       }
 
-      p() -> trigger_t20_4pc_frost( this -> last_resource_cost );
+      if ( ! maybe_ptr( p() -> dbc.ptr ) )
+      {
+        p() -> trigger_t20_4pc_frost( this -> last_resource_cost );
+      }
     }
   }
 
@@ -4669,6 +4673,15 @@ struct frost_strike_t : public death_knight_melee_attack_t
     add_child( oh );
   }
 
+  double cost() const override
+  {
+    double c = death_knight_melee_attack_t::cost();
+
+    c *= 1.0 + p() -> buffs.t20_4pc_frost -> check_value();
+
+    return c;
+  }
+
   void execute() override
   {
     death_knight_melee_attack_t::execute();
@@ -4700,6 +4713,9 @@ struct frost_strike_t : public death_knight_melee_attack_t
       //p() -> buffs.killing_machine -> trigger_attempts++;
       p() -> buffs.killing_machine -> execute();
     }
+
+    p() -> buffs.t20_4pc_frost -> up(); // Benefit tracking on execute
+    p() -> buffs.t20_4pc_frost -> expire();
   }
 };
 
@@ -5141,6 +5157,13 @@ struct obliterate_t : public death_knight_melee_attack_t
       oh -> execute();
 
       p() -> buffs.rime -> trigger();
+
+      if ( maybe_ptr( p() -> dbc.ptr ) &&
+           ( mh -> execute_state -> result_amount > 0 ||
+             oh -> execute_state -> result_amount > 0 ) )
+      {
+        p() -> trigger_t20_4pc_frost( 0 );
+      }
     }
 
     if ( rng().roll( p() -> artifact.overpowered.data().proc_chance() ) )
@@ -6425,20 +6448,27 @@ void death_knight_t::trigger_t20_4pc_frost( double consumed )
     return;
   }
 
-  t20_4pc_frost += consumed;
-
-  if ( sim -> debug )
+  if ( maybe_ptr( dbc.ptr ) )
   {
-    sim -> out_debug.printf( "%s T20 4PC set bonus accumulates %.1f, total %d runic_power",
-      name(), consumed, t20_4pc_frost );
+    buffs.t20_4pc_frost -> trigger();
   }
-
-  if ( t20_4pc_frost >= sets -> set( DEATH_KNIGHT_FROST, T20, B4 ) -> effectN( 2 ).base_value() )
+  else
   {
-    auto cd_adjust = timespan_t::from_seconds( sets -> set( DEATH_KNIGHT_FROST, T20, B4 ) -> effectN( 1 ).base_value() );
-    cooldown.empower_rune_weapon -> adjust( -cd_adjust );
-    cooldown.hungering_rune_weapon -> adjust( -cd_adjust );
-    t20_4pc_frost -= sets -> set( DEATH_KNIGHT_FROST, T20, B4 ) -> effectN( 2 ).base_value();
+    t20_4pc_frost += consumed;
+
+    if ( sim -> debug )
+    {
+      sim -> out_debug.printf( "%s T20 4PC set bonus accumulates %.1f, total %d runic_power",
+        name(), consumed, t20_4pc_frost );
+    }
+
+    if ( t20_4pc_frost >= sets -> set( DEATH_KNIGHT_FROST, T20, B4 ) -> effectN( 2 ).base_value() )
+    {
+      auto cd_adjust = timespan_t::from_seconds( sets -> set( DEATH_KNIGHT_FROST, T20, B4 ) -> effectN( 1 ).base_value() );
+      cooldown.empower_rune_weapon -> adjust( -cd_adjust );
+      cooldown.hungering_rune_weapon -> adjust( -cd_adjust );
+      t20_4pc_frost -= sets -> set( DEATH_KNIGHT_FROST, T20, B4 ) -> effectN( 2 ).base_value();
+    }
   }
 }
 
@@ -7741,6 +7771,10 @@ void death_knight_t::create_buffs()
     .default_value( find_spell( 246995 ) -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
     .refresh_behavior( BUFF_REFRESH_EXTEND );
+  buffs.t20_4pc_frost = buff_creator_t( this, "icy_edge" )
+    .spell( sets -> set( DEATH_KNIGHT_FROST, T20, B4 ) -> effectN( 1 ).trigger() )
+    .trigger_spell( sets -> set( DEATH_KNIGHT_FROST, T20, B4 ) )
+    .default_value( sets -> set( DEATH_KNIGHT_FROST, T20, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
 }
 
 // death_knight_t::init_gains ===============================================
