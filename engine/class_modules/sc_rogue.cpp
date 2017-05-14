@@ -739,6 +739,12 @@ struct rogue_t : public player_t
   role_e    primary_role() const override  { return ROLE_ATTACK; }
   stat_e    convert_hybrid_stat( stat_e s ) const override;
 
+  // Default consumables
+  std::string default_potion() const override;
+  std::string default_flask() const override;
+  std::string default_food() const override;
+  std::string default_rune() const override;
+
   double    composite_melee_speed() const override;
   double    composite_melee_haste() const override;
   double    composite_melee_crit_chance() const override;
@@ -7021,6 +7027,46 @@ double rogue_t::composite_player_target_multiplier( player_t* target, school_e s
   return m;
 }
 
+// rogue_t::default_flask ===================================================
+
+std::string rogue_t::default_flask() const
+{
+  return ( true_level >  100 ) ? "seventh_demon" :
+         ( true_level >= 90  ) ? "greater_draenic_agility_flask" :
+         ( true_level >= 85  ) ? "spring_blossoms" :
+         ( true_level >= 80  ) ? "winds" :
+         "disabled";
+}
+
+// rogue_t::default_potion ==================================================
+
+std::string rogue_t::default_potion() const
+{
+  return ( true_level > 100 ) ? ( specialization() == ROGUE_ASSASSINATION ? "old_war" : "prolonged_power" ) :
+         ( true_level >= 90 ) ? "draenic_agility" :
+         ( true_level >= 85 ) ? "virmens_bite" :
+         ( true_level >= 80 ) ? "tolvir" :
+         "disabled";
+}
+
+// rogue_t::default_food ====================================================
+
+std::string rogue_t::default_food() const
+{
+  return ( true_level >  100 ) ? "lavish_suramar_feast" :
+         ( true_level >  90  ) ? "jumbo_sea_dog" :
+         ( true_level >= 90  ) ? "sea_mist_rice_noodles" :
+         ( true_level >= 80  ) ? "seafood_magnifique_feast" :
+         "disabled";
+}
+
+std::string rogue_t::default_rune() const
+{
+  return ( true_level >= 110 ) ? "defiled" :
+         ( true_level >= 100 ) ? "hyper" :
+         "disabled";
+}
+
 // rogue_t::init_actions ====================================================
 
 void rogue_t::init_action_list()
@@ -7047,36 +7093,13 @@ void rogue_t::init_action_list()
   clear_action_priority_lists();
 
   // Flask
-  if ( sim -> allow_flasks && true_level >= 85 )
-  {
-    std::string flask_action = "flask,name=";
-    flask_action += ( ( true_level >= 110 ) ? "flask_of_the_seventh_demon" : ( true_level >= 100 ) ? "greater_draenic_agility_flask" : ( true_level >= 90 ) ? "spring_blossoms" : ( true_level >= 85 ) ? "winds" : "" );
+  precombat -> add_action( "flask" );
 
-    precombat -> add_action( flask_action );
-
-    // Added Rune if Flask are allowed since there is no "allow_runes" bool.
-    if ( true_level >= 100 )
-    {
-      std::string rune_action = "augmentation,name=";
-      rune_action += ( ( true_level >= 110 ) ? "defiled" : ( true_level >= 100 ) ? "hyper" : "" );
-
-      precombat -> add_action( rune_action );
-    }
-  }
+  // Rune
+  precombat -> add_action( "augmentation" );
 
   // Food
-  if ( sim -> allow_food && level() >= 85 )
-  {
-    std::string food_action = "food,name=";
-    if ( specialization() == ROGUE_ASSASSINATION )
-      food_action += ( ( level() >= 110 ) ? "lavish_suramar_feast" : ( level() >= 100 ) ? "jumbo_sea_dog" : ( level() >= 90 ) ? "sea_mist_rice_noodles" : ( level() >= 85 ) ? "seafood_magnifique_feast" : "" );
-    else if ( specialization() == ROGUE_OUTLAW )
-      food_action += ( ( level() >= 110 ) ? "lavish_suramar_feast" : ( level() >= 100 ) ? "jumbo_sea_dog" : ( level() >= 90 ) ? "sea_mist_rice_noodles" : ( level() >= 85 ) ? "seafood_magnifique_feast" : "" );
-    else if ( specialization() == ROGUE_SUBTLETY )
-      food_action += ( ( level() >= 110 ) ? "lavish_suramar_feast" : ( level() >= 100 ) ? "jumbo_sea_dog" : ( level() >= 90 ) ? "sea_mist_rice_noodles" : ( level() >= 85 ) ? "seafood_magnifique_feast" : "" );
-
-    precombat -> add_action( food_action );
-  }
+  precombat -> add_action( "food" );
 
   // Snapshot stats
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
@@ -7088,26 +7111,16 @@ void rogue_t::init_action_list()
   precombat -> add_action( this, "Stealth" );
 
   // Potion
-  std::string potion_action = "potion,name=";
-  if ( sim -> allow_potions && true_level >= 85 )
-  {
-    if ( specialization() == ROGUE_ASSASSINATION )
-      potion_action += ( ( true_level >= 110 ) ? "old_war" : ( true_level >= 100 ) ? "draenic_agility" : ( true_level >= 90 ) ? "virmens_bite" : ( true_level >= 85 ) ? "tolvir" : "" );
-    else
-      potion_action += ( ( true_level >= 110 ) ? "prolonged_power" : ( true_level >= 100 ) ? "draenic_agility" : ( true_level >= 90 ) ? "virmens_bite" : ( true_level >= 85 ) ? "tolvir" : "" );
+  precombat -> add_action( "potion" );
 
-    // Pre-Pot
-    precombat -> add_action( potion_action );
-
-    // In-Combat Potion
-    potion_action += ",if=buff.bloodlust.react|target.time_to_die<=25";
-    if ( specialization() == ROGUE_ASSASSINATION )
-      potion_action += "|debuff.vendetta.up&cooldown.vanish.remains<5";
-    else if ( specialization() == ROGUE_OUTLAW )
-      potion_action += "|buff.adrenaline_rush.up";
-    else if ( specialization() == ROGUE_SUBTLETY )
-      potion_action += "|buff.shadow_blades.up";
-  }
+  // Potion
+  std::string potion_action = "potion,if=buff.bloodlust.react|target.time_to_die<=25";
+  if ( specialization() == ROGUE_ASSASSINATION )
+    potion_action += "|debuff.vendetta.up&cooldown.vanish.remains<5";
+  else if ( specialization() == ROGUE_OUTLAW )
+    potion_action += "|buff.adrenaline_rush.up";
+  else if ( specialization() == ROGUE_SUBTLETY )
+    potion_action += "|buff.shadow_blades.up";
 
   precombat -> add_talent( this, "Marked for Death", "if=raid_event.adds.in>40" );
 
