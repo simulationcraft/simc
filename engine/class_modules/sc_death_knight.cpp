@@ -517,6 +517,7 @@ public:
     action_t* necrobomb;
     action_t* pestilence; // Armies of the Damned
     action_t* t20_2pc_unholy;
+    action_t* t20_2pc_frost;
   } active_spells;
 
   // Gains
@@ -5085,11 +5086,14 @@ struct frozen_obliteration_t : public death_knight_melee_attack_t
   }
 };
 
-struct obliterate_strike_t : public death_knight_melee_attack_t
+struct obliterate_strike_base_t : public death_knight_melee_attack_t
 {
   frozen_obliteration_t* fo;
 
-  obliterate_strike_t( death_knight_t* p, const std::string& name, weapon_t* w, const spell_data_t* s ) :
+  obliterate_strike_base_t( death_knight_t*     p,
+                            const std::string&  name,
+                            weapon_t*           w,
+                            const spell_data_t* s ) :
     death_knight_melee_attack_t( name, p, s ),
     fo( nullptr )
   {
@@ -5125,19 +5129,30 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
   }
 };
 
-struct obliterate_t : public death_knight_melee_attack_t
+struct obliterate_strike_t : public obliterate_strike_base_t
 {
-  obliterate_strike_t* mh, *oh;
+  obliterate_strike_t( death_knight_t* p, const std::string& name, weapon_t* w, const spell_data_t* s ) :
+    obliterate_strike_base_t( p, name, w, s )
+  { }
+};
 
-  obliterate_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_melee_attack_t( "obliterate", p, p -> find_class_spell( "Obliterate" ) ),
-    mh( new obliterate_strike_t( p, "obliterate_mh", &( p -> main_hand_weapon ), data().effectN( 2 ).trigger() ) ),
-    oh( new obliterate_strike_t( p, "obliterate_offhand", &( p -> off_hand_weapon ), data().effectN( 3 ).trigger() ) )
+// Frost T20 4pc strike.
+struct t20_obliterate_strike_t : public obliterate_strike_base_t
+{
+  t20_obliterate_strike_t( death_knight_t* p, const std::string& name, weapon_t* w, const spell_data_t* s ) :
+    obliterate_strike_base_t( p, name, w, s )
+  { }
+};
+
+struct obliterate_base_t : public death_knight_melee_attack_t
+{
+  obliterate_strike_base_t* mh, *oh;
+
+  obliterate_base_t( death_knight_t* p, const std::string& name, const std::string& options_str = std::string() ) :
+    death_knight_melee_attack_t( name, p, p -> find_specialization_spell( "Obliterate" ) ),
+    mh( nullptr ), oh( nullptr )
   {
     parse_options( options_str );
-
-    add_child( mh );
-    add_child( oh );
   }
 
   void execute() override
@@ -5168,19 +5183,11 @@ struct obliterate_t : public death_knight_melee_attack_t
           p() -> gains.overpowered, this );
     }
 
-    if ( rng().roll( p() -> legendary.koltiras_newfound_will -> proc_chance() ) )
-    {
-      p() -> replenish_rune( p() -> legendary.koltiras_newfound_will -> effectN( 1 ).trigger() -> effectN( 1 ).base_value(),
-          p() -> gains.koltiras_newfound_will );
-    }
-
     if ( rng().roll( p() -> artifact.thronebreaker.data().proc_chance() ) )
     {
       p() -> active_spells.thronebreaker -> set_target( execute_state -> target );
       p() -> active_spells.thronebreaker -> execute();
     }
-
-    consume_killing_machine( execute_state, p() -> procs.oblit_killing_machine );
   }
 
   double cost() const override
@@ -5198,6 +5205,63 @@ struct obliterate_t : public death_knight_melee_attack_t
     }
 
     return c;
+  }
+};
+
+// T20 procced obliterate
+struct t20_obliterate_t : public obliterate_base_t
+{
+  t20_obliterate_t( death_knight_t* p ) :
+    obliterate_base_t( p, "t20_obliterate" )
+  {
+    background = true;
+
+    // Make this obliterate free
+    base_costs[ RESOURCE_RUNE ] = 0;
+    energize_type = ENERGIZE_NONE;
+
+    mh = new t20_obliterate_strike_t( p, "t20_obliterate_mh", &( p -> main_hand_weapon ), data().effectN( 2 ).trigger() );
+    oh = new t20_obliterate_strike_t( p, "t20_obliterate_offhand", &( p -> off_hand_weapon ), data().effectN( 3 ).trigger() );
+
+    add_child( mh );
+    add_child( oh );
+  }
+};
+
+// User-pressed obliterate
+struct obliterate_t : public obliterate_base_t
+{
+  obliterate_t( death_knight_t* p, const std::string& options_str ) :
+    obliterate_base_t( p, "obliterate", options_str )
+  {
+    parse_options( options_str );
+
+    mh = new obliterate_strike_t( p, "obliterate_mh", &( p -> main_hand_weapon ), data().effectN( 2 ).trigger() );
+    oh = new obliterate_strike_t( p, "obliterate_offhand", &( p -> off_hand_weapon ), data().effectN( 3 ).trigger() );
+
+    add_child( mh );
+    add_child( oh );
+  }
+
+  void execute() override
+  {
+    obliterate_base_t::execute();
+
+    if ( rng().roll( p() -> legendary.koltiras_newfound_will -> proc_chance() ) )
+    {
+      p() -> replenish_rune( p() -> legendary.koltiras_newfound_will -> effectN( 1 ).trigger() -> effectN( 1 ).base_value(),
+          p() -> gains.koltiras_newfound_will );
+    }
+
+    // Benefits from Killing Machine, so do a instant execute here instead of a "schedule execute"
+    if ( maybe_ptr( p() -> dbc.ptr ) &&
+         rng().roll( p() -> sets -> set( DEATH_KNIGHT_FROST, T20, B2 ) -> proc_chance() ) )
+    {
+      p() -> active_spells.t20_2pc_frost -> set_target( execute_state -> target );
+      p() -> active_spells.t20_2pc_frost -> execute();
+    }
+
+    consume_killing_machine( execute_state, p() -> procs.oblit_killing_machine );
   }
 };
 
@@ -6747,6 +6811,11 @@ bool death_knight_t::create_actions()
   if ( sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T20, B2 ) )
   {
     active_spells.t20_2pc_unholy = new explosive_army_t( this );
+  }
+
+  if ( maybe_ptr( dbc.ptr ) && sets -> has_set_bonus( DEATH_KNIGHT_FROST, T20, B2 ) )
+  {
+    active_spells.t20_2pc_frost = new t20_obliterate_t( this );
   }
 
   return player_t::create_actions();
