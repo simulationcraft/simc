@@ -453,6 +453,8 @@ public:
     buff_t* frozen_soul;
     buff_t* hungering_rune_weapon;
     buff_t* t20_2pc_frost;
+    buff_t* t20_2pc_unholy;
+    buff_t* t20_4pc_frost;
 
     absorb_buff_t* blood_shield;
     buff_t* rune_tap;
@@ -515,6 +517,7 @@ public:
     action_t* necrobomb;
     action_t* pestilence; // Armies of the Damned
     action_t* t20_2pc_unholy;
+    action_t* t20_2pc_frost;
   } active_spells;
 
   // Gains
@@ -905,6 +908,7 @@ public:
   std::string default_potion() const override;
   std::string default_flask() const override;
   std::string default_food() const override;
+  std::string default_rune() const override;
 
   double    runes_per_second() const;
   double    rune_regen_coefficient() const;
@@ -2175,11 +2179,7 @@ struct valkyr_pet_t : public death_knight_pet_t
   {
     death_knight_pet_t::init_base_stats();
 
-    owner_coeff.ap_from_ap = 1 / 3.0;
-    // 2017-01-10: Dark Arbiter damage increased by 36%. NOTE: Valkyr Strike AP coefficient was
-    // increased 7 -> 7.5 in a hotfix, so apply the remaining increase here as a wonky number.
-    // Reality is probably something entirely different, but needs testing.
-    owner_coeff.ap_from_ap *= 1.27;
+    owner_coeff.ap_from_ap = 1;
   }
 
   void init_action_list() override
@@ -2514,7 +2514,7 @@ struct death_knight_action_t : public Base
   {
     auto ret = action_base_t::consume_cost_per_tick( dot );
 
-    if ( ret && this -> last_resource_cost > 0 )
+    if ( ! maybe_ptr( p() -> dbc.ptr ) && ret && this -> last_resource_cost > 0 )
     {
       p() -> trigger_t20_4pc_frost( this -> last_resource_cost );
     }
@@ -2555,7 +2555,10 @@ struct death_knight_action_t : public Base
         p() -> cooldown.vampiric_blood -> adjust( -sec );
       }
 
-      p() -> trigger_t20_4pc_frost( this -> last_resource_cost );
+      if ( ! maybe_ptr( p() -> dbc.ptr ) )
+      {
+        p() -> trigger_t20_4pc_frost( this -> last_resource_cost );
+      }
     }
   }
 
@@ -3366,7 +3369,12 @@ struct army_of_the_dead_t : public death_knight_spell_t
       // you get for ghouls is 4-6 seconds less.
       // TODO: DBC
       for ( int i = 0; i < 8; i++ )
+      {
         p() -> pets.army_ghoul[ i ] -> summon( timespan_t::from_seconds( 35 ) );
+        p() -> buffs.t20_2pc_unholy -> trigger();
+      }
+
+      p() -> buffs.t20_2pc_unholy -> extend_duration( p(), timespan_t::from_seconds( -5 ) );
 
       // Simulate rune regen for 5 seconds for the consumed runes. Ugly but works
       // Note that this presumes no other rune-using abilities are used
@@ -3381,7 +3389,10 @@ struct army_of_the_dead_t : public death_knight_spell_t
     {
       // TODO: DBC
       for ( int i = 0; i < 8; i++ )
+      {
         p() -> pets.army_ghoul[ i ] -> summon( timespan_t::from_seconds( 40 ) );
+        p() -> buffs.t20_2pc_unholy -> trigger();
+      }
     }
   }
 
@@ -4660,6 +4671,15 @@ struct frost_strike_t : public death_knight_melee_attack_t
     add_child( oh );
   }
 
+  double cost() const override
+  {
+    double c = death_knight_melee_attack_t::cost();
+
+    c *= 1.0 + p() -> buffs.t20_4pc_frost -> check_value();
+
+    return c;
+  }
+
   void execute() override
   {
     death_knight_melee_attack_t::execute();
@@ -4691,6 +4711,9 @@ struct frost_strike_t : public death_knight_melee_attack_t
       //p() -> buffs.killing_machine -> trigger_attempts++;
       p() -> buffs.killing_machine -> execute();
     }
+
+    p() -> buffs.t20_4pc_frost -> up(); // Benefit tracking on execute
+    p() -> buffs.t20_4pc_frost -> expire();
   }
 };
 
@@ -5064,11 +5087,14 @@ struct frozen_obliteration_t : public death_knight_melee_attack_t
   }
 };
 
-struct obliterate_strike_t : public death_knight_melee_attack_t
+struct obliterate_strike_base_t : public death_knight_melee_attack_t
 {
   frozen_obliteration_t* fo;
 
-  obliterate_strike_t( death_knight_t* p, const std::string& name, weapon_t* w, const spell_data_t* s ) :
+  obliterate_strike_base_t( death_knight_t*     p,
+                            const std::string&  name,
+                            weapon_t*           w,
+                            const spell_data_t* s ) :
     death_knight_melee_attack_t( name, p, s ),
     fo( nullptr )
   {
@@ -5104,19 +5130,30 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
   }
 };
 
-struct obliterate_t : public death_knight_melee_attack_t
+struct obliterate_strike_t : public obliterate_strike_base_t
 {
-  obliterate_strike_t* mh, *oh;
+  obliterate_strike_t( death_knight_t* p, const std::string& name, weapon_t* w, const spell_data_t* s ) :
+    obliterate_strike_base_t( p, name, w, s )
+  { }
+};
 
-  obliterate_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_melee_attack_t( "obliterate", p, p -> find_class_spell( "Obliterate" ) ),
-    mh( new obliterate_strike_t( p, "obliterate_mh", &( p -> main_hand_weapon ), data().effectN( 2 ).trigger() ) ),
-    oh( new obliterate_strike_t( p, "obliterate_offhand", &( p -> off_hand_weapon ), data().effectN( 3 ).trigger() ) )
+// Frost T20 4pc strike.
+struct t20_obliterate_strike_t : public obliterate_strike_base_t
+{
+  t20_obliterate_strike_t( death_knight_t* p, const std::string& name, weapon_t* w, const spell_data_t* s ) :
+    obliterate_strike_base_t( p, name, w, s )
+  { }
+};
+
+struct obliterate_base_t : public death_knight_melee_attack_t
+{
+  obliterate_strike_base_t* mh, *oh;
+
+  obliterate_base_t( death_knight_t* p, const std::string& name, const std::string& options_str = std::string() ) :
+    death_knight_melee_attack_t( name, p, p -> find_specialization_spell( "Obliterate" ) ),
+    mh( nullptr ), oh( nullptr )
   {
     parse_options( options_str );
-
-    add_child( mh );
-    add_child( oh );
   }
 
   void execute() override
@@ -5132,6 +5169,13 @@ struct obliterate_t : public death_knight_melee_attack_t
       oh -> execute();
 
       p() -> buffs.rime -> trigger();
+
+      if ( maybe_ptr( p() -> dbc.ptr ) &&
+           ( mh -> execute_state -> result_amount > 0 ||
+             oh -> execute_state -> result_amount > 0 ) )
+      {
+        p() -> trigger_t20_4pc_frost( 0 );
+      }
     }
 
     if ( rng().roll( p() -> artifact.overpowered.data().proc_chance() ) )
@@ -5140,19 +5184,11 @@ struct obliterate_t : public death_knight_melee_attack_t
           p() -> gains.overpowered, this );
     }
 
-    if ( rng().roll( p() -> legendary.koltiras_newfound_will -> proc_chance() ) )
-    {
-      p() -> replenish_rune( p() -> legendary.koltiras_newfound_will -> effectN( 1 ).trigger() -> effectN( 1 ).base_value(),
-          p() -> gains.koltiras_newfound_will );
-    }
-
     if ( rng().roll( p() -> artifact.thronebreaker.data().proc_chance() ) )
     {
       p() -> active_spells.thronebreaker -> set_target( execute_state -> target );
       p() -> active_spells.thronebreaker -> execute();
     }
-
-    consume_killing_machine( execute_state, p() -> procs.oblit_killing_machine );
   }
 
   double cost() const override
@@ -5170,6 +5206,63 @@ struct obliterate_t : public death_knight_melee_attack_t
     }
 
     return c;
+  }
+};
+
+// T20 procced obliterate
+struct t20_obliterate_t : public obliterate_base_t
+{
+  t20_obliterate_t( death_knight_t* p ) :
+    obliterate_base_t( p, "t20_obliterate" )
+  {
+    background = true;
+
+    // Make this obliterate free
+    base_costs[ RESOURCE_RUNE ] = 0;
+    energize_type = ENERGIZE_NONE;
+
+    mh = new t20_obliterate_strike_t( p, "t20_obliterate_mh", &( p -> main_hand_weapon ), data().effectN( 2 ).trigger() );
+    oh = new t20_obliterate_strike_t( p, "t20_obliterate_offhand", &( p -> off_hand_weapon ), data().effectN( 3 ).trigger() );
+
+    add_child( mh );
+    add_child( oh );
+  }
+};
+
+// User-pressed obliterate
+struct obliterate_t : public obliterate_base_t
+{
+  obliterate_t( death_knight_t* p, const std::string& options_str ) :
+    obliterate_base_t( p, "obliterate", options_str )
+  {
+    parse_options( options_str );
+
+    mh = new obliterate_strike_t( p, "obliterate_mh", &( p -> main_hand_weapon ), data().effectN( 2 ).trigger() );
+    oh = new obliterate_strike_t( p, "obliterate_offhand", &( p -> off_hand_weapon ), data().effectN( 3 ).trigger() );
+
+    add_child( mh );
+    add_child( oh );
+  }
+
+  void execute() override
+  {
+    obliterate_base_t::execute();
+
+    if ( rng().roll( p() -> legendary.koltiras_newfound_will -> proc_chance() ) )
+    {
+      p() -> replenish_rune( p() -> legendary.koltiras_newfound_will -> effectN( 1 ).trigger() -> effectN( 1 ).base_value(),
+          p() -> gains.koltiras_newfound_will );
+    }
+
+    // Benefits from Killing Machine, so do a instant execute here instead of a "schedule execute"
+    if ( maybe_ptr( p() -> dbc.ptr ) &&
+         rng().roll( p() -> sets -> set( DEATH_KNIGHT_FROST, T20, B2 ) -> proc_chance() ) )
+    {
+      p() -> active_spells.t20_2pc_frost -> set_target( execute_state -> target );
+      p() -> active_spells.t20_2pc_frost -> execute();
+    }
+
+    consume_killing_machine( execute_state, p() -> procs.oblit_killing_machine );
   }
 };
 
@@ -6416,20 +6509,27 @@ void death_knight_t::trigger_t20_4pc_frost( double consumed )
     return;
   }
 
-  t20_4pc_frost += consumed;
-
-  if ( sim -> debug )
+  if ( maybe_ptr( dbc.ptr ) )
   {
-    sim -> out_debug.printf( "%s T20 4PC set bonus accumulates %.1f, total %d runic_power",
-      name(), consumed, t20_4pc_frost );
+    buffs.t20_4pc_frost -> trigger();
   }
-
-  if ( t20_4pc_frost >= sets -> set( DEATH_KNIGHT_FROST, T20, B4 ) -> effectN( 2 ).base_value() )
+  else
   {
-    auto cd_adjust = timespan_t::from_seconds( sets -> set( DEATH_KNIGHT_FROST, T20, B4 ) -> effectN( 1 ).base_value() );
-    cooldown.empower_rune_weapon -> adjust( -cd_adjust );
-    cooldown.hungering_rune_weapon -> adjust( -cd_adjust );
-    t20_4pc_frost -= sets -> set( DEATH_KNIGHT_FROST, T20, B4 ) -> effectN( 2 ).base_value();
+    t20_4pc_frost += consumed;
+
+    if ( sim -> debug )
+    {
+      sim -> out_debug.printf( "%s T20 4PC set bonus accumulates %.1f, total %d runic_power",
+        name(), consumed, t20_4pc_frost );
+    }
+
+    if ( t20_4pc_frost >= sets -> set( DEATH_KNIGHT_FROST, T20, B4 ) -> effectN( 2 ).base_value() )
+    {
+      auto cd_adjust = timespan_t::from_seconds( sets -> set( DEATH_KNIGHT_FROST, T20, B4 ) -> effectN( 1 ).base_value() );
+      cooldown.empower_rune_weapon -> adjust( -cd_adjust );
+      cooldown.hungering_rune_weapon -> adjust( -cd_adjust );
+      t20_4pc_frost -= sets -> set( DEATH_KNIGHT_FROST, T20, B4 ) -> effectN( 2 ).base_value();
+    }
   }
 }
 
@@ -6457,35 +6557,42 @@ void death_knight_t::trigger_t20_2pc_unholy( const action_state_t* state )
     return;
   }
 
-  // Prefer Apocalypse ghouls over Army of the Dead ghouls. Note that we check that the pets
-  // are there (check non-null pointer for the first array entry). This is because if the user for
-  // some reason has no Apocalypse power (unlikely), or has not specified apocalypse to be used on
-  // the APL, the pets will not be created.
-  if ( artifact.apocalypse.rank() && pets.apocalypse_ghoul[ 0 ] )
+  // PTR has a completely different T20 set bonus
+  if ( maybe_ptr( dbc.ptr ) )
   {
-    for ( auto pet : pets.apocalypse_ghoul )
+  }
+  else
+  {
+    // Prefer Apocalypse ghouls over Army of the Dead ghouls. Note that we check that the pets
+    // are there (check non-null pointer for the first array entry). This is because if the user for
+    // some reason has no Apocalypse power (unlikely), or has not specified apocalypse to be used on
+    // the APL, the pets will not be created.
+    if ( artifact.apocalypse.rank() && pets.apocalypse_ghoul[ 0 ] )
     {
-      if ( ! pet -> is_sleeping() )
+      for ( auto pet : pets.apocalypse_ghoul )
       {
-        active_spells.t20_2pc_unholy -> set_target( state -> target );
-        active_spells.t20_2pc_unholy -> execute();
-        pet -> cast_pet() -> dismiss();
-        return; // Explosion done, bail out
+        if ( ! pet -> is_sleeping() )
+        {
+          active_spells.t20_2pc_unholy -> set_target( state -> target );
+          active_spells.t20_2pc_unholy -> execute();
+          pet -> cast_pet() -> dismiss();
+          return; // Explosion done, bail out
+        }
       }
     }
-  }
 
-  // Look for an Army ghoul to explode
-  if ( pets.army_ghoul[ 0 ] )
-  {
-    for ( auto pet : pets.army_ghoul )
+    // Look for an Army ghoul to explode
+    if ( pets.army_ghoul[ 0 ] )
     {
-      if ( ! pet -> is_sleeping() )
+      for ( auto pet : pets.army_ghoul )
       {
-        active_spells.t20_2pc_unholy -> set_target( state -> target );
-        active_spells.t20_2pc_unholy -> execute();
-        pet -> cast_pet() -> dismiss();
-        return; // Explosion done, bail out
+        if ( ! pet -> is_sleeping() )
+        {
+          active_spells.t20_2pc_unholy -> set_target( state -> target );
+          active_spells.t20_2pc_unholy -> execute();
+          pet -> cast_pet() -> dismiss();
+          return; // Explosion done, bail out
+        }
       }
     }
   }
@@ -6705,6 +6812,11 @@ bool death_knight_t::create_actions()
   if ( sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T20, B2 ) )
   {
     active_spells.t20_2pc_unholy = new explosive_army_t( this );
+  }
+
+  if ( maybe_ptr( dbc.ptr ) && sets -> has_set_bonus( DEATH_KNIGHT_FROST, T20, B2 ) )
+  {
+    active_spells.t20_2pc_frost = new t20_obliterate_t( this );
   }
 
   return player_t::create_actions();
@@ -7161,10 +7273,7 @@ void death_knight_t::default_apl_dps_precombat()
   // Food
   precombat -> add_action( "food" );
 
-  if ( true_level >= 110 )
-  {
-    precombat -> add_action( "augmentation,name=defiled" );
-  }
+  precombat -> add_action( "augmentation" );
 
   // Snapshot stats
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
@@ -7242,6 +7351,15 @@ std::string death_knight_t::default_flask() const
   {
     default: return flask_name;
   }
+}
+
+// death_knight_t::default_rune =============================================
+
+std::string death_knight_t::default_rune() const
+{
+  return ( true_level >= 110 ) ? "defiled" :
+         ( true_level >= 100 ) ? "stout" :
+         "disabled";
 }
 
 // death_knight_t::default_apl_frost ========================================
@@ -7719,6 +7837,16 @@ void death_knight_t::create_buffs()
     .trigger_spell( sets -> set( DEATH_KNIGHT_FROST, T20, B2 ) )
     .default_value( sets -> set( DEATH_KNIGHT_FROST, T20, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buffs.t20_2pc_unholy = buff_creator_t( this, "master_of_ghouls" )
+    .spell( find_spell( 246995 ) )
+    .trigger_spell( sets -> set( DEATH_KNIGHT_UNHOLY, T20, B2 ) )
+    .default_value( find_spell( 246995 ) -> effectN( 1 ).percent() )
+    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+    .refresh_behavior( BUFF_REFRESH_EXTEND );
+  buffs.t20_4pc_frost = buff_creator_t( this, "icy_edge" )
+    .spell( sets -> set( DEATH_KNIGHT_FROST, T20, B4 ) -> effectN( 1 ).trigger() )
+    .trigger_spell( sets -> set( DEATH_KNIGHT_FROST, T20, B4 ) )
+    .default_value( sets -> set( DEATH_KNIGHT_FROST, T20, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
 }
 
 // death_knight_t::init_gains ===============================================
@@ -8120,6 +8248,8 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
   }
 
   m *= 1.0 + buffs.t20_2pc_frost -> stack_value();
+
+  m *= 1.0 + buffs.t20_2pc_unholy -> stack_value();
 
   return m;
 }

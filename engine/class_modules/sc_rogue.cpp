@@ -704,6 +704,12 @@ struct rogue_t : public player_t
     regen_type = REGEN_DYNAMIC;
     regen_caches[CACHE_HASTE] = true;
     regen_caches[CACHE_ATTACK_HASTE] = true;
+
+    // Register a custom talent validity function that allows Vigor to be used when the user has
+    // Soul of the Shadowblade.
+    talent_points.register_validity_fn( [ this ]( const spell_data_t* spell ) {
+      return spell -> id() == 14983 && find_item( 150936 ) != nullptr;
+    } );
   }
 
   // Character Definition
@@ -732,6 +738,12 @@ struct rogue_t : public player_t
   resource_e primary_resource() const override { return RESOURCE_ENERGY; }
   role_e    primary_role() const override  { return ROLE_ATTACK; }
   stat_e    convert_hybrid_stat( stat_e s ) const override;
+
+  // Default consumables
+  std::string default_potion() const override;
+  std::string default_flask() const override;
+  std::string default_food() const override;
+  std::string default_rune() const override;
 
   double    composite_melee_speed() const override;
   double    composite_melee_haste() const override;
@@ -7015,6 +7027,46 @@ double rogue_t::composite_player_target_multiplier( player_t* target, school_e s
   return m;
 }
 
+// rogue_t::default_flask ===================================================
+
+std::string rogue_t::default_flask() const
+{
+  return ( true_level >  100 ) ? "seventh_demon" :
+         ( true_level >= 90  ) ? "greater_draenic_agility_flask" :
+         ( true_level >= 85  ) ? "spring_blossoms" :
+         ( true_level >= 80  ) ? "winds" :
+         "disabled";
+}
+
+// rogue_t::default_potion ==================================================
+
+std::string rogue_t::default_potion() const
+{
+  return ( true_level > 100 ) ? ( specialization() == ROGUE_ASSASSINATION ? "old_war" : "prolonged_power" ) :
+         ( true_level >= 90 ) ? "draenic_agility" :
+         ( true_level >= 85 ) ? "virmens_bite" :
+         ( true_level >= 80 ) ? "tolvir" :
+         "disabled";
+}
+
+// rogue_t::default_food ====================================================
+
+std::string rogue_t::default_food() const
+{
+  return ( true_level >  100 ) ? "lavish_suramar_feast" :
+         ( true_level >  90  ) ? "jumbo_sea_dog" :
+         ( true_level >= 90  ) ? "sea_mist_rice_noodles" :
+         ( true_level >= 80  ) ? "seafood_magnifique_feast" :
+         "disabled";
+}
+
+std::string rogue_t::default_rune() const
+{
+  return ( true_level >= 110 ) ? "defiled" :
+         ( true_level >= 100 ) ? "hyper" :
+         "disabled";
+}
+
 // rogue_t::init_actions ====================================================
 
 void rogue_t::init_action_list()
@@ -7041,36 +7093,13 @@ void rogue_t::init_action_list()
   clear_action_priority_lists();
 
   // Flask
-  if ( sim -> allow_flasks && true_level >= 85 )
-  {
-    std::string flask_action = "flask,name=";
-    flask_action += ( ( true_level >= 110 ) ? "flask_of_the_seventh_demon" : ( true_level >= 100 ) ? "greater_draenic_agility_flask" : ( true_level >= 90 ) ? "spring_blossoms" : ( true_level >= 85 ) ? "winds" : "" );
+  precombat -> add_action( "flask" );
 
-    precombat -> add_action( flask_action );
-
-    // Added Rune if Flask are allowed since there is no "allow_runes" bool.
-    if ( true_level >= 100 )
-    {
-      std::string rune_action = "augmentation,name=";
-      rune_action += ( ( true_level >= 110 ) ? "defiled" : ( true_level >= 100 ) ? "hyper" : "" );
-
-      precombat -> add_action( rune_action );
-    }
-  }
+  // Rune
+  precombat -> add_action( "augmentation" );
 
   // Food
-  if ( sim -> allow_food && level() >= 85 )
-  {
-    std::string food_action = "food,name=";
-    if ( specialization() == ROGUE_ASSASSINATION )
-      food_action += ( ( level() >= 110 ) ? "lavish_suramar_feast" : ( level() >= 100 ) ? "jumbo_sea_dog" : ( level() >= 90 ) ? "sea_mist_rice_noodles" : ( level() >= 85 ) ? "seafood_magnifique_feast" : "" );
-    else if ( specialization() == ROGUE_OUTLAW )
-      food_action += ( ( level() >= 110 ) ? "lavish_suramar_feast" : ( level() >= 100 ) ? "jumbo_sea_dog" : ( level() >= 90 ) ? "sea_mist_rice_noodles" : ( level() >= 85 ) ? "seafood_magnifique_feast" : "" );
-    else if ( specialization() == ROGUE_SUBTLETY )
-      food_action += ( ( level() >= 110 ) ? "lavish_suramar_feast" : ( level() >= 100 ) ? "jumbo_sea_dog" : ( level() >= 90 ) ? "sea_mist_rice_noodles" : ( level() >= 85 ) ? "seafood_magnifique_feast" : "" );
-
-    precombat -> add_action( food_action );
-  }
+  precombat -> add_action( "food" );
 
   // Snapshot stats
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
@@ -7082,28 +7111,21 @@ void rogue_t::init_action_list()
   precombat -> add_action( this, "Stealth" );
 
   // Potion
-  std::string potion_action = "potion,name=";
-  if ( sim -> allow_potions && true_level >= 85 )
-  {
-    if ( specialization() == ROGUE_ASSASSINATION )
-      potion_action += ( ( true_level >= 110 ) ? "old_war" : ( true_level >= 100 ) ? "draenic_agility" : ( true_level >= 90 ) ? "virmens_bite" : ( true_level >= 85 ) ? "tolvir" : "" );
-    else
-      potion_action += ( ( true_level >= 110 ) ? "prolonged_power" : ( true_level >= 100 ) ? "draenic_agility" : ( true_level >= 90 ) ? "virmens_bite" : ( true_level >= 85 ) ? "tolvir" : "" );
+  precombat -> add_action( "potion" );
 
-    // Pre-Pot
-    precombat -> add_action( potion_action );
-
-    // In-Combat Potion
-    potion_action += ",if=buff.bloodlust.react|target.time_to_die<=25";
-    if ( specialization() == ROGUE_ASSASSINATION )
-      potion_action += "|debuff.vendetta.up&cooldown.vanish.remains<5";
-    else if ( specialization() == ROGUE_OUTLAW )
-      potion_action += "|buff.adrenaline_rush.up";
-    else if ( specialization() == ROGUE_SUBTLETY )
-      potion_action += "|buff.shadow_blades.up";
-  }
+  // Potion
+  std::string potion_action = "potion,if=buff.bloodlust.react|target.time_to_die<=25";
+  if ( specialization() == ROGUE_ASSASSINATION )
+    potion_action += "|debuff.vendetta.up&cooldown.vanish.remains<5";
+  else if ( specialization() == ROGUE_OUTLAW )
+    potion_action += "|buff.adrenaline_rush.up";
+  else if ( specialization() == ROGUE_SUBTLETY )
+    potion_action += "|buff.shadow_blades.up";
 
   precombat -> add_talent( this, "Marked for Death", "if=raid_event.adds.in>40" );
+
+  // Vigor variable to check for Vigor effect from talent or legendary ring
+  precombat -> add_action( "variable,name=vigor_active,value=talent.vigor.enabled|equipped.soul_of_the_shadowblade" );
 
   if ( specialization() == ROGUE_ASSASSINATION )
   {
@@ -7249,7 +7271,7 @@ void rogue_t::init_action_list()
   {
     // Pre-Combat
     precombat -> add_action( "variable,name=ssw_refund,value=equipped.shadow_satyrs_walk*(6+ssw_refund_offset)", "Defined variables that doesn't change during the fight" );
-    precombat -> add_action( "variable,name=stealth_threshold,value=(15+talent.vigor.enabled*35+talent.master_of_shadows.enabled*(25+ptr*15)+variable.ssw_refund)" );
+    precombat -> add_action( "variable,name=stealth_threshold,value=(15+variable.vigor_active*35+talent.master_of_shadows.enabled*(25+ptr*15)+variable.ssw_refund)" );
     precombat -> add_action( "variable,name=shd_fractionnal,value=ptr*(1.725+0.6*talent.enveloping_shadows.enabled)+(1-ptr)*2.45" );
     precombat -> add_talent( this, "Enveloping Shadows", "if=combo_points>=5&ptr=0" );
     precombat -> add_action( this, "Shadow Dance", "if=talent.subterfuge.enabled&bugs", "Since 7.1.5, casting Shadow Dance before going in combat let you extends the stealth buff, so it's worth to use with Subterfuge talent. Has not been fixed in 7.2.5!" ); // Before SoD because we do it while not in stealth in-game
@@ -7321,7 +7343,7 @@ void rogue_t::init_action_list()
     stealth_cds -> add_action( this, "Shadow Dance", "if=charges_fractional>=variable.shd_fractionnal" );
     stealth_cds -> add_action( "pool_resource,for_next=1,extra_amount=40" );
     stealth_cds -> add_action( "shadowmeld,if=energy>=40&energy.deficit>=10+variable.ssw_refund" );
-    stealth_cds -> add_action( this, "Shadow Dance", "if=combo_points.deficit>=5-talent.vigor.enabled" );
+    stealth_cds -> add_action( this, "Shadow Dance", "if=combo_points.deficit>=5-variable.vigor_active" );
 
     // Stealthed Rotation
     action_priority_list_t* stealthed = get_action_priority_list( "stealthed", "Stealthed Rotation" );
@@ -7350,7 +7372,7 @@ void rogue_t::init_action_list()
     // Cooldowns
     action_priority_list_t* ptr_cds = get_action_priority_list( "ptr_cds", "Cooldowns" );
     ptr_cds -> add_action( "potion,name=old_war,if=buff.bloodlust.react|target.time_to_die<=25|buff.shadow_blades.up" );
-    ptr_cds -> add_action( "use_item,name=draught_of_souls,if=!stealthed.rogue&energy.deficit>30+talent.vigor.enabled*10" );
+    ptr_cds -> add_action( "use_item,name=draught_of_souls,if=!stealthed.rogue&energy.deficit>30+variable.vigor_active*10" );
     for ( size_t i = 0; i < items.size(); i++ )
     {
       if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) && items[i].name_str != "draught_of_souls" )
@@ -7365,7 +7387,7 @@ void rogue_t::init_action_list()
     }
     ptr_cds -> add_action( this, "Symbols of Death", "if=!stealthed.all" );
     ptr_cds -> add_action( this, "Shadow Blades", "if=combo_points.deficit>=2+stealthed.all-equipped.mantle_of_the_master_assassin" );
-    ptr_cds -> add_action( this, "Goremaw's Bite", "if=!stealthed.all&cooldown.shadow_dance.charges_fractional<=variable.shd_fractionnal&((combo_points.deficit>=4-(time<10)*2&energy.deficit>50+talent.vigor.enabled*25-(time>=10)*15)|(combo_points.deficit>=1&target.time_to_die<8))" );
+    ptr_cds -> add_action( this, "Goremaw's Bite", "if=!stealthed.all&cooldown.shadow_dance.charges_fractional<=variable.shd_fractionnal&((combo_points.deficit>=4-(time<10)*2&energy.deficit>50+variable.vigor_active*25-(time>=10)*15)|(combo_points.deficit>=1&target.time_to_die<8))" );
     ptr_cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit|(raid_event.adds.in>40&combo_points.deficit>=cp_max_spend)" );
 
     // Finishers

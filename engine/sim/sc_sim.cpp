@@ -1404,6 +1404,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   allow_potions( true ),
   allow_food( true ),
   allow_flasks( true ),
+  allow_augmentations( true ),
   solo_raid( false ),
   global_item_upgrade_level( 0 ),
   maximize_reporting( false ),
@@ -2564,7 +2565,7 @@ bool sim_t::iterate()
 
     combat();
 
-    if ( progress_bar.update() )
+    if ( progress_bar.update( false, current_index ) )
     {
       progress_bar.output( false );
     }
@@ -2590,7 +2591,7 @@ bool sim_t::iterate()
     }
   } while ( more_work && ! canceled );
 
-  if ( ! canceled && progress_bar.update( true ) )
+  if ( ! canceled && progress_bar.update( true, current_index ) )
   {
     progress_bar.output( true );
   }
@@ -3086,6 +3087,7 @@ void sim_t::create_options()
   add_option( opt_bool( "override.allow_potions", allow_potions ) );
   add_option( opt_bool( "override.allow_food", allow_food ) );
   add_option( opt_bool( "override.allow_flasks", allow_flasks ) );
+  add_option( opt_bool( "override.allow_augmentations", allow_augmentations ) );
   add_option( opt_bool( "override.bloodlust", overrides.bloodlust ) );
   // Regen
   add_option( opt_timespan( "regen_periodicity", regen_periodicity ) );
@@ -3379,7 +3381,7 @@ void sim_t::setup( sim_control_t* c )
 
 // sim_t::progress ==========================================================
 
-sim_t::sim_progress_t sim_t::progress( std::string* detailed, int index )
+sim_progress_t sim_t::progress( std::string* detailed, int index )
 {
   auto total_progress = work_queue -> progress( index );
 

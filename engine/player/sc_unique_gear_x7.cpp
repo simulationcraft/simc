@@ -100,8 +100,15 @@ namespace item
   void nightblooming_frond( special_effect_t&     );
   void might_of_krosus( special_effect_t&         );
 
+  // 7.2.5 Raid
+  void terror_from_below( special_effect_t&         );
+  void spectral_thurible( special_effect_t&         );
+  void tome_of_unraveling_sanity( special_effect_t& );
+
   // 7.2.0 Dungeon
   void dreadstone_of_endless_shadows( special_effect_t& );
+
+
 
   // Adding this here to check it off the list.
   // The sim builds it automatically.
@@ -376,6 +383,8 @@ void item::arans_relaxing_ruby( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+// Ring of Collapsing Futures ============================================================
 
 void item::ring_of_collapsing_futures( special_effect_t& effect )
 {
@@ -1418,6 +1427,140 @@ void item::star_gate( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 
+}
+
+// Spectral Thurible =============================================================
+//TODO: Check targeting is correct, should store target at buff begin.
+//      Fix travel time - spell should fire at buff expire, travel, then impact.
+
+void item::spectral_thurible( special_effect_t& effect )
+{
+  struct piercing_anguish_t : public spell_t
+  {
+    piercing_anguish_t( const special_effect_t& effect ) :
+      spell_t( "piercing_anguish", effect.player, effect.player -> find_spell( 246751 ) )
+    {
+      background = may_crit = true;
+      callbacks = false;
+      item = effect.item;
+      base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item );
+    }
+  };
+
+  struct spear_of_anguish_t : public buff_t
+  {
+    piercing_anguish_t* piercing_anguish;
+    spear_of_anguish_t( player_t* p, special_effect_t& effect ) :
+      buff_t( p, "spear_of_anguish", p -> find_spell( 243644 ) ),
+      piercing_anguish( new piercing_anguish_t( effect ) )
+    {}
+
+    void aura_gain() override
+    {
+      buff_t::aura_gain();
+      piercing_anguish -> target = player -> target;
+    }
+    void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+    {
+      buff_t::expire_override( expiration_stacks, remaining_duration );
+      piercing_anguish -> execute();
+    }
+  };
+
+  struct spectral_thurible_cb_t : public dbc_proc_callback_t
+  {
+    cooldown_t* icd;
+
+    spectral_thurible_cb_t ( special_effect_t& effect ) :
+      dbc_proc_callback_t( effect.item, effect )
+    {
+      icd = effect.player -> get_cooldown( "spectral_thurible_icd" );
+      icd -> duration = timespan_t::from_seconds( 5.0 );
+
+    }
+
+    void execute( action_t*, action_state_t* ) override
+    {
+      if ( icd -> up() )
+      {
+        effect.custom_buff -> trigger();
+        icd -> start();
+      }
+    }
+  };
+
+  effect.custom_buff = new spear_of_anguish_t( effect.player, effect );
+  new spectral_thurible_cb_t( effect );
+}
+
+// Terror From Below ============================================================
+
+struct terrow_from_below_t : public spell_t
+{
+  terrow_from_below_t( const special_effect_t& effect ) :
+    spell_t( "terror_from_below", effect.player, effect.player -> find_spell( 242524 ) )
+  {
+    background = may_crit = true;
+    callbacks = false;
+    item = effect.item;
+    school = SCHOOL_NATURE;
+    base_dd_min = base_dd_max = effect.driver() -> effectN( 1 ).average( effect.item );
+    aoe = -1;
+    split_aoe_damage = true;
+  }
+};
+
+void item::terror_from_below( special_effect_t& effect )
+{
+  action_t* action = effect.player -> find_action( "terror_from_below" ) ;
+  if ( ! action )
+  {
+    action = effect.player -> create_proc_action( "terror_from_below", effect );
+  }
+
+  if ( ! action )
+  {
+    action = new terrow_from_below_t( effect );
+  }
+
+  effect.execute_action = action;
+  effect.proc_flags2_ = PF2_ALL_HIT;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Tome of Unraveling Sanity ================================================
+
+struct insidious_corruption_t : public proc_spell_t
+{
+  stat_buff_t* buff;
+
+  insidious_corruption_t( const special_effect_t& effect, stat_buff_t* b ) :
+    proc_spell_t( effect ), buff( b )
+  { }
+
+  void last_tick( dot_t* d ) override
+  {
+    auto remains = d -> remains();
+    auto base_duration = buff -> data().duration();
+
+    buff -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, base_duration + remains );
+
+    proc_spell_t::last_tick( d );
+  }
+};
+
+void item::tome_of_unraveling_sanity( special_effect_t& effect )
+{
+  stat_buff_t* b = debug_cast<stat_buff_t*>( buff_t::find( effect.player, "extracted_sanity" ) );
+  if ( ! b )
+  {
+    b = stat_buff_creator_t( effect.player, "extracted_sanity", nullptr, effect.item )
+      .spell( effect.player -> find_spell( 243942 ) );
+  }
+
+  effect.execute_action = create_proc_action<insidious_corruption_t>( effect, b );
+  effect.execute_action -> hasted_ticks = true;
 }
 
 // Windscar Whetstone =======================================================
@@ -4590,8 +4733,15 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 225132, item::might_of_krosus         );
   register_special_effect( 225133, item::pharameres_forbidden_grimoire );
 
+  /* Legion 7.2.5 Raid */
+  register_special_effect( 242524, item::terror_from_below         );
+  register_special_effect( 242605, item::spectral_thurible         );
+  register_special_effect( 243941, item::tome_of_unraveling_sanity );
+
   /* Legion 7.2.0 Dungeon */
   register_special_effect( 238498, item::dreadstone_of_endless_shadows );
+
+
 
   /* Legion 7.0 Misc */
   register_special_effect( 188026, item::infernal_alchemist_stone       );

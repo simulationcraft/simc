@@ -8,6 +8,12 @@ talents=1310022
 artifact=44:0:0:0:0:1052:1:1053:1:1054:1:1055:1:1056:1:1057:1:1058:1:1059:3:1060:3:1061:3:1062:3:1063:3:1064:3:1065:3:1066:3:1067:3:1348:1:1385:1
 spec=outlaw
 
+# Default consumables
+potion=prolonged_power
+flask=seventh_demon
+food=lavish_suramar_feast
+augmentation=defiled
+
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
 # while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
@@ -15,14 +21,15 @@ spec=outlaw
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
-actions.precombat=flask,name=flask_of_the_seventh_demon
-actions.precombat+=/augmentation,name=defiled
-actions.precombat+=/food,name=lavish_suramar_feast
+actions.precombat=flask
+actions.precombat+=/augmentation
+actions.precombat+=/food
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/stealth
-actions.precombat+=/potion,name=prolonged_power
+actions.precombat+=/potion
 actions.precombat+=/marked_for_death,if=raid_event.adds.in>40
+actions.precombat+=/variable,name=vigor_active,value=talent.vigor.enabled|equipped.soul_of_the_shadowblade
 actions.precombat+=/roll_the_bones,if=!talent.slice_and_dice.enabled
 
 # Executed every time the actor is available.
@@ -57,7 +64,7 @@ actions.build+=/pistol_shot,if=combo_points.deficit>=1+buff.broadsides.up&buff.o
 actions.build+=/saber_slash,if=variable.ss_useable
 
 # Cooldowns
-actions.cds=potion,name=prolonged_power,if=buff.bloodlust.react|target.time_to_die<=25|buff.adrenaline_rush.up
+actions.cds=potion,if=buff.bloodlust.react|target.time_to_die<=25|buff.adrenaline_rush.up
 actions.cds+=/use_item,name=tirathons_betrayal,if=buff.bloodlust.react|target.time_to_die<=20|combo_points.deficit<=2
 actions.cds+=/blood_fury
 actions.cds+=/berserking
