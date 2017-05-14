@@ -418,6 +418,7 @@ public:
     buff_t* conflagration_of_chaos;
     buff_t* lord_of_flames;
     buff_t* embrace_chaos;
+    buff_t* chaos_mind;
 
     // legendary buffs
     buff_t* sindorei_spite;
@@ -2461,7 +2462,7 @@ private:
     gain = player -> get_gain( name_str );
 
     can_havoc = false;
-
+    affected_by_destruction_t20_4pc = false;
     affected_by_contagion = true;
     affected_by_deaths_embrace = false;
     destro_mastery = true;
@@ -2475,7 +2476,7 @@ public:
 
   mutable std::vector< player_t* > havoc_targets;
   bool can_havoc;
-
+  bool affected_by_destruction_t20_4pc;
   bool affected_by_contagion;
   bool affected_by_flamelicked;
   bool affected_by_odr_shawl_of_the_ymirjar;
@@ -2821,10 +2822,23 @@ public:
   {
     double pm = spell_t::action_multiplier();
 
-    if( p() -> mastery_spells.chaotic_energies -> ok() && destro_mastery )
+    if ( !maybe_ptr( p() -> dbc.ptr ) && p() -> mastery_spells.chaotic_energies -> ok() && destro_mastery )
     {
       double chaotic_energies_rng = rng().range( 0, p() -> cache.mastery_value() );
       pm *= 1.0 + chaotic_energies_rng;
+    }
+
+    if ( maybe_ptr( p() -> dbc.ptr ) && p() -> mastery_spells.chaotic_energies -> ok() && destro_mastery )
+    {
+      double destro_mastery_value = p() -> cache.mastery_value() / 3.0;
+      double chaotic_energies_rng;
+
+      if ( p() -> sets -> has_set_bonus( WARLOCK_DESTRUCTION, T20, B4 ) && affected_by_destruction_t20_4pc )
+        chaotic_energies_rng = destro_mastery_value;
+      else
+        chaotic_energies_rng = rng().range( 0, destro_mastery_value );
+
+      pm *= 1.0 + chaotic_energies_rng + ( destro_mastery_value );
     }
 
     return pm;
@@ -2863,8 +2877,7 @@ public:
   }
 
   static void accumulate_seed_of_corruption( warlock_td_t* td, double amount )
-  {
-    td -> soc_threshold -= amount;
+  {    td -> soc_threshold -= amount;
 
     if ( td -> soc_threshold <= 0 )
       td -> dots_seed_of_corruption -> cancel();
@@ -4224,6 +4237,7 @@ struct chaos_bolt_t: public warlock_spell_t
       base_execute_time += p -> talents.reverse_entropy -> effectN( 2 ).time_value();
 
     can_havoc = true;
+    affected_by_destruction_t20_4pc = true;
 
     crit_bonus_multiplier *= 1.0 + p -> artifact.chaotic_instability.percent();
 
@@ -4323,6 +4337,9 @@ struct chaos_bolt_t: public warlock_spell_t
 
     p() -> buffs.embrace_chaos -> trigger();
     p() -> buffs.backdraft -> decrement();
+
+    p() -> buffs.chaos_mind -> expire();
+    p() -> buffs.chaos_mind -> trigger();
   }
 
   // Force spell to always crit
@@ -6881,6 +6898,7 @@ void warlock_t::create_buffs()
     .chance( artifact.conflagration_of_chaos.rank() ? artifact.conflagration_of_chaos.data().proc_chance() : 0.0 );
   buffs.embrace_chaos = buff_creator_t( this, "embrace_chaos", sets->set( WARLOCK_DESTRUCTION,T19, B2 ) -> effectN( 1 ).trigger() )
     .chance( sets->set( WARLOCK_DESTRUCTION, T19, B2 ) -> proc_chance() );
+  buffs.chaos_mind = buff_creator_t( this, "chaos_mind", sets -> set( WARLOCK_DESTRUCTION, T20, B4 ) -> effectN( 1 ).trigger() );
 }
 
 void warlock_t::init_rng()
