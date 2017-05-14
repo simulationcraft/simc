@@ -6066,8 +6066,8 @@ std::string hunter_t::default_food() const
 
 std::string hunter_t::default_rune() const
 {
-  return ( true_level >=  100 ) ? "defiled" :
-         ( true_level >=  90  ) ? "focus" :
+  return ( true_level >= 110 ) ? "defiled" :
+         ( true_level >= 100 ) ? "hyper" :
          "disabled";
 }
 
