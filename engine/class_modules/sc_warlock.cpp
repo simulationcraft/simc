@@ -400,6 +400,7 @@ public:
     buff_t* tormented_souls;
     buff_t* compounding_horror;
     buff_t* active_uas;
+    buff_t* demonic_speed;
 
     //demonology buffs
     buff_t* tier18_2pc_demonology;
@@ -2714,6 +2715,10 @@ public:
             }
         }
 
+        if ( p() -> specialization() == WARLOCK_AFFLICTION && p() -> sets -> has_set_bonus( WARLOCK_AFFLICTION, T20, B4 ) )
+        { 
+          p() -> buffs.demonic_speed -> trigger();
+        }
     }
 
 
@@ -6830,6 +6835,8 @@ void warlock_t::create_buffs()
     .tick_behavior( BUFF_TICK_NONE )
     .refresh_behavior( BUFF_REFRESH_NONE )
     .max_stack( 20 );
+  buffs.demonic_speed = buff_creator_t( this, "demonic_speed", sets -> set( WARLOCK_AFFLICTION, T20, B4 ) -> effectN( 1 ).trigger() )
+    .chance( sets -> set( WARLOCK_AFFLICTION, T20, B4 ) -> proc_chance() );
 
   //demonology buffs
   buffs.demonic_synergy = buff_creator_t( this, "demonic_synergy", find_spell( 171982 ) )
