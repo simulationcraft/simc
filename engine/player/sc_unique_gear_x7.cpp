@@ -1437,6 +1437,7 @@ struct terrow_from_below_t : public spell_t
     school = SCHOOL_NATURE;
     base_dd_min = base_dd_max = effect.driver() -> effectN( 1 ).average( effect.item );
     aoe = -1;
+    split_aoe_damage = true;
   }
 };
 
