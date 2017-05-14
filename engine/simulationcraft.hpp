@@ -7522,7 +7522,26 @@ struct proc_resource_t : public proc_action_t<spell_t>
     player -> resource_gain( gain_resource, gain_ta, gain );
   }
 };
+
+template <typename CLASS, typename ...ARGS>
+action_t* create_proc_action( const special_effect_t& effect, ARGS&&... args )
+{
+  auto player = effect.player;
+  auto a = player -> find_action( effect.name() );
+
+  if ( a == nullptr )
+  {
+    a = player -> create_proc_action( effect.name(), effect );
+  }
+
+  if ( a == nullptr )
+  {
+    a = new CLASS( effect, args... );
+  }
+
+  return a;
 }
+} // namespace unique_gear ends
 
 // Consumable ===============================================================
 

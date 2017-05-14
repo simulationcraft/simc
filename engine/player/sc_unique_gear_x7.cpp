@@ -101,9 +101,9 @@ namespace item
   void might_of_krosus( special_effect_t&         );
 
   // 7.2.5 Raid
-  void terror_from_below( special_effect_t&       );
-  void spectral_thurible( special_effect_t&        );
-
+  void terror_from_below( special_effect_t&         );
+  void spectral_thurible( special_effect_t&         );
+  void tome_of_unraveling_sanity( special_effect_t& );
 
   // 7.2.0 Dungeon
   void dreadstone_of_endless_shadows( special_effect_t& );
@@ -1528,6 +1528,41 @@ void item::terror_from_below( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+// Tome of Unraveling Sanity ================================================
+
+struct insidious_corruption_t : public proc_spell_t
+{
+  stat_buff_t* buff;
+
+  insidious_corruption_t( const special_effect_t& effect, stat_buff_t* b ) :
+    proc_spell_t( effect ), buff( b )
+  { }
+
+  void last_tick( dot_t* d ) override
+  {
+    auto remains = d -> remains();
+    auto base_duration = buff -> data().duration();
+
+    buff -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, base_duration + remains );
+
+    proc_spell_t::last_tick( d );
+  }
+};
+
+void item::tome_of_unraveling_sanity( special_effect_t& effect )
+{
+  stat_buff_t* b = debug_cast<stat_buff_t*>( buff_t::find( effect.player, "extracted_sanity" ) );
+  if ( ! b )
+  {
+    b = stat_buff_creator_t( effect.player, "extracted_sanity", nullptr, effect.item )
+      .spell( effect.player -> find_spell( 243942 ) );
+  }
+
+  effect.execute_action = create_proc_action<insidious_corruption_t>( effect, b );
+  effect.execute_action -> hasted_ticks = true;
+}
+
 // Windscar Whetstone =======================================================
 
 void item::windscar_whetstone( special_effect_t& effect )
@@ -4699,8 +4734,9 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 225133, item::pharameres_forbidden_grimoire );
 
   /* Legion 7.2.5 Raid */
-  register_special_effect( 242524, item::terror_from_below       );
-  register_special_effect( 242605, item::spectral_thurible       );
+  register_special_effect( 242524, item::terror_from_below         );
+  register_special_effect( 242605, item::spectral_thurible         );
+  register_special_effect( 243941, item::tome_of_unraveling_sanity );
 
   /* Legion 7.2.0 Dungeon */
   register_special_effect( 238498, item::dreadstone_of_endless_shadows );
