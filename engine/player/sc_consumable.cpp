@@ -645,7 +645,7 @@ struct augmentation_t : public dbc_consumable_base_t
 
   bool disabled_consumable() const override
   {
-    return dbc_consumable_base_t::disabled_consumable();
+    return dbc_consumable_base_t::disabled_consumable() || sim -> allow_augmentations == false;
   }
 
   std::string consumable_default() const override

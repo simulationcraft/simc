@@ -1404,6 +1404,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   allow_potions( true ),
   allow_food( true ),
   allow_flasks( true ),
+  allow_augmentations( true ),
   solo_raid( false ),
   global_item_upgrade_level( 0 ),
   maximize_reporting( false ),
@@ -3086,6 +3087,7 @@ void sim_t::create_options()
   add_option( opt_bool( "override.allow_potions", allow_potions ) );
   add_option( opt_bool( "override.allow_food", allow_food ) );
   add_option( opt_bool( "override.allow_flasks", allow_flasks ) );
+  add_option( opt_bool( "override.allow_augmentations", allow_augmentations ) );
   add_option( opt_bool( "override.bloodlust", overrides.bloodlust ) );
   // Regen
   add_option( opt_timespan( "regen_periodicity", regen_periodicity ) );

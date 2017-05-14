@@ -1713,6 +1713,7 @@ struct sim_t : private sc_thread_t
   int allow_potions;
   int allow_food;
   int allow_flasks;
+  int allow_augmentations;
   int solo_raid;
   int global_item_upgrade_level;
   bool maximize_reporting;
