@@ -100,11 +100,15 @@ namespace item
   void nightblooming_frond( special_effect_t&     );
   void might_of_krosus( special_effect_t&         );
 
+  // 7.2.5 Raid
+  void terror_from_below( special_effect_t&       );
+  void spectral_thurible( special_effect_t&        );
+
+
   // 7.2.0 Dungeon
   void dreadstone_of_endless_shadows( special_effect_t& );
 
-  // 7.2.5 Raid
-  void terror_from_below( special_effect_t&       );
+
 
   // Adding this here to check it off the list.
   // The sim builds it automatically.
@@ -1424,6 +1428,71 @@ void item::star_gate( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 
 }
+
+// Spectral Thurible =============================================================
+//TODO: Check targeting is correct, should store target at buff begin.
+//      Fix travel time - spell should fire at buff expire, travel, then impact.
+
+void item::spectral_thurible( special_effect_t& effect )
+{
+  struct piercing_anguish_t : public spell_t
+  {
+    piercing_anguish_t( const special_effect_t& effect ) :
+      spell_t( "piercing_anguish", effect.player, effect.player -> find_spell( 246751 ) )
+    {
+      background = may_crit = true;
+      callbacks = false;
+      item = effect.item;
+      base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item );
+    }
+  };
+
+  struct spear_of_anguish_t : public buff_t
+  {
+    piercing_anguish_t* piercing_anguish;
+    spear_of_anguish_t( player_t* p, special_effect_t& effect ) :
+      buff_t( p, "spear_of_anguish", p -> find_spell( 243644 ) ),
+      piercing_anguish( new piercing_anguish_t( effect ) )
+    {}
+
+    void aura_gain() override
+    {
+      buff_t::aura_gain();
+      piercing_anguish -> target = player -> target;
+    }
+    void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+    {
+      buff_t::expire_override( expiration_stacks, remaining_duration );
+      piercing_anguish -> execute();
+    }
+  };
+
+  struct spectral_thurible_cb_t : public dbc_proc_callback_t
+  {
+    cooldown_t* icd;
+
+    spectral_thurible_cb_t ( special_effect_t& effect ) :
+      dbc_proc_callback_t( effect.item, effect )
+    {
+      icd = effect.player -> get_cooldown( "spectral_thurible_icd" );
+      icd -> duration = timespan_t::from_seconds( 5.0 );
+
+    }
+
+    void execute( action_t*, action_state_t* ) override
+    {
+      if ( icd -> up() )
+      {
+        effect.custom_buff -> trigger();
+        icd -> start();
+      }
+    }
+  };
+
+  effect.custom_buff = new spear_of_anguish_t( effect.player, effect );
+  new spectral_thurible_cb_t( effect );
+}
+
 // Terror From Below ============================================================
 
 struct terrow_from_below_t : public spell_t
@@ -4631,7 +4700,7 @@ void unique_gear::register_special_effects_x7()
 
   /* Legion 7.2.5 Raid */
   register_special_effect( 242524, item::terror_from_below       );
-
+  register_special_effect( 242605, item::spectral_thurible       );
 
   /* Legion 7.2.0 Dungeon */
   register_special_effect( 238498, item::dreadstone_of_endless_shadows );
