@@ -392,14 +392,13 @@ public:
     cooldown_t* eye_beam;
     cooldown_t* fel_barrage;
     cooldown_t* fel_rush;
-    cooldown_t* fel_rush_secondary;
     cooldown_t* fury_of_the_illidari;
     cooldown_t* metamorphosis;
     cooldown_t* nemesis;
     cooldown_t* netherwalk;
     cooldown_t* throw_glaive;
     cooldown_t* vengeful_retreat;
-    cooldown_t* vengeful_retreat_secondary;
+    cooldown_t* movement_shared;
 
     // Vengeance
     cooldown_t* demon_spikes;
@@ -538,7 +537,6 @@ public:
   pet_t* create_pet( const std::string& name,
                      const std::string& type = std::string() ) override;
   std::string create_profile( save_e = SAVE_ALL ) override;
-  bool has_t18_class_trinket() const override;
   void init_absorb_priority() override;
   void init_action_list() override;
   void init_base_stats() override;
@@ -563,6 +561,12 @@ private:
   void create_benefits();
 
 public:
+  // Default consumables
+  std::string default_potion() const override;
+  std::string default_flask() const override;
+  std::string default_food() const override;
+  std::string default_rune() const override;
+
   // overridden player_t stat functions
   double composite_armor_multiplier() const override;
   double composite_attack_power_multiplier() const override;
@@ -4106,8 +4110,8 @@ struct fel_rush_t : public demon_hunter_attack_t
     damage -> snapshot_state( s, DMG_DIRECT );
     damage -> schedule_execute( s );
 
-    // Aug 04 2016: Using Fel Rush puts VR on cooldown for 1 second.
-    p() -> cooldown.vengeful_retreat_secondary -> start( timespan_t::from_seconds( 1.0 ) );
+    // Fel Rush and VR shared a 1 second GCD when one or the other is triggered
+    p() -> cooldown.movement_shared -> start( timespan_t::from_seconds( 1.0 ) );
 
     if ( !a_cancel )
     {
@@ -4119,8 +4123,8 @@ struct fel_rush_t : public demon_hunter_attack_t
 
   bool ready() override
   {
-    // Aug 04 2016: Using VR puts Fel Rush on cooldown for 1 second.
-    if ( p() -> cooldown.fel_rush_secondary -> down() )
+    // Fel Rush and VR shared a 1 second GCD when one or the other is triggered
+    if ( p() -> cooldown.movement_shared -> down() )
     {
       return false;
     }
@@ -4680,7 +4684,8 @@ struct vengeful_retreat_t : public demon_hunter_attack_t
   {
     demon_hunter_attack_t::execute();
 
-    p() -> cooldown.fel_rush_secondary -> start( timespan_t::from_seconds( 1.0 ) );
+    // Fel Rush and VR shared a 1 second GCD when one or the other is triggered
+    p() -> cooldown.movement_shared -> start( timespan_t::from_seconds( 1.0 ) );
 
     p() -> buff.vengeful_retreat_move -> trigger();
 
@@ -4700,7 +4705,8 @@ struct vengeful_retreat_t : public demon_hunter_attack_t
 
   bool ready() override
   {
-    if ( p() -> cooldown.vengeful_retreat_secondary -> down() )
+    // Fel Rush and VR shared a 1 second GCD when one or the other is triggered
+    if ( p() -> cooldown.movement_shared -> down() )
     {
       return false;
     }
@@ -5350,50 +5356,57 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
 // Demon Hunter Definitions
 // ==========================================================================
 
-demon_hunter_t::demon_hunter_t( sim_t* sim, const std::string& name, race_e r )
-  : player_t( sim, DEMON_HUNTER, name, r ),
-    blade_dance_driver( nullptr ),
-    blade_dance_attacks( 0 ),
-    death_sweep_attacks( 0 ),
-    chaos_strike_attacks( 0 ),
-    annihilation_attacks( 0 ),
-    damage_calcs( 0 ),
-    blade_dance_dmg( nullptr ),
-    death_sweep_dmg( nullptr ),
-    chaos_strike_dmg( nullptr ),
-    annihilation_dmg( nullptr ),
-    melee_main_hand( nullptr ),
-    melee_off_hand( nullptr ),
-    chaos_blade_main_hand( nullptr ),
-    chaos_blade_off_hand( nullptr ),
-    next_fragment_spawn( 0 ),
-    soul_fragments(),
-    sigil_cooldowns( 0 ),
-    spirit_bomb( 0.0 ),
-    spirit_bomb_driver( nullptr ),
-    target_reach( -1.0 ),
-    exiting_melee( nullptr ),
-    initial_fury( 0 ),
-    sigil_of_flame_activates( timespan_t::zero() ),
-    buff(),
-    talent(),
-    spec(),
-    mastery_spell(),
-    cooldown(),
-    gain(),
-    benefits(),
-    proc(),
-    active(),
-    pets(),
-    options(),
-    legendary()
+demon_hunter_t::demon_hunter_t(sim_t* sim, const std::string& name, race_e r)
+  : player_t(sim, DEMON_HUNTER, name, r),
+  blade_dance_driver(nullptr),
+  blade_dance_attacks(0),
+  death_sweep_attacks(0),
+  chaos_strike_attacks(0),
+  annihilation_attacks(0),
+  damage_calcs(0),
+  blade_dance_dmg(nullptr),
+  death_sweep_dmg(nullptr),
+  chaos_strike_dmg(nullptr),
+  annihilation_dmg(nullptr),
+  melee_main_hand(nullptr),
+  melee_off_hand(nullptr),
+  chaos_blade_main_hand(nullptr),
+  chaos_blade_off_hand(nullptr),
+  next_fragment_spawn(0),
+  soul_fragments(),
+  sigil_cooldowns(0),
+  spirit_bomb(0.0),
+  spirit_bomb_driver(nullptr),
+  target_reach(-1.0),
+  exiting_melee(nullptr),
+  initial_fury(0),
+  sigil_of_flame_activates(timespan_t::zero()),
+  buff(),
+  talent(),
+  spec(),
+  mastery_spell(),
+  cooldown(),
+  gain(),
+  benefits(),
+  proc(),
+  active(),
+  pets(),
+  options(),
+  legendary()
 {
-
   create_cooldowns();
   create_gains();
   create_benefits();
 
   regen_type = REGEN_DISABLED;
+
+  // Register a custom talent validity function for talents added by Soul of the Slayer
+  talent_points.register_validity_fn([this](const spell_data_t* spell) {
+    if(specialization() == DEMON_HUNTER_HAVOC)
+      return spell->id() == 206416 /* First Blood */ && find_item(151639) != nullptr;
+    else // DEMON_HUNTER_VENGEANCE
+      return spell->id() == 207697 /* Feast of Souls */ && find_item(151639) != nullptr;
+  });
 }
 
 demon_hunter_t::~demon_hunter_t()
@@ -6130,13 +6143,6 @@ std::string demon_hunter_t::create_profile( save_e type )
   return profile_str;
 }
 
-// demon_hunter_t::has_t18_class_trinket ====================================
-
-bool demon_hunter_t::has_t18_class_trinket() const
-{
-  return false;
-}
-
 // demon_hunter_t::init_absorb_priority =====================================
 
 void demon_hunter_t::init_absorb_priority()
@@ -6617,6 +6623,48 @@ role_e demon_hunter_t::primary_role() const
   }
 }
 
+// demon_hunter_t::default_flask ===================================================
+
+std::string demon_hunter_t::default_flask() const
+{
+  return (true_level >  100) ? "seventh_demon" :
+    (true_level >= 90) ? "greater_draenic_agility_flask" :
+    (true_level >= 85) ? "spring_blossoms" :
+    (true_level >= 80) ? "winds" :
+    "disabled";
+}
+
+// demon_hunter_t::default_potion ==================================================
+
+std::string demon_hunter_t::default_potion() const
+{
+  return (true_level > 100) ? (specialization() == DEMON_HUNTER_HAVOC ? "old_war" : "unbending_potion") :
+    (true_level >= 90) ? (specialization() == DEMON_HUNTER_HAVOC ? "draenic_agility" : "draenic_versatility") :
+    (true_level >= 85) ? "virmens_bite" :
+    (true_level >= 80) ? "tolvir" :
+    "disabled";
+}
+
+// demon_hunter_t::default_food ====================================================
+
+std::string demon_hunter_t::default_food() const
+{
+  return (true_level >  100) ? "lavish_suramar_feast" :
+    (true_level >  90) ? "pickled_eel" :
+    (true_level >= 90) ? "sea_mist_rice_noodles" :
+    (true_level >= 80) ? "seafood_magnifique_feast" :
+    "disabled";
+}
+
+// demon_hunter_t::default_rune ====================================================
+
+std::string demon_hunter_t::default_rune() const
+{
+  return (true_level >= 110) ? "defiled" :
+    (true_level >= 100) ? "hyper" :
+    "disabled";
+}
+
 // ==========================================================================
 // custom demon_hunter_t init functions
 // ==========================================================================
@@ -6627,57 +6675,28 @@ void demon_hunter_t::apl_precombat()
 {
   action_priority_list_t* pre = get_action_priority_list( "precombat" );
 
-  // Flask or Elixir
-  if ( sim -> allow_flasks )
-  {
-    if ( true_level > 100 )
-      pre -> add_action( "flask,type=flask_of_the_seventh_demon" );
-    else
-      pre -> add_action( "flask,type=greater_draenic_agility_flask" );
-  }
+  pre->add_action("flask");
+  pre->add_action("augmentation");
 
   // Food
-  if ( sim -> allow_food )
+  if (specialization() == DEMON_HUNTER_HAVOC)
   {
-    if ( true_level > 100 )
-    {
-      if (specialization() == DEMON_HUNTER_HAVOC)
-      {
-        pre->add_action("food,type=lavish_suramar_feast,if=!equipped.majordomos_dinner_bell");
-        pre->add_action("food,type=nightborne_delicacy_platter,if=equipped.majordomos_dinner_bell");
-      }
-      else
-        pre -> add_action( "food,type=lavish_suramar_feast" );
-    }
-    else
-    {
-      pre -> add_action( "food,type=pickled_eel" );
-    }
+    pre->add_action("food,if=!equipped.majordomos_dinner_bell");
+    pre->add_action("food,type=nightborne_delicacy_platter,if=equipped.majordomos_dinner_bell");
+  }
+  else
+  {
+    pre->add_action("food");
   }
 
-  // Augmentation Rune
-  if ( true_level > 100 )
-    pre -> add_action( "augmentation,type=defiled" );
-
   // Snapshot Stats
-  pre -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
+  pre->add_action("snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done.");
 
-  // Pre-Potion
-  if ( sim -> allow_potions )
+  pre->add_action("potion");
+
+  if (specialization() == DEMON_HUNTER_HAVOC)
   {
-    std::string potion;
-
-    if ( specialization() == DEMON_HUNTER_HAVOC )
-      potion = true_level > 100 ? "old_war" : "draenic_agility";
-    else
-      potion = true_level > 100 ? "unbending_potion" : "draenic_versatility";
-
-    pre -> add_action( "potion,name=" + potion );
-
-    if ( specialization() == DEMON_HUNTER_HAVOC )
-    {
-      pre -> add_action( this, "Metamorphosis" , "if=!(talent.demon_reborn.enabled&talent.demonic.enabled)");
-    }
+    pre->add_action(this, "Metamorphosis", "if=!(talent.demon_reborn.enabled&talent.demonic.enabled)");
   }
 }
 
@@ -6875,14 +6894,7 @@ void demon_hunter_t::apl_havoc()
   
   add_havoc_use_items(this, cd);
 
-  // Pre-Potion
-  if ( sim -> allow_potions )
-  {
-    if ( true_level > 100 )
-      cd -> add_action( "potion,name=old_war,if=buff.metamorphosis.remains>25|target.time_to_die<30" );
-    else
-      cd -> add_action( "potion,name=draenic_agility_potion,if=buff.metamorphosis.remains>25|target.time_to_die<30" );
-  }
+  cd->add_action("potion,if=buff.metamorphosis.remains>25|target.time_to_die<30");
 }
 
 // demon_hunter_t::apl_vengeance ============================================
@@ -6944,9 +6956,9 @@ void demon_hunter_t::apl_vengeance()
 void demon_hunter_t::create_cooldowns()
 {
   // General
-  cooldown.consume_magic = get_cooldown( "consume_magic" );
-  cooldown.felblade      = get_cooldown( "felblade" );
-  cooldown.fel_eruption  = get_cooldown( "fel_eruption" );
+  cooldown.consume_magic        = get_cooldown( "consume_magic" );
+  cooldown.felblade             = get_cooldown( "felblade" );
+  cooldown.fel_eruption         = get_cooldown( "fel_eruption" );
 
   // Havoc
   cooldown.blade_dance          = get_cooldown( "blade_dance" );
@@ -6958,22 +6970,21 @@ void demon_hunter_t::create_cooldowns()
   cooldown.eye_beam             = get_cooldown( "eye_beam" );
   cooldown.fel_barrage          = get_cooldown( "fel_barrage" );
   cooldown.fel_rush             = get_cooldown( "fel_rush" );
-  cooldown.fel_rush_secondary   = get_cooldown( "fel_rush_secondary" );
   cooldown.fury_of_the_illidari = get_cooldown( "fury_of_the_illidari" );
-  cooldown.metamorphosis = get_cooldown("metamorphosis");
+  cooldown.metamorphosis        = get_cooldown( "metamorphosis" );
   cooldown.nemesis              = get_cooldown( "nemesis" );
   cooldown.netherwalk           = get_cooldown( "netherwalk" );
   cooldown.throw_glaive         = get_cooldown( "throw_glaive" );
   cooldown.vengeful_retreat     = get_cooldown( "vengeful_retreat" );
-  cooldown.vengeful_retreat_secondary = get_cooldown( "vengeful_retreat_secondary" );
+  cooldown.movement_shared      = get_cooldown( "movement_shared" );
 
   // Vengeance
-  cooldown.demon_spikes     = get_cooldown( "demon_spikes" );
-  cooldown.fiery_brand      = get_cooldown( "fiery_brand" );
-  cooldown.sigil_of_chains  = get_cooldown( "sigil_of_chains" );
-  cooldown.sigil_of_flame   = get_cooldown( "sigil_of_flame" );
-  cooldown.sigil_of_misery  = get_cooldown( "sigil_of_misery" );
-  cooldown.sigil_of_silence = get_cooldown( "sigil_of_silence" );
+  cooldown.demon_spikes         = get_cooldown( "demon_spikes" );
+  cooldown.fiery_brand          = get_cooldown( "fiery_brand" );
+  cooldown.sigil_of_chains      = get_cooldown( "sigil_of_chains" );
+  cooldown.sigil_of_flame       = get_cooldown( "sigil_of_flame" );
+  cooldown.sigil_of_misery      = get_cooldown( "sigil_of_misery" );
+  cooldown.sigil_of_silence     = get_cooldown( "sigil_of_silence" );
 
   sigil_cooldowns.push_back( cooldown.sigil_of_flame );
   sigil_cooldowns.push_back( cooldown.sigil_of_silence );
@@ -8003,7 +8014,7 @@ public:
   player_t* create_player( sim_t* sim, const std::string& name,
                            race_e r = RACE_NONE ) const override
   {
-    auto p              = new demon_hunter_t( sim, name, r );
+    auto p = new demon_hunter_t( sim, name, r );
     p -> report_extension = std::unique_ptr<player_report_extension_t>( new demon_hunter_report_t( *p ) );
     return p;
   }
