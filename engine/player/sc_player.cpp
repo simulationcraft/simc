@@ -1138,7 +1138,6 @@ void player_t::init_base_stats()
   resources.base_multiplier[ RESOURCE_RUNIC_POWER ] *= 1 + racials.expansive_mind -> effectN( 1 ).percent();
   resources.base_multiplier[ RESOURCE_FOCUS ] *= 1 + racials.expansive_mind -> effectN( 1 ).percent();
 
-
   if ( true_level >= 50 && matching_gear )
   {
     for ( attribute_e a = ATTR_STRENGTH; a <= ATTR_SPIRIT; a++ )
@@ -1565,6 +1564,8 @@ void player_t::init_resources( bool force )
         resources.initial[ i ] += floor( stamina() ) * current.health_per_stamina;
 
       resources.initial[ i ] *= resources.initial_multiplier[ i ];
+
+      resources.initial[ i ] = floor( resources.initial[ i ] );
     }
   }
 
@@ -2798,6 +2799,19 @@ item_t* player_t::find_item( const std::string& str )
   for ( auto& item : items )
     if ( str == item.name() )
       return &item;
+
+  return nullptr;
+}
+
+item_t* player_t::find_item( unsigned item_id )
+{
+  for ( auto& item : items )
+  {
+    if ( item.parsed.data.id == item_id )
+    {
+      return &( item );
+    }
+  }
 
   return nullptr;
 }
@@ -8531,19 +8545,21 @@ const spell_data_t* player_t::find_talent_spell( const std::string& n,
   {
     for ( int i = 0; i < MAX_TALENT_COLS; i++ )
     {
-      talent_data_t* td = talent_data_t::find( type, j, i, s, dbc.ptr );
+      auto td = talent_data_t::find( type, j, i, s, dbc.ptr );
+      auto spell = dbc::find_spell( this, td -> spell_id() );
+
       // Loop through all our classes talents, and check if their spell's id match the one we maped to the given talent name
       if ( td && ( td -> spell_id() == spell_id ) )
       {
         // check if we have the talent enabled or not
         // std::min( 100, x ) dirty fix so that we can access tier 7 talents at level 100 and not level 105
-        if ( check_validity && ( ! talent_points.has_row_col( j, i ) || true_level < std::min( ( j + 1 ) * 15, 100 ) ) )
+        if ( check_validity && ( ! talent_points.validate( spell, j, i ) || true_level < std::min( ( j + 1 ) * 15, 100 ) ) )
           return spell_data_t::not_found();
 
         // We have that talent enabled.
         dbc.add_token( spell_id, token );
 
-        return dbc::find_spell( this, td -> spell_id() );
+        return spell;
       }
     }
   }

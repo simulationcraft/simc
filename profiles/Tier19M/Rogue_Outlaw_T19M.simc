@@ -23,6 +23,7 @@ actions.precombat+=/snapshot_stats
 actions.precombat+=/stealth
 actions.precombat+=/potion,name=prolonged_power
 actions.precombat+=/marked_for_death,if=raid_event.adds.in>40
+actions.precombat+=/variable,name=vigor_active,value=talent.vigor.enabled|equipped.soul_of_the_shadowblade
 actions.precombat+=/roll_the_bones,if=!talent.slice_and_dice.enabled
 
 # Executed every time the actor is available.

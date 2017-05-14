@@ -2564,7 +2564,7 @@ bool sim_t::iterate()
 
     combat();
 
-    if ( progress_bar.update() )
+    if ( progress_bar.update( false, current_index ) )
     {
       progress_bar.output( false );
     }
@@ -2590,7 +2590,7 @@ bool sim_t::iterate()
     }
   } while ( more_work && ! canceled );
 
-  if ( ! canceled && progress_bar.update( true ) )
+  if ( ! canceled && progress_bar.update( true, current_index ) )
   {
     progress_bar.output( true );
   }
@@ -3379,7 +3379,7 @@ void sim_t::setup( sim_control_t* c )
 
 // sim_t::progress ==========================================================
 
-sim_t::sim_progress_t sim_t::progress( std::string* detailed, int index )
+sim_progress_t sim_t::progress( std::string* detailed, int index )
 {
   auto total_progress = work_queue -> progress( index );
 
