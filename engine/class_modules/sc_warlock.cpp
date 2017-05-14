@@ -330,6 +330,7 @@ public:
   } mastery_spells;
 
   //Procs and RNG
+  real_ppm_t* affliction_t20_2pc_rppm;
   real_ppm_t* misery_rppm; // affliction t17 4pc
   real_ppm_t* demonic_power_rppm; // grimoire of sacrifice
   real_ppm_t* grimoire_of_synergy; //caster ppm, i.e., if it procs, the wl will create a buff for the pet.
@@ -450,6 +451,7 @@ public:
     gain_t* incinerate;
     gain_t* incinerate_crits;
     gain_t* dimensional_rift;
+    gain_t* affliction_t20_2pc;
   } gains;
 
   // Procs
@@ -3393,6 +3395,13 @@ struct corruption_t: public warlock_spell_t
       {
         p() -> buffs.compounding_horror -> trigger();
       }
+    }
+
+    if ( result_is_hit( d -> state -> result ) && p() -> sets -> has_set_bonus( WARLOCK_AFFLICTION, T20, B2 ) )
+    {
+      bool procced = p() -> affliction_t20_2pc_rppm -> trigger(); //check for RPPM
+      if ( procced )
+        p()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p() -> gains.affliction_t20_2pc ); //trigger the buff
     }
 
     warlock_spell_t::tick( d );
@@ -6850,7 +6859,8 @@ void warlock_t::init_rng()
 {
   player_t::init_rng();
 
-  misery_rppm = get_rppm( "misery", sets->set( WARLOCK_AFFLICTION, T17, B4 ) );
+  affliction_t20_2pc_rppm = get_rppm( "affliction_t20_2pc", sets -> set( WARLOCK_AFFLICTION, T20, B2 ) );
+  misery_rppm = get_rppm( "misery", sets -> set( WARLOCK_AFFLICTION, T17, B4 ) );
   demonic_power_rppm = get_rppm( "demonic_power", find_spell( 196099 ) );
   grimoire_of_synergy = get_rppm( "grimoire_of_synergy", talents.grimoire_of_synergy );
   grimoire_of_synergy_pet = get_rppm( "grimoire_of_synergy_pet", talents.grimoire_of_synergy );
@@ -6885,6 +6895,7 @@ void warlock_t::init_gains()
   gains.incinerate                  = get_gain( "incinerate" );
   gains.incinerate_crits            = get_gain( "incinerate_crits" );
   gains.dimensional_rift            = get_gain( "dimensional_rift" );
+  gains.affliction_t20_2pc          = get_gain( "affliction_t20_2pc" );
 }
 
 // warlock_t::init_procs ===============================================
