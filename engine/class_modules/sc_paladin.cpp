@@ -4961,10 +4961,10 @@ void paladin_t::generate_action_prio_list_ret()
   priority -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&holy_power>=5&buff.divine_purpose.react" );
   priority -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&holy_power>=3&(buff.crusade.up&(buff.crusade.stack<15|buff.bloodlust.up)|buff.liadrins_fury_unleashed.up)" );
   priority -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&holy_power>=5&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*3)&(!talent.execution_sentence.enabled|cooldown.execution_sentence.remains>gcd)" );
-  priority -> add_action( this, "Divine Storm", "if=spell_targets.divine_storm>=2&cooldown.wake_of_ashes.remains<gcd*2&artifact.wake_of_ashes.enabled&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*4" );
-  priority -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&buff.whisper_of_the_nathrezim.up&buff.whisper_of_the_nathrezim.remains<gcd*1.5&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*4" );
-  priority -> add_action( this, "Templar's Verdict", "if=cooldown.wake_of_ashes.remains<gcd*2&artifact.wake_of_ashes.enabled&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*4" );
-  priority -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&buff.whisper_of_the_nathrezim.up&buff.whisper_of_the_nathrezim.remains<gcd*1.5&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*4" );
+  priority -> add_action( this, "Divine Storm", "if=spell_targets.divine_storm>=2&cooldown.wake_of_ashes.remains<gcd*2&artifact.wake_of_ashes.enabled&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*4)" );
+  priority -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&buff.whisper_of_the_nathrezim.up&buff.whisper_of_the_nathrezim.remains<gcd*1.5&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*4)" );
+  priority -> add_action( this, "Templar's Verdict", "if=cooldown.wake_of_ashes.remains<gcd*2&artifact.wake_of_ashes.enabled&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*4)" );
+  priority -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&buff.whisper_of_the_nathrezim.up&buff.whisper_of_the_nathrezim.remains<gcd*1.5&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*4)" );
   priority -> add_action( this, "Wake of Ashes", "if=(!raid_event.adds.exists|raid_event.adds.in>15)&(holy_power<=0|holy_power=1&(cooldown.blade_of_justice.remains>gcd|cooldown.divine_hammer.remains>gcd)|holy_power=2&((cooldown.zeal.charges_fractional<=0.65|cooldown.crusader_strike.charges_fractional<=0.65)))" );
   priority -> add_action( this, "Blade of Justice", "if=holy_power<=3-set_bonus.tier20_2pc" );
   priority -> add_talent( this, "Divine Hammer", "if=holy_power<=3-set_bonus.tier20_2pc" );
