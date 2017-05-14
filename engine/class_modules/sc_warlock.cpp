@@ -455,6 +455,7 @@ public:
     gain_t* incinerate_crits;
     gain_t* dimensional_rift;
     gain_t* affliction_t20_2pc;
+    gain_t* destruction_t20_2pc;
   } gains;
 
   // Procs
@@ -4110,13 +4111,15 @@ struct incinerate_t: public warlock_spell_t
 
     p() -> buffs.backdraft -> decrement();
 
-    if ( maybe_ptr( p()->dbc.ptr ) )
+    if ( maybe_ptr( p() -> dbc.ptr ) )
     {
       p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.2 * ( p() -> talents.fire_and_brimstone -> ok() ? execute_state -> n_targets : 1 ), p() -> gains.incinerate );
       if ( execute_state -> result == RESULT_CRIT )
         p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.1 * ( p() -> talents.fire_and_brimstone -> ok() ? execute_state -> n_targets : 1 ), p() -> gains.incinerate_crits );
+      if ( p() -> sets -> has_set_bonus( WARLOCK_DESTRUCTION, T20, B2 ) )
+        p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.1 * ( p() -> talents.fire_and_brimstone -> ok() ? execute_state -> n_targets : 1 ), p() -> gains.destruction_t20_2pc );
     }
-        }
+  }
 
   virtual double composite_crit_chance() const override
   {
@@ -6921,6 +6924,7 @@ void warlock_t::init_gains()
   gains.incinerate_crits            = get_gain( "incinerate_crits" );
   gains.dimensional_rift            = get_gain( "dimensional_rift" );
   gains.affliction_t20_2pc          = get_gain( "affliction_t20_2pc" );
+  gains.destruction_t20_2pc         = get_gain( "destruction_t20_2pc" );
 }
 
 // warlock_t::init_procs ===============================================
