@@ -345,6 +345,7 @@ public:
     cooldown_t* dimensional_rift;
     cooldown_t* haunt;
     cooldown_t* sindorei_spite_icd;
+    cooldown_t* call_dreadstalkers;
   } cooldowns;
 
   // Passives
@@ -486,6 +487,7 @@ public:
     proc_t* t18_prince_malchezaar;
     proc_t* wild_imp;
     proc_t* fragment_wild_imp;
+    proc_t* demonology_t20_2pc;
     //destro
     proc_t* t18_4pc_destruction;
     proc_t* shadowy_tear;
@@ -3566,9 +3568,15 @@ struct shadow_bolt_t: public warlock_spell_t
       }
     }
 
-    if( p() -> sets->set( WARLOCK_DEMONOLOGY, T18, B2 ) )
+    if( p() -> sets->has_set_bonus( WARLOCK_DEMONOLOGY, T18, B2 ) )
     {
         p() -> buffs.tier18_2pc_demonology -> trigger( 1 );
+    }
+
+    if ( p() -> sets -> has_set_bonus( WARLOCK_DEMONOLOGY, T20, B2 ) && p() -> rng().roll( p() -> sets -> set( WARLOCK_DEMONOLOGY, T20, B2 ) -> proc_chance() ) )
+    {
+        p() -> cooldowns.call_dreadstalkers -> reset( true );
+        p() -> procs.demonology_t20_2pc -> occur();
     }
   }
 };
@@ -6127,6 +6135,7 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
     cooldowns.dimensional_rift = get_cooldown( "dimensional_rift" );
     cooldowns.haunt = get_cooldown( "haunt" );
     cooldowns.sindorei_spite_icd = get_cooldown( "sindorei_spite_icd" );
+    cooldowns.call_dreadstalkers = get_cooldown( "call_dreadstalkers" );
 
     regen_type = REGEN_DYNAMIC;
     regen_caches[CACHE_HASTE] = true;
@@ -6944,6 +6953,7 @@ void warlock_t::init_procs()
   procs.wilfreds_imp = get_proc( "wilfreds_imp" );
   procs.wilfreds_darkglare = get_proc( "wilfreds_darkglare" );
   procs.t19_2pc_chaos_bolts = get_proc( "t19_2pc_chaos_bolt" );
+  procs.demonology_t20_2pc = get_proc( "demonology_t20_2pc" );
 }
 
 void warlock_t::apl_precombat()
