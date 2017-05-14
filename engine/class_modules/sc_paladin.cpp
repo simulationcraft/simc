@@ -3705,6 +3705,9 @@ struct judgment_t : public paladin_melee_attack_t
       double reduction = p() -> talents.fist_of_justice -> effectN( 1 ).base_value();
       p() -> cooldowns.hammer_of_justice -> ready -= timespan_t::from_seconds( reduction );
     }
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+      if ( p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T20, B4 ) )
+        p() -> buffs.sacred_judgment -> trigger();
   }
 
   proc_types proc_type() const override
