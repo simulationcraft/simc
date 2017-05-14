@@ -908,6 +908,7 @@ public:
   std::string default_potion() const override;
   std::string default_flask() const override;
   std::string default_food() const override;
+  std::string default_rune() const override;
 
   double    runes_per_second() const;
   double    rune_regen_coefficient() const;
@@ -7272,10 +7273,7 @@ void death_knight_t::default_apl_dps_precombat()
   // Food
   precombat -> add_action( "food" );
 
-  if ( true_level >= 110 )
-  {
-    precombat -> add_action( "augmentation,name=defiled" );
-  }
+  precombat -> add_action( "augmentation" );
 
   // Snapshot stats
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
@@ -7353,6 +7351,15 @@ std::string death_knight_t::default_flask() const
   {
     default: return flask_name;
   }
+}
+
+// death_knight_t::default_rune =============================================
+
+std::string death_knight_t::default_rune() const
+{
+  return ( true_level >= 110 ) ? "defiled" :
+         ( true_level >= 100 ) ? "stout" :
+         "disabled";
 }
 
 // death_knight_t::default_apl_frost ========================================
