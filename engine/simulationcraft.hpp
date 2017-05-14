@@ -1713,6 +1713,7 @@ struct sim_t : private sc_thread_t
   int allow_potions;
   int allow_food;
   int allow_flasks;
+  int allow_augmentations;
   int solo_raid;
   int global_item_upgrade_level;
   bool maximize_reporting;
@@ -7521,7 +7522,26 @@ struct proc_resource_t : public proc_action_t<spell_t>
     player -> resource_gain( gain_resource, gain_ta, gain );
   }
 };
+
+template <typename CLASS, typename ...ARGS>
+action_t* create_proc_action( const special_effect_t& effect, ARGS&&... args )
+{
+  auto player = effect.player;
+  auto a = player -> find_action( effect.name() );
+
+  if ( a == nullptr )
+  {
+    a = player -> create_proc_action( effect.name(), effect );
+  }
+
+  if ( a == nullptr )
+  {
+    a = new CLASS( effect, args... );
+  }
+
+  return a;
 }
+} // namespace unique_gear ends
 
 // Consumable ===============================================================
 
