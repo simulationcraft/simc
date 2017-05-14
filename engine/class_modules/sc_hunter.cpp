@@ -3217,9 +3217,8 @@ struct aimed_shot_t: public aimed_shot_base_t
     else if ( p() -> legendary.mm_gloves -> ok() )
       p() -> buffs.gyroscopic_stabilization -> trigger();
 
-    if ( p() -> buffs.t20_2p_precision -> up() )
-      p() -> buffs.t20_2p_precision -> expire();
-    else if ( p() -> sets -> has_set_bonus( HUNTER_MARKSMANSHIP, T20, B2 ) )
+    // 2017-04-15 XXX: as of the current PTR the buff is not consumed and simply refreshed on each AiS
+    if ( p() -> sets -> has_set_bonus( HUNTER_MARKSMANSHIP, T20, B2 ) )
       p() -> buffs.t20_2p_precision -> trigger();
 
     if ( p() -> sets -> has_set_bonus( HUNTER_MARKSMANSHIP, T20, B4 ) )
