@@ -1158,7 +1158,7 @@ struct avengers_shield_t : public paladin_spell_t
 	  paladin_spell_t::init();
 
 	  if (p()->ferren_marcuss_strength){
-		  aoe += (p()->spells.ferren_marcuss_strength->effectN(1).misc_value1());
+		  aoe += (p()->spells.ferren_marcuss_strength->effectN(1).base_value());
 		  base_multiplier *= 1.0 + p()->spells.ferren_marcuss_strength->effectN(2).percent();
 	  }
 
@@ -1173,7 +1173,7 @@ struct avengers_shield_t : public paladin_spell_t
       p() -> buffs.bulwark_of_order -> trigger( 1, p() -> buffs.bulwark_of_order -> value() + s -> result_amount * p() -> artifact.bulwark_of_order.percent() );
 
 	if (p()->gift_of_the_golden_valkyr){
-		timespan_t reduction = timespan_t::from_seconds(-1.0 * p()->spells.gift_of_the_golden_valkyr->effectN(1).misc_value1());
+		timespan_t reduction = timespan_t::from_seconds(-1.0 * p()->spells.gift_of_the_golden_valkyr->effectN(1).base_value());
 		p()->cooldowns.guardian_of_ancient_kings ->adjust(reduction);
 	}
 
@@ -2438,9 +2438,16 @@ struct light_of_the_protector_t : public paladin_heal_t
 
 	  if (p()->saruans_resolve){
 		  cooldown->charges = 2;
-		  cooldown->duration *= (1 + p()->spells.saruans_resolve->effectN(3).percent());
 	  }
 
+  }
+
+  double recharge_multiplier() const override{
+	  double cdr = paladin_heal_t::recharge_multiplier();
+	  if (p()->saruans_resolve){
+		  cdr *= (1 + p()->spells.saruans_resolve->effectN(3).percent());
+	  }
+	  return cdr;
   }
 
   double action_multiplier() const override
@@ -2512,9 +2519,16 @@ struct hand_of_the_protector_t : public paladin_heal_t
 
 	  if (p()->saruans_resolve){
 		  cooldown->charges = 2;
-		  cooldown->duration *= (1 + p()->spells.saruans_resolve->effectN(3).percent());
 	  }
 
+  }
+
+  double recharge_multiplier() const override{
+	  double cdr = paladin_heal_t::recharge_multiplier();
+	  if (p()->saruans_resolve){
+		  cdr *= (1 + p()->spells.saruans_resolve->effectN(3).percent());
+	  }
+	  return cdr;
   }
 
   double action_multiplier() const override
