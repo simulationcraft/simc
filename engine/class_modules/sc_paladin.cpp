@@ -1145,16 +1145,23 @@ struct avengers_shield_t : public paladin_spell_t
   if ( p ->talents.first_avenger->ok() )
     base_aoe_multiplier *= 2.0 / 3.0;
   aoe = 3;
-  if (p->spells.ferren_marcuss_strength){
-    aoe += (p->spells.ferren_marcuss_strength->effectN(1).misc_value1());
-    base_multiplier *= 1.0 + p->spells.ferren_marcuss_strength->effectN(2).percent();
-  }
   aoe = std::max( aoe, 0 );
 
 
     // link needed for trigger_grand_crusader
     cooldown = p -> cooldowns.avengers_shield;
     cooldown -> duration = data().cooldown();
+  }
+
+  void init() override
+  {
+	  paladin_spell_t::init();
+
+	  if (p()->ferren_marcuss_strength){
+		  aoe += (p()->spells.ferren_marcuss_strength->effectN(1).misc_value1());
+		  base_multiplier *= 1.0 + p()->spells.ferren_marcuss_strength->effectN(2).percent();
+	  }
+
   }
 
   void impact( action_state_t* s ) override
