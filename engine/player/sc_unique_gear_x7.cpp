@@ -1443,6 +1443,7 @@ void item::spectral_thurible( special_effect_t& effect )
       background = may_crit = true;
       callbacks = false;
       item = effect.item;
+      aoe = -1;
       base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item );
     }
   };
