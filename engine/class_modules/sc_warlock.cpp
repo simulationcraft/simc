@@ -6274,6 +6274,12 @@ double warlock_t::composite_spell_haste() const
     h *= 1.0 / ( 1.0 + legendary.sephuzs_passive );
   }
 
+  if ( buffs.demonic_speed -> check() )
+    h *= 1.0 / ( 1.0 + buffs.demonic_speed -> check_value() );
+
+  if ( buffs.dreaded_haste -> check() )
+    h *= 1.0 / ( 1.0 + buffs.dreaded_haste -> check_value() );
+
   return h;
 }
 
@@ -6295,6 +6301,12 @@ double warlock_t::composite_melee_haste() const
   {
     h *= 1.0 / ( 1.0 + legendary.sephuzs_passive );
   }
+
+  if ( buffs.demonic_speed -> check() )
+    h *= 1.0 / ( 1.0 + buffs.demonic_speed -> check_value() );
+
+  if ( buffs.dreaded_haste -> check() )
+    h *= 1.0 / ( 1.0 + buffs.dreaded_haste -> check_value() );
 
   return h;
 }
