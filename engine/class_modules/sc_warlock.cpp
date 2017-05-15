@@ -6884,7 +6884,7 @@ void warlock_t::create_buffs()
     .max_stack( 20 );
   buffs.demonic_speed = haste_buff_creator_t( this, "demonic_speed", sets -> set( WARLOCK_AFFLICTION, T20, B4 ) -> effectN( 1 ).trigger() )
     .chance( sets -> set( WARLOCK_AFFLICTION, T20, B4 ) -> proc_chance() )
-    .default_value( sets -> set( WARLOCK_AFFLICTION, T20, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() );
+    .default_value( sets -> set( WARLOCK_AFFLICTION, T20, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
 
   //demonology buffs
   buffs.demonic_synergy = buff_creator_t( this, "demonic_synergy", find_spell( 171982 ) )
@@ -6899,7 +6899,7 @@ void warlock_t::create_buffs()
   buffs.stolen_power = buff_creator_t( this, "stolen_power", find_spell( 211583 ) )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.dreaded_haste = haste_buff_creator_t( this, "dreaded_haste", sets -> set( WARLOCK_DEMONOLOGY, T20, B4 ) -> effectN( 1 ).trigger() )
-    .default_value( sets -> set( WARLOCK_DEMONOLOGY, T20, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() );
+    .default_value( sets -> set( WARLOCK_DEMONOLOGY, T20, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
 
 
   //destruction buffs
