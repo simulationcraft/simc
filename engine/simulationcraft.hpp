@@ -7367,6 +7367,10 @@ const item_data_t* find_item_by_spell( const dbc_t& dbc, unsigned spell_id );
 
 expr_t* create_expression( action_t* a, const std::string& name_str );
 
+// Kludge to automatically apply all player-derived, label based modifiers to unique effects. Will
+// be replaced in the future by something else.
+void apply_label_modifiers( action_t* a );
+
 // Base template for various "proc actions".
 template <typename T_ACTION>
 struct proc_action_t : public T_ACTION
@@ -7389,6 +7393,8 @@ struct proc_action_t : public T_ACTION
     {
       this -> parse_effect_data( this -> data().effectN( i ) );
     }
+
+    unique_gear::apply_label_modifiers( this );
   }
 
   proc_action_t( const special_effect_t& e ) :
@@ -7541,6 +7547,7 @@ action_t* create_proc_action( const special_effect_t& effect, ARGS&&... args )
 
   return a;
 }
+
 } // namespace unique_gear ends
 
 // Consumable ===============================================================

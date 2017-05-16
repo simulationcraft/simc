@@ -107,6 +107,9 @@ std::string bonus_ids_str( dbc_t& );
 
 // Filtered data access
 const item_data_t* find_consumable( item_subclass_consumable type, bool ptr, const std::function<bool(const item_data_t*)>& finder );
+
+// Class / Spec specific passives for an actor
+std::vector<const spell_data_t*> class_passives( const player_t* );
 }
 
 namespace hotfix
