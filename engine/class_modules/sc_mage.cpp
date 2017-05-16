@@ -2651,17 +2651,6 @@ struct time_and_space_t : public arcane_mage_spell_t
     radius += p -> artifact.crackling_energy.data().effectN( 1 ).base_value();
   }
 
-  bool init_finished() override
-  {
-    if ( p() -> bugs )
-    {
-      am_trigger_source_id = p() -> benefits.arcane_missiles
-                                 -> get_source_id( data().name_cstr() );
-    }
-
-    return arcane_mage_spell_t::init_finished();
-  }
-
   virtual double action_multiplier() const override
   {
     double am = arcane_mage_spell_t::action_multiplier();
@@ -2669,16 +2658,6 @@ struct time_and_space_t : public arcane_mage_spell_t
     am *= arcane_charge_damage_bonus();
 
     return am;
-  }
-
-  virtual void execute() override
-  {
-    arcane_mage_spell_t::execute();
-
-    if ( p() -> bugs )
-    {
-      trigger_am( am_trigger_source_id );
-    }
   }
 };
 
@@ -4142,11 +4121,6 @@ struct ice_time_nova_t : public frost_mage_spell_t
   virtual void impact( action_state_t* s ) override
   {
     frost_mage_spell_t::impact( s );
-
-    if ( p() -> bugs )
-    {
-      p() -> buffs.sephuzs_secret -> trigger();
-    }
 
     p() -> apply_crowd_control( s, MECHANIC_ROOT );
   }
