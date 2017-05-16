@@ -6167,6 +6167,24 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
     regen_caches[CACHE_HASTE] = true;
     regen_caches[CACHE_SPELL_HASTE] = true;
     reap_souls_modifier = 2.0;
+
+    talent_points.register_validity_fn( [this]( const spell_data_t* spell )
+    {
+      if ( maybe_ptr( dbc.ptr ) && find_item( 151649 ) ) // Soul of the Netherlord
+      {
+        switch ( specialization() )
+        {
+          case WARLOCK_AFFLICTION:
+            return spell -> id() == 234876; // Death's Embrace
+          case WARLOCK_DEMONOLOGY:
+            return spell -> id() == 196269; // Shadowy Inspiration
+          case WARLOCK_DESTRUCTION:
+            return spell -> id() == 196412; // Eradication
+        }
+      }
+
+      return false;
+    } );
   }
 
 
