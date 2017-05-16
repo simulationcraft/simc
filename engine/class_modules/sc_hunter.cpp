@@ -466,6 +466,24 @@ public:
     regen_type = REGEN_DYNAMIC;
     regen_caches[ CACHE_HASTE ] = true;
     regen_caches[ CACHE_ATTACK_HASTE ] = true;
+
+    talent_points.register_validity_fn( [ this ] ( const spell_data_t* spell )
+    {
+      // Soul of the Huntmaster
+      if ( find_item( 151641 ) )
+      {
+        switch ( specialization() )
+        {
+          case HUNTER_BEAST_MASTERY:
+            return spell -> id() == 193532; // Dire Stable
+          case HUNTER_MARKSMANSHIP:
+            return spell -> id() == 194595; // Lock and Load
+          case HUNTER_SURVIVAL:
+            return spell -> id() == 87935; // Serpent Sting
+        }
+      }
+      return false;
+    } );
   }
 
   // Character Definition
