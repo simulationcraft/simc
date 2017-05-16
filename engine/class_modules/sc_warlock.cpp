@@ -4233,7 +4233,7 @@ struct chaos_bolt_t: public warlock_spell_t
   chaos_bolt_t( warlock_t* p ) :
     warlock_spell_t( p, "Chaos Bolt" ), refund( 0 ), duplicate( nullptr ), duplicate_chance( 0 )
   {
-    if ( p -> talents.reverse_entropy -> ok() )
+    if ( !maybe_ptr ( p -> dbc.ptr ) && p -> talents.reverse_entropy -> ok() )
       base_execute_time += p -> talents.reverse_entropy -> effectN( 2 ).time_value();
 
     can_havoc = true;
