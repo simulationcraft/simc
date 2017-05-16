@@ -683,7 +683,7 @@ Resource         : 25 Runic Power (6) (id=2237)
 Spell Level      : 55
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Death Knight (137005 effect#2), Biting Cold (166057 effect#1), Chill of the Grave (205209 effect#1), Icy Edge (247240 effect#1)
+Affecting spells : Death Knight (137005 effect#2), Biting Cold (166057 effect#1), Chill of the Grave (205209 effect#1)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -731,7 +731,7 @@ School           : Shadow
 Spell Level      : 75
 Range            : 30 yards
 GCD              : 1.5 seconds
-Duration         : 40 seconds
+Duration         : 45 seconds
 Cooldown         : 180 seconds
 Affecting spells : Death Knight (137005 effect#2)
 Attributes       : ........ ........ ........ ........   ........ .x...... .x...... ........ 
@@ -954,7 +954,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ..x..... x....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=43590)    : Apply Aura (6) | Modify Total Stat% (137)
@@ -964,7 +964,7 @@ Effects          :
 #3 (id=337680)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x10 | Target: Self (1)
 Description      : The power of Frost increases your Strength by $s1%, and grants immunity to external movement effects such as knockbacks. Lasts $d.
-Tooltip          : Strength increased by $s1%.
+Tooltip          : Strength increased by $w1%.
 
 Name             : Death Grip (id=51399) [Spell Family (15)] 
 Class            : Death Knight
@@ -1453,6 +1453,7 @@ Name             : Rime (id=59057) [Spell Family (15), Passive]
 Class            : Frost Death Knight
 School           : Physical
 Spell Level      : 59
+Internal Cooldown: 0.5 seconds
 Proc Chance      : 45%
 Proc Flags       : ....x... x...x... x....... ........ 
                  : Yellow Melee, Yellow Ranged, AOE Hostile Spell, Hostile Spell
@@ -1467,7 +1468,9 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=52489)    : Apply Aura (6) | Proc Trigger Spell (42): Rime
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 59052 | Target: Self (1)
-Description      : Your Obliterate has a $h% chance to cause your next Howling Blast to consume no runes and deal $59052s2% additional damage.
+#2 (id=464145)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 45 | Scaled Value: 45 | Target: Self (1)
+Description      : Obliterate has a $h% chance $?s207230[and Frostscythe has a ${$s2/2}.1% chance][] to cause your next Howling Blast to consume no runes and deal $59052s2% additional damage.
 
 Name             : Gift of the Naaru (Racial) (id=59545) [Spell Family (15)] 
 Class            : Death Knight
@@ -1670,7 +1673,7 @@ Name             : Frost Strike Off-Hand (id=66196) [Scaling Spell (1), Spell Fa
 Class            : Death Knight
 School           : Frost
 Range            : 100 yards
-Affecting spells : Frost Death Knight (137006 effect#1), Biting Cold (166057 effect#1), Ambidexterity (189092 effect#1), Chill of the Grave (205209 effect#1), Icy Edge (247240 effect#1)
+Affecting spells : Frost Death Knight (137006 effect#1), Biting Cold (166057 effect#1), Ambidexterity (189092 effect#1), Chill of the Grave (205209 effect#1)
 Triggered by     : Frost Strike (49143)
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ..x..... x.....x. 
@@ -2726,10 +2729,10 @@ Effects          :
                    Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536)
 #5 (id=191173)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Generic Modifier (0)
                    Base Value: -30 | Scaled Value: -30 | Misc Value 2: 281 (Label) | Target: Self (1)
-                   Affected Spells (Label): Fel-Crazed Rage (225777), Orb of Destruction (229700), Ceaseless Toxin (242497), Spear of Anguish (242605), Unending Hunger (242536), Dread Torrent (246464), Insidious Corruption (243941), Piercing Anguish (246751), Dread Reflections (246466)
+                   Affected Spells (Label): Fel-Crazed Rage (225777), Orb of Destruction (229700), Ceaseless Toxin (242497), Spear of Anguish (242605), Unending Hunger (242536), Dread Torrent (246464), Insidious Corruption (243941), Piercing Anguish (246751)
 #6 (id=260787)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Damage (22)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 22 | Misc Value 2: 281 (Label) | Target: Self (1)
-                   Affected Spells (Label): Fel-Crazed Rage (225777), Orb of Destruction (229700), Ceaseless Toxin (242497), Spear of Anguish (242605), Unending Hunger (242536), Dread Torrent (246464), Insidious Corruption (243941), Piercing Anguish (246751), Dread Reflections (246466)
+                   Affected Spells (Label): Fel-Crazed Rage (225777), Orb of Destruction (229700), Ceaseless Toxin (242497), Spear of Anguish (242605), Unending Hunger (242536), Dread Torrent (246464), Insidious Corruption (243941), Piercing Anguish (246751)
 #7 (id=260788)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #8 (id=260789)   : Apply Aura (6) | Dummy (4)
@@ -2763,10 +2766,10 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179691)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Affected Spells: Death Strike (49998), Blood Boil (50842), Death and Decay (52212), Marrowrend (195182), Death's Caress (195292), Bonestorm (196528), Consumption (205223), Heart Strike (206930), Blooddrinker (206931), Soulgorge (212744)
 #2 (id=191166)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Death Strike (49998), Blood Boil (50842), Death and Decay (52212), Marrowrend (195182), Death's Caress (195292), Bonestorm (196528), Consumption (205223), Heart Strike (206930), Blooddrinker (206931), Soulgorge (212744)
 #3 (id=191167)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 80 | Scaled Value: 80 | Target: Self (1)
@@ -2785,7 +2788,7 @@ Effects          :
                    Affected Spells: Icebound Fortitude (48792)
 #8 (id=260809)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self (1)
-                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Dread Reflections (246466), Infernal Cinders (242218)
+                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218)
 #9 (id=260810)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 3 | Misc Value 2: 276 (Label) | Target: Self (1)
                    Affected Spells (Label): Xavaric's Magnum Opus (207472)
@@ -3152,7 +3155,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=216887)   : School Damage (2): shadowfrost
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.50880 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.70000 | Target: Enemy (6)
 #2 (id=322756)   : Dummy (3)
                    Base Value: 66 | Scaled Value: 66
 Description      : $@spelldesc152280
@@ -4370,7 +4373,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=292108)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3.20000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.60000 | Target: Enemy (6)
 Description      : Inflicts Shadow damage to an enemy.
 
 Name             : Shadow Infusion (id=198943) [Spell Family (15), Passive] 
@@ -5451,7 +5454,7 @@ Class            : Death Knight
 School           : Shadow
 Range            : 30 yards
 GCD              : 1.5 seconds
-Duration         : 15 seconds
+Duration         : 20 seconds
 Cooldown         : 120 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6229,7 +6232,7 @@ Name             : Frost Strike (id=222026) [Scaling Spell (1), Spell Family (15
 Class            : Death Knight
 School           : Frost
 Range            : 100 yards
-Affecting spells : Frost Death Knight (137006 effect#1), Biting Cold (166057 effect#1), Chill of the Grave (205209 effect#1), Icy Edge (247240 effect#1)
+Affecting spells : Frost Death Knight (137006 effect#1), Biting Cold (166057 effect#1), Chill of the Grave (205209 effect#1)
 Triggered by     : Frost Strike (49143)
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ..x..... ......x. 

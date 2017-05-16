@@ -330,6 +330,7 @@ public:
   } mastery_spells;
 
   //Procs and RNG
+  real_ppm_t* affliction_t20_2pc_rppm;
   real_ppm_t* misery_rppm; // affliction t17 4pc
   real_ppm_t* demonic_power_rppm; // grimoire of sacrifice
   real_ppm_t* grimoire_of_synergy; //caster ppm, i.e., if it procs, the wl will create a buff for the pet.
@@ -344,6 +345,7 @@ public:
     cooldown_t* dimensional_rift;
     cooldown_t* haunt;
     cooldown_t* sindorei_spite_icd;
+    cooldown_t* call_dreadstalkers;
   } cooldowns;
 
   // Passives
@@ -399,6 +401,7 @@ public:
     buff_t* tormented_souls;
     buff_t* compounding_horror;
     buff_t* active_uas;
+    buff_t* demonic_speed; // t20 4pc
 
     //demonology buffs
     buff_t* tier18_2pc_demonology;
@@ -408,12 +411,14 @@ public:
     buff_t* stolen_power;
     buff_t* demonic_calling;
     buff_t* t18_4pc_driver;
+    buff_t* dreaded_haste; // t20 4pc
 
     //destruction_buffs
     buff_t* backdraft;
     buff_t* conflagration_of_chaos;
     buff_t* lord_of_flames;
     buff_t* embrace_chaos;
+    buff_t* chaos_mind;
 
     // legendary buffs
     buff_t* sindorei_spite;
@@ -450,6 +455,8 @@ public:
     gain_t* incinerate;
     gain_t* incinerate_crits;
     gain_t* dimensional_rift;
+    gain_t* affliction_t20_2pc;
+    gain_t* destruction_t20_2pc;
   } gains;
 
   // Procs
@@ -483,6 +490,7 @@ public:
     proc_t* t18_prince_malchezaar;
     proc_t* wild_imp;
     proc_t* fragment_wild_imp;
+    proc_t* demonology_t20_2pc;
     //destro
     proc_t* t18_4pc_destruction;
     proc_t* shadowy_tear;
@@ -1077,6 +1085,24 @@ struct legion_strike_t: public warlock_pet_melee_attack_t
   }
 };
 
+struct axe_toss_t : public warlock_pet_spell_t
+{
+  axe_toss_t( warlock_pet_t* p ) :
+    warlock_pet_spell_t( "Axe Toss", p, p -> find_spell( 89766 ) )
+  {
+  }
+
+  void execute() override
+  {
+    warlock_pet_spell_t::execute();
+
+    if ( p() -> o() -> legendary.sephuzs_secret )
+    {
+      p() -> o() -> buffs.sephuzs_secret -> trigger();
+    }
+  }
+};
+
 struct felstorm_tick_t: public warlock_pet_melee_attack_t
 {
   felstorm_tick_t( warlock_pet_t* p, const spell_data_t& s ):
@@ -1262,6 +1288,24 @@ struct doom_bolt_t: public warlock_pet_spell_t
       m *= 1.0 + data().effectN( 2 ).percent();
     }
     return m;
+  }
+};
+
+struct shadow_lock_t : public warlock_pet_spell_t
+{
+  shadow_lock_t( warlock_pet_t* p ) :
+    warlock_pet_spell_t( "Shadow Lock", p, p -> find_spell( 171138 ) )
+  {
+  }
+
+  void execute() override
+  {
+    warlock_pet_spell_t::execute();
+
+    if ( p() -> o() -> legendary.sephuzs_secret  )
+    {
+      p() -> o() -> buffs.sephuzs_secret -> trigger();
+    }
   }
 };
 
@@ -1622,12 +1666,16 @@ struct felguard_pet_t: public warlock_pet_t
 
     melee_attack = new warlock_pet_melee_t( this );
     special_action = new felstorm_t( this );
+    special_action_two = new axe_toss_t( this );
   }
 
   double composite_player_multiplier( school_e school ) const override
   {
     double m = warlock_pet_t::composite_player_multiplier( school );
-    m *= 1.0 + o() -> artifact.left_hand_of_darkness.percent();
+
+    if ( !is_grimoire_of_service )
+      m *= 1.0 + o() -> artifact.left_hand_of_darkness.percent();
+
     return m;
   }
 
@@ -1635,6 +1683,7 @@ struct felguard_pet_t: public warlock_pet_t
   {
     if ( name == "legion_strike" ) return new legion_strike_t( this );
     if ( name == "felstorm" ) return new felstorm_t( this );
+    if ( name == "axe_toss" ) return new axe_toss_t( this );
 
     return warlock_pet_t::create_action( name, options_str );
   }
@@ -2134,6 +2183,8 @@ struct doomguard_t: public warlock_pet_t
 
     resources.base[RESOURCE_ENERGY] = 100;
     base_energy_regen_per_second = 12;
+
+    special_action = new shadow_lock_t( this );
   }
 
   double composite_player_multiplier( school_e school ) const override
@@ -2148,6 +2199,7 @@ struct doomguard_t: public warlock_pet_t
   virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
   {
     if ( name == "doom_bolt" ) return new doom_bolt_t( this );
+    if ( name == "shadow_lock" ) return new shadow_lock_t( this );
 
     return warlock_pet_t::create_action( name, options_str );
   }
@@ -2410,7 +2462,7 @@ private:
     gain = player -> get_gain( name_str );
 
     can_havoc = false;
-
+    affected_by_destruction_t20_4pc = false;
     affected_by_contagion = true;
     affected_by_deaths_embrace = false;
     destro_mastery = true;
@@ -2424,7 +2476,7 @@ public:
 
   mutable std::vector< player_t* > havoc_targets;
   bool can_havoc;
-
+  bool affected_by_destruction_t20_4pc;
   bool affected_by_contagion;
   bool affected_by_flamelicked;
   bool affected_by_odr_shawl_of_the_ymirjar;
@@ -2668,6 +2720,10 @@ public:
             }
         }
 
+        if ( p() -> specialization() == WARLOCK_AFFLICTION && p() -> sets -> has_set_bonus( WARLOCK_AFFLICTION, T20, B4 ) )
+        { 
+          p() -> buffs.demonic_speed -> trigger();
+        }
     }
 
 
@@ -2766,10 +2822,23 @@ public:
   {
     double pm = spell_t::action_multiplier();
 
-    if( p() -> mastery_spells.chaotic_energies -> ok() && destro_mastery )
+    if ( !maybe_ptr( p() -> dbc.ptr ) && p() -> mastery_spells.chaotic_energies -> ok() && destro_mastery )
     {
       double chaotic_energies_rng = rng().range( 0, p() -> cache.mastery_value() );
       pm *= 1.0 + chaotic_energies_rng;
+    }
+
+    if ( maybe_ptr( p() -> dbc.ptr ) && p() -> mastery_spells.chaotic_energies -> ok() && destro_mastery )
+    {
+      double destro_mastery_value = p() -> cache.mastery_value() / 3.0;
+      double chaotic_energies_rng;
+
+      if ( p() -> sets -> has_set_bonus( WARLOCK_DESTRUCTION, T20, B4 ) && affected_by_destruction_t20_4pc )
+        chaotic_energies_rng = destro_mastery_value;
+      else
+        chaotic_energies_rng = rng().range( 0, destro_mastery_value );
+
+      pm *= 1.0 + chaotic_energies_rng + ( destro_mastery_value );
     }
 
     return pm;
@@ -2808,8 +2877,7 @@ public:
   }
 
   static void accumulate_seed_of_corruption( warlock_td_t* td, double amount )
-  {
-    td -> soc_threshold -= amount;
+  {    td -> soc_threshold -= amount;
 
     if ( td -> soc_threshold <= 0 )
       td -> dots_seed_of_corruption -> cancel();
@@ -3351,6 +3419,13 @@ struct corruption_t: public warlock_spell_t
       }
     }
 
+    if ( result_is_hit( d -> state -> result ) && p() -> sets -> has_set_bonus( WARLOCK_AFFLICTION, T20, B2 ) )
+    {
+      bool procced = p() -> affliction_t20_2pc_rppm -> trigger(); //check for RPPM
+      if ( procced )
+        p()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p() -> gains.affliction_t20_2pc ); //trigger the buff
+    }
+
     warlock_spell_t::tick( d );
   }
 };
@@ -3508,9 +3583,15 @@ struct shadow_bolt_t: public warlock_spell_t
       }
     }
 
-    if( p() -> sets->set( WARLOCK_DEMONOLOGY, T18, B2 ) )
+    if( p() -> sets->has_set_bonus( WARLOCK_DEMONOLOGY, T18, B2 ) )
     {
         p() -> buffs.tier18_2pc_demonology -> trigger( 1 );
+    }
+
+    if ( p() -> sets -> has_set_bonus( WARLOCK_DEMONOLOGY, T20, B2 ) && p() -> rng().roll( p() -> sets -> set( WARLOCK_DEMONOLOGY, T20, B2 ) -> proc_chance() ) )
+    {
+        p() -> cooldowns.call_dreadstalkers -> reset( true );
+        p() -> procs.demonology_t20_2pc -> occur();
     }
   }
 };
@@ -4043,13 +4124,15 @@ struct incinerate_t: public warlock_spell_t
 
     p() -> buffs.backdraft -> decrement();
 
-    if ( maybe_ptr( p()->dbc.ptr ) )
+    if ( maybe_ptr( p() -> dbc.ptr ) )
     {
       p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.2 * ( p() -> talents.fire_and_brimstone -> ok() ? execute_state -> n_targets : 1 ), p() -> gains.incinerate );
       if ( execute_state -> result == RESULT_CRIT )
         p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.1 * ( p() -> talents.fire_and_brimstone -> ok() ? execute_state -> n_targets : 1 ), p() -> gains.incinerate_crits );
+      if ( p() -> sets -> has_set_bonus( WARLOCK_DESTRUCTION, T20, B2 ) )
+        p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.1 * ( p() -> talents.fire_and_brimstone -> ok() ? execute_state -> n_targets : 1 ), p() -> gains.destruction_t20_2pc );
     }
-        }
+  }
 
   virtual double composite_crit_chance() const override
   {
@@ -4154,6 +4237,7 @@ struct chaos_bolt_t: public warlock_spell_t
       base_execute_time += p -> talents.reverse_entropy -> effectN( 2 ).time_value();
 
     can_havoc = true;
+    affected_by_destruction_t20_4pc = true;
 
     crit_bonus_multiplier *= 1.0 + p -> artifact.chaotic_instability.percent();
 
@@ -4253,6 +4337,9 @@ struct chaos_bolt_t: public warlock_spell_t
 
     p() -> buffs.embrace_chaos -> trigger();
     p() -> buffs.backdraft -> decrement();
+
+    p() -> buffs.chaos_mind -> expire();
+    p() -> buffs.chaos_mind -> trigger();
   }
 
   // Force spell to always crit
@@ -5000,6 +5087,8 @@ struct call_dreadstalkers_t : public warlock_spell_t
     dreadstalker_duration = p -> find_spell( 193332 ) -> duration() + ( p -> sets->has_set_bonus( WARLOCK_DEMONOLOGY, T19, B4 ) ? p -> sets->set( WARLOCK_DEMONOLOGY, T19, B4 ) -> effectN( 1 ).time_value() : timespan_t::zero() );
     dreadstalker_count = data().effectN( 1 ).base_value();
     improved_dreadstalkers = p -> talents.improved_dreadstalkers -> effectN( 1 ).base_value();
+    if ( maybe_ptr( p->dbc.ptr ) )
+      base_costs[RESOURCE_SOUL_SHARD] *= 0.1;
   }
 
   double cost() const override
@@ -5050,6 +5139,11 @@ struct call_dreadstalkers_t : public warlock_spell_t
     if ( recurrent_ritual > 0 )
     {
       p() -> resource_gain( RESOURCE_SOUL_SHARD, recurrent_ritual, p() -> gains.recurrent_ritual );
+    }
+
+    if ( p() -> sets -> has_set_bonus( WARLOCK_DEMONOLOGY, T20, B4 ) )
+    {
+      p() -> buffs.dreaded_haste -> trigger();
     }
   }
 };
@@ -5270,6 +5364,8 @@ struct shadowflame_t : public warlock_spell_t
     dot_duration = timespan_t::from_seconds( 8.0 );
     spell_power_mod.tick = data().effectN( 2 ).sp_coeff();
     base_tick_time = data().effectN( 2 ).period();
+    if ( maybe_ptr( p -> dbc.ptr ) )
+      energize_amount = 1;
   }
 
   timespan_t calculate_dot_refresh_duration( const dot_t* dot,
@@ -6065,6 +6161,7 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
     cooldowns.dimensional_rift = get_cooldown( "dimensional_rift" );
     cooldowns.haunt = get_cooldown( "haunt" );
     cooldowns.sindorei_spite_icd = get_cooldown( "sindorei_spite_icd" );
+    cooldowns.call_dreadstalkers = get_cooldown( "call_dreadstalkers" );
 
     regen_type = REGEN_DYNAMIC;
     regen_caches[CACHE_HASTE] = true;
@@ -6177,6 +6274,12 @@ double warlock_t::composite_spell_haste() const
     h *= 1.0 / ( 1.0 + legendary.sephuzs_passive );
   }
 
+  if ( buffs.demonic_speed -> check() )
+    h *= 1.0 / ( 1.0 + buffs.demonic_speed -> check_value() );
+
+  if ( buffs.dreaded_haste -> check() )
+    h *= 1.0 / ( 1.0 + buffs.dreaded_haste -> check_value() );
+
   return h;
 }
 
@@ -6198,6 +6301,12 @@ double warlock_t::composite_melee_haste() const
   {
     h *= 1.0 / ( 1.0 + legendary.sephuzs_passive );
   }
+
+  if ( buffs.demonic_speed -> check() )
+    h *= 1.0 / ( 1.0 + buffs.demonic_speed -> check_value() );
+
+  if ( buffs.dreaded_haste -> check() )
+    h *= 1.0 / ( 1.0 + buffs.dreaded_haste -> check_value() );
 
   return h;
 }
@@ -6773,6 +6882,9 @@ void warlock_t::create_buffs()
     .tick_behavior( BUFF_TICK_NONE )
     .refresh_behavior( BUFF_REFRESH_NONE )
     .max_stack( 20 );
+  buffs.demonic_speed = haste_buff_creator_t( this, "demonic_speed", sets -> set( WARLOCK_AFFLICTION, T20, B4 ) -> effectN( 1 ).trigger() )
+    .chance( sets -> set( WARLOCK_AFFLICTION, T20, B4 ) -> proc_chance() )
+    .default_value( sets -> set( WARLOCK_AFFLICTION, T20, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
 
   //demonology buffs
   buffs.demonic_synergy = buff_creator_t( this, "demonic_synergy", find_spell( 171982 ) )
@@ -6786,6 +6898,8 @@ void warlock_t::create_buffs()
   buffs.stolen_power_stacks = new stolen_power_stack_t( this );
   buffs.stolen_power = buff_creator_t( this, "stolen_power", find_spell( 211583 ) )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buffs.dreaded_haste = haste_buff_creator_t( this, "dreaded_haste", sets -> set( WARLOCK_DEMONOLOGY, T20, B4 ) -> effectN( 1 ).trigger() )
+    .default_value( sets -> set( WARLOCK_DEMONOLOGY, T20, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
 
 
   //destruction buffs
@@ -6796,13 +6910,15 @@ void warlock_t::create_buffs()
     .chance( artifact.conflagration_of_chaos.rank() ? artifact.conflagration_of_chaos.data().proc_chance() : 0.0 );
   buffs.embrace_chaos = buff_creator_t( this, "embrace_chaos", sets->set( WARLOCK_DESTRUCTION,T19, B2 ) -> effectN( 1 ).trigger() )
     .chance( sets->set( WARLOCK_DESTRUCTION, T19, B2 ) -> proc_chance() );
+  buffs.chaos_mind = buff_creator_t( this, "chaos_mind", sets -> set( WARLOCK_DESTRUCTION, T20, B4 ) -> effectN( 1 ).trigger() );
 }
 
 void warlock_t::init_rng()
 {
   player_t::init_rng();
 
-  misery_rppm = get_rppm( "misery", sets->set( WARLOCK_AFFLICTION, T17, B4 ) );
+  affliction_t20_2pc_rppm = get_rppm( "affliction_t20_2pc", sets -> set( WARLOCK_AFFLICTION, T20, B2 ) );
+  misery_rppm = get_rppm( "misery", sets -> set( WARLOCK_AFFLICTION, T17, B4 ) );
   demonic_power_rppm = get_rppm( "demonic_power", find_spell( 196099 ) );
   grimoire_of_synergy = get_rppm( "grimoire_of_synergy", talents.grimoire_of_synergy );
   grimoire_of_synergy_pet = get_rppm( "grimoire_of_synergy_pet", talents.grimoire_of_synergy );
@@ -6837,6 +6953,8 @@ void warlock_t::init_gains()
   gains.incinerate                  = get_gain( "incinerate" );
   gains.incinerate_crits            = get_gain( "incinerate_crits" );
   gains.dimensional_rift            = get_gain( "dimensional_rift" );
+  gains.affliction_t20_2pc          = get_gain( "affliction_t20_2pc" );
+  gains.destruction_t20_2pc         = get_gain( "destruction_t20_2pc" );
 }
 
 // warlock_t::init_procs ===============================================
@@ -6878,6 +6996,7 @@ void warlock_t::init_procs()
   procs.wilfreds_imp = get_proc( "wilfreds_imp" );
   procs.wilfreds_darkglare = get_proc( "wilfreds_darkglare" );
   procs.t19_2pc_chaos_bolts = get_proc( "t19_2pc_chaos_bolt" );
+  procs.demonology_t20_2pc = get_proc( "demonology_t20_2pc" );
 }
 
 void warlock_t::apl_precombat()
@@ -7107,7 +7226,7 @@ void warlock_t::apl_demonology()
   add_action( "Demonwrath", "chain=1,interrupt=1,if=spell_targets.demonwrath>=3" );
   add_action( "Demonwrath", "moving=1,chain=1,interrupt=1" );
   action_list_str += "/demonbolt";
-  add_action( "Shadow Bolt", "if=buff.shadowy_inspiration.react" );
+  add_action( "Shadow Bolt", "if=buff.shadowy_inspiration.remains" );
   add_action( "Demonic Empowerment", "if=artifact.thalkiels_ascendance.rank&talent.power_trip.enabled&!talent.demonbolt.enabled&(pet_count>=13|talent.shadowy_inspiration.enabled&pet_count>=6)" );
   add_action( "Shadow Bolt" );
 }

@@ -7,6 +7,12 @@ talents=2130131
 artifact=43:0:0:0:0:323:3:324:3:325:3:326:3:327:3:328:3:329:3:330:3:331:3:332:1:333:1:334:1:335:1:337:1:346:1:347:1:1276:1:1384:1:1577:4:1578:1:1579:1:1651:1
 spec=assassination
 
+# Default consumables
+potion=old_war
+flask=seventh_demon
+food=lavish_suramar_feast
+augmentation=defiled
+
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
 # while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
@@ -14,15 +20,16 @@ spec=assassination
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
-actions.precombat=flask,name=flask_of_the_seventh_demon
-actions.precombat+=/augmentation,name=defiled
-actions.precombat+=/food,name=lavish_suramar_feast
+actions.precombat=flask
+actions.precombat+=/augmentation
+actions.precombat+=/food
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/apply_poison
 actions.precombat+=/stealth
-actions.precombat+=/potion,name=old_war
+actions.precombat+=/potion
 actions.precombat+=/marked_for_death,if=raid_event.adds.in>40
+actions.precombat+=/variable,name=vigor_active,value=talent.vigor.enabled|equipped.soul_of_the_shadowblade
 
 # Executed every time the actor is available.
 actions=variable,name=energy_regen_combined,value=energy.regen+poisoned_bleeds*(7+talent.venom_rush.enabled*3)%2
@@ -42,7 +49,7 @@ actions.build+=/mutilate
 actions.build+=/poisoned_knife,cycle_targets=1,if=talent.agonizing_poison.enabled&debuff.agonizing_poison.remains<debuff.agonizing_poison.duration*0.3&debuff.agonizing_poison.stack>=5
 
 # Cooldowns
-actions.cds=potion,name=old_war,if=buff.bloodlust.react|target.time_to_die<=25|debuff.vendetta.up&cooldown.vanish.remains<5
+actions.cds=potion,if=buff.bloodlust.react|target.time_to_die<=25|debuff.vendetta.up&cooldown.vanish.remains<5
 actions.cds+=/use_item,name=draught_of_souls,if=energy.deficit>=35+variable.energy_regen_combined*2&(!equipped.mantle_of_the_master_assassin|cooldown.vanish.remains>8)&(!talent.agonizing_poison.enabled|debuff.agonizing_poison.stack>=5&debuff.surge_of_toxins.remains>=3)
 actions.cds+=/use_item,name=draught_of_souls,if=mantle_duration>0&mantle_duration<3.5&dot.kingsbane.ticking
 actions.cds+=/blood_fury,if=debuff.vendetta.up

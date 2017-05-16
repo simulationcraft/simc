@@ -345,7 +345,7 @@ Duration         : 4 seconds
 Proc Chance      : 101%
 Stance Mask      : 0x20000000
 Mechanic         : Unknown(95)
-Affecting spells : Vendetta (79140 effect#1), Dirty Tricks (108216 effect#1), Shadow Blades (121471 effect#3), Prey on the Weak (131511 effect#2), Shadow Dance (185313 effect#2), Broadsides (193356 effect#3), Premeditation (196979 effect#1), 
+Affecting spells : Vendetta (79140 effect#1), Dirty Tricks (108216 effect#1), Shadow Blades (121471 effect#3), Prey on the Weak (131511 effect#2), Shadow Dance (185313 effect#2), Broadsides (193356 effect#3)
 Attributes       : ....x... ........ x.x..x.. ........   ........ ........ ..x..... ..xx.... 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -535,7 +535,7 @@ School           : Nature
 Spell Level      : 10
 Range            : 100 yards
 Duration         : 12 seconds
-Affecting spells : Improved Poisons (14117 effect#1), Venomous Totem (23726 effect#2), Mastery: Potent Poisons (76803 effect#1), Vendetta (79140 effect#1), Assassination Rogue (137037 effect#1), Master Alchemist (192318 effect#1), Surge of Toxins (192425 effect#1), Master Poisoner (196864 effect#1), 
+Affecting spells : Improved Poisons (14117 effect#1), Venomous Totem (23726 effect#2), Mastery: Potent Poisons (76803 effect#1), Vendetta (79140 effect#1), Assassination Rogue (137037 effect#1), Master Alchemist (192318 effect#1), Surge of Toxins (192425 effect#1), Master Poisoner (196864 effect#1), Toxic Blade (245389 effect#1)
 Triggered by     : Deadly Poison (2823)
 Attributes       : ........ ........ .....x.. ........   ...x.x.x ........ .x...... ........ 
                  : ..x..... ........ ........ x.......   .......x ........ ........ ......x. 
@@ -559,7 +559,7 @@ Duration         : 3600 seconds
 Proc Chance      : 30%
 Proc Flags       : ..x.x... x....... ........ ........ 
                  : White Melee, Yellow Melee, Yellow Ranged
-Affecting spells : Improved Poisons (14117 effect#1), Venomous Totem (23726 effect#2), Envenom (32645 effect#2), Mastery: Potent Poisons (76803 effect#1), Vendetta (79140 effect#1), Assassination Rogue (137037 effect#1), Master Alchemist (192318 effect#1), Surge of Toxins (192425 effect#1), Master Poisoner (196864 effect#1), 
+Affecting spells : Improved Poisons (14117 effect#1), Venomous Totem (23726 effect#2), Envenom (32645 effect#2), Mastery: Potent Poisons (76803 effect#1), Vendetta (79140 effect#1), Assassination Rogue (137037 effect#1), Master Alchemist (192318 effect#1), Surge of Toxins (192425 effect#1), Master Poisoner (196864 effect#1), Toxic Blade (245389 effect#1)
 Attributes       : ....x... ........ ........ ........   .....x.. ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ...xx... ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -1322,7 +1322,7 @@ Spell Level      : 36
 Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 1 seconds
-Affecting spells : Rogue Tier 6 Trinket (40460 effect#1), Mastery: Potent Poisons (76803 effect#1), Mastery: Executioner (76808 effect#1), Vendetta (79140 effect#1), Assassination Rogue (137037 effect#1), Death from Above (163786 effect#1), Cold Blood (170882 effect#1), Toxic Mutilator (184916 effect#1), Toxic Blades (192310 effect#1), Deeper Stratagem (193531 effect#1), 
+Affecting spells : Rogue Tier 6 Trinket (40460 effect#1), Mastery: Potent Poisons (76803 effect#1), Mastery: Executioner (76808 effect#1), Vendetta (79140 effect#1), Assassination Rogue (137037 effect#1), Death from Above (163786 effect#1), Cold Blood (170882 effect#1), Toxic Mutilator (184916 effect#1), Toxic Blades (192310 effect#1), Deeper Stratagem (193531 effect#1), Toxic Blade (245389 effect#1)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
@@ -1570,7 +1570,7 @@ Attributes       : ....x... ........ x....... ........   ....x... .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=44107)    : School Damage (2): physical
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.07900 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.50000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=150470)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.35000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : Sprays knives at all targets within $A1 yards, dealing $s1 Physical damage and applying your active poisons at their normal rate.
@@ -1855,10 +1855,10 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=68022)    : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.00000 | Target: Self (1)
-                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Spore Cloud (32643), Envenom (32645), Deadly Poison (113780), Shadow Blade (121473), Shadow Blade Off-hand (121474), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Alacrity (193538), Agonizing Poison (200803), Curse of the Dreadblades (202665), Kingsbane (222062)
+                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Spore Cloud (32643), Envenom (32645), Deadly Poison (113780), Shadow Blade (121473), Shadow Blade Off-hand (121474), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Agonizing Poison (200803), Curse of the Dreadblades (202665), Kingsbane (222062), Toxic Blade (245388)
 #2 (id=68023)    : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Spore Cloud (32643), Deadly Poison (113780), Shadow Blade (121473), Shadow Blade Off-hand (121474), Kingsbane (192759), Kingsbane (192760), Alacrity (193538), Agonizing Poison (200803), Curse of the Dreadblades (202665), Kingsbane (222062)
+                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Spore Cloud (32643), Deadly Poison (113780), Shadow Blade (121473), Shadow Blade Off-hand (121474), Kingsbane (192759), Kingsbane (192760), Agonizing Poison (200803), Curse of the Dreadblades (202665), Kingsbane (222062), Toxic Blade (245388)
 #3 (id=92122)    : Apply Aura (6) | Dummy (4)
                    Base Value: 350 | Scaled Value: 350 | Target: Self (1)
 #4 (id=322527)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
@@ -1985,7 +1985,7 @@ Attributes       : ........ ........ ........ ........   .....x.. ..x..... .....
 Effects          :
 #1 (id=68390)    : Apply Aura (6) | Unknown(271)
                    Base Value: 30 | Scaled Value: 30 | Target: Enemy (6)
-                   Affected Spells: Backstab (53), Kidney Shot (408), Garrote (703), Sinister Strike (1752), Kick (1766), Gouge (1776), Stealth (1784), Cheap Shot (1833), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Sprint (2983), Crippling Poison (3408), Crippling Poison (3409), Slice and Dice (5171), Evasion (5277), Mutilate (5374), Sap (6770), Ambush (8676), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Hemorrhage (16511), Mutilate Off-Hand (27576), Spore Cloud (32643), Envenom (32645), Fan of Knives (51723), Deadly Poison (113780), Shuriken Toss (114014), Shadow Blade (121473), Shadow Blade Off-hand (121474), Prey on the Weak (131511), Internal Bleeding (154953), Backstab (173458), Poisoned Knife (185565), Kingsbane (192759), Kingsbane (192760), Alacrity (193538), Eviscerate (196819), Finality: Eviscerate (197393), Shuriken Storm (197835), Agonizing Poison (200803), Curse of the Dreadblades (202665), Goremaw's Bite (220901), Kingsbane (222062)
+                   Affected Spells: Backstab (53), Kidney Shot (408), Garrote (703), Sinister Strike (1752), Kick (1766), Gouge (1776), Stealth (1784), Cheap Shot (1833), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Sprint (2983), Crippling Poison (3408), Crippling Poison (3409), Slice and Dice (5171), Evasion (5277), Mutilate (5374), Sap (6770), Ambush (8676), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Hemorrhage (16511), Mutilate Off-Hand (27576), Spore Cloud (32643), Envenom (32645), Fan of Knives (51723), Deadly Poison (113780), Shuriken Toss (114014), Shadow Blade (121473), Shadow Blade Off-hand (121474), Prey on the Weak (131511), Internal Bleeding (154953), Backstab (173458), Poisoned Knife (185565), Kingsbane (192759), Kingsbane (192760), Eviscerate (196819), Finality: Eviscerate (197393), Shuriken Storm (197835), Agonizing Poison (200803), Curse of the Dreadblades (202665), Goremaw's Bite (220901), Kingsbane (222062), Toxic Blade (245388)
 #2 (id=68391)    : Apply Aura (6) | Unknown(343)
                    Base Value: 30 | Scaled Value: 30 | Target: Enemy (6)
 #3 (id=87043)    : Apply Aura (6) | Stalked (68)
@@ -2166,7 +2166,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=119249)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 14 | Target: Self (1)
-Description      : $?c3[Abilities cost $112942m1% less Energy while Stealth or Shadow Dance are active.][Abilities cost $112942s1% less Energy while Stealth is active.]
+Description      : $?c3[Abilities cost $112942m1% less Energy while Stealth or Shadow Dance is active.][Abilities cost $112942s1% less Energy while Stealth is active.]
 
 Name             : Leeching Poison (id=108211) [Spell Family (8)] 
 Class            : Rogue
@@ -2262,7 +2262,7 @@ Class            : Rogue
 School           : Nature
 Spell Level      : 10
 Range            : 100 yards
-Affecting spells : Improved Poisons (14117 effect#1), Venomous Totem (23726 effect#2), Mastery: Potent Poisons (76803 effect#1), Vendetta (79140 effect#1), Assassination Rogue (137037 effect#1), Master Alchemist (192318 effect#1), Surge of Toxins (192425 effect#1), Master Poisoner (196864 effect#1), 
+Affecting spells : Improved Poisons (14117 effect#1), Venomous Totem (23726 effect#2), Mastery: Potent Poisons (76803 effect#1), Vendetta (79140 effect#1), Assassination Rogue (137037 effect#1), Master Alchemist (192318 effect#1), Surge of Toxins (192425 effect#1), Master Poisoner (196864 effect#1), Toxic Blade (245389 effect#1)
 Attributes       : ........ ........ .....x.. ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3092,7 +3092,7 @@ Spell Level      : 12
 Range            : 5 yards
 GCD              : 1 seconds
 Stance Mask      : 0x20000000
-Affecting spells : Shadow Blades (121471 effect#4), Subtlety Rogue (137035 effect#1), From the Shadows (184918 effect#1), Shadow Dance (185313 effect#2), Nightblade (195452 effect#6), Premeditation (196979 effect#2), Precision Strike (197235 effect#1), Shadowstrike (227151 effect#1), Weak Point (238068 effect#1), Shadowstrike (245623 effect#1), 
+Affecting spells : Shadow Blades (121471 effect#4), Subtlety Rogue (137035 effect#1), From the Shadows (184918 effect#1), Shadow Dance (185313 effect#2), Nightblade (195452 effect#6), Precision Strike (197235 effect#1), Shadowstrike (227151 effect#1), Weak Point (238068 effect#1), Shadowstrike (245623 effect#1), 
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3106,10 +3106,10 @@ Effects          :
 #2 (id=269260)   : Weapon Damage% (31)
                    Base Value: 850 | Scaled Value: 8.5 | Target: Enemy (6)
 #3 (id=269261)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: combo_points | Target: Self (1)
 Description      : Strike through the shadows, dealing $sw2 Physical damage to your target. $?a231718[
 
-Shadowstrike's range is increased to ${5+$245623s1} yds and damage is increased by $245623s2% when you are out of combat.][]
+Shadowstrike's range is increased to ${5+$245623s1} yds and damage is increased by $245623s2% while Stealth is active.][]
 
 |cFFFFFFFFAwards $s3 combo $lpoint:points;.|r
 
@@ -3343,7 +3343,7 @@ Name             : Kingsbane (id=192760) [Spell Family (8)]
 Class            : Rogue
 School           : Nature
 Range            : 100 yards
-Affecting spells : Mastery: Potent Poisons (76803 effect#1), Vendetta (79140 effect#1), Assassination Rogue (137037 effect#1), Kingsbane (192853 effect#1), Master Poisoner (196864 effect#1), Dreadblade's Vigor (238103 effect#1)
+Affecting spells : Mastery: Potent Poisons (76803 effect#1), Vendetta (79140 effect#1), Assassination Rogue (137037 effect#1), Kingsbane (192853 effect#1), Master Poisoner (196864 effect#1), Dreadblade's Vigor (238103 effect#1), Toxic Blade (245389 effect#1)
 Triggered by     : Kingsbane (192759)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ x.....x. 
@@ -3611,7 +3611,6 @@ Spell Level      : 1
 Duration         : 20 seconds
 Stacks           : 10 maximum
 Proc Chance      : 101%
-Affecting spells : Mastery: Potent Poisons (76803 effect#1), Vendetta (79140 effect#1)
 Triggered by     : Alacrity (193539)
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4033,35 +4032,12 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=289229)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Gain ${$196980s1*$196980d/$196980t1} Energy over $196980d when you enter Stealth or activate Shadow Dance.
-
-Name             : Premeditation (Passive) (id=196979) [Spell Family (8), Passive] 
-Class            : Rogue
-School           : Physical
-Spell Level      : 1
-Proc Chance      : 101%
-Proc Flags       : ........ ........ ........ .....x.. 
-                 
-Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=289232)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 12 | Target: Self (1)
-                   Affected Spells: Cheap Shot (1833)
-#2 (id=356373)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 23 | Target: Self (1)
-                   Affected Spells: Cheap Shot (1833), Shadowstrike (185438)
-Description      : Cheap Shot and Shadowstrike generate $s1 additional combo point.
+Description      : Gain ${$196980s1*$196980d/$196980t1+$196980s2} Energy over $196980d when you enter Stealth or activate Shadow Dance.
 
 Name             : Master of Shadows (id=196980) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
-Duration         : 4 seconds
+Duration         : 3 seconds
 Attributes       : ........ ........ ........ ........   .....x.. ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4071,9 +4047,11 @@ Attributes       : ........ ........ ........ ........   .....x.. ........ .....
                  : Does not break stealth (37)
 Effects          :
 #1 (id=289234)   : Apply Aura (6) | Periodic Energize Power (24): every 0.5 seconds
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 3 | Target: Self (1)
+                   Base Value: 4 | Scaled Value: 4 | Misc Value: 3 | Target: Self (1)
+#2 (id=464604)   : Energize Power (30)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: energy | Target: Self (1)
 Description      : $@spelldesc196976
-Tooltip          : Regenerating ${$s1*$d/$t1} Energy over $d.
+Tooltip          : Regenerating ${$s1*$d/$t1+$s2} Energy over $d.
 
 Name             : Finality: Eviscerate (id=197393) [Spell Family (8)] 
 Class            : Rogue
@@ -4186,11 +4164,11 @@ Attributes       : ....x... ........ x....... ........   ....x... .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=290720)   : School Damage (2): physical
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.72150 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.20000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=290721)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.35000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
 #3 (id=344592)   : Dummy (3)
-                   Base Value: 200 | Scaled Value: 200 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 100 | Scaled Value: 100 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : Sprays shurikens at all targets within $A1 yards, dealing $s1 Physical damage.
 
 Damage increased by $s3% while Stealth or Shadow Dance is active.
@@ -4479,7 +4457,7 @@ Effects          :
 #2 (id=334761)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Stealth (158188), Shadow Dance (185313)
-Description      : You heal $s1% of your maximum life every $158188t2 sec while Stealth is active.
+Description      : You heal $s1% of your maximum life every $158188t2 sec while Stealth or Shadow Dance is active.
 
 Name             : Tangled Shadow (Passive Talent) (id=200778) [Spell Family (8), Passive] 
 Class            : Rogue
@@ -4530,7 +4508,7 @@ Range            : 100 yards
 Duration         : 12 seconds
 Stacks           : 5 maximum
 Proc Chance      : 101%
-Affecting spells : Improved Poisons (14117 effect#1), Venomous Totem (23726 effect#2), Mastery: Potent Poisons (76803 effect#1), Vendetta (79140 effect#1), Assassination Rogue (137037 effect#1), Master Alchemist (192318 effect#1), Poison Knives (192376 effect#2), Surge of Toxins (192425 effect#1), Master Poisoner (196864 effect#1), 
+Affecting spells : Improved Poisons (14117 effect#1), Venomous Totem (23726 effect#2), Mastery: Potent Poisons (76803 effect#1), Vendetta (79140 effect#1), Assassination Rogue (137037 effect#1), Master Alchemist (192318 effect#1), Poison Knives (192376 effect#2), Surge of Toxins (192425 effect#1), Master Poisoner (196864 effect#1), Toxic Blade (245389 effect#1)
 Triggered by     : Agonizing Poison (200802)
 Attributes       : ........ ........ .....x.. ........   ...x.x.x ........ .x...... ........ 
                  : ..x..... ........ ........ x.......   .......x ........ ........ ......x. 
@@ -4974,7 +4952,7 @@ Name             : Kingsbane (id=222062) [Spell Family (8)]
 Class            : Rogue
 School           : Nature
 Range            : 100 yards
-Affecting spells : Mastery: Potent Poisons (76803 effect#1), Vendetta (79140 effect#1), Assassination Rogue (137037 effect#1), Kingsbane (192853 effect#1), Master Poisoner (196864 effect#1), Dreadblade's Vigor (238103 effect#1)
+Affecting spells : Mastery: Potent Poisons (76803 effect#1), Vendetta (79140 effect#1), Assassination Rogue (137037 effect#1), Kingsbane (192853 effect#1), Master Poisoner (196864 effect#1), Dreadblade's Vigor (238103 effect#1), Toxic Blade (245389 effect#1)
 Triggered by     : Kingsbane (192759)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ......x. 
@@ -5017,7 +4995,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
-Affecting spells : Shadow Dance (185313 effect#2), Item - Rogue T20 Subtlety 2P Bonus (242279 effect#1), Item - Rogue T20 Subtlety 4P Bonus (242280 effect#1)
+Affecting spells : Shadow Dance (185313 effect#2), Item - Rogue T20 Subtlety 2P Bonus (242279 effect#1), 
 Attributes       : ....x... ........ x.x..... ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5080,7 +5058,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=349577)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 5 | Target: Self (1)
-Description      : Shadowstrike deals $245623s2% increased damage and will now teleport you to a target up to ${$245623s1+5} yards away when used from out of combat.
+Description      : Shadowstrike deals $245623s2% increased damage and will now teleport you to a target up to ${$245623s1+5} yards away when used while Stealth is active.
 
 Name             : Garrote (Rank 2) (id=231719) [Spell Family (8), Passive] 
 Class            : Assassination Rogue
@@ -5155,6 +5133,57 @@ Description      : Deepening Shadows reduces the remaining cooldown of Shadow Da
 
 Shadow Dance gains $s2 additional charge.
 
+Name             : Toxic Blade (id=245388) [Spell Family (8)] 
+Class            : Rogue
+School           : Nature
+Resource         : 25 Energy (3) (id=12037)
+Range            : 5 yards
+GCD              : 1 seconds
+Cooldown         : 25 seconds
+Affecting spells : Mastery: Potent Poisons (76803 effect#1), Vendetta (79140 effect#1)
+Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
+                 : ........ ........ ....x... ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=373276)   : Normalized Weapon Damage (121)
+                   Base Value: 1 | Scaled Value: 1 | Target: Enemy (6)
+#2 (id=373277)   : Weapon Damage% (31)
+                   Base Value: 600 | Scaled Value: 6 | Target: Enemy (6)
+#3 (id=373278)   : Energize Power (30)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points | Target: Self (1)
+#4 (id=373280)   : Trigger Spell (64): Toxic Blade
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 245389 | Target: Enemy (6)
+#5 (id=373289)   : Dummy (3)
+                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+Description      : Stab your enemy with a toxic blade, dealing $sw2 Nature damage.
+
+The critical strike chance of your Nature damage abilities against the target is increased by $245389s1% for $245389d.
+
+|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r
+
+Name             : Toxic Blade (id=245389) [Spell Family (8)] 
+Class            : Rogue
+School           : Nature
+Range            : 100 yards
+Duration         : 8 seconds
+Triggered by     : Toxic Blade (245388)
+Attributes       : ....x... ........ ..x..... ..x....x   ........ ........ ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Cannot cancel aura (31)
+Effects          :
+#1 (id=373279)   : Apply Aura (6) | Unknown(308)
+                   Base Value: 40 | Scaled Value: 40 | Target: Enemy (6)
+                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Venomhide Poison (14795), Spore Cloud (32643), Envenom (32645), Deadly Poison (113780), From the Shadows (192434), Poison Bomb (192660), Kingsbane (192760), Agonizing Poison (200803), Kingsbane (222062)
+Description      : $@spelldesc245388
+Tooltip          : $s1% increased chance of being critically hit by Nature damage from the casting Rogue.
+
 Name             : Shadowstrike (Rank 2) (id=245623) [Spell Family (8), Hidden] 
 Class            : Rogue
 School           : Physical
@@ -5163,7 +5192,7 @@ Attributes       : .......x ........ ........ x..x....   .....x.. ........ .....
                  : ........ ......x. ...x.... ........   ........ ........ ....x... ........ 
                  : ........ ........ .....x.. ........   ...x.... ........ .xx..... ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : .....x.. ........ ........ ........   ........ ...x.... ........ ........ 
+                 : .....x.. ....x... ........ ........   ........ ...x.... ........ ........ 
                  : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
                  : Hidden (7), Does not break stealth (37)
 Effects          :
@@ -5237,7 +5266,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
-Affecting spells : Shadow Dance (185313 effect#2), Item - Rogue T20 Subtlety 2P Bonus (242279 effect#1), Item - Rogue T20 Subtlety 4P Bonus (242280 effect#1)
+Affecting spells : Shadow Dance (185313 effect#2), Item - Rogue T20 Subtlety 2P Bonus (242279 effect#1), 
 Attributes       : ....x... ........ x.x..... ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5260,7 +5289,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
-Affecting spells : Shadow Dance (185313 effect#2), Item - Rogue T20 Subtlety 2P Bonus (242279 effect#1), Item - Rogue T20 Subtlety 4P Bonus (242280 effect#2)
+Affecting spells : Shadow Dance (185313 effect#2), Item - Rogue T20 Subtlety 2P Bonus (242279 effect#1), 
 Attributes       : ....x... ........ x.x..... ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

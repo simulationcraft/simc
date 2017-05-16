@@ -11,6 +11,7 @@ spec=frost
 potion=prolonged_power
 flask=countless_armies
 food=lavish_suramar_feast
+augmentation=defiled
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -21,7 +22,7 @@ food=lavish_suramar_feast
 # Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat=flask
 actions.precombat+=/food
-actions.precombat+=/augmentation,name=defiled
+actions.precombat+=/augmentation
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion

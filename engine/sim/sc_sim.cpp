@@ -1377,7 +1377,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   disable_set_bonuses( false ), disable_2_set( 1 ), disable_4_set( 1 ), enable_2_set( 1 ), enable_4_set( 1 ),
   pvp_crit( false ),
   active_enemies( 0 ), active_allies( 0 ),
-  _rng(), seed( 0 ), deterministic( false ),
+  _rng(), seed( 0 ), deterministic( 0 ), strict_work_queue( 0 ),
   average_range( true ), average_gauss( false ),
   convergence_scale( 2 ),
   fight_style( "Patchwerk" ), add_waves( 0 ), overrides( overrides_t() ),
@@ -1389,6 +1389,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   reforge_plot( new reforge_plot_t( this ) ),
   elapsed_cpu( 0.0 ),
   elapsed_time( 0.0 ),
+  work_done( 0 ),
   iteration_dmg( 0 ), priority_iteration_dmg( 0 ), iteration_heal( 0 ), iteration_absorb( 0 ),
   raid_dps(), total_dmg(), raid_hps(), total_heal(), total_absorb(), raid_aps(),
   simulation_length( "Simulation Length", false ),
@@ -1403,6 +1404,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   allow_potions( true ),
   allow_food( true ),
   allow_flasks( true ),
+  allow_augmentations( true ),
   solo_raid( false ),
   global_item_upgrade_level( 0 ),
   maximize_reporting( false ),
@@ -2559,10 +2561,11 @@ bool sim_t::iterate()
   do
   {
     ++current_iteration;
+    ++work_done;
 
     combat();
 
-    if ( progress_bar.update() )
+    if ( progress_bar.update( false, current_index ) )
     {
       progress_bar.output( false );
     }
@@ -2588,7 +2591,7 @@ bool sim_t::iterate()
     }
   } while ( more_work && ! canceled );
 
-  if ( ! canceled && progress_bar.update( true ) )
+  if ( ! canceled && progress_bar.update( true, current_index ) )
   {
     progress_bar.output( true );
   }
@@ -2637,6 +2640,7 @@ void sim_t::merge( sim_t& other_sim )
   auto_lock_t auto_lock( merge_mutex );
 
   iterations += other_sim.iterations;
+  work_per_thread[ other_sim.thread_index ] = other_sim.work_done;
 
   simulation_length.merge( other_sim.simulation_length );
   total_dmg.merge( other_sim.total_dmg );
@@ -2668,6 +2672,8 @@ void sim_t::merge( sim_t& other_sim )
 /// merge all sims together
 void sim_t::merge()
 {
+  work_per_thread[ thread_index ] = work_done;
+
   if ( children.empty() )
     return;
 
@@ -2717,7 +2723,7 @@ void sim_t::partition()
   // However, when we desire deterministic runs (for debugging) we need to force the
   // sims to each use a specific number of iterations as opposed to using shared pool of work.
 
-  if( deterministic ) 
+  if ( deterministic || strict_work_queue )
   {
     work_queue -> init( iterations );
   }
@@ -2737,7 +2743,7 @@ void sim_t::partition()
       remainder--;
     }
 
-    if( deterministic ) 
+    if( deterministic || strict_work_queue )
     {
       child -> work_queue -> init( child -> iterations );
     }
@@ -3081,12 +3087,14 @@ void sim_t::create_options()
   add_option( opt_bool( "override.allow_potions", allow_potions ) );
   add_option( opt_bool( "override.allow_food", allow_food ) );
   add_option( opt_bool( "override.allow_flasks", allow_flasks ) );
+  add_option( opt_bool( "override.allow_augmentations", allow_augmentations ) );
   add_option( opt_bool( "override.bloodlust", overrides.bloodlust ) );
   // Regen
   add_option( opt_timespan( "regen_periodicity", regen_periodicity ) );
   // RNG
   add_option( opt_string( "rng", rng_str ) );
   add_option( opt_bool( "deterministic", deterministic ) );
+  add_option( opt_bool( "strict_work_queue", strict_work_queue ) );
   add_option( opt_float( "report_iteration_data", report_iteration_data ) );
   add_option( opt_int( "min_report_iteration_data", min_report_iteration_data ) );
   add_option( opt_bool( "average_range", average_range ) );
@@ -3206,6 +3214,11 @@ void sim_t::create_options()
   add_option( opt_bool( "show_hotfixes", display_hotfixes ) );
   // Bonus ids
   add_option( opt_bool( "show_bonus_ids", display_bonus_ids ) );
+
+  // Expansion-specific options
+
+  // Legion
+  add_option( opt_int( "legion.infernal_cinders_users", expansion_opts.infernal_cinders_users, 1, 20 ) );
 }
 
 // sim_t::parse_option ======================================================
@@ -3360,6 +3373,10 @@ void sim_t::setup( sim_control_t* c )
     work_queue -> batches( player_no_pet_list.size() );
   }
   work_queue -> init( iterations );
+  if ( thread_index == 0 )
+  {
+    work_per_thread.resize( threads );
+  }
 
   if( deterministic && ( target_error != 0 ) )
   {
@@ -3369,27 +3386,39 @@ void sim_t::setup( sim_control_t* c )
 
 // sim_t::progress ==========================================================
 
-sim_t::sim_progress_t sim_t::progress( std::string* detailed, int index )
+sim_progress_t sim_t::progress( std::string* detailed, int index )
 {
-  auto progress = work_queue -> progress( index );
+  auto total_progress = work_queue -> progress( index );
 
-  if ( deterministic )
+  // If strict work queue is used with target error, estimate that total iterations will be roughly
+  // the total iterations of the main thread, multiplied by the total number of threads.
+  if ( target_error > 0 && strict_work_queue )
+  {
+    total_progress.total_iterations *= threads;
+  }
+
+  // For work queues that are independent, collect all work done so far for the progressbar.
+  if ( deterministic || strict_work_queue )
   {
     AUTO_LOCK( relatives_mutex );
     for ( const auto& child : children )
     {
       if ( child )
       {
-        auto progress = child -> work_queue -> progress();
-        progress.current_iterations += progress.current_iterations;
-        progress.total_iterations += progress.total_iterations;
+        auto progress = child -> work_queue -> progress( index );
+        total_progress.current_iterations += progress.current_iterations;
+        // If no target error, include total iterations from the child threads as well
+        if ( target_error <= 0 )
+        {
+          total_progress.total_iterations += progress.total_iterations;
+        }
       }
     }
   }
 
-  detailed_progress( detailed, progress.current_iterations, progress.total_iterations );
+  detailed_progress( detailed, total_progress.current_iterations, total_progress.total_iterations );
 
-  return progress;
+  return total_progress;
 }
 
 double sim_t::progress( std::string& phase, std::string* detailed, int index )

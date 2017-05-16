@@ -159,6 +159,7 @@ public:
     buff_t* t20_2p_precision;
     buff_t* t20_4p_critical_aimed_damage;
     buff_t* pre_t20_4p_critical_aimed_damage;
+    buff_t* t20_4p_bestial_rage;
     buff_t* sentinels_sight;
     buff_t* butchers_bone_apron;
     buff_t* gyroscopic_stabilization;
@@ -468,47 +469,46 @@ public:
   }
 
   // Character Definition
-  virtual void      init_spells() override;
-  virtual void      init_base_stats() override;
-  virtual void      create_buffs() override;
-  virtual bool      init_special_effects() override;
-  virtual void      init_gains() override;
-  virtual void      init_position() override;
-  virtual void      init_procs() override;
-  virtual void      init_rng() override;
-  virtual void      init_scaling() override;
-  virtual void      init_action_list() override;
-  virtual void      arise() override;
-  virtual void      reset() override;
+  void      init_spells() override;
+  void      init_base_stats() override;
+  void      create_buffs() override;
+  bool      init_special_effects() override;
+  void      init_gains() override;
+  void      init_position() override;
+  void      init_procs() override;
+  void      init_rng() override;
+  void      init_scaling() override;
+  void      init_action_list() override;
+  void      arise() override;
+  void      reset() override;
 
-  virtual void      regen( timespan_t periodicity = timespan_t::from_seconds( 0.25 ) ) override;
-  virtual double    composite_attack_power_multiplier() const override;
-  virtual double    composite_melee_crit_chance() const override;
-  virtual double    composite_spell_crit_chance() const override;
-  virtual double    composite_melee_haste() const override;
-  virtual double    composite_spell_haste() const override;
-  virtual double    composite_mastery_value() const override;
-  virtual double    composite_player_critical_damage_multiplier( const action_state_t* ) const override;
-  virtual double    composite_rating_multiplier( rating_e rating ) const override;
-  virtual double    composite_player_multiplier( school_e school ) const override;
-  virtual double    composite_player_target_multiplier( player_t* target, school_e school ) const override;
-  double            composite_player_pet_damage_multiplier( const action_state_t* ) const override;
-  virtual double    matching_gear_multiplier( attribute_e attr ) const override;
-  virtual void      invalidate_cache( cache_e ) override;
-  virtual void      create_options() override;
-  virtual expr_t*   create_expression( action_t*, const std::string& name ) override;
-  virtual action_t* create_action( const std::string& name, const std::string& options ) override;
-  virtual pet_t*    create_pet( const std::string& name, const std::string& type = std::string() ) override;
-  virtual void      create_pets() override;
-  virtual resource_e primary_resource() const override { return RESOURCE_FOCUS; }
-  virtual role_e    primary_role() const override { return ROLE_ATTACK; }
-  virtual stat_e    convert_hybrid_stat( stat_e s ) const override;
-  virtual std::string      create_profile( save_e = SAVE_ALL ) override;
-  virtual void      copy_from( player_t* source ) override;
-  virtual void      armory_extensions( const std::string& r, const std::string& s, const std::string& c, cache::behavior_e ) override;
+  void      regen( timespan_t periodicity = timespan_t::from_seconds( 0.25 ) ) override;
+  double    composite_attack_power_multiplier() const override;
+  double    composite_melee_crit_chance() const override;
+  double    composite_spell_crit_chance() const override;
+  double    composite_melee_haste() const override;
+  double    composite_spell_haste() const override;
+  double    composite_mastery_value() const override;
+  double    composite_player_critical_damage_multiplier( const action_state_t* ) const override;
+  double    composite_rating_multiplier( rating_e rating ) const override;
+  double    composite_player_multiplier( school_e school ) const override;
+  double    composite_player_target_multiplier( player_t* target, school_e school ) const override;
+  double    composite_player_pet_damage_multiplier( const action_state_t* ) const override;
+  double    matching_gear_multiplier( attribute_e attr ) const override;
+  void      invalidate_cache( cache_e ) override;
+  void      create_options() override;
+  expr_t*   create_expression( action_t*, const std::string& name ) override;
+  action_t* create_action( const std::string& name, const std::string& options ) override;
+  pet_t*    create_pet( const std::string& name, const std::string& type = std::string() ) override;
+  void      create_pets() override;
+  resource_e primary_resource() const override { return RESOURCE_FOCUS; }
+  role_e    primary_role() const override { return ROLE_ATTACK; }
+  stat_e    convert_hybrid_stat( stat_e s ) const override;
+  std::string      create_profile( save_e = SAVE_ALL ) override;
+  void      copy_from( player_t* source ) override;
 
-  virtual void      schedule_ready( timespan_t delta_time = timespan_t::zero( ), bool waiting = false ) override;
-  virtual void      moving( ) override;
+  void      schedule_ready( timespan_t delta_time = timespan_t::zero( ), bool waiting = false ) override;
+  void      moving( ) override;
 
   void              apl_default();
   void              apl_surv();
@@ -517,12 +517,13 @@ public:
   std::string default_potion() const override;
   std::string default_flask() const override;
   std::string default_food() const override;
+  std::string default_rune() const override;
 
   void              add_item_actions( action_priority_list_t* list );
 
   target_specific_t<hunter_td_t> target_data;
 
-  virtual hunter_td_t* get_target_data( player_t* target ) const override
+  hunter_td_t* get_target_data( player_t* target ) const override
   {
     hunter_td_t*& td = target_data[target];
     if ( !td ) td = new hunter_td_t( target, const_cast<hunter_t*>( this ) );
@@ -646,7 +647,7 @@ public:
     return am;
   }
 
-  virtual double cost() const override
+  double cost() const override
   {
     double cost = ab::cost();
 
@@ -827,7 +828,7 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
     may_crit = tick_may_crit = true;
   }
 
-  virtual void init() override
+  void init() override
   {
     if ( player -> main_hand_weapon.group() != WEAPON_RANGED )
       background = true;
@@ -835,10 +836,10 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
     base_t::init();
   }
 
-  virtual bool usable_moving() const override
+  bool usable_moving() const override
   { return true; }
 
-  virtual void execute() override
+  void execute() override
   {
     base_t::execute();
     try_steady_focus();
@@ -848,7 +849,7 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
       trigger_mm_feet( p() );
   }
 
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     base_t::impact( s );
 
@@ -920,7 +921,7 @@ public:
                   base_t( n, player, s )
   {}
 
-  virtual void execute() override
+  void execute() override
   {
     base_t::execute();
     try_steady_focus();
@@ -1090,52 +1091,7 @@ public:
     return PET_FEROCITY;
   }
 
-  //TODO: Reimplement Legion special abilities
-  std::string unique_special()
-  {
-    switch ( pet_type )
-    {
-    case PET_CARRION_BIRD: return "";
-    case PET_CAT:          return "";
-    case PET_CORE_HOUND:   return "";
-    case PET_DEVILSAUR:    return "";
-    case PET_HYENA:        return "";
-    case PET_MOTH:         return "";
-    case PET_RAPTOR:       return "";
-    case PET_SPIRIT_BEAST: return "";
-    case PET_TALLSTRIDER:  return "";
-    case PET_WASP:         return "";
-    case PET_WOLF:         return "";
-    case PET_BEAR:         return "";
-    case PET_BOAR:         return "";
-    case PET_CRAB:         return "";
-    case PET_CROCOLISK:    return "";
-    case PET_GORILLA:      return "";
-    case PET_RHINO:        return "";
-    case PET_SCORPID:      return "";
-    case PET_SHALE_SPIDER: return "";
-    case PET_TURTLE:       return "";
-    case PET_WARP_STALKER: return "";
-    case PET_WORM:         return "";
-    case PET_BAT:          return "";
-    case PET_BIRD_OF_PREY: return "";
-    case PET_CHIMAERA:     return "";
-    case PET_DRAGONHAWK:   return "";
-    case PET_NETHER_RAY:   return "";
-    case PET_RAVAGER:      return "";
-    case PET_SERPENT:      return "";
-    case PET_SILITHID:     return "";
-    case PET_SPIDER:       return "";
-    case PET_SPOREBAT:     return "";
-    case PET_WIND_SERPENT: return "";
-    case PET_FOX:          return "";
-    //case PET_RIVERBEAST:   return "gruesome_bite";
-    default: break;
-    }
-    return nullptr;
-  }
-
-  virtual void init_base_stats() override
+  void init_base_stats() override
   {
     base_t::init_base_stats();
 
@@ -1150,7 +1106,7 @@ public:
     owner_coeff.sp_from_ap = 0.6;
   }
 
-  virtual void create_buffs() override
+  void create_buffs() override
   {
     base_t::create_buffs();
 
@@ -1205,7 +1161,7 @@ public:
         .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 
-  virtual void init_gains() override
+  void init_gains() override
   {
     base_t::init_gains();
 
@@ -1213,26 +1169,19 @@ public:
     gains.aspect_of_the_wild = get_gain( "aspect_of_the_wild" );
   }
 
-  virtual void init_benefits() override
+  void init_benefits() override
   {
     base_t::init_benefits();
 
     benefits.wild_hunt = get_benefit( "wild_hunt" );
   }
 
-  virtual void init_action_list() override
+  void init_action_list() override
   {
     if ( action_list_str.empty() )
     {
       action_list_str += "/auto_attack";
       action_list_str += "/snapshot_stats";
-
-      std::string special = unique_special();
-      if ( !special.empty() )
-      {
-        action_list_str += "/";
-        action_list_str += special;
-      }
       action_list_str += "/claw";
       action_list_str += "/wait_until_ready";
       use_default_action_list = true;
@@ -1241,7 +1190,7 @@ public:
     base_t::init_action_list();
   }
 
-  virtual double composite_melee_crit_chance() const override
+  double composite_melee_crit_chance() const override
   {
     double ac = base_t::composite_melee_crit_chance();
     ac += specs.spiked_collar -> effectN( 3 ).percent();
@@ -1268,7 +1217,7 @@ public:
   double focus_regen_per_second() const override
   { return o() -> focus_regen_per_second() * 1.25; }
 
-  virtual double composite_melee_speed() const override
+  double composite_melee_speed() const override
   {
     double ah = base_t::composite_melee_speed();
 
@@ -1282,14 +1231,14 @@ public:
     return ah;
   }
 
-  virtual void summon( timespan_t duration = timespan_t::zero() ) override
+  void summon( timespan_t duration = timespan_t::zero() ) override
   {
     base_t::summon( duration );
 
     o() -> active.pet = this;
   }
 
-  virtual void demise() override
+  void demise() override
   {
     base_t::demise();
 
@@ -1297,7 +1246,7 @@ public:
       o() -> active.pet = nullptr;
   }
 
-  virtual double composite_player_multiplier( school_e school ) const override
+  double composite_player_multiplier( school_e school ) const override
   {
     double m = base_t::composite_player_multiplier( school );
 
@@ -1319,7 +1268,7 @@ public:
 
   target_specific_t<hunter_main_pet_td_t> target_data;
 
-  virtual hunter_main_pet_td_t* get_target_data( player_t* target ) const override
+  hunter_main_pet_td_t* get_target_data( player_t* target ) const override
   {
     hunter_main_pet_td_t*& td = target_data[target];
     if ( !td )
@@ -1327,12 +1276,12 @@ public:
     return td;
   }
 
-  virtual resource_e primary_resource() const override 
+  resource_e primary_resource() const override
   { return RESOURCE_FOCUS; }
 
-  virtual action_t* create_action( const std::string& name, const std::string& options_str ) override;
+  action_t* create_action( const std::string& name, const std::string& options_str ) override;
 
-  virtual void init_spells() override;
+  void init_spells() override;
 
   void moving() override
   { return; }
@@ -1387,7 +1336,7 @@ struct hunter_secondary_pet_t: public hunter_pet_t
     regen_type = REGEN_DISABLED;
   }
 
-  virtual void init_base_stats() override
+  void init_base_stats() override
   {
     hunter_pet_t::init_base_stats();
 
@@ -1404,7 +1353,7 @@ struct hunter_secondary_pet_t: public hunter_pet_t
     main_hand_attack = new secondary_pet_melee_t<hunter_secondary_pet_t>( name_str + "_melee", this );
   }
 
-  virtual void summon( timespan_t duration = timespan_t::zero() ) override
+  void summon( timespan_t duration = timespan_t::zero() ) override
   {
     hunter_pet_t::summon( duration );
 
@@ -1469,14 +1418,14 @@ struct dire_critter_t: public hunter_secondary_pet_t
     owner_coeff.ap_from_ap = 1.4;
   }
 
-  virtual void init_base_stats() override
+  void init_base_stats() override
   {
     hunter_secondary_pet_t::init_base_stats();
 
     main_hand_attack = new dire_beast_melee_t( this );
   }
 
-  virtual void init_spells() override;
+  void init_spells() override;
 
   void arise() override
   {
@@ -1489,7 +1438,7 @@ struct dire_critter_t: public hunter_secondary_pet_t
     }
   }
 
-  virtual void summon( timespan_t duration = timespan_t::zero() ) override
+  void summon( timespan_t duration = timespan_t::zero() ) override
   {
     hunter_secondary_pet_t::summon( duration );
 
@@ -1497,7 +1446,7 @@ struct dire_critter_t: public hunter_secondary_pet_t
       active.stomp -> execute();
   }
 
-  virtual double composite_player_multiplier( school_e school ) const override
+  double composite_player_multiplier( school_e school ) const override
   {
     double cpm = hunter_secondary_pet_t::composite_player_multiplier( school );
 
@@ -1509,7 +1458,7 @@ struct dire_critter_t: public hunter_secondary_pet_t
     return cpm;
   }
 
-  virtual void create_buffs() override
+  void create_buffs() override
   {
     hunter_secondary_pet_t::create_buffs();
 
@@ -1569,9 +1518,9 @@ struct hati_t: public hunter_secondary_pet_t
     main_hand_attack = new hati_melee_t( this );
   }
 
-  virtual void init_spells() override;
+  void init_spells() override;
 
-  virtual void create_buffs() override
+  void create_buffs() override
   {
     hunter_secondary_pet_t::create_buffs();
 
@@ -1599,7 +1548,7 @@ struct hati_t: public hunter_secondary_pet_t
         .default_value( cleave_value );
   }
 
-  virtual double composite_player_multiplier( school_e school ) const override
+  double composite_player_multiplier( school_e school ) const override
   {
     double m = hunter_secondary_pet_t::composite_player_multiplier( school );
 
@@ -1950,7 +1899,7 @@ struct kill_command_t: public hunter_pet_action_t < hunter_pet_t, attack_t >
 
     // The hardcoded parameter is taken from the $damage value in teh tooltip. e.g., 1.36 below
     // $damage = ${ 1.5*($83381m1 + ($RAP*  1.632   ))*$<bmMastery> }
-    attack_power_mod.direct  = 3.0; // Hard-coded in tooltip.
+    attack_power_mod.direct  = maybe_ptr( p -> dbc.ptr ) ? 3.6 : 3.0; // Hard-coded in tooltip.
 
     base_multiplier *= 1.0 + o() -> artifacts.pack_leader.percent();
 
@@ -1958,7 +1907,7 @@ struct kill_command_t: public hunter_pet_action_t < hunter_pet_t, attack_t >
       jaws_of_thunder = new jaws_of_thunder_t( p );
   }
 
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     base_t::impact( s );
 
@@ -1980,6 +1929,16 @@ struct kill_command_t: public hunter_pet_action_t < hunter_pet_t, attack_t >
 
   bool usable_moving() const override
   { return true; }
+
+  double action_multiplier() const override
+  {
+    double am = base_t::action_multiplier();
+
+    if ( o() -> buffs.t20_4p_bestial_rage -> up() )
+      am *= 1.0 + o() -> buffs.t20_4p_bestial_rage -> check_value();
+
+    return am;
+  }
 };
 
 struct main_pet_kill_command_t: public kill_command_t
@@ -2084,7 +2043,7 @@ struct pet_melee_t: public hunter_main_pet_attack_t
       p() -> active.thunderslash -> execute();
   }
 
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     hunter_main_pet_attack_t::impact( s );
 
@@ -2107,10 +2066,10 @@ struct pet_auto_attack_t: public hunter_main_pet_attack_t
     p() -> main_hand_attack = new pet_melee_t( player );
   }
 
-  virtual void execute() override
+  void execute() override
   { p() -> main_hand_attack -> schedule_execute(); }
 
-  virtual bool ready() override
+  bool ready() override
   { return( p() -> main_hand_attack -> execute_event == nullptr ); } // not swinging
 };
 
@@ -2137,7 +2096,7 @@ struct basic_attack_base_t: public hunter_main_pet_attack_t
     return p() -> resources.current[RESOURCE_FOCUS] > 50;
   }
 
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     hunter_main_pet_attack_t::impact( s );
 
@@ -2215,7 +2174,7 @@ struct flanking_strike_t: public hunter_main_pet_attack_t
     return am;
   }
 
-  virtual double composite_attack_power() const override
+  double composite_attack_power() const override
   { return o() -> cache.attack_power() * o() -> composite_attack_power_multiplier(); }
 };
 
@@ -2249,12 +2208,24 @@ struct dire_frenzy_t: public hunter_main_pet_attack_t
       base_multiplier *= 1.0 + o() -> artifacts.beast_master.percent();
   }
 
-  virtual void schedule_execute( action_state_t* state = nullptr ) override
+  void schedule_execute( action_state_t* state = nullptr ) override
   {
     hunter_main_pet_attack_t::schedule_execute( state );
 
     if ( p() -> buffs.titans_frenzy -> up() && titans_frenzy )
       titans_frenzy -> schedule_execute();
+  }
+
+  double action_multiplier() const override
+  {
+    double am = base_t::action_multiplier();
+
+    // XXX: spell data indicates that it's also affected by T20 4pc
+    // XXX: check in-game
+    if ( o() -> buffs.t20_4p_bestial_rage -> up() )
+      am *= 1.0 + o() -> buffs.t20_4p_bestial_rage -> check_value();
+
+    return am;
   }
 };
 
@@ -2330,14 +2301,14 @@ struct froststorm_breath_t: public hunter_main_pet_spell_t
     add_child( tick_spell );
   }
 
-  virtual void init() override
+  void init() override
   {
     hunter_main_pet_spell_t::init();
 
     tick_spell -> stats = stats;
   }
 
-  virtual void tick( dot_t* d ) override
+  void tick( dot_t* d ) override
   {
     tick_spell -> execute();
     stats -> add_tick( d -> time_to_tick, d -> state -> target );
@@ -2475,7 +2446,7 @@ struct volley_tick_t: hunter_ranged_attack_t
       base_multiplier *= 1.0 + p -> specs.beast_mastery_hunter -> effectN( 6 ).percent();
   }
 
-  virtual void execute() override
+  void execute() override
   {
     hunter_ranged_attack_t::execute();
 
@@ -2510,7 +2481,7 @@ struct volley_t: hunter_spell_t
     }
   }
 
-  virtual void execute() override
+  void execute() override
   {
     hunter_spell_t::execute();
 
@@ -2570,14 +2541,14 @@ struct auto_shot_t: public hunter_action_t < ranged_attack_t >
     first_shot = true;
   }
 
-  virtual timespan_t execute_time() const override
+  timespan_t execute_time() const override
   {
     if ( first_shot )
       return timespan_t::from_millis( 100 );
     return base_t::execute_time();
   }
 
-  virtual void execute() override
+  void execute() override
   {
     if ( first_shot )
       first_shot = false;
@@ -2607,7 +2578,7 @@ struct auto_shot_t: public hunter_action_t < ranged_attack_t >
     }
   }
 
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     base_t::impact( s );
 
@@ -2634,7 +2605,7 @@ struct auto_shot_t: public hunter_action_t < ranged_attack_t >
     }
   }
 
-  virtual double composite_target_crit_chance( player_t* t ) const override
+  double composite_target_crit_chance( player_t* t ) const override
   {
     double cc = base_t::composite_target_crit_chance( t );
 
@@ -2658,12 +2629,12 @@ struct start_attack_t: public action_t
     trigger_gcd = timespan_t::zero();
   }
 
-  virtual void execute() override
+  void execute() override
   {
     player -> main_hand_attack -> schedule_execute();
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     return( player -> main_hand_attack -> execute_event == nullptr ); // not swinging
   }
@@ -2766,22 +2737,25 @@ struct multi_shot_t: public hunter_ranged_attack_t
     }
   }
 
-  virtual void try_steady_focus() override
+  void try_steady_focus() override
   {
     trigger_steady_focus( true );
   }
 
-  virtual double action_multiplier() const override
+  double action_multiplier() const override
   {
     double am = hunter_ranged_attack_t::action_multiplier();
 
     if ( p() -> buffs.bombardment -> up() )
       am *= 1.0 + p() -> buffs.bombardment -> data().effectN( 2 ).percent();
 
+    if ( p() -> buffs.t20_4p_bestial_rage -> up() )
+      am *= 1.0 + p() -> buffs.t20_4p_bestial_rage -> check_value();
+
     return am;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     hunter_ranged_attack_t::execute();
 
@@ -2822,7 +2796,7 @@ struct multi_shot_t: public hunter_ranged_attack_t
     }
   }
 
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     hunter_ranged_attack_t::impact( s );
 
@@ -2841,7 +2815,7 @@ struct multi_shot_t: public hunter_ranged_attack_t
       p() -> buffs.sentinels_sight -> trigger();
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     if ( p() -> talents.sidewinders -> ok() )
       return false;
@@ -2849,7 +2823,7 @@ struct multi_shot_t: public hunter_ranged_attack_t
     return hunter_ranged_attack_t::ready();
   }
 
-  virtual double cast_regen() const override
+  double cast_regen() const override
   {
     double base = hunter_ranged_attack_t::cast_regen();
     double energize = target_list().size() * energize_amount;
@@ -2927,7 +2901,7 @@ struct cobra_shot_t: public hunter_ranged_attack_t
       base_costs[ RESOURCE_FOCUS ] += player -> artifacts.slithering_serpents.value();
   }
 
-  virtual void execute() override
+  void execute() override
   {
     hunter_ranged_attack_t::execute();
 
@@ -2954,7 +2928,7 @@ struct cobra_shot_t: public hunter_ranged_attack_t
     }
   }
 
-  virtual double composite_target_crit_chance( player_t* t ) const override
+  double composite_target_crit_chance( player_t* t ) const override
   {
     double cc = hunter_ranged_attack_t::composite_target_crit_chance( t );
 
@@ -2963,7 +2937,7 @@ struct cobra_shot_t: public hunter_ranged_attack_t
     return cc;
   }
 
-  virtual double action_multiplier() const override
+  double action_multiplier() const override
   {
     double am = hunter_ranged_attack_t::action_multiplier();
 
@@ -2985,6 +2959,9 @@ struct cobra_shot_t: public hunter_ranged_attack_t
 
       am *= 1.0 + active_pets * p() -> talents.way_of_the_cobra -> effectN( 1 ).percent();
     }
+
+    if ( p() -> buffs.t20_4p_bestial_rage -> up() )
+      am *= 1.0 + p() -> buffs.t20_4p_bestial_rage -> check_value();
 
     return am;
   }
@@ -3067,7 +3044,7 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
     crit_bonus_multiplier *= 1.0 + p -> artifacts.deadly_aim.percent();
   }
 
-  virtual double action_multiplier() const override
+  double action_multiplier() const override
   {
     double am = hunter_ranged_attack_t::action_multiplier();
 
@@ -3090,7 +3067,7 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
     return cc;
   }
 
-  virtual double composite_target_da_multiplier( player_t* t ) const override
+  double composite_target_da_multiplier( player_t* t ) const override
   {
     double m = hunter_ranged_attack_t::composite_target_da_multiplier( t );
 
@@ -3115,7 +3092,7 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
       trigger_piercing_shots( s );
   }
 
-  virtual double composite_target_crit_chance( player_t* t ) const override
+  double composite_target_crit_chance( player_t* t ) const override
   {
     double cc = hunter_ranged_attack_t::composite_target_crit_chance( t );
 
@@ -3144,7 +3121,7 @@ struct trick_shot_t: public aimed_shot_base_t
     weapon_multiplier *= p -> talents.trick_shot -> effectN( 1 ).percent();
   }
 
-  virtual void execute() override
+  void execute() override
   {
     aimed_shot_base_t::execute();
 
@@ -3221,7 +3198,7 @@ struct aimed_shot_t: public aimed_shot_base_t
     }
   }
 
-  virtual double cost() const override
+  double cost() const override
   {
     double cost = aimed_shot_base_t::cost();
 
@@ -3245,7 +3222,7 @@ struct aimed_shot_t: public aimed_shot_base_t
     }
   }
 
-  virtual void execute() override
+  void execute() override
   {
     aimed_shot_base_t::execute();
 
@@ -3269,9 +3246,8 @@ struct aimed_shot_t: public aimed_shot_base_t
     else if ( p() -> legendary.mm_gloves -> ok() )
       p() -> buffs.gyroscopic_stabilization -> trigger();
 
-    if ( p() -> buffs.t20_2p_precision -> up() )
-      p() -> buffs.t20_2p_precision -> expire();
-    else if ( p() -> sets -> has_set_bonus( HUNTER_MARKSMANSHIP, T20, B2 ) )
+    // 2017-04-15 XXX: as of the current PTR the buff is not consumed and simply refreshed on each AiS
+    if ( p() -> sets -> has_set_bonus( HUNTER_MARKSMANSHIP, T20, B2 ) )
       p() -> buffs.t20_2p_precision -> trigger();
 
     if ( p() -> sets -> has_set_bonus( HUNTER_MARKSMANSHIP, T20, B4 ) )
@@ -3287,7 +3263,7 @@ struct aimed_shot_t: public aimed_shot_base_t
     vulnerability_stats.update( p(), this );
   }
 
-  virtual timespan_t execute_time() const override
+  timespan_t execute_time() const override
   {
     timespan_t t = aimed_shot_base_t::execute_time();
 
@@ -3301,7 +3277,7 @@ struct aimed_shot_t: public aimed_shot_base_t
     return t;
   }
 
-  virtual bool usable_moving() const override
+  bool usable_moving() const override
   {
     if ( p() -> buffs.gyroscopic_stabilization -> check() )
       return true;
@@ -3330,7 +3306,7 @@ struct arcane_shot_t: public hunter_ranged_attack_t
     trigger_steady_focus( true );
   }
 
-  virtual void execute() override
+  void execute() override
   {
     hunter_ranged_attack_t::execute();
 
@@ -3346,7 +3322,7 @@ struct arcane_shot_t: public hunter_ranged_attack_t
   }
 
 
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     hunter_ranged_attack_t::impact( s );
 
@@ -3356,7 +3332,7 @@ struct arcane_shot_t: public hunter_ranged_attack_t
       p() -> resource_gain( RESOURCE_FOCUS, p() -> artifacts.critical_focus.value(), p() -> gains.critical_focus );
   }
 
-  virtual double composite_target_crit_chance( player_t* t ) const override
+  double composite_target_crit_chance( player_t* t ) const override
   {
     double cc = hunter_ranged_attack_t::composite_target_crit_chance( t );
 
@@ -3365,7 +3341,7 @@ struct arcane_shot_t: public hunter_ranged_attack_t
     return cc;
   }
 
-  virtual double composite_target_da_multiplier( player_t* t ) const override
+  double composite_target_da_multiplier( player_t* t ) const override
   {
     double m = hunter_ranged_attack_t::composite_target_da_multiplier( t );
 
@@ -3377,7 +3353,7 @@ struct arcane_shot_t: public hunter_ranged_attack_t
     return m;
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     if ( p() -> talents.sidewinders->ok() )
       return false;
@@ -3385,7 +3361,7 @@ struct arcane_shot_t: public hunter_ranged_attack_t
     return hunter_ranged_attack_t::ready();
   }
 
-  virtual double cast_regen() const override
+  double cast_regen() const override
   {
     return hunter_ranged_attack_t::cast_regen() + energize_amount;
   }
@@ -3473,7 +3449,7 @@ struct marked_shot_t: public hunter_spell_t
     }
   }
 
-  virtual void execute() override
+  void execute() override
   {
     if ( p() -> legendary.mm_ring -> ok() && rng().roll( p() -> legendary.mm_ring -> effectN( 1 ).percent() ) )
     {
@@ -3495,7 +3471,7 @@ struct marked_shot_t: public hunter_spell_t
   }
 
   // Only schedule the attack if a valid target
-  virtual void schedule_travel( action_state_t* s ) override
+  void schedule_travel( action_state_t* s ) override
   {
     if ( td( s -> target ) -> debuffs.hunters_mark -> up() )
     {
@@ -3513,7 +3489,7 @@ struct marked_shot_t: public hunter_spell_t
   }
 
   // Marked Shot can only be used if a Hunter's Mark exists on any target.
-  virtual bool ready() override
+  bool ready() override
   {
     if ( p() -> buffs.hunters_mark_exists -> up() )
       return hunter_spell_t::ready();
@@ -3542,7 +3518,7 @@ struct piercing_shot_t: public hunter_ranged_attack_t
     base_aoe_multiplier = 0.5;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     hunter_ranged_attack_t::execute();
 
@@ -3552,7 +3528,7 @@ struct piercing_shot_t: public hunter_ranged_attack_t
     vulnerability_stats.update( p(), this );
   }
 
-  virtual double composite_target_da_multiplier(player_t* t) const override
+  double composite_target_da_multiplier(player_t* t) const override
   {
     double m = hunter_ranged_attack_t::composite_target_da_multiplier(t);
 
@@ -3562,7 +3538,7 @@ struct piercing_shot_t: public hunter_ranged_attack_t
     return m;
   }
 
-  virtual double action_multiplier() const override
+  double action_multiplier() const override
   {
     double am = hunter_ranged_attack_t::action_multiplier();
 
@@ -3590,7 +3566,7 @@ struct explosive_shot_t: public hunter_spell_t
       may_proc_bullseye = false;
     }
 
-    virtual void execute() override
+    void execute() override
     {
       initial_target = target;
 
@@ -3600,7 +3576,7 @@ struct explosive_shot_t: public hunter_spell_t
         trigger_bullseye( p(), execute_state -> action );
     }
 
-    virtual double composite_target_da_multiplier( player_t* t ) const override
+    double composite_target_da_multiplier( player_t* t ) const override
     {
       double m = hunter_ranged_attack_t::composite_target_da_multiplier( t );
 
@@ -3645,7 +3621,7 @@ struct sidewinders_t: hunter_ranged_attack_t
       energize_amount += p -> find_spell( 191328 ) -> effectN( 2 ).base_value();
   }
 
-  virtual void execute() override
+  void execute() override
   {
     hunter_ranged_attack_t::execute();
 
@@ -3672,7 +3648,7 @@ struct sidewinders_t: hunter_ranged_attack_t
     }
   }
 
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     hunter_ranged_attack_t::impact( s );
 
@@ -3680,7 +3656,7 @@ struct sidewinders_t: hunter_ranged_attack_t
       p() -> buffs.sentinels_sight -> trigger();
   }
 
-  virtual double cast_regen() const override
+  double cast_regen() const override
   {
     return hunter_ranged_attack_t::cast_regen() + energize_amount;
   }
@@ -3755,7 +3731,7 @@ struct windburst_t: hunter_ranged_attack_t
       td( s -> target ) -> debuffs.vulnerable -> trigger();
   }
 
-  virtual bool usable_moving() const override
+  bool usable_moving() const override
   { return false; }
 };
 
@@ -3899,7 +3875,7 @@ struct mongoose_bite_t: hunter_melee_attack_t
     crit_bonus_multiplier *= 1.0 + p -> artifacts.jaws_of_the_mongoose.percent();
   }
 
-  virtual void execute() override
+  void execute() override
   {
     hunter_melee_attack_t::execute();
 
@@ -3912,7 +3888,7 @@ struct mongoose_bite_t: hunter_melee_attack_t
       p() -> buffs.butchers_bone_apron -> trigger();
   }
 
-  virtual double action_multiplier() const override
+  double action_multiplier() const override
   {
     double am = hunter_melee_attack_t::action_multiplier();
 
@@ -3920,6 +3896,16 @@ struct mongoose_bite_t: hunter_melee_attack_t
       am *= 1.0 + p() -> buffs.mongoose_fury -> check_stack_value();
 
     return am;
+  }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double tm = hunter_melee_attack_t::composite_target_multiplier( t );
+
+    if ( p() -> sets -> has_set_bonus( HUNTER_SURVIVAL, T20, B4 ) && td( t ) -> dots.lacerate -> is_ticking() )
+      tm *= 1.0 + p() -> sets -> set( HUNTER_SURVIVAL, T20, B4 ) -> effectN( 1 ).percent();
+
+    return tm;
   }
 };
 
@@ -3964,7 +3950,7 @@ struct flanking_strike_t: hunter_melee_attack_t
     return hunter_melee_attack_t::init_finished();
   }
 
-  virtual void execute() override
+  void execute() override
   {
     hunter_melee_attack_t::execute();
 
@@ -4036,9 +4022,17 @@ struct lacerate_t: public hunter_melee_attack_t
     tick_zero = false;
 
     base_td_multiplier *= 1.0 + p -> artifacts.lacerating_talons.percent();
+
+    if ( p -> sets -> has_set_bonus( HUNTER_SURVIVAL, T20, B2 ) )
+    {
+      auto t20_2p = p -> sets -> set( HUNTER_SURVIVAL, T20, B2 );
+      base_td_multiplier *= 1 + t20_2p -> effectN( 1 ).percent();
+      base_dd_multiplier *= 1 + t20_2p -> effectN( 2 ).percent();
+      dot_duration += t20_2p -> effectN( 3 ).time_value();
+    }
   }
 
-  virtual void tick( dot_t* d ) override
+  void tick( dot_t* d ) override
   {
     hunter_melee_attack_t::tick( d );
 
@@ -4141,7 +4135,7 @@ struct carve_t: public carve_base_t
       impact_action = new serpent_sting_t( p );
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     if ( p() -> talents.butchery -> ok() )
       return false;
@@ -4187,7 +4181,7 @@ struct fury_of_the_eagle_t: public hunter_melee_attack_t
     tick_action = new fury_of_the_eagle_tick_t( p );
   }
 
-  virtual void execute() override
+  void execute() override
   {
     hunter_melee_attack_t::execute();
 
@@ -4201,7 +4195,7 @@ struct fury_of_the_eagle_t: public hunter_melee_attack_t
     }
   }
 
-  virtual double action_multiplier() const override
+  double action_multiplier() const override
   {
     double am = hunter_melee_attack_t::action_multiplier();
 
@@ -4211,7 +4205,7 @@ struct fury_of_the_eagle_t: public hunter_melee_attack_t
     return am;
   }
 
-  virtual void last_tick( dot_t* dot ) override
+  void last_tick( dot_t* dot ) override
   {
     hunter_melee_attack_t::last_tick( dot );
 
@@ -4262,7 +4256,7 @@ struct raptor_strike_t: public hunter_melee_attack_t
       impact_action = new serpent_sting_t( p );
   }
 
-  virtual void execute() override
+  void execute() override
   {
     hunter_melee_attack_t::execute();
 
@@ -4299,7 +4293,7 @@ struct harpoon_t: public hunter_melee_attack_t
       on_the_trail = new on_the_trail_t( p );
   }
 
-  virtual void execute() override
+  void execute() override
   {
     hunter_melee_attack_t::execute();
 
@@ -4315,7 +4309,7 @@ struct harpoon_t: public hunter_melee_attack_t
       td( execute_state -> target ) -> debuffs.mark_of_helbrine -> trigger();
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     if ( first_harpoon )
       return hunter_melee_attack_t::ready();
@@ -4326,7 +4320,7 @@ struct harpoon_t: public hunter_melee_attack_t
     return hunter_melee_attack_t::ready();
   }
 
-  virtual void reset() override
+  void reset() override
   {
     action_t::reset();
     first_harpoon = true;
@@ -4456,7 +4450,7 @@ struct sentinel_t : public hunter_spell_t
     aoe = -1;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     hunter_spell_t::execute();
 
@@ -4508,7 +4502,7 @@ struct summon_pet_t: public hunter_spell_t
     return hunter_spell_t::init_finished();
   }
 
-  virtual void execute() override
+  void execute() override
   {
     hunter_spell_t::execute();
     pet -> type = PLAYER_PET;
@@ -4520,7 +4514,7 @@ struct summon_pet_t: public hunter_spell_t
     if ( p() -> main_hand_attack ) p() -> main_hand_attack -> cancel();
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     if ( p() -> active.pet == pet || p() -> talents.lone_wolf -> ok() )
       return false;
@@ -4541,7 +4535,7 @@ struct tar_trap_t : public hunter_spell_t
     cooldown -> duration = data().cooldown();
   }
 
-  virtual void execute() override
+  void execute() override
   {
     hunter_spell_t::execute();
 
@@ -4562,7 +4556,7 @@ struct freezing_trap_t : public hunter_spell_t
     cooldown -> duration = data().cooldown();
   }
 
-  virtual void execute() override
+  void execute() override
   {
     hunter_spell_t::execute();
 
@@ -4611,7 +4605,7 @@ struct dire_beast_t: public hunter_spell_t
     return hunter_spell_t::init_finished();
   }
 
-  virtual void execute() override
+  void execute() override
   {
     hunter_spell_t::execute();
 
@@ -4679,7 +4673,7 @@ struct dire_beast_t: public hunter_spell_t
     beast -> summon( summon_duration );
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     if ( p() -> talents.dire_frenzy -> ok() ) return false;
 
@@ -4698,10 +4692,17 @@ struct bestial_wrath_t: public hunter_spell_t
     harmful = may_hit = false;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     p() -> buffs.bestial_wrath  -> trigger();
     p() -> active.pet -> buffs.bestial_wrath -> trigger();
+
+    if ( p() -> artifacts.master_of_beasts.rank() )
+      p() -> pets.hati -> buffs.bestial_wrath -> trigger();
+
+    if ( p() -> sets -> has_set_bonus( HUNTER_BEAST_MASTERY, T20, B4 ) )
+      p() -> buffs.t20_4p_bestial_rage -> trigger();
+
     if ( p() -> sets -> has_set_bonus( HUNTER_BEAST_MASTERY, T19, B2 ) )
     {
       // 2017-02-06 hotfix: "With the Dire Frenzy talent, the Eagletalon Battlegear Beast Mastery 2-piece bonus should now grant your pet 10% increased damage for 15 seconds."
@@ -4718,13 +4719,11 @@ struct bestial_wrath_t: public hunter_spell_t
         }
       }
     }
-    if ( p() -> artifacts.master_of_beasts.rank() )
-      p() -> pets.hati -> buffs.bestial_wrath -> trigger();
 
     hunter_spell_t::execute();
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     if ( !p() -> active.pet )
       return false;
@@ -4757,7 +4756,7 @@ struct kill_command_t: public hunter_spell_t
     return hunter_spell_t::init_finished();
   }
 
-  virtual void execute() override
+  void execute() override
   {
     hunter_spell_t::execute();
 
@@ -4768,7 +4767,7 @@ struct kill_command_t: public hunter_spell_t
       p() -> pets.hati -> active.kill_command -> execute();
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     if ( p() -> active.pet && p() -> active.pet -> active.kill_command -> ready() ) // Range check from the pet.
       return hunter_spell_t::ready();
@@ -4804,7 +4803,7 @@ struct dire_frenzy_t: public hunter_spell_t
     return hunter_spell_t::init_finished();
   }
 
-  virtual void execute() override
+  void execute() override
   {
     hunter_spell_t::execute();
 
@@ -4855,7 +4854,7 @@ struct titans_thunder_t: public hunter_spell_t
     harmful = may_hit = false;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     hunter_spell_t::execute();
 
@@ -4884,7 +4883,7 @@ struct titans_thunder_t: public hunter_spell_t
     return hunter_spell_t::init_finished();
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     if ( !p() -> active.pet )
       return false;
@@ -4906,14 +4905,14 @@ struct aspect_of_the_wild_t: public hunter_spell_t
     dot_duration = timespan_t::zero();
   }
 
-  virtual void execute() override
+  void execute() override
   {
     p() -> buffs.aspect_of_the_wild -> trigger();
     p() -> active.pet -> buffs.aspect_of_the_wild -> trigger();
     hunter_spell_t::execute();
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     if ( !p() -> active.pet )
       return false;
@@ -4952,7 +4951,7 @@ struct stampede_t: public hunter_spell_t
 
   }
 
-  virtual double action_multiplier() const override
+  double action_multiplier() const override
   {
     double am = hunter_spell_t::action_multiplier();
 
@@ -4982,7 +4981,7 @@ struct trueshot_t: public hunter_spell_t
     cooldown -> duration += p -> artifacts.quick_shot.time_value();
   }
 
-  virtual void execute() override
+  void execute() override
   {
     hunter_spell_t::execute();
 
@@ -5012,7 +5011,7 @@ struct aspect_of_the_eagle_t: public hunter_spell_t
       cooldown -> duration *= 1.0 + p -> artifacts.embrace_of_the_aspects.percent();
   }
 
-  virtual void execute() override
+  void execute() override
   {
     hunter_spell_t::execute();
 
@@ -5032,7 +5031,7 @@ struct snake_hunter_t: public hunter_spell_t
     harmful = may_hit = false;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     hunter_spell_t::execute();
 
@@ -5062,7 +5061,7 @@ struct spitting_cobra_t: public hunter_spell_t
     return hunter_spell_t::init_finished();
   }
 
-  virtual void execute() override
+  void execute() override
   {
     hunter_spell_t::execute();
 
@@ -5096,7 +5095,7 @@ struct explosive_trap_t: public hunter_spell_t
       base_multiplier *= 1.0 + p -> artifacts.explosive_force.percent();
     }
 
-    virtual void execute() override
+    void execute() override
     {
       hunter_spell_t::execute();
 
@@ -5106,7 +5105,7 @@ struct explosive_trap_t: public hunter_spell_t
         p() -> resource_gain( RESOURCE_FOCUS, p() -> find_spell( 212575 ) -> effectN( 1 ).resource( RESOURCE_FOCUS ), p() -> gains.nesingwarys_trapping_treads );
     }
 
-    virtual double composite_target_da_multiplier( player_t* t ) const override
+    double composite_target_da_multiplier( player_t* t ) const override
     {
       double m = hunter_spell_t::composite_target_da_multiplier( t );
 
@@ -5116,7 +5115,7 @@ struct explosive_trap_t: public hunter_spell_t
       return m;
     }
 
-    virtual double composite_target_ta_multiplier( player_t* t ) const override
+    double composite_target_ta_multiplier( player_t* t ) const override
     {
       double m = hunter_spell_t::composite_target_ta_multiplier( t );
 
@@ -5236,7 +5235,7 @@ struct caltrops_t: public hunter_spell_t
       cooldown -> duration *= 1.0 + p -> artifacts.hunters_guile.percent();
   }
 
-  virtual void execute() override
+  void execute() override
   {
     hunter_spell_t::execute();
 
@@ -5960,6 +5959,10 @@ void hunter_t::create_buffs()
     buff_creator_t( this, "t20_4p_critical_aimed_damage", find_spell( 242243 ) )
       .default_value( find_spell( 242243 ) -> effectN( 1 ).percent() );
 
+  buffs.t20_4p_bestial_rage =
+    buff_creator_t( this, "t20_4p_bestial_rage", find_spell( 246116 ) )
+      .default_value( find_spell( 246116 ) -> effectN( 1 ).percent() );
+
   buffs.sephuzs_secret =
     haste_buff_creator_t( this, "sephuzs_secret", find_spell( 208052 ) )
       .default_value( find_spell( 208052 ) -> effectN( 2 ).percent() )
@@ -6114,6 +6117,15 @@ std::string hunter_t::default_food() const
          "disabled";
 }
 
+// hunter_t::default_rune ===================================================
+
+std::string hunter_t::default_rune() const
+{
+  return ( true_level >= 110 ) ? "defiled" :
+         ( true_level >= 100 ) ? "hyper" :
+         "disabled";
+}
+
 // hunter_t::init_actions ===================================================
 
 void hunter_t::init_action_list()
@@ -6129,13 +6141,9 @@ void hunter_t::init_action_list()
 
     action_priority_list_t* precombat = get_action_priority_list( "precombat" );
 
-    // Flask
+    // Flask, Rune, Food
     precombat -> add_action( "flask" );
-    // Added Rune if Flask are allowed since there is no "allow_runes" bool.
-    if ( sim -> allow_flasks && true_level >= 110 )
-      precombat -> add_action( "augmentation,type=defiled" );
-
-    // Food
+    precombat -> add_action( "augmentation" );
     precombat -> add_action( "food" );
 
     precombat -> add_action( "summon_pet" );
@@ -6654,6 +6662,9 @@ double hunter_t::composite_player_pet_damage_multiplier( const action_state_t* s
   m *= 1.0 + artifacts.acuity_of_the_unseen_path.percent( 3 );
   m *= 1.0 + artifacts.ferocity_of_the_unseen_path.percent( 3 );
 
+  if ( maybe_ptr( dbc.ptr ) && specs.beast_mastery_hunter -> ok() )
+    m *= 1.0 + specs.beast_mastery_hunter -> effectN( 3 ).percent();
+
   return m;
 }
 
@@ -6731,155 +6742,6 @@ void hunter_t::copy_from( player_t* source )
   hunter_t* p = debug_cast<hunter_t*>( source );
 
   summon_pet_str = p -> summon_pet_str;
-}
-
-// hunter_t::armory_extensions ==============================================
-
-void hunter_t::armory_extensions( const std::string& /* region */,
-                                  const std::string& /* server */,
-                                  const std::string& /* character */,
-                                  cache::behavior_e  /* caching */ )
-{
-#if 0
-  // Pet support
-  static pet_e pet_types[] =
-  {
-    /* 0*/ PET_NONE,         PET_WOLF,         PET_CAT,          PET_SPIDER,   PET_BEAR,
-    /* 5*/ PET_BOAR,         PET_CROCOLISK,    PET_CARRION_BIRD, PET_CRAB,     PET_GORILLA,
-    /*10*/ PET_NONE,         PET_RAPTOR,       PET_TALLSTRIDER,  PET_NONE,     PET_NONE,
-    /*15*/ PET_NONE,         PET_NONE,         PET_NONE,         PET_NONE,     PET_NONE,
-    /*20*/ PET_SCORPID,      PET_TURTLE,       PET_NONE,         PET_NONE,     PET_BAT,
-    /*25*/ PET_HYENA,        PET_BIRD_OF_PREY, PET_WIND_SERPENT, PET_NONE,     PET_NONE,
-    /*30*/ PET_DRAGONHAWK,   PET_RAVAGER,      PET_WARP_STALKER, PET_SPOREBAT, PET_NETHER_RAY,
-    /*35*/ PET_SERPENT,      PET_NONE,         PET_MOTH,         PET_CHIMERA,  PET_DEVILSAUR,
-    /*40*/ PET_NONE,         PET_SILITHID,     PET_WORM,         PET_RHINO,    PET_WASP,
-    /*45*/ PET_CORE_HOUND,   PET_SPIRIT_BEAST, PET_NONE,         PET_NONE,     PET_NONE,
-    /*50*/ PET_FOX,          PET_MONKEY,       PET_DOG,          PET_BEETLE,   PET_NONE,
-    /*55*/ PET_SHALE_SPIDER, PET_NONE,         PET_NONE,         PET_NONE,     PET_NONE,
-    /*60*/ PET_NONE,         PET_NONE,         PET_NONE,         PET_NONE,     PET_NONE,
-    /*65*/ PET_NONE,         PET_WASP,         PET_NONE,         PET_NONE,     PET_NONE
-  };
-  int num_families = sizeof( pet_types ) / sizeof( pet_e );
-
-  std::string url = "http://" + region + ".battle.net/wow/en/character/" + server + '/' + character + "/pet";
-  xml_node_t* pet_xml = xml_t::get( sim, url, caching );
-  if ( sim -> debug ) xml_t::print( pet_xml, sim -> output_file );
-
-  xml_node_t* pet_list_xml = xml_t::get_node( pet_xml, "div", "class", "pets-list" );
-
-  xml_node_t* pet_script_xml = xml_t::get_node( pet_list_xml, "script", "type", "text/javascript" );
-
-  if ( ! pet_script_xml )
-  {
-    sim -> errorf( "Hunter %s unable to download pet data from Armory\n", name() );
-    sim -> cancel();
-    return;
-  }
-
-  std::string cdata_str;
-  if ( xml_t::get_value( cdata_str, pet_script_xml, "cdata" ) )
-  {
-    std::string::size_type pos = cdata_str.find( '{' );
-    if ( pos != std::string::npos ) cdata_str.erase( 0, pos + 1 );
-    pos = cdata_str.rfind( '}' );
-    if ( pos != std::string::npos ) cdata_str.erase( pos );
-
-    js::js_node* pet_js = js_t::create( sim, cdata_str );
-    pet_js = js_t::get_node( pet_js, "Pet.data" );
-    if ( sim -> debug ) js_t::print( pet_js, sim -> output_file );
-
-    if ( ! pet_js )
-    {
-      sim -> errorf( "\nHunter %s unable to download pet data from Armory\n", name() );
-      sim -> cancel();
-      return;
-    }
-
-    std::vector<js::js_node*> pet_records;
-    int num_pets = js_t::get_children( pet_records, pet_js );
-    for ( int i = 0; i < num_pets; i++ )
-    {
-      std::string pet_name, pet_talents;
-      int pet_level, pet_family;
-
-      if ( ! js_t::get_value( pet_name,    pet_records[ i ], "name"     ) ||
-           ! js_t::get_value( pet_talents, pet_records[ i ], "build"    ) ||
-           ! js_t::get_value( pet_level,   pet_records[ i ], "level"    ) ||
-           ! js_t::get_value( pet_family,  pet_records[ i ], "familyId" ) )
-      {
-        sim -> errorf( "\nHunter %s unable to decode pet name/build/level/familyId for pet %s\n", name(), pet_name.c_str() );
-        continue;
-      }
-
-      // Pets can have spaces in names, replace with underscore ..
-      for ( unsigned j = 0; j < pet_name.length(); j++ )
-      {
-        if ( pet_name[ j ] == ' ' )
-          pet_name[ j ] = '_';
-      }
-
-      // Pets can have the same name, so suffix names with an unique
-      // identifier from Battle.net, if one is found
-      if ( js_t::get_name( pet_records[ i ] ) )
-      {
-        pet_name += '_';
-        pet_name += js_t::get_name( pet_records[ i ] );
-      }
-
-      if ( pet_family > num_families || pet_types[ pet_family ] == PET_NONE )
-      {
-        sim -> errorf( "\nHunter %s unable to decode pet %s family id %d\n", name(), pet_name.c_str(), pet_family );
-        continue;
-      }
-
-      hunter_main_pet_t* pet = new hunter_main_pet_t( sim, this, pet_name, pet_types[ pet_family ] );
-
-      pet -> parse_talents_armory( pet_talents );
-
-      pet -> talents_str.clear();
-      for ( int j = 0; j < MAX_TALENT_TREES; j++ )
-      {
-        for ( int k = 0; k < ( int ) pet -> talent_trees[ j ].size(); k++ )
-        {
-          pet -> talents_str += ( char ) ( pet -> talent_trees[ j ][ k ] -> ok() + ( int ) '0' );
-        }
-      }
-    }
-
-    // If we have valid pets, figure out which to summon by parsing Battle.net
-    if ( pet_list )
-    {
-      std::vector<xml_node_t*> pet_nodes;
-
-      int n_pet_nodes = xml_t::get_nodes( pet_nodes, pet_list_xml, "a", "class", "pet" );
-      for ( int i = 0; i < n_pet_nodes; i++ )
-      {
-        xml_node_t* summoned_node = xml_t::get_node( pet_nodes[ i ], "span", "class", "summoned" );
-        std::string summoned_pet_name;
-        std::string summoned_pet_id;
-
-        if ( ! summoned_node )
-          continue;
-
-        xml_t::get_value( summoned_pet_id, pet_nodes[ i ], "data-id" );
-
-        if ( ! xml_t::get_value( summoned_pet_name, xml_t::get_node( pet_nodes[ i ], "span", "class", "name" ), "." ) )
-          continue;
-
-        if ( ! summoned_pet_name.empty() )
-        {
-          summon_pet_str = util::decode_html( summoned_pet_name );
-          if ( ! summoned_pet_id.empty() )
-            summon_pet_str += '_' + summoned_pet_id;
-        }
-      }
-
-      // Pick first pet on the list, if no pet is summoned in the battle net profile
-      if ( summon_pet_str.empty() )
-        summon_pet_str = pet_list -> name_str;
-    }
-  }
-#endif
 }
 
 // hunter_::convert_hybrid_stat ==============================================
@@ -6965,7 +6827,7 @@ public:
   {
   }
 
-  virtual void html_customsection( report::sc_html_stream& /* os*/ ) override
+  void html_customsection( report::sc_html_stream& /* os*/ ) override
   {
     (void)p;
     /*// Custom Class Section
@@ -7015,16 +6877,16 @@ struct hunter_module_t: public module_t
 {
   hunter_module_t(): module_t( HUNTER ) {}
 
-  virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const override
+  player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const override
   {
     auto  p = new hunter_t( sim, name, r );
     p -> report_extension = std::unique_ptr<player_report_extension_t>( new hunter_report_t( *p ) );
     return p;
   }
 
-  virtual bool valid() const override { return true; }
+  bool valid() const override { return true; }
 
-  virtual void static_init() const override
+  void static_init() const override
   {
     register_special_effect( 236447, HUNTER_SURVIVAL,      []( hunter_t& p, const spell_data_t* s ) { p.legendary.sv_chest = s; });
     register_special_effect( 212574, HUNTER_SURVIVAL,      []( hunter_t& p, const spell_data_t* s ) { p.legendary.sv_feet = s; });
@@ -7043,11 +6905,11 @@ struct hunter_module_t: public module_t
     register_special_effect( 208051, SPEC_NONE,            []( hunter_t& p, const spell_data_t* s ) { p.legendary.sephuzs_secret = s; });
   }
 
-  virtual void init( player_t* ) const override
+  void init( player_t* ) const override
   {
   }
 
-  virtual void register_hotfixes() const override
+  void register_hotfixes() const override
   {
     hotfix::register_spell( "Hunter", "2017-1-8", "Spelldata claims that Marking Target's rppm was buffed from 5 to 6.5, but testing shows higher.", 185987 )
       .field( "rppm" )
@@ -7056,8 +6918,8 @@ struct hunter_module_t: public module_t
       .verification_value( 6.5 );
   }
 
-  virtual void combat_begin( sim_t* ) const override {}
-  virtual void combat_end( sim_t* ) const override {}
+  void combat_begin( sim_t* ) const override {}
+  void combat_end( sim_t* ) const override {}
 };
 
 } // UNNAMED NAMESPACE

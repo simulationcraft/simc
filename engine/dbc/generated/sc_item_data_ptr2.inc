@@ -1,6 +1,6 @@
 #define PTR_RAND_PROP_POINTS_SIZE (1300)
 
-// Random property points for item levels 1-1300, wow build 24076
+// Random property points for item levels 1-1300, wow build 24116
 static struct random_prop_data_t __ptr_rand_prop_points_data[] = {
   {    1, {     0,     0,     0,     0,     0 }, {     0,     0,     0,     0,     0 }, {     0,     0,     0,     0,     0 } },
   {    2, {     0,     0,     0,     0,     0 }, {     0,     0,     0,     0,     0 }, {     0,     0,     0,     0,     0 } },
@@ -1306,7 +1306,7 @@ static struct random_prop_data_t __ptr_rand_prop_points_data[] = {
 };
 #define PTR_RAND_SUFFIX_SIZE (450)
 
-// Random new-style item suffixes, wow build 24076
+// Random new-style item suffixes, wow build 24116
 static struct random_suffix_data_t __ptr_rand_suffix_data[] = {
   {   5, "of the Monkey"          , {  2802,  2803,     0,     0,     0 }, {  6666, 10000,     0,     0,     0 } },
   {   6, "of the Eagle"           , {  2804,  2803,     0,     0,     0 }, {  6666, 10000,     0,     0,     0 } },
@@ -1762,7 +1762,7 @@ static struct random_suffix_data_t __ptr_rand_suffix_data[] = {
 };
 #define PTR_SPELL_ITEM_ENCH_SIZE (4166)
 
-// Item enchantment data, wow build 24076
+// Item enchantment data, wow build 24116
 static struct item_enchantment_data_t __ptr_spell_item_ench_data[] = {
   {   13,  33,      0, -1,   5,   1,   0,   0, {   2,   0,   0 }, {    3,    0,    0 }, {      0,      0,      0 }, {  1.0000,  0.0000,  0.0000 },      0, "Sharpened (+$k1 Damage)"           },
   {   14,  33,      0, -1,  15,  15,   0,   0, {   2,   0,   0 }, {    4,    0,    0 }, {      0,      0,      0 }, {  0.3637,  0.0000,  0.0000 },      0, "Sharpened (+$k1 Damage)"           },
@@ -5429,18 +5429,18 @@ static struct item_enchantment_data_t __ptr_spell_item_ench_data[] = {
   { 5335, 256,      0,  0,   1,   0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 159684, 104428,      0 }, {  0.0000,  0.0000,  0.0000 }, 159673, "Mark of Shadowmoon"                },
   { 5336, 256,      0,  0,   1,   0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 159685, 104428,      0 }, {  0.0000,  0.0000,  0.0000 }, 159674, "Mark of Blackrock"                 },
   { 5337,   0,      0,  0,   1,   0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 159682, 104428,      0 }, {  0.0000,  0.0000,  0.0000 }, 159671, "Mark of Warsong"                   },
-  { 5339, 224, 115803, -3,   1, 100,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {     32,      0,      0 }, {  2.0000,  0.0000,  0.0000 },      0, "+$k1 Critical Strike"              },
-  { 5340, 224, 115804, -3,   1, 100,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {     36,      0,      0 }, {  2.0000,  0.0000,  0.0000 },      0, "+$k1 Haste"                        },
-  { 5342, 224, 115805, -3,   1, 100,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {     49,      0,      0 }, {  2.0000,  0.0000,  0.0000 },      0, "+$k1 Mastery"                      },
-  { 5343, 224, 115806, -3,   1, 100,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {     36,      0,      0 }, {  2.0000,  0.0000,  0.0000 },      0, "+$k1 Haste"                        },
-  { 5344, 224, 115807, -3,   1, 100,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {     40,      0,      0 }, {  2.0000,  0.0000,  0.0000 },      0, "+$k1 Versatility"                  },
-  { 5345, 224, 115808, -3,   1, 100,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {      7,      0,      0 }, {  2.0000,  0.0000,  0.0000 },      0, "+$k1 Stamina"                      },
-  { 5346, 224, 115809, -4,   1, 100,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {     32,      0,      0 }, {  2.0000,  0.0000,  0.0000 },      0, "+$k1 Critical Strike"              },
-  { 5347, 224, 115811, -4,   1, 100,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {     36,      0,      0 }, {  2.0000,  0.0000,  0.0000 },      0, "+$k1 Haste"                        },
-  { 5348, 224, 115812, -4,   1, 100,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {     49,      0,      0 }, {  2.0000,  0.0000,  0.0000 },      0, "+$k1 Mastery"                      },
-  { 5349, 224, 115813, -4,   1, 100,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {     36,      0,      0 }, {  2.0000,  0.0000,  0.0000 },      0, "+$k1 Haste"                        },
-  { 5350, 224, 115814, -4,   1, 100,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {     40,      0,      0 }, {  2.0000,  0.0000,  0.0000 },      0, "+$k1 Versatility"                  },
-  { 5351, 224, 115815, -4,   1, 100,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {      7,      0,      0 }, {  2.0000,  0.0000,  0.0000 },      0, "+$k1 Stamina"                      },
+  { 5339, 160, 115803, -3,   1, 100,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {     32,      0,      0 }, {  2.0000,  0.0000,  0.0000 },      0, "+$k1 Critical Strike"              },
+  { 5340, 160, 115804, -3,   1, 100,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {     36,      0,      0 }, {  2.0000,  0.0000,  0.0000 },      0, "+$k1 Haste"                        },
+  { 5342, 160, 115805, -3,   1, 100,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {     49,      0,      0 }, {  2.0000,  0.0000,  0.0000 },      0, "+$k1 Mastery"                      },
+  { 5343, 160, 115806, -3,   1, 100,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {     36,      0,      0 }, {  2.0000,  0.0000,  0.0000 },      0, "+$k1 Haste"                        },
+  { 5344, 160, 115807, -3,   1, 100,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {     40,      0,      0 }, {  2.0000,  0.0000,  0.0000 },      0, "+$k1 Versatility"                  },
+  { 5345, 160, 115808, -3,   1, 100,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {      7,      0,      0 }, {  2.0000,  0.0000,  0.0000 },      0, "+$k1 Stamina"                      },
+  { 5346, 160, 115809, -4,   1, 100,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {     32,      0,      0 }, {  2.0000,  0.0000,  0.0000 },      0, "+$k1 Critical Strike"              },
+  { 5347, 160, 115811, -4,   1, 100,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {     36,      0,      0 }, {  2.0000,  0.0000,  0.0000 },      0, "+$k1 Haste"                        },
+  { 5348, 160, 115812, -4,   1, 100,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {     49,      0,      0 }, {  2.0000,  0.0000,  0.0000 },      0, "+$k1 Mastery"                      },
+  { 5349, 160, 115813, -4,   1, 100,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {     36,      0,      0 }, {  2.0000,  0.0000,  0.0000 },      0, "+$k1 Haste"                        },
+  { 5350, 160, 115814, -4,   1, 100,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {     40,      0,      0 }, {  2.0000,  0.0000,  0.0000 },      0, "+$k1 Versatility"                  },
+  { 5351, 160, 115815, -4,   1, 100,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {      7,      0,      0 }, {  2.0000,  0.0000,  0.0000 },      0, "+$k1 Stamina"                      },
   { 5352,   0,      0,  0,   1,   0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 159243,      0,      0 }, {  0.0000,  0.0000,  0.0000 }, 170627, "Glory of the Thunderlord"          },
   { 5353,   0,      0,  0,   1,   0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 159684, 104428,      0 }, {  0.0000,  0.0000,  0.0000 }, 170628, "Glory of the Shadowmoon"           },
   { 5354,   0,      0,  0,   1,   0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 159685, 104428,      0 }, {  0.0000,  0.0000,  0.0000 }, 170629, "Glory of the Blackrock"            },
@@ -5513,17 +5513,17 @@ static struct item_enchantment_data_t __ptr_spell_item_ench_data[] = {
   { 5455,   9,      0,  0,   1,  60,   0,   0, {  10,  11,  10 }, {    1,    0,    0 }, {      3,    644,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Test - DW - Bonus Rank - Shadow Relic" },
   { 5456,   9,      0,  0,   1,  60,   0,   0, {  10,   0,   0 }, {    1,    0,    0 }, {      5,      0,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Test - DW - Bonus Rank - Fel Relic" },
   { 5457,   0, 130162,  0,   1,  60,   0,   0, {   9,  11,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Val-Sharah Artifact Gem Holy"      },
-  { 5459, 224, 130215, -3,   1, 110,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {     32,      0,      0 }, {  0.5556,  0.0000,  0.0000 },      0, "+$k1 Critical Strike"              },
-  { 5460, 224, 130216, -3,   1, 110,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {     36,      0,      0 }, {  0.5556,  0.0000,  0.0000 },      0, "+$k1 Haste"                        },
-  { 5461, 224, 130218, -3,   1, 110,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {     49,      0,      0 }, {  0.5556,  0.0000,  0.0000 },      0, "+$k1 Mastery"                      },
-  { 5462, 224, 130217, -3,   1, 110,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {     40,      0,      0 }, {  0.5556,  0.0000,  0.0000 },      0, "+$k1 Versatility"                  },
-  { 5463, 224, 130219, -4,   1, 110,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {     32,      0,      0 }, {  0.6250,  0.0000,  0.0000 },      0, "+$k1 Critical Strike"              },
-  { 5464, 224, 130220, -4,   1, 110,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {     36,      0,      0 }, {  0.6250,  0.0000,  0.0000 },      0, "+$k1 Haste"                        },
-  { 5465, 224, 130222, -4,   1, 110,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {     49,      0,      0 }, {  0.6250,  0.0000,  0.0000 },      0, "+$k1 Mastery"                      },
-  { 5466, 224, 130221, -4,   1, 110,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {     40,      0,      0 }, {  0.6250,  0.0000,  0.0000 },      0, "+$k1 Versatility"                  },
-  { 5467, 224, 130246, -4,   1, 110,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {      4,      0,      0 }, {  0.8333,  0.0000,  0.0000 },      0, "+$k1 Strength"                     },
-  { 5468, 224, 130247, -4,   1, 110,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {      3,      0,      0 }, {  0.8333,  0.0000,  0.0000 },      0, "+$k1 Agility"                      },
-  { 5469, 224, 130248, -4,   1, 110,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {      5,      0,      0 }, {  0.8333,  0.0000,  0.0000 },      0, "+$k1 Intellect"                    },
+  { 5459, 160, 130215, -3,   1, 110,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {     32,      0,      0 }, {  0.5556,  0.0000,  0.0000 },      0, "+$k1 Critical Strike"              },
+  { 5460, 160, 130216, -3,   1, 110,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {     36,      0,      0 }, {  0.5556,  0.0000,  0.0000 },      0, "+$k1 Haste"                        },
+  { 5461, 160, 130218, -3,   1, 110,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {     49,      0,      0 }, {  0.5556,  0.0000,  0.0000 },      0, "+$k1 Mastery"                      },
+  { 5462, 160, 130217, -3,   1, 110,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {     40,      0,      0 }, {  0.5556,  0.0000,  0.0000 },      0, "+$k1 Versatility"                  },
+  { 5463, 160, 130219, -4,   1, 110,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {     32,      0,      0 }, {  0.6250,  0.0000,  0.0000 },      0, "+$k1 Critical Strike"              },
+  { 5464, 160, 130220, -4,   1, 110,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {     36,      0,      0 }, {  0.6250,  0.0000,  0.0000 },      0, "+$k1 Haste"                        },
+  { 5465, 160, 130222, -4,   1, 110,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {     49,      0,      0 }, {  0.6250,  0.0000,  0.0000 },      0, "+$k1 Mastery"                      },
+  { 5466, 160, 130221, -4,   1, 110,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {     40,      0,      0 }, {  0.6250,  0.0000,  0.0000 },      0, "+$k1 Versatility"                  },
+  { 5467, 160, 130246, -4,   1, 110,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {      4,      0,      0 }, {  0.8333,  0.0000,  0.0000 },      0, "+$k1 Strength"                     },
+  { 5468, 160, 130247, -4,   1, 110,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {      3,      0,      0 }, {  0.8333,  0.0000,  0.0000 },      0, "+$k1 Agility"                      },
+  { 5469, 160, 130248, -4,   1, 110,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {      5,      0,      0 }, {  0.8333,  0.0000,  0.0000 },      0, "+$k1 Intellect"                    },
   { 5488,   0,      0,  0,   1,  60,   0,   0, {   9,  12,   0 }, {    1,    0,    0 }, {      4,      0,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Owen Test Relic"                   },
   { 5489,   0,      0,  0,   1,  60,   0,   0, {  10,  11,   0 }, {    1,    0,    0 }, {     43,    707,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Heart of the Inferno"              },
   { 5493,   0,      0,  0,   1,  60,   0,   0, {   9,  11,   0 }, {    1,    0,    0 }, {      6,    708,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Package 1 - Holy 1"                },
@@ -5932,7 +5932,7 @@ static struct item_enchantment_data_t __ptr_spell_item_ench_data[] = {
   { 5924, 768,      0,  0,   1,  60,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Demonic Tyranny"                   },
   {    0,   0,      0,  0,   0,   0,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000,  0.0000,  0.0000 },      0, 0                                   },
 };
-// Item armor values data from ItemArmorQuality.dbc, ilevels 1-1300, wow build 24076
+// Item armor values data from ItemArmorQuality.dbc, ilevels 1-1300, wow build 24116
 static struct item_scale_data_t __ptr_itemarmorquality_data[] = {
   {    1, {  0.900,  0.950,  1.000,  1.000,  1.000,  1.000,  1.000 } },
   {    2, {  0.900,  0.950,  1.000,  1.000,  1.000,  1.000,  1.000 } },
@@ -7237,7 +7237,7 @@ static struct item_scale_data_t __ptr_itemarmorquality_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Item armor values data from ItemArmorShield.dbc, ilevels 1-1300, wow build 24076
+// Item armor values data from ItemArmorShield.dbc, ilevels 1-1300, wow build 24116
 static struct item_scale_data_t __ptr_itemarmorshield_data[] = {
   {    1, {   22.000,   23.000,   24.000,   31.000,   38.000,   38.000,   38.000 } },
   {    2, {   24.000,   25.000,   26.000,   33.000,   41.000,   41.000,   41.000 } },
@@ -8242,7 +8242,7 @@ static struct item_scale_data_t __ptr_itemarmorshield_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Item armor values data from ItemArmorTotal.dbc, ilevels 1-1300, wow build 24076
+// Item armor values data from ItemArmorTotal.dbc, ilevels 1-1300, wow build 24116
 static struct item_armor_type_data_t __ptr_itemarmortotal_data[] = {
   {    1, {    19.625,    31.400,    44.857,   78.5000 } },
   {    2, {    20.875,    33.400,    47.714,   83.5000 } },
@@ -9574,7 +9574,7 @@ static struct item_armor_type_data_t __ptr_armor_slot_data[] = {
   { 0, { 0, 0, 0, 0 } }
 };
 
-// Item damage data from ItemDamageOneHand.dbc, ilevels 1-1300, wow build 24076
+// Item damage data from ItemDamageOneHand.dbc, ilevels 1-1300, wow build 24116
 static struct item_scale_data_t __ptr_itemdamageonehand_data[] = {
   {    1, {     0.347,     0.520,     0.629,     1.050,     1.874,     1.874,     1.874 } },
   {    2, {     0.502,     0.755,     0.886,     1.377,     2.240,     2.240,     2.240 } },
@@ -10579,7 +10579,7 @@ static struct item_scale_data_t __ptr_itemdamageonehand_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Item damage data from ItemDamageOneHandCaster.dbc, ilevels 1-1300, wow build 24076
+// Item damage data from ItemDamageOneHandCaster.dbc, ilevels 1-1300, wow build 24116
 static struct item_scale_data_t __ptr_itemdamageonehandcaster_data[] = {
   {    1, {     0.173,     0.260,     0.315,     0.525,     0.937,     0.937,     0.937 } },
   {    2, {     0.251,     0.377,     0.443,     0.689,     1.120,     1.120,     1.120 } },
@@ -11584,7 +11584,7 @@ static struct item_scale_data_t __ptr_itemdamageonehandcaster_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Item damage data from ItemDamageTwoHand.dbc, ilevels 1-1300, wow build 24076
+// Item damage data from ItemDamageTwoHand.dbc, ilevels 1-1300, wow build 24116
 static struct item_scale_data_t __ptr_itemdamagetwohand_data[] = {
   {    1, {     0.446,     0.669,     0.810,     1.352,     2.412,     2.412,     2.412 } },
   {    2, {     0.646,     0.971,     1.140,     1.773,     2.883,     2.883,     2.883 } },
@@ -12589,7 +12589,7 @@ static struct item_scale_data_t __ptr_itemdamagetwohand_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Item damage data from ItemDamageTwoHandCaster.dbc, ilevels 1-1300, wow build 24076
+// Item damage data from ItemDamageTwoHandCaster.dbc, ilevels 1-1300, wow build 24116
 static struct item_scale_data_t __ptr_itemdamagetwohandcaster_data[] = {
   {    1, {     0.223,     0.335,     0.405,     0.676,     1.206,     1.206,     1.206 } },
   {    2, {     0.323,     0.486,     0.570,     0.886,     1.442,     1.442,     1.442 } },
@@ -13594,7 +13594,7 @@ static struct item_scale_data_t __ptr_itemdamagetwohandcaster_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Gem properties, wow build 24076
+// Gem properties, wow build 24116
 static struct gem_property_data_t __ptr_gem_property_data[] = {
   {    2,  2686, 0x00000002,    0 },
   {    3,  2687, 0x00000008,    0 },
@@ -15546,7 +15546,7 @@ static struct gem_property_data_t __ptr_gem_property_data[] = {
   {    0,     0, 0x00000000,    0 },
 };
 
-// Item upgrade rules, wow build level 24076
+// Item upgrade rules, wow build level 24116
 static struct item_upgrade_rule_t __ptr_item_upgrade_rule_data[] = {
   {    94,  445,  86741 },
   {    95,  445,  86743 },
@@ -24757,7 +24757,7 @@ static struct item_upgrade_rule_t __ptr_item_upgrade_rule_data[] = {
   {     0,    0,      0 },
 };
 
-// Upgrade rule data, wow build level 24076
+// Upgrade rule data, wow build level 24116
 static struct item_upgrade_t __ptr_upgrade_rule_data[] = {
   {   1,   1,    0,  8 },
   { 373,  89,    0,  4 },
@@ -24818,7 +24818,7 @@ static struct item_upgrade_t __ptr_upgrade_rule_data[] = {
 
 #define PTR_ITEM_BONUS_TREE_SIZE (422)
 
-// Item bonus trees, wow build 24076
+// Item bonus trees, wow build 24116
 static struct item_bonus_tree_entry_t __ptr_item_bonus_tree_data[PTR_ITEM_BONUS_TREE_SIZE] = {
   {    1,    1,  5,    0,    1 },
   {  107,   61,  5,    0,  449 },
@@ -25098,7 +25098,7 @@ static struct item_bonus_tree_entry_t __ptr_item_bonus_tree_data[PTR_ITEM_BONUS_
   { 2205,  590,  3,    0,    0 },
   { 2206,  590,  5,    0,    0 },
   { 2207,  590,  6,    0,    0 },
-  { 2224,  595,  0,    0,  615 },
+  { 2224,  595,  0,    0, 3596 },
   { 2227,  597,  3,    0, 3514 },
   { 2228,  597,  5,    0, 3516 },
   { 2229,  597,  6,    0, 3518 },
@@ -25244,9 +25244,9 @@ static struct item_bonus_tree_entry_t __ptr_item_bonus_tree_data[PTR_ITEM_BONUS_
   {    0,    0,  0,    0,    0 },
 };
 
-#define PTR_ITEM_BONUS_SIZE (3674)
+#define PTR_ITEM_BONUS_SIZE (3677)
 
-// Item bonuses, wow build 24076
+// Item bonuses, wow build 24116
 static struct item_bonus_entry_t __ptr_item_bonus_data[PTR_ITEM_BONUS_SIZE] = {
   {    1,    1,  1,     20,      0,  0 },
   {    2,    1,  2,      7,  15789,  1 },
@@ -28921,12 +28921,15 @@ static struct item_bonus_entry_t __ptr_item_bonus_data[PTR_ITEM_BONUS_SIZE] = {
   { 5629, 3590,  9,     12,      0,  2 },
   { 5630, 3591, 11,   1058,      0,  0 },
   { 5631, 3592, 11,   1059,      0,  0 },
+  { 5635, 3596, 13,    948,      1,  0 },
+  { 5636,  615,  4,  13216,      0,  1 },
+  { 5637, 3589,  4,  13216,      0,  1 },
   {    0,    0,  0,      0,      0,  0 },
 };
 
-#define PTR_ITEM_BONUS_MAP_SIZE (19732)
+#define PTR_ITEM_BONUS_MAP_SIZE (19744)
 
-// Item bonus map, wow build 24076
+// Item bonus map, wow build 24116
 static struct item_bonus_node_entry_t __ptr_item_bonus_map_data[PTR_ITEM_BONUS_MAP_SIZE] = {
   {     1, 109188,  393 },
   {   125, 109550,  438 },
@@ -47354,7 +47357,6 @@ static struct item_bonus_node_entry_t __ptr_item_bonus_map_data[PTR_ITEM_BONUS_M
   { 63804, 146113,  604 },
   { 63805, 146113,  605 },
   { 63848, 146745,  286 },
-  { 63850, 138489,  608 },
   { 63853, 146758,  463 },
   { 63854, 146758,  455 },
   { 63857, 146759,  463 },
@@ -48659,12 +48661,25 @@ static struct item_bonus_node_entry_t __ptr_item_bonus_map_data[PTR_ITEM_BONUS_M
   { 78274, 151640,  608 },
   { 78276, 151641,  608 },
   { 78278, 151642,  608 },
+  { 78280, 151643,  608 },
+  { 78282, 151644,  608 },
+  { 78284, 151646,  608 },
+  { 78286, 151647,  608 },
+  { 78288, 151649,  608 },
+  { 78290, 151650,  608 },
+  { 78303, 151782,  608 },
+  { 78305, 151783,  608 },
+  { 78307, 151784,  608 },
+  { 78309, 151785,  608 },
+  { 78311, 151786,  608 },
+  { 78313, 151787,  608 },
+  { 78315, 151788,  608 },
   {     0,      0,    0 },
 };
 
 #define PTR_SCALING_STAT_DISTRIBUTION_SIZE (303)
 
-// Scaling stat distributions, wow build 24076
+// Scaling stat distributions, wow build 24116
 static struct scaling_stat_distribution_t __ptr_scaling_stat_distribution_data[PTR_SCALING_STAT_DISTRIBUTION_SIZE] = {
   {    1,   0,  80,   956 },
   {    2,   0,  80,   956 },
@@ -48971,9 +48986,9 @@ static struct scaling_stat_distribution_t __ptr_scaling_stat_distribution_data[P
   {    0,   0,   0,     0 },
 };
 
-#define PTR_CURVE_POINT_SIZE (8557)
+#define PTR_CURVE_POINT_SIZE (8567)
 
-// Curve points data, wow build 24076
+// Curve points data, wow build 24116
 static struct curve_point_t __ptr_curve_point_data[PTR_CURVE_POINT_SIZE] = {
   {    8,  0,    0.00000,    1.00000 },
   {    9,  0,    0.00000,    1.00000 },
@@ -56272,7 +56287,7 @@ static struct curve_point_t __ptr_curve_point_data[PTR_CURVE_POINT_SIZE] = {
   { 2625,  0,    0.00000,    0.00000 },
   { 2625,  1,    1.00000,   -1.00000 },
   { 2627,  0,    0.00000,    0.00000 },
-  { 2627,  1,    0.10000,    1.00000 },
+  { 2627,  1,    0.20000,    1.00000 },
   { 2627,  2,    0.60000,    1.00000 },
   { 2627,  3,    1.00000,    0.25000 },
   { 2628,  0,    0.00000,    1.00000 },
@@ -57531,12 +57546,22 @@ static struct curve_point_t __ptr_curve_point_data[PTR_CURVE_POINT_SIZE] = {
   { 3206,  0,    0.00000,    1.00000 },
   { 3206,  1,    1.00000,    0.00000 },
   { 3210,  0,    0.00000,    1.00000 },
+  { 3247,  0,   15.00000,    0.00000 },
+  { 3247,  1,   16.00000,    0.40000 },
+  { 3247,  2,   20.00000,    2.00000 },
+  { 3249,  0,   21.00000,    0.00000 },
+  { 3249,  1,   30.00000,    4.00000 },
+  { 3250,  0,   31.00000,    0.00000 },
+  { 3250,  1,   40.00000,    4.00000 },
+  { 3252,  0,    0.00000,    0.00000 },
+  { 3252,  1,    0.50182,    0.00000 },
+  { 3252,  2,    1.00000,    1.00000 },
   {    0,  0,    0.00000,    0.00000 },
 };
 
 #define PTR_ITEM_NAME_DESCRIPTION_SIZE (221)
 
-// Item name descriptions, wow build 24076
+// Item name descriptions, wow build 24116
 static struct item_name_description_t __ptr_item_name_description_data[PTR_ITEM_NAME_DESCRIPTION_SIZE] = {
   {     2, "Now with extra description"   },
   {    20, "Season 10"                    },
@@ -57763,7 +57788,7 @@ static struct item_name_description_t __ptr_item_name_description_data[PTR_ITEM_
 
 #define PTR_ITEM_CHILD_EQUIPMENT_SIZE (23)
 
-// Item child equipment, wow build 24076
+// Item child equipment, wow build 24116
 static struct item_child_equipment_t __ptr_item_child_equipment_data[PTR_ITEM_CHILD_EQUIPMENT_SIZE] = {
   {  2, 127417,   1728 },
   {  3, 127829, 127830 },

@@ -3,7 +3,7 @@ level=110
 race=troll
 role=spell
 position=back
-talents=3202023
+talents=1202023
 artifact=37:0:0:0:0:1170:1:1171:4:1172:3:1173:4:1174:4:1175:4:1176:4:1177:4:1178:3:1179:3:1180:1:1181:1:1182:1:1183:1:1184:1:1185:1:1354:1:1391:1:1605:4:1606:1:1607:1:1712:1
 spec=demonology
 
@@ -36,6 +36,8 @@ actions+=/summon_doomguard,if=!talent.grimoire_of_supremacy.enabled&spell_target
 actions+=/summon_infernal,if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>2
 actions+=/summon_doomguard,if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal=1&equipped.132379&!cooldown.sindorei_spite_icd.remains
 actions+=/summon_infernal,if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>1&equipped.132379&!cooldown.sindorei_spite_icd.remains
+actions+=/doomguard:shadow_lock
+actions+=/felguard:axe_toss
 actions+=/hand_of_guldan,if=talent.demonic_calling.enabled&soul_shard>=4&cooldown.call_dreadstalkers.remains<=action.hand_of_guldan.cast_time&buff.demonic_calling.remains
 actions+=/call_dreadstalkers,if=(!talent.summon_darkglare.enabled|talent.power_trip.enabled)&(spell_targets.implosion<3|!talent.implosion.enabled)
 actions+=/hand_of_guldan,if=soul_shard>=4&!talent.summon_darkglare.enabled
@@ -58,7 +60,7 @@ actions+=/life_tap,if=mana.pct<=30
 actions+=/demonwrath,chain=1,interrupt=1,if=spell_targets.demonwrath>=3
 actions+=/demonwrath,moving=1,chain=1,interrupt=1
 actions+=/demonbolt
-actions+=/shadow_bolt,if=buff.shadowy_inspiration.react
+actions+=/shadow_bolt,if=buff.shadowy_inspiration.remains
 actions+=/demonic_empowerment,if=artifact.thalkiels_ascendance.rank&talent.power_trip.enabled&!talent.demonbolt.enabled&(pet_count>=13|talent.shadowy_inspiration.enabled&pet_count>=6)
 actions+=/shadow_bolt
 actions+=/life_tap
@@ -73,7 +75,7 @@ hands=clutch_of_azjaqir,id=138311,bonus_id=3518
 waist=manari_skullbuckled_cinch,id=140887,bonus_id=3518
 legs=leggings_of_azjaqir,id=138317,bonus_id=3518
 feet=perpetually_muddy_sandals,id=140854,bonus_id=3445
-finger1=ring_of_the_scoured_clan,id=140897,bonus_id=3519,enchant_id=5428
+finger1=,id=132452,gems=150mastery,enchant_id=5429,ilevel=940
 finger2=ring_of_braided_stems,id=140896,bonus_id=3518,enchant_id=5428
 trinket1=whispers_in_the_dark,id=140809,bonus_id=3519
 trinket2=erratic_metronome,id=140792,bonus_id=3445

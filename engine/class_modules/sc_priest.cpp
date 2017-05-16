@@ -610,7 +610,9 @@ public:
 
       double drain_multiplier = 1.0 
                               - ( actor.sets->has_set_bonus(PRIEST_SHADOW, T20, B4)
-                                * actor.sets->set( PRIEST_SHADOW, T20, B4 )->effectN( 1 ).percent() );
+                                * actor.talents.surrender_to_madness->ok()
+                                  ? actor.sets->set( PRIEST_SHADOW, T20, B4 )->effectN( 2 ).percent()
+                                  : actor.sets->set( PRIEST_SHADOW, T20, B4 )->effectN( 1 ).percent() );
 
       return drain_multiplier * (     base_drain_per_sec 
                                   + ( actor.buffs.insanity_drain_stacks->current_value - 1 ) 

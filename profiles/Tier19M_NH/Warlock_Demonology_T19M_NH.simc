@@ -58,7 +58,7 @@ actions+=/life_tap,if=mana.pct<=30
 actions+=/demonwrath,chain=1,interrupt=1,if=spell_targets.demonwrath>=3
 actions+=/demonwrath,moving=1,chain=1,interrupt=1
 actions+=/demonbolt
-actions+=/shadow_bolt,if=buff.shadowy_inspiration.react
+actions+=/shadow_bolt,if=buff.shadowy_inspiration.remains
 actions+=/demonic_empowerment,if=artifact.thalkiels_ascendance.rank&talent.power_trip.enabled&!talent.demonbolt.enabled&(pet_count>=13|talent.shadowy_inspiration.enabled&pet_count>=6)
 actions+=/shadow_bolt
 actions+=/life_tap

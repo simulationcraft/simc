@@ -1,6 +1,6 @@
-#define PTR_TALENT_SIZE (618)
+#define PTR_TALENT_SIZE (617)
 
-// 618 talents, wow build 24076
+// 617 talents, wow build 24116
 static struct talent_data_t __ptr_talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplcID, S1 },
   { "Second Wind"                       , 15757, 0x00, 0x0001,   0,   0,   3,   29838,       0,  0 },
@@ -76,7 +76,7 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Demonic Circle"                    , 19280, 0x00, 0x0100,   0,   0,   2,   48018,       0,  0 },
   { "Siphon Life"                       , 19281, 0x00, 0x0100,   0,   1,   6,   63106,       0,  0 },
   { "Renewal"                           , 19283, 0x00, 0x0400,   0,   0,   1,  108238,       0,  0 },
-  { "Death's Embrace"                   , 19284, 0x00, 0x0100,   0,   0,   6,  234876,       0,  0 },
+  { "Death's Embrace"                   , 19284, 0x00, 0x0100, 265,   0,   6,  234876,       0,  0 },
   { "Mortal Coil"                       , 19285, 0x00, 0x0100,   0,   1,   2,    6789,       0,  0 },
   { "Shadowfury"                        , 19286, 0x00, 0x0100,   0,   2,   2,   30283,       0,  0 },
   { "Dark Pact"                         , 19288, 0x00, 0x0100,   0,   2,   4,  108416,       0,  0 },
@@ -205,7 +205,7 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Nemesis"                           , 21868, 0x00, 0x0800, 577,   2,   4,  206491,       0,  0 },
   { "Master of the Glaive"              , 21869, 0x00, 0x0800, 577,   0,   5,  203556,       0,  0 },
   { "Unleashed Power"                   , 21870, 0x00, 0x0800, 577,   1,   5,  206477,       0,  0 },
-  { "Chaos Blades"                      , 21900, 0x00, 0x0800, 577,   0,   6,  211048,       0,  0 },
+  { "Chaos Blades"                      , 21900, 0x00, 0x0800, 577,   0,   6,  247938,       0,  0 },
   { "Fel Barrage"                       , 21901, 0x00, 0x0800, 577,   1,   6,  211053,       0,  0 },
   { "Soul Barrier"                      , 21902, 0x00, 0x0800, 581,   2,   6,  227225,       0,  0 },
   { "Wind Rush Totem"                   , 21963, 0x00, 0x0040,   0,   2,   1,  192077,       0,  0 },
@@ -297,7 +297,7 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Soothing Darkness"                 , 22128, 0x00, 0x0008, 261,   0,   3,  200759,       0,  0 },
   { "Tangled Shadow"                    , 22131, 0x00, 0x0008, 261,   2,   4,  200778,       0,  0 },
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplcID, S1 },
-  { "Premeditation"                     , 22132, 0x00, 0x0008, 261,   0,   6,  196979,       0,  0 },
+  { "Master of Shadows"                 , 22132, 0x00, 0x0008, 261,   0,   6,  196976,       0,  0 },
   { "Marked for Death"                  , 22133, 0x00, 0x0008,   0,   1,   6,  137619,       0,  0 },
   { "Blood Tap"                         , 22134, 0x00, 0x0020, 250,   1,   2,  221699,       0,  0 },
   { "Anti-Magic Barrier"                , 22135, 0x00, 0x0020, 250,   2,   2,  205727,       0,  0 },
@@ -407,14 +407,14 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Subterfuge"                        , 22332, 0x00, 0x0008,   0,   1,   1,  108208,       0,  0 },
   { "Shadow Focus"                      , 22333, 0x00, 0x0008,   0,   2,   1,  108209,       0,  0 },
   { "Strike from the Shadows"           , 22334, 0x00, 0x0008, 261,   0,   4,  196951,       0,  0 },
-  { "Enveloping Shadows"                , 22335, 0x00, 0x0008, 261,   0,   5,  238104,       0,  0 },
-  { "Master of Shadows"                 , 22336, 0x00, 0x0008, 261,   2,   5,  196976,       0,  0 },
+  { "Dark Shadow"                       , 22335, 0x00, 0x0008, 261,   0,   5,  245687,       0,  0 },
+  { "Enveloping Shadows"                , 22336, 0x00, 0x0008, 261,   2,   5,  238104,       0,  0 },
   { "Master Poisoner"                   , 22337, 0x00, 0x0008, 259,   0,   0,  196864,       0,  0 },
   { "Elaborate Planning"                , 22338, 0x00, 0x0008,   0,   1,   0,  193640,       0,  0 },
   { "Hemorrhage"                        , 22339, 0x00, 0x0008, 259,   2,   0,   16511,       0,  0 },
   { "Leeching Poison"                   , 22340, 0x00, 0x0008, 259,   0,   3,  108211,       0,  0 },
   { "Thuggee"                           , 22341, 0x00, 0x0008, 259,   0,   4,  196861,       0,  0 },
-  { "Agonizing Poison"                  , 22343, 0x00, 0x0008, 259,   0,   5,  200802,       0,  0 },
+  { "Toxic Blade"                       , 22343, 0x00, 0x0008, 259,   0,   5,  245388,       0,  0 },
   { "Exsanguinate"                      , 22344, 0x00, 0x0008,   0,   2,   5,  200806,       0,  0 },
   { "Bestial Fury"                      , 22347, 0x00, 0x0004, 253,   1,   3,  194306,       0,  0 },
   { "Sundering"                         , 22351, 0x00, 0x0040, 263,   2,   5,  197214,       0,  0 },
@@ -648,7 +648,6 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Intimidating Roar"                 , 22916, 0x00, 0x0400, 104,   1,   1,  236748,      99,  0 },
   { "Mystic Vitality"                   , 22917, 0x00, 0x0200, 268,   1,   4,  237076,       0,  0 },
   { "Disengage"                         , 22918, 0x00, 0x0004, 255,   1,   2,     781,       0,  0 },
-  { "Dark Shadow"                       , 22968, 0x00, 0x0008, 261,   1,   5,  245687,       0,  0 },
   { "Evangelism"                        , 22976, 0x00, 0x0010, 256,   2,   6,  246287,       0,  0 },
   { "Boulderfist"                       , 22977, 0x00, 0x0040, 263,   1,   6,  246035,       0,  0 },
   { 0                                   ,     0, 0x00, 0x0000,   0,   0,   0,       0,       0,  0 },

@@ -1643,10 +1643,10 @@ Effects          :
 #2 (id=92143)    : Apply Aura (6) | Dummy (4)
                    Base Value: 250 | Scaled Value: 250 | Target: Self (1)
 #3 (id=297947)   : Apply Aura (6) | Add Flat Modifier (107): Spell Proc Chance (18)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.12500 | Misc Value: 18 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.08000 | Misc Value: 18 | Target: Self (1)
                    Affected Spells: Stormbringer (201845)
 #4 (id=297948)   : Apply Aura (6) | Add Flat Modifier (107): Spell Proc Chance (18)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.12500 | Misc Value: 18 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.08000 | Misc Value: 18 | Target: Self (1)
                    Affected Spells: Windfury (33757)
 Description      : Increases your chance to trigger Stormbringer and Windfury by ${$m3}.2%, and increases all Fire, Frost, and Nature damage you deal by ${$77223m1}.2%.
 
@@ -2736,7 +2736,7 @@ Effects          :
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 26 | Target: Self (1)
 #6 (id=260997)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self (1)
-                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Dread Reflections (246466), Infernal Cinders (242218)
+                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218)
 #7 (id=260998)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 249 (Label) | Target: Self (1)
                    Affected Spells (Label): Orb of Destruction (229700)
@@ -2788,7 +2788,7 @@ Effects          :
                    Affected Spells: Echo of the Elements (108283)
 #3 (id=191043)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self (1)
-                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Dread Reflections (246466), Infernal Cinders (242218)
+                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218)
 #4 (id=191044)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 298 (Label) | Target: Self (1)
                    Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621)
@@ -3508,7 +3508,7 @@ Attributes       : ........ ........ x....... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=273980)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.48000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.56250 | Target: Enemy (6)
 Description      : Fires a bolt of lightning at the target, dealing $?s210727[up to ${(1+$210727m2/100)*$s1}][$s1] Nature damage.
 
 Name             : Crash Lightning (id=187874) [Spell Family (11)] 
@@ -5286,21 +5286,21 @@ Name             : Stormbringer (id=201845) [Spell Family (11), Passive]
 Class            : Enhancement Shaman
 School           : Nature
 Spell Level      : 48
-Proc Chance      : 8%
-Proc Flags       : ..x.x... ........ ........ ........ 
-                 : White Melee, Yellow Melee
-Affecting spells : Mastery: Enhanced Elements (77223 effect#3)
+Proc Chance      : 5%
+Proc Flags       : ..x.x... ........ x....... ........ 
+                 : White Melee, Yellow Melee, Hostile Spell
+Affecting spells : Mastery: Enhanced Elements (77223 effect#3), Item - Shaman T19 Enhancement 4P Bonus (211988 effect#1)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
 #1 (id=297456)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Each of your main hand attacks has a $h% chance to reset the remaining cooldown on Stormstrike, and cause your next Stormstrike to cost $201846s3% less Maelstrom and trigger no cooldown.
+Description      : Your weapon attacks have a ${$h}.1% chance to reset the remaining cooldown on Stormstrike, and cause your next Stormstrike to cost $201846s3% less Maelstrom and trigger no cooldown.
 
 Name             : Stormbringer (id=201846) [Spell Family (11)] 
 Class            : Shaman
@@ -5548,7 +5548,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=303466)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
@@ -5560,7 +5560,7 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Lightning Bolt (403), Chain Lightning (421), Lava Beam (114074), Lightning Bolt (187837), Lightning Bolt (188196), Chain Lightning (188443), Lightning Bolt (214815), Lightning Bolt Overload (214816)
 Description      : Raises |cFFFFCC99The Fist of Ra-den|r to the sky and absorbs all nearby electric energy, causing your next $n casts of Lightning Bolt or Chain Lightning to be instant and deal $s1% increased damage.
-Tooltip          : Your next Lightning Bolt or Chain Lightning will be instant and deal $s1% additional damage.
+Tooltip          : Your next Lightning Bolt or Chain Lightning will be instant and deal $w1% additional damage.
 
 Name             : Ancestral Protection Totem (id=207399) [Spell Family (11)] 
 Class            : Shaman

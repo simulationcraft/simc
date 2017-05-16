@@ -1291,13 +1291,21 @@ struct sim_control_t
   option_db_t options;
 };
 
+struct sim_progress_t
+{
+  int current_iterations;
+  int total_iterations;
+  double pct() const
+  { return current_iterations / static_cast<double>(total_iterations); }
+};
+
 // Progress Bar =============================================================
 
 struct progress_bar_t
 {
   sim_t& sim;
-  int steps, updates, interval;
-  double start_time;
+  int steps, updates, interval, update_number;
+  double start_time, last_update, max_interval_time;
   std::string status;
 
   progress_bar_t( sim_t& s );
@@ -1306,8 +1314,8 @@ struct progress_bar_t
   void output( bool finished = false );
   void restart();
 private:
-  bool update_simple( bool finished, int index );
-  bool update_normal( bool finished, int index );
+  bool update_simple( const sim_progress_t&, bool finished, int index );
+  bool update_normal( const sim_progress_t&, bool finished, int index );
 };
 
 /* Encapsulated Vector
@@ -1617,6 +1625,7 @@ struct sim_t : private sc_thread_t
   std::string rng_str;
   uint64_t seed;
   int deterministic;
+  int strict_work_queue;
   int average_range, average_gauss;
   int convergence_scale;
 
@@ -1638,6 +1647,16 @@ struct sim_t : private sc_thread_t
     std::vector<uint64_t> target_health;
   } overrides;
 
+  // Expansion specific custom parameters. Defaults in the constructor.
+  struct expansion_opt_t
+  {
+    // Legion
+    int infernal_cinders_users;
+
+    expansion_opt_t() : infernal_cinders_users( 1 )
+    { }
+  } expansion_opts;
+
   // Auras and De-Buffs
   auto_dispose< std::vector<buff_t*> > buff_list;
 
@@ -1654,6 +1673,8 @@ struct sim_t : private sc_thread_t
   std::unique_ptr<reforge_plot_t> reforge_plot;
   double elapsed_cpu;
   double elapsed_time;
+  std::vector<size_t> work_per_thread;
+  size_t work_done;
   double     iteration_dmg, priority_iteration_dmg,  iteration_heal, iteration_absorb;
   simple_sample_data_t raid_dps, total_dmg, raid_hps, total_heal, total_absorb, raid_aps;
   extended_sample_data_t simulation_length;
@@ -1702,6 +1723,7 @@ struct sim_t : private sc_thread_t
   int allow_potions;
   int allow_food;
   int allow_flasks;
+  int allow_augmentations;
   int solo_raid;
   int global_item_upgrade_level;
   bool maximize_reporting;
@@ -1716,13 +1738,6 @@ struct sim_t : private sc_thread_t
   std::vector<sim_t*> children; // Manual delete!
   int thread_index;
   computer_process::priority_e process_priority;
-  struct sim_progress_t
-  {
-    int current_iterations;
-    int total_iterations;
-    double pct() const
-    { return current_iterations / static_cast<double>(total_iterations); }
-  };
   struct work_queue_t
   {
     private:
@@ -3366,6 +3381,8 @@ struct player_collected_data_t
 struct player_talent_points_t
 {
 public:
+  using validity_fn_t = std::function<bool(const spell_data_t*)>;
+
   player_talent_points_t() { clear(); }
 
   int choice( int row ) const
@@ -3392,10 +3409,22 @@ public:
   void clear();
   std::string to_string() const;
 
+  bool validate( const spell_data_t* spell, int row, int col ) const
+  {
+    return has_row_col( row, col ) ||
+      range::find_if( validity_fns, [ spell ]( const validity_fn_t& fn ) { return fn( spell ); } ) !=
+      validity_fns.end();
+  }
+
   friend std::ostream& operator << ( std::ostream& os, const player_talent_points_t& tp )
   { os << tp.to_string(); return os; }
+
+  void register_validity_fn( const validity_fn_t& fn )
+  { validity_fns.push_back( fn ); }
+
 private:
   std::array<int, MAX_TALENT_ROWS> choices;
+  std::vector<validity_fn_t> validity_fns;
 
   static void row_check( int row )
   { assert( row >= 0 && row < MAX_TALENT_ROWS ); ( void )row; }
@@ -4443,6 +4472,7 @@ struct player_t : public actor_t
 
   pet_t*    find_pet( const std::string& name ) const;
   item_t*     find_item( const std::string& );
+  item_t*     find_item( unsigned );
   action_t*   find_action( const std::string& ) const;
   cooldown_t* find_cooldown( const std::string& name ) const;
   dot_t*      find_dot     ( const std::string& name, player_t* source ) const;
@@ -7347,6 +7377,10 @@ const item_data_t* find_item_by_spell( const dbc_t& dbc, unsigned spell_id );
 
 expr_t* create_expression( action_t* a, const std::string& name_str );
 
+// Kludge to automatically apply all player-derived, label based modifiers to unique effects. Will
+// be replaced in the future by something else.
+void apply_label_modifiers( action_t* a );
+
 // Base template for various "proc actions".
 template <typename T_ACTION>
 struct proc_action_t : public T_ACTION
@@ -7369,12 +7403,15 @@ struct proc_action_t : public T_ACTION
     {
       this -> parse_effect_data( this -> data().effectN( i ) );
     }
+
+    unique_gear::apply_label_modifiers( this );
   }
 
   proc_action_t( const special_effect_t& e ) :
     super( e.name(), e.player, e.trigger() )
   {
     this -> item = e.item;
+    this -> cooldown = e.player -> get_cooldown( e.cooldown_name() );
 
     __initialize();
 
@@ -7502,7 +7539,27 @@ struct proc_resource_t : public proc_action_t<spell_t>
     player -> resource_gain( gain_resource, gain_ta, gain );
   }
 };
+
+template <typename CLASS, typename ...ARGS>
+action_t* create_proc_action( const special_effect_t& effect, ARGS&&... args )
+{
+  auto player = effect.player;
+  auto a = player -> find_action( effect.name() );
+
+  if ( a == nullptr )
+  {
+    a = player -> create_proc_action( effect.name(), effect );
+  }
+
+  if ( a == nullptr )
+  {
+    a = new CLASS( effect, args... );
+  }
+
+  return a;
 }
+
+} // namespace unique_gear ends
 
 // Consumable ===============================================================
 

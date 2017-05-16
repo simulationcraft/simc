@@ -632,6 +632,7 @@ public:
   std::string default_potion() const override;
   std::string default_flask() const override;
   std::string default_food() const override;
+  std::string default_rune() const override;
 
   void      init_rng() override;
   bool      init_special_effects() override;
@@ -3388,6 +3389,9 @@ struct stormstrike_base_t : public shaman_attack_t
         oh -> execute();
       }
 
+      //T20 4p stacks are gained after both MH and OH
+      p() -> buff.t20_4pc_enhancement -> trigger( 2 );
+
       if ( p() -> action.storm_tempests )
       {
         td( execute_state -> target ) -> debuff.storm_tempests -> trigger();
@@ -3403,6 +3407,8 @@ struct stormstrike_base_t : public shaman_attack_t
       {
         p() -> cooldown.feral_spirits -> adjust( - p() -> sets -> set( SHAMAN_ENHANCEMENT, T17, B2 ) -> effectN( 1 ).time_value() );
       }
+      
+      
     }
 
     p() -> buff.stormbringer -> decrement();
@@ -3654,6 +3660,18 @@ struct crash_lightning_t : public shaman_attack_t
     }
   }
 
+  double action_multiplier() const override
+  {
+    double m = shaman_attack_t::action_multiplier();
+
+    if ( maybe_ptr( p() -> dbc.ptr) )
+    {
+      m *= 1.0 + p() -> buff.t20_4pc_enhancement -> stack_value();
+    }
+
+    return m;
+  }
+
   void execute() override
   {
     shaman_attack_t::execute();
@@ -3665,6 +3683,8 @@ struct crash_lightning_t : public shaman_attack_t
           .duration( p() -> find_spell( 205532 ) -> duration() )
           .action( p() -> action.crashing_storm ), true );
     }
+
+    p() -> buff.t20_4pc_enhancement -> expire();
 
     if ( result_is_hit( execute_state -> result ) )
     {
@@ -6983,6 +7003,9 @@ void shaman_t::create_buffs()
     .trigger_spell( ! maybe_ptr( dbc.ptr ) ? spell_data_t::not_found() : sets -> set( SHAMAN_ENHANCEMENT, T20, B2 ) )
     .default_value( sets -> set( SHAMAN_ENHANCEMENT, T20, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_CRIT_CHANCE );
+  buff.t20_4pc_enhancement = buff_creator_t( this, "crashing_lightning", sets -> set( SHAMAN_ENHANCEMENT, T20, B4 ) -> effectN( 1 ).trigger() )
+    .trigger_spell( !maybe_ptr ( dbc.ptr ) ? spell_data_t::not_found() : sets -> set( SHAMAN_ENHANCEMENT, T20, B4 ) )
+    .default_value( sets -> set(SHAMAN_ENHANCEMENT, T20, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
 }
 
 // shaman_t::init_gains =====================================================
@@ -7124,6 +7147,21 @@ std::string shaman_t::default_food() const
   return specialization() == SHAMAN_ENHANCEMENT ? enhance_food : elemental_food;
 }
 
+// shaman_t::default_rune ===================================================
+
+std::string shaman_t::default_rune() const
+{
+  std::string elemental_rune = ( true_level >= 110 ) ? "defiled" :
+                               ( true_level >= 100 ) ? "focus" :
+                               "disabled";
+
+  std::string enhance_rune = ( true_level >= 110 ) ? "defiled" :
+                             ( true_level >= 100 ) ? "hyper" :
+                             "disabled";
+
+  return specialization() == SHAMAN_ENHANCEMENT ? enhance_rune : elemental_rune;
+}
+
 // shaman_t::init_action_list_elemental =====================================
 
 void shaman_t::init_action_list_elemental()
@@ -7141,8 +7179,8 @@ void shaman_t::init_action_list_elemental()
   // Food
   precombat -> add_action( "food" );
 
-  if ( true_level > 100 )
-    precombat -> add_action( "augmentation,type=defiled" );
+  // Rune
+  precombat -> add_action( "augmentation" );
 
   // Snapshot stats
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
@@ -7281,17 +7319,12 @@ void shaman_t::init_action_list_enhancement()
 
   // Flask
   precombat -> add_action( "flask" );
-  // Added Rune if Flask are allowed since there is no "allow_runes" bool.
-  if ( sim -> allow_flasks && true_level >= 100 )
-  {
-    std::string rune_action = "augmentation,type=";
-    rune_action += ((true_level >= 110) ? "defiled" : (true_level >= 100) ? "hyper" : "");
-
-    precombat->add_action(rune_action);
-  }
 
   // Food
   precombat -> add_action( "food" );
+
+  // Rune
+  precombat -> add_action( "augmentation" );
 
   // Snapshot stats
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );

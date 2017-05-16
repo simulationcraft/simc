@@ -8566,9 +8566,9 @@ std::string mage_t::default_food() const
 
 std::string mage_t::default_rune() const
 {
-  return ( true_level >= 100 ) ? "defiled" :
-    ( true_level >= 90 ) ? "focus" :
-    "disabled";
+  return ( true_level >= 110 ) ? "defiled" :
+         ( true_level >= 100 ) ? "focus" :
+                                 "disabled";
 }
 
 // Arcane Mage Action List====================================================
@@ -10120,14 +10120,13 @@ public:
 
   virtual void register_hotfixes() const override
   {
-
     hotfix::register_spell( "Mage", "2017-01-11", "Incorrect spell level for Frozen Orb Bolt.", 84721 )
       .field( "spell_level" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( 57 )
       .verification_value( 81 );
 
-    hotfix::register_spell( "Mage", "2017-02-04", "Manually set Flurry's travel speed.", 44614 )
+    hotfix::register_spell( "Mage", "2017-02-04", "Manually set Flurry's travel speed.", 44614, hotfix::HOTFIX_FLAG_LIVE )
       .field( "prj_speed" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( 45.0 )
