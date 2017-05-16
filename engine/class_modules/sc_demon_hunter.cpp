@@ -4815,6 +4815,7 @@ struct chaos_blades_t : public demon_hunter_buff_t<buff_t>
     : demon_hunter_buff_t<buff_t>(
         *p, buff_creator_t( p, "chaos_blades", p -> talent.chaos_blades )
         .cd( timespan_t::zero() )
+        .default_value(p -> talent.chaos_blades -> effectN(2).percent())
         .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ) )
   {
   }
@@ -6713,7 +6714,8 @@ void add_havoc_use_items( demon_hunter_t* p, action_priority_list_t* apl )
 {
   // talent.chaos_blades won't have valid spell data when importing if they don't have the talent selected
   // We still need the valid cooldown to generate the default conditional
-  const timespan_t chaos_blades_cd = p->find_spell(211048)->cooldown();
+  const timespan_t chaos_blades_cd = maybe_ptr(p->dbc.ptr) ? 
+    p->find_spell(247938)->cooldown() : p->find_spell(211048)->cooldown();
 
   // On-Use Items
   for ( size_t i = 0; i < p -> items.size(); i++ )
@@ -7233,7 +7235,12 @@ double demon_hunter_t::composite_player_multiplier( school_e school ) const
   m *= 1.0 + buff.momentum -> check_value();
 
   if (buff.chaos_blades->check())
-    m *= 1.0 + cache.mastery_value();
+  {
+    if (maybe_ptr(dbc.ptr))
+      m *= 1.0 + buff.chaos_blades->value();
+    else
+      m *= 1.0 + cache.mastery_value();
+  }
 
   if ( dbc::is_school( school, SCHOOL_PHYSICAL ) && buff.demon_spikes -> check() )
     m *= 1.0 + talent.razor_spikes -> effectN( 1 ).percent();
