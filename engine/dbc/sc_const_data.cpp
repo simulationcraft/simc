@@ -970,7 +970,14 @@ bool dbc::is_school( school_e s, school_e s2 )
 
 std::vector<const spell_data_t*> dbc::class_passives( const player_t* p )
 {
-  static const std::vector<std::tuple<player_e, specialization_e, unsigned>> ids {
+  struct entry_t
+  {
+    player_e         type;
+    specialization_e spec;
+    unsigned         spell_id;
+  };
+
+  static const std::vector<entry_t> ids {
     { DEATH_KNIGHT, SPEC_NONE,              137005 },
     { DEATH_KNIGHT, DEATH_KNIGHT_BLOOD,     137008 },
     { DEATH_KNIGHT, DEATH_KNIGHT_UNHOLY,    137007 },
@@ -1023,15 +1030,12 @@ std::vector<const spell_data_t*> dbc::class_passives( const player_t* p )
 
   std::vector<const spell_data_t*> spells;
 
-  range::for_each( ids, [ &spells, p ]( const std::tuple<player_e, specialization_e, unsigned>& entry ) {
-    auto cls = std::get<0>( entry );
-    auto spec = std::get<1>( entry );
-    auto spell_id = std::get<2>( entry );
+  range::for_each( ids, [ &spells, p ]( const entry_t& entry ) {
 
-    if ( cls != p -> type ) return;
-    if ( spec != SPEC_NONE && spec != p -> specialization() ) return;
+    if ( entry.type != p -> type ) return;
+    if ( entry.spec != SPEC_NONE && entry.spec != p -> specialization() ) return;
 
-    spells.push_back( p -> find_spell( spell_id ) );
+    spells.push_back( p -> find_spell( entry.spell_id ) );
   } );
 
   return spells;
