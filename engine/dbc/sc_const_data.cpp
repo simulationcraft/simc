@@ -970,7 +970,7 @@ bool dbc::is_school( school_e s, school_e s2 )
 
 std::vector<const spell_data_t*> dbc::class_passives( const player_t* p )
 {
-  static const std::vector<std::tuple<player_e, specialization_e, unsigned>> ids = {
+  static const std::vector<std::tuple<player_e, specialization_e, unsigned>> ids {
     { DEATH_KNIGHT, SPEC_NONE,              137005 },
     { DEATH_KNIGHT, DEATH_KNIGHT_BLOOD,     137008 },
     { DEATH_KNIGHT, DEATH_KNIGHT_UNHOLY,    137007 },
