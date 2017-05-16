@@ -3930,6 +3930,16 @@ void priest_t::create_cooldowns()
   {
     cooldowns.power_word_shield->duration = timespan_t::from_seconds( 4.0 );
   }
+    talent_points.register_validity_fn( [ this ] ( const spell_data_t* spell )
+  {
+    // Soul of the High Priest
+    if ( find_item( 151646 ) )
+    {
+        return spell -> id() == 109142; // Twist of Fate
+    }
+
+    return false;
+  } );
 }
 
 /** Construct priest gains */
