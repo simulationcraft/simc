@@ -587,6 +587,22 @@ public:
     hailstorm   = nullptr;
 
     regen_type = REGEN_DISABLED;
+
+    talent_points.register_validity_fn([this](const spell_data_t* spell)
+    {
+      // Soul of the Farseer
+      if (find_item(151647))
+      {
+        switch (specialization())
+        {
+        case SHAMAN_ENHANCEMENT:
+          return spell->id() == 197992; // Landslide
+        case SHAMAN_ELEMENTAL:
+          return spell->id() == 108283; // Echo of the Elements
+        }
+      }
+      return false;
+    } );
   }
 
   virtual           ~shaman_t();
