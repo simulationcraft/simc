@@ -2269,7 +2269,7 @@ Effects          :
                    Affected Spells: Consecration (26573), Consecration (81297), Consecration (205228)
 #5 (id=191091)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self (1)
-                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Dread Reflections (246466), Infernal Cinders (242218)
+                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218)
 #6 (id=260917)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 3 | Misc Value 2: 276 (Label) | Target: Self (1)
                    Affected Spells (Label): Xavaric's Magnum Opus (207472)
@@ -2329,7 +2329,7 @@ Effects          :
                    Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536)
 #8 (id=260929)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self (1)
-                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Dread Reflections (246466), Infernal Cinders (242218)
+                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218)
 #9 (id=260930)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #10 (id=260931)   : Apply Aura (6) | Dummy (4)
@@ -3151,7 +3151,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=289147)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      :  Holy Light and Flash of Light reduces the mana cost and damage taken from your next Light of the Martyr by $223316s1%, stacking.
+Description      : Holy Light and Flash of Light reduces the mana cost and damage taken from your next Light of the Martyr by $223316s1%, stacking.
 
 Name             : Crusader's Might (id=196926) [Spell Family (10), Passive] 
 Class            : Paladin
@@ -3202,7 +3202,7 @@ Duration         : 8 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Seal of the Crusader Judgment Increase (23300 effect#1), Item - Icecrown 25 Normal Tank Weapon Proc (71871 effect#1), Item - Icecrown 25 Heroic Slow Melee Weapon Proc (71878 effect#1), Item - Icecrown 25 Normal Dagger Proc (71880 effect#1), Mastery: Divine Judgment (76672 effect#1), Item - Proc Mastery Rating (95878 effect#1), Paladin (137026 effect#3), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#3), Holy Paladin (137029 effect#6), Lucidity (137288 effect#1), Seal of the Crusader Judgment Increase (144307 effect#1), Seal of the Crusader Judgment Increase (144310 effect#1), Seal of the Crusader Judgment Increase (144311 effect#1), Highlord's Judgment (186941 effect#1), Stern Judgment (209217 effect#1), Crusade (224668 effect#4), Judgment (231663 effect#1)
+Affecting spells : Seal of the Crusader Judgment Increase (23300 effect#1), Item - Icecrown 25 Normal Tank Weapon Proc (71871 effect#1), Item - Icecrown 25 Heroic Slow Melee Weapon Proc (71878 effect#1), Item - Icecrown 25 Normal Dagger Proc (71880 effect#1), Mastery: Divine Judgment (76672 effect#1), Item - Proc Mastery Rating (95878 effect#1), Paladin (137026 effect#3), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#3), Holy Paladin (137029 effect#6), Lucidity (137288 effect#1), Seal of the Crusader Judgment Increase (144307 effect#1), Seal of the Crusader Judgment Increase (144310 effect#1), Seal of the Crusader Judgment Increase (144311 effect#1), Highlord's Judgment (186941 effect#1), Stern Judgment (209217 effect#1), Crusade (224668 effect#4), Judgment (231663 effect#1), Judge Unworthy (238134 effect#2)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3732,7 +3732,7 @@ School           : Holy
 Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 2 seconds
-Affecting spells : Lucidity (137323 effect#1), Muze's Unwavering Will (210632 effect#1), Invoke the Light (216122 effect#1), Kam Xi'raff (233997 effect#1)
+Affecting spells : Lucidity (137323 effect#1), Muze's Unwavering Will (210632 effect#1), Invoke the Light (216122 effect#1)
 Attributes       : ........ ........ x....... x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... ......x.   ........ ........ .x...... ......x. 
                  : ........ ......x. ........ ........   ...x.... ........ .xx..... ........ 
@@ -5019,6 +5019,24 @@ Effects          :
 Description      : $@spelldesc238062
 Tooltip          : Your next $?s198034[Divine Hammer][Blade of Justice] deals $w1% increased damage.
 
+Name             : Item - Paladin T20 Retribution 4P Bonus (id=242267) [Spell Family (10), Passive, Hidden] 
+Class            : Paladin
+School           : Physical
+Proc Chance      : 101%
+Proc Flags       : ....x... ....x... x....... ........ 
+                 : Yellow Melee, AOE Hostile Spell, Hostile Spell
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ x....... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=367854)   : Apply Aura (6) | Proc Trigger Spell (42): Sacred Judgment
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 246973 | Target: Self (1)
+Description      : Judgment also increases the damage of $?s198034[Divine Hammer][Blade of Justice] by $246973s1% for $246973d.
+
 Name             : Blessing of the Ashbringer (id=242981) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
@@ -5035,5 +5053,26 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
 Description      : $@spelldesc238098
 Tooltip          : Strength increased by $s1%.
+
+Name             : Sacred Judgment (id=246973) [Spell Family (10)] 
+Class            : Paladin
+School           : Physical
+Duration         : 8 seconds
+Triggered by     : Item - Paladin T20 Retribution 4P Bonus (242267)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ x....... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=376184)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+                   Affected Spells: Blade of Justice (184575), Divine Hammer (198137)
+#2 (id=376185)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Blade of Justice (184575), Divine Hammer (198137)
+Description      : $@spelldesc242267
+Tooltip          : Damage of $?s198034[Divine Hammer][Blade of Justice] increased by $s1%.
 
 
