@@ -4726,6 +4726,12 @@ struct demonwrath_tick_t: public warlock_spell_t
         p() -> shard_react = timespan_t::max();
     }
 
+    if ( p() -> sets -> has_set_bonus( WARLOCK_DEMONOLOGY, T20, B2 ) && p() -> rng().roll( p() -> sets -> set( WARLOCK_DEMONOLOGY, T20, B2 ) -> proc_chance() ) )
+    {
+      p() -> cooldowns.call_dreadstalkers -> reset( true );
+      p() -> procs.demonology_t20_2pc -> occur();
+    }
+
     if ( p() -> artifact.thalkiels_discord.rank() && icd -> up() )
     {
       if ( rng().roll( p() -> artifact.thalkiels_discord.data().proc_chance() ) )
