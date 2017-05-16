@@ -1020,14 +1020,14 @@ void item::mrrgrias_favor( special_effect_t& effect )
 
 // Toe Knee's Promise ======================================================
 
-struct flame_gale_pulse_t : spell_t
+struct flame_gale_pulse_t : proc_spell_t
 {
   //TODO: Are these multipliers multiplicative with one another or should they be added together then applied?
   // Right now we assume they are independant multipliers.
   double chest_multiplier;
   double paired_multiplier;
   flame_gale_pulse_t( special_effect_t& effect ) :
-    spell_t( "flame_gale_pulse", effect.player, effect.player -> find_spell( 230213 ) ),
+    proc_spell_t( "flame_gale_pulse", effect.player, effect.player -> find_spell( 230213 ) ),
     chest_multiplier( util::composite_karazhan_empower_multiplier( effect.player ) ),
     paired_multiplier( 1.0 )
   {
@@ -1040,6 +1040,7 @@ struct flame_gale_pulse_t : spell_t
     base_dd_min = base_dd_max = data().effectN( 2 ).average( effect.item ) * paired_multiplier * chest_multiplier;
   }
 };
+
 struct flame_gale_driver_t : spell_t
 {
   flame_gale_pulse_t* flame_pulse;
@@ -1047,7 +1048,7 @@ struct flame_gale_driver_t : spell_t
     spell_t( "flame_gale_driver", effect.player, effect.player -> find_spell( 230213 ) ),
     flame_pulse( new flame_gale_pulse_t( effect ) )
   {
-  background = true;
+    background = true;
   }
 
   virtual void impact( action_state_t* s )
@@ -1061,6 +1062,7 @@ struct flame_gale_driver_t : spell_t
         .action( flame_pulse ) );
   }
 };
+
 void item::toe_knees_promise( special_effect_t& effect )
 {
   effect.execute_action = new flame_gale_driver_t( effect );
