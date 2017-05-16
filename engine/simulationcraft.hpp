@@ -7411,6 +7411,7 @@ struct proc_action_t : public T_ACTION
     super( e.name(), e.player, e.trigger() )
   {
     this -> item = e.item;
+    this -> cooldown = e.player -> get_cooldown( e.cooldown_name() );
 
     __initialize();
 

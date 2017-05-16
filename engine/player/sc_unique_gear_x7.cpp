@@ -105,6 +105,7 @@ namespace item
   void spectral_thurible( special_effect_t&         );
   void tome_of_unraveling_sanity( special_effect_t& );
   void infernal_cinders( special_effect_t&          );
+  void vial_of_ceaseless_toxins( special_effect_t&  );
 
   // 7.2.0 Dungeon
   void dreadstone_of_endless_shadows( special_effect_t& );
@@ -1592,6 +1593,61 @@ void item::infernal_cinders( special_effect_t& effect )
   effect.execute_action = create_proc_action<infernal_cinders_t>( effect );
 
   new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Vial of Ceaseless Toxins =================================================
+
+struct ceaseless_toxin_t : public proc_spell_t
+{
+  ceaseless_toxin_t( const special_effect_t& effect ) : proc_spell_t( effect )
+  {
+    aoe = -1;
+  }
+
+  // Need to invalidate target list for every execute, because the ability picks a random target
+  void execute() override
+  {
+    target_cache.is_valid = false;
+
+    proc_spell_t::execute();
+  }
+
+  size_t available_targets( std::vector<player_t*>& tl ) const override
+  {
+    proc_spell_t::available_targets( tl );
+    // Remove targets randomly until thre's only one left.
+    while ( tl.size() > 1 )
+    {
+      size_t index = static_cast<size_t>( rng().range( 0.0, as<double>( tl.size() ) ) );
+      tl.erase( tl.begin() + index );
+    }
+
+    return tl.size();
+  }
+
+  void activate() override
+  {
+    proc_spell_t::activate();
+
+    range::for_each( sim -> actor_list, [ this ]( player_t* target ) {
+      if ( ! target -> is_enemy() )
+      {
+        return;
+      }
+
+      target -> callbacks_on_demise.push_back( [ this ]( player_t* actor ) {
+        if ( get_dot( actor ) -> is_ticking() )
+        {
+          cooldown -> adjust( -timespan_t::from_seconds( data().effectN( 3 ).base_value() ) );
+        }
+      } );
+    } );
+  }
+};
+
+void item::vial_of_ceaseless_toxins( special_effect_t& effect )
+{
+  effect.execute_action = create_proc_action<ceaseless_toxin_t>( effect );
 }
 
 // Windscar Whetstone =======================================================
@@ -4730,6 +4786,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 242605, item::spectral_thurible         );
   register_special_effect( 243941, item::tome_of_unraveling_sanity );
   register_special_effect( 242215, item::infernal_cinders          );
+  register_special_effect( 242497, item::vial_of_ceaseless_toxins  );
 
   /* Legion 7.2.0 Dungeon */
   register_special_effect( 238498, item::dreadstone_of_endless_shadows );
