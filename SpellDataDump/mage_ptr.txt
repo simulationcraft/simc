@@ -562,7 +562,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=5792)     : Apply Aura (6) | Unknown(112)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 911 | Target: Self (1)
-                   Affected Spells: Frostbolt (116), Cone of Cold (120), Frost Nova (122), Ice Lance (30455), Flurry (44614), Frost Bomb (113092), Comet Storm (153595), Comet Storm (153596), Ice Nova (157997), Blizzard (190356), Blizzard (190357), Glacial Spike (199786), Ray of Frost (205021), Ebonbolt (214634), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Ebonbolt (228599), Glacial Spike (228600), Frost Nova (235235), Glacial Eruption (242851)
+                   Affected Spells: Frostbolt (116), Cone of Cold (120), Frost Nova (122), Ice Lance (30455), Flurry (44614), Frost Bomb (113092), Comet Storm (153595), Comet Storm (153596), Ice Nova (157997), Blizzard (190356), Blizzard (190357), Glacial Spike (199786), Ray of Frost (205021), Ebonbolt (214634), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Ebonbolt (228599), Glacial Spike (228600), Comet Storm (228601), Frost Nova (235235), Glacial Eruption (242851)
 #2 (id=99824)    : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
 Description      : Multiplies the critical strike chance of your spells against frozen targets by 1.5, and adds an additional $?a231582[${$s2+$231582s1$}%][$s2%] critical strike chance.
@@ -1150,7 +1150,7 @@ Spell Level      : 20
 Range            : 40 yards
 Cast Time        : 3 seconds
 GCD              : 1.5 seconds
-Velocity         : 45 yards/sec
+Velocity         : 50 yards/sec
 Affecting spells : Icy Veins (12472 effect#2), Shatter (12982 effect#1), Ice Floes (108839 effect#1), Mage (137018 effect#2), Enhanced Pyrotechnics (157644 effect#1), Brain Freeze (190446 effect#1), Ice Form (198144 effect#2), Norgannon's Foresight (236380 effect#1)
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2541,7 +2541,7 @@ Effects          :
                    Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536)
 #4 (id=188985)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self (1)
-                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Dread Reflections (246466), Infernal Cinders (242218)
+                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218)
 #5 (id=191129)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 298 (Label) | Target: Self (1)
                    Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621)
@@ -2942,7 +2942,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=212871)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: At Enemy (53)
-Description      : Calls down a series of 7 icy comets on and around the target, each of which deals $153596s1 Frost damage to all enemies within 4 yards of its impact.
+Description      : Calls down a series of 7 icy comets on and around the target, each of which deals $153596s1 Frost damage to all enemies within $228601A1 yds of its impact.
 
 Name             : Comet Storm (id=153596) [Spell Family (3)] 
 Class            : Mage
@@ -5033,6 +5033,24 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(58) | Target: Enemy (6)
 Description      : $@spelldesc199786
 Tooltip          : Frozen in place.
+
+Name             : Comet Storm (id=228601) [Spell Family (3)] 
+Class            : Mage
+School           : Frost
+Range            : 100 yards
+Velocity         : 1 yards/sec
+Affecting spells : Shatter (12982 effect#1), Norgannon's Foresight (236380 effect#1)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ .xx..... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ....x... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Requires line of sight (186)
+Effects          :
+#1 (id=344291)   : Dummy (3)
+                   Base Value: 1 | Scaled Value: 1 | Radius: 0 - 6 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+Description      : $@spelldesc153595
 
 Name             : Arcane Barrage (Rank 2) (id=231564) [Spell Family (3), Passive] 
 Class            : Arcane Mage

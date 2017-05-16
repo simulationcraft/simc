@@ -968,6 +968,79 @@ bool dbc::is_school( school_e s, school_e s2 )
   return ( get_school_mask( s ) & mask2 ) == mask2;
 }
 
+std::vector<const spell_data_t*> dbc::class_passives( const player_t* p )
+{
+  struct entry_t
+  {
+    player_e         type;
+    specialization_e spec;
+    unsigned         spell_id;
+  };
+
+  static const std::vector<entry_t> ids {
+    { DEATH_KNIGHT, SPEC_NONE,              137005 },
+    { DEATH_KNIGHT, DEATH_KNIGHT_BLOOD,     137008 },
+    { DEATH_KNIGHT, DEATH_KNIGHT_UNHOLY,    137007 },
+    { DEATH_KNIGHT, DEATH_KNIGHT_FROST,     137006 },
+    { DEMON_HUNTER, SPEC_NONE,              212611 },
+    { DEMON_HUNTER, DEMON_HUNTER_HAVOC,     212612 },
+    { DEMON_HUNTER, DEMON_HUNTER_VENGEANCE, 212613 },
+    { DRUID,        SPEC_NONE,              137009 },
+    { DRUID,        DRUID_RESTORATION,      137012 },
+    { DRUID,        DRUID_FERAL,            137011 },
+    { DRUID,        DRUID_BALANCE,          137013 },
+    { DRUID,        DRUID_GUARDIAN,         137010 },
+    { HUNTER,       SPEC_NONE,              137014 },
+    { HUNTER,       HUNTER_SURVIVAL,        137017 },
+    { HUNTER,       HUNTER_MARKSMANSHIP,    137016 },
+    { HUNTER,       HUNTER_BEAST_MASTERY,   137015 },
+    { MAGE,         SPEC_NONE,              137018 },
+    { MAGE,         MAGE_ARCANE,            137021 },
+    { MAGE,         MAGE_FIRE,              137019 },
+    { MAGE,         MAGE_FROST,             137020 },
+    { MONK,         SPEC_NONE,              137022 },
+    { MONK,         MONK_BREWMASTER,        137023 },
+    { MONK,         MONK_MISTWEAVER,        137024 },
+    { MONK,         MONK_WINDWALKER,        137025 },
+    { PALADIN,      SPEC_NONE,              137026 },
+    { PALADIN,      PALADIN_HOLY,           137029 },
+    { PALADIN,      PALADIN_PROTECTION,     137028 },
+    { PALADIN,      PALADIN_RETRIBUTION,    137027 },
+    { PRIEST,       SPEC_NONE,              137030 },
+    { PRIEST,       PRIEST_SHADOW,          137033 },
+    { PRIEST,       PRIEST_HOLY,            137031 },
+    { PRIEST,       PRIEST_DISCIPLINE,      137032 },
+    { ROGUE,        SPEC_NONE,              137034 },
+    { ROGUE,        ROGUE_OUTLAW,           137036 },
+    { ROGUE,        ROGUE_SUBTLETY,         137035 },
+    { ROGUE,        ROGUE_ASSASSINATION,    137037 },
+    { SHAMAN,       SPEC_NONE,              137038 },
+    { SHAMAN,       SHAMAN_ELEMENTAL,       137040 },
+    { SHAMAN,       SHAMAN_ENHANCEMENT,     137041 },
+    { SHAMAN,       SHAMAN_RESTORATION,     137039 },
+    { WARLOCK,      SPEC_NONE,              137042 },
+    { WARLOCK,      WARLOCK_AFFLICTION,     137043 },
+    { WARLOCK,      WARLOCK_DEMONOLOGY,     137044 },
+    { WARLOCK,      WARLOCK_DESTRUCTION,    137046 },
+    { WARRIOR,      SPEC_NONE,              137047 },
+    { WARRIOR,      WARRIOR_ARMS,           137049 },
+    { WARRIOR,      WARRIOR_FURY,           137050 },
+    { WARRIOR,      WARRIOR_PROTECTION,     137048 },
+  };
+
+  std::vector<const spell_data_t*> spells;
+
+  range::for_each( ids, [ &spells, p ]( const entry_t& entry ) {
+
+    if ( entry.type != p -> type ) return;
+    if ( entry.spec != SPEC_NONE && entry.spec != p -> specialization() ) return;
+
+    spells.push_back( p -> find_spell( entry.spell_id ) );
+  } );
+
+  return spells;
+}
+
 uint32_t dbc_t::replaced_id( uint32_t id_spell ) const
 {
   auto it = replaced_ids.find( id_spell );

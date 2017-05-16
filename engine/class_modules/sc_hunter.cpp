@@ -159,6 +159,7 @@ public:
     buff_t* t20_2p_precision;
     buff_t* t20_4p_critical_aimed_damage;
     buff_t* pre_t20_4p_critical_aimed_damage;
+    buff_t* t20_4p_bestial_rage;
     buff_t* sentinels_sight;
     buff_t* butchers_bone_apron;
     buff_t* gyroscopic_stabilization;
@@ -1928,6 +1929,16 @@ struct kill_command_t: public hunter_pet_action_t < hunter_pet_t, attack_t >
 
   bool usable_moving() const override
   { return true; }
+
+  double action_multiplier() const override
+  {
+    double am = base_t::action_multiplier();
+
+    if ( o() -> buffs.t20_4p_bestial_rage -> up() )
+      am *= 1.0 + o() -> buffs.t20_4p_bestial_rage -> check_value();
+
+    return am;
+  }
 };
 
 struct main_pet_kill_command_t: public kill_command_t
@@ -2203,6 +2214,18 @@ struct dire_frenzy_t: public hunter_main_pet_attack_t
 
     if ( p() -> buffs.titans_frenzy -> up() && titans_frenzy )
       titans_frenzy -> schedule_execute();
+  }
+
+  double action_multiplier() const override
+  {
+    double am = base_t::action_multiplier();
+
+    // XXX: spell data indicates that it's also affected by T20 4pc
+    // XXX: check in-game
+    if ( o() -> buffs.t20_4p_bestial_rage -> up() )
+      am *= 1.0 + o() -> buffs.t20_4p_bestial_rage -> check_value();
+
+    return am;
   }
 };
 
@@ -2726,6 +2749,9 @@ struct multi_shot_t: public hunter_ranged_attack_t
     if ( p() -> buffs.bombardment -> up() )
       am *= 1.0 + p() -> buffs.bombardment -> data().effectN( 2 ).percent();
 
+    if ( p() -> buffs.t20_4p_bestial_rage -> up() )
+      am *= 1.0 + p() -> buffs.t20_4p_bestial_rage -> check_value();
+
     return am;
   }
 
@@ -2933,6 +2959,9 @@ struct cobra_shot_t: public hunter_ranged_attack_t
 
       am *= 1.0 + active_pets * p() -> talents.way_of_the_cobra -> effectN( 1 ).percent();
     }
+
+    if ( p() -> buffs.t20_4p_bestial_rage -> up() )
+      am *= 1.0 + p() -> buffs.t20_4p_bestial_rage -> check_value();
 
     return am;
   }
@@ -3868,6 +3897,16 @@ struct mongoose_bite_t: hunter_melee_attack_t
 
     return am;
   }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double tm = hunter_melee_attack_t::composite_target_multiplier( t );
+
+    if ( p() -> sets -> has_set_bonus( HUNTER_SURVIVAL, T20, B4 ) && td( t ) -> dots.lacerate -> is_ticking() )
+      tm *= 1.0 + p() -> sets -> set( HUNTER_SURVIVAL, T20, B4 ) -> effectN( 1 ).percent();
+
+    return tm;
+  }
 };
 
 // Flanking Strike =====================================================================
@@ -3983,6 +4022,14 @@ struct lacerate_t: public hunter_melee_attack_t
     tick_zero = false;
 
     base_td_multiplier *= 1.0 + p -> artifacts.lacerating_talons.percent();
+
+    if ( p -> sets -> has_set_bonus( HUNTER_SURVIVAL, T20, B2 ) )
+    {
+      auto t20_2p = p -> sets -> set( HUNTER_SURVIVAL, T20, B2 );
+      base_td_multiplier *= 1 + t20_2p -> effectN( 1 ).percent();
+      base_dd_multiplier *= 1 + t20_2p -> effectN( 2 ).percent();
+      dot_duration += t20_2p -> effectN( 3 ).time_value();
+    }
   }
 
   void tick( dot_t* d ) override
@@ -4649,6 +4696,13 @@ struct bestial_wrath_t: public hunter_spell_t
   {
     p() -> buffs.bestial_wrath  -> trigger();
     p() -> active.pet -> buffs.bestial_wrath -> trigger();
+
+    if ( p() -> artifacts.master_of_beasts.rank() )
+      p() -> pets.hati -> buffs.bestial_wrath -> trigger();
+
+    if ( p() -> sets -> has_set_bonus( HUNTER_BEAST_MASTERY, T20, B4 ) )
+      p() -> buffs.t20_4p_bestial_rage -> trigger();
+
     if ( p() -> sets -> has_set_bonus( HUNTER_BEAST_MASTERY, T19, B2 ) )
     {
       // 2017-02-06 hotfix: "With the Dire Frenzy talent, the Eagletalon Battlegear Beast Mastery 2-piece bonus should now grant your pet 10% increased damage for 15 seconds."
@@ -4665,8 +4719,6 @@ struct bestial_wrath_t: public hunter_spell_t
         }
       }
     }
-    if ( p() -> artifacts.master_of_beasts.rank() )
-      p() -> pets.hati -> buffs.bestial_wrath -> trigger();
 
     hunter_spell_t::execute();
   }
@@ -5906,6 +5958,10 @@ void hunter_t::create_buffs()
   buffs.t20_4p_critical_aimed_damage =
     buff_creator_t( this, "t20_4p_critical_aimed_damage", find_spell( 242243 ) )
       .default_value( find_spell( 242243 ) -> effectN( 1 ).percent() );
+
+  buffs.t20_4p_bestial_rage =
+    buff_creator_t( this, "t20_4p_bestial_rage", find_spell( 246116 ) )
+      .default_value( find_spell( 246116 ) -> effectN( 1 ).percent() );
 
   buffs.sephuzs_secret =
     haste_buff_creator_t( this, "sephuzs_secret", find_spell( 208052 ) )
