@@ -6302,6 +6302,24 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   regen_type = REGEN_DYNAMIC;
   regen_caches[ CACHE_MASTERY ] = true;
 
+  talent_points.register_validity_fn( [ this ] ( const spell_data_t* spell )
+  {
+    // Soul of the Archmage
+    if ( find_item( 151642 ) )
+    {
+      switch ( specialization() )
+      {
+        case MAGE_ARCANE:
+          return spell -> id() == 234302; // Temporal Flux
+        case MAGE_FIRE:
+          return spell -> id() == 205029; // Flame On
+        case MAGE_FROST:
+          return spell -> id() == 205030; // Frozen Touch
+      }
+    }
+
+    return false;
+  } );
 }
 
 
