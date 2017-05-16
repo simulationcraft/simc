@@ -104,6 +104,7 @@ namespace item
   void terror_from_below( special_effect_t&         );
   void spectral_thurible( special_effect_t&         );
   void tome_of_unraveling_sanity( special_effect_t& );
+  void infernal_cinders( special_effect_t&          );
 
   // 7.2.0 Dungeon
   void dreadstone_of_endless_shadows( special_effect_t& );
@@ -1562,6 +1563,35 @@ void item::tome_of_unraveling_sanity( special_effect_t& effect )
 
   effect.execute_action = create_proc_action<insidious_corruption_t>( effect, b );
   effect.execute_action -> hasted_ticks = true;
+}
+
+// Infernal Cinders =========================================================
+
+struct infernal_cinders_t : public proc_spell_t
+{
+  const spell_data_t* damage_multiplier;
+
+  infernal_cinders_t( const special_effect_t& effect ) :
+    proc_spell_t( effect ),
+    damage_multiplier( effect.player -> find_spell( 246654 ) )
+  { }
+
+  double action_multiplier() const override
+  {
+    double m = proc_spell_t::action_multiplier();
+
+    m *= 1.0 + damage_multiplier -> effectN( 1 ).percent() *
+               ( sim -> expansion_opts.infernal_cinders_users - 1);
+
+    return m;
+  }
+};
+
+void item::infernal_cinders( special_effect_t& effect )
+{
+  effect.execute_action = create_proc_action<infernal_cinders_t>( effect );
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 // Windscar Whetstone =======================================================
@@ -4699,6 +4729,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 242524, item::terror_from_below         );
   register_special_effect( 242605, item::spectral_thurible         );
   register_special_effect( 243941, item::tome_of_unraveling_sanity );
+  register_special_effect( 242215, item::infernal_cinders          );
 
   /* Legion 7.2.0 Dungeon */
   register_special_effect( 238498, item::dreadstone_of_endless_shadows );

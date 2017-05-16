@@ -1647,6 +1647,16 @@ struct sim_t : private sc_thread_t
     std::vector<uint64_t> target_health;
   } overrides;
 
+  // Expansion specific custom parameters. Defaults in the constructor.
+  struct expansion_opt_t
+  {
+    // Legion
+    int infernal_cinders_users;
+
+    expansion_opt_t() : infernal_cinders_users( 1 )
+    { }
+  } expansion_opts;
+
   // Auras and De-Buffs
   auto_dispose< std::vector<buff_t*> > buff_list;
 
