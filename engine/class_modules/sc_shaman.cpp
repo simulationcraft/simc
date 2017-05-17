@@ -1301,7 +1301,14 @@ public:
 
     if ( may_proc_stormbringer )
     {
-      may_proc_stormbringer = ab::weapon && ab::weapon -> slot == SLOT_MAIN_HAND;
+      if ( maybe_ptr( p() -> dbc.ptr ) )
+      {
+        may_proc_stormbringer = ab::weapon;
+      }
+      else
+      {
+        may_proc_stormbringer = ab::weapon && ab::weapon -> slot == SLOT_MAIN_HAND;
+      }
     }
 
     if ( may_proc_flametongue )
@@ -1431,6 +1438,14 @@ public:
     double base_chance = p() -> spec.stormbringer -> proc_chance() +
            p() -> cache.mastery() * p() -> mastery.enhanced_elements -> effectN( 3 ).mastery_value();
 
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+    {
+      if ( p() -> sets -> has_set_bonus( SHAMAN_ENHANCEMENT, T19, B4 ) )
+      {
+        base_chance = base_chance + p() -> sets -> set ( SHAMAN_ENHANCEMENT, T19, B4 ) -> effectN( 1 ).percent(); 
+      }
+    }
+
     return base_chance;
   }
 };
@@ -1506,11 +1521,14 @@ public:
 struct shaman_spell_t : public shaman_spell_base_t<spell_t>
 {
   action_t* overload;
+  public:
+    bool may_proc_stormbringer = false;
+    proc_t* proc_sb;
 
   shaman_spell_t( const std::string& token, shaman_t* p,
                   const spell_data_t* s = spell_data_t::nil(),
                   const std::string& options = std::string() ) :
-    base_t( token, p, s ), overload( nullptr )
+    base_t( token, p, s ), overload( nullptr ), proc_sb( nullptr )
   {
     parse_options( options );
 
@@ -1523,6 +1541,17 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     {
       base_crit += player -> sets -> set( SHAMAN_ELEMENTAL, T19, B2 ) -> effectN( 1 ).percent();
     }
+
+    may_proc_stormbringer = false;
+  }
+
+  bool init_finished() override
+  {
+    if ( may_proc_stormbringer )
+    {
+      proc_sb = player -> get_proc( std::string( "Stormbringer: " ) + full_name() );
+    }
+    return base_t::init_finished();
   }
 
   void execute() override
@@ -1598,6 +1627,32 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
 
       make_event<elemental_overload_event_t>( *sim, s );
     }
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    base_t::impact(state);
+    
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+    {
+      p() -> trigger_stormbringer( state );
+    }
+  }
+
+  virtual double stormbringer_proc_chance() const
+  {
+    double base_chance = p() -> spec.stormbringer -> proc_chance() +
+           p() -> cache.mastery() * p() -> mastery.enhanced_elements -> effectN( 3 ).mastery_value();
+
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+    {
+      if ( p() -> sets -> has_set_bonus( SHAMAN_ENHANCEMENT, T19, B4 ) )
+      {
+        base_chance = base_chance + p() -> sets -> set ( SHAMAN_ENHANCEMENT, T19, B4 ) -> effectN( 1 ).percent(); 
+      }
+    }
+
+    return base_chance;
   }
 };
 
@@ -2577,7 +2632,7 @@ struct flametongue_weapon_spell_t : public shaman_spell_t
     shaman_spell_t( n, player, player -> find_spell( 10444 ) )
   {
     may_crit = background = true;
-
+    
     if ( player -> specialization() == SHAMAN_ENHANCEMENT )
     {
       snapshot_flags          = STATE_AP;
@@ -2634,6 +2689,26 @@ struct windfury_attack_t : public shaman_attack_t
     may_proc_windfury = false;
 
     may_proc_maelstrom_weapon = true;
+  }
+
+  bool init_finished() override
+  {
+    auto ret = shaman_attack_t::init_finished();
+
+    if ( may_proc_stormbringer )
+    {
+      if ( weapon -> slot == SLOT_MAIN_HAND )
+      {
+        proc_sb = player -> get_proc( std::string( "Stormbringer: " ) + full_name() );
+      }
+
+      if ( weapon -> slot == SLOT_OFF_HAND )
+      {
+        proc_sb = player -> get_proc( std::string( "Stormbringer: " ) + full_name() + " Off-Hand" );
+      }
+    }
+
+    return ret;
   }
 
   double maelstrom_weapon_energize_amount( const action_state_t* source ) const override
@@ -3263,13 +3338,27 @@ struct lava_lash_t : public shaman_attack_t
   }
 
   double stormbringer_proc_chance() const override
-  { return p() -> sets -> set( SHAMAN_ENHANCEMENT, T19, B4 ) -> proc_chance(); }
+  { 
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+    {
+      return p() -> spec.stormbringer -> proc_chance();
+    }
+    
+    return p() -> sets -> set( SHAMAN_ENHANCEMENT, T19, B4 ) -> proc_chance();
+  }
 
   void init() override
   {
     shaman_attack_t::init();
 
-    may_proc_stormbringer = p() -> sets -> has_set_bonus( SHAMAN_ENHANCEMENT, T19, B4 );
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+    {
+      may_proc_stormbringer = true;
+    }
+    else
+    {
+      may_proc_stormbringer = p() -> sets -> has_set_bonus( SHAMAN_ENHANCEMENT, T19, B4 );
+    }
   }
 
   double cost() const override
@@ -3405,8 +3494,11 @@ struct stormstrike_base_t : public shaman_attack_t
         oh -> execute();
       }
 
-      //T20 4p stacks are gained after both MH and OH
-      p() -> buff.t20_4pc_enhancement -> trigger( 2 );
+      //PTR-24116: Changed to 1 stack per cast.
+      if ( ! stormflurry )
+      {
+        p() -> buff.t20_4pc_enhancement -> trigger( 1 );
+      }
 
       if ( p() -> action.storm_tempests )
       {
@@ -3593,6 +3685,12 @@ struct rockbiter_t : public shaman_spell_t
 
     return m;
   }
+  //TODO: If some spells are intended to proc stormbringer and becomes perm, move init and impact into spell base. Currently assumed to be bugged.
+  void init() override
+  {
+    shaman_spell_t::init();
+    may_proc_stormbringer = true;
+  }
 
   void execute() override
   {
@@ -3624,6 +3722,13 @@ struct flametongue_t : public shaman_spell_t
     add_child( player -> flametongue );
   }
 
+  //TODO: If some spells are intended to proc stormbringer and becomes perm, move init and impact into spell base. Currently assumed to be bugged.
+  void init() override
+  {
+    shaman_spell_t::init();
+    may_proc_stormbringer = true;
+  }
+  
   void execute() override
   {
     shaman_spell_t::execute();
@@ -3643,6 +3748,13 @@ struct frostbrand_t : public shaman_spell_t
 
     if ( player -> hailstorm )
       add_child( player -> hailstorm );
+  }
+
+  //TODO: If some spells are intended to proc stormbringer and becomes perm, move init and impact into spell base. Currently assumed to be bugged.
+  void init() override
+  {
+    shaman_spell_t::init();
+    may_proc_stormbringer = true;
   }
 
   void execute() override
@@ -3821,6 +3933,13 @@ struct windsong_t : public shaman_spell_t
   windsong_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "windsong", player, player -> talent.windsong, options_str )
   {
+  }
+
+  //TODO: If some spells are intended to proc stormbringer and becomes perm, move init and impact into spell base. Currently assumed to be bugged.
+  void init() override
+  {
+    shaman_spell_t::init();
+    may_proc_stormbringer = true;
   }
 
   void execute() override
@@ -6493,26 +6612,78 @@ bool shaman_t::active_elemental_pet() const
 
 void shaman_t::trigger_stormbringer( const action_state_t* state )
 {
-  assert( debug_cast< shaman_attack_t* >( state -> action ) != nullptr &&
-          "Stormbringer called on invalid action type" );
-  shaman_attack_t* attack = debug_cast< shaman_attack_t* >( state -> action );
-
-  if ( ! attack -> may_proc_stormbringer )
-  {
-    return;
-  }
-
+  //assert( debug_cast< shaman_attack_t* >( state -> action ) != nullptr &&
+  //        "Stormbringer called on invalid action type" );
+  
   if ( buff.ghost_wolf -> check() )
   {
     return;
   }
 
-  if ( rng().roll( attack -> stormbringer_proc_chance() ) )
+  if ( maybe_ptr( dbc.ptr ) ) //logic to split spell and attack types to proc stormbringer
   {
-    buff.stormbringer -> trigger( buff.stormbringer -> max_stack() );
-    cooldown.strike -> reset( true );
-    buff.wind_strikes -> trigger();
-    attack -> proc_sb -> occur();
+    shaman_attack_t* attack = nullptr;
+    shaman_spell_t* spell = nullptr;
+
+    if ( state -> action -> type == ACTION_ATTACK )
+    {
+      attack = debug_cast< shaman_attack_t* >( state -> action );
+    }
+    else if ( state -> action -> type == ACTION_SPELL )
+    {
+      spell = debug_cast< shaman_spell_t* >( state -> action );
+    }
+
+    if ( attack )
+    {
+      if ( attack -> may_proc_stormbringer )
+      {
+        if (rng().roll(attack -> stormbringer_proc_chance() ) )
+        {
+          buff.stormbringer -> trigger( buff.stormbringer->max_stack() );
+          cooldown.strike -> reset( true );
+          buff.wind_strikes -> trigger();
+          attack -> proc_sb -> occur();
+        }
+      }
+    }
+    if ( spell )
+    {
+      if ( spell -> may_proc_stormbringer )
+      {
+        if (rng().roll(spell -> stormbringer_proc_chance() ) )
+        {
+          buff.stormbringer -> trigger( buff.stormbringer -> max_stack() );
+          cooldown.strike -> reset( true );
+          buff.wind_strikes -> trigger();
+          spell -> proc_sb -> occur();
+        }
+      }
+    }
+  }
+  else
+  {
+    assert( debug_cast< shaman_attack_t* >( state -> action ) != nullptr &&
+          "Stormbringer called on invalid action type" );
+    shaman_attack_t* attack = debug_cast< shaman_attack_t* >( state -> action );
+
+    if ( ! attack -> may_proc_stormbringer )
+    {
+      return;
+    }
+
+    if ( buff.ghost_wolf -> check() )
+    {
+      return;
+    }
+
+    if ( rng().roll( attack -> stormbringer_proc_chance() ) )
+    {
+      buff.stormbringer -> trigger( buff.stormbringer -> max_stack() );
+      cooldown.strike -> reset( true );
+      buff.wind_strikes -> trigger();
+      attack -> proc_sb -> occur();
+    }
   }
 }
 
