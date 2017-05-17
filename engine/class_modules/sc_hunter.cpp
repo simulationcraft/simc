@@ -4650,24 +4650,16 @@ struct counter_shot_t: public interrupt_base_t
 // Beast Mastery spells
 //==============================
 
-// Dire Beast ===============================================================
+// Dire Spell ===============================================================
+// Base class for Dire Beast & Dire Frenzy
 
-struct dire_beast_t: public hunter_spell_t
+struct dire_spell_t: public hunter_spell_t
 {
-  dire_beast_t( hunter_t* player, const std::string& options_str ):
-    hunter_spell_t( "dire_beast", player, player -> specs.dire_beast )
+  dire_spell_t( const std::string& n, hunter_t* p, const spell_data_t* s ) :
+    hunter_spell_t( n, p, s )
   {
-    parse_options( options_str );
-
     harmful = may_hit = false;
     dot_duration = timespan_t::zero();
-  }
-
-  bool init_finished() override
-  {
-    add_pet_stats( p() -> pets.dire_beasts[ 0 ], { "dire_beast_melee", "stomp" } );
-
-    return hunter_spell_t::init_finished();
   }
 
   void execute() override
@@ -4700,6 +4692,29 @@ struct dire_beast_t: public hunter_spell_t
 
     if ( p() -> legendary.bm_shoulders -> ok() )
       p() -> buffs.the_mantle_of_command -> trigger();
+  }
+};
+
+// Dire Beast ===============================================================
+
+struct dire_beast_t: public dire_spell_t
+{
+  dire_beast_t( hunter_t* player, const std::string& options_str ):
+    dire_spell_t( "dire_beast", player, player -> specs.dire_beast )
+  {
+    parse_options( options_str );
+  }
+
+  bool init_finished() override
+  {
+    add_pet_stats( p() -> pets.dire_beasts[ 0 ], { "dire_beast_melee", "stomp" } );
+
+    return dire_spell_t::init_finished();
+  }
+
+  void execute() override
+  {
+    dire_spell_t::execute();
 
     pet_t* beast = nullptr;
     for( size_t i = 0; i < p() -> pets.dire_beasts.size(); i++ )
@@ -4745,7 +4760,7 @@ struct dire_beast_t: public hunter_spell_t
   {
     if ( p() -> talents.dire_frenzy -> ok() ) return false;
 
-    return hunter_spell_t::ready();
+    return dire_spell_t::ready();
   }
 };
 
@@ -4845,15 +4860,12 @@ struct kill_command_t: public hunter_spell_t
 
 // Dire Frenzy ==============================================================
 
-struct dire_frenzy_t: public hunter_spell_t
+struct dire_frenzy_t: public dire_spell_t
 {
   dire_frenzy_t( hunter_t* p, const std::string& options_str ):
-    hunter_spell_t( "dire_frenzy", p, p -> talents.dire_frenzy )
+    dire_spell_t( "dire_frenzy", p, p -> talents.dire_frenzy )
   {
     parse_options( options_str );
-
-    harmful = may_hit = false;
-    dot_duration = timespan_t::zero();
   }
 
   bool init_finished() override
@@ -4861,36 +4873,12 @@ struct dire_frenzy_t: public hunter_spell_t
     for (auto pet : p() -> pet_list)
       add_pet_stats( pet, { "dire_frenzy", "titans_frenzy" } );
 
-    return hunter_spell_t::init_finished();
+    return dire_spell_t::init_finished();
   }
 
   void execute() override
   {
-    hunter_spell_t::execute();
-
-    for ( buff_t* buff : p() -> buffs.dire_regen )
-    {
-      if ( !buff -> check() )
-      {
-        buff -> trigger();
-        break;
-      }
-    }
-
-    // Adjust BW cd
-    timespan_t t = timespan_t::from_seconds( p() -> specs.dire_beast -> effectN( 1 ).base_value() );
-    // FIXME: spell data still shows the new 4 set as the 2 set, it may be swapped out from under us sometime. For now check for 4 set and use 2 set values.
-    if ( p() -> sets -> has_set_bonus( HUNTER_BEAST_MASTERY, T19, B4 ) )
-      // t += timespan_t::from_seconds( p() -> sets -> set( HUNTER_BEAST_MASTERY, T19, B2 ) -> effectN( 1 ).base_value() );
-      // Not getting the right number from that for some reason.
-      t += timespan_t::from_seconds( p() -> dbc.effect( 312803 ) -> base_value() );
-    p() -> cooldowns.bestial_wrath -> adjust( -t );
-
-    if ( p() -> legendary.bm_feet -> ok() )
-      p() -> cooldowns.kill_command -> adjust( p() -> legendary.bm_feet -> effectN( 1 ).time_value() );
-
-    if ( p() -> legendary.bm_shoulders -> ok() )
-      p() -> buffs.the_mantle_of_command -> trigger();
+    dire_spell_t::execute();
 
     if ( p() -> active.pet )
     {
