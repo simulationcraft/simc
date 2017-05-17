@@ -362,6 +362,7 @@ struct rogue_t : public player_t
     gain_t* curse_of_the_dreadblades;
     gain_t* relentless_strikes;
     gain_t* shadow_satyrs_walk;
+    gain_t* t20_4pc_subtlety;
 
     // CP Gains
     gain_t* seal_fate;
@@ -440,6 +441,7 @@ struct rogue_t : public player_t
     const spell_data_t* insignia_of_ravenholdt;
     const spell_data_t* master_assassins_initiative;
     const spell_data_t* master_assassins_initiative_2;
+    const spell_data_t* t20_4pc_subtlety_effect; // Referenced in desc
   } spell;
 
   // Talents
@@ -2694,6 +2696,10 @@ struct backstab_t : public rogue_attack_t
       {
         p() -> trigger_combo_point_gain( p() -> buffs.sod_backstab -> value(), p() -> gains.sod_backstab, this );
         p() -> buffs.sod_backstab -> expire();
+        if ( p() -> sets -> has_set_bonus( ROGUE_SUBTLETY, T20, B4 ) )
+        {
+          p() -> resource_gain( RESOURCE_ENERGY, p() -> spell.t20_4pc_subtlety_effect -> effectN( 1 ).base_value(), p() -> gains.t20_4pc_subtlety );
+        }
       }
     }
   }
@@ -2986,6 +2992,10 @@ struct eviscerate_t : public rogue_attack_t
       if ( p() -> buffs.sod_eviscerate -> up() )
       {
         p() -> buffs.sod_eviscerate -> expire();
+        if ( p() -> sets -> has_set_bonus( ROGUE_SUBTLETY, T20, B4 ) )
+        {
+          p() -> resource_gain( RESOURCE_ENERGY, p() -> spell.t20_4pc_subtlety_effect -> effectN( 1 ).base_value(), p() -> gains.t20_4pc_subtlety );
+        }
       }
 
       if ( p() -> buffs.focused_shurikens -> up() )
@@ -3269,6 +3279,10 @@ struct gloomblade_t : public rogue_attack_t
       {
         p() -> trigger_combo_point_gain( p() -> buffs.sod_backstab -> value(), p() -> gains.sod_backstab, this );
         p() -> buffs.sod_backstab -> expire();
+        if ( p() -> sets -> has_set_bonus( ROGUE_SUBTLETY, T20, B4 ) )
+        {
+          p() -> resource_gain( RESOURCE_ENERGY, p() -> spell.t20_4pc_subtlety_effect -> effectN( 1 ).base_value(), p() -> gains.t20_4pc_subtlety );
+        }
       }
     }
   }
@@ -4425,6 +4439,10 @@ struct shadowstrike_t : public rogue_attack_t
       {
         p() -> trigger_combo_point_gain( p() -> buffs.sod_shadowstrike -> value(), p() -> gains.sod_shadowstrike, this );
         p() -> buffs.sod_shadowstrike -> expire();
+        if ( p() -> sets -> has_set_bonus( ROGUE_SUBTLETY, T20, B4 ) )
+        {
+          p() -> resource_gain( RESOURCE_ENERGY, p() -> spell.t20_4pc_subtlety_effect -> effectN( 1 ).base_value(), p() -> gains.t20_4pc_subtlety );
+        }
       }
     }
     else
@@ -4464,7 +4482,7 @@ struct shadowstrike_t : public rogue_attack_t
   {
     double m = rogue_attack_t::action_multiplier();
 
-    if ( maybe_ptr ( p() -> dbc.ptr ) && ! p() -> in_combat )
+    if ( maybe_ptr ( p() -> dbc.ptr ) &&  ( p() -> buffs.stealth -> up() || p() -> buffs.vanish -> up() ) )
     {
       m *= 1.0 + p() -> spec.shadowstrike_2 -> effectN( 2 ).percent();
     }
@@ -4491,7 +4509,7 @@ struct shadowstrike_t : public rogue_attack_t
       return 0;
     }
 
-    if ( maybe_ptr( p() -> dbc.ptr ) && ! p() -> in_combat )
+    if ( maybe_ptr( p() -> dbc.ptr ) && ( p() -> buffs.stealth -> up() || p() -> buffs.vanish -> up() ) )
     {
       return range + p() -> spec.shadowstrike_2 -> effectN( 1 ).base_value();
     }
@@ -6346,6 +6364,8 @@ struct stealth_like_buff_t : public buff_t
       if ( maybe_ptr( rogue -> dbc.ptr ) )
       {
         rogue -> buffs.master_of_shadows -> trigger();
+        rogue -> resource_gain( RESOURCE_ENERGY, rogue -> buffs.master_of_shadows -> data().effectN( 2 ).base_value(),
+                                rogue -> gains.master_of_shadows );
       }
       else
       {
@@ -7823,6 +7843,7 @@ void rogue_t::init_spells()
   spell.insignia_of_ravenholdt        = find_spell( 209041 );
   spell.master_assassins_initiative   = find_spell( 235022 );
   spell.master_assassins_initiative_2 = find_spell( 235027 );
+  spell.t20_4pc_subtlety_effect       = find_spell( 247895 );
 
   // Talents
   talent.deeper_stratagem   = find_talent_spell( "Deeper Stratagem" );
@@ -8031,6 +8052,7 @@ void rogue_t::init_gains()
   gains.t19_4pc_subtlety         = get_gain( "Tier 19 4PC Set Bonus"    );
   gains.t20_4pc_assassination    = get_gain( "Tier 20 4PC Set Bonus"    );
   gains.shadow_satyrs_walk       = get_gain( "Shadow Satyr's Walk"      );
+  gains.t20_4pc_subtlety         = get_gain( "Tier 20 4PC Set Bonus"    );
 }
 
 // rogue_t::init_procs ======================================================
@@ -8181,14 +8203,12 @@ void rogue_t::create_buffs()
                                 .default_value( find_spell( 245640 ) -> effectN( 1 ).percent() );
   buffs.shadow_blades         = new buffs::shadow_blades_t( this );
   buffs.shadow_dance          = new buffs::shadow_dance_t( this );
-  const int t20_4pc_cp        = sets -> has_set_bonus( ROGUE_SUBTLETY, T20, B4 ) ? sets -> set( ROGUE_SUBTLETY, T20, B4 ) -> effectN( 1 ).base_value() : 0;
-  const double t20_4pc_mod    = 1.0 + ( sets -> has_set_bonus( ROGUE_SUBTLETY, T20, B4 ) ? sets -> set( ROGUE_SUBTLETY, T20, B4 ) -> effectN( 2 ).percent() : 0.0 );
   buffs.sod_backstab          = buff_creator_t( this, "backstab", maybe_ptr( dbc.ptr ) ? find_spell( 245689 ) : spell_data_t::not_found() )
-                                .default_value( find_spell( 245689 ) -> effectN( 1 ).base_value() + t20_4pc_cp );
+                                .default_value( find_spell( 245689 ) -> effectN( 1 ).base_value() );
   buffs.sod_eviscerate        = buff_creator_t( this, "eviscerate", maybe_ptr( dbc.ptr ) ? find_spell( 245691 ) : spell_data_t::not_found() )
-                                .default_value( find_spell( 245691 ) -> effectN( 1 ).percent() * t20_4pc_mod );
+                                .default_value( find_spell( 245691 ) -> effectN( 1 ).percent() );
   buffs.sod_shadowstrike      = buff_creator_t( this, "shadowstrike", maybe_ptr( dbc.ptr ) ? find_spell( 227151 ) : spell_data_t::not_found() )
-                                .default_value( find_spell( 227151 ) -> effectN( 1 ).base_value() + t20_4pc_cp );
+                                .default_value( find_spell( 227151 ) -> effectN( 1 ).base_value() );
   buffs.symbols_of_death      = buff_creator_t( this, "symbols_of_death", maybe_ptr( dbc.ptr ) ? spell_data_t::not_found() : spec.symbols_of_death )
                                 .refresh_behavior( BUFF_REFRESH_PANDEMIC )
                                 .period( timespan_t::zero() )
