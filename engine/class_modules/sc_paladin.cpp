@@ -420,10 +420,10 @@ public:
     chain_of_thrayn = nullptr;
     ashes_to_dust = nullptr;
     justice_gaze = nullptr;
-  ferren_marcuss_strength = nullptr;
-  saruans_resolve = nullptr;
-  gift_of_the_golden_valkyr = nullptr;
-  heathcliffs_immortality = nullptr;
+    ferren_marcuss_strength = nullptr;
+    saruans_resolve = nullptr;
+    gift_of_the_golden_valkyr = nullptr;
+    heathcliffs_immortality = nullptr;
     sephuz = nullptr;
     active_beacon_of_light             = nullptr;
     active_enlightened_judgments       = nullptr;
@@ -446,6 +446,24 @@ public:
     cooldowns.blade_of_justice        = get_cooldown( "blade_of_justice" );
     cooldowns.blade_of_wrath          = get_cooldown( "blade_of_wrath" );
     cooldowns.divine_hammer           = get_cooldown( "divine_hammer" );
+
+    talent_points.register_validity_fn([this](const spell_data_t* spell)
+    {
+      // Soul of the Highlord
+      if (find_item(151644))
+      {
+        switch (specialization())
+        {
+        case PALADIN_RETRIBUTION:
+          return spell->id() == 223817; // Divine Purpose
+        case PALADIN_HOLY:
+          return spell->id() == 197646; // Divine Purpose
+        case PALADIN_PROTECTION:
+          return spell->id() == 152261; // Holy Shield
+        }
+      }
+      return false;
+    } );
 
     beacon_target = nullptr;
     regen_type = REGEN_DYNAMIC;

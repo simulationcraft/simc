@@ -163,6 +163,7 @@ public:
     buff_t* sentinels_sight;
     buff_t* butchers_bone_apron;
     buff_t* gyroscopic_stabilization;
+    buff_t* the_mantle_of_command;
 
     haste_buff_t* sephuzs_secret;
   } buffs;
@@ -466,6 +467,24 @@ public:
     regen_type = REGEN_DYNAMIC;
     regen_caches[ CACHE_HASTE ] = true;
     regen_caches[ CACHE_ATTACK_HASTE ] = true;
+
+    talent_points.register_validity_fn( [ this ] ( const spell_data_t* spell )
+    {
+      // Soul of the Huntmaster
+      if ( find_item( 151641 ) )
+      {
+        switch ( specialization() )
+        {
+          case HUNTER_BEAST_MASTERY:
+            return spell -> id() == 193532; // Dire Stable
+          case HUNTER_MARKSMANSHIP:
+            return spell -> id() == 194595; // Lock and Load
+          case HUNTER_SURVIVAL:
+            return spell -> id() == 87935; // Serpent Sting
+        }
+      }
+      return false;
+    } );
   }
 
   // Character Definition
@@ -2593,9 +2612,6 @@ struct auto_shot_t: public hunter_action_t < ranged_attack_t >
       double wild_call_chance = p() -> specs.wild_call -> proc_chance() +
                                 p() -> talents.one_with_the_pack -> effectN( 1 ).percent();
 
-      if ( maybe_ptr( p() -> dbc.ptr ) )
-        wild_call_chance += p() -> legendary.bm_shoulders -> effectN( 1 ).percent();
-
       if ( rng().roll( wild_call_chance ) )
       {
         p() -> cooldowns.dire_frenzy -> reset( true );
@@ -4384,6 +4400,9 @@ struct moc_t : public hunter_spell_t
       if ( p() -> mastery.master_of_beasts -> ok() )
           am *= 1.0 + p() -> cache.mastery_value();
 
+      if ( p() -> buffs.the_mantle_of_command -> up() )
+        am *= 1.0 + p() -> buffs.the_mantle_of_command -> data().effectN( 2 ).percent();
+
       return am;
     }
   };
@@ -4633,6 +4652,9 @@ struct dire_beast_t: public hunter_spell_t
     if ( p() -> legendary.bm_feet -> ok() )
       p() -> cooldowns.kill_command -> adjust( p() -> legendary.bm_feet -> effectN( 1 ).time_value() );
 
+    if ( maybe_ptr( p() -> dbc.ptr ) && p() -> legendary.bm_shoulders -> ok() )
+      p() -> buffs.the_mantle_of_command -> trigger();
+
     pet_t* beast = nullptr;
     for( size_t i = 0; i < p() -> pets.dire_beasts.size(); i++ )
     {
@@ -4831,6 +4853,9 @@ struct dire_frenzy_t: public hunter_spell_t
     if ( p() -> legendary.bm_feet -> ok() )
       p() -> cooldowns.kill_command -> adjust( p() -> legendary.bm_feet -> effectN( 1 ).time_value() );
 
+    if ( maybe_ptr( p() -> dbc.ptr ) && p() -> legendary.bm_shoulders -> ok() )
+      p() -> buffs.the_mantle_of_command -> trigger();
+
     if ( p() -> active.pet )
     {
       // Execute number of attacks listed in spell data
@@ -4948,7 +4973,6 @@ struct stampede_t: public hunter_spell_t
     school = SCHOOL_PHYSICAL;
 
     tick_action = new stampede_tick_t( p );
-
   }
 
   double action_multiplier() const override
@@ -4957,6 +4981,9 @@ struct stampede_t: public hunter_spell_t
 
     if ( p() -> mastery.master_of_beasts -> ok() )
       am *= 1.0 + p() -> cache.mastery_value();
+
+    if ( p() -> buffs.the_mantle_of_command -> up() )
+      am *= 1.0 + p() -> buffs.the_mantle_of_command -> data().effectN( 2 ).percent();
 
     return am;
   }
@@ -5946,6 +5973,10 @@ void hunter_t::create_buffs()
     buff_creator_t( this, "gyroscopic_stabilization", find_spell( 235712 ) )
       .default_value( find_spell( 235712 ) -> effectN( 2 ).percent() );
 
+  buffs.the_mantle_of_command =
+    buff_creator_t( this, "the_mantle_of_command", find_spell( 247993 ) )
+      .default_value( find_spell( 247993 ) -> effectN( 1 ).percent() );
+
   buffs.t20_2p_precision =
     buff_creator_t( this, "t20_2p_precision", find_spell( 246153 ) )
       .default_value( find_spell( 246153 ) -> effectN( 2 ).percent() );
@@ -6664,6 +6695,9 @@ double hunter_t::composite_player_pet_damage_multiplier( const action_state_t* s
 
   if ( maybe_ptr( dbc.ptr ) && specs.beast_mastery_hunter -> ok() )
     m *= 1.0 + specs.beast_mastery_hunter -> effectN( 3 ).percent();
+
+  if ( buffs.the_mantle_of_command -> check() )
+    m *= 1.0 + buffs.the_mantle_of_command -> check_value();
 
   return m;
 }
