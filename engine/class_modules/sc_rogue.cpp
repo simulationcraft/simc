@@ -128,6 +128,7 @@ struct rogue_td_t : public actor_target_data_t
     buff_t* surge_of_toxins;
     buff_t* kingsbane;
     buff_t* blood_of_the_assassinated;
+    buff_t* toxic_blade;
   } debuffs;
 
   rogue_td_t( player_t* target, rogue_t* source );
@@ -494,6 +495,7 @@ struct rogue_t : public player_t
 
     // Tier 6 - Level 90
     const spell_data_t* agonizing_poison;
+    const spell_data_t* toxic_blade;
     const spell_data_t* exsanguinate;
 
     const spell_data_t* cannonball_barrage;
@@ -1308,6 +1310,19 @@ struct rogue_attack_t : public melee_attack_t
     }
 
     return tt;
+  }
+
+  double composite_crit_chance() const override
+  {
+    double cc = melee_attack_t::composite_crit_chance();
+
+    rogue_td_t* tdata = td( target );
+    if ( tdata -> debuffs.toxic_blade -> up() && data().affected_by( tdata -> debuffs.toxic_blade -> data().effectN( 1 ) ) )
+    {
+      cc += tdata -> debuffs.toxic_blade -> check_value();
+    }
+
+    return cc;
   }
 
   virtual double composite_poison_flat_modifier( const action_state_t* ) const
@@ -4702,6 +4717,26 @@ struct symbols_of_death_t : public rogue_attack_t
   }
 };
 
+// Toxic Blade ==============================================================
+
+struct toxic_blade_t : public rogue_attack_t
+{
+  toxic_blade_t( rogue_t* p, const std::string& options_str ) :
+    rogue_attack_t( "toxic_blade", p, p -> talent.toxic_blade, options_str )
+  {
+    requires_weapon = WEAPON_DAGGER;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    rogue_attack_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+    {
+      td( s -> target ) -> debuffs.toxic_blade -> trigger();
+    }
+  }
+};
 
 // Vanish ===================================================================
 
@@ -5874,7 +5909,7 @@ void rogue_t::trigger_second_shuriken( const action_state_t* state )
   }
 }
 
-void rogue_t::trigger_sinister_circulation( const action_state_t* s )
+void rogue_t::trigger_sinister_circulation( const action_state_t* )
 {
   if ( ! artifact.sinister_circulation.rank() )
   {
@@ -6795,9 +6830,11 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
     .default_value( sot_debuff -> effectN( 1 ).base_value() * 0.002 )
     .trigger_spell( source -> artifact.surge_of_toxins );
   const spell_data_t* vd = source -> find_specialization_spell( "Vendetta" );
-  debuffs.vendetta =           buff_creator_t( *this, "vendetta", vd )
-                               .cd( timespan_t::zero() )
-                               .default_value( vd -> effectN( 1 ).percent() );
+  debuffs.vendetta = buff_creator_t( *this, "vendetta", vd )
+    .cd( timespan_t::zero() )
+    .default_value( vd -> effectN( 1 ).percent() );
+  debuffs.toxic_blade = buff_creator_t( *this, "toxic_blade", source -> talent.toxic_blade -> effectN( 4 ).trigger() )
+    .default_value( source -> talent.toxic_blade -> effectN( 4 ).trigger() -> effectN( 1 ).percent() );
 
   debuffs.ghostly_strike = buff_creator_t( *this, "ghostly_strike", source -> talent.ghostly_strike )
     .default_value( source -> talent.ghostly_strike -> effectN( 5 ).percent() );
@@ -7500,6 +7537,7 @@ action_t* rogue_t::create_action( const std::string& name,
   if ( name == "sprint"              ) return new sprint_t             ( this, options_str );
   if ( name == "stealth"             ) return new stealth_t            ( this, options_str );
   if ( name == "symbols_of_death"    ) return new symbols_of_death_t   ( this, options_str );
+  if ( name == "toxic_blade"         ) return new toxic_blade_t        ( this, options_str );
   if ( name == "vanish"              ) return new vanish_t             ( this, options_str );
   if ( name == "vendetta"            ) return new vendetta_t           ( this, options_str );
   if ( name == "cancel_autoattack"   ) return new cancel_autoattack_t  ( this, options_str );
@@ -7867,6 +7905,7 @@ void rogue_t::init_spells()
   talent.internal_bleeding  = find_talent_spell( "Internal Bleeding" );
 
   talent.agonizing_poison   = find_talent_spell( "Agonizing Poison" );
+  talent.toxic_blade        = find_talent_spell( "Toxic Blade" );
   talent.exsanguinate       = find_talent_spell( "Exsanguinate" );
 
   talent.venom_rush         = find_talent_spell( "Venom Rush" );
