@@ -6625,25 +6625,48 @@ struct roll_the_bones_t : public buff_t
 
   std::vector<buff_t*> random_roll()
   {
-    std::array<unsigned, 6> rolls = { { 0, 0, 0, 0, 0, 0 } };
-    size_t n_rolls = rogue -> dbc.ptr ? 5 : 6;
-
-    for ( size_t i = 0; i < n_rolls; ++i )
-    {
-      rolls[ rng().range( 0, buffs.size() ) ]++;
-    }
-
-    unsigned largest_group = *std::max_element( rolls.begin(), rolls.end() );
-
     std::vector<buff_t*> rolled;
-    for ( size_t i = 0; i < buffs.size(); ++i )
+
+    if ( maybe_ptr( rogue -> dbc.ptr ) )
     {
-      if ( rolls[ i ] != largest_group )
+      // RtB uses hardcoded probabilities since 7.2.5
+      // As of 2017-05-18 assume these:
+      // -- The current proposal is to reduce the number of dice being rolled from 6 to 5
+      // -- and to hand-set probabilities to something like 79% chance for 1-buff, 20% chance
+      // -- for 2-buffs, and 1% chance for 5-buffs (yahtzee), bringing the expected value of
+      // -- a roll down to 1.24 buffs (plus additional value for synergies between buffs).
+      // Source: https://us.battle.net/forums/en/wow/topic/20753815486?page=2#post-21
+      unsigned num_roll = rng().range( 0, 100 );
+      size_t num_buffs = num_roll < 79 ? 1 : ( num_roll < 99 ? 2 : 5 );
+      std::list<unsigned> pool = { 0, 1, 2, 3, 4, 5 };
+      for ( size_t i = 0; i < num_buffs; i++ )
       {
-        continue;
+        unsigned buff = rng().range( 0, pool.size() );
+        rolled.push_back( buffs[ buff ] );
+        pool.remove( buff );
+      }
+    }
+    else
+    {
+      std::array<unsigned, 6> rolls = { { 0, 0, 0, 0, 0, 0 } };
+      size_t n_rolls = 6;
+
+      for ( size_t i = 0; i < n_rolls; ++i )
+      {
+        rolls[ rng().range( 0, buffs.size() ) ]++;
       }
 
-      rolled.push_back( buffs[ i ] );
+      unsigned largest_group = *std::max_element( rolls.begin(), rolls.end() );
+
+      for ( size_t i = 0; i < buffs.size(); ++i )
+      {
+        if ( rolls[ i ] != largest_group )
+        {
+          continue;
+        }
+
+        rolled.push_back( buffs[ i ] );
+      }
     }
 
     return rolled;
