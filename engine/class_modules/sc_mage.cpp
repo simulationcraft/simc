@@ -213,6 +213,9 @@ public:
   // State switches for rotation selection
   state_switch_t burn_phase;
 
+  // Ground AoE tracking
+  std::map<std::string, timespan_t> ground_aoe_expiration;
+
   // Miscellaneous
   double distance_from_rune,
          global_cinder_count;
@@ -3107,9 +3110,13 @@ struct blizzard_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::execute();
 
+    timespan_t ground_aoe_duration = data().duration() * player -> cache.spell_speed();
+    p() -> ground_aoe_expiration[ name_str ]
+      = sim -> current_time() + ground_aoe_duration;
+
     make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
       .target( execute_state -> target )
-      .duration( data().duration() * player -> cache.spell_speed() )
+      .duration( ground_aoe_duration )
       .action( blizzard_shard )
       .hasted( ground_aoe_params_t::SPELL_SPEED ) );
 
@@ -3313,10 +3320,15 @@ struct comet_storm_t : public frost_mage_spell_t
   void impact( action_state_t* s ) override
   {
     frost_mage_spell_t::impact( s );
+
+    timespan_t ground_aoe_duration = timespan_t::from_seconds( 1.2 );
+    p() -> ground_aoe_expiration[ name_str ]
+      = sim -> current_time() + ground_aoe_duration;
+
     make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
       .pulse_time( timespan_t::from_seconds( 0.2 ) )
       .target( s -> target )
-      .duration( timespan_t::from_seconds( 1.2 ) )
+      .duration( ground_aoe_duration )
       .action( projectile ), true );
   }
 };
@@ -3756,10 +3768,13 @@ struct flamestrike_t : public fire_mage_spell_t
     if ( state -> chain_target == 0 && p() -> talents.flame_patch -> ok() )
     {
       // DurationID: 205470. 8s
+      timespan_t flame_patch_duration = timespan_t::from_seconds( 8.0 );
+      p() -> ground_aoe_expiration[ flame_patch -> name_str ]
+        = sim -> current_time() + flame_patch_duration;
+
       make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
-        .pulse_time( timespan_t::from_seconds( 1.0 ) )
         .target( state -> target )
-        .duration( timespan_t::from_seconds( 8.0 ) )
+        .duration( flame_patch_duration )
         .action( flame_patch )
         .hasted( ground_aoe_params_t::SPELL_SPEED ) );
     }
@@ -4230,21 +4245,25 @@ struct frozen_orb_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::impact( s );
 
+    timespan_t ground_aoe_duration = timespan_t::from_seconds( 10.0 );
+    p() -> ground_aoe_expiration[ name_str ]
+      = sim -> current_time() + ground_aoe_duration;
+
     if ( result_is_hit( s -> result ) )
     {
       trigger_fof( fof_source_id, 1.0 );
       make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
         .pulse_time( timespan_t::from_seconds( 0.5 ) )
         .target( s -> target )
-        .duration( timespan_t::from_seconds( 10.0 ) )
+        .duration( ground_aoe_duration )
         .action( frozen_orb_bolt ) );
     }
     if ( ice_time )
     {
       make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
-        .pulse_time( timespan_t::from_seconds( 10.0 ) )
+        .pulse_time( ground_aoe_duration )
         .target( s -> target )
-        .duration( timespan_t::from_seconds( 10.0 ) )
+        .duration( ground_aoe_duration )
         .action( ice_time_nova ) );
     }
   }
@@ -7703,6 +7722,7 @@ void mage_t::reset()
   }
 
   last_bomb_target = nullptr;
+  ground_aoe_expiration.clear();
   burn_phase.reset();
 }
 
@@ -7917,6 +7937,65 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
     };
 
     return new icicles_expr_t( *this );
+  }
+
+  std::vector<std::string> splits = util::string_split( name_str, "." );
+  if ( splits.size() == 3 && util::str_compare_ci( splits[0], "ground_aoe" ) )
+  {
+    struct ground_aoe_expr_t : public mage_expr_t
+    {
+      std::string aoe_type;
+
+      enum operation_t
+      {
+        OP_REMAINS,
+        OP_INVALID
+      } operation;
+
+      ground_aoe_expr_t( mage_t& m, std::string name_str, std::string aoe, std::string op ) :
+        mage_expr_t( name_str, m ),
+        aoe_type( aoe ),
+        operation( OP_INVALID )
+      {
+        if ( util::str_compare_ci( op, "remains" ) )
+        {
+          operation = OP_REMAINS;
+        }
+
+        util::tolower( aoe_type );
+      }
+
+      double evaluate() override
+      {
+        timespan_t expiration;
+
+        auto it = mage.ground_aoe_expiration.find( aoe_type );
+        if ( it != mage.ground_aoe_expiration.end() )
+        {
+          expiration = it -> second;
+        }
+
+        switch ( operation )
+        {
+          case OP_REMAINS:
+            return std::max( 0.0, ( expiration - mage.sim -> current_time() ).total_seconds() );
+          default:
+            // Shouldn't happen.
+            return 0.0;
+        }
+      }
+    };
+
+    ground_aoe_expr_t* e = new ground_aoe_expr_t( *this, name_str, splits[1], splits[2] );
+    if ( e -> operation == ground_aoe_expr_t::OP_INVALID )
+    {
+      sim -> errorf( "Player %s ground_aoe expression: unknown operation '%s'", name(), splits[2] );
+      delete e;
+    }
+    else
+    {
+      return e;
+    }
   }
 
   return player_t::create_expression( a, name_str );
