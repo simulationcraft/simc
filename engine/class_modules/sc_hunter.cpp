@@ -6240,7 +6240,7 @@ void hunter_t::apl_bm()
   default_list -> add_talent( this, "Volley", "toggle=on" );
 
   // In-combat potion
-  default_list -> add_action( "potion,if=buff.bestial_wrath.remains|!cooldown.beastial_wrath.remains" );
+  default_list -> add_action( "potion,if=buff.bestial_wrath.remains|!cooldown.bestial_wrath.remains" );
 
   // Generic APL
   default_list -> add_talent( this, "A Murder of Crows" );
