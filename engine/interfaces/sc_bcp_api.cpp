@@ -450,6 +450,8 @@ player_t* parse_player( sim_t*             sim,
                    ( std::istreambuf_iterator<char>()    ) );
   }
 
+  profile.Parse< 0 >(result.c_str());
+
   if ( profile.HasParseError() )
   {
     sim -> errorf( "BCP API: Unable to download player from '%s', JSON parse error\n", player.cleanurl.c_str() );
@@ -561,7 +563,7 @@ player_t* parse_player( sim_t*             sim,
   if ( ! p -> server_str.empty() )
     p -> armory_extensions( p -> region_str, p -> server_str, player.name, caching );
 
-  return p;
+   return p;
 }
 
 // download_item_data =======================================================
