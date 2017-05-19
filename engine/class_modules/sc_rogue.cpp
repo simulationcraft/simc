@@ -345,6 +345,7 @@ struct rogue_t : public player_t
     cooldown_t* weaponmaster;
     cooldown_t* vendetta;
     cooldown_t* shadow_nova;
+    cooldown_t* toxic_blade;
   } cooldowns;
 
   // Gains
@@ -704,6 +705,7 @@ struct rogue_t : public player_t
     cooldowns.weaponmaster         = get_cooldown( "weaponmaster"         );
     cooldowns.vendetta             = get_cooldown( "vendetta"             );
     cooldowns.shadow_nova          = get_cooldown( "shadow_nova"          );
+    cooldowns.toxic_blade          = get_cooldown( "toxic_blade"          );
 
     regen_type = REGEN_DYNAMIC;
     regen_caches[CACHE_HASTE] = true;
@@ -7273,6 +7275,9 @@ void rogue_t::init_action_list()
     maintain -> add_action( "call_action_list,name=kb,if=combo_points.deficit>=1+(mantle_duration>=gcd.remains+0.2)" );
     maintain -> add_action( "pool_resource,for_next=1" );
     maintain -> add_action( this, "Garrote", "cycle_targets=1,if=(!talent.subterfuge.enabled|!(cooldown.vanish.up&cooldown.vendetta.remains<=4))&combo_points.deficit>=1&refreshable&(pmultiplier<=1|remains<=tick_time)&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>4" );
+    maintain -> add_action( "pool_resource,for_next=1" );
+    // maintain -> add_talent( this, "Toxic Blade", "if=combo_points.deficit>=1+(mantle_duration>=gcd.remains+0.2)&dot.kingsbane.remains<11&dot.rupture.remains>8" );
+    maintain -> add_action( "toxic_blade,if=combo_points.deficit>=1+(mantle_duration>=gcd.remains+0.2)&dot.kingsbane.remains<11&dot.rupture.remains>8" );
   }
   else if ( specialization() == ROGUE_OUTLAW )
   {
