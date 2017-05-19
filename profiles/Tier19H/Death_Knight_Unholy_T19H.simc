@@ -39,6 +39,7 @@ actions+=/use_items
 actions+=/use_item,name=ring_of_collapsing_futures,if=(buff.temptation.stack=0&target.time_to_die>60)|target.time_to_die<60
 actions+=/potion,if=buff.unholy_strength.react
 actions+=/outbreak,target_if=!dot.virulent_plague.ticking
+actions+=/army_of_the_dead
 actions+=/dark_transformation,if=equipped.137075&cooldown.dark_arbiter.remains>165
 actions+=/dark_transformation,if=equipped.137075&!talent.shadow_infusion.enabled&cooldown.dark_arbiter.remains>55
 actions+=/dark_transformation,if=equipped.137075&talent.shadow_infusion.enabled&cooldown.dark_arbiter.remains>35

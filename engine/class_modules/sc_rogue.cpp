@@ -128,6 +128,7 @@ struct rogue_td_t : public actor_target_data_t
     buff_t* surge_of_toxins;
     buff_t* kingsbane;
     buff_t* blood_of_the_assassinated;
+    buff_t* toxic_blade;
   } debuffs;
 
   rogue_td_t( player_t* target, rogue_t* source );
@@ -344,6 +345,7 @@ struct rogue_t : public player_t
     cooldown_t* weaponmaster;
     cooldown_t* vendetta;
     cooldown_t* shadow_nova;
+    cooldown_t* toxic_blade;
   } cooldowns;
 
   // Gains
@@ -362,6 +364,7 @@ struct rogue_t : public player_t
     gain_t* curse_of_the_dreadblades;
     gain_t* relentless_strikes;
     gain_t* shadow_satyrs_walk;
+    gain_t* t20_4pc_subtlety;
 
     // CP Gains
     gain_t* seal_fate;
@@ -440,6 +443,7 @@ struct rogue_t : public player_t
     const spell_data_t* insignia_of_ravenholdt;
     const spell_data_t* master_assassins_initiative;
     const spell_data_t* master_assassins_initiative_2;
+    const spell_data_t* t20_4pc_subtlety_effect; // Referenced in desc
   } spell;
 
   // Talents
@@ -492,6 +496,7 @@ struct rogue_t : public player_t
 
     // Tier 6 - Level 90
     const spell_data_t* agonizing_poison;
+    const spell_data_t* toxic_blade;
     const spell_data_t* exsanguinate;
 
     const spell_data_t* cannonball_barrage;
@@ -700,6 +705,7 @@ struct rogue_t : public player_t
     cooldowns.weaponmaster         = get_cooldown( "weaponmaster"         );
     cooldowns.vendetta             = get_cooldown( "vendetta"             );
     cooldowns.shadow_nova          = get_cooldown( "shadow_nova"          );
+    cooldowns.toxic_blade          = get_cooldown( "toxic_blade"          );
 
     regen_type = REGEN_DYNAMIC;
     regen_caches[CACHE_HASTE] = true;
@@ -1306,6 +1312,19 @@ struct rogue_attack_t : public melee_attack_t
     }
 
     return tt;
+  }
+
+  double composite_crit_chance() const override
+  {
+    double cc = melee_attack_t::composite_crit_chance();
+
+    rogue_td_t* tdata = td( target );
+    if ( tdata -> debuffs.toxic_blade -> up() && data().affected_by( tdata -> debuffs.toxic_blade -> data().effectN( 1 ) ) )
+    {
+      cc += tdata -> debuffs.toxic_blade -> check_value();
+    }
+
+    return cc;
   }
 
   virtual double composite_poison_flat_modifier( const action_state_t* ) const
@@ -2694,6 +2713,10 @@ struct backstab_t : public rogue_attack_t
       {
         p() -> trigger_combo_point_gain( p() -> buffs.sod_backstab -> value(), p() -> gains.sod_backstab, this );
         p() -> buffs.sod_backstab -> expire();
+        if ( p() -> sets -> has_set_bonus( ROGUE_SUBTLETY, T20, B4 ) )
+        {
+          p() -> resource_gain( RESOURCE_ENERGY, p() -> spell.t20_4pc_subtlety_effect -> effectN( 1 ).base_value(), p() -> gains.t20_4pc_subtlety );
+        }
       }
     }
   }
@@ -2986,6 +3009,10 @@ struct eviscerate_t : public rogue_attack_t
       if ( p() -> buffs.sod_eviscerate -> up() )
       {
         p() -> buffs.sod_eviscerate -> expire();
+        if ( p() -> sets -> has_set_bonus( ROGUE_SUBTLETY, T20, B4 ) )
+        {
+          p() -> resource_gain( RESOURCE_ENERGY, p() -> spell.t20_4pc_subtlety_effect -> effectN( 1 ).base_value(), p() -> gains.t20_4pc_subtlety );
+        }
       }
 
       if ( p() -> buffs.focused_shurikens -> up() )
@@ -3269,6 +3296,10 @@ struct gloomblade_t : public rogue_attack_t
       {
         p() -> trigger_combo_point_gain( p() -> buffs.sod_backstab -> value(), p() -> gains.sod_backstab, this );
         p() -> buffs.sod_backstab -> expire();
+        if ( p() -> sets -> has_set_bonus( ROGUE_SUBTLETY, T20, B4 ) )
+        {
+          p() -> resource_gain( RESOURCE_ENERGY, p() -> spell.t20_4pc_subtlety_effect -> effectN( 1 ).base_value(), p() -> gains.t20_4pc_subtlety );
+        }
       }
     }
   }
@@ -4425,6 +4456,10 @@ struct shadowstrike_t : public rogue_attack_t
       {
         p() -> trigger_combo_point_gain( p() -> buffs.sod_shadowstrike -> value(), p() -> gains.sod_shadowstrike, this );
         p() -> buffs.sod_shadowstrike -> expire();
+        if ( p() -> sets -> has_set_bonus( ROGUE_SUBTLETY, T20, B4 ) )
+        {
+          p() -> resource_gain( RESOURCE_ENERGY, p() -> spell.t20_4pc_subtlety_effect -> effectN( 1 ).base_value(), p() -> gains.t20_4pc_subtlety );
+        }
       }
     }
     else
@@ -4464,7 +4499,7 @@ struct shadowstrike_t : public rogue_attack_t
   {
     double m = rogue_attack_t::action_multiplier();
 
-    if ( maybe_ptr ( p() -> dbc.ptr ) && ! p() -> in_combat )
+    if ( maybe_ptr ( p() -> dbc.ptr ) &&  ( p() -> buffs.stealth -> up() || p() -> buffs.vanish -> up() ) )
     {
       m *= 1.0 + p() -> spec.shadowstrike_2 -> effectN( 2 ).percent();
     }
@@ -4491,7 +4526,7 @@ struct shadowstrike_t : public rogue_attack_t
       return 0;
     }
 
-    if ( maybe_ptr( p() -> dbc.ptr ) && ! p() -> in_combat )
+    if ( maybe_ptr( p() -> dbc.ptr ) && ( p() -> buffs.stealth -> up() || p() -> buffs.vanish -> up() ) )
     {
       return range + p() -> spec.shadowstrike_2 -> effectN( 1 ).base_value();
     }
@@ -4684,6 +4719,26 @@ struct symbols_of_death_t : public rogue_attack_t
   }
 };
 
+// Toxic Blade ==============================================================
+
+struct toxic_blade_t : public rogue_attack_t
+{
+  toxic_blade_t( rogue_t* p, const std::string& options_str ) :
+    rogue_attack_t( "toxic_blade", p, p -> talent.toxic_blade, options_str )
+  {
+    requires_weapon = WEAPON_DAGGER;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    rogue_attack_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+    {
+      td( s -> target ) -> debuffs.toxic_blade -> trigger();
+    }
+  }
+};
 
 // Vanish ===================================================================
 
@@ -5856,7 +5911,7 @@ void rogue_t::trigger_second_shuriken( const action_state_t* state )
   }
 }
 
-void rogue_t::trigger_sinister_circulation( const action_state_t* s )
+void rogue_t::trigger_sinister_circulation( const action_state_t* )
 {
   if ( ! artifact.sinister_circulation.rank() )
   {
@@ -6346,6 +6401,8 @@ struct stealth_like_buff_t : public buff_t
       if ( maybe_ptr( rogue -> dbc.ptr ) )
       {
         rogue -> buffs.master_of_shadows -> trigger();
+        rogue -> resource_gain( RESOURCE_ENERGY, rogue -> buffs.master_of_shadows -> data().effectN( 2 ).base_value(),
+                                rogue -> gains.master_of_shadows );
       }
       else
       {
@@ -6570,25 +6627,48 @@ struct roll_the_bones_t : public buff_t
 
   std::vector<buff_t*> random_roll()
   {
-    std::array<unsigned, 6> rolls = { { 0, 0, 0, 0, 0, 0 } };
-    size_t n_rolls = rogue -> dbc.ptr ? 5 : 6;
-
-    for ( size_t i = 0; i < n_rolls; ++i )
-    {
-      rolls[ rng().range( 0, buffs.size() ) ]++;
-    }
-
-    unsigned largest_group = *std::max_element( rolls.begin(), rolls.end() );
-
     std::vector<buff_t*> rolled;
-    for ( size_t i = 0; i < buffs.size(); ++i )
+
+    if ( maybe_ptr( rogue -> dbc.ptr ) )
     {
-      if ( rolls[ i ] != largest_group )
+      // RtB uses hardcoded probabilities since 7.2.5
+      // As of 2017-05-18 assume these:
+      // -- The current proposal is to reduce the number of dice being rolled from 6 to 5
+      // -- and to hand-set probabilities to something like 79% chance for 1-buff, 20% chance
+      // -- for 2-buffs, and 1% chance for 5-buffs (yahtzee), bringing the expected value of
+      // -- a roll down to 1.24 buffs (plus additional value for synergies between buffs).
+      // Source: https://us.battle.net/forums/en/wow/topic/20753815486?page=2#post-21
+      unsigned num_roll = rng().range( 0, 100 );
+      size_t num_buffs = num_roll < 79 ? 1 : ( num_roll < 99 ? 2 : 5 );
+      std::list<unsigned> pool = { 0, 1, 2, 3, 4, 5 };
+      for ( size_t i = 0; i < num_buffs; i++ )
       {
-        continue;
+        unsigned buff = rng().range( 0, pool.size() );
+        rolled.push_back( buffs[ buff ] );
+        pool.remove( buff );
+      }
+    }
+    else
+    {
+      std::array<unsigned, 6> rolls = { { 0, 0, 0, 0, 0, 0 } };
+      size_t n_rolls = 6;
+
+      for ( size_t i = 0; i < n_rolls; ++i )
+      {
+        rolls[ rng().range( 0, buffs.size() ) ]++;
       }
 
-      rolled.push_back( buffs[ i ] );
+      unsigned largest_group = *std::max_element( rolls.begin(), rolls.end() );
+
+      for ( size_t i = 0; i < buffs.size(); ++i )
+      {
+        if ( rolls[ i ] != largest_group )
+        {
+          continue;
+        }
+
+        rolled.push_back( buffs[ i ] );
+      }
     }
 
     return rolled;
@@ -6775,9 +6855,11 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
     .default_value( sot_debuff -> effectN( 1 ).base_value() * 0.002 )
     .trigger_spell( source -> artifact.surge_of_toxins );
   const spell_data_t* vd = source -> find_specialization_spell( "Vendetta" );
-  debuffs.vendetta =           buff_creator_t( *this, "vendetta", vd )
-                               .cd( timespan_t::zero() )
-                               .default_value( vd -> effectN( 1 ).percent() );
+  debuffs.vendetta = buff_creator_t( *this, "vendetta", vd )
+    .cd( timespan_t::zero() )
+    .default_value( vd -> effectN( 1 ).percent() );
+  debuffs.toxic_blade = buff_creator_t( *this, "toxic_blade", source -> talent.toxic_blade -> effectN( 4 ).trigger() )
+    .default_value( source -> talent.toxic_blade -> effectN( 4 ).trigger() -> effectN( 1 ).percent() );
 
   debuffs.ghostly_strike = buff_creator_t( *this, "ghostly_strike", source -> talent.ghostly_strike )
     .default_value( source -> talent.ghostly_strike -> effectN( 5 ).percent() );
@@ -7124,9 +7206,6 @@ void rogue_t::init_action_list()
 
   precombat -> add_talent( this, "Marked for Death", "if=raid_event.adds.in>40" );
 
-  // Vigor variable to check for Vigor effect from talent or legendary ring
-  precombat -> add_action( "variable,name=vigor_active,value=talent.vigor.enabled|equipped.soul_of_the_shadowblade" );
-
   if ( specialization() == ROGUE_ASSASSINATION )
   {
     def -> add_action( "variable,name=energy_regen_combined,value=energy.regen+poisoned_bleeds*(7+talent.venom_rush.enabled*3)%2" );
@@ -7196,6 +7275,9 @@ void rogue_t::init_action_list()
     maintain -> add_action( "call_action_list,name=kb,if=combo_points.deficit>=1+(mantle_duration>=gcd.remains+0.2)" );
     maintain -> add_action( "pool_resource,for_next=1" );
     maintain -> add_action( this, "Garrote", "cycle_targets=1,if=(!talent.subterfuge.enabled|!(cooldown.vanish.up&cooldown.vendetta.remains<=4))&combo_points.deficit>=1&refreshable&(pmultiplier<=1|remains<=tick_time)&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>4" );
+    maintain -> add_action( "pool_resource,for_next=1" );
+    // maintain -> add_talent( this, "Toxic Blade", "if=combo_points.deficit>=1+(mantle_duration>=gcd.remains+0.2)&dot.kingsbane.remains<11&dot.rupture.remains>8" );
+    maintain -> add_action( "toxic_blade,if=combo_points.deficit>=1+(mantle_duration>=gcd.remains+0.2)&dot.kingsbane.remains<11&dot.rupture.remains>8" );
   }
   else if ( specialization() == ROGUE_OUTLAW )
   {
@@ -7203,7 +7285,9 @@ void rogue_t::init_action_list()
     precombat -> add_action( this, "Roll the Bones", "if=!talent.slice_and_dice.enabled" );
 
     // Main Rotation
-    def -> add_action( "variable,name=rtb_reroll,value=!talent.slice_and_dice.enabled&(rtb_buffs<=2&!rtb_list.any.6)", "Fish for '3 Buffs' or 'True Bearing'. With SnD, consider that we never have to reroll." );
+    def -> add_action( "variable,name=rtb_reroll_ptr,value=!talent.slice_and_dice.enabled&rtb_buffs<2&!rtb_list.any.1", "PTR: Fish for '2 Buffs' or 'Broadsides'. With SnD, consider that we never have to reroll." );
+    def -> add_action( "variable,name=rtb_reroll_live,value=!talent.slice_and_dice.enabled&(rtb_buffs<=2&!rtb_list.any.6)", "Fish for '3 Buffs' or 'True Bearing'. With SnD, consider that we never have to reroll." );
+    def -> add_action( "variable,name=rtb_reroll,value=(ptr&variable.rtb_reroll_ptr)|(!ptr&variable.rtb_reroll_live)" );
     def -> add_action( "variable,name=ss_useable_noreroll,value=(combo_points<5+talent.deeper_stratagem.enabled-(buff.broadsides.up|buff.jolly_roger.up)-(talent.alacrity.enabled&buff.alacrity.stack<=4))", "Condition to use Saber Slash when not rerolling RtB or when using SnD" );
     def -> add_action( "variable,name=ss_useable,value=(talent.anticipation.enabled&combo_points<4)|(!talent.anticipation.enabled&((variable.rtb_reroll&combo_points<4+talent.deeper_stratagem.enabled)|(!variable.rtb_reroll&variable.ss_useable_noreroll)))", "Condition to use Saber Slash, when you have RtB or not" );
     def -> add_action( "call_action_list,name=bf", "Normal rotation" );
@@ -7271,7 +7355,7 @@ void rogue_t::init_action_list()
   {
     // Pre-Combat
     precombat -> add_action( "variable,name=ssw_refund,value=equipped.shadow_satyrs_walk*(6+ssw_refund_offset)", "Defined variables that doesn't change during the fight" );
-    precombat -> add_action( "variable,name=stealth_threshold,value=(15+variable.vigor_active*35+talent.master_of_shadows.enabled*(25+ptr*15)+variable.ssw_refund)" );
+    precombat -> add_action( "variable,name=stealth_threshold,value=(15+talent.vigor.enabled*35+talent.master_of_shadows.enabled*(25+ptr*15)+variable.ssw_refund)" );
     precombat -> add_action( "variable,name=shd_fractionnal,value=ptr*(1.725+0.6*talent.enveloping_shadows.enabled)+(1-ptr)*2.45" );
     precombat -> add_talent( this, "Enveloping Shadows", "if=combo_points>=5&ptr=0" );
     precombat -> add_action( this, "Shadow Dance", "if=talent.subterfuge.enabled&bugs", "Since 7.1.5, casting Shadow Dance before going in combat let you extends the stealth buff, so it's worth to use with Subterfuge talent. Has not been fixed in 7.2.5!" ); // Before SoD because we do it while not in stealth in-game
@@ -7297,7 +7381,7 @@ void rogue_t::init_action_list()
 
     // Cooldowns
     action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );
-    cds -> add_action( "potion,name=old_war,if=buff.bloodlust.react|target.time_to_die<=25|buff.shadow_blades.up" );
+    cds -> add_action( potion_action );
     for ( size_t i = 0; i < items.size(); i++ )
     {
       if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) && items[i].name_str != "draught_of_souls" )
@@ -7343,7 +7427,7 @@ void rogue_t::init_action_list()
     stealth_cds -> add_action( this, "Shadow Dance", "if=charges_fractional>=variable.shd_fractionnal" );
     stealth_cds -> add_action( "pool_resource,for_next=1,extra_amount=40" );
     stealth_cds -> add_action( "shadowmeld,if=energy>=40&energy.deficit>=10+variable.ssw_refund" );
-    stealth_cds -> add_action( this, "Shadow Dance", "if=combo_points.deficit>=5-variable.vigor_active" );
+    stealth_cds -> add_action( this, "Shadow Dance", "if=combo_points.deficit>=5-talent.vigor.enabled" );
 
     // Stealthed Rotation
     action_priority_list_t* stealthed = get_action_priority_list( "stealthed", "Stealthed Rotation" );
@@ -7359,7 +7443,7 @@ void rogue_t::init_action_list()
     ptr_def -> add_action( "call_action_list,name=ptr_cds" );
     ptr_def -> add_action( "run_action_list,name=ptr_stealthed,if=stealthed.all", "Fully switch to the Stealthed Rotation (by doing so, it forces pooling if nothing is available)" );
     ptr_def -> add_action( this, "Nightblade", "if=target.time_to_die>8&remains<gcd.max&combo_points>=4" );
-    ptr_def -> add_action( "call_action_list,name=ptr_stealth_als,if=(combo_points.deficit>=2+talent.premeditation.enabled|cooldown.shadow_dance.charges_fractional>=2.9)" );
+    ptr_def -> add_action( "call_action_list,name=ptr_stealth_als,if=(combo_points.deficit>=3|cooldown.shadow_dance.charges_fractional>=2.9)" );
     ptr_def -> add_action( "call_action_list,name=ptr_finish,if=combo_points>=5|(combo_points>=4&combo_points.deficit<=2&spell_targets.shuriken_storm>=3&spell_targets.shuriken_storm<=4)" );
     ptr_def -> add_action( "call_action_list,name=ptr_build,if=energy.deficit<=variable.stealth_threshold" );
 
@@ -7371,8 +7455,8 @@ void rogue_t::init_action_list()
 
     // Cooldowns
     action_priority_list_t* ptr_cds = get_action_priority_list( "ptr_cds", "Cooldowns" );
-    ptr_cds -> add_action( "potion,name=old_war,if=buff.bloodlust.react|target.time_to_die<=25|buff.shadow_blades.up" );
-    ptr_cds -> add_action( "use_item,name=draught_of_souls,if=!stealthed.rogue&energy.deficit>30+variable.vigor_active*10" );
+    ptr_cds -> add_action( potion_action );
+    ptr_cds -> add_action( "use_item,name=draught_of_souls,if=!stealthed.rogue&energy.deficit>30+talent.vigor.enabled*10" );
     for ( size_t i = 0; i < items.size(); i++ )
     {
       if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) && items[i].name_str != "draught_of_souls" )
@@ -7387,7 +7471,7 @@ void rogue_t::init_action_list()
     }
     ptr_cds -> add_action( this, "Symbols of Death", "if=!stealthed.all" );
     ptr_cds -> add_action( this, "Shadow Blades", "if=combo_points.deficit>=2+stealthed.all-equipped.mantle_of_the_master_assassin" );
-    ptr_cds -> add_action( this, "Goremaw's Bite", "if=!stealthed.all&cooldown.shadow_dance.charges_fractional<=variable.shd_fractionnal&((combo_points.deficit>=4-(time<10)*2&energy.deficit>50+variable.vigor_active*25-(time>=10)*15)|(combo_points.deficit>=1&target.time_to_die<8))" );
+    ptr_cds -> add_action( this, "Goremaw's Bite", "if=!stealthed.all&cooldown.shadow_dance.charges_fractional<=variable.shd_fractionnal&((combo_points.deficit>=4-(time<10)*2&energy.deficit>50+talent.vigor.enabled*25-(time>=10)*15)|(combo_points.deficit>=1&target.time_to_die<8))" );
     ptr_cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit|(raid_event.adds.in>40&combo_points.deficit>=cp_max_spend)" );
 
     // Finishers
@@ -7417,9 +7501,9 @@ void rogue_t::init_action_list()
 
     // Stealthed Rotation
     action_priority_list_t* ptr_stealthed = get_action_priority_list( "ptr_stealthed", "Stealthed Rotation" );
-    ptr_stealthed -> add_action( "call_action_list,name=ptr_finish,if=combo_points>=5&(spell_targets.shuriken_storm>=2+talent.premeditation.enabled+equipped.shadow_satyrs_walk|(mantle_duration<=1.3&mantle_duration-gcd.remains>=0.3))" );
-    ptr_stealthed -> add_action( this, "Shuriken Storm", "if=buff.shadowmeld.down&((combo_points.deficit>=3&spell_targets.shuriken_storm>=2+talent.premeditation.enabled+equipped.shadow_satyrs_walk)|(combo_points.deficit>=1+buff.shadow_blades.up&buff.the_dreadlords_deceit.stack>=29))" );
-    ptr_stealthed -> add_action( "call_action_list,name=ptr_finish,if=combo_points>=5&combo_points.deficit<2+talent.premeditation.enabled+buff.shadow_blades.up-equipped.mantle_of_the_master_assassin" );
+    ptr_stealthed -> add_action( "call_action_list,name=ptr_finish,if=combo_points>=5&(spell_targets.shuriken_storm>=3+equipped.shadow_satyrs_walk|(mantle_duration<=1.3&mantle_duration-gcd.remains>=0.3))" );
+    ptr_stealthed -> add_action( this, "Shuriken Storm", "if=buff.shadowmeld.down&((combo_points.deficit>=3&spell_targets.shuriken_storm>=3+equipped.shadow_satyrs_walk)|(combo_points.deficit>=1+buff.shadow_blades.up&buff.the_dreadlords_deceit.stack>=29))" );
+    ptr_stealthed -> add_action( "call_action_list,name=ptr_finish,if=combo_points>=5&combo_points.deficit<3+buff.shadow_blades.up-equipped.mantle_of_the_master_assassin" );
     ptr_stealthed -> add_action( this, "Shadowstrike" );
   }
 
@@ -7480,6 +7564,7 @@ action_t* rogue_t::create_action( const std::string& name,
   if ( name == "sprint"              ) return new sprint_t             ( this, options_str );
   if ( name == "stealth"             ) return new stealth_t            ( this, options_str );
   if ( name == "symbols_of_death"    ) return new symbols_of_death_t   ( this, options_str );
+  if ( name == "toxic_blade"         ) return new toxic_blade_t        ( this, options_str );
   if ( name == "vanish"              ) return new vanish_t             ( this, options_str );
   if ( name == "vendetta"            ) return new vendetta_t           ( this, options_str );
   if ( name == "cancel_autoattack"   ) return new cancel_autoattack_t  ( this, options_str );
@@ -7823,6 +7908,7 @@ void rogue_t::init_spells()
   spell.insignia_of_ravenholdt        = find_spell( 209041 );
   spell.master_assassins_initiative   = find_spell( 235022 );
   spell.master_assassins_initiative_2 = find_spell( 235027 );
+  spell.t20_4pc_subtlety_effect       = find_spell( 247895 );
 
   // Talents
   talent.deeper_stratagem   = find_talent_spell( "Deeper Stratagem" );
@@ -7846,6 +7932,7 @@ void rogue_t::init_spells()
   talent.internal_bleeding  = find_talent_spell( "Internal Bleeding" );
 
   talent.agonizing_poison   = find_talent_spell( "Agonizing Poison" );
+  talent.toxic_blade        = find_talent_spell( "Toxic Blade" );
   talent.exsanguinate       = find_talent_spell( "Exsanguinate" );
 
   talent.venom_rush         = find_talent_spell( "Venom Rush" );
@@ -8031,6 +8118,7 @@ void rogue_t::init_gains()
   gains.t19_4pc_subtlety         = get_gain( "Tier 19 4PC Set Bonus"    );
   gains.t20_4pc_assassination    = get_gain( "Tier 20 4PC Set Bonus"    );
   gains.shadow_satyrs_walk       = get_gain( "Shadow Satyr's Walk"      );
+  gains.t20_4pc_subtlety         = get_gain( "Tier 20 4PC Set Bonus"    );
 }
 
 // rogue_t::init_procs ======================================================
@@ -8181,14 +8269,12 @@ void rogue_t::create_buffs()
                                 .default_value( find_spell( 245640 ) -> effectN( 1 ).percent() );
   buffs.shadow_blades         = new buffs::shadow_blades_t( this );
   buffs.shadow_dance          = new buffs::shadow_dance_t( this );
-  const int t20_4pc_cp        = sets -> has_set_bonus( ROGUE_SUBTLETY, T20, B4 ) ? sets -> set( ROGUE_SUBTLETY, T20, B4 ) -> effectN( 1 ).base_value() : 0;
-  const double t20_4pc_mod    = 1.0 + ( sets -> has_set_bonus( ROGUE_SUBTLETY, T20, B4 ) ? sets -> set( ROGUE_SUBTLETY, T20, B4 ) -> effectN( 2 ).percent() : 0.0 );
   buffs.sod_backstab          = buff_creator_t( this, "backstab", maybe_ptr( dbc.ptr ) ? find_spell( 245689 ) : spell_data_t::not_found() )
-                                .default_value( find_spell( 245689 ) -> effectN( 1 ).base_value() + t20_4pc_cp );
+                                .default_value( find_spell( 245689 ) -> effectN( 1 ).base_value() );
   buffs.sod_eviscerate        = buff_creator_t( this, "eviscerate", maybe_ptr( dbc.ptr ) ? find_spell( 245691 ) : spell_data_t::not_found() )
-                                .default_value( find_spell( 245691 ) -> effectN( 1 ).percent() * t20_4pc_mod );
+                                .default_value( find_spell( 245691 ) -> effectN( 1 ).percent() );
   buffs.sod_shadowstrike      = buff_creator_t( this, "shadowstrike", maybe_ptr( dbc.ptr ) ? find_spell( 227151 ) : spell_data_t::not_found() )
-                                .default_value( find_spell( 227151 ) -> effectN( 1 ).base_value() + t20_4pc_cp );
+                                .default_value( find_spell( 227151 ) -> effectN( 1 ).base_value() );
   buffs.symbols_of_death      = buff_creator_t( this, "symbols_of_death", maybe_ptr( dbc.ptr ) ? spell_data_t::not_found() : spec.symbols_of_death )
                                 .refresh_behavior( BUFF_REFRESH_PANDEMIC )
                                 .period( timespan_t::zero() )

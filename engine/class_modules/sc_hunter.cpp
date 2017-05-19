@@ -6240,7 +6240,7 @@ void hunter_t::apl_bm()
   default_list -> add_talent( this, "Volley", "toggle=on" );
 
   // In-combat potion
-  default_list -> add_action( "potion,if=buff.bestial_wrath.remains|!cooldown.beastial_wrath.remains" );
+  default_list -> add_action( "potion,if=buff.bestial_wrath.remains|!cooldown.bestial_wrath.remains" );
 
   // Generic APL
   default_list -> add_talent( this, "A Murder of Crows" );
@@ -6258,8 +6258,8 @@ void hunter_t::apl_bm()
   }
   default_list -> add_action( this, "Aspect of the Wild", "if=buff.bestial_wrath.up|target.time_to_die<12" );
   default_list -> add_talent( this, "Barrage", "if=spell_targets.barrage>1" );
-  default_list -> add_action( this, "Titan's Thunder", "if=talent.dire_frenzy.enabled|cooldown.dire_beast.remains>=3|(buff.bestial_wrath.up&pet.dire_beast.active)" );
   default_list -> add_action( this, "Bestial Wrath" );
+  default_list -> add_action( this, "Titan's Thunder", "if=(talent.dire_frenzy.enabled&(buff.bestial_wrath.up|cooldown.bestial_wrath.remains>35))|cooldown.dire_beast.remains>=3|(buff.bestial_wrath.up&pet.dire_beast.active)" );
   default_list -> add_action( this, "Multi-Shot", "if=spell_targets>4&(pet.cat.buff.beast_cleave.remains<gcd.max|pet.cat.buff.beast_cleave.down)" );
   default_list -> add_action( this, "Kill Command" );
   default_list -> add_action( this, "Multi-Shot", "if=spell_targets>1&(pet.cat.buff.beast_cleave.remains<gcd.max*2|pet.cat.buff.beast_cleave.down)" );
