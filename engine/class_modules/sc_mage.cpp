@@ -7943,22 +7943,10 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
     {
       std::string aoe_type;
 
-      enum operation_t
-      {
-        OP_REMAINS,
-        OP_INVALID
-      } operation;
-
-      ground_aoe_expr_t( mage_t& m, std::string name_str, std::string aoe, std::string op ) :
+      ground_aoe_expr_t( mage_t& m, const std::string& name_str, const std::string& aoe ) :
         mage_expr_t( name_str, m ),
-        aoe_type( aoe ),
-        operation( OP_INVALID )
+        aoe_type( aoe )
       {
-        if ( util::str_compare_ci( op, "remains" ) )
-        {
-          operation = OP_REMAINS;
-        }
-
         util::tolower( aoe_type );
       }
 
@@ -7972,26 +7960,17 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
           expiration = it -> second;
         }
 
-        switch ( operation )
-        {
-          case OP_REMAINS:
-            return std::max( 0.0, ( expiration - mage.sim -> current_time() ).total_seconds() );
-          default:
-            // Shouldn't happen.
-            return 0.0;
-        }
+        return std::max( 0.0, ( expiration - mage.sim -> current_time() ).total_seconds() );
       }
     };
 
-    ground_aoe_expr_t* e = new ground_aoe_expr_t( *this, name_str, splits[1], splits[2] );
-    if ( e -> operation == ground_aoe_expr_t::OP_INVALID )
+    if ( util::str_compare_ci( splits[2], "remains" ) )
     {
-      sim -> errorf( "Player %s ground_aoe expression: unknown operation '%s'", name(), splits[2] );
-      delete e;
+      return new ground_aoe_expr_t( *this, name_str, splits[1] );
     }
     else
     {
-      return e;
+      sim -> errorf( "Player %s ground_aoe expression: unknown operation '%s'", name(), splits[2] );
     }
   }
 
