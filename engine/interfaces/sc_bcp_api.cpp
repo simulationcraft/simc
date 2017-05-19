@@ -191,17 +191,24 @@ bool parse_talents( player_t*  p,
 
 // parse_items ==============================================================
 
-void parse_artifact( item_t& item, const rapidjson::Value& artifact )
+bool parse_artifact( item_t& item, const rapidjson::Value& artifact )
 {
   if ( ! artifact.HasMember( "artifactId" ) || ! artifact.HasMember( "artifactTraits" ) )
   {
-    return;
+    return false;
   }
 
   auto artifact_id = artifact[ "artifactId" ].GetUint();
   if ( artifact_id == 0 )
   {
-    return;
+    return false;
+  }
+
+  auto spec_artifact_id = item.player -> dbc.artifact_by_spec( item.player -> specialization() );
+  if ( artifact_id != spec_artifact_id )
+  {
+    item.sim -> errorf( "Player %s has wrong artifact equipped, disabling item ...", item.player -> name() );
+    return false;
   }
 
   auto powers = item.player -> dbc.artifact_powers( artifact_id );
@@ -255,7 +262,7 @@ void parse_artifact( item_t& item, const rapidjson::Value& artifact )
   // If no relics inserted, bail out early
   if ( ! artifact.HasMember( "relics" ) || artifact[ "relics" ].Size() == 0 )
   {
-    return;
+    return true;
   }
 
   for ( auto relic_idx = 0U, end = artifact[ "relics" ].Size(); relic_idx < end; ++relic_idx )
@@ -331,6 +338,8 @@ void parse_artifact( item_t& item, const rapidjson::Value& artifact )
       ++it;
     }
   }
+
+  return true;
 }
 
 bool parse_items( player_t*  p,
@@ -403,7 +412,11 @@ bool parse_items( player_t*  p,
     // Artifact
     if ( data.HasMember( "quality" ) && data[ "quality" ].GetUint() == ITEM_QUALITY_ARTIFACT )
     {
-      parse_artifact( item, data );
+      // If artifact parsing fails, reset the whole item input
+      if ( ! parse_artifact( item, data ) )
+      {
+        item.parsed = item_t::parsed_input_t();
+      }
     }
 
     // Since Armory API does not give us the drop level of items (such as quest items), we will need
