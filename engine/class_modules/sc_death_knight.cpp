@@ -7513,6 +7513,7 @@ void death_knight_t::default_apl_unholy()
 
   // Generic things that should be always done
   def->add_action(this, "Outbreak", "target_if=!dot.virulent_plague.ticking");
+  def->add_action(this, "Army of the Dead" );
   def->add_action(this, "Dark Transformation", "if=equipped.137075&cooldown.dark_arbiter.remains>165");
   def->add_action(this, "Dark Transformation", "if=equipped.137075&!talent.shadow_infusion.enabled&cooldown.dark_arbiter.remains>55");
   def->add_action(this, "Dark Transformation", "if=equipped.137075&talent.shadow_infusion.enabled&cooldown.dark_arbiter.remains>35");
