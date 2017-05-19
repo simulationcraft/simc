@@ -4483,11 +4483,12 @@ struct  keg_smash_stave_off_t: public monk_melee_attack_t
     if ( p.dbc.ptr )
     {
       attack_power_mod.direct = p.spec.keg_smash -> effectN( 2 ).ap_coeff();
-      radius = p.spec.keg_smash -> effectN( 2 ).radius();
+      radius = p.spec.keg_smash -> effectN( 5 ).radius();
     }
     else
     {
-      radius = p.spec.keg_smash -> effectN( 1 ).radius();
+      attack_power_mod.direct = p.spec.keg_smash -> effectN( 1 ).ap_coeff();
+      radius = p.spec.keg_smash -> effectN( 4 ).radius();
     }
 
     if ( p.artifact.smashed.rank() )
@@ -4554,7 +4555,6 @@ struct keg_smash_t: public monk_melee_attack_t
     parse_options( options_str );
 
     aoe = -1;
-    background = dual = true;
     
     if ( p.dbc.ptr )
     {
@@ -4563,6 +4563,7 @@ struct keg_smash_t: public monk_melee_attack_t
     }
     else
     {
+      attack_power_mod.direct = p.spec.keg_smash -> effectN( 1 ).ap_coeff();
       radius = p.spec.keg_smash -> effectN( 1 ).radius();
     }
 
