@@ -1099,7 +1099,9 @@ struct majordomos_dinner_bell_t : proc_spell_t
   {
     // The way this works, despite the tooltip, is that the buff matches your current food buff
     // If you don't have a food buff, it is random
-    if(player->consumables.food)
+
+    // 5/18/2017 - Reports are that this was hotfixed on PTR to always be random
+    if( player->consumables.food && !maybe_ptr(player->dbc.ptr) )
     {
       const stat_buff_t* food_buff = dynamic_cast<stat_buff_t*>(player->consumables.food);
       if (food_buff && food_buff->stats.size() > 0)
@@ -1717,7 +1719,7 @@ void item::nightblooming_frond( special_effect_t& effect )
     {
       double m = proc_attack_t::action_multiplier();
 
-      m *= recursive_strikes_buff -> stack();
+      m *= 1.0 + recursive_strikes_buff -> stack() * 0.5;
 
       return m;
     }
@@ -2489,7 +2491,6 @@ void item::draught_of_souls( special_effect_t& effect )
 
 // Entwined Elemental Foci ==================================================
 
-// TODO: How do refresh procs for this trinket work?
 void item::entwined_elemental_foci( special_effect_t& effect )
 {
   struct entwined_elemental_foci_cb_t : public dbc_proc_callback_t
@@ -2513,14 +2514,33 @@ void item::entwined_elemental_foci( special_effect_t& effect )
 
     void execute( action_t*, action_state_t* )
     {
-      size_t selected_buff = static_cast<size_t>( rng().range( 0, buffs.size() ) );
+      // Foci prefers to proc inactive buffs over active ones.
+      // Make a vector with only the inactive buffs.
+      std::vector<stat_buff_t*> inactive_buffs;
 
-      buffs[ selected_buff ] -> trigger();
+      for (unsigned i = 0; i < buffs.size(); i++)
+      {
+        if (!buffs[i]->check())
+        {
+          inactive_buffs.push_back(buffs[i]);
+        }
+      }
+
+      // If the vector is empty, we can roll any of the buffs.
+      if (inactive_buffs.empty())
+      {
+        inactive_buffs = buffs;
+      }
+
+      // Roll it!
+      int roll = (int)(listener->sim->rng().real() * inactive_buffs.size());
+      inactive_buffs[roll]->trigger();
     }
   };
 
-  double rating_amount = item_database::apply_combat_rating_multiplier( *effect.item,
+  const double rating_amount = item_database::apply_combat_rating_multiplier( *effect.item,
       effect.driver() -> effectN( 2 ).average( effect.item ) );
+
   new entwined_elemental_foci_cb_t( effect, rating_amount );
 }
 

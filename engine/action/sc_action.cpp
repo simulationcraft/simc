@@ -2957,6 +2957,8 @@ expr_t* action_t::create_expression( const std::string& name_str )
       {}
       virtual double evaluate() override
       {
+        if ( ! previously_used )
+          return false;
         if ( as<int>(action.player -> prev_gcd_actions.size()) >= gcd )
           return ( *( action.player -> prev_gcd_actions.end() - gcd ) ) -> internal_id == previously_used -> internal_id;
         return false;

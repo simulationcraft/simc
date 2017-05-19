@@ -744,7 +744,34 @@ public:
       regen_caches[CACHE_ATTACK_HASTE] = true;
     }
     user_options.initial_chi = 0;
+
+    talent_points.register_validity_fn( [ this ]( const spell_data_t* spell ) {
+      if ( find_item( 151643 ) != nullptr )
+      {
+        switch ( specialization() )
+        {
+          case MONK_BREWMASTER:
+            return strcmp( spell -> name_cstr(), "Mystic Vitality") == 0;
+            break;
+          case MONK_MISTWEAVER:
+            return strcmp( spell -> name_cstr(), "Mist Wrap") == 0;
+            break;
+          case MONK_WINDWALKER:
+            return strcmp( spell -> name_cstr(), "Chi Orbit") == 0;
+            break;
+          default:
+            return false;
+            break;
+        }
+      }
+    } );
   }
+
+  // Default consumables
+  std::string default_potion() const override;
+  std::string default_flask() const override;
+  std::string default_food() const override;
+  std::string default_rune() const override;
 
   // player_t overrides
   virtual action_t* create_action( const std::string& name, const std::string& options ) override;
@@ -4460,11 +4487,12 @@ struct  keg_smash_stave_off_t: public monk_melee_attack_t
     }
     else
     {
+      attack_power_mod.direct = p.spec.keg_smash -> effectN( 1 ).ap_coeff();
       radius = p.spec.keg_smash -> effectN( 1 ).radius();
     }
 
     if ( p.artifact.smashed.rank() )
-      radius += p.artifact.smashed.value();
+      range += p.artifact.smashed.value();
 
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
@@ -4527,7 +4555,6 @@ struct keg_smash_t: public monk_melee_attack_t
     parse_options( options_str );
 
     aoe = -1;
-    background = dual = true;
     
     if ( p.dbc.ptr )
     {
@@ -4536,11 +4563,12 @@ struct keg_smash_t: public monk_melee_attack_t
     }
     else
     {
+      attack_power_mod.direct = p.spec.keg_smash -> effectN( 1 ).ap_coeff();
       radius = p.spec.keg_smash -> effectN( 1 ).radius();
     }
 
     if ( p.artifact.smashed.rank() )
-      radius += p.artifact.smashed.value();
+      range += p.artifact.smashed.value();
 
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
@@ -9539,6 +9567,192 @@ void monk_t::assess_heal( school_e school, dmg_e dmg_type, action_state_t* s )
   player_t::assess_heal( school, dmg_type, s );
 }
 
+// =========================================================================
+// Monk APL
+// =========================================================================
+
+// monk_t::default_flask ===================================================
+std::string monk_t::default_flask() const
+{
+  switch ( specialization() )
+  {
+    case MONK_BREWMASTER:
+      if ( true_level > 100)
+        return "seventh_demon";
+      else if ( true_level > 90 )
+        return "greater_draenic_agility_flask";
+      else if ( true_level > 85 )
+        return "spring_blossoms";
+      else if ( true_level > 80 )
+        return "winds";
+      else if ( true_level > 75 )
+        return "endless_rage";
+      else if ( true_level > 70 )
+        return "relentless_assault";
+      else
+        return "disabled";
+      break;
+    case MONK_MISTWEAVER:
+      if ( true_level > 100 )
+        return "whispered_pact";
+      else if ( true_level > 90 )
+        return "greater_draenic_intellect_flask";
+      else if ( true_level > 85 )
+        return "warm_sun";
+      else if ( true_level > 80 )
+        return "draconic_mind";
+      else if ( true_level > 70 )
+        return "blinding_light";
+      else
+        return "disabled";
+      break;
+    case MONK_WINDWALKER:
+      if ( true_level > 100 )
+        return "seventh_demon";
+      else if ( true_level > 90 )
+        return "greater_draenic_agility_flask";
+      else if ( true_level > 85 )
+        return "spring_blossoms";
+      else if ( true_level > 80 )
+        return "winds";
+      else if ( true_level > 75 )
+        return "endless_rage";
+      else if (true_level > 70)
+        return "relentless_assault";
+      else
+        return "disabled";
+      break;
+    default:
+      return "disabled";
+      break;
+  }
+}
+
+// monk_t::default_potion ==================================================
+std::string monk_t::default_potion() const
+{
+  switch ( specialization() )
+  {
+    case MONK_BREWMASTER:
+      if ( true_level > 100)
+        return "prolonged_power";
+      else if ( true_level > 90 )
+        return "draenic_agility";
+      else if ( true_level > 85 )
+        return "virmens_bite";
+      else if ( true_level > 80 )
+        return "tolvir";
+      else if ( true_level > 70 )
+        return "wild_magic";
+      else if ( true_level > 60 )
+        return "haste";
+      else
+        return "disabled";
+      break;
+    case MONK_MISTWEAVER:
+      if ( true_level > 100 )
+        return "prolonged_power";
+      else if ( true_level > 90 )
+        return "draenic_intellect";
+      else if ( true_level > 85 )
+        return "jade_serpent";
+      else if ( true_level > 80 )
+        return "volcanic";
+      else if ( true_level > 70 )
+        return "wild_magic";
+      else if ( true_level > 60 )
+        return "destruction";
+      else
+        return "disabled";
+      break;
+    case MONK_WINDWALKER:
+      if ( true_level > 100 )
+        return "prolonged_power";
+      else if ( true_level > 90 )
+        return "draenic_agility";
+      else if ( true_level > 85 )
+        return "virmens_bite";
+      else if ( true_level > 80 )
+        return "tolvir";
+      else if ( true_level > 70 )
+        return "wild_magic";
+      else if (true_level > 60 )
+        return "haste";
+      else
+        return "disabled";
+      break;
+    default:
+      return "disabled";
+      break;
+  }
+}
+
+// monk_t::default_food ====================================================
+std::string monk_t::default_food() const
+{  switch ( specialization() )
+  {
+    case MONK_BREWMASTER:
+      if ( true_level > 100)
+        return "lavish_suramar_feast";
+      else if ( true_level > 90 )
+        return "salty_squid_roll";
+      else if ( true_level > 85 )
+        return "sea_mist_rice_noodles";
+      else if ( true_level > 80 )
+        return "skewered_eel";
+      else if ( true_level > 70 )
+        return "blackened_dragonfin";
+      else if ( true_level > 60 )
+        return "warp_burger";
+      else
+        return "disabled";
+      break;
+    case MONK_MISTWEAVER:
+      if ( true_level > 100 )
+        return "lavish_suramar_feast";
+      else if ( true_level > 90 )
+        return "salty_squid_roll";
+      else if ( true_level > 85 )
+        return "sea_mist_rice_noodles";
+      else if ( true_level > 80 )
+        return "skewered_eel";
+      else if ( true_level > 70 )
+        return "blackened_dragonfin";
+      else if ( true_level > 60 )
+        return "warp_burger";
+      else
+        return "disabled";
+      break;
+    case MONK_WINDWALKER:
+      if ( true_level > 100 )
+        return "lavish_suramar_feast";
+      else if ( true_level > 90 )
+        return "salty_squid_roll";
+      else if ( true_level > 85 )
+        return "sea_mist_rice_noodles";
+      else if ( true_level > 80 )
+        return "skewered_eel";
+      else if ( true_level > 70 )
+        return "blackened_dragonfin";
+      else if (true_level > 60 )
+        return "warp_burger";
+      else
+        return "disabled";
+      break;
+    default:
+      return "disabled";
+      break;
+  }
+}
+
+// monk_t::default_rune ====================================================
+std::string monk_t::default_rune() const
+{
+  return (true_level >= 110) ? "defiled" :
+    (true_level >= 100) ? "hyper" :
+    "disabled";
+}
+
 // Brewmaster Pre-Combat Action Priority List ============================
 
 void monk_t::apl_pre_brewmaster()
@@ -9546,59 +9760,23 @@ void monk_t::apl_pre_brewmaster()
   action_priority_list_t* pre = get_action_priority_list( "precombat" );
 
   // Flask
-  if ( sim -> allow_flasks && true_level >= 80 )
-  {
-    
-//    if ( true_level > 100)
-//      pre -> add_action( "flask,type=flask_of_the_seventh_demon" );
-    if ( true_level > 90 )
-      pre -> add_action( "flask,type=greater_draenic_agility_flask" );
-    else if ( true_level >= 85 )
-      pre -> add_action( "flask,type=spring_blossoms" );
-    else if ( true_level >= 80 )
-      pre -> add_action( "flask,type=the_winds" );
-    else if ( true_level >= 75 )
-      pre -> add_action( "flask,type=endless_rage" );
-    else
-      pre -> add_action( "flask,type=relentless_assault" );
-  }
+  pre -> add_action( "flask" );
 
-  if ( sim -> allow_food && level() >= 80 )
-  {
-    //if ( level() > 100 )
-    //  pre -> add_action( "food,type=the_hungry_magister" ); //fixmewithproperfood
-    if ( level() > 90)
-      pre -> add_action( "food,type=sleeper_sushi" );
-    else if ( level() >= 80 )
-      pre -> add_action( "food,type=skewered_eel" );
-    else if ( level() >= 70 )
-      pre -> add_action( "food,type=blackened_dragonfin" );
-    else
-      pre -> add_action( "food,type=warp_burger" );
-  }
+  // Food
+  pre -> add_action( "food" );
 
-//  if ( true_level > 100 )
-//    pre -> add_action( "augmentation,type=defiled" );
+  // Rune
+  pre -> add_action( "augmentation" );
 
-  pre -> add_action( "snapshot_stats" );
+  // Snapshot stats
+  pre -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
-  if ( sim -> allow_potions )
-  {
-    //if ( true_level > 100 )
-    //  pre -> add_action( "potion,name=old_war" );
-    if ( true_level > 90 )
-      pre -> add_action( "potion,name=draenic_agility" );
-    else if ( true_level >= 85 )
-      pre -> add_action( "potion,name=virmens_bite" );
-    else
-      pre -> add_action( "potion,name=tolvir" );
-  }
+  pre -> add_action( "potion" );
 
   pre -> add_talent( this, "Diffuse Magic" );
   pre -> add_talent( this, "Dampen Harm" );
   pre -> add_talent( this, "Chi Burst" );
   pre -> add_talent( this, "Chi Wave" );
-
 }
 
 // Windwalker Pre-Combat Action Priority List ==========================
@@ -9606,61 +9784,23 @@ void monk_t::apl_pre_brewmaster()
 void monk_t::apl_pre_windwalker()
 {
   action_priority_list_t* pre = get_action_priority_list("precombat");
-//  std::string& precombat = get_action_priority_list( "precombat" ) -> action_list_str;
 
-  if ( sim -> allow_flasks )
-  {
   // Flask
-    if ( true_level > 100)
-      pre -> add_action( "flask,type=flask_of_the_seventh_demon" );
-    else if ( true_level > 90 )
-      pre -> add_action( "flask,type=greater_draenic_agility_flask" );
-    else if ( true_level >= 85 )
-      pre -> add_action( "flask,type=spring_blossoms" );
-    else if ( true_level >= 80 )
-      pre -> add_action( "flask,type=the_winds" );
-    else if ( true_level >= 75 )
-      pre -> add_action( "flask,type=endless_rage" );
-    else
-      pre->add_action( "flask,type=relentless_assault" );
-  }
+  pre -> add_action( "flask" );
 
-  if ( sim -> allow_food )
-  {
-    // Food
-    if ( level() > 100 )
-      pre -> add_action( "food,type=lavish_suramar" );
-    else if ( level() > 90 )
-      pre -> add_action( "food,type=salty_squid_roll" );
-    else if ( level() >= 85 )
-      pre -> add_action( "food,type=sea_mist_rice_noodles" );
-    else if ( level() >= 80 )
-      pre -> add_action( "food,type=skewered_eel" );
-    else if ( level() >= 70 )
-      pre -> add_action( "food,type=blackened_dragonfin" );
-    else
-      pre -> add_action( "food,type=warp_burger" );
-  }
+  // Food
+  pre -> add_action( "food" );
 
-  if ( true_level > 100 )
-    pre -> add_action( "augmentation,type=defiled" );
+  // Rune
+  pre -> add_action( "augmentation" );
 
-  pre -> add_action( "snapshot_stats" );
+  // Snapshot stats
+  pre -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
-  if ( sim -> allow_potions )
-  {
-    // Prepotion
-    if ( true_level > 100 )
-      pre -> add_action( "potion,name=prolonged_power" );
-    else if ( true_level > 90 )
-      pre -> add_action( "potion,name=draenic_agility" );
-    else if ( true_level >= 85 )
-      pre -> add_action( "potion,name=virmens_bite" );
-    else if ( true_level >= 80 )
-      pre -> add_action( "potion,name=tolvir" );
-    else
-      pre -> add_action( "potion,name=potion_of_speed" );
-  }
+  pre -> add_action( "potion" );
+
+  pre -> add_talent( this, "Chi Burst" );
+  pre -> add_talent( this, "Chi Wave" );
 }
 
 // Mistweaver Pre-Combat Action Priority List ==========================
@@ -9668,48 +9808,23 @@ void monk_t::apl_pre_windwalker()
 void monk_t::apl_pre_mistweaver()
 {
   action_priority_list_t* pre = get_action_priority_list("precombat");
-//  std::string& precombat = get_action_priority_list( "precombat" ) -> action_list_str;
 
-  if ( sim -> allow_flasks )
-  {
-    // Flask
-    if ( true_level > 100)
-      pre -> add_action( "flask,type=flask_of_the_whispered_pact" );
-    else if ( true_level > 90 )
-      pre -> add_action( "flask,type=greater_draenic_intellect_flask" );
-    else if ( true_level >= 85 )
-      pre -> add_action( "flask,type=warm_sun" );
-    else if ( true_level > 80 )
-      pre -> add_action( "flask,type=draconic_mind" );
-  }
+  // Flask
+  pre -> add_action( "flask" );
 
-  if ( sim -> allow_food )
-  {
-    // Food
-    if ( level() > 100 )
-      pre -> add_action( "food,type=nightborne_delicacy_platter" );
-    else if ( level() > 90 )
-      pre -> add_action( "food,type=salty_squid_roll" );
-    else if ( level() >= 85 )
-      pre -> add_action( "food,type=mogu_fish_stew" );
-    else if ( level() > 80 )
-      pre -> add_action( "food,type=seafood_magnifique_feast" );
-  }
+  // Food
+  pre -> add_action( "food" );
 
-  pre -> add_action( "snapshot_stats" );
+  // Rune
+  pre -> add_action( "augmentation" );
 
-  if ( sim -> allow_potions )
-  {
-    // Prepotion
-    if ( true_level > 100 )
-      pre -> add_action( "potion,name=deadly_grace" );
-    else if ( true_level > 90 )
-      pre -> add_action( "potion,name=draenic_intellect_potion" );
-    else if ( true_level >= 85 )
-      pre -> add_action( "potion,name=jade_serpent_potion" );
-    else if ( true_level > 80 )
-      pre -> add_action( "potion,name=volcanic_potion" );
-  }
+  // Snapshot stats
+  pre -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
+
+  pre -> add_action( "potion" );
+
+  pre -> add_talent( this, "Chi Burst" );
+  pre -> add_talent( this, "Chi Wave" );
 }
 
 // Brewmaster Combat Action Priority List =========================
@@ -9799,12 +9914,10 @@ void monk_t::apl_combat_windwalker()
 
   if ( sim -> allow_potions )
   {
-    if ( true_level > 100 )
-      def -> add_action( "potion,name=prolonged_power,if=buff.serenity.up|buff.storm_earth_and_fire.up|(!talent.serenity.enabled&trinket.proc.agility.react)|buff.bloodlust.react|target.time_to_die<=60" );
-    else if ( true_level > 90 )
-      def -> add_action( "potion,name=draenic_agility,if=buff.serenity.up|buff.storm_earth_and_fire.up|(!talent.serenity.enabled&trinket.proc.agility.react)|buff.bloodlust.react|target.time_to_die<=60" );
-    else if ( true_level >= 85 )
-      def -> add_action( "potion,name=virmens_bite,if=buff.bloodlust.react|target.time_to_die<=60" );
+    if ( true_level >= 100 )
+      def -> add_action( "potion,if=buff.serenity.up|buff.storm_earth_and_fire.up|(!talent.serenity.enabled&trinket.proc.agility.react)|buff.bloodlust.react|target.time_to_die<=60" );
+    else 
+      def -> add_action( "potion,if=buff.storm_earth_and_fire.up|trinket.proc.agility.react|buff.bloodlust.react|target.time_to_die<=60" );
   }
 
   def -> add_action( this, "Touch of Death", "if=target.time_to_die<=9" );
@@ -9818,55 +9931,61 @@ void monk_t::apl_combat_windwalker()
   cd -> add_action( "invoke_xuen" );
   int num_items = (int)items.size();
 
-  for ( int i = 0; i < num_items; i++ )
+  // On-use items
+  for ( size_t i = 0; i < items.size(); i++ )
   {
-    if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+    if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) ) 
     {
       if ( items[i].name_str == "unbridled_fury" )
       {
-        cd -> add_action( "use_item,name=" + items[i].name_str + ",if=!artifact.gale_burst.enabled" );
-        cd -> add_action( "use_item,name=" + items[i].name_str + ",if=(!artifact.strike_of_the_windlord.enabled&cooldown.strike_of_the_windlord.remains<14&cooldown.fists_of_fury.remains<=15&cooldown.rising_sun_kick.remains<7)|buff.serenity.up" );
+         cd -> add_action( "use_item,name=" + items[i].name_str + ",if=!artifact.gale_burst.enabled" );
+         cd -> add_action( "use_item,name=" + items[i].name_str + ",if=(!artifact.strike_of_the_windlord.enabled&cooldown.strike_of_the_windlord.remains<14&cooldown.fists_of_fury.remains<=15&cooldown.rising_sun_kick.remains<7)|buff.serenity.up" );
       }
       else if ( items[i].name_str == "tiny_oozeling_in_a_jar" )
         cd -> add_action( "use_item,name=" + items[i].name_str + ",if=buff.congealing_goo.stack>=6" );
       else if ( items[i].name_str == "horn_of_valor" )
         cd -> add_action( "use_item,name=" + items[i].name_str + ",if=!talent.serenity.enabled|cooldown.serenity.remains<18|cooldown.serenity.remains>50|target.time_to_die<=30" );
-      else if ( items[i].name_str == "draught_of_souls" )
-      {
-        // Keeping blank to make sure this is placed AFTER Touch of Death
-      }
-      else
-        cd -> add_action( "use_item,name=" + items[i].name_str );
+      else if ( items[i].name_str != "draught_of_souls" )
+        cd -> add_action( "use_items" );
     }
   }
+
+  // Racials
   for ( size_t i = 0; i < racial_actions.size(); i++ )
   {
-    if ( racial_actions[i] != "arcane_torrent" )
-      cd -> add_action( racial_actions[i]  );
+    if ( racial_actions[i] == "arcane_torrent" )
+      cd -> add_action( racial_actions[i] + ",if=chi.max-chi>=1&energy.time_to_max>=0.5" );
+    else
+      cd -> add_action( racial_actions[i] );
   }
+
   cd -> add_action( this, "Touch of Death", "cycle_targets=1,max_cycle_targets=2,if=!artifact.gale_burst.enabled&equipped.hidden_masters_forbidden_touch&!prev_gcd.1.touch_of_death" );
   cd -> add_action( this, "Touch of Death", "if=!artifact.gale_burst.enabled&!equipped.hidden_masters_forbidden_touch" );
   cd -> add_action( this, "Touch of Death", "cycle_targets=1,max_cycle_targets=2,if=artifact.gale_burst.enabled&((talent.serenity.enabled&cooldown.serenity.remains<=1)|chi>=2)&(cooldown.strike_of_the_windlord.remains<8|cooldown.fists_of_fury.remains<=4)&cooldown.rising_sun_kick.remains<7&!prev_gcd.1.touch_of_death" );
+
   // Trinket usage for procs to add toward Touch of Death Gale Burst Artifact Trait
-  for ( int i = 0; i < num_items; i++ )
+  for ( size_t i = 0; i < items.size(); i++ )
   {
-    if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+    if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) ) 
     {
       if ( items[i].name_str == "draught_of_souls" )
       {
-        cd -> add_action( "use_item,name=" + items[i].name_str + ",if=talent.serenity.enabled&!buff.serenity.up&energy.time_to_max>3" );
-        cd -> add_action( "use_item,name=" + items[i].name_str + ",if=!talent.serenity.enabled&!buff.storm_earth_and_fire.up&energy.time_to_max>3" );
+         cd -> add_action( "use_item,name=" + items[i].name_str + ",if=talent.serenity.enabled&!buff.serenity.up&energy.time_to_max>3" );
+         cd -> add_action( "use_item,name=" + items[i].name_str + ",if=!talent.serenity.enabled&!buff.storm_earth_and_fire.up&energy.time_to_max>3" );
       }
     }
   }
 
   // Storm, Earth, and Fire
   sef -> add_action( this, "Tiger Palm", "cycle_targets=1,if=!prev_gcd.1.tiger_palm&energy=energy.max&chi<1" );
+
+  // Racials
   for ( size_t i = 0; i < racial_actions.size(); i++ )
   {
     if ( racial_actions[i] == "arcane_torrent" )
       sef -> add_action( racial_actions[i] + ",if=chi.max-chi>=1&energy.time_to_max>=0.5" );
   }
+
   sef -> add_action( "call_action_list,name=cd" );
   sef -> add_action( this, "Storm, Earth, and Fire", "if=!buff.storm_earth_and_fire.up" );
   sef -> add_action( "call_action_list,name=st" );
@@ -9887,11 +10006,14 @@ void monk_t::apl_combat_windwalker()
   // Single Target
   st -> add_action( "call_action_list,name=cd" );
   st -> add_talent( this, "Energizing Elixir", "if=chi<=1&(cooldown.rising_sun_kick.remains=0|(artifact.strike_of_the_windlord.enabled&cooldown.strike_of_the_windlord.remains=0)|energy<50)" );
+
+  // Racials
   for ( size_t i = 0; i < racial_actions.size(); i++ )
   {
     if ( racial_actions[i] == "arcane_torrent" )
       st -> add_action( racial_actions[i] + ",if=chi.max-chi>=1&energy.time_to_max>=0.5" );
   }
+
   st -> add_action( this, "Tiger Palm", "cycle_targets=1,if=!prev_gcd.1.tiger_palm&energy.time_to_max<=0.5&chi.max-chi>=2" );
   st -> add_action( this, "Strike of the Windlord", "if=!talent.serenity.enabled|cooldown.serenity.remains>=10" );
   st -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=((chi>=3&energy>=40)|chi>=5)&(!talent.serenity.enabled|cooldown.serenity.remains>=5)" );

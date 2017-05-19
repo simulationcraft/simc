@@ -55,7 +55,7 @@
 #endif
 
 // Needed for usleep in engine/interface/sc_bcp_api.cpp when default apikey builds are done
-#if defined( SC_DEFAULT_APIKEY ) && ! defined( SC_WINDOWS )
+#if ! defined( SC_WINDOWS )
 #include <unistd.h>
 #endif
 

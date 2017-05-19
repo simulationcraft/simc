@@ -4233,7 +4233,7 @@ struct chaos_bolt_t: public warlock_spell_t
   chaos_bolt_t( warlock_t* p ) :
     warlock_spell_t( p, "Chaos Bolt" ), refund( 0 ), duplicate( nullptr ), duplicate_chance( 0 )
   {
-    if ( p -> talents.reverse_entropy -> ok() )
+    if ( !maybe_ptr ( p -> dbc.ptr ) && p -> talents.reverse_entropy -> ok() )
       base_execute_time += p -> talents.reverse_entropy -> effectN( 2 ).time_value();
 
     can_havoc = true;
@@ -4724,6 +4724,12 @@ struct demonwrath_tick_t: public warlock_spell_t
         p() -> shard_react = p() -> sim -> current_time();
       else
         p() -> shard_react = timespan_t::max();
+    }
+
+    if ( p() -> sets -> has_set_bonus( WARLOCK_DEMONOLOGY, T20, B2 ) && p() -> rng().roll( p() -> sets -> set( WARLOCK_DEMONOLOGY, T20, B2 ) -> proc_chance() ) )
+    {
+      p() -> cooldowns.call_dreadstalkers -> reset( true );
+      p() -> procs.demonology_t20_2pc -> occur();
     }
 
     if ( p() -> artifact.thalkiels_discord.rank() && icd -> up() )
@@ -6167,6 +6173,24 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
     regen_caches[CACHE_HASTE] = true;
     regen_caches[CACHE_SPELL_HASTE] = true;
     reap_souls_modifier = 2.0;
+
+    talent_points.register_validity_fn( [this]( const spell_data_t* spell )
+    {
+      if ( maybe_ptr( dbc.ptr ) && find_item( 151649 ) ) // Soul of the Netherlord
+      {
+        switch ( specialization() )
+        {
+          case WARLOCK_AFFLICTION:
+            return spell -> id() == 234876; // Death's Embrace
+          case WARLOCK_DEMONOLOGY:
+            return spell -> id() == 196269; // Shadowy Inspiration
+          case WARLOCK_DESTRUCTION:
+            return spell -> id() == 196412; // Eradication
+        }
+      }
+
+      return false;
+    } );
   }
 
 
