@@ -439,6 +439,8 @@ player_t* parse_player( sim_t*             sim,
   {
     if ( ! download( sim, profile, result, player.url, player.cleanurl, caching ) )
     {
+      sim -> errorf( "BCP API: Unable to download player from '%s', JSON download failed",
+          player.cleanurl.c_str() );
       return nullptr;
     }
   }
