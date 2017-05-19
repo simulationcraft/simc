@@ -5034,7 +5034,7 @@ void priest_t::apl_shadow()
       "insight.enabled)),cycle_targets=1" );
   main->add_action(
       "vampiric_touch,if=active_enemies>1&!talent.misery.enabled&!ticking&(85.2"
-      "*(1+0.2+stat.mastery_rating%16000)*(1.2*talent.sanlayn.enabled)*0.5*target."
+      "*(1+0.2+stat.mastery_rating%16000)*(1+0.2*talent.sanlayn.enabled)*0.5*target."
       "time_to_die%(gcd.max*(138+80*(active_enemies-1))))>1,cycle_targets=1" );
   main->add_action(
       "shadow_word_pain,if=active_enemies>1&!talent.misery.enabled&!ticking&(47.12"
@@ -5228,7 +5228,7 @@ if ( race == RACE_BLOOD_ELF )
       "shadows.rank))" );
   vf->add_action(
       "vampiric_touch,if=active_enemies>1&!talent.misery.enabled&!ticking&(85.2*"
-      "(1+0.02*buff.voidform.stack)*(1+0.2+stat.mastery_rating%16000)*(1.2*talent."
+      "(1+0.02*buff.voidform.stack)*(1+0.2+stat.mastery_rating%16000)*(1+0.2*talent."
       "sanlayn.enabled)*0.5*target.time_to_die%(gcd.max*(138+80*(active_enemies-1)"
       ")))>1,cycle_targets=1" );
   vf->add_action(

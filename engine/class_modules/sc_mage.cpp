@@ -7153,19 +7153,15 @@ struct freeze_t : public action_t
   {
     action_t::reset();
 
-    if ( !action )
+    mage_t* m = debug_cast<mage_t*>( player );
+
+    if ( m -> pets.water_elemental && ! action )
     {
-      mage_t* m = debug_cast<mage_t*>( player );
-      action = debug_cast<pets::water_elemental::freeze_t*>( m -> pets.water_elemental -> find_action( "freeze" ) );
-      if ( action )
+      action         = debug_cast<pets::water_elemental::freeze_t*   >( m -> pets.water_elemental -> find_action( "freeze"    ) );
+      auto water_jet = debug_cast<pets::water_elemental::water_jet_t*>( m -> pets.water_elemental -> find_action( "water_jet" ) );
+      if ( action && water_jet )
       {
-        // Disable autocast on Water Jet.
-        pets::water_elemental::water_jet_t* wj_action
-          = debug_cast<pets::water_elemental::water_jet_t*>( m -> pets.water_elemental -> find_action( "water_jet" ) );
-        if ( wj_action )
-        {
-          wj_action -> autocast = false;
-        }
+        water_jet -> autocast = false;
       }
     }
   }
@@ -7218,13 +7214,14 @@ struct water_jet_t : public action_t
   {
     action_t::reset();
 
-    if ( ! action )
+    mage_t* m = debug_cast<mage_t*>( player );
+
+    if ( m -> pets.water_elemental && ! action )
     {
-      mage_t* m = debug_cast<mage_t*>( player );
       action = debug_cast<pets::water_elemental::water_jet_t*>( m -> pets.water_elemental -> find_action( "water_jet" ) );
       if ( action )
       {
-        action->autocast = false;
+        action -> autocast = false;
       }
     }
   }
