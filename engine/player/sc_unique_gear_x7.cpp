@@ -101,11 +101,12 @@ namespace item
   void might_of_krosus( special_effect_t&         );
 
   // 7.2.5 Raid
-  void terror_from_below( special_effect_t&         );
-  void spectral_thurible( special_effect_t&         );
-  void tome_of_unraveling_sanity( special_effect_t& );
-  void infernal_cinders( special_effect_t&          );
-  void vial_of_ceaseless_toxins( special_effect_t&  );
+  void terror_from_below( special_effect_t&            );
+  void spectral_thurible( special_effect_t&            );
+  void tome_of_unraveling_sanity( special_effect_t&    );
+  void infernal_cinders( special_effect_t&             );
+  void vial_of_ceaseless_toxins( special_effect_t&     );
+  void tarnished_sentinel_medallion( special_effect_t& );
 
   // 7.2.0 Dungeon
   void dreadstone_of_endless_shadows( special_effect_t& );
@@ -1016,6 +1017,62 @@ void item::mrrgrias_favor( special_effect_t& effect )
   effect.execute_action = new thunder_ritual_driver_t( effect );
   effect.execute_action -> add_child( new thunder_ritual_impact_t( effect ) );
 }
+
+
+
+// Tarnished Sentinel Medallion ================================================================
+
+
+/*
+void item::tarnished_sentinel_medallion( special_effect_t& effect )
+{
+
+  // Blast is the proc'd damage
+struct spectral_owl_blast_t : public proc_spell_t
+{
+
+  spectral_owl_blast_t( const special_effect_t& effect ) :
+    proc_spell_t( "spectral_owl_blast", effect.player, effect.player -> find_spell( 222705 ) )
+  {
+    background = may_crit = true;
+    callbacks = false;
+    base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item );
+    cooldown -> duration = timespan_t::zero();
+  }
+};
+
+
+  // proc effect?
+  auto secondary = new special_effect_t( effect.player );
+  secondary -> type = SPECIAL_EFFECT_EQUIP;
+  secondary -> spell_id = effect.spell_id;
+  secondary -> cooldown_ = timespan_t::zero();
+  secondary -> execute_action = new spectral_owl_blast_t( effect );
+  effect.player -> special_effects.push_back( secondary );
+
+  auto proc = new dbc_proc_callback_t( effect.player, *secondary );
+  proc -> initialize();
+  proc -> deactivate();
+
+// "Bolt" is the "DoT" effect that is consistent upon trinket use.
+struct spectral_owl_bolt_t : spell_t
+{
+  spectral_owl_bolt_t( special_effect_t& effect ) :
+    spell_t( "spectral_owl_bolt", effect.player, effect.player -> find_spell( 242570 ) )
+  {
+    background = true;
+    callbacks = false;
+    base_dd_min = base_dd_max = effect.player -> find_spell( 242571 ) -> effectN( 2 ).average( effect.item );
+    add_child( new spectral_owl_blast_t( effect ) );
+  }
+};
+
+*/
+
+  effect.execute_action = new spectral_owl_bolt_t( effect );
+  effect.execute_action -> add_child( new spectral_owl_blast_t( effect ) );
+}
+
 
 
 // Toe Knee's Promise ======================================================
@@ -2294,6 +2351,8 @@ void item::bough_of_corruption( special_effect_t& effect )
 
   new bough_of_corruption_driver_t( effect );
 }
+
+// Ursoc's Rending Paw ========================================================================
 
 void item::ursocs_rending_paw( special_effect_t& effect )
 {
@@ -4809,6 +4868,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 243941, item::tome_of_unraveling_sanity );
   register_special_effect( 242215, item::infernal_cinders          );
   register_special_effect( 242497, item::vial_of_ceaseless_toxins  );
+  register_special_effect( 242570, item::tarnished_sentinel_medallion );
 
   /* Legion 7.2.0 Dungeon */
   register_special_effect( 238498, item::dreadstone_of_endless_shadows );
