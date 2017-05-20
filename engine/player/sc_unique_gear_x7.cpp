@@ -1067,12 +1067,12 @@ struct spectral_owl_bolt_t : spell_t
   }
 };
 
-*/
+
 
   effect.execute_action = new spectral_owl_bolt_t( effect );
   effect.execute_action -> add_child( new spectral_owl_blast_t( effect ) );
 }
-
+*/
 
 
 // Toe Knee's Promise ======================================================
