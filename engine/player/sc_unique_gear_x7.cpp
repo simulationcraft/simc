@@ -1023,9 +1023,9 @@ void item::mrrgrias_favor( special_effect_t& effect )
 // Tarnished Sentinel Medallion ================================================================
 
 
-/*
 void item::tarnished_sentinel_medallion( special_effect_t& effect )
 {
+/*
 
   // Blast is the proc'd damage
 struct spectral_owl_blast_t : public proc_spell_t
@@ -1071,8 +1071,8 @@ struct spectral_owl_bolt_t : spell_t
 
   effect.execute_action = new spectral_owl_bolt_t( effect );
   effect.execute_action -> add_child( new spectral_owl_blast_t( effect ) );
-}
 */
+}
 
 
 // Toe Knee's Promise ======================================================
