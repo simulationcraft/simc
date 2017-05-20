@@ -526,7 +526,6 @@ public:
 
   // Character Definition
   virtual           std::string get_special_use_items( const std::string& item = std::string(), bool specials = false );
-  virtual           std::vector<std::string> get_non_speical_item_actions();
   virtual void      init_spells() override;
   virtual void      init_base_stats() override;
   virtual void      create_buffs() override;
@@ -6985,8 +6984,8 @@ std::string mage_t::get_special_use_items( const std::string& item_name, bool sp
     // Special or not, we need the name and slot
     if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) && item_name == item.name_str)
     {
-      std::string action_string = "use_item,slot=";
-      action_string += item.slot_name();
+      std::string action_string = "use_item,name=";
+      action_string += item.name_str;
 
       // If special, we care about special conditions and placement. Else, we only care about placement in the APL.
       if ( specials )
@@ -6996,47 +6995,6 @@ std::string mage_t::get_special_use_items( const std::string& item_name, bool sp
       }
       actions = action_string;
     }
-  }
-
-  return actions;
-}
-
-// Because we care about both the ability to control special conditions AND position of our on use items,
-// we must use our own get_item_actions which knows to ignore all "special" items so
-// that they can be handled by get_special_use_items()
-std::vector<std::string> mage_t::get_non_speical_item_actions()
-{
-  std::vector<std::string> actions;
-  bool special = false;
-  std::vector<std::string> specials;
-
-  // very ugly construction of our list of special items
-  specials.push_back( "obelisk_of_the_void"           );
-  specials.push_back( "horn_of_valor"                 );
-  specials.push_back( "mrrgrias_favor"                );
-  specials.push_back( "pharameres_forbidden_grimoire" );
-  specials.push_back( "kiljaedens_burning_wish"       );
-
-  for ( const auto& item : items )
-  {
-    // Check our list of specials to see if we're dealing with one
-    for ( size_t i = 0; i < specials.size(); i++ )
-    {
-      if ( item.name_str == specials[i] )
-        special = true;
-    }
-
-    // This will skip Addon and Enchant-based on-use effects. Addons especially are important to
-    // skip from the default APLs since they will interfere with the potion timer, which is almost
-    // always preferred over an Addon. Don't do this for specials.
-    if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) && !special )
-    {
-      std::string action_string = "use_item,slot=";
-      action_string += item.slot_name();
-      actions.push_back( action_string );
-    }
-    // We're moving onto a new item, reset special flag.
-    special = false;
   }
 
   return actions;
@@ -7121,7 +7079,6 @@ std::string mage_t::default_rune() const
 
 void mage_t::apl_arcane()
 {
-  std::vector<std::string> item_actions       = get_non_speical_item_actions();
   std::vector<std::string> racial_actions     = get_racial_actions();
 
   action_priority_list_t* default_list        = get_action_priority_list( "default"          );
@@ -7138,11 +7095,11 @@ void mage_t::apl_arcane()
   default_list -> add_talent( this, "Mirror Image", "if=buff.arcane_power.down" );
   default_list -> add_action( "stop_burn_phase,if=prev_gcd.1.evocation&burn_phase_duration>gcd.max" );
   default_list -> add_action( this, "Mark of Aluneth", "if=cooldown.arcane_power.remains>20" );
-  default_list -> add_action( mage_t::get_special_use_items( "horn_of_valor", false ) );
-  default_list -> add_action( mage_t::get_special_use_items( "obelisk_of_the_void", false ) );
-  default_list -> add_action( mage_t::get_special_use_items( "mrrgrias_favor", false ) );
-  default_list -> add_action( mage_t::get_special_use_items( "pharameres_forbidden_grimoire", false ) );
-  default_list -> add_action( mage_t::get_special_use_items( "kiljaedens_burning_wish", false ) );
+  default_list -> add_action( mage_t::get_special_use_items( "horn_of_valor" ) );
+  default_list -> add_action( mage_t::get_special_use_items( "obelisk_of_the_void" ) );
+  default_list -> add_action( mage_t::get_special_use_items( "mrrgrias_favor" ) );
+  default_list -> add_action( mage_t::get_special_use_items( "pharameres_forbidden_grimoire" ) );
+  default_list -> add_action( mage_t::get_special_use_items( "kiljaedens_burning_wish" ) );
   default_list -> add_action( "call_action_list,name=build,if=buff.arcane_charge.stack<4" );
   default_list -> add_action( "call_action_list,name=init_burn,if=buff.arcane_power.down&buff.arcane_charge.stack=4&(cooldown.mark_of_aluneth.remains=0|cooldown.mark_of_aluneth.remains>20)&(!talent.rune_of_power.enabled|(cooldown.arcane_power.remains<=action.rune_of_power.cast_time|action.rune_of_power.recharge_time<cooldown.arcane_power.remains))|target.time_to_die<45" );
   default_list -> add_action( "call_action_list,name=burn,if=burn_phase" );
@@ -7181,10 +7138,7 @@ void mage_t::apl_arcane()
   {
     cooldowns -> add_action( racial_actions[i] );
   }
-  for( size_t i = 0; i < item_actions.size(); i++ )
-  {
-    cooldowns -> add_action( item_actions[i] );
-  }
+  cooldowns -> add_action( "use_items" );
   if ( race == RACE_TROLL || race == RACE_ORC )
   {
     cooldowns -> add_action( "potion,if=buff.arcane_power.up&(buff.berserking.up|buff.blood_fury.up)" );
@@ -7221,8 +7175,7 @@ void mage_t::apl_arcane()
 
 void mage_t::apl_fire()
 {
-  std::vector<std::string> non_special_item_actions       = mage_t::get_non_speical_item_actions();
-  std::vector<std::string> racial_actions                 = get_racial_actions();
+  std::vector<std::string> racial_actions     = get_racial_actions();
 
 
   action_priority_list_t* default_list        = get_action_priority_list( "default"           );
@@ -7237,9 +7190,9 @@ void mage_t::apl_fire()
   default_list -> add_talent( this, "Rune of Power", "if=cooldown.combustion.remains>40&buff.combustion.down&!talent.kindling.enabled|target.time_to_die.remains<11|talent.kindling.enabled&(charges_fractional>1.8|time<40)&cooldown.combustion.remains>40" );
   default_list -> add_action( mage_t::get_special_use_items( "horn_of_valor", true ) );
   default_list -> add_action( mage_t::get_special_use_items( "obelisk_of_the_void", true ) );
-  default_list -> add_action( mage_t::get_special_use_items( "mrrgrias_favor", false ) );
-  default_list -> add_action( mage_t::get_special_use_items( "pharameres_forbidden_grimoire", false ) );
-  default_list -> add_action( mage_t::get_special_use_items( "kiljaedens_burning_wish", false ) );
+  default_list -> add_action( mage_t::get_special_use_items( "mrrgrias_favor" ) );
+  default_list -> add_action( mage_t::get_special_use_items( "pharameres_forbidden_grimoire" ) );
+  default_list -> add_action( mage_t::get_special_use_items( "kiljaedens_burning_wish" ) );
 
   default_list -> add_action( "call_action_list,name=combustion_phase,if=cooldown.combustion.remains<=action.rune_of_power.cast_time+(!talent.kindling.enabled*gcd)&(!talent.firestarter.enabled|target.health.pct<90|active_enemies>=4|active_enemies>=2&talent.flame_patch.enabled)|buff.combustion.up" );
   default_list -> add_action( "call_action_list,name=rop_phase,if=buff.rune_of_power.up&buff.combustion.down" );
@@ -7255,11 +7208,8 @@ void mage_t::apl_fire()
     combustion_phase -> add_action( racial_actions[i] );
   }
 
-  for( size_t i = 0; i < non_special_item_actions.size(); i++ )
-  {
-    combustion_phase -> add_action( non_special_item_actions[i] );
-  }
-  combustion_phase -> add_action( mage_t::get_special_use_items( "obelisk_of_the_void", false ) );
+  combustion_phase -> add_action( "use_items" );
+  combustion_phase -> add_action( mage_t::get_special_use_items( "obelisk_of_the_void" ) );
   combustion_phase -> add_action( this, "Pyroblast", "if=buff.kaelthas_ultimate_ability.react&buff.combustion.remains>execute_time" );
   combustion_phase -> add_action( this, "Pyroblast", "if=buff.hot_streak.up" );
   combustion_phase -> add_action( this, "Fire Blast", "if=buff.heating_up.up" );
@@ -7308,7 +7258,6 @@ void mage_t::apl_fire()
 
 void mage_t::apl_frost()
 {
-  std::vector<std::string> item_actions = get_item_actions();
   std::vector<std::string> racial_actions = get_racial_actions();
 
   action_priority_list_t* default_list = get_action_priority_list( "default"           );
@@ -7322,11 +7271,11 @@ void mage_t::apl_frost()
   default_list -> add_action( "variable,name=fof_react,value=buff.fingers_of_frost.stack,if=equipped.lady_vashjs_grasp&buff.icy_veins.up&variable.time_until_fof>9|prev_off_gcd.freeze" );
   default_list -> add_action( this, "Ice Lance", "if=variable.fof_react=0&prev_gcd.1.flurry" );
   default_list -> add_action( this, "Time Warp", "if=(time=0&buff.bloodlust.down)|(buff.bloodlust.down&equipped.132410&(cooldown.icy_veins.remains<1|target.time_to_die<50))" );
-  default_list -> add_action( mage_t::get_special_use_items( "horn_of_valor", false ) );
-  default_list -> add_action( mage_t::get_special_use_items( "obelisk_of_the_void", false ) );
-  default_list -> add_action( mage_t::get_special_use_items( "mrrgrias_favor", false ) );
-  default_list -> add_action( mage_t::get_special_use_items( "pharameres_forbidden_grimoire", false ) );
-  default_list -> add_action( mage_t::get_special_use_items( "kiljaedens_burning_wish", false ) );
+  default_list -> add_action( mage_t::get_special_use_items( "horn_of_valor" ) );
+  default_list -> add_action( mage_t::get_special_use_items( "obelisk_of_the_void" ) );
+  default_list -> add_action( mage_t::get_special_use_items( "mrrgrias_favor" ) );
+  default_list -> add_action( mage_t::get_special_use_items( "pharameres_forbidden_grimoire" ) );
+  default_list -> add_action( mage_t::get_special_use_items( "kiljaedens_burning_wish" ) );
   default_list -> add_action( "call_action_list,name=cooldowns" );
   default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>=4" );
   default_list -> add_action( "call_action_list,name=single" );
@@ -7360,15 +7309,12 @@ void mage_t::apl_frost()
   aoe -> add_talent( this, "Glacial Spike" );
   aoe -> add_action( this, "Frostbolt" );
 
-  cooldowns    -> add_talent( this, "Rune of Power", "if=cooldown.icy_veins.remains<cast_time|charges_fractional>1.9&cooldown.icy_veins.remains>10|buff.icy_veins.up|target.time_to_die.remains+5<charges_fractional*10" );
-  cooldowns    -> add_action( "potion,if=cooldown.icy_veins.remains<1" );
-  cooldowns    -> add_action( "variable,name=iv_start,value=time,if=cooldown.icy_veins.ready&buff.icy_veins.down" );
-  cooldowns    -> add_action( this, "Icy Veins", "if=buff.icy_veins.down" );
-  cooldowns    -> add_talent( this, "Mirror Image" );
-  for( size_t i = 0; i < item_actions.size(); i++ )
-  {
-    cooldowns -> add_action( item_actions[i] );
-  }
+  cooldowns -> add_talent( this, "Rune of Power", "if=cooldown.icy_veins.remains<cast_time|charges_fractional>1.9&cooldown.icy_veins.remains>10|buff.icy_veins.up|target.time_to_die.remains+5<charges_fractional*10" );
+  cooldowns -> add_action( "potion,if=cooldown.icy_veins.remains<1" );
+  cooldowns -> add_action( "variable,name=iv_start,value=time,if=cooldown.icy_veins.ready&buff.icy_veins.down" );
+  cooldowns -> add_action( this, "Icy Veins", "if=buff.icy_veins.down" );
+  cooldowns -> add_talent( this, "Mirror Image" );
+  cooldowns -> add_action( "use_items" );
   for( size_t i = 0; i < racial_actions.size(); i++ )
   {
     cooldowns -> add_action( racial_actions[i] );

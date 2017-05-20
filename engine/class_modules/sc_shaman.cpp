@@ -591,14 +591,14 @@ public:
     talent_points.register_validity_fn([this](const spell_data_t* spell)
     {
       // Soul of the Farseer
-      if (find_item(151647))
+      if ( find_item(151647) )
       {
-        switch (specialization())
+        switch ( specialization() )
         {
         case SHAMAN_ENHANCEMENT:
-          return spell->id() == 197992; // Landslide
+          return util::str_compare_ci( spell -> name_cstr(), "Landslide" );
         case SHAMAN_ELEMENTAL:
-          return spell->id() == 108283; // Echo of the Elements
+          return util::str_compare_ci( spell -> name_cstr(), "Echo of the Elements" );
         }
       }
       return false;

@@ -195,13 +195,13 @@ bool parse_artifact( item_t& item, const rapidjson::Value& artifact )
 {
   if ( ! artifact.HasMember( "artifactId" ) || ! artifact.HasMember( "artifactTraits" ) )
   {
-    return false;
+    return true;
   }
 
   auto artifact_id = artifact[ "artifactId" ].GetUint();
   if ( artifact_id == 0 )
   {
-    return false;
+    return true;
   }
 
   auto spec_artifact_id = item.player -> dbc.artifact_by_spec( item.player -> specialization() );
