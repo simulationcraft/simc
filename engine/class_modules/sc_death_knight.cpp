@@ -539,7 +539,8 @@ public:
     gain_t* pestilent_pustules;
     gain_t* tombstone;
     gain_t* overpowered;
-    gain_t* t18_2pc_blood;
+    gain_t* t19_2pc_blood;
+    gain_t* t19_4pc_blood;
     gain_t* scourge_the_unbeliever;
     gain_t* draugr_girdle_everlasting_king;
     gain_t* uvanimor_the_unbeautiful;
@@ -997,7 +998,7 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* d
   debuff.perseverance_of_the_ebon_martyr = buff_creator_t( *this, "perseverance_of_the_ebon_martyr", death_knight -> find_spell( 216059 ) )
     .chance( death_knight -> legendary.perseverance_of_the_ebon_martyr -> ok() )
     .default_value( death_knight -> find_spell( 216059 ) -> effectN( 1 ).percent() )
-    .duration( timespan_t::from_seconds( 5 ) ); //In game testing shows it's around 5 seconds. 
+    .duration( timespan_t::from_seconds( 5 ) ); //In game testing shows it's around 5 seconds.
 }
 
 // ==========================================================================
@@ -3426,7 +3427,7 @@ struct blood_plague_t : public disease_t
 {
   blood_plague_t( death_knight_t* p ) :
     disease_t( p, "blood_plague", 55078 )
-  { 
+  {
     base_multiplier *= 1.0 + p -> artifact.coagulopathy.percent();
   }
 };
@@ -3966,7 +3967,7 @@ struct death_and_decay_t : public death_knight_spell_t
     dot_duration          = data().duration(); // 11 with tick_zero
     hasted_ticks          = false;
     tick_may_crit = tick_zero = ignore_false_positive = ground_aoe = true;
-    
+
     base_multiplier    *= 1.0 + p -> artifact.allconsuming_rot.percent();
 
     base_tick_time *= 1.0 / ( 1.0 + p -> talent.rapid_decomposition -> effectN( 3 ).percent() );
@@ -4373,6 +4374,10 @@ struct death_strike_t : public death_knight_melee_attack_t
     if ( result_is_hit( execute_state -> result ) )
     {
       heal -> execute();
+      if ( rng().roll( p() -> sets -> set( DEATH_KNIGHT_BLOOD, T19, B4 ) -> effectN( 1 ).percent() ) )
+      {
+        p() -> replenish_rune( 1, p() -> gains.t19_4pc_blood );
+      }
     }
 
     p() -> trigger_death_march( execute_state );
@@ -4759,6 +4764,16 @@ struct heart_strike_t : public death_knight_melee_attack_t
     weapon = &( p -> main_hand_weapon );
   }
 
+  gain_t* energize_gain( const action_state_t* /* state */ ) const override
+  {
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T19, B2 ) )
+    {
+      return p() -> gains.t19_2pc_blood;
+    }
+
+    return gain;
+  }
+
   int n_targets() const override
   { return td( target ) -> in_aoe_radius() ? 5 : 2; }
 
@@ -4771,14 +4786,19 @@ struct heart_strike_t : public death_knight_melee_attack_t
       p() -> pets.dancing_rune_weapon -> ability.heart_strike -> set_target( execute_state -> target );
       p() -> pets.dancing_rune_weapon -> ability.heart_strike -> execute();
     }
-
-    if ( rng().roll( p() -> sets -> set( DEATH_KNIGHT_BLOOD, T18, B2 ) -> effectN( 1 ).percent() ) )
-    {
-      p() -> resource_gain( RESOURCE_RUNIC_POWER,
-          p() -> sets -> set( DEATH_KNIGHT_BLOOD, T18, B2 ) -> effectN( 2 ).base_value() / 10,
-          p() -> gains.t18_2pc_blood, this );
-    }
   }
+};
+
+// Consumption
+
+struct consumption_t : public death_knight_spell_t
+{
+  consumption_t( death_knight_t* p, const std::string& options_str )
+    : death_knight_spell_t( "consumption", p, p -> artifact.consumption )
+    {
+      parse_options( options_str );
+      aoe = -1;
+    }
 };
 
 // Horn of Winter ===========================================================
@@ -4993,10 +5013,20 @@ struct marrowrend_t : public death_knight_melee_attack_t
     unholy_coil( nullptr ), unholy_coil_coeff( 0 )
   {
     parse_options( options_str );
-    
+
     base_multiplier    *= 1.0 + p -> artifact.bonebreaker.percent();
 
     weapon = &( p -> main_hand_weapon );
+  }
+
+  gain_t* energize_gain( const action_state_t* /* state */ ) const override
+  {
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T19, B2 ) )
+    {
+      return p() -> gains.t19_2pc_blood;
+    }
+
+    return gain;
   }
 
   void execute() override
@@ -6842,6 +6872,7 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   if ( name == "heart_strike"             ) return new heart_strike_t             ( this, options_str );
   if ( name == "marrowrend"               ) return new marrowrend_t               ( this, options_str );
   if ( name == "vampiric_blood"           ) return new vampiric_blood_t           ( this, options_str );
+  if ( name == "consumption"              ) return new consumption_t              ( this, options_str );
 
   // Frost Actions
   if ( name == "empower_rune_weapon"      ) return new empower_rune_weapon_t      ( this, options_str );
@@ -7446,7 +7477,7 @@ void death_knight_t::default_apl_frost()
   bos -> add_talent( this, "Horn of Winter", "if=cooldown.breath_of_sindragosa.remains>15&runic_power<=70&rune<4" );
   bos -> add_action( this, "Frost Strike", "if=cooldown.breath_of_sindragosa.remains>15" );
   bos -> add_action( this, "Remorseless Winter", "if=cooldown.breath_of_sindragosa.remains>10" );
-  
+
   // Breath of Sindragosa ticking rotation
   bos_ticking -> add_action( this, "Howling Blast", "target_if=!dot.frost_fever.ticking" );
   bos_ticking -> add_action( this, "Remorseless Winter", "if=runic_power>=30&((buff.rime.react&equipped.132459)|(talent.gathering_storm.enabled&(dot.remorseless_winter.remains<=gcd|!dot.remorseless_winter.ticking)))" );
@@ -7461,7 +7492,7 @@ void death_knight_t::default_apl_frost()
   bos_ticking -> add_talent( this, "Hungering Rune Weapon", "if=runic_power<25&!buff.hungering_rune_weapon.up&rune<2" );
   bos_ticking -> add_action( this, "Empower Rune Weapon", "if=runic_power<20" );
   bos_ticking -> add_action( this, "Remorseless Winter", "if=talent.gathering_storm.enabled|!set_bonus.tier19_4pc|runic_power<30" );
-  
+
   // Gathering Storm ticking rotation
   gs_ticking -> add_action( this, "Frost Strike", "if=buff.icy_talons.remains<1.5&talent.icy_talons.enabled" );
   gs_ticking -> add_action( this, "Remorseless Winter" );
@@ -7875,7 +7906,8 @@ void death_knight_t::init_gains()
   gains.pestilent_pustules               = get_gain( "Pestilent Pustules"         );
   gains.tombstone                        = get_gain( "Tombstone"                  );
   gains.overpowered                      = get_gain( "Over-Powered"               );
-  gains.t18_2pc_blood                    = get_gain( "Tier18 Blood 2PC"           );
+  gains.t19_2pc_blood                    = get_gain( "Tier19 Blood 2PC"           );
+  gains.t19_4pc_blood                    = get_gain( "Tier19 Blood 4PC"           );
   gains.scourge_the_unbeliever           = get_gain( "Scourge the Unbeliever"     );
   gains.draugr_girdle_everlasting_king   = get_gain( "Draugr, Girdle of the Everlasting King" );
   gains.uvanimor_the_unbeautiful         = get_gain( "Uvanimor, the Unbeautiful"  );
@@ -8088,9 +8120,9 @@ double death_knight_t::composite_armor_multiplier() const
     a *= 1.0 + runeforge.rune_of_the_stoneskin_gargoyle -> data().effectN( 1 ).percent();
 
   a *= 1.0 + artifact.frozen_skin.percent();
-  
+
   a *= 1.0 + artifact.iron_heart.percent();
-  
+
   a *= 1.0 + artifact.the_hungering_maw.percent();
 
   return a;
@@ -8185,7 +8217,7 @@ double death_knight_t::composite_parry_rating() const
 double death_knight_t::composite_parry() const
 {
   double parry = player_t::composite_parry();
-  
+
   parry *= 1.0 + artifact.grim_perseverance.percent();
 
   if ( buffs.dancing_rune_weapon -> up() )
