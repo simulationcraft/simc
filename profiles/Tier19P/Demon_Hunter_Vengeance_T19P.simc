@@ -8,6 +8,12 @@ talents=3323313
 artifact=60:0:0:0:0:1096:1:1098:1:1099:3:1228:1:1229:3:1230:3:1231:3:1233:2:1234:3:1236:1:1328:1:1434:1
 spec=vengeance
 
+# Default consumables
+potion=unbending_potion
+flask=seventh_demon
+food=lavish_suramar_feast
+augmentation=defiled
+
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
 # while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
@@ -15,12 +21,12 @@ spec=vengeance
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
-actions.precombat=flask,type=flask_of_the_seventh_demon
-actions.precombat+=/food,type=lavish_suramar_feast
-actions.precombat+=/augmentation,type=defiled
+actions.precombat=flask
+actions.precombat+=/augmentation
+actions.precombat+=/food
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion,name=unbending_potion
+actions.precombat+=/potion
 
 # Executed every time the actor is available.
 actions=auto_attack

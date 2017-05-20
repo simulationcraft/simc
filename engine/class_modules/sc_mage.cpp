@@ -213,6 +213,9 @@ public:
   // State switches for rotation selection
   state_switch_t burn_phase;
 
+  // Ground AoE tracking
+  std::map<std::string, timespan_t> ground_aoe_expiration;
+
   // Miscellaneous
   double distance_from_rune,
          global_cinder_count;
@@ -523,7 +526,6 @@ public:
 
   // Character Definition
   virtual           std::string get_special_use_items( const std::string& item = std::string(), bool specials = false );
-  virtual           std::vector<std::string> get_non_speical_item_actions();
   virtual void      init_spells() override;
   virtual void      init_base_stats() override;
   virtual void      create_buffs() override;
@@ -2651,17 +2653,6 @@ struct time_and_space_t : public arcane_mage_spell_t
     radius += p -> artifact.crackling_energy.data().effectN( 1 ).base_value();
   }
 
-  bool init_finished() override
-  {
-    if ( p() -> bugs )
-    {
-      am_trigger_source_id = p() -> benefits.arcane_missiles
-                                 -> get_source_id( data().name_cstr() );
-    }
-
-    return arcane_mage_spell_t::init_finished();
-  }
-
   virtual double action_multiplier() const override
   {
     double am = arcane_mage_spell_t::action_multiplier();
@@ -2669,16 +2660,6 @@ struct time_and_space_t : public arcane_mage_spell_t
     am *= arcane_charge_damage_bonus();
 
     return am;
-  }
-
-  virtual void execute() override
-  {
-    arcane_mage_spell_t::execute();
-
-    if ( p() -> bugs )
-    {
-      trigger_am( am_trigger_source_id );
-    }
   }
 };
 
@@ -3128,9 +3109,13 @@ struct blizzard_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::execute();
 
+    timespan_t ground_aoe_duration = data().duration() * player -> cache.spell_speed();
+    p() -> ground_aoe_expiration[ name_str ]
+      = sim -> current_time() + ground_aoe_duration;
+
     make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
       .target( execute_state -> target )
-      .duration( data().duration() * player -> cache.spell_speed() )
+      .duration( ground_aoe_duration )
       .action( blizzard_shard )
       .hasted( ground_aoe_params_t::SPELL_SPEED ) );
 
@@ -3334,10 +3319,15 @@ struct comet_storm_t : public frost_mage_spell_t
   void impact( action_state_t* s ) override
   {
     frost_mage_spell_t::impact( s );
+
+    timespan_t ground_aoe_duration = timespan_t::from_seconds( 1.2 );
+    p() -> ground_aoe_expiration[ name_str ]
+      = sim -> current_time() + ground_aoe_duration;
+
     make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
       .pulse_time( timespan_t::from_seconds( 0.2 ) )
       .target( s -> target )
-      .duration( timespan_t::from_seconds( 1.2 ) )
+      .duration( ground_aoe_duration )
       .action( projectile ), true );
   }
 };
@@ -3777,10 +3767,13 @@ struct flamestrike_t : public fire_mage_spell_t
     if ( state -> chain_target == 0 && p() -> talents.flame_patch -> ok() )
     {
       // DurationID: 205470. 8s
+      timespan_t flame_patch_duration = timespan_t::from_seconds( 8.0 );
+      p() -> ground_aoe_expiration[ flame_patch -> name_str ]
+        = sim -> current_time() + flame_patch_duration;
+
       make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
-        .pulse_time( timespan_t::from_seconds( 1.0 ) )
         .target( state -> target )
-        .duration( timespan_t::from_seconds( 8.0 ) )
+        .duration( flame_patch_duration )
         .action( flame_patch )
         .hasted( ground_aoe_params_t::SPELL_SPEED ) );
     }
@@ -4143,11 +4136,6 @@ struct ice_time_nova_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::impact( s );
 
-    if ( p() -> bugs )
-    {
-      p() -> buffs.sephuzs_secret -> trigger();
-    }
-
     p() -> apply_crowd_control( s, MECHANIC_ROOT );
   }
 };
@@ -4256,21 +4244,25 @@ struct frozen_orb_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::impact( s );
 
+    timespan_t ground_aoe_duration = timespan_t::from_seconds( 10.0 );
+    p() -> ground_aoe_expiration[ name_str ]
+      = sim -> current_time() + ground_aoe_duration;
+
     if ( result_is_hit( s -> result ) )
     {
       trigger_fof( fof_source_id, 1.0 );
       make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
         .pulse_time( timespan_t::from_seconds( 0.5 ) )
         .target( s -> target )
-        .duration( timespan_t::from_seconds( 10.0 ) )
+        .duration( ground_aoe_duration )
         .action( frozen_orb_bolt ) );
     }
     if ( ice_time )
     {
       make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
-        .pulse_time( timespan_t::from_seconds( 10.0 ) )
+        .pulse_time( ground_aoe_duration )
         .target( s -> target )
-        .duration( timespan_t::from_seconds( 10.0 ) )
+        .duration( ground_aoe_duration )
         .action( ice_time_nova ) );
     }
   }
@@ -4876,7 +4868,6 @@ struct mark_of_aluneth_t : public arcane_mage_spell_t
 // - Meteor (id=177345) contains the time between cast and impact
 // None of these specify the 1 second falling duration given by Celestalon, so
 // we're forced to hardcode it.
-// TODO: Why is meteor burn not a DoT here?
 struct meteor_burn_t : public fire_mage_spell_t
 {
   meteor_burn_t( mage_t* p, int targets ) :
@@ -4901,14 +4892,15 @@ struct meteor_burn_t : public fire_mage_spell_t
 
 struct meteor_impact_t: public fire_mage_spell_t
 {
-  meteor_impact_t( mage_t* p, int targets ):
-    fire_mage_spell_t( "meteor_impact", p, p -> find_spell( 153564 ) )
+  meteor_burn_t* meteor_burn;
+
+  meteor_impact_t( mage_t* p, meteor_burn_t* meteor_burn, int targets ):
+    fire_mage_spell_t( "meteor_impact", p, p -> find_spell( 153564 ) ),
+    meteor_burn( meteor_burn )
   {
     background = true;
     aoe = targets;
     split_aoe_damage = true;
-    spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
-    ground_aoe = true;
     //TODO: Revisit PI behavior once Skullflower confirms behavior.
     triggers_ignite = true;
   }
@@ -4917,38 +4909,57 @@ struct meteor_impact_t: public fire_mage_spell_t
   {
     return timespan_t::from_seconds( 1.0 );
   }
+
+  void impact( action_state_t* s ) override
+  {
+    fire_mage_spell_t::impact( s );
+
+    timespan_t pulse_time = meteor_burn -> data().effectN( 1 ).period();
+    timespan_t ground_aoe_duration = p() -> find_spell( 175396 ) -> duration();
+
+    // It seems that the 8th tick happens only very rarely in game.
+    if ( p() -> bugs )
+    {
+      ground_aoe_duration -= pulse_time;
+    }
+
+    p() -> ground_aoe_expiration[ meteor_burn -> name_str ]
+      = sim -> current_time() + ground_aoe_duration;
+
+    make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
+      .pulse_time( pulse_time )
+      .target( s -> target )
+      .duration( ground_aoe_duration )
+      .action( meteor_burn ) );
+  }
 };
 
 struct meteor_t : public fire_mage_spell_t
 {
   int targets;
   meteor_impact_t* meteor_impact;
-  meteor_burn_t* meteor_burn;
   timespan_t meteor_delay;
-  timespan_t actual_tick_time;
+
   meteor_t( mage_t* p, const std::string& options_str ) :
     fire_mage_spell_t( "meteor", p, p -> find_talent_spell( "Meteor") ),
     targets( -1 ),
-    meteor_impact( new meteor_impact_t( p, targets ) ),
-    meteor_burn( new meteor_burn_t( p, targets ) ),
     meteor_delay( p -> find_spell( 177345 ) -> duration() )
   {
     add_option( opt_int( "targets", targets ) );
     parse_options( options_str );
-    hasted_ticks = false;
     callbacks = false;
+
+    meteor_burn_t* meteor_burn = new meteor_burn_t( p, targets );
+    meteor_impact = new meteor_impact_t( p, meteor_burn, targets );
+
     add_child( meteor_impact );
     add_child( meteor_burn );
-    dot_duration = p -> find_spell( 175396 ) -> duration() -
-                   p -> find_spell( 153564 ) -> duration();
-    actual_tick_time = p -> find_spell( 155158 ) -> effectN( 1 ).period();
-    school = SCHOOL_FIRE;
   }
 
   virtual timespan_t travel_time() const override
   {
-    timespan_t impact_time = meteor_delay * p() ->  composite_spell_haste();
-    timespan_t meteor_spawn = impact_time - timespan_t::from_seconds( 1.0 );
+    timespan_t impact_time = meteor_delay * p() -> composite_spell_haste();
+    timespan_t meteor_spawn = impact_time - meteor_impact -> travel_time();
     meteor_spawn = std::max( timespan_t::zero(), meteor_spawn );
 
     return meteor_spawn;
@@ -4956,20 +4967,9 @@ struct meteor_t : public fire_mage_spell_t
 
   void impact( action_state_t* s ) override
   {
-    // Yep. Don't hate. Need to make the dot tick 1 second after impact.
-    base_tick_time = timespan_t::from_seconds( 2 );
-
     fire_mage_spell_t::impact( s );
     meteor_impact -> set_target( s -> target );
     meteor_impact -> execute();
-    base_tick_time = actual_tick_time;
-  }
-
-  void tick( dot_t* d ) override
-  {
-    fire_mage_spell_t::tick( d );
-    meteor_burn -> set_target( d -> target );
-    meteor_burn -> execute();
   }
 };
 
@@ -5906,19 +5906,15 @@ struct freeze_t : public action_t
   {
     action_t::reset();
 
-    if ( !action )
+    mage_t* m = debug_cast<mage_t*>( player );
+
+    if ( m -> pets.water_elemental && ! action )
     {
-      mage_t* m = debug_cast<mage_t*>( player );
-      action = debug_cast<pets::water_elemental::freeze_t*>( m -> pets.water_elemental -> find_action( "freeze" ) );
-      if ( action )
+      action         = debug_cast<pets::water_elemental::freeze_t*   >( m -> pets.water_elemental -> find_action( "freeze"    ) );
+      auto water_jet = debug_cast<pets::water_elemental::water_jet_t*>( m -> pets.water_elemental -> find_action( "water_jet" ) );
+      if ( action && water_jet )
       {
-        // Disable autocast on Water Jet.
-        pets::water_elemental::water_jet_t* wj_action
-          = debug_cast<pets::water_elemental::water_jet_t*>( m -> pets.water_elemental -> find_action( "water_jet" ) );
-        if ( wj_action )
-        {
-          wj_action -> autocast = false;
-        }
+        water_jet -> autocast = false;
       }
     }
   }
@@ -5971,13 +5967,14 @@ struct water_jet_t : public action_t
   {
     action_t::reset();
 
-    if ( ! action )
+    mage_t* m = debug_cast<mage_t*>( player );
+
+    if ( m -> pets.water_elemental && ! action )
     {
-      mage_t* m = debug_cast<mage_t*>( player );
       action = debug_cast<pets::water_elemental::water_jet_t*>( m -> pets.water_elemental -> find_action( "water_jet" ) );
       if ( action )
       {
-        action->autocast = false;
+        action -> autocast = false;
       }
     }
   }
@@ -6302,6 +6299,24 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   regen_type = REGEN_DYNAMIC;
   regen_caches[ CACHE_MASTERY ] = true;
 
+  talent_points.register_validity_fn( [ this ] ( const spell_data_t* spell )
+  {
+    // Soul of the Archmage
+    if ( find_item( 151642 ) )
+    {
+      switch ( specialization() )
+      {
+        case MAGE_ARCANE:
+          return spell -> id() == 234302; // Temporal Flux
+        case MAGE_FIRE:
+          return spell -> id() == 205029; // Flame On
+        case MAGE_FROST:
+          return spell -> id() == 205030; // Frozen Touch
+      }
+    }
+
+    return false;
+  } );
 }
 
 
@@ -6977,8 +6992,8 @@ std::string mage_t::get_special_use_items( const std::string& item_name, bool sp
     // Special or not, we need the name and slot
     if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) && item_name == item.name_str)
     {
-      std::string action_string = "use_item,slot=";
-      action_string += item.slot_name();
+      std::string action_string = "use_item,name=";
+      action_string += item.name_str;
 
       // If special, we care about special conditions and placement. Else, we only care about placement in the APL.
       if ( specials )
@@ -6988,47 +7003,6 @@ std::string mage_t::get_special_use_items( const std::string& item_name, bool sp
       }
       actions = action_string;
     }
-  }
-
-  return actions;
-}
-
-// Because we care about both the ability to control special conditions AND position of our on use items,
-// we must use our own get_item_actions which knows to ignore all "special" items so
-// that they can be handled by get_special_use_items()
-std::vector<std::string> mage_t::get_non_speical_item_actions()
-{
-  std::vector<std::string> actions;
-  bool special = false;
-  std::vector<std::string> specials;
-
-  // very ugly construction of our list of special items
-  specials.push_back( "obelisk_of_the_void"           );
-  specials.push_back( "horn_of_valor"                 );
-  specials.push_back( "mrrgrias_favor"                );
-  specials.push_back( "pharameres_forbidden_grimoire" );
-  specials.push_back( "kiljaedens_burning_wish"       );
-
-  for ( const auto& item : items )
-  {
-    // Check our list of specials to see if we're dealing with one
-    for ( size_t i = 0; i < specials.size(); i++ )
-    {
-      if ( item.name_str == specials[i] )
-        special = true;
-    }
-
-    // This will skip Addon and Enchant-based on-use effects. Addons especially are important to
-    // skip from the default APLs since they will interfere with the potion timer, which is almost
-    // always preferred over an Addon. Don't do this for specials.
-    if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) && !special )
-    {
-      std::string action_string = "use_item,slot=";
-      action_string += item.slot_name();
-      actions.push_back( action_string );
-    }
-    // We're moving onto a new item, reset special flag.
-    special = false;
   }
 
   return actions;
@@ -7113,7 +7087,6 @@ std::string mage_t::default_rune() const
 
 void mage_t::apl_arcane()
 {
-  std::vector<std::string> item_actions       = get_non_speical_item_actions();
   std::vector<std::string> racial_actions     = get_racial_actions();
 
   action_priority_list_t* default_list        = get_action_priority_list( "default"          );
@@ -7130,11 +7103,11 @@ void mage_t::apl_arcane()
   default_list -> add_talent( this, "Mirror Image", "if=buff.arcane_power.down" );
   default_list -> add_action( "stop_burn_phase,if=prev_gcd.1.evocation&burn_phase_duration>gcd.max" );
   default_list -> add_action( this, "Mark of Aluneth", "if=cooldown.arcane_power.remains>20" );
-  default_list -> add_action( mage_t::get_special_use_items( "horn_of_valor", false ) );
-  default_list -> add_action( mage_t::get_special_use_items( "obelisk_of_the_void", false ) );
-  default_list -> add_action( mage_t::get_special_use_items( "mrrgrias_favor", false ) );
-  default_list -> add_action( mage_t::get_special_use_items( "pharameres_forbidden_grimoire", false ) );
-  default_list -> add_action( mage_t::get_special_use_items( "kiljaedens_burning_wish", false ) );
+  default_list -> add_action( mage_t::get_special_use_items( "horn_of_valor" ) );
+  default_list -> add_action( mage_t::get_special_use_items( "obelisk_of_the_void" ) );
+  default_list -> add_action( mage_t::get_special_use_items( "mrrgrias_favor" ) );
+  default_list -> add_action( mage_t::get_special_use_items( "pharameres_forbidden_grimoire" ) );
+  default_list -> add_action( mage_t::get_special_use_items( "kiljaedens_burning_wish" ) );
   default_list -> add_action( "call_action_list,name=build,if=buff.arcane_charge.stack<4" );
   default_list -> add_action( "call_action_list,name=init_burn,if=buff.arcane_power.down&buff.arcane_charge.stack=4&(cooldown.mark_of_aluneth.remains=0|cooldown.mark_of_aluneth.remains>20)&(!talent.rune_of_power.enabled|(cooldown.arcane_power.remains<=action.rune_of_power.cast_time|action.rune_of_power.recharge_time<cooldown.arcane_power.remains))|target.time_to_die<45" );
   default_list -> add_action( "call_action_list,name=burn,if=burn_phase" );
@@ -7173,10 +7146,7 @@ void mage_t::apl_arcane()
   {
     cooldowns -> add_action( racial_actions[i] );
   }
-  for( size_t i = 0; i < item_actions.size(); i++ )
-  {
-    cooldowns -> add_action( item_actions[i] );
-  }
+  cooldowns -> add_action( "use_items" );
   if ( race == RACE_TROLL || race == RACE_ORC )
   {
     cooldowns -> add_action( "potion,if=buff.arcane_power.up&(buff.berserking.up|buff.blood_fury.up)" );
@@ -7213,8 +7183,7 @@ void mage_t::apl_arcane()
 
 void mage_t::apl_fire()
 {
-  std::vector<std::string> non_special_item_actions       = mage_t::get_non_speical_item_actions();
-  std::vector<std::string> racial_actions                 = get_racial_actions();
+  std::vector<std::string> racial_actions     = get_racial_actions();
 
 
   action_priority_list_t* default_list        = get_action_priority_list( "default"           );
@@ -7229,9 +7198,9 @@ void mage_t::apl_fire()
   default_list -> add_talent( this, "Rune of Power", "if=cooldown.combustion.remains>40&buff.combustion.down&!talent.kindling.enabled|target.time_to_die.remains<11|talent.kindling.enabled&(charges_fractional>1.8|time<40)&cooldown.combustion.remains>40" );
   default_list -> add_action( mage_t::get_special_use_items( "horn_of_valor", true ) );
   default_list -> add_action( mage_t::get_special_use_items( "obelisk_of_the_void", true ) );
-  default_list -> add_action( mage_t::get_special_use_items( "mrrgrias_favor", false ) );
-  default_list -> add_action( mage_t::get_special_use_items( "pharameres_forbidden_grimoire", false ) );
-  default_list -> add_action( mage_t::get_special_use_items( "kiljaedens_burning_wish", false ) );
+  default_list -> add_action( mage_t::get_special_use_items( "mrrgrias_favor" ) );
+  default_list -> add_action( mage_t::get_special_use_items( "pharameres_forbidden_grimoire" ) );
+  default_list -> add_action( mage_t::get_special_use_items( "kiljaedens_burning_wish" ) );
 
   default_list -> add_action( "call_action_list,name=combustion_phase,if=cooldown.combustion.remains<=action.rune_of_power.cast_time+(!talent.kindling.enabled*gcd)&(!talent.firestarter.enabled|target.health.pct<90|active_enemies>=4|active_enemies>=2&talent.flame_patch.enabled)|buff.combustion.up" );
   default_list -> add_action( "call_action_list,name=rop_phase,if=buff.rune_of_power.up&buff.combustion.down" );
@@ -7247,11 +7216,8 @@ void mage_t::apl_fire()
     combustion_phase -> add_action( racial_actions[i] );
   }
 
-  for( size_t i = 0; i < non_special_item_actions.size(); i++ )
-  {
-    combustion_phase -> add_action( non_special_item_actions[i] );
-  }
-  combustion_phase -> add_action( mage_t::get_special_use_items( "obelisk_of_the_void", false ) );
+  combustion_phase -> add_action( "use_items" );
+  combustion_phase -> add_action( mage_t::get_special_use_items( "obelisk_of_the_void" ) );
   combustion_phase -> add_action( this, "Pyroblast", "if=buff.kaelthas_ultimate_ability.react&buff.combustion.remains>execute_time" );
   combustion_phase -> add_action( this, "Pyroblast", "if=buff.hot_streak.up" );
   combustion_phase -> add_action( this, "Fire Blast", "if=buff.heating_up.up" );
@@ -7300,7 +7266,6 @@ void mage_t::apl_fire()
 
 void mage_t::apl_frost()
 {
-  std::vector<std::string> item_actions = get_item_actions();
   std::vector<std::string> racial_actions = get_racial_actions();
 
   action_priority_list_t* default_list = get_action_priority_list( "default"           );
@@ -7314,11 +7279,11 @@ void mage_t::apl_frost()
   default_list -> add_action( "variable,name=fof_react,value=buff.fingers_of_frost.stack,if=equipped.lady_vashjs_grasp&buff.icy_veins.up&variable.time_until_fof>9|prev_off_gcd.freeze" );
   default_list -> add_action( this, "Ice Lance", "if=variable.fof_react=0&prev_gcd.1.flurry" );
   default_list -> add_action( this, "Time Warp", "if=(time=0&buff.bloodlust.down)|(buff.bloodlust.down&equipped.132410&(cooldown.icy_veins.remains<1|target.time_to_die<50))" );
-  default_list -> add_action( mage_t::get_special_use_items( "horn_of_valor", false ) );
-  default_list -> add_action( mage_t::get_special_use_items( "obelisk_of_the_void", false ) );
-  default_list -> add_action( mage_t::get_special_use_items( "mrrgrias_favor", false ) );
-  default_list -> add_action( mage_t::get_special_use_items( "pharameres_forbidden_grimoire", false ) );
-  default_list -> add_action( mage_t::get_special_use_items( "kiljaedens_burning_wish", false ) );
+  default_list -> add_action( mage_t::get_special_use_items( "horn_of_valor" ) );
+  default_list -> add_action( mage_t::get_special_use_items( "obelisk_of_the_void" ) );
+  default_list -> add_action( mage_t::get_special_use_items( "mrrgrias_favor" ) );
+  default_list -> add_action( mage_t::get_special_use_items( "pharameres_forbidden_grimoire" ) );
+  default_list -> add_action( mage_t::get_special_use_items( "kiljaedens_burning_wish" ) );
   default_list -> add_action( "call_action_list,name=cooldowns" );
   default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>=4" );
   default_list -> add_action( "call_action_list,name=single" );
@@ -7352,15 +7317,12 @@ void mage_t::apl_frost()
   aoe -> add_talent( this, "Glacial Spike" );
   aoe -> add_action( this, "Frostbolt" );
 
-  cooldowns    -> add_talent( this, "Rune of Power", "if=cooldown.icy_veins.remains<cast_time|charges_fractional>1.9&cooldown.icy_veins.remains>10|buff.icy_veins.up|target.time_to_die.remains+5<charges_fractional*10" );
-  cooldowns    -> add_action( "potion,if=cooldown.icy_veins.remains<1" );
-  cooldowns    -> add_action( "variable,name=iv_start,value=time,if=cooldown.icy_veins.ready&buff.icy_veins.down" );
-  cooldowns    -> add_action( this, "Icy Veins", "if=buff.icy_veins.down" );
-  cooldowns    -> add_talent( this, "Mirror Image" );
-  for( size_t i = 0; i < item_actions.size(); i++ )
-  {
-    cooldowns -> add_action( item_actions[i] );
-  }
+  cooldowns -> add_talent( this, "Rune of Power", "if=cooldown.icy_veins.remains<cast_time|charges_fractional>1.9&cooldown.icy_veins.remains>10|buff.icy_veins.up|target.time_to_die.remains+5<charges_fractional*10" );
+  cooldowns -> add_action( "potion,if=cooldown.icy_veins.remains<1" );
+  cooldowns -> add_action( "variable,name=iv_start,value=time,if=cooldown.icy_veins.ready&buff.icy_veins.down" );
+  cooldowns -> add_action( this, "Icy Veins", "if=buff.icy_veins.down" );
+  cooldowns -> add_talent( this, "Mirror Image" );
+  cooldowns -> add_action( "use_items" );
   for( size_t i = 0; i < racial_actions.size(); i++ )
   {
     cooldowns -> add_action( racial_actions[i] );
@@ -7711,6 +7673,7 @@ void mage_t::reset()
   }
 
   last_bomb_target = nullptr;
+  ground_aoe_expiration.clear();
   burn_phase.reset();
 }
 
@@ -7925,6 +7888,44 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
     };
 
     return new icicles_expr_t( *this );
+  }
+
+  std::vector<std::string> splits = util::string_split( name_str, "." );
+  if ( splits.size() == 3 && util::str_compare_ci( splits[0], "ground_aoe" ) )
+  {
+    struct ground_aoe_expr_t : public mage_expr_t
+    {
+      std::string aoe_type;
+
+      ground_aoe_expr_t( mage_t& m, const std::string& name_str, const std::string& aoe ) :
+        mage_expr_t( name_str, m ),
+        aoe_type( aoe )
+      {
+        util::tolower( aoe_type );
+      }
+
+      double evaluate() override
+      {
+        timespan_t expiration;
+
+        auto it = mage.ground_aoe_expiration.find( aoe_type );
+        if ( it != mage.ground_aoe_expiration.end() )
+        {
+          expiration = it -> second;
+        }
+
+        return std::max( 0.0, ( expiration - mage.sim -> current_time() ).total_seconds() );
+      }
+    };
+
+    if ( util::str_compare_ci( splits[2], "remains" ) )
+    {
+      return new ground_aoe_expr_t( *this, name_str, splits[1] );
+    }
+    else
+    {
+      sim -> errorf( "Player %s ground_aoe expression: unknown operation '%s'", name(), splits[2] );
+    }
   }
 
   return player_t::create_expression( a, name_str );

@@ -266,7 +266,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=1072)     : Apply Aura (6) | Unknown(308)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7 | Target: Enemy (6)
-                   Affected Spells: Multi-Shot (2643), Freezing Trap (3355), Concussive Shot (5116), Ice Trap (13809), Explosive Trap (13812), Explosive Trap (13813), Wyvern Sting (19386), Aimed Shot (19434), Intimidation (19577), Kill Command (34026), Chimaera Shot (53209), Bullheaded (63896), Serpent Sting (118253), Barrage (120360), Barrage (120361), A Murder of Crows (131900), Iron Horde Trip Mine (155918), Steel Trap (162488), Steel Trap (162496), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Aspect of the Turtle (186265), Bursting Shot (186387), Freezing Trap (187650), Freezing Trap (187651), Tar Trap (187698), Tar Trap (187699), Mongoose Bite (190928), Aimed Shot (191043), Explosive Trap (191433), Cobra Shot (193455), Volley (194392), Black Arrow (194599), Stomp (199530), Throwing Axes (200163), Stampede (201594), Stomp (201754), Flanking Strike (202800), Chimaera Shot (204304), Flanking Strike (204740), Titan's Thunder (207097), Explosive Shot (212431), Explosive Shot (212680), Sidewinders (214579), Sidewinders (214581), Dire Frenzy (217200), Thunderslash (243234)
+                   Affected Spells: Multi-Shot (2643), Freezing Trap (3355), Concussive Shot (5116), Ice Trap (13809), Explosive Trap (13812), Explosive Trap (13813), Wyvern Sting (19386), Aimed Shot (19434), Intimidation (19577), Kill Command (34026), Scatter Shot (37506), Chimaera Shot (53209), Bullheaded (63896), Serpent Sting (118253), Barrage (120360), Barrage (120361), A Murder of Crows (131900), Iron Horde Trip Mine (155918), Steel Trap (162488), Steel Trap (162496), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Aspect of the Turtle (186265), Bursting Shot (186387), Freezing Trap (187650), Freezing Trap (187651), Tar Trap (187698), Tar Trap (187699), Mongoose Bite (190928), Aimed Shot (191043), Explosive Trap (191433), Cobra Shot (193455), Volley (194392), Black Arrow (194599), Stomp (199530), Throwing Axes (200163), Stampede (201594), Stomp (201754), Flanking Strike (202800), Chimaera Shot (204304), Flanking Strike (204740), Explosive Shot (212431), Explosive Shot (212680), Scatter Shot (213691), Sidewinders (214579), Sidewinders (214581), Dire Frenzy (217200), Thunderslash (243234)
 Description      : $@spelldesc187650
 Tooltip          : Incapacitated.
 
@@ -422,7 +422,7 @@ Range            : 100 yards
 Duration         : 10 seconds
 Affecting spells : Freezing Trap (3355 effect#2), Survival Hunter (137017 effect#1), Explosive Force (203670 effect#1), Guerrilla Tactics (236698 effect#7), 
 Attributes       : ........ ........ .....x.. x..x....   ...x.x.x ........ ........ ........ 
-                 : ..x..... ......x. ...x.... ........   ......xx .x...... ..x..... ........ 
+                 : ..x..... ......x. ...x.... ........   ......xx .x...... ..x..... ......x. 
                  : .......x .......x ........ ........   ...x.... .......x .xx..... ..x..... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : .....x.. .x..x... ........ ........   ........ ...x.... ....x... ........ 
@@ -434,7 +434,7 @@ Effects          :
 #2 (id=6179)     : Apply Aura (6) | Periodic Damage (3): fire every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.35000 | Radius: 0 - 5 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : $@spelldesc191433
-Tooltip          : $w2 Fire damage every $t2 seconds.
+Tooltip          : Suffering $w2 Fire damage every $t2 sec.
 
 Name             : Explosive Trap (Fire Trap) (id=13813) [Spell Family (9)] 
 Class            : Hunter
@@ -2655,7 +2655,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 60 seconds
-Affecting spells : Mastery: Master of Beasts (76657 effect#3), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#4), Marksmanship Hunter (137016 effect#3), Guide: Sharpshooting (178549 effect#2), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#3), Roar of the Seven Lions (207318 effect#1), Trueshot (211327 effect#1)
+Affecting spells : Mastery: Master of Beasts (76657 effect#3), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#4), Marksmanship Hunter (137016 effect#3), Guide: Sharpshooting (178549 effect#2), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#3), Roar of the Seven Lions (207318 effect#1), Trueshot (211327 effect#1), The Mantle of Command (247993 effect#2)
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ...x.... 
@@ -2674,7 +2674,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 100 yards
 Velocity         : 1.5 yards/sec
-Affecting spells : Freezing Trap (3355 effect#2), Mastery: Master of Beasts (76657 effect#3), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#3), Guide: Sharpshooting (178549 effect#2), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#3), Roar of the Seven Lions (207318 effect#1), Trueshot (211327 effect#1)
+Affecting spells : Freezing Trap (3355 effect#2), Mastery: Master of Beasts (76657 effect#3), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#3), Guide: Sharpshooting (178549 effect#2), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#3), Roar of the Seven Lions (207318 effect#1), Trueshot (211327 effect#1), The Mantle of Command (247993 effect#2)
 Attributes       : ........ ........ x....x.x ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2815,7 +2815,7 @@ Effects          :
                    Affected Spells: Kill Command (34026), Chimaera Shot (53209), Kill Command (83381), Dire Beast (120679), Chimaera Shot (171454), Chimaera Shot (171457), Volley (194386), Volley (194392), Black Arrow (194599), Throwing Axes (200163), Flanking Strike (202800), Chimaera Shot (204304), Flanking Strike (204740), Butchery (212436), Dire Longevity (215911), Dire Frenzy (217200), Dire Frenzy (217207)
 #3 (id=191143)   : Apply Aura (6) | Hasted Global Cooldown (417)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-                   Affected Spells: Disengage (781), Call Pet 1 (883), Revive Pet (982), Flare (1543), Multi-Shot (2643), Concussive Shot (5116), Feign Death (5384), Ice Trap (13809), Explosive Trap (13813), Wyvern Sting (19386), Aimed Shot (19434), Intimidation (19577), Kill Command (34026), Misdirection (34477), Chimaera Shot (53209), Gift of the Naaru (59543), Call Pet 2 (83242), Call Pet 3 (83243), Call Pet 4 (83244), Call Pet 5 (83245), Kill Command (83381), Binding Shot (109248), Exhilaration (109304), Serpent Sting (118253), Barrage (120360), Dire Beast (120679), A Murder of Crows (131894), A Murder of Crows (131900), Flare (132950), Counter Shot (147362), Iron Horde Trip Mine (155918), Steel Trap (162488), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Lacerate (185855), Marked Shot (185901), Aspect of the Cheetah (186257), Aspect of the Cheetah (186258), Aspect of the Turtle (186265), Raptor Strike (186270), Aspect of the Eagle (186289), Bursting Shot (186387), Freezing Trap (187650), Tar Trap (187698), Muzzle (187707), Carve (187708), Harpoon (190925), Mongoose Bite (190928), Aimed Shot (191043), Sticky Bomb (191241), Explosive Trap (191433), Hatchet Toss (193265), Cobra Shot (193455), Aspect of the Wild (193530), Caltrops (194277), Caltrops (194279), Volley (194386), Volley (194392), Spitting Cobra (194407), Black Arrow (194599), Dragonsfire Grenade (194855), Wing Clip (195645), Piercing Shot (198670), Camouflage (199483), Ranger's Net (200108), Throwing Axes (200163), Stampede (201594), Flanking Strike (202800), Fury of the Eagle (203415), Windburst (204147), Chimaera Shot (204304), Flanking Strike (204740), A Murder of Crows (206505), Sentinel (206817), Explosive Shot (212431), Butchery (212436), Piercing Shot (213678), Sidewinders (214579), Sidewinders (214581), Dire Longevity (215911), Dire Frenzy (217200), Dire Frenzy (217207)
+                   Affected Spells: Disengage (781), Call Pet 1 (883), Revive Pet (982), Flare (1543), Multi-Shot (2643), Concussive Shot (5116), Feign Death (5384), Ice Trap (13809), Explosive Trap (13813), Wyvern Sting (19386), Aimed Shot (19434), Intimidation (19577), Kill Command (34026), Misdirection (34477), Chimaera Shot (53209), Gift of the Naaru (59543), Call Pet 2 (83242), Call Pet 3 (83243), Call Pet 4 (83244), Call Pet 5 (83245), Kill Command (83381), Binding Shot (109248), Exhilaration (109304), Serpent Sting (118253), Barrage (120360), Dire Beast (120679), A Murder of Crows (131894), A Murder of Crows (131900), Flare (132950), Counter Shot (147362), Iron Horde Trip Mine (155918), Steel Trap (162488), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Lacerate (185855), Marked Shot (185901), Aspect of the Cheetah (186257), Aspect of the Cheetah (186258), Aspect of the Turtle (186265), Raptor Strike (186270), Aspect of the Eagle (186289), Bursting Shot (186387), Freezing Trap (187650), Tar Trap (187698), Muzzle (187707), Carve (187708), Harpoon (190925), Mongoose Bite (190928), Aimed Shot (191043), Sticky Bomb (191241), Explosive Trap (191433), Hatchet Toss (193265), Cobra Shot (193455), Aspect of the Wild (193530), Caltrops (194277), Caltrops (194279), Volley (194386), Volley (194392), Spitting Cobra (194407), Black Arrow (194599), Dragonsfire Grenade (194855), Wing Clip (195645), Piercing Shot (198670), Camouflage (199483), Ranger's Net (200108), Throwing Axes (200163), Stampede (201594), Flanking Strike (202800), Fury of the Eagle (203415), Windburst (204147), Chimaera Shot (204304), Flanking Strike (204740), A Murder of Crows (206505), Sentinel (206817), Explosive Shot (212431), Butchery (212436), Piercing Shot (213678), Scatter Shot (213691), Sidewinders (214579), Sidewinders (214581), Dire Longevity (215911), Dire Frenzy (217200), Dire Frenzy (217207)
 #4 (id=191144)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1628 | Target: Self (1)
                    Affected Spells (Category): Sidewinders (214579)
@@ -2876,13 +2876,13 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179698)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
-                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-                   Affected Spells: Multi-Shot (2643), Kill Command (34026), Chimaera Shot (53209), Barrage (120360), Barrage (120361), A Murder of Crows (131900), Chimaera Shot (171454), Chimaera Shot (171457), Cobra Shot (193455), Volley (194392), Stomp (199530), Stampede (201594), Stomp (201754), Titan's Thunder (207097), Thunderslash (243234)
+                   Base Value: 6 | Scaled Value: 6 | Target: Self (1)
+                   Affected Spells: Multi-Shot (2643), Kill Command (34026), Chimaera Shot (53209), Barrage (120360), Barrage (120361), A Murder of Crows (131900), Chimaera Shot (171454), Chimaera Shot (171457), Cobra Shot (193455), Volley (194392), Stomp (199530), Stampede (201594), Stomp (201754), Thunderslash (243234)
 #2 (id=191138)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Multi-Shot (2643), Kill Command (34026), Chimaera Shot (53209), Barrage (120360), Barrage (120361), A Murder of Crows (131900), Chimaera Shot (171454), Chimaera Shot (171457), Cobra Shot (193455), Volley (194392), Stomp (199530), Stampede (201594), Stomp (201754), Titan's Thunder (207097), Thunderslash (243234)
+                   Base Value: 6 | Scaled Value: 6 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Multi-Shot (2643), Kill Command (34026), Chimaera Shot (53209), Barrage (120360), Barrage (120361), A Murder of Crows (131900), Chimaera Shot (171454), Chimaera Shot (171457), Cobra Shot (193455), Volley (194392), Stomp (199530), Stampede (201594), Stomp (201754), Thunderslash (243234)
 #3 (id=191139)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+                   Base Value: 6 | Scaled Value: 6 | Target: Self (1)
                    Affected Spells: Bestial Wrath (19574), Bestial Wrath (186254)
 #4 (id=191140)   : Apply Aura (6) | Add Flat Modifier (107): Generic Modifier (0)
                    Base Value: -45 | Scaled Value: -45 | Target: Self (1)
@@ -2895,7 +2895,7 @@ Effects          :
                    Affected Spells: Volley (194386), Volley (194392)
 #7 (id=260898)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self (1)
-                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Dread Reflections (246466), Infernal Cinders (242218)
+                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218)
 #8 (id=260899)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #9 (id=260900)   : Apply Aura (6) | Dummy (4)
@@ -2922,7 +2922,7 @@ Effects          :
                    Affected Spells: Multi-Shot (2643)
 #2 (id=191134)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self (1)
-                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Dread Reflections (246466), Infernal Cinders (242218)
+                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218)
 #3 (id=191135)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 12 | Scaled Value: 12 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Barrage (120361), A Murder of Crows (131894), A Murder of Crows (131900), Arcane Shot (185358), Bursting Shot (186387), Aimed Shot (191043), Volley (194386), Volley (194392), Black Arrow (194599), Piercing Shot (198670), Windburst (204147), A Murder of Crows (206505), Marked Shot (212621), Piercing Shot (213678), Sidewinders (214579), Sidewinders (214581)
@@ -3716,7 +3716,7 @@ Spell Level      : 20
 Proc Chance      : 20%
 Proc Flags       : ......x. ........ ........ ........ 
                  : White Ranged
-Affecting spells : One with the Pack (199528 effect#1), The Mantle of Command (235721 effect#1)
+Affecting spells : One with the Pack (199528 effect#1)
 Attributes       : ....x.x. x....... ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3736,7 +3736,7 @@ Class            : Hunter
 School           : Physical
 Spell Level      : 20
 Duration         : 4 seconds
-Affecting spells : One with the Pack (199528 effect#1), The Mantle of Command (235721 effect#1)
+Affecting spells : One with the Pack (199528 effect#1)
 Triggered by     : Wild Call (185789)
 Attributes       : .......x ........ ........ .......x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -4606,7 +4606,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=283823)   : Apply Aura (6) | Add Percent Modifier (108): Spell Range (5)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.62500 | Misc Value: 5 | Target: Self (1)
-                   Affected Spells: Flare (1543), Multi-Shot (2643), Concussive Shot (5116), Wyvern Sting (19386), Aimed Shot (19434), Kill Command (34026), Chimaera Shot (53209), Bullheaded (63896), Binding Shot (109248), Barrage (120360), Barrage (120361), Dire Beast (120679), A Murder of Crows (131894), A Murder of Crows (131900), Flare (132950), Counter Shot (147362), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Marked Shot (185901), Bursting Shot (186387), Mongoose Bite (190928), Aimed Shot (191043), Cobra Shot (193455), Volley (194386), Volley (194392), Black Arrow (194599), Piercing Shot (198670), Stomp (199530), Stampede (201594), Stomp (201754), Fury of the Eagle (203415), Windburst (204147), Chimaera Shot (204304), A Murder of Crows (206505), Sentinel (206817), Titan's Thunder (207097), Explosive Shot (212431), Explosive Shot (212680), Piercing Shot (213678), Sidewinders (214579), Sidewinders (214581), Dire Longevity (215911), Thunderslash (243234)
+                   Affected Spells: Flare (1543), Multi-Shot (2643), Concussive Shot (5116), Wyvern Sting (19386), Aimed Shot (19434), Kill Command (34026), Chimaera Shot (53209), Bullheaded (63896), Binding Shot (109248), Barrage (120360), Barrage (120361), Dire Beast (120679), A Murder of Crows (131894), A Murder of Crows (131900), Flare (132950), Counter Shot (147362), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Marked Shot (185901), Bursting Shot (186387), Mongoose Bite (190928), Aimed Shot (191043), Cobra Shot (193455), Volley (194386), Volley (194392), Black Arrow (194599), Piercing Shot (198670), Stomp (199530), Stampede (201594), Stomp (201754), Fury of the Eagle (203415), Windburst (204147), Chimaera Shot (204304), A Murder of Crows (206505), Sentinel (206817), Explosive Shot (212431), Explosive Shot (212680), Piercing Shot (213678), Scatter Shot (213691), Sidewinders (214579), Sidewinders (214581), Dire Longevity (215911), Thunderslash (243234)
 #2 (id=283906)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.50000 | Target: Self (1)
                    Affected Spells: Aimed Shot (19434), Barrage (120361), A Murder of Crows (131894), A Murder of Crows (131900), Bursting Shot (186387), Aimed Shot (191043), Volley (194386), Volley (194392), Black Arrow (194599), Piercing Shot (198670), Windburst (204147), A Murder of Crows (206505), Marked Shot (212621), Explosive Shot (212680), Piercing Shot (213678)
@@ -4985,11 +4985,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Requires line of sight (186)
 Effects          :
 #1 (id=286030)   : Apply Aura (6) | Periodic Damage (3): fire every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.22500 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.63000 | Target: Enemy (6)
 #2 (id=286031)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -20 | Scaled Value: -20 | Mechanic: Unknown(88) | Target: Enemy (6)
 #3 (id=347729)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3.00000 | Radius: 0 - 5 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 4.00000 | Radius: 0 - 5 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : $@spelldesc194855
 Tooltip          : You're burning! You take Fire damage and deal Fire damage to nearby enemies every $t1 sec.
 Slowed by $s2%.
@@ -5546,7 +5546,7 @@ Name             : Stampede (id=201594) [Spell Family (9)]
 Class            : Hunter
 School           : Physical
 Range            : 150 yards
-Affecting spells : Freezing Trap (3355 effect#2), Mastery: Master of Beasts (76657 effect#3), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Guide: Sharpshooting (178549 effect#2), Mastery: Sniper Training (193468 effect#1)
+Affecting spells : Freezing Trap (3355 effect#2), Mastery: Master of Beasts (76657 effect#3), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Guide: Sharpshooting (178549 effect#2), Mastery: Sniper Training (193468 effect#1), The Mantle of Command (247993 effect#2)
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ........ ........   ........ ........ ........ ......x. 
                  : .......x ........ ........ ........   ...x.... .......x .xx..... ........ 
@@ -5672,7 +5672,7 @@ Effects          :
                    Base Value: 800 | Scaled Value: 8 | Target: Enemy (6)
 #2 (id=301285)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-Description      : Focuses the power of Wind through |cFFFFCC99Thas'dorah|r, dealing $sw1 Physical damage to your target, and  leaving behind a trail of wind for $204475d that increases the movement speed of allies by $204477s1%.
+Description      : Focuses the power of Wind through |cFFFFCC99Thas'dorah|r, dealing $sw1 Physical damage to your target, and leaving behind a trail of wind for $204475d that increases the movement speed of allies by $204477s1%.
 
 Name             : Chimaera Shot (id=204304) [Spell Family (9)] 
 Class            : Hunter
@@ -5811,7 +5811,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 60 seconds
-Affecting spells : Mastery: Master of Beasts (76657 effect#3), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#4), Marksmanship Hunter (137016 effect#3), Guide: Sharpshooting (178549 effect#2), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#3), Roar of the Seven Lions (207318 effect#1), Trueshot (211327 effect#1)
+Affecting spells : Mastery: Master of Beasts (76657 effect#3), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#4), Marksmanship Hunter (137016 effect#3), Guide: Sharpshooting (178549 effect#2), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#3), Roar of the Seven Lions (207318 effect#1), Trueshot (211327 effect#1), The Mantle of Command (247993 effect#2)
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ...x.... 
@@ -5951,7 +5951,6 @@ Name             : Titan's Thunder (id=207097) [Spell Family (9)]
 Class            : Hunter
 School           : Nature
 Range            : 10 yards
-Affecting spells : Freezing Trap (3355 effect#2), Beast Mastery Hunter (137015 effect#1), Guide: Sharpshooting (178549 effect#2), Mastery: Sniper Training (193468 effect#1)
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

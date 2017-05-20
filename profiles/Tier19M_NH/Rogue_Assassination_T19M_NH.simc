@@ -29,7 +29,6 @@ actions.precombat+=/apply_poison
 actions.precombat+=/stealth
 actions.precombat+=/potion
 actions.precombat+=/marked_for_death,if=raid_event.adds.in>40
-actions.precombat+=/variable,name=vigor_active,value=talent.vigor.enabled|equipped.soul_of_the_shadowblade
 
 # Executed every time the actor is available.
 actions=variable,name=energy_regen_combined,value=energy.regen+poisoned_bleeds*(7+talent.venom_rush.enabled*3)%2

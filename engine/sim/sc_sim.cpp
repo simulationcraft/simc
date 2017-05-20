@@ -3214,6 +3214,11 @@ void sim_t::create_options()
   add_option( opt_bool( "show_hotfixes", display_hotfixes ) );
   // Bonus ids
   add_option( opt_bool( "show_bonus_ids", display_bonus_ids ) );
+
+  // Expansion-specific options
+
+  // Legion
+  add_option( opt_int( "legion.infernal_cinders_users", expansion_opts.infernal_cinders_users, 1, 20 ) );
 }
 
 // sim_t::parse_option ======================================================

@@ -104,6 +104,8 @@ namespace item
   void terror_from_below( special_effect_t&         );
   void spectral_thurible( special_effect_t&         );
   void tome_of_unraveling_sanity( special_effect_t& );
+  void infernal_cinders( special_effect_t&          );
+  void vial_of_ceaseless_toxins( special_effect_t&  );
 
   // 7.2.0 Dungeon
   void dreadstone_of_endless_shadows( special_effect_t& );
@@ -338,10 +340,10 @@ void enchants::mark_of_the_hidden_satyr( special_effect_t& effect )
 }
 // Aran's Relaxing Ruby ============================================================
 
-struct flame_wreath_t : public spell_t
+struct flame_wreath_t : public proc_spell_t
 {
   flame_wreath_t( const special_effect_t& effect ) :
-    spell_t( "flame_wreath", effect.player, effect.player -> find_spell( 230257 ) )
+    proc_spell_t( "flame_wreath", effect.player, effect.player -> find_spell( 230257 ) )
   {
     background = may_crit = true;
     callbacks = false;
@@ -559,10 +561,10 @@ void item::choker_of_barbed_reins( special_effect_t& effect )
 }
 
 // Deteriorated Construct Core ==============================================
-struct volatile_energy_t : public spell_t
+struct volatile_energy_t : public proc_spell_t
 {
   volatile_energy_t( const special_effect_t& effect ) :
-    spell_t( "volatile_energy", effect.player, effect.player -> find_spell( 230241 ) )
+    proc_spell_t( "volatile_energy", effect.player, effect.player -> find_spell( 230241 ) )
   {
     background = may_crit = true;
     callbacks = false;
@@ -647,10 +649,10 @@ void item::eye_of_command( special_effect_t& effect )
 // Note, custom implementations are going to have to apply the empower multiplier independent of
 // this function.
 
-struct cruel_garrote_t: public spell_t
+struct cruel_garrote_t: public proc_spell_t
 {
   cruel_garrote_t( const special_effect_t& effect ):
-    spell_t( "cruel_garrote", effect.player, effect.driver() )
+    proc_spell_t( "cruel_garrote", effect.player, effect.driver() )
   {
     background = hasted_ticks = tick_may_crit = may_crit = true;
     base_td *= util::composite_karazhan_empower_multiplier( effect.player );
@@ -704,10 +706,10 @@ void item::erratic_metronome( special_effect_t& effect )
 
 // Icon of Rot ==============================================================
 
-struct carrion_swarm_t : public spell_t
+struct carrion_swarm_t : public proc_spell_t
 {
   carrion_swarm_t( const special_effect_t& effect ) :
-    spell_t( "carrion_swarm", effect.player, effect.driver() -> effectN( 1 ).trigger() )
+    proc_spell_t( "carrion_swarm", effect.player, effect.driver() -> effectN( 1 ).trigger() )
   {
     background = true;
     hasted_ticks = may_miss = may_dodge = may_parry = may_block = may_crit = false;
@@ -787,10 +789,10 @@ void item::impact_tremor( special_effect_t& effect )
 
 
 // Fury of the Burning Sky ==================================================
-struct solar_collapse_impact_t : public spell_t
+struct solar_collapse_impact_t : public proc_spell_t
 {
   solar_collapse_impact_t( const special_effect_t& effect ) :
-    spell_t( "solar_collapse_damage", effect.player, effect.player -> find_spell( 229737 ) )
+    proc_spell_t( "solar_collapse_damage", effect.player, effect.player -> find_spell( 229737 ) )
   {
     background = may_crit = true;
     callbacks = false;
@@ -892,7 +894,7 @@ void item::fury_of_the_burning_sky( special_effect_t& effect )
 
 // Mrrgria's Favor ==========================================================
 
-struct thunder_ritual_impact_t : public spell_t
+struct thunder_ritual_impact_t : public proc_spell_t
 {
   //TODO: Are these multipliers multiplicative with one another or should they be added together then applied?
   // Right now we assume they are independant multipliers.
@@ -908,7 +910,7 @@ struct thunder_ritual_impact_t : public spell_t
   cooldown_t* pair_icd;
 
   thunder_ritual_impact_t( const special_effect_t& effect ) :
-    spell_t( "thunder_ritual_damage", effect.player, effect.driver() -> effectN( 1 ).trigger() ),
+    proc_spell_t( "thunder_ritual_damage", effect.player, effect.driver() -> effectN( 1 ).trigger() ),
     pair_multiplied( false ),
     chest_multiplier( util::composite_karazhan_empower_multiplier( effect.player ) ),
     pair_buffed( false )
@@ -1018,14 +1020,14 @@ void item::mrrgrias_favor( special_effect_t& effect )
 
 // Toe Knee's Promise ======================================================
 
-struct flame_gale_pulse_t : spell_t
+struct flame_gale_pulse_t : proc_spell_t
 {
   //TODO: Are these multipliers multiplicative with one another or should they be added together then applied?
   // Right now we assume they are independant multipliers.
   double chest_multiplier;
   double paired_multiplier;
   flame_gale_pulse_t( special_effect_t& effect ) :
-    spell_t( "flame_gale_pulse", effect.player, effect.player -> find_spell( 230213 ) ),
+    proc_spell_t( "flame_gale_pulse", effect.player, effect.player -> find_spell( 230213 ) ),
     chest_multiplier( util::composite_karazhan_empower_multiplier( effect.player ) ),
     paired_multiplier( 1.0 )
   {
@@ -1038,6 +1040,7 @@ struct flame_gale_pulse_t : spell_t
     base_dd_min = base_dd_max = data().effectN( 2 ).average( effect.item ) * paired_multiplier * chest_multiplier;
   }
 };
+
 struct flame_gale_driver_t : spell_t
 {
   flame_gale_pulse_t* flame_pulse;
@@ -1045,7 +1048,7 @@ struct flame_gale_driver_t : spell_t
     spell_t( "flame_gale_driver", effect.player, effect.player -> find_spell( 230213 ) ),
     flame_pulse( new flame_gale_pulse_t( effect ) )
   {
-  background = true;
+    background = true;
   }
 
   virtual void impact( action_state_t* s )
@@ -1059,6 +1062,7 @@ struct flame_gale_driver_t : spell_t
         .action( flame_pulse ) );
   }
 };
+
 void item::toe_knees_promise( special_effect_t& effect )
 {
   effect.execute_action = new flame_gale_driver_t( effect );
@@ -1095,7 +1099,9 @@ struct majordomos_dinner_bell_t : proc_spell_t
   {
     // The way this works, despite the tooltip, is that the buff matches your current food buff
     // If you don't have a food buff, it is random
-    if(player->consumables.food)
+
+    // 5/18/2017 - Reports are that this was hotfixed on PTR to always be random
+    if( player->consumables.food && !maybe_ptr(player->dbc.ptr) )
     {
       const stat_buff_t* food_buff = dynamic_cast<stat_buff_t*>(player->consumables.food);
       if (food_buff && food_buff->stats.size() > 0)
@@ -1388,10 +1394,10 @@ void item::spiked_counterweight( special_effect_t& effect )
 
 // Star Gate ================================================================
 
-struct nether_meteor_t : public spell_t
+struct nether_meteor_t : public proc_spell_t
 {
   nether_meteor_t( const special_effect_t& effect ) :
-    spell_t( "nether_meteor", effect.player, effect.driver() )
+    proc_spell_t( "nether_meteor", effect.player, effect.driver() )
   {
     background = may_crit = true;
     callbacks = false;
@@ -1435,14 +1441,15 @@ void item::star_gate( special_effect_t& effect )
 
 void item::spectral_thurible( special_effect_t& effect )
 {
-  struct piercing_anguish_t : public spell_t
+  struct piercing_anguish_t : public proc_spell_t
   {
     piercing_anguish_t( const special_effect_t& effect ) :
-      spell_t( "piercing_anguish", effect.player, effect.player -> find_spell( 246751 ) )
+      proc_spell_t( "piercing_anguish", effect.player, effect.player -> find_spell( 246751 ) )
     {
       background = may_crit = true;
       callbacks = false;
       item = effect.item;
+      aoe = -1;
       base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item );
     }
   };
@@ -1495,10 +1502,10 @@ void item::spectral_thurible( special_effect_t& effect )
 
 // Terror From Below ============================================================
 
-struct terrow_from_below_t : public spell_t
+struct terrow_from_below_t : public proc_spell_t
 {
   terrow_from_below_t( const special_effect_t& effect ) :
-    spell_t( "terror_from_below", effect.player, effect.player -> find_spell( 242524 ) )
+    proc_spell_t( "terror_from_below", effect.player, effect.player -> find_spell( 242524 ) )
   {
     background = may_crit = true;
     callbacks = false;
@@ -1561,6 +1568,90 @@ void item::tome_of_unraveling_sanity( special_effect_t& effect )
 
   effect.execute_action = create_proc_action<insidious_corruption_t>( effect, b );
   effect.execute_action -> hasted_ticks = true;
+}
+
+// Infernal Cinders =========================================================
+
+struct infernal_cinders_t : public proc_spell_t
+{
+  const spell_data_t* damage_multiplier;
+
+  infernal_cinders_t( const special_effect_t& effect ) :
+    proc_spell_t( effect ),
+    damage_multiplier( effect.player -> find_spell( 246654 ) )
+  { }
+
+  double action_multiplier() const override
+  {
+    double m = proc_spell_t::action_multiplier();
+
+    m *= 1.0 + damage_multiplier -> effectN( 1 ).percent() *
+               ( sim -> expansion_opts.infernal_cinders_users - 1);
+
+    return m;
+  }
+};
+
+void item::infernal_cinders( special_effect_t& effect )
+{
+  effect.execute_action = create_proc_action<infernal_cinders_t>( effect );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Vial of Ceaseless Toxins =================================================
+
+struct ceaseless_toxin_t : public proc_spell_t
+{
+  ceaseless_toxin_t( const special_effect_t& effect ) : proc_spell_t( effect )
+  {
+    aoe = -1;
+  }
+
+  // Need to invalidate target list for every execute, because the ability picks a random target
+  void execute() override
+  {
+    target_cache.is_valid = false;
+
+    proc_spell_t::execute();
+  }
+
+  size_t available_targets( std::vector<player_t*>& tl ) const override
+  {
+    proc_spell_t::available_targets( tl );
+    // Remove targets randomly until thre's only one left.
+    while ( tl.size() > 1 )
+    {
+      size_t index = static_cast<size_t>( rng().range( 0.0, as<double>( tl.size() ) ) );
+      tl.erase( tl.begin() + index );
+    }
+
+    return tl.size();
+  }
+
+  void activate() override
+  {
+    proc_spell_t::activate();
+
+    range::for_each( sim -> actor_list, [ this ]( player_t* target ) {
+      if ( ! target -> is_enemy() )
+      {
+        return;
+      }
+
+      target -> callbacks_on_demise.push_back( [ this ]( player_t* actor ) {
+        if ( get_dot( actor ) -> is_ticking() )
+        {
+          cooldown -> adjust( -timespan_t::from_seconds( data().effectN( 3 ).base_value() ) );
+        }
+      } );
+    } );
+  }
+};
+
+void item::vial_of_ceaseless_toxins( special_effect_t& effect )
+{
+  effect.execute_action = create_proc_action<ceaseless_toxin_t>( effect );
 }
 
 // Windscar Whetstone =======================================================
@@ -1628,7 +1719,7 @@ void item::nightblooming_frond( special_effect_t& effect )
     {
       double m = proc_attack_t::action_multiplier();
 
-      m *= recursive_strikes_buff -> stack();
+      m *= 1.0 + recursive_strikes_buff -> stack() * 0.5;
 
       return m;
     }
@@ -1773,44 +1864,19 @@ void item::might_of_krosus( special_effect_t& effect )
 
 void item::pharameres_forbidden_grimoire( special_effect_t& effect )
 {
-  struct orb_of_destruction_impact_t : public spell_t
+  struct orb_of_destruction_impact_t : public proc_spell_t
   {
     orb_of_destruction_impact_t( const special_effect_t& effect ) :
-      spell_t( "orb_of_destruction_impact", effect.player, effect.driver() ->effectN( 1 ).trigger() )
+      proc_spell_t( "orb_of_destruction_impact", effect.player, effect.driver() ->effectN( 1 ).trigger() )
     {
       background = may_crit = true;
       aoe = -1;
       base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item );
-      // Melee users always deal half damage even if they run 20 yards out to use this trinket. 
-      switch ( effect.player->type )
-      {
-        case WARRIOR:
-        case ROGUE:
-        case PALADIN:
-        case DEMON_HUNTER:
-        case DEATH_KNIGHT:
-        case MONK:
-          base_multiplier *= 0.5;
-          break;
-        default:
-          switch ( effect.player->specialization() )
-          {
-            case HUNTER_SURVIVAL:
-            case SHAMAN_ENHANCEMENT:
-            case DRUID_FERAL:
-            case DRUID_GUARDIAN:
-              base_multiplier *= 0.5;
-              break;
-            default:
-              break;
-          }
-          break;
-      }
     }
 
     double composite_target_multiplier( player_t* t ) const override
     {
-      double am = spell_t::composite_target_multiplier( t );
+      double am = proc_spell_t::composite_target_multiplier( t );
       //Formula for the damage reduction due to distance from the original target seems to fit
       // damage_reduction = 1 - ( distance / 30 ) ^ 2
       // Data used to find this approximation:
@@ -2043,7 +2109,7 @@ void item::tirathons_betrayal( special_effect_t& effect )
 
 // Damage event for the poisoned dreams impact, comes from the Posioned Dreams debuff being
 // impacted by a spell.
-struct poisoned_dreams_impact_t : public spell_t
+struct poisoned_dreams_impact_t : public proc_spell_t
 {
   // Poisoned Dreams has some ICD that prevents the damage event from
   // being triggered multiple times in quick succession.
@@ -2051,7 +2117,7 @@ struct poisoned_dreams_impact_t : public spell_t
   cooldown_t* icd;
   double stack_multiplier;
   poisoned_dreams_impact_t( const special_effect_t& effect ) :
-    spell_t( "poisoned_dreams_damage", effect.player, effect.player -> find_spell( 222705 ) ),
+    proc_spell_t( "poisoned_dreams_damage", effect.player, effect.player -> find_spell( 222705 ) ),
     stack_multiplier( 1.0 )
   {
     background = may_crit = true;
@@ -2319,7 +2385,6 @@ void item::draught_of_souls( special_effect_t& effect )
     {
       aoe = 0; // This does not actually AOE
       dual = true;
-      base_multiplier *= 1.0 + effect.player -> find_specialization_spell( "Unholy Death Knight" ) -> effectN( 4 ).percent();
     }
   };
 
@@ -2347,19 +2412,6 @@ void item::draught_of_souls( special_effect_t& effect )
       {
         damage = new felcrazed_rage_t( effect );
         add_child( damage );
-      }
-
-      switch ( effect_.player->specialization() ) { // Half effectiveness for tanks
-        case WARRIOR_PROTECTION:
-        case PALADIN_PROTECTION:
-        case DEATH_KNIGHT_BLOOD:
-        case MONK_BREWMASTER:
-        case DRUID_GUARDIAN:
-        case DEMON_HUNTER_VENGEANCE:
-          damage->base_dd_multiplier *= 0.5;
-          break;
-        default:
-          break;
       }
     }
 
@@ -2439,7 +2491,6 @@ void item::draught_of_souls( special_effect_t& effect )
 
 // Entwined Elemental Foci ==================================================
 
-// TODO: How do refresh procs for this trinket work?
 void item::entwined_elemental_foci( special_effect_t& effect )
 {
   struct entwined_elemental_foci_cb_t : public dbc_proc_callback_t
@@ -2463,14 +2514,33 @@ void item::entwined_elemental_foci( special_effect_t& effect )
 
     void execute( action_t*, action_state_t* )
     {
-      size_t selected_buff = static_cast<size_t>( rng().range( 0, buffs.size() ) );
+      // Foci prefers to proc inactive buffs over active ones.
+      // Make a vector with only the inactive buffs.
+      std::vector<stat_buff_t*> inactive_buffs;
 
-      buffs[ selected_buff ] -> trigger();
+      for (unsigned i = 0; i < buffs.size(); i++)
+      {
+        if (!buffs[i]->check())
+        {
+          inactive_buffs.push_back(buffs[i]);
+        }
+      }
+
+      // If the vector is empty, we can roll any of the buffs.
+      if (inactive_buffs.empty())
+      {
+        inactive_buffs = buffs;
+      }
+
+      // Roll it!
+      int roll = (int)(listener->sim->rng().real() * inactive_buffs.size());
+      inactive_buffs[roll]->trigger();
     }
   };
 
-  double rating_amount = item_database::apply_combat_rating_multiplier( *effect.item,
+  const double rating_amount = item_database::apply_combat_rating_multiplier( *effect.item,
       effect.driver() -> effectN( 2 ).average( effect.item ) );
+
   new entwined_elemental_foci_cb_t( effect, rating_amount );
 }
 
@@ -2958,10 +3028,10 @@ void item::elementium_bomb_squirrel( special_effect_t& effect )
 
 // Kil'jaeden's Burning Wish ================================================
 
-struct kiljaedens_burning_wish_t : public spell_t
+struct kiljaedens_burning_wish_t : public proc_spell_t
 {
   kiljaedens_burning_wish_t( const special_effect_t& effect ) :
-    spell_t( "kiljaedens_burning_wish", effect.player, effect.player -> find_spell( 235999 ) )
+    proc_spell_t( "kiljaedens_burning_wish", effect.player, effect.player -> find_spell( 235999 ) )
   {
     background = may_crit = true;
     aoe = -1;
@@ -3286,10 +3356,10 @@ void item::terrorbound_nexus( special_effect_t& effect )
 
 // Unstable Horrorslime =====================================================
 
-struct volatile_ichor_t : public spell_t
+struct volatile_ichor_t : public proc_spell_t
 {
   volatile_ichor_t( const special_effect_t& effect ) :
-    spell_t( "volatile_ichor", effect.player, effect.player -> find_spell( 222187 ) )
+    proc_spell_t( "volatile_ichor", effect.player, effect.player -> find_spell( 222187 ) )
   {
     background = may_crit = true;
     //TODO: Is this true?
@@ -3921,10 +3991,10 @@ void set_bonus::march_of_the_legion( special_effect_t&  effect ) {
     std::string spell_name = spell->name_cstr();
     util::tokenize( spell_name );
 
-    struct march_t : public spell_t
+    struct march_t : public proc_spell_t
     {
       march_t(player_t* player) :
-        spell_t("march_of_the_legion", player, player -> find_spell( 228446 ) )
+        proc_spell_t("march_of_the_legion", player, player -> find_spell( 228446 ) )
       {
         background = proc = may_crit = true;
         callbacks = false;
@@ -4228,10 +4298,10 @@ void consumable::lemon_herb_filet( special_effect_t& effect )
 
 // Pepper Breath (generic) ==================================================
 
-struct pepper_breath_damage_t : public spell_t
+struct pepper_breath_damage_t : public proc_spell_t
 {
   pepper_breath_damage_t( const special_effect_t& effect, unsigned spell_id ) :
-    spell_t( "pepper_breath_damage", effect.player, effect.player -> find_spell( spell_id ) )
+    proc_spell_t( "pepper_breath_damage", effect.player, effect.player -> find_spell( spell_id ) )
   {
     background = true;
     callbacks = false;
@@ -4248,12 +4318,12 @@ struct pepper_breath_damage_t : public spell_t
 };
 
 
-struct pepper_breath_driver_t : public spell_t
+struct pepper_breath_driver_t : public proc_spell_t
 {
   size_t balls_min, balls_max;
 
   pepper_breath_driver_t( const special_effect_t& effect, unsigned trigger_id ) :
-    spell_t( "pepper_breath", effect.player, effect.trigger() ),
+    proc_spell_t( "pepper_breath", effect.player, effect.trigger() ),
     balls_min( effect.trigger() -> effectN( 1 ).min( effect.player ) ),
     balls_max( effect.trigger() -> effectN( 1 ).max( effect.player ) )
   {
@@ -4385,10 +4455,10 @@ void item::caged_horror( special_effect_t& effect )
 
 struct spawn_of_serpentrix_t : public pet_t
 {
-  struct magma_spit_t : public spell_t
+  struct magma_spit_t : public proc_spell_t
   {
     magma_spit_t( player_t* player, double damage ) :
-      spell_t( "magma_spit", player, player -> find_spell( 215754 ) )
+      proc_spell_t( "magma_spit", player, player -> find_spell( 215754 ) )
     {
       may_crit = true;
       base_dd_min = base_dd_max = damage;
@@ -4737,6 +4807,8 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 242524, item::terror_from_below         );
   register_special_effect( 242605, item::spectral_thurible         );
   register_special_effect( 243941, item::tome_of_unraveling_sanity );
+  register_special_effect( 242215, item::infernal_cinders          );
+  register_special_effect( 242497, item::vial_of_ceaseless_toxins  );
 
   /* Legion 7.2.0 Dungeon */
   register_special_effect( 238498, item::dreadstone_of_endless_shadows );

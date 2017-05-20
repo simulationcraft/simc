@@ -9,6 +9,12 @@ talent_override=momentum,if=active_enemies>1|raid_event.adds.exists
 artifact=3:0:0:0:0:1000:4:1001:4:1002:4:1003:4:1004:4:1005:4:1006:4:1007:4:1008:4:1010:1:1011:1:1012:1:1013:1:1014:1:1015:1:1016:1:1330:1:1362:1:1493:4:1494:1:1495:1:1496:1:1630:1
 spec=havoc
 
+# Default consumables
+potion=old_war
+flask=seventh_demon
+food=lavish_suramar_feast
+augmentation=defiled
+
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
 # while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
@@ -16,13 +22,13 @@ spec=havoc
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
-actions.precombat=flask,type=flask_of_the_seventh_demon
-actions.precombat+=/food,type=lavish_suramar_feast,if=!equipped.majordomos_dinner_bell
+actions.precombat=flask
+actions.precombat+=/augmentation
+actions.precombat+=/food,if=!equipped.majordomos_dinner_bell
 actions.precombat+=/food,type=nightborne_delicacy_platter,if=equipped.majordomos_dinner_bell
-actions.precombat+=/augmentation,type=defiled
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion,name=old_war
+actions.precombat+=/potion
 actions.precombat+=/metamorphosis,if=!(talent.demon_reborn.enabled&talent.demonic.enabled)
 
 # Executed every time the actor is available.
@@ -50,7 +56,7 @@ actions.cooldown+=/metamorphosis,if=talent.demonic.enabled&buff.metamorphosis.up
 actions.cooldown+=/nemesis,target_if=min:target.time_to_die,if=raid_event.adds.exists&debuff.nemesis.down&(active_enemies>desired_targets|raid_event.adds.in>60)
 actions.cooldown+=/nemesis,if=!raid_event.adds.exists&(buff.chaos_blades.up|buff.metamorphosis.up|cooldown.metamorphosis.adjusted_remains<20|target.time_to_die<=60)
 actions.cooldown+=/chaos_blades,if=buff.metamorphosis.up|cooldown.metamorphosis.adjusted_remains>60|target.time_to_die<=12
-actions.cooldown+=/potion,name=old_war,if=buff.metamorphosis.remains>25|target.time_to_die<30
+actions.cooldown+=/potion,if=buff.metamorphosis.remains>25|target.time_to_die<30
 
 # Specific APL for the Blind Fury+Demonic Appetite+Demonic build
 actions.demonic=pick_up_fragment,if=fury.deficit>=35&cooldown.eye_beam.remains>5

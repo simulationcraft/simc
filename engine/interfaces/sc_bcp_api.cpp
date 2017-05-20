@@ -32,6 +32,11 @@ bool download( sim_t*               sim,
   int attempt = 0;
   do
   {
+#if defined ( SC_WINDOWS )
+    _sleep( attempt * 250 );
+#else
+    usleep( attempt * 250000 );
+#endif
     if ( http::get( result, url, cleanurl, caching ) )
     {
       d.Parse< 0 >( result.c_str() );
@@ -186,17 +191,24 @@ bool parse_talents( player_t*  p,
 
 // parse_items ==============================================================
 
-void parse_artifact( item_t& item, const rapidjson::Value& artifact )
+bool parse_artifact( item_t& item, const rapidjson::Value& artifact )
 {
   if ( ! artifact.HasMember( "artifactId" ) || ! artifact.HasMember( "artifactTraits" ) )
   {
-    return;
+    return true;
   }
 
   auto artifact_id = artifact[ "artifactId" ].GetUint();
   if ( artifact_id == 0 )
   {
-    return;
+    return true;
+  }
+
+  auto spec_artifact_id = item.player -> dbc.artifact_by_spec( item.player -> specialization() );
+  if ( artifact_id != spec_artifact_id )
+  {
+    item.sim -> errorf( "Player %s has wrong artifact equipped, disabling item ...", item.player -> name() );
+    return false;
   }
 
   auto powers = item.player -> dbc.artifact_powers( artifact_id );
@@ -250,7 +262,7 @@ void parse_artifact( item_t& item, const rapidjson::Value& artifact )
   // If no relics inserted, bail out early
   if ( ! artifact.HasMember( "relics" ) || artifact[ "relics" ].Size() == 0 )
   {
-    return;
+    return true;
   }
 
   for ( auto relic_idx = 0U, end = artifact[ "relics" ].Size(); relic_idx < end; ++relic_idx )
@@ -326,6 +338,8 @@ void parse_artifact( item_t& item, const rapidjson::Value& artifact )
       ++it;
     }
   }
+
+  return true;
 }
 
 bool parse_items( player_t*  p,
@@ -398,7 +412,11 @@ bool parse_items( player_t*  p,
     // Artifact
     if ( data.HasMember( "quality" ) && data[ "quality" ].GetUint() == ITEM_QUALITY_ARTIFACT )
     {
-      parse_artifact( item, data );
+      // If artifact parsing fails, reset the whole item input
+      if ( ! parse_artifact( item, data ) )
+      {
+        item.parsed = item_t::parsed_input_t();
+      }
     }
 
     // Since Armory API does not give us the drop level of items (such as quest items), we will need
@@ -439,6 +457,8 @@ player_t* parse_player( sim_t*             sim,
   {
     if ( ! download( sim, profile, result, player.url, player.cleanurl, caching ) )
     {
+      sim -> errorf( "BCP API: Unable to download player from '%s', JSON download failed",
+          player.cleanurl.c_str() );
       return nullptr;
     }
   }
@@ -449,6 +469,8 @@ player_t* parse_player( sim_t*             sim,
     result.assign( ( std::istreambuf_iterator<char>( ifs ) ),
                    ( std::istreambuf_iterator<char>()    ) );
   }
+
+  profile.Parse< 0 >(result.c_str());
 
   if ( profile.HasParseError() )
   {
@@ -561,7 +583,7 @@ player_t* parse_player( sim_t*             sim,
   if ( ! p -> server_str.empty() )
     p -> armory_extensions( p -> region_str, p -> server_str, player.name, caching );
 
-  return p;
+   return p;
 }
 
 // download_item_data =======================================================

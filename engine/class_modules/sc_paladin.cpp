@@ -420,10 +420,10 @@ public:
     chain_of_thrayn = nullptr;
     ashes_to_dust = nullptr;
     justice_gaze = nullptr;
-  ferren_marcuss_strength = nullptr;
-  saruans_resolve = nullptr;
-  gift_of_the_golden_valkyr = nullptr;
-  heathcliffs_immortality = nullptr;
+    ferren_marcuss_strength = nullptr;
+    saruans_resolve = nullptr;
+    gift_of_the_golden_valkyr = nullptr;
+    heathcliffs_immortality = nullptr;
     sephuz = nullptr;
     active_beacon_of_light             = nullptr;
     active_enlightened_judgments       = nullptr;
@@ -446,6 +446,24 @@ public:
     cooldowns.blade_of_justice        = get_cooldown( "blade_of_justice" );
     cooldowns.blade_of_wrath          = get_cooldown( "blade_of_wrath" );
     cooldowns.divine_hammer           = get_cooldown( "divine_hammer" );
+
+    talent_points.register_validity_fn([this](const spell_data_t* spell)
+    {
+      // Soul of the Highlord
+      if (find_item(151644))
+      {
+        switch (specialization())
+        {
+        case PALADIN_RETRIBUTION:
+          return spell->id() == 223817; // Divine Purpose
+        case PALADIN_HOLY:
+          return spell->id() == 197646; // Divine Purpose
+        case PALADIN_PROTECTION:
+          return spell->id() == 152261; // Holy Shield
+        }
+      }
+      return false;
+    } );
 
     beacon_target = nullptr;
     regen_type = REGEN_DYNAMIC;
@@ -1145,16 +1163,23 @@ struct avengers_shield_t : public paladin_spell_t
   if ( p ->talents.first_avenger->ok() )
     base_aoe_multiplier *= 2.0 / 3.0;
   aoe = 3;
-  if (p->spells.ferren_marcuss_strength){
-    aoe += (p->spells.ferren_marcuss_strength->effectN(1).misc_value1());
-    base_multiplier *= 1.0 + p->spells.ferren_marcuss_strength->effectN(2).percent();
-  }
   aoe = std::max( aoe, 0 );
 
 
     // link needed for trigger_grand_crusader
     cooldown = p -> cooldowns.avengers_shield;
     cooldown -> duration = data().cooldown();
+  }
+
+  void init() override
+  {
+	  paladin_spell_t::init();
+
+	  if (p()->ferren_marcuss_strength){
+		  aoe += (p()->spells.ferren_marcuss_strength->effectN(1).base_value());
+		  base_multiplier *= 1.0 + p()->spells.ferren_marcuss_strength->effectN(2).percent();
+	  }
+
   }
 
   void impact( action_state_t* s ) override
@@ -1164,11 +1189,14 @@ struct avengers_shield_t : public paladin_spell_t
     // Bulwark of Order absorb shield. Amount is additive per hit.
     if ( p() -> artifact.bulwark_of_order.rank() )
       p() -> buffs.bulwark_of_order -> trigger( 1, p() -> buffs.bulwark_of_order -> value() + s -> result_amount * p() -> artifact.bulwark_of_order.percent() );
-  if (p()->spells.gift_of_the_golden_valkyr){
-    timespan_t reduction = timespan_t::from_seconds(-1.0 * p()->spells.gift_of_the_golden_valkyr->effectN(1).misc_value1());
-    p()->cooldowns.avenging_wrath->adjust(reduction);
-  }
+
+	if (p()->gift_of_the_golden_valkyr){
+		timespan_t reduction = timespan_t::from_seconds(-1.0 * p()->spells.gift_of_the_golden_valkyr->effectN(1).base_value());
+		p()->cooldowns.guardian_of_ancient_kings ->adjust(reduction);
+	}
+
     p() -> trigger_tyrs_enforcer( s );
+
   }
 };
 
@@ -2407,11 +2435,6 @@ struct light_of_the_protector_t : public paladin_heal_t
 
     // link needed for Righteous Protector / SotR cooldown reduction
     cooldown = p -> cooldowns.light_of_the_protector;
-
-  if (p->spells.saruans_resolve){
-    cooldown->charges = 2;
-    cooldown->duration *= (1 + p->spells.saruans_resolve->effectN(3).percent());
-  }
     // prevent spamming
     internal_cooldown -> duration = timespan_t::from_seconds( 1.0 );
 
@@ -2425,6 +2448,24 @@ struct light_of_the_protector_t : public paladin_heal_t
     } else {
       titans_proc = nullptr;
     }
+  }
+
+  void init() override
+  {
+	  paladin_heal_t::init();
+
+	  if (p()->saruans_resolve){
+		  cooldown->charges = 2;
+	  }
+
+  }
+
+  double recharge_multiplier() const override{
+	  double cdr = paladin_heal_t::recharge_multiplier();
+	  if (p()->saruans_resolve){
+		  cdr *= (1 + p()->spells.saruans_resolve->effectN(3).percent());
+	  }
+	  return cdr;
   }
 
   double action_multiplier() const override
@@ -2474,11 +2515,6 @@ struct hand_of_the_protector_t : public paladin_heal_t
     // link needed for Righteous Protector / SotR cooldown reduction
     cooldown = p -> cooldowns.hand_of_the_protector;
 
-  if (p->spells.saruans_resolve){
-    cooldown->charges = 2;
-    cooldown->duration *= (1 + p->spells.saruans_resolve->effectN(3).percent());
-  }
-
     // prevent spamming
     internal_cooldown -> duration = timespan_t::from_seconds( .75 );
 
@@ -2492,6 +2528,25 @@ struct hand_of_the_protector_t : public paladin_heal_t
     } else {
       titans_proc = nullptr;
     }
+
+  }
+
+  void init() override
+  {
+	  paladin_heal_t::init();
+
+	  if (p()->saruans_resolve){
+		  cooldown->charges = 2;
+	  }
+
+  }
+
+  double recharge_multiplier() const override{
+	  double cdr = paladin_heal_t::recharge_multiplier();
+	  if (p()->saruans_resolve){
+		  cdr *= (1 + p()->spells.saruans_resolve->effectN(3).percent());
+	  }
+	  return cdr;
   }
 
   double action_multiplier() const override
@@ -5958,7 +6013,7 @@ void paladin_t::target_mitigation( school_e school,
   }
 
   // heathcliffs
-  if (standing_in_consecration() && spells.heathcliffs_immortality)
+  if (standing_in_consecration() && heathcliffs_immortality)
   {
     s->result_amount *= 1.0 - spells.heathcliffs_immortality->effectN(1).percent();
   }
