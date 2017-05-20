@@ -4868,7 +4868,6 @@ struct mark_of_aluneth_t : public arcane_mage_spell_t
 // - Meteor (id=177345) contains the time between cast and impact
 // None of these specify the 1 second falling duration given by Celestalon, so
 // we're forced to hardcode it.
-// TODO: Why is meteor burn not a DoT here?
 struct meteor_burn_t : public fire_mage_spell_t
 {
   meteor_burn_t( mage_t* p, int targets ) :
@@ -4893,14 +4892,15 @@ struct meteor_burn_t : public fire_mage_spell_t
 
 struct meteor_impact_t: public fire_mage_spell_t
 {
-  meteor_impact_t( mage_t* p, int targets ):
-    fire_mage_spell_t( "meteor_impact", p, p -> find_spell( 153564 ) )
+  meteor_burn_t* meteor_burn;
+
+  meteor_impact_t( mage_t* p, meteor_burn_t* meteor_burn, int targets ):
+    fire_mage_spell_t( "meteor_impact", p, p -> find_spell( 153564 ) ),
+    meteor_burn( meteor_burn )
   {
     background = true;
     aoe = targets;
     split_aoe_damage = true;
-    spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
-    ground_aoe = true;
     //TODO: Revisit PI behavior once Skullflower confirms behavior.
     triggers_ignite = true;
   }
@@ -4909,38 +4909,57 @@ struct meteor_impact_t: public fire_mage_spell_t
   {
     return timespan_t::from_seconds( 1.0 );
   }
+
+  void impact( action_state_t* s ) override
+  {
+    fire_mage_spell_t::impact( s );
+
+    timespan_t pulse_time = meteor_burn -> data().effectN( 1 ).period();
+    timespan_t ground_aoe_duration = p() -> find_spell( 175396 ) -> duration();
+
+    // It seems that the 8th tick happens only very rarely in game.
+    if ( p() -> bugs )
+    {
+      ground_aoe_duration -= pulse_time;
+    }
+
+    p() -> ground_aoe_expiration[ meteor_burn -> name_str ]
+      = sim -> current_time() + ground_aoe_duration;
+
+    make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
+      .pulse_time( pulse_time )
+      .target( s -> target )
+      .duration( ground_aoe_duration )
+      .action( meteor_burn ) );
+  }
 };
 
 struct meteor_t : public fire_mage_spell_t
 {
   int targets;
   meteor_impact_t* meteor_impact;
-  meteor_burn_t* meteor_burn;
   timespan_t meteor_delay;
-  timespan_t actual_tick_time;
+
   meteor_t( mage_t* p, const std::string& options_str ) :
     fire_mage_spell_t( "meteor", p, p -> find_talent_spell( "Meteor") ),
     targets( -1 ),
-    meteor_impact( new meteor_impact_t( p, targets ) ),
-    meteor_burn( new meteor_burn_t( p, targets ) ),
     meteor_delay( p -> find_spell( 177345 ) -> duration() )
   {
     add_option( opt_int( "targets", targets ) );
     parse_options( options_str );
-    hasted_ticks = false;
     callbacks = false;
+
+    meteor_burn_t* meteor_burn = new meteor_burn_t( p, targets );
+    meteor_impact = new meteor_impact_t( p, meteor_burn, targets );
+
     add_child( meteor_impact );
     add_child( meteor_burn );
-    dot_duration = p -> find_spell( 175396 ) -> duration() -
-                   p -> find_spell( 153564 ) -> duration();
-    actual_tick_time = p -> find_spell( 155158 ) -> effectN( 1 ).period();
-    school = SCHOOL_FIRE;
   }
 
   virtual timespan_t travel_time() const override
   {
-    timespan_t impact_time = meteor_delay * p() ->  composite_spell_haste();
-    timespan_t meteor_spawn = impact_time - timespan_t::from_seconds( 1.0 );
+    timespan_t impact_time = meteor_delay * p() -> composite_spell_haste();
+    timespan_t meteor_spawn = impact_time - meteor_impact -> travel_time();
     meteor_spawn = std::max( timespan_t::zero(), meteor_spawn );
 
     return meteor_spawn;
@@ -4948,20 +4967,9 @@ struct meteor_t : public fire_mage_spell_t
 
   void impact( action_state_t* s ) override
   {
-    // Yep. Don't hate. Need to make the dot tick 1 second after impact.
-    base_tick_time = timespan_t::from_seconds( 2 );
-
     fire_mage_spell_t::impact( s );
     meteor_impact -> set_target( s -> target );
     meteor_impact -> execute();
-    base_tick_time = actual_tick_time;
-  }
-
-  void tick( dot_t* d ) override
-  {
-    fire_mage_spell_t::tick( d );
-    meteor_burn -> set_target( d -> target );
-    meteor_burn -> execute();
   }
 };
 
