@@ -1025,53 +1025,102 @@ void item::mrrgrias_favor( special_effect_t& effect )
 
 void item::tarnished_sentinel_medallion( special_effect_t& effect )
 {
-/*
-
   // Blast is the proc'd damage
-struct spectral_owl_blast_t : public proc_spell_t
-{
-
-  spectral_owl_blast_t( const special_effect_t& effect ) :
-    proc_spell_t( "spectral_owl_blast", effect.player, effect.player -> find_spell( 222705 ) )
+  struct spectral_owl_blast_t : public proc_spell_t
   {
-    background = may_crit = true;
-    callbacks = false;
-    base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item );
-    cooldown -> duration = timespan_t::zero();
-  }
-};
+    spectral_owl_blast_t( const special_effect_t& effect ) :
+      proc_spell_t( "spectral_blast", effect.player, effect.player -> find_spell( 246442 ), effect.item )
+    {
+      cooldown -> duration = timespan_t::zero();
+    }
+  };
 
+  struct spectral_owl_blast_cb_t : public dbc_proc_callback_t
+  {
+    spectral_owl_blast_cb_t( const special_effect_t* effect ) :
+      dbc_proc_callback_t( effect -> item, *effect )
+    { }
+
+    void execute( action_t*, action_state_t* state ) override
+    {
+      // Owl blast triggers only on the bound target (see below)
+      if ( state -> target != effect.execute_action -> target )
+      {
+        return;
+      }
+
+      proc_action -> set_target( state -> target );
+      proc_action -> schedule_execute();
+    }
+  };
 
   // proc effect?
   auto secondary = new special_effect_t( effect.player );
   secondary -> type = SPECIAL_EFFECT_EQUIP;
+  secondary -> source = SPECIAL_EFFECT_SOURCE_ITEM;
+  secondary -> item = effect.item;
   secondary -> spell_id = effect.spell_id;
   secondary -> cooldown_ = timespan_t::zero();
-  secondary -> execute_action = new spectral_owl_blast_t( effect );
+  secondary -> execute_action = create_proc_action<spectral_owl_blast_t>( effect );
   effect.player -> special_effects.push_back( secondary );
 
-  auto proc = new dbc_proc_callback_t( effect.player, *secondary );
-  proc -> initialize();
-  proc -> deactivate();
+  auto proc = new spectral_owl_blast_cb_t( secondary );
 
-// "Bolt" is the "DoT" effect that is consistent upon trinket use.
-struct spectral_owl_bolt_t : spell_t
-{
-  spectral_owl_bolt_t( special_effect_t& effect ) :
-    spell_t( "spectral_owl_bolt", effect.player, effect.player -> find_spell( 242570 ) )
+  // "Bolt" is the "DoT" effect that is consistent upon trinket use.
+  struct spectral_owl_bolt_t : proc_spell_t
   {
-    background = true;
-    callbacks = false;
-    base_dd_min = base_dd_max = effect.player -> find_spell( 242571 ) -> effectN( 2 ).average( effect.item );
-    add_child( new spectral_owl_blast_t( effect ) );
-  }
-};
+    // Owl blast callback
+    dbc_proc_callback_t* callback;
 
+    spectral_owl_bolt_t( const special_effect_t& effect, dbc_proc_callback_t* cb ) :
+      proc_spell_t( "spectral_owl", effect.player, effect.driver(), effect.item ),
+      callback( cb )
+    {
+      hasted_ticks   = true;
+      base_td        = player -> find_spell( 242571 ) -> effectN( 1 ).average( effect.item );
+      dot_duration   = data().duration();
+      base_tick_time = data().effectN( 2 ).period();
 
+      add_child( callback -> effect.execute_action );
+    }
 
-  effect.execute_action = new spectral_owl_bolt_t( effect );
-  effect.execute_action -> add_child( new spectral_owl_blast_t( effect ) );
-*/
+    // The last (hasted) partial "tick" always does full damage
+    double last_tick_factor( const dot_t*, const timespan_t&, const timespan_t& ) const override
+    { return 1.0; }
+
+    // Fake Owl does periodic damage, in game does direct damage
+    dmg_e amount_type( const action_state_t*, bool ) const override
+    { return DMG_DIRECT; }
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+
+      // Bind the owl blast target to the dot target
+      callback -> effect.execute_action -> target = execute_state -> target;
+
+      // Activate the callback
+      callback -> activate();
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      proc_spell_t::last_tick( d );
+
+      // Dot over, deactivate the blast callback
+      callback -> deactivate();
+    }
+
+    void reset() override
+    {
+      proc_spell_t::reset();
+
+      // Always start in deactivated mode
+      callback -> deactivate();
+    }
+  };
+
+  effect.execute_action = create_proc_action<spectral_owl_bolt_t>( effect, proc );
 }
 
 
