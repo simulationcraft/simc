@@ -1481,6 +1481,15 @@ struct blessed_hammer_tick_t : public paladin_spell_t
     may_crit = true;
   }
 
+  double action_multiplier() const override
+  {
+	  double am = paladin_spell_t::action_multiplier();
+
+	  am *= 1.0 + p()->artifact.hammer_time.percent(1);
+
+	  return am;
+  }
+
   virtual void impact( action_state_t* s ) override
   {
     paladin_spell_t::impact( s );
@@ -1488,6 +1497,7 @@ struct blessed_hammer_tick_t : public paladin_spell_t
     // apply BH debuff to target_data structure
     td( s -> target ) -> buffs.blessed_hammer_debuff -> trigger();
   }
+
 };
 
 struct blessed_hammer_t : public paladin_spell_t
@@ -1516,6 +1526,7 @@ struct blessed_hammer_t : public paladin_spell_t
 
     add_child( hammer );
   }
+  
 
   void execute() override
   {
@@ -1555,6 +1566,12 @@ struct consecration_tick_t: public paladin_spell_t {
     {
       base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 8 ).percent();
     }
+
+	if (p->specialization() == PALADIN_PROTECTION)
+	{
+		base_multiplier *= 1.0 + p->passives.protection_paladin->effectN(4).percent();
+	}
+
   }
 };
 
