@@ -1041,16 +1041,17 @@ void item::tarnished_sentinel_medallion( special_effect_t& effect )
       dbc_proc_callback_t( effect -> item, *effect )
     { }
 
-    void execute( action_t*, action_state_t* state ) override
+
+    void trigger( action_t* a, void* call_data ) override
     {
+      auto state = static_cast<action_state_t*>( call_data );
       // Owl blast triggers only on the bound target (see below)
       if ( state -> target != effect.execute_action -> target )
       {
         return;
       }
 
-      proc_action -> set_target( state -> target );
-      proc_action -> schedule_execute();
+      dbc_proc_callback_t::trigger( a, call_data );
     }
   };
 
@@ -1058,6 +1059,9 @@ void item::tarnished_sentinel_medallion( special_effect_t& effect )
   auto secondary = new special_effect_t( effect.player );
   secondary -> type = SPECIAL_EFFECT_EQUIP;
   secondary -> source = SPECIAL_EFFECT_SOURCE_ITEM;
+  // Spell data does not flag AOE spells as being able to proc it
+  secondary -> proc_flags_ = PF_RANGED_ABILITY | PF_RANGED | PF_SPELL | PF_AOE_SPELL | PF_PERIODIC;
+  secondary -> proc_flags2_ = PF2_ALL_HIT;
   secondary -> item = effect.item;
   secondary -> spell_id = effect.spell_id;
   secondary -> cooldown_ = timespan_t::zero();
