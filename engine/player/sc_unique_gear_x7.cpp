@@ -1041,16 +1041,17 @@ void item::tarnished_sentinel_medallion( special_effect_t& effect )
       dbc_proc_callback_t( effect -> item, *effect )
     { }
 
-    void execute( action_t*, action_state_t* state ) override
+
+    void trigger( action_t* a, void* call_data ) override
     {
+      auto state = static_cast<action_state_t*>( call_data );
       // Owl blast triggers only on the bound target (see below)
       if ( state -> target != effect.execute_action -> target )
       {
         return;
       }
 
-      proc_action -> set_target( state -> target );
-      proc_action -> schedule_execute();
+      dbc_proc_callback_t::trigger( a, call_data );
     }
   };
 
