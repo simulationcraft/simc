@@ -6444,7 +6444,7 @@ void hunter_t::apl_surv()
   aoe -> add_action( this, "Carve", "if=talent.serpent_sting.enabled&!dot.serpent_sting.ticking" );
   aoe -> add_action( this, "Carve", "if=active_enemies>5" );
 
-  preBitePhase -> add_action( this, "Flanking Strike" );
+  preBitePhase -> add_action( this, "Flanking Strike", "if=cooldown.mongoose_bite.charges<3" );
   preBitePhase -> add_talent( this, "Spitting Cobra" );
   preBitePhase -> add_action( this, "Lacerate", "if=!dot.lacerate.ticking" );
   preBitePhase -> add_action( this, "Raptor Strike", "if=active_enemies=1&talent.serpent_sting.enabled&!dot.serpent_sting.ticking" );
