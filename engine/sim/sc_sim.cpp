@@ -2714,6 +2714,8 @@ void sim_t::partition()
   if ( iterations < threads )
     return;
 
+  thread::set_main_thread_priority();
+
   merge_mutex.lock(); // parent sim is locked until parent merge() is called
 
   int remainder = iterations % threads;
