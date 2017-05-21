@@ -7389,7 +7389,7 @@ void death_knight_t::default_apl_blood()
   st -> add_action( "marrowrend,if=buff.bone_shield.stack=0|buff.bone_shield.remains<(3*gcd.max)" );
   st -> add_action( "vampiric_blood" );
   st -> add_action( "blood_mirror,if=talent.blood_mirror.enabled" );
-  st -> add_action( "potion,name=prolonged_power,if=(talent.bonestorm.enabled&dot.bonestorm.ticking)|talent.blood_mirror.enabled" );
+  st -> add_action( "potion,if=(talent.bonestorm.enabled&dot.bonestorm.ticking)|talent.blood_mirror.enabled" );
   st -> add_action( "consumption" );
   st -> add_action( "death_and_decay,if=buff.crimson_scourge.up|talent.rapid_decomposition.enabled" );
   st -> add_action( "bonestorm,if=talent.bonestorm.enabled&runic_power.deficit<10" );
