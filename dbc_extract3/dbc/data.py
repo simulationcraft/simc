@@ -261,7 +261,7 @@ class DBCRecord(RawDBCRecord):
 
             if type_ == 'S':
                 if self._d[i] > 0:
-                    s += '"%s"%c' % (self._dbcp.get_string(self._d[i]).replace('"', '\"'), delim)
+                    s += '"%s"%c' % (self._dbcp.get_string(self._d[i]).replace('"', '\\"'), delim)
                 else:
                     s += '""%c' % delim
             elif type_ == 'f':
