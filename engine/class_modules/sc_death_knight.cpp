@@ -3741,6 +3741,15 @@ struct blooddrinker_t : public death_knight_spell_t
   { return base_tick_time; }
 };
 
+struct bloodworms_t : public death_knight_spell_t
+{
+  bloodworms_t( death_knight_t* p, const std::string& options_str ) :
+    death_knight_spell_t( "bloodworms", p, p -> talent.bloodworms )
+    {
+    parse_options( options_str );
+  }
+};
+
 // Bonestorm ================================================================
 
 struct bonestorm_heal_t : public death_knight_heal_t
@@ -5037,9 +5046,45 @@ struct marrowrend_t : public death_knight_melee_attack_t
     {
       p() -> pets.dancing_rune_weapon -> ability.marrowrend -> set_target( execute_state -> target );
       p() -> pets.dancing_rune_weapon -> ability.marrowrend -> execute();
+
+      // rattling bones 30% chance to get extra charge
+      if ( rng().roll( p() -> artifact.rattling_bones.percent() ) )
+      {
+        // while DRW is up your marrowrend gens an extra charge (double for each of the weapons)
+        // 5 + 5 = 10 (+1 from your actual weapon) = 11
+        if ( p() -> artifact.mouth_of_hell.rank() )
+        {
+          p() -> buffs.bone_shield -> trigger( 10 );
+        }
+        else
+        {
+          // base 4 + 4 = 8 from each DRW
+          p() -> buffs.bone_shield -> trigger( 8 );
+        }
+      }
+      else
+      {
+        // 4 + 4 = 8 (+1 from your actual weapon) = 9
+        if ( p() -> artifact.mouth_of_hell.rank() )
+        {
+          p() -> buffs.bone_shield -> trigger( 9 );
+        }
+        else
+        {
+          // base 3 + 3 = 6 from each DRW
+          p() -> buffs.bone_shield -> trigger( 6 );
+        }
+      }
     }
 
-    p() -> buffs.bone_shield -> trigger( data().effectN( 3 ).base_value() );
+    if ( rng().roll( p() -> artifact.rattling_bones.percent() ) )
+    {
+      p() -> buffs.bone_shield -> trigger( 4 );
+    }
+    else
+    {
+      p() -> buffs.bone_shield -> trigger( data().effectN( 3 ).base_value() );
+    }
 
     if ( execute_state -> result_amount > 0 && unholy_coil )
     {
@@ -6905,6 +6950,7 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   if ( name == "blighted_rune_weapon"     ) return new blighted_rune_weapon_t     ( this, options_str );
   if ( name == "blood_mirror"             ) return new blood_mirror_t             ( this, options_str );
   if ( name == "blooddrinker"             ) return new blooddrinker_t             ( this, options_str );
+  if ( name == "bloodworms"               ) return new bloodworms_t               ( this, options_str );
   if ( name == "bonestorm"                ) return new bonestorm_t                ( this, options_str );
   if ( name == "breath_of_sindragosa"     ) return new breath_of_sindragosa_t     ( this, options_str );
   if ( name == "clawing_shadows"          ) return new clawing_shadows_t          ( this, options_str );
