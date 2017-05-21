@@ -7363,8 +7363,42 @@ void death_knight_t::default_apl_dps_precombat()
 
 void death_knight_t::default_apl_blood()
 {
-    // TODO: mrdmnd - implement
-  default_apl_frost();
+  action_priority_list_t* def = get_action_priority_list( "default" );
+  action_priority_list_t* st  = get_action_priority_list( "st" );
+
+  // Setup precombat APL for DPS spec
+  default_apl_dps_precombat();
+
+  // Racials
+  def->add_action("arcane_torrent,if=runic_power.deficit>20");
+  def->add_action("blood_fury");
+  def->add_action("berserking");
+
+  // On-use items
+  def->add_action("use_items");
+
+  // Default Actions
+  def -> add_action( "blood_boil,if=!dot.blood_plague.remains<=0" );
+  def -> add_action( "auto_attack" );
+  def -> add_action( "call_action_list,name=st" );
+
+  // Single Target Rotation
+  st -> add_action( "blooddrinker,if=talent.blooddrinker.enabled&(!(buff.dancing_rune_weapon.up))" );
+  st -> add_action( "dancing_rune_weapon" );
+  st -> add_action( "death_strike,if=prev_gcd.1.death_strike" );
+  st -> add_action( "marrowrend,if=buff.bone_shield.stack=0|buff.bone_shield.remains<(3*gcd.max)" );
+  st -> add_action( "vampiric_blood" );
+  st -> add_action( "blood_mirror,if=talent.blood_mirror.enabled" );
+  st -> add_action( "potion,name=prolonged_power,if=(talent.bonestorm.enabled&dot.bonestorm.ticking)|talent.blood_mirror.enabled" );
+  st -> add_action( "consumption" );
+  st -> add_action( "death_and_decay,if=buff.crimson_scourge.up|talent.rapid_decomposition.enabled" );
+  st -> add_action( "bonestorm,if=talent.bonestorm.enabled&runic_power.deficit<10" );
+  st -> add_action( "marrowrend,if=buff.bone_shield.stack<5&active_enemies<3" );
+  st -> add_action( "death_strike,if=((runic_power>(80+10*!talent.ossuary.enabled)&talent.bonestorm.enabled&!dot.bonestorm.ticking&(cooldown.bonestorm.remains>15|((rune>3&runic_power.deficit<15)&cooldown.bonestorm.remains>5)))|!(talent.bonestorm.enabled))&(!talent.ossuary.enabled|buff.bone_shield.stack>5|rune>=3&runic_power.deficit<10)" );
+  st -> add_action( "death_and_decay" );
+  st -> add_action( "heart_strike,if=runic_power.deficit>=5|rune>3" );
+  st -> add_action( "blood_boil" );
+
 }
 
 // death_knight_t::default_potion ===========================================
@@ -7383,9 +7417,16 @@ std::string death_knight_t::default_potion() const
                               ( true_level >= 80 ) ? "golemblood_potion" :
                               "disabled";
 
+  std::string blood_potion = ( true_level > 100 ) ? "prolonged_power" :
+                              ( true_level >= 90 ) ? "draenic_strength" :
+                              ( true_level >= 85 ) ? "mogu_power" :
+                              ( true_level >= 80 ) ? "golemblood_potion" :
+                              "disabled";
+
   switch ( specialization() )
   {
     case DEATH_KNIGHT_FROST: return frost_potion;
+    case DEATH_KNIGHT_BLOOD: return blood_potion;
     default:                 return unholy_potion;
   }
 }
@@ -7406,9 +7447,12 @@ std::string death_knight_t::default_food() const
                             ( true_level >= 80 ) ? "seafood_magnifique_feast" :
                             "disabled";
 
+  std::string blood_food = "disabled";
+
   switch ( specialization() )
   {
     case DEATH_KNIGHT_FROST: return frost_food;
+    case DEATH_KNIGHT_BLOOD: return blood_food;
     default:                 return unholy_food;
   }
 }
