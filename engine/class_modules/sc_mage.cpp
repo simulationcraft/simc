@@ -3483,7 +3483,7 @@ struct evocation_t : public arcane_mage_spell_t
     tick_zero         = true;
     ignore_false_positive = true;
 
-    cooldown -> duration *= -p -> spec.evocation_2 -> effectN( 1 ).percent();
+    cooldown -> duration *= 1.0 - p -> spec.evocation_2 -> effectN( 1 ).percent();
 
     if ( p -> artifact.aegwynns_ascendance.rank() )
     {
