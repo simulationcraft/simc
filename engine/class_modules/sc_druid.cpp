@@ -3150,9 +3150,7 @@ struct ferocious_bite_t : public cat_attack_t
     add_option( opt_bool( "max_energy" , max_energy ) );
     parse_options( options_str );
 
-    max_excess_energy  = -1 * data().effectN( 2 ).base_value();
-    special            = true;
-    energize_type      = ENERGIZE_NONE; // disable negative energy gain in spell data
+    max_excess_energy = 1 * data().effectN( 2 ).base_value();
 
     crit_bonus_multiplier *= 1.0 + p -> artifact.powerful_bite.percent();
     if (p->talent.sabertooth->ok())
@@ -3193,7 +3191,7 @@ struct ferocious_bite_t : public cat_attack_t
 
     cat_attack_t::execute();
 
-    max_excess_energy = -1 * data().effectN( 2 ).base_value();
+    max_excess_energy = 1 * data().effectN( 2 ).base_value();
   }
 
   void impact( action_state_t* s ) override
