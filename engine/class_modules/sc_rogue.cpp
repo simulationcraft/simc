@@ -8463,7 +8463,7 @@ static bool parse_fixed_rtb( sim_t* sim,
     buffs.push_back( buff_index );
   }
 
-  if ( buffs.size() == 0 || buffs.size() == 4 || buffs.size() == 5 )
+  if ( buffs.size() == 0 || buffs.size() > 6 )
   {
     sim -> errorf( "%s: No valid 'fixed_rtb' buffs given by string '%s'", sim -> active_player -> name(),
         value.c_str() );
