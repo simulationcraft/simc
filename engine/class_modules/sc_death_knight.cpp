@@ -3953,7 +3953,7 @@ struct bonestorm_t : public death_knight_spell_t
   }
 
   timespan_t composite_dot_duration( const action_state_t* ) const override
-  {return base_tick_time * last_resource_cost / 10;}
+  { return base_tick_time * last_resource_cost / 10; }
 };
 
 // Chains of Ice ============================================================
