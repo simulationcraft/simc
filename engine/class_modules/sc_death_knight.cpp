@@ -3942,17 +3942,21 @@ struct bonestorm_t : public death_knight_spell_t
   bonestorm_heal_t* heal;
 
   bonestorm_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "bonestorm", p, p -> talent.bonestorm ),
+    //death_knight_spell_t( "bonestorm", p, p -> talent.bonestorm ),
+    death_knight_spell_t( "bonestorm", p, p -> find_spell( 194844 ) ),
     heal( new bonestorm_heal_t( p ) )
   {
     parse_options( options_str );
     hasted_ticks = false;
     tick_action = new bonestorm_aoe_t( p, heal );
     add_child( heal );
+    cooldown -> duration = data().cooldown();
   }
 
   timespan_t composite_dot_duration( const action_state_t* ) const override
-  { return base_tick_time * last_resource_cost / 10; }
+  {
+    return base_tick_time * last_resource_cost / 10;
+  }
 };
 
 // Chains of Ice ============================================================
