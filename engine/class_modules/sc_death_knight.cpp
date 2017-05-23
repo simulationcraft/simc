@@ -249,9 +249,6 @@ struct rune_t
   // Start regenerating the rune
   void start_regenerating();
 
-  // Directly adjust regeneration by time units
-  void adjust_regen_event( const timespan_t& adjustment );
-
   void reset()
   {
     regen_start = timespan_t::min();
@@ -353,9 +350,6 @@ struct runes_t
 
   void consume( unsigned runes );
 
-  // Perform seconds of rune regeneration time instantaneously
-  void regenerate_immediate( const timespan_t& seconds );
-
   // Time it takes with the current rune regeneration speed to regenerate n_runes by the Death
   // Knight.
   timespan_t time_to_regen( unsigned n_runes ) const;
@@ -427,7 +421,6 @@ public:
   // Counters
   int pestilent_pustules;
   int crystalline_swords;
-  int t20_2pc_frost;
   int t20_4pc_frost; // Collect RP usage
 
   stats_t*  antimagic_shell;
@@ -459,6 +452,7 @@ public:
     buff_t* remorseless_winter;
     buff_t* frozen_soul;
     buff_t* hungering_rune_weapon;
+    buff_t* t20_2pc_frost;
     buff_t* t20_2pc_unholy;
     buff_t* t20_4pc_frost;
 
@@ -478,6 +472,7 @@ public:
     absorb_buff_t* tombstone;
 
     buff_t* frozen_pulse;
+    buff_t* death_and_decay_tick;
 
     stat_buff_t* t19oh_8pc;
     buff_t* skullflowers_haemostasis;
@@ -523,6 +518,7 @@ public:
     action_t* necrobomb;
     action_t* pestilence; // Armies of the Damned
     action_t* t20_2pc_unholy;
+    action_t* t20_2pc_frost;
   } active_spells;
 
   // Gains
@@ -551,6 +547,7 @@ public:
     gain_t* uvanimor_the_unbeautiful;
     gain_t* koltiras_newfound_will;
     gain_t* t19_4pc_frost;
+    gain_t* rapid_decomposition;
   } gains;
 
   // Specialization
@@ -824,7 +821,6 @@ public:
     antimagic_shell_absorbed( 0.0 ),
     pestilent_pustules( 0 ),
     crystalline_swords( 0 ),
-    t20_2pc_frost( 0 ),
     t20_4pc_frost( 0 ),
     antimagic_shell( nullptr ),
     buffs( buffs_t() ),
@@ -926,6 +922,9 @@ public:
   void      trigger_death_march( const action_state_t* state );
   void      apply_diseases( action_state_t* state, unsigned diseases );
   double    ready_runes_count( bool fractional ) const;
+  double    runes_cooldown_min( ) const;
+  double    runes_cooldown_max( ) const;
+  double    runes_cooldown_time( const rune_t& r ) const;
   void      default_apl_dps_precombat();
   void      default_apl_blood();
   void      default_apl_frost();
@@ -933,7 +932,6 @@ public:
   void      copy_from( player_t* ) override;
   double    bone_shield_handler( const action_state_t* ) const;
 
-  void      trigger_t20_2pc_frost( double consumed );
   void      trigger_t20_4pc_frost( double consumed );
   void      trigger_t20_2pc_unholy( const action_state_t* state );
   void      trigger_t20_4pc_unholy( double consumed );
@@ -1098,99 +1096,6 @@ inline void runes_t::consume( unsigned runes )
     }
   }
 
-}
-
-inline void runes_t::regenerate_immediate( const timespan_t& seconds )
-{
-  if ( seconds <= timespan_t::zero() )
-  {
-    dk -> sim -> errorf( "%s warning, regenerating runes with an invalid immediate value (%.3f)",
-      dk -> name(), seconds.total_seconds() );
-    return;
-  }
-
-  if ( dk -> sim -> debug )
-  {
-    dk -> sim -> out_debug.printf( "%s regenerating runes with an immediate value of %.3f",
-        dk -> name(), seconds.total_seconds() );
-    log_rune_status( dk );
-  }
-
-  // Collect regenerating and depleted runes
-  std::vector<rune_t*> regenerating_runes, depleted_runes;
-  range::for_each( slot, [ &regenerating_runes, &depleted_runes ]( rune_t& r ) {
-    if ( r.is_regenerating() )
-    {
-      regenerating_runes.push_back( &( r ) );
-    }
-    else if ( r.is_depleted() )
-    {
-      depleted_runes.push_back( &( r ) );
-    }
-  });
-
-  // Sort regenerating runes by ascending remaining time
-  range::sort( regenerating_runes, []( const rune_t* l, const rune_t* r ) {
-    return l -> event -> remains() < r -> event -> remains();
-  } );
-
-  timespan_t seconds_left = seconds;
-  // Regenerate runes in time chunks, until all immediate regeneration time is consumed
-  while ( seconds_left > timespan_t::zero() )
-  {
-    // Pop out all full runes from regenerating runes. Can happen if below the call to
-    // adjust_regen_event causes the rune to actually fill up.
-    while ( regenerating_runes.size() > 0 && regenerating_runes.front() -> is_ready() )
-    {
-      regenerating_runes.erase( regenerating_runes.begin() );
-    }
-
-    // Move any new regenerating runes from depleted runes to regenerating runes. They can be placed
-    // at the back, since they will automatically have the longest regen time. This can occur if
-    // there are depleted runes, and a regenerating rune fills up (causing a depleted rune to start
-    // regenerating)
-    while ( true )
-    {
-      auto it = range::find_if( depleted_runes, []( rune_t* r ) { return r -> is_regenerating(); } );
-      if ( it != depleted_runes.end() )
-      {
-        regenerating_runes.push_back( *it );
-        depleted_runes.erase( it );
-      }
-      else
-      {
-        break;
-      }
-    }
-
-    // Break out early if all runes are filled up
-    if ( regenerating_runes.size() == 0 )
-    {
-      break;
-    }
-
-    // The first rune in the regenerating runes list is always going to be the one with the least
-    // remaining regeneration time left, so use that as a clamp to determine how large a chunk can
-    // be regenerated during this iteration of the loop.
-    auto first_left = regenerating_runes[ 0 ] -> event -> remains();
-
-    // Clamp regenerating time units to the minimum of total regeneration time left, and the first
-    // regenerating rune's time left
-    timespan_t units_regened = std::min( seconds_left, first_left );
-
-    // Regenerate all regenerating runes by units_regened
-    for ( auto rune : regenerating_runes )
-    {
-      rune -> adjust_regen_event( -units_regened );
-    }
-
-    seconds_left -= units_regened;
-  }
-
-  if ( dk -> sim -> debug )
-  {
-    log_rune_status( dk );
-  }
 }
 
 timespan_t runes_t::time_to_regen( unsigned n_runes ) const
@@ -1368,49 +1273,6 @@ inline void rune_t::start_regenerating()
     -> ptr( event )
     -> coefficient( runes -> dk -> rune_regen_coefficient() )
     -> schedule( timespan_t::from_seconds( RUNE_REGEN_BASE ) );
-}
-
-inline void rune_t::adjust_regen_event( const timespan_t& adjustment )
-{
-  if ( ! event )
-  {
-    return;
-  }
-
-  auto new_remains = event -> remains() + adjustment;
-
-  // Reduce remaining rune regeneration time by adjustment seconds.
-  if ( adjustment < timespan_t::zero() )
-  {
-    // Filled the rune through the adjustment
-    if ( new_remains <= timespan_t::zero() )
-    {
-      fill_rune();
-    }
-    // Cut out adjustment amount of time from the rune regeneration, recreate the event with a
-    // shorter remaining event time.
-    else
-    {
-      auto e = event;
-      event = rune_event_t::create( runes -> dk -> sim )
-        -> rune( *this )
-        -> ptr( event )
-        -> coefficient( event -> coefficient() )
-        -> schedule( new_remains, false ); // Note, sheduled using new_remains and no coefficient
-
-      event_t::cancel( e );
-
-      if ( adjustment < timespan_t::zero() )
-      {
-        regen_start += adjustment;
-      }
-    }
-  }
-  // Adjustment is positive, reschedule the regeneration event to the new remaining time.
-  else if ( adjustment > timespan_t::zero() )
-  {
-    event -> reschedule( new_remains );
-  }
 }
 
 namespace pets {
@@ -2625,14 +2487,9 @@ struct death_knight_action_t : public Base
   death_knight_td_t* td( player_t* t ) const
   { return p() -> get_target_data( t ); }
 
-  virtual double runic_power_generation_multiplier( const action_state_t* s ) const
+  virtual double runic_power_generation_multiplier( const action_state_t* /* actions state */ ) const
   {
     double m = 1.0;
-
-    if ( p() -> talent.rapid_decomposition -> ok() && td( s -> target ) -> in_aoe_radius() )
-    {
-      m *= 1.0 + p() -> talent.rapid_decomposition -> effectN( 4 ).percent();
-    }
 
     m *= 1.0 + p() -> artifact.runic_tattoos.data().effectN( 1 ).percent();
 
@@ -2655,9 +2512,9 @@ struct death_knight_action_t : public Base
   {
     auto ret = action_base_t::consume_cost_per_tick( dot );
 
-    if ( maybe_ptr( p() -> dbc.ptr ) )
+    if ( ! maybe_ptr( p() -> dbc.ptr ) && ret && this -> last_resource_cost > 0 )
     {
-      p() -> trigger_t20_2pc_frost( this -> last_resource_cost );
+      p() -> trigger_t20_4pc_frost( this -> last_resource_cost );
     }
 
     return ret;
@@ -2682,11 +2539,6 @@ struct death_knight_action_t : public Base
       }
     }
 
-    if ( maybe_ptr( p() -> dbc.ptr ) && this -> base_costs[ RESOURCE_RUNE ] > 0 )
-    {
-      p() -> trigger_t20_4pc_frost( this -> base_costs[ RESOURCE_RUNE ] );
-    }
-
     if ( this -> base_costs[ RESOURCE_RUNIC_POWER ] > 0 && this -> last_resource_cost > 0 )
     {
       if ( p() -> talent.dark_arbiter -> ok() && p() -> pets.dark_arbiter )
@@ -2701,9 +2553,9 @@ struct death_knight_action_t : public Base
         p() -> cooldown.vampiric_blood -> adjust( -sec );
       }
 
-      if ( maybe_ptr( p() -> dbc.ptr ) )
+      if ( ! maybe_ptr( p() -> dbc.ptr ) )
       {
-        p() -> trigger_t20_2pc_frost( this -> last_resource_cost );
+        p() -> trigger_t20_4pc_frost( this -> last_resource_cost );
       }
     }
   }
@@ -3496,18 +3348,14 @@ struct army_of_the_dead_t : public death_knight_spell_t
     harmful = false;
   }
 
-  void schedule_execute( action_state_t* s ) override
+  virtual void schedule_execute( action_state_t* s ) override
   {
     death_knight_spell_t::schedule_execute( s );
 
     p() -> buffs.army_of_the_dead -> trigger( 1, p() -> cache.dodge() + p() -> cache.parry() );
   }
 
-  // Army of the Dead should always cost resources
-  double cost() const override
-  { return base_costs[ RESOURCE_RUNE ]; }
-
-  void execute() override
+  virtual void execute() override
   {
     death_knight_spell_t::execute();
 
@@ -3534,9 +3382,6 @@ struct army_of_the_dead_t : public death_knight_spell_t
 
       //simulate RP decay for that 5 seconds
       p() -> resource_loss( RESOURCE_RUNIC_POWER, p() -> runic_power_decay_rate * 5, nullptr, nullptr );
-
-      // Simulate rune regeneration for 5 seconds
-      p() -> _runes.regenerate_immediate( timespan_t::from_seconds( 5 ) );
     }
     else
     {
@@ -3919,7 +3764,7 @@ struct bonestorm_aoe_t : public death_knight_spell_t
   bonestorm_heal_t* heal;
 
   bonestorm_aoe_t( death_knight_t* p, bonestorm_heal_t* heal ) :
-    death_knight_spell_t( "bonestorm", p, p -> find_spell( 196528 ) ),
+    death_knight_spell_t( "bonestorm_damage", p, p -> find_spell( 196528 ) ),
     heal( heal )
   {
     background = true;
@@ -3949,7 +3794,6 @@ struct bonestorm_t : public death_knight_spell_t
     hasted_ticks = false;
     tick_action = new bonestorm_aoe_t( p, heal );
     add_child( heal );
-    cooldown -> duration = data().cooldown();
   }
 
   timespan_t composite_dot_duration( const action_state_t* ) const override
@@ -4114,6 +3958,26 @@ struct dark_transformation_t : public death_knight_spell_t
   }
 };
 
+struct death_and_decay_tick_t final : public death_knight_spell_t
+{
+  death_and_decay_tick_t( death_knight_t* p, const std::string& options_str ) :
+    death_knight_spell_t( "death_and_decay", p, p -> find_specialization_spell( "Death and Decay" ) )
+  {
+    parse_options( options_str );
+    base_tick_time = timespan_t::from_seconds( 1.0 );
+    hasted_ticks   = false;
+  }
+
+  void tick( dot_t* d ) override
+  {
+    death_knight_spell_t::tick( d );
+    if (d->state->result_amount > 0 && p() -> talent.rapid_decomposition -> ok())
+    {
+      energize_amount += ( p() -> talent.rapid_decomposition -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) );
+    }
+  }
+};
+
 // Death and Decay ==========================================================
 
 struct death_and_decay_t : public death_knight_spell_t
@@ -4135,6 +3999,7 @@ struct death_and_decay_t : public death_knight_spell_t
     base_tick_time *= 1.0 / ( 1.0 + p -> talent.rapid_decomposition -> effectN( 3 ).percent() );
 
     cooldown -> duration *= 1.0 + p -> spec.blood_death_knight -> effectN( 3 ).percent();
+
   }
 
   // Need to override dot duration to get full ticks
@@ -4160,7 +4025,17 @@ struct death_and_decay_t : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     p() -> buffs.crimson_scourge -> decrement();
+    p() -> buffs.death_and_decay_tick -> trigger();
   }
+
+  // void tick( dot_t* d ) override
+  // {
+  //   death_knight_spell_t::tick( d );
+  //   if ( d->state->result_amount > 0 && p() -> talent.rapid_decomposition -> ok() && buffs.rapid_decomposition -> check())
+  //   {
+  //     energize_amount += ( p() -> talent.rapid_decomposition -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) );
+  //   }
+  // }
 
   void impact( action_state_t* s ) override
   {
@@ -4605,6 +4480,8 @@ struct empower_rune_weapon_t : public death_knight_spell_t
 
       rune.fill_rune( p() -> gains.empower_rune_weapon );
     }
+
+    p() -> buffs.t20_2pc_frost -> trigger();
   }
 
   bool ready() override
@@ -4836,6 +4713,15 @@ struct frost_strike_t : public death_knight_melee_attack_t
     add_child( oh );
   }
 
+  double cost() const override
+  {
+    double c = death_knight_melee_attack_t::cost();
+
+    c *= 1.0 + p() -> buffs.t20_4pc_frost -> check_value();
+
+    return c;
+  }
+
   void execute() override
   {
     death_knight_melee_attack_t::execute();
@@ -4867,6 +4753,9 @@ struct frost_strike_t : public death_knight_melee_attack_t
       //p() -> buffs.killing_machine -> trigger_attempts++;
       p() -> buffs.killing_machine -> execute();
     }
+
+    p() -> buffs.t20_4pc_frost -> up(); // Benefit tracking on execute
+    p() -> buffs.t20_4pc_frost -> expire();
   }
 };
 
@@ -5096,6 +4985,7 @@ struct hungering_rune_weapon_t : public death_knight_spell_t
         data().effectN( 2 ).resource( RESOURCE_RUNIC_POWER ),
         p() -> gains.hungering_rune_weapon );
     p() -> buffs.hungering_rune_weapon -> trigger();
+    p() -> buffs.t20_2pc_frost -> trigger();
   }
 };
 
@@ -5288,11 +5178,11 @@ struct frozen_obliteration_t : public death_knight_melee_attack_t
   }
 };
 
-struct obliterate_strike_t : public death_knight_melee_attack_t
+struct obliterate_strike_base_t : public death_knight_melee_attack_t
 {
   frozen_obliteration_t* fo;
 
-  obliterate_strike_t( death_knight_t*     p,
+  obliterate_strike_base_t( death_knight_t*     p,
                             const std::string&  name,
                             weapon_t*           w,
                             const spell_data_t* s ) :
@@ -5331,21 +5221,30 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
   }
 };
 
-struct obliterate_t : public death_knight_melee_attack_t
+struct obliterate_strike_t : public obliterate_strike_base_t
 {
-  obliterate_strike_t* mh, *oh;
+  obliterate_strike_t( death_knight_t* p, const std::string& name, weapon_t* w, const spell_data_t* s ) :
+    obliterate_strike_base_t( p, name, w, s )
+  { }
+};
 
-  obliterate_t( death_knight_t* p, const std::string& options_str = std::string() ) :
-    death_knight_melee_attack_t( "obliterate", p, p -> find_specialization_spell( "Obliterate" ) ),
+// Frost T20 4pc strike.
+struct t20_obliterate_strike_t : public obliterate_strike_base_t
+{
+  t20_obliterate_strike_t( death_knight_t* p, const std::string& name, weapon_t* w, const spell_data_t* s ) :
+    obliterate_strike_base_t( p, name, w, s )
+  { }
+};
+
+struct obliterate_base_t : public death_knight_melee_attack_t
+{
+  obliterate_strike_base_t* mh, *oh;
+
+  obliterate_base_t( death_knight_t* p, const std::string& name, const std::string& options_str = std::string() ) :
+    death_knight_melee_attack_t( name, p, p -> find_specialization_spell( "Obliterate" ) ),
     mh( nullptr ), oh( nullptr )
   {
     parse_options( options_str );
-
-    mh = new obliterate_strike_t( p, "obliterate_mh", &( p -> main_hand_weapon ), data().effectN( 2 ).trigger() );
-    oh = new obliterate_strike_t( p, "obliterate_offhand", &( p -> off_hand_weapon ), data().effectN( 3 ).trigger() );
-
-    add_child( mh );
-    add_child( oh );
   }
 
   void execute() override
@@ -5361,6 +5260,13 @@ struct obliterate_t : public death_knight_melee_attack_t
       oh -> execute();
 
       p() -> buffs.rime -> trigger();
+
+      if ( maybe_ptr( p() -> dbc.ptr ) &&
+           ( mh -> execute_state -> result_amount > 0 ||
+             oh -> execute_state -> result_amount > 0 ) )
+      {
+        p() -> trigger_t20_4pc_frost( 0 );
+      }
     }
 
     if ( rng().roll( p() -> artifact.overpowered.data().proc_chance() ) )
@@ -5374,14 +5280,6 @@ struct obliterate_t : public death_knight_melee_attack_t
       p() -> active_spells.thronebreaker -> set_target( execute_state -> target );
       p() -> active_spells.thronebreaker -> execute();
     }
-
-    if ( rng().roll( p() -> legendary.koltiras_newfound_will -> proc_chance() ) )
-    {
-      p() -> replenish_rune( p() -> legendary.koltiras_newfound_will -> effectN( 1 ).trigger() -> effectN( 1 ).base_value(),
-          p() -> gains.koltiras_newfound_will );
-    }
-
-    consume_killing_machine( execute_state, p() -> procs.oblit_killing_machine );
   }
 
   double cost() const override
@@ -5399,6 +5297,63 @@ struct obliterate_t : public death_knight_melee_attack_t
     }
 
     return c;
+  }
+};
+
+// T20 procced obliterate
+struct t20_obliterate_t : public obliterate_base_t
+{
+  t20_obliterate_t( death_knight_t* p ) :
+    obliterate_base_t( p, "t20_obliterate" )
+  {
+    background = true;
+
+    // Make this obliterate free
+    base_costs[ RESOURCE_RUNE ] = 0;
+    energize_type = ENERGIZE_NONE;
+
+    mh = new t20_obliterate_strike_t( p, "t20_obliterate_mh", &( p -> main_hand_weapon ), data().effectN( 2 ).trigger() );
+    oh = new t20_obliterate_strike_t( p, "t20_obliterate_offhand", &( p -> off_hand_weapon ), data().effectN( 3 ).trigger() );
+
+    add_child( mh );
+    add_child( oh );
+  }
+};
+
+// User-pressed obliterate
+struct obliterate_t : public obliterate_base_t
+{
+  obliterate_t( death_knight_t* p, const std::string& options_str ) :
+    obliterate_base_t( p, "obliterate", options_str )
+  {
+    parse_options( options_str );
+
+    mh = new obliterate_strike_t( p, "obliterate_mh", &( p -> main_hand_weapon ), data().effectN( 2 ).trigger() );
+    oh = new obliterate_strike_t( p, "obliterate_offhand", &( p -> off_hand_weapon ), data().effectN( 3 ).trigger() );
+
+    add_child( mh );
+    add_child( oh );
+  }
+
+  void execute() override
+  {
+    obliterate_base_t::execute();
+
+    if ( rng().roll( p() -> legendary.koltiras_newfound_will -> proc_chance() ) )
+    {
+      p() -> replenish_rune( p() -> legendary.koltiras_newfound_will -> effectN( 1 ).trigger() -> effectN( 1 ).base_value(),
+          p() -> gains.koltiras_newfound_will );
+    }
+
+    // Benefits from Killing Machine, so do a instant execute here instead of a "schedule execute"
+    if ( maybe_ptr( p() -> dbc.ptr ) &&
+         rng().roll( p() -> sets -> set( DEATH_KNIGHT_FROST, T20, B2 ) -> proc_chance() ) )
+    {
+      p() -> active_spells.t20_2pc_frost -> set_target( execute_state -> target );
+      p() -> active_spells.t20_2pc_frost -> execute();
+    }
+
+    consume_killing_machine( execute_state, p() -> procs.oblit_killing_machine );
   }
 };
 
@@ -5507,10 +5462,7 @@ struct pillar_of_frost_t : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
-    p() -> buffs.pillar_of_frost -> trigger( 1,
-        p() -> buffs.pillar_of_frost -> default_value +
-        p() -> buffs.t20_4pc_frost -> stack_value() );
-    p() -> buffs.t20_4pc_frost -> expire();
+    p() -> buffs.pillar_of_frost -> trigger();
   }
 };
 
@@ -6641,39 +6593,6 @@ void death_knight_t::analyze( sim_t& s )
   _runes.cumulative_waste.analyze();
 }
 
-void death_knight_t::trigger_t20_2pc_frost( double consumed )
-{
-  if ( ! sets -> has_set_bonus( DEATH_KNIGHT_FROST, T20, B2 ) )
-  {
-    return;
-  }
-
-  if ( ! buffs.pillar_of_frost -> up() )
-  {
-    return;
-  }
-
-  if ( consumed <= 0 )
-  {
-    return;
-  }
-
-  t20_2pc_frost += consumed;
-
-  if ( sim -> debug )
-  {
-    sim -> out_debug.printf( "%s T20 2PC set bonus accumulates %.1f, total %d runic_power",
-      name(), consumed, t20_2pc_frost );
-  }
-
-  if ( t20_2pc_frost >= sets -> set( DEATH_KNIGHT_FROST, T20, B2 ) -> effectN( 1 ).base_value() )
-  {
-    buffs.pillar_of_frost -> extend_duration( this, timespan_t::from_seconds(
-      sets -> set( DEATH_KNIGHT_FROST, T20, B2 ) -> effectN( 2 ).base_value() / 10.0 ) );
-    t20_2pc_frost -= sets -> set( DEATH_KNIGHT_FROST, T20, B2 ) -> effectN( 1 ).base_value();
-  }
-}
-
 void death_knight_t::trigger_t20_4pc_frost( double consumed )
 {
   if ( ! sets -> has_set_bonus( DEATH_KNIGHT_FROST, T20, B4 ) )
@@ -6681,30 +6600,27 @@ void death_knight_t::trigger_t20_4pc_frost( double consumed )
     return;
   }
 
-  if ( consumed == 0 )
+  if ( maybe_ptr( dbc.ptr ) )
   {
-    return;
+    buffs.t20_4pc_frost -> trigger();
   }
-
-  t20_4pc_frost += consumed;
-
-  if ( sim -> debug )
+  else
   {
-    sim -> out_debug.printf( "%s T20 4PC set bonus accumulates %.1f, total %d runes",
-      name(), consumed, t20_4pc_frost );
-  }
+    t20_4pc_frost += consumed;
 
-  if ( t20_4pc_frost >= sets -> set( DEATH_KNIGHT_FROST, T20, B4 ) -> effectN( 1 ).base_value() )
-  {
-    if ( ! buffs.t20_4pc_frost -> check() )
+    if ( sim -> debug )
     {
-      buffs.t20_4pc_frost -> trigger();
+      sim -> out_debug.printf( "%s T20 4PC set bonus accumulates %.1f, total %d runic_power",
+        name(), consumed, t20_4pc_frost );
     }
-    else
+
+    if ( t20_4pc_frost >= sets -> set( DEATH_KNIGHT_FROST, T20, B4 ) -> effectN( 2 ).base_value() )
     {
-      buffs.t20_4pc_frost -> current_value += buffs.t20_4pc_frost -> default_value;
+      auto cd_adjust = timespan_t::from_seconds( sets -> set( DEATH_KNIGHT_FROST, T20, B4 ) -> effectN( 1 ).base_value() );
+      cooldown.empower_rune_weapon -> adjust( -cd_adjust );
+      cooldown.hungering_rune_weapon -> adjust( -cd_adjust );
+      t20_4pc_frost -= sets -> set( DEATH_KNIGHT_FROST, T20, B4 ) -> effectN( 2 ).base_value();
     }
-    t20_4pc_frost -= sets -> set( DEATH_KNIGHT_FROST, T20, B4 ) -> effectN( 1 ).base_value();
   }
 }
 
@@ -6989,6 +6905,11 @@ bool death_knight_t::create_actions()
     active_spells.t20_2pc_unholy = new explosive_army_t( this );
   }
 
+  if ( maybe_ptr( dbc.ptr ) && sets -> has_set_bonus( DEATH_KNIGHT_FROST, T20, B2 ) )
+  {
+    active_spells.t20_2pc_frost = new t20_obliterate_t( this );
+  }
+
   return player_t::create_actions();
 }
 
@@ -7013,6 +6934,7 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   if ( name == "marrowrend"               ) return new marrowrend_t               ( this, options_str );
   if ( name == "vampiric_blood"           ) return new vampiric_blood_t           ( this, options_str );
   if ( name == "consumption"              ) return new consumption_t              ( this, options_str );
+  if ( name == "death_and_decay_tick"     ) return new death_and_decay_tick_t     ( this, options_str );
 
   // Frost Actions
   if ( name == "empower_rune_weapon"      ) return new empower_rune_weapon_t      ( this, options_str );
@@ -8049,15 +7971,22 @@ void death_knight_t::create_buffs()
   buffs.remorseless_winter = new remorseless_winter_buff_t( this );
 
   buffs.hungering_rune_weapon = new hungering_rune_weapon_buff_t( this );
+  buffs.t20_2pc_frost = buff_creator_t( this, "rune_empowered" )
+    .spell( sets -> set( DEATH_KNIGHT_FROST, T20, B2 ) -> effectN( 1 ).trigger() )
+    .trigger_spell( sets -> set( DEATH_KNIGHT_FROST, T20, B2 ) )
+    .default_value( sets -> set( DEATH_KNIGHT_FROST, T20, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
+    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.t20_2pc_unholy = buff_creator_t( this, "master_of_ghouls" )
     .spell( find_spell( 246995 ) )
     .trigger_spell( sets -> set( DEATH_KNIGHT_UNHOLY, T20, B2 ) )
     .default_value( find_spell( 246995 ) -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
     .refresh_behavior( BUFF_REFRESH_EXTEND );
-  buffs.t20_4pc_frost = buff_creator_t( this, "t20_4pc_frost" )
-    .default_value( 0.01 )
-    .chance( sets -> has_set_bonus( DEATH_KNIGHT_FROST, T20, B4 ) );
+  buffs.t20_4pc_frost = buff_creator_t( this, "icy_edge" )
+    .spell( sets -> set( DEATH_KNIGHT_FROST, T20, B4 ) -> effectN( 1 ).trigger() )
+    .trigger_spell( sets -> set( DEATH_KNIGHT_FROST, T20, B4 ) )
+    .default_value( sets -> set( DEATH_KNIGHT_FROST, T20, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
+  buffs.death_and_decay_tick = buff_creator_t( this, "death_and_decay_tick", find_spell( 43265 ) );
 }
 
 // death_knight_t::init_gains ===============================================
@@ -8092,6 +8021,7 @@ void death_knight_t::init_gains()
   gains.uvanimor_the_unbeautiful         = get_gain( "Uvanimor, the Unbeautiful"  );
   gains.koltiras_newfound_will           = get_gain( "Koltira's Newfound Will"    );
   gains.t19_4pc_frost                    = get_gain( "Tier19 Frost 4PC"           );
+  gains.rapid_decomposition              = get_gain( "Rapid Decomposition"        );
 }
 
 // death_knight_t::init_procs ===============================================
@@ -8184,7 +8114,6 @@ void death_knight_t::reset()
   crystalline_swords = 0;
   _runes.reset();
   rw_damage_targets.clear();
-  t20_2pc_frost = 0;
   t20_4pc_frost = 0;
 }
 
@@ -8459,6 +8388,8 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
   {
     m *= 1.0 + buffs.t18_4pc_unholy -> data().effectN( 2 ).percent();
   }
+
+  m *= 1.0 + buffs.t20_2pc_frost -> stack_value();
 
   m *= 1.0 + buffs.t20_2pc_unholy -> stack_value();
 
@@ -8786,6 +8717,57 @@ double death_knight_t::ready_runes_count( bool fractional ) const
   }
 
   return result;
+}
+
+// death_knight_t::runes_cooldown_min =======================================
+
+double death_knight_t::runes_cooldown_min( ) const
+{
+  double min_time = std::numeric_limits<double>::max();
+
+  for ( size_t rune_idx = 0; rune_idx < MAX_RUNES; ++rune_idx )
+  {
+    const rune_t& r = _runes.slot[ rune_idx ];
+
+    if ( r.is_ready() ) {
+      return 0.0;
+    }
+
+    double time = runes_cooldown_time( r );
+    if ( time < min_time )
+    {
+      min_time = time;
+    }
+  }
+
+  return min_time;
+}
+
+// death_knight_t::runes_cooldown_max =======================================
+
+double death_knight_t::runes_cooldown_max( ) const
+{
+  double max_time = 0;
+
+  for ( size_t rune_idx = 0; rune_idx < MAX_RUNES; ++rune_idx )
+  {
+    const rune_t& r = _runes.slot[ rune_idx ];
+
+    double time = runes_cooldown_time( r );
+    if ( time > max_time )
+    {
+      max_time = time;
+    }
+  }
+
+  return max_time;
+}
+
+// death_knight_t::runes_cooldown_time ======================================
+
+double death_knight_t::runes_cooldown_time( const rune_t& rune ) const
+{
+  return rune.is_ready() ? 0.0 : ( 1.0 - rune.fill_level() ) / runes_per_second();
 }
 
 // death_knight_t::arise ====================================================
