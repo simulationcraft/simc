@@ -1829,7 +1829,7 @@ void item::nightblooming_frond( special_effect_t& effect )
     {
       double m = proc_attack_t::action_multiplier();
 
-      m *= 1.0 + recursive_strikes_buff -> stack() * 0.5;
+      m *= 1.0 + ( recursive_strikes_buff -> stack() - 1 );
 
       return m;
     }
