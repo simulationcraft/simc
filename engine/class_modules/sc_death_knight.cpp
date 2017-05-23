@@ -5180,49 +5180,37 @@ struct marrowrend_t : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::execute();
 
+    int base = data().effectN( 3 ).base_value();
+    int amount = base;
+
     if ( p() -> buffs.dancing_rune_weapon -> check() )
     {
       p() -> pets.dancing_rune_weapon -> ability.marrowrend -> set_target( execute_state -> target );
       p() -> pets.dancing_rune_weapon -> ability.marrowrend -> execute();
 
-      // rattling bones 30% chance to get extra charge
-      if ( rng().roll( p() -> artifact.rattling_bones.percent() ) )
+      // gain an extra charge for each DRW
+      if ( rng().roll( p() -> artifact.rattling_bones.percent() ) &&  p() -> artifact.rattling_bones.rank())
       {
-        // while DRW is up your marrowrend gens an extra charge (double for each of the weapons)
-        // 5 + 5 = 10 (+1 from your actual weapon) = 11
-        if ( p() -> artifact.mouth_of_hell.rank() )
-        {
-          p() -> buffs.bone_shield -> trigger( 10 );
-        }
-        else
-        {
-          // base 4 + 4 = 8 from each DRW
-          p() -> buffs.bone_shield -> trigger( 8 );
-        }
+        amount += 2;
+      }
+
+      if ( p() -> artifact.mouth_of_hell.rank() )
+      {
+        // while DRW is up your marrowrend gens an extra charge
+        // (((base gain + 1 extra from MoH) * 2 for each DRW) + 1 for your actiul weapon)
+        amount += (((base + 1) * 2) + 1);
       }
       else
       {
-        // 4 + 4 = 8 (+1 from your actual weapon) = 9
-        if ( p() -> artifact.mouth_of_hell.rank() )
-        {
-          p() -> buffs.bone_shield -> trigger( 9 );
-        }
-        else
-        {
-          // base 3 + 3 = 6 from each DRW
-          p() -> buffs.bone_shield -> trigger( 6 );
-        }
+        amount += (base * 2);
       }
     }
 
-    if ( rng().roll( p() -> artifact.rattling_bones.percent() ) )
+    if ( rng().roll( p() -> artifact.rattling_bones.percent() ) &&  p() -> artifact.rattling_bones.rank())
     {
-      p() -> buffs.bone_shield -> trigger( 4 );
+      amount += 1;
     }
-    else
-    {
-      p() -> buffs.bone_shield -> trigger( data().effectN( 3 ).base_value() );
-    }
+    p() -> buffs.bone_shield -> trigger( amount );
 
     if ( execute_state -> result_amount > 0 && unholy_coil )
     {
