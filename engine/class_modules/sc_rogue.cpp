@@ -182,6 +182,7 @@ struct rogue_t : public player_t
 {
   // Custom options
   std::vector<size_t> fixed_rtb;
+  std::vector<double> fixed_rtb_odds;
 
   // Duskwalker footpads counter
   double df_counter;
@@ -623,6 +624,7 @@ struct rogue_t : public player_t
     proc_t* roll_the_bones_1;
     proc_t* roll_the_bones_2;
     proc_t* roll_the_bones_3;
+    proc_t* roll_the_bones_4;
     proc_t* roll_the_bones_5;
     proc_t* roll_the_bones_6;
 
@@ -682,7 +684,7 @@ struct rogue_t : public player_t
     prng( prng_t() ),
     legendary( legendary_t() ),
     initial_combo_points( 0 ),
-    ssw_refund_offset(0)
+    ssw_refund_offset( 0 )
   {
     // Cooldowns
     cooldowns.adrenaline_rush      = get_cooldown( "adrenaline_rush"      );
@@ -6629,7 +6631,7 @@ struct roll_the_bones_t : public buff_t
   {
     std::vector<buff_t*> rolled;
 
-    if ( maybe_ptr( rogue -> dbc.ptr ) )
+    if ( rogue -> fixed_rtb_odds.empty() && maybe_ptr( rogue -> dbc.ptr ) )
     {
       // RtB uses hardcoded probabilities since 7.2.5
       // As of 2017-05-18 assume these:
@@ -6638,8 +6640,24 @@ struct roll_the_bones_t : public buff_t
       // -- for 2-buffs, and 1% chance for 5-buffs (yahtzee), bringing the expected value of
       // -- a roll down to 1.24 buffs (plus additional value for synergies between buffs).
       // Source: https://us.battle.net/forums/en/wow/topic/20753815486?page=2#post-21
-      unsigned num_roll = rng().range( 0, 100 );
-      size_t num_buffs = num_roll < 79 ? 1 : ( num_roll < 99 ? 2 : 5 );
+      rogue -> fixed_rtb_odds = { 79.0, 20.0, 0.0, 0.0, 1.0, 0.0 };
+    }
+
+    if ( ! rogue -> fixed_rtb_odds.empty() )
+    {
+      double roll = rng().range( 0.0, 100.0 );
+      size_t num_buffs = 0;
+      double aggregate = 0.0;
+      for ( const double& chance : rogue -> fixed_rtb_odds )
+      {
+        aggregate += chance;
+        num_buffs++;
+        if ( roll < aggregate )
+        {
+          break;
+        }
+      }
+
       std::list<unsigned> pool = { 0, 1, 2, 3, 4, 5 };
       for ( size_t i = 0; i < num_buffs; i++ )
       {
@@ -6722,6 +6740,9 @@ struct roll_the_bones_t : public buff_t
         break;
       case 3:
         rogue -> procs.roll_the_bones_3 -> occur();
+        break;
+      case 4:
+        rogue -> procs.roll_the_bones_4 -> occur();
         break;
       case 5:
         rogue -> procs.roll_the_bones_5 -> occur();
@@ -8135,6 +8156,7 @@ void rogue_t::init_procs()
   procs.roll_the_bones_1         = get_proc( "Roll the Bones: 1 buff"  );
   procs.roll_the_bones_2         = get_proc( "Roll the Bones: 2 buffs" );
   procs.roll_the_bones_3         = get_proc( "Roll the Bones: 3 buffs" );
+  procs.roll_the_bones_4         = get_proc( "Roll the Bones: 4 buffs" );
   procs.roll_the_bones_5         = get_proc( "Roll the Bones: 5 buffs" );
   procs.roll_the_bones_6         = get_proc( "Roll the Bones: 6 buffs" );
 
@@ -8475,13 +8497,47 @@ static bool parse_fixed_rtb( sim_t* sim,
   return true;
 }
 
+static bool parse_fixed_rtb_odds( sim_t* sim,
+                                  const std::string& /* name */,
+                                  const std::string& value )
+{
+  std::vector<std::string> odds = util::string_split( value, "," );
+  if ( odds.size() != 6 )
+  {
+    sim -> errorf( "%s: Expected 6 comma-separated values for 'fixed_rtb_odds'", sim -> active_player -> name());
+    return false;
+  }
+
+  std::vector<double> buff_chances;
+  buff_chances.resize( 6, 0.0 );
+  double sum = 0.0;
+  for ( size_t i = 0; i < odds.size(); i++ )
+  {
+    buff_chances[ i ] = strtod( odds[ i ].c_str(), nullptr );
+    sum += buff_chances[ i ];
+  }
+
+  if ( sum != 100.0 )
+  {
+    sim -> errorf( "Warning: %s: 'fixed_rtb_odds' adding up to %f instead of 100, re-scaling accordingly", sim -> active_player -> name(), sum );
+    for ( size_t i = 0; i < odds.size(); i++ )
+    {
+      buff_chances[ i ] = buff_chances[ i ] / sum * 100.0;
+    }
+  }
+
+  debug_cast< rogue_t* >( sim -> active_player ) -> fixed_rtb_odds = buff_chances;
+  return true;
+}
+
 void rogue_t::create_options()
 {
   add_option( opt_func( "off_hand_secondary", parse_offhand_secondary ) );
   add_option( opt_func( "main_hand_secondary", parse_mainhand_secondary ) );
   add_option( opt_int( "initial_combo_points", initial_combo_points ) );
   add_option( opt_func( "fixed_rtb", parse_fixed_rtb ) );
-  add_option( opt_int("ssw_refund_offset", ssw_refund_offset) );
+  add_option( opt_func( "fixed_rtb_odds", parse_fixed_rtb_odds ) );
+  add_option( opt_int( "ssw_refund_offset", ssw_refund_offset ) );
 
   player_t::create_options();
 }
@@ -8513,6 +8569,9 @@ void rogue_t::copy_from( player_t* source )
   {
     ssw_refund_offset = rogue -> ssw_refund_offset;
   }
+
+  fixed_rtb = rogue -> fixed_rtb;
+  fixed_rtb_odds = rogue -> fixed_rtb_odds;
 }
 
 // rogue_t::create_profile  =================================================
