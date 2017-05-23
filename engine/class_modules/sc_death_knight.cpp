@@ -3893,6 +3893,15 @@ struct blooddrinker_t : public death_knight_spell_t
   { return base_tick_time; }
 };
 
+struct bloodworms_t : public death_knight_spell_t
+{
+  bloodworms_t( death_knight_t* p, const std::string& options_str ) :
+    death_knight_spell_t( "bloodworms", p, p -> talent.bloodworms )
+    {
+    parse_options( options_str );
+  }
+};
+
 // Bonestorm ================================================================
 
 struct bonestorm_heal_t : public death_knight_heal_t
@@ -5174,9 +5183,45 @@ struct marrowrend_t : public death_knight_melee_attack_t
     {
       p() -> pets.dancing_rune_weapon -> ability.marrowrend -> set_target( execute_state -> target );
       p() -> pets.dancing_rune_weapon -> ability.marrowrend -> execute();
+
+      // rattling bones 30% chance to get extra charge
+      if ( rng().roll( p() -> artifact.rattling_bones.percent() ) )
+      {
+        // while DRW is up your marrowrend gens an extra charge (double for each of the weapons)
+        // 5 + 5 = 10 (+1 from your actual weapon) = 11
+        if ( p() -> artifact.mouth_of_hell.rank() )
+        {
+          p() -> buffs.bone_shield -> trigger( 10 );
+        }
+        else
+        {
+          // base 4 + 4 = 8 from each DRW
+          p() -> buffs.bone_shield -> trigger( 8 );
+        }
+      }
+      else
+      {
+        // 4 + 4 = 8 (+1 from your actual weapon) = 9
+        if ( p() -> artifact.mouth_of_hell.rank() )
+        {
+          p() -> buffs.bone_shield -> trigger( 9 );
+        }
+        else
+        {
+          // base 3 + 3 = 6 from each DRW
+          p() -> buffs.bone_shield -> trigger( 6 );
+        }
+      }
     }
 
-    p() -> buffs.bone_shield -> trigger( data().effectN( 3 ).base_value() );
+    if ( rng().roll( p() -> artifact.rattling_bones.percent() ) )
+    {
+      p() -> buffs.bone_shield -> trigger( 4 );
+    }
+    else
+    {
+      p() -> buffs.bone_shield -> trigger( data().effectN( 3 ).base_value() );
+    }
 
     if ( execute_state -> result_amount > 0 && unholy_coil )
     {
@@ -7011,6 +7056,7 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   if ( name == "blighted_rune_weapon"     ) return new blighted_rune_weapon_t     ( this, options_str );
   if ( name == "blood_mirror"             ) return new blood_mirror_t             ( this, options_str );
   if ( name == "blooddrinker"             ) return new blooddrinker_t             ( this, options_str );
+  if ( name == "bloodworms"               ) return new bloodworms_t               ( this, options_str );
   if ( name == "bonestorm"                ) return new bonestorm_t                ( this, options_str );
   if ( name == "breath_of_sindragosa"     ) return new breath_of_sindragosa_t     ( this, options_str );
   if ( name == "clawing_shadows"          ) return new clawing_shadows_t          ( this, options_str );
@@ -7423,8 +7469,42 @@ void death_knight_t::default_apl_dps_precombat()
 
 void death_knight_t::default_apl_blood()
 {
-    // TODO: mrdmnd - implement
-  default_apl_frost();
+  action_priority_list_t* def = get_action_priority_list( "default" );
+  action_priority_list_t* st  = get_action_priority_list( "st" );
+
+  // Setup precombat APL for DPS spec
+  default_apl_dps_precombat();
+
+  // Racials
+  def->add_action("arcane_torrent,if=runic_power.deficit>20");
+  def->add_action("blood_fury");
+  def->add_action("berserking");
+
+  // On-use items
+  def->add_action("use_items");
+
+  // Default Actions
+  def -> add_action( "blood_boil,if=!dot.blood_plague.remains<=0" );
+  def -> add_action( "auto_attack" );
+  def -> add_action( "call_action_list,name=st" );
+
+  // Single Target Rotation
+  st -> add_action( "blooddrinker,if=talent.blooddrinker.enabled&(!(buff.dancing_rune_weapon.up))" );
+  st -> add_action( "dancing_rune_weapon" );
+  st -> add_action( "death_strike,if=prev_gcd.1.death_strike" );
+  st -> add_action( "marrowrend,if=buff.bone_shield.stack=0|buff.bone_shield.remains<(3*gcd.max)" );
+  st -> add_action( "vampiric_blood" );
+  st -> add_action( "blood_mirror,if=talent.blood_mirror.enabled" );
+  st -> add_action( "potion,if=(talent.bonestorm.enabled&dot.bonestorm.ticking)|talent.blood_mirror.enabled" );
+  st -> add_action( "consumption" );
+  st -> add_action( "death_and_decay,if=buff.crimson_scourge.up|talent.rapid_decomposition.enabled" );
+  st -> add_action( "bonestorm,if=talent.bonestorm.enabled&runic_power.deficit<10" );
+  st -> add_action( "marrowrend,if=buff.bone_shield.stack<5&active_enemies<3" );
+  st -> add_action( "death_strike,if=((runic_power>(80+10*!talent.ossuary.enabled)&talent.bonestorm.enabled&!dot.bonestorm.ticking&(cooldown.bonestorm.remains>15|((rune>3&runic_power.deficit<15)&cooldown.bonestorm.remains>5)))|!(talent.bonestorm.enabled))&(!talent.ossuary.enabled|buff.bone_shield.stack>5|rune>=3&runic_power.deficit<10)" );
+  st -> add_action( "death_and_decay" );
+  st -> add_action( "heart_strike,if=runic_power.deficit>=5|rune>3" );
+  st -> add_action( "blood_boil" );
+
 }
 
 // death_knight_t::default_potion ===========================================
@@ -7443,9 +7523,16 @@ std::string death_knight_t::default_potion() const
                               ( true_level >= 80 ) ? "golemblood_potion" :
                               "disabled";
 
+  std::string blood_potion = ( true_level > 100 ) ? "prolonged_power" :
+                              ( true_level >= 90 ) ? "draenic_strength" :
+                              ( true_level >= 85 ) ? "mogu_power" :
+                              ( true_level >= 80 ) ? "golemblood_potion" :
+                              "disabled";
+
   switch ( specialization() )
   {
     case DEATH_KNIGHT_FROST: return frost_potion;
+    case DEATH_KNIGHT_BLOOD: return blood_potion;
     default:                 return unholy_potion;
   }
 }
@@ -7466,9 +7553,12 @@ std::string death_knight_t::default_food() const
                             ( true_level >= 80 ) ? "seafood_magnifique_feast" :
                             "disabled";
 
+  std::string blood_food = "disabled";
+
   switch ( specialization() )
   {
     case DEATH_KNIGHT_FROST: return frost_food;
+    case DEATH_KNIGHT_BLOOD: return blood_food;
     default:                 return unholy_food;
   }
 }
