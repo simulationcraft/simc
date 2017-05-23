@@ -3919,7 +3919,7 @@ struct bonestorm_aoe_t : public death_knight_spell_t
   bonestorm_heal_t* heal;
 
   bonestorm_aoe_t( death_knight_t* p, bonestorm_heal_t* heal ) :
-    death_knight_spell_t( "bonestorm", p, p -> find_spell( 196528 ) ),
+    death_knight_spell_t( "bonestorm_damage", p, p -> find_spell( 196528 ) ),
     heal( heal )
   {
     background = true;
