@@ -11975,7 +11975,8 @@ void player_t::acquire_target( retarget_event_e event, player_t* context )
   // TODO: Fancier system
   for ( auto enemy : sim -> target_non_sleeping_list )
   {
-    if ( enemy -> debuffs.invulnerable -> up() )
+    if (    enemy -> debuffs.invulnerable != nullptr 
+         && enemy -> debuffs.invulnerable -> up() )
     {
       continue;
     }
