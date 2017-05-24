@@ -1537,7 +1537,8 @@ struct second_shuriken_t : public rogue_attack_t
     // Stealth Buff
     if ( p() -> buffs.stealth -> up() || p() -> buffs.shadow_dance -> up() || p() -> buffs.vanish -> up() )
     {
-      m *= 1.0 + 2.0; //FIXME Hotfix 09-24: Hardcoded to 200% until they add it in Spell Data like Shuriken Storm. Still the case as of 10/22/2016 (7.1 22882).
+      // Using Shuriken Storm modifier since that is what the spell data refenrences as well.
+      m *= 1.0 + p() -> find_specialization_spell( "Shuriken Storm" ) -> effectN( 3 ).percent();
     }
 
     return m;
