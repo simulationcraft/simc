@@ -100,8 +100,8 @@ public:
     propagate_const<buff_t*> reperation;               // T18 Disc 2p
     propagate_const<buff_t*> premonition;              // T18 Shadow 4pc
     propagate_const<stat_buff_t*> power_overwhelming;  // T19OH
-    propagate_const<buff_t*> void_vb;            // T19 Shadow 4pc
-    propagate_const<buff_t*> empty_mind;            // T20 Shadow 2pc
+    propagate_const<buff_t*> void_vb;                  // T19 Shadow 4pc
+    propagate_const<buff_t*> empty_mind;               // T20 Shadow 2pc
 
     // Legion Legendaries
     haste_buff_t* sephuzs_secret;
@@ -382,6 +382,7 @@ public:
     const special_effect_t* the_twins_painful_touch;    // ring
     const special_effect_t* zeks_exterminatus;          // cloak
     const special_effect_t* sephuzs_secret;             // ring
+    const special_effect_t* heart_of_the_void;          // chest
   } active_items;
 
   // Pets
@@ -3275,6 +3276,19 @@ struct void_eruption_t final : public priest_spell_t
       priest.buffs.voidform->bump( mss_vf_stacks - 1 );  // You start with 3 Stacks of Voidform 2017/01/17
     }
   }
+  // TODO: Healing part of HotV
+  double composite_da_multiplier(const action_state_t* state) const override
+  {
+    double d = priest_spell_t::composite_da_multiplier(state);
+
+    if ( priest.active_items.heart_of_the_void )
+    {
+      d *= 1.0 + 
+            ( priest.active_items.heart_of_the_void->driver()->effectN( 1 ).percent() );
+    }
+
+    return d;
+  }
 
   bool ready() override
   {
@@ -3794,6 +3808,13 @@ void zeks_exterminatus( special_effect_t& effect )
   do_trinket_init( priest, PRIEST_SHADOW, priest->active_items.zeks_exterminatus, effect );
 }
 
+void heart_of_the_void(special_effect_t& effect)
+{
+  priest_t* priest = debug_cast<priest_t*>(effect.player);
+  assert(priest);
+  do_trinket_init(priest, PRIEST_SHADOW, priest->active_items.heart_of_the_void, effect);
+}
+
 using namespace unique_gear;
 
 struct sephuzs_secret_enabler_t : public scoped_actor_callback_t<priest_t>
@@ -3843,6 +3864,7 @@ void init()
   unique_gear::register_special_effect( 236545, zeks_exterminatus );
   unique_gear::register_special_effect( 208051, sephuzs_secret_enabler_t() );
   unique_gear::register_special_effect( 208051, sephuzs_secret_t(), true );
+  unique_gear::register_special_effect( 248296, heart_of_the_void );
 }
 
 }  // items
