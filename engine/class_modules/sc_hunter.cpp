@@ -116,6 +116,7 @@ public:
     spell_data_ptr_t bm_ring;
     spell_data_ptr_t bm_shoulders;
     spell_data_ptr_t bm_waist;
+    spell_data_ptr_t bm_chest;
 
     // Marksmanship
     spell_data_ptr_t mm_feet;
@@ -166,6 +167,7 @@ public:
     buff_t* gyroscopic_stabilization;
     buff_t* the_mantle_of_command;
     buff_t* celerity_of_the_windrunners;
+    buff_t* parsels_tongue;
 
     haste_buff_t* sephuzs_secret;
   } buffs;
@@ -2944,6 +2946,9 @@ struct cobra_shot_t: public hunter_ranged_attack_t
           break;
       }
     }
+
+    if ( p() -> legendary.bm_chest -> ok() )
+      p() -> buffs.parsels_tongue -> trigger();
   }
 
   double composite_target_crit_chance( player_t* t ) const override
@@ -5986,6 +5991,11 @@ void hunter_t::create_buffs()
     haste_buff_creator_t( this, "celerity_of_the_windrunners", find_spell( 248088 ) )
       .default_value( find_spell( 248088 ) -> effectN( 1 ).percent() );
 
+  buffs.parsels_tongue =
+    buff_creator_t( this, "parsels_tongue", find_spell( 248085 ) )
+      .default_value( find_spell( 248085 ) -> effectN( 1 ).percent() )
+      .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
   buffs.t20_2p_precision =
     buff_creator_t( this, "t20_2p_precision", find_spell( 246153 ) )
       .default_value( find_spell( 246153 ) -> effectN( 2 ).percent() );
@@ -6675,6 +6685,9 @@ double hunter_t::composite_player_multiplier( school_e school ) const
   if ( buffs.t19_4p_mongoose_power -> up() )
     m *= 1.0 + buffs.t19_4p_mongoose_power -> check_value();
 
+  if ( buffs.parsels_tongue -> up() )
+    m *= 1.0 + buffs.parsels_tongue -> check_value();
+
   return m;
 }
 
@@ -6713,6 +6726,9 @@ double hunter_t::composite_player_pet_damage_multiplier( const action_state_t* s
 
   if ( buffs.the_mantle_of_command -> check() )
     m *= 1.0 + buffs.the_mantle_of_command -> check_value();
+
+  if ( buffs.parsels_tongue -> up() )
+    m *= 1.0 + buffs.parsels_tongue -> data().effectN( 2 ).percent();
 
   return m;
 }
@@ -6945,6 +6961,7 @@ struct hunter_module_t: public module_t
     register_special_effect( 212329, SPEC_NONE,            []( hunter_t& p, const spell_data_t* s ) { p.legendary.bm_ring = s; });
     register_special_effect( 235721, HUNTER_BEAST_MASTERY, []( hunter_t& p, const spell_data_t* s ) { p.legendary.bm_shoulders = s; });
     register_special_effect( 207280, HUNTER_BEAST_MASTERY, []( hunter_t& p, const spell_data_t* s ) { p.legendary.bm_waist = s; });
+    register_special_effect( 248084, HUNTER_BEAST_MASTERY, []( hunter_t& p, const spell_data_t* s ) { p.legendary.bm_chest = s; });
     register_special_effect( 206889, HUNTER_MARKSMANSHIP,  []( hunter_t& p, const spell_data_t* s ) { p.legendary.mm_feet = s; });
     register_special_effect( 235691, HUNTER_MARKSMANSHIP,  []( hunter_t& p, const spell_data_t* s ) { p.legendary.mm_gloves = s; });
     register_special_effect( 224550, HUNTER_MARKSMANSHIP,  []( hunter_t& p, const spell_data_t* s ) { p.legendary.mm_ring = s; });
