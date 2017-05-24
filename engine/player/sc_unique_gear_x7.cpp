@@ -1752,7 +1752,7 @@ struct ceaseless_toxin_t : public proc_spell_t
       target -> callbacks_on_demise.push_back( [ this ]( player_t* actor ) {
         if ( get_dot( actor ) -> is_ticking() )
         {
-          cooldown -> adjust( -timespan_t::from_seconds( data().effectN( 3 ).base_value() ) );
+          cooldown -> adjust( -timespan_t::from_seconds( data().effectN( maybe_ptr( player -> dbc.ptr ) ? 3 : 2 ).base_value() ) );
         }
       } );
     } );
