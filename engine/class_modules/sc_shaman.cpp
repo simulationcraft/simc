@@ -20,6 +20,7 @@
 // Enhancement
 // T20
 // 2p - Does the triggering crash hit benefit from the buff?
+// Windstrike unleash doom procs (currently commented)
 
 
 namespace { // UNNAMED NAMESPACE
@@ -3633,6 +3634,15 @@ struct windstrike_t : public stormstrike_base_t
 
     return stormstrike_base_t::ready();
   }
+
+  //Windstrike currently does not proc unleash doom - comment all this out if it gets fixed on PTR.
+  //void execute() override
+  //{
+  //  // Proc unleash doom before the actual damage strikes, they already benefit from the buff
+  //  p() -> buff.unleash_doom -> trigger();
+
+  //  stormstrike_base_t::execute();
+  //}
 };
 
 // Sundering Spell =========================================================
