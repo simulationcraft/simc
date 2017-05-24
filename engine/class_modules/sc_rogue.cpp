@@ -6659,12 +6659,13 @@ struct roll_the_bones_t : public buff_t
         }
       }
 
-      std::list<unsigned> pool = { 0, 1, 2, 3, 4, 5 };
+      std::vector<unsigned> pool = { 0, 1, 2, 3, 4, 5 };
       for ( size_t i = 0; i < num_buffs; i++ )
       {
         unsigned buff = rng().range( 0, pool.size() );
-        rolled.push_back( buffs[ buff ] );
-        pool.remove( buff );
+        auto buff_idx = pool[ buff ];
+        rolled.push_back( buffs[ buff_idx ] );
+        pool.erase( pool.begin() + buff );
       }
     }
     else
