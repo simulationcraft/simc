@@ -596,7 +596,7 @@ public:
         switch ( specialization() )
         {
         case SHAMAN_ENHANCEMENT:
-          return util::str_compare_ci( spell -> name_cstr(), "Landslide" );
+          return util::str_compare_ci( spell -> name_cstr(), "Tempest" );
         case SHAMAN_ELEMENTAL:
           return util::str_compare_ci( spell -> name_cstr(), "Echo of the Elements" );
         }
