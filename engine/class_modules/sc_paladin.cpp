@@ -381,6 +381,8 @@ public:
     artifact_power_t light_of_the_titans;
     artifact_power_t tyrs_enforcer;
     artifact_power_t unrelenting_light;
+	artifact_power_t holy_aegis;
+	artifact_power_t bulwark_of_the_silver_hand;
 
   } artifact;
 
@@ -505,6 +507,7 @@ public:
   virtual double    composite_spell_power_multiplier() const override;
   virtual double    composite_crit_avoidance() const override;
   virtual double    composite_parry_rating() const override;
+  virtual double    composite_parry() const override;
   virtual double    composite_block() const override;
   virtual double    composite_block_reduction() const override;
   virtual double    temporary_movement_modifier() const override;
@@ -1481,6 +1484,15 @@ struct blessed_hammer_tick_t : public paladin_spell_t
     may_crit = true;
   }
 
+  double action_multiplier() const override
+  {
+	  double am = paladin_spell_t::action_multiplier();
+
+	  am *= 1.0 + p()->artifact.hammer_time.percent(1);
+
+	  return am;
+  }
+
   virtual void impact( action_state_t* s ) override
   {
     paladin_spell_t::impact( s );
@@ -1488,6 +1500,7 @@ struct blessed_hammer_tick_t : public paladin_spell_t
     // apply BH debuff to target_data structure
     td( s -> target ) -> buffs.blessed_hammer_debuff -> trigger();
   }
+
 };
 
 struct blessed_hammer_t : public paladin_spell_t
@@ -1516,6 +1529,7 @@ struct blessed_hammer_t : public paladin_spell_t
 
     add_child( hammer );
   }
+  
 
   void execute() override
   {
@@ -1555,6 +1569,12 @@ struct consecration_tick_t: public paladin_spell_t {
     {
       base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 8 ).percent();
     }
+
+	if (p->specialization() == PALADIN_PROTECTION)
+	{
+		base_multiplier *= 1.0 + p->passives.protection_paladin->effectN(4).percent();
+	}
+
   }
 };
 
@@ -5407,6 +5427,8 @@ void paladin_t::init_spells()
   artifact.light_of_the_titans     = find_artifact_spell( "Light of the Titans" );
   artifact.tyrs_enforcer           = find_artifact_spell( "Tyr's Enforcer" );
   artifact.unrelenting_light       = find_artifact_spell( "Unrelenting Light" );
+  artifact.holy_aegis			   = find_artifact_spell("Holy Aegis");
+  artifact.bulwark_of_the_silver_hand = find_artifact_spell("Bulwark of the Silver Hand");
 
   // Spells
   spells.holy_light                    = find_specialization_spell( "Holy Light" );
@@ -5804,6 +5826,8 @@ double paladin_t::composite_player_multiplier( school_e school ) const
   // artifacts
   m *= 1.0 + artifact.ashbringers_light.percent();
   m *= 1.0 + artifact.ferocity_of_the_silver_hand.percent();
+  m *= 1.0 + artifact.bulwark_of_the_silver_hand.percent();
+
 
   if ( school == SCHOOL_HOLY )
     m *= 1.0 + artifact.truthguards_light.percent();
@@ -5970,6 +5994,15 @@ double paladin_t::composite_parry_rating() const
     p += composite_melee_crit_rating();
 
   return p;
+}
+
+double paladin_t::composite_parry() const
+{
+	double p_r = player_t::composite_parry();
+
+	p_r += artifact.holy_aegis.percent(1);
+
+	return p_r;
 }
 
 // paladin_t::temporary_movement_modifier =====================================

@@ -1017,7 +1017,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 232709 | Target: Self (1)
 Description      : Remove all snares and vault away.  Nearby enemies take $198813sw2 Physical damage and have their movement speed reduced by $198813s1% for $198813d.$?a203551[
 
-|cFFFFFFFFGenerates $203650o1 Fury over $203650d if you damage an enemy.|r][]
+|cFFFFFFFFGenerates ${($203650s1/5)*$203650d} Fury over $203650d if you damage an enemy.|r][]
 
 Name             : Vengeful Retreat (id=198813) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -2021,7 +2021,7 @@ Effects          :
 #1 (id=305259)   : Apply Aura (6) | Dummy (4)
                    Base Value: 200 | Scaled Value: 200 | Misc Value: 14 | Target: Self (1)
 #2 (id=323061)   : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14)
-                   Base Value: -35 | Scaled Value: -35 | Misc Value: 14 | Target: Self (1)
+                   Base Value: -20 | Scaled Value: -20 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Blade Dance (188499), Blade Dance (199552), Blade Dance (200685), Death Sweep (210152), Death Sweep (210153), Death Sweep (210155)
 Description      : Reduces the Fury cost of Blade Dance by $s2 and increases its damage to $<firstbloodDmg> against the first target struck.
 Variables        : $baseDmg=${3*$199552sw2+$200685sw2} 
@@ -3286,7 +3286,7 @@ Attributes       : ....x... ........ ....xx.. ........   ...x.... ..x..... ..x..
 Effects          :
 #1 (id=324244)   : Apply Aura (6) | Stun (12)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy (6)
-Description      : Imprisons a demon, beast, or humanoid for $d. Damage will cancel the effect. Limit 1.
+Description      : Imprisons a demon, beast, or humanoid, incapacitating them for $d. Damage will cancel the effect. Limit 1.
 Tooltip          : Incapacitated.
 
 Name             : Soul Rending (id=217996) [Spell Family (107), Passive] 
@@ -3310,7 +3310,9 @@ Class            : Vengeance Demon Hunter
 School           : Fire
 Spell Level      : 103
 Duration         : 6 seconds
-Cooldown         : 20 seconds
+Cooldown         : 1 seconds
+Charges          : 1 (20 seconds cooldown)
+Category         : 1693
 Proc Chance      : 100%
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

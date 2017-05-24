@@ -69,3 +69,9 @@ enum priority_e {
 void set_priority( priority_e);
 
 } // computer_process
+
+namespace thread
+{
+  // Windows (10) needs to promote main thread to higher priority
+  void set_main_thread_priority();
+}

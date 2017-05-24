@@ -889,11 +889,9 @@ public:
       rage /= p() -> talents.anger_management -> effectN( 1 ).base_value();
       rage *= -1;
 
-      if ( p() -> specialization() != WARRIOR_PROTECTION )
-      {
-        p() -> cooldown.battle_cry -> adjust( timespan_t::from_seconds( rage ) );
-      }
-      else
+      p() -> cooldown.battle_cry -> adjust( timespan_t::from_seconds( rage ) );
+
+      if ( p() -> specialization() == WARRIOR_PROTECTION )
       {
         p() -> cooldown.last_stand -> adjust( timespan_t::from_seconds( rage ) );
         p() -> cooldown.shield_wall -> adjust( timespan_t::from_seconds( rage ) );
