@@ -644,7 +644,6 @@ namespace pets {
     melee_attack_t* melee_attack;
     stats_t* summon_stats;
     spell_t *ascendance;
-    const spell_data_t* command;
 
     warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_e pt, bool guardian = false );
     virtual void init_base_stats() override;
@@ -1433,7 +1432,6 @@ pet_t( sim, owner, pet_name, pt, guardian ), special_action( nullptr ), special_
   owner_coeff.ap_from_sp = 1.0;
   owner_coeff.sp_from_sp = 1.0;
   owner_coeff.health = 0.5;
-  command = find_spell( 21563 );
 
 //  ascendance = new thalkiels_ascendance_pet_spell_t( this );
 }
@@ -1526,9 +1524,6 @@ void warlock_pet_t::schedule_ready( timespan_t delta_time, bool waiting )
 double warlock_pet_t::composite_player_multiplier( school_e school ) const
 {
   double m = pet_t::composite_player_multiplier( school );
-
-  if ( o() -> race == RACE_ORC )
-    m *= 1.0 + command -> effectN( 1 ).percent();
 
   m *= 1.0 + o() -> buffs.tier18_2pc_demonology -> stack_value();
 
@@ -2000,15 +1995,12 @@ struct felhunter_pet_t: public warlock_pet_t
     warlock_pet_t( sim, owner, name, PET_FELHUNTER, name != "felhunter" )
   {
     action_list_str = "shadow_bite";
-    if ( owner -> specialization() == WARLOCK_AFFLICTION )
+
+    owner_coeff.ap_from_sp *= 1.2; //Hotfixed no spelldata, live as of 05-24-2017
+    if ( maybe_ptr( owner -> dbc.ptr ) && owner -> specialization() == WARLOCK_AFFLICTION )
     {
-      owner_coeff.ap_from_sp *= 1.2; //Hotfixed, no data
-      owner_coeff.sp_from_sp *= 1.2; //Hotfixed, no data
-      if ( maybe_ptr( owner -> dbc.ptr ) )
-      {
-        owner_coeff.ap_from_sp *= 1.2; //Hotfixed, no data
-        owner_coeff.sp_from_sp *= 1.2; //Hotfixed, no data
-      }
+      owner_coeff.ap_from_sp *= 1.0 + owner -> spec.affliction -> effectN( 2 ).percent();
+      owner_coeff.sp_from_sp *= 1.0 + owner -> spec.affliction -> effectN( 2 ).percent();
     }
   }
 
@@ -2085,15 +2077,10 @@ struct infernal_t: public warlock_pet_t
     warlock_pet_t( sim, owner, "infernal", PET_INFERNAL )
   {
     owner_coeff.health = 0.4;
-    if ( owner->specialization() == WARLOCK_AFFLICTION )
+    if ( maybe_ptr( owner -> dbc.ptr ) && owner -> specialization() == WARLOCK_AFFLICTION )
     {
-      owner_coeff.ap_from_sp *= 1.2; //Hotfixed, no data
-      owner_coeff.sp_from_sp *= 1.2; //Hotfixed, no data
-      if ( maybe_ptr( owner->dbc.ptr ) )
-      {
-        owner_coeff.ap_from_sp *= 1.2; //Hotfixed, no data
-        owner_coeff.sp_from_sp *= 1.2; //Hotfixed, no data
-      }
+      owner_coeff.ap_from_sp *= 1.0 + owner -> spec.affliction -> effectN( 2 ).percent();
+      owner_coeff.sp_from_sp *= 1.0 + owner -> spec.affliction -> effectN( 2 ).percent();
     }
   }
 
@@ -2167,15 +2154,10 @@ struct doomguard_t: public warlock_pet_t
   {
     owner_coeff.health = 0.4;
     action_list_str = "doom_bolt";
-    if ( owner -> specialization() == WARLOCK_AFFLICTION )
+    if ( maybe_ptr( owner -> dbc.ptr ) && owner -> specialization() == WARLOCK_AFFLICTION )
     {
-      owner_coeff.ap_from_sp *= 1.2; //Hotfixed, no data
-      owner_coeff.sp_from_sp *= 1.2; //Hotfixed, no data
-      if ( maybe_ptr( owner -> dbc.ptr ) )
-      {
-        owner_coeff.ap_from_sp *= 1.2; //Hotfixed, no data
-        owner_coeff.sp_from_sp *= 1.2; //Hotfixed, no data
-      }
+      owner_coeff.ap_from_sp *= 1.0 + owner-> spec.affliction -> effectN( 2 ).percent();
+      owner_coeff.sp_from_sp *= 1.0 + owner -> spec.affliction -> effectN( 2 ).percent();
     }
   }
 
