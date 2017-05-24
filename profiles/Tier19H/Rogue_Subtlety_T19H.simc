@@ -31,8 +31,8 @@ actions.precombat+=/potion
 actions.precombat+=/marked_for_death,if=raid_event.adds.in>40
 # Defined variables that doesn't change during the fight
 actions.precombat+=/variable,name=ssw_refund,value=equipped.shadow_satyrs_walk*(6+ssw_refund_offset)
-actions.precombat+=/variable,name=stealth_threshold,value=(15+talent.vigor.enabled*35+talent.master_of_shadows.enabled*(25+ptr*15)+variable.ssw_refund)
-actions.precombat+=/variable,name=shd_fractionnal,value=ptr*(1.725+0.6*talent.enveloping_shadows.enabled)+(1-ptr)*2.45
+actions.precombat+=/variable,name=stealth_threshold,value=(15+talent.vigor.enabled*35+talent.master_of_shadows.enabled*25+variable.ssw_refund)
+actions.precombat+=/variable,name=shd_fractionnal,value=ptr*(1.725+0.725*talent.enveloping_shadows.enabled)+(1-ptr)*2.45
 actions.precombat+=/enveloping_shadows,if=combo_points>=5&ptr=0
 # Since 7.1.5, casting Shadow Dance before going in combat let you extends the stealth buff, so it's worth to use with Subterfuge talent. Has not been fixed in 7.2.5!
 actions.precombat+=/shadow_dance,if=talent.subterfuge.enabled&bugs

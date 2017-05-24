@@ -9,6 +9,11 @@
 #include <mutex>
 #include <chrono>
 
+#if defined( SC_WINDOWS )
+#define NOMINMAX
+#include <windows.h>
+#endif
+
 // C++11 STL multi-threading hook-ups
 
 
@@ -185,3 +190,17 @@ void computer_process::set_priority( priority_e )
   // do nothing
 }
 #endif
+
+namespace thread
+{
+void set_main_thread_priority()
+{
+#if defined( SC_WINDOWS )
+  if ( !SetThreadPriority( GetCurrentThread(), THREAD_PRIORITY_ABOVE_NORMAL ) )
+  {
+    perror( "Unable to set main thread priority" );
+  }
+#else
+#endif
+}
+}

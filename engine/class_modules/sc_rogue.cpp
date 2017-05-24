@@ -182,6 +182,7 @@ struct rogue_t : public player_t
 {
   // Custom options
   std::vector<size_t> fixed_rtb;
+  std::vector<double> fixed_rtb_odds;
 
   // Duskwalker footpads counter
   double df_counter;
@@ -623,6 +624,7 @@ struct rogue_t : public player_t
     proc_t* roll_the_bones_1;
     proc_t* roll_the_bones_2;
     proc_t* roll_the_bones_3;
+    proc_t* roll_the_bones_4;
     proc_t* roll_the_bones_5;
     proc_t* roll_the_bones_6;
 
@@ -682,7 +684,7 @@ struct rogue_t : public player_t
     prng( prng_t() ),
     legendary( legendary_t() ),
     initial_combo_points( 0 ),
-    ssw_refund_offset(0)
+    ssw_refund_offset( 0 )
   {
     // Cooldowns
     cooldowns.adrenaline_rush      = get_cooldown( "adrenaline_rush"      );
@@ -1535,7 +1537,8 @@ struct second_shuriken_t : public rogue_attack_t
     // Stealth Buff
     if ( p() -> buffs.stealth -> up() || p() -> buffs.shadow_dance -> up() || p() -> buffs.vanish -> up() )
     {
-      m *= 1.0 + 2.0; //FIXME Hotfix 09-24: Hardcoded to 200% until they add it in Spell Data like Shuriken Storm. Still the case as of 10/22/2016 (7.1 22882).
+      // Using Shuriken Storm modifier since that is what the spell data refenrences as well.
+      m *= 1.0 + p() -> find_specialization_spell( "Shuriken Storm" ) -> effectN( 3 ).percent();
     }
 
     return m;
@@ -6629,7 +6632,7 @@ struct roll_the_bones_t : public buff_t
   {
     std::vector<buff_t*> rolled;
 
-    if ( maybe_ptr( rogue -> dbc.ptr ) )
+    if ( rogue -> fixed_rtb_odds.empty() && maybe_ptr( rogue -> dbc.ptr ) )
     {
       // RtB uses hardcoded probabilities since 7.2.5
       // As of 2017-05-18 assume these:
@@ -6638,14 +6641,31 @@ struct roll_the_bones_t : public buff_t
       // -- for 2-buffs, and 1% chance for 5-buffs (yahtzee), bringing the expected value of
       // -- a roll down to 1.24 buffs (plus additional value for synergies between buffs).
       // Source: https://us.battle.net/forums/en/wow/topic/20753815486?page=2#post-21
-      unsigned num_roll = rng().range( 0, 100 );
-      size_t num_buffs = num_roll < 79 ? 1 : ( num_roll < 99 ? 2 : 5 );
-      std::list<unsigned> pool = { 0, 1, 2, 3, 4, 5 };
+      rogue -> fixed_rtb_odds = { 79.0, 20.0, 0.0, 0.0, 1.0, 0.0 };
+    }
+
+    if ( ! rogue -> fixed_rtb_odds.empty() )
+    {
+      double roll = rng().range( 0.0, 100.0 );
+      size_t num_buffs = 0;
+      double aggregate = 0.0;
+      for ( const double& chance : rogue -> fixed_rtb_odds )
+      {
+        aggregate += chance;
+        num_buffs++;
+        if ( roll < aggregate )
+        {
+          break;
+        }
+      }
+
+      std::vector<unsigned> pool = { 0, 1, 2, 3, 4, 5 };
       for ( size_t i = 0; i < num_buffs; i++ )
       {
         unsigned buff = rng().range( 0, pool.size() );
-        rolled.push_back( buffs[ buff ] );
-        pool.remove( buff );
+        auto buff_idx = pool[ buff ];
+        rolled.push_back( buffs[ buff_idx ] );
+        pool.erase( pool.begin() + buff );
       }
     }
     else
@@ -6722,6 +6742,9 @@ struct roll_the_bones_t : public buff_t
         break;
       case 3:
         rogue -> procs.roll_the_bones_3 -> occur();
+        break;
+      case 4:
+        rogue -> procs.roll_the_bones_4 -> occur();
         break;
       case 5:
         rogue -> procs.roll_the_bones_5 -> occur();
@@ -7275,9 +7298,11 @@ void rogue_t::init_action_list()
     maintain -> add_action( "call_action_list,name=kb,if=combo_points.deficit>=1+(mantle_duration>=gcd.remains+0.2)" );
     maintain -> add_action( "pool_resource,for_next=1" );
     maintain -> add_action( this, "Garrote", "cycle_targets=1,if=(!talent.subterfuge.enabled|!(cooldown.vanish.up&cooldown.vendetta.remains<=4))&combo_points.deficit>=1&refreshable&(pmultiplier<=1|remains<=tick_time)&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>4" );
-    maintain -> add_action( "pool_resource,for_next=1" );
-    // maintain -> add_talent( this, "Toxic Blade", "if=combo_points.deficit>=1+(mantle_duration>=gcd.remains+0.2)&dot.kingsbane.remains<11&dot.rupture.remains>8" );
-    maintain -> add_action( "toxic_blade,if=combo_points.deficit>=1+(mantle_duration>=gcd.remains+0.2)&dot.kingsbane.remains<11&dot.rupture.remains>8" );
+    if ( maybe_ptr( dbc.ptr ) )
+    {
+      maintain -> add_action( "pool_resource,for_next=1" );
+      maintain -> add_talent( this, "Toxic Blade", "if=combo_points.deficit>=1+(mantle_duration>=gcd.remains+0.2)&dot.kingsbane.remains<11&dot.rupture.remains>8" );
+    }
   }
   else if ( specialization() == ROGUE_OUTLAW )
   {
@@ -7285,7 +7310,7 @@ void rogue_t::init_action_list()
     precombat -> add_action( this, "Roll the Bones", "if=!talent.slice_and_dice.enabled" );
 
     // Main Rotation
-    def -> add_action( "variable,name=rtb_reroll_ptr,value=!talent.slice_and_dice.enabled&rtb_buffs<2&!rtb_list.any.1", "PTR: Fish for '2 Buffs' or 'Broadsides'. With SnD, consider that we never have to reroll." );
+    def -> add_action( "variable,name=rtb_reroll_ptr,value=!talent.slice_and_dice.enabled&rtb_buffs<2", "PTR: Fish for '2 Buffs'. With SnD, consider that we never have to reroll." );
     def -> add_action( "variable,name=rtb_reroll_live,value=!talent.slice_and_dice.enabled&(rtb_buffs<=2&!rtb_list.any.6)", "Fish for '3 Buffs' or 'True Bearing'. With SnD, consider that we never have to reroll." );
     def -> add_action( "variable,name=rtb_reroll,value=(ptr&variable.rtb_reroll_ptr)|(!ptr&variable.rtb_reroll_live)" );
     def -> add_action( "variable,name=ss_useable_noreroll,value=(combo_points<5+talent.deeper_stratagem.enabled-(buff.broadsides.up|buff.jolly_roger.up)-(talent.alacrity.enabled&buff.alacrity.stack<=4))", "Condition to use Saber Slash when not rerolling RtB or when using SnD" );
@@ -7355,8 +7380,8 @@ void rogue_t::init_action_list()
   {
     // Pre-Combat
     precombat -> add_action( "variable,name=ssw_refund,value=equipped.shadow_satyrs_walk*(6+ssw_refund_offset)", "Defined variables that doesn't change during the fight" );
-    precombat -> add_action( "variable,name=stealth_threshold,value=(15+talent.vigor.enabled*35+talent.master_of_shadows.enabled*(25+ptr*15)+variable.ssw_refund)" );
-    precombat -> add_action( "variable,name=shd_fractionnal,value=ptr*(1.725+0.6*talent.enveloping_shadows.enabled)+(1-ptr)*2.45" );
+    precombat -> add_action( "variable,name=stealth_threshold,value=(15+talent.vigor.enabled*35+talent.master_of_shadows.enabled*25+variable.ssw_refund)" );
+    precombat -> add_action( "variable,name=shd_fractionnal,value=ptr*(1.725+0.725*talent.enveloping_shadows.enabled)+(1-ptr)*2.45" );
     precombat -> add_talent( this, "Enveloping Shadows", "if=combo_points>=5&ptr=0" );
     precombat -> add_action( this, "Shadow Dance", "if=talent.subterfuge.enabled&bugs", "Since 7.1.5, casting Shadow Dance before going in combat let you extends the stealth buff, so it's worth to use with Subterfuge talent. Has not been fixed in 7.2.5!" ); // Before SoD because we do it while not in stealth in-game
     precombat -> add_action( this, "Symbols of Death" );
@@ -8133,6 +8158,7 @@ void rogue_t::init_procs()
   procs.roll_the_bones_1         = get_proc( "Roll the Bones: 1 buff"  );
   procs.roll_the_bones_2         = get_proc( "Roll the Bones: 2 buffs" );
   procs.roll_the_bones_3         = get_proc( "Roll the Bones: 3 buffs" );
+  procs.roll_the_bones_4         = get_proc( "Roll the Bones: 4 buffs" );
   procs.roll_the_bones_5         = get_proc( "Roll the Bones: 5 buffs" );
   procs.roll_the_bones_6         = get_proc( "Roll the Bones: 6 buffs" );
 
@@ -8461,7 +8487,7 @@ static bool parse_fixed_rtb( sim_t* sim,
     buffs.push_back( buff_index );
   }
 
-  if ( buffs.size() == 0 || buffs.size() == 4 || buffs.size() == 5 )
+  if ( buffs.size() == 0 || buffs.size() > 6 )
   {
     sim -> errorf( "%s: No valid 'fixed_rtb' buffs given by string '%s'", sim -> active_player -> name(),
         value.c_str() );
@@ -8473,13 +8499,47 @@ static bool parse_fixed_rtb( sim_t* sim,
   return true;
 }
 
+static bool parse_fixed_rtb_odds( sim_t* sim,
+                                  const std::string& /* name */,
+                                  const std::string& value )
+{
+  std::vector<std::string> odds = util::string_split( value, "," );
+  if ( odds.size() != 6 )
+  {
+    sim -> errorf( "%s: Expected 6 comma-separated values for 'fixed_rtb_odds'", sim -> active_player -> name());
+    return false;
+  }
+
+  std::vector<double> buff_chances;
+  buff_chances.resize( 6, 0.0 );
+  double sum = 0.0;
+  for ( size_t i = 0; i < odds.size(); i++ )
+  {
+    buff_chances[ i ] = strtod( odds[ i ].c_str(), nullptr );
+    sum += buff_chances[ i ];
+  }
+
+  if ( sum != 100.0 )
+  {
+    sim -> errorf( "Warning: %s: 'fixed_rtb_odds' adding up to %f instead of 100, re-scaling accordingly", sim -> active_player -> name(), sum );
+    for ( size_t i = 0; i < odds.size(); i++ )
+    {
+      buff_chances[ i ] = buff_chances[ i ] / sum * 100.0;
+    }
+  }
+
+  debug_cast< rogue_t* >( sim -> active_player ) -> fixed_rtb_odds = buff_chances;
+  return true;
+}
+
 void rogue_t::create_options()
 {
   add_option( opt_func( "off_hand_secondary", parse_offhand_secondary ) );
   add_option( opt_func( "main_hand_secondary", parse_mainhand_secondary ) );
   add_option( opt_int( "initial_combo_points", initial_combo_points ) );
   add_option( opt_func( "fixed_rtb", parse_fixed_rtb ) );
-  add_option( opt_int("ssw_refund_offset", ssw_refund_offset) );
+  add_option( opt_func( "fixed_rtb_odds", parse_fixed_rtb_odds ) );
+  add_option( opt_int( "ssw_refund_offset", ssw_refund_offset ) );
 
   player_t::create_options();
 }
@@ -8511,6 +8571,9 @@ void rogue_t::copy_from( player_t* source )
   {
     ssw_refund_offset = rogue -> ssw_refund_offset;
   }
+
+  fixed_rtb = rogue -> fixed_rtb;
+  fixed_rtb_odds = rogue -> fixed_rtb_odds;
 }
 
 // rogue_t::create_profile  =================================================

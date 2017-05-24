@@ -3689,6 +3689,25 @@ void unique_gear::initialize_special_effect_2( special_effect_t* effect )
   }
   else if ( effect -> type == SPECIAL_EFFECT_EQUIP )
   {
+    // Ensure we are not accidentally initializing a generic special effect multiple times
+    bool exists = effect -> player -> callbacks.has_callback( [ effect ]( const action_callback_t* cb ) {
+      auto dbc_cb = dynamic_cast<const dbc_proc_callback_t*>( cb );
+      if ( dbc_cb == nullptr )
+      {
+        return false;
+      }
+
+      // Special effects are unique, and have an 1:1 relationship with (dbc proc) callbacks. Pointer
+      // comparison here is enough to ensure that no special_effect_t object gets more than one
+      // dbc_proc_callback_t object.
+      return &( dbc_cb -> effect ) == effect;
+    } );
+
+    if ( exists )
+    {
+      return;
+    }
+
     if ( effect -> item )
     {
       new dbc_proc_callback_t( effect -> item, *effect );

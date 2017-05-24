@@ -1371,7 +1371,7 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88) | Target: Enemy (6)
 #2 (id=158599)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 1 | Scaled Value: 1 | Mechanic: Unknown(88) | Target: Enemy (6)
-Description      : Reduces the target's movement speed by $s1% for $d, duration refreshed by your melee attacks.  Targets already snared will be rooted for $116706d instead.
+Description      : Reduces the target's movement speed by $s1% for $d, duration refreshed by your melee attacks. Targets already snared will be rooted for $116706d instead.
 Tooltip          : Movement slowed by $w1%. When struck again by Disable, you will be rooted for $116706d.
 
 Name             : Provoke (id=116189) [Spell Family (53)] 
@@ -1438,7 +1438,7 @@ Effects          :
 #1 (id=131794)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Friend (21)
 #2 (id=284314)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.00000 | Radius: 0 - 40 yards | Target: Unknown(132) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.00000 | Radius: 0 - 30 yards | Target: Unknown(132) -> AOE friendly (31)
 Description      : Causes a surge of invigorating mists around the target, healing them and their $s1 nearest injured allies for $s2.
 
 Name             : Thunder Focus Tea (id=116680) [Scaling Spell (6), Spell Family (53)] 
@@ -1493,8 +1493,8 @@ Name             : Effuse (id=116694) [Spell Family (53)]
 Class            : Brewmaster Mistweaver Windwalker Monk
 School           : Nature
 Resource         : 2% Base Mana (0) (id=6078) w/ Mistweaver Monk (id=137024)
-Resource         : 30 Energy (3) (id=9204) w/ Windwalker Monk (id=137025)
-Resource         : 30 Energy (3) (id=9205) w/ Brewmaster Monk (id=137023)
+Resource         : 30 Energy (3) (id=9204) w/ Brewmaster Monk (id=137023)
+Resource         : 30 Energy (3) (id=9205) w/ Windwalker Monk (id=137025)
 Spell Level      : 8
 Range            : 40 yards
 Cast Time        : 1.5 seconds
@@ -1560,6 +1560,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... ....x... ........ ........ 
                  : Yellow Melee, AOE Hostile Spell
+Triggered by     : The Wind Blows (248101)
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -1700,7 +1701,7 @@ Name             : Fists of Fury (id=117418) [Spell Family (53)]
 Class            : Monk
 School           : Physical
 Spell Level      : 1
-Range            : 5 yards
+Range            : 8 yards
 Affecting spells : Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Fists of the Wind (195291 effect#1)
 Triggered by     : Fists of Fury (113656)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1896,7 +1897,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=137916)   : Dummy (3)
-                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | Target: Self (1)
 Description      : Clears $s1% of your damage delayed with Stagger.
 
 Shares charges with Ironskin Brew.
@@ -2089,11 +2090,11 @@ Range            : 15 yards
 GCD              : 1 seconds
 Velocity         : 30 yards/sec
 Duration         : 15 seconds
-Cooldown         : 8 seconds
-Charges          : 0 (8 seconds cooldown)
+Cooldown         : 1 seconds
+Charges          : 1 (8 seconds cooldown)
 Category         : 1490
 Proc Chance      : 101%
-Affecting spells : Brewmaster Monk (137023 effect#1), Smashed (213050 effect#1), Full Keg (214428 effect#1)
+Affecting spells : Brewmaster Monk (137023 effect#1), Smashed (213050 effect#1), Full Keg (214428 effect#1), Stormstout's Last Gasp (248044 effect#2)
 Attributes       : ........ ........ ........ ........   ...x...x .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4713,7 +4714,7 @@ Proc Chance      : 101%
 Artifact Power   : Id: 831, Index: 0, Max Rank: 1
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, AOE Hostile Spell, Hostile Spell
-Affecting spells : Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), 
+Affecting spells : Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), The Wind Blows (248101 effect#1), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4758,7 +4759,7 @@ Range            : 12 yards
 Proc Chance      : 101%
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, AOE Hostile Spell, Hostile Spell
-Affecting spells : Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), 
+Affecting spells : Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), The Wind Blows (248101 effect#1), 
 Triggered by     : Strike of the Windlord (205320)
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ x....... 
@@ -5148,7 +5149,7 @@ Range            : 12 yards
 Proc Chance      : 101%
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, AOE Hostile Spell, Hostile Spell
-Affecting spells : Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), 
+Affecting spells : Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), The Wind Blows (248101 effect#1), 
 Triggered by     : Strike of the Windlord (205320)
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5520,6 +5521,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=372570)   : Apply Aura (6) | Modify Base Resistance (142)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 1 | Target: Self (1)
-Description      : Your Armor is increased by 25%.
+Description      : Your Armor is increased by $s1%.
 
 

@@ -318,6 +318,7 @@ public:
     bool sephuzs_secret;
     double sephuzs_passive;
     bool magistrike;
+    bool the_master_harvester;
 
   } legendary;
 
@@ -463,6 +464,7 @@ public:
   struct procs_t
   {
     proc_t* soul_conduit;
+    proc_t* the_master_harvester;
     //aff
     proc_t* fatal_echos;
     proc_t* t18_2pc_affliction;
@@ -642,7 +644,6 @@ namespace pets {
     melee_attack_t* melee_attack;
     stats_t* summon_stats;
     spell_t *ascendance;
-    const spell_data_t* command;
 
     warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_e pt, bool guardian = false );
     virtual void init_base_stats() override;
@@ -1431,7 +1432,6 @@ pet_t( sim, owner, pet_name, pt, guardian ), special_action( nullptr ), special_
   owner_coeff.ap_from_sp = 1.0;
   owner_coeff.sp_from_sp = 1.0;
   owner_coeff.health = 0.5;
-  command = find_spell( 21563 );
 
 //  ascendance = new thalkiels_ascendance_pet_spell_t( this );
 }
@@ -1524,9 +1524,6 @@ void warlock_pet_t::schedule_ready( timespan_t delta_time, bool waiting )
 double warlock_pet_t::composite_player_multiplier( school_e school ) const
 {
   double m = pet_t::composite_player_multiplier( school );
-
-  if ( o() -> race == RACE_ORC )
-    m *= 1.0 + command -> effectN( 1 ).percent();
 
   m *= 1.0 + o() -> buffs.tier18_2pc_demonology -> stack_value();
 
@@ -1998,15 +1995,12 @@ struct felhunter_pet_t: public warlock_pet_t
     warlock_pet_t( sim, owner, name, PET_FELHUNTER, name != "felhunter" )
   {
     action_list_str = "shadow_bite";
-    if ( owner -> specialization() == WARLOCK_AFFLICTION )
+
+    owner_coeff.ap_from_sp *= 1.2; //Hotfixed no spelldata, live as of 05-24-2017
+    if ( maybe_ptr( owner -> dbc.ptr ) && owner -> specialization() == WARLOCK_AFFLICTION )
     {
-      owner_coeff.ap_from_sp *= 1.2; //Hotfixed, no data
-      owner_coeff.sp_from_sp *= 1.2; //Hotfixed, no data
-      if ( maybe_ptr( owner -> dbc.ptr ) )
-      {
-        owner_coeff.ap_from_sp *= 1.2; //Hotfixed, no data
-        owner_coeff.sp_from_sp *= 1.2; //Hotfixed, no data
-      }
+      owner_coeff.ap_from_sp *= 1.0 + owner -> spec.affliction -> effectN( 2 ).percent();
+      owner_coeff.sp_from_sp *= 1.0 + owner -> spec.affliction -> effectN( 2 ).percent();
     }
   }
 
@@ -2083,15 +2077,10 @@ struct infernal_t: public warlock_pet_t
     warlock_pet_t( sim, owner, "infernal", PET_INFERNAL )
   {
     owner_coeff.health = 0.4;
-    if ( owner->specialization() == WARLOCK_AFFLICTION )
+    if ( maybe_ptr( owner -> dbc.ptr ) && owner -> specialization() == WARLOCK_AFFLICTION )
     {
-      owner_coeff.ap_from_sp *= 1.2; //Hotfixed, no data
-      owner_coeff.sp_from_sp *= 1.2; //Hotfixed, no data
-      if ( maybe_ptr( owner->dbc.ptr ) )
-      {
-        owner_coeff.ap_from_sp *= 1.2; //Hotfixed, no data
-        owner_coeff.sp_from_sp *= 1.2; //Hotfixed, no data
-      }
+      owner_coeff.ap_from_sp *= 1.0 + owner -> spec.affliction -> effectN( 2 ).percent();
+      owner_coeff.sp_from_sp *= 1.0 + owner -> spec.affliction -> effectN( 2 ).percent();
     }
   }
 
@@ -2165,15 +2154,10 @@ struct doomguard_t: public warlock_pet_t
   {
     owner_coeff.health = 0.4;
     action_list_str = "doom_bolt";
-    if ( owner -> specialization() == WARLOCK_AFFLICTION )
+    if ( maybe_ptr( owner -> dbc.ptr ) && owner -> specialization() == WARLOCK_AFFLICTION )
     {
-      owner_coeff.ap_from_sp *= 1.2; //Hotfixed, no data
-      owner_coeff.sp_from_sp *= 1.2; //Hotfixed, no data
-      if ( maybe_ptr( owner -> dbc.ptr ) )
-      {
-        owner_coeff.ap_from_sp *= 1.2; //Hotfixed, no data
-        owner_coeff.sp_from_sp *= 1.2; //Hotfixed, no data
-      }
+      owner_coeff.ap_from_sp *= 1.0 + owner-> spec.affliction -> effectN( 2 ).percent();
+      owner_coeff.sp_from_sp *= 1.0 + owner -> spec.affliction -> effectN( 2 ).percent();
     }
   }
 
@@ -2696,37 +2680,63 @@ public:
   {
     spell_t::consume_resource();
 
-    if(resource_current == RESOURCE_SOUL_SHARD)
+    if ( resource_current == RESOURCE_SOUL_SHARD )
     {
-        if (  p() -> talents.soul_conduit -> ok() )
+      if ( p() -> legendary.the_master_harvester )
+      {
+        timespan_t sh_duration = p() -> find_spell( 248113 ) -> effectN( 4 ).time_value() * 1000;
+        double sh_proc_chance;
+        switch ( p() -> specialization() )
         {
-          double soul_conduit_rng = p() -> talents.soul_conduit -> effectN( 1 ).percent() + ( maybe_ptr( p() -> dbc.ptr ) ? p() -> spec.destruction -> effectN( 3 ).percent() : 0 );
-
-          for ( int i = 0; i < last_resource_cost; i++ )
+        case WARLOCK_AFFLICTION:
+          sh_proc_chance = p() -> find_spell( 248113 ) -> effectN( 1 ).percent();
+          break;
+        case WARLOCK_DEMONOLOGY:
+          sh_proc_chance = p() -> find_spell( 248113 ) -> effectN( 2 ).percent();
+          break;
+        case WARLOCK_DESTRUCTION:
+          sh_proc_chance = p() -> find_spell( 248113 ) -> effectN( 3 ).percent();
+          break;
+        }
+        
+        for ( int i = 0; i < last_resource_cost; i++ )
+        {
+          if ( p() -> rng().roll( sh_proc_chance ) )
           {
-            if ( rng().roll( soul_conduit_rng ) )
-            {
-              p() -> resource_gain( RESOURCE_SOUL_SHARD, 1.0, p() -> gains.soul_conduit );
-              p()->procs.soul_conduit->occur();
-            }
+            p() -> buffs.soul_harvest -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, sh_duration );
+            p() -> procs.the_master_harvester -> occur();
           }
         }
-        if(p()->legendary.wakeners_loyalty_enabled
-                && p()->specialization() == WARLOCK_DEMONOLOGY )
+
+      }
+
+      if ( p()->talents.soul_conduit->ok() )
+      {
+        double soul_conduit_rng = p()->talents.soul_conduit->effectN( 1 ).percent() + ( maybe_ptr( p()->dbc.ptr ) ? p()->spec.destruction->effectN( 3 ).percent() : 0 );
+
+        for ( int i = 0; i < last_resource_cost; i++ )
         {
-            for(int i = 0; i < last_resource_cost; i++)
-            {
-                p()->legendary.wakeners_shard_counter ++;
-            }
+          if ( rng().roll( soul_conduit_rng ) )
+          {
+            p()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p()->gains.soul_conduit );
+            p()->procs.soul_conduit->occur();
+          }
         }
+      }
+      if ( p()->legendary.wakeners_loyalty_enabled
+        && p()->specialization() == WARLOCK_DEMONOLOGY )
+      {
+        for ( int i = 0; i < last_resource_cost; i++ )
+        {
+          p()->legendary.wakeners_shard_counter++;
+        }
+      }
 
-        if ( p() -> specialization() == WARLOCK_AFFLICTION && p() -> sets -> has_set_bonus( WARLOCK_AFFLICTION, T20, B4 ) )
-        { 
-          p() -> buffs.demonic_speed -> trigger();
-        }
+      if ( p()->specialization() == WARLOCK_AFFLICTION && p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T20, B4 ) )
+      {
+        p()->buffs.demonic_speed->trigger();
+      }
     }
-
-
   }
 
   void tick( dot_t* d ) override
@@ -6183,7 +6193,7 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
           case WARLOCK_AFFLICTION:
             return spell -> id() == 234876; // Death's Embrace
           case WARLOCK_DEMONOLOGY:
-            return spell -> id() == 196269; // Shadowy Inspiration
+            return spell -> id() == 171975; // Shadowy Inspiration
           case WARLOCK_DESTRUCTION:
             return spell -> id() == 196412; // Eradication
         }
@@ -6872,7 +6882,8 @@ void warlock_t::create_buffs()
     .refresh_behavior( BUFF_REFRESH_PANDEMIC )
     .tick_behavior( BUFF_TICK_NONE );
   buffs.soul_harvest = buff_creator_t( this, "soul_harvest", find_spell( 196098 ) )
-    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+    .refresh_behavior( BUFF_REFRESH_EXTEND );
 
   //legendary buffs
   buffs.stretens_insanity = buff_creator_t( this, "stretens_insanity", find_spell( 208822 ) )
@@ -7013,6 +7024,7 @@ void warlock_t::init_procs()
   procs.stolen_power_stack = get_proc( "stolen_power_proc" );
   procs.stolen_power_used = get_proc( "stolen_power_used" );
   procs.soul_conduit = get_proc( "soul_conduit" );
+  procs.the_master_harvester = get_proc( "the_master_harvester" );
   procs.t18_demo_4p = get_proc( "t18_demo_4p" );
   procs.souls_consumed = get_proc( "souls_consumed" );
   procs.the_expendables = get_proc( "the_expendables" );
@@ -8340,6 +8352,16 @@ struct magistrike_t : public scoped_actor_callback_t<warlock_t>
   }
 };
 
+struct the_master_harvester_t : public scoped_actor_callback_t<warlock_t>
+{
+  the_master_harvester_t() : super( WARLOCK ){}
+
+  void manipulate( warlock_t* a, const special_effect_t& e ) override
+  {
+    a -> legendary.the_master_harvester = true;
+  }
+};
+
 struct warlock_module_t: public module_t
 {
   warlock_module_t(): module_t( WARLOCK ) {}
@@ -8374,6 +8396,7 @@ struct warlock_module_t: public module_t
     register_special_effect( 208051, sephuzs_secret_t() );
     register_special_effect( 207952, sacrolashs_dark_strike_t() );
     register_special_effect( 213014, magistrike_t() );
+    register_special_effect( 248113, the_master_harvester_t() );
   }
 
   virtual void register_hotfixes() const override

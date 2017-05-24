@@ -3083,6 +3083,9 @@ struct effect_callbacks_t
   effect_callbacks_t( sim_t* sim ) : sim( sim )
   { }
 
+  bool has_callback( const std::function<bool(const T_CB*)> cmp ) const
+  { return range::find_if( all_callbacks, cmp ) != all_callbacks.end(); }
+
   virtual ~effect_callbacks_t()
   { range::sort( all_callbacks ); dispose( all_callbacks.begin(), range::unique( all_callbacks ) ); }
 

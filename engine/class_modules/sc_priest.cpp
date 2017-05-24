@@ -662,7 +662,20 @@ public:
         return;
       }
 
-      assert( actor.resources.current[ RESOURCE_INSANITY ] >= drain_per_second * drain_interval );
+      double drained = drain_per_second * drain_interval;
+      // Ensure we always have enough to drain. This should always be true, since the drain is
+      // always kept track of in relation to time.
+#ifndef NDEBUG
+      if ( actor.resources.current[ RESOURCE_INSANITY ] < drained )
+      {
+        actor.sim -> errorf( "%s warning, insanity-track overdrain, current=%f drained=%f total=%f",
+          actor.name(), actor.resources.current[ RESOURCE_INSANITY ], drained,
+          actor.resources.current[ RESOURCE_INSANITY ] - drained );
+        drained = actor.resources.current[ RESOURCE_INSANITY ];
+      }
+#else
+      assert( actor.resources.current[ RESOURCE_INSANITY ] >= drained );
+#endif
 
       if ( actor.sim->debug )
       {
@@ -674,13 +687,13 @@ public:
             "drain_per_second=%f, last_drained=%.3f, drain_interval=%.3f, "
             "current=%.1f/%.1f, new=%.1f/%.1f",
             actor.name(), drain_per_second, last_drained.total_seconds(), drain_interval, current, max,
-            ( current - drain_interval * drain_per_second ), max );
+            ( current - drained ), max );
       }
 
       // Update last drained, we're about to reduce the amount of insanity the actor has
       last_drained = actor.sim->current_time();
 
-      actor.resource_loss( RESOURCE_INSANITY, drain_interval * drain_per_second, actor.gains.insanity_drain );
+      actor.resource_loss( RESOURCE_INSANITY, drained, actor.gains.insanity_drain );
     }
 
     /**

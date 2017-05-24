@@ -217,6 +217,14 @@ class DBCRecord(RawDBCRecord):
 
         return f
 
+    def field_names(self, delim = ", "):
+        fields = []
+        if self._id > -1:
+            fields.append('id')
+        fields += self._fi
+
+        return delim.join(fields)
+
     def __str__(self):
         s = []
 
@@ -241,7 +249,8 @@ class DBCRecord(RawDBCRecord):
 
     def csv(self, delim = ',', header = False):
         s = ''
-        s += '%u%c' % (self._id, delim)
+        if self._id > -1:
+            s += '%u%c' % (self._id, delim)
 
         for i in range(0, len(self._fi)):
             field = self._fi[i]
@@ -252,7 +261,7 @@ class DBCRecord(RawDBCRecord):
 
             if type_ == 'S':
                 if self._d[i] > 0:
-                    s += '\"%s\"%c' % (repr(self._dbcp.get_string(self._d[i])), delim)
+                    s += '"%s"%c' % (self._dbcp.get_string(self._d[i]).replace('"', '\\"'), delim)
                 else:
                     s += '""%c' % delim
             elif type_ == 'f':

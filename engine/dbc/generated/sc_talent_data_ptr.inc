@@ -1,6 +1,6 @@
 #define PTR_TALENT_SIZE (617)
 
-// 617 talents, wow build 24116
+// 617 talents, wow build 24163
 static struct talent_data_t __ptr_talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplcID, S1 },
   { "Second Wind"                       , 15757, 0x00, 0x0001,   0,   0,   3,   29838,       0,  0 },
@@ -442,11 +442,11 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Virtue's Blade"                    , 22375, 0x00, 0x0002,  70,   0,   3,  202271,       0,  0 },
   { "Renewed Fury"                      , 22378, 0x00, 0x0001,  73,   0,   2,  202288,       0,  0 },
   { "Wrecking Ball"                     , 22379, 0x00, 0x0001,  72,   0,   2,  215569,       0,  0 },
-  { "Fervor of Battle"                  , 22380, 0x00, 0x0001,  71,   0,   2,  202316,       0,  0 },
+  { "Trauma"                            , 22380, 0x00, 0x0001,  71,   0,   2,  215538,       0,  0 },
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplcID, S1 },
   { "Outburst"                          , 22381, 0x00, 0x0001,   0,   1,   2,  206320,       0,  0 },
   { "Warpaint"                          , 22382, 0x00, 0x0001,  72,   2,   3,  208154,       0,  0 },
-  { "In For The Kill"                   , 22383, 0x00, 0x0001,  71,   0,   4,  215550,       0,  0 },
+  { "Fervor of Battle"                  , 22383, 0x00, 0x0001,  71,   0,   4,  202316,       0,  0 },
   { "Massacre"                          , 22384, 0x00, 0x0001,  72,   0,   4,  206315,       0,  0 },
   { "Force of Nature"                   , 22385, 0x00, 0x0400, 102,   0,   0,  205636,       0,  0 },
   { "Warrior of Elune"                  , 22386, 0x00, 0x0400, 102,   1,   0,  202425,       0,  0 },
@@ -460,9 +460,9 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Deadly Calm"                       , 22394, 0x00, 0x0001,  71,   0,   5,  227266,       0,  0 },
   { "Bloodbath"                         , 22395, 0x00, 0x0001,  72,   0,   5,   12292,       0,  0 },
   { "Vengeance"                         , 22396, 0x00, 0x0001,  73,   0,   5,  202572,       0,  0 },
-  { "Trauma"                            , 22397, 0x00, 0x0001,  71,   1,   5,  215538,       0,  0 },
+  { "In For The Kill"                   , 22397, 0x00, 0x0001,  71,   1,   5,  248621,       0,  0 },
   { "Into the Fray"                     , 22398, 0x00, 0x0001,  73,   1,   5,  202603,       0,  0 },
-  { "Titanic Might"                     , 22399, 0x00, 0x0001,  71,   2,   5,  202612,       0,  0 },
+  { "Focused Rage"                      , 22399, 0x00, 0x0001,  71,   2,   5,  207982,       0,  0 },
   { "Inner Rage"                        , 22400, 0x00, 0x0001,  72,   2,   5,  215573,       0,  0 },
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplcID, S1 },
   { "Booming Voice"                     , 22401, 0x00, 0x0001,  73,   2,   5,  202743,       0,  0 },
@@ -635,7 +635,7 @@ static struct talent_data_t __ptr_talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplcID, S1 },
   { "Safeguard"                         , 22789, 0x00, 0x0001,  73,   2,   1,  223657,       0,  0 },
   { "Demonic Appetite"                  , 22799, 0x00, 0x0800, 577,   2,   1,  206478,       0,  0 },
-  { "Focused Rage"                      , 22800, 0x00, 0x0001,  71,   2,   4,  207982,       0,  0 },
+  { "Titanic Might"                     , 22800, 0x00, 0x0001,  71,   2,   4,  202612,       0,  0 },
   { "Ravager"                           , 22801, 0x00, 0x0001,  73,   2,   6,  228920,       0,  0 },
   { "Fist of Justice"                   , 22896, 0x00, 0x0002,  70,   0,   2,  234299,       0,  0 },
   { "Ice Floes"                         , 22903, 0x00, 0x0080,  64,   1,   1,  108839,       0,  0 },

@@ -295,7 +295,7 @@ public:
     gain_t* spirit_of_the_crane;
     gain_t* tier17_2pc_healer;
     gain_t* tiger_palm;
-    gain_t* healing_elixirs;
+    gain_t* healing_elixir;
     gain_t* fortuitous_spheres;
   } gain;
 
@@ -344,7 +344,7 @@ public:
     const spell_data_t* leg_sweep;
 
     // Tier 75 Talents
-    const spell_data_t* healing_elixirs;
+    const spell_data_t* healing_elixir;
     const spell_data_t* mystic_vitality;
     const spell_data_t* diffuse_magic; // Mistweaver & Windwalker
     const spell_data_t* dampen_harm;
@@ -544,7 +544,7 @@ public:
     cooldown_t* desperate_measure;
     cooldown_t* fists_of_fury;
     cooldown_t* fortifying_brew;
-    cooldown_t* healing_elixirs;
+    cooldown_t* healing_elixir;
     cooldown_t* rising_sun_kick;
     cooldown_t* refreshing_jade_wind;
     cooldown_t* rushing_jade_wind;
@@ -563,7 +563,7 @@ public:
     const spell_data_t* chi_torpedo;
     const spell_data_t* chi_wave_damage;
     const spell_data_t* chi_wave_heal;
-    const spell_data_t* healing_elixirs;
+    const spell_data_t* healing_elixir;
     // Brewmaster
     const spell_data_t* breath_of_fire_dot;
     const spell_data_t* celestial_fortune;
@@ -645,6 +645,7 @@ public:
     const spell_data_t* gai_plins_soothing_sash;
     const spell_data_t* jewel_of_the_lost_abbey;
     const spell_data_t* salsalabims_lost_tunic;
+    const spell_data_t* stormstouts_last_gasp;
 
     // Mistweaver
     const spell_data_t* eithas_lunar_glides_of_eramas;
@@ -662,6 +663,7 @@ public:
     const spell_data_t* katsuos_eclipse; // Reduce the cost of Fists of Fury by x Chi.
     const spell_data_t* march_of_the_legion; // Increase the movement speed bonus of Windwalking by x%.
     const spell_data_t* the_emperors_capacitor; // Chi spenders increase the damage of your next Crackling Jade Lightning by X%. Stacks up to Y times.
+    const spell_data_t* the_wind_blows;
   } legendary;
 
   struct pets_t
@@ -728,7 +730,7 @@ public:
     cooldown.breath_of_fire               = get_cooldown( "breath_of_fire" );
     cooldown.fortifying_brew              = get_cooldown( "fortifying_brew" );
     cooldown.fists_of_fury                = get_cooldown( "fists_of_fury" );
-    cooldown.healing_elixirs              = get_cooldown( "healing_elixirs" );
+    cooldown.healing_elixir              = get_cooldown( "healing_elixir" );
     cooldown.rising_sun_kick              = get_cooldown( "rising_sun_kick" );
     cooldown.refreshing_jade_wind         = get_cooldown( "refreshing_jade_wind" );
     cooldown.rushing_jade_wind            = get_cooldown( "rushing_jade_wind" );
@@ -764,6 +766,8 @@ public:
             break;
         }
       }
+
+      return false;
     } );
   }
 
@@ -849,6 +853,7 @@ public:
   // Custom Monk Functions
   double current_stagger_tick_dmg();
   double current_stagger_tick_dmg_percent();
+  double current_stagger_amount_remains();
   double current_stagger_dot_remains();
   double stagger_pct();
   void trigger_celestial_fortune( action_state_t* );
@@ -2218,8 +2223,8 @@ public:
         // Technically minimum GCD is 750ms but nothing brings the GCD below 1 sec
         ab::min_gcd = timespan_t::from_seconds( 1.0 );
         // Brewmasters no longer use Chi so need to zero out chi cost
-        if ( ab::data().affected_by( player -> spec.stagger -> effectN( 15 ) ) )
-          ab::base_costs[RESOURCE_CHI] *= 1 + player -> spec.stagger -> effectN( 15 ).percent(); // -100% for Brewmasters
+        if ( ab::data().affected_by( player -> spec.stagger -> effectN( maybe_ptr( player -> dbc.ptr ) ? 14 : 15 ) ) )
+          ab::base_costs[RESOURCE_CHI] *= 1 + player -> spec.stagger -> effectN( maybe_ptr( player -> dbc.ptr ) ? 14 : 15 ).percent(); // -100% for Brewmasters
         // Hasted Cooldown
         ab::cooldown -> hasted = ab::data().affected_by( player -> spec.brewmaster_monk -> effectN( 3 ) );
         break;
@@ -2878,7 +2883,7 @@ struct tiger_palm_t: public monk_melee_attack_t
     add_child( eye_of_the_tiger_heal );
 
     if ( p -> specialization() == MONK_BREWMASTER )
-      base_costs[RESOURCE_ENERGY] *= 1 + p -> spec.stagger -> effectN( 16 ).percent(); // -50% for Brewmasters
+      base_costs[RESOURCE_ENERGY] *= 1 + p -> spec.stagger -> effectN( maybe_ptr( player -> dbc.ptr ) ? 15 : 16 ).percent(); // -50% for Brewmasters
 
     if ( p -> specialization() == MONK_WINDWALKER )
       energize_amount = p -> spec.windwalker_monk -> effectN( 4 ).base_value();
@@ -4298,6 +4303,11 @@ struct strike_of_the_windlord_t: public monk_melee_attack_t
     if ( p() -> artifact.thunderfist.rank() )
       p() -> buff.thunderfist -> trigger();
 
+    if ( p() -> legendary.the_wind_blows )
+    {
+      p() -> buff.bok_proc -> trigger( 1, buff_t::DEFAULT_VALUE(), 1 );
+      p() -> proc.bok_proc -> occur();
+    }
   }
 
   virtual void impact( action_state_t* s ) override
@@ -4480,16 +4490,8 @@ struct  keg_smash_stave_off_t: public monk_melee_attack_t
     aoe = -1;
     background = dual = true;
     
-    if ( p.dbc.ptr )
-    {
-      attack_power_mod.direct = p.spec.keg_smash -> effectN( 2 ).ap_coeff();
-      radius = p.spec.keg_smash -> effectN( 2 ).radius();
-    }
-    else
-    {
-      attack_power_mod.direct = p.spec.keg_smash -> effectN( 1 ).ap_coeff();
-      radius = p.spec.keg_smash -> effectN( 1 ).radius();
-    }
+    attack_power_mod.direct = p.spec.keg_smash -> effectN( maybe_ptr( p.dbc.ptr ) ? 2 : 1 ).ap_coeff();
+    radius = p.spec.keg_smash -> effectN( maybe_ptr( p.dbc.ptr ) ? 2 : 1 ).radius();
 
     if ( p.artifact.smashed.rank() )
       range += p.artifact.smashed.value();
@@ -4497,9 +4499,6 @@ struct  keg_smash_stave_off_t: public monk_melee_attack_t
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
     cooldown -> duration = timespan_t::zero();
-    // Keg Smash does not appear to be picking up the baseline Trigger GCD reduction
-    // Forcing the trigger GCD to 1 second.
-    trigger_gcd = timespan_t::from_seconds( 1 );
   }
 
   // Force 250 milliseconds for the animation, but not delay the overall GCD
@@ -4556,16 +4555,8 @@ struct keg_smash_t: public monk_melee_attack_t
 
     aoe = -1;
     
-    if ( p.dbc.ptr )
-    {
-      attack_power_mod.direct = p.spec.keg_smash -> effectN( 2 ).ap_coeff();
-      radius = p.spec.keg_smash -> effectN( 2 ).radius();
-    }
-    else
-    {
-      attack_power_mod.direct = p.spec.keg_smash -> effectN( 1 ).ap_coeff();
-      radius = p.spec.keg_smash -> effectN( 1 ).radius();
-    }
+    attack_power_mod.direct = p.spec.keg_smash -> effectN( maybe_ptr( p.dbc.ptr ) ? 2 : 1 ).ap_coeff();
+    radius = p.spec.keg_smash -> effectN( maybe_ptr( p.dbc.ptr ) ? 2 : 1 ).radius();
 
     if ( p.artifact.smashed.rank() )
       range += p.artifact.smashed.value();
@@ -4614,7 +4605,7 @@ struct keg_smash_t: public monk_melee_attack_t
     monk_melee_attack_t::execute();
 
     if ( p() -> legendary.salsalabims_lost_tunic != nullptr )
-      p() -> cooldown.breath_of_fire -> reset(false);
+      p() -> cooldown.breath_of_fire -> reset( false );
     // If cooldown was reset by Secret Ingredients talent, to end the buff
     if ( p() -> buff.keg_smash_talent -> check() )
       p() -> buff.keg_smash_talent -> expire();
@@ -5430,11 +5421,11 @@ struct dragonfire_brew : public monk_spell_t
     monk_spell_t( "dragonfire_brew", &p, p.artifact.dragonfire_brew )
   {
     background = true;
-    tick_may_crit = may_crit = false;
+    tick_may_crit = may_crit = true;
     hasted_ticks = false;
     // Placeholder stuff to get things working
     dot_duration = timespan_t::from_seconds( 3 ); // Hard code the duration to 3 seconds
-    base_tick_time = dot_duration / p.find_spell( 213183 ) -> effectN( 1 ).base_value();
+    base_tick_time = dot_duration / p.artifact.dragonfire_brew.data().effectN( 1 ).base_value();
     tick_zero = hasted_ticks = false;
 
     tick_action = new dragonfire_brew_tick( p );
@@ -5460,6 +5451,9 @@ struct breath_of_fire_t: public monk_spell_t
       background = true;
       tick_may_crit = may_crit = true;
       hasted_ticks = false;
+
+      if ( maybe_ptr( p.dbc.ptr ) && p.artifact.dragonfire_brew.rank() )
+        dot_duration *= p.artifact.dragonfire_brew.data().effectN( 2 ).percent();
     }
 
     double action_multiplier() const override
@@ -5488,6 +5482,7 @@ struct breath_of_fire_t: public monk_spell_t
     trigger_gcd = timespan_t::from_seconds( 1 );
 
     add_child( dragonfire );
+    add_child( dot_action );
   }
 
   double action_multiplier() const override
@@ -5659,6 +5654,14 @@ struct stagger_self_damage_t : public residual_action::residual_periodic_action_
     dot_t* d = get_dot();
     if ( d && d -> state )
       return calculate_tick_amount( d -> state, d -> current_stack() );
+    return 0;
+  }
+
+  double amount_remaining()
+  {
+    dot_t* d = get_dot();
+    if ( d && d -> state )
+      return d -> state -> result_amount;
     return 0;
   }
 };
@@ -5851,9 +5854,9 @@ struct purifying_brew_t: public monk_spell_t
 
 //    p() -> sample_datas.purified_damage -> add( stagger_dmg );
 
-    if ( p() -> talent.healing_elixirs -> ok() )
+    if ( p() -> talent.healing_elixir -> ok() )
     {
-      if ( p() -> cooldown.healing_elixirs -> up() )
+      if ( p() -> cooldown.healing_elixir -> up() )
         p() -> active_actions.healing_elixir -> execute();
     }
 
@@ -5909,9 +5912,9 @@ struct mana_tea_t: public monk_spell_t
 
     p() -> buff.mana_tea -> trigger();
 
-    if ( p() -> talent.healing_elixirs -> ok() )
+    if ( p() -> talent.healing_elixir -> ok() )
     {
-      if ( p() -> cooldown.healing_elixirs -> up() )
+      if ( p() -> cooldown.healing_elixir -> up() )
         p() -> active_actions.healing_elixir -> execute();
     }
   }
@@ -5976,9 +5979,9 @@ struct thunder_focus_tea_t : public monk_spell_t
 
     p() -> buff.thunder_focus_tea -> trigger( p() -> buff.thunder_focus_tea -> max_stack() );
 
-    if ( p() -> talent.healing_elixirs -> ok() )
+    if ( p() -> talent.healing_elixir -> ok() )
     {
-      if ( p() -> cooldown.healing_elixirs -> up() )
+      if ( p() -> cooldown.healing_elixir -> up() )
         p() -> active_actions.healing_elixir -> execute();
     }
 
@@ -7088,16 +7091,16 @@ struct chi_burst_t: public monk_spell_t
 // Healing Elixirs
 // ==========================================================================
 
-struct healing_elixirs_t: public monk_heal_t
+struct healing_elixir_t: public monk_heal_t
 {
-  healing_elixirs_t( monk_t& p ):
-    monk_heal_t( "healing_elixirs", p, p.talent.healing_elixirs )
+  healing_elixir_t( monk_t& p ):
+    monk_heal_t( "healing_elixir", p, p.talent.healing_elixir )
   {
     harmful = may_crit = false;
     background = true;
     target = &p;
     trigger_gcd = timespan_t::zero();
-    base_pct_heal = p.passives.healing_elixirs -> effectN( 1 ).percent();
+    base_pct_heal = p.passives.healing_elixir -> effectN( 1 ).percent();
     cooldown -> duration = data().effectN( 1 ).period();
   }
 };
@@ -7943,7 +7946,7 @@ void monk_t::init_spells()
   talent.leg_sweep                   = find_talent_spell( "Leg Sweep" );
 
   // Tier 75 Talents
-  talent.healing_elixirs             = find_talent_spell( "Healing Elixirs" );
+  talent.healing_elixir              = find_talent_spell( "Healing Elixir" );
   talent.mystic_vitality             = find_talent_spell( "Mystic Vitality" );
   talent.diffuse_magic               = find_talent_spell( "Diffuse Magic" );
   talent.dampen_harm                 = find_talent_spell( "Dampen Harm" );
@@ -8124,7 +8127,7 @@ void monk_t::init_spells()
   passives.chi_torpedo                      = find_spell( 119085 );
   passives.chi_wave_damage                  = find_spell( 132467 );
   passives.chi_wave_heal                    = find_spell( 132463 );
-  passives.healing_elixirs                  = find_spell( 122281 ); // talent.healing_elixirs -> effectN( 1 ).trigger() -> effectN( 1 ).trigger()
+  passives.healing_elixir                  = find_spell( 122281 ); // talent.healing_elixir -> effectN( 1 ).trigger() -> effectN( 1 ).trigger()
 
   // Brewmaster
   passives.breath_of_fire_dot               = find_spell( 123725 );
@@ -8203,8 +8206,8 @@ void monk_t::init_spells()
   sample_datas.heavy_stagger_total_damage     = get_sample_data("Amount of damage purified while at heavy stagger");
 
   //SPELLS
-  if ( talent.healing_elixirs -> ok() )
-    active_actions.healing_elixir     = new actions::healing_elixirs_t( *this );
+  if ( talent.healing_elixir -> ok() )
+    active_actions.healing_elixir     = new actions::healing_elixir_t( *this );
 
   if ( talent.chi_orbit -> ok() )
     active_actions.chi_orbit = new actions::chi_orbit_t( this );
@@ -9095,12 +9098,14 @@ double monk_t::composite_armor_multiplier() const
 {
   double a = player_t::composite_armor_multiplier();
 
-  a *= 1 + spec.stagger -> effectN( 14 ).percent();
 
   if ( !maybe_ptr( dbc.ptr ) )
+  {
+    a *= 1 + spec.stagger -> effectN( 14 ).percent();
     a *= 1 + spec.brewmaster_monk -> effectN( 8 ).percent();
-
-  a *= 1 + spec.brewmasters_balance -> effectN( 1 ).percent();
+  }
+  else
+    a *= 1 + spec.brewmasters_balance -> effectN( 1 ).percent();
 
   if ( artifact.wanderers_hardiness.rank() )
     a *= 1 + artifact.wanderers_hardiness.percent();
@@ -9325,21 +9330,6 @@ void monk_t::assess_damage(school_e school,
   buff.fortifying_brew -> up();
   if ( specialization() == MONK_BREWMASTER )
   {
-    // Brewmaster Tier 18 (WoD 6.2) trinket effect is in use, adjust Elusive Brew proc chance based on spell data of the special effect.
-/*    if ( eluding_movements )
-    {
-    {
-      double bm_trinket_proc = eluding_movements -> driver() -> effectN( 1 ).average( eluding_movements -> item );
-
-      if ( health_percentage() < bm_trinket_proc )
-      {
-//        TODO: Figure out how to get trigger_brew to work from here
-        if ( rng().roll( ( bm_trinket_proc / 100 ) / 2 ) )
-          buff.elusive_brew_stacks -> trigger( 1 );
-      }
-    }
-*/
-
     if ( s -> result == RESULT_DODGE )
     {
       if ( buff.elusive_brawler -> up() )
@@ -9452,10 +9442,10 @@ void monk_t::target_mitigation( school_e school,
   // cap HP% at 0 HP since SimC can fall below 0 HP
   double health_percent_after_the_hit = fmax( ( resources.current[RESOURCE_HEALTH] - s -> result_amount ) / max_health(), 0 );
 
-  if ( talent.healing_elixirs -> ok() )
+  if ( talent.healing_elixir -> ok() )
   {
     // TODO: 35% HP for Healing Elixirs is hard-coded until otherwise changed
-    if ( resources.pct(RESOURCE_HEALTH) > 0.35 && health_percent_after_the_hit <= 0.35 && cooldown.healing_elixirs -> up() )
+    if ( resources.pct(RESOURCE_HEALTH) > 0.35 && health_percent_after_the_hit <= 0.35 && cooldown.healing_elixir -> up() )
       active_actions.healing_elixir -> execute();
   }
 
@@ -9464,9 +9454,9 @@ void monk_t::target_mitigation( school_e school,
   if ( specialization() == MONK_BREWMASTER )
   {
     // Obstinate Determination is a separate roll to the normal GotO chance to proc.
-    // TODO: 35% HP for Obstinate Determination is hard-coded until otherwise changed
     if ( artifact.obstinate_determination.rank() && s -> result_amount > 0 
-      && resources.pct(RESOURCE_HEALTH) > 0.35 && health_percent_after_the_hit <= 0.35 )
+      && resources.pct(RESOURCE_HEALTH) > artifact.obstinate_determination.percent() 
+      && health_percent_after_the_hit <= artifact.obstinate_determination.percent() )
     {
       if ( artifact.overflow.rank() )
       { 
@@ -9485,7 +9475,7 @@ void monk_t::target_mitigation( school_e school,
     double goto_proc_chance = s -> result_amount / max_health();
 
     if ( talent.gift_of_the_mists -> ok() )
-      // Due to the fact that SimC can cause HP values to go into negative, force the cap to be 160% since the original formula can go above 160% with negative HP
+      // Due to the fact that SimC can cause HP values to go into negative, force the cap to be 175% since the original formula can go above 175% with negative HP
       goto_proc_chance *= 1 + ( talent.gift_of_the_mists -> effectN( 1 ).percent() * ( 1 - fmax( ( health_before_hit - s -> result_amount ) / max_health(), 0 ) ) );
 
     gift_of_the_ox_proc_chance += goto_proc_chance;
@@ -9544,6 +9534,19 @@ void monk_t::assess_damage_imminent_pre_absorb( school_e school,
     // Hook up Stagger Mechanism
     if ( stagger_dmg > 0 )
     {
+      if ( maybe_ptr(dbc.ptr) )
+      {
+        // Blizzard is putting a cap on how much damage can go into stagger
+        double amount_remains = active_actions.stagger_self_damage -> amount_remaining();
+        double cap = max_health() * spec.stagger -> effectN( 13 ).percent();
+        if ( amount_remains + stagger_dmg >= cap )
+        {
+          double diff = amount_remains - cap;
+          s -> result_amount += stagger_dmg - diff;
+          s -> result_mitigated += stagger_dmg - diff;
+          stagger_dmg -= diff;
+        }
+      }
       sample_datas.stagger_total_damage -> add( stagger_dmg );
       residual_action::trigger( active_actions.stagger_self_damage, this, stagger_dmg );
     }
@@ -9555,7 +9558,7 @@ void monk_t::assess_damage_imminent_pre_absorb( school_e school,
 void monk_t::assess_heal( school_e school, dmg_e dmg_type, action_state_t* s )
 {
   // Celestial Fortune procs a heal every now and again
-/*  if ( s -> action -> id != passives.healing_elixirs -> id() 
+/*  if ( s -> action -> id != passives.healing_elixir -> id() 
     || s -> action -> id != passives.gift_of_the_ox_heal -> id()
     || s -> action -> id != passives.greater_gift_of_the_ox_heal -> id() )
   {
@@ -10200,6 +10203,16 @@ double monk_t::current_stagger_tick_dmg()
   return dmg;
 }
 
+// monk_t::current_stagger_total ==================================================
+
+double monk_t::current_stagger_amount_remains()
+{
+  double dmg = 0;
+  if ( active_actions.stagger_self_damage )
+    dmg = active_actions.stagger_self_damage -> amount_remaining();
+  return dmg;
+}
+
 // monk_t::current_stagger_dmg_percent ==================================================
 
 double monk_t::current_stagger_tick_dmg_percent()
@@ -10598,6 +10611,17 @@ struct salsalabims_lost_tunic_t : public unique_gear::scoped_actor_callback_t<mo
   }
 };
 
+struct stormstouts_last_gasp_t : public unique_gear::scoped_actor_callback_t<monk_t>
+{
+  stormstouts_last_gasp_t() : super( MONK_BREWMASTER )
+  { }
+
+  void manipulate( monk_t* monk, const special_effect_t& e ) override
+  {
+    monk -> legendary.stormstouts_last_gasp = e.driver();
+  }
+};
+
 // Mistweaver
 struct eithas_lunar_glides_of_eramas_t : public unique_gear::scoped_actor_callback_t<monk_t>
 {
@@ -10722,6 +10746,18 @@ struct the_emperors_capacitor_t : public unique_gear::scoped_actor_callback_t<mo
   { monk -> legendary.the_emperors_capacitor = e.driver(); }
 };
 
+struct the_wind_blows_t : public unique_gear::scoped_actor_callback_t<monk_t>
+{
+  the_wind_blows_t() : super( MONK_WINDWALKER )
+  { }
+
+  void manipulate( monk_t* monk, const special_effect_t& e ) override
+  { 
+    monk -> legendary.the_wind_blows = e.driver(); 
+    monk->cooldown.strike_of_the_windlord->duration *= 1 + monk -> legendary.the_wind_blows -> effectN( 1 ).percent();
+  }
+};
+
 struct monk_module_t: public module_t
 {
   monk_module_t(): module_t( MONK ) {}
@@ -10759,6 +10795,7 @@ struct monk_module_t: public module_t
     unique_gear::register_special_effect( 208837, gai_plins_soothing_sash_t() );
     unique_gear::register_special_effect( 208881, jewel_of_the_lost_abbey_t() );
     unique_gear::register_special_effect( 212935, salsalabims_lost_tunic_t() );
+    unique_gear::register_special_effect( 248044, stormstouts_last_gasp_t() );
 
     // Mistweaver
     unique_gear::register_special_effect( 217153, eithas_lunar_glides_of_eramas_t() );
@@ -10775,6 +10812,7 @@ struct monk_module_t: public module_t
     unique_gear::register_special_effect( 208045, katsuos_eclipse_t() );
     unique_gear::register_special_effect( 212132, march_of_the_legion_t() );
     unique_gear::register_special_effect( 235053, the_emperors_capacitor_t() );
+    unique_gear::register_special_effect( 248101, the_wind_blows_t() );
   }
 
 
