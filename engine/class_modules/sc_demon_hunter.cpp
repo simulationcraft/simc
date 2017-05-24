@@ -306,6 +306,7 @@ public:
     const spell_data_t* eye_beam;
     const spell_data_t* fel_rush_damage;
     const spell_data_t* vengeful_retreat;
+    const spell_data_t* chaos_blades;
 
     // Vengeance
     const spell_data_t* vengeance;
@@ -505,7 +506,7 @@ public:
   struct
   {
     // General
-    const spell_data_t* sephuzs_secret;
+    const spell_data_t* sephuzs_secret = nullptr;
 
     // Havoc
     double eternal_hunger;
@@ -513,6 +514,7 @@ public:
     double delusions_of_grandeur_reduction;
     double delusions_of_grandeur_fury_per_time;
     int anger_of_the_halfgiants_fury;
+    const spell_data_t* chaos_theory = nullptr;
 
     // Vengeance
     double cloak_of_fel_flames;
@@ -3307,6 +3309,17 @@ struct blade_dance_base_t : public demon_hunter_attack_t
     assert( dodge_buff );
     dodge_buff -> trigger();
 
+    // Chaos Theory Legendary Cloak
+    if (p()->legendary.chaos_theory)
+    {
+      if (p()->rng().roll(p()->legendary.chaos_theory->proc_chance()))
+      {
+        timespan_t proc_duration = timespan_t::from_seconds(p()->legendary.chaos_theory->effectN(1).base_value());
+        p()->buff.chaos_blades->trigger(1, p()->buff.chaos_blades->default_value, -1.0, proc_duration);
+      }
+    }
+
+    // T20 2pc Bonus
     if (target_list().size() > 0)
     {
       const double refund = p()->sets->set(DEMON_HUNTER_HAVOC, T20, B2)->effectN(1).resource(RESOURCE_FURY);
@@ -4813,9 +4826,10 @@ struct chaos_blades_t : public demon_hunter_buff_t<buff_t>
 {
   chaos_blades_t( demon_hunter_t* p )
     : demon_hunter_buff_t<buff_t>(
-        *p, buff_creator_t( p, "chaos_blades", p -> talent.chaos_blades )
+        *p, buff_creator_t( p, "chaos_blades", p -> spec.chaos_blades )
         .cd( timespan_t::zero() )
-        .default_value(p -> talent.chaos_blades -> effectN(2).percent())
+        .refresh_behavior(BUFF_REFRESH_EXTEND)
+        .default_value(p -> spec.chaos_blades -> effectN(2).percent())
         .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ) )
   {
   }
@@ -6347,6 +6361,7 @@ void demon_hunter_t::init_spells()
   spec.eye_beam            = find_class_spell( "Eye Beam" );
   spec.fel_rush_damage     = find_spell( 192611 );
   spec.vengeful_retreat    = find_class_spell( "Vengeful Retreat" );
+  spec.chaos_blades        = maybe_ptr(dbc.ptr) ? find_spell(247938) : find_spell(211048);
 
   // Vengeance
   spec.vengeance        = find_specialization_spell("Vengeance Demon Hunter");
@@ -6487,10 +6502,10 @@ void demon_hunter_t::init_spells()
     new consume_soul_t( this, "consume_soul_lesser", spec.consume_soul_lesser,
                         SOUL_FRAGMENT_LESSER );
 
-  if ( talent.chaos_blades -> ok() )
+  if ( spec.chaos_blades -> ok() )
   {
     const spell_data_t* mh_spell =
-      find_spell( talent.chaos_blades -> effectN( 1 ).misc_value1() );
+      find_spell( spec.chaos_blades -> effectN( 1 ).misc_value1() );
 
     // Not linked via a trigger, so assert that the spell is there.
     assert( mh_spell -> ok() );
@@ -6499,7 +6514,7 @@ void demon_hunter_t::init_spells()
       &main_hand_weapon, mh_spell);
 
     chaos_blade_off_hand = new chaos_blade_t("chaos_blade_oh", this, 
-      &off_hand_weapon, talent.chaos_blades->effectN(1).trigger());
+      &off_hand_weapon, spec.chaos_blades->effectN(1).trigger());
   }
 
   if ( talent.demon_blades -> ok() )
@@ -6712,10 +6727,7 @@ void demon_hunter_t::apl_default()
 
 void add_havoc_use_items( demon_hunter_t* p, action_priority_list_t* apl )
 {
-  // talent.chaos_blades won't have valid spell data when importing if they don't have the talent selected
-  // We still need the valid cooldown to generate the default conditional
-  const timespan_t chaos_blades_cd = maybe_ptr(p->dbc.ptr) ? 
-    p->find_spell(247938)->cooldown() : p->find_spell(211048)->cooldown();
+  const timespan_t chaos_blades_cd = p->spec.chaos_blades->cooldown();
 
   // On-Use Items
   for ( size_t i = 0; i < p -> items.size(); i++ )
@@ -6857,16 +6869,14 @@ void demon_hunter_t::apl_havoc()
     "(!talent.master_of_the_glaive.enabled|!talent.momentum.enabled|buff.momentum.up)&"
     "(spell_targets>=3|raid_event.adds.in>recharge_time+cooldown)");
   normal->add_talent(this, "Felblade", "if=fury.deficit>=30+buff.prepared.up*8");
-  normal->add_action(this, "Eye Beam", "if=talent.blind_fury.enabled&(spell_targets.eye_beam_tick>desired_targets|fury.deficit>=35)");
+  normal->add_action(this, "Eye Beam", "if=spell_targets.eye_beam_tick>desired_targets|(spell_targets.eye_beam_tick>=3&raid_event.adds.in>cooldown)"
+    "|(talent.blind_fury.enabled&fury.deficit>=35)");
   normal->add_action(this, spec.annihilation, "annihilation", "if=(talent.demon_blades.enabled|"
     "!talent.momentum.enabled|buff.momentum.up|fury.deficit<30+buff.prepared.up*8|"
     "buff.metamorphosis.remains<5)&!variable.pooling_for_blade_dance");
   normal->add_action(this, "Throw Glaive", "if=talent.bloodlet.enabled&"
     "(!talent.master_of_the_glaive.enabled|!talent.momentum.enabled|buff.momentum.up)&raid_event.adds.in>recharge_time+cooldown");
-  normal->add_action(this, "Eye Beam", "if=!talent.blind_fury.enabled&(spell_targets.eye_beam_tick>desired_targets|("
-    "!set_bonus.tier19_4pc&raid_event.adds.in>45&!variable.pooling_for_meta&buff.metamorphosis.down&"
-    "(artifact.anguish_of_the_deceiver.enabled|active_enemies>1)&!talent.chaos_cleave.enabled))");
-  normal->add_action(this, "Throw Glaive", "if=buff.metamorphosis.down&spell_targets>=2");
+  normal->add_action(this, "Throw Glaive", "if=!talent.bloodlet.enabled&buff.metamorphosis.down&spell_targets>=3");
   normal->add_action(this, "Chaos Strike", "if=(talent.demon_blades.enabled|"
     "!talent.momentum.enabled|buff.momentum.up|fury.deficit<30+buff.prepared.up*8)&"
     "!variable.pooling_for_chaos_strike&!variable.pooling_for_meta&!variable.pooling_for_blade_dance");
@@ -7879,6 +7889,18 @@ struct moarg_bionic_stabilizers_t
   }
 };
 
+struct chaos_theory_t : public unique_gear::scoped_actor_callback_t<demon_hunter_t>
+{
+  chaos_theory_t() : super(DEMON_HUNTER)
+  {
+  }
+
+  void manipulate(demon_hunter_t* dh, const special_effect_t& e) override
+  {
+    dh->legendary.chaos_theory = e.driver();
+  }
+};
+
 // Vengeance-specific legendary items
 
 struct cloak_of_fel_flames_t : public scoped_actor_callback_t<demon_hunter_t>
@@ -8051,6 +8073,7 @@ public:
     register_special_effect(210840, the_defilers_lost_vambraces_t());
     register_special_effect(209354, delusions_of_grandeur_t());
     register_special_effect(208051, sephuzs_secret_t());
+    register_special_effect(248072, chaos_theory_t());
   }
 
   void register_hotfixes() const override
