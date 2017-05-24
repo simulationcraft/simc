@@ -259,16 +259,18 @@ public:
           * heating_up,
           * hot_streak,
           * pyretic_incantation,
-          * streaking,             // T19 4pc Fire
-          * ignition,              // T20 2pc Fire
-          * critical_massive;      // T20 4pc Fire
+          * streaking,               // T19 4pc Fire
+          * ignition,                // T20 2pc Fire
+          * critical_massive,        // T20 4pc Fire
+          * contained_infernal_core; // 7.2.5 legendary shoulder
 
     // Frost
     buff_t* brain_freeze,
           * fingers_of_frost,
-          * icicles,               // Buff to track icicles - doesn't always line up with icicle count though!
+          * icicles,                           // Buff to track icicles - doesn't always line up with icicle count though!
           * icy_veins,
-          * frozen_mass;           // T20 2pc Frost
+          * frozen_mass,                       // T20 2pc Frost
+          * shattered_fragments_of_sindragosa; // 7.2.5 legendary head
 
 
     // Talents
@@ -1596,6 +1598,19 @@ public:
 
   void trigger_unstable_magic( action_state_t* state );
 
+  // Trigger one stack of a buff and if the buff reaches max stacks,
+  // execute the action and remove the buff.
+  void trigger_and_execute( buff_t* buff, action_t* action, player_t* target )
+  {
+    buff -> trigger();
+    if ( buff -> check() == buff -> max_stack() )
+    {
+      action -> set_target( target );
+      action -> execute();
+      buff -> expire();
+    }
+  }
+
   virtual double composite_target_multiplier( player_t* target ) const override
   {
     double tm = spell_t::composite_target_multiplier( target );
@@ -2395,8 +2410,87 @@ struct aegwynns_ascendance_t : public arcane_mage_spell_t
   }
 };
 
+// Arcane Orb Spell ===========================================================
+
+struct arcane_orb_bolt_t : public arcane_mage_spell_t
+{
+  int ao_impact_am_source_id;
+
+  arcane_orb_bolt_t( mage_t* p, bool legendary ) :
+    arcane_mage_spell_t( legendary ? "legendary_arcane_orb_bolt" : "arcane_orb_bolt",
+                         p, p -> find_spell( 153640 ) )
+  {
+    aoe = -1;
+    background = true;
+  }
+
+  virtual bool init_finished() override
+  {
+    ao_impact_am_source_id = p() -> benefits.arcane_missiles
+                                 -> get_source_id( "Arcane Orb Impact" );
+
+    return arcane_mage_spell_t::init_finished();
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    arcane_mage_spell_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+    {
+      trigger_arcane_charge();
+      trigger_am( ao_impact_am_source_id );
+    }
+  }
+};
+
+struct arcane_orb_t : public arcane_mage_spell_t
+{
+  arcane_orb_bolt_t* orb_bolt;
+
+  arcane_orb_t( mage_t* p, const std::string& options_str, bool legendary = false ) :
+    arcane_mage_spell_t( legendary ? "legendary_arcane_orb" : "arcane_orb", p,
+                         p -> find_talent_spell( "Arcane Orb", "", SPEC_NONE, false, ! legendary ) ),
+    orb_bolt( new arcane_orb_bolt_t( p, legendary ) )
+  {
+    parse_options( options_str );
+
+    may_miss = false;
+    may_crit = false;
+    triggers_erosion = false;
+
+    if ( legendary )
+    {
+      background = true;
+      base_costs[ RESOURCE_MANA ] = 0;
+    }
+
+    add_child( orb_bolt );
+  }
+
+  virtual void execute() override
+  {
+    arcane_mage_spell_t::execute();
+    trigger_arcane_charge();
+  }
+
+
+  virtual timespan_t travel_time() const override
+  {
+    return timespan_t::from_seconds( std::max( 0.1, ( ( player -> get_player_distance( *target ) - 10.0 ) /
+                                     16.0 ) ) );
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    arcane_mage_spell_t::impact( s );
+
+    orb_bolt -> execute();
+  }
+};
 
 // Arcane Barrage Spell =======================================================
+
 // Arcane Rebound Spell
 //TODO: Improve timing of impact of this vs Arcane Barrage if alpha timings go live
 struct arcane_rebound_t : public arcane_mage_spell_t
@@ -2419,18 +2513,24 @@ struct arcane_rebound_t : public arcane_mage_spell_t
 struct arcane_barrage_t : public arcane_mage_spell_t
 {
   arcane_rebound_t* arcane_rebound;
+  arcane_orb_t* arcane_orb;
+
   double mystic_kilt_of_the_rune_master_regen;
+  double mantle_of_the_first_kirin_tor_chance;
 
   arcane_barrage_t( mage_t* p, const std::string& options_str ) :
     arcane_mage_spell_t( "arcane_barrage", p, p -> find_class_spell( "Arcane Barrage" ) ),
     arcane_rebound( new arcane_rebound_t( p ) ),
-    mystic_kilt_of_the_rune_master_regen( 0.0 )
+    arcane_orb( new arcane_orb_t( p, "", true ) ),
+    mystic_kilt_of_the_rune_master_regen( 0.0 ),
+    mantle_of_the_first_kirin_tor_chance( 0.0 )
   {
     parse_options( options_str );
     base_aoe_multiplier *= data().effectN( 2 ).percent();
     base_multiplier *= 1.0 + p -> artifact.torrential_barrage.percent();
     cooldown -> hasted = true;
     add_child( arcane_rebound );
+    add_child( arcane_orb );
   }
 
   virtual void execute() override
@@ -2440,16 +2540,20 @@ struct arcane_barrage_t : public arcane_mage_spell_t
 
     p() -> benefits.arcane_charge.arcane_barrage -> update();
 
-    if ( mystic_kilt_of_the_rune_master_regen > 0 &&
-         p() -> buffs.arcane_charge -> check() )
+    if ( mystic_kilt_of_the_rune_master_regen > 0 && charges > 0 )
     {
-      p() -> resource_gain( RESOURCE_MANA, ( p() -> buffs.arcane_charge -> check() * mystic_kilt_of_the_rune_master_regen * p() -> resources.max[ RESOURCE_MANA ] ), p() -> gains.mystic_kilt_of_the_rune_master );
+      p() -> resource_gain( RESOURCE_MANA, ( charges * mystic_kilt_of_the_rune_master_regen * p() -> resources.max[ RESOURCE_MANA ] ), p() -> gains.mystic_kilt_of_the_rune_master );
     }
 
     arcane_mage_spell_t::execute();
 
     p() -> buffs.arcane_charge -> expire();
 
+    if ( rng().roll( mantle_of_the_first_kirin_tor_chance * charges ) )
+    {
+      arcane_orb -> set_target( execute_state -> target );
+      arcane_orb -> execute();
+    }
   }
 
   virtual void impact( action_state_t* s ) override
@@ -2909,79 +3013,6 @@ struct arcane_missiles_t : public arcane_mage_spell_t
   }
 };
 
-
-// Arcane Orb Spell =========================================================
-
-struct arcane_orb_bolt_t : public arcane_mage_spell_t
-{
-  int ao_impact_am_source_id;
-
-  arcane_orb_bolt_t( mage_t* p ) :
-    arcane_mage_spell_t( "arcane_orb_bolt", p, p -> find_spell( 153640 ) )
-  {
-    aoe = -1;
-    background = true;
-  }
-
-  virtual bool init_finished() override
-  {
-    ao_impact_am_source_id = p() -> benefits.arcane_missiles
-                                 -> get_source_id( "Arcane Orb Impact" );
-
-    return arcane_mage_spell_t::init_finished();
-  }
-
-  virtual void impact( action_state_t* s ) override
-  {
-    arcane_mage_spell_t::impact( s );
-
-    if ( result_is_hit( s -> result ) )
-    {
-      trigger_arcane_charge();
-      trigger_am( ao_impact_am_source_id );
-    }
-  }
-};
-
-struct arcane_orb_t : public arcane_mage_spell_t
-{
-  arcane_orb_bolt_t* orb_bolt;
-
-  arcane_orb_t( mage_t* p, const std::string& options_str ) :
-    arcane_mage_spell_t( "arcane_orb", p,
-                         p -> find_talent_spell( "Arcane Orb" ) ),
-    orb_bolt( new arcane_orb_bolt_t( p ) )
-  {
-    parse_options( options_str );
-
-    may_miss = false;
-    may_crit = false;
-    triggers_erosion = false;
-
-    add_child( orb_bolt );
-  }
-
-  virtual void execute() override
-  {
-    arcane_mage_spell_t::execute();
-    trigger_arcane_charge();
-  }
-
-
-  virtual timespan_t travel_time() const override
-  {
-    return timespan_t::from_seconds( std::max( 0.1, ( ( player -> get_player_distance( *target ) - 10.0 ) /
-                                     16.0 ) ) );
-  }
-
-  virtual void impact( action_state_t* s ) override
-  {
-    arcane_mage_spell_t::impact( s );
-
-    orb_bolt -> execute();
-  }
-};
-
 // Arcane Power Spell =======================================================
 
 struct arcane_power_t : public arcane_mage_spell_t
@@ -3289,8 +3320,8 @@ struct combustion_t : public fire_mage_spell_t
 
 struct comet_storm_projectile_t : public frost_mage_spell_t
 {
-  comet_storm_projectile_t( mage_t* p) :
-    frost_mage_spell_t( "comet_storm_projectile", p,
+  comet_storm_projectile_t( mage_t* p, bool legendary ) :
+    frost_mage_spell_t( legendary ? "legendary_comet_storm_projectile" : "comet_storm_projectile", p,
                         p -> find_spell( 153596 ) )
   {
     aoe = -1;
@@ -3302,13 +3333,20 @@ struct comet_storm_t : public frost_mage_spell_t
 {
   comet_storm_projectile_t* projectile;
 
-  comet_storm_t( mage_t* p, const std::string& options_str ) :
-    frost_mage_spell_t( "comet_storm", p, p -> talents.comet_storm ),
-    projectile( new comet_storm_projectile_t( p ) )
+  comet_storm_t( mage_t* p, const std::string& options_str, bool legendary = false ) :
+    frost_mage_spell_t( legendary ? "legendary_comet_storm" : "comet_storm",
+                        p, p -> find_talent_spell( "Comet Storm", "", SPEC_NONE, false, ! legendary ) ),
+    projectile( new comet_storm_projectile_t( p, legendary ) )
   {
     parse_options( options_str );
     may_miss = false;
     add_child( projectile );
+
+    if ( legendary )
+    {
+      background = true;
+      base_costs[ RESOURCE_MANA ] = 0;
+    }
   }
 
   virtual timespan_t travel_time() const override
@@ -3524,15 +3562,146 @@ struct evocation_t : public arcane_mage_spell_t
   }
 };
 
+// Meteor Spell ===============================================================
+
+// TODO: Have they fixed Meteor's implementation in Legion?
+// Implementation details from Celestalon:
+// http://blue.mmo-champion.com/topic/318876-warlords-of-draenor-theorycraft-discussion/#post301
+// Meteor is split over a number of spell IDs, some of which don't seem to be
+// used for anything useful:
+// - Meteor (id=153561) is the talent spell, the driver
+// - Meteor (id=153564) is the initial impact damage
+// - Meteor Burn (id=155158) is the ground effect tick damage
+// - Meteor Burn (id=175396) provides the tooltip's burn duration (8 seconds),
+//   but doesn't match in game where we only see 7 ticks over 7 seconds.
+// - Meteor (id=177345) contains the time between cast and impact
+// None of these specify the 1 second falling duration given by Celestalon, so
+// we're forced to hardcode it.
+struct meteor_burn_t : public fire_mage_spell_t
+{
+  meteor_burn_t( mage_t* p, int targets, bool legendary ) :
+    fire_mage_spell_t( legendary ? "legendary_meteor_burn" : "meteor_burn",
+                       p, p -> find_spell( 155158 ) )
+  {
+    background = true;
+    aoe = targets;
+    spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
+    spell_power_mod.tick = 0;
+    dot_duration = timespan_t::zero();
+    radius = p -> find_spell( 153564 ) -> effectN( 1 ).radius_max();
+    ground_aoe = true;
+  }
+
+  // Override damage type because Meteor Burn is considered a DOT
+  dmg_e amount_type( const action_state_t* /* state */,
+                     bool /* periodic */ ) const override
+  {
+    return DMG_OVER_TIME;
+  }
+};
+
+struct meteor_impact_t: public fire_mage_spell_t
+{
+  meteor_burn_t* meteor_burn;
+
+  meteor_impact_t( mage_t* p, meteor_burn_t* meteor_burn, int targets, bool legendary ):
+    fire_mage_spell_t( legendary ? "legendary_meteor_imapct" : "meteor_impact",
+                       p, p -> find_spell( 153564 ) ),
+    meteor_burn( meteor_burn )
+  {
+    background = true;
+    aoe = targets;
+    split_aoe_damage = true;
+    //TODO: Revisit PI behavior once Skullflower confirms behavior.
+    triggers_ignite = true;
+  }
+
+  timespan_t travel_time() const override
+  {
+    return timespan_t::from_seconds( 1.0 );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    fire_mage_spell_t::impact( s );
+
+    timespan_t pulse_time = meteor_burn -> data().effectN( 1 ).period();
+    timespan_t ground_aoe_duration = p() -> find_spell( 175396 ) -> duration();
+
+    // It seems that the 8th tick happens only very rarely in game.
+    if ( p() -> bugs )
+    {
+      ground_aoe_duration -= pulse_time;
+    }
+
+    p() -> ground_aoe_expiration[ meteor_burn -> name_str ]
+      = sim -> current_time() + ground_aoe_duration;
+
+    make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
+      .pulse_time( pulse_time )
+      .target( s -> target )
+      .duration( ground_aoe_duration )
+      .action( meteor_burn ) );
+  }
+};
+
+struct meteor_t : public fire_mage_spell_t
+{
+  int targets;
+  meteor_impact_t* meteor_impact;
+  timespan_t meteor_delay;
+
+  meteor_t( mage_t* p, const std::string& options_str, bool legendary = false ) :
+    fire_mage_spell_t( legendary ? "legendary_meteor" : "meteor",
+                       p, p -> find_talent_spell( "Meteor", "", SPEC_NONE, false, ! legendary ) ),
+    targets( -1 ),
+    meteor_delay( p -> find_spell( 177345 ) -> duration() )
+  {
+    add_option( opt_int( "targets", targets ) );
+    parse_options( options_str );
+    callbacks = false;
+
+    meteor_burn_t* meteor_burn = new meteor_burn_t( p, targets, legendary );
+    meteor_impact = new meteor_impact_t( p, meteor_burn, targets, legendary );
+
+    add_child( meteor_impact );
+    add_child( meteor_burn );
+
+    if ( legendary )
+    {
+      background = true;
+      base_costs[ RESOURCE_MANA ] = 0;
+    }
+  }
+
+  virtual timespan_t travel_time() const override
+  {
+    timespan_t impact_time = meteor_delay * p() -> composite_spell_haste();
+    timespan_t meteor_spawn = impact_time - meteor_impact -> travel_time();
+    meteor_spawn = std::max( timespan_t::zero(), meteor_spawn );
+
+    return meteor_spawn;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    fire_mage_spell_t::impact( s );
+    meteor_impact -> set_target( s -> target );
+    meteor_impact -> execute();
+  }
+};
+
 // Fireball Spell ===========================================================
 
 struct fireball_t : public fire_mage_spell_t
 {
   conflagration_dot_t* conflagration_dot;
+  meteor_t* meteor;
 
   fireball_t( mage_t* p, const std::string& options_str ) :
     fire_mage_spell_t( "fireball", p, p -> find_class_spell( "Fireball" ) ),
-    conflagration_dot( new conflagration_dot_t( p ) )
+    conflagration_dot( new conflagration_dot_t( p ) ),
+    meteor( new meteor_t( p, "", true ) )
   {
     parse_options( options_str );
     triggers_pyretic_incantation = true;
@@ -3562,6 +3731,8 @@ struct fireball_t : public fire_mage_spell_t
     {
       p() -> buffs.ignition -> trigger();
     }
+
+    trigger_and_execute( p() -> buffs.contained_infernal_core, meteor, execute_state -> target );
   }
 
   virtual void impact( action_state_t* s ) override
@@ -3870,10 +4041,12 @@ struct flurry_bolt_t : public frost_mage_spell_t
 struct flurry_t : public frost_mage_spell_t
 {
   flurry_bolt_t* flurry_bolt;
+  comet_storm_t* comet_storm;
 
   flurry_t( mage_t* p, const std::string& options_str ) :
     frost_mage_spell_t( "flurry", p, p -> find_specialization_spell( "Flurry" ) ),
-    flurry_bolt( new flurry_bolt_t( p ) )
+    flurry_bolt( new flurry_bolt_t( p ) ),
+    comet_storm( new comet_storm_t( p, "", true ) )
   {
     parse_options( options_str );
     tick_zero = true;
@@ -3919,6 +4092,8 @@ struct flurry_t : public frost_mage_spell_t
     flurry_bolt -> brain_freeze_buffed = p() -> buffs.brain_freeze -> up();
 
     p() -> buffs.brain_freeze -> expire();
+
+    trigger_and_execute( p() -> buffs.shattered_fragments_of_sindragosa, comet_storm, execute_state -> target );
   }
 
   void tick( dot_t* d ) override
@@ -3988,12 +4163,15 @@ struct frostbolt_t : public frost_mage_spell_t
   // clumping FB/FFB icicle damage together in reports.
   stats_t* icicle;
 
+  comet_storm_t* comet_storm;
+
   int water_jet_fof_source_id;
 
   frostbolt_t( mage_t* p, const std::string& options_str ) :
     frost_mage_spell_t( "frostbolt", p,
                         p -> find_specialization_spell( "Frostbolt" ) ),
-    icicle( p -> get_stats( "icicle" ) )
+    icicle( p -> get_stats( "icicle" ) ),
+    comet_storm( new comet_storm_t( p, "", true ) )
   {
     parse_options( options_str );
     parse_effect_data( p -> find_spell( 228597 ) -> effectN( 1 ) );
@@ -4046,6 +4224,8 @@ struct frostbolt_t : public frost_mage_spell_t
       bf_proc_chance += p() -> artifact.clarity_of_thought.percent();
       trigger_brain_freeze( bf_proc_chance );
     }
+
+    trigger_and_execute( p() -> buffs.shattered_fragments_of_sindragosa, comet_storm, execute_state -> target );
   }
 
   virtual void impact( action_state_t* s ) override
@@ -4853,126 +5033,6 @@ struct mark_of_aluneth_t : public arcane_mage_spell_t
     mark_explosion -> execute();
   }
 };
-// Meteor Spell ===============================================================
-
-// TODO: Have they fixed Meteor's implementation in Legion?
-// Implementation details from Celestalon:
-// http://blue.mmo-champion.com/topic/318876-warlords-of-draenor-theorycraft-discussion/#post301
-// Meteor is split over a number of spell IDs, some of which don't seem to be
-// used for anything useful:
-// - Meteor (id=153561) is the talent spell, the driver
-// - Meteor (id=153564) is the initial impact damage
-// - Meteor Burn (id=155158) is the ground effect tick damage
-// - Meteor Burn (id=175396) provides the tooltip's burn duration (8 seconds),
-//   but doesn't match in game where we only see 7 ticks over 7 seconds.
-// - Meteor (id=177345) contains the time between cast and impact
-// None of these specify the 1 second falling duration given by Celestalon, so
-// we're forced to hardcode it.
-struct meteor_burn_t : public fire_mage_spell_t
-{
-  meteor_burn_t( mage_t* p, int targets ) :
-    fire_mage_spell_t( "meteor_burn", p, p -> find_spell( 155158 ) )
-  {
-    background = true;
-    aoe = targets;
-    spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
-    spell_power_mod.tick = 0;
-    dot_duration = timespan_t::zero();
-    radius = p -> find_spell( 153564 ) -> effectN( 1 ).radius_max();
-    ground_aoe = true;
-  }
-
-  // Override damage type because Meteor Burn is considered a DOT
-  dmg_e amount_type( const action_state_t* /* state */,
-                     bool /* periodic */ ) const override
-  {
-    return DMG_OVER_TIME;
-  }
-};
-
-struct meteor_impact_t: public fire_mage_spell_t
-{
-  meteor_burn_t* meteor_burn;
-
-  meteor_impact_t( mage_t* p, meteor_burn_t* meteor_burn, int targets ):
-    fire_mage_spell_t( "meteor_impact", p, p -> find_spell( 153564 ) ),
-    meteor_burn( meteor_burn )
-  {
-    background = true;
-    aoe = targets;
-    split_aoe_damage = true;
-    //TODO: Revisit PI behavior once Skullflower confirms behavior.
-    triggers_ignite = true;
-  }
-
-  timespan_t travel_time() const override
-  {
-    return timespan_t::from_seconds( 1.0 );
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    fire_mage_spell_t::impact( s );
-
-    timespan_t pulse_time = meteor_burn -> data().effectN( 1 ).period();
-    timespan_t ground_aoe_duration = p() -> find_spell( 175396 ) -> duration();
-
-    // It seems that the 8th tick happens only very rarely in game.
-    if ( p() -> bugs )
-    {
-      ground_aoe_duration -= pulse_time;
-    }
-
-    p() -> ground_aoe_expiration[ meteor_burn -> name_str ]
-      = sim -> current_time() + ground_aoe_duration;
-
-    make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
-      .pulse_time( pulse_time )
-      .target( s -> target )
-      .duration( ground_aoe_duration )
-      .action( meteor_burn ) );
-  }
-};
-
-struct meteor_t : public fire_mage_spell_t
-{
-  int targets;
-  meteor_impact_t* meteor_impact;
-  timespan_t meteor_delay;
-
-  meteor_t( mage_t* p, const std::string& options_str ) :
-    fire_mage_spell_t( "meteor", p, p -> find_talent_spell( "Meteor") ),
-    targets( -1 ),
-    meteor_delay( p -> find_spell( 177345 ) -> duration() )
-  {
-    add_option( opt_int( "targets", targets ) );
-    parse_options( options_str );
-    callbacks = false;
-
-    meteor_burn_t* meteor_burn = new meteor_burn_t( p, targets );
-    meteor_impact = new meteor_impact_t( p, meteor_burn, targets );
-
-    add_child( meteor_impact );
-    add_child( meteor_burn );
-  }
-
-  virtual timespan_t travel_time() const override
-  {
-    timespan_t impact_time = meteor_delay * p() -> composite_spell_haste();
-    timespan_t meteor_spawn = impact_time - meteor_impact -> travel_time();
-    meteor_spawn = std::max( timespan_t::zero(), meteor_spawn );
-
-    return meteor_spawn;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    fire_mage_spell_t::impact( s );
-    meteor_impact -> set_target( s -> target );
-    meteor_impact -> execute();
-  }
-};
-
 
 // Mirror Image Spell =========================================================
 
@@ -5226,8 +5286,11 @@ struct phoenixs_flames_t : public fire_mage_spell_t
 
 struct pyroblast_t : public fire_mage_spell_t
 {
+  meteor_t* meteor;
+
   pyroblast_t( mage_t* p, const std::string& options_str ) :
-    fire_mage_spell_t( "pyroblast", p, p -> find_class_spell( "Pyroblast" ) )
+    fire_mage_spell_t( "pyroblast", p, p -> find_class_spell( "Pyroblast" ) ),
+    meteor( new meteor_t( p, "", true ) )
   {
     parse_options( options_str );
 
@@ -5299,6 +5362,8 @@ struct pyroblast_t : public fire_mage_spell_t
     {
       p() -> buffs.hot_streak -> expire();
     }
+
+    trigger_and_execute( p() -> buffs.contained_infernal_core, meteor, execute_state -> target );
   }
 
   virtual void snapshot_state( action_state_t* s, dmg_e rt ) override
@@ -7924,7 +7989,7 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
     }
     else
     {
-      sim -> errorf( "Player %s ground_aoe expression: unknown operation '%s'", name(), splits[2] );
+      sim -> errorf( "Player %s ground_aoe expression: unknown operation '%s'", name(), splits[2].c_str() );
     }
   }
 
@@ -8251,6 +8316,15 @@ struct gravity_spiral_t : public scoped_actor_callback_t<mage_t>
   }
 };
 
+struct mantle_of_the_first_kirin_tor_t : public scoped_action_callback_t<arcane_barrage_t>
+{
+  mantle_of_the_first_kirin_tor_t() : super( MAGE_ARCANE, "arcane_barrage" )
+  { }
+
+  void manipulate( arcane_barrage_t* action, const special_effect_t& e ) override
+  { action -> mantle_of_the_first_kirin_tor_chance = e.driver() -> effectN( 1 ).percent(); }
+};
+
 // Fire Legendary Items
 struct koralons_burning_touch_t : public scoped_action_callback_t<scorch_t>
 {
@@ -8303,6 +8377,24 @@ struct pyrotex_ignition_cloth_t : public scoped_action_callback_t<phoenixs_flame
     action -> pyrotex_ignition_cloth_reduction = e.driver() -> effectN( 1 ).time_value();
   }
 };
+
+struct contained_infernal_core_t : public class_buff_cb_t<mage_t, buff_t, buff_creator_t>
+{
+  contained_infernal_core_t() : super( MAGE_FIRE, "contained_infernal_core" )
+  { }
+
+  buff_t*& buff_ptr( const special_effect_t& e ) override
+  {
+    return debug_cast<mage_t*>( e.player ) -> buffs.contained_infernal_core;
+  }
+
+  buff_creator_t creator( const special_effect_t& e ) const override
+  {
+    return super::creator( e )
+      .spell( e.player -> find_spell( 248146 ) );
+  }
+};
+
 // Frost Legendary Items
 struct magtheridons_banished_bracers_t : public class_buff_cb_t<mage_t, buff_t, buff_creator_t>
 {
@@ -8362,6 +8454,23 @@ struct ice_time_t : public scoped_action_callback_t<frozen_orb_t>
     action -> ice_time = true;
   }
 };
+
+struct shattered_fragments_of_sindragosa_t : public class_buff_cb_t<mage_t, buff_t, buff_creator_t>
+{
+  shattered_fragments_of_sindragosa_t() : super( MAGE_FROST, "shattered_fragments_of_sindragosa" )
+  { }
+
+  buff_t*& buff_ptr( const special_effect_t& e ) override
+  {
+    return debug_cast<mage_t*>( e.player ) -> buffs.shattered_fragments_of_sindragosa;
+  }
+
+  buff_creator_t creator( const special_effect_t& e ) const override
+  {
+    return super::creator( e )
+      .spell( e.player -> find_spell( 248176 ) );
+  }
+};
 // MAGE MODULE INTERFACE ====================================================
 
 static void do_trinket_init( mage_t*                  p,
@@ -8392,21 +8501,24 @@ public:
 
   virtual void static_init() const override
   {
-    unique_gear::register_special_effect( 209311, cord_of_infinity_t(),                 true );
-    unique_gear::register_special_effect( 208099, koralons_burning_touch_t()                 );
-    unique_gear::register_special_effect( 214403, magtheridons_banished_bracers_t(),    true );
-    unique_gear::register_special_effect( 206397, zannesu_journey_t(),                  true );
-    unique_gear::register_special_effect( 208146, lady_vashjs_grasp_t()                      );
-    unique_gear::register_special_effect( 208080, rhonins_assaulting_armwraps_t(),      true );
-    unique_gear::register_special_effect( 207547, darcklis_dragonfire_diadem_t()             );
-    unique_gear::register_special_effect( 208051, sephuzs_secret_t(),                   true );
-    unique_gear::register_special_effect( 207970, shard_of_the_exodar_t()                    );
-    unique_gear::register_special_effect( 209450, marquee_bindings_of_the_sun_king_t(), true );
-    unique_gear::register_special_effect( 209280, mystic_kilt_of_the_rune_master_t()         );
-    unique_gear::register_special_effect( 222276, sorcerous_shadowruby_pendant               );
-    unique_gear::register_special_effect( 235940, pyrotex_ignition_cloth_t()                 );
-    unique_gear::register_special_effect( 235227, ice_time_t()                               );
-    unique_gear::register_special_effect( 235273, gravity_spiral_t()                         );
+    unique_gear::register_special_effect( 209311, cord_of_infinity_t(),                  true );
+    unique_gear::register_special_effect( 208099, koralons_burning_touch_t()                  );
+    unique_gear::register_special_effect( 214403, magtheridons_banished_bracers_t(),     true );
+    unique_gear::register_special_effect( 206397, zannesu_journey_t(),                   true );
+    unique_gear::register_special_effect( 208146, lady_vashjs_grasp_t()                       );
+    unique_gear::register_special_effect( 208080, rhonins_assaulting_armwraps_t(),       true );
+    unique_gear::register_special_effect( 207547, darcklis_dragonfire_diadem_t()              );
+    unique_gear::register_special_effect( 208051, sephuzs_secret_t(),                    true );
+    unique_gear::register_special_effect( 207970, shard_of_the_exodar_t()                     );
+    unique_gear::register_special_effect( 209450, marquee_bindings_of_the_sun_king_t(),  true );
+    unique_gear::register_special_effect( 209280, mystic_kilt_of_the_rune_master_t()          );
+    unique_gear::register_special_effect( 222276, sorcerous_shadowruby_pendant                );
+    unique_gear::register_special_effect( 235940, pyrotex_ignition_cloth_t()                  );
+    unique_gear::register_special_effect( 235227, ice_time_t()                                );
+    unique_gear::register_special_effect( 235273, gravity_spiral_t()                          );
+    unique_gear::register_special_effect( 248098, mantle_of_the_first_kirin_tor_t()           );
+    unique_gear::register_special_effect( 248099, contained_infernal_core_t(),           true );
+    unique_gear::register_special_effect( 248100, shattered_fragments_of_sindragosa_t(), true );
   }
 
   virtual void register_hotfixes() const override
