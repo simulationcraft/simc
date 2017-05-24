@@ -4,7 +4,7 @@
 #ifndef ptr_MAX_CLASS
 #define ptr_MAX_CLASS (13)
 #endif
-// Class based active abilities, wow build 24116
+// Class based active abilities, wow build 24163
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
@@ -1168,7 +1168,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
 };
 #define PTR_TREE_SPECIALIZATION_SIZE (36)
 
-// Talent tree specialization abilities, wow build 24116
+// Talent tree specialization abilities, wow build 24163
 static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -2277,7 +2277,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
 };
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 24116
+// Class mastery abilities, wow build 24163
 static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2516,7 +2516,7 @@ static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS]
 #define ptr_MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 24116
+// Racial abilities, wow build 24163
 static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -3254,7 +3254,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
 };
 #define PTR_SET_BONUS_DATA_SIZE (616)
 
-// Set bonus data, wow build 24116
+// Set bonus data, wow build 24163
 static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,   71, 165636, { 127055, 127081, 127092, 127103, 127114,  0 } },
@@ -3900,7 +3900,7 @@ static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
 };
 #define PTR_RPPMMOD_SIZE (517)
 
-// 517 RPPM Modifiers, wow build level 24116
+// 517 RPPM Modifiers, wow build level 24163
 static struct rppm_modifier_t __ptr_rppmmodifier_data[] = {
   {  45054,    4,  1,  1.0000 },
   {  49530,    1,  1,  1.0000 },
@@ -4423,7 +4423,7 @@ static struct rppm_modifier_t __ptr_rppmmodifier_data[] = {
 };
 #define PTR_ARTIFACT_SIZE (41)
 
-// Artifact base data, wow build 24116
+// Artifact base data, wow build 24163
 static struct artifact_t __ptr_artifact_data[PTR_ARTIFACT_SIZE] = {
   {  2,  70 },
   {  3, 577 },
@@ -4469,7 +4469,7 @@ static struct artifact_t __ptr_artifact_data[PTR_ARTIFACT_SIZE] = {
 };
 #define PTR_ARTIFACT_POWER_SIZE (895)
 
-// Artifact power data, wow build 24116
+// Artifact power data, wow build 24163
 static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER_SIZE] = {
   {   40,   2,  18,  0,   0, 205273, "Wake of Ashes"                      }, // Wake of Ashes (id=205273, n_ranks=1)
   {   41,   2,  32,  4,   3, 186941, "Highlord's Judgment"                }, // Highlord's Judgment (id=186941, n_ranks=8)
@@ -4739,7 +4739,7 @@ static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER
   { 1620,  35,   5,  0,  50, 239042, "Concordance of the Legionfall"      }, // Concordance of the Legionfall (id=239042, n_ranks=50)
   { 1715,  35,   2,  0,   1, 241269, "Fury of the Valarjar"               }, // Fury of the Valarjar (id=241269, n_ranks=1)
   { 1136,  36,  18,  0,   0, 209577, "Warbreaker"                         }, // Warbreaker (id=209577, n_ranks=1)
-  { 1137,  36,   1,  1,   1, 209574, "Shattered Defenses"                 }, // Shattered Defenses (id=209574, n_ranks=1)
+  { 1137,  36,   1,  1,   1, 248580, "Shattered Defenses"                 }, // Shattered Defenses (id=248580, n_ranks=1)
   { 1138,  36,   1,  2,   1, 209573, "Void Cleave"                        }, // Void Cleave (id=209573, n_ranks=1)
   { 1139,  36,   1,  3,   1, 209566, "Corrupted Blood of Zakajz"          }, // Corrupted Blood of Zakajz (id=209566, n_ranks=1)
   { 1140,  36,   0,  0,   1, 209559, "Defensive Measures"                 }, // Defensive Measures (id=209559, n_ranks=1)
@@ -4751,7 +4751,7 @@ static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER
   { 1146,  36,  32,  7,   3, 216274, "Many Will Fall"                     }, // Many Will Fall (id=216274, n_ranks=8)
   { 1147,  36,  32,  8,   3, 209481, "Deathblow"                          }, // Deathblow (id=209481, n_ranks=8)
   { 1148,  36,  32, 11,   3, 209483, "Tactical Advance"                   }, // Tactical Advance (id=209483, n_ranks=8)
-  { 1149,  36,  32,  9,   3, 209492, "Precise Strikes"                    }, // Precise Strikes (id=209492, n_ranks=8)
+  { 1149,  36,  32,  9,   3, 248579, "Precise Strikes"                    }, // Precise Strikes (id=248579, n_ranks=8)
   { 1150,  36,  32, 10,   3, 209494, "Exploit the Weakness"               }, // Exploit the Weakness (id=209494, n_ranks=8)
   { 1151,  36,  32, 12,   3, 209541, "Touch of Zakajz"                    }, // Touch of Zakajz (id=209541, n_ranks=8)
   { 1220,  36,   8,  0,   0, 211309, "Artificial Stamina"                 }, // Artificial Stamina (id=211309, n_ranks=1)
@@ -5369,7 +5369,7 @@ static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER
 };
 #define PTR_ARTIFACT_POWER_RANK_SIZE (5907)
 
-// Artifact power rank data, wow build 24116
+// Artifact power rank data, wow build 24163
 static struct artifact_power_rank_t __ptr_artifact_power_rank_data[PTR_ARTIFACT_POWER_RANK_SIZE] = {
   { 2316,    40,  0, 205273,      0.000, 0x00000000, 0 },
   { 2317,    41,  0, 186941,      8.000, 0x00000000, 0 },
@@ -7859,7 +7859,7 @@ static struct artifact_power_rank_t __ptr_artifact_power_rank_data[PTR_ARTIFACT_
   { 5006,  1134,  0, 209539,      0.000, 0x00000000, 0 },
   { 5007,  1135,  0, 209474,      0.000, 0x00000000, 0 },
   { 5043,  1136,  0, 209577,      0.000, 0x00000000, 0 },
-  { 5044,  1137,  0, 209574,      0.000, 0x00000000, 0 },
+  { 5044,  1137,  0, 248580,      0.000, 0x00000000, 0 },
   { 5045,  1138,  0, 209573,      0.000, 0x00000000, 0 },
   { 5046,  1139,  0, 209566,      0.000, 0x00000000, 0 },
   { 5047,  1140,  0, 209559,      0.000, 0x00000000, 0 },
@@ -7913,14 +7913,14 @@ static struct artifact_power_rank_t __ptr_artifact_power_rank_data[PTR_ARTIFACT_
   { 5088,  1148,  5, 209483,     60.000, 0x00000000, 0 },
   { 7320,  1148,  6, 209483,     70.000, 0x00000000, 0 },
   { 7321,  1148,  7, 209483,     80.000, 0x00000000, 0 },
-  { 5056,  1149,  0, 209492,    -10.000, 0x00000000, 0 },
-  { 5089,  1149,  1, 209492,    -20.000, 0x00000000, 0 },
-  { 5090,  1149,  2, 209492,    -30.000, 0x00000000, 0 },
-  { 5091,  1149,  3, 209492,    -40.000, 0x00000000, 0 },
-  { 5092,  1149,  4, 209492,    -50.000, 0x00000000, 0 },
-  { 5093,  1149,  5, 209492,    -60.000, 0x00000000, 0 },
-  { 7318,  1149,  6, 209492,    -70.000, 0x00000000, 0 },
-  { 7319,  1149,  7, 209492,    -80.000, 0x00000000, 0 },
+  { 5056,  1149,  0, 248579,     10.000, 0x00000000, 0 },
+  { 5089,  1149,  1, 248579,     20.000, 0x00000000, 0 },
+  { 5090,  1149,  2, 248579,     30.000, 0x00000000, 0 },
+  { 5091,  1149,  3, 248579,     40.000, 0x00000000, 0 },
+  { 5092,  1149,  4, 248579,     50.000, 0x00000000, 0 },
+  { 5093,  1149,  5, 248579,     60.000, 0x00000000, 0 },
+  { 7318,  1149,  6, 248579,     70.000, 0x00000000, 0 },
+  { 7319,  1149,  7, 248579,     80.000, 0x00000000, 0 },
   { 5057,  1150,  0, 209494,      4.000, 0x00000000, 0 },
   { 5094,  1150,  1, 209494,      8.000, 0x00000000, 0 },
   { 5095,  1150,  2, 209494,     12.000, 0x00000000, 0 },
@@ -11281,7 +11281,7 @@ static struct artifact_power_rank_t __ptr_artifact_power_rank_data[PTR_ARTIFACT_
 };
 #define PTR_PTR_ARTIFACT_POWER_RANK_HOTFIX_SIZE (0)
 
-// 0 ptr_artifact_power_rank hotfix entries, wow build level 24116
+// 0 ptr_artifact_power_rank hotfix entries, wow build level 24163
 static hotfix::client_hotfix_entry_t __ptr_ptr_artifact_power_rank_hotfix_data[] = {
   {      0,  0, 0, 0 },
 };
