@@ -4483,16 +4483,8 @@ struct  keg_smash_stave_off_t: public monk_melee_attack_t
     aoe = -1;
     background = dual = true;
     
-    if ( p.dbc.ptr )
-    {
-      attack_power_mod.direct = p.spec.keg_smash -> effectN( 2 ).ap_coeff();
-      radius = p.spec.keg_smash -> effectN( 2 ).radius();
-    }
-    else
-    {
-      attack_power_mod.direct = p.spec.keg_smash -> effectN( 1 ).ap_coeff();
-      radius = p.spec.keg_smash -> effectN( 1 ).radius();
-    }
+    attack_power_mod.direct = p.spec.keg_smash -> effectN( maybe_ptr( p.dbc.ptr ) ? 2 : 1 ).ap_coeff();
+    radius = p.spec.keg_smash -> effectN( maybe_ptr( p.dbc.ptr ) ? 2 : 1 ).radius();
 
     if ( p.artifact.smashed.rank() )
       range += p.artifact.smashed.value();
@@ -4500,9 +4492,6 @@ struct  keg_smash_stave_off_t: public monk_melee_attack_t
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
     cooldown -> duration = timespan_t::zero();
-    // Keg Smash does not appear to be picking up the baseline Trigger GCD reduction
-    // Forcing the trigger GCD to 1 second.
-    trigger_gcd = timespan_t::from_seconds( 1 );
   }
 
   // Force 250 milliseconds for the animation, but not delay the overall GCD
@@ -4559,16 +4548,8 @@ struct keg_smash_t: public monk_melee_attack_t
 
     aoe = -1;
     
-    if ( p.dbc.ptr )
-    {
-      attack_power_mod.direct = p.spec.keg_smash -> effectN( 2 ).ap_coeff();
-      radius = p.spec.keg_smash -> effectN( 2 ).radius();
-    }
-    else
-    {
-      attack_power_mod.direct = p.spec.keg_smash -> effectN( 1 ).ap_coeff();
-      radius = p.spec.keg_smash -> effectN( 1 ).radius();
-    }
+    attack_power_mod.direct = p.spec.keg_smash -> effectN( maybe_ptr( p.dbc.ptr ) ? 2 : 1 ).ap_coeff();
+    radius = p.spec.keg_smash -> effectN( maybe_ptr( p.dbc.ptr ) ? 2 : 1 ).radius();
 
     if ( p.artifact.smashed.rank() )
       range += p.artifact.smashed.value();
@@ -5433,11 +5414,11 @@ struct dragonfire_brew : public monk_spell_t
     monk_spell_t( "dragonfire_brew", &p, p.artifact.dragonfire_brew )
   {
     background = true;
-    tick_may_crit = may_crit = false;
+    tick_may_crit = may_crit = true;
     hasted_ticks = false;
     // Placeholder stuff to get things working
     dot_duration = timespan_t::from_seconds( 3 ); // Hard code the duration to 3 seconds
-    base_tick_time = dot_duration / p.find_spell( 213183 ) -> effectN( 1 ).base_value();
+    base_tick_time = dot_duration / p.artifact.dragonfire_brew.data().effectN( 1 ).base_value();
     tick_zero = hasted_ticks = false;
 
     tick_action = new dragonfire_brew_tick( p );
@@ -5463,6 +5444,9 @@ struct breath_of_fire_t: public monk_spell_t
       background = true;
       tick_may_crit = may_crit = true;
       hasted_ticks = false;
+
+      if ( maybe_ptr( p.dbc.ptr ) && p.artifact.dragonfire_brew.rank() )
+        dot_duration *= p.artifact.dragonfire_brew.data().effectN( 2 ).percent();
     }
 
     double action_multiplier() const override
@@ -5491,6 +5475,7 @@ struct breath_of_fire_t: public monk_spell_t
     trigger_gcd = timespan_t::from_seconds( 1 );
 
     add_child( dragonfire );
+    add_child( dot_action );
   }
 
   double action_multiplier() const override
@@ -9112,8 +9097,8 @@ double monk_t::composite_armor_multiplier() const
     a *= 1 + spec.stagger -> effectN( 14 ).percent();
     a *= 1 + spec.brewmaster_monk -> effectN( 8 ).percent();
   }
-
-  a *= 1 + spec.brewmasters_balance -> effectN( 1 ).percent();
+  else
+    a *= 1 + spec.brewmasters_balance -> effectN( 1 ).percent();
 
   if ( artifact.wanderers_hardiness.rank() )
     a *= 1 + artifact.wanderers_hardiness.percent();
