@@ -1187,7 +1187,7 @@ School           : Shadow
 Spell Level      : 55
 Range            : 50000 yards
 Duration         : 24 seconds
-Affecting spells : Coagulopathy (192460 effect#1)
+Affecting spells : Blood Death Knight (137008 effect#1), Coagulopathy (192460 effect#1), Soulflayer's Corruption (248066 effect#1)
 Triggered by     : Death's Caress (195292)
 Attributes       : ....x... ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ..x..... ......x. 
@@ -2767,10 +2767,10 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179691)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
-                   Affected Spells: Death Strike (49998), Blood Boil (50842), Death and Decay (52212), Marrowrend (195182), Death's Caress (195292), Bonestorm (196528), Consumption (205223), Heart Strike (206930), Blooddrinker (206931), Soulgorge (212744)
+                   Affected Spells: Death Strike (49998), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Marrowrend (195182), Death's Caress (195292), Bonestorm (196528), Consumption (205223), Heart Strike (206930), Blooddrinker (206931), Soulgorge (212744)
 #2 (id=191166)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Death Strike (49998), Blood Boil (50842), Death and Decay (52212), Marrowrend (195182), Death's Caress (195292), Bonestorm (196528), Consumption (205223), Heart Strike (206930), Blooddrinker (206931), Soulgorge (212744)
+                   Affected Spells: Death Strike (49998), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Marrowrend (195182), Death's Caress (195292), Bonestorm (196528), Consumption (205223), Heart Strike (206930), Blooddrinker (206931), Soulgorge (212744)
 #3 (id=191167)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 80 | Scaled Value: 80 | Target: Self (1)
                    Affected Spells: Death Strike (49998), Death Strike Off-Hand (66188), Consumption (205223)
@@ -4373,7 +4373,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=292108)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.60000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.20000 | Target: Enemy (6)
 Description      : Inflicts Shadow damage to an enemy.
 
 Name             : Shadow Infusion (id=198943) [Spell Family (15), Passive] 
@@ -5296,7 +5296,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : Disable weapon procs (151)
 Effects          :
 #1 (id=306575)   : Apply Aura (6) | Modify Ranged and Melee Attack Speed% (342)
-                   Base Value: 125 | Scaled Value: 125 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 Description      : $@spelldesc207289
 Tooltip          : Attack speed increased by $s1%.
 

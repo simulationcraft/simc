@@ -803,7 +803,7 @@ School           : Holy
 Resource         : 3 Holy Power (9) (id=2444)
 Spell Level      : 40
 GCD              : 1.5 seconds
-Affecting spells : Paladin (137026 effect#3), The Fires of Justice (209785 effect#1), Divine Purpose (223819 effect#1)
+Affecting spells : Paladin (137026 effect#3), The Fires of Justice (209785 effect#1), Divine Purpose (223819 effect#1), Scarlet Inquisitor's Expurgation (248289 effect#1)
 Attributes       : ........ ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .......x ........ ........ 
@@ -2997,8 +2997,7 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 Description      : Calls down the Light to heal you for $s1% of your missing health.$?s26573&!s203785[
 
-While you are standing in your Consecration, Light of the Protector's healing is increased by $188370s2%.][]
-
+While you are standing in your Consecration, Light of the Protector's healing is increased by $188370s2%.][]
 
 Name             : Blade of Justice (id=184575) [Spell Family (10)] 
 Class            : Retribution Paladin
@@ -3732,7 +3731,7 @@ School           : Holy
 Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 2 seconds
-Affecting spells : Lucidity (137323 effect#1), Muze's Unwavering Will (210632 effect#1), Invoke the Light (216122 effect#1)
+Affecting spells : Lucidity (137323 effect#1), Muze's Unwavering Will (210632 effect#1), Invoke the Light (216122 effect#1), Kam Xi'raff (233997 effect#1)
 Attributes       : ........ ........ x....... x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... ......x.   ........ ........ .x...... ......x. 
                  : ........ ......x. ........ ........   ...x.... ........ .xx..... ........ 
@@ -3989,7 +3988,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=316391)   : Apply Aura (6) | Unknown(87)
                    Base Value: -35 | Scaled Value: -35 | Misc Value: 0x1 | Target: Self (1)
-Description      : Reduces Physical damage you take by $s2%, and instantly counterattacks any enemy that strikes you in melee combat for $205202sw1 Physical damage.  Lasts $d.
+Description      : Reduces Physical damage you take by $s2%, and instantly counterattacks any enemy that strikes you in melee combat for $205202sw1 Physical damage. Lasts $d.
 Tooltip          : Counterattacking all melee attacks.
 
 Name             : Eye for an Eye (id=205202) [Spell Family (10)] 
@@ -4095,6 +4094,7 @@ GCD              : 1.5 seconds
 Duration         : 9 seconds
 Cooldown         : 60 seconds
 Artifact Power   : Id: 1120, Index: 0, Max Rank: 1
+Affecting spells : Pillars of Inmost Ligiht (248102 effect#1), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4108,7 +4108,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 2.70000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #3 (id=321125)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 25 yards | Target: At Caster (22) -> AOE enemy (instant) (7)
-Description      : Releases a blinding flash from |cFFFFCC99Truthguard|r, causing $s2 Holy damage to all nearby enemies and reducing all damage they deal to you by $s1% for $d.
+Description      : Releases a blinding flash from |cFFFFCC99Truthguard|r, causing $s2 Holy damage to all nearby enemies within $A1 yds and reducing all damage they deal to you by $s1% for $d.
 Tooltip          : Dealing $s1% less damage to the Paladin.
 
 Name             : The Fires of Justice (id=209785) [Spell Family (10)] 
@@ -4289,7 +4289,7 @@ Effects          :
 #3 (id=316427)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 11
                    Affected Spells: Divine Shield (642)
-Description      : Reduces your Divine Shield cooldown by $s3%.  In addition, any attack which would kill you instead reduces you to $s2% of your maximum health and triggers Divine Shield.
+Description      : Reduces your Divine Shield cooldown by $s3%. In addition, any attack which would kill you instead reduces you to $s2% of your maximum health and triggers Divine Shield.
 
 Cannot occur while Divine Shield is on cooldown or Forbearance is active. 
 
@@ -4639,7 +4639,7 @@ Class            : Paladin
 School           : Holy
 Spell Level      : 32
 Range            : 100 yards
-Affecting spells : Retribution Paladin (137027 effect#1), Righteous Blade (184843 effect#1), Divine Tempest (186773 effect#2), Judgment (197277 effect#1), Final Verdict (198038 effect#2), Whisper of the Nathrezim (207635 effect#1), Item - Paladin T19 Retribution 2P Bonus (211444 effect#1)
+Affecting spells : Retribution Paladin (137027 effect#1), Righteous Blade (184843 effect#1), Divine Tempest (186773 effect#2), Judgment (197277 effect#1), Final Verdict (198038 effect#2), Whisper of the Nathrezim (207635 effect#1), Item - Paladin T19 Retribution 2P Bonus (211444 effect#1), Scarlet Inquisitor's Expurgation (248289 effect#1)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .......x ........ ........ 
@@ -4996,7 +4996,7 @@ Attributes       : ......x. ........ ........ .......x   ........ ........ .....
 Effects          :
 #1 (id=360783)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : When your Greater Blessings are active, gain Blessing of the Ashbringer. Blessing of the Ashbringer grants $242981s1% Strength.
+Description      : When both of your Greater Blessings are active, gain Blessing of the Ashbringer. Blessing of the Ashbringer grants $242981s1% Strength.
 
 Name             : Righteous Verdict (id=238996) [Spell Family (10)] 
 Class            : Paladin
@@ -5049,8 +5049,8 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Cannot cancel aura (31)
 Effects          :
-#1 (id=368965)   : Apply Aura (6) | Modify Attribute% (80)
-                   Base Value: 4 | Scaled Value: 4 | Target: Self (1)
+#1 (id=368965)   : Apply Aura (6) | Modify Total Stat% (137)
+                   Base Value: 4 | Scaled Value: 4 | Misc Value 2: 0x1 | Target: Self (1)
 Description      : $@spelldesc238098
 Tooltip          : Strength increased by $s1%.
 

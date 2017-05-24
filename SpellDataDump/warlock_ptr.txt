@@ -1467,7 +1467,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 30 yards/sec
-Duration         : 15 seconds
+Duration         : 10 seconds
 Cooldown         : 25 seconds
 Affecting spells : Affliction Warlock (137043 effect#2), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1478,9 +1478,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=40331)    : School Damage (2): shadow
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 8.00000 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 5.00000 | Target: Enemy (6)
 #2 (id=40332)    : Apply Aura (6) | Unknown(270)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 127 | Target: Enemy (6)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 127 | Target: Enemy (6)
 Description      : A ghostly soul haunts the target, dealing $s1 Shadow damage and increasing your damage dealt to the target by $s2% for $d. If the target dies, Haunt's cooldown is reset.
 Tooltip          : Taking $s2% increased damage from the Warlock. Haunt's cooldown will be reset on death.
 
@@ -3093,13 +3093,13 @@ Effects          :
                    Base Value: -33 | Scaled Value: -33 | Target: Self (1)
                    Affected Spells: Demonic Power (196100)
 #2 (id=191031)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
                    Affected Spells: Agony (980), Seed of Corruption (27243), Seed of Corruption (27285), Haunt (48181), Siphon Life (63106), Corruption (146739), Demonic Power (196100), Drain Soul (198590), Soul Flame (199581), Phantom Singularity (205179), Phantom Singularity (205246), Harvester of Souls (218615), Compounding Horror (231489), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Rend Soul (242834)
 #3 (id=191032)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Agony (980), Seed of Corruption (27243), Seed of Corruption (27285), Haunt (48181), Siphon Life (63106), Corruption (146739), Demonic Power (196100), Drain Soul (198590), Soul Flame (199581), Phantom Singularity (205179), Phantom Singularity (205246), Harvester of Souls (218615), Compounding Horror (231489), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Rend Soul (242834)
 #4 (id=191033)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
 #5 (id=191034)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #6 (id=261077)   : Apply Aura (6) | Dummy (4)
@@ -4366,7 +4366,7 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
 Effects          :
 #1 (id=288695)   : Summon (28)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 99887 | Misc Value 2: 0xe47 | Radius: 10 yards | Target: Unknown(72)
-Description      : $@spelldesc187365
+Description      : Summons a Shadowy Tear.
 
 Name             : Shadow Bolt (id=196657) [Spell Family (5)] 
 Class            : Warlock
@@ -5389,14 +5389,15 @@ School           : Shadow
 Range            : 100 yards
 Duration         : 15 seconds
 Attributes       : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   .......x ........ ........ ........ 
+                 : ........ ........ ........ ........   .......x ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ .......x ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=368856)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Enemy (6)
+Description      : Increases the damage of Fel Firebolt by $s1%.
 Tooltip          : Increases the damage of Fel Firebolt by $s1%.
 
 Name             : Searing Bolt (id=243050) [Spell Family (5)] 

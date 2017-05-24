@@ -3990,7 +3990,7 @@ Effects          :
 #3 (id=464158)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rip (1079), Ashamane's Rip (210705)
-Description      : Your finishing moves deal $s2% increased damage and grant $s1 Energy per combo point spent.
+Description      : Your finishing moves grant $s1 Energy per combo point spent and deal $s2% increased damage.
 
 Name             : Soul of the Forest (id=158477) [Spell Family (7), Passive] 
 Class            : Druid
@@ -5025,10 +5025,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=290202)   : Apply Aura (6) | Add Flat Modifier (107): Spell Range (5)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 5 | Target: Self (1)
-                   Affected Spells: Entangling Roots (339), Tranquility (740), Rejuvenation (774), Rip (1079), Rake (1822), Remove Corruption (2782), Solar Wrath (5176), Healing Touch (5185), Mighty Bash (5211), Shred (5221), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Innervate (29166), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Typhoon (61391), Thrash (77758), Starsurge (78674), Solar Beam (78675), Pulverize (80313), Nature's Cure (88423), Sunfire (93402), Skull Bash (93985), Ironbark (102342), Cenarion Ward (102351), Cenarion Ward (102352), Mass Entanglement (102359), Wild Charge (102401), Ursol's Vortex (102793), Swipe (106785), Thrash (106830), Skull Bash (106839), Typhoon (132469), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Efflorescence (145205), Moonfire (155625), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Brutal Slash (202028), Enraged Mangle (202085), Stellar Flare (202347), Shooting Stars (202497), New Moon (202767), Half Moon (202768), Fury of Elune (202770), Full Moon (202771), Goldrinn's Fang (203001), Lunar Beam (204069), Force of Nature (205636), Shadow Thrash (210687), Ashamane's Rip (210705), Ashamane's Frenzy (210722), Ashamane's Frenzy (210723), Fury of Elune (211545), Revitalize (212040), Brambles (213709), Swipe (213764), Swipe (213771), Echoing Stars (226104), Enraged Maul (236716)
+                   Affected Spells: Entangling Roots (339), Tranquility (740), Rejuvenation (774), Rip (1079), Rake (1822), Remove Corruption (2782), Solar Wrath (5176), Healing Touch (5185), Mighty Bash (5211), Shred (5221), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Innervate (29166), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Typhoon (61391), Thrash (77758), Starsurge (78674), Solar Beam (78675), Pulverize (80313), Nature's Cure (88423), Sunfire (93402), Skull Bash (93985), Ironbark (102342), Cenarion Ward (102351), Cenarion Ward (102352), Mass Entanglement (102359), Wild Charge (102401), Ursol's Vortex (102793), Swipe (106785), Thrash (106830), Skull Bash (106839), Typhoon (132469), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Efflorescence (145205), Moonfire (155625), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Brutal Slash (202028), Enraged Mangle (202085), Stellar Flare (202347), New Moon (202767), Half Moon (202768), Fury of Elune (202770), Full Moon (202771), Lunar Beam (204069), Force of Nature (205636), Shadow Thrash (210687), Ashamane's Rip (210705), Ashamane's Frenzy (210722), Ashamane's Frenzy (210723), Fury of Elune (211545), Revitalize (212040), Brambles (213709), Swipe (213764), Swipe (213771), Echoing Stars (226104), Enraged Maul (236716), Force of Nature (248280)
 #2 (id=314659)   : Apply Aura (6) | Unknown(153)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-                   Affected Spells: Entangling Roots (339), Tranquility (740), Rejuvenation (774), Rip (1079), Rake (1822), Remove Corruption (2782), Solar Wrath (5176), Healing Touch (5185), Mighty Bash (5211), Shred (5221), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Typhoon (61391), Thrash (77758), Starsurge (78674), Solar Beam (78675), Pulverize (80313), Nature's Cure (88423), Sunfire (93402), Skull Bash (93985), Ironbark (102342), Cenarion Ward (102351), Cenarion Ward (102352), Mass Entanglement (102359), Wild Charge (102401), Swipe (106785), Thrash (106830), Skull Bash (106839), Typhoon (132469), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Efflorescence (145205), Moonfire (155625), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Enraged Mangle (202085), Stellar Flare (202347), Shooting Stars (202497), New Moon (202767), Half Moon (202768), Fury of Elune (202770), Full Moon (202771), Goldrinn's Fang (203001), Touch of the Moon (203018), Lunar Beam (204069), Force of Nature (205636), Essence of G'Hanir (208253), Ashamane's Rip (210705), Fury of Elune (211545), Revitalize (212040), Brambles (213709), Swipe (213764), Swipe (213771), Echoing Stars (226104), Enraged Maul (236716)
+                   Affected Spells: Entangling Roots (339), Tranquility (740), Rejuvenation (774), Rip (1079), Rake (1822), Remove Corruption (2782), Solar Wrath (5176), Healing Touch (5185), Mighty Bash (5211), Shred (5221), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Typhoon (61391), Thrash (77758), Starsurge (78674), Solar Beam (78675), Pulverize (80313), Nature's Cure (88423), Sunfire (93402), Skull Bash (93985), Ironbark (102342), Cenarion Ward (102351), Cenarion Ward (102352), Mass Entanglement (102359), Wild Charge (102401), Swipe (106785), Thrash (106830), Skull Bash (106839), Typhoon (132469), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Efflorescence (145205), Moonfire (155625), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Enraged Mangle (202085), Stellar Flare (202347), Shooting Stars (202497), New Moon (202767), Half Moon (202768), Fury of Elune (202770), Full Moon (202771), Goldrinn's Fang (203001), Touch of the Moon (203018), Lunar Beam (204069), Force of Nature (205636), Essence of G'Hanir (208253), Ashamane's Rip (210705), Fury of Elune (211545), Revitalize (212040), Brambles (213709), Swipe (213764), Swipe (213771), Echoing Stars (226104), Enraged Maul (236716), Force of Nature (248280)
 #3 (id=317501)   : Apply Aura (6) | Add Flat Modifier (107): Spell Radius (6)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 6 | Target: Self (1)
                    Affected Spells: Incapacitating Roar (99), Tranquility (740), Typhoon (61391), Thrash (77758), Displacer Beast (102280), Swipe (106785), Thrash (106830), Stampeding Roar (106898), Typhoon (132469), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Tranquility (157982), Brutal Slash (202028), Lunar Beam (204069), Shadow Thrash (210687), Power of the Archdruid (213121), Brambles (213709), Swipe (213771), Intimidating Roar (236748)
@@ -5723,7 +5723,7 @@ School           : Astral
 Spell Level      : 1
 Range            : 50000 yards
 Velocity         : 0.8 yards/sec
-Affecting spells : Balance Druid (137013 effect#1), Lucidity (137247 effect#1), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
+Affecting spells : Balance Druid (137013 effect#1), Lucidity (137247 effect#1), Astral Influence (197524 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), 
 Attributes       : ........ ........ ........ ...x....   .......x ..x..... ........ ........ 
                  : ..x..... ........ ......x. ........   x....... .x...... ........ ......x. 
                  : ....x... .......x ........ ........   ........ ........ ........ ..x..... 
@@ -5879,58 +5879,22 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 18.72000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 #2 (id=298970)   : Energize Power (30)
                    Base Value: 400 | Scaled Value: 400 | Misc Value: astral_power | Target: Self (1)
-#3 (id=299005)   : Unknown(164)
-                   Base Value: 202788 | Scaled Value: 202788 | Trigger Spell: 202788 | Target: Self (1)
-#4 (id=299044)   : Unknown(164)
-                   Base Value: 202787 | Scaled Value: 202787 | Trigger Spell: 202787
+#3 (id=299005)   : Dummy (3)
+                   Base Value: 202788 | Scaled Value: 202788 | Target: Self (1)
+#4 (id=299044)   : Dummy (3)
+                   Base Value: 202787 | Scaled Value: 202787
 #5 (id=302252)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: At Enemy (53)
 Description      : Deals $m1 Arcane damage to the target and reduced damage to all other nearby enemies, and resets Full Moon to become New Moon.
 
 |cFFFFFFFFGenerates ${$m2/10} Astral Power.|r
 
-Name             : New Moon Override (id=202787) [Hidden] 
-Class            : Druid
-School           : Physical
-Duration         : Aura (infinite)
-Stacks           : 1 maximum
-Proc Chance      : 101%
-Triggered by     : Full Moon (202771)
-Attributes       : .......x ........ ........ .......x   ........ ........ ........ ....x... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ..x..... ........ ........ 
-                 : Hidden (7), Cannot cancel aura (31)
-Effects          :
-#1 (id=298996)   : Apply Aura (6) | Unknown(332)
-                   Base Value: 202768 | Scaled Value: 202768 | Misc Value: 202767 | Target: Self (1)
-
-Name             : Half Moon Override (id=202788) 
-Class            : Druid
-School           : Physical
-Duration         : Aura (infinite)
-Stacks           : 1 maximum
-Proc Chance      : 101%
-Triggered by     : Full Moon (202771)
-Attributes       : ........ ........ ........ .......x   ........ ........ ........ ....x... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ..x..... ........ ........ 
-                 : Cannot cancel aura (31)
-Effects          :
-#1 (id=298997)   : Apply Aura (6) | Unknown(332)
-                   Base Value: 202771 | Scaled Value: 202771 | Misc Value: 202767 | Target: Self (1)
-
 Name             : Goldrinn's Fang (id=203001) [Spell Family (7)] 
 Class            : Druid
 School           : Arcane
 Range            : 60 yards
 Velocity         : 20 yards/sec
-Affecting spells : Balance Druid (137013 effect#1), Lucidity (137247 effect#1), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
+Affecting spells : Balance Druid (137013 effect#1), Lucidity (137247 effect#1), Astral Influence (197524 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), 
 Triggered by     : Power of Goldrinn (202996)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6167,7 +6131,6 @@ School           : Nature
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
-Duration         : 10 seconds
 Cooldown         : 60 seconds
 Affecting spells : Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
@@ -6179,10 +6142,14 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Disable target procs (113)
 Effects          :
 #1 (id=303838)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: Unknown(87)
-#2 (id=303839)   : Summon (28)
-                   Base Value: 3 | Scaled Value: 3 | Misc Value: 103822 | Misc Value 2: 0xc19 | Target: Unknown(87)
-Description      : Summons a stand of $s2 Treants for $d which immediately taunt and attack enemies in the targeted area.
+                   Base Value: 3 | Scaled Value: 3 | Radius: 8 yards | Target: Unknown(87)
+#2 (id=303839)   : Trigger Spell (64): Force of Nature
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 10 | Trigger Spell: 248280 | Target: Unknown(87)
+#3 (id=465061)   : Trigger Spell (64): Force of Nature
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 155 | Trigger Spell: 248280 | Target: Unknown(87)
+#4 (id=465062)   : Trigger Spell (64): Force of Nature
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 300 | Trigger Spell: 248280 | Target: Unknown(87)
+Description      : Summons a stand of $s1 Treants for $248280d which immediately taunt and attack enemies in the targeted area.
 
 Name             : Abundance (id=207383) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
@@ -7235,5 +7202,25 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : Unleash a terrifying roar, causing all enemies within $A1 yards to cower in fear, disorienting them for $d. Usable in all shapeshift forms.
 Tooltip          : Incapacitated.
+
+Name             : Force of Nature (id=248280) [Spell Family (7)] 
+Class            : Druid
+School           : Nature
+Spell Level      : 1
+Range            : 40 yards
+Duration         : 10 seconds
+Affecting spells : Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
+Triggered by     : Force of Nature (205636)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ .x...... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Disable target procs (113)
+Effects          :
+#1 (id=465060)   : Summon (28)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 103822 | Misc Value 2: 0xc19 | Radius: 0 - 5 yards | Target: Unknown(87) -> Unknown(91)
+Description      : Summons a stand of $s2 Treants for $d which immediately taunt and attack enemies in the targeted area.
 
 

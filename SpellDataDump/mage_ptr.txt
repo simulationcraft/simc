@@ -1047,12 +1047,11 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10
 Description      : Launches bolts of arcane energy at the enemy target, causing $s1 Arcane damage. 
 
-Damage increased by $36032s1% per Arcane Charge$?a231564[
+Damage increased by $36032s1% per Arcane Charge.$?a231564[
 
 Hits $36032s3 additional $Ltarget:targets; within $s3 yds per Arcane Charge for $s2% damage.][]
 
-|cFFFFFFFFConsumes all Arcane Charges.|r
-
+|cFFFFFFFFConsumes all Arcane Charges.|r
 
 Name             : Pyroblast Clearcasting Driver (id=44448) [Spell Family (3), Passive, Hidden] 
 Class            : Fire Mage
