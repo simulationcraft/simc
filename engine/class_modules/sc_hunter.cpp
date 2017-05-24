@@ -476,7 +476,7 @@ public:
         switch ( specialization() )
         {
           case HUNTER_BEAST_MASTERY:
-            return spell -> id() == 193532; // Dire Stable
+            return spell -> id() == 194306; // Bestial Fury
           case HUNTER_MARKSMANSHIP:
             return spell -> id() == 194595; // Lock and Load
           case HUNTER_SURVIVAL:
