@@ -645,6 +645,7 @@ public:
     const spell_data_t* gai_plins_soothing_sash;
     const spell_data_t* jewel_of_the_lost_abbey;
     const spell_data_t* salsalabims_lost_tunic;
+    const spell_data_t* stormstouts_last_gasp;
 
     // Mistweaver
     const spell_data_t* eithas_lunar_glides_of_eramas;
@@ -662,6 +663,7 @@ public:
     const spell_data_t* katsuos_eclipse; // Reduce the cost of Fists of Fury by x Chi.
     const spell_data_t* march_of_the_legion; // Increase the movement speed bonus of Windwalking by x%.
     const spell_data_t* the_emperors_capacitor; // Chi spenders increase the damage of your next Crackling Jade Lightning by X%. Stacks up to Y times.
+    const spell_data_t* the_wind_blows;
   } legendary;
 
   struct pets_t
@@ -4301,6 +4303,11 @@ struct strike_of_the_windlord_t: public monk_melee_attack_t
     if ( p() -> artifact.thunderfist.rank() )
       p() -> buff.thunderfist -> trigger();
 
+    if ( p() -> legendary.the_wind_blows )
+    {
+      p() -> buff.bok_proc -> trigger( 1, buff_t::DEFAULT_VALUE(), 1 );
+      p() -> proc.bok_proc -> occur();
+    }
   }
 
   virtual void impact( action_state_t* s ) override
@@ -4598,7 +4605,7 @@ struct keg_smash_t: public monk_melee_attack_t
     monk_melee_attack_t::execute();
 
     if ( p() -> legendary.salsalabims_lost_tunic != nullptr )
-      p() -> cooldown.breath_of_fire -> reset(false);
+      p() -> cooldown.breath_of_fire -> reset( false );
     // If cooldown was reset by Secret Ingredients talent, to end the buff
     if ( p() -> buff.keg_smash_talent -> check() )
       p() -> buff.keg_smash_talent -> expire();
@@ -10604,6 +10611,17 @@ struct salsalabims_lost_tunic_t : public unique_gear::scoped_actor_callback_t<mo
   }
 };
 
+struct stormstouts_last_gasp_t : public unique_gear::scoped_actor_callback_t<monk_t>
+{
+  stormstouts_last_gasp_t() : super( MONK_BREWMASTER )
+  { }
+
+  void manipulate( monk_t* monk, const special_effect_t& e ) override
+  {
+    monk -> legendary.stormstouts_last_gasp = e.driver();
+  }
+};
+
 // Mistweaver
 struct eithas_lunar_glides_of_eramas_t : public unique_gear::scoped_actor_callback_t<monk_t>
 {
@@ -10728,6 +10746,18 @@ struct the_emperors_capacitor_t : public unique_gear::scoped_actor_callback_t<mo
   { monk -> legendary.the_emperors_capacitor = e.driver(); }
 };
 
+struct the_wind_blows_t : public unique_gear::scoped_actor_callback_t<monk_t>
+{
+  the_wind_blows_t() : super( MONK_WINDWALKER )
+  { }
+
+  void manipulate( monk_t* monk, const special_effect_t& e ) override
+  { 
+    monk -> legendary.the_wind_blows = e.driver(); 
+    monk->cooldown.strike_of_the_windlord->duration *= 1 + monk -> legendary.the_wind_blows -> effectN( 1 ).percent();
+  }
+};
+
 struct monk_module_t: public module_t
 {
   monk_module_t(): module_t( MONK ) {}
@@ -10765,6 +10795,7 @@ struct monk_module_t: public module_t
     unique_gear::register_special_effect( 208837, gai_plins_soothing_sash_t() );
     unique_gear::register_special_effect( 208881, jewel_of_the_lost_abbey_t() );
     unique_gear::register_special_effect( 212935, salsalabims_lost_tunic_t() );
+    unique_gear::register_special_effect( 248044, stormstouts_last_gasp_t() );
 
     // Mistweaver
     unique_gear::register_special_effect( 217153, eithas_lunar_glides_of_eramas_t() );
@@ -10781,6 +10812,7 @@ struct monk_module_t: public module_t
     unique_gear::register_special_effect( 208045, katsuos_eclipse_t() );
     unique_gear::register_special_effect( 212132, march_of_the_legion_t() );
     unique_gear::register_special_effect( 235053, the_emperors_capacitor_t() );
+    unique_gear::register_special_effect( 248101, the_wind_blows_t() );
   }
 
 
