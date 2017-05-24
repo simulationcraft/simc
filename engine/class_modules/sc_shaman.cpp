@@ -3660,8 +3660,11 @@ struct sundering_t : public shaman_attack_t
 
 struct rockbiter_t : public shaman_spell_t
 {
+  double primal_ascendants_stormcallers_chance;
+
   rockbiter_t( shaman_t* player, const std::string& options_str ) :
-    shaman_spell_t( "rockbiter", player, player -> find_specialization_spell( "Rockbiter" ), options_str )
+    shaman_spell_t( "rockbiter", player, player -> find_specialization_spell( "Rockbiter" ), options_str ),
+    primal_ascendants_stormcallers_chance( 0 )
   {
     maelstrom_gain += player -> artifact.gathering_of_the_maelstrom.value();
     base_multiplier *= 1.0 + player -> artifact.weapons_of_the_elements.percent();
@@ -3697,6 +3700,13 @@ struct rockbiter_t : public shaman_spell_t
     p() -> buff.landslide-> trigger();
 
     shaman_spell_t::execute();
+
+    if ( rng().roll(primal_ascendants_stormcallers_chance) )
+    {
+      // Stormcallers of the Ascendant spell ID: 248111
+      p() -> buff.ascendance -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, p() -> find_spell( 248111 ) -> effectN( 1 ).time_value() );
+    }
+
   }
 
   bool ready() override
@@ -8570,6 +8580,17 @@ struct smoldering_heart_earthquake_t : public scoped_action_callback_t<earthquak
   }
 };
 
+struct primal_ascendants_stormcallers_t : public scoped_action_callback_t<rockbiter_t>
+{
+  primal_ascendants_stormcallers_t() : super(SHAMAN, "rockbiter")
+  { }
+
+  void manipulate(rockbiter_t* action, const special_effect_t& e) override
+  {
+    action -> primal_ascendants_stormcallers_chance = e.driver() -> proc_chance();
+  }
+};
+
 struct emalons_charged_core_t : public scoped_action_callback_t<crash_lightning_t>
 {
   emalons_charged_core_t() : super( SHAMAN, "crash_lightning" )
@@ -8810,6 +8831,7 @@ struct shaman_module_t : public module_t
     register_special_effect( 208051, sephuzs_secret_t(), true );
     register_special_effect( 248029, smoldering_heart_earth_shock_t() );
     register_special_effect( 248029, smoldering_heart_earthquake_t() );
+    register_special_effect( 151820, primal_ascendants_stormcallers_t() );
   }
 
   void register_hotfixes() const override
