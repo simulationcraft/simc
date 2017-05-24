@@ -123,6 +123,7 @@ public:
     spell_data_ptr_t mm_ring;
     spell_data_ptr_t mm_waist;
     spell_data_ptr_t mm_wrist;
+    spell_data_ptr_t mm_cloak;
 
     // Generic
     spell_data_ptr_t sephuzs_secret;
@@ -164,6 +165,7 @@ public:
     buff_t* butchers_bone_apron;
     buff_t* gyroscopic_stabilization;
     buff_t* the_mantle_of_command;
+    buff_t* celerity_of_the_windrunners;
 
     haste_buff_t* sephuzs_secret;
   } buffs;
@@ -3737,6 +3739,9 @@ struct windburst_t: hunter_ranged_attack_t
       cyclonic_burst -> target = execute_state -> target;
       cyclonic_burst -> execute();
     }
+
+    if ( p() -> legendary.mm_cloak -> ok() )
+      p() -> buffs.celerity_of_the_windrunners -> trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -5977,6 +5982,10 @@ void hunter_t::create_buffs()
     buff_creator_t( this, "the_mantle_of_command", find_spell( 247993 ) )
       .default_value( find_spell( 247993 ) -> effectN( 1 ).percent() );
 
+  buffs.celerity_of_the_windrunners =
+    haste_buff_creator_t( this, "celerity_of_the_windrunners", find_spell( 248088 ) )
+      .default_value( find_spell( 248088 ) -> effectN( 1 ).percent() );
+
   buffs.t20_2p_precision =
     buff_creator_t( this, "t20_2p_precision", find_spell( 246153 ) )
       .default_value( find_spell( 246153 ) -> effectN( 2 ).percent() );
@@ -6596,6 +6605,9 @@ double hunter_t::composite_melee_haste() const
   if ( legendary.sephuzs_secret -> ok() )
     h *= 1.0 / ( 1.0 + legendary.sephuzs_secret -> effectN( 3 ).percent() );
 
+  if ( buffs.celerity_of_the_windrunners -> check() )
+    h *= 1.0 / ( 1.0 + buffs.celerity_of_the_windrunners -> check_value() );
+
   return h;
 }
 
@@ -6613,6 +6625,9 @@ double hunter_t::composite_spell_haste() const
 
   if ( legendary.sephuzs_secret -> ok() )
     h *= 1.0 / ( 1.0 + legendary.sephuzs_secret -> effectN( 3 ).percent() );
+
+  if ( buffs.celerity_of_the_windrunners -> check() )
+    h *= 1.0 / ( 1.0 + buffs.celerity_of_the_windrunners -> check_value() );
 
   return h;
 }
@@ -6935,6 +6950,7 @@ struct hunter_module_t: public module_t
     register_special_effect( 224550, HUNTER_MARKSMANSHIP,  []( hunter_t& p, const spell_data_t* s ) { p.legendary.mm_ring = s; });
     register_special_effect( 208912, HUNTER_MARKSMANSHIP,  []( hunter_t& p, const spell_data_t* s ) { p.legendary.mm_waist = s; });
     register_special_effect( 226841, HUNTER_MARKSMANSHIP,  []( hunter_t& p, const spell_data_t* s ) { p.legendary.mm_wrist = s; });
+    register_special_effect( 248087, HUNTER_MARKSMANSHIP,  []( hunter_t& p, const spell_data_t* s ) { p.legendary.mm_cloak = s; });
     register_special_effect( 206332, SPEC_NONE,            []( hunter_t& p, const spell_data_t* s ) { p.legendary.wrist = s; });
     register_special_effect( 208051, SPEC_NONE,            []( hunter_t& p, const spell_data_t* s ) { p.legendary.sephuzs_secret = s; });
   }
