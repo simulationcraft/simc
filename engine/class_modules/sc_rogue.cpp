@@ -1243,6 +1243,11 @@ struct rogue_attack_t : public melee_attack_t
       }
     }
 
+    if ( tdata -> debuffs.toxic_blade -> up() && data().affected_by( tdata -> debuffs.toxic_blade -> data().effectN( 1 ) ) )
+    {
+      m *= 1.0 + tdata -> debuffs.toxic_blade -> value();
+    }
+
     return m;
   }
 
@@ -1314,19 +1319,6 @@ struct rogue_attack_t : public melee_attack_t
     }
 
     return tt;
-  }
-
-  double composite_crit_chance() const override
-  {
-    double cc = melee_attack_t::composite_crit_chance();
-
-    rogue_td_t* tdata = td( target );
-    if ( tdata -> debuffs.toxic_blade -> up() && data().affected_by( tdata -> debuffs.toxic_blade -> data().effectN( 1 ) ) )
-    {
-      cc += tdata -> debuffs.toxic_blade -> check_value();
-    }
-
-    return cc;
   }
 
   virtual double composite_poison_flat_modifier( const action_state_t* ) const
@@ -7300,8 +7292,7 @@ void rogue_t::init_action_list()
     maintain -> add_action( this, "Garrote", "cycle_targets=1,if=(!talent.subterfuge.enabled|!(cooldown.vanish.up&cooldown.vendetta.remains<=4))&combo_points.deficit>=1&refreshable&(pmultiplier<=1|remains<=tick_time)&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>4" );
     if ( maybe_ptr( dbc.ptr ) )
     {
-      maintain -> add_action( "pool_resource,for_next=1" );
-      maintain -> add_talent( this, "Toxic Blade", "if=combo_points.deficit>=1+(mantle_duration>=gcd.remains+0.2)&dot.kingsbane.remains<11&dot.rupture.remains>8" );
+      maintain -> add_talent( this, "Toxic Blade", "if=combo_points.deficit>=1+(mantle_duration>=gcd.remains+0.2)&dot.rupture.remains>8" );
     }
   }
   else if ( specialization() == ROGUE_OUTLAW )
