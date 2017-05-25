@@ -3315,7 +3315,10 @@ struct blade_dance_base_t : public demon_hunter_attack_t
       if (p()->rng().roll(p()->legendary.chaos_theory->proc_chance()))
       {
         timespan_t proc_duration = timespan_t::from_seconds(p()->legendary.chaos_theory->effectN(1).base_value());
-        p()->buff.chaos_blades->trigger(1, p()->buff.chaos_blades->default_value, -1.0, proc_duration);
+        if (p()->buff.chaos_blades->check())
+          p()->buff.chaos_blades->extend_duration(p(), proc_duration);
+        else
+          p()->buff.chaos_blades->trigger(1, p()->buff.chaos_blades->default_value, -1.0, proc_duration);
       }
     }
 
@@ -4828,7 +4831,6 @@ struct chaos_blades_t : public demon_hunter_buff_t<buff_t>
     : demon_hunter_buff_t<buff_t>(
         *p, buff_creator_t( p, "chaos_blades", p -> spec.chaos_blades )
         .cd( timespan_t::zero() )
-        .refresh_behavior(BUFF_REFRESH_EXTEND)
         .default_value(p -> spec.chaos_blades -> effectN(2).percent())
         .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ) )
   {
