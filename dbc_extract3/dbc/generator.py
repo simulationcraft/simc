@@ -1430,6 +1430,8 @@ class SpellDataGenerator(DataGenerator):
           ( 228358, 0 ),                            # Winter's Chill
           ( 242253, 0 ),                            # Frost T20 2P Frozen Mass
           ( 240689, 0 ),                            # Aluneth - Time and Space
+          ( 248147, 0 ),                            # Erupting Infernal Core
+          ( 248177, 0 ),                            # Rage of the Frost Wyrm
         ),
 
         # Warlock:
