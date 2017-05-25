@@ -742,6 +742,7 @@ public:
 
     // Feral
     double the_wildshapers_clutch;
+    double behemoth_headdress = 0;
     timespan_t ailuro_pouncers;
   } legendary;
 
@@ -2613,6 +2614,11 @@ public:
     {
       int consumed = ( int ) p() -> resources.current[ RESOURCE_COMBO_POINT ];
 
+      if ( p() -> buff.tigers_fury -> check() )
+      {
+         p() -> buff.tigers_fury -> extend_duration( p() , timespan_t::from_seconds(p() -> legendary.behemoth_headdress * consumed) );
+      }
+
       p() -> resource_loss( RESOURCE_COMBO_POINT, consumed, nullptr, this );
 
       if ( sim -> log )
@@ -3011,8 +3017,15 @@ struct ashamanes_rip_t : public cat_attack_t
       
     base_tick_time *= 1.0 + p -> talent.jagged_wounds -> effectN( 1 ).percent();
     base_multiplier *= 1.0 + p -> artifact.razor_fangs.percent();
-    if (p->t20_4pc)
+    if (p->t20_4pc || p->sets->has_set_bonus(DRUID_FERAL, T20, B4))
        base_multiplier *= 1.15;
+
+    if (p->t20_2pc || p->sets->has_set_bonus(DRUID_FERAL, T20, B2))
+    {
+       energize_amount = 2; //TODO(feral): Add spelldata once available
+       energize_resource = RESOURCE_ENERGY;
+       energize_type = ENERGIZE_PER_TICK;
+    }
 
   }
 
@@ -3043,7 +3056,12 @@ struct ashamanes_rip_t : public cat_attack_t
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
-  { return td( s -> target ) -> dots.rip -> remains(); }
+  { 
+     if (p()->t20_4pc || p()->sets->has_set_bonus(DRUID_FERAL, T20, B4))
+        return td( s -> target ) -> dots.rip -> remains() + ( p()->talent.jagged_wounds->ok() ? timespan_t::from_seconds(5.4) : timespan_t::from_seconds( 8 ) );
+     
+     return td( s -> target ) -> dots.rip -> remains(); 
+  }
 
   virtual void execute() override
   {
@@ -9593,6 +9611,18 @@ struct ailuro_pouncers_t : public scoped_buff_callback_t<buff_t>
   }
 };
 
+struct behemoth_headdress_t : public scoped_actor_callback_t<druid_t>
+{
+   behemoth_headdress_t() : super( DRUID )
+   {}
+
+   void manipulate( druid_t* d, const special_effect_t& e ) override
+   {
+      d->legendary.behemoth_headdress = 0.4; //TODO(feral): Add spelldata hook.
+         //e.driver()->effectN(1).base_value() / 10;
+   }
+};
+
 struct chatoyant_signet_t : public scoped_actor_callback_t<druid_t>
 {
   chatoyant_signet_t() : super( DRUID )
@@ -9919,6 +9949,7 @@ struct druid_module_t : public module_t
     register_special_effect( 222270, sylvan_walker_t() );
     register_special_effect( 208051, sephuzs_t() );
     register_special_effect( 208051, sephuzs_secret_t(), true);
+    register_special_effect( 248081, behemoth_headdress_t() );
     // register_special_effect( 208220, amanthuls_wisdom );
     // register_special_effect( 207943, edraith_bonds_of_aglaya );
     // register_special_effect( 210667, ekowraith_creator_of_worlds );
