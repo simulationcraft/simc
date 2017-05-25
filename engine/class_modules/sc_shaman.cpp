@@ -5301,10 +5301,18 @@ struct earth_shock_t : public shaman_spell_t
       p() -> resource_gain( RESOURCE_MAELSTROM, last_resource_cost, p() -> gain.the_deceivers_blood_pact, this );
     }
 
-    if ( rng().roll( smoldering_heart_chance ) )
+    if ( rng().roll( smoldering_heart_chance * last_resource_cost ) )
     {
       // Smoldering Heart spell ID: 248029
-      p() -> buff.ascendance -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, p() -> find_spell( 248029 ) -> effectN( 1 ).time_value() );
+      if ( ! p() -> buff.ascendance -> up() ) 
+      {
+        p() -> buff.ascendance -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, p() -> find_spell( 248029 ) -> effectN( 1 ).time_value() );
+      }
+      else 
+      {
+        p() -> buff.ascendance -> extend_duration( p(), p() -> find_spell( 248029 ) -> effectN( 1 ).time_value() );
+      }
+      
     }
   }
 };
@@ -8575,7 +8583,7 @@ struct smoldering_heart_earth_shock_t : public scoped_action_callback_t<earth_sh
 
   void manipulate(earth_shock_t* action, const special_effect_t& e) override
   {
-    action -> smoldering_heart_chance = e.driver() -> effectN( 2 ).percent();
+    action -> smoldering_heart_chance = e.driver() -> effectN( 2 ).percent() / action -> base_cost();
   }
 };
 
