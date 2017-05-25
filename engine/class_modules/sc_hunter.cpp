@@ -566,18 +566,20 @@ public:
   typedef hunter_action_t base_t;
 
   bool hasted_gcd;
-  bool affected_by_aotw_gcd_reduce;
-  bool affected_by_sv_legendary_cloak;
-  bool benefits_from_sniper_training;
+
+  struct {
+    bool aotw_gcd_reduce;
+    bool sv_legendary_cloak;
+    bool sniper_training;
+  } affected_by;
 
   hunter_action_t( const std::string& n, hunter_t* player,
                    const spell_data_t* s = spell_data_t::nil() ):
                    ab( n, player, s ),
-                   hasted_gcd( false ),
-                   affected_by_aotw_gcd_reduce( false ),
-                   affected_by_sv_legendary_cloak( false ),
-                   benefits_from_sniper_training( false )
+                   hasted_gcd( false )
   {
+    memset( &affected_by, 0, sizeof(affected_by) );
+
     ab::special = true;
 
     if ( ab::data().affected_by( p() -> specs.hunter -> effectN( 3 ) ) )
@@ -586,14 +588,10 @@ public:
     if ( ab::data().affected_by( p() -> specs.hunter -> effectN( 2 ) ) )
       ab::cooldown -> hasted = true;
 
-    if ( ab::data().affected_by( p() -> mastery.sniper_training -> effectN( 2 ) ) )
-      benefits_from_sniper_training = true;
-
-    if ( maybe_ptr( ab::player -> dbc.ptr ) && ab::data().affected_by( p() -> specs.aspect_of_the_wild -> effectN( 3 ) ) )
-      affected_by_aotw_gcd_reduce = true;
-
-    if ( ab::data().affected_by( p() -> find_spell( 248212 ) -> effectN( 1 ) ) )
-      affected_by_sv_legendary_cloak = true;
+    affected_by.sniper_training = ab::data().affected_by( p() -> mastery.sniper_training -> effectN( 2 ) );
+    affected_by.aotw_gcd_reduce = maybe_ptr( ab::player -> dbc.ptr ) &&
+                                  ab::data().affected_by( p() -> specs.aspect_of_the_wild -> effectN( 3 ) );
+    affected_by.sv_legendary_cloak = ab::data().affected_by( p() -> find_spell( 248212 ) -> effectN( 1 ) );
   }
 
   hunter_t* p()
@@ -643,7 +641,7 @@ public:
     if ( g == timespan_t::zero() )
       return g;
 
-    if ( maybe_ptr( ab::player -> dbc.ptr ) && affected_by_aotw_gcd_reduce && p() -> buffs.aspect_of_the_wild -> check() )
+    if ( maybe_ptr( ab::player -> dbc.ptr ) && affected_by.aotw_gcd_reduce && p() -> buffs.aspect_of_the_wild -> check() )
       g += p() -> specs.aspect_of_the_wild -> effectN( 3 ).time_value();
 
     if ( hasted_gcd )
@@ -671,7 +669,7 @@ public:
   {
     double am = ab::action_multiplier();
 
-    if ( benefits_from_sniper_training && p() -> mastery.sniper_training -> ok() )
+    if ( affected_by.sniper_training && p() -> mastery.sniper_training -> ok() )
       am *= 1.0 + p() -> cache.mastery() * p() -> mastery.sniper_training -> effectN( 2 ).mastery_value();
 
     return am;
@@ -681,7 +679,7 @@ public:
   {
     double cc = ab::composite_target_crit_chance( t );
 
-    if ( affected_by_sv_legendary_cloak )
+    if ( affected_by.sv_legendary_cloak )
       cc += td( t ) -> debuffs.unseen_predators_cloak -> check_value();
 
     return cc;
