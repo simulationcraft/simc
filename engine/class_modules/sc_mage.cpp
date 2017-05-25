@@ -215,6 +215,7 @@ public:
 
   // Ground AoE tracking
   std::map<std::string, timespan_t> ground_aoe_expiration;
+  ground_aoe_event_t* active_meteor_burn;
 
   // Miscellaneous
   double distance_from_rune,
@@ -4928,6 +4929,33 @@ struct mark_of_aluneth_t : public arcane_mage_spell_t
 // - Meteor (id=177345) contains the time between cast and impact
 // None of these specify the 1 second falling duration given by Celestalon, so
 // we're forced to hardcode it.
+
+struct tracking_ground_aoe_event_t : public ground_aoe_event_t
+{
+  mage_t* mage;
+
+  tracking_ground_aoe_event_t( mage_t* mage, const ground_aoe_params_t* param, action_state_t* ps, bool first_tick = false ):
+    ground_aoe_event_t( mage, param, ps, first_tick ), mage( mage )
+  { }
+
+  tracking_ground_aoe_event_t( mage_t* mage, const ground_aoe_params_t& param, bool first_tick = false ) :
+    ground_aoe_event_t( mage, param, first_tick ), mage( mage )
+  { }
+
+  void schedule_event() override
+  {
+    assert( ! mage -> active_meteor_burn );
+    mage -> active_meteor_burn = make_event<tracking_ground_aoe_event_t>( sim(), mage, params, pulse_state );
+  }
+
+  void execute() override
+  {
+    assert( mage -> active_meteor_burn );
+    mage -> active_meteor_burn = nullptr;
+    ground_aoe_event_t::execute();
+  }
+};
+
 struct meteor_burn_t : public fire_mage_spell_t
 {
   meteor_burn_t( mage_t* p, int targets, bool legendary ) :
@@ -4988,7 +5016,9 @@ struct meteor_impact_t: public fire_mage_spell_t
     p() -> ground_aoe_expiration[ meteor_burn -> name_str ]
       = sim -> current_time() + ground_aoe_duration;
 
-    make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
+    event_t::cancel( p() -> active_meteor_burn );
+
+    p() -> active_meteor_burn = make_event<tracking_ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
       .pulse_time( pulse_time )
       .target( s -> target )
       .duration( ground_aoe_duration )
@@ -6342,6 +6372,7 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   touch_of_the_magi_explosion( nullptr ),
   unstable_magic_explosion( nullptr ),
   last_bomb_target( nullptr ),
+  active_meteor_burn( nullptr ),
   distance_from_rune( 0.0 ),
   global_cinder_count( 0 ),
   blessing_of_wisdom( false ),
@@ -7772,6 +7803,7 @@ void mage_t::reset()
 
   last_bomb_target = nullptr;
   ground_aoe_expiration.clear();
+  active_meteor_burn = nullptr;
   burn_phase.reset();
 }
 
