@@ -4025,7 +4025,7 @@ struct flurry_t : public frost_mage_spell_t
   virtual void snapshot_state( action_state_t* s, dmg_e rt ) override
   {
     frost_spell_state_t* fss = cast_state( s );
-    fss -> trigger_comet_storm = p() -> buffs.rage_of_the_frost_wyrm -> check();
+    fss -> trigger_comet_storm = p() -> buffs.rage_of_the_frost_wyrm -> check() != 0;
 
     frost_mage_spell_t::snapshot_state( s, rt );
   }
@@ -4168,7 +4168,7 @@ struct frostbolt_t : public frost_mage_spell_t
     if ( !fss -> execute_snapshot )
     {
       fss -> execute_snapshot = true;
-      fss -> trigger_comet_storm = p() -> buffs.rage_of_the_frost_wyrm -> check();
+      fss -> trigger_comet_storm = p() -> buffs.rage_of_the_frost_wyrm -> check() != 0;
     }
 
     frost_mage_spell_t::snapshot_state( s, rt );
