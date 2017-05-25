@@ -95,7 +95,7 @@ public:
   const special_effect_t* archavons_heavy_hand, *bindings_of_kakushan,
     *kargaths_sacrificed_hands, *thundergods_vigor, *ceannar_charger, *kazzalax_fujiedas_fury, *the_walls_fell,
     *destiny_driver, *prydaz_xavarics_magnum_opus, *mannoroths_bloodletting_manacles,
-    *najentuss_vertebrae, *ayalas_stone_heart, *weight_of_the_earth, *raging_fury;
+    *najentuss_vertebrae, *ayalas_stone_heart, *weight_of_the_earth, *raging_fury, *the_great_storms_eye, *valarjar_berserkers, *ararats_bloodmirror;
 
   // Active
   struct active_t
@@ -114,6 +114,7 @@ public:
   {
     buff_t* avatar;
     buff_t* ayalas_stone_heart;
+    buff_t* tornados_eye;
     buff_t* battle_cry;
     buff_t* battle_cry_deadly_calm;
     buff_t* berserker_rage;
@@ -204,6 +205,7 @@ public:
     cooldown_t* shield_wall;
     cooldown_t* shockwave;
     cooldown_t* storm_bolt;
+    cooldown_t* opportunity_strikes;
   } cooldown;
 
   // Gains
@@ -228,6 +230,8 @@ public:
     // Legendarys
     gain_t* ceannar_rage;
     gain_t* rage_from_damage_taken;
+    gain_t* valarjar_berserking;
+    gain_t* ravager;
   } gain;
 
   // Spells
@@ -479,7 +483,7 @@ public:
 
     archavons_heavy_hand = bindings_of_kakushan = kargaths_sacrificed_hands = thundergods_vigor =
     ceannar_charger = kazzalax_fujiedas_fury = the_walls_fell = destiny_driver = prydaz_xavarics_magnum_opus = mannoroths_bloodletting_manacles =
-    najentuss_vertebrae = ayalas_stone_heart = weight_of_the_earth = raging_fury = nullptr;
+    najentuss_vertebrae = ayalas_stone_heart = weight_of_the_earth = raging_fury = the_great_storms_eye = valarjar_berserkers = ararats_bloodmirror = nullptr;
     regen_type = REGEN_DISABLED;
   }
 
@@ -1003,10 +1007,11 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
   {
     if ( special && s -> action -> data().id() != p() -> active.opportunity_strikes -> data().id() )
     {
-      if ( rng().roll( ( 1 - ( s -> target -> health_percentage() / 100 ) ) * p() -> talents.opportunity_strikes -> proc_chance() ) )
+      if ( rng().roll( ( 1 - ( s -> target -> health_percentage() / 100 ) ) * p() -> talents.opportunity_strikes -> proc_chance() ) && p() -> cooldown.opportunity_strikes -> up() )
       {
         p() -> active.opportunity_strikes -> target = s -> target;
-        p() -> active.opportunity_strikes -> execute(); // Blizzard Employee "What can we do to make this talent really awkward?"
+        p() -> active.opportunity_strikes -> execute(); 
+        p() -> cooldown.opportunity_strikes -> start();
         return true;
       }
     }
@@ -1577,6 +1582,7 @@ struct bladestorm_t: public warrior_attack_t
   {
     warrior_attack_t::execute();
     p() -> buff.bladestorm -> trigger();
+    p() -> buff.tornados_eye -> trigger();
   }
 
   void tick( dot_t* d ) override
@@ -2163,6 +2169,18 @@ struct execute_sweep_t: public warrior_attack_t
     return 0;
   }
 
+  void assess_damage( dmg_e type, action_state_t* s ) override
+  {
+    warrior_attack_t::assess_damage( type, s );
+    if ( p() -> talents.trauma -> ok() && maybe_ptr( p() -> dbc.ptr ) )
+    {
+      residual_action::trigger(
+        p() -> active.trauma, // ignite spell
+        s -> target, // target
+        p() -> talents.trauma -> effectN( 1 ).percent() * s -> result_amount );
+    }
+  }
+
   void impact( action_state_t* s ) override
   {
     warrior_attack_t::impact( s );
@@ -2228,6 +2246,18 @@ struct execute_arms_t: public warrior_attack_t
     {
       execute_sweeping_strike = new execute_sweep_t( p );
       add_child( execute_sweeping_strike );
+    }
+  }
+
+  void assess_damage( dmg_e type, action_state_t* s ) override
+  {
+    warrior_attack_t::assess_damage( type, s );
+    if ( p() -> talents.trauma -> ok() && maybe_ptr( p() -> dbc.ptr ) )
+    {
+      residual_action::trigger(
+        p() -> active.trauma, // ignite spell
+        s -> target, // target
+        p() -> talents.trauma -> effectN( 1 ).percent() * s -> result_amount );
     }
   }
 
@@ -3107,13 +3137,15 @@ struct neltharions_fury_t: public warrior_attack_t
 struct rampage_attack_t: public warrior_attack_t
 {
   int aoe_targets;
-  bool first_attack;
-  bool first_attack_missed;
+  bool first_attack, first_attack_missed, valarjar_berserking;
+  double rage_from_valarjar_berserking;
   rampage_attack_t( warrior_t* p, const spell_data_t* rampage, const std::string& name ):
     warrior_attack_t( name, p, rampage ),
     aoe_targets( p -> spec.whirlwind -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() ),
     first_attack( false ),
-    first_attack_missed( false )
+    first_attack_missed( false ),
+    valarjar_berserking( false ),
+    rage_from_valarjar_berserking( p -> find_spell( 248179 ) -> effectN( 1 ).base_value() / 10.0 )
   {
     dual = true;
     weapon_multiplier *= 1.0 + p -> artifact.unstoppable.percent();
@@ -3133,9 +3165,15 @@ struct rampage_attack_t: public warrior_attack_t
 
   void impact( action_state_t* s ) override
   {
-    if ( !first_attack_missed ) // If the first attack misses, all of the rest do as well. However, if any other attack misses, the attacks after continue. 
+    if ( !first_attack_missed )
+    {// If the first attack misses, all of the rest do as well. However, if any other attack misses, the attacks after continue. 
                                 // The animations and timing of everything else -- such as odyns champion proccing after the last attack -- still occur, so we can't just cancel rampage.
       warrior_attack_t::impact( s );
+      if ( valarjar_berserking && s -> result == RESULT_CRIT )
+      {
+        p() -> resource_gain( RESOURCE_RAGE, rage_from_valarjar_berserking, p() -> gain.valarjar_berserking  );
+      }
+    }
   }
 
   int n_targets() const override
@@ -3269,14 +3307,24 @@ struct rampage_parent_t: public warrior_attack_t
 
 struct ravager_tick_t: public warrior_attack_t
 {
+  double rage_from_ravager;
   ravager_tick_t( warrior_t* p, const std::string& name ):
-    warrior_attack_t( name, p, p -> find_spell( 156287 ) )
+    warrior_attack_t( name, p, p -> find_spell( 156287 ) ),
+    rage_from_ravager( 0.0 )
   {
     aoe = -1;
     dual = ground_aoe = true;
     if ( p -> specialization() == WARRIOR_PROTECTION )
       attack_power_mod.direct *= 1.0 + p -> spell.prot_warrior -> effectN( 3 ).percent();//89% damage decrease for prot.
     attack_power_mod.direct *= 1.0 + p -> artifact.storm_of_swords.percent();
+    rage_from_ravager = p -> find_spell( 248439 ) -> effectN( 1 ).resource( RESOURCE_RAGE );
+  }
+
+
+  void impact( action_state_t* s ) override
+  {
+    warrior_attack_t::impact( s );
+    p() -> resource_gain( RESOURCE_RAGE, rage_from_ravager, p() -> gain.ravager );
   }
 };
 
@@ -3311,6 +3359,8 @@ struct ravager_t: public warrior_attack_t
     {
       p() -> buff.ravager -> trigger();
     }
+
+    p() -> buff.tornados_eye -> trigger();
 
     warrior_attack_t::execute();
   }
@@ -4873,6 +4923,8 @@ void warrior_t::init_spells()
   cooldown.shield_wall              = get_cooldown( "shield_wall" );
   cooldown.shockwave                = get_cooldown( "shockwave" );
   cooldown.storm_bolt               = get_cooldown( "storm_bolt" );
+  cooldown.opportunity_strikes      = get_cooldown( "opportunity_strikes" );
+  cooldown.opportunity_strikes -> duration = talents.opportunity_strikes -> internal_cooldown();
 
   if ( artifact.odyns_champion.rank() )
   {
@@ -5812,6 +5864,8 @@ void warrior_t::init_gains()
   gain.pulse_of_battle = get_gain( "pulse_of_battle" );
 
   gain.ceannar_rage = get_gain( "ceannar_rage" );
+  gain.valarjar_berserking = get_gain( "valarjar_berserking" );
+  gain.ravager = get_gain( "ravager" );
   gain.rage_from_damage_taken = get_gain( "rage_from_damage_taken" );
 }
 
@@ -6030,6 +6084,11 @@ double warrior_t::composite_player_multiplier( school_e school ) const
   if ( buff.avatar -> check() )
   {
     m *= 1.0 + buff.avatar -> data().effectN( 1 ).percent();
+  }
+
+  if ( buff.tornados_eye -> check() )
+  {
+    m *= 1.0 + ( buff.tornados_eye -> current_stack * buff.tornados_eye -> data().effectN( 2 ).percent() );
   }
 
   if ( specialization() == WARRIOR_ARMS )
@@ -6388,6 +6447,10 @@ double warrior_t::temporary_movement_modifier() const
   else if ( buff.bounding_stride -> up() )
   {
     temporary = std::max( buff.bounding_stride -> value(), temporary );
+  }
+  else if ( buff.tornados_eye -> up() )
+  {
+    temporary = std::max( buff.tornados_eye -> current_stack * buff.tornados_eye -> data().effectN( 1 ).percent(), temporary );
   }
   else if ( buff.frothing_berserker -> up() )
   {
@@ -6825,6 +6888,25 @@ struct ayalas_stone_heart_t: public unique_gear::class_buff_cb_t<warrior_t>
   }
 };
 
+struct the_great_storms_eye_t : public unique_gear::class_buff_cb_t<warrior_t>
+{
+  the_great_storms_eye_t() : super( WARRIOR, "tornados_eye" )
+  {}
+
+  buff_t*& buff_ptr( const special_effect_t& e ) override
+  {
+    return actor( e ) -> buff.tornados_eye;
+  }
+
+  buff_creator_t creator( const special_effect_t& e ) const override
+  {
+    return super::creator( e )
+      .spell( e.player -> find_spell( 248145 ) )
+      .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+      .add_invalidate( CACHE_RUN_SPEED );
+  }
+};
+
 struct bindings_of_kakushan_t : public unique_gear::class_buff_cb_t<warrior_t>
 {
   bindings_of_kakushan_t() : super( WARRIOR, "bindings_of_kakushan" ) { }
@@ -6910,6 +6992,17 @@ struct sephuzs_secret_t: public unique_gear::scoped_actor_callback_t<warrior_t>
   }
 };
 
+struct valarjar_berserkers_t : public unique_gear::scoped_action_callback_t<rampage_attack_t>
+{
+  valarjar_berserkers_t() : super( WARRIOR, "rampage" )
+  {}
+
+  void manipulate( rampage_attack_t* action, const special_effect_t& e )
+  {
+    action -> valarjar_berserking = true;
+  }
+};
+
 struct warrior_module_t: public module_t
 {
   warrior_module_t(): module_t( WARRIOR ) {}
@@ -6941,6 +7034,8 @@ struct warrior_module_t: public module_t
     unique_gear::register_special_effect( 222266, raging_fury_t() );
     unique_gear::register_special_effect( 222266, raging_fury2_t() );
     unique_gear::register_special_effect( 208051, sephuzs_secret_t() );
+    unique_gear::register_special_effect( 248118, the_great_storms_eye_t() );
+    unique_gear::register_special_effect( 248120, valarjar_berserkers_t(), true );
   }
 
   virtual void register_hotfixes() const override
