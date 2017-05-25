@@ -2226,7 +2226,7 @@ struct frost_mage_spell_t : public mage_spell_t
 
   void execute_shattered_fragments( player_t* target )
   {
-    execute_legendary_effect( p() -> buffs.shattered_fragments_of_sindragosa,
+    execute_legendary_effect( p() -> buffs.rage_of_the_frost_wyrm,
                               p() -> action.legendary_comet_storm,
                               target );
   }
