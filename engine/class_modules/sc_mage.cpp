@@ -262,7 +262,8 @@ public:
           * streaking,               // T19 4pc Fire
           * ignition,                // T20 2pc Fire
           * critical_massive,        // T20 4pc Fire
-          * contained_infernal_core; // 7.2.5 legendary shoulder
+          * contained_infernal_core, // 7.2.5 legendary shoulder
+          * erupting_infernal_core;
 
     // Frost
     buff_t* brain_freeze,
@@ -270,7 +271,8 @@ public:
           * icicles,                           // Buff to track icicles - doesn't always line up with icicle count though!
           * icy_veins,
           * frozen_mass,                       // T20 2pc Frost
-          * shattered_fragments_of_sindragosa; // 7.2.5 legendary head
+          * shattered_fragments_of_sindragosa, // 7.2.5 legendary head
+          * rage_of_the_frost_wyrm;
 
 
     // Talents
@@ -6812,52 +6814,54 @@ void mage_t::create_buffs()
                                   .duration( timespan_t::zero() );
 
   // Fire
-  buffs.combustion            = buff_creator_t( this, "combustion", find_spell( 190319 ) )
-                                  .cd( timespan_t::zero() )
-                                  .add_invalidate( CACHE_MASTERY )
-                                  .add_invalidate( CACHE_CRIT_CHANCE )
-                                  .default_value( find_spell( 190319 ) -> effectN( 1 ).percent() );
+  buffs.combustion             = buff_creator_t( this, "combustion", find_spell( 190319 ) )
+                                   .cd( timespan_t::zero() )
+                                   .add_invalidate( CACHE_MASTERY )
+                                   .add_invalidate( CACHE_CRIT_CHANCE )
+                                   .default_value( find_spell( 190319 ) -> effectN( 1 ).percent() );
   buffs.combustion -> buff_duration += artifact.preignited.time_value();
 
-  buffs.critical_massive      = buff_creator_t( this, "critical_massive", find_spell( 242251 ) )
-                                  .default_value( find_spell( 242251 ) -> effectN( 1 ).percent() );
-  buffs.enhanced_pyrotechnics = buff_creator_t( this, "enhanced_pyrotechnics", find_spell( 157644 ) )
-                                  .default_value( find_spell( 157644 ) -> effectN( 1 ).percent()
-                                      + sets -> set( MAGE_FIRE, T19, B2 ) -> effectN( 1 ).percent() );
-  buffs.ignition              = buff_creator_t( this, "ignition", find_spell( 246261 ) );
-  buffs.heating_up            = buff_creator_t( this, "heating_up",  find_spell( 48107 ) );
-  buffs.hot_streak            = buff_creator_t( this, "hot_streak",  find_spell( 48108 ) );
-  buffs.pyretic_incantation   = buff_creator_t( this, "pyretic_incantation", find_spell( 194329 ) )
-                                  .default_value( find_spell( 194329 ) -> effectN( 1 ).percent() );
-  buffs.streaking             = buff_creator_t( this, "streaking", find_spell( 211399 ) )
-                                  .add_invalidate( CACHE_SPELL_HASTE )
-                                  .default_value( find_spell( 211399 ) -> effectN( 1 ).percent() );
+  buffs.critical_massive       = buff_creator_t( this, "critical_massive", find_spell( 242251 ) )
+                                   .default_value( find_spell( 242251 ) -> effectN( 1 ).percent() );
+  buffs.enhanced_pyrotechnics  = buff_creator_t( this, "enhanced_pyrotechnics", find_spell( 157644 ) )
+                                   .default_value( find_spell( 157644 ) -> effectN( 1 ).percent()
+                                       + sets -> set( MAGE_FIRE, T19, B2 ) -> effectN( 1 ).percent() );
+  buffs.ignition               = buff_creator_t( this, "ignition", find_spell( 246261 ) );
+  buffs.heating_up             = buff_creator_t( this, "heating_up",  find_spell( 48107 ) );
+  buffs.hot_streak             = buff_creator_t( this, "hot_streak",  find_spell( 48108 ) );
+  buffs.pyretic_incantation    = buff_creator_t( this, "pyretic_incantation", find_spell( 194329 ) )
+                                   .default_value( find_spell( 194329 ) -> effectN( 1 ).percent() );
+  buffs.streaking              = buff_creator_t( this, "streaking", find_spell( 211399 ) )
+                                   .add_invalidate( CACHE_SPELL_HASTE )
+                                   .default_value( find_spell( 211399 ) -> effectN( 1 ).percent() );
+  buffs.erupting_infernal_core = buff_creator_t( this, "erupting_infernal_core", find_spell( 248147 ) );
 
   // Frost
-  buffs.brain_freeze          = buff_creator_t( this, "brain_freeze", find_spell( 190446 ) );
-  buffs.bone_chilling         = buff_creator_t( this, "bone_chilling", find_spell( 205766 ) )
-                                  .default_value( talents.bone_chilling -> effectN( 1 ).percent() / 10 )
-                                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  buffs.fingers_of_frost      = buff_creator_t( this, "fingers_of_frost", find_spell( 44544 ) )
-                                  .max_stack( find_spell( 44544 ) -> max_stacks() +
-                                              artifact.icy_hand.rank() );
-  buffs.frozen_mass           = buff_creator_t( this, "frozen_mass", find_spell( 242253 ) )
-                                  .default_value( find_spell( 242253 ) -> effectN( 1 ).percent() );
+  buffs.brain_freeze           = buff_creator_t( this, "brain_freeze", find_spell( 190446 ) );
+  buffs.bone_chilling          = buff_creator_t( this, "bone_chilling", find_spell( 205766 ) )
+                                   .default_value( talents.bone_chilling -> effectN( 1 ).percent() / 10 )
+                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buffs.fingers_of_frost       = buff_creator_t( this, "fingers_of_frost", find_spell( 44544 ) )
+                                   .max_stack( find_spell( 44544 ) -> max_stacks() +
+                                               artifact.icy_hand.rank() );
+  buffs.frozen_mass            = buff_creator_t( this, "frozen_mass", find_spell( 242253 ) )
+                                   .default_value( find_spell( 242253 ) -> effectN( 1 ).percent() );
+  buffs.rage_of_the_frost_wyrm = buff_creator_t( this, "rage_of_the_frost_wyrm", find_spell( 248177 ) );
 
   // Buff to track icicles. This does not, however, track the true amount of icicles present.
   // Instead, as it does in game, it tracks icicle buff stack count based on the number of *casts*
   // of icicle generating spells. icicles are generated on impact, so they are slightly de-synced.
-  buffs.icicles               = buff_creator_t( this, "icicles", find_spell( 148012 ) ).max_stack( 5.0 );
-  buffs.icy_veins             = new buffs::icy_veins_buff_t( this );
-  buffs.ray_of_frost          = new buffs::ray_of_frost_buff_t( this );
+  buffs.icicles                = buff_creator_t( this, "icicles", find_spell( 148012 ) ).max_stack( 5.0 );
+  buffs.icy_veins              = new buffs::icy_veins_buff_t( this );
+  buffs.ray_of_frost           = new buffs::ray_of_frost_buff_t( this );
 
   // Talents
-  buffs.ice_floes             = buff_creator_t( this, "ice_floes", talents.ice_floes );
-  buffs.incanters_flow        = new buffs::incanters_flow_t( this );
-  buffs.rune_of_power         = buff_creator_t( this, "rune_of_power", find_spell( 116014 ) )
-                                  .duration( find_spell( 116011 ) -> duration() )
-                                  .default_value( find_spell( 116014 ) -> effectN( 1 ).percent() )
-                                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buffs.ice_floes              = buff_creator_t( this, "ice_floes", talents.ice_floes );
+  buffs.incanters_flow         = new buffs::incanters_flow_t( this );
+  buffs.rune_of_power          = buff_creator_t( this, "rune_of_power", find_spell( 116014 ) )
+                                   .duration( find_spell( 116011 ) -> duration() )
+                                   .default_value( find_spell( 116014 ) -> effectN( 1 ).percent() )
+                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   // Artifact
   buffs.chain_reaction   = buff_creator_t( this, "chain_reaction", find_spell( 195418 ) )
