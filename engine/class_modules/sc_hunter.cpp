@@ -5994,6 +5994,7 @@ void hunter_t::create_buffs()
   buffs.parsels_tongue =
     buff_creator_t( this, "parsels_tongue", find_spell( 248085 ) )
       .default_value( find_spell( 248085 ) -> effectN( 1 ).percent() )
+      .max_stack( find_spell( 248085 ) -> max_stacks() )
       .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buffs.t20_2p_precision =
