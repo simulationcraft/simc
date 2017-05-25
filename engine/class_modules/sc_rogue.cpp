@@ -4724,6 +4724,18 @@ struct toxic_blade_t : public rogue_attack_t
     requires_weapon = WEAPON_DAGGER;
   }
 
+  double action_multiplier() const override
+  {
+    double m = rogue_attack_t::action_multiplier();
+
+    if ( p() -> mastery.potent_poisons -> ok() )
+    {
+      m *= 1.0 + p() -> cache.mastery_value();
+    }
+
+    return m;
+  }
+
   void impact( action_state_t* s ) override
   {
     rogue_attack_t::impact( s );
