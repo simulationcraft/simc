@@ -95,7 +95,7 @@ public:
   const special_effect_t* archavons_heavy_hand, *bindings_of_kakushan,
     *kargaths_sacrificed_hands, *thundergods_vigor, *ceannar_charger, *kazzalax_fujiedas_fury, *the_walls_fell,
     *destiny_driver, *prydaz_xavarics_magnum_opus, *mannoroths_bloodletting_manacles,
-    *najentuss_vertebrae, *ayalas_stone_heart, *weight_of_the_earth, *raging_fury, *the_great_storms_eye, *valarjar_berserkers, *ararats_bloodmirror;
+    *najentuss_vertebrae, *ayalas_stone_heart, *weight_of_the_earth, *raging_fury, *the_great_storms_eye, *ararats_bloodmirror;
 
   // Active
   struct active_t
@@ -382,6 +382,7 @@ public:
   {
     // Eventually move all legendarys here for organization
     const spell_data_t* sephuzs_secret;
+    const spell_data_t* valarjar_berserkers;
   } legendary;
 
   // Artifacts
@@ -483,7 +484,7 @@ public:
 
     archavons_heavy_hand = bindings_of_kakushan = kargaths_sacrificed_hands = thundergods_vigor =
     ceannar_charger = kazzalax_fujiedas_fury = the_walls_fell = destiny_driver = prydaz_xavarics_magnum_opus = mannoroths_bloodletting_manacles =
-    najentuss_vertebrae = ayalas_stone_heart = weight_of_the_earth = raging_fury = the_great_storms_eye = valarjar_berserkers = ararats_bloodmirror = nullptr;
+    najentuss_vertebrae = ayalas_stone_heart = weight_of_the_earth = raging_fury = the_great_storms_eye = ararats_bloodmirror = nullptr;
     regen_type = REGEN_DISABLED;
   }
 
@@ -3169,7 +3170,7 @@ struct rampage_attack_t: public warrior_attack_t
     {// If the first attack misses, all of the rest do as well. However, if any other attack misses, the attacks after continue. 
                                 // The animations and timing of everything else -- such as odyns champion proccing after the last attack -- still occur, so we can't just cancel rampage.
       warrior_attack_t::impact( s );
-      if ( valarjar_berserking && s -> result == RESULT_CRIT )
+      if ( p() -> legendary.valarjar_berserkers != nullptr && s -> result == RESULT_CRIT )
       {
         p() -> resource_gain( RESOURCE_RAGE, rage_from_valarjar_berserking, p() -> gain.valarjar_berserking  );
       }
@@ -6992,14 +6993,14 @@ struct sephuzs_secret_t: public unique_gear::scoped_actor_callback_t<warrior_t>
   }
 };
 
-struct valarjar_berserkers_t : public unique_gear::scoped_action_callback_t<rampage_attack_t>
+struct valarjar_berserkers_t : public unique_gear::scoped_actor_callback_t<warrior_t>
 {
-  valarjar_berserkers_t() : super( WARRIOR, "rampage" )
+  valarjar_berserkers_t() : super( WARRIOR )
   {}
 
-  void manipulate( rampage_attack_t* action, const special_effect_t& e )
+  void manipulate( warrior_t* warrior, const special_effect_t& e ) override
   {
-    action -> valarjar_berserking = true;
+    warrior -> legendary.valarjar_berserkers = e.driver();
   }
 };
 
@@ -7034,8 +7035,8 @@ struct warrior_module_t: public module_t
     unique_gear::register_special_effect( 222266, raging_fury_t() );
     unique_gear::register_special_effect( 222266, raging_fury2_t() );
     unique_gear::register_special_effect( 208051, sephuzs_secret_t() );
-    unique_gear::register_special_effect( 248118, the_great_storms_eye_t() );
-    unique_gear::register_special_effect( 248120, valarjar_berserkers_t(), true );
+    unique_gear::register_special_effect( 248118, the_great_storms_eye_t(), true );
+    unique_gear::register_special_effect( 248120, valarjar_berserkers_t() );
   }
 
   virtual void register_hotfixes() const override
