@@ -6687,7 +6687,7 @@ double hunter_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buffs.t19_4p_mongoose_power -> check_value();
 
   if ( buffs.parsels_tongue -> up() )
-    m *= 1.0 + buffs.parsels_tongue -> check_value();
+    m *= 1.0 + buffs.parsels_tongue -> stack_value();
 
   return m;
 }
@@ -6729,7 +6729,7 @@ double hunter_t::composite_player_pet_damage_multiplier( const action_state_t* s
     m *= 1.0 + buffs.the_mantle_of_command -> check_value();
 
   if ( buffs.parsels_tongue -> up() )
-    m *= 1.0 + buffs.parsels_tongue -> data().effectN( 2 ).percent();
+    m *= 1.0 + buffs.parsels_tongue -> data().effectN( 2 ).percent() * buffs.parsels_tongue -> current_stack;
 
   return m;
 }
