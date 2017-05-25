@@ -62,6 +62,7 @@ struct hunter_td_t: public actor_target_data_t
     buff_t* vulnerable;
     buff_t* true_aim;
     buff_t* mark_of_helbrine;
+    buff_t* unseen_predators_cloak;
   } debuffs;
 
   struct dots_t
@@ -110,6 +111,7 @@ public:
     spell_data_ptr_t sv_ring;
     spell_data_ptr_t sv_waist;
     spell_data_ptr_t wrist;
+    spell_data_ptr_t sv_cloak;
 
     // Beast Mastery
     spell_data_ptr_t bm_feet;
@@ -565,6 +567,7 @@ public:
 
   bool hasted_gcd;
   bool affected_by_aotw_gcd_reduce;
+  bool affected_by_sv_legendary_cloak;
   bool benefits_from_sniper_training;
 
   hunter_action_t( const std::string& n, hunter_t* player,
@@ -572,6 +575,7 @@ public:
                    ab( n, player, s ),
                    hasted_gcd( false ),
                    affected_by_aotw_gcd_reduce( false ),
+                   affected_by_sv_legendary_cloak( false ),
                    benefits_from_sniper_training( false )
   {
     ab::special = true;
@@ -587,6 +591,9 @@ public:
 
     if ( maybe_ptr( ab::player -> dbc.ptr ) && ab::data().affected_by( p() -> specs.aspect_of_the_wild -> effectN( 3 ) ) )
       affected_by_aotw_gcd_reduce = true;
+
+    if ( ab::data().affected_by( p() -> find_spell( 248212 ) -> effectN( 1 ) ) )
+      affected_by_sv_legendary_cloak = true;
   }
 
   hunter_t* p()
@@ -668,6 +675,16 @@ public:
       am *= 1.0 + p() -> cache.mastery() * p() -> mastery.sniper_training -> effectN( 2 ).mastery_value();
 
     return am;
+  }
+
+  double composite_target_crit_chance( player_t* t ) const override
+  {
+    double cc = ab::composite_target_crit_chance( t );
+
+    if ( affected_by_sv_legendary_cloak )
+      cc += td( t ) -> debuffs.unseen_predators_cloak -> check_value();
+
+    return cc;
   }
 
   double cost() const override
@@ -5142,6 +5159,14 @@ struct explosive_trap_t: public hunter_spell_t
         p() -> resource_gain( RESOURCE_FOCUS, p() -> find_spell( 212575 ) -> effectN( 1 ).resource( RESOURCE_FOCUS ), p() -> gains.nesingwarys_trapping_treads );
     }
 
+    void impact( action_state_t* s ) override
+    {
+      hunter_spell_t::impact( s );
+
+      if ( p() -> legendary.sv_cloak -> ok() )
+        td( s -> target ) -> debuffs.unseen_predators_cloak -> trigger();
+    }
+
     double composite_target_da_multiplier( player_t* t ) const override
     {
       double m = hunter_spell_t::composite_target_da_multiplier( t );
@@ -5429,6 +5454,10 @@ hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ):
         .default_value( p -> find_spell( 213154 ) 
                           -> effectN( 1 )
                             .percent() );
+
+  debuffs.unseen_predators_cloak =
+    buff_creator_t( *this, "unseen_predators_cloak", p -> find_spell( 248212 ) )
+      .default_value( p -> find_spell( 248212 ) -> effectN( 1 ).percent() );
 
   target -> callbacks_on_demise.push_back( std::bind( &hunter_td_t::target_demise, this ) );
 }
@@ -6958,6 +6987,7 @@ struct hunter_module_t: public module_t
     register_special_effect( 212574, HUNTER_SURVIVAL,      []( hunter_t& p, const spell_data_t* s ) { p.legendary.sv_feet = s; });
     register_special_effect( 225155, HUNTER_SURVIVAL,      []( hunter_t& p, const spell_data_t* s ) { p.legendary.sv_ring = s; });
     register_special_effect( 213154, HUNTER_SURVIVAL,      []( hunter_t& p, const spell_data_t* s ) { p.legendary.sv_waist = s; });
+    register_special_effect( 248089, HUNTER_SURVIVAL,      []( hunter_t& p, const spell_data_t* s ) { p.legendary.sv_cloak = s; });
     register_special_effect( 212278, HUNTER_BEAST_MASTERY, []( hunter_t& p, const spell_data_t* s ) { p.legendary.bm_feet = s; });
     register_special_effect( 212329, SPEC_NONE,            []( hunter_t& p, const spell_data_t* s ) { p.legendary.bm_ring = s; });
     register_special_effect( 235721, HUNTER_BEAST_MASTERY, []( hunter_t& p, const spell_data_t* s ) { p.legendary.bm_shoulders = s; });
