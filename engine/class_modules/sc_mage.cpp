@@ -2478,13 +2478,13 @@ struct arcane_barrage_t : public arcane_mage_spell_t
 
     arcane_mage_spell_t::execute();
 
-    p() -> buffs.arcane_charge -> expire();
-
     if ( rng().roll( mantle_of_the_first_kirin_tor_chance * charges ) )
     {
       p() -> action.legendary_arcane_orb -> set_target( execute_state -> target );
       p() -> action.legendary_arcane_orb -> execute();
     }
+
+    p() -> buffs.arcane_charge -> expire();
   }
 
   virtual void impact( action_state_t* s ) override
