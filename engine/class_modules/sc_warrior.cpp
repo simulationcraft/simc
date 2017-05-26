@@ -1362,7 +1362,7 @@ struct mortal_strike_t20_t : public warrior_attack_t
   {
     double cc = warrior_attack_t::composite_crit_chance();
 
-    if ( p() -> buff.shattered_defenses -> check() )
+    if ( !maybe_ptr( p() -> dbc.ptr ) && p() -> buff.shattered_defenses -> check() )//FIXME PTR
     {
       cc += p() -> buff.shattered_defenses -> data().effectN( 2 ).percent();
     }
@@ -1441,7 +1441,7 @@ struct mortal_strike_t : public warrior_attack_t
   {
     double cc = warrior_attack_t::composite_crit_chance();
 
-    if ( p() -> buff.shattered_defenses -> check() )
+    if ( !maybe_ptr( p() -> dbc.ptr ) && p() -> buff.shattered_defenses -> check() ) //FIXME PTR
     {
       cc += p() -> buff.shattered_defenses -> data().effectN( 2 ).percent();
     }
@@ -2284,7 +2284,7 @@ struct execute_arms_t: public warrior_attack_t
   {
     double cc = warrior_attack_t::composite_crit_chance();
 
-    if ( p() -> buff.shattered_defenses -> check() )
+    if ( !maybe_ptr( p() -> dbc.ptr ) && p() -> buff.shattered_defenses -> check() ) //FIXME PTR
     {
       cc += p() -> buff.shattered_defenses -> data().effectN( 2 ).percent();
     }

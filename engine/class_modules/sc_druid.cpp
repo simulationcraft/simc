@@ -1881,8 +1881,8 @@ public:
   druid_spell_t( const std::string& token, druid_t* p,
                  const spell_data_t* s      = spell_data_t::nil(),
                  const std::string& options = std::string() )
-    : base_t( token, p, s ),
-      incarnation( data().affected_by( p -> talent.incarnation_moonkin -> effectN( 4 ) ) ),
+    : base_t( token, p, s ), //FIXME PTR
+      incarnation( maybe_ptr( p -> dbc.ptr ) ? data().affected_by( p -> talent.incarnation_moonkin -> effectN( 2 ) ) : data().affected_by( p -> talent.incarnation_moonkin -> effectN( 4 ) ) ),
       celestial_alignment( data().affected_by( p -> spec.celestial_alignment -> effectN( 3 ) ) ),
       blessing_of_elune( data().affected_by( p -> spec.blessing_of_elune -> effectN( 1 ) ) ),
       stellar_empowerment( false )
@@ -1903,7 +1903,12 @@ public:
         e *= 1.0 + p() -> spec.celestial_alignment -> effectN( 3 ).percent();
 
       if ( incarnation && p() -> buff.incarnation_moonkin -> check() )
-        e *= 1.0 + p() -> talent.incarnation_moonkin -> effectN( 4 ).percent();
+      {
+        if ( maybe_ptr( p() -> dbc.ptr ) ) //FIXME PTR
+          e *= 1.0 + p() -> talent.incarnation_moonkin -> effectN( 2 ).percent();
+        else
+          e *= 1.0 + p() -> talent.incarnation_moonkin -> effectN( 4 ).percent();
+      }
 
     }
 
