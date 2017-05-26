@@ -1536,7 +1536,7 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
   }
 
   if ( o() -> buffs.soul_harvest -> check() )
-    m *= 1.0 + o() -> talents.soul_harvest -> effectN( 1 ).percent();
+    m *= 1.0 + o() -> buffs.soul_harvest -> stack_value() ;
 
   if ( is_grimoire_of_service )
   {
@@ -2684,7 +2684,7 @@ public:
     {
       if ( p() -> legendary.the_master_harvester )
       {
-        timespan_t sh_duration = p() -> find_spell( 248113 ) -> effectN( 4 ).time_value() * 1000;
+        timespan_t sh_duration = timespan_t::from_seconds( p() -> find_spell( 248113 ) -> effectN( 4 ).base_value() );
         double sh_proc_chance;
         switch ( p() -> specialization() )
         {
@@ -2703,7 +2703,7 @@ public:
         {
           if ( p() -> rng().roll( sh_proc_chance ) )
           {
-            p() -> buffs.soul_harvest -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, sh_duration );
+            p() -> buffs.soul_harvest -> trigger( 1, 0.2, -1.0, sh_duration );
             p() -> procs.the_master_harvester -> occur();
           }
         }
@@ -5710,6 +5710,7 @@ struct soul_harvest_t : public warlock_spell_t
         }
       }
       total_duration = base_duration + timespan_t::from_seconds( 2.0 ) * num_targets;
+
       p() -> buffs.soul_harvest -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, std::min( total_duration, timespan_t::from_seconds( 35 ) ) );
     }
 
@@ -6218,7 +6219,7 @@ double warlock_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buffs.empowered_life_tap -> data().effectN( 1 ).percent();
 
   if ( buffs.soul_harvest -> check() )
-    m *= 1.0 + talents.soul_harvest -> effectN( 1 ).percent();
+    m *= 1.0 + buffs.soul_harvest -> stack_value();
 
   if ( buffs.instability -> check() )
     m *= 1.0 + find_spell( 216472 ) -> effectN( 1 ).percent();
@@ -6883,7 +6884,9 @@ void warlock_t::create_buffs()
     .tick_behavior( BUFF_TICK_NONE );
   buffs.soul_harvest = buff_creator_t( this, "soul_harvest", find_spell( 196098 ) )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-    .refresh_behavior( BUFF_REFRESH_EXTEND );
+    .refresh_behavior( BUFF_REFRESH_EXTEND )
+    .cd( timespan_t::zero() )
+    .default_value( find_spell( 196098 ) -> effectN( 1 ).percent() );
 
   //legendary buffs
   buffs.stretens_insanity = buff_creator_t( this, "stretens_insanity", find_spell( 208822 ) )
