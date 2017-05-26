@@ -3706,7 +3706,14 @@ struct rockbiter_t : public shaman_spell_t
     if ( rng().roll(primal_ascendants_stormcallers_chance) )
     {
       // Stormcallers of the Ascendant spell ID: 248111
-      p() -> buff.ascendance -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, p() -> find_spell( 248111 ) -> effectN( 1 ).time_value() );
+      if ( p() -> buff.ascendance -> up() )
+      {
+        p() -> buff.ascendance -> extend_duration( p(), p() -> find_spell( 248111 ) -> effectN( 1 ).time_value());
+      }
+      else
+      {
+        p() -> buff.ascendance -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, p() -> find_spell( 248111 ) -> effectN( 1 ).time_value() );
+      }
     }
 
   }
@@ -5221,7 +5228,14 @@ struct earthquake_t : public shaman_spell_t
     if ( rng().roll( smoldering_heart_chance ) )
     {
       // Smoldering Heart spell ID: 248029
-      p() -> buff.ascendance -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, p() -> find_spell( 248029 ) -> effectN( 1 ).time_value() );
+      if ( p() -> buff.ascendance -> up() )
+      {
+        p() -> buff.ascendance -> extend_duration( p(), p() -> find_spell( 248029 ) -> effectN( 1 ).time_value());
+      }
+      else
+      {
+        p() -> buff.ascendance -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, p() -> find_spell( 248029 ) -> effectN( 1 ).time_value() );
+      }
     }
   }
 };
@@ -5296,13 +5310,13 @@ struct earth_shock_t : public shaman_spell_t
     if ( rng().roll( smoldering_heart_chance * last_resource_cost ) )
     {
       // Smoldering Heart spell ID: 248029
-      if ( ! p() -> buff.ascendance -> up() ) 
+      if ( p() -> buff.ascendance -> up() )
+      {
+        p() -> buff.ascendance -> extend_duration( p(), p() -> find_spell( 248029 ) -> effectN( 1 ).time_value());
+      }
+      else
       {
         p() -> buff.ascendance -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, p() -> find_spell( 248029 ) -> effectN( 1 ).time_value() );
-      }
-      else 
-      {
-        p() -> buff.ascendance -> extend_duration( p(), p() -> find_spell( 248029 ) -> effectN( 1 ).time_value() );
       }
       
     }
