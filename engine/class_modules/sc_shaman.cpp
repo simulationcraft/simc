@@ -1439,14 +1439,6 @@ public:
     double base_chance = p() -> spec.stormbringer -> proc_chance() +
            p() -> cache.mastery() * p() -> mastery.enhanced_elements -> effectN( 3 ).mastery_value();
 
-    if ( maybe_ptr( p() -> dbc.ptr ) )
-    {
-      if ( p() -> sets -> has_set_bonus( SHAMAN_ENHANCEMENT, T19, B4 ) )
-      {
-        base_chance = base_chance + p() -> sets -> set ( SHAMAN_ENHANCEMENT, T19, B4 ) -> effectN( 1 ).percent(); 
-      }
-    }
-
     return base_chance;
   }
 };
@@ -1642,15 +1634,12 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
 
   virtual double stormbringer_proc_chance() const
   {
-    double base_chance = p() -> spec.stormbringer -> proc_chance() +
-           p() -> cache.mastery() * p() -> mastery.enhanced_elements -> effectN( 3 ).mastery_value();
+    double base_chance = 0; 
 
     if ( maybe_ptr( p() -> dbc.ptr ) )
     {
-      if ( p() -> sets -> has_set_bonus( SHAMAN_ENHANCEMENT, T19, B4 ) )
-      {
-        base_chance = base_chance + p() -> sets -> set ( SHAMAN_ENHANCEMENT, T19, B4 ) -> effectN( 1 ).percent(); 
-      }
+      base_chance += p() -> spec.stormbringer -> proc_chance() +
+           p() -> cache.mastery() * p() -> mastery.enhanced_elements -> effectN( 3 ).mastery_value();
     }
 
     return base_chance;
@@ -3342,9 +3331,10 @@ struct lava_lash_t : public shaman_attack_t
   { 
     if ( maybe_ptr( p() -> dbc.ptr ) )
     {
-	  double proc_chance = 0;
-      proc_chance += p() -> spec.stormbringer -> proc_chance();
+      auto proc_chance = shaman_attack_t::stormbringer_proc_chance();
+
       proc_chance += p() -> sets -> set( SHAMAN_ENHANCEMENT, T19, B4 ) -> proc_chance();
+
       return proc_chance;
     }
     
