@@ -3342,7 +3342,10 @@ struct lava_lash_t : public shaman_attack_t
   { 
     if ( maybe_ptr( p() -> dbc.ptr ) )
     {
-      return p() -> spec.stormbringer -> proc_chance();
+	  double proc_chance = 0;
+	  proc_chance += p() -> spec.stormbringer -> proc_chance();
+	  proc_chance += p() -> sets -> set( SHAMAN_ENHANCEMENT, T19, B4 ) -> proc_chance()
+      return proc_chance;
     }
     
     return p() -> sets -> set( SHAMAN_ENHANCEMENT, T19, B4 ) -> proc_chance();
@@ -3635,14 +3638,13 @@ struct windstrike_t : public stormstrike_base_t
     return stormstrike_base_t::ready();
   }
 
-  //Windstrike currently does not proc unleash doom - comment all this out if it gets fixed on PTR.
-  //void execute() override
-  //{
-  //  // Proc unleash doom before the actual damage strikes, they already benefit from the buff
-  //  p() -> buff.unleash_doom -> trigger();
+  void execute() override
+  {
+    // Proc unleash doom before the actual damage strikes, they already benefit from the buff
+    p() -> buff.unleash_doom -> trigger();
 
-  //  stormstrike_base_t::execute();
-  //}
+    stormstrike_base_t::execute();
+  }
 };
 
 // Sundering Spell =========================================================
@@ -8849,7 +8851,7 @@ struct shaman_module_t : public module_t
     register_special_effect( 208051, sephuzs_secret_t(), true );
     register_special_effect( 248029, smoldering_heart_earth_shock_t() );
     register_special_effect( 248029, smoldering_heart_earthquake_t() );
-    register_special_effect( 151820, primal_ascendants_stormcallers_t() );
+    register_special_effect( 248111, primal_ascendants_stormcallers_t() );
   }
 
   void register_hotfixes() const override
