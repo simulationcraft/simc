@@ -3309,7 +3309,7 @@ struct cinderstorm_t : public fire_mage_spell_t
   {
     if ( p() -> global_cinder_count > 0 )
     {
-      cinder_count = p() -> global_cinder_count;
+      cinder_count = static_cast<int>( p() -> global_cinder_count );
     }
     fire_mage_spell_t::execute();
 
@@ -6378,7 +6378,7 @@ struct ignite_spread_event_t : public event_t
         // TODO: Filter valid candidates by ignite spread range
 
         // Randomly select spread target from remaining candidates
-        index = floor( mage -> rng().real() * index );
+        index = as<int>( floor( mage -> rng().real() * index ) );
         dot_t* destination = candidates[ index ];
 
         if ( destination -> is_ticking() )
@@ -6974,7 +6974,7 @@ void mage_t::create_buffs()
   // Buff to track icicles. This does not, however, track the true amount of icicles present.
   // Instead, as it does in game, it tracks icicle buff stack count based on the number of *casts*
   // of icicle generating spells. icicles are generated on impact, so they are slightly de-synced.
-  buffs.icicles                = buff_creator_t( this, "icicles", find_spell( 148012 ) ).max_stack( 5.0 );
+  buffs.icicles                = buff_creator_t( this, "icicles", find_spell( 148012 ) ).max_stack( 5 );
   buffs.icy_veins              = new buffs::icy_veins_buff_t( this );
   buffs.ray_of_frost           = new buffs::ray_of_frost_buff_t( this );
 
@@ -8371,7 +8371,7 @@ struct sorcerous_shadowruby_pendant_driver_t : public spell_t
   virtual void impact( action_state_t* s ) override
   {
     spell_t::impact( s );
-    current_roll = static_cast<unsigned>( rng().range( 0, sorcerous_spells.size() ) );
+    current_roll = static_cast<unsigned>( rng().range( 0, as<double>( sorcerous_spells.size() ) ) );
     sorcerous_spells[ current_roll ] -> execute();
   }
 };
