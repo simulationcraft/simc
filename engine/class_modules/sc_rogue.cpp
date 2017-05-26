@@ -8423,7 +8423,8 @@ void rogue_t::create_buffs()
   buffs.shivarran_symmetry                 = buff_creator_t( this, "shivarran_symmetry", find_spell( 226318 ) );
   // Subtlety
   buffs.the_first_of_the_dead              = buff_creator_t( this, "the_first_of_the_dead", find_spell( 248210 ) )
-                                             .default_value( find_spell( 248210 ) -> effectN( 1 ).percent() );
+                                             .default_value( find_spell( 248210 ) -> effectN( 1 ).percent() )
+                                             .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
 
   // Tiers
