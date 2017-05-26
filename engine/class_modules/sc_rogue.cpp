@@ -286,10 +286,12 @@ struct rogue_t : public player_t
     buff_t* the_dreadlords_deceit_driver;
     buff_t* the_dreadlords_deceit;
     // Assassination
+    buff_t* the_empty_crown;
     // Outlaw
     buff_t* greenskins_waterlogged_wristcuffs;
     buff_t* shivarran_symmetry;
     // Subtlety
+    buff_t* the_first_of_the_dead;
 
 
     // Tiers
@@ -347,6 +349,7 @@ struct rogue_t : public player_t
     cooldown_t* vendetta;
     cooldown_t* shadow_nova;
     cooldown_t* toxic_blade;
+    cooldown_t* curse_of_the_dreadblades;
   } cooldowns;
 
   // Gains
@@ -366,6 +369,8 @@ struct rogue_t : public player_t
     gain_t* relentless_strikes;
     gain_t* shadow_satyrs_walk;
     gain_t* t20_4pc_subtlety;
+    gain_t* the_empty_crown;
+    gain_t* the_first_of_the_dead;
 
     // CP Gains
     gain_t* seal_fate;
@@ -646,6 +651,9 @@ struct rogue_t : public player_t
     const spell_data_t* the_dreadlords_deceit;
     const spell_data_t* insignia_of_ravenholdt;
     const spell_data_t* mantle_of_the_master_assassin;
+    const spell_data_t* the_curse_of_restlessness;
+    const spell_data_t* the_empty_crown;
+    const spell_data_t* the_first_of_the_dead;
   } legendary;
 
   // Options
@@ -687,27 +695,28 @@ struct rogue_t : public player_t
     ssw_refund_offset( 0 )
   {
     // Cooldowns
-    cooldowns.adrenaline_rush      = get_cooldown( "adrenaline_rush"      );
-    cooldowns.garrote              = get_cooldown( "garrote"              );
-    cooldowns.kingsbane            = get_cooldown( "kingsbane"            );
-    cooldowns.sinister_circulation = get_cooldown( "sinister_circulation" );
-    cooldowns.killing_spree        = get_cooldown( "killing_spree"        );
-    cooldowns.shadow_dance         = get_cooldown( "shadow_dance"         );
-    cooldowns.sprint               = get_cooldown( "sprint"               );
-    cooldowns.vanish               = get_cooldown( "vanish"               );
-    cooldowns.between_the_eyes     = get_cooldown( "between_the_eyes"     );
-    cooldowns.blind                = get_cooldown( "blind"                );
-    cooldowns.gouge                = get_cooldown( "gouge"                );
-    cooldowns.cannonball_barrage   = get_cooldown( "cannon_ball_barrage"  );
-    cooldowns.cloak_of_shadows     = get_cooldown( "cloak_of_shadows"     );
-    cooldowns.death_from_above     = get_cooldown( "death_from_above"     );
-    cooldowns.grappling_hook       = get_cooldown( "grappling_hook"       );
-    cooldowns.marked_for_death     = get_cooldown( "marked_for_death"     );
-    cooldowns.riposte              = get_cooldown( "riposte"              );
-    cooldowns.weaponmaster         = get_cooldown( "weaponmaster"         );
-    cooldowns.vendetta             = get_cooldown( "vendetta"             );
-    cooldowns.shadow_nova          = get_cooldown( "shadow_nova"          );
-    cooldowns.toxic_blade          = get_cooldown( "toxic_blade"          );
+    cooldowns.adrenaline_rush          = get_cooldown( "adrenaline_rush"          );
+    cooldowns.garrote                  = get_cooldown( "garrote"                  );
+    cooldowns.kingsbane                = get_cooldown( "kingsbane"                );
+    cooldowns.sinister_circulation     = get_cooldown( "sinister_circulation"     );
+    cooldowns.killing_spree            = get_cooldown( "killing_spree"            );
+    cooldowns.shadow_dance             = get_cooldown( "shadow_dance"             );
+    cooldowns.sprint                   = get_cooldown( "sprint"                   );
+    cooldowns.vanish                   = get_cooldown( "vanish"                   );
+    cooldowns.between_the_eyes         = get_cooldown( "between_the_eyes"         );
+    cooldowns.blind                    = get_cooldown( "blind"                    );
+    cooldowns.gouge                    = get_cooldown( "gouge"                    );
+    cooldowns.cannonball_barrage       = get_cooldown( "cannon_ball_barrage"      );
+    cooldowns.cloak_of_shadows         = get_cooldown( "cloak_of_shadows"         );
+    cooldowns.death_from_above         = get_cooldown( "death_from_above"         );
+    cooldowns.grappling_hook           = get_cooldown( "grappling_hook"           );
+    cooldowns.marked_for_death         = get_cooldown( "marked_for_death"         );
+    cooldowns.riposte                  = get_cooldown( "riposte"                  );
+    cooldowns.weaponmaster             = get_cooldown( "weaponmaster"             );
+    cooldowns.vendetta                 = get_cooldown( "vendetta"                 );
+    cooldowns.shadow_nova              = get_cooldown( "shadow_nova"              );
+    cooldowns.toxic_blade              = get_cooldown( "toxic_blade"              );
+    cooldowns.curse_of_the_dreadblades = get_cooldown( "curse_of_the_dreadblades" );
 
     regen_type = REGEN_DYNAMIC;
     regen_caches[CACHE_HASTE] = true;
@@ -3551,6 +3560,16 @@ struct kingsbane_t : public rogue_attack_t
     return m;
   }
 
+  void execute() override
+  {
+    rogue_attack_t::execute();
+
+    if ( p() -> legendary.the_empty_crown )
+    {
+      p() -> buffs.the_empty_crown -> trigger();
+    }
+  }
+
   void impact( action_state_t* state ) override
   {
     rogue_attack_t::impact( state );
@@ -4710,6 +4729,14 @@ struct symbols_of_death_t : public rogue_attack_t
         p() -> buffs.death -> trigger( p() -> sets -> set( ROGUE_SUBTLETY, T20, B4 ) -> effectN( 1 ).base_value() );
       else
         p() -> buffs.death -> trigger( 1 );
+    }
+
+    if ( p() -> legendary.the_first_of_the_dead )
+    {
+      p() -> buffs.the_first_of_the_dead -> trigger();
+      p() -> resource_gain( RESOURCE_ENERGY,
+                            p() -> buffs.the_first_of_the_dead -> data().effectN( 2 ).resource( RESOURCE_ENERGY ),
+                            p() -> gains.the_first_of_the_dead, this );
     }
   }
 };
@@ -6094,6 +6121,14 @@ void rogue_t::trigger_restless_blades( const action_state_t* state )
   cooldowns.killing_spree -> adjust( v, false );
   cooldowns.marked_for_death -> adjust( v, false );
   cooldowns.death_from_above -> adjust( v, false );
+
+  // The Curse of Restlessness Legendary
+  if ( legendary.the_curse_of_restlessness )
+  {
+    timespan_t t = timespan_t::from_seconds( legendary.the_curse_of_restlessness -> effectN( 1 ).base_value() / 100.0 );
+    t *= - actions::rogue_attack_t::cast_state( state ) -> cp;
+    cooldowns.curse_of_the_dreadblades -> adjust( t, false );
+  }
 }
 
 void do_exsanguinate( dot_t* dot, double coeff )
@@ -7060,6 +7095,10 @@ double rogue_t::composite_player_multiplier( school_e school ) const
          dbc::is_school( school, SCHOOL_SHADOW) ) )
   {
     m *= 1.0 + artifact.shadow_fangs.data().effectN( 1 ).percent();
+  }
+  if ( buffs.the_first_of_the_dead -> up() )
+  {
+    m *= 1.0 + buffs.the_first_of_the_dead -> check_value();
   }
 
   return m;
@@ -8147,6 +8186,8 @@ void rogue_t::init_gains()
   gains.t20_4pc_assassination    = get_gain( "Tier 20 4PC Set Bonus"    );
   gains.shadow_satyrs_walk       = get_gain( "Shadow Satyr's Walk"      );
   gains.t20_4pc_subtlety         = get_gain( "Tier 20 4PC Set Bonus"    );
+  gains.the_empty_crown          = get_gain( "The Empty Crown"          );
+  gains.the_first_of_the_dead    = get_gain( "The First of the Dead"    );
 }
 
 // rogue_t::init_procs ======================================================
@@ -8373,10 +8414,16 @@ void rogue_t::create_buffs()
   buffs.the_dreadlords_deceit              = buff_creator_t( this, "the_dreadlords_deceit", tddid )
                                              .default_value( tddid -> effectN( 1 ).percent() );
   // Assassination
+  buffs.the_empty_crown                    = buff_creator_t( this, "the_empty_crown", find_spell(248201) )
+                                             .tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
+                                               resource_gain( RESOURCE_ENERGY, find_spell(248201) -> effectN( 1 ).base_value(), gains.the_empty_crown );
+                                             } );
   // Outlaw
   buffs.greenskins_waterlogged_wristcuffs  = buff_creator_t( this, "greenskins_waterlogged_wristcuffs", find_spell( 209423 ) );
   buffs.shivarran_symmetry                 = buff_creator_t( this, "shivarran_symmetry", find_spell( 226318 ) );
   // Subtlety
+  buffs.the_first_of_the_dead              = buff_creator_t( this, "the_first_of_the_dead", find_spell( 248210 ) )
+                                             .default_value( find_spell( 248210 ) -> effectN( 1 ).percent() );
 
 
   // Tiers
@@ -9120,6 +9167,33 @@ struct mantle_of_the_master_assassin_t : public unique_gear::scoped_actor_callba
   { rogue -> legendary.mantle_of_the_master_assassin = e.driver(); }
 };
 
+struct the_curse_of_restlessness_t : public unique_gear::scoped_actor_callback_t<rogue_t>
+{
+  the_curse_of_restlessness_t() : super( ROGUE )
+  { }
+
+  void manipulate( rogue_t* rogue, const special_effect_t& e ) override
+  { rogue -> legendary.the_curse_of_restlessness = e.driver(); }
+};
+
+struct the_empty_crown_t : public unique_gear::scoped_actor_callback_t<rogue_t>
+{
+  the_empty_crown_t() : super( ROGUE )
+  { }
+
+  void manipulate( rogue_t* rogue, const special_effect_t& e ) override
+  { rogue -> legendary.the_empty_crown = e.driver(); }
+};
+
+struct the_first_of_the_dead_t : public unique_gear::scoped_actor_callback_t<rogue_t>
+{
+  the_first_of_the_dead_t() : super( ROGUE )
+  { }
+
+  void manipulate( rogue_t* rogue, const special_effect_t& e ) override
+  { rogue -> legendary.the_first_of_the_dead = e.driver(); }
+};
+
 struct rogue_module_t : public module_t
 {
   rogue_module_t() : module_t( ROGUE ) {}
@@ -9149,6 +9223,9 @@ struct rogue_module_t : public module_t
     unique_gear::register_special_effect( 208692, the_dreadlords_deceit_t()             );
     unique_gear::register_special_effect( 209041, insignia_of_ravenholdt_t()            );
     unique_gear::register_special_effect( 235022, mantle_of_the_master_assassin_t()     );
+    unique_gear::register_special_effect( 248107, the_curse_of_restlessness_t()         );
+    unique_gear::register_special_effect( 248106, the_empty_crown_t()                   );
+    unique_gear::register_special_effect( 248110, the_first_of_the_dead_t()             );
   }
 
   void register_hotfixes() const override
