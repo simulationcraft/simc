@@ -3344,7 +3344,7 @@ struct lava_lash_t : public shaman_attack_t
     {
 	  double proc_chance = 0;
       proc_chance += p() -> spec.stormbringer -> proc_chance();
-      proc_chance += p() -> sets -> set( SHAMAN_ENHANCEMENT, T19, B4 ) -> proc_chance()
+      proc_chance += p() -> sets -> set( SHAMAN_ENHANCEMENT, T19, B4 ) -> proc_chance();
       return proc_chance;
     }
     
