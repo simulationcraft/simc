@@ -8303,7 +8303,7 @@ bool player_t::parse_artifact_wowhead( const std::string& artifact_string )
   }
 
   auto spec_artifact_id = dbc.artifact_by_spec( specialization() );
-  if ( spec_artifact_id != artifact_id )
+  if ( specialization() != SPEC_NONE && spec_artifact_id != artifact_id )
   {
     return false;
   }
