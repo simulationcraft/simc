@@ -10544,18 +10544,37 @@ void player_t::analyze( sim_t& s )
 
   // Damage Timelines =======================================================
 
-  collected_data.timeline_dmg.init( max_buckets );
-  bool is_hps = primary_role() == ROLE_HEAL;
-  range::for_each( tmp_stats_list, [ this, is_hps, max_buckets ]( stats_t* stats ) {
-    if ( ( stats -> type != STATS_DMG ) == is_hps )
-    {
-      size_t j_max = std::min( max_buckets, stats -> timeline_amount.data().size() );
-      for ( size_t j = 0; j < j_max; j++ )
+  if ( sim -> report_details != 0 )
+  {
+    collected_data.timeline_dmg.init( max_buckets );
+    bool is_hps = primary_role() == ROLE_HEAL;
+    range::for_each( tmp_stats_list, [ this, is_hps, max_buckets ]( stats_t* stats ) {
+      if ( stats -> timeline_amount == nullptr )
       {
-        collected_data.timeline_dmg.add( j, stats -> timeline_amount.data()[ j ] );
+        return;
       }
+
+      if ( ( stats -> type != STATS_DMG ) == is_hps )
+      {
+        size_t j_max = std::min( max_buckets, stats -> timeline_amount -> data().size() );
+        for ( size_t j = 0; j < j_max; j++ )
+        {
+          collected_data.timeline_dmg.add( j, stats -> timeline_amount -> data()[ j ] );
+        }
+      }
+    } );
+  }
+  else
+  {
+    if ( ! sim -> single_actor_batch )
+    {
+      collected_data.timeline_dmg.adjust( *sim );
     }
-  } );
+    else
+    {
+      collected_data.timeline_dmg.adjust( collected_data.fight_length );
+    }
+  }
 
   recreate_talent_str( s.talent_format );
 

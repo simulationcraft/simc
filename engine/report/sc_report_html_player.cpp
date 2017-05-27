@@ -24,6 +24,12 @@ bool has_avoidance( const std::array<stats_t::stats_results_t, RESULT_MAX>& s )
            s[ RESULT_PARRY ].count.mean() ) > 0;
 }
 
+bool has_avoidance( const std::array<stats_t::stats_results_t, FULLTYPE_MAX>& s )
+{
+  return ( s[ FULLTYPE_MISS ].count.mean() + s[ FULLTYPE_DODGE ].count.mean() +
+           s[ FULLTYPE_PARRY ].count.mean() ) > 0;
+}
+
 bool has_block( const std::array<stats_t::stats_results_t, FULLTYPE_MAX>& s )
 {
   return ( s[ FULLTYPE_HIT_BLOCK ].count.mean() +
@@ -32,6 +38,13 @@ bool has_block( const std::array<stats_t::stats_results_t, FULLTYPE_MAX>& s )
            s[ FULLTYPE_GLANCE_CRITBLOCK ].count.mean() +
            s[ FULLTYPE_CRIT_BLOCK ].count.mean() +
            s[ FULLTYPE_CRIT_CRITBLOCK ].count.mean() ) > 0;
+}
+
+bool has_glance( const std::array<stats_t::stats_results_t, FULLTYPE_MAX>& s )
+{
+  return s[ FULLTYPE_GLANCE ].count.mean() > 0 ||
+         s[ FULLTYPE_GLANCE_BLOCK ].count.mean() > 0 ||
+         s[ FULLTYPE_GLANCE_CRITBLOCK ].count.mean() > 0;
 }
 
 bool player_has_tick_results( const player_t& p, unsigned stats_mask )
@@ -84,8 +97,7 @@ bool player_has_block( const player_t& p, unsigned stats_mask )
     if ( !( stats_mask & ( 1 << stat->type ) ) )
       continue;
 
-    if ( has_block( stat->direct_results_detail ) ||
-         has_block( stat->tick_results_detail ) )
+    if ( has_block( stat->direct_results ) )
       return true;
   }
 
@@ -105,7 +117,7 @@ bool player_has_glance( const player_t& p, unsigned stats_mask )
     if ( !( stats_mask & ( 1 << stat->type ) ) )
       continue;
 
-    if ( stat->direct_results[ RESULT_GLANCE ].count.mean() > 0 )
+    if ( has_glance( stat -> direct_results ) )
       return true;
   }
 
@@ -157,8 +169,8 @@ std::string output_action_name( const stats_t& s, const player_t* actor )
 
 // print_html_action_info =================================================
 
-double mean_damage(
-    const std::array<stats_t::stats_results_t, RESULT_MAX>& result )
+template <typename T>
+double mean_damage( const T& result )
 {
   double mean  = 0;
   size_t count = 0;
@@ -175,64 +187,124 @@ double mean_damage(
   return mean;
 }
 
+template <typename T, typename V>
+double mean_value( const T& results, const std::initializer_list<V>& selectors )
+{
+  double sum = 0, count = 0;
+
+  range::for_each( selectors, [ & ]( const V& selector ) {
+    auto idx = static_cast<int>( selector );
+    if ( idx < 0 )
+    {
+      return;
+    }
+
+    if ( results.size() < as<size_t>( idx ) )
+    {
+      return;
+    }
+
+    count += results[ idx ].actual_amount.count();
+    sum   += results[ idx ].actual_amount.sum();
+  } );
+
+  return count > 0 ? sum / count : 0;
+}
+
+template <typename T, typename V>
+double pct_value( const T& results, const std::initializer_list<V>& selectors )
+{
+  double sum = 0;
+
+  range::for_each( selectors, [ & ]( const V& selector ) {
+    auto idx = static_cast<int>( selector );
+    if ( idx < 0 )
+    {
+      return;
+    }
+
+    if ( results.size() < as<size_t>( idx ) )
+    {
+      return;
+    }
+
+    sum += results[ idx ].pct;
+  } );
+
+  return sum;
+}
+
 void print_html_action_summary( report::sc_html_stream& os, unsigned stats_mask,
                                 int result_type, const stats_t& s,
                                 const player_t& p )
 {
+  using full_result_t = std::array<stats_t::stats_results_t, FULLTYPE_MAX>;
+  using result_t = std::array<stats_t::stats_results_t, RESULT_MAX>;
+
   std::string type_str;
   if ( result_type == 1 )
     type_str = "Periodic";
   else
     type_str = "Direct";
 
-  const auto& results = result_type == 1 ? s.tick_results : s.direct_results;
-  const auto& block_results =
-      result_type == 1 ? s.tick_results_detail : s.direct_results_detail;
+  const auto& dr = s.direct_results;
+  const auto& tr = s.tick_results;
 
   // Result type
   os.format( "<td class=\"right small\">%s</td>\n", type_str.c_str() );
 
-  // Count
-  double count = ( result_type == 1 ) ? s.num_tick_results.mean()
-                                      : s.num_direct_results.mean();
-
-  os.format( "<td class=\"right small\">%.1f</td>\n", count );
+  os.format( "<td class=\"right small\">%.1f</td>\n",
+             result_type == 1
+             ? s.num_tick_results.mean()
+             : s.num_direct_results.mean() );
 
   // Hit results
   os.format( "<td class=\"right small\">%.0f</td>\n",
-             results[ RESULT_HIT ].actual_amount.pretty_mean() );
+             result_type == 1
+             ? mean_value<result_t, result_e>( tr, { RESULT_HIT } )
+             : mean_value<full_result_t, full_result_e>( dr, { FULLTYPE_HIT, FULLTYPE_HIT_BLOCK, FULLTYPE_HIT_CRITBLOCK } ) );
 
   // Crit results
   os.format( "<td class=\"right small\">%.0f</td>\n",
-             results[ RESULT_CRIT ].actual_amount.pretty_mean() );
+             result_type == 1
+             ? mean_value<result_t, result_e>( tr, { RESULT_CRIT } )
+             : mean_value<full_result_t, full_result_e>( dr, { FULLTYPE_CRIT, FULLTYPE_CRIT_BLOCK, FULLTYPE_CRIT_CRITBLOCK } ) );
 
   // Mean amount
-  os.format( "<td class=\"right small\">%.0f</td>\n", mean_damage( results ) );
+  os.format( "<td class=\"right small\">%.0f</td>\n",
+             result_type == 1
+             ? mean_damage( tr )
+             : mean_damage( dr ) );
 
   // Crit%
   os.format( "<td class=\"right small\">%.1f%%</td>\n",
-             results[ RESULT_CRIT ].pct );
+             result_type == 1
+             ? pct_value<result_t, result_e>( tr, { RESULT_CRIT } )
+             : pct_value<full_result_t, full_result_e>( dr, { FULLTYPE_CRIT, FULLTYPE_CRIT_BLOCK, FULLTYPE_CRIT_CRITBLOCK } ) );
 
   if ( player_has_avoidance( p, stats_mask ) )
-    os.format(
-        "<td class=\"right small\">%.1f%%</td>\n",  // direct_results Avoid%
-        results[ RESULT_MISS ].pct + results[ RESULT_DODGE ].pct +
-            results[ RESULT_PARRY ].pct );
+    os.format( "<td class=\"right small\">%.1f%%</td>\n",  // direct_results Avoid%
+               result_type == 1
+               ? pct_value<result_t, result_e>( tr, { RESULT_MISS, RESULT_DODGE, RESULT_PARRY } )
+               : pct_value<full_result_t, full_result_e>( dr, { FULLTYPE_MISS, FULLTYPE_DODGE, FULLTYPE_PARRY } ) );
 
   if ( player_has_glance( p, stats_mask ) )
-    os.format(
-        "<td class=\"right small\">%.1f%%</td>\n",  // direct_results Glance%
-        results[ RESULT_GLANCE ].pct );
+    os.format( "<td class=\"right small\">%.1f%%</td>\n",  // direct_results Glance%
+             result_type == 1
+             ? pct_value<result_t, result_e>( tr, { RESULT_GLANCE } )
+             : pct_value<full_result_t, full_result_e>( dr, { FULLTYPE_GLANCE, FULLTYPE_GLANCE_BLOCK, FULLTYPE_GLANCE_CRITBLOCK } ) );
 
   if ( player_has_block( p, stats_mask ) )
-    os.format(
-        "<td class=\"right small\">%.1f%%</td>\n",  // direct_results Block%
-        block_results[ FULLTYPE_HIT_BLOCK ].pct +
-            block_results[ FULLTYPE_HIT_CRITBLOCK ].pct +
-            block_results[ FULLTYPE_GLANCE_BLOCK ].pct +
-            block_results[ FULLTYPE_GLANCE_CRITBLOCK ].pct +
-            block_results[ FULLTYPE_CRIT_BLOCK ].pct +
-            block_results[ FULLTYPE_CRIT_CRITBLOCK ].pct );
+    os.format( "<td class=\"right small\">%.1f%%</td>\n",  // direct_results Block%
+        result_type == 1
+        ? 0
+        : pct_value<full_result_t, full_result_e>( dr,
+          { FULLTYPE_HIT_BLOCK,
+            FULLTYPE_HIT_CRITBLOCK,
+            FULLTYPE_GLANCE_BLOCK,
+            FULLTYPE_GLANCE_CRITBLOCK,
+            FULLTYPE_CRIT_BLOCK,
+            FULLTYPE_CRIT_CRITBLOCK } ) );
 
   if ( player_has_tick_results( p, stats_mask ) )
   {
@@ -514,92 +586,46 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask,
          << "<th class=\"small\">Overkill %</th>\n"
          << "</tr>\n";
       int k = 0;
-      if ( has_block( s.direct_results_detail ) )
+      for ( full_result_e i = FULLTYPE_MAX; --i >= FULLTYPE_NONE; )
       {
-        for ( full_result_e i = FULLTYPE_MAX; --i >= FULLTYPE_NONE; )
+        if ( ! s.direct_results[ i ].count.mean() )
+          continue;
+
+        os << "<tr";
+
+        if ( k & 1 )
         {
-          if ( !s.direct_results_detail[ i ].count.mean() )
-            continue;
-
-          os << "<tr";
-
-          if ( k & 1 )
-          {
-            os << " class=\"odd\"";
-          }
-          k++;
-          os << ">\n";
-
-          os.format(
-              "<td class=\"left small\">%s</td>\n"
-              "<td class=\"right small\">%.2f</td>\n"
-              "<td class=\"right small\">%.2f%%</td>\n"
-              "<td class=\"right small\">%.2f</td>\n"
-              "<td class=\"right small\">%.0f</td>\n"
-              "<td class=\"right small\">%.0f</td>\n"
-              "<td class=\"right small\">%.2f</td>\n"
-              "<td class=\"right small\">%.0f</td>\n"
-              "<td class=\"right small\">%.0f</td>\n"
-              "<td class=\"right small\">%.0f</td>\n"
-              "<td class=\"right small\">%.0f</td>\n"
-              "<td class=\"right small\">%.2f</td>\n"
-              "</tr>\n",
-              util::full_result_type_string( i ),
-              s.direct_results_detail[ i ].count.mean(),
-              s.direct_results_detail[ i ].pct,
-              s.direct_results_detail[ i ].actual_amount.mean(),
-              s.direct_results_detail[ i ].actual_amount.min(),
-              s.direct_results_detail[ i ].actual_amount.max(),
-              s.direct_results_detail[ i ].avg_actual_amount.mean(),
-              s.direct_results_detail[ i ].avg_actual_amount.min(),
-              s.direct_results_detail[ i ].avg_actual_amount.max(),
-              s.direct_results_detail[ i ].fight_actual_amount.mean(),
-              s.direct_results_detail[ i ].fight_total_amount.mean(),
-              s.direct_results_detail[ i ].overkill_pct.mean() );
+          os << " class=\"odd\"";
         }
-      }
-      else
-      {
-        for ( result_e i = RESULT_MAX; --i >= RESULT_NONE; )
-        {
-          if ( !s.direct_results[ i ].count.mean() )
-            continue;
+        k++;
+        os << ">\n";
 
-          os << "<tr";
-
-          if ( k & 1 )
-          {
-            os << " class=\"odd\"";
-          }
-          k++;
-          os << ">\n";
-
-          os.format(
-              "<td class=\"left small\">%s</td>\n"
-              "<td class=\"right small\">%.2f</td>\n"
-              "<td class=\"right small\">%.2f%%</td>\n"
-              "<td class=\"right small\">%.2f</td>\n"
-              "<td class=\"right small\">%.0f</td>\n"
-              "<td class=\"right small\">%.0f</td>\n"
-              "<td class=\"right small\">%.2f</td>\n"
-              "<td class=\"right small\">%.0f</td>\n"
-              "<td class=\"right small\">%.0f</td>\n"
-              "<td class=\"right small\">%.0f</td>\n"
-              "<td class=\"right small\">%.0f</td>\n"
-              "<td class=\"right small\">%.2f</td>\n"
-              "</tr>\n",
-              util::result_type_string( i ), s.direct_results[ i ].count.mean(),
-              s.direct_results[ i ].pct,
-              s.direct_results[ i ].actual_amount.mean(),
-              s.direct_results[ i ].actual_amount.min(),
-              s.direct_results[ i ].actual_amount.max(),
-              s.direct_results[ i ].avg_actual_amount.mean(),
-              s.direct_results[ i ].avg_actual_amount.min(),
-              s.direct_results[ i ].avg_actual_amount.max(),
-              s.direct_results[ i ].fight_actual_amount.mean(),
-              s.direct_results[ i ].fight_total_amount.mean(),
-              s.direct_results[ i ].overkill_pct.mean() );
-        }
+        os.format(
+            "<td class=\"left small\">%s</td>\n"
+            "<td class=\"right small\">%.2f</td>\n"
+            "<td class=\"right small\">%.2f%%</td>\n"
+            "<td class=\"right small\">%.2f</td>\n"
+            "<td class=\"right small\">%.0f</td>\n"
+            "<td class=\"right small\">%.0f</td>\n"
+            "<td class=\"right small\">%.2f</td>\n"
+            "<td class=\"right small\">%.0f</td>\n"
+            "<td class=\"right small\">%.0f</td>\n"
+            "<td class=\"right small\">%.0f</td>\n"
+            "<td class=\"right small\">%.0f</td>\n"
+            "<td class=\"right small\">%.2f</td>\n"
+            "</tr>\n",
+            util::full_result_type_string( i ),
+            s.direct_results[ i ].count.mean(),
+            s.direct_results[ i ].pct,
+            s.direct_results[ i ].actual_amount.mean(),
+            s.direct_results[ i ].actual_amount.min(),
+            s.direct_results[ i ].actual_amount.max(),
+            s.direct_results[ i ].avg_actual_amount.mean(),
+            s.direct_results[ i ].avg_actual_amount.min(),
+            s.direct_results[ i ].avg_actual_amount.max(),
+            s.direct_results[ i ].fight_actual_amount.mean(),
+            s.direct_results[ i ].fight_total_amount.mean(),
+            s.direct_results[ i ].overkill_pct.mean() );
       }
     }
 
@@ -628,87 +654,42 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask,
          << "<th class=\"small\">Overkill %</th>\n"
          << "</tr>\n";
       int k = 0;
-      if ( has_block( s.tick_results_detail ) )
+      for ( result_e i = RESULT_MAX; --i >= RESULT_NONE; )
       {
-        for ( full_result_e i = FULLTYPE_MAX; --i >= FULLTYPE_NONE; )
-        {
-          if ( !s.tick_results_detail[ i ].count.mean() )
-            continue;
+        if ( !s.tick_results[ i ].count.mean() )
+          continue;
 
-          os << "<tr";
-          if ( k & 1 )
-          {
-            os << " class=\"odd\"";
-          }
-          k++;
-          os << ">\n";
-          os.format(
-              "<td class=\"left small\">%s</td>\n"
-              "<td class=\"right small\">%.1f</td>\n"
-              "<td class=\"right small\">%.2f%%</td>\n"
-              "<td class=\"right small\">%.2f</td>\n"
-              "<td class=\"right small\">%.0f</td>\n"
-              "<td class=\"right small\">%.0f</td>\n"
-              "<td class=\"right small\">%.2f</td>\n"
-              "<td class=\"right small\">%.0f</td>\n"
-              "<td class=\"right small\">%.0f</td>\n"
-              "<td class=\"right small\">%.0f</td>\n"
-              "<td class=\"right small\">%.0f</td>\n"
-              "<td class=\"right small\">%.2f</td>\n"
-              "</tr>\n",
-              util::full_result_type_string( i ),
-              s.tick_results_detail[ i ].count.mean(),
-              s.tick_results_detail[ i ].pct,
-              s.tick_results_detail[ i ].actual_amount.mean(),
-              s.tick_results_detail[ i ].actual_amount.min(),
-              s.tick_results_detail[ i ].actual_amount.max(),
-              s.tick_results_detail[ i ].avg_actual_amount.mean(),
-              s.tick_results_detail[ i ].avg_actual_amount.min(),
-              s.tick_results_detail[ i ].avg_actual_amount.max(),
-              s.tick_results_detail[ i ].fight_actual_amount.mean(),
-              s.tick_results_detail[ i ].fight_total_amount.mean(),
-              s.tick_results_detail[ i ].overkill_pct.mean() );
-        }
-      }
-      else
-      {
-        for ( result_e i = RESULT_MAX; --i >= RESULT_NONE; )
+        os << "<tr";
+        if ( k & 1 )
         {
-          if ( !s.tick_results[ i ].count.mean() )
-            continue;
-
-          os << "<tr";
-          if ( k & 1 )
-          {
-            os << " class=\"odd\"";
-          }
-          k++;
-          os << ">\n";
-          os.format(
-              "<td class=\"left small\">%s</td>\n"
-              "<td class=\"right small\">%.1f</td>\n"
-              "<td class=\"right small\">%.2f%%</td>\n"
-              "<td class=\"right small\">%.2f</td>\n"
-              "<td class=\"right small\">%.0f</td>\n"
-              "<td class=\"right small\">%.0f</td>\n"
-              "<td class=\"right small\">%.2f</td>\n"
-              "<td class=\"right small\">%.0f</td>\n"
-              "<td class=\"right small\">%.0f</td>\n"
-              "<td class=\"right small\">%.0f</td>\n"
-              "<td class=\"right small\">%.0f</td>\n"
-              "<td class=\"right small\">%.2f</td>\n"
-              "</tr>\n",
-              util::result_type_string( i ), s.tick_results[ i ].count.mean(),
-              s.tick_results[ i ].pct, s.tick_results[ i ].actual_amount.mean(),
-              s.tick_results[ i ].actual_amount.min(),
-              s.tick_results[ i ].actual_amount.max(),
-              s.tick_results[ i ].avg_actual_amount.mean(),
-              s.tick_results[ i ].avg_actual_amount.min(),
-              s.tick_results[ i ].avg_actual_amount.max(),
-              s.tick_results[ i ].fight_actual_amount.mean(),
-              s.tick_results[ i ].fight_total_amount.mean(),
-              s.tick_results[ i ].overkill_pct.mean() );
+          os << " class=\"odd\"";
         }
+        k++;
+        os << ">\n";
+        os.format(
+            "<td class=\"left small\">%s</td>\n"
+            "<td class=\"right small\">%.1f</td>\n"
+            "<td class=\"right small\">%.2f%%</td>\n"
+            "<td class=\"right small\">%.2f</td>\n"
+            "<td class=\"right small\">%.0f</td>\n"
+            "<td class=\"right small\">%.0f</td>\n"
+            "<td class=\"right small\">%.2f</td>\n"
+            "<td class=\"right small\">%.0f</td>\n"
+            "<td class=\"right small\">%.0f</td>\n"
+            "<td class=\"right small\">%.0f</td>\n"
+            "<td class=\"right small\">%.0f</td>\n"
+            "<td class=\"right small\">%.2f</td>\n"
+            "</tr>\n",
+            util::result_type_string( i ), s.tick_results[ i ].count.mean(),
+            s.tick_results[ i ].pct, s.tick_results[ i ].actual_amount.mean(),
+            s.tick_results[ i ].actual_amount.min(),
+            s.tick_results[ i ].actual_amount.max(),
+            s.tick_results[ i ].avg_actual_amount.mean(),
+            s.tick_results[ i ].avg_actual_amount.min(),
+            s.tick_results[ i ].avg_actual_amount.max(),
+            s.tick_results[ i ].fight_actual_amount.mean(),
+            s.tick_results[ i ].fight_total_amount.mean(),
+            s.tick_results[ i ].overkill_pct.mean() );
       }
     }
 

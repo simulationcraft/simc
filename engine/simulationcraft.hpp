@@ -5040,12 +5040,8 @@ public:
     void datacollection_begin();
     void datacollection_end();
   };
-  std::array<stats_results_t,RESULT_MAX> direct_results;
-  std::array<stats_results_t,FULLTYPE_MAX> direct_results_detail;
+  std::array<stats_results_t,FULLTYPE_MAX> direct_results;
   std::array<stats_results_t,RESULT_MAX> tick_results;
-  std::array<stats_results_t,FULLTYPE_MAX> tick_results_detail;
-
-  sc_timeline_t timeline_amount;
 
   // Reporting only
   std::array<double, RESOURCE_MAX> resource_portion, apr, rpe;
@@ -5061,6 +5057,7 @@ public:
     gear_stats_t error;
   };
   std::unique_ptr<stats_scaling_t> scaling;
+  std::unique_ptr<sc_timeline_t> timeline_amount;
 
   stats_t( const std::string& name, player_t* );
 
