@@ -744,6 +744,9 @@ public:
     double the_wildshapers_clutch;
     double behemoth_headdress = 0;
     timespan_t ailuro_pouncers;
+
+    // Guardian
+    double fury_of_nature = 0;
   } legendary;
 
   druid_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
@@ -8264,6 +8267,11 @@ double druid_t::composite_player_multiplier( school_e school ) const
   if ( artifact.embrace_of_the_nightmare.rank() )
     m *= 1.0 + buff.rage_of_the_sleeper -> check() * buff.rage_of_the_sleeper -> data().effectN( 5 ).percent();
 
+  // Fury of Nature increases Arcane and Nature damage
+  // TODO(guardian): confirm damage sources that are/aren't affected
+  if ( dbc::is_school( school, SCHOOL_ARCANE ) || dbc::is_school( school, SCHOOL_NATURE ) )
+    m *= 1.0 + legendary.fury_of_nature;
+
   m *= 1.0 + artifact.fangs_of_the_first.percent();
   m *= 1.0 + artifact.ferocity_of_the_cenarion_circle.percent();
   m *= 1.0 + artifact.fortitude_of_the_cenarion_circle.data().effectN( 1 ).percent();
@@ -9783,6 +9791,18 @@ struct lady_and_the_child_t : public scoped_action_callback_t<T>
 
 // Guardian
 
+struct fury_of_nature_t : public scoped_actor_callback_t<druid_t>
+{
+
+   fury_of_nature_t() : super( DRUID )
+   {}
+
+   void manipulate( druid_t* d, const special_effect_t& e ) override
+   {
+      d -> legendary.fury_of_nature += e.driver() -> effectN( 1 ).percent();
+   }
+};
+
 struct elizes_everlasting_encasement_t : public scoped_action_callback_t<thrash_bear_t>
 {
   elizes_everlasting_encasement_t() : super( DRUID, "thrash_bear" )
@@ -9930,6 +9950,7 @@ struct druid_module_t : public module_t
     register_special_effect( 214843, fangs_of_ashamane_t() );
 
     // Legion Legendaries
+    register_special_effect( 248083, fury_of_nature_t() );
     register_special_effect( 208228, dual_determination_t() );
     register_special_effect( 208342, elizes_everlasting_encasement_t() );
     register_special_effect( 208199, impeccable_fel_essence_t() );
