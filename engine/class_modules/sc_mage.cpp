@@ -221,7 +221,7 @@ public:
   double distance_from_rune,
          global_cinder_count,
          firestarter_time;
-  bool blessing_of_wisdom;
+  int blessing_of_wisdom_count;
 
   // Benefits
   struct benefits_t
@@ -6483,7 +6483,7 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   distance_from_rune( 0.0 ),
   global_cinder_count( 0.0 ),
   firestarter_time( 0.0 ),
-  blessing_of_wisdom( false ),
+  blessing_of_wisdom_count( 0 ),
   benefits( benefits_t() ),
   buffs( buffs_t() ),
   cooldowns( cooldowns_t() ),
@@ -6700,7 +6700,7 @@ void mage_t::create_options()
 {
   add_option( opt_float( "global_cinder_count", global_cinder_count ) );
   add_option( opt_float( "firestarter_time", firestarter_time ) );
-  add_option( opt_bool( "blessing_of_wisdom", blessing_of_wisdom ) );
+  add_option( opt_int( "blessing_of_wisdom_count", blessing_of_wisdom_count ) );
   player_t::create_options();
 }
 
@@ -6712,9 +6712,9 @@ void mage_t::copy_from( player_t* source )
 
   mage_t* p = debug_cast<mage_t*>( source );
 
-  global_cinder_count = p -> global_cinder_count;
-  firestarter_time    = p -> firestarter_time;
-  blessing_of_wisdom  = p -> blessing_of_wisdom;
+  global_cinder_count       = p -> global_cinder_count;
+  firestarter_time          = p -> firestarter_time;
+  blessing_of_wisdom_count  = p -> blessing_of_wisdom_count;
 }
 
 // mage_t::create_pets ========================================================
@@ -7024,11 +7024,14 @@ void mage_t::create_buffs()
 
   //Misc
 
+  // N active GBoWs are modeled by a single buff that gives N times as much mana.
   buffs.greater_blessing_of_widsom = make_buff( this, "greater_blessing_of_wisdom", find_spell( 203539 ) )
-                                                    -> set_tick_callback( [ this ]( buff_t*, int, const timespan_t& )
-                                                                    { resource_gain( RESOURCE_MANA, resources.max[ RESOURCE_MANA ]*0.002,
-                                                                      gains.greater_blessing_of_wisdom ); } )
-                                                    -> set_period( find_spell( 203539 ) -> effectN( 2 ).period() );
+    -> set_tick_callback( [ this ]( buff_t*, int, const timespan_t& )
+      { resource_gain( RESOURCE_MANA,
+                       resources.max[ RESOURCE_MANA ] * 0.002 * blessing_of_wisdom_count,
+                       gains.greater_blessing_of_wisdom ); } )
+    -> set_period( find_spell( 203539 ) -> effectN( 2 ).period() )
+    -> set_tick_behavior( BUFF_TICK_CLIP );
 }
 
 // mage_t::init_gains =======================================================
@@ -8021,7 +8024,7 @@ void mage_t::arise()
       break;
   }
 
-  if ( blessing_of_wisdom )
+  if ( blessing_of_wisdom_count > 0 )
   {
     buffs.greater_blessing_of_widsom -> trigger();
   }
