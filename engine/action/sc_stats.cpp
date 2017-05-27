@@ -40,13 +40,19 @@ stats_t::stats_t( const std::string& n, player_t* p ) :
   aps( 0 ), ape( 0 ), apet( 0 ), etpe( 0 ), ttpt( 0 ),
   total_time( timespan_t::zero() ),
   timeline_aps_chart(),
-  scaling()
+  scaling( nullptr ),
+  timeline_amount( nullptr )
 {
   int size = std::min( sim.iterations, 10000 );
   actual_amount.reserve( size );
   total_amount.reserve( size );
   portion_aps.reserve( size );
   portion_apse.reserve( size );
+
+  if ( sim.report_details != 0 )
+  {
+    timeline_amount = std::unique_ptr<sc_timeline_t>( new sc_timeline_t() );
+  }
 }
 
 // stats_t::add_child =======================================================
@@ -139,7 +145,29 @@ void stats_t::add_result( double act_amount,
   r -> actual_amount.add( act_amount );
   r -> total_amount.add( tot_amount );
 
-  timeline_amount.add( sim.current_time(), act_amount );
+  // Collect timeline data to stats-specific object if it exists, or to the player's global "damage
+  // output" timeline (e.g., when report_details=0).
+  if ( timeline_amount )
+  {
+    timeline_amount -> add( sim.current_time(), act_amount );
+  }
+  else
+  {
+    if ( ! player -> is_pet() )
+    {
+      player -> collected_data.timeline_dmg.add( sim.current_time(), act_amount );
+    }
+    else if ( player -> is_pet() )
+    {
+      player -> cast_pet() -> owner -> collected_data.timeline_dmg.add( sim.current_time(), act_amount );
+      // If pets get reported separately, collect the damage output to the pet's own timeline as
+      // well, for reporting purposes
+      if ( sim.report_pets_separately )
+      {
+        player -> collected_data.timeline_dmg.add( sim.current_time(), act_amount );
+      }
+    }
+  }
 }
 
 // stats_t::add_execute =====================================================
@@ -235,7 +263,14 @@ void stats_t::datacollection_end()
   num_direct_results.add( idr );
   num_tick_results.add( itr );
 
-  timeline_amount.add( sim.current_time(), 0.0 );
+  if ( timeline_amount )
+  {
+    timeline_amount -> add( sim.current_time(), 0.0 );
+  }
+  else
+  {
+    player -> collected_data.timeline_dmg.add( sim.current_time(), 0.0 );
+  }
 }
 
 // stats_t::analyze =========================================================
@@ -319,19 +354,22 @@ void stats_t::analyze()
   ttpt = num_ticks.mean() ? total_tick_time.mean() / num_ticks.mean() : 0.0;
   etpe = num_executes.mean() ? ( total_execute_time.mean() + ( channeled ? total_tick_time.mean() : 0.0 ) ) / num_executes.mean() : 0.0;
 
-  if ( ! sim.single_actor_batch )
+  if ( timeline_amount )
   {
-    timeline_amount.adjust( sim );
-  }
-  else
-  {
-    if ( player -> is_pet() )
+    if ( ! sim.single_actor_batch )
     {
-      timeline_amount.adjust( player -> cast_pet() -> owner -> collected_data.fight_length );
+      timeline_amount -> adjust( sim );
     }
     else
     {
-      timeline_amount.adjust( player -> collected_data.fight_length );
+      if ( player -> is_pet() )
+      {
+        timeline_amount -> adjust( player -> cast_pet() -> owner -> collected_data.fight_length );
+      }
+      else
+      {
+        timeline_amount -> adjust( player -> collected_data.fight_length );
+      }
     }
   }
 }
@@ -418,7 +456,14 @@ void stats_t::merge( const stats_t& other )
     direct_results[ i ].merge( other.direct_results[ i ] );
   }
 
-  timeline_amount.merge( other.timeline_amount );
+  if ( timeline_amount )
+  {
+    timeline_amount -> merge( *other.timeline_amount );
+  }
+  else
+  {
+    player -> collected_data.timeline_dmg.merge( other.player -> collected_data.timeline_dmg );
+  }
 }
 
 bool stats_t::has_direct_amount_results() const
