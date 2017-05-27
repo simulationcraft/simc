@@ -895,6 +895,8 @@ public:
       rage *= -1;
 
       p() -> cooldown.battle_cry -> adjust( timespan_t::from_seconds( rage ) );
+      if ( maybe_ptr( p() -> dbc.ptr ) ) //FIXME PTR
+        p() -> cooldown.bladestorm -> adjust( timespan_t::from_seconds( rage ) );
 
       if ( p() -> specialization() == WARRIOR_PROTECTION )
       {
@@ -1150,6 +1152,8 @@ struct melee_t: public warrior_attack_t
       devastator = new devastate_t( p, "" );
       add_child( devastator );
     }
+    if ( maybe_ptr( p -> dbc.ptr ) ) //FIXME
+      arms_rage_multiplier *= 1.0715;
   }
 
   void reset() override
@@ -1247,7 +1251,10 @@ struct melee_t: public warrior_attack_t
     {
       if ( s -> result == RESULT_CRIT )
       {
-        rage_gain *= rng().range( 5.715, 6.00 );
+        if ( maybe_ptr( p() -> dbc.ptr ) ) //FIXME PTR
+          rage_gain *= 5.5555;
+        else
+          rage_gain *= rng().range( 5.715, 6.00 );
       }
       else
       {
@@ -1446,6 +1453,9 @@ struct mortal_strike_t : public warrior_attack_t
       cc += p() -> buff.shattered_defenses -> data().effectN( 2 ).percent();
     }
 
+    if ( maybe_ptr( p() -> dbc.ptr ) ) //FIXME PTR
+      cc *= 1.0 + p() -> buff.precise_strikes -> check_value();
+
     return cc;
   }
 
@@ -1464,7 +1474,8 @@ struct mortal_strike_t : public warrior_attack_t
   {
     double c = warrior_attack_t::cost();
 
-    c *= 1.0 + p() -> buff.precise_strikes -> check_value();
+    if( !maybe_ptr( p() -> dbc.ptr ) ) //FIXME PTR
+      c *= 1.0 + p() -> buff.precise_strikes -> check_value();
 
     return c;
   }
@@ -1571,7 +1582,7 @@ struct bladestorm_t: public warrior_attack_t
         bladestorm_oh -> weapon = &( player -> off_hand_weapon );
         add_child( bladestorm_oh );
       }
-      if ( p -> sets -> has_set_bonus( WARRIOR_ARMS, T20, B2 ) )
+      if ( p -> sets -> has_set_bonus( WARRIOR_ARMS, T20, B4 ) )
       {
         mortal_strike = new mortal_strike_t20_t( p, "bladestorm_mortal_strike" );
         add_child( mortal_strike );
@@ -1954,22 +1965,22 @@ struct cleave_t: public warrior_attack_t
 
 struct colossus_smash_t: public warrior_attack_t
 {
-  timespan_t t20_4p_reduction;
+  timespan_t t20_2p_reduction;
   colossus_smash_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "colossus_smash", p, p -> spec.colossus_smash ),
-    t20_4p_reduction( timespan_t::zero() )
+    t20_2p_reduction( timespan_t::zero() )
   {
     parse_options( options_str );
     weapon = &( player -> main_hand_weapon );
     weapon_multiplier *= 1.0 + p -> artifact.focus_in_battle.percent();
-    if ( p -> sets -> has_set_bonus( WARRIOR_ARMS, T20, B4 ) )
+    if ( p -> sets -> has_set_bonus( WARRIOR_ARMS, T20, B2 ) )
     {
       if ( p -> talents.ravager -> ok() )
-        t20_4p_reduction = timespan_t::from_seconds( p -> sets -> set( WARRIOR_ARMS, T20, B4 ) -> effectN( 2 ).base_value() / 10 );
+        t20_2p_reduction = timespan_t::from_seconds( p -> sets -> set( WARRIOR_ARMS, T20, B2 ) -> effectN( 2 ).base_value() / 10 );
       else
-        t20_4p_reduction = timespan_t::from_seconds( p -> sets -> set( WARRIOR_ARMS, T20, B4 ) -> effectN( 1 ).base_value() / 10 );
+        t20_2p_reduction = timespan_t::from_seconds( p -> sets -> set( WARRIOR_ARMS, T20, B2 ) -> effectN( 1 ).base_value() / 10 );
 
-      t20_4p_reduction *= -1.0;
+      t20_2p_reduction *= -1.0;
     }
   }
 
@@ -1984,9 +1995,9 @@ struct colossus_smash_t: public warrior_attack_t
       p() -> buff.shattered_defenses -> trigger();
       p() -> buff.precise_strikes -> trigger();
       if ( p() -> talents.ravager -> ok() )
-        p() -> cooldown.ravager -> adjust( t20_4p_reduction );
+        p() -> cooldown.ravager -> adjust( t20_2p_reduction );
       else
-        p() -> cooldown.bladestorm -> adjust( t20_4p_reduction );
+        p() -> cooldown.bladestorm -> adjust( t20_2p_reduction );
     }
   }
 
@@ -2272,7 +2283,9 @@ struct execute_arms_t: public warrior_attack_t
     }
     else
     {
-      double temp_max_rage = max_rage * ( 1.0 + p() -> buff.precise_strikes -> check_value() );
+      double temp_max_rage = max_rage;
+      if ( !maybe_ptr( p() -> dbc.ptr ) ) //FIXME PTR
+        temp_max_rage *= ( 1.0 + p() -> buff.precise_strikes -> check_value() );
       am *= 4.0 * ( std::min( temp_max_rage, p() -> resources.current[RESOURCE_RAGE] ) / temp_max_rage );
     }
     if ( execute_sweeping_strike ) execute_sweeping_strike -> dmg_mult = am; // The sweeping strike deals damage based on the action multiplier of the original attack before shattered defenses.
@@ -2288,6 +2301,9 @@ struct execute_arms_t: public warrior_attack_t
     {
       cc += p() -> buff.shattered_defenses -> data().effectN( 2 ).percent();
     }
+    
+    if ( maybe_ptr( p() -> dbc.ptr ) ) //FIXME PTR
+      cc *= 1.0 + p() -> buff.precise_strikes -> check_value();
 
     return cc;
   }
@@ -2298,7 +2314,9 @@ struct execute_arms_t: public warrior_attack_t
 
     if ( !is_it_free() )
     {
-      double temp_max_rage = max_rage * ( 1.0 + p() -> buff.precise_strikes -> check_value() );
+      double temp_max_rage = max_rage;
+      if ( !maybe_ptr( p() -> dbc.ptr ) ) //FIXME PTR
+        temp_max_rage *= ( 1.0 + p() -> buff.precise_strikes -> check_value() );
       c = std::min( temp_max_rage, p() -> resources.current[RESOURCE_RAGE] );
       c = ( c / temp_max_rage ) * 40;
     }
@@ -2331,8 +2349,9 @@ struct execute_arms_t: public warrior_attack_t
     }
     if ( p() -> mastery.colossal_might -> ok() )
     {
-      double temp_max_rage = max_rage * ( 1.0 + p() -> buff.precise_strikes -> check_value() );
-      c *= 1.0 + p() -> buff.precise_strikes -> check_value();
+      double temp_max_rage = max_rage;
+      if ( !maybe_ptr( p() -> dbc.ptr ) ) //FIXME PTR
+        temp_max_rage *= ( 1.0 + p() -> buff.precise_strikes -> check_value() );
       c = std::min( temp_max_rage, std::max( p() -> resources.current[RESOURCE_RAGE], c ) );
     }
     return c;
@@ -3343,7 +3362,7 @@ struct ravager_t: public warrior_attack_t
     hasted_ticks = callbacks = false;
     attack_power_mod.direct = attack_power_mod.tick = 0;
     add_child( ravager );
-    if ( p -> sets -> has_set_bonus( WARRIOR_ARMS, T20, B2 ) )
+    if ( p -> sets -> has_set_bonus( WARRIOR_ARMS, T20, B4 ) )
     {
       mortal_strike = new mortal_strike_t20_t( p, "ravager_mortal_strike" );
       add_child( mortal_strike );
