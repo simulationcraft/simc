@@ -238,6 +238,9 @@ void print_html_action_summary( report::sc_html_stream& os, unsigned stats_mask,
                                 int result_type, const stats_t& s,
                                 const player_t& p )
 {
+  using full_result_t = std::array<stats_t::stats_results_t, FULLTYPE_MAX>;
+  using result_t = std::array<stats_t::stats_results_t, RESULT_MAX>;
+
   std::string type_str;
   if ( result_type == 1 )
     type_str = "Periodic";
@@ -258,14 +261,14 @@ void print_html_action_summary( report::sc_html_stream& os, unsigned stats_mask,
   // Hit results
   os.format( "<td class=\"right small\">%.0f</td>\n",
              result_type == 1
-             ? mean_value( tr, { RESULT_HIT } )
-             : mean_value( dr, { FULLTYPE_HIT, FULLTYPE_HIT_BLOCK, FULLTYPE_HIT_CRITBLOCK } ) );
+             ? mean_value<result_t, result_e>( tr, { RESULT_HIT } )
+             : mean_value<full_result_t, full_result_e>( dr, { FULLTYPE_HIT, FULLTYPE_HIT_BLOCK, FULLTYPE_HIT_CRITBLOCK } ) );
 
   // Crit results
   os.format( "<td class=\"right small\">%.0f</td>\n",
              result_type == 1
-             ? mean_value( tr, { RESULT_CRIT } )
-             : mean_value( dr, { FULLTYPE_CRIT, FULLTYPE_CRIT_BLOCK, FULLTYPE_CRIT_CRITBLOCK } ) );
+             ? mean_value<result_t, result_e>( tr, { RESULT_CRIT } )
+             : mean_value<full_result_t, full_result_e>( dr, { FULLTYPE_CRIT, FULLTYPE_CRIT_BLOCK, FULLTYPE_CRIT_CRITBLOCK } ) );
 
   // Mean amount
   os.format( "<td class=\"right small\">%.0f</td>\n",
@@ -276,31 +279,32 @@ void print_html_action_summary( report::sc_html_stream& os, unsigned stats_mask,
   // Crit%
   os.format( "<td class=\"right small\">%.1f%%</td>\n",
              result_type == 1
-             ? pct_value( tr, { RESULT_CRIT } )
-             : pct_value( dr, { FULLTYPE_CRIT, FULLTYPE_CRIT_BLOCK, FULLTYPE_CRIT_CRITBLOCK } ) );
+             ? pct_value<result_t, result_e>( tr, { RESULT_CRIT } )
+             : pct_value<full_result_t, full_result_e>( dr, { FULLTYPE_CRIT, FULLTYPE_CRIT_BLOCK, FULLTYPE_CRIT_CRITBLOCK } ) );
 
   if ( player_has_avoidance( p, stats_mask ) )
     os.format( "<td class=\"right small\">%.1f%%</td>\n",  // direct_results Avoid%
                result_type == 1
-               ? pct_value( tr, { RESULT_MISS, RESULT_DODGE, RESULT_PARRY } )
-               : pct_value( dr, { FULLTYPE_MISS, FULLTYPE_DODGE, FULLTYPE_PARRY } ) );
+               ? pct_value<result_t, result_e>( tr, { RESULT_MISS, RESULT_DODGE, RESULT_PARRY } )
+               : pct_value<full_result_t, full_result_e>( dr, { FULLTYPE_MISS, FULLTYPE_DODGE, FULLTYPE_PARRY } ) );
 
   if ( player_has_glance( p, stats_mask ) )
     os.format( "<td class=\"right small\">%.1f%%</td>\n",  // direct_results Glance%
              result_type == 1
-             ? pct_value( tr, { RESULT_GLANCE } )
-             : pct_value( dr, { FULLTYPE_GLANCE, FULLTYPE_GLANCE_BLOCK, FULLTYPE_GLANCE_CRITBLOCK } ) );
+             ? pct_value<result_t, result_e>( tr, { RESULT_GLANCE } )
+             : pct_value<full_result_t, full_result_e>( dr, { FULLTYPE_GLANCE, FULLTYPE_GLANCE_BLOCK, FULLTYPE_GLANCE_CRITBLOCK } ) );
 
   if ( player_has_block( p, stats_mask ) )
     os.format( "<td class=\"right small\">%.1f%%</td>\n",  // direct_results Block%
         result_type == 1
         ? 0
-        : pct_value( dr, { FULLTYPE_HIT_BLOCK,
-                           FULLTYPE_HIT_CRITBLOCK,
-                           FULLTYPE_GLANCE_BLOCK,
-                           FULLTYPE_GLANCE_CRITBLOCK,
-                           FULLTYPE_CRIT_BLOCK,
-                           FULLTYPE_CRIT_CRITBLOCK } ) );
+        : pct_value<full_result_t, full_result_e>( dr,
+          { FULLTYPE_HIT_BLOCK,
+            FULLTYPE_HIT_CRITBLOCK,
+            FULLTYPE_GLANCE_BLOCK,
+            FULLTYPE_GLANCE_CRITBLOCK,
+            FULLTYPE_CRIT_BLOCK,
+            FULLTYPE_CRIT_CRITBLOCK } ) );
 
   if ( player_has_tick_results( p, stats_mask ) )
   {
