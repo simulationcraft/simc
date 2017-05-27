@@ -9156,11 +9156,11 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
 
 
 // Copypasta for reporting
-bool has_amount_results( const std::array<stats_t::stats_results_t, RESULT_MAX>& res )
+bool has_amount_results( const std::array<stats_t::stats_results_t, FULLTYPE_MAX>& res )
 {
   return (
-           res[ RESULT_HIT ].actual_amount.mean() > 0 ||
-           res[ RESULT_CRIT ].actual_amount.mean() > 0
+           res[ FULLTYPE_HIT ].actual_amount.mean() > 0 ||
+           res[ FULLTYPE_CRIT ].actual_amount.mean() > 0
          );
 }
 

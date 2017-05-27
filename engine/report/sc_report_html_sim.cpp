@@ -86,20 +86,20 @@ void print_raw_action_damage( report::sc_html_stream& os, const stats_t& s,
                direct_total / s.player->collected_data.fight_length.mean(),
                s.num_direct_results.mean() /
                    ( s.player->collected_data.fight_length.mean() / 60.0 ),
-               s.direct_results[ RESULT_HIT ].actual_amount.mean(),
-               s.direct_results[ RESULT_CRIT ].actual_amount.mean(),
+               s.direct_results[ FULLTYPE_HIT ].actual_amount.mean(),
+               s.direct_results[ FULLTYPE_CRIT ].actual_amount.mean(),
                s.num_executes.mean(), s.num_direct_results.mean(),
-               s.direct_results[ RESULT_CRIT ].pct,
-               s.direct_results[ RESULT_MISS ].pct +
-                   s.direct_results[ RESULT_DODGE ].pct +
-                   s.direct_results[ RESULT_PARRY ].pct,
-               s.direct_results[ RESULT_GLANCE ].pct,
-               s.direct_results_detail[ FULLTYPE_HIT_BLOCK ].pct +
-                   s.direct_results_detail[ FULLTYPE_HIT_CRITBLOCK ].pct +
-                   s.direct_results_detail[ FULLTYPE_GLANCE_BLOCK ].pct +
-                   s.direct_results_detail[ FULLTYPE_GLANCE_CRITBLOCK ].pct +
-                   s.direct_results_detail[ FULLTYPE_CRIT_BLOCK ].pct +
-                   s.direct_results_detail[ FULLTYPE_CRIT_CRITBLOCK ].pct,
+               s.direct_results[ FULLTYPE_CRIT ].pct,
+               s.direct_results[ FULLTYPE_MISS ].pct +
+                   s.direct_results[ FULLTYPE_DODGE ].pct +
+                   s.direct_results[ FULLTYPE_PARRY ].pct,
+               s.direct_results[ FULLTYPE_GLANCE ].pct,
+               s.direct_results[ FULLTYPE_HIT_BLOCK ].pct +
+                   s.direct_results[ FULLTYPE_HIT_CRITBLOCK ].pct +
+                   s.direct_results[ FULLTYPE_GLANCE_BLOCK ].pct +
+                   s.direct_results[ FULLTYPE_GLANCE_CRITBLOCK ].pct +
+                   s.direct_results[ FULLTYPE_CRIT_BLOCK ].pct +
+                   s.direct_results[ FULLTYPE_CRIT_CRITBLOCK ].pct,
                s.total_intervals.mean(), s.total_amount.mean(),
                s.player->collected_data.fight_length.mean() );
   }
@@ -123,12 +123,7 @@ void print_raw_action_damage( report::sc_html_stream& os, const stats_t& s,
         s.tick_results[ RESULT_MISS ].pct + s.tick_results[ RESULT_DODGE ].pct +
             s.tick_results[ RESULT_PARRY ].pct,
         s.tick_results[ RESULT_GLANCE ].pct,
-        s.tick_results_detail[ FULLTYPE_HIT_BLOCK ].pct +
-            s.tick_results_detail[ FULLTYPE_HIT_CRITBLOCK ].pct +
-            s.tick_results_detail[ FULLTYPE_GLANCE_BLOCK ].pct +
-            s.tick_results_detail[ FULLTYPE_GLANCE_CRITBLOCK ].pct +
-            s.tick_results_detail[ FULLTYPE_CRIT_BLOCK ].pct +
-            s.tick_results_detail[ FULLTYPE_CRIT_CRITBLOCK ].pct,
+        0,
         s.total_intervals.mean(), s.total_amount.mean(),
         s.player->collected_data.fight_length.mean() );
   }

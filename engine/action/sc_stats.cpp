@@ -33,9 +33,7 @@ stats_t::stats_t( const std::string& n, player_t* p ) :
   portion_aps( name_str + " Portion APS", p -> sim -> statistics_level < 3 ),
   portion_apse( name_str + " Portion APSe", p -> sim -> statistics_level < 3 ),
   direct_results(),
-  direct_results_detail(),
   tick_results(),
-  tick_results_detail(),
   // Reporting only
   resource_portion(), apr(), rpe(),
   rpe_sum( 0 ), compound_amount( 0 ), overkill_pct( 0 ),
@@ -127,9 +125,13 @@ void stats_t::add_result( double act_amount,
 {
   stats_results_t* r = nullptr;
   if ( dmg_type == DMG_DIRECT || dmg_type == HEAL_DIRECT || dmg_type == ABSORB )
-    r = &( direct_results[ result ] );
+  {
+    r = &( direct_results[ translate_result( result, block_result ) ] );
+  }
   else
+  {
     r = &( tick_results[ result ] );
+  }
 
   r -> iteration_count += 1;
   r -> iteration_actual_amount += act_amount;
@@ -137,21 +139,6 @@ void stats_t::add_result( double act_amount,
   r -> actual_amount.add( act_amount );
   r -> total_amount.add( tot_amount );
 
-  if ( block_result != BLOCK_RESULT_UNKNOWN )
-  {
-    full_result_e fulltype = translate_result( result, block_result );
-    stats_results_t* f = nullptr;
-    if ( dmg_type == DMG_DIRECT || dmg_type == HEAL_DIRECT || dmg_type == ABSORB )
-      f = &( direct_results_detail[ fulltype ] );
-    else
-      f = &( tick_results_detail[ fulltype ] );
-
-    f -> iteration_count += 1;
-    f -> iteration_actual_amount += act_amount;
-    f -> iteration_total_amount += tot_amount;
-    f -> actual_amount.add( act_amount );
-    f -> total_amount.add( tot_amount );
-  }
   timeline_amount.add( sim.current_time(), act_amount );
 }
 
@@ -197,16 +184,8 @@ void stats_t::datacollection_begin()
   iteration_total_execute_time = timespan_t::zero();
   iteration_total_tick_time = timespan_t::zero();
 
-  for ( result_e i = RESULT_NONE; i < RESULT_MAX; i++ )
-  {
-    direct_results[ i ].datacollection_begin();
-    tick_results[ i ].datacollection_begin();
-  }
-  for ( full_result_e i = FULLTYPE_NONE; i < FULLTYPE_MAX; i++ )
-  {
-    direct_results_detail[ i ].datacollection_begin();
-    tick_results_detail[ i ].datacollection_begin();
-  }
+  range::for_each( direct_results, []( stats_results_t& r ) { r.datacollection_begin(); } );
+  range::for_each( tick_results, []( stats_results_t& r ) { r.datacollection_begin(); } );
 }
 
 // stats_t::datacollection_end ==============================================
@@ -218,23 +197,21 @@ void stats_t::datacollection_end()
   double idr = 0;
   double itr = 0;
 
-  for ( result_e i = RESULT_NONE; i < RESULT_MAX; i++ )
-  {
-    idr += direct_results[ i ].iteration_count;
-    itr += tick_results[ i ].iteration_count;
+  range::for_each( direct_results, [ &idr, &iaa, &ita ]( stats_results_t& r ) {
+    idr += r.iteration_count;
+    iaa += r.iteration_actual_amount;
+    ita += r.iteration_total_amount;
 
-    iaa += direct_results[ i ].iteration_actual_amount + tick_results[ i ].iteration_actual_amount;
-    ita += direct_results[ i ].iteration_total_amount + tick_results[ i ].iteration_total_amount;
+    r.datacollection_end();
+  } );
 
-    direct_results[ i ].datacollection_end();
-    tick_results[ i ].datacollection_end();
-  }
+  range::for_each( tick_results, [ &itr, &iaa, &ita ]( stats_results_t& r ) {
+    itr += r.iteration_count;
+    iaa += r.iteration_actual_amount;
+    ita += r.iteration_total_amount;
 
-  for ( full_result_e i = FULLTYPE_NONE; i < FULLTYPE_MAX; i++ )
-  {
-    direct_results_detail[ i ].datacollection_end();
-    tick_results_detail[ i ].datacollection_end();
-  }
+    r.datacollection_end();
+  } );
 
   actual_amount.add( iaa );
   total_amount.add( ita );
@@ -283,16 +260,13 @@ void stats_t::analyze()
     if ( ! a.background ) background = false;
   }
 
-  for ( result_e i = RESULT_NONE; i < RESULT_MAX; i++ )
-  {
-    direct_results[ i ].analyze( num_direct_results.mean() );
-    tick_results[ i ].analyze( num_tick_results.mean() );
-  }
-  for ( full_result_e i = FULLTYPE_NONE; i < FULLTYPE_MAX; i++ )
-  {
-    direct_results_detail[ i ].analyze( num_direct_results.mean() );
-    tick_results_detail[ i ].analyze( num_tick_results.mean() );
-  }
+  range::for_each( direct_results, [ this ]( stats_results_t& r ) {
+    r.analyze( num_direct_results.mean() );
+  } );
+
+  range::for_each( tick_results, [ this ]( stats_results_t& r ) {
+    r.analyze( num_tick_results.mean() );
+  } );
 
   portion_aps.analyze();
   portion_apse.analyze();
@@ -436,14 +410,12 @@ void stats_t::merge( const stats_t& other )
 
   for ( result_e i = RESULT_NONE; i < RESULT_MAX; ++i )
   {
-    direct_results[ i ].merge( other.direct_results[ i ] );
     tick_results[ i ].merge( other.tick_results[ i ] );
   }
 
   for ( full_result_e i = FULLTYPE_NONE; i < FULLTYPE_MAX; i++ )
   {
-    direct_results_detail[ i ].merge( other.direct_results_detail[ i ] );
-    tick_results_detail[ i ].merge( other.tick_results_detail[ i ] );
+    direct_results[ i ].merge( other.direct_results[ i ] );
   }
 
   timeline_amount.merge( other.timeline_amount );
@@ -452,8 +424,15 @@ void stats_t::merge( const stats_t& other )
 bool stats_t::has_direct_amount_results() const
 {
   return (
-      direct_results[ RESULT_HIT ].actual_amount.mean() > 0 ||
-      direct_results[ RESULT_CRIT ].actual_amount.mean() > 0 );
+      direct_results[ FULLTYPE_HIT ].actual_amount.mean() > 0 ||
+      direct_results[ FULLTYPE_HIT_BLOCK ].actual_amount.mean() > 0 ||
+      direct_results[ FULLTYPE_HIT_CRITBLOCK ].actual_amount.mean() > 0 ||
+      direct_results[ FULLTYPE_GLANCE ].actual_amount.mean() > 0 ||
+      direct_results[ FULLTYPE_GLANCE_BLOCK ].actual_amount.mean() > 0 ||
+      direct_results[ FULLTYPE_GLANCE_CRITBLOCK ].actual_amount.mean() > 0 ||
+      direct_results[ FULLTYPE_CRIT ].actual_amount.mean() > 0 ||
+      direct_results[ FULLTYPE_CRIT_BLOCK ].actual_amount.mean() > 0 ||
+      direct_results[ FULLTYPE_CRIT_CRITBLOCK ].actual_amount.mean() > 0 );
 }
 
 bool stats_t::has_tick_amount_results() const
