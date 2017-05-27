@@ -219,7 +219,8 @@ public:
 
   // Miscellaneous
   double distance_from_rune,
-         global_cinder_count;
+         global_cinder_count,
+         firestarter_time;
   bool blessing_of_wisdom;
 
   // Benefits
@@ -405,7 +406,7 @@ public:
                       * words_of_power,
                       * pyromaniac,
                       * conflagration,
-                      * fire_starter,
+                      * firestarter,
                       * ray_of_frost,
                       * lonely_winter,
                       * bone_chilling;
@@ -1954,6 +1955,22 @@ struct fire_mage_spell_t : public mage_spell_t
     if ( !ignite_exists )
     {
       p -> procs.ignite_applied -> occur();
+    }
+  }
+
+  bool firestarter_active( player_t* target ) const
+  {
+    if ( ! p() -> talents.firestarter -> ok() )
+      return false;
+
+    // Check for user-specified override.
+    if ( p() -> firestarter_time > 0 )
+    {
+      return sim -> current_time() < timespan_t::from_seconds( p() -> firestarter_time );
+    }
+    else
+    {
+      return target -> health_percentage() > p() -> talents.firestarter -> effectN( 1 ).base_value();
     }
   }
 
@@ -3717,8 +3734,7 @@ struct fireball_t : public fire_mage_spell_t
   {
     double c = fire_mage_spell_t::composite_target_crit_chance( target );
 
-    if( p() -> talents.fire_starter -> ok() && ( target -> health_percentage() >
-        p() -> talents.fire_starter -> effectN( 1 ).base_value() ) )
+    if ( firestarter_active( target ) )
     {
       c = 1.0;
     }
@@ -5556,8 +5572,7 @@ struct pyroblast_t : public fire_mage_spell_t
   {
     double c = fire_mage_spell_t::composite_target_crit_chance( target );
 
-    if( p() -> talents.fire_starter -> ok() && ( target -> health_percentage() >
-        p() -> talents.fire_starter -> effectN( 1 ).base_value() ) )
+    if ( firestarter_active( target ) )
     {
       c = 1.0;
     }
@@ -6466,7 +6481,8 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   last_bomb_target( nullptr ),
   active_meteor_burn( nullptr ),
   distance_from_rune( 0.0 ),
-  global_cinder_count( 0 ),
+  global_cinder_count( 0.0 ),
+  firestarter_time( 0.0 ),
   blessing_of_wisdom( false ),
   benefits( benefits_t() ),
   buffs( buffs_t() ),
@@ -6683,6 +6699,7 @@ bool mage_t::create_actions()
 void mage_t::create_options()
 {
   add_option( opt_float( "global_cinder_count", global_cinder_count ) );
+  add_option( opt_float( "firestarter_time", firestarter_time ) );
   add_option( opt_bool( "blessing_of_wisdom", blessing_of_wisdom ) );
   player_t::create_options();
 }
@@ -6696,7 +6713,8 @@ void mage_t::copy_from( player_t* source )
   mage_t* p = debug_cast<mage_t*>( source );
 
   global_cinder_count = p -> global_cinder_count;
-  blessing_of_wisdom = p -> blessing_of_wisdom;
+  firestarter_time    = p -> firestarter_time;
+  blessing_of_wisdom  = p -> blessing_of_wisdom;
 }
 
 // mage_t::create_pets ========================================================
@@ -6735,7 +6753,7 @@ void mage_t::init_spells()
   talents.words_of_power  = find_talent_spell( "Words of Power"  );
   talents.pyromaniac      = find_talent_spell( "Pyromaniac"      );
   talents.conflagration   = find_talent_spell( "Conflagration"   );
-  talents.fire_starter    = find_talent_spell( "Firestarter"     );
+  talents.firestarter     = find_talent_spell( "Firestarter"     );
   talents.ray_of_frost    = find_talent_spell( "Ray of Frost"    );
   talents.lonely_winter   = find_talent_spell( "Lonely Winter"   );
   talents.bone_chilling   = find_talent_spell( "Bone Chilling"   );
