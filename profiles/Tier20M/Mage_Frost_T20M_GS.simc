@@ -75,20 +75,20 @@ actions.single+=/frostbolt,if=buff.frozen_mass.remains>action.glacial_spike.exec
 actions.single+=/glacial_spike,if=cooldown.frozen_orb.remains>10
 actions.single+=/frostbolt
 
-head=crown_of_the_arcane_tempest,id=147147,ilevel=935
-neck=string_of_extracted_incisors,id=147013,ilevel=935,enchant_id=5437
-shoulders=mantle_of_the_arcane_tempest,id=147150,ilevel=935
-back=cloak_of_everburning_knowledge,id=138365,ilevel=905
-chest=robes_of_the_arcane_tempest,id=147149,ilevel=935
-wrist=oathbreakers_cuffs,id=147001,ilevel=935
-hands=gloves_of_everburning_knowledge,id=138309,ilevel=905
-waist=braided_torture_lash,id=146998,ilevel=935
-legs=leggings_of_the_arcane_tempest,id=147148,ilevel=935
-feet=emberscatter_treads,id=146986,ilevel=935
-finger1=seal_of_the_second_duumvirate,id=147195,ilevel=935
-finger2=yathaes_thumb_ring,id=147021,ilevel=935
-trinket1=charm_of_the_rising_tide,id=147002,ilevel=935
-trinket2=tome_of_unraveling_sanity,id=147019,ilevel=935
+head=crown_of_the_arcane_tempest,id=147147,bonus_id=3563
+neck=string_of_extracted_incisors,id=147013,bonus_id=3563,enchant_id=5437
+shoulders=mantle_of_the_arcane_tempest,id=147150,bonus_id=3563
+back=cloak_of_everburning_knowledge,id=138365,bonus_id=3518
+chest=robes_of_the_arcane_tempest,id=147149,bonus_id=3563
+wrist=oathbreakers_cuffs,id=147001,bonus_id=3563
+hands=gloves_of_everburning_knowledge,id=138309,bonus_id=3518
+waist=braided_torture_lash,id=146998,bonus_id=3563
+legs=leggings_of_the_arcane_tempest,id=147148,bonus_id=3563
+feet=emberscatter_treads,id=146986,bonus_id=3563
+finger1=seal_of_the_second_duumvirate,id=147195,bonus_id=3563
+finger2=yathaes_thumb_ring,id=147021,bonus_id=3563
+trinket1=charm_of_the_rising_tide,id=147002,bonus_id=3563
+trinket2=tome_of_unraveling_sanity,id=147019,bonus_id=3563
 main_hand=ebonchill,id=128862,ilevel=954
 
 # Gear Summary
