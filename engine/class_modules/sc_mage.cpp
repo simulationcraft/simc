@@ -7495,11 +7495,19 @@ void mage_t::apl_frost()
   action_priority_list_t* cooldowns    = get_action_priority_list( "cooldowns"         );
 
   default_list -> add_action( this, "Counterspell", "if=target.debuff.casting.react" );
-  default_list -> add_action( "variable,name=time_until_fof,value=10-(time-variable.iv_start-floor((time-variable.iv_start)%10)*10)" );
-  default_list -> add_action( "variable,name=fof_react,value=buff.fingers_of_frost.react" );
+  default_list -> add_action( "variable,name=time_until_fof,value=10-(time-variable.iv_start-floor((time-variable.iv_start)%10)*10)",
+    "This variable tracks the remaining time until FoF proc from Lady Vashj's Grasp. Note that it doesn't check whether the actor "
+    "actually has the legendary or that Icy Veins is currently active." );
+  default_list -> add_action( "variable,name=fof_react,value=buff.fingers_of_frost.react",
+    "Replacement for buff.fingers_of_frost.react. Since some of the FoFs are not random and can be anticipated (Freeze, "
+    "Lady Vashj's Grasp), we can bypass the .react check." );
   default_list -> add_action( "variable,name=fof_react,value=buff.fingers_of_frost.stack,if=equipped.lady_vashjs_grasp&buff.icy_veins.up&variable.time_until_fof>9|prev_off_gcd.freeze" );
-  default_list -> add_action( this, "Ice Lance", "if=variable.fof_react=0&prev_gcd.1.flurry" );
-  default_list -> add_action( this, "Time Warp", "if=(time=0&buff.bloodlust.down)|(buff.bloodlust.down&equipped.132410&(cooldown.icy_veins.remains<1|target.time_to_die<50))" );
+  default_list -> add_action( this, "Ice Lance", "if=variable.fof_react=0&prev_gcd.1.flurry",
+    "Free Ice Lance after Flurry. This action has rather high priority to ensure that we don't cast Rune of Power, Ray of Frost, "
+    "etc. after Flurry and break up the combo. If FoF was already active, we do not lose anything by delaying the Ice Lance." );
+  default_list -> add_action( this, "Time Warp", "if=buff.bloodlust.down&(buff.exhaustion.down|equipped.shard_of_the_exodar)&(time=0|cooldown.icy_veins.remains<1|target.time_to_die<50)",
+    "Time Warp is used right at the start. If the actor has Shard of the Exodar, try to synchronize the second Time Warp with "
+    "Icy Veins. If the target is about to die, use Time Warp regardless." );
   default_list -> add_action( mage_t::get_special_use_items( "horn_of_valor" ) );
   default_list -> add_action( mage_t::get_special_use_items( "obelisk_of_the_void" ) );
   default_list -> add_action( mage_t::get_special_use_items( "mrrgrias_favor" ) );
@@ -7509,38 +7517,57 @@ void mage_t::apl_frost()
   default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>=4" );
   default_list -> add_action( "call_action_list,name=single" );
 
-  single -> add_talent( this, "Ice Nova", "if=debuff.winters_chill.up" );
+  single -> add_talent( this, "Ice Nova", "if=debuff.winters_chill.up",
+    "In some circumstances, it is possible for both Ice Lance and Ice Nova to benefit from a single Winter's Chill." );
   single -> add_action( this, "Frostbolt", "if=prev_off_gcd.water_jet" );
-  single -> add_action( "water_jet,if=prev_gcd.1.frostbolt&buff.fingers_of_frost.stack<(2+artifact.icy_hand.enabled)&buff.brain_freeze.react=0" );
+  single -> add_action( "water_jet,if=prev_gcd.1.frostbolt&buff.fingers_of_frost.stack<(2+artifact.icy_hand.enabled)&buff.brain_freeze.react=0",
+    "Basic Water Jet combo. Since Water Jet can only be used if the actor is not casting, we use it right after Frostbolt is executed. "
+    "At the default distance, Frostbolt travels slightly over 1 s, giving Water Jet enough time to apply the DoT (Water Jet's cast time "
+    "is 1 s, with haste scaling). The APL then forces another Frostbolt to guarantee getting both FoFs from the Water Jet. This works for "
+    "most haste values (roughly from 0% to 160%). When changing the default distance, great care must be taken otherwise this action "
+    "won't produce two FoFs." );
   single -> add_talent( this, "Ray of Frost", "if=buff.icy_veins.up|(cooldown.icy_veins.remains>action.ray_of_frost.cooldown&buff.rune_of_power.down)" );
-  single -> add_action( this, "Flurry", "if=prev_gcd.1.ebonbolt|prev_gcd.1.frostbolt&buff.brain_freeze.react" );
-  single -> add_action( this, "Blizzard", "if=cast_time=0&active_enemies>1&variable.fof_react<3" );
+  single -> add_action( this, "Flurry", "if=prev_gcd.1.ebonbolt|(prev_gcd.1.frostbolt|prev_gcd.1.glacial_spike)&buff.brain_freeze.react",
+    "Winter's Chill from Flurry can apply to the spell cast right before (provided the travel time is long enough). This can be "
+    "exploited to a great effect with Ebonbolt, Glacial Spike (which deal a lot of damage by themselves) and Frostbolt (as a "
+    "guaranteed way to proc Frozen Veins and Chain Reaction)." );
+  single -> add_action( this, "Blizzard", "if=cast_time=0&active_enemies>1&variable.fof_react<3",
+    "Freezing Rain Blizzard. While the normal Blizzard action is usually enough, right after Frozen Orb the actor will be "
+    "getting a lot of FoFs, which might delay Blizzard to the point where we miss out on Freezing Rain. Therefore, if we are "
+    "not at a risk of overcapping on FoF, use Blizzard before using Ice Lance." );
   single -> add_talent( this, "Frost Bomb", "if=debuff.frost_bomb.remains<action.ice_lance.travel_time&variable.fof_react>0" );
   single -> add_action( this, "Ice Lance", "if=variable.fof_react>0&cooldown.icy_veins.remains>10|variable.fof_react>2" );
   single -> add_action( this, "Frozen Orb" );
   single -> add_talent( this, "Ice Nova" );
   single -> add_talent( this, "Comet Storm" );
-  single -> add_action( this, "Blizzard", "if=active_enemies>2|active_enemies>1&!(talent.glacial_spike.enabled&talent.splitting_ice.enabled)|(buff.zannesu_journey.stack=5&buff.zannesu_journey.remains>cast_time)" );
+  single -> add_action( this, "Blizzard", "if=active_enemies>2|active_enemies>1&!(talent.glacial_spike.enabled&talent.splitting_ice.enabled)|(buff.zannesu_journey.stack=5&buff.zannesu_journey.remains>cast_time)",
+    "Against low number of targets, Blizzard is used as a filler. Use it only against 2 or more targets, 3 or more when using Glacial "
+    "Spike and Splitting Ice. Zann'esu buffed Blizzard is used only at 5 stacks." );
   single -> add_action( this, "Ebonbolt", "if=buff.brain_freeze.react=0" );
   single -> add_talent( this, "Glacial Spike" );
   single -> add_action( this, "Frostbolt" );
 
   aoe -> add_action( this, "Frostbolt", "if=prev_off_gcd.water_jet" );
-  aoe -> add_action( this, "Frozen Orb" );
+  aoe -> add_action( this, "Frozen Orb", "",
+    "Make sure Frozen Orb is used before Blizzard if both are available. This is a small gain with Freezing Rain "
+    "and on par without." );
   aoe -> add_action( this, "Blizzard" );
   aoe -> add_talent( this, "Comet Storm" );
   aoe -> add_talent( this, "Ice Nova" );
   aoe -> add_action( "water_jet,if=prev_gcd.1.frostbolt&buff.fingers_of_frost.stack<(2+artifact.icy_hand.enabled)&buff.brain_freeze.react=0" );
-  aoe -> add_action( this, "Flurry", "if=prev_gcd.1.ebonbolt|prev_gcd.1.frostbolt&buff.brain_freeze.react" );
+  aoe -> add_action( this, "Flurry", "if=prev_gcd.1.ebonbolt|(prev_gcd.1.glacial_spike|prev_gcd.1.frostbolt)&buff.brain_freeze.react" );
   aoe -> add_talent( this, "Frost Bomb", "if=debuff.frost_bomb.remains<action.ice_lance.travel_time&variable.fof_react>0" );
   aoe -> add_action( this, "Ice Lance", "if=variable.fof_react>0" );
   aoe -> add_action( this, "Ebonbolt", "if=buff.brain_freeze.react=0" );
   aoe -> add_talent( this, "Glacial Spike" );
   aoe -> add_action( this, "Frostbolt" );
 
-  cooldowns -> add_talent( this, "Rune of Power", "if=cooldown.icy_veins.remains<cast_time|charges_fractional>1.9&cooldown.icy_veins.remains>10|buff.icy_veins.up|target.time_to_die.remains+5<charges_fractional*10" );
+  cooldowns -> add_talent( this, "Rune of Power", "if=cooldown.icy_veins.remains<cast_time|charges_fractional>1.9&cooldown.icy_veins.remains>10|buff.icy_veins.up|target.time_to_die.remains+5<charges_fractional*10",
+    "Rune of Power is used when going into Icy Veins and while Icy Veins are up. Outside of Icy Veins, use Rune of Power "
+    "when about to cap on charges or the target is about to die." );
   cooldowns -> add_action( "potion,if=cooldown.icy_veins.remains<1" );
-  cooldowns -> add_action( "variable,name=iv_start,value=time,if=cooldown.icy_veins.ready&buff.icy_veins.down" );
+  cooldowns -> add_action( "variable,name=iv_start,value=time,if=cooldown.icy_veins.ready&buff.icy_veins.down",
+    "Variable which tracks when Icy Veins were used. For use in time_until_fof variable." );
   cooldowns -> add_action( this, "Icy Veins", "if=buff.icy_veins.down" );
   cooldowns -> add_talent( this, "Mirror Image" );
   cooldowns -> add_action( "use_items" );
