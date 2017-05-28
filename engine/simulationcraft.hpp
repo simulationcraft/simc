@@ -8267,9 +8267,6 @@ public:
     return tick;
   }
 
-  timespan_t pulse_time() const
-  { return ground_aoe_event_t::_pulse_time(params, player() ); }
-
   bool may_pulse() const
   {
     if ( params -> n_pulses() > 0 )
@@ -8282,7 +8279,7 @@ public:
 
       if ( params -> expiration_pulse() == ground_aoe_params_t::NO_EXPIRATION_PULSE )
       {
-        return time_left >= pulse_time();
+        return time_left >= pulse_time( false );
       }
       else
       {
@@ -8291,8 +8288,8 @@ public:
     }
   }
 
-  const char* name() const override
-  { return "ground_aoe_event"; }
+  virtual timespan_t pulse_time( bool clamp = true ) const
+  { return _pulse_time( params, player(), clamp ); }
 
   virtual void schedule_event()
   {
@@ -8305,6 +8302,9 @@ public:
     }
   }
 
+  const char* name() const override
+  { return "ground_aoe_event"; }
+
   void execute() override
   {
     action_t* spell_ = params -> action();
@@ -8316,7 +8316,7 @@ public:
           params -> n_pulses() > 0
             ? ( params -> n_pulses() - current_pulse ) * pulse_time().total_seconds()
             : ( params -> duration() - ( sim().current_time() - params -> start_time() ) ).total_seconds(),
-          pulse_time().total_seconds() );
+          pulse_time( false ).total_seconds() );
     }
 
     // Manually snapshot the state so we can adjust the x and y coordinates of the snapshotted
@@ -8335,11 +8335,11 @@ public:
     {
       // Don't clamp the pulse time here, since we need to figure out the fractional multiplier for
       // the last pulse.
-      auto pulse_time = _pulse_time( params, player(), false );
+      auto time = pulse_time( false );
       auto time_left = _time_left( params, player() );
-      if ( pulse_time > time_left )
+      if ( time > time_left )
       {
-        double multiplier = time_left / pulse_time;
+        double multiplier = time_left / time;
         pulse_state -> da_multiplier *= multiplier;
         pulse_state -> ta_multiplier *= multiplier;
       }
