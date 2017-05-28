@@ -1652,8 +1652,9 @@ struct sim_t : private sc_thread_t
   {
     // Legion
     int infernal_cinders_users;
+    int engine_of_eradication_orbs;
 
-    expansion_opt_t() : infernal_cinders_users( 1 )
+    expansion_opt_t() : infernal_cinders_users( 1 ), engine_of_eradication_orbs( 3 )
     { }
   } expansion_opts;
 
@@ -4358,6 +4359,8 @@ struct player_t : public actor_t
   specialization_e specialization() const { return _spec; }
   const char* primary_tree_name() const;
   virtual stat_e normalize_by() const;
+
+  virtual stat_e primary_stat() const { return STAT_NONE; }
 
   virtual double health_percentage() const;
   virtual double max_health() const;

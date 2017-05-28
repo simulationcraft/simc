@@ -909,6 +909,7 @@ public:
   void      create_options() override;
   resource_e primary_resource() const override { return RESOURCE_RUNIC_POWER; }
   role_e    primary_role() const override;
+  stat_e    primary_stat() const override;
   stat_e    convert_hybrid_stat( stat_e s ) const override;
   void      invalidate_cache( cache_e ) override;
   double    resource_loss( resource_e resource_type, double amount, gain_t* g = nullptr, action_t* a = nullptr ) override;
@@ -8646,6 +8647,17 @@ role_e death_knight_t::primary_role() const
     return ROLE_TANK;
 
   return ROLE_ATTACK;
+}
+
+// death_knight_t::primary_stat ==================================================
+
+stat_e death_knight_t::primary_stat() const
+{
+  switch ( specialization() )
+  {
+    case DEATH_KNIGHT_BLOOD: return STAT_STAMINA;
+    default:                 return STAT_STRENGTH;
+  }
 }
 
 // death_knight_t::create_options ================================================

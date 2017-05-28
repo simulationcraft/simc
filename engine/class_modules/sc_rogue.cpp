@@ -755,6 +755,7 @@ struct rogue_t : public player_t
   resource_e primary_resource() const override { return RESOURCE_ENERGY; }
   role_e    primary_role() const override  { return ROLE_ATTACK; }
   stat_e    convert_hybrid_stat( stat_e s ) const override;
+  stat_e    primary_stat() const override { return STAT_AGILITY; }
 
   // Default consumables
   std::string default_potion() const override;
