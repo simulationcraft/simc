@@ -7544,14 +7544,14 @@ struct proc_resource_t : public proc_action_t<spell_t>
 };
 
 template <typename CLASS, typename ...ARGS>
-action_t* create_proc_action( const special_effect_t& effect, ARGS&&... args )
+action_t* create_proc_action( const std::string& name, const special_effect_t& effect, ARGS&&... args )
 {
   auto player = effect.player;
-  auto a = player -> find_action( effect.name() );
+  auto a = player -> find_action( name );
 
   if ( a == nullptr )
   {
-    a = player -> create_proc_action( effect.name(), effect );
+    a = player -> create_proc_action( name, effect );
   }
 
   if ( a == nullptr )
