@@ -8037,9 +8037,6 @@ void mage_t::arise()
   }
 }
 
-// Copypasta, execept for target selection. This is a massive kludge. Buyer
-// beware!
-
 // mage_t::create_expression ================================================
 
 expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
@@ -8161,6 +8158,41 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
     return new icicles_expr_t( *this );
   }
 
+  // Firestarter expressions ==================================================
+  if ( util::str_compare_ci( name_str, "firestarter_active" ) )
+  {
+    struct firestarter_expr_t : public mage_expr_t
+    {
+      action_t* a;
+
+      firestarter_expr_t( mage_t& m, action_t* a ) :
+        mage_expr_t( "firestarter_active", m ), a( a )
+      { }
+
+      double evaluate()
+      {
+        if ( ! mage.talents.firestarter -> ok() )
+          return 0;
+
+        if ( mage.firestarter_time > timespan_t::zero() )
+        {
+          return static_cast<double>(
+            mage.sim -> current_time() <
+            mage.firestarter_time );
+        }
+        else
+        {
+          return static_cast<double>(
+            a -> target -> health_percentage() >
+            mage.talents.firestarter -> effectN( 1 ).base_value() );
+        }
+      }
+    };
+
+    return new firestarter_expr_t( *this, a );
+  }
+
+  // Ground AoE expressions ===================================================
   std::vector<std::string> splits = util::string_split( name_str, "." );
   if ( splits.size() == 3 && util::str_compare_ci( splits[0], "ground_aoe" ) )
   {
