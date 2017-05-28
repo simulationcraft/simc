@@ -1635,10 +1635,10 @@ struct consecration_t : public paladin_spell_t
         .x( execute_state -> action -> player -> x_position )
         .y( execute_state -> action -> player -> y_position )
         // TODO: this is a hack that doesn't work properly, fix this correctly
-        .duration( ground_effect_duration )
+        .duration( ground_effect_duration * ( ( p() -> specialization() == PALADIN_RETRIBUTION ) ? ( p() -> composite_spell_haste() ) : 1 ) )
         .start_time( sim -> current_time()  )
         .action( damage_tick )
-        .hasted( ground_aoe_params_t::SPELL_HASTE ), true );
+        .hasted( ( p() -> specialization() == PALADIN_RETRIBUTION ) ? ( ground_aoe_params_t::SPELL_HASTE ) : ( ground_aoe_params_t::NOTHING ) ), true );
 
     // push the pointer to the list of active consecrations
     // execute() and schedule_event() methods of paladin_ground_aoe_t handle updating the list
