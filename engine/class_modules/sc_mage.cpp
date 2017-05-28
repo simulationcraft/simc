@@ -7520,7 +7520,7 @@ void mage_t::apl_frost()
     "Variable which tracks when Icy Veins were used. For use in time_until_fof variable." );
   default_list -> add_action( "variable,name=time_until_fof,value=10-(time-variable.iv_start-floor((time-variable.iv_start)%10)*10)",
     "This variable tracks the remaining time until FoF proc from Lady Vashj's Grasp. Note that it doesn't check whether the actor "
-    "actually has the legendary or that Icy Veins is currently active." );
+    "actually has the legendary or that Icy Veins are currently active." );
   default_list -> add_action( "variable,name=fof_react,value=buff.fingers_of_frost.react",
     "Replacement for buff.fingers_of_frost.react. Since some of the FoFs are not random and can be anticipated (Freeze, "
     "Lady Vashj's Grasp), we can bypass the .react check." );
