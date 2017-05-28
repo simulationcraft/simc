@@ -99,7 +99,7 @@ feet=slippers_of_enduring_vigilance,id=146987,ilevel=930
 finger1=seal_of_the_second_duumvirate,id=147195,ilevel=940
 finger2=band_of_rescinded_truths,id=147194,ilevel=930
 trinket1=tarnished_sentinel_medallion,id=147017,ilevel=930
-trinket2=tome_of_unraveling_sanity,id=147019,ilevel=940
+trinket2=terror_from_below,id=147016,ilevel=930
 main_hand=felomelorn,id=128820,ilevel=954
 off_hand=heart_of_the_phoenix,id=133959
 
@@ -114,3 +114,4 @@ off_hand=heart_of_the_phoenix,id=133959
 # gear_armor=2163
 # set_bonus=tier20_2pc=1
 # set_bonus=tier20_4pc=1
+
