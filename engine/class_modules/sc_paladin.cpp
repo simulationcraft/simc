@@ -1632,7 +1632,7 @@ struct consecration_t : public paladin_spell_t
         .duration( ground_effect_duration )
         .start_time( sim -> current_time()  )
         .action( damage_tick )
-        .hasted( ground_aoe_params_t::NOTHING ), true );
+        .hasted( ground_aoe_params_t::SPELL_HASTE ), true );
 
     // push the pointer to the list of active consecrations
     // execute() and schedule_event() methods of paladin_ground_aoe_t handle updating the list
