@@ -219,8 +219,8 @@ public:
 
   // Miscellaneous
   double distance_from_rune,
-         global_cinder_count,
-         firestarter_time;
+         global_cinder_count;
+  timespan_t firestarter_time;
   int blessing_of_wisdom_count;
 
   // Benefits
@@ -1964,9 +1964,9 @@ struct fire_mage_spell_t : public mage_spell_t
       return false;
 
     // Check for user-specified override.
-    if ( p() -> firestarter_time > 0 )
+    if ( p() -> firestarter_time > timespan_t::zero() )
     {
-      return sim -> current_time() < timespan_t::from_seconds( p() -> firestarter_time );
+      return sim -> current_time() < p() -> firestarter_time;
     }
     else
     {
@@ -6482,7 +6482,7 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   active_meteor_burn( nullptr ),
   distance_from_rune( 0.0 ),
   global_cinder_count( 0.0 ),
-  firestarter_time( 0.0 ),
+  firestarter_time( timespan_t::zero() ),
   blessing_of_wisdom_count( 0 ),
   benefits( benefits_t() ),
   buffs( buffs_t() ),
@@ -6699,7 +6699,7 @@ bool mage_t::create_actions()
 void mage_t::create_options()
 {
   add_option( opt_float( "global_cinder_count", global_cinder_count ) );
-  add_option( opt_float( "firestarter_time", firestarter_time ) );
+  add_option( opt_timespan( "firestarter_time", firestarter_time ) );
   add_option( opt_int( "blessing_of_wisdom_count", blessing_of_wisdom_count ) );
   player_t::create_options();
 }
