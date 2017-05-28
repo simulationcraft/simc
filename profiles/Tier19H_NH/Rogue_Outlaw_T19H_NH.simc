@@ -40,7 +40,7 @@ actions+=/variable,name=rtb_reroll,value=(ptr&variable.rtb_reroll_ptr)|(!ptr&var
 # Condition to use Saber Slash when not rerolling RtB or when using SnD
 actions+=/variable,name=ss_useable_noreroll,value=(combo_points<5+talent.deeper_stratagem.enabled-(buff.broadsides.up|buff.jolly_roger.up)-(talent.alacrity.enabled&buff.alacrity.stack<=4))
 # Condition to use Saber Slash, when you have RtB or not
-actions+=/variable,name=ss_useable,value=(talent.anticipation.enabled&combo_points<4)|(!talent.anticipation.enabled&((variable.rtb_reroll&combo_points<4+talent.deeper_stratagem.enabled)|(!variable.rtb_reroll&variable.ss_useable_noreroll)))
+actions+=/variable,name=ss_useable,value=(talent.anticipation.enabled&combo_points<5)|(!talent.anticipation.enabled&((variable.rtb_reroll&combo_points<4+talent.deeper_stratagem.enabled)|(!variable.rtb_reroll&variable.ss_useable_noreroll)))
 # Normal rotation
 actions+=/call_action_list,name=bf
 actions+=/call_action_list,name=cds

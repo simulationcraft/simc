@@ -8297,6 +8297,17 @@ bool player_t::parse_artifact_wowhead( const std::string& artifact_string )
   }
 
   unsigned artifact_id = util::to_unsigned( splits[ 0 ] );
+  if ( artifact_id == 0 )
+  {
+    return false;
+  }
+
+  auto spec_artifact_id = dbc.artifact_by_spec( specialization() );
+  if ( specialization() != SPEC_NONE && spec_artifact_id != artifact_id )
+  {
+    return false;
+  }
+
   size_t n_relics = 0, n_excess_points = 0, relic_idx = 0;
   for ( size_t i = 1; i < 5; ++i )
   {
@@ -8322,31 +8333,47 @@ bool player_t::parse_artifact_wowhead( const std::string& artifact_string )
     if ( pos != artifact_powers.end() )
     {
       artifact.points[ pos - artifact_powers.begin() ].first = rank;
-      // Sanitize the input on any ranks > 3 so that we can get accurate purchased ranks for the
-      // user, even if the string contains zero relic ids. Note the power type check, power type 5
-      // is the 20 rank "final" power.
-      if ( n_relics == 0 && rank > 3 && ( *pos ) -> power_type != 5 )
-      {
-        n_excess_points += rank - 3;
-      }
-
       artifact.n_points += rank;
+      artifact.n_purchased_points += rank;
     }
   }
 
-  if ( artifact.n_points < ( n_relics == 0 ? n_excess_points : n_relics ) )
-  {
-    artifact.n_purchased_points = 0;
-  }
-  else
-  {
-    artifact.n_purchased_points = artifact.n_points - static_cast<unsigned int>(( n_relics == 0 ? n_excess_points : n_relics ));
-  }
+  // Adjust artifact points based on relic traits
+  range::for_each( artifact.relics, [ this, artifact_id, &artifact_powers ]( unsigned item_id ) {
+    if ( item_id == 0 )
+    {
+      return;
+    }
+
+    auto relic_data = dbc.artifact_relic_rank_index( artifact_id, item_id );
+    if ( relic_data.first == 0 || relic_data.second == 0 )
+    {
+      return;
+    }
+
+    // Trait internal index
+    auto pos = range::find_if( artifact_powers,
+                               [ &relic_data ]( const artifact_power_data_t* power_data ) {
+                                 return power_data -> id == relic_data.first;
+                               } );
+
+    if ( pos != artifact_powers.end() )
+    {
+      auto index = pos - artifact_powers.begin();
+      auto actual = std::min( as<uint8_t>( relic_data.second ), artifact.points[ index ].first );
+
+      artifact.points[ index ].first -= actual;
+      artifact.points[ index ].second += actual;
+
+      artifact.n_purchased_points -= actual;
+    }
+  } );
 
   // The initial power does not count towards the purchased points
   if ( artifact.n_purchased_points > 0 )
   {
     artifact.n_purchased_points--;
+    artifact.n_points--;
   }
 
   return true;
@@ -10517,18 +10544,37 @@ void player_t::analyze( sim_t& s )
 
   // Damage Timelines =======================================================
 
-  collected_data.timeline_dmg.init( max_buckets );
-  bool is_hps = primary_role() == ROLE_HEAL;
-  range::for_each( tmp_stats_list, [ this, is_hps, max_buckets ]( stats_t* stats ) {
-    if ( ( stats -> type != STATS_DMG ) == is_hps )
-    {
-      size_t j_max = std::min( max_buckets, stats -> timeline_amount.data().size() );
-      for ( size_t j = 0; j < j_max; j++ )
+  if ( sim -> report_details != 0 )
+  {
+    collected_data.timeline_dmg.init( max_buckets );
+    bool is_hps = primary_role() == ROLE_HEAL;
+    range::for_each( tmp_stats_list, [ this, is_hps, max_buckets ]( stats_t* stats ) {
+      if ( stats -> timeline_amount == nullptr )
       {
-        collected_data.timeline_dmg.add( j, stats -> timeline_amount.data()[ j ] );
+        return;
       }
+
+      if ( ( stats -> type != STATS_DMG ) == is_hps )
+      {
+        size_t j_max = std::min( max_buckets, stats -> timeline_amount -> data().size() );
+        for ( size_t j = 0; j < j_max; j++ )
+        {
+          collected_data.timeline_dmg.add( j, stats -> timeline_amount -> data()[ j ] );
+        }
+      }
+    } );
+  }
+  else
+  {
+    if ( ! sim -> single_actor_batch )
+    {
+      collected_data.timeline_dmg.adjust( *sim );
     }
-  } );
+    else
+    {
+      collected_data.timeline_dmg.adjust( collected_data.fight_length );
+    }
+  }
 
   recreate_talent_str( s.talent_format );
 

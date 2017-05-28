@@ -375,6 +375,22 @@ js::sc_js_t to_json( result_e i, const stats_t::stats_results_t& sr )
   node.set( "pct", sr.pct );
   return node;
 }
+
+js::sc_js_t to_json( full_result_e i, const stats_t::stats_results_t& sr )
+{
+  js::sc_js_t node;
+  node.set( "result", util::full_result_type_string( i ) );
+  node.set( "actual_amount", to_json( sr.actual_amount ) );
+  node.set( "avg_actual_amount", to_json( sr.avg_actual_amount ) );
+  node.set( "total_amount", to_json( sr.total_amount ) );
+  node.set( "fight_actual_amount", to_json( sr.fight_actual_amount ) );
+  node.set( "fight_total_amount", to_json( sr.fight_total_amount ) );
+  node.set( "overkill_pct", to_json( sr.overkill_pct ) );
+  node.set( "count", to_json( sr.count ) );
+  node.set( "pct", sr.pct );
+  return node;
+}
+
 /*
 js::sc_js_t to_json( const benefit_t& b )
 {
@@ -457,16 +473,19 @@ void stats_to_json( JsonOutput root, const player_t& p )
 
     for ( full_result_e r = FULLTYPE_NONE; r < FULLTYPE_MAX; ++r )
     {
-      if ( s -> direct_results_detail[ r ].count.mean() != 0 )
+      if ( s -> direct_results[ r ].count.mean() != 0 )
       {
         to_json( node[ "direct_results" ][ util::full_result_type_string( r ) ],
-                 s -> direct_results_detail[ r ] );
+                 s -> direct_results[ r ] );
       }
+    }
 
-      if ( s -> tick_results_detail[ r ].count.mean() != 0 )
+    for ( result_e r = RESULT_NONE; r < RESULT_MAX; ++r )
+    {
+      if ( s -> tick_results[ r ].count.mean() != 0 )
       {
-        to_json( node[ "tick_results" ][ util::full_result_type_string( r ) ],
-                 s -> tick_results_detail[ r ] );
+        to_json( node[ "tick_results" ][ util::result_type_string( r ) ],
+                 s -> tick_results[ r ] );
       }
     }
   } );
@@ -519,13 +538,13 @@ js::sc_js_t to_json( const stats_t& s )
   node.set( "total_amount", to_json( s.total_amount ) );
   node.set( "portion_aps", to_json( s.portion_aps ) );
   node.set( "portion_apse", to_json( s.portion_apse ) );
-  for ( result_e i = RESULT_NONE; i < RESULT_MAX; ++i )
+  for ( full_result_e i = FULLTYPE_NONE; i < FULLTYPE_MAX; ++i )
   {
     node.add( "direct_results", to_json( i, s.direct_results[ i ] ) );
-    node.add( "direct_results_detail",
-              to_json( i, s.direct_results_detail[ i ] ) );
+  }
+  for ( result_e i = RESULT_NONE; i < RESULT_MAX; ++i )
+  {
     node.add( "tick_results", to_json( i, s.tick_results[ i ] ) );
-    node.add( "tick_results_detail", to_json( i, s.tick_results_detail[ i ] ) );
   }
   return node;
 }

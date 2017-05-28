@@ -677,8 +677,9 @@ public:
   void      create_pets() override;
   expr_t* create_expression( action_t*, const std::string& name ) override;
   resource_e primary_resource() const override { return RESOURCE_MANA; }
-  role_e primary_role() const override;
-  stat_e convert_hybrid_stat( stat_e s ) const override;
+  role_e    primary_role() const override;
+  stat_e    primary_stat() const override;
+  stat_e    convert_hybrid_stat( stat_e s ) const override;
   void      arise() override;
   void      reset() override;
   void      merge( player_t& other ) override;
@@ -8198,7 +8199,19 @@ role_e shaman_t::primary_role() const
   return player_t::primary_role();
 }
 
+// shaman_t::primary_stat ==================================================
+
+stat_e shaman_t::primary_stat() const
+{
+  switch ( specialization() )
+  {
+    case SHAMAN_ENHANCEMENT: return STAT_AGILITY;
+    default:                 return STAT_INTELLECT;
+  }
+}
+
 // shaman_t::convert_hybrid_stat ===========================================
+
 stat_e shaman_t::convert_hybrid_stat( stat_e s ) const
 {
   switch ( s )

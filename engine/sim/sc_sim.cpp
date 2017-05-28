@@ -2318,11 +2318,14 @@ bool sim_t::init()
   }
   else if ( timewalk > 0 )
   {
-    switch ( timewalk )
+    if ( scale_to_itemlevel != -1 )
     {
-    case 85: scale_to_itemlevel = 300; break;
-    case 80: scale_to_itemlevel = 160; break;
-    case 70: scale_to_itemlevel = 95;  break;
+      switch ( timewalk )
+      {
+        case 85: scale_to_itemlevel = 300; break;
+        case 80: scale_to_itemlevel = 160; break;
+        case 70: scale_to_itemlevel = 95;  break;
+      }
     }
     scale_itemlevel_down_only = true;
   }
@@ -3221,6 +3224,7 @@ void sim_t::create_options()
 
   // Legion
   add_option( opt_int( "legion.infernal_cinders_users", expansion_opts.infernal_cinders_users, 1, 20 ) );
+  add_option( opt_int( "legion.engine_of_eradication_orbs", expansion_opts.engine_of_eradication_orbs, 0, 3 ) );
 }
 
 // sim_t::parse_option ======================================================

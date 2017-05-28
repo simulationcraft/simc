@@ -479,6 +479,8 @@ public:
 
     buff_t* frozen_pulse;
 
+    buff_t* death_and_decay_tick;
+
     stat_buff_t* t19oh_8pc;
     buff_t* skullflowers_haemostasis;
     haste_buff_t* sephuzs_secret;
@@ -907,6 +909,7 @@ public:
   void      create_options() override;
   resource_e primary_resource() const override { return RESOURCE_RUNIC_POWER; }
   role_e    primary_role() const override;
+  stat_e    primary_stat() const override;
   stat_e    convert_hybrid_stat( stat_e s ) const override;
   void      invalidate_cache( cache_e ) override;
   double    resource_loss( resource_e resource_type, double amount, gain_t* g = nullptr, action_t* a = nullptr ) override;
@@ -4113,6 +4116,26 @@ struct dark_transformation_t : public death_knight_spell_t
   }
 };
 
+struct death_and_decay_tick_t final : public death_knight_spell_t
+{
+  death_and_decay_tick_t( death_knight_t* p, const std::string& options_str ) :
+    death_knight_spell_t( "death_and_decay", p, p -> find_specialization_spell( "Death and Decay" ) )
+  {
+    parse_options( options_str );
+    base_tick_time = timespan_t::from_seconds( 1.0 );
+    hasted_ticks   = false;
+  }
+
+  void tick( dot_t* d ) override
+  {
+    death_knight_spell_t::tick( d );
+    if (d->state->result_amount > 0 && p() -> talent.rapid_decomposition -> ok())
+    {
+      energize_amount += ( p() -> talent.rapid_decomposition -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) );
+    }
+  }
+};
+
 // Death and Decay ==========================================================
 
 struct death_and_decay_t : public death_knight_spell_t
@@ -4159,6 +4182,7 @@ struct death_and_decay_t : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     p() -> buffs.crimson_scourge -> decrement();
+    p() -> buffs.death_and_decay_tick -> trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -5179,49 +5203,37 @@ struct marrowrend_t : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::execute();
 
+    int base = data().effectN( 3 ).base_value();
+    int amount = base;
+
     if ( p() -> buffs.dancing_rune_weapon -> check() )
     {
       p() -> pets.dancing_rune_weapon -> ability.marrowrend -> set_target( execute_state -> target );
       p() -> pets.dancing_rune_weapon -> ability.marrowrend -> execute();
 
-      // rattling bones 30% chance to get extra charge
-      if ( rng().roll( p() -> artifact.rattling_bones.percent() ) )
+      // gain an extra charge for each DRW
+      if ( rng().roll( p() -> artifact.rattling_bones.percent() ) &&  p() -> artifact.rattling_bones.rank())
       {
-        // while DRW is up your marrowrend gens an extra charge (double for each of the weapons)
-        // 5 + 5 = 10 (+1 from your actual weapon) = 11
-        if ( p() -> artifact.mouth_of_hell.rank() )
-        {
-          p() -> buffs.bone_shield -> trigger( 10 );
-        }
-        else
-        {
-          // base 4 + 4 = 8 from each DRW
-          p() -> buffs.bone_shield -> trigger( 8 );
-        }
+        amount += 2;
+      }
+
+      if ( p() -> artifact.mouth_of_hell.rank() )
+      {
+        // while DRW is up your marrowrend gens an extra charge
+        // (((base gain + 1 extra from MoH) * 2 for each DRW) + 1 for your actiul weapon)
+        amount += (((base + 1) * 2) + 1);
       }
       else
       {
-        // 4 + 4 = 8 (+1 from your actual weapon) = 9
-        if ( p() -> artifact.mouth_of_hell.rank() )
-        {
-          p() -> buffs.bone_shield -> trigger( 9 );
-        }
-        else
-        {
-          // base 3 + 3 = 6 from each DRW
-          p() -> buffs.bone_shield -> trigger( 6 );
-        }
+        amount += (base * 2);
       }
     }
 
-    if ( rng().roll( p() -> artifact.rattling_bones.percent() ) )
+    if ( rng().roll( p() -> artifact.rattling_bones.percent() ) &&  p() -> artifact.rattling_bones.rank())
     {
-      p() -> buffs.bone_shield -> trigger( 4 );
+      amount += 1;
     }
-    else
-    {
-      p() -> buffs.bone_shield -> trigger( data().effectN( 3 ).base_value() );
-    }
+    p() -> buffs.bone_shield -> trigger( amount );
 
     if ( execute_state -> result_amount > 0 && unholy_coil )
     {
@@ -7024,6 +7036,7 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   if ( name == "marrowrend"               ) return new marrowrend_t               ( this, options_str );
   if ( name == "vampiric_blood"           ) return new vampiric_blood_t           ( this, options_str );
   if ( name == "consumption"              ) return new consumption_t              ( this, options_str );
+  if ( name == "death_and_decay_tick"     ) return new death_and_decay_tick_t     ( this, options_str );
 
   // Frost Actions
   if ( name == "empower_rune_weapon"      ) return new empower_rune_weapon_t      ( this, options_str );
@@ -8069,6 +8082,8 @@ void death_knight_t::create_buffs()
   buffs.t20_4pc_frost = buff_creator_t( this, "t20_4pc_frost" )
     .default_value( 0.01 )
     .chance( sets -> has_set_bonus( DEATH_KNIGHT_FROST, T20, B4 ) );
+    
+  buffs.death_and_decay_tick = buff_creator_t( this, "death_and_decay_tick", find_spell( 43265 ) );
 }
 
 // death_knight_t::init_gains ===============================================
@@ -8632,6 +8647,17 @@ role_e death_knight_t::primary_role() const
     return ROLE_TANK;
 
   return ROLE_ATTACK;
+}
+
+// death_knight_t::primary_stat ==================================================
+
+stat_e death_knight_t::primary_stat() const
+{
+  switch ( specialization() )
+  {
+    case DEATH_KNIGHT_BLOOD: return STAT_STAMINA;
+    default:                 return STAT_STRENGTH;
+  }
 }
 
 // death_knight_t::create_options ================================================

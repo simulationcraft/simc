@@ -99,6 +99,7 @@ public:
   const special_effect_t* justice_gaze;
   const special_effect_t* chain_of_thrayn;
   const special_effect_t* ashes_to_dust;
+  const special_effect_t* scarlet_inquisitors_expurgation;
   const special_effect_t* ferren_marcuss_strength;
   const special_effect_t* saruans_resolve;
   const special_effect_t* gift_of_the_golden_valkyr;
@@ -143,6 +144,8 @@ public:
     stat_buff_t* seraphim;
     buff_t* whisper_of_the_nathrezim;
     buffs::liadrins_fury_unleashed_t* liadrins_fury_unleashed;
+    buff_t* scarlet_inquisitors_expurgation_driver;
+    buff_t* scarlet_inquisitors_expurgation;
 
     // Set Bonuses
     buff_t* vindicators_fury;     // WoD Ret PVP 4-piece
@@ -255,10 +258,10 @@ public:
     const spell_data_t* justice_gaze;
     const spell_data_t* chain_of_thrayn;
     const spell_data_t* ashes_to_dust;
-  const spell_data_t* ferren_marcuss_strength;
-  const spell_data_t* saruans_resolve;
-  const spell_data_t* gift_of_the_golden_valkyr;
-  const spell_data_t* heathcliffs_immortality;
+    const spell_data_t* ferren_marcuss_strength;
+    const spell_data_t* saruans_resolve;
+    const spell_data_t* gift_of_the_golden_valkyr;
+    const spell_data_t* heathcliffs_immortality;
     const spell_data_t* consecration_bonus;
     const spell_data_t* blessing_of_the_ashbringer;
   } spells;
@@ -421,6 +424,7 @@ public:
     liadrins_fury_unleashed = nullptr;
     chain_of_thrayn = nullptr;
     ashes_to_dust = nullptr;
+    scarlet_inquisitors_expurgation = nullptr;
     justice_gaze = nullptr;
     ferren_marcuss_strength = nullptr;
     saruans_resolve = nullptr;
@@ -462,6 +466,8 @@ public:
           return spell->id() == 197646; // Divine Purpose
         case PALADIN_PROTECTION:
           return spell->id() == 152261; // Holy Shield
+        default:
+          return false;
         }
       }
       return false;
@@ -1529,7 +1535,7 @@ struct blessed_hammer_t : public paladin_spell_t
 
     add_child( hammer );
   }
-  
+
 
   void execute() override
   {
@@ -1621,18 +1627,32 @@ struct consecration_t : public paladin_spell_t
   {
     paladin_spell_t::execute();
 
+    paladin_ground_aoe_t* alt_aoe = nullptr;
     // create a new ground aoe event
-    paladin_ground_aoe_t* alt_aoe =
+    if ( p() -> specialization() == PALADIN_RETRIBUTION ) {
+      alt_aoe =
+        make_event<paladin_ground_aoe_t>( *sim, p(), ground_aoe_params_t()
+        .target( execute_state -> target )
+        // spawn at feet of player
+        .x( execute_state -> action -> player -> x_position )
+        .y( execute_state -> action -> player -> y_position )
+        .n_pulses( 13 )
+        .start_time( sim -> current_time()  )
+        .action( damage_tick )
+        .hasted( ground_aoe_params_t::SPELL_HASTE ), true );
+    } else {
+      alt_aoe =
         make_event<paladin_ground_aoe_t>( *sim, p(), ground_aoe_params_t()
         .target( execute_state -> target )
         // spawn at feet of player
         .x( execute_state -> action -> player -> x_position )
         .y( execute_state -> action -> player -> y_position )
         // TODO: this is a hack that doesn't work properly, fix this correctly
-        .duration( ground_effect_duration )
+        .duration( ground_effect_duration ) 
         .start_time( sim -> current_time()  )
         .action( damage_tick )
         .hasted( ground_aoe_params_t::NOTHING ), true );
+    }
 
     // push the pointer to the list of active consecrations
     // execute() and schedule_event() methods of paladin_ground_aoe_t handle updating the list
@@ -3455,6 +3475,8 @@ struct divine_storm_t: public holy_power_consumer_t
     double am = holy_power_consumer_t::action_multiplier();
     if ( p() -> buffs.whisper_of_the_nathrezim -> check() )
       am *= 1.0 + p() -> buffs.whisper_of_the_nathrezim -> data().effectN( 1 ).percent();
+    if ( p() -> buffs.scarlet_inquisitors_expurgation -> up() )
+      am *= 1.0 + p() -> buffs.scarlet_inquisitors_expurgation -> check_stack_value();
     return am;
   }
 
@@ -3477,6 +3499,11 @@ struct divine_storm_t: public holy_power_consumer_t
         p() -> buffs.whisper_of_the_nathrezim -> expire();
 
       make_event<whisper_of_the_nathrezim_event_t>( *sim, p(), timespan_t::from_millis( 300 ) );
+    }
+
+    if ( p() -> scarlet_inquisitors_expurgation )
+    {
+      p() -> buffs.scarlet_inquisitors_expurgation -> expire();
     }
   }
 
@@ -4684,6 +4711,14 @@ void paladin_t::create_buffs()
   buffs.righteous_verdict              = buff_creator_t( this, "righteous_verdict", find_spell( 238996 ) );
   buffs.sacred_judgment                = buff_creator_t( this, "sacred_judgment", find_spell( 246973 ) );
 
+  buffs.scarlet_inquisitors_expurgation = buff_creator_t( this, "scarlet_inquisitors_expurgation", find_spell( 248289 ) )
+                                          .default_value( find_spell( 248289 ) -> effectN( 1 ).percent() );
+  buffs.scarlet_inquisitors_expurgation_driver = buff_creator_t( this, "scarlet_inquisitors_expurgation_driver", find_spell( 248103 ) )
+                                                 .period( find_spell( 248103 ) -> effectN( 1 ).period() )
+                                                 .quiet( true )
+                                                 .tick_callback([this](buff_t*, int, const timespan_t&) { buffs.scarlet_inquisitors_expurgation -> trigger(); })
+                                                 .tick_time_behavior( BUFF_TICK_TIME_UNHASTED );
+
   // Tier Bonuses
 
   buffs.vindicators_fury       = buff_creator_t( this, "vindicators_fury", find_spell( 165903 ) )
@@ -4983,6 +5018,21 @@ void paladin_t::generate_action_prio_list_ret()
         item_str = "use_item,name=" + items[i].name_str + ",if=!raid_event.adds.exists|raid_event.adds.in>75";
         cds -> add_action( item_str );
       }
+      else if ( items[i].name_str == "specter_of_betrayal" )
+      {
+        item_str = "use_item,name=" + items[i].name_str + ",if=(buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=15)|(cooldown.crusade.remains>5&!buff.crusade.up|cooldown.avenging_wrath.remains>5)";
+        cds -> add_action( item_str );
+      }
+      else if ( items[i].name_str == "umbral_moonglaives" )
+      {
+        item_str = "use_item,name=" + items[i].name_str + ",(buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=15)";
+        cds -> add_action( item_str );
+      }
+      else if ( items[i].name_str == "vial_of_ceaseless_toxins" )
+      {
+        item_str = "use_item,name=" + items[i].name_str + ",if=(buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=15)|(cooldown.crusade.remains>30&!buff.crusade.up|cooldown.avenging_wrath.remains>30)";
+        cds -> add_action( item_str );
+      }
       else if ( items[i].slot != SLOT_WAIST )
       {
         item_str = "use_item,name=" + items[i].name_str + ",if=(buff.avenging_wrath.up|buff.crusade.up)";
@@ -5040,6 +5090,8 @@ void paladin_t::generate_action_prio_list_ret()
   priority -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&buff.whisper_of_the_nathrezim.up&buff.whisper_of_the_nathrezim.remains<gcd*1.5&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*4)" );
   priority -> add_action( this, "Templar's Verdict", "if=cooldown.wake_of_ashes.remains<gcd*2&artifact.wake_of_ashes.enabled&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*4)" );
   priority -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&buff.whisper_of_the_nathrezim.up&buff.whisper_of_the_nathrezim.remains<gcd*1.5&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*4)" );
+  priority -> add_action( this, "Judgment", "if=dot.execution_sentence.ticking&dot.execution_sentence.remains<gcd*2&debuff.judgment.remains<gcd*2" );
+  priority -> add_talent( this, "Consecration", "if=(cooldown.blade_of_justice.remains>gcd*2|cooldown.divine_hammer.remains>gcd*2)" );
   priority -> add_action( this, "Wake of Ashes", "if=(!raid_event.adds.exists|raid_event.adds.in>15)&(holy_power<=0|holy_power=1&(cooldown.blade_of_justice.remains>gcd|cooldown.divine_hammer.remains>gcd)|holy_power=2&((cooldown.zeal.charges_fractional<=0.65|cooldown.crusader_strike.charges_fractional<=0.65)))" );
   priority -> add_action( this, "Blade of Justice", "if=holy_power<=3-set_bonus.tier20_2pc" );
   priority -> add_talent( this, "Divine Hammer", "if=holy_power<=3-set_bonus.tier20_2pc" );
@@ -6376,6 +6428,12 @@ void paladin_t::combat_begin()
   player_t::combat_begin();
 
   resources.current[ RESOURCE_HOLY_POWER ] = 0;
+
+  if ( scarlet_inquisitors_expurgation )
+  {
+    buffs.scarlet_inquisitors_expurgation -> trigger( 30 );
+    buffs.scarlet_inquisitors_expurgation_driver -> trigger();
+  }
 }
 
 // paladin_t::get_divine_judgment =============================================
@@ -6566,6 +6624,12 @@ struct sephuzs_secret_enabler_t : public unique_gear::scoped_actor_callback_t<pa
   { paladin -> sephuz = e.driver(); }
 };
 
+static void scarlet_inquisitors_expurgation( special_effect_t& effect )
+{
+  paladin_t* s = debug_cast<paladin_t*>( effect.player );
+  do_trinket_init( s, PALADIN_RETRIBUTION, s -> scarlet_inquisitors_expurgation, effect );
+}
+
 // PALADIN MODULE INTERFACE =================================================
 
 struct paladin_module_t : public module_t
@@ -6587,13 +6651,14 @@ struct paladin_module_t : public module_t
     unique_gear::register_special_effect( 207633, whisper_of_the_nathrezim );
     unique_gear::register_special_effect( 208408, liadrins_fury_unleashed );
     unique_gear::register_special_effect( 206338, chain_of_thrayn );
-  unique_gear::register_special_effect( 207614, ferren_marcuss_strength);
-  unique_gear::register_special_effect(234653, saruans_resolve);
-  unique_gear::register_special_effect(207628, gift_of_the_golden_valkyr);
-  unique_gear::register_special_effect(207599, heathcliffs_immortality);
+    unique_gear::register_special_effect( 207614, ferren_marcuss_strength);
+    unique_gear::register_special_effect( 234653, saruans_resolve);
+    unique_gear::register_special_effect( 207628, gift_of_the_golden_valkyr);
+    unique_gear::register_special_effect( 207599, heathcliffs_immortality);
     unique_gear::register_special_effect( 236106, ashes_to_dust );
     unique_gear::register_special_effect( 211557, justice_gaze );
     unique_gear::register_special_effect( 208051, sephuzs_secret_enabler_t() );
+    unique_gear::register_special_effect( 248103, scarlet_inquisitors_expurgation );
   }
 
   virtual void init( player_t* p ) const override

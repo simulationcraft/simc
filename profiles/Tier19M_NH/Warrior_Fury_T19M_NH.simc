@@ -4,7 +4,7 @@ race=troll
 role=attack
 position=back
 talents=2333232
-artifact=35:0:0:0:0:980:1:981:1:982:1:984:1:985:1:986:1:987:1:988:3:989:3:990:3:991:3:992:3:993:3:994:3:995:3:996:3:1357:1:1394:20
+artifact=35:0:0:0:0:980:1:981:1:982:1:984:1:985:1:986:1:987:1:988:4:989:4:990:4:991:4:992:4:993:4:994:4:995:4:996:4:1357:1:1394:1:1617:4:1618:1:1619:1:1620:1:1715:1
 spec=fury
 
 # This default action priority list is automatically created based on your character.

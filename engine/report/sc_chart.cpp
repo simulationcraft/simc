@@ -1541,8 +1541,13 @@ bool chart::generate_scale_factors( highchart::bar_chart_t& bc,
 highchart::time_series_t& chart::generate_stats_timeline(
     highchart::time_series_t& ts, const stats_t& s )
 {
+  if ( s.timeline_amount == nullptr )
+  {
+    return ts;
+  }
+
   sc_timeline_t timeline_aps;
-  s.timeline_amount.build_derivative_timeline( timeline_aps );
+  s.timeline_amount -> build_derivative_timeline( timeline_aps );
   std::string stats_type = util::stats_type_string( s.type );
   ts.set_toggle_id( "actor" + util::to_string( s.player->index ) + "_" +
                     s.name_str + "_" + stats_type + "_toggle" );
