@@ -4413,6 +4413,7 @@ struct frozen_orb_t : public frost_mage_spell_t
   virtual void impact( action_state_t* s ) override
   {
     frost_mage_spell_t::impact( s );
+    player_t* t = s -> target;
 
     timespan_t ground_aoe_duration = timespan_t::from_seconds( 10.0 );
     p() -> ground_aoe_expiration[ name_str ]
@@ -4423,17 +4424,16 @@ struct frozen_orb_t : public frost_mage_spell_t
       trigger_fof( fof_source_id, 1.0 );
       make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
         .pulse_time( timespan_t::from_seconds( 0.5 ) )
-        .target( s -> target )
+        .target( t )
         .duration( ground_aoe_duration )
-        .action( frozen_orb_bolt ) );
-    }
-    if ( ice_time )
-    {
-      make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
-        .pulse_time( ground_aoe_duration )
-        .target( s -> target )
-        .duration( ground_aoe_duration )
-        .action( ice_time_nova ) );
+        .action( frozen_orb_bolt )
+        .expiration_callback( [ this, t ] () {
+          if ( ice_time )
+          {
+            ice_time_nova -> set_target( t );
+            ice_time_nova -> execute();
+          }
+        } ) );
     }
   }
 };
