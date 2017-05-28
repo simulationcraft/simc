@@ -7558,7 +7558,6 @@ action_t* create_proc_action( const special_effect_t& effect, ARGS&&... args )
 
   return a;
 }
-
 } // namespace unique_gear ends
 
 // Consumable ===============================================================
@@ -8087,6 +8086,8 @@ struct ground_aoe_params_t
     PARTIAL_EXPIRATION_PULSE
   };
 
+  using param_cb_t = std::function<void(void)>;
+
   player_t* target_;
   double x_, y_;
   hasted_with hasted_;
@@ -8094,12 +8095,13 @@ struct ground_aoe_params_t
   timespan_t pulse_time_, start_time_, duration_;
   expiration_pulse_type expiration_pulse_;
   unsigned n_pulses_;
+  param_cb_t expiration_cb_;
 
   ground_aoe_params_t() :
     target_( nullptr ), x_( -1 ), y_( -1 ), hasted_( NOTHING ), action_( nullptr ),
     pulse_time_( timespan_t::from_seconds( 1.0 ) ), start_time_( timespan_t::min() ),
     duration_( timespan_t::zero() ),
-    expiration_pulse_( NO_EXPIRATION_PULSE ), n_pulses_( 0 )
+    expiration_pulse_( NO_EXPIRATION_PULSE ), n_pulses_( 0 ), expiration_cb_( nullptr )
   { }
 
   player_t* target() const { return target_; }
@@ -8112,6 +8114,7 @@ struct ground_aoe_params_t
   const timespan_t& duration() const { return duration_; }
   expiration_pulse_type expiration_pulse() const { return expiration_pulse_; }
   unsigned n_pulses() const { return n_pulses_; }
+  const param_cb_t& expiration_callback() const { return expiration_cb_; }
 
   ground_aoe_params_t& target( player_t* p )
   {
@@ -8168,6 +8171,22 @@ struct ground_aoe_params_t
 
   ground_aoe_params_t& n_pulses( unsigned n )
   { n_pulses_ = n; return *this; }
+
+  ground_aoe_params_t& expiration_callback( const param_cb_t& cb )
+  { expiration_cb_ = cb; return *this; }
+};
+
+// Delayed expiration callback for groud_aoe_event_t
+struct expiration_callback_event_t : public event_t
+{
+  ground_aoe_params_t::param_cb_t callback;
+
+  expiration_callback_event_t( sim_t& sim, const ground_aoe_params_t* p, const timespan_t& delay ) :
+    event_t( sim, delay ), callback( p -> expiration_callback() )
+  { }
+
+  void execute() override
+  { callback(); }
 };
 
 // Fake "ground aoe object" for things. Pulses until duration runs out, does not perform partial
@@ -8355,6 +8374,33 @@ public:
       // aoe is pulsing, so nullptr the params from this (soon to be recycled) event.
       params = nullptr;
       pulse_state = nullptr;
+    }
+    else
+    {
+      handle_expiration();
+    }
+  }
+
+  // Figure out how to handle expiration callback if it's defined
+  void handle_expiration()
+  {
+    if ( ! params -> expiration_callback() )
+    {
+      return;
+    }
+
+    auto time_left = _time_left( params, player() );
+
+    // Trigger immediately, since no time left. Can happen for example when ground aoe events are
+    // not hasted, or when pulse-based behavior is used (instead of duration-based behavior)
+    if ( time_left <= timespan_t::zero() )
+    {
+      params -> expiration_callback()();
+    }
+    // Defer until the end of the ground aoe event, even if there are no ticks left
+    else
+    {
+      make_event<expiration_callback_event_t>( sim(), sim(), params, time_left );
     }
   }
 };
