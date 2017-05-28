@@ -108,6 +108,7 @@ namespace item
   void vial_of_ceaseless_toxins( special_effect_t&     );
   void tarnished_sentinel_medallion( special_effect_t& );
   void umbral_moonglaives( special_effect_t&           );
+  void engine_of_eradication( special_effect_t&        );
 
   // 7.2.0 Dungeon
   void dreadstone_of_endless_shadows( special_effect_t& );
@@ -1190,6 +1191,36 @@ struct umbral_glaives_driver_t : public proc_spell_t
 void item::umbral_moonglaives( special_effect_t& effect )
 {
   effect.execute_action = create_proc_action<umbral_glaives_driver_t>( effect );
+}
+
+// Engine of Eradication ===================================================
+
+void item::engine_of_eradication( special_effect_t& effect )
+{
+  auto primary_stat = effect.player -> primary_stat();
+  if ( primary_stat == STAT_NONE )
+  {
+    effect.player -> sim -> errorf( "%s no primary stat defined for specialization, cannot initialize %s",
+        effect.player -> name(), effect.name().c_str() );
+    effect.type = SPECIAL_EFFECT_NONE;
+    return;
+  }
+
+  double amount = effect.trigger() -> effectN( 3 ).average( effect.item );
+  stat_buff_t* buff = debug_cast<stat_buff_t*>( buff_t::find( effect.player, "demonic_vigor" ) );
+  if ( buff == nullptr )
+  {
+    auto extra_seconds = timespan_t::from_seconds( effect.driver() -> effectN( 1 ).base_value() );
+    extra_seconds *= effect.player -> sim -> expansion_opts.engine_of_eradication_orbs;
+
+    buff = stat_buff_creator_t( effect.player, "demonic_vigor", effect.trigger(), effect.item )
+           .add_stat( primary_stat, amount )
+           .duration( effect.trigger() -> duration() + extra_seconds );
+  }
+
+  effect.custom_buff = buff;
+
+  new dbc_proc_callback_t( effect.item, effect );
 }
 
 // Toe Knee's Promise ======================================================
@@ -4989,6 +5020,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 242497, item::vial_of_ceaseless_toxins  );
   register_special_effect( 242570, item::tarnished_sentinel_medallion );
   register_special_effect( 242553, item::umbral_moonglaives        );
+  register_special_effect( 242611, item::engine_of_eradication     );
 
   /* Legion 7.2.0 Dungeon */
   register_special_effect( 238498, item::dreadstone_of_endless_shadows );

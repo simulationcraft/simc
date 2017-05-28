@@ -3224,6 +3224,7 @@ void sim_t::create_options()
 
   // Legion
   add_option( opt_int( "legion.infernal_cinders_users", expansion_opts.infernal_cinders_users, 1, 20 ) );
+  add_option( opt_int( "legion.engine_of_eradication_orbs", expansion_opts.engine_of_eradication_orbs, 0, 3 ) );
 }
 
 // sim_t::parse_option ======================================================
