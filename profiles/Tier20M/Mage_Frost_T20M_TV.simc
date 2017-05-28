@@ -80,17 +80,17 @@ actions.single+=/glacial_spike,if=buff.brain_freeze.react&cooldown.frozen_orb.re
 actions.single+=/frostbolt
 
 head=crown_of_the_arcane_tempest,id=147147,ilevel=930
-neck=string_of_extracted_incisors,id=147013,ilevel=930,enchant_id=5437
+neck=string_of_extracted_incisors,id=147013,ilevel=930,enchant_id=5890
 shoulders=mantle_of_the_arcane_tempest,id=147150,ilevel=930
-back=cloak_of_everburning_knowledge,id=138365,bonus_id=3518
+back=cloak_of_everburning_knowledge,id=138365,bonus_id=3518,enchant=binding_of_intellect
 chest=robes_of_the_arcane_tempest,id=147149,ilevel=930
 wrist=oathbreakers_cuffs,id=147001,ilevel=930
 hands=gloves_of_everburning_knowledge,id=138309,bonus_id=3518
 waist=braided_torture_lash,id=146998,ilevel=930
 legs=leggings_of_the_arcane_tempest,id=147148,ilevel=930
 feet=slippers_of_enduring_vigilance,id=146987,ilevel=930
-finger1=seal_of_the_second_duumvirate,id=147195,ilevel=940
-finger2=yathaes_thumb_ring,id=147021,ilevel=930
+finger1=seal_of_the_second_duumvirate,id=147195,ilevel=940,enchant=200crit
+finger2=yathaes_thumb_ring,id=147021,ilevel=930,enchant=200crit
 trinket1=tarnished_sentinel_medallion,id=147017,ilevel=930
 trinket2=terror_from_below,id=147016,ilevel=930
 main_hand=ebonchill,id=128862,ilevel=954
@@ -99,5 +99,4 @@ main_hand=ebonchill,id=128862,ilevel=954
 # set_bonus=tier19_2pc=1
 # set_bonus=tier20_2pc=1
 # set_bonus=tier20_4pc=1
-
 
