@@ -7516,6 +7516,8 @@ void mage_t::apl_frost()
   action_priority_list_t* cooldowns    = get_action_priority_list( "cooldowns"         );
 
   default_list -> add_action( this, "Counterspell", "if=target.debuff.casting.react" );
+  default_list -> add_action( "variable,name=iv_start,value=time,if=prev_off_gcd.icy_veins",
+    "Variable which tracks when Icy Veins were used. For use in time_until_fof variable." );
   default_list -> add_action( "variable,name=time_until_fof,value=10-(time-variable.iv_start-floor((time-variable.iv_start)%10)*10)",
     "This variable tracks the remaining time until FoF proc from Lady Vashj's Grasp. Note that it doesn't check whether the actor "
     "actually has the legendary or that Icy Veins is currently active." );
@@ -7587,8 +7589,6 @@ void mage_t::apl_frost()
     "Rune of Power is used when going into Icy Veins and while Icy Veins are up. Outside of Icy Veins, use Rune of Power "
     "when about to cap on charges or the target is about to die." );
   cooldowns -> add_action( "potion,if=cooldown.icy_veins.remains<1" );
-  cooldowns -> add_action( "variable,name=iv_start,value=time,if=cooldown.icy_veins.ready&buff.icy_veins.down",
-    "Variable which tracks when Icy Veins were used. For use in time_until_fof variable." );
   cooldowns -> add_action( this, "Icy Veins", "if=buff.icy_veins.down" );
   cooldowns -> add_talent( this, "Mirror Image" );
   cooldowns -> add_action( "use_items" );
