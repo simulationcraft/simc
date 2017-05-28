@@ -4,7 +4,7 @@ race=dwarf
 role=spell
 position=back
 talents=2032022
-artifact=53:147095:142305:147095:0:783:1:784:4:785:4:786:4:787:4:788:7:789:4:790:4:791:4:792:4:793:1:794:1:795:1:796:1:797:1:798:1:1296:1:1373:1:1537:4:1538:1:1539:1:1540:1:1641:1
+artifact=53:147095:142305:147095:0:783:1:784:4:785:4:786:5:787:4:788:6:789:4:790:4:791:4:792:4:793:1:794:1:795:1:796:1:797:1:798:1:1296:1:1373:1:1537:4:1538:1:1539:1:1540:1:1641:1
 spec=frost
 
 # Default consumables
@@ -90,11 +90,6 @@ finger2=yathaes_thumb_ring,id=147021,ilevel=930
 trinket1=charm_of_the_rising_tide,id=147002,ilevel=930
 trinket2=tome_of_unraveling_sanity,id=147019,ilevel=940
 main_hand=ebonchill,id=128862,ilevel=954
-
-
-
-
-
 
 
 # Gear Summary
