@@ -92,7 +92,7 @@ feet=emberscatter_treads,id=146986,ilevel=930
 finger1=seal_of_the_second_duumvirate,id=147195,ilevel=940
 finger2=yathaes_thumb_ring,id=147021,ilevel=930
 trinket1=tarnished_sentinel_medallion,id=147017,ilevel=930
-trinket2=tome_of_unraveling_sanity,id=147019,ilevel=940
+trinket2=terror_from_below,id=147016,ilevel=930
 main_hand=ebonchill,id=128862,ilevel=954
 
 
@@ -100,3 +100,9 @@ main_hand=ebonchill,id=128862,ilevel=954
 # set_bonus=tier19_2pc=1
 # set_bonus=tier20_2pc=1
 # set_bonus=tier20_4pc=1
+
+
+
+
+
+

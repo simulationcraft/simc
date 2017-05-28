@@ -4399,7 +4399,7 @@ struct frozen_orb_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::execute();
 
-    if ( p() -> sets -> has_set_bonus( MAGE_FROST, T20, B2) )
+    if ( p() -> sets -> has_set_bonus( MAGE_FROST, T20, B2 ) )
     {
       p() -> buffs.frozen_mass -> trigger();
     }
