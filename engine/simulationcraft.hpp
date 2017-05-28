@@ -8080,16 +8080,25 @@ struct ground_aoe_params_t
     ATTACK_SPEED
   };
 
+  enum expiration_pulse_type
+  {
+    NO_EXPIRATION_PULSE = 0,
+    FULL_EXPIRATION_PULSE,
+    PARTIAL_EXPIRATION_PULSE
+  };
+
   player_t* target_;
   double x_, y_;
   hasted_with hasted_;
   action_t* action_;
   timespan_t pulse_time_, start_time_, duration_;
+  expiration_pulse_type expiration_pulse_;
 
   ground_aoe_params_t() :
     target_( nullptr ), x_( -1 ), y_( -1 ), hasted_( NOTHING ), action_( nullptr ),
     pulse_time_( timespan_t::from_seconds( 1.0 ) ), start_time_( timespan_t::min() ),
-    duration_( timespan_t::zero() )
+    duration_( timespan_t::zero() ),
+    expiration_pulse_( NO_EXPIRATION_PULSE )
   { }
 
   player_t* target() const { return target_; }
@@ -8100,6 +8109,7 @@ struct ground_aoe_params_t
   const timespan_t& pulse_time() const { return pulse_time_; }
   const timespan_t& start_time() const { return start_time_; }
   const timespan_t& duration() const { return duration_; }
+  expiration_pulse_type expiration_pulse() const { return expiration_pulse_; }
 
   ground_aoe_params_t& target( player_t* p )
   {
@@ -8150,6 +8160,9 @@ struct ground_aoe_params_t
 
   ground_aoe_params_t& duration( const timespan_t& t )
   { duration_ = t; return *this; }
+
+  ground_aoe_params_t& expiration_pulse( expiration_pulse_type state )
+  { expiration_pulse_ = state; return *this; }
 };
 
 // Fake "ground aoe object" for things. Pulses until duration runs out, does not perform partial
@@ -8209,9 +8222,14 @@ public:
     }
   }
 
-  static timespan_t _pulse_time( const ground_aoe_params_t* params, const player_t* p)
+  static timespan_t _time_left( const ground_aoe_params_t* params, const player_t* p )
+  { return params -> duration() - ( p -> sim -> current_time() - params -> start_time() ); }
+
+  static timespan_t _pulse_time( const ground_aoe_params_t* params, const player_t* p, bool clamp = true )
   {
-    timespan_t tick = params -> pulse_time();
+    auto tick = params -> pulse_time();
+    auto time_left = _time_left( params, p );
+
     switch ( params -> hasted() )
     {
       case ground_aoe_params_t::SPELL_SPEED:
@@ -8230,6 +8248,12 @@ public:
         break;
     }
 
+    if ( clamp && tick > time_left )
+    {
+      assert( params -> expiration_pulse() != ground_aoe_params_t::NO_EXPIRATION_PULSE );
+      return time_left;
+    }
+
     return tick;
   }
 
@@ -8238,7 +8262,16 @@ public:
 
   bool may_pulse() const
   {
-    return params -> duration() - ( sim().current_time() - params -> start_time() ) >= pulse_time();
+    auto time_left = _time_left( params, player() );
+
+    if ( params -> expiration_pulse() == ground_aoe_params_t::NO_EXPIRATION_PULSE )
+    {
+      return time_left >= pulse_time();
+    }
+    else
+    {
+      return time_left > timespan_t::zero();
+    }
   }
 
   const char* name() const override
@@ -8266,6 +8299,22 @@ public:
     pulse_state -> target = params -> target();
     pulse_state -> original_x = params -> x();
     pulse_state -> original_y = params -> y();
+
+    // Update state multipliers if expiration_pulse() is PARTIAL_PULSE, and the object is pulsing
+    // for the last (partial) time.
+    if ( params -> expiration_pulse() == ground_aoe_params_t::PARTIAL_EXPIRATION_PULSE )
+    {
+      // Don't clamp the pulse time here, since we need to figure out the fractional multiplier for
+      // the last pulse.
+      auto pulse_time = _pulse_time( params, player(), false );
+      auto time_left = _time_left( params, player() );
+      if ( pulse_time > time_left )
+      {
+        double multiplier = time_left / pulse_time;
+        pulse_state -> da_multiplier *= multiplier;
+        pulse_state -> ta_multiplier *= multiplier;
+      }
+    }
 
     spell_ -> schedule_execute( spell_ -> get_state( pulse_state ) );
 
