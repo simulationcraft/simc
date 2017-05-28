@@ -559,6 +559,7 @@ public:
   virtual resource_e primary_resource() const override { return RESOURCE_MANA; }
   virtual role_e    primary_role() const override { return ROLE_SPELL; }
   virtual stat_e    convert_hybrid_stat( stat_e s ) const override;
+  virtual stat_e    primary_stat() const override { return STAT_INTELLECT; }
   virtual double    mana_regen_per_second() const override;
   virtual double    composite_player_multiplier( school_e school ) const override;
   virtual double    composite_player_critical_damage_multiplier( const action_state_t* ) const override;
