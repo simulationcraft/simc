@@ -82,7 +82,7 @@ private:
   std::vector<double> _data;
 
 public:
-  timeline_t() : _data( 10, 0 ) {}
+  timeline_t() : _data() {}
 
   // const access to the underlying vector data
   const std::vector<double>& data() const
@@ -100,7 +100,7 @@ public:
     if ( index >= _data.capacity() ) // we need to reallocate
     {
       // Reserve data less aggressively than doubling the size every time
-      _data.reserve( static_cast<unsigned>( index * 1.25 ) );
+      _data.reserve( std::max( size_t( 10 ), static_cast<size_t>( index * 1.25 ) ) );
       _data.resize( index + 1 );
     }
     else if ( index >= _data.size() ) // we still have enough capacity left, but need to resize up to index
