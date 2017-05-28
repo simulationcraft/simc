@@ -8093,12 +8093,13 @@ struct ground_aoe_params_t
   action_t* action_;
   timespan_t pulse_time_, start_time_, duration_;
   expiration_pulse_type expiration_pulse_;
+  unsigned n_pulses_;
 
   ground_aoe_params_t() :
     target_( nullptr ), x_( -1 ), y_( -1 ), hasted_( NOTHING ), action_( nullptr ),
     pulse_time_( timespan_t::from_seconds( 1.0 ) ), start_time_( timespan_t::min() ),
     duration_( timespan_t::zero() ),
-    expiration_pulse_( NO_EXPIRATION_PULSE )
+    expiration_pulse_( NO_EXPIRATION_PULSE ), n_pulses_( 0 )
   { }
 
   player_t* target() const { return target_; }
@@ -8110,6 +8111,7 @@ struct ground_aoe_params_t
   const timespan_t& start_time() const { return start_time_; }
   const timespan_t& duration() const { return duration_; }
   expiration_pulse_type expiration_pulse() const { return expiration_pulse_; }
+  unsigned n_pulses() const { return n_pulses_; }
 
   ground_aoe_params_t& target( player_t* p )
   {
@@ -8163,6 +8165,9 @@ struct ground_aoe_params_t
 
   ground_aoe_params_t& expiration_pulse( expiration_pulse_type state )
   { expiration_pulse_ = state; return *this; }
+
+  ground_aoe_params_t& n_pulses( unsigned n )
+  { n_pulses_ = n; return *this; }
 };
 
 // Fake "ground aoe object" for things. Pulses until duration runs out, does not perform partial
@@ -8174,6 +8179,7 @@ struct ground_aoe_event_t : public player_event_t
   // Pointer needed here, as simc event system cannot fit all params into event_t
   const ground_aoe_params_t* params;
   action_state_t* pulse_state;
+  unsigned current_pulse;
 
 protected:
   template <typename Event, typename... Args>
@@ -8185,7 +8191,7 @@ protected:
     : player_event_t(
           *p, immediate_pulse ? timespan_t::zero() : _pulse_time( param, p ) ),
       params( param ),
-      pulse_state( ps )
+      pulse_state( ps ), current_pulse( 1 )
   {
     // Ensure we have enough information to start pulsing.
     assert( params -> target() != nullptr && "No target defined for ground_aoe_event_t" );
@@ -8194,8 +8200,8 @@ protected:
             "Pulse time for ground_aoe_event_t must be a positive value" );
     assert( params -> start_time() >= timespan_t::zero() &&
             "Start time for ground_aoe_event must be defined" );
-    assert( params -> duration() > timespan_t::zero() &&
-            "Duration for ground_aoe_event_t must be defined" );
+    assert( ( params -> duration() > timespan_t::zero() || params -> n_pulses() > 0 ) &&
+            "Duration or number of pulses for ground_aoe_event_t must be defined" );
 
     // Make a state object that persists for this ground aoe event throughout its lifetime
     if ( ! pulse_state )
@@ -8221,6 +8227,9 @@ public:
       action_state_t::release( pulse_state );
     }
   }
+
+  void set_current_pulse( unsigned v )
+  { current_pulse = v; }
 
   static timespan_t _time_left( const ground_aoe_params_t* params, const player_t* p )
   { return params -> duration() - ( p -> sim -> current_time() - params -> start_time() ); }
@@ -8248,7 +8257,8 @@ public:
         break;
     }
 
-    if ( clamp && tick > time_left )
+    // Clamping can only occur on duration-based ground aoe events.
+    if ( params -> n_pulses() == 0 && clamp && tick > time_left )
     {
       assert( params -> expiration_pulse() != ground_aoe_params_t::NO_EXPIRATION_PULSE );
       return time_left;
@@ -8262,15 +8272,22 @@ public:
 
   bool may_pulse() const
   {
-    auto time_left = _time_left( params, player() );
-
-    if ( params -> expiration_pulse() == ground_aoe_params_t::NO_EXPIRATION_PULSE )
+    if ( params -> n_pulses() > 0 )
     {
-      return time_left >= pulse_time();
+      return current_pulse < params -> n_pulses();
     }
     else
     {
-      return time_left > timespan_t::zero();
+      auto time_left = _time_left( params, player() );
+
+      if ( params -> expiration_pulse() == ground_aoe_params_t::NO_EXPIRATION_PULSE )
+      {
+        return time_left >= pulse_time();
+      }
+      else
+      {
+        return time_left > timespan_t::zero();
+      }
     }
   }
 
@@ -8278,7 +8295,15 @@ public:
   { return "ground_aoe_event"; }
 
   virtual void schedule_event()
-  { make_event<ground_aoe_event_t>( sim(), _player, params, pulse_state ); }
+  {
+    auto event = make_event<ground_aoe_event_t>( sim(), _player, params, pulse_state );
+    // If the ground-aoe event is a pulse-based one, increase the current pulse of the newly created
+    // event.
+    if ( params -> n_pulses() > 0 )
+    {
+      event -> set_current_pulse( current_pulse + 1 );
+    }
+  }
 
   void execute() override
   {
@@ -8288,7 +8313,9 @@ public:
     {
       sim().out_debug.printf( "%s %s pulse start_time=%.3f remaining_time=%.3f tick_time=%.3f",
           player() -> name(), spell_ -> name(), params -> start_time().total_seconds(),
-          ( params -> duration() - ( sim().current_time() - params -> start_time() ) ).total_seconds(),
+          params -> n_pulses() > 0
+            ? ( params -> n_pulses() - current_pulse ) * pulse_time().total_seconds()
+            : ( params -> duration() - ( sim().current_time() - params -> start_time() ) ).total_seconds(),
           pulse_time().total_seconds() );
     }
 
@@ -8301,8 +8328,10 @@ public:
     pulse_state -> original_y = params -> y();
 
     // Update state multipliers if expiration_pulse() is PARTIAL_PULSE, and the object is pulsing
-    // for the last (partial) time.
-    if ( params -> expiration_pulse() == ground_aoe_params_t::PARTIAL_EXPIRATION_PULSE )
+    // for the last (partial) time. Note that pulse-based ground aoe events do not have a concept of
+    // partial ticks.
+    if ( params -> n_pulses() == 0 &&
+         params -> expiration_pulse() == ground_aoe_params_t::PARTIAL_EXPIRATION_PULSE )
     {
       // Don't clamp the pulse time here, since we need to figure out the fractional multiplier for
       // the last pulse.
