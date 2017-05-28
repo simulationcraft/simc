@@ -56,23 +56,28 @@ actions.aoe+=/frostbolt
 actions.cooldowns=rune_of_power,if=(cooldown.icy_veins.remains<cast_time|charges_fractional>1.9&cooldown.icy_veins.remains>30|buff.icy_veins.up|target.time_to_die.remains+5<charges_fractional*10)&charges_fractional>1.9
 actions.cooldowns+=/potion,name=prolonged_power,if=cooldown.icy_veins.remains<1
 actions.cooldowns+=/variable,name=iv_start,value=time,if=cooldown.icy_veins.ready&buff.icy_veins.down
-actions.cooldown+=/use_item,slot=trinket2
-actions.cooldown+=/use_item,slot=trinket1
 actions.cooldowns+=/icy_veins,if=buff.icy_veins.down
 actions.cooldowns+=/mirror_image
 actions.cooldowns+=/use_item,slot=trinket1
+actions.cooldowns+=/use_item,slot=trinket2
+actions.cooldowns+=/use_item,slot=finger2
 actions.cooldowns+=/blood_fury
 actions.cooldowns+=/arcane_torrent
 actions.cooldowns+=/berserking
  
 actions.single=ice_nova,if=debuff.winters_chill.up
-actions.single+=/rune_of_power,if=cooldown.frozen_orb.remains<execute_time
-actions.single+=/frozen_orb,if=!talent.rune_of_power.enabled|buff.rune_of_power.up
+actions.single+=/frozen_orb
+actions.single+=/frostbolt,if=prev_off_gcd.water_jet
+actions.single+=/water_jet,if=prev_gcd.1.frostbolt&buff.fingers_of_frost.stack<(2+artifact.icy_hand.enabled)&buff.brain_freeze.react=0
+actions.single+=/ray_of_frost,if=buff.icy_veins.up|(cooldown.icy_veins.remains>action.ray_of_frost.cooldown&buff.rune_of_power.down)
+actions.single+=/flurry,if=prev_gcd.1.ebonbolt|buff.brain_freeze.react&(prev_gcd.1.glacial_spike|prev_gcd.1.frostbolt&buff.icicles.react<=3|prev_gcd.1.frostbolt&cooldown.frozen_orb.remains<=10&cooldown.frozen_orb.remains>0)
+actions.single+=/frost_bomb,if=debuff.frost_bomb.remains<action.ice_lance.travel_time&variable.fof_react>0
+actions.single+=/ice_lance,if=buff.fingers_of_frost.react|prev_gcd.1.flurry
 actions.single+=/ebonbolt,if=buff.fingers_of_frost.react=0
-actions.single+=/flurry,if=prev_gcd.1.ebonbolt|buff.brain_freeze.react&(prev_gcd.1.glacial_spike|prev_gcd.1.frostbolt&buff.icicles.react<=2|prev_gcd.1.frostbolt&cooldown.frozen_orb.remains<10&cooldown.frozen_orb.remains>2)
-actions.single+=/ice_lance,if=buff.fingers_of_frost.react>0|prev_gcd.1.flurry
-actions.single+=/frostbolt,if=buff.frozen_mass.remains>action.glacial_spike.execute_time+gcd&buff.brain_freeze.react=0
-actions.single+=/glacial_spike,if=cooldown.frozen_orb.remains>10
+actions.single+=/ice_nova
+actions.single+=/comet_storm
+actions.single+=/blizzard,if=active_enemies>2|active_enemies>1&!(talent.glacial_spike.enabled&talent.splitting_ice.enabled)|(buff.zannesu_journey.stack>1&buff.zannesu_journey.remains>cast_time)
+actions.single+=/glacial_spike,if=buff.brain_freeze.react&cooldown.frozen_orb.remains>10
 actions.single+=/frostbolt
 
 head=crown_of_the_arcane_tempest,id=147147,ilevel=930
@@ -87,7 +92,7 @@ legs=leggings_of_the_arcane_tempest,id=147148,ilevel=930
 feet=emberscatter_treads,id=146986,ilevel=930
 finger1=seal_of_the_second_duumvirate,id=147195,ilevel=930
 finger2=yathaes_thumb_ring,id=147021,ilevel=930
-trinket1=charm_of_the_rising_tide,id=147002,ilevel=930
+trinket1=tarnished_sentinel_medallion,id=147017,ilevel=930
 trinket2=tome_of_unraveling_sanity,id=147019,ilevel=940
 main_hand=ebonchill,id=128862,ilevel=954
 
