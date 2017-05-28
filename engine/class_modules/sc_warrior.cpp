@@ -486,6 +486,24 @@ public:
     ceannar_charger = kazzalax_fujiedas_fury = the_walls_fell = destiny_driver = prydaz_xavarics_magnum_opus = mannoroths_bloodletting_manacles =
     najentuss_vertebrae = ayalas_stone_heart = weight_of_the_earth = raging_fury = the_great_storms_eye = ararats_bloodmirror = nullptr;
     regen_type = REGEN_DISABLED;
+
+    talent_points.register_validity_fn( [ this ] ( const spell_data_t* spell )
+    {
+      // Soul of the Battlelord
+      if ( find_item( 151650 ) )
+      {
+        switch ( specialization() )
+        {
+          case WARRIOR_FURY:
+            return spell -> id() == 206315; // Massacre
+          case WARRIOR_ARMS:
+            return spell -> id() == 227266; // Deadly Calm
+          case WARRIOR_PROTECTION:
+            return spell -> id() == 202572; // Vengeance
+        }
+      }
+      return false;
+    } );
   }
 
   virtual           ~warrior_t();
@@ -1013,7 +1031,7 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
       if ( rng().roll( ( 1 - ( s -> target -> health_percentage() / 100 ) ) * p() -> talents.opportunity_strikes -> proc_chance() ) && p() -> cooldown.opportunity_strikes -> up() )
       {
         p() -> active.opportunity_strikes -> target = s -> target;
-        p() -> active.opportunity_strikes -> execute(); 
+        p() -> active.opportunity_strikes -> execute();
         p() -> cooldown.opportunity_strikes -> start();
         return true;
       }
@@ -2301,7 +2319,7 @@ struct execute_arms_t: public warrior_attack_t
     {
       cc += p() -> buff.shattered_defenses -> data().effectN( 2 ).percent();
     }
-    
+
     if ( maybe_ptr( p() -> dbc.ptr ) ) //FIXME PTR
       cc *= 1.0 + p() -> buff.precise_strikes -> check_value();
 
@@ -2556,7 +2574,7 @@ struct hamstring_t: public warrior_attack_t
 
 // Piercing Howl ==============================================================
 
-struct piercing_howl_t : public warrior_attack_t 
+struct piercing_howl_t : public warrior_attack_t
 {
   piercing_howl_t( warrior_t* p, const std::string& options_str ) :
     warrior_attack_t( "piercing_howl", p, p -> spec.piercing_howl )
@@ -3033,7 +3051,7 @@ struct overpower_t: public warrior_attack_t
 };
 
 // Odyn's Fury ==========================================================================
- 
+
 struct odyns_damage_t: public warrior_attack_t
 {
   odyns_damage_t( warrior_t* p, const spell_data_t* spell, const std::string& name ):
@@ -3076,7 +3094,7 @@ struct odyns_fury_t: public warrior_attack_t
     oh -> target = mh -> target;
     mh -> execute();
     oh -> execute();
-    if ( odyn && rng().roll( 0.5 ) ) // Seems to have a coin flip chance to either get odyn or helya... test more later. 
+    if ( odyn && rng().roll( 0.5 ) ) // Seems to have a coin flip chance to either get odyn or helya... test more later.
     {
       odyn -> target = mh -> target;
       odyn -> execute();
@@ -3186,7 +3204,7 @@ struct rampage_attack_t: public warrior_attack_t
   void impact( action_state_t* s ) override
   {
     if ( !first_attack_missed )
-    {// If the first attack misses, all of the rest do as well. However, if any other attack misses, the attacks after continue. 
+    {// If the first attack misses, all of the rest do as well. However, if any other attack misses, the attacks after continue.
                                 // The animations and timing of everything else -- such as odyns champion proccing after the last attack -- still occur, so we can't just cancel rampage.
       warrior_attack_t::impact( s );
       if ( p() -> legendary.valarjar_berserkers != nullptr && s -> result == RESULT_CRIT )
@@ -6636,7 +6654,7 @@ void warrior_t::target_mitigation( school_e school,
   if ( action_t::result_is_block( s -> block_result ) )
   {
     buff.dragon_scales -> trigger();
-    if ( s -> block_result == BLOCK_RESULT_CRIT_BLOCKED ) 
+    if ( s -> block_result == BLOCK_RESULT_CRIT_BLOCKED )
     {
       if ( artifact.scales_of_earth.rank() && buff.scales_of_earth -> trigger() )
       {
