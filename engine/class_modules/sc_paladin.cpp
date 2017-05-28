@@ -1627,18 +1627,32 @@ struct consecration_t : public paladin_spell_t
   {
     paladin_spell_t::execute();
 
+    paladin_ground_aoe_t* alt_aoe = nullptr;
     // create a new ground aoe event
-    paladin_ground_aoe_t* alt_aoe =
+    if ( p() -> specialization() == PALADIN_RETRIBUTION ) {
+      alt_aoe =
+        make_event<paladin_ground_aoe_t>( *sim, p(), ground_aoe_params_t()
+        .target( execute_state -> target )
+        // spawn at feet of player
+        .x( execute_state -> action -> player -> x_position )
+        .y( execute_state -> action -> player -> y_position )
+        .n_pulses( 13 )
+        .start_time( sim -> current_time()  )
+        .action( damage_tick )
+        .hasted( ground_aoe_params_t::SPELL_HASTE ), true );
+    } else {
+      alt_aoe =
         make_event<paladin_ground_aoe_t>( *sim, p(), ground_aoe_params_t()
         .target( execute_state -> target )
         // spawn at feet of player
         .x( execute_state -> action -> player -> x_position )
         .y( execute_state -> action -> player -> y_position )
         // TODO: this is a hack that doesn't work properly, fix this correctly
-        .duration( ground_effect_duration * ( ( p() -> specialization() == PALADIN_RETRIBUTION ) ? ( p() -> composite_spell_haste() ) : 1 ) )
+        .duration( ground_effect_duration ) 
         .start_time( sim -> current_time()  )
         .action( damage_tick )
-        .hasted( ( p() -> specialization() == PALADIN_RETRIBUTION ) ? ( ground_aoe_params_t::SPELL_HASTE ) : ( ground_aoe_params_t::NOTHING ) ), true );
+        .hasted( ground_aoe_params_t::NOTHING ), true );
+    }
 
     // push the pointer to the list of active consecrations
     // execute() and schedule_event() methods of paladin_ground_aoe_t handle updating the list
