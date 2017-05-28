@@ -1334,6 +1334,7 @@ struct rogue_attack_t : public melee_attack_t
   { return 0.0; }
 
   expr_t* create_nightblade_finality_expression();
+  expr_t* create_improved_snd_expression();
   expr_t* create_expression( const std::string& name_str ) override;
 };
 
@@ -4649,6 +4650,16 @@ struct slice_and_dice_t : public rogue_attack_t
 
     p() -> buffs.slice_and_dice -> trigger( 1, snd_mod, -1.0, snd_duration );
   }
+
+  expr_t* create_expression( const std::string& name_str ) override
+  {
+    if ( util::str_compare_ci( name_str, "improved" ) )
+    {
+      return create_improved_snd_expression();
+    }
+
+    return rogue_attack_t::create_expression( name_str );
+  }
 };
 
 // Sprint ===================================================================
@@ -5354,6 +5365,16 @@ expr_t* actions::rogue_attack_t::create_nightblade_finality_expression()
   } );
 }
 
+// rogue_attack_t::create_improved_snd_expression ==============================
+
+expr_t* actions::rogue_attack_t::create_improved_snd_expression()
+{
+  return make_fn_expr( "improved", [ this ]() {
+    // The SnD buff value is a modifier for the talent effect percentage. Is it >1, our SnD is improved.
+    return p() -> buffs.slice_and_dice -> up() && p() -> buffs.slice_and_dice -> value() > 1.0;
+  } );
+}
+
 // rogue_attack_t::create_expression =========================================
 
 expr_t* actions::rogue_attack_t::create_expression( const std::string& name_str )
@@ -5372,6 +5393,10 @@ expr_t* actions::rogue_attack_t::create_expression( const std::string& name_str 
   else if ( util::str_compare_ci( name_str, "dot.nightblade.finality" ) )
   {
     return create_nightblade_finality_expression();
+  }
+  else if ( util::str_compare_ci( name_str, "buff.slice_and_dice.improved" ) )
+  {
+    return create_improved_snd_expression();
   }
 
   return melee_attack_t::create_expression( name_str );
