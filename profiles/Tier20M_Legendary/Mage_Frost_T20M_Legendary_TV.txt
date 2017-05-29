@@ -89,8 +89,8 @@ hands=gloves_of_the_arcane_tempest,id=147146,ilevel=930
 waist=braided_torture_lash,id=146998,ilevel=930
 legs=leggings_of_divine_portents,id=146993,ilevel=930
 feet=emberscatter_treads,id=146986,ilevel=930
-finger1=seal_of_the_second_duumvirate,id=147195,ilevel=940,enchant=200crit / Vers
-finger2=shard_of_the_exodar,id=132410,ilevel=970,gems=150crit,enchant=200crit / Vers
+finger1=seal_of_the_second_duumvirate,id=147195,ilevel=940,enchant=200crit
+finger2=shard_of_the_exodar,id=132410,ilevel=970,gems=150crit,enchant=200crit
 trinket1=tarnished_sentinel_medallion,id=147017,ilevel=930
 trinket2=terror_from_below,id=147016,ilevel=930
 main_hand=ebonchill,id=128862,ilevel=957
@@ -99,4 +99,3 @@ main_hand=ebonchill,id=128862,ilevel=957
 # set_bonus=tier19_2pc=1
 # set_bonus=tier20_2pc=1
 # set_bonus=tier20_4pc=1
-
