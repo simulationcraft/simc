@@ -748,18 +748,18 @@ public:
     user_options.initial_chi = 0;
 
     talent_points.register_validity_fn( [ this ]( const spell_data_t* spell ) {
-      if ( find_item( 151643 ) != nullptr )
+      if ( find_item( 151643 ) != nullptr ) // Soul of the Grandmaster Legendary
       {
         switch ( specialization() )
         {
           case MONK_BREWMASTER:
-            return strcmp( spell -> name_cstr(), "Mystic Vitality") == 0;
+            return spell -> id() == 237076; // Mystic Vitality
             break;
           case MONK_MISTWEAVER:
-            return strcmp( spell -> name_cstr(), "Mist Wrap") == 0;
+            return spell -> id() == 197900; // Mist Wrap
             break;
           case MONK_WINDWALKER:
-            return strcmp( spell -> name_cstr(), "Chi Orbit") == 0;
+            return spell -> id() == 196743; // Chi Orbit
             break;
           default:
             return false;
@@ -820,6 +820,7 @@ public:
   virtual void      copy_from( player_t* ) override;
   virtual resource_e primary_resource() const override;
   virtual role_e    primary_role() const override;
+  virtual stat_e    primary_stat() const override;
   virtual stat_e    convert_hybrid_stat( stat_e s ) const override;
   virtual void      pre_analyze_hook() override;
   virtual void      combat_begin() override;
@@ -9224,6 +9225,18 @@ role_e monk_t::primary_role() const
     return ROLE_DPS;
 
   return ROLE_HYBRID;
+}
+
+// monk_t::primary_stat =====================================================
+
+stat_e monk_t::primary_stat() const
+{
+  switch ( specialization() )
+  {
+    case MONK_BREWMASTER: return STAT_STAMINA; break;
+    case MONK_MISTWEAVER: return STAT_INTELLECT; break;
+    default:              return STAT_AGILITY;
+  }
 }
 
 // monk_t::convert_hybrid_stat ==============================================
