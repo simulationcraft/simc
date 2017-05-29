@@ -6426,9 +6426,9 @@ struct variable_t : public action_t
     }
   }
 
-  void init() override
+  bool init_finished() override
   {
-    action_t::init();
+    auto ret = action_t::init_finished();
 
     if ( ! background &&
          operation != OPERATION_FLOOR && operation != OPERATION_CEIL &&
@@ -6456,6 +6456,8 @@ struct variable_t : public action_t
         }
       }
     }
+
+    return ret;
   }
 
   ~variable_t()
