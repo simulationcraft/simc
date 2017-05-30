@@ -6206,6 +6206,8 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
             return spell -> id() == 171975; // Shadowy Inspiration
           case WARLOCK_DESTRUCTION:
             return spell -> id() == 196412; // Eradication
+          default:
+            return false;
         }
       }
 
