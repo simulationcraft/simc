@@ -262,6 +262,7 @@ public:
           * critical_massive,        // T20 4pc Fire
           * enhanced_pyrotechnics,
           * erupting_infernal_core,  // 7.2.5 legendary shoulder, primed buff
+          * frenetic_speed,
           * heating_up,
           * hot_streak,
           * ignition,                // T20 2pc Fire
@@ -441,7 +442,7 @@ public:
 
     // Tier 75
     const spell_data_t* chrono_shift,
-                      * frenetic_speed, // NYI
+                      * frenetic_speed,
                       * frigid_winds, // NYI
                       * ring_of_frost, // NYI
                       * ice_ward;
@@ -5747,6 +5748,11 @@ struct scorch_t : public fire_mage_spell_t
   {
     fire_mage_spell_t::impact( s );
 
+    if ( p() -> talents.frenetic_speed -> ok() )
+    {
+      p() -> buffs.frenetic_speed -> trigger();
+    }
+
     if ( p() -> artifact.scorched_earth.rank() )
     {
       p() -> buffs.scorched_earth -> trigger();
@@ -7056,6 +7062,9 @@ void mage_t::create_buffs()
                                    .default_value( find_spell( 157644 ) -> effectN( 1 ).percent()
                                        + sets -> set( MAGE_FIRE, T19, B2 ) -> effectN( 1 ).percent() );
   buffs.erupting_infernal_core = buff_creator_t( this, "erupting_infernal_core", find_spell( 248147 ) );
+  buffs.frenetic_speed         = buff_creator_t( this, "frenetic_speed", find_spell( 236060 ) )
+                                   .default_value( find_spell( 236060 ) -> effectN( 1 ).percent() )
+                                   .add_invalidate( CACHE_RUN_SPEED );
   buffs.ignition               = buff_creator_t( this, "ignition", find_spell( 246261 ) );
   buffs.heating_up             = buff_creator_t( this, "heating_up",  find_spell( 48107 ) );
   buffs.hot_streak             = buff_creator_t( this, "hot_streak",  find_spell( 48108 ) );
@@ -8095,6 +8104,11 @@ double mage_t::passive_movement_modifier() const
   if ( buffs.chrono_shift -> check() )
   {
     pmm += buffs.chrono_shift -> check_value();
+  }
+
+  if ( buffs.frenetic_speed -> check() )
+  {
+    pmm += buffs.frenetic_speed -> check_value();
   }
 
   if ( buffs.scorched_earth -> check() )
