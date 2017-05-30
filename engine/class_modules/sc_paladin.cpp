@@ -531,6 +531,7 @@ public:
   virtual resource_e primary_resource() const override { return RESOURCE_MANA; }
   virtual role_e    primary_role() const override;
   virtual stat_e    convert_hybrid_stat( stat_e s ) const override;
+  virtual stat_e    primary_stat() const override;
   virtual void      regen( timespan_t periodicity ) override;
   virtual void      combat_begin() override;
   virtual void      copy_from( player_t* ) override;
@@ -5583,6 +5584,19 @@ role_e paladin_t::primary_role() const
     return ROLE_HEAL;
 
   return ROLE_HYBRID;
+}
+
+// paladin_t::primary_stat ==================================================
+
+stat_e paladin_t::primary_stat() const
+{
+  switch ( specialization() )
+  {
+    case PALADIN_PROTECTION:  return STAT_STAMINA;
+    case PALADIN_HOLY:        return STAT_INTELLECT;
+    case PALADIN_RETRIBUTION: return STAT_STRENGTH;
+    default:                  return STAT_STRENGTH;
+  }
 }
 
 // paladin_t::convert_hybrid_stat ===========================================
