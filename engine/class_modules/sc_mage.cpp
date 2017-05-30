@@ -7625,6 +7625,7 @@ void mage_t::apl_frost()
   action_priority_list_t* single       = get_action_priority_list( "single"            );
   action_priority_list_t* aoe          = get_action_priority_list( "aoe"               );
   action_priority_list_t* cooldowns    = get_action_priority_list( "cooldowns"         );
+  action_priority_list_t* movement     = get_action_priority_list( "movement"          );
 
   default_list -> add_action( this, "Counterspell", "if=target.debuff.casting.react" );
   default_list -> add_action( "variable,name=iv_start,value=time,if=prev_off_gcd.icy_veins",
@@ -7647,6 +7648,7 @@ void mage_t::apl_frost()
   default_list -> add_action( mage_t::get_special_use_items( "mrrgrias_favor" ) );
   default_list -> add_action( mage_t::get_special_use_items( "pharameres_forbidden_grimoire" ) );
   default_list -> add_action( mage_t::get_special_use_items( "kiljaedens_burning_wish" ) );
+  default_list -> add_action( "call_action_list,name=movement" );
   default_list -> add_action( "call_action_list,name=cooldowns" );
   default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>=4" );
   default_list -> add_action( "call_action_list,name=single" );
@@ -7680,6 +7682,10 @@ void mage_t::apl_frost()
   single -> add_action( this, "Ebonbolt", "if=buff.brain_freeze.react=0" );
   single -> add_talent( this, "Glacial Spike" );
   single -> add_action( this, "Frostbolt" );
+  single -> add_action( this, "Blizzard", "if=cast_time=0",
+    "While on the move, use instant Blizzard if available." );
+  single -> add_action( this, "Ice Lance" , "",
+    "Otherwise just use Ice Lance to do at least some damage." );
 
   aoe -> add_action( this, "Frostbolt", "if=prev_off_gcd.water_jet" );
   aoe -> add_action( this, "Frozen Orb", "",
@@ -7695,6 +7701,7 @@ void mage_t::apl_frost()
   aoe -> add_action( this, "Ebonbolt", "if=buff.brain_freeze.react=0" );
   aoe -> add_talent( this, "Glacial Spike" );
   aoe -> add_action( this, "Frostbolt" );
+  aoe -> add_action( this, "Ice Lance" );
 
   cooldowns -> add_talent( this, "Rune of Power", "if=cooldown.icy_veins.remains<cast_time|charges_fractional>1.9&cooldown.icy_veins.remains>10|buff.icy_veins.up|target.time_to_die.remains+5<charges_fractional*10",
     "Rune of Power is used when going into Icy Veins and while Icy Veins are up. Outside of Icy Veins, use Rune of Power "
@@ -7707,6 +7714,9 @@ void mage_t::apl_frost()
   {
     cooldowns -> add_action( racial_actions[i] );
   }
+
+  movement -> add_action( this, "Blink", "if=movement.distance>10" );
+  movement -> add_talent( this, "Ice Floes", "if=buff.ice_floes.down&movement.distance>0&variable.fof_react=0" );
 }
 
 // Default Action List ========================================================
