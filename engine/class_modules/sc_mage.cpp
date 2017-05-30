@@ -249,32 +249,34 @@ public:
     buff_t* arcane_charge,
           * arcane_familiar,
           * arcane_power,
-          * presence_of_mind,
-          * quickening,
-          * crackling_energy;      // T20 2pc Arcane
+          * chrono_shift,
+          * crackling_energy, // T20 2pc Arcane
+          * presence_of_mind;
+
     buffs::arcane_missiles_t* arcane_missiles;
 
 
     // Fire
     buff_t* combustion,
+          * contained_infernal_core, // 7.2.5 legendary shoulder, tracking buff
+          * critical_massive,        // T20 4pc Fire
           * enhanced_pyrotechnics,
+          * erupting_infernal_core,  // 7.2.5 legendary shoulder, primed buff
           * heating_up,
           * hot_streak,
-          * pyretic_incantation,
-          * streaking,               // T19 4pc Fire
           * ignition,                // T20 2pc Fire
-          * critical_massive,        // T20 4pc Fire
-          * contained_infernal_core, // 7.2.5 legendary shoulder
-          * erupting_infernal_core;
+          * pyretic_incantation,
+          * streaking;               // T19 4pc Fire
+
 
     // Frost
     buff_t* brain_freeze,
           * fingers_of_frost,
+          * frozen_mass,                       // T20 2pc Frost
           * icicles,                           // Buff to track icicles - doesn't always line up with icicle count though!
           * icy_veins,
-          * frozen_mass,                       // T20 2pc Frost
-          * shattered_fragments_of_sindragosa, // 7.2.5 legendary head
-          * rage_of_the_frost_wyrm;
+          * rage_of_the_frost_wyrm,            // 7.2.5 legendary head, primed buff
+          * shattered_fragments_of_sindragosa; // 7.2.5 legendary head, tracking buff
 
 
     // Talents
@@ -437,7 +439,7 @@ public:
                       * splitting_ice;
 
     // Tier 75
-    const spell_data_t* chrono_shift, // NYI
+    const spell_data_t* chrono_shift,
                       * frenetic_speed, // NYI
                       * frigid_winds, // NYI
                       * ring_of_frost, // NYI
@@ -2573,6 +2575,11 @@ struct arcane_barrage_t : public arcane_mage_spell_t
   virtual void impact( action_state_t* s ) override
   {
     arcane_mage_spell_t::impact( s );
+
+    if ( p() -> talents.chrono_shift -> ok() )
+    {
+      p() -> buffs.chrono_shift -> trigger();
+    }
 
     if ( p() -> artifact.arcane_rebound.rank() && s -> n_targets > 2 && s -> chain_target == 0 )
     {
@@ -7013,6 +7020,9 @@ void mage_t::create_buffs()
                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.arcane_power -> buff_duration += artifact.aegwynns_imperative.time_value();
 
+  buffs.chrono_shift          = buff_creator_t( this, "chrono_shift", find_spell( 236298 ) )
+                                  .default_value( find_spell( 236298 ) -> effectN( 1 ).percent() )
+                                  .add_invalidate( CACHE_RUN_SPEED );
   buffs.crackling_energy      = buff_creator_t( this, "crackling_energy", find_spell( 246224 ) )
                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                                   .default_value( find_spell( 246224 ) -> effectN( 1 ).percent() );
@@ -8066,6 +8076,11 @@ double mage_t::passive_movement_modifier() const
   if ( buffs.sephuzs_secret -> default_chance != 0 )
   {
     pmm += buffs.sephuzs_secret -> data().driver() -> effectN( 2 ).percent();
+  }
+
+  if ( buffs.chrono_shift -> check() )
+  {
+    pmm += buffs.chrono_shift -> check_value();
   }
 
   return pmm;
