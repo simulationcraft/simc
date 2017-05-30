@@ -509,7 +509,7 @@ public:
                      pyretic_incantation,
                      phoenixs_flames,
                      burning_gaze,
-                     big_mouth, //NYI
+                     big_mouth,
                      blast_furnace,
                      wings_of_flame,
                      empowered_spellblade,
@@ -3524,6 +3524,7 @@ struct dragons_breath_t : public fire_mage_spell_t
     parse_options( options_str );
     aoe = -1;
     triggers_pyretic_incantation = true;
+    radius += p -> artifact.big_mouth.value();
 
     if ( p -> talents.alexstraszas_fury -> ok() )
     {
@@ -8616,7 +8617,10 @@ struct darcklis_dragonfire_diadem_t : public scoped_action_callback_t<dragons_br
   { }
 
   void manipulate( dragons_breath_t* action, const special_effect_t& e ) override
-  { action -> base_multiplier *= 1.0 + e.driver() -> effectN( 2 ).percent(); }
+  {
+    action -> radius += e.driver() -> effectN( 1 ).base_value();
+    action -> base_multiplier *= 1.0 + e.driver() -> effectN( 2 ).percent();
+  }
 };
 
 
@@ -8644,7 +8648,8 @@ struct pyrotex_ignition_cloth_t : public scoped_action_callback_t<phoenixs_flame
   { }
 
   void manipulate( phoenixs_flames_t* action, const special_effect_t& e ) override
-  { action -> pyrotex_ignition_cloth = true;
+  {
+    action -> pyrotex_ignition_cloth = true;
     action -> pyrotex_ignition_cloth_reduction = e.driver() -> effectN( 1 ).time_value();
   }
 };
