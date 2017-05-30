@@ -500,6 +500,9 @@ public:
             return spell -> id() == 227266; // Deadly Calm
           case WARRIOR_PROTECTION:
             return spell -> id() == 202572; // Vengeance
+         default:
+            // This shouldn't happen
+            break;
         }
       }
       return false;
