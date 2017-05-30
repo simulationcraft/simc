@@ -3552,7 +3552,7 @@ struct shield_slam_t: public warrior_attack_t
 
     if ( p() -> buff.shield_block -> up() )
     {
-      am *= 1.0 + heavy_repercussions;
+      am *= 1.3 + heavy_repercussions;
     }
 
     am *= 1.0 + p() -> buff.bindings_of_kakushan -> stack_value();
