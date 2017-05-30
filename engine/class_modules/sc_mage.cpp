@@ -412,7 +412,7 @@ public:
                       * bone_chilling;
 
     // Tier 30
-    const spell_data_t* shimmer, // NYI
+    const spell_data_t* shimmer,
                       * slipstream,
                       * blast_wave,
                       * ice_floes,
@@ -3158,6 +3158,11 @@ struct blink_t : public mage_spell_t
     base_teleport_distance = 20;
 
     movement_directionality = MOVEMENT_OMNI;
+
+    if ( p -> talents.shimmer -> ok() )
+    {
+      background = true;
+    }
   }
 };
 
@@ -5734,6 +5739,23 @@ struct scorch_t : public fire_mage_spell_t
   { return true; }
 };
 
+// Shimmer Spell ============================================================
+
+struct shimmer_t : public mage_spell_t
+{
+  shimmer_t( mage_t* p, const std::string& options_str ) :
+    mage_spell_t( "shimmer", p, p -> talents.shimmer )
+  {
+    parse_options( options_str );
+
+    harmful = false;
+    ignore_false_positive = true;
+    base_teleport_distance = 20;
+
+    movement_directionality = MOVEMENT_OMNI;
+  }
+};
+
 
 // Slow Spell ===============================================================
 
@@ -6666,7 +6688,17 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "ebonbolt"          ) return new                 ebonbolt_t( this, options_str );
 
   // Shared spells
-  if ( name == "blink"             ) return new                   blink_t( this, options_str );
+  if ( name == "blink"             )
+  {
+    if ( talents.shimmer -> ok() )
+    {
+      return new shimmer_t( this, options_str );
+    }
+    else
+    {
+      return new blink_t( this, options_str );
+    }
+  }
   if ( name == "counterspell"      ) return new            counterspell_t( this, options_str );
   if ( name == "frost_nova"        ) return new              frost_nova_t( this, options_str );
   if ( name == "time_warp"         ) return new               time_warp_t( this, options_str );
@@ -6689,6 +6721,7 @@ action_t* mage_t::create_action( const std::string& name,
   }
   if ( name == "mirror_image"      ) return new            mirror_image_t( this, options_str );
   if ( name == "rune_of_power"     ) return new           rune_of_power_t( this, options_str );
+  if ( name == "shimmer"           ) return new                 shimmer_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
