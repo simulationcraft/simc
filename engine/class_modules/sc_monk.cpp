@@ -1354,8 +1354,8 @@ struct storm_earth_and_fire_pet_t : public pet_t
     {
       double c = sef_melee_attack_t::composite_crit_chance();
 
-      if ( maybe_ptr( o() -> dbc.ptr ) && p() -> buff.pressure_point_sef -> up() )
-        c += p() -> buff.pressure_point_sef -> value();
+      if ( maybe_ptr( o() -> dbc.ptr ) && o() -> buff.pressure_point -> up() )
+        c += o() -> buff.pressure_point -> value();
 
       return c;
     }
@@ -1392,8 +1392,8 @@ struct storm_earth_and_fire_pet_t : public pet_t
     {
       double c = sef_melee_attack_t::composite_crit_chance();
 
-      if ( maybe_ptr( o() -> dbc.ptr ) && p() -> buff.pressure_point_sef -> up() )
-        c += p() -> buff.pressure_point_sef -> value();
+      if ( maybe_ptr( o() -> dbc.ptr ) && o() -> buff.pressure_point -> up() )
+        c += o() -> buff.pressure_point -> value();
 
       return c;
     }
@@ -1524,9 +1524,6 @@ struct storm_earth_and_fire_pet_t : public pet_t
 
       if ( p() -> buff.transfer_the_power_sef -> up() )
         p() -> buff.transfer_the_power_sef -> expire();
-
-      //if ( maybe_ptr( o() -> dbc.ptr ) && o() -> sets -> has_set_bonus( MONK_WINDWALKER, T20, B2 ) )
-      //  p() -> buff.pressure_point_sef -> trigger();
     }
   };
 
@@ -1861,9 +1858,6 @@ public:
 
     buff.transfer_the_power_sef = buff_creator_t( this, "transfer_the_power_sef", o() -> artifact.transfer_the_power.data().effectN( 1 ).trigger() )
                             .default_value( o() -> artifact.transfer_the_power.rank() ? o() -> artifact.transfer_the_power.percent() : 0 ); 
-
-    buff.pressure_point_sef = buff_creator_t( this, "pressure_point_sef", o() -> passives.pressure_point )
-      .default_value( o() -> passives.pressure_point -> effectN( 1 ).percent() );
   }
 
   void trigger_attack( sef_ability_e ability, const action_t* source_action )
@@ -9233,8 +9227,8 @@ stat_e monk_t::primary_stat() const
 {
   switch ( specialization() )
   {
-    case MONK_BREWMASTER: return STAT_STAMINA; break;
-    case MONK_MISTWEAVER: return STAT_INTELLECT; break;
+    case MONK_BREWMASTER: return STAT_STAMINA;
+    case MONK_MISTWEAVER: return STAT_INTELLECT;
     default:              return STAT_AGILITY;
   }
 }
