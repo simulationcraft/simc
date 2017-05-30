@@ -6678,6 +6678,26 @@ bool mage_t::create_actions()
 {
   using namespace actions;
 
+  if ( spec.ignite -> ok() )
+  {
+    ignite = new ignite_t( this );
+  }
+
+  if ( spec.icicles -> ok() )
+  {
+    icicle = new icicle_t( this );
+  }
+
+  if ( talents.unstable_magic -> ok() )
+  {
+    unstable_magic_explosion = new unstable_magic_explosion_t( this );
+  }
+
+  if ( artifact.touch_of_the_magi.rank() )
+  {
+    touch_of_the_magi_explosion = new touch_of_the_magi_explosion_t( this );
+  }
+
   // Global actions for 7.2.5 legendaries.
   // TODO: Probably a better idea to construct these in the legendary callbacks?
   switch ( specialization() )
@@ -6894,20 +6914,6 @@ void mage_t::init_spells()
   spec.ignite                = find_mastery_spell( MAGE_FIRE );
   spec.icicles               = find_mastery_spell( MAGE_FROST );
   spec.icicles_driver        = find_spell( 148012 );
-
-  // Active spells
-  if ( spec.ignite -> ok()  )
-    ignite = new actions::ignite_t( this );
-  if ( spec.icicles -> ok() )
-    icicle = new actions::icicle_t( this );
-  if ( talents.unstable_magic -> ok() )
-    unstable_magic_explosion = new actions::unstable_magic_explosion_t( this );
-
-  if ( artifact.touch_of_the_magi.rank() )
-  {
-    touch_of_the_magi_explosion =
-      new actions::touch_of_the_magi_explosion_t( this );
-  }
 }
 
 // mage_t::init_base ========================================================
