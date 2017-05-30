@@ -1651,10 +1651,12 @@ struct sim_t : private sc_thread_t
   struct expansion_opt_t
   {
     // Legion
-    int infernal_cinders_users;
-    int engine_of_eradication_orbs;
+    int                 infernal_cinders_users;
+    int                 engine_of_eradication_orbs;
+    std::vector<double> cradle_of_anguish_resets;
 
-    expansion_opt_t() : infernal_cinders_users( 1 ), engine_of_eradication_orbs( 3 )
+    expansion_opt_t() :
+      infernal_cinders_users( 1 ), engine_of_eradication_orbs( 3 )
     { }
   } expansion_opts;
 

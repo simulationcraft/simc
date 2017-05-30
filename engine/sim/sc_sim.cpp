@@ -3225,6 +3225,25 @@ void sim_t::create_options()
   // Legion
   add_option( opt_int( "legion.infernal_cinders_users", expansion_opts.infernal_cinders_users, 1, 20 ) );
   add_option( opt_int( "legion.engine_of_eradication_orbs", expansion_opts.engine_of_eradication_orbs, 0, 3 ) );
+  add_option( opt_func( "legion.cradle_of_anguish_resets", []( sim_t* sim, const std::string&, const std::string& value ) {
+    auto split = util::string_split( value, ":/," );
+    range::for_each( split, [ sim ]( const std::string& str ) {
+      auto v = std::atof( str.c_str() );
+      if ( v <= 0.0 )
+      {
+        return;
+      }
+
+      auto it = range::find( sim -> expansion_opts.cradle_of_anguish_resets, v );
+      if ( it != sim -> expansion_opts.cradle_of_anguish_resets.end() )
+      {
+        return;
+      }
+
+      sim -> expansion_opts.cradle_of_anguish_resets.push_back( v );
+    } );
+    return true;
+  } ) );
 }
 
 // sim_t::parse_option ======================================================

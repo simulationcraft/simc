@@ -110,6 +110,7 @@ namespace item
   void umbral_moonglaives( special_effect_t&           );
   void engine_of_eradication( special_effect_t&        );
   void specter_of_betrayal( special_effect_t&          );
+  void cradle_of_anguish( special_effect_t&            );
 
   // 7.2.0 Dungeon
   void dreadstone_of_endless_shadows( special_effect_t& );
@@ -1373,6 +1374,81 @@ void specter_of_betrayal_driver_t::reset()
 void item::specter_of_betrayal( special_effect_t& effect )
 {
   effect.execute_action = create_proc_action<specter_of_betrayal_driver_t>( "specter_of_betrayal_driver", effect );
+}
+
+// Cradle of Anguish =======================================================
+
+struct cradle_of_anguish_ticker_t : public event_t
+{
+  stat_buff_t* buff;
+  timespan_t tick_time;
+
+  cradle_of_anguish_ticker_t( stat_buff_t* b, const timespan_t& t ) :
+    event_t( *b -> sim, t ), buff( b ), tick_time( t )
+  { }
+
+  void execute() override
+  {
+    buff -> trigger();
+
+    if ( buff -> check() < buff -> max_stack() )
+    {
+      make_event<cradle_of_anguish_ticker_t>( sim(), buff, tick_time );
+    }
+  }
+};
+
+struct cradle_of_anguish_reset_t : public event_t
+{
+  const special_effect_t& effect;
+  size_t current_idx;
+  stat_buff_t* buff;
+
+  cradle_of_anguish_reset_t( const special_effect_t& e, stat_buff_t* b, size_t reset_idx = 0 ) :
+    event_t( *b -> sim, timespan_t::from_seconds( b -> sim -> expansion_opts.cradle_of_anguish_resets[ reset_idx ] ) -
+                        b -> sim -> current_time() ),
+    effect( e ), current_idx( reset_idx ), buff( b )
+  { }
+
+  void execute() override
+  {
+    auto max_stack = buff -> check() == buff -> max_stack();
+    buff -> expire();
+
+    if ( ++current_idx < sim().expansion_opts.cradle_of_anguish_resets.size() )
+    {
+      make_event<cradle_of_anguish_reset_t>( sim(), effect, buff, current_idx );
+    }
+
+    if ( max_stack )
+    {
+      make_event<cradle_of_anguish_ticker_t>( *buff -> sim, buff,
+                                              effect.driver() -> effectN( 1 ).period() );
+    }
+  }
+};
+
+void item::cradle_of_anguish( special_effect_t& effect )
+{
+  stat_buff_t* buff = debug_cast<stat_buff_t*>( buff_t::find( effect.player, "strength_of_will" ) );
+  auto buff_spell = effect.player -> find_spell( 242642 );
+  auto amount = buff_spell -> effectN( 3 ).average( effect.item );
+
+  if ( buff == nullptr )
+  {
+    buff = stat_buff_creator_t( effect.player, "strength_of_will", buff_spell, effect.item )
+           .add_stat( effect.player -> primary_stat(), amount );
+  }
+
+  effect.player -> callbacks_on_arise.emplace_back( [ buff, effect ]() {
+    buff -> trigger( buff -> data().max_stacks() );
+    if ( buff -> sim -> expansion_opts.cradle_of_anguish_resets.size() )
+    {
+      make_event<cradle_of_anguish_reset_t>( *buff -> sim, effect, buff );
+      make_event<cradle_of_anguish_ticker_t>( *buff -> sim, buff,
+                                              effect.driver() -> effectN( 1 ).period() );
+    }
+  } );
 }
 
 // Toe Knee's Promise ======================================================
@@ -5174,6 +5250,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 242553, item::umbral_moonglaives        );
   register_special_effect( 242611, item::engine_of_eradication     );
   register_special_effect( 246461, item::specter_of_betrayal       );
+  register_special_effect( 242640, item::cradle_of_anguish         );
 
   /* Legion 7.2.0 Dungeon */
   register_special_effect( 238498, item::dreadstone_of_endless_shadows );

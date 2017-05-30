@@ -3477,6 +3477,7 @@ struct apocalypse_t : public death_knight_melee_attack_t
       }
 
       p() -> pets.apocalypse_ghoul[ i ] -> summon( duration );
+      p() -> buffs.t20_2pc_unholy -> trigger();
     }
 
     if ( p() -> artifact.deaths_harbinger.rank() > 0 )
