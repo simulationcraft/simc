@@ -6591,6 +6591,8 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
           return spell -> id() == 205029; // Flame On
         case MAGE_FROST:
           return spell -> id() == 205030; // Frozen Touch
+        default:
+          break;
       }
     }
 
