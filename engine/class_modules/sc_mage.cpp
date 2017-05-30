@@ -935,6 +935,8 @@ struct mirror_image_pet_t : public mage_pet_t
       case MAGE_FROST:
         action_list_str = "frostbolt";
         break;
+      default:
+        break;
     }
 
     mage_pet_t::init_action_list();
@@ -6791,6 +6793,8 @@ bool mage_t::create_actions()
     case MAGE_FROST:
       action.legendary_comet_storm = new comet_storm_t( this, "", true );
       break;
+    default:
+      break;
   }
 
   return player_t::create_actions();
@@ -7382,6 +7386,8 @@ void mage_t::apl_precombat()
       break;
     case MAGE_FROST:
       precombat -> add_action( this, "Frostbolt" );
+      break;
+    default:
       break;
   }
 }
@@ -8831,20 +8837,6 @@ struct shattered_fragments_of_sindragosa_t : public class_buff_cb_t<mage_t, buff
   }
 };
 // MAGE MODULE INTERFACE ====================================================
-
-static void do_trinket_init( mage_t*                  p,
-                             specialization_e         spec,
-                             const special_effect_t*& ptr,
-                             const special_effect_t&  effect )
-{
-  if ( !p -> find_spell( effect.spell_id ) -> ok() ||
-       p -> specialization() != spec )
-  {
-    return;
-  }
-
-  ptr = &( effect );
-}
 
 struct mage_module_t : public module_t
 {
