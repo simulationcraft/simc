@@ -413,8 +413,12 @@ public:
 
     // Tier 30
     const spell_data_t* shimmer, // NYI
+                      * slipstream,
                       * blast_wave,
-                      * ice_floes;
+                      * ice_floes,
+                      * mana_shield, // NYI
+                      * blazing_soul, // NYI
+                      * glacial_insulation; // NYI
 
     // Tier 45
     const spell_data_t* mirror_image,
@@ -433,7 +437,10 @@ public:
                       * splitting_ice;
 
     // Tier 75
-    const spell_data_t* ring_of_frost, // NYI
+    const spell_data_t* chrono_shift, // NYI
+                      * frenetic_speed, // NYI
+                      * frigid_winds, // NYI
+                      * ring_of_frost, // NYI
                       * ice_ward;
 
     // Tier 90
@@ -3016,6 +3023,14 @@ struct arcane_missiles_t : public arcane_mage_spell_t
 
     return arcane_mage_spell_t::ready();
   }
+
+  bool usable_moving() const override
+  {
+    if ( p() -> talents.slipstream -> ok() )
+      return true;
+
+    return arcane_mage_spell_t::usable_moving();
+  }
 };
 
 // Arcane Orb Spell ===========================================================
@@ -3644,6 +3659,14 @@ struct evocation_t : public arcane_mage_spell_t
       aegwynns_ascendance -> base_dd_min = explosion_amount;
       aegwynns_ascendance -> execute();
     }
+  }
+
+  bool usable_moving() const override
+  {
+    if ( p() -> talents.slipstream -> ok() )
+      return true;
+
+    return arcane_mage_spell_t::usable_moving();
   }
 };
 
@@ -6766,55 +6789,61 @@ void mage_t::init_spells()
 
   // Talents
   // Tier 15
-  talents.arcane_familiar = find_talent_spell( "Arcane Familiar" );
-  talents.amplification   = find_talent_spell( "Amplification"   );
-  talents.words_of_power  = find_talent_spell( "Words of Power"  );
-  talents.pyromaniac      = find_talent_spell( "Pyromaniac"      );
-  talents.conflagration   = find_talent_spell( "Conflagration"   );
-  talents.firestarter     = find_talent_spell( "Firestarter"     );
-  talents.ray_of_frost    = find_talent_spell( "Ray of Frost"    );
-  talents.lonely_winter   = find_talent_spell( "Lonely Winter"   );
-  talents.bone_chilling   = find_talent_spell( "Bone Chilling"   );
+  talents.arcane_familiar    = find_talent_spell( "Arcane Familiar"    );
+  talents.amplification      = find_talent_spell( "Amplification"      );
+  talents.words_of_power     = find_talent_spell( "Words of Power"     );
+  talents.pyromaniac         = find_talent_spell( "Pyromaniac"         );
+  talents.conflagration      = find_talent_spell( "Conflagration"      );
+  talents.firestarter        = find_talent_spell( "Firestarter"        );
+  talents.ray_of_frost       = find_talent_spell( "Ray of Frost"       );
+  talents.lonely_winter      = find_talent_spell( "Lonely Winter"      );
+  talents.bone_chilling      = find_talent_spell( "Bone Chilling"      );
   // Tier 30
-  talents.shimmer         = find_talent_spell( "Shimmer"         );
-  talents.blast_wave      = find_talent_spell( "Blast Wave"      );
-  talents.ice_floes       = find_talent_spell( "Ice Floes"       );
+  talents.shimmer            = find_talent_spell( "Shimmer"            );
+  talents.slipstream         = find_talent_spell( "Slipstream"         );
+  talents.blast_wave         = find_talent_spell( "Blast Wave"         );
+  talents.ice_floes          = find_talent_spell( "Ice Floes"          );
+  talents.mana_shield        = find_talent_spell( "Mana Shield"        );
+  talents.blazing_soul       = find_talent_spell( "Blazing Soul"       );
+  talents.glacial_insulation = find_talent_spell( "Glacial Insulation" );
   // Tier 45
-  talents.mirror_image    = find_talent_spell( "Mirror Image"    );
-  talents.rune_of_power   = find_talent_spell( "Rune of Power"   );
-  talents.incanters_flow  = find_talent_spell( "Incanter's Flow" );
+  talents.mirror_image       = find_talent_spell( "Mirror Image"       );
+  talents.rune_of_power      = find_talent_spell( "Rune of Power"      );
+  talents.incanters_flow     = find_talent_spell( "Incanter's Flow"    );
   // Tier 60
-  talents.supernova       = find_talent_spell( "Supernova"       );
-  talents.charged_up      = find_talent_spell( "Charged Up"      );
-  talents.resonance       = find_talent_spell( "Resonance"       );
-  talents.alexstraszas_fury = find_talent_spell( "Alexstrasza's Fury" );
-  talents.flame_on        = find_talent_spell( "Flame On"        );
-  talents.controlled_burn = find_talent_spell( "Controlled Burn" );
-  talents.ice_nova        = find_talent_spell( "Ice Nova"        );
-  talents.frozen_touch    = find_talent_spell( "Frozen Touch"    );
-  talents.splitting_ice   = find_talent_spell( "Splitting Ice"   );
-
+  talents.supernova          = find_talent_spell( "Supernova"          );
+  talents.charged_up         = find_talent_spell( "Charged Up"         );
+  talents.resonance          = find_talent_spell( "Resonance"          );
+  talents.alexstraszas_fury  = find_talent_spell( "Alexstrasza's Fury" );
+  talents.flame_on           = find_talent_spell( "Flame On"           );
+  talents.controlled_burn    = find_talent_spell( "Controlled Burn"    );
+  talents.ice_nova           = find_talent_spell( "Ice Nova"           );
+  talents.frozen_touch       = find_talent_spell( "Frozen Touch"       );
+  talents.splitting_ice      = find_talent_spell( "Splitting Ice"      );
   // Tier 75
-  talents.ring_of_frost   = find_talent_spell( "Ring of Frost"   );
-  talents.ice_ward        = find_talent_spell( "Ice Ward"        );
+  talents.chrono_shift       = find_talent_spell( "Chrono Shift"       );
+  talents.frenetic_speed     = find_talent_spell( "Frenetic Speed"     );
+  talents.frigid_winds       = find_talent_spell( "Frigid Winds"       );
+  talents.ring_of_frost      = find_talent_spell( "Ring of Frost"      );
+  talents.ice_ward           = find_talent_spell( "Ice Ward"           );
   // Tier 90
-  talents.nether_tempest  = find_talent_spell( "Nether Tempest"  );
-  talents.living_bomb     = find_talent_spell( "Living Bomb"     );
-  talents.frost_bomb      = find_talent_spell( "Frost Bomb"      );
-  talents.unstable_magic  = find_talent_spell( "Unstable Magic"  );
-  talents.erosion         = find_talent_spell( "Erosion"         );
-  talents.flame_patch     = find_talent_spell( "Flame Patch"     );
-  talents.arctic_gale     = find_talent_spell( "Arctic Gale"     );
+  talents.nether_tempest     = find_talent_spell( "Nether Tempest"     );
+  talents.living_bomb        = find_talent_spell( "Living Bomb"        );
+  talents.frost_bomb         = find_talent_spell( "Frost Bomb"         );
+  talents.unstable_magic     = find_talent_spell( "Unstable Magic"     );
+  talents.erosion            = find_talent_spell( "Erosion"            );
+  talents.flame_patch        = find_talent_spell( "Flame Patch"        );
+  talents.arctic_gale        = find_talent_spell( "Arctic Gale"        );
   // Tier 100
-  talents.overpowered     = find_talent_spell( "Overpowered"     );
-  talents.temporal_flux   = find_talent_spell( "Temporal Flux"   );
-  talents.arcane_orb      = find_talent_spell( "Arcane Orb"      );
-  talents.kindling        = find_talent_spell( "Kindling"        );
-  talents.cinderstorm     = find_talent_spell( "Cinderstorm"     );
-  talents.meteor          = find_talent_spell( "Meteor"          );
-  talents.thermal_void    = find_talent_spell( "Thermal Void"    );
-  talents.glacial_spike   = find_talent_spell( "Glacial Spike"   );
-  talents.comet_storm     = find_talent_spell( "Comet Storm"     );
+  talents.overpowered        = find_talent_spell( "Overpowered"        );
+  talents.temporal_flux      = find_talent_spell( "Temporal Flux"      );
+  talents.arcane_orb         = find_talent_spell( "Arcane Orb"         );
+  talents.kindling           = find_talent_spell( "Kindling"           );
+  talents.cinderstorm        = find_talent_spell( "Cinderstorm"        );
+  talents.meteor             = find_talent_spell( "Meteor"             );
+  talents.thermal_void       = find_talent_spell( "Thermal Void"       );
+  talents.glacial_spike      = find_talent_spell( "Glacial Spike"      );
+  talents.comet_storm        = find_talent_spell( "Comet Storm"        );
 
   //Artifact Spells
   //Arcane
