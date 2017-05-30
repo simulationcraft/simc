@@ -266,6 +266,7 @@ public:
           * hot_streak,
           * ignition,                // T20 2pc Fire
           * pyretic_incantation,
+          * scorched_earth,
           * streaking;               // T19 4pc Fire
 
 
@@ -5742,6 +5743,16 @@ struct scorch_t : public fire_mage_spell_t
     return c;
   }
 
+  virtual void impact( action_state_t* s ) override
+  {
+    fire_mage_spell_t::impact( s );
+
+    if ( p() -> artifact.scorched_earth.rank() )
+    {
+      p() -> buffs.scorched_earth -> trigger();
+    }
+  }
+
   virtual bool usable_moving() const override
   { return true; }
 };
@@ -7044,6 +7055,7 @@ void mage_t::create_buffs()
   buffs.enhanced_pyrotechnics  = buff_creator_t( this, "enhanced_pyrotechnics", find_spell( 157644 ) )
                                    .default_value( find_spell( 157644 ) -> effectN( 1 ).percent()
                                        + sets -> set( MAGE_FIRE, T19, B2 ) -> effectN( 1 ).percent() );
+  buffs.erupting_infernal_core = buff_creator_t( this, "erupting_infernal_core", find_spell( 248147 ) );
   buffs.ignition               = buff_creator_t( this, "ignition", find_spell( 246261 ) );
   buffs.heating_up             = buff_creator_t( this, "heating_up",  find_spell( 48107 ) );
   buffs.hot_streak             = buff_creator_t( this, "hot_streak",  find_spell( 48108 ) );
@@ -7052,7 +7064,9 @@ void mage_t::create_buffs()
   buffs.streaking              = buff_creator_t( this, "streaking", find_spell( 211399 ) )
                                    .add_invalidate( CACHE_SPELL_HASTE )
                                    .default_value( find_spell( 211399 ) -> effectN( 1 ).percent() );
-  buffs.erupting_infernal_core = buff_creator_t( this, "erupting_infernal_core", find_spell( 248147 ) );
+  buffs.scorched_earth         = buff_creator_t( this, "scorched_earth", find_spell( 227482 ) )
+                                   .default_value( find_spell( 227482 ) -> effectN( 1 ).percent() )
+                                   .add_invalidate( CACHE_RUN_SPEED );
 
   // Frost
   buffs.brain_freeze           = buff_creator_t( this, "brain_freeze", find_spell( 190446 ) );
@@ -8081,6 +8095,11 @@ double mage_t::passive_movement_modifier() const
   if ( buffs.chrono_shift -> check() )
   {
     pmm += buffs.chrono_shift -> check_value();
+  }
+
+  if ( buffs.scorched_earth -> check() )
+  {
+    pmm += buffs.scorched_earth -> check_stack_value();
   }
 
   return pmm;
