@@ -3087,12 +3087,15 @@ expr_t* action_t::create_expression( const std::string& name_str )
 
       target_proxy_expr_t( action_t& a, const std::string& expr_str ) :
         action_expr_t( "target_proxy_expr", a ), suffix_expr_str( expr_str )
-      {
-        proxy_expr.resize( a.sim -> actor_list.size() + 1, 0 );
-      }
+      { }
 
       double evaluate() override
       {
+        if ( proxy_expr.size() <= action.target -> actor_index )
+        {
+          proxy_expr.resize( action.target -> actor_index + 1, nullptr );
+        }
+
         if ( proxy_expr[ action.target -> actor_index ] == 0 )
         {
           proxy_expr[ action.target -> actor_index ] = action.target -> create_expression( &action, suffix_expr_str );
