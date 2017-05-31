@@ -1141,7 +1141,7 @@ struct arcane_familiar_buff_t : public buff_t
     set_tick_callback( [ this ] ( buff_t* /* buff */, int /* total_ticks */, const timespan_t& /* tick_time */ )
     {
       assert( arcane_assault );
-      arcane_assault -> target = player -> target;
+      arcane_assault -> set_target( player -> target );
       arcane_assault -> execute();
     } );
   }
@@ -2316,7 +2316,7 @@ struct icicle_t : public frost_mage_spell_t
   }
 
   // To correctly record damage and execute information to the correct source
-  // action , we set the stats object of the icicle cast to the source stats object,
+  // action, we set the stats object of the icicle cast to the source stats object,
   // carried from trigger_icicle() to here through the execute_event_t.
   void execute() override
   {
@@ -7711,7 +7711,7 @@ void mage_t::apl_frost()
   single -> add_action( this, "Frostbolt" );
   single -> add_action( this, "Blizzard", "if=cast_time=0",
     "While on the move, use instant Blizzard if available." );
-  single -> add_action( this, "Ice Lance" , "",
+  single -> add_action( this, "Ice Lance", "",
     "Otherwise just use Ice Lance to do at least some damage." );
 
   aoe -> add_action( this, "Frostbolt", "if=prev_off_gcd.water_jet" );
