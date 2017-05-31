@@ -718,6 +718,23 @@ public:
                         ab( n, p, s )
   {
     ab::may_crit = true;
+
+    // If pets are not reported separately, create single stats_t objects for the various pet
+    // abilities.
+    if ( ! ab::sim -> report_pets_separately )
+    {
+      auto first_pet = p -> owner -> find_pet( p -> name_str );
+      if ( first_pet != nullptr && first_pet != p )
+      {
+        auto it = range::find( p -> stats_list, ab::stats );
+        if ( it != p -> stats_list.end() )
+        {
+          p -> stats_list.erase( it );
+          delete ab::stats;
+          ab::stats = first_pet -> get_stats( ab::name_str, this );
+        }
+      }
+    }
   }
   virtual ~warlock_pet_action_t() {}
 
@@ -759,12 +776,12 @@ public:
 
 };
 
-struct warlock_pet_melee_t: public melee_attack_t
+struct warlock_pet_melee_t: public warlock_pet_action_t<melee_attack_t>
 {
-  struct off_hand_swing: public melee_attack_t
+  struct off_hand_swing: public warlock_pet_action_t<melee_attack_t>
   {
     off_hand_swing( warlock_pet_t* p, const char* name = "melee_oh" ):
-      melee_attack_t( name, p, spell_data_t::nil() )
+      warlock_pet_action_t<melee_attack_t>( name, p, spell_data_t::nil() )
     {
       school = SCHOOL_PHYSICAL;
       weapon = &( p -> off_hand_weapon );
@@ -778,7 +795,7 @@ struct warlock_pet_melee_t: public melee_attack_t
   off_hand_swing* oh;
 
   warlock_pet_melee_t( warlock_pet_t* p, const char* name = "melee" ):
-    melee_attack_t( name, p, spell_data_t::nil() ), oh( nullptr )
+    warlock_pet_action_t<melee_attack_t>( name, p, spell_data_t::nil() ), oh( nullptr )
   {
     school = SCHOOL_PHYSICAL;
     weapon = &( p -> main_hand_weapon );
@@ -1705,8 +1722,6 @@ struct t18_illidari_satyr_t: public warlock_pet_t
     warlock_pet_t::init_base_stats();
     base_energy_regen_per_second = 0;
     melee_attack = new warlock_pet_melee_t( this );
-    if ( o() -> warlock_pet_list.t18_illidari_satyr[0] )
-      melee_attack -> stats = o() -> warlock_pet_list.t18_illidari_satyr[0] -> get_stats( "melee" );
   }
 };
 
@@ -1725,8 +1740,6 @@ struct t18_prince_malchezaar_t: public warlock_pet_t
     warlock_pet_t::init_base_stats();
     base_energy_regen_per_second = 0;
     melee_attack = new warlock_pet_melee_t( this );
-    if ( o() -> warlock_pet_list.t18_prince_malchezaar[0] )
-      melee_attack -> stats = o() -> warlock_pet_list.t18_prince_malchezaar[0] -> get_stats( "melee" );
   }
 
   double composite_player_multiplier( school_e school ) const override
@@ -1755,18 +1768,13 @@ struct t18_vicious_hellhound_t: public warlock_pet_t
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.0 );
     melee_attack = new warlock_pet_melee_t( this );
     melee_attack -> base_execute_time = timespan_t::from_seconds( 1.0 );
-    if ( o() -> warlock_pet_list.t18_vicious_hellhound[0] )
-      melee_attack -> stats = o() -> warlock_pet_list.t18_vicious_hellhound[0] -> get_stats( "melee" );
   }
 };
 
 struct chaos_tear_t : public warlock_pet_t
 {
-  stats_t** chaos_bolt_stats;
-  stats_t* regular_stats;
-
   chaos_tear_t( sim_t* sim, warlock_t* owner ) :
-    warlock_pet_t( sim, owner, "chaos_tear", PET_NONE, true ), chaos_bolt_stats( nullptr ), regular_stats(nullptr)
+    warlock_pet_t( sim, owner, "chaos_tear", PET_NONE, true )
   {
     action_list_str = "chaos_bolt";
     regen_type = REGEN_DISABLED;
@@ -1781,21 +1789,7 @@ struct chaos_tear_t : public warlock_pet_t
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str ) override
   {
-    if ( name == "chaos_bolt" )
-    {
-      action_t* a = new rift_chaos_bolt_t( this );
-      chaos_bolt_stats = &( a -> stats );
-      if ( this == o() -> warlock_pet_list.chaos_tear[0] || sim -> report_pets_separately )
-      {
-        regular_stats = a -> stats;
-      }
-      else
-      {
-        regular_stats = o() -> warlock_pet_list.chaos_tear[0] -> get_stats( "chaos_bolt" );
-        *chaos_bolt_stats = regular_stats;
-      }
-      return a;
-    }
+    if ( name == "chaos_bolt" ) return new rift_chaos_bolt_t( this );
 
     return warlock_pet_t::create_action( name, options_str );
   }
@@ -1815,12 +1809,10 @@ namespace shadowy_tear {
 
   struct shadowy_tear_t : public warlock_pet_t
   {
-    stats_t** shadow_bolt_stats;
-    stats_t* regular_stats;
     target_specific_t<shadowy_tear_td_t> target_data;
 
     shadowy_tear_t( sim_t* sim, warlock_t* owner ) :
-      warlock_pet_t( sim, owner, "shadowy_tear", PET_NONE, true ), shadow_bolt_stats( nullptr ), regular_stats( nullptr )
+      warlock_pet_t( sim, owner, "shadowy_tear", PET_NONE, true )
     {
       action_list_str = "shadow_bolt";
       regen_type = REGEN_DISABLED;
@@ -1847,21 +1839,7 @@ namespace shadowy_tear {
 
     virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
     {
-      if ( name == "shadow_bolt" )
-      {
-        action_t* a = new rift_shadow_bolt_t( this );
-        shadow_bolt_stats = &( a -> stats );
-        if ( this == o() -> warlock_pet_list.shadowy_tear[0] || sim -> report_pets_separately )
-        {
-          regular_stats = a -> stats;
-        }
-        else
-        {
-          regular_stats = o() -> warlock_pet_list.shadowy_tear[0] -> get_stats( "shadow_bolt" );
-          *shadow_bolt_stats = regular_stats;
-        }
-        return a;
-      }
+      if ( name == "shadow_bolt" ) return new rift_shadow_bolt_t( this );
 
       return warlock_pet_t::create_action( name, options_str );
     }
@@ -1876,13 +1854,8 @@ namespace shadowy_tear {
 
 namespace flame_rift {
 
-  struct flame_rift_t;
-
   struct flame_rift_t : public warlock_pet_t
   {
-    stats_t** searing_bolt_stats;
-    stats_t* regular_stats;
-
     flame_rift_t( sim_t* sim, warlock_t* owner ) :
       warlock_pet_t( sim, owner, "flame_rift", PET_NONE, true )
     {
@@ -1898,21 +1871,7 @@ namespace flame_rift {
 
     virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
     {
-      if ( name == "searing_bolt" )
-      {
-        action_t* a = new searing_bolt_t( this );
-        searing_bolt_stats = &( a->stats );
-        if ( this == o()->warlock_pet_list.flame_rift[0] || sim->report_pets_separately )
-        {
-          regular_stats = a->stats;
-        }
-        else
-        {
-          regular_stats = o()->warlock_pet_list.flame_rift[0]->get_stats( "searing_bolt" );
-          *searing_bolt_stats = regular_stats;
-        }
-        return a;
-      }
+      if ( name == "searing_bolt" ) return new searing_bolt_t( this );
 
       return warlock_pet_t::create_action( name, options_str );
     }
@@ -1920,8 +1879,6 @@ namespace flame_rift {
 }
 
 namespace chaos_portal {
-
-  struct chaos_portal_t;
 
   struct chaos_portal_td_t : public actor_target_data_t
   {
@@ -1965,21 +1922,7 @@ namespace chaos_portal {
 
     virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
     {
-      if ( name == "chaos_barrage" )
-      {
-        action_t* a = new chaos_barrage_t( this );
-        chaos_barrage_stats = &( a -> stats );
-        if ( this == o() -> warlock_pet_list.chaos_portal[0] || sim -> report_pets_separately )
-        {
-          regular_stats = a -> stats;
-        }
-        else
-        {
-          regular_stats = o() -> warlock_pet_list.chaos_portal[0] -> get_stats( "chaos_barrage" );
-          *chaos_barrage_stats = regular_stats;
-        }
-        return a;
-      }
+      if ( name == "chaos_barrage" ) return new chaos_barrage_t( this );
 
       return warlock_pet_t::create_action( name, options_str );
     }
@@ -2195,13 +2138,10 @@ struct doomguard_t: public warlock_pet_t
 struct wild_imp_pet_t: public warlock_pet_t
 {
   action_t* firebolt;
-  stats_t** fel_firebolt_stats;
-  stats_t* regular_stats;
   bool isnotdoge;
 
   wild_imp_pet_t( sim_t* sim, warlock_t* owner ):
-    warlock_pet_t( sim, owner, "wild_imp", PET_WILD_IMP ), fel_firebolt_stats( nullptr ),
-    regular_stats(nullptr)
+    warlock_pet_t( sim, owner, "wild_imp", PET_WILD_IMP )
   {
   }
 
@@ -2238,15 +2178,6 @@ struct wild_imp_pet_t: public warlock_pet_t
     if ( name == "fel_firebolt" )
     {
       firebolt = new fel_firebolt_t( this );
-      fel_firebolt_stats = &( firebolt -> stats );
-      if ( this == o() -> warlock_pet_list.wild_imps[ 0 ] || sim -> report_pets_separately )
-      {
-        regular_stats = firebolt -> stats;
-      }
-      else
-      {
-        regular_stats = o() -> warlock_pet_list.wild_imps[ 0 ] -> get_stats( "fel_firebolt" );
-      }
       return firebolt;
     }
 
@@ -2266,18 +2197,14 @@ struct wild_imp_pet_t: public warlock_pet_t
   void trigger(int timespan, bool isdoge = false )
   {
     isnotdoge = !isdoge;
-    *fel_firebolt_stats = regular_stats;
     summon( timespan_t::from_millis( timespan ) );
   }
 };
 
 struct dreadstalker_t : public warlock_pet_t
 {
-    stats_t** dreadbite_stats;
-    stats_t* regular_stats;
-
   dreadstalker_t( sim_t* sim, warlock_t* owner ) :
-    warlock_pet_t( sim, owner, "dreadstalker", PET_DREADSTALKER ), dreadbite_stats( nullptr ), regular_stats(nullptr)
+    warlock_pet_t( sim, owner, "dreadstalker", PET_DREADSTALKER )
   {
     action_list_str = "travel/dreadbite";
     regen_type = REGEN_DISABLED;
@@ -2313,27 +2240,11 @@ struct dreadstalker_t : public warlock_pet_t
     resources.base[RESOURCE_ENERGY] = 0;
     base_energy_regen_per_second = 0;
     melee_attack = new warlock_pet_melee_t( this );
-    if ( o() -> warlock_pet_list.dreadstalkers[0] )
-      melee_attack -> stats = o() ->warlock_pet_list.dreadstalkers[0] -> get_stats( "melee" );
   }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
   {
-    if ( name == "dreadbite" )
-    {
-      action_t* a = new dreadbite_t( this );
-      dreadbite_stats = &( a -> stats );
-      if ( this == o() ->warlock_pet_list.dreadstalkers[0] || sim -> report_pets_separately )
-      {
-        regular_stats = a -> stats;
-      }
-      else
-      {
-        regular_stats = o() ->warlock_pet_list.dreadstalkers[0] -> get_stats( "dreadbite" );
-        *dreadbite_stats = regular_stats;
-      }
-      return a;
-    }
+    if ( name == "dreadbite" ) return new dreadbite_t( this );
 
     return warlock_pet_t::create_action( name, options_str );
   }
