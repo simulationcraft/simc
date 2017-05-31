@@ -4149,6 +4149,8 @@ struct frost_bomb_t : public frost_mage_spell_t
     frost_mage_spell_t( "frost_bomb", p, p -> talents.frost_bomb )
   {
     parse_options( options_str );
+    // Frost Bomb no longer has ticking damage.
+    dot_duration = timespan_t::zero();
     stats -> add_child( p -> get_stats( "frost_bomb_explosion" ) );
   }
 
