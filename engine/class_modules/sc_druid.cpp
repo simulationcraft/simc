@@ -5255,8 +5255,7 @@ struct full_moon_t : public druid_spell_t
   void execute() override
   {
     druid_spell_t::execute();
-    moon_stage_e NEXT_MOON = NEW_MOON;
-    p() -> moon_stage = NEXT_MOON; // TOCHECK: Requires hit?
+    p()->moon_stage = NEW_MOON; // TOCHECK: Requires hit?
   }
 
   bool ready() override
@@ -9681,19 +9680,6 @@ struct impeccable_fel_essence_t : public scoped_actor_callback_t<druid_t>
   }
 };
 
-struct radiant_moonlight_t : public scoped_action_callback_t<full_moon_t>
-{
-    radiant_moonlight_t() : super(DRUID, "radiant_moonlight")
-    {}
-
-    void manipulate(full_moon_t* action, const special_effect_t& e) override
-    {
-        
-    }
-
-};
-
-
 struct promise_of_elune_t : public class_buff_cb_t<druid_t>
 {
   promise_of_elune_t() : super( DRUID, "power_of_elune_the_moon_goddess" )
@@ -9969,7 +9955,6 @@ struct druid_module_t : public module_t
     register_special_effect( 208051, sephuzs_t() );
     register_special_effect( 208051, sephuzs_secret_t(), true);
     register_special_effect( 248081, behemoth_headdress_t() );
-    register_special_effect(248163, radiant_moonlight_t());
     // register_special_effect( 208220, amanthuls_wisdom );
     // register_special_effect( 207943, edraith_bonds_of_aglaya );
     // register_special_effect( 210667, ekowraith_creator_of_worlds );
