@@ -1568,7 +1568,9 @@ public:
 
   virtual bool usable_moving() const override
   {
-    if ( p() -> buffs.ice_floes -> check() )
+    buff_t* ice_floes = p() -> buffs.ice_floes;
+
+    if ( ice_floes -> check() && data().affected_by( ice_floes -> data().effectN( 1 ) ) )
     {
       return true;
     }
