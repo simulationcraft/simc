@@ -324,11 +324,10 @@ public:
   {
     cooldown_t* combustion,
               * cone_of_cold,
-              * dragons_breath,
               * evocation,
+              * frost_nova,
               * frozen_orb,
               * icy_veins,
-              * fire_blast,
               * phoenixs_flames,
               * presence_of_mind,
               * ray_of_frost,
@@ -3407,6 +3406,26 @@ struct cinderstorm_t : public fire_mage_spell_t
       make_event<events::cinder_impact_event_t>( *sim, *p(), cinder, target,
                                                   travel_time);
     }
+  }
+};
+
+// Cold Snap Spell ============================================================
+
+struct cold_snap_t : public frost_mage_spell_t
+{
+  cold_snap_t( mage_t* p, const std::string& options_str ) :
+    frost_mage_spell_t( "cold_snap", p, p -> find_specialization_spell( "Cold Snap" ) )
+  {
+    parse_options( options_str );
+    harmful = false;
+  };
+
+  virtual void execute() override
+  {
+    frost_mage_spell_t::execute();
+
+    p() -> cooldowns.cone_of_cold -> reset( false );
+    p() -> cooldowns.frost_nova -> reset( false );
   }
 };
 
@@ -6571,11 +6590,10 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   // Cooldowns
   cooldowns.combustion       = get_cooldown( "combustion"       );
   cooldowns.cone_of_cold     = get_cooldown( "cone_of_cold"     );
-  cooldowns.dragons_breath   = get_cooldown( "dragons_breath"   );
   cooldowns.evocation        = get_cooldown( "evocation"        );
+  cooldowns.frost_nova       = get_cooldown( "frost_nova"       );
   cooldowns.frozen_orb       = get_cooldown( "frozen_orb"       );
   cooldowns.icy_veins        = get_cooldown( "icy_veins"        );
-  cooldowns.fire_blast       = get_cooldown( "fire_blast"       );
   cooldowns.phoenixs_flames  = get_cooldown( "phoenixs_flames"  );
   cooldowns.presence_of_mind = get_cooldown( "presence_of_mind" );
   cooldowns.ray_of_frost     = get_cooldown( "ray_of_frost"     );
@@ -6694,6 +6712,7 @@ action_t* mage_t::create_action( const std::string& name,
 
   // Frost
   if ( name == "blizzard"          ) return new                blizzard_t( this, options_str );
+  if ( name == "cold_snap"         ) return new               cold_snap_t( this, options_str );
   if ( name == "comet_storm"       ) return new             comet_storm_t( this, options_str );
   if ( name == "cone_of_cold"      ) return new            cone_of_cold_t( this, options_str );
   if ( name == "flurry"            ) return new                  flurry_t( this, options_str );
