@@ -2538,7 +2538,7 @@ struct arcane_barrage_t : public arcane_mage_spell_t
   double mantle_of_the_first_kirin_tor_chance;
 
   arcane_barrage_t( mage_t* p, const std::string& options_str ) :
-    arcane_mage_spell_t( "arcane_barrage", p, p -> find_class_spell( "Arcane Barrage" ) ),
+    arcane_mage_spell_t( "arcane_barrage", p, p -> find_specialization_spell( "Arcane Barrage" ) ),
     arcane_rebound( new arcane_rebound_t( p ) ),
     mystic_kilt_of_the_rune_master_regen( 0.0 ),
     mantle_of_the_first_kirin_tor_chance( 0.0 )
@@ -2648,7 +2648,7 @@ struct arcane_blast_t : public arcane_mage_spell_t
 
   arcane_blast_t( mage_t* p, const std::string& options_str ) :
     arcane_mage_spell_t( "arcane_blast", p,
-                         p -> find_class_spell( "Arcane Blast" ) )
+                         p -> find_specialization_spell( "Arcane Blast" ) )
   {
     parse_options( options_str );
     triggers_arcane_missiles = false; // Disable default AM proc logic.
@@ -2798,7 +2798,7 @@ struct arcane_explosion_t : public arcane_mage_spell_t
 
   arcane_explosion_t( mage_t* p, const std::string& options_str ) :
     arcane_mage_spell_t( "arcane_explosion", p,
-                         p -> find_class_spell( "Arcane Explosion" ) ),
+                         p -> find_specialization_spell( "Arcane Explosion" ) ),
     time_and_space( nullptr )
   {
     parse_options( options_str );
@@ -2872,7 +2872,7 @@ struct arcane_missiles_tick_t : public arcane_mage_spell_t
 {
   arcane_missiles_tick_t( mage_t* p ) :
     arcane_mage_spell_t( "arcane_missiles_tick", p,
-                         p -> find_class_spell( "Arcane Missiles" )
+                         p -> find_specialization_spell( "Arcane Missiles" )
                            -> effectN( 2 ).trigger() )
   {
     background  = true;
@@ -2918,7 +2918,7 @@ struct arcane_missiles_t : public arcane_mage_spell_t
 
   arcane_missiles_t( mage_t* p, const std::string& options_str ) :
     arcane_mage_spell_t( "arcane_missiles", p,
-                         p -> find_class_spell( "Arcane Missiles" ) )
+                         p -> find_specialization_spell( "Arcane Missiles" ) )
   {
     parse_options( options_str );
     may_miss = false;
@@ -3129,7 +3129,7 @@ struct arcane_power_t : public arcane_mage_spell_t
 {
   arcane_power_t( mage_t* p, const std::string& options_str ) :
     arcane_mage_spell_t( "arcane_power", p,
-                         p -> find_class_spell( "Arcane Power" ) )
+                         p -> find_specialization_spell( "Arcane Power" ) )
   {
     parse_options( options_str );
     harmful = false;
@@ -3276,7 +3276,7 @@ struct blizzard_t : public frost_mage_spell_t
 struct charged_up_t : public arcane_mage_spell_t
 {
   charged_up_t( mage_t* p, const std::string& options_str ) :
-    arcane_mage_spell_t( "charged_up", p, p -> find_spell ( "Charged Up" ) )
+    arcane_mage_spell_t( "charged_up", p, p -> talents.charged_up )
   {
     parse_options( options_str );
     harmful = false;
@@ -3435,7 +3435,7 @@ struct cold_snap_t : public frost_mage_spell_t
 struct combustion_t : public fire_mage_spell_t
 {
   combustion_t( mage_t* p, const std::string& options_str ) :
-    fire_mage_spell_t( "combustion", p, p -> find_class_spell( "Combustion" ) )
+    fire_mage_spell_t( "combustion", p, p -> find_specialization_spell( "Combustion" ) )
   {
     parse_options( options_str );
     dot_duration = timespan_t::zero();
@@ -3556,7 +3556,7 @@ struct dragons_breath_t : public fire_mage_spell_t
 {
   dragons_breath_t( mage_t* p, const std::string& options_str ) :
     fire_mage_spell_t( "dragons_breath", p,
-                       p -> find_class_spell( "Dragon's Breath" ) )
+                       p -> find_specialization_spell( "Dragon's Breath" ) )
   {
     parse_options( options_str );
     aoe = -1;
@@ -3645,7 +3645,7 @@ struct evocation_t : public arcane_mage_spell_t
 
   evocation_t( mage_t* p, const std::string& options_str ) :
     arcane_mage_spell_t( "evocation", p,
-                         p -> find_class_spell( "Evocation" ) ),
+                         p -> find_specialization_spell( "Evocation" ) ),
     mana_gained( 0.0 )
   {
     parse_options( options_str );
@@ -4811,7 +4811,7 @@ struct fire_blast_t : public fire_mage_spell_t
 
   fire_blast_t( mage_t* p, const std::string& options_str ) :
     fire_mage_spell_t( "fire_blast", p,
-                       p -> find_class_spell( "Fire Blast" ) ),
+                       p -> find_specialization_spell( "Fire Blast" ) ),
     blast_furnace( nullptr )
   {
     parse_options( options_str );
@@ -5499,7 +5499,7 @@ struct phoenixs_flames_t : public fire_mage_spell_t
 struct pyroblast_t : public fire_mage_spell_t
 {
   pyroblast_t( mage_t* p, const std::string& options_str ) :
-    fire_mage_spell_t( "pyroblast", p, p -> find_class_spell( "Pyroblast" ) )
+    fire_mage_spell_t( "pyroblast", p, p -> find_specialization_spell( "Pyroblast" ) )
   {
     parse_options( options_str );
 
@@ -5810,7 +5810,7 @@ struct shimmer_t : public mage_spell_t
 struct slow_t : public arcane_mage_spell_t
 {
   slow_t( mage_t* p, const std::string& options_str ) :
-    arcane_mage_spell_t( "slow", p, p -> find_class_spell( "Slow" ) )
+    arcane_mage_spell_t( "slow", p, p -> find_specialization_spell( "Slow" ) )
   {
     parse_options( options_str );
     ignore_false_positive = true;
