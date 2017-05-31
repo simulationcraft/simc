@@ -1017,6 +1017,22 @@ public:
   hunter_pet_action_t( const std::string& n, T_PET* p, const spell_data_t* s = spell_data_t::nil() ):
     ab( n, p, s )
   {
+    // If pets are not reported separately, create single stats_t objects for the various pet
+    // abilities.
+    if ( ! ab::sim -> report_pets_separately )
+    {
+      auto first_pet = p -> owner -> find_pet( p -> name_str );
+      if ( first_pet != nullptr && first_pet != p )
+      {
+        auto it = range::find( p -> stats_list, ab::stats );
+        if ( it != p -> stats_list.end() )
+        {
+          p -> stats_list.erase( it );
+          delete ab::stats;
+          ab::stats = first_pet -> get_stats( ab::name_str, this );
+        }
+      }
+    }
   }
 
   T_PET* p()             { return static_cast<T_PET*>( ab::player ); }
@@ -1429,30 +1445,13 @@ struct dire_critter_t: public hunter_secondary_pet_t
     {
       aoe = -1;
     }
-
-    bool init_finished() override
-    {
-      if ( o() -> pets.dire_beasts[ 0 ] )
-        stats = o() -> pets.dire_beasts[ 0 ] -> get_stats( name_str );
-
-      return base_t::init_finished();
-    }
   };
 
   struct dire_beast_melee_t: public secondary_pet_melee_t<dire_critter_t>
   {
     dire_beast_melee_t( dire_critter_t* p ):
       base_t( "dire_beast_melee", p )
-    {
-    }
-
-    bool init_finished() override
-    {
-      if ( o() -> pets.dire_beasts[ 0 ] )
-        stats = o() -> pets.dire_beasts[ 0 ] -> get_stats( name_str );
-
-      return base_t::init_finished();
-    }
+    { }
   };
 
   struct actives_t
@@ -1710,14 +1709,6 @@ struct sneaky_snake_t: public hunter_secondary_pet_t
       cooldown -> duration = p -> find_spell( 243120 ) -> internal_cooldown();
     }
 
-    bool init_finished() override
-    {
-      if ( o() -> pets.sneaky_snakes[ 0 ] )
-        stats = o() -> pets.sneaky_snakes[ 0 ] -> get_stats( name_str );
-
-      return base_t::init_finished();
-    }
-
     void trigger( action_state_t* s )
     {
       if ( cooldown -> down() )
@@ -1739,14 +1730,6 @@ struct sneaky_snake_t: public hunter_secondary_pet_t
       base_t( "sneaky_snake_melee", p ),
       deathstrike_venom( new deathstrike_venom_t( p ) )
     {
-    }
-
-    bool init_finished() override
-    {
-      if ( o() -> pets.sneaky_snakes[ 0 ] )
-        stats = o() -> pets.sneaky_snakes[ 0 ] -> get_stats( name_str );
-
-      return base_t::init_finished();
     }
 
     void impact( action_state_t* s ) override
@@ -2441,8 +2424,6 @@ void dire_critter_t::init_spells()
   if ( o() -> artifacts.titans_thunder.rank() )
   {
     active.titans_thunder = new actions::titans_thunder_t( this );
-    if ( o() -> pets.dire_beasts[ 0 ] )
-      active.titans_thunder -> stats = o() -> pets.dire_beasts[ 0 ] -> get_stats( "titans_thunder" );
   }
 }
 
