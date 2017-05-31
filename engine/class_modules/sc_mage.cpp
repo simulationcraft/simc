@@ -4466,6 +4466,7 @@ struct frozen_orb_t : public frost_mage_spell_t
             ice_time_nova -> snapshot_state( state, ice_time_nova -> amount_type( state ) );
             // Make sure Ice Time works correctly with distance targetting, e.g.
             // when the target moves out of Frozen Orb.
+            state -> target     = t;
             state -> original_x = x;
             state -> original_y = y;
 
@@ -6338,7 +6339,9 @@ struct icicle_event_t : public event_t
       return;
     }
 
-    actions::icicle_state_t* new_s = debug_cast<actions::icicle_state_t*>( mage -> icicle -> get_state() );
+    mage -> icicle -> set_target( target );
+    auto new_s = debug_cast<actions::icicle_state_t*>( mage -> icicle -> get_state() );
+    mage -> icicle -> snapshot_state( new_s, mage -> icicle -> amount_type( new_s ) );
     new_s -> source = state.stats;
     new_s -> target = target;
 
@@ -8465,11 +8468,13 @@ void mage_t::trigger_icicle( const action_state_t* trigger_state, bool chain, pl
     if ( d.damage == 0 )
       return;
 
-    icicle -> base_dd_min = icicle -> base_dd_max = d.damage;
-
-    actions::icicle_state_t* new_state = debug_cast<actions::icicle_state_t*>( icicle -> get_state() );
+    icicle -> set_target( icicle_target );
+    auto new_state = debug_cast<actions::icicle_state_t*>( icicle -> get_state() );
+    icicle -> snapshot_state( new_state, icicle -> amount_type( new_state ) );
     new_state -> target = icicle_target;
     new_state -> source = d.stats;
+
+    icicle -> base_dd_min = icicle -> base_dd_max = d.damage;
 
     // Immediately execute icicles so the correct damage is carried into the
     // travelling icicle object
