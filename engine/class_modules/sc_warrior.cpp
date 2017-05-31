@@ -500,6 +500,9 @@ public:
             return spell -> id() == 227266; // Deadly Calm
           case WARRIOR_PROTECTION:
             return spell -> id() == 202572; // Vengeance
+         default:
+            // This shouldn't happen
+            break;
         }
       }
       return false;
@@ -3549,7 +3552,7 @@ struct shield_slam_t: public warrior_attack_t
 
     if ( p() -> buff.shield_block -> up() )
     {
-      am *= 1.0 + heavy_repercussions;
+      am *= 1.3 + heavy_repercussions;
     }
 
     am *= 1.0 + p() -> buff.bindings_of_kakushan -> stack_value();

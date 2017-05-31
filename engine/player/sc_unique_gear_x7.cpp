@@ -1186,6 +1186,7 @@ struct umbral_glaives_driver_t : public proc_spell_t
         auto state = shatter -> get_state();
         shatter -> snapshot_state( state, shatter -> amount_type( state ) );
 
+        state -> target     = storm -> target;
         state -> original_x = storm -> execute_state -> original_x;
         state -> original_y = storm -> execute_state -> original_y;
 

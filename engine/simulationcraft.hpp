@@ -4795,9 +4795,9 @@ public:
   T*& operator[](  const player_t* target ) const
   {
     assert( target );
-    if ( data.empty() )
+    if ( data.size() <= target -> actor_index )
     {
-      data.resize( target -> sim -> actor_list.size() );
+      data.resize( target -> actor_index + 1 );
     }
     return data[ target -> actor_index ];
   }

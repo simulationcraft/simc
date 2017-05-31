@@ -487,6 +487,8 @@ public:
             return spell -> id() == 194595; // Lock and Load
           case HUNTER_SURVIVAL:
             return spell -> id() == 87935; // Serpent Sting
+          default:
+            return false;
         }
       }
       return false;

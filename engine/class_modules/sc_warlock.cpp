@@ -319,6 +319,7 @@ public:
     double sephuzs_passive;
     bool magistrike;
     bool the_master_harvester;
+    bool alythesss_pyrogenics;
 
   } legendary;
 
@@ -420,12 +421,14 @@ public:
     buff_t* lord_of_flames;
     buff_t* embrace_chaos;
     buff_t* chaos_mind;
+    buff_t* active_havoc;
 
     // legendary buffs
     buff_t* sindorei_spite;
     buff_t* stretens_insanity;
     buff_t* lessons_of_spacetime;
     haste_buff_t* sephuzs_secret;
+    buff_t* alythesss_pyrogenics;
   } buffs;
 
   // Gains
@@ -3899,13 +3902,16 @@ struct havoc_t: public warlock_spell_t
   {
     warlock_spell_t::execute();
     p() -> havoc_target = execute_state -> target;
+
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+      p() -> buffs.active_havoc -> trigger();
   }
 
   void impact( action_state_t* s ) override
   {
     warlock_spell_t::impact( s );
 
-    td( s -> target ) -> debuffs_havoc -> trigger( 1, buff_t::DEFAULT_VALUE(),-1, havoc_duration );
+    td( s -> target ) -> debuffs_havoc -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, havoc_duration );
   }
 };
 
@@ -4695,6 +4701,9 @@ struct rain_of_fire_t : public warlock_spell_t
       .duration( data().duration() * player -> cache.spell_haste() )
       .start_time( sim -> current_time() )
       .action( p() -> active.rain_of_fire ) );
+
+    if ( p() -> legendary.alythesss_pyrogenics )
+      p() -> buffs.alythesss_pyrogenics -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, data().duration() * player->cache.spell_haste() );
   }
 };
 
@@ -6197,6 +6206,8 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
             return spell -> id() == 171975; // Shadowy Inspiration
           case WARLOCK_DESTRUCTION:
             return spell -> id() == 196412; // Eradication
+          default:
+            return false;
         }
       }
 
@@ -6227,6 +6238,7 @@ double warlock_t::composite_player_multiplier( school_e school ) const
   if ( specialization() == WARLOCK_DESTRUCTION && dbc::is_school( school, SCHOOL_FIRE ) )
   {
     m *= 1.0 + artifact.flames_of_the_pit.percent();
+    m *= 1.0 + buffs.alythesss_pyrogenics -> stack_value();
   }
 
   if ( specialization() == WARLOCK_DEMONOLOGY && ( dbc::is_school( school, SCHOOL_FIRE ) || dbc::is_school( school, SCHOOL_SHADOW ) ) )
@@ -6902,6 +6914,9 @@ void warlock_t::create_buffs()
     haste_buff_creator_t( this, "sephuzs_secret", find_spell( 208052 ) )
     .default_value( find_spell( 208052 ) -> effectN( 2 ).percent() )
     .cd( find_spell( 226262 ) -> duration() );
+  buffs.alythesss_pyrogenics = buff_creator_t( this, "alythesss_pyrogenics", find_spell( 205675 ) )
+    .default_value( find_spell( 205675 ) -> effectN( 1 ).percent() )
+    .refresh_behavior( BUFF_REFRESH_DISABLED );
 
   //affliction buffs
   buffs.shard_instability = buff_creator_t( this, "shard_instability", find_spell( 216457 ) )
@@ -6949,6 +6964,10 @@ void warlock_t::create_buffs()
   buffs.embrace_chaos = buff_creator_t( this, "embrace_chaos", sets->set( WARLOCK_DESTRUCTION,T19, B2 ) -> effectN( 1 ).trigger() )
     .chance( sets->set( WARLOCK_DESTRUCTION, T19, B2 ) -> proc_chance() );
   buffs.chaos_mind = buff_creator_t( this, "chaos_mind", sets -> set( WARLOCK_DESTRUCTION, T20, B4 ) -> effectN( 1 ).trigger() );
+  buffs.active_havoc = buff_creator_t( this, "active_havoc" )
+    .tick_behavior( BUFF_TICK_NONE )
+    .refresh_behavior( BUFF_REFRESH_NONE )
+    .duration( timespan_t::from_seconds( talents.wreak_havoc -> ok() ? 20 : 10 ) );
 }
 
 void warlock_t::init_rng()
@@ -8365,6 +8384,16 @@ struct the_master_harvester_t : public scoped_actor_callback_t<warlock_t>
   }
 };
 
+struct alythesss_pyrogenics_t : public scoped_actor_callback_t<warlock_t>
+{
+  alythesss_pyrogenics_t() : super( WARLOCK ){}
+
+  void manipulate( warlock_t* a, const special_effect_t& e ) override
+  {
+    a -> legendary.alythesss_pyrogenics = true;
+  }
+};
+
 struct warlock_module_t: public module_t
 {
   warlock_module_t(): module_t( WARLOCK ) {}
@@ -8400,6 +8429,7 @@ struct warlock_module_t: public module_t
     register_special_effect( 207952, sacrolashs_dark_strike_t() );
     register_special_effect( 213014, magistrike_t() );
     register_special_effect( 248113, the_master_harvester_t() );
+    register_special_effect( 205678, alythesss_pyrogenics_t() );
   }
 
   virtual void register_hotfixes() const override
