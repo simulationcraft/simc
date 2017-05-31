@@ -1399,12 +1399,11 @@ struct hunter_secondary_pet_t: public hunter_pet_t
     resources.base[RESOURCE_MANA] = 0;
 
     stamina_per_owner = 0;
+
     main_hand_weapon.min_dmg    = dbc.spell_scaling( o() -> type, o() -> level() );
     main_hand_weapon.max_dmg    = main_hand_weapon.min_dmg;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2 );
     main_hand_weapon.type       = WEAPON_BEAST;
-
-    main_hand_attack = new secondary_pet_melee_t<hunter_secondary_pet_t>( name_str + "_melee", this );
   }
 
   void summon( timespan_t duration = timespan_t::zero() ) override
@@ -1412,7 +1411,8 @@ struct hunter_secondary_pet_t: public hunter_pet_t
     hunter_pet_t::summon( duration );
 
     // attack immediately on summons
-    main_hand_attack -> execute();
+    if ( main_hand_attack )
+      main_hand_attack -> execute();
   }
 };
 
@@ -1799,6 +1799,7 @@ struct dark_minion_t: hunter_secondary_pet_t
   {
     hunter_secondary_pet_t::init_base_stats();
 
+    main_hand_attack = new secondary_pet_melee_t<dark_minion_t>( "dark_minion_melee", this );
     if ( o() -> pets.dark_minions[ 0 ] )
       main_hand_attack -> stats = o() -> pets.dark_minions[ 0 ] -> main_hand_attack -> stats;
   }
