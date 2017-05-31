@@ -1699,7 +1699,7 @@ struct sneaky_snake_t: public hunter_secondary_pet_t
     {
       background = true;
       hasted_ticks = false;
-      tick_may_crit = true;
+      may_crit = tick_may_crit = true;
       dot_max_stack = data().max_stacks();
 
       cooldown -> duration = p -> find_spell( 243120 ) -> internal_cooldown();
