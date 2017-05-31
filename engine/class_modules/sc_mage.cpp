@@ -2051,8 +2051,7 @@ struct frost_spell_state_t : public mage_spell_state_t
   virtual void copy_state( const action_state_t* s ) override
   {
     mage_spell_state_t::copy_state( s );
-    const frost_spell_state_t* fss =
-      debug_cast<const frost_spell_state_t*>( s );
+    auto fss = debug_cast<const frost_spell_state_t*>( s );
 
     impact_override     = fss -> impact_override;
     fof                 = fss -> fof;
@@ -4089,8 +4088,7 @@ struct flurry_t : public frost_mage_spell_t
 
   virtual void snapshot_state( action_state_t* s, dmg_e rt ) override
   {
-    frost_spell_state_t* fss = cast_state( s );
-    fss -> trigger_comet_storm = p() -> buffs.rage_of_the_frost_wyrm -> check() != 0;
+    cast_state( s ) -> trigger_comet_storm = p() -> buffs.rage_of_the_frost_wyrm -> check() != 0;
 
     frost_mage_spell_t::snapshot_state( s, rt );
   }
@@ -4112,8 +4110,7 @@ struct flurry_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::impact( s );
 
-    auto fss = cast_state( s );
-    if ( fss -> trigger_comet_storm )
+    if ( cast_state( s ) -> trigger_comet_storm )
     {
       execute_shattered_fragments( s -> target );
     }
@@ -4231,7 +4228,7 @@ struct frostbolt_t : public frost_mage_spell_t
 
   virtual void snapshot_state( action_state_t* s, dmg_e rt ) override
   {
-    frost_spell_state_t* fss = cast_state( s );
+    auto fss = cast_state( s );
     if ( ! fss -> execute_snapshot )
     {
       fss -> execute_snapshot = true;
@@ -4304,8 +4301,7 @@ struct frostbolt_t : public frost_mage_spell_t
         p() -> buffs.chain_reaction -> trigger();
       }
 
-      auto fss = cast_state( s );
-      if ( fss -> trigger_comet_storm )
+      if ( cast_state( s ) -> trigger_comet_storm )
       {
         execute_shattered_fragments( s -> target );
       }
@@ -4642,7 +4638,7 @@ struct ice_lance_t : public frost_mage_spell_t
 
   virtual void snapshot_state( action_state_t* s, dmg_e rt ) override
   {
-    frost_spell_state_t* fss = cast_state( s );
+    auto fss = cast_state( s );
     if ( !fss -> execute_snapshot )
     {
       fss -> execute_snapshot = true;
@@ -4679,7 +4675,7 @@ struct ice_lance_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::impact( s );
 
-    frost_spell_state_t* fss = cast_state( s );
+    auto fss = cast_state( s );
     if ( p() -> talents.thermal_void -> ok() &&
          p() -> buffs.icy_veins -> check() &&
          fss -> frozen() &&
@@ -4713,9 +4709,8 @@ struct ice_lance_t : public frost_mage_spell_t
   virtual double composite_da_multiplier( const action_state_t* s ) const override
   {
     double m = frost_mage_spell_t::composite_da_multiplier( s );
-    const frost_spell_state_t* fss = cast_state( s );
 
-    if ( fss -> frozen() )
+    if ( cast_state( s ) -> frozen() )
     {
       m *= 3.0;
       m *= 1 + p() -> artifact.obsidian_lance.percent();
