@@ -735,6 +735,19 @@ public:
     if ( !ab::background && p() -> sets -> has_set_bonus( HUNTER_MARKSMANSHIP, T20, B4 ) )
       p() -> buffs.pre_t20_4p_critical_aimed_damage -> expire();
   }
+
+  void add_pet_stats( pet_t* pet, std::initializer_list<std::string> names )
+  {
+    if ( ! pet )
+      return;
+
+    for ( const auto& n : names )
+    {
+      stats_t* s = pet -> find_stats( n );
+      if ( s )
+        ab::stats -> add_child( s );
+    }
+  }
 };
 
 // True Aim can only exist on one target at a time
@@ -1621,14 +1634,6 @@ struct spitting_cobra_t: public hunter_pet_t
        */
       ability_lag = timespan_t::from_millis(340);
       ability_lag_stddev = timespan_t::from_millis(170);
-    }
-
-    bool init_finished() override
-    {
-      if ( o() -> pets.spitting_cobra )
-        stats = o() -> pets.spitting_cobra -> get_stats( name_str );
-
-      return base_t::init_finished();
     }
 
     // the cobra double dips off versatility & haste
@@ -3986,10 +3991,7 @@ struct flanking_strike_t: hunter_melee_attack_t
   bool init_finished() override
   {
     for ( auto pet : p() -> pet_list )
-    {
-      stats -> add_child( pet -> get_stats( "flanking_strike" ) );
-      stats -> add_child( pet -> get_stats( "bestial_ferocity" ) );
-    }
+      add_pet_stats( pet, { "flanking_strike", "bestial_ferocity" } );
 
     return hunter_melee_attack_t::init_finished();
   }
@@ -4642,12 +4644,7 @@ struct dire_beast_t: public hunter_spell_t
 
   bool init_finished() override
   {
-    for (auto pet : p() -> pet_list)
-    {
-      stats -> add_child( pet -> get_stats( "dire_beast_melee" ) );
-      stats -> add_child( pet -> get_stats( "felboar_melee" ) );
-      stats -> add_child( pet -> get_stats( "stomp" ) );
-    }
+    add_pet_stats( p() -> pets.dire_beasts[ 0 ], { "dire_beast_melee", "stomp" } );
 
     return hunter_spell_t::init_finished();
   }
@@ -4797,11 +4794,7 @@ struct kill_command_t: public hunter_spell_t
   bool init_finished() override
   {
     for (auto pet : p() -> pet_list)
-    {
-      stats -> add_child( pet -> get_stats( "kill_command" ) );
-      stats -> add_child( pet -> get_stats( "bestial_ferocity" ) );
-      stats -> add_child( pet -> get_stats( "jaws_of_thunder" ) );
-    }
+      add_pet_stats( pet, { "kill_command", "jaws_of_thunder", "bestial_ferocity" } );
 
     return hunter_spell_t::init_finished();
   }
@@ -4845,10 +4838,7 @@ struct dire_frenzy_t: public hunter_spell_t
   bool init_finished() override
   {
     for (auto pet : p() -> pet_list)
-    {
-      stats -> add_child( pet -> get_stats( "dire_frenzy" ) );
-      stats -> add_child( pet -> get_stats( "titans_frenzy" ) );
-    }
+      add_pet_stats( pet, { "dire_frenzy", "titans_frenzy" } );
 
     return hunter_spell_t::init_finished();
   }
@@ -4931,7 +4921,7 @@ struct titans_thunder_t: public hunter_spell_t
   bool init_finished() override
   {
     for (auto pet : p() -> pet_list)
-      stats -> add_child( pet -> get_stats( "titans_thunder" ) );
+      add_pet_stats( pet, { "titans_thunder" } );
 
     return hunter_spell_t::init_finished();
   }
@@ -5110,8 +5100,7 @@ struct spitting_cobra_t: public hunter_spell_t
 
   bool init_finished() override
   {
-    if ( p() -> pets.spitting_cobra )
-      stats -> add_child( p() -> pets.spitting_cobra -> get_stats( "cobra_spit" ) );
+    add_pet_stats( p() -> pets.spitting_cobra, { "cobra_spit" } );
 
     return hunter_spell_t::init_finished();
   }
