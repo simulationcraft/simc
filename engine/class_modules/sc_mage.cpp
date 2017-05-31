@@ -98,10 +98,12 @@ struct mage_td_t : public actor_target_data_t
 {
   struct dots_t
   {
-    dot_t* frost_bomb;
-    dot_t* ignite;
-    dot_t* living_bomb;
-    dot_t* nether_tempest;
+    dot_t* blast_furnace,
+         * conflagration_dot,
+         * ignite,
+         * living_bomb,
+         * mark_of_aluneth,
+         * nether_tempest;
   } dots;
 
   struct debuffs_t
@@ -4159,7 +4161,6 @@ struct frost_bomb_t : public frost_mage_spell_t
       if ( p() -> last_bomb_target != nullptr &&
            p() -> last_bomb_target != execute_state -> target )
       {
-        td( p() -> last_bomb_target ) -> dots.frost_bomb -> cancel();
         td( p() -> last_bomb_target ) -> debuffs.frost_bomb -> expire();
       }
       p() -> last_bomb_target = execute_state -> target;
@@ -6540,10 +6541,12 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   dots( dots_t() ),
   debuffs( debuffs_t() )
 {
-  dots.frost_bomb     = target -> get_dot( "frost_bomb",     mage );
-  dots.ignite         = target -> get_dot( "ignite",         mage );
-  dots.living_bomb    = target -> get_dot( "living_bomb",    mage );
-  dots.nether_tempest = target -> get_dot( "nether_tempest", mage );
+  dots.blast_furnace     = target -> get_dot( "blast_furnace",     mage );
+  dots.conflagration_dot = target -> get_dot( "conflagration_dot", mage );
+  dots.ignite            = target -> get_dot( "ignite",            mage );
+  dots.living_bomb       = target -> get_dot( "living_bomb",       mage );
+  dots.mark_of_aluneth   = target -> get_dot( "mark_of_aluneth",   mage );
+  dots.nether_tempest    = target -> get_dot( "nether_tempest",    mage );
 
   debuffs.erosion     = new buffs::erosion_t( this );
   debuffs.slow        = buff_creator_t( *this, "slow",
