@@ -8302,7 +8302,7 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
     }
     else
     {
-      sim -> errorf( "Player %s firestarer expression: unknown operation '%s'", name(), splits[2].c_str() );
+      sim -> errorf( "Player %s firestarer expression: unknown operation '%s'", name(), splits[1].c_str() );
     }
   }
 
