@@ -8336,6 +8336,7 @@ void rogue_t::create_buffs()
                                     resource_gain( RESOURCE_COMBO_POINT, 1, gains.enveloping_shadows );
                                   } );
   buffs.master_of_shadows       = buff_creator_t( this, "master_of_shadows", find_spell( 196980 ) )
+                                  .period( find_spell( 196980 ) -> effectN( 1 ).period() )
                                   .tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
                                     resource_gain( RESOURCE_ENERGY, find_spell( 196980 ) -> effectN( 1 ).base_value(), gains.master_of_shadows );
                                   } )
@@ -8373,6 +8374,7 @@ void rogue_t::create_buffs()
                                              .default_value( tddid -> effectN( 1 ).percent() );
   // Assassination
   buffs.the_empty_crown                    = buff_creator_t( this, "the_empty_crown", find_spell(248201) )
+                                             .period( find_spell(248201) -> effectN( 1 ).period() )
                                              .tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
                                                resource_gain( RESOURCE_ENERGY, find_spell(248201) -> effectN( 1 ).base_value(), gains.the_empty_crown );
                                              } );
