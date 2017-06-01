@@ -2051,7 +2051,8 @@ struct wound_poison_t : public rogue_poison_t
       double m = rogue_poison_t::action_multiplier();
 
       // Note: As of 04/08/2017, Mastery is applied two times on Wound Poison. Bug ?
-      if ( p() -> mastery.potent_poisons -> ok() )
+      // As of 2017-06-01 on 7.2.5 PTR, this has been fixed!
+      if ( ! maybe_ptr( p() -> dbc.ptr ) && p() -> mastery.potent_poisons -> ok() )
       {
         m *= 1.0 + p() -> cache.mastery_value();
       }
