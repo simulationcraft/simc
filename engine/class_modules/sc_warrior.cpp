@@ -176,6 +176,7 @@ public:
     buff_t* destiny_driver; //215157
     buff_t* xavarics_magnum_opus; //207472
     haste_buff_t* sephuzs_secret;
+    haste_buff_t* in_for_the_kill;
   } buff;
 
   // Cooldowns
@@ -1424,7 +1425,7 @@ struct mortal_strike_t20_t : public warrior_attack_t
       {
         execute_state -> target -> debuffs.mortal_wounds -> trigger();
       }
-      if ( p() -> talents.in_for_the_kill -> ok() && execute_state -> target -> health_percentage() <= 20 )
+      if ( !maybe_ptr( p() -> dbc.ptr ) && p() -> talents.in_for_the_kill -> ok() && execute_state -> target -> health_percentage() <= 20 ) //FIXME PTR
       {
         p() -> resource_gain( RESOURCE_RAGE, p() -> talents.in_for_the_kill -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ),
                               p() -> gain.in_for_the_kill );
@@ -1511,7 +1512,7 @@ struct mortal_strike_t : public warrior_attack_t
       {
         execute_state -> target -> debuffs.mortal_wounds -> trigger();
       }
-      if ( p() -> talents.in_for_the_kill -> ok() && execute_state -> target -> health_percentage() <= 20 )
+      if ( !maybe_ptr( p() -> dbc.ptr ) && p() -> talents.in_for_the_kill -> ok() && execute_state -> target -> health_percentage() <= 20 ) //FIXME PTR
       {
         p() -> resource_gain( RESOURCE_RAGE, p() -> talents.in_for_the_kill -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ),
                               p() -> gain.in_for_the_kill );
@@ -5782,7 +5783,7 @@ void warrior_t::create_buffs()
     .add_invalidate( CACHE_ARMOR );
 
   buff.precise_strikes = buff_creator_t( this, "precise_strikes", find_spell( 209493 ) )
-    .default_value( artifact.precise_strikes.percent() )
+    .default_value( artifact.precise_strikes.rank() * artifact.precise_strikes.data().effectN( 1 ).percent() )
     .chance( artifact.precise_strikes.rank() > 0 ? 1 : 0 );
 
   buff.ravager = buff_creator_t( this, "ravager", talents.ravager );
@@ -5862,6 +5863,14 @@ void warrior_t::create_buffs()
     .default_value( artifact.neltharions_thunder.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() );
 
   buff.sephuzs_secret = new buffs::sephuzs_secret_buff_t( this );
+
+  if ( maybe_ptr( dbc.ptr ) ) //FIXME PTR
+  {
+    buff.in_for_the_kill = haste_buff_creator_t( this, "in_for_the_kill", talents.in_for_the_kill -> effectN( 1 ).trigger() )
+      .default_value( talents.in_for_the_kill -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
+  }
+  else
+    buff.in_for_the_kill = nullptr;
 }
 
 // warrior_t::init_scaling ==================================================
@@ -6216,6 +6225,9 @@ double warrior_t::composite_melee_haste() const
   a *= 1.0 / ( 1.0 + buff.into_the_fray -> check_stack_value() );
 
   a *= 1.0 / ( 1.0 + buff.sephuzs_secret -> check_value() );
+
+  if ( buff.in_for_the_kill != nullptr )
+    a *= 1.0 / ( 1.0 + buff.in_for_the_kill -> check_value() );
 
   return a;
 }

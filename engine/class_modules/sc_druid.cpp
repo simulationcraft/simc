@@ -8269,8 +8269,7 @@ double druid_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buff.rage_of_the_sleeper -> check() * buff.rage_of_the_sleeper -> data().effectN( 5 ).percent();
 
   // Fury of Nature increases Arcane and Nature damage
-  // TODO(guardian): confirm damage sources that are/aren't affected
-  if ( dbc::is_school( school, SCHOOL_ARCANE ) || dbc::is_school( school, SCHOOL_NATURE ) )
+  if ( buff.bear_form -> check() && ( dbc::is_school( school, SCHOOL_ARCANE ) || dbc::is_school( school, SCHOOL_NATURE ) ) )
     m *= 1.0 + legendary.fury_of_nature;
 
   m *= 1.0 + artifact.fangs_of_the_first.percent();
@@ -9649,8 +9648,7 @@ struct behemoth_headdress_t : public scoped_actor_callback_t<druid_t>
 
    void manipulate( druid_t* d, const special_effect_t& e ) override
    {
-      d->legendary.behemoth_headdress = 0.4; //TODO(feral): Add spelldata hook.
-         //e.driver()->effectN(1).base_value() / 10;
+      d->legendary.behemoth_headdress = e.driver()->effectN(1).base_value() / 10.0;
    }
 };
 

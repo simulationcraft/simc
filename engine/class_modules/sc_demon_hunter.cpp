@@ -550,6 +550,7 @@ public:
   void invalidate_cache( cache_e ) override;
   resource_e primary_resource() const override;
   role_e primary_role() const override;
+  stat_e primary_stat() const override;
   void activate() override;
 
   // custom demon_hunter_t init functions
@@ -3312,9 +3313,9 @@ struct blade_dance_base_t : public demon_hunter_attack_t
     // Chaos Theory Legendary Cloak
     if (p()->legendary.chaos_theory)
     {
-      if (p()->rng().roll(p()->legendary.chaos_theory->proc_chance()))
+      if (p()->rng().roll(p()->legendary.chaos_theory->effectN(1).percent()))
       {
-        timespan_t proc_duration = timespan_t::from_seconds(p()->legendary.chaos_theory->effectN(1).base_value());
+        timespan_t proc_duration = timespan_t::from_seconds(p()->legendary.chaos_theory->effectN(2).base_value());
         if (p()->buff.chaos_blades->check())
           p()->buff.chaos_blades->extend_duration(p(), proc_duration);
         else
@@ -6615,7 +6616,7 @@ void demon_hunter_t::invalidate_cache( cache_e c )
 
 resource_e demon_hunter_t::primary_resource() const
 {
-  switch ( specialization() )
+  switch (specialization())
   {
     case DEMON_HUNTER_HAVOC:
       return RESOURCE_FURY;
@@ -6630,7 +6631,7 @@ resource_e demon_hunter_t::primary_resource() const
 
 role_e demon_hunter_t::primary_role() const
 {
-  switch ( specialization() )
+  switch (specialization())
   {
     case DEMON_HUNTER_HAVOC:
       return ROLE_ATTACK;
@@ -6638,6 +6639,21 @@ role_e demon_hunter_t::primary_role() const
       return ROLE_TANK;
     default:
       return ROLE_NONE;
+  }
+}
+
+// demon_hunter_t::primary_stat ==================================================
+
+stat_e demon_hunter_t::primary_stat() const
+{
+  switch (specialization())
+  {
+    case DEMON_HUNTER_HAVOC:
+      return STAT_AGILITY;
+    case DEMON_HUNTER_VENGEANCE:
+      return STAT_STAMINA;
+    default:
+      return STAT_NONE;
   }
 }
 

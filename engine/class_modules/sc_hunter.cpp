@@ -160,9 +160,9 @@ public:
     buff_t* moknathal_tactics;
     buff_t* spitting_cobra;
     buff_t* t19_4p_mongoose_power;
-    buff_t* t20_2p_precision;
-    buff_t* t20_4p_critical_aimed_damage;
-    buff_t* pre_t20_4p_critical_aimed_damage;
+    buff_t* t20_4p_precision;
+    buff_t* t20_2p_critical_aimed_damage;
+    buff_t* pre_t20_2p_critical_aimed_damage;
     buff_t* t20_4p_bestial_rage;
     buff_t* sentinels_sight;
     buff_t* butchers_bone_apron;
@@ -730,10 +730,10 @@ public:
       p() -> buffs.pre_steady_focus -> expire();
   }
 
-  virtual void try_t20_4p_mm()
+  virtual void try_t20_2p_mm()
   {
-    if ( !ab::background && p() -> sets -> has_set_bonus( HUNTER_MARKSMANSHIP, T20, B4 ) )
-      p() -> buffs.pre_t20_4p_critical_aimed_damage -> expire();
+    if ( !ab::background && p() -> sets -> has_set_bonus( HUNTER_MARKSMANSHIP, T20, B2 ) )
+      p() -> buffs.pre_t20_2p_critical_aimed_damage -> expire();
   }
 
   void add_pet_stats( pet_t* pet, std::initializer_list<std::string> names )
@@ -834,8 +834,9 @@ struct vulnerability_stats_t
 
     if ( has_patient_sniper )
     {
+      auto psniper_value = p -> talents.patient_sniper -> effectN( 1 ).base_value();
       for ( size_t i = 0; i < patient_sniper.size(); i++ )
-        patient_sniper[ i ] = p -> get_proc( "vuln_" + name + "_" + std::to_string( 10 * i ) );
+        patient_sniper[ i ] = p -> get_proc( "vuln_" + name + "_" + std::to_string( psniper_value * i ) );
     }
   }
 
@@ -897,7 +898,7 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
   {
     base_t::execute();
     try_steady_focus();
-    try_t20_4p_mm();
+    try_t20_2p_mm();
 
     if ( may_proc_mm_feet )
       trigger_mm_feet( p() );
@@ -979,7 +980,7 @@ public:
   {
     base_t::execute();
     try_steady_focus();
-    try_t20_4p_mm();
+    try_t20_2p_mm();
   }
 };
 
@@ -2245,18 +2246,6 @@ struct dire_frenzy_t: public hunter_main_pet_attack_t
     if ( p() -> buffs.titans_frenzy -> up() && titans_frenzy )
       titans_frenzy -> schedule_execute();
   }
-
-  double action_multiplier() const override
-  {
-    double am = base_t::action_multiplier();
-
-    // XXX: spell data indicates that it's also affected by T20 4pc
-    // XXX: check in-game
-    if ( o() -> buffs.t20_4p_bestial_rage -> up() )
-      am *= 1.0 + o() -> buffs.t20_4p_bestial_rage -> check_value();
-
-    return am;
-  }
 };
 
 // Thunderslash =============================================================
@@ -3233,8 +3222,8 @@ struct aimed_shot_t: public aimed_shot_base_t
     if ( p() -> buffs.lock_and_load -> check() )
       return 0;
 
-    if ( p() -> buffs.t20_2p_precision -> check() )
-      cost *= 1.0 + p() -> buffs.t20_2p_precision -> check_value();
+    if ( p() -> buffs.t20_4p_precision -> check() )
+      cost *= 1.0 + p() -> buffs.t20_4p_precision -> check_value();
 
     return cost;
   }
@@ -3275,16 +3264,16 @@ struct aimed_shot_t: public aimed_shot_base_t
       p() -> buffs.gyroscopic_stabilization -> trigger();
 
     // 2017-04-15 XXX: as of the current PTR the buff is not consumed and simply refreshed on each AiS
-    if ( p() -> sets -> has_set_bonus( HUNTER_MARKSMANSHIP, T20, B2 ) )
-      p() -> buffs.t20_2p_precision -> trigger();
-
     if ( p() -> sets -> has_set_bonus( HUNTER_MARKSMANSHIP, T20, B4 ) )
+      p() -> buffs.t20_4p_precision -> trigger();
+
+    if ( p() -> sets -> has_set_bonus( HUNTER_MARKSMANSHIP, T20, B2 ) )
     {
-      p() -> buffs.pre_t20_4p_critical_aimed_damage -> trigger();
-      if ( p() -> buffs.pre_t20_4p_critical_aimed_damage-> stack() == 2 )
+      p() -> buffs.pre_t20_2p_critical_aimed_damage -> trigger();
+      if ( p() -> buffs.pre_t20_2p_critical_aimed_damage-> stack() == 2 )
       {
-        p() -> buffs.t20_4p_critical_aimed_damage -> trigger();
-        p() -> buffs.pre_t20_4p_critical_aimed_damage-> expire();
+        p() -> buffs.t20_2p_critical_aimed_damage -> trigger();
+        p() -> buffs.pre_t20_2p_critical_aimed_damage-> expire();
       }
     }
 
@@ -3299,8 +3288,8 @@ struct aimed_shot_t: public aimed_shot_base_t
       t = timespan_t::zero();
 
     // may have to be moved to the base class as it affects lotw arrows
-    if ( p() -> buffs.t20_2p_precision -> check() )
-      t *= 1.0 + p() -> buffs.t20_2p_precision -> data().effectN( 1 ).percent();
+    if ( p() -> buffs.t20_4p_precision -> check() )
+      t *= 1.0 + p() -> buffs.t20_4p_precision -> data().effectN( 1 ).percent();
 
     return t;
   }
@@ -3312,7 +3301,7 @@ struct aimed_shot_t: public aimed_shot_base_t
     return false;
   }
 
-  void try_t20_4p_mm() override {}
+  void try_t20_2p_mm() override {}
 };
 
 // Arcane Shot Attack ================================================================
@@ -5998,17 +5987,17 @@ void hunter_t::create_buffs()
       .max_stack( find_spell( 248085 ) -> max_stacks() )
       .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
-  buffs.t20_2p_precision =
-    buff_creator_t( this, "t20_2p_precision", find_spell( 246153 ) )
+  buffs.t20_4p_precision =
+    buff_creator_t( this, "t20_4p_precision", find_spell( 246153 ) )
       .default_value( find_spell( 246153 ) -> effectN( 2 ).percent() );
 
-  buffs.pre_t20_4p_critical_aimed_damage =
-    buff_creator_t( this, "pre_t20_4p_critical_aimed_damage" )
+  buffs.pre_t20_2p_critical_aimed_damage =
+    buff_creator_t( this, "pre_t20_2p_critical_aimed_damage" )
       .max_stack( 2 )
       .quiet( true );
 
-  buffs.t20_4p_critical_aimed_damage =
-    buff_creator_t( this, "t20_4p_critical_aimed_damage", find_spell( 242243 ) )
+  buffs.t20_2p_critical_aimed_damage =
+    buff_creator_t( this, "t20_2p_critical_aimed_damage", find_spell( 242243 ) )
       .default_value( find_spell( 242243 ) -> effectN( 1 ).percent() );
 
   buffs.t20_4p_bestial_rage =
@@ -6653,8 +6642,8 @@ double hunter_t::composite_player_critical_damage_multiplier( const action_state
   if ( buffs.rapid_killing -> up() )
     cdm *= 1.0 + buffs.rapid_killing -> value();
 
-  if ( buffs.t20_4p_critical_aimed_damage -> up() )
-    cdm *= 1.0 + buffs.t20_4p_critical_aimed_damage -> value();
+  if ( buffs.t20_2p_critical_aimed_damage -> up() )
+    cdm *= 1.0 + buffs.t20_2p_critical_aimed_damage -> value();
 
   return cdm;
 }

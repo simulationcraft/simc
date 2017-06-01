@@ -635,9 +635,9 @@ bool parse_fight_style( sim_t*             sim,
     sim -> fight_style = "HecticAddCleave";
 
     sim -> raid_events_str += "/adds,count=5,first=" + util::to_string( int( sim -> max_time.total_seconds() * 0.05 ) ) + ",cooldown=" + util::to_string( int( sim -> max_time.total_seconds() * 0.075 ) ) + ",duration=" + util::to_string( int( sim -> max_time.total_seconds() * 0.05 ) ) + ",last=" + util::to_string( int( sim -> max_time.total_seconds() * 0.75 ) ); //P1
-      
+
     sim -> raid_events_str += "/movement,first=" + util::to_string( int( sim -> max_time.total_seconds() * 0.05 ) ) + ",cooldown=" + util::to_string( int( sim -> max_time.total_seconds() * 0.075 ) ) + ",distance=25,last=" + util::to_string( int( sim -> max_time.total_seconds() * 0.75 ) ); //move to new position of adds
-      
+
     sim -> raid_events_str += "/movement,players_only=1,first=" + util::to_string( int( sim -> max_time.total_seconds() * 0.03 ) ) + ",cooldown=" + util::to_string( int( sim -> max_time.total_seconds() * 0.04 ) ) + ",distance=8"; //move out of stuff
 
   }
@@ -1331,6 +1331,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   current_error( 0 ),
   current_mean( 0 ),
   analyze_error_interval( 100 ),
+  analyze_number( 0 ),
   control( nullptr ),
   parent( p ),
   initialized( false ),
@@ -1601,6 +1602,8 @@ void sim_t::reset()
   event_mgr.reset();
 
   expected_iteration_time = max_time * iteration_time_adjust();
+
+  analyze_number = 0;
 
   for ( auto& buff : buff_list )
     buff -> reset();
@@ -1902,7 +1905,21 @@ void sim_t::analyze_error()
   if ( thread_index != 0 ) return;
   if ( target_error <= 0 ) return;
   if ( current_iteration < 1 ) return;
-  if ( current_iteration % analyze_error_interval != 0 ) return;
+
+  int n_iterations = work_queue -> progress().current_iterations;
+  if ( strict_work_queue )
+  {
+    range::for_each( children, [ &n_iterations ]( sim_t* c ) {
+      n_iterations += c -> work_queue -> progress().current_iterations;
+    } );
+  }
+
+  if ( n_iterations < analyze_error_interval * ( analyze_number + 1 ) )
+  {
+    return;
+  }
+
+  analyze_number++;
 
   double mean_total=0;
   int mean_count=0;
@@ -1963,9 +1980,21 @@ void sim_t::analyze_error()
     }
     else
     {
-      auto progress = work_queue -> progress();
-      work_queue -> project( static_cast<int>( progress.current_iterations * ( ( current_error * current_error ) /
-        ( target_error *  target_error ) ) ) );
+      auto projected_iterations = static_cast<int>( n_iterations * ( ( current_error * current_error ) /
+          ( target_error *  target_error ) ) );
+      if ( ! strict_work_queue )
+      {
+        work_queue -> project( projected_iterations );
+      }
+      else
+      {
+        // Divide work evenly between threads
+        projected_iterations /= threads;
+        work_queue -> project( projected_iterations );
+        range::for_each( children, [ projected_iterations ]( sim_t* c ) {
+          c -> work_queue -> project( projected_iterations );
+        } );
+      }
     }
   }
 }
@@ -3224,7 +3253,7 @@ void sim_t::create_options()
 
   // Legion
   add_option( opt_int( "legion.infernal_cinders_users", expansion_opts.infernal_cinders_users, 1, 20 ) );
-  add_option( opt_int( "legion.engine_of_eradication_orbs", expansion_opts.engine_of_eradication_orbs, 0, 3 ) );
+  add_option( opt_int( "legion.engine_of_eradication_orbs", expansion_opts.engine_of_eradication_orbs, 0, 4 ) );
   add_option( opt_func( "legion.cradle_of_anguish_resets", []( sim_t* sim, const std::string&, const std::string& value ) {
     auto split = util::string_split( value, ":/," );
     range::for_each( split, [ sim ]( const std::string& str ) {

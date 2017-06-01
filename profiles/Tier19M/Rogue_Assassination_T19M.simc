@@ -1,11 +1,11 @@
 rogue="Rogue_Assassination_T19M"
+spec=assassination
 level=110
 race=pandaren
 role=attack
 position=back
 talents=1130111
 artifact=43:0:0:0:0:323:3:324:3:325:3:326:3:327:3:328:3:329:3:330:3:331:3:332:1:333:1:334:1:335:1:337:1:346:1:347:1:1276:1:1384:1:1651:1
-spec=assassination
 
 # Default consumables
 potion=old_war

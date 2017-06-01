@@ -420,7 +420,6 @@ public:
     buff_t* conflagration_of_chaos;
     buff_t* lord_of_flames;
     buff_t* embrace_chaos;
-    buff_t* chaos_mind;
     buff_t* active_havoc;
 
     // legendary buffs
@@ -1589,6 +1588,9 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
   m *= 1.0 + o() -> buffs.sindorei_spite -> check_stack_value();
   m *= 1.0 + o() -> buffs.lessons_of_spacetime -> check_stack_value();
 
+  if ( maybe_ptr( o() -> dbc.ptr ) && o() -> specialization() == WARLOCK_AFFLICTION )
+    m *= 1.0 + o() -> spec.affliction -> effectN( 3 ).percent();
+
   return m;
 }
 
@@ -1943,11 +1945,6 @@ struct felhunter_pet_t: public warlock_pet_t
     action_list_str = "shadow_bite";
 
     owner_coeff.ap_from_sp *= 1.2; //Hotfixed no spelldata, live as of 05-24-2017
-    if ( maybe_ptr( owner -> dbc.ptr ) && owner -> specialization() == WARLOCK_AFFLICTION )
-    {
-      owner_coeff.ap_from_sp *= 1.0 + owner -> spec.affliction -> effectN( 2 ).percent();
-      owner_coeff.sp_from_sp *= 1.0 + owner -> spec.affliction -> effectN( 2 ).percent();
-    }
   }
 
   virtual void init_base_stats() override
@@ -2023,11 +2020,6 @@ struct infernal_t: public warlock_pet_t
     warlock_pet_t( sim, owner, "infernal", PET_INFERNAL )
   {
     owner_coeff.health = 0.4;
-    if ( maybe_ptr( owner -> dbc.ptr ) && owner -> specialization() == WARLOCK_AFFLICTION )
-    {
-      owner_coeff.ap_from_sp *= 1.0 + owner -> spec.affliction -> effectN( 2 ).percent();
-      owner_coeff.sp_from_sp *= 1.0 + owner -> spec.affliction -> effectN( 2 ).percent();
-    }
   }
 
   virtual void init_base_stats() override
@@ -2100,11 +2092,6 @@ struct doomguard_t: public warlock_pet_t
   {
     owner_coeff.health = 0.4;
     action_list_str = "doom_bolt";
-    if ( maybe_ptr( owner -> dbc.ptr ) && owner -> specialization() == WARLOCK_AFFLICTION )
-    {
-      owner_coeff.ap_from_sp *= 1.0 + owner-> spec.affliction -> effectN( 2 ).percent();
-      owner_coeff.sp_from_sp *= 1.0 + owner -> spec.affliction -> effectN( 2 ).percent();
-    }
   }
 
   virtual void init_base_stats() override
@@ -2485,12 +2472,15 @@ public:
     if ( destruction_dot_increase ) 
       base_td_multiplier *= 1.0 + p() -> spec.destruction -> effectN( 2 ).percent();
 
-    affliction_direct_increase = data().affected_by( p() -> spec.affliction -> effectN( 2 ) );
-    affliction_dot_increase = data().affected_by( p() -> spec.affliction -> effectN( 3 ) );
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+    { 
+    affliction_direct_increase = data().affected_by( p() -> spec.affliction -> effectN( 1 ) );
+    affliction_dot_increase = data().affected_by( p() -> spec.affliction -> effectN( 2 ) );
     if ( affliction_direct_increase )
-      base_dd_multiplier *= 1.0 + p() -> spec.affliction -> effectN( 2 ).percent();
+      base_dd_multiplier *= 1.0 + p() -> spec.affliction -> effectN( 1 ).percent();
     if ( affliction_dot_increase )
-      base_td_multiplier *= 1.0 + p() -> spec.affliction -> effectN( 3 ).percent();
+      base_td_multiplier *= 1.0 + p() -> spec.affliction -> effectN( 2 ).percent();
+    }
   }
 
   int n_targets() const override
@@ -2754,7 +2744,7 @@ public:
 
     if ( maybe_ptr( p() -> dbc.ptr ) && p() -> mastery_spells.chaotic_energies -> ok() && destro_mastery )
     {
-      double destro_mastery_value = p() -> cache.mastery_value() / 3.0;
+      double destro_mastery_value = p() -> cache.mastery_value() / 2.0;
       double chaotic_energies_rng;
 
       if ( p() -> sets -> has_set_bonus( WARLOCK_DESTRUCTION, T20, B4 ) && affected_by_destruction_t20_4pc )
@@ -4264,9 +4254,6 @@ struct chaos_bolt_t: public warlock_spell_t
 
     p() -> buffs.embrace_chaos -> trigger();
     p() -> buffs.backdraft -> decrement();
-
-    p() -> buffs.chaos_mind -> expire();
-    p() -> buffs.chaos_mind -> trigger();
   }
 
   // Force spell to always crit
@@ -6874,7 +6861,6 @@ void warlock_t::create_buffs()
     .chance( artifact.conflagration_of_chaos.rank() ? artifact.conflagration_of_chaos.data().proc_chance() : 0.0 );
   buffs.embrace_chaos = buff_creator_t( this, "embrace_chaos", sets->set( WARLOCK_DESTRUCTION,T19, B2 ) -> effectN( 1 ).trigger() )
     .chance( sets->set( WARLOCK_DESTRUCTION, T19, B2 ) -> proc_chance() );
-  buffs.chaos_mind = buff_creator_t( this, "chaos_mind", sets -> set( WARLOCK_DESTRUCTION, T20, B4 ) -> effectN( 1 ).trigger() );
   buffs.active_havoc = buff_creator_t( this, "active_havoc" )
     .tick_behavior( BUFF_TICK_NONE )
     .refresh_behavior( BUFF_REFRESH_NONE )

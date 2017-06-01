@@ -5089,7 +5089,7 @@ timespan_t player_t::time_to_percent( double percent ) const
   if ( iteration_dmg_taken > 0.0 && resources.base[RESOURCE_HEALTH] > 0 && sim -> current_time() >= timespan_t::from_seconds( 1.0 ) && !sim -> fixed_time )
     ttp = ( resources.current[RESOURCE_HEALTH] - ( percent * 0.01 * resources.base[RESOURCE_HEALTH] ) ) / ( iteration_dmg_taken / sim -> current_time().total_seconds() );
   else
-    ttp = ( sim -> expected_iteration_time - sim -> current_time() ).total_seconds() * ( 100 - percent ) * 0.01;
+    ttp = ( sim -> expected_iteration_time * ( 1.0 - percent * 0.01 ) - sim -> current_time() ).total_seconds();
 
   time_to_percent = timespan_t::from_seconds( ttp );
 
@@ -8307,6 +8307,8 @@ bool player_t::parse_artifact_wowhead( const std::string& artifact_string )
   auto spec_artifact_id = dbc.artifact_by_spec( specialization() );
   if ( specialization() != SPEC_NONE && spec_artifact_id != artifact_id )
   {
+    sim -> errorf( "%s invalid artifact identifier '%u', expected '%u'",
+      name(), spec_artifact_id, artifact_id );
     return false;
   }
 
@@ -9896,10 +9898,14 @@ std::string player_t::create_profile( save_e stype )
   {
     profile_str += util::player_type_string( type );
     profile_str += "=\"" + name_str + '"' + term;
+
     if ( ! origin_str.empty() )
       profile_str += "origin=\"" + origin_str + '"' + term;
     if ( ! report_information.thumbnail_url.empty() )
       profile_str += "thumbnail=\"" + report_information.thumbnail_url + '"' + term;
+
+    profile_str += "spec=";
+    profile_str += dbc::specialization_string( specialization() ) + term;
     profile_str += "level=" + util::to_string( true_level ) + term;
     profile_str += "race=" + race_str + term;
     if ( race == RACE_NIGHT_ELF ) {
@@ -9953,9 +9959,6 @@ std::string player_t::create_profile( save_e stype )
 
   if ( stype == SAVE_ALL )
   {
-    profile_str += "spec=";
-    profile_str += dbc::specialization_string( specialization() ) + term;
-
     std::string potion_option = potion_str.empty() ? default_potion() : potion_str;
     std::string flask_option = flask_str.empty() ? default_flask() : flask_str;
     std::string food_option = food_str.empty() ? default_food() : food_str;
