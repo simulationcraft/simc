@@ -365,7 +365,6 @@ struct rogue_t : public player_t
     gain_t* curse_of_the_dreadblades;
     gain_t* relentless_strikes;
     gain_t* shadow_satyrs_walk;
-    gain_t* t20_4pc_subtlety;
     gain_t* the_empty_crown;
     gain_t* the_first_of_the_dead;
     gain_t* symbols_of_death;
@@ -379,7 +378,6 @@ struct rogue_t : public player_t
     gain_t* shadow_blades;
     gain_t* enveloping_shadows;
     gain_t* t19_4pc_subtlety;
-    gain_t* t20_4pc_assassination;
   } gains;
 
   // Spec passives
@@ -445,7 +443,6 @@ struct rogue_t : public player_t
     const spell_data_t* insignia_of_ravenholdt;
     const spell_data_t* master_assassins_initiative;
     const spell_data_t* master_assassins_initiative_2;
-    const spell_data_t* t20_4pc_subtlety_effect; // Referenced in desc
   } spell;
 
   // Talents
@@ -3087,19 +3084,19 @@ struct garrote_t : public rogue_attack_t
     base_multiplier *= 1.0 + p -> artifact.strangler.percent();
     may_crit = false;
 
-    if ( p -> sets -> has_set_bonus( ROGUE_ASSASSINATION, T20, B2 ) )
-      cooldown -> duration = data().cooldown() + p -> sets -> set( ROGUE_ASSASSINATION, T20, B2 ) -> effectN( 1 ).time_value();
-
     if ( p -> sets -> has_set_bonus( ROGUE_ASSASSINATION, T20, B4 ) )
-      base_multiplier *= 1.0 + p -> sets -> set( ROGUE_ASSASSINATION, T20, B4 ) -> effectN( 2 ).percent();
+      cooldown -> duration = data().cooldown() + p -> sets -> set( ROGUE_ASSASSINATION, T20, B4 ) -> effectN( 1 ).time_value();
+
+    if ( p -> sets -> has_set_bonus( ROGUE_ASSASSINATION, T20, B2 ) )
+      base_multiplier *= 1.0 + p -> sets -> set( ROGUE_ASSASSINATION, T20, B2 ) -> effectN( 1 ).percent();
   }
 
   double cost() const override
   {
     double c = rogue_attack_t::cost();
 
-    if ( p() -> sets -> has_set_bonus( ROGUE_ASSASSINATION, T20, B2 ) )
-      c += p() -> sets -> set( ROGUE_ASSASSINATION, T20, B2 ) -> effectN( 2 ).base_value();
+    if ( p() -> sets -> has_set_bonus( ROGUE_ASSASSINATION, T20, B4 ) )
+      c += p() -> sets -> set( ROGUE_ASSASSINATION, T20, B4 ) -> effectN( 2 ).base_value();
 
     return c;
   }
@@ -3158,12 +3155,6 @@ struct garrote_t : public rogue_attack_t
   void execute() override
   {
     rogue_attack_t::execute();
-
-    if ( result_is_hit( execute_state -> result ) && p() -> sets -> has_set_bonus( ROGUE_ASSASSINATION, T20, B4 ) )
-    {
-      p() -> trigger_combo_point_gain( p() -> sets -> set( ROGUE_ASSASSINATION, T20, B4 ) -> effectN( 1 ).base_value(),
-          p() -> gains.t20_4pc_assassination, this );
-    }
 
     td( execute_state -> target ) -> debuffs.garrote -> trigger();
   }
@@ -7948,7 +7939,6 @@ void rogue_t::init_spells()
   spell.insignia_of_ravenholdt        = find_spell( 209041 );
   spell.master_assassins_initiative   = find_spell( 235022 );
   spell.master_assassins_initiative_2 = find_spell( 235027 );
-  spell.t20_4pc_subtlety_effect       = find_spell( 247895 );
 
   // Talents
   talent.deeper_stratagem   = find_talent_spell( "Deeper Stratagem" );
@@ -8154,9 +8144,7 @@ void rogue_t::init_gains()
   gains.curse_of_the_dreadblades = get_gain( "Curse of the Dreadblades" );
   gains.relentless_strikes       = get_gain( "Relentless Strikes"       );
   gains.t19_4pc_subtlety         = get_gain( "Tier 19 4PC Set Bonus"    );
-  gains.t20_4pc_assassination    = get_gain( "Tier 20 4PC Set Bonus"    );
   gains.shadow_satyrs_walk       = get_gain( "Shadow Satyr's Walk"      );
-  gains.t20_4pc_subtlety         = get_gain( "Tier 20 4PC Set Bonus"    );
   gains.the_empty_crown          = get_gain( "The Empty Crown"          );
   gains.the_first_of_the_dead    = get_gain( "The First of the Dead"    );
   gains.symbols_of_death         = get_gain( "Symbols of Death"         );
