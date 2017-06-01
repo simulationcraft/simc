@@ -2712,6 +2712,12 @@ struct backstab_t : public rogue_attack_t
     if ( maybe_ptr( p() -> dbc.ptr ) )
     {
       p() -> trigger_energetic_stabbing( execute_state );
+
+      if ( p() -> buffs.the_first_of_the_dead -> up() )
+      {
+        p() -> trigger_combo_point_gain( p() -> buffs.the_first_of_the_dead -> data().effectN( 2 ).resource( RESOURCE_COMBO_POINT ),
+                                         p() -> gains.the_first_of_the_dead, this );
+      }
     }
   }
 };
@@ -3264,6 +3270,12 @@ struct gloomblade_t : public rogue_attack_t
     if ( maybe_ptr( p() -> dbc.ptr ) )
     {
       p() -> trigger_energetic_stabbing( execute_state );
+
+      if ( p() -> buffs.the_first_of_the_dead -> up() )
+      {
+        p() -> trigger_combo_point_gain( p() -> buffs.the_first_of_the_dead -> data().effectN( 2 ).resource( RESOURCE_COMBO_POINT ),
+                                         p() -> gains.the_first_of_the_dead, this );
+      }
     }
   }
 };
@@ -4434,6 +4446,12 @@ struct shadowstrike_t : public rogue_attack_t
           p() -> gains.t19_4pc_subtlety, this );
     }
 
+    if ( p() -> buffs.the_first_of_the_dead -> up() )
+    {
+      p() -> trigger_combo_point_gain( p() -> buffs.the_first_of_the_dead -> data().effectN( 1 ).resource( RESOURCE_COMBO_POINT ),
+                                        p() -> gains.the_first_of_the_dead, this );
+    }
+
     if ( shadow_satyrs_walk )
     {
       const spell_data_t* base_proc = p() -> find_spell( 224914 );
@@ -4678,9 +4696,6 @@ struct symbols_of_death_t : public rogue_attack_t
     if ( p() -> legendary.the_first_of_the_dead )
     {
       p() -> buffs.the_first_of_the_dead -> trigger();
-      p() -> resource_gain( RESOURCE_ENERGY,
-                            p() -> buffs.the_first_of_the_dead -> data().effectN( 2 ).resource( RESOURCE_ENERGY ),
-                            p() -> gains.the_first_of_the_dead, this );
     }
   }
 };
@@ -7054,10 +7069,6 @@ double rogue_t::composite_player_multiplier( school_e school ) const
   {
     m *= 1.0 + artifact.shadow_fangs.data().effectN( 1 ).percent();
   }
-  if ( buffs.the_first_of_the_dead -> up() )
-  {
-    m *= 1.0 + buffs.the_first_of_the_dead -> check_value();
-  }
 
   return m;
 }
@@ -8382,9 +8393,7 @@ void rogue_t::create_buffs()
   buffs.greenskins_waterlogged_wristcuffs  = buff_creator_t( this, "greenskins_waterlogged_wristcuffs", find_spell( 209423 ) );
   buffs.shivarran_symmetry                 = buff_creator_t( this, "shivarran_symmetry", find_spell( 226318 ) );
   // Subtlety
-  buffs.the_first_of_the_dead              = buff_creator_t( this, "the_first_of_the_dead", find_spell( 248210 ) )
-                                             .default_value( find_spell( 248210 ) -> effectN( 1 ).percent() )
-                                             .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buffs.the_first_of_the_dead              = buff_creator_t( this, "the_first_of_the_dead", find_spell( 248210 ) );
 
 
   // Tiers
