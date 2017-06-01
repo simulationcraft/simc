@@ -339,6 +339,7 @@ public:
     cooldown_t* lava_lash;
     cooldown_t* storm_elemental;
     cooldown_t* strike;
+	cooldown_t* t20_4pc_elemental;
   } cooldown;
 
   // Gains
@@ -423,6 +424,7 @@ public:
     const spell_data_t* ancestral_swiftness;
     const spell_data_t* ascendance;
     const spell_data_t* gust_of_wind;
+	const spell_data_t* lightning_surge_totem;
 
     // Elemental
     const spell_data_t* path_of_flame;
@@ -575,6 +577,7 @@ public:
     cooldown.lava_burst           = get_cooldown( "lava_burst"            );
     cooldown.lava_lash            = get_cooldown( "lava_lash"             );
     cooldown.strike               = get_cooldown( "strike"                );
+	cooldown.t20_4pc_elemental	  = get_cooldown( "t20_4pc_elemental"                );
 
     melee_mh = nullptr;
     melee_oh = nullptr;
@@ -623,6 +626,7 @@ public:
   void trigger_t17_4pc_elemental( int );
   void trigger_t18_4pc_elemental();
   void trigger_t19_oh_8pc( const action_state_t* );
+  void trigger_t20_4pc_elemental(const action_state_t*);
   void trigger_stormbringer( const action_state_t* state );
   void trigger_elemental_focus( const action_state_t* state );
   void trigger_lightning_shield( const action_state_t* state );
@@ -5410,9 +5414,7 @@ struct flame_shock_t : public shaman_spell_t
     if ( d -> state -> result == RESULT_CRIT &&
          player -> sets -> has_set_bonus( SHAMAN_ELEMENTAL, T20, B4 ) )
     {
-      // it's cool to not use time value for...time values
-      p() -> cooldown.fire_elemental  -> adjust( timespan_t::from_seconds( -1.0 * p() -> sets -> set( SHAMAN_ELEMENTAL, T20, B4 ) -> effectN( 1 ).base_value() / 10.0 ) );
-      p() -> cooldown.storm_elemental -> adjust( timespan_t::from_seconds( -1.0 * p() -> sets -> set( SHAMAN_ELEMENTAL, T20, B4 ) -> effectN( 2 ).base_value() / 10.0 ) );
+		p() -> trigger_t20_4pc_elemental( execute_state );
     }
   }
 
@@ -5979,6 +5981,37 @@ struct liquid_magma_totem_t : public shaman_totem_pet_t
   }
 };
 
+// Lightning Surge Totem ====================================================
+
+struct lightning_surge_static_charge_t : public spell_t
+{
+	lightning_surge_static_charge_t(shaman_totem_pet_t* p) :
+		spell_t("static_charge", p, p -> find_spell(118905))
+	{
+		aoe = -1;
+		background = may_crit = true;
+		callbacks = false;
+	}
+};
+
+struct lightning_surge_totem_t : public shaman_totem_pet_t {
+	lightning_surge_totem_t(shaman_t* owner) :
+		shaman_totem_pet_t(owner, "lightning_surge_totem") {
+	}
+
+	void init_spells() override {
+		shaman_totem_pet_t::init_spells();
+	}
+
+	void init_action_list() override
+	{
+		clear_action_priority_lists();
+		auto default_list = get_action_priority_list("default");
+
+		default_list->add_action(this, find_pet_spell("Static Chage"), "Static Chage");
+	}
+};
+
 // ==========================================================================
 // Shaman Custom Buff implementation
 // ==========================================================================
@@ -6503,6 +6536,8 @@ void shaman_t::init_spells()
   talent.path_of_flame               = find_talent_spell( "Path of Flame"        );
   talent.earthen_rage                = find_talent_spell( "Earthen Rage"         );
   talent.totem_mastery               = find_talent_spell( "Totem Mastery"        );
+
+  talent.lightning_surge_totem		 = find_talent_spell( "Lightning Surge Totem");
 
   talent.aftershock                  = find_talent_spell( "Aftershock"           );
   talent.elemental_mastery           = find_talent_spell( "Elemental Mastery"    );
@@ -7087,6 +7122,24 @@ void shaman_t::trigger_t19_oh_8pc( const action_state_t* )
   }
 
   buff.t19_oh_8pc -> trigger();
+}
+
+void shaman_t::trigger_t20_4pc_elemental(const action_state_t*)
+{
+	if (!sets->has_set_bonus(SHAMAN_ELEMENTAL, T20, B4))
+	{
+		return;
+	}
+
+	if (cooldown.t20_4pc_elemental -> down())
+	{
+		return;
+	}
+
+	cooldown.fire_elemental->adjust(timespan_t::from_seconds(-1.0 * sets->set(SHAMAN_ELEMENTAL, T20, B4)->effectN(1).base_value() / 10.0));
+	cooldown.storm_elemental->adjust(timespan_t::from_seconds(-1.0 * sets->set(SHAMAN_ELEMENTAL, T20, B4)->effectN(2).base_value() / 10.0));
+
+	cooldown.t20_4pc_elemental->start(timespan_t::from_seconds(1));
 }
 
 void shaman_t::trigger_flametongue_weapon( const action_state_t* state )
