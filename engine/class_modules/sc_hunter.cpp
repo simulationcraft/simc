@@ -735,6 +735,19 @@ public:
     if ( !ab::background && p() -> sets -> has_set_bonus( HUNTER_MARKSMANSHIP, T20, B4 ) )
       p() -> buffs.pre_t20_4p_critical_aimed_damage -> expire();
   }
+
+  void add_pet_stats( pet_t* pet, std::initializer_list<std::string> names )
+  {
+    if ( ! pet )
+      return;
+
+    for ( const auto& n : names )
+    {
+      stats_t* s = pet -> find_stats( n );
+      if ( s )
+        ab::stats -> add_child( s );
+    }
+  }
 };
 
 // True Aim can only exist on one target at a time
@@ -1004,6 +1017,22 @@ public:
   hunter_pet_action_t( const std::string& n, T_PET* p, const spell_data_t* s = spell_data_t::nil() ):
     ab( n, p, s )
   {
+    // If pets are not reported separately, create single stats_t objects for the various pet
+    // abilities.
+    if ( ! ab::sim -> report_pets_separately )
+    {
+      auto first_pet = p -> owner -> find_pet( p -> name_str );
+      if ( first_pet != nullptr && first_pet != p )
+      {
+        auto it = range::find( p -> stats_list, ab::stats );
+        if ( it != p -> stats_list.end() )
+        {
+          p -> stats_list.erase( it );
+          delete ab::stats;
+          ab::stats = first_pet -> get_stats( ab::name_str, this );
+        }
+      }
+    }
   }
 
   T_PET* p()             { return static_cast<T_PET*>( ab::player ); }
@@ -1386,12 +1415,11 @@ struct hunter_secondary_pet_t: public hunter_pet_t
     resources.base[RESOURCE_MANA] = 0;
 
     stamina_per_owner = 0;
+
     main_hand_weapon.min_dmg    = dbc.spell_scaling( o() -> type, o() -> level() );
     main_hand_weapon.max_dmg    = main_hand_weapon.min_dmg;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2 );
     main_hand_weapon.type       = WEAPON_BEAST;
-
-    main_hand_attack = new secondary_pet_melee_t<hunter_secondary_pet_t>( name_str + "_melee", this );
   }
 
   void summon( timespan_t duration = timespan_t::zero() ) override
@@ -1399,7 +1427,8 @@ struct hunter_secondary_pet_t: public hunter_pet_t
     hunter_pet_t::summon( duration );
 
     // attack immediately on summons
-    main_hand_attack -> execute();
+    if ( main_hand_attack )
+      main_hand_attack -> execute();
   }
 };
 
@@ -1416,30 +1445,13 @@ struct dire_critter_t: public hunter_secondary_pet_t
     {
       aoe = -1;
     }
-
-    bool init_finished() override
-    {
-      if ( o() -> pets.dire_beasts[ 0 ] )
-        stats = o() -> pets.dire_beasts[ 0 ] -> get_stats( name_str );
-
-      return base_t::init_finished();
-    }
   };
 
   struct dire_beast_melee_t: public secondary_pet_melee_t<dire_critter_t>
   {
     dire_beast_melee_t( dire_critter_t* p ):
       base_t( "dire_beast_melee", p )
-    {
-    }
-
-    bool init_finished() override
-    {
-      if ( o() -> pets.dire_beasts[ 0 ] )
-        stats = o() -> pets.dire_beasts[ 0 ] -> get_stats( name_str );
-
-      return base_t::init_finished();
-    }
+    { }
   };
 
   struct actives_t
@@ -1623,14 +1635,6 @@ struct spitting_cobra_t: public hunter_pet_t
       ability_lag_stddev = timespan_t::from_millis(170);
     }
 
-    bool init_finished() override
-    {
-      if ( o() -> pets.spitting_cobra )
-        stats = o() -> pets.spitting_cobra -> get_stats( name_str );
-
-      return base_t::init_finished();
-    }
-
     // the cobra double dips off versatility & haste
     double composite_versatility( const action_state_t* s ) const override
     {
@@ -1699,18 +1703,10 @@ struct sneaky_snake_t: public hunter_secondary_pet_t
     {
       background = true;
       hasted_ticks = false;
-      tick_may_crit = true;
+      may_crit = tick_may_crit = true;
       dot_max_stack = data().max_stacks();
 
       cooldown -> duration = p -> find_spell( 243120 ) -> internal_cooldown();
-    }
-
-    bool init_finished() override
-    {
-      if ( o() -> pets.sneaky_snakes[ 0 ] )
-        stats = o() -> pets.sneaky_snakes[ 0 ] -> get_stats( name_str );
-
-      return base_t::init_finished();
     }
 
     void trigger( action_state_t* s )
@@ -1734,14 +1730,6 @@ struct sneaky_snake_t: public hunter_secondary_pet_t
       base_t( "sneaky_snake_melee", p ),
       deathstrike_venom( new deathstrike_venom_t( p ) )
     {
-    }
-
-    bool init_finished() override
-    {
-      if ( o() -> pets.sneaky_snakes[ 0 ] )
-        stats = o() -> pets.sneaky_snakes[ 0 ] -> get_stats( name_str );
-
-      return base_t::init_finished();
     }
 
     void impact( action_state_t* s ) override
@@ -1794,6 +1782,7 @@ struct dark_minion_t: hunter_secondary_pet_t
   {
     hunter_secondary_pet_t::init_base_stats();
 
+    main_hand_attack = new secondary_pet_melee_t<dark_minion_t>( "dark_minion_melee", this );
     if ( o() -> pets.dark_minions[ 0 ] )
       main_hand_attack -> stats = o() -> pets.dark_minions[ 0 ] -> main_hand_attack -> stats;
   }
@@ -2435,8 +2424,6 @@ void dire_critter_t::init_spells()
   if ( o() -> artifacts.titans_thunder.rank() )
   {
     active.titans_thunder = new actions::titans_thunder_t( this );
-    if ( o() -> pets.dire_beasts[ 0 ] )
-      active.titans_thunder -> stats = o() -> pets.dire_beasts[ 0 ] -> get_stats( "titans_thunder" );
   }
 }
 
@@ -3986,10 +3973,7 @@ struct flanking_strike_t: hunter_melee_attack_t
   bool init_finished() override
   {
     for ( auto pet : p() -> pet_list )
-    {
-      stats -> add_child( pet -> get_stats( "flanking_strike" ) );
-      stats -> add_child( pet -> get_stats( "bestial_ferocity" ) );
-    }
+      add_pet_stats( pet, { "flanking_strike", "bestial_ferocity" } );
 
     return hunter_melee_attack_t::init_finished();
   }
@@ -4642,12 +4626,7 @@ struct dire_beast_t: public hunter_spell_t
 
   bool init_finished() override
   {
-    for (auto pet : p() -> pet_list)
-    {
-      stats -> add_child( pet -> get_stats( "dire_beast_melee" ) );
-      stats -> add_child( pet -> get_stats( "felboar_melee" ) );
-      stats -> add_child( pet -> get_stats( "stomp" ) );
-    }
+    add_pet_stats( p() -> pets.dire_beasts[ 0 ], { "dire_beast_melee", "stomp" } );
 
     return hunter_spell_t::init_finished();
   }
@@ -4797,11 +4776,7 @@ struct kill_command_t: public hunter_spell_t
   bool init_finished() override
   {
     for (auto pet : p() -> pet_list)
-    {
-      stats -> add_child( pet -> get_stats( "kill_command" ) );
-      stats -> add_child( pet -> get_stats( "bestial_ferocity" ) );
-      stats -> add_child( pet -> get_stats( "jaws_of_thunder" ) );
-    }
+      add_pet_stats( pet, { "kill_command", "jaws_of_thunder", "bestial_ferocity" } );
 
     return hunter_spell_t::init_finished();
   }
@@ -4845,10 +4820,7 @@ struct dire_frenzy_t: public hunter_spell_t
   bool init_finished() override
   {
     for (auto pet : p() -> pet_list)
-    {
-      stats -> add_child( pet -> get_stats( "dire_frenzy" ) );
-      stats -> add_child( pet -> get_stats( "titans_frenzy" ) );
-    }
+      add_pet_stats( pet, { "dire_frenzy", "titans_frenzy" } );
 
     return hunter_spell_t::init_finished();
   }
@@ -4931,7 +4903,7 @@ struct titans_thunder_t: public hunter_spell_t
   bool init_finished() override
   {
     for (auto pet : p() -> pet_list)
-      stats -> add_child( pet -> get_stats( "titans_thunder" ) );
+      add_pet_stats( pet, { "titans_thunder" } );
 
     return hunter_spell_t::init_finished();
   }
@@ -5110,8 +5082,7 @@ struct spitting_cobra_t: public hunter_spell_t
 
   bool init_finished() override
   {
-    if ( p() -> pets.spitting_cobra )
-      stats -> add_child( p() -> pets.spitting_cobra -> get_stats( "cobra_spit" ) );
+    add_pet_stats( p() -> pets.spitting_cobra, { "cobra_spit" } );
 
     return hunter_spell_t::init_finished();
   }

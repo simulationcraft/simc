@@ -266,7 +266,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=1072)     : Apply Aura (6) | Unknown(308)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7 | Target: Enemy (6)
-                   Affected Spells: Multi-Shot (2643), Freezing Trap (3355), Concussive Shot (5116), Ice Trap (13809), Explosive Trap (13812), Explosive Trap (13813), Wyvern Sting (19386), Aimed Shot (19434), Intimidation (19577), Kill Command (34026), Scatter Shot (37506), Chimaera Shot (53209), Bullheaded (63896), Serpent Sting (118253), Barrage (120360), Barrage (120361), A Murder of Crows (131900), Iron Horde Trip Mine (155918), Steel Trap (162488), Steel Trap (162496), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Aspect of the Turtle (186265), Bursting Shot (186387), Freezing Trap (187650), Freezing Trap (187651), Tar Trap (187698), Tar Trap (187699), Mongoose Bite (190928), Aimed Shot (191043), Explosive Trap (191433), Cobra Shot (193455), Volley (194392), Black Arrow (194599), Stomp (199530), Throwing Axes (200163), Stampede (201594), Stomp (201754), Flanking Strike (202800), Chimaera Shot (204304), Flanking Strike (204740), Explosive Shot (212431), Explosive Shot (212680), Scatter Shot (213691), Sidewinders (214579), Sidewinders (214581), Dire Frenzy (217200), Thunderslash (243234)
+                   Affected Spells: Multi-Shot (2643), Freezing Trap (3355), Concussive Shot (5116), Ice Trap (13809), Explosive Trap (13812), Explosive Trap (13813), Wyvern Sting (19386), Aimed Shot (19434), Intimidation (19577), Kill Command (34026), Scatter Shot (37506), Chimaera Shot (53209), Bullheaded (63896), Serpent Sting (118253), Barrage (120360), Barrage (120361), A Murder of Crows (131900), Iron Horde Trip Mine (155918), Steel Trap (162488), Steel Trap (162496), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Aspect of the Turtle (186265), Bursting Shot (186387), Freezing Trap (187650), Freezing Trap (187651), Tar Trap (187698), Tar Trap (187699), Mongoose Bite (190928), Aimed Shot (191043), Explosive Trap (191433), Cobra Shot (193455), Volley (194392), Black Arrow (194599), Stomp (199530), Throwing Axes (200163), Stampede (201594), Stomp (201754), Flanking Strike (202800), Chimaera Shot (204304), Flanking Strike (204740), Explosive Shot (212431), Explosive Shot (212680), Scatter Shot (213691), Sidewinders (214579), Sidewinders (214581), Dire Frenzy (217200), Dire Frenzy (217207)
 Description      : $@spelldesc187650
 Tooltip          : Incapacitated.
 
@@ -430,9 +430,9 @@ Attributes       : ........ ........ .....x.. x..x....   ...x.x.x ........ .....
                  : Cannot dodge/parry/block (21), Does not break stealth (37), Not a proc (105), Requires line of sight (186)
 Effects          :
 #1 (id=6178)     : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3.50000 | Radius: 0 - 5 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3.50000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 #2 (id=6179)     : Apply Aura (6) | Periodic Damage (3): fire every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.35000 | Radius: 0 - 5 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.35000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : $@spelldesc191433
 Tooltip          : Suffering $w2 Fire damage every $t2 sec.
 
@@ -2877,10 +2877,10 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179698)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 6 | Scaled Value: 6 | Target: Self (1)
-                   Affected Spells: Multi-Shot (2643), Kill Command (34026), Chimaera Shot (53209), Barrage (120360), Barrage (120361), A Murder of Crows (131900), Chimaera Shot (171454), Chimaera Shot (171457), Cobra Shot (193455), Volley (194392), Stomp (199530), Stampede (201594), Stomp (201754), Thunderslash (243234)
+                   Affected Spells: Multi-Shot (2643), Kill Command (34026), Chimaera Shot (53209), Barrage (120360), Barrage (120361), A Murder of Crows (131900), Chimaera Shot (171454), Chimaera Shot (171457), Cobra Shot (193455), Volley (194392), Stomp (199530), Stampede (201594), Stomp (201754)
 #2 (id=191138)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
                    Base Value: 6 | Scaled Value: 6 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Multi-Shot (2643), Kill Command (34026), Chimaera Shot (53209), Barrage (120360), Barrage (120361), A Murder of Crows (131900), Chimaera Shot (171454), Chimaera Shot (171457), Cobra Shot (193455), Volley (194392), Stomp (199530), Stampede (201594), Stomp (201754), Thunderslash (243234)
+                   Affected Spells: Multi-Shot (2643), Kill Command (34026), Chimaera Shot (53209), Barrage (120360), Barrage (120361), A Murder of Crows (131900), Chimaera Shot (171454), Chimaera Shot (171457), Cobra Shot (193455), Volley (194392), Stomp (199530), Stampede (201594), Stomp (201754)
 #3 (id=191139)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 6 | Scaled Value: 6 | Target: Self (1)
                    Affected Spells: Bestial Wrath (19574), Bestial Wrath (186254)
@@ -4607,7 +4607,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=283823)   : Apply Aura (6) | Add Percent Modifier (108): Spell Range (5)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.62500 | Misc Value: 5 | Target: Self (1)
-                   Affected Spells: Flare (1543), Multi-Shot (2643), Concussive Shot (5116), Wyvern Sting (19386), Aimed Shot (19434), Kill Command (34026), Chimaera Shot (53209), Bullheaded (63896), Binding Shot (109248), Barrage (120360), Barrage (120361), Dire Beast (120679), A Murder of Crows (131894), A Murder of Crows (131900), Flare (132950), Counter Shot (147362), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Marked Shot (185901), Bursting Shot (186387), Mongoose Bite (190928), Aimed Shot (191043), Cobra Shot (193455), Volley (194386), Volley (194392), Black Arrow (194599), Dragonsfire Grenade (194858), Piercing Shot (198670), Stomp (199530), Stampede (201594), Stomp (201754), Fury of the Eagle (203415), Windburst (204147), Chimaera Shot (204304), A Murder of Crows (206505), Sentinel (206817), Explosive Shot (212431), Explosive Shot (212680), Piercing Shot (213678), Scatter Shot (213691), Sidewinders (214579), Sidewinders (214581), Dire Longevity (215911), Thunderslash (243234)
+                   Affected Spells: Flare (1543), Multi-Shot (2643), Concussive Shot (5116), Wyvern Sting (19386), Aimed Shot (19434), Kill Command (34026), Chimaera Shot (53209), Bullheaded (63896), Binding Shot (109248), Barrage (120360), Barrage (120361), Dire Beast (120679), A Murder of Crows (131894), A Murder of Crows (131900), Flare (132950), Counter Shot (147362), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Marked Shot (185901), Bursting Shot (186387), Mongoose Bite (190928), Aimed Shot (191043), Cobra Shot (193455), Volley (194386), Volley (194392), Black Arrow (194599), Dragonsfire Grenade (194858), Piercing Shot (198670), Stomp (199530), Stampede (201594), Stomp (201754), Fury of the Eagle (203415), Windburst (204147), Chimaera Shot (204304), A Murder of Crows (206505), Sentinel (206817), Explosive Shot (212431), Explosive Shot (212680), Piercing Shot (213678), Scatter Shot (213691), Sidewinders (214579), Sidewinders (214581), Dire Longevity (215911)
 #2 (id=283906)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.50000 | Target: Self (1)
                    Affected Spells: Aimed Shot (19434), Barrage (120361), A Murder of Crows (131894), A Murder of Crows (131900), Bursting Shot (186387), Aimed Shot (191043), Volley (194386), Volley (194392), Black Arrow (194599), Piercing Shot (198670), Windburst (204147), A Murder of Crows (206505), Marked Shot (212621), Explosive Shot (212680), Piercing Shot (213678)
@@ -6067,12 +6067,12 @@ Range            : 100 yards
 Velocity         : 90 yards/sec
 Affecting spells : Marksmanship Hunter (137016 effect#3), Windrunner's Guidance (190457 effect#1), Precision (190520 effect#1), Mastery: Sniper Training (193468 effect#2), 
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
-                 : ........ ........ .x...... ........   ........ ........ ........ ........ 
+                 : ........ ........ .x...... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Ranged Ability (1)
+                 : Ranged Ability (1), Not a proc (105)
 Effects          :
 #1 (id=315281)   : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy (6)
@@ -6237,7 +6237,7 @@ Class            : Hunter
 School           : Physical
 Spell Level      : 1
 Range            : 25 yards
-Affecting spells : Hunter (137014 effect#2), Aspect of the Wild (193530 effect#3), Pack Leader (197080 effect#1), Roar of the Seven Lions (207318 effect#1), Bestial Rage (246116 effect#1)
+Affecting spells : Freezing Trap (3355 effect#2), Hunter (137014 effect#2), Aspect of the Wild (193530 effect#3), Beast Master (215779 effect#2)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
