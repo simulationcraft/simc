@@ -5089,7 +5089,7 @@ timespan_t player_t::time_to_percent( double percent ) const
   if ( iteration_dmg_taken > 0.0 && resources.base[RESOURCE_HEALTH] > 0 && sim -> current_time() >= timespan_t::from_seconds( 1.0 ) && !sim -> fixed_time )
     ttp = ( resources.current[RESOURCE_HEALTH] - ( percent * 0.01 * resources.base[RESOURCE_HEALTH] ) ) / ( iteration_dmg_taken / sim -> current_time().total_seconds() );
   else
-    ttp = ( sim -> expected_iteration_time - sim -> current_time() ).total_seconds() * ( 100 - percent ) * 0.01;
+    ttp = ( sim -> expected_iteration_time * ( 1.0 - percent * 0.01 ) - sim -> current_time() ).total_seconds();
 
   time_to_percent = timespan_t::from_seconds( ttp );
 
