@@ -9898,10 +9898,14 @@ std::string player_t::create_profile( save_e stype )
   {
     profile_str += util::player_type_string( type );
     profile_str += "=\"" + name_str + '"' + term;
+
     if ( ! origin_str.empty() )
       profile_str += "origin=\"" + origin_str + '"' + term;
     if ( ! report_information.thumbnail_url.empty() )
       profile_str += "thumbnail=\"" + report_information.thumbnail_url + '"' + term;
+
+    profile_str += "spec=";
+    profile_str += dbc::specialization_string( specialization() ) + term;
     profile_str += "level=" + util::to_string( true_level ) + term;
     profile_str += "race=" + race_str + term;
     if ( race == RACE_NIGHT_ELF ) {
@@ -9955,9 +9959,6 @@ std::string player_t::create_profile( save_e stype )
 
   if ( stype == SAVE_ALL )
   {
-    profile_str += "spec=";
-    profile_str += dbc::specialization_string( specialization() ) + term;
-
     std::string potion_option = potion_str.empty() ? default_potion() : potion_str;
     std::string flask_option = flask_str.empty() ? default_flask() : flask_str;
     std::string food_option = food_str.empty() ? default_food() : food_str;
