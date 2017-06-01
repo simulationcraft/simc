@@ -175,6 +175,7 @@ Name             : Bloodlust (id=2825) [Spell Family (11)]
 Class            : Shaman
 Race             : Orc, Tauren, Troll, Goblin
 School           : Nature
+Resource         : 21.5% Base Mana (0) (id=12194)
 Spell Level      : 50
 Duration         : 40 seconds
 Cooldown         : 300 seconds
@@ -452,9 +453,9 @@ Resource         : 40 Maelstrom (11) (id=715)
 Spell Level      : 20
 Range            : 5 yards
 GCD              : 1.5 seconds
-Cooldown         : 16 seconds
+Cooldown         : 15 seconds
 Category         : 1254
-Category Cooldown: 16 seconds
+Category Cooldown: 15 seconds
 Proc Chance      : 101%
 Affecting spells : Ascendance (114051 effect#3), Shaman (137038 effect#2), Stormbringer (201846 effect#2), 
 Triggered by     : Stormbringer (201846)
@@ -2170,10 +2171,10 @@ Effects          :
                    Base Value: 115356 | Scaled Value: 115356 | Target: Self (1)
                    Affected Spells: Stormstrike (17364)
 #4 (id=305266)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
-                   Base Value: -75 | Scaled Value: -75 | Misc Value: 11 | Target: Self (1)
+                   Base Value: -80 | Scaled Value: -80 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Windstrike (115356)
 #5 (id=375209)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
-                   Base Value: -75 | Scaled Value: -75 | Misc Value: 14 | Target: Self (1)
+                   Base Value: -80 | Scaled Value: -80 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Windstrike (115356)
 Description      : Transform into an Air Ascendant for $114051d, reducing the cooldown and cost of Stormstrike by $s4%, and transforming your auto attack and Stormstrike into Wind attacks which bypass armor and have a $s1 yd range.
 Tooltip          : Transformed into a powerful Air ascendant. Auto attacks have a $114089r yard range. Stormstrike is empowered and has a $114089r yard range.
@@ -2313,7 +2314,7 @@ Name             : Player Damage Reduction (id=115043) [Passive, Hidden]
 Class            : Death Knight, Shaman, Mage, Warlock, Monk
 School           : Physical
 Spell Level      : 1
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ......xx ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2828,13 +2829,13 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179725)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
-                   Base Value: 7 | Scaled Value: 7 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
                    Affected Spells: Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lava Lash (60103), Windstrike (115357), Windstrike Off-Hand (115360), Lightning Bolt (187837), Crash Lightning (187874), Earthen Spike (188089), Lightning Shield (192109), Rockbiter (193786), Flametongue (193796), Crash Lightning (195592), Frostbrand (196834), Sundering (197214), Fury of Air (197385), Unleash Lava (199053), Unleash Lightning (199054), Doom Vortex (199116), Windsong (201898), Crashing Storm (210801), Hailstorm (210854), Stormlash (213307), Storm Tempests (214452), Feral Lunge (215802)
 #2 (id=191038)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
-                   Base Value: 7 | Scaled Value: 7 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lava Lash (60103), Windstrike (115357), Windstrike Off-Hand (115360), Lightning Bolt (187837), Crash Lightning (187874), Earthen Spike (188089), Lightning Shield (192109), Rockbiter (193786), Flametongue (193796), Crash Lightning (195592), Frostbrand (196834), Sundering (197214), Fury of Air (197385), Unleash Lava (199053), Unleash Lightning (199054), Doom Vortex (199116), Windsong (201898), Crashing Storm (210801), Hailstorm (210854), Stormlash (213307), Storm Tempests (214452), Feral Lunge (215802)
 #3 (id=191039)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 7 | Scaled Value: 7 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
                    Affected Spells: Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lava Lash (60103), Windstrike (115357), Windstrike Off-Hand (115360), Lightning Bolt (187837), Crash Lightning (187874), Earthen Spike (188089), Lightning Shield (192109), Rockbiter (193786), Flametongue (193796), Crash Lightning (195592), Frostbrand (196834), Sundering (197214), Fury of Air (197385), Unleash Lava (199053), Unleash Lightning (199054), Doom Vortex (199116), Windsong (201898), Crashing Storm (210801), Hailstorm (210854), Stormlash (213307), Storm Tempests (214452), Feral Lunge (215802)
 #4 (id=191040)   : Apply Aura (6) | Override Spell Power per Attack Power% (366)
                    Base Value: 120 | Scaled Value: 120 | Target: Self (1)
@@ -2879,7 +2880,7 @@ Name             : Player Damage Reduction Level 90 (id=142689) [Passive, Hidden
 Class            : Death Knight, Shaman, Mage, Warlock, Monk
 School           : Physical
 Spell Level      : 90
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ......xx ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3126,7 +3127,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=219326)   : School Damage (2): nature
-                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 1 | SP Coefficient: 0.48000 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 1 | SP Coefficient: 0.60000 | Target: Enemy (6)
 Description      : Conjures a gust of wind that deals $s1 Nature damage to an enemy and generates $226180s2 Maelstrom for the Shaman.
 
 Name             : Call Lightning (id=157348) [Spell Family (11)] 
@@ -3146,7 +3147,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=219409)   : School Damage (2): nature
-                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 1 | SP Coefficient: 0.96000 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 1 | SP Coefficient: 1.20000 | Target: Enemy (6)
 #2 (id=219410)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 300 | Scaled Value: 300 | Misc Value: 0x7f | Target: Self (1)
 Description      : Call down a lightning strike on an enemy, dealing $s1 Nature damage, and leaving the Storm Elemental charged with energy for $d.
@@ -4285,7 +4286,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=282040)   : Apply Aura (6) | Dummy (4)
                    Base Value: 4 | Scaled Value: 4 | Misc Value: 6 | Target: Self (1)
-Description      : Crash Lightning also electrifies the ground, leaving an electrical field behind which damages enemies within it for ${6*$210801s1} Nature damage over $210797d. 
+Description      : Crash Lightning also electrifies the ground, leaving an electrical field behind which damages enemies within it for ${7*$210801s1} Nature damage over $210797d. 
 
 Name             : Storm Elemental (id=192249) [Spell Family (11)] 
 Class            : Shaman
@@ -4759,7 +4760,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=289974)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.35000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.42000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=289975)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -30 | Scaled Value: -30 | Radius: 0 - 8 yards | Mechanic: Unknown(88) | Target: At Caster (22) -> AOE enemy (15)
 Description      : $@spelldesc197211
@@ -5300,7 +5301,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=297456)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Your weapon attacks have a ${$h}.1% chance to reset the remaining cooldown on Stormstrike, and cause your next Stormstrike to cost $201846s3% less Maelstrom and trigger no cooldown.
+Description      : Your weapon attacks have a $h.1% chance to reset the remaining cooldown on Stormstrike, and cause your next Stormstrike to cost $201846s3% less Maelstrom and trigger no cooldown.
 
 Name             : Stormbringer (id=201846) [Spell Family (11)] 
 Class            : Shaman
@@ -5357,7 +5358,7 @@ Effects          :
 #1 (id=297539)   : School Damage (2): nature
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 5.00000 | Target: Enemy (6)
 #2 (id=297540)   : Apply Aura (6) | Modify Melee Attack Speed% (319)
-                   Base Value: 35 | Scaled Value: 35 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 Description      : Lashes your enemy for $s1 Nature damage, and enhances your weapons with wind, increasing your attack speed by $s2% for $d.
 Tooltip          : Attack speed increased by $s2%.
 
@@ -5365,7 +5366,7 @@ Name             : Hot Hand (id=201900) [Spell Family (11), Passive, Hidden]
 Class            : Shaman
 School           : Fire
 Proc Chance      : 100%
-Real PPM         : 3.5 (Haste multiplier)
+Real PPM         : 2.5 (Haste multiplier)
 Proc Flags       : ..x.x... ........ ........ ........ 
                  : White Melee, Yellow Melee
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -6033,7 +6034,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Stormlash (195222), Stormlash (195255), Stormlash (195256), Stormlash (213307)
 #2 (id=312160)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
-                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
                    Affected Spells: Stormlash (195222), Stormlash (195255), Stormlash (195256), Stormlash (213307)
 Description      : Stormlash now spreads to $s1 additional target and deals $s2% additional damage.
 

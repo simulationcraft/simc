@@ -3731,7 +3731,7 @@ School           : Holy
 Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 2 seconds
-Affecting spells : Lucidity (137323 effect#1), Muze's Unwavering Will (210632 effect#1), Invoke the Light (216122 effect#1), Kam Xi'raff (233997 effect#1)
+Affecting spells : Lucidity (137323 effect#1), Muze's Unwavering Will (210632 effect#1), Invoke the Light (216122 effect#1)
 Attributes       : ........ ........ x....... x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... ......x.   ........ ........ .x...... ......x. 
                  : ........ ......x. ........ ........   ...x.... ........ .xx..... ........ 
