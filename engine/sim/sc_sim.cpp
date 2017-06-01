@@ -635,9 +635,9 @@ bool parse_fight_style( sim_t*             sim,
     sim -> fight_style = "HecticAddCleave";
 
     sim -> raid_events_str += "/adds,count=5,first=" + util::to_string( int( sim -> max_time.total_seconds() * 0.05 ) ) + ",cooldown=" + util::to_string( int( sim -> max_time.total_seconds() * 0.075 ) ) + ",duration=" + util::to_string( int( sim -> max_time.total_seconds() * 0.05 ) ) + ",last=" + util::to_string( int( sim -> max_time.total_seconds() * 0.75 ) ); //P1
-      
+
     sim -> raid_events_str += "/movement,first=" + util::to_string( int( sim -> max_time.total_seconds() * 0.05 ) ) + ",cooldown=" + util::to_string( int( sim -> max_time.total_seconds() * 0.075 ) ) + ",distance=25,last=" + util::to_string( int( sim -> max_time.total_seconds() * 0.75 ) ); //move to new position of adds
-      
+
     sim -> raid_events_str += "/movement,players_only=1,first=" + util::to_string( int( sim -> max_time.total_seconds() * 0.03 ) ) + ",cooldown=" + util::to_string( int( sim -> max_time.total_seconds() * 0.04 ) ) + ",distance=8"; //move out of stuff
 
   }
@@ -3224,7 +3224,7 @@ void sim_t::create_options()
 
   // Legion
   add_option( opt_int( "legion.infernal_cinders_users", expansion_opts.infernal_cinders_users, 1, 20 ) );
-  add_option( opt_int( "legion.engine_of_eradication_orbs", expansion_opts.engine_of_eradication_orbs, 0, 3 ) );
+  add_option( opt_int( "legion.engine_of_eradication_orbs", expansion_opts.engine_of_eradication_orbs, 0, 4 ) );
   add_option( opt_func( "legion.cradle_of_anguish_resets", []( sim_t* sim, const std::string&, const std::string& value ) {
     auto split = util::string_split( value, ":/," );
     range::for_each( split, [ sim ]( const std::string& str ) {

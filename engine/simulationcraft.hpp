@@ -1656,7 +1656,7 @@ struct sim_t : private sc_thread_t
     std::vector<double> cradle_of_anguish_resets;
 
     expansion_opt_t() :
-      infernal_cinders_users( 1 ), engine_of_eradication_orbs( 3 )
+      infernal_cinders_users( 1 ), engine_of_eradication_orbs( 4 )
     { }
   } expansion_opts;
 
@@ -4012,7 +4012,7 @@ struct player_t : public actor_t
     // 7.0 trinket proxy buffs
     buff_t* incensed;
     buff_t* taste_of_mana; // Gnawed Thumb Ring buff
-    
+
     // 7.0 Legendaries
     buff_t* aggramars_stride;
 
@@ -4332,7 +4332,7 @@ struct player_t : public actor_t
   virtual void interrupt();
   virtual void halt();
   virtual void moving();
-  virtual void finish_moving() 
+  virtual void finish_moving()
   {
     if ( buffs.norgannons_foresight )
     {

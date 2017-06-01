@@ -171,7 +171,7 @@ double composite_karazhan_empower_multiplier( const player_t* player )
 namespace set_bonus
 {
   // 7.0 Dungeon
-  void march_of_the_legion( special_effect_t& ); 
+  void march_of_the_legion( special_effect_t& );
   void journey_through_time( special_effect_t& ); // NYI
 
   // Generic passive stat aura adder for set bonuses
@@ -1222,6 +1222,7 @@ void item::engine_of_eradication( special_effect_t& effect )
 
     buff = stat_buff_creator_t( effect.player, "demonic_vigor", effect.trigger(), effect.item )
            .add_stat( primary_stat, amount )
+           .refresh_behavior( BUFF_REFRESH_EXTEND )
            .duration( effect.trigger() -> duration() + extra_seconds );
   }
 
@@ -4238,7 +4239,7 @@ void item::convergence_of_fates( special_effect_t& effect )
     }
     else
     {
-      effect.ppm_ = -4.2; //Blizz fudged up the spelldata for ret, 4.2 is the baseline, not 3. 
+      effect.ppm_ = -4.2; //Blizz fudged up the spelldata for ret, 4.2 is the baseline, not 3.
       effect.rppm_modifier_ = 1.0;
     }
     break;
