@@ -1638,45 +1638,18 @@ public:
   }
 
   // Helper methods for 7.2.5 fire shoulders and frost head.
-  void trigger_legendary_effect( buff_t* tracking_buff, buff_t* primed_buff )
+  void trigger_legendary_effect( buff_t* tracking_buff, buff_t* primed_buff, action_t* action, player_t* target )
   {
-    // These two legendaries trigger an extra stack of the tracking buff when
-    // then primed buff is up, resulting in the free spell happening every
-    // N - 1 casts, instead of N casts.
-    // As of PTR build 24163, 2014-05-30.
-    if ( p() -> bugs )
+    if ( tracking_buff -> check() == tracking_buff -> max_stack() - 2 )
     {
-      if ( tracking_buff -> check() == tracking_buff -> max_stack() - 2 )
-      {
-        tracking_buff -> expire();
-        primed_buff -> trigger();
-      }
-      else
-      {
-        tracking_buff -> trigger();
-      }
+      tracking_buff -> expire();
+      primed_buff -> trigger();
     }
-    else
+    else if ( primed_buff -> check() == 0 )
     {
       tracking_buff -> trigger();
-
-      int stacks     = tracking_buff -> check();
-      int max_stacks = tracking_buff -> max_stack();
-
-      if ( stacks == max_stacks - 1 )
-      {
-        primed_buff -> trigger();
-      }
-      if ( stacks == max_stacks )
-      {
-        tracking_buff -> expire();
-      }
     }
-  }
-
-  void execute_legendary_effect( buff_t* primed_buff, action_t* action, player_t* target )
-  {
-    if ( primed_buff -> check() )
+    else
     {
       action -> set_target( target );
       action -> execute();
@@ -1991,15 +1964,10 @@ struct fire_mage_spell_t : public mage_spell_t
   }
 
   // Helper methods for Contained Infernal Core.
-  void trigger_infernal_core()
+  void trigger_infernal_core( player_t* target )
   {
     trigger_legendary_effect( p() -> buffs.contained_infernal_core,
-                              p() -> buffs.erupting_infernal_core );
-  }
-
-  void execute_infernal_core( player_t* target )
-  {
-    execute_legendary_effect( p() -> buffs.erupting_infernal_core,
+                              p() -> buffs.erupting_infernal_core,
                               p() -> action.legendary_meteor,
                               target );
   }
@@ -2018,14 +1986,12 @@ struct frost_spell_state_t : public mage_spell_state_t
   bool impact_override;
   bool fof;
   bool execute_snapshot;
-  bool trigger_comet_storm;
 
   frost_spell_state_t( action_t* action, player_t* target ) :
     mage_spell_state_t( action, target ),
     impact_override( false ),
     fof( false ),
-    execute_snapshot( false ),
-    trigger_comet_storm( false )
+    execute_snapshot( false )
   { }
 
   virtual void initialize() override
@@ -2035,7 +2001,6 @@ struct frost_spell_state_t : public mage_spell_state_t
     impact_override     = false;
     fof                 = false;
     execute_snapshot    = false;
-    trigger_comet_storm = false;
   }
 
   virtual std::ostringstream& debug_str( std::ostringstream& s ) override
@@ -2043,8 +2008,7 @@ struct frost_spell_state_t : public mage_spell_state_t
     mage_spell_state_t::debug_str( s )
       << " impact_override="     << impact_override
       << " fof="                 << fof
-      << " execute_snapshot="    << execute_snapshot
-      << " trigger_comet_storm=" << trigger_comet_storm;
+      << " execute_snapshot="    << execute_snapshot;
     return s;
   }
 
@@ -2056,7 +2020,6 @@ struct frost_spell_state_t : public mage_spell_state_t
     impact_override     = fss -> impact_override;
     fof                 = fss -> fof;
     execute_snapshot    = fss -> execute_snapshot;
-    trigger_comet_storm = fss -> trigger_comet_storm;
   }
 
   virtual bool frozen() const override
@@ -2260,15 +2223,10 @@ struct frost_mage_spell_t : public mage_spell_t
   }
 
   // Helper methods for Shattered Fragments of Sindragosa.
-  void trigger_shattered_fragments()
+  void trigger_shattered_fragments( player_t* target )
   {
     trigger_legendary_effect( p() -> buffs.shattered_fragments_of_sindragosa,
-                              p() -> buffs.rage_of_the_frost_wyrm );
-  }
-
-  void execute_shattered_fragments( player_t* target )
-  {
-    execute_legendary_effect( p() -> buffs.rage_of_the_frost_wyrm,
+                              p() -> buffs.rage_of_the_frost_wyrm,
                               p() -> action.legendary_comet_storm,
                               target );
   }
@@ -3780,8 +3738,7 @@ struct fireball_t : public fire_mage_spell_t
         trigger_unstable_magic( s );
       }
 
-      execute_infernal_core( s -> target );
-      trigger_infernal_core();
+      trigger_infernal_core( s -> target );
     }
   }
 
@@ -4086,13 +4043,6 @@ struct flurry_t : public frost_mage_spell_t
     return frost_mage_spell_t::execute_time();
   }
 
-  virtual void snapshot_state( action_state_t* s, dmg_e rt ) override
-  {
-    cast_state( s ) -> trigger_comet_storm = p() -> buffs.rage_of_the_frost_wyrm -> check() != 0;
-
-    frost_mage_spell_t::snapshot_state( s, rt );
-  }
-
   virtual void execute() override
   {
     frost_mage_spell_t::execute();
@@ -4102,18 +4052,13 @@ struct flurry_t : public frost_mage_spell_t
     flurry_bolt -> brain_freeze_buffed = p() -> buffs.brain_freeze -> up();
 
     p() -> buffs.brain_freeze -> expire();
-
-    trigger_shattered_fragments();
   }
 
   virtual void impact( action_state_t* s ) override
   {
     frost_mage_spell_t::impact( s );
 
-    if ( cast_state( s ) -> trigger_comet_storm )
-    {
-      execute_shattered_fragments( s -> target );
-    }
+    trigger_shattered_fragments( s -> target );
   }
 
   void tick( dot_t* d ) override
@@ -4226,18 +4171,6 @@ struct frostbolt_t : public frost_mage_spell_t
     return frost_mage_spell_t::init_finished();
   }
 
-  virtual void snapshot_state( action_state_t* s, dmg_e rt ) override
-  {
-    auto fss = cast_state( s );
-    if ( ! fss -> execute_snapshot )
-    {
-      fss -> execute_snapshot = true;
-      fss -> trigger_comet_storm = p() -> buffs.rage_of_the_frost_wyrm -> check() != 0;
-    }
-
-    frost_mage_spell_t::snapshot_state( s, rt );
-  }
-
   virtual void execute() override
   {
     frost_mage_spell_t::execute();
@@ -4255,8 +4188,6 @@ struct frostbolt_t : public frost_mage_spell_t
       bf_proc_chance += p() -> artifact.clarity_of_thought.percent();
       trigger_brain_freeze( bf_proc_chance );
     }
-
-    trigger_shattered_fragments();
   }
 
   virtual void impact( action_state_t* s ) override
@@ -4301,10 +4232,7 @@ struct frostbolt_t : public frost_mage_spell_t
         p() -> buffs.chain_reaction -> trigger();
       }
 
-      if ( cast_state( s ) -> trigger_comet_storm )
-      {
-        execute_shattered_fragments( s -> target );
-      }
+      trigger_shattered_fragments( s -> target );
     }
   }
 };
@@ -5604,8 +5532,7 @@ struct pyroblast_t : public fire_mage_spell_t
         p() -> buffs.critical_massive -> trigger();
       }
 
-      execute_infernal_core( s -> target );
-      trigger_infernal_core();
+      trigger_infernal_core( s -> target );
     }
   }
 
