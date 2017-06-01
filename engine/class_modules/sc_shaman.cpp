@@ -3493,11 +3493,7 @@ struct stormstrike_base_t : public shaman_attack_t
         oh -> execute();
       }
 
-      //PTR-24116: Changed to 1 stack per cast.
-      if ( ! stormflurry )
-      {
-        p() -> buff.t20_4pc_enhancement -> trigger( 1 );
-      }
+      p() -> buff.t20_4pc_enhancement -> trigger( 1 );
 
       if ( p() -> action.storm_tempests )
       {
