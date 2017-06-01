@@ -1524,7 +1524,7 @@ struct sim_t : private sc_thread_t
   double target_error;
   double current_error;
   double current_mean;
-  int analyze_error_interval;
+  int analyze_error_interval, analyze_number;
 
   sim_control_t* control;
   sim_t*      parent;
