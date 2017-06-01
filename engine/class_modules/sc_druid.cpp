@@ -9649,8 +9649,7 @@ struct behemoth_headdress_t : public scoped_actor_callback_t<druid_t>
 
    void manipulate( druid_t* d, const special_effect_t& e ) override
    {
-      d->legendary.behemoth_headdress = 0.4; //TODO(feral): Add spelldata hook.
-         //e.driver()->effectN(1).base_value() / 10;
+      d->legendary.behemoth_headdress = e.driver()->effectN(1).base_value() / 10.0;
    }
 };
 
