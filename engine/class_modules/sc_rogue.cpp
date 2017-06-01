@@ -969,7 +969,7 @@ struct rogue_attack_t : public melee_attack_t
     }
 
     // FIXME: Apply "spec aura"
-    // The Assassination is special since some spells are flagged 2 times.
+    // The Assassination aura is special since some spells are flagged 2 times.
     if ( data().affected_by( p -> spec.assassination_rogue -> effectN( 1 ) ) &&
          ! data().affected_by( p -> spec.assassination_rogue -> effectN( 2 ) ) )
     {
@@ -983,7 +983,9 @@ struct rogue_attack_t : public melee_attack_t
     {
       base_multiplier *= 1.0 + p -> spec.outlaw_rogue -> effectN( 1 ).percent();
     }
-    if ( data().affected_by( p -> spec.subtlety_rogue -> effectN( 1 ) ) )
+    // The Subtlety aura is special since some spells are flagged 2 times.
+    if ( data().affected_by( p -> spec.subtlety_rogue -> effectN( 1 ) ) &&
+         ! data().affected_by( p -> spec.subtlety_rogue -> effectN( 2 ) ) )
     {
       base_multiplier *= 1.0 + p -> spec.subtlety_rogue -> effectN( 1 ).percent();
     }
