@@ -420,7 +420,6 @@ public:
     buff_t* conflagration_of_chaos;
     buff_t* lord_of_flames;
     buff_t* embrace_chaos;
-    buff_t* chaos_mind;
     buff_t* active_havoc;
 
     // legendary buffs
@@ -2754,7 +2753,7 @@ public:
 
     if ( maybe_ptr( p() -> dbc.ptr ) && p() -> mastery_spells.chaotic_energies -> ok() && destro_mastery )
     {
-      double destro_mastery_value = p() -> cache.mastery_value() / 3.0;
+      double destro_mastery_value = p() -> cache.mastery_value() / 2.0;
       double chaotic_energies_rng;
 
       if ( p() -> sets -> has_set_bonus( WARLOCK_DESTRUCTION, T20, B4 ) && affected_by_destruction_t20_4pc )
@@ -4264,9 +4263,6 @@ struct chaos_bolt_t: public warlock_spell_t
 
     p() -> buffs.embrace_chaos -> trigger();
     p() -> buffs.backdraft -> decrement();
-
-    p() -> buffs.chaos_mind -> expire();
-    p() -> buffs.chaos_mind -> trigger();
   }
 
   // Force spell to always crit
@@ -6874,7 +6870,6 @@ void warlock_t::create_buffs()
     .chance( artifact.conflagration_of_chaos.rank() ? artifact.conflagration_of_chaos.data().proc_chance() : 0.0 );
   buffs.embrace_chaos = buff_creator_t( this, "embrace_chaos", sets->set( WARLOCK_DESTRUCTION,T19, B2 ) -> effectN( 1 ).trigger() )
     .chance( sets->set( WARLOCK_DESTRUCTION, T19, B2 ) -> proc_chance() );
-  buffs.chaos_mind = buff_creator_t( this, "chaos_mind", sets -> set( WARLOCK_DESTRUCTION, T20, B4 ) -> effectN( 1 ).trigger() );
   buffs.active_havoc = buff_creator_t( this, "active_havoc" )
     .tick_behavior( BUFF_TICK_NONE )
     .refresh_behavior( BUFF_REFRESH_NONE )
