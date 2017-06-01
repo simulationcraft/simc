@@ -2020,11 +2020,6 @@ struct infernal_t: public warlock_pet_t
     warlock_pet_t( sim, owner, "infernal", PET_INFERNAL )
   {
     owner_coeff.health = 0.4;
-    if ( maybe_ptr( owner -> dbc.ptr ) && owner -> specialization() == WARLOCK_AFFLICTION )
-    {
-      owner_coeff.ap_from_sp *= 1.0 + owner -> spec.affliction -> effectN( 2 ).percent();
-      owner_coeff.sp_from_sp *= 1.0 + owner -> spec.affliction -> effectN( 2 ).percent();
-    }
   }
 
   virtual void init_base_stats() override
@@ -2097,11 +2092,6 @@ struct doomguard_t: public warlock_pet_t
   {
     owner_coeff.health = 0.4;
     action_list_str = "doom_bolt";
-    if ( maybe_ptr( owner -> dbc.ptr ) && owner -> specialization() == WARLOCK_AFFLICTION )
-    {
-      owner_coeff.ap_from_sp *= 1.0 + owner-> spec.affliction -> effectN( 2 ).percent();
-      owner_coeff.sp_from_sp *= 1.0 + owner -> spec.affliction -> effectN( 2 ).percent();
-    }
   }
 
   virtual void init_base_stats() override
