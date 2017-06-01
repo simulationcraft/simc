@@ -8244,42 +8244,69 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
     return new icicles_expr_t( *this );
   }
 
+  std::vector<std::string> splits = util::string_split( name_str, "." );
+
   // Firestarter expressions ==================================================
-  if ( util::str_compare_ci( name_str, "firestarter_active" ) )
+  if ( splits.size() == 2 && util::str_compare_ci( splits[0], "firestarter" ) )
   {
+    enum expr_type_t
+    {
+      FIRESTARTER_ACTIVE,
+      FIRESTARTER_REMAINS
+    };
+
     struct firestarter_expr_t : public mage_expr_t
     {
       action_t* a;
+      expr_type_t type;
 
-      firestarter_expr_t( mage_t& m, action_t* a ) :
-        mage_expr_t( "firestarter_active", m ), a( a )
+      firestarter_expr_t( mage_t& m, const std::string& name, action_t* a, expr_type_t type ) :
+        mage_expr_t( name, m ), a( a ), type( type )
       { }
 
-      double evaluate()
+      double evaluate() override
       {
         if ( ! mage.talents.firestarter -> ok() )
-          return 0;
+          return 0.0;
+
+        timespan_t remains;
 
         if ( mage.firestarter_time > timespan_t::zero() )
         {
-          return static_cast<double>(
-            mage.sim -> current_time() <
-            mage.firestarter_time );
+          remains = std::max( timespan_t::zero(), mage.firestarter_time - mage.sim -> current_time() );
         }
         else
         {
-          return static_cast<double>(
-            a -> target -> health_percentage() >
-            mage.talents.firestarter -> effectN( 1 ).base_value() );
+          remains = a -> target -> time_to_percent( mage.talents.firestarter -> effectN( 1 ).base_value() );
+        }
+
+        switch ( type )
+        {
+          case FIRESTARTER_ACTIVE:
+            return static_cast<double>( remains > timespan_t::zero() );
+          case FIRESTARTER_REMAINS:
+            return remains.total_seconds();
+          default:
+            return 0.0;
         }
       }
     };
 
-    return new firestarter_expr_t( *this, a );
+    if ( util::str_compare_ci( splits[1], "active" ) )
+    {
+      return new firestarter_expr_t( *this, name_str, a, FIRESTARTER_ACTIVE );
+    }
+    else if ( util::str_compare_ci( splits[1], "remains" ) )
+    {
+      return new firestarter_expr_t( *this, name_str, a, FIRESTARTER_REMAINS );
+    }
+    else
+    {
+      sim -> errorf( "Player %s firestarer expression: unknown operation '%s'", name(), splits[2].c_str() );
+    }
   }
 
   // Ground AoE expressions ===================================================
-  std::vector<std::string> splits = util::string_split( name_str, "." );
   if ( splits.size() == 3 && util::str_compare_ci( splits[0], "ground_aoe" ) )
   {
     struct ground_aoe_expr_t : public mage_expr_t
