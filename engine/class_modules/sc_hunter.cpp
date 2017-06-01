@@ -834,8 +834,9 @@ struct vulnerability_stats_t
 
     if ( has_patient_sniper )
     {
+      auto psniper_value = p -> talents.patient_sniper -> effectN( 1 ).base_value();
       for ( size_t i = 0; i < patient_sniper.size(); i++ )
-        patient_sniper[ i ] = p -> get_proc( "vuln_" + name + "_" + std::to_string( 10 * i ) );
+        patient_sniper[ i ] = p -> get_proc( "vuln_" + name + "_" + std::to_string( psniper_value * i ) );
     }
   }
 
