@@ -2245,18 +2245,6 @@ struct dire_frenzy_t: public hunter_main_pet_attack_t
     if ( p() -> buffs.titans_frenzy -> up() && titans_frenzy )
       titans_frenzy -> schedule_execute();
   }
-
-  double action_multiplier() const override
-  {
-    double am = base_t::action_multiplier();
-
-    // XXX: spell data indicates that it's also affected by T20 4pc
-    // XXX: check in-game
-    if ( o() -> buffs.t20_4p_bestial_rage -> up() )
-      am *= 1.0 + o() -> buffs.t20_4p_bestial_rage -> check_value();
-
-    return am;
-  }
 };
 
 // Thunderslash =============================================================
