@@ -2043,6 +2043,7 @@ struct ceaseless_toxin_t : public proc_spell_t
   ceaseless_toxin_t( const special_effect_t& effect ) : proc_spell_t( effect )
   {
     aoe = -1;
+    hasted_ticks = true;
   }
 
   // Need to invalidate target list for every execute, because the ability picks a random target
