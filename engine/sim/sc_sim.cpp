@@ -1980,9 +1980,21 @@ void sim_t::analyze_error()
     }
     else
     {
-      auto progress = work_queue -> progress();
-      work_queue -> project( static_cast<int>( progress.current_iterations * ( ( current_error * current_error ) /
-        ( target_error *  target_error ) ) ) );
+      auto projected_iterations = static_cast<int>( n_iterations * ( ( current_error * current_error ) /
+          ( target_error *  target_error ) ) );
+      if ( ! strict_work_queue )
+      {
+        work_queue -> project( projected_iterations );
+      }
+      else
+      {
+        // Divide work evenly between threads
+        projected_iterations /= threads;
+        work_queue -> project( projected_iterations );
+        range::for_each( children, [ projected_iterations ]( sim_t* c ) {
+          c -> work_queue -> project( projected_iterations );
+        } );
+      }
     }
   }
 }
