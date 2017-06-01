@@ -635,9 +635,9 @@ bool parse_fight_style( sim_t*             sim,
     sim -> fight_style = "HecticAddCleave";
 
     sim -> raid_events_str += "/adds,count=5,first=" + util::to_string( int( sim -> max_time.total_seconds() * 0.05 ) ) + ",cooldown=" + util::to_string( int( sim -> max_time.total_seconds() * 0.075 ) ) + ",duration=" + util::to_string( int( sim -> max_time.total_seconds() * 0.05 ) ) + ",last=" + util::to_string( int( sim -> max_time.total_seconds() * 0.75 ) ); //P1
-      
+
     sim -> raid_events_str += "/movement,first=" + util::to_string( int( sim -> max_time.total_seconds() * 0.05 ) ) + ",cooldown=" + util::to_string( int( sim -> max_time.total_seconds() * 0.075 ) ) + ",distance=25,last=" + util::to_string( int( sim -> max_time.total_seconds() * 0.75 ) ); //move to new position of adds
-      
+
     sim -> raid_events_str += "/movement,players_only=1,first=" + util::to_string( int( sim -> max_time.total_seconds() * 0.03 ) ) + ",cooldown=" + util::to_string( int( sim -> max_time.total_seconds() * 0.04 ) ) + ",distance=8"; //move out of stuff
 
   }
@@ -2318,11 +2318,14 @@ bool sim_t::init()
   }
   else if ( timewalk > 0 )
   {
-    switch ( timewalk )
+    if ( scale_to_itemlevel != -1 )
     {
-    case 85: scale_to_itemlevel = 300; break;
-    case 80: scale_to_itemlevel = 160; break;
-    case 70: scale_to_itemlevel = 95;  break;
+      switch ( timewalk )
+      {
+        case 85: scale_to_itemlevel = 300; break;
+        case 80: scale_to_itemlevel = 160; break;
+        case 70: scale_to_itemlevel = 95;  break;
+      }
     }
     scale_itemlevel_down_only = true;
   }
@@ -3221,6 +3224,26 @@ void sim_t::create_options()
 
   // Legion
   add_option( opt_int( "legion.infernal_cinders_users", expansion_opts.infernal_cinders_users, 1, 20 ) );
+  add_option( opt_int( "legion.engine_of_eradication_orbs", expansion_opts.engine_of_eradication_orbs, 0, 4 ) );
+  add_option( opt_func( "legion.cradle_of_anguish_resets", []( sim_t* sim, const std::string&, const std::string& value ) {
+    auto split = util::string_split( value, ":/," );
+    range::for_each( split, [ sim ]( const std::string& str ) {
+      auto v = std::atof( str.c_str() );
+      if ( v <= 0.0 )
+      {
+        return;
+      }
+
+      auto it = range::find( sim -> expansion_opts.cradle_of_anguish_resets, v );
+      if ( it != sim -> expansion_opts.cradle_of_anguish_resets.end() )
+      {
+        return;
+      }
+
+      sim -> expansion_opts.cradle_of_anguish_resets.push_back( v );
+    } );
+    return true;
+  } ) );
 }
 
 // sim_t::parse_option ======================================================

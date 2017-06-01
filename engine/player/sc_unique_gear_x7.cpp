@@ -107,6 +107,10 @@ namespace item
   void infernal_cinders( special_effect_t&             );
   void vial_of_ceaseless_toxins( special_effect_t&     );
   void tarnished_sentinel_medallion( special_effect_t& );
+  void umbral_moonglaives( special_effect_t&           );
+  void engine_of_eradication( special_effect_t&        );
+  void specter_of_betrayal( special_effect_t&          );
+  void cradle_of_anguish( special_effect_t&            );
 
   // 7.2.0 Dungeon
   void dreadstone_of_endless_shadows( special_effect_t& );
@@ -167,7 +171,7 @@ double composite_karazhan_empower_multiplier( const player_t* player )
 namespace set_bonus
 {
   // 7.0 Dungeon
-  void march_of_the_legion( special_effect_t& ); 
+  void march_of_the_legion( special_effect_t& );
   void journey_through_time( special_effect_t& ); // NYI
 
   // Generic passive stat aura adder for set bonuses
@@ -1022,7 +1026,6 @@ void item::mrrgrias_favor( special_effect_t& effect )
 
 // Tarnished Sentinel Medallion ================================================================
 
-
 void item::tarnished_sentinel_medallion( special_effect_t& effect )
 {
   // Blast is the proc'd damage
@@ -1065,7 +1068,7 @@ void item::tarnished_sentinel_medallion( special_effect_t& effect )
   secondary -> item = effect.item;
   secondary -> spell_id = effect.spell_id;
   secondary -> cooldown_ = timespan_t::zero();
-  secondary -> execute_action = create_proc_action<spectral_owl_blast_t>( effect );
+  secondary -> execute_action = create_proc_action<spectral_owl_blast_t>( "spectral_blast", effect );
   effect.player -> special_effects.push_back( secondary );
 
   auto proc = new spectral_owl_blast_cb_t( secondary );
@@ -1124,9 +1127,331 @@ void item::tarnished_sentinel_medallion( special_effect_t& effect )
     }
   };
 
-  effect.execute_action = create_proc_action<spectral_owl_bolt_t>( effect, proc );
+  effect.execute_action = create_proc_action<spectral_owl_bolt_t>( "spectral_owl", effect, proc );
 }
 
+// Umbral Moonglaives ======================================================
+
+struct umbral_glaive_storm_t : public proc_spell_t
+{
+  umbral_glaive_storm_t( const special_effect_t& effect ) :
+    proc_spell_t( "umbral_glaive_storm", effect.player, effect.player -> find_spell( 242556 ), effect.item )
+  {
+    ground_aoe = true;
+  }
+};
+
+struct shattering_umbral_glaives_t : public proc_spell_t
+{
+  shattering_umbral_glaives_t( const special_effect_t& effect ) :
+    proc_spell_t( "shattering_umbral_glaives", effect.player, effect.player -> find_spell( 242557 ), effect.item )
+  {
+    ground_aoe = true;
+  }
+};
+
+struct umbral_glaives_driver_t : public proc_spell_t
+{
+  action_t* storm;
+  action_t* shatter;
+
+  umbral_glaives_driver_t( const special_effect_t& effect ) :
+    proc_spell_t( "umbral_glaives_driver", effect.player, effect.driver(), effect.item )
+  {
+    quiet = true;
+
+    storm = create_proc_action<umbral_glaive_storm_t>( "umbral_glaive_storm", effect );
+
+    shatter = effect.player -> find_action( "shattering_umbral_glaives" );
+    if ( shatter == nullptr )
+    {
+      shatter = new shattering_umbral_glaives_t( effect );
+    }
+
+    storm -> add_child( shatter );
+  }
+
+  void execute() override
+  {
+    proc_spell_t::execute();
+
+    make_event<ground_aoe_event_t>( *sim, player, ground_aoe_params_t()
+      .target( execute_state -> target )
+      .pulse_time( data().effectN( 2 ).period() )
+      .duration( data().duration() )
+      .action( storm )
+      .expiration_callback( [ this ]() {
+        shatter -> set_target( storm -> target );
+        // Need to copy coordinates from the ground aoe event's last execute
+        auto state = shatter -> get_state();
+        shatter -> snapshot_state( state, shatter -> amount_type( state ) );
+
+        state -> target     = storm -> target;
+        state -> original_x = storm -> execute_state -> original_x;
+        state -> original_y = storm -> execute_state -> original_y;
+
+        shatter -> schedule_execute( state );
+      } ) );
+  }
+};
+
+void item::umbral_moonglaives( special_effect_t& effect )
+{
+  effect.execute_action = create_proc_action<umbral_glaives_driver_t>( "umbral_glaives_driver", effect );
+}
+
+// Engine of Eradication ===================================================
+
+void item::engine_of_eradication( special_effect_t& effect )
+{
+  auto primary_stat = effect.player -> primary_stat();
+  if ( primary_stat == STAT_NONE )
+  {
+    effect.player -> sim -> errorf( "%s no primary stat defined for specialization, cannot initialize %s",
+        effect.player -> name(), effect.name().c_str() );
+    effect.type = SPECIAL_EFFECT_NONE;
+    return;
+  }
+
+  double amount = effect.trigger() -> effectN( 3 ).average( effect.item );
+  stat_buff_t* buff = debug_cast<stat_buff_t*>( buff_t::find( effect.player, "demonic_vigor" ) );
+  if ( buff == nullptr )
+  {
+    auto extra_seconds = timespan_t::from_seconds( effect.driver() -> effectN( 1 ).base_value() );
+    extra_seconds *= effect.player -> sim -> expansion_opts.engine_of_eradication_orbs;
+
+    buff = stat_buff_creator_t( effect.player, "demonic_vigor", effect.trigger(), effect.item )
+           .add_stat( primary_stat, amount )
+           .refresh_behavior( BUFF_REFRESH_EXTEND )
+           .duration( effect.trigger() -> duration() + extra_seconds );
+  }
+
+  effect.custom_buff = buff;
+
+  new dbc_proc_callback_t( effect.item, effect );
+}
+
+// Specter of Betrayal =====================================================
+
+// A fake dread reflection, spawned at x, y coordinates. Uniquely identified by it's expiration
+// event.
+struct dread_reflection_t
+{
+  double x, y;
+  event_t* expiration;
+};
+
+// Main driver for the Specter of Betrayal item. Handles manipulation of fake Dread Reflections, and
+// kicks off a ground_aoe_event_t to pulse damage from all alive Dread Reflections.
+struct specter_of_betrayal_driver_t : public spell_t
+{
+  std::vector<dread_reflection_t> reflections;
+  action_t* torrent_driver;
+
+  specter_of_betrayal_driver_t( const special_effect_t& effect );
+  void add_reflection();
+  void remove_reflection( event_t* event );
+
+  void execute() override;
+  void reset() override;
+};
+
+// An expiration event to despawn a Dread Reflection
+struct reflection_expiration_t : public event_t
+{
+  specter_of_betrayal_driver_t* driver;
+
+  reflection_expiration_t( specter_of_betrayal_driver_t* d ) :
+    event_t( *d -> sim, d -> data().duration() ), driver( d )
+  { }
+
+  void execute() override
+  { driver -> remove_reflection( this ); }
+};
+
+// The AOE damage that emits off of the Dread Reflections
+struct dread_torrent_t : public proc_spell_t
+{
+  dread_torrent_t( const special_effect_t& effect ) :
+    proc_spell_t( "dread_torrent", effect.player, effect.player -> find_spell( 246464 ), effect.item )
+  {
+    split_aoe_damage = ground_aoe = true;
+  }
+};
+
+// A driver action to pulse all Dread Reflections that are currently alive
+struct dread_torrent_driver_t : public spell_t
+{
+  action_t* blast;
+  const specter_of_betrayal_driver_t* driver;
+
+  dread_torrent_driver_t( const special_effect_t& effect, const specter_of_betrayal_driver_t* d ) :
+    spell_t( "dread_torrent_driver", effect.player, effect.player -> find_spell( 246463 ) ),
+    blast( create_proc_action<dread_torrent_t>( "dread_torrent", effect ) ),
+    driver( d )
+  {
+    quiet = background = true;
+    callbacks = false;
+    // This driver is not a dot, the periodic nature is handled by the ground aoe event that pulses
+    // this action.
+    base_tick_time = dot_duration = timespan_t::zero();
+  }
+
+  void execute() override
+  {
+    spell_t::execute();
+
+    // Pulse all reflections that are up
+    range::for_each( driver -> reflections, [ this ]( const dread_reflection_t& reflection ) {
+      // Set target will invalidate the target list for us (if it changed), needed if the trinket is
+      // used with proper distance targeting, since then the x, y coordinates of the Dread
+      // Reflections become important.
+      blast -> set_target( driver -> target );
+
+      auto state = blast -> get_state();
+      state -> target = driver -> target;
+
+      blast -> snapshot_state( state, blast -> amount_type( state ) );
+
+      state -> original_x = reflection.x;
+      state -> original_y = reflection.y;
+
+      // Bypass schedule_execute and manually do "pre execute state", so our aoe works correctly
+      blast -> pre_execute_state = state;
+      blast -> execute();
+    } );
+  }
+};
+
+specter_of_betrayal_driver_t::specter_of_betrayal_driver_t( const special_effect_t& effect ) :
+  spell_t( "specter_of_betrayal_driver", effect.player, effect.driver() ),
+  torrent_driver( create_proc_action<dread_torrent_driver_t>( "dread_torrent_driver", effect, this ) )
+{
+  quiet = background = true;
+  callbacks = false;
+}
+
+void specter_of_betrayal_driver_t::add_reflection()
+{
+  reflections.push_back( {
+    player -> x_position,
+    player -> y_position,
+    make_event<reflection_expiration_t>( *sim, this )
+  } );
+}
+
+void specter_of_betrayal_driver_t::remove_reflection( event_t* event )
+{
+  auto it = range::find_if( reflections, [ event ]( const dread_reflection_t& reflection ) {
+    return reflection.expiration == event;
+  } );
+
+  if ( it != reflections.end() )
+  {
+    reflections.erase( it );
+  }
+}
+
+void specter_of_betrayal_driver_t::execute()
+{
+  spell_t::execute();
+
+  add_reflection();
+
+  // Start pulsing damage from all Dread Reflections that are currently up
+  make_event<ground_aoe_event_t>( *sim, player, ground_aoe_params_t()
+    .target( execute_state -> target )
+    .pulse_time( torrent_driver -> data().effectN( 1 ).period() )
+    .duration( torrent_driver -> data().duration() )
+    .action( torrent_driver ), true /* immediately pulses */ );
+}
+
+void specter_of_betrayal_driver_t::reset()
+{
+  spell_t::reset();
+
+  reflections.clear();
+}
+
+void item::specter_of_betrayal( special_effect_t& effect )
+{
+  effect.execute_action = create_proc_action<specter_of_betrayal_driver_t>( "specter_of_betrayal_driver", effect );
+}
+
+// Cradle of Anguish =======================================================
+
+struct cradle_of_anguish_ticker_t : public event_t
+{
+  stat_buff_t* buff;
+  timespan_t tick_time;
+
+  cradle_of_anguish_ticker_t( stat_buff_t* b, const timespan_t& t ) :
+    event_t( *b -> sim, t ), buff( b ), tick_time( t )
+  { }
+
+  void execute() override
+  {
+    buff -> trigger();
+
+    if ( buff -> check() < buff -> max_stack() )
+    {
+      make_event<cradle_of_anguish_ticker_t>( sim(), buff, tick_time );
+    }
+  }
+};
+
+struct cradle_of_anguish_reset_t : public event_t
+{
+  const special_effect_t& effect;
+  size_t current_idx;
+  stat_buff_t* buff;
+
+  cradle_of_anguish_reset_t( const special_effect_t& e, stat_buff_t* b, size_t reset_idx = 0 ) :
+    event_t( *b -> sim, timespan_t::from_seconds( b -> sim -> expansion_opts.cradle_of_anguish_resets[ reset_idx ] ) -
+                        b -> sim -> current_time() ),
+    effect( e ), current_idx( reset_idx ), buff( b )
+  { }
+
+  void execute() override
+  {
+    auto max_stack = buff -> check() == buff -> max_stack();
+    buff -> expire();
+
+    if ( ++current_idx < sim().expansion_opts.cradle_of_anguish_resets.size() )
+    {
+      make_event<cradle_of_anguish_reset_t>( sim(), effect, buff, current_idx );
+    }
+
+    if ( max_stack )
+    {
+      make_event<cradle_of_anguish_ticker_t>( *buff -> sim, buff,
+                                              effect.driver() -> effectN( 1 ).period() );
+    }
+  }
+};
+
+void item::cradle_of_anguish( special_effect_t& effect )
+{
+  stat_buff_t* buff = debug_cast<stat_buff_t*>( buff_t::find( effect.player, "strength_of_will" ) );
+  auto buff_spell = effect.player -> find_spell( 242642 );
+  auto amount = buff_spell -> effectN( 3 ).average( effect.item );
+
+  if ( buff == nullptr )
+  {
+    buff = stat_buff_creator_t( effect.player, "strength_of_will", buff_spell, effect.item )
+           .add_stat( effect.player -> primary_stat(), amount );
+  }
+
+  effect.player -> callbacks_on_arise.emplace_back( [ buff, effect ]() {
+    buff -> trigger( buff -> data().max_stacks() );
+    if ( buff -> sim -> expansion_opts.cradle_of_anguish_resets.size() )
+    {
+      make_event<cradle_of_anguish_reset_t>( *buff -> sim, effect, buff );
+      make_event<cradle_of_anguish_ticker_t>( *buff -> sim, buff,
+                                              effect.driver() -> effectN( 1 ).period() );
+    }
+  } );
+}
 
 // Toe Knee's Promise ======================================================
 
@@ -1654,7 +1979,9 @@ struct insidious_corruption_t : public proc_spell_t
 
   insidious_corruption_t( const special_effect_t& effect, stat_buff_t* b ) :
     proc_spell_t( effect ), buff( b )
-  { }
+  {
+    may_crit = tick_may_crit = false;
+  }
 
   void last_tick( dot_t* d ) override
   {
@@ -1676,7 +2003,7 @@ void item::tome_of_unraveling_sanity( special_effect_t& effect )
       .spell( effect.player -> find_spell( 243942 ) );
   }
 
-  effect.execute_action = create_proc_action<insidious_corruption_t>( effect, b );
+  effect.execute_action = create_proc_action<insidious_corruption_t>( "insidious_corruption", effect, b );
   effect.execute_action -> hasted_ticks = true;
 }
 
@@ -1704,7 +2031,7 @@ struct infernal_cinders_t : public proc_spell_t
 
 void item::infernal_cinders( special_effect_t& effect )
 {
-  effect.execute_action = create_proc_action<infernal_cinders_t>( effect );
+  effect.execute_action = create_proc_action<infernal_cinders_t>( "infernal_cinders", effect );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -1761,7 +2088,7 @@ struct ceaseless_toxin_t : public proc_spell_t
 
 void item::vial_of_ceaseless_toxins( special_effect_t& effect )
 {
-  effect.execute_action = create_proc_action<ceaseless_toxin_t>( effect );
+  effect.execute_action = create_proc_action<ceaseless_toxin_t>( "ceaseless_toxin", effect );
 }
 
 // Windscar Whetstone =======================================================
@@ -3912,7 +4239,7 @@ void item::convergence_of_fates( special_effect_t& effect )
     }
     else
     {
-      effect.ppm_ = -4.2; //Blizz fudged up the spelldata for ret, 4.2 is the baseline, not 3. 
+      effect.ppm_ = -4.2; //Blizz fudged up the spelldata for ret, 4.2 is the baseline, not 3.
       effect.rppm_modifier_ = 1.0;
     }
     break;
@@ -4922,6 +5249,10 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 242215, item::infernal_cinders          );
   register_special_effect( 242497, item::vial_of_ceaseless_toxins  );
   register_special_effect( 242570, item::tarnished_sentinel_medallion );
+  register_special_effect( 242553, item::umbral_moonglaives        );
+  register_special_effect( 242611, item::engine_of_eradication     );
+  register_special_effect( 246461, item::specter_of_betrayal       );
+  register_special_effect( 242640, item::cradle_of_anguish         );
 
   /* Legion 7.2.0 Dungeon */
   register_special_effect( 238498, item::dreadstone_of_endless_shadows );

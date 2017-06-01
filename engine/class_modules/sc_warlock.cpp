@@ -319,6 +319,7 @@ public:
     double sephuzs_passive;
     bool magistrike;
     bool the_master_harvester;
+    bool alythesss_pyrogenics;
 
   } legendary;
 
@@ -420,12 +421,14 @@ public:
     buff_t* lord_of_flames;
     buff_t* embrace_chaos;
     buff_t* chaos_mind;
+    buff_t* active_havoc;
 
     // legendary buffs
     buff_t* sindorei_spite;
     buff_t* stretens_insanity;
     buff_t* lessons_of_spacetime;
     haste_buff_t* sephuzs_secret;
+    buff_t* alythesss_pyrogenics;
   } buffs;
 
   // Gains
@@ -715,6 +718,23 @@ public:
                         ab( n, p, s )
   {
     ab::may_crit = true;
+
+    // If pets are not reported separately, create single stats_t objects for the various pet
+    // abilities.
+    if ( ! ab::sim -> report_pets_separately )
+    {
+      auto first_pet = p -> owner -> find_pet( p -> name_str );
+      if ( first_pet != nullptr && first_pet != p )
+      {
+        auto it = range::find( p -> stats_list, ab::stats );
+        if ( it != p -> stats_list.end() )
+        {
+          p -> stats_list.erase( it );
+          delete ab::stats;
+          ab::stats = first_pet -> get_stats( ab::name_str, this );
+        }
+      }
+    }
   }
   virtual ~warlock_pet_action_t() {}
 
@@ -756,12 +776,12 @@ public:
 
 };
 
-struct warlock_pet_melee_t: public melee_attack_t
+struct warlock_pet_melee_t: public warlock_pet_action_t<melee_attack_t>
 {
-  struct off_hand_swing: public melee_attack_t
+  struct off_hand_swing: public warlock_pet_action_t<melee_attack_t>
   {
     off_hand_swing( warlock_pet_t* p, const char* name = "melee_oh" ):
-      melee_attack_t( name, p, spell_data_t::nil() )
+      warlock_pet_action_t<melee_attack_t>( name, p, spell_data_t::nil() )
     {
       school = SCHOOL_PHYSICAL;
       weapon = &( p -> off_hand_weapon );
@@ -775,7 +795,7 @@ struct warlock_pet_melee_t: public melee_attack_t
   off_hand_swing* oh;
 
   warlock_pet_melee_t( warlock_pet_t* p, const char* name = "melee" ):
-    melee_attack_t( name, p, spell_data_t::nil() ), oh( nullptr )
+    warlock_pet_action_t<melee_attack_t>( name, p, spell_data_t::nil() ), oh( nullptr )
   {
     school = SCHOOL_PHYSICAL;
     weapon = &( p -> main_hand_weapon );
@@ -1536,7 +1556,7 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
   }
 
   if ( o() -> buffs.soul_harvest -> check() )
-    m *= 1.0 + o() -> talents.soul_harvest -> effectN( 1 ).percent();
+    m *= 1.0 + o() -> buffs.soul_harvest -> stack_value() ;
 
   if ( is_grimoire_of_service )
   {
@@ -1702,8 +1722,6 @@ struct t18_illidari_satyr_t: public warlock_pet_t
     warlock_pet_t::init_base_stats();
     base_energy_regen_per_second = 0;
     melee_attack = new warlock_pet_melee_t( this );
-    if ( o() -> warlock_pet_list.t18_illidari_satyr[0] )
-      melee_attack -> stats = o() -> warlock_pet_list.t18_illidari_satyr[0] -> get_stats( "melee" );
   }
 };
 
@@ -1722,8 +1740,6 @@ struct t18_prince_malchezaar_t: public warlock_pet_t
     warlock_pet_t::init_base_stats();
     base_energy_regen_per_second = 0;
     melee_attack = new warlock_pet_melee_t( this );
-    if ( o() -> warlock_pet_list.t18_prince_malchezaar[0] )
-      melee_attack -> stats = o() -> warlock_pet_list.t18_prince_malchezaar[0] -> get_stats( "melee" );
   }
 
   double composite_player_multiplier( school_e school ) const override
@@ -1752,18 +1768,13 @@ struct t18_vicious_hellhound_t: public warlock_pet_t
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.0 );
     melee_attack = new warlock_pet_melee_t( this );
     melee_attack -> base_execute_time = timespan_t::from_seconds( 1.0 );
-    if ( o() -> warlock_pet_list.t18_vicious_hellhound[0] )
-      melee_attack -> stats = o() -> warlock_pet_list.t18_vicious_hellhound[0] -> get_stats( "melee" );
   }
 };
 
 struct chaos_tear_t : public warlock_pet_t
 {
-  stats_t** chaos_bolt_stats;
-  stats_t* regular_stats;
-
   chaos_tear_t( sim_t* sim, warlock_t* owner ) :
-    warlock_pet_t( sim, owner, "chaos_tear", PET_NONE, true ), chaos_bolt_stats( nullptr ), regular_stats(nullptr)
+    warlock_pet_t( sim, owner, "chaos_tear", PET_NONE, true )
   {
     action_list_str = "chaos_bolt";
     regen_type = REGEN_DISABLED;
@@ -1778,21 +1789,7 @@ struct chaos_tear_t : public warlock_pet_t
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str ) override
   {
-    if ( name == "chaos_bolt" )
-    {
-      action_t* a = new rift_chaos_bolt_t( this );
-      chaos_bolt_stats = &( a -> stats );
-      if ( this == o() -> warlock_pet_list.chaos_tear[0] || sim -> report_pets_separately )
-      {
-        regular_stats = a -> stats;
-      }
-      else
-      {
-        regular_stats = o() -> warlock_pet_list.chaos_tear[0] -> get_stats( "chaos_bolt" );
-        *chaos_bolt_stats = regular_stats;
-      }
-      return a;
-    }
+    if ( name == "chaos_bolt" ) return new rift_chaos_bolt_t( this );
 
     return warlock_pet_t::create_action( name, options_str );
   }
@@ -1812,12 +1809,10 @@ namespace shadowy_tear {
 
   struct shadowy_tear_t : public warlock_pet_t
   {
-    stats_t** shadow_bolt_stats;
-    stats_t* regular_stats;
     target_specific_t<shadowy_tear_td_t> target_data;
 
     shadowy_tear_t( sim_t* sim, warlock_t* owner ) :
-      warlock_pet_t( sim, owner, "shadowy_tear", PET_NONE, true ), shadow_bolt_stats( nullptr ), regular_stats( nullptr )
+      warlock_pet_t( sim, owner, "shadowy_tear", PET_NONE, true )
     {
       action_list_str = "shadow_bolt";
       regen_type = REGEN_DISABLED;
@@ -1844,21 +1839,7 @@ namespace shadowy_tear {
 
     virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
     {
-      if ( name == "shadow_bolt" )
-      {
-        action_t* a = new rift_shadow_bolt_t( this );
-        shadow_bolt_stats = &( a -> stats );
-        if ( this == o() -> warlock_pet_list.shadowy_tear[0] || sim -> report_pets_separately )
-        {
-          regular_stats = a -> stats;
-        }
-        else
-        {
-          regular_stats = o() -> warlock_pet_list.shadowy_tear[0] -> get_stats( "shadow_bolt" );
-          *shadow_bolt_stats = regular_stats;
-        }
-        return a;
-      }
+      if ( name == "shadow_bolt" ) return new rift_shadow_bolt_t( this );
 
       return warlock_pet_t::create_action( name, options_str );
     }
@@ -1873,13 +1854,8 @@ namespace shadowy_tear {
 
 namespace flame_rift {
 
-  struct flame_rift_t;
-
   struct flame_rift_t : public warlock_pet_t
   {
-    stats_t** searing_bolt_stats;
-    stats_t* regular_stats;
-
     flame_rift_t( sim_t* sim, warlock_t* owner ) :
       warlock_pet_t( sim, owner, "flame_rift", PET_NONE, true )
     {
@@ -1895,21 +1871,7 @@ namespace flame_rift {
 
     virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
     {
-      if ( name == "searing_bolt" )
-      {
-        action_t* a = new searing_bolt_t( this );
-        searing_bolt_stats = &( a->stats );
-        if ( this == o()->warlock_pet_list.flame_rift[0] || sim->report_pets_separately )
-        {
-          regular_stats = a->stats;
-        }
-        else
-        {
-          regular_stats = o()->warlock_pet_list.flame_rift[0]->get_stats( "searing_bolt" );
-          *searing_bolt_stats = regular_stats;
-        }
-        return a;
-      }
+      if ( name == "searing_bolt" ) return new searing_bolt_t( this );
 
       return warlock_pet_t::create_action( name, options_str );
     }
@@ -1917,8 +1879,6 @@ namespace flame_rift {
 }
 
 namespace chaos_portal {
-
-  struct chaos_portal_t;
 
   struct chaos_portal_td_t : public actor_target_data_t
   {
@@ -1962,21 +1922,7 @@ namespace chaos_portal {
 
     virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
     {
-      if ( name == "chaos_barrage" )
-      {
-        action_t* a = new chaos_barrage_t( this );
-        chaos_barrage_stats = &( a -> stats );
-        if ( this == o() -> warlock_pet_list.chaos_portal[0] || sim -> report_pets_separately )
-        {
-          regular_stats = a -> stats;
-        }
-        else
-        {
-          regular_stats = o() -> warlock_pet_list.chaos_portal[0] -> get_stats( "chaos_barrage" );
-          *chaos_barrage_stats = regular_stats;
-        }
-        return a;
-      }
+      if ( name == "chaos_barrage" ) return new chaos_barrage_t( this );
 
       return warlock_pet_t::create_action( name, options_str );
     }
@@ -2192,13 +2138,10 @@ struct doomguard_t: public warlock_pet_t
 struct wild_imp_pet_t: public warlock_pet_t
 {
   action_t* firebolt;
-  stats_t** fel_firebolt_stats;
-  stats_t* regular_stats;
   bool isnotdoge;
 
   wild_imp_pet_t( sim_t* sim, warlock_t* owner ):
-    warlock_pet_t( sim, owner, "wild_imp", PET_WILD_IMP ), fel_firebolt_stats( nullptr ),
-    regular_stats(nullptr)
+    warlock_pet_t( sim, owner, "wild_imp", PET_WILD_IMP )
   {
   }
 
@@ -2235,15 +2178,6 @@ struct wild_imp_pet_t: public warlock_pet_t
     if ( name == "fel_firebolt" )
     {
       firebolt = new fel_firebolt_t( this );
-      fel_firebolt_stats = &( firebolt -> stats );
-      if ( this == o() -> warlock_pet_list.wild_imps[ 0 ] || sim -> report_pets_separately )
-      {
-        regular_stats = firebolt -> stats;
-      }
-      else
-      {
-        regular_stats = o() -> warlock_pet_list.wild_imps[ 0 ] -> get_stats( "fel_firebolt" );
-      }
       return firebolt;
     }
 
@@ -2263,18 +2197,14 @@ struct wild_imp_pet_t: public warlock_pet_t
   void trigger(int timespan, bool isdoge = false )
   {
     isnotdoge = !isdoge;
-    *fel_firebolt_stats = regular_stats;
     summon( timespan_t::from_millis( timespan ) );
   }
 };
 
 struct dreadstalker_t : public warlock_pet_t
 {
-    stats_t** dreadbite_stats;
-    stats_t* regular_stats;
-
   dreadstalker_t( sim_t* sim, warlock_t* owner ) :
-    warlock_pet_t( sim, owner, "dreadstalker", PET_DREADSTALKER ), dreadbite_stats( nullptr ), regular_stats(nullptr)
+    warlock_pet_t( sim, owner, "dreadstalker", PET_DREADSTALKER )
   {
     action_list_str = "travel/dreadbite";
     regen_type = REGEN_DISABLED;
@@ -2310,27 +2240,11 @@ struct dreadstalker_t : public warlock_pet_t
     resources.base[RESOURCE_ENERGY] = 0;
     base_energy_regen_per_second = 0;
     melee_attack = new warlock_pet_melee_t( this );
-    if ( o() -> warlock_pet_list.dreadstalkers[0] )
-      melee_attack -> stats = o() ->warlock_pet_list.dreadstalkers[0] -> get_stats( "melee" );
   }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
   {
-    if ( name == "dreadbite" )
-    {
-      action_t* a = new dreadbite_t( this );
-      dreadbite_stats = &( a -> stats );
-      if ( this == o() ->warlock_pet_list.dreadstalkers[0] || sim -> report_pets_separately )
-      {
-        regular_stats = a -> stats;
-      }
-      else
-      {
-        regular_stats = o() ->warlock_pet_list.dreadstalkers[0] -> get_stats( "dreadbite" );
-        *dreadbite_stats = regular_stats;
-      }
-      return a;
-    }
+    if ( name == "dreadbite" ) return new dreadbite_t( this );
 
     return warlock_pet_t::create_action( name, options_str );
   }
@@ -2684,7 +2598,7 @@ public:
     {
       if ( p() -> legendary.the_master_harvester )
       {
-        timespan_t sh_duration = p() -> find_spell( 248113 ) -> effectN( 4 ).time_value() * 1000;
+        timespan_t sh_duration = timespan_t::from_seconds( p() -> find_spell( 248113 ) -> effectN( 4 ).base_value() );
         double sh_proc_chance;
         switch ( p() -> specialization() )
         {
@@ -2703,7 +2617,7 @@ public:
         {
           if ( p() -> rng().roll( sh_proc_chance ) )
           {
-            p() -> buffs.soul_harvest -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, sh_duration );
+            p() -> buffs.soul_harvest -> trigger( 1, 0.2, -1.0, sh_duration );
             p() -> procs.the_master_harvester -> occur();
           }
         }
@@ -3899,13 +3813,16 @@ struct havoc_t: public warlock_spell_t
   {
     warlock_spell_t::execute();
     p() -> havoc_target = execute_state -> target;
+
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+      p() -> buffs.active_havoc -> trigger();
   }
 
   void impact( action_state_t* s ) override
   {
     warlock_spell_t::impact( s );
 
-    td( s -> target ) -> debuffs_havoc -> trigger( 1, buff_t::DEFAULT_VALUE(),-1, havoc_duration );
+    td( s -> target ) -> debuffs_havoc -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, havoc_duration );
   }
 };
 
@@ -4695,6 +4612,9 @@ struct rain_of_fire_t : public warlock_spell_t
       .duration( data().duration() * player -> cache.spell_haste() )
       .start_time( sim -> current_time() )
       .action( p() -> active.rain_of_fire ) );
+
+    if ( p() -> legendary.alythesss_pyrogenics )
+      p() -> buffs.alythesss_pyrogenics -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, data().duration() * player->cache.spell_haste() );
   }
 };
 
@@ -5710,6 +5630,7 @@ struct soul_harvest_t : public warlock_spell_t
         }
       }
       total_duration = base_duration + timespan_t::from_seconds( 2.0 ) * num_targets;
+
       p() -> buffs.soul_harvest -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, std::min( total_duration, timespan_t::from_seconds( 35 ) ) );
     }
 
@@ -6196,6 +6117,8 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
             return spell -> id() == 171975; // Shadowy Inspiration
           case WARLOCK_DESTRUCTION:
             return spell -> id() == 196412; // Eradication
+          default:
+            return false;
         }
       }
 
@@ -6218,7 +6141,7 @@ double warlock_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buffs.empowered_life_tap -> data().effectN( 1 ).percent();
 
   if ( buffs.soul_harvest -> check() )
-    m *= 1.0 + talents.soul_harvest -> effectN( 1 ).percent();
+    m *= 1.0 + buffs.soul_harvest -> stack_value();
 
   if ( buffs.instability -> check() )
     m *= 1.0 + find_spell( 216472 ) -> effectN( 1 ).percent();
@@ -6226,6 +6149,7 @@ double warlock_t::composite_player_multiplier( school_e school ) const
   if ( specialization() == WARLOCK_DESTRUCTION && dbc::is_school( school, SCHOOL_FIRE ) )
   {
     m *= 1.0 + artifact.flames_of_the_pit.percent();
+    m *= 1.0 + buffs.alythesss_pyrogenics -> stack_value();
   }
 
   if ( specialization() == WARLOCK_DEMONOLOGY && ( dbc::is_school( school, SCHOOL_FIRE ) || dbc::is_school( school, SCHOOL_SHADOW ) ) )
@@ -6883,7 +6807,9 @@ void warlock_t::create_buffs()
     .tick_behavior( BUFF_TICK_NONE );
   buffs.soul_harvest = buff_creator_t( this, "soul_harvest", find_spell( 196098 ) )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-    .refresh_behavior( BUFF_REFRESH_EXTEND );
+    .refresh_behavior( BUFF_REFRESH_EXTEND )
+    .cd( timespan_t::zero() )
+    .default_value( find_spell( 196098 ) -> effectN( 1 ).percent() );
 
   //legendary buffs
   buffs.stretens_insanity = buff_creator_t( this, "stretens_insanity", find_spell( 208822 ) )
@@ -6899,6 +6825,9 @@ void warlock_t::create_buffs()
     haste_buff_creator_t( this, "sephuzs_secret", find_spell( 208052 ) )
     .default_value( find_spell( 208052 ) -> effectN( 2 ).percent() )
     .cd( find_spell( 226262 ) -> duration() );
+  buffs.alythesss_pyrogenics = buff_creator_t( this, "alythesss_pyrogenics", find_spell( 205675 ) )
+    .default_value( find_spell( 205675 ) -> effectN( 1 ).percent() )
+    .refresh_behavior( BUFF_REFRESH_DISABLED );
 
   //affliction buffs
   buffs.shard_instability = buff_creator_t( this, "shard_instability", find_spell( 216457 ) )
@@ -6946,6 +6875,10 @@ void warlock_t::create_buffs()
   buffs.embrace_chaos = buff_creator_t( this, "embrace_chaos", sets->set( WARLOCK_DESTRUCTION,T19, B2 ) -> effectN( 1 ).trigger() )
     .chance( sets->set( WARLOCK_DESTRUCTION, T19, B2 ) -> proc_chance() );
   buffs.chaos_mind = buff_creator_t( this, "chaos_mind", sets -> set( WARLOCK_DESTRUCTION, T20, B4 ) -> effectN( 1 ).trigger() );
+  buffs.active_havoc = buff_creator_t( this, "active_havoc" )
+    .tick_behavior( BUFF_TICK_NONE )
+    .refresh_behavior( BUFF_REFRESH_NONE )
+    .duration( timespan_t::from_seconds( talents.wreak_havoc -> ok() ? 20 : 10 ) );
 }
 
 void warlock_t::init_rng()
@@ -8362,6 +8295,16 @@ struct the_master_harvester_t : public scoped_actor_callback_t<warlock_t>
   }
 };
 
+struct alythesss_pyrogenics_t : public scoped_actor_callback_t<warlock_t>
+{
+  alythesss_pyrogenics_t() : super( WARLOCK ){}
+
+  void manipulate( warlock_t* a, const special_effect_t& e ) override
+  {
+    a -> legendary.alythesss_pyrogenics = true;
+  }
+};
+
 struct warlock_module_t: public module_t
 {
   warlock_module_t(): module_t( WARLOCK ) {}
@@ -8397,6 +8340,7 @@ struct warlock_module_t: public module_t
     register_special_effect( 207952, sacrolashs_dark_strike_t() );
     register_special_effect( 213014, magistrike_t() );
     register_special_effect( 248113, the_master_harvester_t() );
+    register_special_effect( 205678, alythesss_pyrogenics_t() );
   }
 
   virtual void register_hotfixes() const override

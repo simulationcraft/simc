@@ -286,10 +286,12 @@ struct rogue_t : public player_t
     buff_t* the_dreadlords_deceit_driver;
     buff_t* the_dreadlords_deceit;
     // Assassination
+    buff_t* the_empty_crown;
     // Outlaw
     buff_t* greenskins_waterlogged_wristcuffs;
     buff_t* shivarran_symmetry;
     // Subtlety
+    buff_t* the_first_of_the_dead;
 
 
     // Tiers
@@ -347,6 +349,7 @@ struct rogue_t : public player_t
     cooldown_t* vendetta;
     cooldown_t* shadow_nova;
     cooldown_t* toxic_blade;
+    cooldown_t* curse_of_the_dreadblades;
   } cooldowns;
 
   // Gains
@@ -366,6 +369,8 @@ struct rogue_t : public player_t
     gain_t* relentless_strikes;
     gain_t* shadow_satyrs_walk;
     gain_t* t20_4pc_subtlety;
+    gain_t* the_empty_crown;
+    gain_t* the_first_of_the_dead;
 
     // CP Gains
     gain_t* seal_fate;
@@ -646,6 +651,9 @@ struct rogue_t : public player_t
     const spell_data_t* the_dreadlords_deceit;
     const spell_data_t* insignia_of_ravenholdt;
     const spell_data_t* mantle_of_the_master_assassin;
+    const spell_data_t* the_curse_of_restlessness;
+    const spell_data_t* the_empty_crown;
+    const spell_data_t* the_first_of_the_dead;
   } legendary;
 
   // Options
@@ -687,27 +695,28 @@ struct rogue_t : public player_t
     ssw_refund_offset( 0 )
   {
     // Cooldowns
-    cooldowns.adrenaline_rush      = get_cooldown( "adrenaline_rush"      );
-    cooldowns.garrote              = get_cooldown( "garrote"              );
-    cooldowns.kingsbane            = get_cooldown( "kingsbane"            );
-    cooldowns.sinister_circulation = get_cooldown( "sinister_circulation" );
-    cooldowns.killing_spree        = get_cooldown( "killing_spree"        );
-    cooldowns.shadow_dance         = get_cooldown( "shadow_dance"         );
-    cooldowns.sprint               = get_cooldown( "sprint"               );
-    cooldowns.vanish               = get_cooldown( "vanish"               );
-    cooldowns.between_the_eyes     = get_cooldown( "between_the_eyes"     );
-    cooldowns.blind                = get_cooldown( "blind"                );
-    cooldowns.gouge                = get_cooldown( "gouge"                );
-    cooldowns.cannonball_barrage   = get_cooldown( "cannon_ball_barrage"  );
-    cooldowns.cloak_of_shadows     = get_cooldown( "cloak_of_shadows"     );
-    cooldowns.death_from_above     = get_cooldown( "death_from_above"     );
-    cooldowns.grappling_hook       = get_cooldown( "grappling_hook"       );
-    cooldowns.marked_for_death     = get_cooldown( "marked_for_death"     );
-    cooldowns.riposte              = get_cooldown( "riposte"              );
-    cooldowns.weaponmaster         = get_cooldown( "weaponmaster"         );
-    cooldowns.vendetta             = get_cooldown( "vendetta"             );
-    cooldowns.shadow_nova          = get_cooldown( "shadow_nova"          );
-    cooldowns.toxic_blade          = get_cooldown( "toxic_blade"          );
+    cooldowns.adrenaline_rush          = get_cooldown( "adrenaline_rush"          );
+    cooldowns.garrote                  = get_cooldown( "garrote"                  );
+    cooldowns.kingsbane                = get_cooldown( "kingsbane"                );
+    cooldowns.sinister_circulation     = get_cooldown( "sinister_circulation"     );
+    cooldowns.killing_spree            = get_cooldown( "killing_spree"            );
+    cooldowns.shadow_dance             = get_cooldown( "shadow_dance"             );
+    cooldowns.sprint                   = get_cooldown( "sprint"                   );
+    cooldowns.vanish                   = get_cooldown( "vanish"                   );
+    cooldowns.between_the_eyes         = get_cooldown( "between_the_eyes"         );
+    cooldowns.blind                    = get_cooldown( "blind"                    );
+    cooldowns.gouge                    = get_cooldown( "gouge"                    );
+    cooldowns.cannonball_barrage       = get_cooldown( "cannon_ball_barrage"      );
+    cooldowns.cloak_of_shadows         = get_cooldown( "cloak_of_shadows"         );
+    cooldowns.death_from_above         = get_cooldown( "death_from_above"         );
+    cooldowns.grappling_hook           = get_cooldown( "grappling_hook"           );
+    cooldowns.marked_for_death         = get_cooldown( "marked_for_death"         );
+    cooldowns.riposte                  = get_cooldown( "riposte"                  );
+    cooldowns.weaponmaster             = get_cooldown( "weaponmaster"             );
+    cooldowns.vendetta                 = get_cooldown( "vendetta"                 );
+    cooldowns.shadow_nova              = get_cooldown( "shadow_nova"              );
+    cooldowns.toxic_blade              = get_cooldown( "toxic_blade"              );
+    cooldowns.curse_of_the_dreadblades = get_cooldown( "curse_of_the_dreadblades" );
 
     regen_type = REGEN_DYNAMIC;
     regen_caches[CACHE_HASTE] = true;
@@ -746,6 +755,7 @@ struct rogue_t : public player_t
   resource_e primary_resource() const override { return RESOURCE_ENERGY; }
   role_e    primary_role() const override  { return ROLE_ATTACK; }
   stat_e    convert_hybrid_stat( stat_e s ) const override;
+  stat_e    primary_stat() const override { return STAT_AGILITY; }
 
   // Default consumables
   std::string default_potion() const override;
@@ -1243,6 +1253,11 @@ struct rogue_attack_t : public melee_attack_t
       }
     }
 
+    if ( tdata -> debuffs.toxic_blade -> up() && data().affected_by( tdata -> debuffs.toxic_blade -> data().effectN( 1 ) ) )
+    {
+      m *= 1.0 + tdata -> debuffs.toxic_blade -> value();
+    }
+
     return m;
   }
 
@@ -1316,23 +1331,11 @@ struct rogue_attack_t : public melee_attack_t
     return tt;
   }
 
-  double composite_crit_chance() const override
-  {
-    double cc = melee_attack_t::composite_crit_chance();
-
-    rogue_td_t* tdata = td( target );
-    if ( tdata -> debuffs.toxic_blade -> up() && data().affected_by( tdata -> debuffs.toxic_blade -> data().effectN( 1 ) ) )
-    {
-      cc += tdata -> debuffs.toxic_blade -> check_value();
-    }
-
-    return cc;
-  }
-
   virtual double composite_poison_flat_modifier( const action_state_t* ) const
   { return 0.0; }
 
   expr_t* create_nightblade_finality_expression();
+  expr_t* create_improved_snd_expression();
   expr_t* create_expression( const std::string& name_str ) override;
 };
 
@@ -3559,6 +3562,16 @@ struct kingsbane_t : public rogue_attack_t
     return m;
   }
 
+  void execute() override
+  {
+    rogue_attack_t::execute();
+
+    if ( p() -> legendary.the_empty_crown )
+    {
+      p() -> buffs.the_empty_crown -> trigger();
+    }
+  }
+
   void impact( action_state_t* state ) override
   {
     rogue_attack_t::impact( state );
@@ -4638,6 +4651,16 @@ struct slice_and_dice_t : public rogue_attack_t
 
     p() -> buffs.slice_and_dice -> trigger( 1, snd_mod, -1.0, snd_duration );
   }
+
+  expr_t* create_expression( const std::string& name_str ) override
+  {
+    if ( util::str_compare_ci( name_str, "improved" ) )
+    {
+      return create_improved_snd_expression();
+    }
+
+    return rogue_attack_t::create_expression( name_str );
+  }
 };
 
 // Sprint ===================================================================
@@ -4719,6 +4742,14 @@ struct symbols_of_death_t : public rogue_attack_t
       else
         p() -> buffs.death -> trigger( 1 );
     }
+
+    if ( p() -> legendary.the_first_of_the_dead )
+    {
+      p() -> buffs.the_first_of_the_dead -> trigger();
+      p() -> resource_gain( RESOURCE_ENERGY,
+                            p() -> buffs.the_first_of_the_dead -> data().effectN( 2 ).resource( RESOURCE_ENERGY ),
+                            p() -> gains.the_first_of_the_dead, this );
+    }
   }
 };
 
@@ -4730,6 +4761,18 @@ struct toxic_blade_t : public rogue_attack_t
     rogue_attack_t( "toxic_blade", p, p -> talent.toxic_blade, options_str )
   {
     requires_weapon = WEAPON_DAGGER;
+  }
+
+  double action_multiplier() const override
+  {
+    double m = rogue_attack_t::action_multiplier();
+
+    if ( p() -> mastery.potent_poisons -> ok() )
+    {
+      m *= 1.0 + p() -> cache.mastery_value();
+    }
+
+    return m;
   }
 
   void impact( action_state_t* s ) override
@@ -5323,6 +5366,16 @@ expr_t* actions::rogue_attack_t::create_nightblade_finality_expression()
   } );
 }
 
+// rogue_attack_t::create_improved_snd_expression ==============================
+
+expr_t* actions::rogue_attack_t::create_improved_snd_expression()
+{
+  return make_fn_expr( "improved", [ this ]() {
+    // The SnD buff value is a modifier for the talent effect percentage. Is it >1, our SnD is improved.
+    return p() -> buffs.slice_and_dice -> up() && p() -> buffs.slice_and_dice -> value() > 1.0;
+  } );
+}
+
 // rogue_attack_t::create_expression =========================================
 
 expr_t* actions::rogue_attack_t::create_expression( const std::string& name_str )
@@ -5341,6 +5394,10 @@ expr_t* actions::rogue_attack_t::create_expression( const std::string& name_str 
   else if ( util::str_compare_ci( name_str, "dot.nightblade.finality" ) )
   {
     return create_nightblade_finality_expression();
+  }
+  else if ( util::str_compare_ci( name_str, "buff.slice_and_dice.improved" ) )
+  {
+    return create_improved_snd_expression();
   }
 
   return melee_attack_t::create_expression( name_str );
@@ -6090,6 +6147,14 @@ void rogue_t::trigger_restless_blades( const action_state_t* state )
   cooldowns.killing_spree -> adjust( v, false );
   cooldowns.marked_for_death -> adjust( v, false );
   cooldowns.death_from_above -> adjust( v, false );
+
+  // The Curse of Restlessness Legendary
+  if ( legendary.the_curse_of_restlessness )
+  {
+    timespan_t t = timespan_t::from_seconds( legendary.the_curse_of_restlessness -> effectN( 1 ).base_value() / 100.0 );
+    t *= - actions::rogue_attack_t::cast_state( state ) -> cp;
+    cooldowns.curse_of_the_dreadblades -> adjust( t, false );
+  }
 }
 
 void do_exsanguinate( dot_t* dot, double coeff )
@@ -7057,6 +7122,10 @@ double rogue_t::composite_player_multiplier( school_e school ) const
   {
     m *= 1.0 + artifact.shadow_fangs.data().effectN( 1 ).percent();
   }
+  if ( buffs.the_first_of_the_dead -> up() )
+  {
+    m *= 1.0 + buffs.the_first_of_the_dead -> check_value();
+  }
 
   return m;
 }
@@ -7300,8 +7369,7 @@ void rogue_t::init_action_list()
     maintain -> add_action( this, "Garrote", "cycle_targets=1,if=(!talent.subterfuge.enabled|!(cooldown.vanish.up&cooldown.vendetta.remains<=4))&combo_points.deficit>=1&refreshable&(pmultiplier<=1|remains<=tick_time)&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>4" );
     if ( maybe_ptr( dbc.ptr ) )
     {
-      maintain -> add_action( "pool_resource,for_next=1" );
-      maintain -> add_talent( this, "Toxic Blade", "if=combo_points.deficit>=1+(mantle_duration>=gcd.remains+0.2)&dot.kingsbane.remains<11&dot.rupture.remains>8" );
+      maintain -> add_talent( this, "Toxic Blade", "if=combo_points.deficit>=1+(mantle_duration>=gcd.remains+0.2)&dot.rupture.remains>8" );
     }
   }
   else if ( specialization() == ROGUE_OUTLAW )
@@ -7314,7 +7382,7 @@ void rogue_t::init_action_list()
     def -> add_action( "variable,name=rtb_reroll_live,value=!talent.slice_and_dice.enabled&(rtb_buffs<=2&!rtb_list.any.6)", "Fish for '3 Buffs' or 'True Bearing'. With SnD, consider that we never have to reroll." );
     def -> add_action( "variable,name=rtb_reroll,value=(ptr&variable.rtb_reroll_ptr)|(!ptr&variable.rtb_reroll_live)" );
     def -> add_action( "variable,name=ss_useable_noreroll,value=(combo_points<5+talent.deeper_stratagem.enabled-(buff.broadsides.up|buff.jolly_roger.up)-(talent.alacrity.enabled&buff.alacrity.stack<=4))", "Condition to use Saber Slash when not rerolling RtB or when using SnD" );
-    def -> add_action( "variable,name=ss_useable,value=(talent.anticipation.enabled&combo_points<4)|(!talent.anticipation.enabled&((variable.rtb_reroll&combo_points<4+talent.deeper_stratagem.enabled)|(!variable.rtb_reroll&variable.ss_useable_noreroll)))", "Condition to use Saber Slash, when you have RtB or not" );
+    def -> add_action( "variable,name=ss_useable,value=(talent.anticipation.enabled&combo_points<5)|(!talent.anticipation.enabled&((variable.rtb_reroll&combo_points<4+talent.deeper_stratagem.enabled)|(!variable.rtb_reroll&variable.ss_useable_noreroll)))", "Condition to use Saber Slash, when you have RtB or not" );
     def -> add_action( "call_action_list,name=bf", "Normal rotation" );
     def -> add_action( "call_action_list,name=cds" );
     def -> add_action( "call_action_list,name=stealth,if=stealthed.rogue|cooldown.vanish.up|cooldown.shadowmeld.up", "Conditions are here to avoid worthless check if nothing is available" );
@@ -8144,6 +8212,8 @@ void rogue_t::init_gains()
   gains.t20_4pc_assassination    = get_gain( "Tier 20 4PC Set Bonus"    );
   gains.shadow_satyrs_walk       = get_gain( "Shadow Satyr's Walk"      );
   gains.t20_4pc_subtlety         = get_gain( "Tier 20 4PC Set Bonus"    );
+  gains.the_empty_crown          = get_gain( "The Empty Crown"          );
+  gains.the_first_of_the_dead    = get_gain( "The First of the Dead"    );
 }
 
 // rogue_t::init_procs ======================================================
@@ -8370,10 +8440,17 @@ void rogue_t::create_buffs()
   buffs.the_dreadlords_deceit              = buff_creator_t( this, "the_dreadlords_deceit", tddid )
                                              .default_value( tddid -> effectN( 1 ).percent() );
   // Assassination
+  buffs.the_empty_crown                    = buff_creator_t( this, "the_empty_crown", find_spell(248201) )
+                                             .tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
+                                               resource_gain( RESOURCE_ENERGY, find_spell(248201) -> effectN( 1 ).base_value(), gains.the_empty_crown );
+                                             } );
   // Outlaw
   buffs.greenskins_waterlogged_wristcuffs  = buff_creator_t( this, "greenskins_waterlogged_wristcuffs", find_spell( 209423 ) );
   buffs.shivarran_symmetry                 = buff_creator_t( this, "shivarran_symmetry", find_spell( 226318 ) );
   // Subtlety
+  buffs.the_first_of_the_dead              = buff_creator_t( this, "the_first_of_the_dead", find_spell( 248210 ) )
+                                             .default_value( find_spell( 248210 ) -> effectN( 1 ).percent() )
+                                             .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
 
   // Tiers
@@ -9117,6 +9194,33 @@ struct mantle_of_the_master_assassin_t : public unique_gear::scoped_actor_callba
   { rogue -> legendary.mantle_of_the_master_assassin = e.driver(); }
 };
 
+struct the_curse_of_restlessness_t : public unique_gear::scoped_actor_callback_t<rogue_t>
+{
+  the_curse_of_restlessness_t() : super( ROGUE )
+  { }
+
+  void manipulate( rogue_t* rogue, const special_effect_t& e ) override
+  { rogue -> legendary.the_curse_of_restlessness = e.driver(); }
+};
+
+struct the_empty_crown_t : public unique_gear::scoped_actor_callback_t<rogue_t>
+{
+  the_empty_crown_t() : super( ROGUE )
+  { }
+
+  void manipulate( rogue_t* rogue, const special_effect_t& e ) override
+  { rogue -> legendary.the_empty_crown = e.driver(); }
+};
+
+struct the_first_of_the_dead_t : public unique_gear::scoped_actor_callback_t<rogue_t>
+{
+  the_first_of_the_dead_t() : super( ROGUE )
+  { }
+
+  void manipulate( rogue_t* rogue, const special_effect_t& e ) override
+  { rogue -> legendary.the_first_of_the_dead = e.driver(); }
+};
+
 struct rogue_module_t : public module_t
 {
   rogue_module_t() : module_t( ROGUE ) {}
@@ -9146,6 +9250,9 @@ struct rogue_module_t : public module_t
     unique_gear::register_special_effect( 208692, the_dreadlords_deceit_t()             );
     unique_gear::register_special_effect( 209041, insignia_of_ravenholdt_t()            );
     unique_gear::register_special_effect( 235022, mantle_of_the_master_assassin_t()     );
+    unique_gear::register_special_effect( 248107, the_curse_of_restlessness_t()         );
+    unique_gear::register_special_effect( 248106, the_empty_crown_t()                   );
+    unique_gear::register_special_effect( 248110, the_first_of_the_dead_t()             );
   }
 
   void register_hotfixes() const override

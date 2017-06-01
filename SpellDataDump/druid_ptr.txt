@@ -3420,10 +3420,10 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179695)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Base Value: -4 | Scaled Value: -4 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Healing Touch (5185), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102352), Germination (155675), Tranquility (157982), Nature's Essence (189800), Dreamwalker (189853), Cultivation (200389), Spring Blossoms (207386), Mark of Shifting (224392)
 #2 (id=191150)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
+                   Base Value: -4 | Scaled Value: -4 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Healing Touch (5185), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102352), Germination (155675), Tranquility (157982), Nature's Essence (189800), Dreamwalker (189853), Cultivation (200389), Spring Blossoms (207386), Mark of Shifting (224392)
 #3 (id=191151)   : Apply Aura (6) | Unknown(379)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
@@ -5418,7 +5418,10 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #3 (id=297728)   : Weapon Damage% (31)
                    Base Value: 2470 | Scaled Value: 24.7 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
-Description      : Strikes all nearby enemies with a massive slash, inflicting $sw3 Physical damage. Awards $s1 combo $lpoint:points;. Maximum $s2 charges.
+Description      : Strikes all nearby enemies with a massive slash, inflicting $sw3 Physical damage.
+
+|cFFFFFFFFAwards $s1 combo $lpoint:points;.|r
+
 
 Name             : Sabertooth (id=202031) [Spell Family (7), Passive] 
 Class            : Druid
@@ -5725,7 +5728,7 @@ Range            : 50000 yards
 Velocity         : 0.8 yards/sec
 Affecting spells : Balance Druid (137013 effect#1), Lucidity (137247 effect#1), Astral Influence (197524 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), 
 Attributes       : ........ ........ ........ ...x....   .......x ..x..... ........ ........ 
-                 : ..x..... ........ ......x. ........   x....... .x...... ........ ......x. 
+                 : ..x..... ........ ......x. ........   x....... .x...... ......x. .x....x. 
                  : ....x... .......x ........ ........   ........ ........ ........ ..x..... 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ....x... ........ ........ ........ 

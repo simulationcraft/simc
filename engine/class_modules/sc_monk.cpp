@@ -730,7 +730,7 @@ public:
     cooldown.breath_of_fire               = get_cooldown( "breath_of_fire" );
     cooldown.fortifying_brew              = get_cooldown( "fortifying_brew" );
     cooldown.fists_of_fury                = get_cooldown( "fists_of_fury" );
-    cooldown.healing_elixir              = get_cooldown( "healing_elixir" );
+    cooldown.healing_elixir               = get_cooldown( "healing_elixir" );
     cooldown.rising_sun_kick              = get_cooldown( "rising_sun_kick" );
     cooldown.refreshing_jade_wind         = get_cooldown( "refreshing_jade_wind" );
     cooldown.rushing_jade_wind            = get_cooldown( "rushing_jade_wind" );
@@ -748,18 +748,18 @@ public:
     user_options.initial_chi = 0;
 
     talent_points.register_validity_fn( [ this ]( const spell_data_t* spell ) {
-      if ( find_item( 151643 ) != nullptr )
+      if ( find_item( 151643 ) != nullptr ) // Soul of the Grandmaster Legendary
       {
         switch ( specialization() )
         {
           case MONK_BREWMASTER:
-            return strcmp( spell -> name_cstr(), "Mystic Vitality") == 0;
+            return spell -> id() == 237076; // Mystic Vitality
             break;
           case MONK_MISTWEAVER:
-            return strcmp( spell -> name_cstr(), "Mist Wrap") == 0;
+            return spell -> id() == 197900; // Mist Wrap
             break;
           case MONK_WINDWALKER:
-            return strcmp( spell -> name_cstr(), "Chi Orbit") == 0;
+            return spell -> id() == 196743; // Chi Orbit
             break;
           default:
             return false;
@@ -820,6 +820,7 @@ public:
   virtual void      copy_from( player_t* ) override;
   virtual resource_e primary_resource() const override;
   virtual role_e    primary_role() const override;
+  virtual stat_e    primary_stat() const override;
   virtual stat_e    convert_hybrid_stat( stat_e s ) const override;
   virtual void      pre_analyze_hook() override;
   virtual void      combat_begin() override;
@@ -1353,8 +1354,8 @@ struct storm_earth_and_fire_pet_t : public pet_t
     {
       double c = sef_melee_attack_t::composite_crit_chance();
 
-      if ( maybe_ptr( o() -> dbc.ptr ) && p() -> buff.pressure_point_sef -> up() )
-        c += p() -> buff.pressure_point_sef -> value();
+      if ( maybe_ptr( o() -> dbc.ptr ) && o() -> buff.pressure_point -> up() )
+        c += o() -> buff.pressure_point -> value();
 
       return c;
     }
@@ -1391,8 +1392,8 @@ struct storm_earth_and_fire_pet_t : public pet_t
     {
       double c = sef_melee_attack_t::composite_crit_chance();
 
-      if ( maybe_ptr( o() -> dbc.ptr ) && p() -> buff.pressure_point_sef -> up() )
-        c += p() -> buff.pressure_point_sef -> value();
+      if ( maybe_ptr( o() -> dbc.ptr ) && o() -> buff.pressure_point -> up() )
+        c += o() -> buff.pressure_point -> value();
 
       return c;
     }
@@ -1523,9 +1524,6 @@ struct storm_earth_and_fire_pet_t : public pet_t
 
       if ( p() -> buff.transfer_the_power_sef -> up() )
         p() -> buff.transfer_the_power_sef -> expire();
-
-      //if ( maybe_ptr( o() -> dbc.ptr ) && o() -> sets -> has_set_bonus( MONK_WINDWALKER, T20, B2 ) )
-      //  p() -> buff.pressure_point_sef -> trigger();
     }
   };
 
@@ -1860,9 +1858,6 @@ public:
 
     buff.transfer_the_power_sef = buff_creator_t( this, "transfer_the_power_sef", o() -> artifact.transfer_the_power.data().effectN( 1 ).trigger() )
                             .default_value( o() -> artifact.transfer_the_power.rank() ? o() -> artifact.transfer_the_power.percent() : 0 ); 
-
-    buff.pressure_point_sef = buff_creator_t( this, "pressure_point_sef", o() -> passives.pressure_point )
-      .default_value( o() -> passives.pressure_point -> effectN( 1 ).percent() );
   }
 
   void trigger_attack( sef_ability_e ability, const action_t* source_action )
@@ -4563,7 +4558,11 @@ struct keg_smash_t: public monk_melee_attack_t
 
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
+
     cooldown -> duration = p.spec.keg_smash -> cooldown();
+    if ( maybe_ptr ( p.dbc.ptr ) )
+      cooldown -> duration = p.spec.keg_smash -> charge_cooldown();
+
     // Keg Smash does not appear to be picking up the baseline Trigger GCD reduction
     // Forcing the trigger GCD to 1 second.
     trigger_gcd = timespan_t::from_seconds( 1 );
@@ -7591,7 +7590,7 @@ monk( *p )
     debuff.gale_burst = buff_creator_t( *this, "gale_burst", p -> passives.gale_burst )
       .default_value( 0 )
       .quiet( true );
-    debuff.touch_of_karma = buff_creator_t( *this, "touch_of_karma", p -> spec.touch_of_karma )
+    debuff.touch_of_karma = buff_creator_t( *this, "touch_of_karma_debuff", p -> spec.touch_of_karma )
       // set the percent of the max hp as the default value.
       .default_value( p -> spec.touch_of_karma -> effectN( 3 ).percent() );
   }
@@ -9226,6 +9225,18 @@ role_e monk_t::primary_role() const
   return ROLE_HYBRID;
 }
 
+// monk_t::primary_stat =====================================================
+
+stat_e monk_t::primary_stat() const
+{
+  switch ( specialization() )
+  {
+    case MONK_BREWMASTER: return STAT_STAMINA;
+    case MONK_MISTWEAVER: return STAT_INTELLECT;
+    default:              return STAT_AGILITY;
+  }
+}
+
 // monk_t::convert_hybrid_stat ==============================================
 
 stat_e monk_t::convert_hybrid_stat( stat_e s ) const
@@ -9638,7 +9649,7 @@ std::string monk_t::default_potion() const
   {
     case MONK_BREWMASTER:
       if ( true_level > 100)
-        return "prolonged_power";
+        return "old_war";
       else if ( true_level > 90 )
         return "draenic_agility";
       else if ( true_level > 85 )
@@ -9696,7 +9707,7 @@ std::string monk_t::default_food() const
   {
     case MONK_BREWMASTER:
       if ( true_level > 100)
-        return "lavish_suramar_feast";
+        return "fishbrul_special";
       else if ( true_level > 90 )
         return "salty_squid_roll";
       else if ( true_level > 85 )
@@ -9841,51 +9852,47 @@ void monk_t::apl_combat_brewmaster()
 
   def -> add_action( "auto_attack" );
 
-/*  for ( size_t i = 0; i < racial_actions.size(); i++ )
-  {
-      def -> add_action( racial_actions[i] + ",if=energy<=40" );
-  }
-*/
+  def -> add_action( "greater_gift_of_the_ox" );
+  def -> add_action( this, "Gift of the Ox" );
+//  def -> add_talent( this, "Healing Elixir", "if=incoming_damage_1500ms" );
+  def -> add_talent( this, "Dampen Harm", "if=incoming_damage_1500ms&buff.fortifying_brew.down" );
+  def -> add_action( this, "Fortifying Brew", "if=incoming_damage_1500ms&(buff.dampen_harm.down|buff.diffuse_magic.down)" );
 
-//  def -> add_talent( this, "Chi Brew", "if=(chi<1&stagger.heavy)|(chi<2)" );
-//  def -> add_action( this, "Gift of the Ox", "if=buff.gift_of_the_ox.react&incoming_damage_1500ms" );
-//  def -> add_talent( this, "Diffuse Magic", "if=incoming_damage_1500ms&buff.fortifying_brew.down" );
-//  def -> add_talent( this, "Dampen Harm", "if=incoming_damage_1500ms&buff.fortifying_brew.down" );
-//  def -> add_action( this, "Fortifying Brew", "if=incoming_damage_1500ms&(buff.dampen_harm.down|buff.diffuse_magic.down)" );
-
-/*  int num_items = (int)items.size();
+  int num_items = (int)items.size();
   for ( int i = 0; i < num_items; i++ )
   {
     if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
-      def -> add_action( "use_item,name=" + items[i].name_str + ",if=incoming_damage_1500ms&(buff.dampen_harm.down|buff.diffuse_magic.down)&buff.fortifying_brew.down" );
+      def -> add_action( "use_item,name=" + items[i].name_str ); //+ ",if=incoming_damage_1500ms&(buff.dampen_harm.down|buff.diffuse_magic.down)&buff.fortifying_brew.down" );
   }
-  */
-
-//  def -> add_action( "invoke_niuzao,if=talent.invoke_niuzao.enabled&target.time_to_die>15&buff.serenity.down" );
-//  def -> add_talent( this, "Serenity", "if=talent.serenity.enabled&cooldown.keg_smash.remains>6" );
-  
-/*  if ( sim -> allow_potions )
-  {
-    if ( true_level >= 85 )
-      def -> add_action( "potion,name=virmens_bite,if=(buff.fortifying_brew.down&(buff.dampen_harm.down|buff.diffuse_magic.down))" );
-  }
-*/
 
   def -> add_action( "call_action_list,name=st,if=active_enemies<3" );
 //  def -> add_action( "call_action_list,name=aoe,if=active_enemies>=3" );
 
 //  st -> add_action( this, "Purifying Brew", "if=stagger.heavy" );
-//  st -> add_action( this, "Purifying Brew", "if=buff.serenity.up" );
 //  st -> add_action( this, "Purifying Brew", "if=stagger.moderate" );
-  //  st->add_talent(this, "Black Ox Brew");
+  st -> add_action( "potion" );
+
+  for ( size_t i = 0; i < racial_actions.size(); i++ )
+  {
+    if ( racial_actions[i] != "arcane_torrent" )
+      st -> add_action( racial_actions[i] );
+  }
+  st -> add_action( "invoke_niuzao,if=talent.invoke_niuzao.enabled&target.time_to_die>45" );
+  st -> add_action( this, "Ironskin Brew", "if=buff.blackout_combo.down&cooldown.brews.charges>=1" );
+  st -> add_talent( this, "Black Ox Brew", "if=energy<31&cooldown.brews.charges<1" );
+  for ( size_t i = 0; i < racial_actions.size(); i++ )
+  {
+    if ( racial_actions[i] == "arcane_torrent" )
+      st -> add_action( racial_actions[i] + ",if=energy<31" );
+  }
+  st -> add_action( this, "Exploding Keg" );
+  st -> add_action( this, "Breath of Fire", "if=buff.blackout_combo.down&energy<50&buff.bloodlust.down");
+  st -> add_action( this, "Tiger Palm", "if=buff.blackout_combo.up" );
   st -> add_action( this, "Keg Smash" );
   st -> add_action( this, "Blackout Strike" );
-  st -> add_action( this, "Exploding Keg" );
-  st -> add_talent( this, "Chi Burst" );
-  st -> add_talent( this, "Chi Wave" );
+  st -> add_action( this, "Tiger Palm", "if=!talent.blackout_combo.enabled&cooldown.keg_smash.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=55" );
   st -> add_talent( this, "Rushing Jade Wind" );
-  st -> add_action( this, "Breath of Fire");
-  st -> add_action( this, "Tiger Palm" );//, "if=(energy+(energy.regen*cooldown.keg_smash.remains))>=40");
+
 
 /*  aoe -> add_action( this, "Purifying Brew", "if=stagger.heavy" );
   aoe -> add_action( this, "Purifying Brew", "if=buff.serenity.up" );
@@ -9997,14 +10004,16 @@ void monk_t::apl_combat_windwalker()
   serenity -> add_action(this, "Tiger Palm", "cycle_targets=1,if=!prev_gcd.1.tiger_palm&energy=energy.max&chi<1&!buff.serenity.up");
   serenity -> add_action( "call_action_list,name=cd" );
   serenity -> add_talent( this, "Serenity" );
+  serenity -> add_action( this, "Fists of Fury", "interrupt_if=cooldown.rising_sun_kick.remains<=1" );
   serenity -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=active_enemies<3" );
   serenity -> add_action( this, "Strike of the Windlord" );
+  serenity -> add_action( this, "Fists of Fury", "if=((equipped.drinking_horn_cover&buff.pressure_point.remains<=1&set_bonus.tier20_2pc)&(cooldown.rising_sun_kick.remains>1|active_enemies>1))" );
   serenity -> add_action( this, "Fists of Fury", "if=((!equipped.drinking_horn_cover|buff.bloodlust.up|buff.serenity.remains<1)&(cooldown.rising_sun_kick.remains>1|active_enemies>1))" );
   serenity -> add_action( this, "Spinning Crane Kick", "if=active_enemies>=3&!prev_gcd.1.spinning_crane_kick" );
   serenity -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=active_enemies>=3" );
   serenity -> add_action( this, "Spinning Crane Kick", "if=!prev_gcd.1.spinning_crane_kick" );
-  serenity -> add_action( this, "Blackout Kick", "cycle_targets=1,if=!prev_gcd.1.blackout_kick" );
   serenity -> add_talent( this, "Rushing Jade Wind", "if=!prev_gcd.1.rushing_jade_wind" );
+  serenity -> add_action( this, "Blackout Kick", "cycle_targets=1,if=!prev_gcd.1.blackout_kick" );
 
   // Single Target
   st -> add_action( "call_action_list,name=cd" );
@@ -10019,10 +10028,10 @@ void monk_t::apl_combat_windwalker()
 
   st -> add_action( this, "Tiger Palm", "cycle_targets=1,if=!prev_gcd.1.tiger_palm&energy.time_to_max<=0.5&chi.max-chi>=2" );
   st -> add_action( this, "Strike of the Windlord", "if=!talent.serenity.enabled|cooldown.serenity.remains>=10" );
-  st -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=((chi>=3&energy>=40)|chi>=5)&(!talent.serenity.enabled|cooldown.serenity.remains>=5)" );
+  st -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=active_enemies<=3&((chi>=3&energy>=40)|chi>=5)&(!talent.serenity.enabled|cooldown.serenity.remains>=5)" );
   st -> add_action( this, "Fists of Fury", "if=talent.serenity.enabled&!equipped.drinking_horn_cover&cooldown.serenity.remains>=5&energy.time_to_max>2" );
   st -> add_action( this, "Fists of Fury", "if=!(talent.serenity.enabled&!equipped.drinking_horn_cover)&energy.time_to_max>2" );
-  st -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=!talent.serenity.enabled|cooldown.serenity.remains>=5" );
+  st -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=active_enemies<=3&(!talent.serenity.enabled|cooldown.serenity.remains>=5)" );
   st -> add_talent( this, "Whirling Dragon Punch" );
   st -> add_action( this, "Crackling Jade Lightning", "if=equipped.the_emperors_capacitor&buff.the_emperors_capacitor.stack>=19&energy.time_to_max>3" );
   st -> add_action( this, "Crackling Jade Lightning", "if=equipped.the_emperors_capacitor&buff.the_emperors_capacitor.stack>=14&cooldown.serenity.remains<13&talent.serenity.enabled&energy.time_to_max>3" );

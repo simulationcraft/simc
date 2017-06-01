@@ -1651,9 +1651,12 @@ struct sim_t : private sc_thread_t
   struct expansion_opt_t
   {
     // Legion
-    int infernal_cinders_users;
+    int                 infernal_cinders_users;
+    int                 engine_of_eradication_orbs;
+    std::vector<double> cradle_of_anguish_resets;
 
-    expansion_opt_t() : infernal_cinders_users( 1 )
+    expansion_opt_t() :
+      infernal_cinders_users( 1 ), engine_of_eradication_orbs( 4 )
     { }
   } expansion_opts;
 
@@ -4009,7 +4012,7 @@ struct player_t : public actor_t
     // 7.0 trinket proxy buffs
     buff_t* incensed;
     buff_t* taste_of_mana; // Gnawed Thumb Ring buff
-    
+
     // 7.0 Legendaries
     buff_t* aggramars_stride;
 
@@ -4329,7 +4332,7 @@ struct player_t : public actor_t
   virtual void interrupt();
   virtual void halt();
   virtual void moving();
-  virtual void finish_moving() 
+  virtual void finish_moving()
   {
     if ( buffs.norgannons_foresight )
     {
@@ -4358,6 +4361,8 @@ struct player_t : public actor_t
   specialization_e specialization() const { return _spec; }
   const char* primary_tree_name() const;
   virtual stat_e normalize_by() const;
+
+  virtual stat_e primary_stat() const { return STAT_NONE; }
 
   virtual double health_percentage() const;
   virtual double max_health() const;
@@ -4790,9 +4795,9 @@ public:
   T*& operator[](  const player_t* target ) const
   {
     assert( target );
-    if ( data.empty() )
+    if ( data.size() <= target -> actor_index )
     {
-      data.resize( target -> sim -> actor_list.size() );
+      data.resize( target -> actor_index + 1 );
     }
     return data[ target -> actor_index ];
   }
@@ -5040,12 +5045,8 @@ public:
     void datacollection_begin();
     void datacollection_end();
   };
-  std::array<stats_results_t,RESULT_MAX> direct_results;
-  std::array<stats_results_t,FULLTYPE_MAX> direct_results_detail;
+  std::array<stats_results_t,FULLTYPE_MAX> direct_results;
   std::array<stats_results_t,RESULT_MAX> tick_results;
-  std::array<stats_results_t,FULLTYPE_MAX> tick_results_detail;
-
-  sc_timeline_t timeline_amount;
 
   // Reporting only
   std::array<double, RESOURCE_MAX> resource_portion, apr, rpe;
@@ -5061,6 +5062,7 @@ public:
     gear_stats_t error;
   };
   std::unique_ptr<stats_scaling_t> scaling;
+  std::unique_ptr<sc_timeline_t> timeline_amount;
 
   stats_t( const std::string& name, player_t* );
 
@@ -7544,14 +7546,14 @@ struct proc_resource_t : public proc_action_t<spell_t>
 };
 
 template <typename CLASS, typename ...ARGS>
-action_t* create_proc_action( const special_effect_t& effect, ARGS&&... args )
+action_t* create_proc_action( const std::string& name, const special_effect_t& effect, ARGS&&... args )
 {
   auto player = effect.player;
-  auto a = player -> find_action( effect.name() );
+  auto a = player -> find_action( name );
 
   if ( a == nullptr )
   {
-    a = player -> create_proc_action( effect.name(), effect );
+    a = player -> create_proc_action( name, effect );
   }
 
   if ( a == nullptr )
@@ -7561,7 +7563,6 @@ action_t* create_proc_action( const special_effect_t& effect, ARGS&&... args )
 
   return a;
 }
-
 } // namespace unique_gear ends
 
 // Consumable ===============================================================
@@ -8083,16 +8084,29 @@ struct ground_aoe_params_t
     ATTACK_SPEED
   };
 
+  enum expiration_pulse_type
+  {
+    NO_EXPIRATION_PULSE = 0,
+    FULL_EXPIRATION_PULSE,
+    PARTIAL_EXPIRATION_PULSE
+  };
+
+  using param_cb_t = std::function<void(void)>;
+
   player_t* target_;
   double x_, y_;
   hasted_with hasted_;
   action_t* action_;
   timespan_t pulse_time_, start_time_, duration_;
+  expiration_pulse_type expiration_pulse_;
+  unsigned n_pulses_;
+  param_cb_t expiration_cb_;
 
   ground_aoe_params_t() :
     target_( nullptr ), x_( -1 ), y_( -1 ), hasted_( NOTHING ), action_( nullptr ),
     pulse_time_( timespan_t::from_seconds( 1.0 ) ), start_time_( timespan_t::min() ),
-    duration_( timespan_t::zero() )
+    duration_( timespan_t::zero() ),
+    expiration_pulse_( NO_EXPIRATION_PULSE ), n_pulses_( 0 ), expiration_cb_( nullptr )
   { }
 
   player_t* target() const { return target_; }
@@ -8103,6 +8117,9 @@ struct ground_aoe_params_t
   const timespan_t& pulse_time() const { return pulse_time_; }
   const timespan_t& start_time() const { return start_time_; }
   const timespan_t& duration() const { return duration_; }
+  expiration_pulse_type expiration_pulse() const { return expiration_pulse_; }
+  unsigned n_pulses() const { return n_pulses_; }
+  const param_cb_t& expiration_callback() const { return expiration_cb_; }
 
   ground_aoe_params_t& target( player_t* p )
   {
@@ -8153,6 +8170,28 @@ struct ground_aoe_params_t
 
   ground_aoe_params_t& duration( const timespan_t& t )
   { duration_ = t; return *this; }
+
+  ground_aoe_params_t& expiration_pulse( expiration_pulse_type state )
+  { expiration_pulse_ = state; return *this; }
+
+  ground_aoe_params_t& n_pulses( unsigned n )
+  { n_pulses_ = n; return *this; }
+
+  ground_aoe_params_t& expiration_callback( const param_cb_t& cb )
+  { expiration_cb_ = cb; return *this; }
+};
+
+// Delayed expiration callback for groud_aoe_event_t
+struct expiration_callback_event_t : public event_t
+{
+  ground_aoe_params_t::param_cb_t callback;
+
+  expiration_callback_event_t( sim_t& sim, const ground_aoe_params_t* p, const timespan_t& delay ) :
+    event_t( sim, delay ), callback( p -> expiration_callback() )
+  { }
+
+  void execute() override
+  { callback(); }
 };
 
 // Fake "ground aoe object" for things. Pulses until duration runs out, does not perform partial
@@ -8164,6 +8203,7 @@ struct ground_aoe_event_t : public player_event_t
   // Pointer needed here, as simc event system cannot fit all params into event_t
   const ground_aoe_params_t* params;
   action_state_t* pulse_state;
+  unsigned current_pulse;
 
 protected:
   template <typename Event, typename... Args>
@@ -8175,7 +8215,7 @@ protected:
     : player_event_t(
           *p, immediate_pulse ? timespan_t::zero() : _pulse_time( param, p ) ),
       params( param ),
-      pulse_state( ps )
+      pulse_state( ps ), current_pulse( 1 )
   {
     // Ensure we have enough information to start pulsing.
     assert( params -> target() != nullptr && "No target defined for ground_aoe_event_t" );
@@ -8184,8 +8224,8 @@ protected:
             "Pulse time for ground_aoe_event_t must be a positive value" );
     assert( params -> start_time() >= timespan_t::zero() &&
             "Start time for ground_aoe_event must be defined" );
-    assert( params -> duration() > timespan_t::zero() &&
-            "Duration for ground_aoe_event_t must be defined" );
+    assert( ( params -> duration() > timespan_t::zero() || params -> n_pulses() > 0 ) &&
+            "Duration or number of pulses for ground_aoe_event_t must be defined" );
 
     // Make a state object that persists for this ground aoe event throughout its lifetime
     if ( ! pulse_state )
@@ -8212,9 +8252,17 @@ public:
     }
   }
 
-  static timespan_t _pulse_time( const ground_aoe_params_t* params, const player_t* p)
+  void set_current_pulse( unsigned v )
+  { current_pulse = v; }
+
+  static timespan_t _time_left( const ground_aoe_params_t* params, const player_t* p )
+  { return params -> duration() - ( p -> sim -> current_time() - params -> start_time() ); }
+
+  static timespan_t _pulse_time( const ground_aoe_params_t* params, const player_t* p, bool clamp = true )
   {
-    timespan_t tick = params -> pulse_time();
+    auto tick = params -> pulse_time();
+    auto time_left = _time_left( params, p );
+
     switch ( params -> hasted() )
     {
       case ground_aoe_params_t::SPELL_SPEED:
@@ -8233,22 +8281,53 @@ public:
         break;
     }
 
+    // Clamping can only occur on duration-based ground aoe events.
+    if ( params -> n_pulses() == 0 && clamp && tick > time_left )
+    {
+      assert( params -> expiration_pulse() != ground_aoe_params_t::NO_EXPIRATION_PULSE );
+      return time_left;
+    }
+
     return tick;
   }
 
-  timespan_t pulse_time() const
-  { return ground_aoe_event_t::_pulse_time(params, player() ); }
-
   bool may_pulse() const
   {
-    return params -> duration() - ( sim().current_time() - params -> start_time() ) >= pulse_time();
+    if ( params -> n_pulses() > 0 )
+    {
+      return current_pulse < params -> n_pulses();
+    }
+    else
+    {
+      auto time_left = _time_left( params, player() );
+
+      if ( params -> expiration_pulse() == ground_aoe_params_t::NO_EXPIRATION_PULSE )
+      {
+        return time_left >= pulse_time( false );
+      }
+      else
+      {
+        return time_left > timespan_t::zero();
+      }
+    }
+  }
+
+  virtual timespan_t pulse_time( bool clamp = true ) const
+  { return _pulse_time( params, player(), clamp ); }
+
+  virtual void schedule_event()
+  {
+    auto event = make_event<ground_aoe_event_t>( sim(), _player, params, pulse_state );
+    // If the ground-aoe event is a pulse-based one, increase the current pulse of the newly created
+    // event.
+    if ( params -> n_pulses() > 0 )
+    {
+      event -> set_current_pulse( current_pulse + 1 );
+    }
   }
 
   const char* name() const override
   { return "ground_aoe_event"; }
-
-  virtual void schedule_event()
-  { make_event<ground_aoe_event_t>( sim(), _player, params, pulse_state ); }
 
   void execute() override
   {
@@ -8258,8 +8337,10 @@ public:
     {
       sim().out_debug.printf( "%s %s pulse start_time=%.3f remaining_time=%.3f tick_time=%.3f",
           player() -> name(), spell_ -> name(), params -> start_time().total_seconds(),
-          ( params -> duration() - ( sim().current_time() - params -> start_time() ) ).total_seconds(),
-          pulse_time().total_seconds() );
+          params -> n_pulses() > 0
+            ? ( params -> n_pulses() - current_pulse ) * pulse_time().total_seconds()
+            : ( params -> duration() - ( sim().current_time() - params -> start_time() ) ).total_seconds(),
+          pulse_time( false ).total_seconds() );
     }
 
     // Manually snapshot the state so we can adjust the x and y coordinates of the snapshotted
@@ -8269,6 +8350,24 @@ public:
     pulse_state -> target = params -> target();
     pulse_state -> original_x = params -> x();
     pulse_state -> original_y = params -> y();
+
+    // Update state multipliers if expiration_pulse() is PARTIAL_PULSE, and the object is pulsing
+    // for the last (partial) time. Note that pulse-based ground aoe events do not have a concept of
+    // partial ticks.
+    if ( params -> n_pulses() == 0 &&
+         params -> expiration_pulse() == ground_aoe_params_t::PARTIAL_EXPIRATION_PULSE )
+    {
+      // Don't clamp the pulse time here, since we need to figure out the fractional multiplier for
+      // the last pulse.
+      auto time = pulse_time( false );
+      auto time_left = _time_left( params, player() );
+      if ( time > time_left )
+      {
+        double multiplier = time_left / time;
+        pulse_state -> da_multiplier *= multiplier;
+        pulse_state -> ta_multiplier *= multiplier;
+      }
+    }
 
     spell_ -> schedule_execute( spell_ -> get_state( pulse_state ) );
 
@@ -8280,6 +8379,33 @@ public:
       // aoe is pulsing, so nullptr the params from this (soon to be recycled) event.
       params = nullptr;
       pulse_state = nullptr;
+    }
+    else
+    {
+      handle_expiration();
+    }
+  }
+
+  // Figure out how to handle expiration callback if it's defined
+  void handle_expiration()
+  {
+    if ( ! params -> expiration_callback() )
+    {
+      return;
+    }
+
+    auto time_left = _time_left( params, player() );
+
+    // Trigger immediately, since no time left. Can happen for example when ground aoe events are
+    // not hasted, or when pulse-based behavior is used (instead of duration-based behavior)
+    if ( time_left <= timespan_t::zero() )
+    {
+      params -> expiration_callback()();
+    }
+    // Defer until the end of the ground aoe event, even if there are no ticks left
+    else
+    {
+      make_event<expiration_callback_event_t>( sim(), sim(), params, time_left );
     }
   }
 };

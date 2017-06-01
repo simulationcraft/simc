@@ -4587,6 +4587,12 @@ void apply_spell_labels( const spell_data_t* spell, action_t* a )
     std::string modifier_str;
     switch ( static_cast<property_type_t>( effect.misc_value1() ) )
     {
+      case P_EFFECT_1:
+        old_value = a -> base_multiplier;
+        modifier_str = "direct/periodic damage/healing";
+        a -> base_multiplier *= 1.0 + effect.percent();
+        new_value = a -> base_multiplier;
+        break;
       case P_GENERIC:
         old_value = a -> base_dd_multiplier;
         modifier_str = "direct damage/healing";
