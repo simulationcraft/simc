@@ -850,6 +850,9 @@ static void break_stealth( rogue_t* p )
     // The only way to trigger it since recent hotfix is :
     // - Do Shadow Dance -> Stealth while out of combat (only possible with Subterfuge)
     // - Proc Stealth at the end of the Vanish and using Shadow Dance before Vanish expires.
+    // As of 2017-06-01 on 7.2.5 PTR the former has been fixed because stealth is not usable
+    // with Shadow Dance up. Stealth still does not break with Dance up, so Vanish buff
+    // conversion still works.
     ( ! p -> bugs || ! p -> buffs.shadow_dance -> check() ) )
     p -> buffs.stealth -> expire();
 
@@ -7394,7 +7397,7 @@ void rogue_t::init_action_list()
     precombat -> add_action( "variable,name=stealth_threshold,value=(15+talent.vigor.enabled*35+talent.master_of_shadows.enabled*25+variable.ssw_refund)" );
     precombat -> add_action( "variable,name=shd_fractionnal,value=ptr*(1.725+0.725*talent.enveloping_shadows.enabled)+(1-ptr)*2.45" );
     precombat -> add_talent( this, "Enveloping Shadows", "if=combo_points>=5&ptr=0" );
-    precombat -> add_action( this, "Shadow Dance", "if=talent.subterfuge.enabled&bugs", "Since 7.1.5, casting Shadow Dance before going in combat let you extends the stealth buff, so it's worth to use with Subterfuge talent. Has not been fixed in 7.2.5!" ); // Before SoD because we do it while not in stealth in-game
+    precombat -> add_action( this, "Shadow Dance", "if=talent.subterfuge.enabled&bugs&!ptr", "Since 7.1.5, casting Shadow Dance before going in combat let you extends the stealth buff, so it's worth to use with Subterfuge talent. Has been fixed in 7.2.5!" ); // Before SoD because we do it while not in stealth in-game
     precombat -> add_action( this, "Symbols of Death" );
 
     // Main Rotation
