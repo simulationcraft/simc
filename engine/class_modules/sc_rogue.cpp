@@ -282,6 +282,7 @@ struct rogue_t : public player_t
     buff_t* mantle_of_the_master_assassin;
     buff_t* the_dreadlords_deceit_driver;
     buff_t* the_dreadlords_deceit;
+    haste_buff_t* sephuzs_secret;
     // Assassination
     buff_t* the_empty_crown;
     // Outlaw
@@ -647,6 +648,7 @@ struct rogue_t : public player_t
     const spell_data_t* the_curse_of_restlessness;
     const spell_data_t* the_empty_crown;
     const spell_data_t* the_first_of_the_dead;
+    const spell_data_t* sephuzs_secret;
   } legendary;
 
   // Options
@@ -799,6 +801,7 @@ struct rogue_t : public player_t
   void trigger_relentless_strikes( const action_state_t* );
   void trigger_insignia_of_ravenholdt( action_state_t* );
   void trigger_shadow_nova( const action_state_t* );
+  void trigger_sephuzs_secret( const action_state_t* state, spell_mechanic mechanic, double proc_chance = -1.0 );
 
   // Computes the composite Agonizing Poison stack multiplier for Assassination Rogue
   double agonizing_poison_stack_multiplier( const rogue_td_t* ) const;
@@ -2755,6 +2758,8 @@ struct between_the_eyes_t : public rogue_attack_t
         p() -> buffs.greenskins_waterlogged_wristcuffs -> trigger();
       }
     }
+
+    p() -> trigger_sephuzs_secret( execute_state, MECHANIC_STUN );
   }
 };
 
@@ -3196,6 +3201,8 @@ struct gouge_t : public rogue_attack_t
     {
       p() -> trigger_combo_point_gain( p() -> buffs.broadsides -> data().effectN( 1 ).base_value(),
           p() -> gains.broadsides, this );
+
+      p() -> trigger_sephuzs_secret( execute_state, MECHANIC_INCAPACITATE );
     }
   }
 };
@@ -3370,6 +3377,13 @@ struct kick_t : public rogue_attack_t
       return false;
 
     return rogue_attack_t::ready();
+  }
+
+  void execute() override
+  {
+    rogue_attack_t::execute();
+
+    p() -> trigger_sephuzs_secret( execute_state, MECHANIC_INTERRUPT );
   }
 };
 
@@ -5074,6 +5088,8 @@ struct kidney_shot_t : public rogue_attack_t
     {
       internal_bleeding -> schedule_execute( internal_bleeding -> get_state( state ) );
     }
+
+    p() -> trigger_sephuzs_secret( execute_state, MECHANIC_STUN );
   }
 };
 
@@ -6270,6 +6286,33 @@ void rogue_t::trigger_shadow_nova( const action_state_t* )
   }
 }
 
+// Proudly copy pasta'd from the Shaman module, whee
+void rogue_t::trigger_sephuzs_secret( const action_state_t* state,
+                                      spell_mechanic        mechanic,
+                                      double                override_proc_chance )
+{
+  switch ( mechanic )
+  {
+    // Interrupts will always trigger sephuz
+    case MECHANIC_INTERRUPT:
+      break;
+    default:
+      // By default, proc sephuz on persistent enemies if they are below the "boss level"
+      // (playerlevel + 3), and on any kind of transient adds.
+      if ( state -> target -> type != ENEMY_ADD &&
+           ( state -> target -> level() >= sim -> max_player_level + 3 ) )
+      {
+        return;
+      }
+      break;
+  }
+
+  if ( legendary.sephuzs_secret )
+  {
+    buffs.sephuzs_secret -> trigger( 1, buff_t::DEFAULT_VALUE(), override_proc_chance );
+  }
+}
+
 namespace buffs {
 // ==========================================================================
 // Buffs
@@ -6939,6 +6982,16 @@ double rogue_t::composite_melee_haste() const
     h *= 1.0 / ( 1.0 + buffs.alacrity -> stack_value() );
   }
 
+  if ( buffs.sephuzs_secret -> check() )
+  {
+    h *= 1.0 / (1.0 + buffs.sephuzs_secret -> stack_value() );
+  }
+
+  if ( legendary.sephuzs_secret )
+  {
+    h *= 1.0 / ( 1.0 + legendary.sephuzs_secret -> effectN( 3 ).percent() );
+  }
+
   return h;
 }
 
@@ -6970,6 +7023,16 @@ double rogue_t::composite_spell_haste() const
   if ( buffs.alacrity -> check() )
   {
     h *= 1.0 / ( 1.0 + buffs.alacrity -> stack_value() );
+  }
+
+  if ( buffs.sephuzs_secret -> check() )
+  {
+    h *= 1.0 / (1.0 + buffs.sephuzs_secret -> stack_value() );
+  }
+
+  if ( legendary.sephuzs_secret )
+  {
+    h *= 1.0 / ( 1.0 + legendary.sephuzs_secret -> effectN( 3 ).percent() );
   }
 
   return h;
@@ -8378,6 +8441,10 @@ void rogue_t::create_buffs()
   const spell_data_t* tddid                = ( specialization() == ROGUE_ASSASSINATION ) ? find_spell( 208693 ): ( specialization() == ROGUE_SUBTLETY ) ? find_spell( 228224 ): spell_data_t::not_found();
   buffs.the_dreadlords_deceit              = buff_creator_t( this, "the_dreadlords_deceit", tddid )
                                              .default_value( tddid -> effectN( 1 ).percent() );
+  buffs.sephuzs_secret                     = haste_buff_creator_t( this, "sephuzs_secret", find_spell( 208052 ) )
+                                             .cd( find_spell( 226262 ) -> duration() )
+                                             .default_value( find_spell( 208052 ) -> effectN( 2 ).percent() )
+                                             .add_invalidate( CACHE_RUN_SPEED );
   // Assassination
   buffs.the_empty_crown                    = buff_creator_t( this, "the_empty_crown", find_spell(248201) )
                                              .period( find_spell(248201) -> effectN( 1 ).period() )
@@ -8872,6 +8939,11 @@ double rogue_t::temporary_movement_modifier() const
   if ( buffs.shadowstep -> up() )
     temporary = std::max( buffs.shadowstep -> data().effectN( 2 ).percent(), temporary );
 
+  if ( buffs.sephuzs_secret -> up() )
+  {
+    temporary = std::max( buffs.sephuzs_secret -> data().effectN( 1 ).percent(), temporary );
+  }
+
   return temporary;
 }
 
@@ -8887,6 +8959,11 @@ double rogue_t::passive_movement_modifier() const
 
   if ( buffs.stealth -> up() || buffs.shadow_dance -> up() ) // Check if nightstalker is temporary or passive.
     ms += talent.nightstalker -> effectN( 1 ).percent();
+
+  if ( legendary.sephuzs_secret )
+  {
+    ms += legendary.sephuzs_secret -> effectN( 2 ).percent();
+  }
 
   return ms;
 }
@@ -9159,6 +9236,15 @@ struct the_first_of_the_dead_t : public unique_gear::scoped_actor_callback_t<rog
   { rogue -> legendary.the_first_of_the_dead = e.driver(); }
 };
 
+struct sephuzs_secret_t : public unique_gear::scoped_actor_callback_t<rogue_t>
+{
+  sephuzs_secret_t() : super( ROGUE )
+  { }
+
+  void manipulate( rogue_t* rogue, const special_effect_t& e ) override
+  { rogue -> legendary.sephuzs_secret = e.driver(); }
+};
+
 struct rogue_module_t : public module_t
 {
   rogue_module_t() : module_t( ROGUE ) {}
@@ -9191,6 +9277,7 @@ struct rogue_module_t : public module_t
     unique_gear::register_special_effect( 248107, the_curse_of_restlessness_t()         );
     unique_gear::register_special_effect( 248106, the_empty_crown_t()                   );
     unique_gear::register_special_effect( 248110, the_first_of_the_dead_t()             );
+    unique_gear::register_special_effect( 208051, sephuzs_secret_t()                    );
   }
 
   void register_hotfixes() const override
