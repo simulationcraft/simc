@@ -208,6 +208,7 @@ public:
   std::vector<counter_t*> counters;
   std::vector<player_t*> lightning_rods;
   int t18_4pc_elemental_counter;
+  double smoldering_heart_chance = 0;
 
   // Options
   unsigned stormlash_targets;
@@ -1020,7 +1021,7 @@ public:
   double      maelstrom_gain_coefficient;
 
   // Generic procs
-  bool may_proc_unleash_doom;
+  bool may_proc_unleash_doom;  
 
   proc_t* proc_ud;
 
@@ -1170,6 +1171,26 @@ public:
     }
 
     ab::update_ready( cd );
+  }
+
+  virtual void consume_resource() override
+  {
+    ab::consume_resource();
+
+    double maelstromSpent = ab::last_resource_cost;
+
+    if ( rng().roll( p() -> smoldering_heart_chance * maelstromSpent ) )
+    {
+      // Smoldering Heart spell ID: 248029
+      if ( p() -> buff.ascendance -> up() )
+      {
+        p() -> buff.ascendance -> extend_duration( p(), p() -> find_spell( 248029 ) -> effectN( 1 ).time_value());
+      }
+      else
+      {
+        p() -> buff.ascendance -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, p() -> find_spell( 248029 ) -> effectN( 1 ).time_value() );
+      }
+    }
   }
 
   virtual expr_t* create_expression( const std::string& name ) override
@@ -3667,11 +3688,8 @@ struct sundering_t : public shaman_attack_t
 
 struct rockbiter_t : public shaman_spell_t
 {
-  double primal_ascendants_stormcallers_chance;
-
   rockbiter_t( shaman_t* player, const std::string& options_str ) :
-    shaman_spell_t( "rockbiter", player, player -> find_specialization_spell( "Rockbiter" ), options_str ),
-    primal_ascendants_stormcallers_chance( 0 )
+    shaman_spell_t( "rockbiter", player, player -> find_specialization_spell( "Rockbiter" ), options_str )
   {
     maelstrom_gain += player -> artifact.gathering_of_the_maelstrom.value();
     base_multiplier *= 1.0 + player -> artifact.weapons_of_the_elements.percent();
@@ -3707,19 +3725,6 @@ struct rockbiter_t : public shaman_spell_t
     p() -> buff.landslide-> trigger();
 
     shaman_spell_t::execute();
-
-    if ( rng().roll(primal_ascendants_stormcallers_chance) )
-    {
-      // Stormcallers of the Ascendant spell ID: 248111
-      if ( p() -> buff.ascendance -> up() )
-      {
-        p() -> buff.ascendance -> extend_duration( p(), p() -> find_spell( 248111 ) -> effectN( 1 ).time_value());
-      }
-      else
-      {
-        p() -> buff.ascendance -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, p() -> find_spell( 248111 ) -> effectN( 1 ).time_value() );
-      }
-    }
 
   }
 
@@ -5191,11 +5196,10 @@ struct earthquake_damage_t : public shaman_spell_t
 struct earthquake_t : public shaman_spell_t
 {
   earthquake_damage_t* rumble;
-  double smoldering_heart_chance;
 
   earthquake_t( shaman_t* player, const std::string& options_str ):
     shaman_spell_t( "earthquake", player, player -> find_specialization_spell( "Earthquake" ), options_str ),
-    rumble( new earthquake_damage_t( player ) ), smoldering_heart_chance( 0 )
+    rumble( new earthquake_damage_t( player ) )
   {
     dot_duration = timespan_t::zero(); // The periodic effect is handled by ground_aoe_event_t
     add_child( rumble );
@@ -5231,18 +5235,6 @@ struct earthquake_t : public shaman_spell_t
 
     p() -> buff.elemental_focus -> decrement();
 
-    if ( rng().roll( smoldering_heart_chance * last_resource_cost ) )
-    {
-      // Smoldering Heart spell ID: 248029
-      if ( p() -> buff.ascendance -> up() )
-      {
-        p() -> buff.ascendance -> extend_duration( p(), p() -> find_spell( 248029 ) -> effectN( 1 ).time_value());
-      }
-      else
-      {
-        p() -> buff.ascendance -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, p() -> find_spell( 248029 ) -> effectN( 1 ).time_value() );
-      }
-    }
   }
 };
 
@@ -5278,12 +5270,11 @@ struct earth_shock_t : public shaman_spell_t
   double base_coefficient;
   double eotgs_base_chance; // 7.0 legendary Echoes of the Great Sundering proc chance
   double tdbp_proc_chance; // 7.0 legendary The Deceiver's Blood Pact proc chance
-  double smoldering_heart_chance; // 7.2.5 legendary Smoldering Heart proc chance
 
   earth_shock_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "earth_shock", player, player -> find_specialization_spell( "Earth Shock" ), options_str ),
     base_coefficient( data().effectN( 1 ).sp_coeff() / base_cost() ), eotgs_base_chance( 0 ),
-    tdbp_proc_chance( 0 ), smoldering_heart_chance( 0 )
+    tdbp_proc_chance( 0 )
   {
     base_multiplier *= 1.0 + player -> artifact.earthen_attunement.percent();
     secondary_costs[ RESOURCE_MAELSTROM ] += player -> artifact.swelling_maelstrom.data().effectN( 1 ).base_value();
@@ -5312,19 +5303,6 @@ struct earth_shock_t : public shaman_spell_t
     {
       p() -> resource_gain( RESOURCE_MAELSTROM, last_resource_cost, p() -> gain.the_deceivers_blood_pact, this );
     }
-
-    if ( rng().roll( smoldering_heart_chance * last_resource_cost ) )
-    {
-      // Smoldering Heart spell ID: 248029
-      if ( p() -> buff.ascendance -> up() )
-      {
-        p() -> buff.ascendance -> extend_duration( p(), p() -> find_spell( 248029 ) -> effectN( 1 ).time_value());
-      }
-      else
-      {
-        p() -> buff.ascendance -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, p() -> find_spell( 248029 ) -> effectN( 1 ).time_value() );
-      }
-    }
   }
 };
 
@@ -5333,12 +5311,11 @@ struct earth_shock_t : public shaman_spell_t
 struct flame_shock_t : public shaman_spell_t
 {
   double duration_multiplier; // Elemental Bellows
-  double smoldering_heart_chance;
   timespan_t duration_per_maelstrom;
 
   flame_shock_t( shaman_t* player, const std::string& options_str = std::string()  ) :
     shaman_spell_t( "flame_shock", player, player -> find_specialization_spell( "Flame Shock" ), options_str ),
-    duration_multiplier( 1.0 ), duration_per_maelstrom( timespan_t::zero() ), smoldering_heart_chance( 0 )
+    duration_multiplier( 1.0 ), duration_per_maelstrom( timespan_t::zero() )
   {
     tick_may_crit         = true;
     track_cd_waste        = false;
@@ -5423,18 +5400,6 @@ struct flame_shock_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    if ( rng().roll( smoldering_heart_chance * last_resource_cost ) )
-    {
-      // Smoldering Heart spell ID: 248029
-      if ( p() -> buff.ascendance -> up() )
-      {
-        p() -> buff.ascendance -> extend_duration( p(), p() -> find_spell( 248029 ) -> effectN( 1 ).time_value() );
-      }
-      else
-      {
-        p() -> buff.ascendance -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, p() -> find_spell( 248029 ) -> effectN( 1 ).time_value() );
-      }
-    }
   }
 };
 
@@ -5443,11 +5408,10 @@ struct flame_shock_t : public shaman_spell_t
 struct frost_shock_t : public shaman_spell_t
 {
   double damage_coefficient;
-  double smoldering_heart_chance;
 
   frost_shock_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "frost_shock", player, player -> find_specialization_spell( "Frost Shock" ), options_str ),
-    damage_coefficient( data().effectN( 3 ).percent() / secondary_costs[ RESOURCE_MAELSTROM ] ), smoldering_heart_chance( 0 )
+    damage_coefficient( data().effectN( 3 ).percent() / secondary_costs[ RESOURCE_MAELSTROM ] )
   {
     // maybe this ability will get an increase at one point
   }
@@ -5468,19 +5432,6 @@ struct frost_shock_t : public shaman_spell_t
     shaman_spell_t::execute();
 
     p() -> buff.icefury -> decrement();
-
-    if ( rng().roll( smoldering_heart_chance * last_resource_cost ) )
-    {
-      // Smoldering Heart spell ID: 248029
-      if ( p() -> buff.ascendance -> up() )
-      {
-        p() -> buff.ascendance -> extend_duration( p(), p() -> find_spell( 248029 ) -> effectN( 1 ).time_value());
-      }
-      else
-      {
-        p() -> buff.ascendance -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, p() -> find_spell( 248029 ) -> effectN( 1 ).time_value() );
-      }
-    }
 
   }
 };
@@ -8683,58 +8634,22 @@ struct echoes_of_the_great_sundering_buff_t : public class_buff_cb_t<buff_t>
   { return super::creator( e ).spell( e.player -> find_spell( 208723 ) ); }
 };
 
-struct smoldering_heart_earth_shock_t : public scoped_action_callback_t<earth_shock_t>
+struct smoldering_heart_chance_t : public unique_gear::scoped_actor_callback_t<shaman_t>
 {
-  smoldering_heart_earth_shock_t() : super(SHAMAN, "earth_shock")
+  smoldering_heart_chance_t() : super( SHAMAN )
   { }
 
-  void manipulate(earth_shock_t* action, const special_effect_t& e) override
+  void manipulate(shaman_t* shaman, const special_effect_t& e) override
   {
-    action -> smoldering_heart_chance = e.driver() -> effectN( 2 ).percent() / 100.0;
-  }
-};
-
-struct smoldering_heart_flame_shock_t : public scoped_action_callback_t<flame_shock_t>
-{
-  smoldering_heart_flame_shock_t() : super(SHAMAN, "flame_shock")
-  { }
-
-  void manipulate(flame_shock_t* action, const special_effect_t& e) override
-  {
-    action -> smoldering_heart_chance = e.driver() -> effectN( 2 ).percent() / 100.0;
-  }
-};
-
-struct smoldering_heart_frost_shock_t : public scoped_action_callback_t<frost_shock_t>
-{
-  smoldering_heart_frost_shock_t() : super(SHAMAN, "frost_shock")
-  { }
-
-  void manipulate(frost_shock_t* action, const special_effect_t& e) override
-  {
-    action -> smoldering_heart_chance = e.driver() -> effectN( 2 ).percent() / 100.0;
-  }
-};
-
-struct smoldering_heart_earthquake_t : public scoped_action_callback_t<earthquake_t>
-{
-  smoldering_heart_earthquake_t() : super(SHAMAN, "earthquake")
-  { }
-
-  void manipulate(earthquake_t* action, const special_effect_t& e) override
-  {
-    action -> smoldering_heart_chance = e.driver() -> effectN( 2 ).percent() / 100.0;
-  }
-};
-
-struct primal_ascendants_stormcallers_t : public scoped_action_callback_t<rockbiter_t>
-{
-  primal_ascendants_stormcallers_t() : super(SHAMAN, "rockbiter")
-  { }
-
-  void manipulate(rockbiter_t* action, const special_effect_t& e) override
-  {
-    action -> primal_ascendants_stormcallers_chance = e.driver() -> proc_chance();
+    if ( shaman -> specialization() == SHAMAN_ENHANCEMENT )
+    {
+      shaman -> smoldering_heart_chance = e.driver() -> effectN( 3 ).percent() / 100.0;
+    }
+    
+    if ( shaman -> specialization() == SHAMAN_ELEMENTAL )
+    {
+      shaman -> smoldering_heart_chance = e.driver() -> effectN( 2 ).percent() / 100.0;
+    }
   }
 };
 
@@ -8976,11 +8891,7 @@ struct shaman_module_t : public module_t
     register_special_effect( 234814, uncertain_reminder_t() );
     register_special_effect( 208051, sephuzs_secret_enabler_t() );
     register_special_effect( 208051, sephuzs_secret_t(), true );
-    register_special_effect( 248029, smoldering_heart_earth_shock_t() );
-    register_special_effect( 248029, smoldering_heart_flame_shock_t() );
-    register_special_effect( 248029, smoldering_heart_frost_shock_t() );
-    register_special_effect( 248029, smoldering_heart_earthquake_t() );
-    register_special_effect( 248111, primal_ascendants_stormcallers_t() );
+    register_special_effect( 248029, smoldering_heart_chance_t() );
   }
 
   void register_hotfixes() const override
