@@ -1477,7 +1477,7 @@ struct mortal_strike_t : public warrior_attack_t
     }
 
     if ( maybe_ptr( p() -> dbc.ptr ) ) //FIXME PTR
-      cc += 1.0 + p() -> buff.precise_strikes -> check_value();
+      cc += p() -> buff.precise_strikes -> check_value();
 
     return cc;
   }
@@ -2328,7 +2328,7 @@ struct execute_arms_t: public warrior_attack_t
     }
 
     if ( maybe_ptr( p() -> dbc.ptr ) ) //FIXME PTR
-      cc += 1.0 + p() -> buff.precise_strikes -> check_value();
+      cc += p() -> buff.precise_strikes -> check_value();
 
     return cc;
   }
