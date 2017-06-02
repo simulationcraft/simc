@@ -1009,6 +1009,12 @@ public:
   {
     paladin_ground_aoe_t* foo = make_event<paladin_ground_aoe_t>( sim(), paladin, params, pulse_state );
     paladin -> active_consecrations.push_back( foo );
+    // If the ground-aoe event is a pulse-based one, increase the current pulse of the newly created
+    // event.
+    if ( params -> n_pulses() > 0 )
+    {
+      foo -> set_current_pulse( current_pulse + 1 );
+    }
   }
 
   void execute() override
