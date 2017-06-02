@@ -1179,7 +1179,7 @@ public:
 
     double maelstromSpent = ab::last_resource_cost;
 
-    if ( rng().roll( p() -> smoldering_heart_chance * maelstromSpent ) )
+    if ( p() -> rng().roll( p() -> smoldering_heart_chance * maelstromSpent ) )
     {
       // Smoldering Heart spell ID: 248029
       if ( p() -> buff.ascendance -> up() )
