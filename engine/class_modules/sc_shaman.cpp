@@ -4674,6 +4674,7 @@ struct lightning_bolt_t : public shaman_spell_t
       cooldown -> duration += player -> talent.overcharge -> effectN( 3 ).time_value();
       m_overcharge = player -> talent.overcharge -> effectN( 2 ).percent() /
         player -> talent.overcharge -> effectN( 1 ).base_value();
+      track_cd_waste = true;
     }
 
     // TODO: Is it still 10% per Maelstrom with Stormbringer?
