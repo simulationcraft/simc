@@ -860,6 +860,26 @@ public:
     cooldown.sindragosas_fury= get_cooldown( "sindragosas_fury" );
     cooldown.vampiric_blood = get_cooldown( "vampiric_blood" );
 
+    talent_points.register_validity_fn( [ this ] ( const spell_data_t* spell )
+    {
+      // Soul of the Deathlord
+      if ( find_item( 151640 ) )
+      {
+        switch ( specialization() )
+        {
+          case DEATH_KNIGHT_BLOOD:
+            return spell -> id() == 206974; // Foul Bulwark
+          case DEATH_KNIGHT_FROST:
+            return spell -> id() == 194912; // Gathering Storm
+          case DEATH_KNIGHT_UNHOLY:
+            return spell -> id() == 207624; // Bursting Sores
+         default:
+            break;
+        }
+      }
+      return false;
+    } );
+    
     regen_type = REGEN_DYNAMIC;
   }
 
