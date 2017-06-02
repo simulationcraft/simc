@@ -7503,7 +7503,7 @@ void rogue_t::init_action_list()
       else
         ptr_cds -> add_action( racial_actions[i] + ",if=stealthed.rogue" );
     }
-    ptr_cds -> add_action( this, "Symbols of Death", "if=!stealthed.all" );
+    ptr_cds -> add_action( this, "Symbols of Death", "if=!stealthed.all|talent.dark_shadow.enabled" );
     ptr_cds -> add_action( this, "Shadow Blades", "if=combo_points.deficit>=2+stealthed.all-equipped.mantle_of_the_master_assassin" );
     ptr_cds -> add_action( this, "Goremaw's Bite", "if=!stealthed.all&cooldown.shadow_dance.charges_fractional<=variable.shd_fractionnal&((combo_points.deficit>=4-(time<10)*2&energy.deficit>50+talent.vigor.enabled*25-(time>=10)*15)|(combo_points.deficit>=1&target.time_to_die<8))" );
     ptr_cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit|(raid_event.adds.in>40&combo_points.deficit>=cp_max_spend)" );
@@ -7531,12 +7531,12 @@ void rogue_t::init_action_list()
     ptr_stealth_cds -> add_action( this, "Shadow Dance", "if=charges_fractional>=variable.shd_fractionnal" );
     ptr_stealth_cds -> add_action( "pool_resource,for_next=1,extra_amount=40" );
     ptr_stealth_cds -> add_action( "shadowmeld,if=energy>=40&energy.deficit>=10+variable.ssw_refund" );
-    ptr_stealth_cds -> add_action( this, "Shadow Dance", "if=combo_points.deficit>=2+talent.subterfuge.enabled*2" );
+    ptr_stealth_cds -> add_action( this, "Shadow Dance", "if=combo_points.deficit>=2+(talent.subterfuge.enabled|buff.the_first_of_the_dead.up)*2&(cooldown.symbols_of_death.remains>2|!talent.dark_shadow.enabled)" );
 
     // Stealthed Rotation
     action_priority_list_t* ptr_stealthed = get_action_priority_list( "ptr_stealthed", "Stealthed Rotation" );
     ptr_stealthed -> add_action( "call_action_list,name=ptr_finish,if=combo_points>=5&(spell_targets.shuriken_storm>=3+equipped.shadow_satyrs_walk|(mantle_duration<=1.3&mantle_duration-gcd.remains>=0.3))" );
-    ptr_stealthed -> add_action( this, "Shuriken Storm", "if=buff.shadowmeld.down&((combo_points.deficit>=3&spell_targets.shuriken_storm>=3+equipped.shadow_satyrs_walk)|(combo_points.deficit>=1+buff.shadow_blades.up&buff.the_dreadlords_deceit.stack>=29))" );
+    ptr_stealthed -> add_action( this, "Shuriken Storm", "if=buff.shadowmeld.down&((combo_points.deficit>=3&spell_targets.shuriken_storm>=3+equipped.shadow_satyrs_walk)|(combo_points.deficit>=1&buff.the_dreadlords_deceit.stack>=29))" );
     ptr_stealthed -> add_action( "call_action_list,name=ptr_finish,if=combo_points>=5&combo_points.deficit<3+buff.shadow_blades.up-equipped.mantle_of_the_master_assassin" );
     ptr_stealthed -> add_action( this, "Shadowstrike" );
   }
