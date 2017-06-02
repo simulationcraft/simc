@@ -1,11 +1,11 @@
 shaman="Shaman_Elemental_T19P"
+spec=elemental
 level=110
 race=orc
 role=spell
 position=ranged_back
 talents=2112333
 artifact=40:0:0:0:0:291:1:292:1:293:1:294:1:296:1:300:2:301:3:302:3:303:3:304:3:1350:1
-spec=elemental
 
 # Default consumables
 potion=prolonged_power
@@ -67,7 +67,10 @@ actions.aoe+=/flame_shock,moving=1,target_if=refreshable
 actions.single_asc=ascendance,if=dot.flame_shock.remains>buff.ascendance.duration&(time>=60|buff.bloodlust.up)&cooldown.lava_burst.remains>0&!buff.stormkeeper.up
 actions.single_asc+=/flame_shock,if=!ticking|dot.flame_shock.remains<=gcd
 actions.single_asc+=/flame_shock,if=maelstrom>=20&remains<=buff.ascendance.duration&cooldown.ascendance.remains+buff.ascendance.duration<=duration
+# Keep your EB always on Cooldown.
 actions.single_asc+=/elemental_blast
+# Use EQ on single target, if you have a huge haste buff, that increases haste above 50% and said buff still lasts longer than 5 seconds OR two enemies. Don't use EQ during Ascendance.
+actions.single_asc+=/earthquake,if=buff.echoes_of_the_great_sundering.up|artifact.seismic_storm.enabled&((active_enemies>1&spell_targets.chain_lightning>1)|spell_haste<=0.66&!(buff.bloodlust.up&buff.bloodlust.remains<5))&!buff.ascendance.up
 actions.single_asc+=/earthquake,if=buff.echoes_of_the_great_sundering.up&!buff.ascendance.up&maelstrom>=86
 actions.single_asc+=/earth_shock,if=maelstrom>=117|!artifact.swelling_maelstrom.enabled&maelstrom>=92
 # Keep SK for large or soon add waves.
@@ -78,8 +81,6 @@ actions.single_asc+=/lava_burst,if=dot.flame_shock.remains>cast_time&(cooldown_r
 actions.single_asc+=/flame_shock,if=maelstrom>=20&buff.elemental_focus.up,target_if=refreshable
 actions.single_asc+=/earth_shock,if=maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=86
 actions.single_asc+=/totem_mastery,if=buff.resonance_totem.remains<10|(buff.resonance_totem.remains<(buff.ascendance.duration+cooldown.ascendance.remains)&cooldown.ascendance.remains<15)
-# Use EQ on single target if you have a huge haste buff that increases haste above 50% and said buffs still last longer than 5 seconds OR two enemies.
-actions.single_asc+=/earthquake,if=buff.echoes_of_the_great_sundering.up|artifact.seismic_storm.enabled&((active_enemies>1&spell_targets.chain_lightning>1)|spell_haste<=0.66&!(buff.bloodlust.up&buff.bloodlust.remains<5))
 actions.single_asc+=/lava_beam,if=active_enemies>1&spell_targets.lava_beam>1
 actions.single_asc+=/lightning_bolt,if=buff.power_of_the_maelstrom.up&spell_targets.chain_lightning<3
 actions.single_asc+=/chain_lightning,if=active_enemies>1&spell_targets.chain_lightning>1
@@ -92,6 +93,7 @@ actions.single_asc+=/flame_shock,moving=1,if=movement.distance>6
 actions.single_if=flame_shock,if=!ticking|dot.flame_shock.remains<=gcd
 actions.single_if+=/earthquake,if=buff.echoes_of_the_great_sundering.up&maelstrom>=86
 actions.single_if+=/frost_shock,if=buff.icefury.up&maelstrom>=111
+# Keep your EB always on Cooldown.
 actions.single_if+=/elemental_blast
 actions.single_if+=/earth_shock,if=maelstrom>=117|!artifact.swelling_maelstrom.enabled&maelstrom>=92
 # Keep SK for large or soon spawning add waves.
@@ -117,7 +119,10 @@ actions.single_if+=/flame_shock,moving=1,if=movement.distance>6
 # Single Target Action Priority List for Lightning Rod Spec
 actions.single_lr=flame_shock,if=!ticking|dot.flame_shock.remains<=gcd
 actions.single_lr+=/earthquake,if=buff.echoes_of_the_great_sundering.up&maelstrom>=86
+# Keep your EB always on Cooldown.
 actions.single_lr+=/elemental_blast
+# Use EQ on single target if you have a huge haste buff that increases haste above 50% and said buffs still last longer than 5 seconds OR two enemies.
+actions.single_lr+=/earthquake,if=buff.echoes_of_the_great_sundering.up|artifact.seismic_storm.enabled&((active_enemies>1&spell_targets.chain_lightning>1)|spell_haste<=0.66&!(buff.bloodlust.up&buff.bloodlust.remains<5))
 actions.single_lr+=/earth_shock,if=maelstrom>=117|!artifact.swelling_maelstrom.enabled&maelstrom>=92
 # Keep SK for large or soon add waves.
 actions.single_lr+=/stormkeeper,if=raid_event.adds.count<3|raid_event.adds.in>50
@@ -126,8 +131,6 @@ actions.single_lr+=/lava_burst,if=dot.flame_shock.remains>cast_time&cooldown_rea
 actions.single_lr+=/flame_shock,if=maelstrom>=20&buff.elemental_focus.up,target_if=refreshable
 actions.single_lr+=/earth_shock,if=maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=86
 actions.single_lr+=/totem_mastery,if=buff.resonance_totem.remains<10|(buff.resonance_totem.remains<(buff.ascendance.duration+cooldown.ascendance.remains)&cooldown.ascendance.remains<15)
-# Use EQ on single target if you have a huge haste buff that increases haste above 50% and said buffs still last longer than 5 seconds OR two enemies.
-actions.single_lr+=/earthquake,if=buff.echoes_of_the_great_sundering.up|artifact.seismic_storm.enabled&((active_enemies>1&spell_targets.chain_lightning>1)|spell_haste<=0.66&!(buff.bloodlust.up&buff.bloodlust.remains<5))
 actions.single_lr+=/lightning_bolt,if=buff.power_of_the_maelstrom.up&spell_targets.chain_lightning<3,target_if=debuff.lightning_rod.down
 actions.single_lr+=/lightning_bolt,if=buff.power_of_the_maelstrom.up&spell_targets.chain_lightning<3
 actions.single_lr+=/chain_lightning,if=active_enemies>1&spell_targets.chain_lightning>1,target_if=debuff.lightning_rod.down

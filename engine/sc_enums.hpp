@@ -169,6 +169,7 @@ inline bool is_pandaren( race_e r )
 
 enum player_e
 {
+  PLAYER_SPECIAL_SCALE7 = -7,
   PLAYER_SPECIAL_SCALE6 = -6,
   PLAYER_SPECIAL_SCALE5 = -5,
   PLAYER_SPECIAL_SCALE4 = -4,

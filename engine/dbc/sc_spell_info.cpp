@@ -782,8 +782,16 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
   {
     const random_prop_data_t& ilevel_data = dbc.random_property( level );
     double item_budget = ilevel_data.p_epic[ 0 ];
+    auto coefficient = 1.0;
 
-    s << item_budget * e -> m_average();
+    if ( spell -> scaling_class() == PLAYER_SPECIAL_SCALE7 )
+    {
+      // Technically this should check for the item type, but that's not possible right now
+      coefficient = dbc.combat_rating_multiplier( level, CR_MULTIPLIER_TRINKET );
+    }
+
+    s << item_budget * e -> m_average() * coefficient;
+
   }
 
   if ( e -> m_average() != 0 || e -> m_delta() != 0 )

@@ -233,6 +233,7 @@ public:
     gain_t* rage_from_damage_taken;
     gain_t* valarjar_berserking;
     gain_t* ravager;
+    gain_t* execute_refund;
   } gain;
 
   // Spells
@@ -2016,6 +2017,8 @@ struct colossus_smash_t: public warrior_attack_t
 
       p() -> buff.shattered_defenses -> trigger();
       p() -> buff.precise_strikes -> trigger();
+      if ( p() -> buff.in_for_the_kill != nullptr )
+        p() -> buff.in_for_the_kill -> trigger();
       if ( p() -> talents.ravager -> ok() )
         p() -> cooldown.ravager -> adjust( t20_2p_reduction );
       else
@@ -2383,6 +2386,10 @@ struct execute_arms_t: public warrior_attack_t
   {
     warrior_attack_t::execute();
 
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+    {
+      p() -> resource_gain( RESOURCE_RAGE, last_resource_cost * 0.3, p() -> gain.execute_refund );
+    }
     if ( execute_sweeping_strike )
     {
       make_event<sweeping_execute_t>( *sim, p(),
@@ -3211,7 +3218,7 @@ struct rampage_attack_t: public warrior_attack_t
     {// If the first attack misses, all of the rest do as well. However, if any other attack misses, the attacks after continue.
                                 // The animations and timing of everything else -- such as odyns champion proccing after the last attack -- still occur, so we can't just cancel rampage.
       warrior_attack_t::impact( s );
-      if ( p() -> legendary.valarjar_berserkers != nullptr && s -> result == RESULT_CRIT )
+      if ( p() -> legendary.valarjar_berserkers != nullptr && s -> result == RESULT_CRIT && target == s -> target )
       {
         p() -> resource_gain( RESOURCE_RAGE, rage_from_valarjar_berserking, p() -> gain.valarjar_berserking  );
       }
@@ -5917,6 +5924,7 @@ void warrior_t::init_gains()
   gain.valarjar_berserking = get_gain( "valarjar_berserking" );
   gain.ravager = get_gain( "ravager" );
   gain.rage_from_damage_taken = get_gain( "rage_from_damage_taken" );
+  gain.execute_refund = get_gain( "execute_refund" );
 }
 
 // warrior_t::init_position ====================================================

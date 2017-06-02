@@ -2011,21 +2011,20 @@ void item::tome_of_unraveling_sanity( special_effect_t& effect )
 
 struct infernal_cinders_t : public proc_spell_t
 {
-  const spell_data_t* damage_multiplier;
+  const spell_data_t* dancing_flames;
 
   infernal_cinders_t( const special_effect_t& effect ) :
     proc_spell_t( effect ),
-    damage_multiplier( effect.player -> find_spell( 246654 ) )
+    dancing_flames( effect.player -> find_spell( 246654 ) )
   { }
 
-  double action_multiplier() const override
+  double composite_crit_chance() const override
   {
-    double m = proc_spell_t::action_multiplier();
+    double cc = proc_spell_t::composite_crit_chance();
 
-    m *= 1.0 + damage_multiplier -> effectN( 1 ).percent() *
-               ( sim -> expansion_opts.infernal_cinders_users - 1);
+    cc += dancing_flames->effectN(1).percent() * (sim->expansion_opts.infernal_cinders_users - 1);
 
-    return m;
+    return cc;
   }
 };
 
