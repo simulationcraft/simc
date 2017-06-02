@@ -4674,6 +4674,7 @@ struct lightning_bolt_t : public shaman_spell_t
       cooldown -> duration += player -> talent.overcharge -> effectN( 3 ).time_value();
       m_overcharge = player -> talent.overcharge -> effectN( 2 ).percent() /
         player -> talent.overcharge -> effectN( 1 ).base_value();
+      track_cd_waste = true;
     }
 
     // TODO: Is it still 10% per Maelstrom with Stormbringer?
@@ -7557,7 +7558,7 @@ void shaman_t::init_action_list_elemental()
   // Single target - Lightning Rod
   single_lr -> add_action( this, "Flame Shock", "if=!ticking|dot.flame_shock.remains<=gcd" );
   single_lr -> add_action( this, "Earthquake", "if=buff.echoes_of_the_great_sundering.up&maelstrom>=86" );
-  single_lr -> add_talent( this, "Elemental Blast" );
+  single_lr -> add_talent( this, "Elemental Blast", "", "Keep your EB always on Cooldown." );
   single_lr -> add_action( this, "Earthquake", "if=buff.echoes_of_the_great_sundering.up|artifact.seismic_storm.enabled&((active_enemies>1&spell_targets.chain_lightning>1)|spell_haste<=0.66&!(buff.bloodlust.up&buff.bloodlust.remains<5))", "Use EQ on single target if you have a huge haste buff that increases haste above 50% and said buffs still last longer than 5 seconds OR two enemies." );
   single_lr -> add_action( this, "Earth Shock", "if=maelstrom>=117|!artifact.swelling_maelstrom.enabled&maelstrom>=92" );
   single_lr -> add_action( this, "Stormkeeper", "if=raid_event.adds.count<3|raid_event.adds.in>50", "Keep SK for large or soon add waves." );
@@ -7580,7 +7581,7 @@ void shaman_t::init_action_list_elemental()
   single_if -> add_action( this, "Flame Shock", "if=!ticking|dot.flame_shock.remains<=gcd" );
   single_if -> add_action( this, "Earthquake", "if=buff.echoes_of_the_great_sundering.up&maelstrom>=86" );
   single_if -> add_action( this, "Frost Shock", "if=buff.icefury.up&maelstrom>=111" );
-  single_if -> add_talent( this, "Elemental Blast" );
+  single_if -> add_talent( this, "Elemental Blast", "", "Keep your EB always on Cooldown." );
   single_if -> add_action( this, "Earth Shock", "if=maelstrom>=117|!artifact.swelling_maelstrom.enabled&maelstrom>=92" );
   single_if -> add_action( this, "Stormkeeper", "if=raid_event.adds.count<3|raid_event.adds.in>50", "Keep SK for large or soon spawning add waves." );
   single_if -> add_talent( this, "Icefury", "if=raid_event.movement.in<5|maelstrom<=101" );
@@ -7604,7 +7605,7 @@ void shaman_t::init_action_list_elemental()
   single_asc -> add_talent( this, "Ascendance", "if=dot.flame_shock.remains>buff.ascendance.duration&(time>=60|buff.bloodlust.up)&cooldown.lava_burst.remains>0&!buff.stormkeeper.up" );
   single_asc -> add_action( this, "Flame Shock", "if=!ticking|dot.flame_shock.remains<=gcd" );
   single_asc -> add_action( this, "Flame Shock", "if=maelstrom>=20&remains<=buff.ascendance.duration&cooldown.ascendance.remains+buff.ascendance.duration<=duration" );
-  single_asc -> add_talent( this, "Elemental Blast", "Keep your EB always on Cooldown." );
+  single_asc -> add_talent( this, "Elemental Blast", "", "Keep your EB always on Cooldown." );
   single_asc -> add_action( this, "Earthquake", "if=buff.echoes_of_the_great_sundering.up|artifact.seismic_storm.enabled&((active_enemies>1&spell_targets.chain_lightning>1)|spell_haste<=0.66&!(buff.bloodlust.up&buff.bloodlust.remains<5))&!buff.ascendance.up", "Use EQ on single target, if you have a huge haste buff, that increases haste above 50% and said buff still lasts longer than 5 seconds OR two enemies. Don't use EQ during Ascendance." );
   single_asc -> add_action( this, "Earthquake", "if=buff.echoes_of_the_great_sundering.up&!buff.ascendance.up&maelstrom>=86" );
   single_asc -> add_action( this, "Earth Shock", "if=maelstrom>=117|!artifact.swelling_maelstrom.enabled&maelstrom>=92" );

@@ -5181,10 +5181,6 @@ if ( race == RACE_BLOOD_ELF )
    vf->add_action( 
     "arcane_torrent,if=buff.insanity_drain_stacks.value>=20&(insanity-"
     "(current_insanity_drain*gcd.max)+15)<100" );
-  vf->add_action( 
-    "dispersion,if=talent.legacy_of_the_void.enabled&current_insanity_drain*"
-    "gcd.max>insanity&!buff.power_infusion.up&buff.voidform.stack>=51&cooldown"
-    ".void_torrent.remains<=8" );
   vf->add_action(
     "mind_bomb,if=equipped.sephuzs_secret&target.is_add&cooldown.buff_sephuzs_"
     "secret.remains<1&!buff.sephuzs_secret.up&buff.insanity_drain_stacks.value>10"
@@ -5199,9 +5195,10 @@ if ( race == RACE_BLOOD_ELF )
       "value)+60))" );
   vf->add_action(
       "mindbender,if=set_bonus.tier20_4pc&buff.insanity_drain_stacks.value>="
-      "(25+2*buff.bloodlust.up+2*talent.fortress_of_the_mind.enabled)&(!talent."
-      "surrender_to_madness.enabled|(talent.surrender_to_madness.enabled&target."
-      "time_to_die>variable.s2mcheck-buff.insanity_drain_stacks.value))" );
+      "(25-(3*(raid_event.movement.in<15)*((active_enemies-target.adds)=1))+"
+      "2*buff.bloodlust.up+2*talent.fortress_of_the_mind.enabled)&(!talent"
+      ".surrender_to_madness.enabled|(talent.surrender_to_madness.enabled&"
+      "target.time_to_die>variable.s2mcheck-buff.insanity_drain_stacks.value))" );
     vf->add_action(
       "mindbender,if=!set_bonus.tier20_4pc&(!talent.surrender_to_madness."
       "enabled"
