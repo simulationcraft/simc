@@ -5259,8 +5259,7 @@ struct full_moon_t : public druid_spell_t
   void execute() override
   {
     druid_spell_t::execute();
-
-    p() -> moon_stage = NEW_MOON; // TOCHECK: Requires hit?
+    p()->moon_stage = NEW_MOON; // TOCHECK: Requires hit?
   }
 
   bool ready() override
@@ -6085,9 +6084,6 @@ struct starfall_t : public druid_spell_t
     {
       druid_spell_t::execute();
 
-      if ( p() -> sets -> has_set_bonus( DRUID_BALANCE, T20, B4 ))
-         p() -> buff.astral_acceleration -> trigger();
-
       // Non-distance targeting: If we hit more than 1 target, simply trigger the echo as an AoE.
       if ( p() -> artifact.echoing_stars.rank() && ! echoing_stars &&
         ! sim -> distance_targeting_enabled && execute_state -> n_targets > 1 )
@@ -6166,6 +6162,10 @@ struct starfall_t : public druid_spell_t
 
   virtual void execute() override
   {
+    if (p()->sets->has_set_bonus(DRUID_BALANCE, T20, B4) && trigger_gcd > timespan_t::zero())
+    {
+      p()->buff.astral_acceleration->trigger();
+    }
     druid_spell_t::execute();
 
     make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
