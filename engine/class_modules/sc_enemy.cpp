@@ -868,7 +868,6 @@ struct add_t : public pet_t
     pet_t( s, o, n, pt )
   {
     true_level = s -> max_player_level + 3;
-    sim -> target_list.push_back( this );
   }
 
   virtual void init_action_list() override
