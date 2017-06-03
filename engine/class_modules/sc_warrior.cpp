@@ -1629,7 +1629,7 @@ struct bladestorm_t: public warrior_attack_t
     {
       bladestorm_oh -> execute();
     }
-    if ( mortal_strike )
+    if ( mortal_strike && d -> ticks_left() > 0 )
     {
       auto t = select_random_target();
 
