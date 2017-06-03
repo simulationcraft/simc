@@ -7294,9 +7294,15 @@ void warlock_t::reset()
 {
   player_t::reset();
 
-  for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
+  for ( size_t i = 0; i < sim -> target_list.size(); i++ )
   {
-    warlock_td_t* td = target_data[sim -> actor_list[i]];
+    warlock_td_t* td = target_data[ sim -> target_list[ i ] ];
+    if ( td ) td -> reset();
+  }
+
+  if ( talents.soul_effigy -> ok() && warlock_pet_list.soul_effigy )
+  {
+    warlock_td_t* td = target_data[ warlock_pet_list.soul_effigy ];
     if ( td ) td -> reset();
   }
 
