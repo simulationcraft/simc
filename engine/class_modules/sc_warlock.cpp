@@ -7294,7 +7294,15 @@ void warlock_t::reset()
 {
   player_t::reset();
 
-  for ( size_t i = 0; i < sim -> target_list.size(); i++ )
+  // Figure out up to what actor ID we should reset. This is the max of target list actors, and
+  // their pets
+  size_t max_idx = sim -> target_list.data().back() -> actor_index + 1;
+  if ( sim -> target_list.data().back() -> pet_list.size() > 0 )
+  {
+    max_idx = sim -> target_list.data().back() -> pet_list.back() -> actor_index + 1;
+  }
+
+  for ( size_t i = 0; i < max_idx; i++ )
   {
     warlock_td_t* td = target_data[ sim -> target_list[ i ] ];
     if ( td ) td -> reset();
