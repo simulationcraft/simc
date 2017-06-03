@@ -4258,9 +4258,9 @@ void item::convergence_of_fates( special_effect_t& effect )
     }
     break;
   case DEATH_KNIGHT_UNHOLY:
-    if ( ! player_talent( effect.player, "Dark Arbiter" ) )
+    if ( player_talent( effect.player, "Dark Arbiter" ) )
     {
-      effect.ppm_ = -4.98;
+      effect.ppm_ = -5.5;
       effect.rppm_modifier_ = 1.0;
     }
     break;
