@@ -208,7 +208,6 @@ public:
   std::vector<counter_t*> counters;
   std::vector<player_t*> lightning_rods;
   int t18_4pc_elemental_counter;
-  double smoldering_heart_chance = 0;
 
   // Options
   unsigned stormlash_targets;
@@ -530,8 +529,11 @@ public:
   struct legendary_t
   {
     const spell_data_t* sephuzs_secret;
+    const spell_data_t* smoldering_heart;
 
-    legendary_t() : sephuzs_secret( spell_data_t::not_found() )
+    legendary_t() :
+      sephuzs_secret( spell_data_t::not_found() ),
+      smoldering_heart( spell_data_t::not_found() )
     { }
   } legendary;
 
@@ -1173,27 +1175,45 @@ public:
     ab::update_ready( cd );
   }
 
-  virtual void consume_resource() override
+  void consume_resource() override
   {
     ab::consume_resource();
 
-    double maelstromSpent = ab::last_resource_cost;
-
-    if ( p() -> rng().roll( p() -> smoldering_heart_chance * maelstromSpent ) )
+    if ( p() -> legendary.smoldering_heart -> ok() )
     {
-      // Smoldering Heart spell ID: 248029
-      if ( p() -> buff.ascendance -> up() )
+      auto sh_base_proc_chance = 0.0;
+
+      switch ( p() -> specialization() )
       {
-        p() -> buff.ascendance -> extend_duration( p(), p() -> find_spell( 248029 ) -> effectN( 1 ).time_value());
+        case SHAMAN_ELEMENTAL:
+          sh_base_proc_chance = p() -> legendary.smoldering_heart -> effectN( 2 ).percent();
+          break;
+        case SHAMAN_ENHANCEMENT:
+          sh_base_proc_chance = p() -> legendary.smoldering_heart -> effectN( 3 ).percent();
+          break;
+        default:
+          break;
       }
-      else
+
+      sh_base_proc_chance /= 100.0;
+
+      if ( ab::rng().roll( sh_base_proc_chance * ab::last_resource_cost ) )
       {
-        p() -> buff.ascendance -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, p() -> find_spell( 248029 ) -> effectN( 1 ).time_value() );
+        auto duration = p() -> legendary.smoldering_heart -> effectN( 1 ).time_value();
+        // Smoldering Heart spell ID: 248029
+        if ( p() -> buff.ascendance -> up() )
+        {
+          p() -> buff.ascendance -> extend_duration( p(), duration );
+        }
+        else
+        {
+          p() -> buff.ascendance -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, duration );
+        }
       }
     }
   }
 
-  virtual expr_t* create_expression( const std::string& name ) override
+  expr_t* create_expression( const std::string& name ) override
   {
     if ( ! util::str_compare_ci( name, "cooldown.higher_priority.min_remains" ) )
       return ab::create_expression( name );
@@ -8640,17 +8660,7 @@ struct smoldering_heart_chance_t : public unique_gear::scoped_actor_callback_t<s
   { }
 
   void manipulate(shaman_t* shaman, const special_effect_t& e) override
-  {
-    if ( shaman -> specialization() == SHAMAN_ENHANCEMENT )
-    {
-      shaman -> smoldering_heart_chance = e.driver() -> effectN( 3 ).percent() / 100.0;
-    }
-    
-    if ( shaman -> specialization() == SHAMAN_ELEMENTAL )
-    {
-      shaman -> smoldering_heart_chance = e.driver() -> effectN( 2 ).percent() / 100.0;
-    }
-  }
+  { shaman -> legendary.smoldering_heart = e.driver(); }
 };
 
 struct emalons_charged_core_t : public scoped_action_callback_t<crash_lightning_t>
