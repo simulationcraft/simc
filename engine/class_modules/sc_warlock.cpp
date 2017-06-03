@@ -7302,11 +7302,19 @@ void warlock_t::reset()
     max_idx = sim -> target_list.data().back() -> pet_list.back() -> actor_index + 1;
   }
 
-  for ( size_t i = 0; i < max_idx; i++ )
-  {
-    warlock_td_t* td = target_data[ sim -> target_list[ i ] ];
-    if ( td ) td -> reset();
-  }
+  range::for_each( sim -> target_list, [ this ]( const player_t* t ) {
+    if ( auto td = target_data[ t ] )
+    {
+      td -> reset();
+    }
+
+    range::for_each( t -> pet_list, [ this ]( const player_t* add ) {
+      if ( auto td = target_data[ add ] )
+      {
+        td -> reset();
+      }
+    } );
+  } );
 
   if ( talents.soul_effigy -> ok() && warlock_pet_list.soul_effigy )
   {
