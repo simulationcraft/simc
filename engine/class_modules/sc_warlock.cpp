@@ -5602,6 +5602,8 @@ struct soul_harvest_t : public warlock_spell_t
   virtual void execute() override
   {
     warlock_spell_t::execute();
+    
+    p() -> buffs.soul_harvest -> expire(); //Potentially bugged check when live
 
     if ( p() -> specialization() == WARLOCK_AFFLICTION )
     {
