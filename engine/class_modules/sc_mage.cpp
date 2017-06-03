@@ -3548,6 +3548,7 @@ struct glacial_eruption_t : public frost_mage_spell_t
     frost_mage_spell_t( "glacial_eruption", p, p -> find_spell( 242851 ) )
   {
     background = true;
+    callbacks = false;
     aoe = -1;
   }
 };
@@ -3561,6 +3562,10 @@ struct ebonbolt_t : public frost_mage_spell_t
     frost_mage_spell_t( "ebonbolt", p, p -> artifact.ebonbolt ),
     glacial_eruption( new glacial_eruption_t( p ) )
   {
+    // Ebonbolt has some weird 'callbacks' properties.
+    // For example: Ebonbolt cast triggers Concordance, impact triggers
+    // Mark of the Hidden Satyr but does not trigger Erratic Metronome and
+    // Tarnished Sentinel Medallion.
     parse_options( options_str );
     parse_effect_data( p -> find_spell( 228599 ) -> effectN( 1 ) );
     if ( !p -> artifact.ebonbolt.rank() )
@@ -4014,7 +4019,9 @@ struct flurry_t : public frost_mage_spell_t
     hasted_ticks = true;
     add_child( flurry_bolt );
 
-    //TODO: Remove hardcoded values once it exists in spell data for bolt impact timing.
+    // TODO: Remove hardcoded values once it exists in spell data for bolt impact timing.
+    // TODO: When 7.2.5 goes live, confirm that the PTR "tick time scales with haste" is
+    // correct.
     dot_duration = timespan_t::from_seconds( 0.8 );
     base_tick_time = timespan_t::from_seconds( 0.4 );
   }
