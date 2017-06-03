@@ -4618,10 +4618,8 @@ struct ice_lance_t : public frost_mage_spell_t
     {
       timespan_t tv_extension = p() -> talents.thermal_void
                                     -> effectN( 1 ).time_value() * 1000;
-      // Can we get the 30 sec from spell data?
-      timespan_t max_extension = timespan_t::from_seconds( 30 ) - p() -> buffs.icy_veins -> remains();
 
-      p() -> buffs.icy_veins -> extend_duration( p(), std::min( tv_extension, max_extension ) );
+      p() -> buffs.icy_veins -> extend_duration( p(), tv_extension );
     }
     if ( result_is_hit( s -> result ) && fss -> frozen() &&
          td( s -> target ) -> debuffs.frost_bomb -> check() )
