@@ -872,7 +872,7 @@ public:
           case DEATH_KNIGHT_FROST:
             return spell -> id() == 194912; // Gathering Storm
           case DEATH_KNIGHT_UNHOLY:
-            return spell -> id() == 207624; // Bursting Sores
+            return spell -> id() == 207264; // Bursting Sores
          default:
             break;
         }
@@ -7703,8 +7703,8 @@ void death_knight_t::default_apl_frost()
   bos -> add_action( this, "Remorseless Winter", "if=talent.gathering_storm.enabled" );
   bos -> add_action( this, "Howling Blast", "target_if=!dot.frost_fever.ticking" );
   bos -> add_action( this, "Howling Blast", "if=buff.rime.react&rune.time_to_4<(gcd*2)" );
-  bos -> add_action( this, "Obliterate", "if=rune.time_to_6<gcd&!talent.gathering_storm.enabled ");
-  bos -> add_action( this, "Obliterate", "if=rune.time_to_4<gcd&(cooldown.breath_of_sindragosa.remains|runic_power<70) ");
+  bos -> add_action( this, "Obliterate", "if=rune.time_to_6<gcd&!talent.gathering_storm.enabled" );
+  bos -> add_action( this, "Obliterate", "if=rune.time_to_4<gcd&(cooldown.breath_of_sindragosa.remains|runic_power<70)" );
   bos -> add_action( this, "Frost Strike", "if=runic_power>=90&set_bonus.tier19_4pc&cooldown.breath_of_sindragosa.remains" );
   bos -> add_action( this, "Remorseless Winter", "if=buff.rime.react&equipped.132459" );
   bos -> add_action( this, "Howling Blast", "if=buff.rime.react&(dot.remorseless_winter.ticking|cooldown.remorseless_winter.remains>gcd|(!equipped.132459&!talent.gathering_storm.enabled))" );
