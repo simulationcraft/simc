@@ -17,21 +17,21 @@ race=blood_elf
 spec=frost
 role=attack
 position=back
-talents=3320032
+talents=3120032
 artifact=12:0:0:0:0:108:3:109:3:110:3:111:3:113:3:114:3:115:3:117:3:119:1:120:1:122:1:123:1:124:1:1090:3:1091:1:1092:1:1332:1:1360:1:1485:4:1486:1:1487:1:1628:1
 
-head=eventide_casque,id=140881,bonus_id=3517
-neck=radiant_string_of_scorpid_eyes,id=140898,bonus_id=3517,enchant=mark_of_the_claw
+head=dreadwyrm_crown,id=138355,bonus_id=3517
+neck=belerons_choker_of_misery,id=140899,bonus_id=3517,enchant=mark_of_the_trained_soldier
 shoulders=dreadwyrm_shoulderguards,id=138361,bonus_id=3517
 back=dreadwyrm_greatcloak,id=138364,bonus_id=3517,enchant=binding_of_strength
-chest=dreadwyrm_breastplate,id=138349,bonus_id=3517
+chest=breastplate_of_the_remembered_king,id=140913,bonus_id=3517
 wrists=eternally_recurring_bracers,id=140893,bonus_id=3517
 hands=bridgebreaker_gauntlets,id=140907,bonus_id=3517
 waist=gilded_nightborne_waistplate,id=140880,bonus_id=3517
 legs=dreadwyrm_legplates,id=138358,bonus_id=3517
 feet=leystonetoe_kickers,id=140884,bonus_id=3517
-finger1=ring_of_braided_stems,id=140896,bonus_id=3517,enchant=binding_of_haste
-finger2=spellblades_gemmed_signet,id=140895,bonus_id=3517,enchant=binding_of_haste
+finger1=ring_of_braided_stems,id=140896,bonus_id=3517,enchant=binding_of_mastery
+finger2=spellblades_gemmed_signet,id=140895,bonus_id=3517,enchant=binding_of_mastery
 trinket1=convergence_of_fates,id=140806,bonus_id=3517
 trinket2=entwined_elemental_foci,id=140796,bonus_id=3517
 main_hand=blades_of_the_fallen_prince,id=128292,gem_id=140832/140823/140832,relic_id=3517/3517/3517,enchant=rune_of_razorice

@@ -1477,7 +1477,7 @@ struct mortal_strike_t : public warrior_attack_t
     }
 
     if ( maybe_ptr( p() -> dbc.ptr ) ) //FIXME PTR
-      cc *= 1.0 + p() -> buff.precise_strikes -> check_value();
+      cc += p() -> buff.precise_strikes -> check_value();
 
     return cc;
   }
@@ -2328,7 +2328,7 @@ struct execute_arms_t: public warrior_attack_t
     }
 
     if ( maybe_ptr( p() -> dbc.ptr ) ) //FIXME PTR
-      cc *= 1.0 + p() -> buff.precise_strikes -> check_value();
+      cc += p() -> buff.precise_strikes -> check_value();
 
     return cc;
   }
@@ -5790,7 +5790,7 @@ void warrior_t::create_buffs()
     .add_invalidate( CACHE_ARMOR );
 
   buff.precise_strikes = buff_creator_t( this, "precise_strikes", find_spell( 209493 ) )
-    .default_value( artifact.precise_strikes.rank() * artifact.precise_strikes.data().effectN( 1 ).percent() )
+    .default_value( artifact.precise_strikes.percent() )
     .chance( artifact.precise_strikes.rank() > 0 ? 1 : 0 );
 
   buff.ravager = buff_creator_t( this, "ravager", talents.ravager );
