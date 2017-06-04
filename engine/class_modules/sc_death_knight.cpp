@@ -57,6 +57,7 @@ const double RUNE_REGEN_BASE_SEC = ( 1 / RUNE_REGEN_BASE );
 
 const size_t MAX_RUNES = 6;
 const size_t MAX_REGENERATING_RUNES = 3;
+const double MAX_START_OF_COMBAT_RP = 20;
 
 template <typename T>
 struct dynamic_event_t : public event_t
@@ -555,6 +556,7 @@ public:
     gain_t* uvanimor_the_unbeautiful;
     gain_t* koltiras_newfound_will;
     gain_t* t19_4pc_frost;
+    gain_t* start_of_combat_overflow;
   } gains;
 
   // Specialization
@@ -8175,6 +8177,7 @@ void death_knight_t::init_gains()
   gains.uvanimor_the_unbeautiful         = get_gain( "Uvanimor, the Unbeautiful"  );
   gains.koltiras_newfound_will           = get_gain( "Koltira's Newfound Will"    );
   gains.t19_4pc_frost                    = get_gain( "Tier19 Frost 4PC"           );
+  gains.start_of_combat_overflow         = get_gain( "Start of Combat Overflow"   );
 }
 
 // death_knight_t::init_procs ===============================================
@@ -8676,6 +8679,12 @@ void death_knight_t::combat_begin()
   player_t::combat_begin();
 
   buffs.cold_heart -> trigger( buffs.cold_heart -> max_stack() );
+
+  auto rp_overflow = resources.current[ RESOURCE_RUNIC_POWER ] - MAX_START_OF_COMBAT_RP;
+  if ( rp_overflow > 0 )
+  {
+    resource_loss( RESOURCE_RUNIC_POWER, rp_overflow, gains.start_of_combat_overflow );
+  }
 }
 
 // death_knight_t::invalidate_cache =========================================
