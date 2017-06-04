@@ -4288,7 +4288,7 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | Misc Value: 6 | Target: Self (1)
 Description      : Crash Lightning also electrifies the ground, leaving an electrical field behind which damages enemies within it for ${7*$210801s1} Nature damage over $210797d. 
 
-Name             : Storm Elemental (id=192249) [Spell Family (11)] 
+Name             : Storm Elemental (id=192249) [Scaling Spell (-6), Spell Family (11)] 
 Class            : Shaman
 School           : Nature
 Spell Level      : 1
@@ -4306,7 +4306,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=282046)   : Dummy (3)
-                   Base Value: 1 | Scaled Value: 1 (avg=0.164) | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 190984.6 (avg=0.164) | Target: Enemy (6)
 Description      : Calls forth a Greater Storm Elemental to hurl gusts of wind that damage the Shaman's enemies and generate Maelstrom for the Shaman for $157299d.
 
 Name             : Fulmination (id=193777) [Spell Family (11), Hidden] 
