@@ -1432,6 +1432,9 @@ class SpellDataGenerator(DataGenerator):
           ( 240689, 0 ),                            # Aluneth - Time and Space
           ( 248147, 0 ),                            # Erupting Infernal Core
           ( 248177, 0 ),                            # Rage of the Frost Wyrm
+          ( 222305, 0 ),                            # Sorcerous Fireball
+          ( 222320, 0 ),                            # Sorcerous Frostbolt
+          ( 222321, 0 ),                            # Sorcerous Arcane Blast
         ),
 
         # Warlock:
