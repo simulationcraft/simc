@@ -909,9 +909,9 @@ token_e next_token( action_t* action, const std::string& expr_str,
     return TOK_ABS;
   if ( c == '+' )
     return TOK_ADD;
-  if ( c == '-' && ( prev_token == TOK_STR || prev_token == TOK_NUM ) )
+  if ( c == '-' && ( prev_token == TOK_STR || prev_token == TOK_NUM || prev_token == TOK_RPAR ) )
     return TOK_SUB;
-  if ( c == '-' && prev_token != TOK_STR && prev_token != TOK_NUM &&
+  if ( c == '-' && prev_token != TOK_STR && prev_token != TOK_NUM && prev_token != TOK_RPAR &&
        !isdigit( static_cast<unsigned char>( expr_str[ current_index ] ) ) )
     return TOK_SUB;
   if ( c == '*' )
