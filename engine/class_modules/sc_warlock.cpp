@@ -5602,6 +5602,8 @@ struct soul_harvest_t : public warlock_spell_t
   virtual void execute() override
   {
     warlock_spell_t::execute();
+    
+    p() -> buffs.soul_harvest -> expire(); //Potentially bugged check when live
 
     if ( p() -> specialization() == WARLOCK_AFFLICTION )
     {
@@ -7294,9 +7296,31 @@ void warlock_t::reset()
 {
   player_t::reset();
 
-  for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
+  // Figure out up to what actor ID we should reset. This is the max of target list actors, and
+  // their pets
+  size_t max_idx = sim -> target_list.data().back() -> actor_index + 1;
+  if ( sim -> target_list.data().back() -> pet_list.size() > 0 )
   {
-    warlock_td_t* td = target_data[sim -> actor_list[i]];
+    max_idx = sim -> target_list.data().back() -> pet_list.back() -> actor_index + 1;
+  }
+
+  range::for_each( sim -> target_list, [ this ]( const player_t* t ) {
+    if ( auto td = target_data[ t ] )
+    {
+      td -> reset();
+    }
+
+    range::for_each( t -> pet_list, [ this ]( const player_t* add ) {
+      if ( auto td = target_data[ add ] )
+      {
+        td -> reset();
+      }
+    } );
+  } );
+
+  if ( talents.soul_effigy -> ok() && warlock_pet_list.soul_effigy )
+  {
+    warlock_td_t* td = target_data[ warlock_pet_list.soul_effigy ];
     if ( td ) td -> reset();
   }
 

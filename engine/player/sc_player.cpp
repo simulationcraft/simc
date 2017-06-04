@@ -8308,7 +8308,7 @@ bool player_t::parse_artifact_wowhead( const std::string& artifact_string )
   if ( specialization() != SPEC_NONE && spec_artifact_id != artifact_id )
   {
     sim -> errorf( "%s invalid artifact identifier '%u', expected '%u'",
-      name(), spec_artifact_id, artifact_id );
+      name(), artifact_id, spec_artifact_id );
     return false;
   }
 
