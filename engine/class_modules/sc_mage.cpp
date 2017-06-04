@@ -2225,6 +2225,10 @@ struct frost_mage_spell_t : public mage_spell_t
   // Helper methods for Shattered Fragments of Sindragosa.
   void trigger_shattered_fragments( player_t* target )
   {
+    // It seems that casting Flurry while Frostbolt is mid-air does not
+    // trigger the buff if Frostbolt hits before Flurry does (thankfully,
+    // it usually happens the other way around).
+    // TODO: Check this
     trigger_legendary_effect( p() -> buffs.shattered_fragments_of_sindragosa,
                               p() -> buffs.rage_of_the_frost_wyrm,
                               p() -> action.legendary_comet_storm,
