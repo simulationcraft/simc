@@ -4594,16 +4594,12 @@ struct ice_lance_t : public frost_mage_spell_t
     p() -> buffs.magtheridons_might -> trigger();
 
     // Begin casting all Icicles at the target, beginning 0.25 seconds after the
-    // Ice Lance cast with remaining Icicles launching at intervals of 0.75
-    // seconds, both values adjusted by haste. Casting continues until all
-    // Icicles are gone, including new ones that accumulate Iwhile they're being
-    // fired. If target dies, Icicles stop. If Ice Lance is cast again, the
-    // current sequence is interrupted and a new one begins.
+    // Ice Lance cast with remaining Icicles launching at intervals of 0.4
+    // seconds, the latter adjusted by haste. Casting continues until all
+    // Icicles are gone, including new ones that accumulate while they're being
+    // fired. If target dies, Icicles stop.
     if ( !p() -> talents.glacial_spike -> ok() )
     {
-      //TODO: This is technically not correct - the buff should be step-wise decreased; but it has
-      // no real effect on gameplay.
-      p() -> buffs.icicles -> expire();
       p() -> trigger_icicle( execute_state, true, target );
     }
 
@@ -6274,8 +6270,7 @@ struct icicle_event_t : public event_t
   icicle_event_t( mage_t& m, const icicle_data_t& s, player_t* t, bool first = false ) :
     event_t( m ), mage( &m ), target( t ), state( s )
   {
-    double cast_time = first ? 0.25 : 0.75;
-    cast_time *= mage -> cache.spell_speed();
+    double cast_time = first ? 0.25 : ( 0.4 * mage -> cache.spell_speed() );
 
     schedule( timespan_t::from_seconds( cast_time ) );
   }
@@ -6306,6 +6301,8 @@ struct icicle_event_t : public event_t
     // travelling icicle object
     mage -> icicle -> pre_execute_state = new_s;
     mage -> icicle -> execute();
+
+    mage -> buffs.icicles -> decrement();
 
     icicle_data_t new_state = mage -> get_icicle_object();
     if ( new_state.damage > 0 )
