@@ -1204,15 +1204,8 @@ void item::umbral_moonglaives( special_effect_t& effect )
 
 void item::engine_of_eradication( special_effect_t& effect )
 {
-  auto primary_stat = effect.player -> primary_stat();
-  if ( primary_stat == STAT_NONE )
-  {
-    effect.player -> sim -> errorf( "%s no primary stat defined for specialization, cannot initialize %s",
-        effect.player -> name(), effect.name().c_str() );
-    effect.type = SPECIAL_EFFECT_NONE;
-    return;
-  }
-
+  auto primary_stat = effect.player -> convert_hybrid_stat( STAT_STR_AGI );
+  
   double amount = effect.trigger() -> effectN( 3 ).average( effect.item );
   stat_buff_t* buff = debug_cast<stat_buff_t*>( buff_t::find( effect.player, "demonic_vigor" ) );
   if ( buff == nullptr )
@@ -1439,7 +1432,7 @@ void item::cradle_of_anguish( special_effect_t& effect )
   if ( buff == nullptr )
   {
     buff = stat_buff_creator_t( effect.player, "strength_of_will", buff_spell, effect.item )
-           .add_stat( effect.player -> primary_stat(), amount );
+           .add_stat( effect.player -> convert_hybrid_stat( STAT_STR_AGI ) , amount );
   }
 
   effect.player -> callbacks_on_arise.emplace_back( [ buff, effect ]() {
