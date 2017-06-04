@@ -8504,75 +8504,80 @@ using namespace unique_gear;
 using namespace actions;
 // Legion Mage JC Neck
 
-//TODO: Whitelist these spell effects so we don't have to hardcode their damage values.
 struct sorcerous_fireball_t : public spell_t
 {
-  sorcerous_fireball_t( mage_t* p ) :
-    spell_t( "sorcerous_fireball", p )
+  sorcerous_fireball_t( const special_effect_t& effect ) :
+    spell_t( "sorcerous_fireball", effect.player, effect.player -> find_spell( 222305 ) )
   {
     background = true;
     may_crit = true;
-    base_dd_min = base_dd_max = 246600;
-    dot_duration = timespan_t::from_seconds( 5.0 );
-    base_tick_time = timespan_t::from_seconds( 1.0 );
-    base_td = 36990;
+    hasted_ticks = false;
+    base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item );
+    base_td = data().effectN( 2 ).average( effect.item );
   }
+
   virtual double composite_crit_chance() const override
   { return 0.1; }
+
   virtual double composite_crit_chance_multiplier() const override
   { return 1.0; }
 };
 
 struct sorcerous_frostbolt_t : public spell_t
 {
-  sorcerous_frostbolt_t( mage_t* p ) :
-    spell_t( "sorcerous_frostbolt", p )
+  sorcerous_frostbolt_t( const special_effect_t& effect ) :
+    spell_t( "sorcerous_frostbolt", effect.player, effect.player -> find_spell( 222320 ) )
   {
-  background = true;
-  may_crit = true;
-
-  base_dd_min = base_dd_max = 406890;
+    background = true;
+    may_crit = true;
+    base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item );
   }
+
   virtual double composite_crit_chance() const override
   { return 0.1; }
+
   virtual double composite_crit_chance_multiplier() const override
   { return 1.0; }
 };
 
 struct sorcerous_arcane_blast_t : public spell_t
 {
-  sorcerous_arcane_blast_t( mage_t* p ) :
-    spell_t( "sorcerous_arcane_blast", p )
+  sorcerous_arcane_blast_t( const special_effect_t& effect ) :
+    spell_t( "sorcerous_arcane_blast", effect.player, effect.player -> find_spell( 222321 ) )
   {
     background = true;
     may_crit = true;
-    base_dd_min = base_dd_max = 431550;
+    base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item );
   }
+
   virtual double composite_crit_chance() const override
   { return 0.1; }
+
   virtual double composite_crit_chance_multiplier() const override
   { return 1.0; }
 };
 
 struct sorcerous_shadowruby_pendant_driver_t : public spell_t
 {
-  unsigned current_roll;
   std::array<spell_t*, 3> sorcerous_spells;
   sorcerous_shadowruby_pendant_driver_t( const special_effect_t& effect ) :
     spell_t( "wanton_sorcery", effect.player, effect.player -> find_spell( 222276 ) )
   {
     callbacks = harmful = false;
     background = quiet = true;
-    mage_t* p = debug_cast<mage_t*>( effect.player );
-    sorcerous_spells[ 0 ] = new sorcerous_fireball_t( p );
-    sorcerous_spells[ 1 ] = new sorcerous_frostbolt_t( p );
-    sorcerous_spells[ 2 ] = new sorcerous_arcane_blast_t( p );
+    sorcerous_spells[ 0 ] = new sorcerous_fireball_t( effect );
+    sorcerous_spells[ 1 ] = new sorcerous_frostbolt_t( effect );
+    sorcerous_spells[ 2 ] = new sorcerous_arcane_blast_t( effect );
   }
-  virtual void impact( action_state_t* s ) override
+  virtual void execute() override
   {
-    spell_t::impact( s );
-    current_roll = static_cast<unsigned>( rng().range( 0, as<double>( sorcerous_spells.size() ) ) );
-    sorcerous_spells[ current_roll ] -> execute();
+    spell_t::execute();
+
+    auto current_roll = static_cast<unsigned>( rng().range( 0, as<double>( sorcerous_spells.size() ) ) );
+    auto spell = sorcerous_spells[ current_roll ];
+
+    spell -> set_target( execute_state -> target );
+    spell -> execute();
   }
 };
 
