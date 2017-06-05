@@ -5649,8 +5649,9 @@ struct reap_souls_t: public warlock_spell_t
 {
   timespan_t base_duration;
   timespan_t total_duration;
-  timespan_t check_time;
+  timespan_t base_time;
   timespan_t reap_and_sow_bonus;
+  timespan_t max_extension;
   int souls_consumed;
     reap_souls_t( warlock_t* p ) :
         warlock_spell_t( "reap_souls", p, p -> artifact.reap_souls ), souls_consumed( 0 )
@@ -5675,12 +5676,13 @@ struct reap_souls_t: public warlock_spell_t
 
       if ( p() -> artifact.reap_souls.rank() && p() -> buffs.tormented_souls -> check() )
       {
-          check_time = base_duration + reap_and_sow_bonus;
-
+        base_time = base_duration + reap_and_sow_bonus;
         souls_consumed = p() -> buffs.tormented_souls -> stack();
-//        total_duration = base_duration * souls_consumed;
-        total_duration = check_time * souls_consumed;
-        p() -> buffs.deadwind_harvester -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, total_duration );
+        total_duration = base_time * souls_consumed;
+        max_extension = base_time * 12 - p() -> buffs.deadwind_harvester -> remains();
+
+        p() -> buffs.deadwind_harvester -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, std::min( max_extension, total_duration ) );
+
         for ( int i = 0; i < souls_consumed; ++i )
         {
           p() -> procs.souls_consumed -> occur();
