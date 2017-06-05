@@ -310,6 +310,7 @@ public:
 
     // Miscellaneous Buffs
     buff_t* greater_blessing_of_widsom;
+    buff_t* t19_oh_buff;
 
   } buffs;
 
@@ -604,8 +605,8 @@ public:
   // Public mage functions:
   icicle_data_t get_icicle_object();
   void trigger_icicle( const action_state_t* trigger_state, bool chain = false, player_t* chain_target = nullptr );
-
   void trigger_touch_of_the_magi( buffs::touch_of_the_magi_t* touch_of_the_magi_buff );
+  void trigger_t19_oh();
 
   bool apply_crowd_control( const action_state_t* state, spell_mechanic type );
 
@@ -2675,6 +2676,8 @@ struct arcane_blast_t : public arcane_mage_spell_t
         p() -> cooldowns.presence_of_mind -> start();
       }
     }
+
+    p() -> trigger_t19_oh();
   }
 
   virtual double action_multiplier() const override
@@ -3709,11 +3712,12 @@ struct fireball_t : public fire_mage_spell_t
   {
     fire_mage_spell_t::execute();
 
-    if ( p() -> sets -> has_set_bonus( MAGE_FIRE, T20, B2 )
-      && rng().roll( p() -> sets -> set( MAGE_FIRE, T20, B2 ) -> effectN( 1 ).percent() ) )
+    if ( p() -> sets -> has_set_bonus( MAGE_FIRE, T20, B2 ) )
     {
       p() -> buffs.ignition -> trigger();
     }
+
+    p() -> trigger_t19_oh();
   }
 
   virtual void impact( action_state_t* s ) override
@@ -4199,6 +4203,8 @@ struct frostbolt_t : public frost_mage_spell_t
       bf_proc_chance += p() -> artifact.clarity_of_thought.percent();
       trigger_brain_freeze( bf_proc_chance );
     }
+
+    p() -> trigger_t19_oh();
   }
 
   virtual void impact( action_state_t* s ) override
@@ -6582,6 +6588,14 @@ void mage_t::trigger_touch_of_the_magi( buffs::touch_of_the_magi_t* buff )
   touch_of_the_magi_explosion -> execute();
 }
 
+void mage_t::trigger_t19_oh()
+{
+  if ( sets -> has_set_bonus( specialization(), T19OH, B8 ) )
+  {
+    buffs.t19_oh_buff -> trigger();
+  }
+}
+
 bool mage_t::apply_crowd_control( const action_state_t* state, spell_mechanic type )
 {
   if ( type == MECHANIC_INTERRUPT )
@@ -7028,7 +7042,8 @@ void mage_t::create_buffs()
   buffs.frenetic_speed         = buff_creator_t( this, "frenetic_speed", find_spell( 236060 ) )
                                    .default_value( find_spell( 236060 ) -> effectN( 1 ).percent() )
                                    .add_invalidate( CACHE_RUN_SPEED );
-  buffs.ignition               = buff_creator_t( this, "ignition", find_spell( 246261 ) );
+  buffs.ignition               = buff_creator_t( this, "ignition", find_spell( 246261 ) )
+                                   .trigger_spell( sets -> set( MAGE_FIRE, T20, B2 ) );
   buffs.heating_up             = buff_creator_t( this, "heating_up",  find_spell( 48107 ) );
   buffs.hot_streak             = buff_creator_t( this, "hot_streak",  find_spell( 48108 ) );
   buffs.pyretic_incantation    = buff_creator_t( this, "pyretic_incantation", find_spell( 194329 ) )
@@ -7092,6 +7107,8 @@ void mage_t::create_buffs()
                        gains.greater_blessing_of_wisdom ); } )
     -> set_period( find_spell( 203539 ) -> effectN( 2 ).period() )
     -> set_tick_behavior( BUFF_TICK_CLIP );
+  buffs.t19_oh_buff = stat_buff_creator_t( this, "ancient_knowledge", find_spell( 221648 ) )
+                        .trigger_spell( sets -> set( specialization(), T19OH, B8 ) );
 }
 
 // mage_t::init_gains =======================================================
