@@ -6827,7 +6827,8 @@ void warlock_t::create_buffs()
   buffs.misery = haste_buff_creator_t( this, "misery", find_spell( 216412 ) )
     .default_value( find_spell( 216412 ) -> effectN( 1 ).percent() );
   buffs.deadwind_harvester = buff_creator_t( this, "deadwind_harvester", find_spell( 216708 ) )
-    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+    .refresh_behavior( BUFF_REFRESH_EXTEND );
   buffs.tormented_souls = buff_creator_t( this, "tormented_souls", find_spell( 216695 ) )
     .tick_behavior( BUFF_TICK_NONE );
   buffs.compounding_horror = buff_creator_t( this, "compounding_horror", find_spell( 199281 ) );
