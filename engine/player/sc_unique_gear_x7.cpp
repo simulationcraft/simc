@@ -1368,7 +1368,14 @@ void specter_of_betrayal_driver_t::reset()
 
 void item::specter_of_betrayal( special_effect_t& effect )
 {
-  effect.execute_action = create_proc_action<specter_of_betrayal_driver_t>( "specter_of_betrayal_driver", effect );
+  if ( effect.driver() -> ok() )
+  {
+    effect.execute_action = create_proc_action<specter_of_betrayal_driver_t>( "specter_of_betrayal_driver", effect );
+  }
+  else
+  {
+    effect.type = SPECIAL_EFFECT_NONE;
+  }
 }
 
 // Cradle of Anguish =======================================================
