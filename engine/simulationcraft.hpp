@@ -5577,6 +5577,8 @@ public:
     options_t();
   } option;
 
+  bool interrupt_global;
+
   expr_t* if_expr;
 
   enum target_if_mode_e
@@ -6094,8 +6096,9 @@ struct call_action_list_t : public action_t
   action_priority_list_t* alist;
 
   call_action_list_t( player_t*, const std::string& );
-  virtual void execute() override
+  void execute() override
   { assert( 0 ); }
+  void init() override;
 };
 
 // Attack ===================================================================
@@ -6911,6 +6914,8 @@ struct action_priority_t
 
 struct action_priority_list_t
 {
+  using parent_t = std::tuple<const action_priority_list_t*, size_t>;
+
   // Internal ID of the action list, used in conjunction with the "new"
   // call_action_list action, that allows for potential infinite loops in the
   // APL.
@@ -6924,6 +6929,7 @@ struct action_priority_list_t
   bool used;
   std::vector<action_t*> foreground_action_list;
   std::vector<action_t*> off_gcd_actions;
+  std::vector<parent_t> parents;
   int random; // Used to determine how faceroll something actually is. :D
   action_priority_list_t( std::string name, player_t* p, const std::string& list_comment = std::string() ) :
     internal_id( 0 ), internal_id_mask( 0 ), name_str( name ), action_list_comment_str( list_comment ), player( p ), used( false ),
