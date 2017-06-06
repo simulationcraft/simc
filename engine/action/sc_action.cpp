@@ -3470,7 +3470,7 @@ void call_action_list_t::init()
 {
   action_t::init();
 
-  if ( action_list )
+  if ( action_list && alist )
   {
     auto action_it = range::find( action_list -> foreground_action_list, this );
     auto action_idx = std::distance( action_list -> foreground_action_list.begin(), action_it );
