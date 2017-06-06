@@ -1010,7 +1010,7 @@ struct arcane_blast_t : public mirror_image_spell_t
     double tm = mirror_image_spell_t::composite_target_multiplier( target );
 
     // Arcane Blast (88084) should work with Erosion, according to the spell data.
-    // Does not work in game, as of PTR build 24218, 2017-06-01
+    // Does not work in game, as of PTR build 24271, 2017-06-06.
     if ( ! o() -> bugs )
     {
       mage_td_t* tdata = o() -> get_target_data( target );
@@ -1722,7 +1722,7 @@ struct arcane_mage_spell_t : public mage_spell_t
       // The damage bonus given by mastery seems to be snapshot at the moment
       // Arcane Charge is gained. As long as the stack number remains the same,
       // any future changes to mastery will have no effect.
-      // As of PTR build 24218, 2017-06-01.
+      // As of PTR build 24271, 2017-06-06.
       if ( ac -> check() < ac -> max_stack() )
       {
         ac -> trigger( stacks, savant_damage_bonus() );
@@ -1967,6 +1967,12 @@ struct fire_mage_spell_t : public mage_spell_t
   // Helper methods for Contained Infernal Core.
   void trigger_infernal_core( player_t* target )
   {
+    // As of PTR build 24271, 2017-06-06, casting Fireball and instant Pyroblast
+    // while at 28 stacks removes tracking buff, then triggers primed buff and
+    // one stack of tracking buff (instead of triggering the Meteor). Next cast
+    // then expires the primed buff, triggers the Meteor and triggers a second
+    // stack of the tracking buff.
+    // TODO: Check this
     trigger_legendary_effect( p() -> buffs.contained_infernal_core,
                               p() -> buffs.erupting_infernal_core,
                               p() -> action.legendary_meteor,
@@ -2229,6 +2235,7 @@ struct frost_mage_spell_t : public mage_spell_t
     // It seems that casting Flurry while Frostbolt is mid-air does not
     // trigger the buff if Frostbolt hits before Flurry does (thankfully,
     // it usually happens the other way around).
+    // Last checked: PTR build 24271, 2017-06-06
     // TODO: Check this
     trigger_legendary_effect( p() -> buffs.shattered_fragments_of_sindragosa,
                               p() -> buffs.rage_of_the_frost_wyrm,
@@ -2738,7 +2745,7 @@ struct time_and_space_t : public arcane_mage_spell_t
     background = true;
 
     // All other background actions trigger Erosion.
-    // As of PTR build 24218, 2017-06-01.
+    // As of PTR build 24271, 2017-06-06.
     if ( p -> bugs )
     {
       triggers_erosion = false;
@@ -3427,6 +3434,13 @@ struct comet_storm_projectile_t : public frost_mage_spell_t
   {
     aoe = -1;
     background = true;
+
+    // Should be 6 yd according to the tooltip, but it's 4 yd
+    // in game. As of PTR build 24218, 2017-06-03.
+    if ( ! p -> bugs )
+    {
+      radius = 6.0;
+    }
   }
 };
 
@@ -3908,7 +3922,7 @@ struct flamestrike_t : public fire_mage_spell_t
       // None of the following Aftershocks get Ignition crit bonus.
       //
       // This should model that behavior correctly. Otherwise we might need custom snapshotting.
-      //
+      // Last checked: PTR build 24271, 2017-06-06
       // TODO: Check if this is still true.
       aftershocks -> ignition = p() -> buffs.ignition -> up();
 
@@ -4288,7 +4302,7 @@ struct ice_time_nova_t : public frost_mage_spell_t
     aoe = -1;
 
     // According to the spell data.
-    // As of PTR build 24218, 2017-06-01.
+    // As of PTR build 24271, 2017-06-06.
     if ( p -> bugs )
     {
       affected_by.frost_mage = false;
@@ -4321,7 +4335,7 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
     crit_bonus_multiplier *= 1.0 + p -> artifact.orbital_strike.percent();
     chills = true;
 
-    // As of PTR build 24218, 2017-06-01.
+    // As of PTR build 24271, 2017-06-06.
     if ( p -> bugs )
     {
       affected_by.shatter = false;
@@ -4931,7 +4945,7 @@ struct mark_of_aluneth_explosion_t : public arcane_mage_spell_t
     background = true;
     aoe = -1;
 
-    // As of PTR build 24218, 2017-06-01.
+    // As of PTR build 24271, 2017-06-06.
     if ( p -> bugs )
     {
       affected_by.arcane_mage = false;
@@ -5118,7 +5132,7 @@ struct meteor_impact_t: public fire_mage_spell_t
     timespan_t ground_aoe_duration = p() -> find_spell( 175396 ) -> duration();
 
     // It seems that the 8th tick happens only very rarely in game.
-    // As of PTR build 24218, 2017-06-01.
+    // As of PTR build 24271, 2017-06-06.
     if ( p() -> bugs )
     {
       ground_aoe_duration -= pulse_time;
@@ -5353,7 +5367,7 @@ struct phoenixs_flames_splash_t : public fire_mage_spell_t
     double am = fire_mage_spell_t::action_multiplier();
 
     // Phoenix's Flames splash deal 25% less damage compared to the
-    // spell data/tooltip values. As of PTR build 24218, 2017-06-01.
+    // spell data/tooltip values. As of PTR build 24271, 2017-06-06.
     am *= std::pow( strafing_run_multiplier, p() -> bugs ? chain_number + 1 : chain_number );
 
     return am;
