@@ -8474,7 +8474,8 @@ void rogue_t::create_buffs()
   // Artifact
   // Abilities
   buffs.curse_of_the_dreadblades  = buff_creator_t( this, "curse_of_the_dreadblades", artifact.curse_of_the_dreadblades )
-                                    .cd( timespan_t::zero() ); // Handled by the action
+                                    .cd( timespan_t::zero() ) // Handled by the action
+                                    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buffs.goremaws_bite             = buff_creator_t( this, "goremaws_bite", artifact.goremaws_bite.data().effectN( 4 ).trigger() )
                                     .tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
