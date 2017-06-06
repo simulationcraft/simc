@@ -4042,7 +4042,7 @@ struct fists_of_fury_t: public monk_melee_attack_t
   {
     double c = monk_melee_attack_t::cost();
 
-    if ( p() -> legendary.katsuos_eclipse )
+    if ( p() -> legendary.katsuos_eclipse && !p() -> buff.serenity -> up() )
       c += p() -> legendary.katsuos_eclipse -> effectN( 1 ).base_value(); // saved as -1
 
     return c;

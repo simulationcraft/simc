@@ -176,6 +176,7 @@ public:
     buff_t* destiny_driver; //215157
     buff_t* xavarics_magnum_opus; //207472
     haste_buff_t* sephuzs_secret;
+    haste_buff_t* in_for_the_kill;
   } buff;
 
   // Cooldowns
@@ -232,6 +233,7 @@ public:
     gain_t* rage_from_damage_taken;
     gain_t* valarjar_berserking;
     gain_t* ravager;
+    gain_t* execute_refund;
   } gain;
 
   // Spells
@@ -1424,7 +1426,7 @@ struct mortal_strike_t20_t : public warrior_attack_t
       {
         execute_state -> target -> debuffs.mortal_wounds -> trigger();
       }
-      if ( p() -> talents.in_for_the_kill -> ok() && execute_state -> target -> health_percentage() <= 20 )
+      if ( !maybe_ptr( p() -> dbc.ptr ) && p() -> talents.in_for_the_kill -> ok() && execute_state -> target -> health_percentage() <= 20 ) //FIXME PTR
       {
         p() -> resource_gain( RESOURCE_RAGE, p() -> talents.in_for_the_kill -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ),
                               p() -> gain.in_for_the_kill );
@@ -1475,7 +1477,7 @@ struct mortal_strike_t : public warrior_attack_t
     }
 
     if ( maybe_ptr( p() -> dbc.ptr ) ) //FIXME PTR
-      cc *= 1.0 + p() -> buff.precise_strikes -> check_value();
+      cc += p() -> buff.precise_strikes -> check_value();
 
     return cc;
   }
@@ -1511,7 +1513,7 @@ struct mortal_strike_t : public warrior_attack_t
       {
         execute_state -> target -> debuffs.mortal_wounds -> trigger();
       }
-      if ( p() -> talents.in_for_the_kill -> ok() && execute_state -> target -> health_percentage() <= 20 )
+      if ( !maybe_ptr( p() -> dbc.ptr ) && p() -> talents.in_for_the_kill -> ok() && execute_state -> target -> health_percentage() <= 20 ) //FIXME PTR
       {
         p() -> resource_gain( RESOURCE_RAGE, p() -> talents.in_for_the_kill -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ),
                               p() -> gain.in_for_the_kill );
@@ -1627,7 +1629,7 @@ struct bladestorm_t: public warrior_attack_t
     {
       bladestorm_oh -> execute();
     }
-    if ( mortal_strike )
+    if ( mortal_strike && d -> ticks_left() > 0 )
     {
       auto t = select_random_target();
 
@@ -2015,6 +2017,8 @@ struct colossus_smash_t: public warrior_attack_t
 
       p() -> buff.shattered_defenses -> trigger();
       p() -> buff.precise_strikes -> trigger();
+      if ( p() -> buff.in_for_the_kill != nullptr )
+        p() -> buff.in_for_the_kill -> trigger();
       if ( p() -> talents.ravager -> ok() )
         p() -> cooldown.ravager -> adjust( t20_2p_reduction );
       else
@@ -2324,7 +2328,7 @@ struct execute_arms_t: public warrior_attack_t
     }
 
     if ( maybe_ptr( p() -> dbc.ptr ) ) //FIXME PTR
-      cc *= 1.0 + p() -> buff.precise_strikes -> check_value();
+      cc += p() -> buff.precise_strikes -> check_value();
 
     return cc;
   }
@@ -2382,6 +2386,10 @@ struct execute_arms_t: public warrior_attack_t
   {
     warrior_attack_t::execute();
 
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+    {
+      p() -> resource_gain( RESOURCE_RAGE, last_resource_cost * 0.3, p() -> gain.execute_refund );
+    }
     if ( execute_sweeping_strike )
     {
       make_event<sweeping_execute_t>( *sim, p(),
@@ -3210,7 +3218,7 @@ struct rampage_attack_t: public warrior_attack_t
     {// If the first attack misses, all of the rest do as well. However, if any other attack misses, the attacks after continue.
                                 // The animations and timing of everything else -- such as odyns champion proccing after the last attack -- still occur, so we can't just cancel rampage.
       warrior_attack_t::impact( s );
-      if ( p() -> legendary.valarjar_berserkers != nullptr && s -> result == RESULT_CRIT )
+      if ( p() -> legendary.valarjar_berserkers != nullptr && s -> result == RESULT_CRIT && target == s -> target )
       {
         p() -> resource_gain( RESOURCE_RAGE, rage_from_valarjar_berserking, p() -> gain.valarjar_berserking  );
       }
@@ -5862,6 +5870,14 @@ void warrior_t::create_buffs()
     .default_value( artifact.neltharions_thunder.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() );
 
   buff.sephuzs_secret = new buffs::sephuzs_secret_buff_t( this );
+
+  if ( maybe_ptr( dbc.ptr ) ) //FIXME PTR
+  {
+    buff.in_for_the_kill = haste_buff_creator_t( this, "in_for_the_kill", talents.in_for_the_kill -> effectN( 1 ).trigger() )
+      .default_value( talents.in_for_the_kill -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
+  }
+  else
+    buff.in_for_the_kill = nullptr;
 }
 
 // warrior_t::init_scaling ==================================================
@@ -5908,6 +5924,7 @@ void warrior_t::init_gains()
   gain.valarjar_berserking = get_gain( "valarjar_berserking" );
   gain.ravager = get_gain( "ravager" );
   gain.rage_from_damage_taken = get_gain( "rage_from_damage_taken" );
+  gain.execute_refund = get_gain( "execute_refund" );
 }
 
 // warrior_t::init_position ====================================================
@@ -6216,6 +6233,9 @@ double warrior_t::composite_melee_haste() const
   a *= 1.0 / ( 1.0 + buff.into_the_fray -> check_stack_value() );
 
   a *= 1.0 / ( 1.0 + buff.sephuzs_secret -> check_value() );
+
+  if ( buff.in_for_the_kill != nullptr )
+    a *= 1.0 / ( 1.0 + buff.in_for_the_kill -> check_value() );
 
   return a;
 }

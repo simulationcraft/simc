@@ -3108,9 +3108,11 @@ Class            : Mage
 School           : Fire
 Range            : 100 yards
 Duration         : 10 seconds
+Stacks           : 3 maximum
+Proc Chance      : 101%
 Affecting spells : Fire Mage (137019 effect#1), Norgannon's Foresight (236380 effect#1)
 Attributes       : ........ ........ .......x x..x....   .....x.. ........ ........ ........ 
-                 : ..x..... ......x. ...x.... ....x...   .......x ........ ........ ........ 
+                 : ..x..... ......x. ...x.... ....x...   .......x ........ ........ ......x. 
                  : .......x ........ ........ ........   ...x.... ..x....x .xx..... ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : .....x.. .x..x... ........ ........   ........ ...x.... ....x... ........ 
@@ -4826,6 +4828,64 @@ Effects          :
 Description      : $@spelldesc44457
 Tooltip          : Causes $w1 Fire damage every $t1 sec. After $d, the target explodes, causing $w2 Fire damage to the target and all other enemies within $44461A2 yards$?$w3>0[, and spreading Living Bomb][].
 
+Name             : Fireball (id=222305) [Scaling Spell (-1)] 
+Class            : Mage
+School           : Fire
+Spell Level      : 1
+Range            : 30 yards
+Velocity         : 25 yards/sec
+Duration         : 5 seconds
+Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+Effects          :
+#1 (id=331819)   : School Damage (2): fire
+                   Base Value: 0 | Scaled Value: 169900 (avg=100) | Target: Enemy (6)
+#2 (id=342491)   : Apply Aura (6) | Periodic Damage (3): fire every 1 seconds
+                   Base Value: 0 | Scaled Value: 25485 (avg=15) | Target: Enemy (6)
+Description      : Deal $sw1 Fire damage and an additional $sw2 Fire damage over $d.
+Tooltip          : Taking $sw2 Fire damage every $t2 sec.
+
+Name             : Frostbolt (id=222320) [Scaling Spell (-1)] 
+Class            : Mage
+School           : Frost
+Spell Level      : 1
+Range            : 30 yards
+Velocity         : 25 yards/sec
+Duration         : 5 seconds
+Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+Effects          :
+#1 (id=331848)   : School Damage (2): frost
+                   Base Value: 0 | Scaled Value: 280335 (avg=165) | Target: Enemy (6)
+#2 (id=342164)   : Apply Aura (6) | Decrease Movement Speed% (33)
+                   Base Value: -70 | Scaled Value: -70 | Target: Enemy (6)
+Description      : Deal $s1 Frost damage and reduces the target's movement speed by $s2% for $d.
+Tooltip          : Movement speed reduced by $s2% for $d.
+
+Name             : Arcane Blast (id=222321) [Scaling Spell (-1)] 
+Class            : Mage
+School           : Arcane
+Spell Level      : 1
+Range            : 30 yards
+Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+Effects          :
+#1 (id=331849)   : School Damage (2): arcane
+                   Base Value: 0 | Scaled Value: 297325 (avg=175) | Target: Enemy (6)
+Description      : Deal $s1 Arcane damage.
+
 Name             : Phoenix's Flames (Artifact) (id=224637) [Spell Family (3)] 
 Class            : Mage
 School           : Fire
@@ -5750,7 +5810,7 @@ Name             : Shattered Fragments of Sindragosa (id=248176) [Spell Family (
 Class            : Mage
 School           : Physical
 Duration         : 30 seconds
-Stacks           : 20 maximum
+Stacks           : 15 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 

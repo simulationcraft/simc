@@ -230,6 +230,10 @@ sc_main.o: .FORCE
 
 report/sc_report_html_sim.o: .FORCE
 
+report/sc_report_json.o: .FORCE
+
+report/sc_report_xml.o: .FORCE
+
 # cleanup targets
 mostlyclean:
 	-@echo [$(MODULE)] Cleaning intermediate files

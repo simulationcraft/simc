@@ -20,13 +20,12 @@ void progress_bar_t::init()
   }
   else
   {
-    auto n_iterations = sim.work_queue -> size();
+    interval = sim.work_queue -> size();
     if ( sim.deterministic || sim.strict_work_queue )
     {
-      n_iterations *= sim.threads;
+      interval *= sim.threads;
     }
-
-    interval = n_iterations / updates;
+    interval /= updates;
   }
   if ( interval == 0 )
   {
@@ -67,12 +66,12 @@ bool progress_bar_t::update( bool finished, int index )
   if ( ! finished )
   {
     double update_interval = last_update - util::wall_time();
-    if ( progress.current_iterations < interval * update_number &&
+    if ( progress.current_iterations < update_number + interval &&
          update_interval < max_interval_time )
     {
       return false;
     }
-    update_number++;
+    update_number = progress.current_iterations;
     last_update = util::wall_time();
   }
 

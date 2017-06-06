@@ -1204,15 +1204,8 @@ void item::umbral_moonglaives( special_effect_t& effect )
 
 void item::engine_of_eradication( special_effect_t& effect )
 {
-  auto primary_stat = effect.player -> primary_stat();
-  if ( primary_stat == STAT_NONE )
-  {
-    effect.player -> sim -> errorf( "%s no primary stat defined for specialization, cannot initialize %s",
-        effect.player -> name(), effect.name().c_str() );
-    effect.type = SPECIAL_EFFECT_NONE;
-    return;
-  }
-
+  auto primary_stat = effect.player -> convert_hybrid_stat( STAT_STR_AGI );
+  
   double amount = effect.trigger() -> effectN( 3 ).average( effect.item );
   stat_buff_t* buff = debug_cast<stat_buff_t*>( buff_t::find( effect.player, "demonic_vigor" ) );
   if ( buff == nullptr )
@@ -1375,7 +1368,14 @@ void specter_of_betrayal_driver_t::reset()
 
 void item::specter_of_betrayal( special_effect_t& effect )
 {
-  effect.execute_action = create_proc_action<specter_of_betrayal_driver_t>( "specter_of_betrayal_driver", effect );
+  if ( effect.driver() -> ok() )
+  {
+    effect.execute_action = create_proc_action<specter_of_betrayal_driver_t>( "specter_of_betrayal_driver", effect );
+  }
+  else
+  {
+    effect.type = SPECIAL_EFFECT_NONE;
+  }
 }
 
 // Cradle of Anguish =======================================================
@@ -1439,7 +1439,7 @@ void item::cradle_of_anguish( special_effect_t& effect )
   if ( buff == nullptr )
   {
     buff = stat_buff_creator_t( effect.player, "strength_of_will", buff_spell, effect.item )
-           .add_stat( effect.player -> primary_stat(), amount );
+           .add_stat( effect.player -> convert_hybrid_stat( STAT_STR_AGI ) , amount );
   }
 
   effect.player -> callbacks_on_arise.emplace_back( [ buff, effect ]() {
@@ -2011,21 +2011,20 @@ void item::tome_of_unraveling_sanity( special_effect_t& effect )
 
 struct infernal_cinders_t : public proc_spell_t
 {
-  const spell_data_t* damage_multiplier;
+  const spell_data_t* dancing_flames;
 
   infernal_cinders_t( const special_effect_t& effect ) :
     proc_spell_t( effect ),
-    damage_multiplier( effect.player -> find_spell( 246654 ) )
+    dancing_flames( effect.player -> find_spell( 246654 ) )
   { }
 
-  double action_multiplier() const override
+  double composite_crit_chance() const override
   {
-    double m = proc_spell_t::action_multiplier();
+    double cc = proc_spell_t::composite_crit_chance();
 
-    m *= 1.0 + damage_multiplier -> effectN( 1 ).percent() *
-               ( sim -> expansion_opts.infernal_cinders_users - 1);
+    cc += dancing_flames->effectN(1).percent() * (sim->expansion_opts.infernal_cinders_users - 1);
 
-    return m;
+    return cc;
   }
 };
 
@@ -2043,6 +2042,7 @@ struct ceaseless_toxin_t : public proc_spell_t
   ceaseless_toxin_t( const special_effect_t& effect ) : proc_spell_t( effect )
   {
     aoe = -1;
+    hasted_ticks = true;
   }
 
   // Need to invalidate target list for every execute, because the ability picks a random target
@@ -4258,9 +4258,9 @@ void item::convergence_of_fates( special_effect_t& effect )
     }
     break;
   case DEATH_KNIGHT_UNHOLY:
-    if ( ! player_talent( effect.player, "Dark Arbiter" ) )
+    if ( player_talent( effect.player, "Dark Arbiter" ) )
     {
-      effect.ppm_ = -4.98;
+      effect.ppm_ = -5.5;
       effect.rppm_modifier_ = 1.0;
     }
     break;

@@ -484,6 +484,7 @@ action_t::action_t( action_e       ty,
   num_targets_hit(),
   marker(),
   option(),
+  interrupt_global( false ),
   if_expr(),
   target_if_mode( TARGET_IF_NONE ),
   target_if_expr(),
@@ -563,6 +564,7 @@ action_t::action_t( action_e       ty,
   add_option( opt_string( "interrupt_if", option.interrupt_if_expr_str ) );
   add_option( opt_string( "early_chain_if", option.early_chain_if_expr_str ) );
   add_option( opt_bool( "interrupt", option.interrupt ) );
+  add_option( opt_bool( "interrupt_global", interrupt_global ) );
   add_option( opt_bool( "chain", option.chain ) );
   add_option( opt_bool( "cycle_targets", option.cycle_targets ) );
   add_option( opt_bool( "cycle_players", option.cycle_players ) );
@@ -3461,6 +3463,26 @@ call_action_list_t::call_action_list_t( player_t* player, const std::string& opt
   {
     sim -> errorf( "Player %s uses call_action_list with unknown action list %s\n", player -> name(), alist_name.c_str() );
     sim -> cancel();
+  }
+
+}
+
+void call_action_list_t::init()
+{
+  action_t::init();
+
+  if ( action_list && alist )
+  {
+    auto action_it = range::find( action_list -> foreground_action_list, this );
+    auto action_idx = std::distance( action_list -> foreground_action_list.begin(), action_it );
+    auto it = range::find_if( alist -> parents, [ this ]( const action_priority_list_t::parent_t& parent ) {
+      return std::get<0>( parent ) == action_list;
+    } );
+
+    if ( it == alist -> parents.end() )
+    {
+      alist -> parents.push_back( std::make_tuple( action_list, action_idx ) );
+    }
   }
 }
 

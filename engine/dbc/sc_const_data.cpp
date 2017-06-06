@@ -1694,7 +1694,13 @@ double spelleffect_data_t::average( const item_t* item ) const
   if ( ! item )
     return 0;
 
-  return _m_avg * item_database::item_budget( item, _spell -> max_scaling_level() );
+  auto budget = item_database::item_budget( item, _spell -> max_scaling_level() );
+  if ( _spell -> scaling_class() == PLAYER_SPECIAL_SCALE7 )
+  {
+    budget = item_database::apply_combat_rating_multiplier( *item, budget );
+  }
+
+  return _m_avg * budget;
 }
 
 double dbc_t::item_socket_cost( unsigned ilevel ) const
@@ -1753,6 +1759,11 @@ double spelleffect_data_t::delta( const item_t* item ) const
 
   if ( _m_delta != 0 )
     m_scale = item_database::item_budget( item, _spell -> max_scaling_level() );
+
+  if ( _spell -> scaling_class() == PLAYER_SPECIAL_SCALE7 )
+  {
+    m_scale = item_database::apply_combat_rating_multiplier( *item, m_scale );
+  }
 
   return scaled_delta( m_scale );
 }

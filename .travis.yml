@@ -2,10 +2,12 @@
 # framework to run SimulationCrafts tests with every GitHub push or pull-request.
 language: cpp
 
+osx_image: xcode8.3
+
 branches:
   only:
     - legion-dev
-    
+
 # Enable Trusty (Ubuntu 14.04 LTS) Beta
 sudo: required
 dist: trusty
@@ -50,7 +52,8 @@ notifications:
 
 install:
   # Build SimulationCraft
-  - make DEBUG=1 -C engine -j 2
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then make DEBUG=1 -C engine -j 2; fi
+  - if [ "$TRAVIS_OS_NAME" == "osx"   ]; then make DEBUG=1 SANITIZE=1 -C engine -j 2; fi
 
 script:
   # Test SimulationCraft.

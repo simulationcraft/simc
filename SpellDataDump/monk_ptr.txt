@@ -442,7 +442,7 @@ Resource         : 50 Energy (3) (id=10716) w/ Windwalker Monk (id=137025)
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Stance of the Fierce Tiger (103985 effect#5), Stagger (115069 effect#11), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Heightened Senses (165692 effect#1), Mana Tea (197908 effect#1), Item - Monk T19 Brewmaster 4P Bonus (211417 effect#1), Tiger Claws (218607 effect#1), Blackout Combo (228563 effect#1)
+Affecting spells : Stance of the Fierce Tiger (103985 effect#5), Stagger (115069 effect#11), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Heightened Senses (165692 effect#1), Item - Monk T19 Brewmaster 4P Bonus (211417 effect#1), Tiger Claws (218607 effect#1), Blackout Combo (228563 effect#1)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -557,7 +557,7 @@ Resource         : 3 Chi (12) (id=10834) w/ Brewmaster Monk (id=137023)
 Spell Level      : 40
 GCD              : 1.5 seconds
 Duration         : 1.5 seconds
-Affecting spells : Stance of the Fierce Tiger (103985 effect#5), Stagger (115069 effect#11), Mistweaver Monk (137024 effect#6), Lucidity (137331 effect#1), Serenity (152173 effect#1), Mana Tea (197908 effect#1), 
+Affecting spells : Stance of the Fierce Tiger (103985 effect#5), Stagger (115069 effect#11), Mistweaver Monk (137024 effect#6), Lucidity (137331 effect#1), Serenity (152173 effect#1), 
 Triggered by     : Cyclone Strikes (220358)
 Attributes       : ....x... ........ x.x..... ........   ..x...x. ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -669,7 +669,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Charges          : 1 (10 seconds cooldown)
 Category         : 1518: Monk (137022 effect#2)
-Affecting spells : Stance of the Fierce Tiger (103985 effect#5), Stagger (115069 effect#11), Monk (137022 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Rising Winds (195263 effect#1), Mana Tea (197908 effect#1), Pressure Point (247255 effect#1)
+Affecting spells : Stance of the Fierce Tiger (103985 effect#5), Stagger (115069 effect#11), Monk (137022 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Rising Winds (195263 effect#1), Pressure Point (247255 effect#1)
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -972,7 +972,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 30 yards/sec
 Cooldown         : 8 seconds
-Affecting spells : Thunder Focus Tea (116680 effect#1), Enveloping Mist (124682 effect#2), Lucidity (137331 effect#1), Chi-ji's Guidance (167717 effect#1), Extend Life (185158 effect#2), Mana Tea (197908 effect#1), Extended Healing (199372 effect#1), The Mists of Sheilun (199888 effect#1), Item - Monk T19 Mistweaver 2P Bonus (211418 effect#1)
+Affecting spells : Thunder Focus Tea (116680 effect#1), Enveloping Mist (124682 effect#2), Lucidity (137331 effect#1), Chi-ji's Guidance (167717 effect#1), Extend Life (185158 effect#2), Extended Healing (199372 effect#1), The Mists of Sheilun (199888 effect#1), Item - Monk T19 Mistweaver 2P Bonus (211418 effect#1)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ..x...x. 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -1015,7 +1015,7 @@ School           : Nature
 Spell Level      : 10
 Range            : 40 yards
 Duration         : 300 seconds
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Lucidity (137331 effect#1), Extend Life (185158 effect#2), Mist Wrap (197900 effect#1), Mana Tea (197908 effect#1), Soothing Remedies (199377 effect#1), The Mists of Sheilun (199888 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Lucidity (137331 effect#1), Extend Life (185158 effect#2), Mist Wrap (197900 effect#1), Soothing Remedies (199377 effect#1), The Mists of Sheilun (199888 effect#1)
 Attributes       : ........ ........ x....... ........   ..x...x. ........ ........ ..x..x.. 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..x.. ........ ........ 
@@ -1144,7 +1144,7 @@ Resource         : 4.374% Base Mana (0) (id=5718)
 Spell Level      : 70
 GCD              : 1.5 seconds
 Cooldown         : 180 seconds
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Lucidity (137331 effect#1), Extend Life (185158 effect#2), Mana Tea (197908 effect#1), Tendrils of Revival (238058 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Lucidity (137331 effect#1), Extend Life (185158 effect#2), Tendrils of Revival (238058 effect#1)
 Attributes       : ........ ........ ........ ........   ........ ..x....x ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1249,7 +1249,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 1 (8 seconds cooldown)
 Category         : 1511
-Affecting spells : Stance of the Fierce Tiger (103985 effect#5), Stagger (115069 effect#11), Lucidity (137331 effect#1), Mana Tea (197908 effect#1)
+Affecting spells : Stance of the Fierce Tiger (103985 effect#5), Stagger (115069 effect#11), Lucidity (137331 effect#1)
 Attributes       : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1427,7 +1427,7 @@ Spell Level      : 28
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Thunder Focus Tea (116680 effect#5), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2), Uplifting Trance (197206 effect#1), Mana Tea (197908 effect#1), Infusion of Life (199380 effect#1)
+Affecting spells : Thunder Focus Tea (116680 effect#5), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2), Uplifting Trance (197206 effect#1), Infusion of Life (199380 effect#1)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1499,7 +1499,7 @@ Spell Level      : 8
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Thunder Focus Tea (116680 effect#2), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Lucidity (137331 effect#1), Extend Life (185158 effect#2), Mana Tea (197908 effect#1), Coalescing Mists (199364 effect#1), Soothing Mist (209525 effect#2), Effuse (231602 effect#1)
+Affecting spells : Thunder Focus Tea (116680 effect#2), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Lucidity (137331 effect#1), Extend Life (185158 effect#2), Coalescing Mists (199364 effect#1), Soothing Mist (209525 effect#2), Effuse (231602 effect#1)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1648,7 +1648,7 @@ Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 6 seconds
-Affecting spells : Stance of the Fierce Tiger (103985 effect#5), Stagger (115069 effect#11), Monk (137022 effect#1), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Lucidity (137331 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Mana Tea (197908 effect#1)
+Affecting spells : Stance of the Fierce Tiger (103985 effect#5), Stagger (115069 effect#11), Monk (137022 effect#1), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Lucidity (137331 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), 
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -1681,7 +1681,7 @@ Spell Level      : 35
 Range            : 40 yards
 Duration         : 12 seconds
 Cooldown         : 180 seconds
-Affecting spells : Lucidity (137331 effect#1), Item - Monk WoD PvP Mistweaver 4P Bonus (165697 effect#1), Mana Tea (197908 effect#1), Protection of Shaohao (199367 effect#1)
+Affecting spells : Lucidity (137331 effect#1), Item - Monk WoD PvP Mistweaver 4P Bonus (165697 effect#1), Protection of Shaohao (199367 effect#1)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1778,7 +1778,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 4 seconds
 Proc Chance      : 100%
-Affecting spells : Stance of the Fierce Tiger (103985 effect#5), Stagger (115069 effect#11), Brewmaster Monk (137023 effect#2), Mistweaver Monk (137024 effect#15), Windwalker Monk (137025 effect#2), Lucidity (137331 effect#1), Storm, Earth, and Fire (137639 effect#1), Mana Tea (197908 effect#1), The Emperor's Capacitor (235054 effect#1), 
+Affecting spells : Stance of the Fierce Tiger (103985 effect#5), Stagger (115069 effect#11), Brewmaster Monk (137023 effect#2), Mistweaver Monk (137024 effect#15), Windwalker Monk (137025 effect#2), Lucidity (137331 effect#1), Storm, Earth, and Fire (137639 effect#1), The Emperor's Capacitor (235054 effect#1), 
 Attributes       : ........ ........ ........ ........   ..x..... ......x. ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ...x.... 
@@ -1910,7 +1910,7 @@ Duration         : 20 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Lucidity (137331 effect#1), Extend Life (185158 effect#2), Mana Tea (197908 effect#1), Extended Healing (199372 effect#1), The Mists of Sheilun (199888 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Lucidity (137331 effect#1), Extend Life (185158 effect#2), Extended Healing (199372 effect#1), The Mists of Sheilun (199888 effect#1)
 Attributes       : ........ ........ ..x..... x..x....   ........ ........ ........ ........ 
                  : ..x..... x....... ........ ........   ........ .x...... ........ ..x...x. 
                  : ........ .......x ........ ........   ........ .....x.. ........ ........ 
@@ -2648,7 +2648,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 6 seconds
-Affecting spells : Thunder Focus Tea (116680 effect#3), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2), Mist Wrap (197900 effect#2), Mana Tea (197908 effect#1), Way of the Mistweaver (199366 effect#1), The Mists of Sheilun (199888 effect#1), Soothing Mist (209525 effect#2), Enveloping Mist (231605 effect#1), Surge of Mists (246328 effect#1)
+Affecting spells : Thunder Focus Tea (116680 effect#3), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2), Mist Wrap (197900 effect#2), Way of the Mistweaver (199366 effect#1), The Mists of Sheilun (199888 effect#1), Soothing Mist (209525 effect#2), Enveloping Mist (231605 effect#1), Surge of Mists (246328 effect#1)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -3315,16 +3315,16 @@ Effects          :
                    Base Value: 2000 | Scaled Value: 2000 | Misc Value: 1518
                    Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (185099)
 #11 (id=260832)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
-                   Base Value: -30 | Scaled Value: -30
+                   Base Value: -20 | Scaled Value: -20
                    Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (185099)
 #12 (id=260833)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
-                   Base Value: -12 | Scaled Value: -12
+                   Base Value: 0 | Scaled Value: 0
                    Affected Spells: Blackout Kick (100784), Blackout Strike (205523), Blackout Kick (228649)
 #13 (id=260834)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
-                   Base Value: -12 | Scaled Value: -12
+                   Base Value: 0 | Scaled Value: 0
                    Affected Spells: Tiger Palm (100780)
 #14 (id=260835)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
-                   Base Value: -40 | Scaled Value: -40
+                   Base Value: -32 | Scaled Value: -32
                    Affected Spells: Spinning Crane Kick (107270)
 #15 (id=260836)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
                    Base Value: 400 | Scaled Value: 400 | Misc Value: 22 | Target: Self (1)
@@ -3486,7 +3486,7 @@ Description      : $@spelldesc123986
 Name             : Rushing Jade Wind (id=148187) [Spell Family (53)] 
 Class            : Monk
 School           : Physical
-Affecting spells : Stance of the Fierce Tiger (103985 effect#5), Stagger (115069 effect#11), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Lucidity (137331 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Mana Tea (197908 effect#1)
+Affecting spells : Stance of the Fierce Tiger (103985 effect#5), Stagger (115069 effect#11), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Lucidity (137331 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), 
 Triggered by     : Rushing Jade Wind (116847)
 Attributes       : ....x... ........ ..x..... ...x....   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ .x...... ........ ........ 
@@ -3853,7 +3853,7 @@ Class            : Monk
 School           : Physical
 Spell Level      : 56
 Range            : 5 yards
-Affecting spells : Stance of the Fierce Tiger (103985 effect#5), Stagger (115069 effect#11), Monk (137022 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Rising Winds (195263 effect#1), Mana Tea (197908 effect#1), Pressure Point (247255 effect#1)
+Affecting spells : Stance of the Fierce Tiger (103985 effect#5), Stagger (115069 effect#11), Monk (137022 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Rising Winds (195263 effect#1), Pressure Point (247255 effect#1)
 Triggered by     : Rising Sun Kick (107428)
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3910,7 +3910,7 @@ Spell Level      : 40
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Cooldown         : 12 seconds
-Affecting spells : Thunder Focus Tea (116680 effect#4), Thunder Focus Tea (197218 effect#1), Mana Tea (197908 effect#1)
+Affecting spells : Thunder Focus Tea (116680 effect#4), Thunder Focus Tea (197218 effect#1), 
 Attributes       : ........ ........ x....... ........   ..x...x. ..x..... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -4504,12 +4504,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=290828)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Tiger Palm (100780), Spinning Crane Kick (101546), Rising Sun Kick (107428), Renewing Mist (115151), Soothing Mist (115175), Revival (115310), Detox (115450), Vivify (116670), Effuse (116694), Rushing Jade Wind (116847), Life Cocoon (116849), Crackling Jade Lightning (117952), Renewing Mist (119611), Enveloping Mist (124682), Rushing Jade Wind (148187), Rising Sun Kick (185099), Essence Font (191837), Soothing Mist (209525), Reawaken (212051), Detox (218164)
-#2 (id=345166)   : Apply Aura (6) | Add Percent Modifier (108): Runic Power Generation (34)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value: 34 | Target: Self (1)
-                   Affected Spells: Spinning Crane Kick (101546), Rising Sun Kick (107428), Rising Sun Kick (185099)
+#1 (id=290828)   : Apply Aura (6) | Modify Power Cost% (72)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 127 | Misc Value 2: 0x1 | Target: Self (1)
 Description      : Reduces the mana cost of your spells by $s1% for $d.
 Tooltip          : Mana cost of spells reduced by $s1%.
 
@@ -4802,7 +4798,7 @@ Range            : 40 yards
 GCD              : 0.5 seconds
 Duration         : 20 seconds
 Cooldown         : 1 seconds
-Affecting spells : Enveloping Mist (124682 effect#2), Lucidity (137331 effect#1), Extend Life (185158 effect#2), Mist Wrap (197900 effect#1), Mana Tea (197908 effect#1), Soothing Remedies (199377 effect#1), The Mists of Sheilun (199888 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Lucidity (137331 effect#1), Extend Life (185158 effect#2), Mist Wrap (197900 effect#1), Soothing Remedies (199377 effect#1), The Mists of Sheilun (199888 effect#1)
 Attributes       : ........ ........ x....... ........   ..x...x. ........ ........ ..x..x.. 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..x.. ........ ...x.... 
@@ -4915,7 +4911,7 @@ Spell Level      : 66
 Range            : 100 yards
 Cast Time        : 10 seconds
 GCD              : 1.5 seconds
-Affecting spells : Lucidity (137331 effect#1), Mana Tea (197908 effect#1)
+Affecting spells : Lucidity (137331 effect#1)
 Attributes       : ........ ........ ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ....x... ........ ........ ........ 
                  : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -5073,7 +5069,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 1 (8 seconds cooldown)
 Category         : 1511
-Affecting spells : Stance of the Fierce Tiger (103985 effect#5), Stagger (115069 effect#11), Lucidity (137331 effect#1), Mana Tea (197908 effect#1)
+Affecting spells : Stance of the Fierce Tiger (103985 effect#5), Stagger (115069 effect#11), Lucidity (137331 effect#1)
 Attributes       : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

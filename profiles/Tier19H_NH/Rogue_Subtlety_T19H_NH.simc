@@ -1,4 +1,5 @@
 rogue="Rogue_Subtlety_T19H_NH"
+spec=subtlety
 level=110
 race=night_elf
 timeofday=day
@@ -6,7 +7,6 @@ role=attack
 position=back
 talents=1210011
 artifact=17:0:0:0:0:851:1:852:3:853:3:854:3:855:3:856:3:857:3:858:3:859:3:860:3:861:1:862:1:863:1:864:1:865:1:866:1:1349:1:1386:1:1585:4:1586:1:1587:1:1653:1
-spec=subtlety
 
 # Default consumables
 potion=prolonged_power
@@ -34,8 +34,8 @@ actions.precombat+=/variable,name=ssw_refund,value=equipped.shadow_satyrs_walk*(
 actions.precombat+=/variable,name=stealth_threshold,value=(15+talent.vigor.enabled*35+talent.master_of_shadows.enabled*25+variable.ssw_refund)
 actions.precombat+=/variable,name=shd_fractionnal,value=ptr*(1.725+0.725*talent.enveloping_shadows.enabled)+(1-ptr)*2.45
 actions.precombat+=/enveloping_shadows,if=combo_points>=5&ptr=0
-# Since 7.1.5, casting Shadow Dance before going in combat let you extends the stealth buff, so it's worth to use with Subterfuge talent. Has not been fixed in 7.2.5!
-actions.precombat+=/shadow_dance,if=talent.subterfuge.enabled&bugs
+# Since 7.1.5, casting Shadow Dance before going in combat let you extends the stealth buff, so it's worth to use with Subterfuge talent. Has been fixed in 7.2.5!
+actions.precombat+=/shadow_dance,if=talent.subterfuge.enabled&bugs&!ptr
 actions.precombat+=/symbols_of_death
 
 # Executed every time the actor is available.
@@ -84,7 +84,7 @@ actions.ptr_cds+=/use_item,name=draught_of_souls,if=!stealthed.rogue&energy.defi
 actions.ptr_cds+=/blood_fury,if=stealthed.rogue
 actions.ptr_cds+=/berserking,if=stealthed.rogue
 actions.ptr_cds+=/arcane_torrent,if=stealthed.rogue&energy.deficit>70
-actions.ptr_cds+=/symbols_of_death,if=!stealthed.all
+actions.ptr_cds+=/symbols_of_death,if=!stealthed.all|talent.dark_shadow.enabled
 actions.ptr_cds+=/shadow_blades,if=combo_points.deficit>=2+stealthed.all-equipped.mantle_of_the_master_assassin
 actions.ptr_cds+=/goremaws_bite,if=!stealthed.all&cooldown.shadow_dance.charges_fractional<=variable.shd_fractionnal&((combo_points.deficit>=4-(time<10)*2&energy.deficit>50+talent.vigor.enabled*25-(time>=10)*15)|(combo_points.deficit>=1&target.time_to_die<8))
 actions.ptr_cds+=/marked_for_death,target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit|(raid_event.adds.in>40&combo_points.deficit>=cp_max_spend)
@@ -116,11 +116,11 @@ actions.ptr_stealth_cds=vanish,if=mantle_duration=0&cooldown.shadow_dance.charge
 actions.ptr_stealth_cds+=/shadow_dance,if=charges_fractional>=variable.shd_fractionnal
 actions.ptr_stealth_cds+=/pool_resource,for_next=1,extra_amount=40
 actions.ptr_stealth_cds+=/shadowmeld,if=energy>=40&energy.deficit>=10+variable.ssw_refund
-actions.ptr_stealth_cds+=/shadow_dance,if=combo_points.deficit>=2+(buff.shadowstrike.up|talent.subterfuge.enabled)*2
+actions.ptr_stealth_cds+=/shadow_dance,if=combo_points.deficit>=2+(talent.subterfuge.enabled|buff.the_first_of_the_dead.up)*2&(cooldown.symbols_of_death.remains>2|!talent.dark_shadow.enabled)
 
 # Stealthed Rotation
 actions.ptr_stealthed=call_action_list,name=ptr_finish,if=combo_points>=5&(spell_targets.shuriken_storm>=3+equipped.shadow_satyrs_walk|(mantle_duration<=1.3&mantle_duration-gcd.remains>=0.3))
-actions.ptr_stealthed+=/shuriken_storm,if=buff.shadowmeld.down&((combo_points.deficit>=3&spell_targets.shuriken_storm>=3+equipped.shadow_satyrs_walk)|(combo_points.deficit>=1+buff.shadow_blades.up&buff.the_dreadlords_deceit.stack>=29))
+actions.ptr_stealthed+=/shuriken_storm,if=buff.shadowmeld.down&((combo_points.deficit>=3&spell_targets.shuriken_storm>=3+equipped.shadow_satyrs_walk)|(combo_points.deficit>=1&buff.the_dreadlords_deceit.stack>=29))
 actions.ptr_stealthed+=/call_action_list,name=ptr_finish,if=combo_points>=5&combo_points.deficit<3+buff.shadow_blades.up-equipped.mantle_of_the_master_assassin
 actions.ptr_stealthed+=/shadowstrike
 

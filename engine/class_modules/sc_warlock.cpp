@@ -420,7 +420,6 @@ public:
     buff_t* conflagration_of_chaos;
     buff_t* lord_of_flames;
     buff_t* embrace_chaos;
-    buff_t* chaos_mind;
     buff_t* active_havoc;
 
     // legendary buffs
@@ -1589,6 +1588,9 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
   m *= 1.0 + o() -> buffs.sindorei_spite -> check_stack_value();
   m *= 1.0 + o() -> buffs.lessons_of_spacetime -> check_stack_value();
 
+  if ( maybe_ptr( o() -> dbc.ptr ) && o() -> specialization() == WARLOCK_AFFLICTION )
+    m *= 1.0 + o() -> spec.affliction -> effectN( 3 ).percent();
+
   return m;
 }
 
@@ -1943,11 +1945,6 @@ struct felhunter_pet_t: public warlock_pet_t
     action_list_str = "shadow_bite";
 
     owner_coeff.ap_from_sp *= 1.2; //Hotfixed no spelldata, live as of 05-24-2017
-    if ( maybe_ptr( owner -> dbc.ptr ) && owner -> specialization() == WARLOCK_AFFLICTION )
-    {
-      owner_coeff.ap_from_sp *= 1.0 + owner -> spec.affliction -> effectN( 2 ).percent();
-      owner_coeff.sp_from_sp *= 1.0 + owner -> spec.affliction -> effectN( 2 ).percent();
-    }
   }
 
   virtual void init_base_stats() override
@@ -2023,11 +2020,6 @@ struct infernal_t: public warlock_pet_t
     warlock_pet_t( sim, owner, "infernal", PET_INFERNAL )
   {
     owner_coeff.health = 0.4;
-    if ( maybe_ptr( owner -> dbc.ptr ) && owner -> specialization() == WARLOCK_AFFLICTION )
-    {
-      owner_coeff.ap_from_sp *= 1.0 + owner -> spec.affliction -> effectN( 2 ).percent();
-      owner_coeff.sp_from_sp *= 1.0 + owner -> spec.affliction -> effectN( 2 ).percent();
-    }
   }
 
   virtual void init_base_stats() override
@@ -2100,11 +2092,6 @@ struct doomguard_t: public warlock_pet_t
   {
     owner_coeff.health = 0.4;
     action_list_str = "doom_bolt";
-    if ( maybe_ptr( owner -> dbc.ptr ) && owner -> specialization() == WARLOCK_AFFLICTION )
-    {
-      owner_coeff.ap_from_sp *= 1.0 + owner-> spec.affliction -> effectN( 2 ).percent();
-      owner_coeff.sp_from_sp *= 1.0 + owner -> spec.affliction -> effectN( 2 ).percent();
-    }
   }
 
   virtual void init_base_stats() override
@@ -2485,12 +2472,15 @@ public:
     if ( destruction_dot_increase ) 
       base_td_multiplier *= 1.0 + p() -> spec.destruction -> effectN( 2 ).percent();
 
-    affliction_direct_increase = data().affected_by( p() -> spec.affliction -> effectN( 2 ) );
-    affliction_dot_increase = data().affected_by( p() -> spec.affliction -> effectN( 3 ) );
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+    { 
+    affliction_direct_increase = data().affected_by( p() -> spec.affliction -> effectN( 1 ) );
+    affliction_dot_increase = data().affected_by( p() -> spec.affliction -> effectN( 2 ) );
     if ( affliction_direct_increase )
-      base_dd_multiplier *= 1.0 + p() -> spec.affliction -> effectN( 2 ).percent();
+      base_dd_multiplier *= 1.0 + p() -> spec.affliction -> effectN( 1 ).percent();
     if ( affliction_dot_increase )
-      base_td_multiplier *= 1.0 + p() -> spec.affliction -> effectN( 3 ).percent();
+      base_td_multiplier *= 1.0 + p() -> spec.affliction -> effectN( 2 ).percent();
+    }
   }
 
   int n_targets() const override
@@ -2754,7 +2744,7 @@ public:
 
     if ( maybe_ptr( p() -> dbc.ptr ) && p() -> mastery_spells.chaotic_energies -> ok() && destro_mastery )
     {
-      double destro_mastery_value = p() -> cache.mastery_value() / 3.0;
+      double destro_mastery_value = p() -> cache.mastery_value() / 2.0;
       double chaotic_energies_rng;
 
       if ( p() -> sets -> has_set_bonus( WARLOCK_DESTRUCTION, T20, B4 ) && affected_by_destruction_t20_4pc )
@@ -4264,9 +4254,6 @@ struct chaos_bolt_t: public warlock_spell_t
 
     p() -> buffs.embrace_chaos -> trigger();
     p() -> buffs.backdraft -> decrement();
-
-    p() -> buffs.chaos_mind -> expire();
-    p() -> buffs.chaos_mind -> trigger();
   }
 
   // Force spell to always crit
@@ -5615,6 +5602,8 @@ struct soul_harvest_t : public warlock_spell_t
   virtual void execute() override
   {
     warlock_spell_t::execute();
+    
+    p() -> buffs.soul_harvest -> expire(); //Potentially bugged check when live
 
     if ( p() -> specialization() == WARLOCK_AFFLICTION )
     {
@@ -5660,8 +5649,9 @@ struct reap_souls_t: public warlock_spell_t
 {
   timespan_t base_duration;
   timespan_t total_duration;
-  timespan_t check_time;
+  timespan_t base_time;
   timespan_t reap_and_sow_bonus;
+  timespan_t max_extension;
   int souls_consumed;
     reap_souls_t( warlock_t* p ) :
         warlock_spell_t( "reap_souls", p, p -> artifact.reap_souls ), souls_consumed( 0 )
@@ -5686,12 +5676,13 @@ struct reap_souls_t: public warlock_spell_t
 
       if ( p() -> artifact.reap_souls.rank() && p() -> buffs.tormented_souls -> check() )
       {
-          check_time = base_duration + reap_and_sow_bonus;
-
+        base_time = base_duration + reap_and_sow_bonus;
         souls_consumed = p() -> buffs.tormented_souls -> stack();
-//        total_duration = base_duration * souls_consumed;
-        total_duration = check_time * souls_consumed;
-        p() -> buffs.deadwind_harvester -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, total_duration );
+        total_duration = base_time * souls_consumed;
+        max_extension = base_time * 12 - p() -> buffs.deadwind_harvester -> remains();
+
+        p() -> buffs.deadwind_harvester -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, std::min( max_extension, total_duration ) );
+
         for ( int i = 0; i < souls_consumed; ++i )
         {
           p() -> procs.souls_consumed -> occur();
@@ -6838,7 +6829,8 @@ void warlock_t::create_buffs()
   buffs.misery = haste_buff_creator_t( this, "misery", find_spell( 216412 ) )
     .default_value( find_spell( 216412 ) -> effectN( 1 ).percent() );
   buffs.deadwind_harvester = buff_creator_t( this, "deadwind_harvester", find_spell( 216708 ) )
-    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+    .refresh_behavior( BUFF_REFRESH_EXTEND );
   buffs.tormented_souls = buff_creator_t( this, "tormented_souls", find_spell( 216695 ) )
     .tick_behavior( BUFF_TICK_NONE );
   buffs.compounding_horror = buff_creator_t( this, "compounding_horror", find_spell( 199281 ) );
@@ -6874,7 +6866,6 @@ void warlock_t::create_buffs()
     .chance( artifact.conflagration_of_chaos.rank() ? artifact.conflagration_of_chaos.data().proc_chance() : 0.0 );
   buffs.embrace_chaos = buff_creator_t( this, "embrace_chaos", sets->set( WARLOCK_DESTRUCTION,T19, B2 ) -> effectN( 1 ).trigger() )
     .chance( sets->set( WARLOCK_DESTRUCTION, T19, B2 ) -> proc_chance() );
-  buffs.chaos_mind = buff_creator_t( this, "chaos_mind", sets -> set( WARLOCK_DESTRUCTION, T20, B4 ) -> effectN( 1 ).trigger() );
   buffs.active_havoc = buff_creator_t( this, "active_havoc" )
     .tick_behavior( BUFF_TICK_NONE )
     .refresh_behavior( BUFF_REFRESH_NONE )
@@ -7308,9 +7299,31 @@ void warlock_t::reset()
 {
   player_t::reset();
 
-  for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
+  // Figure out up to what actor ID we should reset. This is the max of target list actors, and
+  // their pets
+  size_t max_idx = sim -> target_list.data().back() -> actor_index + 1;
+  if ( sim -> target_list.data().back() -> pet_list.size() > 0 )
   {
-    warlock_td_t* td = target_data[sim -> actor_list[i]];
+    max_idx = sim -> target_list.data().back() -> pet_list.back() -> actor_index + 1;
+  }
+
+  range::for_each( sim -> target_list, [ this ]( const player_t* t ) {
+    if ( auto td = target_data[ t ] )
+    {
+      td -> reset();
+    }
+
+    range::for_each( t -> pet_list, [ this ]( const player_t* add ) {
+      if ( auto td = target_data[ add ] )
+      {
+        td -> reset();
+      }
+    } );
+  } );
+
+  if ( talents.soul_effigy -> ok() && warlock_pet_list.soul_effigy )
+  {
+    warlock_td_t* td = target_data[ warlock_pet_list.soul_effigy ];
     if ( td ) td -> reset();
   }
 
