@@ -5649,8 +5649,9 @@ struct reap_souls_t: public warlock_spell_t
 {
   timespan_t base_duration;
   timespan_t total_duration;
-  timespan_t check_time;
+  timespan_t base_time;
   timespan_t reap_and_sow_bonus;
+  timespan_t max_extension;
   int souls_consumed;
     reap_souls_t( warlock_t* p ) :
         warlock_spell_t( "reap_souls", p, p -> artifact.reap_souls ), souls_consumed( 0 )
@@ -5675,12 +5676,13 @@ struct reap_souls_t: public warlock_spell_t
 
       if ( p() -> artifact.reap_souls.rank() && p() -> buffs.tormented_souls -> check() )
       {
-          check_time = base_duration + reap_and_sow_bonus;
-
+        base_time = base_duration + reap_and_sow_bonus;
         souls_consumed = p() -> buffs.tormented_souls -> stack();
-//        total_duration = base_duration * souls_consumed;
-        total_duration = check_time * souls_consumed;
-        p() -> buffs.deadwind_harvester -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, total_duration );
+        total_duration = base_time * souls_consumed;
+        max_extension = base_time * 12 - p() -> buffs.deadwind_harvester -> remains();
+
+        p() -> buffs.deadwind_harvester -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, std::min( max_extension, total_duration ) );
+
         for ( int i = 0; i < souls_consumed; ++i )
         {
           p() -> procs.souls_consumed -> occur();
@@ -6827,7 +6829,8 @@ void warlock_t::create_buffs()
   buffs.misery = haste_buff_creator_t( this, "misery", find_spell( 216412 ) )
     .default_value( find_spell( 216412 ) -> effectN( 1 ).percent() );
   buffs.deadwind_harvester = buff_creator_t( this, "deadwind_harvester", find_spell( 216708 ) )
-    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+    .refresh_behavior( BUFF_REFRESH_EXTEND );
   buffs.tormented_souls = buff_creator_t( this, "tormented_souls", find_spell( 216695 ) )
     .tick_behavior( BUFF_TICK_NONE );
   buffs.compounding_horror = buff_creator_t( this, "compounding_horror", find_spell( 199281 ) );

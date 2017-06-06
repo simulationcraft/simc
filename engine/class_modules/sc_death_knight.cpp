@@ -57,6 +57,7 @@ const double RUNE_REGEN_BASE_SEC = ( 1 / RUNE_REGEN_BASE );
 
 const size_t MAX_RUNES = 6;
 const size_t MAX_REGENERATING_RUNES = 3;
+const double MAX_START_OF_COMBAT_RP = 20;
 
 template <typename T>
 struct dynamic_event_t : public event_t
@@ -484,6 +485,7 @@ public:
     stat_buff_t* t19oh_8pc;
     buff_t* skullflowers_haemostasis;
     haste_buff_t* sephuzs_secret;
+    buff_t* cold_heart;
   } buffs;
 
   struct runeforge_t {
@@ -525,6 +527,7 @@ public:
     action_t* necrobomb;
     action_t* pestilence; // Armies of the Damned
     action_t* t20_2pc_unholy;
+    action_t* cold_heart;
   } active_spells;
 
   // Gains
@@ -553,6 +556,7 @@ public:
     gain_t* uvanimor_the_unbeautiful;
     gain_t* koltiras_newfound_will;
     gain_t* t19_4pc_frost;
+    gain_t* start_of_combat_overflow;
   } gains;
 
   // Specialization
@@ -914,6 +918,7 @@ public:
   double    composite_player_critical_damage_multiplier( const action_state_t* ) const override;
   double    composite_crit_avoidance() const override;
   double    passive_movement_modifier() const override;
+  void      combat_begin() override;
   void      reset() override;
   void      arise() override;
   void      adjust_dynamic_cooldowns() override;
@@ -3308,6 +3313,25 @@ struct explosive_army_t : public death_knight_spell_t
   }
 };
 
+// Cold Heart damage spell
+struct cold_heart_damage_t : public death_knight_spell_t
+{
+  cold_heart_damage_t( death_knight_t* p ) :
+    death_knight_spell_t( "cold_heart", p, p -> find_spell( 248397 ) )
+  {
+    background = true;
+  }
+
+  double action_multiplier() const override
+  {
+    double m = death_knight_spell_t::action_multiplier();
+
+    m *= 1.0 + ( p() -> buffs.cold_heart -> stack() - 1 );
+
+    return m;
+  }
+};
+
 // ==========================================================================
 // Death Knight Attacks
 // ==========================================================================
@@ -4003,12 +4027,16 @@ struct chains_of_ice_t : public death_knight_spell_t
     }
   }
 
-  void impact( action_state_t* state ) override
+  void execute() override
   {
-    death_knight_spell_t::impact( state );
+    death_knight_spell_t::execute();
 
-    if ( result_is_hit( state -> result ) )
-      p() -> apply_diseases( state, DISEASE_FROST_FEVER );
+    if ( p() -> buffs.cold_heart -> check() > 0 )
+    {
+      p() -> active_spells.cold_heart -> set_target( execute_state -> target );
+      p() -> active_spells.cold_heart -> execute();
+      p() -> buffs.cold_heart -> expire();
+    }
   }
 };
 
@@ -8149,6 +8177,7 @@ void death_knight_t::init_gains()
   gains.uvanimor_the_unbeautiful         = get_gain( "Uvanimor, the Unbeautiful"  );
   gains.koltiras_newfound_will           = get_gain( "Koltira's Newfound Will"    );
   gains.t19_4pc_frost                    = get_gain( "Tier19 Frost 4PC"           );
+  gains.start_of_combat_overflow         = get_gain( "Start of Combat Overflow"   );
 }
 
 // death_knight_t::init_procs ===============================================
@@ -8641,6 +8670,21 @@ double death_knight_t::passive_movement_modifier() const
 
   */
   return ms;
+}
+
+// death_knight_t::combat_begin =============================================
+
+void death_knight_t::combat_begin()
+{
+  player_t::combat_begin();
+
+  buffs.cold_heart -> trigger( buffs.cold_heart -> max_stack() );
+
+  auto rp_overflow = resources.current[ RESOURCE_RUNIC_POWER ] - MAX_START_OF_COMBAT_RP;
+  if ( rp_overflow > 0 )
+  {
+    resource_loss( RESOURCE_RUNIC_POWER, rp_overflow, gains.start_of_combat_overflow );
+  }
 }
 
 // death_knight_t::invalidate_cache =========================================
@@ -9153,6 +9197,49 @@ struct perseverance_of_the_ebon_martyr_t : public scoped_actor_callback_t<death_
   { p -> legendary.perseverance_of_the_ebon_martyr = e.driver(); }
 };
 
+struct cold_heart_t : public scoped_actor_callback_t<death_knight_t>
+{
+  struct cold_heart_tick_t : public event_t
+  {
+    timespan_t delay;
+    buff_t* buff;
+
+    cold_heart_tick_t( buff_t* b, const timespan_t& d ) :
+      event_t( *b -> sim, d ), delay( d ), buff( b )
+    { }
+
+    void execute() override
+    {
+      buff -> trigger();
+      make_event<cold_heart_tick_t>( sim(), buff, delay );
+    }
+  };
+
+  cold_heart_t() : super( DEATH_KNIGHT )
+  { }
+
+  void manipulate( death_knight_t* p, const special_effect_t& e ) override
+  {
+    p -> callbacks_on_arise.push_back( [ p, &e ]() {
+      make_event<cold_heart_tick_t>( *p -> sim, p -> buffs.cold_heart, e.driver() -> effectN( 1 ).period() );
+    } );
+
+    p -> active_spells.cold_heart = new cold_heart_damage_t( p );
+  }
+};
+
+struct cold_heart_buff_t: public class_buff_cb_t<buff_t>
+{
+  cold_heart_buff_t() : super( DEATH_KNIGHT, "cold_heart" )
+  { }
+
+  buff_t*& buff_ptr( const special_effect_t& e ) override
+  { return debug_cast<death_knight_t*>( e.player ) -> buffs.cold_heart; }
+
+  buff_creator_t creator( const special_effect_t& e ) const override
+  { return super::creator( e ).spell( e.player -> find_spell( 235599 ) ); }
+};
+
 struct death_knight_module_t : public module_t {
   death_knight_module_t() : module_t( DEATH_KNIGHT ) {}
 
@@ -9186,6 +9273,9 @@ struct death_knight_module_t : public module_t {
     unique_gear::register_special_effect( 235556, death_march_t() );
     unique_gear::register_special_effect( 235558, skullflowers_haemostasis_t(), true );
     unique_gear::register_special_effect( 208051, sephuzs_secret_t() );
+    // 7.2.5
+    unique_gear::register_special_effect( 235592, cold_heart_t() );
+    unique_gear::register_special_effect( 235592, cold_heart_buff_t(), true );
   }
 
   void register_hotfixes() const override
