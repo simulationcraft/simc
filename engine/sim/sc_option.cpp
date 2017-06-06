@@ -565,6 +565,67 @@ protected:
   map_t& _ref;
 };
 
+struct opts_map_list_t : public option_t
+{
+  opts_map_list_t( const std::string& name, map_list_t& ref ) :
+    option_t( name ), _ref( ref )
+  { }
+
+protected:
+  bool parse( sim_t*, const std::string& n, const std::string& v ) const override
+  {
+    std::string::size_type last = n.size() - 1;
+    bool append = false;
+    if ( n[ last ] == '+' )
+    {
+      append = true;
+      --last;
+    }
+    std::string::size_type dot = n.rfind( ".", last );
+    if ( dot != std::string::npos )
+    {
+      if ( name() == n.substr( 0, dot + 1 ) )
+      {
+        auto listname = n.substr( dot + 1, last - dot );
+        auto& vec = _ref[ listname ];
+        if ( ! append )
+        {
+          vec.clear();
+        }
+
+        vec.push_back( v );
+        return true;
+      }
+    }
+    return false;
+  }
+
+  std::ostream& print( std::ostream& stream ) const override
+  {
+    for ( map_list_t::const_iterator it = _ref.begin(), end = _ref.end(); it != end; ++it )
+    {
+      for ( auto valit = it -> second.begin(), end = it -> second.end(); valit != end; ++valit )
+      {
+        stream << name() << it -> first;
+
+        if ( valit == it -> second.begin() )
+        {
+          stream << "=";
+        }
+        else
+        {
+          stream << "+=";
+        }
+
+        stream << *valit << "\n";
+      }
+    }
+    return stream;
+  }
+
+  map_list_t& _ref;
+};
+
 struct opts_list_t : public option_t
 {
   opts_list_t( const std::string& name, list_t& ref ) :
@@ -945,6 +1006,9 @@ std::unique_ptr<option_t> opt_list( const std::string& n, opts::list_t& v )
 
 std::unique_ptr<option_t> opt_map( const std::string& n, opts::map_t& v )
 { return std::unique_ptr<option_t>(new opts::opts_map_t( n, v )); }
+
+std::unique_ptr<option_t> opt_map_list( const std::string& n, opts::map_list_t& v )
+{ return std::unique_ptr<option_t>(new opts::opts_map_list_t( n, v )); }
 
 std::unique_ptr<option_t> opt_func( const std::string& n, const opts::function_t& f )
 { return std::unique_ptr<option_t>(new opts::opts_sim_func_t( n, f )); }

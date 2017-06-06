@@ -5,6 +5,7 @@
 
 #include "simulationcraft.hpp"
 #include "report/sc_highchart.hpp"
+#include "sc_profileset.hpp"
 #ifdef SC_WINDOWS
 #include <direct.h>
 #endif
@@ -1433,6 +1434,8 @@ sim_t::sim_t( sim_t* p, int index ) :
   use_optimal_buffs_and_debuffs( 1 );
 
   create_options();
+
+  profileset::create_options( this );
 
   if ( parent )
   {

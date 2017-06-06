@@ -11,6 +11,7 @@
 #include "util/generic.hpp"
 #include "sc_enums.hpp"
 
+struct sim_t;
 struct sim_control_t;
 
 namespace profileset
@@ -76,6 +77,11 @@ public:
 
   sim_control_t* create_sim_options( const sim_control_t* );
 };
+
+
+bool parse_profileset( sim_t* sim, const std::string&, const std::string& );
+
+void create_options( sim_t* sim );
 
 } /* Namespace profileset ends */
 

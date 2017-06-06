@@ -29,4 +29,14 @@ sim_control_t* profile_set_t::create_sim_options( const sim_control_t* original 
 
   return new_options;
 }
+
+bool parse_profileset( sim_t* sim, const std::string&, const std::string& )
+{
+  return true;
+}
+
+void create_options( sim_t* sim )
+{
+  sim -> add_option( opt_map_list( "profileset.", sim -> profileset_map ) );
+}
 } /* Namespace profileset ends */

@@ -1852,6 +1852,9 @@ struct sim_t : private sc_thread_t
   bool display_hotfixes, disable_hotfixes;
   bool display_bonus_ids;
 
+  // Profilesets
+  opts::map_list_t profileset_map;
+
   sim_t( sim_t* parent = nullptr, int thread_index = 0 );
   virtual ~sim_t();
 
