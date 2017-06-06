@@ -686,7 +686,7 @@ Attributes       : ....x... ........ x.x..... .....x..   .....x.. ..x..... .....
                  : Does not break stealth (37)
 Effects          :
 #1 (id=1833)     : Apply Aura (6) | Modify Ranged and Melee Attack Speed% (342)
-                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Base Value: 125 | Scaled Value: 125 | Target: Self (1)
 #2 (id=127877)   : Apply Aura (6) | Periodic Energize Power (24): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Target: Self (1)
 #3 (id=356567)   : Apply Aura (6) | Mod Power Regen (110)
@@ -713,7 +713,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Stance Mask      : 0x40000000
-Affecting spells : Incarnation: Chosen of Elune (102560 effect#2), Lucidity (137247 effect#1), Solar Empowerment (164545 effect#1), Lunar Empowerment (164547 effect#3), Item - Druid T17 Balance 2P Bonus (165433 effect#1), Celestial Fury (180719 effect#2), Thrash (192090 effect#2), Celestial Alignment (194223 effect#3), Astral Influence (197524 effect#1), Astral Power (197911 effect#2), Solar Stabbing (202426 effect#1), Blessing of Elune (202737 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Solar Empowerment (211089 effect#1), Skywrath (214514 effect#1)
+Affecting spells : Incarnation: Chosen of Elune (102560 effect#2), Restoration Druid (137012 effect#8), Lucidity (137247 effect#1), Solar Empowerment (164545 effect#1), Lunar Empowerment (164547 effect#3), Item - Druid T17 Balance 2P Bonus (165433 effect#1), Celestial Fury (180719 effect#2), Thrash (192090 effect#2), Celestial Alignment (194223 effect#3), Astral Influence (197524 effect#1), Astral Power (197911 effect#2), Solar Stabbing (202426 effect#1), Blessing of Elune (202737 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Solar Empowerment (211089 effect#1), Skywrath (214514 effect#1)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
