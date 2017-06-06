@@ -521,6 +521,7 @@ static const std::unordered_map<unsigned, const std::string> _effect_type_string
   { 155, "Titan Grip"               },
   { 156, "Add Socket"               },
   { 157, "Create Item"              },
+  { 202, "Apply Player/Pet Aura"    },
 };
 
 static const std::unordered_map<unsigned, const std::string> _effect_subtype_strings =
