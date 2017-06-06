@@ -1972,6 +1972,8 @@ struct fire_mage_spell_t : public mage_spell_t
     // one stack of tracking buff (instead of triggering the Meteor). Next cast
     // then expires the primed buff, triggers the Meteor and triggers a second
     // stack of the tracking buff.
+    // Conversely, doing the same when only the primed buff is active only
+    // triggers Meteor (it should also trigger one stack of the tracking buff).
     // TODO: Check this
     trigger_legendary_effect( p() -> buffs.contained_infernal_core,
                               p() -> buffs.erupting_infernal_core,
