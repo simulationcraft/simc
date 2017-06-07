@@ -5920,16 +5920,6 @@ struct solar_wrath_t : public druid_spell_t
     return am;
   }
 
-  timespan_t gcd() const override
-  {
-    timespan_t g = druid_spell_t::gcd();
-
-    if ( p() -> talent.starlord -> ok() && p() -> buff.solar_empowerment -> check() )
-      g *= 1 - p() -> talent.starlord -> effectN( 1 ).percent();
-
-    return g;
-  }
-
   timespan_t execute_time() const override
   {
     timespan_t et = druid_spell_t::execute_time();
