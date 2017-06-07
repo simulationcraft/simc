@@ -1617,7 +1617,6 @@ struct bladestorm_t: public warrior_attack_t
   {
     warrior_attack_t::execute();
     p() -> buff.bladestorm -> trigger();
-    p() -> buff.tornados_eye -> trigger();
   }
 
   void tick( dot_t* d ) override
@@ -1639,6 +1638,11 @@ struct bladestorm_t: public warrior_attack_t
         mortal_strike -> execute();
       }
     }
+	
+	if (d -> ticks_left() > 0)
+	{
+		p() -> buff . tornados_eye -> trigger();
+	}
   }
 
   void last_tick( dot_t*d ) override
@@ -2278,7 +2282,7 @@ struct execute_arms_t: public warrior_attack_t
     weapon = &( p -> main_hand_weapon );
 
     base_crit += p -> artifact.deathblow.percent();
-    max_rage = p -> talents.dauntless -> ok() ? 32 : 40;
+    max_rage = p -> talents.dauntless -> ok() ? 40 * (1 + p->talents.dauntless->effectN(1).percent()) : 40;
     if ( p -> talents.sweeping_strikes -> ok() )
     {
       execute_sweeping_strike = new execute_sweep_t( p );
@@ -3001,7 +3005,6 @@ struct raging_blow_t: public warrior_attack_t
     {
       mh_attack -> execute();
       oh_attack -> execute();
-      p() -> buff.raging_thirst -> expire();
     }
     p() -> buff.t20_fury_4p -> trigger( 1 );
   }
@@ -3409,7 +3412,6 @@ struct ravager_t: public warrior_attack_t
       p() -> buff.ravager -> trigger();
     }
 
-    p() -> buff.tornados_eye -> trigger();
 
     warrior_attack_t::execute();
   }
@@ -3428,6 +3430,10 @@ struct ravager_t: public warrior_attack_t
         mortal_strike -> execute();
       }
     }
+	if (d->ticks_left() > 2)
+	{
+		p()->buff.tornados_eye->trigger();
+	}
   }
 };
 
@@ -6961,10 +6967,17 @@ struct the_great_storms_eye_t : public unique_gear::class_buff_cb_t<warrior_t>
 
   buff_creator_t creator( const special_effect_t& e ) const override
   {
+   if(e . player -> talent_points . has_row_col(6,3))
     return super::creator( e )
       .spell( e.player -> find_spell( 248145 ) )
       .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
       .add_invalidate( CACHE_RUN_SPEED );
+   else
+	   return super::creator(e)
+	   .spell(e.player->find_spell(248142))
+	   .add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER)
+	   .add_invalidate(CACHE_RUN_SPEED);
+
   }
 };
 
