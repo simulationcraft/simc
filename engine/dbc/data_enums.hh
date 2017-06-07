@@ -759,7 +759,7 @@ enum effect_type_t : unsigned {
     E_197 = 197,
     E_198 = 198,
     E_199 = 199,
-    E_202 = 202,
+    E_APPLY_AURA_PLAYER_AND_PET = 202,
     E_203 = 203,
     E_205 = 205,
     E_206 = 206,

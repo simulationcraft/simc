@@ -3029,13 +3029,6 @@ struct ashamanes_rip_t : public cat_attack_t
     if (p->t20_4pc || p->sets->has_set_bonus(DRUID_FERAL, T20, B4))
        base_multiplier *= 1.15;
 
-    if (p->t20_2pc || p->sets->has_set_bonus(DRUID_FERAL, T20, B2))
-    {
-       energize_amount = 2; //TODO(feral): Add spelldata once available
-       energize_resource = RESOURCE_ENERGY;
-       energize_type = ENERGIZE_PER_TICK;
-    }
-
   }
 
   action_state_t* new_state() override
@@ -3066,9 +3059,6 @@ struct ashamanes_rip_t : public cat_attack_t
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   { 
-     if (p()->t20_4pc || p()->sets->has_set_bonus(DRUID_FERAL, T20, B4))
-        return td( s -> target ) -> dots.rip -> remains() + ( p()->talent.jagged_wounds->ok() ? timespan_t::from_seconds(5.4) : timespan_t::from_seconds( 8 ) );
-     
      return td( s -> target ) -> dots.rip -> remains(); 
   }
 
@@ -5552,6 +5542,8 @@ struct lunar_strike_t : public druid_spell_t
     if ( p() -> talent.starlord -> ok() && p() -> buff.lunar_empowerment -> check() )
       g *= 1 - p() -> talent.starlord -> effectN( 1 ).percent();
 
+    g = std::max( min_gcd, g );
+
     return g;
   }
 
@@ -5946,6 +5938,8 @@ struct solar_wrath_t : public druid_spell_t
 
     if ( p() -> talent.starlord -> ok() && p() -> buff.solar_empowerment -> check() )
       g *= 1 - p() -> talent.starlord -> effectN( 1 ).percent();
+
+    g = std::max( min_gcd, g );
 
     return g;
   }
