@@ -5178,7 +5178,7 @@ struct earthquake_damage_t : public shaman_spell_t
     aoe = -1;
     ground_aoe = background = true;
     school = SCHOOL_PHYSICAL;
-    spell_power_mod.direct = 0.5; // Hardcoded into tooltip because it's cool
+    spell_power_mod.direct = 0.65; // Hardcoded into tooltip because it's cool
     base_multiplier *= 1.0 + p() -> artifact.the_ground_trembles.percent();
     affected_by_elemental_focus = true; // Needed to explicitly flag, since spell data lacks info
   }
@@ -5246,8 +5246,7 @@ struct earthquake_t : public shaman_spell_t
     make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
         .target( execute_state -> target )
         .duration( data().duration() )
-        .action( rumble )
-        .hasted( ground_aoe_params_t::SPELL_SPEED ), true );
+        .action( rumble ) );
 
     // Note, needs to be decremented after ground_aoe_event_t is created so that the rumble gets the
     // buff multiplier as persistent.
@@ -7528,9 +7527,8 @@ void shaman_t::init_action_list_elemental()
 
   // Single target - Lightning Rod
   single_lr -> add_action( this, "Flame Shock", "if=!ticking|dot.flame_shock.remains<=gcd" );
-  single_lr -> add_action( this, "Earthquake", "if=buff.echoes_of_the_great_sundering.up&maelstrom>=86" );
   single_lr -> add_talent( this, "Elemental Blast", "", "Keep your EB always on Cooldown." );
-  single_lr -> add_action( this, "Earthquake", "if=buff.echoes_of_the_great_sundering.up|artifact.seismic_storm.enabled&((active_enemies>1&spell_targets.chain_lightning>1)|spell_haste<=0.66&!(buff.bloodlust.up&buff.bloodlust.remains<5))", "Use EQ on single target if you have a huge haste buff that increases haste above 50% and said buffs still last longer than 5 seconds OR two enemies." );
+  single_lr -> add_action( this, "Earthquake", "if=buff.echoes_of_the_great_sundering.up" );
   single_lr -> add_action( this, "Earth Shock", "if=maelstrom>=117|!artifact.swelling_maelstrom.enabled&maelstrom>=92" );
   single_lr -> add_action( this, "Stormkeeper", "if=raid_event.adds.count<3|raid_event.adds.in>50", "Keep SK for large or soon add waves." );
   single_lr -> add_talent( this, "Liquid Magma Totem", "if=raid_event.adds.count<3|raid_event.adds.in>50" );
@@ -7564,7 +7562,7 @@ void shaman_t::init_action_list_elemental()
   single_if -> add_action( this, "Frost Shock", "moving=1,if=buff.icefury.up" );
   single_if -> add_action( this, "Earth Shock", "if=maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=86" );
   single_if -> add_talent( this, "Totem Mastery", "if=buff.resonance_totem.remains<10" );
-  single_if -> add_action( this, "Earthquake", "if=buff.echoes_of_the_great_sundering.up|artifact.seismic_storm.enabled&((active_enemies>1&spell_targets.chain_lightning>1)|spell_haste<=0.66&!(buff.bloodlust.up&buff.bloodlust.remains<5))", "Use EQ on single target if you have a huge haste buff that increases haste above 50% and said buffs still last longer than 5 seconds OR two enemies." );
+  single_if -> add_action( this, "Earthquake", "if=buff.echoes_of_the_great_sundering.up" );
   single_if -> add_action( this, "Lightning Bolt", "if=buff.power_of_the_maelstrom.up&spell_targets.chain_lightning<3" );
   single_if -> add_action( this, "Chain Lightning", "if=active_enemies>1&spell_targets.chain_lightning>1" );
   single_if -> add_action( this, "Lightning Bolt" );
@@ -7577,7 +7575,6 @@ void shaman_t::init_action_list_elemental()
   single_asc -> add_action( this, "Flame Shock", "if=!ticking|dot.flame_shock.remains<=gcd" );
   single_asc -> add_action( this, "Flame Shock", "if=maelstrom>=20&remains<=buff.ascendance.duration&cooldown.ascendance.remains+buff.ascendance.duration<=duration" );
   single_asc -> add_talent( this, "Elemental Blast", "", "Keep your EB always on Cooldown." );
-  single_asc -> add_action( this, "Earthquake", "if=buff.echoes_of_the_great_sundering.up|artifact.seismic_storm.enabled&((active_enemies>1&spell_targets.chain_lightning>1)|spell_haste<=0.66&!(buff.bloodlust.up&buff.bloodlust.remains<5))&!buff.ascendance.up", "Use EQ on single target, if you have a huge haste buff, that increases haste above 50% and said buff still lasts longer than 5 seconds OR two enemies. Don't use EQ during Ascendance." );
   single_asc -> add_action( this, "Earthquake", "if=buff.echoes_of_the_great_sundering.up&!buff.ascendance.up&maelstrom>=86" );
   single_asc -> add_action( this, "Earth Shock", "if=maelstrom>=117|!artifact.swelling_maelstrom.enabled&maelstrom>=92" );
   single_asc -> add_action( this, "Stormkeeper", "if=raid_event.adds.count<3|raid_event.adds.in>50", "Keep SK for large or soon add waves." );
