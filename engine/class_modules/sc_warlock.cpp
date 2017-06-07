@@ -8195,7 +8195,7 @@ struct recurrent_ritual_t : public scoped_action_callback_t<call_dreadstalkers_t
 
   void manipulate( call_dreadstalkers_t* a, const special_effect_t& e ) override
   {
-    a -> recurrent_ritual = e.driver() -> effectN( 1 ).trigger() -> effectN( 1 ).base_value();
+    a -> recurrent_ritual = e.driver() -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() / 10.0;
   }
 };
 
