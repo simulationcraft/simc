@@ -1,4 +1,5 @@
 demonhunter="Demon_Hunter_Havoc_T19H"
+spec=havoc
 level=110
 race=blood_elf
 role=attack
@@ -7,7 +8,6 @@ talents=2220311
 talent_override=fel_barrage,if=(active_enemies>1|raid_event.adds.exists)&!talent.demonic.enabled
 talent_override=momentum,if=active_enemies>1|raid_event.adds.exists
 artifact=3:0:0:0:0:1001:3:1002:3:1003:3:1004:2:1005:3:1006:3:1007:3:1010:1:1011:1:1012:1:1014:1:1015:1:1016:1:1330:1
-spec=havoc
 
 # Default consumables
 potion=old_war
@@ -37,16 +37,15 @@ actions+=/variable,name=waiting_for_nemesis,value=!(!talent.nemesis.enabled|cool
 actions+=/variable,name=waiting_for_chaos_blades,value=!(!talent.chaos_blades.enabled|cooldown.chaos_blades.ready|cooldown.chaos_blades.remains>target.time_to_die|cooldown.chaos_blades.remains>60)
 # "Getting ready to use meta" conditions, this is used in a few places.
 actions+=/variable,name=pooling_for_meta,value=!talent.demonic.enabled&cooldown.metamorphosis.remains<6&fury.deficit>30&(!variable.waiting_for_nemesis|cooldown.nemesis.remains<10)&(!variable.waiting_for_chaos_blades|cooldown.chaos_blades.remains<6)
-# Blade Dance conditions. Always if First Blood is talented or the T20 2pc set bonus, otherwise at 5+ targets with Chaos Cleave or 3+ targets without.
-actions+=/variable,name=blade_dance,value=talent.first_blood.enabled|set_bonus.tier20_2pc|spell_targets.blade_dance1>=3+(talent.chaos_cleave.enabled*3)
-# Blade Dance pooling condition, so we don't spend too much fury when we need it soon. No need to pool on
-# single target since First Blood already makes it cheap enough and delaying it a tiny bit isn't a big deal.
-actions+=/variable,name=pooling_for_blade_dance,value=variable.blade_dance&fury-40<35-talent.first_blood.enabled*20&(spell_targets.blade_dance1>=3+(talent.chaos_cleave.enabled*3))
+# Blade Dance conditions. Always if First Blood is talented or the T20 4pc set bonus, otherwise at 6+ targets with Chaos Cleave or 3+ targets without.
+actions+=/variable,name=blade_dance,value=talent.first_blood.enabled|set_bonus.tier20_4pc|spell_targets.blade_dance1>=3+(talent.chaos_cleave.enabled*3)
+# Blade Dance pooling condition, so we don't spend too much fury on Chaos Strike when we need it soon.
+actions+=/variable,name=pooling_for_blade_dance,value=variable.blade_dance&(fury<75-talent.first_blood.enabled*20)
 # Chaos Strike pooling condition, so we don't spend too much fury when we need it for Chaos Cleave AoE
 actions+=/variable,name=pooling_for_chaos_strike,value=talent.chaos_cleave.enabled&fury.deficit>40&!raid_event.adds.up&raid_event.adds.in<2*gcd
 actions+=/consume_magic
 actions+=/call_action_list,name=cooldown,if=gcd.remains=0
-actions+=/run_action_list,name=demonic,if=talent.demonic.enabled&talent.demonic_appetite.enabled&talent.blind_fury.enabled
+actions+=/run_action_list,name=demonic,if=talent.demonic.enabled
 actions+=/run_action_list,name=normal
 
 # Use Metamorphosis when we are done pooling Fury and when we are not waiting for other cooldowns to sync.
@@ -60,7 +59,7 @@ actions.cooldown+=/use_item,slot=trinket1,if=buff.chaos_blades.up|!talent.chaos_
 actions.cooldown+=/potion,if=buff.metamorphosis.remains>25|target.time_to_die<30
 
 # Specific APL for the Blind Fury+Demonic Appetite+Demonic build
-actions.demonic=pick_up_fragment,if=fury.deficit>=35&cooldown.eye_beam.remains>5
+actions.demonic=pick_up_fragment,if=fury.deficit>=35&(cooldown.eye_beam.remains>5|buff.metamorphosis.up)
 # Vengeful Retreat backwards through the target to minimize downtime.
 actions.demonic+=/vengeful_retreat,if=(talent.prepared.enabled|talent.momentum.enabled)&buff.prepared.down&buff.momentum.down
 # Fel Rush for Momentum.
@@ -71,13 +70,14 @@ actions.demonic+=/fel_eruption
 actions.demonic+=/fury_of_the_illidari,if=(active_enemies>desired_targets)|(raid_event.adds.in>55&(!talent.momentum.enabled|buff.momentum.up))
 actions.demonic+=/blade_dance,if=variable.blade_dance&cooldown.eye_beam.remains>5&!cooldown.metamorphosis.ready
 actions.demonic+=/throw_glaive,if=talent.bloodlet.enabled&spell_targets>=2&(!talent.master_of_the_glaive.enabled|!talent.momentum.enabled|buff.momentum.up)&(spell_targets>=3|raid_event.adds.in>recharge_time+cooldown)
+actions.demonic+=/felblade,if=fury.deficit>=30
 actions.demonic+=/eye_beam,if=spell_targets.eye_beam_tick>desired_targets|!buff.metamorphosis.extended_by_demonic
 actions.demonic+=/annihilation,if=(!talent.momentum.enabled|buff.momentum.up|fury.deficit<30+buff.prepared.up*8|buff.metamorphosis.remains<5)&!variable.pooling_for_blade_dance
 actions.demonic+=/throw_glaive,if=talent.bloodlet.enabled&(!talent.master_of_the_glaive.enabled|!talent.momentum.enabled|buff.momentum.up)&raid_event.adds.in>recharge_time+cooldown
 actions.demonic+=/chaos_strike,if=(!talent.momentum.enabled|buff.momentum.up|fury.deficit<30+buff.prepared.up*8)&!variable.pooling_for_chaos_strike&!variable.pooling_for_meta&!variable.pooling_for_blade_dance
-actions.demonic+=/fel_rush,if=!talent.momentum.enabled&buff.metamorphosis.down&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))
+actions.demonic+=/fel_rush,if=!talent.momentum.enabled&(buff.metamorphosis.down|talent.demon_blades.enabled)&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))
 actions.demonic+=/demons_bite
-actions.demonic+=/throw_glaive,if=buff.out_of_range.up
+actions.demonic+=/throw_glaive,if=buff.out_of_range.up|!talent.bloodlet.enabled
 actions.demonic+=/fel_rush,if=movement.distance>15|(buff.out_of_range.up&!talent.momentum.enabled)
 actions.demonic+=/vengeful_retreat,if=movement.distance>15
 
@@ -95,21 +95,20 @@ actions.normal+=/death_sweep,if=variable.blade_dance
 actions.normal+=/fel_rush,if=charges=2&!talent.momentum.enabled&!talent.fel_mastery.enabled
 actions.normal+=/fel_eruption
 actions.normal+=/fury_of_the_illidari,if=(active_enemies>desired_targets)|(raid_event.adds.in>55&(!talent.momentum.enabled|buff.momentum.up)&(!talent.chaos_blades.enabled|buff.chaos_blades.up|cooldown.chaos_blades.remains>30|target.time_to_die<cooldown.chaos_blades.remains))
-actions.normal+=/blade_dance,if=variable.blade_dance&(!cooldown.metamorphosis.ready)
+actions.normal+=/blade_dance,if=variable.blade_dance&!cooldown.metamorphosis.ready
 actions.normal+=/throw_glaive,if=talent.bloodlet.enabled&spell_targets>=2&(!talent.master_of_the_glaive.enabled|!talent.momentum.enabled|buff.momentum.up)&(spell_targets>=3|raid_event.adds.in>recharge_time+cooldown)
 actions.normal+=/felblade,if=fury.deficit>=30+buff.prepared.up*8
-actions.normal+=/eye_beam,if=talent.blind_fury.enabled&(spell_targets.eye_beam_tick>desired_targets|fury.deficit>=35)
+actions.normal+=/eye_beam,if=spell_targets.eye_beam_tick>desired_targets|(spell_targets.eye_beam_tick>=3&raid_event.adds.in>cooldown)|(talent.blind_fury.enabled&fury.deficit>=35)
 actions.normal+=/annihilation,if=(talent.demon_blades.enabled|!talent.momentum.enabled|buff.momentum.up|fury.deficit<30+buff.prepared.up*8|buff.metamorphosis.remains<5)&!variable.pooling_for_blade_dance
 actions.normal+=/throw_glaive,if=talent.bloodlet.enabled&(!talent.master_of_the_glaive.enabled|!talent.momentum.enabled|buff.momentum.up)&raid_event.adds.in>recharge_time+cooldown
-actions.normal+=/eye_beam,if=!talent.blind_fury.enabled&(spell_targets.eye_beam_tick>desired_targets|(!set_bonus.tier19_4pc&raid_event.adds.in>45&!variable.pooling_for_meta&buff.metamorphosis.down&(artifact.anguish_of_the_deceiver.enabled|active_enemies>1)&!talent.chaos_cleave.enabled))
-actions.normal+=/throw_glaive,if=buff.metamorphosis.down&spell_targets>=2
+actions.normal+=/throw_glaive,if=!talent.bloodlet.enabled&buff.metamorphosis.down&spell_targets>=3
 actions.normal+=/chaos_strike,if=(talent.demon_blades.enabled|!talent.momentum.enabled|buff.momentum.up|fury.deficit<30+buff.prepared.up*8)&!variable.pooling_for_chaos_strike&!variable.pooling_for_meta&!variable.pooling_for_blade_dance
 # Use Fel Barrage if its nearing max charges, saving it for Momentum and adds if possible.
 actions.normal+=/fel_barrage,if=(charges=max_charges-1)&buff.metamorphosis.down&(buff.momentum.up|!talent.momentum.enabled)&(active_enemies>desired_targets|raid_event.adds.in>30)
 actions.normal+=/fel_rush,if=!talent.momentum.enabled&raid_event.movement.in>charges*10&(talent.demon_blades.enabled|buff.metamorphosis.down)
 actions.normal+=/demons_bite
 actions.normal+=/throw_glaive,if=buff.out_of_range.up
-actions.normal+=/felblade,if=movement.distance|buff.out_of_range.up
+actions.normal+=/felblade,if=movement.distance>15|buff.out_of_range.up
 actions.normal+=/fel_rush,if=movement.distance>15|(buff.out_of_range.up&!talent.momentum.enabled)
 actions.normal+=/vengeful_retreat,if=movement.distance>15
 actions.normal+=/throw_glaive,if=!talent.bloodlet.enabled

@@ -1,11 +1,11 @@
 monk="Monk_Windwalker_T19M_NH"
+spec=windwalker
 level=110
 race=blood_elf
 role=dps
 position=back
 talents=3010032
 artifact=50:0:0:0:0:800:4:801:4:820:4:821:4:822:4:824:4:825:4:826:1:827:1:828:1:829:4:830:1:831:1:832:1:833:1:1094:4:1341:1:1376:1:1549:4:1550:1:1551:1:1552:1:1644:1
-spec=windwalker
 
 # Default consumables
 potion=prolonged_power
@@ -60,24 +60,26 @@ actions.sef+=/call_action_list,name=st
 actions.serenity=tiger_palm,cycle_targets=1,if=!prev_gcd.1.tiger_palm&energy=energy.max&chi<1&!buff.serenity.up
 actions.serenity+=/call_action_list,name=cd
 actions.serenity+=/serenity
+actions.serenity+=/fists_of_fury,interrupt_if=cooldown.rising_sun_kick.remains<=1
 actions.serenity+=/rising_sun_kick,cycle_targets=1,if=active_enemies<3
 actions.serenity+=/strike_of_the_windlord
+actions.serenity+=/fists_of_fury,if=((equipped.drinking_horn_cover&buff.pressure_point.remains<=1&set_bonus.tier20_2pc)&(cooldown.rising_sun_kick.remains>1|active_enemies>1))
 actions.serenity+=/fists_of_fury,if=((!equipped.drinking_horn_cover|buff.bloodlust.up|buff.serenity.remains<1)&(cooldown.rising_sun_kick.remains>1|active_enemies>1))
 actions.serenity+=/spinning_crane_kick,if=active_enemies>=3&!prev_gcd.1.spinning_crane_kick
 actions.serenity+=/rising_sun_kick,cycle_targets=1,if=active_enemies>=3
 actions.serenity+=/spinning_crane_kick,if=!prev_gcd.1.spinning_crane_kick
-actions.serenity+=/blackout_kick,cycle_targets=1,if=!prev_gcd.1.blackout_kick
 actions.serenity+=/rushing_jade_wind,if=!prev_gcd.1.rushing_jade_wind
+actions.serenity+=/blackout_kick,cycle_targets=1,if=!prev_gcd.1.blackout_kick
 
 actions.st=call_action_list,name=cd
 actions.st+=/energizing_elixir,if=chi<=1&(cooldown.rising_sun_kick.remains=0|(artifact.strike_of_the_windlord.enabled&cooldown.strike_of_the_windlord.remains=0)|energy<50)
 actions.st+=/arcane_torrent,if=chi.max-chi>=1&energy.time_to_max>=0.5
 actions.st+=/tiger_palm,cycle_targets=1,if=!prev_gcd.1.tiger_palm&energy.time_to_max<=0.5&chi.max-chi>=2
 actions.st+=/strike_of_the_windlord,if=!talent.serenity.enabled|cooldown.serenity.remains>=10
-actions.st+=/rising_sun_kick,cycle_targets=1,if=((chi>=3&energy>=40)|chi>=5)&(!talent.serenity.enabled|cooldown.serenity.remains>=5)
+actions.st+=/rising_sun_kick,cycle_targets=1,if=active_enemies<=3&((chi>=3&energy>=40)|chi>=5)&(!talent.serenity.enabled|cooldown.serenity.remains>=5)
 actions.st+=/fists_of_fury,if=talent.serenity.enabled&!equipped.drinking_horn_cover&cooldown.serenity.remains>=5&energy.time_to_max>2
 actions.st+=/fists_of_fury,if=!(talent.serenity.enabled&!equipped.drinking_horn_cover)&energy.time_to_max>2
-actions.st+=/rising_sun_kick,cycle_targets=1,if=!talent.serenity.enabled|cooldown.serenity.remains>=5
+actions.st+=/rising_sun_kick,cycle_targets=1,if=active_enemies<=3&(!talent.serenity.enabled|cooldown.serenity.remains>=5)
 actions.st+=/whirling_dragon_punch
 actions.st+=/crackling_jade_lightning,if=equipped.the_emperors_capacitor&buff.the_emperors_capacitor.stack>=19&energy.time_to_max>3
 actions.st+=/crackling_jade_lightning,if=equipped.the_emperors_capacitor&buff.the_emperors_capacitor.stack>=14&cooldown.serenity.remains<13&talent.serenity.enabled&energy.time_to_max>3

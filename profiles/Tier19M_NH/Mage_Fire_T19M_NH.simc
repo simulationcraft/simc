@@ -1,11 +1,11 @@
 mage="Mage_Fire_T19M_NH"
+spec=fire
 level=110
 race=troll
 role=spell
 position=back
 talents=1012022
 artifact=54:0:0:0:0:748:1:749:4:750:4:751:4:752:4:753:4:754:4:755:4:756:4:757:4:758:1:759:1:760:1:761:1:762:1:763:1:1340:1:1372:1:1533:4:1534:1:1535:1:1536:1:1640:1
-spec=fire
 
 # Default consumables
 potion=deadly_grace
@@ -50,6 +50,7 @@ actions.combustion_phase+=/potion
 actions.combustion_phase+=/blood_fury
 actions.combustion_phase+=/berserking
 actions.combustion_phase+=/arcane_torrent
+actions.combustion_phase+=/use_items
 actions.combustion_phase+=/pyroblast,if=buff.kaelthas_ultimate_ability.react&buff.combustion.remains>execute_time
 actions.combustion_phase+=/pyroblast,if=buff.hot_streak.up
 actions.combustion_phase+=/fire_blast,if=buff.heating_up.up

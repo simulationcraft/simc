@@ -5220,7 +5220,7 @@ Effects          :
                    Base Value: 200 | Scaled Value: 200 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780)
 #2 (id=344192)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
-                   Base Value: -6000 | Scaled Value: -6000 | Misc Value: 11 | Target: Self (1)
+                   Base Value: -3000 | Scaled Value: -3000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Breath of Fire (115181), Dragonfire Brew (227681)
 #3 (id=344193)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)

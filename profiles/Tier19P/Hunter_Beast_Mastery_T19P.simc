@@ -1,11 +1,11 @@
 hunter="Hunter_Beast_Mastery_T19P"
+spec=beast_mastery
 level=110
 race=orc
 role=attack
 position=ranged_back
 talents=2102012
 artifact=56:0:0:0:0:869:3:870:3:872:3:874:3:875:3:878:1:880:1:881:1:882:1:1095:3:1336:1
-spec=beast_mastery
 
 # Default consumables
 potion=prolonged_power

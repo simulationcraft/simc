@@ -1324,6 +1324,7 @@ class SpellDataGenerator(DataGenerator):
             ( 192380, 0 ),          # Poisoned Knives damage component
             ( 202848, 0 ),          # Blunderbuss driver
             ( 197496, 0 ), ( 197498, 0 ), # New nightblade buffs
+            ( 246558, 0 ),          # Outlaw T20 4pc Lesser Adrenaline Rush
         ),
 
         # Priest:

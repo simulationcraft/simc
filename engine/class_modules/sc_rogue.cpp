@@ -299,6 +299,7 @@ struct rogue_t : public player_t
     buff_t* t19_4pc_outlaw;
     // T20 Raid
     buff_t* t20_2pc_outlaw;
+    haste_buff_t* t20_4pc_outlaw;
 
 
 
@@ -369,6 +370,7 @@ struct rogue_t : public player_t
     gain_t* the_empty_crown;
     gain_t* the_first_of_the_dead;
     gain_t* symbols_of_death;
+    gain_t* t20_4pc_outlaw;
 
     // CP Gains
     gain_t* seal_fate;
@@ -919,6 +921,7 @@ struct rogue_attack_t : public melee_attack_t
     bool agonizing_poison;
     bool alacrity;
     bool adrenaline_rush_gcd;
+    bool lesser_adrenaline_rush_gcd;
   } affected_by;
 
   rogue_attack_t( const std::string& token, rogue_t* p,
@@ -1022,6 +1025,7 @@ struct rogue_attack_t : public melee_attack_t
     affected_by.agonizing_poison = p() -> talent.agonizing_poison -> ok();
     affected_by.alacrity = base_costs[ RESOURCE_COMBO_POINT ] > 0;
     affected_by.adrenaline_rush_gcd = data().affected_by( p() -> buffs.adrenaline_rush -> data().effectN( 3 ) );
+    affected_by.lesser_adrenaline_rush_gcd = data().affected_by( p() -> buffs.t20_4pc_outlaw -> data().effectN( 3 ) );
   }
 
   bool init_finished() override
@@ -1071,6 +1075,12 @@ struct rogue_attack_t : public melee_attack_t
          t != timespan_t::zero() && p() -> buffs.adrenaline_rush -> check() )
     {
       t += p() -> buffs.adrenaline_rush -> data().effectN( 3 ).time_value();
+    }
+
+    if ( affected_by.lesser_adrenaline_rush_gcd &&
+         t != timespan_t::zero() && p() -> buffs.t20_4pc_outlaw -> check() )
+    {
+      t += p() -> buffs.t20_4pc_outlaw -> data().effectN( 3 ).time_value();
     }
 
     return t;
@@ -4683,8 +4693,8 @@ struct symbols_of_death_t : public rogue_attack_t
 
     dot_duration = timespan_t::zero(); // TODO: Check ticking in later builds
 
-    if ( p -> sets -> has_set_bonus( ROGUE_SUBTLETY, T20, B2 ) )
-      cooldown -> duration -= timespan_t::from_seconds( p -> sets -> set( ROGUE_SUBTLETY, T20, B2 ) -> effectN( 3 ).base_value() );
+    if ( p -> sets -> has_set_bonus( ROGUE_SUBTLETY, T20, B4 ) )
+      cooldown -> duration -= timespan_t::from_seconds( p -> sets -> set( ROGUE_SUBTLETY, T20, B4 ) -> effectN( 3 ).base_value() );
   }
 
   void execute() override
@@ -6343,7 +6353,6 @@ struct proxy_garrote_t : public buff_t
 struct adrenaline_rush_t : public haste_buff_t
 {
   rogue_t* r;
-  bool t20_4pc_extension_running;
 
   adrenaline_rush_t( rogue_t* p ) :
     haste_buff_t( haste_buff_creator_t( p, "adrenaline_rush", p -> find_class_spell( "Adrenaline Rush" ) )
@@ -6351,25 +6360,16 @@ struct adrenaline_rush_t : public haste_buff_t
                   .default_value( p -> find_class_spell( "Adrenaline Rush" ) -> effectN( 2 ).percent() )
                   .affects_regen( true )
                   .add_invalidate( CACHE_ATTACK_SPEED ) ),
-    r( p ),
-    t20_4pc_extension_running( false )
+    r( p )
   { }
-
-  void execute( int stacks, double value, timespan_t duration ) override
-  {
-    buff_t::execute( stacks, value, duration );
-
-    t20_4pc_extension_running = false;
-  }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     buff_t::expire_override( expiration_stacks, remaining_duration );
 
-    if ( r -> sets -> has_set_bonus( ROGUE_OUTLAW, T20, B4) && ! t20_4pc_extension_running )
+    if ( r -> sets -> has_set_bonus( ROGUE_OUTLAW, T20, B4) )
     {
-      trigger( 1, value() / 2.0, -1.0, timespan_t::from_seconds( r -> sets -> set( ROGUE_OUTLAW, T20, B4 ) -> effectN( 1 ).base_value() ) );
-      t20_4pc_extension_running = true;
+      r -> buffs.t20_4pc_outlaw -> trigger();
     }
   }
 };
@@ -6962,6 +6962,9 @@ double rogue_t::composite_melee_speed() const
 
   if ( buffs.adrenaline_rush -> check() )
     h *= 1.0 / ( 1.0 + buffs.adrenaline_rush -> value() );
+
+  if ( buffs.t20_4pc_outlaw -> check() )
+    h *= 1.0 / ( 1.0 + buffs.t20_4pc_outlaw -> value() );
 
   if ( buffs.grand_melee -> up() )
   {
@@ -8214,6 +8217,7 @@ void rogue_t::init_gains()
   gains.the_empty_crown          = get_gain( "The Empty Crown"          );
   gains.the_first_of_the_dead    = get_gain( "The First of the Dead"    );
   gains.symbols_of_death         = get_gain( "Symbols of Death"         );
+  gains.t20_4pc_outlaw           = get_gain( "Lesser Adrenaline Rush"   );
 }
 
 // rogue_t::init_procs ======================================================
@@ -8369,13 +8373,13 @@ void rogue_t::create_buffs()
                                 .refresh_behavior( BUFF_REFRESH_PANDEMIC )
                                 .period( maybe_ptr( dbc.ptr ) ? spec.symbols_of_death -> effectN( 3 ).period() : timespan_t::zero() )
                                 .tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
-                                  if ( maybe_ptr( dbc.ptr ) && sets -> has_set_bonus( ROGUE_SUBTLETY, T20, B2 ) ) {
-                                    resource_gain( RESOURCE_ENERGY, sets -> set( ROGUE_SUBTLETY, T20, B2 ) -> effectN( 1 ).base_value(), gains.symbols_of_death );
+                                  if ( maybe_ptr( dbc.ptr ) && sets -> has_set_bonus( ROGUE_SUBTLETY, T20, B4 ) ) {
+                                    resource_gain( RESOURCE_ENERGY, sets -> set( ROGUE_SUBTLETY, T20, B4 ) -> effectN( 1 ).base_value(), gains.symbols_of_death );
                                   }
                                 } )
                                 .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                                 .default_value( 1.0 + spec.symbols_of_death -> effectN( 1 ).percent() + artifact.etched_in_shadow.percent() +
-                                  ( sets -> has_set_bonus( ROGUE_SUBTLETY, T20, B4 ) ? sets -> set( ROGUE_SUBTLETY, T20, B4 ) -> effectN( 1 ).percent() : 0.0 )
+                                  ( sets -> has_set_bonus( ROGUE_SUBTLETY, T20, B2 ) ? sets -> set( ROGUE_SUBTLETY, T20, B2 ) -> effectN( 1 ).percent() : 0.0 )
                                 );
 
 
@@ -8469,6 +8473,11 @@ void rogue_t::create_buffs()
   buffs.t20_2pc_outlaw                     = buff_creator_t( this, "headshot", find_spell( 242277 ) )
                                              .default_value( find_spell( 242277 ) -> effectN( 1 ).percent() )
                                              .add_invalidate( CACHE_CRIT_CHANCE );
+  buffs.t20_4pc_outlaw                     = haste_buff_creator_t( this, "lesser_adrenaline_rush", find_spell( 246558 ) )
+                                             .cd( timespan_t::zero() )
+                                             .default_value( find_spell( 246558 ) -> effectN( 2 ).percent() )
+                                             .affects_regen( true )
+                                             .add_invalidate( CACHE_ATTACK_SPEED );
 
 
   // Artifact
@@ -8982,6 +8991,15 @@ void rogue_t::regen( timespan_t periodicity )
       double energy_regen = periodicity.total_seconds() * energy_regen_per_second() * buffs.adrenaline_rush -> data().effectN( 1 ).percent();
 
       resource_gain( RESOURCE_ENERGY, energy_regen, gains.adrenaline_rush );
+    }
+  }
+  else if (buffs.t20_4pc_outlaw -> up() )
+  {
+    if ( ! resources.is_infinite( RESOURCE_ENERGY ) )
+    {
+      double energy_regen = periodicity.total_seconds() * energy_regen_per_second() * buffs.t20_4pc_outlaw -> data().effectN( 1 ).percent();
+
+      resource_gain( RESOURCE_ENERGY, energy_regen, gains.t20_4pc_outlaw );
     }
   }
 }

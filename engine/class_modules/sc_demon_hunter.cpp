@@ -307,6 +307,7 @@ public:
     const spell_data_t* fel_rush_damage;
     const spell_data_t* vengeful_retreat;
     const spell_data_t* chaos_blades;
+    const spell_data_t* havoc_t20_4pc_fury;
 
     // Vengeance
     const spell_data_t* vengeance;
@@ -421,7 +422,7 @@ public:
     gain_t* prepared;
     gain_t* blind_fury;
     gain_t* anger_of_the_halfgiants;
-    gain_t* havoc_t20_2pc;
+    gain_t* havoc_t20_4pc;
 
     // Vengeance
     gain_t* damage_taken;
@@ -2955,10 +2956,7 @@ struct demon_hunter_attack_t : public demon_hunter_action_t<melee_attack_t>
       return;
 
     // All hits have an x% chance to generate 1 charge.
-    // FIXME: Using the effect on PTR as a temp fix for bad spelldata, to be hotfixed. Revert to proc_chance() when fixed.
-    const double percent = maybe_ptr(p()->dbc.ptr) ? 
-      p()->talent.demon_blades->effectN(1).percent() : p()->talent.demon_blades->proc_chance();
-    
+    const double percent = p()->talent.demon_blades->proc_chance();
     if (!rng().roll(percent))
       return;
 
@@ -3181,7 +3179,7 @@ struct blade_dance_attack_t : public demon_hunter_attack_t
   {
     double cc = demon_hunter_attack_t::composite_crit_chance();
 
-    cc += p()->sets->set(DEMON_HUNTER_HAVOC, T20, B4)->effectN(1).percent();
+    cc += p()->sets->set(DEMON_HUNTER_HAVOC, T20, B2)->effectN(1).percent();
 
     return cc;
   }
@@ -3327,11 +3325,11 @@ struct blade_dance_base_t : public demon_hunter_attack_t
       }
     }
 
-    // T20 2pc Bonus
-    if (target_list().size() > 0)
+    // T20 4pc Bonus
+    if (target_list().size() > 0 && p()->sets->set(DEMON_HUNTER_HAVOC, T20, B4)->ok())
     {
-      const double refund = p()->sets->set(DEMON_HUNTER_HAVOC, T20, B2)->effectN(1).resource(RESOURCE_FURY);
-      p()->resource_gain(RESOURCE_FURY, refund, p()->gain.havoc_t20_2pc);
+      const double refund = p()->spec.havoc_t20_4pc_fury->effectN(1).resource(RESOURCE_FURY);
+      p()->resource_gain(RESOURCE_FURY, refund, p()->gain.havoc_t20_4pc);
     }
   }
 };
@@ -6357,18 +6355,19 @@ void demon_hunter_t::init_spells()
   spec.soul_fragment          = find_spell(204255);
 
   // Havoc
-  spec.havoc               = find_specialization_spell( "Havoc Demon Hunter" );
-  spec.annihilation        = find_spell( 201427 );
-  spec.blade_dance         = find_class_spell( "Blade Dance" );
-  spec.blur                = find_class_spell( "Blur" );
-  spec.chaos_nova          = find_class_spell( "Chaos Nova" );
-  spec.chaos_strike        = find_class_spell( "Chaos Strike" );
-  spec.chaos_strike_refund = find_spell( 197125 );
-  spec.death_sweep         = find_spell( 210152 );
-  spec.eye_beam            = find_class_spell( "Eye Beam" );
-  spec.fel_rush_damage     = find_spell( 192611 );
-  spec.vengeful_retreat    = find_class_spell( "Vengeful Retreat" );
-  spec.chaos_blades        = maybe_ptr(dbc.ptr) ? find_spell(247938) : find_spell(211048);
+  spec.havoc                = find_specialization_spell( "Havoc Demon Hunter" );
+  spec.annihilation         = find_spell( 201427 );
+  spec.blade_dance          = find_class_spell( "Blade Dance" );
+  spec.blur                 = find_class_spell( "Blur" );
+  spec.chaos_nova           = find_class_spell( "Chaos Nova" );
+  spec.chaos_strike         = find_class_spell( "Chaos Strike" );
+  spec.chaos_strike_refund  = find_spell( 197125 );
+  spec.death_sweep          = find_spell( 210152 );
+  spec.eye_beam             = find_class_spell( "Eye Beam" );
+  spec.fel_rush_damage      = find_spell( 192611 );
+  spec.vengeful_retreat     = find_class_spell( "Vengeful Retreat" );
+  spec.chaos_blades         = maybe_ptr(dbc.ptr) ? find_spell(247938) : find_spell(211048);
+  spec.havoc_t20_4pc_fury   = find_spell(245862);
 
   // Vengeance
   spec.vengeance        = find_specialization_spell("Vengeance Demon Hunter");
@@ -6817,9 +6816,9 @@ void demon_hunter_t::apl_havoc()
   def -> add_action( "variable,name=pooling_for_meta,value=!talent.demonic.enabled&cooldown.metamorphosis.remains<6&fury.deficit>30"
     "&(!variable.waiting_for_nemesis|cooldown.nemesis.remains<10)&(!variable.waiting_for_chaos_blades|cooldown.chaos_blades.remains<6)",
     "\"Getting ready to use meta\" conditions, this is used in a few places." );
-  def -> add_action( "variable,name=blade_dance,value=talent.first_blood.enabled|set_bonus.tier20_2pc"
+  def -> add_action( "variable,name=blade_dance,value=talent.first_blood.enabled|set_bonus.tier20_4pc"
     "|spell_targets.blade_dance1>=3+(talent.chaos_cleave.enabled*3)",
-    "Blade Dance conditions. Always if First Blood is talented or the T20 2pc set bonus, "
+    "Blade Dance conditions. Always if First Blood is talented or the T20 4pc set bonus, "
     "otherwise at 6+ targets with Chaos Cleave or 3+ targets without." );
   def -> add_action( "variable,name=pooling_for_blade_dance,value=variable.blade_dance&(fury<75-talent.first_blood.enabled*20)",
     "Blade Dance pooling condition, so we don't spend too much fury on Chaos Strike when we need it soon." );
@@ -6834,7 +6833,7 @@ void demon_hunter_t::apl_havoc()
   def->add_action("run_action_list,name=normal");
 
   action_priority_list_t* demonic = get_action_priority_list("demonic", "Specific APL for the Blind Fury+Demonic Appetite+Demonic build");
-  demonic->add_action("pick_up_fragment,if=fury.deficit>=35&cooldown.eye_beam.remains>5");
+  demonic->add_action("pick_up_fragment,if=fury.deficit>=35&(cooldown.eye_beam.remains>5|buff.metamorphosis.up)");
   demonic->add_action(this, "Vengeful Retreat", "if=(talent.prepared.enabled|talent.momentum.enabled)&buff.prepared.down&buff.momentum.down",
     "Vengeful Retreat backwards through the target to minimize downtime.");
   demonic->add_action(this, "Fel Rush", "if=(talent.momentum.enabled|talent.fel_mastery.enabled)&"
@@ -7037,7 +7036,7 @@ void demon_hunter_t::create_gains()
   gain.prepared                 = get_gain("prepared");
   gain.blind_fury               = get_gain("blind_fury");
   gain.anger_of_the_halfgiants  = get_gain("anger_of_the_halfgiants");
-  gain.havoc_t20_2pc            = get_gain("havoc_t20_2pc");
+  gain.havoc_t20_4pc            = get_gain("havoc_t20_4pc");
 
   // Vengeance
   gain.damage_taken             = get_gain("damage_taken");

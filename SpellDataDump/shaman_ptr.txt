@@ -322,7 +322,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=3248)     : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 9.20000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 11.00000 | Target: Enemy (6)
 Description      : Instantly shocks the target with concussive force, causing up to $s1 Nature damage based on Maelstrom spent.
 
 Name             : Fire Nova (id=8349) [Scaling Spell (10), Spell Family (11)] 
@@ -1336,7 +1336,7 @@ GCD              : 1.5 seconds
 Duration         : 15 seconds
 Charges          : 1 (6 seconds cooldown)
 Category         : 1228
-Affecting spells : Healing Trance (60515 effect#1), Unleash Life (73685 effect#3), Mastery: Deep Healing (77226 effect#1), Lucidity (137326 effect#1), Item - Shaman T18 Restoration 2P Bonus (185873 effect#1), Torrent (200072 effect#1), Pull of the Sea (207118 effect#1), Pull of the Sea (210029 effect#1), Pull of the Sea (210030 effect#1), Pull of the Sea (210031 effect#1), Pull of the Sea (210032 effect#1), Pull of the Sea (210033 effect#1), Riptide (231725 effect#1), Tidal Force (246729 effect#2), Item - Shaman T20 Restoration 2P Bonus Dummy Crit Marker (246733 effect#1)
+Affecting spells : Healing Trance (60515 effect#1), Unleash Life (73685 effect#3), Mastery: Deep Healing (77226 effect#1), Lucidity (137326 effect#1), Item - Shaman T18 Restoration 2P Bonus (185873 effect#1), Torrent (200072 effect#1), Pull of the Sea (207118 effect#1), Pull of the Sea (210029 effect#1), Pull of the Sea (210030 effect#1), Pull of the Sea (210031 effect#1), Pull of the Sea (210032 effect#1), Pull of the Sea (210033 effect#1), Riptide (231725 effect#1)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -1539,6 +1539,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
 Proc Flags       : ........ ......x. ........ ........ 
                  : Heal
+Affecting spells : Mastery: Deep Healing (77226 effect#1)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ......x.   ........ .x...... ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1665,7 +1666,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=68079)    : Apply Aura (6) | Unknown(354)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.00000 | Misc Value: 2 | Target: Self (1)
-                   Affected Spells: Chain Heal (1064), Healing Stream (5672), Healing Surge (8004), Healing Stream Totem (52042), Gift of the Naaru (59547), Riptide (61295), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Healing Surge (188070), Rockbiter (193786), Wellspring (197995), Wellspring (197997), Gift of the Queen (207778), Queen's Decree (208899), Tidal Totem (209069)
+                   Affected Spells: Chain Heal (1064), Healing Stream (5672), Healing Surge (8004), Healing Stream Totem (52042), Gift of the Naaru (59547), Riptide (61295), Unleash Life (73685), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Healing Surge (188070), Rockbiter (193786), Wellspring (197995), Wellspring (197997), Gift of the Queen (207778), Queen's Decree (208899), Tidal Totem (209069)
 #2 (id=92128)    : Apply Aura (6) | Dummy (4)
                    Base Value: 300 | Scaled Value: 300 | Target: Self (1)
 Description      : Increases healing from your spells by up to $77226s1%, based on the current health of your target. Lower health targets are healed for more.
@@ -5733,7 +5734,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=307693)   : Unknown(202) | Dummy (4)
+#1 (id=307693)   : Apply Player/Pet Aura (202) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Radius: 100 yards | Target: Self (1)
 Description      : Damaging enemies with your Fire, Frost, or Nature abilities increases all damage you deal by ${$207995s1/10}.1% for $207995d. Each element adds a separate application.
 

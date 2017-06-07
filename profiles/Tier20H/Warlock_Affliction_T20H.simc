@@ -1,11 +1,11 @@
 warlock="Warlock_Affliction_T20H"
+spec=affliction
 level=110
 race=human
 role=spell
 position=back
 talents=3101011
 artifact=39:0:0:0:0:915:4:916:4:917:4:918:4:919:3:920:4:921:4:922:3:923:3:924:1:925:1:926:1:927:1:928:1:929:1:999:1:1353:1:1390:1:1601:4:1602:1:1603:1:1711:1
-spec=affliction
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
