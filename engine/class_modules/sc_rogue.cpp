@@ -4683,8 +4683,8 @@ struct symbols_of_death_t : public rogue_attack_t
 
     dot_duration = timespan_t::zero(); // TODO: Check ticking in later builds
 
-    if ( p -> sets -> has_set_bonus( ROGUE_SUBTLETY, T20, B2 ) )
-      cooldown -> duration -= timespan_t::from_seconds( p -> sets -> set( ROGUE_SUBTLETY, T20, B2 ) -> effectN( 3 ).base_value() );
+    if ( p -> sets -> has_set_bonus( ROGUE_SUBTLETY, T20, B4 ) )
+      cooldown -> duration -= timespan_t::from_seconds( p -> sets -> set( ROGUE_SUBTLETY, T20, B4 ) -> effectN( 3 ).base_value() );
   }
 
   void execute() override
@@ -8369,13 +8369,13 @@ void rogue_t::create_buffs()
                                 .refresh_behavior( BUFF_REFRESH_PANDEMIC )
                                 .period( maybe_ptr( dbc.ptr ) ? spec.symbols_of_death -> effectN( 3 ).period() : timespan_t::zero() )
                                 .tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
-                                  if ( maybe_ptr( dbc.ptr ) && sets -> has_set_bonus( ROGUE_SUBTLETY, T20, B2 ) ) {
-                                    resource_gain( RESOURCE_ENERGY, sets -> set( ROGUE_SUBTLETY, T20, B2 ) -> effectN( 1 ).base_value(), gains.symbols_of_death );
+                                  if ( maybe_ptr( dbc.ptr ) && sets -> has_set_bonus( ROGUE_SUBTLETY, T20, B4 ) ) {
+                                    resource_gain( RESOURCE_ENERGY, sets -> set( ROGUE_SUBTLETY, T20, B4 ) -> effectN( 1 ).base_value(), gains.symbols_of_death );
                                   }
                                 } )
                                 .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                                 .default_value( 1.0 + spec.symbols_of_death -> effectN( 1 ).percent() + artifact.etched_in_shadow.percent() +
-                                  ( sets -> has_set_bonus( ROGUE_SUBTLETY, T20, B4 ) ? sets -> set( ROGUE_SUBTLETY, T20, B4 ) -> effectN( 1 ).percent() : 0.0 )
+                                  ( sets -> has_set_bonus( ROGUE_SUBTLETY, T20, B2 ) ? sets -> set( ROGUE_SUBTLETY, T20, B2 ) -> effectN( 1 ).percent() : 0.0 )
                                 );
 
 
