@@ -2956,7 +2956,7 @@ Attributes       : ........ ........ .......x x..x....   .....x.. ........ .....
                  : Does not break stealth (37), Not a proc (105), Requires line of sight (186)
 Effects          :
 #1 (id=212872)   : School Damage (2): frost
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.52100 | Radius: 0 - 4 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.52100 | Radius: 0 - 6 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : $@spelldesc153595
 
 Name             : Arcane Orb (id=153626) 
@@ -4724,7 +4724,7 @@ Tooltip          : Slowed by $s1% for $d.
 Name             : Displacement Beacon (id=212799) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
-Spell Level      : 24
+Spell Level      : 1
 Duration         : 10 seconds
 Affecting spells : Everywhere At Once (187301 effect#1), Norgannon's Foresight (236380 effect#1)
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
@@ -4745,7 +4745,7 @@ Name             : Displacement (id=212801) [Spell Family (3)]
 Replaces         : Displacement (id=195676)
 Class            : Arcane Mage
 School           : Arcane
-Spell Level      : 24
+Spell Level      : 1
 Duration         : 0.3 seconds
 Cooldown         : 30 seconds
 Affecting spells : Icy Veins (12472 effect#2), Improved Mana Gems (37447 effect#1), Everywhere At Once (187301 effect#2), Ice Form (198144 effect#2), Norgannon's Foresight (236380 effect#1)
