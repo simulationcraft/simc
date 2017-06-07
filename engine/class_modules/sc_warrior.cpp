@@ -1818,10 +1818,12 @@ struct furious_slash_t: public warrior_attack_t
 
 struct charge_t: public warrior_attack_t
 {
+  const spell_data_t* charge_damage;
   bool first_charge;
   double movement_speed_increase, min_range;
   charge_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "charge", p, p -> spell.charge ),
+	charge_damage(p -> find_spell(126664)),
     first_charge( true ), movement_speed_increase( 5.0 ), min_range( data().min_range() )
   {
     parse_options( options_str );
@@ -1830,6 +1832,7 @@ struct charge_t: public warrior_attack_t
     energize_resource = RESOURCE_RAGE;
     energize_type = ENERGIZE_ON_CAST;
     energize_amount += p -> artifact.uncontrolled_rage.value() / 10;
+	attack_power_mod.direct = charge_damage -> effectN ( 2 ) . ap_coeff();
 
     if ( p -> talents.warbringer -> ok() )
     {
