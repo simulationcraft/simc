@@ -1,11 +1,11 @@
 deathknight="Death_Knight_Frost_T19M_NH"
+spec=frost
 level=110
 race=blood_elf
 role=attack
 position=back
 talents=3120032
 artifact=12:0:0:0:0:108:4:109:4:110:4:111:4:113:4:114:4:115:4:117:4:119:1:120:1:122:1:123:1:124:1:1090:4:1091:1:1092:1:1332:1:1360:1:1485:4:1486:1:1487:1:1488:1:1628:1
-spec=frost
 
 # Default consumables
 potion=prolonged_power
@@ -36,8 +36,8 @@ actions+=/blood_fury,if=buff.pillar_of_frost.up
 actions+=/berserking,if=buff.pillar_of_frost.up
 actions+=/use_items
 actions+=/use_item,name=ring_of_collapsing_futures,if=(buff.temptation.stack=0&target.time_to_die>60)|target.time_to_die<60
-actions+=/use_item,name=draught_of_souls,if=rune.time_to_5<3&(!dot.breath_of_sindragosa.ticking|runic_power>60)
 actions+=/use_item,name=horn_of_valor,if=buff.pillar_of_frost.up&(!talent.breath_of_sindragosa.enabled|!cooldown.breath_of_sindragosa.remains)
+actions+=/use_item,name=draught_of_souls,if=rune.time_to_5<3&(!dot.breath_of_sindragosa.ticking|runic_power>60)
 actions+=/potion,if=buff.pillar_of_frost.up&(!talent.breath_of_sindragosa.enabled|!cooldown.breath_of_sindragosa.remains)
 actions+=/pillar_of_frost,if=!talent.breath_of_sindragosa.enabled
 actions+=/pillar_of_frost,if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains>40
@@ -82,7 +82,7 @@ actions.bos_ticking+=/hungering_rune_weapon,if=runic_power<20&!buff.hungering_ru
 actions.bos_ticking+=/empower_rune_weapon,if=runic_power<20
 
 actions.generic=obliteration,if=(!talent.frozen_pulse.enabled|(rune<2&runic_power<28))&!talent.gathering_storm.enabled
-actions.generic+=/frost_strike,if=buff.icy_talons.remains<=gcd&talent.icy_talons.enabled
+actions.generic+=/frost_strike,if=buff.icy_talons.remains<1.5&talent.icy_talons.enabled
 actions.generic+=/frost_strike,if=talent.shattering_strikes.enabled&debuff.razorice.stack=5
 actions.generic+=/howling_blast,target_if=!dot.frost_fever.ticking
 actions.generic+=/remorseless_winter,if=(buff.rime.react&equipped.132459&!(buff.obliteration.up&spell_targets.howling_blast<2))|talent.gathering_storm.enabled
@@ -106,12 +106,12 @@ actions.generic+=/frost_strike
 actions.generic+=/empower_rune_weapon
 actions.generic+=/hungering_rune_weapon,if=!buff.hungering_rune_weapon.up
 
-actions.gs_ticking=frost_strike,if=buff.icy_talons.remains<=gcd&talent.icy_talons.enabled
+actions.gs_ticking=frost_strike,if=buff.icy_talons.remains<1.5&talent.icy_talons.enabled
 actions.gs_ticking+=/remorseless_winter
 actions.gs_ticking+=/howling_blast,if=!dot.frost_fever.ticking
 actions.gs_ticking+=/howling_blast,if=buff.rime.react&!(buff.obliteration.up&spell_targets.howling_blast<2)
 actions.gs_ticking+=/obliteration,if=(!talent.frozen_pulse.enabled|(rune<2&runic_power<28))
-actions.gs_ticking+=/obliterate,if=rune.time_to_5<gcd|buff.killing_machine.react|buff.obliteration.up
+actions.gs_ticking+=/obliterate,if=rune>3|buff.killing_machine.react|buff.obliteration.up
 actions.gs_ticking+=/sindragosas_fury,if=(equipped.144293|buff.pillar_of_frost.up)&buff.unholy_strength.up&debuff.razorice.stack=5&!buff.obliteration.up
 actions.gs_ticking+=/frost_strike,if=runic_power>80|(buff.obliteration.up&!buff.killing_machine.react)
 actions.gs_ticking+=/obliterate
@@ -139,12 +139,12 @@ main_hand=blades_of_the_fallen_prince,id=128292,gem_id=140832/140823/140832,reli
 off_hand=blades_of_the_fallen_prince,id=128293,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=913.00
+# gear_ilvl=912.88
 # gear_strength=24228
 # gear_stamina=35283
 # gear_crit_rating=8236
 # gear_haste_rating=6553
-# gear_mastery_rating=6614
+# gear_mastery_rating=7214
 # gear_versatility_rating=2164
 # gear_armor=4642
 # set_bonus=tier19_2pc=1

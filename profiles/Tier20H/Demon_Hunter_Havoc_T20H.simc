@@ -1,4 +1,4 @@
-demonhunter="Demon_Hunter_Havoc_T19H"
+demonhunter="Demon_Hunter_Havoc_T20H"
 spec=havoc
 level=110
 race=blood_elf
@@ -7,7 +7,7 @@ position=back
 talents=2220311
 talent_override=fel_barrage,if=(active_enemies>1|raid_event.adds.exists)&!talent.demonic.enabled
 talent_override=momentum,if=active_enemies>1|raid_event.adds.exists
-artifact=3:0:0:0:0:1001:3:1002:3:1003:3:1004:2:1005:3:1006:3:1007:3:1010:1:1011:1:1012:1:1014:1:1015:1:1016:1:1330:1
+artifact=3:0:0:0:0:1000:4:1001:4:1002:4:1003:4:1004:4:1005:4:1006:4:1007:4:1008:4:1010:1:1011:1:1012:1:1013:1:1014:1:1015:1:1016:1:1330:1:1362:1:1493:4:1494:1:1495:1:1496:1:1630:1
 
 # Default consumables
 potion=old_war
@@ -55,7 +55,7 @@ actions.cooldown+=/metamorphosis,if=talent.demonic.enabled&buff.metamorphosis.up
 actions.cooldown+=/nemesis,target_if=min:target.time_to_die,if=raid_event.adds.exists&debuff.nemesis.down&(active_enemies>desired_targets|raid_event.adds.in>60)
 actions.cooldown+=/nemesis,if=!raid_event.adds.exists&(buff.chaos_blades.up|buff.metamorphosis.up|cooldown.metamorphosis.adjusted_remains<20|target.time_to_die<=60)
 actions.cooldown+=/chaos_blades,if=buff.metamorphosis.up|cooldown.metamorphosis.adjusted_remains>60|target.time_to_die<=12
-actions.cooldown+=/use_item,slot=trinket1,if=buff.chaos_blades.up|!talent.chaos_blades.enabled
+actions.cooldown+=/use_item,slot=trinket1
 actions.cooldown+=/potion,if=buff.metamorphosis.remains>25|target.time_to_die<30
 
 # Specific APL for the Blind Fury+Demonic Appetite+Demonic build
@@ -113,30 +113,31 @@ actions.normal+=/fel_rush,if=movement.distance>15|(buff.out_of_range.up&!talent.
 actions.normal+=/vengeful_retreat,if=movement.distance>15
 actions.normal+=/throw_glaive,if=!talent.bloodlet.enabled
 
-head=mask_of_multitudinous_eyes,id=139204,bonus_id=1805
-neck=understone_gorget,id=134491,bonus_id=3418/1517/1813,enchant=mark_of_the_hidden_satyr
-shoulders=felbat_leather_pauldrons,id=134374,bonus_id=3418/1527/1813
-back=cloak_of_manaspun_silk,id=134410,bonus_id=3418/1517/1813,enchant=binding_of_agility
-chest=vest_of_rupturing_diamonds,id=137336,bonus_id=3418/1517/1813
-wrists=felbat_leather_wristwraps,id=134368,bonus_id=3418/1527/1813
-hands=guileful_intruder_handguards,id=137480,bonus_id=3418/1517/1813
-waist=felbat_leather_cinch,id=134375,bonus_id=3418/1527/1813
-legs=felbat_leather_leggings,id=134370,bonus_id=3418/1527/1813
-feet=tunnel_trudger_footguards,id=137397,bonus_id=3418/1517/1813
-finger1=band_of_callous_dominance,id=134528,bonus_id=3418/1517/1813,enchant=binding_of_critical_strike
-finger2=utgarde_royal_signet,id=133637,bonus_id=3418/1517/1813,enchant=binding_of_critical_strike
-trinket1=faulty_countermeasure,id=137539,bonus_id=3418/1517/1813
-trinket2=bloodthirsty_instinct,id=139329,bonus_id=1805/1487
-main_hand=twinblades_of_the_deceiver,id=127829,bonus_id=719,gem_id=139251/138226/139251,relic_id=1805/1805/1805
+head=shadowscarred_headcover,id=147034,ilevel=925
+neck=locket_of_splintered_souls,id=147014,ilevel=915,enchant=mark_of_the_claw
+shoulders=demonbane_shoulderpads,id=147132,ilevel=915
+back=chaos_theory,id=151798,ilevel=970,enchant=binding_of_agility
+chest=demonbane_harness,id=147127,ilevel=915
+wrists=bracers_of_rippling_darkness,id=147042,ilevel=915
+hands=demonbane_gauntlets,id=147129,ilevel=915
+waist=etched_bone_waistband,id=147040,ilevel=915
+legs=demonbane_leggings,id=147131,ilevel=915
+feet=glacier_walkers,id=147029,ilevel=915
+finger1=anger_of_the_halfgiants,id=137038,ilevel=970,gems=150crit,enchant=binding_of_critical_strike
+finger2=seal_of_the_second_duumvirate,id=147195,ilevel=925,enchant=binding_of_critical_strike
+trinket1=specter_of_betrayal,id=151190,ilevel=925
+trinket2=infernal_cinders,id=147009,ilevel=915
+main_hand=twinblades_of_the_deceiver,id=127829,bonus_id=719,ilevel=938,gem_id=147086/147108/147086/0
 off_hand=twinblades_of_the_deceiver,id=127830,gem_id=0/0/0/0,relic_id=0/0
 
 # Gear Summary
-# gear_ilvl=868.63
-# gear_agility=14601
-# gear_stamina=23338
-# gear_crit_rating=13987
-# gear_haste_rating=1321
-# gear_mastery_rating=674
-# gear_versatility_rating=4269
-# gear_armor=2126
-# set_bonus=tier19p_leather_2pc=1
+# gear_ilvl=926.63
+# gear_agility=24419
+# gear_stamina=40358
+# gear_crit_rating=13248
+# gear_haste_rating=7972
+# gear_mastery_rating=4867
+# gear_versatility_rating=1676
+# gear_armor=2359
+# set_bonus=tier20_2pc=1
+# set_bonus=tier20_4pc=1

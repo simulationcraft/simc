@@ -1,11 +1,11 @@
 deathknight="Death_Knight_Unholy_T19M_NH"
+spec=unholy
 level=110
 race=blood_elf
 role=attack
 position=back
 talents=3230021
 artifact=16:0:0:0:0:149:1:150:1:151:1:152:1:153:1:154:1:156:4:157:4:158:4:262:4:263:1:264:4:265:4:266:4:267:4:1119:4:1333:1:1361:1:1489:4:1490:1:1491:1:1492:1:1629:1
-spec=unholy
 
 # Default consumables
 potion=prolonged_power
