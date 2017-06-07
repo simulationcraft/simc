@@ -103,6 +103,3 @@ simulationcraft.sln
 simulationcraft*.db
 engine/simulationcraft.hpp.cpp
 gui/*_resource*
-/debug.log
-/debug.log
-/debug.log
