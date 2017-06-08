@@ -21,7 +21,7 @@ generate_Demon_Hunter_T20H.simc
 #generate_Druid_T20H.simc
 
 # Hunter
-#generate_Hunter_T20H.simc
+generate_Hunter_T20H.simc
 
 # Mage
 #generate_Mage_T20H.simc

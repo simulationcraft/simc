@@ -1,0 +1,71 @@
+# T20M
+# Tier 20 Tomb of Sargeras
+# * Ilvl Cap: 930 (940 for Sargeras gear)
+# * Artifact Rank Cap: 52
+# * 3 Relics with max ilevel of 930 (940 for Sargeras gear)
+# * 2 Legendaries
+# * No items from World Bosses / World Quests / BoEs
+# * Mythic+ gear is permitted up to the Mythic+ item level cap
+# * No Random Gems (ie. Bonus RNG Gem Slots)
+# * No Tertiary Stats
+# * No Hardcoded Stats (generally if an item gives wrong stats: either bonus_id is wrong, either the item no longer exists in-game)
+# * It is recommended to use enchant name (ex : ",enchant=binding_of_mastery") rather than id/hardcoded stats.
+
+
+hunter="Hunter_Beast_Mastery_T20M"
+level=110
+race=orc
+role=attack
+position=ranged_back
+talents=2202012
+artifact=56:0:0:0:0:868:4:869:4:870:4:871:4:872:4:873:4:874:4:875:4:876:1:877:1:878:1:879:1:880:1:881:1:882:1:1095:4:1336:1:1368:1:1517:4:1518:1:1519:1:1520:1:1636:1
+spec=beast_mastery
+
+head=wildstalker_helmet,id=147142,ilevel=930
+neck=locket_of_splintered_souls,id=147014,ilevel=930,enchant=mark_of_the_hidden_satyr
+shoulders=wildstalker_spaulders,id=147144,ilevel=930
+back=wildstalker_cape,id=147140,ilevel=930,enchant=binding_of_agility
+chest=parsels_tongue,id=151805,bonus_id=3530
+wrists=painsinged_armguards,id=147057,ilevel=930
+hands=vicegrip_of_the_unrepentant,id=147048,ilevel=940
+waist=roar_of_the_seven_lions,id=137080,bonus_id=3530
+legs=wildstalker_leggings,id=147143,ilevel=930
+feet=starstalker_treads,id=147046,ilevel=940
+finger1=scaled_band_of_servitude,id=147020,ilevel=930,enchant=binding_of_mastery
+finger2=seal_of_the_second_duumvirate,id=147195,ilevel=940,enchant=binding_of_mastery
+trinket1=tarnished_sentinel_medallion,id=147017,ilevel=930
+trinket2=engine_of_eradication,id=147015,ilevel=930
+main_hand=titanstrike,id=128861,gem_id=147113/147076/147102,relic_ilevel=930/930/930
+
+save=Hunter_Beast_Mastery_T20M.simc
+
+
+hunter="Hunter_Marksmanship_T20M"
+level=110
+race=troll
+role=attack
+position=ranged_back
+talents=1303013
+artifact=55:0:0:0:0:307:1:308:1:309:1:310:1:311:1:312:4:313:4:314:4:315:4:316:4:317:4:318:4:319:4:320:4:321:1:322:1:1337:1:1369:1:1521:4:1522:1:1523:1:1524:1:1637:1
+spec=marksmanship
+
+head=wildstalker_helmet,id=147142,ilevel=930
+neck=locket_of_splintered_souls,id=147014,ilevel=930,enchant=mark_of_the_hidden_satyr
+shoulders=wildstalker_spaulders,id=147144,ilevel=930
+back=wildstalker_cape,id=147140,ilevel=930,enchant=binding_of_agility
+chest=wildstalker_chestguard,id=147139,ilevel=930
+wrists=painsinged_armguards,id=147057,ilevel=930
+hands=vicegrip_of_the_unrepentant,id=147048,ilevel=940
+# hands=mkii_gyroscopic_stabilizer,id=144303,bonus_id=3530
+waist=waistguard_of_interminable_unity,id=147056,ilevel=930
+legs=legguards_of_siphoned_power,id=147052,ilevel=930
+feet=ullrs_feather_snowshoes,id=137033,bonus_id=3530
+# feet=starstalker_treads,id=147046,ilevel=940
+finger1=soul_of_the_huntmaster,id=151641,bonus_id=3530,gems=150mastery,enchant=binding_of_mastery
+# finger1=scaled_band_of_servitude,id=147020,ilevel=930,enchant=binding_of_mastery
+finger2=seal_of_the_second_duumvirate,id=147195,ilevel=940,enchant=binding_of_mastery
+trinket1=tarnished_sentinel_medallion,id=147017,ilevel=930
+trinket2=convergence_of_fates,id=140806,bonus_id=3518
+main_hand=thasdorah_legacy_of_the_windrunners,id=128826,gem_id=147112/147082/147105,relic_ilevel=930/940/930
+
+save=Hunter_Marksmanship_T20M.simc
