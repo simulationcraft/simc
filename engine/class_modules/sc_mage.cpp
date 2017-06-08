@@ -4455,11 +4455,8 @@ struct frozen_orb_t : public frost_mage_spell_t
 
 struct glacial_spike_t : public frost_mage_spell_t
 {
-  double stored_icicle_value;
-
   glacial_spike_t( mage_t* p, const std::string& options_str ) :
-    frost_mage_spell_t( "glacial_spike", p, p -> talents.glacial_spike ),
-    stored_icicle_value( 0.0 )
+    frost_mage_spell_t( "glacial_spike", p, p -> talents.glacial_spike )
   {
     parse_options( options_str );
     parse_effect_data( p -> find_spell( 228600 ) -> effectN( 1 ) );
@@ -4484,6 +4481,26 @@ struct glacial_spike_t : public frost_mage_spell_t
 
   virtual void execute() override
   {
+    double icicle_damage = 0.0;
+    int icicle_count = as<int>( p() -> icicles.size() );
+
+    for ( int i = 0; i < icicle_count; i++ )
+    {
+      icicle_data_t d = p() -> get_icicle_object();
+      icicle_damage += d.damage;
+    }
+
+    if ( sim -> debug )
+    {
+      sim -> out_debug.printf( "Add %u icicles to glacial_spike for %f damage",
+                               icicle_count, icicle_damage );
+    }
+
+    // Ideally, this would be passed to impact() in action_state_t, but since
+    // it's pretty much impossible to execute another Glacial Spike before
+    // the first one impacts, this should be fine.
+    base_dd_min = base_dd_max = icicle_damage;
+
     frost_mage_spell_t::execute();
 
     p() -> buffs.icicles -> expire();
@@ -4491,36 +4508,6 @@ struct glacial_spike_t : public frost_mage_spell_t
 
   virtual void impact( action_state_t* s ) override
   {
-    double icicle_damage_sum = 0;
-    int icicle_count = as<int>( p() -> icicles.size() );
-
-    for ( int i = 0; i < icicle_count; i++ )
-    {
-      icicle_data_t d = p() -> get_icicle_object();
-      icicle_damage_sum += d.damage;
-    }
-
-    if ( sim -> debug )
-    {
-      sim -> out_debug.printf( "Add %u icicles to glacial_spike for %f damage",
-                               icicle_count, icicle_damage_sum );
-    }
-    // If we're dealing with the first target when using splitting ice, store the total icicle value.
-    if ( s -> n_targets > 1 && s -> chain_target == 0 )
-    {
-      stored_icicle_value = icicle_damage_sum;
-    }
-
-    // If we're dealing with the non-primary target, no icicles exist.
-    // So grab the stored icicle value
-    if ( s -> chain_target != 0 )
-    {
-      icicle_damage_sum = stored_icicle_value;
-    }
-
-    base_dd_min = icicle_damage_sum;
-    base_dd_max = icicle_damage_sum;
-
     frost_mage_spell_t::impact( s );
     p() -> apply_crowd_control( s, MECHANIC_ROOT );
   }
