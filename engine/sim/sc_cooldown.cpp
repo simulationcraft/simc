@@ -402,28 +402,45 @@ expr_t* cooldown_t::create_expression( action_t*, const std::string& name_str )
   else if ( name_str == "up" || name_str == "ready" )
     return make_mem_fn_expr( name_str, *this, &cooldown_t::up );
   else if ( name_str == "charges" )
-    return make_ref_expr( name_str, current_charge );
+  {
+    return make_fn_expr( name_str, [ this ]() {
+      if ( charges <= 1 )
+      {
+        return up() ? 1.0 : 0.0;
+      }
+      else
+      {
+        return as<double>( current_charge );
+      }
+    } );
+  }
   else if ( name_str == "charges_fractional" )
   {
-    struct charges_fractional_expr_t : public expr_t
-    {
-      const cooldown_t* cd;
-      charges_fractional_expr_t( const cooldown_t* c ) :
-        expr_t( "charges_fractional" ), cd( c )
-      { }
-
-      virtual double evaluate() override
+    return make_fn_expr( name_str, [ this ]() {
+      if ( charges > 1 )
       {
-        double charges = cd -> current_charge;
-        if ( cd -> recharge_event )
+        double charges = current_charge;
+        if ( recharge_event )
         {
-          recharge_event_t* re = debug_cast<recharge_event_t*>( cd -> recharge_event );
+          recharge_event_t* re = debug_cast<recharge_event_t*>( recharge_event );
           charges += 1 - ( re -> remains() / re -> event_duration_ );
         }
         return charges;
       }
-    };
-    return new charges_fractional_expr_t( this );
+      else
+      {
+        if ( up() )
+        {
+          return 1.0;
+        }
+        else
+        {
+          timespan_t duration = ready - last_start,
+                     elapsed  = sim.current_time() - last_start;
+          return elapsed / duration;
+        }
+      }
+    } );
   }
   else if ( name_str == "recharge_time" )
   {

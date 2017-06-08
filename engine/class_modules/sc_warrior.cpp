@@ -1500,6 +1500,9 @@ struct mortal_strike_t : public warrior_attack_t
     if( !maybe_ptr( p() -> dbc.ptr ) ) //FIXME PTR
       c *= 1.0 + p() -> buff.precise_strikes -> check_value();
 
+	if (maybe_ptr(p()->dbc.ptr)) //FIXME PTR
+		c += p()->archavons_heavy_hand->driver()->effectN(1).resource(RESOURCE_RAGE);
+
     return c;
   }
 
@@ -1523,7 +1526,7 @@ struct mortal_strike_t : public warrior_attack_t
     p() -> buff.shattered_defenses -> expire();
     p() -> buff.precise_strikes -> expire();
     p() -> buff.executioners_precision -> expire();
-    if ( p() -> archavons_heavy_hand )
+    if (!maybe_ptr(p()->dbc.ptr) && p() -> archavons_heavy_hand ) //FIXME PTR
     {
       p() -> resource_gain( RESOURCE_RAGE, p() -> archavons_heavy_hand -> driver() -> effectN( 1 ).resource( RESOURCE_RAGE ), p() -> gain.archavons_heavy_hand );
     }
@@ -3433,7 +3436,7 @@ struct ravager_t: public warrior_attack_t
         mortal_strike -> execute();
       }
     }
-	if (d->ticks_left() > 2)
+	if (d->ticks_left() > 0)
 	{
 		p()->buff.tornados_eye->trigger();
 	}
