@@ -1500,7 +1500,7 @@ struct mortal_strike_t : public warrior_attack_t
     if( !maybe_ptr( p() -> dbc.ptr ) ) //FIXME PTR
       c *= 1.0 + p() -> buff.precise_strikes -> check_value();
 
-	if (maybe_ptr(p()->dbc.ptr)) //FIXME PTR
+	if (p()->archavons_heavy_hand && maybe_ptr(p()->dbc.ptr)) //FIXME PTR
 		c += p()->archavons_heavy_hand->driver()->effectN(1).resource(RESOURCE_RAGE);
 
     return c;
