@@ -112,8 +112,7 @@ struct mage_td_t : public actor_target_data_t
           * slow;
     buffs::touch_of_the_magi_t* touch_of_the_magi;
 
-    buff_t* chilled,
-          * frost_bomb,
+    buff_t* frost_bomb,
           * water_jet, // Proxy Water Jet to compensate for expression system
           * winters_chill,
           * frozen;
@@ -1165,30 +1164,6 @@ struct arcane_familiar_buff_t : public buff_t
   }
 };
 
-
-// Chilled debuff =============================================================
-
-struct chilled_t : public buff_t
-{
-  chilled_t( mage_td_t* td ) :
-    buff_t( buff_creator_t( *td, "chilled",
-                            td -> source -> find_spell( 205708 ) ) )
-  { }
-
-  bool trigger( int stacks, double value,
-                double chance, timespan_t duration ) override
-  {
-    mage_t* p = debug_cast<mage_t*>( source );
-
-    if ( p -> talents.bone_chilling -> ok() )
-    {
-      p -> buffs.bone_chilling -> trigger();
-    }
-
-    return buff_t::trigger( stacks, value, chance, duration );
-  }
-};
-
 struct erosion_t : public buff_t
 {
   // Erosion debuff =============================================================
@@ -2225,9 +2200,9 @@ struct frost_mage_spell_t : public mage_spell_t
 
     mage_spell_t::impact( s );
 
-    if ( result_is_hit( s -> result ) && chills )
+    if ( result_is_hit( s -> result ) && chills && p() -> talents.bone_chilling -> ok() )
     {
-      td( s -> target ) -> debuffs.chilled -> trigger();
+      p() -> buffs.bone_chilling -> trigger();
     }
   }
 
@@ -6480,7 +6455,6 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
                                         mage -> find_spell( 31589 ) );
   debuffs.touch_of_the_magi = new buffs::touch_of_the_magi_t( this );
 
-  debuffs.chilled     = new buffs::chilled_t( this );
   debuffs.frost_bomb  = buff_creator_t( *this, "frost_bomb",
                                         mage -> talents.frost_bomb );
   debuffs.frozen      = buff_creator_t( *this, "frozen" )
