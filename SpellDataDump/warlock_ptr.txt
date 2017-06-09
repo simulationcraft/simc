@@ -2241,9 +2241,9 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=119452)   : Unknown(202) | Dummy (4)
+#1 (id=119452)   : Apply Player/Pet Aura (202) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Radius: 100 yards | Target: Self (1)
-#2 (id=326363)   : Unknown(202) | Dummy (4)
+#2 (id=326363)   : Apply Player/Pet Aura (202) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Radius: 100 yards | Target: Self (1)
 Description      : All single-target damage done by you and your minions grants you and your pet shadowy shields that absorb $s1% of the damage dealt$?s219272[][ for $108366d], up to $?s219272[$219272s2][$s2]% of maximum health.
 
@@ -4433,7 +4433,7 @@ Tooltip          : Suffering $w1 Shadow damage every $t1 seconds. Restoring ${$e
 
 Name             : Bane of Havoc (Honor Talent) (id=200546) [Spell Family (5)] 
 Class            : Warlock
-School           : Physical
+School           : Shadow
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds

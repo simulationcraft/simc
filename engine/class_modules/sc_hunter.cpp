@@ -3915,6 +3915,11 @@ struct auto_attack_t: public action_t
 
 struct mongoose_bite_t: hunter_melee_attack_t
 {
+  struct {
+    std::array<proc_t*, 7> at_fury;
+    proc_t* t20_4p_no_lac;
+  } stats_;
+
   mongoose_bite_t( hunter_t* p, const std::string& options_str ):
     hunter_melee_attack_t( "mongoose_bite", p, p -> specs.mongoose_bite )
   {
@@ -3923,6 +3928,12 @@ struct mongoose_bite_t: hunter_melee_attack_t
 
     base_multiplier *= 1.0 + p -> artifacts.sharpened_fang.percent();
     crit_bonus_multiplier *= 1.0 + p -> artifacts.jaws_of_the_mongoose.percent();
+
+    for ( size_t i = 0; i < stats_.at_fury.size(); i++ )
+      stats_.at_fury[ i ] = p -> get_proc( "bite_at_" + std::to_string( i ) + "_fury" );
+
+    if ( p -> sets -> has_set_bonus( HUNTER_SURVIVAL, T20, B4 ) )
+      stats_.t20_4p_no_lac = p -> get_proc( "t20_4p_bite_no_lacerate" );
   }
 
   void execute() override
@@ -3931,6 +3942,8 @@ struct mongoose_bite_t: hunter_melee_attack_t
 
     if ( p() -> sets -> has_set_bonus( HUNTER_SURVIVAL, T19, B4 ) && p() -> buffs.mongoose_fury -> stack() == 5 )
       p() -> buffs.t19_4p_mongoose_power -> trigger();
+
+    stats_.at_fury[ p() -> buffs.mongoose_fury -> check() ] -> occur();
 
     p() -> buffs.mongoose_fury -> trigger();
 
@@ -3952,8 +3965,13 @@ struct mongoose_bite_t: hunter_melee_attack_t
   {
     double tm = hunter_melee_attack_t::composite_target_multiplier( t );
 
-    if ( p() -> sets -> has_set_bonus( HUNTER_SURVIVAL, T20, B4 ) && td( t ) -> dots.lacerate -> is_ticking() )
-      tm *= 1.0 + p() -> sets -> set( HUNTER_SURVIVAL, T20, B4 ) -> effectN( 1 ).percent();
+    if ( p() -> sets -> has_set_bonus( HUNTER_SURVIVAL, T20, B4 ) )
+    {
+      if ( td( t ) -> dots.lacerate -> is_ticking() )
+        tm *= 1.0 + p() -> sets -> set( HUNTER_SURVIVAL, T20, B4 ) -> effectN( 1 ).percent();
+      else
+        stats_.t20_4p_no_lac -> occur();
+    }
 
     return tm;
   }

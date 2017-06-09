@@ -1,11 +1,11 @@
 warrior="Warrior_Protection_T19M"
+spec=protection
 level=110
 race=tauren
 role=tank
 position=front
 talents=1222312
 artifact=11:0:0:0:0:91:1:92:1:93:1:94:1:95:3:96:3:97:1:98:3:99:3:100:3:101:3:102:3:103:1:104:1:105:3:106:3:1358:1
-spec=protection
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,

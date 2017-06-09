@@ -1500,6 +1500,9 @@ struct mortal_strike_t : public warrior_attack_t
     if( !maybe_ptr( p() -> dbc.ptr ) ) //FIXME PTR
       c *= 1.0 + p() -> buff.precise_strikes -> check_value();
 
+	if (p()->archavons_heavy_hand && maybe_ptr(p()->dbc.ptr)) //FIXME PTR
+		c += p()->archavons_heavy_hand->driver()->effectN(1).resource(RESOURCE_RAGE);
+
     return c;
   }
 
@@ -1523,7 +1526,7 @@ struct mortal_strike_t : public warrior_attack_t
     p() -> buff.shattered_defenses -> expire();
     p() -> buff.precise_strikes -> expire();
     p() -> buff.executioners_precision -> expire();
-    if ( p() -> archavons_heavy_hand )
+    if (!maybe_ptr(p()->dbc.ptr) && p() -> archavons_heavy_hand ) //FIXME PTR
     {
       p() -> resource_gain( RESOURCE_RAGE, p() -> archavons_heavy_hand -> driver() -> effectN( 1 ).resource( RESOURCE_RAGE ), p() -> gain.archavons_heavy_hand );
     }
@@ -1617,7 +1620,6 @@ struct bladestorm_t: public warrior_attack_t
   {
     warrior_attack_t::execute();
     p() -> buff.bladestorm -> trigger();
-    p() -> buff.tornados_eye -> trigger();
   }
 
   void tick( dot_t* d ) override
@@ -1639,6 +1641,11 @@ struct bladestorm_t: public warrior_attack_t
         mortal_strike -> execute();
       }
     }
+	
+	if (d -> ticks_left() > 0)
+	{
+		p() -> buff . tornados_eye -> trigger();
+	}
   }
 
   void last_tick( dot_t*d ) override
@@ -1814,10 +1821,12 @@ struct furious_slash_t: public warrior_attack_t
 
 struct charge_t: public warrior_attack_t
 {
+  const spell_data_t* charge_damage;
   bool first_charge;
   double movement_speed_increase, min_range;
   charge_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "charge", p, p -> spell.charge ),
+	charge_damage(p -> find_spell(126664)),
     first_charge( true ), movement_speed_increase( 5.0 ), min_range( data().min_range() )
   {
     parse_options( options_str );
@@ -1826,6 +1835,7 @@ struct charge_t: public warrior_attack_t
     energize_resource = RESOURCE_RAGE;
     energize_type = ENERGIZE_ON_CAST;
     energize_amount += p -> artifact.uncontrolled_rage.value() / 10;
+	attack_power_mod.direct = charge_damage -> effectN ( 2 ) . ap_coeff();
 
     if ( p -> talents.warbringer -> ok() )
     {
@@ -2278,7 +2288,7 @@ struct execute_arms_t: public warrior_attack_t
     weapon = &( p -> main_hand_weapon );
 
     base_crit += p -> artifact.deathblow.percent();
-    max_rage = p -> talents.dauntless -> ok() ? 32 : 40;
+    max_rage = p -> talents.dauntless -> ok() ? 40 * (1 + p->talents.dauntless->effectN(1).percent()) : 40;
     if ( p -> talents.sweeping_strikes -> ok() )
     {
       execute_sweeping_strike = new execute_sweep_t( p );
@@ -3001,7 +3011,6 @@ struct raging_blow_t: public warrior_attack_t
     {
       mh_attack -> execute();
       oh_attack -> execute();
-      p() -> buff.raging_thirst -> expire();
     }
     p() -> buff.t20_fury_4p -> trigger( 1 );
   }
@@ -3409,7 +3418,6 @@ struct ravager_t: public warrior_attack_t
       p() -> buff.ravager -> trigger();
     }
 
-    p() -> buff.tornados_eye -> trigger();
 
     warrior_attack_t::execute();
   }
@@ -3428,6 +3436,10 @@ struct ravager_t: public warrior_attack_t
         mortal_strike -> execute();
       }
     }
+	if (d->ticks_left() > 0)
+	{
+		p()->buff.tornados_eye->trigger();
+	}
   }
 };
 
@@ -6961,10 +6973,17 @@ struct the_great_storms_eye_t : public unique_gear::class_buff_cb_t<warrior_t>
 
   buff_creator_t creator( const special_effect_t& e ) const override
   {
+   if(e . player -> talent_points . has_row_col(6,3))
     return super::creator( e )
       .spell( e.player -> find_spell( 248145 ) )
       .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
       .add_invalidate( CACHE_RUN_SPEED );
+   else
+	   return super::creator(e)
+	   .spell(e.player->find_spell(248142))
+	   .add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER)
+	   .add_invalidate(CACHE_RUN_SPEED);
+
   }
 };
 

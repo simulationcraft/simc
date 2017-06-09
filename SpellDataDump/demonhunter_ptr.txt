@@ -1484,7 +1484,7 @@ Description      : Reduces the cooldown of Vengeful Retreat by 10 sec, and gener
 Name             : Demon Blades (id=203555) [Spell Family (107), Passive] 
 Class            : Demon Hunter
 School           : Physical
-Proc Chance      : 100%
+Proc Chance      : 60%
 Proc Flags       : ..x..... ........ ........ ........ 
                  : White Melee
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 

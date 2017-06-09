@@ -1,11 +1,11 @@
 shaman="Shaman_Enhancement_T19P"
+spec=enhancement
 level=110
 race=troll
 role=attack
 position=back
 talents=2002222
 artifact=41:137316:137543:133682:0:899:1:901:1:902:1:903:1:904:1:905:1:906:1:909:3:910:5:911:3:912:3:913:1:1351:1
-spec=enhancement
 
 # Default consumables
 potion=prolonged_power

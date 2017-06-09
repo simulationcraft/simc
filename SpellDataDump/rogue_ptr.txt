@@ -419,7 +419,7 @@ Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 4 seconds
 Mechanic         : Bleed
-Affecting spells : Hemorrhage (16511 effect#4), Rogue Tier 6 Trinket (40460 effect#1), Mastery: Executioner (76808 effect#1), Vendetta (79140 effect#1), Assassination Rogue (137037 effect#1), Adrenaline Rush (186286 effect#3), Serrated Edge (192315 effect#1), Gushing Wound (192329 effect#1), Blood of the Assassinated (192925 effect#1), Deeper Stratagem (193531 effect#1), 
+Affecting spells : Hemorrhage (16511 effect#4), Rogue Tier 6 Trinket (40460 effect#1), Mastery: Executioner (76808 effect#1), Vendetta (79140 effect#1), Assassination Rogue (137037 effect#1), Adrenaline Rush (186286 effect#3), Serrated Edge (192315 effect#1), Gushing Wound (192329 effect#1), Blood of the Assassinated (192925 effect#1), Deeper Stratagem (193531 effect#1), Lesser Adrenaline Rush (246558 effect#3)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ...x.... ........ ....x... ........   ........ ........ ........ ........ 
@@ -509,7 +509,7 @@ Resource         : 1 - 5 Combo Points (4) (id=10581)
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Adrenaline Rush (13750 effect#3), Outlaw Rogue (137036 effect#1), Death from Above (163786 effect#1), Deceit (166878 effect#1), Eviscerating Blade (184917 effect#2), Deeper Stratagem (193531 effect#1), Acrobatic Strikes (196924 effect#1), Fate's Thirst (202514 effect#1), Fatebringer (202524 effect#1)
+Affecting spells : Adrenaline Rush (13750 effect#3), Outlaw Rogue (137036 effect#1), Death from Above (163786 effect#1), Deceit (166878 effect#1), Eviscerating Blade (184917 effect#2), Deeper Stratagem (193531 effect#1), Acrobatic Strikes (196924 effect#1), Fate's Thirst (202514 effect#1), Fatebringer (202524 effect#1), Lesser Adrenaline Rush (246558 effect#3)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
@@ -676,7 +676,7 @@ Spell Level      : 14
 Range            : 100 yards
 GCD              : 1 seconds
 Duration         : 6 seconds
-Affecting spells : Adrenaline Rush (13750 effect#3), Rogue Tier 6 Trinket (40460 effect#1), Energetic Recovery (79152 effect#1), Adrenaline Rush (186286 effect#3), Deeper Stratagem (193531 effect#1), Fatebringer (202524 effect#1)
+Affecting spells : Adrenaline Rush (13750 effect#3), Rogue Tier 6 Trinket (40460 effect#1), Energetic Recovery (79152 effect#1), Adrenaline Rush (186286 effect#3), Deeper Stratagem (193531 effect#1), Fatebringer (202524 effect#1), Lesser Adrenaline Rush (246558 effect#3)
 Attributes       : ....x... ........ x.x..... .....x..   .....x.. ..x..... ......x. ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3146,7 +3146,7 @@ Spell Level      : 12
 Range            : 20 yards
 GCD              : 1 seconds
 Duration         : 6 seconds
-Affecting spells : Adrenaline Rush (13750 effect#3), Outlaw Rogue (137036 effect#1), Broadsides (193356 effect#3), Opportunity (195627 effect#1), Gunslinger (202522 effect#1), Blunderbuss (202848 effect#1), Greenskin's Waterlogged Wristcuffs (209423 effect#1)
+Affecting spells : Adrenaline Rush (13750 effect#3), Outlaw Rogue (137036 effect#1), Broadsides (193356 effect#3), Opportunity (195627 effect#1), Gunslinger (202522 effect#1), Blunderbuss (202848 effect#1), Greenskin's Waterlogged Wristcuffs (209423 effect#1), Lesser Adrenaline Rush (246558 effect#3)
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ...x.... 
@@ -3389,7 +3389,7 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 0.5 seconds
-Affecting spells : Adrenaline Rush (13750 effect#3), Outlaw Rogue (137036 effect#1), Broadsides (193356 effect#3), Acrobatic Strikes (196924 effect#1), Swordmaster (200733 effect#1), Cursed Edges (202463 effect#1), Swordplay (211669 effect#1), Sabermetrics (238067 effect#1)
+Affecting spells : Adrenaline Rush (13750 effect#3), Outlaw Rogue (137036 effect#1), Broadsides (193356 effect#3), Acrobatic Strikes (196924 effect#1), Swordmaster (200733 effect#1), Cursed Edges (202463 effect#1), Swordplay (211669 effect#1), Sabermetrics (238067 effect#1), Lesser Adrenaline Rush (246558 effect#3)
 Attributes       : ....x... ........ x.x..... .......x   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ...x.... 
@@ -3425,7 +3425,7 @@ Spell Level      : 40
 Range            : 100 yards
 GCD              : 1 seconds
 Duration         : 6 seconds
-Affecting spells : Adrenaline Rush (13750 effect#3), Deeper Stratagem (193531 effect#1), Fatebringer (202524 effect#1)
+Affecting spells : Adrenaline Rush (13750 effect#3), Deeper Stratagem (193531 effect#1), Fatebringer (202524 effect#1), Lesser Adrenaline Rush (246558 effect#3)
 Attributes       : ....x... ........ x.x..... .....x..   .....x.. ..x..... ......x. ....x... 
                  : ..x..... ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -3939,7 +3939,7 @@ Spell Level      : 1
 Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 15 seconds
-Affecting spells : Adrenaline Rush (13750 effect#3), Outlaw Rogue (137036 effect#1), Broadsides (193356 effect#2), Acrobatic Strikes (196924 effect#1)
+Affecting spells : Adrenaline Rush (13750 effect#3), Outlaw Rogue (137036 effect#1), Broadsides (193356 effect#2), Acrobatic Strikes (196924 effect#1), Lesser Adrenaline Rush (246558 effect#3)
 Attributes       : ....x... ........ x.x..... .......x   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ...x.... 
@@ -4358,7 +4358,7 @@ Spell Level      : 20
 Range            : 20 yards
 GCD              : 1 seconds
 Cooldown         : 20 seconds
-Affecting spells : Adrenaline Rush (13750 effect#3), Outlaw Rogue (137036 effect#1), Deeper Stratagem (193531 effect#1), Fatebringer (202524 effect#1), Black Powder (216230 effect#1), Between the Eyes (235484 effect#1)
+Affecting spells : Adrenaline Rush (13750 effect#3), Outlaw Rogue (137036 effect#1), Deeper Stratagem (193531 effect#1), Fatebringer (202524 effect#1), Black Powder (216230 effect#1), Between the Eyes (235484 effect#1), Lesser Adrenaline Rush (246558 effect#3)
 Attributes       : ....x... ........ x.....x. ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ........ ...x.... 
@@ -4628,7 +4628,7 @@ Range            : 20 yards
 GCD              : 1 seconds
 Velocity         : 40 yards/sec
 Duration         : 6 seconds
-Affecting spells : Adrenaline Rush (13750 effect#3), Outlaw Rogue (137036 effect#1), Broadsides (193356 effect#3), Opportunity (195627 effect#1), Gunslinger (202522 effect#1), Blunderbuss (202848 effect#1), Greenskin's Waterlogged Wristcuffs (209423 effect#1)
+Affecting spells : Adrenaline Rush (13750 effect#3), Outlaw Rogue (137036 effect#1), Broadsides (193356 effect#3), Opportunity (195627 effect#1), Gunslinger (202522 effect#1), Blunderbuss (202848 effect#1), Greenskin's Waterlogged Wristcuffs (209423 effect#1), Lesser Adrenaline Rush (246558 effect#3)
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5272,5 +5272,29 @@ Effects          :
 #1 (id=374034)   : Apply Aura (6) | Periodic Dummy (226): every 0.25 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc245751
+
+Name             : Lesser Adrenaline Rush (id=246558) [Spell Family (8)] 
+Class            : Rogue
+School           : Physical
+Spell Level      : 56
+Duration         : 10 seconds
+Cooldown         : 180 seconds
+Attributes       : ....x... ........ x....... ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=375522)   : Apply Aura (6) | Mod Power Regen (110)
+                   Base Value: 30 | Scaled Value: 30 | SP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
+#2 (id=375523)   : Apply Aura (6) | Modify Ranged and Melee Attack Speed% (342)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+#3 (id=375524)   : Apply Aura (6) | Add Flat Modifier (107): Spell Global Cooldown (21)
+                   Base Value: -200 | Scaled Value: -200 | Misc Value: 21 | Target: Self (1)
+                   Affected Spells: Rupture (1943), Run Through (2098), Slice and Dice (5171), Pistol Shot (185763), Saber Slash (193315), Roll the Bones (193316), Ghostly Strike (196937), Between the Eyes (199804), Blunderbuss (202895)
+Description      : Increases your Energy regeneration rate by $s1% and your attack speed by $s2% for $d.
+Tooltip          : Energy regeneration increased by $s1%.
+Attack speed increased by $s2%.
 
 

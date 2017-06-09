@@ -1,11 +1,11 @@
 warrior="Warrior_Fury_T19M"
+spec=fury
 level=110
 race=troll
 role=attack
 position=back
 talents=2333232
 artifact=35:142516:142518:142511:0:980:1:981:1:982:1:984:1:985:1:986:1:987:1:988:3:989:3:990:3:991:4:992:4:993:3:994:3:995:4:996:3:1357:1
-spec=fury
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,

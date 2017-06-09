@@ -1,9 +1,9 @@
-# T19M_NH
-# Tier 19 Mythic Nighthold
-# * Ilvl Cap: 910
+# T20M
+# Tier 20 Tomb of Sargeras
+# * Ilvl Cap: 930 (940 for Sargeras gear)
 # * Artifact Rank Cap: 52
-# * 3 Relics with max ilevel of 910
-# * No Legendaries (see Raid_T19x_Legendary.simc)
+# * 3 Relics with max ilevel of 930 (940 for Sargeras gear)
+# * 2 Legendaries
 # * No items from World Bosses / World Quests / BoEs
 # * Mythic+ gear is permitted up to the Mythic+ item level cap
 # * No Random Gems (ie. Bonus RNG Gem Slots)
@@ -15,13 +15,13 @@
 #generate_Death_Knight_T20M.simc
 
 # Demon Hunter
-#generate_Demon_Hunter_T20M.simc
+generate_Demon_Hunter_T20M.simc
 
 # Druid
 generate_Druid_T20M.simc
 
 # Hunter
-#generate_Hunter_T20M.simc
+generate_Hunter_T20M.simc
 
 # Mage
 #generate_Mage_T20M.simc
@@ -30,10 +30,10 @@ generate_Druid_T20M.simc
 #generate_Monk_T20M.simc
 
 # Paladin
-#generate_Paladin_T20M.simc
+generate_Paladin_T20M.simc
 
-# Paladin
-#generate_Priest_T20M.simc
+# Priest
+generate_Priest_T20M.simc
 
 # Rogue
 #generate_Rogue_T20M.simc

@@ -9,7 +9,7 @@ if exist simc.exe goto 32
 goto exit
 :32
 @echo on
-forfiles -s -m generate_T1?*.simc -c "cmd /c echo Running @path && %~dp0simc.exe @file"
+forfiles -s -m generate_T*.simc -c "cmd /c echo Running @path && %~dp0simc.exe @file"
 goto pause
 :exit
 echo "This file requires the CLI to be located in the same folder"

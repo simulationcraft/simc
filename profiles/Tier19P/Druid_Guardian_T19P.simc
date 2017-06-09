@@ -1,11 +1,11 @@
 druid="Druid_Guardian_T19P"
+spec=guardian
 level=110
 race=worgen
 role=tank
 position=front
 talents=3323323
 artifact=57:0:0:0:0:948:3:950:3:951:3:952:3:954:2:956:3:957:1:958:1:960:1:961:1:979:1:1334:1
-spec=guardian
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -15,7 +15,7 @@ spec=guardian
 
 # Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat=flask,type=flask_of_the_seventh_demon
-actions.precombat+=/food,type=azshari_salad
+actions.precombat+=/food,type=lavish_suramar_feast
 actions.precombat+=/augmentation,type=defiled
 actions.precombat+=/bear_form
 # Snapshot raid buffed stats before combat begins and pre-potting is done.

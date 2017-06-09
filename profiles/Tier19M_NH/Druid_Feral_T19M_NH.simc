@@ -1,4 +1,5 @@
 druid="Druid_Feral_T19M_NH"
+spec=feral
 level=110
 race=night_elf
 timeofday=day
@@ -6,7 +7,6 @@ role=attack
 position=back
 talents=2331322
 artifact=58:0:0:0:0:1153:1:1154:1:1155:1:1156:1:1157:1:1158:1:1159:1:1160:4:1161:4:1162:4:1163:4:1164:4:1165:4:1166:4:1167:4:1168:4:1327:1:1365:1:1505:4:1506:1:1507:1:1508:1:1633:1
-spec=feral
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -16,7 +16,7 @@ spec=feral
 
 # Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat=flask,type=flask_of_the_seventh_demon
-actions.precombat+=/food,type=nightborne_delicacy_platter
+actions.precombat+=/food,type=lavish_suramar_feast
 actions.precombat+=/augmentation,type=defiled
 actions.precombat+=/regrowth,if=talent.bloodtalons.enabled
 # Rake_refresh controls how aggresively to refresh rake. Lower means less aggresively.

@@ -307,6 +307,7 @@ public:
     const spell_data_t* fel_rush_damage;
     const spell_data_t* vengeful_retreat;
     const spell_data_t* chaos_blades;
+    const spell_data_t* havoc_t20_4pc_fury;
 
     // Vengeance
     const spell_data_t* vengeance;
@@ -421,7 +422,7 @@ public:
     gain_t* prepared;
     gain_t* blind_fury;
     gain_t* anger_of_the_halfgiants;
-    gain_t* havoc_t20_2pc;
+    gain_t* havoc_t20_4pc;
 
     // Vengeance
     gain_t* damage_taken;
@@ -2955,8 +2956,9 @@ struct demon_hunter_attack_t : public demon_hunter_action_t<melee_attack_t>
       return;
 
     // All hits have an x% chance to generate 1 charge.
-    if ( !rng().roll( p() -> talent.demon_blades -> proc_chance() ) )
-        return;
+    const double percent = p()->talent.demon_blades->proc_chance();
+    if (!rng().roll(percent))
+      return;
 
     p() -> active.demon_blades -> target = s -> target;
     p() -> active.demon_blades -> schedule_execute();
@@ -3177,7 +3179,7 @@ struct blade_dance_attack_t : public demon_hunter_attack_t
   {
     double cc = demon_hunter_attack_t::composite_crit_chance();
 
-    cc += p()->sets->set(DEMON_HUNTER_HAVOC, T20, B4)->effectN(1).percent();
+    cc += p()->sets->set(DEMON_HUNTER_HAVOC, T20, B2)->effectN(1).percent();
 
     return cc;
   }
@@ -3323,11 +3325,11 @@ struct blade_dance_base_t : public demon_hunter_attack_t
       }
     }
 
-    // T20 2pc Bonus
-    if (target_list().size() > 0)
+    // T20 4pc Bonus
+    if (target_list().size() > 0 && p()->sets->set(DEMON_HUNTER_HAVOC, T20, B4)->ok())
     {
-      const double refund = p()->sets->set(DEMON_HUNTER_HAVOC, T20, B2)->effectN(1).resource(RESOURCE_FURY);
-      p()->resource_gain(RESOURCE_FURY, refund, p()->gain.havoc_t20_2pc);
+      const double refund = p()->spec.havoc_t20_4pc_fury->effectN(1).resource(RESOURCE_FURY);
+      p()->resource_gain(RESOURCE_FURY, refund, p()->gain.havoc_t20_4pc);
     }
   }
 };
@@ -6353,18 +6355,19 @@ void demon_hunter_t::init_spells()
   spec.soul_fragment          = find_spell(204255);
 
   // Havoc
-  spec.havoc               = find_specialization_spell( "Havoc Demon Hunter" );
-  spec.annihilation        = find_spell( 201427 );
-  spec.blade_dance         = find_class_spell( "Blade Dance" );
-  spec.blur                = find_class_spell( "Blur" );
-  spec.chaos_nova          = find_class_spell( "Chaos Nova" );
-  spec.chaos_strike        = find_class_spell( "Chaos Strike" );
-  spec.chaos_strike_refund = find_spell( 197125 );
-  spec.death_sweep         = find_spell( 210152 );
-  spec.eye_beam            = find_class_spell( "Eye Beam" );
-  spec.fel_rush_damage     = find_spell( 192611 );
-  spec.vengeful_retreat    = find_class_spell( "Vengeful Retreat" );
-  spec.chaos_blades        = maybe_ptr(dbc.ptr) ? find_spell(247938) : find_spell(211048);
+  spec.havoc                = find_specialization_spell( "Havoc Demon Hunter" );
+  spec.annihilation         = find_spell( 201427 );
+  spec.blade_dance          = find_class_spell( "Blade Dance" );
+  spec.blur                 = find_class_spell( "Blur" );
+  spec.chaos_nova           = find_class_spell( "Chaos Nova" );
+  spec.chaos_strike         = find_class_spell( "Chaos Strike" );
+  spec.chaos_strike_refund  = find_spell( 197125 );
+  spec.death_sweep          = find_spell( 210152 );
+  spec.eye_beam             = find_class_spell( "Eye Beam" );
+  spec.fel_rush_damage      = find_spell( 192611 );
+  spec.vengeful_retreat     = find_class_spell( "Vengeful Retreat" );
+  spec.chaos_blades         = maybe_ptr(dbc.ptr) ? find_spell(247938) : find_spell(211048);
+  spec.havoc_t20_4pc_fury   = find_spell(245862);
 
   // Vengeance
   spec.vengeance        = find_specialization_spell("Vengeance Demon Hunter");
@@ -6813,26 +6816,24 @@ void demon_hunter_t::apl_havoc()
   def -> add_action( "variable,name=pooling_for_meta,value=!talent.demonic.enabled&cooldown.metamorphosis.remains<6&fury.deficit>30"
     "&(!variable.waiting_for_nemesis|cooldown.nemesis.remains<10)&(!variable.waiting_for_chaos_blades|cooldown.chaos_blades.remains<6)",
     "\"Getting ready to use meta\" conditions, this is used in a few places." );
-  def -> add_action( "variable,name=blade_dance,value=talent.first_blood.enabled|set_bonus.tier20_2pc"
+  def -> add_action( "variable,name=blade_dance,value=talent.first_blood.enabled|set_bonus.tier20_4pc"
     "|spell_targets.blade_dance1>=3+(talent.chaos_cleave.enabled*3)",
-    "Blade Dance conditions. Always if First Blood is talented or the T20 2pc set bonus,"
-    " otherwise at 5+ targets with Chaos Cleave or 3+ targets without." );
-  def -> add_action( "variable,name=pooling_for_blade_dance,value=variable.blade_dance&"
-    "fury-40<35-talent.first_blood.enabled*20&(spell_targets.blade_dance1>=3+(talent.chaos_cleave.enabled*3))",
-    "Blade Dance pooling condition, so we don't spend too much fury when we need it soon. No need"
-    " to pool on\n# single target since First Blood already makes it cheap enough and delaying it a"
-    " tiny bit isn't a big deal." );
-  def -> add_action("variable,name=pooling_for_chaos_strike,value=talent.chaos_cleave.enabled&fury.deficit>40&!raid_event.adds.up&raid_event.adds.in<2*gcd",
+    "Blade Dance conditions. Always if First Blood is talented or the T20 4pc set bonus, "
+    "otherwise at 6+ targets with Chaos Cleave or 3+ targets without." );
+  def -> add_action( "variable,name=pooling_for_blade_dance,value=variable.blade_dance&(fury<75-talent.first_blood.enabled*20)",
+    "Blade Dance pooling condition, so we don't spend too much fury on Chaos Strike when we need it soon." );
+  def -> add_action("variable,name=pooling_for_chaos_strike,value=talent.chaos_cleave.enabled&fury.deficit>40&"
+    "!raid_event.adds.up&raid_event.adds.in<2*gcd",
     "Chaos Strike pooling condition, so we don't spend too much fury when we need it for Chaos Cleave AoE");
   
   // Cooldown List
   def->add_action(this, "Consume Magic");
   def->add_action("call_action_list,name=cooldown,if=gcd.remains=0");
-  def->add_action("run_action_list,name=demonic,if=talent.demonic.enabled&talent.demonic_appetite.enabled&talent.blind_fury.enabled");
+  def->add_action("run_action_list,name=demonic,if=talent.demonic.enabled");
   def->add_action("run_action_list,name=normal");
 
   action_priority_list_t* demonic = get_action_priority_list("demonic", "Specific APL for the Blind Fury+Demonic Appetite+Demonic build");
-  demonic->add_action("pick_up_fragment,if=fury.deficit>=35&cooldown.eye_beam.remains>5");
+  demonic->add_action("pick_up_fragment,if=fury.deficit>=35&(cooldown.eye_beam.remains>5|buff.metamorphosis.up)");
   demonic->add_action(this, "Vengeful Retreat", "if=(talent.prepared.enabled|talent.momentum.enabled)&buff.prepared.down&buff.momentum.down",
     "Vengeful Retreat backwards through the target to minimize downtime.");
   demonic->add_action(this, "Fel Rush", "if=(talent.momentum.enabled|talent.fel_mastery.enabled)&"
@@ -6848,6 +6849,7 @@ void demon_hunter_t::apl_havoc()
   demonic->add_action(this, "Throw Glaive", "if=talent.bloodlet.enabled&spell_targets>=2&"
     "(!talent.master_of_the_glaive.enabled|!talent.momentum.enabled|buff.momentum.up)&"
     "(spell_targets>=3|raid_event.adds.in>recharge_time+cooldown)");
+  demonic->add_talent(this, "Felblade", "if=fury.deficit>=30");
   demonic->add_action(this, "Eye Beam", "if=spell_targets.eye_beam_tick>desired_targets|!buff.metamorphosis.extended_by_demonic");
   demonic->add_action(this, spec.annihilation, "annihilation", 
     "if=(!talent.momentum.enabled|buff.momentum.up|fury.deficit<30+buff.prepared.up*8|buff.metamorphosis.remains<5)&"
@@ -6856,9 +6858,10 @@ void demon_hunter_t::apl_havoc()
     "(!talent.master_of_the_glaive.enabled|!talent.momentum.enabled|buff.momentum.up)&raid_event.adds.in>recharge_time+cooldown");
   demonic->add_action(this, "Chaos Strike", "if=(!talent.momentum.enabled|buff.momentum.up|fury.deficit<30+buff.prepared.up*8)&"
     "!variable.pooling_for_chaos_strike&!variable.pooling_for_meta&!variable.pooling_for_blade_dance");
-  demonic->add_action(this, "Fel Rush", "if=!talent.momentum.enabled&buff.metamorphosis.down&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))");
+  demonic->add_action(this, "Fel Rush", "if=!talent.momentum.enabled&(buff.metamorphosis.down|talent.demon_blades.enabled)&"
+    "(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))");
   demonic->add_action(this, "Demon's Bite");
-  demonic->add_action(this, "Throw Glaive", "if=buff.out_of_range.up");
+  demonic->add_action(this, "Throw Glaive", "if=buff.out_of_range.up|!talent.bloodlet.enabled");
   demonic->add_action(this, "Fel Rush", "if=movement.distance>15|(buff.out_of_range.up&!talent.momentum.enabled)");
   demonic->add_action(this, "Vengeful Retreat", "if=movement.distance>15");
 
@@ -6882,7 +6885,7 @@ void demon_hunter_t::apl_havoc()
   normal->add_action(this, artifact.fury_of_the_illidari, "fury_of_the_illidari",
     "if=(active_enemies>desired_targets)|(raid_event.adds.in>55&(!talent.momentum.enabled|buff.momentum.up)&"
     "(!talent.chaos_blades.enabled|buff.chaos_blades.up|cooldown.chaos_blades.remains>30|target.time_to_die<cooldown.chaos_blades.remains))");
-  normal->add_action(this, "Blade Dance", "if=variable.blade_dance&(!cooldown.metamorphosis.ready)");
+  normal->add_action(this, "Blade Dance", "if=variable.blade_dance&!cooldown.metamorphosis.ready");
   normal->add_action(this, "Throw Glaive", "if=talent.bloodlet.enabled&spell_targets>=2&"
     "(!talent.master_of_the_glaive.enabled|!talent.momentum.enabled|buff.momentum.up)&"
     "(spell_targets>=3|raid_event.adds.in>recharge_time+cooldown)");
@@ -6904,7 +6907,7 @@ void demon_hunter_t::apl_havoc()
   normal->add_action(this, "Fel Rush", "if=!talent.momentum.enabled&raid_event.movement.in>charges*10&(talent.demon_blades.enabled|buff.metamorphosis.down)");
   normal->add_action(this, "Demon's Bite");
   normal->add_action(this, "Throw Glaive", "if=buff.out_of_range.up");
-  normal->add_talent(this, "Felblade", "if=movement.distance|buff.out_of_range.up");
+  normal->add_talent(this, "Felblade", "if=movement.distance>15|buff.out_of_range.up");
   normal->add_action(this, "Fel Rush", "if=movement.distance>15|(buff.out_of_range.up&!talent.momentum.enabled)");
   normal->add_action(this, "Vengeful Retreat", "if=movement.distance>15");
   normal->add_action(this, "Throw Glaive", "if=!talent.bloodlet.enabled");
@@ -7033,7 +7036,7 @@ void demon_hunter_t::create_gains()
   gain.prepared                 = get_gain("prepared");
   gain.blind_fury               = get_gain("blind_fury");
   gain.anger_of_the_halfgiants  = get_gain("anger_of_the_halfgiants");
-  gain.havoc_t20_2pc            = get_gain("havoc_t20_2pc");
+  gain.havoc_t20_4pc            = get_gain("havoc_t20_4pc");
 
   // Vengeance
   gain.damage_taken             = get_gain("damage_taken");
@@ -7865,187 +7868,180 @@ using namespace actions::attacks;
 
 namespace items
 {
+  // Generic legendary items
 
-// Generic legendary items
-struct sephuzs_secret_t : public unique_gear::scoped_actor_callback_t<demon_hunter_t>
-{
-  sephuzs_secret_t() : super(DEMON_HUNTER)
+  struct sephuzs_secret_t : public scoped_actor_callback_t<demon_hunter_t>
   {
-  }
+    sephuzs_secret_t() : super(DEMON_HUNTER)
+    {
+    }
 
-  void manipulate(demon_hunter_t* dh, const special_effect_t& e) override
+    void manipulate(demon_hunter_t* dh, const special_effect_t& e) override
+    {
+      dh->legendary.sephuzs_secret = e.driver();
+    }
+  };
+
+  struct moarg_bionic_stabilizers_t : public scoped_action_callback_t<throw_glaive_t>
   {
-    dh->legendary.sephuzs_secret = e.driver();
-  }
-};
+    moarg_bionic_stabilizers_t() : super(DEMON_HUNTER, "throw_glaive")
+    {
+    }
 
-struct anger_of_the_halfgiants_t : scoped_actor_callback_t<demon_hunter_t>
-{
-  anger_of_the_halfgiants_t() : super(DEMON_HUNTER)
+    void manipulate(throw_glaive_t* action, const special_effect_t& e) override
+    {
+      const spell_data_t* driver = e.driver();
+
+      action->base_multiplier *= 1.0 + driver->effectN(2).percent();
+      action->chain_bonus_damage += driver->effectN(1).percent();
+    }
+  };
+
+  // Vengeance-specific legendary items
+
+  struct cloak_of_fel_flames_t : public scoped_actor_callback_t<demon_hunter_t>
   {
-  }
+    cloak_of_fel_flames_t() : super(DEMON_HUNTER_VENGEANCE)
+    {
+    }
 
-  void manipulate(demon_hunter_t* dh, const special_effect_t& e) override
+    void manipulate(demon_hunter_t* actor, const special_effect_t& e) override
+    {
+      actor->legendary.cloak_of_fel_flames = e.driver()->effectN(1).percent();
+    }
+  };
+
+  struct fragment_of_the_betrayers_prison_t : public scoped_actor_callback_t<demon_hunter_t>
   {
-    dh->legendary.anger_of_the_halfgiants_fury = e.driver()->effectN(1).base_value();
-  }
-};
+    fragment_of_the_betrayers_prison_t() : super(DEMON_HUNTER_VENGEANCE)
+    {
+    }
 
-struct moarg_bionic_stabilizers_t
-  : public scoped_action_callback_t<throw_glaive_t>
-{
-  moarg_bionic_stabilizers_t() : super( DEMON_HUNTER, "throw_glaive" )
+    void manipulate(demon_hunter_t* actor, const special_effect_t& /* e */) override
+    {
+      actor->legendary.fragment_of_the_betrayers_prison =
+        actor->find_spell(217500)->effectN(1).percent();
+    }
+  };
+
+  struct the_defilers_lost_vambraces_t : public scoped_actor_callback_t<demon_hunter_t>
   {
-  }
+    the_defilers_lost_vambraces_t() : super(DEMON_HUNTER_VENGEANCE)
+    {
+    }
 
-  void manipulate( throw_glaive_t* action, const special_effect_t& e ) override
+    void manipulate(demon_hunter_t* actor, const special_effect_t& e) override
+    {
+      actor->legendary.the_defilers_lost_vambraces =
+        timespan_t::from_seconds(-e.driver()->effectN(1).base_value());
+    }
+  };
+
+  struct kirel_narak_t : public scoped_actor_callback_t<demon_hunter_t>
   {
-    const spell_data_t* driver = e.driver();
+    kirel_narak_t() : super(DEMON_HUNTER_VENGEANCE)
+    {
+    }
 
-    action->base_multiplier *= 1.0 + driver->effectN(2).percent();
-    action->chain_bonus_damage += driver->effectN(1).percent();
-  }
-};
+    void manipulate(demon_hunter_t* actor, const special_effect_t& e) override
+    {
+      actor->legendary.kirel_narak =
+        timespan_t::from_seconds(-e.driver()->effectN(1).base_value());
+    }
+  };
 
-struct chaos_theory_t : public unique_gear::scoped_actor_callback_t<demon_hunter_t>
-{
-  chaos_theory_t() : super(DEMON_HUNTER)
+  struct runemasters_pauldrons_t : public scoped_actor_callback_t<demon_hunter_t>
   {
-  }
+    runemasters_pauldrons_t() : super(DEMON_HUNTER_VENGEANCE)
+    {
+    }
 
-  void manipulate(demon_hunter_t* dh, const special_effect_t& e) override
+    void manipulate(demon_hunter_t* actor,
+      const special_effect_t& /* e */) override
+    {
+      actor->legendary.runemasters_pauldrons = true;
+    }
+  };
+
+  // Havoc-specific legendary items
+
+  struct anger_of_the_halfgiants_t : scoped_actor_callback_t<demon_hunter_t>
   {
-    dh->legendary.chaos_theory = e.driver();
-  }
-};
+    anger_of_the_halfgiants_t() : super(DEMON_HUNTER_HAVOC)
+    {
+    }
 
-// Vengeance-specific legendary items
+    void manipulate(demon_hunter_t* dh, const special_effect_t& e) override
+    {
+      dh->legendary.anger_of_the_halfgiants_fury = e.driver()->effectN(1).base_value();
+    }
+  };
 
-struct cloak_of_fel_flames_t : public scoped_actor_callback_t<demon_hunter_t>
-{
-  cloak_of_fel_flames_t() : super( DEMON_HUNTER_VENGEANCE )
+
+  struct chaos_theory_t : public unique_gear::scoped_actor_callback_t<demon_hunter_t>
   {
-  }
+    chaos_theory_t() : super(DEMON_HUNTER_HAVOC)
+    {
+    }
 
-  void manipulate( demon_hunter_t* actor, const special_effect_t& e ) override
+    void manipulate(demon_hunter_t* dh, const special_effect_t& e) override
+    {
+      dh->legendary.chaos_theory = e.driver();
+    }
+  };
+
+  struct eternal_hunger_t : public scoped_actor_callback_t<demon_hunter_t>
   {
-    actor -> legendary.cloak_of_fel_flames = e.driver() -> effectN( 1 ).percent();
-  }
-};
+    eternal_hunger_t() : super(DEMON_HUNTER_HAVOC)
+    {
+    }
 
-struct fragment_of_the_betrayers_prison_t
-  : public scoped_actor_callback_t<demon_hunter_t>
-{
-  fragment_of_the_betrayers_prison_t() : super( DEMON_HUNTER_VENGEANCE )
+    void manipulate(demon_hunter_t* actor, const special_effect_t& e) override
+    {
+      actor->legendary.eternal_hunger = e.driver()->effectN(1).percent();
+    }
+  };
+
+  struct raddons_cascading_eyes_t : public scoped_actor_callback_t<demon_hunter_t>
   {
-  }
+    raddons_cascading_eyes_t() : super(DEMON_HUNTER_HAVOC)
+    {
+    }
 
-  void manipulate( demon_hunter_t* actor,
-                   const special_effect_t& /* e */ ) override
+    void manipulate(demon_hunter_t* actor, const special_effect_t& e) override
+    {
+      actor->legendary.raddons_cascading_eyes = -e.driver()->effectN(1).time_value();
+    }
+  };
+
+  struct delusions_of_grandeur_t : public scoped_actor_callback_t<demon_hunter_t>
   {
-    actor -> legendary.fragment_of_the_betrayers_prison =
-      actor -> find_spell( 217500 ) -> effectN( 1 ).percent();
-  }
-};
+    delusions_of_grandeur_t() : super(DEMON_HUNTER_HAVOC)
+    {
+    }
 
-struct the_defilers_lost_vambraces_t
-  : public scoped_actor_callback_t<demon_hunter_t>
-{
-  the_defilers_lost_vambraces_t() : super( DEMON_HUNTER_VENGEANCE )
+    void manipulate(demon_hunter_t* actor, const special_effect_t& e) override
+    {
+      actor->legendary.delusions_of_grandeur_reduction = -e.driver()->effectN(1).base_value();
+      actor->legendary.delusions_of_grandeur_fury_per_time = e.driver()->effectN(2).base_value();
+    }
+  };
+
+  struct loramus_thalipedes_sacrifice_t : public scoped_action_callback_t<fel_rush_t::fel_rush_damage_t>
   {
-  }
+    loramus_thalipedes_sacrifice_t() : super(DEMON_HUNTER_HAVOC, "fel_rush_dmg")
+    {
+    }
 
-  void manipulate( demon_hunter_t* actor, const special_effect_t& e ) override
-  {
-    actor -> legendary.the_defilers_lost_vambraces =
-      timespan_t::from_seconds( -e.driver() -> effectN( 1 ).base_value() );
-  }
-};
+    void manipulate(fel_rush_t::fel_rush_damage_t* action,
+      const special_effect_t& e) override
+    {
+      double dm = e.driver()->effectN(1).percent();
 
-struct kirel_narak_t : public scoped_actor_callback_t<demon_hunter_t>
-{
-  kirel_narak_t() : super( DEMON_HUNTER_VENGEANCE )
-  {
-  }
-
-  void manipulate( demon_hunter_t* actor, const special_effect_t& e ) override
-  {
-    actor -> legendary.kirel_narak =
-      timespan_t::from_seconds( -e.driver() -> effectN( 1 ).base_value() );
-  }
-};
-
-struct runemasters_pauldrons_t : public scoped_actor_callback_t<demon_hunter_t>
-{
-  runemasters_pauldrons_t() : super( DEMON_HUNTER_VENGEANCE )
-  {
-  }
-
-  void manipulate( demon_hunter_t* actor,
-                   const special_effect_t& /* e */ ) override
-  {
-    actor -> legendary.runemasters_pauldrons = true;
-  }
-};
-
-// Havoc-specific legendary items
-
-struct eternal_hunger_t : public scoped_actor_callback_t<demon_hunter_t>
-{
-  eternal_hunger_t() : super( DEMON_HUNTER_HAVOC )
-  {
-  }
-
-  void manipulate( demon_hunter_t* actor, const special_effect_t& e ) override
-  {
-    actor -> legendary.eternal_hunger = e.driver() -> effectN( 1 ).percent();
-  }
-};
-
-struct raddons_cascading_eyes_t : public scoped_actor_callback_t<demon_hunter_t>
-{
-  raddons_cascading_eyes_t() : super( DEMON_HUNTER_HAVOC )
-  {
-  }
-
-  void manipulate( demon_hunter_t* actor, const special_effect_t& e ) override
-  {
-    actor -> legendary.raddons_cascading_eyes =
-      -e.driver() -> effectN( 1 ).time_value();
-  }
-};
-
-struct delusions_of_grandeur_t : public scoped_actor_callback_t<demon_hunter_t>
-{
-  delusions_of_grandeur_t() : super(DEMON_HUNTER_HAVOC)
-  {
-  }
-
-  void manipulate(demon_hunter_t* actor, const special_effect_t& e) override
-  {
-    actor->legendary.delusions_of_grandeur_reduction = -e.driver()->effectN(1).base_value();
-    
-    actor->legendary.delusions_of_grandeur_fury_per_time =
-      e.driver()->effectN(2).base_value();
-  }
-};
-
-struct loramus_thalipedes_sacrifice_t
-  : public scoped_action_callback_t<fel_rush_t::fel_rush_damage_t>
-{
-  loramus_thalipedes_sacrifice_t() : super( DEMON_HUNTER_HAVOC, "fel_rush_dmg" )
-  {
-  }
-
-  void manipulate( fel_rush_t::fel_rush_damage_t* action,
-                   const special_effect_t& e ) override
-  {
-    double dm = e.driver()->effectN(1).percent();
-    
-    action->base_multiplier *= 1.0 + dm;
-    action->chain_bonus_damage += dm;
-  }
-};
+      action->base_multiplier *= 1.0 + dm;
+      action->chain_bonus_damage += dm;
+    }
+  };
 
 } // end namespace items
 

@@ -1,11 +1,11 @@
 warlock="Warlock_Demonology_T19P"
+spec=demonology
 level=110
 race=troll
 role=spell
 position=back
 talents=3201022
 artifact=37:137549:137492:133764:0:1170:1:1171:3:1173:2:1176:6:1177:3:1178:3:1180:1:1182:1:1183:1:1185:1:1354:1
-spec=demonology
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,

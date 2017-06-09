@@ -5218,6 +5218,12 @@ struct demonbolt_t : public warlock_spell_t
     {
       p() -> buffs.tier18_2pc_demonology -> trigger( 1 );
     }
+
+    if ( p() -> sets -> has_set_bonus( WARLOCK_DEMONOLOGY, T20, B2 ) && p() -> rng().roll( p() -> sets -> set( WARLOCK_DEMONOLOGY, T20, B2 ) -> proc_chance() ) )
+    {
+      p() -> cooldowns.call_dreadstalkers -> reset( true );
+      p() -> procs.demonology_t20_2pc -> occur();
+    }
   }
 };
 
@@ -8195,7 +8201,7 @@ struct recurrent_ritual_t : public scoped_action_callback_t<call_dreadstalkers_t
 
   void manipulate( call_dreadstalkers_t* a, const special_effect_t& e ) override
   {
-    a -> recurrent_ritual = e.driver() -> effectN( 1 ).trigger() -> effectN( 1 ).base_value();
+    a -> recurrent_ritual = e.driver() -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() / 10.0;
   }
 };
 

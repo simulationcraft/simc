@@ -4710,10 +4710,10 @@ Name             : Ironfur (id=192081) [Spell Family (7)]
 Class            : Guardian Druid
 School           : Nature
 Resource         : 45 Rage (1) (id=10391)
-Spell Level      : 44
+Spell Level      : 20
 Duration         : 6 seconds
 Cooldown         : 0.5 seconds
-Stacks           : 6 maximum
+Stacks           : 1 maximum
 Proc Chance      : 101%
 Stance Mask      : 0x00000010
 Affecting spells : Reinforced Fur (200395 effect#1), Ursoc's Endurance (200399 effect#1), Gory Fur (201671 effect#1), Natural Defenses (211160 effect#1), Guardian of Elune (213680 effect#1), Ironfur (231070 effect#1)

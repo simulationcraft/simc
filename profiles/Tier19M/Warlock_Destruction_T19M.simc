@@ -1,11 +1,11 @@
 warlock="Warlock_Destruction_T19M"
+spec=destruction
 level=110
 race=troll
 role=spell
 position=back
 talents=2203022
 artifact=38:142513:142516:142513:0:803:1:804:3:805:3:806:5:807:3:808:3:809:4:810:3:811:3:812:3:813:1:814:1:815:1:816:1:817:1:818:1:1355:1
-spec=destruction
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,

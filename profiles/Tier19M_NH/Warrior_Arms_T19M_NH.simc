@@ -1,11 +1,11 @@
 warrior="Warrior_Arms_T19M_NH"
+spec=arms
 level=110
 race=blood_elf
 role=attack
 position=back
 talents=1332311
-artifact=36:0:0:0:0:1136:1:1137:1:1138:1:1139:1:1140:1:1141:1:1142:1:1143:3:1144:3:1145:3:1146:3:1147:3:1148:3:1149:3:1150:3:1151:3:1356:1:1393:20
-spec=arms
+artifact=36:0:0:0:0:1136:1:1137:1:1138:1:1139:1:1140:1:1141:1:1142:1:1143:4:1144:4:1145:4:1146:4:1147:4:1148:4:1149:4:1150:4:1151:4:1356:1:1393:1:1613:4:1614:1:1615:1:1616:1:1714:1
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,

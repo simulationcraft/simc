@@ -1380,7 +1380,7 @@ struct celestial_alignment_buff_t : public druid_buff_t < buff_t >
 struct moonkin_form_t : public druid_buff_t< buff_t >
 {
   moonkin_form_t( druid_t& p ) :
-    base_t( p, buff_creator_t( &p, "moonkin_form", p.spec.moonkin_form )
+    base_t( p, buff_creator_t( &p, "moonkin_form", p.find_affinity_spell( "Moonkin Form" ) )
             .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
             .add_invalidate( CACHE_ARMOR )
             .chance( 1.0 ) )
@@ -5542,6 +5542,8 @@ struct lunar_strike_t : public druid_spell_t
     if ( p() -> talent.starlord -> ok() && p() -> buff.lunar_empowerment -> check() )
       g *= 1 - p() -> talent.starlord -> effectN( 1 ).percent();
 
+    g = std::max( min_gcd, g );
+
     return g;
   }
 
@@ -5789,7 +5791,7 @@ struct sunfire_t : public druid_spell_t
 struct moonkin_form_t : public druid_spell_t
 {
   moonkin_form_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "moonkin_form", player, player -> spec.moonkin_form, options_str )
+    druid_spell_t( "moonkin_form", player, player -> find_affinity_spell( "Moonkin Form" ), options_str )
   {
     form_mask = NO_FORM | CAT_FORM | BEAR_FORM;
     may_autounshift = false;
@@ -5936,6 +5938,8 @@ struct solar_wrath_t : public druid_spell_t
 
     if ( p() -> talent.starlord -> ok() && p() -> buff.solar_empowerment -> check() )
       g *= 1 - p() -> talent.starlord -> effectN( 1 ).percent();
+
+    g = std::max( min_gcd, g );
 
     return g;
   }
@@ -8978,6 +8982,11 @@ void druid_t::shapeshift( form_e f )
     buff.bear_form -> trigger();
     break;
   case MOONKIN_FORM:
+    if ( buff.rage_of_the_sleeper -> check() )
+    {
+      buff.rage_of_the_sleeper -> expire();
+    }
+
     buff.moonkin_form -> trigger();
     break;
   case MOONKIN_FORM_AFFINITY:
