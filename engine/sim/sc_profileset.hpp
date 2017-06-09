@@ -69,8 +69,8 @@ public:
 
 
 bool parse_profilesets( sim_t* sim );
+bool iterate_profilesets( sim_t* sim );
 
-void iterate_profilesets( sim_t* sim );
 void create_options( sim_t* sim );
 
 } /* Namespace profileset ends */

@@ -69,9 +69,8 @@ bool parse_profilesets( sim_t* sim )
     return true;
   }
 
-  if ( sim -> player_list.size() > 1 )
+  if ( sim -> player_no_pet_list.size() > 1 )
   {
-    sim -> errorf( "Profilesets must be used with only one player profile" );
     return false;
   }
 
@@ -107,7 +106,7 @@ bool parse_profilesets( sim_t* sim )
     }
     catch ( const std::exception& e )
     {
-      std::cerr <<  "ERROR! Setup failure: " << e.what() << std::endl;
+      std::cerr <<  "ERROR! Profileset '" << it -> first << "' Setup failure: " << e.what() << std::endl;
       sim -> control = original_control;
       return false;
     }
@@ -125,8 +124,13 @@ void create_options( sim_t* sim )
   sim -> add_option( opt_map_list( "profileset.", sim -> profileset_map ) );
 }
 
-void iterate_profilesets( sim_t* sim )
+bool iterate_profilesets( sim_t* sim )
 {
+  if ( sim -> profilesets.size() == 0 )
+  {
+    return true;
+  }
+
   sim_control_t* original_opts = sim -> control;
 
   for ( const auto set : sim -> profilesets )
@@ -141,11 +145,13 @@ void iterate_profilesets( sim_t* sim )
 
     if ( ret == false )
     {
-      break;
+      return false;
     }
   }
 
   sim -> control = original_opts;
+
+  return true;
 }
 
 } /* Namespace profileset ends */

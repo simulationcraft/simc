@@ -265,15 +265,18 @@ int sim_t::main( const std::vector<std::string>& args )
     set_sim_base_str( "Baseline" );
     if ( execute() )
     {
-      if ( profilesets.size() > 0 )
-      {
-        profileset::iterate_profilesets( this );
-      }
-
       scaling      -> analyze();
       plot         -> analyze();
       reforge_plot -> analyze();
-      report::print_suite( this );
+
+      if ( ! profileset::iterate_profilesets( this ) )
+      {
+        canceled = 1;
+      }
+      else
+      {
+        report::print_suite( this );
+      }
     }
     else
       canceled = 1;
