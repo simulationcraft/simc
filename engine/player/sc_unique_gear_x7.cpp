@@ -4894,10 +4894,10 @@ void item::caged_horror( special_effect_t& effect )
 
 struct spawn_of_serpentrix_t : public pet_t
 {
-  struct magma_spit_t : public proc_spell_t
+  struct magma_spit_t : public spell_t
   {
     magma_spit_t( player_t* player, double damage ) :
-      proc_spell_t( "magma_spit", player, player -> find_spell( 215754 ) )
+      spell_t( "magma_spit", player, player -> find_spell( 215754 ) )
     {
       may_crit = true;
       base_dd_min = base_dd_max = damage;
