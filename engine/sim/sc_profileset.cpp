@@ -69,6 +69,12 @@ bool parse_profilesets( sim_t* sim )
     return true;
   }
 
+  if ( sim -> player_list.size() > 1 )
+  {
+    sim -> errorf( "Profilesets must be used with only one player profile" );
+    return false;
+  }
+
   auto original_control = sim -> control;
 
   for ( auto it = sim -> profileset_map.begin(); it != sim -> profileset_map.end(); ++it )
