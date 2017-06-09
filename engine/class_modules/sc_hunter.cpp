@@ -1180,7 +1180,7 @@ public:
   {
     base_t::create_buffs();
 
-    buffs.aspect_of_the_wild = 
+    buffs.aspect_of_the_wild =
       buff_creator_t( this, "aspect_of_the_wild", o() -> specs.aspect_of_the_wild )
         .cd( timespan_t::zero() )
         .default_value( o() -> specs.aspect_of_the_wild -> effectN( 1 ).percent() )
@@ -1191,14 +1191,13 @@ public:
     buffs.aspect_of_the_wild -> buff_duration += o() -> artifacts.wilderness_expert.time_value();
 
     // Bestial Wrath
-    buffs.bestial_wrath = 
+    buffs.bestial_wrath =
       buff_creator_t( this, "bestial_wrath", o() -> specs.bestial_wrath )
         .activated( true )
         .cd( timespan_t::zero() )
         .default_value( o() -> specs.bestial_wrath -> effectN( 1 ).percent() +
                         o() -> talents.bestial_fury -> effectN( 1 ).percent() +
                         o() -> artifacts.unleash_the_beast.percent() )
-        .duration( timespan_t::from_seconds( 15.0 ) )
         .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
     // Beast Cleave
@@ -1214,14 +1213,14 @@ public:
         .default_value( cleave_value );
 
     // Dire Frenzy
-    buffs.dire_frenzy = 
+    buffs.dire_frenzy =
       buff_creator_t( this, "dire_frenzy", o() -> talents.dire_frenzy )
         .default_value ( o() -> talents.dire_frenzy -> effectN( 2 ).percent() +
                          o() -> artifacts.beast_master.percent( 2 ) )
         .cd( timespan_t::zero() )
         .add_invalidate( CACHE_ATTACK_HASTE );
 
-    buffs.titans_frenzy = 
+    buffs.titans_frenzy =
       buff_creator_t( this, "titans_frenzy", o() -> artifacts.titans_thunder )
         .duration( timespan_t::from_seconds( 30.0 ) );
 
@@ -1515,7 +1514,7 @@ struct dire_critter_t: public hunter_secondary_pet_t
   {
     hunter_secondary_pet_t::create_buffs();
 
-    buffs.bestial_wrath = 
+    buffs.bestial_wrath =
       make_buff( this, "bestial_wrath", find_spell( 211183 ) )
         -> set_default_value( find_spell( 211183 ) -> effectN( 1 ).percent() )
         -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
@@ -1578,14 +1577,13 @@ struct hati_t: public hunter_secondary_pet_t
     hunter_secondary_pet_t::create_buffs();
 
     // Bestial Wrath
-    buffs.bestial_wrath = 
+    buffs.bestial_wrath =
       buff_creator_t( this, "bestial_wrath", o() -> specs.bestial_wrath )
         .activated( true )
         .cd( timespan_t::zero() )
         .default_value( o() -> specs.bestial_wrath -> effectN( 1 ).percent() +
                         o() -> talents.bestial_fury -> effectN( 1 ).percent() +
                         o() -> artifacts.unleash_the_beast.percent() )
-        .duration( timespan_t::from_seconds( 15.0 ) )
         .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
     // Beast Cleave
@@ -5449,7 +5447,7 @@ hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ):
   dots.on_the_trail = target -> get_dot( "on_the_trail", p );
   dots.a_murder_of_crows = target -> get_dot( "a_murder_of_crows", p );
 
-  debuffs.hunters_mark = 
+  debuffs.hunters_mark =
     buff_creator_t( *this, "hunters_mark", p -> find_spell( 185365 ) );
 
   debuffs.vulnerable =
@@ -5458,17 +5456,13 @@ hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ):
                       p -> artifacts.unerring_arrows.percent() )
       .refresh_behavior( BUFF_REFRESH_DURATION );
 
-  debuffs.true_aim = 
+  debuffs.true_aim =
     buff_creator_t( *this, "true_aim", p -> find_spell( 199803 ) )
-        .default_value( p -> find_spell( 199803 ) 
-                          -> effectN( 1 )
-                            .percent() );
+        .default_value( p -> find_spell( 199803 ) -> effectN( 1 ).percent() );
 
-  debuffs.mark_of_helbrine = 
+  debuffs.mark_of_helbrine =
     buff_creator_t( *this, "mark_of_helbrine", p -> find_spell( 213156 ) )
-        .default_value( p -> find_spell( 213154 ) 
-                          -> effectN( 1 )
-                            .percent() );
+        .default_value( p -> find_spell( 213154 ) -> effectN( 1 ).percent() );
 
   debuffs.unseen_predators_cloak =
     buff_creator_t( *this, "unseen_predators_cloak", p -> find_spell( 248212 ) )
@@ -5858,13 +5852,13 @@ void hunter_t::create_buffs()
   player_t::create_buffs();
 
   // General
-  
-  buffs.volley = 
+
+  buffs.volley =
     buff_creator_t( this, "volley", talents.volley );
 
   // Beast Mastery
 
-  buffs.aspect_of_the_wild           
+  buffs.aspect_of_the_wild
     = buff_creator_t( this, "aspect_of_the_wild", find_spell(193530) )
       .cd( timespan_t::zero() )
       .add_invalidate( CACHE_CRIT_CHANCE )
@@ -5874,16 +5868,15 @@ void hunter_t::create_buffs()
                       } );
   buffs.aspect_of_the_wild -> buff_duration += artifacts.wilderness_expert.time_value();
 
-  buffs.bestial_wrath 
+  buffs.bestial_wrath
     = buff_creator_t( this, "bestial_wrath", specs.bestial_wrath )
         .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
         .cd( timespan_t::zero() )
         .default_value( specs.bestial_wrath -> effectN( 1 ).percent() +
                         talents.bestial_fury -> effectN( 1 ).percent() +
-                        artifacts.unleash_the_beast.percent() )
-        .duration( timespan_t::from_seconds( 15.0 ) );
+                        artifacts.unleash_the_beast.percent() );
 
-  buffs.big_game_hunter = 
+  buffs.big_game_hunter =
     buff_creator_t( this, "big_game_hunter", talents.big_game_hunter )
       .activated( true )
       .default_value( talents.big_game_hunter -> effectN( 1 ).percent() );
@@ -5904,110 +5897,86 @@ void hunter_t::create_buffs()
 
   // Marksmanship
 
-  buffs.bullseye = 
-    buff_creator_t( this, "bullseye", artifacts.bullseye.data()
-                                     .effectN( 1 )
-                                     .trigger() )
+  buffs.bullseye =
+    buff_creator_t( this, "bullseye", artifacts.bullseye.data().effectN( 1 ).trigger() )
       .add_invalidate( CACHE_CRIT_CHANCE )
-      .default_value( find_spell( 204090 ) 
-                   -> effectN( 1 )
-                     .percent() )
-      .max_stack( 30 );
+      .default_value( find_spell( 204090 ) -> effectN( 1 ).percent() )
+      .max_stack( find_spell( 204090 ) -> max_stacks() );
 
-  buffs.bombardment = 
-    buff_creator_t( this, "bombardment", specs.bombardment 
-                                      -> effectN( 1 )
-                                        .trigger() );
+  buffs.bombardment =
+    buff_creator_t( this, "bombardment", specs.bombardment -> effectN( 1 ).trigger() );
 
-  buffs.careful_aim 
+  buffs.careful_aim
     = buff_creator_t( this, "careful_aim", talents.careful_aim )
         .activated( true )
         .default_value( talents.careful_aim -> effectN( 1 ).percent() );
 
-  buffs.hunters_mark_exists 
+  buffs.hunters_mark_exists
     = new buffs::hunters_mark_exists_buff_t( this );
 
-  buffs.lock_and_load = 
-    buff_creator_t( this, "lock_and_load", talents.lock_and_load 
-                                        -> effectN( 1 )
-                                          .trigger() )
-      .max_stack( 2 );
+  buffs.lock_and_load =
+    buff_creator_t( this, "lock_and_load", talents.lock_and_load -> effectN( 1 ).trigger() )
+      .max_stack( find_spell( 194594 ) -> initial_stacks() );
 
-  buffs.marking_targets = 
+  buffs.marking_targets =
     buff_creator_t( this, "marking_targets", find_spell(223138) );
 
-  buffs.pre_steady_focus = 
+  buffs.pre_steady_focus =
     buff_creator_t( this, "pre_steady_focus" )
       .max_stack( 2 )
       .quiet( true );
 
-  buffs.rapid_killing = 
+  buffs.rapid_killing =
     buff_creator_t( this, "rapid_killing", find_spell(191342) )
-      .default_value( find_spell( 191342 ) 
-                   -> effectN( 1 )
-                     .percent() );
+      .default_value( find_spell( 191342 ) -> effectN( 1 ).percent() );
 
-  buffs.steady_focus 
+  buffs.steady_focus
     = buff_creator_t( this, "steady_focus", find_spell(193534) )
         .chance( talents.steady_focus -> ok() );
 
-  buffs.trick_shot = 
+  buffs.trick_shot =
     buff_creator_t( this, "trick_shot", find_spell(227272) )
-      .default_value( find_spell( 227272 ) 
-                   -> effectN( 1 )
-                     .percent() );
+      .default_value( find_spell( 227272 ) -> effectN( 1 ).percent() );
 
-  buffs.trueshot = 
+  buffs.trueshot =
     haste_buff_creator_t( this, "trueshot", specs.trueshot )
       .default_value( specs.trueshot -> effectN( 1 ).percent() )
       .cd( timespan_t::zero() );
 
   // Survival
 
-  buffs.aspect_of_the_eagle = 
+  buffs.aspect_of_the_eagle =
     buff_creator_t( this, "aspect_of_the_eagle", specs.aspect_of_the_eagle )
       .cd( timespan_t::zero() )
       .add_invalidate( CACHE_CRIT_CHANCE )
       .default_value( specs.aspect_of_the_eagle -> effectN( 1 ).percent() +
-                      find_specialization_spell( 231555 )-> effectN( 1 ).percent() +
-                      find_specialization_spell( 237327 ) ->effectN( 1 ).percent() );
+                      find_specialization_spell( 231555 ) -> effectN( 1 ).percent() +
+                      find_specialization_spell( 237327 ) -> effectN( 1 ).percent() );
   if ( artifacts.aspect_of_the_skylord.rank() )
-  {
-    buffs.aspect_of_the_eagle 
-      -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  }
+    buffs.aspect_of_the_eagle -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
-  buffs.fury_of_the_eagle = 
-    buff_creator_t( this, "fury_of_the_eagle", find_spell(203415) )
+  buffs.fury_of_the_eagle =
+    buff_creator_t( this, "fury_of_the_eagle", find_spell( 203415 ) )
       .cd( timespan_t::zero() )
       .max_stack( 6 );
 
-  buffs.moknathal_tactics = 
-    buff_creator_t( this, "moknathal_tactics", talents.way_of_the_moknathal
-                                            -> effectN( 1 )
-                                              .trigger() )
-      .default_value( find_spell( 201081 ) 
-                   -> effectN( 1 )
-                     .percent() )
-      .max_stack( 4 );
+  buffs.moknathal_tactics =
+    buff_creator_t( this, "moknathal_tactics", talents.way_of_the_moknathal -> effectN( 1 ).trigger() )
+      .default_value( find_spell( 201081 ) -> effectN( 1 ).percent() )
+      .max_stack( find_spell( 201081 ) -> max_stacks() );
 
-  buffs.mongoose_fury = 
-    buff_creator_t( this, "mongoose_fury", find_spell(190931) )
-      .default_value( find_spell( 190931 ) 
-                   -> effectN( 1 )
-                     .percent() )
-      .duration( timespan_t::from_seconds( 14.0 ) )
+  buffs.mongoose_fury =
+    buff_creator_t( this, "mongoose_fury", find_spell( 190931 ) )
+      .default_value( find_spell( 190931 ) -> effectN( 1 ).percent() )
       .refresh_behavior( BUFF_REFRESH_DISABLED )
-      .max_stack( 6 );
+      .max_stack( find_spell( 190931 ) -> max_stacks() );
 
-  buffs.sentinels_sight = 
-    buff_creator_t( this, "sentinels_sight", find_spell(208913) )
-      .default_value( find_spell( 208913 ) 
-                   -> effectN( 1 )
-                     .percent() )
-      .max_stack( 20 );
+  buffs.sentinels_sight =
+    buff_creator_t( this, "sentinels_sight", find_spell( 208913 ) )
+      .default_value( find_spell( 208913 ) -> effectN( 1 ).percent() )
+      .max_stack( find_spell( 208913 ) -> max_stacks() );
 
-  buffs.spitting_cobra = 
+  buffs.spitting_cobra =
     buff_creator_t( this, "spitting_cobra", talents.spitting_cobra )
       .default_value( find_spell( 194407 ) -> effectN( 2 ).resource( RESOURCE_FOCUS ) )
       .tick_callback( [ this ]( buff_t *buff, int, const timespan_t& ){
