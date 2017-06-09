@@ -1003,6 +1003,13 @@ public:
   {
     return static_cast<hunter_t*>( owner );
   }
+
+  double beast_cleave_value() const
+  {
+    double value = o() -> specs.beast_cleave -> effectN( 1 ).percent();
+    value *= 1.0 + o() -> artifacts.furious_swipes.percent();
+    return value;
+  }
 };
 
 // Template for common hunter pet action code. See priest_action_t.
@@ -1201,16 +1208,10 @@ public:
         .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
     // Beast Cleave
-    double cleave_value = o() -> find_specialization_spell( "Beast Cleave" ) 
-                              -> effectN( 1 )
-                                .percent();
-    cleave_value *= 1.0 + o() -> artifacts.furious_swipes.percent();
-    if ( o() -> find_spell( 118459 ) -> affected_by ( o() -> specs.beast_mastery_hunter -> effectN( 1 ) ) )
-      cleave_value *= 1.0 + o() -> specs.beast_mastery_hunter -> effectN( 1 ).percent();
-    buffs.beast_cleave = 
+    buffs.beast_cleave =
       buff_creator_t( this, "beast_cleave", find_spell(118455) )
         .activated( true )
-        .default_value( cleave_value );
+        .default_value( beast_cleave_value() );
 
     // Dire Frenzy
     buffs.dire_frenzy =
@@ -1587,16 +1588,10 @@ struct hati_t: public hunter_secondary_pet_t
         .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
     // Beast Cleave
-    double cleave_value = o() -> find_specialization_spell( "Beast Cleave" ) 
-                              -> effectN( 1 )
-                                .percent();
-    cleave_value *= 1.0 + o() -> artifacts.furious_swipes.percent();
-    if ( o() -> find_spell( 118459 ) -> affected_by ( o() -> specs.beast_mastery_hunter -> effectN( 1 ) ) )
-      cleave_value *= 1.0 + o() -> specs.beast_mastery_hunter -> effectN( 1 ).percent();
-    buffs.beast_cleave = 
-      buff_creator_t( this, "beast_cleave", find_spell(118455) )
+    buffs.beast_cleave =
+      buff_creator_t( this, "beast_cleave", find_spell( 118455 ) )
         .activated( true )
-        .default_value( cleave_value );
+        .default_value( beast_cleave_value() );
   }
 
   double composite_player_multiplier( school_e school ) const override
