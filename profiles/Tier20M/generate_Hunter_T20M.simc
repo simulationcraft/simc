@@ -25,10 +25,10 @@ head=wildstalker_helmet,id=147142,ilevel=930
 neck=locket_of_splintered_souls,id=147014,ilevel=930,enchant=mark_of_the_hidden_satyr
 shoulders=wildstalker_spaulders,id=147144,ilevel=930
 back=wildstalker_cape,id=147140,ilevel=930,enchant=binding_of_agility
-chest=parsels_tongue,id=151805,bonus_id=3530
+chest=parsels_tongue,id=151805,bonus_id=3570
 wrists=painsinged_armguards,id=147057,ilevel=930
 hands=vicegrip_of_the_unrepentant,id=147048,ilevel=940
-waist=roar_of_the_seven_lions,id=137080,bonus_id=3530
+waist=roar_of_the_seven_lions,id=137080,bonus_id=3570
 legs=wildstalker_leggings,id=147143,ilevel=930
 feet=starstalker_treads,id=147046,ilevel=940
 finger1=scaled_band_of_servitude,id=147020,ilevel=930,enchant=binding_of_mastery
@@ -56,12 +56,12 @@ back=wildstalker_cape,id=147140,ilevel=930,enchant=binding_of_agility
 chest=wildstalker_chestguard,id=147139,ilevel=930
 wrists=painsinged_armguards,id=147057,ilevel=930
 hands=vicegrip_of_the_unrepentant,id=147048,ilevel=940
-# hands=mkii_gyroscopic_stabilizer,id=144303,bonus_id=3530
+# hands=mkii_gyroscopic_stabilizer,id=144303,bonus_id=3570
 waist=waistguard_of_interminable_unity,id=147056,ilevel=930
 legs=legguards_of_siphoned_power,id=147052,ilevel=930
-feet=ullrs_feather_snowshoes,id=137033,bonus_id=3530
+feet=ullrs_feather_snowshoes,id=137033,bonus_id=3570
 # feet=starstalker_treads,id=147046,ilevel=940
-finger1=soul_of_the_huntmaster,id=151641,bonus_id=3530,gems=150mastery,enchant=binding_of_mastery
+finger1=soul_of_the_huntmaster,id=151641,bonus_id=3570,gems=150mastery,enchant=binding_of_mastery
 # finger1=scaled_band_of_servitude,id=147020,ilevel=930,enchant=binding_of_mastery
 finger2=seal_of_the_second_duumvirate,id=147195,ilevel=940,enchant=binding_of_mastery
 trinket1=tarnished_sentinel_medallion,id=147017,ilevel=930
