@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
+#include "sim/sc_profileset.hpp"
 #include <locale>
 
 #ifdef SC_SIGACTION
@@ -264,6 +265,11 @@ int sim_t::main( const std::vector<std::string>& args )
     set_sim_base_str( "Baseline" );
     if ( execute() )
     {
+      if ( profilesets.size() > 0 )
+      {
+        profileset::iterate_profilesets( this );
+      }
+
       scaling      -> analyze();
       plot         -> analyze();
       reforge_plot -> analyze();

@@ -43,44 +43,34 @@ public:
 
 class profile_set_t
 {
-  std::string              m_name;
-  std::vector<std::string> m_options;
-  profile_result_t         m_result;
+  std::string      m_name;
+  sim_control_t*   m_options;
+  profile_result_t m_result;
 
 public:
-  profile_set_t( const std::string& name ) :
-    m_name( name )
-  { }
+  profile_set_t( const std::string& name, sim_control_t* opts );
+
+  ~profile_set_t();
 
   const std::string& name() const
   { return m_name; }
 
-  const std::vector<std::string>& options() const
-  { return m_options; }
+  sim_control_t* options() const;
 
   const profile_result_t& result() const
   { return m_result; }
 
-  void add_option( const std::string& opt )
-  {
-    auto it = range::find( m_options, opt );
-    if ( it != m_options.end() )
-    {
-      return;
-    }
-
-    m_options.emplace_back( opt );
-  }
-
   void set_result( const profile_result_t& result )
   { m_result = result; }
 
-  sim_control_t* create_sim_options( const sim_control_t* );
+  static sim_control_t* create_sim_options( const sim_control_t*,
+      const std::vector<std::string>& opts );
 };
 
 
-bool parse_profileset( sim_t* sim, const std::string&, const std::string& );
+bool parse_profilesets( sim_t* sim );
 
+void iterate_profilesets( sim_t* sim );
 void create_options( sim_t* sim );
 
 } /* Namespace profileset ends */

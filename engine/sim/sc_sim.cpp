@@ -2484,6 +2484,11 @@ bool sim_t::init()
     }
   }
 
+  if ( ! profileset::parse_profilesets( this ) )
+  {
+    return false;
+  }
+
   initialized = true;
 
   return canceled ? false : true;
@@ -2829,7 +2834,7 @@ bool sim_t::execute()
   elapsed_cpu  = util::cpu_time()  - start_cpu_time;
   elapsed_time = util::wall_time() - start_wall_time;
 
-  return true;
+  return success;
 }
 
 /// find player in sim by name
