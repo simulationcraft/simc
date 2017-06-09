@@ -79,6 +79,11 @@ bool parse_profilesets( sim_t* sim )
 
   for ( auto it = sim -> profileset_map.begin(); it != sim -> profileset_map.end(); ++it )
   {
+    if ( it -> second.size() == 0 )
+    {
+      continue;
+    }
+
     auto control = profile_set_t::create_sim_options( sim -> control, it -> second );
     if ( control == nullptr )
     {
