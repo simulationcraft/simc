@@ -574,6 +574,11 @@ struct opts_map_list_t : public option_t
 protected:
   bool parse( sim_t*, const std::string& n, const std::string& v ) const override
   {
+    if ( v.empty() )
+    {
+      return false;
+    }
+
     std::string::size_type last = n.size() - 1;
     bool append = false;
     if ( n[ last ] == '+' )
