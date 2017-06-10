@@ -7642,7 +7642,7 @@ void mage_t::apl_frost()
     "While Frozen Mass is active, we want to generate as many buffed Icicles as possible. However, we do not want to do this at "
     "the expense of the final Glacial Spike, which should be also used while Frozen Mass is active." );
   single -> add_talent( this, "Glacial Spike", "if=cooldown.frozen_orb.remains>10|!set_bonus.tier20_2pc",
-    "Glacial Spike is generally used as it is available, unless we have T20 2pc. In that case, Glacial Spike is delay when "
+    "Glacial Spike is generally used as it is available, unless we have T20 2pc. In that case, Glacial Spike is delayed when "
     "Frozen Mass is happening soon (in less than 10 s)." );
   single -> add_action( this, "Frostbolt" );
   single -> add_action( this, "Blizzard", "if=cast_time=0",
