@@ -98,8 +98,8 @@ hands=fanged_slayers_handguards,id=147171,ilevel=930
 waist=waistguard_of_profane_duplicity,id=147347,ilevel=940
 legs=fanged_slayers_legguards,id=147173,ilevel=930
 feet=felscape_pathfinders,id=147030,ilevel=930
-finger1=yathaes_thumb_ring,id=147021,ilevel=930,enchant=binding_of_crit
-finger2=band_of_rescinded_truths,id=147194,ilevel=930,enchant=binding_of_crit
+finger1=yathaes_thumb_ring,id=147021,ilevel=930,enchant=binding_of_critical_strike
+finger2=band_of_rescinded_truths,id=147194,ilevel=930,enchant=binding_of_critical_strike
 trinket1=engine_of_eradication,id=147015,ilevel=930
 trinket2=specter_of_betrayal,id=151190,ilevel=940
 main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=147110/147102/151189,relic_ilevel=930/930/930
@@ -109,7 +109,7 @@ off_hand=the_kingslayers,id=128869
 # gear_ilvl=938.88
 # gear_agility=28546
 # gear_stamina=45295
-# gear_crit_rating=6610
+# gear_crit_rating=7010
 # gear_haste_rating=3170
 # gear_mastery_rating=11271
 # gear_versatility_rating=6147
