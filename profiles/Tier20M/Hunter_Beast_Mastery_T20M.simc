@@ -51,31 +51,31 @@ actions+=/multishot,if=spell_targets>1&(pet.cat.buff.beast_cleave.remains<gcd.ma
 actions+=/chimaera_shot,if=focus<90
 actions+=/cobra_shot,if=(cooldown.kill_command.remains>focus.time_to_max&cooldown.bestial_wrath.remains>focus.time_to_max)|(buff.bestial_wrath.up&focus.regen*cooldown.kill_command.remains>30)|target.time_to_die<cooldown.kill_command.remains
 
-head=wildstalker_helmet,id=147142,ilevel=930
-neck=locket_of_splintered_souls,id=147014,ilevel=930,enchant=mark_of_the_hidden_satyr
-shoulders=wildstalker_spaulders,id=147144,ilevel=930
-back=wildstalker_cape,id=147140,ilevel=930,enchant=binding_of_agility
-chest=parsels_tongue,id=151805,bonus_id=3530
-wrists=painsinged_armguards,id=147057,ilevel=930
-hands=vicegrip_of_the_unrepentant,id=147048,ilevel=940
-waist=roar_of_the_seven_lions,id=137080,bonus_id=3530
-legs=wildstalker_leggings,id=147143,ilevel=930
-feet=starstalker_treads,id=147046,ilevel=940
-finger1=scaled_band_of_servitude,id=147020,ilevel=930,enchant=binding_of_mastery
-finger2=seal_of_the_second_duumvirate,id=147195,ilevel=940,enchant=binding_of_mastery
-trinket1=tarnished_sentinel_medallion,id=147017,ilevel=930
-trinket2=engine_of_eradication,id=147015,ilevel=930
-main_hand=titanstrike,id=128861,gem_id=147113/147076/147102,relic_ilevel=930/930/930
+head=wildstalker_helmet,id=147142,bonus_id=1512/3563
+neck=locket_of_splintered_souls,id=147014,bonus_id=1512/3563,enchant=mark_of_the_hidden_satyr
+shoulders=wildstalker_spaulders,id=147144,bonus_id=1512/3563
+back=wildstalker_cape,id=147140,bonus_id=1512/3563,enchant=binding_of_agility
+chest=parsels_tongue,id=151805,bonus_id=3570
+wrists=painsinged_armguards,id=147057,bonus_id=1512/3563
+hands=vicegrip_of_the_unrepentant,id=147048,bonus_id=1522/3563
+waist=roar_of_the_seven_lions,id=137080,bonus_id=3570
+legs=wildstalker_leggings,id=147143,bonus_id=1512/3563
+feet=starstalker_treads,id=147046,bonus_id=1522/3563
+finger1=scaled_band_of_servitude,id=147020,bonus_id=1512/3563,enchant=binding_of_mastery
+finger2=seal_of_the_second_duumvirate,id=147195,bonus_id=1522/3563,enchant=binding_of_mastery
+trinket1=tarnished_sentinel_medallion,id=147017,bonus_id=1512/3563
+trinket2=engine_of_eradication,id=147015,bonus_id=1512/3563
+main_hand=titanstrike,id=128861,gem_id=147113/147076/147102,relic_id=1512:3563/1512:3563/1512:3563
 
 # Gear Summary
-# gear_ilvl=934.73
-# gear_agility=25049
-# gear_stamina=44779
+# gear_ilvl=938.73
+# gear_agility=26827
+# gear_stamina=47446
 # gear_crit_rating=7808
-# gear_haste_rating=8780
-# gear_mastery_rating=11459
+# gear_haste_rating=9000
+# gear_mastery_rating=11638
 # gear_versatility_rating=1162
-# gear_armor=3274
+# gear_armor=3358
 # set_bonus=tier20_2pc=1
 # set_bonus=tier20_4pc=1
 summon_pet=cat

@@ -21,21 +21,21 @@ talents=2202012
 artifact=56:0:0:0:0:868:4:869:4:870:4:871:4:872:4:873:4:874:4:875:4:876:1:877:1:878:1:879:1:880:1:881:1:882:1:1095:4:1336:1:1368:1:1517:4:1518:1:1519:1:1520:1:1636:1
 spec=beast_mastery
 
-head=wildstalker_helmet,id=147142,ilevel=915
-neck=locket_of_splintered_souls,id=147014,ilevel=915,enchant=mark_of_the_hidden_satyr
-shoulders=wildstalker_spaulders,id=147144,ilevel=915
-back=wildstalker_cape,id=147140,ilevel=915,enchant=binding_of_agility
-chest=parsels_tongue,id=151805,bonus_id=3530
-wrists=painsinged_armguards,id=147057,ilevel=915
-hands=vicegrip_of_the_unrepentant,id=147048,ilevel=925
-waist=roar_of_the_seven_lions,id=137080,bonus_id=3530
-legs=wildstalker_leggings,id=147143,ilevel=915
-feet=starstalker_treads,id=147046,ilevel=925
-finger1=scaled_band_of_servitude,id=147020,ilevel=915,enchant=binding_of_mastery
-finger2=seal_of_the_second_duumvirate,id=147195,ilevel=925,enchant=binding_of_mastery
-trinket1=tarnished_sentinel_medallion,id=147017,ilevel=915
-trinket2=engine_of_eradication,id=147015,ilevel=915
-main_hand=titanstrike,id=128861,gem_id=147113/147076/147102,relic_ilevel=915/915/915
+head=wildstalker_helmet,id=147142,bonus_id=1497/3562
+neck=locket_of_splintered_souls,id=147014,bonus_id=1497/3562,enchant=mark_of_the_hidden_satyr
+shoulders=wildstalker_spaulders,id=147144,bonus_id=1497/3562
+back=wildstalker_cape,id=147140,bonus_id=1497/3562,enchant=binding_of_agility
+chest=parsels_tongue,id=151805,bonus_id=3570
+wrists=painsinged_armguards,id=147057,bonus_id=1497/3562
+hands=vicegrip_of_the_unrepentant,id=147048,bonus_id=1507/3562
+waist=roar_of_the_seven_lions,id=137080,bonus_id=3570
+legs=wildstalker_leggings,id=147143,bonus_id=1497/3562
+feet=starstalker_treads,id=147046,bonus_id=1507/3562
+finger1=scaled_band_of_servitude,id=147020,bonus_id=1497/3562,enchant=binding_of_mastery
+finger2=seal_of_the_second_duumvirate,id=147195,bonus_id=1507/3562,enchant=binding_of_mastery
+trinket1=tarnished_sentinel_medallion,id=147017,bonus_id=1497/3562
+trinket2=engine_of_eradication,id=147015,bonus_id=1497/3562
+main_hand=titanstrike,id=128861,gem_id=147113/147076/147102,relic_ilevel=1497:3562/1497:3562/1497:3562
 
 save=Hunter_Beast_Mastery_T20H.simc
 
@@ -49,23 +49,23 @@ talents=1303013
 artifact=55:0:0:0:0:307:1:308:1:309:1:310:1:311:1:312:4:313:4:314:4:315:4:316:4:317:4:318:4:319:4:320:4:321:1:322:1:1337:1:1369:1:1521:4:1522:1:1523:1:1524:1:1637:1
 spec=marksmanship
 
-head=wildstalker_helmet,id=147142,ilevel=915
-neck=locket_of_splintered_souls,id=147014,ilevel=915,enchant=mark_of_the_hidden_satyr
-shoulders=wildstalker_spaulders,id=147144,ilevel=915
-back=wildstalker_cape,id=147140,ilevel=915,enchant=binding_of_agility
-chest=wildstalker_chestguard,id=147139,ilevel=915
-wrists=painsinged_armguards,id=147057,ilevel=915
-hands=vicegrip_of_the_unrepentant,id=147048,ilevel=925
-# hands=mkii_gyroscopic_stabilizer,id=144303,bonus_id=3530
-waist=waistguard_of_interminable_unity,id=147056,ilevel=915
-legs=legguards_of_siphoned_power,id=147052,ilevel=915
-feet=ullrs_feather_snowshoes,id=137033,bonus_id=3530
-# feet=starstalker_treads,id=147046,ilevel=925
-finger1=soul_of_the_huntmaster,id=151641,bonus_id=3530,gems=150mastery,enchant=binding_of_mastery
-# finger1=scaled_band_of_servitude,id=147020,ilevel=915,enchant=binding_of_mastery
-finger2=seal_of_the_second_duumvirate,id=147195,ilevel=925,enchant=binding_of_mastery
-trinket1=tarnished_sentinel_medallion,id=147017,ilevel=915
+head=wildstalker_helmet,id=147142,bonus_id=1497/3562
+neck=locket_of_splintered_souls,id=147014,bonus_id=1497/3562,enchant=mark_of_the_hidden_satyr
+shoulders=wildstalker_spaulders,id=147144,bonus_id=1497/3562
+back=wildstalker_cape,id=147140,bonus_id=1497/3562,enchant=binding_of_agility
+chest=wildstalker_chestguard,id=147139,bonus_id=1497/3562
+wrists=painsinged_armguards,id=147057,bonus_id=1497/3562
+hands=vicegrip_of_the_unrepentant,id=147048,bonus_id=1507/3562
+# hands=mkii_gyroscopic_stabilizer,id=144303,bonus_id=3570
+waist=waistguard_of_interminable_unity,id=147056,bonus_id=1497/3562
+legs=legguards_of_siphoned_power,id=147052,bonus_id=1497/3562
+feet=ullrs_feather_snowshoes,id=137033,bonus_id=3570
+# feet=starstalker_treads,id=147046,bonus_id=1507/3562
+finger1=soul_of_the_huntmaster,id=151641,bonus_id=3570,gems=150mastery,enchant=binding_of_mastery
+# finger1=scaled_band_of_servitude,id=147020,bonus_id=1497/3562,enchant=binding_of_mastery
+finger2=seal_of_the_second_duumvirate,id=147195,bonus_id=1507/3562,enchant=binding_of_mastery
+trinket1=tarnished_sentinel_medallion,id=147017,bonus_id=1497/3562
 trinket2=convergence_of_fates,id=140806,bonus_id=3518
-main_hand=thasdorah_legacy_of_the_windrunners,id=128826,gem_id=147112/147082/147105,relic_ilevel=915/925/915
+main_hand=thasdorah_legacy_of_the_windrunners,id=128826,gem_id=147112/147082/147105,relic_ilevel=1497:3562/1507:3562/1497:3562
 
 save=Hunter_Marksmanship_T20H.simc

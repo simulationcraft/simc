@@ -2497,6 +2497,8 @@ void sim_t::analyze()
   for ( size_t i = 0; i < buff_list.size(); ++i )
     buff_list[ i ] -> analyze();
 
+  std::cout << "Analyzing actor data ..." << std::endl;
+
   for ( size_t i = 0; i < actor_list.size(); i++ )
     actor_list[ i ] -> analyze( *this );
 
@@ -2670,6 +2672,8 @@ void sim_t::do_pause()
 void sim_t::merge( sim_t& other_sim )
 {
   auto_lock_t auto_lock( merge_mutex );
+
+  std::cout << "Merging data from thread-" << other_sim.thread_index << " ..." << std::endl;
 
   iterations += other_sim.iterations;
   work_per_thread[ other_sim.thread_index ] = other_sim.work_done;
