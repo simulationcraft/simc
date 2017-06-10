@@ -339,7 +339,7 @@ public:
     cooldown_t* lava_lash;
     cooldown_t* storm_elemental;
     cooldown_t* strike;
-	cooldown_t* t20_4pc_elemental;
+  cooldown_t* t20_4pc_elemental;
   } cooldown;
 
   // Gains
@@ -424,7 +424,7 @@ public:
     const spell_data_t* ancestral_swiftness;
     const spell_data_t* ascendance;
     const spell_data_t* gust_of_wind;
-	const spell_data_t* lightning_surge_totem;
+  const spell_data_t* lightning_surge_totem;
 
     // Elemental
     const spell_data_t* path_of_flame;
@@ -580,7 +580,7 @@ public:
     cooldown.lava_burst           = get_cooldown( "lava_burst"            );
     cooldown.lava_lash            = get_cooldown( "lava_lash"             );
     cooldown.strike               = get_cooldown( "strike"                );
-	cooldown.t20_4pc_elemental	  = get_cooldown( "t20_4pc_elemental"                );
+  cooldown.t20_4pc_elemental	  = get_cooldown( "t20_4pc_elemental"                );
 
     melee_mh = nullptr;
     melee_oh = nullptr;
@@ -2861,12 +2861,12 @@ struct stormstrike_attack_t : public shaman_attack_t
       m *= p() -> artifact.stormflurry.percent( 2 );
     }
 
-	if ( maybe_ptr( p() -> dbc.ptr ) && p() -> sets -> has_set_bonus( SHAMAN_ENHANCEMENT, T19, B2 ))
-	{
-		//TODO: t19_2pc ptr data doesn't seem to be working properly.
-	  //m *= 1.0 + t19_2pc -> effectN( 1 ).percent();
-	  m *= 1.1;
-	}
+  if ( maybe_ptr( p() -> dbc.ptr ) && p() -> sets -> has_set_bonus( SHAMAN_ENHANCEMENT, T19, B2 ))
+  {
+    //TODO: t19_2pc ptr data doesn't seem to be working properly.
+    //m *= 1.0 + t19_2pc -> effectN( 1 ).percent();
+    m *= 1.1;
+  }
 
     return m;
   }
@@ -2875,15 +2875,15 @@ struct stormstrike_attack_t : public shaman_attack_t
   {
     double c = shaman_attack_t::composite_crit_chance();	
 
-	if ( maybe_ptr( p() -> dbc.ptr ) && p() -> talent.tempest && p() -> buff.stormbringer -> up() )
+  if ( maybe_ptr( p() -> dbc.ptr ) && p() -> talent.tempest && p() -> buff.stormbringer -> up() )
     {
       c += p() -> talent.tempest -> effectN( 1 ).percent();
     }
-	
-	if ( !maybe_ptr( p() -> dbc.ptr ) && p() -> sets -> has_set_bonus( SHAMAN_ENHANCEMENT, T19, B2 ) && p() -> buff.stormbringer -> up())
-	{
-	  c+= t19_2pc -> effectN( 1 ).percent();
-	}
+  
+  if ( !maybe_ptr( p() -> dbc.ptr ) && p() -> sets -> has_set_bonus( SHAMAN_ENHANCEMENT, T19, B2 ) && p() -> buff.stormbringer -> up())
+  {
+    c+= t19_2pc -> effectN( 1 ).percent();
+  }
 
     return c;
   }
@@ -3600,7 +3600,7 @@ struct stormstrike_t : public stormstrike_base_t
     if ( p() -> off_hand_weapon.type != WEAPON_NONE )
     {
       oh = new stormstrike_attack_t( "stormstrike_offhand", player, data().effectN( 2 ).trigger(), &( player -> off_hand_weapon ) );
-	  oh -> may_proc_stormbringer = false;
+    oh -> may_proc_stormbringer = false;
       add_child( oh );
     }
   }
@@ -3639,7 +3639,7 @@ struct windstrike_t : public stormstrike_base_t
     if ( p() -> off_hand_weapon.type != WEAPON_NONE )
     {
       oh = new windstrike_attack_t( "windstrike_offhand", player, data().effectN( 2 ).trigger(), &( player -> off_hand_weapon ) );
-	  oh -> may_proc_stormbringer = false;
+    oh -> may_proc_stormbringer = false;
       add_child( oh );
     }
   }
@@ -5413,7 +5413,7 @@ struct flame_shock_t : public shaman_spell_t
     if ( d -> state -> result == RESULT_CRIT &&
          player -> sets -> has_set_bonus( SHAMAN_ELEMENTAL, T20, B4 ) )
     {
-		p() -> trigger_t20_4pc_elemental( execute_state );
+    p() -> trigger_t20_4pc_elemental( execute_state );
     }
   }
 
@@ -5958,31 +5958,31 @@ struct liquid_magma_totem_t : public shaman_totem_pet_t
 
 struct lightning_surge_static_charge_t : public spell_t
 {
-	lightning_surge_static_charge_t(shaman_totem_pet_t* p) :
-		spell_t("static_charge", p, p -> find_spell(118905))
-	{
-		aoe = -1;
-		background = may_crit = true;
-		callbacks = false;
-	}
+  lightning_surge_static_charge_t(shaman_totem_pet_t* p) :
+    spell_t("static_charge", p, p -> find_spell(118905))
+  {
+    aoe = -1;
+    background = may_crit = true;
+    callbacks = false;
+  }
 };
 
 struct lightning_surge_totem_t : public shaman_totem_pet_t {
-	lightning_surge_totem_t(shaman_t* owner) :
-		shaman_totem_pet_t(owner, "lightning_surge_totem") {
-	}
+  lightning_surge_totem_t(shaman_t* owner) :
+    shaman_totem_pet_t(owner, "lightning_surge_totem") {
+  }
 
-	void init_spells() override {
-		shaman_totem_pet_t::init_spells();
-	}
+  void init_spells() override {
+    shaman_totem_pet_t::init_spells();
+  }
 
-	void init_action_list() override
-	{
-		clear_action_priority_lists();
-		auto default_list = get_action_priority_list("default");
+  void init_action_list() override
+  {
+    clear_action_priority_lists();
+    auto default_list = get_action_priority_list("default");
 
-		default_list->add_action(this, find_pet_spell("Static Chage"), "Static Chage");
-	}
+    default_list->add_action(this, find_pet_spell("Static Chage"), "Static Chage");
+  }
 };
 
 // ==========================================================================
@@ -7099,20 +7099,20 @@ void shaman_t::trigger_t19_oh_8pc( const action_state_t* )
 
 void shaman_t::trigger_t20_4pc_elemental(const action_state_t*)
 {
-	if (!sets->has_set_bonus(SHAMAN_ELEMENTAL, T20, B4))
-	{
-		return;
-	}
+  if (!sets->has_set_bonus(SHAMAN_ELEMENTAL, T20, B4))
+  {
+    return;
+  }
 
-	if (cooldown.t20_4pc_elemental -> down())
-	{
-		return;
-	}
+  if (cooldown.t20_4pc_elemental -> down())
+  {
+    return;
+  }
 
-	cooldown.fire_elemental->adjust(timespan_t::from_seconds(-1.0 * sets->set(SHAMAN_ELEMENTAL, T20, B4)->effectN(1).base_value() / 10.0));
-	cooldown.storm_elemental->adjust(timespan_t::from_seconds(-1.0 * sets->set(SHAMAN_ELEMENTAL, T20, B4)->effectN(2).base_value() / 10.0));
+  cooldown.fire_elemental->adjust(timespan_t::from_seconds(-1.0 * sets->set(SHAMAN_ELEMENTAL, T20, B4)->effectN(1).base_value() / 10.0));
+  cooldown.storm_elemental->adjust(timespan_t::from_seconds(-1.0 * sets->set(SHAMAN_ELEMENTAL, T20, B4)->effectN(2).base_value() / 10.0));
 
-	cooldown.t20_4pc_elemental->start(timespan_t::from_seconds(1));
+  cooldown.t20_4pc_elemental->start(timespan_t::from_seconds(1));
 }
 
 void shaman_t::trigger_flametongue_weapon( const action_state_t* state )

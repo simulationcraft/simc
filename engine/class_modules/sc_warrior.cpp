@@ -84,18 +84,12 @@ public:
   event_t* heroic_charge, *rampage_driver;
   std::vector<attack_t*> rampage_attacks;
   std::vector<cooldown_t*> odyns_champion_cds;
-  bool non_dps_mechanics, warrior_fixed_time, frothing_may_trigger, opportunity_strikes_once;
+  bool non_dps_mechanics, warrior_fixed_time, frothing_may_trigger;
   double expected_max_health;
 
   std::vector<counter_t*> counters;
   auto_dispose< std::vector<data_t*> > cd_waste_exec, cd_waste_cumulative;
   auto_dispose< std::vector<simple_data_t*> > cd_waste_iter;
-
-  // Legendary Items
-  const special_effect_t* archavons_heavy_hand, *bindings_of_kakushan,
-    *kargaths_sacrificed_hands, *thundergods_vigor, *ceannar_charger, *kazzalax_fujiedas_fury, *the_walls_fell,
-    *destiny_driver, *prydaz_xavarics_magnum_opus,
-    *najentuss_vertebrae, *ayalas_stone_heart, *weight_of_the_earth, *raging_fury, *the_great_storms_eye, *ararats_bloodmirror;
 
   // Active
   struct active_t
@@ -173,8 +167,8 @@ public:
     buff_t* bindings_of_kakushan;
     buff_t* kargaths_sacrificed_hands;
     buff_t* fujiedas_fury;
-    buff_t* destiny_driver; //215157
-    buff_t* xavarics_magnum_opus; //207472
+    buff_t* destiny_driver;
+    buff_t* xavarics_magnum_opus;
     haste_buff_t* sephuzs_secret;
     haste_buff_t* in_for_the_kill;
   } buff;
@@ -382,15 +376,46 @@ public:
 
   struct legendary_t
   {
-    // Eventually move all legendarys here for organization
     const spell_data_t* sephuzs_secret;
     const spell_data_t* valarjar_berserkers;
     const spell_data_t* mannoroths_bloodletting_manacles;
+    const spell_data_t* ceannar_charger;
+    const spell_data_t* archavons_heavy_hand;
+    const spell_data_t* bindings_of_kakushan;
+    const spell_data_t* kargaths_sacrificed_hands;
+    const spell_data_t* thundergods_vigor;
+    const spell_data_t* kazzalax_fujiedas_fury;
+    const spell_data_t* the_walls_fell;
+    const spell_data_t* destiny_driver;
+    const spell_data_t* prydaz_xavarics_magnum_opus;
+    const spell_data_t* najentuss_vertebrae;
+    const spell_data_t* ayalas_stone_heart;
+    const spell_data_t* weight_of_the_earth;
+    const spell_data_t* raging_fury;
+    const spell_data_t* the_great_storms_eye;
+    const spell_data_t* ararats_bloodmirror;
 
     legendary_t() :
       sephuzs_secret( nullptr ), valarjar_berserkers( nullptr ),
-      mannoroths_bloodletting_manacles( spell_data_t::not_found() )
-    { }
+      mannoroths_bloodletting_manacles( spell_data_t::not_found() ),
+      ceannar_charger( spell_data_t::not_found() ),
+      archavons_heavy_hand( spell_data_t::not_found() ),
+      bindings_of_kakushan( spell_data_t::not_found() ),
+      kargaths_sacrificed_hands( spell_data_t::not_found() ),
+      thundergods_vigor( spell_data_t::not_found() ),
+      kazzalax_fujiedas_fury( spell_data_t::not_found() ),
+      the_walls_fell( spell_data_t::not_found() ),
+      destiny_driver( spell_data_t::not_found() ),
+      prydaz_xavarics_magnum_opus( spell_data_t::not_found() ),
+      najentuss_vertebrae( spell_data_t::not_found() ),
+      ayalas_stone_heart( spell_data_t::not_found() ),
+      weight_of_the_earth( spell_data_t::not_found() ),
+      raging_fury( spell_data_t::not_found() ),
+      the_great_storms_eye( spell_data_t::not_found() ),
+      ararats_bloodmirror( spell_data_t::not_found() )
+    {
+    }
+
   } legendary;
 
   // Artifacts
@@ -487,12 +512,8 @@ public:
     artifact( artifact_spell_data_t() )
   {
     non_dps_mechanics = false; // When set to false, disables stuff that isn't important, such as second wind, bloodthirst heal, etc.
-    warrior_fixed_time = frothing_may_trigger = opportunity_strikes_once = true; //Frothing only triggers on the first ability that pushes you to 100 rage, until rage is consumed and then it may trigger again.
+    warrior_fixed_time = frothing_may_trigger = true; //Frothing only triggers on the first ability that pushes you to 100 rage, until rage is consumed and then it may trigger again.
     expected_max_health = 0;
-
-    archavons_heavy_hand = bindings_of_kakushan = kargaths_sacrificed_hands = thundergods_vigor =
-    ceannar_charger = kazzalax_fujiedas_fury = the_walls_fell = destiny_driver = prydaz_xavarics_magnum_opus =
-    najentuss_vertebrae = ayalas_stone_heart = weight_of_the_earth = raging_fury = the_great_storms_eye = ararats_bloodmirror = nullptr;
 
     regen_type = REGEN_DISABLED;
 
@@ -601,9 +622,9 @@ public:
   void enrage()
   {
     buff.enrage -> trigger();
-    if ( ceannar_charger )
+    if ( legendary.ceannar_charger )
     {
-      resource_gain( RESOURCE_RAGE, ceannar_charger -> driver() -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ), gain.ceannar_rage );
+      resource_gain( RESOURCE_RAGE, legendary.ceannar_charger -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ), gain.ceannar_rage );
     }
   }
   template <typename T_CONTAINER, typename T_DATA>
@@ -1036,7 +1057,7 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
     }
   }
 
-  virtual bool opportunity_strikes( action_state_t* s )
+  void opportunity_strikes( action_state_t* s )
   {
     if ( special && s -> action -> data().id() != p() -> active.opportunity_strikes -> data().id() )
     {
@@ -1045,10 +1066,8 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
         p() -> active.opportunity_strikes -> target = s -> target;
         p() -> active.opportunity_strikes -> execute();
         p() -> cooldown.opportunity_strikes -> start();
-        return true;
       }
     }
-    return false;
   }
 
   virtual void impact( action_state_t* s ) override
@@ -1443,10 +1462,7 @@ struct mortal_strike_t20_t : public warrior_attack_t
     p() -> buff.shattered_defenses -> expire();
     p() -> buff.precise_strikes -> expire();
     p() -> buff.executioners_precision -> expire();
-    if ( p() -> archavons_heavy_hand )
-    {
-      p() -> resource_gain( RESOURCE_RAGE, p() -> archavons_heavy_hand -> driver() -> effectN( 1 ).resource( RESOURCE_RAGE ), p() -> gain.archavons_heavy_hand );
-    }
+    p() -> resource_gain( RESOURCE_RAGE, p() -> legendary.archavons_heavy_hand -> effectN( 1 ).resource( RESOURCE_RAGE ), p() -> gain.archavons_heavy_hand );
   }
 
   void impact( action_state_t* s ) override
@@ -1507,8 +1523,8 @@ struct mortal_strike_t : public warrior_attack_t
     if( !maybe_ptr( p() -> dbc.ptr ) ) //FIXME PTR
       c *= 1.0 + p() -> buff.precise_strikes -> check_value();
 
-	if (p()->archavons_heavy_hand && maybe_ptr(p()->dbc.ptr)) //FIXME PTR
-		c += p()->archavons_heavy_hand->driver()->effectN(1).resource(RESOURCE_RAGE);
+  if (maybe_ptr(p()->dbc.ptr)) //FIXME PTR
+    c += p()->legendary.archavons_heavy_hand ->effectN(1).resource(RESOURCE_RAGE);
 
     return c;
   }
@@ -1533,9 +1549,9 @@ struct mortal_strike_t : public warrior_attack_t
     p() -> buff.shattered_defenses -> expire();
     p() -> buff.precise_strikes -> expire();
     p() -> buff.executioners_precision -> expire();
-    if (!maybe_ptr(p()->dbc.ptr) && p() -> archavons_heavy_hand ) //FIXME PTR
+    if (!maybe_ptr(p()->dbc.ptr) ) //FIXME PTR
     {
-      p() -> resource_gain( RESOURCE_RAGE, p() -> archavons_heavy_hand -> driver() -> effectN( 1 ).resource( RESOURCE_RAGE ), p() -> gain.archavons_heavy_hand );
+      p() -> resource_gain( RESOURCE_RAGE, p() -> legendary.archavons_heavy_hand -> effectN( 1 ).resource( RESOURCE_RAGE ), p() -> gain.archavons_heavy_hand );
     }
   }
 
@@ -1648,11 +1664,11 @@ struct bladestorm_t: public warrior_attack_t
         mortal_strike -> execute();
       }
     }
-	
-	if (d -> ticks_left() > 0)
-	{
-		p() -> buff . tornados_eye -> trigger();
-	}
+
+    if ( d -> ticks_left() > 0 )
+    {
+      p() -> buff . tornados_eye -> trigger();
+    }
   }
 
   void last_tick( dot_t*d ) override
@@ -1833,7 +1849,7 @@ struct charge_t: public warrior_attack_t
   double movement_speed_increase, min_range;
   charge_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "charge", p, p -> spell.charge ),
-	charge_damage(p -> find_spell(126664)),
+  charge_damage(p -> find_spell(126664)),
     first_charge( true ), movement_speed_increase( 5.0 ), min_range( data().min_range() )
   {
     parse_options( options_str );
@@ -1842,7 +1858,7 @@ struct charge_t: public warrior_attack_t
     energize_resource = RESOURCE_RAGE;
     energize_type = ENERGIZE_ON_CAST;
     energize_amount += p -> artifact.uncontrolled_rage.value() / 10;
-	attack_power_mod.direct = charge_damage -> effectN ( 2 ) . ap_coeff();
+  attack_power_mod.direct = charge_damage -> effectN ( 2 ) . ap_coeff();
 
     if ( p -> talents.warbringer -> ok() )
     {
@@ -1919,8 +1935,7 @@ struct intercept_t: public warrior_attack_t
     movement_directionality = MOVEMENT_OMNI;
     energize_type = ENERGIZE_ON_CAST;
     energize_resource = RESOURCE_RAGE;
-    if ( p -> raging_fury )
-      energize_amount *= 1.0 + p -> raging_fury -> driver() -> effectN( 1 ).percent();
+    energize_amount *= 1.0 + p -> legendary.raging_fury -> effectN( 1 ).percent();
     if ( p -> talents.warbringer -> ok() )
     {
       aoe = -1;
@@ -3443,10 +3458,10 @@ struct ravager_t: public warrior_attack_t
         mortal_strike -> execute();
       }
     }
-	if (d->ticks_left() > 0)
-	{
-		p()->buff.tornados_eye->trigger();
-	}
+    if ( d->ticks_left() > 0 )
+    {
+      p()->buff.tornados_eye->trigger();
+    }
   }
 };
 
@@ -3943,7 +3958,7 @@ struct fury_whirlwind_parent_t: public warrior_attack_t
 
   timespan_t composite_dot_duration( const action_state_t* /* s */ ) const override
   {
-    if ( p() -> najentuss_vertebrae != 0 && as<int>( target_list().size() ) >= p() -> najentuss_vertebrae -> driver() -> effectN( 1 ).base_value() )
+    if ( as<int>( target_list().size() ) >= p() -> legendary.najentuss_vertebrae -> effectN( 1 ).base_value() )
     {
       return base_tick_time * 4.0;
     }
@@ -3999,17 +4014,6 @@ struct arms_whirlwind_mh_t: public warrior_attack_t
     weapon_multiplier *= 1.0 + p -> artifact.many_will_fall.percent();
   }
 
-  bool opportunity_strikes( action_state_t* s ) override
-  {
-    if ( p() -> opportunity_strikes_once && warrior_attack_t::opportunity_strikes( s ) )
-    {
-      p() -> opportunity_strikes_once = false;
-      return true;
-    }
-    return false;
-  }
-
-
   double action_multiplier() const override
   {
     double am = warrior_attack_t::action_multiplier();
@@ -4060,16 +4064,6 @@ struct first_arms_whirlwind_mh_t: public warrior_attack_t
     {
       p() -> resource_gain( RESOURCE_RAGE, p() -> artifact.will_of_the_first_king.data().effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ), p() -> gain.will_of_the_first_king );
     }
-  }
-
-  bool opportunity_strikes( action_state_t* s ) override
-  {
-    if ( p() -> opportunity_strikes_once && warrior_attack_t::opportunity_strikes( s ) )
-    {
-      p() -> opportunity_strikes_once = false;
-      return true;
-    }
-    return false;
   }
 
   void assess_damage( dmg_e type, action_state_t* s ) override
@@ -4138,7 +4132,7 @@ struct arms_whirlwind_parent_t: public warrior_attack_t
 
   timespan_t composite_dot_duration( const action_state_t* /* s */ ) const override
   {
-    if ( p() -> najentuss_vertebrae != 0 && as<int>( target_list().size() ) >= p() -> najentuss_vertebrae -> driver() -> effectN( 1 ).base_value() )
+    if ( as<int>( target_list().size() ) >= p() -> legendary.najentuss_vertebrae -> effectN( 1 ).base_value() )
     {
       return base_tick_time * 4.0;
     }
@@ -4165,12 +4159,6 @@ struct arms_whirlwind_parent_t: public warrior_attack_t
     warrior_attack_t::last_tick( d );
 
     p() -> buff.cleave -> expire();
-  }
-
-  void execute() override
-  {
-    p() -> opportunity_strikes_once = true; // Opportunity strikes rolls multiple times, but seems to only proc once per whirlwind.
-    warrior_attack_t::execute();
   }
 
   bool ready() override
@@ -6110,7 +6098,7 @@ void warrior_t::reset()
 
   heroic_charge = nullptr;
   rampage_driver = nullptr;
-  frothing_may_trigger = opportunity_strikes_once = true;
+  frothing_may_trigger = true;
 }
 
 // Movement related overrides. =============================================
@@ -6844,75 +6832,6 @@ private:
   warrior_t& p;
 };
 
-static void do_trinket_init( warrior_t*                player,
-                             specialization_e         spec,
-                             const special_effect_t*& ptr,
-                             const special_effect_t&  effect )
-{
-  // Ensure we have the spell data. This will prevent the trinket effect from working on live
-  // Simulationcraft. Also ensure correct specialization.
-  if ( ! player -> find_spell( effect.spell_id ) -> ok() ||
-       ( player -> specialization() != spec && spec != SPEC_NONE ) )
-  {
-    return;
-  }
-  // Set pointer, module considers non-null pointer to mean the effect is "enabled"
-  ptr = &( effect );
-}
-
-static void archavons_heavy_hand( special_effect_t& effect )
-{
-  warrior_t* s = debug_cast<warrior_t*>( effect.player );
-  do_trinket_init( s, SPEC_NONE, s -> archavons_heavy_hand, effect );
-}
-
-static void thundergods_vigor( special_effect_t& effect )
-{
-  warrior_t* s = debug_cast<warrior_t*>( effect.player );
-  do_trinket_init( s, SPEC_NONE, s -> thundergods_vigor, effect );
-}
-
-static void ceannar_charger( special_effect_t& effect )
-{
-  warrior_t* s = debug_cast<warrior_t*>( effect.player );
-  do_trinket_init( s, SPEC_NONE, s -> ceannar_charger, effect );
-}
-
-static void the_walls_fell( special_effect_t& effect )
-{
-  warrior_t* s = debug_cast<warrior_t*>( effect.player );
-  do_trinket_init( s, SPEC_NONE, s -> the_walls_fell, effect );
-}
-
-static void najentuss_vertebrae( special_effect_t& effect )
-{
-  warrior_t* s = debug_cast<warrior_t*>( effect.player );
-  do_trinket_init( s, SPEC_NONE, s -> najentuss_vertebrae, effect );
-}
-
-// WARRIOR MODULE INTERFACE =================================================
-
-/*
-struct fury_trinket_t : public unique_gear::class_buff_cb_t<warrior_t, haste_buff_t, haste_buff_creator_t>
-{
-  fury_trinket_t() : super( WARRIOR, "berserkers_fury" ) { }
-
-  // Assign to warrior_t::buff.fury_trinket
-  haste_buff_t*& buff_ptr( const special_effect_t& e ) override
-  { return actor( e ) -> buff.fury_trinket; }
-
-  // Customize the buff that is about to be created. Both fallback and real buff will use the same
-  // creator, but the fallback buff creator will additionally assign the proc chance for the buff to
-  // zero, essentially disabling it.
-  haste_buff_creator_t creator( const special_effect_t& e ) const override
-  {
-    return super::creator( e )
-      .spell( e.driver() -> effectN( 1 ).trigger() )
-      .default_value( e.driver() -> effectN( 1 ).trigger() -> effectN( 1 ).average( e.item ) / 100.0 );
-  }
-};
-*/
-
 struct raging_fury_t: public unique_gear::scoped_action_callback_t<charge_t>
 {
   raging_fury_t(): super( WARRIOR, "charge" )
@@ -6974,17 +6893,16 @@ struct the_great_storms_eye_t : public unique_gear::class_buff_cb_t<warrior_t>
 
   buff_creator_t creator( const special_effect_t& e ) const override
   {
-   if(e . player -> talent_points . has_row_col(6,3))
-    return super::creator( e )
+    if ( e.player -> talent_points.has_row_col( 6, 3 ) )
+      return super::creator( e )
       .spell( e.player -> find_spell( 248145 ) )
       .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
       .add_invalidate( CACHE_RUN_SPEED );
-   else
-	   return super::creator(e)
-	   .spell(e.player->find_spell(248142))
-	   .add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER)
-	   .add_invalidate(CACHE_RUN_SPEED);
-
+    else
+      return super::creator( e )
+      .spell( e.player -> find_spell( 248142 ) )
+      .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+      .add_invalidate( CACHE_RUN_SPEED );
   }
 };
 
@@ -7093,6 +7011,51 @@ struct mannoroths_bloodletting_manacles_t : public unique_gear::scoped_actor_cal
   { warrior -> legendary.mannoroths_bloodletting_manacles = e.driver(); }
 };
 
+struct archavons_heavy_hand_t : public unique_gear::scoped_actor_callback_t<warrior_t>
+{
+  archavons_heavy_hand_t() : super( WARRIOR )
+  {}
+
+  void manipulate( warrior_t* warrior, const special_effect_t& e ) override
+  { warrior -> legendary.archavons_heavy_hand = e.driver(); }
+};
+
+struct thundergods_vigor_t : public unique_gear::scoped_actor_callback_t<warrior_t>
+{
+  thundergods_vigor_t() : super( WARRIOR )
+  {}
+
+  void manipulate( warrior_t* warrior, const special_effect_t& e ) override
+  { warrior -> legendary.thundergods_vigor = e.driver(); }
+};
+
+struct ceannar_charger_t : public unique_gear::scoped_actor_callback_t<warrior_t>
+{
+  ceannar_charger_t() : super( WARRIOR )
+  {}
+
+  void manipulate( warrior_t* warrior, const special_effect_t& e ) override
+  { warrior -> legendary.ceannar_charger = e.driver(); }
+};
+
+struct the_walls_fell_t : public unique_gear::scoped_actor_callback_t<warrior_t>
+{
+  the_walls_fell_t() : super( WARRIOR )
+  {}
+
+  void manipulate( warrior_t* warrior, const special_effect_t& e ) override
+  { warrior -> legendary.the_walls_fell = e.driver(); }
+};
+
+struct najentuss_vertebrae_t : public unique_gear::scoped_actor_callback_t<warrior_t>
+{
+  najentuss_vertebrae_t() : super( WARRIOR )
+  {}
+
+  void manipulate( warrior_t* warrior, const special_effect_t& e ) override
+  { warrior -> legendary.najentuss_vertebrae = e.driver(); }
+};
+
 struct warrior_module_t: public module_t
 {
   warrior_module_t(): module_t( WARRIOR ) {}
@@ -7108,17 +7071,17 @@ struct warrior_module_t: public module_t
 
   virtual void static_init() const override
   {
-    unique_gear::register_special_effect( 205144, archavons_heavy_hand );
+    unique_gear::register_special_effect( 205144, archavons_heavy_hand_t() );
     unique_gear::register_special_effect( 207841, bindings_of_kakushan_t(), true );
     unique_gear::register_special_effect( 207845, kargaths_sacrificed_hands_t(), true );
-    unique_gear::register_special_effect( 215176, thundergods_vigor ); //NYI
-    unique_gear::register_special_effect( 207779, ceannar_charger );
+    unique_gear::register_special_effect( 215176, thundergods_vigor_t() ); //NYI
+    unique_gear::register_special_effect( 207779, ceannar_charger_t() );
     unique_gear::register_special_effect( 207775, kazzalax_fujiedas_fury_t(), true );
-    unique_gear::register_special_effect( 215057, the_walls_fell ); //NYI
+    unique_gear::register_special_effect( 215057, the_walls_fell_t() ); //NYI
     unique_gear::register_special_effect( 215090, destiny_driver_t(), true );
     unique_gear::register_special_effect( 207428, prydaz_xavarics_magnum_opus_t(), true ); //Not finished
     unique_gear::register_special_effect( 208908, mannoroths_bloodletting_manacles_t() ); //NYI
-    unique_gear::register_special_effect( 215096, najentuss_vertebrae );
+    unique_gear::register_special_effect( 215096, najentuss_vertebrae_t() );
     unique_gear::register_special_effect( 207767, ayalas_stone_heart_t(), true );
     unique_gear::register_special_effect( 208177, weight_of_the_earth_t() );
     unique_gear::register_special_effect( 222266, raging_fury_t() );
