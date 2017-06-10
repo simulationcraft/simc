@@ -2687,10 +2687,7 @@ struct death_knight_action_t : public Base
   {
     auto ret = action_base_t::consume_cost_per_tick( dot );
 
-    if ( maybe_ptr( p() -> dbc.ptr ) )
-    {
-      p() -> trigger_t20_2pc_frost( this -> last_resource_cost );
-    }
+    p() -> trigger_t20_2pc_frost( this -> last_resource_cost );
 
     return ret;
   }
@@ -2714,7 +2711,7 @@ struct death_knight_action_t : public Base
       }
     }
 
-    if ( maybe_ptr( p() -> dbc.ptr ) && this -> base_costs[ RESOURCE_RUNE ] > 0 )
+    if ( this -> base_costs[ RESOURCE_RUNE ] > 0 )
     {
       p() -> trigger_t20_4pc_frost( this -> base_costs[ RESOURCE_RUNE ] );
     }
@@ -2733,10 +2730,7 @@ struct death_knight_action_t : public Base
         p() -> cooldown.vampiric_blood -> adjust( -sec );
       }
 
-      if ( maybe_ptr( p() -> dbc.ptr ) )
-      {
-        p() -> trigger_t20_2pc_frost( this -> last_resource_cost );
-      }
+      p() -> trigger_t20_2pc_frost( this -> last_resource_cost );
     }
   }
 
@@ -6808,45 +6802,7 @@ void death_knight_t::trigger_t20_2pc_unholy( const action_state_t* state )
     return;
   }
 
-  // PTR has a completely different T20 set bonus
-  if ( maybe_ptr( dbc.ptr ) )
-  {
-  }
-  else
-  {
-    // Prefer Apocalypse ghouls over Army of the Dead ghouls. Note that we check that the pets
-    // are there (check non-null pointer for the first array entry). This is because if the user for
-    // some reason has no Apocalypse power (unlikely), or has not specified apocalypse to be used on
-    // the APL, the pets will not be created.
-    if ( artifact.apocalypse.rank() && pets.apocalypse_ghoul[ 0 ] )
-    {
-      for ( auto pet : pets.apocalypse_ghoul )
-      {
-        if ( ! pet -> is_sleeping() )
-        {
-          active_spells.t20_2pc_unholy -> set_target( state -> target );
-          active_spells.t20_2pc_unholy -> execute();
-          pet -> cast_pet() -> dismiss();
-          return; // Explosion done, bail out
-        }
-      }
-    }
-
-    // Look for an Army ghoul to explode
-    if ( pets.army_ghoul[ 0 ] )
-    {
-      for ( auto pet : pets.army_ghoul )
-      {
-        if ( ! pet -> is_sleeping() )
-        {
-          active_spells.t20_2pc_unholy -> set_target( state -> target );
-          active_spells.t20_2pc_unholy -> execute();
-          pet -> cast_pet() -> dismiss();
-          return; // Explosion done, bail out
-        }
-      }
-    }
-  }
+  //FIXME - Not implemented
 }
 
 unsigned death_knight_t::replenish_rune( unsigned n, gain_t* gain )
