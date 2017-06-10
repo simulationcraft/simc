@@ -1184,7 +1184,7 @@ struct melee_t: public warrior_attack_t
   melee_t( const std::string& name, warrior_t* p ):
     warrior_attack_t( name, p, spell_data_t::nil() ),
     mh_lost_melee_contact( true ), oh_lost_melee_contact( true ),
-    base_rage_generation( 1.75 ), arms_rage_multiplier( 4.286 ), fury_rage_multiplier( 0.80 ),
+    base_rage_generation( 1.75 ), arms_rage_multiplier( 4.4 ), fury_rage_multiplier( 0.80 ),
     devastator( nullptr )
   {
     school = SCHOOL_PHYSICAL;
@@ -1295,14 +1295,9 @@ struct melee_t: public warrior_attack_t
 
     if ( p() -> specialization() == WARRIOR_ARMS )
     {
+      rage_gain *= arms_rage_multiplier;
       if ( s -> result == RESULT_CRIT )
-      {
-        rage_gain *= 5.5555;
-      }
-      else
-      {
-        rage_gain *= arms_rage_multiplier;
-      }
+        rage_gain *= 1.3; 
     }
     else
     {
@@ -1490,8 +1485,8 @@ struct mortal_strike_t : public warrior_attack_t
   {
     double c = warrior_attack_t::cost();
 
-	if( p() -> legendary.archavons_heavy_hand != nullptr )
-		c += p() -> legendary.archavons_heavy_hand -> effectN(1).resource( RESOURCE_RAGE );
+  if( p() -> legendary.archavons_heavy_hand != nullptr )
+    c += p() -> legendary.archavons_heavy_hand -> effectN(1).resource( RESOURCE_RAGE );
 
     return c;
   }
@@ -3898,9 +3893,9 @@ struct fury_whirlwind_parent_t: public warrior_attack_t
 
   timespan_t composite_dot_duration( const action_state_t* /* s */ ) const override
   {
-    if  (p() -> legendary.najentuss_vertebrae != nullptr && as<int>( target_list().size() ) >= p() -> legendary.najentuss_vertebrae -> effectN( 1 ).base_value() )
+    if ( p() -> legendary.najentuss_vertebrae != nullptr && as<int>( target_list().size() ) >= p() -> legendary.najentuss_vertebrae -> effectN( 1 ).base_value() )
     {
-	  return dot_duration + (base_tick_time * p() -> legendary.najentuss_vertebrae -> effectN( 2 ).base_value());
+      return dot_duration + ( base_tick_time * p() -> legendary.najentuss_vertebrae -> effectN( 2 ).base_value() );
     }
 
     return dot_duration;
