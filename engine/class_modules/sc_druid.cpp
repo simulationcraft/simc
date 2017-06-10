@@ -3901,7 +3901,9 @@ struct bear_melee_t : public bear_attack_t
 
     energize_type     = ENERGIZE_ON_HIT;
     energize_resource = RESOURCE_RAGE;
-    energize_amount   = 7; // https://worldofwarcraft.com/en-gb/news/20457825#_ClassChanges
+    // Note: This is not *exactly* 6 in-game (actual value is slightly less), but close enough to be within margin of error.
+    // TODO(guardian): determine actual value
+    energize_amount   = 6; // https://worldofwarcraft.com/en-gb/news/20812012/world-of-warcraft-7-2-5-patch-notes
   }
 
   virtual timespan_t execute_time() const override
