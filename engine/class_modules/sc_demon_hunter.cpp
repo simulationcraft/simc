@@ -1360,10 +1360,7 @@ public:
     if (p()->rppm.fel_barrage->trigger())
     {
       p()->proc.fel_barrage->occur();
-      if (maybe_ptr(p()->dbc.ptr))
-        p()->cooldown.fel_barrage->adjust(timespan_t::from_seconds(-5), true);
-      else
-        p()->cooldown.fel_barrage->reset(true);
+      p()->cooldown.fel_barrage->adjust(timespan_t::from_seconds(-5), true);
     }
   }
 
@@ -6366,7 +6363,7 @@ void demon_hunter_t::init_spells()
   spec.eye_beam             = find_class_spell( "Eye Beam" );
   spec.fel_rush_damage      = find_spell( 192611 );
   spec.vengeful_retreat     = find_class_spell( "Vengeful Retreat" );
-  spec.chaos_blades         = maybe_ptr(dbc.ptr) ? find_spell(247938) : find_spell(211048);
+  spec.chaos_blades         = find_spell(247938);
   spec.havoc_t20_4pc_fury   = find_spell(245862);
 
   // Vengeance
@@ -7265,12 +7262,9 @@ double demon_hunter_t::composite_player_multiplier( school_e school ) const
 
   m *= 1.0 + buff.momentum -> check_value();
 
-  if (buff.chaos_blades->check())
+  if ( buff.chaos_blades->check() )
   {
-    if (maybe_ptr(dbc.ptr))
-      m *= 1.0 + buff.chaos_blades->value();
-    else
-      m *= 1.0 + cache.mastery_value();
+    m *= 1.0 + buff.chaos_blades->value();
   }
 
   if ( dbc::is_school( school, SCHOOL_PHYSICAL ) && buff.demon_spikes -> check() )
