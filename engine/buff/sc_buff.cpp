@@ -157,7 +157,7 @@ struct expiration_delay_t : public buff_event_t
 }
 
 buff_t::buff_t(actor_pair_t q, const std::string& name, const spell_data_t* spell_data) :
-		buff_t( buff_creation::buff_creator_basics_t(q, name, spell_data ) )
+    buff_t( buff_creation::buff_creator_basics_t(q, name, spell_data ) )
 {
 
 }
@@ -365,23 +365,23 @@ buff_t* buff_t::set_duration( timespan_t duration )
   // Set Buff duration
   if ( duration == timespan_t::min() )
   {
-	if ( data().ok() )
-	{
-	  buff_duration = data().duration();
-	}
-	else
-	{
-	  buff_duration = timespan_t();
-	}
+  if ( data().ok() )
+  {
+    buff_duration = data().duration();
   }
   else
   {
-	  buff_duration = duration;
+    buff_duration = timespan_t();
+  }
+  }
+  else
+  {
+    buff_duration = duration;
   }
 
   if ( buff_duration < timespan_t::zero() )
   {
-	buff_duration = timespan_t::zero();
+  buff_duration = timespan_t::zero();
   }
   return this;
 }
@@ -391,29 +391,29 @@ buff_t* buff_t::set_max_stack( int max_stack )
   // Set Max stacks
   if ( max_stack == -1 )
   {
-	if ( data().ok() )
-	{
-	  if ( data().max_stacks() != 0 )
-	  {
-	    _max_stack = data().max_stacks();
-	  }
-	  else if ( data().initial_stacks() != 0 )
-	  {
-	    _max_stack = std::abs( data().initial_stacks() );
-	  }
+  if ( data().ok() )
+  {
+    if ( data().max_stacks() != 0 )
+    {
+      _max_stack = data().max_stacks();
+    }
+    else if ( data().initial_stacks() != 0 )
+    {
+      _max_stack = std::abs( data().initial_stacks() );
+    }
     else
     {
       _max_stack = 1;
     }
-	}
-	else
-	{
-		_max_stack = 1;
-	}
   }
   else
   {
-	_max_stack = max_stack;
+    _max_stack = 1;
+  }
+  }
+  else
+  {
+  _max_stack = max_stack;
   }
 
   if ( _max_stack < 1 )
