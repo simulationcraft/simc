@@ -695,7 +695,7 @@ public:
       cost += cost * p() -> find_spell( 211327 ) -> effectN( 1 ).percent();
 
     if ( p() -> legendary.bm_waist -> ok() && p() -> buffs.bestial_wrath -> check() )
-      cost *= 1.0 + p() -> find_spell( 207318 ) -> effectN( 1 ).percent();
+      cost *= 1.0 + p() -> legendary.bm_waist -> effectN( 1 ).trigger() -> effectN( 1 ).percent();
 
     return cost;
   }
@@ -1911,8 +1911,11 @@ struct bestial_ferocity_t: public hunter_main_pet_attack_t
 struct kill_command_t: public hunter_pet_action_t < hunter_pet_t, attack_t >
 {
   jaws_of_thunder_t* jaws_of_thunder;
+  double jaws_of_thunder_mult;
+
   kill_command_t( hunter_pet_t* p ):
-    base_t( "kill_command", p, p -> find_spell( 83381 ) ), jaws_of_thunder( nullptr )
+    base_t( "kill_command", p, p -> find_spell( 83381 ) ),
+    jaws_of_thunder( nullptr ), jaws_of_thunder_mult( 0 )
   {
     background = true;
     may_crit = true;
@@ -1927,7 +1930,10 @@ struct kill_command_t: public hunter_pet_action_t < hunter_pet_t, attack_t >
     base_multiplier *= 1.0 + o() -> artifacts.pack_leader.percent();
 
     if ( o() -> artifacts.jaws_of_thunder.rank() )
+    {
       jaws_of_thunder = new jaws_of_thunder_t( p );
+      jaws_of_thunder_mult = o() -> find_spell( 197163 ) -> effectN( 2 ).percent();
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -1936,10 +1942,7 @@ struct kill_command_t: public hunter_pet_action_t < hunter_pet_t, attack_t >
 
     if ( rng().roll( o() -> artifacts.jaws_of_thunder.percent() ) )
     {
-      jaws_of_thunder -> base_dd_min =  o() -> find_spell( 197163 ) 
-                                            -> effectN( 2 )
-                                            .percent() * 
-                                            s -> result_amount;
+      jaws_of_thunder -> base_dd_min = s -> result_amount * jaws_of_thunder_mult;
       jaws_of_thunder -> base_dd_max = jaws_of_thunder -> base_dd_min;
       jaws_of_thunder -> target = s -> target;
       jaws_of_thunder -> execute();
@@ -3993,6 +3996,7 @@ struct flanking_strike_t: hunter_melee_attack_t
   };
 
   echo_of_ohnara_t* echo_of_ohnara;
+  timespan_t base_animal_instincts_cdr;
 
   flanking_strike_t( hunter_t* p, const std::string& options_str ):
     hunter_melee_attack_t( "flanking_strike", p, p -> specs.flanking_strike ),
@@ -4007,6 +4011,9 @@ struct flanking_strike_t: hunter_melee_attack_t
       echo_of_ohnara = new echo_of_ohnara_t( p );
       add_child( echo_of_ohnara );
     }
+
+    if ( p -> talents.animal_instincts -> ok() )
+      base_animal_instincts_cdr = -p -> find_spell( 232646 ) -> effectN( 1 ).time_value() * 1000;
   }
 
   bool init_finished() override
@@ -4021,13 +4028,13 @@ struct flanking_strike_t: hunter_melee_attack_t
   {
     hunter_melee_attack_t::execute();
 
-    timespan_t animal_instincts = -p() -> find_spell( 232646 ) -> effectN( 1 ).time_value() * 1000 * p() -> cache.spell_haste();
-
     if ( p() -> active.pet )
       p() -> active.pet -> active.flanking_strike -> execute();
 
     if ( p() -> talents.animal_instincts -> ok() )
     {
+      const timespan_t animal_instincts = base_animal_instincts_cdr * p() -> cache.spell_haste();
+
       p() -> animal_instincts_cds.clear();
 
       if ( !p() -> cooldowns.flanking_strike -> up() )
@@ -6653,7 +6660,7 @@ double hunter_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + artifacts.iron_talons.data().effectN( 1 ).percent();
 
   if ( artifacts.aspect_of_the_skylord.rank() && buffs.aspect_of_the_eagle -> check() )
-    m *= 1.0 + find_spell( 203927 ) -> effectN( 1 ).percent();
+    m *= 1.0 + artifacts.aspect_of_the_skylord.data().effectN( 1 ).trigger() -> effectN( 1 ).percent();
 
   m *= 1.0 + artifacts.spiritbound.percent();
   m *= 1.0 + artifacts.windflight_arrows.percent();
