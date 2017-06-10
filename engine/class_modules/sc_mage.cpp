@@ -5058,11 +5058,13 @@ struct meteor_burn_t : public fire_mage_spell_t
 struct meteor_impact_t: public fire_mage_spell_t
 {
   meteor_burn_t* meteor_burn;
+  timespan_t meteor_burn_duration;
 
   meteor_impact_t( mage_t* p, meteor_burn_t* meteor_burn, int targets, bool legendary ):
     fire_mage_spell_t( legendary ? "legendary_meteor_imapct" : "meteor_impact",
                        p, p -> find_spell( 153564 ) ),
-    meteor_burn( meteor_burn )
+    meteor_burn( meteor_burn ),
+    meteor_burn_duration( p -> find_spell( 175396 ) -> duration() )
   {
     background = true;
     aoe = targets;
@@ -5081,7 +5083,7 @@ struct meteor_impact_t: public fire_mage_spell_t
     fire_mage_spell_t::impact( s );
 
     timespan_t pulse_time = meteor_burn -> data().effectN( 1 ).period();
-    timespan_t ground_aoe_duration = p() -> find_spell( 175396 ) -> duration();
+    timespan_t ground_aoe_duration = meteor_burn_duration;
 
     // It seems that the 8th tick happens only very rarely in game.
     // As of PTR build 24287, 2017-06-08.
