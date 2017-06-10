@@ -7157,6 +7157,7 @@ void warlock_t::apl_demonology()
   add_action( "Shadow Bolt", "if=buff.shadowy_inspiration.remains" );
   add_action( "Demonic Empowerment", "if=artifact.thalkiels_ascendance.rank&talent.power_trip.enabled&!talent.demonbolt.enabled&(pet_count>=13|talent.shadowy_inspiration.enabled&pet_count>=6)" );
   add_action( "Shadow Bolt" );
+  add_action( "Life Tap" );
 }
 
 void warlock_t::apl_destruction()
@@ -7215,6 +7216,7 @@ void warlock_t::apl_destruction()
   add_action( "Conflagrate", "if=!talent.roaring_blaze.enabled&buff.backdraft.stack<3" );
   add_action( "Immolate", "if=(active_enemies<5|!talent.fire_and_brimstone.enabled)&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>=action.immolate.cast_time*active_enemies)&!talent.roaring_blaze.enabled&remains<=duration*0.3" );
   add_action( "Incinerate" );
+  add_action( "Life Tap" );
 }
 
 void warlock_t::init_action_list()
@@ -7240,9 +7242,6 @@ void warlock_t::init_action_list()
       apl_default();
       break;
     }
-
-    if ( !WARLOCK_AFFLICTION )
-      apl_global_filler();
 
     use_default_action_list = true;
   }

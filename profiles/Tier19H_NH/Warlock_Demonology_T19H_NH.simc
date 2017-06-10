@@ -60,6 +60,7 @@ actions+=/demonbolt
 actions+=/shadow_bolt,if=buff.shadowy_inspiration.remains
 actions+=/demonic_empowerment,if=artifact.thalkiels_ascendance.rank&talent.power_trip.enabled&!talent.demonbolt.enabled&(pet_count>=13|talent.shadowy_inspiration.enabled&pet_count>=6)
 actions+=/shadow_bolt
+actions+=/life_tap
 
 head=eyes_of_azjaqir,id=138314,bonus_id=3516
 neck=radiant_string_of_scorpid_eyes,id=140898,bonus_id=3444,enchant=mark_of_the_claw

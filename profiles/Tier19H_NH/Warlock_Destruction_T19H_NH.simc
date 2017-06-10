@@ -69,6 +69,7 @@ actions+=/shadowburn
 actions+=/conflagrate,if=!talent.roaring_blaze.enabled&buff.backdraft.stack<3
 actions+=/immolate,if=(active_enemies<5|!talent.fire_and_brimstone.enabled)&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>=action.immolate.cast_time*active_enemies)&!talent.roaring_blaze.enabled&remains<=duration*0.3
 actions+=/incinerate
+actions+=/life_tap
 
 head=eyes_of_azjaqir,id=138314,bonus_id=3516
 neck=radiant_string_of_scorpid_eyes,id=140898,bonus_id=3444,enchant=mark_of_the_claw
