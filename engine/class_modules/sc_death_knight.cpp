@@ -4843,6 +4843,13 @@ struct frostscythe_t : public death_knight_melee_attack_t
 
     // Frostscythe procs rime at half the chance of Obliterate
     p() -> buffs.rime -> trigger( 1, buff_t::DEFAULT_VALUE(), rime_proc_chance );
+
+    // Frostscythe procs Thronebreaker at half the chance of Obliterate
+    if ( rng().roll( p() -> artifact.thronebreaker.data().effectN( 2 ).percent() ) )
+    {
+      p() -> active_spells.thronebreaker -> set_target( execute_state -> target );
+      p() -> active_spells.thronebreaker -> execute();
+    }
   }
 
   double composite_crit_chance() const override
