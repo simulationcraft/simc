@@ -592,8 +592,7 @@ public:
       ab::cooldown -> hasted = true;
 
     affected_by.sniper_training = ab::data().affected_by( p() -> mastery.sniper_training -> effectN( 2 ) );
-    affected_by.aotw_gcd_reduce = maybe_ptr( ab::player -> dbc.ptr ) &&
-                                  ab::data().affected_by( p() -> specs.aspect_of_the_wild -> effectN( 3 ) );
+    affected_by.aotw_gcd_reduce = ab::data().affected_by( p() -> specs.aspect_of_the_wild -> effectN( 3 ) );
     affected_by.sv_legendary_cloak = ab::data().affected_by( p() -> find_spell( 248212 ) -> effectN( 1 ) );
   }
 
@@ -644,7 +643,7 @@ public:
     if ( g == timespan_t::zero() )
       return g;
 
-    if ( maybe_ptr( ab::player -> dbc.ptr ) && affected_by.aotw_gcd_reduce && p() -> buffs.aspect_of_the_wild -> check() )
+    if ( affected_by.aotw_gcd_reduce && p() -> buffs.aspect_of_the_wild -> check() )
       g += p() -> specs.aspect_of_the_wild -> effectN( 3 ).time_value();
 
     if ( hasted_gcd )
@@ -1930,7 +1929,7 @@ struct kill_command_t: public hunter_pet_action_t < hunter_pet_t, attack_t >
 
     // The hardcoded parameter is taken from the $damage value in teh tooltip. e.g., 1.36 below
     // $damage = ${ 1.5*($83381m1 + ($RAP*  1.632   ))*$<bmMastery> }
-    attack_power_mod.direct  = maybe_ptr( p -> dbc.ptr ) ? 3.6 : 3.0; // Hard-coded in tooltip.
+    attack_power_mod.direct  = 3.6; // Hard-coded in tooltip.
 
     base_multiplier *= 1.0 + o() -> artifacts.pack_leader.percent();
 
@@ -4696,7 +4695,7 @@ struct dire_beast_t: public hunter_spell_t
     if ( p() -> legendary.bm_feet -> ok() )
       p() -> cooldowns.kill_command -> adjust( p() -> legendary.bm_feet -> effectN( 1 ).time_value() );
 
-    if ( maybe_ptr( p() -> dbc.ptr ) && p() -> legendary.bm_shoulders -> ok() )
+    if ( p() -> legendary.bm_shoulders -> ok() )
       p() -> buffs.the_mantle_of_command -> trigger();
 
     pet_t* beast = nullptr;
@@ -4852,9 +4851,6 @@ struct dire_frenzy_t: public hunter_spell_t
 
     harmful = may_hit = false;
     dot_duration = timespan_t::zero();
-
-    if ( !maybe_ptr( p -> dbc.ptr ) && p -> talents.dire_stable -> ok() )
-      energize_amount += p -> talents.dire_stable -> effectN( 2 ).base_value();
   }
 
   bool init_finished() override
@@ -4869,15 +4865,12 @@ struct dire_frenzy_t: public hunter_spell_t
   {
     hunter_spell_t::execute();
 
-    if ( maybe_ptr( p() -> dbc.ptr ) )
+    for ( buff_t* buff : p() -> buffs.dire_regen )
     {
-      for ( buff_t* buff : p() -> buffs.dire_regen )
+      if ( !buff -> check() )
       {
-        if ( ! buff -> check() )
-        {
-          buff -> trigger();
-          break;
-        }
+        buff -> trigger();
+        break;
       }
     }
 
@@ -4893,7 +4886,7 @@ struct dire_frenzy_t: public hunter_spell_t
     if ( p() -> legendary.bm_feet -> ok() )
       p() -> cooldowns.kill_command -> adjust( p() -> legendary.bm_feet -> effectN( 1 ).time_value() );
 
-    if ( maybe_ptr( p() -> dbc.ptr ) && p() -> legendary.bm_shoulders -> ok() )
+    if ( p() -> legendary.bm_shoulders -> ok() )
       p() -> buffs.the_mantle_of_command -> trigger();
 
     if ( p() -> active.pet )
@@ -5887,7 +5880,7 @@ void hunter_t::create_buffs()
 
   // initialize dire beast/frenzy buffs
   const spell_data_t* dire_spell =
-    find_spell( maybe_ptr( dbc.ptr ) && talents.dire_frenzy -> ok() ? 246152 : 120694 );
+    find_spell( talents.dire_frenzy -> ok() ? 246152 : 120694 );
   for ( size_t i = 0; i < buffs.dire_regen.size(); i++ )
   {
     buffs.dire_regen[ i ] =
@@ -6068,12 +6061,6 @@ bool hunter_t::init_special_effects()
   bool ret = player_t::init_special_effects();
 
   // Cooldown adjustments
-
-  if ( legendary.bm_shoulders -> ok() && ! maybe_ptr( dbc.ptr ) )
-  {
-    cooldowns.dire_beast -> charges += legendary.bm_shoulders -> effectN( 1 ).base_value();
-    cooldowns.dire_frenzy -> charges += legendary.bm_shoulders -> effectN( 1 ).base_value();
-  }
 
   if ( legendary.wrist -> ok() )
   {
@@ -6307,16 +6294,7 @@ void hunter_t::apl_bm()
   default_list -> add_talent( this, "A Murder of Crows" );
   default_list -> add_talent( this, "Stampede", "if=buff.bloodlust.up|buff.bestial_wrath.up|cooldown.bestial_wrath.remains<=2|target.time_to_die<=14" );
   default_list -> add_action( this, "Dire Beast", "if=cooldown.bestial_wrath.remains>3" );
-  if ( maybe_ptr( dbc.ptr ) )
-  {
-    default_list -> add_talent( this, "Dire Frenzy", "if=(pet.cat.buff.dire_frenzy.remains<=gcd.max*1.2)|(charges_fractional>=1.8)|target.time_to_die<9" );
-  }
-  else
-  {
-    default_list -> add_talent( this, "Dire Frenzy", "if=(cooldown.bestial_wrath.remains>6&(!equipped.the_mantle_of_command|pet.cat.buff.dire_frenzy.remains<=gcd.max*1.2))|"
-                                                     "(charges>=2&focus.deficit>=25+talent.dire_stable.enabled*12)|"
-                                                     "target.time_to_die<9" );
-  }
+  default_list -> add_talent( this, "Dire Frenzy", "if=(pet.cat.buff.dire_frenzy.remains<=gcd.max*1.2)|(charges_fractional>=1.8)|target.time_to_die<9" );
   default_list -> add_action( this, "Aspect of the Wild", "if=buff.bestial_wrath.up|target.time_to_die<12" );
   default_list -> add_talent( this, "Barrage", "if=spell_targets.barrage>1" );
   default_list -> add_action( this, "Bestial Wrath" );
@@ -6763,7 +6741,7 @@ double hunter_t::composite_player_pet_damage_multiplier( const action_state_t* s
   m *= 1.0 + artifacts.acuity_of_the_unseen_path.percent( 3 );
   m *= 1.0 + artifacts.ferocity_of_the_unseen_path.percent( 3 );
 
-  if ( maybe_ptr( dbc.ptr ) && specs.beast_mastery_hunter -> ok() )
+  if ( specs.beast_mastery_hunter -> ok() )
     m *= 1.0 + specs.beast_mastery_hunter -> effectN( 3 ).percent();
 
   if ( buffs.the_mantle_of_command -> check() )
