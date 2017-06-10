@@ -1983,9 +1983,7 @@ struct insidious_corruption_t : public proc_spell_t
 
   insidious_corruption_t( const special_effect_t& effect, stat_buff_t* b ) :
     proc_spell_t( effect ), buff( b )
-  {
-    may_crit = tick_may_crit = false;
-  }
+  { }
 
   void last_tick( dot_t* d ) override
   {
