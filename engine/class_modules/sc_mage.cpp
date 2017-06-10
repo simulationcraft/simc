@@ -67,7 +67,7 @@ public:
   {
     if ( !state )
     {
-      return timespan_t::zero();
+      return last_disable - last_enable;
     }
     return now - last_enable;
   }
