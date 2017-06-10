@@ -33,7 +33,6 @@ actions.precombat+=/marked_for_death,if=raid_event.adds.in>40
 actions.precombat+=/variable,name=ssw_refund,value=equipped.shadow_satyrs_walk*(6+ssw_refund_offset)
 actions.precombat+=/variable,name=stealth_threshold,value=(15+talent.vigor.enabled*35+talent.master_of_shadows.enabled*25+variable.ssw_refund)
 actions.precombat+=/variable,name=shd_fractionnal,value=ptr*(1.725+0.725*talent.enveloping_shadows.enabled)+(1-ptr)*2.45
-actions.precombat+=/enveloping_shadows,if=combo_points>=5&ptr=0
 # Since 7.1.5, casting Shadow Dance before going in combat let you extends the stealth buff, so it's worth to use with Subterfuge talent. Has been fixed in 7.2.5!
 actions.precombat+=/shadow_dance,if=talent.subterfuge.enabled&bugs&!ptr
 actions.precombat+=/symbols_of_death
@@ -66,8 +65,7 @@ actions.cds+=/goremaws_bite,if=combo_points.deficit>=2+stealthed.all-equipped.ma
 actions.cds+=/marked_for_death,target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit|(raid_event.adds.in>40&combo_points.deficit>=cp_max_spend)
 
 # Finishers
-actions.finish=enveloping_shadows,if=buff.enveloping_shadows.remains<target.time_to_die&buff.enveloping_shadows.remains<=combo_points*1.8
-actions.finish+=/death_from_above,if=spell_targets.death_from_above>=5
+actions.finish=death_from_above,if=spell_targets.death_from_above>=5
 actions.finish+=/nightblade,if=target.time_to_die-remains>8&(mantle_duration=0|remains<=mantle_duration)&((refreshable&(!finality|buff.finality_nightblade.up))|remains<tick_time*2)
 actions.finish+=/nightblade,cycle_targets=1,if=target.time_to_die-remains>8&mantle_duration=0&((refreshable&(!finality|buff.finality_nightblade.up))|remains<tick_time*2)
 actions.finish+=/death_from_above
