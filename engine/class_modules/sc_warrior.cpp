@@ -94,7 +94,7 @@ public:
   // Legendary Items
   const special_effect_t* archavons_heavy_hand, *bindings_of_kakushan,
     *kargaths_sacrificed_hands, *thundergods_vigor, *ceannar_charger, *kazzalax_fujiedas_fury, *the_walls_fell,
-    *destiny_driver, *prydaz_xavarics_magnum_opus, *mannoroths_bloodletting_manacles,
+    *destiny_driver, *prydaz_xavarics_magnum_opus,
     *najentuss_vertebrae, *ayalas_stone_heart, *weight_of_the_earth, *raging_fury, *the_great_storms_eye, *ararats_bloodmirror;
 
   // Active
@@ -385,6 +385,12 @@ public:
     // Eventually move all legendarys here for organization
     const spell_data_t* sephuzs_secret;
     const spell_data_t* valarjar_berserkers;
+    const spell_data_t* mannoroths_bloodletting_manacles;
+
+    legendary_t() :
+      sephuzs_secret( nullptr ), valarjar_berserkers( nullptr ),
+      mannoroths_bloodletting_manacles( spell_data_t::not_found() )
+    { }
   } legendary;
 
   // Artifacts
@@ -485,8 +491,9 @@ public:
     expected_max_health = 0;
 
     archavons_heavy_hand = bindings_of_kakushan = kargaths_sacrificed_hands = thundergods_vigor =
-    ceannar_charger = kazzalax_fujiedas_fury = the_walls_fell = destiny_driver = prydaz_xavarics_magnum_opus = mannoroths_bloodletting_manacles =
+    ceannar_charger = kazzalax_fujiedas_fury = the_walls_fell = destiny_driver = prydaz_xavarics_magnum_opus =
     najentuss_vertebrae = ayalas_stone_heart = weight_of_the_earth = raging_fury = the_great_storms_eye = ararats_bloodmirror = nullptr;
+
     regen_type = REGEN_DISABLED;
 
     talent_points.register_validity_fn( [ this ] ( const spell_data_t* spell )
@@ -862,10 +869,10 @@ public:
     {
       tactician();
     }
-    if ( p() -> mannoroths_bloodletting_manacles )
+    if ( p() -> legendary.mannoroths_bloodletting_manacles -> ok() )
     {
-        p() -> resource_gain( RESOURCE_HEALTH, ( ( tactician_cost() / p() -> mannoroths_bloodletting_manacles -> driver() -> effectN( 2 ).base_value() )
-                              * p() -> mannoroths_bloodletting_manacles -> driver() -> effectN( 1 ).percent() ) * p() -> resources.max[RESOURCE_HEALTH],
+        p() -> resource_gain( RESOURCE_HEALTH, ( ( tactician_cost() / p() -> legendary.mannoroths_bloodletting_manacles -> effectN( 2 ).base_value() )
+                              * p() -> legendary.mannoroths_bloodletting_manacles -> effectN( 1 ).percent() ) * p() -> resources.max[RESOURCE_HEALTH],
                               p() -> gain.mannoroths_bloodletting_manacles );
     }
 
@@ -6877,12 +6884,6 @@ static void the_walls_fell( special_effect_t& effect )
   do_trinket_init( s, SPEC_NONE, s -> the_walls_fell, effect );
 }
 
-static void mannoroths_bloodletting_manacles( special_effect_t& effect )
-{
-  warrior_t* s = debug_cast<warrior_t*>( effect.player );
-  do_trinket_init( s, SPEC_NONE, s -> mannoroths_bloodletting_manacles, effect );
-}
-
 static void najentuss_vertebrae( special_effect_t& effect )
 {
   warrior_t* s = debug_cast<warrior_t*>( effect.player );
@@ -7083,6 +7084,15 @@ struct valarjar_berserkers_t : public unique_gear::scoped_actor_callback_t<warri
   }
 };
 
+struct mannoroths_bloodletting_manacles_t : public unique_gear::scoped_actor_callback_t<warrior_t>
+{
+  mannoroths_bloodletting_manacles_t() : super( WARRIOR )
+  { }
+
+  void manipulate( warrior_t* warrior, const special_effect_t& e ) override
+  { warrior -> legendary.mannoroths_bloodletting_manacles = e.driver(); }
+};
+
 struct warrior_module_t: public module_t
 {
   warrior_module_t(): module_t( WARRIOR ) {}
@@ -7107,7 +7117,7 @@ struct warrior_module_t: public module_t
     unique_gear::register_special_effect( 215057, the_walls_fell ); //NYI
     unique_gear::register_special_effect( 215090, destiny_driver_t(), true );
     unique_gear::register_special_effect( 207428, prydaz_xavarics_magnum_opus_t(), true ); //Not finished
-    unique_gear::register_special_effect( 208908, mannoroths_bloodletting_manacles ); //NYI
+    unique_gear::register_special_effect( 208908, mannoroths_bloodletting_manacles_t() ); //NYI
     unique_gear::register_special_effect( 215096, najentuss_vertebrae );
     unique_gear::register_special_effect( 207767, ayalas_stone_heart_t(), true );
     unique_gear::register_special_effect( 208177, weight_of_the_earth_t() );
