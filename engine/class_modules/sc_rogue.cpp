@@ -2827,26 +2827,6 @@ struct curse_of_the_dreadblades_t : public rogue_attack_t
   }
 };
 
-// Enveloping Shadows =======================================================
-
-struct enveloping_shadows_t : public rogue_attack_t
-{
-  enveloping_shadows_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "enveloping_shadows", p, p -> talent.enveloping_shadows, options_str )
-  {
-    harmful = false;
-  }
-
-  void execute() override
-  {
-    rogue_attack_t::execute();
-
-    timespan_t duration = cast_state( execute_state ) -> cp * data().effectN( 1 ).period() * 2;
-
-    p() -> buffs.enveloping_shadows -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
-  }
-};
-
 // Envenom ==================================================================
 
 struct envenom_t : public rogue_attack_t
@@ -7348,7 +7328,6 @@ void rogue_t::init_action_list()
     precombat -> add_action( "variable,name=ssw_refund,value=equipped.shadow_satyrs_walk*(6+ssw_refund_offset)", "Defined variables that doesn't change during the fight" );
     precombat -> add_action( "variable,name=stealth_threshold,value=(15+talent.vigor.enabled*35+talent.master_of_shadows.enabled*25+variable.ssw_refund)" );
     precombat -> add_action( "variable,name=shd_fractionnal,value=ptr*(1.725+0.725*talent.enveloping_shadows.enabled)+(1-ptr)*2.45" );
-    precombat -> add_talent( this, "Enveloping Shadows", "if=combo_points>=5&ptr=0" );
     precombat -> add_action( this, "Shadow Dance", "if=talent.subterfuge.enabled&bugs&!ptr", "Since 7.1.5, casting Shadow Dance before going in combat let you extends the stealth buff, so it's worth to use with Subterfuge talent. Has been fixed in 7.2.5!" ); // Before SoD because we do it while not in stealth in-game
     precombat -> add_action( this, "Symbols of Death" );
 
@@ -7392,7 +7371,6 @@ void rogue_t::init_action_list()
     // Finishers
     action_priority_list_t* finish = get_action_priority_list( "finish", "Finishers" );
       // Pandemic is 6 * CP * 0.3, ie CP * 1.8
-    finish -> add_talent( this, "Enveloping Shadows", "if=buff.enveloping_shadows.remains<target.time_to_die&buff.enveloping_shadows.remains<=combo_points*1.8" );
     finish -> add_talent( this, "Death from Above", "if=spell_targets.death_from_above>=5" );
       // It is not worth to override a normal nightblade for a finality one outside of pandemic threshold, it is worth to wait the end of the finality to refresh it unless you already got the finality buff.
     finish -> add_action( this, "Nightblade", "if=target.time_to_die-remains>8&(mantle_duration=0|remains<=mantle_duration)&((refreshable&(!finality|buff.finality_nightblade.up))|remains<tick_time*2)" );
@@ -7520,7 +7498,6 @@ action_t* rogue_t::create_action( const std::string& name,
   if ( name == "cannonball_barrage"  ) return new cannonball_barrage_t ( this, options_str );
   if ( name == "curse_of_the_dreadblades" ) return new curse_of_the_dreadblades_t( this, options_str );
   if ( name == "death_from_above"    ) return new death_from_above_t   ( this, options_str );
-  if ( name == "enveloping_shadows"  ) return new enveloping_shadows_t ( this, options_str );
   if ( name == "envenom"             ) return new envenom_t            ( this, options_str );
   if ( name == "eviscerate"          ) return new eviscerate_t         ( this, options_str );
   if ( name == "exsanguinate"        ) return new exsanguinate_t       ( this, options_str );
