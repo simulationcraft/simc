@@ -946,8 +946,7 @@ public:
       rage *= -1;
 
       p() -> cooldown.battle_cry -> adjust( timespan_t::from_seconds( rage ) );
-      if ( maybe_ptr( p() -> dbc.ptr ) ) //FIXME PTR
-        p() -> cooldown.bladestorm -> adjust( timespan_t::from_seconds( rage ) );
+      p() -> cooldown.bladestorm -> adjust( timespan_t::from_seconds( rage ) );
 
       if ( p() -> specialization() == WARRIOR_PROTECTION )
       {
@@ -1185,7 +1184,7 @@ struct melee_t: public warrior_attack_t
   melee_t( const std::string& name, warrior_t* p ):
     warrior_attack_t( name, p, spell_data_t::nil() ),
     mh_lost_melee_contact( true ), oh_lost_melee_contact( true ),
-    base_rage_generation( 1.75 ), arms_rage_multiplier( 4.0 ), fury_rage_multiplier( 0.80 ),
+    base_rage_generation( 1.75 ), arms_rage_multiplier( 4.286 ), fury_rage_multiplier( 0.80 ),
     devastator( nullptr )
   {
     school = SCHOOL_PHYSICAL;
@@ -1201,8 +1200,6 @@ struct melee_t: public warrior_attack_t
       devastator = new devastate_t( p, "" );
       add_child( devastator );
     }
-    if ( maybe_ptr( p -> dbc.ptr ) ) //FIXME
-      arms_rage_multiplier *= 1.0715;
   }
 
   void reset() override
@@ -1300,10 +1297,7 @@ struct melee_t: public warrior_attack_t
     {
       if ( s -> result == RESULT_CRIT )
       {
-        if ( maybe_ptr( p() -> dbc.ptr ) ) //FIXME PTR
-          rage_gain *= 5.5555;
-        else
-          rage_gain *= rng().range( 5.715, 6.00 );
+        rage_gain *= 5.5555;
       }
       else
       {
@@ -1414,18 +1408,6 @@ struct mortal_strike_t20_t : public warrior_attack_t
     weapon_multiplier *= 1.0 + p -> artifact.thoradins_might.percent();
   }
 
-  double composite_crit_chance() const override
-  {
-    double cc = warrior_attack_t::composite_crit_chance();
-
-    if ( !maybe_ptr( p() -> dbc.ptr ) && p() -> buff.shattered_defenses -> check() )//FIXME PTR
-    {
-      cc += p() -> buff.shattered_defenses -> data().effectN( 2 ).percent();
-    }
-
-    return cc;
-  }
-
   double action_multiplier() const override
   {
     double am = warrior_attack_t::action_multiplier();
@@ -1451,11 +1433,6 @@ struct mortal_strike_t20_t : public warrior_attack_t
       if ( ! sim -> overrides.mortal_wounds && execute_state -> target -> debuffs.mortal_wounds )
       {
         execute_state -> target -> debuffs.mortal_wounds -> trigger();
-      }
-      if ( !maybe_ptr( p() -> dbc.ptr ) && p() -> talents.in_for_the_kill -> ok() && execute_state -> target -> health_percentage() <= 20 ) //FIXME PTR
-      {
-        p() -> resource_gain( RESOURCE_RAGE, p() -> talents.in_for_the_kill -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ),
-                              p() -> gain.in_for_the_kill );
       }
       p() -> buff.focused_rage -> expire();
     }
@@ -1494,13 +1471,7 @@ struct mortal_strike_t : public warrior_attack_t
   {
     double cc = warrior_attack_t::composite_crit_chance();
 
-    if ( !maybe_ptr( p() -> dbc.ptr ) && p() -> buff.shattered_defenses -> check() ) //FIXME PTR
-    {
-      cc += p() -> buff.shattered_defenses -> data().effectN( 2 ).percent();
-    }
-
-    if ( maybe_ptr( p() -> dbc.ptr ) ) //FIXME PTR
-      cc += p() -> buff.precise_strikes -> check_value();
+    cc += p() -> buff.precise_strikes -> check_value();
 
     return cc;
   }
@@ -1520,11 +1491,7 @@ struct mortal_strike_t : public warrior_attack_t
   {
     double c = warrior_attack_t::cost();
 
-    if( !maybe_ptr( p() -> dbc.ptr ) ) //FIXME PTR
-      c *= 1.0 + p() -> buff.precise_strikes -> check_value();
-
-  if (maybe_ptr(p()->dbc.ptr)) //FIXME PTR
-    c += p()->legendary.archavons_heavy_hand ->effectN(1).resource(RESOURCE_RAGE);
+    c += p() -> legendary.archavons_heavy_hand -> effectN(1).resource( RESOURCE_RAGE );
 
     return c;
   }
@@ -1539,20 +1506,11 @@ struct mortal_strike_t : public warrior_attack_t
       {
         execute_state -> target -> debuffs.mortal_wounds -> trigger();
       }
-      if ( !maybe_ptr( p() -> dbc.ptr ) && p() -> talents.in_for_the_kill -> ok() && execute_state -> target -> health_percentage() <= 20 ) //FIXME PTR
-      {
-        p() -> resource_gain( RESOURCE_RAGE, p() -> talents.in_for_the_kill -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ),
-                              p() -> gain.in_for_the_kill );
-      }
       p() -> buff.focused_rage -> expire();
     }
     p() -> buff.shattered_defenses -> expire();
     p() -> buff.precise_strikes -> expire();
     p() -> buff.executioners_precision -> expire();
-    if (!maybe_ptr(p()->dbc.ptr) ) //FIXME PTR
-    {
-      p() -> resource_gain( RESOURCE_RAGE, p() -> legendary.archavons_heavy_hand -> effectN( 1 ).resource( RESOURCE_RAGE ), p() -> gain.archavons_heavy_hand );
-    }
   }
 
   void impact( action_state_t* s ) override
@@ -2240,7 +2198,7 @@ struct execute_sweep_t: public warrior_attack_t
   void assess_damage( dmg_e type, action_state_t* s ) override
   {
     warrior_attack_t::assess_damage( type, s );
-    if ( p() -> talents.trauma -> ok() && maybe_ptr( p() -> dbc.ptr ) )
+    if ( p() -> talents.trauma -> ok() )
     {
       residual_action::trigger(
         p() -> active.trauma, // ignite spell
@@ -2320,7 +2278,7 @@ struct execute_arms_t: public warrior_attack_t
   void assess_damage( dmg_e type, action_state_t* s ) override
   {
     warrior_attack_t::assess_damage( type, s );
-    if ( p() -> talents.trauma -> ok() && maybe_ptr( p() -> dbc.ptr ) )
+    if ( p() -> talents.trauma -> ok() )
     {
       residual_action::trigger(
         p() -> active.trauma, // ignite spell
@@ -2339,10 +2297,7 @@ struct execute_arms_t: public warrior_attack_t
     }
     else
     {
-      double temp_max_rage = max_rage;
-      if ( !maybe_ptr( p() -> dbc.ptr ) ) //FIXME PTR
-        temp_max_rage *= ( 1.0 + p() -> buff.precise_strikes -> check_value() );
-      am *= 4.0 * ( std::min( temp_max_rage, p() -> resources.current[RESOURCE_RAGE] ) / temp_max_rage );
+      am *= 4.0 * ( std::min( max_rage, p() -> resources.current[RESOURCE_RAGE] ) / max_rage );
     }
     if ( execute_sweeping_strike ) execute_sweeping_strike -> dmg_mult = am; // The sweeping strike deals damage based on the action multiplier of the original attack before shattered defenses.
     am *= 1.0 + p() -> buff.shattered_defenses -> stack_value();
@@ -2353,13 +2308,7 @@ struct execute_arms_t: public warrior_attack_t
   {
     double cc = warrior_attack_t::composite_crit_chance();
 
-    if ( !maybe_ptr( p() -> dbc.ptr ) && p() -> buff.shattered_defenses -> check() ) //FIXME PTR
-    {
-      cc += p() -> buff.shattered_defenses -> data().effectN( 2 ).percent();
-    }
-
-    if ( maybe_ptr( p() -> dbc.ptr ) ) //FIXME PTR
-      cc += p() -> buff.precise_strikes -> check_value();
+    cc += p() -> buff.precise_strikes -> check_value();
 
     return cc;
   }
@@ -2370,11 +2319,8 @@ struct execute_arms_t: public warrior_attack_t
 
     if ( !is_it_free() )
     {
-      double temp_max_rage = max_rage;
-      if ( !maybe_ptr( p() -> dbc.ptr ) ) //FIXME PTR
-        temp_max_rage *= ( 1.0 + p() -> buff.precise_strikes -> check_value() );
-      c = std::min( temp_max_rage, p() -> resources.current[RESOURCE_RAGE] );
-      c = ( c / temp_max_rage ) * 40;
+      c = std::min( max_rage, p() -> resources.current[RESOURCE_RAGE] );
+      c = ( c / max_rage ) * 40;
     }
     if ( sim -> log )
     {
@@ -2405,10 +2351,7 @@ struct execute_arms_t: public warrior_attack_t
     }
     if ( p() -> mastery.colossal_might -> ok() )
     {
-      double temp_max_rage = max_rage;
-      if ( !maybe_ptr( p() -> dbc.ptr ) ) //FIXME PTR
-        temp_max_rage *= ( 1.0 + p() -> buff.precise_strikes -> check_value() );
-      c = std::min( temp_max_rage, std::max( p() -> resources.current[RESOURCE_RAGE], c ) );
+      c = std::min( max_rage, std::max( p() -> resources.current[RESOURCE_RAGE], c ) );
     }
     return c;
   }
@@ -2417,10 +2360,8 @@ struct execute_arms_t: public warrior_attack_t
   {
     warrior_attack_t::execute();
 
-    if ( maybe_ptr( p() -> dbc.ptr ) )
-    {
-      p() -> resource_gain( RESOURCE_RAGE, last_resource_cost * 0.3, p() -> gain.execute_refund );
-    }
+    p() -> resource_gain( RESOURCE_RAGE, last_resource_cost * 0.3, p() -> gain.execute_refund );
+
     if ( execute_sweeping_strike )
     {
       make_event<sweeping_execute_t>( *sim, p(),
@@ -5877,13 +5818,8 @@ void warrior_t::create_buffs()
 
   buff.sephuzs_secret = new buffs::sephuzs_secret_buff_t( this );
 
-  if ( maybe_ptr( dbc.ptr ) ) //FIXME PTR
-  {
-    buff.in_for_the_kill = haste_buff_creator_t( this, "in_for_the_kill", talents.in_for_the_kill -> effectN( 1 ).trigger() )
-      .default_value( talents.in_for_the_kill -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
-  }
-  else
-    buff.in_for_the_kill = nullptr;
+  buff.in_for_the_kill = haste_buff_creator_t( this, "in_for_the_kill", talents.in_for_the_kill -> effectN( 1 ).trigger() )
+    .default_value( talents.in_for_the_kill -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
 }
 
 // warrior_t::init_scaling ==================================================
