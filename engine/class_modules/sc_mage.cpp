@@ -207,8 +207,6 @@ public:
   event_t* ignite_spread_event;
 
   // Active
-  action_t* touch_of_the_magi_explosion;
-  action_t* unstable_magic_explosion;
   player_t* last_bomb_target;
 
   // State switches for rotation selection
@@ -223,6 +221,17 @@ public:
          global_cinder_count;
   timespan_t firestarter_time;
   int blessing_of_wisdom_count;
+
+  // Cached actions
+  struct actions_t
+  {
+    action_t* frost_bomb_explosion;
+    action_t* legendary_arcane_orb;
+    action_t* legendary_meteor;
+    action_t* legendary_comet_storm;
+    action_t* touch_of_the_magi_explosion;
+    action_t* unstable_magic_explosion;
+  } action;
 
   // Benefits
   struct benefits_t
@@ -312,14 +321,6 @@ public:
     buff_t* t19_oh_buff;
 
   } buffs;
-
-  // Cached actions
-  struct actions_t
-  {
-    action_t* legendary_arcane_orb;
-    action_t* legendary_meteor;
-    action_t* legendary_comet_storm;
-  } action;
 
   // Cooldowns
   struct cooldowns_t
@@ -2497,7 +2498,10 @@ struct arcane_barrage_t : public arcane_mage_spell_t
     base_multiplier *= 1.0 + p -> artifact.torrential_barrage.percent();
     cooldown -> hasted = true;
     add_child( arcane_rebound );
-    add_child( p -> action.legendary_arcane_orb );
+    if ( p -> action.legendary_arcane_orb )
+    {
+      add_child( p -> action.legendary_arcane_orb );
+    }
   }
 
   virtual void execute() override
@@ -2519,6 +2523,7 @@ struct arcane_barrage_t : public arcane_mage_spell_t
 
     if ( rng().roll( mantle_of_the_first_kirin_tor_chance * charges ) )
     {
+      assert( p() -> action.legendary_arcane_orb );
       p() -> action.legendary_arcane_orb -> set_target( execute_state -> target );
       p() -> action.legendary_arcane_orb -> execute();
     }
@@ -2607,9 +2612,9 @@ struct arcane_blast_t : public arcane_mage_spell_t
     {
       touch_of_the_magi = new touch_of_the_magi_t( p );
     }
-    if ( p -> talents.unstable_magic -> ok() )
+    if ( p -> action.unstable_magic_explosion )
     {
-      stats -> add_child( p -> get_stats( "unstable_magic_explosion" ) );
+      add_child( p -> action.unstable_magic_explosion );
     }
   }
 
@@ -2698,10 +2703,7 @@ struct arcane_blast_t : public arcane_mage_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      if ( p() -> talents.unstable_magic -> ok() )
-      {
-        trigger_unstable_magic( s );
-      }
+      trigger_unstable_magic( s );
 
       if ( p() -> artifact.touch_of_the_magi.rank() )
       {
@@ -3681,9 +3683,9 @@ struct fireball_t : public fire_mage_spell_t
     base_multiplier *= 1.0 + p -> artifact.great_balls_of_fire.percent();
     base_execute_time *= 1.0 + p -> artifact.fire_at_will.percent();
     add_child( conflagration_dot );
-    if ( p -> talents.unstable_magic -> ok() )
+    if ( p -> action.unstable_magic_explosion )
     {
-      stats -> add_child( p -> get_stats( "unstable_magic_explosion" ) );
+      add_child( p -> action.unstable_magic_explosion );
     }
   }
 
@@ -3731,11 +3733,7 @@ struct fireball_t : public fire_mage_spell_t
         conflagration_dot -> execute();
       }
 
-      if ( p() -> talents.unstable_magic -> ok() )
-      {
-        trigger_unstable_magic( s );
-      }
-
+      trigger_unstable_magic( s );
       trigger_infernal_core( s -> target );
     }
   }
@@ -4094,7 +4092,11 @@ struct frost_bomb_t : public frost_mage_spell_t
     parse_options( options_str );
     // Frost Bomb no longer has ticking damage.
     dot_duration = timespan_t::zero();
-    stats -> add_child( p -> get_stats( "frost_bomb_explosion" ) );
+
+    if ( p -> action.frost_bomb_explosion )
+    {
+      add_child( p -> action.frost_bomb_explosion );
+    }
   }
 
   virtual void execute() override
@@ -4147,9 +4149,9 @@ struct frostbolt_t : public frost_mage_spell_t
       assert( p -> icicle );
       icicle -> action_list.push_back( p -> icicle );
     }
-    if ( p -> talents.unstable_magic -> ok() )
+    if ( p -> action.unstable_magic_explosion )
     {
-      stats -> add_child( p -> get_stats( "unstable_magic_explosion" ) );
+      add_child( p -> action.unstable_magic_explosion );
     }
     if ( p -> talents.lonely_winter -> ok() )
     {
@@ -4199,14 +4201,9 @@ struct frostbolt_t : public frost_mage_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      if ( p() -> talents.unstable_magic -> ok() )
-      {
-        trigger_unstable_magic( s );
-      }
-
       trigger_icicle_gain( s, icicle );
 
-      if (  p() -> pets.water_elemental && !p() -> pets.water_elemental -> is_sleeping() )
+      if ( p() -> pets.water_elemental && !p() -> pets.water_elemental -> is_sleeping() )
       {
         auto we_td =
           p() -> pets.water_elemental
@@ -4219,8 +4216,7 @@ struct frostbolt_t : public frost_mage_spell_t
       }
 
       //TODO: Fix hardcode once spelldata has value for proc rate.
-      if ( p() -> artifact.ice_nine.rank() &&
-           rng().roll( 0.15 ) )
+      if ( p() -> artifact.ice_nine.rank() && rng().roll( 0.15 ) )
       {
         trigger_icicle_gain( s, icicle );
         p() -> buffs.icicles -> trigger();
@@ -4229,12 +4225,12 @@ struct frostbolt_t : public frost_mage_spell_t
       {
         p() -> cooldowns.icy_veins -> adjust( p() -> artifact.frozen_veins.time_value() );
       }
-
       if ( s -> result == RESULT_CRIT && p() -> artifact.chain_reaction.rank() )
       {
         p() -> buffs.chain_reaction -> trigger();
       }
 
+      trigger_unstable_magic( s );
       trigger_shattered_fragments( s -> target );
     }
   }
@@ -4518,18 +4514,11 @@ struct ice_floes_t : public mage_spell_t
 
 struct ice_lance_t : public frost_mage_spell_t
 {
-  frost_bomb_explosion_t* frost_bomb_explosion;
-
   ice_lance_t( mage_t* p, const std::string& options_str ) :
     frost_mage_spell_t( "ice_lance", p, p -> find_specialization_spell( "Ice Lance" ) )
   {
     parse_options( options_str );
     parse_effect_data( p -> find_spell( 228598 ) -> effectN( 1 ) );
-
-    if ( p -> talents.frost_bomb -> ok() )
-    {
-      frost_bomb_explosion = new frost_bomb_explosion_t( p );
-    }
 
     if ( p -> talents.lonely_winter -> ok() )
     {
@@ -4598,8 +4587,9 @@ struct ice_lance_t : public frost_mage_spell_t
     if ( result_is_hit( s -> result ) && fss -> frozen() &&
          td( s -> target ) -> debuffs.frost_bomb -> check() )
     {
-      frost_bomb_explosion -> set_target( s -> target );
-      frost_bomb_explosion -> execute();
+      assert( p() -> action.frost_bomb_explosion );
+      p() -> action.frost_bomb_explosion -> set_target( s -> target );
+      p() -> action.frost_bomb_explosion -> execute();
     }
   }
 
@@ -6062,19 +6052,24 @@ struct unstable_magic_explosion_t : public mage_spell_t
 
 void mage_spell_t::trigger_unstable_magic( action_state_t* s )
 {
+  if ( ! p() -> talents.unstable_magic -> ok() )
+    return;
+
+  assert( p() -> action.unstable_magic_explosion );
+
   double um_proc_rate;
   switch ( p() -> specialization() )
   {
     case MAGE_ARCANE:
-      um_proc_rate = p() -> unstable_magic_explosion
+      um_proc_rate = p() -> action.unstable_magic_explosion
                          -> data().effectN( 1 ).percent();
       break;
     case MAGE_FROST:
-      um_proc_rate = p() -> unstable_magic_explosion
+      um_proc_rate = p() -> action.unstable_magic_explosion
                          -> data().effectN( 2 ).percent();
       break;
     case MAGE_FIRE:
-      um_proc_rate = p() -> unstable_magic_explosion
+      um_proc_rate = p() -> action.unstable_magic_explosion
                          -> data().effectN( 3 ).percent();
       break;
     default:
@@ -6084,10 +6079,10 @@ void mage_spell_t::trigger_unstable_magic( action_state_t* s )
 
   if ( p() -> rng().roll( um_proc_rate ) )
   {
-    p() -> unstable_magic_explosion -> set_target( s -> target );
-    p() -> unstable_magic_explosion -> base_dd_max = s -> result_amount;
-    p() -> unstable_magic_explosion -> base_dd_min = s -> result_amount;
-    p() -> unstable_magic_explosion -> execute();
+    p() -> action.unstable_magic_explosion -> set_target( s -> target );
+    p() -> action.unstable_magic_explosion -> base_dd_max = s -> result_amount;
+    p() -> action.unstable_magic_explosion -> base_dd_min = s -> result_amount;
+    p() -> action.unstable_magic_explosion -> execute();
   }
 }
 
@@ -6478,14 +6473,13 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   icicle_event( nullptr ),
   ignite( nullptr ),
   ignite_spread_event( nullptr ),
-  touch_of_the_magi_explosion( nullptr ),
-  unstable_magic_explosion( nullptr ),
   last_bomb_target( nullptr ),
   active_meteor_burn( nullptr ),
   distance_from_rune( 0.0 ),
   global_cinder_count( 0.0 ),
   firestarter_time( timespan_t::zero() ),
   blessing_of_wisdom_count( 0 ),
+  action( actions_t() ),
   benefits( benefits_t() ),
   buffs( buffs_t() ),
   cooldowns( cooldowns_t() ),
@@ -6550,11 +6544,11 @@ mage_t::~mage_t()
 /// Touch of the Magi explosion trigger
 void mage_t::trigger_touch_of_the_magi( buffs::touch_of_the_magi_t* buff )
 {
-
-  touch_of_the_magi_explosion -> set_target( buff -> player );
-  touch_of_the_magi_explosion -> base_dd_max = buff -> accumulated_damage;
-  touch_of_the_magi_explosion -> base_dd_min = buff -> accumulated_damage;
-  touch_of_the_magi_explosion -> execute();
+  assert( action.touch_of_the_magi_explosion );
+  action.touch_of_the_magi_explosion -> set_target( buff -> player );
+  action.touch_of_the_magi_explosion -> base_dd_max = buff -> accumulated_damage;
+  action.touch_of_the_magi_explosion -> base_dd_min = buff -> accumulated_damage;
+  action.touch_of_the_magi_explosion -> execute();
 }
 
 void mage_t::trigger_t19_oh()
@@ -6710,14 +6704,19 @@ bool mage_t::create_actions()
     icicle = new icicle_t( this );
   }
 
+  if ( talents.frost_bomb -> ok() )
+  {
+    action.frost_bomb_explosion = new frost_bomb_explosion_t( this );
+  }
+
   if ( talents.unstable_magic -> ok() )
   {
-    unstable_magic_explosion = new unstable_magic_explosion_t( this );
+    action.unstable_magic_explosion = new unstable_magic_explosion_t( this );
   }
 
   if ( artifact.touch_of_the_magi.rank() )
   {
-    touch_of_the_magi_explosion = new touch_of_the_magi_explosion_t( this );
+    action.touch_of_the_magi_explosion = new touch_of_the_magi_explosion_t( this );
   }
 
   // Global actions for 7.2.5 legendaries.
