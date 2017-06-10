@@ -1359,8 +1359,9 @@ public:
 
     if (p()->rppm.fel_barrage->trigger())
     {
+      const double reduction = p()->talent.fel_barrage->effectN(2).base_value() * 100;
+      p()->cooldown.fel_barrage->adjust(timespan_t::from_millis(-reduction), true);
       p()->proc.fel_barrage->occur();
-      p()->cooldown.fel_barrage->adjust(timespan_t::from_seconds(-5), true);
     }
   }
 
@@ -1911,24 +1912,6 @@ struct fel_barrage_t : public demon_hunter_spell_t
   timespan_t tick_time( const action_state_t* ) const override
   { return base_tick_time; }
 
-  double composite_persistent_multiplier( const action_state_t* ) const override
-  {
-    /* Override persistent multiplier and just return the charge multiplier.
-    This value will be used to modify the tick_state. */
-    return ( double )cooldown -> current_charge / cooldown -> charges;
-  }
-
-  void update_ready( timespan_t cd_duration ) override
-  {
-    assert( cooldown -> current_charge > 0 );
-
-    /* A bit of a dirty hack to consume all charges. Just consume all but one
-       and let action_t::update_ready() take it from there. */
-    cooldown -> current_charge = 1;
-
-    demon_hunter_spell_t::update_ready( cd_duration );
-  }
-
   bool usable_moving() const override
   { return true; }
 
@@ -1939,8 +1922,6 @@ struct fel_barrage_t : public demon_hunter_spell_t
     action_state_t* tick_state = damage -> get_state();
     damage -> target = d -> target;
     damage -> snapshot_state( tick_state, DMG_DIRECT );
-    // Multiply the damage by the number of charges.
-    tick_state -> persistent_multiplier *= d -> state -> persistent_multiplier;
     damage-> schedule_execute( tick_state );
   }
 };
@@ -6871,8 +6852,7 @@ void demon_hunter_t::apl_havoc()
     "(!talent.momentum.enabled|(charges=2|cooldown.vengeful_retreat.remains>4)&buff.momentum.down)&"
     "(!talent.fel_mastery.enabled|fury.deficit>=25)&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))",
     "Fel Rush for Momentum and for fury from Fel Mastery.");
-  normal->add_talent(this, "Fel Barrage", "if=(charges=max_charges)&(buff.momentum.up|!talent.momentum.enabled)&"
-    "(active_enemies>desired_targets|raid_event.adds.in>30)",
+  normal->add_talent(this, "Fel Barrage", "if=(buff.momentum.up|!talent.momentum.enabled)&(active_enemies>desired_targets|raid_event.adds.in>30)",
     "Use Fel Barrage at max charges, saving it for Momentum and adds if possible.");
   normal->add_action(this, "Throw Glaive", "if=talent.bloodlet.enabled&(!talent.momentum.enabled|buff.momentum.up)&charges=2");
   normal->add_talent(this, "Felblade", "if=fury<15&(cooldown.death_sweep.remains<2*gcd|cooldown.blade_dance.remains<2*gcd)");
@@ -6898,9 +6878,6 @@ void demon_hunter_t::apl_havoc()
   normal->add_action(this, "Chaos Strike", "if=(talent.demon_blades.enabled|"
     "!talent.momentum.enabled|buff.momentum.up|fury.deficit<30+buff.prepared.up*8)&"
     "!variable.pooling_for_chaos_strike&!variable.pooling_for_meta&!variable.pooling_for_blade_dance");
-  normal->add_talent(this, "Fel Barrage", "if=(charges=max_charges-1)&buff.metamorphosis.down&(buff.momentum.up|"
-    "!talent.momentum.enabled)&(active_enemies>desired_targets|raid_event.adds.in>30)",
-    "Use Fel Barrage if its nearing max charges, saving it for Momentum and adds if possible.");
   normal->add_action(this, "Fel Rush", "if=!talent.momentum.enabled&raid_event.movement.in>charges*10&(talent.demon_blades.enabled|buff.metamorphosis.down)");
   normal->add_action(this, "Demon's Bite");
   normal->add_action(this, "Throw Glaive", "if=buff.out_of_range.up");
