@@ -164,7 +164,8 @@ bool iterate_profilesets( sim_t* sim )
     set -> result()
       .metric_type( SCALE_METRIC_DPS )
       .metric( metric.value )
-      .stddev( metric.stddev );
+      .stddev( metric.stddev )
+      .iterations( player -> collected_data.total_iterations );
 
     delete profile_sim;
   }
