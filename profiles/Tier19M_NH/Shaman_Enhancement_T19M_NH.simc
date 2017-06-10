@@ -39,8 +39,6 @@ actions+=/use_items
 actions+=/berserking,if=buff.ascendance.up|(feral_spirit.remains>5)|level<100
 actions+=/blood_fury,if=buff.ascendance.up|(feral_spirit.remains>5)|level<100
 actions+=/potion,if=feral_spirit.remains>5|target.time_to_die<=60
-actions+=/boulderfist,if=buff.boulderfist.remains<gcd|(maelstrom<=50&active_enemies>=3)
-actions+=/boulderfist,if=buff.boulderfist.remains<gcd|(charges_fractional>1.75&maelstrom<=100&active_enemies<=2)
 actions+=/rockbiter,if=talent.landslide.enabled&buff.landslide.remains<gcd
 actions+=/fury_of_air,if=!ticking&maelstrom>22
 actions+=/frostbrand,if=talent.hailstorm.enabled&buff.frostbrand.remains<gcd&((!talent.fury_of_air.enabled)|(talent.fury_of_air.enabled&maelstrom>25))
@@ -74,7 +72,6 @@ actions+=/lava_lash,if=(!set_bonus.tier19_4pc&maelstrom>=120)|(!talent.fury_of_a
 actions+=/flametongue,if=buff.flametongue.remains<4.8
 actions+=/rockbiter
 actions+=/flametongue
-actions+=/boulderfist
 
 head=helm_of_shackled_elements,id=138343,bonus_id=3518
 neck=cursed_beartooth_necklace,id=139239,bonus_id=1527/1806,enchant=mark_of_the_hidden_satyr
