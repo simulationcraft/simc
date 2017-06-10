@@ -587,6 +587,7 @@ public:
   virtual double    temporary_movement_modifier() const override;
   virtual double    passive_movement_modifier() const override;
   virtual void      arise() override;
+  virtual std::string create_profile( save_e ) override;
   virtual void      copy_from( player_t* ) override;
 
   target_specific_t<mage_td_t> target_data;
@@ -6746,6 +6747,23 @@ void mage_t::create_options()
   add_option( opt_timespan( "firestarter_time", firestarter_time ) );
   add_option( opt_int( "blessing_of_wisdom_count", blessing_of_wisdom_count ) );
   player_t::create_options();
+}
+
+// mage_t::create_profile ================================================
+
+std::string mage_t::create_profile( save_e save_type )
+{
+  std::string profile = player_t::create_profile( save_type );
+
+  if ( save_type == SAVE_ALL )
+  {
+    if ( firestarter_time > timespan_t::zero() )
+    {
+      profile += "firestarter_time=" + util::to_string( firestarter_time.total_seconds() ) + "\n";
+    }
+  }
+
+  return profile;
 }
 
 // mage_t::copy_from =====================================================
