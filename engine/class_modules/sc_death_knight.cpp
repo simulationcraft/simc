@@ -4819,15 +4819,18 @@ struct festering_strike_t : public death_knight_melee_attack_t
 
 struct frostscythe_t : public death_knight_melee_attack_t
 {
+  double rime_proc_chance;
+
   frostscythe_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_melee_attack_t( "frostscythe", p, p -> talent.frostscythe )
+    death_knight_melee_attack_t( "frostscythe", p, p -> talent.frostscythe ),
+    rime_proc_chance( ( p -> spec.rime -> proc_chance() +
+                        p -> sets -> set( DEATH_KNIGHT_FROST, T19, B2 ) -> effectN( 1 ).percent() ) / 2.0 )
   {
     parse_options( options_str );
 
     weapon = &( player -> main_hand_weapon );
     aoe = -1;
 
-    // TODO: Check how this is exactly in game
     crit_bonus_multiplier *= 1.0 + p -> spec.death_knight -> effectN( 5 ).percent();
   }
 
@@ -4837,6 +4840,9 @@ struct frostscythe_t : public death_knight_melee_attack_t
 
     consume_killing_machine( execute_state, p() -> procs.fs_killing_machine );
     trigger_icecap( execute_state );
+
+    // Frostscythe procs rime at half the chance of Obliterate
+    p() -> buffs.rime -> trigger( 1, buff_t::DEFAULT_VALUE(), rime_proc_chance );
   }
 
   double composite_crit_chance() const override
