@@ -808,6 +808,7 @@ public:
   virtual           ~druid_t();
 
   // Character Definition
+  virtual void      activate() override;
   virtual void      init() override;
   virtual void      init_absorb_priority() override;
   virtual void      init_action_list() override;
@@ -6565,6 +6566,64 @@ struct ailuro_pouncers_event_t : public event_t
 // ==========================================================================
 // Druid Character Definition
 // ==========================================================================
+
+// druid_t::activate ========================================================
+void druid_t::activate()
+{
+   if ( talent.predator -> ok() )
+   {
+      range::for_each( sim -> actor_list, [this] (player_t* target) -> void {
+         if ( !target -> is_enemy() )
+            return;
+
+         target->callbacks_on_demise.push_back([this](player_t* target) -> void {
+            auto p = this;
+            if (p -> specialization() != DRUID_FERAL)
+               return;
+
+            if (get_target_data(target) ->       dots.thrash_cat -> is_ticking() ||
+                get_target_data(target) ->              dots.rip -> is_ticking() ||
+                get_target_data(target) ->             dots.rake -> is_ticking() ||
+                get_target_data(target) -> dots.ashamanes_frenzy -> is_ticking() )
+            { 
+               
+               
+               if (!p->cooldown.tigers_fury->down())
+                  p->proc.predator_wasted->occur();
+
+               p->cooldown.tigers_fury->reset(true);
+               p->proc.predator->occur();
+            }
+         });
+
+
+
+
+      });
+
+
+      callbacks_on_demise.push_back( [this]( player_t* target ) -> void {
+         if (sim->active_player->specialization() != DRUID_FERAL)
+            return;
+
+         if ( get_target_data( target ) -> dots.thrash_cat       -> is_ticking() || 
+              get_target_data( target ) -> dots.rip              -> is_ticking() || 
+              get_target_data( target ) -> dots.rake             -> is_ticking() ||
+              get_target_data( target ) -> dots.ashamanes_frenzy -> is_ticking() )
+         {
+            auto p = ( (druid_t*) sim -> active_player );
+
+            if ( !p -> cooldown.tigers_fury -> down() )
+                  p -> proc.predator_wasted -> occur( );
+
+            p -> cooldown.tigers_fury -> reset( true );
+            p -> proc.predator -> occur();
+         } 
+      });
+   }
+
+   player_t::activate();
+}
 
 // druid_t::create_action  ==================================================
 
