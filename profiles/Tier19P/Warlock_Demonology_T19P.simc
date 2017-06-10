@@ -1,11 +1,11 @@
-warlock="Warlock_Demonology_T20H"
+warlock="Warlock_Demonology_T19P"
 spec=demonology
 level=110
 race=troll
 role=spell
 position=back
-talents=1202023
-artifact=37:0:0:0:0:1170:1:1171:4:1172:3:1173:4:1174:4:1175:4:1176:4:1177:4:1178:3:1179:3:1180:1:1181:1:1182:1:1183:1:1184:1:1185:1:1354:1:1391:1:1605:4:1606:1:1607:1:1712:1
+talents=3201022
+artifact=37:137549:137492:133764:0:1170:1:1171:3:1173:2:1176:6:1177:3:1178:3:1180:1:1182:1:1183:1:1185:1:1354:1
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -63,33 +63,32 @@ actions+=/demonic_empowerment,if=artifact.thalkiels_ascendance.rank&talent.power
 actions+=/shadow_bolt
 actions+=/life_tap
 
-head=wakeners_loyalty,id=144385,ilevel=970
-neck=string_of_extracted_incisors,id=147013,ilevel=915,enchant_id=5437
-shoulders=recurrent_ritual,id=132393,ilevel=970
-back=diabolic_shroud,id=147181,ilevel=915,enchant_id=5436
-chest=diabolic_robe,id=147185,ilevel=915
-wrists=ravenous_devotees_bracelets,id=147000,ilevel=915
-hands=diabolic_gloves,id=147182,ilevel=915
-waist=striferiddled_cinch,id=146999,ilevel=915
-legs=diabolic_leggings,id=147184,ilevel=915
-feet=slippers_of_enduring_vigilance,id=146987,ilevel=915
-finger1=scaled_band_of_servitude,id=147020,ilevel=915,enchant_id=5428
-finger2=seal_of_the_second_duumvirate,id=147195,ilevel=925,enchant_id=5428
-trinket1=tarnished_sentinel_medallion,id=147017,ilevel=915
-trinket2=tome_of_unraveling_sanity,id=147019,ilevel=925
-main_hand=spine_of_thalkiel,id=137246,ilevel=939,gem_id=0/0/0/0,relic_id=0/0
-off_hand=skull_of_the_manari,id=128943,bonus_id=748,ilevel=939,gem_id=147087/147091/147110
+head=collar_of_enclosure,id=134424,bonus_id=1492/1727
+neck=chain_of_a_hundred_maws,id=134498,bonus_id=1492/1727,enchant=mark_of_the_claw
+shoulders=amice_of_the_unfurling_tempest,id=134432,bonus_id=1492/1727
+back=goldscar_pelt,id=133639,bonus_id=1492/1727,enchant_id=5436
+chest=fluxflow_robes,id=134413,bonus_id=1492/1727
+wrists=armbands_of_slaughter,id=134436,bonus_id=1492/1727
+hands=satin_throatclutchers,id=134422,bonus_id=1492/1727
+waist=waistband_of_spiritual_doom,id=137507,bonus_id=1492/1727
+legs=leggings_of_swirling_runes,id=133610,bonus_id=1492/1727
+feet=mistbound_helarjar_footwraps,id=133608,bonus_id=1492/1727
+finger1=band_of_fused_coral,id=134532,bonus_id=1492/1727,enchant_id=5428
+finger2=seal_of_malicious_deceit,id=134489,bonus_id=1492/1727,enchant_id=5428
+trinket1=naraxas_spiked_tongue,id=137349,bonus_id=1492/1727
+trinket2=chrono_shard,id=137419,bonus_id=1492/1727
+main_hand=spine_of_thalkiel,id=137246,ilevel=870
+off_hand=skull_of_the_manari,id=128943,ilevel=870,gem_id=137459/137492/133764,relic_id=1492:3412/1492:3412/1492:3412
 
 # Gear Summary
-# gear_ilvl=926.13
-# gear_stamina=42224
-# gear_intellect=26602
-# gear_spell_power=17871
-# gear_crit_rating=4565
-# gear_haste_rating=11298
-# gear_mastery_rating=7731
-# gear_versatility_rating=2943
-# gear_armor=2163
-# set_bonus=tier20_2pc=1
-# set_bonus=tier20_4pc=1
+# gear_ilvl=843.75
+# gear_stamina=18841
+# gear_intellect=11844
+# gear_spell_power=9399
+# gear_crit_rating=5110
+# gear_haste_rating=10714
+# gear_mastery_rating=2502
+# gear_leech_rating=424
+# gear_armor=1570
+# set_bonus=tier19p_cloth_2pc=1
 default_pet=felguard

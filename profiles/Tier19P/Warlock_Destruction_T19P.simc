@@ -1,11 +1,11 @@
-warlock="Warlock_Destruction_T20H"
+warlock="Warlock_Destruction_T19P"
 spec=destruction
 level=110
 race=troll
 role=spell
 position=back
-talents=1203012
-artifact=38:0:0:0:0:803:1:804:4:805:4:806:4:807:4:808:4:809:4:810:3:811:3:812:3:813:1:814:1:815:1:816:1:817:1:818:1:1355:1:1392:1:1609:4:1610:1:1611:1:1713:1
+talents=2203022
+artifact=38:137476:140837:137476:0:803:1:804:3:807:5:809:4:811:3:812:3:815:1:817:1:818:1:1355:1
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -72,31 +72,30 @@ actions+=/immolate,if=(active_enemies<5|!talent.fire_and_brimstone.enabled)&(!ta
 actions+=/incinerate
 actions+=/life_tap
 
-head=diabolic_helm,id=147183,ilevel=915
-neck=string_of_extracted_incisors,id=147013,ilevel=915,enchant_id=5437
-shoulders=lessons_of_spacetime,id=144369,ilevel=970
-back=diabolic_shroud,id=147181,ilevel=915,enchant_id=5436
-chest=diabolic_robe,id=147185,ilevel=915
-wrists=oathbreakers_cuffs,id=147001,ilevel=915
-hands=gloves_of_furtive_oppression,id=146988,ilevel=915
-waist=feretory_of_souls,id=132456,ilevel=970
-legs=diabolic_leggings,id=147184,ilevel=915
-feet=slippers_of_enduring_vigilance,id=146987,ilevel=915
-finger1=yathaes_thumb_ring,id=147021,ilevel=915,enchant_id=5428
-finger2=seal_of_the_second_duumvirate,id=147195,ilevel=925,enchant_id=5428
-trinket1=tarnished_sentinel_medallion,id=147017,ilevel=915
-trinket2=tome_of_unraveling_sanity,id=147019,ilevel=925
-main_hand=scepter_of_sargeras,id=128941,ilevel=942,gem_id=147090/147091/147090
+head=collar_of_enclosure,id=134424,bonus_id=1492/1727
+neck=tightweb_choker,id=134541,bonus_id=1492/1727,enchant=mark_of_the_claw
+shoulders=amice_of_the_unfurling_tempest,id=134432,bonus_id=1492/1727
+back=goldscar_pelt,id=133639,bonus_id=1492/1727,enchant_id=5436
+chest=fluxflow_robes,id=134413,bonus_id=1492/1727
+wrists=armbands_of_slaughter,id=134436,bonus_id=1492/1727
+hands=silken_bloodscent_gloves,id=133609,bonus_id=1492/1727
+waist=waistband_of_spiritual_doom,id=137507,bonus_id=1492/1727
+legs=legwraps_of_reverberating_shadows,id=137404,bonus_id=1492/1727
+feet=mistbound_helarjar_footwraps,id=133608,bonus_id=1492/1727
+finger1=band_of_fused_coral,id=134532,bonus_id=1492/1727,enchant_id=5428
+finger2=seal_of_malicious_deceit,id=134489,bonus_id=1492/1727,enchant_id=5428
+trinket1=naraxas_spiked_tongue,id=137349,bonus_id=1492/1727
+trinket2=oakhearts_gnarled_root,id=137306,bonus_id=1492/1727
+main_hand=scepter_of_sargeras,id=128941,gem_id=137476/137316/137476,relic_id=1492:3412/1492:3412/1492:3412
 
 # Gear Summary
-# gear_ilvl=925.47
-# gear_stamina=41771
-# gear_intellect=43807
-# gear_crit_rating=6835
-# gear_haste_rating=9694
-# gear_mastery_rating=6393
-# gear_versatility_rating=3557
-# gear_armor=2146
-# set_bonus=tier20_2pc=1
-# set_bonus=tier20_4pc=1
+# gear_ilvl=842.00
+# gear_stamina=18863
+# gear_intellect=19631
+# gear_crit_rating=6545
+# gear_haste_rating=10113
+# gear_mastery_rating=1683
+# gear_versatility_rating=943
+# gear_armor=1570
+# set_bonus=tier19p_cloth_2pc=1
 default_pet=imp
