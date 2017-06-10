@@ -10,7 +10,7 @@ artifact=4:0:0:0:0:72:4:73:1:74:4:75:4:77:4:78:1:79:4:80:1:81:4:82:4:83:4:84:4:8
 # Default consumables
 potion=deadly_grace
 flask=whispered_pact
-food=lavish_suramar_feast
+food=lemon_herb_filet
 augmentation=defiled
 
 # This default action priority list is automatically created based on your character.
