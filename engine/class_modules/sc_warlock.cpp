@@ -1588,7 +1588,7 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
   m *= 1.0 + o() -> buffs.sindorei_spite -> check_stack_value();
   m *= 1.0 + o() -> buffs.lessons_of_spacetime -> check_stack_value();
 
-  if ( maybe_ptr( o() -> dbc.ptr ) && o() -> specialization() == WARLOCK_AFFLICTION )
+  if ( o() -> specialization() == WARLOCK_AFFLICTION )
     m *= 1.0 + o() -> spec.affliction -> effectN( 3 ).percent();
 
   return m;
@@ -2469,18 +2469,15 @@ public:
     destruction_dot_increase = data().affected_by( p() -> spec.destruction -> effectN( 2 ) );
     if ( destruction_direct_increase )
       base_dd_multiplier *= 1.0 + p() -> spec.destruction -> effectN( 1 ).percent();
-    if ( destruction_dot_increase ) 
+    if ( destruction_dot_increase )
       base_td_multiplier *= 1.0 + p() -> spec.destruction -> effectN( 2 ).percent();
 
-    if ( maybe_ptr( p() -> dbc.ptr ) )
-    { 
     affliction_direct_increase = data().affected_by( p() -> spec.affliction -> effectN( 1 ) );
     affliction_dot_increase = data().affected_by( p() -> spec.affliction -> effectN( 2 ) );
     if ( affliction_direct_increase )
       base_dd_multiplier *= 1.0 + p() -> spec.affliction -> effectN( 1 ).percent();
     if ( affliction_dot_increase )
       base_td_multiplier *= 1.0 + p() -> spec.affliction -> effectN( 2 ).percent();
-    }
   }
 
   int n_targets() const override
@@ -2616,7 +2613,7 @@ public:
 
       if ( p()->talents.soul_conduit->ok() )
       {
-        double soul_conduit_rng = p()->talents.soul_conduit->effectN( 1 ).percent() + ( maybe_ptr( p()->dbc.ptr ) ? p()->spec.destruction->effectN( 3 ).percent() : 0 );
+        double soul_conduit_rng = p()->talents.soul_conduit->effectN( 1 ).percent() + p()->spec.destruction->effectN( 3 ).percent();
 
         for ( int i = 0; i < last_resource_cost; i++ )
         {
@@ -2736,13 +2733,7 @@ public:
   {
     double pm = spell_t::action_multiplier();
 
-    if ( !maybe_ptr( p() -> dbc.ptr ) && p() -> mastery_spells.chaotic_energies -> ok() && destro_mastery )
-    {
-      double chaotic_energies_rng = rng().range( 0, p() -> cache.mastery_value() );
-      pm *= 1.0 + chaotic_energies_rng;
-    }
-
-    if ( maybe_ptr( p() -> dbc.ptr ) && p() -> mastery_spells.chaotic_energies -> ok() && destro_mastery )
+    if ( p() -> mastery_spells.chaotic_energies -> ok() && destro_mastery )
     {
       double destro_mastery_value = p() -> cache.mastery_value() / 2.0;
       double chaotic_energies_rng;
@@ -2918,10 +2909,7 @@ struct agony_t: public warlock_spell_t
   {
     int agony_max_stacks;
 
-    if ( maybe_ptr( p() -> dbc.ptr ) )
-      agony_max_stacks = ( p() -> talents.writhe_in_agony -> ok() ? p() -> talents.writhe_in_agony -> effectN( 2 ).base_value() : 10 );
-    else
-      agony_max_stacks = 10 * ( 1 + ( p() -> talents.writhe_in_agony -> ok() ? p() -> talents.writhe_in_agony -> effectN( 1 ).percent() : 0 ) );
+    agony_max_stacks = ( p() -> talents.writhe_in_agony -> ok() ? p() -> talents.writhe_in_agony -> effectN( 2 ).base_value() : 10 );
     if ( td( d -> state -> target ) -> agony_stack < agony_max_stacks )
       td( d -> state -> target ) -> agony_stack++;
 
@@ -3148,8 +3136,7 @@ struct unstable_affliction_t: public warlock_spell_t
     spell_power_mod.direct = ptr_spell -> effectN( 1 ).sp_coeff();
     dot_duration = timespan_t::zero(); // DoT managed by ignite action.
     affected_by_contagion = false;
-    if ( maybe_ptr( p -> dbc.ptr ) )
-      base_costs[RESOURCE_SOUL_SHARD] *= 0.1;
+    base_costs[RESOURCE_SOUL_SHARD] *= 0.1;
   }
 
   double cost() const override
@@ -3710,8 +3697,7 @@ struct hand_of_guldan_t: public warlock_spell_t
     doom -> dual = true;
     doom -> base_costs[RESOURCE_MANA] = 0;
     base_multiplier *= 1.0 + p -> artifact.dirty_hands.percent();
-    if ( maybe_ptr( p -> dbc.ptr ) )
-      base_costs[RESOURCE_SOUL_SHARD] *= 0.1;
+    base_costs[RESOURCE_SOUL_SHARD] *= 0.1;
   }
 
   virtual timespan_t travel_time() const override
@@ -3787,15 +3773,10 @@ struct havoc_t: public warlock_spell_t
   {
     may_crit = false;
 
-    if ( p -> talents.wreak_havoc -> ok() && !maybe_ptr( p -> dbc.ptr ) )
-      cooldown -> duration = timespan_t::from_seconds( 0 );
     havoc_duration = p -> find_spell( 80240 ) -> duration();
     if ( p -> talents.wreak_havoc -> ok() )
     {
-      if ( maybe_ptr( p -> dbc.ptr ) )
-        havoc_duration = -p -> find_spell( 196410 ) -> effectN( 1 ).time_value();
-      else
-        havoc_duration += p -> find_spell( 196410 ) -> effectN( 1 ).time_value();
+      havoc_duration = -p -> find_spell( 196410 ) -> effectN( 1 ).time_value();
     }
   }
 
@@ -3804,8 +3785,7 @@ struct havoc_t: public warlock_spell_t
     warlock_spell_t::execute();
     p() -> havoc_target = execute_state -> target;
 
-    if ( maybe_ptr( p() -> dbc.ptr ) )
-      p() -> buffs.active_havoc -> trigger();
+    p() -> buffs.active_havoc -> trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -3871,20 +3851,10 @@ struct immolate_t: public warlock_spell_t
   {
     warlock_spell_t::tick( d );
 
-    if ( maybe_ptr( p() -> dbc.ptr ) )
-    {
-      if ( d -> state -> result == RESULT_CRIT && rng().roll( 0.5 ) )
-        p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.1, p() -> gains.immolate_crits );
+    if ( d -> state -> result == RESULT_CRIT && rng().roll( 0.5 ) )
+      p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.1, p() -> gains.immolate_crits );
 
-      p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.1, p() -> gains.immolate );
-    }
-    else
-    {
-      if ( d -> state -> result == RESULT_CRIT && rng().roll( 0.3 ) )
-        p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.immolate );
-      else if ( d -> state -> result == RESULT_HIT && rng().roll( 0.15 ) )
-        p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.immolate );
-    }
+    p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.1, p() -> gains.immolate );
   }
 };
 
@@ -3895,10 +3865,7 @@ struct conflagrate_t: public warlock_spell_t
   conflagrate_t( warlock_t* p ):
     warlock_spell_t( "Conflagrate", p, p -> find_spell( 17962 ) )
   {
-    if ( maybe_ptr( p -> dbc.ptr ) )
-      energize_type = ENERGIZE_NONE;
-    else
-      energize_type = ENERGIZE_ON_CAST;
+    energize_type = ENERGIZE_NONE;
     base_duration = p -> find_spell( 117828 ) -> duration();
     base_multiplier *= 1.0 + p -> artifact.flames_of_sargeras.percent();
 
@@ -3976,8 +3943,7 @@ struct conflagrate_t: public warlock_spell_t
         td( s -> target ) -> debuffs_roaring_blaze -> trigger( 1 );
       }
 
-      if ( maybe_ptr( p() -> dbc.ptr ) )
-        p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.5, p() -> gains.conflagrate );
+      p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.5, p() -> gains.conflagrate );
     }
   }
 };
@@ -4041,14 +4007,11 @@ struct incinerate_t: public warlock_spell_t
 
     p() -> buffs.backdraft -> decrement();
 
-    if ( maybe_ptr( p() -> dbc.ptr ) )
-    {
-      p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.2 * ( p() -> talents.fire_and_brimstone -> ok() ? execute_state -> n_targets : 1 ), p() -> gains.incinerate );
-      if ( execute_state -> result == RESULT_CRIT )
-        p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.1 * ( p() -> talents.fire_and_brimstone -> ok() ? execute_state -> n_targets : 1 ), p() -> gains.incinerate_crits );
-      if ( p() -> sets -> has_set_bonus( WARLOCK_DESTRUCTION, T20, B2 ) )
-        p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.1 * ( p() -> talents.fire_and_brimstone -> ok() ? execute_state -> n_targets : 1 ), p() -> gains.destruction_t20_2pc );
-    }
+    p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.2 * ( p() -> talents.fire_and_brimstone -> ok() ? execute_state -> n_targets : 1 ), p() -> gains.incinerate );
+    if ( execute_state -> result == RESULT_CRIT )
+      p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.1 * ( p() -> talents.fire_and_brimstone -> ok() ? execute_state -> n_targets : 1 ), p() -> gains.incinerate_crits );
+    if ( p() -> sets -> has_set_bonus( WARLOCK_DESTRUCTION, T20, B2 ) )
+      p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.1 * ( p() -> talents.fire_and_brimstone -> ok() ? execute_state -> n_targets : 1 ), p() -> gains.destruction_t20_2pc );
   }
 
   virtual double composite_crit_chance() const override
@@ -4083,8 +4046,7 @@ struct duplicate_chaos_bolt_t : public warlock_spell_t
     crit_bonus_multiplier *= 1.0 + p -> artifact.chaotic_instability.percent();
     base_multiplier *= 1.0 + ( p -> sets->set( WARLOCK_DESTRUCTION, T18, B2 ) -> effectN( 2 ).percent() );
     base_multiplier *= 1.0 + ( p -> sets->set( WARLOCK_DESTRUCTION, T17, B4 ) -> effectN( 1 ).percent() );
-    if ( maybe_ptr( p -> dbc.ptr ) )
-      base_multiplier *= 1.0 + ( p -> talents.reverse_entropy -> effectN( 2 ).percent() );
+    base_multiplier *= 1.0 + ( p -> talents.reverse_entropy -> effectN( 2 ).percent() );
   }
 
   timespan_t travel_time() const override
@@ -4150,9 +4112,6 @@ struct chaos_bolt_t: public warlock_spell_t
   chaos_bolt_t( warlock_t* p ) :
     warlock_spell_t( p, "Chaos Bolt" ), refund( 0 ), duplicate( nullptr ), duplicate_chance( 0 )
   {
-    if ( !maybe_ptr ( p -> dbc.ptr ) && p -> talents.reverse_entropy -> ok() )
-      base_execute_time += p -> talents.reverse_entropy -> effectN( 2 ).time_value();
-
     can_havoc = true;
     affected_by_destruction_t20_4pc = true;
 
@@ -4161,10 +4120,8 @@ struct chaos_bolt_t: public warlock_spell_t
     base_execute_time += p -> sets->set( WARLOCK_DESTRUCTION, T18, B2 ) -> effectN( 1 ).time_value();
     base_multiplier *= 1.0 + ( p -> sets->set( WARLOCK_DESTRUCTION, T18, B2 ) -> effectN( 2 ).percent() );
     base_multiplier *= 1.0 + ( p -> sets->set( WARLOCK_DESTRUCTION, T17, B4 ) -> effectN( 1 ).percent() );
-    if ( maybe_ptr( p -> dbc.ptr ) )
-      base_multiplier *= 1.0 + ( p -> talents.reverse_entropy -> effectN( 2 ).percent() );
-    if ( maybe_ptr( p -> dbc.ptr ) )
-      base_costs[RESOURCE_SOUL_SHARD] *= 0.1;
+    base_multiplier *= 1.0 + ( p -> talents.reverse_entropy -> effectN( 2 ).percent() );
+    base_costs[RESOURCE_SOUL_SHARD] *= 0.1;
 
     backdraft_cast_time = 1.0 + p -> buffs.backdraft -> data().effectN( 1 ).percent();
     backdraft_gcd = 1.0 + p -> buffs.backdraft -> data().effectN( 2 ).percent();
@@ -4333,8 +4290,7 @@ struct dimensional_rift_t : public warlock_spell_t
   {
     warlock_spell_t::execute();
 
-    if ( maybe_ptr( p() -> dbc.ptr ) )
-      p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.3, p() -> gains.dimensional_rift );
+    p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.3, p() -> gains.dimensional_rift );
 
     double rift = rng().range( 0.0, 1.0 );
 
@@ -4503,8 +4459,7 @@ struct seed_of_corruption_t: public warlock_spell_t
     threshold_mod = 3.0;
     base_tick_time = dot_duration;
     hasted_ticks = false;
-    if ( maybe_ptr( p -> dbc.ptr ) )
-      base_costs[RESOURCE_SOUL_SHARD] *= 0.1;
+    base_costs[RESOURCE_SOUL_SHARD] *= 0.1;
 
     sow_the_seeds_targets = p -> talents.sow_the_seeds -> effectN( 1 ).base_value();
 
@@ -4564,8 +4519,7 @@ struct rain_of_fire_t : public warlock_spell_t
       callbacks = false;
       radius = p -> find_spell( 5740 ) -> effectN( 1 ).radius();
 
-      if ( maybe_ptr( p -> dbc.ptr ) )
-        base_multiplier *= 1.0 + ( p -> talents.reverse_entropy -> effectN( 2 ).percent() );
+      base_multiplier *= 1.0 + ( p -> talents.reverse_entropy -> effectN( 2 ).percent() );
     }
   };
 
@@ -4577,8 +4531,7 @@ struct rain_of_fire_t : public warlock_spell_t
     may_miss = may_crit = false;
     base_tick_time = data().duration() / 8.0; // ticks 8 times (missing from spell data)
     base_execute_time = timespan_t::zero(); // HOTFIX
-    if ( maybe_ptr( p -> dbc.ptr ) )
-      base_costs[RESOURCE_SOUL_SHARD] *= 0.1;
+    base_costs[RESOURCE_SOUL_SHARD] *= 0.1;
 
     if ( !p -> active.rain_of_fire )
     {
@@ -4815,8 +4768,7 @@ struct summon_doomguard_t: public warlock_spell_t
     warlock_spell_t( "summon_doomguard", p, p -> find_spell( 18540 ) )
   {
     harmful = may_crit = false;
-    if ( maybe_ptr( p -> dbc.ptr ) )
-      base_costs[RESOURCE_SOUL_SHARD] *= 0.1;
+    base_costs[RESOURCE_SOUL_SHARD] *= 0.1;
 
     cooldown = p -> cooldowns.doomguard;
     if ( !p -> talents.grimoire_of_supremacy -> ok() )
@@ -4891,8 +4843,7 @@ struct summon_infernal_t : public warlock_spell_t
     infernal_awakening( nullptr )
   {
     harmful = may_crit = false;
-    if ( maybe_ptr( p -> dbc.ptr ) )
-      base_costs[RESOURCE_SOUL_SHARD] *= 0.1;
+    base_costs[RESOURCE_SOUL_SHARD] *= 0.1;
 
     cooldown = p -> cooldowns.infernal;
     if ( !p -> talents.grimoire_of_supremacy -> ok() )
@@ -4969,8 +4920,7 @@ struct summon_darkglare_t : public warlock_spell_t
     warlock_spell_t( "summon_darkglare", p, p -> talents.summon_darkglare )
   {
     harmful = may_crit = may_miss = false;
-    if ( maybe_ptr( p -> dbc.ptr ) )
-      base_costs[RESOURCE_SOUL_SHARD] *= 0.1;
+    base_costs[RESOURCE_SOUL_SHARD] *= 0.1;
 
     darkglare_duration = data().duration() + timespan_t::from_millis( 1 );
   }
@@ -5010,8 +4960,7 @@ struct call_dreadstalkers_t : public warlock_spell_t
     dreadstalker_duration = p -> find_spell( 193332 ) -> duration() + ( p -> sets->has_set_bonus( WARLOCK_DEMONOLOGY, T19, B4 ) ? p -> sets->set( WARLOCK_DEMONOLOGY, T19, B4 ) -> effectN( 1 ).time_value() : timespan_t::zero() );
     dreadstalker_count = data().effectN( 1 ).base_value();
     improved_dreadstalkers = p -> talents.improved_dreadstalkers -> effectN( 1 ).base_value();
-    if ( maybe_ptr( p->dbc.ptr ) )
-      base_costs[RESOURCE_SOUL_SHARD] *= 0.1;
+    base_costs[RESOURCE_SOUL_SHARD] *= 0.1;
   }
 
   double cost() const override
@@ -5293,8 +5242,7 @@ struct shadowflame_t : public warlock_spell_t
     dot_duration = timespan_t::from_seconds( 8.0 );
     spell_power_mod.tick = data().effectN( 2 ).sp_coeff();
     base_tick_time = data().effectN( 2 ).period();
-    if ( maybe_ptr( p -> dbc.ptr ) )
-      energize_amount = 1;
+    energize_amount = 1;
   }
 
   timespan_t calculate_dot_refresh_duration( const dot_t* dot,
@@ -5423,7 +5371,7 @@ struct shadowburn_t: public warlock_spell_t
     {
       if ( target -> is_sleeping() )
       {
-        p() -> resource_gain( RESOURCE_SOUL_SHARD, ( maybe_ptr( p() -> dbc.ptr ) ? 0.6 : 1.0 ), shard_gain );
+        p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.6, shard_gain );
       }
     }
   };
@@ -5454,8 +5402,7 @@ struct shadowburn_t: public warlock_spell_t
 
     resource_event = make_event<resource_event_t>( *sim, p(), this, s -> target );
 
-    if ( maybe_ptr( p() -> dbc.ptr ) )
-      p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.5, p() -> gains.shadowburn );
+    p() -> resource_gain( RESOURCE_SOUL_SHARD, 0.5, p() -> gains.shadowburn );
   }
 
   void init() override
@@ -5787,8 +5734,7 @@ struct grimoire_of_service_t: public summon_pet_t
   grimoire_of_service_t( warlock_t* p, const std::string& pet_name ):
     summon_pet_t( "service_" + pet_name, p, p -> talents.grimoire_of_service -> ok() ? p -> find_class_spell( "Grimoire: " + pet_name ) : spell_data_t::not_found() )
   {
-    if ( maybe_ptr( p -> dbc.ptr ) )
-      base_costs[RESOURCE_SOUL_SHARD] *= 0.1;
+    base_costs[RESOURCE_SOUL_SHARD] *= 0.1;
 
     cooldown = p -> get_cooldown( "grimoire_of_service" );
     cooldown -> duration = data().cooldown();
@@ -6024,7 +5970,7 @@ warlock( p )
   debuffs_shadowflame = buff_creator_t( *this, "shadowflame", source -> find_spell( 205181 ) );
   debuffs_agony = buff_creator_t( *this, "agony", source -> find_spell( 980 ) )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC )
-    .max_stack( ( warlock.talents.writhe_in_agony -> ok() ? ( maybe_ptr( warlock.dbc.ptr ) ? warlock.talents.writhe_in_agony -> effectN( 2 ).base_value() : 20 ) : 10 ) );
+    .max_stack( ( warlock.talents.writhe_in_agony -> ok() ? warlock.talents.writhe_in_agony -> effectN( 2 ).base_value() : 10 ) );
   debuffs_eradication = buff_creator_t( *this, "eradication", source -> find_spell( 196414 ) )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC );
   debuffs_roaring_blaze = buff_creator_t( *this, "roaring_blaze", source -> find_spell( 205690 ) )
@@ -6104,7 +6050,7 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
 
     talent_points.register_validity_fn( [this]( const spell_data_t* spell )
     {
-      if ( maybe_ptr( dbc.ptr ) && find_item( 151649 ) ) // Soul of the Netherlord
+      if ( find_item( 151649 ) ) // Soul of the Netherlord
       {
         switch ( specialization() )
         {
