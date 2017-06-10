@@ -37,8 +37,8 @@ actions+=/immolate,cycle_targets=1,if=(active_enemies<5|!talent.fire_and_brimsto
 actions+=/immolate,if=talent.roaring_blaze.enabled&remains<=duration&!debuff.roaring_blaze.remains&target.time_to_die>10&(action.conflagrate.charges=2+set_bonus.tier19_4pc|(action.conflagrate.charges>=1+set_bonus.tier19_4pc&action.conflagrate.recharge_time<cast_time+gcd)|target.time_to_die<24)
 actions+=/berserking
 actions+=/blood_fury
-actions+=/use_item,name=tarnished_sentinel_medallion
 actions+=/use_item,name=tome_of_unraveling_sanity
+actions+=/use_item,name=tarnished_sentinel_medallion
 actions+=/potion,name=deadly_grace,if=(buff.soul_harvest.remains|trinket.proc.any.react|target.time_to_die<=45)
 actions+=/shadowburn,if=buff.conflagration_of_chaos.remains<=action.chaos_bolt.cast_time
 actions+=/shadowburn,if=(charges=1+set_bonus.tier19_4pc&recharge_time<action.chaos_bolt.cast_time|charges=2+set_bonus.tier19_4pc)&soul_shard<5
@@ -85,8 +85,8 @@ legs=diabolic_leggings,id=147184,ilevel=915
 feet=slippers_of_enduring_vigilance,id=146987,ilevel=915
 finger1=yathaes_thumb_ring,id=147021,ilevel=915,enchant_id=5428
 finger2=seal_of_the_second_duumvirate,id=147195,ilevel=925,enchant_id=5428
-trinket1=tome_of_unraveling_sanity,id=147019,ilevel=925
-trinket2=tarnished_sentinel_medallion,id=147017,ilevel=915
+trinket1=tarnished_sentinel_medallion,id=147017,ilevel=915
+trinket2=tome_of_unraveling_sanity,id=147019,ilevel=925
 main_hand=scepter_of_sargeras,id=128941,ilevel=942,gem_id=147090/147091/147090
 
 # Gear Summary
