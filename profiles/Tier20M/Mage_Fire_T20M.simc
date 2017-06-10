@@ -1,11 +1,11 @@
 mage="Mage_Fire_T20M"
+spec=fire
 level=110
 race=troll
 role=spell
 position=back
 talents=3012023
 artifact=54:142183:147079:142183:0:748:1:749:4:750:4:751:6:752:4:753:4:754:4:755:4:756:4:757:4:758:1:759:1:760:1:761:1:762:1:763:1:1340:1:1372:1:1533:5:1534:1:1535:1:1536:1:1640:1
-spec=fire
 
 # Default consumables
 potion=deadly_grace
@@ -33,7 +33,7 @@ actions=counterspell,if=target.debuff.casting.react
 actions+=/time_warp,if=(time=0&buff.bloodlust.down)|(buff.bloodlust.down&equipped.132410&(cooldown.combustion.remains<1|target.time_to_die.remains<50))
 actions+=/mirror_image,if=buff.combustion.down
 actions+=/rune_of_power,if=cooldown.combustion.remains>40&buff.combustion.down&!talent.kindling.enabled|target.time_to_die.remains<11|talent.kindling.enabled&(charges_fractional>1.8|time<40)&cooldown.combustion.remains>40
-actions+=/call_action_list,name=combustion_phase,if=cooldown.combustion.remains<=action.rune_of_power.cast_time+(!talent.kindling.enabled*gcd)&(!talent.firestarter.enabled|target.health.pct<90|active_enemies>=4|active_enemies>=2&talent.flame_patch.enabled)|buff.combustion.up
+actions+=/call_action_list,name=combustion_phase,if=cooldown.combustion.remains<=action.rune_of_power.cast_time+(!talent.kindling.enabled*gcd)&(!talent.firestarter.enabled|!firestarter.active|active_enemies>=4|active_enemies>=2&talent.flame_patch.enabled)|buff.combustion.up
 actions+=/call_action_list,name=rop_phase,if=buff.rune_of_power.up&buff.combustion.down
 actions+=/call_action_list,name=standard_rotation
 
@@ -104,14 +104,13 @@ main_hand=felomelorn,id=128820,ilevel=954
 off_hand=heart_of_the_phoenix,id=133959
 
 # Gear Summary
-# gear_ilvl=934.25
+# gear_ilvl=933.63
 # gear_stamina=43513
-# gear_intellect=46580
-# gear_crit_rating=4065
+# gear_intellect=43586
+# gear_crit_rating=5385
 # gear_haste_rating=10137
 # gear_mastery_rating=7194
 # gear_versatility_rating=5874
 # gear_armor=2163
 # set_bonus=tier20_2pc=1
 # set_bonus=tier20_4pc=1
-
