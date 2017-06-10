@@ -3828,12 +3828,15 @@ struct aftershocks_t : public fire_mage_spell_t
 struct flamestrike_t : public fire_mage_spell_t
 {
   aftershocks_t* aftershocks;
+
   flame_patch_t* flame_patch;
+  timespan_t flame_patch_duration;
 
   flamestrike_t( mage_t* p, const std::string& options_str ) :
     fire_mage_spell_t( "flamestrike", p,
                        p -> find_specialization_spell( "Flamestrike" ) ),
-    flame_patch( new flame_patch_t( p ) )
+    flame_patch( new flame_patch_t( p ) ),
+    flame_patch_duration( p -> find_spell( 205470 ) -> duration() )
   {
     parse_options( options_str );
 
@@ -3904,8 +3907,6 @@ struct flamestrike_t : public fire_mage_spell_t
     }
     if ( state -> chain_target == 0 && p() -> talents.flame_patch -> ok() )
     {
-      // DurationID: 205470. 8s
-      timespan_t flame_patch_duration = timespan_t::from_seconds( 8.0 );
       p() -> ground_aoe_expiration[ flame_patch -> name_str ]
         = sim -> current_time() + flame_patch_duration;
 
@@ -5058,17 +5059,29 @@ struct meteor_burn_t : public fire_mage_spell_t
 struct meteor_impact_t: public fire_mage_spell_t
 {
   meteor_burn_t* meteor_burn;
+  timespan_t meteor_burn_duration;
+  timespan_t meteor_burn_pulse_time;
 
   meteor_impact_t( mage_t* p, meteor_burn_t* meteor_burn, int targets, bool legendary ):
     fire_mage_spell_t( legendary ? "legendary_meteor_imapct" : "meteor_impact",
                        p, p -> find_spell( 153564 ) ),
-    meteor_burn( meteor_burn )
+    meteor_burn( meteor_burn ),
+    meteor_burn_duration( p -> find_spell( 175396 ) -> duration() )
   {
     background = true;
     aoe = targets;
     split_aoe_damage = true;
     //TODO: Revisit PI behavior once Skullflower confirms behavior.
     triggers_ignite = true;
+
+    meteor_burn_pulse_time = meteor_burn -> data().effectN( 1 ).period();
+
+    // It seems that the 8th tick happens only very rarely in game.
+    // As of PTR build 24287, 2017-06-08.
+    if ( p -> bugs )
+    {
+      meteor_burn_duration -= meteor_burn_pulse_time;
+    }
   }
 
   timespan_t travel_time() const override
@@ -5080,25 +5093,15 @@ struct meteor_impact_t: public fire_mage_spell_t
   {
     fire_mage_spell_t::impact( s );
 
-    timespan_t pulse_time = meteor_burn -> data().effectN( 1 ).period();
-    timespan_t ground_aoe_duration = p() -> find_spell( 175396 ) -> duration();
-
-    // It seems that the 8th tick happens only very rarely in game.
-    // As of PTR build 24287, 2017-06-08.
-    if ( p() -> bugs )
-    {
-      ground_aoe_duration -= pulse_time;
-    }
-
     p() -> ground_aoe_expiration[ meteor_burn -> name_str ]
-      = sim -> current_time() + ground_aoe_duration;
+      = sim -> current_time() + meteor_burn_duration;
 
     event_t::cancel( p() -> active_meteor_burn );
 
     p() -> active_meteor_burn = make_event<tracking_ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
-      .pulse_time( pulse_time )
+      .pulse_time( meteor_burn_pulse_time )
       .target( s -> target )
-      .duration( ground_aoe_duration )
+      .duration( meteor_burn_duration )
       .action( meteor_burn ) );
   }
 };
