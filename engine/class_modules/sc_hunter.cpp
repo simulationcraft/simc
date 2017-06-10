@@ -702,10 +702,11 @@ public:
 
   virtual double cast_regen() const
   {
-    double cast_seconds = std::max( this -> execute_time().total_seconds(), this -> gcd().total_seconds() );
-    double sf_seconds = std::min( cast_seconds, p() -> buffs.steady_focus -> remains().total_seconds() );
-    double regen = p() -> focus_regen_per_second();
-    return ( regen * cast_seconds ) + ( regen * p() -> buffs.steady_focus -> check_value() * sf_seconds );
+    const timespan_t cast_time = std::max( this -> execute_time(), this -> gcd() );
+    const timespan_t sf_time = std::min( cast_time, p() -> buffs.steady_focus -> remains() );
+    const double regen = p() -> focus_regen_per_second();
+    const double sf_mult = p() -> buffs.steady_focus -> check_value();
+    return ( regen * cast_time.total_seconds() ) + ( regen * sf_mult * sf_time.total_seconds() );
   }
 
 // action list expressions
