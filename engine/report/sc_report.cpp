@@ -591,7 +591,7 @@ bool report::check_artifact_points( const player_t& p, sim_t& sim )
     sim.errorf(
         "Player %s has %s artifact points, maximum allowed (including relics) "
         "for %s is %s.\n",
-        p.name(), util::to_string( p.artifact.n_points - 1 ).c_str(),
+        p.name(), util::to_string( p.artifact.n_points ).c_str(),
         tier_name.c_str(), util::to_string( max_allowed ).c_str() );
     return false;
   }
@@ -600,7 +600,7 @@ bool report::check_artifact_points( const player_t& p, sim_t& sim )
     sim.errorf(
         "Player %s has %s artifact points, maximum allowed (including relics) "
         "for %s is %s. Add more!\n",
-        p.name(), util::to_string( p.artifact.n_points - 1 ).c_str(),
+        p.name(), util::to_string( p.artifact.n_points ).c_str(),
         tier_name.c_str(), util::to_string( max_allowed ).c_str() );
     return true;
   }
