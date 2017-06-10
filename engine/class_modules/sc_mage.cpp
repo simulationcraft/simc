@@ -7364,7 +7364,7 @@ std::string mage_t::default_food() const
     ( specialization() == MAGE_FIRE )   ? "pickled_eel" :
                                           "salty_squid_roll";
 
-  return ( true_level > 100 ) ? "lavish_suramar_feast" :
+  return ( true_level > 100 ) ? "lemon_herb_filet" :
          ( true_level >  90 ) ? lvl100_food :
          ( true_level >= 90 ) ? "mogu_fish_stew" :
          ( true_level >= 80 ) ? "seafood_magnifique_feast" :

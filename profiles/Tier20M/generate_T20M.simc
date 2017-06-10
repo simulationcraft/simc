@@ -24,7 +24,7 @@ generate_Druid_T20M.simc
 generate_Hunter_T20M.simc
 
 # Mage
-#generate_Mage_T20M.simc
+generate_Mage_T20M.simc
 
 # Monk
 #generate_Monk_T20M.simc
