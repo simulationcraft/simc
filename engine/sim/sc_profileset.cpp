@@ -143,7 +143,7 @@ bool iterate_profilesets( sim_t* sim )
 
   sim_control_t* original_opts = sim -> control;
 
-  for ( const auto set : sim -> profilesets )
+  for ( auto set : sim -> profilesets )
   {
     sim -> control = set -> options();
 
@@ -151,12 +151,22 @@ bool iterate_profilesets( sim_t* sim )
 
     profile_sim -> set_sim_base_str( set -> name() );
     auto ret = profile_sim -> execute();
-    delete profile_sim;
 
     if ( ret == false )
     {
+      delete profile_sim;
       return false;
     }
+
+    const auto player = profile_sim -> player_no_pet_list.data().front();
+    auto metric = player -> scaling_for_metric( SCALE_METRIC_DPS );
+
+    set -> result()
+      .metric_type( SCALE_METRIC_DPS )
+      .metric( metric.value )
+      .stddev( metric.stddev );
+
+    delete profile_sim;
   }
 
   sim -> control = original_opts;

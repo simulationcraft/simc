@@ -20,25 +20,45 @@ class profile_result_t
 {
   scale_metric_e m_metric_type;
   double         m_metric;
-  double         m_variance;
+  double         m_stddev;
+  size_t         m_iterations;
 
 public:
   profile_result_t() :
-    m_metric_type( SCALE_METRIC_NONE ), m_metric( 0 ), m_variance( 0 )
+    m_metric_type( SCALE_METRIC_NONE ), m_metric( 0 ), m_stddev( 0 ), m_iterations( 0 )
   { }
 
-  profile_result_t( scale_metric_e metric_type, double metric, double variance ) :
-    m_metric_type( metric_type ), m_metric( metric ), m_variance( variance )
+  profile_result_t( scale_metric_e type ) :
+    m_metric_type( type ), m_metric( 0 ), m_stddev( 0 )
+  { }
+
+  profile_result_t( scale_metric_e metric_type, double metric, double stddev ) :
+    m_metric_type( metric_type ), m_metric( metric ), m_stddev( stddev )
   { }
 
   scale_metric_e metric_type() const
   { return m_metric_type; }
 
+  profile_result_t& metric_type( scale_metric_e t )
+  { m_metric_type = t; return *this; }
+
   double metric() const
   { return m_metric; }
 
-  double variance() const
-  { return m_variance; }
+  profile_result_t& metric( double m )
+  { m_metric = m; return *this; }
+
+  double stddev() const
+  { return m_stddev; }
+
+  profile_result_t& stddev( double v )
+  { m_stddev = v; return *this; }
+
+  size_t iterations() const
+  { return m_iterations; }
+
+  profile_result_t& iterations( size_t i )
+  { m_iterations = i; return *this; }
 };
 
 class profile_set_t
@@ -60,6 +80,9 @@ public:
   const profile_result_t& result() const
   { return m_result; }
 
+  profile_result_t& result()
+  { return m_result; }
+
   void set_result( const profile_result_t& result )
   { m_result = result; }
 
@@ -67,6 +90,16 @@ public:
       const std::vector<std::string>& opts );
 };
 
+using profileset_vector_t = std::vector<std::unique_ptr<profile_set_t>>;
+
+class profilesets_t
+{
+  profileset_vector_t m_profilesets;
+
+public:
+  profilesets_t()
+  { }
+};
 
 bool parse_profilesets( sim_t* sim );
 bool iterate_profilesets( sim_t* sim );
