@@ -61,6 +61,16 @@ profile_set_t::~profile_set_t()
   delete m_options;
 }
 
+bool validate_profileset( sim_t* ps_sim )
+{
+  if ( ps_sim -> player_no_pet_list.size() > 1 )
+  {
+    ps_sim -> errorf( "Profileset simulations must have only one actor" );
+    return false;
+  }
+
+  return true;
+}
 
 bool parse_profilesets( sim_t* sim )
 {
@@ -69,7 +79,7 @@ bool parse_profilesets( sim_t* sim )
     return true;
   }
 
-  if ( sim -> player_no_pet_list.size() > 1 )
+  if ( ! validate_profileset( sim ) )
   {
     return false;
   }
@@ -95,7 +105,7 @@ bool parse_profilesets( sim_t* sim )
     try {
       auto test_sim = new sim_t( sim );
       auto ret = test_sim -> init();
-      if ( ! ret )
+      if ( ! ret || ! validate_profileset( test_sim ) )
       {
         sim -> control = original_control;
         delete test_sim;

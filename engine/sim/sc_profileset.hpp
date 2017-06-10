@@ -70,6 +70,7 @@ public:
 
 bool parse_profilesets( sim_t* sim );
 bool iterate_profilesets( sim_t* sim );
+bool validate_profileset( sim_t* profileset_sim );
 
 void create_options( sim_t* sim );
 
