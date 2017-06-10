@@ -86,7 +86,7 @@ race=night_elf
 timeofday=day
 role=attack
 position=back
-talents=1210011
+talents=1310031
 artifact=17:0:0:0:0:851:1:853:3:854:3:855:3:856:3:858:3:860:1:863:1:866:1:1349:1
 spec=subtlety
 
